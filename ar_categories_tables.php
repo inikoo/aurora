@@ -29,6 +29,10 @@ switch ($tipo) {
 case 'categories':
 	categories(get_table_parameters(), $db, $user);
 	break;
+case 'subject_categories':
+	subject_categories(get_table_parameters(), $db, $user);
+	break;
+	
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
@@ -39,7 +43,6 @@ default:
 
 
 function categories($_data, $db, $user) {
-	global $db;
 	$rtext_label='category';
 	include_once 'prepare_table/init.php';
 
@@ -95,6 +98,61 @@ function categories($_data, $db, $user) {
 }
 
 
+function subject_categories($_data, $db, $user) {
 
+
+	$rtext_label='category';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+
+	foreach ($db->query($sql) as $data) {
+
+		switch ($data['Category Branch Type']) {
+		case 'Root':
+			$level=_('Root');
+			break;
+		case 'Head':
+			$level=_('Head');
+			break;
+		case 'Node':
+			$level=_('Node');
+			break;
+		default:
+			$level=$data['Category Branch Type'];
+			break;
+		}
+		$level=$data['Category Branch Type'];
+
+
+		$adata[]=array(
+			'id'=>(integer) $data['Category Key'],
+			'position'=>$data['Category Position'],
+			'store_key'=>(integer) $data['Category Store Key'],
+			'code'=>$data['Category Code'],
+			'label'=>$data['Category Label'],
+			'subjects'=>number($data['Category Number Subjects']),
+			'level'=>$level,
+			'subcategories'=>number($data['Category Children']),
+			'percentage_assigned'=>percentage($data['Category Number Subjects'], ($data['Category Number Subjects']+$data['Category Subjects Not Assigned']))
+		);
+
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
 
 ?>

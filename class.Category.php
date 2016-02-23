@@ -11,10 +11,14 @@
 
  Version 2.0
 */
-include_once 'class.DB_Table.php';
 include_once 'class.Node.php';
 
-class Category extends DB_Table {
+
+include_once 'class.Image.management.ext.php';
+
+
+
+class Category extends ObjectwithImage {
 
 
 
@@ -296,6 +300,9 @@ class Category extends DB_Table {
 
 
 		$branch_type=$this->data['Category Branch Type'];
+
+		$data['Category Scope']=$this->data['Category Scope'];
+
 		$data['Category Subject']=$this->data['Category Subject'];
 		$data['Category Subject Key']=$this->data['Category Subject Key'];
 
@@ -750,7 +757,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 
-	function update_field_switcher($field, $value, $options='',$metadata='') {
+	function update_field_switcher($field, $value, $options='', $metadata='') {
 
 
 
@@ -944,20 +951,52 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 	function update_number_of_subjects() {
-		$sql=sprintf("select COUNT(DISTINCT `Subject Key`)  as num from `Category Bridge`  where `Category Key`=%d  ",
-			$this->id
-		);
-		$res=mysql_query($sql);
-		$num=0;
-		if ($row=mysql_fetch_assoc($res)) {
-			$num=$row['num'];
+
+		if ($this->data['Category Subject']=='Category') {
+
+			$sql=sprintf("select sum(`Category Number Subjects`)  as num from `Category Bridge` B left join `Category Dimension` C on (B.`Subject Key`=C.`Category Key`) where B.`Category Key`=%d  ",
+				$this->id
+			);
+
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$num=$row['num'];
+				}else {
+					$num=0;
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+
+		}else {
+
+			$sql=sprintf("select COUNT(DISTINCT `Subject Key`)  as num from `Category Bridge`  where `Category Key`=%d  ",
+				$this->id
+			);
+
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$num=$row['num'];
+				}else {
+					$num=0;
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+
+
+
 		}
 		$sql=sprintf("update `Category Dimension` set `Category Number Subjects`=%d where `Category Key`=%d ",
 			$num,
 			$this->id
 		);
-		mysql_query($sql);
-		// print "$sql\n";
+		$this->db->exec($sql);
+
 		$this->update_no_assigned_subjects();
 
 	}
@@ -969,7 +1008,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 		$total_subjects=0;
 
-		switch ($this->data['Category Subject']) {
+		switch ($this->data['Category Scope']) {
 		case('Part'):
 
 			$sql=sprintf("select count(*) as num from `Part Warehouse Bridge` where `Warehouse Key`=%d",
@@ -1003,13 +1042,19 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			break;
 		}
 
-		//print "$sql\n";
 
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$total_subjects=$row['num'];
-
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$total_subjects=$row['num'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			print_r($this);
+			print "$sql\n";
+			exit;
 		}
+
+
 
 
 		$sql=sprintf("select COUNT(Distinct `Subject Key`)  as num from `Category Bridge`  where `Category Key`=%d  ",
@@ -2094,9 +2139,12 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 				prepare_mysql($other_value),
 				$this->id
 			);
-			mysql_query($sql);
-			//print "$sql\n";
-			$inserted= mysql_affected_rows();
+
+
+			$update_op=$this->db->prepare($sql);
+			$update_op->execute();
+			$inserted=$update_op->rowCount();
+
 
 
 
@@ -2185,11 +2233,11 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 						$subject_key,
 						$this->id
 					);
-					mysql_query($sql);
+					$update_op=$this->db->prepare($sql);
+					$update_op->execute();
+					$inserted=$update_op->rowCount();
 
-
-
-					if (mysql_affected_rows()) {
+					if ($inserted) {
 						$parent_category=new Category($parent_key);
 
 						$parent_category->update_number_of_subjects();
@@ -2374,6 +2422,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		}
 	}
 
+
 	function get_field_label($field) {
 		global $account;
 
@@ -2386,7 +2435,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		case 'Category Label':
 			$label=_('label');
 			break;
-		
+
 
 
 
@@ -2399,4 +2448,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		return $label;
 
 	}
+
+
 }

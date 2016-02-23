@@ -53,10 +53,11 @@ class Timeseries extends DB_Table {
 
 			$this->id=$this->data['Timeseries Key'];
 			if ($this->data['Timeseries Parent']=='Store') {
-                $this->parent=new Store($this->data['Timeseries Parent Key']);
-               
-			}else{
-			    $this->parent=new Account(1);
+				include_once 'class.Store.php';
+				$this->parent=new Store($this->data['Timeseries Parent Key']);
+
+			}else {
+				$this->parent=new Account(1);
 			}
 		}
 
@@ -66,7 +67,7 @@ class Timeseries extends DB_Table {
 	}
 
 
-	function update_field_switcher($field, $value, $options='',$metadata='') {
+	function update_field_switcher($field, $value, $options='', $metadata='') {
 		if (is_string($value))
 			$value=_trim($value);
 

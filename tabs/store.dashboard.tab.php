@@ -11,6 +11,7 @@
 */
 
 $store=$state['_object'];
+$smarty->assign('store', $store);
 
 $html=$smarty->fetch('dashboard/store_sales_plot.tpl');
 

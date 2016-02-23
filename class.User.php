@@ -2027,7 +2027,7 @@ class User extends DB_Table {
 					'caption'=>$row['Image Caption'],
 					'is_principal'=>$row['Is Principal'],
 					'id'=>$row['Image Key'],
-					'size'=>formatSizeUnits($row['Image File Size']
+					'size'=>file_size($row['Image File Size']
 					)
 				);
 

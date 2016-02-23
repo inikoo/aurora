@@ -12,6 +12,7 @@
 require_once 'common.php';
 require_once 'utils/ar_common.php';
 require_once 'utils/object_functions.php';
+require_once 'utils/natural_language.php';
 
 
 if (!isset($_REQUEST['tipo'])) {
@@ -98,7 +99,7 @@ default:
 function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 
-	$object=get_object($data['object'], $data['key']);
+	$object=get_object($data['object'], $data['key'],$load_other_data=true);
 
 
 	if (!$object->id) {
@@ -163,7 +164,6 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 		if ($object->updated) {
 			$msg=sprintf('<span class="success"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $data['field'], _('Updated'));
-
 
 			$formatted_value=$object->get($formatted_field);
 

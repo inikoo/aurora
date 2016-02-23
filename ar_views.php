@@ -25,6 +25,8 @@ case 'views':
 	require_once 'utils/parse_request.php';
 
 
+
+
 	$data=prepare_values($_REQUEST, array(
 			'request'=>array('type'=>'string'),
 			'old_state'=>array('type'=>'json array'),
@@ -52,15 +54,112 @@ case 'views':
 
 
 
+
+	$state['current_store']=$_SESSION['current_store'];
+	$state['current_website']=$_SESSION['current_store'];
+	$state['current_warehouse']=$_SESSION['current_store'];
+
+
+
+
+	$store='';
+	$website='';
+	$warehouse='';
+
+
+
+	switch ($state['parent']) {
+
+	case 'store':
+		include_once 'class.Store.php';
+		$_parent=new Store($state['parent_key']);
+		$state['current_store']=$_parent->id;
+		$store=$_parent;
+		break;
+	case 'part':
+		include_once 'class.Part.php';
+		$_parent=new Part($state['parent_key']);
+
+
+		break;
+	case 'website':
+		$_parent=new Site($state['parent_key']);
+		$website=$_parent;
+		$state['current_website']=$_parent->id;
+		$website=$_parent;
+
+		break;
+	case 'warehouse':
+		include_once 'class.Warehouse.php';
+		$_parent=new Warehouse($state['parent_key']);
+		$warehouse=$_parent;
+		$state['current_warehouse']=$_parent->id;
+
+		break;
+	case 'category':
+		include_once 'class.Category.php';
+		include_once 'class.Store.php';
+		$_parent=new Category($state['parent_key']);
+
+		if ($_parent->get('Category Scope')=='Product' or $_parent->get('Category Scope')=='Customer') {
+			$store=new Store($_parent->get('Store Key'));
+
+		}
+
+		break;
+
+	default:
+		$_parent=false;
+	}
+	$state['_parent']=$_parent;
+
+
+
 	if ($state['object']!='') {
 
+
+
+
 		$_object=get_object($state['object'], $state['key']);
+
+		if (is_numeric($_object->get('Store Key'))) {
+			include_once 'class.Store.php';
+			$store=new Store($_object->get('Store Key'));
+			$state['current_store']=$store->id;
+		}
+		if (is_numeric($_object->get('Warehouse Key'))) {
+			include_once 'class.Warehouse.php';
+			$warehouse=new Store($_object->get('Warehouse Key'));
+			$state['current_warehouse']=$warehouse->id;
+		}
+
+
+		if ($state['object']=='product' or $state['object']=='customer') {
+
+
+			if ($state['parent']=='store' and $_object->get('Store Key')!=$state['parent_key']) {
+				$state=array('old_state'=>$state, 'module'=>'utils', 'section'=>'not_found', 'tab'=>'not_found', 'subtab'=>'', 'parent'=>$state['object'], 'parent_key'=>'', 'object'=>'',
+					'store'=>'',
+					'website'=>'',
+					'warehouse'=>'',
+					'key'=>'',
+					'request'=>$state['request']
+				);
+
+			}
+		}
 
 
 		if (!$_object->id  and $modules[$state['module']]['sections'][$state['section']]['type']=='object') {
 
 
-			$state=array('old_state'=>$state, 'module'=>'utils', 'section'=>'not_found', 'tab'=>'not_found', 'subtab'=>'', 'parent'=>$state['object'], 'parent_key'=>'', 'object'=>'');
+			$state=array('old_state'=>$state, 'module'=>'utils', 'section'=>'not_found', 'tab'=>'not_found', 'subtab'=>'', 'parent'=>$state['object'], 'parent_key'=>'', 'object'=>'',
+				'store'=>$store,
+				'website'=>$website,
+				'warehouse'=>$warehouse,
+				'key'=>'',
+				'request'=>$state['request']
+			);
 
 
 		}else {
@@ -71,32 +170,31 @@ case 'views':
 
 	}
 
-	switch ($state['parent']) {
 
-	case 'store':
-		include_once 'class.Store.php';
-		$_parent=new Store($state['parent_key']);
-		break;
-	case 'website':
-		$_parent=new Site($state['parent_key']);
-
-
-
-		break;
-
-	default:
-		$_parent=false;
-	}
 
 	if (is_object($_parent) and !$_parent->id) {
-		$state=array('old_state'=>$state, 'module'=>'utils', 'section'=>'not_found', 'tab'=>'not_found', 'subtab'=>'', 'parent'=>$state['parent'], 'parent_key'=>'', 'object'=>'');
+		$state=array('old_state'=>$state, 'module'=>'utils', 'section'=>'not_found', 'tab'=>'not_found', 'subtab'=>'', 'parent'=>$state['parent'], 'parent_key'=>'', 'object'=>'',
+			'store'=>$store,
+			'website'=>$website,
+			'warehouse'=>$warehouse
+		);
 	}
+
 
 	if ($state['module']=='hr') {
 		if (!$user->can_view('staff') ) {
-			$state=array('old_state'=>$state, 'module'=>'utils', 'section'=>'forbidden', 'tab'=>'forbidden', 'subtab'=>'', 'parent'=>$state['parent'], 'parent_key'=>$state['parent_key'], '_object'=>'', 'object'=>'', 'key'=>'');
+			$state=array('old_state'=>$state, 'module'=>'utils', 'section'=>'forbidden', 'tab'=>'forbidden', 'subtab'=>'', 'parent'=>$state['parent'], 'parent_key'=>$state['parent_key'], '_object'=>'', 'object'=>'', 'key'=>'',
+				'store'=>$store,
+				'website'=>$website,
+				'warehouse'=>$warehouse);
 		}
 	}
+
+	$state['store']=$store;
+	$state['website']=$website;
+	$state['warehouse']=$warehouse;
+
+
 
 	$sql=sprintf('insert into `User System View Fact`  (`User Key`,`Date`,`Module`,`Section`,`Tab`,`Parent`,`Parent Key`,`Object`,`Object Key`)  values (%d,%s,%s,%s,%s,%s,%s,%s,%s)',
 		$user->id,
@@ -113,6 +211,17 @@ case 'views':
 	$db->exec($sql);
 
 	$_SESSION['request']=$state['request'];
+
+
+    if(isset($state['current_store'])){
+	$_SESSION['current_store']=$state['current_store'];
+	}
+	  if(isset($state['current_website'])){
+	$_SESSION['current_website']=$state['current_website'];
+	}
+	  if(isset($state['current_warehouse'])){
+	$_SESSION['current_warehouse']=$state['current_warehouse'];
+}
 
 	$response=array('state'=>array());
 
@@ -132,14 +241,13 @@ case 'views':
 		$data['old_state']['key']!=$state['key'] or  $reload
 
 	) {
-
 		$response['navigation']=get_navigation($user, $smarty, $state, $db, $account);
 
 	}
-
 	if ($reload) {
 		$response['logout_label']=_('Logout');
 	}
+
 
 	//special dynamic tabs
 	if ($state['section']=='timesheets') {
@@ -171,18 +279,26 @@ case 'views':
 		}
 	}
 
-	$response['tabs']=get_tabs($state, $modules);// todo only calculate when is subtabs in the section
+	list($state, $response['tabs'])=get_tabs($state, $modules, $user, $smarty);// todo only calculate when is subtabs in the section
 
-	if ($state['object']!=''  and ($modules[$state['module']]['sections'][$state['section']]['type']=='object'  or isset($modules[$state['module']]['sections'][$state['section']]['showcase'])  )   ) {
-		$response['object_showcase']=get_object_showcase($state, $smarty, $user);
+
+	if ($state['object']!=''
+		and ($modules[$state['module']]['sections'][$state['section']]['type']=='object'  or isset($modules[$state['module']]['sections'][$state['section']]['showcase'])  )   ) {
+		$response['object_showcase']=get_object_showcase(
+			(isset($modules[$state['module']]['sections'][$state['section']]['showcase'])?$modules[$state['module']]['sections'][$state['section']]['showcase']:$state['object']),
+			$state, $smarty, $user, $db);
 	}else {
 		$response['object_showcase']='';
 	}
 
 
-	$response['tab']=get_tab($state['tab'], $state['subtab'], $state, $data['metadata']);
+	$response['tab']=get_tab($db, $smarty, $user, $account, $state['tab'], $state['subtab'], $state, $data['metadata']);
 
 	unset($state['_object']);
+	unset($state['_parent']);
+	unset($state['store']);
+	unset($state['website']);
+	unset($state['warehouse']);
 	$response['state']=$state;
 
 
@@ -201,7 +317,7 @@ case 'tab':
 
 
 	$response=array(
-		'tab'=>get_tab($data['tab'], $data['subtab'], $data['state'])
+		'tab'=>get_tab($db, $smarty, $user, $account, $data['tab'], $data['subtab'], $data['state'])
 	);
 
 
@@ -217,9 +333,8 @@ default:
 
 }
 
-function get_tab($tab, $subtab, $state=false, $metadata) {
+function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state=false, $metadata=false) {
 
-	global $smarty, $user, $db, $account;
 
 	$_tab=$tab;
 	$_subtab=$subtab;
@@ -228,7 +343,6 @@ function get_tab($tab, $subtab, $state=false, $metadata) {
 	$state['tab']=$actual_tab;
 
 	$smarty->assign('data', $state);
-
 
 
 	if (file_exists('tabs/'.$actual_tab . '.tab.php')) {
@@ -254,12 +368,11 @@ function get_tab($tab, $subtab, $state=false, $metadata) {
 
 
 
-function get_object_showcase($data, $smarty, $user) {
+function get_object_showcase($showcase, $data, $smarty, $user, $db) {
 
 
 
-
-	switch ($data['object']  ) {
+	switch ($showcase) {
 
 	case 'website':
 	case 'dashboard':
@@ -267,60 +380,89 @@ function get_object_showcase($data, $smarty, $user) {
 		break;
 	case 'store':
 		include_once 'showcase/store.show.php';
-		$html=get_store_showcase($data, $smarty, $user);
+		$html=get_store_showcase($data, $smarty, $user, $db);
+		break;
+	case 'products_special_categories':
+		include_once 'showcase/products_special_categories.show.php';
+		$html=get_products_special_categories_showcase($data, $smarty, $user, $db);
 		break;
 	case 'account':
 		include_once 'showcase/account.show.php';
-		$html=get_account_showcase($data, $smarty, $user);
+		$html=get_account_showcase($data, $smarty, $user, $db);
 		break;
-
+	case 'product':
+		include_once 'showcase/product.show.php';
+		$html=get_product_showcase($data, $smarty, $user, $db);
+		break;
+	case 'part':
+		include_once 'showcase/part.show.php';
+		$html=get_part_showcase($data, $smarty, $user, $db);
+		break;
 	case 'employee':
 		include_once 'showcase/employee.show.php';
-		$html=get_employee_showcase($data, $smarty, $user);
+		$html=get_employee_showcase($data, $smarty, $user, $db);
 		break;
 	case 'contractor':
 		include_once 'showcase/contractor.show.php';
-		$html=get_contractor_showcase($data, $smarty, $user);
+		$html=get_contractor_showcase($data, $smarty, $user, $db);
 		break;
 	case 'customer':
 		include_once 'showcase/customer.show.php';
-		$html=get_customer_showcase($data, $smarty, $user);
+		$html=get_customer_showcase($data, $smarty, $user, $db);
 		break;
 	case 'supplier':
 		include_once 'showcase/supplier.show.php';
-		$html=get_supplier_showcase($data, $smarty, $user);
+		$html=get_supplier_showcase($data, $smarty, $user, $db);
 		break;
 	case 'order':
 		include_once 'showcase/order.show.php';
-		$html=get_order_showcase($data, $smarty, $user);
+		$html=get_order_showcase($data, $smarty, $user, $db);
 		break;
 	case 'invoice':
 		include_once 'showcase/invoice.show.php';
-		$html=get_invoice_showcase($data, $smarty, $user);
+		$html=get_invoice_showcase($data, $smarty, $user, $db);
 		break;
 	case 'delivery_note':
 		include_once 'showcase/delivery_note.show.php';
-		$html=get_delivery_note_showcase($data, $smarty, $user);
+		$html=get_delivery_note_showcase($data, $smarty, $user, $db);
 		break;
 	case 'user':
 		include_once 'showcase/user.show.php';
-		$html=get_user_showcase($data, $smarty, $user);
+		$html=get_user_showcase($data, $smarty, $user, $db);
 		break;
 	case 'warehouse':
 		include_once 'showcase/warehouse.show.php';
-		$html=get_warehouse_showcase($data, $smarty, $user);
+		$html=get_warehouse_showcase($data, $smarty, $user, $db);
 		break;
 	case 'timesheet':
 		include_once 'showcase/timesheet.show.php';
-		$html=get_timesheet_showcase($data, $smarty, $user);
+		$html=get_timesheet_showcase($data, $smarty, $user, $db);
 		break;
 	case 'attachment':
 		include_once 'showcase/attachment.show.php';
-		$html=get_attachment_showcase($data, $smarty, $user);
+		$html=get_attachment_showcase($data, $smarty, $user, $db);
 		break;
 	case 'manufacture_task':
 		include_once 'showcase/manufacture_task.show.php';
-		$html=get_manufacture_task_showcase($data, $smarty, $user);
+		$html=get_manufacture_task_showcase($data, $smarty, $user, $db);
+		break;
+	case 'category':
+
+		if ($data['_object']->id==$data['store']->get('Store Family Category Key') or
+			$data['_object']->id==$data['store']->get('Store Department Category Key')
+		) {
+			$html='';
+		}elseif ($data['_object']->get('Root Key')==$data['store']->get('Store Family Category Key')) {
+			include_once 'showcase/family.show.php';
+			$html=get_family_showcase($data, $smarty, $user, $db);
+		}elseif ($data['_object']->get('Root Key')==$data['store']->get('Store Department Category Key')) {
+			include_once 'showcase/department.show.php';
+			$html=get_department_showcase($data, $smarty, $user, $db);
+		}else {
+
+			include_once 'showcase/category.show.php';
+			$html=get_category_showcase($data, $smarty, $user, $db);
+		}
 		break;
 	default:
 		$html=$data['object'].' -> '.$data['key'];
@@ -355,23 +497,43 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		require_once 'navigation/dashboard.nav.php';
 		return get_dashboard_navigation($data, $smarty, $user, $db, $account);
 		break;
-	case ('products'):
 	case ('products_server'):
 		require_once 'navigation/products.nav.php';
 		switch ($data['section']) {
 		case 'stores':
-			return get_stores_navigation($data);
-			break;
-		case 'store':
-			return get_store_navigation($data);
+			return get_stores_navigation($data, $smarty, $user, $db , $account);
 			break;
 
+		case 'products':
+			return get_products_all_stores_navigation($data, $smarty, $user, $db, $account);
+			break;
+
+		}
+	case ('products'):
+		require_once 'navigation/products.nav.php';
+		switch ($data['section']) {
+
+		case 'store':
+			return get_store_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case 'products':
+			return get_products_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case 'dashboard':
+			return get_store_dashboard_navigation($data, $smarty, $user, $db, $account);
+			break;
 		case 'product':
-			return get_product_navigation($data);
+
+
+
+			return get_product_navigation($data, $smarty, $user, $db, $account);
 			break;
 
 		case ('categories'):
-			return get_products_categories_navigation($data);
+			return get_products_categories_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('category'):
+			return get_products_category_navigation($data, $smarty, $user, $db, $account);
 			break;
 		}
 	case ('customers'):
@@ -379,38 +541,38 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		switch ($data['section']) {
 
 		case ('customer'):
-			return get_customer_navigation($data, $smarty, $user, $db);
+			return get_customer_navigation($data, $smarty, $user, $db, $account);
 			break;
 
 		case ('customers'):
-			return get_customers_navigation($data, $smarty, $user, $db);
+			return get_customers_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('categories'):
 
-			return get_customers_categories_navigation($data, $smarty, $user, $db);
+			return get_customers_categories_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('category'):
 
-			return get_customers_category_navigation($data, $smarty, $user, $db);
+			return get_customers_category_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('lists'):
-			return get_customers_lists_navigation($data, $smarty, $user, $db);
+			return get_customers_lists_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('list'):
-			return get_customers_list_navigation($data, $smarty, $user, $db);
+			return get_customers_list_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('dashboard'):
-			return get_customers_dashboard_navigation($data, $smarty, $user, $db);
+			return get_customers_dashboard_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('statistics'):
 
-			return get_customers_statistics_navigation($data, $smarty, $user, $db);
+			return get_customers_statistics_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('pending_orders'):
-			return get_customers_pending_orders_navigation($data, $smarty, $user, $db);
+			return get_customers_pending_orders_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('customer.new'):
-			return get_new_customer_navigation($data, $smarty, $user, $db, $account);
+			return get_new_customer_navigation($data, $smarty, $user, $db, $account, $account);
 			break;
 		}
 
@@ -702,30 +864,38 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		}
 
 		break;
+	case ('inventory_server'):
+		require_once 'navigation/inventory.nav.php';
+		switch ($data['section']) {
+		case ('inventory'):
+			return get_inventory_all_warehouses_navigation($data, $smarty, $user, $db, $account);
+			break;
 
+
+		}
 	case ('inventory'):
 		require_once 'navigation/inventory.nav.php';
 		switch ($data['section']) {
 
 
 		case ('inventory'):
-			return get_inventory_navigation($data);
+			return get_inventory_navigation($data, $smarty, $user, $db, $account);
 			break;
 
 		case ('part'):
-			return get_part_navigation($data);
+			return get_part_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('transactions'):
-			return get_transactions_navigation($data);
+			return get_transactions_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('stock_history'):
-			return get_stock_history_navigation($data);
+			return get_stock_history_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('categories'):
-			return get_categories_navigation($data);
+			return get_categories_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('category'):
-			return get_category_navigation($data);
+			return get_category_navigation($data, $smarty, $user, $db, $account);
 			break;
 		}
 
@@ -931,8 +1101,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
 
 
-function get_tabs($data, $modules) {
-	global $user, $smarty;
+function get_tabs($data, $modules, $user, $smarty) {
 
 
 
@@ -967,47 +1136,113 @@ function get_tabs($data, $modules) {
 
 	);
 
+	if ($data['section']=='category') {
 
+		if ($data['_object']->get('Category Scope')=='Product') {
+			if ($data['_object']->get('Category Subject')=='Product') {
+				$_content['tabs']['category.subjects']['label']=_('Products');
+
+
+				if ($data['_object']->get('Root Key')==$data['store']->get('Store Family Category Key')) {
+					$_content['tabs']['category.categories']['label']=_('Families');
+				}
+
+			}else {
+
+
+				if ($data['_object']->get('Root Key')==$data['store']->get('Store Department Category Key')) {
+					$_content['tabs']['category.subjects']['label']=_('Families');
+					$_content['tabs']['category.categories']['label']=_('Departments');
+				}elseif ($data['_object']->get('Root Key')==$data['store']->get('Store Family Category Key')) {
+					$_content['tabs']['category.categories']['label']=_('Families');
+				}else {
+
+					$_content['tabs']['category.subjects']['label']=_('Categories');
+				}
+
+			}
+		}
+
+
+
+		if ($data['_object']->get('Category Branch Type')=='Head') {
+			unset($_content['tabs']['category.categories']);
+			if ($data['tab']=='category.categories') {
+				$_content['tabs']['category.subjects']['selected']=true;
+				$data['tab']='category.subjects';
+			}
+
+		}else {
+			unset($_content['tabs']['category.subjects']);
+			if ($data['tab']=='category.subjects') {
+				$_content['tabs']['category.categories']['selected']=true;
+				$data['tab']='category.categories';
+			}
+		}
+
+		//print_r($data['_object']);
+		//print_r($_content);
+
+
+	}
 
 	$smarty->assign('_content', $_content);
 
 	$html=$smarty->fetch('tabs.tpl');
 
-	return $html;
+	return array($data, $html);
 }
 
 
 function get_view_position($state) {
 	global $user, $smarty, $account;
 
-	$state['current_store']='';
-	$state['current_website']='';
-	$state['current_warehouse']='';
+
 	$branch=array();
 	//$branch=array(array('label'=>'<span >'._('Home').'</span>', 'icon'=>'home', 'reference'=>'/dashboard'));
-
+	//print_r($state);
 	switch ($state['module']) {
 	case 'dashboard':
+
+
 		$branch=array(array('label'=>'<span >'._('Dashboard').'</span>', 'icon'=>'dashboard', 'reference'=>'/dashboard'));
 
 		break;
+
+	case 'products_server':
+		if ($state['section']=='stores') {
+			$branch[]=array('label'=>_('Stores'), 'icon'=>'shopping-bag', 'reference'=>'');
+
+		}elseif ($state['section']=='products') {
+
+			$branch[]=array('label'=>_('Products (All stores)'), 'icon'=>'cube', 'reference'=>'');
+		}
+
+
+		break;
+
 	case 'products':
 
-		if ( $user->get_number_stores()>1) {
 
-
-			$branch[]=array('label'=>_('Stores'), 'icon'=>'bars', 'reference'=>'stores');
-
-		}
 		if ($state['section']=='store') {
-			$branch[]=array('label'=>_('Store').' <span class="id">'.$state['_object']->get('Store Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$state['_object']->id);
+			$branch[]=array('label'=>_('Store').' <span class="id">'.$state['_object']->get('Store Code').'</span>', 'icon'=>'shopping-bag', 'reference'=>'store/'.$state['_object']->id);
+			$state['current_store']=$state['_object']->id;
+
+		}elseif ($state['section']=='dashboard') {
+			$branch[]=array('label'=>_("Store's dashboard").' <span class="id">'.$state['_object']->get('Store Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$state['_object']->id);
 			$state['current_store']=$state['_object']->id;
 
 		}elseif ($state['section']=='product') {
 
 			if ($state['parent']=='store') {
-				$store=new Store($state['parent_key']);
-				$branch[]=array('label'=>_('Store').' <span class="id">'.$store->get('Store Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$store->id);
+				if ( $user->get_number_stores()>1) {
+
+
+					$branch[]=array('label'=>_('(All stores)'), 'icon'=>'', 'reference'=>'products/all');
+					$branch[]=array('label'=>_('Products').' <span class="id">'.$state['store']->get('Code').'</span>', 'icon'=>'cube', 'reference'=>'products/'.$state['store']->id);
+
+
+				}
 			}elseif ($state['parent']=='order') {
 				$order=new Order($state['parent_key']);
 				$store=new Store($order->get('Order Store Key'));
@@ -1023,25 +1258,57 @@ function get_view_position($state) {
 
 
 			}
-			$state['current_store']=$store->id;
+			$state['current_store']=$state['store']->id;
 			$_ref=$state['parent'].'/'.$state['parent_key'].'/product/'.$state['_object']->id;
 			if (isset($state['otf'])) {
 				$_ref=$state['parent'].'/'.$state['parent_key'].'/item/'.$state['otf'];
 			}
 
-			$branch[]=array('label'=>_('Product').' <span class="id">'.$state['_object']->get('Product Code').'</span>', 'icon'=>'', 'reference'=>$_ref);
+			$branch[]=array('label'=>'<span class="id Store_Product_Code">'.$state['_object']->get('Code').'</span>', 'icon'=>'cube', 'reference'=>$_ref);
 
 		}elseif ($state['section']=='products') {
+			if ( $user->get_number_stores()>1) {
 
-			if ($state['object']=='store') {
-				$store=new Store($state['key']);
-				$branch[]=array('label'=>$store->get('Store Code'), 'icon'=>'', 'reference'=>'store/'.$store->id);
-				$state['current_store']=$store->id;
+
+				$branch[]=array('label'=>_('(All stores)'), 'icon'=>'', 'reference'=>'products/all');
+
 			}
+
+			$branch[]=array('label'=>_('Products').' <span class="id">'.$state['store']->get('Code').'</span>', 'icon'=>'cube', 'reference'=>'');
 
 
 		}elseif ($state['section']=='categories') {
-			$branch[]=array('label'=>_('Pending orders (All stores)'), 'icon'=>'bars', 'reference'=>'pending_orders/all');
+			$branch[]=array('label'=>_("Products's categories"), 'icon'=>'sitemap', 'reference'=>'');
+		}elseif ($state['section']=='category') {
+			$category=$state['_object'];
+			$branch[]=array('label'=>_("Products's categories"), 'icon'=>'sitemap', 'reference'=>'products/'.$category->get('Store Key').'/categories');
+
+
+			if (isset($state['metadata'])) {
+				$parent_category_keys=$state['metadata'];
+			}else {
+
+				$parent_category_keys=preg_split('/\>/', $category->get('Category Position'));
+			}
+
+
+			foreach ( $parent_category_keys as $category_key) {
+				if (!is_numeric($category_key)) {
+					continue;
+				}
+				if ($category_key==$state['key']) {
+					$branch[]=array('label'=>$category->get('Label'), 'icon'=>'', 'reference'=>'');
+					break;
+				}else {
+
+					$parent_category=new Category($category_key);
+					if ($parent_category->id) {
+
+						$branch[]=array('label'=>$parent_category->get('Label'), 'icon'=>'', 'reference'=>'products/'.$category->get('Store Key').'/category/'.$parent_category->id);
+
+					}
+				}
+			}
 		}
 
 
@@ -1068,10 +1335,8 @@ function get_view_position($state) {
 
 		if ( $user->get_number_stores()>1) {
 
-			if ($state['section']=='pending_orders')
-				$branch[]=array('label'=>_('Pending orders (All stores)'), 'icon'=>'bars', 'reference'=>'pending_orders/all');
-			else
-				$branch[]=array('label'=>_('(All stores)'), 'icon'=>'', 'reference'=>'customers/all');
+
+			$branch[]=array('label'=>_('(All stores)'), 'icon'=>'', 'reference'=>'customers/all');
 
 		}
 
@@ -1546,8 +1811,23 @@ function get_view_position($state) {
 
 		}
 		break;
+	case 'inventory_server':
+		if ($state['section']=='inventory') {
+
+			$branch[]=array('label'=>_('Inventory (All warehouses)'), 'icon'=>'cube', 'reference'=>'');
+		}
+
+
+		break;
+
+
 	case 'inventory':
-		$branch[]=array('label'=>_('Inventory'), 'icon'=>'', 'reference'=>'inventory');
+		if ( $user->get_number_warehouses()>1 or $user->can_create('warehouses') ) {
+
+			$branch[]=array('label'=>_('(All warehouses)'), 'icon'=>'', 'reference'=>'inventory/all');
+
+		}
+		$branch[]=array('label'=>_('Inventory').' ('._('Parts').')', 'icon'=>'square', 'reference'=>'inventory');
 
 		break;
 
@@ -1971,19 +2251,19 @@ function get_help($data, $modules, $db) {
 
 
 
-	$response['tabs']=get_tabs($state, $modules);// todo only calculate when is subtabs in the section
+	list($state, $response['tabs'])=get_tabs($state, $modules, $user, $smarty);// todo only calculate when is subtabs in the section
 
 	$response['view_position']=get_view_position($state);
 
-
+	/*
 	if ($state['object']!=''  and $modules[$state['module']]['sections'][$state['section']]['type']=='object') {
-		$response['object_showcase']=get_object_showcase($state, $smarty, $user);
+		$response['object_showcase']=get_object_showcase($state, $smarty, $user,$db);
 	}else {
 		$response['object_showcase']='';
 	}
-
-
-	$response['tab']=get_tab($state['tab'], $state['subtab'], $state);
+*/
+	$response['object_showcase']='';
+	$response['tab']=get_tab($db, $smarty, $user, $account, $state['tab'], $state['subtab'], $state);
 
 	unset($state['_object']);
 	$response['state']=$state;

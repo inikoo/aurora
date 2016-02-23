@@ -383,7 +383,19 @@ function check_for_duplicates($data, $db, $user, $account) {
 
 
 		break;	
+	case 'Part':
+	switch ($field) {
+		case 'Part Reference':
+		$invalid_msg=_('Part reference already used');
+				$sql=sprintf("select P.`Part SKU` as `key` ,`Part Reference` as field from `Part Dimension` P left join `Part Warehouse Bridge` B on (B.`Part SKU`=P.`Part SKU`) where `Part Reference`=%s  and `Part Status`='In Use' and `Warehouse Key`=%d ",
+					prepare_mysql($data['value']),
+					$data['parent_key']
+				);
+		$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
 		
+		}
+	
+	break;	
 
 	default:
 
@@ -422,7 +434,7 @@ function check_for_duplicates($data, $db, $user, $account) {
 
 
 		if (!isset($invalid_msg)) {
-			$invalid_msg=_('Another object with same value found');
+			$invalid_msg=_('There is another object with the same value');
 		}
 		$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
 	}

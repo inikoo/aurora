@@ -12,7 +12,7 @@
 
 
 
-function get_object($object_name, $key) {
+function get_object($object_name, $key,$load_other_data=false) {
 
 	global $account;
 
@@ -23,7 +23,7 @@ function get_object($object_name, $key) {
 		break;
 	case 'customer':
 	case 'Customer':
-	include_once 'class.Customer.php';
+		include_once 'class.Customer.php';
 		$object=new Customer($key);
 		break;
 	case 'store':
@@ -31,10 +31,14 @@ function get_object($object_name, $key) {
 		include_once 'class.Store.php';
 		$object=new Store($key);
 		break;
-
+	case 'storeproduct':
 	case 'product':
-		include_once 'class.Product.php';
-		$object=new Product('pid', $key);
+	case 'StoreProduct':
+	case 'Store Product':
+	case 'Product':
+		include_once 'class.StoreProduct.php';
+		$object=new StoreProduct($key);
+		
 		break;
 	case 'order':
 		include_once 'class.Order.php';

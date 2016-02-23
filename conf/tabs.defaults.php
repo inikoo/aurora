@@ -333,36 +333,7 @@ $tab_defaults=array(
 		'f_period'=>'ytd',
 
 	),
-	'store.departments'=>array(
-		'view'=>'overview',
-		'sort_key'=>'id',
-		'sort_order'=>1,
-		'rpp'=>20,
-		'rpp_options'=>$default_rrp_options,
-		'f_field'=>'code',
-		'f_period'=>'ytd',
 
-	),
-	'store.families'=>array(
-		'view'=>'overview',
-		'sort_key'=>'id',
-		'sort_order'=>1,
-		'rpp'=>20,
-		'rpp_options'=>$default_rrp_options,
-		'f_field'=>'code',
-		'f_period'=>'ytd',
-
-	),
-	'department.families'=>array(
-		'view'=>'overview',
-		'sort_key'=>'id',
-		'sort_order'=>1,
-		'rpp'=>20,
-		'rpp_options'=>$default_rrp_options,
-		'f_field'=>'code',
-		'f_period'=>'ytd',
-
-	),
 	'store.products'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
@@ -371,9 +342,11 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code',
 		'f_period'=>'ytd',
+		'elements_type'=>each(  $elements_options['products']  ) ['key'],
+		'elements'=>$elements_options['products'],
 
 	),
-	'department.products'=>array(
+	'category.products'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
@@ -381,26 +354,19 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code',
 		'f_period'=>'ytd',
+		'elements_type'=>each(  $elements_options['products']  ) ['key'],
+		'elements'=>$elements_options['products'],
 
 	),
-	'family.products'=>array(
+	'products.categories'=>array(
 		'view'=>'overview',
-		'sort_key'=>'id',
+		'sort_key'=>'code',
 		'sort_order'=>1,
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
-		'f_field'=>'code',
-		'f_period'=>'ytd',
+		'f_field'=>'code'
+	),
 
-	),
-	'family.history'=>array(
-		'view'=>'overview',
-		'sort_key'=>'date',
-		'sort_order'=>1,
-		'rpp'=>20,
-		'rpp_options'=>$default_rrp_options,
-		'f_field'=>'note'
-	),
 	'product.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
@@ -556,6 +522,18 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'note'
+	),
+	'part.products'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code',
+		'f_period'=>'ytd',
+		'elements_type'=>each(  $elements_options['products']  ) ['key'],
+		'elements'=>$elements_options['products'],
+
 	),
 	'warehouse.locations'=>array(
 		'view'=>'overview',
@@ -836,7 +814,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'',
 	),
-	
+
 	'timeseries'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
@@ -845,7 +823,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'',
 	),
-		'timeserie.records'=>array(
+	'timeserie.records'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
@@ -863,7 +841,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'',
 	),
-	
+
 	'data_sets.attachments'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
@@ -872,7 +850,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'',
 	),
-	
+
 	'account.users'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
@@ -957,7 +935,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'note'
 	),
-'payment_accounts'=>array(
+	'payment_accounts'=>array(
 		'view'=>'overview',
 		'sort_key'=>'code',
 		'sort_order'=>1,
@@ -1074,6 +1052,16 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code'
 	),
+
+	'subject_categories'=>array(
+		'view'=>'overview',
+		'sort_key'=>'code',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code'
+	),
+
 );
 
 

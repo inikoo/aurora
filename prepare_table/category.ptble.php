@@ -9,7 +9,7 @@
 
 */
 
-
+$group_by='';
 
 
 switch ($parameters['parent']) {
@@ -19,16 +19,19 @@ case 'account':
 	switch ($parameters['subject']) {
 
 	case('customer'):
-		$where.=sprintf(" and `Category Subject`='Customer'");
+		$where.=sprintf(" and `Category Scope`='Customer'");
 		break;
 	case('product'):
-		$where.=sprintf(" and `Category Subject`='Product' ");
+		$where.=sprintf(" and `Category Scope`='Product' ");
 		break;
 	case('family'):
-		$where.=sprintf(" and `Category Subject`='Family'");
+		$where.=sprintf(" and `Category Scope`='Family'");
 		break;
 	case('invoice'):
-		$where.=sprintf(" and `Category Subject`='Invoice' ");
+		$where.=sprintf(" and `Category Scope`='Invoice' ");
+		break;
+	default:
+		$where.=sprintf(" and false ");
 		break;
 	}
 	break;
@@ -39,17 +42,21 @@ case 'store':
 	switch ($parameters['subject']) {
 
 	case('customer'):
-		$where.=sprintf(" and `Category Subject`='Customer'");
+		$where.=sprintf(" and `Category Scope`='Customer'");
 		break;
 	case('product'):
-		$where.=sprintf(" and `Category Subject`='Product' ");
+		$where.=sprintf(" and `Category Scope`='Product' ");
 		break;
 	case('family'):
-		$where.=sprintf(" and `Category Subject`='Family'");
+		$where.=sprintf(" and `Category Scope`='Family'");
 		break;
 	case('invoice'):
-		$where.=sprintf(" and `Category Subject`='Invoice' ");
+		$where.=sprintf(" and `Category Scope`='Invoice' ");
 		break;
+	default:
+		$where.=sprintf(" and false ");
+		break;
+
 	}
 	break;
 case 'warehouse':
@@ -58,7 +65,10 @@ case 'warehouse':
 	switch ($parameters['subject']) {
 
 	case('part'):
-		$where.=sprintf(" and `Category Subject`='Part' ");
+		$where.=sprintf(" and `Category Scope`='Part' ");
+		break;
+	default:
+		$where.=sprintf(" and false ");
 		break;
 	}
 	break;
@@ -68,18 +78,17 @@ case 'category':
 
 
 	break;
-	
-	
+
+
 case '':
 	switch ($parameters['subject']) {
 	case('supplier'):
-		$where.=" and `Category Subject`='Supplier'";
+		$where.=" and `Category Scope`='Supplier'";
 		break;
 	}
 default:
 	exit('error: unknown parent category: '.$parameters['parent']);
 }
-
 
 
 

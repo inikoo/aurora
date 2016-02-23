@@ -29,8 +29,8 @@ $table_filters=array(
 );
 
 $parameters=array(
-		'parent'=>'store',
-		'parent_key'=>$state['key'],
+		'parent'=>$state['parent'],
+		'parent_key'=>$state['parent_key'],
 		
 );
 

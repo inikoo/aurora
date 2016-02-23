@@ -55,7 +55,10 @@ function suppliers($_data,$db,$user) {
 	$adata=array();
 
 
-	foreach ($db->query($sql) as $data) {
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
+		
 
 
 		$sales=money($data["Supplier $db_period Acc Parts Sold Amount"],$corporate_currency);
@@ -116,7 +119,15 @@ function suppliers($_data,$db,$user) {
 
 		);
 
+	
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
 	}
+
+	
 
 	$response=array('resultset'=>
 		array(

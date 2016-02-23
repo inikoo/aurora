@@ -12,6 +12,7 @@
 require_once 'common.php';
 require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
+require_once 'utils/date_functions.php';
 
 
 if (!$user->can_view('stores')) {
@@ -33,14 +34,12 @@ switch ($tipo) {
 case 'stores':
 	stores(get_table_parameters(), $db, $user);
 	break;
-case 'departments':
-	departments(get_table_parameters(), $db, $user);
-	break;
-case 'families':
-	families(get_table_parameters(), $db, $user);
-	break;
+
 case 'products':
 	products(get_table_parameters(), $db, $user);
+	break;
+case 'categories':
+	categories(get_table_parameters(), $db, $user);
 	break;
 
 default:
@@ -93,77 +92,6 @@ function stores($_data, $db, $user) {
 }
 
 
-function departments($_data, $db, $user) {
-	$rtext_label='department';
-	include_once 'prepare_table/init.php';
-
-	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-	$adata=array();
-
-	// print $sql;
-
-
-	foreach ($db->query($sql) as $data) {
-
-
-		$adata[]=array(
-			'id'=>(integer) $data['Product Department Key'],
-			'store_key'=>(integer) $data['Product Department Store Key'],
-			'code'=>$data['Product Department Code'],
-			'name'=>$data['Product Department Name'],
-			'active_families'=>number($data['Product Department Families'])
-		);
-
-	}
-
-	$response=array('resultset'=>
-		array(
-			'state'=>200,
-			'data'=>$adata,
-			'rtext'=>$rtext,
-			'sort_key'=>$_order,
-			'sort_dir'=>$_dir,
-			'total_records'=> $total
-
-		)
-	);
-	echo json_encode($response);
-}
-
-
-function families($_data, $db, $user) {
-	$rtext_label='family';
-	include_once 'prepare_table/init.php';
-
-	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-	$adata=array();
-
-	// print $sql;
-
-	foreach ($db->query($sql) as $data) {
-		$adata[]=array(
-			'id'=>(integer) $data['Product Family Key'],
-			'code'=>$data['Product Family Code'],
-			'name'=>$data['Product Family Name'],
-		);
-
-	}
-
-	$response=array('resultset'=>
-		array(
-			'state'=>200,
-			'data'=>$adata,
-			'rtext'=>$rtext,
-			'sort_key'=>$_order,
-			'sort_dir'=>$_dir,
-			'total_records'=> $total
-
-		)
-	);
-	echo json_encode($response);
-}
-
-
 function products($_data, $db, $user) {
 
 
@@ -182,20 +110,98 @@ function products($_data, $db, $user) {
 	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
 
-	// print $sql;
+	$adata=array();
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
 
 
-	foreach ($db->query($sql) as $data) {
+
+			$adata[]=array(
+
+				'id'=>(integer) $data['Store Product Key'],
+				'store_key'=>(integer) $data['Store Key'],
+				'store'=>$data['Store Code'],
+				'code'=>$data['Store Product Code'],
+				'name'=>$data['Store Product Outer Description'],
+				'price'=>money($data['Store Product Price'], $data['Store Currency Code']),
+			);
 
 
-		$adata[]=array(
+		}
 
-			'id'=>(integer) $data['Product ID'],
-			'code'=>$data['Product Code'],
-			'name'=>$data['Product Name'],
-		);
-
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
 	}
+
+
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function categories($_data, $db, $user) {
+
+	$rtext_label='category';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
+
+			switch ($data['Category Branch Type']) {
+			case 'Root':
+				$level=_('Root');
+				break;
+			case 'Head':
+				$level=_('Head');
+				break;
+			case 'Node':
+				$level=_('Node');
+				break;
+			default:
+				$level=$data['Category Branch Type'];
+				break;
+			}
+			$level=$data['Category Branch Type'];
+
+
+			$adata[]=array(
+				'id'=>(integer) $data['Category Key'],
+				'store_key'=>(integer) $data['Category Store Key'],
+				'code'=>$data['Category Code'],
+				'label'=>$data['Category Label'],
+				'subjects'=>number($data['Category Number Subjects']),
+				'level'=>$level,
+				'subcategories'=>number($data['Category Children']),
+				'percentage_assigned'=>percentage($data['Category Number Subjects'], ($data['Category Number Subjects']+$data['Category Subjects Not Assigned']))
+			);
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
 
 	$response=array('resultset'=>
 		array(
