@@ -532,7 +532,7 @@ class Store extends DB_Table {
 
 
 
-	function update_field_switcher($field, $value, $options='',$metadata='') {
+	function update_field_switcher($field, $value, $options='', $metadata='') {
 
 
 		switch ($field) {
@@ -636,6 +636,8 @@ class Store extends DB_Table {
 
 			$sql="insert into `Store Data Currency` (`Store Key`) values(".$this->id.");";
 			mysql_query($sql);
+			
+			/*
 
 			$dept_data=array(
 				'Product Department Code'=>'ND_'.$this->data['Store Code'],
@@ -674,7 +676,7 @@ class Store extends DB_Table {
 			);
 
 			mysql_query($sql);
-
+*/
 
 			$sql=sprintf("select `SR Category Key` from `Account Dimension` ");
 			$res=mysql_query($sql);
@@ -2116,14 +2118,15 @@ class Store extends DB_Table {
 		return false;
 
 	}
-	
+
+
 	function create_customer($data) {
 		$this->new_customer=false;
 
 		$data['editor']=$this->editor;
 		$data['Customer Store Key']=$this->id;
-		
-		
+
+
 		$address_fields=array(
 			'Address Recipient'=>$data['Customer Main Contact Name'],
 			'Address Organization'=>$data['Customer Company Name'],
@@ -2138,44 +2141,44 @@ class Store extends DB_Table {
 
 		);
 		unset($data['Customer Contact Address country']);
-	
-	    if(isset($data['Customer Contact Address addressLine1'])){
-	        $address_fields['Address Line 1']=$data['Customer Contact Address addressLine1'];
-	        unset($data['Customer Contact Address addressLine1']);
-	    }
-	    if(isset($data['Customer Contact Address addressLine2'])){
-	        $address_fields['Address Line 2']=$data['Customer Contact Address addressLine2'];
-	        unset($data['Customer Contact Address addressLine2']);
-	    }
-	     if(isset($data['Customer Contact Address sortingCode'])){
-	        $address_fields['Address Sorting Code']=$data['Customer Contact Address sortingCode'];
-	        unset($data['Customer Contact Address sortingCode']);
-	    }
-	      if(isset($data['Customer Contact Address postalCode'])){
-	        $address_fields['Address Postal Code']=$data['Customer Contact Address postalCode'];
-	        unset($data['Customer Contact Address postalCode']);
-	    }
-	    
-	      if(isset($data['Customer Contact Address dependentLocality'])){
-	        $address_fields['Address Dependent Locality']=$data['Customer Contact Address dependentLocality'];
-	        unset($data['Customer Contact Address dependentLocality']);
-	    }
-	    
-	      if(isset($data['Customer Contact Address locality'])){
-	        $address_fields['Address Locality']=$data['Customer Contact Address locality'];
-	        unset($data['Customer Contact Address locality']);
-	    }
-	    
-	      if(isset($data['Customer Contact Address administrativeArea'])){
-	        $address_fields['Address Administrative Area']=$data['Customer Contact Address administrativeArea'];
-	        unset($data['Customer Contact Address administrativeArea']);
-	    }
-	    
-	//print_r($address_fields);
-		//	print_r($data);
+
+		if (isset($data['Customer Contact Address addressLine1'])) {
+			$address_fields['Address Line 1']=$data['Customer Contact Address addressLine1'];
+			unset($data['Customer Contact Address addressLine1']);
+		}
+		if (isset($data['Customer Contact Address addressLine2'])) {
+			$address_fields['Address Line 2']=$data['Customer Contact Address addressLine2'];
+			unset($data['Customer Contact Address addressLine2']);
+		}
+		if (isset($data['Customer Contact Address sortingCode'])) {
+			$address_fields['Address Sorting Code']=$data['Customer Contact Address sortingCode'];
+			unset($data['Customer Contact Address sortingCode']);
+		}
+		if (isset($data['Customer Contact Address postalCode'])) {
+			$address_fields['Address Postal Code']=$data['Customer Contact Address postalCode'];
+			unset($data['Customer Contact Address postalCode']);
+		}
+
+		if (isset($data['Customer Contact Address dependentLocality'])) {
+			$address_fields['Address Dependent Locality']=$data['Customer Contact Address dependentLocality'];
+			unset($data['Customer Contact Address dependentLocality']);
+		}
+
+		if (isset($data['Customer Contact Address locality'])) {
+			$address_fields['Address Locality']=$data['Customer Contact Address locality'];
+			unset($data['Customer Contact Address locality']);
+		}
+
+		if (isset($data['Customer Contact Address administrativeArea'])) {
+			$address_fields['Address Administrative Area']=$data['Customer Contact Address administrativeArea'];
+			unset($data['Customer Contact Address administrativeArea']);
+		}
+
+		//print_r($address_fields);
+		// print_r($data);
 
 		//exit;
-		
+
 		$customer= new Customer('new', $data, $address_fields);
 
 		if ($customer->id) {
@@ -2187,7 +2190,7 @@ class Store extends DB_Table {
 			} else {
 				$this->error=true;
 				$this->msg=$customer->msg;
-				
+
 			}
 			return $customer;
 		}
@@ -2196,6 +2199,22 @@ class Store extends DB_Table {
 			$this->msg=$customer->msg;
 		}
 	}
+
+
+	function get_sales_timeseries_sql() {
+
+		$table='`Order Spanshot Fact` TR ';
+		$where=sprintf(' where `Store Key`=%d', $this->id);
+
+		$order='`Date`';
+		$fields="`Sales`,`Sales DC`,`Availability`,`Customers`,`Invoices`";
+
+		$sql="select $fields from $table $where  order by $order ";
+		
+		return $sql;
+
+	}
+
 
 }
 

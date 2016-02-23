@@ -12,9 +12,10 @@
  Version 2.0
 */
 
-include_once 'class.Product.php';
+include_once 'class.Asset.php';
 
-class part extends DB_Table {
+class Part extends Asset{
+
 
 
 	private $current_locations_loaded=false;
@@ -23,6 +24,9 @@ class part extends DB_Table {
 	public $locale='en_GB';
 
 	function __construct($a1, $a2=false) {
+
+		global $db;
+		$this->db=$db;
 
 		$this->table_name='Part';
 		$this->ignore_fields=array(
@@ -51,7 +55,7 @@ class part extends DB_Table {
 			return;
 
 		$result=mysql_query($sql);
-		
+
 		if (($this->data=mysql_fetch_array($result, MYSQL_ASSOC))) {
 			$this->id=$this->data['Part SKU'];
 			$this->sku=$this->data['Part SKU'];
@@ -324,12 +328,39 @@ class part extends DB_Table {
 	}
 
 
-	function update_field_switcher($field, $value, $options='',$metadata='') {
+	function update_linked_products($field, $value, $options, $metadata) {
+
+
+
+		foreach ($this->get_products_data() as $product_data) {
+			
+			if ($field=='Part Package Weight') {
+					$value=$value*$product_data['Parts Per Product'];
+				}
+			if (array_key_exists($field, $product_data['Linked Fields'])) {
+				$product=new StoreProduct($product_data['Store Product Key']);
+				$update_data=array();
+
+				
+				$update_data[$product_data['Linked Fields'][$field]]=$value;
+
+				$product->update($update_data);
+			}
+		}
+
+	}
+
+
+	function update_field_switcher($field, $value, $options='', $metadata='') {
 
 
 
 		switch ($field) {
+		case 'Part Package Weight':
+			$this->update_field($field, $value, $options);
+			$this->update_linked_products($field, $value, $options, $metadata);
 
+			break;
 		case('Store Sticky Note'):
 			$this->update_field_switcher('Sticky Note', $value);
 			break;
@@ -1158,10 +1189,7 @@ class part extends DB_Table {
 	}
 
 
-	function get_sku() {
-		return sprintf("%05d", $this->sku);
 
-	}
 
 
 	function get_period($period, $key) {
@@ -1170,14 +1198,6 @@ class part extends DB_Table {
 
 
 	function get($key='', $args=false) {
-
-
-
-
-
-
-		if (array_key_exists($key, $this->data))
-			return $this->data[$key];
 
 
 
@@ -1223,6 +1243,9 @@ class part extends DB_Table {
 
 
 		switch ($key) {
+		case 'SKU':
+			return sprintf("SKU%05d", $this->sku);
+			break;
 		case 'Origin Country Code':
 			if ($this->data['Part Origin Country Code']) {
 				include_once 'class.Country.php';
@@ -1289,18 +1312,15 @@ class part extends DB_Table {
 
 
 		case('Package Weight'):
-		case('Unit Weight'):
-			if ($key=='Package Weight')
-				$tag='Package';
-			else
-				$tag='Unit';
-			$weight=$this->data['Part '.$tag.' Weight Display'];
 
-			if ($weight!='' and  is_numeric($weight)) {
-				$number_digits=(int)strlen(substr(strrchr($weight, "."), 1));
-				$weight= number($weight, $number_digits).$this->data['Part '.$tag.' Weight Display Units'];
-			}
-			return $weight;
+			return weight($this->data['Part Package Weight']);
+			//$weight=$this->data['Part Package Weight Display'];
+
+			//if ($weight!='' and  is_numeric($weight)) {
+			// $number_digits=(int)strlen(substr(strrchr($weight, "."), 1));
+			//  $weight= number($weight, $number_digits).$this->data['Part '.$tag.' Weight Display Units'];
+			//}
+			//return $weight;
 			break;
 		case('SKU'):
 			return sprintf('SKU%5d', $this->sku);
@@ -1360,6 +1380,13 @@ class part extends DB_Table {
 
 			return $associated;
 			break;
+
+		default:
+			if (array_key_exists($key, $this->data))
+				return $this->data[$key];
+
+			if (array_key_exists('Part '.$key, $this->data))
+				return $this->data['Part '.$key];
 
 		}
 
@@ -4269,6 +4296,87 @@ class part extends DB_Table {
 
 
 
+	}
+
+
+	function get_field_label($field) {
+		global $account;
+
+		switch ($field) {
+
+		case 'Part SKU':
+			$label=_('SKU');
+			break;
+
+		case 'Part Reference':
+			$label=_('reference');
+			break;
+		case 'Part Unit Description':
+			$label=_('description');
+			break;
+		case 'Store Product Price':
+			$label=_('Price');
+			break;
+
+		case 'Part Package Weight':
+			$label=_('weight');
+			break;
+		case 'Part Package XHTML Dimensions':
+			$label=_('dimensions');
+			break;
+
+		case 'Part Tariff Code':
+			$label=_('tariff code');
+			break;
+
+		case 'Part Duty Rate':
+			$label=_('duty rate');
+			break;
+
+		case 'Stor':
+			$label=_('Price');
+			break;
+
+
+		default:
+			$label=$field;
+
+		}
+
+		return $label;
+
+	}
+
+
+	function get_products_data($with_objects=false) {
+
+		include_once 'class.StoreProduct.php';
+
+		$sql=sprintf("select `Linked Fields`,`Store Product Key`,`Parts Per Product`,`Note` from `Store Product Part Bridge` where `Part SKU`=%d ",
+			$this->id
+		);
+		$products_data=array();
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$product_data=$row;
+				if ($product_data['Linked Fields']=='') {
+					$product_data['Linked Fields']=array();
+					$product_data['Number Linked Fields']=0;
+				}else {
+					$product_data['Linked Fields']=json_decode($row['Linked Fields'], true);
+					$product_data['Number Linked Fields']=count($product_data['Linked Fields']);
+				}
+				if ($with_objects) {
+					$product_data['Product']=new StoreProduct($row['Store Product Key']);
+				}
+				$products_data[]=$product_data;
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+		return $products_data;
 	}
 
 

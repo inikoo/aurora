@@ -406,7 +406,7 @@ function get_customers_category_navigation($data, $smarty, $user, $db) {
 
 
 
-	$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit'), 'url'=>"edit_customer_categories.php?store_id=".$store->id);
+	//$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit'), 'url'=>"edit_customer_categories.php?store_id=".$store->id);
 
 	$sections=get_sections('customers', $store->id);
 	$sections['categories']['selected']=true;

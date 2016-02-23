@@ -268,30 +268,7 @@ function money_cents($amount) {
 }
 
 
-function weight($w, $unit='Kg', $number_decimals=3, $simplify=false, $zero_fill=false) {
-	if ($w=='') return '';
-	if ($simplify) {
-		if ($w==0) {
-			return '0'.$unit;
-		}
 
-		$w=round($w);
-
-		if ($w==0) {
-			return '~1'.$unit;
-		}elseif ($w>1000) {
-			$w=number($w, 0);
-		}
-		return $w.$unit;
-	}else {
-		if ($zero_fill) {
-			return number($w, $number_decimals, true).$unit;
-
-		}else {
-			return number($w, $number_decimals).$unit;
-		}
-	}
-}
 
 
 

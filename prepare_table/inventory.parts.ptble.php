@@ -10,7 +10,7 @@
 */
 
 $where="where true  ";
-$table="`Part Dimension` P";
+$table="`Part Dimension` P  left join `Part Warehouse Bridge` B on (B.`Part SKU`=P.`Part SKU`) left join `Warehouse Dimension` W on (B.`Warehouse Key`=W.`Warehouse Key`)  ";
 $filter_msg='';
 $sql_type='part';
 $filter_msg='';
@@ -340,7 +340,7 @@ $order='P.'.$order;
 
 $sql_totals="select count(Distinct P.`Part SKU`) as num from $table  $where  ";
 
-$fields='P.`Part SKU`,`Part Reference`,`Part Unit Description`,`Part XHTML Currently Used In`'
+$fields='B.`Warehouse Key`,`Warehouse Code`,P.`Part SKU`,`Part Reference`,`Part Unit Description`,`Part XHTML Currently Used In`';
 
 function parts_awhere($awhere) {
 

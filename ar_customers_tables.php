@@ -257,7 +257,7 @@ function lists($_data, $db, $user) {
 
 
 function categories($_data, $db, $user) {
-	global $db;
+	
 	$rtext_label='category';
 	include_once 'prepare_table/init.php';
 

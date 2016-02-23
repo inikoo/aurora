@@ -551,28 +551,52 @@ $modules=array(
 	'products'=>array(
 		'section'=>'products',
 		'sections'=>array(
-			'products'=>array('type'=>'navigation', 'label'=>_('Products'), 'title'=>_("Products database"), 'icon'=>'cube', 'reference'=>'store',
+			'dashboard'=>array('type'=>'navigation', 'label'=>_('Dashboard'), 'title'=>_("Products's dashboard"), 'icon'=>'dashboard', 'reference'=>'store/%d/dashboard',
 				'tabs'=>array(
-					'store.products'=>array()
+					'store.dashboard'=>array()
+				)
+			),
+
+			'store'=>array(
+				'type'=>'navigation',
+				'label'=>_('Store'),
+				'title'=>_('Store'),
+				'icon'=>'shopping-bag',
+				'showcase'=>true,
+				'reference'=>'store/%d',
+				'tabs'=>array(
+					'store.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
+					'store.history'=>array('label'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
+
+
+				)
+			),
+			'products'=>array('type'=>'navigation', 'label'=>_('Products'), 'title'=>_("Products database"), 'icon'=>'cube', 'reference'=>'products/%d',
+				'tabs'=>array(
+					'products'=>array()
 				)
 
 
 			),
-			'categories'=>array('type'=>'navigation', 'label'=>_('Categories'), 'title'=>_("Products categories"), 'icon'=>'sitemap', 'reference'=>'store/categories'),
-			'store'=>array(
-				'type'=>'object',
-				'label'=>_('Store'),
-				'title'=>_('Store'),
-				'icon'=>'',
-				'reference'=>'store/%d',
-				'tabs'=>array(
-					'store.dashboard'=>array('label'=>_('Dashboard'), 'title'=>_('Dashboard')),
-					'store.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
-					'store.history'=>array('label'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
 
-					'store.products'=>array('label'=>_('Products'), 'title'=>_('Products')),
+
+			'categories'=>array('type'=>'navigation', 'label'=>_('Categories'), 'title'=>_("Products categories"), 'icon'=>'sitemap', 'reference'=>'products/%d/categories', 'showcase'=>'products_special_categories',
+				'tabs'=>array(
+					'products.categories'=>array()
+				)
+
+			),
+			'category'=>array(
+				'type'=>'object',
+
+				'tabs'=>array(
+					'category.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+					'category.history'=>array('label'=>_('History'), 'icon'=>'sticky-note-o'),
+					'category.categories'=>array('label'=>_('Subcategories')),
+					'category.subjects'=>array('label'=>''),
 
 				)
+
 			),
 
 			'product'=>array(
@@ -629,12 +653,18 @@ $modules=array(
 		'parent'=>'none',
 		'parent_type'=>'none',
 		'sections'=>array(
-			'stores'=>array('type'=>'navigation', 'label'=>_('Stores'), 'title'=>_('Stores'), 'icon'=>'shopping-cart', 'reference'=>'stores',
+			'stores'=>array('type'=>'navigation', 'label'=>_('Stores'), 'icon'=>'shopping-bag', 'reference'=>'stores',
 				'tabs'=>array(
 					'stores'=>array()
 				)
-			)
+			),
+			'products'=>array('type'=>'navigation', 'label'=>_('Products'), 'icon'=>'cube', 'reference'=>'products/all',
+				'tabs'=>array(
 
+					'products'=>array('label'=>_('Products'), 'icon'=>'cube'),
+
+				)
+			)
 		)
 	),
 	'marketing'=>array(
@@ -832,7 +862,7 @@ $modules=array(
 
 				)
 			),
-	'supplier.new'=>array('type'=>'new_object',
+			'supplier.new'=>array('type'=>'new_object',
 				'tabs'=>array(
 					'supplier.new'=>array('label'=>_('New supplier')),
 
@@ -856,14 +886,32 @@ $modules=array(
 
 		)
 	),
+	
+	
+	'inventory_server'=>array(
+
+		'parent'=>'none',
+		'parent_type'=>'none',
+		'sections'=>array(
+			
+			'inventory'=>array('type'=>'navigation', 'label'=>_('Inventory (Parts)'), 'icon'=>'square-o', 'reference'=>'inventory/all',
+				'tabs'=>array(
+
+					'inventory.parts'=>array('label'=>_('Parts'), 'icon'=>'square-o'),
+
+				)
+			)
+		)
+	),
+	
+	
 	'inventory'=>array(
 		'sections'=>array(
 			'inventory'=>array(
 
 				'type'=>'navigation', 'label'=>_('Inventory').' ('._('Parts').')', 'title'=>_('Inventory'), 'icon'=>'th', 'reference'=>'inventory/%d',
 				'tabs'=>array(
-					'inventory.parts'=>array('label'=>_('Parts'), 'title'=>_('Parts')),
-					'inventory.families'=>array('label'=>_("Part's Families"), 'title'=>_("Part's families")),
+					'inventory.parts'=>array('label'=>_('Parts')),
 
 				)
 			),
@@ -1247,19 +1295,19 @@ $modules=array(
 					'timeseries'=>array('label'=>_('Timeseries')),
 				)
 			),
-			
-		
-			
+
+
+
 			'timeserie'=>array('type'=>'',
-			
-			'subtabs_parent'=>array(
+
+				'subtabs_parent'=>array(
 					'timeserie.records.annually'=>'timeserie.records',
 					'timeserie.records.monthy'=>'timeserie.records',
 					'timeserie.records.weekly'=>'timeserie.records',
 					'timeserie.records.daily'=>'timeserie.records',
 
 				),
-			
+
 				'tabs'=>array(
 					'timeserie.plot'=>array('label'=>_('Plot')),
 					'timeserie.records'=>array('label'=>_('Records'),
@@ -1382,9 +1430,9 @@ function get_sections($module, $parent_key=false) {
 	global $modules;
 
 	$sections=array();
-	
+
 	foreach ($modules[$module]['sections'] as $key=>$value) {
-	
+
 		if ($value['type']=='navigation') {
 			if ($parent_key) {
 				$value['reference']=sprintf($value['reference'], $parent_key);

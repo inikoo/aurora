@@ -10,20 +10,13 @@
  Version 3.0
 */
 
-
-function get_inventory_navigation($data) {
+function get_inventory_all_warehouses_navigation($data, $smarty, $user, $db, $account) {
 
 	global $user,$smarty;
 
 	$block_view=$data['section'];
 
-	switch ($data['parent']) {
-	case 'warehouse':
-		$warehouse=new Warehouse($data['parent_key']);
-		break;
-	default:
-		break;
-	}
+	
 
 
 	$left_buttons=array();
@@ -31,7 +24,7 @@ function get_inventory_navigation($data) {
 
 
 	$right_buttons=array();
-	$sections=get_sections('inventory','');
+	$sections=get_sections('inventory_server','');
 
 	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
 
@@ -43,7 +36,51 @@ function get_inventory_navigation($data) {
 
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
-		'title'=>_('Inventory'),
+		'title'=>_('Inventory (All warehouses)'),
+		'search'=>array('show'=>true,'placeholder'=>_('Search inventory all warehouses'))
+
+	);
+	$smarty->assign('_content',$_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+}
+
+
+function get_inventory_navigation($data, $smarty, $user, $db, $account) {
+
+	global $user,$smarty;
+
+	$block_view=$data['section'];
+
+	switch ($data['parent']) {
+	case 'warehouse':
+		
+		break;
+	default:
+		break;
+	}
+
+
+	$left_buttons=array();
+
+
+
+	$right_buttons=array();
+	$sections=get_sections('inventory',$data['warehouse']->id);
+
+	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
+$title=_('Inventory').' ('._('Parts').') <span class="id">'.$data['warehouse']->get('Code').'</span>';
+
+	$_content=array(
+
+		'sections_class'=>'',
+		'sections'=>$sections,
+
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
 		'search'=>array('show'=>true,'placeholder'=>_('Search inventory'))
 
 	);
@@ -54,7 +91,7 @@ function get_inventory_navigation($data) {
 
 }
 
-function get_part_navigation($data) {
+function get_part_navigation($data, $smarty, $user, $db, $account) {
 
 	global $user, $smarty;
 
@@ -228,19 +265,20 @@ function get_part_navigation($data) {
 
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
-		'title'=>_('Part').' <span class="id">'.$object->get('Part Reference').'</span>',
+		'title'=>_('Part').' <span class="id Part_Reference">'.$object->get('Part Reference').'</span> (<span class="id Part_SKU">'.$object->get('SKU').'</span>) ',
 		'search'=>array('show'=>true, 'placeholder'=>_('Search parts'))
 
 	);
 	$smarty->assign('_content', $_content);
 
 	$html=$smarty->fetch('navigation.tpl');
+	
 	return $html;
 
 }
 
 
-function get_transactions_navigation($data) {
+function get_transactions_navigation($data, $smarty, $user, $db, $account) {
 
 	global $user,$smarty;
 
@@ -283,7 +321,7 @@ function get_transactions_navigation($data) {
 
 }
 
-function get_categories_navigation($data) {
+function get_categories_navigation($data, $smarty, $user, $db, $account) {
 
 	global $user, $smarty;
 
@@ -330,7 +368,7 @@ function get_categories_navigation($data) {
 }
 
 
-function get_customers_category_navigation($data) {
+function get_customers_category_navigation($data, $smarty, $user, $db, $account) {
 
 	global $user, $smarty;
 

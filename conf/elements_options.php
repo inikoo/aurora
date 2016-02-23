@@ -151,7 +151,21 @@ $elements_options=array(
 			)
 		)
 
-	)
+	),
+	'products'=>array(
+		'status'=>array(
+			'label'=>_('Status'),
+			'items'=>array(
+				'InProcess'=>array('label'=>_('In process'), 'selected'=>false),
+				'Active'=>array('label'=>_('Active'), 'selected'=>true),
+				'Suspended'=>array('label'=>_('Suspended'), 'selected'=>false),
+				'Discontinued'=>array('label'=>_('Discontinued'), 'selected'=>false)
+		)
+		
+
+
+	),
+)
 );
 
 ?>

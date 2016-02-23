@@ -81,10 +81,10 @@ function seconds_to_string($seconds, $until='seconds', $short=false) {
 
 function seconds_to_hourminutes($seconds) {
 	$units = array(
-		
+
 		"hours"   => 3600,
 		"minutes" => 60,
-		
+
 	);
 
 	$start=false;
@@ -93,23 +93,23 @@ function seconds_to_hourminutes($seconds) {
 	foreach ( $units as $key=>$unit ) {
 		$quot  = intval($seconds / $unit);
 		$seconds -= $quot * $unit;
-		
-					switch ($key) {
-					
-					case 'hours':
-						$string.=' '.sprintf(_('%s:'), $quot);
-						break;
-					case 'minutes':
-						$string.=sprintf(_('%02d'), $quot);
-						break;
-					
-					}
-				
-				
-				
-			
 
-	
+		switch ($key) {
+
+		case 'hours':
+			$string.=' '.sprintf(_('%s:'), $quot);
+			break;
+		case 'minutes':
+			$string.=sprintf(_('%02d'), $quot);
+			break;
+
+		}
+
+
+
+
+
+
 
 		//if ($until==$key)$end=true;
 
@@ -148,6 +148,80 @@ function file_size($bytes) {
 	return $bytes;
 }
 
+
+function get_file_as($code) {
+	$ncode=$code;
+	$c=preg_split('/\-/', $code);
+	if (count($c)==2) {
+		if (is_numeric($c[1]))
+			$ncode=sprintf("%s-%05d", strtolower($c[0]), $c[1]);
+		else {
+			if (preg_match('/^[^\d]+\d+$/', $c[1])) {
+				if (preg_match('/\d*$/', $c[1], $match_num) and preg_match('/^[^\d]*/', $c[1], $match_alpha)) {
+					$ncode=sprintf("%s-%s%05d", strtolower($c[0]), strtolower($match_alpha[0]), $match_num[0]);
+					return $ncode;
+				}
+			}
+			if (preg_match('/^\d+[^\d]+$/', $c[1])) {
+				if (preg_match('/^\d*/', $c[1], $match_num) and preg_match('/[^\d]*$/', $c[1], $match_alpha)) {
+					$ncode=sprintf("%s-%05d%s", strtolower($c[0]), $match_num[0], strtolower($match_alpha[0]));
+					return $ncode;
+				}
+			}
+
+
+			$ncode=sprintf("%s-%s", strtolower($c[0]), strtolower($c[1]));
+		}
+
+	}
+	if (count($c)==3) {
+		if (is_numeric($c[1]) and is_numeric($c[2])) {
+			$ncode=sprintf("%s-%05d-%05d", strtolower($c[0]), $c[1], $c[2]);
+			return $ncode;
+		}
+		if (!is_numeric($c[1]) and is_numeric($c[2])) {
+			$ncode=sprintf("%s-%s-%05d", strtolower($c[0]), strtolower($c[1]), $c[2]);
+			return $ncode;
+		}
+		if (is_numeric($c[1]) and !is_numeric($c[2])) {
+			$ncode=sprintf("%s-%05d-%s", strtolower($c[0]), $c[1], strtolower($c[2]));
+			return $ncode;
+		}
+
+
+
+	}
+
+
+	return $ncode;
+}
+
+
+function weight($w, $unit='Kg', $number_decimals=3, $simplify=false, $zero_fill=false) {
+	//print $w;
+	if ($w=='') return '';
+	if ($simplify) {
+		if ($w==0) {
+			return '0'.$unit;
+		}
+
+		$w=round($w);
+
+		if ($w==0) {
+			return '~1'.$unit;
+		}elseif ($w>1000) {
+			$w=number($w, 0);
+		}
+		return $w.$unit;
+	}else {
+		if ($zero_fill) {
+			return number($w, $number_decimals, true).$unit;
+
+		}else {
+			return number($w, $number_decimals).$unit;
+		}
+	}
+}
 
 
 ?>

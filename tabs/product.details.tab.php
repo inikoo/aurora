@@ -9,89 +9,146 @@
 
 */
 include_once 'utils/invalid_messages.php';
-
+$state['_object']->get_store_data();
 $product=$state['_object'];
 
 
+$linked_fields=$product->get_linked_fields_data();
 
 $object_fields=array(
 	array(
 		'label'=>_('Id'),
 		'show_title'=>true,
 		'fields'=>array(
+
 			array(
-				'render'=>false,
-				'class'=>'locked',
-				'id'=>'Product_ID',
-				'value'=>$product->pid ,
-				'label'=>_('ID')
+				'id'=>'Store_Product_Code',
+				'edit'=>'string',
+				'value'=>htmlspecialchars($product->get('Store Product Code')),
+				'formatted_value'=>$product->get('Code'),
+				'label'=>ucfirst($product->get_field_label('Store Product Code')),
+				'required'=>true,
+				'server_validation'=>'check_for_duplicates'
 			),
+
+
+		)
+	),
+array(
+		'label'=>_('Parts'),
+		'show_title'=>true,
+		'fields'=>array(
 			array(
-				'render'=>false,
-				'class'=>'locked',
-				'id'=>'Product_Key',
-				'value'=>$product->id ,
-				'label'=>_('Key')
+				'id'=>'Product_Parts',
+				'edit'=>'parts_list',
+				'value'=>$product->get('Product Parts') ,
+				'formatted_value'=>$product->get('Parts') ,
+				'label'=>ucfirst($product->get_field_label('Product Parts')),
+				'required'=>false,
+			)
+
+		)
+	),
+	
+	array(
+		'label'=>_('Family'),
+		'show_title'=>true,
+		'fields'=>array(
+		array(
+				'id'=>'Store_Product_Family_Category_Key',
+				'edit'=>'object_select',
+				'value'=>htmlspecialchars($product->get('Store Product Family Category Key')),
+				'formatted_value'=>$product->get('Family Category Key'),
+				'label'=>ucfirst($product->get_field_label('Store Product Family Category Key')),
+				'required'=>true,
+                
+
 			),
+		
 			array(
-				'class'=>'string',
-				'id'=>'Product_Code',
-				'value'=>$product->get('Product Code'),
-				'label'=>_('Code')
-			),
-			array(
-				'class'=>'string',
-				'id'=>'Product_Name',
-				'value'=>$product->get('Product Name'),
-				'label'=>_('Name')
+				'id'=>'Store_Product_Label_in_Family',
+				'edit'=>'string',
+				'value'=>htmlspecialchars($product->get('Store Product Label in Family')),
+				'formatted_value'=>$product->get('Label in Family'),
+				'label'=>ucfirst($product->get_field_label('Store Product Label in Family')),
+				'required'=>true,
+
+
 			),
 
 		)
 	),
-
 	array(
 		'label'=>_('Outer'),
 		'show_title'=>true,
 		'fields'=>array(
+		array(
+				'id'=>'Store_Product_Outer_Description',
+				'edit'=>'string',
+				'value'=>htmlspecialchars($product->get('Store Product Outer Description')),
+				'formatted_value'=>$product->get('Outer Description'),
+				'label'=>ucfirst($product->get_field_label('Store Product Outer Description')),
+				'required'=>true,
+
+
+			),
+
 			array(
-				'id'=>'Product_Price',
+				'id'=>'Store_Product_Price',
 				'edit'=>'amount',
-				'value'=>$product->get('Product Price') ,
+				'value'=>$product->get('Store Product Price') ,
 				'formatted_value'=>$product->get('Price') ,
-				'label'=>ucfirst($product->get_field_label('Product Price')),
+				'label'=>ucfirst($product->get_field_label('Store Product Price')),
 				'invalid_msg'=>get_invalid_message('amount'),
 				'required'=>true,
 			),
-
 			array(
-				'id'=>'Product_Units_Per_Case',
-				'edit'=>'small_integer',
-				'value'=>$product->get('Product Units Per Case') ,
-				'formatted_value'=>$product->get('Units Per Case') ,
-				'label'=>ucfirst($product->get_field_label('Product Units Per Case')),
-				'invalid_msg'=>get_invalid_message('small_integer'),
+				'id'=>'Store_Product_Outer_Weight',
+				'edit'=>'numeric',
+				'value'=>$product->get('Store Product Outer Weight') ,
+				'formatted_value'=>$product->get('Outer Weight') ,
+				'label'=>ucfirst($product->get_field_label('Store Product Outer Weight')),
+				'invalid_msg'=>get_invalid_message('numeric'),
+				'required'=>true,
+			),
+			array(
+				'id'=>'Store_Product_Outer_Dimensions',
+				'edit'=>'numeric',
+				'value'=>$product->get('Store Product Outer Dimensions') ,
+				'formatted_value'=>$product->get('Outer Dimensions') ,
+				'label'=>ucfirst($product->get_field_label('Store Product Outer Dimensions')),
+				'invalid_msg'=>get_invalid_message('numeric'),
 				'required'=>true,
 			),
 
 
-
-		)
-	), array(
-		'label'=>_('Unit'),
-		'show_title'=>true,
-		'fields'=>array(
-
 			array(
-				'id'=>'Product_Unit_Type',
-				'value'=>$product->get('Product Unit Type') ,
-				'label'=>_('Unit type')
+				'id'=>'Store_Product_Outer_Tariff_Code',
+				'edit'=>'numeric',
+				'value'=>$product->get('Store Product Outer Tariff Code') ,
+				'formatted_value'=>$product->get('Outer Tariff Code') ,
+				'label'=>ucfirst($product->get_field_label('Store Product Outer Tariff Code')),
+				'invalid_msg'=>get_invalid_message('string'),
+				'required'=>true,
+
+
 			),
 			array(
-				'id'=>'Product_Retail_Units_Per_Unit',
+				'id'=>'Store_Product_Outer_Duty_Rate',
+				'edit'=>'numeric',
+				'value'=>$product->get('Store Product Outer Duty Rate') ,
+				'formatted_value'=>$product->get('Outer Duty Rate') ,
+				'label'=>ucfirst($product->get_field_label('Store Product Outer Duty Rate')),
+				'invalid_msg'=>get_invalid_message('string'),
+				'required'=>true,
+
+			),
+			array(
+				'id'=>'Store_Product_Units_Per_Outer',
 				'edit'=>'small_integer',
-				'value'=>$product->get('Product Retail Units Per Unit') ,
-				'formatted_value'=>$product->get('Retail Units Per Unit') ,
-				'label'=>ucfirst($product->get_field_label('Product Retail Units Per Unit')),
+				'value'=>$product->get('Store Product Units Per Outer') ,
+				'formatted_value'=>$product->get('Units Per Outer') ,
+				'label'=>ucfirst($product->get_field_label('Store Product Units Per Outer')),
 				'invalid_msg'=>get_invalid_message('small_integer'),
 				'required'=>true,
 			),
@@ -102,36 +159,76 @@ $object_fields=array(
 		'label'=>_('Retail unit'),
 		'show_title'=>true,
 		'fields'=>array(
-		
-			array(
-				'id'=>'Product_Unit_Type',
-				'value'=>$product->get('Product Unit Type') ,
-				'label'=>_('Unit type')
-			),
-
-
-		)
-	),
 	array(
-		'label'=>_('Export codes'),
-		'show_title'=>true,
-		'fields'=>array(
+				'id'=>'Product_Unit_Type',
+				'edit'=>'options',
+				'value'=>$product->get('Store Product Unit Type') ,
+				'formatted_value'=>$product->get('Unit Type'),
+				'label'=>ucfirst($product->get_field_label('Store Product Unit Type')),
+			),
+
 			array(
-				'id'=>'Product_Tariff_Code',
-				'value'=>$product->get('Product Tariff Code') ,
-				'label'=>_('Tariff code')
+				'id'=>'Store_Product_Unit_Description',
+				'edit'=>'string',
+				'value'=>htmlspecialchars($product->get('Store Product Unit Description')),
+				'formatted_value'=>$product->get('Unit Description'),
+				'label'=>ucfirst($product->get_field_label('Store Product Unit Description')),
+				'required'=>true,
+
+
 			),
 			array(
-				'id'=>'Product_Duty_Rate',
-				'value'=>$product->get('Product Duty Rate') ,
-				'label'=>_('Duty rate')
-			)
+				'id'=>'Store_Product_Unit_Weight',
+				'edit'=>'numeric',
+				'value'=>$product->get('Store Product Unit Weight') ,
+				'formatted_value'=>$product->get('Unit Weight') ,
+				'label'=>ucfirst($product->get_field_label('Store Product Unit Weight')),
+				'invalid_msg'=>get_invalid_message('numeric'),
+				'required'=>true,
+			),
+			array(
+				'id'=>'Store_Product_Unit_Dimensions',
+				'edit'=>'numeric',
+				'value'=>$product->get('Store Product Unit Dimensions') ,
+				'formatted_value'=>$product->get('Unit Dimensions') ,
+				'label'=>ucfirst($product->get_field_label('Store Product Unit Dimensions')),
+				'invalid_msg'=>get_invalid_message('numeric'),
+				'required'=>true,
+			),
+
+		
 
 		)
 	),
+
+	
 );
+
+//print_r($linked_fields);
+foreach ($object_fields as $key=>$object_field) {
+	foreach ( $object_field['fields'] as $key2=>$fields) {
+		if (array_key_exists($fields['id'], $linked_fields)) {
+			if ($linked_fields[$fields['id']]=='') {
+				$object_fields[$key]['fields'][$key2]['label'].=' <i  class="discret fa fa-chain-borken" title="'._('Value indepedient from part').'"></i>';
+			}else {
+				$object_fields[$key]['fields'][$key2]['label'].=' <i  class="discret fa fa-chain"  title="'._('Linked to part value').'"></i>';
+				$object_fields[$key]['fields'][$key2]['linked']=true;
+
+			}
+		}
+
+	}
+
+}
+
 $smarty->assign('object_fields', $object_fields);
 $smarty->assign('state', $state);
+
+$smarty->assign('parts_list', $product->get_parts_data(true));
+$smarty->assign('linked_fields', $linked_fields);
+
+
+
 
 $html=$smarty->fetch('edit_object.tpl');
 

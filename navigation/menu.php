@@ -140,10 +140,10 @@ if ($user->can_view('marketing')) {
 if ($user->can_view('stores')) {
 
 	if ($user->data['User Hooked Store Key']) {
-		$nav_menu[] = array('<i class="fa fa-square-o fa-fw"></i> '._('Products'), 'store/'.$user->data['User Hooked Store Key'], 'products', 'module', '');
+		$nav_menu[] = array('<i class="fa fa-cube fa-fw"></i> '._('Products'), 'store/'.$user->data['User Hooked Store Key'], 'products', 'module', '');
 
 	}else {
-		$nav_menu[] = array('<i class="fa fa-square-o fa-fw"></i> '._('Products'), 'stores', 'products', 'module', '');
+		$nav_menu[] = array('<i class="fa fa-cube fa-fw"></i> '._('Products'), 'stores', 'products', 'module', '');
 	}
 
 	/*
@@ -167,12 +167,15 @@ if ($user->can_view('warehouses')) {
 	}
 */
 
-	$nav_menu[] = array('<i class="fa fa-square fa-fw"></i> '._('Inventory'), 'inventory', 'inventory', 'module', '');
 
 
 	if ($user->data['User Hooked Warehouse Key']) {
+		$nav_menu[] = array('<i class="fa fa-square fa-fw"></i> '._('Inventory'), 'inventory/'.$user->data['User Hooked Warehouse Key'], 'inventory', 'module', '');
+
 		$nav_menu[] = array('<i class="fa fa-th-large fa-fw"></i> '._('Warehouse'), 'warehouse/'.$user->data['User Hooked Warehouse Key'], 'warehouses', 'module', '');
 	}else {
+		$nav_menu[] = array('<i class="fa fa-square fa-fw"></i> '._('Inventory'), 'inventory/all', 'inventory', 'module', '');
+
 		$nav_menu[] = array('<i class="fa fa-th-large fa-fw"></i> '._('Warehouse'), 'warehouses', 'warehouses', 'module', '');
 	}
 
@@ -237,7 +240,7 @@ if ($current_item=='products_server')$current_item='products';
 if ($current_item=='orders_server')$current_item='orders';
 if ($current_item=='invoices_server')$current_item='invoices';
 if ($current_item=='delivery_notes_server')$current_item='delivery_notes';
-
+if ($current_item=='inventory_server')$current_item='inventory';
 if ($current_item=='warehouses_server')$current_item='warehouses';
 
 if ($data['object']=='order') {

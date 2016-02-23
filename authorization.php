@@ -99,6 +99,15 @@ if ($auth->is_authenticated()) {
 	$_SESSION['user_key']=$auth->get_user_key();
 	$user=new User($_SESSION['user_key']);
 	$_SESSION['text_locale']=$user->data['User Preferred Locale'];
+
+
+
+	$_SESSION['current_store']='';
+	$_SESSION['current_website']='';
+	$_SESSION['current_warehouse']='';
+
+
+
 	$_SESSION['state']=array();
 
 	if (isset($_REQUEST['url']) and $_REQUEST['url']!='' ) {

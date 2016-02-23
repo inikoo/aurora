@@ -35,7 +35,14 @@ case 'website.favourites.customers':
 		));
 	get_customers_element_numbers($db, $data['parameters']);
 	break;
+case 'store.products':
+case 'category.products':
 
+	$data=prepare_values($_REQUEST, array(
+			'parameters'=>array('type'=>'json array')
+		));
+	get_products_element_numbers($db, $data['parameters'], $user);
+	break;
 case 'orders':
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
@@ -61,6 +68,74 @@ default:
 	exit;
 	break;
 }
+
+
+function get_products_element_numbers($db, $data, $user) {
+
+
+	$parent_key=$data['parent_key'];
+
+	$elements_numbers=array(
+		'status'=>array('InProcess'=>0, 'Active'=>0, 'Suspended'=>0, 'Discontinued'=>0),
+
+	);
+
+
+	$table='`Store Product Dimension`  P';
+	switch ($data['parent']) {
+	case 'store':
+		$where=sprintf(' where `Store Product Store Key`=%d  ', $data['parent_key']);
+		break;
+	case 'part':
+		$table='`Store Product Dimension`  P left join `Store Product Part Bridge` B on (B.`Store Product Key`=P.`Store Product Key`)';
+
+		$where=sprintf(' where `Part SKU`=%d  ', $data['parent_key']);
+		break;	
+	case 'account':
+		$where=sprintf(" where `Store Product Store Key` in (%s) ", join(',', $user->stores));
+
+		break;
+	case 'category':
+
+
+		$where=sprintf(" where `Subject`='Product' and  `Category Key`=%d", $data['parent_key']);
+		$table=' `Category Bridge` left join  `Store Product Dimension` P on (`Subject Key`=`Store Product Key`) ';
+
+
+		break;
+	case 'list':
+		$tab='customers.list';
+		break;
+	case 'favourites':
+		$where=sprintf(' where C.`Customer Key` in (select DISTINCT F.`Customer Key` from `Customer Favorite Product Bridge` F where `Site Key`=%d )', $data['parent_key']);
+		break;
+	default:
+		$response=array('state'=>405, 'resp'=>'product parent not founs '.$data['parent']);
+		echo json_encode($response);
+
+		return;
+	}
+
+
+
+
+
+	$sql=sprintf("select count(*) as number,`Store Product Status` as element from $table $where  group by `Store Product Status` ");
+	foreach ($db->query($sql) as $row) {
+
+		$elements_numbers['status'][$row['element']]=number($row['number']);
+
+	}
+
+
+
+	$response= array('state'=>200, 'elements_numbers'=>$elements_numbers);
+	echo json_encode($response);
+
+
+
+}
+
 
 function get_customers_element_numbers($db, $data) {
 

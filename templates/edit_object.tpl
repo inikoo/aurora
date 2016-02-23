@@ -27,6 +27,7 @@
 
 	    {if isset($field.class)}{assign "class" $field.class}{else}{assign "class" ""}{/if} 
 	    {if isset($field.render)}{assign "render" $field.render}{else}{assign "render" true}{/if} 
+	    {if isset($field.linked)}{assign "linked" $field.linked}{else}{assign "linked" ""}{/if} 
 	    {if isset($field.required)}{assign "required" $field.required}{else}{assign "required" true}{/if} 
 	    {if isset($field.server_validation)}{assign "server_validation" $field.server_validation}{else}{assign "server_validation" ""}{/if} 
 	    {if isset($field.invalid_msg)}{assign "invalid_msg" $field.invalid_msg}{else}{assign "invalid_msg" ""}{/if} 
@@ -41,9 +42,11 @@
 		    <td id="{$field.id}_label" class="label" ><span>{$field.label}</span></td>
 		    <td class="show_buttons  {if $edit=='address'}address {/if}" > 
 		
-		<i class="fa fa-lock fw {if $edit!='' or $class=='new'}hide{/if} edit"></i>  
+		<i class="fa fa-lock fw {if $edit!='' or $class=='new'  }hide{/if} edit"></i>
+				<i class="fa fa-lock fw {if !$linked  }hide{/if} edit"></i>  
+  
 		<i id="{$field.id}_reset_button" class="fa fa-sign-out fa-flip-horizontal fw reset hide reset_button" onclick="close_edit_this_field(this)"></i> 
-		<i id="{$field.id}_edit_button" class="fa fa-pencil fw edit {if $edit==''}hide{/if} edit_button" onclick="open_edit_this_field(this)"></i> 
+		<i id="{$field.id}_edit_button" class="fa fa-pencil fw edit {if $edit=='' or $linked!=''}hide{/if} edit_button" onclick="open_edit_this_field(this)"></i> 
 		
 		</td>
 		<td  id="{$field.id}_container" class="container value  " _required="{$required}" field_type='{$field_type}' server_validation='{$server_validation}' object='{$state._object->get_object_name()}' key='{$state.key}' parent='{$state.parent}' parent_key='{$state.parent_key}'> 
@@ -54,7 +57,7 @@
        <input id="{$field.id}_value" type='hidden' class="unformatted_value" value="{$field.value}" />
     
         
-		{if $edit=='string' or  $edit=='handle' or  $edit=='email' or $edit=='new_email' or  $edit=='int_unsigned' or $edit=='smallint_unsigned' or $edit=='mediumint_unsigned' or $edit=='int' or $edit=='smallint' or $edit=='mediumint' or $edit=='anything' or $edit=='numeric' } 
+		{if $edit=='string' or  $edit=='handle' or  $edit=='email' or $edit=='new_email' or  $edit=='int_unsigned' or $edit=='smallint_unsigned' or $edit=='mediumint_unsigned' or $edit=='int' or $edit=='smallint' or $edit=='mediumint' or $edit=='anything' or $edit=='numeric'  or $edit=='amount' } 
 		
 	
 		<input id="{$field.id}" class="input_field hide" value="{$field.value}" has_been_valid="0"/>
@@ -65,6 +68,8 @@
 		{include file="working_hours.edit.tpl" field=$field working_hours=$working_hours } 
 		{elseif $edit=='salary'  } 
 		{include file="salary.edit.tpl" field=$field salary=$salary } 
+		{elseif $edit=='parts_list'  } 
+		{include file="parts_list.edit.tpl" field=$field parts_list=$parts_list } 
 		{elseif $edit=='textarea'  } 
 		
 	

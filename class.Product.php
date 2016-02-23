@@ -6,7 +6,7 @@
 
   About:get  Autor: Raul Perusquia <rulovico@gmail.com>
 
-  Copyright (c) on009, Inikoo
+  Copyright (c) 2009, Inikoo
 
   Version 2.0
 */

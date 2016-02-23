@@ -285,5 +285,17 @@
                 }
             }
         }
+        
+#parts_list{
+margin-bottom:30px;
+.parts_per_product{width:80px; input{width:30px}}
+.notes{ input{width:95%}}
+.parts{width:275px;input{width:90%}}
+.add_new_part_tr{
+.fa{padding-left:5px}
+.button{padding-right:15px}
+}
+
+}        
 
 

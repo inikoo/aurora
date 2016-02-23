@@ -256,12 +256,11 @@ class Warehouse extends DB_Table{
 			break;
 		default:
 
-			if (array_key_exists($key,$this->data))
+			if (array_key_exists($key, $this->data))
 				return $this->data[$key];
-			else {
 
-				return $key;
-			}
+			if (array_key_exists('Warehouse '.$key, $this->data))
+				return $this->data['Warehouse '.$key];
 		}
 		return '';
 	}

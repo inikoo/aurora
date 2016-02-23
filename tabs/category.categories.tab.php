@@ -30,7 +30,7 @@ $table_filters=array(
 );
 
 $parameters=array(
-		'parent'=>'category',
+		'parent'=>$state['object'],
 		'parent_key'=>$state['key'],
 		
 );

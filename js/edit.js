@@ -32,7 +32,7 @@ function open_edit_field(object, key, field) {
     case 'email':
     case 'new_email':
     case 'numeric':
-
+    case 'amount':
     case 'int_unsigned':
     case 'smallint_unsigned':
     case 'mediumint_unsigned':
@@ -125,7 +125,9 @@ function open_edit_field(object, key, field) {
         $('#' + field + '_save_button').removeClass('hide')
 
         break;
-
+ case 'parts_list':
+        $('#parts_list').removeClass('hide')
+        break;
     default:
 
     }
@@ -170,6 +172,7 @@ function close_edit_field(field) {
     case 'password':
     case 'textarea':
     case 'numeric':
+    case 'amount':
 
         $('#' + field).addClass('hide')
 
@@ -319,7 +322,9 @@ function close_edit_field(field) {
         break;
     case 'salary':
         $('#salary').addClass('hide')
-
+        break;
+    case 'parts_list':
+        $('#parts_list').addClass('hide')
         break;
     default:
 
@@ -1333,6 +1338,76 @@ function delete_directory_item(directory_field, field) {
 
             post_set_as_main(data)
 */
+        } else if (data.state == 400) {
+
+
+        }
+    })
+
+}
+
+function show_sticky_note_edit_dialog(anchor) {
+    console.log('==============')
+    if ($('#edit_sticky_note_dialog').hasClass('hide')) {
+        $('#edit_sticky_note_dialog').removeClass('hide')
+        $('#sticky_note_value').focus()
+
+        if (anchor == 'sticky_note_button') {
+            var position = $('#' + anchor).position();
+
+
+            $('#edit_sticky_note_dialog').css({
+                'left': position.left - $('#edit_sticky_note_dialog').width(),
+                'top': position.top + $('#' + anchor).height()
+            })
+        } else {
+            var position = $('#showcase_sticky_note .sticky_note').position();
+            $('#edit_sticky_note_dialog').css({
+                'left': position.left,
+                'top': position.top
+            })
+        }
+
+
+    } else {
+
+        close_sticky_note_dialog()
+    }
+
+
+}
+
+function close_sticky_note_dialog() {
+    $('#edit_sticky_note_dialog').addClass('hide')
+}
+
+function save_sticky_note() {
+
+
+    var value = $('#sticky_note_value').val()
+    var object = $('#edit_sticky_note_dialog').attr('object')
+    var key = $('#edit_sticky_note_dialog').attr('key')
+    var field = $('#edit_sticky_note_dialog').attr('field')
+
+    var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value)
+    console.log(request)
+    $.getJSON(request, function(data) {
+
+
+        if (data.state == 200) {
+            console.log(data)
+            $('#sticky_note_value').val(data.value)
+            $('#showcase_sticky_note .sticky_note').html(data.formatted_value)
+            if (data.value == '') {
+                $('#showcase_sticky_note').addClass('hide')
+                $('#sticky_note_button').removeClass('hide')
+            } else {
+                $('#showcase_sticky_note').removeClass('hide')
+                $('#sticky_note_button').addClass('hide')
+
+            }
+
+            close_sticky_note_dialog()
         } else if (data.state == 400) {
 
 

@@ -1,4 +1,5 @@
 #object_showcase {
+
     clear: both;
     border-bottom: 1px solid #ccc;
     font-size: 15px;
@@ -22,10 +23,40 @@
     
     
    
+   
     
      @import 'showcase.subject';
     @import 'showcase.order';
+    @import 'showcase.asset';
 
+    h1{font-size:140%;padding:0px;margin:0px;
+    .id{color:#000}
     
+    }
  
 }
+
+
+
+.half{float:left;min-height:160px;padding:10px 20px;
+h1{font-size:100%}
+
+&.left{width:50%;border-right:1px solid #ccc}
+}
+
+.main_image{border:1px solid #ccc;background: #fff;}
+
+.wraptocenter {
+
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    width: 300px;
+    height: 300px;
+    margin-bottom:10px;
+    padding-top:0px
+}
+.wraptocenter img {
+     vertical-align: bottom;max-width:270px;max-height:270px;
+}
+

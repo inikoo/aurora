@@ -1633,7 +1633,7 @@ class Site extends DB_Table {
 			'caption'=>'',
 			'is_principal'=>'Yes',
 			'id'=>$image->data['Image Key'],
-			'size'=>formatSizeUnits($image->data['Image File Size']
+			'size'=>file_size($image->data['Image File Size']
 			)
 		);
 
@@ -1676,7 +1676,7 @@ class Site extends DB_Table {
 				'filename'=>$row['Image Filename'],
 				'ratio'=>$ratio,'caption'=>$row['Image Caption'],
 				'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key'],
-				'size'=>formatSizeUnits($row['Image File Size'])
+				'size'=>file_size($row['Image File Size'])
 			);
 		}
 		// print_r($images_slideshow);
