@@ -1,10 +1,38 @@
 <?php
 
-function convert_units($value,$from,$to) {
+function convert_units($value, $from, $to) {
 
 	if ($from==$to)
 		return $value;
 	switch ($from) {
+
+	case 'm3':
+		switch ($to) {
+		case 'l':
+			return $value*1000;
+		case 'ml':
+			return $value*1000000;
+		}
+		break;
+
+	case 'l':
+		switch ($to) {
+		case 'm3':
+			return $value*0.001;
+		case 'ml':
+			return $value*1000;
+		}
+		break;
+
+	case 'ml':
+		switch ($to) {
+		case 'l':
+			return $value*0.001;
+		case 'm3':
+			return $value*.000001;
+		}
+		break;
+
 	case 'Kg':
 		switch ($to) {
 		case 'g':

@@ -20,48 +20,51 @@ class Warehouse extends DB_Table{
 	var $areas=false;
 	var $locations=false;
 
-	function Warehouse($a1,$a2=false,$a3=false) {
+	function Warehouse($a1, $a2=false, $a3=false) {
+
+		global $db;
+		$this->db=$db;
 
 		$this->table_name='Warehouse';
 		$this->ignore_fields=array('Warehouse Key');
 
 		if (is_numeric($a1) and !$a2) {
-			$this->get_data('id',$a1);
+			$this->get_data('id', $a1);
 		}elseif ($a1=='find') {
-			$this->find($a2,$a3);
+			$this->find($a2, $a3);
 
 		}else
-			$this->get_data($a1,$a2);
+			$this->get_data($a1, $a2);
 	}
 
 
-	function get_data($key,$tag) {
+	function get_data($key, $tag) {
 
 		if ($key=='id')
-			$sql=sprintf("select * from `Warehouse Dimension` where `Warehouse Key`=%d",$tag);
+			$sql=sprintf("select * from `Warehouse Dimension` where `Warehouse Key`=%d", $tag);
 		else if ($key=='code')
-				$sql=sprintf("select  * from `Warehouse Dimension` where `Warehouse Code`=%s ",prepare_mysql($tag));
-			else if ($key=='name')
-					$sql=sprintf("select  *  from `Warehouse Dimension` where `Warehouse Name`=%s ",prepare_mysql($tag));
+			$sql=sprintf("select  * from `Warehouse Dimension` where `Warehouse Code`=%s ", prepare_mysql($tag));
+		else if ($key=='name')
+			$sql=sprintf("select  *  from `Warehouse Dimension` where `Warehouse Name`=%s ", prepare_mysql($tag));
 
-				else
-					return;
-				$result=mysql_query($sql);
-			if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$this->id=$this->data['Warehouse Key'];
-				$this->code=$this->data['Warehouse Code'];
+		else
+			return;
 
-			}
 
+		if ($this->data = $this->db->query($sql)->fetch()) {
+			$this->id=$this->data['Warehouse Key'];
+			$this->code=$this->data['Warehouse Code'];
+		}
 
 
 
 	}
 
-	function find($raw_data,$options) {
+
+	function find($raw_data, $options) {
 		if (isset($raw_data['editor'])) {
 			foreach ($raw_data['editor'] as $key=>$value) {
-				if (array_key_exists($key,$this->editor))
+				if (array_key_exists($key, $this->editor))
 					$this->editor[$key]=$value;
 			}
 		}
@@ -71,16 +74,16 @@ class Warehouse extends DB_Table{
 
 		$create='';
 		$update='';
-		if (preg_match('/create/i',$options)) {
+		if (preg_match('/create/i', $options)) {
 			$create='create';
 		}
-		if (preg_match('/update/i',$options)) {
+		if (preg_match('/update/i', $options)) {
 			$update='update';
 		}
 
 		$data=$this->base_data();
 		foreach ($raw_data as $key=>$value) {
-			if (array_key_exists($key,$data))
+			if (array_key_exists($key, $data))
 				$data[$key]=_trim($value);
 		}
 
@@ -98,7 +101,7 @@ class Warehouse extends DB_Table{
 
 
 		$sql=sprintf("select `Warehouse Key` from `Warehouse Dimension` where `Warehouse Code`=%s  "
-			,prepare_mysql($data['Warehouse Code'])
+			, prepare_mysql($data['Warehouse Code'])
 		);
 
 		$result=mysql_query($sql);
@@ -113,7 +116,7 @@ class Warehouse extends DB_Table{
 			return;
 		}
 		if ($this->found)
-			$this->get_data('id',$this->found_key);
+			$this->get_data('id', $this->found_key);
 
 		if ($update and $this->found) {
 
@@ -122,12 +125,13 @@ class Warehouse extends DB_Table{
 
 	}
 
+
 	function create($data) {
 		$this->new=false;
 		$base_data=$this->base_data();
 
 		foreach ($data as $key=>$value) {
-			if (array_key_exists($key,$base_data))
+			if (array_key_exists($key, $base_data))
 				$base_data[$key]=_trim($value);
 		}
 
@@ -136,14 +140,14 @@ class Warehouse extends DB_Table{
 			$keys.="`$key`,";
 			$values.=prepare_mysql($value).",";
 		}
-		$keys=preg_replace('/,$/',')',$keys);
-		$values=preg_replace('/,$/',')',$values);
-		$sql=sprintf("insert into `Warehouse Dimension` %s %s",$keys,$values);
+		$keys=preg_replace('/,$/', ')', $keys);
+		$values=preg_replace('/,$/', ')', $values);
+		$sql=sprintf("insert into `Warehouse Dimension` %s %s", $keys, $values);
 
 		if (mysql_query($sql)) {
 			$this->id = mysql_insert_id();
 			$this->msg=_("Warehouse Added");
-			$this->get_data('id',$this->id);
+			$this->get_data('id', $this->id);
 			$this->new=true;
 
 
@@ -158,7 +162,7 @@ class Warehouse extends DB_Table{
 			}
 
 
-			$flags=array('Blue'=>_('Blue'),'Green'=>_('Green'),'Orange'=>_('Orange'),'Pink'=>_('Pink'),'Purple'=>_('Purple'),'Red'=>_('Red'),'Yellow'=>_('Yellow'));
+			$flags=array('Blue'=>_('Blue'), 'Green'=>_('Green'), 'Orange'=>_('Orange'), 'Pink'=>_('Pink'), 'Purple'=>_('Purple'), 'Red'=>_('Red'), 'Yellow'=>_('Yellow'));
 			foreach ($flags as $flag=>$flag_label) {
 				$sql=sprintf("INSERT INTO `Warehouse Flag Dimension` (`Warehouse Flag Key`, `Warehouse Key`, `Warehouse Flag Color`, `Warehouse Flag Label`, `Warehouse Flag Number Locations`, `Warehouse Flag Active`) VALUES (NULL, %d, %s,%s, '0', 'Yes')",
 					$this->id,
@@ -198,7 +202,7 @@ class Warehouse extends DB_Table{
 					return;
 				}
 
-				$location=new Warehouse('name',$value);
+				$location=new Warehouse('name', $value);
 				if ($location->id) {
 					$this->msg=_('Another ware house has the same name');
 					$this->update_ok=false;
@@ -217,7 +221,7 @@ class Warehouse extends DB_Table{
 	function load($key='') {
 		switch ($key) {
 		case('areas'):
-			$sql=sprintf("select * from `Warehouse Area Dimension` where `Warehouse Key`=%d ",$this->id);
+			$sql=sprintf("select * from `Warehouse Area Dimension` where `Warehouse Key`=%d ", $this->id);
 
 			$result =mysql_query($sql);
 			$this->areas=array();
@@ -235,7 +239,7 @@ class Warehouse extends DB_Table{
 	}
 
 
-	function get($key,$data=false) {
+	function get($key, $data=false) {
 		switch ($key) {
 		case('num_areas'):
 		case('number_areas'):
@@ -270,7 +274,7 @@ class Warehouse extends DB_Table{
 		// print_r($data);
 		$this->new_area=false;
 		$data['Warehouse Key']=$this->id;
-		$area= new WarehouseArea('find',$data,'create');
+		$area= new WarehouseArea('find', $data, 'create');
 		$this->new_area_msg=$area->msg;
 		if ($area->new) {
 			$this->new_area=true;
@@ -278,22 +282,23 @@ class Warehouse extends DB_Table{
 		}
 	}
 
+
 	function update_children() {
-		$sql=sprintf('select count(*) as number from `Location Dimension` where `Location Warehouse Key`=%d',$this->id);
+		$sql=sprintf('select count(*) as number from `Location Dimension` where `Location Warehouse Key`=%d', $this->id);
 		$res=mysql_query($sql);
 		$number_locations=0;
 		if ($row=mysql_fetch_array($res)) {
 			$number_locations=$row['number'];
 		}
 
-		$sql=sprintf('select count(*) as number from `Shelf Dimension` where `Shelf Warehouse Key`=%d',$this->id);
+		$sql=sprintf('select count(*) as number from `Shelf Dimension` where `Shelf Warehouse Key`=%d', $this->id);
 		$res=mysql_query($sql);
 		$number_shelfs=0;
 		if ($row=mysql_fetch_array($res)) {
 			$number_shelfs=$row['number'];
 		}
 
-		$sql=sprintf('select count(*) as number from `Warehouse Area Dimension` where `Warehouse Key`=%d',$this->id);
+		$sql=sprintf('select count(*) as number from `Warehouse Area Dimension` where `Warehouse Key`=%d', $this->id);
 		$res=mysql_query($sql);
 		$number_areas=0;
 		if ($row=mysql_fetch_array($res)) {
@@ -302,16 +307,17 @@ class Warehouse extends DB_Table{
 
 
 		$sql=sprintf('update `Warehouse Dimension` set `Warehouse Number Locations`=%d ,`Warehouse Number Shelfs`=%d  ,`Warehouse Number Areas`=%d  where `Warehouse Key`=%d'
-			,$number_locations
-			,$number_shelfs
-			,$number_areas
-			,$this->id
+			, $number_locations
+			, $number_shelfs
+			, $number_areas
+			, $this->id
 		);
 		mysql_query($sql);
-		$this->get_data('id',$this->id);
+		$this->get_data('id', $this->id);
 	}
 
-	function update_inventory_snapshot($from,$to=false) {
+
+	function update_inventory_snapshot($from, $to=false) {
 
 		if (!$to) {
 			$to=$from;
@@ -329,17 +335,17 @@ class Warehouse extends DB_Table{
 			$sql=sprintf('select ITF.`Part SKU`,`Part Cost`,`Value At Day Cost` from `Inventory Spanshot Fact` ITF left join `Part Dimension` P  on (P.`Part SKU`=ITF.`Part SKU`)where `Warehouse Key`=%d and `Date`=%s and `Value At Day Cost`!=0 and `Part Valid From`>%s',
 				$this->id,
 				prepare_mysql($row['Date']),
-				prepare_mysql(date("Y-m-d H:i:s",strtotime($row['Date'].' 23:59:59 -1 year')))
+				prepare_mysql(date("Y-m-d H:i:s", strtotime($row['Date'].' 23:59:59 -1 year')))
 			);
 			$res2=mysql_query($sql);
 
 			while ($row2=mysql_fetch_assoc($res2)) {
 				$sql=sprintf("select count(*) as num from `Inventory Transaction Fact` where `Part SKU`=%d and  `Inventory Transaction Type`='Sale' and `Date`>=%s and `Date`<=%s ",
 					$row2['Part SKU'],
-					prepare_mysql(date("Y-m-d H:i:s",strtotime($row['Date'].' 23:59:59 -1 year'))),
+					prepare_mysql(date("Y-m-d H:i:s", strtotime($row['Date'].' 23:59:59 -1 year'))),
 					prepare_mysql($row['Date'].' 23:59:59')
 				);
-				
+
 				$res3=mysql_query($sql);
 				if ($row3=mysql_fetch_array($res3)) {
 					if ($row3['num']==0) {
@@ -425,7 +431,7 @@ class Warehouse extends DB_Table{
 				);
 				mysql_query($sql);
 
-			//	print "$sql\n";
+				// print "$sql\n";
 
 
 
@@ -435,10 +441,11 @@ class Warehouse extends DB_Table{
 
 	}
 
+
 	function update_location_flags_numbers() {
 
 
-		$sql=sprintf("select * from  `Warehouse Flag Dimension` where `Warehouse Key`=%d  ",$this->id);
+		$sql=sprintf("select * from  `Warehouse Flag Dimension` where `Warehouse Key`=%d  ", $this->id);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 
@@ -447,9 +454,10 @@ class Warehouse extends DB_Table{
 		}
 	}
 
+
 	function update_location_flag_number($flag_key) {
 		$num=0;
-		$sql=sprintf("select count(*) as num  from  `Location Dimension` where `Warehouse Flag Key`=%d ",$flag_key);
+		$sql=sprintf("select count(*) as num  from  `Location Dimension` where `Warehouse Flag Key`=%d ", $flag_key);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$num=$row['num'];
@@ -462,6 +470,7 @@ class Warehouse extends DB_Table{
 
 
 	}
+
 
 	function get_default_flag_key() {
 		$flag_key=0;
@@ -479,9 +488,10 @@ class Warehouse extends DB_Table{
 
 	}
 
-	function update_flag($flag_key,$field,$value) {
 
-		if (in_array($field,array('Warehouse Flag Label','Warehouse Flag Active'))) {
+	function update_flag($flag_key, $field, $value) {
+
+		if (in_array($field, array('Warehouse Flag Label', 'Warehouse Flag Active'))) {
 
 
 			$sql=sprintf("select * from  `Warehouse Flag Dimension` where  `Warehouse Flag Key`=%d and `Warehouse Key`=%d",
@@ -547,4 +557,6 @@ class Warehouse extends DB_Table{
 
 
 }
+
+
 ?>

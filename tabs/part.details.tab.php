@@ -14,6 +14,9 @@ include_once 'utils/invalid_messages.php';
 
 $part=$state['_object'];
 
+$options_Packing_Group=array(
+	'None'=>_('None'), 'I'=>'I', 'II'=>'II', 'III'=>'III'
+);
 
 
 $object_fields=array(
@@ -63,13 +66,14 @@ $object_fields=array(
 				'required'=>true,
 			),
 			array(
-				'id'=>'Part_Package_XHTML_Dimensions',
-				'edit'=>'numeric',
-				'value'=>$part->get('Part Package XHTML Dimensions') ,
-				'formatted_value'=>$part->get('Package XHTML Dimensions') ,
-				'label'=>ucfirst($part->get_field_label('Part Package XHTML Dimensions')),
+				'id'=>'Part_Package_Dimensions',
+				'edit'=>'dimensions',
+				'value'=>$part->get('Part Package Dimensions') ,
+				'formatted_value'=>$part->get('Package Dimensions') ,
+				'label'=>ucfirst($part->get_field_label('Part Package Dimensions')),
 				'invalid_msg'=>get_invalid_message('string'),
 				'required'=>true,
+				'placeholder'=>_('L x W x H (in cm)')
 			),
 
 
@@ -118,11 +122,72 @@ $object_fields=array(
 				'formatted_value'=>$part->get('UN Class'),
 				'label'=>ucfirst($part->get_field_label('Part UN Class')),
 				'required'=>false
+			),
+			array(
+				'id'=>'Part_Packing_Group',
+				'edit'=>'option',
+				'options'=>$options_Packing_Group,
+				'value'=>htmlspecialchars($part->get('Part Packing Group')),
+				'formatted_value'=>$part->get('Packing Group'),
+				'label'=>ucfirst($part->get_field_label('Part Packing Group')),
+				'required'=>false
+			),
+			array(
+				'id'=>'Part_Proper_Shipping_Name',
+				'edit'=>'string',
+				'value'=>htmlspecialchars($part->get('Part Proper Shipping Name')),
+				'formatted_value'=>$part->get('Proper Shipping Name'),
+				'label'=>ucfirst($part->get_field_label('Part Proper Shipping Name')),
+				'required'=>false
+			),
+			array(
+				'id'=>'Part_Hazard_Indentification_Number',
+				'edit'=>'string',
+				'value'=>htmlspecialchars($part->get('Part Hazard Indentification Number')),
+				'formatted_value'=>$part->get('Hazard Indentification Number'),
+				'label'=>ucfirst($part->get_field_label('Part Hazard Indentification Number')),
+				'required'=>false
 			)
-
-
 		)
-	),
+			
+			
+
+
+
+
+		),
+	
+	array(
+		'label'=>_('Components'),
+		'show_title'=>true,
+		'fields'=>array(
+
+			array(
+				'id'=>'Part_Materials',
+				'edit'=>'textarea',
+				'value'=>htmlspecialchars($part->get('Part Materials')),
+				'formatted_value'=>$part->get('Materials'),
+				'label'=>ucfirst($part->get_field_label('Part Materials')),
+				'required'=>false
+			),
+			
+			array(
+				'id'=>'Part_Origin_Country_Code',
+				'edit'=>'country',
+				'value'=>htmlspecialchars($part->get('Part Origin Country Code')),
+				'formatted_value'=>$part->get('Origin Country Code'),
+				'label'=>ucfirst($part->get_field_label('Part Origin Country Code')),
+				'required'=>false
+			),
+			
+		)
+			
+			
+
+
+
+		)	
+	
 
 
 );

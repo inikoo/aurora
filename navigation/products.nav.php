@@ -458,7 +458,7 @@ function get_product_navigation($data, $smarty, $user, $db, $account) {
 		case 'part':
 			$tab='part.products';
 			$_section='inventory';
-			break;	
+			break;
 		case 'department':
 			$tab='department.products';
 			$_section='products';
@@ -639,12 +639,12 @@ function get_product_navigation($data, $smarty, $user, $db, $account) {
 
 		break;
 	case 'part':
-	    
-	    $part_warehouse=$data['current_warehouse'];
-	    if(!$part_warehouse){
-	        $part_warehouse=array_pop($data['_parent']->get('Warehouse Keys'));
-	    }
-	    
+
+		$part_warehouse=$data['current_warehouse'];
+		if (!$part_warehouse) {
+			$part_warehouse=array_pop($data['_parent']->get('Warehouse Keys'));
+		}
+
 		$up_button=array('icon'=>'arrow-up', 'title'=>_("Part").' ('.$data['_parent']->get('SKU').')', 'reference'=>'inventory/'.$part_warehouse.'/part/'.$data['_parent']->id);
 
 		if ($prev_key) {

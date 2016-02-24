@@ -56,8 +56,8 @@ case 'views':
 
 
 	$state['current_store']=$_SESSION['current_store'];
-	$state['current_website']=$_SESSION['current_store'];
-	$state['current_warehouse']=$_SESSION['current_store'];
+	$state['current_website']=$_SESSION['current_website'];
+	$state['current_warehouse']=$_SESSION['current_warehouse'];
 
 
 

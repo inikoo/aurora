@@ -159,7 +159,7 @@ if ($result=$db->query($sql)) {
 							
 							if ($_parts_data[$_key]['Parts Per Product']==1) {
 							
-								$linked_fields['Part Package XHTML Dimension']='Store Product Outer Dimensions';
+								$linked_fields['Part Package Dimensions']='Store Product Outer Dimensions';
 
 							}
 						}

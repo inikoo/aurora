@@ -60,6 +60,183 @@ class Asset extends ObjectwithImage {
 		switch ($key) {
 
 
+		case $this->table_name.' Materials':
+
+			if ($this->data[$this->table_name.' Materials']!='') {
+				$materials='';
+				$materials_data=json_decode($this->data[$this->table_name.' Materials'], true);
+
+
+				foreach ($materials_data as $material_data) {
+
+					if ($material_data['may_contain']=='Yes') {
+						$may_contain_tag='±';
+					}else {
+						$may_contain_tag='';
+					}
+
+					$materials.=sprintf(', %s%s', $may_contain_tag, $material_data['name']);
+
+					if ($material_data['ratio']>0) {
+						$materials.=sprintf(' (%s)', percentage($material_data['ratio'], 1));
+					}
+				}
+
+				$materials=preg_replace('/^\, /', '', $materials);
+
+
+				return array(true, $materials);
+
+			}else {
+				return array(true, '');
+			}
+			break;
+		case 'Materials':
+
+			if ($this->data[$this->table_name.' Materials']!='') {
+				$materials_data=json_decode($this->data[$this->table_name.' Materials'], true);
+				$xhtml_materials='';
+
+				foreach ($materials_data as $material_data) {
+					if (!array_key_exists('id', $material_data)) {
+						continue;
+					}
+
+					if ($material_data['may_contain']=='Yes') {
+						$may_contain_tag='±';
+					}else {
+						$may_contain_tag='';
+					}
+
+					if ($material_data['id']>0) {
+						$xhtml_materials.=sprintf(', %s<span onCLick="change_view(matarial/%d)" class="link" >%s</span>',
+							$may_contain_tag,
+							$material_data['id'],
+							$material_data['name']);
+					}else {
+						$xhtml_materials.=sprintf(', %s%s', $may_contain_tag, $material_data['name']);
+
+					}
+
+
+					if ($material_data['ratio']>0) {
+						$xhtml_materials.=sprintf(' (%s)', percentage($material_data['ratio'], 1));
+					}
+				}
+
+				$xhtml_materials=ucfirst(preg_replace('/^\, /', '', $xhtml_materials));
+				return array(true, $xhtml_materials);
+
+
+			}else {
+				return array(true, '');
+			}
+			break;
+		case $this->table_name.' Package Dimensions':
+			$dimensions='';
+
+			if ($this->data[$this->table_name.' Package Dimensions']!='') {
+				$data=json_decode($this->data[$this->table_name.' Package Dimensions'], true);
+				include_once 'utils/units_functions.php';
+				switch ($data['type']) {
+				case 'Rectangular':
+
+					$dimensions=number(convert_units($data['l'], 'm', $data['units'])).'x'.number(convert_units($data['w'], 'm', $data['units'])).'x'.number(convert_units($data['h'], 'm', $data['units'])).' ('.$data['units'].')';
+
+
+					break;
+				case 'Cilinder':
+					if ( !$part->data['Part '.$tag.' Dimensions Length Display']  or  !$part->data['Part '.$tag.' Dimensions Diameter Display']) {
+						$dimensions='';
+					}else {
+						$dimensions='L:'.number($part->data['Part '.$tag.' Dimensions Length Display']).' &#8709;:'.number($part->data['Part '.$tag.' Dimensions Diameter Display']).' ('.$part->data['Part '.$tag.' Dimensions Display Units'].')';
+					}
+					break;
+				case 'Sphere':
+					if (   !$part->data['Part '.$tag.' Dimensions Diameter Display']) {
+						$dimensions='';
+					}else {
+						$dimensions='&#8709;:'.number($part->data['Part '.$tag.' Dimensions Diameter Display']).' ('.$part->data['Part '.$tag.' Dimensions Display Units'].')';
+					}
+					break;
+				case 'String':
+					if (   !$part->data['Part '.$tag.' Dimensions Length Display']) {
+						$dimensions='';
+					}else {
+						$dimensions='L:'.number($part->data['Part '.$tag.' Dimensions Length Display']).' ('.$part->data['Part '.$tag.' Dimensions Display Units'].')';
+					}
+					break;
+				case 'Sheet':
+					if ( !$part->data['Part '.$tag.' Dimensions Width Display']  or  !$part->data['Part '.$tag.' Dimensions Length Display']) {
+						$dimensions='';
+					}else {
+						$dimensions=number($part->data['Part '.$tag.' Dimensions Width Display']).'x'.number($part->data['Part '.$tag.' Dimensions Length Display']).' ('.$part->data['Part '.$tag.' Dimensions Display Units'].')';
+					}
+					break;
+				default:
+					$dimensions='';
+				}
+
+			}
+
+
+
+			return array(true, $dimensions);
+			break;
+		case 'Package Dimensions':
+			$dimensions='';
+
+			if ($this->data[$this->table_name.' Package Dimensions']!='') {
+				$data=json_decode($this->data[$this->table_name.' Package Dimensions'], true);
+				include_once 'utils/units_functions.php';
+				switch ($data['type']) {
+				case 'Rectangular':
+
+					$dimensions=number(convert_units($data['l'], 'm', $data['units'])).'x'.number(convert_units($data['w'], 'm', $data['units'])).'x'.number(convert_units($data['h'], 'm', $data['units'])).' ('.$data['units'].')';
+					$dimensions.=', <span class="discret">'.volume($data['vol']).'</span>';
+					if ($this->data[$this->table_name.' Package Weight']>0) {
+						$dimensions.='<span class="discret">, '.number($this->data[$this->table_name.' Package Weight']/$data['vol']).'Kg/L</span>';
+					}
+
+					break;
+				case 'Cilinder':
+					if ( !$part->data['Part '.$tag.' Dimensions Length Display']  or  !$part->data['Part '.$tag.' Dimensions Diameter Display']) {
+						$dimensions='';
+					}else {
+						$dimensions='L:'.number($part->data['Part '.$tag.' Dimensions Length Display']).' &#8709;:'.number($part->data['Part '.$tag.' Dimensions Diameter Display']).' ('.$part->data['Part '.$tag.' Dimensions Display Units'].')';
+					}
+					break;
+				case 'Sphere':
+					if (   !$part->data['Part '.$tag.' Dimensions Diameter Display']) {
+						$dimensions='';
+					}else {
+						$dimensions='&#8709;:'.number($part->data['Part '.$tag.' Dimensions Diameter Display']).' ('.$part->data['Part '.$tag.' Dimensions Display Units'].')';
+					}
+					break;
+				case 'String':
+					if (   !$part->data['Part '.$tag.' Dimensions Length Display']) {
+						$dimensions='';
+					}else {
+						$dimensions='L:'.number($part->data['Part '.$tag.' Dimensions Length Display']).' ('.$part->data['Part '.$tag.' Dimensions Display Units'].')';
+					}
+					break;
+				case 'Sheet':
+					if ( !$part->data['Part '.$tag.' Dimensions Width Display']  or  !$part->data['Part '.$tag.' Dimensions Length Display']) {
+						$dimensions='';
+					}else {
+						$dimensions=number($part->data['Part '.$tag.' Dimensions Width Display']).'x'.number($part->data['Part '.$tag.' Dimensions Length Display']).' ('.$part->data['Part '.$tag.' Dimensions Display Units'].')';
+					}
+					break;
+				default:
+					$dimensions='';
+				}
+
+			}
+
+
+
+			return array(true, $dimensions);
+
 		default:
 
 			if (preg_match('/'.$this->table_name.' History Note (\d+)/i', $key, $matches)) {
@@ -83,7 +260,7 @@ class Asset extends ObjectwithImage {
 	}
 
 
-	
+
 
 
 }

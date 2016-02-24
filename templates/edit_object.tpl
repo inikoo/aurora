@@ -20,7 +20,6 @@
         {/foreach}
     
     {else}
-    
  	{foreach from=$field_group.fields item=field name=fields} 
 	    {if isset($field.edit)}{assign "edit" $field.edit}{else}{assign "edit" ""}{/if} 
 	    {if isset($field.field_type)}{assign "field_type" $field.field_type}{else}{assign "field_type" $edit}{/if} 
@@ -57,10 +56,10 @@
        <input id="{$field.id}_value" type='hidden' class="unformatted_value" value="{$field.value}" />
     
         
-		{if $edit=='string' or  $edit=='handle' or  $edit=='email' or $edit=='new_email' or  $edit=='int_unsigned' or $edit=='smallint_unsigned' or $edit=='mediumint_unsigned' or $edit=='int' or $edit=='smallint' or $edit=='mediumint' or $edit=='anything' or $edit=='numeric'  or $edit=='amount' } 
+		{if $edit=='string' or   $edit=='dimensions' or $edit=='handle' or  $edit=='email' or $edit=='new_email' or  $edit=='int_unsigned' or $edit=='smallint_unsigned' or $edit=='mediumint_unsigned' or $edit=='int' or $edit=='smallint' or $edit=='mediumint' or $edit=='anything' or $edit=='numeric'  or $edit=='amount' } 
 		
 	
-		<input id="{$field.id}" class="input_field hide" value="{$field.value}" has_been_valid="0"/>
+		<input id="{$field.id}" class="input_field hide" value="{$field.value}" has_been_valid="0" {if isset($field.placeholder)}placeholder="{$field.placeholder}"{/if} />
 		<i id="{$field.id}_save_button" class="fa fa-cloud save {$edit} hide" onclick="save_this_field(this)"></i> 
 		<span id="{$field.id}_msg" class="msg"></span> 
 		
