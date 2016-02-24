@@ -54,12 +54,11 @@ class Part extends Asset{
 		else
 			return;
 
-		$result=mysql_query($sql);
-
-		if (($this->data=mysql_fetch_array($result, MYSQL_ASSOC))) {
+		if ($this->data = $this->db->query($sql)->fetch()) {
 			$this->id=$this->data['Part SKU'];
 			$this->sku=$this->data['Part SKU'];
 		}
+
 
 
 	}
@@ -333,15 +332,14 @@ class Part extends Asset{
 
 
 		foreach ($this->get_products_data() as $product_data) {
-			
 			if ($field=='Part Package Weight') {
-					$value=$value*$product_data['Parts Per Product'];
-				}
+				$value=$value*$product_data['Parts Per Product'];
+			}
 			if (array_key_exists($field, $product_data['Linked Fields'])) {
 				$product=new StoreProduct($product_data['Store Product Key']);
 				$update_data=array();
 
-				
+
 				$update_data[$product_data['Linked Fields'][$field]]=$value;
 
 				$product->update($update_data);
@@ -356,7 +354,82 @@ class Part extends Asset{
 
 
 		switch ($field) {
+
+
+
+		case 'Part Materials':
+			include_once 'utils/parse_materials.php';
+
+			if ($value=='') {
+				$materials='';
+				$sql=sprintf("delete from `Part Material Bridge` where `Part SKU`=%d ", $this->sku);
+				$this->db->exec($sql);
+
+			}else {
+
+				$materials_data=parse_materials($value, $this->editor);
+
+				$sql=sprintf("delete from `Part Material Bridge` where `Part SKU`=%d ", $this->sku);
+
+				$this->db->exec($sql);
+           
+				foreach ($materials_data as $material_data) {
+
+					if ($material_data['id']>0) {
+						$sql=sprintf("insert into `Part Material Bridge` (`Part SKU`, `Material Key`, `Ratio`, `May Contain`) values (%d, %d, %s, %s) ",
+							$this->sku,
+							$material_data['id'],
+							prepare_mysql($material_data['ratio']),
+							prepare_mysql($material_data['may_contain'])
+
+						);
+						$this->db->exec($sql);
+
+
+					}
+
+
+				}
+
+
+				$materials=json_encode($materials_data);
+			}
+			
+			$this->update_field('Part Materials', $materials, $options);
+			$this->update_linked_products($field, $value, $options, $metadata);
+
+			break;
+
+		case 'Part Package Dimensions':
+
+			if ($value=='') {
+				$dim='';
+				$vol='';
+			}else {
+				$dim=parse_dimensions($value);
+				if ($dim=='') {
+					$this->error=true;
+					$this->msg=_("Part package dimensions can't be parsed");
+					return;
+				}
+				$_tmp=json_decode($dim, true);
+				$vol=$_tmp['vol'];
+			}
+
+			$this->update_field('Part Package Dimensions', $dim, $options);
+			$this->update_field('Part Package Volume', $vol, $options);
+			$this->update_linked_products($field, $value, $options, $metadata);
+
+
+			break;
 		case 'Part Package Weight':
+		case 'Part UN Number':
+		case 'Part UN Class':
+		case 'Part Packing Group':
+		case 'Part Proper Shipping Name':
+		case 'Part Hazard Indentification Number':
+		case('Part Tariff Code'):
+		case('Part Duty Rate'):
 			$this->update_field($field, $value, $options);
 			$this->update_linked_products($field, $value, $options, $metadata);
 
@@ -508,53 +581,7 @@ class Part extends Asset{
 	}
 
 
-	function get_xhtml_dimensions($tag, $locale='en_GB') {
 
-
-
-		switch ($this->data["Part $tag Dimensions Type"]) {
-		case 'Rectangular':
-			if (!$this->data['Part '.$tag.' Dimensions Width Display'] or  !$this->data['Part '.$tag.' Dimensions Depth Display']  or  !$this->data['Part '.$tag.' Dimensions Length Display']) {
-				$dimensions='';
-			}else {
-				$dimensions=number($this->data['Part '.$tag.' Dimensions Width Display']).'x'.number($this->data['Part '.$tag.' Dimensions Depth Display']).'x'.number($this->data['Part '.$tag.' Dimensions Length Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
-			}
-			break;
-		case 'Cilinder':
-			if ( !$this->data['Part '.$tag.' Dimensions Length Display']  or  !$this->data['Part '.$tag.' Dimensions Diameter Display']) {
-				$dimensions='';
-			}else {
-				$dimensions='L:'.number($this->data['Part '.$tag.' Dimensions Length Display']).' &#8709;:'.number($this->data['Part '.$tag.' Dimensions Diameter Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
-			}
-			break;
-		case 'Sphere':
-			if (   !$this->data['Part '.$tag.' Dimensions Diameter Display']) {
-				$dimensions='';
-			}else {
-				$dimensions='&#8709;:'.number($this->data['Part '.$tag.' Dimensions Diameter Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
-			}
-			break;
-		case 'String':
-			if (   !$this->data['Part '.$tag.' Dimensions Length Display']) {
-				$dimensions='';
-			}else {
-				$dimensions='L:'.number($this->data['Part '.$tag.' Dimensions Length Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
-			}
-			break;
-		case 'Sheet':
-			if ( !$this->data['Part '.$tag.' Dimensions Width Display']  or  !$this->data['Part '.$tag.' Dimensions Length Display']) {
-				$dimensions='';
-			}else {
-				$dimensions=number($this->data['Part '.$tag.' Dimensions Width Display']).'x'.number($this->data['Part '.$tag.' Dimensions Length Display']).' ('.$this->data['Part '.$tag.' Dimensions Display Units'].')';
-			}
-			break;
-		default:
-			$dimensions='';
-		}
-
-		return $dimensions;
-
-	}
 
 
 
@@ -710,8 +737,9 @@ class Part extends Asset{
 
 
 		$sql=sprintf("delete from `Part Material Bridge` where `Part SKU`=%d ", $this->sku);
-		mysql_query($sql);
-		//print_r($materials);
+
+		$this->db->exec($sql);
+
 		foreach ($materials as $key=>$_value) {
 			$material_data=array('Material Name'=>$_value['name'], 'editor'=>$this->editor);
 
@@ -719,14 +747,14 @@ class Part extends Asset{
 
 			//print_r($material_data);
 			if ($material->id) {
-				$sql=sprintf("insert into `Part Material Bridge` (`Part SKU`,`Material Key`,`Ratio`,`May Contain`) values (%d,%d,%s,%s) ",
+				$sql=sprintf("insert into `Part Material Bridge` (`Part SKU`, `Material Key`, `Ratio`, `May Contain`) values (%d, %d, %s, %s) ",
 					$this->sku,
 					$material->id,
 					prepare_mysql($_value['ratio']),
 					prepare_mysql($_value['may contain'])
 
 				);
-				mysql_query($sql);
+				$this->db->exec($sql);
 
 
 			}
@@ -909,7 +937,7 @@ class Part extends Asset{
 			$astock=0;
 			$avaue=0;
 
-			$sql=sprintf("select ifnull(avg(`Quantity On Hand`),'ERROR') as stock,avg(`Value At Cost`) as value from `Inventory Spanshot Fact` where  `Part SKU`=%d and `Date`>=%s and `Date`<=%s group by `Date`", $this->data['Part SKU'], prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid From']))), prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid To']))  ));
+			$sql=sprintf("select ifnull(avg(`Quantity On Hand`), 'ERROR') as stock, avg(`Value At Cost`) as value from `Inventory Spanshot Fact` where  `Part SKU`=%d and `Date`>=%s and `Date`<=%s group by `Date`", $this->data['Part SKU'], prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid From']))), prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid To']))  ));
 			// print "$sql\n";
 			$result=mysql_query($sql);
 			$days=0;
@@ -944,7 +972,7 @@ class Part extends Asset{
 			$tdays = (strtotime($this->data['Part Valid To']) - strtotime($this->data['Part Valid From'])) / (60 * 60 * 24);
 			//print "$tdays $days o: $outstock e: $errors \n";
 			$unknown=$tdays-$days_ok;
-			$sql=sprintf("update `Part Dimension` set `Part Total AVG Stock`=%s ,`Part Total AVG Stock Value`=%s,`Part Total Keeping Days`=%f ,`Part Total Out of Stock Days`=%f , `Part Total Unknown Stock Days`=%s, `Part Total GMROI`=%s where `Part SKU`=%d"
+			$sql=sprintf("update `Part Dimension` set `Part Total AVG Stock`=%s , `Part Total AVG Stock Value`=%s, `Part Total Keeping Days`=%f , `Part Total Out of Stock Days`=%f , `Part Total Unknown Stock Days`=%s, `Part Total GMROI`=%s where `Part SKU`=%d"
 				, $astock
 				, $avalue
 				, $tdays
@@ -959,7 +987,7 @@ class Part extends Asset{
 			$astock=0;
 			$avalue=0;
 
-			$sql=sprintf("select ifnull(avg(`Quantity On Hand`),'ERROR') as stock,avg(`Value At Cost`) as value from `Inventory Spanshot Fact` where   `Part SKU`=%d and `Date`>=%s and `Date`<=%s  and `Date`>=%s    group by `Date`", $this->data['Part SKU'], prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid From']))), prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid To']))  )  , prepare_mysql(date("Y-m-d H:i:s", strtotime("now -1 year")))  );
+			$sql=sprintf("select ifnull(avg(`Quantity On Hand`), 'ERROR') as stock, avg(`Value At Cost`) as value from `Inventory Spanshot Fact` where   `Part SKU`=%d and `Date`>=%s and `Date`<=%s  and `Date`>=%s    group by `Date`", $this->data['Part SKU'], prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid From']))), prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid To']))  )  , prepare_mysql(date("Y-m-d H:i:s", strtotime("now -1 year")))  );
 			//print "$sql\n";
 			$result=mysql_query($sql);
 			$days=0;
@@ -994,7 +1022,7 @@ class Part extends Asset{
 			$tdays = (strtotime($this->data['Part Valid To']) - strtotime($this->data['Part Valid From'])) / (60 * 60 * 24);
 			//print "$tdays $days o: $outstock e: $errors \n";
 			$unknown=$tdays-$days_ok;
-			$sql=sprintf("update `Part Dimension` set `Part 1 Year Acc AVG Stock`=%s ,`Part 1 Year Acc AVG Stock Value`=%s,`Part 1 Year Acc Keeping Days`=%f ,`Part 1 Year Acc Out of Stock Days`=%f , `Part 1 Year Acc Unknown Stock Days`=%s, `Part 1 Year Acc GMROI`=%s where `Part SKU`=%d"
+			$sql=sprintf("update `Part Dimension` set `Part 1 Year Acc AVG Stock`=%s , `Part 1 Year Acc AVG Stock Value`=%s, `Part 1 Year Acc Keeping Days`=%f , `Part 1 Year Acc Out of Stock Days`=%f , `Part 1 Year Acc Unknown Stock Days`=%s, `Part 1 Year Acc GMROI`=%s where `Part SKU`=%d"
 				, $astock
 				, $avalue
 				, $tdays
@@ -1010,7 +1038,7 @@ class Part extends Asset{
 			$astock=0;
 			$avalue=0;
 
-			$sql=sprintf("select ifnull(avg(`Quantity On Hand`),'ERROR') as stock,avg(`Value At Cost`) as value from `Inventory Spanshot Fact` where   `Part SKU`=%d and `Date`>=%s and `Date`<=%s  and `Date`>=%s    group by `Date`", $this->data['Part SKU'], prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid From']))), prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid To']))  )  , prepare_mysql(date("Y-m-d H:i:s", strtotime("now -3 month")))  );
+			$sql=sprintf("select ifnull(avg(`Quantity On Hand`), 'ERROR') as stock, avg(`Value At Cost`) as value from `Inventory Spanshot Fact` where   `Part SKU`=%d and `Date`>=%s and `Date`<=%s  and `Date`>=%s    group by `Date`", $this->data['Part SKU'], prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid From']))), prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid To']))  )  , prepare_mysql(date("Y-m-d H:i:s", strtotime("now -3 month")))  );
 			// print "$sql\n";
 			$result=mysql_query($sql);
 			$days=0;
@@ -1045,7 +1073,7 @@ class Part extends Asset{
 			$tdays = (strtotime($this->data['Part Valid To']) - strtotime($this->data['Part Valid From'])) / (60 * 60 * 24);
 			//print "$tdays $days o: $outstock e: $errors \n";
 			$unknown=$tdays-$days_ok;
-			$sql=sprintf("update `Part Dimension` set `Part 1 Quarter Acc AVG Stock`=%s ,`Part 1 Quarter Acc AVG Stock Value`=%s,`Part 1 Quarter Acc Keeping Days`=%f ,`Part 1 Quarter Acc Out of Stock Days`=%f , `Part 1 Quarter Acc Unknown Stock Days`=%s, `Part 1 Quarter Acc GMROI`=%s where `Part SKU`=%d"
+			$sql=sprintf("update `Part Dimension` set `Part 1 Quarter Acc AVG Stock`=%s , `Part 1 Quarter Acc AVG Stock Value`=%s, `Part 1 Quarter Acc Keeping Days`=%f , `Part 1 Quarter Acc Out of Stock Days`=%f , `Part 1 Quarter Acc Unknown Stock Days`=%s, `Part 1 Quarter Acc GMROI`=%s where `Part SKU`=%d"
 				, $astock
 				, $avalue
 				, $tdays
@@ -1060,7 +1088,7 @@ class Part extends Asset{
 			$astock=0;
 			$avalue=0;
 
-			$sql=sprintf("select ifnull(avg(`Quantity On Hand`),'ERROR') as stock,avg(`Value At Cost`) as value from `Inventory Spanshot Fact` where `Part SKU`=%d and `Date`>=%s and `Date`<=%s  and `Date`>=%s    group by `Date`", $this->data['Part SKU'], prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid From']))), prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid To']))  )  , prepare_mysql(date("Y-m-d H:i:s", strtotime("now -1 month")))  );
+			$sql=sprintf("select ifnull(avg(`Quantity On Hand`), 'ERROR') as stock, avg(`Value At Cost`) as value from `Inventory Spanshot Fact` where `Part SKU`=%d and `Date`>=%s and `Date`<=%s  and `Date`>=%s    group by `Date`", $this->data['Part SKU'], prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid From']))), prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid To']))  )  , prepare_mysql(date("Y-m-d H:i:s", strtotime("now -1 month")))  );
 			// print "$sql\n";
 			$result=mysql_query($sql);
 			$days=0;
@@ -1095,7 +1123,7 @@ class Part extends Asset{
 			$tdays = (strtotime($this->data['Part Valid To']) - strtotime($this->data['Part Valid From'])) / (60 * 60 * 24);
 			//print "$tdays $days o: $outstock e: $errors \n";
 			$unknown=$tdays-$days_ok;
-			$sql=sprintf("update `Part Dimension` set `Part 1 Month Acc AVG Stock`=%s ,`Part 1 Month Acc AVG Stock Value`=%s,`Part 1 Month Acc Keeping Days`=%f ,`Part 1 Month Acc Out of Stock Days`=%f , `Part 1 Month Acc Unknown Stock Days`=%s, `Part 1 Month Acc GMROI`=%s where `Part SKU`=%d"
+			$sql=sprintf("update `Part Dimension` set `Part 1 Month Acc AVG Stock`=%s , `Part 1 Month Acc AVG Stock Value`=%s, `Part 1 Month Acc Keeping Days`=%f , `Part 1 Month Acc Out of Stock Days`=%f , `Part 1 Month Acc Unknown Stock Days`=%s, `Part 1 Month Acc GMROI`=%s where `Part SKU`=%d"
 				, $astock
 				, $avalue
 				, $tdays
@@ -1111,7 +1139,7 @@ class Part extends Asset{
 			$astock=0;
 			$avalue=0;
 
-			$sql=sprintf("select ifnull(avg(`Quantity On Hand`),'ERROR') as stock,avg(`Value At Cost`) as value from `Inventory Spanshot Fact` where `Part SKU`=%d and `Date`>=%s and `Date`<=%s  and `Date`>=%s    group by `Date`", $this->data['Part SKU'], prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid From']))), prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid To']))  )  , prepare_mysql(date("Y-m-d H:i:s", strtotime("now -1 week")))  );
+			$sql=sprintf("select ifnull(avg(`Quantity On Hand`), 'ERROR') as stock, avg(`Value At Cost`) as value from `Inventory Spanshot Fact` where `Part SKU`=%d and `Date`>=%s and `Date`<=%s  and `Date`>=%s    group by `Date`", $this->data['Part SKU'], prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid From']))), prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid To']))  )  , prepare_mysql(date("Y-m-d H:i:s", strtotime("now -1 week")))  );
 			// print "$sql\n";
 			$result=mysql_query($sql);
 			$days=0;
@@ -1147,7 +1175,7 @@ class Part extends Asset{
 			$tdays = (strtotime($this->data['Part Valid To']) - strtotime($this->data['Part Valid From'])) / (60 * 60 * 24);
 			//print "$tdays $days o: $outstock e: $errors \n";
 			$unknown=$tdays-$days_ok;
-			$sql=sprintf("update `Part Dimension` set `Part 1 Week Acc AVG Stock`=%s ,`Part 1 Week Acc AVG Stock Value`=%s,`Part 1 Week Acc Keeping Days`=%f ,`Part 1 Week Acc Out of Stock Days`=%f , `Part 1 Week Acc Unknown Stock Days`=%s, `Part 1 Week Acc GMROI`=%s where `Part SKU`=%d"
+			$sql=sprintf("update `Part Dimension` set `Part 1 Week Acc AVG Stock`=%s , `Part 1 Week Acc AVG Stock Value`=%s, `Part 1 Week Acc Keeping Days`=%f , `Part 1 Week Acc Out of Stock Days`=%f , `Part 1 Week Acc Unknown Stock Days`=%s, `Part 1 Week Acc GMROI`=%s where `Part SKU`=%d"
 				, $astock
 				, $avalue
 				, $tdays
@@ -1200,49 +1228,14 @@ class Part extends Asset{
 	function get($key='', $args=false) {
 
 
+		list($got, $result)=$this->get_asset_common($key, $args);
+		if ($got)return $result;
 
 
-		if (preg_match('/No Supplied$/', $key)) {
-
-			$_key=preg_replace('/ No Supplied$/', '', $key);
-			if (preg_match('/^Part /', $key)) {
-				return $this->data["$_key Required"]-$this->data["$_key Provided"];
-
-			} else {
-				return number($this->data["Part $_key Required"]-$this->data["Part $_key Provided"]);
-			}
-
-		}
-
-
-		if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Month To|Today|Week To).*(Amount|Profit)$/', $key)) {
-
-			$amount='Part '.$key;
-
-			return money($this->data[$amount]);
-		}
-
-		if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Month To|Today|Week To).*(Margin|GMROI)$/', $key)) {
-
-			$amount='Part '.$key;
-
-			return percentage($this->data[$amount], 1);
-		}
-
-
-		if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Provided|Broken|Acquired)$/', $key) or $key=='Current Stock'  ) {
-
-			$amount='Part '.$key;
-
-			return number($this->data[$amount]);
-		}
-
-		$_key=preg_replace('/^part /', '', $key);
-		if (isset($this->data[$_key]))
-			return $this->data[$key];
 
 
 		switch ($key) {
+
 		case 'SKU':
 			return sprintf("SKU%05d", $this->sku);
 			break;
@@ -1382,6 +1375,43 @@ class Part extends Asset{
 			break;
 
 		default:
+
+			if (preg_match('/No Supplied$/', $key)) {
+
+				$_key=preg_replace('/ No Supplied$/', '', $key);
+				if (preg_match('/^Part /', $key)) {
+					return $this->data["$_key Required"]-$this->data["$_key Provided"];
+
+				} else {
+					return number($this->data["Part $_key Required"]-$this->data["Part $_key Provided"]);
+				}
+
+			}
+
+
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Month To|Today|Week To).*(Amount|Profit)$/', $key)) {
+
+				$amount='Part '.$key;
+
+				return money($this->data[$amount]);
+			}
+
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Month To|Today|Week To).*(Margin|GMROI)$/', $key)) {
+
+				$amount='Part '.$key;
+
+				return percentage($this->data[$amount], 1);
+			}
+
+
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Provided|Broken|Acquired)$/', $key) or $key=='Current Stock'  ) {
+
+				$amount='Part '.$key;
+
+				return number($this->data[$amount]);
+			}
+
+
 			if (array_key_exists($key, $this->data))
 				return $this->data[$key];
 
@@ -1427,7 +1457,7 @@ class Part extends Asset{
 
 		/*
 
-			$sql=sprintf("select sum(`Quantity On Hand`) as stock ,sum(`Quantity In Process`) as in_process ,sum(`Stock Value`) as value from `Part Location Dimension` where `Part SKU`=%d ",$this->id);
+			$sql=sprintf("select sum(`Quantity On Hand`) as stock , sum(`Quantity In Process`) as in_process , sum(`Stock Value`) as value from `Part Location Dimension` where `Part SKU`=%d ",$this->id);
 			$res=mysql_query($sql);
 			//print $sql;
 			if ($row=mysql_fetch_array($res)) {
@@ -1438,8 +1468,8 @@ class Part extends Asset{
 			}
 */
 
-		$sql=sprintf("select sum(`Inventory Transaction Quantity`) as stock ,sum(`Inventory Transaction Amount`) as value
-			       from `Inventory Transaction Fact` where `Part SKU`=%d ",
+		$sql=sprintf("select sum(`Inventory Transaction Quantity`) as stock , sum(`Inventory Transaction Amount`) as value
+																																																								from `Inventory Transaction Fact` where `Part SKU`=%d ",
 			$this->sku
 		);
 
@@ -1465,7 +1495,7 @@ class Part extends Asset{
 	function get_stock($date) {
 		$stock=0;
 		$value=0;
-		$sql=sprintf("select ifnull(sum(`Quantity On Hand`),0) as stock,ifnull(sum(`Value At Cost`),0) as value from `Inventory Spanshot Fact` where `Part SKU`=%d and `Date`=%s"
+		$sql=sprintf("select ifnull(sum(`Quantity On Hand`), 0) as stock, ifnull(sum(`Value At Cost`), 0) as value from `Inventory Spanshot Fact` where `Part SKU`=%d and `Date`=%s"
 			, $this->id, prepare_mysql($date));
 		$res=mysql_query($sql);
 
@@ -1557,8 +1587,8 @@ class Part extends Asset{
 
 
 
-		$sql=sprintf("update `Part Dimension`  set `Part Current Stock`=%f ,`Part Current Value`=%f,`Part Current Stock In Process`=%f,`Part Current Stock Picked`=%f,
-			       `Part Current On Hand Stock`=%f where  `Part SKU`=%d   "
+		$sql=sprintf("update `Part Dimension`  set `Part Current Stock`=%f , `Part Current Value`=%f, `Part Current Stock In Process`=%f, `Part Current Stock Picked`=%f,
+																																																																	`Part Current On Hand Stock`=%f where  `Part SKU`=%d   "
 			, $stock+$picked
 			, $value
 			, $required-$picked
@@ -1759,8 +1789,8 @@ class Part extends Asset{
 
 	function get_suppliers() {
 		$suppliers=array();
-		$sql=sprintf("select `Supplier Product Code`,  SD.`Supplier Key`,`Supplier Code` from `Supplier Product Part List` SPPL   left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`)
-                     where `Part SKU`=%d  order by `Supplier Key`;", $this->data['Part SKU']);
+		$sql=sprintf("select `Supplier Product Code`,  SD.`Supplier Key`, `Supplier Code` from `Supplier Product Part List` SPPL   left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`)
+																																																																						where `Part SKU`=%d  order by `Supplier Key`;", $this->data['Part SKU']);
 		$result=mysql_query($sql);
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			$suppliers[$row['Supplier Key']]=array('Supplier Key'=>$row['Supplier Key']);
@@ -1789,10 +1819,10 @@ class Part extends Asset{
 
 		$supplier_products=array();
 		$sql=sprintf("select  SPPD.`Supplier Product ID`
-                     from `Supplier Product Part List` SPPL
-                     left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)
-                     where `Part SKU`=%d ;
-                     ", $this->data['Part SKU']);
+																																																																												from `Supplier Product Part List` SPPL
+																																																																												left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)
+																																																																												where `Part SKU`=%d ;
+																																																																												", $this->data['Part SKU']);
 		// print $sql;
 		$result=mysql_query($sql);
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -1830,11 +1860,11 @@ class Part extends Asset{
 		$supplier_products=array();
 		$sql=sprintf("
 
-                     select `Supplier Product Valid To`,`Supplier Product Valid From`, SPPD.`Supplier Product ID` , `Supplier Product Current Key`,SPPD.`Supplier Product Part Key`,`Supplier Product Part In Use`,`Supplier Product Units Per Part`,SPD.`Supplier Product Code`,  SPD.`Supplier Key`,`Supplier Code`
-                     from `Supplier Product Part List` SPPL
-                     left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)
-                     left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID`) where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes' order by `Supplier Product Valid To` desc;
-                     ", $this->data['Part SKU']);
+																																																																																select `Supplier Product Valid To`, `Supplier Product Valid From`, SPPD.`Supplier Product ID` , `Supplier Product Current Key`, SPPD.`Supplier Product Part Key`, `Supplier Product Part In Use`, `Supplier Product Units Per Part`, SPD.`Supplier Product Code`,  SPD.`Supplier Key`, `Supplier Code`
+																																																																																from `Supplier Product Part List` SPPL
+																																																																																left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)
+																																																																																left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID`) where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes' order by `Supplier Product Valid To` desc;
+																																																																																", $this->data['Part SKU']);
 		// print $sql;
 		$result=mysql_query($sql);
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -1861,22 +1891,22 @@ class Part extends Asset{
 
 	function update_supplied_by() {
 		$supplied_by='';
-		$sql=sprintf("select SPD.`Supplier Product ID`,  `Supplier Product Code`,  SD.`Supplier Key`,SD.`Supplier Code`
-						from `Supplier Product Part List` SPPL
-							left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)
-							left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID`)
-							left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPD.`Supplier Key`)
-							where `Part SKU`=%d  and `Supplier Product Part Most Recent`='Yes' order by `Supplier Key`;",
+		$sql=sprintf("select SPD.`Supplier Product ID`,  `Supplier Product Code`,  SD.`Supplier Key`, SD.`Supplier Code`
+																																																																																										from `Supplier Product Part List` SPPL
+																																																																																										left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)
+																																																																																										left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID`)
+																																																																																										left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPD.`Supplier Key`)
+																																																																																										where `Part SKU`=%d  and `Supplier Product Part Most Recent`='Yes' order by `Supplier Key`;",
 			$this->data['Part SKU']);
 
 
 		$sxql=sprintf("
 
-                     select `Supplier Product Valid To`,`Supplier Product Valid From`, SPPD.`Supplier Product ID` , `Supplier Product Current Key`,SPPD.`Supplier Product Part Key`,`Supplier Product Part In Use`,`Supplier Product Units Per Part`,SPD.`Supplier Product Code`,  SPD.`Supplier Key`,`Supplier Code`
-                     from `Supplier Product Part List` SPPL
-                     left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)
-                     left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID`) where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes' order by `Supplier Product Valid To` desc;
-                     ", $this->data['Part SKU']);
+																																																																																										select `Supplier Product Valid To`, `Supplier Product Valid From`, SPPD.`Supplier Product ID` , `Supplier Product Current Key`, SPPD.`Supplier Product Part Key`, `Supplier Product Part In Use`, `Supplier Product Units Per Part`, SPD.`Supplier Product Code`,  SPD.`Supplier Key`, `Supplier Code`
+																																																																																										from `Supplier Product Part List` SPPL
+																																																																																										left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)
+																																																																																										left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID`) where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes' order by `Supplier Product Valid To` desc;
+																																																																																										", $this->data['Part SKU']);
 
 		$result=mysql_query($sql);
 		//print "$sql\n";
@@ -1925,11 +1955,11 @@ class Part extends Asset{
 		$supplier_products=array();
 		$sql=sprintf("
 
-                     select `Supplier Product Valid To`,`Supplier Product Valid From`, SPPD.`Supplier Product ID` , `Supplier Product Current Key`,SPPD.`Supplier Product Part Key`,`Supplier Product Part In Use`,`Supplier Product Units Per Part`,SPD.`Supplier Product Code`,  SPD.`Supplier Key`,`Supplier Code`
-                     from `Supplier Product Part List` SPPL
-                     left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)
-                     left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID`) where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes' order by `Supplier Product Valid To` desc;
-                     ", $this->data['Part SKU']);
+																																																																																																select `Supplier Product Valid To`, `Supplier Product Valid From`, SPPD.`Supplier Product ID` , `Supplier Product Current Key`, SPPD.`Supplier Product Part Key`, `Supplier Product Part In Use`, `Supplier Product Units Per Part`, SPD.`Supplier Product Code`,  SPD.`Supplier Key`, `Supplier Code`
+																																																																																																from `Supplier Product Part List` SPPL
+																																																																																																left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)
+																																																																																																left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID`) where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes' order by `Supplier Product Valid To` desc;
+																																																																																																", $this->data['Part SKU']);
 		// print $sql;
 		$result=mysql_query($sql);
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -1956,10 +1986,10 @@ class Part extends Asset{
 
 	function get_supplier_products_historic($date) {
 		$supplier_products=array();
-		$sql=sprintf("select SPD.`Supplier Product ID`, `SPH Key`,  `Supplier Product Units Per Part`,SPD.`Supplier Product Code`,  SD.`Supplier Key`,SD.`Supplier Code`     from `Supplier Product Part List` SPPL    left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)    left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID`)    left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPD.`Supplier Key`)     left join `Supplier Product History Dimension` H on ( H.`Supplier Product ID`=SPD.`Supplier Product ID` )    where `Part SKU`=%d
-                     and ( (`SPH Valid From`<=%s and `SPH Valid To`>=%s and `SPH Type`='Historic') or (`SPH Valid From`<=%s and  `SPH Type`='Normal')     )
-                     and ( (`Supplier Product Part Valid From`<=%s  and `Supplier Product Part Valid To`>=%s and `Supplier Product Part Most Recent`='No') or  (`Supplier Product Part Valid From`<=%s and `Supplier Product Part Most Recent`='Yes')
-                     ) ;"
+		$sql=sprintf("select SPD.`Supplier Product ID`, `SPH Key`,  `Supplier Product Units Per Part`, SPD.`Supplier Product Code`,  SD.`Supplier Key`, SD.`Supplier Code`     from `Supplier Product Part List` SPPL    left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)    left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID`)    left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPD.`Supplier Key`)     left join `Supplier Product History Dimension` H on ( H.`Supplier Product ID`=SPD.`Supplier Product ID` )    where `Part SKU`=%d
+																																																																																																												and ( (`SPH Valid From`<=%s and `SPH Valid To`>=%s and `SPH Type`='Historic') or (`SPH Valid From`<=%s and  `SPH Type`='Normal')     )
+																																																																																																												and ( (`Supplier Product Part Valid From`<=%s  and `Supplier Product Part Valid To`>=%s and `Supplier Product Part Most Recent`='No') or  (`Supplier Product Part Valid From`<=%s and `Supplier Product Part Most Recent`='Yes')
+																																																																																																												) ;"
 			, $this->data['Part SKU'],
 			prepare_mysql($date),
 			prepare_mysql($date),
@@ -2163,7 +2193,7 @@ class Part extends Asset{
 			mysql_query($sql);
 
 			$details=_('Part')." SKU".sprintf("%05d", $this->sku)." "._('associated with unknown location');
-			$sql=sprintf("insert into `Inventory Transaction Fact` (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%s,%s,%d,%d,%s,%f,%.2f,%s,%s,%s)",
+			$sql=sprintf("insert into `Inventory Transaction Fact` (`Inventory Transaction Record Type`, `Inventory Transaction Section`, `Part SKU`, `Location Key`, `Inventory Transaction Type`, `Inventory Transaction Quantity`, `Inventory Transaction Amount`, `User Key`, `Note`, `Date`) values (%s, %s, %d, %d, %s, %f, %.2f, %s, %s, %s)",
 				"'Helper'",
 				"'Other'",
 				$this->sku,
@@ -2349,7 +2379,7 @@ class Part extends Asset{
 
 	function get_current_products($for_smarty=false) {
 
-		$sql=sprintf("select  `Product Number Web Pages`,`Product Web Configuration`,`Product Web State`,`Store Key`,`Store Code`,P.`Product ID`,`Product Code`,`Product Store Key` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` P on (P.`Product ID`=PPD.`Product ID`) left join `Store Dimension` on (`Product Store Key`=`Store Key`)  where  `Part SKU`=%d  and  `Product Part Most Recent`='Yes'  and `Product Record Type`='Normal'",
+		$sql=sprintf("select  `Product Number Web Pages`,`Product Web Configuration`,`Product Web State`,`Store Key`,`Store Code`,P.`Product ID`,`Product Code`,`Product Store Key` from `Product Part list` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` P on (P.`Product ID`=PPD.`Product ID`) left join `Store Dimension` on (`Product Store Key`=`Store Key`)  where  `Part SKU`=%d  and  `Product Part Most Recent`='Yes'  and `Product Record Type`='Normal'",
 			$this->sku
 		);
 		//print $sql;
@@ -2373,7 +2403,7 @@ class Part extends Asset{
 
 	function get_current_products_objects() {
 
-		$sql=sprintf("select  P.`Product ID` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` P on (P.`Product ID`=PPD.`Product ID`) left join `Store Dimension` on (`Product Store Key`=`Store Key`)  where  `Part SKU`=%d  and  `Product Part Most Recent`='Yes'  and `Product Record Type`='Normal'",
+		$sql=sprintf("select  P.`Product ID` from `Product Part list` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` P on (P.`Product ID`=PPD.`Product ID`) left join `Store Dimension` on (`Product Store Key`=`Store Key`)  where  `Part SKU`=%d  and  `Product Part Most Recent`='Yes'  and `Product Record Type`='Normal'",
 			$this->sku
 		);
 		//print $sql;
@@ -2444,7 +2474,7 @@ class Part extends Asset{
 	function items_per_product($product_ID, $date=false) {
 		$where_date='';
 
-		$sql=sprintf("select AVG(`Parts Per Product`) as parts_per_product from `Product Part Dimension` PPD left join `Product Part List` PPL on (PPD.`Product Part Key`=PPL.`Product Part Key`) where `Part SKU`=%d and  `Product ID`=%d %s  "
+		$sql=sprintf("select AVG(`Parts Per Product`) as parts_per_product from `Product Part Dimension` PPD left join `Product Part list` PPL on (PPD.`Product Part Key`=PPL.`Product Part Key`) where `Part SKU`=%d and  `Product ID`=%d %s  "
 			, $this->id
 			, $product_ID
 			, $where_date
@@ -3013,7 +3043,7 @@ class Part extends Asset{
 
 		}
 
-		$sql=sprintf("update `Part Dimension` set `Part Days Available Forecast`=%s,`Part XHTML Available For Forecast`=%s where `Part SKU`=%d", $this->data['Part Days Available Forecast'], prepare_mysql($this->data['Part XHTML Available For Forecast']), $this->id );
+		$sql=sprintf("update `Part Dimension` set `Part Days Available Forecast`=%s,`Part XHTML Available for Forecast`=%s where `Part SKU`=%d", $this->data['Part Days Available Forecast'], prepare_mysql($this->data['Part XHTML Available For Forecast']), $this->id );
 		//print $sql;
 		mysql_query($sql);
 
@@ -3142,10 +3172,10 @@ class Part extends Asset{
 		if ($date) {
 			// print "from date";
 
-			$sql=sprintf("select AVG(`SPH Case Cost`/`SPH Units Per Case`*`Supplier Product Units Per Part`) as cost
+			$sql=sprintf("select AVG(`SPH case Cost`/`SPH Units Per case`*`Supplier Product Units Per Part`) as cost
                          from `Supplier Product Dimension` SP
                          left join `Supplier Product Part Dimension` SPPD  on (SP.`Supplier Product ID`=SPPD.`Supplier Product ID` )
-                         left join `Supplier Product Part List` B  on (SPPD.`Supplier Product Part Key`=B.`Supplier Product Part Key` )
+                         left join `Supplier Product Part list` B  on (SPPD.`Supplier Product Part Key`=B.`Supplier Product Part Key` )
                          left join  `Supplier Product History Dimension` SPHD on (SPHD.`Supplier Product ID`=SP.`Supplier Product ID`)
                          where `Part SKU`=%d and
                          (
@@ -3173,10 +3203,10 @@ class Part extends Asset{
 		}
 		// print "not found in date";
 
-		$sql=sprintf("select AVG(`SPH Case Cost`/`SPH Units Per Case`*`Supplier Product Units Per Part`) as cost
+		$sql=sprintf("select AVG(`SPH case Cost`/`SPH Units Per case`*`Supplier Product Units Per Part`) as cost
                      from `Supplier Product Dimension` SP
                      left join `Supplier Product Part Dimension` SPPD  on (SP.`Supplier Product ID`=SPPD.`Supplier Product ID` )
-                     left join `Supplier Product Part List` B  on (SPPD.`Supplier Product Part Key`=B.`Supplier Product Part Key` )
+                     left join `Supplier Product Part list` B  on (SPPD.`Supplier Product Part Key`=B.`Supplier Product Part Key` )
                      left join  `Supplier Product History Dimension` SPHD ON (SPHD.`SPH Key`=SP.`Supplier Product Current Key`)
                      where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes' ", $this->sku);
 		//print "$sql\n\n";
@@ -3196,7 +3226,7 @@ class Part extends Asset{
 
 
 	function get_estimated_future_cost() {
-		$sql=sprintf("select min(`Supplier Product Cost Per Case`*`Supplier Product Units Per Part`/`Supplier Product Units Per Case`) as min_cost ,avg(`Supplier Product Cost Per Case`*`Supplier Product Units Per Part`/`Supplier Product Units Per Case`) as avg_cost   from `Supplier Product Part List` SPPL left join  `Supplier Product Part Dimension` SPPD on (  SPPL.`Supplier Product Part Key`=SPPD.`Supplier Product Part Key`)    left join  `Supplier Product Dimension` SPD  on (SPPD.`Supplier Product ID`=SPD.`Supplier Product ID`)      where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes'", $this->sku);
+		$sql=sprintf("select min(`Supplier Product Cost Per case`*`Supplier Product Units Per Part`/`Supplier Product Units Per case`) as min_cost ,avg(`Supplier Product Cost Per case`*`Supplier Product Units Per Part`/`Supplier Product Units Per case`) as avg_cost   from `Supplier Product Part list` SPPL left join  `Supplier Product Part Dimension` SPPD on (  SPPL.`Supplier Product Part Key`=SPPD.`Supplier Product Part Key`)    left join  `Supplier Product Dimension` SPD  on (SPPD.`Supplier Product ID`=SPD.`Supplier Product ID`)      where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes'", $this->sku);
 		// print "$sql\n";
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -3223,7 +3253,7 @@ class Part extends Asset{
 	function update_used_in() {
 		$used_in_products='';
 		$raw_used_in_products='';
-		$sql=sprintf("select `Store Code`,PD.`Product ID`,`Product Code` from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` PD on (PD.`Product ID`=PPD.`Product ID`) left join `Store Dimension`  on (PD.`Product Store Key`=`Store Key`)  where PPL.`Part SKU`=%d and `Product Part Most Recent`='Yes' and `Product Record Type`='Normal' order by `Product Code`,`Store Code`", $this->data['Part SKU']);
+		$sql=sprintf("select `Store Code`,PD.`Product ID`,`Product Code` from `Product Part list` PPL left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` PD on (PD.`Product ID`=PPD.`Product ID`) left join `Store Dimension`  on (PD.`Product Store Key`=`Store Key`)  where PPL.`Part SKU`=%d and `Product Part Most Recent`='Yes' and `Product Record Type`='Normal' order by `Product Code`,`Store Code`", $this->data['Part SKU']);
 		$result=mysql_query($sql);
 		//   print "$sql\n";
 		$used_in=array();
@@ -3512,7 +3542,7 @@ class Part extends Asset{
 		}
 		$product_ids=array();
 
-		$sql=sprintf("select  `Product ID` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and  `Product Part Valid From`<=%s  and `Product Part Most Recent`='Yes'  "
+		$sql=sprintf("select  `Product ID` from `Product Part list` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and  `Product Part Valid From`<=%s  and `Product Part Most Recent`='Yes'  "
 			, $this->sku
 			, prepare_mysql($date)
 
@@ -3523,7 +3553,7 @@ class Part extends Asset{
 			$product_ids[$row['Product ID']]= $row['Product ID'];
 		}
 
-		$sql=sprintf("select  `Product ID` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and `Product Part Valid From`<=%s  and `Product Part Valid To`>=%s and `Product Part Most Recent`='No'  "
+		$sql=sprintf("select  `Product ID` from `Product Part list` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and `Product Part Valid From`<=%s  and `Product Part Valid To`>=%s and `Product Part Most Recent`='No'  "
 			, $this->sku
 			, prepare_mysql($date)
 			, prepare_mysql($date)
@@ -3539,7 +3569,7 @@ class Part extends Asset{
 
 
 	function get_current_product_ids() {
-		$sql=sprintf("select `Product Part Dimension`.`Product ID` from `Product Part List` left join `Product Part Dimension` on (`Product Part List`.`Product Part Key`=`Product Part Dimension`.`Product Part Key`)   where `Part SKU`=%d and `Product Part Most Recent`='Yes' ", $this->sku);
+		$sql=sprintf("select `Product Part Dimension`.`Product ID` from `Product Part list` left join `Product Part Dimension` on (`Product Part list`.`Product Part Key`=`Product Part Dimension`.`Product Part Key`)   where `Part SKU`=%d and `Product Part Most Recent`='Yes' ", $this->sku);
 		// print $sql;
 		$result=mysql_query($sql);
 		$product_ids=array();
@@ -3557,7 +3587,7 @@ class Part extends Asset{
 	function get_product_part_list($date=false) {
 
 		if (!$date) {
-			$sql=sprintf("select * from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and  `Product Part Most Recent`='Yes'  "
+			$sql=sprintf("select * from `Product Part list` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and  `Product Part Most Recent`='Yes'  "
 				, $this->sku
 
 			)
@@ -3570,7 +3600,7 @@ class Part extends Asset{
 		}
 
 		$product_part_list=array();
-		$sql=sprintf("select * from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and  `Product Part Valid From`<=%s  and `Product Part Most Recent`='Yes'  "
+		$sql=sprintf("select * from `Product Part list` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and  `Product Part Valid From`<=%s  and `Product Part Most Recent`='Yes'  "
 			, $this->sku
 			, prepare_mysql($date)
 
@@ -3581,7 +3611,7 @@ class Part extends Asset{
 			$product_part_list[$row['Product Part Key']]= $row;
 		}
 
-		$sql=sprintf("select * from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and `Product Part Valid From`<=%s  and `Product Part Valid To`<=%s and `Product Part Most Recent`='No'  "
+		$sql=sprintf("select * from `Product Part list` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and `Product Part Valid From`<=%s  and `Product Part Valid To`<=%s and `Product Part Most Recent`='No'  "
 			, $this->sku
 			, prepare_mysql($date)
 			, prepare_mysql($date)
@@ -3597,7 +3627,7 @@ class Part extends Asset{
 
 
 	function get_current_product_part_list() {
-		$sql=sprintf("select * from `Product Part List` left join `Product Part Dimension` on (`Product Part List`.`Product Part Key`=`Product Part Dimension`.`Product Part Key`)   where `Part SKU`=%d and `Product Part Most Recent`='Yes' ", $this->data['Part SKU']);
+		$sql=sprintf("select * from `Product Part list` left join `Product Part Dimension` on (`Product Part list`.`Product Part Key`=`Product Part Dimension`.`Product Part Key`)   where `Part SKU`=%d and `Product Part Most Recent`='Yes' ", $this->data['Part SKU']);
 		// print $sql;
 		$result=mysql_query($sql);
 		$product_part_list=array();
@@ -3638,7 +3668,7 @@ class Part extends Asset{
 			if (strtotime($from)>strtotime($product_from))
 				$from=$product_from;
 
-			$sql=sprintf("select  PPD.`Product Part Key` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where `Part SKU`=%d  and PPD.`Product ID`=%d "
+			$sql=sprintf("select  PPD.`Product Part Key` from `Product Part list` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where `Part SKU`=%d  and PPD.`Product ID`=%d "
 				, $this->sku, $pid);
 			$res2=mysql_query($sql);
 
@@ -4052,7 +4082,7 @@ class Part extends Asset{
 		foreach ($supplier_products as $supplier_product) {
 
 
-			$sql=sprintf("select POTF.`Supplier Delivery Note Last Updated Date`,`Supplier Delivery Note Quantity`,`Purchase Order Transaction State`,`Supplier Delivery Note Received Quantity`,`Supplier Delivery Note Damaged Quantity`,SDND.`Supplier Delivery Note Key`,`Supplier Delivery Note Public ID`,`Supplier Delivery Note Date`,`Supplier Delivery Note State`,`Purchase Order Estimated Receiving Date`,`Purchase Order State`,`Purchase Order Cancelled Date`,`Purchase Order Estimated Receiving Date`,`Purchase Order Submitted Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key`,`Purchase Order Quantity` from `Purchase Order Transaction Fact` POTF  left join `Purchase Order Dimension` PO on (PO.`Purchase Order Key`=POTF.`Purchase Order Key`) left join `Supplier Delivery Note Dimension` SDND on (SDND.`Supplier Delivery Note Key`=POTF.`Supplier Delivery Note Key`)  where `Supplier Product ID`=%d "
+			$sql=sprintf("select POTF.`Supplier Delivery Note Last Updated Date`,`Supplier Delivery Note Quantity`,`Purchase Order Transaction State`,`Supplier Delivery Note Received Quantity`,`Supplier Delivery Note Damaged Quantity`,SDND.`Supplier Delivery Note Key`,`Supplier Delivery Note public ID`,`Supplier Delivery Note Date`,`Supplier Delivery Note State`,`Purchase Order Estimated Receiving Date`,`Purchase Order State`,`Purchase Order Cancelled Date`,`Purchase Order Estimated Receiving Date`,`Purchase Order Submitted Date`,`Purchase Order public ID`,POTF.`Purchase Order Key`,`Purchase Order Quantity` from `Purchase Order Transaction Fact` POTF  left join `Purchase Order Dimension` PO on (PO.`Purchase Order Key`=POTF.`Purchase Order Key`) left join `Supplier Delivery Note Dimension` SDND on (SDND.`Supplier Delivery Note Key`=POTF.`Supplier Delivery Note Key`)  where `Supplier Product ID`=%d "
 				, $supplier_product['Supplier Product ID']
 			);
 
@@ -4321,7 +4351,7 @@ class Part extends Asset{
 		case 'Part Package Weight':
 			$label=_('weight');
 			break;
-		case 'Part Package XHTML Dimensions':
+		case 'Part Package Dimensions':
 			$label=_('dimensions');
 			break;
 
@@ -4333,6 +4363,25 @@ class Part extends Asset{
 			$label=_('duty rate');
 			break;
 
+		case 'Part UN Number':
+			$label=_('UN number');
+			break;
+
+		case 'Part UN Class':
+			$label=_('UN class');
+			break;
+		case 'Part Packing Group':
+			$label=_('packing group');
+			break;
+		case 'Part Proper Shipping Name':
+			$label=_('proper shipping name');
+			break;
+		case 'Part Hazard Indentification Number':
+			$label=_('hazard indentification number');
+			break;
+		case 'Part Unit Materials':
+			$label=_('Materials/Ingredients');
+			break;
 		case 'Stor':
 			$label=_('Price');
 			break;

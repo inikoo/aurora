@@ -387,6 +387,29 @@ class StoreProduct extends Asset{
 
 
 		switch ($field) {
+		case 'Store Product Outer Dimensions':
+
+			if ($value=='') {
+				$dim='';
+				$vol='';
+			}else {
+				$dim=parse_dimensions($value);
+				if ($dim=='') {
+					$this->error=true;
+					$this->msg=_("Package dimensions can't be parsed");
+					return;
+				}
+				$_tmp=json_decode($dim, true);
+				$vol=$_tmp['vol'];
+			}
+
+			$this->update_field('Store Product Outer Dimensions', $dim, $options);
+			$this->update_field('Store Product Outer Volume', $vol, $options);
+
+
+			break;
+		
+		
 		case 'Store Product Family Category Key':
 			include_once 'class.Category.php';
 			$family=new Category($value);

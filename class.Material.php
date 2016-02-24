@@ -13,43 +13,43 @@ include_once 'class.DB_Table.php';
 
 class Material extends DB_Table{
 
-	function Material($a1=false,$a2=false) {
+	function Material($a1=false, $a2=false) {
+
+		global $db;
+		$this->db=$db;
+
 
 		$this->table_name='Material';
-	$this->ignore_fields=array('Material Key');
-	
+		$this->ignore_fields=array('Material Key');
+
 		if ($a1=='create') {
 			$this->create($a2);
 
 		}if ($a1=='find create') {
-			$this->find($a2,$a1);
+			$this->find($a2, $a1);
 
 		}else
-			$this->get_data($a1,$s2);
+			$this->get_data($a1, $s2);
 	}
-	function get_data($tag,$key) {
 
 
-		$sql=sprintf("select * from `Material Dimension` where `Material Key`=%d ",$key);
+	function get_data($tag, $key) {
 
 
-		$result=mysql_query($sql);
-		if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$sql=sprintf("select * from `Material Dimension` where `Material Key`=%d ", $key);
+
+		if ($this->data = $this->db->query($sql)->fetch()) {
 			$this->id=$this->data['Material Key'];
-
-
 		}
 
 
-
-
 	}
 
 
-	function find($raw_data,$options){
+	function find($raw_data, $options) {
 		if (isset($raw_data['editor'])) {
 			foreach ($raw_data['editor'] as $key=>$value) {
-				if (array_key_exists($key,$this->editor))
+				if (array_key_exists($key, $this->editor))
 					$this->editor[$key]=$value;
 			}
 		}
@@ -59,39 +59,44 @@ class Material extends DB_Table{
 
 		$create='';
 		$update='';
-		if (preg_match('/create/i',$options)) {
+		if (preg_match('/create/i', $options)) {
 			$create='create';
 		}
-		if (preg_match('/update/i',$options)) {
+		if (preg_match('/update/i', $options)) {
 			$update='update';
 		}
 
 		$data=$this->base_data();
 		foreach ($raw_data as $key=>$value) {
-			if (array_key_exists($key,$data))
+			if (array_key_exists($key, $data))
 				$data[$key]=_trim($value);
 		}
 
 
 		//    print_r($raw_data);
 
-		
-		if ($data['Material Name']==''){
+
+		if ($data['Material Name']=='') {
 			return;
 		}
-			
+
 
 
 		$sql=sprintf("select `Material Key` from `Material Dimension` where `Material Name`=%s  "
-			,prepare_mysql($data['Material Name'])
+			, prepare_mysql($data['Material Name'])
 		);
-		//print $sql;
 
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$this->found=true;
-			$this->found_key=$row['Material Key'];
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$this->found=true;
+				$this->found_key=$row['Material Key'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 
 
 		if ($create and !$this->found) {
@@ -99,54 +104,57 @@ class Material extends DB_Table{
 			return;
 		}
 		if ($this->found)
-			$this->get_data('id',$this->found_key);
+			$this->get_data('id', $this->found_key);
 
 		if ($update and $this->found) {
 
 		}
-	
+
 	}
+
 
 	function create($data) {
 		$this->new=false;
 
-		
+
 
 		$base_data=$this->base_data();
 
 		foreach ($data as $key=>$value) {
-			if (array_key_exists($key,$base_data)){
+			if (array_key_exists($key, $base_data)) {
 				$base_data[$key]=_trim($value);
-				
-				
-				}
+
+
+			}
 		}
 
 		$keys='(';$values='values(';
 		foreach ($base_data as $key=>$value) {
 			$keys.="`$key`,";
 
-		if($key=='Material XHTML Description'){
-								$values.=prepare_mysql($value,false).",";
+			if ($key=='Material XHTML Description') {
+				$values.=prepare_mysql($value, false).",";
 
-				}else{
-									$values.=prepare_mysql($value).",";
+			}else {
+				$values.=prepare_mysql($value).",";
 
-				}
-				
-		
-		
-				
+			}
+
+
+
+
 		}
-		$keys=preg_replace('/,$/',')',$keys);
-		$values=preg_replace('/,$/',')',$values);
-		
-		$sql=sprintf("insert into `Material Dimension` %s %s",$keys,$values);
-		//print $sql;
-		if (mysql_query($sql)) {
-			$this->id = mysql_insert_id();
+		$keys=preg_replace('/,$/', ')', $keys);
+		$values=preg_replace('/,$/', ')', $values);
+
+		$sql=sprintf("insert into `Material Dimension` %s %s", $keys, $values);
+
+
+
+		if ($this->db->exec($sql)) {
+			$this->id=$this->db->lastInsertId();
 			$this->msg=_("Material added");
-			$this->get_data('id',$this->id);
+			$this->get_data('id', $this->id);
 			$this->new=true;
 
 
@@ -156,10 +164,10 @@ class Material extends DB_Table{
 			$this->msg="Error can not create material\n";
 		}
 	}
-	
-	
-	
-	function get($key,$data=false) {
+
+
+
+	function get($key, $data=false) {
 		switch ($key) {
 
 		default:
@@ -172,87 +180,24 @@ class Material extends DB_Table{
 	}
 
 
-	protected function update_field_switcher($field, $value, $options='',$metadata='') {
+	protected function update_field_switcher($field, $value, $options='', $metadata='') {
 
 
 		switch ($field) {
-		case 'Company Name':
 
-		case 'Material Name':
-			$this->update_company_name($value);
-			break;
-		case('Material Currency'):
-			$this->update_currency($value);
-			break;
 		default:
-			$this->company->update_field_switcher($field,$value,$options);
+			$base_data=$this->base_data();
+			if (array_key_exists($field, $base_data)) {
+				$this->update_field($field, $value, $options);
+			}
 			break;
 		}
 	}
 
 
-	function update_name($value) {
 
-
-		$sql=sprintf("update `Material Dimension` set `Material Name`=%s",prepare_mysql($value));
-		mysql_query($sql);
-
-		$this->updated=true;
-		$this->new_value=$value;
-	}
-
-
-
-
-
-	function update_company_name($value) {
-
-		$this->company->update_field_switcher('Company Name',$value);
-
-		$this->updated=$this->company->updated;
-		$this->new_value=$this->company->data['Company Name'];
-
-	}
-
-
-	function update_currency($value) {
-		$value=strtoupper($value);
-		$sql=sprintf("select * from kbase.`Currency Dimension` where `Currency Code`=%s",prepare_mysql($value));
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-
-			$sql=sprintf("update `Material Dimension` set `Material Currency`=%s",prepare_mysql($value));
-			mysql_query($sql);
-
-			$this->updated=true;
-			$this->new_value=$value;
-
-		}else {
-			$this->error=true;
-			$this->msg='Currency Code '.$value.' not valid';
-
-		}
-	}
-
-
-	function add_account_history($history_key,$type=false) {
-		$this->post_add_history($history_key,$type=false);
-	}
-
-	function post_add_history($history_key,$type=false) {
-
-		if (!$type) {
-			$type='Changes';
-		}
-
-		$sql=sprintf("insert into  `Material History Bridge` (`History Key`,`Type`) values (%d,%s)",
-			$history_key,
-			prepare_mysql($type)
-		);
-		mysql_query($sql);
-		//print $sql;
-	}
 
 }
+
 
 ?>

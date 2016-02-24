@@ -48,17 +48,19 @@ abstract class DB_Table {
 
 
 		$data=array();
-		$result = mysql_query("SHOW COLUMNS FROM `History Dimension`");
-		if (!$result) {
-			echo 'Could not run query: ' . mysql_error();
-			exit;
-		}
-		if (mysql_num_rows($result) > 0) {
-			while ($row = mysql_fetch_assoc($result)) {
+		$sql='SHOW COLUMNS FROM `History Dimension`';
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
 				if (!in_array($row['Field'], $this->ignore_fields))
 					$data[$row['Field']]=$row['Default'];
 			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
+
 		return $data;
 	}
 
@@ -663,7 +665,7 @@ abstract class DB_Table {
 			addslashes($this->table_name),
 			$this->id
 		);
-		
+
 		$this->db->exec($sql);
 		$this->updated=true;
 
@@ -988,10 +990,10 @@ abstract class DB_Table {
 	}
 
 
-	
 
 
-	
+
+
 
 
 	function get_name() {

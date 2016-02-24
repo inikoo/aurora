@@ -41,6 +41,7 @@ function open_edit_field(object, key, field) {
     case 'mediumint':
     case 'pin':
     case 'password':
+     case 'dimensions':
         $('#' + field).removeClass('hide')
         $('#' + field).focus()
         $('#' + field + '_save_button').removeClass('hide')
@@ -173,6 +174,8 @@ function close_edit_field(field) {
     case 'textarea':
     case 'numeric':
     case 'amount':
+    case 'dimensions':
+    
 
         $('#' + field).addClass('hide')
 

@@ -224,4 +224,12 @@ function weight($w, $unit='Kg', $number_decimals=3, $simplify=false, $zero_fill=
 }
 
 
+function volume($value, $unit='L') {
+	if ($value=='') return '';
+	return number($value,3).'L';
+}
+
+
+
+
 ?>
