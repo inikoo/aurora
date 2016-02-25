@@ -1006,6 +1006,18 @@ $modules=array(
 				)
 
 			),
+			'location'=>array(
+
+				'type'=>'object', 'label'=>_('Location'), 'icon'=>'map-sings', 'reference'=>'',
+				'tabs'=>array(
+					'location.details'=>array('label'=>_('Data'), 'title'=>_('Location detais'),'icon'=>'database'),
+					'warehouse.history'=>array('label'=>_('History/Notes'), 'title'=>_('History/Notes'), 'icon'=>'history'),
+					
+					'warehouse.parts'=>array('label'=>_('Parts'),'icon'=>'square-o'),
+
+				)
+
+			),
 
 
 

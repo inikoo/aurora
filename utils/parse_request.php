@@ -995,7 +995,7 @@ function parse_request($_data, $db) {
 											$parent_key=$key;
 											$key=$view_path[4];
 											$parent='part';
-											
+
 										}
 
 									}
@@ -1032,12 +1032,18 @@ function parse_request($_data, $db) {
 			break;
 		case 'locations':
 			$module='warehouses';
-			$section='locations';
 
 
-			$parent='warehouse';
+			if ( isset($view_path[0]) ) {
+				$parent='warehouse';
+				$parent_key=$view_path[0];
+				if ( isset($view_path[1]) ) {
+					$section='location';
+					$key=$view_path[1];
+				}
 
-			$parent_key=$view_path[0];
+			}
+
 			break;
 
 		case 'production':

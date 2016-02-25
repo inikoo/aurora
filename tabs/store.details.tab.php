@@ -32,13 +32,7 @@ $object_fields=array(
 		'label'=>_('Id'),
 		'show_title'=>true,
 		'fields'=>array(
-			array(
-				'render'=>false,
-				'class'=>'locked',
-				'id'=>'Store_Key',
-				'value'=>$store->id  ,
-				'label'=>_('Id')
-			),
+			
 			array(
 				'edit'=>'string',
 				'id'=>'Store_Code',

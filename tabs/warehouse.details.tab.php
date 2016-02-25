@@ -8,8 +8,9 @@
  Version 3
 
 */
+include_once 'utils/invalid_messages.php';
 
-$website=new Site($state['key']);
+$warehouse=$state['_object'];
 
 
 
@@ -18,78 +19,34 @@ $object_fields=array(
 		'label'=>_('Id'),
 		'show_title'=>true,
 		'fields'=>array(
-			array(
-				'class'=>'locked',
-				'id'=>'Site_Key',
-				'value'=>$website->get('Site Key') ,
-				'label'=>_('Id')
-			),
 
 			array(
-				'class'=>'string',
-				'id'=>'Site_Code',
-				'value'=>$website->get('Site Code'),
-				'label'=>_('Code')
+				'edit'=>'string',
+				'id'=>'Warehouse_Code',
+				'value'=>$warehouse->get('Warehouse Code')  ,
+				'label'=>ucfirst($warehouse->get_field_label('Warehouse Code')),
+				'invalid_msg'=>get_invalid_message('string'),
+				'required'=>true,
+				'server_validation'=>'check_for_duplicates',
 			),
 			array(
-				'class'=>'string',
-				'id'=>'Site_Nme',
-				'value'=>$website->get('Site Name'),
-				'label'=>_('Nme')
+				'edit'=>'string',
+				'id'=>'Warehouse_Name',
+				'value'=>$warehouse->get('Warehouse Name')  ,
+				'label'=>ucfirst($warehouse->get_field_label('Warehouse Name')),
+				'invalid_msg'=>get_invalid_message('string'),
+				'required'=>true,
 			),
 
 		)
 	),
-	array(
-		'label'=>_('Contact'),
-		'show_title'=>false,
-		'fields'=>array(
-			
 
-			array(
-				'class'=>'string',
-				'id'=>'Site_Main_Contact_Name',
-				'value'=>$website->get('Site Main Contact Name'),
-				'label'=>_('Contact name')
-			),
-			array(
-				'class'=>'string',
-				'id'=>'Site_Main_Plain_Email',
-				'value'=>$website->get('Site Main XHTML Email'),
-				'label'=>_('Email')
-			),
-			array(
-				'class'=>'string',
-				'id'=>'Site_Main_Plain_Telephone',
-				'value'=>$website->get('Site Main Plain Telephone'),
-				'label'=>_('Phone')
-			),
-			array(
-				'class'=>'string',
-				'id'=>'Site_Main_Plain_Mobile',
-				'value'=>$website->get('Site Main Plain Mobile'),
-				'label'=>_('Mobile')
-			),
-			array(
-				'class'=>'string',
-				'id'=>'Site_Main_Plain_FAX',
-				'value'=>$website->get('Site Main Plain FAX'),
-				'label'=>_('FAX')
-			),
-			array(
-				'class'=>'address',
-				'id'=>'Site_Main_Plain_Adresss',
-				'value'=>$website->get('Site Main XHTML Address'),
-				'label'=>_('Address')
-			)
-		)
-	),
-	
+
 );
 $smarty->assign('object', $state['_object']);
 $smarty->assign('key', $state['key']);
 
-$smarty->assign('object_fields',$object_fields);
+$smarty->assign('object_fields', $object_fields);
 $smarty->assign('state', $state);
 
 
