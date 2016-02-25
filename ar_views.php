@@ -129,7 +129,7 @@ case 'views':
 		}
 		if (is_numeric($_object->get('Warehouse Key'))) {
 			include_once 'class.Warehouse.php';
-			$warehouse=new Store($_object->get('Warehouse Key'));
+			$warehouse=new Warehouse($_object->get('Warehouse Key'));
 			$state['current_warehouse']=$warehouse->id;
 		}
 
@@ -1831,7 +1831,7 @@ function get_view_position($state) {
 			$branch[]=array('label'=>_('(All warehouses)'), 'icon'=>'', 'reference'=>'inventory/all');
 
 		}
-		$branch[]=array('label'=>_('Inventory').' <span class="id">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'square', 'reference'=>'');
+		$branch[]=array('label'=>_('Inventory').' <span class="id">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'th-large', 'reference'=>'');
 
 		break;
 		case 'part':
@@ -1840,7 +1840,7 @@ function get_view_position($state) {
 			$branch[]=array('label'=>_('(All warehouses)'), 'icon'=>'', 'reference'=>'inventory/all');
 
 		}
-		$branch[]=array('label'=>_('Inventory').' <span class="id">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'', 'reference'=>'inventory/'.$state['warehouse']->id);
+		$branch[]=array('label'=>_('Inventory').' <span class="id">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'th-large', 'reference'=>'inventory/'.$state['warehouse']->id);
 		$branch[]=array('label'=>'<span class="id Part_Reference">'.$state['_object']->get('Reference').'</span> (<span class="id">'.$state['_object']->get('SKU').'</span>)' , 'icon'=>'square', 'reference'=>'');
 
 		break;
@@ -1848,6 +1848,35 @@ function get_view_position($state) {
 	
 	
 		break;
+
+	case 'warehouses':
+	
+	
+	switch ($state['section']) {
+		case 'warehouse':
+			if ( $user->get_number_warehouses()>1 or $user->can_create('warehouses') ) {
+
+			$branch[]=array('label'=>_('(All warehouses)'), 'icon'=>'', 'reference'=>'warehouses');
+
+		}
+		$branch[]=array('label'=>_('warehouse').' <span class="id Warehouse_Code">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'map', 'reference'=>'');
+
+		break;
+		case 'part':
+			if ( $user->get_number_warehouses()>1 or $user->can_create('warehouses') ) {
+
+			$branch[]=array('label'=>_('(All warehouses)'), 'icon'=>'', 'reference'=>'inventory/all');
+
+		}
+		$branch[]=array('label'=>_('Inventory').' <span class="id">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'th-large', 'reference'=>'inventory/'.$state['warehouse']->id);
+		$branch[]=array('label'=>'<span class="id Part_Reference">'.$state['_object']->get('Reference').'</span> (<span class="id">'.$state['_object']->get('SKU').'</span>)' , 'icon'=>'square', 'reference'=>'');
+
+		break;
+		}
+	
+	
+		break;
+
 
 	case 'websites':
 

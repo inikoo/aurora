@@ -81,8 +81,8 @@ function get_warehouse_navigation($data) {
 
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
-		'title'=>_('Warehouse').' <span class="id">'.$warehouse->get('Warehouse Code').'</span>',
-		'search'=>array('show'=>true, 'placeholder'=>_('Search suppliers'))
+		'title'=>_('Warehouse').' <span  class="id Warehouse_Code" >'.$warehouse->get('Code').'</span>',
+		'search'=>array('show'=>true, 'placeholder'=>_('Search locations'))
 
 	);
 	$smarty->assign('_content', $_content);

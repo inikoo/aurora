@@ -7,13 +7,6 @@ var columns = [
     cell: "string",
 
 }, {
-    name: "locate_key",
-    label: "",
-    editable: false,
-     renderable: false,
-    cell: "string",
-
-}, {
     name: "warehouse_area_key",
     label: "",
     editable: false,
@@ -39,7 +32,7 @@ var columns = [
         orderSeparator: '',
         events: {
             "click": function() {
-                 change_view('location/' + this.model.get("locate_key"))
+                 change_view('locations/{$data['parent_key']}/' + this.model.get("id"))
             }
         },
         className: "link"

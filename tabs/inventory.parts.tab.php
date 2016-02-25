@@ -34,6 +34,9 @@ $parameters=array(
 	
 );
 
+$table_buttons=array();
+$table_buttons[]=array('icon'=>'plus', 'title'=>_('New part'), 'reference'=>"inventory/".$state['parent_key']."/part/new");
+$smarty->assign('table_buttons', $table_buttons);
 
 include('utils/get_table_html.php');
 

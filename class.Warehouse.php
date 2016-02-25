@@ -554,6 +554,26 @@ class Warehouse extends DB_Table{
 	}
 
 
+	function get_field_label($field) {
+		global $account;
+
+		switch ($field) {
+
+		case 'Warehouse Code':
+			$label=_('code');
+			break;
+		case 'Warehouse Name':
+			$label=_('name');
+			break;
+
+		default:
+			$label=$field;
+
+		}
+
+		return $label;
+
+	}
 
 
 }
