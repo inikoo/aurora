@@ -372,7 +372,7 @@ class Part extends Asset{
 				$sql=sprintf("delete from `Part Material Bridge` where `Part SKU`=%d ", $this->sku);
 
 				$this->db->exec($sql);
-           
+
 				foreach ($materials_data as $material_data) {
 
 					if ($material_data['id']>0) {
@@ -394,7 +394,7 @@ class Part extends Asset{
 
 				$materials=json_encode($materials_data);
 			}
-			
+
 			$this->update_field('Part Materials', $materials, $options);
 			$this->update_linked_products($field, $value, $options, $metadata);
 
@@ -417,29 +417,48 @@ class Part extends Asset{
 			}
 
 			$this->update_field('Part Package Dimensions', $dim, $options);
-			$this->update_field('Part Package Volume', $vol, $options);
+			$this->update_field('Part Package Volume', $vol,  'no_history');
 			$this->update_linked_products($field, $value, $options, $metadata);
 
 
 			break;
 		case 'Part Package Weight':
+			$this->update_field($field, $value, $options);
+
+			$this->other_fields_updated=array(
+				'Part_Package_Dimensions'=>array(
+					'field'=>'Part_Package_Dimensions',
+					'render'=>true,
+					'value'=>$this->get('Part Package Dimensions'),
+					'formatted_value'=>$this->get('Package Dimensions'),
+
+
+				)
+			);
+			$this->update_linked_products($field, $value, $options, $metadata);
+			break;
+		case('Part Tariff Code'):
+
+			if ($value=='') {
+				$tariff_code_valid='';
+			}else {
+				include_once 'utils/validate_tariff_code.php';
+				$tariff_code_valid=validate_tariff_code($value, $this->db);
+			}
+
+			$this->update_field($field, $value, $options);
+			$this->update_field('Part Tariff Code Valid', $tariff_code_valid, 'no_history');
+			$this->update_linked_products($field, $value, $options, $metadata);
+
+			break;
 		case 'Part UN Number':
 		case 'Part UN Class':
 		case 'Part Packing Group':
 		case 'Part Proper Shipping Name':
 		case 'Part Hazard Indentification Number':
-		case('Part Tariff Code'):
 		case('Part Duty Rate'):
 			$this->update_field($field, $value, $options);
 			$this->update_linked_products($field, $value, $options, $metadata);
-
-			break;
-		case('Store Sticky Note'):
-			$this->update_field_switcher('Sticky Note', $value);
-			break;
-		case('Sticky Note'):
-			$this->update_field('Part '.$field, $value, 'no_null');
-			$this->new_value=html_entity_decode($this->new_value);
 			break;
 		case('Part Status'):
 			$this->update_status($value, $options);
@@ -585,335 +604,8 @@ class Part extends Asset{
 
 
 
-	function update_tariff_code_valid() {
 
-		$tariff_code=$this->data['Part Tariff Code'];
-		if (strlen($tariff_code)==10  ) {
-			$tariff_code=substr($tariff_code, 0, -2);
-		}
 
-
-		$sql=sprintf("select count(*) as num  from kbase.`Commodity Code Dimension` where `Commodity Code`=%s ",
-			prepare_mysql($tariff_code)
-		);
-		$res=mysql_query($sql);
-		$valid='No';
-		if ($row=mysql_fetch_assoc($res)) {
-			if ($row['num']>0) {
-				$valid='Yes';
-			}
-		}
-
-		$sql=sprintf("update `Part Dimension` set `Part Tariff Code Valid`=%s where `Part SKU`=%d", prepare_mysql($valid), $this->sku);
-		mysql_query($sql);
-
-	}
-
-
-	function update_duty_rate($value, $options='') {
-
-		$this->update_field('Part Duty Rate', $value, $options);
-		$product_ids=$this->get_product_ids();
-
-		foreach ($product_ids as $product_id) {
-			$product=new Product('pid', $product_id);
-			$product->update_field('Product Duty Rate', $value, $options);
-		}
-	}
-
-
-	function update_tariff_code($value, $options='') {
-
-		$this->update_field('Part Tariff Code', $value, $options);
-		$this->update_tariff_code_valid();
-		$product_ids=$this->get_product_ids();
-
-		foreach ($product_ids as $product_id) {
-			$product=new Product('pid', $product_id);
-			if ($product->data['Product Use Part Tariff Data']=='Yes') {
-				$product->update_field('Product Tariff Code', $value, $options);
-			}
-		}
-	}
-
-
-	function get_materials() {
-		$materials='';
-		$xhtml_materials='';
-
-		$sql=sprintf("select * from `Part Material Bridge` B left join `Material Dimension` MD on (MD.`Material Key`=B.`Material Key`) where `Part SKU`=%d order by `Part Material Key` ",
-			$this->sku
-
-		);
-		$res=mysql_query($sql);
-
-		while ($row=mysql_fetch_assoc($res)) {
-
-			if ($row['May Contain']=='Yes') {
-				$may_contain_tag='±';
-			}else {
-				$may_contain_tag='';
-			}
-
-			$materials.=sprintf(', %s%s', $may_contain_tag, $row['Material Name']);
-			$xhtml_materials.=sprintf(', %s<a href="material.php?id=%d">%s</a>', $may_contain_tag, $row['Material Key'], $row['Material Name']);
-
-			if ($row['Ratio']>0) {
-				$materials.=sprintf(' (%s)', percentage($row['Ratio'], 1));
-				$xhtml_materials.=sprintf(' (%s)', percentage($row['Ratio'], 1));
-			}
-		}
-
-		$materials=preg_replace('/^\, /', '', $materials);
-		$xhtml_materials=preg_replace('/^\, /', '', $xhtml_materials);
-
-		return array($materials, $xhtml_materials);
-
-	}
-
-
-	function update_materials($value) {
-		include_once 'class.Material.php';
-
-
-		//if($value==$this->data['Part Unit Materials'])
-		//   return;
-
-		$materials=array();
-
-		$_materials=preg_split('/\s*,\s*/', $value);
-		// print_r($_materials);
-		$sum_ratios=0;
-
-		foreach ($_materials as $material) {
-			$material=_trim($material);
-			$material=preg_replace('/\s*\.$/', '', $material);
-			$ratio=0;
-			if (preg_match('/\s*\(.+\s*\%\s*\)$/', $material, $match)) {
-				$_percentage=$match[0];
-				$_percentage=preg_replace('/^\s*\(/', '', $_percentage);
-				$_percentage=preg_replace('/s*\%\s*\)$/', '', $_percentage);
-				$_percentage=floatval($_percentage);
-				if (is_float($_percentage) and $_percentage>0) {
-					$material=preg_replace('/\s*\(.+\s*\%\s*\)$/', '', $material);
-					$ratio=$_percentage/100;
-
-				}else {
-					$ratio=0;
-				}
-
-				if ($material!='') {
-
-					$sum_ratios+=$ratio;
-					if (array_key_exists(strtolower($material), $materials)) {
-						$materials[strtolower($material)]['ratio']+=$ratio;
-					}else {
-						$materials[strtolower($material)]=array('name'=>$material, 'ratio'=>$ratio, 'may contain'=>'No');
-					}
-				}
-			}else if (preg_match('/^\s*\(\+\/\-.+\)$/', $material, $match)) {
-
-				$material=preg_replace('/^\s*\(\+\/\-/', '', $material);
-				$material=preg_replace('/\)$/', '', $material);
-				$material=_trim($material);
-				if ($material!='') {
-					$materials[strtolower($material)]=array('name'=>$material, 'ratio'=>'', 'may contain'=>'Yes');
-				}
-			}else {
-
-				$materials[strtolower($material)]=array('name'=>$material, 'ratio'=>'', 'may contain'=>'No');
-
-			}
-
-
-
-		}
-
-		if ($sum_ratios>1) {
-			foreach ($materials as $key=>$material) {
-				$materials[$key]['ratio']=$materials[$key]['ratio']/$sum_ratios;
-			}
-		}
-
-
-		$sql=sprintf("delete from `Part Material Bridge` where `Part SKU`=%d ", $this->sku);
-
-		$this->db->exec($sql);
-
-		foreach ($materials as $key=>$_value) {
-			$material_data=array('Material Name'=>$_value['name'], 'editor'=>$this->editor);
-
-			$material=new Material('find create', $material_data);
-
-			//print_r($material_data);
-			if ($material->id) {
-				$sql=sprintf("insert into `Part Material Bridge` (`Part SKU`, `Material Key`, `Ratio`, `May Contain`) values (%d, %d, %s, %s) ",
-					$this->sku,
-					$material->id,
-					prepare_mysql($_value['ratio']),
-					prepare_mysql($_value['may contain'])
-
-				);
-				$this->db->exec($sql);
-
-
-			}
-
-
-		}
-		list($materials, $xhtml_materials)=$this->get_materials();
-		$this->update_field('Part Unit Materials', $materials);
-		$this->update_field('Part Unit XHTML Materials', $xhtml_materials, 'nohistory');
-
-
-		$this->updated=true;
-		$this->new_value=$materials;
-
-	}
-
-
-	function update_fields_used_in_products($field, $value, $options='') {
-
-		if (preg_match('/Weight.*Display/', $field)) {
-			$this->update_weight_dimensions_data($field, $value, 'Weight');
-		}elseif (preg_match('/Dimensions.*Display/', $field)) {
-			$this->update_weight_dimensions_data($field, $value, 'Dimensions');
-		}elseif ($field=='Part Unit Materials') {
-			$this->update_materials($value, 'Unit');
-		}else {
-
-
-			$this->update_field($field, $value, $options);
-		}
-		if ($field=='Part Tariff Code') {
-			$this->update_tariff_code_valid();
-		}
-
-		switch ($field) {
-
-		case 'Part Origin Country Code':
-			$product_ids=$this->get_product_ids();
-
-			foreach ($product_ids as $product_id) {
-
-				$product=new Product('pid', $product_id);
-				if ($product->data['Product Use Part Tariff Data']=='Yes') {
-
-					$product->update_origin_country_from_parts();
-				}
-			}
-
-			break;
-		case 'Part Unit Materials':
-
-			$product_ids=$this->get_product_ids();
-
-			foreach ($product_ids as $product_id) {
-
-				$product=new Product('pid', $product_id);
-
-				if ($product->data['Product Use Part Units Properties']=='Yes' ) {
-					$product->update_materials($value, 'Unit');
-				}
-			}
-
-			break;
-
-		case 'Part Unit Weight Display':
-		case 'Part Unit Weight Display Units':
-		case 'Part Package Weight Display':
-		case 'Part Package Weight Display Units':
-
-			$product_ids=$this->get_product_ids();
-
-			foreach ($product_ids as $product_id) {
-
-				$product=new Product('pid', $product_id);
-				if ($product->data['Product Use Part Properties']=='Yes' ) {
-					$product->update_weight_from_parts('Package');
-				}
-				if ($product->data['Product Use Part Units Properties']=='Yes' ) {
-					$product->update_weight_from_parts('Unit');
-				}
-			}
-
-
-
-
-			break;
-
-
-		case 'Part Unit Dimensions Type':
-		case 'Part Unit Dimensions Display Units':
-		case 'Part Unit Dimensions Width Display':
-		case 'Part Unit Dimensions Depth Display':
-		case 'Part Unit Dimensions Length Display':
-		case 'Part Unit Dimensions Diameter Display':
-		case 'Part Package Dimensions Type':
-		case 'Part Package Dimensions Display Units':
-		case 'Part Package Dimensions Width Display':
-		case 'Part Package Dimensions Depth Display':
-		case 'Part Package Dimensions Length Display':
-		case 'Part Package Dimensions Diameter Display':
-
-			if (preg_match('/Package/', $field)) {
-				$tag='Package';
-			}else {
-				$tag='Unit';
-
-			}
-			//print $tag;
-			$product_ids=$this->get_product_ids();
-
-			foreach ($product_ids as $product_id) {
-
-				$product=new Product('pid', $product_id);
-				if (
-					($tag=='Package' and ( $product->data['Product Use Part Properties']=='Yes' and $product->data['Product Part Units Ratio']==1))  or
-					($tag=='Unit' and  $product->data['Product Use Part Units Properties']=='Yes')
-
-
-				) {
-
-					$product->update_volume_from_parts($tag);
-
-
-				}
-			}
-			break;
-		case 'Part Tariff Code':
-		case 'Part Duty Rate':
-
-			$product_ids=$this->get_product_ids();
-
-			foreach ($product_ids as $product_id) {
-
-				$product=new Product('pid', $product_id);
-				if ($product->data['Product Use Part Tariff Data']=='Yes') {
-					$_field=preg_replace('/^Part /', 'Product ', $field);
-					$product->update_field($_field, $value, $options);
-				}
-			}
-			break;
-		case 'Part UN Number':
-		case 'Part UN Class':
-		case 'Part Health And Safety':
-		case 'Part Packing Group':
-		case 'Part Proper Shipping Name':
-		case 'Part Hazard Indentification Number':
-			$product_ids=$this->get_product_ids();
-
-			foreach ($product_ids as $product_id) {
-
-				$product=new Product('pid', $product_id);
-				if ($product->data['Product Use Part H and S']=='Yes') {
-					$_field=preg_replace('/^Part /', 'Product ', $field);
-					$product->update_field($_field, $value, $options);
-				}
-			}
-		}
-
-	}
 
 
 
@@ -1211,11 +903,6 @@ class Part extends Asset{
 	}
 
 
-	function formatted_sku() {
-		return $this->get_sku();
-
-	}
-
 
 
 
@@ -1235,28 +922,29 @@ class Part extends Asset{
 
 
 		switch ($key) {
-
-		case 'SKU':
-			return sprintf("SKU%05d", $this->sku);
-			break;
+		
+		
 		case 'Origin Country Code':
 			if ($this->data['Part Origin Country Code']) {
 				include_once 'class.Country.php';
 				$country=new Country('code', $this->data['Part Origin Country Code']);
-				return $country->get_country_name($this->locale);
+				return '<img src="/art/flags/'.strtolower($country->get('Country 2 Alpha Code')).'.gif" title="'.$country->get('Country Code').'"> '._($country->get('Country Name'));
 			}else {
 				return '';
 			}
 
 			break;
-		case 'Origin Country':
-			if ($this->data['Part Origin Country Code']) {
-				include_once 'class.Country.php';
-				$country=new Country('code', $this->data['Part Origin Country Code']);
-				return '<img style="vertical-align:-.5px" src="art/flags/'.strtolower($country->data['Country 2 Alpha Code']).'.gif" title="'.$country->data['Country Code'].'"> '.$country->get_country_name($this->locale);
-			}else {
-				return '';
-			}
+			
+			
+		case 'Package Weight':
+			return weight($this->data['Part Package Weight']);
+
+			
+			
+			break;
+		case 'SKU':
+			return sprintf("sku%05d", $this->sku);
+			break;
 
 			break;
 		case 'Next Supplier Shipment':
@@ -1266,9 +954,7 @@ class Part extends Asset{
 				return strftime("%a, %e %b %y", strtotime($this->data['Part Next Supplier Shipment'].' +0:00'));
 			}
 			break;
-		case("Sticky Note"):
-			return nl2br($this->data['Part Sticky Note']);
-			break;
+
 		case('Current Stock Available'):
 
 			return number($this->data['Part Current On Hand Stock']-$this->data['Part Current Stock In Process']);
@@ -1280,48 +966,6 @@ class Part extends Asset{
 
 			break;
 
-		case('Package Volume'):
-		case('Unit Volume'):
-			if ($key=='Package Volume')
-				$volume=$this->data['Part Package Dimensions Volume'];
-			else
-				$volume=$this->data['Part Unit Dimensions Volume'];
-
-			if (!is_numeric($volume) or $volume==0) {
-				return '';
-			}
-
-
-			$number_digits=strlen(substr(strrchr($volume, "."), 1));
-
-
-			if ($volume<1) {
-				return number($volume*1000, $number_digits).'mL';
-			}else {
-				return number($volume, $number_digits).'L';
-			}
-
-			break;
-
-
-		case('Package Weight'):
-
-			return weight($this->data['Part Package Weight']);
-			//$weight=$this->data['Part Package Weight Display'];
-
-			//if ($weight!='' and  is_numeric($weight)) {
-			// $number_digits=(int)strlen(substr(strrchr($weight, "."), 1));
-			//  $weight= number($weight, $number_digits).$this->data['Part '.$tag.' Weight Display Units'];
-			//}
-			//return $weight;
-			break;
-		case('SKU'):
-			return sprintf('SKU%5d', $this->sku);
-			break;
-
-		case('Picking Location Key'):
-
-			return $this->get_picking_location_key();
 			break;
 		case('Valid From'):
 		case('Valid From Datetime'):
@@ -1335,43 +979,7 @@ class Part extends Asset{
 
 			break;
 
-		case('Current Associated Locations'):
 
-			if (!$this->current_locations_loaded)
-				$this->load_current_locations();
-			return $this->current_associated_locations;
-			break;
-
-		case('Associated Locations'):
-			$associate=array();
-			$associated=array();
-
-			if ($args!='') {
-				$date=" and `Date`<='".date("Y-m-d H:i:s", strtotime($args))."'";
-			} else
-				$date='';
-
-
-
-			$sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where `Inventory Transaction Type` like 'Associate' and `Part SKU`=%d  %s  group by `Location Key`  ", $this->data['Part SKU'], $date);
-			//  print $sql;
-			$res=mysql_query($sql);
-			while ($row=mysql_fetch_array($res)) {
-				$associate[]=$row['Location Key'];
-			}
-			foreach ($associate as $location_key) {
-				$sql=sprintf("select `Inventory Transaction Type` from `Inventory Transaction Fact` where (`Inventory Transaction Type` like 'Associate' or `Inventory Transaction Type` like 'Disassociate') and `Part SKU`=%d and `Location Key`=%d %s order by `Date` desc limit 1 ", $this->data['Part SKU'], $location_key, $date);
-				//   print $sql;
-				$res=mysql_query($sql);
-				if ($row=mysql_fetch_array($res)) {
-
-					if ($row['Inventory Transaction Type']=='Associate')
-						$associated[]=$location_key;
-				}
-
-			}
-
-			return $associated;
 			break;
 
 		default:
@@ -3744,125 +3352,6 @@ class Part extends Asset{
 
 
 
-	function remove_image($image_key) {
-
-		$sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`='Part' and `Subject Key`=%d  and `Image Key`=%d", $this->sku, $image_key);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-
-			$sql=sprintf("delete from `Image Bridge` where `Subject Type`='Part' and `Subject Key`=%d  and `Image Key`=%d", $this->sku, $image_key);
-			mysql_query($sql);
-			$this->updated=true;
-
-
-			$number_images=$this->get_number_of_images();
-
-			if ($number_images==0) {
-				$main_image_src='art/nopic.png';
-				$main_image_key=0;
-				$this->data['Part Main Image']=$main_image_src;
-				$this->data['Part Main Image Key']=$main_image_key;
-				$sql=sprintf("update `Part Dimension` set `Part Main Image`=%s ,`Part Main Image Key`=%d where `Part SKU`=%d",
-					prepare_mysql($main_image_src),
-					$main_image_key,
-					$this->sku
-				);
-
-				mysql_query($sql);
-			}else if ($row['Is Principal']=='Yes') {
-
-				$sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='Part' and `Subject Key`=%d  ", $this->sku);
-				$res2=mysql_query($sql);
-				if ($row2=mysql_fetch_assoc($res2)) {
-					$this->update_main_image($row2['Image Key']) ;
-				}
-			}
-
-
-		} else {
-			$this->error=true;
-			$this->msg='image not associated';
-
-		}
-
-
-
-
-
-	}
-
-
-	function update_image_caption($image_key, $value) {
-		$value=_trim($value);
-
-
-
-		$sql=sprintf("update `Image Bridge` set `Image Caption`=%s where  `Subject Type`='Part' and `Subject Key`=%d  and `Image Key`=%d"
-			, prepare_mysql($value)
-			, $this->sku, $image_key);
-		mysql_query($sql);
-		//print $sql;
-		if (mysql_affected_rows()) {
-			$this->new_value=$value;
-			$this->updated=true;
-		} else {
-			$this->msg=_('No change');
-
-		}
-
-	}
-
-
-	function get_main_image_key() {
-
-		return $this->data['Part Main Image Key'];
-	}
-
-
-	function update_main_image($image_key) {
-
-		$sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='Part' and `Subject Key`=%d  and `Image Key`=%d", $this->sku, $image_key);
-		$res=mysql_query($sql);
-		if (!mysql_num_rows($res)) {
-			$this->error=true;
-			$this->msg='image not associated';
-		}
-
-		$sql=sprintf("update `Image Bridge` set `Is Principal`='No' where `Subject Type`='Part' and `Subject Key`=%d  ", $this->sku);
-		mysql_query($sql);
-		$sql=sprintf("update `Image Bridge` set `Is Principal`='Yes' where `Subject Type`='Part' and `Subject Key`=%d  and `Image Key`=%d", $this->sku, $image_key);
-		mysql_query($sql);
-
-
-		$main_image_src='image.php?id='.$image_key.'&size=small';
-		$main_image_key=$image_key;
-
-		$this->data['Part Main Image']=$main_image_src;
-		$this->data['Part Main Image Key']=$main_image_key;
-		$sql=sprintf("update `Part Dimension` set `Part Main Image`=%s ,`Part Main Image Key`=%d where `Part SKU`=%d",
-			prepare_mysql($main_image_src),
-			$main_image_key,
-			$this->sku
-		);
-
-		mysql_query($sql);
-
-		$this->updated=true;
-
-	}
-
-
-	function get_number_of_images() {
-		$number_of_images=0;
-		$sql=sprintf("select count(*) as num from `Image Bridge` where `Subject Type`='Part' and `Subject Key`=%d ", $this->sku);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$number_of_images=$row['num'];
-		}
-		return $number_of_images;
-	}
-
-
 
 	function update_number_transactions() {
 
@@ -4382,8 +3871,8 @@ class Part extends Asset{
 		case 'Part Unit Materials':
 			$label=_('Materials/Ingredients');
 			break;
-		case 'Stor':
-			$label=_('Price');
+		case 'Part Origin Country Code':
+			$label=_('country of origin');
 			break;
 
 

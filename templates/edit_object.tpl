@@ -226,6 +226,9 @@
 	
 	</script>
 	{/if}
+	
+		    {elseif $edit=='country'   } 
+	 
 				{elseif $edit=='telephone'  or $edit=='new_telephone' } 
 	<input  id="{$field.id}" class="input_field telephone_input_field hide" value="" has_been_valid="0"/>
 		<i id="{$field.id}_save_button" class="fa fa-cloud  save {$edit} hide" onclick="save_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i> 
@@ -348,7 +351,11 @@
 		    $('#{$field.id}').on('change', function() {
 		        on_changed_value('{$field.id}', $('#{$field.id}').val())
 		    });
-        </script> 
+		    
+       </script> 
+
+
+
         {elseif $edit=='' } 
             {if $class=='new'}
             <span id="{$field.id}_msg" class="msg"></span> 

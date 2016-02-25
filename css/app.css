@@ -633,6 +633,9 @@ input {
   text-decoration: line-through;
   opacity: .7; }
 
+.invalid_value {
+  padding-left: 5px; }
+
 .padding_left_10 {
   padding-left: 10px; }
 

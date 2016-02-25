@@ -57,6 +57,7 @@ function open_edit_field(object, key, field) {
         })
 
     case 'address':
+     case 'country':
     case 'new_delivery_address':
 
 
@@ -213,7 +214,7 @@ function close_edit_field(field) {
         break;
 
     case 'address':
-
+ case 'country':
 
 
 

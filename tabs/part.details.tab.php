@@ -10,6 +10,7 @@
 */
 
 include_once 'utils/invalid_messages.php';
+include_once 'utils/country_functions.php';
 
 
 $part=$state['_object'];
@@ -193,6 +194,9 @@ $object_fields=array(
 );
 $smarty->assign('object_fields', $object_fields);
 $smarty->assign('state', $state);
+$smarty->assign('preferred_countries', '"'.join('", "', preferred_countries(
+($part->get('Part Origin Country Code')==''?$account->get('Account Country 2 Alpha Code'):$part->get('Part Origin Country Code'))
+)).'"');
 
 $html=$smarty->fetch('edit_object.tpl');
 

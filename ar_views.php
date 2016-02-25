@@ -1822,13 +1822,31 @@ function get_view_position($state) {
 
 
 	case 'inventory':
-		if ( $user->get_number_warehouses()>1 or $user->can_create('warehouses') ) {
+	
+	
+	switch ($state['section']) {
+		case 'inventory':
+			if ( $user->get_number_warehouses()>1 or $user->can_create('warehouses') ) {
 
 			$branch[]=array('label'=>_('(All warehouses)'), 'icon'=>'', 'reference'=>'inventory/all');
 
 		}
-		$branch[]=array('label'=>_('Inventory').' ('._('Parts').')', 'icon'=>'square', 'reference'=>'inventory');
+		$branch[]=array('label'=>_('Inventory').' <span class="id">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'square', 'reference'=>'');
 
+		break;
+		case 'part':
+			if ( $user->get_number_warehouses()>1 or $user->can_create('warehouses') ) {
+
+			$branch[]=array('label'=>_('(All warehouses)'), 'icon'=>'', 'reference'=>'inventory/all');
+
+		}
+		$branch[]=array('label'=>_('Inventory').' <span class="id">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'', 'reference'=>'inventory/'.$state['warehouse']->id);
+		$branch[]=array('label'=>'<span class="id Part_Reference">'.$state['_object']->get('Reference').'</span> (<span class="id">'.$state['_object']->get('SKU').'</span>)' , 'icon'=>'square', 'reference'=>'');
+
+		break;
+		}
+	
+	
 		break;
 
 	case 'websites':
