@@ -199,12 +199,40 @@
 		<span id="{$field.id}_formatted_value" class="{$field.id} formatted_value hide" ondblclick="open_edit_field('{$object_name}','{$state.key}','{$field.id}')">{if isset($field.formatted_value)}{$field.formatted_value}{else}{$field.value}{/if}</span>
 		<span id="{$field.id}_value" class="hide " >{$field.value}</span>
 
-		{if $edit=='string' or $edit=='handle' or $edit=='email' or  $edit=='int_unsigned' or $edit=='smallint_unsigned' or $edit=='mediumint_unsigned' or $edit=='int' or $edit=='smallint' or $edit=='mediumint' or $edit=='anything' or $edit=='numeric' } 
+		{if $edit=='string' or $edit=='handle' or $edit=='dimensions'  or $edit=='email' or  $edit=='int_unsigned' or $edit=='smallint_unsigned' or $edit=='mediumint_unsigned' or $edit=='int' or $edit=='smallint' or $edit=='mediumint' or $edit=='anything' or $edit=='numeric' } 
 		
 	
 		<input id="{$field.id}" class="input_field " value="{$field.value}" has_been_valid="0"/>
 		<span id="{$field.id}_msg" class="msg"></span> 
 		
+		{elseif $edit=='dropdown_select'}
+			
+			<input id="{$field.id}" type="hidden" class=" input_field" value="{$field.value}" has_been_valid="0"/>
+		<input id="{$field.id}_dropdown_select_label"  field="{$field.id}" scope="{$field.scope}" class=" dropdown_select" value="{$field.formatted_value}" has_been_valid="0"/>
+
+		<span id="{$field.id}_msg" class="msg"></span> 
+		<div id="{$field.id}_results_container" class="search_results_container">
+		
+		<table id="{$field.id}_results" border="0"  >
+			<tr class="hide" id="{$field.id}_search_result_template" field="" value="" formatted_value="" onClick="select_dropdown_option(this.getAttribute('field'),this.getAttribute('value'),this.getAttribute('formatted_value'))">
+				<td class="code" ></td>
+				<td style="width:85%" class="label" ></td>
+				
+			</tr>
+		</table>
+	
+	</div>
+		
+		
+		<script>
+		  $("#{$field.id}_dropdown_select_label").on("input propertychange", function(evt) {
+		 
+ var delay = 100;
+        if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
+        delayed_on_change_dropdown_select_field($(this), delay)
+    });
+		</script>
+
 		{elseif $edit=='textarea' } 
 		
 	

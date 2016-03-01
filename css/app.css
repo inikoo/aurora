@@ -359,63 +359,63 @@ input {
           font-size: 80%; }
         #app_main #navigation #header .title img {
           vertical-align: -5%; }
-      #app_main #navigation #header #search_form {
-        float: right;
-        border-left: 1px solid #aaa;
-        margin-left: 4px; }
-        #app_main #navigation #header #search_form #search {
-          height: 20px;
-          border: none;
-          border-botom: 1px solid #ddd;
-          padding-left: 5px;
-          width: 280px; }
-          #app_main #navigation #header #search_form #search::-webkit-input-placeholder {
-            color: #aaa;
-            font-style: italic; }
-          #app_main #navigation #header #search_form #search:-moz-placeholder {
-            color: #aaa;
-            font-style: italic; }
-          #app_main #navigation #header #search_form #search::-moz-placeholder {
-            color: #aaa;
-            font-style: italic; }
-          #app_main #navigation #header #search_form #search:-ms-input-placeholder {
-            color: #aaa;
-            font-style: italic; }
-        #app_main #navigation #header #search_form mark {
-          color: #000;
-          background: none; }
-        #app_main #navigation #header #search_form #results_container {
-          z-index: 100;
-          position: absolute;
-          width: 650px; }
-          #app_main #navigation #header #search_form #results_container #results_container_shifted {
-            position: relative;
-            left: -327px;
-            background: #FFF;
-            width: 100%; }
-            #app_main #navigation #header #search_form #results_container #results_container_shifted.show {
-              border: 1px solid #ccc; }
-            #app_main #navigation #header #search_form #results_container #results_container_shifted table {
-              width: 100%; }
-              #app_main #navigation #header #search_form #results_container #results_container_shifted table tr {
-                cursor: pointer;
-                border-bottom: 1px solid #eee; }
-                #app_main #navigation #header #search_form #results_container #results_container_shifted table tr:last-of-type {
-                  border-bottom: none; }
-              #app_main #navigation #header #search_form #results_container #results_container_shifted table td.label {
-                padding-left: 20px; }
-              #app_main #navigation #header #search_form #results_container #results_container_shifted table tr:hover, #app_main #navigation #header #search_form #results_container #results_container_shifted table tr.selected {
-                background: #edf3f8; }
-        #app_main #navigation #header #search_form #clear_search {
-          position: absolute;
-          top: 5px;
-          right: 40px;
-          z-index: 1000;
-          font-size: 15px;
-          cursor: pointer;
-          line-height: 20px;
-          color: grey;
-          text-decoration: none; }
+
+#search_form {
+  float: right;
+  border-left: 1px solid #aaa;
+  margin-left: 4px; }
+  #search_form #search {
+    height: 20px;
+    border: none;
+    border-botom: 1px solid #ddd;
+    padding-left: 5px;
+    width: 280px; }
+    #search_form #search::-webkit-input-placeholder {
+      color: #aaa;
+      font-style: italic; }
+    #search_form #search:-moz-placeholder {
+      color: #aaa;
+      font-style: italic; }
+    #search_form #search::-moz-placeholder {
+      color: #aaa;
+      font-style: italic; }
+    #search_form #search:-ms-input-placeholder {
+      color: #aaa;
+      font-style: italic; }
+  #search_form mark {
+    color: #000;
+    background: none; }
+  #search_form #clear_search {
+    position: absolute;
+    top: 5px;
+    right: 40px;
+    z-index: 1000;
+    font-size: 15px;
+    cursor: pointer;
+    line-height: 20px;
+    color: grey;
+    text-decoration: none; }
+
+.search_results_container {
+  z-index: 100;
+  position: absolute;
+  width: 650px; }
+  .search_results_container #results_container_shifted {
+    position: relative;
+    left: -327px; }
+  .search_results_container table {
+    border: 1px solid #ccc;
+    background: #FFF;
+    width: 100%; }
+    .search_results_container table tr {
+      cursor: pointer;
+      border-bottom: 1px solid #eee; }
+      .search_results_container table tr:last-of-type {
+        border-bottom: none; }
+    .search_results_container table td.label {
+      padding-left: 20px; }
+    .search_results_container table tr:hover, .search_results_container table tr.selected {
+      background: #edf3f8; }
 
 #tabs {
   margin-top: 2px; }

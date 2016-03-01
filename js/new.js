@@ -38,7 +38,8 @@ function get_form_validation_state(submitting) {
             component_validation = 'potentially_valid'
         }
 
-        if (component_validation == 'invalid' || component_validation == 'potentially_valid') console.log(field + ' ' + component_validation + ' ' + form_validation)
+        //if (component_validation == 'invalid' || component_validation == 'potentially_valid') 
+        
         if (component_validation == 'invalid') {
             form_validation = 'invalid';
         }
@@ -491,3 +492,4 @@ function update_new_address_fields(field, country_code, hide_recipient_fields, a
     })
 
 }
+

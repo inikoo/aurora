@@ -39,7 +39,8 @@ function navigate(e, direction) {
         case 'option':
             navigate_option(e, key_scope.field, direction);
             break;
-
+        case 'dropdown_select':
+            navigate_dropdown_select(e, key_scope.field, direction);
 
         default:
 
@@ -47,6 +48,33 @@ function navigate(e, direction) {
 
     }
 }
+
+function navigate_dropdown_select(e, field, direction) {
+
+    switch (direction) {
+    case 'up':
+        e.preventDefault();
+        var element = $('#' + field + '_results .result.selected').prev()
+        if (element.attr('id') != undefined) {
+            $('#' + field + '_results .result.selected').removeClass('selected');
+            element.addClass('selected');
+        }
+        break;
+
+    case 'down':
+        e.preventDefault();
+        var element = $('#' + field + '_results .result.selected').next()
+        if (element.attr('id') != undefined) {
+            $('#' + field + '_results .result.selected').removeClass('selected');
+            element.addClass('selected');
+        }
+        break;
+
+    default:
+
+    }
+}
+
 
 function navigate_search(e, direction) {
 
@@ -110,6 +138,19 @@ function enter_hit(e) {
                 change_view(view)
             }
             break;
+
+        case 'dropdown_select':
+
+            var field = $("#"+key_scope.field+"_results .result.selected").attr('field')
+            var value = $("#"+key_scope.field+"_results .result.selected").attr('value')
+            var formatted_value = $("#"+key_scope.field+"_results .result.selected").attr('formatted_value')
+
+
+            if (field) {
+                select_dropdown_option(field, value, formatted_value)
+            }
+            break;
+
         case 'option':
         case 'radio_option':
         case 'string':

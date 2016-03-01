@@ -91,6 +91,48 @@ function get_inventory_navigation($data, $smarty, $user, $db, $account) {
 }
 
 
+function get_new_part_navigation($data, $smarty, $user, $db, $account) {
+
+
+
+
+
+
+	$up_button=array('icon'=>'arrow-up', 'title'=>_("Inventory").' ('.$data['warehouse']->get('Code').')', 'reference'=>'inventory/'.$data['warehouse']->id);
+
+
+	$left_buttons=array();
+	$left_buttons[]=$up_button;
+
+
+
+	$right_buttons=array();
+$sections=get_sections('inventory', $data['warehouse']->id);
+	$_section='inventory';
+	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
+
+	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
+	$title=_('New part').' ('._('Warehouse').' <span class="id">'.$data['warehouse']->get('Code').'</span>)';
+
+	$_content=array(
+
+		'sections_class'=>'',
+		'sections'=>$sections,
+
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>_('Search inventory'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+}
+
+
 function get_part_navigation($data, $smarty, $user, $db, $account) {
 
 	global $user, $smarty;
@@ -262,8 +304,8 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
 
 	$right_buttons=array();
 	//$right_buttons[]=array('icon'=>'edit','title'=>_('Edit store'),'reference'=>'store/'.$store->id.'/edit');
-	$sections=get_sections('warehouses', $warehouse_key);
-	$_section='warehouses';
+	$sections=get_sections('inventory', $data['warehouse']->id);
+	$_section='inventory';
 	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
 
 

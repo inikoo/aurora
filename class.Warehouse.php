@@ -144,8 +144,8 @@ class Warehouse extends DB_Table{
 		$values=preg_replace('/,$/', ')', $values);
 		$sql=sprintf("insert into `Warehouse Dimension` %s %s", $keys, $values);
 
-		if (mysql_query($sql)) {
-			$this->id = mysql_insert_id();
+		if ($this->db->exec($sql)) {
+			$this->id=$this->db->lastInsertId();
 			$this->msg=_("Warehouse Added");
 			$this->get_data('id', $this->id);
 			$this->new=true;
@@ -170,7 +170,7 @@ class Warehouse extends DB_Table{
 					prepare_mysql($flag_label)
 				);
 
-				mysql_query($sql);
+				$this->db->exec($sql);
 
 			}
 
@@ -182,61 +182,6 @@ class Warehouse extends DB_Table{
 	}
 
 
-
-
-	function xupdate($data) {
-		foreach ($data as $key =>$value)
-			switch ($key) {
-			case('name'):
-				$name=_trim($value);
-
-				if ($name=='') {
-					$this->msg=_('Wrong warehouse name');
-					$this->update_ok=false;
-					return;
-				}
-
-				if ($name==$this->get($tipo)) {
-					$this->msg=_('Nothing to change');
-					$this->update_ok=false;
-					return;
-				}
-
-				$location=new Warehouse('name', $value);
-				if ($location->id) {
-					$this->msg=_('Another ware house has the same name');
-					$this->update_ok=false;
-					return;
-				}
-				$this->data['name']=$name;
-				$this->msg=_('Warehouse name changed');
-				$this->update_ok=true;
-				break;
-			}
-
-
-	}
-
-
-	function load($key='') {
-		switch ($key) {
-		case('areas'):
-			$sql=sprintf("select * from `Warehouse Area Dimension` where `Warehouse Key`=%d ", $this->id);
-
-			$result =mysql_query($sql);
-			$this->areas=array();
-			while ($row=mysql_fetch_array($result)) {
-				$this->areas[$row['id']]=array(
-					'id'=>$row['`Warehouse Area Key`'],
-					'code'=>$row['Warehouse Area Code'],
-				);
-			}
-			break;
-
-		}
-
-
-	}
 
 
 	function get($key, $data=false) {
@@ -552,6 +497,52 @@ class Warehouse extends DB_Table{
 		}
 
 	}
+
+
+	function create_part($data) {
+		$this->new_part=false;
+
+		$data['editor']=$this->editor;
+
+
+		if (!isset($data['Part From'])) {
+			$data['Part From']=gmdate('Y-m-d H:i:s');
+		}
+
+
+
+
+		$part= new Part('find', $data, 'create');
+
+		if ($part->id) {
+			$this->new_part_msg=$part->msg;
+
+			if ($part->new) {
+				$this->new_part=true;
+
+
+				$sql=sprintf("insert into `Part Warehouse Bridge` (`Part SKU`,`Warehouse Key`) values (%d,%d)", $part->sku, $this->id);
+
+				$this->db->exec($sql);
+
+				return $part;
+			} else {
+				$this->error=true;
+				if ($part->found) {
+					$this->msg=_('Duplicated part');
+				}else {
+					$this->msg='Error '.$part->msg;
+				}
+			}
+			return false;
+		}
+		else {
+			$this->error=true;
+			$this->msg='Error '.$part->msg;
+			return false;
+		}
+	}
+
 
 
 	function get_field_label($field) {

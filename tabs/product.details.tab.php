@@ -12,6 +12,14 @@ include_once 'utils/invalid_messages.php';
 $state['_object']->get_store_data();
 $product=$state['_object'];
 
+if ($product->get('Store Product Family Category Key')) {
+    include_once('class.Category.php');
+	$family=new Category($product->get('Store Product Family Category Key'));
+	$family_label=$family->get('Code').', '.$family->get('Label');
+}else {
+	$family_label='';
+}
+
 
 $linked_fields=$product->get_linked_fields_data();
 
@@ -34,7 +42,7 @@ $object_fields=array(
 
 		)
 	),
-array(
+	array(
 		'label'=>_('Parts'),
 		'show_title'=>true,
 		'fields'=>array(
@@ -49,22 +57,23 @@ array(
 
 		)
 	),
-	
+
 	array(
 		'label'=>_('Family'),
 		'show_title'=>true,
 		'fields'=>array(
-		array(
+			array(
 				'id'=>'Store_Product_Family_Category_Key',
-				'edit'=>'object_select',
+				'edit'=>'dropdown_select',
+				'scope'=>'families',
 				'value'=>htmlspecialchars($product->get('Store Product Family Category Key')),
-				'formatted_value'=>$product->get('Family Category Key'),
-				'label'=>ucfirst($product->get_field_label('Store Product Family Category Key')),
+				'formatted_value'=>$family_label,
+				'label'=>_('Family'),
 				'required'=>true,
-                
+
 
 			),
-		
+
 			array(
 				'id'=>'Store_Product_Label_in_Family',
 				'edit'=>'string',
@@ -82,7 +91,7 @@ array(
 		'label'=>_('Outer'),
 		'show_title'=>true,
 		'fields'=>array(
-		array(
+			array(
 				'id'=>'Store_Product_Outer_Description',
 				'edit'=>'string',
 				'value'=>htmlspecialchars($product->get('Store Product Outer Description')),
@@ -159,7 +168,7 @@ array(
 		'label'=>_('Retail unit'),
 		'show_title'=>true,
 		'fields'=>array(
-	array(
+			array(
 				'id'=>'Product_Unit_Type',
 				'edit'=>'options',
 				'value'=>$product->get('Store Product Unit Type') ,
@@ -196,12 +205,12 @@ array(
 				'required'=>true,
 			),
 
-		
+
 
 		)
 	),
 
-	
+
 );
 
 //print_r($linked_fields);

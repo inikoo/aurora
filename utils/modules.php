@@ -645,6 +645,13 @@ $modules=array(
 
 				)
 			),
+			'product.new'=>array('type'=>'new_object',
+				'tabs'=>array(
+					'product.new'=>array('label'=>_('New product')),
+
+				)
+
+			),
 
 		)
 	),
@@ -972,6 +979,14 @@ $modules=array(
 					),
 					'part.products'=>array('label'=>_('Products'), 'title'=>_('Products'), 'icon'=>'square'),
 				)
+			),
+			
+			'part.new'=>array('type'=>'new_object',
+				'tabs'=>array(
+					'part.new'=>array('label'=>_('New part')),
+
+				)
+
 			),
 			'transactions'=>array(
 				'type'=>'navigation', 'label'=>_('Stock Movements'), 'title'=>_('Stock movements'), 'icon'=>'exchange', 'reference'=>'inventory/transactions',

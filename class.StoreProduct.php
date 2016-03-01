@@ -329,7 +329,7 @@ class StoreProduct extends Asset{
 		$values='';
 		foreach ($this->data as $key=>$value) {
 			$keys.=",`".$key."`";
-			if (in_array($key,array('Store Product Valid To','Store Product Unit Weight','Store Product Outer Weight'))) {
+			if (in_array($key, array('Store Product Valid To', 'Store Product Unit Weight', 'Store Product Outer Weight'))) {
 				$values.=','.prepare_mysql($value, true);
 
 			}else {
@@ -408,8 +408,8 @@ class StoreProduct extends Asset{
 
 
 			break;
-		
-		
+
+
 		case 'Store Product Family Category Key':
 			include_once 'class.Category.php';
 			$family=new Category($value);
@@ -434,6 +434,16 @@ class StoreProduct extends Asset{
 			$this->update_field('Store Product Department Category Key', $departmet_key, 'no_history');
 
 
+			$this->other_fields_updated=array(
+				'Store_Product_Family_Category_Key'=>array(
+					'field'=>'Store_Product_Family_Category_Key',
+					'render'=>true,
+					'value'=>$this->get('Family Category Key'),
+					'formatted_value'=>$family->get('Code').', '.$family->get('Label')
+
+
+				)
+			);
 
 
 

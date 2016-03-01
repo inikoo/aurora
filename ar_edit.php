@@ -100,7 +100,7 @@ default:
 function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 
-	$object=get_object($data['object'], $data['key'],$load_other_data=true);
+	$object=get_object($data['object'], $data['key'], $load_other_data=true);
 
 
 	if (!$object->id) {
@@ -405,7 +405,29 @@ function new_object($account, $db, $user, $editor, $data) {
 	$parent->editor=$editor;
 
 	switch ($data['object']) {
+	case 'Part':
+		include_once 'class.Part.php';
+		$object=$parent->create_part($data['fields_data']);
 
+		if ($parent->new_part) {
+
+			$smarty->assign('object', $object);
+			$smarty->assign('warehouse', $parent);
+
+			$pcard=$smarty->fetch('presentation_cards/part.pcard.tpl');
+			$updated_data=array();
+		}else {
+
+
+			$response=array(
+				'state'=>400,
+				'msg'=>$parent->msg
+
+			);
+			echo json_encode($response);
+			exit;
+		}
+		break;
 	case 'Manufacture_Task':
 		include_once 'class.Manufacture_Task.php';
 		$object=$parent->create_manufacture_task($data['fields_data']);
