@@ -3,16 +3,18 @@
  Copyright (c) 2015, Inikoo
  Version 3.0*/
 
-function validate_field(field, new_value, field_type, required, server_validation_type, parent, parent_key, object, key) {
+function validate_field(field, new_value, field_type, required, server_validation_settings, parent, parent_key, object, key) {
 
     var validation = client_validation(field_type, required, new_value, field)
 
+    
+
+    if (validation.class == 'valid' && server_validation_settings!='') {
+
+    var settings=JSON.parse(server_validation_settings)
 
 
-    if (validation.class == 'valid' && server_validation_type) {
-
-
-        if (server_validation_type == 'check_for_duplicates' && new_value == '') {
+        if (settings.tipo == 'check_for_duplicates' && new_value == '') {
             return validation;
         }
 
@@ -21,7 +23,7 @@ function validate_field(field, new_value, field_type, required, server_validatio
             type: ''
         }
 
-        server_validation(server_validation_type, parent, parent_key, object, key, field, new_value)
+        server_validation(settings, parent, parent_key, object, key, field, new_value)
     }
 
 
@@ -90,7 +92,7 @@ function validate_address(field) {
 
 function client_validation(type, required, value, field) {
 
-    console.log(type + ' ' + required)
+    //console.log(type + ' ' + required)
     var valid_state = {
         class: 'valid',
         type: ''
@@ -498,11 +500,27 @@ function validate_signed_integer(value, max_value) {
 }
 
 
-function server_validation(tipo, parent, parent_key, object, key, field, value) {
+function server_validation(settings, parent, parent_key, object, key, field, value) {
 
+
+   
+   console.log(settings)
+   
+   if(settings.parent!=null){
+    parent=settings.parent;
+   }
+    if(settings.parent_key!=null){
+    parent_key=settings.parent_key;
+   }
+   
+    if(settings.parent_key_field!=null){
+    parent_key=$('#'+settings.parent_key_field).val()
+   }
+   
 
     $("#" + field + '_editor').addClass('waiting')
-    var request = '/ar_validation.php?tipo=' + tipo + '&parent=' + parent + '&parent_key=' + parent_key + '&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value
+    var request = '/ar_validation.php?tipo=' + settings.tipo + '&parent=' + parent + '&parent_key=' + parent_key + '&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value
+   console.log(request)
 
 
     $.getJSON(request, function(data) {

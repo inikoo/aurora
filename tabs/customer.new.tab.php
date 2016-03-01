@@ -88,7 +88,7 @@ $object_fields=array(
 				'edit'=>'email',
 				'value'=>$customer->get('Customer Main Plain Email'),
 				'formatted_value'=>$customer->get('Main Plain Email'),
-				'server_validation'=>'check_for_duplicates',
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 				'label'=>ucfirst($customer->get_field_label('Customer Main Plain Email')),
 				'invalid_msg'=>get_invalid_message('email'),
 				'required'=>true,

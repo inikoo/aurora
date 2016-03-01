@@ -89,7 +89,7 @@ $object_fields=array(
 				'edit'=>'email',
 				'value'=>$customer->get('Customer Main Plain Email'),
 				'formatted_value'=>$customer->get('Main Plain Email'),
-				'server_validation'=>'check_for_duplicates',
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 				'label'=>ucfirst($customer->get_field_label('Customer Main Plain Email')),
 				'invalid_msg'=>get_invalid_message('email'),
 				'required'=>true
@@ -98,7 +98,7 @@ $object_fields=array(
 				'render'=>false,
 				'edit'=>'new_email',
 				'value'=>'',
-				'server_validation'=>'check_for_duplicates',
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 				'formatted_value'=>'',
 				'label'=>ucfirst($customer->get_field_label('Customer Other Email')),
 				'invalid_msg'=>get_invalid_message('email'),
@@ -112,7 +112,7 @@ $object_fields=array(
 				'edit'=>'email',
 				'value'=>'',
 				'formatted_value'=>'',
-				'server_validation'=>'check_for_duplicates',
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 				'label'=>ucfirst($customer->get_field_label('Customer Other Email')).' <i onClick="set_this_as_main(this)" title="'._('Set as main email').'" class="fa fa-star-o very_discret button"></i>',
 				'invalid_msg'=>get_invalid_message('email'),
 				'required'=>false
@@ -293,7 +293,7 @@ if (count($other_emails)>0) {
 			'edit'=>'email',
 			'value'=>$other_email_data['email'],
 			'formatted_value'=>$other_email_data['email'],
-			'server_validation'=>'check_for_duplicates',
+			'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 			'label'=>ucfirst($customer->get_field_label('Customer Other Email')).' <i onClick="set_this_as_main(this)" title="'._('Set as main email').'" class="fa fa-star-o very_discret button"></i>',
 			'required'=>false
 		);

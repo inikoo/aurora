@@ -143,7 +143,7 @@ $object_fields=array(
 				'value'=>$system_user->get('User Handle'),
 				'formatted_value'=>$system_user->get('Handle'),
 				'label'=>_('Login'),
-				'server_validation'=>'check_for_duplicates',
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 				'invalid_msg'=>get_invalid_message('handle'),
 
 

@@ -79,7 +79,7 @@ $object_fields=array(
 				'edit'=>'string',
 				'value'=>$supplier->get('Supplier Code'),
 				'label'=>ucfirst($supplier->get_field_label('Code')),
-				'server_validation'=>'check_for_duplicates',
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 				'invalid_msg'=>get_invalid_message('string'),
 				'type'=>'value'
 			),
@@ -114,7 +114,7 @@ $object_fields=array(
 				'edit'=>'email',
 				'value'=>$supplier->get('Supplier Main Plain Email'),
 				'formatted_value'=>$supplier->get('Main Plain Email'),
-				'server_validation'=>'check_for_duplicates',
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 				'label'=>ucfirst($supplier->get_field_label('Supplier Main Plain Email')),
 				'invalid_msg'=>get_invalid_message('email'),
 				'required'=>true
@@ -123,7 +123,7 @@ $object_fields=array(
 				'render'=>false,
 				'edit'=>'new_email',
 				'value'=>'',
-				'server_validation'=>'check_for_duplicates',
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 				'formatted_value'=>'',
 				'label'=>ucfirst($supplier->get_field_label('Supplier Other Email')),
 				'invalid_msg'=>get_invalid_message('email'),
@@ -137,7 +137,7 @@ $object_fields=array(
 				'edit'=>'email',
 				'value'=>'',
 				'formatted_value'=>'',
-				'server_validation'=>'check_for_duplicates',
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 				'label'=>ucfirst($supplier->get_field_label('Supplier Other Email')).' <i onClick="set_this_as_main(this)" title="'._('Set as main email').'" class="fa fa-star-o very_discret button"></i>',
 				'invalid_msg'=>get_invalid_message('email'),
 				'required'=>false
@@ -352,7 +352,7 @@ if (count($other_emails)>0) {
 			'edit'=>'email',
 			'value'=>$other_email_data['email'],
 			'formatted_value'=>$other_email_data['email'],
-			'server_validation'=>'check_for_duplicates',
+			'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 			'label'=>ucfirst($supplier->get_field_label('Supplier Other Email')).' <i onClick="set_this_as_main(this)" title="'._('Set as main email').'" class="fa fa-star-o very_discret button"></i>',
 			'required'=>false
 		);
