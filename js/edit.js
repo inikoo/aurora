@@ -41,8 +41,13 @@ function open_edit_field(object, key, field) {
     case 'mediumint':
     case 'pin':
     case 'password':
-     case 'dimensions':
+    case 'dimensions':
         $('#' + field).removeClass('hide')
+        $('#' + field).focus()
+        $('#' + field + '_save_button').removeClass('hide')
+        break;
+    case 'dropdown_select':
+        $('#' + field + '_dropdown_select_label').removeClass('hide')
         $('#' + field).focus()
         $('#' + field + '_save_button').removeClass('hide')
         break;
@@ -57,7 +62,7 @@ function open_edit_field(object, key, field) {
         })
 
     case 'address':
-     case 'country':
+    case 'country':
     case 'new_delivery_address':
 
 
@@ -127,7 +132,7 @@ function open_edit_field(object, key, field) {
         $('#' + field + '_save_button').removeClass('hide')
 
         break;
- case 'parts_list':
+    case 'parts_list':
         $('#parts_list').removeClass('hide')
         break;
     default:
@@ -176,13 +181,19 @@ function close_edit_field(field) {
     case 'numeric':
     case 'amount':
     case 'dimensions':
-    
+
 
         $('#' + field).addClass('hide')
 
 
         //$('#' + field + '_editor').removeClass('changed')
         break;
+     case 'dropdown_select':
+        $('#' + field + '_dropdown_select_label').addClass('hide')
+       // $('#' + field + '_save_button').removeClass('hide')
+        break;
+
+ 
     case 'new_email':
         $('#new_email_formatted_value').html('')
         $('#new_email_value').val('')
@@ -214,7 +225,7 @@ function close_edit_field(field) {
         break;
 
     case 'address':
- case 'country':
+    case 'country':
 
 
 
@@ -404,7 +415,7 @@ function on_changed_confirm_value(field, confirm_value) {
 
 function on_changed_value(field, new_value) {
 
-
+    console.log('changed: ' + field)
 
     var object = $('#fields').attr('object');
 
@@ -811,6 +822,11 @@ function save_field(object, key, field) {
             } else if (type == 'radio_option') {
                 $('#' + field + '_options li .current_mark').removeClass('current')
                 $('#' + field + '_option_' + value + ' .current_mark').addClass('current')
+
+
+            } else if (type == 'dropdown_select') {
+                //  $('#' + field + '').removeClass('current')
+                $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
 
 
             } else {
@@ -1418,5 +1434,90 @@ function save_sticky_note() {
 
         }
     })
+
+}
+
+function delayed_on_change_dropdown_select_field(object, timeout) {
+    var field = object.attr('id');
+
+    var field_element = $('#' + field);
+    var new_value = field_element.val()
+
+
+    key_scope = {
+        type: 'dropdown_select',
+        field: field_element.attr('field')
+    };
+
+
+    window.clearTimeout(object.data("timeout"));
+
+    object.data("timeout", setTimeout(function() {
+
+        get_dropdown_select(field, new_value)
+    }, timeout));
+}
+
+
+function get_dropdown_select(dropdown_input, new_value) {
+
+    var scope = $('#' + dropdown_input).attr('scope')
+    var field = $('#' + dropdown_input).attr('field')
+    var request = '/ar_find.php?tipo=find_object&query=' + fixedEncodeURIComponent(new_value) + '&scope=' + scope + '&state=' + JSON.stringify(state)
+
+    $.getJSON(request, function(data) {
+
+
+        if (data.number_results > 0) {
+            $('#' + field + '_results_container').removeClass('hide').addClass('show')
+        } else {
+
+
+
+            $('#' + field + '_results_container').addClass('hide').removeClass('show')
+            $('#' + field).val('')
+            on_changed_value(field, '')
+        }
+
+
+        $("#" + field + "_results .result").remove();
+
+        var first = true;
+
+        for (var result_key in data.results) {
+
+            var clone = $("#" + field + "_search_result_template").clone()
+            clone.prop('id', field + '_result_' + result_key);
+            clone.addClass('result').removeClass('hide')
+            clone.attr('value', data.results[result_key].value)
+            clone.attr('formatted_value', data.results[result_key].formatted_value)
+            clone.attr('field', field)
+            if (first) {
+                clone.addClass('selected')
+                first = false
+            }
+
+            clone.children(".code").html(data.results[result_key].code)
+
+            clone.children(".label").html(data.results[result_key].description)
+
+            $("#" + field + "_results").append(clone)
+
+
+        }
+
+    })
+
+
+}
+
+
+function select_dropdown_option(field, value, formatted_value) {
+
+    $('#' + field + '_dropdown_select_label').val(formatted_value)
+    $('#' + field).val(value)
+    on_changed_value(field, value)
+
+    $('#' + field + '_results_container').addClass('hide').removeClass('show')
 
 }
