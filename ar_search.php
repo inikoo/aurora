@@ -12,6 +12,7 @@
 require_once 'common.php';
 require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
+require_once 'utils/text_functions.php';
 
 
 
@@ -74,6 +75,8 @@ default:
 	exit;
 	break;
 }
+
+
 
 function search_inventory($db, $account, $memcache_ip, $data) {
 
@@ -371,7 +374,7 @@ function search_products($db, $account, $memcache_ip, $data) {
 		if ($number_queries==1) {
 			$q=$queries;
 			if (is_numeric($q)) {
-				$sql=sprintf("select `Store Product Key`,`Store Product Code`,`Store Product Label` from `Store Product Dimension` where true $where_store and `Store Product Key`=%d",
+				$sql=sprintf("select `Store Product Key`,`Store Product Code`,`Store Product Unit Description` from `Store Product Dimension` where true $where_store and `Store Product Key`=%d",
 					$q);
 
 
@@ -396,7 +399,7 @@ function search_products($db, $account, $memcache_ip, $data) {
 
 
 
-			$sql=sprintf("select `Store Product Key`,`Store Product Code`,`Store Product Label` from `Store Product Dimension` where true $where_store and `Store Product Code` like '%s%%' limit 20 ",
+			$sql=sprintf("select `Store Product Key`,`Store Product Code`,`Store Product Unit Description` from `Store Product Dimension` where true $where_store and `Store Product Code` like '%s%%' limit 20 ",
 				$q);
 
 
@@ -427,16 +430,16 @@ function search_products($db, $account, $memcache_ip, $data) {
 
 
 
-			$sql=sprintf("select `Store Product Key`,`Store Product Code`,`Store Product Label` from `Store Product Dimension` where true $where_store and `Store Product Label`  REGEXP '[[:<:]]%s' limit 100 ",
+			$sql=sprintf("select `Store Product Key`,`Store Product Code`,`Store Product Unit Description` from `Store Product Dimension` where true $where_store and `Store Product Unit Description`  REGEXP '[[:<:]]%s' limit 100 ",
 				$q);
 
 			if ($result=$db->query($sql)) {
 				foreach ($result as $row) {
-					if ($row['Store Product Label']==$q)
+					if ($row['Store Product Unit Description']==$q)
 						$candidates[$row['Store Product Key']]=55;
 					else {
 
-						$len_name=strlen($row['Store Product Label']);
+						$len_name=strlen($row['Store Product Unit Description']);
 						$len_q=strlen($q);
 						$factor=$len_q/$len_name;
 						$candidates[$row['Store Product Key']]=50*$factor;
@@ -478,7 +481,7 @@ function search_products($db, $account, $memcache_ip, $data) {
 		}
 		$product_keys=preg_replace('/^,/', '', $product_keys);
 
-		$sql=sprintf("select `Store Code`,`Store Key`,`Store Product Key`,`Store Product Code`,`Store Product Label` from `Store Product Dimension` left join `Store Dimension` S on (`Store Product Store Key`=S.`Store Key`) where `Store Product Key` in (%s)",
+		$sql=sprintf("select `Store Code`,`Store Key`,`Store Product Key`,`Store Product Code`,`Store Product Unit Description` from `Store Product Dimension` left join `Store Dimension` S on (`Store Product Store Key`=S.`Store Key`) where `Store Product Key` in (%s)",
 			$product_keys);
 
 		if ($result=$db->query($sql)) {
@@ -491,7 +494,7 @@ function search_products($db, $account, $memcache_ip, $data) {
 				$results[$row['Store Product Key']]=array(
 					'store'=>$row['Store Code'],
 					'label'=>highlightkeyword(sprintf('%s', $row['Store Product Code']), $queries ),
-					'details'=>highlightkeyword($row['Store Product Label'], $queries ),
+					'details'=>highlightkeyword($row['Store Product Unit Description'], $queries ),
 					'view'=>sprintf('products/%d/%d', $row['Store Key'], $row['Store Product Key'])
 
 
@@ -989,23 +992,7 @@ function search_hr($db, $account, $memcache_ip, $data) {
 }
 
 
-function highlightkeyword($str, $search) {
-	$highlightcolor = "#daa732";
-	$occurrences = substr_count(strtolower($str), strtolower($search));
-	$newstring = $str;
-	$match = array();
 
-	for ($i=0;$i<$occurrences;$i++) {
-		$match[$i] = stripos($str, $search, $i);
-		$match[$i] = substr($str, $match[$i], strlen($search));
-		$newstring = str_replace($match[$i], '[#]'.$match[$i].'[@]', strip_tags($newstring));
-	}
-
-	$newstring = str_replace('[#]', '<mark>', $newstring);
-	$newstring = str_replace('[@]', '</mark>', $newstring);
-	return $newstring;
-
-}
 
 
 ?>

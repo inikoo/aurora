@@ -1014,7 +1014,7 @@ function get_new_customer_navigation($data, $smarty, $user, $db) {
 	$left_buttons[]=$up_button;
 
 
-	$title= '<span class="id ">'._('New Customer').'</span>';
+	$title=_('New Customer').' ('._('Store').' <span class="id">'.$data['store']->get('Code').'</span>)';
 
 
 	$_content=array(

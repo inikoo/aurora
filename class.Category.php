@@ -62,28 +62,32 @@ class Category extends ObjectwithImage {
 
 			break;
 		}
-		$result=mysql_query($sql);
-		//print $sql;
-		if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)  ) {
+		if ($this->data = $this->db->query($sql)->fetch()) {
 			$this->id=$this->data['Category Key'];
 
 			if ($this->data['Category Subject']=='Part') {
 				$this->subject_table_name='Part Category';
 				$sql=sprintf("select * from `Part Category Dimension` where `Part Category Key`=%d", $this->id);
-				//print "$sql\n";
-				$result2=mysql_query($sql);
-				if ($row=mysql_fetch_array($result2, MYSQL_ASSOC)  ) {
-					$this->data=array_merge($this->data, $row);
+				if ($result2=$this->db->query($sql)) {
+					if ($row = $result2->fetch()) {
+						$this->data=array_merge($this->data, $row);
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
 				}
 
 			}elseif ($this->data['Category Subject']=='Family') {
 				$this->subject_table_name='Product Family';
 
 				$sql=sprintf("select * from `Product Family Category Dimension` where `Product Family Category Key`=%d", $this->id);
-				//print "$sql\n";
-				$result2=mysql_query($sql);
-				if ($row=mysql_fetch_array($result2, MYSQL_ASSOC)  ) {
-					$this->data=array_merge($this->data, $row);
+				if ($result2=$this->db->query($sql)) {
+					if ($row = $result2->fetch()) {
+						$this->data=array_merge($this->data, $row);
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
 				}
 
 
@@ -91,22 +95,17 @@ class Category extends ObjectwithImage {
 				$this->subject_table_name='Product';
 
 				$sql=sprintf("select * from `Product Category Dimension` where `Product Category Key`=%d", $this->id);
-				//print "$sql\n";
-				$result2=mysql_query($sql);
-				if ($row=mysql_fetch_array($result2, MYSQL_ASSOC)  ) {
-					$this->data=array_merge($this->data, $row);
-				}
-				/*
-			}elseif ($this->data['Category Subject']=='Customer') {
-				$this->subject_table_name='Customer';
 
-				$sql=sprintf("select * from `Customer Category Dimension` where `Customer Category Key`=%d",$this->id);
-				print "$sql\n";
-				$result2=mysql_query($sql);
-				if ($row=mysql_fetch_array($result2, MYSQL_ASSOC)  ) {
-					$this->data=array_merge($this->data,$row);
+				if ($result2=$this->db->query($sql)) {
+					if ($row = $result2->fetch()) {
+						$this->data=array_merge($this->data, $row);
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
 				}
-*/
+
+
 			}elseif ($this->data['Category Subject']=='Supplier') {
 
 
@@ -114,10 +113,13 @@ class Category extends ObjectwithImage {
 				$this->subject_table_name='Supplier';
 
 				$sql=sprintf("select * from `Supplier Category Dimension` where `Category Key`=%d", $this->id);
-				//print "$sql\n";
-				$result2=mysql_query($sql);
-				if ($row=mysql_fetch_array($result2, MYSQL_ASSOC)  ) {
-					$this->data=array_merge($this->data, $row);
+				if ($result2=$this->db->query($sql)) {
+					if ($row = $result2->fetch()) {
+						$this->data=array_merge($this->data, $row);
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
 				}
 
 
@@ -125,10 +127,13 @@ class Category extends ObjectwithImage {
 				$this->subject_table_name='Supplier';
 
 				$sql=sprintf("select * from `Invoice Category Dimension` where `Invoice Category Key`=%d", $this->id);
-				//print "$sql\n";
-				$result2=mysql_query($sql);
-				if ($row=mysql_fetch_array($result2, MYSQL_ASSOC)  ) {
-					$this->data=array_merge($this->data, $row);
+				if ($result2=$this->db->query($sql)) {
+					if ($row = $result2->fetch()) {
+						$this->data=array_merge($this->data, $row);
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
 				}
 
 			}
@@ -191,25 +196,27 @@ class Category extends ObjectwithImage {
 		}
 
 
-		// print "$sql";
-
-		$result=mysql_query($sql);
-		$num_results=mysql_num_rows($result);
-		if ($num_results==1) {
-			$row=mysql_fetch_array($result, MYSQL_ASSOC);
-			$this->found=true;
-			$this->found_key=$row['Category Key'];
-
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$this->found=true;
+				$this->found_key=$row['Category Key'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
+
 		if ($this->found) {
 			$this->get_data('id', $this->found_key);
+		}else {
+
+			if ($create ) {
+				$this->create($data);
+
+			}
 		}
-
-		if ($create and !$this->found) {
-			$this->create($data);
-
-		}
-
 
 	}
 
@@ -258,20 +265,20 @@ class Category extends ObjectwithImage {
 
 			if ($this->data['Category Subject']=='Invoice') {
 				$sql=sprintf("insert into `Invoice Category Dimension` (`Invoice Category Key`,`Invoice Category Store Key`) values (%d,%d)", $this->id, $this->data['Category Store Key']);
-				mysql_query($sql);
+				$this->db->exec($sql);
 			}
 			elseif ($this->data['Category Subject']=='Supplier') {
 				$sql=sprintf("insert into `Supplier Category Dimension` (`Category Key`) values (%d)", $this->id);
-				mysql_query($sql);
+				$this->db->exec($sql);
 			}elseif ($this->data['Category Subject']=='Part') {
 				$sql=sprintf("insert into `Part Category Dimension` (`Part Category Key`,`Part Category Warehouse Key`) values (%d,%d)", $this->id, $this->data['Category Warehouse Key']);
-				mysql_query($sql);
+				$this->db->exec($sql);
 			}elseif ($this->data['Category Subject']=='Product') {
 				$sql=sprintf("insert into `Product Category Dimension` (`Product Category Key`,`Product Category Store Key`) values (%d,%d)", $this->id, $this->data['Category Store Key']);
-				mysql_query($sql);
+				$this->db->exec($sql);
 			}elseif ($this->data['Category Subject']=='Family') {
 				$sql=sprintf("insert into `Product Family Category Dimension` (`Product Family Category Key`,`Product Family Category Store Key`) values (%d,%d)", $this->id, $this->data['Category Store Key']);
-				mysql_query($sql);
+				$this->db->exec($sql);
 			}
 
 
@@ -474,13 +481,23 @@ class Category extends ObjectwithImage {
 		$category_keys=preg_split('/\>/', preg_replace('/\>$/', '', $this->data['Category Position']));
 
 		$sql=sprintf("select `Category Code`,`Category Key` from `Category Dimension` where `Category Key` in (%s)", join(',', $category_keys));
-		//print $sql;
-		$result=mysql_query($sql);
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-			$category_data[$row['Category Key']]=$row['Category Code'];
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$category_data[$row['Category Key']]=$row['Category Code'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
+
 		$xhtml_tree='';
 		$plain_tree='';
+
+
+
 		foreach ($category_keys as $key) {
 			if (array_key_exists($key, $category_data)) {
 				$xhtml_tree.=sprintf(" <a href='%s?id=%d'>%s</a> &rarr;", $link, $key, $category_data[$key]);
@@ -498,7 +515,7 @@ class Category extends ObjectwithImage {
 			prepare_mysql($this->data['Category Plain Branch Tree']),
 			$this->id
 		);
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 
 
@@ -545,12 +562,20 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		$sql=sprintf("select `Subject Key` from `Category Bridge`  where `Category Key`=%d  ",
 			$this->id
 		);
-		$res=mysql_query($sql);
-		$this->deleting_category=true;
-		while ($row=mysql_fetch_assoc($res)) {
-			$this->disassociate_subject($row['Subject Key']);
 
+		$this->deleting_category=true;
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$this->disassociate_subject($row['Subject Key']);
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
+
 
 
 
@@ -558,25 +583,24 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 		if ($this->data['Category Subject']=='Invoice') {
 			$sql=sprintf('delete from `Invoice Category Dimension` where `Category Key`=%d', $this->id);
-			mysql_query($sql);
+			$this->db->exec($sql);
 		}
 		elseif ($this->data['Category Subject']=='Supplier') {
 			$sql=sprintf('delete from `Supplier Category Dimension` where `Category Key`=%d', $this->id);
-			mysql_query($sql);
+			$this->db->exec($sql);
 		}elseif ($this->data['Category Subject']=='Part') {
 			$sql=sprintf('delete from `Part Category Dimension`  where `Category Key`=%d', $this->id);
-			mysql_query($sql);
+			$this->db->exec($sql);
 		}
 
 
 
+		$this->db->exec($sql_new_deleted_category);
 
 
-		//print $sql_new_deleted_category;
-		mysql_query($sql_new_deleted_category);
-		//print $sql_new_deleted_category;
+
 		$sql=sprintf('delete from `Category Dimension` where `Category Key`=%d', $this->id);
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 		foreach ($parent_keys as $parent_key) {
 			$parent_category=new Category($parent_key);
@@ -617,11 +641,18 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			$subject_key,
 			$this->id
 		);
-		$res=mysql_query($sql);
-		//print $sql;
-		while ($row=mysql_fetch_assoc($res)) {
-			$sub_category_keys_selected[$row['Category Key']]=$row['Category Key'];
+
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$sub_category_keys_selected[$row['Category Key']]=$row['Category Key'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 		return $sub_category_keys_selected;
 	}
 
@@ -637,15 +668,19 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			$category_key
 		);
 
-		$res=mysql_query($sql);
-		while ($row=mysql_fetch_assoc($res)) {
 
-			$this->all_descendants_keys[$row['Category Key']]=$row['Category Key'];
-
-			$this->load_all_descendants_keys($row['Category Key']);
-
-
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$this->all_descendants_keys[$row['Category Key']]=$row['Category Key'];
+				$this->load_all_descendants_keys($row['Category Key']);
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
+
 
 
 
@@ -656,12 +691,17 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		$sql = sprintf("SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d ",
 			$this->id
 		);
-
-		$res=mysql_query($sql);
 		$children_keys=array();
-		while ($row=mysql_fetch_assoc($res)) {
-			$children_keys[$row['Category Key']]=$row['Category Key'];
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$children_keys[$row['Category Key']]=$row['Category Key'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 		return $children_keys;
 
 	}
@@ -674,13 +714,20 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			$this->id
 		);
 		//  print $sql;
-		$res=mysql_query($sql);
-		$children_keys=array();
-		while ($row=mysql_fetch_assoc($res)) {
-			$children_keys[$row['Category Key']]=new Category($row['Category Key']);
+
+		$children_objects=array();
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$children_objects[$row['Category Key']]=new Category($row['Category Key']);
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
 
-		return $children_keys;
+
+
+		return $children_objects;
 
 	}
 
@@ -689,12 +736,20 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		$sql = sprintf("SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d and `Category Show Subject User Interface`='Yes' order by `Category Code` ",
 			$this->id
 		);
-		//  print $sql;
-		$res=mysql_query($sql);
+
+
+
 		$children_keys=array();
-		while ($row=mysql_fetch_assoc($res)) {
-			$children_keys[$row['Category Key']]=new Category($row['Category Key']);
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$children_keys[$row['Category Key']]=new Category($row['Category Key']);
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
 
 		return $children_keys;
 
@@ -706,11 +761,20 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			$this->id
 		);
 		//  print $sql;
-		$res=mysql_query($sql);
+
 		$children_keys=array();
-		while ($row=mysql_fetch_assoc($res)) {
-			$children_keys[$row['Category Key']]=new Category($row['Category Key']);
+
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$children_keys[$row['Category Key']]=new Category($row['Category Key']);
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 
 		return $children_keys;
 
@@ -721,12 +785,19 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		$sql = sprintf("SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d and `Category Show Public New Subject`='Yes' order by `Category Code` ",
 			$this->id
 		);
-		//  print $sql;
-		$res=mysql_query($sql);
+
 		$children_keys=array();
-		while ($row=mysql_fetch_assoc($res)) {
-			$children_keys[$row['Category Key']]=new Category($row['Category Key']);
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$children_keys[$row['Category Key']]=new Category($row['Category Key']);
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 
 		return $children_keys;
 
@@ -739,19 +810,17 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 		$data=array();
-		$result = mysql_query("SHOW COLUMNS FROM `".$this->subject_table_name." Category Dimension`");
-		if (!$result) {
-			echo 'Could not run query: ' . mysql_error();
-			exit;
+
+		$sql=sprintf('show columns from `%s Dimension`', addslashes($this->subject_table_name));
+		foreach ($this->db->query($sql) as $row) {
+			if (!in_array($row['Field'], $this->ignore_fields))
+				$data[$row['Field']]=$row['Default'];
 		}
-		if (mysql_num_rows($result) > 0) {
-			while ($row = mysql_fetch_assoc($result)) {
-				if (!in_array($row['Field'], $this->ignore_fields))
-					$data[$row['Field']]=$row['Default'];
-			}
-		}
-		//print_r($data);
+
 		return $data;
+
+
+
 	}
 
 
@@ -814,27 +883,27 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 		$sql="select `".$field."` as value from  `".$this->subject_table_name." Category Dimension`  where `$key_field`=".$this->id;
 
-		//print "$sql ";
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-			$old_value=$row['value'];
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$old_value=$row['value'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 
 
 		$sql="update `".$this->subject_table_name." Category Dimension` set `".$field."`=".prepare_mysql($value, $null_if_empty)." where `$key_field`=".$this->id;
 
-		//print "$sql\n";
+		$update = $this->db->prepare($sql);
+		$update->execute();
 
-		mysql_query($sql);
-		$affected=mysql_affected_rows();
-		if ($affected==-1) {
-			$this->msg.=' '._('Record can not be updated')."\n";
-			$this->error_updated=true;
-			$this->error=true;
 
-			return;
-		}
-		elseif ($affected==0) {
+
+		$affected=$update->rowCount();
+		if ($affected==0) {
 			$this->data[$field]=$value;
 		}
 		else {
@@ -863,7 +932,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 				$history_key=$this->add_history($history_data);
 				$sql=sprintf("insert into `%s Category History Bridge` values (%d,%d,'No','No','Changes')", $this->subject_table_name, $this->id, $history_key);
-				mysql_query($sql);
+				$this->db->exec($sql);
 
 
 
@@ -882,22 +951,35 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			$this->id,
 			prepare_mysql($this->data['Category Subject'])
 		);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$number_of_children=$row['num'];
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$number_of_children=$row['num'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 		$has_children_other='No';
 		$sql = sprintf("SELECT COUNT(*)  as num  FROM `Category Dimension` WHERE `Category Parent Key`=%d and `Category Subject`=%s and `Is Category Field Other`='Yes' ",
 			$this->id,
 			prepare_mysql($this->data['Category Subject'])
 		);
-		$res=mysql_query($sql);
 
-		if ($row=mysql_fetch_assoc($res)) {
-			if ($row['num']>0) {
-				$has_children_other='Yes';
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				if ($row['num']>0) {
+					$has_children_other='Yes';
+				}
 			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
+
 
 
 
@@ -910,13 +992,23 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 				prepare_mysql($this->data['Category Subject'])
 			);
 
-			$res=mysql_query($sql);
+
 			$max_deep=0;
-			while ($row=mysql_fetch_assoc($res)) {
-				$deep=count(preg_split('/\>/', $row['Category Position']))-2;
-				if ($deep>$max_deep)
-					$max_deep=$deep;
+
+
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$deep=count(preg_split('/\>/', $row['Category Position']))-2;
+					if ($deep>$max_deep)
+						$max_deep=$deep;
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
+
+
+
 		}
 
 		$sql=sprintf("update `Category Dimension` set `Category Children`=%d ,`Category Children Deep`=%d , `Category Children Other`=%s where `Category Key`=%d ",
@@ -925,7 +1017,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			prepare_mysql($has_children_other),
 			$this->id
 		);
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 
 		if ($this->data['Category Branch Type']!='Root') {
@@ -933,13 +1025,13 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 				$sql=sprintf("update `Category Dimension` set `Category Branch Type`='Node' where `Category Key`=%d ",
 					$this->id
 				);
-				mysql_query($sql);
+				$this->db->exec($sql);
 			}else {
 
 				$sql=sprintf("update `Category Dimension` set `Category Branch Type`='Head' where `Category Key`=%d ",
 					$this->id
 				);
-				mysql_query($sql);
+				$this->db->exec($sql);
 			}
 
 
@@ -1056,18 +1148,25 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 
-
+		$assigned_subjects=0;
 		$sql=sprintf("select COUNT(Distinct `Subject Key`)  as num from `Category Bridge`  where `Category Key`=%d  ",
 			$this->id
 		);
-		$res=mysql_query($sql);
-		$assigned_subjects=0;
-		if ($row=mysql_fetch_assoc($res)) {
-			$assigned_subjects=$row['num'];
+
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$assigned_subjects=$row['num'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 		$no_assigned_subjects=$total_subjects-$assigned_subjects;
 
-		mysql_query($sql);
+
 		$sql=sprintf("update `Category Dimension` set  `Category Subjects Not Assigned`=%d  where `Category Root Key`=%d ",
 			$no_assigned_subjects,
 			$this->data['Category Root Key']
@@ -1075,9 +1174,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 		$this->data['Category Subjects Not Assigned']=$no_assigned_subjects;
 
-		//print $sql;
 
-		mysql_query($sql);
+
+		$this->db->exec($sql);
 
 	}
 
@@ -1103,11 +1202,18 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 			$sql="select count(Distinct I.`Invoice Key`) as total from $table   $where  ";
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-				$number_invoices=$row['total'];
+
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$number_invoices=$row['total'];
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
+
+
 
 
 		}
@@ -1321,7 +1427,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 		);
 
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 
 	}
@@ -1342,19 +1448,19 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 		);
-		$result=mysql_query($sql);
 
 
-
-
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-			$sales_data['sold_amount']=$row['sold_amount'];
-
-
-
-
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$sales_data['sold_amount']=$row['sold_amount'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
+
 
 		return $sales_data;
 	}
@@ -1382,14 +1488,20 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 		);
-		$result=mysql_query($sql);
 
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$supplier_category_data["$db_interval Acc Cost"]=$row["cost"];
-			$supplier_category_data["$db_interval Acc Part Sales"]=$row["sold"];
-			$supplier_category_data["$db_interval Acc Profit"]=$row["profit"];
 
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$supplier_category_data["$db_interval Acc Cost"]=$row["cost"];
+				$supplier_category_data["$db_interval Acc Part Sales"]=$row["sold"];
+				$supplier_category_data["$db_interval Acc Profit"]=$row["profit"];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 
 		$sql=sprintf("update `Supplier Category Dimension` set
                      `$db_interval Acc Cost`=%.2f,
@@ -1402,7 +1514,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			, $this->id
 		);
 
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 		//     print "$sql\n";
 
@@ -1416,16 +1528,20 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 			);
-			$result=mysql_query($sql);
 
 
-
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$supplier_category_data["$db_interval Acc 1YB Cost"]=$row["cost"];
-				$supplier_category_data["$db_interval Acc 1YB Part Sales"]=$row["sold"];
-				$supplier_category_data["$db_interval Acc 1YB Profit"]=$row["profit"];
-
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$supplier_category_data["$db_interval Acc 1YB Cost"]=$row["cost"];
+					$supplier_category_data["$db_interval Acc 1YB Part Sales"]=$row["sold"];
+					$supplier_category_data["$db_interval Acc 1YB Profit"]=$row["profit"];
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
+
+
 
 			$sql=sprintf("update `Supplier Category Dimension` set
                          `$db_interval Acc 1YB Cost`=%.2f,
@@ -1437,8 +1553,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 				, $supplier_category_data["$db_interval Acc 1YB Profit"]
 				, $this->id
 			);
-			//print "$sql\n";
-			mysql_query($sql);
+			$this->db->exec($sql);
 
 		}
 
@@ -1456,11 +1571,18 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 		$sql=sprintf("select count(*) as num ,`Part Status` from  `Part Dimension` P left join `Category Bridge` B on (P.`Part SKU`=B.`Subject Key`)  where B.`Category Key`=%d and `Subject`='Part' group by  `Part Status`   ",
 			$this->id);
-		$res=mysql_query($sql);
-		while ($row=mysql_fetch_assoc($res)) {
-			$elements_numbers[$row['Part Status']]=number($row['num']);
 
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$elements_numbers[$row['Part Status']]=number($row['num']);
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 
 		if ($elements_numbers['Not In Use']>0 and $elements_numbers['In Use']==0) {
 			$this->data['Part Category Status`']='NotInUse';
@@ -1473,7 +1595,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			$this->id
 		);
 
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 
 	}
@@ -1498,21 +1620,28 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 								from `Part Dimension` ITF left join `Category Bridge` on (`Part SKU`=`Subject Key` and `Subject`='Part')   where `Category Key`=%d" ,
 			$this->id);
-		$result=mysql_query($sql);
-		//print $sql;
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$this->data["Part Category $db_interval Acc Profit"]=$row['profit'];
-			$this->data["Part Category $db_interval Acc Profit After Storing"]=$row['profit_after_storing'];
-			$this->data["Part Category $db_interval Acc Acquired"]=$row['bought'];
-			$this->data["Part Category $db_interval Acc Sold Amount"]=$row['sold_amount'];
-			$this->data["Part Category $db_interval Acc Sold"]=$row['sold'];
-			$this->data["Part Category $db_interval Acc Provided"]=-1.0*$row['dispatched'];
-			$this->data["Part Category $db_interval Acc Required"]=$row['required'];
-			$this->data["Part Category $db_interval Acc Given"]=$row['given'];
-			$this->data["Part Category $db_interval Acc Broken"]=$row['broken'];
-			$this->data["Part Category $db_interval Acc Lost"]=$row['lost'];
 
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$this->data["Part Category $db_interval Acc Profit"]=$row['profit'];
+				$this->data["Part Category $db_interval Acc Profit After Storing"]=$row['profit_after_storing'];
+				$this->data["Part Category $db_interval Acc Acquired"]=$row['bought'];
+				$this->data["Part Category $db_interval Acc Sold Amount"]=$row['sold_amount'];
+				$this->data["Part Category $db_interval Acc Sold"]=$row['sold'];
+				$this->data["Part Category $db_interval Acc Provided"]=-1.0*$row['dispatched'];
+				$this->data["Part Category $db_interval Acc Required"]=$row['required'];
+				$this->data["Part Category $db_interval Acc Given"]=$row['given'];
+				$this->data["Part Category $db_interval Acc Broken"]=$row['broken'];
+				$this->data["Part Category $db_interval Acc Lost"]=$row['lost'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
+
 
 
 		if ($this->data["Part Category $db_interval Acc Sold Amount"]!=0)
@@ -1550,7 +1679,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 			, $this->id);
 
-		mysql_query($sql);
+		$this->db->exec($sql);
 		//print "$sql\n";
 
 		if ($from_date_1yb) {
@@ -1568,21 +1697,26 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 								from `Part Dimension` ITF left join `Category Bridge` on (`Part SKU`=`Subject Key` and `Subject`='Part')   where `Category Key`=%d" ,
 				$this->id);
-			$result=mysql_query($sql);
-			//print $sql;
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$this->data["Part Category $db_interval Acc 1YB Profit"]=$row['profit'];
-				$this->data["Part Category $db_interval Acc 1YB Profit After Storing"]=$row['profit_after_storing'];
-				$this->data["Part Category $db_interval Acc 1YB Acquired"]=$row['bought'];
-				$this->data["Part Category $db_interval Acc 1YB Sold Amount"]=$row['sold_amount'];
-				$this->data["Part Category $db_interval Acc 1YB Sold"]=$row['sold'];
-				$this->data["Part Category $db_interval Acc 1YB Provided"]=-1.0*$row['dispatched'];
-				$this->data["Part Category $db_interval Acc 1YB Required"]=$row['required'];
-				$this->data["Part Category $db_interval Acc 1YB Given"]=$row['given'];
-				$this->data["Part Category $db_interval Acc 1YB Broken"]=$row['broken'];
-				$this->data["Part Category $db_interval Acc 1YB Lost"]=$row['lost'];
 
+
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$this->data["Part Category $db_interval Acc 1YB Profit"]=$row['profit'];
+					$this->data["Part Category $db_interval Acc 1YB Profit After Storing"]=$row['profit_after_storing'];
+					$this->data["Part Category $db_interval Acc 1YB Acquired"]=$row['bought'];
+					$this->data["Part Category $db_interval Acc 1YB Sold Amount"]=$row['sold_amount'];
+					$this->data["Part Category $db_interval Acc 1YB Sold"]=$row['sold'];
+					$this->data["Part Category $db_interval Acc 1YB Provided"]=-1.0*$row['dispatched'];
+					$this->data["Part Category $db_interval Acc 1YB Required"]=$row['required'];
+					$this->data["Part Category $db_interval Acc 1YB Given"]=$row['given'];
+					$this->data["Part Category $db_interval Acc 1YB Broken"]=$row['broken'];
+					$this->data["Part Category $db_interval Acc 1YB Lost"]=$row['lost'];
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
+
 
 
 			if ($this->data["Part Category $db_interval Acc 1YB Sold Amount"]!=0)
@@ -1620,7 +1754,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 				, $this->id);
 
-			mysql_query($sql);
+			$this->db->exec($sql);
 			//print "$sql\n";
 
 
@@ -1656,7 +1790,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 				, $this->id);
 
-			mysql_query($sql);
+			$this->db->exec($sql);
 			//print "$sql\n";
 
 
@@ -1703,22 +1837,32 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			($to_date?sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)):'')
 
 		);
-		$result=mysql_query($sql);
 
-		//print "$sql\n";
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$invoice_category_data["Invoice Category $db_interval Acc Discount Amount"]=$row["discounts"];
-			$invoice_category_data["Invoice Category $db_interval Acc Invoiced Amount"]=$row["net"];
-			$invoice_category_data["Invoice Category $db_interval Acc Invoices"]=$row["invoices"];
-			$invoice_category_data["Invoice Category $db_interval Acc Refunds"]=$row["refunds"];
-			$invoice_category_data["Invoice Category $db_interval Acc Paid"]=$row["paid"];
-			$invoice_category_data["Invoice Category $db_interval Acc To Pay"]=$row["to_pay"];
 
-			$invoice_category_data["Invoice Category $db_interval Acc Profit"]=$row["profit"];
-			$invoice_category_data["Invoice Category DC $db_interval Acc Invoiced Amount"]=$row["dc_net"];
-			$invoice_category_data["Invoice Category DC $db_interval Acc Discount Amount"]=$row["dc_discounts"];
-			$invoice_category_data["Invoice Category DC $db_interval Acc Profit"]=$row["dc_profit"];
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$invoice_category_data["Invoice Category $db_interval Acc Discount Amount"]=$row["discounts"];
+				$invoice_category_data["Invoice Category $db_interval Acc Invoiced Amount"]=$row["net"];
+				$invoice_category_data["Invoice Category $db_interval Acc Invoices"]=$row["invoices"];
+				$invoice_category_data["Invoice Category $db_interval Acc Refunds"]=$row["refunds"];
+				$invoice_category_data["Invoice Category $db_interval Acc Paid"]=$row["paid"];
+				$invoice_category_data["Invoice Category $db_interval Acc To Pay"]=$row["to_pay"];
+
+				$invoice_category_data["Invoice Category $db_interval Acc Profit"]=$row["profit"];
+				$invoice_category_data["Invoice Category DC $db_interval Acc Invoiced Amount"]=$row["dc_net"];
+				$invoice_category_data["Invoice Category DC $db_interval Acc Discount Amount"]=$row["dc_discounts"];
+				$invoice_category_data["Invoice Category DC $db_interval Acc Profit"]=$row["dc_profit"];
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
+
+
 
 		$sql=sprintf("update `Invoice Category Dimension` set
                      `Invoice Category $db_interval Acc Discount Amount`=%.2f,
@@ -1741,7 +1885,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			, $this->id
 		);
 
-		mysql_query($sql);
+		$this->db->exec($sql);
 		//print "$sql\n\n";
 		$sql=sprintf("update `Invoice Category Dimension` set
                      `Invoice Category DC $db_interval Acc Discount Amount`=%.2f,
@@ -1754,7 +1898,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			, $this->id
 		);
 
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 
 
@@ -1774,16 +1918,25 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 				prepare_mysql($to_1yb)
 			);
 			// print "$sql\n\n";
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$invoice_category_data["Invoice Category $db_interval Acc 1YB Discount Amount"]=$row["discounts"];
-				$invoice_category_data["Invoice Category $db_interval Acc 1YB Invoiced Amount"]=$row["net"];
-				$invoice_category_data["Invoice Category $db_interval Acc 1YB Invoices"]=$row["invoices"];
-				$invoice_category_data["Invoice Category $db_interval Acc 1YB Profit"]=$row["profit"];
-				$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Invoiced Amount"]=$row["dc_net"];
-				$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Discount Amount"]=$row["dc_discounts"];
-				$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Profit"]=$row["dc_profit"];
+
+
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$invoice_category_data["Invoice Category $db_interval Acc 1YB Discount Amount"]=$row["discounts"];
+					$invoice_category_data["Invoice Category $db_interval Acc 1YB Invoiced Amount"]=$row["net"];
+					$invoice_category_data["Invoice Category $db_interval Acc 1YB Invoices"]=$row["invoices"];
+					$invoice_category_data["Invoice Category $db_interval Acc 1YB Profit"]=$row["profit"];
+					$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Invoiced Amount"]=$row["dc_net"];
+					$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Discount Amount"]=$row["dc_discounts"];
+					$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Profit"]=$row["dc_profit"];
+
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
+
+
 
 			$sql=sprintf("update `Invoice Category Dimension` set
                          `Invoice Category $db_interval Acc 1YB Discount Amount`=%.2f,
@@ -1798,7 +1951,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 				, $this->id
 			);
 
-			mysql_query($sql);
+			$this->db->exec($sql);
 			// print "$sql\n";
 			$sql=sprintf("update `Invoice Category Dimension` set
                          `Invoice Category DC $db_interval Acc 1YB Discount Amount`=%.2f,
@@ -1811,7 +1964,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 				, $this->id
 			);
 			// print "$sql\n";
-			mysql_query($sql);
+			$this->db->exec($sql);
 		}
 
 
@@ -1819,11 +1972,22 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 	function get_other_categories() {
+
+		$other_data=array();
+
 		$sql=sprintf("select * from `Category Dimension` where `Is Category Field Other`='Yes' and `Category Subject`='Customer'");
-		$result=mysql_query($sql);
-		while ($row=mysql_fetch_assoc($result)) {
-			$other_data[$row['Category Parent Key']]=$row['Category Key'];
+
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$other_data[$row['Category Parent Key']]=$row['Category Key'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 
 		return $other_data;
 	}
@@ -1837,10 +2001,14 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			$this->id
 		);
 
-		//print $sql;
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($result)) {
-			$other_value=$row['other_value'];
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$other_value=$row['other_value'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
 
 
@@ -1859,7 +2027,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 		);
 		//print $sql;
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 	}
 
@@ -1873,10 +2041,18 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			$subject_key,
 			$this->id);
 		//print $sql;
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($result)) {
-			$number_of_children=$row['number_of_children'];
+
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$number_of_children=$row['number_of_children'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 		return $number_of_children;
 	}
 
@@ -1889,10 +2065,17 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 			$this->id);
 		//print $sql;
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($result)) {
-			$children_key_is_other_value=$row['Category Key'];
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$children_key_is_other_value=$row['Category Key'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 		return $children_key_is_other_value;
 	}
 
@@ -1905,10 +2088,17 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 			$this->id);
 		//print $sql;
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($result)) {
-			$children_key_is_other_value=$row['Category Key'];
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$children_key_is_other_value=$row['Category Key'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 		return $children_key_is_other_value;
 	}
 
@@ -1940,15 +2130,23 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 				prepare_mysql($this->data['Category Subject']),
 				$subject_key
 			);
-			$res=mysql_query($sql);
+
 			$return_value=false;
-			while ($row=mysql_fetch_assoc($res)) {
 
-				$head_category=new Category($row['Category Head Key']);
-				if ($head_category->disassociate_subject($subject_key))
-					$return_value=true;
 
+			if ($result=$this->db->query($sql)) {
+				foreach ($result as $row) {
+
+					$head_category=new Category($row['Category Head Key']);
+					if ($head_category->disassociate_subject($subject_key))
+						$return_value=true;
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
+
+
 			$this->get_data('id', $this->id);
 			return $return_value;
 
@@ -1960,9 +2158,14 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			prepare_mysql($this->data['Category Subject']),
 			$subject_key
 		);
-		mysql_query($sql);
-		$deleted= mysql_affected_rows();
 
+
+		$del = $this->db->prepare($sql);
+		$del->execute();
+
+
+
+$deleted=$del->rowCount();
 
 		if ($deleted) {
 
@@ -1993,11 +2196,15 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 				$details=_('Customer').': <a href="customer.php?id='.$customer->id.'">'.$customer->data['Customer Name'].'</a> ('.$customer->data['Customer Main Location'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']).' ('.$this->data['Category Label'].')';
 				break;
 			case('Product'):
-				include_once 'class.Product.php';
+				include_once 'class.StoreProduct.php';
 
-				$product=new Product('pid', $subject_key);
-				$abstract=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']);
-				$details=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> ('.$product->data['Product Name'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']).' ('.$this->data['Category Label'].')';
+				$product=new StoreProduct($subject_key);
+				
+				$abstract=sprintf(_('Product %s disassociated from category %s'),$product->get('Code'),$this->get('Code'));
+				$details='';
+				//$abstract=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']);
+				//$details=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> ('.$product->data['Product Name'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']).' ('.$this->data['Category Label'].')';
+				
 				break;
 
 
@@ -2035,7 +2242,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 					$history_key
 				);
 				// print $sql;
-				mysql_query($sql);
+				$this->db->exec($sql);
 				break;
 			case('Product'):
 				break;
@@ -2054,9 +2261,10 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 					prepare_mysql($this->data['Category Subject']),
 					$subject_key
 				);
-				mysql_query($sql);
+				$del = $this->db->prepare($sql);
+				$del->execute();
 
-				if (mysql_affected_rows()) {
+				if ($del->rowCount()) {
 					$parent_category=new Category($parent_key);
 
 					$parent_category->update_number_of_subjects();
@@ -2072,28 +2280,47 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 					prepare_mysql($this->data['Category Subject']),
 					$subject_key
 				);
-				$res=mysql_query($sql);
-				while ($row=mysql_fetch_assoc($res)) {
 
 
-					$category=new Category($row['Category Key']);
-					foreach ($category->get_parent_keys() as $parent_key) {
-						$sql=sprintf("insert into `Category Bridge` values (%d,%s,%d, NULL,%d)",
-							$parent_key,
-							prepare_mysql($category->data['Category Subject']),
-							$subject_key,
-							$subject_key
-						);
-						mysql_query($sql);
-						if (mysql_affected_rows()) {
-							$parent_category=new Category($parent_key);
-							$parent_category->update_number_of_subjects();
-							$parent_category->update_subjects_data();
 
+				if ($result=$this->db->query($sql)) {
+					foreach ($result as $row) {
+
+
+
+						$category=new Category($row['Category Key']);
+						foreach ($category->get_parent_keys() as $parent_key) {
+							$sql=sprintf("insert into `Category Bridge` values (%d,%s,%d, NULL,%d)",
+								$parent_key,
+								prepare_mysql($category->data['Category Subject']),
+								$subject_key,
+								$subject_key
+							);
+
+							$insert = $this->db->prepare($sql);
+							$insert->execute();
+
+
+
+							if ($insert->rowCount()) {
+								$parent_category=new Category($parent_key);
+								$parent_category->update_number_of_subjects();
+								$parent_category->update_subjects_data();
+
+							}
 						}
-					}
 
+
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
 				}
+
+
+
+
+
 
 			}
 
@@ -2109,12 +2336,20 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 	function is_subject_associated($subject_key) {
 		$sql=sprintf("select `Subject Key` from `Category Bridge` where `Category Key`=%d and `Subject Key`=%d ", $this->id, $subject_key);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			return true;
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				return true;
+			}else {
+				return false;
+			}
 		}else {
-			return false;
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
+
 	}
 
 
@@ -2180,9 +2415,14 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 				case('Product'):
 					include_once 'class.Product.php';
 
-					$product=new Product('pid', $subject_key);
-					$abstract=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']);
-					$details=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> ('.$product->data['Product Name'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']).' ('.$this->data['Category Label'].')';
+					$product=new StoreProduct( $subject_key);
+					
+					
+					$abstract=sprintf(_('Product %s associated with category %s'),$product->get('Code'),$this->get('Code'));
+				$details='';
+				
+					//$abstract=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']);
+					//$details=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> ('.$product->data['Product Name'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']).' ('.$this->data['Category Label'].')';
 					break;
 				default:
 					$abstract='todo';
@@ -2216,7 +2456,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 						$history_key
 					);
 					// print $sql;
-					mysql_query($sql);
+					$this->db->exec($sql);
 					break;
 				case('Product'):
 					break;
@@ -2270,18 +2510,23 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 				prepare_mysql($this->data['Category Subject']),
 				$subject_key
 			);
-			$res=mysql_query($sql);
-
-			while ($row=mysql_fetch_assoc($res)) {
 
 
 
-				$other_category=new Category($row['Category Key']);
-				$other_category->editor=$this->editor;
-				$other_category->disassociate_subject($subject_key);
+			if ($result=$this->db->query($sql)) {
+				foreach ($result as $row) {
 
-
+					$other_category=new Category($row['Category Key']);
+					$other_category->editor=$this->editor;
+					$other_category->disassociate_subject($subject_key);
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
+
+
+
 
 			return $this->associate_subject($subject_key, true, $other_value);
 
@@ -2382,7 +2627,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 				$history_key,
 				prepare_mysql($type)
 			);
-			mysql_query($sql);
+			$this->db->exec($sql);
 			break;
 		case('Supplier'):
 			$sql=sprintf("insert into  `Supplier Category History Bridge` values (%d,%d,%s)",
@@ -2390,7 +2635,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 				$history_key,
 				prepare_mysql($type)
 			);
-			mysql_query($sql);
+			$this->db->exec($sql);
 			break;
 		case('Customer'):
 			$sql=sprintf("insert into  `Customer Category History Bridge` values (%d,%d,%d,%s)",
@@ -2399,7 +2644,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 				$history_key,
 				prepare_mysql($type)
 			);
-			mysql_query($sql);
+			$this->db->exec($sql);
 			break;
 		case('Product'):
 			$sql=sprintf("insert into  `Product Category History Bridge` values (%d,%d,%d,%s)",
@@ -2408,7 +2653,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 				$history_key,
 				prepare_mysql($type)
 			);
-			mysql_query($sql);
+			$this->db->exec($sql);
 			break;
 		case('Family'):
 			$sql=sprintf("insert into  `Product Family Category History Bridge` values (%d,%d,%d,%s)",
@@ -2417,7 +2662,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 				$history_key,
 				prepare_mysql($type)
 			);
-			mysql_query($sql);
+			$this->db->exec($sql);
 			break;
 		}
 	}

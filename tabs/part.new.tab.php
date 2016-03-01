@@ -2,30 +2,37 @@
 /*
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created: 9 October 2015 at 12:43:25 CEST, Malaga Spain
- Copyright (c) 2015, Inikoo
+ Created: 25 February 2016 at 19:04:00 GMT+8 Kuala Lumpur , Malaysia
+ Copyright (c) 2016, Inikoo
 
  Version 3
 
 */
 
+
 include_once 'utils/invalid_messages.php';
-include_once 'utils/country_functions.php';
 
 
-$part=$state['_object'];
+$part=new Part(0);
 
 $options_Packing_Group=array(
 	'None'=>_('None'), 'I'=>'I', 'II'=>'II', 'III'=>'III'
 );
 
 
+$options_yn=array(
+	'Yes'=>_('Yes'), 'No'=>_('No')
+);
+
+
+
+asort($options_yn);
+
 $object_fields=array(
 	array(
 		'label'=>_('Id'),
 		'show_title'=>true,
 		'fields'=>array(
-
 			array(
 				'id'=>'Part_Reference',
 				'edit'=>'string',
@@ -33,7 +40,9 @@ $object_fields=array(
 				'formatted_value'=>$part->get('Reference'),
 				'label'=>ucfirst($part->get_field_label('Part Reference')),
 				'required'=>true,
-				'server_validation'=>'check_for_duplicates'
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
+
+				'type'=>'value'
 			),
 
 
@@ -41,6 +50,7 @@ $object_fields=array(
 
 		)
 	),
+
 	array(
 		'label'=>_('Stock unit'),
 		'show_title'=>true,
@@ -52,7 +62,7 @@ $object_fields=array(
 				'formatted_value'=>$part->get('Unit Description'),
 				'label'=>ucfirst($part->get_field_label('Part Unit Description')),
 				'required'=>true,
-
+				'type'=>'value'
 
 
 			),
@@ -64,7 +74,10 @@ $object_fields=array(
 				'formatted_value'=>$part->get('Package Weight') ,
 				'label'=>ucfirst($part->get_field_label('Part Package Weight')),
 				'invalid_msg'=>get_invalid_message('numeric'),
-				'required'=>true,
+				'required'=>false,
+				'placeholder'=>_('Kg'),
+
+				'type'=>'value'
 			),
 			array(
 				'id'=>'Part_Package_Dimensions',
@@ -73,8 +86,9 @@ $object_fields=array(
 				'formatted_value'=>$part->get('Package Dimensions') ,
 				'label'=>ucfirst($part->get_field_label('Part Package Dimensions')),
 				'invalid_msg'=>get_invalid_message('string'),
-				'required'=>true,
-				'placeholder'=>_('L x W x H (in cm)')
+				'required'=>false,
+				'placeholder'=>_('L x W x H (in cm)'),
+				'type'=>'value'
 			),
 
 
@@ -85,8 +99,8 @@ $object_fields=array(
 				'formatted_value'=>$part->get('Tariff Code') ,
 				'label'=>ucfirst($part->get_field_label('Part Tariff Code')),
 				'invalid_msg'=>get_invalid_message('string'),
-				'required'=>true,
-
+				'required'=>false,
+				'type'=>'value'
 
 			),
 			array(
@@ -96,7 +110,8 @@ $object_fields=array(
 				'formatted_value'=>$part->get('Duty Rate') ,
 				'label'=>ucfirst($part->get_field_label('Part Duty Rate')),
 				'invalid_msg'=>get_invalid_message('string'),
-				'required'=>true,
+				'required'=>false,
+				'type'=>'value'
 
 			)
 
@@ -150,14 +165,14 @@ $object_fields=array(
 				'required'=>false
 			)
 		)
-			
-			
 
 
 
 
-		),
-	
+
+
+	),
+
 	array(
 		'label'=>_('Components'),
 		'show_title'=>true,
@@ -171,7 +186,7 @@ $object_fields=array(
 				'label'=>ucfirst($part->get_field_label('Part Materials')),
 				'required'=>false
 			),
-			
+
 			array(
 				'id'=>'Part_Origin_Country_Code',
 				'edit'=>'country',
@@ -180,41 +195,32 @@ $object_fields=array(
 				'label'=>ucfirst($part->get_field_label('Part Origin Country Code')),
 				'required'=>false
 			),
-			
-		)
-			
-			
-
-
-
-		)	,
-		array(
-		'label'=>_('Operations'),
-		'show_title'=>true,
-		'class'=>'edit_fields',
-		'fields'=>array(
-			array(
-
-				'id'=>'delete_part',
-				'class'=>'new',
-				'value'=>'',
-				'label'=>'<i class="fa fa-lock button" style="margin-right:20px"></i> <span class="disabled">'._('Delete part').' <i class="fa fa-trash new_button link"></i></span>',
-				'reference'=>''
-			),
 
 		)
-		
-	),
-	
+
+
+
+
+
+	)
 
 
 );
-$smarty->assign('object_fields', $object_fields);
 $smarty->assign('state', $state);
-$smarty->assign('preferred_countries', '"'.join('", "', preferred_countries(
-($part->get('Part Origin Country Code')==''?$account->get('Account Country 2 Alpha Code'):$part->get('Part Origin Country Code'))
-)).'"');
+$smarty->assign('object', $part);
 
-$html=$smarty->fetch('edit_object.tpl');
+
+$smarty->assign('object_name', $part->get_object_name());
+
+
+$smarty->assign('object_fields', $object_fields);
+//$smarty->assign('new_object_label', _('View new employee'));
+//$smarty->assign('new_object_request','employee/__key__');
+
+
+
+//$smarty->assign('js_code', file_get_contents('js/employee.new.js'));
+
+$html=$smarty->fetch('new_object.tpl');
 
 ?>

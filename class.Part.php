@@ -23,7 +23,7 @@ class Part extends Asset{
 	public $warehouse_key=1;
 	public $locale='en_GB';
 
-	function __construct($a1, $a2=false) {
+	function __construct($arg1, $arg2=false, $arg3=false) {
 
 		global $db;
 		$this->db=$db;
@@ -33,13 +33,25 @@ class Part extends Asset{
 			'Part Key'
 		);
 
-		if (is_numeric($a1) and !$a2) {
-			$this->get_data('id', $a1);
-		} else if (($a1=='new' or $a1=='create') and is_array($a2) ) {
-			$this->msg=$this->create($a2);
+		if (is_numeric($arg1) and !$arg2) {
+			$this->get_data('id', $arg1);
+			return;
+		}
 
-		} else
-			$this->get_data($a1, $a2);
+
+		if (preg_match('/^find/i', $arg1)) {
+
+			$this->find($arg2, $arg3);
+			return;
+		}
+
+		if (preg_match('/^create/i', $arg1)) {
+			$this->create($arg2);
+			return;
+		}
+
+
+		$this->get_data($arg1, $arg2);
 
 	}
 
@@ -57,6 +69,64 @@ class Part extends Asset{
 		if ($this->data = $this->db->query($sql)->fetch()) {
 			$this->id=$this->data['Part SKU'];
 			$this->sku=$this->data['Part SKU'];
+		}
+
+
+
+	}
+
+
+	function find($raw_data, $options) {
+
+
+
+		if (isset($raw_data['editor'])) {
+			foreach ($raw_data['editor'] as $key=>$value) {
+
+				if (array_key_exists($key, $this->editor))
+					$this->editor[$key]=$value;
+
+			}
+		}
+
+
+		$create='';
+		if (preg_match('/create/i', $options)) {
+			$create='create';
+		}
+
+
+		$data=$this->base_data();
+		foreach ($raw_data as $key=>$value) {
+			if (array_key_exists($key, $data)) {
+				$data[$key]=_trim($value);
+			}
+		}
+
+
+
+		$sql=sprintf("select `Part SKU` from `Part Dimension` where `Part Reference`=%s", prepare_mysql($data['Part Reference']));
+
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$this->found=true;
+				$this->found_key=$row['Part SKU'];
+				$this->get_data('id', $this->found_key);
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+		if ($create and !$this->found) {
+
+
+
+
+			$this->create($raw_data);
+
 		}
 
 
@@ -110,25 +180,19 @@ class Part extends Asset{
 
 		$sql=sprintf("insert into `Part Dimension` %s %s", $keys, $values);
 		//print $sql;
-		if (mysql_query($sql)) {
-			$this->id = mysql_insert_id();
+	
+		if ($this->db->exec($sql)) {
+			$this->id=$this->db->lastInsertId();
 			$this->sku =$this->id ;
 			$this->new=true;
 
-			$warehouse_key=1;
-			if (array_key_exists('Warehouse Key', $data) and is_numeric($data['Warehouse Key'])  and  $data['Warehouse Key']>0) {
-				$warehouse_key=$data['Warehouse Key'];
-			}
-
-			$sql=sprintf("insert into `Part Warehouse Bridge` values (%d,%d)", $this->sku, $warehouse_key);
-			//print "$sql\n";
-			mysql_query($sql);
+			
 
 			$this->get_data('id', $this->id);
 			$data_for_history=array(
 				'Action'=>'created',
 				'History Abstract'=>_('Part Created'),
-				'History Details'=>_('Part')." ".$this->get_sku()." (".$this->data['Part Unit Description'].")"._('Created')
+				'History Details'=>_('Part')." ".$this->get('SKU')." (".$this->data['Part Unit Description'].")"._('Created')
 			);
 
 			$this->update_main_state();
@@ -168,8 +232,7 @@ class Part extends Asset{
 			, prepare_mysql($this->data['Part Main State'])
 			, $this->id
 		);
-		mysql_query($sql);
-		//print "$sql\n";
+		$this->db->exec($sql);
 
 	}
 
@@ -918,12 +981,15 @@ class Part extends Asset{
 		list($got, $result)=$this->get_asset_common($key, $args);
 		if ($got)return $result;
 
+		if (!$this->id)
+			return;
+
 
 
 
 		switch ($key) {
-		
-		
+
+
 		case 'Origin Country Code':
 			if ($this->data['Part Origin Country Code']) {
 				include_once 'class.Country.php';
@@ -934,13 +1000,13 @@ class Part extends Asset{
 			}
 
 			break;
-			
-			
+
+
 		case 'Package Weight':
 			return weight($this->data['Part Package Weight']);
 
-			
-			
+
+
 			break;
 		case 'SKU':
 			return sprintf("sku%05d", $this->sku);

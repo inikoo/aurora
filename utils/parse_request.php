@@ -996,6 +996,12 @@ function parse_request($_data, $db) {
 											$key=$view_path[4];
 											$parent='part';
 
+										}elseif($view_path[4]=='new'){
+										$module='products';
+											$section='product.new';
+											$object='product';
+											$parent_key=$key;
+											$parent='part';
 										}
 
 									}
@@ -1003,7 +1009,9 @@ function parse_request($_data, $db) {
 								}
 
 							}
-
+                            elseif($view_path[2]=='new'){
+                                $section='part.new';
+                            }
 
 
 

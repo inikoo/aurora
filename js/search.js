@@ -41,9 +41,9 @@ function search(query) {
         console.log(data)
 
         if (data.number_results > 0) {
-            $('#results_container_shifted').addClass('show')
+            $('#results_container_shifted').removeClass('hide')
         } else {
-            $('#results_container_shifted').removeClass('show')
+            $('#results_container_shifted').addClass('hide')
 
         }
 

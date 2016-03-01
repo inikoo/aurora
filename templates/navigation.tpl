@@ -25,13 +25,13 @@
 		{$_content.title}
 	</span>
  
-<div id="search_form" style="position:relative;{if !$_content.search.show}display:none{/if}">
+<div id="search_form" class="search_form" style="position:relative;{if !$_content.search.show}display:none{/if}">
 	<input id="search" placeholder="{$_content.search.placeholder}"> <div id="clear_search" class="hide" ><i onclick="clear_search()" class="fa fa-times "></i></div>
 	<div class="square_button right">
 		<i class="fa fa-search fa-fw"></i> 
 	</div>
-	<div id="results_container" >
-		<div id="results_container_shifted">
+	<div id="results_container" class="search_results_container" >
+		<div id="results_container_shifted" class="hide">
 		<table id="results" border="0" >
 			<tr class="hide" id="search_result_template" view="" onClick="change_view(this.getAttribute('view'))">
 				<td class="label" ></td>
