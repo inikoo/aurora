@@ -28,7 +28,7 @@ $object_fields=array(
 				'formatted_value'=>$category->get('Code'),
 				'label'=>ucfirst($category->get_field_label('Category Code')),
 				'invalid_msg'=>get_invalid_message('string'),
-				'server_validation'=>'check_for_duplicates',
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 			),
 				array(
 				'edit'=>'string',

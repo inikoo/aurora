@@ -27,7 +27,7 @@ $object_fields=array(
 				'label'=>ucfirst($warehouse->get_field_label('Warehouse Code')),
 				'invalid_msg'=>get_invalid_message('string'),
 				'required'=>true,
-				'server_validation'=>'check_for_duplicates',
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 			),
 			array(
 				'edit'=>'string',

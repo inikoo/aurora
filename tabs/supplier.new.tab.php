@@ -40,7 +40,7 @@ $object_fields=array(
 				'edit'=>'string',
 				'value'=>$supplier->get('Supplier Code'),
 				'label'=>ucfirst($supplier->get_field_label('Code')),
-				'server_validation'=>'check_for_duplicates',
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 				'invalid_msg'=>get_invalid_message('string'),
 				'type'=>'value'
 			),
@@ -77,7 +77,7 @@ $object_fields=array(
 				'edit'=>'email',
 				'value'=>$supplier->get('Supplier Main Plain Email'),
 				'formatted_value'=>$supplier->get('Main Plain Email'),
-				'server_validation'=>'check_for_duplicates',
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 				'label'=>ucfirst($supplier->get_field_label('Supplier Main Plain Email')),
 				'invalid_msg'=>get_invalid_message('email'),
 				'required'=>false,

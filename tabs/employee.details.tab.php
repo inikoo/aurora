@@ -92,7 +92,7 @@ $object_fields=array(
 				'value'=>$employee->get('Staff ID'),
 				'label'=>ucfirst($employee->get_field_label('Staff ID')),
 				'invalid_msg'=>get_invalid_message('smallint_unsigned'),
-				'server_validation'=>'check_for_duplicates',
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 				'required'=>false
 			),
 			array(
@@ -101,7 +101,7 @@ $object_fields=array(
 				'edit'=>'string',
 				'value'=>$employee->get('Staff Alias'),
 				'label'=>ucfirst($employee->get_field_label('Staff Alias')),
-				'server_validation'=>'check_for_duplicates',
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 				'invalid_msg'=>get_invalid_message('string'),
 			),
 
@@ -143,7 +143,7 @@ $object_fields=array(
 				'value'=>$employee->get('Staff Official ID'),
 				'label'=>ucfirst($employee->get_field_label('Staff Official ID')),
 				'invalid_msg'=>get_invalid_message('string'),
-				'server_validation'=>'check_for_duplicates',
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 				'required'=>false
 			),
 			array(
@@ -153,7 +153,7 @@ $object_fields=array(
 				'value'=>$employee->get('Staff Email'),
 				'formatted_value'=>$employee->get('Email'),
 				'label'=>ucfirst($employee->get_field_label('Staff Email')),
-				'server_validation'=>'check_for_duplicates',
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 				'invalid_msg'=>get_invalid_message('email'),
 			),
 			array(
@@ -330,7 +330,7 @@ if ($employee->get('Staff User Key')) {
 				'value'=>$employee->get('Staff User Handle'),
 				'formatted_value'=>$employee->get('User Handle'),
 				'label'=>ucfirst($employee->get_field_label('Staff User Handle')),
-				'server_validation'=>'check_for_duplicates',
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 				'invalid_msg'=>get_invalid_message('handle'),
 			),
 

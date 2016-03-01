@@ -40,7 +40,7 @@ $object_fields=array(
 				'label'=>ucfirst($store->get_field_label('Store Code')),
 				'invalid_msg'=>get_invalid_message('string'),
 				'required'=>true,
-				'server_validation'=>'check_for_duplicates',
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 
 
 

@@ -43,7 +43,7 @@ $object_fields=array(
 				'value'=>$manufacture_task->get('Manufacture Task Code'),
 				'formatted_value'=>$manufacture_task->get('Task Code'),
 				'label'=>ucfirst($manufacture_task->get_field_label('Manufacture Task Code')),
-				'server_validation'=>'check_for_duplicates',
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 				'type'=>'value'
 
 			),
@@ -54,7 +54,7 @@ $object_fields=array(
 				'value'=>$manufacture_task->get('Manufacture Task Name'),
 				'formatted_value'=>$manufacture_task->get('Task Name'),
 				'label'=>ucfirst($manufacture_task->get_field_label('Manufacture Task Name')),
-				'server_validation'=>'check_for_duplicates',
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 				'type'=>'value'
 
 			),
