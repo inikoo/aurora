@@ -62,6 +62,35 @@
 		<input id="{$field.id}" class="input_field hide" value="{$field.value}" has_been_valid="0" {if isset($field.placeholder)}placeholder="{$field.placeholder}"{/if} />
 		<i id="{$field.id}_save_button" class="fa fa-cloud save {$edit} hide" onclick="save_this_field(this)"></i> 
 		<span id="{$field.id}_msg" class="msg"></span> 
+		{elseif $edit=='dropdown_select'  } 
+		
+		
+			<input id="{$field.id}" type="hidden" class=" input_field" value="{$field.value}" has_been_valid="0"/>
+		<input id="{$field.id}_dropdown_select_label" class="hide" field="{$field.id}" scope="{$field.scope}" class=" dropdown_select" value="{$field.formatted_value}" has_been_valid="0"/>
+
+		<span id="{$field.id}_msg" class="msg"></span> 
+		<i id="{$field.id}_save_button" class="fa fa-cloud save {$edit} hide" onclick="save_this_field(this)"></i> 
+		<div id="{$field.id}_results_container" class="search_results_container">
+		
+		<table id="{$field.id}_results" border="0"  >
+			<tr class="hide" id="{$field.id}_search_result_template" field="" value="" formatted_value="" onClick="select_dropdown_option(this.getAttribute('field'),this.getAttribute('value'),this.getAttribute('formatted_value'))">
+				<td class="code" ></td>
+				<td style="width:85%" class="label" ></td>
+				
+			</tr>
+		</table>
+	
+	</div>
+		
+		
+		<script>
+		  $("#{$field.id}_dropdown_select_label").on("input propertychange", function(evt) {
+		 
+ var delay = 100;
+        if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
+        delayed_on_change_dropdown_select_field($(this), delay)
+    });
+		</script>
 		
 		{elseif $edit=='working_hours'  } 
 		{include file="working_hours.edit.tpl" field=$field working_hours=$working_hours } 
