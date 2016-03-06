@@ -282,5 +282,33 @@ div{padding-right:10px;
 
 }
 
+tr.deleted_tr td:not(.inmmune){text-decoration: line-through;color:red;opacity: .5;
+img {background: red;opacity: 1}
+.tint {
+	position: relative;
+	float: left;
+}
+
+.tint:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: rgba(255,0,0, 0.25);
+	-moz-transition: background .3s linear;
+	-webkit-transition: background .3s linear;
+	-o-transition: background .3s linear;
+	transition: background .3s linear;
+}
+
+
+
+}
+tr.deleting_tr{opacity: .5}
+
+
 
 

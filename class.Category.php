@@ -12,17 +12,22 @@
  Version 2.0
 */
 include_once 'class.Node.php';
+include_once 'trait.ImageSubject.php';
+include_once 'trait.AttachmentSubject.php';
+include_once 'trait.NotesSubject.php';
 
 
-include_once 'class.Image.management.ext.php';
 
 
 
-class Category extends ObjectwithImage {
 
+class Category extends DB_Table{
+	use ImageSubject, NotesSubject, AttachmentSubject;
 
 
 	function Category($a1, $a2=false, $a3=false) {
+
+
 
 		global $db;
 		$this->db=$db;
@@ -2165,7 +2170,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 
-$deleted=$del->rowCount();
+		$deleted=$del->rowCount();
 
 		if ($deleted) {
 
@@ -2199,12 +2204,12 @@ $deleted=$del->rowCount();
 				include_once 'class.StoreProduct.php';
 
 				$product=new StoreProduct($subject_key);
-				
-				$abstract=sprintf(_('Product %s disassociated from category %s'),$product->get('Code'),$this->get('Code'));
+
+				$abstract=sprintf(_('Product %s disassociated from category %s'), $product->get('Code'), $this->get('Code'));
 				$details='';
 				//$abstract=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']);
 				//$details=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> ('.$product->data['Product Name'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']).' ('.$this->data['Category Label'].')';
-				
+
 				break;
 
 
@@ -2416,11 +2421,11 @@ $deleted=$del->rowCount();
 					include_once 'class.Product.php';
 
 					$product=new StoreProduct( $subject_key);
-					
-					
-					$abstract=sprintf(_('Product %s associated with category %s'),$product->get('Code'),$this->get('Code'));
-				$details='';
-				
+
+
+					$abstract=sprintf(_('Product %s associated with category %s'), $product->get('Code'), $this->get('Code'));
+					$details='';
+
 					//$abstract=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']);
 					//$details=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> ('.$product->data['Product Name'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']).' ('.$this->data['Category Label'].')';
 					break;

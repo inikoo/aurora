@@ -12,8 +12,9 @@
  Version 2.0
 */
 
-//require_once 'class.Name.php';
+
 require_once 'class.User.php';
+include_once 'trait.AttachmentSubject.php';
 
 class Staff extends DB_Table{
 

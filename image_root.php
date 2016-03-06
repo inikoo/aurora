@@ -62,8 +62,13 @@ if ($result=$db->query($sql)) {
 			else
 				echo  $row['Image Small Data'] ;
 		}elseif ($size=='thumbnail' or $size=='tiny') {
-			echo  $row['Image Thumbnail Data'];
-
+			if ($row['Image Thumbnail Data']) {
+				echo  $row['Image Thumbnail Data'];
+			} elseif ($row['Image Small Data']) {
+				echo  $row['Image Small Data'];
+			}else {
+				echo  $row['Image Data'];
+			}
 		}else {
 			echo $row['Image Data'];
 		}

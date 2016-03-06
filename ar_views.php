@@ -78,8 +78,10 @@ case 'views':
 		break;
 	case 'part':
 		include_once 'class.Part.php';
-		$_parent=new Part($state['parent_key']);
+				include_once 'class.Warehouse.php';
 
+		$_parent=new Part($state['parent_key']);
+$warehouse=new Warehouse($state['current_warehouse']);
 
 		break;
 	case 'website':
@@ -888,6 +890,10 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case ('part.new'):
 			return get_new_part_navigation($data, $smarty, $user, $db, $account, $account);
 			break;	
+		case ('part.image'):
+			return get_part_image_navigation($data, $smarty, $user, $db, $account);
+			break;	
+			
 		case ('transactions'):
 			return get_transactions_navigation($data, $smarty, $user, $db, $account);
 			break;
@@ -1831,7 +1837,7 @@ function get_view_position($state) {
 		case 'inventory':
 			if ( $user->get_number_warehouses()>1 or $user->can_create('warehouses') ) {
 
-			$branch[]=array('label'=>_('(All warehouses)'), 'icon'=>'', 'reference'=>'inventory/all');
+			$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'inventory/all');
 
 		}
 		$branch[]=array('label'=>_('Inventory').' <span class="id">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'th-large', 'reference'=>'');
@@ -1840,17 +1846,30 @@ function get_view_position($state) {
 		case 'part':
 			if ( $user->get_number_warehouses()>1 or $user->can_create('warehouses') ) {
 
-			$branch[]=array('label'=>_('(All warehouses)'), 'icon'=>'', 'reference'=>'inventory/all');
+			$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'inventory/all');
 
 		}
 		$branch[]=array('label'=>_('Inventory').' <span class="id">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'th-large', 'reference'=>'inventory/'.$state['warehouse']->id);
 		$branch[]=array('label'=>'<span class="id Part_Reference">'.$state['_object']->get('Reference').'</span> (<span class="id">'.$state['_object']->get('SKU').'</span>)' , 'icon'=>'square', 'reference'=>'');
 
 		break;
+		
+		case 'part.image':
+			if ( $user->get_number_warehouses()>1 or $user->can_create('warehouses') ) {
+
+			$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'inventory/all');
+
+		}
+		$branch[]=array('label'=>_('Inventory').' <span class="id">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'th-large', 'reference'=>'inventory/'.$state['warehouse']->id);
+		$branch[]=array('label'=>'<span class="id Part_Reference">'.$state['_parent']->get('Reference').'</span> (<span class="id">'.$state['_parent']->get('SKU').'</span>)' , 'icon'=>'square', 'reference'=>'inventory/'.$state['warehouse']->id.'/part/'.$state['_parent']->sku);
+			$branch[]=array('label'=>_('Image'), 'icon'=>'camera-retro', 'reference'=>'');
+
+		break;
+		
 		case 'part.new':
 			if ( $user->get_number_warehouses()>1 or $user->can_create('warehouses') ) {
 
-			$branch[]=array('label'=>_('(All warehouses)'), 'icon'=>'', 'reference'=>'inventory/all');
+			$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'inventory/all');
 
 		}
 		$branch[]=array('label'=>_('Inventory').' <span class="id">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'th-large', 'reference'=>'inventory/'.$state['warehouse']->id);
@@ -1869,7 +1888,7 @@ function get_view_position($state) {
 		case 'warehouse':
 			if ( $user->get_number_warehouses()>1 or $user->can_create('warehouses') ) {
 
-			$branch[]=array('label'=>_('(All warehouses)'), 'icon'=>'', 'reference'=>'warehouses');
+			$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'warehouses');
 
 		}
 		$branch[]=array('label'=>_('warehouse').' <span class="id Warehouse_Code">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'map', 'reference'=>'');
@@ -1878,7 +1897,7 @@ function get_view_position($state) {
 		case 'part':
 			if ( $user->get_number_warehouses()>1 or $user->can_create('warehouses') ) {
 
-			$branch[]=array('label'=>_('(All warehouses)'), 'icon'=>'', 'reference'=>'inventory/all');
+			$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'inventory/all');
 
 		}
 		$branch[]=array('label'=>_('Inventory').' <span class="id">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'th-large', 'reference'=>'inventory/'.$state['warehouse']->id);

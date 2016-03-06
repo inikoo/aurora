@@ -144,6 +144,11 @@ function get_object($object_name, $key,$load_other_data=false) {
 		require_once "class.Timeseries.php";
 		$object=new Timeseries($key);
 		break;
+		
+	case 'image.subject':
+		require_once "class.Image.php";
+		$object=new Image('image_bridge_key',$key);
+		break;	
 	default:
 		exit('need to complete E1 '.$object_name);
 		break;

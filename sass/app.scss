@@ -745,13 +745,15 @@ right connector from last child*/
  .width_20{width:20px}
  .width_50{width:50px}
 
- .o{width:100px}
+ .width_100{width:100px}
  .width_150{width:150px}
  .width_200{width:200px}
  .width_250{width:250px}
  .width_300{width:300px}
  .width_350{width:350px}
  .width_400{width:400px}
+ .width_500{width:400px}
+ .width_600{width:400px}
 
 #table{
  .icon_container{ i {display:inline}}
@@ -802,7 +804,7 @@ path.ema {
 @import 'edit_object';
 @import 'new_object';
 @import 'sticky_note';
-
+@import 'upload_image';
 
 
 .adr{

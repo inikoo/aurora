@@ -19,7 +19,7 @@ function get_part_showcase($data,$smarty,$user,$db) {
 		return "";
 	}
 
-
+/*
 	$images=$part->get_images_slidesshow();
 
 	if (count($images)>0) {
@@ -31,7 +31,7 @@ function get_part_showcase($data,$smarty,$user,$db) {
 
 	$smarty->assign('main_image', $main_image);
 	$smarty->assign('images', $images);
-
+*/
 	
 
 	$sql=sprintf("select `Category Label`,`Category Code`,`Category Key` from `Category Dimension` where `Category Key`=%d ",

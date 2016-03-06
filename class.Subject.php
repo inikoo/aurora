@@ -10,9 +10,15 @@
 
 */
 include_once 'class.DB_Table.php';
+include_once 'trait.ImageSubject.php';
+include_once 'trait.AttachmentSubject.php';
+include_once 'trait.NotesSubject.php';
+
+
 
 
 class Subject extends DB_Table {
+	use ImageSubject,NotesSubject,AttachmentSubject;
 
 
 	function get_name() {

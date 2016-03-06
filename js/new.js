@@ -157,13 +157,7 @@ function save_new_object(object, upload_file) {
 
 
         var request = $.ajax({
-            //url: "/ar_edit.php",
-            //dataType: 'script',
-            //cache: false,
-            //contentType: false,
-            //processData: false,
-            //data: form_data,                       
-            //type: 'post'
+
             url: "/ar_edit.php",
             data: form_data,
             processData: false,
