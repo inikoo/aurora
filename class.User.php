@@ -515,7 +515,7 @@ class User extends DB_Table {
 	}
 
 
-	function update_field_switcher($field, $value, $options='',$metadata='') {
+	function update_field_switcher($field, $value, $options='', $metadata='') {
 
 
 		if (is_string($value))
@@ -1091,7 +1091,8 @@ class User extends DB_Table {
 
 	function get($key) {
 
-		//print $key;
+		if (!$this->id)
+			return;
 
 
 		switch ($key) {
@@ -2309,7 +2310,7 @@ class User extends DB_Table {
 					$this->id,
 					prepare_mysql($fields)
 				);
-				
+
 				$this->db->exec($sql);
 
 			}
