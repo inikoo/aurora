@@ -7,6 +7,8 @@ require_once 'conf/key.php';
 include_once 'utils/i18n.php';
 
 require_once 'utils/general_functions.php';
+require_once 'utils/system_functions.php';
+
 require_once 'utils/detect_agent.php';
 require_once "utils/aes.php";
 
@@ -37,8 +39,13 @@ mysql_query("SET time_zone='+0:00'");
 */
 
 $account=new Account($db);
-date_default_timezone_set($account->data['Account Timezone']) ;
-define("TIMEZONE",$account->data['Account Timezone']);
+
+
+//exit;
+
+setTimezone($account->get('Timezone'));
+
+//define("TIMEZONE",$account->data['Account Timezone']);
 
 require_once 'utils/modules.php';
 

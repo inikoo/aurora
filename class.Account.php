@@ -32,9 +32,18 @@ class Account extends DB_Table{
 
 		$sql=sprintf("select * from `Account Dimension` where `Account Key`=1 ");
 
-		if ($this->data = $this->db->query($sql)->fetch()) {
-			$this->id=1;
+
+		if ($result=$this->db->query($sql)) {
+			if ($this->data = $result->fetch()) {
+				$this->id=1;
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
+
 	}
 
 
@@ -102,6 +111,12 @@ class Account extends DB_Table{
 
 
 	function get($key, $data=false) {
+
+		if (!$this->id)
+			return;
+
+
+
 		switch ($key) {
 
 		case 'National Employment Code Label':
@@ -131,7 +146,7 @@ class Account extends DB_Table{
 	}
 
 
-	protected function update_field_switcher($field, $value, $options='',$metadata='') {
+	protected function update_field_switcher($field, $value, $options='', $metadata='') {
 
 
 		switch ($field) {
@@ -292,12 +307,12 @@ class Account extends DB_Table{
 
 
 
-        if( !array_key_exists('Supplier Code',$data)  or $data['Supplier Code']==''  ){
-            $this->error=true;
-            $this->msg='error, no supplier code';
-          
-            return;
-        }
+		if ( !array_key_exists('Supplier Code', $data)  or $data['Supplier Code']==''  ) {
+			$this->error=true;
+			$this->msg='error, no supplier code';
+
+			return;
+		}
 
 
 		$address_fields=array(
