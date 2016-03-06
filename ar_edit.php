@@ -77,6 +77,23 @@ case 'upload_attachment':
 	upload_attachment($account, $db, $user, $editor, $data, $smarty);
 	break;
 
+case 'upload_images':
+
+	$data=prepare_values($_REQUEST, array(
+			'object'=>array('type'=>'string'),
+			'key'=>array('type'=>'key'),
+		));
+
+	upload_images($account, $db, $user, $editor, $data, $smarty);
+	break;
+case 'delete_image':
+	$data=prepare_values($_REQUEST, array(
+			'image_bridge_key'=>array('type'=>'key'),
+		));
+
+	delete_image($account, $db, $user, $editor, $data, $smarty);
+	break;
+
 case 'new_object':
 
 	$data=prepare_values($_REQUEST, array(
@@ -744,6 +761,216 @@ function upload_attachment($account, $db, $user, $editor, $data, $smarty) {
 
 
 
+
+
+}
+
+
+
+function upload_images($account, $db, $user, $editor, $data, $smarty) {
+
+	include_once 'class.Image.php';
+
+
+
+	$object=get_object($data['object'], $data['key']);
+	$object->editor=$editor;
+
+
+	if (!$object->id) {
+		$msg= 'object key not found';
+		$response= array('state'=>400, 'msg'=>$msg);
+		echo json_encode($response);
+		exit;
+	}
+
+
+
+	if (empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD']) && strtolower($_SERVER['REQUEST_METHOD']) == 'post') { //catch file overload error...
+		$postMax = ini_get('post_max_size'); //grab the size limits...
+		$msg= sprintf(_("File can not be attached, please note files larger than %s will result in this error!, let's us know, an we will increase the size limits"), $postMax);
+		$response= array('state'=>400, 'msg'=>$msg, 'key'=>'attach');
+		echo json_encode($response);
+		exit;
+
+	}
+
+	if (empty($_FILES) ) {
+		$msg= '_FILES array empty';
+		$response= array('state'=>400, 'msg'=>_("Image can't be uploaded").", ".$msg);
+		echo json_encode($response);
+		exit;
+
+	}
+
+	$errors=0;
+	$error_msg=array();
+	$uploads=0;
+
+	foreach ($_FILES['files']['name'] as $file_key=>$name) {
+
+
+
+		$error=$_FILES['files']['error'][$file_key];
+		$size=$_FILES['files']['size'][$file_key];
+		$tmp_name=$_FILES['files']['tmp_name'][$file_key];
+		$type=$_FILES['files']['type'][$file_key];
+
+		if ($error) {
+			$msg=parse_upload_file_error_msg($error);
+
+			$response= array('state'=>400, 'msg'=>$msg, 'key'=>'attach');
+			echo json_encode($response);
+			exit;
+		}
+
+		if ($size==0) {
+			$msg= _("This file seems that is empty, have a look and try again").'.';
+
+
+			$response= array('state'=>400, 'msg'=>$msg, 'key'=>'attach');
+			echo json_encode($response);
+			exit;
+
+		}
+
+
+
+		$data['fields_data']['Filename']=$tmp_name;
+		$data['fields_data']['Attachment File Original Name']=$name;
+
+		$image_data=array(
+			'Upload Data'=>array('tmp_name'=>$tmp_name, 'type'=>$type),
+			'Image Filename'=>$name,
+
+		);
+
+		$image=$object->add_image($image_data);
+
+
+		if ($object->error) {
+
+
+			$errors++;
+
+			$error_msg[]=$object->msg;
+
+		}
+		else {
+			$uploads++;
+
+
+
+		}
+
+
+
+
+
+
+	}
+
+	if ($uploads>0) {
+		$msg='<i class="fa fa-check"></i> '._('Success');
+	}else {
+		$msg='<i class="fa fa-exclamation-circle"></i>';
+	}
+
+	$response=array(
+		'state'=>200,
+		'msg'=>$msg,
+		'errors'=>$errors,
+		'error_msg'=>$error_msg,
+		'uploads'=>$uploads,
+		'number_images'=>$object->get_number_images(),
+		'main_image_key'=>$object->get_main_image_key()
+
+	);
+
+	echo json_encode($response);
+
+
+
+}
+
+
+function delete_image($account, $db, $user, $editor, $data, $smarty) {
+
+	include_once 'class.Image.php';
+
+
+	$sql=sprintf('select `Image Subject Object`,`Image Subject Object Key`,`Image Subject Image Key` from `Image Subject Bridge` where `Image Subject Key`=%d ', $data['image_bridge_key']);
+	if ($result=$db->query($sql)) {
+		if ($row = $result->fetch()) {
+
+			$object=get_object($row['Image Subject Object'], $row['Image Subject Object Key']);
+			$object->editor=$editor;
+
+			if (!$object->id) {
+				$msg= 'object key not found';
+				$response= array('state'=>400, 'msg'=>$msg);
+				echo json_encode($response);
+				exit;
+			}
+
+			$object->delete_image( $data['image_bridge_key']);
+
+			$response= array(
+				'state'=>200,
+				'msg'=>_('Image deleted'),
+				'number_images'=>$object->get_number_images(),
+				'main_image_key'=>$object->get_main_image_key()
+
+			);
+			echo json_encode($response);
+			exit;
+
+		}else {
+			$msg=_('Image not found');
+			$response= array('state'=>400, 'msg'=>$msg);
+			echo json_encode($response);
+			exit;
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
+function parse_upload_file_error_msg($file_data_error) {
+
+	if ($file_data_error===UPLOAD_ERR_INI_SIZE) {
+		$msg=sprintf(_('file exceeds the upload max filesize (%s)'), ini_get('upload_max_filesize'));
+
+	}elseif ($file_data_error===UPLOAD_ERR_FORM_SIZE) {
+		$msg=_('The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form');
+
+	}elseif ($file_data_error===UPLOAD_ERR_PARTIAL) {
+		$msg=_('The uploaded file was only partially uploaded');
+
+	}elseif ($file_data_error===UPLOAD_ERR_NO_FILE) {
+		$msg=_('No file was uploaded');
+
+	}else {
+
+		$msg=sprintf(_('File could not be attached, error code %s'), $file_data_error);
+
+
+
+	}
 
 
 }

@@ -206,10 +206,22 @@ abstract class DB_Table {
 		elseif (preg_match('/^custom_field_customer/i', $field)) {
 			$field1=preg_replace('/^custom_field_customer_/', '', $field);
 			$sql=sprintf("select `Custom Field Key` from `Custom Field Dimension` where `Custom Field Name`=%s", prepare_mysql($field1));
-			$res=mysql_query($sql);
-			$r=mysql_fetch_assoc($res);
 
-			$sql=sprintf("select `%s` as value from `Customer Custom Field Dimension` where `Customer Key`=%d", $r['Custom Field Key'], $table_key);
+			$field_key='Error';
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$field_key=$r['Custom Field Key'];
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+
+
+
+
+			$sql=sprintf("select `%s` as value from `Customer Custom Field Dimension` where `Customer Key`=%d", $field_key, $table_key);
 		}
 		else {
 
@@ -621,55 +633,9 @@ abstract class DB_Table {
 
 
 
-	function add_note($note, $details='', $date=false, $deletable='No', $customer_history_type='Notes', $author=false, $subject=false, $subject_key=false) {
 
 
-		list($ok, $note, $details)=$this->prepare_note($note, $details);
-		if (!$ok) {
-			return;
-		}
-		$history_data=array(
-			'History Abstract'=>$note,
-			'History Details'=>$details,
-			'Action'=>'created',
-			'Direct Object'=>'Note',
-			'Prepostion'=>'on',
-			'Indirect Object'=>$this->table_name,
-			'Indirect Object Key'=>(($this->table_name=='Product' or $this->table_name=='Supplier Product')  ?$this->pid:$this->id)
-		);
-		if ($author) {
-			$history_data['Author Name']=$author;
-		}
-		if ($subject) {
-			$history_data['Subject']=$subject;
-			$history_data['Subject Key']=$subject_key;
-		}
-
-		if ($date!='')
-			$history_data['Date']=$date;
-
-
-		$history_key=$this->add_subject_history($history_data, $force_save=true, $deletable, $customer_history_type, $this->table_name, $this->id);
-
-		$this->updated=true;
-		$this->new_value=$history_key;
-	}
-
-
-	function edit_note_strikethrough($note_key, $value) {
-
-		$sql=sprintf("update `%s History Bridge` set  `Strikethrough`=%s    where `History Key`=%d and `%s Key`=%d",
-			addslashes($this->table_name),
-			prepare_mysql($value),
-			$note_key,
-			addslashes($this->table_name),
-			$this->id
-		);
-
-		$this->db->exec($sql);
-		$this->updated=true;
-
-	}
+	
 
 
 	function add_subject_history($history_data, $force_save=true, $deletable='No', $type='Changes', $table_name, $table_key) {
@@ -691,306 +657,6 @@ abstract class DB_Table {
 	}
 
 
-	function add_attachment($raw_data) {
-		$data=array(
-			'file'=>$raw_data['Filename']
-		);
-
-		$attach=new Attachment('find', $data, 'create');
-
-
-		$subject_key=$this->id;
-		$subject_key=$this->get_main_id();
-
-		if ($this->table_name=='Product Family') {
-			$subject='Family';
-		}elseif ($this->table_name=='Product Department') {
-			$subject='Department';
-		}else {
-
-			$subject=$this->get_object_name();
-		}
-
-
-
-		if ($attach->id) {
-
-
-			$sql=sprintf("insert into `Attachment Bridge` (`Attachment Key`,`Subject`,`Subject Key`,`Attachment File Original Name`,`Attachment Caption`,`Attachment Subject Type`) values (%d,%s,%d,%s,%s,%s)",
-				$attach->id,
-				prepare_mysql($this->get_object_name()),
-				$this->get_main_id(),
-				prepare_mysql($raw_data['Attachment File Original Name']),
-				prepare_mysql($raw_data['Attachment Caption'], false),
-				prepare_mysql($raw_data['Attachment Subject Type'])
-
-
-			);
-			$this->db->exec($sql);
-
-			$subject_bridge_key=$this->db->lastInsertId();
-
-			if (!$subject_bridge_key) {
-
-				$this->error=true;
-				$this->msg=_('File already attached');
-				return $attach;
-			}
-			$attach->editor=$this->editor;
-			$history_data=array(
-				'History Abstract'=>_('File attached'),
-				'History Details'=>'',
-				'Action'=>'created',
-			);
-			$attach->add_subject_history($history_data, true, 'No', 'Changes', 'Attachment Bridge', $subject_bridge_key);
-
-
-			$attach->get_subject_data($subject_bridge_key);
-
-
-
-
-		}
-		else {
-			$this->error;
-			$this->msg=$attach->msg;
-		}
-
-
-		return $attach;
-	}
-
-
-	function prepare_note($note, $details) {
-		$note=_trim($note);
-		if ($note=='') {
-			$this->msg=_('Empty note');
-			return array(0, 0, 0);
-		}
-
-
-		if ($details=='') {
-
-
-			$details='';
-			if (strlen($note)>1000) {
-				$words=preg_split('/\s/', $note);
-				$len=0;
-				$note='';
-				$details='';
-				foreach ($words as $word) {
-					$len+=strlen($word);
-					if ($note=='')
-						$note=$word;
-					else {
-						if ($len<1000)
-							$note.=' '.$word;
-						else
-							$details.=' '.$word;
-
-					}
-				}
-
-
-
-			}
-
-		}
-		return array(1, $note, $details);
-
-	}
-
-
-	function get_number_attachments_formatted() {
-		$attachments=0;
-
-		if ($this->table_name=='Product' or $this->table_name=='Supplier Product')
-			$subject_key=$this->pid;
-		else
-			$subject_key=$this->id;
-
-		if ($this->table_name=='Product Family') {
-			$subject='Family';
-		}elseif ($this->table_name=='Product Department') {
-			$subject='Department';
-		}else {
-
-			$subject=$this->table_name;
-		}
-
-
-		$sql=sprintf('select count(*) as num from `Attachment Bridge`where `Subject`=%s and `Subject Key`=%d',
-			prepare_mysql($subject),
-			$subject_key
-		);
-
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$attachments=number($row['num']);
-		}
-
-		return $attachments;
-
-	}
-
-
-	function get_attachments_data() {
-
-		include_once 'utils/units_functions.php';
-
-		if ($this->table_name=='Product' or $this->table_name=='Supplier Product')
-			$subject_key=$this->pid;
-		else
-			$subject_key=$this->id;
-
-		if ($this->table_name=='Product Family') {
-			$subject='Family';
-		}elseif ($this->table_name=='Product Department') {
-			$subject='Department';
-		}else {
-
-			$subject=$this->table_name;
-		}
-
-
-		$sql=sprintf('select A.`Attachment Key`,`Attachment MIME Type`,`Attachment Type`,`Attachment Caption`,`Attachment Public`,`Attachment File Original Name`,`Attachment Thumbnail Image Key`,`Attachment File Size` from `Attachment Bridge` B left join `Attachment Dimension` A on  (A.`Attachment Key`=B.`Attachment Key`) where `Subject`=%s and `Subject Key`=%d',
-			prepare_mysql($subject),
-			$subject_key
-		);
-
-		$res=mysql_query($sql);
-		$attachment_data=array();
-		while ($row=mysql_fetch_assoc($res)) {
-
-			if ($row['Attachment Type']=='Image') {
-				$icon= '<img class="icon" src="art/icons/page_white_picture.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'" />';
-			}elseif ($row['Attachment Type']=='Image') {
-				$icon= '<img class="icon"  src="art/icons/page_white_excel.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
-			}elseif ($row['Attachment Type']=='Word') {
-				$icon=  '<img class="icon" src="art/icons/page_white_word.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
-			}elseif ($row['Attachment Type']=='PDF') {
-				$icon=  '<img class="icon" src="art/icons/page_white_acrobat.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
-			}elseif ($row['Attachment Type']=='Compresed') {
-				$icon=  '<img class="icon" src="art/icons/page_white_compressed.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
-			}elseif ($row['Attachment Type']=='Text') {
-				$icon=  '<img class="icon" src="art/icons/page_white_text.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
-			}else {
-				$icon= '<img class="icon" src="art/icons/attach.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
-
-			}
-
-			$name=$row['Attachment File Original Name'];
-			if (strlen($name)>20) {
-
-				$exts = preg_split("/\./i", $name) ;
-				$n = count($exts)-1;
-
-				$_exts = $exts[$n];
-				unset($exts[$n]);
-				$name=join(',', $exts);
-
-
-				$name = substr($name, 0, 15) . " <b>&hellip;</b> ".$_exts;
-			}
-
-
-			$attachment_data[]=array(
-				'key'=>$row['Attachment Key'],
-				'type'=>$row['Attachment Type'],
-				'caption'=>$row['Attachment Caption'],
-				'public'=>$row['Attachment Public'],
-				'name'=>$name,
-				'full_name'=>$row['Attachment File Original Name'],
-				'size'=>file_size($row['Attachment File Size']),
-				'thumbnail'=>$row['Attachment Thumbnail Image Key'],
-				'icon'=>$icon
-			);
-		}
-
-		return  $attachment_data;
-	}
-
-
-	function get_note($note_key) {
-		$note='';
-		$sql=sprintf('select `History Abstract` from  `History Dimension`  where `History Key`=%d and `Indirect Object`=%s and `Indirect Object Key`=%s',
-			$note_key,
-			prepare_mysql($this->table_name),
-			$this->id
-		);
-		if ($result=$this->db->query($sql)) {
-			if ($row = $result->fetch()) {
-				$note=$row['History Abstract'];
-			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
-		}
-		return $note;
-	}
-
-
-	function edit_note($note_key, $note, $details='', $change_date=false) {
-
-		if ($note=='') {
-
-			$old_value=$this->get_note($note_key);
-
-			$sql=sprintf("delete from `%s History Bridge` where `History Key`=%d and `Deletable`='Yes'", $this->table_name, $note_key);
-
-			$prep=$this->db->prepare($sql);
-			$prep->execute();
-			if ($prep->rowCount()) {
-
-				$this->deleted=true;
-
-				$sql=sprintf("delete from `History Dimension` where `History Key`=%d", $note_key);
-				$this->db->exec($sql);
-				$this->deleted_value=$old_value;
-				//$this->add_changelog_record($this->table_name.' Other Email', $old_value, '', $options, $this->table_name, $this->id, 'removed');
-
-			}else {
-
-			}
-
-		}else {
-
-
-			list($ok, $note, $details)=$this->prepare_note($note, $details);
-			if (!$ok) {
-				$this->error=true;
-
-				return;
-			}
-			$sql=sprintf("update `History Dimension` set `History Abstract`=%s ,`History Details`=%s where `History Key`=%d and `Indirect Object`=%s and `Indirect Object Key`=%s ",
-				prepare_mysql($note),
-				prepare_mysql($details),
-
-				$note_key,
-				prepare_mysql($this->table_name),
-				$this->id
-			);
-
-			$prep=$this->db->prepare($sql);
-			$prep->execute();
-			if ($prep->rowCount()) {
-				if ($change_date=='update_date') {
-					$sql=sprintf("update `History Dimension` set `History Date`=%s where `History Key`=%d  ",
-						prepare_mysql(gmdate("Y-m-d H:i:s")),
-						$note_key
-					);
-					$this->db->exec($sql);
-				}
-
-				$this->updated=true;
-				$this->new_value=$note;
-			}
-		}
-
-	}
-
-
-
 
 
 
@@ -1008,33 +674,6 @@ abstract class DB_Table {
 	}
 
 
-	function get_number_of_images() {
-
-		if ($this->table_name=='Product' or $this->table_name=='Supplier Product')
-			$subject_key=$this->pid;
-		else
-			$subject_key=$this->id;
-
-		if ($this->table_name=='Product Family') {
-			$subject='Family';
-		}elseif ($this->table_name=='Product Department') {
-			$subject='Department';
-		}else {
-
-			$subject=$this->table_name;
-		}
-
-		$number_of_images=0;
-		$sql=sprintf("select count(*) as num from `Image Bridge` where `Subject Type`=%s and `Subject Key`=%d ",
-			prepare_mysql($subject),
-			$subject_key);
-		//print $sql;
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$number_of_images=$row['num'];
-		}
-		return $number_of_images;
-	}
 
 
 	function get_formatted_id($prefix='') {

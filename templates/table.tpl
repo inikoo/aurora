@@ -105,9 +105,9 @@
 	{$f_label}:
 	</div>
 	</div>
-	
-	{if isset($table_buttons) and count(table_buttons)>0}
 	<div id="table_buttons">
+	{if (isset($table_buttons) and count(table_buttons)>0)  }
+	
 	{foreach from=$table_buttons item=button } 
 	
 	 {if isset($button.inline_new_object)} 
@@ -115,20 +115,115 @@
 	 {/if} 
 	
 	<div  {if isset($button.id) and $button.id }id="{$button.id}"{/if}  class="square_button right "       {if isset($button.reference) and $button.reference!=''}onclick="change_view('{$button.reference}')"{/if} {if isset($button.title)}title="{$button.title}"{/if}>
-	  
-	
 	 <i {if isset($button.id) and $button.id }id="icon_{$button.id}"{/if} class="fa fa-{$button.icon} fa-fw"></i> 
-
-
 	</div>
 	
 	 {if isset($button.inline_new_object)} 
 	<span id="inline_new_object_msg" class="invalid"></span>
 		 {/if} 	
 	{/foreach}
-	  </div>
+	
+	
+	 
 	{/if}
 	
+	{if isset($upload_file)}
+	
+	<div   class="square_button right " >
+		<form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate  >
+
+	<input type="file" name="image_upload" id="file_upload" class="inputfile" multiple/>
+	 <label for="file_upload"><i  class="fa fa-upload fa-fw"></i><label>
+	</form>
+	</div>
+	<span id="file_upload_msg" style="float:right;padding-right:10px"></span>
+	<script>
+	var droppedFiles = false;
+
+	$('#file_upload').on('change', function(e) {
+	    upload_file()
+	});
+
+	function upload_file() {
+    var ajaxData = new FormData();
+
+    //var ajaxData = new FormData( );
+    if (droppedFiles) {
+        $.each(droppedFiles, function(i, file) {
+            ajaxData.append('files', file);
+        });
+    }
+
+
+
+
+    $.each($('#file_upload').prop("files"), function(i, file) {
+        ajaxData.append("files[" + i + "]", file);
+
+    });
+
+
+    ajaxData.append("tipo", '{$upload_file.tipo}')
+    ajaxData.append("object", '{$upload_file.object}')
+    ajaxData.append("key", '{$upload_file.key}')
+
+    $.ajax({
+        url: "/ar_edit.php",
+        type: 'POST',
+        data: ajaxData,
+        dataType: 'json',
+        cache: false,
+        contentType: false,
+        processData: false,
+
+
+
+
+
+
+        complete: function() {
+
+        },
+        success: function(data) {
+            if (data.state == '400') {
+                $('#file_upload_msg').html(data.msg)
+            }
+
+            rows.url = '/' + rows.ar_file + '?tipo=' + rows.tipo + '&parameters=' + rows.parameters
+            rows.fetch({
+                reset: true
+            });
+
+            if (data.number_images == 0) {
+
+                $('div.main_image').addClass('hide')
+                $('form.main_image').removeClass('hide')
+                $('div.main_image img').attr('src', '/art/nopic.png')
+
+
+            } else {
+                $('div.main_image').removeClass('hide')
+                $('form.main_image').addClass('hide')
+                $('div.main_image img').attr('src', '/image_root.php?id=' + data.main_image_key + '&size=small')
+
+
+
+
+            }
+
+        },
+        error: function() {
+
+        }
+    });
+}
+
+
+
+	</script>
+	{/if}
+	
+	 </div>
 	<span id="rtext"></span> 
 </div>
 {if isset($table_views) and count($table_views)>1}

@@ -1005,6 +1005,18 @@ function parse_request($_data, $db) {
 										}
 
 									}
+									if ($view_path[3]=='image') {
+
+										if (is_numeric($view_path[4])) {
+											$section='part.image';
+											$object='image.subject';
+											$parent_key=$key;
+											$key=$view_path[4];
+											$parent='part';
+
+										}
+
+									}
 
 								}
 

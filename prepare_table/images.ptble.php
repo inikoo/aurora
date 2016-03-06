@@ -9,9 +9,27 @@
 
 */
 
+$table='`Image Dimension` I left join `Image Subject Bridge` B on (I.`Image Key`=`Image Subject Image Key`)';
 
-$table='`Image Dimension` I ';
-$where=' where true';
+$fields="`Image Subject Key`,I.`Image Key`,`Image Width`,	`Image Height`,`Image File Size`,`Image File Format`,`Image Filename`,`Image Subject Image Caption`";
+
+//print_r($parameters);
+
+switch ($parameters['parent']) {
+case 'part':
+	$where=sprintf(" where `Image Subject Object`='Part' and `Image Subject Object Key`=%d",$parameters['parent_key']);
+
+	break;
+case 'account':
+	$table='`Image Dimension` I ';
+	$where=' where true';
+
+default:
+
+	exit('image parent not done yet '.$parameters['parent']);
+
+}
+
 
 $wheref='';
 
@@ -33,6 +51,5 @@ else
 
 $sql_totals="select count(Distinct I.`Image Key`) as num from $table $where  ";
 
-$fields="`Image Key`,`Image Width`,	`Image Height`,`Image File Size`,`Image File Format`,`Image Filename`";
 
 ?>

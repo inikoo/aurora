@@ -138,7 +138,6 @@ $modules=array(
 
 		)
 	),
-
 	'customers_server'=>array(
 
 		'parent'=>'none',
@@ -223,8 +222,6 @@ $modules=array(
 		)
 
 	),
-
-
 	'invoices'=>array(
 		'section'=>'invoices',
 		'parent'=>'store',
@@ -319,7 +316,6 @@ $modules=array(
 		)
 
 	),
-
 	'delivery_notes'=>array(
 		'section'=>'delivery_notes',
 		'parent'=>'store',
@@ -404,7 +400,6 @@ $modules=array(
 		)
 
 	),
-
 	'payments'=>array(
 		'section'=>'invoices',
 		'parent'=>'store',
@@ -458,7 +453,6 @@ $modules=array(
 
 		)
 	),
-
 	'websites'=>array(
 		'section'=>'dashboard',
 		'parent'=>'website',
@@ -893,8 +887,6 @@ $modules=array(
 
 		)
 	),
-	
-	
 	'inventory_server'=>array(
 
 		'parent'=>'none',
@@ -910,22 +902,20 @@ $modules=array(
 			)
 		)
 	),
-	
-	
 	'inventory'=>array(
 		'sections'=>array(
 			'inventory'=>array(
 
-				'type'=>'navigation', 'label'=>_('Inventory').' ('._('Parts').')', 'title'=>_('Inventory'), 'icon'=>'th', 'reference'=>'inventory/%d',
+				'type'=>'navigation', 'label'=>_('Inventory').' ('._('Parts').')', 'icon'=>'th', 'reference'=>'inventory/%d',
 				'tabs'=>array(
 					'inventory.parts'=>array('label'=>_('Parts')),
 
 				)
 			),
-			'categories'=>array('type'=>'navigation', 'label'=>_("Part's Categories"), 'title'=>_("Part's Categories"), 'icon'=>'sitemap', 'reference'=>'inventory/categories',
+			'categories'=>array('type'=>'navigation', 'label'=>_("Part's Categories"), 'icon'=>'sitemap', 'reference'=>'inventory/categories',
 
 				'tabs'=>array(
-					'inventory.categories'=>array('label'=>_("Part's Categories"), 'title'=>_("Part's Categories")),
+					'inventory.categories'=>array('label'=>_("Part's Categories")),
 				)
 			),
 
@@ -949,35 +939,36 @@ $modules=array(
 
 
 					'part.details'=>array('label'=>_('Data'), 'icon'=>'database'),
-					'part.history'=>array('label'=>_('History/Notes'), 'title'=>_('History/Notes'), 'icon'=>'history'),
-					'part.sales'=>array('label'=>_('Sales'), 'title'=>_('Sales'), 'icon'=>'money',
+					'part.history'=>array('label'=>_('History/Notes'), 'icon'=>'history'),
+					'part.sales'=>array('label'=>_('Sales'), 'icon'=>'money',
 						'subtabs'=>array(
-							'part.sales.overview'=>array('label'=>_('Overview'), 'title'=>_('Overview')),
-							'part.sales.history'=>array('label'=>_('Sales history'), 'title'=>_('Sales history')),
-							'part.sales.products'=>array('label'=>_('Product sales breakdown'), 'title'=>_('Product sales breakdown')),
+							'part.sales.overview'=>array('label'=>_('Overview')),
+							'part.sales.history'=>array('label'=>_('Sales history')),
+							'part.sales.products'=>array('label'=>_('Product sales breakdown')),
 
 						)
 
 					),
-					'part.stock'=>array('label'=>_('Stock'), 'title'=>_('Stock'), 'icon'=>'th',
+					'part.stock'=>array('label'=>_('Stock'), 'icon'=>'th',
 						'subtabs'=>array(
-							'part.stock.overview'=>array('label'=>_('Overview'), 'title'=>_('Overview')),
-							'part.stock.transactions'=>array('label'=>_('Transactions history'), 'title'=>_('Transactions history')),
-							'part.stock.history'=>array('label'=>_('Stock history'), 'title'=>_('Stock history')),
-							'part.stock.availability'=>array('label'=>_('Availability history'), 'title'=>_('Availability history')),
+							'part.stock.overview'=>array('label'=>_('Overview')),
+							'part.stock.transactions'=>array('label'=>_('Transactions history')),
+							'part.stock.history'=>array('label'=>_('Stock history')),
+							'part.stock.availability'=>array('label'=>_('Availability history')),
 
 						)
 					),
-					'part.purchase_orders'=>array('label'=>_('Purchase Orders'), 'title'=>_('Purchase Orders'), 'icon'=>'ship',
+					'part.purchase_orders'=>array('label'=>_('Purchase Orders'), 'icon'=>'ship',
 						'subtabs'=>array(
-							'part.purchase_orders.purchase_orders'=>array('label'=>_('Purchase Orders'), 'title'=>_('Purchase Orders')),
-							'part.purchase_orders.delivery_notes'=>array('label'=>_('Delivery Notes'), 'title'=>_("Supplier's delivery notes")),
-							'part.purchase_orders.invoices'=>array('label'=>_('Invoices'), 'title'=>_("Supplier's invoices")),
+							'part.purchase_orders.purchase_orders'=>array('label'=>_('Purchase Orders')),
+							'part.purchase_orders.delivery_notes'=>array('label'=>_('Delivery Notes')),
+							'part.purchase_orders.invoices'=>array('label'=>_('Invoices')),
 
 						)
 
 					),
-					'part.products'=>array('label'=>_('Products'), 'title'=>_('Products'), 'icon'=>'square'),
+					'part.products'=>array('label'=>_('Products'), 'icon'=>'square'),
+					'part.images'=>array('label'=>_('Images'), 'icon'=>'camera-retro'),
 				)
 			),
 			
@@ -988,18 +979,30 @@ $modules=array(
 				)
 
 			),
-			'transactions'=>array(
-				'type'=>'navigation', 'label'=>_('Stock Movements'), 'title'=>_('Stock movements'), 'icon'=>'exchange', 'reference'=>'inventory/transactions',
+			'part.image'=>array('type'=>'object',
+				
+
+
 				'tabs'=>array(
-					'inventory.transactions'=>array('label'=>_('Stock movements'), 'title'=>_('Stock movements'))
+
+
+					'part.image.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+					'part.image.history'=>array('label'=>_('History/Notes'), 'icon'=>'history'),
+	
+				)
+			),
+			'transactions'=>array(
+				'type'=>'navigation', 'label'=>_('Stock Movements'), 'icon'=>'exchange', 'reference'=>'inventory/transactions',
+				'tabs'=>array(
+					'inventory.transactions'=>array('label'=>_('Stock movements'))
 
 				)
 			),
 			'stock_history'=>array(
-				'type'=>'navigation', 'label'=>_('Stock History'), 'title'=>_('Stock History'), 'icon'=>'history', 'reference'=>'inventory/stock_history',
+				'type'=>'navigation', 'label'=>_('Stock History'), 'icon'=>'history', 'reference'=>'inventory/stock_history',
 				'tabs'=>array(
-					'inventory.stock_history.dashboard'=>array('label'=>_('Dashboard'), 'title'=>_('Dashboard')),
-					'inventory.stock_history.timeline'=>array('label'=>_('Timeline'), 'title'=>_('Timeline')),
+					'inventory.stock_history.dashboard'=>array('label'=>_('Dashboard')),
+					'inventory.stock_history.timeline'=>array('label'=>_('Timeline')),
 
 				)
 			),
@@ -1271,7 +1274,6 @@ $modules=array(
 		)
 
 	),
-
 	'account'=>array(
 
 
@@ -1406,7 +1408,6 @@ $modules=array(
 		)
 
 	),
-
 	'utils'=>array(
 		'sections'=>array(
 			'forbidden'=>array('type'=>'object', 'label'=>_('Forbidden'), 'title'=>_('Forbidden'),  'id'=>'forbidden',
@@ -1431,7 +1432,6 @@ $modules=array(
 
 		)
 	),
-
 	'help'=>array(
 		'sections'=>array(
 			'help'=>array('type'=>'object', 'label'=>_('Help'), 'icon'=>'shopping-cart', 'id'=>'forbidden',

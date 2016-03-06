@@ -9,12 +9,13 @@
  Version 3.0
 
 */
-include_once 'class.Image.management.ext.php';
+include_once 'trait.ImageSubject.php';
+include_once 'trait.AttachmentSubject.php';
+include_once 'trait.NotesSubject.php';
 
 
-class Asset extends ObjectwithImage {
-
-
+class Asset extends DB_Table{
+	use ImageSubject,NotesSubject,AttachmentSubject;
 
 	function update_subject_field_switcher($field, $value, $options='', $metadata) {
 
@@ -69,6 +70,9 @@ class Asset extends ObjectwithImage {
 
 			if ($this->data[$this->table_name.' Materials']!='') {
 				$materials='';
+				
+				
+				
 				$materials_data=json_decode($this->data[$this->table_name.' Materials'], true);
 
 

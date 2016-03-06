@@ -36,7 +36,7 @@ require_once 'class.Warehouse.php';
 require_once 'class.Part.php';
 
 require_once 'class.StoreProduct.php';
-
+include_once 'utils/parse_materials.php';
 $editor=array(
 	'Author Name'=>'',
 	'Author Alias'=>'',
@@ -48,7 +48,7 @@ $editor=array(
 
 
 
-$sql=sprintf('select * from `Part Dimension` where `Part SKU`=1443');
+$sql=sprintf('select * from `Part Dimension` where `Part SKU`=1383');
 
 $sql=sprintf('select * from `Part Dimension`  ');
 
@@ -66,6 +66,15 @@ if ($result=$db->query($sql)) {
 		}
 		$part->update(array('Part Barcode'=>json_encode($barcode_data)), 'no_history');
 
+		if ($row['Part Materials']!='' and !preg_match('/^\[\{\"name\"\:/',$row['Part Materials'])  ) {
+			print $row['Part SKU'].' '.$row['Part Materials']."\n";
+
+
+
+			$part->update(array('Part Materials'=>$row['Part Materials']), 'no_history');
+
+		}
+		continue;
 		$dimensions=get_xhtml_dimensions($part);
 
 		if ($dimensions!='') {
@@ -90,7 +99,7 @@ if ($result=$db->query($sql)) {
 
 function get_xhtml_dimensions($part) {
 
-	$locale='en_GB'
+	$locale='en_GB';
 	$tag='Package';
 	$dimensions='';
 	switch ($part->data["Part $tag Dimensions Type"]) {

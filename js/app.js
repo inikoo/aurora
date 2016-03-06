@@ -43,32 +43,31 @@ function change_subtab(subtab) {
 }
 
 
-function help(){
-    
-    change_view(state.request,{help:true})
+function help() {
+
+    change_view(state.request, {
+        help: true
+    })
 
 }
 
 function change_view(_request, metadata) {
 
-//console.log(metadata)
-
+    //console.log(metadata)
 
     if (metadata == undefined) {
         metadata = {};
     }
-    
-    var request = "/ar_views.php?tipo=views&request=" + _request + '&metadata=' + JSON.stringify(metadata) + "&old_state=" + JSON.stringify(state) 
 
-    $.getJSON(request,
-     function(data) {
-        
-    
+    var request = "/ar_views.php?tipo=views&request=" + _request + '&metadata=' + JSON.stringify(metadata) + "&old_state=" + JSON.stringify(state)
+
+    $.getJSON(request, function(data) {
+
+
 
         state = data.state;
 
         //console.log(data.state)
-
         if (typeof(data.navigation) != "undefined" && data.navigation !== null && data.navigation != '') {
             // $('#navigation').removeClass('hide')
             $('#navigation').html(data.navigation);
@@ -84,14 +83,14 @@ function change_view(_request, metadata) {
 
 
         }
-        
-         if (typeof(data.logout_label) != "undefined" && data.logout_label !== null) {
+
+        if (typeof(data.logout_label) != "undefined" && data.logout_label !== null) {
             $('#logout_label').html(data.logout_label);
 
 
         }
-        
-        
+
+
 
         if (typeof(data.view_position) != "undefined" && data.view_position !== null) {
 
@@ -159,7 +158,9 @@ function logout() {
     window.location.href = "/logout.php";
 }
 
-function decodeEntities(a){return a}
+function decodeEntities(a) {
+    return a
+}
 /*
 var decodeEntities = (function() {
 
@@ -182,8 +183,11 @@ var decodeEntities = (function() {
 })();
 */
 
-function htmlEncode(value){
-  return $('<div/>').text(value).html();
+function htmlEncode(value) {
+    return $('<div/>').text(value).html();
 }
 
-
+var isAdvancedUpload = function() {
+        var div = document.createElement('div');
+        return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window;
+    }();
