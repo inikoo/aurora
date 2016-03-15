@@ -18,9 +18,10 @@ function generatePassword($length=9, $strength=0) {
 		$vowels .= 'AEU';
 	}
 	if ($strength>=2) {
-		$consonants .= '!=/[]{}~\<>$%^&*()_+@#.,%';// Dont use ; or : or |
-	}if ($strength>=3) {
-		$vowels = 'qwertyupasfghjkzxcvbnmQWERTYUPASDFGHJKLZXCVBNM';
+		$consonants .= '!=/[]{}~\<>$%^&*()_+@#.,%';
+	}
+	if ($strength>=3) {
+		$vowels .= '!=/[]{}~\<>$%^&*()_+@#.,%';
 
 	}
 

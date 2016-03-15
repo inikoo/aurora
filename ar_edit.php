@@ -104,7 +104,7 @@ case 'new_object':
 
 		));
 
-	new_object($account, $db, $user, $editor, $data);
+	new_object($account, $db, $user, $editor, $data,$smarty);
 	break;
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
@@ -414,9 +414,9 @@ function delete_object_component($account, $db, $user, $editor, $data, $smarty) 
 }
 
 
-function new_object($account, $db, $user, $editor, $data) {
+function new_object($account, $db, $user, $editor, $data,$smarty) {
 
-	global $smarty;
+	
 
 	$parent=get_object($data['parent'], $data['parent_key']);
 	$parent->editor=$editor;

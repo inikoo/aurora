@@ -10,8 +10,43 @@
  Version 3.0
 */
 
+
+function get_account_setup_navigation($data, $smarty, $user, $db, $account) {
+
+
+	$sections=array();
+	//$sections['account']['selected']=true;
+$skip=false;
+	if ($data['section']=='setup_add_employees') {
+		$title=_('Add employees');
+		$skip=true;
+	}elseif ($data['section']=='setup_root_user') {
+		$title=_('Set up root user');
+	}else {
+		$title=_('Account set up');
+	}
+	
+	
+	
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>array(),
+		'right_buttons'=>array(),
+		'title'=>$title,
+		'search'=>array('show'=>false, 'placeholder'=>_('Search account')),
+		'skip'=>$skip
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+}
+
+
+
 function get_account_navigation($data, $smarty, $user, $db, $account) {
-	global $smarty;
 
 
 	$sections=get_sections('account', '');
@@ -34,8 +69,8 @@ function get_account_navigation($data, $smarty, $user, $db, $account) {
 }
 
 
+
 function get_new_api_key_navigation($data, $smarty, $user, $db, $account) {
-	global $smarty;
 
 
 	$sections=get_sections('account', '');
@@ -63,7 +98,7 @@ function get_new_api_key_navigation($data, $smarty, $user, $db, $account) {
 
 
 function get_orders_index_navigation($data, $smarty, $user, $db, $account) {
-	global $smarty;
+
 
 
 	$sections=array();
@@ -88,7 +123,7 @@ function get_orders_index_navigation($data, $smarty, $user, $db, $account) {
 
 
 function get_settings_navigation($data, $smarty, $user, $db, $account) {
-	global $smarty;
+
 
 
 	$sections=get_sections('account', '');
@@ -910,7 +945,7 @@ function get_api_key_navigation($data, $smarty, $user, $db, $account) {
 
 
 function get_profile_navigation($data, $smarty, $user, $db, $account) {
-	global $smarty;
+
 
 
 

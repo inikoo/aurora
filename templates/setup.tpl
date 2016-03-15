@@ -13,7 +13,7 @@
 	<link href="/css/app.css" rel="stylesheet">
     <link href="/external_libs/d3fc/d3fc.css" rel="stylesheet"/>
 
-	<script type="text/javascript" src="/utils/country_data.js.php?locale={$locale}"></script> 
+	<script type="text/javascript" src="/utils/country_data.js.php"></script> 
 
 
 
@@ -28,6 +28,11 @@
 	<script type="text/javascript" src="/js/backgrid.js"></script> 
 	<script type="text/javascript" src="/js/backgrid-filter.js"></script> 
 	<script type="text/javascript" src="/js/app.js"></script> 
+	<script type="text/javascript" src="js/telephone_utils.js"></script> 
+
+	
+	<script type="text/javascript" src="/js/setup.js"></script> 
+
 	<script type="text/javascript" src="/js/keyboard_shorcuts.js"></script> 
 	<script type="text/javascript" src="/js/search.js"></script> 
 	<script type="text/javascript" src="/js/table.js"></script> 
@@ -39,40 +44,13 @@
 	
 	<script src="/external_libs/d3fc/d3.min.js"></script>
    <script src="/external_libs/d3fc/layout.js"></script>
-   <script src="/external_libs/d3fc//d3fc.js"></script>
-   <script>
-   $(document).ready(function() {
-
-
-
-    state = {
-        module: '',
-        section: '',
-        parent: '',
-        parent_key: '',
-        object: '',
-        key: ''
-    }
-    structure = {}
-
-    change_view($('#_request').val())
-
-
-
-    $(document).keydown(function(e) {
-        key_press(e)
-    });
-
-
-
-
-})
-
-   </script>
+   <script src="/external_libs/d3fc/d3fc.js"></script>
+	
+	
 	
 </head>
 <body>
-<input type="hidden" id="_request" value="{$_request}">
+<input type="hidden" id="_request" value="{$request}">
 <div id="top_bar">
 	<div id="view_position">
 	</div>
@@ -85,16 +63,16 @@
 					<img src="/art/aurora_log_v2_orange_small.png" /> 
 				</div>
 				<div id="hello_user" class="link" onclick="change_view('profile')">
-					{$user->get('User Alias')} 
+					
 				</div>
 			</div>
 			<div id="account_name" class="link" onclick="change_view('account')">
-				{$account->get('Account Name')} 
+				
 			</div>
 			<div id="menu">
 			</div>
-			<ul style="margin-top:20px">
-				<li onclick="logout()"><i class="fa fa-sign-out fa-fw"></i> <span id="logout_label">{t}Logout{/t}</li>
+			<ul style="margin-top:20px" class="">
+				<li onclick="logout()"><i class="fa fa-sign-out fa-fw"></i> <span id="logout_label">{t}Exit{/t}</li>
 			</ul>
 		</div>
 		<div id="app_main">
@@ -112,9 +90,7 @@
 	</section>
 	<aside id="notifications">
 		<div class="top_buttons" style="padding:2px 10px;border-bottom:1px solid #eee">
-			<div onclick="change_view('/fire')" class="square_button  " title="{t}Fire evacuation roll call{/t}">
-				<i class="fa fa-fire fa-fw" style="color:orange"></i> 
-			</div>
+			
 			<div>
 	</aside>
 </div>

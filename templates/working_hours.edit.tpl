@@ -25,7 +25,7 @@
 
 		{for $i=0 to 8}
 		{$day_index = $i}
-		<tr id="day_{$i}" class="{if  ($i>=0 and $i<6) }weekday{else}weekend{/if}  {if $i==0 or $i==6}group{else}day{/if}      {if  ($i>0 and $i<6) and $compact_weekdays}hide{/if}  {if  ( $i==7 or $i==8 )and $compact_weekend}hide{/if} {if  ( $i==6 )and !$compact_weekend}hide{/if} {if  ( $i==0 )and !$compact_weekdays}hide{/if}  "  >
+		<tr id="day_{$i}" class="{if  ($i>=0 and $i<6) }weekday{else}weekend{/if}  {if $i==0 or $i==6}group{else}day{/if}      {if  $i>0 and $i<6 and $compact_weekdays}hide{/if}  {if  ( $i==7 or $i==8 ) and $compact_weekend}hide{/if} {if   $i==6  and !$compact_weekend}hide{/if} {if   $i==0  and !$compact_weekdays}hide{/if}  "  >
 			<td class="expand_days">
 			{if $i==0}
 			{$day_index = 1}

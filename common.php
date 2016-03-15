@@ -20,7 +20,7 @@ require_once "class.User.php";
 $mem = new Memcached();
 $mem->addServer($memcache_ip, 11211);
 
-$db = new PDO("mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user,$dns_pwd ,array(\PDO::MYSQL_ATTR_INIT_COMMAND =>"SET time_zone = '+0:00';"));
+$db = new PDO("mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd , array(\PDO::MYSQL_ATTR_INIT_COMMAND =>"SET time_zone = '+0:00';"));
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 /*
@@ -41,9 +41,18 @@ mysql_query("SET time_zone='+0:00'");
 $account=new Account($db);
 
 
+if($account->get('Account State')!='Active'){
+	header('Location: /login.php');
+    exit;
+}
+
 //exit;
 
-setTimezone($account->get('Timezone'));
+if ($account->get('Timezone')) {
+	date_default_timezone_set($account->get('Timezone'));
+}else {
+	setTimezone('UTC');
+}
 
 //define("TIMEZONE",$account->data['Account Timezone']);
 
@@ -65,14 +74,14 @@ $smarty->cache_dir = 'server_files/smarty/cache';
 $smarty->config_dir = 'server_files/smarty/configs';
 //$smarty->error_reporting = E_STRICT;
 
-$smarty->assign('account',$account);
+$smarty->assign('account', $account);
 
 
 $is_already_logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);
 
 if (!$is_already_logged_in) {
 	$target = $_SERVER['PHP_SELF'];
-	if (!preg_match('/(js|js\.php)$/',$target)) {
+	if (!preg_match('/(js|js\.php)$/', $target)) {
 
 		header('Location: /login.php?ref='.$_SERVER['REQUEST_URI']);
 		exit;
@@ -90,7 +99,7 @@ if ($_SESSION['logged_in_page']!=0) {
 	session_destroy();
 	unset($_SESSION);
 
-		header('Location: /login.php');
+	header('Location: /login.php');
 	exit;
 
 }
@@ -100,20 +109,21 @@ $user=new User($_SESSION['user_key']);
 
 
 
-if(isset($user)){
-    $locale=$user->get('User Preferred Locale');
-}else{
-    $locale=$account->get('Locale').'.UTF-8';
+if (isset($user)) {
+	$locale=$user->get('User Preferred Locale');
+}else {
+	$locale=$account->get('Locale').'.UTF-8';
 }
-$smarty->assign('locale',$locale);
+$smarty->assign('locale', $locale);
 
 set_locale($locale);
 
 
 
-$smarty->assign('user',$user);
+$smarty->assign('user', $user);
 
 $user->read_groups();
+
 $user->read_rights();
 $user->read_stores();
 $user->read_websites();
@@ -126,7 +136,7 @@ if ($user->data['User Type']=='Supplier') {
 
 
 
-$smarty->assign('account',$account);
+$smarty->assign('account', $account);
 
 
 /*
@@ -150,7 +160,7 @@ $smarty->assign('lang_menu',$lang_menu);
 
 $common='';
 
-$smarty->assign('page_name',basename($_SERVER["PHP_SELF"], ".php"));
-$smarty->assign('analyticstracking',( file_exists('templates/analyticstracking.tpl')?true:false));
+$smarty->assign('page_name', basename($_SERVER["PHP_SELF"], ".php"));
+$smarty->assign('analyticstracking', ( file_exists('templates/analyticstracking.tpl')?true:false));
 
 ?>

@@ -12,8 +12,8 @@
 */
 
 
-function parse_request($_data, $db) {
-	global $user, $modules, $account;
+function parse_request($_data, $db, $modules, $account='', $user='') {
+
 
 
 
@@ -996,8 +996,8 @@ function parse_request($_data, $db) {
 											$key=$view_path[4];
 											$parent='part';
 
-										}elseif($view_path[4]=='new'){
-										$module='products';
+										}elseif ($view_path[4]=='new') {
+											$module='products';
 											$section='product.new';
 											$object='product';
 											$parent_key=$key;
@@ -1021,9 +1021,9 @@ function parse_request($_data, $db) {
 								}
 
 							}
-                            elseif($view_path[2]=='new'){
-                                $section='part.new';
-                            }
+							elseif ($view_path[2]=='new') {
+								$section='part.new';
+							}
 
 
 
@@ -1561,7 +1561,32 @@ function parse_request($_data, $db) {
 
 
 				}
+				elseif ($view_path[0]=='setup') {
+					$section='setup';
+                    $object='account';
+					if (isset($view_path[1])) {
+						if ($view_path[1]=='error') {
+							$section='setup_error';
+							$key=$view_path[2];
+						}elseif ($view_path[1]=='root_user') {
+							$section='setup_root_user';
+							$object='user_root';
 
+						}elseif ($view_path[1]=='add_employees') {
+							$section='setup_add_employees';
+							$object='account';
+							$key=1;
+						}elseif ($view_path[1]=='add_employee') {
+							$section='setup_add_employee';
+							$parent='account';
+							$parent_key=1;
+							$object='employee';
+							$key=1;
+
+						}
+					}
+
+				}
 
 			}
 
@@ -1849,7 +1874,7 @@ function parse_request($_data, $db) {
 		$state['metadata']=$metadata;
 	}
 
-	//print_r($state);
+	
 
 	return $state;
 
@@ -1875,6 +1900,8 @@ function parse_tabs($module, $section, $_data, $modules) {
 
 		}
 		else {
+
+
 			if ( !isset($modules[$module]['sections'][$section]['tabs']) or  !is_array($modules[$module]['sections'][$section]['tabs']) or count($modules[$module]['sections'][$section]['tabs'])==0 ) {
 				print "problem with M: $module S: $section";
 			}

@@ -245,7 +245,7 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
 		'refunds'=>array('value'=>number($sum_refunds)),
 
 		'refunds_1yb'=>number($sum_refunds_1yb),
-		'refunds_delta'=>delta($row['refunds'], $row['refunds_1yb']),
+		'refunds_delta'=>delta($sum_refunds, $sum_refunds_1yb),
 
 		'replacements'=>number($sum_replacements),
 		'replacements_percentage'=>percentage($sum_replacements, $sum_delivery_notes),

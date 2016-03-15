@@ -11,7 +11,7 @@
 
 include_once 'utils/invalid_messages.php';
 include 'utils/available_locales.php';
-include 'utils/user_groups.php';
+include 'conf/user_groups.php';
 
 $system_user=new User($state['key']);
 

@@ -297,10 +297,34 @@ class Staff extends DB_Table{
 			break;
 
 		case('Staff Position'):
-			return $this->get_positions();
+
+			$positions='';
+			$sql=sprintf('select GROUP_CONCAT(`Role Code`) as positions  from `Staff Role Bridge` where  `Staff Key`=%d ', $this->id);
+
+			if ($row = $this->db->query($sql)->fetch()) {
+				$positions=$row['positions'];
+			}
+			return $positions;
+
 			break;
 		case('Position'):
-			return $this->get_formatted_positions();
+			$positions='';
+			include 'conf/roles.php';
+
+			$sql=sprintf('select `Role Code` from `Staff Role Bridge` where  `Staff Key`=%d ', $this->id);
+
+			if ($result=$this->db->query($sql)) {
+				foreach ($result as $row) {
+				
+				
+					$positions.=$roles[$row['Role Code']]['title'].', ';
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+			$positions=preg_replace('/, $/', '', $positions);
+			return $positions;
 			break;
 		case('Staff Supervisor'):
 			return $this->get_supervisors();
@@ -372,7 +396,8 @@ class Staff extends DB_Table{
 
 
 	function get_field_label($field) {
-		global $account;
+
+
 
 		switch ($field) {
 
@@ -406,7 +431,8 @@ class Staff extends DB_Table{
 			$label=_('address');
 			break;
 		case 'Staff Official ID':
-			$label=$account->get('National Employment Code Label')==''?_('official Id'):$account->get('National Employment Code Label');
+		$account=new Account();
+			$label=$account->get('National Employment Code Label')==''?_('Official Id'):$account->get('National Employment Code Label');
 			break;
 		case 'Staff Next of Kind':
 			$label=_('next of kin');
@@ -521,7 +547,7 @@ class Staff extends DB_Table{
 				$this->get_data('id', $this->found_key);
 			}
 		}else {
-			print_r($error_info=$this->db->errorInfo());
+			print_r($error_info=$this->db->errorInfo());print "$sql";
 			exit;
 		}
 
@@ -542,7 +568,9 @@ class Staff extends DB_Table{
 
 	function create($data) {
 
-		global $account;
+
+		$account=new Account();
+
 		include_once 'class.Timesheet.php';
 		require_once 'utils/date_functions.php';
 
@@ -617,11 +645,15 @@ class Staff extends DB_Table{
 					}
 				}
 
-				$this->create_user($user_data);
+				$staff_user=$this->create_user($user_data);
 				//print_r($this->user);
 				if ($this->create_user_error) {
 					$this->extra_msg='<span class="warning"><i class="fa fa-exclamation-triangle"></i> '._("System user couldn't be created").' ('.$this->create_user_msg.')</span>';
 				}
+
+				$this->update_roles($data['Staff Position'], 'no_history');
+
+
 			}
 
 
@@ -660,11 +692,11 @@ class Staff extends DB_Table{
 
 		if (!array_key_exists('User Password', $data) or $data['User Password']=='' ) {
 			include_once 'utils/password_functions.php';
-			$data['User Password']=hash('sha256', generatePassword(8, 10));
+			$data['User Password']=hash('sha256', generatePassword(8, 3));
 		}
 		if (!array_key_exists('User PIN', $data) or $data['User PIN']=='' ) {
 			include_once 'utis/password_functions.php';
-			$data['User Password']=hash('sha256', generatePassword(8, 10));
+			$data['User PIN']=hash('sha256', generatePassword(8, 3));
 		}
 		$data['User Type']='Staff';
 		$data['User Parent Key']=$this->id;
@@ -675,7 +707,7 @@ class Staff extends DB_Table{
 		$this->create_user_msg=$user->msg;
 		$this->user=$user;
 
-
+		return $user;
 
 
 	}
@@ -846,7 +878,7 @@ class Staff extends DB_Table{
 	}
 
 
-	function update_field_switcher($field, $value, $options='',$metadata='') {
+	function update_field_switcher($field, $value, $options='', $metadata='') {
 		if (is_string($value))
 			$value=_trim($value);
 
@@ -882,7 +914,7 @@ class Staff extends DB_Table{
 			$this->update_name($value);
 			break;
 		case('Staff Position'):
-			$this->update_positions($value);
+			$this->update_roles($value);
 			break;
 		case('Staff Supervisor'):
 			$this->update_supervisors($value);
@@ -1036,25 +1068,47 @@ class Staff extends DB_Table{
 	}
 
 
-	function update_positions($values, $options='') {
+	function update_roles($values, $options='') {
+
+		$account=new Account();
 
 		$old_value=$this->get('Position');
 
 		$positions=array();
-		$sql=sprintf('select `Company Position Key` from `Company Position Dimension`  ');
-		foreach ($this->db->query($sql) as $row) {
-			$positions[$row['Company Position Key']]=false;
+
+
+
+
+		include 'conf/roles.php';
+		foreach ($roles as $_key=>$_data) {
+			if (in_array($account->get('Setup Metadata')['size'], $_data['size'])) {
+
+				foreach ($account->get('Setup Metadata')['instances'] as $instance) {
+					if (in_array($instance, $_data['instances'])) {
+
+						$positions[$_key]=array(
+							'label'=>$_data['title'],
+							'selected'=>false
+						);
+						break;
+					}
+				}
+			}
 		}
+
+
+
 
 		foreach (preg_split('/,/', $values) as $selected_position) {
 			$positions[$selected_position]['selected']=true;
 		}
 
+
 		foreach ($positions as $key=>$value) {
-			if ($value) {
-				$this->add_position($key);
+			if ($value['selected']) {
+				$this->add_role($key);
 			}else {
-				$this->remove_position($key);
+				$this->remove_role($key);
 			}
 		}
 
@@ -1066,30 +1120,36 @@ class Staff extends DB_Table{
 	}
 
 
-	function remove_position($position_key) {
+	function remove_role($role_code) {
 
-		$sql=sprintf("delete from  `Company Position Staff Bridge` where `Position Key`=%d and `Staff Key`=%d", $position_key, $this->id);
+		$sql=sprintf("delete from  `Staff Role Bridge` where `Role Code`=%s and `Staff Key`=%d",
+		 prepare_mysql($role_code),
+		  $this->id);
 
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
 				$this->updated=true;
 			}
 		}else {
-			print_r($error_info=$this->db->errorInfo());
+			print_r($error_info=$this->db->errorInfo());print "$sql";
 			exit;
 		}
 	}
 
 
-	function add_position($value) {
+	function add_role($role_code) {
 		$updated=false;
-		$sql=sprintf("insert into `Company Position Staff Bridge` (`Position Key`, `Staff Key`) values (%d, %d)   ON DUPLICATE KEY UPDATE  `Position Key`= %d", $value, $this->id, $value);
+		$sql=sprintf("insert into `Staff Role Bridge` (`Role Code`, `Staff Key`) values (%s, %d)   ON DUPLICATE KEY UPDATE  `Role Code`= %s", 
+		prepare_mysql($role_code), 
+		$this->id,
+		prepare_mysql($role_code)
+		);
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
 				$this->updated=true;
 			}
 		}else {
-			print_r($error_info=$this->db->errorInfo());
+			print_r($error_info=$this->db->errorInfo());print "$sql";
 			exit;
 		}
 
@@ -1097,26 +1157,7 @@ class Staff extends DB_Table{
 	}
 
 
-	function get_positions() {
-		$positions='';
-		$sql=sprintf('select GROUP_CONCAT(`Company Position Key`) as positions  from `Company Position Dimension` CPD left join `Company Position Staff Bridge` B on (B.`Position Key`=CPD.`Company Position Key`) where  `Staff Key`=%d ', $this->id);
 
-		if ($row = $this->db->query($sql)->fetch()) {
-			$positions=$row['positions'];
-		}
-		return $positions;
-	}
-
-
-	function get_formatted_positions() {
-
-		$positions='';
-		$sql=sprintf('select GROUP_CONCAT(`Company Position Title`  order by `Company Position Title` separator ", ") as positions  from `Company Position Dimension` CPD left join `Company Position Staff Bridge` B on (B.`Position Key`=CPD.`Company Position Key`)  where  `Staff Key`=%d  ', $this->id);
-		if ($row = $this->db->query($sql)->fetch()) {
-			$positions=$row['positions'];
-		}
-		return $positions;
-	}
 
 
 	function update_supervisors($values, $options='') {
@@ -1161,7 +1202,7 @@ class Staff extends DB_Table{
 				$this->updated=true;
 			}
 		}else {
-			print_r($error_info=$this->db->errorInfo());
+			print_r($error_info=$this->db->errorInfo());print "$sql";
 			exit;
 		}
 	}
@@ -1175,7 +1216,7 @@ class Staff extends DB_Table{
 				$this->updated=true;
 			}
 		}else {
-			print_r($error_info=$this->db->errorInfo());
+			print_r($error_info=$this->db->errorInfo());print "$sql";
 			exit;
 		}
 	}

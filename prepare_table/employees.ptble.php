@@ -104,7 +104,7 @@ $fields="`Staff ID`,`Staff Job Title`,`Staff Birthday`,`Staff Official ID`,`Staf
 `Staff Alias`,`Staff Key`,`Staff Name`,`Staff Type`,
 `Staff Valid To`,`Staff Valid From`,`User Login Count`,
 `User Handle`,`User Active`,`User Last Login`,
-(select GROUP_CONCAT(`Company Position Title`  order by `Company Position Title` separator \", \")   from `Company Position Dimension` CPD left join `Company Position Staff Bridge` B on (B.`Position Key`=CPD.`Company Position Key`)  where  B.`Staff Key`=SD.`Staff Key` ) as roles,
+(select GROUP_CONCAT(`Role Code` ) from `Staff Role Bridge` B  where  B.`Staff Key`=SD.`Staff Key` ) as roles,
 (select GROUP_CONCAT(`Staff Alias`  order by `Staff Alias` separator \", \")    from  `Staff Supervisor Bridge` B left join `Staff Dimension` S on (B.`Supervisor Key`=S.`Staff Key`)  where  B.`Staff Key`=SD.`Staff Key` ) as supervisors
 	
 	

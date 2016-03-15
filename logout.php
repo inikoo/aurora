@@ -10,9 +10,8 @@
 */
 
 include_once 'common.php';
-
 $sql=sprintf("update `User Log Dimension` set `Logout Date`=NOW()  where `Session ID`=%s", prepare_mysql(session_id()));
-mysql_query($sql);
+$db->exec($sql);
 
 session_regenerate_id();
 session_destroy();

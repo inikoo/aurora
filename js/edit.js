@@ -415,7 +415,7 @@ function on_changed_confirm_value(field, confirm_value) {
 
 function on_changed_value(field, new_value) {
 
-    console.log('changed: ' + field)
+   // console.log('changed: ' + field)
 
     var object = $('#fields').attr('object');
 

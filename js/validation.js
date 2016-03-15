@@ -7,11 +7,11 @@ function validate_field(field, new_value, field_type, required, server_validatio
 
     var validation = client_validation(field_type, required, new_value, field)
 
-    
 
-    if (validation.class == 'valid' && server_validation_settings!='') {
 
-    var settings=JSON.parse(server_validation_settings)
+    if (validation.class == 'valid' && server_validation_settings != '') {
+
+        var settings = JSON.parse(server_validation_settings)
 
 
         if (settings.tipo == 'check_for_duplicates' && new_value == '') {
@@ -503,24 +503,32 @@ function validate_signed_integer(value, max_value) {
 function server_validation(settings, parent, parent_key, object, key, field, value) {
 
 
-   
-   console.log(settings)
-   
-   if(settings.parent!=null){
-    parent=settings.parent;
-   }
-    if(settings.parent_key!=null){
-    parent_key=settings.parent_key;
-   }
-   
-    if(settings.parent_key_field!=null){
-    parent_key=$('#'+settings.parent_key_field).val()
-   }
-   
+
+    console.log(settings.setup)
+
+    if (settings.parent != null) {
+        parent = settings.parent;
+    }
+    if (settings.parent_key != null) {
+        parent_key = settings.parent_key;
+    }
+
+    if (settings.parent_key_field != null) {
+        parent_key = $('#' + settings.parent_key_field).val()
+    }
+
 
     $("#" + field + '_editor').addClass('waiting')
-    var request = '/ar_validation.php?tipo=' + settings.tipo + '&parent=' + parent + '&parent_key=' + parent_key + '&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value
-   console.log(request)
+
+    if (settings.setup != null) {
+            var request = '/ar_setup.php?tipo=' + settings.tipo + '&parent=' + parent + '&parent_key=' + parent_key + '&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value
+
+    } else {
+
+        var request = '/ar_validation.php?tipo=' + settings.tipo + '&parent=' + parent + '&parent_key=' + parent_key + '&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value
+    }
+
+    console.log(request)
 
 
     $.getJSON(request, function(data) {

@@ -200,6 +200,28 @@ input {
   width: 1px;
 }
 
+
+.branding{
+margin-bottom:30px;
+
+.brand{font-size:30px;
+			background: -webkit-linear-gradient(#FDD017, #D4A017);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;}
+
+
+
+    .logo{width:100px;
+    &.setup{width:50px;}
+    }
+
+}
+
+
+
+
+
+
 .text {
 
   &--center {

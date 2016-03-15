@@ -286,3 +286,21 @@ rename table `Image Bridge` to `Image Subject Bridge`;
 ALTER TABLE `Image Subject Bridge` CHANGE `Image Subject Image Public` `Image Subject Is Public` ENUM('Yes','No') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'No';
 ALTER TABLE `Image Subject Bridge` CHANGE `Image Subject Subject` `Image Subject Object` ENUM('Store Product','Site Favicon','Product','Family','Department','Store','Part','Supplier Product','Store Logo','Store Email Template Header','Store Email Postcard','Email Image','Page','Page Header','Page Footer','Page Header Preview','Page Footer Preview','Page Preview','Site Menu','Site Search','User Profile','Attachment Thumbnail','Category') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `Image Subject Subject Key` `Image Subject Object Key` MEDIUMINT(8) UNSIGNED NOT NULL;
 // run migrate_images.oneoff.php 
+
+ALTER TABLE `Account Dimension` CHANGE `Stores` `Account Stores` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0', CHANGE `Websites` `Account Websites` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0', CHANGE `Warehouses` `Account Warehouses` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0', CHANGE `Employees` `Account Employees` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', CHANGE `Inikoo Public URL` `Account System Public URL` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `Inikoo Version` `Account System Version` VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `Short Message` `Account Short Message` VARCHAR(512) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `SR Category Key` `Account SR Category Key` MEDIUMINT(9) NULL DEFAULT NULL, CHANGE `Apply Tax Method` `Account Apply Tax Method` ENUM('Per Item','Per Total') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Per Item';
+ALTER TABLE `Account Dimension` DROP `Account Menu Label`;
+ALTER TABLE `Account Dimension` CHANGE `Account Country Code` `Account Country Code` VARCHAR(3) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'GBR', CHANGE `Account Country 2 Alpha Code` `Account Country 2 Alpha Code` VARCHAR(2) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'GB';
+ALTER TABLE `Account Dimension` DROP `Account Company Key`;
+ALTER TABLE `Account Dimension` DROP `Account System Version`;
+ALTER TABLE `Account Dimension` ADD `Account Setup State` ENUM('InProcess','Done') NOT NULL DEFAULT 'InProcess' AFTER `Account HR Start Year`;
+ALTER TABLE `Account Dimension` CHANGE `Account Setup State` `Account State` ENUM('InProcess','Ready') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'InProcess';
+ALTER TABLE `User Dimension` ADD `User Password Recovery Email` VARCHAR(255) NULL DEFAULT NULL AFTER `User Inactive Note`, ADD `User Password Recovery Mobile` VARCHAR(64) NULL DEFAULT NULL AFTER `User Password Recovery Email`;
+ALTER TABLE `Account Dimension` ADD `Account Creation Date` DATETIME NULL DEFAULT NULL AFTER `Account State`;
+ALTER TABLE `Account Dimension` CHANGE `Account State` `Account State` ENUM('Created','RootUser','Ready') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Created';
+ALTER TABLE `Account Dimension` CHANGE `Account State` `Account State` ENUM('InProcess','Active') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'InProcess';
+ALTER TABLE `Account Dimension` ADD `Account Setup Metadata` TEXT NULL DEFAULT NULL AFTER `Account Creation Date`;
+
+CREATE TABLE `Staff Role Bridge` ( `Role Code` varchar(8) NOT NULL, `Staff Key` mediumint(8) UNSIGNED NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ALTER TABLE `Staff Role Bridge` ADD PRIMARY KEY (`Role Code`,`Staff Key`);
+// run (todo) migrate user_company_positions.php
+

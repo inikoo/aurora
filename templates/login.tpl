@@ -6,7 +6,7 @@
 <head>
 	<link href="/art/aurora_log_v2_orange.png" rel="shortcut icon" type="image/x-icon" />
 
-	<title>{t}Inikoo Login{/t}</title>
+	<title>{t}Login{/t}</title>
 	<link href="/css/font-awesome.min.css" rel="stylesheet"> 
 	<link rel="stylesheet" href="css/login.css"> 
 	<script type="text/javascript" src="/js/jquery.min.js"></script> 
@@ -17,29 +17,23 @@
 <body class="align">
 <div class="site__container">
 	<div class="grid__container">
-		<div style="margin-bottom:30px">
+		<div class="branding">
 			<div class="text--center">
-				<img style="width:150px" src="art/aurora_log_v2_orange.png">
+				<img id="logo"  src="art/aurora_log_v2_orange.png">
 			</div>
-			<div class="text--center" style="font-size:30px;
-			background: -webkit-linear-gradient(#FDD017, #D4A017);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-			">
-				aurora
-			</div>
+			<div class="text--center brand">aurora</div>
 		</div>
 		<form class="form form--login" name="login_form" id="login_form" method="post" autocomplete="off" action="authorization.php">
 			<input type="hidden" id="ep" name="ep" value="{$st}" />
 			<input type="hidden" name="url" value="{$url}" />
 
 			<div class="form__field">
-				<label for="login__username"><i class="fa fa-user fa-fw"></i> <span class="hidden">{t}Username{/t}</span></label> 
-				<input name="login__username" id="login__username" type="text" class="form__input" placeholder="Username" required> 
+				<label for="login__username" title="{t}Username{/t}"><i class="fa fa-user fa-fw"></i> <span class="hidden"></span></label> 
+				<input name="login__username" id="login__username" type="text" class="form__input" placeholder="{t}Username{/t}" required> 
 			</div>
 			<div class="form__field">
-				<label for="login__password"><i class="fa fa-lock fa-fw"></i> <span class="hidden">{t}Password{/t}</span></label> 
-				<input id="login__password" type="password" class="form__input" placeholder="Password" required> 
+				<label for="login__password" title="{t}Password{/t}"><i class="fa fa-lock fa-fw"></i> <span class="hidden"></span></label> 
+				<input id="login__password" type="password" class="form__input" placeholder="{t}Password{/t}" required> 
 			</div>
 			<div class="form__field">
 				<input type="submit" value="{t}Log In{/t}"> 
