@@ -6,7 +6,10 @@ $color_dark_font: #ddd;
 $color_dark_darker_font: #777;
 $color_highlight_over_dark: #FFF;
 $header_background_color: #fefefe;
-$color_dark_font_selected: yellow;
+$color_dark_font_selected: #FFFF00;
+$color_dark_font_current: #FFFF66;
+
+
 $color_dark_font_hover: #FFFFCC;
 
 
@@ -118,6 +121,7 @@ html, body {
     .hide {
         display: none;
     }
+   
 }
 .panel {
     border: 1px solid #ccc;
@@ -268,6 +272,7 @@ input{
             margin-right: 6px;
             font-size: 95%;
             opacity: .20;
+            &.highlight{opacity: 1}
         }
         &:hover {
             background-color: $color_dark_highlight;
@@ -294,6 +299,17 @@ input{
     li.section.selected, li.section.selected:hover {
         color: $color_dark_font_selected;
     }
+    
+    
+    li.current_step, li.current_step:hover {
+        color: $color_dark_font_current;
+        .fa {
+          //  opacity: .75;
+        }
+    }
+   
+    
+    
     #top_info {
         height: $height_row;
         line-height: $height_row;
@@ -448,13 +464,27 @@ input{
             line-height: $height_header;
             margin-bottom: 10px;
             border-bottom: 1px solid #ccc;
-            .title {
+           
+            .title{float: left;
+                padding-left: 10px;}
+          .skip{float:right;padding-right:20px;padding-left:20px;border-left:1px solid #ccc;color:$color_warning}
+            
+           
+        }
+    }
+ 
+}
+
+ .title {
+            
                 color: #555;
-                float: left;
-                padding-left: 10px;
+                
                 font-size: $height_header*.7;
                 font-family: $font_title;
                 font-weight: 700;
+                
+                
+                
                 .bullet {
                     color: #000;
                     position: relative;
@@ -475,14 +505,7 @@ input{
                     vertical-align: -5%;
                 }
             }
-            
-          
-            
-           
-        }
-    }
- 
-}
+
 
   @import 'search';
 
@@ -729,6 +752,10 @@ right connector from last child*/
 
 .warning{color:$color_warning}
 .error{color:$color_error}
+
+.error_box{color:$color_error;padding:30px;margin:30px;text-align:center;border:1px solid $color_error}
+
+
 .disabled{opacity:.5;color:#777}
 .strikethrough{text-decoration:line-through;opacity:.7}
 

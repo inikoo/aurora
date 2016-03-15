@@ -230,6 +230,8 @@ else {
 }
 
 if ($user->can_view('account')) {
+
+
 	$nav_menu[] = array('<i class="fa fa-star fa-fw"></i> '._('Account'), '/account' , 'account', 'module', '');
 }
 
@@ -257,6 +259,8 @@ if ($data['object']=='order') {
 
 $smarty->assign('current_item', $current_item);
 $smarty->assign('current_section', $current_section);
+
+
 
 $smarty->assign('nav_menu', $nav_menu);
 

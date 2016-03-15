@@ -28,14 +28,25 @@ $options_yn=array(
 	'Yes'=>_('Yes'), 'No'=>_('No')
 );
 
-$options_Staff_Position=array();
-$sql=sprintf('select `Company Position Key`,`Company Position Code`,`Company Position Title` from `Company Position Dimension`  ');
-foreach ($db->query($sql) as $row) {
-	$options_Staff_Position[$row['Company Position Key']]=array(
-		'label'=>$row['Company Position Title'],
-		'selected'=>false
-	);
+
+
+include 'conf/roles.php';
+foreach ($roles as $_key=>$_data) {
+	if (in_array($account->get('Setup Metadata')['size'], $_data['size'])) {
+
+		foreach ($account->get('Setup Metadata')['instances'] as $instance) {
+			if (in_array($instance, $_data['instances'])) {
+
+				$options_Staff_Position[$_key]=array(
+					'label'=>$_data['title'],
+					'selected'=>false
+				);
+				break;
+			}
+		}
+	}
 }
+
 
 foreach (preg_split('/,/', $employee->get('Staff Position')) as $current_position_key) {
 	if ( array_key_exists($current_position_key, $options_Staff_Position ) ) {
@@ -284,24 +295,7 @@ $object_fields=array(
 		)
 	),
 
-	array(
-		'label'=>_('System roles'),
-		'show_title'=>true,
-		'class'=>'edit_fields',
-		'fields'=>array(
 
-			array(
-				'render'=>($employee->get('Staff Currently Working')=='Yes'?true:false),
-				'id'=>'Staff_Position',
-				'edit'=>'radio_option',
-				'value'=>$employee->get('Staff Position'),
-				'formatted_value'=>$employee->get('Position'),
-				'options'=>$options_Staff_Position,
-				'label'=>ucfirst($employee->get_field_label('Staff Position')),
-			)
-
-		)
-	),
 
 );
 
@@ -322,6 +316,14 @@ if ($employee->get('Staff User Key')) {
 				'formatted_value'=>$employee->get('User Active'),
 				'options'=>$options_yn,
 				'label'=>ucfirst($employee->get_field_label('Staff Active')),
+			),
+				array(
+				'id'=>'Staff_Position',
+				'edit'=>'radio_option',
+				'value'=>$employee->get('Staff Position'),
+				'formatted_value'=>$employee->get('Position'),
+				'options'=>$options_Staff_Position,
+				'label'=>ucfirst($employee->get_field_label('Staff Position')),
 			),
 			array(
 

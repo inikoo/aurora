@@ -19,11 +19,8 @@ class Account extends DB_Table{
 
 		$this->table_name='Account';
 
-		if ($a1=='create') {
-			$this->create($a2);
 
-		}else
-			$this->get_data();
+		$this->get_data();
 	}
 
 
@@ -47,67 +44,6 @@ class Account extends DB_Table{
 	}
 
 
-	function create($data) {
-		$this->new=false;
-
-
-
-
-		$data['Account Company Name']=$company->data['Company Name'];
-		$data['Account Country Code']=$company->data['Company Main Country Code'];
-
-		$address=new Address($company->data['Company Main Address Key']);
-
-		$data['Account Country Code']=$company->data['Company Main Country Code'];
-		$data['Account Country 2 Alpha Code']=$address->data['Address Country 2 Alpha Code'];
-
-		$base_data=$this->base_data();
-
-		foreach ($data as $key=>$value) {
-			if (array_key_exists($key, $base_data))
-				$base_data[$key]=_trim($value);
-		}
-
-		$keys='(';$values='values(';
-		foreach ($base_data as $key=>$value) {
-			$keys.="`$key`,";
-
-			if ($key=='Short Message')
-				$values.=prepare_mysql($value, false).",";
-
-			else
-				$values.=prepare_mysql($value).",";
-		}
-		$keys=preg_replace('/,$/', ')', $keys);
-		$values=preg_replace('/,$/', ')', $values);
-		$sql=sprintf("delete * from  `Account Dimension` " );
-		mysql_query($sql);
-		$sql=sprintf("insert into `Account Dimension` %s %s", $keys, $values);
-
-
-		if ($result=$this->db->query($sql)) {
-			if ($row = $result->fetch()) {
-				$this->id=$this->db->lastInsertId();
-				$this->msg=_("Account Added");
-				$this->get_data();
-				$this->new=true;
-
-
-				$sql=sprintf("INSERT INTO `Payment Service Provider Dimension` ( `Payment Service Provider Code`, `Payment Service Provider Name`, `Payment Service Provider Type`) VALUES ('Accounts', %s, 'Account');",
-					_('Internal customers accounts')
-
-				);
-
-				$this->db->exec($sql);
-			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
-		}
-
-
-
-	}
 
 
 	function get($key, $data=false) {
@@ -118,7 +54,9 @@ class Account extends DB_Table{
 
 
 		switch ($key) {
-
+		case 'Setup Metadata':
+			return json_decode($this->data['Account Setup Metadata'], true);
+			break;
 		case 'National Employment Code Label':
 
 			switch ($this->data['Account Country 2 Alpha Code']) {
@@ -229,33 +167,48 @@ class Account extends DB_Table{
 			$history_key,
 			prepare_mysql($type)
 		);
-		mysql_query($sql);
+		$this->db->exec($sql);
 		//print $sql;
 	}
 
 
 	function get_current_staff_with_position_code($position_code, $options='') {
+
+
+		if (preg_match('/smarty/i', $options))
+			$smarty=true;
+		else
+			$smarty=false;
+
 		$positions=array();
-		$sql=sprintf('Select * from `Staff Dimension` SD  left join `Company Position Staff Bridge` B on (B.`Staff Key`=SD.`Staff Key`) left join `Company Position Dimension` CPD on (CPD.`Company Position Key`=B.`Position Key`) where  `Company Position Code`=%s and `Staff Currently Working`="Yes"'
+		$sql=sprintf('Select * from `Staff Dimension` SD  left join `Company Position Staff Bridge` B on (B.`Staff Key`=SD.`Staff Key`)  where  `Position Code`=%s and `Staff Currently Working`="Yes"'
 			, prepare_mysql($position_code)
 		);
 
 
-		$smarty=false;
-		if (preg_match('/smarty/i', $options))
-			$smarty=true;
-		$res=mysql_query($sql);
-		while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-			if ($smarty) {
-				$_row=array();
-				foreach ($row as $key=>$value) {
-					$_row[preg_replace('/\s/', '', $key)]=$value;
-				}
 
-				$positions[$row['Staff Key']]=$_row;
-			}else
-				$positions[$row['Staff Key']]=$row;
+		if ($result=$db->this->query($sql)) {
+			foreach ($result as $row) {
+
+				if ($smarty) {
+					$_row=array();
+					foreach ($row as $key=>$value) {
+						$_row[preg_replace('/\s/', '', $key)]=$value;
+					}
+
+					$positions[$row['Staff Key']]=$_row;
+				}else
+					$positions[$row['Staff Key']]=$row;
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
+
+
 		return $positions;
 	}
 
@@ -465,7 +418,7 @@ class Account extends DB_Table{
 			$number_employees=$row['num'];
 		}
 
-		$this->update(array('Employees'=>$number_employees), 'no_history');
+		$this->update(array('Account Employees'=>$number_employees), 'no_history');
 
 	}
 
@@ -491,6 +444,7 @@ class Account extends DB_Table{
 		case 'Account Order Transactions':
 			$label=_("Order's Items");
 			break;
+
 		default:
 			$label=$field;
 		}

@@ -396,7 +396,7 @@ function api_requests($_data, $db, $user) {
 function groups($_data, $db, $user) {
 	
 	$rtext_label='user group';
-	include_once 'utils/user_groups.php';
+	include 'conf/user_groups.php';
 
 	$totals_metadata=array(
 		'filtered'=>0,

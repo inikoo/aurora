@@ -12,7 +12,7 @@ include_once 'class.Staff.php';
 
 include_once 'utils/invalid_messages.php';
 include 'utils/available_locales.php';
-include 'utils/user_groups.php';
+include 'conf/user_groups.php';
 
 $system_user=new User($state['key']);
 
@@ -101,13 +101,7 @@ $object_fields=array(
 		'show_title'=>true,
 		'class'=>'links',
 		'fields'=>array(
-			array(
-				'render'=>false,
-				'class'=>'locked',
-				'id'=>'User_ID',
-				'value'=>$system_user->get_formatted_id() ,
-				'label'=>_('ID')
-			),
+			
 
 			array(
 				'class'=>'link',

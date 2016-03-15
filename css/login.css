@@ -103,6 +103,18 @@ input {
   position: absolute;
   width: 1px; }
 
+.branding {
+  margin-bottom: 30px; }
+  .branding .brand {
+    font-size: 30px;
+    background: -webkit-linear-gradient(#FDD017, #D4A017);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; }
+  .branding .logo {
+    width: 100px; }
+    .branding .logo.setup {
+      width: 50px; }
+
 .text--center {
   text-align: center; }
 

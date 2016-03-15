@@ -12,14 +12,16 @@
 
 
 
-function get_object($object_name, $key,$load_other_data=false) {
+function get_object($object_name, $key, $load_other_data=false) {
 
 	global $account;
 
 	switch ($object_name) {
 	case 'account':
-
-		$object=$account;
+	case 'Account':
+		include_once 'class.Account.php';
+		$object=new Account();
+		break;
 		break;
 	case 'customer':
 	case 'Customer':
@@ -38,7 +40,7 @@ function get_object($object_name, $key,$load_other_data=false) {
 	case 'Product':
 		include_once 'class.StoreProduct.php';
 		$object=new StoreProduct($key);
-		
+
 		break;
 	case 'order':
 		include_once 'class.Order.php';
@@ -89,6 +91,10 @@ function get_object($object_name, $key,$load_other_data=false) {
 	case 'User':
 		include_once 'class.User.php';
 		$object=new User($key);
+		break;
+	case 'user_root':
+		include_once 'class.User.php';
+		$object=new User('Administrator');
 		break;
 	case 'list':
 		include_once 'class.List.php';
@@ -144,11 +150,11 @@ function get_object($object_name, $key,$load_other_data=false) {
 		require_once "class.Timeseries.php";
 		$object=new Timeseries($key);
 		break;
-		
+
 	case 'image.subject':
 		require_once "class.Image.php";
-		$object=new Image('image_bridge_key',$key);
-		break;	
+		$object=new Image('image_bridge_key', $key);
+		break;
 	default:
 		exit('need to complete E1 '.$object_name);
 		break;

@@ -2,7 +2,7 @@
 /*
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created: 15 November 2015 at 14:20:16 GMT Sheffied UK
+ Created: 9 March 2016 at 18:02:13 GMT+8, Yiwu, China
  Copyright (c) 2015, Inikoo
 
  Version 3
@@ -13,6 +13,11 @@
 include_once 'utils/invalid_messages.php';
 include_once 'class.Staff.php';
 
+$account=new Account();
+$smarty->assign('account', $account);
+
+
+$user=new User('Administrator');
 
 $employee=new Staff(0);
 
@@ -23,6 +28,9 @@ $options_Staff_Type=array(
 $options_yn=array(
 	'Yes'=>_('Yes'), 'No'=>_('No')
 );
+
+$options_Staff_Position=array();
+
 
 
 include 'conf/roles.php';
@@ -41,6 +49,17 @@ foreach ($roles as $_key=>$_data) {
 		}
 	}
 }
+
+
+$sql=sprintf('select `Company Position Key`,`Company Position Code` from `Company Position Dimension`  ');
+foreach ($db->query($sql) as $row) {
+	$options_Staff_Position[$row['Company Position Key']]=array(
+		'label'=>$roles[$row['Company Position Key']['title']],
+		'selected'=>false
+	);
+}
+
+
 
 $options_Staff_Supervisor=array();
 $sql=sprintf('select `Staff Name`,`Staff Key`,`Staff Alias` from `Staff Dimension` where `Staff Currently Working`="Yes" ');
@@ -77,7 +96,7 @@ $object_fields=array(
 				'value'=>'',
 				'label'=>ucfirst($employee->get_field_label('Staff ID')),
 				'invalid_msg'=>get_invalid_message('smallint_unsigned'),
-				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates', 'setup'=>1)),
 				'required'=>false,
 				'type'=>'value'
 			),
@@ -87,7 +106,7 @@ $object_fields=array(
 				'edit'=>'string',
 				'value'=>$employee->get('Staff Alias'),
 				'label'=>ucfirst($employee->get_field_label('Staff Alias')),
-				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates', 'setup'=>1)),
 				'invalid_msg'=>get_invalid_message('string'),
 				'type'=>'value'
 			),
@@ -130,9 +149,9 @@ $object_fields=array(
 				'id'=>'Staff_Official_ID',
 				'edit'=>'string',
 				'value'=>$employee->get('Staff Official ID'),
-				'label'=>ucfirst($employee->get_field_label('Staff Official ID')),
+				'label'=>ucfirst($account->get('National Employment Code Label')==''?_('Official Id'):$account->get('National Employment Code Label')),
 				'invalid_msg'=>get_invalid_message('string'),
-				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates', 'setup'=>1)),
 				'required'=>false,
 				'type'=>'value'
 			),
@@ -143,7 +162,7 @@ $object_fields=array(
 				'value'=>$employee->get('Staff Email'),
 				'formatted_value'=>$employee->get('Email'),
 				'label'=>ucfirst($employee->get_field_label('Staff Email')),
-				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates', 'setup'=>1)),
 				'invalid_msg'=>get_invalid_message('email'),
 				'required'=>false,
 				'type'=>'value'
@@ -249,7 +268,7 @@ $object_fields=array(
 		)
 	),
 
-
+	
 
 );
 
@@ -282,7 +301,17 @@ $object_fields[]=array(
 			'type'=>'util'
 		),
 
-
+		array(
+		'render'=>false,
+			'id'=>'Staff_Position',
+			'edit'=>'radio_option',
+			'value'=>'',
+			'formatted_value'=>'',
+			'options'=>$options_Staff_Position,
+			'label'=>ucfirst($employee->get_field_label('Staff Position')),
+			'required'=>false,
+			'type'=>'user_value'
+		),
 		array(
 			'render'=>false,
 			'id'=>'Staff_User_Active',
@@ -295,23 +324,12 @@ $object_fields[]=array(
 		),
 		array(
 			'render'=>false,
-			'id'=>'Staff_Position',
-			'edit'=>'radio_option',
-			'value'=>'',
-			'formatted_value'=>'',
-			'options'=>$options_Staff_Position,
-			'label'=>ucfirst($employee->get_field_label('Staff Position')),
-			'required'=>false,
-			'type'=>'user_value'
-		),
-		array(
-			'render'=>false,
 			'id'=>'Staff_User_Handle',
 			'edit'=>'handle',
 			'value'=>$employee->get('Staff User Handle'),
 			'formatted_value'=>$employee->get('User Handle'),
 			'label'=>ucfirst($employee->get_field_label('Staff User Handle')),
-			'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
+			'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates', 'setup'=>1)),
 			'invalid_msg'=>get_invalid_message('handle'),
 			'type'=>'user_value'
 
@@ -346,6 +364,7 @@ $object_fields[]=array(
 	)
 );
 
+//print_r($state);
 
 
 $smarty->assign('state', $state);
@@ -356,11 +375,9 @@ $smarty->assign('object_name', $employee->get_object_name());
 
 
 $smarty->assign('object_fields', $object_fields);
-$smarty->assign('new_object_label', _('View new employee'));
-$smarty->assign('new_object_request', 'employee/__key__');
 
-
-
+$smarty->assign('form_type', 'setup');
+$smarty->assign('step', 'add_employee');
 
 $smarty->assign('js_code', file_get_contents('js/employee.new.js'));
 

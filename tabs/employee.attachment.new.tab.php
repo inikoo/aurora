@@ -120,7 +120,7 @@ $smarty->assign('object', $attachment);
 $smarty->assign('object_name', preg_replace('/ /', '_', $attachment->get_object_name()));
 
 
-$smarty->assign('upload_file', 'upload_attachment');
+$smarty->assign('form_type', 'upload_attachment');
 
 $smarty->assign('object_fields', $object_fields);
 

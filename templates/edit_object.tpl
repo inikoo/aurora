@@ -1,8 +1,8 @@
 <div id="fields"  class="edit_object" object="{$state._object->get_object_name()}" key="{$state.key}" >
 <span id="invalid_msg" class="hide">{t}Invalid value{/t}</span>
 
-{if isset({$preferred_countries})}
-<input id="preferred_countries" type="hidden" value="{$preferred_countries}">
+{if isset($preferred_countries)}
+<input id="preferred_countries" type="hidden"  value="{$preferred_countries}">
 {/if}
 <table border=0>
 {foreach from=$object_fields item=field_group } 
@@ -51,7 +51,7 @@
 		<td  id="{$field.id}_container" class="container value  " _required="{$required}" field_type='{$field_type}' server_validation='{$server_validation}' object='{$state._object->get_object_name()}' key='{$state.key}' parent='{$state.parent}' parent_key='{$state.parent_key}'> 
 		
 		
-		<span id="{$field.id}_formatted_value"   class="{$field.id} {$edit} formatted_value " ondblclick="open_edit_this_field(this)">{if isset($field.formatted_value)}{$field.formatted_value}{else}{$field.value}{/if}</span>
+		<span id="{$field.id}_formatted_value"   class="{$field.id} {$edit}  formatted_value " ondblclick="open_edit_this_field(this)">{if isset($field.formatted_value)}{$field.formatted_value}{else}{$field.value}{/if}</span>
 		
        <input id="{$field.id}_value" type='hidden' class="unformatted_value" value="{$field.value}" />
     
@@ -212,7 +212,7 @@
 
 	  telInput_{$field.id}.intlTelInput({
 	     initialCountry: initial_country,
-	     preferredCountries: [{$preferred_countries}]
+	     preferredCountries: [{if isset($preferred_countries)}{$preferred_countries}{else}'gb'{/if}]
 	 });
 	 
 	 
@@ -321,9 +321,7 @@
 		{elseif $edit=='radio_option' } 
 		
 		<input id="{$field.id}" type="hidden" value="{$field.value}" has_been_valid="0"/>
-		{*}
-		<input id="{$field.id}_formatted"  type="hidden" class="option_input_field hide" value="{$field.formatted_value}" readonly />
-		{*}
+		
 		<i  id="{$field.id}_save_button" class="fa fa-cloud save {$edit} hide" onclick="save_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i> 
         <span id="{$field.id}_msg" class="msg"></span> 
 		<div id="{$field.id}_options" class="dropcontainer radio_option hide" >

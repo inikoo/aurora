@@ -39,7 +39,6 @@ function get_form_validation_state(submitting) {
         }
 
         //if (component_validation == 'invalid' || component_validation == 'potentially_valid') 
-        
         if (component_validation == 'invalid') {
             form_validation = 'invalid';
         }
@@ -105,7 +104,7 @@ function check_if_form_is_valid() {
 
 }
 
-function save_new_object(object, upload_file) {
+function save_new_object(object, form_type) {
 
     var form_validation = get_form_validation_state()
     process_form_validation(form_validation, true)
@@ -134,6 +133,8 @@ function save_new_object(object, upload_file) {
 
             if (field_type == 'time') {
                 value = clean_time($('#' + field).val())
+            } else if (field_type == 'password' || field_type == 'password_with_confirmation' || field_type == 'password_with_confirmation_paranoid' || field_type == 'pin' || field_type == 'pin_with_confirmation' || field_type == 'pin_with_confirmation_paranoid') {
+                value = sha256_digest($('#' + field).val())
             } else if (field_type == 'attachment') {
                 form_data.append("file", $('#' + field).prop("files")[0])
                 value = ''
@@ -145,16 +146,21 @@ function save_new_object(object, upload_file) {
         });
 
 
+
+        if (form_type == 'setup') {
+            save_setup(object, fields_data)
+            return;
+        }
+
+        // used only for debug
         var request = '/ar_edit.php?tipo=new_object&object=' + object + '&parent=' + $('#fields').attr('parent') + '&parent_key=' + $('#fields').attr('parent_key') + '&fields_data=' + JSON.stringify(fields_data)
         console.log(request)
-
-        form_data.append("tipo", (upload_file != '' ? upload_file : 'new_object'))
+        //=====
+        form_data.append("tipo", (form_type != '' ? form_type : 'new_object'))
         form_data.append("object", object)
         form_data.append("parent", $('#fields').attr('parent'))
         form_data.append("parent_key", $('#fields').attr('parent_key'))
         form_data.append("fields_data", JSON.stringify(fields_data))
-
-
 
         var request = $.ajax({
 
@@ -166,7 +172,6 @@ function save_new_object(object, upload_file) {
             dataType: 'json'
 
         })
-
 
         request.done(function(data) {
 
@@ -486,4 +491,3 @@ function update_new_address_fields(field, country_code, hide_recipient_fields, a
     })
 
 }
-

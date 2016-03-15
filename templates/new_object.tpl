@@ -1,8 +1,8 @@
-	{if isset($upload_file)}{assign "upload_file" $upload_file}{else}{assign "upload_file" ""}{/if} 
+	{if isset($form_type)}{assign "form_type" $form_type}{else}{assign "form_type" ""}{/if} 
 
 <div id="result" class="result hide">
 </div>
-<div  id="fields" class="new_object   {if $upload_file}$upload_file{/if}" object="{$object_name}" parent='{$state.parent}' parent_key='{$state.parent_key}' has_been_fully_validated="0" >
+<div  id="fields" class="new_object   {if $form_type}$form_type{/if}" object="{$object_name}" parent='{$state.parent}' parent_key='{$state.parent_key}' key="{$state.key}" {if isset($step)}step="{$step}"{/if} has_been_fully_validated="0" >
     <table border=0>
     {foreach from=$object_fields item=field_group } 
         <tr class="title" >
@@ -400,7 +400,7 @@
 <td></td>
 <td>
 
-<span class="save_form save " id="{$object_name}_save"  onclick="save_new_object('{$object_name}','{$upload_file}')"  ><span id="save_label">{t}Save{/t}</span><span class="hide" id="saving_label">{t}Saving{/t}</span> <i id="{$object_name}_save_icon" class="fa fa-cloud  " ></i></span> 
+<span class="save_form save " id="{$object_name}_save"  onclick="save_new_object('{$object_name}','{$form_type}')"  ><span id="save_label">{t}Save{/t}</span><span class="hide" id="saving_label">{t}Saving{/t}</span> <i id="{$object_name}_save_icon" class="fa fa-cloud  " ></i></span> 
 <span id="{$object_name}_msg" class="msg"></span></span> 
 <span class="hide results" id="{$object_name}_create_other" onClick="change_view(state.request)">{t}Add another{/t} <i class="fa fa-plus"></i>  </span> 
 <span class="hide results" id="{$object_name}_go_new" request="" request_template="{$new_object_request}" onClick="change_to_new_object_view()"  >{if isset($new_object_label)}{$new_object_label}{else}{t}View new object{/t}{/if} <i class="fa fa-arrow-right"></i> </span>

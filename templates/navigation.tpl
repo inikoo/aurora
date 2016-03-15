@@ -24,7 +24,12 @@
 	<span id="nav_title" class="title">
 		{$_content.title}
 	</span>
- 
+	
+	{if isset($_content.skip) and $_content.skip }
+	<span id="skip" class="title button skip" onClick="skip()">
+		{t}Skip{/t} 
+	</span>
+ {/if}
 <div id="search_form" class="search_form" style="position:relative;{if !$_content.search.show}display:none{/if}">
 	<input id="search" placeholder="{$_content.search.placeholder}"> <div id="clear_search" class="hide" ><i onclick="clear_search()" class="fa fa-times "></i></div>
 	<div class="square_button right">
@@ -44,6 +49,8 @@
 	
 	
 	{foreach from=$_content.right_buttons name=right_buttons item=button } 
+	
+	
 	<div {if isset($button.id) and $button.id }id="{$button.id}" {/if} {if isset($button.click)  }onClick="{$button.click}" {/if}      class=" {if isset($button.class)}{$button.class}{/if}  square_button right {if $smarty.foreach.right_buttons.first}border{/if}" {if isset($button.reference) and $button.reference!=''}onclick="change_view('{$button.reference}')"{/if}title="{$button.title}">
 		<i class="fa fa-{$button.icon} fa-fw "></i> 
 	</div>

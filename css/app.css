@@ -181,6 +181,8 @@ input {
       margin-right: 6px;
       font-size: 95%;
       opacity: .20; }
+      #app_leftmenu li .fa.highlight {
+        opacity: 1; }
     #app_leftmenu li:hover {
       background-color: #666;
       color: #fff; }
@@ -193,11 +195,13 @@ input {
     padding-left: 50px;
     font-size: 80%; }
   #app_leftmenu li.selected, #app_leftmenu li.selected:hover {
-    color: yellow; }
+    color: #FFFF00; }
     #app_leftmenu li.selected .fa, #app_leftmenu li.selected:hover .fa {
       opacity: .75; }
   #app_leftmenu li.section.selected, #app_leftmenu li.section.selected:hover {
-    color: yellow; }
+    color: #FFFF00; }
+  #app_leftmenu li.current_step, #app_leftmenu li.current_step:hover {
+    color: #FFFF66; }
   #app_leftmenu #top_info {
     height: 32px;
     line-height: 32px;
@@ -339,26 +343,34 @@ input {
       margin-bottom: 10px;
       border-bottom: 1px solid #ccc; }
       #app_main #navigation #header .title {
-        color: #555;
         float: left;
-        padding-left: 10px;
-        font-size: 21px;
-        font-family: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
-        font-weight: 700; }
-        #app_main #navigation #header .title .bullet {
-          color: #000;
-          position: relative;
-          top: 1px;
-          padding: 0px 5px; }
-        #app_main #navigation #header .title .id {
-          color: #000;
-          font-weight: 800; }
-        #app_main #navigation #header .title .new {
-          background: yellow; }
-        #app_main #navigation #header .title .subtitle {
-          font-size: 80%; }
-        #app_main #navigation #header .title img {
-          vertical-align: -5%; }
+        padding-left: 10px; }
+      #app_main #navigation #header .skip {
+        float: right;
+        padding-right: 20px;
+        padding-left: 20px;
+        border-left: 1px solid #ccc;
+        color: #ED9121; }
+
+.title {
+  color: #555;
+  font-size: 21px;
+  font-family: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
+  font-weight: 700; }
+  .title .bullet {
+    color: #000;
+    position: relative;
+    top: 1px;
+    padding: 0px 5px; }
+  .title .id {
+    color: #000;
+    font-weight: 800; }
+  .title .new {
+    background: yellow; }
+  .title .subtitle {
+    font-size: 80%; }
+  .title img {
+    vertical-align: -5%; }
 
 #search_form {
   float: right;
@@ -624,6 +636,13 @@ input {
 
 .error {
   color: tomato; }
+
+.error_box {
+  color: tomato;
+  padding: 30px;
+  margin: 30px;
+  text-align: center;
+  border: 1px solid tomato; }
 
 .disabled {
   opacity: .5;
@@ -929,7 +948,7 @@ input {
           position: relative;
           top: -1px; }
       .new_object table .main_title .widget_types .widget.selected, .new_object table .main_title .widget_types .widget.selected:hover, .presention_card table .main_title .widget_types .widget.selected, .presention_card table .main_title .widget_types .widget.selected:hover, .showcase table .main_title .widget_types .widget.selected, .showcase table .main_title .widget_types .widget.selected:hover, .dashboard table .main_title .widget_types .widget.selected, .dashboard table .main_title .widget_types .widget.selected:hover, .export_dialog table .main_title .widget_types .widget.selected, .export_dialog table .main_title .widget_types .widget.selected:hover {
-        color: yellow; }
+        color: #FFFF00; }
       .new_object table .main_title .widget_types .widget:hover, .presention_card table .main_title .widget_types .widget:hover, .showcase table .main_title .widget_types .widget:hover, .dashboard table .main_title .widget_types .widget:hover, .export_dialog table .main_title .widget_types .widget:hover {
         color: #FFFFCC; }
     .new_object table .main_title .tabs, .presention_card table .main_title .tabs, .showcase table .main_title .tabs, .dashboard table .main_title .tabs, .export_dialog table .main_title .tabs {
@@ -943,7 +962,7 @@ input {
       .new_object table .main_title .tabs .tab.widget:hover, .presention_card table .main_title .tabs .tab.widget:hover, .showcase table .main_title .tabs .tab.widget:hover, .dashboard table .main_title .tabs .tab.widget:hover, .export_dialog table .main_title .tabs .tab.widget:hover {
         background-color: #color_dark_highlight !important; }
       .new_object table .main_title .tabs .tab.widget_selected:hover, .new_object table .main_title .tabs .tab.widget_selected, .presention_card table .main_title .tabs .tab.widget_selected:hover, .presention_card table .main_title .tabs .tab.widget_selected, .showcase table .main_title .tabs .tab.widget_selected:hover, .showcase table .main_title .tabs .tab.widget_selected, .dashboard table .main_title .tabs .tab.widget_selected:hover, .dashboard table .main_title .tabs .tab.widget_selected, .export_dialog table .main_title .tabs .tab.widget_selected:hover, .export_dialog table .main_title .tabs .tab.widget_selected {
-        color: yellow !important; }
+        color: #FFFF00 !important; }
   .new_object table .formated_value, .presention_card table .formated_value, .showcase table .formated_value, .dashboard table .formated_value, .export_dialog table .formated_value {
     margin-right: 10px; }
   .new_object table td, .presention_card table td, .showcase table td, .dashboard table td, .export_dialog table td {
@@ -1449,7 +1468,7 @@ textarea {
             position: relative;
             top: -1px; }
         .edit_object table .main_title .widget_types .widget.selected, .edit_object table .main_title .widget_types .widget.selected:hover {
-          color: yellow; }
+          color: #FFFF00; }
         .edit_object table .main_title .widget_types .widget:hover {
           color: #FFFFCC; }
       .edit_object table .main_title .tabs {
@@ -1463,7 +1482,7 @@ textarea {
         .edit_object table .main_title .tabs .tab.widget:hover {
           background-color: #color_dark_highlight !important; }
         .edit_object table .main_title .tabs .tab.widget_selected:hover, .edit_object table .main_title .tabs .tab.widget_selected {
-          color: yellow !important; }
+          color: #FFFF00 !important; }
     .edit_object table .formated_value {
       margin-right: 10px; }
     .edit_object table td {

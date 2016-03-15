@@ -200,9 +200,11 @@ class User extends DB_Table {
 
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
-				$this->error=true;
-				$this->msg=_('Duplicate user login');
-				return;
+				if ($row['numh']>0) {
+					$this->error=true;
+					$this->msg=_('Duplicate user login');
+					return;
+				}
 			}else {
 				$this->error=true;
 				$this->msg= _('Unknown error');
@@ -320,7 +322,6 @@ class User extends DB_Table {
 
 		else
 			$sql=sprintf("select * from `User Dimension` where `User Key`=%d", $data);
-
 
 
 		if ($this->data = $this->db->query($sql)->fetch()) {
@@ -740,7 +741,7 @@ class User extends DB_Table {
 
 	function add_group($to_add, $history=true) {
 
-		include 'utils/user_groups.php';
+		include 'conf/user_groups.php';
 
 		$changed=0;
 		foreach ($to_add as $group_key) {
@@ -776,7 +777,7 @@ class User extends DB_Table {
 
 	function delete_group($to_delete, $history=true) {
 
-		include 'utils/user_groups.php';
+		include 'conf/user_groups.php';
 
 		$changed=0;
 		foreach ($to_delete as $group_key) {
@@ -1227,7 +1228,12 @@ class User extends DB_Table {
 		case 'Preferred Locale':
 			$label=_('Language');
 			break;
-
+		case 'User Password Recovery Email':
+			$label=_("Recovery email");
+			break;
+		case 'User Password Recovery Mobile':
+			$label=_("Recovery mobile");
+			break;
 
 		default:
 			$label=$field;
@@ -1347,11 +1353,13 @@ class User extends DB_Table {
 
 	function can_do($right_type, $tag, $tag_key=false) {
 
-		//  print_r($this->rights_allow);
-
+	
 		if (!is_string($tag))
 			return false;
 		$tag=strtolower(_trim($tag));
+		
+		
+		
 		if ($tag_key==false) {
 			if (isset($this->rights_allow[$right_type][$tag]))
 				return true;
@@ -1409,7 +1417,7 @@ class User extends DB_Table {
 			return '<span class="all" ><i class="fa fa-toggle-on"></i> '._('all').'</span>';
 		}else {
 
-			include 'utils/user_groups.php';
+			include 'conf/user_groups.php';
 			$groups=array();
 			$sql=sprintf("select `User Group Key` as `key` from `User Group User Bridge` UGUB  where UGUB.`User Key`=%d", $this->id);
 			foreach ($this->db->query($sql) as $row) {
@@ -1553,14 +1561,18 @@ class User extends DB_Table {
 
 
 	function read_groups() {
+
+		include 'conf/user_groups.php';
+
 		$this->groups=array();
 		$this->groups_key_list='';
 		$this->groups_key_array=array();
 
-		$sql=sprintf("select * from `User Group User Bridge` UGUB left join `User Group Dimension` GD on (GD.`User Group Key`=UGUB.`User Group Key`) where UGUB.`User Key`=%d", $this->id);
+		$sql=sprintf("select `User Group Key` from `User Group User Bridge`  where  `User Key`=%d", $this->id);
+
 		if ($result=$this->db->query($sql)) {
 			foreach ($result as $row) {
-				$this->groups[$row['User Group Key']]=array('User Group Name'=>$row['User Group Name']);
+				$this->groups[$row['User Group Key']]=array('User Group Name'=>$user_groups[$row['User Group Key']]['Name']);
 				$this->groups_key_list.=','.$row['User Group Key'];
 				$this->groups_key_array[]=$row['User Group Key'];
 			}
@@ -1681,6 +1693,9 @@ class User extends DB_Table {
 
 	function read_rights() {
 
+		include 'conf/user_groups.php';
+		include 'conf/user_rights.php';
+
 		$this->rights_allow['View']=array();
 		$this->rights_allow['Delete']=array();
 		$this->rights_allow['Edit']=array();
@@ -1690,75 +1705,56 @@ class User extends DB_Table {
 		if (!$this->groups_read)
 			$this->read_groups();
 
-		if (count($this->groups)>0) {
 
-			$sql=sprintf("select * from `User Group Rights Bridge`  UGRB left join `Right Dimension` RD on (RD.`Right Key`=UGRB.`Right Key`)  where `Group Key` in (%s)"
-				, $this->groups_key_list);
+		//print_r($this->groups_key_array);
 
-			if ($result=$this->db->query($sql)) {
-				foreach ($result as $row) {
+		$rights=array();
+		foreach ($this->groups_key_array as $group_key) {
 
-					if ($row['Right Type']=='View') {
-						$this->rights_allow['View'][$row['Right Name']]=array(
-							'Right Name'=>$row['Right Name'],
-							//'Right Access'=>$row['Right Access'],
-							//'Right Access Keys'=>$row['Rigth Access Keys']
-						);
-						$this->rights[$row['Right Name']]['View']='View';
-					}
-					if ($row['Right Type']=='Delete') {
-						$this->rights_allow['Delete'][$row['Right Name']]=$row['Right Name'];
-						$this->rights[$row['Right Name']]['Delete']='Delete';
-					}
-					if ($row['Right Type']=='Edit') {
-						$this->rights_allow['Edit'][$row['Right Name']]=array('Right Name'=>$row['Right Name']
-							//,'Right Access'=>$row['Right Access'],'Rigth Access Keys'=>$row['Rigth Access Keys']
-						);
-						$this->rights[$row['Right Name']]['Edit']='Edit';
-					}
-					if ($row['Right Type']=='Create') {
-						$this->rights_allow['Create'][$row['Right Name']]=$row['Right Name'];
-						$this->rights[$row['Right Name']]['Create']='Create';
-					}
-
-
-
-				}
-			}else {
-				print_r($error_info=$this->db->errorInfo());
-				exit;
-			}
-
-
-
+			$rights+=$user_groups[$group_key]['Rights'];
 		}
-		$sql=sprintf("select * from `User Rights Bridge`  URB left join  `Right Dimension` RD on (RD.`Right Key`=URB.`Right Key`)  where `User Key`=%d", $this->id);
+
+
+		$sql=sprintf("select group_concat(`Right Code`) as rights from `User Rights Bridge` where `User Key`=%d", $this->id);
 
 		if ($result=$this->db->query($sql)) {
-			foreach ($result as $row) {
-
-				if ($row['Right Type']=='View') {
-					$this->rights_allow['View'][$row['Right Name']]=$row['Right Name'];
-					$this->rights[$row['Right Name']]['View']='View';
-				}
-				if ($row['Right Type']=='Delete') {
-					$this->rights_allow['Delete'][$row['Right Name']]=$row['Right Name'];
-					$this->rights[$row['Right Name']]['`Delete']='Delete';
-				}
-				if ($row['Right Type']=='Edit') {
-					$this->rights_allow['Edit'][$row['Right Name']]=$row['Right Name'];
-					$this->rights[$row['Right Name']]['Edit']='Edit';
-				}
-				if ($row['Right Type']=='Create') {
-					$this->rights_allow['Create'][$row['Right Name']]=$row['Right Name'];
-					$this->rights[$row['Right Name']]['Create']='Create';
-				}
-
+			if ($row = $result->fetch()) {
+				$rights+preg_split('/,/', $row['rights']);
 			}
 		}else {
 			print_r($error_info=$this->db->errorInfo());
 			exit;
 		}
+
+
+
+		
+		foreach ($rights as $right) {
+			$right_data=$user_rights[$right];
+
+
+			if ($right_data['Right Type']=='View') {
+				$this->rights_allow['View'][$right_data['Right Name']]=1;
+
+				$this->rights[$right_data['Right Name']]['View']='View';
+			}
+			if ($right_data['Right Type']=='Delete') {
+				$this->rights_allow['Delete'][$right_data['Right Name']]=1;
+				$this->rights[$right_data['Right Name']]['Delete']='Delete';
+			}
+			if ($right_data['Right Type']=='Edit') {
+				$this->rights_allow['Edit'][$right_data['Right Name']]=1;
+				$this->rights[$right_data['Right Name']]['Edit']='Edit';
+			}
+			if ($right_data['Right Type']=='Create') {
+				$this->rights_allow['Create'][$right_data['Right Name']]=1;
+				$this->rights[$right_data['Right Name']]['Create']='Create';
+			}
+
+
+
+		}
+
 
 
 	}

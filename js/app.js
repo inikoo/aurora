@@ -60,10 +60,9 @@ function change_view(_request, metadata) {
     }
 
     var request = "/ar_views.php?tipo=views&request=" + _request + '&metadata=' + JSON.stringify(metadata) + "&old_state=" + JSON.stringify(state)
-
     $.getJSON(request, function(data) {
 
-
+ console.log(data);
 
         state = data.state;
 
@@ -78,7 +77,9 @@ function change_view(_request, metadata) {
         if (typeof(data.tabs) != "undefined" && data.tabs !== null) {
             $('#tabs').html(data.tabs);
         }
+         
         if (typeof(data.menu) != "undefined" && data.menu !== null) {
+       
             $('#menu').html(data.menu);
 
 
@@ -125,32 +126,6 @@ function change_view(_request, metadata) {
 
 }
 
-$(document).ready(function() {
-
-
-
-    state = {
-        module: '',
-        section: '',
-        parent: '',
-        parent_key: '',
-        object: '',
-        key: ''
-    }
-    structure = {}
-
-    change_view($('#_request').val())
-
-
-
-    $(document).keydown(function(e) {
-        key_press(e)
-    });
-
-
-
-
-})
 
 
 

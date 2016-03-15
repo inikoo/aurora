@@ -50,7 +50,7 @@ case 'views':
 		$reload=false;
 	}
 
-	$state=parse_request($data, $db);
+	$state=parse_request($data, $db, $modules, $account, $user);
 
 
 
@@ -78,10 +78,10 @@ case 'views':
 		break;
 	case 'part':
 		include_once 'class.Part.php';
-				include_once 'class.Warehouse.php';
+		include_once 'class.Warehouse.php';
 
 		$_parent=new Part($state['parent_key']);
-$warehouse=new Warehouse($state['current_warehouse']);
+		$warehouse=new Warehouse($state['current_warehouse']);
 
 		break;
 	case 'website':
@@ -215,15 +215,15 @@ $warehouse=new Warehouse($state['current_warehouse']);
 	$_SESSION['request']=$state['request'];
 
 
-    if(isset($state['current_store'])){
-	$_SESSION['current_store']=$state['current_store'];
+	if (isset($state['current_store'])) {
+		$_SESSION['current_store']=$state['current_store'];
 	}
-	  if(isset($state['current_website'])){
-	$_SESSION['current_website']=$state['current_website'];
+	if (isset($state['current_website'])) {
+		$_SESSION['current_website']=$state['current_website'];
 	}
-	  if(isset($state['current_warehouse'])){
-	$_SESSION['current_warehouse']=$state['current_warehouse'];
-}
+	if (isset($state['current_warehouse'])) {
+		$_SESSION['current_warehouse']=$state['current_warehouse'];
+	}
 
 	$response=array('state'=>array());
 
@@ -231,7 +231,7 @@ $warehouse=new Warehouse($state['current_warehouse']);
 
 
 	if ($data['old_state']['module']!=$state['module']  or $reload ) {
-		$response['menu']=get_menu($state);
+		$response['menu']=get_menu($state, $user, $smarty);
 
 	}
 
@@ -475,12 +475,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db) {
 }
 
 
-function get_menu($data) {
-
-	global $user, $smarty;
-
-
-
+function get_menu($data, $user, $smarty) {
 
 	include_once 'navigation/menu.php';
 
@@ -889,11 +884,11 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 			break;
 		case ('part.new'):
 			return get_new_part_navigation($data, $smarty, $user, $db, $account, $account);
-			break;	
+			break;
 		case ('part.image'):
 			return get_part_image_navigation($data, $smarty, $user, $db, $account);
-			break;	
-			
+			break;
+
 		case ('transactions'):
 			return get_transactions_navigation($data, $smarty, $user, $db, $account);
 			break;
@@ -1831,82 +1826,82 @@ function get_view_position($state) {
 
 
 	case 'inventory':
-	
-	
-	switch ($state['section']) {
+
+
+		switch ($state['section']) {
 		case 'inventory':
 			if ( $user->get_number_warehouses()>1 or $user->can_create('warehouses') ) {
 
-			$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'inventory/all');
+				$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'inventory/all');
 
-		}
-		$branch[]=array('label'=>_('Inventory').' <span class="id">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'th-large', 'reference'=>'');
+			}
+			$branch[]=array('label'=>_('Inventory').' <span class="id">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'th-large', 'reference'=>'');
 
-		break;
+			break;
 		case 'part':
 			if ( $user->get_number_warehouses()>1 or $user->can_create('warehouses') ) {
 
-			$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'inventory/all');
+				$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'inventory/all');
 
-		}
-		$branch[]=array('label'=>_('Inventory').' <span class="id">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'th-large', 'reference'=>'inventory/'.$state['warehouse']->id);
-		$branch[]=array('label'=>'<span class="id Part_Reference">'.$state['_object']->get('Reference').'</span> (<span class="id">'.$state['_object']->get('SKU').'</span>)' , 'icon'=>'square', 'reference'=>'');
+			}
+			$branch[]=array('label'=>_('Inventory').' <span class="id">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'th-large', 'reference'=>'inventory/'.$state['warehouse']->id);
+			$branch[]=array('label'=>'<span class="id Part_Reference">'.$state['_object']->get('Reference').'</span> (<span class="id">'.$state['_object']->get('SKU').'</span>)' , 'icon'=>'square', 'reference'=>'');
 
-		break;
-		
+			break;
+
 		case 'part.image':
 			if ( $user->get_number_warehouses()>1 or $user->can_create('warehouses') ) {
 
-			$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'inventory/all');
+				$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'inventory/all');
 
-		}
-		$branch[]=array('label'=>_('Inventory').' <span class="id">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'th-large', 'reference'=>'inventory/'.$state['warehouse']->id);
-		$branch[]=array('label'=>'<span class="id Part_Reference">'.$state['_parent']->get('Reference').'</span> (<span class="id">'.$state['_parent']->get('SKU').'</span>)' , 'icon'=>'square', 'reference'=>'inventory/'.$state['warehouse']->id.'/part/'.$state['_parent']->sku);
+			}
+			$branch[]=array('label'=>_('Inventory').' <span class="id">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'th-large', 'reference'=>'inventory/'.$state['warehouse']->id);
+			$branch[]=array('label'=>'<span class="id Part_Reference">'.$state['_parent']->get('Reference').'</span> (<span class="id">'.$state['_parent']->get('SKU').'</span>)' , 'icon'=>'square', 'reference'=>'inventory/'.$state['warehouse']->id.'/part/'.$state['_parent']->sku);
 			$branch[]=array('label'=>_('Image'), 'icon'=>'camera-retro', 'reference'=>'');
 
-		break;
-		
+			break;
+
 		case 'part.new':
 			if ( $user->get_number_warehouses()>1 or $user->can_create('warehouses') ) {
 
-			$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'inventory/all');
+				$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'inventory/all');
 
-		}
-		$branch[]=array('label'=>_('Inventory').' <span class="id">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'th-large', 'reference'=>'inventory/'.$state['warehouse']->id);
-		$branch[]=array('label'=>_('New part') , 'icon'=>'square', 'reference'=>'');
+			}
+			$branch[]=array('label'=>_('Inventory').' <span class="id">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'th-large', 'reference'=>'inventory/'.$state['warehouse']->id);
+			$branch[]=array('label'=>_('New part') , 'icon'=>'square', 'reference'=>'');
 
-		break;
+			break;
 		}
-	
-	
+
+
 		break;
 
 	case 'warehouses':
-	
-	
-	switch ($state['section']) {
+
+
+		switch ($state['section']) {
 		case 'warehouse':
 			if ( $user->get_number_warehouses()>1 or $user->can_create('warehouses') ) {
 
-			$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'warehouses');
+				$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'warehouses');
 
-		}
-		$branch[]=array('label'=>_('warehouse').' <span class="id Warehouse_Code">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'map', 'reference'=>'');
+			}
+			$branch[]=array('label'=>_('warehouse').' <span class="id Warehouse_Code">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'map', 'reference'=>'');
 
-		break;
+			break;
 		case 'part':
 			if ( $user->get_number_warehouses()>1 or $user->can_create('warehouses') ) {
 
-			$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'inventory/all');
+				$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'inventory/all');
 
-		}
-		$branch[]=array('label'=>_('Inventory').' <span class="id">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'th-large', 'reference'=>'inventory/'.$state['warehouse']->id);
-		$branch[]=array('label'=>'<span class="id Part_Reference">'.$state['_object']->get('Reference').'</span> (<span class="id">'.$state['_object']->get('SKU').'</span>)' , 'icon'=>'square', 'reference'=>'');
+			}
+			$branch[]=array('label'=>_('Inventory').' <span class="id">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'th-large', 'reference'=>'inventory/'.$state['warehouse']->id);
+			$branch[]=array('label'=>'<span class="id Part_Reference">'.$state['_object']->get('Reference').'</span> (<span class="id">'.$state['_object']->get('SKU').'</span>)' , 'icon'=>'square', 'reference'=>'');
 
-		break;
+			break;
 		}
-	
-	
+
+
 		break;
 
 
@@ -2290,9 +2285,9 @@ function get_view_position($state) {
 
 
 
-function get_help($data, $modules, $db) {
+function get_help($data, $modules, $db, $account='', $user='') {
 
-	$scope_state=parse_request($data, $db);
+	$scope_state=parse_request($data, $db, $modules, $account, $user);
 
 
 	$state=array(
@@ -2311,7 +2306,7 @@ function get_help($data, $modules, $db) {
 
 
 	if ($data['old_state']['module']!=$state['module']   ) {
-		$response['menu']=get_menu($state);
+		$response['menu']=get_menu($state, $user, $smarty);
 
 	}
 

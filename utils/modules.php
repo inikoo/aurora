@@ -892,7 +892,7 @@ $modules=array(
 		'parent'=>'none',
 		'parent_type'=>'none',
 		'sections'=>array(
-			
+
 			'inventory'=>array('type'=>'navigation', 'label'=>_('Inventory (Parts)'), 'icon'=>'square-o', 'reference'=>'inventory/all',
 				'tabs'=>array(
 
@@ -971,7 +971,7 @@ $modules=array(
 					'part.images'=>array('label'=>_('Images'), 'icon'=>'camera-retro'),
 				)
 			),
-			
+
 			'part.new'=>array('type'=>'new_object',
 				'tabs'=>array(
 					'part.new'=>array('label'=>_('New part')),
@@ -980,7 +980,7 @@ $modules=array(
 
 			),
 			'part.image'=>array('type'=>'object',
-				
+
 
 
 				'tabs'=>array(
@@ -988,7 +988,7 @@ $modules=array(
 
 					'part.image.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 					'part.image.history'=>array('label'=>_('History/Notes'), 'icon'=>'history'),
-	
+
 				)
 			),
 			'transactions'=>array(
@@ -1028,10 +1028,10 @@ $modules=array(
 
 				'type'=>'object', 'label'=>_('Location'), 'icon'=>'map-sings', 'reference'=>'',
 				'tabs'=>array(
-					'location.details'=>array('label'=>_('Data'), 'title'=>_('Location detais'),'icon'=>'database'),
+					'location.details'=>array('label'=>_('Data'), 'title'=>_('Location detais'), 'icon'=>'database'),
 					'warehouse.history'=>array('label'=>_('History/Notes'), 'title'=>_('History/Notes'), 'icon'=>'history'),
-					
-					'warehouse.parts'=>array('label'=>_('Parts'),'icon'=>'square-o'),
+
+					'warehouse.parts'=>array('label'=>_('Parts'), 'icon'=>'square-o'),
 
 				)
 
@@ -1278,6 +1278,33 @@ $modules=array(
 
 
 		'sections'=>array(
+
+			'setup'=>array('type'=>'',
+				'tabs'=>array(
+					'account.setup'=>array('label'=>_('Account set up')),
+				)
+			),
+			'setup_error'=>array('type'=>'',
+				'tabs'=>array(
+					'account.setup.error'=>array('label'=>''),
+				)
+			),
+			'setup_root_user'=>array('type'=>'',
+				'tabs'=>array(
+					'account.setup.root_user'=>array('label'=>''),
+				)
+			),
+			'setup_add_employees'=>array('type'=>'',
+				'tabs'=>array(
+					'account.setup.add_employees'=>array('label'=>''),
+				)
+			),
+			'setup_add_employee'=>array('type'=>'',
+				'tabs'=>array(
+					'account.setup.add_employee'=>array('label'=>''),
+				)
+			),
+
 			'account'=>array('type'=>'navigation', 'label'=>_('Account'), 'icon'=>'star', 'reference'=>'account', 'showcase'=>true,
 				'tabs'=>array(
 					'account.details'=>array('label'=>_('Data'), 'title'=>_('Account details')),
@@ -1359,6 +1386,9 @@ $modules=array(
 					'account.settings'=>array('label'=>_('Settings')),
 				)
 			),
+
+
+
 			'staff'=>array('type'=>'object', 'label'=>_('Staff'), 'title'=>_("Staff users"), 'icon'=>'hand-rock-o', 'reference'=>'users',
 				'tabs'=>array(
 					'users.staff.users'=>array('label'=>_('Users')),
