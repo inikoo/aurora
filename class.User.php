@@ -1574,8 +1574,8 @@ class User extends DB_Table {
 			foreach ($result as $row) {
 
 				//TODO remove after migrating to aurora, and taking off un used grous from User Group User Bridge
-				if ($row['User Group Key']==4) {
-					break;
+				if ($row['User Group Key']==4 or $row['User Group Key']==7 or $row['User Group Key']==12) {
+					continue;
 				}
 
 

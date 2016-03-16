@@ -36,9 +36,14 @@ foreach ($user_groups as $key=>$user_group) {
 		'selected'=>false
 	);
 }
-
 foreach (preg_split('/,/', $system_user->get('User Groups')) as $key) {
 	if ($key) {
+
+		//TODO remove after migrating to aurora, and taking off un used grous from User Group User Bridge
+		if ($key==4 or $key==7 or $key==12) {
+			continue;
+		}
+
 		$options_Groups[$key]['selected']=true;
 	}
 }
@@ -91,7 +96,6 @@ asort($options_locales);
 asort($options_Groups);
 
 
-
 $staff=new Staff($system_user->get('User Parent Key'));
 
 
@@ -101,7 +105,7 @@ $object_fields=array(
 		'show_title'=>true,
 		'class'=>'links',
 		'fields'=>array(
-			
+
 
 			array(
 				'class'=>'link',
