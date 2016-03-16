@@ -303,4 +303,6 @@ ALTER TABLE `Account Dimension` ADD `Account Setup Metadata` TEXT NULL DEFAULT N
 CREATE TABLE `Staff Role Bridge` ( `Role Code` varchar(8) NOT NULL, `Staff Key` mediumint(8) UNSIGNED NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ALTER TABLE `Staff Role Bridge` ADD PRIMARY KEY (`Role Code`,`Staff Key`);
 // run (todo) migrate user_company_positions.php
+ALTER TABLE `User Rights Bridge` CHANGE `Right Key` `Right Code` VARCHAR(8) NOT NULL;
+
 
