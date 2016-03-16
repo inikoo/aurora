@@ -30,6 +30,7 @@
   "homepage": "https://github.com/inikoo/aurora#readme",
   "devDependencies": {
     "grunt": "^0.4.5",
-    "grunt-contrib-concat": "^1.0.0"
+    "grunt-contrib-concat": "^1.0.0",
+    "grunt-contrib-uglify": "^1.0.0"
   }
 }
