@@ -44,14 +44,6 @@ $account=new Account();
 if ($account->id and $account->get('Account State')=='Active') {
 
 	set_locale($account->get('Account Locale').'.UTF-8');
-
-
-
-
-
-
-
-
 	include_once 'conf/key.php';
 
 	require_once 'utils/general_functions.php';

@@ -1353,13 +1353,13 @@ class User extends DB_Table {
 
 	function can_do($right_type, $tag, $tag_key=false) {
 
-	
+
 		if (!is_string($tag))
 			return false;
 		$tag=strtolower(_trim($tag));
-		
-		
-		
+
+
+
 		if ($tag_key==false) {
 			if (isset($this->rights_allow[$right_type][$tag]))
 				return true;
@@ -1563,7 +1563,6 @@ class User extends DB_Table {
 	function read_groups() {
 
 		include 'conf/user_groups.php';
-
 		$this->groups=array();
 		$this->groups_key_list='';
 		$this->groups_key_array=array();
@@ -1571,7 +1570,15 @@ class User extends DB_Table {
 		$sql=sprintf("select `User Group Key` from `User Group User Bridge`  where  `User Key`=%d", $this->id);
 
 		if ($result=$this->db->query($sql)) {
+
 			foreach ($result as $row) {
+
+				//TODO remove after migrating to aurora, and taking off un used grous from User Group User Bridge
+				if ($row['User Group Key']==4) {
+					break;
+				}
+
+
 				$this->groups[$row['User Group Key']]=array('User Group Name'=>$user_groups[$row['User Group Key']]['Name']);
 				$this->groups_key_list.=','.$row['User Group Key'];
 				$this->groups_key_array[]=$row['User Group Key'];
@@ -1706,20 +1713,23 @@ class User extends DB_Table {
 			$this->read_groups();
 
 
-		//print_r($this->groups_key_array);
 
 		$rights=array();
 		foreach ($this->groups_key_array as $group_key) {
-
-			$rights+=$user_groups[$group_key]['Rights'];
+			//print "* $group_key *  ";
+			//print_r($user_groups[$group_key]['Rights']);
+			$rights=array_merge($rights, $user_groups[$group_key]['Rights']);
+			//print_r($rights);
 		}
 
+		//print "****";
 
 		$sql=sprintf("select group_concat(`Right Code`) as rights from `User Rights Bridge` where `User Key`=%d", $this->id);
 
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
-				$rights+preg_split('/,/', $row['rights']);
+				if ($row['rights']!='')
+					$rights=array_merge($rights, preg_split('/,/', $row['rights']));
 			}
 		}else {
 			print_r($error_info=$this->db->errorInfo());
@@ -1728,7 +1738,6 @@ class User extends DB_Table {
 
 
 
-		
 		foreach ($rights as $right) {
 			$right_data=$user_rights[$right];
 
@@ -1754,9 +1763,9 @@ class User extends DB_Table {
 
 
 		}
-
-
-
+		//print_r($this->groups_key_array);
+		//print_r($this->rights_allow);
+		//exit;
 	}
 
 
