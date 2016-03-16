@@ -1,0 +1,35 @@
+{
+  "name": "aurora",
+  "version": "1.0.0",
+  "description": "Business systems platform  ",
+  "main": "index.php",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/inikoo/aurora.git"
+  },
+  "keywords": [
+    "Business",
+    "operations",
+    "data",
+    "warehouse",
+    "busiess",
+    "intelligence",
+    "forecasting"
+  ],
+  "author": "Raul Perusquia, Inikoo Ltd",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/inikoo/aurora/issues"
+  },
+  "homepage": "https://github.com/inikoo/aurora#readme",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-concat": "^1.0.0"
+  }
+}
