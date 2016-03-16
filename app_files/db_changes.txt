@@ -294,11 +294,15 @@ ALTER TABLE `Account Dimension` DROP `Account Company Key`;
 ALTER TABLE `Account Dimension` DROP `Account System Version`;
 ALTER TABLE `Account Dimension` ADD `Account Setup State` ENUM('InProcess','Done') NOT NULL DEFAULT 'InProcess' AFTER `Account HR Start Year`;
 ALTER TABLE `Account Dimension` CHANGE `Account Setup State` `Account State` ENUM('InProcess','Ready') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'InProcess';
-ALTER TABLE `User Dimension` ADD `User Password Recovery Email` VARCHAR(255) NULL DEFAULT NULL AFTER `User Inactive Note`, ADD `User Password Recovery Mobile` VARCHAR(64) NULL DEFAULT NULL AFTER `User Password Recovery Email`;
 ALTER TABLE `Account Dimension` ADD `Account Creation Date` DATETIME NULL DEFAULT NULL AFTER `Account State`;
 ALTER TABLE `Account Dimension` CHANGE `Account State` `Account State` ENUM('Created','RootUser','Ready') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Created';
 ALTER TABLE `Account Dimension` CHANGE `Account State` `Account State` ENUM('InProcess','Active') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'InProcess';
 ALTER TABLE `Account Dimension` ADD `Account Setup Metadata` TEXT NULL DEFAULT NULL AFTER `Account Creation Date`;
+
+update `Account Dimension` set `Account State`='Active';
+update `Account Dimension` set `Account Setup Metadata`='{"steps":{"root_user":{"setup":true},"add_employees":{"setup":true}},"size":"Big","instances":["Com","Prod"]}';
+ALTER TABLE `User Dimension` ADD `User Password Recovery Email` VARCHAR(255) NULL DEFAULT NULL AFTER `User Inactive Note`, ADD `User Password Recovery Mobile` VARCHAR(64) NULL DEFAULT NULL AFTER `User Password Recovery Email`;
+
 
 CREATE TABLE `Staff Role Bridge` ( `Role Code` varchar(8) NOT NULL, `Staff Key` mediumint(8) UNSIGNED NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ALTER TABLE `Staff Role Bridge` ADD PRIMARY KEY (`Role Code`,`Staff Key`);

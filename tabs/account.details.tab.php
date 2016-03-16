@@ -19,17 +19,18 @@ $object_fields=array(
 		'fields'=>array(
 			
 			
+			
 			array(
-				'class'=>'string',
-				'id'=>'Account_Code',
-				'value'=>$account->get('Account Code'),
-				'label'=>_('Code')
-			),
-			array(
-				'class'=>'string',
+			
+				
 				'id'=>'Account_Name',
-				'value'=>$account->get('Account Name'),
-				'label'=>_('Name')
+				'edit'=>'string',
+				'value'=>htmlspecialchars($account->get('Account Name')),
+				'formatted_value'=>$account->get('Name'),
+				'label'=>ucfirst($account->get_field_label('Account Name')),
+				'required'=>false
+				
+				
 			),
 
 		)
@@ -56,23 +57,7 @@ $object_fields=array(
 
 		)
 	),
-	array(
-		'label'=>_('Usage'),
-		'show_title'=>true,
-		'fields'=>array(
-			array(
-				'id'=>'Account_Stores',
-				'value'=>$account->get('Stores') ,
-				'label'=>_('Stores')
-			),
-          array(
-				'id'=>'Account_Websites',
-				'value'=>$account->get('Websites') ,
-				'label'=>_('Websites')
-			),
-
-		)
-	),
+	
 	
 	
 );

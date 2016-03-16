@@ -88,9 +88,7 @@
 					{$user->get('User Alias')} 
 				</div>
 			</div>
-			<div id="account_name" class="link" onclick="change_view('account')">
-				{$account->get('Account Name')} 
-			</div>
+			<div id="account_name" class="link Account_Name" onclick="change_view('account')">{$account->get('Account Name')}</div>
 			<div id="menu">
 			</div>
 			<ul style="margin-top:20px">
