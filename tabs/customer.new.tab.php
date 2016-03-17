@@ -182,7 +182,7 @@ $smarty->assign('default_country', $store->get('Store Home Country Code 2 Alpha'
 $smarty->assign('preferred_countries', '"'.join('", "', preferred_countries($store->get('Store Home Country Code 2 Alpha'))).'"');
 
 
-$smarty->assign('js_code', file_get_contents('js/employee.new.js'));
+$smarty->assign('js_code', file_get_contents('build/js/employee.new.min.js'));
 
 $html=$smarty->fetch('new_object.tpl');
 

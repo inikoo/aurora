@@ -35,7 +35,6 @@ $smarty->assign('table_buttons', $table_buttons);
 
 
 
-//$smarty->assign('js_code',  file_get_contents('js/history_notes.js'));
 $smarty->assign('aux_templates', array('history_notes.tpl'));
 $smarty->assign('state', $state);
 

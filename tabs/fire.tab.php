@@ -34,7 +34,7 @@ $parameters=array(
 
 );
 
-$smarty->assign('js_code', file_get_contents('js/fire.js'));
+$smarty->assign('js_code', file_get_contents('build/js/fire.min.js'));
 
 
 include 'utils/get_table_html.php';

@@ -163,15 +163,11 @@ $smarty->assign('object_name', $supplier->get_object_name());
 
 
 $smarty->assign('object_fields', $object_fields);
-//$smarty->assign('new_object_label', _('View new employee'));
-//$smarty->assign('new_object_request','employee/__key__');
 
-//$store=new Store($state['parent_key']);
 $smarty->assign('default_country', $account->get('Account Country 2 Alpha Code'));
 $smarty->assign('preferred_countries', '"'.join('", "', preferred_countries($account->get('Account Country 2 Alpha Code'))).'"');
 
 
-//$smarty->assign('js_code', file_get_contents('js/employee.new.js'));
 
 $html=$smarty->fetch('new_object.tpl');
 

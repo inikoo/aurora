@@ -23,20 +23,20 @@ $table_filters=array(
 );
 
 $parameters=array(
-		'parent'=>$state['object'],
-		'parent_key'=>$state['key'],
-		
+	'parent'=>$state['object'],
+	'parent_key'=>$state['key'],
+
 );
 
 
 $smarty->assign('upload_file', array(
-'tipo'=>'upload_images',
-'object'=>$state['object'],
-'key'=>$state['key'],
-'label'=>_('Upload image')
+		'tipo'=>'upload_images',
+		'object'=>$state['object'],
+		'key'=>$state['key'],
+		'label'=>_('Upload image')
+	));
 
-));
-$smarty->assign('js_code', file_get_contents('js/edit_images.js'));
-include('utils/get_table_html.php');
+$smarty->assign('js_code', file_get_contents('build/js/edit_images.min.js'));
+include 'utils/get_table_html.php';
 
 ?>
