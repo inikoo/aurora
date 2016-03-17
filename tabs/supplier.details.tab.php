@@ -386,9 +386,8 @@ $smarty->assign('key', $state['key']);
 
 $smarty->assign('object_fields', $object_fields);
 $smarty->assign('state', $state);
-//$smarty->assign('js_code', file_get_contents('js/supplier.details.js'));
+$smarty->assign('js_code', file_get_contents('js/supplier.details.js'));//??? maybe has to be deleted
 
-//print_r($supplier->get('Supplier Contact Address'));
 
 $html=$smarty->fetch('edit_object.tpl');
 

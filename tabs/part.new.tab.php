@@ -214,12 +214,6 @@ $smarty->assign('object_name', $part->get_object_name());
 
 
 $smarty->assign('object_fields', $object_fields);
-//$smarty->assign('new_object_label', _('View new employee'));
-//$smarty->assign('new_object_request','employee/__key__');
-
-
-
-//$smarty->assign('js_code', file_get_contents('js/employee.new.js'));
 
 $html=$smarty->fetch('new_object.tpl');
 

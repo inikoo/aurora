@@ -11,35 +11,15 @@
 	<link href="/css/backgrid-filter.css" rel="stylesheet">
 	<link href="/css/intlTelInput.css" rel="stylesheet">
 	<link href="/css/app.css" rel="stylesheet">
-    <link href="/external_libs/d3fc/d3fc.css" rel="stylesheet"/>
+    <link href="/css/d3fc.css" rel="stylesheet"/>
 
 	<script type="text/javascript" src="/utils/country_data.js.php?locale={$locale}"></script> 
 
 
 
-	<script type="text/javascript" src="/js/jquery.min.js"></script> 
-	<script type="text/javascript" src="/js/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="/js/moment.min.js"></script> 
-	<script type="text/javascript" src="/js/chrono.min.js"></script> 
-	<script type="text/javascript" src="/js/sha256.js"></script> 
-	<script type="text/javascript" src="/js/underscore.js"></script> 
-	<script type="text/javascript" src="/js/backbone.js"></script> 
-	<script type="text/javascript" src="/js/backbone.paginator.js"></script> 
-	<script type="text/javascript" src="/js/backgrid.js"></script> 
-	<script type="text/javascript" src="/js/backgrid-filter.js"></script> 
-	<script type="text/javascript" src="/js/app.js"></script> 
-	<script type="text/javascript" src="/js/keyboard_shorcuts.js"></script> 
-	<script type="text/javascript" src="/js/search.js"></script> 
-	<script type="text/javascript" src="/js/table.js"></script> 
-	<script type="text/javascript" src="/js/validation.js"></script> 
-	<script type="text/javascript" src="/js/edit.js"></script> 
-	<script type="text/javascript" src="/js/new.js"></script> 
-	<script type="text/javascript" src="/js/intlTelInput.js"></script> 
-	
-	
-	<script src="/external_libs/d3fc/d3.min.js"></script>
-   <script src="/external_libs/d3fc/layout.js"></script>
-   <script src="/external_libs/d3fc//d3fc.js"></script>
+	<script type="text/javascript" src="/build/js/libs.min.js"></script> 
+	<script type="text/javascript" src="/build/js/aurora.min.js"></script> 
+
    <script>
    $(document).ready(function() {
 

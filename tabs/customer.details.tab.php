@@ -363,7 +363,7 @@ $smarty->assign('key', $state['key']);
 
 $smarty->assign('object_fields', $object_fields);
 $smarty->assign('state', $state);
-$smarty->assign('js_code', file_get_contents('js/customer.details.js'));
+$smarty->assign('js_code', file_get_contents('build/js/customer.details.min.js'));
 
 //print_r($customer->get('Customer Contact Address'));
 

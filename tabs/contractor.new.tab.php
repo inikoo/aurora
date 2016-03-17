@@ -307,7 +307,7 @@ $smarty->assign('new_object_request','contractor/__key__');
 
 
 
-$smarty->assign('js_code', file_get_contents('js/employee.new.js'));
+$smarty->assign('js_code', file_get_contents('build/js/employee.new.min.js'));
 
 $html=$smarty->fetch('new_object.tpl');
 

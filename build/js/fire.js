@@ -1,0 +1,1 @@
+function toggle_check_record(a){var b=$("#check_"+a);b.hasClass("checked")?b.removeClass("checked success").addClass("unchecked disabled").html('<i class="fa fa-star-o">'):b.removeClass("unchecked disabled").addClass("checked success").html('<i class="fa fa-star">')}

@@ -46,7 +46,7 @@ $table_buttons[]=array(
 );
 $smarty->assign('table_buttons', $table_buttons);
 
-$smarty->assign('js_code', file_get_contents('js/timesheet.records.js'));
+$smarty->assign('js_code', file_get_contents('build/js/timesheet.records.min.js'));
 
 include 'utils/get_table_html.php';
 
