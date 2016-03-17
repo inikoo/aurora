@@ -366,7 +366,7 @@ $smarty->assign('state', $state);
 
 
 
-$smarty->assign('js_code', 'build/js/customer.details.min.js');
+$smarty->assign('js_code', 'build/js/injections/customer.details.min.js');
 
 //print_r($customer->get('Customer Contact Address'));
 
