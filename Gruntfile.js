@@ -7,7 +7,7 @@ module.exports = function(grunt) {
 
         concat: {
             js_libs: {
-                src: ['js/jquery-2.2.1.js', 'js/jquery-ui.js', 'js/moment-with-locales.js', 'js/chrono.js', 'js/sha256.js', 'js/underscore.js', 'js/backbone.js', 'js/backbone.paginator.js', 'js/backgrid.js', 'js/backgrid-filter.js', 'js/intlTelInput.js', 'js/d3.js', 'js/d3fc.layout.js', 'js/d3fc.js'],
+                src: ['js/libs/jquery-2.2.1.js', 'js/libs/jquery-ui.js', 'js/libs/moment-with-locales.js', 'js/libs/chrono.js', 'js/libs/sha256.js', 'js/libs/underscore.js', 'js/libs/backbone.js', 'js/libs/backbone.paginator.js', 'js/libs/backgrid.js', 'js/libs/backgrid-filter.js', 'js/libs/intlTelInput.js', 'js/libs/d3.js', 'js/libs/d3fc.layout.js', 'js/libs/d3fc.js'],
                 dest: 'build/js/libs.js',
             },
             js_aurora: {
@@ -28,43 +28,28 @@ module.exports = function(grunt) {
                 src: 'build/js/aurora.js',
                 dest: 'build/js/aurora.min.js',
             },
-            injection1: {
-                src: ['js/employee.new.js'],
-                dest: 'build/js/employee.new.js'
+            injections: {
+                files: [{
+                    expand: true,
+                    src: 'js/injections/*.js',
+                    dest: 'build/',
+                    ext: '.min.js'
+                }]
             },
-            injection2: {
-                src: ['js/billingregion_taxcategory.js'],
-                dest: 'build/js/billingregion_taxcategory.min.js'
-            },
-            injection3: {
-                src: ['js/customer.details.js'],
-                dest: 'build/js/customer.details.min.js'
-            },
-            injection4: {
-                src: ['js/fire.js'],
-                dest: 'build/js/fire.min.js'
-            },
-            injection5: {
-                src: ['js/edit_images.js'],
-                dest: 'build/js/edit_images.min.js'
-            },
-            injection6: {
-                src: ['js/supplier.details.js'],
-                dest: 'build/js/supplier.details.min.js'
-            },
-            injection7: {
-                src: ['js/timesheet.records.js'],
-                dest: 'build/js/timesheet.records.min.js'
-            },
-            injection8: {
-                src: ['js/timesheets.days.js'],
-                dest: 'build/js/timesheets.days.min.js'
-            },
+
 
 
             login: {
-                src: ['js/jquery-2.2.1.js', 'js/sha256.js', 'js/aes.js', 'js/login.js'],
+                src: ['js/libs/jquery-2.2.1.js', 'js/libs/sha256.js', 'js/libs/aes.js', 'js/login/login.js'],
                 dest: 'build/js/login.min.js'
+            },
+            login_setup: {
+                src: ['js/libs/jquery-2.2.1.js', 'js/libs/sha256.js', 'js/libs/aes.js', 'js/setup/login.setup.js'],
+                dest: 'build/js/login.setup.min.js'
+            },
+            setup: {
+                src: ['js/setup/setup.js'],
+                dest: 'build/js/setup.min.js'
             }
 
 
@@ -88,13 +73,13 @@ module.exports = function(grunt) {
             }
         },
         cssmin: {
- options: {
-    shorthandCompacting: false,
-    roundingPrecision: -1,
-  },
+            options: {
+                shorthandCompacting: false,
+                roundingPrecision: -1,
+            },
             target: {
                 files: {
-                   'build/css/libs.min.css': ['css/jquery-ui.css', 'css/font-awesome.css', 'css/intlTelInput.css', 'css/d3fc.css', 'css/backgrid.css', 'css/backgrid-filter.css']
+                    'build/css/libs.min.css': ['css/jquery-ui.css', 'css/font-awesome.css', 'css/intlTelInput.css', 'css/d3fc.css', 'css/backgrid.css', 'css/backgrid-filter.css']
 
                 }
             }
@@ -117,7 +102,29 @@ module.exports = function(grunt) {
                 ],
             },
         },
-
+        watch: {
+            scripts: {
+                files: ['js/*.js'],
+                tasks: ['concat:js_aurora', 'uglify:aurora'],
+                options: {
+                    spawn: false,
+                },
+            },
+            injections: {
+                files: ['js/injections/*.js'],
+                tasks: ['uglify:injections'],
+                options: {
+                    spawn: false,
+                },
+            },
+            sass: {
+                files: ['sass/*.scss'],
+                tasks: ['sass:aurora'],
+                options: {
+                    spawn: false,
+                },
+            }
+        }
 
     });
 
@@ -126,6 +133,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-sass');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-contrib-watch');
 
     grunt.registerTask('default', ['concat', 'uglify', 'sass', 'cssmin', 'copy']);
 

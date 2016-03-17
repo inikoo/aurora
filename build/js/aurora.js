@@ -21,14 +21,9 @@ $(document).ready(function() {
 
     change_view($('#_request').val())
 
-
-
     $(document).keydown(function(e) {
         key_press(e)
     });
-
-
-
 
 })
 

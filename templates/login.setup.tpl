@@ -1,3 +1,4 @@
+{strip} 
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -7,11 +8,12 @@
 	<link href="/art/aurora_log_v2_orange.png" rel="shortcut icon" type="image/x-icon" />
 
 	<title>{t}Set up{/t}</title>
-	<link href="/css/font-awesome.min.css" rel="stylesheet"> 
-	<link rel="stylesheet" href="css/login.css"> 
-	<script type="text/javascript" src="/js/jquery.min.js"></script> 
-
-	<script type="text/javascript" src="/js/login.setup.js"></script> 
+	
+	<link href="/build/css/libs.min.css" rel="stylesheet">
+	<link href="/build/css/login.min.css" rel="stylesheet">
+	<script type="text/javascript" src="/build/js/login.setup.min.js"></script>
+	
+ 
 </head>
 <body class="align">
 <div class="site__container ">
@@ -43,3 +45,5 @@
 
 </body>
 </html>
+{/strip} 
+

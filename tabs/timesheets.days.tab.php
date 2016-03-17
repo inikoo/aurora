@@ -32,7 +32,7 @@ $parameters=array(
 
 );
 
-$smarty->assign('js_code', file_get_contents('build/js/timesheets.days.min.js'));
+$smarty->assign('js_code', file_get_contents('build/js/injections/timesheets.days.min.js'));
 
 
 include('utils/get_table_html.php');

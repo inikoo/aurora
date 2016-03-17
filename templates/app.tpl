@@ -5,13 +5,11 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>Aurora</title>
+	
 	<link href="/art/aurora_log_v2_orange_small.png" rel="shortcut icon" type="image/x-icon" />
 	<link href="/build/css/libs.min.css" rel="stylesheet">
 	<link href="/build/css/app.min.css" rel="stylesheet">
-	
-
-	
-	
+		
     <script type="text/javascript" src="/utils/country_data.js.php?locale={$locale}"></script> 
 	<script type="text/javascript" src="/build/js/libs.min.js"></script> 
 	<script type="text/javascript" src="/build/js/aurora.min.js"></script> 

@@ -379,7 +379,7 @@ $smarty->assign('object_fields', $object_fields);
 $smarty->assign('form_type', 'setup');
 $smarty->assign('step', 'add_employee');
 
-$smarty->assign('js_code', file_get_contents('build/js/employee.new.min.js'));
+$smarty->assign('js_code', file_get_contents('build/js/injections/employee.new.min.js'));
 
 $html=$smarty->fetch('new_object.tpl');
 

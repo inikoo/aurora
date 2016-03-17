@@ -36,7 +36,7 @@ $smarty->assign('upload_file', array(
 		'label'=>_('Upload image')
 	));
 
-$smarty->assign('js_code', file_get_contents('build/js/edit_images.min.js'));
+$smarty->assign('js_code', file_get_contents('build/js/injections/edit_images.min.js'));
 include 'utils/get_table_html.php';
 
 ?>

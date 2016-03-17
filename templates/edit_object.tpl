@@ -268,7 +268,7 @@
 		
 		$("#{$field.id}").intlTelInput(
 		{
-		utilsScript: "/js/telephone_utils.js",
+		utilsScript: "/js/libs/telephone_utils.js",
 		defaultCountry:'{$account->get('Account Country 2 Alpha Code')}',
 		preferredCountries:['{$account->get('Account Country 2 Alpha Code')}']
 		}
