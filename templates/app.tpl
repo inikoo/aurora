@@ -1,3 +1,4 @@
+{strip} 
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html>
 <html lang='en' xml:lang='en' xmlns="http://www.w3.org/1999/xhtml">
@@ -5,50 +6,17 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>Aurora</title>
 	<link href="/art/aurora_log_v2_orange_small.png" rel="shortcut icon" type="image/x-icon" />
-	<link href="/css/jquery-ui.min.css" rel="stylesheet">
-	<link href="/css/font-awesome.min.css" rel="stylesheet">
-	<link href="/css/backgrid.css" rel="stylesheet">
-	<link href="/css/backgrid-filter.css" rel="stylesheet">
-	<link href="/css/intlTelInput.css" rel="stylesheet">
-	<link href="/css/app.css" rel="stylesheet">
-    <link href="/css/d3fc.css" rel="stylesheet"/>
+	<link href="/build/css/libs.min.css" rel="stylesheet">
+	<link href="/build/css/app.min.css" rel="stylesheet">
+	
 
-	<script type="text/javascript" src="/utils/country_data.js.php?locale={$locale}"></script> 
-
-
-
+	
+	
+    <script type="text/javascript" src="/utils/country_data.js.php?locale={$locale}"></script> 
 	<script type="text/javascript" src="/build/js/libs.min.js"></script> 
 	<script type="text/javascript" src="/build/js/aurora.min.js"></script> 
 
-   <script>
-   $(document).ready(function() {
-
-
-
-    state = {
-        module: '',
-        section: '',
-        parent: '',
-        parent_key: '',
-        object: '',
-        key: ''
-    }
-    structure = {}
-
-    change_view($('#_request').val())
-
-
-
-    $(document).keydown(function(e) {
-        key_press(e)
-    });
-
-
-
-
-})
-
-   </script>
+ 
 	
 </head>
 <body>
@@ -98,3 +66,4 @@
 </div>
 </body>
 </html>
+{/strip} 

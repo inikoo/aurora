@@ -5,7 +5,32 @@
 
 var key_scope = false;
 
+$(document).ready(function() {
 
+
+
+    state = {
+        module: '',
+        section: '',
+        parent: '',
+        parent_key: '',
+        object: '',
+        key: ''
+    }
+    structure = {}
+
+    change_view($('#_request').val())
+
+
+
+    $(document).keydown(function(e) {
+        key_press(e)
+    });
+
+
+
+
+})
 
 
 function change_browser_history_state(request) {
