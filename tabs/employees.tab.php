@@ -41,6 +41,15 @@ $parameters=array(
 $table_buttons=array();
 $table_buttons[]=array('icon'=>'plus', 'title'=>_('New employee'), 'reference'=>"employee/new");
 $smarty->assign('table_buttons', $table_buttons);
+$smarty->assign('upload_file', array(
+'tipo'=>'upload_images',
+'object'=>$state['object'],
+'key'=>$state['key'],
+'label'=>_('Upload employees')
+
+));
+
+
 
 $smarty->assign('tipo', $tipo);
 

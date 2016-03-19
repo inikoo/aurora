@@ -315,8 +315,8 @@ class Staff extends DB_Table{
 
 			if ($result=$this->db->query($sql)) {
 				foreach ($result as $row) {
-				
-				
+
+
 					$positions.=$roles[$row['Role Code']]['title'].', ';
 				}
 			}else {
@@ -431,7 +431,7 @@ class Staff extends DB_Table{
 			$label=_('address');
 			break;
 		case 'Staff Official ID':
-		$account=new Account();
+			$account=new Account();
 			$label=$account->get('National Employment Code Label')==''?_('Official Id'):$account->get('National Employment Code Label');
 			break;
 		case 'Staff Next of Kind':
@@ -1074,8 +1074,7 @@ class Staff extends DB_Table{
 
 		$old_value=$this->get('Position');
 
-		$positions=array();
-
+		$available_roles=array();
 
 
 
@@ -1086,7 +1085,7 @@ class Staff extends DB_Table{
 				foreach ($account->get('Setup Metadata')['instances'] as $instance) {
 					if (in_array($instance, $_data['instances'])) {
 
-						$positions[$_key]=array(
+						$available_roles[$_key]=array(
 							'label'=>$_data['title'],
 							'selected'=>false
 						);
@@ -1099,18 +1098,23 @@ class Staff extends DB_Table{
 
 
 
-		foreach (preg_split('/,/', $values) as $selected_position) {
-			$positions[$selected_position]['selected']=true;
+		foreach (preg_split('/,/', $values) as $selected_role) {
+			$available_roles[$selected_role]['selected']=true;
 		}
 
 
-		foreach ($positions as $key=>$value) {
+		foreach ($available_roles as $key=>$value) {
 			if ($value['selected']) {
 				$this->add_role($key);
 			}else {
 				$this->remove_role($key);
 			}
 		}
+
+
+		$this->update_user_groups();
+
+
 
 		$new_value=$this->get('Position');
 		$this->add_changelog_record('Staff Position', $old_value, $new_value, $options, $this->table_name, $this->id);
@@ -1120,11 +1124,35 @@ class Staff extends DB_Table{
 	}
 
 
+	function update_user_groups() {
+		include 'conf/roles.php';
+
+		$groups=array();
+
+
+		foreach (preg_split( '/,/',$this->get('Staff Position')) as $role_code) {
+		//print_r($roles[$role_code]['user_groups']);
+			$groups=array_merge($groups, $roles[$role_code]['user_groups']);
+		}
+
+$groups = join(',',array_unique($groups));
+		
+		$this->get_user_data();
+		//print_r($this->data);
+		if ($this->data['Staff User Key']) {
+			$staff_user=new User($this->data['Staff User Key']);
+			if ($staff_user->id) {
+				   $staff_user->update_groups($groups);
+			}
+		}
+	}
+
+
 	function remove_role($role_code) {
 
 		$sql=sprintf("delete from  `Staff Role Bridge` where `Role Code`=%s and `Staff Key`=%d",
-		 prepare_mysql($role_code),
-		  $this->id);
+			prepare_mysql($role_code),
+			$this->id);
 
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
@@ -1139,10 +1167,10 @@ class Staff extends DB_Table{
 
 	function add_role($role_code) {
 		$updated=false;
-		$sql=sprintf("insert into `Staff Role Bridge` (`Role Code`, `Staff Key`) values (%s, %d)   ON DUPLICATE KEY UPDATE  `Role Code`= %s", 
-		prepare_mysql($role_code), 
-		$this->id,
-		prepare_mysql($role_code)
+		$sql=sprintf("insert into `Staff Role Bridge` (`Role Code`, `Staff Key`) values (%s, %d)   ON DUPLICATE KEY UPDATE  `Role Code`= %s",
+			prepare_mysql($role_code),
+			$this->id,
+			prepare_mysql($role_code)
 		);
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {

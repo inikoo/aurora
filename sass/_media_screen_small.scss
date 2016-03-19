@@ -1,0 +1,42 @@
+
+@media screen and  (max-width: 1450px) {
+$grid_section_width_small: 1140px;
+
+.grid {
+    padding-left: $grid_section_width_small;
+}
+
+.grid > section {
+   width: $grid_section_width_small;
+    margin-left: -$grid_section_width_small;
+}
+
+
+#app_leftmenu {
+width: 40px;
+ li {
+        padding: 3px 5px 3px 10px;
+        }
+
+.label,#top_info,#account_name{display:none}
+ #aurora_logo_small_screen{display:block}
+  #aurora_logo_small_screen{
+    padding:10px 0px;
+    img{width:60%}
+    }
+}
+
+#app_main {
+    margin-left: 40px;
+    }
+
+
+
+#notifications {
+
+}
+
+
+
+}
+
