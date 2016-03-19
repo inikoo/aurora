@@ -19,9 +19,9 @@ $default=$user->get_tab_defaults($tab);
 
 
 $table_views=array(
-	'privilegies'=>array('label'=>_('Privilegies'),'title'=>_('Privileges')),
-	'groups'=>array('label'=>_('Groups'),'title'=>_('Groups')),
-	'weblog'=>array('label'=>_('Weblog'),'title'=>_('Weblog')),
+	'privilegies'=>array('label'=>_('Overview')),
+	'groups'=>array('label'=>_('Permissions')),
+	'weblog'=>array('label'=>_('Syslog')),
 
 );
 

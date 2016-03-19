@@ -133,6 +133,11 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 
 	$formatted_field= preg_replace('/^'.$object->get_object_name().' /', '', $field);
+    
+    if($field=='Staff Position' and $data['object']=='User'){
+        $formatted_field='Position';
+    }
+
 
 
 	if (preg_match('/ Telephone$/', $field)) {

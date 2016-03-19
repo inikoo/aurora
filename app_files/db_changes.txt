@@ -306,7 +306,6 @@ ALTER TABLE `User Dimension` ADD `User Password Recovery Email` VARCHAR(255) NUL
 
 CREATE TABLE `Staff Role Bridge` ( `Role Code` varchar(8) NOT NULL, `Staff Key` mediumint(8) UNSIGNED NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ALTER TABLE `Staff Role Bridge` ADD PRIMARY KEY (`Role Code`,`Staff Key`);
-// run (todo) migrate user_company_positions.php
 ALTER TABLE `User Rights Bridge` CHANGE `Right Key` `Right Code` VARCHAR(8) NOT NULL;
-
+delete from `User Group User Bridge` where `User Group Key` in (4,7,12);
 

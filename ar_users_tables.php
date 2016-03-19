@@ -36,9 +36,7 @@ case 'users':
 case 'staff':
 	staff(get_table_parameters(), $db, $user);
 	break;
-case 'groups':
-	groups(get_table_parameters(), $db, $user);
-	break;
+
 case 'login_history':
 	login_history(get_table_parameters(), $db, $user);
 	break;
@@ -392,66 +390,6 @@ function api_requests($_data, $db, $user) {
 	echo json_encode($response);
 }
 
-
-function groups($_data, $db, $user) {
-	
-	$rtext_label='user group';
-	include 'conf/user_groups.php';
-
-	$totals_metadata=array(
-		'filtered'=>0,
-		'filter_total'=>0,
-		'total_records'=>count($user_groups),
-		'total'=>count($user_groups)
-
-	);
-
-	include_once 'prepare_table/init.php';
-
-
-	$sql="select $fields from $table $where $wheref $group_by ";
-
-
-	foreach ($db->query($sql) as $data) {
-
-		if (isset($user_groups[$data['User Group Key']])) {
-
-			$user_groups[$data['User Group Key']]['users']=$data['users'];
-			$user_groups[$data['User Group Key']]['active_users']=$data['active_users'];
-			$user_groups[$data['User Group Key']]['inactive_users']=$data['inactive_users'];
-		}
-	}
-
-	foreach ($user_groups as $key=>$data) {
-
-		
-
-		$adata[]=array(
-			'id'=> (integer) $key,
-			'name'=>$data['Name'],
-			'view'=>$data['View'],
-			'edit'=>$data['Edit'],
-			'active_users'=>(isset($data['active_users'])?number($data['active_users']):0),
-			'inactive_users'=>(isset($data['inactive_users'])?number($data['inactive_users']):0),
-		);
-
-	}
-
-	$rtext=_("User's privilegies groups");
-
-	$response=array('resultset'=>
-		array(
-			'state'=>200,
-			'data'=>$adata,
-			'rtext'=>$rtext,
-			'sort_key'=>$_order,
-			'sort_dir'=>$_dir,
-			'total_records'=> $total
-
-		)
-	);
-	echo json_encode($response);
-}
 
 
 ?>

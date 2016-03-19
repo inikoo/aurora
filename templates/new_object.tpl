@@ -403,7 +403,7 @@
 <span class="save_form save " id="{$object_name}_save"  onclick="save_new_object('{$object_name}','{$form_type}')"  ><span id="save_label">{t}Save{/t}</span><span class="hide" id="saving_label">{t}Saving{/t}</span> <i id="{$object_name}_save_icon" class="fa fa-cloud  " ></i></span> 
 <span id="{$object_name}_msg" class="msg"></span></span> 
 <span class="hide results" id="{$object_name}_create_other" onClick="change_view(state.request)">{t}Add another{/t} <i class="fa fa-plus"></i>  </span> 
-<span class="hide results" id="{$object_name}_go_new" request="" request_template="{$new_object_request}" onClick="change_to_new_object_view()"  >{if isset($new_object_label)}{$new_object_label}{else}{t}View new object{/t}{/if} <i class="fa fa-arrow-right"></i> </span>
+<span class="hide results" id="{$object_name}_go_new" request=""  onClick="change_to_new_object_view()"  >{if isset($new_object_label)}{$new_object_label}{else}{t}View new object{/t}{/if} <i class="fa fa-arrow-right"></i> </span>
 
 </td>
 </tr>

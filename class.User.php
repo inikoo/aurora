@@ -476,7 +476,6 @@ class User extends DB_Table {
 
 		$this->updated=false;
 
-		//     global $_group;
 		$groups=preg_split('/,/', $value);
 		foreach ($groups as $key=>$value) {
 			if (!is_numeric($value) )
@@ -491,7 +490,6 @@ class User extends DB_Table {
 
 		$to_delete = array_diff($old_groups, $groups);
 		$to_add = array_diff($groups, $old_groups);
-
 
 
 
@@ -523,6 +521,14 @@ class User extends DB_Table {
 			$value=_trim($value);
 
 		switch ($field) {
+		case('Staff Position'):
+			include_once 'class.Staff.php';
+			$employee=new Staff($this->get_staff_key());
+			if ($employee->id) {
+				$employee->update_roles($value);
+			}
+			break;
+
 		case('User Groups'):
 			$this->update_groups($value);
 			break;
@@ -988,6 +994,7 @@ class User extends DB_Table {
 
 
 	function add_store($to_add, $history=true) {
+		include_once 'class.Store.php';
 		$changed=0;
 		foreach ($to_add as $scope_id) {
 
@@ -1022,6 +1029,7 @@ class User extends DB_Table {
 
 
 	function delete_store($to_delete, $history=true) {
+		include_once 'class.Store.php';
 
 		include_once 'class.Store.php';
 		$changed=0;
@@ -1190,7 +1198,13 @@ class User extends DB_Table {
 		case('groups'):
 			return $this->data['groups'];
 			break;
-		default:
+
+		case('Staff Position'):
+		case('Position'):
+			include_once 'class.Staff.php';
+			$employee=new Staff($this->get_staff_key());
+			return $employee->get($key);
+			break;
 		default:
 			if (array_key_exists($key, $this->data))
 				return $this->data[$key];
@@ -1573,10 +1587,6 @@ class User extends DB_Table {
 
 			foreach ($result as $row) {
 
-				//TODO remove after migrating to aurora, and taking off un used grous from User Group User Bridge
-				if ($row['User Group Key']==4 or $row['User Group Key']==7 or $row['User Group Key']==12) {
-					continue;
-				}
 
 
 				$this->groups[$row['User Group Key']]=array('User Group Name'=>$user_groups[$row['User Group Key']]['Name']);
@@ -1590,6 +1600,8 @@ class User extends DB_Table {
 
 
 		$this->groups_key_list=preg_replace('/^,/', '', $this->groups_key_list);
+
+
 
 		$this->groups_read=true;
 	}

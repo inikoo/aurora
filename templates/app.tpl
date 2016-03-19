@@ -35,10 +35,15 @@
 				</div>
 			</div>
 			<div id="account_name" class="link Account_Name" onclick="change_view('account')">{$account->get('Account Name')}</div>
+			
+			<div id="aurora_logo_small_screen"  >
+					<img  src="/art/aurora_log_v2_orange_small.png" /> 
+			</div>
+			
 			<div id="menu">
 			</div>
 			<ul style="margin-top:20px">
-				<li onclick="logout()"><i class="fa fa-sign-out fa-fw"></i> <span id="logout_label">{t}Logout{/t}</li>
+				<li onclick="logout()"><i class="fa fa-sign-out fa-fw"></i><span id="logout_label" class="label"> {t}Logout{/t}</span></li>
 			</ul>
 		</div>
 		<div id="app_main">
@@ -55,11 +60,17 @@
 		</div>
 	</section>
 	<aside id="notifications">
-		<div class="top_buttons" style="padding:2px 10px;border-bottom:1px solid #eee">
-			<div onclick="change_view('/fire')" class="square_button  " title="{t}Fire evacuation roll call{/t}">
+		<div class="top_buttons" >
+			
+			<div onclick="change_view('/fire')" class="square_button  " style="float:left" title="{t}Fire evacuation roll call{/t}">
 				<i class="fa fa-fire fa-fw" style="color:orange"></i> 
 			</div>
-			<div>
+			<div onclick="change_view('/fire')" class="square_button  " style="float:left" title="{t}Help{/t}">
+				<i class="fa fa-question-circle fa-fw" style="color:#14307D"></i> 
+			</div>
+			
+			<div style="clear:both"></div>
+			</div>
 	</aside>
 </div>
 </body>

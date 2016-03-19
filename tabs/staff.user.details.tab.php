@@ -15,7 +15,34 @@ include 'utils/available_locales.php';
 include 'conf/user_groups.php';
 
 $system_user=new User($state['key']);
+$employee=new Staff($system_user->get_staff_key());
 
+
+
+include 'conf/roles.php';
+foreach ($roles as $_key=>$_data) {
+	if (in_array($account->get('Setup Metadata')['size'], $_data['size'])) {
+
+		foreach ($account->get('Setup Metadata')['instances'] as $instance) {
+			if (in_array($instance, $_data['instances'])) {
+
+				$options_Staff_Position[$_key]=array(
+					'label'=>$_data['title'],
+					'selected'=>false
+				);
+				break;
+			}
+		}
+	}
+}
+
+
+foreach (preg_split('/,/', $employee->get('Staff Position')) as $current_position_key) {
+	if ( array_key_exists($current_position_key, $options_Staff_Position ) ) {
+
+		$options_Staff_Position[$current_position_key]['selected']=true;
+	}
+}
 
 $options_yn=array(
 	'Yes'=>_('Yes'), 'No'=>_('No')
@@ -36,19 +63,17 @@ foreach ($user_groups as $key=>$user_group) {
 		'selected'=>false
 	);
 }
+
+/*
 foreach (preg_split('/,/', $system_user->get('User Groups')) as $key) {
 	if ($key) {
 
-		//TODO remove after migrating to aurora, and taking off un used grous from User Group User Bridge
-		if ($key==4 or $key==7 or $key==12) {
-			continue;
-		}
 
 		$options_Groups[$key]['selected']=true;
 	}
 }
 
-
+*/
 $options_Stores=array();
 $sql=sprintf('select `Store Key` as `key` ,`Store Name`,`Store Code`   from `Store Dimension`  ');
 foreach ($db->query($sql) as $row) {
@@ -94,6 +119,7 @@ foreach (preg_split('/,/', $system_user->get('User Warehouses')) as $key) {
 asort($options_yn);
 asort($options_locales);
 asort($options_Groups);
+asort($options_Staff_Position);
 
 
 $staff=new Staff($system_user->get('User Parent Key'));
@@ -173,6 +199,7 @@ $object_fields=array(
 		'show_title'=>true,
 		'class'=>'edit_fields',
 		'fields'=>array(
+		/*
 			array(
 				'id'=>'User_Groups',
 				'edit'=>'radio_option',
@@ -182,6 +209,15 @@ $object_fields=array(
 				'options'=>$options_Groups,
 
 
+			),
+			*/
+							array(
+				'id'=>'Staff_Position',
+				'edit'=>'radio_option',
+				'value'=>$employee->get('Staff Position'),
+				'formatted_value'=>$employee->get('Position'),
+				'options'=>$options_Staff_Position,
+				'label'=>ucfirst($employee->get_field_label('Staff Position')),
 			),
 			array(
 				'id'=>'User_Stores',
