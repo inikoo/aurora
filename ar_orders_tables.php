@@ -13,6 +13,7 @@ require_once 'common.php';
 require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
 require_once 'utils/order_functions.php';
+require_once 'utils/natural_language.php';
 
 if (!$user->can_view('orders')) {
 	echo json_encode(array('state'=>405, 'resp'=>'Forbidden'));

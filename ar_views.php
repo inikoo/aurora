@@ -589,7 +589,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		switch ($data['section']) {
 		case ('orders'):
 		case ('payments'):
-			return get_orders_server_navigation($data);
+			return get_orders_server_navigation($data, $smarty, $user, $db, $account);
 			break;
 		}
 
@@ -600,14 +600,14 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
 		case ('invoices'):
 		case ('payments'):
-			return get_invoices_server_navigation($data);
+			return get_invoices_server_navigation($data, $smarty, $user, $db, $account);
 			break;
 
 		case ('categories'):
-			return get_invoices_categories_server_navigation($data);
+			return get_invoices_categories_server_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('category'):
-			return get_invoices_category_server_navigation($data);
+			return get_invoices_category_server_navigation($data, $smarty, $user, $db, $account);
 			break;
 		}
 
@@ -619,7 +619,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		switch ($data['section']) {
 		case ('delivery_notes'):
 
-			return get_delivery_notes_server_navigation($data);
+			return get_delivery_notes_server_navigation($data, $smarty, $user, $db, $account);
 			break;
 		}
 
@@ -630,16 +630,16 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		switch ($data['section']) {
 		case ('orders'):
 		case ('payments'):
-			return get_orders_navigation($data);
+			return get_orders_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('order'):
-			return get_order_navigation($data);
+			return get_order_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('delivery_note'):
-			return get_delivery_note_navigation($data);
+			return get_delivery_note_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('invoice'):
-			return get_invoice_navigation($data);
+			return get_invoice_navigation($data, $smarty, $user, $db, $account);
 			break;
 		default:
 			return 'View not found';
@@ -652,17 +652,17 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
 		case ('invoices'):
 		case ('payments'):
-			return get_invoices_navigation($data);
+			return get_invoices_navigation($data, $smarty, $user, $db, $account);
 			break;
 
 		case ('invoice'):
-			return get_invoice_navigation($data);
+			return get_invoice_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('delivery_note'):
-			return get_delivery_note_navigation($data);
+			return get_delivery_note_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('order'):
-			return get_order_navigation($data);
+			return get_order_navigation($data, $smarty, $user, $db, $account);
 			break;
 		default:
 			return 'View not found';
@@ -673,22 +673,22 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		require_once 'navigation/orders.nav.php';
 		switch ($data['section']) {
 		case ('delivery_notes'):
-			return get_delivery_notes_navigation($data);
+			return get_delivery_notes_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('delivery_note'):
-			return get_delivery_note_navigation($data);
+			return get_delivery_note_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('invoice'):
-			return get_invoice_navigation($data);
+			return get_invoice_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('order'):
-			return get_order_navigation($data);
+			return get_order_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('pick_aid'):
-			return get_pick_aid_navigation($data);
+			return get_pick_aid_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('pack_aid'):
-			return get_pack_aid_navigation($data);
+			return get_pack_aid_navigation($data, $smarty, $user, $db, $account);
 			break;
 		default:
 			return 'View not found';
@@ -702,18 +702,18 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		switch ($data['section']) {
 		case ('websites'):
 
-			return get_websites_navigation($data);
+			return get_websites_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('website'):
 
 
-			return get_website_navigation($data);
+			return get_website_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('page'):
-			return get_page_navigation($data);
+			return get_page_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('website.user'):
-			return get_user_navigation($data);
+			return get_user_navigation($data, $smarty, $user, $db, $account);
 			break;
 		default:
 			return 'View not found';
@@ -725,7 +725,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		switch ($data['section']) {
 		case ('marketing'):
 
-			return get_marketing_server_navigation($data);
+			return get_marketing_server_navigation($data, $smarty, $user, $db, $account);
 			break;
 		}
 
@@ -736,35 +736,35 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		switch ($data['section']) {
 
 		case ('deals'):
-			return get_deals_navigation($data);
+			return get_deals_navigation($data, $smarty, $user, $db, $account);
 			break;
 
 		case ('enewsletters'):
-			return get_enewsletters_navigation($data);
+			return get_enewsletters_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('mailshots'):
 
-			return get_mailshots_navigation($data);
+			return get_mailshots_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('marketing_post'):
 
-			return get_marketing_post_navigation($data);
+			return get_marketing_post_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('lists'):
-			return get_customers_lists_navigation($data);
+			return get_customers_lists_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('list'):
-			return get_customers_list_navigation($data);
+			return get_customers_list_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('dashboard'):
-			return get_customers_dashboard_navigation($data);
+			return get_customers_dashboard_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('statistics'):
 
-			return get_customers_statistics_navigation($data);
+			return get_customers_statistics_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('pending_orders'):
-			return get_customers_pending_orders_navigation($data);
+			return get_customers_pending_orders_navigation($data, $smarty, $user, $db, $account);
 			break;
 		}
 
