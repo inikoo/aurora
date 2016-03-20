@@ -11,7 +11,7 @@
 */
 
 
-function get_orders_navigation($data) {
+function get_orders_navigation($data, $smarty, $user, $db, $account) {
 
 	global $user, $smarty;
 	require_once 'class.Store.php';
@@ -69,16 +69,39 @@ function get_orders_navigation($data) {
 		list($prev_key, $next_key)=get_prev_next($store->id, $user->stores);
 
 		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $prev_key);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$prev_title=sprintf($button_label, $row['Store Code']);
-		}else {$prev_title='';}
+		
+		
+if ($result=$db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$prev_title=sprintf($button_label, $row['Store Code']);
+			}else{
+			$prev_title='';
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+		
+		
+		
+	
+		
+		
 		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $next_key);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$next_title=sprintf($button_label, $row['Store Code']);
-		}else {$next_title='';}
-
+		
+		
+		if ($result=$db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$next_title=sprintf($button_label, $row['Store Code']);
+			}else{
+			$next_title='';
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+		
+	
 
 		$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>$block_view.'/'.$prev_key);
 		$left_buttons[]=$up_button;
@@ -110,7 +133,7 @@ function get_orders_navigation($data) {
 }
 
 
-function get_delivery_notes_navigation($data) {
+function get_delivery_notes_navigation($data, $smarty, $user, $db, $account) {
 
 	global $user, $smarty;
 	require_once 'class.Store.php';
@@ -187,7 +210,7 @@ function get_delivery_notes_navigation($data) {
 }
 
 
-function get_invoices_navigation($data) {
+function get_invoices_navigation($data, $smarty, $user, $db, $account) {
 
 	global $user, $smarty;
 	require_once 'class.Store.php';
@@ -271,7 +294,7 @@ function get_invoices_navigation($data) {
 }
 
 
-function get_orders_server_navigation($data) {
+function get_orders_server_navigation($data, $smarty, $user, $db, $account) {
 
 	global $user, $smarty;
 
@@ -337,7 +360,7 @@ function get_orders_server_navigation($data) {
 }
 
 
-function get_invoices_server_navigation($data) {
+function get_invoices_server_navigation($data, $smarty, $user, $db, $account) {
 
 	global $user, $smarty;
 
@@ -391,7 +414,7 @@ function get_invoices_server_navigation($data) {
 }
 
 
-function get_invoices_categories_server_navigation($data) {
+function get_invoices_categories_server_navigation($data, $smarty, $user, $db, $account) {
 
 	global $user, $smarty;
 
@@ -435,7 +458,7 @@ function get_invoices_categories_server_navigation($data) {
 
 }
 
-function get_invoices_category_server_navigation($data) {
+function get_invoices_category_server_navigation($data, $smarty, $user, $db, $account) {
 
 	global $user, $smarty;
 
@@ -480,7 +503,7 @@ function get_invoices_category_server_navigation($data) {
 }
 
 
-function get_delivery_notes_server_navigation($data) {
+function get_delivery_notes_server_navigation($data, $smarty, $user, $db, $account) {
 
 	global $user, $smarty;
 
@@ -529,7 +552,7 @@ function get_delivery_notes_server_navigation($data) {
 }
 
 
-function get_order_navigation($data) {
+function get_order_navigation($data, $smarty, $user, $db, $account) {
 
 	global $user, $smarty;
 
@@ -800,7 +823,7 @@ function get_order_navigation($data) {
 }
 
 
-function get_delivery_note_navigation($data) {
+function get_delivery_note_navigation($data, $smarty, $user, $db, $account) {
 
 	global $user, $smarty;
 
@@ -1068,7 +1091,7 @@ function get_delivery_note_navigation($data) {
 }
 
 
-function get_invoice_navigation($data) {
+function get_invoice_navigation($data, $smarty, $user, $db, $account) {
 
 	global $user, $smarty;
 
@@ -1331,7 +1354,7 @@ function get_invoice_navigation($data) {
 }
 
 
-function get_pick_aid_navigation($data) {
+function get_pick_aid_navigation($data, $smarty, $user, $db, $account) {
 
 	global $user, $smarty;
 
