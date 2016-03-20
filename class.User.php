@@ -1372,13 +1372,15 @@ class User extends DB_Table {
 			return false;
 		$tag=strtolower(_trim($tag));
 
-
+		
 
 		if ($tag_key==false) {
-			if (isset($this->rights_allow[$right_type][$tag]))
+			if (isset($this->rights_allow[$right_type][$tag])) {
+		
 				return true;
-			else
+			}else {
 				return false;
+			}
 		}
 
 

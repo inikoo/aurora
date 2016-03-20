@@ -12,7 +12,7 @@
 		
     <script type="text/javascript" src="/utils/country_data.js.php?locale={$locale}"></script> 
 	<script type="text/javascript" src="/build/js/libs.min.js"></script> 
-	<script type="text/javascript" src="/build/js/aurora.min.js"></script> 
+	<script type="text/javascript" src="/build/js/aurora.js"></script> 
 
  
 	
@@ -62,15 +62,26 @@
 	<aside id="notifications">
 		<div class="top_buttons" >
 			
-			<div onclick="change_view('/fire')" class="square_button  " style="float:left" title="{t}Fire evacuation roll call{/t}">
+			<div onclick="change_view('/fire')" class="square_button  button"  title="{t}Fire evacuation roll call{/t}">
 				<i class="fa fa-fire fa-fw" style="color:orange"></i> 
 			</div>
-			<div onclick="change_view('/fire')" class="square_button  " style="float:left" title="{t}Help{/t}">
-				<i class="fa fa-question-circle fa-fw" style="color:#14307D"></i> 
+			<div id="help_button" onclick="show_help()" class="square_button {if $show_help}selected{/if}"  title="{t}Help{/t}">
+				<i class="fa fa-question-circle fa-fw  " ></i> 
 			</div>
 			
 			<div style="clear:both"></div>
-			</div>
+		</div>
+		<div id="help" class="{if !$show_help}hide{/if}">
+		 <div class="top">
+		    {t}Help{/t}
+		    </div>
+		    <div class="navigation">
+		    <span class="help_title"></span>
+		    </div>
+		    <div class="content">
+		    </div>
+		</div>
+		
 	</aside>
 </div>
 </body>
