@@ -63,27 +63,20 @@ function change_subtab(subtab) {
 }
 
 
-function help() {
 
-    change_view(state.request, {
-        help: true
-    })
-
-}
 
 function change_view(_request, metadata) {
 
     //console.log(metadata)
-
     if (metadata == undefined) {
         metadata = {};
     }
 
     var request = "/ar_views.php?tipo=views&request=" + _request + '&metadata=' + JSON.stringify(metadata) + "&old_state=" + JSON.stringify(state)
+
     $.getJSON(request, function(data) {
 
- console.log(data);
-
+        //console.log(data);
         state = data.state;
 
         //console.log(data.state)
@@ -97,9 +90,9 @@ function change_view(_request, metadata) {
         if (typeof(data.tabs) != "undefined" && data.tabs !== null) {
             $('#tabs').html(data.tabs);
         }
-         
+
         if (typeof(data.menu) != "undefined" && data.menu !== null) {
-       
+
             $('#menu').html(data.menu);
 
 
@@ -140,7 +133,7 @@ function change_view(_request, metadata) {
 
 
         change_browser_history_state(data.state.request)
-
+        help()
 
     });
 
