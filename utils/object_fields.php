@@ -171,9 +171,9 @@ function get_object_fields($object,$db) {
 
 						'id'=>'Staff_Address',
 						'edit'=>'textarea',
-						'value'=>$employee->get('Staff Staff Address'),
+						'value'=>$employee->get('Staff Address'),
 						'formatted_value'=>$employee->get('Staff Address'),
-						'label'=>ucfirst($employee->get_field_label('Staff Staff Address')),
+						'label'=>ucfirst($employee->get_field_label('Staff Address')),
 						'invalid_msg'=>get_invalid_message('string'),
 						'required'=>false,
 						'type'=>'value'
@@ -217,7 +217,8 @@ function get_object_fields($object,$db) {
 						'formatted_value'=>_('Yes'),
 						'options'=>$options_yn,
 						'label'=>ucfirst($employee->get_field_label('Staff Currently Working')),
-						'type'=>'value'
+						'type'=>'value',
+						'required'=>false,
 					),
 					array(
 						'render'=>false,
@@ -228,6 +229,19 @@ function get_object_fields($object,$db) {
 						'value'=>$employee->get('Staff Valid From'),
 						'formatted_value'=>$employee->get('Valid From'),
 						'label'=>ucfirst($employee->get_field_label('Staff Valid From')),
+						'invalid_msg'=>get_invalid_message('date'),
+						'type'=>'value',
+						'required'=>false,
+					),
+					array(
+						'render'=>false,
+						'edit'=>'hidden',
+						'id'=>'Staff_Valid_To',
+
+						'time'=>'09:00:00',
+						'value'=>$employee->get('Staff Valid To'),
+						'formatted_value'=>$employee->get('Valid To'),
+						'label'=>ucfirst($employee->get_field_label('Staff Valid To')),
 						'invalid_msg'=>get_invalid_message('date'),
 						'type'=>'value',
 						'required'=>false,
@@ -338,11 +352,11 @@ function get_object_fields($object,$db) {
 					),
 					array(
 						'render'=>false,
-						'id'=>'Staff_User_PIN',
+						'id'=>'Staff_PIN',
 						'edit'=>'pin',
 						'value'=>'',
 						'formatted_value'=>'****',
-						'label'=>ucfirst($employee->get_field_label('Staff User PIN')),
+						'label'=>ucfirst($employee->get_field_label('Staff PIN')),
 						'invalid_msg'=>get_invalid_message('pin'),
 						'type'=>'user_value',
 						'required'=>false,
