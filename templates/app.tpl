@@ -11,7 +11,7 @@
 	<link href="/build/css/app.min.css" rel="stylesheet">
 		
     <script type="text/javascript" src="/utils/country_data.js.php?locale={$locale}"></script> 
-	<script type="text/javascript" src="/build/js/libs.min.js"></script> 
+	<script type="text/javascript" src="/build/js/libs.js"></script> 
 	<script type="text/javascript" src="/build/js/aurora.js"></script> 
 
  

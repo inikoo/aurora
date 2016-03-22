@@ -31,8 +31,16 @@ function help() {
         if (typeof(data.content) != "undefined" && data.content !== null && data.content != '') {
 
             $('#help  .content').html(data.content).removeClass('hide');
+
+            if ($('#help  .content .question').length == 1) {
+                show_answer($('#help  .content .question')[0])
+            }
+
         } else {
             $('#help  .content').html('').addClass('hide');
+
+
+
         }
 
 
@@ -52,12 +60,12 @@ function show_answer(element) {
     if ($(element).next().hasClass('hide')) {
         $('#help .answer').addClass('hide')
 
-$(element).find('.fa-caret-right.bullet').removeClass('fa-caret-right').addClass('fa-caret-down')
+        $(element).find('.fa-caret-right.bullet').removeClass('fa-caret-right').addClass('fa-caret-down')
         $(element).next().removeClass('hide')
     } else {
         $('#help .answer').addClass('hide')
 
-$(element).find('.fa-caret-down.bullet').removeClass('fa-caret-down').addClass('fa-caret-right')
+        $(element).find('.fa-caret-down.bullet').removeClass('fa-caret-down').addClass('fa-caret-right')
 
 
     }
