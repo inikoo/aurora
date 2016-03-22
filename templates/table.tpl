@@ -133,7 +133,7 @@
 		<form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate  >
 
 	<input type="file" name="image_upload" id="file_upload" class="inputfile" multiple/>
-	 <label for="file_upload"><i  class="fa fa-upload fa-fw"></i><label>
+	 <label for="file_upload"><i  class="fa fa-upload fa-fw button"></i><label>
 	</form>
 	</div>
 	<span id="file_upload_msg" style="float:right;padding-right:10px"></span>

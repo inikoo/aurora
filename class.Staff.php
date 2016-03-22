@@ -457,7 +457,7 @@ class Staff extends DB_Table{
 
 			break;
 		case 'Staff Position':
-			$label=_('role');
+			$label=_('roles');
 			break;
 		case 'Staff Job Title':
 

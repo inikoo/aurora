@@ -9,6 +9,10 @@ function show_user_fields() {
     $('#Staff_User_Handle_field ,#Staff_User_Password_field, #Staff_User_PIN_field,#Staff_Position_field').removeClass('hide')
     $('#Staff_User_Active_container,  #Staff_User_Handle_container ,#Staff_User_Password_container, #Staff_User_PIN_container,#Staff_Position_container').addClass('value')
 
+ $('#Staff_User_Handle_validation').addClass('required')
+ $('#Staff_User_Handle_container').attr('_required',1)
+
+
 
   $(".value").each(function(index) {
      

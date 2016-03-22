@@ -74,6 +74,9 @@ function get_title($state, $account, $user) {
 
 			return _('Employees list');
 		}
+	}elseif ($state['tab']=='employee.new') {
+				return _('Adding an employee');
+
 	}
 	return '';
 }
@@ -82,11 +85,9 @@ function get_title($state, $account, $user) {
 function get_content($state, $smarty, $account, $user) {
 
 	$smarty->assign('user', $user);
-
-	if ($state['tab']=='employees') {
-
-
-		return $smarty->fetch('help/'.$state['module'].'.'.$state['tab'].'.quick.tpl');
+	$template='help/'.$state['module'].'.'.$state['tab'].'.quick.tpl';
+	if ($smarty->templateExists($template)) {
+		return $smarty->fetch($template);
 	}
 	return _('There is not help for this section');
 }

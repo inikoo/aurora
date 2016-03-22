@@ -472,5 +472,5 @@
     });
 
    
-   {if isset($js_code)}{$js_code}{/if}
+{if isset($js_code) }{fetch file="$js_code"}{/if}
 </script> 
