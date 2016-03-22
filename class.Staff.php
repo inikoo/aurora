@@ -694,10 +694,8 @@ class Staff extends DB_Table{
 			include_once 'utils/password_functions.php';
 			$data['User Password']=hash('sha256', generatePassword(8, 3));
 		}
-		if (!array_key_exists('User PIN', $data) or $data['User PIN']=='' ) {
-			include_once 'utis/password_functions.php';
-			$data['User PIN']=hash('sha256', generatePassword(8, 3));
-		}
+
+
 		$data['User Type']='Staff';
 		$data['User Parent Key']=$this->id;
 		$data['User Alias']=$this->get('Name');
@@ -1070,6 +1068,9 @@ class Staff extends DB_Table{
 
 	function update_roles($values, $options='') {
 
+
+
+
 		$account=new Account();
 
 		$old_value=$this->get('Position');
@@ -1097,11 +1098,17 @@ class Staff extends DB_Table{
 
 
 
+		if ($values!='') {
 
-		foreach (preg_split('/,/', $values) as $selected_role) {
-			$available_roles[$selected_role]['selected']=true;
+			foreach (preg_split('/,/', $values) as $selected_role) {
+			
+			if(array_key_exists($selected_role,$available_roles)){
+				$available_roles[$selected_role]['selected']=true;
+				}
+			}
+
+
 		}
-
 
 		foreach ($available_roles as $key=>$value) {
 			if ($value['selected']) {
@@ -1130,19 +1137,20 @@ class Staff extends DB_Table{
 		$groups=array();
 
 
-		foreach (preg_split( '/,/',$this->get('Staff Position')) as $role_code) {
-		//print_r($roles[$role_code]['user_groups']);
+		foreach (preg_split( '/,/', $this->get('Staff Position')) as $role_code) {
+			if(array_key_exists($role_code,$roles)){
 			$groups=array_merge($groups, $roles[$role_code]['user_groups']);
+			}
 		}
 
-$groups = join(',',array_unique($groups));
-		
+		$groups = join(',', array_unique($groups));
+
 		$this->get_user_data();
 		//print_r($this->data);
-		if ($this->data['Staff User Key']) {
+		if ( isset($this->data['Staff User Key']) and   $this->data['Staff User Key']) {
 			$staff_user=new User($this->data['Staff User Key']);
 			if ($staff_user->id) {
-				   $staff_user->update_groups($groups);
+				$staff_user->update_groups($groups);
 			}
 		}
 	}
