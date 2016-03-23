@@ -1,3 +1,0 @@
-
-sudo chgrp www-data uploads/ smarty/templates_c/ smarty/cache/ smarty/config images/original images/med images/tb ck;
-sudo chmod g+w uploads/ smarty/templates_c/ smarty/cache/ images/original images/med images/tb ck
