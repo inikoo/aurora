@@ -46,9 +46,9 @@ $smarty->assign('table_buttons', $table_buttons);
 
 $smarty->assign('tipo', $tipo);
 $smarty->assign('upload_file', array(
-'tipo'=>'upload_images',
-'object'=>$state['object'],
-'key'=>$state['key'],
+'tipo'=>'upload_objects',
+'scope'=>$state['parent'],
+'scope_key'=>$state['parent_key'],
 'label'=>_('Upload employees')
 
 ));

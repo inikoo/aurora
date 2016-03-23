@@ -23,7 +23,6 @@ if (!isset($_REQUEST['tipo'])) {
 }
 
 
-
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
@@ -64,6 +63,18 @@ case 'set_as_main':
 
 	set_as_main($account, $db, $user, $editor, $data, $smarty);
 	break;
+
+case 'upload_objects':
+
+	$data=prepare_values($_REQUEST, array(
+			'scope'=>array('type'=>'string'),
+			'scope_key'=>array('type'=>'numeric'),
+
+		));
+
+	upload_objects($account, $db, $user, $editor, $data, $smarty);
+	break;
+
 case 'upload_attachment':
 
 	$data=prepare_values($_REQUEST, array(
@@ -80,8 +91,8 @@ case 'upload_attachment':
 case 'upload_images':
 
 	$data=prepare_values($_REQUEST, array(
-			'object'=>array('type'=>'string'),
-			'key'=>array('type'=>'key'),
+			'scope'=>array('type'=>'string'),
+			'scope_key'=>array('type'=>'key'),
 		));
 
 	upload_images($account, $db, $user, $editor, $data, $smarty);
@@ -104,7 +115,7 @@ case 'new_object':
 
 		));
 
-	new_object($account, $db, $user, $editor, $data,$smarty);
+	new_object($account, $db, $user, $editor, $data, $smarty);
 	break;
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
@@ -133,10 +144,10 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 
 	$formatted_field= preg_replace('/^'.$object->get_object_name().' /', '', $field);
-    
-    if($field=='Staff Position' and $data['object']=='User'){
-        $formatted_field='Position';
-    }
+
+	if ($field=='Staff Position' and $data['object']=='User') {
+		$formatted_field='Position';
+	}
 
 
 
@@ -419,9 +430,9 @@ function delete_object_component($account, $db, $user, $editor, $data, $smarty) 
 }
 
 
-function new_object($account, $db, $user, $editor, $data,$smarty) {
+function new_object($account, $db, $user, $editor, $data, $smarty) {
 
-	
+
 
 	$parent=get_object($data['parent'], $data['parent_key']);
 	$parent->editor=$editor;
@@ -778,7 +789,7 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
 
 
 
-	$object=get_object($data['object'], $data['key']);
+	$object=get_object($data['scope'], $data['scope_key']);
 	$object->editor=$editor;
 
 
@@ -883,6 +894,7 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
 
 	$response=array(
 		'state'=>200,
+		'tipo'=>'upload_images',
 		'msg'=>$msg,
 		'errors'=>$errors,
 		'error_msg'=>$error_msg,
@@ -943,15 +955,6 @@ function delete_image($account, $db, $user, $editor, $data, $smarty) {
 
 
 
-
-
-
-
-
-
-
-
-
 }
 
 
@@ -977,8 +980,177 @@ function parse_upload_file_error_msg($file_data_error) {
 
 	}
 
+	return $msg;
 
 }
+
+
+function upload_objects($account, $db, $user, $editor, $data, $smarty) {
+
+	require_once 'external_libs/PHPExcel/Classes/PHPExcel.php';
+	require_once 'external_libs/PHPExcel/Classes/PHPExcel/IOFactory.php';
+
+	$valid_extensions=array('xls', 'xlt', 'xlm', 'xlsx', 'xlsm', 'xltx', 'xltm', 'xlsb', 'ods', 'slk', 'gnumeric', 'tsv', 'tab', 'csv');
+
+	$parent=get_object($data['scope'], $data['scope_key']);
+	$parent->editor=$editor;
+
+
+
+	if (!$parent->id) {
+		$msg= 'parent key not found';
+		$response= array('state'=>400, 'msg'=>$msg);
+		echo json_encode($response);
+		exit;
+	}
+
+
+
+	if (empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD']) && strtolower($_SERVER['REQUEST_METHOD']) == 'post') { //catch file overload error...
+		$postMax = ini_get('post_max_size'); //grab the size limits...
+		$msg= sprintf(_("File can not be attached, please note files larger than %s will result in this error!, let's us know, an we will increase the size limits"), $postMax);
+		$response= array('state'=>400, 'msg'=>$msg, 'key'=>'attach');
+		echo json_encode($response);
+		exit;
+
+	}
+
+	if (empty($_FILES) ) {
+		$msg= '_FILES array empty';
+		$response= array('state'=>400, 'msg'=>_("Image can't be uploaded").", ".$msg);
+		echo json_encode($response);
+		exit;
+
+	}
+
+	$files_uploaded=array();
+	$files_with_errors=array();
+
+	foreach ($_FILES['files']['name'] as $file_key=>$name) {
+
+
+
+		$error=$_FILES['files']['error'][$file_key];
+		$size=$_FILES['files']['size'][$file_key];
+		$tmp_name=$_FILES['files']['tmp_name'][$file_key];
+		$type=$_FILES['files']['type'][$file_key];
+		$extension=strtolower(pathinfo($name, PATHINFO_EXTENSION));
+
+
+
+
+
+		if ($error) {
+			$msg=parse_upload_file_error_msg($error);
+
+			$files_with_errors[]=array('msg'=>$msg, 'filename'=>$name);
+			continue;
+
+		}
+
+		if ($size==0) {
+			$msg= _("This file seems that is empty, have a look and try again").'.';
+			$files_with_errors[]=array('msg'=>$msg, 'filename'=>$name);
+			continue;
+
+
+		}
+
+		if (!in_array($extension, $valid_extensions)) {
+			$msg=_('Invalid file type').' <b>'.$extension.'</b> <i>('.$type.')</i>';
+
+			$files_with_errors[]=array('msg'=>$msg, 'filename'=>$name);
+			continue;
+
+		}
+
+		$files_uploaded[]=array('tmp_name'=>$tmp_name, 'filename'=>$name);
+
+		/* Do this in fork
+
+		rename($tmp_name, $tmp_name.'.'.pathinfo($name, PATHINFO_EXTENSION));
+		$tmp_name=$tmp_name.'.'.pathinfo($name, PATHINFO_EXTENSION);
+
+		$inputFileType = PHPExcel_IOFactory::identify($tmp_name);
+
+
+
+		$objReader = PHPExcel_IOFactory::createReader($inputFileType);
+		$objReader->setReadDataOnly(true);
+
+		$objPHPExcel = @$objReader->load($tmp_name);
+
+
+		$objWorksheet = $objPHPExcel->getActiveSheet();
+
+		$highestRow = $objWorksheet->getHighestRow();
+		$highestColumn = $objWorksheet->getHighestColumn();
+		$highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
+		$rows = array();
+		for ($row = 0; $row <= $highestRow; ++$row) {
+			for ($col = 0; $col <= $highestColumnIndex; ++$col) {
+				$rows[$col] = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
+			}
+		}
+		print $inputFileType;
+		print_r($rows);
+		unlink($tmp_name);
+
+*/
+
+
+
+
+
+
+
+	}
+
+	if (count($files_uploaded)==1) {
+		$msg='<i class="fa fa-spinner fa-spin"></i> '._('Processing');
+		$state=200;
+	}elseif (count($files_uploaded)>1) {
+
+		$msg='<i class="fa fa-spinner fa-spin"></i> '.sprintf(_('Processing %s files'), count($files_uploaded));
+		$state=200;
+	}else if (count($files_with_errors)==1) {
+
+		foreach ($files_with_errors as $file_with_errors) {
+			$error_msg=$file_with_errors['msg'];
+		}
+
+		$msg='<i class="fa fa-exclamation-circle"></i> '.$error_msg;
+		$state=400;
+	}else if (count($files_with_errors)>0) {
+		$error_msg='';
+		foreach ($files_with_errors as $file_with_errors) {
+			$error_msg.=$file_with_errors['filename'].': '.$file_with_errors['msg'].', ';
+		}
+		$error_msg=preg_replace('/,$/', '', $error_msg);
+
+		$msg='<i class="fa fa-exclamation-circle"></i> '.$error_msg;
+		$state=400;
+	}else {
+		$msg='<i class="fa fa-exclamation-circle"></i> '._('No files uploaded');
+		$state=400;
+	}
+
+	$response=array(
+		'state'=>$state,
+		'msg'=>$msg,
+		'tipo'=>'upload_objects',
+		'files_uploaded'=>$files_uploaded,
+		'files_with_errors'=>$files_with_errors,
+
+
+	);
+
+	echo json_encode($response);
+
+
+
+}
+
 
 
 ?>

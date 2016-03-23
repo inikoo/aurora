@@ -163,9 +163,10 @@
     });
 
 
+
     ajaxData.append("tipo", '{$upload_file.tipo}')
-    ajaxData.append("object", '{$upload_file.object}')
-    ajaxData.append("key", '{$upload_file.key}')
+    ajaxData.append("scope", '{$upload_file.scope}')
+    ajaxData.append("scope_key", '{$upload_file.scope_key}')
 
     $.ajax({
         url: "/ar_edit.php",
@@ -185,38 +186,52 @@
 
         },
         success: function(data) {
-            if (data.state == '400') {
-                $('#file_upload_msg').html(data.msg)
+
+
+
+            if (data.state == '200') {
+
+                if (data.tipo == 'upload_images') {
+
+                    rows.url = '/' + rows.ar_file + '?tipo=' + rows.tipo + '&parameters=' + rows.parameters
+                    rows.fetch({
+                        reset: true
+                    });
+
+                    if (data.number_images == 0) {
+
+                        $('div.main_image').addClass('hide')
+                        $('form.main_image').removeClass('hide')
+                        $('div.main_image img').attr('src', '/art/nopic.png')
+
+
+                    } else {
+                        $('div.main_image').removeClass('hide')
+                        $('form.main_image').addClass('hide')
+                        $('div.main_image img').attr('src', '/image_root.php?id=' + data.main_image_key + '&size=small')
+
+
+
+
+                    }
+
+                }
+                else if(data.tipo == 'upload_objects'){
+                    change_view(state.request+'/import/'+data.import_key);
+                }
+
+            } else if (data.state == '400') {
+                $('#file_upload_msg').html(data.msg).addClass('error')
             }
 
-            rows.url = '/' + rows.ar_file + '?tipo=' + rows.tipo + '&parameters=' + rows.parameters
-            rows.fetch({
-                reset: true
-            });
 
-            if (data.number_images == 0) {
-
-                $('div.main_image').addClass('hide')
-                $('form.main_image').removeClass('hide')
-                $('div.main_image img').attr('src', '/art/nopic.png')
-
-
-            } else {
-                $('div.main_image').removeClass('hide')
-                $('form.main_image').addClass('hide')
-                $('div.main_image img').attr('src', '/image_root.php?id=' + data.main_image_key + '&size=small')
-
-
-
-
-            }
 
         },
         error: function() {
 
         }
     });
-}
+    }
 
 
 
