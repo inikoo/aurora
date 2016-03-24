@@ -3,7 +3,9 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
-
+        clean: {
+            build: ["build/*", "!build/keyring/**", "!build/server_files/**"],
+        },
 
         concat: {
             js_libs: {
@@ -57,18 +59,18 @@ module.exports = function(grunt) {
         sass: {
             aurora: {
                 options: {
-                    style: 'compressed'
+                   // style: 'compressed'
                 },
                 files: {
-                    'build/css/app.min.css': 'sass/app.scss'
+                    'css/app.css': 'sass/app.scss'
                 }
             },
             login: {
                 options: {
-                    style: 'compressed'
+                   // style: 'compressed'
                 },
                 files: {
-                    'build/css/login.min.css': 'sass/login.scss'
+                    'css/login.css': 'sass/login.scss'
                 }
             }
         },
@@ -77,15 +79,30 @@ module.exports = function(grunt) {
                 shorthandCompacting: false,
                 roundingPrecision: -1,
             },
-            target: {
+            libs: {
                 files: {
-                    'build/css/libs.min.css': ['css/jquery-ui.css', 'css/font-awesome.css', 'css/intlTelInput.css', 'css/d3fc.css', 'css/backgrid.css', 'css/backgrid-filter.css']
+                    'build/css/libs.min.css':
+                     ['css/jquery-ui.css', 'css/font-awesome.css', 'css/intlTelInput.css', 'css/d3fc.css', 'css/backgrid.css', 'css/backgrid-filter.css']
+
+                }
+            },
+            aurora: {
+                files: {
+                    'build/css/app.min.css':
+                     ['css/app.css']
+
+                }
+            },
+              login: {
+                files: {
+                    'build/css/login.min.css':
+                     ['css/login.css']
 
                 }
             }
         },
         copy: {
-            main: {
+            css_aux_files: {
                 files: [
 
                 {
@@ -96,12 +113,106 @@ module.exports = function(grunt) {
                     expand: true,
                     src: ['css/images/*'],
                     dest: 'build/'
-                },
+                }],
+            },
+            php: {
+                files: [
 
+
+
+                {
+                    expand: true,
+                    src: ['*.php'],
+                    dest: 'build/'
+                }],
+            },
+            php_libs: {
+                files: [
+
+
+                {
+                    expand: true,
+                    src: ['external_libs/**'],
+                    dest: 'build/'
+                },
 
                 ],
             },
+            locale: {
+                files: [
+
+
+                {
+                    expand: true,
+                    src: ['locale/**'],
+                    dest: 'build/'
+                },
+
+                ],
+            },
+            conf: {
+                files: [{
+                    expand: true,
+                    src: ['conf/*.php'],
+                    dest: 'build/'
+                },
+
+                ],
+            },
+            cron: {
+                files: [{
+                    expand: true,
+                    src: ['cron/*.php'],
+                    dest: 'build/'
+                },
+
+                ],
+            },
+            navigation: {
+                files: [{
+                    expand: true,
+                    src: ['navigation/*.php'],
+                    dest: 'build/'
+                },
+
+                ],
+            },
+            pdf: {
+                files: [{
+                    expand: true,
+                    src: ['pdf/*.php'],
+                    dest: 'build/'
+                },
+
+                ],
+            },
+            prepare_table: {
+                files: [{
+                    expand: true,
+                    src: ['prepare_table/*.php'],
+                    dest: 'build/'
+                },
+
+                ],
+            },
+
         },
+
+        imagemin: {
+            aurora: {
+                options: {
+                    optimizationLevel: 3,
+
+                },
+                files: [{
+                    expand: true,
+                    cwd: 'art/',
+                    src: ['**/*.{png,jpg,gif}'],
+                    dest: 'build/art/'
+                }]
+            }
+        },
+
         watch: {
             scripts: {
                 files: ['js/*.js'],
@@ -134,7 +245,9 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-contrib-imagemin');
 
-    grunt.registerTask('default', ['concat', 'uglify', 'sass', 'cssmin', 'copy']);
+    grunt.registerTask('default', ['clean', 'imagemin', 'concat', 'uglify', 'sass', 'cssmin', 'copy']);
 
 };

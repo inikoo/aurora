@@ -174,15 +174,12 @@ $smarty->assign('object_name', $customer->get_object_name());
 
 
 $smarty->assign('object_fields', $object_fields);
-$smarty->assign('new_object_label', _('View new employee'));
-$smarty->assign('new_object_request','employee/__key__');
 
 $store=new Store($state['parent_key']);
 $smarty->assign('default_country', $store->get('Store Home Country Code 2 Alpha'));
 $smarty->assign('preferred_countries', '"'.join('", "', preferred_countries($store->get('Store Home Country Code 2 Alpha'))).'"');
 
 
-$smarty->assign('js_code', file_get_contents('build/js/injections/employee.new.min.js'));
 
 $html=$smarty->fetch('new_object.tpl');
 

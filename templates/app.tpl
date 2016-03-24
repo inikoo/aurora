@@ -1,4 +1,4 @@
-{strip} 
+{if $_DEVEL}{strip}{/if}
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html>
 <html lang='en' xml:lang='en' xmlns="http://www.w3.org/1999/xhtml">
@@ -6,7 +6,47 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>Aurora</title>
 	
-	<link href="/art/aurora_log_v2_orange_small.png" rel="shortcut icon" type="image/x-icon" />
+		<link href="/art/aurora_log_v2_orange_small.png" rel="shortcut icon" type="image/x-icon" />
+
+ 
+ 	{if $_DEVEL} 
+	<link href="/css/jquery-ui.css" rel="stylesheet"> 
+	<link href="/css/font-awesome.css" rel="stylesheet"> 
+	<link href="/css/intlTelInput.css" rel="stylesheet"> 
+	<link href="/css/d3fc.css" rel="stylesheet"> 
+	<link href="/css/backgrid.css" rel="stylesheet"> 
+	<link href="/css/backgrid-filter.css" rel="stylesheet"> 
+	<link href="/css/app.css" rel="stylesheet"> 
+
+    <script type="text/javascript" src="/js/libs/jquery-2.2.1.js"></script> 
+	<script type="text/javascript" src="/js/libs/jquery-ui.js"></script> 
+
+	<script type="text/javascript" src="/js/libs/moment-with-locales.js"></script> 
+	<script type="text/javascript" src="/js/libs/chrono.js"></script> 
+	<script type="text/javascript" src="/js/libs/sha256.js"></script>
+	<script type="text/javascript" src="/js/libs/underscore.js"></script>
+	<script type="text/javascript" src="/js/libs/backbone.js"></script>
+	<script type="text/javascript" src="/js/libs/backbone.paginator.js"></script>
+	<script type="text/javascript" src="/js/libs/backgrid.js"></script>
+	<script type="text/javascript" src="/js/libs/backgrid-filter.js"></script>
+	<script type="text/javascript" src="/js/libs/intlTelInput.js"></script>
+	<script type="text/javascript" src="/js/libs/d3.js"></script>
+	<script type="text/javascript" src="/js/libs/d3fc.layout.js"></script>
+	<script type="text/javascript" src="/js/libs/d3fc.js"></script>
+	
+
+		<script type="text/javascript" src="/js/app.js"></script>
+		<script type="text/javascript" src="/js/keyboard_shorcuts.js"></script>
+		<script type="text/javascript" src="/js/search.js"></script>
+		<script type="text/javascript" src="/js/table.js"></script>
+		<script type="text/javascript" src="/js/validation.js"></script>
+		<script type="text/javascript" src="/js/edit.js"></script>
+		<script type="text/javascript" src="/js/new.js"></script>
+		<script type="text/javascript" src="/js/help.js"></script>
+
+	
+
+	{else} 
 	<link href="/build/css/libs.min.css" rel="stylesheet">
 	<link href="/build/css/app.min.css" rel="stylesheet">
 		
@@ -14,6 +54,10 @@
 	<script type="text/javascript" src="/build/js/libs.js"></script> 
 	<script type="text/javascript" src="/build/js/aurora.js"></script> 
 
+	{/if} 
+
+ 
+ 
  
 	
 </head>
@@ -86,4 +130,4 @@
 </div>
 </body>
 </html>
-{/strip} 
+{if $_DEVEL}{/strip}{/if}

@@ -33,20 +33,21 @@ $table_buttons[]=array(
 	'id'=>'new_record',
 	'inline_new_object'=>
 	array(
-	'field_id'=>'Timesheet_Record_Date',
-	'field_label'=>_('New clocking record').':',
-	'field_edit'=>'time',
-	'date'=>$state['_object']->get('IsoDate'),
-	'object'=>'Timesheet_Record',
-	'parent'=>$state['object'],
-	'parent_key'=>$state['key'],
-	
+		'field_id'=>'Timesheet_Record_Date',
+		'field_label'=>_('New clocking record').':',
+		'field_edit'=>'time',
+		'date'=>$state['_object']->get('IsoDate'),
+		'object'=>'Timesheet_Record',
+		'parent'=>$state['object'],
+		'parent_key'=>$state['key'],
+
 	)
 
 );
 $smarty->assign('table_buttons', $table_buttons);
 
-$smarty->assign('js_code', file_get_contents('build/js/injections/timesheet.records.min.js'));
+$smarty->assign('js_code', 'js/injections/timesheet_records.'.(_DEVEL?'':'min.').'js');
+
 
 include 'utils/get_table_html.php';
 

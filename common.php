@@ -1,19 +1,19 @@
 <?php
 
 error_reporting(E_ALL ^ E_DEPRECATED);
+define("_DEVEL",   isset($_SERVER['devel']));
 
-require_once 'conf/dns.php';
-require_once 'conf/key.php';
+
+require_once 'keyring/dns.php';
+require_once 'keyring/key.php';
+
+
 include_once 'utils/i18n.php';
-
 require_once 'utils/general_functions.php';
 require_once 'utils/system_functions.php';
-
 require_once 'utils/detect_agent.php';
 require_once "utils/aes.php";
-
 require_once "class.Account.php";
-
 require_once "class.Auth.php";
 require_once "class.User.php";
 
@@ -24,7 +24,7 @@ $db = new PDO("mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dn
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
-$default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
+$default_DB_link=mysql_connect($dns_host, $dns_user, $dns_pwd );
 if (!$default_DB_link) {
 	print "Error can not connect with database server\n";
 }
@@ -41,9 +41,9 @@ mysql_query("SET time_zone='+0:00'");
 $account=new Account($db);
 
 
-if($account->get('Account State')!='Active'){
+if ($account->get('Account State')!='Active') {
 	header('Location: /login.php');
-    exit;
+	exit;
 }
 
 //exit;
@@ -72,7 +72,8 @@ $smarty->template_dir = 'templates';
 $smarty->compile_dir = 'server_files/smarty/templates_c';
 $smarty->cache_dir = 'server_files/smarty/cache';
 $smarty->config_dir = 'server_files/smarty/configs';
-//$smarty->error_reporting = E_STRICT;
+$smarty->assign('_DEVEL', _DEVEL);
+
 
 $smarty->assign('account', $account);
 

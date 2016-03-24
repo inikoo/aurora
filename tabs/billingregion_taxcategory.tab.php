@@ -28,7 +28,10 @@ $parameters=array(
 	'parent_key'=>1
 );
 
-$smarty->assign('js_code', file_get_contents('build/js/injections/billingregion_taxcategory.min.js'));
+
+
+$smarty->assign('js_code', 'js/injections/billingregion_taxcategory.'.(_DEVEL?'':'min.').'js');
+
 
 $smarty->assign('aux_templates', array('table.aux/billingregion_taxcategory.tpl'));
 

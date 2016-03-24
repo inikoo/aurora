@@ -22,20 +22,19 @@ $table_views=array(
 );
 
 $table_filters=array(
-	'alias'=>array('label'=>_('Alias'),'title'=>_('Employee alias')),
-	'name'=>array('label'=>_('Name'),'title'=>_('Employee name')),
+	'alias'=>array('label'=>_('Alias'), 'title'=>_('Employee alias')),
+	'name'=>array('label'=>_('Name'), 'title'=>_('Employee name')),
 
 );
 
 $parameters=array(
 	'parent'=>$state['parent'],
 	'parent_key'=>$state['parent_key'],
-	
+
 
 );
 
-$smarty->assign('js_code', 'build/js/injections/fire.min.js');
-
+$smarty->assign('js_code', 'js/injections/fire.'.(_DEVEL?'':'min.').'js');
 
 include 'utils/get_table_html.php';
 

@@ -264,7 +264,7 @@ $object_fields=array(
 		)
 	),
 
-array(
+	array(
 		'label'=>_('Operations'),
 		'show_title'=>true,
 		'class'=>'edit_fields',
@@ -279,7 +279,7 @@ array(
 			),
 
 		)
-		
+
 	),
 
 );
@@ -365,10 +365,8 @@ $smarty->assign('object_fields', $object_fields);
 $smarty->assign('state', $state);
 
 
+$smarty->assign('js_code', 'js/injections/customer_details.'.(_DEVEL?'':'min.').'js');
 
-$smarty->assign('js_code', 'build/js/injections/customer.details.min.js');
-
-//print_r($customer->get('Customer Contact Address'));
 
 $html=$smarty->fetch('edit_object.tpl');
 

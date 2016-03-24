@@ -26,15 +26,15 @@ $table_filters=array(
 );
 
 $parameters=array(
-'parent'=>$state['parent'],
+	'parent'=>$state['parent'],
 	'parent_key'=>$state['parent_key'],
 	'group_by'=>'day',
 
 );
 
-$smarty->assign('js_code', file_get_contents('build/js/injections/timesheets.days.min.js'));
 
+$smarty->assign('js_code', 'js/injections/timesheets_days.'.(_DEVEL?'':'min.').'js');
 
-include('utils/get_table_html.php');
+include 'utils/get_table_html.php';
 
 ?>
