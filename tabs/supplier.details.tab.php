@@ -73,7 +73,7 @@ $object_fields=array(
 		'label'=>_('Code, name'),
 		'show_title'=>true,
 		'fields'=>array(
-		array(
+			array(
 
 				'id'=>'Supplier_Code',
 				'edit'=>'string',
@@ -386,7 +386,8 @@ $smarty->assign('key', $state['key']);
 
 $smarty->assign('object_fields', $object_fields);
 $smarty->assign('state', $state);
-$smarty->assign('js_code', file_get_contents('js/supplier.details.js'));//??? maybe has to be deleted
+
+$smarty->assign('js_code', 'js/injections/supplier_details.'.(_DEVEL?'':'min.').'js');//??? maybe has to be deleted
 
 
 $html=$smarty->fetch('edit_object.tpl');

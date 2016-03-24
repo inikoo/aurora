@@ -103,8 +103,8 @@ $object_fields=array(
 				'type'=>'value'
 
 			),
-			
-			
+
+
 			array(
 
 				'id'=>'Staff_Email',
@@ -128,7 +128,7 @@ $object_fields=array(
 				'required'=>false,
 				'type'=>'value'
 			),
-		
+
 
 		)
 	),
@@ -137,7 +137,7 @@ $object_fields=array(
 		'show_title'=>true,
 		'class'=>'edit_fields',
 		'fields'=>array(
-			
+
 
 			array(
 				'render'=>false,
@@ -162,7 +162,7 @@ $object_fields=array(
 				'type'=>'value',
 				'required'=>false,
 			),
-			
+
 			array(
 
 				'id'=>'Staff_Job_Title',
@@ -187,13 +187,13 @@ $object_fields=array(
 
 		)
 	),
-	
+
 	array(
 		'label'=>_('System roles'),
 		'show_title'=>true,
 		'class'=>'edit_fields',
 		'fields'=>array(
-			
+
 			array(
 				'id'=>'Staff_Position',
 				'edit'=>'radio_option',
@@ -297,17 +297,13 @@ $smarty->assign('state', $state);
 $smarty->assign('object', $employee);
 
 
-$smarty->assign('object_name','Contractor');
+$smarty->assign('object_name', 'Contractor');
 
 
 $smarty->assign('object_fields', $object_fields);
-$smarty->assign('new_object_label', _('View new contractor'));
-$smarty->assign('new_object_request','contractor/__key__');
 
+$smarty->assign('js_code', 'js/injections/employee.'.(_DEVEL?'':'min.').'js');
 
-
-
-$smarty->assign('js_code', 'build/js/injections/employee.min.js');
 
 $html=$smarty->fetch('new_object.tpl');
 

@@ -1,3 +1,5 @@
+SetEnv devel 1
+
 RewriteEngine On
 
 RewriteRule ^api/ api.php [L]

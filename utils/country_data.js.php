@@ -10,8 +10,8 @@
  Version 2.0
 */
 chdir('../');
-require_once 'conf/dns.php';
-require_once 'conf/key.php';
+require_once 'keyring/dns.php';
+require_once 'keyring/key.php';
 include_once 'utils/i18n.php';
 
 require_once 'utils/general_functions.php';

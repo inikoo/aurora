@@ -268,7 +268,7 @@ $object_fields=array(
 		)
 	),
 
-	
+
 
 );
 
@@ -302,7 +302,7 @@ $object_fields[]=array(
 		),
 
 		array(
-		'render'=>false,
+			'render'=>false,
 			'id'=>'Staff_Position',
 			'edit'=>'radio_option',
 			'value'=>'',
@@ -379,7 +379,8 @@ $smarty->assign('object_fields', $object_fields);
 $smarty->assign('form_type', 'setup');
 $smarty->assign('step', 'add_employee');
 
-$smarty->assign('js_code', file_get_contents('build/js/injections/employee.new.min.js'));
+$smarty->assign('js_code', 'js/injections/employee.'.(_DEVEL?'':'min.').'js');
+
 
 $html=$smarty->fetch('new_object.tpl');
 

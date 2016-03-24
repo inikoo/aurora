@@ -10,7 +10,8 @@
 
 
 
-include_once 'conf/dns.php';
+include_once 'keyring/dns.php';
+include_once 'keyring/key.php';
 
 include_once 'external_libs/Smarty/Smarty.class.php';
 include_once 'class.Account.php';
@@ -45,7 +46,6 @@ if (!$db2) {
 }
 
 include_once 'utils/i18n.php';
-include_once 'conf/key.php';
 require_once 'utils/general_functions.php';
 require_once 'utils/detect_agent.php';
 require_once "utils/aes.php";
