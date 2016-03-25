@@ -1,12 +1,16 @@
 <!-- 
 About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created: 19 March 2016 at 17:20:00 GMT+8, Kuala Lumpur, Malaysia
+ Created: 25 March 2016 at 18:09:25 GMT+8, Kuala Lumpur, Malaysia
 
  Copyright (c) 2016, Inikoo
 
  Version 3.0
 -->
+
+<p>
+{t}The system users has to be linked to a employee in you company.{/t}
+</p>
 
 
 <div class="item">
@@ -14,9 +18,9 @@ About:
 		<i class="fa fa-caret-right bullet fw"></i> {t}How to add new employees?{/t} 
 	</div>
 	<div class="answer hide">
-		<p>
-			{t}Click in the <i class="fa fa-plus"></i> icon at the table header{/t} 
-		</p>
+	<p>
+		{t}Click in the <i class="fa fa-plus"></i> icon at the table header{/t} 
+	</p>
 	</div>
 </div>
 <div class="item">
@@ -39,8 +43,10 @@ About:
 			<li><b>{t}Next of kind{/t}.</b> <i>({t}optional{/t})</i> [{t}string{/t}]</li>
 			<li><b>{t}Type{/t}</b> <i>(~{t}required{/t})</i> {literal}['<span style="text-decoration:underline">Employee</span>', 'Volunteer', 'TemporalWorker', 'WorkExperience']{/literal}</li>
 			<li><b>{t}Currently working{/t}</b> <i>(~{t}required{/t})</i> {literal}['<span style="text-decoration:underline">Yes</span>', 'No']{/literal}</li>
+
 			<li><b>{t}Working from{/t}</b> <i>({t}optional{/t})</i> [YYYY-MM-DD] e.g. 2006-03-01</li>
 			<li><b>{t}Worked until{/t}</b> <i>({t}required if <b>Currently working</b> set to No{/t})</i> [YYYY-MM-DD] e.g. 2010-08-30</li>
+
 			<li><b>{t}Job title{/t}</b> <i>({t}optional{/t})</i> [{t}string{/t}]</li>
 			<li><b>{t}Supervisor{/t}</b> <i>({t}optional{/t})</i> [Employee code]</li>
 			<li><b>{t}Login{/t}</b> <i>({t}optional{/t},{t}unique{/t})</i> [string {t}min length 4{/t}] </li>
@@ -50,19 +56,19 @@ About:
 			<li><b>{t}PIN{/t}</b> <i>({t}optional{/t})</i> [string {t}min length 4{/t}]</li>
 		</ul>
 		<p>
-			{t}Would not be possible to add an employee if any fields marked as <i>{t}required{/t}</i> are missing or fields marked as <i>{t}unique{/t}</i> are already on record{/t} 
+			{t}Would not be possible to add an employee if any fields marked as <i>{t}required{/t}</i> are missing or fields marked as <i>{t}unique{/t}</i> are already on record{/t}
 		</p>
 		<p>
-			{t}Invalid <b>email</b> and <b>{t}Contact number{/t}</b> would be ignored if not valid{/t} 
+			{t}Invalid <b>email</b> and <b>{t}Contact number{/t}</b> would be ignored if not valid{/t}
 		</p>
 		<p>
-			{t}If <i>~{t}required{/t}</i> value don't match the valid options, <span style="text-decoration:underline">default</span> will be used{/t} 
+			{t}If <i>~{t}required{/t}</i> value don't match the valid options, <span style="text-decoration:underline">default</span> will be used{/t}
 		</p>
 		<p>
-			{t}If <b>login</b> is empty or less of 4 letters the system user will not be created{/t} 
+			{t}If <b>login</b> is empty or less of 4 letters the system user will not be created{/t}
 		</p>
 		<p>
-			{t}A random string will be used if the <b>password</b> and <b>PIN</b> if shorter than the minimum length{/t} 
+			{t}A random string will be used if the <b>password</b> and <b>PIN</b> if shorter than the minimum length{/t}
 		</p>
 	</div>
 </div>

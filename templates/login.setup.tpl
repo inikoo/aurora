@@ -1,17 +1,33 @@
-{strip} 
+{if $_DEVEL}{strip}{/if}
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3c.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{$lang_code}">
+<html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
 	<link href="/art/aurora_log_v2_orange.png" rel="shortcut icon" type="image/x-icon" />
 
 	<title>{t}Set up{/t}</title>
 	
-	<link href="/build/css/libs.min.css" rel="stylesheet">
-	<link href="/build/css/login.min.css" rel="stylesheet">
-	<script type="text/javascript" src="/build/js/login.setup.min.js"></script>
+	
+	{if $_DEVEL} 
+	<link href="/css/jquery-ui.css" rel="stylesheet"> 
+	<link href="/css/font-awesome.css" rel="stylesheet"> 
+	<link href="/css/intlTelInput.css" rel="stylesheet"> 
+	<link href="/css/d3fc.css" rel="stylesheet"> 
+	<link href="/css/backgrid.css" rel="stylesheet"> 
+	<link href="/css/backgrid-filter.css" rel="stylesheet"> 
+	<link href="/css/login.css" rel="stylesheet"> 
+    <script type="text/javascript" src="js/libs/jquery-2.2.1.js"></script> 
+	<script type="text/javascript" src="js/libs/sha256.js"></script> 
+	<script type="text/javascript" src="js/libs/aes.js"></script> 
+	<script type="text/javascript" src="js/setup/login.setup.js"></script>
+	{else} 
+	<link href="/css/libs.min.css" rel="stylesheet"> 
+	<link href="/css/login.min.css" rel="stylesheet"> 
+	<script type="text/javascript" src="js/login.setup.min.js"></script> 
+	{/if} 
+	
 	
  
 </head>
@@ -45,5 +61,5 @@
 
 </body>
 </html>
-{/strip} 
+{if $_DEVEL}{/strip}{/if}
 

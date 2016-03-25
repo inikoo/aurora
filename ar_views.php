@@ -53,8 +53,7 @@ case 'views':
 	$state=parse_request($data, $db, $modules, $account, $user);
 
 
-
-
+	
 	$state['current_store']=$_SESSION['current_store'];
 	$state['current_website']=$_SESSION['current_website'];
 	$state['current_warehouse']=$_SESSION['current_warehouse'];
@@ -172,13 +171,24 @@ case 'views':
 
 	}
 
+if ($state['section']=='setup') {
+		
+			$state=array('old_state'=>$state, 'module'=>'utils', 'section'=>'not_found', 'tab'=>'not_found', 'subtab'=>'', 'parent'=>$state['parent'], 'parent_key'=>'', 'object'=>'', 'key'=>'',
+			'store'=>$store,
+			'website'=>$website,
+			'warehouse'=>$warehouse,
+			'request'=>$data['request']
+		);
+		
+	}
 
 
 	if (is_object($_parent) and !$_parent->id) {
-		$state=array('old_state'=>$state, 'module'=>'utils', 'section'=>'not_found', 'tab'=>'not_found', 'subtab'=>'', 'parent'=>$state['parent'], 'parent_key'=>'', 'object'=>'',
+		$state=array('old_state'=>$state, 'module'=>'utils', 'section'=>'not_found', 'tab'=>'not_found', 'subtab'=>'', 'parent'=>$state['parent'], 'parent_key'=>'', 'object'=>'', 'key'=>'',
 			'store'=>$store,
 			'website'=>$website,
-			'warehouse'=>$warehouse
+			'warehouse'=>$warehouse,
+			'request'=>$data['request']
 		);
 	}
 
