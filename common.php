@@ -46,7 +46,6 @@ if ($account->get('Account State')!='Active') {
 	exit;
 }
 
-//exit;
 
 if ($account->get('Timezone')) {
 	date_default_timezone_set($account->get('Timezone'));
@@ -54,7 +53,6 @@ if ($account->get('Timezone')) {
 	setTimezone('UTC');
 }
 
-//define("TIMEZONE",$account->data['Account Timezone']);
 
 require_once 'utils/modules.php';
 

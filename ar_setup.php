@@ -20,7 +20,7 @@ include_once 'utils/i18n.php';
 date_default_timezone_set('UTC');
 
 
-include_once 'conf/dns.php';
+include_once 'keyring/dns.php';
 include_once 'class.Account.php';
 include_once 'class.User.php';
 
@@ -137,7 +137,16 @@ case 'skip':
 
 	skip_step( $data);
 	break;
+case 'help':
+	$data=prepare_values($_REQUEST, array(
 
+			'state'=>array('type'=>'json array'),
+		));
+
+
+	$account=new Account();
+	get_help($data, $modules, $db, $account, $user, $smarty);
+	break;
 default:
 	$response=array('state'=>404, 'resp'=>'Operation not found 2');
 	echo json_encode($response);
@@ -493,71 +502,6 @@ function get_view_position($state, $smarty) {
 
 
 
-
-function get_help($data, $modules, $db) {
-
-	$scope_state=parse_request($data, $db);
-
-
-	$state=array(
-		'request'=>$scope_state['request'],
-		'module'=>'help',
-		'section'=>'help',
-		'tab'=>'help',
-		'subtab'=>'',
-		'parent'=>'',
-		'parent_key'=>'',
-		'object'=>'',
-		'key'=>'',
-	);
-
-	$response=array('state'=>array());
-
-
-	if ($data['old_state']['module']!=$state['module']   ) {
-		$response['menu']='';
-
-	}
-
-
-	if ($data['old_state']['section']!=$state['section'] or
-		$data['old_state']['parent_key']!=$state['parent_key'] or
-		$data['old_state']['key']!=$state['key']
-
-	) {
-
-		require_once 'navigation/help.nav.php';
-		$response['navigation']=get_help_navigation($data);
-
-	}
-
-
-
-
-	list($state, $response['tabs'])=get_tabs($state, $modules, $user, $smarty);// todo only calculate when is subtabs in the section
-
-	$response['view_position']=get_view_position($state);
-
-	/*
-	if ($state['object']!=''  and $modules[$state['module']]['sections'][$state['section']]['type']=='object') {
-		$response['object_showcase']=get_object_showcase($state, $smarty, $user,$db);
-	}else {
-		$response['object_showcase']='';
-	}
-*/
-	$response['object_showcase']='';
-	$response['tab']=get_tab($db, $smarty, $user, $account, $state['tab'], $state['subtab'], $state);
-
-	unset($state['_object']);
-	$response['state']=$state;
-
-
-	echo json_encode($response);
-
-
-
-
-}
 
 
 function get_setup_menu($data, $user, $smarty) {
@@ -1238,6 +1182,79 @@ function skip_step($data) {
 	);
 	echo json_encode($response);
 }
+
+
+function get_help($data, $modules, $db, $account, $user, $smarty) {
+
+	//print_r($data['state']);
+
+	$setup_data=$account->get('Setup Metadata');
+	$step='finish';
+	foreach ($setup_data['steps'] as $step_code=>$step_data) {
+		if (!$step_data['setup']) {
+			$step= 'account/setup/'.$step_code;
+			break;
+		}
+	}
+
+	$title=get_help_title($data['state'], $step, $account, $user);
+	$content=get_help_content($data['state'], $step, $smarty, $account, $user);
+
+	$response=array(
+		'title'=>$title,
+		'content'=>$content
+	);
+
+	echo json_encode($response);
+
+
+
+
+}
+
+
+function get_help_title($state, $step, $account, $user) {
+
+
+
+	if ($state['tab']=='account.setup.root_user') {
+		return _('Root user');
+	}elseif ($state['tab']=='account.setup.add_employees') {
+		return _('Add employees');
+	}elseif ($state['tab']=='account.setup') {
+
+
+
+		if ($step=='finish') {
+			return _('Set up complete!');
+		}
+
+	}
+	return '';
+}
+
+
+function get_help_content($state, $step, $smarty, $account, $user) {
+
+	$smarty->assign('user', $user);
+	$smarty->assign('account', $account);
+
+
+	if ($state['tab']=='account.setup') {
+		if ($step=='finish') {
+			$template='help/account.setup.finish.quick.tpl';
+		}else {
+			$template='';
+		}
+	}else {
+		$template='help/'.$state['tab'].'.quick.tpl';
+	}
+	if ($smarty->templateExists($template)) {
+		return $smarty->fetch($template);
+	}
+	return _('There is not help for this section');
+}
+
 
 
 ?>

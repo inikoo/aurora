@@ -8,7 +8,6 @@
 	<link href="/art/aurora_log_v2_orange.png" rel="shortcut icon" type="image/x-icon" />
 	<title>{t}Login{/t}</title>
 	{if $_DEVEL} 
-
 	<link href="/css/jquery-ui.css" rel="stylesheet"> 
 	<link href="/css/font-awesome.css" rel="stylesheet"> 
 	<link href="/css/intlTelInput.css" rel="stylesheet"> 
@@ -19,13 +18,10 @@
     <script type="text/javascript" src="js/libs/jquery-2.2.1.js"></script> 
 	<script type="text/javascript" src="js/libs/sha256.js"></script> 
 	<script type="text/javascript" src="js/libs/aes.js"></script> 
-	
-	<script type="text/javascript" src="js/login/login.js"></script> 	{else} 
+	<script type="text/javascript" src="js/login/login.js"></script>
+	{else} 
 	<link href="/css/libs.min.css" rel="stylesheet"> 
 	<link href="/css/login.min.css" rel="stylesheet"> 
-	
-
-	
 	<script type="text/javascript" src="js/login.min.js"></script> 
 	{/if} 
 </head>

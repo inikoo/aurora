@@ -20,7 +20,6 @@
 
     <script type="text/javascript" src="/js/libs/jquery-2.2.1.js"></script> 
 	<script type="text/javascript" src="/js/libs/jquery-ui.js"></script> 
-
 	<script type="text/javascript" src="/js/libs/moment-with-locales.js"></script> 
 	<script type="text/javascript" src="/js/libs/chrono.js"></script> 
 	<script type="text/javascript" src="/js/libs/sha256.js"></script>
@@ -33,26 +32,20 @@
 	<script type="text/javascript" src="/js/libs/d3.js"></script>
 	<script type="text/javascript" src="/js/libs/d3fc.layout.js"></script>
 	<script type="text/javascript" src="/js/libs/d3fc.js"></script>
-	
-
-		<script type="text/javascript" src="/js/app.js"></script>
-		<script type="text/javascript" src="/js/keyboard_shorcuts.js"></script>
-		<script type="text/javascript" src="/js/search.js"></script>
-		<script type="text/javascript" src="/js/table.js"></script>
-		<script type="text/javascript" src="/js/validation.js"></script>
-		<script type="text/javascript" src="/js/edit.js"></script>
-		<script type="text/javascript" src="/js/new.js"></script>
-		<script type="text/javascript" src="/js/help.js"></script>
-
-	
-
+	<script type="text/javascript" src="/js/app.js"></script>
+	<script type="text/javascript" src="/js/keyboard_shorcuts.js"></script>
+	<script type="text/javascript" src="/js/search.js"></script>
+	<script type="text/javascript" src="/js/table.js"></script>
+	<script type="text/javascript" src="/js/validation.js"></script>
+	<script type="text/javascript" src="/js/edit.js"></script>
+	<script type="text/javascript" src="/js/new.js"></script>
+	<script type="text/javascript" src="/js/help.js"></script>
 	{else} 
 	<link href="/build/css/libs.min.css" rel="stylesheet">
 	<link href="/build/css/app.min.css" rel="stylesheet">
-		
     <script type="text/javascript" src="/utils/country_data.js.php?locale={$locale}"></script> 
 	<script type="text/javascript" src="/build/js/libs.js"></script> 
-	<script type="text/javascript" src="/build/js/aurora.js"></script> 
+	<script type="text/javascript" src="/build/js/app.js"></script> 
 
 	{/if} 
 
