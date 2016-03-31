@@ -1215,12 +1215,43 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 				}elseif ( $view_path[0]=='contractors') {
 
 					$section='contractors';
+				}elseif ($view_path[0]=='overtimes') {
+
+
+					$section='overtimes';
+
+
+
+
+					if (isset($view_path[0])) {
+						if (is_numeric($view_path[0])) {
+
+							$section='overtime';
+							$object='overtime';
+							$parent='account';
+							$parent_key=1;
+
+							$key=$view_path[0];
+
+
+
+
+						}elseif ($view_path[0]=='new') {
+							$section='overtime.new';
+							$object='overtime';
+
+						}
+					}
+
+
+
+
+
+
 				}elseif ( $view_path[0]=='organization') {
 
 					$section='organization';
-				}
-
-				elseif ($view_path[0]=='timesheet') {
+				}elseif ($view_path[0]=='timesheet') {
 					$section='timesheet';
 					$object='timesheet';
 					$parent='account';
@@ -1232,6 +1263,37 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 					}
 
 
+
+				}elseif ( $view_path[0]=='upload') {
+
+					$section='upload';
+					$object='upload';
+					$parent='account';
+					$parent_key=1;
+
+					if (isset($view_path[1])) {
+
+						if (is_numeric($view_path[1])) {
+							$key=$view_path[1];
+						}
+
+					}
+
+				}
+				elseif ( $view_path[0]=='uploads') {
+
+					$section='upload';
+					$object='upload';
+					$parent='employees';
+					$parent_key=1;
+
+					if (isset($view_path[1])) {
+
+						if (is_numeric($view_path[1])) {
+							$key=$view_path[1];
+						}
+
+					}
 
 				}
 
@@ -1563,7 +1625,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 				}
 				elseif ($view_path[0]=='setup') {
 					$section='setup';
-                    $object='account';
+					$object='account';
 					if (isset($view_path[1])) {
 						if ($view_path[1]=='error') {
 							$section='setup_error';
@@ -1874,7 +1936,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 		$state['metadata']=$metadata;
 	}
 
-	
+
 
 	return $state;
 
@@ -1882,6 +1944,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 
 function parse_tabs($module, $section, $_data, $modules) {
+
+
 
 
 	$subtab='';

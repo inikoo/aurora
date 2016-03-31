@@ -17,13 +17,16 @@ include 'utils/general_functions.php';
 include 'utils/system_functions.php';
 
 include 'export.fork.php';
+include 'upload.fork.php';
+
 
 //include 'ping_sitemap.fork.php';
-//include 'import.fork.php';
 //include 'edit_parts.fork.php';
 //include 'housekeeping.fork..php';
 //include 'sendemail.fork.php';
 //include 'edit_pages.fork.php';
+
+
 
 $count_number_used=0;
 
@@ -31,13 +34,16 @@ $count_number_used=0;
 $worker= new GearmanWorker();
 $worker->addServer('127.0.0.1');
 $worker->addFunction("export", "fork_export");
+$worker->addFunction("upload", "fork_upload");
+
+
 //$worker->addFunction("ping_sitemap", "fork_ping_sitemap");
-//$worker->addFunction("import", "fork_import");
 //$worker->addFunction("edit_parts", "fork_edit_parts");
 //$worker->addFunction("housekeeping", "fork_housekeeping");
 //$worker->addFunction("edit_pages", "fork_edit_pages");
 //$worker->addFunction("sendemail", "fork_sendemail");
 
+$db=false;
 
 
 while ($worker->work()) {
@@ -51,6 +57,8 @@ while ($worker->work()) {
 
 
 function get_fork_data($job) {
+
+    global $db;
 
 	$fork_encrypt_key=md5('huls0fjhslsshskslgjbtqcwijnbxhl2391');
 	$fork_raw_data=$job->workload();
@@ -73,6 +81,8 @@ function get_fork_data($job) {
 	$db = new PDO("mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd , array(\PDO::MYSQL_ATTR_INIT_COMMAND =>"SET time_zone = '+0:00';"));
 	$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
+
+
 	/*
 
 	$default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
@@ -89,7 +99,7 @@ function get_fork_data($job) {
 	mysql_query("SET time_zone='+0:00'");
 	*/
 
-	$inikoo_account=new Account();
+	$account=new Account($db);
 
 	if ($account->get('Timezone')) {
 		date_default_timezone_set($account->get('Timezone'));
@@ -108,7 +118,7 @@ function get_fork_data($job) {
 	if ($result=$db->query($sql)) {
 		if ($row = $result->fetch()) {
 			$fork_data=json_decode($row['Fork Process Data'], true);
-			return array('fork_key'=>$fork_key, 'inikoo_account_code'=>$inikoo_account_code, 'fork_data'=>$fork_data);
+			return array('fork_key'=>$fork_key, 'inikoo_account_code'=>$inikoo_account_code, 'fork_data'=>$fork_data,'db'=>$db);
 		}else {
 			print "fork data not found";
 			return false;

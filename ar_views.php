@@ -53,7 +53,7 @@ case 'views':
 	$state=parse_request($data, $db, $modules, $account, $user);
 
 
-	
+
 	$state['current_store']=$_SESSION['current_store'];
 	$state['current_website']=$_SESSION['current_website'];
 	$state['current_warehouse']=$_SESSION['current_warehouse'];
@@ -171,15 +171,15 @@ case 'views':
 
 	}
 
-if ($state['section']=='setup') {
-		
-			$state=array('old_state'=>$state, 'module'=>'utils', 'section'=>'not_found', 'tab'=>'not_found', 'subtab'=>'', 'parent'=>$state['parent'], 'parent_key'=>'', 'object'=>'', 'key'=>'',
+	if ($state['section']=='setup') {
+
+		$state=array('old_state'=>$state, 'module'=>'utils', 'section'=>'not_found', 'tab'=>'not_found', 'subtab'=>'', 'parent'=>$state['parent'], 'parent_key'=>'', 'object'=>'', 'key'=>'',
 			'store'=>$store,
 			'website'=>$website,
 			'warehouse'=>$warehouse,
 			'request'=>$data['request']
 		);
-		
+
 	}
 
 
@@ -457,6 +457,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db) {
 	case 'manufacture_task':
 		include_once 'showcase/manufacture_task.show.php';
 		$html=get_manufacture_task_showcase($data, $smarty, $user, $db);
+		break;
+	case 'upload':
+		include_once 'showcase/upload.show.php';
+		$html=get_upload_showcase($data, $smarty, $user, $db);
 		break;
 	case 'category':
 
@@ -977,6 +981,12 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 			break;
 		case ('employee.attachment'):
 			return get_employee_attachment_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('upload'):
+			return get_upload_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('overtimes'):
+			return get_overtimes_navigation($data, $smarty, $user, $db, $account);
 			break;
 		}
 

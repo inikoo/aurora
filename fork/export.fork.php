@@ -11,8 +11,9 @@
 */
 
 
-function fork_export($job, $db) {
+function fork_export($job) {
 
+ 
 
 	if (!$_data=get_fork_data($job))
 		return;

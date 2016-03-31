@@ -57,7 +57,7 @@ class Timeseries extends DB_Table {
 				$this->parent=new Store($this->data['Timeseries Parent Key']);
 
 			}else {
-				$this->parent=new Account(1);
+				$this->parent=new Account();
 			}
 		}
 

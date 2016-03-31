@@ -806,6 +806,22 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'note'
 	),
+	'upload.employees'=>array(
+		'view'=>'overview',
+		'sort_key'=>'row',
+		'sort_order'=>0,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'object_name'
+	),
+	'employees.uploads'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>0,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>''
+	),
 	'reports'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',

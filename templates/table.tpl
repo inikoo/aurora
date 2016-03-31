@@ -165,11 +165,12 @@
 
 
     ajaxData.append("tipo", '{$upload_file.tipo}')
-    ajaxData.append("scope", '{$upload_file.scope}')
-    ajaxData.append("scope_key", '{$upload_file.scope_key}')
+    ajaxData.append("parent", '{$upload_file.parent}')
+    ajaxData.append("parent_key", '{$upload_file.parent_key}')
+    ajaxData.append("object", '{$upload_file.object}')
 
     $.ajax({
-        url: "/ar_edit.php",
+        url: "/ar_upload.php",
         type: 'POST',
         data: ajaxData,
         dataType: 'json',
@@ -217,7 +218,7 @@
 
                 }
                 else if(data.tipo == 'upload_objects'){
-                    change_view(state.request+'/import/'+data.import_key);
+                    change_view(state.request+'/upload/'+data.upload_key);
                 }
 
             } else if (data.state == '400') {

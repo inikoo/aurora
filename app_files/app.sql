@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.6.29, for osx10.11 (x86_64)
 --
--- Host: localhost    Database: dw
+-- Host: localhost    Database: aurora
 -- ------------------------------------------------------
 -- Server version	5.6.29
 
@@ -44,7 +44,7 @@ CREATE TABLE `API Key Dimension` (
   PRIMARY KEY (`API Key Key`),
   KEY `API Key User Key` (`API Key User Key`),
   KEY `API Key Code` (`API Key Code`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -215,7 +215,7 @@ CREATE TABLE `Address Dimension` (
   KEY `Address World Region` (`Address World Region`(64)),
   KEY `Address Main Telephone Key` (`Address Main Telephone Key`),
   KEY `Address Main FAX Key` (`Address Main FAX Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=258519 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -253,7 +253,7 @@ CREATE TABLE `Attachment Bridge` (
   KEY `Attachment Key` (`Attachment Key`),
   KEY `Subject` (`Subject`,`Subject Key`),
   KEY `Attachment Public` (`Attachment Public`)
-) ENGINE=InnoDB AUTO_INCREMENT=993 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -294,7 +294,7 @@ CREATE TABLE `Attachment Dimension` (
   `Attachment Thumbnail Image Key` mediumint(8) unsigned DEFAULT NULL,
   PRIMARY KEY (`Attachment Key`),
   UNIQUE KEY `Attachment Checksum` (`Attachment File Checksum`)
-) ENGINE=InnoDB AUTO_INCREMENT=497 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -346,7 +346,7 @@ CREATE TABLE `Billing To Dimension` (
   KEY `Billing To Country Code` (`Billing To Country Code`),
   KEY `Billing To Country 2 Alpha Code` (`Billing To Country 2 Alpha Code`),
   KEY `Billing To Postal Code` (`Billing To Postal Code`)
-) ENGINE=InnoDB AUTO_INCREMENT=65773 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -422,7 +422,7 @@ CREATE TABLE `Category Deleted Dimension` (
   KEY `Category Deleted Store Key` (`Category Deleted Store Key`),
   KEY `Category Deleted Warehouse Key` (`Category Deleted Warehouse Key`),
   KEY `Category Deleted Branch Type` (`Category Deleted Branch Type`)
-) ENGINE=InnoDB AUTO_INCREMENT=14437 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -479,7 +479,7 @@ CREATE TABLE `Category Dimension` (
   KEY `Category Locked` (`Category Locked`),
   KEY `Category Name` (`Category Code`(20)),
   KEY `Category Scope` (`Category Scope`)
-) ENGINE=InnoDB AUTO_INCREMENT=5682 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -531,7 +531,7 @@ CREATE TABLE `Charge Dimension` (
   KEY `z` (`Charge Type`),
   KEY `Charge Active` (`Charge Active`),
   KEY `Store Key` (`Store Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -582,7 +582,7 @@ CREATE TABLE `Company Area Dimension` (
   `Company Area Number Positions` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Company Area Number Employees` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Company Area Key`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -622,7 +622,7 @@ CREATE TABLE `Company Department Dimension` (
   `Company Department Number Positions` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Company Department Number Employees` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Company Department Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -690,7 +690,7 @@ CREATE TABLE `Company Dimension` (
   KEY `Company Main Telephone Key` (`Company Main Telephone Key`),
   KEY `Company Main FAX Key` (`Company Main FAX Key`),
   KEY `Company Main Address Key` (`Company Main Address Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=181097 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -723,7 +723,7 @@ CREATE TABLE `Company Position Dimension` (
   `Company Position Description` text,
   `Company Position Employees` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Company Position Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -852,7 +852,7 @@ CREATE TABLE `Contact Dimension` (
   KEY `Contact Main Email` (`Contact Main Plain Email`(8)),
   KEY `Contact Surname` (`Contact Surname`(128)),
   KEY `Contact First Name` (`Contact First Name`(128))
-) ENGINE=InnoDB AUTO_INCREMENT=222977 DEFAULT CHARSET=utf8 COMMENT='Personal Contact Information';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Personal Contact Information';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -994,7 +994,7 @@ CREATE TABLE `Customer Credit Card Token Dimension` (
   PRIMARY KEY (`Customer Credit Card Token Key`),
   UNIQUE KEY `Token` (`Customer Key`,`Billing To Key`,`Ship To Key`,`CCUI`(64)) USING BTREE,
   KEY `Valid Until` (`Valid Until`)
-) ENGINE=InnoDB AUTO_INCREMENT=2451 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1265,7 +1265,7 @@ CREATE TABLE `Customer Dimension` (
   KEY `Customer Last Dispatched Order Date` (`Customer Last Invoiced Dispatched Date`),
   KEY `Customer Billing Address Key` (`Customer Billing Address Key`),
   KEY `Customer Tax Number` (`Customer Tax Number`)
-) ENGINE=InnoDB AUTO_INCREMENT=220655 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1286,7 +1286,7 @@ CREATE TABLE `Customer Favorite Product Bridge` (
   `Date Created` datetime NOT NULL,
   PRIMARY KEY (`Customer Favorite Product Key`),
   UNIQUE KEY `Customer Key` (`Customer Key`,`Product ID`,`Site Key`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=91919 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1324,7 +1324,7 @@ CREATE TABLE `Customer Import Metadata` (
   PRIMARY KEY (`Customer Import Metadata Key`),
   KEY `Metadata` (`Metadata`),
   KEY `Import Date` (`Import Date`)
-) ENGINE=InnoDB AUTO_INCREMENT=96923 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1385,7 +1385,7 @@ CREATE TABLE `Customer Other Delivery Address Dimension` (
   PRIMARY KEY (`Customer Other Delivery Address Key`),
   KEY `Customer Other Delivery Address Customer Key` (`Customer Other Delivery Address Customer Key`),
   KEY `Customer Other Delivery Address Store Key` (`Customer Other Delivery Address Store Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=7490 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1405,7 +1405,7 @@ CREATE TABLE `Customer Other Email Dimension` (
   KEY `Customer Other Email Customer Key` (`Customer Other Email Customer Key`,`Customer Other Email Email`) USING BTREE,
   KEY `Customer Other Email Store Key` (`Customer Other Email Store Key`),
   KEY `Customer Other Email Email` (`Customer Other Email Email`)
-) ENGINE=InnoDB AUTO_INCREMENT=2468 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1426,7 +1426,7 @@ CREATE TABLE `Customer Other Telephone Dimension` (
   KEY `Customer Other Telephone Customer Key` (`Customer Other Telephone Customer Key`,`Customer Other Telephone Number`) USING BTREE,
   KEY `Customer Other Telephone Store Key` (`Customer Other Telephone Store Key`),
   KEY `Customer Other Telephone Number` (`Customer Other Telephone Number`)
-) ENGINE=InnoDB AUTO_INCREMENT=800 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1445,7 +1445,7 @@ CREATE TABLE `Customer Send Post` (
   `Post Type` enum('Catalogue','Advert','Letter') NOT NULL,
   PRIMARY KEY (`Customer Send Post Key`),
   KEY `Customer Key` (`Customer Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=529 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1484,7 +1484,7 @@ CREATE TABLE `Dashboard Dimension` (
   KEY `User key` (`User key`),
   KEY `Dashboard Order` (`Dashboard Order`),
   KEY `Dashboard Default` (`Dashboard Default`)
-) ENGINE=InnoDB AUTO_INCREMENT=173 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1504,7 +1504,7 @@ CREATE TABLE `Dashboard Widget Bridge` (
   PRIMARY KEY (`Dashboard Widget Key`),
   KEY `Widget Key` (`Widget Key`),
   KEY `Dashboard Key` (`Dashboard Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=657 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1522,7 +1522,7 @@ CREATE TABLE `Data Sets Dimension` (
   `Data Sets Size` double unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Data Sets Key`),
   UNIQUE KEY `Data Sets Code` (`Data Sets Code`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1548,7 +1548,7 @@ CREATE TABLE `Deal Campaign Dimension` (
   PRIMARY KEY (`Deal Campaign Key`),
   UNIQUE KEY `Deal Campaign Store Key` (`Deal Campaign Store Key`,`Deal Campaign Name`),
   KEY `Deal Campaign Status` (`Deal Campaign Status`)
-) ENGINE=InnoDB AUTO_INCREMENT=355 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1616,7 +1616,7 @@ CREATE TABLE `Deal Component Dimension` (
   KEY `Deal Metadata Public` (`Deal Component Public`),
   KEY `Deal Component Allowance Target Type` (`Deal Component Allowance Target Type`),
   KEY `Deal Component Mirror Key` (`Deal Component Mirror Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=24167 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1662,7 +1662,7 @@ CREATE TABLE `Deal Dimension` (
   KEY `Deal Terms Object` (`Deal Trigger`),
   KEY `Deal Campaign Key` (`Deal Campaign Key`),
   KEY `Deal Mirror Key` (`Deal Mirror Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=6051 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1766,7 +1766,7 @@ CREATE TABLE `Delivery Note Dimension` (
   KEY `Delivery Note Show in Warehouse Orders` (`Delivery Note Show in Warehouse Orders`),
   KEY `Delivery Note Invoiced` (`Delivery Note Invoiced`),
   KEY `Delivery Note Waiting For Parts` (`Delivery Note Waiting For Parts`)
-) ENGINE=InnoDB AUTO_INCREMENT=1988685 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1860,7 +1860,7 @@ CREATE TABLE `Email Campaign Dimension` (
   KEY `Email Campaign Status` (`Email Campaign Status`),
   KEY `Email Campaign Store Key` (`Email Campaign Store Key`),
   KEY `Email Campaign Type` (`Email Campaign Type`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1883,7 +1883,7 @@ CREATE TABLE `Email Campaign Mailing List` (
   UNIQUE KEY `Email Address` (`Email Address`,`Email Campaign Key`),
   KEY `Email Campaign Key` (`Email Campaign Key`,`Email Key`,`Email Send Key`),
   KEY `Email Content Key` (`Email Content Key`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1942,7 +1942,7 @@ CREATE TABLE `Email Content Dimension` (
   `Email Template Header Image Key` mediumint(8) unsigned DEFAULT NULL,
   `Email Content Template Postcard Key` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`Email Content Key`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1963,7 +1963,7 @@ CREATE TABLE `Email Content Paragraph Dimension` (
   `Paragraph Content` mediumtext NOT NULL,
   PRIMARY KEY (`Email Paragraph Key`),
   KEY `Email Content Key` (`Email Content Key`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1992,7 +1992,7 @@ CREATE TABLE `Email Credentials Dimension` (
   `API Key MadMimi` varchar(256) DEFAULT NULL,
   `Email Address MadMimi` varchar(256) DEFAULT NULL,
   PRIMARY KEY (`Email Credentials Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=147 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2084,7 +2084,7 @@ CREATE TABLE `Email Dimension` (
   UNIQUE KEY `Email_2` (`Email`(64)),
   KEY `Email Validated` (`Email Validated`),
   KEY `Email Verified` (`Email Correct`)
-) ENGINE=InnoDB AUTO_INCREMENT=188117 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2203,7 +2203,7 @@ CREATE TABLE `Email Send Dimension` (
   KEY `Email Send Parent Type` (`Email Send Recipient Type`),
   KEY `Email Send Type Key` (`Email Send Type Key`),
   KEY `Email Send Type Parent Key` (`Email Send Type Parent Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=534571 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2256,7 +2256,7 @@ CREATE TABLE `Email Site Reminder Dimension` (
   KEY `Email Site Reminder State` (`Email Site Reminder State`,`Trigger Scope`,`Trigger Scope Key`),
   KEY `Trigger Scope Name` (`Trigger Scope Name`),
   KEY `Customer Name` (`Customer Name`(64))
-) ENGINE=InnoDB AUTO_INCREMENT=211935 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2285,7 +2285,7 @@ CREATE TABLE `Email Template Color Scheme Dimension` (
   `Header Image Source` varchar(256) NOT NULL,
   PRIMARY KEY (`Email Template Color Scheme Key`),
   KEY `Store Key` (`Store Key`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2440,7 +2440,7 @@ CREATE TABLE `Fork Dimension` (
   `Fork Result Metadata` varchar(256) DEFAULT NULL,
   PRIMARY KEY (`Fork Key`),
   KEY `Fork Token` (`Fork Token`)
-) ENGINE=InnoDB AUTO_INCREMENT=441255 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2510,7 +2510,7 @@ CREATE TABLE `History Dimension` (
   KEY `Deep` (`Deep`),
   KEY `Indirect Object` (`Indirect Object`(24),`Indirect Object Key`),
   KEY `Subject` (`Subject`,`Subject Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=57567083 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2567,7 +2567,7 @@ CREATE TABLE `Image Dimension` (
   PRIMARY KEY (`Image Key`),
   KEY `Image Checksum` (`Image File Checksum`),
   KEY `Image Public` (`Image Public`)
-) ENGINE=InnoDB AUTO_INCREMENT=1166019 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2592,7 +2592,7 @@ CREATE TABLE `Image Subject Bridge` (
   KEY `Subject Key` (`Image Subject Object Key`),
   KEY `Image Key` (`Image Subject Image Key`),
   KEY `Subject Type` (`Image Subject Object`)
-) ENGINE=InnoDB AUTO_INCREMENT=344266 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2611,7 +2611,7 @@ CREATE TABLE `Import Map` (
   `Meta Data` text NOT NULL,
   PRIMARY KEY (`Map Key`),
   KEY `Scope` (`Parent`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2635,7 +2635,7 @@ CREATE TABLE `Imported Record` (
   KEY `Imported Records Key` (`Imported Record Parent Key`),
   KEY `Imported Record Index` (`Imported Record Index`),
   KEY `Imported Record Import State` (`Imported Record Import State`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2046 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2677,7 +2677,7 @@ CREATE TABLE `Imported Records Dimension` (
   KEY `Imported Records User Key` (`Imported Records User Key`),
   KEY `Impoted Records State` (`Imported Records State`),
   KEY `Imported Records Cancelled Date` (`Imported Records Cancelled Date`)
-) ENGINE=InnoDB AUTO_INCREMENT=892 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2705,7 +2705,7 @@ CREATE TABLE `Insurance Dimension` (
   `Insurance Expiration Date` datetime DEFAULT NULL,
   PRIMARY KEY (`Insurance Key`),
   KEY `Insurance Store Key` (`Insurance Store Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2729,7 +2729,7 @@ CREATE TABLE `Inventory Audit Dimension` (
   KEY `Inventory Audit Location Key` (`Inventory Audit Location Key`),
   KEY `Inventory Audit User Key` (`Inventory Audit User Key`),
   KEY `Inventory Audit Type` (`Inventory Audit Type`)
-) ENGINE=InnoDB AUTO_INCREMENT=98052 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2854,7 +2854,7 @@ CREATE TABLE `Inventory Transaction Fact` (
   KEY `Inventory Transaction Section` (`Inventory Transaction Section`),
   KEY `Inventory Transaction Record Type` (`Inventory Transaction Record Type`),
   KEY `Inventory Transaction Type` (`Inventory Transaction Type`)
-) ENGINE=InnoDB AUTO_INCREMENT=40351561 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3358,7 +3358,7 @@ CREATE TABLE `Invoice Dimension` (
   KEY `Invoice Customer Level Type` (`Invoice Customer Level Type`),
   KEY `Invoice Billing To Key` (`Invoice Billing To Key`),
   KEY `Invoice Billing Region` (`Invoice Billing Region`)
-) ENGINE=InnoDB AUTO_INCREMENT=1622701 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3505,7 +3505,7 @@ CREATE TABLE `Language Dimension` (
   `Language Name` varchar(60) NOT NULL,
   `Language Original Name` varchar(60) NOT NULL,
   PRIMARY KEY (`Language Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3557,7 +3557,7 @@ CREATE TABLE `List Dimension` (
   PRIMARY KEY (`List Key`),
   UNIQUE KEY `Customer List Store Key` (`List Parent Key`,`List Name`(36),`List Scope`),
   KEY `Customer List Use Type` (`List Use Type`)
-) ENGINE=InnoDB AUTO_INCREMENT=3619 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3663,7 +3663,7 @@ CREATE TABLE `Location Dimension` (
   KEY `Location Mainly Used For` (`Location Mainly Used For`),
   KEY `Location Flag Key` (`Warehouse Flag Key`),
   KEY `Location File As` (`Location File As`(16))
-) ENGINE=InnoDB AUTO_INCREMENT=14219 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3692,7 +3692,7 @@ CREATE TABLE `Manufacture Task Dimension` (
   PRIMARY KEY (`Manufacture Task Key`),
   UNIQUE KEY `Manufacture Task Name` (`Manufacture Task Name`),
   UNIQUE KEY `Manufacture Task Code` (`Manufacture Task Code`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3722,7 +3722,7 @@ CREATE TABLE `Marketing Post Dimension` (
   `Marketing Post Name` varchar(255) CHARACTER SET latin1 NOT NULL,
   `Store Key` mediumint(8) NOT NULL,
   PRIMARY KEY (`Marketing Post Key`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3740,7 +3740,7 @@ CREATE TABLE `Marketing Post Sent Fact` (
   `Requested Date` date NOT NULL,
   `Sent Date` date DEFAULT NULL,
   PRIMARY KEY (`Marketing Post Sent Fact Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=119733 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3763,7 +3763,7 @@ CREATE TABLE `MasterKey Dimension` (
   PRIMARY KEY (`MasterKey Key`),
   KEY `Key` (`Key`(8)),
   KEY `Used` (`Used`)
-) ENGINE=InnoDB AUTO_INCREMENT=90569 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3781,7 +3781,7 @@ CREATE TABLE `MasterKey Internal Dimension` (
   `IP` varchar(64) NOT NULL,
   PRIMARY KEY (`MasterKey Internal Key`),
   KEY `Key` (`Key`(8))
-) ENGINE=InnoDB AUTO_INCREMENT=44327 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3798,7 +3798,7 @@ CREATE TABLE `Material Dimension` (
   `Material XHTML Description` longtext NOT NULL,
   PRIMARY KEY (`Material Key`),
   KEY `Material Name` (`Material Name`(64))
-) ENGINE=InnoDB AUTO_INCREMENT=1474 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3885,7 +3885,7 @@ CREATE TABLE `Order Basket History Dimension` (
   PRIMARY KEY (`Order Basket History Key`),
   KEY `Date` (`Date`),
   KEY `Order Key` (`Order Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=2723207 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4120,7 +4120,7 @@ CREATE TABLE `Order Dimension` (
   KEY `Order Send to Warehouse Date` (`Order Send to Warehouse Date`),
   KEY `Order Dispatched Date` (`Order Dispatched Date`),
   KEY `Order Show in Warehouse Orders` (`Order Show in Warehouse Orders`)
-) ENGINE=InnoDB AUTO_INCREMENT=1957397 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4167,7 +4167,7 @@ CREATE TABLE `Order Import Metadata` (
   UNIQUE KEY `Metadata` (`Metadata`),
   KEY `Name` (`Name`),
   KEY `Import Date` (`Import Date`)
-) ENGINE=InnoDB AUTO_INCREMENT=558037 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4213,7 +4213,7 @@ CREATE TABLE `Order Meta Transaction Deal Dimension` (
   KEY `Order Key` (`Order Key`),
   KEY `Bonus Order Transaction Fact Key` (`Bonus Order Transaction Fact Key`),
   KEY `Order Meta Transaction Deal Type` (`Order Meta Transaction Deal Type`)
-) ENGINE=InnoDB AUTO_INCREMENT=2470351 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4291,7 +4291,7 @@ CREATE TABLE `Order No Product Transaction Fact` (
   KEY `Transaction Type Key` (`Transaction Type Key`),
   KEY `Refund Key` (`Refund Key`),
   KEY `Affected Order Key` (`Affected Order Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=21409341 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4346,7 +4346,7 @@ CREATE TABLE `Order Post Transaction Dimension` (
   KEY `Order Post Transaction Fact Key` (`Order Post Transaction Fact Key`),
   KEY `Order Post Transaction Metadata` (`Order Post Transaction Metadata`),
   KEY `Delivery Note Key` (`Delivery Note Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=242209 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4593,7 +4593,7 @@ CREATE TABLE `Order Transaction Fact` (
   KEY `Refund Metadata` (`Refund Metadata`),
   KEY `Product ID_2` (`Product ID`,`Customer Key`),
   KEY `Product Family Key_2` (`Product Family Key`,`Customer Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=34657499 DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
 /*!50100 PARTITION BY RANGE (to_days(`Invoice Date`))
 (PARTITION p0 VALUES LESS THAN (732677) ENGINE = InnoDB,
  PARTITION p1 VALUES LESS THAN (733042) ENGINE = InnoDB,
@@ -4669,7 +4669,7 @@ CREATE TABLE `Page Dimension` (
   `Page Published` enum('Yes','No') NOT NULL DEFAULT 'No',
   PRIMARY KEY (`Page Key`),
   KEY `Page URL` (`Page URL`(64))
-) ENGINE=InnoDB AUTO_INCREMENT=115139 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4690,7 +4690,7 @@ CREATE TABLE `Page Footer Dimension` (
   `CSS` longtext CHARACTER SET latin1 NOT NULL,
   `Javascript` longtext CHARACTER SET latin1 NOT NULL,
   PRIMARY KEY (`Page Footer Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=1337 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4730,7 +4730,7 @@ CREATE TABLE `Page Header Dimension` (
   PRIMARY KEY (`Page Header Key`),
   KEY `Default Site` (`Default Site`),
   KEY `Site Key` (`Site Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=649 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4784,7 +4784,7 @@ CREATE TABLE `Page Product Button Dimension` (
   KEY `Product ID` (`Product ID`),
   KEY `Page Key` (`Page Key`),
   KEY `Site Key` (`Site Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=79035 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4811,7 +4811,7 @@ CREATE TABLE `Page Product Dimension` (
   KEY `Site Key` (`Site Key`),
   KEY `Family Key` (`Family Key`),
   KEY `State` (`State`)
-) ENGINE=InnoDB AUTO_INCREMENT=1235421 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4837,7 +4837,7 @@ CREATE TABLE `Page Product List Dimension` (
   PRIMARY KEY (`Page Product List Key`),
   KEY `Page Key` (`Page Key`),
   KEY `Site Key` (`Site Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=10765 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4859,7 +4859,7 @@ CREATE TABLE `Page Redirection Dimension` (
   PRIMARY KEY (`Page Redirection Key`),
   KEY `Page Target Key` (`Page Target Key`),
   KEY `Source Host` (`Source Host`(32),`Source Path`(32),`Source File`(32))
-) ENGINE=InnoDB AUTO_INCREMENT=22188 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4900,7 +4900,7 @@ CREATE TABLE `Page State Timeline` (
   `Operation` enum('Created','Change','Deleted') NOT NULL,
   PRIMARY KEY (`Page State Key`),
   KEY `Operation` (`Operation`)
-) ENGINE=InnoDB AUTO_INCREMENT=153703 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5015,7 +5015,7 @@ CREATE TABLE `Page Store Data Dimension` (
   `Page Store Yesterday Acc Users Requests` mediumint(9) NOT NULL DEFAULT '0',
   `Page Store Yesterday Acc Users Sessions` mediumint(9) NOT NULL DEFAULT '0',
   PRIMARY KEY (`Page Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=115139 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5044,7 +5044,7 @@ CREATE TABLE `Page Store Deleted Dimension` (
   PRIMARY KEY (`Page Store Deleted Key`),
   KEY `Site Key` (`Site Key`),
   KEY `Store Key` (`Store Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=4785 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5117,7 +5117,7 @@ CREATE TABLE `Page Store Dimension` (
   KEY `Page Code` (`Page Code`(5)),
   KEY `Page Store Section Type` (`Page Store Section Type`),
   KEY `Site Flag Key` (`Site Flag Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=115139 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5149,7 +5149,7 @@ CREATE TABLE `Page Store External File Dimension` (
   `Page Store External File Type` enum('Javascript','CSS') CHARACTER SET latin1 NOT NULL,
   `Page Store External File Content` longtext NOT NULL,
   PRIMARY KEY (`Page Store External File Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=43933 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5228,7 +5228,7 @@ CREATE TABLE `Page Store Section Dimension` (
   `Page Store Section Layout Data` text,
   PRIMARY KEY (`Page Store Section Key`),
   KEY `Site Key` (`Site Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=203 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5265,7 +5265,7 @@ CREATE TABLE `Page URL Dimension` (
   KEY `Page URL Host` (`Page URL Host`),
   KEY `Page URL Host_2` (`Page URL Host`,`Page URL Path`),
   KEY `Page URL` (`Page URL`(64))
-) ENGINE=InnoDB AUTO_INCREMENT=3063335 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5290,7 +5290,7 @@ CREATE TABLE `Part Availability for Products Timeline` (
   KEY `Warehouse Key` (`Warehouse Key`),
   KEY `User Key` (`User Key`),
   KEY `Source` (`Source`)
-) ENGINE=InnoDB AUTO_INCREMENT=51121 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5877,7 +5877,7 @@ CREATE TABLE `Part Category Dimension` (
   PRIMARY KEY (`Part Category Key`),
   KEY `Part Category Status` (`Part Category Status`),
   KEY `Part Category Warehouse Key` (`Part Category Warehouse Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=14421 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6619,7 +6619,7 @@ CREATE TABLE `Part Dimension` (
   KEY `Part Available for Products Configuration` (`Part Available for Products Configuration`),
   KEY `Part Next Shipment State` (`Part Next Shipment State`),
   KEY `Part Units` (`Part Units`)
-) ENGINE=InnoDB AUTO_INCREMENT=51042 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6686,7 +6686,7 @@ CREATE TABLE `Part Material Bridge` (
   `May Contain` enum('Yes','No') NOT NULL DEFAULT 'No',
   PRIMARY KEY (`Part Material Key`),
   UNIQUE KEY `Part SKU` (`Part SKU`,`Material Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=586665 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6817,7 +6817,7 @@ CREATE TABLE `Payment Account Dimension` (
   PRIMARY KEY (`Payment Account Key`),
   UNIQUE KEY `Payment Account Code` (`Payment Account Code`),
   KEY `Payment Service Provider Key` (`Payment Service Provider Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6922,7 +6922,7 @@ CREATE TABLE `Payment Dimension` (
   KEY `Payment Method` (`Payment Method`),
   KEY `Payment Order Key` (`Payment Order Key`),
   KEY `Payment Transaction Status` (`Payment Transaction Status`)
-) ENGINE=InnoDB AUTO_INCREMENT=154299 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6967,7 +6967,7 @@ CREATE TABLE `Payment Service Provider Dimension` (
   `Payment Service Provider Balance Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (`Payment Service Provider Key`),
   KEY `Payment Service Provider Code` (`Payment Service Provider Code`(16))
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -7032,7 +7032,7 @@ CREATE TABLE `Product Availability Timeline` (
   KEY `Store Key` (`Store Key`),
   KEY `User Key` (`User Key`),
   KEY `Source` (`Source`)
-) ENGINE=InnoDB AUTO_INCREMENT=204447 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -7503,7 +7503,7 @@ CREATE TABLE `Product Data Dimension` (
   `Product 10 Day Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
   `Product 1 Week Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
   PRIMARY KEY (`Product ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=146931 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -7820,7 +7820,7 @@ CREATE TABLE `Product Department Data Dimension` (
   `Product Department 10 Day Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
   `Product Department 3 Year Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (`Product Department Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=401 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -7893,7 +7893,7 @@ CREATE TABLE `Product Department Default Currency` (
   `Product Department DC Last Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product Department DC Last Month Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (`Product Department Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=401 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -7968,7 +7968,7 @@ CREATE TABLE `Product Department Dimension` (
   KEY `Product Department Name` (`Product Department Name`),
   KEY `Product Department Store Key` (`Product Department Store Key`),
   KEY `Product Department Sales Type` (`Product Department Sales Type`)
-) ENGINE=InnoDB AUTO_INCREMENT=401 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -8159,7 +8159,7 @@ CREATE TABLE `Product Dimension` (
   KEY `Product Main Type` (`Product Main Type`),
   KEY `Product Number of Parts` (`Product Number of Parts`),
   KEY `Product Name` (`Product Name`(64))
-) ENGINE=InnoDB AUTO_INCREMENT=146931 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -8575,7 +8575,7 @@ CREATE TABLE `Product Family Data Dimension` (
   `Product Family 10 Day Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
   `Product Family 1 Week Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
   PRIMARY KEY (`Product Family Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=10617 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -8648,7 +8648,7 @@ CREATE TABLE `Product Family Default Currency` (
   `Product Family DC Last Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product Family DC Last Month Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (`Product Family Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=10617 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -8746,7 +8746,7 @@ CREATE TABLE `Product Family Dimension` (
   KEY `Product Family Name` (`Product Family Name`(128)),
   KEY `Product Family Special Characteristic` (`Product Family Special Characteristic`(128)),
   KEY `Product Family Web Products` (`Product Family Web Products`)
-) ENGINE=InnoDB AUTO_INCREMENT=10617 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -9051,7 +9051,7 @@ CREATE TABLE `Product History Dimension` (
   KEY `Product ID` (`Product ID`),
   KEY `Product History Valid From` (`Product History Valid From`),
   KEY `Product History Valid To` (`Product History Valid To`)
-) ENGINE=InnoDB AUTO_INCREMENT=258689 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -9124,7 +9124,7 @@ CREATE TABLE `Product ID Default Currency` (
   `Product ID DC Last Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product ID DC Last Month Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (`Product ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=146931 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -9156,7 +9156,7 @@ CREATE TABLE `Product Import Metadata` (
   PRIMARY KEY (`Product Import Metadata Key`),
   KEY `Metadata` (`Metadata`),
   KEY `Import Date` (`Import Date`)
-) ENGINE=InnoDB AUTO_INCREMENT=16338 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -9175,7 +9175,7 @@ CREATE TABLE `Product Material Bridge` (
   PRIMARY KEY (`Product Material Key`),
   UNIQUE KEY `Product ID` (`Product ID`,`Material Key`),
   UNIQUE KEY `Product ID_2` (`Product ID`,`Material Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=5278641 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -9214,7 +9214,7 @@ CREATE TABLE `Product Part Dimension` (
   KEY `Product Part Most Recent` (`Product Part Most Recent`),
   KEY `Product ID` (`Product ID`),
   KEY `Product Part Type` (`Product Part Type`)
-) ENGINE=InnoDB AUTO_INCREMENT=145425 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -9233,7 +9233,7 @@ CREATE TABLE `Product Part List` (
   PRIMARY KEY (`Product Part List Key`),
   KEY `Part SKU` (`Part SKU`),
   KEY `Product Part Key` (`Product Part Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=161657 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -9418,7 +9418,7 @@ CREATE TABLE `Purchase Order Dimension` (
   `Purchase Order Port of Import` varchar(255) DEFAULT NULL,
   `Purchase Order Terms and Conditions` text,
   PRIMARY KEY (`Purchase Order Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=111 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -9519,7 +9519,7 @@ CREATE TABLE `Purchase Order Transaction Fact` (
   `Supplier Invoice Key` mediumint(8) unsigned DEFAULT NULL,
   PRIMARY KEY (`Purchase Order Transaction Fact Key`),
   KEY `Purchase Order Key` (`Purchase Order Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=139 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -9562,7 +9562,7 @@ CREATE TABLE `Right Dimension` (
   `Right Access Keys` text NOT NULL,
   UNIQUE KEY `define_name_i_idx` (`Right Type`,`Right Name`),
   UNIQUE KEY `right_id_idx` (`Right Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -9667,7 +9667,7 @@ CREATE TABLE `Shelf Type Dimension` (
   `Shelf Type Location Max Weight` float DEFAULT NULL,
   `Shelf Type Location Max Volume` float DEFAULT NULL,
   PRIMARY KEY (`Shelf Type Key`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -9699,7 +9699,7 @@ CREATE TABLE `Ship To Dimension` (
   KEY `Ship To Country Code` (`Ship To Country Code`),
   KEY `Ship To Country 2 Alpha Code` (`Ship To Country 2 Alpha Code`),
   KEY `Ship To Postal Code` (`Ship To Postal Code`)
-) ENGINE=InnoDB AUTO_INCREMENT=224287 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -9778,7 +9778,7 @@ CREATE TABLE `Shipper Dimension` (
   `Shipper Active` enum('Yes','No') NOT NULL DEFAULT 'Yes',
   PRIMARY KEY (`Shipper Key`),
   KEY `Shipper Active` (`Shipper Active`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -9804,7 +9804,7 @@ CREATE TABLE `Shipping Dimension` (
   KEY `y` (`Shipping Destination Code`),
   KEY `z` (`Shipping Destination Type`),
   KEY `Shipping Secondary Destination Check` (`Shipping Secondary Destination Check`)
-) ENGINE=InnoDB AUTO_INCREMENT=793 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -10121,7 +10121,7 @@ CREATE TABLE `Site Dimension` (
   UNIQUE KEY `Site Name` (`Site Name`,`Site Store Key`),
   UNIQUE KEY `Site URL` (`Site URL`),
   KEY `Store Key` (`Site Store Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -10157,7 +10157,7 @@ CREATE TABLE `Site Flag Dimension` (
   PRIMARY KEY (`Site Flag Key`),
   UNIQUE KEY `Site Key` (`Site Key`,`Site Flag Color`),
   KEY `Site Key_2` (`Site Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -10230,7 +10230,7 @@ CREATE TABLE `Sitemap Dimension` (
   `Sitemap Content` longtext CHARACTER SET latin1,
   PRIMARY KEY (`Sitemap Key`),
   UNIQUE KEY `Sitemap Site Key` (`Sitemap Site Key`,`Sitemap Name`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -10276,7 +10276,7 @@ CREATE TABLE `Staff Dimension` (
   KEY `Staff Most Recent` (`Staff Most Recent`),
   KEY `Staff Valid from` (`Staff Valid From`),
   KEY `Staff Valid To` (`Staff Valid To`)
-) ENGINE=InnoDB AUTO_INCREMENT=263 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -10299,7 +10299,7 @@ CREATE TABLE `Staff Event Dimension` (
   `Staff Date Key` mediumint(11) NOT NULL,
   `Staff Key` mediumint(11) NOT NULL,
   PRIMARY KEY (`Staff Event Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -10652,7 +10652,7 @@ CREATE TABLE `Store Data Dimension` (
   `Store 3 Year Lost Contacts With Orders` mediumint(9) NOT NULL DEFAULT '0',
   `Store Year To Day Lost Contacts With Orders` mediumint(9) NOT NULL DEFAULT '0',
   PRIMARY KEY (`Store Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -10752,7 +10752,7 @@ CREATE TABLE `Store Default Currency` (
   `Store DC 3 Year Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Store DC 3 Year Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (`Store Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -10890,7 +10890,7 @@ CREATE TABLE `Store Dimension` (
   KEY `Store State` (`Store State`),
   KEY `Store Show in Warehouse Orders` (`Store Show in Warehouse Orders`),
   KEY `Store Customer Payment Account Key` (`Store Customer Payment Account Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -12043,7 +12043,7 @@ CREATE TABLE `Supplier Dimension` (
   KEY `Supplier Main Telephone Key` (`Supplier Main Telephone Key`),
   KEY `Supplier Main FAX Key` (`Supplier Main FAX Key`),
   KEY `Supplier Is Agent` (`Supplier Is Agent`)
-) ENGINE=InnoDB AUTO_INCREMENT=6359 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -12684,7 +12684,7 @@ CREATE TABLE `Supplier Product Dimension` (
   KEY `Supplier Product Delivery Days Set Up` (`Supplier Product Delivery Days Set Up`),
   KEY `Supplier Product Available` (`Supplier Product Available`),
   KEY `Supplier Product State` (`Supplier Product State`)
-) ENGINE=InnoDB AUTO_INCREMENT=69333 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13093,7 +13093,7 @@ CREATE TABLE `Supplier Product History Dimension` (
   KEY `SPH To` (`SPH Valid To`),
   KEY `SPH Type` (`SPH Type`),
   KEY `Supplier Product Key` (`Supplier Product ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=108099 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13135,7 +13135,7 @@ CREATE TABLE `Supplier Product Part Dimension` (
   KEY `Supplier Product Part Most Recent` (`Supplier Product Part Most Recent`),
   KEY `Supplier Product Part In Use` (`Supplier Product Part In Use`),
   KEY `Supplier Product Historic Key` (`Supplier Product Historic Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=79117 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13153,7 +13153,7 @@ CREATE TABLE `Supplier Product Part List` (
   PRIMARY KEY (`Supplier Product Part List Key`),
   KEY `Supplier Product Part ID` (`Supplier Product Part Key`),
   KEY `Part SKU` (`Part SKU`)
-) ENGINE=InnoDB AUTO_INCREMENT=79093 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13197,7 +13197,7 @@ CREATE TABLE `Table Dimension` (
   `Table Name` varchar(64) NOT NULL,
   `Table Export Fields` text NOT NULL,
   PRIMARY KEY (`Table Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13244,7 +13244,7 @@ CREATE TABLE `Tax Category Dimension` (
   KEY `Composite` (`Composite`),
   KEY `Tax Category Active` (`Tax Category Active`),
   KEY `Tax Category Country Code` (`Tax Category Country Code`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13291,7 +13291,7 @@ CREATE TABLE `Telecom Dimension` (
   PRIMARY KEY (`Telecom Key`),
   KEY `Telecom Plain Number` (`Telecom Plain Number`),
   KEY `Telecom Area Code` (`Telecom Area Code`)
-) ENGINE=InnoDB AUTO_INCREMENT=203281 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13322,7 +13322,7 @@ CREATE TABLE `Theme Background Dimension` (
   `Background CSS` text NOT NULL,
   `Footer CSS` text NOT NULL,
   PRIMARY KEY (`Theme Background Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13340,7 +13340,7 @@ CREATE TABLE `Theme Dimension` (
   `Theme CSS Tables` text NOT NULL,
   `Theme CSS Top Navigation` text NOT NULL,
   PRIMARY KEY (`Theme Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13400,7 +13400,7 @@ CREATE TABLE `Timeseries Dimension` (
   `Timeseries Created` datetime DEFAULT NULL,
   `Timeseries Updated` datetime DEFAULT NULL,
   PRIMARY KEY (`Timeseries Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13424,7 +13424,7 @@ CREATE TABLE `Timeseries Record Dimension` (
   PRIMARY KEY (`Timeseries Record Key`),
   KEY `Time Series Date` (`Timeseries Record Date`),
   KEY `Timeseries Key` (`Timeseries Record Timeseries Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=31125 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13453,7 +13453,7 @@ CREATE TABLE `Timesheet Dimension` (
   PRIMARY KEY (`Timesheet Key`),
   UNIQUE KEY `Timesheet Date` (`Timesheet Date`,`Timesheet Staff Key`),
   KEY `Timesheet Date_2` (`Timesheet Date`)
-) ENGINE=InnoDB AUTO_INCREMENT=162795 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13479,7 +13479,72 @@ CREATE TABLE `Timesheet Record Dimension` (
   UNIQUE KEY `Staff Key` (`Timesheet Record Staff Key`,`Timesheet Record Date`,`Timesheet Record Type`) USING BTREE,
   KEY `Timesheet Key` (`Timesheet Record Timesheet Key`),
   KEY `Timesheet Record Ignored Due Missing End` (`Timesheet Record Ignored Due Missing End`)
-) ENGINE=InnoDB AUTO_INCREMENT=841828 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Upload Dimension`
+--
+
+DROP TABLE IF EXISTS `Upload Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Upload Dimension` (
+  `Upload Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Upload State` enum('Uploaded','InProcess','Finished','Cancelled') NOT NULL DEFAULT 'Uploaded',
+  `Upload Date` datetime DEFAULT NULL,
+  `Upload Parent` varchar(16) NOT NULL,
+  `Upload Parent Key` mediumint(8) unsigned NOT NULL,
+  `Upload Object` varchar(16) NOT NULL,
+  `Upload User Key` mediumint(8) unsigned DEFAULT NULL,
+  `Upload Created` datetime DEFAULT NULL,
+  `Upload OK` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Upload Warnings` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Upload Errors` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Upload Metadata` text,
+  PRIMARY KEY (`Upload Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Upload File Dimension`
+--
+
+DROP TABLE IF EXISTS `Upload File Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Upload File Dimension` (
+  `Upload File Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Upload File Upload Key` mediumint(8) unsigned DEFAULT NULL,
+  `Upload File Checksum` varchar(64) DEFAULT NULL,
+  `Upload File Name` varchar(255) NOT NULL,
+  `Upload File Size` int(10) unsigned NOT NULL,
+  `Upload File Metadata` text,
+  PRIMARY KEY (`Upload File Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Upload Record Dimension`
+--
+
+DROP TABLE IF EXISTS `Upload Record Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Upload Record Dimension` (
+  `Upload Record Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Upload Record Upload Key` mediumint(8) unsigned NOT NULL,
+  `Upload Record Upload File Key` smallint(5) unsigned DEFAULT NULL,
+  `Upload Record Row Index` int(10) unsigned NOT NULL,
+  `Upload Record Status` enum('InProcess','Done') NOT NULL DEFAULT 'InProcess',
+  `Upload Record State` enum('InProcess','OK','Error','Warning','Cancelled') NOT NULL DEFAULT 'InProcess',
+  `Upload Record Date` datetime DEFAULT NULL,
+  `Upload Record Message Code` varchar(255) DEFAULT NULL,
+  `Upload Record Message Metadata` text,
+  `Upload Record Data` longblob NOT NULL,
+  `Upload Record Object Key` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`Upload Record Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13499,7 +13564,7 @@ CREATE TABLE `User Agent Dimension` (
   PRIMARY KEY (`User Agent Key`),
   KEY `User Agent Type` (`User Agent Type`),
   KEY `User Agent String` (`User Agent String`(128))
-) ENGINE=InnoDB AUTO_INCREMENT=244237 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13546,7 +13611,7 @@ CREATE TABLE `User Dimension` (
   KEY `User Parent Key` (`User Parent Key`),
   KEY `User Login Count` (`User Login Count`),
   KEY `User Has Login` (`User Has Login`)
-) ENGINE=InnoDB AUTO_INCREMENT=203530 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13586,7 +13651,7 @@ CREATE TABLE `User Group Dimension` (
   `User Group Name` varchar(255) NOT NULL,
   `User Group Description` text,
   PRIMARY KEY (`User Group Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13662,7 +13727,7 @@ CREATE TABLE `User Log Dimension` (
   KEY `Status` (`Status`),
   KEY `Site Key` (`Site Key`),
   KEY `Session ID` (`Session ID`(32))
-) ENGINE=InnoDB AUTO_INCREMENT=1289382 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13693,7 +13758,7 @@ CREATE TABLE `User Request Dimension` (
   KEY `User Log Key` (`User Log Key`),
   KEY `Site Key` (`Site Key`),
   KEY `Is User` (`Is User`)
-) ENGINE=InnoDB AUTO_INCREMENT=76750195 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13765,7 +13830,7 @@ CREATE TABLE `User System View Fact` (
   `Object` varchar(255) DEFAULT NULL,
   `Object Key` mediumint(9) DEFAULT NULL,
   PRIMARY KEY (`User System View Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=18472 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13780,7 +13845,7 @@ CREATE TABLE `Visitor Dimension` (
   `Visitor Site Key` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`Visitor Key`),
   KEY `User Visitor Site Key` (`Visitor Site Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=10402417 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13799,7 +13864,7 @@ CREATE TABLE `Visitor Session Dimension` (
   PRIMARY KEY (`Visitor Session Key`),
   KEY `User Session Visitor Key` (`Visitor Session Visitor Key`),
   KEY `User Session Site Key` (`Visitor Session Site Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=19863849 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13824,7 +13889,7 @@ CREATE TABLE `Voucher Dimension` (
   PRIMARY KEY (`Voucher Key`),
   UNIQUE KEY `Voucher Store Key` (`Voucher Store Key`,`Voucher Code`),
   KEY `Voucher Status` (`Voucher Status`)
-) ENGINE=InnoDB AUTO_INCREMENT=173 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13864,7 +13929,7 @@ CREATE TABLE `Warehouse Area Dimension` (
   PRIMARY KEY (`Warehouse Area Key`),
   UNIQUE KEY `Warehouse Area Code_2` (`Warehouse Area Code`,`Warehouse Key`),
   KEY `Warehouse Area Code` (`Warehouse Area Code`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13918,7 +13983,7 @@ CREATE TABLE `Warehouse Dimension` (
   PRIMARY KEY (`Warehouse Key`),
   UNIQUE KEY `Warehouse Code` (`Warehouse Code`),
   UNIQUE KEY `Warehouse Name` (`Warehouse Name`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13938,7 +14003,7 @@ CREATE TABLE `Warehouse Flag Dimension` (
   PRIMARY KEY (`Warehouse Flag Key`),
   UNIQUE KEY `Warehouse Key` (`Warehouse Key`,`Warehouse Flag Color`),
   KEY `Warehouse Key_2` (`Warehouse Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -14001,7 +14066,7 @@ CREATE TABLE `Widget Dimension` (
   `Widget Description` varchar(255) NOT NULL,
   `Widget Metadata` varchar(1024) NOT NULL,
   PRIMARY KEY (`Widget Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -14016,7 +14081,7 @@ CREATE TABLE `debugtable` (
   `text` longtext NOT NULL,
   `date` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3261637 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -14032,7 +14097,7 @@ CREATE TABLE `todo_users` (
   `order_name` varchar(60) CHARACTER SET latin1 NOT NULL,
   `tipo` varchar(20) CHARACTER SET latin1 NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=295784 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -14044,4 +14109,4 @@ CREATE TABLE `todo_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-03-25 12:13:59
+-- Dump completed on 2016-03-31 15:00:35

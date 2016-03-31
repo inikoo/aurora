@@ -583,6 +583,14 @@ class Staff extends DB_Table{
 		}
 		$this->editor=$data['editor'];
 
+		if ($this->data['Staff Type']=='') {
+			$this->data['Staff Type']='Employee';
+		}
+
+		if ($this->data['Staff Currently Working']=='') {
+			$this->data['Staff Currently Working']='Yes';
+		}
+
 		if ($this->data['Staff Valid From']=='') {
 			$this->data['Staff Valid From']=gmdate('Y-m-d H:i:s');
 		}
@@ -592,7 +600,7 @@ class Staff extends DB_Table{
 		$values='';
 		foreach ($this->data as $key=>$value) {
 			$keys.=",`".$key."`";
-			if ($key=='Staff Valid To') {
+			if ($key=='Staff Valid To' or $key=='Staff Birthday') {
 				$values.=','.prepare_mysql($value, true);
 
 			}else {
@@ -655,10 +663,6 @@ class Staff extends DB_Table{
 
 
 			}
-
-
-
-
 
 		}else {
 			$this->error=true;
@@ -1101,9 +1105,9 @@ class Staff extends DB_Table{
 		if ($values!='') {
 
 			foreach (preg_split('/,/', $values) as $selected_role) {
-			
-			if(array_key_exists($selected_role,$available_roles)){
-				$available_roles[$selected_role]['selected']=true;
+
+				if (array_key_exists($selected_role, $available_roles)) {
+					$available_roles[$selected_role]['selected']=true;
 				}
 			}
 
@@ -1138,8 +1142,8 @@ class Staff extends DB_Table{
 
 
 		foreach (preg_split( '/,/', $this->get('Staff Position')) as $role_code) {
-			if(array_key_exists($role_code,$roles)){
-			$groups=array_merge($groups, $roles[$role_code]['user_groups']);
+			if (array_key_exists($role_code, $roles)) {
+				$groups=array_merge($groups, $roles[$role_code]['user_groups']);
 			}
 		}
 
