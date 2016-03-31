@@ -180,6 +180,10 @@ module.exports = function(grunt) {
                     dest: 'build/fork/'
                 },{
                     expand: true,
+                    src: ['trait.*.php'],
+                    dest: 'build/fork/'
+                },{
+                    expand: true,
                     src: ['conf/*.php'],
                     dest: 'build/fork/'
                 }, {
@@ -225,7 +229,7 @@ module.exports = function(grunt) {
                 },
             },
              fork: {
-                files: ['fork/*.php'],
+                files: ['fork/*.php','conf/*.php','utils/*','class.*.php','trait.*.php'],
                 tasks: ['copy:fork'],
                 options: {
                     spawn: false,

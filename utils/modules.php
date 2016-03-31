@@ -1113,10 +1113,24 @@ $modules=array(
 			'employees'=>array('type'=>'navigation', 'label'=>_('Employees'), 'title'=>_("Employees"), 'icon'=>'hand-rock-o', 'reference'=>'hr',
 
 
+				'subtabs_parent'=>array(
+					'employees.uploads'=>'employees.history_uploads',
+					'employees.history'=>'employees.history_uploads',
+
+
+				),
+
 				'tabs'=>array(
 					'employees'=>array('label'=>_('Employees')),
+					'employees.history_uploads'=>array('label'=>_('History'),
+						'subtabs'=>array(
+							'employees.history'=>array('label'=>_('History'), 'icon'=>'history'),
+							'employees.uploads'=>array('label'=>_('Uploads'), 'icon'=>'upload'),
+
+						)
+					),
+
 					'exemployees'=>array('label'=>_('Ex employees'), 'title'=>_('Ex Employees'), 'class'=>'right'),
-					'overtimes'=>array('label'=>_('Overtimes')),
 
 
 
@@ -1129,6 +1143,15 @@ $modules=array(
 				'type'=>'navigation', 'label'=>_('Contractors'), 'icon'=>'hand-spock-o', 'reference'=>'hr/contractors',
 				'tabs'=>array(
 					'contractors'=>array('label'=>_('Employees')),
+
+				)
+
+
+			),
+			'overtimes'=>array(
+				'type'=>'navigation', 'label'=>_('Overtimes'), 'icon'=>'clock-o', 'reference'=>'hr/overtimes',
+				'tabs'=>array(
+					'overtimes'=>array('label'=>_('Overtimes')),
 
 				)
 
@@ -1160,8 +1183,6 @@ $modules=array(
 					'employee.attachments'=>array('label'=>_('Attachments'), 'icon'=>'paperclip'),
 					'employee.timesheets'=>array('label'=>_('Timesheets'),
 						'subtabs'=>array(
-							//      'employee.calendar'=>array('label'=>_('Calendar')),
-
 							'employee.timesheets'=>array('label'=>_('Timesheets')),
 							'employee.timesheets.records'=>array('label'=>_('Clockings')),
 
@@ -1252,6 +1273,20 @@ $modules=array(
 					'timesheet_record.import'=>array('label'=>_('Import'), 'title'=>_('Import timesheet record')),
 					'timesheet_record.api'=>array('label'=>_('API'), 'title'=>_('API')),
 					'timesheet_record.cancel'=>array('class'=>'right', 'label'=>_('Cancel'), 'title'=>_('Cancel'), 'icon'=>'sign-out fa-flip-horizontal'),
+
+				)
+
+			),
+			'uploads'=>array('type'=>'',
+				'tabs'=>array(
+					'uploads'=>array('label'=>_('Uploads')),
+
+				)
+
+			),
+			'upload'=>array('type'=>'object',
+				'tabs'=>array(
+					'upload.employees'=>array('label'=>_('Upload Records')),
 
 				)
 

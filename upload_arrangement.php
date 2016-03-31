@@ -11,7 +11,7 @@
 */
 
 require_once 'common.php';
-require_once 'utils/object_fields.php';
+require_once 'conf/object_fields.php';
 include_once 'utils/invalid_messages.php';
 
 require_once 'external_libs/PHPExcel/Classes/PHPExcel.php';

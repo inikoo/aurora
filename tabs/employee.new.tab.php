@@ -11,7 +11,7 @@
 include_once 'utils/invalid_messages.php';
 
 
-include_once 'utils/object_fields.php';
+include_once 'conf/object_fields.php';
 include_once 'class.Staff.php';
 
 $employee=new Staff(0);

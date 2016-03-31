@@ -122,7 +122,7 @@ class Invoice extends DB_Table {
 		$public_id=mysql_insert_id();
 
 		include_once 'class.Account.php';
-		$account=new Account(1);
+		$account=new Account();
 
 		$this->data['Invoice Public ID']=sprintf($account->data['Account Invoice Public ID Format'], $public_id).$suffix;
 		$this->data['Invoice File As']=$this->prepare_file_as($this->data['Invoice Public ID']);
@@ -258,7 +258,7 @@ class Invoice extends DB_Table {
 					mysql_query($sqla);
 					$public_id=mysql_insert_id();
 					include_once 'class.Account.php';
-					$account=new Account(1);
+					$account=new Account();
 					$invoice_public_id=sprintf($account->data['Account Invoice Public ID Format'], $public_id);
 
 				}
@@ -273,7 +273,7 @@ class Invoice extends DB_Table {
 		}
 		elseif ($store->data['Store Refund Public ID Method']=='Account Wide Own Index') {
 
-			$account=new Account(1);
+			$account=new Account();
 			$sql=sprintf("UPDATE `Account Dimension` SET `Account Invoice Last Refund Public ID` = LAST_INSERT_ID(`Account Invoice Last Refund Public ID` + 1) where `Account Key`=1");
 			mysql_query($sql);
 
@@ -318,7 +318,7 @@ class Invoice extends DB_Table {
 				mysql_query($sqla);
 				$public_id=mysql_insert_id();
 				include_once 'class.Account.php';
-				$account=new Account(1);
+				$account=new Account();
 				$invoice_public_id=sprintf($account->data['Account Invoice Public ID Format'], $public_id);
 
 			}

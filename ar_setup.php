@@ -9,6 +9,7 @@
 
  Version 3.0
 */
+
 error_reporting(E_ALL);
 require_once 'utils/general_functions.php';
 require_once 'utils/object_functions.php';

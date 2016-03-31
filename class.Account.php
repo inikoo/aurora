@@ -13,9 +13,13 @@ include_once 'class.DB_Table.php';
 
 class Account extends DB_Table{
 
-	function Account($a1=false, $a2=false) {
-		global $db;
+	function Account($db=false) {
+
+		if (!$db) {
+			global $db;
+		}
 		$this->db=$db;
+
 
 		$this->table_name='Account';
 
@@ -240,6 +244,9 @@ class Account extends DB_Table{
 				$this->error=true;
 				if ($staff->found) {
 					$this->msg=_('Duplicated employee code');
+					$this->error_code='duplicated_field';
+					$this->error_metadata=json_encode(array('Staff Alias'));
+
 				}else {
 					$this->msg=$staff->msg;
 				}
