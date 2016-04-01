@@ -260,6 +260,59 @@ class Account extends DB_Table{
 	}
 
 
+	function create_store($data) {
+		include_once 'class.Country.php';
+
+		$this->new_object=false;
+
+		$data['editor']=$this->editor;
+
+
+		$data['Store Valid From']=gmdate('Y-m-d H:i:s');
+		$data['Store Timezone']=preg_replace('/_/', '/', $data['Store Timezone']);
+		$data['Store Home Country Code 2 Alpha']=substr($data['Store Locale'], -2);
+
+		$country=new Country('2alpha', $data['Store Home Country Code 2 Alpha']);
+		$data['Store Home Country Name']=$country->get('Country Name');
+
+		$store= new Store('find', $data, 'create');
+
+
+
+
+		if ($store->id) {
+			$this->new_object_msg=$store->msg;
+
+			if ($store->new) {
+				$this->new_object=true;
+				$this->update_stores_data();
+			} else {
+				$this->error=true;
+				if ($store->found) {
+
+					$this->error_code='duplicated_field';
+					$this->error_metadata=json_encode(array($store->duplicated_field));
+
+					if ($store->duplicated_field=='Store Code') {
+						$this->msg=_('Duplicated store code');
+					}else {
+						$this->msg=_('Duplicated store name');
+					}
+
+
+				}else {
+					$this->msg=$store->msg;
+				}
+			}
+			return $store;
+		}
+		else {
+			$this->error=true;
+			$this->msg=$store->msg;
+		}
+	}
+
+
 	function create_supplier($data) {
 		$this->new_employee=false;
 
@@ -426,6 +479,30 @@ class Account extends DB_Table{
 		}
 
 		$this->update(array('Account Employees'=>$number_employees), 'no_history');
+
+	}
+
+
+	function update_stores_data() {
+		$number_stores=0;
+		$sql=sprintf('select count(*) as num from `Store Dimension` where `Store State`="Normal"');
+		if ($row = $this->db->query($sql)->fetch()) {
+			$number_stores=$row['num'];
+		}
+
+		$this->update(array('Account Stores'=>$number_stores), 'no_history');
+
+	}
+
+
+	function update_warehouses_data() {
+		$number_stores=0;
+		$sql=sprintf('select count(*) as num from `Warehouse Dimension` ');
+		if ($row = $this->db->query($sql)->fetch()) {
+			$number_stores=$row['num'];
+		}
+
+		$this->update(array('Account Warehouses'=>$number_stores), 'no_history');
 
 	}
 

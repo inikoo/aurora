@@ -24,8 +24,8 @@ $roles = array(
 'PICK'=>array('title'=>_('Picker'),'size'=>array('Basic','Medium','Big'),'instances'=>array('Com'),'user_groups'=>array(11)),
 'PACK'=>array('title'=>_('Packer'),'size'=>array('Basic','Medium','Big'),'instances'=>array('Com'),'user_groups'=>array(11)),
 'OHADM'=>array('title'=>_('Dispatch Supervisor'),'size'=>array('Basic','Medium','Big'),'instances'=>array('Com'),'user_groups'=>array(11)),
-'PRODM'=>array('title'=>_('Production Supervisor'),'size'=>array('Basic','Medium','Big'),'instances'=>array('Prod')),
-'PRODO'=>array('title'=>_('Production Operative'),'size'=>array('Basic','Medium','Big'),'instances'=>array('Prod')),
+'PRODM'=>array('title'=>_('Production Supervisor'),'size'=>array('Basic','Medium','Big'),'instances'=>array('Prod'),'user_groups'=>array(4)),
+'PRODO'=>array('title'=>_('Production Operative'),'size'=>array('Basic','Medium','Big'),'instances'=>array('Prod'),'user_groups'=>array(4)),
 'CUS'=>array('title'=>_('Customer Service'),'size'=>array('Basic','Medium','Big'),'instances'=>array('Com','Prod','Serv'),'user_groups'=>array(2)),
 'CUSM'=>array('title'=>_('Customer Service Supervisor'),'size'=>array('Basic','Medium','Big'),'instances'=>array('Com','Prod','Serv'),'user_groups'=>array(2)),
 

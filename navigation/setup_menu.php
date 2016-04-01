@@ -26,9 +26,9 @@ foreach ($setup_data['steps'] as $step_code=>$step_data) {
 	}elseif ($step_code=='add_employees') {
 		$nav_menu[] = array('<i class="fa fa-check fa-fw '.($step_data['setup']?'highlight':'discret').'"></i>',_('Add employees'), '/account/setup/add_employees' , 'setup_add_employees', 'module', '');
 	}elseif ($step_code=='add_warehouse') {
-		$nav_menu[] = array('<i class="fa fa-check fa-fw '.($step_data['setup']?'highlight':'discret').'"></i>',_('Set warehouse'), '/setup/add_warehouse' , 'setup.add_warehouse', 'module', '');
+		$nav_menu[] = array('<i class="fa fa-check fa-fw '.($step_data['setup']?'highlight':'discret').'"></i>',_('Set warehouse'), '/account/setup/add_warehouse' , 'setup.add_warehouse', 'module', '');
 	}elseif ($step_code=='add_store') {
-		$nav_menu[] = array('<i class="fa fa-check fa-fw '.($step_data['setup']?'highlight':'discret').'"></i>',_('Set store'), '/setup/add_store' , 'setup.add_store', 'module', '');
+		$nav_menu[] = array('<i class="fa fa-check fa-fw '.($step_data['setup']?'highlight':'discret').'"></i>',_('Set store'), '/account/setup/add_store' , 'setup.add_store', 'module', '');
 	}
 
 }

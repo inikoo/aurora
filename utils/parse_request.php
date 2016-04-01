@@ -78,6 +78,13 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 					}
 
 				}
+				elseif ($view_path[0]=='new') {
+					$section='store.new';
+					$object='';
+
+
+
+				}
 				elseif ($view_path[0]=='product') {
 					$module='products';
 					$section='product';
@@ -961,7 +968,37 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 			$object='warehouse';
 
-			$key=$view_path[0];
+			if (isset($view_path[0])) {
+
+				if (is_numeric($view_path[0])) {
+					$key=$view_path[0];
+
+					
+
+				}
+				elseif ($view_path[0]=='new') {
+					$section='warehouse.new';
+					$object='';
+
+
+
+				}
+
+
+
+			}else {
+				if ($user->data['User Hooked Warehouse Key'] and in_array($user->data['User Hooked Warehouse Key'], $user->stores)) {
+					$key=$user->data['User Hooked Warehouse Key'];
+				}else {
+					$_tmp=$user->warehouses;
+					$key=array_shift($_tmp);
+				}
+			}
+
+
+
+
+
 
 			break;
 		case 'inventory':
@@ -1643,6 +1680,22 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 							$parent='account';
 							$parent_key=1;
 							$object='employee';
+							$key=1;
+
+						}elseif ($view_path[1]=='add_warehouse') {
+
+
+							$section='setup_add_warehouse';
+							$parent='account';
+							$parent_key=1;
+							$object='warehouse';
+							$key=1;
+
+						}elseif ($view_path[1]=='add_store') {
+							$section='setup_add_store';
+							$parent='account';
+							$parent_key=1;
+							$object='store';
 							$key=1;
 
 						}

@@ -479,6 +479,28 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 		$pcard=$smarty->fetch('presentation_cards/system_user.pcard.tpl');
 		$updated_data=array();
 		break;
+	case 'Store':
+		include_once 'class.Store.php';
+		if (!$parent->error) {
+			$object=$parent->create_store($data['fields_data']);
+			$smarty->assign('account', $account);
+			$smarty->assign('object', $object);
+
+			$pcard=$smarty->fetch('presentation_cards/store.pcard.tpl');
+			$updated_data=array();
+		}
+		break;
+	case 'Warehouse':
+		include_once 'class.Warehouse.php';
+		if (!$parent->error) {
+			$object=$parent->create_store($data['fields_data']);
+			$smarty->assign('account', $account);
+			$smarty->assign('object', $object);
+
+			$pcard=$smarty->fetch('presentation_cards/warehouse.pcard.tpl');
+			$updated_data=array();
+		}
+		break;	
 	case 'Customer':
 		include_once 'class.Customer.php';
 		if (!$parent->error) {

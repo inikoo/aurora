@@ -2,7 +2,7 @@
 /*
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created: 15 November 2015 at 14:20:16 GMT Sheffied UK
+ Created: 31 March 2016 at 16:04:38 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2015, Inikoo
 
  Version 3
@@ -12,20 +12,20 @@ include_once 'utils/invalid_messages.php';
 
 
 include_once 'conf/object_fields.php';
-include_once 'class.Staff.php';
+include_once 'class.Store.php';
 
-$employee=new Staff(0);
+$store=new Store(0);
 
-$object_fields=get_object_fields($employee, $db);
+$object_fields=get_object_fields($store, $db);
 
 
 
 
 $smarty->assign('state', $state);
-$smarty->assign('object', $employee);
+$smarty->assign('object', $store);
 
 
-$smarty->assign('object_name', $employee->get_object_name());
+$smarty->assign('object_name', $store->get_object_name());
 
 
 $smarty->assign('object_fields', $object_fields);

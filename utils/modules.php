@@ -565,6 +565,14 @@ $modules=array(
 
 				)
 			),
+
+			'store.new'=>array('type'=>'new_object',
+				'tabs'=>array(
+					'store.new'=>array('label'=>_('New store')),
+
+				)
+
+			),
 			'products'=>array('type'=>'navigation', 'label'=>_('Products'), 'title'=>_("Products database"), 'icon'=>'cube', 'reference'=>'products/%d',
 				'tabs'=>array(
 					'products'=>array()
@@ -1024,6 +1032,13 @@ $modules=array(
 				)
 
 			),
+				'warehouse.new'=>array('type'=>'new_object',
+				'tabs'=>array(
+					'warehouse.new'=>array('label'=>_('New warehouse')),
+
+				)
+
+			),
 			'location'=>array(
 
 				'type'=>'object', 'label'=>_('Location'), 'icon'=>'map-sings', 'reference'=>'',
@@ -1196,7 +1211,7 @@ $modules=array(
 
 			'employee.new'=>array('type'=>'new_object',
 				'tabs'=>array(
-					'employee.new'=>array('label'=>_('New employee'), 'title'=>_('New employee')),
+					'employee.new'=>array('label'=>_('New employee')),
 
 				)
 
@@ -1337,6 +1352,16 @@ $modules=array(
 			'setup_add_employee'=>array('type'=>'',
 				'tabs'=>array(
 					'account.setup.add_employee'=>array('label'=>''),
+				)
+			),
+			'setup_add_warehouse'=>array('type'=>'',
+				'tabs'=>array(
+					'account.setup.setup_add_warehouse'=>array('label'=>''),
+				)
+			),
+			'setup_add_store'=>array('type'=>'',
+				'tabs'=>array(
+					'account.setup.add_store'=>array('label'=>''),
 				)
 			),
 

@@ -57,20 +57,13 @@ function get_store_navigation($data, $smarty, $user, $db, $account) {
 			exit;
 		}
 
-
-
-
-
 		$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'store/'.$prev_key );
 		$left_buttons[]=array('icon'=>'arrow-up', 'title'=>_('Stores'), 'reference'=>'stores', 'parent'=>'');
-
 		$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'store/'.$next_key );
 	}
 
 
 	$right_buttons=array();
-	$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit store'), 'reference'=>'store/'.$store->id.'/edit');
-	$right_buttons[]=array('icon'=>'plus', 'title'=>_('New store'), 'id'=>"new_store");
 	$sections=get_sections('products', $store->id);
 	$_section='store';
 	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
@@ -949,6 +942,44 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
 	$smarty->assign('_content', $_content);
 	$html=$smarty->fetch('navigation.tpl');
 	return $html;
+
+}
+
+function get_new_store_navigation($data, $smarty, $user, $db, $account) {
+
+
+
+	$block_view=$data['section'];
+
+
+	$sections=get_sections('products_server');
+
+
+	$left_buttons=array();
+
+		$left_buttons[]=array('icon'=>'arrow-up', 'title'=>_('Stores'), 'reference'=>'stores', 'parent'=>'');
+
+
+	$right_buttons=array();
+
+	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
+
+
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>_('New store'),
+		'search'=>array('show'=>true, 'placeholder'=>_('Search products all stores'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
 
 }
 
