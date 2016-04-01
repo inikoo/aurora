@@ -16,8 +16,66 @@ function get_object_fields($object, $db) {
 
 	switch ($object->get_object_name()) {
 
+	case 'Warehouse':
 
 
+		$object_fields=array(
+			array(
+				'label'=>_('Id'),
+				'show_title'=>true,
+				'fields'=>array(
+
+					array(
+						'edit'=>'string',
+						'id'=>'Warehouse_Code',
+						'value'=>$object->get('Warehouse Code'),
+						'formatted_value'=>$object->get('Code'),
+						'label'=>ucfirst($object->get_field_label('Warehouse Code')),
+						'invalid_msg'=>get_invalid_message('string'),
+						'required'=>true,
+						'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
+						'type'=>'value'
+					),
+					array(
+						'edit'=>'string',
+						'id'=>'Warehouse_Name',
+						'value'=>$object->get('Warehouse Name')  ,
+						'formatted_value'=>$object->get('Name'),
+						'label'=>ucfirst($object->get_field_label('Warehouse Name')),
+						'invalid_msg'=>get_invalid_message('string'),
+						'required'=>true,
+						'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
+						'type'=>'value'
+					),
+
+				)
+			),
+			
+			array(
+				'label'=>_('Address'),
+				'show_title'=>true,
+				'fields'=>array(
+
+				
+					array(
+						'edit'=>'textarea',
+						'id'=>'Warehouse_Address',
+						'value'=>$object->get('Warehouse Address'),
+						'formatted_value'=>$object->get('Address'),
+						'label'=>ucfirst($object->get_field_label('Warehouse Address')),
+						'invalid_msg'=>get_invalid_message('string'),
+						'required'=>true,
+						'type'=>'value'
+					),
+				)
+			),
+
+
+		);
+
+		return $object_fields;
+
+		break;
 	case 'Store':
 
 		$store=$object;

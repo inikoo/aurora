@@ -157,29 +157,41 @@ if ($user->can_view('stores')) {
 }
 
 
-if ($user->can_view('warehouses')) {
+if ($user->can_view('locations')) {
 
-	/*
+
+
+
 	if ($user->data['User Hooked Warehouse Key']) {
-		$nav_menu[] = array('<i class="fa fa-th  fa-fw"></i>',_('Inventory'), 'inventory.php?block_view=parts&warehouse_id='.$user->warehouses[0],'parts','module','');
+
+		$nav_menu[] = array('<i class="fa fa-map fa-fw"></i>',_('Warehouse'), 'warehouse/'.$user->data['User Hooked Warehouse Key'], 'warehouses', 'module', '');
 	}else {
-		$nav_menu[] = array('<i class="fa fa-th fa-fw"></i>',_('Inventory'), 'warehouses_server','parts','module','');
+
+		$nav_menu[] = array('<i class="fa fa-th-large fa-fw"></i>',_('Warehouse'), 'warehouses', 'warehouses', 'module', '');
 	}
-*/
+
+}
+
+if ($user->can_view('parts')) {
+
 
 
 
 	if ($user->data['User Hooked Warehouse Key']) {
 		$nav_menu[] = array('<i class="fa fa-th-large fa-fw"></i>',_('Inventory'), 'inventory/'.$user->data['User Hooked Warehouse Key'], 'inventory', 'module', '');
 
-		$nav_menu[] = array('<i class="fa fa-map fa-fw"></i>',_('Warehouse'), 'warehouse/'.$user->data['User Hooked Warehouse Key'], 'warehouses', 'module', '');
 	}else {
 		$nav_menu[] = array('<i class="fa fa-th-large fa-fw"></i>',_('Inventory'), 'inventory/all', 'inventory', 'module', '');
 
-		$nav_menu[] = array('<i class="fa fa-th-large fa-fw"></i>',_('Warehouse'), 'warehouses', 'warehouses', 'module', '');
 	}
 
 }
+
+
+
+
+
+
 if ($user->can_view('reports')) {
 	$nav_menu[] = array('<i class="fa fa-line-chart fa-fw"></i>',_('Reports'), 'reports', 'reports', 'module', '');
 }

@@ -16,6 +16,8 @@ $sql_type='part';
 $filter_msg='';
 $wheref='';
 
+$fields='';
+
 if (isset($parameters['awhere']) and $parameters['awhere']) {
 
 	$tmp=preg_replace('/\\\"/', '"', $awhere);
@@ -67,6 +69,8 @@ elseif ($parameters['parent']=='category') {
 		return;
 	}
 
+$fields=' "" as `Warehouse Code`,';
+
 	$where=sprintf(" where `Subject`='Part' and  `Category Key`=%d", $parameters['parent_key']);
 	$table=' `Category Bridge` left join  `Part Dimension` P on (`Subject Key`=`Part SKU`) ';
 	$where_type='';
@@ -76,13 +80,19 @@ elseif ($parameters['parent']=='category') {
 }
 elseif ($parameters['parent']=='warehouse') {
 	$where=sprintf(" where  `Warehouse Key`=%d", $parameters['parent_key']);
+$fields=' "" as `Warehouse Code`,';
 
 	$table="`Part Dimension` P left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`)";
 
 
-}else {
+}elseif ($parameters['parent']=='account') {
 
 
+$fields='`Warehouse Code`,';
+
+
+}else{
+exit("parent not found ".$parameters['parent']);
 }
 
 /*
@@ -340,7 +350,7 @@ $order='P.'.$order;
 
 $sql_totals="select count(Distinct P.`Part SKU`) as num from $table  $where  ";
 
-$fields='B.`Warehouse Key`,`Warehouse Code`,P.`Part SKU`,`Part Reference`,`Part Unit Description`,`Part XHTML Currently Used In`';
+$fields.='B.`Warehouse Key`,P.`Part SKU`,`Part Reference`,`Part Unit Description`,`Part XHTML Currently Used In`';
 
 function parts_awhere($awhere) {
 

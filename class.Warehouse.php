@@ -77,9 +77,7 @@ class Warehouse extends DB_Table{
 		if (preg_match('/create/i', $options)) {
 			$create='create';
 		}
-		if (preg_match('/update/i', $options)) {
-			$update='update';
-		}
+		
 
 		$data=$this->base_data();
 		foreach ($raw_data as $key=>$value) {
@@ -88,7 +86,6 @@ class Warehouse extends DB_Table{
 		}
 
 
-		//    print_r($raw_data);
 
 		if ($data['Warehouse Code']=='' ) {
 			$this->error=true;
@@ -99,15 +96,44 @@ class Warehouse extends DB_Table{
 		if ($data['Warehouse Name']=='')
 			$data['Warehouse Name']=$data['Warehouse Code'];
 
-
+		
+		
+		
 		$sql=sprintf("select `Warehouse Key` from `Warehouse Dimension` where `Warehouse Code`=%s  "
 			, prepare_mysql($data['Warehouse Code'])
 		);
 
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$this->found=true;
-			$this->found_key=$row['Warehouse Key'];
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+
+				$this->found=true;
+				$this->found_key=$row['Warehouse Key'];
+				$this->get_data('id', $this->found_key);
+				$this->duplicated_field='Warehouse Code';
+				return;
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+		$sql=sprintf("select `Warehouse Key` from `Warehouse Dimension` where `Warehouse Name`=%s  "
+			, prepare_mysql($data['Warehouse Name'])
+		);
+
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+
+				$this->found=true;
+				$this->found_key=$row['Warehouse Key'];
+				$this->get_data('id', $this->found_key);
+				$this->duplicated_field='Warehouse Name';
+				return;
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
 
 
@@ -115,12 +141,8 @@ class Warehouse extends DB_Table{
 			$this->create($data);
 			return;
 		}
-		if ($this->found)
-			$this->get_data('id', $this->found_key);
-
-		if ($update and $this->found) {
-
-		}
+		
+		
 
 
 	}
@@ -138,7 +160,10 @@ class Warehouse extends DB_Table{
 		$keys='(';$values='values(';
 		foreach ($base_data as $key=>$value) {
 			$keys.="`$key`,";
-			$values.=prepare_mysql($value).",";
+			if (preg_match('/^(Warehouse Address|Warehouse Company Name|Warehouse Company Number|Warehouse VAT Number|Warehouse Telephone|Warehouse Email)$/i', $key))
+				$values.=prepare_mysql($value, false).",";
+			else
+				$values.=prepare_mysql($value).",";
 		}
 		$keys=preg_replace('/,$/', ')', $keys);
 		$values=preg_replace('/,$/', ')', $values);
@@ -178,6 +203,8 @@ class Warehouse extends DB_Table{
 			return;
 		}else {
 			$this->msg=_(" Error can not create warehouse");
+			print $sql;
+			exit;
 		}
 	}
 
@@ -185,6 +212,13 @@ class Warehouse extends DB_Table{
 
 
 	function get($key, $data=false) {
+
+		if (!$this->id) {
+			return '';
+		}
+
+
+
 		switch ($key) {
 		case('num_areas'):
 		case('number_areas'):

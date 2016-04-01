@@ -24,21 +24,23 @@ $table_views=array(
 );
 
 $table_filters=array(
-	'reference'=>array('label'=>_('Reference'),'title'=>_('Part reference')),
+	'reference'=>array('label'=>_('Reference'), 'title'=>_('Part reference')),
 
 );
+
 
 $parameters=array(
-		'parent'=>'',
-		'parent_key'=>'',
-	
+	'parent'=>$state['parent'],
+	'parent_key'=>$state['parent_key'],
+
 );
 
-$table_buttons=array();
-$table_buttons[]=array('icon'=>'plus', 'title'=>_('New part'), 'reference'=>"inventory/".$state['parent_key']."/part/new");
-$smarty->assign('table_buttons', $table_buttons);
-
-include('utils/get_table_html.php');
+if ($state['parent']=='warehouse') {
+	$table_buttons=array();
+	$table_buttons[]=array('icon'=>'plus', 'title'=>_('New part'), 'reference'=>"inventory/".$state['parent_key']."/part/new");
+	$smarty->assign('table_buttons', $table_buttons);
+}
+include 'utils/get_table_html.php';
 
 
 ?>

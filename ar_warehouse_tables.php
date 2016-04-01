@@ -15,14 +15,14 @@ require_once 'utils/table_functions.php';
 require_once 'utils/natural_language.php';
 
 
-if (!$user->can_view('warehouses')) {
-	echo json_encode(array('state'=>405,'resp'=>'Forbidden'));
+if (!$user->can_view('parts')) {
+	echo json_encode(array('state'=>405, 'resp'=>'Forbidden'));
 	exit;
 }
 
 
 if (!isset($_REQUEST['tipo'])) {
-	$response=array('state'=>405,'resp'=>'Non acceptable request (t)');
+	$response=array('state'=>405, 'resp'=>'Non acceptable request (t)');
 	echo json_encode($response);
 	exit;
 }
@@ -32,19 +32,19 @@ $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
 case 'warehouses':
-	warehouses(get_table_parameters(),$db,$user);
+	warehouses(get_table_parameters(), $db, $user);
 	break;
 case 'parts':
-	parts(get_table_parameters(),$db,$user);
+	parts(get_table_parameters(), $db, $user);
 	break;
 case 'locations':
-	locations(get_table_parameters(),$db,$user);
+	locations(get_table_parameters(), $db, $user);
 	break;
 case 'replenishments':
-	replenishments(get_table_parameters(),$db,$user);
+	replenishments(get_table_parameters(), $db, $user);
 	break;
 default:
-	$response=array('state'=>405,'resp'=>'Tipo not found '.$tipo);
+	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
 	exit;
 	break;
@@ -58,16 +58,16 @@ function warehouses($_data, $db, $user) {
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
 
-//	print $sql;
+	// print $sql;
 
 
 	foreach ($db->query($sql) as $data) {
-	
+
 		$adata[]=array(
 			'id'=>(integer) $data['Warehouse Key'],
 			'code'=>$data['Warehouse Code'],
 			'name'=>$data['Warehouse Name'],
-			);
+		);
 
 	}
 
@@ -86,7 +86,7 @@ function warehouses($_data, $db, $user) {
 }
 
 
-function locations($_data,$db,$user) {
+function locations($_data, $db, $user) {
 
 
 	$rtext_label='location';
@@ -168,7 +168,8 @@ function locations($_data,$db,$user) {
 	echo json_encode($response);
 }
 
-function replenishments($_data,$db,$user) {
+
+function replenishments($_data, $db, $user) {
 
 
 	$rtext_label='replenishment';
@@ -197,11 +198,11 @@ function replenishments($_data,$db,$user) {
 
 
 		$stock='<div border=0 style="xwidth:150px">';
-		$locations_data=preg_split('/,/',$data['location_data']);
+		$locations_data=preg_split('/,/', $data['location_data']);
 
 		foreach ($locations_data as $raw_location_data) {
 			if ($raw_location_data!='' ) {
-				$_locations_data=preg_split('/\:/',$raw_location_data);
+				$_locations_data=preg_split('/\:/', $raw_location_data);
 				if ($_locations_data[0]!=$data['Location Key']) {
 					$stock.='<div style="clear:both">';
 					$stock.='<div style="float:left;min-width:100px;"><a href="location.php?id='.$_locations_data[0].'">'.$_locations_data[1].'</a></div><div style="float:left;min-width:100px;text-align:right">'.number($_locations_data[3]).'</div>';
@@ -240,7 +241,8 @@ function replenishments($_data,$db,$user) {
 	echo json_encode($response);
 }
 
-function parts($_data,$db,$user) {
+
+function parts($_data, $db, $user) {
 
 
 	$rtext_label='part';
@@ -248,24 +250,35 @@ function parts($_data,$db,$user) {
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
-	// print $sql;
-	foreach ($db->query($sql) as $data) {
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $data) {
 
 
-		$adata[]=array(
-			'id'=>(integer)$data['Part SKU'],
-			'warehouse_key'=>(integer)$data['Warehouse Key'],
-			'warehouse'=>$data['Warehouse Code'],
-			'reference'=>$data['Part Reference'],
-			'formatted_sku'=>sprintf("SKU%05d",$data['Part SKU']),
-			'reference'=>$data['Part Reference'],
-			'description'=>$data['Part Unit Description'],
-			'products'=>$data['Part XHTML Currently Used In'],
+
+			$adata[]=array(
+				'id'=>(integer)$data['Part SKU'],
+				'warehouse_key'=>(integer)$data['Warehouse Key'],
+				'warehouse'=>$data['Warehouse Code'],
+				'reference'=>$data['Part Reference'],
+				'formatted_sku'=>sprintf("SKU%05d", $data['Part SKU']),
+				'reference'=>$data['Part Reference'],
+				'description'=>$data['Part Unit Description'],
+				'products'=>$data['Part XHTML Currently Used In'],
 
 
-		);
+			);
 
+
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		print $sql;
+		exit;
 	}
+
+
+
 
 	$response=array('resultset'=>
 		array(
@@ -280,5 +293,6 @@ function parts($_data,$db,$user) {
 	);
 	echo json_encode($response);
 }
+
 
 ?>
