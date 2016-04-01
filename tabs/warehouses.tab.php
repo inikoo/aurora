@@ -20,15 +20,19 @@ $default=$user->get_tab_defaults($tab);
 $table_views=array();
 
 $table_filters=array(
-	'code'=>array('label'=>_('Code'),'title'=>_('Store code')),
-	'name'=>array('label'=>_('Name'),'title'=>_('Store name')),
+	'code'=>array('label'=>_('Code'),'title'=>_('Warehouse code')),
+	'name'=>array('label'=>_('Name'),'title'=>_('Warehouse name')),
 
 );
 
 $parameters=array(
-		'parent'=>'',
-		'parent_key'=>'',
+		'parent'=>'account',
+		'parent_key'=>1,
 );
+
+$table_buttons=array();
+$table_buttons[]=array('icon'=>'plus', 'title'=>_('New warehouse'), 'reference'=>"warehouse/new");
+$smarty->assign('table_buttons', $table_buttons);
 
 
 include('utils/get_table_html.php');

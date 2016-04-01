@@ -13944,6 +13944,9 @@ CREATE TABLE `Warehouse Dimension` (
   `Warehouse Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `Warehouse Code` varchar(16) NOT NULL,
   `Warehouse Name` varchar(255) NOT NULL,
+  `Warehouse State` enum('Active','Closed') NOT NULL DEFAULT 'Active',
+  `Warehouse Valid From` datetime DEFAULT NULL,
+  `Warehouse Valid To` datetime DEFAULT NULL,
   `Warehouse Address` text NOT NULL,
   `Warehouse Company Name` varchar(255) NOT NULL,
   `Warehouse Company Number` varchar(255) NOT NULL,
@@ -14110,4 +14113,4 @@ CREATE TABLE `todo_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-04-01 15:16:11
+-- Dump completed on 2016-04-01 16:03:53

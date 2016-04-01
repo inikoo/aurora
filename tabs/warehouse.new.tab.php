@@ -16,7 +16,7 @@ include_once 'class.Warehouse.php';
 
 $warehouse=new Warehouse(0);
 
-$object_fields=get_object_fields('warehouse', $db);
+$object_fields=get_object_fields($warehouse, $db);
 
 
 

@@ -224,16 +224,11 @@ class Store extends DB_Table {
 		}
 
 
-
-
-
 		if ($create and !$this->found) {
 			$this->create($data);
 			return;
 		}
-		if ($this->found) {
-			$this->get_data('id', $this->found_key);
-		}
+		
 
 
 	}

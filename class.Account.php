@@ -313,6 +313,53 @@ class Account extends DB_Table{
 	}
 
 
+function create_warehouse($data) {
+
+		$this->new_object=false;
+
+		$data['editor']=$this->editor;
+
+		$data['Warehouse State']='Active';
+		$data['Warehouse Valid From']=gmdate('Y-m-d H:i:s');
+	
+		$warehouse= new Warehouse('find', $data, 'create');
+
+
+
+
+		if ($warehouse->id) {
+			$this->new_object_msg=$warehouse->msg;
+
+			if ($warehouse->new) {
+				$this->new_object=true;
+				$this->update_warehouses_data();
+			} else {
+				$this->error=true;
+				if ($warehouse->found) {
+
+					$this->error_code='duplicated_field';
+					$this->error_metadata=json_encode(array($warehouse->duplicated_field));
+
+					if ($warehouse->duplicated_field=='Warehouse Code') {
+						$this->msg=_('Duplicated warehouse code');
+					}else {
+						$this->msg=_('Duplicated warehouse name');
+					}
+
+
+				}else {
+					$this->msg=$warehouse->msg;
+				}
+			}
+			return $warehouse;
+		}
+		else {
+			$this->error=true;
+			$this->msg=$warehouse->msg;
+		}
+	}
+
+
 	function create_supplier($data) {
 		$this->new_employee=false;
 
@@ -497,7 +544,7 @@ class Account extends DB_Table{
 
 	function update_warehouses_data() {
 		$number_stores=0;
-		$sql=sprintf('select count(*) as num from `Warehouse Dimension` ');
+		$sql=sprintf('select count(*) as num from `Warehouse Dimension` where `Warehouse State`="Active"');
 		if ($row = $this->db->query($sql)->fetch()) {
 			$number_stores=$row['num'];
 		}

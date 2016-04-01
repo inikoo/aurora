@@ -12,9 +12,8 @@
 
 include_once 'class.Warehouse.php';
 
-function get_warehouses_navigation($data) {
+function get_warehouses_navigation($data, $smarty, $user, $db, $account) {
 
-	global $user, $smarty;
 
 
 
@@ -52,9 +51,48 @@ function get_warehouses_navigation($data) {
 }
 
 
-function get_warehouse_navigation($data) {
+function get_new_warehouse_navigation($data, $smarty, $user, $db, $account) {
 
-	global $user, $smarty;
+
+
+
+	$block_view=$data['section'];
+
+
+
+
+	$left_buttons=array();
+
+	$left_buttons[]=array('icon'=>'arrow-up', 'title'=>_('Warehouses'), 'reference'=>'warehouses', 'parent'=>'');
+
+
+	$right_buttons=array();
+	$sections=array();
+
+	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
+
+
+	$_content=array(
+
+		'sections_class'=>'',
+		'sections'=>$sections,
+
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>_('New Warehouse'),
+		'search'=>array('show'=>true, 'placeholder'=>_('Search inventory all warehouses'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+}
+
+
+function get_warehouse_navigation($data, $smarty, $user, $db, $account) {
+
 
 
 
@@ -65,6 +103,7 @@ function get_warehouse_navigation($data) {
 
 
 	$left_buttons=array();
+	$left_buttons[]=array('icon'=>'arrow-up', 'title'=>_('Warehouses'), 'reference'=>'warehouses', 'parent'=>'');
 
 
 
@@ -93,9 +132,8 @@ function get_warehouse_navigation($data) {
 }
 
 
-function get_locations_navigation($data) {
+function get_locations_navigation($data, $smarty, $user, $db, $account) {
 
-	global $user, $smarty;
 
 
 

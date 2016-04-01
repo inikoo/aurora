@@ -483,24 +483,50 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 		include_once 'class.Store.php';
 		if (!$parent->error) {
 			$object=$parent->create_store($data['fields_data']);
-			$smarty->assign('account', $account);
-			$smarty->assign('object', $object);
 
-			$pcard=$smarty->fetch('presentation_cards/store.pcard.tpl');
-			$updated_data=array();
+			if ($parent->new_object) {
+
+				$smarty->assign('account', $account);
+				$smarty->assign('object', $object);
+
+				$pcard=$smarty->fetch('presentation_cards/store.pcard.tpl');
+				$updated_data=array();
+
+			}else {
+				$response=array(
+					'state'=>400,
+					'msg'=>$parent->msg
+
+				);
+				echo json_encode($response);
+				exit;
+
+			}
+
 		}
 		break;
 	case 'Warehouse':
 		include_once 'class.Warehouse.php';
 		if (!$parent->error) {
-			$object=$parent->create_store($data['fields_data']);
-			$smarty->assign('account', $account);
-			$smarty->assign('object', $object);
+			$object=$parent->create_warehouse($data['fields_data']);
+			if ($parent->new_object) {
+				$smarty->assign('account', $account);
+				$smarty->assign('object', $object);
 
-			$pcard=$smarty->fetch('presentation_cards/warehouse.pcard.tpl');
-			$updated_data=array();
+				$pcard=$smarty->fetch('presentation_cards/warehouse.pcard.tpl');
+				$updated_data=array();
+			}else {
+				$response=array(
+					'state'=>400,
+					'msg'=>$parent->msg
+
+				);
+				echo json_encode($response);
+				exit;
+
+			}
 		}
-		break;	
+		break;
 	case 'Customer':
 		include_once 'class.Customer.php';
 		if (!$parent->error) {
