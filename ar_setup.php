@@ -309,12 +309,14 @@ function get_view($data, $db, $modules, $smarty) {
 	$state=parse_request($data, $db, $modules, $account='', $user='');
 
 
-
 	$_object=get_object($state['object'], $state['key']);
 
 	$state['_object']=$_object;
-	$state['key']=$_object->id;
-
+	if ($_object) {
+		$state['key']=$_object->id;
+	}else {
+		$state['key']='';
+	}
 
 
 	$_SESSION['request']=$state['request'];

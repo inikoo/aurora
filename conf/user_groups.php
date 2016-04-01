@@ -52,6 +52,14 @@ $user_groups=array(
 		'Rights'=>array('SV', 'LV', 'LC', 'LD', 'LE', 'PV', 'PC', 'PD', 'PE')
 
 	),
+	4=>array(
+		'Key'=>4,
+		'Name'=>_('Production'),
+		'View'=>'<i  title="'._('Inventory').'" class="fa fa-square fa-fw"></i> <i  title="'._('Warehouse (Locations)').'" class="fa fa-th-large fa-fw"></i>',
+		'Edit'=>'',
+		'Rights'=>array('LV', 'PV', 'FV')
+
+	),
 	5=>array(
 		'Key'=>5,
 		'Name'=>_('Sales Intelligence'),

@@ -14,6 +14,9 @@
 
 function get_object($object_name, $key, $load_other_data=false) {
 
+    if($object_name=='')return false;
+
+
 	global $account;
 
 	switch ($object_name) {

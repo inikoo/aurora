@@ -10786,6 +10786,7 @@ CREATE TABLE `Store Dimension` (
   `Store STD with Sale Day Sales` float NOT NULL DEFAULT '0',
   `Store Max Day Sales` float NOT NULL DEFAULT '0',
   `Store Locale` enum('en_GB','de_DE','fr_FR','es_ES','pl_PL','it_IT','sk_SK','pt_PT') DEFAULT 'en_GB',
+  `Store Currency` varchar(3) DEFAULT NULL,
   `Store Timezone` varchar(64) NOT NULL DEFAULT 'Europe/London',
   `Store Sticky Note` text,
   `Store Page Key` mediumint(8) unsigned DEFAULT NULL,
@@ -14109,4 +14110,4 @@ CREATE TABLE `todo_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-03-31 15:00:35
+-- Dump completed on 2016-04-01 15:16:11

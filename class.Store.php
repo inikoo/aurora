@@ -186,32 +186,67 @@ class Store extends DB_Table {
 			$data['Store Name']=$data['Store Code'];
 
 
-		$sql=sprintf("select * from `Store Dimension` where `Store Code`=%s  "
+		$sql=sprintf("select `Store Key` from `Store Dimension` where `Store Code`=%s  "
 			, prepare_mysql($data['Store Code'])
 		);
 
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$this->found=true;
-			$this->found_key=$row['Store Key'];
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+
+				$this->found=true;
+				$this->found_key=$row['Store Key'];
+				$this->get_data('id', $this->found_key);
+				$this->duplicated_field='Store Code';
+				return;
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+		$sql=sprintf("select `Store Key` from `Store Dimension` where `Store Name`=%s  "
+			, prepare_mysql($data['Store Name'])
+		);
+
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+
+				$this->found=true;
+				$this->found_key=$row['Store Key'];
+				$this->get_data('id', $this->found_key);
+				$this->duplicated_field='Store Name';
+				return;
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+
 
 
 		if ($create and !$this->found) {
 			$this->create($data);
 			return;
 		}
-		if ($this->found)
+		if ($this->found) {
 			$this->get_data('id', $this->found_key);
-
-		if ($update and $this->found) {
-
 		}
+
 
 	}
 
 
 	function get($key='') {
+
+
+
+		if (!$this->id) {
+			return '';
+		}
+
 
 		if (isset($this->data[$key]))
 			return $this->data[$key];
@@ -636,7 +671,7 @@ class Store extends DB_Table {
 
 			$sql="insert into `Store Data Currency` (`Store Key`) values(".$this->id.");";
 			mysql_query($sql);
-			
+
 			/*
 
 			$dept_data=array(
@@ -678,6 +713,8 @@ class Store extends DB_Table {
 			mysql_query($sql);
 */
 
+			/*
+
 			$sql=sprintf("select `SR Category Key` from `Account Dimension` ");
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_assoc($res)) {
@@ -689,19 +726,22 @@ class Store extends DB_Table {
 				$this->create_sr_category($parent_category_key);
 
 			}
+*/
 
 
-			$history_key=$this->add_subject_history(array(
-					'Action'=>'created',
-					'History Abstract'=>_('Store created').' ('.$this->data['Store Name'].')',
-					'History Details'=>''
-				), true);
+
+			$history_data=array(
+				'History Abstract'=>sprintf(_('Store %s (%s) created'), $this->data['Store Name'],$this->data['Store Code']),
+				'History Details'=>'',
+				'Action'=>'created'
+			);
+
+			$history_key=$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
 
 
-			include_once 'class.Account.php';
-
-			$hq=new Account();
-			$hq->add_account_history($history_key);
+					include_once 'class.Account.php';
+			$account=new Account();
+			$account->add_account_history($history_key);
 
 			return;
 		} else {
@@ -2210,7 +2250,7 @@ class Store extends DB_Table {
 		$fields="`Sales`,`Sales DC`,`Availability`,`Customers`,`Invoices`";
 
 		$sql="select $fields from $table $where  order by $order ";
-		
+
 		return $sql;
 
 	}

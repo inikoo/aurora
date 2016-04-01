@@ -855,7 +855,7 @@ function timesheets_employees($_data, $db, $user) {
 }
 
 
-function fire($_data, $db, $user) {
+function ta($_data, $db, $user) {
 
 	$rtext_label='employee';
 	include_once 'prepare_table/init.php';

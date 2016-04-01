@@ -308,4 +308,5 @@ CREATE TABLE `Staff Role Bridge` ( `Role Code` varchar(8) NOT NULL, `Staff Key` 
 ALTER TABLE `Staff Role Bridge` ADD PRIMARY KEY (`Role Code`,`Staff Key`);
 ALTER TABLE `User Rights Bridge` CHANGE `Right Key` `Right Code` VARCHAR(8) NOT NULL;
 delete from `User Group User Bridge` where `User Group Key` in (4,7,12);
-
+ALTER TABLE `Store Dimension` ADD `Store Currency` VARCHAR(3) NULL DEFAULT NULL AFTER `Store Locale`;
+update`Store Dimension` set `Store Currency`=`Store Currency Code`;

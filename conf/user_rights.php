@@ -68,6 +68,12 @@ $user_rights=array(
 'ME'=>array( 'Right Type' => 'Edit', 'Right Name' => 'marketing'),
 'MD'=>array( 'Right Type' => 'Delete', 'Right Name' => 'marketing'),
 'MC'=>array( 'Right Type' => 'Create', 'Right Name' => 'marketing'),
+
+'FV'=>array( 'Right Type' => 'View', 'Right Name' => 'production'),
+'FE'=>array( 'Right Type' => 'Edit', 'Right Name' => 'production'),
+'FD'=>array( 'Right Type' => 'Delete', 'Right Name' => 'production'),
+'FC'=>array( 'Right Type' => 'Create', 'Right Name' => 'production'),
+
 );
 
 

@@ -1143,6 +1143,9 @@ class Staff extends DB_Table{
 
 		foreach (preg_split( '/,/', $this->get('Staff Position')) as $role_code) {
 			if (array_key_exists($role_code, $roles)) {
+				
+				
+				
 				$groups=array_merge($groups, $roles[$role_code]['user_groups']);
 			}
 		}

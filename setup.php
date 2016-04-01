@@ -73,8 +73,8 @@ if (!$account->id ) {
 				'steps'=>array(
 					'root_user'=>array('setup'=>false),
 					'add_employees'=>array('setup'=>false),
-					//'add_warehouse'=>array('setup'=>false),
-					//'add_store'=>array('setup'=>false)
+					'add_warehouse'=>array('setup'=>false),
+					'add_store'=>array('setup'=>false)
 				),
 				'size'=>'Big',
 				'instances'=>array('Com', 'Prod')

@@ -527,6 +527,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case 'store':
 			return get_store_navigation($data, $smarty, $user, $db, $account);
 			break;
+		case 'store.new':
+			return get_new_store_navigation($data, $smarty, $user, $db, $account);
+			break;	
 		case 'products':
 			return get_products_navigation($data, $smarty, $user, $db, $account);
 			break;
@@ -955,7 +958,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 			return get_organization_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('employee'):
-
 			return get_employee_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('employee.new'):
@@ -1252,6 +1254,11 @@ function get_view_position($state) {
 			$branch[]=array('label'=>_('Store').' <span class="id">'.$state['_object']->get('Store Code').'</span>', 'icon'=>'shopping-bag', 'reference'=>'store/'.$state['_object']->id);
 			$state['current_store']=$state['_object']->id;
 
+		}elseif($state['section']=='store.new'){
+					$branch[]=array('label'=>_('Stores'), 'icon'=>'', 'reference'=>'stores');
+					$branch[]=array('label'=>_('New store'), 'icon'=>'shopping-bag', 'reference'=>'');
+
+		
 		}elseif ($state['section']=='dashboard') {
 			$branch[]=array('label'=>_("Store's dashboard").' <span class="id">'.$state['_object']->get('Store Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$state['_object']->id);
 			$state['current_store']=$state['_object']->id;

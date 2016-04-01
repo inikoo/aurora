@@ -12,25 +12,179 @@
 
 
 
-function get_object_fields($object,$db) {
+function get_object_fields($object, $db) {
 
-	switch ($object) {
-	case 'employee':
-		include_once 'class.Staff.php';
+	switch ($object->get_object_name()) {
 
 
-		$employee=new Staff(0);
+
+	case 'Store':
+
+		$store=$object;
+		$options_locale=array(
+			'en_GB'=>'en_GB '._('British English'),
+			'de_DE'=>'de_DE '._('German'),
+			'fr_FR'=>'fr_FR '._('French'),
+			'es_ES'=>'es_ES '._('Spanish'),
+			'pl_PL'=>'pl_PL '._('Polish'),
+			'it_IT'=>'it_IT '._('Italian'),
+			'sk_SK'=>'sk_SK '._('Sloavak'),
+			'pt_PT'=>'pt_PT '._('Portuguese'),
+		);
+		asort($options_locale);
+
+
+		$options_timezones=array();
+		foreach ( DateTimeZone::listIdentifiers() as $timezone) {
+			$options_timezones[preg_replace('/\//', '_', $timezone)]=$timezone;
+		}
+
+		$options_currencies=array();
+		$sql=sprintf("select `Currency Code`,`Currency Name`,`Currency Symbol`,`Currency Flag` from kbase.`Currency Dimension` ");
+		if ($result=$db->query($sql)) {
+			foreach ($result as $row) {
+				$options_currencies[$row['Currency Code']]=_($row['Currency Name']).' '.$row['Currency Symbol'];
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
+		asort($options_currencies);
+
+
+		$object_fields=array(
+			array(
+				'label'=>_('Id'),
+				'show_title'=>true,
+				'fields'=>array(
+
+					array(
+						'edit'=>'string',
+						'id'=>'Store_Code',
+						'value'=>$store->get('Store Code')  ,
+						'label'=>ucfirst($store->get_field_label('Store Code')),
+						'invalid_msg'=>get_invalid_message('string'),
+						'required'=>true,
+						'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
+						'type'=>'value'
+
+
+
+					),
+					array(
+						'edit'=>'string',
+						'id'=>'Store_Name',
+						'value'=>$store->get('Store Name'),
+						'label'=>ucfirst($store->get_field_label('Store Name')),
+						'invalid_msg'=>get_invalid_message('string'),
+						'required'=>true,
+						'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
+
+						'type'=>'value'
+					),
+
+
+				)
+			),
+			array(
+				'label'=>_('Localization'),
+				'show_title'=>true,
+				'fields'=>array(
+					array(
+						'id'=>'Store_Locale',
+						'edit'=>'option',
+						'options'=>$options_locale,
+						'value'=>$store->get('Store Locale'),
+						'formatted_value'=>$store->get('Locale'),
+						'label'=>ucfirst($store->get_field_label('Store Locale')),
+						'type'=>'value'
+					),
+					array(
+						'id'=>'Store_Currency',
+						'edit'=>'option',
+						'options'=>$options_currencies,
+						'value'=>$store->get('Store Currency') ,
+						'formatted_value'=>$store->get(' urrency') ,
+						'label'=>ucfirst($store->get_field_label('Store Currency')),
+						'type'=>'value'
+					),
+					array(
+						'id'=>'Store_Timezone',
+						'edit'=>'option',
+						'options'=>$options_timezones,
+						'value'=>$store->get('Store Timezone') ,
+						'formatted_value'=>$store->get('Timezone'),
+						'label'=>ucfirst($store->get_field_label('Store Timezone')),
+						'type'=>'value'
+					)
+
+				)
+			),
+			array(
+				'label'=>_('Contact'),
+				'show_title'=>true,
+				'fields'=>array(
+
+					array(
+						'edit'=>'email',
+						'id'=>'Store_Email',
+						'value'=>$store->get('Store Email')  ,
+						'label'=>ucfirst($store->get_field_label('Store Email')),
+						'invalid_msg'=>get_invalid_message('email'),
+						'required'=>false,
+
+						'type'=>'value'
+
+
+					),
+					array(
+						'edit'=>'telephone',
+						'id'=>'Store_Telephone',
+						'value'=>$store->get('Store Telephone'),
+						'formatted_value'=>$store->get('Telephone'),
+						'label'=>ucfirst($store->get_field_label('Store Telephone')),
+						'invalid_msg'=>get_invalid_message('telephone'),
+						'required'=>false,
+						'type'=>'value'
+					),
+
+					array(
+						'edit'=>'textarea',
+						'id'=>'Store_Address',
+						'value'=>$store->get('Store Address'),
+						'formatted_value'=>$store->get('Address'),
+						'label'=>ucfirst($store->get_field_label('Store Address')),
+						'invalid_msg'=>get_invalid_message('string'),
+						'required'=>false,
+						'type'=>'value'
+					),
+					array(
+						'edit'=>'string',
+						'id'=>'Store_URL',
+						'value'=>$store->get('Store URL'),
+						'formatted_value'=>$store->get('Store URL'),
+						'label'=>ucfirst($store->get_field_label('Store URL')),
+						'invalid_msg'=>get_invalid_message('string'),
+						'required'=>false,
+						'type'=>'value'
+					),
+
+				)
+			)
+
+		);
+		return $object_fields;
+		break;
+	case 'Staff':
+		$employee=$object;
 		$account=new Account();
-
 		$options_Staff_Type=array(
 			'Employee'=>_('Employee'), 'Volunteer'=>_('Volunteer'), 'TemporalWorker'=>_('Temporal Worker'), 'WorkExperience'=>_('Work Experience')
 		);
-
 		$options_yn=array(
 			'Yes'=>_('Yes'), 'No'=>_('No')
 		);
-
-
 		include 'conf/roles.php';
 		foreach ($roles as $_key=>$_data) {
 			if (in_array($account->get('Setup Metadata')['size'], $_data['size'])) {
@@ -58,16 +212,10 @@ function get_object_fields($object,$db) {
 				'selected'=>false
 			);
 		}
-
-
-
 		asort($options_Staff_Position);
 		asort($options_Staff_Supervisor);
-
 		asort($options_Staff_Type);
 		asort($options_yn);
-
-
 
 		$object_fields=array(
 			array(
@@ -303,9 +451,9 @@ function get_object_fields($object,$db) {
 						'render'=>false,
 						'id'=>'Staff_User_Active',
 						'edit'=>'option',
+						'options'=>$options_yn,
 						'value'=>'Yes',
 						'formatted_value'=>_('Yes'),
-						'options'=>$options_yn,
 						'label'=>ucfirst($employee->get_field_label('Staff User Active')),
 						'type'=>'user_value',
 						'hidden'=>true
@@ -334,7 +482,7 @@ function get_object_fields($object,$db) {
 						'required'=>false,
 						'type'=>'user_value'
 					),
-					
+
 
 					array(
 						'render'=>false,
@@ -346,7 +494,7 @@ function get_object_fields($object,$db) {
 						'label'=>ucfirst($employee->get_field_label('Staff User Password')),
 						'invalid_msg'=>get_invalid_message('password'),
 						'type'=>'user_value',
-												'required'=>false,
+						'required'=>false,
 
 
 					),
@@ -374,6 +522,8 @@ function get_object_fields($object,$db) {
 		return $object_fields;
 
 		break;
+
+
 	default:
 		return '';
 		break;
