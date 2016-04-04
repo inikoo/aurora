@@ -973,7 +973,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 				if (is_numeric($view_path[0])) {
 					$key=$view_path[0];
 
-					
+
 
 				}
 				elseif ($view_path[0]=='new') {
@@ -1004,85 +1004,78 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 		case 'inventory':
 			$module='inventory';
 			$section='inventory';
-
+			$parent='account';
+			$parent_key=1;
 
 
 			if (isset($view_path[0])) {
 
-				if (is_numeric($view_path[0])) {
-					$parent='warehouse';
-					$key=$view_path[0];
-
-
-					if (isset($view_path[1])) {
-						if ($view_path[1]=='part') {
-							$section='part';
-							$object='part';
-
-							if (is_numeric($view_path[2])) {
-								$key=$view_path[2];
-
-								if (isset($view_path[3])) {
-									if ($view_path[3]=='product') {
-
-										if (is_numeric($view_path[4])) {
-											$module='products';
-											$section='product';
-											$object='product';
-											$parent_key=$key;
-											$key=$view_path[4];
-											$parent='part';
-
-										}elseif ($view_path[4]=='new') {
-											$module='products';
-											$section='product.new';
-											$object='product';
-											$parent_key=$key;
-											$parent='part';
-										}
-
-									}
-									if ($view_path[3]=='image') {
-
-										if (is_numeric($view_path[4])) {
-											$section='part.image';
-											$object='image.subject';
-											$parent_key=$key;
-											$key=$view_path[4];
-											$parent='part';
-
-										}
-
-									}
-
-								}
-
-							}
-							elseif ($view_path[2]=='new') {
-								$section='part.new';
-							}
-
-
-
-
-						}
-						elseif ($view_path[1]=='transactions') {
+				if ($view_path[0]=='transactions') {
 							$section='transactions';
-						}elseif ($view_path[1]=='stock_history') {
+						}elseif ($view_path[0]=='stock_history') {
 							$section='stock_history';
-						}elseif ($view_path[1]=='categories') {
+						}elseif ($view_path[0]=='categories') {
 							$section='categories';
+						}
+				
+				
+			}
+
+
+
+			break;
+
+		case 'part':
+			$module='inventory';
+
+			$section='part';
+			$object='part';
+
+			if (is_numeric($view_path[0])) {
+				$key=$view_path[0];
+
+				if (isset($view_path[1])) {
+					if ($view_path[1]=='product') {
+
+						if (is_numeric($view_path[2])) {
+							$module='products';
+							$section='product';
+							$object='product';
+							$parent_key=$key;
+							$key=$view_path[4];
+							$parent='part';
+
+						}elseif ($view_path[2]=='new') {
+							$module='products';
+							$section='product.new';
+							$object='product';
+							$parent_key=$key;
+							$parent='part';
+						}
+
+					}
+					if ($view_path[1]=='image') {
+
+						if (is_numeric($view_path[2])) {
+							$section='part.image';
+							$object='image.subject';
+							$parent_key=$key;
+							$key=$view_path[2];
+							$parent='part';
+
 						}
 
 					}
 
-
-				}elseif ($view_path[0]=='all') {
-					$module='inventory_server';
-					$section='inventory';
 				}
 
 			}
+			elseif ($view_path[0]=='new') {
+				$section='part.new';
+			}
+
+
+
 
 
 

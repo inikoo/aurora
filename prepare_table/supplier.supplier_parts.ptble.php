@@ -46,98 +46,13 @@ elseif ($parameters['f_field']=='description' and $f_value!='')
 $_order=$order;
 $_dir=$order_direction;
 
-if ($order=='stock')
-	$order='`Part Current Stock`';
-elseif ($order=='sku')
-	$order='`Part SKU`';
-elseif ($order=='id')
-	$order='`Part SKU`';
-elseif ($order=='formatted_sku')
-	$order='`Part SKU`';
-elseif ($order=='reference')
+if ($order=='part_description'){
 	$order='`Part Reference`';
-elseif ($order=='description')
-	$order='`Part Unit Description`';
-elseif ($order=='available_for')
-	$order='`Part Available Days Forecast`';
-elseif ($order=='supplied_by')
-	$order='`Part XHTML Currently Supplied By`';
-elseif ($order=='products')
-	$order='`Part Currently Used In`';
-elseif ($order=='margin') {
-	$order=' `Part '.$period_tag.' Acc Margin` ';
-} elseif ($order=='sold') {
-	$order=' `Part '.$period_tag.' Acc Sold` ';
-} elseif ($order=='money_in') {
-	$order=' `Part '.$period_tag.' Acc Sold Amount` ';
-} elseif ($order=='profit_sold') {
-
-	$order=' `Part '.$period_tag.' Acc Profit` ';
-} elseif ($order=='avg_stock') {
-
-	$order=' `Part '.$period_tag.' Acc AVG Stock` ';
-
-
-} elseif ($order=='avg_stockvalue') {
-
-	$order=' `Part '.$period_tag.' Acc AVG Stock Value` ';
-
-} elseif ($order=='keep_days') {
-
-	$order=' `Part '.$period_tag.' Acc Keeping Days` ';
-} elseif ($order=='outstock_days') {
-
-	$order=' `Part '.$period_tag.' Acc Out of Stock Days` ';
-
-} elseif ($order=='unknown_days') {
-
-	$order=' `Part '.$period_tag.' Acc Unknown Stock Days` ';
-
-} elseif ($order=='gmroi') {
-
-	$order=' `Part '.$period_tag.' Acc GMROI` ';
-
-}elseif ($order=='stock_value') {
-
-	$order=' `Part Current Value` ';
-
-}elseif ($order=='delta_money_in') {
-
-	$order=' `Part '.$period_tag.' Acc 1YD Sold`';
-
-}elseif ($order=='delta_sold') {
-
-	$order=' `Part '.$period_tag.' Acc 1YD Sold Amount`';
-
-}elseif ($order=='stock_days') {
-
-	$order=' `Part Days Available Forecast`';
-
-}elseif ($order=='next_shipment') {
-
-	$order=' `Part Next Supplier Shipment`';
-
-}elseif ($order=='package_type') {
-	$order='`Part Package Type`';
-}elseif ($order=='package_weight') {
-	$order='`Part Package Weight`';
-}elseif ($order=='Package') {
-	$order='`Part Package Dimensions Volume`';
-}elseif ($order=='package_volume') {
-	$order='`Part Package Dimensions Volume`';
-}elseif ($order=='unit_weight') {
-	$order='`Part Unit Weight`';
-}elseif ($order=='unit_dimension') {
-	$order='`Part Unit Dimensions Volume`';
-}elseif ($order=='from') {
-	$order='`Part Valid From`';
-}elseif ($order=='to') {
-	$order='`Part Valid To`';
-}elseif ($order=='last_update') {
-	$order='`Part Last Updated`';
+}elseif ($order=='reference'){
+	$order='`Supplier Part Reference`';
 }else {
 
-	$order='`Supplier Part SKU`';
+	$order='`Supplier Part Part SKU`';
 }
 
 

@@ -63,8 +63,7 @@ function parts($_data, $db, $user) {
 
 			$adata[]=array(
 				'id'=>(integer)$data['Part SKU'],
-				'warehouse_key'=>(integer)$data['Warehouse Key'],
-				'warehouse'=>$data['Warehouse Code'],
+			
 				'reference'=>$data['Part Reference'],
 				'formatted_sku'=>sprintf("SKU%05d", $data['Part SKU']),
 				'reference'=>$data['Part Reference'],
@@ -143,7 +142,7 @@ function supplier_parts($_data, $db, $user) {
 				'part_reference'=>$data['Part Reference'],
 				'reference'=>$data['Supplier Part Reference'],
 				'formatted_sku'=>sprintf("SKU%05d", $data['Supplier Part Part SKU']),
-				'part_description'=>'<span style="min-width:80px;display: inline-block;" class="link padding_right_10" onClick="part/'.$data['Supplier Part Part SKU'].'">'.$data['Part Reference'].'</span> '.$data['Part Unit Description'],
+				'part_description'=>'<span style="min-width:80px;display: inline-block;" class="link padding_right_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$data['Part Reference'].'</span> '.$data['Part Unit Description'],
 
 				'description'=>$data['Part Unit Description'],
 				'status'=>$status,

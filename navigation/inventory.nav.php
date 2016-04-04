@@ -10,42 +10,6 @@
  Version 3.0
 */
 
-function get_inventory_all_warehouses_navigation($data, $smarty, $user, $db, $account) {
-
-
-	$block_view=$data['section'];
-
-
-
-
-	$left_buttons=array();
-
-
-
-	$right_buttons=array();
-	$sections=get_sections('inventory_server', '');
-
-	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
-
-
-	$_content=array(
-
-		'sections_class'=>'',
-		'sections'=>$sections,
-
-		'left_buttons'=>$left_buttons,
-		'right_buttons'=>$right_buttons,
-		'title'=>_('Inventory (All warehouses)'),
-		'search'=>array('show'=>true, 'placeholder'=>_('Search inventory all warehouses'))
-
-	);
-	$smarty->assign('_content', $_content);
-
-	$html=$smarty->fetch('navigation.tpl');
-	return $html;
-
-}
-
 
 function get_inventory_navigation($data, $smarty, $user, $db, $account) {
 
@@ -54,7 +18,7 @@ function get_inventory_navigation($data, $smarty, $user, $db, $account) {
 	$block_view=$data['section'];
 
 	switch ($data['parent']) {
-	case 'warehouse':
+	case 'account':
 
 		break;
 	default:
@@ -67,10 +31,10 @@ function get_inventory_navigation($data, $smarty, $user, $db, $account) {
 
 
 	$right_buttons=array();
-	$sections=get_sections('inventory', $data['warehouse']->id);
+	$sections=get_sections('inventory');
 
 	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
-	$title=_('Inventory').' ('._('Parts').') <span class="id">'.$data['warehouse']->get('Code').'</span>';
+	$title=_('Inventory').' ('._('Parts').')';
 
 	$_content=array(
 
@@ -98,7 +62,7 @@ function get_new_part_navigation($data, $smarty, $user, $db, $account) {
 
 
 
-	$up_button=array('icon'=>'arrow-up', 'title'=>_("Inventory").' ('.$data['warehouse']->get('Code').')', 'reference'=>'inventory/'.$data['warehouse']->id);
+	$up_button=array('icon'=>'arrow-up', 'title'=>_("Inventory"), 'reference'=>'inventory');
 
 
 	$left_buttons=array();
@@ -107,12 +71,12 @@ function get_new_part_navigation($data, $smarty, $user, $db, $account) {
 
 
 	$right_buttons=array();
-	$sections=get_sections('inventory', $data['warehouse']->id);
+	$sections=get_sections('inventory');
 	$_section='inventory';
 	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
 
 	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
-	$title=_('New part').' ('._('Warehouse').' <span class="id">'.$data['warehouse']->get('Code').'</span>)';
+	$title=_('New part');
 
 	$_content=array(
 
@@ -151,9 +115,9 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
 	if ($data['parent']) {
 
 		switch ($data['parent']) {
-		case 'warehouse':
+		case 'account':
 			$tab='inventory.parts';
-			$_section='warehouses';
+			$_section='inventory';
 			break;
 
 
@@ -232,14 +196,13 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
 
 
 				switch ($data['parent']) {
-				case 'warehouse':
+				case 'account':
 
-					$warehouse= new Warehouse($data['parent_key']);
-					$warehouse_key=$warehouse->id;
-					$up_button=array('icon'=>'arrow-up', 'title'=>_("Inventory").' ('.$warehouse->get('Warehouse Code').')', 'reference'=>'inventory/'.$data['parent_key']);
+				
+					$up_button=array('icon'=>'arrow-up', 'title'=>_("Inventory"), 'reference'=>'inventory');
 
 					if ($prev_key) {
-						$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'inventory/'.$data['parent_key'].'/part/'.$prev_key);
+						$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'part/'.$prev_key);
 
 					}else {
 						$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'');
@@ -249,7 +212,7 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
 
 
 					if ($next_key) {
-						$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'inventory/'.$data['parent_key'].'/part/'.$next_key);
+						$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'part/'.$next_key);
 
 					}else {
 						$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
@@ -257,28 +220,7 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
 					}
 
 					break;
-				case 'department':
-					$up_button=array('icon'=>'arrow-up', 'title'=>_("Department").' ('.$object->get('Product Main Department Code').')', 'reference'=>'store/'.$object->get('Product Store Key').'/department/'.$object->get('Product Main Department Key'));
-
-					if ($prev_key) {
-						$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'department/'.$data['parent_key'].'/product/'.$prev_key);
-
-					}else {
-						$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'');
-
-					}
-					$left_buttons[]=$up_button;
-
-
-					if ($next_key) {
-						$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'department/'.$data['parent_key'].'/product/'.$next_key);
-
-					}else {
-						$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
-
-					}
-
-					break;
+				
 
 				}
 
@@ -296,7 +238,7 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
 	}
 
 	else {
-		$_section='products';
+		$_section='inventory';
 
 	}
 
@@ -304,7 +246,7 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
 
 	$right_buttons=array();
 	//$right_buttons[]=array('icon'=>'edit','title'=>_('Edit store'),'reference'=>'store/'.$store->id.'/edit');
-	$sections=get_sections('inventory', $data['warehouse']->id);
+	$sections=get_sections('inventory');
 	$_section='inventory';
 	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
 
@@ -350,7 +292,7 @@ function get_part_image_navigation($data, $smarty, $user, $db, $account) {
 		switch ($data['parent']) {
 		case 'part':
 			$tab='part.images';
-			$_section='warehouses';
+			$_section='inventory';
 			break;
 
 
@@ -429,14 +371,13 @@ function get_part_image_navigation($data, $smarty, $user, $db, $account) {
 
 
 				switch ($data['parent']) {
-				case 'warehouse':
+				case 'account':
 
-					$warehouse= new Warehouse($data['parent_key']);
-					$warehouse_key=$warehouse->id;
-					$up_button=array('icon'=>'arrow-up', 'title'=>_("Inventory").' ('.$warehouse->get('Warehouse Code').')', 'reference'=>'inventory/'.$data['parent_key']);
+		
+					$up_button=array('icon'=>'arrow-up', 'title'=>_("Inventory"), 'reference'=>'inventory');
 
 					if ($prev_key) {
-						$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'inventory/'.$data['parent_key'].'/part/'.$prev_key);
+						$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'part/'.$prev_key);
 
 					}else {
 						$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'');
@@ -446,36 +387,14 @@ function get_part_image_navigation($data, $smarty, $user, $db, $account) {
 
 
 					if ($next_key) {
-						$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'inventory/'.$data['parent_key'].'/part/'.$next_key);
+						$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'part/'.$next_key);
 
 					}else {
 						$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
 
 					}
 
-					break;
-				case 'department':
-					$up_button=array('icon'=>'arrow-up', 'title'=>_("Department").' ('.$object->get('Product Main Department Code').')', 'reference'=>'store/'.$object->get('Product Store Key').'/department/'.$object->get('Product Main Department Key'));
-
-					if ($prev_key) {
-						$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'department/'.$data['parent_key'].'/product/'.$prev_key);
-
-					}else {
-						$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'');
-
-					}
-					$left_buttons[]=$up_button;
-
-
-					if ($next_key) {
-						$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'department/'.$data['parent_key'].'/product/'.$next_key);
-
-					}else {
-						$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
-
-					}
-
-					break;
+			
 
 				}
 
@@ -501,7 +420,7 @@ function get_part_image_navigation($data, $smarty, $user, $db, $account) {
 
 	$right_buttons=array();
 	//$right_buttons[]=array('icon'=>'edit','title'=>_('Edit store'),'reference'=>'store/'.$store->id.'/edit');
-	$sections=get_sections('inventory', $data['warehouse']->id);
+	$sections=get_sections('inventory');
 	$_section='inventory';
 	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
 
@@ -532,8 +451,7 @@ function get_transactions_navigation($data, $smarty, $user, $db, $account) {
 	$block_view=$data['section'];
 
 	switch ($data['parent']) {
-	case 'warehouse':
-		$warehouse=new Warehouse($data['parent_key']);
+	case 'account':
 		break;
 	default:
 		break;

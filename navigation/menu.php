@@ -175,38 +175,29 @@ if ($user->can_view('locations')) {
 if ($user->can_view('parts')) {
 
 
-
-
-	if ($user->data['User Hooked Warehouse Key']) {
-		$nav_menu[] = array('<i class="fa fa-th-large fa-fw"></i>',_('Inventory'), 'inventory/'.$user->data['User Hooked Warehouse Key'], 'inventory', 'module', '');
-
-	}else {
-		$nav_menu[] = array('<i class="fa fa-th-large fa-fw"></i>',_('Inventory'), 'inventory/all', 'inventory', 'module', '');
-
-	}
-
-}
-
-
-
-
-
-
-if ($user->can_view('reports')) {
-	$nav_menu[] = array('<i class="fa fa-line-chart fa-fw"></i>',_('Reports'), 'reports', 'reports', 'module', '');
-}
-
-
-if ($user->can_view('suppliers')) {
-	$nav_menu[] = array('<i class="fa fa-magic fa-fw"></i>',_('Production'), 'production', 'production', 'module', '');
+		$nav_menu[] = array('<i class="fa fa-th-large fa-fw"></i>',_('Inventory'), 'inventory', 'inventory', 'module', '');
 
 
 }
 
 
 if ($user->can_view('suppliers')) {
-	$nav_menu[] = array('<i class="fa fa-industry fa-fw"></i>',_('Suppliers'), 'suppliers', 'suppliers', 'module', '');
+	$nav_menu[] = array('<i class="fa fa-ship fa-fw"></i>',_('Suppliers'), 'suppliers', 'suppliers', 'module', '');
 }
+
+
+
+
+
+
+
+if ($user->can_view('suppliers')) {
+	$nav_menu[] = array('<i class="fa fa-industry fa-fw"></i>',_('Production'), 'production', 'production', 'module', '');
+
+
+}
+
+
 
 
 if ($user->can_view('staff')) {
@@ -214,7 +205,9 @@ if ($user->can_view('staff')) {
 }
 
 
-
+if ($user->can_view('reports')) {
+	$nav_menu[] = array('<i class="fa fa-line-chart fa-fw"></i>',_('Reports'), 'reports', 'reports', 'module', '');
+}
 
 
 if ($user->data['User Type']=='Supplier') {
