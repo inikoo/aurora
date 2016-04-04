@@ -77,7 +77,7 @@ class Warehouse extends DB_Table{
 		if (preg_match('/create/i', $options)) {
 			$create='create';
 		}
-		
+
 
 		$data=$this->base_data();
 		foreach ($raw_data as $key=>$value) {
@@ -96,9 +96,9 @@ class Warehouse extends DB_Table{
 		if ($data['Warehouse Name']=='')
 			$data['Warehouse Name']=$data['Warehouse Code'];
 
-		
-		
-		
+
+
+
 		$sql=sprintf("select `Warehouse Key` from `Warehouse Dimension` where `Warehouse Code`=%s  "
 			, prepare_mysql($data['Warehouse Code'])
 		);
@@ -141,8 +141,8 @@ class Warehouse extends DB_Table{
 			$this->create($data);
 			return;
 		}
-		
-		
+
+
 
 
 	}
@@ -182,7 +182,7 @@ class Warehouse extends DB_Table{
 					$this->editor['User Key'],
 					$this->id
 				);
-				mysql_query($sql);
+				$this->db->exec($sql);
 
 			}
 
@@ -264,25 +264,50 @@ class Warehouse extends DB_Table{
 
 	function update_children() {
 		$sql=sprintf('select count(*) as number from `Location Dimension` where `Location Warehouse Key`=%d', $this->id);
-		$res=mysql_query($sql);
 		$number_locations=0;
-		if ($row=mysql_fetch_array($res)) {
-			$number_locations=$row['number'];
+
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$number_locations=$row['number'];
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 
 		$sql=sprintf('select count(*) as number from `Shelf Dimension` where `Shelf Warehouse Key`=%d', $this->id);
-		$res=mysql_query($sql);
 		$number_shelfs=0;
-		if ($row=mysql_fetch_array($res)) {
-			$number_shelfs=$row['number'];
+
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$number_shelfs=$row['number'];
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
 
+
+
 		$sql=sprintf('select count(*) as number from `Warehouse Area Dimension` where `Warehouse Key`=%d', $this->id);
-		$res=mysql_query($sql);
 		$number_areas=0;
-		if ($row=mysql_fetch_array($res)) {
-			$number_areas=$row['number'];
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$number_areas=$row['number'];
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
 
 
 		$sql=sprintf('update `Warehouse Dimension` set `Warehouse Number Locations`=%d ,`Warehouse Number Shelfs`=%d  ,`Warehouse Number Areas`=%d  where `Warehouse Key`=%d'
@@ -291,7 +316,7 @@ class Warehouse extends DB_Table{
 			, $number_areas
 			, $this->id
 		);
-		mysql_query($sql);
+		$this->db->exec($sql);
 		$this->get_data('id', $this->id);
 	}
 
@@ -307,57 +332,74 @@ class Warehouse extends DB_Table{
 			prepare_mysql($to)
 		);
 
-		$res=mysql_query($sql);
-		while ($row=mysql_fetch_array($res)) {
-			$dormant_1y_open_value_at_day=0;
 
-			$sql=sprintf('select ITF.`Part SKU`,`Part Cost`,`Value At Day Cost` from `Inventory Spanshot Fact` ITF left join `Part Dimension` P  on (P.`Part SKU`=ITF.`Part SKU`)where `Warehouse Key`=%d and `Date`=%s and `Value At Day Cost`!=0 and `Part Valid From`>%s',
-				$this->id,
-				prepare_mysql($row['Date']),
-				prepare_mysql(date("Y-m-d H:i:s", strtotime($row['Date'].' 23:59:59 -1 year')))
-			);
-			$res2=mysql_query($sql);
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
 
-			while ($row2=mysql_fetch_assoc($res2)) {
-				$sql=sprintf("select count(*) as num from `Inventory Transaction Fact` where `Part SKU`=%d and  `Inventory Transaction Type`='Sale' and `Date`>=%s and `Date`<=%s ",
-					$row2['Part SKU'],
-					prepare_mysql(date("Y-m-d H:i:s", strtotime($row['Date'].' 23:59:59 -1 year'))),
-					prepare_mysql($row['Date'].' 23:59:59')
+				$dormant_1y_open_value_at_day=0;
+
+				$sql=sprintf('select ITF.`Part SKU`,`Part Cost`,`Value At Day Cost` from `Inventory Spanshot Fact` ITF left join `Part Dimension` P  on (P.`Part SKU`=ITF.`Part SKU`)where `Warehouse Key`=%d and `Date`=%s and `Value At Day Cost`!=0 and `Part Valid From`>%s',
+					$this->id,
+					prepare_mysql($row['Date']),
+					prepare_mysql(date("Y-m-d H:i:s", strtotime($row['Date'].' 23:59:59 -1 year')))
 				);
 
-				$res3=mysql_query($sql);
-				if ($row3=mysql_fetch_array($res3)) {
-					if ($row3['num']==0) {
-						$dormant_1y_open_value_at_day+=$row2['Value At Day Cost'];
+
+				if ($result2=$this->db->query($sql)) {
+					foreach ($result2 as $row2) {
+
+						$sql=sprintf("select count(*) as num from `Inventory Transaction Fact` where `Part SKU`=%d and  `Inventory Transaction Type`='Sale' and `Date`>=%s and `Date`<=%s ",
+							$row2['Part SKU'],
+							prepare_mysql(date("Y-m-d H:i:s", strtotime($row['Date'].' 23:59:59 -1 year'))),
+							prepare_mysql($row['Date'].' 23:59:59')
+						);
+
+
+						if ($result3=$this->db->query($sql)) {
+							if ($row3 = $result3->fetch()) {
+								if ($row3['num']==0) {
+									$dormant_1y_open_value_at_day+=$row2['Value At Day Cost'];
+								}
+							}
+						}else {
+							print_r($error_info=$this->db->errorInfo());
+							exit;
+						}
+
+
+
+
+
 					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
 				}
 
-			}
 
 
-			$sql=sprintf("select `Date`,
+
+				$sql=sprintf("select `Date`,
 			count(DISTINCT `Part SKU`) as parts,`Date`, count(DISTINCT `Location Key`) as locations,
 			sum(`Value At Cost Open`) as open ,sum(`Value At Cost High`) as high,sum(`Value At Cost Low`) as low,sum(`Value At Cost`) as close ,
 			sum(`Value At Day Cost Open`) as open_value_at_day ,sum(`Value At Day Cost High`) as high_value_at_day,sum(`Value At Day Cost Low`) as low_value_at_day,sum(`Value At Day Cost`) as close_value_at_day,
 			sum(`Value Commercial Open`) as open_commercial_value ,sum(`Value Commercial High`) as high_commercial_value,sum(`Value Commercial Low`) as low_commercial_value,sum(`Value Commercial`) as close_commercial_value
 			from `Inventory Spanshot Fact` where `Warehouse Key`=%d and `Date`=%s",
-				$this->id,
-				prepare_mysql($row['Date'])
+					$this->id,
+					prepare_mysql($row['Date'])
 
-			);
-
-
+				);
 
 
-			$res2=mysql_query($sql);
-
-			if ($row2=mysql_fetch_assoc($res2)) {
+				if ($result2=$this->db->query($sql)) {
+					if ($row2= $result2->fetch()) {
 
 
 
 
 
-				$sql=sprintf("insert into `Inventory Warehouse Spanshot Fact` (`Date`,`Warehouse Key`,`Parts`,`Locations`,
+
+						$sql=sprintf("insert into `Inventory Warehouse Spanshot Fact` (`Date`,`Warehouse Key`,`Parts`,`Locations`,
 				`Value At Cost`,`Value At Day Cost`,`Value Commercial`,`Value At Cost Open`,`Value At Cost High`,`Value At Cost Low`,`Value At Day Cost Open`,`Value At Day Cost High`,`Value At Day Cost Low`,
 				`Value Commercial Open`,`Value Commercial High`,`Value Commercial Low`,`Dormant 1 Year Value At Day Cost`
 
@@ -368,55 +410,70 @@ class Warehouse extends DB_Table{
 			`Value Commercial Open`=%f,`Value Commercial High`=%f,`Value Commercial Low`=%f,
 			`Parts`=%d,`Locations`=%d,`Dormant 1 Year Value At Day Cost`=%.2f
 			",
-					prepare_mysql($row['Date']),
+							prepare_mysql($row['Date']),
 
-					$this->id,
-					$row2['parts'],
-					$row2['locations'],
+							$this->id,
+							$row2['parts'],
+							$row2['locations'],
 
-					$row2['close'],
-					$row2['close_value_at_day'],
-					$row2['close_commercial_value'],
-					$row2['open'],
-					$row2['high'],
-					$row2['low'],
+							$row2['close'],
+							$row2['close_value_at_day'],
+							$row2['close_commercial_value'],
+							$row2['open'],
+							$row2['high'],
+							$row2['low'],
 
-					$row2['open_value_at_day'],
-					$row2['high_value_at_day'],
-					$row2['low_value_at_day'],
-					$row2['open_commercial_value'],
-					$row2['high_commercial_value'],
-					$row2['low_commercial_value'],
-					$dormant_1y_open_value_at_day,
+							$row2['open_value_at_day'],
+							$row2['high_value_at_day'],
+							$row2['low_value_at_day'],
+							$row2['open_commercial_value'],
+							$row2['high_commercial_value'],
+							$row2['low_commercial_value'],
+							$dormant_1y_open_value_at_day,
 
-					$row2['close'],
-					$row2['close_value_at_day'],
-					$row2['close_commercial_value'],
-					$row2['open'],
-					$row2['high'],
-					$row2['low'],
+							$row2['close'],
+							$row2['close_value_at_day'],
+							$row2['close_commercial_value'],
+							$row2['open'],
+							$row2['high'],
+							$row2['low'],
 
-					$row2['open_value_at_day'],
-					$row2['high_value_at_day'],
-					$row2['low_value_at_day'],
-					$row2['open_commercial_value'],
-					$row2['high_commercial_value'],
-					$row2['low_commercial_value'],
-					$row2['parts'],
-					$row2['locations'],
-					$dormant_1y_open_value_at_day
+							$row2['open_value_at_day'],
+							$row2['high_value_at_day'],
+							$row2['low_value_at_day'],
+							$row2['open_commercial_value'],
+							$row2['high_commercial_value'],
+							$row2['low_commercial_value'],
+							$row2['parts'],
+							$row2['locations'],
+							$dormant_1y_open_value_at_day
 
 
-				);
-				mysql_query($sql);
+						);
+						$this->db->exec($sql);
 
-				// print "$sql\n";
+						// print "$sql\n";
+
+
+
+
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
+				}
+
+
 
 
 
 			}
-
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 
 	}
 
@@ -425,27 +482,43 @@ class Warehouse extends DB_Table{
 
 
 		$sql=sprintf("select * from  `Warehouse Flag Dimension` where `Warehouse Key`=%d  ", $this->id);
-		$res=mysql_query($sql);
-		while ($row=mysql_fetch_assoc($res)) {
 
-			$this->update_location_flag_number($row['Warehouse Flag Key']);
 
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$this->update_location_flag_number($row['Warehouse Flag Key']);
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
+
 	}
 
 
 	function update_location_flag_number($flag_key) {
 		$num=0;
 		$sql=sprintf("select count(*) as num  from  `Location Dimension` where `Warehouse Flag Key`=%d ", $flag_key);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$num=$row['num'];
 
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$num=$row['num'];
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 		$sql=sprintf("update  `Warehouse Flag Dimension`  set `Warehouse Flag Number Locations`=%d where `Warehouse Flag Key`=%d ",
 			$num,
 			$flag_key);
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 
 	}
@@ -459,10 +532,17 @@ class Warehouse extends DB_Table{
 		);
 
 
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-			$flag_key=$row['Warehouse Flag Key'];
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$flag_key=$row['Warehouse Flag Key'];
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 		return $flag_key;
 
 	}
@@ -477,51 +557,68 @@ class Warehouse extends DB_Table{
 				$flag_key,
 				$this->id
 			);
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_assoc($res)) {
-
-				$default_flag_key=$this->get_default_flag_key();
-				if ($default_flag_key==$value and $field=='Warehouse Flag Active' and $value=='No') {
-					$this->error=true;
-					$this->msg='can not disable defaukt flag';
-				}
 
 
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
 
 
-				$sql=sprintf("update  `Warehouse Flag Dimension`  set `%s`=%s where `Warehouse Flag Key`=%d ",
-					$field,
-					prepare_mysql($value),
-					$flag_key
-
-				);
-				mysql_query($sql);
-
-
-				if ($field=='Warehouse Flag Active' and $value=='No') {
-					$sql=sprintf("select `Location Key` from `Location Dimension` where `Location Warehouse Key`=%d and `Warehouse Flag Key`=%d",
-						$this->id,
-						$row['Warehouse Flag Key']
-
-					);
-					//print $sql;
-					$res2=mysql_query($sql);
-					while ($row2=mysql_fetch_assoc($res2)) {
-						$location=new Location($row2['Location Key']);
-						$location->update_warehouse_flag_key($default_flag_key);
+					$default_flag_key=$this->get_default_flag_key();
+					if ($default_flag_key==$value and $field=='Warehouse Flag Active' and $value=='No') {
+						$this->error=true;
+						$this->msg='can not disable defaukt flag';
 					}
 
+
+
+
+					$sql=sprintf("update  `Warehouse Flag Dimension`  set `%s`=%s where `Warehouse Flag Key`=%d ",
+						$field,
+						prepare_mysql($value),
+						$flag_key
+
+					);
+					$this->db->exec($sql);
+
+
+					if ($field=='Warehouse Flag Active' and $value=='No') {
+						$sql=sprintf("select `Location Key` from `Location Dimension` where `Location Warehouse Key`=%d and `Warehouse Flag Key`=%d",
+							$this->id,
+							$row['Warehouse Flag Key']
+
+						);
+
+						if ($result2=$this->db->query($sql)) {
+							foreach ($result2 as $row2) {
+								$location=new Location($row2['Location Key']);
+								$location->update_warehouse_flag_key($default_flag_key);
+							}
+						}else {
+							print_r($error_info=$this->db->errorInfo());
+							exit;
+						}
+
+
+
+
+					}
+
+
+					$this->updated=true;
+					$this->new_value=$value;
+
+
+
+				}else {
+					$this->error=true;
+					$this->msg='unknown flag';
 				}
-
-
-				$this->updated=true;
-				$this->new_value=$value;
-
-
 			}else {
-				$this->error=true;
-				$this->msg='unknown flag';
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
+
+
 
 
 

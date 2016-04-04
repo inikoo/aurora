@@ -18,7 +18,7 @@ include_once 'trait.NotesSubject.php';
 
 
 class Subject extends DB_Table {
-	use ImageSubject,NotesSubject,AttachmentSubject;
+	use ImageSubject, NotesSubject, AttachmentSubject;
 
 
 	function get_name() {
@@ -357,6 +357,7 @@ class Subject extends DB_Table {
 		->withLocality($this->get($type.' Address Locality'))
 		->withAdministrativeArea($this->get($type.' Address Administrative Area'))
 		->withCountryCode($this->get($type.' Address Country 2 Alpha Code'));
+
 
 		$xhtml_address=$formatter->format($address);
 
@@ -1260,14 +1261,14 @@ class Subject extends DB_Table {
 	}
 
 
-	function update_subject_field_switcher($field, $value, $options='',$metadata) {
+	function update_subject_field_switcher($field, $value, $options='', $metadata) {
 
 
 		switch ($field) {
 
 		case 'History Note':
-		
-		
+
+
 			$this->add_note($value, '', '', $metadata['deletable']);
 			break;
 		case $this->table_name.' Contact Address':
@@ -1434,10 +1435,14 @@ class Subject extends DB_Table {
 				$this->update_address_formatted_fields('Contact', 'no_history');
 
 			}
-			if ($old_value==$this->get('Invoice Address Organization')) {
-				$this->update_field($this->table_name.' Invoice Address Organization', $value, 'no_history');
-				$this->update_address_formatted_fields('Invoice', 'no_history');
 
+			if ($this->table_name=='Customer') {
+
+				if ($old_value==$this->get('Invoice Address Organization')) {
+					$this->update_field($this->table_name.' Invoice Address Organization', $value, 'no_history');
+					$this->update_address_formatted_fields('Invoice', 'no_history');
+
+				}
 			}
 
 			$this->other_fields_updated=array(
@@ -1475,12 +1480,13 @@ class Subject extends DB_Table {
 				$this->update_address_formatted_fields('Contact', 'no_history');
 
 			}
-			if ($old_value==$this->get('Invoice Address Recipient')) {
-				$this->update_field($this->table_name.' Invoice Address Recipient', $value, 'no_history');
-				$this->update_address_formatted_fields('Invoice', 'no_history');
+			if ($this->table_name=='Customer') {
+				if ($old_value==$this->get('Invoice Address Recipient')) {
+					$this->update_field($this->table_name.' Invoice Address Recipient', $value, 'no_history');
+					$this->update_address_formatted_fields('Invoice', 'no_history');
 
+				}
 			}
-
 
 			$this->other_fields_updated=array(
 				$this->table_name.'_Name'=>array(
@@ -1507,13 +1513,13 @@ class Subject extends DB_Table {
 				$this->edit_note($history_key, $value);
 				return true;
 			}
-			
+
 			if (preg_match('/^History Note Strikethrough (\d+)/i', $field, $matches)) {
 				$history_key=$matches[1];
 				$this->edit_note_strikethrough($history_key, $value);
 				return true;
 			}
-						
+
 			if (preg_match('/^'.$this->table_name.' Other Email (\d+)/i', $field, $matches)) {
 				$customer_email_key=$matches[1];
 				$old_value=$this->get($field);
@@ -1747,13 +1753,13 @@ class Subject extends DB_Table {
 			if (preg_match('/'.$this->table_name.' History Note (\d+)/i', $key, $matches)) {
 
 
-				return array(true,$this->get_note($matches[1]));
+				return array(true, $this->get_note($matches[1]));
 
 			}
 			if (preg_match('/History Note (Strikethrough )?(\d+)/i', $key, $matches)) {
 
 
-				return array(true,nl2br($this->get_note($matches[2])));
+				return array(true, nl2br($this->get_note($matches[2])));
 
 			}
 

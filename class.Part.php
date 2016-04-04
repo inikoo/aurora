@@ -180,13 +180,13 @@ class Part extends Asset{
 
 		$sql=sprintf("insert into `Part Dimension` %s %s", $keys, $values);
 		//print $sql;
-	
+
 		if ($this->db->exec($sql)) {
 			$this->id=$this->db->lastInsertId();
 			$this->sku =$this->id ;
 			$this->new=true;
 
-			
+
 
 			$this->get_data('id', $this->id);
 			$data_for_history=array(
@@ -261,7 +261,7 @@ class Part extends Asset{
 
 			$this->data['Part Valid To']=gmdate("Y-m-d H:i:s");
 			$sql=sprintf("update `Part Dimension` set `Part Valid To`=%s where `Part SKU`=%d", prepare_mysql($this->data['Part Valid To']), $this->sku);
-			mysql_query($sql);
+			$this->db->exec($sql);
 
 			$this->get_data('sku', $this->sku);
 			$this->update_availability_for_products_configuration('Automatic', $options);
@@ -275,11 +275,17 @@ class Part extends Asset{
 
 
 		$sql=sprintf("select `Category Key` from `Category Bridge` where `Subject`='Part' and `Subject Key`=%d", $this->sku);
-		$res=mysql_query($sql);
-		while ($row=mysql_fetch_assoc($res)) {
-			$category=new Category($row['Category Key']);
-			$category->update_part_category_status();
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$category=new Category($row['Category Key']);
+				$category->update_part_category_status();
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
 
 
 		$products=$this->get_product_ids();
@@ -365,7 +371,7 @@ class Part extends Asset{
 				prepare_mysql($this->data['Part Available for Products'])
 
 			);
-			mysql_query($sql);
+			$this->db->exec($sql);
 
 			if ($last_record_key) {
 				$sql=sprintf("update `Part Availability for Products Timeline` set `Duration`=%d where `Part Availability for Products Key`=%d",
@@ -373,7 +379,7 @@ class Part extends Asset{
 					$last_record_key
 
 				);
-				mysql_query($sql);
+				$this->db->exec($sql);
 
 			}
 
@@ -1003,6 +1009,7 @@ class Part extends Asset{
 
 
 		case 'Package Weight':
+			include_once 'utils/natural_language.php';
 			return weight($this->data['Part Package Weight']);
 
 
@@ -1217,7 +1224,7 @@ class Part extends Asset{
 			$this->id
 		);
 		//print $sql;
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 
 		$products=$this->get_current_product_ids();
@@ -1270,7 +1277,7 @@ class Part extends Asset{
 			, $stock
 			, $this->id
 		);
-		mysql_query($sql);
+		$this->db->exec($sql);
 		//print "-> $stock , $picked, $required, , , ";
 		$this->update_stock_state();
 
@@ -1310,7 +1317,7 @@ class Part extends Asset{
 			, prepare_mysql($availability)
 			, $this->sku
 		);
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 
 
@@ -1335,9 +1342,10 @@ class Part extends Asset{
 			, prepare_mysql($date)
 			, $this->id
 		);
-		mysql_query($sql);
-		//print "$sql\n";
-		if (mysql_affected_rows()) {
+
+		$op=$this->db->prepare($sql);
+		$op->execute();
+		if ($op->rowCount()) {
 			//print "sdasdas asdkokk; $date\n";
 			$this->update_product_part_list_dates();
 		}
@@ -1372,7 +1380,7 @@ class Part extends Asset{
 			$this->id
 		);
 
-		mysql_query($sql);
+		$this->db->exec($sql);
 		$this->data[$field]=$date;
 	}
 
@@ -1390,7 +1398,7 @@ class Part extends Asset{
 			prepare_mysql($date),
 			$this->id
 		);
-		mysql_query($sql);
+		$this->db->exec($sql);
 		$this->data['Part Last Sale Date']=$date;
 	}
 
@@ -1413,12 +1421,21 @@ class Part extends Asset{
 	function update_picking_location() {
 
 		$sql=sprintf("select * from `Part Location Dimension` PL left join `Location Dimension` L on (L.`Location Key`=PL.`Location Key`) where `Part SKU`=%d and `Can Pick`='Yes'  ", $this->sku);
-		$res=mysql_query($sql);
+
 		$picking_location='';
-		while ($row=mysql_fetch_assoc($res)) {
-			$picking_location.=sprintf(", <href='location.php?id=%d'>%s</a>", $row['Location Key'], $row['Location Code']);
+
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$picking_location.=sprintf(", <href='location.php?id=%d'>%s</a>", $row['Location Key'], $row['Location Code']);
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
-		//print $sql;
+
+
 		$picking_location=preg_replace('/^,/', '', $picking_location);
 		$this->data['Part XHTML Picking Location']=$picking_location;
 
@@ -1426,9 +1443,7 @@ class Part extends Asset{
 			, prepare_mysql($this->data['Part XHTML Picking Location'], false)
 			, $this->id
 		);
-		// print $sql;
-		//  exit;
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 	}
 
@@ -1442,19 +1457,27 @@ class Part extends Asset{
 			, prepare_mysql($date)
 
 		);
-		//     print $sql;
-		mysql_query($sql);
-		if ($affected_from=mysql_affected_rows())
+
+		$op=$this->db->prepare($sql);
+		$op->execute();
+		if ($affected_from=$op->rowCount()) {
 			$this->data['Part Valid From']=$date;
+		}
 		$sql=sprintf("update `Part Dimension`  set `Part Valid To`=%s where  `Part SKU`=%d and `Part Valid To`<%s   "
 			, prepare_mysql($date)
 			, $this->id
 			, prepare_mysql($date)
 
 		);
-		mysql_query($sql);
-		if ($affected_to=mysql_affected_rows())
+		
+		
+		$op=$this->db->prepare($sql);
+		$op->execute();
+		if ($affected_to=$op->rowCount()) {
 			$this->data['Part Valid To']=$date;
+		}
+		
+	
 
 
 		return $affected_to+$affected_from;
@@ -1463,12 +1486,21 @@ class Part extends Asset{
 
 	function get_suppliers() {
 		$suppliers=array();
-		$sql=sprintf("select `Supplier Product Code`,  SD.`Supplier Key`, `Supplier Code` from `Supplier Product Part List` SPPL   left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`)
-																																																																						where `Part SKU`=%d  order by `Supplier Key`;", $this->data['Part SKU']);
-		$result=mysql_query($sql);
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-			$suppliers[$row['Supplier Key']]=array('Supplier Key'=>$row['Supplier Key']);
+		$sql=sprintf("select `Supplier Product Code`,  SD.`Supplier Key`, `Supplier Code` from `Supplier Product Part List` SPPL   left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`) where `Part SKU`=%d  order by `Supplier Key`;", $this->data['Part SKU']);
+
+
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$suppliers[$row['Supplier Key']]=array('Supplier Key'=>$row['Supplier Key']);
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 		return $suppliers;
 	}
 
@@ -1492,19 +1524,21 @@ class Part extends Asset{
 
 
 		$supplier_products=array();
-		$sql=sprintf("select  SPPD.`Supplier Product ID`
-																																																																												from `Supplier Product Part List` SPPL
-																																																																												left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)
-																																																																												where `Part SKU`=%d ;
-																																																																												", $this->data['Part SKU']);
-		// print $sql;
-		$result=mysql_query($sql);
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-			$supplier_products[$row['Supplier Product ID']]=$row['Supplier Product ID'];
+		$sql=sprintf("select  SPPD.`Supplier Product ID` from `Supplier Product Part List` SPPL left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) where `Part SKU`=%d ",
+			$this->data['Part SKU']);
 
 
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$supplier_products[$row['Supplier Product ID']]=$row['Supplier Product ID'];
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
 		return $supplier_products;
 	}
 
@@ -1863,8 +1897,7 @@ class Part extends Asset{
 			$sql=sprintf("delete from  `Inventory Transaction Fact` where `Inventory Transaction Key`=%d  "
 				, $row['Inventory Transaction Key']
 			);
-			// print "$sql\n";
-			mysql_query($sql);
+			$this->db->exec($sql);
 
 			$details=_('Part')." SKU".sprintf("%05d", $this->sku)." "._('associated with unknown location');
 			$sql=sprintf("insert into `Inventory Transaction Fact` (`Inventory Transaction Record Type`, `Inventory Transaction Section`, `Part SKU`, `Location Key`, `Inventory Transaction Type`, `Inventory Transaction Quantity`, `Inventory Transaction Amount`, `User Key`, `Note`, `Date`) values (%s, %s, %d, %d, %s, %f, %.2f, %s, %s, %s)",
@@ -1880,7 +1913,7 @@ class Part extends Asset{
 				prepare_mysql($date)
 
 			);
-			mysql_query($sql);
+			$this->db->exec($sql);
 
 		}
 
@@ -2595,7 +2628,7 @@ class Part extends Asset{
 
 				, $this->id);
 
-			mysql_query($sql);
+			$this->db->exec($sql);
 
 
 			$this->data["Part $db_interval Acc 1YD Required"]=($this->data["Part $db_interval Acc 1YB Required"]==0?0:($this->data["Part $db_interval Acc Required"]-$this->data["Part $db_interval Acc 1YB Required"])/$this->data["Part $db_interval Acc 1YB Required"]);
@@ -2629,7 +2662,7 @@ class Part extends Asset{
 
 				, $this->id);
 
-			mysql_query($sql);
+			$this->db->exec($sql);
 
 
 			//print "$sql\n";
@@ -3087,13 +3120,13 @@ class Part extends Asset{
 					, $this->sku
 					, $location_key
 				);
-				mysql_query($sql);
+				$this->db->exec($sql);
 
 				$sql=sprintf("delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Audit') and `Note` like '%%Part associated with location%%'   and  `Part SKU`=%d and `Location Key`=%d  order by `Date` limit 1 "
 					, $this->sku
 					, $location_key
 				);
-				mysql_query($sql);
+				$this->db->exec($sql);
 				//print $sql;
 				$first_date=date("Y-m-d H:i:s", strtotime($first_date." -1 second"));
 				$part_location->associate(array('date'=>$first_date));
@@ -3520,7 +3553,7 @@ class Part extends Asset{
 			$this->sku
 
 		);
-		mysql_query($sql);
+		$this->db->exec($sql);
 		$this->data['Part MSDS Attachment XHTML Info']='';
 		$this->data['Part MSDS Attachment Bridge Key']='';
 		$history_data=array(
@@ -3610,7 +3643,7 @@ class Part extends Asset{
 			$this->sku
 
 		);
-		mysql_query($sql);
+		$this->db->exec($sql);
 		$this->data['Part MSDS Attachment Bridge Key']=$attach_bridge_key;
 		$this->data['Part MSDS Attachment XHTML Info']=$attach_info;
 
@@ -3809,8 +3842,7 @@ class Part extends Asset{
 			prepare_mysql($next_shippment, false),
 			prepare_mysql($next_shippment_date),
 			$this->sku);
-		// print "$sql\n";
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 		$this->data['Part XHTML Next Supplier Shipment']=$next_shippment;
 		$this->data['Part Next Supplier Shipment']=$next_shippment_date;
@@ -3877,7 +3909,7 @@ class Part extends Asset{
 
 		);
 
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 
 

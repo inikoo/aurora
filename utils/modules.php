@@ -867,7 +867,8 @@ $modules=array(
 				'tabs'=>array(
 					'supplier.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
 					'supplier.history'=>array('label'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
-					'supplier.orders'=>array('label'=>_('Orders'), 'title'=>_('Orders')),
+					'supplier.supplier_parts'=>array('label'=>_('Parts'), 'icon'=>'square'),
+					'supplier.orders'=>array('label'=>_('Orders'), 'icon'=>'ship'),
 
 				)
 			),

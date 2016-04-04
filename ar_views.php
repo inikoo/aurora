@@ -1437,7 +1437,7 @@ function get_view_position($state) {
 			$branch[]=array('label'=>_('Suppiers'), 'icon'=>'industry', 'reference'=>'suppliers');
 		}elseif ($state['section']=='supplier') {
 			$branch[]=array('label'=>_('Suppiers'), 'icon'=>'industry', 'reference'=>'suppliers');
-			$branch[]=array('label'=>$state['_object']->get('Code'), 'icon'=>'', 'reference'=>'supplier/'.$state['key']);
+			$branch[]=array('label'=>'<span class="Supplier_Code">'.$state['_object']->get('Code').'</span>', 'icon'=>'', 'reference'=>'supplier/'.$state['key']);
 
 		}elseif ($state['section']=='supplier.new') {
 			$branch[]=array('label'=>_('Suppiers'), 'icon'=>'industry', 'reference'=>'suppliers');
