@@ -34,9 +34,7 @@ switch ($tipo) {
 case 'warehouses':
 	warehouses(get_table_parameters(), $db, $user);
 	break;
-case 'parts':
-	parts(get_table_parameters(), $db, $user);
-	break;
+
 case 'locations':
 	locations(get_table_parameters(), $db, $user);
 	break;
@@ -241,58 +239,6 @@ function replenishments($_data, $db, $user) {
 	echo json_encode($response);
 }
 
-
-function parts($_data, $db, $user) {
-
-
-	$rtext_label='part';
-	include_once 'prepare_table/init.php';
-
-	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-	$adata=array();
-
-	if ($result=$db->query($sql)) {
-		foreach ($result as $data) {
-
-
-
-			$adata[]=array(
-				'id'=>(integer)$data['Part SKU'],
-				'warehouse_key'=>(integer)$data['Warehouse Key'],
-				'warehouse'=>$data['Warehouse Code'],
-				'reference'=>$data['Part Reference'],
-				'formatted_sku'=>sprintf("SKU%05d", $data['Part SKU']),
-				'reference'=>$data['Part Reference'],
-				'description'=>$data['Part Unit Description'],
-				'products'=>$data['Part XHTML Currently Used In'],
-
-
-			);
-
-
-		}
-	}else {
-		print_r($error_info=$db->errorInfo());
-		print $sql;
-		exit;
-	}
-
-
-
-
-	$response=array('resultset'=>
-		array(
-			'state'=>200,
-			'data'=>$adata,
-			'rtext'=>$rtext,
-			'sort_key'=>$_order,
-			'sort_dir'=>$_dir,
-			'total_records'=> $total
-
-		)
-	);
-	echo json_encode($response);
-}
 
 
 ?>

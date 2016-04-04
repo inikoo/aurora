@@ -878,15 +878,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		}
 
 		break;
-	case ('inventory_server'):
-		require_once 'navigation/inventory.nav.php';
-		switch ($data['section']) {
-		case ('inventory'):
-			return get_inventory_all_warehouses_navigation($data, $smarty, $user, $db, $account);
-			break;
-
-
-		}
+	
 	case ('inventory'):
 		require_once 'navigation/inventory.nav.php';
 		switch ($data['section']) {
@@ -1434,14 +1426,14 @@ function get_view_position($state) {
 		break;
 	case 'suppliers':
 		if ($state['section']=='suppliers') {
-			$branch[]=array('label'=>_('Suppiers'), 'icon'=>'industry', 'reference'=>'suppliers');
+			$branch[]=array('label'=>_('Suppiers'), 'icon'=>'ship', 'reference'=>'suppliers');
 		}elseif ($state['section']=='supplier') {
-			$branch[]=array('label'=>_('Suppiers'), 'icon'=>'industry', 'reference'=>'suppliers');
-			$branch[]=array('label'=>'<span class="Supplier_Code">'.$state['_object']->get('Code').'</span>', 'icon'=>'', 'reference'=>'supplier/'.$state['key']);
+			$branch[]=array('label'=>_('Suppiers'), 'icon'=>'', 'reference'=>'suppliers');
+			$branch[]=array('label'=>'<span class="Supplier_Code">'.$state['_object']->get('Code').'</span>', 'icon'=>'ship', 'reference'=>'supplier/'.$state['key']);
 
 		}elseif ($state['section']=='supplier.new') {
-			$branch[]=array('label'=>_('Suppiers'), 'icon'=>'industry', 'reference'=>'suppliers');
-			$branch[]=array('label'=>_('New supplier'), 'icon'=>'', 'reference'=>'');
+			$branch[]=array('label'=>_('Suppiers'), 'icon'=>'', 'reference'=>'suppliers');
+			$branch[]=array('label'=>_('New supplier'), 'icon'=>'ship', 'reference'=>'');
 
 		}
 		break;
@@ -1845,14 +1837,6 @@ function get_view_position($state) {
 
 		}
 		break;
-	case 'inventory_server':
-		if ($state['section']=='inventory') {
-
-			$branch[]=array('label'=>_('Inventory (All warehouses)'), 'icon'=>'cube', 'reference'=>'');
-		}
-
-
-		break;
 
 
 	case 'inventory':
@@ -1861,42 +1845,29 @@ function get_view_position($state) {
 		switch ($state['section']) {
 		case 'inventory':
 
-			$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'inventory/all');
 
 
-			$branch[]=array('label'=>_('Inventory').' <span class="id">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'th-large', 'reference'=>'');
+			$branch[]=array('label'=>_('Inventory'), 'icon'=>'th-large', 'reference'=>'');
 
 			break;
 		case 'part':
-			if ( $user->get_number_warehouses()>1 or $user->can_create('warehouses') ) {
-
-				$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'inventory/all');
-
-			}
-			$branch[]=array('label'=>_('Inventory').' <span class="id">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'th-large', 'reference'=>'inventory/'.$state['warehouse']->id);
+			
+			$branch[]=array('label'=>_('Inventory'), 'icon'=>'th-large', 'reference'=>'inventory');
 			$branch[]=array('label'=>'<span class="id Part_Reference">'.$state['_object']->get('Reference').'</span> (<span class="id">'.$state['_object']->get('SKU').'</span>)' , 'icon'=>'square', 'reference'=>'');
 
 			break;
 
 		case 'part.image':
-			if ( $user->get_number_warehouses()>1 or $user->can_create('warehouses') ) {
-
-				$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'inventory/all');
-
-			}
-			$branch[]=array('label'=>_('Inventory').' <span class="id">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'th-large', 'reference'=>'inventory/'.$state['warehouse']->id);
+			
+			$branch[]=array('label'=>_('Inventory'), 'icon'=>'th-large', 'reference'=>'inventory');
 			$branch[]=array('label'=>'<span class="id Part_Reference">'.$state['_parent']->get('Reference').'</span> (<span class="id">'.$state['_parent']->get('SKU').'</span>)' , 'icon'=>'square', 'reference'=>'inventory/'.$state['warehouse']->id.'/part/'.$state['_parent']->sku);
 			$branch[]=array('label'=>_('Image'), 'icon'=>'camera-retro', 'reference'=>'');
 
 			break;
 
 		case 'part.new':
-			if ( $user->get_number_warehouses()>1 or $user->can_create('warehouses') ) {
-
-				$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'inventory/all');
-
-			}
-			$branch[]=array('label'=>_('Inventory').' <span class="id">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'th-large', 'reference'=>'inventory/'.$state['warehouse']->id);
+			
+			$branch[]=array('label'=>_('Inventory'), 'icon'=>'th-large', 'reference'=>'inventory');
 			$branch[]=array('label'=>_('New part') , 'icon'=>'square', 'reference'=>'');
 
 			break;

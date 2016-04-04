@@ -13,3 +13,4 @@ ALTER TABLE `Account Dimension` DROP `Apply Tax Method`;
 
 
 
+drop table `Part Warehouse Bridge`;

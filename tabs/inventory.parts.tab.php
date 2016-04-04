@@ -12,7 +12,7 @@
 
 
 $tab='inventory.parts';
-$ar_file='ar_warehouse_tables.php';
+$ar_file='ar_inventory_tables.php';
 $tipo='parts';
 
 $default=$user->get_tab_defaults($tab);

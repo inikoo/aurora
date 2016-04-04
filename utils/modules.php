@@ -815,7 +815,7 @@ $modules=array(
 
 			'suppliers'=>array(
 
-				'type'=>'navigation', 'label'=>_('Suppliers'), 'title'=>_('Suppliers'), 'icon'=>'industry', 'reference'=>'suppliers',
+				'type'=>'navigation', 'label'=>_('Suppliers'), 'icon'=>'ship', 'reference'=>'suppliers',
 				'tabs'=>array(
 					'suppliers'=>array()
 				)
@@ -861,14 +861,13 @@ $modules=array(
 			'supplier'=>array(
 				'type'=>'object',
 				'label'=>_('Supplier'),
-				'title'=>_('Supplier'),
-				'icon'=>'industry',
+				'icon'=>'ship',
 				'reference'=>'supplier/%d',
 				'tabs'=>array(
 					'supplier.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
 					'supplier.history'=>array('label'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
 					'supplier.supplier_parts'=>array('label'=>_('Parts'), 'icon'=>'square'),
-					'supplier.orders'=>array('label'=>_('Orders'), 'icon'=>'ship'),
+					'supplier.orders'=>array('label'=>_('Orders'), 'icon'=>'clipboard'),
 
 				)
 			),
@@ -896,26 +895,12 @@ $modules=array(
 
 		)
 	),
-	'inventory_server'=>array(
-
-		'parent'=>'none',
-		'parent_type'=>'none',
-		'sections'=>array(
-
-			'inventory'=>array('type'=>'navigation', 'label'=>_('Inventory (Parts)'), 'icon'=>'square-o', 'reference'=>'inventory/all',
-				'tabs'=>array(
-
-					'inventory.parts'=>array('label'=>_('Parts'), 'icon'=>'square-o'),
-
-				)
-			)
-		)
-	),
+	
 	'inventory'=>array(
 		'sections'=>array(
 			'inventory'=>array(
 
-				'type'=>'navigation', 'label'=>_('Inventory').' ('._('Parts').')', 'icon'=>'th', 'reference'=>'inventory/%d',
+				'type'=>'navigation', 'label'=>_('Inventory').' ('._('Parts').')', 'icon'=>'th', 'reference'=>'inventory',
 				'tabs'=>array(
 					'inventory.parts'=>array('label'=>_('Parts')),
 
@@ -967,7 +952,7 @@ $modules=array(
 
 						)
 					),
-					'part.purchase_orders'=>array('label'=>_('Purchase Orders'), 'icon'=>'ship',
+					'part.purchase_orders'=>array('label'=>_('Purchase Orders'), 'icon'=>'clipboard',
 						'subtabs'=>array(
 							'part.purchase_orders.purchase_orders'=>array('label'=>_('Purchase Orders')),
 							'part.purchase_orders.delivery_notes'=>array('label'=>_('Delivery Notes')),
@@ -1461,7 +1446,7 @@ $modules=array(
 			),
 
 			'suppliers'=>array(
-				'type'=>'object', 'label'=>_('Suppliers'), 'title'=>_('Suppliers users'), 'icon'=>'industry', 'reference'=>'users/suppliers',
+				'type'=>'object', 'label'=>_('Suppliers'), 'title'=>_('Suppliers users'), 'icon'=>'ship', 'reference'=>'users/suppliers',
 			),
 			'warehouse'=>array(
 				'type'=>'object', 'label'=>_('Warehouse'), 'title'=>_('Warehouse users'), 'icon'=>'th-large', 'reference'=>'users/warehouse',

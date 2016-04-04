@@ -7,23 +7,6 @@ var columns = [
     cell: "string",
 
 },{
-    name: "warehouse",
-    label: "{t}Warehouse{/t}",
-    editable:false,
-    renderable: {if $data['parent']=='account'}true{else}false{/if},
-     sortType: "toggle",
-    
-    cell: Backgrid.StringCell.extend({
-        events: {
-            "click": function() {
-                change_view( 'inventory/' + this.model.get("warehouse_key"))
-            }
-        },
-        className: "link"
-       
-})
-   
-},{
     name: "formatted_sku",
     label: "{t}SKU{/t}",
     editable: false,
@@ -33,7 +16,7 @@ var columns = [
         orderSeparator: '',
         events: {
             "click": function() {
-                change_view( '{if $data['parent']=='account'}account{else if $data['parent']=='warehouse'}inventory/{$data['parent_key']}{else}{$data['parent']}/{$data['parent_key']}{/if}/part/' + this.model.get("id"))
+                change_view( '{if $data['parent']=='account'}{else}{$data['parent']}/{$data['parent_key']}/{/if}part/' + this.model.get("id"))
 
             }
         },
@@ -50,7 +33,7 @@ var columns = [
     cell: Backgrid.StringCell.extend({
         events: {
             "click": function() {
-                change_view( '{if $data['parent']=='account'}account{else if $data['parent']=='warehouse'}inventory/{$data['parent_key']}{else}{$data['parent']}/{$data['parent_key']}{/if}/part/' + this.model.get("id"))
+                change_view( '{if $data['parent']=='account'}{else}{$data['parent']}/{$data['parent_key']}/{/if}part/' + this.model.get("id"))
             }
         },
         className: "link"
