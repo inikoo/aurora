@@ -48,6 +48,39 @@ $editor=array(
 
 
 
+/*
+//update `Image Bridge` set  `Subject Type`='Store Product' where `Subject Type`='Product';<--- do it later ????
+
+
+ALTER TABLE `Image Bridge` ADD `Image Public` ENUM('Yes','No') NOT NULL DEFAULT 'No' AFTER `Image Caption`, ADD `Image Order` SMALLINT UNSIGNED NOT NULL DEFAULT '1' AFTER `Image Public`;
+
+
+ALTER TABLE `Image Bridge` ADD `Image Bridge Key` mediumint PRIMARY KEY AUTO_INCREMENT;
+ALTER TABLE `Image Bridge` CHANGE `Image Bridge Key` `Image Bridge Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT;
+ALTER TABLE `Image Bridge` CHANGE `Image Bridge Key` `Image Bridge Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT FIRST;
+ALTER TABLE `Image Bridge` ADD `Date` DATETIME NULL DEFAULT NULL AFTER `Image Order`;
+ALTER TABLE `Image Bridge` CHANGE `Image Bridge Key` `Image Subject Key` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, CHANGE `Subject Type` `Image Subject Subject` ENUM('Store Product','Site Favicon','Product','Family','Department','Store','Part','Supplier Product','Store Logo','Store Email Template Header','Store Email Postcard','Email Image','Page','Page Header','Page Footer','Page Header Preview','Page Footer Preview','Page Preview','Site Menu','Site Search','User Profile','Attachment Thumbnail','Category') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `Subject Key` `Image Subject Subject Key` MEDIUMINT(8) UNSIGNED NOT NULL, CHANGE `Image Key` `Image Subject Image Key` MEDIUMINT(8) UNSIGNED NOT NULL, CHANGE `Is Principal` `Image Subject Is Principal` ENUM('Yes','No') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Yes', CHANGE `Image Caption` `Image Subject Image Caption` VARCHAR(1024) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `Image Public` `Image Subject Image Public` ENUM('Yes','No') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'No', CHANGE `Image Order` `Image Subject Order` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '1', CHANGE `Date` `Image Subject Date` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `Image Subject Bridge` CHANGE `Image Subject Image Public` `Image Subject Is Public` ENUM('Yes','No') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'No';
+ALTER TABLE `Image Subject Bridge` CHANGE `Image Subject Subject` `Image Subject Object` ENUM('Store Product','Site Favicon','Product','Family','Department','Store','Part','Supplier Product','Store Logo','Store Email Template Header','Store Email Postcard','Email Image','Page','Page Header','Page Footer','Page Header Preview','Page Footer Preview','Page Preview','Site Menu','Site Search','User Profile','Attachment Thumbnail','Category') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `Image Subject Subject Key` `Image Subject Object Key` MEDIUMINT(8) UNSIGNED NOT NULL;
+
+*/
+
+
+$sql=sprintf('select * from `Image Bridge`');
+
+if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+		
+		
+		
+		$sql=sprintf("");
+		
+		}
+}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+}
+
 
 $sql=sprintf('select * from `Part Dimension`  ');
 

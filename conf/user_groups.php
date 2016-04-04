@@ -81,7 +81,7 @@ $user_groups=array(
 		'Name'=>_('Buyer'),
 		'View'=>' <i title="'._('Orders').'" class="fa fa-shopping-cart fa-fw"> <i title="'._('Websites').'" class="fa fa-globe fa-fw"></i> <i  title="'._('Inventory').'" class="fa fa-square fa-fw"></i> <i title="'._('Suppliers').'" class="fa fa-industry fa-fw"></i>',
 		'Edit'=>'<i  title="'._('Inventory').'" class="fa fa-square fa-fw"></i> <i title="'._('Suppliers').'" class="fa fa-industry fa-fw"></i>',
-		'Rights'=>array()
+		'Rights'=>array('BV','BE','BD','BC')
 
 	),
 	9=>array(

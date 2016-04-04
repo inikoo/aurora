@@ -507,6 +507,25 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code'
 	),
+		'supplier.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'note',
+		'elements_type'=>each($elements_options['supplier_history'])['key'],
+		'elements'=>$elements_options['supplier_history']
+	),
+		'supplier.supplier_parts'=>array(
+		'view'=>'overview',
+		'sort_key'=>'reference',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'reference',
+		
+	),
 	'warehouses'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',

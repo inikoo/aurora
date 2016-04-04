@@ -32,21 +32,49 @@ require_once 'utils/get_addressing.php';
 require_once 'class.Supplier.php';
 require_once 'class.Store.php';
 require_once 'class.Address.php';
+require_once 'class.SupplierProduct.php';
+require_once 'class.Part.php';
+require_once 'class.SupplierPart.php';
 
 
-
-
-$sql=sprintf('select `Supplier Key` from `Supplier Dimension` where `Supplier Key`=6350 order by `Supplier Key` desc ');
-$sql=sprintf('select `Supplier Key` from `Supplier Dimension` order by `Supplier Key` desc ');
+$sql=sprintf('select `Supplier Key` from `Supplier Dimension`   order by `Supplier Key` desc');
 
 if ($result=$db->query($sql)) {
 	foreach ($result as $row) {
 		$supplier=new Supplier($row['Supplier Key']);
 
+		if ($supplier->data['Supplier Main Country Code']=='UNK') {
+			$supplier->update(array(
+					'Supplier Main Country Key'=>30,
+					'Supplier Main Country Code'=>'GBR',
+					'Supplier Main Country'=>'United Kingdom',
+
+				), 'no_history');
+		}
+
+	}
+}
+
+
+$sql=sprintf('select `Supplier Key` from `Supplier Dimension` where `Supplier Key`=6327 order by `Supplier Key` desc ');
+$sql=sprintf('select `Supplier Key` from `Supplier Dimension`   order by `Supplier Key` ');
+
+if ($result=$db->query($sql)) {
+	foreach ($result as $row) {
+		$supplier=new Supplier($row['Supplier Key']);
+
+
+
+
 		$default_country=$account->get('Account Country 2 Alpha Code');
 
 
-		$supplier->update(array('Supplier Company Name'=>$supplier->get('Name')));
+
+
+
+		// print "**".$supplier->id."**** ".$supplier->get('Name')."**\n";
+
+		//
 
 
 		$other_emails=get_other_emails_data($db, $supplier);
@@ -92,6 +120,8 @@ if ($result=$db->query($sql)) {
 
 		$supplier->update_address('Contact', $address_fields);
 
+
+
 		$location=$supplier->get('Contact Address Locality');
 		if ($location=='') {
 			$location=$supplier->get('Contact Address Administrative Area');
@@ -109,7 +139,6 @@ if ($result=$db->query($sql)) {
 			), 'no_history');
 
 
-
 		if ($supplier->data['Supplier Main Plain Telephone']!='') {
 			$supplier->update(array('Supplier Main Plain Telephone'=>$supplier->data['Supplier Main Plain Telephone']), 'no_history');
 		}
@@ -124,6 +153,100 @@ if ($result=$db->query($sql)) {
 		add_other_telephone(get_other_telecoms_data($db, 'Telephone', $supplier), $supplier);
 		add_other_telephone(get_other_telecoms_data($db, 'Mobile', $supplier), $supplier);
 		add_other_telephone(get_other_telecoms_data($db, 'FAX', $supplier), $supplier);
+
+		$supplier->update(array('Supplier Company Name'=>$supplier->get('Name')));
+
+
+		$sql=sprintf('select * from `Supplier Product Dimension`   where `Supplier Key`=%d order by `Supplier Product ID`  desc  '  , $supplier->id);
+
+		if ($result2=$db->query($sql)) {
+			foreach ($result2 as $row2) {
+				$sp=new SupplierProduct('pid', $row2['Supplier Product ID']);
+				$part_data=$sp->get_parts();
+
+
+				if (count($part_data)>1) {
+
+					foreach ($part_data as $_key=>$_part_data) {
+						if ($_part_data['part']->data['Part Status']=='Not In Use') {
+
+							unset($part_data[$_key]);
+						}
+
+					}
+
+
+				}
+
+
+				if (count($part_data)>1) {
+
+					foreach ($part_data as $_part_data) {
+						//print $_part_data['part']->sku.','.$_part_data['part']->data['Part Reference'].','.$_part_data['part']->data['Part Status'].','.$sp->id."\n";
+					}
+
+
+				}
+
+
+				foreach ($part_data as $_part_data) {
+
+					$sp_ref=preg_replace('/^\?/', '', $sp->data['Supplier Product Code']);
+					if ($sp_ref=='') {
+						$sp_ref=$_part_data['part']->get('Reference');
+					}
+
+					if ($sp->data['Supplier Product State']=='Available') {
+						$status='Available';
+					}else {
+						$status='Discontinued';
+					}
+
+					if ( $status=='Discontinued') {
+						$to=$sp->data['Supplier Product Valid To'];
+					}else {
+						$to='';
+					}
+
+
+
+
+					$sp_data=array(
+						'Supplier Part Supplier Key'=>$supplier->id,
+						'Supplier Part Part SKU'=>$_part_data['part']->sku,
+						'Supplier Part Reference'=>$sp_ref,
+						'Supplier Part Status'=>$status,
+						'Supplier Part From'=>$sp->data['Supplier Product Valid From'],
+						'Supplier Part To'=>$to,
+						'Supplier Part Cost'=>json_encode(array('Currency'=>$sp->data['Supplier Product Currency'], 'Cost'=>$sp->data['Supplier Product Cost Per Case']))
+
+					);
+					$spart=new SupplierPart('find', $sp_data, 'create');
+
+					if ($spart->found) {
+						print "Diplicate ".$spart->duplicated_field."\n";
+						print_r($sp_data);
+					}else {
+
+						if ($spart->error) {
+							print "Error ".$spart->msg."\n";
+							print_r($sp_data);
+						}
+					}
+
+
+
+					//print $_part_data['part']->sku.','.$_part_data['part']->data['Part Reference'].','.$_part_data['part']->data['Part Status'].','.$sp->id."\n";
+					break;
+				}
+
+
+			}
+
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
 
 
 
@@ -158,6 +281,9 @@ function add_other_telephone($other_telephones, $supplier) {
 	}
 
 }
+
+
+
 
 
 
