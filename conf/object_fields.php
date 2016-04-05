@@ -12,10 +12,350 @@
 
 
 
-function get_object_fields($object, $db) {
+function get_object_fields($object, $db, $options=false) {
 
 	switch ($object->get_object_name()) {
 
+	case 'Supplier Part':
+
+		$options_status=array('Available'=>_('Available'), 'NoAvailable'=>_('No stock'), 'Discontinued'=>_('Discontinued'));
+
+
+
+		$object_fields=array(
+			array(
+				'label'=>_('Id'),
+				'show_title'=>true,
+				'fields'=>array(
+
+					array(
+						'id'=>'Supplier_Part_Reference',
+						'edit'=>'string',
+						'value'=>htmlspecialchars($object->get('Supplier Part Reference')),
+						'formatted_value'=>$object->get('Reference'),
+						'label'=>ucfirst($object->get_field_label('Supplier Part Reference')),
+						'required'=>true,
+						'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
+					),
+
+
+
+
+				)
+			),
+
+			array(
+				'label'=>_('Ordering'),
+				'show_title'=>true,
+				'fields'=>array(
+					array(
+						'id'=>'Supplier_Part_Status',
+						'edit'=>'option',
+						'options'=>$options_status,
+						'value'=>htmlspecialchars($object->get('Supplier Part Status')),
+						'formatted_value'=>$object->get('Status'),
+						'label'=>ucfirst($object->get_field_label('Supplier Part Status')),
+						'required'=>true,
+					),
+
+
+					array(
+						'id'=>'Supplier_Part_Batch',
+						'edit'=>'string',
+						'value'=>htmlspecialchars($object->get('Supplier Part Batch')),
+						'formatted_value'=>$object->get('Batch'),
+						'label'=>ucfirst($object->get_field_label('Supplier Part Batch')),
+						'required'=>true,
+					),
+
+					array(
+						'id'=>'Supplier_Part_Cost',
+						'edit'=>'string',
+						'value'=>htmlspecialchars($object->get('Supplier Part Cost')),
+						'formatted_value'=>$object->get('Cost'),
+						'label'=>ucfirst($object->get_field_label('Supplier Part Cost')),
+						'required'=>true,
+					),
+
+
+
+
+				)
+			),
+
+
+
+		);
+
+		return $object_fields;
+
+		break;
+	case 'Part':
+
+
+		if (isset($options['show_full_label']) and  $options['show_full_label'] ) {
+			$show_full_label=true;
+			$field_prefix='Part ';
+		}else {
+			$show_full_label=false;
+			$field_prefix='';
+		}
+
+		$options_Packing_Group=array(
+			'None'=>_('None'), 'I'=>'I', 'II'=>'II', 'III'=>'III'
+		);
+
+
+		$object_fields=array(
+			array(
+				'label'=>($show_full_label?_('Part Id'):_('Id')),
+				'show_title'=>true,
+				'fields'=>array(
+
+					array(
+						'id'=>'Part_Reference',
+						'edit'=>'string',
+						'value'=>htmlspecialchars($object->get($field_prefix.'Part Reference')),
+						'formatted_value'=>$object->get($field_prefix.'Reference'),
+						'label'=>ucfirst($object->get_field_label('Part Reference')),
+						'required'=>true,
+						'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates', 'parent'=>'account', 'parent_key'=>1, 'object'=>'Part', 'key'=>$object->id)),
+					),
+
+array(
+						'id'=>'Part_Tariff_Code',
+						'edit'=>'numeric',
+						'value'=>$object->get($field_prefix.'Part Tariff Code') ,
+						'formatted_value'=>$object->get($field_prefix.'Tariff Code') ,
+						'label'=>ucfirst($object->get_field_label('Part Tariff Code')),
+						'invalid_msg'=>get_invalid_message('string'),
+						'required'=>true,
+
+
+					),
+					array(
+						'id'=>'Part_Duty_Rate',
+						'edit'=>'numeric',
+						'value'=>$object->get($field_prefix.'Part Duty Rate') ,
+						'formatted_value'=>$object->get($field_prefix.'Duty Rate') ,
+						'label'=>ucfirst($object->get_field_label('Part Duty Rate')),
+						'invalid_msg'=>get_invalid_message('string'),
+						'required'=>true,
+
+					),
+
+
+				)
+			),
+			array(
+				'label'=>($show_full_label?_('Part stock keeping unit (Outer)'):_('Stock keeping unit (Outer)')),
+
+				'show_title'=>true,
+				'fields'=>array(
+					array(
+						'id'=>'Part_Package_Description',
+						'edit'=>'string',
+						'value'=>htmlspecialchars($object->get($field_prefix.'Part Package Description')),
+						'formatted_value'=>$object->get($field_prefix.'Package Description'),
+						'label'=>ucfirst($object->get_field_label('Package Unit Description')),
+						'required'=>true,
+
+
+
+					),
+
+					array(
+						'id'=>'Part_Package_Weight',
+						'edit'=>'numeric',
+						'value'=>$object->get($field_prefix.'Part Package Weight') ,
+						'formatted_value'=>$object->get($field_prefix.'Package Weight') ,
+						'label'=>ucfirst($object->get_field_label('Part Package Weight')),
+						'invalid_msg'=>get_invalid_message('numeric'),
+						'required'=>true,
+					),
+					array(
+						'id'=>'Part_Package_Dimensions',
+						'edit'=>'dimensions',
+						'value'=>$object->get($field_prefix.'Part Package Dimensions') ,
+						'formatted_value'=>$object->get($field_prefix.'Package Dimensions') ,
+						'label'=>ucfirst($object->get_field_label('Part Package Dimensions')),
+						'invalid_msg'=>get_invalid_message('string'),
+						'required'=>true,
+						'placeholder'=>_('L x W x H (in cm)')
+					),
+
+
+					
+					
+
+
+				)
+			),
+			array(
+				'label'=>($show_full_label?_('Part commercial unit'):_('Commercial unit')),
+
+				'show_title'=>true,
+				'fields'=>array(
+				array(
+						'id'=>'Part_Units',
+						'edit'=>'numeric',
+						'value'=>$object->get($field_prefix.'Part Units') ,
+						'formatted_value'=>$object->get($field_prefix.'Units') ,
+						'label'=>ucfirst($object->get_field_label('Part Units')),
+						'invalid_msg'=>get_invalid_message('string'),
+						'required'=>true,
+
+					),
+					array(
+						'id'=>'Part_Unit_Description',
+						'edit'=>'string',
+						'value'=>htmlspecialchars($object->get($field_prefix.'Part Unit Description')),
+						'formatted_value'=>$object->get($field_prefix.'Unit Description'),
+						'label'=>ucfirst($object->get_field_label('Part Unit Description')),
+						'required'=>true,
+
+
+
+					),
+
+					array(
+						'id'=>'Part_Unit_Weight',
+						'edit'=>'numeric',
+						'value'=>$object->get($field_prefix.'Part Unit Weight') ,
+						'formatted_value'=>$object->get($field_prefix.'Unit Weight') ,
+						'label'=>ucfirst($object->get_field_label('Part Unit Weight')),
+						'invalid_msg'=>get_invalid_message('numeric'),
+						'required'=>true,
+					),
+					array(
+						'id'=>'Part_Unit_Dimensions',
+						'edit'=>'dimensions',
+						'value'=>$object->get($field_prefix.'Part Unit Dimensions') ,
+						'formatted_value'=>$object->get($field_prefix.'Unit Dimensions') ,
+						'label'=>ucfirst($object->get_field_label('Part Unit Dimensions')),
+						'invalid_msg'=>get_invalid_message('string'),
+						'required'=>true,
+						'placeholder'=>_('L x W x H (in cm)')
+					),
+
+
+			
+
+
+				)
+			),
+			array(
+				'label'=>($show_full_label?_('Part health & safety'):_('Health & Safety')),
+
+				'show_title'=>true,
+				'fields'=>array(
+
+					array(
+						'id'=>'Part_UN_Number',
+						'edit'=>'string',
+						'value'=>htmlspecialchars($object->get($field_prefix.'Part UN Number')),
+						'formatted_value'=>$object->get($field_prefix.'UN Number'),
+						'label'=>ucfirst($object->get_field_label('Part UN Number')),
+						'required'=>false
+					),
+					array(
+						'id'=>'Part_UN_Class',
+						'edit'=>'string',
+						'value'=>htmlspecialchars($object->get($field_prefix.'Part UN Class')),
+						'formatted_value'=>$object->get($field_prefix.'UN Class'),
+						'label'=>ucfirst($object->get_field_label('Part UN Class')),
+						'required'=>false
+					),
+					array(
+						'id'=>'Part_Packing_Group',
+						'edit'=>'option',
+						'options'=>$options_Packing_Group,
+						'value'=>htmlspecialchars($object->get($field_prefix.'Part Packing Group')),
+						'formatted_value'=>$object->get($field_prefix.'Packing Group'),
+						'label'=>ucfirst($object->get_field_label('Part Packing Group')),
+						'required'=>false
+					),
+					array(
+						'id'=>'Part_Proper_Shipping_Name',
+						'edit'=>'string',
+						'value'=>htmlspecialchars($object->get($field_prefix.'Part Proper Shipping Name')),
+						'formatted_value'=>$object->get($field_prefix.'Proper Shipping Name'),
+						'label'=>ucfirst($object->get_field_label('Part Proper Shipping Name')),
+						'required'=>false
+					),
+					array(
+						'id'=>'Part_Hazard_Indentification_Number',
+						'edit'=>'string',
+						'value'=>htmlspecialchars($object->get($field_prefix.'Part Hazard Indentification Number')),
+						'formatted_value'=>$object->get($field_prefix.'Hazard Indentification Number'),
+						'label'=>ucfirst($object->get_field_label('Part Hazard Indentification Number')),
+						'required'=>false
+					)
+				)
+
+
+
+
+
+
+			),
+
+			array(
+				'label'=>($show_full_label?_('Part components'):_('Components')),
+
+				'show_title'=>true,
+				'fields'=>array(
+
+					array(
+						'id'=>'Part_Materials',
+						'edit'=>'textarea',
+						'value'=>htmlspecialchars($object->get($field_prefix.'Part Materials')),
+						'formatted_value'=>$object->get($field_prefix.'Materials'),
+						'label'=>ucfirst($object->get_field_label('Part Materials')),
+						'required'=>false
+					),
+
+					array(
+						'id'=>'Part_Origin_Country_Code',
+						'edit'=>'country',
+						'value'=>htmlspecialchars($object->get($field_prefix.'Part Origin Country Code')),
+						'formatted_value'=>$object->get($field_prefix.'Origin Country Code'),
+						'label'=>ucfirst($object->get_field_label('Part Origin Country Code')),
+						'required'=>false
+					),
+
+				)
+
+
+
+
+
+			) ,
+			array(
+				'label'=>_('Operations'),
+				'show_title'=>true,
+				'class'=>'edit_fields',
+				'fields'=>array(
+					array(
+
+						'id'=>'delete_part',
+						'class'=>'new',
+						'value'=>'',
+						'label'=>'<i class="fa fa-lock button" style="margin-right:20px"></i> <span class="disabled">'._('Delete part').' <i class="fa fa-trash new_button link"></i></span>',
+						'reference'=>''
+					),
+
+				)
+
+			),
+
+
+
+		);
+
+		return $object_fields;
+
+		break;
 	case 'Warehouse':
 
 
@@ -50,13 +390,13 @@ function get_object_fields($object, $db) {
 
 				)
 			),
-			
+
 			array(
 				'label'=>_('Address'),
 				'show_title'=>true,
 				'fields'=>array(
 
-				
+
 					array(
 						'edit'=>'textarea',
 						'id'=>'Warehouse_Address',

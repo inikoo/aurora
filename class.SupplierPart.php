@@ -11,6 +11,7 @@
 */
 
 include_once 'class.DB_Table.php';
+include_once 'class.Part.php';
 
 class SupplierPart extends DB_Table{
 
@@ -40,9 +41,10 @@ class SupplierPart extends DB_Table{
 		else
 			return;
 
-
 		if ($this->data = $this->db->query($sql)->fetch()) {
 			$this->id=$this->data['Supplier Part Key'];
+
+			$this->part=new Part($this->data['Supplier Part Part SKU']);
 		}
 
 
@@ -187,7 +189,33 @@ class SupplierPart extends DB_Table{
 
 		switch ($key) {
 
+		case 'Status':
+
+			switch ($this->data['Supplier Part Status']) {
+			case 'Available':
+				$status=sprintf('<i class="fa fa-stop success" ></i> %s', _('Available'));
+				break;
+			case 'NoAvailable':
+				$status=sprintf('<i class="fa fa-stop warning" ></i> %s', _('No available'));
+
+				break;
+			case 'Discontinued':
+				$status=sprintf('<i class="fa fa-ban error" ></i> %s', _('Discontinued'));
+
+				break;
+			default:
+				$status=$this->data['Supplier Part Status'];
+				break;
+			}
+
+			return $status;
+			break;
 		default:
+
+			if (preg_match('/^Part /', $key)) {
+				return $this->part->get(preg_replace('/^Part /', '', $key));
+
+			}
 
 			if (array_key_exists($key, $this->data))
 				return $this->data[$key];
@@ -199,19 +227,67 @@ class SupplierPart extends DB_Table{
 	}
 
 
+	function update_field_switcher($field, $value, $options='', $metadata='') {
+
+
+
+		switch ($field) {
+
+
+
+		default:
+
+
+			if (preg_match('/^Part /', $field)) {
+				$this->part->update(array($field=>$value), $options);
+				$this->updated=$this->part->updated;
+				$this->msg=$this->part->msg;
+				$this->error=$this->part->error;
+
+			}else {
+
+				$base_data=$this->base_data();
+
+				if (array_key_exists($field, $base_data)) {
+
+					if ($value!=$this->data[$field]) {
+
+
+						$this->update_field($field, $value, $options);
+
+
+
+
+					}
+				}
+
+
+			}
+
+		}
+
+
+	}
+
+
 
 	function get_field_label($field) {
 		global $account;
 
 		switch ($field) {
 
-		case 'Supplier Part Code':
-			$label=_('code');
+		case 'Supplier Part Reference':
+			$label=_("supplier's SKU");
 			break;
-		case 'Supplier Part Name':
-			$label=_('name');
+		case 'Supplier Part Cost':
+			$label=_('cost');
 			break;
-
+		case 'Supplier Part Batch':
+			$label=_('batch');
+			break;
+		case 'Supplier Part Status':
+			$label=_('availability');
+			break;
 		default:
 			$label=$field;
 

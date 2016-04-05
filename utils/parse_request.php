@@ -367,11 +367,42 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 		case 'supplier':
 			$module='suppliers';
 			$section='supplier';
-			$parent='suppliers';
+			$parent='account';
+			$parent_key=1;
 
 			$object='supplier';
 
-			$key=$view_path[0];
+			if (isset($view_path[0])) {
+				if (is_numeric($view_path[0])) {
+					$key=$view_path[0];
+
+
+					if (isset($view_path[1])) {
+
+						if ($view_path[1]=='part') {
+							$section='supplier_part';
+							$parent='supplier';
+							$parent_key=$key;
+							$object='supplier_part';
+							if (isset($view_path[2])) {
+								if (is_numeric($view_path[2])) {
+
+									$key=$view_path[2];
+								}elseif ($view_path[2]=='new') {
+									$section='supplier_part.new';
+								}
+							}
+
+
+						}
+
+					}
+
+				}
+
+			}
+
+
 
 			break;
 		case 'customers':
@@ -1011,14 +1042,14 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			if (isset($view_path[0])) {
 
 				if ($view_path[0]=='transactions') {
-							$section='transactions';
-						}elseif ($view_path[0]=='stock_history') {
-							$section='stock_history';
-						}elseif ($view_path[0]=='categories') {
-							$section='categories';
-						}
-				
-				
+					$section='transactions';
+				}elseif ($view_path[0]=='stock_history') {
+					$section='stock_history';
+				}elseif ($view_path[0]=='categories') {
+					$section='categories';
+				}
+
+
 			}
 
 

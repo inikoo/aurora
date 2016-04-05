@@ -46,6 +46,8 @@ $editor=array(
 	'Date'=>gmdate('Y-m-d H:i:s')
 );
 
+$sql=sprintf('update  `Part Dimension` set `Part Package Description`=`Part Unit Description`;  ');
+$db->exec($sql);
 
 
 $sql=sprintf('select * from `Part Dimension` where `Part SKU`=1383');

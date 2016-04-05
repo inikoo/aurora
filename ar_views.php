@@ -108,7 +108,10 @@ case 'views':
 		}
 
 		break;
-
+	case 'supplier':
+		include_once 'class.Supplier.php';
+		$_parent=new Supplier($state['parent_key']);
+		break;
 	default:
 		$_parent=false;
 	}
@@ -122,6 +125,7 @@ case 'views':
 
 
 		$_object=get_object($state['object'], $state['key']);
+
 
 		if (is_numeric($_object->get('Store Key'))) {
 			include_once 'class.Store.php';
@@ -410,6 +414,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db) {
 		include_once 'showcase/part.show.php';
 		$html=get_part_showcase($data, $smarty, $user, $db);
 		break;
+	case 'supplier_part':
+		include_once 'showcase/supplier_part.show.php';
+		$html=get_supplier_part_showcase($data, $smarty, $user, $db);
+		break;	
 	case 'employee':
 		include_once 'showcase/employee.show.php';
 		$html=get_employee_showcase($data, $smarty, $user, $db);
@@ -849,36 +857,34 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		switch ($data['section']) {
 
 		case ('supplier'):
-			return get_supplier_navigation($data);
+			return get_supplier_navigation($data, $smarty, $user, $db, $account);
 			break;
 
 		case ('suppliers'):
-			return get_suppliers_navigation($data);
+			return get_suppliers_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('categories'):
 
-			return get_suppliers_categories_navigation($data);
+			return get_suppliers_categories_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('category'):
 
-			return get_suppliers_category_navigation($data);
+			return get_suppliers_category_navigation($data, $smarty, $user, $db, $account);
 			break;
-		case ('lists'):
-			return get_suppliers_lists_navigation($data);
-			break;
-		case ('list'):
-			return get_suppliers_list_navigation($data);
-			break;
+	
 		case ('dashboard'):
-			return get_suppliers_dashboard_navigation($data);
+			return get_suppliers_dashboard_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('supplier.new'):
 			return get_new_supplier_navigation($data, $smarty, $user, $db, $account);
 			break;
+		case ('supplier_part'):
+			return get_supplier_part_navigation($data, $smarty, $user, $db, $account);
+			break;	
 		}
 
 		break;
-	
+
 	case ('inventory'):
 		require_once 'navigation/inventory.nav.php';
 		switch ($data['section']) {
@@ -926,7 +932,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 			break;
 		case ('warehouse.new'):
 			return get_new_warehouse_navigation($data, $smarty, $user, $db, $account);
-			break;	
+			break;
 
 		case ('locations'):
 			return get_locations_navigation($data, $smarty, $user, $db, $account);
@@ -1435,6 +1441,11 @@ function get_view_position($state) {
 			$branch[]=array('label'=>_('Suppiers'), 'icon'=>'', 'reference'=>'suppliers');
 			$branch[]=array('label'=>_('New supplier'), 'icon'=>'ship', 'reference'=>'');
 
+		}elseif ($state['section']=='supplier_part') {
+			$branch[]=array('label'=>_('Suppiers'), 'icon'=>'', 'reference'=>'suppliers');
+			$branch[]=array('label'=>'<span class="Supplier_Code">'.$state['_parent']->get('Code').'</span>', 'icon'=>'ship', 'reference'=>'supplier/'.$state['_parent']->id);
+			$branch[]=array('label'=>'<span class="Supplier_Part_Reference">'.$state['_object']->get('Reference').'</span>', 'icon'=>'stop', 'reference'=>'');
+
 		}
 		break;
 	case 'orders_server':
@@ -1851,14 +1862,14 @@ function get_view_position($state) {
 
 			break;
 		case 'part':
-			
+
 			$branch[]=array('label'=>_('Inventory'), 'icon'=>'th-large', 'reference'=>'inventory');
 			$branch[]=array('label'=>'<span class="id Part_Reference">'.$state['_object']->get('Reference').'</span> (<span class="id">'.$state['_object']->get('SKU').'</span>)' , 'icon'=>'square', 'reference'=>'');
 
 			break;
 
 		case 'part.image':
-			
+
 			$branch[]=array('label'=>_('Inventory'), 'icon'=>'th-large', 'reference'=>'inventory');
 			$branch[]=array('label'=>'<span class="id Part_Reference">'.$state['_parent']->get('Reference').'</span> (<span class="id">'.$state['_parent']->get('SKU').'</span>)' , 'icon'=>'square', 'reference'=>'inventory/'.$state['warehouse']->id.'/part/'.$state['_parent']->sku);
 			$branch[]=array('label'=>_('Image'), 'icon'=>'camera-retro', 'reference'=>'');
@@ -1866,7 +1877,7 @@ function get_view_position($state) {
 			break;
 
 		case 'part.new':
-			
+
 			$branch[]=array('label'=>_('Inventory'), 'icon'=>'th-large', 'reference'=>'inventory');
 			$branch[]=array('label'=>_('New part') , 'icon'=>'square', 'reference'=>'');
 
@@ -1896,14 +1907,14 @@ function get_view_position($state) {
 			$branch[]=array('label'=>_('warehouse').' <span class="id Warehouse_Code">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'map', 'reference'=>'');
 
 			break;
-			
+
 		case 'warehouse.new':
 
 			$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'warehouses');
 
-					$branch[]=array('label'=>_('New warehouse'), 'icon'=>'map', 'reference'=>'');
+			$branch[]=array('label'=>_('New warehouse'), 'icon'=>'map', 'reference'=>'');
 
-			break;	
+			break;
 		case 'part':
 			if ( $user->get_number_warehouses()>1 or $user->can_create('warehouses') ) {
 

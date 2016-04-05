@@ -512,6 +512,13 @@ function server_validation(settings, parent, parent_key, object, key, field, val
     if (settings.parent_key != null) {
         parent_key = settings.parent_key;
     }
+    if (settings.object != null) {
+        object = settings.object;
+    }
+    
+     if (settings.key != null) {
+        key = settings.key;
+    }
 
     if (settings.parent_key_field != null) {
         parent_key = $('#' + settings.parent_key_field).val()

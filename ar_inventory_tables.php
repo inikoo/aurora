@@ -113,10 +113,10 @@ function supplier_parts($_data, $db, $user) {
 
 			switch ($data['Supplier Part Status']) {
 			case 'Available':
-				$status=sprintf('<i class="fa fa-square success" title="%s"></i>', _('Available'));
+				$status=sprintf('<i class="fa fa-stop success" title="%s"></i>', _('Available'));
 				break;
 			case 'NoAvailable':
-				$status=sprintf('<i class="fa fa-square-o warning" title="%s"></i>', _('No available'));
+				$status=sprintf('<i class="fa fa-stop warning" title="%s"></i>', _('No available'));
 
 				break;
 			case 'Discontinued':
@@ -136,7 +136,7 @@ function supplier_parts($_data, $db, $user) {
             }
 
 			$adata[]=array(
-				'id'=>(integer)$data['Supplier Part Part SKU'],
+				'id'=>(integer)$data['Supplier Part Key'],
 				'supplier_key'=>(integer)$data['Supplier Part Supplier Key'],
 				'part_key'=>(integer)$data['Supplier Part Part SKU'],
 				'part_reference'=>$data['Part Reference'],

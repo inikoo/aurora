@@ -14,13 +14,10 @@ function open_edit_field(object, key, field) {
 
 
     var type = $('#' + field + '_container').attr('field_type')
-    //var offset = $('#' + field + '_label').position();
+
     $('#' + field + '_formatted_value').addClass('hide')
     $('#' + field + '_edit_button').addClass('hide')
-
     $('#' + field + '_reset_button').removeClass('hide')
-
-
     $('#' + field + '_msg').html('').removeClass('success error')
 
 
@@ -102,8 +99,12 @@ function open_edit_field(object, key, field) {
         break;
 
     case 'option':
+    
+    
+
+    
         $('#' + field + '_options').removeClass('hide')
-        $('#' + field + '_formatted').removeClass('hide')
+       // $('#' + field + '_formatted').removeClass('hide')
         $('#' + field + '_save_button').removeClass('hide')
 
 
@@ -809,7 +810,6 @@ function save_field(object, key, field) {
 
 
             $('#' + field + '_value').val(data.value)
-
 
 
 

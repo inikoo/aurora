@@ -112,6 +112,8 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 	$formatted_field= preg_replace('/^'.$object->get_object_name().' /', '', $field);
 
+
+
 	if ($field=='Staff Position' and $data['object']=='User') {
 		$formatted_field='Position';
 	}
@@ -162,6 +164,9 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 		$directory_field='';
 		$directory='';
 		$items_in_directory='';
+
+
+
 
 		if ($object->updated) {
 			$msg=sprintf('<span class="success"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $data['field'], _('Updated'));
