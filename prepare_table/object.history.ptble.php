@@ -90,9 +90,12 @@ elseif ($parameters['parent']=='user') {
 }elseif ($parameters['parent']=='category') {
 	$where=sprintf(' where   B.`Category Key`=%d   ', $parameters['parent_key']);
 	$subject='Category';
+}elseif ($parameters['parent']=='supplier_part') {
+	$where=sprintf(' where   B.`Supplier Part Key`=%d   ', $parameters['parent_key']);
+	$subject='Supplier Part';
 }else {
 	print_r($parameters);
-	exit('parent not set up');
+	exit('parent not set up '.$parameters['parent']);
 }
 
 if (isset($parameters['elements']['type']['items'])) {

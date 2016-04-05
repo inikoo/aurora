@@ -526,6 +526,17 @@ $tab_defaults=array(
 		'f_field'=>'reference',
 		
 	),
+	
+	'supplier_part.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'note',
+		'elements_type'=>each($elements_options['supplier_part_history'])['key'],
+		'elements'=>$elements_options['supplier_part_history']
+	),
 	'warehouses'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',

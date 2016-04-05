@@ -2,7 +2,7 @@
 /*
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created: 9 October 2015 at 12:43:25 CEST, Malaga Spain
+ Created: 4 April 2016 at 21:38:45 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2015, Inikoo
 
  Version 3
@@ -14,11 +14,9 @@ include_once 'utils/country_functions.php';
 include_once 'conf/object_fields.php';
 
 
-$part=$state['_object'];
+$part=$state['_object']->part;
 
-
-$object_fields=get_object_fields($part, $db,array('show_full_label'=>false));
-
+$object_fields=get_object_fields($part, $db,array('show_full_label'=>true));
 
 
 

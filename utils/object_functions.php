@@ -162,6 +162,11 @@ function get_object($object_name, $key, $load_other_data=false) {
 		require_once "class.Upload.php";
 		$object=new Upload($key);
 		break;	
+	case 'supplier_part':
+	case 'Supplier Part':
+		require_once "class.SupplierPart.php";
+		$object=new SupplierPart($key);
+		break;		
 	default:
 		exit('need to complete E1 '.$object_name);
 		break;

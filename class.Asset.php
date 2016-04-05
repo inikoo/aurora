@@ -142,10 +142,11 @@ class Asset extends DB_Table{
 			}
 			break;
 		case $this->table_name.' Package Dimensions':
+		case $this->table_name.' Unit Dimensions':
 			$dimensions='';
 
-			if ($this->data[$this->table_name.' Package Dimensions']!='') {
-				$data=json_decode($this->data[$this->table_name.' Package Dimensions'], true);
+			if ($this->data[$key]!='') {
+				$data=json_decode($this->data[$key], true);
 				include_once 'utils/units_functions.php';
 				switch ($data['type']) {
 				case 'Rectangular':
@@ -193,18 +194,22 @@ class Asset extends DB_Table{
 			return array(true, $dimensions);
 			break;
 		case 'Package Dimensions':
+		case 'Unit Dimensions':
 			$dimensions='';
 
-			if ($this->data[$this->table_name.' Package Dimensions']!='') {
-				$data=json_decode($this->data[$this->table_name.' Package Dimensions'], true);
+
+        $tag=preg_replace('/ Dimensions$/','',$key);
+
+			if ($this->data[$this->table_name.' '.$key]!='') {
+				$data=json_decode($this->data[$this->table_name.' '.$key], true);
 				include_once 'utils/units_functions.php';
 				switch ($data['type']) {
 				case 'Rectangular':
 
 					$dimensions=number(convert_units($data['l'], 'm', $data['units'])).'x'.number(convert_units($data['w'], 'm', $data['units'])).'x'.number(convert_units($data['h'], 'm', $data['units'])).' ('.$data['units'].')';
 					$dimensions.=', <span class="discret">'.volume($data['vol']).'</span>';
-					if ($this->data[$this->table_name.' Package Weight']>0) {
-						$dimensions.='<span class="discret">, '.number($this->data[$this->table_name.' Package Weight']/$data['vol']).'Kg/L</span>';
+					if ($this->data[$this->table_name." $tag Weight"]>0) {
+						$dimensions.='<span class="discret">, '.number($this->data[$this->table_name." $tag Weight"]/$data['vol']).'Kg/L</span>';
 					}
 
 					break;

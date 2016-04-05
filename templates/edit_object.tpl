@@ -306,14 +306,14 @@
 		<i id="{$field.id}_save_button" class="fa fa-cloud  save {$edit} radio_option hide" onclick="save_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i> 
 		<span id="{$field.id}_msg" class="msg"></span> 
 		
-				<div id="{$field.id}_options" class="dropcontainer radio_option hide" >
+		<div id="{$field.id}_options" class="dropcontainer radio_option hide" >
 
 			<ul>
 				{foreach from=$field.options item=option key=value} 
 				<li id="{$field.id}_option_{$value}" label="{$option}" value="{$value}" class="{if $value==$field.value}selected{/if}" onclick="select_option('{$field.id}','{$value}','{$option}' )">{$option} <i class="fa fa-circle fw current_mark {if $value==$field.value}current{/if}"></i></li>
 				{/foreach} 
 			</ul>
-			</div>
+		</div>
 			
 		
 

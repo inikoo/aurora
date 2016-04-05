@@ -68,13 +68,23 @@ $elements_options=array(
 
 		)
 	),
-		'supplier_history'=>array(
+	'supplier_history'=>array(
 		'type'=>array(
 			'label'=>_('Type'),
 			'items'=>array(
 				'Notes'=>array('label'=>_('Notes'), 'selected'=>true),
 				'Changes'=>array('label'=>_('Changes'), 'selected'=>true),
 				'WebLog'=>array('label'=>_('WebLog'), 'selected'=>true),
+			),
+
+		)
+	),
+		'supplier_part_history'=>array(
+		'type'=>array(
+			'label'=>_('Type'),
+			'items'=>array(
+				'Notes'=>array('label'=>_('Notes'), 'selected'=>true),
+				'Changes'=>array('label'=>_('Changes'), 'selected'=>true),
 			),
 
 		)
@@ -171,12 +181,12 @@ $elements_options=array(
 				'Active'=>array('label'=>_('Active'), 'selected'=>true),
 				'Suspended'=>array('label'=>_('Suspended'), 'selected'=>false),
 				'Discontinued'=>array('label'=>_('Discontinued'), 'selected'=>false)
-		)
-		
+			)
 
 
-	),
-)
+
+		),
+	)
 );
 
 ?>

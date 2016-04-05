@@ -470,6 +470,9 @@ class Part extends Asset{
 			break;
 
 		case 'Part Package Dimensions':
+		case 'Part Unit Dimensions':
+
+			$tag=preg_replace('/ Dimensions$/', '', $field);
 
 			if ($value=='') {
 				$dim='';
@@ -478,28 +481,35 @@ class Part extends Asset{
 				$dim=parse_dimensions($value);
 				if ($dim=='') {
 					$this->error=true;
-					$this->msg=_("Part package dimensions can't be parsed");
+					$this->msg=_("Dimensions can't be parsed");
 					return;
 				}
 				$_tmp=json_decode($dim, true);
 				$vol=$_tmp['vol'];
 			}
 
-			$this->update_field('Part Package Dimensions', $dim, $options);
-			$this->update_field('Part Package Volume', $vol,  'no_history');
+			$this->update_field($tag.' Dimensions', $dim, $options);
+			$this->update_field($tag.' Volume', $vol,  'no_history');
 			$this->update_linked_products($field, $value, $options, $metadata);
 
 
 			break;
 		case 'Part Package Weight':
+		case 'Part Unit Weight':
+		
+		
+			$tag=preg_replace('/ Weight$/', '', $field);
+			$tag2=preg_replace('/^Part /', '', $tag);
+		    $tag3=preg_replace('/ /', '_', $tag);
+		
 			$this->update_field($field, $value, $options);
 
 			$this->other_fields_updated=array(
-				'Part_Package_Dimensions'=>array(
-					'field'=>'Part_Package_Dimensions',
+				$tag3.'_Dimensions'=>array(
+					'field'=>$tag3.'_Dimensions',
 					'render'=>true,
-					'value'=>$this->get('Part Package Dimensions'),
-					'formatted_value'=>$this->get('Package Dimensions'),
+					'value'=>$this->get($tag.' Dimensions'),
+					'formatted_value'=>$this->get($tag2.' Dimensions'),
 
 
 				)
@@ -1009,11 +1019,9 @@ class Part extends Asset{
 
 
 		case 'Package Weight':
+		case 'Unit Weight':
 			include_once 'utils/natural_language.php';
-			return weight($this->data['Part Package Weight']);
-
-
-
+			return weight($this->data['Part '.$key]);
 			break;
 		case 'SKU':
 			return sprintf("sku%05d", $this->sku);
@@ -1469,15 +1477,15 @@ class Part extends Asset{
 			, prepare_mysql($date)
 
 		);
-		
-		
+
+
 		$op=$this->db->prepare($sql);
 		$op->execute();
 		if ($affected_to=$op->rowCount()) {
 			$this->data['Part Valid To']=$date;
 		}
-		
-	
+
+
 
 
 		return $affected_to+$affected_from;
@@ -3941,7 +3949,12 @@ class Part extends Asset{
 		case 'Part Package Dimensions':
 			$label=_('dimensions');
 			break;
-
+		case 'Part Unit Weight':
+			$label=_('weight');
+			break;
+		case 'Part Unit Dimensions':
+			$label=_('dimensions');
+			break;
 		case 'Part Tariff Code':
 			$label=_('tariff code');
 			break;
@@ -3972,6 +3985,10 @@ class Part extends Asset{
 		case 'Part Origin Country Code':
 			$label=_('country of origin');
 			break;
+		case 'Part Units':
+			$label=_('commercial units per SKU');
+			break;
+
 
 
 		default:

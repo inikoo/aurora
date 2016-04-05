@@ -26,7 +26,7 @@ var columns = [
     cell: Backgrid.StringCell.extend({
         events: {
             "click": function() {
-                change_view( '/supplier/part/' + this.model.get("id"))
+                change_view( '/supplier/'+this.model.get("supplier_key")+'/part/' + this.model.get("id"))
             }
         },
         className: "link"
