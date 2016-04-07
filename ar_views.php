@@ -417,7 +417,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db) {
 	case 'supplier_part':
 		include_once 'showcase/supplier_part.show.php';
 		$html=get_supplier_part_showcase($data, $smarty, $user, $db);
-		break;	
+		break;
 	case 'employee':
 		include_once 'showcase/employee.show.php';
 		$html=get_employee_showcase($data, $smarty, $user, $db);
@@ -470,6 +470,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db) {
 		include_once 'showcase/upload.show.php';
 		$html=get_upload_showcase($data, $smarty, $user, $db);
 		break;
+	case 'barcode':
+		include_once 'showcase/barcode.show.php';
+		$html=get_barcode_showcase($data, $smarty, $user, $db);
+		break;	
 	case 'category':
 
 		if ($data['_object']->id==$data['store']->get('Store Family Category Key') or
@@ -871,7 +875,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
 			return get_suppliers_category_navigation($data, $smarty, $user, $db, $account);
 			break;
-	
+
 		case ('dashboard'):
 			return get_suppliers_dashboard_navigation($data, $smarty, $user, $db, $account);
 			break;
@@ -880,7 +884,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 			break;
 		case ('supplier_part'):
 			return get_supplier_part_navigation($data, $smarty, $user, $db, $account);
-			break;	
+			break;
 		}
 
 		break;
@@ -916,6 +920,12 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case ('category'):
 			return get_category_navigation($data, $smarty, $user, $db, $account);
 			break;
+		case ('barcodes'):
+			return get_barcodes_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('barcode'):
+			return get_barcode_navigation($data, $smarty, $user, $db, $account);
+			break;	
 		}
 
 		break;
@@ -1855,11 +1865,7 @@ function get_view_position($state) {
 
 		switch ($state['section']) {
 		case 'inventory':
-
-
-
 			$branch[]=array('label'=>_('Inventory'), 'icon'=>'th-large', 'reference'=>'');
-
 			break;
 		case 'part':
 
@@ -1882,10 +1888,19 @@ function get_view_position($state) {
 			$branch[]=array('label'=>_('New part') , 'icon'=>'square', 'reference'=>'');
 
 			break;
+		case 'barcodes':
+			$branch[]=array('label'=>_('Barcodes'), 'icon'=>'barcode', 'reference'=>'');
+			break;
+		case 'barcode':
+			$branch[]=array('label'=>_('Barcodes'), 'icon'=>'', 'reference'=>'inventory/barcodes');
+			$branch[]=array('label'=>$state['_object']->get('Number'), 'icon'=>'barcode', 'reference'=>'');
+
+			break;
 		}
-
-
 		break;
+
+
+
 	case 'warehouses_server':
 
 		$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'map', 'reference'=>'');

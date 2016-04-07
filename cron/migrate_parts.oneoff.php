@@ -50,13 +50,16 @@ $sql=sprintf('update  `Part Dimension` set `Part Package Description`=`Part Unit
 $db->exec($sql);
 
 
-$sql=sprintf('select * from `Part Dimension` where `Part SKU`=1383');
+$sql=sprintf('select * from `Part Dimension` where `Part SKU`=5305');
 
 $sql=sprintf('select * from `Part Dimension`  ');
 
 if ($result=$db->query($sql)) {
 	foreach ($result as $row) {
 		$part=new Part($row['Part SKU']);
+
+		/*
+
 		if (!($row['Part Barcode Data Source']=='Other' and $row['Part Barcode Data']=='')) {
 
 			$barcode_data=array(
@@ -67,15 +70,54 @@ if ($result=$db->query($sql)) {
 
 		}
 		$part->update(array('Part Barcode'=>json_encode($barcode_data)), 'no_history');
-
-		if ($row['Part Materials']!='' and !preg_match('/^\[\{\"name\"\:/',$row['Part Materials'])  ) {
-			print $row['Part SKU'].' '.$row['Part Materials']."\n";
+*/
+		if ($row['Part Materials']!='' and !preg_match('/^\[\{\"name\"\:/', $row['Part Materials'])  ) {
+			//print $row['Part SKU'].' '.$row['Part Materials']."\n";
 
 
 
 			$part->update(array('Part Materials'=>$row['Part Materials']), 'no_history');
 
 		}
+
+
+		$num_uk_prod=0;
+		$prod_uk=false;
+
+
+		foreach ($part->get_product_ids() as $product_pid) {
+			$product=new Product('pid', $product_pid);
+
+			if ($product->id and $product->data['Product Record Type']=='Normal') {
+				$products[]=array(
+					'code'=>$product->data['Product Code'],
+					'store'=>$product->data['Product Store Key'],
+					'parts'=>$product->get_number_of_parts()
+				);
+				if ($product->data['Product Store Key']==1 and $product->get_number_of_parts()==1) {
+					$num_uk_prod++;
+					$prod_uk=$product;
+				}
+			}
+		}
+
+		//print_r($products);
+
+		if ($num_uk_prod==1) {
+			$part->update(array(
+					'Part Units'=>$prod_uk->get('Product Units Per Case'),
+					'Part Unit Description'=>$prod_uk->get('Product Name'),
+
+				), 'no_history');
+		}else {
+
+			if ($part->data['Part Status']=='In Use') {
+				print "Cant retrieve units ".$part->sku." ".$part->get('Reference')."\n";
+			}
+		}
+
+
+
 		continue;
 		$dimensions=get_xhtml_dimensions($part);
 

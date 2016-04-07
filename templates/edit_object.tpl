@@ -64,9 +64,9 @@
 		<span id="{$field.id}_msg" class="msg"></span> 
 		{elseif $edit=='dropdown_select'  } 
 		
-		
+	
 			<input id="{$field.id}" type="hidden" class=" input_field" value="{$field.value}" has_been_valid="0"/>
-		<input id="{$field.id}_dropdown_select_label" class="hide" field="{$field.id}" scope="{$field.scope}" class=" dropdown_select" value="{$field.formatted_value}" has_been_valid="0"/>
+		<input id="{$field.id}_dropdown_select_label" class="hide" field="{$field.id}" scope="{$field.scope}" class=" dropdown_select" value="{$field.stripped_formatted_value}" has_been_valid="0"/>
 
 		<span id="{$field.id}_msg" class="msg"></span> 
 		<i id="{$field.id}_save_button" class="fa fa-cloud save {$edit} hide" onclick="save_this_field(this)"></i> 
@@ -256,7 +256,7 @@
 	</script>
 	{/if}
 	
-		    {elseif $edit=='country'   } 
+		 
 	 
 				{elseif $edit=='telephone'  or $edit=='new_telephone' } 
 	<input  id="{$field.id}" class="input_field telephone_input_field hide" value="" has_been_valid="0"/>

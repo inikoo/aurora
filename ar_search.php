@@ -87,7 +87,7 @@ function search_inventory($db, $account, $memcache_ip, $data) {
 	$user=$data['user'];
 	$queries=trim($data['query']);
 
-	if ($queries=='' or count($user->warehouses)==0) {
+	if ($queries=='' ) {
 		$response=array('state'=>200, 'results'=>0, 'data'=>'');
 		echo json_encode($response);
 		return;
@@ -95,36 +95,8 @@ function search_inventory($db, $account, $memcache_ip, $data) {
 
 
 
-	if ($data['scope']=='warehouse') {
-		if (in_array($data['scope_key'], $user->stores)) {
-			$warehouses=$data['scope_key'];
-
-			if (count($user->warehouses)==1) {
-				$part_table="`Part Dimension` P";
-				$where_warehouse='';
-			}else {
-				$part_table="`Part Dimension` P left join `Part Warehouse Bridge` B on (B.`Part SKU`=P.`Part SKU`)";
-				$where_warehouse=sprintf(' and `Warehouse Key`=%d', $data['scope_key']);
-			}
-
-
-		}else {
-			$response=array('state'=>200, 'results'=>0, 'data'=>'');
-			echo json_encode($response);
-			return;
-		}
-	} else {
-		if (count($user->warehouses)==$account->data['Warehouses']) {
-			$part_table="`Part Dimension` P";
-			$where_warehouse='';
-		}else {
-			$part_table="`Part Dimension` P left join `Part Warehouse Bridge` B on (B.`Part SKU`=P.`Part SKU`)";
-			$where_warehouse=sprintf(' and `Warehouse Key` in (%s)', join(',', $user->stores));
-		}
-
-		$warehouses=join(',', $user->warehouses);
-	}
-	$memcache_fingerprint=$account->get('Account Code').'SEARCH_INVENTORY'.$warehouses.md5($queries);
+	
+	$memcache_fingerprint=$account->get('Account Code').'SEARCH_INVENTORY'.md5($queries);
 
 	$cache = new Memcached();
 	$cache->addServer($memcache_ip, 11211);
@@ -156,7 +128,7 @@ function search_inventory($db, $account, $memcache_ip, $data) {
 		if ($number_queries==1) {
 			$q=$queries;
 			if (is_numeric($q)) {
-				$sql=sprintf("select `Part SKU`,`Part Reference`,`Part Unit Description` from $part_table where true $where_warehouse and `Part SKU`=%d",
+				$sql=sprintf("select `Part SKU`,`Part Reference`,`Part Unit Description` from `Part Dimension` where  `Part SKU`=%d",
 					$q);
 
 
@@ -182,7 +154,7 @@ function search_inventory($db, $account, $memcache_ip, $data) {
 
 
 
-			$sql=sprintf("select `Part SKU`,`Part Reference`,`Part Unit Description` from $part_table  where true $where_warehouse and `Part Reference` like '%s%%' limit 20 ",
+			$sql=sprintf("select `Part SKU`,`Part Reference`,`Part Unit Description` from `Part Dimension` where `Part Reference` like '%s%%' limit 20 ",
 				$q);
 
 
@@ -214,7 +186,7 @@ function search_inventory($db, $account, $memcache_ip, $data) {
 
 
 
-			$sql=sprintf("select `Part SKU`,`Part Reference`,`Part Unit Description`from $part_table  where true $where_warehouse and `Part Unit Description`  REGEXP '[[:<:]]%s' limit 100 ",
+			$sql=sprintf("select `Part SKU`,`Part Reference`,`Part Unit Description` from `Part Dimension` where `Part Unit Description`  REGEXP '[[:<:]]%s' limit 100 ",
 				$q);
 
 			if ($result=$db->query($sql)) {
@@ -266,7 +238,7 @@ function search_inventory($db, $account, $memcache_ip, $data) {
 		}
 		$product_keys=preg_replace('/^,/', '', $customer_keys);
 
-		$sql=sprintf("select `Warehouse Code`,B.`Warehouse Key`,P.`Part SKU`,`Part Reference`,`Part Unit Description` from `Part Dimension` P left join `Part Warehouse Bridge` B on (B.`Part SKU`=P.`Part SKU`) left join `Warehouse Dimension` W on (B.`Warehouse Key`=W.`Warehouse Key`) where B.`Part SKU` in (%s)",
+		$sql=sprintf("select P.`Part SKU`,`Part Reference`,`Part Unit Description` from `Part Dimension` P  where P.`Part SKU` in (%s)",
 			$product_keys);
 
 		if ($result=$db->query($sql)) {
@@ -277,10 +249,9 @@ function search_inventory($db, $account, $memcache_ip, $data) {
 
 
 				$results[$row['Part SKU']]=array(
-					'warehouse'=>$row['Warehouse Code'],
 					'label'=>highlightkeyword(sprintf('%s', $row['Part Reference']), $queries ),
 					'details'=>highlightkeyword($row['Part Unit Description'], $queries ),
-					'view'=>sprintf('inventory/%d/part/%d', $row['Warehouse Key'], $row['Part SKU'])
+					'view'=>sprintf('part/%d', $row['Part SKU'])
 
 
 

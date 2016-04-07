@@ -342,3 +342,7 @@ ALTER TABLE `Store Dimension` ADD `Store Currency` VARCHAR(3) NULL DEFAULT NULL 
 update `Store Dimension` set `Store Currency`=`Store Currency Code`;
 ALTER TABLE `Warehouse Dimension` ADD `Warehouse State` ENUM('Active','Closed') NOT NULL DEFAULT 'Active' AFTER `Warehouse Name`, ADD `Warehouse Valid From` DATETIME NULL DEFAULT NULL AFTER `Warehouse State`, ADD `Warehouse Valid To` DATETIME NULL DEFAULT NULL AFTER `Warehouse Valid From`;
 
+ALTER TABLE `Part Dimension` ADD `Part Barcode Key` BIGINT UNSIGNED NULL DEFAULT NULL AFTER `Part Barcode`, ADD INDEX (`Part Barcode Number`);
+
+ALTER TABLE `Part Dimension` ADD `Part Barcode Number` BIGINT UNSIGNED NULL DEFAULT NULL AFTER `Part Barcode`, ADD INDEX (`Part Barcode Number`);
+

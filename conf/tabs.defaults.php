@@ -507,7 +507,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code'
 	),
-		'supplier.history'=>array(
+	'supplier.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
 		'sort_order'=>1,
@@ -517,16 +517,16 @@ $tab_defaults=array(
 		'elements_type'=>each($elements_options['supplier_history'])['key'],
 		'elements'=>$elements_options['supplier_history']
 	),
-		'supplier.supplier_parts'=>array(
+	'supplier.supplier_parts'=>array(
 		'view'=>'overview',
 		'sort_key'=>'reference',
 		'sort_order'=>1,
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'reference',
-		
+
 	),
-	
+
 	'supplier_part.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
@@ -604,6 +604,16 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'reference'
+	),
+	'inventory.barcodes'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'number',
+		'elements_type'=>each(  $elements_options['barcodes']  ) ['key'],
+		'elements'=>$elements_options['barcodes'],
 	),
 	'operatives'=>array(
 		'view'=>'overview',

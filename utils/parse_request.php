@@ -1047,6 +1047,17 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 					$section='stock_history';
 				}elseif ($view_path[0]=='categories') {
 					$section='categories';
+				}elseif ($view_path[0]=='barcodes') {
+					$section='barcodes';
+				}elseif ($view_path[0]=='barcode') {
+					$section='barcode';
+					$object='barcode';
+					if (isset($view_path[1])) {
+						if (is_numeric($view_path[1])) {
+							$key=$view_path[1];
+						}
+					}
+
 				}
 
 
