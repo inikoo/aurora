@@ -939,6 +939,21 @@ $modules=array(
 
 				)
 			),
+			'barcodes'=>array(
+				'type'=>'navigation', 'label'=>_('Barcodes'), 'icon'=>'barcode', 'reference'=>'inventory/barcodes',
+				'tabs'=>array(
+					'inventory.barcodes'=>array('label'=>_('Barcodes'))
+
+				)
+			),
+			'barcode'=>array(
+				'type'=>'object', 
+				'tabs'=>array(
+					'barcode.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+					'barcode.assets'=>array('label'=>_('Products/Parts'), 'icon'=>'cube'),
+
+				)
+			),
 			'categories'=>array('type'=>'navigation', 'label'=>_("Part's Categories"), 'icon'=>'sitemap', 'reference'=>'inventory/categories',
 
 				'tabs'=>array(
@@ -1018,6 +1033,7 @@ $modules=array(
 
 				)
 			),
+			
 			'transactions'=>array(
 				'type'=>'navigation', 'label'=>_('Stock Movements'), 'icon'=>'exchange', 'reference'=>'inventory/transactions',
 				'tabs'=>array(

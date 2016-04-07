@@ -166,7 +166,12 @@ function get_object($object_name, $key, $load_other_data=false) {
 	case 'Supplier Part':
 		require_once "class.SupplierPart.php";
 		$object=new SupplierPart($key);
-		break;		
+		break;	
+	case 'barcode':
+	case 'Barcode':
+		require_once "class.Barcode.php";
+		$object=new Barcode($key);
+		break;			
 	default:
 		exit('need to complete E1 '.$object_name);
 		break;

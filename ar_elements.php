@@ -63,6 +63,13 @@ case 'supplier_part.history':
 		));
 	get_history_elements($db, $data['parameters']);
 	break;
+case 'inventory.barcodes':
+
+	$data=prepare_values($_REQUEST, array(
+			'parameters'=>array('type'=>'json array')
+		));
+	get_barcodes_elements($db, $data['parameters'],$user);
+	break;
 
 default:
 	$response=array('state'=>405, 'resp'=>'Tab not found '.$tab);
@@ -609,6 +616,49 @@ function get_delivery_note_element_numbers($db, $data) {
 	foreach ($elements_numbers['dispatch'] as $key=>$value) {
 		$elements_numbers['dispatch'][$key]=number($value);
 	}
+
+	$response= array('state'=>200, 'elements_numbers'=>$elements_numbers);
+	echo json_encode($response);
+
+
+
+}
+
+
+function get_barcodes_elements($db, $data, $user) {
+
+
+
+	$elements_numbers=array(
+		'status'=>array('Available'=>0, 'Used'=>0, 'Reserved'=>0),
+
+	);
+
+
+	$table='`Barcode Dimension`  B';
+	switch ($data['parent']) {
+	case 'account':
+		$where='';
+		break;
+	default:
+		$response=array('state'=>405, 'resp'=>'product parent not founs '.$data['parent']);
+		echo json_encode($response);
+
+		return;
+	}
+
+
+
+
+
+	$sql=sprintf("select count(*) as number,`Barcode Status` as element from $table $where  group by `Barcode Status` ");
+	foreach ($db->query($sql) as $row) {
+
+		$elements_numbers['status'][$row['element']]=number($row['number']);
+
+	}
+
+
 
 	$response= array('state'=>200, 'elements_numbers'=>$elements_numbers);
 	echo json_encode($response);

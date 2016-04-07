@@ -35,6 +35,9 @@ switch ($tipo) {
 case 'parts':
 	parts(get_table_parameters(), $db, $user);
 	break;
+case 'barcodes':
+	barcodes(get_table_parameters(), $db, $user);
+	break;
 case 'supplier_parts':
 	supplier_parts(get_table_parameters(), $db, $user);
 	break;
@@ -63,7 +66,7 @@ function parts($_data, $db, $user) {
 
 			$adata[]=array(
 				'id'=>(integer)$data['Part SKU'],
-			
+
 				'reference'=>$data['Part Reference'],
 				'formatted_sku'=>sprintf("SKU%05d", $data['Part SKU']),
 				'reference'=>$data['Part Reference'],
@@ -128,12 +131,12 @@ function supplier_parts($_data, $db, $user) {
 				break;
 			}
 
-            if($data['Supplier Part Cost']!=''){
-                $_cost=json_decode($data['Supplier Part Cost'],true);
-                $cost=money($_cost['Cost'],$_cost['Currency']);
-            }else{
-                $cost='';
-            }
+			if ($data['Supplier Part Cost']!='') {
+				$_cost=json_decode($data['Supplier Part Cost'], true);
+				$cost=money($_cost['Cost'], $_cost['Currency']);
+			}else {
+				$cost='';
+			}
 
 			$adata[]=array(
 				'id'=>(integer)$data['Supplier Part Key'],
@@ -147,7 +150,72 @@ function supplier_parts($_data, $db, $user) {
 				'description'=>$data['Part Unit Description'],
 				'status'=>$status,
 				'cost'=>$cost,
-				
+
+			);
+
+
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		print $sql;
+		exit;
+	}
+
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function barcodes($_data, $db, $user) {
+
+
+	$rtext_label='barcodes';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $data) {
+
+			switch ($data['Barcode Status']) {
+			case 'Available':
+				$status=sprintf('<i class="fa fa-barcode fa-fw" ></i> %s', _('Available'));
+				break;
+			case 'Used':
+				$status=sprintf('<span class="disabled"><i class="fa fa-cube fa-fw " ></i> %s', _('Used').'</span>');
+
+				break;
+			case 'Reserved':
+				$status=sprintf('<span class="disabled"> <i class="fa fa-shield fa-fw " ></i> %s', _('Reserved').'</span>');
+
+				break;
+			default:
+				$status=$data['Barcode Status'];
+				break;
+			}
+
+			$adata[]=array(
+				'id'=>(integer)$data['Barcode Key'],
+
+				'number'=>$data['Barcode Number'],
+
+				'status'=>$status,
+'notes'=>$data['Barcode Sticky Note'],
+
 			);
 
 

@@ -186,6 +186,19 @@ $elements_options=array(
 
 
 		),
+	),
+	'barcodes'=>array(
+		'status'=>array(
+			'label'=>_('Status'),
+			'items'=>array(
+				'Available'=>array('label'=>_('Available'), 'selected'=>true),
+				'Used'=>array('label'=>_('Used'), 'selected'=>true),
+				'Reserved'=>array('label'=>_('Reserved'), 'selected'=>true),
+			)
+
+
+
+		),
 	)
 );
 

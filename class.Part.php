@@ -496,12 +496,12 @@ class Part extends Asset{
 			break;
 		case 'Part Package Weight':
 		case 'Part Unit Weight':
-		
-		
+
+
 			$tag=preg_replace('/ Weight$/', '', $field);
 			$tag2=preg_replace('/^Part /', '', $tag);
-		    $tag3=preg_replace('/ /', '_', $tag);
-		
+			$tag3=preg_replace('/ /', '_', $tag);
+
 			$this->update_field($field, $value, $options);
 
 			$this->other_fields_updated=array(
@@ -545,7 +545,7 @@ class Part extends Asset{
 		case('Part Available for Products Configuration'):
 			$this->update_availability_for_products_configuration($value, $options);
 			break;
-
+    /*
 		case('Part Tariff Code'):
 		case('Part Duty Rate'):
 		case 'Part UN Number':
@@ -575,6 +575,8 @@ class Part extends Asset{
 
 			$this->update_fields_used_in_products($field, $value, $options);
 			break;
+		*/	
+			
 		case 'Part Next Set Supplier Shipment':
 			$this->update_set_next_supplier_shipment($value, $options);
 			break;
@@ -1011,6 +1013,16 @@ class Part extends Asset{
 				include_once 'class.Country.php';
 				$country=new Country('code', $this->data['Part Origin Country Code']);
 				return '<img src="/art/flags/'.strtolower($country->get('Country 2 Alpha Code')).'.gif" title="'.$country->get('Country Code').'"> '._($country->get('Country Name'));
+			}else {
+				return '';
+			}
+
+			break;
+		case 'Origin Country':
+			if ($this->data['Part Origin Country Code']) {
+				include_once 'class.Country.php';
+				$country=new Country('code', $this->data['Part Origin Country Code']);
+				return $country->get('Country Name');
 			}else {
 				return '';
 			}

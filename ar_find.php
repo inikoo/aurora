@@ -45,6 +45,9 @@ case 'find_object':
 	case 'stores':
 		find_stores($db, $account, $memcache_ip, $data);
 		break;
+	case 'countries':
+		find_countries($db, $account, $memcache_ip, $data);
+		break;
 	case 'families':
 		find_special_category('Family', $db, $account, $memcache_ip, $data);
 		break;
@@ -215,7 +218,7 @@ function find_stores($db, $account, $memcache_ip, $data) {
 				$results[$row['Store Key']]=array(
 					'code'=>highlightkeyword(sprintf('%s', $row['Store Code']), $queries ),
 					'description'=>highlightkeyword($row['Store Name'], $queries ),
-					
+
 					'value'=>$row['Store Key'],
 					'formatted_value'=>$row['Store Name'].' ('.$row['Store Code'].')'
 
@@ -334,7 +337,7 @@ function find_special_category($type, $db, $account, $memcache_ip, $data) {
 			$sql=sprintf("select `Category Key`,`Category Code`,`Category Label` from `Category Dimension` where true $where_root_categories and `Category Code` like '%s%%' limit 20 ",
 				$q);
 
-			
+
 			if ($result=$db->query($sql)) {
 				foreach ($result as $row) {
 
@@ -416,7 +419,7 @@ function find_special_category($type, $db, $account, $memcache_ip, $data) {
 					'formatted_value'=>$row['Category Code'].', '.$row['Category Label'],
 					'code'=>$row['Category Code'],
 					'description'=>$row['Category Label'],
-					
+
 				);
 
 			}
@@ -442,6 +445,235 @@ function find_special_category($type, $db, $account, $memcache_ip, $data) {
 }
 
 
+function find_countries($db, $account, $memcache_ip, $data) {
+
+
+
+	$cache=false;
+	$max_results=10;
+	$user=$data['user'];
+	$queries=trim($data['query']);
+
+	if ($queries=='') {
+		$response=array('state'=>200, 'results'=>0, 'data'=>'');
+		echo json_encode($response);
+		return;
+	}
+
+
+
+
+	$memcache_fingerprint=$account->get('Account Code').'SEARCH_COUNTRY'.md5($queries);
+
+	$cache = new Memcached();
+	$cache->addServer($memcache_ip, 11211);
+
+
+	if (strlen($queries)<=2) {
+		$memcache_time=295200;
+	}if (strlen($queries)<=3) {
+		$memcache_time=86400;
+	}if (strlen($queries)<=4) {
+		$memcache_time=3600;
+	}else {
+		$memcache_time=300;
+
+	}
+
+
+	$results_data=$cache->get($memcache_fingerprint);
+
+
+	if (!$results_data or true) {
+
+
+		$candidates=array();
+
+		$query_array=preg_split('/\s+/', $queries);
+		$number_queries=count($query_array);
+
+
+
+
+		foreach ($query_array as $q) {
+
+
+			if (strlen($q)<=3) {
+
+
+				$sql=sprintf("select `Country Key`,`Country Code`,`Country Name` from kbase.`Country Dimension` where `Country Code` like '%s%%' limit 20 ",
+					$q);
+
+
+				if ($result=$db->query($sql)) {
+					foreach ($result as $row) {
+
+						if ($row['Country Code']==$q)
+							$candidates[$row['Country Key']]=1000;
+						else {
+
+							$len_name=strlen($row['Country Code']);
+							$len_q=strlen($q);
+							$factor=$len_q/$len_name;
+							$candidates[$row['Country Key']]=500*$factor;
+						}
+
+					}
+				}else {
+					print_r($error_info=$db->errorInfo());
+					exit;
+				}
+
+
+			}
+			
+			if (strlen($q)==2) {
+
+
+				$sql=sprintf("select `Country Key`,`Country Code`,`Country Name` from kbase.`Country Dimension` where  `Country 2 Alpha Code` like '%s%%' limit 20 ",
+					$q);
+
+
+				if ($result=$db->query($sql)) {
+					foreach ($result as $row) {
+
+						if ($row['Country Code']==$q)
+							$candidates[$row['Country Key']]=1000;
+						else {
+
+							$len_name=strlen($row['Country Code']);
+							$len_q=strlen($q);
+							$factor=$len_q/$len_name;
+							$candidates[$row['Country Key']]=500*$factor;
+						}
+
+					}
+				}else {
+					print_r($error_info=$db->errorInfo());
+					exit;
+				}
+
+
+			}
+
+
+
+
+			$sql=sprintf("select `Country Key`,`Country Code`,`Country Name` from kbase.`Country Dimension` where  `Country Name`  REGEXP '[[:<:]]%s' limit 100 ",
+				$q);
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+					if ($row['Country Name']==$q)
+						$candidates[$row['Country Key']]=55;
+					else {
+
+						$len_name=strlen($row['Country Name']);
+						$len_q=strlen($q);
+						$factor=$len_q/$len_name;
+						$candidates[$row['Country Key']]=50*$factor;
+					}
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				exit;
+			}
+			
+			$sql=sprintf("select `Country Key`,`Country Code`,`Country Local Name` from kbase.`Country Dimension` where  `Country Local Name`  REGEXP '[[:<:]]%s' limit 100 ",
+				$q);
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+					if ($row['Country Local Name']==$q)
+						$candidates[$row['Country Key']]=55;
+					else {
+
+						$len_name=strlen($row['Country Local Name']);
+						$len_q=strlen($q);
+						$factor=$len_q/$len_name;
+						$candidates[$row['Country Key']]=50*$factor;
+					}
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				exit;
+			}
+
+
+		}
+
+
+		arsort($candidates);
+
+
+
+		$total_candidates=count($candidates);
+
+		if ($total_candidates==0) {
+			$response=array('state'=>200, 'results'=>0, 'data'=>'');
+			echo json_encode($response);
+			return;
+		}
+
+		$counter=0;
+		$product_keys='';
+		$results=array();
+
+		foreach ($candidates as $key=>$val) {
+			$counter++;
+			$product_keys.=','.$key;
+			$results[$key]='';
+			if ($counter>$max_results) {
+				break;
+			}
+		}
+		$product_keys=preg_replace('/^,/', '', $product_keys);
+
+		$sql=sprintf("select `Country Code`,`Country Key`,`Country Name` from kbase.`Country Dimension` C where `Country Key` in (%s)",
+			$product_keys);
+
+		if ($result=$db->query($sql)) {
+			foreach ($result as $row) {
+
+
+
+
+
+				$results[$row['Country Key']]=array(
+					'code'=>highlightkeyword(sprintf('%s', $row['Country Code']), $queries ),
+					'description'=>highlightkeyword($row['Country Name'], $queries ),
+
+					'value'=>$row['Country Code'],
+					'formatted_value'=>$row['Country Name'].' ('.$row['Country Code'].')'
+
+
+
+
+				);
+
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
+
+
+
+
+		$results_data=array('n'=>count($results), 'd'=>$results);
+		$cache->set($memcache_fingerprint, $results_data, $memcache_time);
+
+
+
+	}
+	$response=array('state'=>200, 'number_results'=>$results_data['n'], 'results'=>$results_data['d'], 'q'=>$queries);
+
+	echo json_encode($response);
+
+}
 
 
 ?>

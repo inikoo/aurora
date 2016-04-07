@@ -66,19 +66,30 @@ ALTER TABLE `Image Subject Bridge` CHANGE `Image Subject Subject` `Image Subject
 */
 
 
-$sql=sprintf('select * from `Image Bridge`');
+$sql=sprintf('select * from `Image Bridge` where `Subject Type`  ');
 
 if ($result=$db->query($sql)) {
-		foreach ($result as $row) {
+	foreach ($result as $row) {
+
+
+		$sql=sprintf("insert into `Image Subject Bridge` (`Image Subject Object`,`Image Subject Object Key`,`Image Subject Image Key`,`Image Subject Is Principal`,`Image Subject Image Caption`) values (%s,%d,%d,%s,%s)",
+			prepare_mysql($row['Subject Type']),
+
+			$row['Subject Key'],
+			$row['Image Key'],
+
+			prepare_mysql($row['Is Principal']),
+			prepare_mysql($row['Image Caption'],false)
+
+		);
 		
-		
-		
-		$sql=sprintf("");
-		
-		}
+		//print "$sql\n";
+        $db->exec($sql);
+        
+	}
 }else {
-		print_r($error_info=$db->errorInfo());
-		exit;
+	print_r($error_info=$db->errorInfo());
+	exit;
 }
 
 
@@ -114,7 +125,7 @@ function set_order($db, $object, $object_key) {
 				$order,
 				$row['Image Subject Key']
 			);
-			
+
 			$db->exec($sql);
 			$order++;
 		}

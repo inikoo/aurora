@@ -2,7 +2,7 @@
 /*
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created: 30 September 2015 18:22:51 BST, Sheffield, UK
+ Created: 6 April 2016 at 00:13:30 GMT+8, Kaula Lumpur, Mlaysia
  Copyright (c) 2015, Inikoo
 
  Version 3
@@ -11,9 +11,9 @@
 
 
 
-$tab='inventory.parts';
+$tab='inventory.barcodes';
 $ar_file='ar_inventory_tables.php';
-$tipo='parts';
+$tipo='barcodes';
 
 $default=$user->get_tab_defaults($tab);
 
@@ -24,7 +24,8 @@ $table_views=array(
 );
 
 $table_filters=array(
-	'reference'=>array('label'=>_('Reference'), 'title'=>_('Part reference')),
+	'number'=>array('label'=>_('Number'), 'title'=>_('Barcode Number')),
+	'reference'=>array('label'=>_('Part Reference'), 'title'=>_('Part Reference')),
 
 );
 
@@ -34,6 +35,7 @@ $parameters=array(
 	'parent_key'=>$state['parent_key'],
 
 );
+
 
 include 'utils/get_table_html.php';
 

@@ -317,9 +317,11 @@ array(
 
 					array(
 						'id'=>'Part_Origin_Country_Code',
-						'edit'=>'country',
+						'edit'=>'dropdown_select',
+						'scope'=>'countries',
 						'value'=>htmlspecialchars($object->get($field_prefix.'Part Origin Country Code')),
 						'formatted_value'=>$object->get($field_prefix.'Origin Country Code'),
+						'stripped_formatted_value'=>($object->get($field_prefix.'Part Origin Country Code')!=''?  $object->get($field_prefix.'Origin Country').' ('.$object->get($field_prefix.'Part Origin Country Code').')':''),
 						'label'=>ucfirst($object->get_field_label('Part Origin Country Code')),
 						'required'=>false
 					),
