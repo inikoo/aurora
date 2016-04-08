@@ -131,6 +131,54 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 		foreach ($query_array as $q) {
 
 
+			$sql=sprintf("select `Supplier Key`,`Supplier Code` from `Supplier Dimension` where `Supplier Code` like '%s%%' limit 20 ",
+				$q);
+
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+
+					if ($row['Supplier Code']==$q)
+						$candidates['S'.$row['Supplier Key']]=1000;
+					else {
+
+						$len_name=strlen($row['Supplier Code']);
+						$len_q=strlen($q);
+						$factor=$len_q/$len_name;
+						$candidates['S'.$row['Supplier Key']]=500*$factor;
+					}
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				print $sql;
+				exit;
+			}
+
+			$sql=sprintf("select `Supplier Key`,`Supplier Name` from `Supplier Dimension` where `Supplier Code`  REGEXP '[[:<:]]%s' limit 20 ",
+				$q);
+
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+
+					if ($row['Supplier Name']==$q)
+						$candidates['S'.$row['Supplier Key']]=800;
+					else {
+
+						$len_name=strlen($row['Supplier Name']);
+						$len_q=strlen($q);
+						$factor=$len_q/$len_name;
+						$candidates['S'.$row['Supplier Key']]=400*$factor;
+					}
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				print $sql;
+				exit;
+			}
+
 
 
 			$sql=sprintf("select `Supplier Part Key`,`Supplier Part Reference` from `Supplier Part Dimension` where `Supplier Part Reference` like '%s%%' limit 20 ",
@@ -160,24 +208,47 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 
 
 
+			$sql=sprintf("select `Supplier Part Key`,`Part Reference` from `Supplier Part Dimension`  left join   `Part Dimension`  on (`Supplier Part Part SKU`=`Part SKU`) where `Part Reference` like '%s%%' limit 20 ",
+				$q);
+
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+
+					if ($row['Part Reference']==$q)
+						$candidates['P'.$row['Supplier Part Key']]=750;
+					else {
+
+						$len_name=strlen($row['Part Reference']);
+						$len_q=strlen($q);
+						$factor=$len_q/$len_name;
+						$candidates['P'.$row['Supplier Part Key']]=375*$factor;
+					}
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				print $sql;
+				exit;
+			}
 
 
 
 
 
-			$sql=sprintf("select `Part SKU`,`Part Reference`,`Part Unit Description` from `Part Dimension` where `Part Unit Description`  REGEXP '[[:<:]]%s' limit 100 ",
+			$sql=sprintf("select `Supplier Part Key`,`Part Unit Description` from `Supplier Part Dimension` left join   `Part Dimension`  on (`Supplier Part Part SKU`=`Part SKU`)  where `Part Unit Description`  REGEXP '[[:<:]]%s' limit 100 ",
 				$q);
 
 			if ($result=$db->query($sql)) {
 				foreach ($result as $row) {
 					if ($row['Part Unit Description']==$q)
-						$candidates[$row['Part SKU']]=55;
+						$candidates['P'.$row['Supplier Part Key']]=55;
 					else {
 
 						$len_name=strlen($row['Part Unit Description']);
 						$len_q=strlen($q);
 						$factor=$len_q/$len_name;
-						$candidates[$row['Part SKU']]=50*$factor;
+						$candidates['P'.$row['Supplier Part Key']]=50*$factor;
 					}
 
 				}
@@ -204,50 +275,97 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 		}
 
 		$counter=0;
-		$customer_keys='';
+		$supplier_parts_keys='';
+		$supplier_keys='';
 		$results=array();
+		$number_supplier_parts_keys=0;
+		$number_supplier_keys=0;
 
-		foreach ($candidates as $key=>$val) {
+		foreach ($candidates as $_key=>$val) {
 			$counter++;
-			$customer_keys.=','.$key;
-			$results[$key]='';
+
+			if ($_key[0]=='P') {
+				$key=preg_replace('/^P/', '', $_key);
+				$supplier_parts_keys.=','.$key;
+				$results[$_key]='';
+				$number_supplier_parts_keys++;
+
+			}elseif ($_key[0]=='S') {
+				$key=preg_replace('/^S/', '', $_key);
+				$supplier_keys.=','.$key;
+				$results[$_key]='';
+				$number_supplier_keys++;
+
+			}
+
 			if ($counter>$max_results) {
 				break;
 			}
 		}
-		$product_keys=preg_replace('/^,/', '', $customer_keys);
+		$supplier_parts_keys=preg_replace('/^,/', '', $supplier_parts_keys);
+		$supplier_keys=preg_replace('/^,/', '', $supplier_keys);
 
 
+		if ($number_supplier_parts_keys) {
+			$sql=sprintf("select `Supplier Part Key`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Part Unit Description` from `Supplier Part Dimension` left join   `Part Dimension`  on (`Supplier Part Part SKU`=`Part SKU`)   where `Supplier Part Key` in (%s)",
+				$supplier_parts_keys);
 
-		$sql=sprintf("select P.`Part SKU`,`Part Reference`,`Part Unit Description` from `Part Dimension` P  where P.`Part SKU` in (%s)",
-			$product_keys);
-
-		if ($result=$db->query($sql)) {
-			foreach ($result as $row) {
-
-
-
-
-
-				$results[$row['Part SKU']]=array(
-					'label'=>highlightkeyword(sprintf('%s', $row['Part Reference']), $queries ),
-					'details'=>highlightkeyword($row['Part Unit Description'], $queries ),
-					'view'=>sprintf('part/%d', $row['Part SKU'])
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
 
 
 
 
-				);
 
+					$results['P'.$row['Supplier Part Key']]=array(
+						'label'=>'<i class="fa fa-stop fa-fw "></i> '.highlightkeyword(sprintf('%s', $row['Supplier Part Reference']), $queries ),
+						'details'=>highlightkeyword($row['Part Unit Description'], $queries ),
+						'view'=>sprintf('supplier/%d/part/%d', $row['Supplier Part Supplier Key'] , $row['Supplier Part Key'])
+
+
+
+
+					);
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				print $sql;
+				exit;
 			}
-		}else {
-			print_r($error_info=$db->errorInfo());
-			print $sql;
-			exit;
 		}
 
+		if ($number_supplier_keys) {
+
+			$sql=sprintf("select `Supplier Key`,`Supplier Code`,`Supplier Name` from `Supplier Dimension`  where `Supplier Key` in (%s)",
+				$supplier_keys);
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
 
 
+
+
+
+					$results['S'.$row['Supplier Key']]=array(
+						'label'=>'<i class="fa fa-ship fa-fw "></i> '.highlightkeyword(sprintf('%s', $row['Supplier Code']), $queries ),
+						'details'=>highlightkeyword($row['Supplier Name'], $queries ),
+						'view'=>sprintf('supplier/%d', $row['Supplier Key'] )
+
+
+
+
+					);
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				print $sql;
+				exit;
+			}
+
+
+		}
 
 
 		$results_data=array('n'=>count($results), 'd'=>$results);
