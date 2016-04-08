@@ -973,6 +973,7 @@ $modules=array(
 					'part.purchase_orders.purchase_orders'=>'part.purchase_orders',
 					'part.purchase_orders.delivery_notes'=>'part.purchase_orders',
 					'part.purchase_orders.invoices'=>'part.purchase_orders',
+					'part.supplier_parts'=>'part.purchase_orders'
 				),
 
 
@@ -1000,11 +1001,13 @@ $modules=array(
 
 						)
 					),
-					'part.purchase_orders'=>array('label'=>_('Purchase Orders'), 'icon'=>'clipboard',
+					'part.purchase_orders'=>array('label'=>_('Supplier & Purchase orders'), 'icon'=>'ship',
 						'subtabs'=>array(
-							'part.purchase_orders.purchase_orders'=>array('label'=>_('Purchase Orders')),
-							'part.purchase_orders.delivery_notes'=>array('label'=>_('Delivery Notes')),
-							'part.purchase_orders.invoices'=>array('label'=>_('Invoices')),
+							'part.supplier_parts'=>array('label'=>_("Supplier's parts"),'icon'=>'stop'),
+
+							'part.purchase_orders.purchase_orders'=>array('label'=>_('Purchase orders'),'icon'=>'clipboard'),
+							'part.purchase_orders.delivery_notes'=>array('label'=>_("Supplier's delivery notes")),
+							'part.purchase_orders.invoices'=>array('label'=>_("Supplier's invoices")),
 
 						)
 
