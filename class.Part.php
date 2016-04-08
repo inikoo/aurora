@@ -2106,7 +2106,7 @@ class Part extends Asset{
 
 	function get_current_products($for_smarty=false) {
 
-		$sql=sprintf("select  `Product Number Web Pages`,`Product Web Configuration`,`Product Web State`,`Store Key`,`Store Code`,P.`Product ID`,`Product Code`,`Product Store Key` from `Product Part list` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` P on (P.`Product ID`=PPD.`Product ID`) left join `Store Dimension` on (`Product Store Key`=`Store Key`)  where  `Part SKU`=%d  and  `Product Part Most Recent`='Yes'  and `Product Record Type`='Normal'",
+		$sql=sprintf("select  `Product Number Web Pages`,`Product Web Configuration`,`Product Web State`,`Store Key`,`Store Code`,P.`Product ID`,`Product Code`,`Product Store Key` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` P on (P.`Product ID`=PPD.`Product ID`) left join `Store Dimension` on (`Product Store Key`=`Store Key`)  where  `Part SKU`=%d  and  `Product Part Most Recent`='Yes'  and `Product Record Type`='Normal'",
 			$this->sku
 		);
 		//print $sql;
@@ -2130,7 +2130,7 @@ class Part extends Asset{
 
 	function get_current_products_objects() {
 
-		$sql=sprintf("select  P.`Product ID` from `Product Part list` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` P on (P.`Product ID`=PPD.`Product ID`) left join `Store Dimension` on (`Product Store Key`=`Store Key`)  where  `Part SKU`=%d  and  `Product Part Most Recent`='Yes'  and `Product Record Type`='Normal'",
+		$sql=sprintf("select  P.`Product ID` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` P on (P.`Product ID`=PPD.`Product ID`) left join `Store Dimension` on (`Product Store Key`=`Store Key`)  where  `Part SKU`=%d  and  `Product Part Most Recent`='Yes'  and `Product Record Type`='Normal'",
 			$this->sku
 		);
 		//print $sql;
@@ -2201,7 +2201,7 @@ class Part extends Asset{
 	function items_per_product($product_ID, $date=false) {
 		$where_date='';
 
-		$sql=sprintf("select AVG(`Parts Per Product`) as parts_per_product from `Product Part Dimension` PPD left join `Product Part list` PPL on (PPD.`Product Part Key`=PPL.`Product Part Key`) where `Part SKU`=%d and  `Product ID`=%d %s  "
+		$sql=sprintf("select AVG(`Parts Per Product`) as parts_per_product from `Product Part Dimension` PPD left join `Product Part List` PPL on (PPD.`Product Part Key`=PPL.`Product Part Key`) where `Part SKU`=%d and  `Product ID`=%d %s  "
 			, $this->id
 			, $product_ID
 			, $where_date
@@ -2902,7 +2902,7 @@ class Part extends Asset{
 			$sql=sprintf("select AVG(`SPH case Cost`/`SPH Units Per case`*`Supplier Product Units Per Part`) as cost
                          from `Supplier Product Dimension` SP
                          left join `Supplier Product Part Dimension` SPPD  on (SP.`Supplier Product ID`=SPPD.`Supplier Product ID` )
-                         left join `Supplier Product Part list` B  on (SPPD.`Supplier Product Part Key`=B.`Supplier Product Part Key` )
+                         left join `Supplier Product Part List` B  on (SPPD.`Supplier Product Part Key`=B.`Supplier Product Part Key` )
                          left join  `Supplier Product History Dimension` SPHD on (SPHD.`Supplier Product ID`=SP.`Supplier Product ID`)
                          where `Part SKU`=%d and
                          (
@@ -2933,7 +2933,7 @@ class Part extends Asset{
 		$sql=sprintf("select AVG(`SPH case Cost`/`SPH Units Per case`*`Supplier Product Units Per Part`) as cost
                      from `Supplier Product Dimension` SP
                      left join `Supplier Product Part Dimension` SPPD  on (SP.`Supplier Product ID`=SPPD.`Supplier Product ID` )
-                     left join `Supplier Product Part list` B  on (SPPD.`Supplier Product Part Key`=B.`Supplier Product Part Key` )
+                     left join `Supplier Product Part List` B  on (SPPD.`Supplier Product Part Key`=B.`Supplier Product Part Key` )
                      left join  `Supplier Product History Dimension` SPHD ON (SPHD.`SPH Key`=SP.`Supplier Product Current Key`)
                      where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes' ", $this->sku);
 		//print "$sql\n\n";
@@ -2953,7 +2953,7 @@ class Part extends Asset{
 
 
 	function get_estimated_future_cost() {
-		$sql=sprintf("select min(`Supplier Product Cost Per case`*`Supplier Product Units Per Part`/`Supplier Product Units Per case`) as min_cost ,avg(`Supplier Product Cost Per case`*`Supplier Product Units Per Part`/`Supplier Product Units Per case`) as avg_cost   from `Supplier Product Part list` SPPL left join  `Supplier Product Part Dimension` SPPD on (  SPPL.`Supplier Product Part Key`=SPPD.`Supplier Product Part Key`)    left join  `Supplier Product Dimension` SPD  on (SPPD.`Supplier Product ID`=SPD.`Supplier Product ID`)      where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes'", $this->sku);
+		$sql=sprintf("select min(`Supplier Product Cost Per case`*`Supplier Product Units Per Part`/`Supplier Product Units Per case`) as min_cost ,avg(`Supplier Product Cost Per case`*`Supplier Product Units Per Part`/`Supplier Product Units Per case`) as avg_cost   from `Supplier Product Part List` SPPL left join  `Supplier Product Part Dimension` SPPD on (  SPPL.`Supplier Product Part Key`=SPPD.`Supplier Product Part Key`)    left join  `Supplier Product Dimension` SPD  on (SPPD.`Supplier Product ID`=SPD.`Supplier Product ID`)      where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes'", $this->sku);
 		// print "$sql\n";
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -2980,7 +2980,7 @@ class Part extends Asset{
 	function update_used_in() {
 		$used_in_products='';
 		$raw_used_in_products='';
-		$sql=sprintf("select `Store Code`,PD.`Product ID`,`Product Code` from `Product Part list` PPL left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` PD on (PD.`Product ID`=PPD.`Product ID`) left join `Store Dimension`  on (PD.`Product Store Key`=`Store Key`)  where PPL.`Part SKU`=%d and `Product Part Most Recent`='Yes' and `Product Record Type`='Normal' order by `Product Code`,`Store Code`", $this->data['Part SKU']);
+		$sql=sprintf("select `Store Code`,PD.`Product ID`,`Product Code` from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` PD on (PD.`Product ID`=PPD.`Product ID`) left join `Store Dimension`  on (PD.`Product Store Key`=`Store Key`)  where PPL.`Part SKU`=%d and `Product Part Most Recent`='Yes' and `Product Record Type`='Normal' order by `Product Code`,`Store Code`", $this->data['Part SKU']);
 		$result=mysql_query($sql);
 		//   print "$sql\n";
 		$used_in=array();
@@ -3269,7 +3269,7 @@ class Part extends Asset{
 		}
 		$product_ids=array();
 
-		$sql=sprintf("select  `Product ID` from `Product Part list` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and  `Product Part Valid From`<=%s  and `Product Part Most Recent`='Yes'  "
+		$sql=sprintf("select  `Product ID` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and  `Product Part Valid From`<=%s  and `Product Part Most Recent`='Yes'  "
 			, $this->sku
 			, prepare_mysql($date)
 
@@ -3280,7 +3280,7 @@ class Part extends Asset{
 			$product_ids[$row['Product ID']]= $row['Product ID'];
 		}
 
-		$sql=sprintf("select  `Product ID` from `Product Part list` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and `Product Part Valid From`<=%s  and `Product Part Valid To`>=%s and `Product Part Most Recent`='No'  "
+		$sql=sprintf("select  `Product ID` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and `Product Part Valid From`<=%s  and `Product Part Valid To`>=%s and `Product Part Most Recent`='No'  "
 			, $this->sku
 			, prepare_mysql($date)
 			, prepare_mysql($date)
@@ -3296,8 +3296,8 @@ class Part extends Asset{
 
 
 	function get_current_product_ids() {
-		$sql=sprintf("select `Product Part Dimension`.`Product ID` from `Product Part list` left join `Product Part Dimension` on (`Product Part list`.`Product Part Key`=`Product Part Dimension`.`Product Part Key`)   where `Part SKU`=%d and `Product Part Most Recent`='Yes' ", $this->sku);
-		 print "$sql\n";
+		$sql=sprintf("select `Product Part Dimension`.`Product ID` from `Product Part List` left join `Product Part Dimension` on (`Product Part List`.`Product Part Key`=`Product Part Dimension`.`Product Part Key`)   where `Part SKU`=%d and `Product Part Most Recent`='Yes' ", $this->sku);
+		
 		$result=mysql_query($sql);
 		$product_ids=array();
 		
@@ -3315,7 +3315,7 @@ class Part extends Asset{
 	function get_product_part_list($date=false) {
 
 		if (!$date) {
-			$sql=sprintf("select * from `Product Part list` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and  `Product Part Most Recent`='Yes'  "
+			$sql=sprintf("select * from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and  `Product Part Most Recent`='Yes'  "
 				, $this->sku
 
 			)
@@ -3328,7 +3328,7 @@ class Part extends Asset{
 		}
 
 		$product_part_list=array();
-		$sql=sprintf("select * from `Product Part list` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and  `Product Part Valid From`<=%s  and `Product Part Most Recent`='Yes'  "
+		$sql=sprintf("select * from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and  `Product Part Valid From`<=%s  and `Product Part Most Recent`='Yes'  "
 			, $this->sku
 			, prepare_mysql($date)
 
@@ -3339,7 +3339,7 @@ class Part extends Asset{
 			$product_part_list[$row['Product Part Key']]= $row;
 		}
 
-		$sql=sprintf("select * from `Product Part list` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and `Product Part Valid From`<=%s  and `Product Part Valid To`<=%s and `Product Part Most Recent`='No'  "
+		$sql=sprintf("select * from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and `Product Part Valid From`<=%s  and `Product Part Valid To`<=%s and `Product Part Most Recent`='No'  "
 			, $this->sku
 			, prepare_mysql($date)
 			, prepare_mysql($date)
@@ -3355,7 +3355,7 @@ class Part extends Asset{
 
 
 	function get_current_product_part_list() {
-		$sql=sprintf("select * from `Product Part list` left join `Product Part Dimension` on (`Product Part list`.`Product Part Key`=`Product Part Dimension`.`Product Part Key`)   where `Part SKU`=%d and `Product Part Most Recent`='Yes' ", $this->data['Part SKU']);
+		$sql=sprintf("select * from `Product Part List` left join `Product Part Dimension` on (`Product Part List`.`Product Part Key`=`Product Part Dimension`.`Product Part Key`)   where `Part SKU`=%d and `Product Part Most Recent`='Yes' ", $this->data['Part SKU']);
 		// print $sql;
 		$result=mysql_query($sql);
 		$product_part_list=array();
@@ -3396,7 +3396,7 @@ class Part extends Asset{
 			if (strtotime($from)>strtotime($product_from))
 				$from=$product_from;
 
-			$sql=sprintf("select  PPD.`Product Part Key` from `Product Part list` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where `Part SKU`=%d  and PPD.`Product ID`=%d "
+			$sql=sprintf("select  PPD.`Product Part Key` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where `Part SKU`=%d  and PPD.`Product ID`=%d "
 				, $this->sku, $pid);
 			$res2=mysql_query($sql);
 
