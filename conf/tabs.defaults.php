@@ -573,6 +573,15 @@ $tab_defaults=array(
 		'elements'=>$elements_options['products'],
 
 	),
+	'part.supplier_parts'=>array(
+		'view'=>'overview',
+		'sort_key'=>'reference',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'reference',
+
+	),
 	'warehouse.locations'=>array(
 		'view'=>'overview',
 		'sort_key'=>'code',

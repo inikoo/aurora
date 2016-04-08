@@ -263,7 +263,6 @@ ALTER TABLE `Store Dimension` ADD `Store Family Category Key` MEDIUMINT NULL DEF
 // From HERe  ==================== 03/04/2016, 13:47
 
 
-create the 3 upload tables upload.sql
 
 ALTER TABLE `Category Dimension` ADD `Category Scope` VARCHAR(32) NULL AFTER `Category Show Public Edit`, ADD INDEX (`Category Scope`);
 ALTER TABLE `Category Dimension` CHANGE `Category Subject` `Category Subject` ENUM('Product','Supplier','Customer','Family','Invoice','Part','Category') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Product';
@@ -280,28 +279,6 @@ ALTER TABLE `Part Dimension` ADD `Part Package Dimensions` VARCHAR(255) NULL DEF
 
 
 
-
-CREATE TABLE `Image Subject Bridge` (
-  `Image Subject Key` mediumint(8) UNSIGNED NOT NULL,
-  `Image Subject Object` enum('Store Product','Site Favicon','Product','Family','Department','Store','Part','Supplier Product','Store Logo','Store Email Template Header','Store Email Postcard','Email Image','Page','Page Header','Page Footer','Page Header Preview','Page Footer Preview','Page Preview','Site Menu','Site Search','User Profile','Attachment Thumbnail','Category') DEFAULT NULL,
-  `Image Subject Object Key` mediumint(8) UNSIGNED NOT NULL,
-  `Image Subject Image Key` mediumint(8) UNSIGNED NOT NULL,
-  `Image Subject Is Principal` enum('Yes','No') NOT NULL DEFAULT 'Yes',
-  `Image Subject Image Caption` varchar(1024) NOT NULL,
-  `Image Subject Is Public` enum('Yes','No') NOT NULL DEFAULT 'No',
-  `Image Subject Order` smallint(5) UNSIGNED NOT NULL DEFAULT '1',
-  `Image Subject Date` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-ALTER TABLE `Image Subject Bridge`
-  ADD PRIMARY KEY (`Image Subject Key`),
-  ADD UNIQUE KEY `unique` (`Image Subject Object`,`Image Subject Object Key`,`Image Subject Image Key`),
-  ADD KEY `Subject Key` (`Image Subject Object Key`),
-  ADD KEY `Image Key` (`Image Subject Image Key`),
-  ADD KEY `Subject Type` (`Image Subject Object`);
-ALTER TABLE `Image Subject Bridge`
-  MODIFY `Image Subject Key` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 // run migrate_images.oneoff.php 
 
@@ -334,15 +311,15 @@ update `Account Dimension` set `Account Apply Tax Method`=`Apply Tax Method`;
 ALTER TABLE `User Dimension` ADD `User Password Recovery Email` VARCHAR(255) NULL DEFAULT NULL AFTER `User Inactive Note`, ADD `User Password Recovery Mobile` VARCHAR(64) NULL DEFAULT NULL AFTER `User Password Recovery Email`;
 
 
-CREATE TABLE `Staff Role Bridge` ( `Role Code` varchar(8) NOT NULL, `Staff Key` mediumint(8) UNSIGNED NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-ALTER TABLE `Staff Role Bridge` ADD PRIMARY KEY (`Role Code`,`Staff Key`);
+
+
 ALTER TABLE `User Rights Bridge` CHANGE `Right Key` `Right Code` VARCHAR(8) NOT NULL;
 delete from `User Group User Bridge` where `User Group Key` in (4,7,12);
 ALTER TABLE `Store Dimension` ADD `Store Currency` VARCHAR(3) NULL DEFAULT NULL AFTER `Store Locale`;
 update `Store Dimension` set `Store Currency`=`Store Currency Code`;
 ALTER TABLE `Warehouse Dimension` ADD `Warehouse State` ENUM('Active','Closed') NOT NULL DEFAULT 'Active' AFTER `Warehouse Name`, ADD `Warehouse Valid From` DATETIME NULL DEFAULT NULL AFTER `Warehouse State`, ADD `Warehouse Valid To` DATETIME NULL DEFAULT NULL AFTER `Warehouse Valid From`;
 
-ALTER TABLE `Part Dimension` ADD `Part Barcode Key` BIGINT UNSIGNED NULL DEFAULT NULL AFTER `Part Barcode`, ADD INDEX (`Part Barcode Number`);
+ALTER TABLE `Part Dimension` ADD `Part Barcode Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Part Barcode`, ADD INDEX (`Part Barcode Key`);
 
 ALTER TABLE `Part Dimension` ADD `Part Barcode Number` BIGINT UNSIGNED NULL DEFAULT NULL AFTER `Part Barcode`, ADD INDEX (`Part Barcode Number`);
 
