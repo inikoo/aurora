@@ -64,6 +64,9 @@ case 'search':
 	}elseif ($data['state']['module']=='hr') {
 		search_hr($db, $account, $memcache_ip, $data);
 
+	}elseif ($data['state']['module']=='suppliers') {
+		search_suppliers($db, $account, $memcache_ip, $data);
+
 	}
 
 	break;
@@ -76,6 +79,188 @@ default:
 	break;
 }
 
+function search_suppliers($db, $account, $memcache_ip, $data) {
+
+
+
+	$cache=false;
+	$max_results=10;
+	$user=$data['user'];
+	$queries=trim($data['query']);
+
+	if ($queries=='' ) {
+		$response=array('state'=>200, 'results'=>0, 'data'=>'');
+		echo json_encode($response);
+		return;
+	}
+
+
+
+
+	$memcache_fingerprint=$account->get('Account Code').'SEARCH_SUPPLIERS'.md5($queries);
+
+	$cache = new Memcached();
+	$cache->addServer($memcache_ip, 11211);
+
+
+	if (strlen($queries)<=2) {
+		$memcache_time=295200;
+	}if (strlen($queries)<=3) {
+		$memcache_time=86400;
+	}if (strlen($queries)<=4) {
+		$memcache_time=3600;
+	}else {
+		$memcache_time=300;
+
+	}
+
+
+	$results_data=$cache->get($memcache_fingerprint);
+
+
+	if (!$results_data ) {
+
+
+		$candidates=array();
+
+		$query_array=preg_split('/\s+/', $queries);
+		$number_queries=count($query_array);
+
+
+
+		foreach ($query_array as $q) {
+
+
+
+
+			$sql=sprintf("select `Supplier Part Key`,`Supplier Part Reference` from `Supplier Part Dimension` where `Supplier Part Reference` like '%s%%' limit 20 ",
+				$q);
+
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+
+					if ($row['Supplier Part Reference']==$q)
+						$candidates['P'.$row['Supplier Part Key']]=1000;
+					else {
+
+						$len_name=strlen($row['Supplier Part Reference']);
+						$len_q=strlen($q);
+						$factor=$len_q/$len_name;
+						$candidates['P'.$row['Supplier Part Key']]=500*$factor;
+					}
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				print $sql;
+				exit;
+			}
+
+
+
+
+
+
+
+
+
+			$sql=sprintf("select `Part SKU`,`Part Reference`,`Part Unit Description` from `Part Dimension` where `Part Unit Description`  REGEXP '[[:<:]]%s' limit 100 ",
+				$q);
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+					if ($row['Part Unit Description']==$q)
+						$candidates[$row['Part SKU']]=55;
+					else {
+
+						$len_name=strlen($row['Part Unit Description']);
+						$len_q=strlen($q);
+						$factor=$len_q/$len_name;
+						$candidates[$row['Part SKU']]=50*$factor;
+					}
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				print $sql;
+				exit;
+			}
+
+
+		}
+
+
+		arsort($candidates);
+
+
+
+		$total_candidates=count($candidates);
+
+		if ($total_candidates==0) {
+			$response=array('state'=>200, 'results'=>0, 'data'=>'');
+			echo json_encode($response);
+			return;
+		}
+
+		$counter=0;
+		$customer_keys='';
+		$results=array();
+
+		foreach ($candidates as $key=>$val) {
+			$counter++;
+			$customer_keys.=','.$key;
+			$results[$key]='';
+			if ($counter>$max_results) {
+				break;
+			}
+		}
+		$product_keys=preg_replace('/^,/', '', $customer_keys);
+
+
+
+		$sql=sprintf("select P.`Part SKU`,`Part Reference`,`Part Unit Description` from `Part Dimension` P  where P.`Part SKU` in (%s)",
+			$product_keys);
+
+		if ($result=$db->query($sql)) {
+			foreach ($result as $row) {
+
+
+
+
+
+				$results[$row['Part SKU']]=array(
+					'label'=>highlightkeyword(sprintf('%s', $row['Part Reference']), $queries ),
+					'details'=>highlightkeyword($row['Part Unit Description'], $queries ),
+					'view'=>sprintf('part/%d', $row['Part SKU'])
+
+
+
+
+				);
+
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			print $sql;
+			exit;
+		}
+
+
+
+
+
+		$results_data=array('n'=>count($results), 'd'=>$results);
+		$cache->set($memcache_fingerprint, $results_data, $memcache_time);
+
+
+
+	}
+	$response=array('state'=>200, 'number_results'=>$results_data['n'], 'results'=>$results_data['d'], 'q'=>$queries);
+
+	echo json_encode($response);
+
+}
 
 
 function search_inventory($db, $account, $memcache_ip, $data) {
@@ -95,7 +280,7 @@ function search_inventory($db, $account, $memcache_ip, $data) {
 
 
 
-	
+
 	$memcache_fingerprint=$account->get('Account Code').'SEARCH_INVENTORY'.md5($queries);
 
 	$cache = new Memcached();
@@ -117,7 +302,7 @@ function search_inventory($db, $account, $memcache_ip, $data) {
 	$results_data=$cache->get($memcache_fingerprint);
 
 
-	if (!$results_data or true) {
+	if (!$results_data ) {
 
 
 		$candidates=array();
@@ -125,28 +310,7 @@ function search_inventory($db, $account, $memcache_ip, $data) {
 		$query_array=preg_split('/\s+/', $queries);
 		$number_queries=count($query_array);
 
-		if ($number_queries==1) {
-			$q=$queries;
-			if (is_numeric($q)) {
-				$sql=sprintf("select `Part SKU`,`Part Reference`,`Part Unit Description` from `Part Dimension` where  `Part SKU`=%d",
-					$q);
 
-
-				if ($result=$db->query($sql)) {
-					if ($row = $result->fetch()) {
-						$candidates[$row['Part SKU']]=2000;
-					}
-				}else {
-					print_r($error_info=$db->errorInfo());
-					print $sql;
-					exit;
-				}
-
-
-			}
-
-
-		}
 
 
 		foreach ($query_array as $q) {

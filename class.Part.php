@@ -3297,9 +3297,10 @@ class Part extends Asset{
 
 	function get_current_product_ids() {
 		$sql=sprintf("select `Product Part Dimension`.`Product ID` from `Product Part list` left join `Product Part Dimension` on (`Product Part list`.`Product Part Key`=`Product Part Dimension`.`Product Part Key`)   where `Part SKU`=%d and `Product Part Most Recent`='Yes' ", $this->sku);
-		// print $sql;
+		 print "$sql\n";
 		$result=mysql_query($sql);
 		$product_ids=array();
+		
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			$product_ids[$row['Product ID']]= $row['Product ID'];
 		}
