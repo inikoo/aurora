@@ -30,6 +30,7 @@ function open_edit_field(object, key, field) {
     case 'new_email':
     case 'numeric':
     case 'amount':
+    case 'flexi_amount':
     case 'int_unsigned':
     case 'smallint_unsigned':
     case 'mediumint_unsigned':
@@ -99,12 +100,12 @@ function open_edit_field(object, key, field) {
         break;
 
     case 'option':
-    
-    
 
-    
+
+
+
         $('#' + field + '_options').removeClass('hide')
-       // $('#' + field + '_formatted').removeClass('hide')
+        // $('#' + field + '_formatted').removeClass('hide')
         $('#' + field + '_save_button').removeClass('hide')
 
 
@@ -181,6 +182,8 @@ function close_edit_field(field) {
     case 'textarea':
     case 'numeric':
     case 'amount':
+    case 'flexi_amount':
+
     case 'dimensions':
 
 
@@ -189,12 +192,12 @@ function close_edit_field(field) {
 
         //$('#' + field + '_editor').removeClass('changed')
         break;
-     case 'dropdown_select':
+    case 'dropdown_select':
         $('#' + field + '_dropdown_select_label').addClass('hide')
-       // $('#' + field + '_save_button').removeClass('hide')
+        // $('#' + field + '_save_button').removeClass('hide')
         break;
 
- 
+
     case 'new_email':
         $('#new_email_formatted_value').html('')
         $('#new_email_value').val('')
@@ -416,8 +419,7 @@ function on_changed_confirm_value(field, confirm_value) {
 
 function on_changed_value(field, new_value) {
 
-   // console.log('changed: ' + field)
-
+    // console.log('changed: ' + field)
     var object = $('#fields').attr('object');
 
     if ($('#' + object + '_save').hasClass('hide')) {

@@ -995,7 +995,6 @@ class Part extends Asset{
 
 	function get($key='', $args=false) {
 
-
 		list($got, $result)=$this->get_asset_common($key, $args);
 		if ($got)return $result;
 
@@ -1022,7 +1021,7 @@ class Part extends Asset{
 			if ($this->data['Part Origin Country Code']) {
 				include_once 'class.Country.php';
 				$country=new Country('code', $this->data['Part Origin Country Code']);
-				return $country->get('Country Name');
+				return $country->get('Country Name').' ('.$country->get('Code').')';
 			}else {
 				return '';
 			}
@@ -3999,7 +3998,7 @@ class Part extends Asset{
 			$label=_('country of origin');
 			break;
 		case 'Part Units':
-			$label=_('commercial units per SKU');
+			$label=_('Units per SKO');
 			break;
 
 

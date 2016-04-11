@@ -324,9 +324,6 @@ function create_warehouse($data) {
 	
 		$warehouse= new Warehouse('find', $data, 'create');
 
-
-
-
 		if ($warehouse->id) {
 			$this->new_object_msg=$warehouse->msg;
 

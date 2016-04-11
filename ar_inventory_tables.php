@@ -131,12 +131,7 @@ function supplier_parts($_data, $db, $user) {
 				break;
 			}
 
-			if ($data['Supplier Part Cost']!='') {
-				$_cost=json_decode($data['Supplier Part Cost'], true);
-				$cost=money($_cost['Cost'], $_cost['Currency']);
-			}else {
-				$cost='';
-			}
+			
 
 			$adata[]=array(
 				'id'=>(integer)$data['Supplier Part Key'],
@@ -149,7 +144,8 @@ function supplier_parts($_data, $db, $user) {
 
 				'description'=>$data['Part Unit Description'],
 				'status'=>$status,
-				'cost'=>$cost,
+				'cost'=>money($data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']),
+				'packing'=>'<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Supplier Part Units Per Package'].'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discret padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discret">'.($data['Supplier Part Units Per Package']*$data['Supplier Part Packages Per Carton'].'</span>')
 
 			);
 
@@ -186,6 +182,8 @@ function barcodes($_data, $db, $user) {
 	include_once 'prepare_table/init.php';
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+	//print $sql;
 	$adata=array();
 
 	if ($result=$db->query($sql)) {
@@ -207,6 +205,12 @@ function barcodes($_data, $db, $user) {
 				$status=$data['Barcode Status'];
 				break;
 			}
+			if ($data['parts']!='') {
+				$_parts=preg_split('/,/', $data['parts']);
+				$assets=sprintf('<i class="fa fa-square fa-fw"></i> <span class="link" onClick="change_view(\'part/%d\')">%s</span>',$_parts[0],$_parts[1]);
+			}else {
+				$assets='';
+			}
 
 			$adata[]=array(
 				'id'=>(integer)$data['Barcode Key'],
@@ -214,7 +218,8 @@ function barcodes($_data, $db, $user) {
 				'number'=>$data['Barcode Number'],
 
 				'status'=>$status,
-'notes'=>$data['Barcode Sticky Note'],
+				'notes'=>$data['Barcode Sticky Note'],
+				'assets'=>$assets
 
 			);
 

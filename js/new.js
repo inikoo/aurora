@@ -198,6 +198,9 @@ function save_new_object(object, form_type) {
 
             } else if (data.state == 400) {
                 $('#fields').addClass('error');
+                
+               
+                
                 $('#' + object + '_msg').html(data.msg).removeClass('hide')
 
             }

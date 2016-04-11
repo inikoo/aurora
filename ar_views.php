@@ -122,8 +122,6 @@ case 'views':
 	if ($state['object']!='') {
 
 
-
-
 		$_object=get_object($state['object'], $state['key']);
 
 
@@ -473,7 +471,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db) {
 	case 'barcode':
 		include_once 'showcase/barcode.show.php';
 		$html=get_barcode_showcase($data, $smarty, $user, $db);
-		break;	
+		break;
 	case 'category':
 
 		if ($data['_object']->id==$data['store']->get('Store Family Category Key') or
@@ -885,6 +883,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case ('supplier_part'):
 			return get_supplier_part_navigation($data, $smarty, $user, $db, $account);
 			break;
+		case ('supplier_part.new'):
+			return get_new_supplier_part_navigation($data, $smarty, $user, $db, $account);
+			break;
 		}
 
 		break;
@@ -925,7 +926,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 			break;
 		case ('barcode'):
 			return get_barcode_navigation($data, $smarty, $user, $db, $account);
-			break;	
+			break;
 		}
 
 		break;
@@ -1455,6 +1456,11 @@ function get_view_position($state) {
 			$branch[]=array('label'=>_('Suppiers'), 'icon'=>'', 'reference'=>'suppliers');
 			$branch[]=array('label'=>'<span class="Supplier_Code">'.$state['_parent']->get('Code').'</span>', 'icon'=>'ship', 'reference'=>'supplier/'.$state['_parent']->id);
 			$branch[]=array('label'=>'<span class="Supplier_Part_Reference">'.$state['_object']->get('Reference').'</span>', 'icon'=>'stop', 'reference'=>'');
+
+		}elseif ($state['section']=='supplier_part.new') {
+			$branch[]=array('label'=>_('Suppiers'), 'icon'=>'', 'reference'=>'suppliers');
+			$branch[]=array('label'=>'<span class="Supplier_Code">'.$state['_parent']->get('Code').'</span>', 'icon'=>'ship', 'reference'=>'supplier/'.$state['_parent']->id);
+			$branch[]=array('label'=>_("New supplier's part"), 'icon'=>'stop', 'reference'=>'');
 
 		}
 		break;

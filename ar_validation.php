@@ -374,10 +374,6 @@ function check_for_duplicates($data, $db, $user, $account) {
 				$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
 
 
-
-
-
-
 			}
 		}
 
@@ -387,9 +383,8 @@ function check_for_duplicates($data, $db, $user, $account) {
 	switch ($field) {
 		case 'Part Reference':
 		$invalid_msg=_('Part reference already used');
-				$sql=sprintf("select P.`Part SKU` as `key` ,`Part Reference` as field from `Part Dimension` P left join `Part Warehouse Bridge` B on (B.`Part SKU`=P.`Part SKU`) where `Part Reference`=%s  and `Part Status`='In Use' and `Warehouse Key`=%d ",
-					prepare_mysql($data['value']),
-					$data['parent_key']
+				$sql=sprintf("select P.`Part SKU` as `key` ,`Part Reference` as field from `Part Dimension` P where  `Part Reference`=%s  and `Part Status`='In Use' ",
+					prepare_mysql($data['value'])
 				);
 		$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
 		
@@ -406,7 +401,6 @@ function check_for_duplicates($data, $db, $user, $account) {
 
 
 
-
 	if (count($validation_sql_queries)==0) {
 		switch ($data['parent']) {
 		case 'store':
@@ -415,6 +409,9 @@ function check_for_duplicates($data, $db, $user, $account) {
 		case 'category':
 			$parent_where=sprintf(' and `%s Parent Key`=%d ', $data['object'], $data['parent_key']);
 			break;
+		case 'supplier':
+			$parent_where=sprintf(' and `%s Supplier Key`=%d ', $data['object'], $data['parent_key']);
+			break;	
 		default:
 			$parent_where='';
 		}

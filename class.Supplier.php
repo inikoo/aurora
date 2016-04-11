@@ -237,13 +237,13 @@ class supplier extends Subject {
 			break;
 		case ('Default Currency'):
 
-			if ($this->data['Supplier Default Currency']!='') {
+			if ($this->data['Supplier Default Currency Code']!='') {
 
 
 
 				$options_currencies=array();
 				$sql=sprintf("select `Currency Code`,`Currency Name`,`Currency Symbol` from kbase.`Currency Dimension` where `Currency Code`=%s",
-					prepare_mysql($this->data['Supplier Default Currency']));
+					prepare_mysql($this->data['Supplier Default Currency Code']));
 
 
 
@@ -251,7 +251,7 @@ class supplier extends Subject {
 					if ($row = $result->fetch()) {
 						return sprintf("%s (%s)", $row['Currency Name'], $row['Currency Code']);
 					}else {
-						return $this->data['Supplier Default Currency'];
+						return $this->data['Supplier Default Currency Code'];
 					}
 				}else {
 					print_r($error_info=$this->db->errorInfo());
@@ -279,21 +279,18 @@ class supplier extends Subject {
 			if ($this->data['Supplier Products Origin Country Code']) {
 				include_once 'class.Country.php';
 				$country=new Country('code', $this->data['Supplier Products Origin Country Code']);
-				return $country->get_country_name($this->locale);
+				return _($country->get('Country Name')).' ('.$country->get('Country Code').')';
 			}else {
 				return '';
 			}
 
 			break;
-		case 'Products Origin':
-			if ($this->data['Supplier Products Origin Country Code']) {
-				include_once 'class.Country.php';
-				$country=new Country('code', $this->data['Supplier Products Origin Country Code']);
-				return sprintf('<img  src="/art/flags/%s.gif"/> %s', strtolower($country->data['Country 2 Alpha Code']), _($country->get('Country Name')));
-			}else {
-				return '';
-			}
+
+
+
 			break;
+
+
 		case('Purchase Orders'):
 		case('Open Purchase Orders'):
 		case('Delivery Notes'):
@@ -981,7 +978,7 @@ class supplier extends Subject {
 	}
 
 
-	function update_field_switcher($field, $value, $options='',$metadata='') {
+	function update_field_switcher($field, $value, $options='', $metadata='') {
 
 
 
@@ -989,7 +986,7 @@ class supplier extends Subject {
 			$value=_trim($value);
 
 
-		if ($this->update_subject_field_switcher($field, $value, $options,$metadata)) {
+		if ($this->update_subject_field_switcher($field, $value, $options, $metadata)) {
 			return;
 		}
 
@@ -1024,16 +1021,20 @@ class supplier extends Subject {
 			break;
 
 
-		case('Supplier Products Origin Country Code'):
-			$this->update_field($field, $value, $options);
-			$this->update_field('Supplier Products Origin', $this->get('Products Origin'), $options);
+			// case('Supplier Products Origin Country Code'):
+			// $this->update_field($field, $value, $options);
+			//$this->update_field('Supplier Products Origin', $this->get('Products Origin'), $options);
+
+			/*
 			$sql=sprintf("select `Supplier Product ID` from `Supplier Product Dimension` where `Supplier Key`=%d", $this->id);
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_assoc($res)) {
 				$supplier_product=new SupplierProduct('pid', $row['Supplier Product ID']);
 				$supplier_product->update(array('Supplier Product Origin Country Code'=>$value));
 			}
-			break;
+			*/
+			// break;
+			/*
 		case('Supplier Average Delivery Days'):
 			$this->update_field($field, $value, $options);
 
@@ -1047,6 +1048,7 @@ class supplier extends Subject {
 				$supplier_product->update(array('Supplier Product Delivery Days'=>$value));
 			}
 			break;
+			*/
 		default:
 
 			$this->update_field($field, $value, $options);
@@ -1059,7 +1061,7 @@ class supplier extends Subject {
 
 	function update_default_currency($currency, $modify_products, $ratio) {
 
-		$this->update_field_switcher('Supplier Default Currency', $currency);
+		$this->update_field_switcher('Supplier Default Currency Code', $currency);
 
 		if ($modify_products=='Yes') {
 
@@ -1226,6 +1228,125 @@ class supplier extends Subject {
 	}
 
 
+
+	function create_supplier_part_record($data) {
+
+		$data['Supplier Part Supplier Key']=$this->id;
+		if ($data['Supplier Part Minimum Carton Order']=='') {
+			$data['Supplier Part Minimum Carton Order']=1;
+		}else {
+			$data['Supplier Part Minimum Carton Order']=ceil($data['Supplier Part Minimum Carton Order']);
+		}
+
+
+
+		$supplier_part= new SupplierPart('find', $data, 'create');
+
+
+		if ($supplier_part->id) {
+			$this->new_object_msg=$supplier_part->msg;
+
+			if ($supplier_part->new) {
+				$this->new_object=true;
+				$this->update_suplier_parts_data();
+
+
+				$part=new Part('find', $data, 'create');
+				if ($supplier_part->new) {
+					$supplier_part->update(array('Supplier Part Part SKU'=>$part->sku));
+					$supplier_part->get_data('id', $supplier_part->id);
+				}else {
+
+					$this->error=true;
+					if ($part->found) {
+
+						$this->error_code='duplicated_field';
+						$this->error_metadata=json_encode(array($part->duplicated_field));
+
+						if ($supplpartier_part->duplicated_field=='Part Reference') {
+							$this->msg=_("Duplicated part reference");
+						}else {
+							$this->msg='Duplicated '.$part->duplicated_field;
+						}
+
+
+					}else {
+						$this->msg=$part->msg;
+					}
+
+					$sql=sprintf('delete from `Supplier Part Dimension` where `Supplier Part Key`=%d', $supplier_part->id);
+					$this->db->exec($sql);
+					$sql=sprintf('select `History Key` from `Supplier Part History Bridge` where `Supplier Part Key`=%d', $supplier_part->id);
+					if ($result=$this->db->query($sql)) {
+						foreach ($result as $row) {
+							$sql=sprintf('delete from `History Dimension` where `History Key`=%d  ', $row['History Key']);
+							$this->db->exec($sql);
+						}
+					}else {
+						print_r($error_info=$this->db->errorInfo());
+						exit;
+					}
+
+					$sql=sprintf('delete from `Supplier Part Dimension` where `Supplier Part Key`=%d', $supplier_part->id);
+					$this->db->exec($sql);
+					$supplier_part=new SupplierPart(0);
+
+				}
+
+
+
+
+			} 
+			else {
+
+				$this->error=true;
+				if ($supplier_part->found) {
+
+					$this->error_code='duplicated_field';
+					$this->error_metadata=json_encode(array($supplier_part->duplicated_field));
+
+					if ($supplier_part->duplicated_field=='Supplier Part Reference') {
+						$this->msg=_("Duplicated supplier's part reference");
+					}else {
+						$this->msg='Duplicated '.$supplier_part->duplicated_field;
+					}
+
+
+				}else {
+					$this->msg=$supplier_part->msg;
+				}
+			}
+			return $supplier_part;
+		}
+		else {
+			$this->error=true;
+
+			if ($supplier_part->found) {
+$this->error_code='duplicated_field';
+					$this->error_metadata=json_encode(array($supplier_part->duplicated_field));
+
+					if ($supplier_part->duplicated_field=='Part Reference') {
+						$this->msg=_("Duplicated part reference");
+					}else {
+						$this->msg='Duplicated '.$supplier_part->duplicated_field;
+					}
+
+			}else {
+
+
+
+				$this->msg=$supplier_part->msg;
+			}
+		}
+
+	}
+
+
+	function update_suplier_parts_data() {
+
+	}
+
+
 	function get_field_label($field) {
 		global $account;
 
@@ -1283,8 +1404,11 @@ class supplier extends Subject {
 		case 'Supplier Average Delivery Days':
 			$label=_('delivery time (days)');
 			break;
-		case 'Supplier Default Currency':
+		case 'Supplier Default Currency Code':
 			$label=_('currency');
+			break;
+		case 'Part Origin Country Code':
+			$label=_('country of origin');
 			break;
 		case 'Supplier Default Incoterm':
 			$label=_('Incoterm');

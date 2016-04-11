@@ -344,9 +344,6 @@ function get_supplier_navigation($data, $smarty, $user, $db, $account) {
 
 function get_new_supplier_navigation($data, $smarty, $user, $db, $account) {
 
-
-
-
 	$left_buttons=array();
 	$right_buttons=array();
 
@@ -608,8 +605,48 @@ function get_supplier_part_navigation($data, $smarty, $user, $db, $account) {
 
 
 	$title= '<i class="fa fa-stop"></i>  <span class="id Supplier_Part_Reference">'.$data['_object']->get('Reference').'</span>';
-	$title.=' <small class="padding_left_10"> <i class="fa fa-long-arrow-right padding_left_10"></i> <i class="fa fa-square button" title="'._('Part').'" onCLick="change_view(\'part/'.$data['_object']->part->id.'\')" ></i> <span class="Part_Reference button"  onCLick="change_view(\'part/'.$data['_object']->part->id.'\')">'.$data['_object']->part->get('Reference').'</small>';
+	$title.=' <small class="padding_left_10"> <i class="fa fa-long-arrow-right padding_left_10"></i> <i class="fa fa-square button" title="'._('Part').'" onCLick="change_view(\'/part/'.$data['_object']->part->id.'\')" ></i> <span class="Part_Reference button"  onCLick="change_view(\'part/'.$data['_object']->part->id.'\')">'.$data['_object']->part->get('Reference').'</small>';
 	
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>_('Search suppliers'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+
+	$html=$smarty->fetch('navigation.tpl');
+
+	return $html;
+
+}
+
+
+
+function get_new_supplier_part_navigation($data, $smarty, $user, $db, $account) {
+
+	$left_buttons=array();
+	$right_buttons=array();
+
+
+	$sections=get_sections('suppliers', '');
+
+	$_section='suppliers';
+	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
+
+	$up_button=array('icon'=>'arrow-up', 'title'=>_("Supplier").' ('.$data['_parent']->get('Code').')', 'reference'=>'supplier/'.$data['parent_key']);
+
+
+	$left_buttons[]=$up_button;
+
+
+	$title= '<span class="id ">'._("New Supplier's part").'</span>';
+
 
 	$_content=array(
 		'sections_class'=>'',

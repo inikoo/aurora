@@ -47,8 +47,8 @@ var columns = [
 })
    
 },{
-    name: "products",
-    label: "{t}Products{/t}",
+    name: "assets",
+    label: "{t}Parts{/t}",
     editable: true,
      sortType: "toggle",
     

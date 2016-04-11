@@ -109,7 +109,8 @@ input {
   width: 100%;
   background: #555;
   font-size: 11px;
-  color: #fff; }
+  color: #fff;
+  z-index: 1000; }
   #top_bar a {
     color: #fff; }
   #top_bar #view_position {

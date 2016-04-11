@@ -389,6 +389,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 									$key=$view_path[2];
 								}elseif ($view_path[2]=='new') {
+								    $key=0;
 									$section='supplier_part.new';
 								}
 							}

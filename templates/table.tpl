@@ -458,7 +458,7 @@ var with_elements=false;
 {/if}
 
 {if isset($js_code) }
-{include file="string:$js_code" } 
+{include file="$js_code" } 
 {/if}
 
 </script> 
