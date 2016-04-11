@@ -77,7 +77,6 @@ function suppliers($_data,$db,$user) {
 		$required=number($data["Supplier $db_period Acc Parts Required"],0);
 
 
-
 		$adata[]=array(
 			'id'=>(integer)$data['Supplier Key'],
 			'formatted_id'=>sprintf('%03d',$data['Supplier Key']),
@@ -93,7 +92,7 @@ function suppliers($_data,$db,$user) {
 			'contact'=>$data['Supplier Main Contact Name'],
 			'sold'=>$sold,
 			'required'=>$required,
-			'origin'=>$data['Supplier Products Origin'],
+			'origin'=>$data['Supplier Products Origin Country Code'],
 			'active_sp'=>number($data['Supplier Active Supplier Products']),
 			'no_active_sp'=>number($data['Supplier Discontinued Supplier Products']),
 

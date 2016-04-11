@@ -16,7 +16,7 @@ include_once 'conf/object_fields.php';
 
 $part=$state['_object']->part;
 
-$object_fields=get_object_fields($part, $db,array('show_full_label'=>true));
+$object_fields=get_object_fields($part, $db,array('supplier_part_scope'=>true));
 
 
 

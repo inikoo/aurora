@@ -323,3 +323,5 @@ ALTER TABLE `Part Dimension` ADD `Part Barcode Key` MEDIUMINT UNSIGNED NULL DEFA
 
 ALTER TABLE `Part Dimension` ADD `Part Barcode Number` BIGINT UNSIGNED NULL DEFAULT NULL AFTER `Part Barcode`, ADD INDEX (`Part Barcode Number`);
 
+
+

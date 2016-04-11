@@ -56,6 +56,8 @@ if ($order=='part_description'){
 	$order='`Part Reference`';
 }elseif ($order=='reference'){
 	$order='`Supplier Part Reference`';
+}elseif ($order=='cost'){
+	$order='`Supplier Part Unit Cost`';
 }else {
 
 	$order='`Supplier Part Part SKU`';
@@ -65,7 +67,7 @@ if ($order=='part_description'){
 
 $sql_totals="select count(Distinct SP.`Supplier Part Key`) as num from $table  $where  ";
 				
-$fields.='`Supplier Part Key`,`Supplier Part Part SKU`,`Part Reference`,`Part Unit Description`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Supplier Part Status`,`Supplier Part From`,`Supplier Part To`,`Supplier Part Cost`,`Supplier Part Batch`';
+$fields.='`Supplier Part Key`,`Supplier Part Part SKU`,`Part Reference`,`Part Unit Description`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Supplier Part Status`,`Supplier Part From`,`Supplier Part To`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,`Supplier Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,`Supplier Part Minimum Carton Order`';
 
 
 ?>

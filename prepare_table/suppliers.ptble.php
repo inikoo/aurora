@@ -9,12 +9,12 @@
 
 */
 
-require_once 'utils/date_functions.php';
 
+include_once('utils/date_functions.php');
 
 $currency='';
 $where='where true';
-$table='`Supplier Dimension` S ';
+$table='`Supplier Dimension` S left join `Supplier Data`  D on (S.`Supplier Key`=D.`Supplier Key`)';
 $group_by='';
 $where_type='';
 
@@ -176,9 +176,9 @@ if ($order=='code')
 elseif ($order=='name')
 	$order='`Supplier Name`';
 elseif ($order=='formatted_id')
-	$order='`Supplier Key`';
+	$order='S.`Supplier Key`';
 elseif ($order=='id')
-	$order='`Supplier Key`';
+	$order='S.`Supplier Key`';
 elseif ($order=='location')
 	$order='`Supplier Location`';
 elseif ($order=='email')
@@ -261,10 +261,18 @@ elseif ($order=='sales_year2') {$order="`Supplier 2 Year Ago Sales Amount`";}
 elseif ($order=='sales_year3') {$order="`Supplier 3 Year Ago Sales Amount`";}
 elseif ($order=='sales_year4') {$order="`Supplier 4 Year Ago Sales Amount`";}
 elseif ($order=='sales_year0') {$order="`Supplier Year To Day Acc Parts Sold Amount`";}
+else{
+	$order="S.`Supplier Key`";
 
+}
 
 $sql_totals="select count(Distinct S.`Supplier Key`) as num from $table  $where  $where_type";
 
-$fields='*';
-
+$fields="S.`Supplier Key`,`Supplier Products Origin Country Code`,`Supplier $db_period Acc Parts Sold Amount`,`Supplier $db_period Acc 1YB Parts Sold Amount`,
+`Supplier $db_period Acc Parts Profit`,`Supplier $db_period Acc Parts Profit After Storing`,`Supplier $db_period Acc Parts Cost`,`Supplier $db_period Acc Parts Sold`,`Supplier $db_period Acc Parts Required`,`Supplier $db_period Acc Parts Margin`,
+`Supplier Name`,`Supplier Low Availability Products`,`Supplier Surplus Availability Products`,`Supplier Optimal Availability Products`,`Supplier Critical Availability Products`,`Supplier Out Of Stock Products`,
+`Supplier Location`,`Supplier Main Plain Email`,`Supplier Main XHTML Telephone`,`Supplier Main Contact Name`,
+`Supplier Active Supplier Products`,`Supplier Discontinued Supplier Products`,`Supplier Average Delivery Days`,`Supplier Open Purchase Orders`,
+`Supplier 1 Year Ago Sales Amount`,`Supplier 2 Year Ago Sales Amount`,`Supplier 3 Year Ago Sales Amount`,`Supplier 4 Year Ago Sales Amount`
+";
 ?>

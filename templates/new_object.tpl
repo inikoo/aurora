@@ -7,7 +7,7 @@
     {foreach from=$object_fields item=field_group } 
         <tr class="title" >
             <td  colspan=3>
-	            {$field_group.label}
+	            {$field_group.label} 
 	        </td>
         </tr>
         {if isset($field_group.class)}{assign "field_class" $field_group.class}{else}{assign "field_class" ""}{/if} 
@@ -16,7 +16,7 @@
 	    {if isset($field.render)}{assign "render" $field.render}{else}{assign "render" true}{/if} 
         <tr  class="link {if !$render}hide{/if}" onClick="change_view('{$field.reference}')">
             <td  colspan=3>
-	            <i style="margin-right:10px" class="fa fa-link"></i> {$field.label}
+	            <i style="margin-right:10px" class="fa fa-link"></i> {$field.label} 
 	        </td>
         </tr>
         {/foreach}
@@ -199,10 +199,10 @@
 		<span id="{$field.id}_formatted_value" class="{$field.id} formatted_value hide" ondblclick="open_edit_field('{$object_name}','{$state.key}','{$field.id}')">{if isset($field.formatted_value)}{$field.formatted_value}{else}{$field.value}{/if}</span>
 		<span id="{$field.id}_value" class="hide " >{$field.value}</span>
 
-		{if $edit=='string' or $edit=='handle' or $edit=='dimensions'  or $edit=='email' or  $edit=='int_unsigned' or $edit=='smallint_unsigned' or $edit=='mediumint_unsigned' or $edit=='int' or $edit=='smallint' or $edit=='mediumint' or $edit=='anything' or $edit=='numeric' } 
+		{if $edit=='string' or $edit=='handle' or $edit=='dimensions'  or $edit=='email' or  $edit=='int_unsigned' or $edit=='smallint_unsigned' or $edit=='mediumint_unsigned' or $edit=='int' or $edit=='smallint' or $edit=='mediumint' or $edit=='anything' or $edit=='numeric' or $edit=='amount' or $edit=='flexi_amount' } 
 		
 	
-		<input id="{$field.id}" class="input_field " value="{$field.value}" has_been_valid="0"/>
+		<input id="{$field.id}" class="input_field " value="{$field.value}" has_been_valid="0" {if isset($field.placeholder)}placeholder="{$field.placeholder}"{/if}/>
 		<span id="{$field.id}_msg" class="msg"></span> 
 		
 		{elseif $edit=='dropdown_select'}
@@ -279,7 +279,7 @@
 
 		
 		<i id="{$field.id}_save_button" class="fa fa-cloud  save {$edit} hide" onclick="save_field('{$object_name}','{$state.key}','{$field.id}')"></i> 
-		<span id="{$field.id}_msg" class="msg"></span> 
+		<span id="{$object_name}_msg" class="msg"></span> 
 		
 		{elseif $edit=='hidden' } 
 				<input id="{$field.id}" type="hidden" value="{$field.value}" has_been_valid="0" />
@@ -450,11 +450,14 @@
 
         var validation = validate_field(field, value, type, required, server_validation, parent, parent_key, _object, key)
 
-       
+     
        
             if (validation.class == 'invalid' && value == '') {
                 validation.class = 'potentially_valid'
             }
+                          console.log(field)
+
+              console.log(validation)
        
          $('#' + field + '_field').removeClass('invalid potentially_valid valid').addClass(validation.class)
 

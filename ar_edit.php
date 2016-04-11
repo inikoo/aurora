@@ -604,10 +604,20 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 			);
 		}
 		break;
+	case 'Supplier Part':
+		include_once 'class.SupplierPart.php';
+		$object=$parent->create_supplier_part_record($data['fields_data']);
+		if (!$parent->error) {
+			$smarty->assign('object', $object);
+
+			$pcard=$smarty->fetch('presentation_cards/supplier_part.pcard.tpl');
+			$updated_data=array();
+		}
+		break;
 	default:
 		$response=array(
 			'state'=>400,
-			'msg'=>'object process not found'
+			'msg'=>'object process not found '.$data['object']
 
 		);
 
@@ -619,6 +629,9 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
 	if ($parent->error) {
+	
+	
+	
 		$response=array(
 			'state'=>400,
 			'msg'=>'<i class="fa fa-exclamation-circle"></i> '.$parent->msg,

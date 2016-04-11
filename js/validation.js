@@ -455,6 +455,33 @@ function client_validation(type, required, value, field) {
             }
         }
         break
+    case 'flexi_amount':
+       
+       var regex = /^[1-9]\d*(((,\d{3}){1})?(\.\d{0,2})?)$/;
+        if (regex.test(value)) {
+           return valid_state;
+        }
+       
+       
+       
+          var regex = /^[1-9]\d*(((,\d{3}){1})?(\.\d{0,6})?)(\s?[a-z]{1,2})?$/;
+        if (regex.test(value)) {
+            /// console.log('ccc')
+            return {
+                class: 'potentially_valid',
+                type: 'invalid_amount'
+            }
+        }
+       
+        var regex = /^[1-9]\d*(((,\d{3}){1})?(\.\d{0,6})?)(\s?[a-z]{3})?$/;
+        if (!regex.test(value)) {
+            /// console.log('ccc')
+            return {
+                class: 'invalid',
+                type: 'invalid_amount'
+            }
+        }
+        break
     default:
 
     }
@@ -515,8 +542,8 @@ function server_validation(settings, parent, parent_key, object, key, field, val
     if (settings.object != null) {
         object = settings.object;
     }
-    
-     if (settings.key != null) {
+
+    if (settings.key != null) {
         key = settings.key;
     }
 
@@ -528,14 +555,14 @@ function server_validation(settings, parent, parent_key, object, key, field, val
     $("#" + field + '_editor').addClass('waiting')
 
     if (settings.setup != null) {
-            var request = '/ar_setup.php?tipo=' + settings.tipo + '&parent=' + parent + '&parent_key=' + parent_key + '&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value
+        var request = '/ar_setup.php?tipo=' + settings.tipo + '&parent=' + parent + '&parent_key=' + parent_key + '&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value
 
     } else {
 
         var request = '/ar_validation.php?tipo=' + settings.tipo + '&parent=' + parent + '&parent_key=' + parent_key + '&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value
     }
 
-    console.log(request)
+  //  console.log(request)
 
 
     $.getJSON(request, function(data) {

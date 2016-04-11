@@ -21,7 +21,7 @@ $default=$user->get_tab_defaults($tab);
 
 $table_views=array(
 	'overview'=>array('label'=>_('Overview'), 'title'=>_('Overview')),
-	'parts'=>array('label'=>_('Part'), 'title'=>_('Part details')),
+	'parts'=>array('label'=>_('Inventory Part'), 'title'=>_('Part details')),
 	'reorder'=>array('label'=>_('Reorder')),
 
 );
@@ -36,6 +36,19 @@ $parameters=array(
 	'parent_key'=>$state['key'],
 
 );
+
+
+$table_buttons=array();
+$table_buttons[]=array('icon'=>'plus', 'title'=>_("New supplier's part"), 'reference'=>"supplier/".$state['key']."/part/new");
+$smarty->assign('table_buttons', $table_buttons);
+$smarty->assign('upload_file', array(
+'tipo'=>'upload_objects',
+'parent'=>$state['object'],
+'parent_key'=>$state['key'],
+'object'=>'supplier_part',
+'label'=>_("Upload supplier's parts")
+
+));
 
 
 include 'utils/get_table_html.php';
