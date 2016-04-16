@@ -42,8 +42,17 @@ $account=new Account($db);
 
 
 if ($account->get('Account State')!='Active') {
+
+
+$target = $_SERVER['PHP_SELF'];
+	if (preg_match('/^\/ar_validation.php$/', $target)) {
+		
+		
+	}else{
+
 	header('Location: /login.php');
 	exit;
+	}
 }
 
 

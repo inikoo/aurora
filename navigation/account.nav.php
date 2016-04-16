@@ -22,6 +22,10 @@ $skip=false;
 		$skip=true;
 	}elseif ($data['section']=='setup_root_user') {
 		$title=_('Set up root user');
+	}elseif ($data['section']=='setup_add_warehouse') {
+		$title=_('Add warehouse');
+	}elseif ($data['section']=='setup_add_store') {
+		$title=_('Add store');
 	}else {
 		$title=_('Account set up');
 	}
