@@ -136,14 +136,18 @@ class Store extends DB_Table {
 
 
 
-
-		$res =mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			foreach ($row as $key=>$value) {
-				$this->data[$key]=$value;
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				foreach ($row as $key=>$value) {
+					$this->data[$key]=$value;
+				}
 			}
-
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 	}
 
 
@@ -228,7 +232,7 @@ class Store extends DB_Table {
 			$this->create($data);
 			return;
 		}
-		
+
 
 
 	}
@@ -359,53 +363,54 @@ class Store extends DB_Table {
 
 		if ($this->data['Store Contacts']==0) {
 
-			//Todo: delte Dept Families and products
-			$sql=sprintf("select `Product Department Key` from `Product Department Dimension where `Product Department Store Key`=%d", $this->id);
-			$res=mysql_query($sql);
-			while ($row=mysql_fetch_assoc($res)) {
-				$department=new Department($row[]);
+			$sql=sprintf("select `Category Key` from `Category Dimension where `Category Store Key`=%d", $this->id);
+
+			include_once 'class.Category.php';
+			if ($result=$this->db->query($sql)) {
+				foreach ($result as $row) {
+					$category=new Category($row['Category Key']);
+					$category->delete();
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
+
+
+
 
 
 
 			$sql=sprintf("delete from `Store Dimension` where `Store Key`=%d", $this->id);
-			if (mysql_query($sql)) {
-				$this->deleted=true;
-				$sql=sprintf("delete from `User Right Scope Bridge` where `Scope`='Store' and `Scope Key`=%d ", $this->id);
-				mysql_query($sql);
-				$sql=sprintf("delete from `Store Default Currency` where `Store Key`=%d ", $this->id);
-				mysql_query($sql);
-				$sql=sprintf("delete from `Store Data Dimension` where `Store Key`=%d ", $this->id);
-				mysql_query($sql);
-
-
-
-
-				$sql=sprintf("delete from `Invoice Category Dimension` where `Invoice Category Store Key`=%d ", $this->id);
-				mysql_query($sql);
-				$sql=sprintf("delete from `Category Dimension` where `Category Store Key`=%d ", $this->id);
-				mysql_query($sql);
+			$this->db->exec($sql);
+			$this->deleted=true;
+			$sql=sprintf("delete from `User Right Scope Bridge` where `Scope`='Store' and `Scope Key`=%d ", $this->id);
+			$this->db->exec($sql);
+			$sql=sprintf("delete from `Store Default Currency` where `Store Key`=%d ", $this->id);
+			$this->db->exec($sql);
+			$sql=sprintf("delete from `Store Data Dimension` where `Store Key`=%d ", $this->id);
+			$this->db->exec($sql);
+			$sql=sprintf("delete from `Invoice Category Dimension` where `Invoice Category Store Key`=%d ", $this->id);
+			$this->db->exec($sql);
+			$sql=sprintf("delete from `Category Dimension` where `Category Store Key`=%d ", $this->id);
+			$this->db->exec($sql);
 
 
 
 
 
-				$history_key=$this->add_history(array(
-						'Action'=>'deleted',
-						'History Abstract'=>_('Store deleted').' ('.$this->data['Store Name'].')',
-						'History Details'=>''
-					), true);
+			$history_key=$this->add_history(array(
+					'Action'=>'deleted',
+					'History Abstract'=>sprintf(_('Store %d deleted'), $this->data['Store Name']),
+					'History Details'=>''
+				), true);
 
-				include_once 'class.Account.php';
+			include_once 'class.Account.php';
 
-				$hq=new Account();
-				$hq->add_account_history($history_key);
+			$hq=new Account();
+			$hq->add_account_history($history_key);
 
-			} else {
 
-				$this->msg='Error: can not delete store';
-				return;
-			}
 
 			$this->deleted=true;
 		} else {
@@ -417,26 +422,6 @@ class Store extends DB_Table {
 
 
 
-	function get_products_for_sale() {
-		$products_for_sale=0;
-		$sql=sprintf("select count(*) as number from `Product Dimension` where `Product Store Key`=%d and `Product Record Type`='Normal'     and `Product Main Type` in ('Private','Sale')",
-			$this->id
-		);
-
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$products_for_sale=$row['number'];
-		}
-		return $products_for_sale;
-	}
-
-
-	function get_formatted_products_for_sale() {
-
-		return number($this->get_products_for_sale());
-	}
-
-
 
 
 
@@ -446,118 +431,6 @@ class Store extends DB_Table {
 
 	}
 
-
-	function update_code($a1) {
-
-		if (_trim($a1)==$this->data['Store Code']) {
-			$this->updated=true;
-			$this->new_value=$a1;
-			return;
-
-		}
-
-		if ($a1=='') {
-			$this->msg=_('Error: Wrong code (empty)');
-			return;
-		}
-
-		if (!(strtolower($a1)==strtolower($this->data['Store Code']) and $a1!=$this->data['Store Code'])) {
-			$sql=sprintf("select count(*) as num from `Store Dimension` where  `Store Code`=%s COLLATE utf8_general_ci  "
-				, prepare_mysql($a1)
-			);
-			$res=mysql_query($sql);
-			$row=mysql_fetch_array($res);
-			if ($row['num']>0) {
-				$this->msg=_("Error: There is another store with the same code");
-				return;
-			}
-		}
-		$old_value=$this->get('Store Code');
-		$sql=sprintf("update `Store Dimension` set `Store Code`=%s where `Store Key`=%d  "
-			, prepare_mysql($a1)
-			, $this->id
-		);
-		if (mysql_query($sql)) {
-			$this->msg=_('Store Code Updated');
-			$this->updated=true;
-			$this->new_value=$a1;
-			$this->data['Store Code']=$a1;
-
-			$history_data=array(
-				'Indirect Object'=>'Store Code'
-				, 'History Abstract'=>_('Store Code Changed').' ('.$this->get('Store Code').')'
-				, 'History Details'=>_('Store')." ".$this->data['Store Name']." "._('changed code from').' '.$old_value." "._('to').' '. $this->get('Store Code')
-			);
-			//print_r($history_data);
-			$this->add_history($history_data);
-
-
-
-
-
-		} else {
-			$this->msg=_("Error: Store code could not be updated");
-
-			$this->updated=false;
-
-		}
-	}
-
-
-	function update_name($value) {
-		if (_trim($value)==$this->data['Store Name']) {
-			$this->updated=true;
-			$this->new_value=$value;
-			return;
-
-		}
-
-		if ($value=='') {
-			$this->msg=_('Error: Wrong name (empty)');
-			return;
-		}
-
-		if (!(strtolower($value)==strtolower($this->data['Store Name']) and $value!=$this->data['Store Name'])) {
-
-			$sql=sprintf("select count(*) as num from `Store Dimension` where `Store Name`=%s COLLATE utf8_general_ci"
-				, prepare_mysql($value)
-			);
-
-			$res=mysql_query($sql);
-			$row=mysql_fetch_array($res);
-			if ($row['num']>0) {
-				$this->msg=_("Error: Another store with the same name");
-				return;
-			}
-		}
-		$old_value=$this->get('Store Name');
-		$sql=sprintf("update `Store Dimension` set `Store Name`=%s where `Store Key`=%d "
-			, prepare_mysql($value)
-			, $this->id
-		);
-		if (mysql_query($sql)) {
-			$this->msg=_('Store name updated');
-			$this->updated=true;
-			$this->new_value=$value;
-			$this->data['Store Name']=$value;
-
-			$this->add_history(array(
-					'Indirect Object'=>'Store Name',
-					'History Abstract'=>_('Store Name Changed').' ('.$this->get('Store Name').')',
-					'History Details'=>_('Store')." ("._('Code').":".$this->get('Store Code').") "._('name changed from').' '.$old_value." "._('to').' '. $this->get('Store Name')
-				));
-
-
-
-
-
-		} else {
-			$this->msg=_("Error: Store name could not be updated");
-
-			$this->updated=false;
-
-		}
-	}
 
 
 
@@ -573,39 +446,18 @@ class Store extends DB_Table {
 			$this->update_field('Store '.$field, $value, 'no_null');
 			$this->new_value=html_entity_decode($this->new_value);
 			break;
-		case('code'):
+
 		case('Store Code'):
-			$this->update_code($value);
+		case('Store Name'):
+
+			if ($value=='') {
+                $this->error=true;
+                $this->msg=_("Value can't be empty");
+			}
+			$this->update_field($field, $value, $options);
 			break;
 
-		case('slogan'):
-			$this->update_field('Store Slogan', $value);
-			break;
-		case('url'):
-			$this->update_field('Store URL', $value);
-			break;
 
-		case('contact'):
-			$this->update_field('Store Contact', $value);
-			break;
-		case('email'):
-			$this->update_field('Store Email', $value);
-			break;
-		case('telephone'):
-			$this->update_field('Store Telephone', $value);
-			break;
-		case('fax'):
-			$this->update_field('Store Fax', $value);
-			break;
-		case('address'):
-			$this->update_field('Store Address', $value);
-			break;
-		case('marketing_description'):
-			$this->update_field('Short Marketing Description', $value);
-			break;
-		case('name'):
-			$this->update_name($value);
-			break;
 		default:
 			$base_data=$this->base_data();
 			if (array_key_exists($field, $base_data)) {
@@ -633,7 +485,7 @@ class Store extends DB_Table {
 		}
 
 		$keys='(';
-		$values='values(';
+		$values='values (';
 		foreach ($basedata as $key=>$value) {
 			$keys.="`$key`,";
 			if (preg_match('/Store Email|Store Telephone|Store Telephone|Slogan|URL|Fax|Sticky Note|Store VAT Number/i', $key))
@@ -645,8 +497,13 @@ class Store extends DB_Table {
 		$values=preg_replace('/,$/', ')', $values);
 		$sql=sprintf("insert into `Store Dimension` %s %s", $keys, $values);
 
-		if (mysql_query($sql)) {
-			$this->id = mysql_insert_id();
+$sql="insert into `Store Dimension` $keys  $values";
+
+		if ($this->db->exec($sql)) {
+			$this->id=$this->db->lastInsertId();
+
+
+		
 			$this->msg=_("Store Added");
 			$this->get_data('id', $this->id);
 			$this->new=true;
@@ -657,15 +514,15 @@ class Store extends DB_Table {
 					$this->editor['User Key'],
 					$this->id
 				);
-				mysql_query($sql);
+				$this->db->exec($sql);
 
 			}
 
 			$sql="insert into `Store Default Currency` (`Store Key`) values(".$this->id.");";
-			mysql_query($sql);
+				$this->db->exec($sql);
 
 			$sql="insert into `Store Data Currency` (`Store Key`) values(".$this->id.");";
-			mysql_query($sql);
+				$this->db->exec($sql);
 
 			/*
 
@@ -726,7 +583,7 @@ class Store extends DB_Table {
 
 
 			$history_data=array(
-				'History Abstract'=>sprintf(_('Store %s (%s) created'), $this->data['Store Name'],$this->data['Store Code']),
+				'History Abstract'=>sprintf(_('Store %s (%s) created'), $this->data['Store Name'], $this->data['Store Code']),
 				'History Details'=>'',
 				'Action'=>'created'
 			);
@@ -734,7 +591,7 @@ class Store extends DB_Table {
 			$history_key=$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
 
 
-					include_once 'class.Account.php';
+			include_once 'class.Account.php';
 			$account=new Account();
 			$account->add_account_history($history_key);
 

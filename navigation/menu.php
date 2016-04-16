@@ -167,7 +167,7 @@ if ($user->can_view('locations')) {
 		$nav_menu[] = array('<i class="fa fa-map fa-fw"></i>',_('Warehouse'), 'warehouse/'.$user->data['User Hooked Warehouse Key'], 'warehouses', 'module', '');
 	}else {
 
-		$nav_menu[] = array('<i class="fa fa-th-large fa-fw"></i>',_('Warehouse'), 'warehouses', 'warehouses', 'module', '');
+		$nav_menu[] = array('<i class="fa fa-map fa-fw"></i>',_('Warehouse'), 'warehouses', 'warehouses', 'module', '');
 	}
 
 }

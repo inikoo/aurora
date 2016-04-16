@@ -11,6 +11,9 @@
 */
 
 error_reporting(E_ALL);
+
+define("_DEVEL",   isset($_SERVER['devel']));
+
 require_once 'utils/general_functions.php';
 require_once 'utils/object_functions.php';
 require_once 'utils/system_functions.php';
@@ -31,6 +34,7 @@ $smarty->template_dir = 'templates';
 $smarty->compile_dir = 'server_files/smarty/templates_c';
 $smarty->cache_dir = 'server_files/smarty/cache';
 $smarty->config_dir = 'server_files/smarty/configs';
+$smarty->assign('_DEVEL', _DEVEL);
 
 $db = new PDO("mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd , array(\PDO::MYSQL_ATTR_INIT_COMMAND =>"SET time_zone = '+0:00';"));
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
@@ -107,7 +111,7 @@ case 'setup':
 
 	if ($data['step']=='root_user') {
 		setup_root_user($data);
-	}elseif ($data['step']=='add_employee') {
+	}elseif (  in_array( $data['step'] , array('add_employee', 'add_warehouse', 'add_store'  ))) {
 		new_object( $db,  $editor, $data, $smarty);
 	}
 
@@ -270,6 +274,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case ('setup_error'):
 		case ('setup_root_user'):
 		case ('setup_add_employees'):
+		case ('setup_add_warehouse'):
+		case ('setup_add_store'):
+
 			return get_account_setup_navigation($data, $smarty, $user, $db, $account);
 			break;
 
@@ -482,6 +489,9 @@ function get_view_position($state, $smarty) {
 		break;
 	case 'setup_add_employees':
 		$branch[]=array('label'=>_('Add employees'), 'icon'=>'', 'reference'=>'');
+		break;
+	case 'setup_add_warehouse':
+		$branch[]=array('label'=>_('Add warehouse'), 'icon'=>'', 'reference'=>'');
 		break;
 	}
 
@@ -1064,6 +1074,8 @@ function new_object($db, $editor, $data, $smarty) {
 	$parent=get_object($data['parent'], $data['parent_key']);
 	$parent->editor=$editor;
 
+	$step='';
+
 	switch ($data['object']) {
 
 
@@ -1076,30 +1088,71 @@ function new_object($db, $editor, $data, $smarty) {
 			$smarty->assign('object', $object);
 
 			$pcard=$smarty->fetch('presentation_cards/employee.pcard.tpl');
+
+
+
+
 			$updated_data=array();
 
-			$account=new Account();
-			$setup_data=$account->get('Setup Metadata');
-			$setup_data['steps']['add_employees']['setup']=true;
-			$account->update(array('Account Setup Metadata'=>json_encode($setup_data)), 'no_history');
+			$step='add_employees';
 
 
-
-			$done=true;
-			foreach ($setup_data['steps'] as $step_code=>$step_data) {
-				if (!$step_data['setup']) {
-					$done=false;
-					break;
-				}
-			}
-			if ($done) {
-				$account->update(array('Account State'=>'Active'));
-			}
 
 
 		}
 
 
+		break;
+
+	case 'Warehouse':
+		include_once 'class.Warehouse.php';
+		if (!$parent->error) {
+			$object=$parent->create_warehouse($data['fields_data']);
+			if ($parent->new_object) {
+				$smarty->assign('account', $account);
+				$smarty->assign('object', $object);
+
+				$pcard=$smarty->fetch('presentation_cards/warehouse.pcard.tpl');
+				$updated_data=array();
+				$step='add_warehouse';
+			}else {
+				$response=array(
+					'state'=>400,
+					'msg'=>$parent->msg
+
+				);
+				echo json_encode($response);
+				exit;
+
+			}
+		}
+		break;
+	case 'Store':
+		include_once 'class.Store.php';
+		if (!$parent->error) {
+			$object=$parent->create_store($data['fields_data']);
+
+			if ($parent->new_object) {
+
+				$smarty->assign('account', $account);
+				$smarty->assign('object', $object);
+
+				$pcard=$smarty->fetch('presentation_cards/store.pcard.tpl');
+				$updated_data=array();
+				$step='add_store';
+
+			}else {
+				$response=array(
+					'state'=>400,
+					'msg'=>$parent->msg
+
+				);
+				echo json_encode($response);
+				exit;
+
+			}
+
+		}
 		break;
 
 	default:
@@ -1124,6 +1177,26 @@ function new_object($db, $editor, $data, $smarty) {
 		);
 
 	}else {
+
+
+		$setup_data=$account->get('Setup Metadata');
+		$setup_data['steps'][$step]['setup']=true;
+		$account=new Account();
+		$account->update(array('Account Setup Metadata'=>json_encode($setup_data)), 'no_history');
+
+
+
+		$done=true;
+		foreach ($setup_data['steps'] as $step_code=>$step_data) {
+			if (!$step_data['setup']) {
+				$done=false;
+				break;
+			}
+		}
+		if ($done) {
+			$account->update(array('Account State'=>'Active'));
+		}
+
 
 		$response=array(
 			'state'=>200,
