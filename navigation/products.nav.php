@@ -69,13 +69,17 @@ function get_store_navigation($data, $smarty, $user, $db, $account) {
 	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
 
 
+	$title=_('Store').' <span class="Store_Code id">'.$store->get('Code').'</span>';
+	if (   !in_array($data['key'], $user->stores)   ) {
+		$title=' <i class="fa fa-lock padding_right_10"></i>'.$title;
+	}
+
 	$_content=array(
 		'sections_class'=>'',
 		'sections'=>$sections,
-
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
-		'title'=>_('Store').' <span class="id">'.$store->get('Code').'</span>',
+		'title'=>$title,
 		'search'=>array('show'=>true, 'placeholder'=>_('Search products').' '.$store->get('Store Code'))
 
 	);
@@ -517,8 +521,8 @@ function get_product_navigation($data, $smarty, $user, $db, $account) {
 			if ($row2 = $result2->fetch() and $row2['num']>1) {
 
 
-				$sql=sprintf("select P.`Store Product Code` object_name,P.`Store Product Key` as object_key %s from $table   $where $wheref
-	                and ($_order_field < %s OR ($_order_field = %s AND P.`Store Product Key` < %d))  order by $_order_field desc , P.`Store Product Key` desc limit 1",
+				$sql=sprintf("select P.`Product Code` object_name,P.`Product ID` as object_key %s from $table   $where $wheref
+	                and ($_order_field < %s OR ($_order_field = %s AND P.`Product ID` < %d))  order by $_order_field desc , P.`Product ID` desc limit 1",
 					$extra_field,
 					prepare_mysql($_order_field_value),
 					prepare_mysql($_order_field_value),
@@ -539,8 +543,8 @@ function get_product_navigation($data, $smarty, $user, $db, $account) {
 				}
 
 
-				$sql=sprintf("select P.`Store Product Code` object_name,P.`Store Product Key` as object_key %s from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND P.`Store Product Key` > %d))  order by $_order_field   , P.`Store Product Key`  limit 1",
+				$sql=sprintf("select P.`Product Code` object_name,P.`Product ID` as object_key %s from $table   $where $wheref
+	                and ($_order_field  > %s OR ($_order_field  = %s AND P.`Product ID` > %d))  order by $_order_field   , P.`Product ID`  limit 1",
 					$extra_field,
 					prepare_mysql($_order_field_value),
 					prepare_mysql($_order_field_value),
@@ -945,6 +949,7 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
 
 }
 
+
 function get_new_store_navigation($data, $smarty, $user, $db, $account) {
 
 
@@ -957,7 +962,7 @@ function get_new_store_navigation($data, $smarty, $user, $db, $account) {
 
 	$left_buttons=array();
 
-		$left_buttons[]=array('icon'=>'arrow-up', 'title'=>_('Stores'), 'reference'=>'stores', 'parent'=>'');
+	$left_buttons[]=array('icon'=>'arrow-up', 'title'=>_('Stores'), 'reference'=>'stores', 'parent'=>'');
 
 
 	$right_buttons=array();

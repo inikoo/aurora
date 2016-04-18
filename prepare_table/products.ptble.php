@@ -13,7 +13,7 @@ include_once('utils/date_functions.php');
 $period_tag=get_interval_db_name($parameters['f_period']);
 
 $group_by='';
-$table="`Store Product Dimension` P left join `Store Product Data` PD on (PD.`Store Product Key`=P.`Store Product Key`) left join `Store Dimension` S on (`Store Product Store Key`=`Store Key`)";
+$table="`Product Dimension` P left join `Product Data Dimension` PD on (PD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`)";
 $where_interval='';
 $wheref='';
 
@@ -45,7 +45,7 @@ case('list'):
 		$awhere=false;
 		if ($customer_list_data['List Type']=='Static') {
 
-			$table='`List Product Bridge` PB left join `Store Product Dimension` P  on (PB.`Store Product Key`=P.`Store Product Key`) left join `Store Product Data` PD on (PD.`Store Product Key`=P.`Store Product Key`) left join `Store Dimension` S on (`Store Product Store Key`=`Store Key`)';
+			$table='`List Product Bridge` PB left join `Product Dimension` P  on (PB.`Product ID`=P.`Product ID`) left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`)';
 			$where=sprintf(' where `List Key`=%d ', $_REQUEST['parent_key']);
 
 		} else {// Dynamic by DEFAULT
@@ -70,21 +70,21 @@ case('list'):
 	break;
 case('stores'):
 case('account'):
-	$where=sprintf(" where `Store Product Store Key` in (%s) ", join(',', $user->stores));
+	$where=sprintf(" where `Product Store Key` in (%s) ", join(',', $user->stores));
 	break;
 case('store'):
-	$where=sprintf(' where `Store Product Store Key`=%d', $parameters['parent_key']);
+	$where=sprintf(' where `Product Store Key`=%d', $parameters['parent_key']);
 	break;
 	
 case('part'):
-		$table='`Store Product Dimension`  P  left join `Store Product Data` PD on (PD.`Store Product Key`=P.`Store Product Key`) left join `Store Dimension` S on (`Store Product Store Key`=`Store Key`) left join `Store Product Part Bridge` B on (B.`Store Product Key`=P.`Store Product Key`)';
+		$table='`Product Dimension`  P  left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`) left join `Product Part Bridge` B on (B.`Product ID`=P.`Product ID`)';
 
 		$where=sprintf(' where `Part SKU`=%d  ', $parameters['parent_key']);
 	break;	
 
 case('customer_favourites'):
 
-	$table="`Store Product Dimension` P left join `Store Product Data` PD on (PD.`Store Product Key`=P.`Store Product Key`) left join `Store Dimension` S on (`Store Product Store Key`=`Store Key`) left join `Customer Favorite Product Bridge` F on (F.`Store Product Key`=P.`Store Product Key`)";
+	$table="`Product Dimension` P left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`) left join `Customer Favorite Product Bridge` F on (F.`Product ID`=P.`Product ID`)";
 
 
 	$where.=sprintf(' where F.`Customer Key`=%d', $parameters['parent_key']);
@@ -92,8 +92,8 @@ case('customer_favourites'):
 
 case('customer'):
 
-	$table=" `Order Transaction Fact` OTF  left join `Store Product Dimension` P on (P.`Store Product Key`=OTF.`Store Product Key`) left join `Store Product Data` PD on (PD.`Store Product Key`=P.`Store Product Key`) left join `Store Dimension` S on (`Store Product Store Key`=S.`Store Key`) ";
-	$group_by=' group by OTF.`Store Product Key`';
+	$table=" `Order Transaction Fact` OTF  left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) left join `Product Data Dimension` PD on (PD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=S.`Store Key`) ";
+	$group_by=' group by OTF.`Product ID`';
 	$where=sprintf(' where `Customer Key`=%d', $parameters['parent_key']);
 	break;
 case('category'):
@@ -105,7 +105,7 @@ case('category'):
 	}
 
 	$where=sprintf(" where `Subject`='Product' and  `Category Key`=%d", $parameters['parent_key']);
-	$table=' `Category Bridge` left join  `Store Product Dimension` P on (`Subject Key`=`Store Product Key`) left join `Store Product Data` PD on (PD.`Store Product Key`=P.`Store Product Key`) left join `Store Dimension` S on (`Store Product Store Key`=`Store Key`)';
+	$table=' `Category Bridge` left join  `Product Dimension` P on (`Subject Key`=`Product ID`) left join `Product Data Dimension` PD on (PD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`)';
 	break;
 default:
 
@@ -129,7 +129,7 @@ case 'status':
 	if ($_elements=='') {
 		$where.=' and false' ;
 	} elseif ($count_elements<4) {
-		$where.=' and `Store Product Status` in ('.$_elements.')' ;
+		$where.=' and `Product Status` in ('.$_elements.')' ;
 	}
 	break;
 
@@ -148,9 +148,9 @@ case 'status':
 
 
 if ($parameters['f_field']=='code' and $f_value!='')
-	$wheref.=" and  `Store Product Code` like '".addslashes($f_value)."%'";
+	$wheref.=" and  `Product Code` like '".addslashes($f_value)."%'";
 elseif ($parameters['f_field']=='description' and $f_value!='')
-	$wheref.=" and  `Store Product Name` like '%".addslashes($f_value)."%'";
+	$wheref.=" and  `Product Name` like '%".addslashes($f_value)."%'";
 
 
 
@@ -159,110 +159,110 @@ $_order=$order;
 
 
 if ($order=='stock')
-	$order='`Store Product Availability`';
+	$order='`Product Availability`';
 elseif ($order=='code' )
-	$order='`Store Product Code File As`';
+	$order='`Product Code File As`';
 elseif ($order=='name')
-	$order='`Store Product Outer Description`';
+	$order='`Product Outer Description`';
 elseif ($order=='available_for')
-	$order='`Store Product Available Days Forecast`';
+	$order='`Product Available Days Forecast`';
 elseif ($order=='shortname')
-	$order='`Store Product Available Days Forecast`';
+	$order='`Product Available Days Forecast`';
 
 elseif ($order=='profit') {
 
-	$order='`Store Product '.$period_tag.' Acc Profit`';
+	$order='`Product '.$period_tag.' Acc Profit`';
 
 
 }
 elseif ($order=='sales') {
-	$order='`Store Product '.$period_tag.' Acc Invoiced Amount`';
+	$order='`Product '.$period_tag.' Acc Invoiced Amount`';
 }elseif ($order=='sales_reorder') {
-	$order='`Store Product '.$period_tag.' Acc Invoiced Amount`';
+	$order='`Product '.$period_tag.' Acc Invoiced Amount`';
 }elseif ($_order=='delta_sales') {
-	$order='`Store Product '.$period_tag.' Acc Invoiced Amount`';
+	$order='`Product '.$period_tag.' Acc Invoiced Amount`';
 
 }
 elseif ($order=='margin') {
-	$order='`Store Product '.$period_tag.' Margin`';
+	$order='`Product '.$period_tag.' Margin`';
 
 
 }
 elseif ($order=='sold') {
-	$order='`Store Product '.$period_tag.' Acc Quantity Invoiced`';
+	$order='`Product '.$period_tag.' Acc Quantity Invoiced`';
 }elseif ($order=='sold_reorder') {
-	$order='`Store Product '.$period_tag.' Acc Quantity Invoiced`';
+	$order='`Product '.$period_tag.' Acc Quantity Invoiced`';
 }
 elseif ($order=='family') {
-	$order='`Store Product Family`Code';
+	$order='`Product Family`Code';
 }
 elseif ($order=='dept') {
-	$order='`Store Product Main Department Code`';
+	$order='`Product Main Department Code`';
 }
 elseif ($order=='expcode') {
-	$order='`Store Product Tariff Code`';
+	$order='`Product Tariff Code`';
 }
 elseif ($order=='parts') {
-	$order='`Store Product XHTML Parts`';
+	$order='`Product XHTML Parts`';
 }
 elseif ($order=='supplied') {
-	$order='`Store Product XHTML Supplied By`';
+	$order='`Product XHTML Supplied By`';
 }
 elseif ($order=='gmroi') {
-	$order='`Store Product GMROI`';
+	$order='`Product GMROI`';
 }
 elseif ($order=='state') {
-	$order='`Store Product Sales Type`';
+	$order='`Product Sales Type`';
 }
 elseif ($order=='web') {
-	$order='`Store Product Web Configuration`';
+	$order='`Product Web Configuration`';
 }
 elseif ($order=='stock_state') {
-	$order='`Store Product Availability State`';
+	$order='`Product Availability State`';
 }
 elseif ($order=='stock_forecast') {
-	$order='`Store Product Available Days Forecast`';
+	$order='`Product Available Days Forecast`';
 }
 elseif ($order=='formatted_record_type') {
-	$order='`Store Product Record Type`';
+	$order='`Product Record Type`';
 }
 elseif ($order=='store') {
 	$order='`Store Code`';
 }elseif ($order=='price') {
-	$order='`Store Product Price`';
+	$order='`Product Price`';
 }elseif ($order=='from') {
-	$order='`Store Product Valid From`';
+	$order='`Product Valid From`';
 }elseif ($order=='to') {
-	$order='`Store Product Valid To`';
+	$order='`Product Valid To`';
 }elseif ($order=='last_update') {
-	$order='`Store Product Last Updated`';
+	$order='`Product Last Updated`';
 }elseif ($order=='package_type') {
-	$order='`Store Product Package Type`';
+	$order='`Product Package Type`';
 }elseif ($order=='package_weight') {
-	$order='`Store Product Package Weight`';
+	$order='`Product Package Weight`';
 }elseif ($order=='Package') {
-	$order='`Store Product Package Dimensions Volume`';
+	$order='`Product Package Dimensions Volume`';
 }elseif ($order=='package_volume') {
-	$order='`Store Product Package Dimensions Volume`';
+	$order='`Product Package Dimensions Volume`';
 }elseif ($order=='unit_weight') {
-	$order='`Store Product Unit Weight`';
+	$order='`Product Unit Weight`';
 }elseif ($order=='unit_dimension') {
-	$order='`Store Product Unit Dimensions Volume`';
+	$order='`Product Unit Dimensions Volume`';
 }elseif ($order=='1m_avg_sold_over_1y') {
-	$order='`Store Product 1 Year Acc Quantity Invoiced`';
+	$order='`Product 1 Year Acc Quantity Invoiced`';
 }elseif ($order=='days_available_over_1y') {
-	$order='`Store Product 1 Year Acc Days On Sale`';
+	$order='`Product 1 Year Acc Days On Sale`';
 }elseif ($order=='percentage_available_1y') {
-	$order='`Store Product 1 Year Acc Days Available`/`Store Product 1 Year Acc Days On Sale`';
+	$order='`Product 1 Year Acc Days Available`/`Product 1 Year Acc Days On Sale`';
 }else {
-	$order='P.`Store Product Key`';
+	$order='P.`Product ID`';
 }
 
 
 
-$sql_totals="select count(distinct  P.`Store Product Key`) as num from $table $where";
+$sql_totals="select count(distinct  P.`Product ID`) as num from $table $where";
 
-$fields="P.`Store Product Key`,`Store Product Code`,`Store Product Outer Description`,`Store Product Price`,`Store Currency Code`,`Store Code`,`Store Key`";
+$fields="P.`Product ID`,`Product Code`,`Product Name`,`Product Price`,`Store Currency Code`,`Store Code`,`Store Key`";
 
 //$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 // print $sql;
@@ -297,7 +297,7 @@ function product_awhere($awhere) {
 
 
 	$where='where true';
-	$table='`Store Product Dimension` P ';
+	$table='`Product Dimension` P ';
 
 	$use_product=false;
 	//$use_categories =false;
@@ -309,16 +309,16 @@ function product_awhere($awhere) {
 	foreach ($where_data['price'] as $price) {
 		switch ($price) {
 		case 'less':
-			$price_where.=sprintf(" and `Store Product Price`<%s ", prepare_mysql($where_data['price_lower']));
+			$price_where.=sprintf(" and `Product Price`<%s ", prepare_mysql($where_data['price_lower']));
 			break;
 		case 'equal':
-			$price_where.=sprintf(" and `Store Product Price`=%s  ", prepare_mysql($where_data['price_lower']));
+			$price_where.=sprintf(" and `Product Price`=%s  ", prepare_mysql($where_data['price_lower']));
 			break;
 		case 'more':
-			$price_where.=sprintf(" and `Store Product Price`>%s  ", prepare_mysql($where_data['price_upper']));
+			$price_where.=sprintf(" and `Product Price`>%s  ", prepare_mysql($where_data['price_upper']));
 			break;
 		case 'between':
-			$price_where.=sprintf(" and  `Store Product Price`>%s  and `Store Product Price`<%s", prepare_mysql($where_data['price_lower']), prepare_mysql($where_data['price_upper']));
+			$price_where.=sprintf(" and  `Product Price`>%s  and `Product Price`<%s", prepare_mysql($where_data['price_lower']), prepare_mysql($where_data['price_upper']));
 			break;
 		}
 	}
@@ -332,16 +332,16 @@ function product_awhere($awhere) {
 	foreach ($where_data['invoice'] as $invoice) {
 		switch ($invoice) {
 		case 'less':
-			$invoice_where.=sprintf(" and `Store Product Total Invoiced Amount`<%s ", prepare_mysql($where_data['invoice_lower']));
+			$invoice_where.=sprintf(" and `Product Total Invoiced Amount`<%s ", prepare_mysql($where_data['invoice_lower']));
 			break;
 		case 'equal':
-			$invoice_where.=sprintf(" and `Store Product Total Invoiced Amount`=%s  ", prepare_mysql($where_data['invoice_lower']));
+			$invoice_where.=sprintf(" and `Product Total Invoiced Amount`=%s  ", prepare_mysql($where_data['invoice_lower']));
 			break;
 		case 'more':
-			$invoice_where.=sprintf(" and `Store Product Total Invoiced Amount`>%s  ", prepare_mysql($where_data['invoice_upper']));
+			$invoice_where.=sprintf(" and `Product Total Invoiced Amount`>%s  ", prepare_mysql($where_data['invoice_upper']));
 			break;
 		case 'between':
-			$invoice_where.=sprintf(" and `Store Product Total Invoiced Amount`>%s  and `Store Product Total Invoiced Amount`<%s", prepare_mysql($where_data['invoice_lower']), prepare_mysql($where_data['invoice_upper']));
+			$invoice_where.=sprintf(" and `Product Total Invoiced Amount`>%s  and `Product Total Invoiced Amount`<%s", prepare_mysql($where_data['invoice_lower']), prepare_mysql($where_data['invoice_upper']));
 			break;
 		}
 	}
@@ -357,19 +357,19 @@ function product_awhere($awhere) {
 	foreach ($where_data['web_state'] as $web_state) {
 		switch ($web_state) {
 		case 'online_force_out_of_stock':
-			$web_state_where.=sprintf(" or `Store Product Web Configuration`='Online Force Out of Stock' ");
+			$web_state_where.=sprintf(" or `Product Web Configuration`='Online Force Out of Stock' ");
 			break;
 		case 'online_auto':
-			$web_state_where.=sprintf(" or `Store Product Web Configuration`='Online Auto'  ");
+			$web_state_where.=sprintf(" or `Product Web Configuration`='Online Auto'  ");
 			break;
 		case 'offline':
-			$web_state_where.=sprintf(" or  `Store Product Web Configuration`='Offline'  ");
+			$web_state_where.=sprintf(" or  `Product Web Configuration`='Offline'  ");
 			break;
 		case 'unknown':
-			$web_state_where.=sprintf(" or  `Store Product Web Configuration`='Unknown'  ");
+			$web_state_where.=sprintf(" or  `Product Web Configuration`='Unknown'  ");
 			break;
 		case 'online_force_for_sale':
-			$web_state_where.=sprintf(" or  `Store Product Web Configuration`='Online Force For Sale'  ");
+			$web_state_where.=sprintf(" or  `Product Web Configuration`='Online Force For Sale'  ");
 			break;
 		}
 	}
@@ -382,27 +382,27 @@ function product_awhere($awhere) {
 	foreach ($where_data['availability_state'] as $availability_state) {
 		switch ($availability_state) {
 		case 'optimal':
-			$availability_state_where.=sprintf(" or `Store Product Availability State`='Optimal' ");
+			$availability_state_where.=sprintf(" or `Product Availability State`='Optimal' ");
 			break;
 		case 'low':
-			$availability_state_where.=sprintf(" or `Store Product Availability State`='Low'  ");
+			$availability_state_where.=sprintf(" or `Product Availability State`='Low'  ");
 			break;
 		case 'critical':
-			$availability_state_where.=sprintf(" or  `Store Product Availability State`='Critical'  ");
+			$availability_state_where.=sprintf(" or  `Product Availability State`='Critical'  ");
 			break;
 		case 'surplus':
-			$availability_state_where.=sprintf(" or  `Store Product Availability State`='Surplus'  ");
+			$availability_state_where.=sprintf(" or  `Product Availability State`='Surplus'  ");
 			break;
 		case 'out_of_stock':
-			$availability_state_where.=sprintf(" or  `Store Product Availability State`='Out of Stock'  ");
+			$availability_state_where.=sprintf(" or  `Product Availability State`='Out of Stock'  ");
 			break;
 
 		case 'unknown':
-			$availability_state_where.=sprintf(" or  `Store Product Availability State`='Unknown'  ");
+			$availability_state_where.=sprintf(" or  `Product Availability State`='Unknown'  ");
 			break;
 
 		case 'no_applicable':
-			$availability_state_where.=sprintf(" or  `Store Product Availability State`='No applicable'  ");
+			$availability_state_where.=sprintf(" or  `Product Availability State`='No applicable'  ");
 			break;
 		}
 	}
@@ -413,8 +413,8 @@ function product_awhere($awhere) {
 
 
 
-	$date_interval_from=prepare_mysql_dates($where_data['product_valid_from'], '', '`Store Product Valid From`', 'only_dates');
-	$date_interval_to=prepare_mysql_dates('', $where_data['product_valid_to'], '`Store Product Valid To`', 'only_dates');
+	$date_interval_from=prepare_mysql_dates($where_data['product_valid_from'], '', '`Product Valid From`', 'only_dates');
+	$date_interval_to=prepare_mysql_dates('', $where_data['product_valid_to'], '`Product Valid To`', 'only_dates');
 
 
 

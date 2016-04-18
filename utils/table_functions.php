@@ -112,6 +112,10 @@ function get_rtext($record_label, $total_records) {
 		return sprintf(ngettext('%s delivery note', '%s delivery notes', $total_records), number($total_records));
 	}elseif ($record_label=='part') {
 		return sprintf(ngettext('%s part', '%s parts', $total_records), number($total_records));
+	}elseif ($record_label=='discontinued part') {
+		return sprintf(ngettext('%s discontinued part', '%s discontinued parts', $total_records), number($total_records));
+	}elseif ($record_label=='supplier part') {
+		return sprintf(ngettext("%s supplier's part", "%s supplier's parts", $total_records), number($total_records));
 	}elseif ($record_label=='website') {
 		return sprintf(ngettext('%s website', '%s websites', $total_records), number($total_records));
 	}elseif ($record_label=='warehouse') {
@@ -197,6 +201,10 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
 		return sprintf(ngettext('%s delivery note of %s', '%s delivery notes of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
 	}elseif ($record_label=='part') {
 		return sprintf(ngettext('%s part of %s', '%s parts of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
+	}elseif ($record_label=='discontinued part') {
+		return sprintf(ngettext('%s discontinued part of %s', '%s discontinued parts of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
+	}elseif ($record_label=='supplier part') {
+		return sprintf(ngettext("%s supplier's part of %s", "%s supplier's parts of %s", $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
 	}elseif ($record_label=='website') {
 		return sprintf(ngettext('%s website of %s', '%s websites of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
 	}elseif ($record_label=='warehouse') {

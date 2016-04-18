@@ -605,7 +605,7 @@ function get_supplier_part_navigation($data, $smarty, $user, $db, $account) {
 
 
 	$title= '<i class="fa fa-stop"></i>  <span class="id Supplier_Part_Reference">'.$data['_object']->get('Reference').'</span>';
-	$title.=' <small class="padding_left_10"> <i class="fa fa-long-arrow-right padding_left_10"></i> <i class="fa fa-square button" title="'._('Part').'" onCLick="change_view(\'/part/'.$data['_object']->part->id.'\')" ></i> <span class="Part_Reference button"  onCLick="change_view(\'part/'.$data['_object']->part->id.'\')">'.$data['_object']->part->get('Reference').'</small>';
+	$title.=' <small class="padding_left_10"> <i class="fa fa-long-arrow-right padding_left_10"></i> <i class="fa fa-square button" title="'._('Part').'" onCLick="change_view(\'/part/'.$data['_object']->part->id.'\')" ></i> <span class="Part_Part_Reference button"  onCLick="change_view(\'part/'.$data['_object']->part->id.'\')">'.$data['_object']->part->get('Reference').'</small>';
 	
 
 	$_content=array(

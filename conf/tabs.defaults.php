@@ -524,6 +524,8 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'reference',
+		'elements_type'=>each($elements_options['supplier_parts'])['key'],
+		'elements'=>$elements_options['supplier_parts']
 
 	),
 
@@ -609,6 +611,17 @@ $tab_defaults=array(
 	'inventory.parts'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'reference',
+		'elements_type'=>each(  $elements_options['parts']  ) ['key'],
+		'elements'=>$elements_options['parts'],
+	),
+
+	'inventory.discontinued_parts'=>array(
+		'view'=>'overview',
+		'sort_key'=>'to',
 		'sort_order'=>1,
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,

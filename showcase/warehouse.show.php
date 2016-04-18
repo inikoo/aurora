@@ -10,19 +10,26 @@
  Version 3.0
 */
 
-function get_warehouse_showcase($data) {
+function get_warehouse_showcase($data, $smarty, $user, $db) {
 
-    global $smarty;
-    
-    $warehouse=new Warehouse($data['key']);
-    
-    $smarty->assign('warehouse',$warehouse);
 
-    return $smarty->fetch('showcase/warehouse.tpl');
-    
+	$warehouse=new Warehouse($data['key']);
+
+	$smarty->assign('warehouse', $warehouse);
+
+	return $smarty->fetch('showcase/warehouse.tpl');
+
 
 
 }
 
+function get_locked_warehouse_showcase($data, $smarty, $user, $db){
+
+
+	$smarty->assign('warehouse', $data['_object']);
+
+	return $smarty->fetch('showcase/warehouse.locked.tpl');
+
+}
 
 ?>

@@ -28,6 +28,12 @@ if (!isset($_REQUEST['tab'])) {
 $tab=$_REQUEST['tab'];
 
 switch ($tab) {
+case 'inventory.parts':
+	$data=prepare_values($_REQUEST, array(
+			'parameters'=>array('type'=>'json array')
+		));
+	get_parts_elements($db, $data['parameters'], $user);
+	break;
 case 'customers':
 case 'website.favourites.customers':
 	$data=prepare_values($_REQUEST, array(
@@ -64,11 +70,16 @@ case 'supplier_part.history':
 	get_history_elements($db, $data['parameters']);
 	break;
 case 'inventory.barcodes':
-
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
 		));
-	get_barcodes_elements($db, $data['parameters'],$user);
+	get_barcodes_elements($db, $data['parameters'], $user);
+	break;
+case 'supplier.supplier_parts':
+	$data=prepare_values($_REQUEST, array(
+			'parameters'=>array('type'=>'json array')
+		));
+	get_supplier_parts_elements($db, $data['parameters'], $user);
 	break;
 
 default:
@@ -76,6 +87,102 @@ default:
 	echo json_encode($response);
 	exit;
 	break;
+}
+
+function get_parts_elements($db, $data, $user) {
+
+
+
+	$parent_key=$data['parent_key'];
+	$elements_numbers=array(
+		'stock_status'=>array('Surplus'=>0, 'Optimal'=>0, 'Low'=>0,'Critical'=>0,'Out_Of_Stock'=>0),
+
+	);
+
+
+	$table='`Part Dimension`  P  ';
+	switch ($data['parent']) {
+	case 'account':
+		$where="where `Part Status`='In Use'";
+		break;
+	default:
+		$response=array('state'=>405, 'resp'=>'product parent not found '.$data['parent']);
+		echo json_encode($response);
+
+		return;
+	}
+
+
+
+	$sql=sprintf("select count(*) as number,`Part Stock Status` as element from $table $where  group by `Part Stock Status` ");
+
+	foreach ($db->query($sql) as $row) {
+
+		$elements_numbers['stock_status'][preg_replace('/\s/','',$row['element'])]=number($row['number']);
+
+	}
+
+
+
+	$response= array('state'=>200, 'elements_numbers'=>$elements_numbers);
+	echo json_encode($response);
+
+
+
+}
+
+
+function get_supplier_parts_elements($db, $data, $user) {
+
+
+
+	$parent_key=$data['parent_key'];
+
+	$elements_numbers=array(
+		'status'=>array('Available'=>0, 'NoAvailable'=>0, 'Discontinued'=>0),
+		'part_status'=>array('InUse'=>0, 'NotInUse'=>0),
+
+	);
+
+
+	$table='`Supplier Part Dimension`  SP left join `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`) ';
+	switch ($data['parent']) {
+	case 'supplier':
+		$where=sprintf(' where `Supplier Part Supplier Key`=%d  ', $data['parent_key']);
+		break;
+		break;
+	default:
+		$response=array('state'=>405, 'resp'=>'product parent not found '.$data['parent']);
+		echo json_encode($response);
+
+		return;
+	}
+
+
+
+	$sql=sprintf("select count(*) as number,`Part Status` as element from $table $where  group by `Part Status` ");
+
+	foreach ($db->query($sql) as $row) {
+
+		$elements_numbers['part_status'][preg_replace('/\s/','',$row['element'])]=number($row['number']);
+
+	}
+
+	$sql=sprintf("select count(*) as number,`Supplier Part Status` as element from $table $where  group by `Supplier Part Status` ");
+
+	foreach ($db->query($sql) as $row) {
+
+		$elements_numbers['status'][$row['element']]=number($row['number']);
+
+	}
+
+
+
+	$response= array('state'=>200, 'elements_numbers'=>$elements_numbers);
+	echo json_encode($response);
+
+
+
 }
 
 
@@ -90,25 +197,25 @@ function get_products_element_numbers($db, $data, $user) {
 	);
 
 
-	$table='`Store Product Dimension`  P';
+	$table='`Product Dimension`  P';
 	switch ($data['parent']) {
 	case 'store':
-		$where=sprintf(' where `Store Product Store Key`=%d  ', $data['parent_key']);
+		$where=sprintf(' where `Product Store Key`=%d  ', $data['parent_key']);
 		break;
 	case 'part':
-		$table='`Store Product Dimension`  P left join `Store Product Part Bridge` B on (B.`Store Product Key`=P.`Store Product Key`)';
+		$table='`Product Dimension`  P left join `Product Part Bridge` B on (B.`Product Part Product ID`=P.`Product ID`)';
 
-		$where=sprintf(' where `Part SKU`=%d  ', $data['parent_key']);
+		$where=sprintf(' where `Product Part Part SKU`=%d  ', $data['parent_key']);
 		break;
 	case 'account':
-		$where=sprintf(" where `Store Product Store Key` in (%s) ", join(',', $user->stores));
+		$where=sprintf(" where `Product Store Key` in (%s) ", join(',', $user->stores));
 
 		break;
 	case 'category':
 
 
 		$where=sprintf(" where `Subject`='Product' and  `Category Key`=%d", $data['parent_key']);
-		$table=' `Category Bridge` left join  `Store Product Dimension` P on (`Subject Key`=`Store Product Key`) ';
+		$table=' `Category Bridge` left join  `Product Dimension` P on (`Subject Key`=`Product ID`) ';
 
 
 		break;
@@ -119,7 +226,7 @@ function get_products_element_numbers($db, $data, $user) {
 		$where=sprintf(' where C.`Customer Key` in (select DISTINCT F.`Customer Key` from `Customer Favorite Product Bridge` F where `Site Key`=%d )', $data['parent_key']);
 		break;
 	default:
-		$response=array('state'=>405, 'resp'=>'product parent not founs '.$data['parent']);
+		$response=array('state'=>405, 'resp'=>'product parent not found '.$data['parent']);
 		echo json_encode($response);
 
 		return;
@@ -129,7 +236,8 @@ function get_products_element_numbers($db, $data, $user) {
 
 
 
-	$sql=sprintf("select count(*) as number,`Store Product Status` as element from $table $where  group by `Store Product Status` ");
+	$sql=sprintf("select count(*) as number,`Product Status` as element from $table $where  group by `Product Status` ");
+
 	foreach ($db->query($sql) as $row) {
 
 		$elements_numbers['status'][$row['element']]=number($row['number']);
@@ -174,7 +282,7 @@ function get_customers_element_numbers($db, $data) {
 		$where=sprintf(' where C.`Customer Key` in (select DISTINCT F.`Customer Key` from `Customer Favorite Product Bridge` F where `Site Key`=%d )', $data['parent_key']);
 		break;
 	default:
-		$response=array('state'=>405, 'resp'=>'customer parent not founs '.$data['parent']);
+		$response=array('state'=>405, 'resp'=>'customer parent not found '.$data['parent']);
 		echo json_encode($response);
 
 		return;
@@ -641,7 +749,7 @@ function get_barcodes_elements($db, $data, $user) {
 		$where='';
 		break;
 	default:
-		$response=array('state'=>405, 'resp'=>'product parent not founs '.$data['parent']);
+		$response=array('state'=>405, 'resp'=>'product parent not found '.$data['parent']);
 		echo json_encode($response);
 
 		return;

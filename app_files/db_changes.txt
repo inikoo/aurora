@@ -260,27 +260,13 @@ ALTER TABLE `Customer Dimension` ADD `Customer Preferred Contact Number Formatte
 ALTER TABLE `Store Dimension` ADD `Store Family Category Key` MEDIUMINT NULL DEFAULT NULL AFTER `Store Payments`, ADD `Store Department Category Key` MEDIUMINT NULL DEFAULT NULL AFTER `Store Family Category Key`;
 //ALTER TABLE `Category Dimension` ADD `Category Children Type` ENUM('Subjects','Categories') NOT NULL DEFAULT 'Subjects' AFTER `Category Branch Type`;
 
-// From HERe  ==================== 03/04/2016, 13:47
-
-
+ALTER TABLE `Part Dimension` ADD `Part Materials` TEXT NULL DEFAULT NULL AFTER `Part Unit Materials`; 
+ALTER TABLE `Part Dimension` ADD `Part Package Dimensions` VARCHAR(255) NULL DEFAULT NULL AFTER `Part Unit Weight Display Units`;
 
 ALTER TABLE `Category Dimension` ADD `Category Scope` VARCHAR(32) NULL AFTER `Category Show Public Edit`, ADD INDEX (`Category Scope`);
 ALTER TABLE `Category Dimension` CHANGE `Category Subject` `Category Subject` ENUM('Product','Supplier','Customer','Family','Invoice','Part','Category') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Product';
 ALTER TABLE `Category Dimension` ADD `Category Sticky Note` TEXT NULL DEFAULT NULL AFTER `Category Locked`;
 ALTER TABLE `Category Bridge` CHANGE `Subject` `Subject` ENUM('Product','Supplier','Customer','Family','Invoice','Part','Category') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
-
-
-
-ALTER TABLE `Part Dimension` ADD `Part Barcode` TEXT NULL DEFAULT NULL AFTER `Part Unit Description`;
-ALTER TABLE `Part Dimension` ADD `Part Materials` TEXT NULL DEFAULT NULL AFTER `Part Unit Materials`; 
-ALTER TABLE `Part Dimension` ADD `Part Package Dimensions` VARCHAR(255) NULL DEFAULT NULL AFTER `Part Unit Weight Display Units`;
-
-
-
-
-
-
-// run migrate_images.oneoff.php 
 
 ALTER TABLE `Account Dimension` CHANGE `Stores` `Account Stores` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0', CHANGE `Websites` `Account Websites` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0', CHANGE `Warehouses` `Account Warehouses` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0', CHANGE `Employees` `Account Employees` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0';
 
@@ -306,22 +292,47 @@ ALTER TABLE `Account Dimension` CHANGE `Account SR Category Key` `Account SR Cat
 
 update `Account Dimension` set `Account SR Category Key`=`SR Category Key`;
 update `Account Dimension` set `Account Apply Tax Method`=`Apply Tax Method`;
-
-
+update `Account Dimension` set `Account System Version`=`Inikoo Version`;
 ALTER TABLE `User Dimension` ADD `User Password Recovery Email` VARCHAR(255) NULL DEFAULT NULL AFTER `User Inactive Note`, ADD `User Password Recovery Mobile` VARCHAR(64) NULL DEFAULT NULL AFTER `User Password Recovery Email`;
 
-
-
-
-ALTER TABLE `User Rights Bridge` CHANGE `Right Key` `Right Code` VARCHAR(8) NOT NULL;
-delete from `User Group User Bridge` where `User Group Key` in (4,7,12);
-ALTER TABLE `Store Dimension` ADD `Store Currency` VARCHAR(3) NULL DEFAULT NULL AFTER `Store Locale`;
-update `Store Dimension` set `Store Currency`=`Store Currency Code`;
 ALTER TABLE `Warehouse Dimension` ADD `Warehouse State` ENUM('Active','Closed') NOT NULL DEFAULT 'Active' AFTER `Warehouse Name`, ADD `Warehouse Valid From` DATETIME NULL DEFAULT NULL AFTER `Warehouse State`, ADD `Warehouse Valid To` DATETIME NULL DEFAULT NULL AFTER `Warehouse Valid From`;
 
-ALTER TABLE `Part Dimension` ADD `Part Barcode Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Part Barcode`, ADD INDEX (`Part Barcode Key`);
+delete from `User Group User Bridge` where `User Group Key` in (4,7,12);
 
-ALTER TABLE `Part Dimension` ADD `Part Barcode Number` BIGINT UNSIGNED NULL DEFAULT NULL AFTER `Part Barcode`, ADD INDEX (`Part Barcode Number`);
+  ALTER TABLE `User Rights Bridge` CHANGE `Right Key` `Right Code` VARCHAR(8) NOT NULL;
+
+ALTER TABLE `Product Dimension` ADD `Product Family Category Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Product Origin Country Code`;
+ALTER TABLE `Product Dimension` ADD `Product Department Category Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Product Family Category Key`;
+
+ALTER TABLE `Product Dimension` ADD `Product Unit Dimensions` VARCHAR(255) NULL DEFAULT NULL AFTER `Product Unit XHTML Dimensions`;
+
+drop table `Product Part Bridge`;
+CREATE TABLE `Product Part Bridge` (
+  `Product Part Product ID` mediumint(8) UNSIGNED NOT NULL,
+  `Product Part Part SKU` mediumint(8) UNSIGNED NOT NULL,
+  `Product Part Ratio` float NOT NULL DEFAULT '1',
+  `Product Part Note` varchar(255) DEFAULT NULL,
+  `Product Part Linked Fields` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `Product Part Bridge`
+  ADD PRIMARY KEY (`Product Part Product ID`,`Product Part Part SKU`),
+  ADD KEY `Product Part Product ID` (`Product Part Product ID`),
+  ADD KEY `Product Part Part SKU` (`Product Part Part SKU`) USING BTREE;
+
+
+
+// From HERe  ==================== 15/04/2016, 10:45
+
+migrate_suppliers.oneoff.php
+migrate_images.oneoff.php 
+migrate_supplier_parts.oneoff.php 
+migrate_products.oneoff.php 
+migrate_history_note_details.php
+migrate_parts.oneoff.php
+
+
+
 
 
 

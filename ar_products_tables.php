@@ -69,6 +69,8 @@ function stores($_data, $db, $user) {
 
 
 		$adata[]=array(
+				    'access'=>(in_array($data['Store Key'],$user->stores)?'':'<i class="fa fa-lock "></i>'),
+
 			'id'=>(integer) $data['Store Key'],
 			'code'=>$data['Store Code'],
 			'name'=>$data['Store Name'],
@@ -119,12 +121,12 @@ function products($_data, $db, $user) {
 
 			$adata[]=array(
 
-				'id'=>(integer) $data['Store Product Key'],
+				'id'=>(integer) $data['Product ID'],
 				'store_key'=>(integer) $data['Store Key'],
 				'store'=>$data['Store Code'],
-				'code'=>$data['Store Product Code'],
-				'name'=>$data['Store Product Outer Description'],
-				'price'=>money($data['Store Product Price'], $data['Store Currency Code']),
+				'code'=>$data['Product Code'],
+				'name'=>$data['Product Name'],
+				'price'=>money($data['Product Price'], $data['Store Currency Code']),
 			);
 
 

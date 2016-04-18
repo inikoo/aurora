@@ -149,6 +149,12 @@ function percentage($a, $b, $fixed=1, $error_txt='NA', $psign='%', $plus_sing=fa
 	return $per;
 }
 
+function ratio($a,$b){
+
+    if($b==0)return 1;
+    return $a/$b;
+
+}
 
 /* Function: parse_money
 
@@ -219,45 +225,6 @@ function ParseFloat($floatString) {
 }
 
 
-function currency_symbol($currency) {
-	switch ($currency) {
-	case('GBP'):
-		return '£';
-		break;
-	case('EUR'):
-	case('EU'):
-		return '€';
-		break;
-	case('USD'):
-		return '$';
-		break;
-	case('PLN'):
-		return 'zł';
-		break;
-	case('DKK'):
-	case('NOK'):
-	case('SEK'):
-		return 'kr ';
-		break;
-	case('CHF'):
-		return 'CHF';
-		break;
-	case('INR'):
-		return '₹';
-		break;
-	case('IDR'):
-		return 'Rp';
-		break;
-	case('CNY'):
-		return '¥';
-		break;
-
-
-	default:
-		return '¤';
-	}
-
-}
 
 
 

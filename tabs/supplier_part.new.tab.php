@@ -17,13 +17,10 @@ include_once 'class.Part.php';
 
 
 
-$object_fields=get_object_fields($state['_object'], $db,array('supplier'=>$state['_parent'],'new'=>true,'supplier_part_scope'=>true));
-
-
-
+$object_fields=get_object_fields($state['_object'], $db, $user, array('supplier'=>$state['_parent'], 'new'=>true, 'supplier_part_scope'=>true));
 
 $smarty->assign('state', $state);
-$smarty->assign('object',$state['_object']);
+$smarty->assign('object', $state['_object']);
 
 
 $smarty->assign('object_name', $state['_object']->get_object_name());

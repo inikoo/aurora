@@ -256,7 +256,14 @@ class Store extends DB_Table {
 
 
 		switch ($key) {
+
+		case('Currency Code'):
+			include_once 'utils/natural_language.php';
+			return currency_label($this->data['Store Currency Code'],$this->db);
+			break;
+
 		case('Currency Symbol'):
+			include_once 'utils/natural_language.php';
 			return currency_symbol($this->data['Store Currency Code']);
 			break;
 
@@ -451,8 +458,8 @@ class Store extends DB_Table {
 		case('Store Name'):
 
 			if ($value=='') {
-                $this->error=true;
-                $this->msg=_("Value can't be empty");
+				$this->error=true;
+				$this->msg=_("Value can't be empty");
 			}
 			$this->update_field($field, $value, $options);
 			break;
@@ -497,13 +504,13 @@ class Store extends DB_Table {
 		$values=preg_replace('/,$/', ')', $values);
 		$sql=sprintf("insert into `Store Dimension` %s %s", $keys, $values);
 
-$sql="insert into `Store Dimension` $keys  $values";
+		$sql="insert into `Store Dimension` $keys  $values";
 
 		if ($this->db->exec($sql)) {
 			$this->id=$this->db->lastInsertId();
 
 
-		
+
 			$this->msg=_("Store Added");
 			$this->get_data('id', $this->id);
 			$this->new=true;
@@ -519,10 +526,10 @@ $sql="insert into `Store Dimension` $keys  $values";
 			}
 
 			$sql="insert into `Store Default Currency` (`Store Key`) values(".$this->id.");";
-				$this->db->exec($sql);
+			$this->db->exec($sql);
 
 			$sql="insert into `Store Data Currency` (`Store Key`) values(".$this->id.");";
-				$this->db->exec($sql);
+			$this->db->exec($sql);
 
 			/*
 

@@ -113,7 +113,6 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 	$formatted_field= preg_replace('/^'.$object->get_object_name().' /', '', $field);
 
 
-
 	if ($field=='Staff Position' and $data['object']=='User') {
 		$formatted_field='Position';
 	}
@@ -128,11 +127,18 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 
 	if (isset($data['metadata'])) {
+	
+	
+	
 		$object->update(array($field=>$data['value']), $options, $data['metadata']);
+	
 	}else {
+	
 		$object->update(array($field=>$data['value']), $options);
 	}
 
+
+//print_r($data['metadata']);
 
 	if (isset($data['metadata'])) {
 		if (isset($data['metadata']['extra_fields'])) {
@@ -151,6 +157,9 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 
 	}
+	
+	
+
 
 	if ($object->error) {
 		$response=array(

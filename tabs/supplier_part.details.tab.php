@@ -16,14 +16,36 @@ include_once 'conf/object_fields.php';
 
 $supplier_part=$state['_object'];
 
-$object_fields=get_object_fields($supplier_part, $db,array('show_full_label'=>true));
+
+$object_fields_supplier_part=get_object_fields($supplier_part, $db, $user,
+	array(
+		'show_full_label'=>true,
+		'supplier'=>$state['_parent']
+	));
+
+
+
+$part=$state['_object']->part;
+
+$object_fields_part=get_object_fields($part, $db, $user, array('supplier_part_scope'=>true));
 
 
 
 
 
-$smarty->assign('object_fields', $object_fields);
+$smarty->assign('preferred_countries', '"'.join('", "', preferred_countries(
+			($part->get('Part Origin Country Code')==''?$account->get('Account Country 2 Alpha Code'):$part->get('Part Origin Country Code'))
+		)).'"');
+
+
+
+
+
+
+$smarty->assign('object_fields', array_merge($object_fields_supplier_part, $object_fields_part));
 $smarty->assign('state', $state);
+
+$smarty->assign('js_code', 'js/injections/supplier_part_details.'.(_DEVEL?'':'min.').'js');
 
 
 $html=$smarty->fetch('edit_object.tpl');

@@ -5,7 +5,18 @@ var columns = [
     editable: false,
     renderable: false,
     cell: "string"
-}, {
+}
+, {
+    name: "access",
+    label: "",
+    editable: false,
+    sortType: "toggle",
+    cell: Backgrid.HtmlCell.extend({
+        className: "width_20"
+    })
+
+}
+, {
     name: "code",
     label: "{t}Code{/t}",
     editable: false,

@@ -17,9 +17,7 @@ include_once 'conf/object_fields.php';
 
 $supplier=$state['_object'];
 
-$object_fields=get_object_fields($supplier, $db,array('show_full_label'=>false));
-
-
+$object_fields=get_object_fields($supplier, $db, $user, array('show_full_label'=>false));
 
 $smarty->assign('default_country', $account->get('Account Country 2 Alpha Code'));
 $smarty->assign('preferred_countries', '"'.join('", "', preferred_countries($account->get('Account Country 2 Alpha Code'))).'"');
@@ -30,7 +28,9 @@ $smarty->assign('key', $state['key']);
 $smarty->assign('object_fields', $object_fields);
 $smarty->assign('state', $state);
 
-$smarty->assign('js_code', 'js/injections/supplier_details.'.(_DEVEL?'':'min.').'js');//??? maybe has to be deleted
+
+
+$smarty->assign('js_code', 'js/injections/supplier_details.'.(_DEVEL?'':'min.').'js');
 
 
 $html=$smarty->fetch('edit_object.tpl');

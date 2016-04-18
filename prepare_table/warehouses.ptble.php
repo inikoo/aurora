@@ -9,11 +9,14 @@
 
 */
 
-
+/* to delete =====
 if (count($user->warehouses)==0)
 	$where="where false";
 else
 	$where=sprintf("where W.`Warehouse Key` in (%s)", join(',', $user->warehouses));
+*/
+
+$where='where true';
 $filter_msg='';
 
 

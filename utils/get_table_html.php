@@ -12,7 +12,6 @@
 
 
 
-
 if (isset($_SESSION['table_state'][$tab])) {
 	$table_state=$_SESSION['table_state'][$tab];
 }else {

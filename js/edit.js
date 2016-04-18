@@ -5,7 +5,10 @@
 
 
 function open_edit_this_field(scope) {
-    open_edit_field($('#fields').attr('object'), $('#fields').attr('key'), $(scope).closest('tr').attr('field'))
+    var field = $(scope).closest('tr').attr('field')
+    if ($('#' + field + '_lock').hasClass('hide')) {
+        open_edit_field($('#fields').attr('object'), $('#fields').attr('key'), field)
+    }
 }
 
 
@@ -30,7 +33,7 @@ function open_edit_field(object, key, field) {
     case 'new_email':
     case 'numeric':
     case 'amount':
-    case 'flexi_amount':
+    case 'amount_margin':
     case 'int_unsigned':
     case 'smallint_unsigned':
     case 'mediumint_unsigned':
@@ -182,7 +185,7 @@ function close_edit_field(field) {
     case 'textarea':
     case 'numeric':
     case 'amount':
-    case 'flexi_amount':
+    case 'amount_margin':
 
     case 'dimensions':
 
@@ -371,7 +374,13 @@ function delayed_on_change_field(object, timeout) {
     object.data("timeout", setTimeout(function() {
         on_changed_value(field, new_value)
     }, timeout));
+
+
+
 }
+
+
+
 
 function on_changed_confirm_value(field, confirm_value) {
 
@@ -787,6 +796,7 @@ function save_field(object, key, field) {
         value = sha256_digest(value)
     } else if (type == 'telephone') {
         value = $('#' + field).intlTelInput("getNumber");
+/*
         metadata = {
 
             'extra_fields': [{
@@ -795,6 +805,7 @@ function save_field(object, key, field) {
             }]
 
         }
+        */
     }
 
     var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value) + '&metadata=' + JSON.stringify(metadata)

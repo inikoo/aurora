@@ -16,6 +16,15 @@ html, body {
   background: #fcfcfc;
   margin: 0px;
   font-size: 14px; }
+  html .sr-only, body .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0; }
   html a, html table, html button, html tbody, body a, body table, body button, body tbody {
     outline: none; }
   html .link, html a, body .link, body a {
@@ -942,7 +951,7 @@ input {
     background-color: #edf3f8;
     color: #000; }
   .date_chooser .interval {
-    width: 15.4%; }
+    width: 15.0%; }
   .date_chooser .day {
     width: 9%; }
   .date_chooser .fixed_interval {
@@ -959,6 +968,10 @@ input {
       padding-bottom: 10px; }
   #select_date_control_panel .until, #select_interval_control_panel .until {
     margin-top: 15px; }
+
+.backgrid .adr {
+  padding-bottom: 10px;
+  line-height: 70%; }
 
 .new_object table, .presention_card table, .showcase table, .dashboard table, .export_dialog table {
   width: 100%; }
@@ -1142,11 +1155,6 @@ table .totals td {
       cursor: pointer;
       width: 100%; }
 
-.table div.tr {
-  display: table-row; }
-  .table div.tr div.td {
-    display: table-cell; }
-
 #edit_history_note_dialog .note_type {
   padding: 0px 5px 10px 0px; }
   #edit_history_note_dialog .note_type i {
@@ -1189,6 +1197,13 @@ tr.deleted_tr td:not(.inmmune) {
 
 tr.deleting_tr {
   opacity: .5; }
+
+.table div.tr {
+  width: 100%;
+  clear: both;
+  border-top: 1px solid #ddd; }
+.table div.tr > div {
+  float: left; }
 
 #object_showcase {
   clear: both;

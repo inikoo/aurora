@@ -887,8 +887,6 @@ $modules=array(
 
 
 					'supplier_part.details'=>array('label'=>_('Data'), 'icon'=>'database'),
-					'supplier_part.details'=>array('label'=>_('Data'), 'icon'=>'database'),
-					'supplier_part.part.details'=>array('label'=>_('Part data'), 'icon'=>'database'),
 
 					'supplier_part.history'=>array('label'=>_('History/Notes'), 'icon'=>'history'),
 					
@@ -936,6 +934,7 @@ $modules=array(
 				'type'=>'navigation', 'label'=>_('Inventory').' ('._('Parts').')', 'icon'=>'th-large', 'reference'=>'inventory',
 				'tabs'=>array(
 					'inventory.parts'=>array('label'=>_('Parts')),
+					'inventory.discontinued_parts'=>array('label'=>_('Discontinued parts'),'class'=>'right discret'),
 
 				)
 			),
@@ -1059,7 +1058,7 @@ $modules=array(
 		'sections'=>array(
 			'warehouse'=>array(
 
-				'type'=>'navigation', 'label'=>_('Warehouse'), 'title'=>_('Warehouse'), 'icon'=>'th-large', 'reference'=>'warehouse/%d',
+				'type'=>'object', 'label'=>_('Warehouse'), 'title'=>_('Warehouse'), 'icon'=>'th-large', 'reference'=>'warehouse/%d',
 				'tabs'=>array(
 					'warehouse.details'=>array('label'=>_('Data'), 'title'=>_('Warehouse detais')),
 					'warehouse.history'=>array('label'=>_('History/Notes'), 'title'=>_('History/Notes'), 'icon'=>'history'),
@@ -1223,25 +1222,13 @@ $modules=array(
 			),
 			'employee'=>array('type'=>'object',
 
-				'subtabs_parent'=>array(
-					'employee.timesheets'=>'employee.timesheets',
-					'employee.timesheets.records'=>'employee.timesheets',
-
-
-				),
+				
 
 				'tabs'=>array(
 					'employee.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 					'employee.history'=>array('label'=>_('History, Notes'), 'icon'=>'sticky-note-o'),
 					'employee.attachments'=>array('label'=>_('Attachments'), 'icon'=>'paperclip'),
-					'employee.timesheets'=>array('label'=>_('Timesheets'),
-						'subtabs'=>array(
-							'employee.timesheets'=>array('label'=>_('Timesheets')),
-							'employee.timesheets.records'=>array('label'=>_('Clockings')),
-
-						)
-
-					),
+					'employee.timesheets'=>array('label'=>_('Timesheets')),
 
 				)
 
@@ -1394,7 +1381,7 @@ $modules=array(
 			),
 			'setup_add_warehouse'=>array('type'=>'',
 				'tabs'=>array(
-					'account.setup.setup_add_warehouse'=>array('label'=>''),
+					'account.setup.add_warehouse'=>array('label'=>''),
 				)
 			),
 			'setup_add_store'=>array('type'=>'',

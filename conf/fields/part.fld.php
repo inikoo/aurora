@@ -38,7 +38,8 @@ $part_fields=array(
 
 			array(
 				'id'=>'Part_Reference',
-				'edit'=>'string',
+				'edit'=>($edit?'string':''),
+
 				'value'=>htmlspecialchars($object->get('Part Reference')),
 				'formatted_value'=>$object->get('Reference'),
 				'label'=>ucfirst($object->get_field_label('Part Reference')),
@@ -47,27 +48,7 @@ $part_fields=array(
 				'type'=>'value'
 			),
 
-			array(
-				'id'=>'Part_Tariff_Code',
-				'edit'=>'numeric',
-				'value'=>$object->get('Part Tariff Code') ,
-				'formatted_value'=>$object->get('Tariff Code') ,
-				'label'=>ucfirst($object->get_field_label('Part Tariff Code')),
-				'invalid_msg'=>get_invalid_message('string'),
-				'required'=>false,
-				'type'=>'value'
-
-			),
-			array(
-				'id'=>'Part_Duty_Rate',
-				'edit'=>'numeric',
-				'value'=>$object->get('Part Duty Rate') ,
-				'formatted_value'=>$object->get('Duty Rate') ,
-				'label'=>ucfirst($object->get_field_label('Part Duty Rate')),
-				'invalid_msg'=>get_invalid_message('string'),
-				'required'=>false,
-				'type'=>'value'
-			),
+		
 
 
 		)
@@ -80,7 +61,8 @@ $part_fields=array(
 
 			array(
 				'id'=>'Part_Unit_Description',
-				'edit'=>'string',
+				'edit'=>($edit?'string':''),
+
 				'value'=>htmlspecialchars($object->get('Part Unit Description')),
 				'formatted_value'=>$object->get('Unit Description'),
 				'label'=>ucfirst($object->get_field_label('Part Unit Description')),
@@ -92,7 +74,8 @@ $part_fields=array(
 
 			array(
 				'id'=>'Part_Unit_Weight',
-				'edit'=>'numeric',
+				'edit'=>($edit?'numeric':''),
+
 				'value'=>$object->get('Part Unit Weight') ,
 				'formatted_value'=>$object->get('Unit Weight') ,
 				'label'=>ucfirst($object->get_field_label('Part Unit Weight')),
@@ -129,7 +112,8 @@ $part_fields=array(
 				'render'=>($supplier_part_scope?false:true),
 
 				'id'=>'Part_Units',
-				'edit'=>'numeric',
+				'edit'=>($edit?'numeric':''),
+
 				'value'=>$object->get('Part Units') ,
 				'formatted_value'=>$object->get('Units') ,
 				'label'=>ucfirst($object->get_field_label('Part Units')),
@@ -139,7 +123,8 @@ $part_fields=array(
 			),
 			array(
 				'id'=>'Part_Package_Description',
-				'edit'=>'string',
+				'edit'=>($edit?'string':''),
+
 				'value'=>htmlspecialchars($object->get('Part Package Description')),
 				'formatted_value'=>$object->get('Package Description'),
 				'label'=>ucfirst($object->get_field_label('Package Unit Description')),
@@ -151,7 +136,8 @@ $part_fields=array(
 
 			array(
 				'id'=>'Part_Package_Weight',
-				'edit'=>'numeric',
+				'edit'=>($edit?'numeric':''),
+
 				'value'=>$object->get('Part Package Weight') ,
 				'formatted_value'=>$object->get('Package Weight') ,
 				'label'=>ucfirst($object->get_field_label('Part Package Weight')),
@@ -180,77 +166,16 @@ $part_fields=array(
 
 		)
 	),
-
-	array(
-		'label'=>($supplier_part_scope?_('Part health & safety'):_('Health & Safety')),
-
-		'show_title'=>true,
-		'fields'=>array(
-
-			array(
-				'id'=>'Part_UN_Number',
-				'edit'=>'string',
-				'value'=>htmlspecialchars($object->get('Part UN Number')),
-				'formatted_value'=>$object->get('UN Number'),
-				'label'=>ucfirst($object->get_field_label('Part UN Number')),
-				'required'=>false,
-				'type'=>'value'
-			),
-			array(
-				'id'=>'Part_UN_Class',
-				'edit'=>'string',
-				'value'=>htmlspecialchars($object->get('Part UN Class')),
-				'formatted_value'=>$object->get('UN Class'),
-				'label'=>ucfirst($object->get_field_label('Part UN Class')),
-				'required'=>false,
-				'type'=>'value'
-			),
-			array(
-				'id'=>'Part_Packing_Group',
-				'edit'=>'option',
-				'options'=>$options_Packing_Group,
-				'value'=>htmlspecialchars($object->get('Part Packing Group')),
-				'formatted_value'=>$object->get('Packing Group'),
-				'label'=>ucfirst($object->get_field_label('Part Packing Group')),
-				'required'=>false,
-				'type'=>'value'
-			),
-			array(
-				'id'=>'Part_Proper_Shipping_Name',
-				'edit'=>'string',
-				'value'=>htmlspecialchars($object->get('Part Proper Shipping Name')),
-				'formatted_value'=>$object->get('Proper Shipping Name'),
-				'label'=>ucfirst($object->get_field_label('Part Proper Shipping Name')),
-				'required'=>false,
-				'type'=>'value'
-			),
-			array(
-				'id'=>'Part_Hazard_Indentification_Number',
-				'edit'=>'string',
-				'value'=>htmlspecialchars($object->get('Part Hazard Indentification Number')),
-				'formatted_value'=>$object->get('Hazard Indentification Number'),
-				'label'=>ucfirst($object->get_field_label('Part Hazard Indentification Number')),
-				'required'=>false,
-				'type'=>'value'
-			)
-		)
-
-
-
-
-
-
-	),
-
-	array(
-		'label'=>($supplier_part_scope?_('Part components'):_('Components')),
+array(
+		'label'=>($supplier_part_scope?_('Part properties'):_('Properties')),
 
 		'show_title'=>true,
 		'fields'=>array(
 
 			array(
 				'id'=>'Part_Materials',
-				'edit'=>'textarea',
+				'edit'=>($edit?'textarea':''),
+
 				'value'=>htmlspecialchars($object->get('Part Materials')),
 				'formatted_value'=>$object->get('Materials'),
 				'label'=>ucfirst($object->get_field_label('Part Materials')),
@@ -269,6 +194,29 @@ $part_fields=array(
 				'required'=>false,
 				'type'=>'value'
 			),
+				array(
+				'id'=>'Part_Tariff_Code',
+				'edit'=>($edit?'numeric':''),
+
+				'value'=>$object->get('Part Tariff Code') ,
+				'formatted_value'=>$object->get('Tariff Code') ,
+				'label'=>ucfirst($object->get_field_label('Part Tariff Code')),
+				'invalid_msg'=>get_invalid_message('string'),
+				'required'=>false,
+				'type'=>'value'
+
+			),
+			array(
+				'id'=>'Part_Duty_Rate',
+				'edit'=>($edit?'numeric':''),
+
+				'value'=>$object->get('Part Duty Rate') ,
+				'formatted_value'=>$object->get('Duty Rate') ,
+				'label'=>ucfirst($object->get_field_label('Part Duty Rate')),
+				'invalid_msg'=>get_invalid_message('string'),
+				'required'=>false,
+				'type'=>'value'
+			),
 
 		)
 
@@ -277,6 +225,73 @@ $part_fields=array(
 
 
 	) ,
+	array(
+		'label'=>($supplier_part_scope?_('Part health & safety'):_('Health & Safety')),
+
+		'show_title'=>true,
+		'fields'=>array(
+
+			array(
+				'id'=>'Part_UN_Number',
+				'edit'=>($edit?'string':''),
+
+				'value'=>htmlspecialchars($object->get('Part UN Number')),
+				'formatted_value'=>$object->get('UN Number'),
+				'label'=>ucfirst($object->get_field_label('Part UN Number')),
+				'required'=>false,
+				'type'=>'value'
+			),
+			array(
+				'id'=>'Part_UN_Class',
+				'edit'=>($edit?'string':''),
+
+				'value'=>htmlspecialchars($object->get('Part UN Class')),
+				'formatted_value'=>$object->get('UN Class'),
+				'label'=>ucfirst($object->get_field_label('Part UN Class')),
+				'required'=>false,
+				'type'=>'value'
+			),
+			array(
+				'id'=>'Part_Packing_Group',
+				'edit'=>($edit?'option':''),
+
+				'options'=>$options_Packing_Group,
+				'value'=>htmlspecialchars($object->get('Part Packing Group')),
+				'formatted_value'=>$object->get('Packing Group'),
+				'label'=>ucfirst($object->get_field_label('Part Packing Group')),
+				'required'=>false,
+				'type'=>'value'
+			),
+			array(
+				'id'=>'Part_Proper_Shipping_Name',
+				'edit'=>($edit?'string':''),
+
+				'value'=>htmlspecialchars($object->get('Part Proper Shipping Name')),
+				'formatted_value'=>$object->get('Proper Shipping Name'),
+				'label'=>ucfirst($object->get_field_label('Part Proper Shipping Name')),
+				'required'=>false,
+				'type'=>'value'
+			),
+			array(
+				'id'=>'Part_Hazard_Indentification_Number',
+				'edit'=>($edit?'string':''),
+
+				'value'=>htmlspecialchars($object->get('Part Hazard Indentification Number')),
+				'formatted_value'=>$object->get('Hazard Indentification Number'),
+				'label'=>ucfirst($object->get_field_label('Part Hazard Indentification Number')),
+				'required'=>false,
+				'type'=>'value'
+			)
+		)
+
+
+
+
+
+
+	),
+
+	
 
 
 

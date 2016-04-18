@@ -10,6 +10,8 @@
  Version 3.0
 */
 
+$account=new Account();
+
 if (isset($options['new']) and  $options['new'] ) {
 	$new=true;
 }else {
@@ -24,6 +26,8 @@ if (isset($options['show_full_label']) and  $options['show_full_label'] ) {
 	$field_prefix='';
 }
 
+
+
 $options_status=array('Available'=>_('Available'), 'NoAvailable'=>_('No stock'), 'Discontinued'=>_('Discontinued'));
 $supplier_part_fields=array(
 	array(
@@ -35,7 +39,8 @@ $supplier_part_fields=array(
 
 			array(
 				'id'=>'Supplier_Part_Reference',
-				'edit'=>'string',
+				'edit'=>($edit?'string':''),
+
 				'value'=>htmlspecialchars($object->get('Supplier Part Reference')),
 				'formatted_value'=>$object->get('Reference'),
 				'label'=>ucfirst($object->get_field_label('Supplier Part Reference')),
@@ -44,7 +49,17 @@ $supplier_part_fields=array(
 				'type'=>'value'
 			),
 
+			array(
+				'id'=>'Part_Part_Reference',
+				'edit'=>($edit?'string':''),
 
+				'value'=>htmlspecialchars($object->get('Part Part Reference')),
+				'formatted_value'=>$object->get('Part Reference'),
+				'label'=>ucfirst($object->get_field_label('Part Part Reference')),
+				'required'=>true,
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates', 'field'=>'Part_Reference', 'parent'=>'account', 'parent_key'=>1, 'object'=>'Part', 'key'=>$object->part->id)),
+				'type'=>'value'
+			),
 
 
 		)
@@ -60,7 +75,8 @@ $supplier_part_fields=array(
 			array(
 				'render'=>($new?false:true),
 				'id'=>'Supplier_Part_Status',
-				'edit'=>'option',
+				'edit'=>($edit?'option':''),
+
 				'options'=>$options_status,
 				'value'=>htmlspecialchars($object->get('Supplier Part Status')),
 				'formatted_value'=>$object->get('Status'),
@@ -71,26 +87,7 @@ $supplier_part_fields=array(
 
 
 
-			array(
-				'id'=>'Supplier_Part_Unit_Cost',
-				'edit'=>'flexi_amount',
-				'value'=>htmlspecialchars($object->get('Supplier Part Unit Cost')),
-				'formatted_value'=>$object->get('Unit Cost'),
-				'label'=>ucfirst($object->get_field_label('Supplier Part Unit Cost')),
-				'required'=>true,
-				'placeholder'=>($new?$options['supplier']->get('Default Currency'):$object->get('Currency Code')),
-				'type'=>'value'
-			),
-				array(
-				'render'=>false,
-				'id'=>'Supplier_Part_Currency_Code',
-				'edit'=>'string',
-				'value'=>($new?$options['supplier']->get('Supplier Default Currency Code'):htmlspecialchars($object->get('Supplier Part Currency Code'))),
-				'formatted_value'=>($new?$options['supplier']->get('Default Currency Code '):htmlspecialchars($object->get('Currency Code'))),
-				'label'=>ucfirst($object->get_field_label('Supplier Part Currency Code')),
-				'required'=>false,
-				'type'=>'value'
-			),
+
 			array(
 				'id'=>'Supplier_Part_Minimum_Carton_Order',
 				'edit'=>'smallint_unsigned',
@@ -102,9 +99,10 @@ $supplier_part_fields=array(
 				'required'=>true,
 				'type'=>'value'
 			),
-				array(
+			array(
 				'id'=>'Supplier_Part_Average_Delivery_Days',
-				'edit'=>'numeric',
+				'edit'=>($edit?'numeric':''),
+
 				'value'=>($new?1:htmlspecialchars($object->get('Supplier Part Average Delivery Days'))),
 				'formatted_value'=>($new?7:$object->get('Average Delivery Days')),
 				'label'=>ucfirst($object->get_field_label('Supplier Part Average Delivery Days')),
@@ -113,8 +111,81 @@ $supplier_part_fields=array(
 				'required'=>true,
 				'type'=>'value'
 			),
+			array(
+				'id'=>'Supplier_Part_Carton_CBM',
+				'edit'=>($edit?'numeric':''),
+
+				'value'=>htmlspecialchars($object->get('Supplier Part Carton CBM')),
+				'formatted_value'=>$object->get('Carton CBM'),
+				'label'=>ucfirst($object->get_field_label('Supplier Part Carton CBM')),
+				'placeholder'=>_('cubic meters'),
+				'required'=>false,
+				'type'=>'value'
+			),
 
 
+		)
+	),
+
+	array(
+		'label'=>($show_full_label?_("Supplier's part cost/price"):_('Cost/price')),
+
+		'show_title'=>true,
+		'fields'=>array(
+			array(
+				'render'=>false,
+				'id'=>'Supplier_Part_Currency_Code',
+				'edit'=>($edit?'string':''),
+
+				'value'=>($new?$options['supplier']->get('Supplier Default Currency Code'):htmlspecialchars($object->get('Supplier Part Currency Code'))),
+				'formatted_value'=>($new?$options['supplier']->get('Default Currency Code '):htmlspecialchars($object->get('Currency Code'))),
+				'label'=>ucfirst($object->get_field_label('Supplier Part Currency Code')),
+				'required'=>false,
+				'type'=>'value'
+			),
+
+			array(
+				'id'=>'Supplier_Part_Unit_Cost',
+				'edit'=>($edit?'amount':''),
+
+				'value'=>htmlspecialchars($object->get('Supplier Part Unit Cost')),
+				'formatted_value'=>$object->get('Unit Cost'),
+				'label'=>ucfirst($object->get_field_label('Supplier Part Unit Cost')),
+				'required'=>true,
+				'placeholder'=>sprintf(_('amount in %s '), $options['supplier']->get('Default Currency Code')),
+				'type'=>'value'
+			),
+
+			array(
+				'id'=>'Supplier_Part_Unit_Extra_Cost',
+				'edit'=>'amount_margin',
+				'value'=>htmlspecialchars($object->get('Supplier Part Unit Extra Cost')),
+				'formatted_value'=>$object->get('Unit Extra Cost'),
+				'label'=>ucfirst($object->get_field_label('Supplier Part Unit Extra Cost')),
+				'required'=>true,
+				'placeholder'=>sprintf(_('amount in %s or %%'), $options['supplier']->get('Default Currency Code')),
+				'type'=>'value'
+			),
+			array(
+				'id'=>'Part_Part_Unit_Price',
+				'edit'=>'amount_margin',
+				'value'=>htmlspecialchars($object->get('Part Part Unit Price')),
+				'formatted_value'=>$object->get('Part Unit Price'),
+				'label'=>ucfirst($object->get_field_label('Part Part Unit Price')),
+				'required'=>true,
+				'placeholder'=>sprintf(_('amount in %s or margin (%%)'), $account->get('Currency')),
+				'type'=>'value'
+			),
+			array(
+				'id'=>'Part_Part_Unit_RRP',
+				'edit'=>'amount_margin',
+				'value'=>htmlspecialchars($object->get('Part Part Unit RRP')),
+				'formatted_value'=>$object->get('Part Unit RRP'),
+				'label'=>ucfirst($object->get_field_label('Part Part Unit RRP')),
+				'required'=>true,
+				'placeholder'=>sprintf(_('amount in %s or margin (%%)'), $account->get('Currency')),
+				'type'=>'value'
+			),
 
 		)
 	),
@@ -144,16 +215,7 @@ $supplier_part_fields=array(
 				'required'=>true,
 				'type'=>'value'
 			),
-			array(
-				'id'=>'Supplier_Part_Carton_CBM',
-				'edit'=>'numeric',
-				'value'=>htmlspecialchars($object->get('Supplier Part Carton CBM')),
-				'formatted_value'=>$object->get('Carton CBM'),
-				'label'=>ucfirst($object->get_field_label('Supplier Part Carton CBM')),
-				'placeholder'=>_('cubic meters'),
-				'required'=>false,
-				'type'=>'value'
-			),
+
 
 
 		)

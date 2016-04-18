@@ -295,7 +295,6 @@ case 'views':
 
 	list($state, $response['tabs'])=get_tabs($state, $modules, $user, $smarty);// todo only calculate when is subtabs in the section
 
-
 	if ($state['object']!=''
 		and ($modules[$state['module']]['sections'][$state['section']]['type']=='object'  or isset($modules[$state['module']]['sections'][$state['section']]['showcase'])  )   ) {
 		$response['object_showcase']=get_object_showcase(
@@ -385,7 +384,6 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state=false, $me
 function get_object_showcase($showcase, $data, $smarty, $user, $db) {
 
 
-
 	switch ($showcase) {
 
 	case 'website':
@@ -450,7 +448,13 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db) {
 		break;
 	case 'warehouse':
 		include_once 'showcase/warehouse.show.php';
-		$html=get_warehouse_showcase($data, $smarty, $user, $db);
+
+		if ( !$user->can_view('locations') or   !in_array($data['key'], $user->warehouses)   ) {
+			$html=get_locked_warehouse_showcase($data, $smarty, $user, $db);
+			
+		}else {
+			$html=get_warehouse_showcase($data, $smarty, $user, $db);
+		}
 		break;
 	case 'timesheet':
 		include_once 'showcase/timesheet.show.php';
@@ -1225,6 +1229,14 @@ function get_tabs($data, $modules, $user, $smarty) {
 	}
 
 	$smarty->assign('_content', $_content);
+	
+	
+	if ($data['section']=='warehouse') {
+	    if ( !$user->can_view('locations') or   !in_array($data['key'], $user->warehouses)   ) {
+            return array($data, '');
+        }
+	
+	}
 
 	$html=$smarty->fetch('tabs.tpl');
 
@@ -1263,7 +1275,7 @@ function get_view_position($state) {
 
 
 		if ($state['section']=='store') {
-			$branch[]=array('label'=>_('Store').' <span class="id">'.$state['_object']->get('Store Code').'</span>', 'icon'=>'shopping-bag', 'reference'=>'store/'.$state['_object']->id);
+			$branch[]=array('label'=>_('Store').' <span class="Store_Code id">'.$state['_object']->get('Store Code').'</span>', 'icon'=>'shopping-bag', 'reference'=>'store/'.$state['_object']->id);
 			$state['current_store']=$state['_object']->id;
 
 		}elseif ($state['section']=='store.new') {
@@ -1443,22 +1455,22 @@ function get_view_position($state) {
 		break;
 	case 'suppliers':
 		if ($state['section']=='suppliers') {
-			$branch[]=array('label'=>_('Suppiers'), 'icon'=>'ship', 'reference'=>'suppliers');
+			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'ship', 'reference'=>'suppliers');
 		}elseif ($state['section']=='supplier') {
-			$branch[]=array('label'=>_('Suppiers'), 'icon'=>'', 'reference'=>'suppliers');
+			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
 			$branch[]=array('label'=>'<span class="Supplier_Code">'.$state['_object']->get('Code').'</span>', 'icon'=>'ship', 'reference'=>'supplier/'.$state['key']);
 
 		}elseif ($state['section']=='supplier.new') {
-			$branch[]=array('label'=>_('Suppiers'), 'icon'=>'', 'reference'=>'suppliers');
+			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
 			$branch[]=array('label'=>_('New supplier'), 'icon'=>'ship', 'reference'=>'');
 
 		}elseif ($state['section']=='supplier_part') {
-			$branch[]=array('label'=>_('Suppiers'), 'icon'=>'', 'reference'=>'suppliers');
+			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
 			$branch[]=array('label'=>'<span class="Supplier_Code">'.$state['_parent']->get('Code').'</span>', 'icon'=>'ship', 'reference'=>'supplier/'.$state['_parent']->id);
 			$branch[]=array('label'=>'<span class="Supplier_Part_Reference">'.$state['_object']->get('Reference').'</span>', 'icon'=>'stop', 'reference'=>'');
 
 		}elseif ($state['section']=='supplier_part.new') {
-			$branch[]=array('label'=>_('Suppiers'), 'icon'=>'', 'reference'=>'suppliers');
+			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
 			$branch[]=array('label'=>'<span class="Supplier_Code">'.$state['_parent']->get('Code').'</span>', 'icon'=>'ship', 'reference'=>'supplier/'.$state['_parent']->id);
 			$branch[]=array('label'=>_("New supplier's part"), 'icon'=>'stop', 'reference'=>'');
 

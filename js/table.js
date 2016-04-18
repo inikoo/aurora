@@ -93,6 +93,7 @@ function get_elements_numbers(tab, parameters) {
             for (element in data.elements_numbers) {
 
                 for (item in data.elements_numbers[element]) {
+                console.log(item)
                     $("#element_qty_" + item).html('(' + data.elements_numbers[element][item] + ')')
 
 

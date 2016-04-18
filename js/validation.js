@@ -15,6 +15,8 @@ function validate_field(field, new_value, field_type, required, server_validatio
 
 
         if (settings.tipo == 'check_for_duplicates' && new_value == '') {
+            post_validate_field(validation, field)
+
             return validation;
         }
 
@@ -27,10 +29,15 @@ function validate_field(field, new_value, field_type, required, server_validatio
     }
 
 
+    post_validate_field(validation, field)
+
 
     return validation;
 }
 
+function post_validate_field(validation, field) {
+
+}
 
 function validate_address(field) {
     var valid_state = {
@@ -446,34 +453,57 @@ function client_validation(type, required, value, field) {
 
     case 'amount':
 
-        var regex = /^[1-9]\d*(((,\d{3}){1})?(\.\d{0,2})?)$/;
-        if (!regex.test(value)) {
-            /// console.log('ccc')
-            return {
-                class: 'invalid',
-                type: 'invalid_amount'
-            }
-        }
-        break
-    case 'flexi_amount':
-       
-       var regex = /^[1-9]\d*(((,\d{3}){1})?(\.\d{0,2})?)$/;
-        if (regex.test(value)) {
-           return valid_state;
-        }
-       
-       
-       
-          var regex = /^[1-9]\d*(((,\d{3}){1})?(\.\d{0,6})?)(\s?[a-z]{1,2})?$/;
-        if (regex.test(value)) {
-            /// console.log('ccc')
+        var comma = ','
+        var dot = '.'
+
+        var re = new RegExp(comma, "g");
+        value = value.replace(re, "")
+
+        if (value == dot) {
             return {
                 class: 'potentially_valid',
+                type: 'invalid'
+            }
+        }
+
+
+        var regex = new RegExp('^\d*\.?\d{0,6}$');
+        if (!regex.test(value)) {
+            return {
+                class: 'invalid',
                 type: 'invalid_amount'
             }
         }
-       
-        var regex = /^[1-9]\d*(((,\d{3}){1})?(\.\d{0,6})?)(\s?[a-z]{3})?$/;
+        break
+
+
+
+    case 'amount_margin':
+
+
+        value = value.replace(/\%$/g, "")
+
+
+        var comma = ','
+        var dot = '.'
+
+
+
+
+        var re = new RegExp(comma, "g");
+        value = value.replace(re, "")
+
+        if (value == dot) {
+            return {
+                class: 'potentially_valid',
+                type: 'invalid'
+            }
+        }
+
+
+        var regex = new RegExp('^\\d*\.?\\d{0,6}$');
+
+
         if (!regex.test(value)) {
             /// console.log('ccc')
             return {
@@ -481,7 +511,9 @@ function client_validation(type, required, value, field) {
                 type: 'invalid_amount'
             }
         }
-        break
+
+
+
     default:
 
     }
@@ -489,6 +521,10 @@ function client_validation(type, required, value, field) {
 
     return valid_state;
 }
+
+
+
+
 
 function validate_signed_integer(value, max_value) {
 
@@ -547,6 +583,7 @@ function server_validation(settings, parent, parent_key, object, key, field, val
         key = settings.key;
     }
 
+
     if (settings.parent_key_field != null) {
         parent_key = $('#' + settings.parent_key_field).val()
     }
@@ -562,9 +599,7 @@ function server_validation(settings, parent, parent_key, object, key, field, val
         var request = '/ar_validation.php?tipo=' + settings.tipo + '&parent=' + parent + '&parent_key=' + parent_key + '&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value
     }
 
-  //  console.log(request)
-
-
+    //  console.log(request)
     $.getJSON(request, function(data) {
 
 
@@ -589,6 +624,7 @@ function server_validation(settings, parent, parent_key, object, key, field, val
             var msg = "Error, can't verify value on server"
 
         }
+        post_validate_field(validation, field)
 
 
         $('#' + field + '_msg').html(msg)

@@ -15,7 +15,7 @@ include_once 'trait.NotesSubject.php';
 
 
 class Asset extends DB_Table{
-	use ImageSubject,NotesSubject,AttachmentSubject;
+	use ImageSubject, NotesSubject, AttachmentSubject;
 
 	function update_subject_field_switcher($field, $value, $options='', $metadata) {
 
@@ -59,6 +59,35 @@ class Asset extends DB_Table{
 	function get_asset_common($key, $arg1='') {
 
 		switch ($key) {
+
+		case 'Stock Status Icon':
+
+			switch ($this->data[$this->table_name.' Stock Status']) {
+			case 'Surplus':
+				$stock_status='<i class="fa  fa-plus-circle fa-fw" aria-hidden="true" title="'._('Surplus stock').'"></i>';
+				break;
+			case 'Optimal':
+				$stock_status='<i class="fa fa-check-circle fa-fw" aria-hidden="true" title="'._('Optimal stock').'"></i>';
+				break;
+			case 'Low':
+				$stock_status='<i class="fa fa-minus-circle fa-fw" aria-hidden="true" title="'._('Low stock').'"></i>';
+				break;
+			case 'Critical':
+				$stock_status='<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"  title="'._('Critical stock').'"></i>';
+				break;
+			case 'Out_Of_Stock':
+				$stock_status='<i class="fa error fa-ban fa-fw" aria-hidden="true"  title="'._('Out of stock').'"></i>';
+				break;
+			case 'Error':
+				$stock_status='<i class="fa fa-question-circle fa-fw" aria-hidden="true"  title="'._('Error').'"></i>';
+				break;
+			default:
+				$stock_status=$this->data[$this->table_name.' Stock Status'];
+				break;
+			}
+			return  array(true, $stock_status);
+			break;
+
 		case  'Tariff Code':
 			$tariff_code=$this->data[$this->table_name.' Tariff Code'];
 			if ($tariff_code!='' and $this->data[$this->table_name.' Tariff Code Valid']=='No') {
@@ -70,9 +99,9 @@ class Asset extends DB_Table{
 
 			if ($this->data[$this->table_name.' Materials']!='') {
 				$materials='';
-				
-				
-				
+
+
+
 				$materials_data=json_decode($this->data[$this->table_name.' Materials'], true);
 
 
@@ -198,7 +227,7 @@ class Asset extends DB_Table{
 			$dimensions='';
 
 
-        $tag=preg_replace('/ Dimensions$/','',$key);
+			$tag=preg_replace('/ Dimensions$/', '', $key);
 
 			if ($this->data[$this->table_name.' '.$key]!='') {
 				$data=json_decode($this->data[$this->table_name.' '.$key], true);

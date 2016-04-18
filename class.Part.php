@@ -545,7 +545,7 @@ class Part extends Asset{
 		case('Part Available for Products Configuration'):
 			$this->update_availability_for_products_configuration($value, $options);
 			break;
-    /*
+			/*
 		case('Part Tariff Code'):
 		case('Part Duty Rate'):
 		case 'Part UN Number':
@@ -575,8 +575,8 @@ class Part extends Asset{
 
 			$this->update_fields_used_in_products($field, $value, $options);
 			break;
-		*/	
-			
+		*/
+
 		case 'Part Next Set Supplier Shipment':
 			$this->update_set_next_supplier_shipment($value, $options);
 			break;
@@ -1006,6 +1006,12 @@ class Part extends Asset{
 
 		switch ($key) {
 
+		case 'Available Forecast':
+		  
+		
+			include_once 'utils/natural_language.php';
+			return '<i class="fa fa-ban error fa-fw" aria-hidden="true" title="'._('Out of stock').'" ></i> '._('in').' <span title="'.sprintf("%s %s",number($this->data['Part Days Available Forecast'],1) , ngettext("day", "days", number($this->data['Part Days Available Forecast'],1))).'">'.days_to_string($this->data['Part Days Available Forecast'], true).'</span>';
+			break;
 
 		case 'Origin Country Code':
 			if ($this->data['Part Origin Country Code']) {
@@ -1221,31 +1227,32 @@ class Part extends Asset{
 	}
 
 
-	function update_stock_state() {
+	function update_stock_status() {
 
 		if ($this->data['Part Current Stock']<0) {
-			$stock_state='Error';
+			$stock_state='Critical';
 		}elseif ($this->data['Part Current Stock']==0) {
-			$stock_state='OutofStock';
+			$stock_state='Out_of_Stock';
 		}elseif ($this->data['Part Days Available Forecast']<=$this->data['Part Delivery Days']) {
-			$stock_state='VeryLow';
+			$stock_state='Critical';
 		}elseif ($this->data['Part Days Available Forecast']<=$this->data['Part Delivery Days']+7) {
 			$stock_state='Low';
 		}elseif ($this->data['Part Days Available Forecast']>=$this->data['Part Excess Availability Days Limit']) {
-			$stock_state='Excess';
+			$stock_state='Surplus';
 		}else {
-			$stock_state='Normal';
+			$stock_state='Optimal';
 		}
 		$this->data['Part Stock State']=$stock_state;
 
-		$sql=sprintf("update `Part Dimension`  set `Part Stock State`=%s where  `Part SKU`=%d   ",
+		$sql=sprintf("update `Part Dimension`  set `Part Stock Status`=%s where  `Part SKU`=%d   ",
 			prepare_mysql($this->data['Part Stock State']),
 			$this->id
 		);
-		//print $sql;
+		//print "$sql\n";
 		$this->db->exec($sql);
 
 
+		/*
 		$products=$this->get_current_product_ids();
 
 		foreach ($products as  $product_id=>$values) {
@@ -1254,7 +1261,7 @@ class Part extends Asset{
 				$product->update_availability();
 			}
 		}
-
+*/
 
 	}
 
@@ -1298,7 +1305,7 @@ class Part extends Asset{
 		);
 		$this->db->exec($sql);
 		//print "-> $stock , $picked, $required, , , ";
-		$this->update_stock_state();
+		$this->update_stock_status();
 
 		$this->update_available_forecast();
 
@@ -3296,10 +3303,10 @@ class Part extends Asset{
 
 	function get_current_product_ids() {
 		$sql=sprintf("select `Product Part Dimension`.`Product ID` from `Product Part List` left join `Product Part Dimension` on (`Product Part List`.`Product Part Key`=`Product Part Dimension`.`Product Part Key`)   where `Part SKU`=%d and `Product Part Most Recent`='Yes' ", $this->sku);
-		
+
 		$result=mysql_query($sql);
 		$product_ids=array();
-		
+
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			$product_ids[$row['Product ID']]= $row['Product ID'];
 		}

@@ -12,6 +12,7 @@
 
 require_once 'common.php';
 require_once 'class.Staff.php';
+require_once 'utils/date_functions.php';
 
 $sql=sprintf('select `Staff Key` from `Staff Dimension` where `Staff Type`!="Contractor" order by `Staff Key` desc ');
 

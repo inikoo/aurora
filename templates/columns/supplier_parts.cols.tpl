@@ -1,101 +1,109 @@
-var columns = [
-  {
+var columns = [{
     name: "id",
     label: "",
     editable: false,
-     renderable: false,
+    renderable: false,
     cell: "string",
 
-}
-,{
+}, {
     name: "status",
     label: "",
     editable: false,
-     sortType: "toggle",
+    sortType: "toggle",
     cell: Backgrid.HtmlCell.extend({
-      className: "width_20"
-})
-   
-}
-,{
+        className: "width_20"
+    })
+
+}, {
     name: "reference",
     label: "{t}Reference{/t}",
     editable: true,
-     sortType: "toggle",
-    
+    sortType: "toggle",
+
     cell: Backgrid.StringCell.extend({
         events: {
             "click": function() {
-                change_view( '/supplier/'+this.model.get("supplier_key")+'/part/' + this.model.get("id"))
+                change_view('/supplier/' + this.model.get("supplier_key") + '/part/' + this.model.get("id"))
             }
         },
         className: "link"
-       
-})
-   
+
+    })
+
 }
 
 
-,{
+, {
     name: "part_reference",
     label: "{t}Part{/t}",
     editable: true,
-     sortType: "toggle",
-    
+    sortType: "toggle",
+
     cell: Backgrid.StringCell.extend({
         events: {
             "click": function() {
-                change_view( 'part/' + this.model.get("part_sku"))
+                change_view('part/' + this.model.get("part_sku"))
             }
         },
         className: "link"
-       
-})
-   
-},{
+
+    })
+
+}, {
     name: "description",
     label: "{t}Description{/t}",
     editable: false,
-     sortType: "toggle",
-    
+    sortType: "toggle",
+
     cell: Backgrid.StringCell.extend({
-       
-       
-})
-   
-}
-,{
+
+
+    })
+
+},
+{
     name: "part_description",
     label: "{t}Part{/t}",
     editable: false,
-     sortType: "toggle",
-    
-    cell: Backgrid.HtmlCell.extend({
-       
-       
-})
-   
-}
+    sortType: "toggle",
 
-,{
+    cell: Backgrid.HtmlCell.extend({
+
+
+    })
+
+}
+,
+{
+    name: "stock",
+    label: "{t}Stock{/t}",
+   editable: false,
+   
+    defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='stock'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+    headerCell: integerHeaderCell
+}
+, {
     name: "cost",
     label: "{t}Cost{/t}",
     editable: false,
-     sortType: "toggle",
-    cell: Backgrid.HtmlCell.extend({
-})
-   
-}
-,{
+    sortType: "toggle",
+    cell: Backgrid.HtmlCell.extend({})
+
+}, {
     name: "packing",
     label: "{t}Packing{/t}",
     editable: false,
-     sortType: "toggle",
-    cell: Backgrid.HtmlCell.extend({
-})
-   
+    sortType: "toggle",
+    cell: Backgrid.HtmlCell.extend({})
+
 }
+
 ]
+
 
 function change_table_view(view,save_state){
 
@@ -106,7 +114,7 @@ function change_table_view(view,save_state){
      grid.columns.findWhere({ name: 'part_description'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'description'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'part_reference'} ).set("renderable", false)
-    //grid.columns.findWhere({ name: 'status'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'stock'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'cost'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'packing'} ).set("renderable", false)
 
@@ -120,6 +128,8 @@ function change_table_view(view,save_state){
             grid.columns.findWhere({ name: 'part_reference'} ).set("renderable", true)
 
         grid.columns.findWhere({ name: 'description'} ).set("renderable", true)
+            grid.columns.findWhere({ name: 'stock'} ).set("renderable", true)
+
     }else if(view=='reorder'){
         grid.columns.findWhere({ name: 'part_reference'} ).set("renderable", true)
                  grid.columns.findWhere({ name: 'status'} ).set("renderable", true)

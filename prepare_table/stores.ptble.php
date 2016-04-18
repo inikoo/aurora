@@ -11,10 +11,14 @@
 
 $period_tag=get_interval_db_name($parameters['f_period']);
 
+/*
 if (count($user->stores)==0)
 	$where="where false";
 else
 	$where=sprintf("where S.`Store Key` in (%s)", join(',', $user->stores));
+*/
+$where='where true ';
+
 $filter_msg='';
 
 

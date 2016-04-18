@@ -86,6 +86,7 @@ class Subject extends DB_Table {
 
 	function set_as_main($field, $other_key) {
 
+
 		switch ($field) {
 		case 'Customer Other Email':
 		case 'Supplier Other Email':
@@ -842,15 +843,15 @@ class Subject extends DB_Table {
 		}
 
 
+
 		if ($updated_fields_number>0) {
 			$this->updated=true;
 		}
 
 
-		if ($this->updated or true ) {
+		if ($this->updated  ) {
 
 			$this->update_address_formatted_fields($type, $options);
-
 
 			$this->add_changelog_record($this->table_name." $type Address", $old_value, $this->get("$type Address"), '', $this->table_name, $this->id );
 
@@ -1187,7 +1188,6 @@ class Subject extends DB_Table {
 
 				include_once 'utils/get_phoneUtil.php';
 				$phoneUtil=get_phoneUtil();
-
 				try {
 					if ($this->get('Contact Address Country 2 Alpha Code')=='' or $this->get('Contact Address Country 2 Alpha Code')=='XX') {
 
@@ -1208,22 +1208,24 @@ class Subject extends DB_Table {
 					$value=$phoneUtil->format($proto_number, \libphonenumber\PhoneNumberFormat::E164);
 
 
-
 				} catch (\libphonenumber\NumberParseException $e) {
 
 				}
 
 			}else {
-				$formated_value=='';
+				$formated_value='';
 			}
 
 
 
 			$this->update_field($field, $value, 'no_history');
 
-			$this->update_field_switcher($this->table_name.' Preferred Contact Number', '');
 
-			$this->update_field(preg_replace('/Plain/', 'XHTML', $field), $formated_value);
+
+			$this->update_field(preg_replace('/Plain/', 'XHTML', $field), $formated_value, 'no_history');
+
+			$this->update_field_switcher($this->table_name.' Preferred Contact Number','', $options);
+
 
 			$this->other_fields_updated=array(
 				$this->table_name.'_Main_Plain_Mobile'=>array(
@@ -1237,6 +1239,7 @@ class Subject extends DB_Table {
 					'label'=>ucfirst($this->get_field_label($this->table_name.' Main Plain Telephone')). ($this->get($this->table_name.' Main Plain Telephone')!=''?($this->get($this->table_name.' Preferred Contact Number')=='Telephone'?' <i title="'._('Main contact number').'" class="fa fa-star discret"></i>':' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discret button"></i>'):'')    ,
 				));
 		}
+
 
 
 
@@ -1258,12 +1261,13 @@ class Subject extends DB_Table {
 		);
 
 
+    
+
 	}
 
 
 	function update_subject_field_switcher($field, $value, $options='', $metadata) {
-
-
+		
 		switch ($field) {
 
 		case 'History Note':
@@ -1284,6 +1288,8 @@ class Subject extends DB_Table {
 		case $this->table_name.' Main Plain Telephone':
 
 			$this->update_telephone($field, $value, $options);
+			
+			
 			return true;
 			break;
 
@@ -1333,8 +1339,9 @@ class Subject extends DB_Table {
 
 			}
 
+
 			$this->update_field($field, $value, 'no_history');
-			$this->update_field(preg_replace('/Plain/', 'XHTML', $field), $formatted_value);
+			$this->update_field(preg_replace('/Plain/', 'XHTML', $field), $formatted_value, 'no_history');
 
 
 			if ($field=='Customer Main Plain Mobile') {
@@ -1389,7 +1396,6 @@ class Subject extends DB_Table {
 
 
 			$this->update_field($field, $value, $options);
-
 			$this->update_field($this->table_name.' Preferred Contact Number Formatted Number', $this->get('Main XHTML '.$value), $options);
 
 
@@ -1677,6 +1683,9 @@ class Subject extends DB_Table {
 
 			return false;
 		}
+
+
+
 
 		return false;
 	}

@@ -16,7 +16,7 @@ include_once 'class.Staff.php';
 
 $employee=new Staff(0);
 
-$object_fields=get_object_fields($employee, $db);
+$object_fields=get_object_fields($employee, $db, $user);
 
 
 
