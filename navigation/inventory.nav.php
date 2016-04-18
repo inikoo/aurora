@@ -146,7 +146,7 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
 		}
 
 
-
+		$extra_where=' and `Part Status`="In Use"';
 
 		include_once 'prepare_table/'.$tab.'.ptble.php';
 

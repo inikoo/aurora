@@ -94,149 +94,40 @@ $fields=' "" as `Warehouse Code`,';
 exit("parent not found ".$parameters['parent']);
 }
 
-
+if(isset($extra_where))
 $where.=$extra_where;
 
-/*
 
 
-	switch ($elements_type) {
-	case 'use':
+if (isset($parameters['elements_type'])) {
+
+	switch ($parameters['elements_type']) {
+	case 'stock_status':
 		$_elements='';
-		$elements_count=0;
-		foreach ($elements['use'] as $_key=>$_value) {
-			if ($_value) {
-				$elements_count++;
-
-				if ($_key=='InUse') {
-					$_key='In Use';
-				}else {
-					$_key='Not In Use';
-				}
-
+		$count_elements=0;
+		foreach ($parameters['elements'][$parameters['elements_type']]['items'] as $_key=>$_value) {
+			if ($_value['selected']) {
+				$count_elements++;
 				$_elements.=','.prepare_mysql($_key);
+
 			}
 		}
-		$_elements=preg_replace('/^\,/','',$_elements);
-		if ($elements_count==0) {
-			$where.=' and false' ;
-		} elseif ($elements_count==1) {
-			$where.=' and `Part Status` in ('.$_elements.')' ;
-		}
-		break;
-	case 'state':
-		$_elements='';
-		$element_counter=0;
-		foreach ($elements['state'] as $_key=>$_value) {
-			if ($_value) {
-				$_elements.=','.prepare_mysql($_key);
-				$element_counter++;
-			}
-		}
-		$_elements=preg_replace('/^\,/','',$_elements);
+
+
+
+
+		$_elements=preg_replace('/^\,/', '', $_elements);
 		if ($_elements=='') {
 			$where.=' and false' ;
-		}elseif ( $element_counter<4) {
+		} elseif ($count_elements<5) {
+			$where.=' and `Part Stock Status` in ('.$_elements.')' ;
 
-			$where.=' and `Part Main State` in ('.$_elements.')' ;
-		}
-
-
-		break;
-	case 'stock_state':
-
-		$_elements='';
-		$elements_count=0;
-		foreach ($elements['use'] as $_key=>$_value) {
-			if ($_value) {
-				$elements_count++;
-
-				if ($_key=='InUse') {
-					$_key='In Use';
-				}else {
-					$_key='Not In Use';
-				}
-
-				$_elements.=','.prepare_mysql($_key);
-			}
-		}
-		$_elements=preg_replace('/^\,/','',$_elements);
-		if ($elements_count==0) {
-			$where.=' and false' ;
-		} elseif ($elements_count==1) {
-			$where.=' and `Part Status` in ('.$_elements.')' ;
-		}
-
-
-
-		$_elements='';
-		$element_counter=0;
-		foreach ($elements['stock_state'] as $_key=>$_value) {
-			if ($_value) {
-				$_elements.=','.prepare_mysql($_key);
-				$element_counter++;
-			}
-		}
-		$_elements=preg_replace('/^\,/','',$_elements);
-		if ($_elements=='') {
-			$where.=' and false' ;
-		}elseif ( $element_counter<4) {
-
-			$where.=' and `Part Stock State` in ('.$_elements.')' ;
 		}
 		break;
+	
+}
+}
 
-
-
-	case 'next_shipment':
-
-		$_elements='';
-		$elements_count=0;
-		foreach ($elements['use'] as $_key=>$_value) {
-			if ($_value) {
-				$elements_count++;
-
-				if ($_key=='InUse') {
-					$_key='In Use';
-				}else {
-					$_key='Not In Use';
-				}
-
-				$_elements.=','.prepare_mysql($_key);
-			}
-		}
-		$_elements=preg_replace('/^\,/','',$_elements);
-		if ($elements_count==0) {
-			$where.=' and false' ;
-		} elseif ($elements_count==1) {
-			$where.=' and `Part Status` in ('.$_elements.')' ;
-		}
-
-
-
-		$_elements='';
-		$element_counter=0;
-		foreach ($elements['next_shipment'] as $_key=>$_value) {
-			if ($_value) {
-				$_elements.=','.prepare_mysql($_key);
-				$element_counter++;
-			}
-		}
-		$_elements=preg_replace('/^\,/','',$_elements);
-		if ($_elements=='') {
-			$where.=' and false' ;
-		}elseif ( $element_counter<3) {
-
-			$where.=' and `Part Next Shipment State` in ('.$_elements.')' ;
-		}
-		break;
-
-	default:
-		$where.=' and false' ;
-
-	}
-
-*/
 
 
 if ($parameters['f_field']=='used_in' and $f_value!='')
@@ -352,7 +243,7 @@ $order='P.'.$order;
 
 $sql_totals="select count(Distinct P.`Part SKU`) as num from $table  $where  ";
 
-$fields.='P.`Part SKU`,`Part Reference`,`Part Unit Description`,`Part XHTML Currently Used In`';
+$fields.='P.`Part SKU`,`Part Reference`,`Part Unit Description`,`Part Current Stock`,`Part Stock Status`,`Part Days Available Forecast`';
 
 function parts_awhere($awhere) {
 

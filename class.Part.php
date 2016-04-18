@@ -1230,7 +1230,7 @@ class Part extends Asset{
 	function update_stock_status() {
 
 		if ($this->data['Part Current Stock']<0) {
-			$stock_state='Critical';
+			$stock_state='Error';
 		}elseif ($this->data['Part Current Stock']==0) {
 			$stock_state='Out_of_Stock';
 		}elseif ($this->data['Part Days Available Forecast']<=$this->data['Part Delivery Days']) {
@@ -1248,7 +1248,7 @@ class Part extends Asset{
 			prepare_mysql($this->data['Part Stock State']),
 			$this->id
 		);
-		//print "$sql\n";
+		
 		$this->db->exec($sql);
 
 

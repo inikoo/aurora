@@ -189,13 +189,14 @@ $elements_options=array(
 		),
 	),
 	'parts'=>array(
-		'status'=>array(
+		'stock_status'=>array(
 			'label'=>_('Stock status'),
 			'items'=>array(
 				'Surplus'=>array('label'=>_('Surplus'), 'selected'=>true),
 				'Optimal'=>array('label'=>_('Optimal'), 'selected'=>true),
 				'Low'=>array('label'=>_('Low'), 'selected'=>true),
 				'Critical'=>array('label'=>_('Critical'), 'selected'=>true),
+				'Error'=>array('label'=>_('Error'), 'selected'=>true),
 				'Out_Of_Stock'=>array('label'=>_('Out of stock'), 'selected'=>true)
 
 			)
@@ -239,7 +240,24 @@ $elements_options=array(
 
 
 		),
-	)
+	),
+	'part_stock_transactions'=>array(
+		'type'=>array(
+			'label'=>_('Transaction type'),
+			'items'=>array(
+				'Move'=>array('label'=>_('Movements'), 'selected'=>true),
+				'NoDispatched'=>array('label'=>_('No Dispatched'), 'selected'=>true),
+				'Audit'=>array('label'=>_('Audits'), 'selected'=>true),
+				'In'=>array('label'=>_('In'), 'selected'=>true),
+				'Out'=>array('label'=>_('Out'), 'selected'=>true),
+				'OIP'=>array('label'=>'OIP', 'selected'=>true,'title'=>_('Orders in Process'))
+
+			)
+
+
+
+		),
+	),
 );
 
 ?>

@@ -627,6 +627,19 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'reference'
 	),
+	'part.stock.transactions'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>100,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'note',
+		'elements_type'=>each(  $elements_options['part_stock_transactions']  ) ['key'],
+		'elements'=>$elements_options['part_stock_transactions'],
+	),
+
+	
+	
 	'inventory.barcodes'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',

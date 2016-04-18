@@ -81,12 +81,58 @@ case 'supplier.supplier_parts':
 		));
 	get_supplier_parts_elements($db, $data['parameters'], $user);
 	break;
-
+case 'part.stock.transactions':
+	$data=prepare_values($_REQUEST, array(
+			'parameters'=>array('type'=>'json array')
+		));
+	get_part_stock_transactions_elements($db, $data['parameters'], $user);
+	break;
 default:
 	$response=array('state'=>405, 'resp'=>'Tab not found '.$tab);
 	echo json_encode($response);
 	exit;
 	break;
+}
+
+function get_part_stock_transactions_elements($db, $data, $user) {
+
+
+
+	$parent_key=$data['parent_key'];
+	$elements_numbers=array(
+		'stock_status'=>array('OIP'=>0, 'In'=>0, 'Move'=>0,'Out'=>0,'Audit'=>0,'NoDispatched'=>0),
+
+	);
+
+
+	$table='`Inventory Transaction Fact`  ITF  ';
+	switch ($data['parent']) {
+	case 'part':
+		$where=sprintf("where `Inventory Transaction Record Type`='Movement' and `Part SKU`=%d",$data['parent_key']);
+		break;
+	default:
+		$response=array('state'=>405, 'resp'=>'parent not found '.$data['parent']);
+		echo json_encode($response);
+
+		return;
+	}
+
+
+
+	$sql=sprintf("select count(*) as number,`Inventory Transaction Section` as element from $table $where  group by `Inventory Transaction Section` ");
+	foreach ($db->query($sql) as $row) {
+
+		$elements_numbers['stock_status'][preg_replace('/\s/','',$row['element'])]=number($row['number']);
+
+	}
+
+
+
+	$response= array('state'=>200, 'elements_numbers'=>$elements_numbers);
+	echo json_encode($response);
+
+
+
 }
 
 function get_parts_elements($db, $data, $user) {
@@ -95,7 +141,7 @@ function get_parts_elements($db, $data, $user) {
 
 	$parent_key=$data['parent_key'];
 	$elements_numbers=array(
-		'stock_status'=>array('Surplus'=>0, 'Optimal'=>0, 'Low'=>0,'Critical'=>0,'Out_Of_Stock'=>0),
+		'stock_status'=>array('Surplus'=>0, 'Optimal'=>0, 'Low'=>0,'Critical'=>0,'Out_Of_Stock'=>0,'Error'=>0),
 
 	);
 

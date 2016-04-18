@@ -33,17 +33,21 @@ $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
 case 'parts':
-	parts(get_table_parameters(), $db, $user,'active');
+	parts(get_table_parameters(), $db, $user, 'active');
+	break;
+case 'stock_transactions':
+	stock_transactions(get_table_parameters(), $db, $user);
 	break;
 case 'discontinued_parts':
-	parts(get_table_parameters(), $db, $user,'discontinued');
-	break;	
+	parts(get_table_parameters(), $db, $user, 'discontinued');
+	break;
 case 'barcodes':
 	barcodes(get_table_parameters(), $db, $user);
 	break;
 case 'supplier_parts':
 	supplier_parts(get_table_parameters(), $db, $user);
 	break;
+
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
@@ -59,7 +63,7 @@ function parts($_data, $db, $user, $type) {
 		$extra_where=' and `Part Status`="Not In Use"';
 		$rtext_label='discontinued part';
 
-	}elseif($type=='active') {
+	}elseif ($type=='active') {
 		$extra_where=' and `Part Status`="In Use"';
 		$rtext_label='part';
 
@@ -80,15 +84,140 @@ function parts($_data, $db, $user, $type) {
 
 
 
+			switch ($data['Part Stock Status']) {
+			case 'Surplus':
+				$stock_status='<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Optimal':
+				$stock_status='<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Low':
+				$stock_status='<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Critical':
+				$stock_status='<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Out_Of_Stock':
+				$stock_status='<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Error':
+				$stock_status='<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+				break;
+			default:
+				$stock_status=$data['Part Stock Status'];
+				break;
+			}
+
+
 			$adata[]=array(
 				'id'=>(integer)$data['Part SKU'],
-
 				'reference'=>$data['Part Reference'],
-				'formatted_sku'=>sprintf("SKU%05d", $data['Part SKU']),
-				'reference'=>$data['Part Reference'],
-				'description'=>$data['Part Unit Description'],
-				'products'=>$data['Part XHTML Currently Used In'],
+				'unit_description'=>$data['Part Unit Description'],
+				'stock_status'=>$stock_status,
+				'stock'=>'<span class="'.($data['Part Current Stock']<0?'error':'').'">'.number(floor($data['Part Current Stock'])).'</span>'
 
+			);
+
+
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		print $sql;
+		exit;
+	}
+
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function stock_transactions($_data, $db, $user) {
+
+
+	$rtext_label='transaction';
+
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $data) {
+			//MossRB-04 227330 Taken from: 11A1
+
+			$note=$data['Note'];
+			switch ($data['Inventory Transaction Section']) {
+			case 'OIP':
+				$type='<i class="fa  fa-sign-out discret fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Out':
+				$type='<i class="fa fa-sign-out fa-fw" aria-hidden="true"></i>';
+
+				if ($parameters['parent']=='part') {
+					$note=sprintf(_('%s %s (%s) taken from %s'),
+
+                        number(-1*$data['Inventory Transaction Quantity']),
+                        '<span title="'._('Stock keeping outers').'">SKO</span>',
+                    
+												sprintf('<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-truck" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'], $data['Delivery Note ID']),
+							sprintf('<span class="button" onClick="change_view(\'location/%d\')">%s</span>', $data['Location Key'], $data['Location Code'])
+
+
+					);
+				}else {
+					$note=sprintf(_('%sx %s (%s) taken from %s'),
+                        number(-1*$data['Inventory Transaction Quantity']),
+
+						($parameters['parent']=='part'?
+							sprintf('<i class="fa fa-square" aria-hidden="true"></i> %s', $data['Part Reference']):
+							sprintf('<span class="button" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span>', $data['Part SKU'], $data['Part Reference'])
+						),
+							sprintf('<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-truck" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'], $data['Delivery Note ID']),
+							sprintf('<span class="button" onClick="change_view(\'location/%d\')">%s</span>', $data['Location Key'], $data['Location Code'])
+
+					);
+				}
+
+
+
+				break;
+			case 'In':
+				$type='<i class="fa fa-sign-in fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Audit':
+				$type='<i class="fa  fa-pencil-square-o fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Move':
+				$type='<i class="fa fa-refresh fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Error':
+				$type='<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+				break;
+			default:
+				$type=$data['Inventory Transaction Section'];
+				break;
+			}
+
+
+			$adata[]=array(
+				'id'=>(integer)$data['Inventory Transaction Key'],
+				'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Date'].' +0:00')),
+				'change'=>$data['Inventory Transaction Quantity'],
+				'note'=>$note,
+				'type'=>$type,
 
 			);
 
@@ -164,7 +293,7 @@ function supplier_parts($_data, $db, $user) {
 				$stock_status='<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
 				break;
 			case 'Error':
-				$stock_status='<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
+				$stock_status='<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
 				break;
 			default:
 				$stock_status=$data['Part Stock Status'];
