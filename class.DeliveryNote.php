@@ -459,9 +459,12 @@ class DeliveryNote extends DB_Table {
 			break;
 
 		case('Estimated Weight'):
+				    include_once('utils/natural_language.php');
+
 			return weight($this->data['Delivery Note Estimated Weight']);
 			break;
 		case('Weight'):
+		    include_once('utils/natural_language.php');
 
 			if ($this->data['Delivery Note Weight Source']=='Given')
 				return weight($this->data['Delivery Note Weight']);

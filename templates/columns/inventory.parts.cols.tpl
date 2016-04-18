@@ -6,6 +6,15 @@ var columns = [
      renderable: false,
     cell: "string",
 
+}, {
+    name: "stock_status",
+    label: "",
+    editable: false,
+    sortType: "toggle",
+    cell: Backgrid.HtmlCell.extend({
+        className: "width_20"
+    })
+
 },{
     name: "reference",
     label: "{t}Reference{/t}",
@@ -22,9 +31,10 @@ var columns = [
        
 })
    
-},{
-    name: "description",
-    label: "{t}Description{/t}",
+},
+{
+    name: "unit_description",
+    label: "{t}Unit description{/t}",
     editable: true,
      sortType: "toggle",
     
@@ -33,14 +43,18 @@ var columns = [
        
 })
    
-},{
-    name: "products",
-    label: "{t}Products{/t}",
-    editable: true,
-     sortType: "toggle",
-    
-    cell: "html",
+},
+{
+    name: "stock",
+    label: "{t}Stock{/t}",
+   editable: false,
    
+    defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='stock'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+    headerCell: integerHeaderCell
 }
 ]
 

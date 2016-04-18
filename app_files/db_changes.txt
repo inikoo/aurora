@@ -320,6 +320,7 @@ ALTER TABLE `Product Part Bridge`
   ADD KEY `Product Part Product ID` (`Product Part Product ID`),
   ADD KEY `Product Part Part SKU` (`Product Part Part SKU`) USING BTREE;
 
+ALTER TABLE `Part Dimension` CHANGE `Part Stock Status` `Part Stock Status` ENUM('Surplus','Optimal','Low','Critical','Out_Of_Stock','Error') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Optimal';
 
 
 // From HERe  ==================== 15/04/2016, 10:45
