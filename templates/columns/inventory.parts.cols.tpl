@@ -7,24 +7,6 @@ var columns = [
     cell: "string",
 
 },{
-    name: "formatted_sku",
-    label: "{t}SKU{/t}",
-    editable: false,
-     sortType: "toggle",
-    
-    cell: Backgrid.StringCell.extend({
-        orderSeparator: '',
-        events: {
-            "click": function() {
-                change_view( '{if $data['parent']=='account'}{else}{$data['parent']}/{$data['parent_key']}/{/if}part/' + this.model.get("id"))
-
-            }
-        },
-        className: "link"
-       
-})
-   
-},{
     name: "reference",
     label: "{t}Reference{/t}",
     editable: true,

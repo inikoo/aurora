@@ -59,8 +59,21 @@
 				<tr  class="main">
 					
 					<td class=" highlight">{$part->get('Status')} </td>
+					
+					<td class="aright highlight" style="font-size:200%">
+					{$part->get('Part Current On Hand Stock')} {$part->get('Stock Status Icon')}
+					</td>
+					
 				</tr>
-				
+				<tr>
+					
+						<td class="aright" colspan="2" style="padding-top:0;color:#777;font-size:90%"> <b id="current_stock" title="{t}Current stock{/t}">{$part->get('Part Current Stock')}</b> <b>-[<span id="current_stock_picked" title="{t}Stock picked{/t}">{$part->get('Part Current Stock Picked')}</span>]</b> -(<span id="current_stock_in_process" title="{t}Waiting to be picked{/t}">{$part->get('Part Current Stock In Process')}</span>) &rarr; <span title="{t}Available to sell{/t}" id="current_stock_available">{$part->get('Current Stock Available')}</span></td>
+					
+				</tr>
+				<tr>
+				<td></td>
+				<td class="aright">{$part->get('Available Forecast')}</td>
+				</tr>
 				
 			</table>
 			

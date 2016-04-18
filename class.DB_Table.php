@@ -197,7 +197,10 @@ abstract class DB_Table {
 		}
 		else if ($table_name=='Part') {
 			$key_field='Part SKU';
+		}else if ($table_name=='Product') {
+			$key_field='Product ID';
 		}
+		
 
 		if (preg_match('/^custom_field_part/i', $field)) {
 			$field1=preg_replace('/^custom_field_part_/', '', $field);
@@ -336,7 +339,6 @@ abstract class DB_Table {
 			'Action'=>$action
 
 		);
-
 
 		$history_key=$this->add_history($history_data, false, false, $options);
 
@@ -553,7 +555,7 @@ abstract class DB_Table {
 
 				$data['History Details']='
 				<div class="table">
-				<div class="field tr"><div>'._('Time').':</div><div>'.strftime("%a %e %b %Y %H:%M:%S %Z").'</div></div>
+				<div class="field tr"><div>'._('Time').':</div><div>'.strftime("%a %e %b %Y %H:%M:%S %Z").'</div></div>xx
 				<div class="field tr"><div>'._('User').':</div><div>'.$this->editor['Author Alias'].'</div></div>
 				<div class="field tr"><div>'._('Action').':</div><div>'._('Changed').'</div></div>
 				<div class="field tr"><div>'._('Old value').':</div><div>'.$raw_data['old_value'].'</div></div>
@@ -635,7 +637,7 @@ abstract class DB_Table {
 
 
 
-	
+
 
 
 	function add_subject_history($history_data, $force_save=true, $deletable='No', $type='Changes', $table_name, $table_key) {

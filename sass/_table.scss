@@ -1,4 +1,12 @@
+.backgrid{
 
+
+
+.adr {
+            padding-bottom: 10px; line-height: 70%; 
+        }
+
+}
 .new_object, .presention_card, .showcase, .dashboard, .export_dialog {
     table {
         width: 100%;
@@ -250,11 +258,7 @@ table {
 }
 
 
-.table{
-    div.tr{display: table-row;
-    div.td{display: table-cell;}
-    }
-}
+
 
 
 #edit_history_note_dialog{ .note_type{
@@ -307,6 +311,12 @@ img {background: red;opacity: 1}
 
 }
 tr.deleting_tr{opacity: .5}
+
+.table{ 
+    div.tr{width:100%;clear:both;border-top:1px solid #ddd}
+     div.tr > div{float:left}
+}
+
 
 
 

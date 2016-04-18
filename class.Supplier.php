@@ -86,6 +86,8 @@ class supplier extends Subject {
 
 
 
+
+
 		if ($tipo=='id' or $tipo=='key')
 			$sql=sprintf("select * from `Supplier Dimension` where `Supplier Key`=%d", $id);
 		elseif ($tipo=='code') {
@@ -406,64 +408,69 @@ class supplier extends Subject {
 	}
 
 
-	function update_products_info() {
-		$this->data['Supplier Active Supplier Products']=0;
-		$this->data['Supplier Discontinued Supplier Products']=0;
-		$sql=sprintf("select sum(if(`Supplier Product Buy State`='Ok',1,0)) as buy_ok, sum(if(`Supplier Product Buy State`='Discontinued',1,0)) as discontinued from `Supplier Product Dimension` where  `supplier key`=%d", $this->id);
+	function update_supplier_parts() {
 
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$this->data['Supplier Active Supplier Products']=$row['buy_ok'];
-			$this->data['Supplier Discontinued Supplier Products']=$row['discontinued'];
+		$supplier_number_parts=0;
+		$supplier_number_surplus_parts=0;
+		$supplier_number_optimal_parts=0;
+		$supplier_number_low_parts=0;
+		$supplier_number_critical_parts=0;
+		$supplier_number_out_of_stock_parts=0;
 
-			$sql=sprintf("update `Supplier Dimension` set `Supplier Active Supplier Products`=%d ,`Supplier Discontinued Supplier Products`=%d where `Supplier Key`=%d  ",
-				$row['buy_ok'],
-				$row['discontinued'],
-				$this->id
-			);
-			mysql_query($sql);
+		$sql=sprintf('select count(*) as num ,
+		sum(if(`Part Stock Status`="Surplus",1,0)) as surplus,
+		sum(if(`Part Stock Status`="Optimal",1,0)) as optimal,
+		sum(if(`Part Stock Status`="Low",1,0)) as low,
+		sum(if(`Part Stock Status`="Critical",1,0)) as critical,
+		sum(if(`Part Stock Status`="Out_Of_Stock",1,0)) as out_of_stock
+
+		from `Supplier Part Dimension` SP  left join `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`)  where `Supplier Part Supplier Key`=%d  and `Part Status`="In Use" and `Supplier Part Status`!="Discontinued" ',
+			$this->id
+		);
+
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				print_r($row);
+
+				$supplier_number_parts=$row['num'];
+				if ($row['num']>0) {
+					$supplier_number_surplus_parts=$row['surplus'];
+					$supplier_number_optimal_parts=$row['optimal'];
+					$supplier_number_low_parts=$row['low'];
+					$supplier_number_critical_parts=$row['critical'];
+					$supplier_number_out_of_stock_parts=$row['out_of_stock'];
+				}
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
 
-		$sql=sprintf("select
-		                sum(if(`Product Record Type`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales Type`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales Type`='Public Sale',1,0)) as for_sale,
-		                sum(if(`Product Record Type`='In Process',1,0)) as in_process,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from
-                         `Supplier Product Dimension` SPD
-                         left join `Supplier Product Part Dimension` SPPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID` )
-                         left join `Supplier Product Part List` SPPL on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key` )
-                         left join `Product Part List` PPL on (SPPL.`Part SKU`=PPL.`Part SKU`)
-                         left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`)
-                         left join `Product Dimension` PD on (PD.`Product ID`=PPD.`Product ID`)
-                         where SPD.`Supplier Key`=%d ;",
-			$this->id);
+		print_r(array(
+				'Supplier Number Parts'=>$supplier_number_parts,
+				'Supplier Number Surplus Parts'=>$supplier_number_surplus_parts,
+				'Supplier Number Optimal Parts'=>$supplier_number_optimal_parts,
+				'Supplier Number Low Parts'=>$supplier_number_low_parts,
+				'Supplier Number Critical Parts'=>$supplier_number_critical_parts,
+				'Supplier Number Out Of Stock Parts'=>$supplier_number_out_of_stock_parts,
 
+			));
+		$this->update(array(
+				'Supplier Number Parts'=>$supplier_number_parts,
+				'Supplier Number Surplus Parts'=>$supplier_number_surplus_parts,
+				'Supplier Number Optimal Parts'=>$supplier_number_optimal_parts,
+				'Supplier Number Low Parts'=>$supplier_number_low_parts,
+				'Supplier Number Critical Parts'=>$supplier_number_critical_parts,
+				'Supplier Number Out Of Stock Parts'=>$supplier_number_out_of_stock_parts,
 
-		$sql=sprintf("select sum(if(`Part Stock State`='Error',1,0)) as availability_unknown,sum(if(`Part Stock State`='Normal',1,0)) as availability_optimal,sum(if(`Part Stock State`='Low',1,0)) as availability_low,sum(if(`Part Stock State`='VeryLow',1,0)) as availability_critical,sum(if(`Part Stock State`='Excess',1,0)) as availability_surplus,sum(if(`Part Stock State`='OutofStock',1,0)) as availability_outofstock from  `Supplier Product Part Dimension` SPPD  left join `Supplier Product Part List` SPPL  on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part List Key` )   left join `Part Dimension` PA on (PA.`Part SKU`=SPPL.`Part SKU`) left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID`) where SPD.`Supplier Key`=%d  and `Supplier Product Part Most Recent`='Yes';",
-			$this->id);
-
-		//print "$sql\n";
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			// $sql=sprintf("update `Supplier Dimension` set `Supplier For Sale Products`=%d ,`Supplier Discontinued Products`=%d ,`Supplier Not For Sale Products`=%d , `Supplier Optimal Availability Products`=%d , `Supplier Low Availability Products`=%d ,`Supplier Critical Availability Products`=%d ,`Supplier Out Of Stock Products`=%d,`Supplier Unknown Stock Products`=%d ,`Supplier Surplus Availability Products`=%d where `Supplier Key`=%d  ",
-
-			$sql=sprintf("update `Supplier Dimension` set `Supplier Optimal Availability Products`=%d , `Supplier Low Availability Products`=%d ,`Supplier Critical Availability Products`=%d ,`Supplier Out Of Stock Products`=%d,`Supplier Unknown Stock Products`=%d ,`Supplier Surplus Availability Products`=%d where `Supplier Key`=%d  ",
-				//$row['for_sale'],
-				// $row['discontinued'],
-				// $row['not_for_sale'],
-				// $row['sale_unknown'],
-				$row['availability_optimal'],
-				$row['availability_low'],
-				$row['availability_critical'],
-				$row['availability_outofstock'],
-				$row['availability_unknown'],
-				$row['availability_surplus'],
-				$this->id
-			);
-			//print "$sql\n";
-			mysql_query($sql);
-		}
-		$this->get_data('id', $this->id);
+			), 'no_history');
 
 	}
+
+
+	
 
 
 	function update_up_today_sales() {
@@ -1296,7 +1303,7 @@ class supplier extends Subject {
 
 
 
-			} 
+			}
 			else {
 
 				$this->error=true;
@@ -1322,14 +1329,14 @@ class supplier extends Subject {
 			$this->error=true;
 
 			if ($supplier_part->found) {
-$this->error_code='duplicated_field';
-					$this->error_metadata=json_encode(array($supplier_part->duplicated_field));
+				$this->error_code='duplicated_field';
+				$this->error_metadata=json_encode(array($supplier_part->duplicated_field));
 
-					if ($supplier_part->duplicated_field=='Part Reference') {
-						$this->msg=_("Duplicated part reference");
-					}else {
-						$this->msg='Duplicated '.$supplier_part->duplicated_field;
-					}
+				if ($supplier_part->duplicated_field=='Part Reference') {
+					$this->msg=_("Duplicated part reference");
+				}else {
+					$this->msg='Duplicated '.$supplier_part->duplicated_field;
+				}
 
 			}else {
 

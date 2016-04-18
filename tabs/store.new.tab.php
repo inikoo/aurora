@@ -16,7 +16,7 @@ include_once 'class.Store.php';
 
 $store=new Store(0);
 
-$object_fields=get_object_fields($store, $db);
+$object_fields=get_object_fields($store, $db, $user);
 
 
 

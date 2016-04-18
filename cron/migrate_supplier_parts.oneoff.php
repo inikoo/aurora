@@ -115,8 +115,7 @@ if ($result2=$db->query($sql)) {
 				}
 			}
 
-
-
+            
 			//print $_part_data['part']->sku.','.$_part_data['part']->data['Part Reference'].','.$_part_data['part']->data['Part Status'].','.$sp->id."\n";
 			break;
 		}

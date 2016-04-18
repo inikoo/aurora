@@ -1,5 +1,32 @@
 <?php
 
+
+function days_to_string($days, $short=false) {
+	$days=round($days);
+	if ($days<1) {
+
+		if ($short) {
+			return sprintf(_('%sd'), 1);
+		}else {
+			return sprintf("%d %s", 1, ngettext("day", "days", 1));
+
+		}
+
+	}if ($days<100) {
+
+		if ($short) {
+			return sprintf(_('%sd'), $days);
+		}else {
+			return sprintf("%d %s", $days , ngettext("day", "days", $days));
+
+		}
+
+	}
+
+
+}
+
+
 function seconds_to_string($seconds, $until='seconds', $short=false) {
 	$units = array(
 		"weeks"   => 604800,
@@ -77,6 +104,7 @@ function seconds_to_string($seconds, $until='seconds', $short=false) {
 
 
 }
+
 
 
 function seconds_to_hourminutes($seconds) {
@@ -226,10 +254,74 @@ function weight($w, $unit='Kg', $number_decimals=3, $simplify=false, $zero_fill=
 
 function volume($value, $unit='L') {
 	if ($value=='') return '';
-	return number($value,3).'L';
+	return number($value, 3).'L';
 }
 
 
+function currency_symbol($currency) {
+	switch ($currency) {
+	case('GBP'):
+		return '£';
+		break;
+	case('EUR'):
+	case('EU'):
+		return '€';
+		break;
+	case('USD'):
+		return '$';
+		break;
+	case('PLN'):
+		return 'zł';
+		break;
+	case('DKK'):
+	case('NOK'):
+	case('SEK'):
+		return 'kr ';
+		break;
+	case('CHF'):
+		return 'CHF';
+		break;
+	case('INR'):
+		return '₹';
+		break;
+	case('IDR'):
+		return 'Rp';
+		break;
+	case('CNY'):
+		return '¥';
+		break;
+
+
+	default:
+		return '¤';
+	}
+
+}
+
+
+function currency_label($currency, $db) {
+
+	$sql=sprintf("select `Currency Code`,`Currency Name`,`Currency Symbol`,`Currency Flag` from kbase.`Currency Dimension` where `Currency Code`=%s",
+		prepare_mysql($currency)
+	);
+
+	if ($result=$db->query($sql)) {
+		if ($row = $result->fetch()) {
+			return sprintf('<span title="%s">%s (%s)</span>',
+				$row['Currency Code'],
+				$row['Currency Name'],
+				$row['Currency Symbol']
+
+			);
+		}else {
+			return $currency;
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+}
 
 
 ?>

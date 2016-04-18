@@ -9,33 +9,36 @@
 
 */
 
+if ( !$user->can_view('locations') or   !in_array($state['key'], $user->warehouses)   ) {
+	$html='';
+}else {
 
 
-$tab='warehouse.locations';
-$ar_file='ar_warehouse_tables.php';
-$tipo='locations';
+	$tab='warehouse.locations';
+	$ar_file='ar_warehouse_tables.php';
+	$tipo='locations';
 
-$default=$user->get_tab_defaults($tab);
+	$default=$user->get_tab_defaults($tab);
 
 
 
-$table_views=array(
+	$table_views=array(
 
-);
+	);
 
-$table_filters=array(
-	'code'=>array('label'=>_('Code'),'title'=>_('Location code')),
+	$table_filters=array(
+		'code'=>array('label'=>_('Code'), 'title'=>_('Location code')),
 
-);
+	);
 
-$parameters=array(
+	$parameters=array(
 		'parent'=>$state['object'],
 		'parent_key'=>$state['key'],
-	
-);
+
+	);
 
 
-include('utils/get_table_html.php');
-
+	include 'utils/get_table_html.php';
+}
 
 ?>

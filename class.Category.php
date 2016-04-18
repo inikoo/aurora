@@ -203,8 +203,14 @@ class Category extends DB_Table{
 
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
+
+
 				$this->found=true;
 				$this->found_key=$row['Category Key'];
+				$this->get_data('id', $this->found_key);
+				$this->duplicated_field='Category Code';
+
+				return;
 			}
 		}else {
 			print_r($error_info=$this->db->errorInfo());
@@ -213,15 +219,13 @@ class Category extends DB_Table{
 
 
 
-		if ($this->found) {
-			$this->get_data('id', $this->found_key);
-		}else {
 
-			if ($create ) {
-				$this->create($data);
 
-			}
+		if ($create ) {
+			$this->create($data);
+
 		}
+
 
 	}
 
@@ -373,6 +377,8 @@ class Category extends DB_Table{
 
 
 	function get($key='') {
+
+		if (!$this->id)return false;
 
 		if (isset($this->data[$key]))
 			return $this->data[$key];

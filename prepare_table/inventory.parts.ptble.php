@@ -94,6 +94,9 @@ $fields=' "" as `Warehouse Code`,';
 exit("parent not found ".$parameters['parent']);
 }
 
+
+$where.=$extra_where;
+
 /*
 
 

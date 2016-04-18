@@ -582,7 +582,7 @@ function search_products($db, $account, $memcache_ip, $data) {
 	if ($data['scope']=='store') {
 		if (in_array($data['scope_key'], $user->stores)) {
 			$stores=$data['scope_key'];
-			$where_store=sprintf(' and `Store Product Store Key`=%d', $data['scope_key']);
+			$where_store=sprintf(' and `Product Store Key`=%d', $data['scope_key']);
 		}else {
 			$where_store=' and false';
 		}
@@ -590,7 +590,7 @@ function search_products($db, $account, $memcache_ip, $data) {
 		if (count($user->stores)==$account->data['Stores']) {
 			$where_store='';
 		}else {
-			$where_store=sprintf(' and `Store Product Store Key` in (%s)', join(',', $user->stores));
+			$where_store=sprintf(' and `Product Store Key` in (%s)', join(',', $user->stores));
 		}
 
 		$stores=join(',', $user->stores);
@@ -627,13 +627,13 @@ function search_products($db, $account, $memcache_ip, $data) {
 		if ($number_queries==1) {
 			$q=$queries;
 			if (is_numeric($q)) {
-				$sql=sprintf("select `Store Product Key`,`Store Product Code`,`Store Product Unit Description` from `Store Product Dimension` where true $where_store and `Store Product Key`=%d",
+				$sql=sprintf("select `Product ID`,`Product Code`,`Product Name` from `Product Dimension` where true $where_store and `Product ID`=%d",
 					$q);
 
 
 				if ($result=$db->query($sql)) {
 					if ($row = $result->fetch()) {
-						$candidates[$row['Store Product Key']]=2000;
+						$candidates[$row['Product ID']]=2000;
 					}
 				}else {
 					print_r($error_info=$db->errorInfo());
@@ -652,21 +652,21 @@ function search_products($db, $account, $memcache_ip, $data) {
 
 
 
-			$sql=sprintf("select `Store Product Key`,`Store Product Code`,`Store Product Unit Description` from `Store Product Dimension` where true $where_store and `Store Product Code` like '%s%%' limit 20 ",
+			$sql=sprintf("select `Product ID`,`Product Code`,`Product Name` from `Product Dimension` where true $where_store and `Product Code` like '%s%%' limit 20 ",
 				$q);
 
 
 			if ($result=$db->query($sql)) {
 				foreach ($result as $row) {
 
-					if ($row['Store Product Code']==$q)
-						$candidates[$row['Store Product Key']]=1000;
+					if ($row['Product Code']==$q)
+						$candidates[$row['Product ID']]=1000;
 					else {
 
-						$len_name=strlen($row['Store Product Code']);
+						$len_name=strlen($row['Product Code']);
 						$len_q=strlen($q);
 						$factor=$len_q/$len_name;
-						$candidates[$row['Store Product Key']]=500*$factor;
+						$candidates[$row['Product ID']]=500*$factor;
 					}
 
 				}
@@ -683,19 +683,19 @@ function search_products($db, $account, $memcache_ip, $data) {
 
 
 
-			$sql=sprintf("select `Store Product Key`,`Store Product Code`,`Store Product Unit Description` from `Store Product Dimension` where true $where_store and `Store Product Unit Description`  REGEXP '[[:<:]]%s' limit 100 ",
+			$sql=sprintf("select `Product ID`,`Product Code`,`Product Name` from `Product Dimension` where true $where_store and `Product Name`  REGEXP '[[:<:]]%s' limit 100 ",
 				$q);
 
 			if ($result=$db->query($sql)) {
 				foreach ($result as $row) {
-					if ($row['Store Product Unit Description']==$q)
-						$candidates[$row['Store Product Key']]=55;
+					if ($row['Product Name']==$q)
+						$candidates[$row['Product ID']]=55;
 					else {
 
-						$len_name=strlen($row['Store Product Unit Description']);
+						$len_name=strlen($row['Product Name']);
 						$len_q=strlen($q);
 						$factor=$len_q/$len_name;
-						$candidates[$row['Store Product Key']]=50*$factor;
+						$candidates[$row['Product ID']]=50*$factor;
 					}
 
 				}
@@ -734,7 +734,7 @@ function search_products($db, $account, $memcache_ip, $data) {
 		}
 		$product_keys=preg_replace('/^,/', '', $product_keys);
 
-		$sql=sprintf("select `Store Code`,`Store Key`,`Store Product Key`,`Store Product Code`,`Store Product Unit Description` from `Store Product Dimension` left join `Store Dimension` S on (`Store Product Store Key`=S.`Store Key`) where `Store Product Key` in (%s)",
+		$sql=sprintf("select `Store Code`,`Store Key`,`Product ID`,`Product Code`,`Product Name` from `Product Dimension` left join `Store Dimension` S on (`Product Store Key`=S.`Store Key`) where `Product ID` in (%s)",
 			$product_keys);
 
 		if ($result=$db->query($sql)) {
@@ -744,11 +744,11 @@ function search_products($db, $account, $memcache_ip, $data) {
 
 
 
-				$results[$row['Store Product Key']]=array(
+				$results[$row['Product ID']]=array(
 					'store'=>$row['Store Code'],
-					'label'=>highlightkeyword(sprintf('%s', $row['Store Product Code']), $queries ),
-					'details'=>highlightkeyword($row['Store Product Unit Description'], $queries ),
-					'view'=>sprintf('products/%d/%d', $row['Store Key'], $row['Store Product Key'])
+					'label'=>highlightkeyword(sprintf('%s', $row['Product Code']), $queries ),
+					'details'=>highlightkeyword($row['Product Name'], $queries ),
+					'view'=>sprintf('products/%d/%d', $row['Store Key'], $row['Product ID'])
 
 
 

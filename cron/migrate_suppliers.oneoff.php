@@ -37,6 +37,7 @@ require_once 'class.Part.php';
 require_once 'class.SupplierPart.php';
 
 
+$sql=sprintf('select `Supplier Key` from `Supplier Dimension` where `Supplier Key`=6348  order by `Supplier Key` desc');
 $sql=sprintf('select `Supplier Key` from `Supplier Dimension`   order by `Supplier Key` desc');
 
 if ($result=$db->query($sql)) {
@@ -56,14 +57,14 @@ if ($result=$db->query($sql)) {
 }
 
 
-$sql=sprintf('select `Supplier Key` from `Supplier Dimension` where `Supplier Key`=6327 order by `Supplier Key` desc ');
+$sql=sprintf('select `Supplier Key` from `Supplier Dimension` where `Supplier Key`=6348 order by `Supplier Key` desc ');
 $sql=sprintf('select `Supplier Key` from `Supplier Dimension`   order by `Supplier Key` ');
 
 if ($result=$db->query($sql)) {
 	foreach ($result as $row) {
 		$supplier=new Supplier($row['Supplier Key']);
 
-
+		$supplier->update_supplier_parts();
 
 
 		$default_country=$account->get('Account Country 2 Alpha Code');
@@ -82,7 +83,7 @@ if ($result=$db->query($sql)) {
 			//print $supplier->id."\n";
 
 			foreach ($other_emails as $other_email) {
-				$supplier->update(array('new email'=>$other_email['email']));
+				$supplier->update(array('new email'=>$other_email['email']), 'no_history');
 				//print_r($supplier);
 			}
 
@@ -118,7 +119,10 @@ if ($result=$db->query($sql)) {
 
 		}
 
-		$supplier->update_address('Contact', $address_fields);
+
+
+
+		$supplier->update_address('Contact', $address_fields, 'no_history');
 
 
 
@@ -154,10 +158,10 @@ if ($result=$db->query($sql)) {
 		add_other_telephone(get_other_telecoms_data($db, 'Mobile', $supplier), $supplier);
 		add_other_telephone(get_other_telecoms_data($db, 'FAX', $supplier), $supplier);
 
-		$supplier->update(array('Supplier Company Name'=>$supplier->get('Name')));
+		$supplier->update(array('Supplier Company Name'=>$supplier->get('Name')), 'no_history');
 
 
-		
+
 
 
 

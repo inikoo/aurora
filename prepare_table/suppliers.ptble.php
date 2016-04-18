@@ -183,8 +183,16 @@ elseif ($order=='location')
 	$order='`Supplier Location`';
 elseif ($order=='email')
 	$order='`Supplier Main XHTML Email`';
-elseif ($order=='products')
-	$order='`Supplier Active Supplier Products`';
+elseif ($order=='telephone')
+	$order='`Supplier Preferred Contact Number Formatted Number`';
+elseif ($order=='contact') 
+	$order="`Supplier Main Contact Name`";
+elseif ($order=='company') 
+	$order="`Supplier Company Name`";
+	
+	
+elseif ($order=='supplier_parts')
+	$order='`Supplier Number Parts`';
 elseif ($order=='sales') {
 	$order="`Supplier $db_period Acc Parts Sold Amount`";
 }
@@ -212,16 +220,10 @@ elseif ($order=='delta_sales') {
 
 elseif ($order=='pending_pos') {
 	$order='`Supplier Open Purchase Orders`';
-
-}
-elseif ($order=='margin') {
+}elseif ($order=='margin') {
 	$order="`Supplier $db_period Acc Parts Margin`";
-
-}
-elseif ($order=='cost') {
+}elseif ($order=='cost') {
 	$order="`Supplier $db_period Acc Parts Cost`";
-
-
 }elseif ($order=='origin') {
 	$order="`Supplier Products Origin Country Code`";
 }elseif ($order=='active_sp') {
@@ -231,25 +233,20 @@ elseif ($order=='cost') {
 }elseif ($order=='delivery_time') {
 	$order="`Supplier Average Delivery Days`";
 }elseif ($order=='low') {
-	$order="`Supplier Low Availability Products`";
-}elseif ($order=='high') {
-	$order="`Supplier Surplus Availability Products`";
-}elseif ($order=='normal') {
-	$order="`Supplier Optimal Availability Products`";
+	$order="`Supplier Number Low Parts`";
+}elseif ($order=='surplus') {
+	$order="`Supplier Number Surplus Parts`";
+}elseif ($order=='optimal') {
+	$order="`Supplier Number Optimal Parts`";
+}elseif ($order=='low') {
+	$order="`Supplier Number Low Parts`";
 }elseif ($order=='critical') {
-	$order="`Supplier Critical Availability Products`";
-}elseif ($order=='outofstock') {
-	$order="`Supplier Out Of Stock Products`";
-}elseif ($order=='contact') {
-	$order="`Supplier Main Contact Name`";
-}elseif ($order=='tel') {
-	$order="`Supplier Main Plain Telephone`";
+	$order="`Supplier Number Critical Parts`";
+}elseif ($order=='out_of_stock') {
+	$order="`Supplier Number Out Of Stock Parts`";
 }elseif ($order=='profit_after_storing') {
 	$order="`Supplier $db_period Acc Parts Profit After Storing`";
-
-}
-
-elseif ($order=='profit') {
+}elseif ($order=='profit') {
 	$order="`Supplier $db_period Acc Parts Profit`";
 }
 elseif ($order=='delta_sales_year0') {$order="(-1*(`Supplier Year To Day Acc Parts Sold Amount`-`Supplier Year To Day Acc 1YB Parts Sold Amount`)/`Supplier Year To Day Acc 1YB Parts Sold Amount`)";}
@@ -263,16 +260,18 @@ elseif ($order=='sales_year4') {$order="`Supplier 4 Year Ago Sales Amount`";}
 elseif ($order=='sales_year0') {$order="`Supplier Year To Day Acc Parts Sold Amount`";}
 else{
 	$order="S.`Supplier Key`";
-
 }
 
 $sql_totals="select count(Distinct S.`Supplier Key`) as num from $table  $where  $where_type";
 
-$fields="S.`Supplier Key`,`Supplier Products Origin Country Code`,`Supplier $db_period Acc Parts Sold Amount`,`Supplier $db_period Acc 1YB Parts Sold Amount`,
+$fields="
+S.`Supplier Key`,`Supplier Code`,`Supplier Products Origin Country Code`,`Supplier $db_period Acc Parts Sold Amount`,`Supplier $db_period Acc 1YB Parts Sold Amount`,
 `Supplier $db_period Acc Parts Profit`,`Supplier $db_period Acc Parts Profit After Storing`,`Supplier $db_period Acc Parts Cost`,`Supplier $db_period Acc Parts Sold`,`Supplier $db_period Acc Parts Required`,`Supplier $db_period Acc Parts Margin`,
-`Supplier Name`,`Supplier Low Availability Products`,`Supplier Surplus Availability Products`,`Supplier Optimal Availability Products`,`Supplier Critical Availability Products`,`Supplier Out Of Stock Products`,
-`Supplier Location`,`Supplier Main Plain Email`,`Supplier Main XHTML Telephone`,`Supplier Main Contact Name`,
-`Supplier Active Supplier Products`,`Supplier Discontinued Supplier Products`,`Supplier Average Delivery Days`,`Supplier Open Purchase Orders`,
-`Supplier 1 Year Ago Sales Amount`,`Supplier 2 Year Ago Sales Amount`,`Supplier 3 Year Ago Sales Amount`,`Supplier 4 Year Ago Sales Amount`
+`Supplier Name`,
+`Supplier Location`,`Supplier Main Plain Email`,`Supplier Preferred Contact Number`,`Supplier Preferred Contact Number Formatted Number`,`Supplier Main Contact Name`,`Supplier Company Name`,
+`Supplier Average Delivery Days`,`Supplier Open Purchase Orders`,
+`Supplier 1 Year Ago Sales Amount`,`Supplier 2 Year Ago Sales Amount`,`Supplier 3 Year Ago Sales Amount`,`Supplier 4 Year Ago Sales Amount`,
+`Supplier Number Parts`,`Supplier Number Surplus Parts`,`Supplier Number Optimal Parts`,`Supplier Number Low Parts`,`Supplier Number Critical Parts`,`Supplier Number Critical Parts`,`Supplier Number Out Of Stock Parts`
+
 ";
 ?>

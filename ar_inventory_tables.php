@@ -33,8 +33,11 @@ $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
 case 'parts':
-	parts(get_table_parameters(), $db, $user);
+	parts(get_table_parameters(), $db, $user,'active');
 	break;
+case 'discontinued_parts':
+	parts(get_table_parameters(), $db, $user,'discontinued');
+	break;	
 case 'barcodes':
 	barcodes(get_table_parameters(), $db, $user);
 	break;
@@ -50,10 +53,23 @@ default:
 
 
 
-function parts($_data, $db, $user) {
+function parts($_data, $db, $user, $type) {
+
+	if ($type=='discontinued') {
+		$extra_where=' and `Part Status`="Not In Use"';
+		$rtext_label='discontinued part';
+
+	}elseif($type=='active') {
+		$extra_where=' and `Part Status`="In Use"';
+		$rtext_label='part';
+
+	}else {
+		$extra_where='';
+		$rtext_label='part';
+
+	}
 
 
-	$rtext_label='part';
 	include_once 'prepare_table/init.php';
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
@@ -131,7 +147,31 @@ function supplier_parts($_data, $db, $user) {
 				break;
 			}
 
-			
+			switch ($data['Part Stock Status']) {
+			case 'Surplus':
+				$stock_status='<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Optimal':
+				$stock_status='<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Low':
+				$stock_status='<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Critical':
+				$stock_status='<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Out_Of_Stock':
+				$stock_status='<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Error':
+				$stock_status='<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
+				break;
+			default:
+				$stock_status=$data['Part Stock Status'];
+				break;
+			}
+
+
 
 			$adata[]=array(
 				'id'=>(integer)$data['Supplier Part Key'],
@@ -145,8 +185,8 @@ function supplier_parts($_data, $db, $user) {
 				'description'=>$data['Part Unit Description'],
 				'status'=>$status,
 				'cost'=>money($data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']),
-				'packing'=>'<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Supplier Part Units Per Package'].'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discret padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discret">'.($data['Supplier Part Units Per Package']*$data['Supplier Part Packages Per Carton'].'</span>')
-
+				'packing'=>'<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Supplier Part Units Per Package'].'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discret padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discret">'.($data['Supplier Part Units Per Package']*$data['Supplier Part Packages Per Carton'].'</span>'),
+				'stock'=>number(floor($data['Part Current Stock']))." $stock_status"
 			);
 
 
@@ -207,7 +247,7 @@ function barcodes($_data, $db, $user) {
 			}
 			if ($data['parts']!='') {
 				$_parts=preg_split('/,/', $data['parts']);
-				$assets=sprintf('<i class="fa fa-square fa-fw"></i> <span class="link" onClick="change_view(\'part/%d\')">%s</span>',$_parts[0],$_parts[1]);
+				$assets=sprintf('<i class="fa fa-square fa-fw"></i> <span class="link" onClick="change_view(\'part/%d\')">%s</span>', $_parts[0], $_parts[1]);
 			}else {
 				$assets='';
 			}

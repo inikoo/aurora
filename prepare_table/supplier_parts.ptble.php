@@ -20,22 +20,62 @@ $fields='';
 
 if ($parameters['parent']=='supplier') {
 	$where=sprintf(" where  `Supplier Part Supplier Key`=%d", $parameters['parent_key']);
-  
+
 }elseif ($parameters['parent']=='account') {
-
-
-
 
 }elseif ($parameters['parent']=='part') {
 	$where=sprintf(" where  SP.`Supplier Part Part SKU`=%d", $parameters['parent_key']);
-
-
-
-
-}else{
-exit("parent not found: ".$parameters['parent']);
+}else {
+	exit("parent not found: ".$parameters['parent']);
 }
 
+if (isset($parameters['elements_type'])) {
+
+	switch ($parameters['elements_type']) {
+	case 'status':
+		$_elements='';
+		$count_elements=0;
+		foreach ($parameters['elements'][$parameters['elements_type']]['items'] as $_key=>$_value) {
+			if ($_value['selected']) {
+				$count_elements++;
+				$_elements.=','.prepare_mysql($_key);
+
+			}
+		}
+
+
+
+
+		$_elements=preg_replace('/^\,/', '', $_elements);
+		if ($_elements=='') {
+			$where.=' and false' ;
+		} elseif ($count_elements<3) {
+			$where.=' and `Supplier Part Status` in ('.$_elements.')' ;
+
+		}
+		break;
+	case 'part_status':
+		$_elements='';
+		$count_elements=0;
+		foreach ($parameters['elements'][$parameters['elements_type']]['items'] as $_key=>$_value) {
+			if ($_value['selected']) {
+				$count_elements++;
+				$_elements.=','.prepare_mysql($_key);
+
+			}
+		}
+		$_elements=preg_replace('/^\,/', '', $_elements);
+		if ($_elements=='') {
+			$where.=' and false' ;
+		} elseif ($count_elements==1) {
+			$where.=' and `Part Status`='.$_elements.'' ;
+
+		}
+		break;
+
+
+	}
+}
 
 
 if ($parameters['f_field']=='used_in' and $f_value!='')
@@ -52,22 +92,26 @@ elseif ($parameters['f_field']=='description' and $f_value!='')
 $_order=$order;
 $_dir=$order_direction;
 
-if ($order=='part_description'){
+if ($order=='part_description') {
 	$order='`Part Reference`';
-}elseif ($order=='reference'){
+}elseif ($order=='reference') {
 	$order='`Supplier Part Reference`';
-}elseif ($order=='cost'){
+}elseif ($order=='cost') {
 	$order='`Supplier Part Unit Cost`';
+}elseif ($order=='stock') {
+	$order='`Part Current Stock`';
 }else {
 
-	$order='`Supplier Part Part SKU`';
+	$order='`Supplier Part Key`';
 }
 
 
 
 $sql_totals="select count(Distinct SP.`Supplier Part Key`) as num from $table  $where  ";
-				
-$fields.='`Supplier Part Key`,`Supplier Part Part SKU`,`Part Reference`,`Part Unit Description`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Supplier Part Status`,`Supplier Part From`,`Supplier Part To`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,`Supplier Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,`Supplier Part Minimum Carton Order`';
+
+$fields.='`Supplier Part Key`,`Supplier Part Part SKU`,`Part Reference`,`Part Unit Description`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Supplier Part Status`,`Supplier Part From`,`Supplier Part To`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,`Supplier Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,`Supplier Part Minimum Carton Order`,
+`Part Current Stock`,`Part Stock Status`,`Part Status`
+';
 
 
 ?>

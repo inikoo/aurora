@@ -113,6 +113,18 @@ function get_warehouse_navigation($data, $smarty, $user, $db, $account) {
 	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
 
 
+	$title=_('Warehouse').' <span  class="id Warehouse_Code" >'.$warehouse->get('Code').'</span>';
+
+	if ( !$user->can_view('locations')   ) {
+
+
+		$title=_('Access forbidden').' <i class="fa fa-lock "></i>';
+	}elseif (   !in_array($data['key'], $user->warehouses)   ) {
+
+
+		$title=' <i class="fa fa-lock padding_right_10"></i>'.$title;
+	}
+
 	$_content=array(
 
 		'sections_class'=>'',
@@ -120,7 +132,7 @@ function get_warehouse_navigation($data, $smarty, $user, $db, $account) {
 
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
-		'title'=>_('Warehouse').' <span  class="id Warehouse_Code" >'.$warehouse->get('Code').'</span>',
+		'title'=>$title,
 		'search'=>array('show'=>true, 'placeholder'=>_('Search locations'))
 
 	);

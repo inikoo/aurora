@@ -79,7 +79,7 @@ $elements_options=array(
 
 		)
 	),
-		'supplier_part_history'=>array(
+	'supplier_part_history'=>array(
 		'type'=>array(
 			'label'=>_('Type'),
 			'items'=>array(
@@ -173,6 +173,7 @@ $elements_options=array(
 		)
 
 	),
+
 	'products'=>array(
 		'status'=>array(
 			'label'=>_('Status'),
@@ -186,6 +187,45 @@ $elements_options=array(
 
 
 		),
+	),
+	'parts'=>array(
+		'status'=>array(
+			'label'=>_('Stock status'),
+			'items'=>array(
+				'Surplus'=>array('label'=>_('Surplus'), 'selected'=>true),
+				'Optimal'=>array('label'=>_('Optimal'), 'selected'=>true),
+				'Low'=>array('label'=>_('Low'), 'selected'=>true),
+				'Critical'=>array('label'=>_('Critical'), 'selected'=>true),
+				'Out_Of_Stock'=>array('label'=>_('Out of stock'), 'selected'=>true)
+
+			)
+
+
+
+		),
+	),
+	'supplier_parts'=>array(
+		'status'=>array(
+			'label'=>_('Status'),
+			'items'=>array(
+				'Available'=>array('label'=>_('Available'), 'selected'=>true),
+				'NoAvailable'=>array('label'=>_('No available'), 'selected'=>true),
+				'Discontinued'=>array('label'=>_('Discontinued'), 'selected'=>false)
+			)
+
+
+
+		),
+		'part_status'=>array(
+			'label'=>_('Part status'),
+			'items'=>array(
+				'InUse'=>array('label'=>_('Part active'), 'selected'=>true),
+				'NotInUse'=>array('label'=>_('Part discontinued'), 'selected'=>true),
+			)
+
+
+
+		)
 	),
 	'barcodes'=>array(
 		'status'=>array(

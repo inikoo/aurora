@@ -15,7 +15,7 @@ require_once 'utils/table_functions.php';
 require_once 'utils/natural_language.php';
 
 
-if (!$user->can_view('parts')) {
+if (!$user->can_view('locations')) {
 	echo json_encode(array('state'=>405, 'resp'=>'Forbidden'));
 	exit;
 }
@@ -49,7 +49,7 @@ default:
 }
 
 function warehouses($_data, $db, $user) {
-	global $db;
+	
 	$rtext_label='warehouse';
 	include_once 'prepare_table/init.php';
 
@@ -62,6 +62,7 @@ function warehouses($_data, $db, $user) {
 	foreach ($db->query($sql) as $data) {
 
 		$adata[]=array(
+		    'access'=>(in_array($data['Warehouse Key'],$user->warehouses)?'':'<i class="fa fa-lock error"></i>'),
 			'id'=>(integer) $data['Warehouse Key'],
 			'code'=>$data['Warehouse Code'],
 			'name'=>$data['Warehouse Name'],

@@ -14,7 +14,7 @@ include_once 'utils/invalid_messages.php';
 include_once 'conf/object_fields.php';
 
 
-$object_fields=get_object_fields($state['_object'], $db);
+$object_fields=get_object_fields($state['_object'], $db,$user);
 
 
 $account=new Account($db);

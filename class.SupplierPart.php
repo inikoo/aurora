@@ -208,6 +208,15 @@ class SupplierPart extends DB_Table{
 
 
 		switch ($key) {
+
+		case 'Average Delivery':
+
+			if ($this->data['Supplier Part Status']!='Discontinued') {
+				include_once 'utils/natural_language.php';
+				return '<i class="fa fa-hourglass-end fa-fw" aria-hidden="true" title="'._('Delivery time').'" ></i>  <span title="'.sprintf("%s %s", number($this->data['Supplier Part Average Delivery Days'], 1) , ngettext("day", "days", number($this->data['Supplier Part Average Delivery Days'], 1))).'">'.days_to_string($this->data['Supplier Part Average Delivery Days'], true).'</span>';
+			}
+			break;
+
 		case 'Minimum Carton Order':
 
 			if ($this->data['Supplier Part Minimum Carton Order']=='')return '';
@@ -249,7 +258,7 @@ class SupplierPart extends DB_Table{
 			}
 
 
-    return $cost;
+			return $cost;
 			break;
 		case 'Status':
 
@@ -330,6 +339,8 @@ class SupplierPart extends DB_Table{
 
 
 			if (preg_match('/^Part /', $field)) {
+			
+			        $field=preg_replace('/^Part /','',$field);
 				$this->part->update(array($field=>$value), $options);
 				$this->updated=$this->part->updated;
 				$this->msg=$this->part->msg;
@@ -391,6 +402,10 @@ class SupplierPart extends DB_Table{
 		case 'Supplier Part Carton CBM':
 			$label=_("carton CBM");
 			break;
+		case 'Supplier Part Average Delivery Days':
+		$label=_("average delivery time");
+			break;
+			
 		default:
 			$label=$field;
 

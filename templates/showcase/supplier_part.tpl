@@ -30,9 +30,25 @@
 		<div id="overviews">
 			<table border="0" class="overview" style="">
 				<tr id="account_balance_tr" class="main">
-					<td id="account_balance" class=" highlight">{$supplier_part->get('Status')} </td>
+				<td >{$supplier_part->get('Average Delivery')}</td>
+					<td  class="aright highlight">{$supplier_part->get('Status')} </td>
 				</tr>
 			</table>
+			
+			<table border="0" class="overview">
+				<tr  class="main">
+					
+					<td >{$part->get('Available Forecast')}</td>
+					
+					<td class="aright highlight" >
+					{$part->get('Part Current On Hand Stock')} {$part->get('Stock Status Icon')}
+					</td>
+					
+				</tr>
+				
+				
+			</table>
+			
 		</div>
 	</div>
 	<div style="clear:both">

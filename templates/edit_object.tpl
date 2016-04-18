@@ -41,8 +41,8 @@
 		    <td id="{$field.id}_label" class="label" ><span>{$field.label}</span></td>
 		    <td class="show_buttons  {if $edit=='address'}address {/if}" > 
 		
-		<i class="fa fa-lock fw {if $edit!='' or $class=='new'  }hide{/if} edit"></i>
-				<i class="fa fa-lock fw {if !$linked  }hide{/if} edit"></i>  
+		<i id="{$field.id}_lock" class="fa fa-lock fw {if $edit!='' or $class=='new'  }hide{/if} edit"></i>
+		<i class="fa fa-lock fw {if !$linked  }hide{/if} edit"></i>  
   
 		<i id="{$field.id}_reset_button" class="fa fa-sign-out fa-flip-horizontal fw reset hide reset_button" onclick="close_edit_this_field(this)"></i> 
 		<i id="{$field.id}_edit_button" class="fa fa-pencil fw edit {if $edit=='' or $linked!=''}hide{/if} edit_button" onclick="open_edit_this_field(this)"></i> 
@@ -56,12 +56,15 @@
        <input id="{$field.id}_value" type='hidden' class="unformatted_value" value="{$field.value}" />
     
         
-		{if $edit=='string' or   $edit=='dimensions' or $edit=='handle' or  $edit=='email' or $edit=='new_email' or  $edit=='int_unsigned' or $edit=='smallint_unsigned' or $edit=='mediumint_unsigned' or $edit=='int' or $edit=='smallint' or $edit=='mediumint' or $edit=='anything' or $edit=='numeric'  or $edit=='amount'  or $edit=='flexi_amount'} 
+		{if $edit=='string' or   $edit=='dimensions' or $edit=='handle' or  $edit=='email' or $edit=='new_email' or  $edit=='int_unsigned' or $edit=='smallint_unsigned' or $edit=='mediumint_unsigned' or $edit=='int' or $edit=='smallint' or $edit=='mediumint' or $edit=='anything' or $edit=='numeric'  or $edit=='amount'  or $edit=='amount_margin'} 
 		
 	
 		<input id="{$field.id}" class="input_field hide" value="{$field.value}" has_been_valid="0" {if isset($field.placeholder)}placeholder="{$field.placeholder}"{/if} />
 		<i id="{$field.id}_save_button" class="fa fa-cloud save {$edit} hide" onclick="save_this_field(this)"></i> 
 		<span id="{$field.id}_msg" class="msg"></span> 
+		<span id="{$field.id}_info" class="hide"></span>
+		
+		
 		{elseif $edit=='dropdown_select'  } 
 		
 	

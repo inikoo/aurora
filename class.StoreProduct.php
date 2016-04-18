@@ -19,8 +19,8 @@ class StoreProduct extends Asset{
 		$this->db=$db;
 
 
-		$this->table_name='Store Product';
-		$this->ignore_fields=array('Store Product Key');
+		$this->table_name='Product';
+		$this->ignore_fields=array('Product ID');
 		if (is_numeric($arg1)) {
 			$this->get_data('id', $arg1);
 			return ;
@@ -46,9 +46,9 @@ class StoreProduct extends Asset{
 	function get_data($key, $id, $aux_id=false) {
 
 		if ($key=='id')
-			$sql=sprintf("select * from `Store Product Dimension` where `Store Product Key`=%d", $id);
+			$sql=sprintf("select * from `Product Dimension` where `Product ID`=%d", $id);
 		elseif ($key=='store_code')
-			$sql=sprintf("select * from  `Store Product Dimension`  where `Store Product Store Key`=%s  and `Store Product Key`=%s", $id, prepare_mysql($aux_id));
+			$sql=sprintf("select * from `Product Dimension` where `Product Store Key`=%s  and `Product ID`=%s", $id, prepare_mysql($aux_id));
 
 		else
 			return;
@@ -56,7 +56,7 @@ class StoreProduct extends Asset{
 
 
 		if ($this->data = $this->db->query($sql)->fetch()) {
-			$this->id=$this->data['Store Product Key'];
+			$this->id=$this->data['Product ID'];
 		}
 		$this->get_store_data();
 	}
@@ -64,7 +64,7 @@ class StoreProduct extends Asset{
 
 	function get_store_data() {
 
-		$sql=sprintf('select * from `Store Dimension` where `Store Key`=%d ', $this->data['Store Product Store Key']);
+		$sql=sprintf('select * from `Store Dimension` where `Store Key`=%d ', $this->data['Product Store Key']);
 		if ($row = $this->db->query($sql)->fetch()) {
 
 			foreach ($row as $key=>$value) {
@@ -81,23 +81,33 @@ class StoreProduct extends Asset{
 
 		include_once 'class.Part.php';
 
-		$sql=sprintf("select `Linked Fields`,`Part SKU`,`Parts Per Product`,`Note` from `Store Product Part Bridge` where `Store Product Key`=%d ",
+		$sql=sprintf("select `Product Part Linked Fields`,`Product Part Part SKU`,`Product Part Ratio`,`Product Part Note` from `Product Part Bridge` where `Product Part Product ID`=%d ",
 			$this->id
 		);
 		$parts_data=array();
 		if ($result=$this->db->query($sql)) {
 			foreach ($result as $row) {
 				$part_data=$row;
-				if ($part_data['Linked Fields']=='') {
+
+				$part_data=array(
+					'Parts Per Product'=>$row['Product Part Ratio'],
+					'Note'=>$row['Product Part Note'],
+					'Part SKU'=>$row['Product Part Part SKU'],
+				);
+
+
+				if ($row['Product Part Linked Fields']=='') {
 					$part_data['Linked Fields']=array();
 					$part_data['Number Linked Fields']=0;
 				}else {
-					$part_data['Linked Fields']=json_decode($row['Linked Fields'], true);
+					$part_data['Linked Fields']=json_decode($row['Product Part Linked Fields'], true);
 					$part_data['Number Linked Fields']=count($part_data['Linked Fields']);
 				}
 				if ($with_objects) {
-					$part_data['Part']=new Part($row['Part SKU']);
+					$part_data['Part']=new Part($row['Product Part Part SKU']);
 				}
+
+
 				$parts_data[]=$part_data;
 			}
 		}else {
@@ -118,9 +128,9 @@ class StoreProduct extends Asset{
 			return;
 
 		switch ($key) {
-		case 'Unit Type':
-			if ($this->data['Store Product Unit Type']=='')return '';
-			$unit_type_data=json_decode($this->data['Store Product Unit Type'], true);
+		case 'Unit Type':return '';
+			if ($this->data['Product Unit Type']=='')return '';
+			$unit_type_data=json_decode($this->data['Product Unit Type'], true);
 			$unit_type_key=key($unit_type_data);
 
 			$unit_type_value=$unit_type_data[$unit_type_key];
@@ -154,28 +164,28 @@ class StoreProduct extends Asset{
 
 			break;
 		case 'Outer Weight':
-			return weight($this->data['Store Product Outer Weight']);
+			return weight($this->data['Product Outer Weight']);
 
 
-		case 'Store Product Outer Weight':
-			$str = number_format($this->data['Store Product Outer Weight'], 4);
+		case 'Product Outer Weight':
+			$str = number_format($this->data['Product Outer Weight'], 4);
 
 			return preg_replace('/(?<=\d{3})0+$/', '', $str);
 
-		case 'Store Product Price':
-			$str = number_format($this->data['Store Product Price'], 4);
+		case 'Product Price':
+			$str = number_format($this->data['Product Price'], 4);
 
 			return preg_replace('/(?<=\d{2})0+$/', '', $str);
 			break;
 		case 'Price':
-			return money($this->data['Store Product Price'], $this->data['Store Currency Code']);
+			return money($this->data['Product Price'], $this->data['Store Currency Code']);
 			break;
 		default:
 			if (array_key_exists($key, $this->data))
 				return $this->data[$key];
 
-			if (array_key_exists('Store Product '.$key, $this->data))
-				return $this->data['Store Product '.$key];
+			if (array_key_exists('Product '.$key, $this->data))
+				return $this->data['Product '.$key];
 
 		}
 
@@ -188,48 +198,48 @@ class StoreProduct extends Asset{
 
 		switch ($field) {
 
-		case 'Store Product Key':
+		case 'Product ID':
 			$label=_('id');
 			break;
 
-		case 'Store Product Code':
+		case 'Product Code':
 			$label=_('code');
 			break;
-		case 'Store Product Outer Description':
+		case 'Product Outer Description':
 			$label=_('description');
 			break;
-		case 'Store Product Unit Description':
+		case 'Product Unit Description':
 			$label=_('unit description');
 			break;
-		case 'Store Product Price':
+		case 'Product Price':
 			$label=_('Price');
 			break;
-		case 'Store Product Outer Weight':
+		case 'Product Outer Weight':
 			$label=_('weight');
 			break;
-		case 'Store Product Outer Dimensions':
+		case 'Product Outer Dimensions':
 			$label=_('dimensions');
 			break;
-		case 'Store Product Units Per Outer':
+		case 'Product Units Per Outer':
 			$label=_('retail units per outer');
 			break;
-		case 'Store Product Outer Tariff Code':
+		case 'Product Outer Tariff Code':
 			$label=_('tariff code');
 			break;
-		case 'Store Product Outer Duty Rate':
+		case 'Product Outer Duty Rate':
 			$label=_('duty rate');
 			break;
-		case 'Store Product Unit Type':
+		case 'Product Unit Type':
 			$label=_('unit type');
 			break;
-		case 'Store Product Label in Family':
+		case 'Product Label in Family':
 			$label=_('label in family');
 			break;
 
-		case 'Store Product Unit Weight':
+		case 'Product Unit Weight':
 			$label=_('unit weight');
 			break;
-		case 'Store Product Unit Dimensions':
+		case 'Product Unit Dimensions':
 			$label=_('unit dimensions');
 			break;
 
@@ -273,16 +283,16 @@ class StoreProduct extends Asset{
 		}
 
 
-		$sql=sprintf("select `Store Product Key` from `Store Product Dimension` where  `Store Product Store Key`=%s and `Store Product Code`=%s",
-			$data['Store Product Store Key'],
-			prepare_mysql($data['Store Product Code'])
+		$sql=sprintf("select `Product ID` from `Product Dimension` where  `Product Store Key`=%s and `Product Code`=%s",
+			$data['Product Store Key'],
+			prepare_mysql($data['Product Code'])
 		);
 
 
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
 				$this->found=true;
-				$this->found_key=$row['Store Product Key'];
+				$this->found_key=$row['Product ID'];
 				$this->get_data('id', $this->found_key);
 			}
 		}else {
@@ -318,18 +328,18 @@ class StoreProduct extends Asset{
 		}
 		$this->editor=$data['editor'];
 
-		if ($this->data['Store Product Valid From']=='') {
-			$this->data['Store Product Valid From']=gmdate('Y-m-d H:i:s');
+		if ($this->data['Product Valid From']=='') {
+			$this->data['Product Valid From']=gmdate('Y-m-d H:i:s');
 		}
 
 
-		$this->data['Store Product Code File As']=get_file_as($this->data['Store Product Code']);
+		$this->data['Product Code File As']=get_file_as($this->data['Product Code']);
 
 		$keys='';
 		$values='';
 		foreach ($this->data as $key=>$value) {
 			$keys.=",`".$key."`";
-			if (in_array($key, array('Store Product Valid To', 'Store Product Unit Weight', 'Store Product Outer Weight'))) {
+			if (in_array($key, array('Product Valid To', 'Product Unit Weight', 'Product Outer Weight'))) {
 				$values.=','.prepare_mysql($value, true);
 
 			}else {
@@ -339,22 +349,22 @@ class StoreProduct extends Asset{
 		$values=preg_replace('/^,/', '', $values);
 		$keys=preg_replace('/^,/', '', $keys);
 
-		$sql="insert into `Store Product Dimension` ($keys) values ($values)";
+		$sql="insert into `Product Dimension` ($keys) values ($values)";
 		if ($this->db->exec($sql)) {
 			$this->id=$this->db->lastInsertId();
 			$this->get_data('id', $this->id);
 
-			$sql=sprintf("insert into  `Store Product DC Data`  (`Store Product Key`) values (%d) ", $this->id);
+			$sql=sprintf("insert into  `Product DC Data`  (`Product ID`) values (%d) ", $this->id);
 			$this->db->exec($sql);
 
-			$sql=sprintf("insert into  `Store Product Data`  (`Store Product Key`) values (%d) ", $this->id);
+			$sql=sprintf("insert into  `Product Data`  (`Product ID`) values (%d) ", $this->id);
 			$this->db->exec($sql);
 
 
 
 
 			$history_data=array(
-				'History Abstract'=>sprintf(_('%s product record created'), $this->data['Store Product Outer Description']),
+				'History Abstract'=>sprintf(_('%s product record created'), $this->data['Product Outer Description']),
 				'History Details'=>'',
 				'Action'=>'created'
 			);
@@ -370,7 +380,7 @@ class StoreProduct extends Asset{
 
 		}else {
 			$this->error=true;
-			$this->msg='Error inserting Store Product record';
+			$this->msg='Error inserting Product record';
 		}
 
 
@@ -387,7 +397,7 @@ class StoreProduct extends Asset{
 
 
 		switch ($field) {
-		case 'Store Product Outer Dimensions':
+		case 'Product Outer Dimensions':
 
 			if ($value=='') {
 				$dim='';
@@ -403,14 +413,14 @@ class StoreProduct extends Asset{
 				$vol=$_tmp['vol'];
 			}
 
-			$this->update_field('Store Product Outer Dimensions', $dim, $options);
-			$this->update_field('Store Product Outer Volume', $vol, $options);
+			$this->update_field('Product Outer Dimensions', $dim, $options);
+			$this->update_field('Product Outer Volume', $vol, $options);
 
 
 			break;
 
 
-		case 'Store Product Family Category Key':
+		case 'Product Family Category Key':
 			include_once 'class.Category.php';
 			$family=new Category($value);
 			$family->associate_subject($this->id);
@@ -431,7 +441,7 @@ class StoreProduct extends Asset{
 				print_r($error_info=$this->db->errorInfo());
 				exit;
 			}
-			$this->update_field('Store Product Department Category Key', $departmet_key, 'no_history');
+			$this->update_field('Product Department Category Key', $departmet_key, 'no_history');
 
 
 			$this->other_fields_updated=array(
@@ -462,17 +472,17 @@ class StoreProduct extends Asset{
 
 	function get_linked_fields_data() {
 
-		$sql=sprintf("select `Part SKU`,`Linked Fields` from `Store Product Part Bridge` where `Store Product Key`=%d", $this->id);
+		$sql=sprintf("select `Product Part Part SKU`,`Product Part Linked Fields` from `Product Part Bridge` where `Product Part Product ID`=%d", $this->id);
 
 		$linked_fields_data=array();
 		if ($result=$this->db->query($sql)) {
 			foreach ($result as $row) {
-				if ($row['Linked Fields']!='') {
-					$linked_fields=json_decode($row['Linked Fields'], true);
+				if ($row['Product Part Linked Fields']!='') {
+					$linked_fields=json_decode($row['Product Part Linked Fields'], true);
 
 					foreach ($linked_fields as $key=>$value) {
 						$value=preg_replace('/\s/', '_', $value);
-						$linked_fields_data[$value]=$row['Part SKU'];
+						$linked_fields_data[$value]=$row['Product Part Part SKU'];
 					}
 
 				}

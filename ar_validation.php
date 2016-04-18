@@ -382,6 +382,10 @@ function check_for_duplicates($data, $db, $user, $account) {
 	case 'Part':
 	switch ($field) {
 		case 'Part Reference':
+		case 'Part Part Reference':
+		
+		
+		
 		$invalid_msg=_('Part reference already used');
 				$sql=sprintf("select P.`Part SKU` as `key` ,`Part Reference` as field from `Part Dimension` P where  `Part Reference`=%s  and `Part Status`='In Use' ",
 					prepare_mysql($data['value'])

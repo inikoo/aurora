@@ -51,12 +51,18 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			$section='dashboard';
 			break;
 		case 'stores':
+			if (!$user->can_view('stores')) {$module='utils';$section='forbidden';break;}
+
 			$module='products_server';
 			$section='stores';
 
 
 			break;
 		case 'store':
+
+			if (!$user->can_view('stores')) {$module='utils';$section='forbidden';break;}
+
+
 			$module='products';
 			$section='store';
 			$object='store';
@@ -112,6 +118,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			break;
 
 		case 'products':
+			if (!$user->can_view('stores')) {$module='utils';$section='forbidden';break;}
+
 			$module='products';
 			$section='products';
 
@@ -270,11 +278,15 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 			break;
 		case 'websites':
+			if (!$user->can_view('sites')) {$module='utils';$section='forbidden';break;}
+
 			$module='websites';
 			$section='websites';
 
 			break;
 		case 'website':
+			if (!$user->can_view('sites')) {$module='utils';$section='forbidden';break;}
+
 			$module='websites';
 			$section='website';
 			$object='website';
@@ -312,6 +324,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 			break;
 		case 'page':
+			if (!$user->can_view('sites')) {$module='utils';$section='forbidden';break;}
+
 			$module='websites';
 			$section='page';
 			$object='page';
@@ -335,6 +349,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 			break;
 		case 'customer':
+			if (!$user->can_view('customers')) {$module='utils';$section='forbidden';break;}
 
 			$module='customers';
 			$section='customer';
@@ -365,6 +380,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 			break;
 		case 'supplier':
+			if (!$user->can_view('suppliers')) {$module='utils';$section='forbidden';break;}
+
 			$module='suppliers';
 			$section='supplier';
 			$parent='account';
@@ -389,7 +406,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 									$key=$view_path[2];
 								}elseif ($view_path[2]=='new') {
-								    $key=0;
+									$key=0;
 									$section='supplier_part.new';
 								}
 							}
@@ -407,6 +424,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 			break;
 		case 'customers':
+			if (!$user->can_view('customers')) {$module='utils';$section='forbidden';break;}
 
 			$module='customers';
 
@@ -543,6 +561,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 			break;
 		case 'orders':
+			if (!$user->can_view('orders')) {$module='utils';$section='forbidden';break;}
+
 			$module='orders';
 			if ($count_view_path==0) {
 				$section='orders';
@@ -585,6 +605,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 			break;
 		case 'invoices':
+			if (!$user->can_view('orders')) {$module='utils';$section='forbidden';break;}
+
 			$module='invoices';
 			if ($count_view_path==0) {
 				$section='invoices';
@@ -659,6 +681,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			}
 			break;
 		case 'delivery_notes':
+			if (!$user->can_view('orders')) {$module='utils';$section='forbidden';break;}
+
 			$module='delivery_notes';
 			if ($count_view_path==0) {
 				$section='delivery_notes';
@@ -696,6 +720,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			}
 			break;
 		case 'order':
+			if (!$user->can_view('orders')) {$module='utils';$section='forbidden';break;}
+
 			$module='orders';
 			if ( isset($view_path[0])) {
 
@@ -781,6 +807,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			break;
 
 		case 'delivery_note':
+			if (!$user->can_view('orders')) {$module='utils';$section='forbidden';break;}
+
 			$module='delivery_notes';
 			if ( isset($view_path[0])) {
 
@@ -879,6 +907,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 			break;
 		case 'invoice':
+			if (!$user->can_view('orders')) {$module='utils';$section='forbidden';break;}
+
 			$module='invoices';
 			if ( isset($view_path[0])) {
 
@@ -950,6 +980,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 			break;
 		case 'marketing':
+			if (!$user->can_view('marketing')) {$module='utils';$section='forbidden';break;}
+
 			$module='marketing';
 			if ($count_view_path==0) {
 				$section='deals';
@@ -988,6 +1020,9 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			}
 			break;
 		case 'warehouses':
+
+			if (!$user->can_view('locations')) {$module='utils';$section='forbidden';break;}
+
 			$module='warehouses_server';
 			$section='warehouses';
 
@@ -995,6 +1030,9 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			break;
 
 		case 'warehouse':
+
+			if (!$user->can_view('locations')) {$module='utils';$section='forbidden';break;}
+
 			$module='warehouses';
 			$section='warehouse';
 
@@ -1034,6 +1072,10 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 			break;
 		case 'inventory':
+
+			if (!$user->can_view('parts')) {$module='utils';$section='forbidden';break;}
+
+
 			$module='inventory';
 			$section='inventory';
 			$parent='account';
@@ -1069,6 +1111,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			break;
 
 		case 'part':
+			if (!$user->can_view('parts')) {$module='utils';$section='forbidden';break;}
+
 			$module='inventory';
 
 			$section='part';
@@ -1124,6 +1168,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 			break;
 		case 'locations':
+			if (!$user->can_view('locations')) {$module='utils';$section='forbidden';break;}
+
 			$module='warehouses';
 
 
@@ -1140,6 +1186,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			break;
 
 		case 'production':
+			if (!$user->can_view('suppliers')) {$module='utils';$section='forbidden';break;}
+
 			$module='production';
 			$section='dashboard';
 			$parent='account';
@@ -1187,6 +1235,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			break;
 
 		case 'manufacture_task':
+			if (!$user->can_view('suppliers')) {$module='utils';$section='forbidden';break;}
+
 			$module='production';
 			$section='manufacture_task';
 			$parent='account';
@@ -1202,6 +1252,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			break;
 
 		case 'suppliers':
+			if (!$user->can_view('suppliers')) {$module='utils';$section='forbidden';break;}
+
 			$module='suppliers';
 			$section='suppliers';
 
@@ -1277,6 +1329,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			}
 			break;
 		case 'hr':
+			if (!$user->can_view('staff')) {$module='utils';$section='forbidden';break;}
+
 			$module='hr';
 			$section='employees';
 			$parent='account';
@@ -1378,6 +1432,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			break;
 
 		case 'timesheet':
+			if (!$user->can_view('staff')) {$module='utils';$section='forbidden';break;}
 
 			$module='hr';
 			$section='timesheet';
@@ -1394,6 +1449,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			break;
 
 		case 'timesheets':
+			if (!$user->can_view('staff')) {$module='utils';$section='forbidden';break;}
 
 			$module='hr';
 			$section='timesheets';
@@ -1424,6 +1480,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			break;
 
 		case 'employee':
+			if (!$user->can_view('staff')) {$module='utils';$section='forbidden';break;}
 
 			$module='hr';
 			$section='employee';
@@ -1500,6 +1557,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			break;
 
 		case 'overtime':
+			if (!$user->can_view('staff')) {$module='utils';$section='forbidden';break;}
 
 			$module='hr';
 			$section='overtime';
@@ -1524,6 +1582,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			break;
 
 		case 'contractor':
+			if (!$user->can_view('staff')) {$module='utils';$section='forbidden';break;}
 
 			$module='hr';
 			$section='contractor';
@@ -1543,6 +1602,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 			break;
 		case 'reports':
+			if (!$user->can_view('reports')) {$module='utils';$section='forbidden';break;}
+
 			$module='reports';
 			$section='reports';
 
@@ -1550,6 +1611,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 
 		case 'report':
+			if (!$user->can_view('reports')) {$module='utils';$section='forbidden';break;}
+
 			$module='reports';
 
 			if (isset($view_path[0])) {
@@ -1590,6 +1653,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 			break;
 		case 'account':
+			if (!$user->can_view('account')) {$module='utils';$section='forbidden';break;}
+
 			$module='account';
 			$section='account';
 			$object='account';
@@ -1746,6 +1811,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 			break;
 		case 'payment_service_providers':
+			if (!$user->can_view('orders')) {$module='utils';$section='forbidden';break;}
+
 			$module='payments';
 			$section='payment_service_providers';
 			$parent='account';
@@ -1792,6 +1859,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			}
 			break;
 		case 'payment_service_provider':
+			if (!$user->can_view('orders')) {$module='utils';$section='forbidden';break;}
+
 			$module='payments';
 			$section='payment_service_provider';
 			$parent='account';
@@ -1838,6 +1907,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			}
 			break;
 		case 'payment_account':
+			if (!$user->can_view('orders')) {$module='utils';$section='forbidden';break;}
+
 			$module='payments';
 			$section='payment_account';
 			$parent='account';
@@ -1896,6 +1967,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 			break;
 		case 'payment':
+			if (!$user->can_view('orders')) {$module='utils';$section='forbidden';break;}
+
 			$module='payments';
 			$section='payment';
 			$object='payment';
@@ -1915,6 +1988,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			}
 			break;
 		case 'payment_accounts':
+			if (!$user->can_view('orders')) {$module='utils';$section='forbidden';break;}
+
 			$module='payments';
 			$section='payment_accounts';
 			$parent='account';
@@ -1947,6 +2022,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			break;
 
 		case 'payments':
+			if (!$user->can_view('orders')) {$module='utils';$section='forbidden';break;}
+
 			$module='payments';
 			$section='payments';
 			$parent='account';
@@ -1978,6 +2055,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			}
 			break;
 		case 'timeseries':
+			if (!$user->can_view('account')) {$module='utils';$section='forbidden';break;}
+
 			$module='account';
 			$section='timeserie';
 			if (isset($view_path[0])) {

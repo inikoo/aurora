@@ -73,7 +73,8 @@ $supplier_fields=array(
 			array(
 
 				'id'=>'Supplier_Code',
-				'edit'=>'string',
+				'edit'=>($edit?'string':''),
+
 				'value'=>$object->get('Supplier Code'),
 				'label'=>ucfirst($object->get_field_label('Code')),
 				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
@@ -82,7 +83,8 @@ $supplier_fields=array(
 			),
 			array(
 				'id'=>'Supplier_Company_Name',
-				'edit'=>'string',
+				'edit'=>($edit?'string':''),
+
 				'value'=>htmlspecialchars($object->get('Supplier Company Name')),
 				'formatted_value'=>$object->get('Company Name'),
 				'label'=>ucfirst($object->get_field_label('Supplier Company Name')),
@@ -92,7 +94,8 @@ $supplier_fields=array(
 			array(
 
 				'id'=>'Supplier_Main_Contact_Name',
-				'edit'=>'string',
+				'edit'=>($edit?'string':''),
+
 				'value'=>htmlspecialchars($object->get('Supplier Main Contact Name')),
 				'formatted_value'=>$object->get('Main Contact Name'),
 				'label'=>ucfirst($object->get_field_label('Supplier Main Contact Name')),
@@ -108,7 +111,8 @@ $supplier_fields=array(
 
 			array(
 				'id'=>'Supplier_Main_Plain_Email',
-				'edit'=>'email',
+				'edit'=>($edit?'email':''),
+
 				'value'=>$object->get('Supplier Main Plain Email'),
 				'formatted_value'=>$object->get('Main Plain Email'),
 				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
@@ -131,7 +135,8 @@ $supplier_fields=array(
 			array(
 				'id'=>'Supplier_Other_Email',
 				'render'=>false,
-				'edit'=>'email',
+				'edit'=>($edit?'email':''),
+
 				'value'=>'',
 				'formatted_value'=>'',
 				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
@@ -159,7 +164,8 @@ $supplier_fields=array(
 
 			array(
 				'id'=>'Supplier_Main_Plain_Mobile',
-				'edit'=>'telephone',
+				'edit'=>($edit?'telephone':''),
+
 				'value'=>$object->get('Supplier Main Plain Mobile'),
 				'formatted_value'=>$object->get('Main Plain Mobile'),
 				'label'=>ucfirst($object->get_field_label('Supplier Main Plain Mobile')). ($object->get('Supplier Main Plain Mobile')!=''?($object->get('Supplier Preferred Contact Number')=='Mobile'?'':' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discret button"></i>'):'')    ,
@@ -171,7 +177,8 @@ $supplier_fields=array(
 
 
 				'id'=>'Supplier_Main_Plain_Telephone',
-				'edit'=>'telephone',
+				'edit'=>($edit?'telephone':''),
+
 				'value'=>$object->get('Supplier Main Plain Telephone'),
 				'formatted_value'=>$object->get('Main Plain Telephone'),
 				'label'=>ucfirst($object->get_field_label('Supplier Main Plain Telephone')).($object->get('Supplier Main Plain Telephone')!=''?($object->get('Supplier Preferred Contact Number')=='Telephone'?'':' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discret button"></i>'):'')    ,
@@ -191,7 +198,8 @@ $supplier_fields=array(
 			array(
 				'id'=>'Supplier_Other_Telephone',
 				'render'=>false,
-				'edit'=>'telephone',
+				'edit'=>($edit?'telephone':''),
+
 				'value'=>'',
 				'formatted_value'=>'',
 				'label'=>ucfirst($object->get_field_label('Supplier Other Telephone')).' <i onClick="set_this_as_main(this)" title="'._('Set as main telephone').'" class="fa fa-star-o very_discret button"></i>',
@@ -210,7 +218,8 @@ $supplier_fields=array(
 
 			array(
 				'id'=>'Supplier_Main_Plain_FAX',
-				'edit'=>'telephone',
+				'edit'=>($edit?'telephone':''),
+
 				'value'=>$object->get('Supplier Main Plain FAX'),
 				'formatted_value'=>$object->get('Main Plain FAX'),
 				'label'=>ucfirst($object->get_field_label('Supplier Main Plain FAX')),
@@ -228,7 +237,8 @@ $supplier_fields=array(
 
 			array(
 				'id'=>'Supplier_Contact_Address',
-				'edit'=>'address',
+				'edit'=>($edit?'address':''),
+
 				'value'=>htmlspecialchars($object->get('Supplier Contact Address')),
 				'formatted_value'=>$object->get('Contact Address'),
 				'label'=>ucfirst($object->get_field_label('Supplier Contact Address')),
@@ -257,7 +267,8 @@ $supplier_fields=array(
 			),
 			array(
 				'id'=>'Supplier_Default_Currency_Code',
-				'edit'=>'option',
+				'edit'=>($edit?'option':''),
+
 				'options'=>$options_currencies,
 				'value'=>$object->get('Supplier Default Currency Code'),
 				'formatted_value'=>$object->get('Default Currency'),
@@ -286,7 +297,8 @@ $supplier_fields=array(
 
 			array(
 				'id'=>'Supplier_Default_Incoterm',
-				'edit'=>'option',
+				'edit'=>($edit?'option':''),
+
 				'options'=>$options_incoterms,
 				'value'=>$object->get('Supplier Default Incoterm'),
 				'formatted_value'=>$object->get('Default Incoterm'),
@@ -295,7 +307,8 @@ $supplier_fields=array(
 			),
 			array(
 				'id'=>'Supplier_Default_Port_of_Export',
-				'edit'=>'string',
+				'edit'=>($edit?'string':''),
+
 				'value'=>$object->get('Supplier Default Port of Export'),
 				'formatted_value'=>$object->get('Default Port of Export'),
 				'label'=>ucfirst($object->get_field_label('Supplier Default Port of Export')),
@@ -303,7 +316,8 @@ $supplier_fields=array(
 			),
 			array(
 				'id'=>'Supplier_Default_Port_of_Import',
-				'edit'=>'string',
+				'edit'=>($edit?'string':''),
+
 				'value'=>$object->get('Supplier Default Port of Import'),
 				'formatted_value'=>$object->get('Default Port of Import'),
 				'label'=>ucfirst($object->get_field_label('Supplier Default Port of Import')),
@@ -311,7 +325,8 @@ $supplier_fields=array(
 			),
 			array(
 				'id'=>'Supplier_Default_PO_Terms_and_Conditions',
-				'edit'=>'textarea',
+				'edit'=>($edit?'textarea':''),
+
 				'value'=>$object->get('Supplier Default PO Terms and Conditions'),
 				'formatted_value'=>$object->get('Default PO Terms and Conditions'),
 				'label'=>ucfirst($object->get_field_label('Supplier Default PO Terms and Conditions')),
@@ -319,7 +334,8 @@ $supplier_fields=array(
 			),
 			array(
 				'id'=>'Supplier_Show_Warehouse_TC_in_PO',
-				'edit'=>'option',
+				'edit'=>($edit?'option':''),
+
 				'options'=>$options_yn,
 				'value'=>$object->get('Supplier Show Warehouse TC in PO'),
 				'formatted_value'=>$object->get('Show Warehouse TC in PO'),
@@ -356,7 +372,8 @@ if (count($other_emails)>0) {
 	foreach ($other_emails as $other_email_data_key=>$other_email_data) {
 		$other_emails_fields[]=array(
 			'id'=>'Supplier_Other_Email_'.$other_email_data_key,
-			'edit'=>'email',
+			'edit'=>($edit?'email':''),
+
 			'value'=>$other_email_data['email'],
 			'formatted_value'=>$other_email_data['email'],
 			'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
@@ -373,7 +390,8 @@ if (count($other_telephones)>0) {
 	foreach ($other_telephones as $other_telephone_data_key=>$other_telephone_data) {
 		$other_telephones_fields[]=array(
 			'id'=>'Supplier_Other_Telephone_'.$other_telephone_data_key,
-			'edit'=>'telephone',
+			'edit'=>($edit?'telephone':''),
+
 			'value'=>$other_telephone_data['telephone'],
 			'formatted_value'=>$other_telephone_data['formatted_telephone'],
 			'label'=>ucfirst($object->get_field_label('Supplier Other Telephone')).' <i onClick="set_this_as_main(this)" title="'._('Set as main telephone').'" class="fa fa-star-o very_discret button"></i>',

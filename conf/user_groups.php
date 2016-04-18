@@ -41,7 +41,7 @@ $user_groups=array(
 		'Name'=>_('Customer Services'),
 		'View'=>'<i title="'._('Customers').'" class="fa fa-users fa-fw"> <i title="'._('Orders').'" class="fa fa-shopping-cart fa-fw"> <i title="'._('Websites').'" class="fa fa-globe fa-fw"></i> <i  title="'._('Products').'" class="fa fa-square-o fa-fw"></i>',
 		'Edit'=>'<i title="'._('Customers').'" class="fa fa-users fa-fw"> <i title="'._('Orders').'" class="fa fa-shopping-cart fa-fw">',
-		'Rights'=>array('CV', 'CE', 'CC', 'CD', 'SV', 'WV')
+		'Rights'=>array('CV', 'CE', 'CC', 'CD', 'SV', 'WV','SV')
 
 	),
 	3=>array(

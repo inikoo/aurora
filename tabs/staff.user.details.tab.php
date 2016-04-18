@@ -199,19 +199,8 @@ $object_fields=array(
 		'show_title'=>true,
 		'class'=>'edit_fields',
 		'fields'=>array(
-		/*
+			
 			array(
-				'id'=>'User_Groups',
-				'edit'=>'radio_option',
-				'value'=>$system_user->get('User Groups') ,
-				'formatted_value'=>$system_user->get('Groups') ,
-				'label'=>ucfirst($system_user->get_field_label('User Groups')),
-				'options'=>$options_Groups,
-
-
-			),
-			*/
-							array(
 				'id'=>'Staff_Position',
 				'edit'=>'radio_option',
 				'value'=>$employee->get('Staff Position'),
