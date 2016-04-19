@@ -1,3 +1,35 @@
+.popout_chooser {
+    width: 200px;
+    border-left: none;
+    div {
+        border-top: 1px solid #eee;
+        padding: 4px 0px 4px 15px;
+        cursor: pointer;
+        .fa {
+            font-size: 70%;
+            position: relative;
+            top: -1px;
+            margin-right: 2px;
+            color: #999;
+            transition: color .7s;
+        }
+        &:last-of-type {
+            border-bottom: none;
+        }
+        &:hover > .fa {
+            color: #333;
+        }
+        &:hover > .fa, &.selected > .fa {
+            color: #222;
+        }
+    }
+}
+
+
+
+
+
+
 .backgrid{
 
 

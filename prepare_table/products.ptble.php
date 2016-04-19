@@ -45,7 +45,7 @@ case('list'):
 		$awhere=false;
 		if ($customer_list_data['List Type']=='Static') {
 
-			$table='`List Product Bridge` PB left join `Product Dimension` P  on (PB.`Product ID`=P.`Product ID`) left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`)';
+			$table='`List Product Bridge` PB left join `Product Dimension` P  on (PB.`Product ID`=P.`Product ID`) left join `Product Data Dimension` PD on (PD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`)';
 			$where=sprintf(' where `List Key`=%d ', $_REQUEST['parent_key']);
 
 		} else {// Dynamic by DEFAULT
@@ -77,14 +77,14 @@ case('store'):
 	break;
 	
 case('part'):
-		$table='`Product Dimension`  P  left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`) left join `Product Part Bridge` B on (B.`Product ID`=P.`Product ID`)';
+		$table='`Product Dimension`  P  left join `Product Data Dimension` PD on (PD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`) left join `Product Part Bridge` B on (B.`Product Part Product ID`=P.`Product ID`)';
 
-		$where=sprintf(' where `Part SKU`=%d  ', $parameters['parent_key']);
+		$where=sprintf(' where `Product Part Part SKU`=%d  ', $parameters['parent_key']);
 	break;	
 
 case('customer_favourites'):
 
-	$table="`Product Dimension` P left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`) left join `Customer Favorite Product Bridge` F on (F.`Product ID`=P.`Product ID`)";
+	$table="`Product Dimension` P left join `Product Data Dimension` PD on (PD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`) left join `Customer Favorite Product Bridge` F on (F.`Product ID`=P.`Product ID`)";
 
 
 	$where.=sprintf(' where F.`Customer Key`=%d', $parameters['parent_key']);

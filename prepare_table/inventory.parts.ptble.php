@@ -9,8 +9,10 @@
 
 */
 
+include_once 'utils/date_functions.php';
+
 $where="where true  ";
-$table="`Part Dimension` P  ";
+$table="`Part Dimension` P left join `Part Data` D on (D.`Part SKU`=P.`Part SKU`) ";
 $filter_msg='';
 $sql_type='part';
 $filter_msg='';
@@ -69,7 +71,7 @@ elseif ($parameters['parent']=='category') {
 		return;
 	}
 
-$fields=' "" as `Warehouse Code`,';
+	$fields=' "" as `Warehouse Code`,';
 
 	$where=sprintf(" where `Subject`='Part' and  `Category Key`=%d", $parameters['parent_key']);
 	$table=' `Category Bridge` left join  `Part Dimension` P on (`Subject Key`=`Part SKU`) ';
@@ -80,7 +82,7 @@ $fields=' "" as `Warehouse Code`,';
 }
 elseif ($parameters['parent']=='warehouse') {
 	$where=sprintf(" where  `Warehouse Key`=%d", $parameters['parent_key']);
-$fields=' "" as `Warehouse Code`,';
+	$fields=' "" as `Warehouse Code`,';
 
 	$table="`Part Dimension` P left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`)";
 
@@ -90,12 +92,12 @@ $fields=' "" as `Warehouse Code`,';
 
 
 
-}else{
-exit("parent not found ".$parameters['parent']);
+}else {
+	exit("parent not found ".$parameters['parent']);
 }
 
-if(isset($extra_where))
-$where.=$extra_where;
+if (isset($extra_where))
+	$where.=$extra_where;
 
 
 
@@ -124,11 +126,17 @@ if (isset($parameters['elements_type'])) {
 
 		}
 		break;
-	
-}
+
+	}
 }
 
+$db_period=get_interval_db_name($parameters['f_period']);
+if(in_array($db_period,array('Total','3 Year'))){
+$yb_fields=" '' as sold_1y,'' as revenue_1y";
 
+}else{
+$yb_fields="`Part $db_period Acc 1YB Sold` as sold_1y,`Part $db_period Acc 1YB Sold Amount` as revenue_1y";
+}
 
 if ($parameters['f_field']=='used_in' and $f_value!='')
 	$wheref.=" and  `Part XHTML Currently Used In` like '%".addslashes($f_value)."%'";
@@ -144,89 +152,27 @@ elseif ($parameters['f_field']=='description' and $f_value!='')
 $_order=$order;
 $_dir=$order_direction;
 
-if ($order=='stock')
+if ($order=='id') {
+	$order='P.`Part SKU`';
+}elseif ($order=='stock') {
 	$order='`Part Current Stock`';
-elseif ($order=='sku')
-	$order='`Part SKU`';
-elseif ($order=='id')
-	$order='`Part SKU`';
-elseif ($order=='formatted_sku')
-	$order='`Part SKU`';
-elseif ($order=='reference')
+}elseif ($order=='stock_status') {
+	$order='`Part Stock Status`';
+}elseif ($order=='reference') {
 	$order='`Part Reference`';
-elseif ($order=='description')
+}elseif ($order=='unit_description') {
 	$order='`Part Unit Description`';
-elseif ($order=='available_for')
-	$order='`Part Available Days Forecast`';
-elseif ($order=='supplied_by')
-	$order='`Part XHTML Currently Supplied By`';
-elseif ($order=='products')
-	$order='`Part Currently Used In`';
-elseif ($order=='margin') {
-	$order=' `Part '.$period_tag.' Acc Margin` ';
+}elseif ($order=='available_for') {
+	$order='`Part Days Available Forecast`';
+
 } elseif ($order=='sold') {
-	$order=' `Part '.$period_tag.' Acc Sold` ';
-} elseif ($order=='money_in') {
-	$order=' `Part '.$period_tag.' Acc Sold Amount` ';
-} elseif ($order=='profit_sold') {
-
-	$order=' `Part '.$period_tag.' Acc Profit` ';
-} elseif ($order=='avg_stock') {
-
-	$order=' `Part '.$period_tag.' Acc AVG Stock` ';
-
-
-} elseif ($order=='avg_stockvalue') {
-
-	$order=' `Part '.$period_tag.' Acc AVG Stock Value` ';
-
-} elseif ($order=='keep_days') {
-
-	$order=' `Part '.$period_tag.' Acc Keeping Days` ';
-} elseif ($order=='outstock_days') {
-
-	$order=' `Part '.$period_tag.' Acc Out of Stock Days` ';
-
-} elseif ($order=='unknown_days') {
-
-	$order=' `Part '.$period_tag.' Acc Unknown Stock Days` ';
-
-} elseif ($order=='gmroi') {
-
-	$order=' `Part '.$period_tag.' Acc GMROI` ';
-
-}elseif ($order=='stock_value') {
-
-	$order=' `Part Current Value` ';
-
-}elseif ($order=='delta_money_in') {
-
-	$order=' `Part '.$period_tag.' Acc 1YD Sold`';
-
-}elseif ($order=='delta_sold') {
-
-	$order=' `Part '.$period_tag.' Acc 1YD Sold Amount`';
-
-}elseif ($order=='stock_days') {
-
-	$order=' `Part Days Available Forecast`';
-
-}elseif ($order=='next_shipment') {
-
-	$order=' `Part Next Supplier Shipment`';
-
-}elseif ($order=='package_type') {
-	$order='`Part Package Type`';
-}elseif ($order=='package_weight') {
-	$order='`Part Package Weight`';
-}elseif ($order=='Package') {
-	$order='`Part Package Dimensions Volume`';
-}elseif ($order=='package_volume') {
-	$order='`Part Package Dimensions Volume`';
-}elseif ($order=='unit_weight') {
-	$order='`Part Unit Weight`';
-}elseif ($order=='unit_dimension') {
-	$order='`Part Unit Dimensions Volume`';
+	$order=' sold ';
+}elseif ($order=='revenue') {
+	$order=' revenue ';
+}elseif ($order=='lost') {
+	$order=' lost ';
+}elseif ($order=='bought') {
+	$order=' bought ';
 }elseif ($order=='from') {
 	$order='`Part Valid From`';
 }elseif ($order=='to') {
@@ -238,12 +184,22 @@ elseif ($order=='margin') {
 	$order='`Part SKU`';
 }
 
-$order='P.'.$order;
 
 
 $sql_totals="select count(Distinct P.`Part SKU`) as num from $table  $where  ";
 
-$fields.='P.`Part SKU`,`Part Reference`,`Part Unit Description`,`Part Current Stock`,`Part Stock Status`,`Part Days Available Forecast`';
+$fields.="P.`Part SKU`,`Part Reference`,`Part Unit Description`,`Part Current Stock`,`Part Stock Status`,`Part Days Available Forecast`,
+`Part $db_period Acc Sold` as sold,
+
+
+`Part $db_period Acc Given` as given,
+(`Part $db_period Acc Broken`+`Part $db_period Acc Lost`) as lost,
+
+`Part $db_period Acc Sold Amount` as revenue,
+`Part $db_period Acc Acquired` as bought,
+`Part Days Available Forecast`,$yb_fields
+
+";
 
 function parts_awhere($awhere) {
 

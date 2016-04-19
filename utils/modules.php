@@ -972,7 +972,13 @@ $modules=array(
 					'part.purchase_orders.purchase_orders'=>'part.purchase_orders',
 					'part.purchase_orders.delivery_notes'=>'part.purchase_orders',
 					'part.purchase_orders.invoices'=>'part.purchase_orders',
-					'part.supplier_parts'=>'part.purchase_orders'
+					'part.supplier_parts'=>'part.purchase_orders',
+					'part.stock.history.annually'=>'part.stock',
+						'part.stock.history.monthy'=>'part.stock',
+					'part.stock.history.weekly'=>'part.stock',
+					'part.stock.history.daily'=>'part.stock',
+					'part.stock.history.plot'=>'part.stock',
+
 				),
 
 
@@ -982,15 +988,11 @@ $modules=array(
 
 					'part.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 					'part.history'=>array('label'=>_('History/Notes'), 'icon'=>'history'),
-					'part.sales'=>array('label'=>_('Sales'), 'icon'=>'money',
-						'subtabs'=>array(
-							'part.sales.overview'=>array('label'=>_('Overview')),
-							'part.sales.history'=>array('label'=>_('Sales history')),
-							'part.sales.products'=>array('label'=>_('Product sales breakdown')),
-
-						)
+					'part.stock.transactions'=>array('label'=>_('Warehouse transactions'), 'icon'=>'',
+						
 
 					),
+					/*
 					'part.stock'=>array('label'=>_('Stock'), 'icon'=>'th',
 						'subtabs'=>array(
 							'part.stock.overview'=>array('label'=>_('Overview')),
@@ -1000,6 +1002,54 @@ $modules=array(
 
 						)
 					),
+					*/
+					'part.stock'=>array('label'=>_('Stock History'),
+						'subtabs'=>array(
+							'part.stock.history.annually'=>array('label'=>_('Annually')),
+							'part.stock.history.monthy'=>array('label'=>_('Monthy')),
+							'part.stock.history.weekly'=>array('label'=>_('Weekly')),
+							'part.stock.history.daily'=>array('label'=>_('Daily')),
+							'part.stock.history.plot'=>array('label'=>_('Chart'),'class'=>'right'),
+
+
+						)
+
+
+					),
+					
+					/*
+					
+						'timeserie'=>array('type'=>'',
+
+				'subtabs_parent'=>array(
+					'timeserie.records.annually'=>'timeserie.records',
+					'timeserie.records.monthy'=>'timeserie.records',
+					'timeserie.records.weekly'=>'timeserie.records',
+					'timeserie.records.daily'=>'timeserie.records',
+
+				),
+
+				'tabs'=>array(
+					'timeserie.plot'=>array('label'=>_('Plot')),
+					'timeserie.records'=>array('label'=>_('Records'),
+						'subtabs'=>array(
+							'timeserie.records.annually'=>array('label'=>_('Annually')),
+							'timeserie.records.monthy'=>array('label'=>_('Monthy')),
+							'timeserie.records.weekly'=>array('label'=>_('Weekly')),
+							'timeserie.records.daily'=>array('label'=>_('Daily')),
+
+
+						)
+
+
+					),
+
+				)
+			),
+					
+			*/		
+					
+					
 					'part.purchase_orders'=>array('label'=>_('Supplier & Purchase orders'), 'icon'=>'ship',
 						'subtabs'=>array(
 							'part.supplier_parts'=>array('label'=>_("Supplier's parts"),'icon'=>'stop'),

@@ -186,6 +186,8 @@ class Part extends Asset{
 			$this->sku =$this->id ;
 			$this->new=true;
 
+			$sql="insert into `Part Data` (`Part SKU`) values(".$this->id.");";
+			$this->db->exec($sql);
 
 
 			$this->get_data('id', $this->id);
@@ -1007,10 +1009,11 @@ class Part extends Asset{
 		switch ($key) {
 
 		case 'Available Forecast':
-		  
-		
+
+			if ($this->data['Part Stock Status']=='Out_Of_Stock' or  $this->data['Part Stock Status']=='Error') return '';
 			include_once 'utils/natural_language.php';
-			return '<i class="fa fa-ban error fa-fw" aria-hidden="true" title="'._('Out of stock').'" ></i> '._('in').' <span title="'.sprintf("%s %s",number($this->data['Part Days Available Forecast'],1) , ngettext("day", "days", number($this->data['Part Days Available Forecast'],1))).'">'.days_to_string($this->data['Part Days Available Forecast'], true).'</span>';
+			return '<i class="fa fa-ban error fa-fw" aria-hidden="true" title="'._('Out of stock').'" ></i> '._('in').' <span title="'.sprintf("%s %s", number($this->data['Part Days Available Forecast'], 1) ,
+				ngettext("day", "days", intval($this->data['Part Days Available Forecast'] ) )).'">'.days_to_string($this->data['Part Days Available Forecast'], true).'</span>';
 			break;
 
 		case 'Origin Country Code':
@@ -1248,7 +1251,7 @@ class Part extends Asset{
 			prepare_mysql($this->data['Part Stock State']),
 			$this->id
 		);
-		
+
 		$this->db->exec($sql);
 
 
@@ -2375,6 +2378,7 @@ class Part extends Asset{
 
 	function update_sales_from_invoices($interval) {
 
+		include_once 'utils/date_functions.php';
 		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb)=calculate_interval_dates($interval);
 		//print "$db_interval,$from_date,$to_date,$from_date_1yb,$to_date_1yb  \n";
 
@@ -2399,13 +2403,21 @@ class Part extends Asset{
 			($to_date?sprintf('and `Date`<%s', prepare_mysql($to_date)):'')
 
 		);
-		$result=mysql_query($sql);
-		//   print "$sql\n";
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$this->data["Part $db_interval Acc Profit"]=$row['profit'];
-			$this->data["Part $db_interval Acc Profit After Storing"]=$this->data["Part $db_interval Acc Profit"]-$row['cost_storing'];
 
+
+
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$this->data["Part $db_interval Acc Profit"]=$row['profit'];
+				$this->data["Part $db_interval Acc Profit After Storing"]=$this->data["Part $db_interval Acc Profit"]-$row['cost_storing'];
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
 
 
 		$sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought
@@ -2415,14 +2427,18 @@ class Part extends Asset{
 			($to_date?sprintf('and `Date`<%s', prepare_mysql($to_date)):'')
 
 		);
-		$result=mysql_query($sql);
-		//print "$sql\n";
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-
-			$this->data["Part $db_interval Acc Acquired"]=$row['bought'];
-
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$this->data["Part $db_interval Acc Acquired"]=$row['bought'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
+
 
 
 		$sql=sprintf("select sum(`Amount In`) as sold_amount,
@@ -2437,17 +2453,22 @@ class Part extends Asset{
 			($to_date?sprintf('and `Date`<%s', prepare_mysql($to_date)):'')
 
 		);
-		$result=mysql_query($sql);
-		//  print "$sql\n";
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			//print_r($row);
-			$this->data["Part $db_interval Acc Sold Amount"]=$row['sold_amount'];
-			$this->data["Part $db_interval Acc Sold"]=$row['sold'];
-			$this->data["Part $db_interval Acc Provided"]=-1.0*$row['dispatched'];
-			$this->data["Part $db_interval Acc Required"]=$row['required'];
-			$this->data["Part $db_interval Acc Given"]=$row['given'];
 
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$this->data["Part $db_interval Acc Sold Amount"]=$row['sold_amount'];
+				$this->data["Part $db_interval Acc Sold"]=$row['sold'];
+				$this->data["Part $db_interval Acc Provided"]=-1.0*$row['dispatched'];
+				$this->data["Part $db_interval Acc Required"]=$row['required'];
+				$this->data["Part $db_interval Acc Given"]=$row['given'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 
 		$sql=sprintf("select sum(`Inventory Transaction Quantity`) as broken
                      from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Broken' and `Part SKU`=%d %s %s" ,
@@ -2456,13 +2477,18 @@ class Part extends Asset{
 			($to_date?sprintf('and `Date`<%s', prepare_mysql($to_date)):'')
 
 		);
-		$result=mysql_query($sql);
-		//print "$sql\n";
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-			$this->data["Part $db_interval Acc Broken"]=-1.*$row['broken'];
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$this->data["Part $db_interval Acc Broken"]=-1.*$row['broken'];
 
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 
 
 		$sql=sprintf("select sum(`Inventory Transaction Quantity`) as lost
@@ -2472,13 +2498,16 @@ class Part extends Asset{
 			($to_date?sprintf('and `Date`<%s', prepare_mysql($to_date)):'')
 
 		);
-		$result=mysql_query($sql);
-		//print "$sql\n";
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-			$this->data["Part $db_interval Acc Lost"]=-1.*$row['lost'];
-
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$this->data["Part $db_interval Acc Lost"]=-1.*$row['lost'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
 
 
 
@@ -2492,7 +2521,7 @@ class Part extends Asset{
 		$this->data["Part $db_interval Acc Margin"]=$margin;
 
 
-		$sql=sprintf("update `Part Dimension` set
+		$sql=sprintf("update `Part Data` set
                      `Part $db_interval Acc Required`=%f ,
                      `Part $db_interval Acc Provided`=%f,
                      `Part $db_interval Acc Given`=%f ,
@@ -2513,10 +2542,12 @@ class Part extends Asset{
 
 			, $this->id);
 
-		mysql_query($sql);
+
+//print "$sql\n";
+
+		$this->db->exec($sql);
 
 
-		//print "$sql\n";
 
 
 		if ($from_date_1yb) {
@@ -2540,13 +2571,18 @@ class Part extends Asset{
 				($to_date_1yb?sprintf('and `Date`<%s', prepare_mysql($to_date_1yb)):'')
 
 			);
-			$result=mysql_query($sql);
-			//   print "$sql\n";
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$this->data["Part $db_interval Acc 1YB Profit"]=$row['profit'];
-				$this->data["Part $db_interval Acc 1YB Profit After Storing"]=$this->data["Part $db_interval Acc 1YB Profit"]-$row['cost_storing'];
 
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$this->data["Part $db_interval Acc 1YB Profit"]=$row['profit'];
+					$this->data["Part $db_interval Acc 1YB Profit After Storing"]=$this->data["Part $db_interval Acc 1YB Profit"]-$row['cost_storing'];
+
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
+
 
 
 			$sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought
@@ -2556,13 +2592,15 @@ class Part extends Asset{
 				($to_date_1yb?sprintf('and `Date`<%s', prepare_mysql($to_date_1yb)):'')
 
 			);
-			$result=mysql_query($sql);
-			//print "$sql\n";
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$this->data["Part $db_interval Acc 1YB Acquired"]=$row['bought'];
 
-				$this->data["Part $db_interval Acc 1YB Acquired"]=$row['bought'];
-
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
 
 
@@ -2578,16 +2616,20 @@ class Part extends Asset{
 				($to_date_1yb?sprintf('and `Date`<%s', prepare_mysql($to_date_1yb)):'')
 
 			);
-			$result=mysql_query($sql);
-			//print "$sql\n";
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-				$this->data["Part $db_interval Acc 1YB Sold Amount"]=$row['sold_amount'];
-				$this->data["Part $db_interval Acc 1YB Sold"]=$row['sold'];
-				$this->data["Part $db_interval Acc 1YB Provided"]=-1.0*$row['dispatched'];
-				$this->data["Part $db_interval Acc 1YB Required"]=$row['required'];
-				$this->data["Part $db_interval Acc 1YB Given"]=$row['given'];
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
 
+					$this->data["Part $db_interval Acc 1YB Sold Amount"]=$row['sold_amount'];
+					$this->data["Part $db_interval Acc 1YB Sold"]=$row['sold'];
+					$this->data["Part $db_interval Acc 1YB Provided"]=-1.0*$row['dispatched'];
+					$this->data["Part $db_interval Acc 1YB Required"]=$row['required'];
+					$this->data["Part $db_interval Acc 1YB Given"]=$row['given'];
+
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
 
 			$sql=sprintf("select sum(`Inventory Transaction Quantity`) as broken
@@ -2597,13 +2639,17 @@ class Part extends Asset{
 				($to_date_1yb?sprintf('and `Date`<%s', prepare_mysql($to_date_1yb)):'')
 
 			);
-			$result=mysql_query($sql);
-			//print "$sql\n";
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-				$this->data["Part $db_interval Acc 1YB Broken"]=-1.*$row['broken'];
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$this->data["Part $db_interval Acc 1YB Broken"]=-1.*$row['broken'];
 
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
+
 
 
 			$sql=sprintf("select sum(`Inventory Transaction Quantity`) as lost
@@ -2613,13 +2659,17 @@ class Part extends Asset{
 				($to_date_1yb?sprintf('and `Date`<%s', prepare_mysql($to_date_1yb)):'')
 
 			);
-			$result=mysql_query($sql);
-			//print "$sql\n";
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-				$this->data["Part $db_interval Acc 1YB Lost"]=-1.*$row['lost'];
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$this->data["Part $db_interval Acc 1YB Lost"]=-1.*$row['lost'];
 
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
+
 
 
 
@@ -2633,7 +2683,7 @@ class Part extends Asset{
 			$this->data["Part $db_interval Acc 1YB Margin"]=$margin;
 
 
-			$sql=sprintf("update `Part Dimension` set
+			$sql=sprintf("update `Part Data` set
                      `Part $db_interval Acc 1YB Required`=%f ,
                      `Part $db_interval Acc 1YB Provided`=%f,
                      `Part $db_interval Acc 1YB Given`=%f ,
@@ -2667,7 +2717,7 @@ class Part extends Asset{
 			$this->data["Part $db_interval Acc 1YD Margin"]=($this->data["Part $db_interval Acc 1YB Margin"]==0?0:($this->data["Part $db_interval Acc Margin"]-$this->data["Part $db_interval Acc 1YB Margin"])/$this->data["Part $db_interval Acc 1YB Margin"]);
 
 
-			$sql=sprintf("update `Part Dimension` set
+			$sql=sprintf("update `Part Data` set
                      `Part $db_interval Acc 1YD Required`=%f ,
                      `Part $db_interval Acc 1YD Provided`=%f,
                      `Part $db_interval Acc 1YD Given`=%f ,

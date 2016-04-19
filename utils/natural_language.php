@@ -12,15 +12,47 @@ function days_to_string($days, $short=false) {
 
 		}
 
-	}if ($days<100) {
+	}elseif ($days<10) {
 
 		if ($short) {
 			return sprintf(_('%sd'), $days);
 		}else {
-			return sprintf("%d %s", $days , ngettext("day", "days", $days));
+			return sprintf("%d %s", $days , ngettext("day", "days", intval($days)));
 
 		}
 
+	}elseif ($days<100) {
+		$weeks=floor($days/7);
+
+		if ($short) {
+			return sprintf(_('%sw'), $weeks);
+		}else {
+			return sprintf("%d %s", $weeks , ngettext("week", "weeks", intval($weeks)));
+
+		}
+
+	}elseif ($days<1095) {
+		$months=floor($days/30.4167);
+		if ($short) {
+			return sprintf(_('%sm'), $months);
+		}else {
+			return sprintf("%d %s", $months , ngettext("month", "months", intval($months)));
+
+		}
+
+	}elseif ($days<1825) {
+		$years=floor($days/365);
+
+		if ($short) {
+			return sprintf(_('%sy'), $years);
+		}else {
+			return sprintf("%d %s", $years , ngettext("year", "yers", intval($years)));
+
+		}
+
+	}else {
+
+		return _('years');
 	}
 
 

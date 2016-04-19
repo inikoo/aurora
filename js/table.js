@@ -93,7 +93,7 @@ function get_elements_numbers(tab, parameters) {
             for (element in data.elements_numbers) {
 
                 for (item in data.elements_numbers[element]) {
-                console.log(item)
+                    console.log(item)
                     $("#element_qty_" + item).html('(' + data.elements_numbers[element][item] + ')')
 
 
@@ -103,6 +103,51 @@ function get_elements_numbers(tab, parameters) {
     })
 
 }
+
+
+
+function close_columns_period_options() {
+    var icon = $('#columns_period .fa')
+
+    icon.addClass('fa-bars')
+    icon.removeClass('fa-chevron-up')
+    $('#columns_period_chooser').addClass('hide')
+
+}
+
+
+function show_columns_period_options() {
+
+
+
+
+    var button = $('#columns_period')
+    var icon = $('#columns_period .fa')
+
+    if (!icon.hasClass('fa-bars')) {
+
+        close_columns_period_options()
+    } else {
+        icon.removeClass('fa-bars')
+        icon.addClass('fa-chevron-up')
+
+        var offset = $('#columns_period .fa').position();
+        var height = button.height();
+
+        console.log(icon.width())
+
+        $('#columns_period_chooser').removeClass('hide').offset({
+            top: $('#columns_period').position().top + height,
+            left: offset.left - $('#columns_period_chooser').width() + icon.width() + 20
+        })
+
+
+
+
+    }
+
+}
+
 
 function show_elements_types() {
 
@@ -132,6 +177,30 @@ function show_elements_types() {
 
 }
 
+
+function change_columns_period(period,period_label) {
+
+$('#columns_period span.label').html(period_label)
+
+
+
+    var parameters = jQuery.parseJSON(rows.parameters);
+    parameters.f_period = period;
+
+    rows.parameters = JSON.stringify(parameters)
+
+    rows.url = '/' + rows.ar_file + '?tipo=' + rows.tipo + '&parameters=' + rows.parameters
+    rows.fetch({
+        reset: true
+    });
+    
+    close_columns_period_options()
+$('#columns_period_chooser div').removeClass('selected')
+$('#columns_period_chooser .fa').removeClass('fa-circle').addClass('fa-circle-o')
+$('#element_group_option_'+period).addClass('selected')
+$('#element_group_option_'+period+' .fa').removeClass('fa-circle-o').addClass('fa-circle')
+
+}
 
 function change_elements_type(elements_type) {
 
@@ -220,10 +289,10 @@ function change_table_element(event, item) {
 
     rows.url = '/' + rows.ar_file + '?tipo=' + rows.tipo + '&parameters=' + rows.parameters
 
-  rows.fetch({
+    rows.fetch({
         reset: true
     });
-    
+
 }
 
 
@@ -244,21 +313,21 @@ function show_export_dialog() {
 function hide_export_dialog() {
     $('#export_dialog').addClass('hide')
     hide_export_config_dialog()
-    
-    
+
+
     $('.export_download').addClass('hide').attr('title', '').click(function() {})
     $('.export_progress_bar_bg').addClass('hide').html('')
     $('.export_progress_bar').css('width', '0px').removeClass('hide').attr('title', '').html('')
 
-    
+
 }
 
 
 
-function open_export_config(){
- if ($('#export_dialog_config').hasClass('hide')) {
+function open_export_config() {
+    if ($('#export_dialog_config').hasClass('hide')) {
         $('#export_dialog_config').removeClass('hide')
-        $("#export_dialog_config").css('left', -1 * ($("#export_dialog_config").width() +40 + $("#export_dialog").width()));
+        $("#export_dialog_config").css('left', -1 * ($("#export_dialog_config").width() + 40 + $("#export_dialog").width()));
         $("#export_dialog_config").css('top', $("#show_export_dialog").height());
     } else {
         hide_export_config_dialog()
@@ -267,11 +336,11 @@ function open_export_config(){
 
 function hide_export_config_dialog() {
     $('#export_dialog_config').addClass('hide')
-    
-    
-    
-    
-    
+
+
+
+
+
 }
 
 function toggle_export_field(key) {

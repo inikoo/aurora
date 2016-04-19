@@ -33,10 +33,13 @@ $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
 case 'parts':
-	parts(get_table_parameters(), $db, $user, 'active');
+	parts(get_table_parameters(), $db, $user, 'active',$account);
 	break;
 case 'stock_transactions':
 	stock_transactions(get_table_parameters(), $db, $user);
+	break;
+case 'stock_history':
+	stock_history(get_table_parameters(), $db, $user,$account);
 	break;
 case 'discontinued_parts':
 	parts(get_table_parameters(), $db, $user, 'discontinued');
@@ -57,7 +60,7 @@ default:
 
 
 
-function parts($_data, $db, $user, $type) {
+function parts($_data, $db, $user, $type,$account) {
 
 	if ($type=='discontinued') {
 		$extra_where=' and `Part Status`="Not In Use"';
@@ -114,7 +117,69 @@ function parts($_data, $db, $user, $type) {
 				'reference'=>$data['Part Reference'],
 				'unit_description'=>$data['Part Unit Description'],
 				'stock_status'=>$stock_status,
-				'stock'=>'<span class="'.($data['Part Current Stock']<0?'error':'').'">'.number(floor($data['Part Current Stock'])).'</span>'
+				'stock'=>'<span class="'.($data['Part Current Stock']<0?'error':'').'">'.number(floor($data['Part Current Stock'])).'</span>',
+                'sold'=>number($data['sold']),
+                'sold_1y'=>delta($data['sold'],$data['sold_1y']),
+                'revenue'=>money($data['revenue'],$account->get('Currency')),
+                                'revenue_1y'=>delta($data['revenue'],$data['revenue_1y']),
+
+                'lost'=>number($data['lost']),
+                'bought'=>number($data['bought']),
+
+			);
+
+
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		print $sql;
+		exit;
+	}
+
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function stock_history($_data, $db, $user,$account) {
+
+
+	$rtext_label='days';
+
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+	$adata=array();
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $data) {
+
+
+
+			$adata[]=array(
+				'date'=>strftime("%a %e %b %Y", strtotime($data['Date'].' +0:00')),
+				'year'=>strftime("%Y", strtotime($data['Date'].' +0:00')),
+				'month_year'=>strftime("%b %Y", strtotime($data['Date'].' +0:00')),
+				'week_year'=>strftime("(%e %b) %Y %W ", strtotime($data['Date'].' +0:00')),
+				'stock'=>number($data['Quantity On Hand']),
+				'value'=>money($data['Value At Day Cost'], $account->get('Currency')),
+				'in'=>number($data['Quantity In']),
+				'sold'=>number($data['Quantity Sold']),
+				'lost'=>number($data['Quantity Lost']),
 
 			);
 
@@ -169,24 +234,24 @@ function stock_transactions($_data, $db, $user) {
 				if ($parameters['parent']=='part') {
 					$note=sprintf(_('%s %s (%s) taken from %s'),
 
-                        number(-1*$data['Inventory Transaction Quantity']),
-                        '<span title="'._('Stock keeping outers').'">SKO</span>',
-                    
-												sprintf('<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-truck" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'], $data['Delivery Note ID']),
-							sprintf('<span class="button" onClick="change_view(\'location/%d\')">%s</span>', $data['Location Key'], $data['Location Code'])
+						number(-1*$data['Inventory Transaction Quantity']),
+						'<span title="'._('Stock keeping outers').'">SKO</span>',
+
+						sprintf('<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-truck" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'], $data['Delivery Note ID']),
+						sprintf('<span class="button" onClick="change_view(\'location/%d\')">%s</span>', $data['Location Key'], $data['Location Code'])
 
 
 					);
 				}else {
 					$note=sprintf(_('%sx %s (%s) taken from %s'),
-                        number(-1*$data['Inventory Transaction Quantity']),
+						number(-1*$data['Inventory Transaction Quantity']),
 
 						($parameters['parent']=='part'?
 							sprintf('<i class="fa fa-square" aria-hidden="true"></i> %s', $data['Part Reference']):
 							sprintf('<span class="button" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span>', $data['Part SKU'], $data['Part Reference'])
 						),
-							sprintf('<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-truck" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'], $data['Delivery Note ID']),
-							sprintf('<span class="button" onClick="change_view(\'location/%d\')">%s</span>', $data['Location Key'], $data['Location Code'])
+						sprintf('<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-truck" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'], $data['Delivery Note ID']),
+						sprintf('<span class="button" onClick="change_view(\'location/%d\')">%s</span>', $data['Location Key'], $data['Location Code'])
 
 					);
 				}
