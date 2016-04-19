@@ -20,6 +20,8 @@ $default=$user->get_tab_defaults($tab);
 
 
 $table_views=array(
+	'overview'=>array('label'=>_('Overview')),
+	'sales'=>array('label'=>_('Sales')),
 
 );
 

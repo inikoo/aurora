@@ -50,6 +50,19 @@ $sql=sprintf('update  `Part Dimension` set `Part Package Description`=`Part Unit
 $db->exec($sql);
 
 
+$sql=sprintf('select `Part SKU` from `Part Dimension`  ');
+
+if ($result=$db->query($sql)) {
+	foreach ($result as $row) {
+		$sql="insert into `Part Data` (`Part SKU`) values(".$row['Part SKU'].");";
+			$db->exec($sql);
+        
+
+	}
+}
+
+
+
 $sql=sprintf('select * from `Part Dimension` where `Part SKU`=5305');
 
 $sql=sprintf('select * from `Part Dimension`  ');

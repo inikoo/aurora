@@ -456,27 +456,6 @@ input {
   margin-left: 60px;
   border-left: 1px solid #ccc; }
 
-#elements_chooser {
-  width: 200px;
-  border-left: none; }
-  #elements_chooser div {
-    border-top: 1px solid #eee;
-    padding: 4px 0px 4px 15px;
-    cursor: pointer; }
-    #elements_chooser div .fa {
-      font-size: 70%;
-      position: relative;
-      top: -1px;
-      margin-right: 2px;
-      color: #999;
-      transition: color .7s; }
-    #elements_chooser div:last-of-type {
-      border-bottom: none; }
-    #elements_chooser div:hover > .fa {
-      color: #333; }
-    #elements_chooser div:hover > .fa, #elements_chooser div.selected > .fa {
-      color: #222; }
-
 .tree {
   width: auto;
   margin-left: auto;
@@ -968,6 +947,27 @@ input {
       padding-bottom: 10px; }
   #select_date_control_panel .until, #select_interval_control_panel .until {
     margin-top: 15px; }
+
+.popout_chooser {
+  width: 200px;
+  border-left: none; }
+  .popout_chooser div {
+    border-top: 1px solid #eee;
+    padding: 4px 0px 4px 15px;
+    cursor: pointer; }
+    .popout_chooser div .fa {
+      font-size: 70%;
+      position: relative;
+      top: -1px;
+      margin-right: 2px;
+      color: #999;
+      transition: color .7s; }
+    .popout_chooser div:last-of-type {
+      border-bottom: none; }
+    .popout_chooser div:hover > .fa {
+      color: #333; }
+    .popout_chooser div:hover > .fa, .popout_chooser div.selected > .fa {
+      color: #222; }
 
 .backgrid .adr {
   padding-bottom: 10px;

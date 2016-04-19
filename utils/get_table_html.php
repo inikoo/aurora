@@ -10,6 +10,7 @@
  Version 3.0
 */
 
+include_once 'utils/date_functions.php';
 
 
 if (isset($_SESSION['table_state'][$tab])) {
@@ -18,10 +19,11 @@ if (isset($_SESSION['table_state'][$tab])) {
 	$table_state=array();
 }
 
+
 foreach ($default as $key=>$value) {
 	if ($key=='rpp_options' or $key=='frequency' ) {
 
-$parameters[$key]=$value;
+		$parameters[$key]=$value;
 	}elseif ($key=='export_fields') {
 
 
@@ -118,6 +120,23 @@ $smarty->assign('f_label', ($parameters['f_field'] ? $table_filters[$parameters[
 $table_view=$parameters['view'];
 $smarty->assign('table_view', $parameters['view']);
 
+if (array_key_exists('f_period', $parameters)) {
+	$smarty->assign('f_period', $parameters['f_period']);
+	$smarty->assign('f_period_label', get_interval_db_name($parameters['f_period']));
+
+	$f_periods=array(
+		'all'=>get_interval_db_name('all'),
+		'ytd'=>get_interval_db_name('ytd'),
+		'mtd'=>get_interval_db_name('mtd'),
+		'wtd'=>get_interval_db_name('wtd'),
+		'today'=>get_interval_db_name('today'),
+
+	);
+	$smarty->assign('f_periods', $f_periods);
+
+
+}
+
 
 if (array_key_exists('elements', $parameters))
 	$smarty->assign('elements', $parameters['elements']);
@@ -147,8 +166,8 @@ $smarty->assign('tipo', $tipo);
 $smarty->assign('parameters', $parameters);
 $smarty->assign('tab', $tab);
 
-if (isset($columns_parameters)){
-$smarty->assign('columns_parameters', $columns_parameters);
+if (isset($columns_parameters)) {
+	$smarty->assign('columns_parameters', $columns_parameters);
 
 }
 

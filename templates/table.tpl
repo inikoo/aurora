@@ -246,11 +246,20 @@
 <div class="table_views tabs ">
 {foreach from=$table_views item=view key=id} 
 <div id="view_{$id}" class="view tab left {if isset($view.selected) and $view.selected}selected{/if}"  onclick="change_table_view('{$id}',true)" title="{if isset($view.title)}{$view.title}{else}{$view.label}{/if}">
-			{if isset($view.icon) and $view.icon!=''}<i class="fa fa-{$view.icon}"></i>{/if} <span class="label"> {$view.label}</span> 
-		</div>
-{/foreach} 
+    {if isset($view.icon) and $view.icon!=''}<i class="fa fa-{$view.icon}"></i>{/if} <span class="label"> {$view.label}</span> 
+</div>
+{/foreach}
+{if isset($f_period) }
+
+<div id="columns_period" class="aright padding_right_10">
+<span class="label">{$f_period_label}</span> <i class="fa fa-bars fa-fw padding_left_10 button" aria-hidden="true" onclick="show_columns_period_options()"></i>
+</div> 
+{/if}
 </div>
 {/if}
+
+
+
 <div class="table" id="table">
 </div>
 
@@ -463,15 +472,23 @@ var with_elements=false;
 
 </script> 
 
-<div id="elements_chooser" class="hide panel" >
+<div id="elements_chooser" class="hide panel popout_chooser" >
 {foreach from=$elements item=element_group key=_elements_type} 
-<div onClick="change_elements_type('{$_elements_type}')" id="element_group_option_{$_elements_type}" elements_type="$_elements_type" class="{if $_elements_type==$elements_type}selected{/if}" >
+<div onClick="change_elements_type('{$_elements_type}')" id="element_group_option_{$_elements_type}" elements_type="{$_elements_type}" class="{if $_elements_type==$elements_type}selected{/if}" >
 <i class="fa fw {if $_elements_type==$elements_type}fa-circle{else}fa-circle-o{/if}"></i> {$element_group['label']}
 </div>
 {/foreach} 
+</div>
 
+<div id="columns_period_chooser" class="hide panel popout_chooser" >
+{foreach from=$f_periods item=period_label key=_f_period} 
+<div onClick="change_columns_period('{$_f_period}','{$period_label}')" id="element_group_option_{$_f_period}" elements_type="{$_f_period}" class="aright {if $f_period==$_f_period}selected{/if}" >
+ {$period_label} <i class="fa fw {if $f_period==$_f_period}fa-circle{else}fa-circle-o{/if} padding_left_10 padding_right_10"></i>
+</div>
+{/foreach} 
 
 </div>
+
 {if isset($aux_templates) }
 {foreach from=$aux_templates item=aux_template } 
 {include file="$aux_template" } 
