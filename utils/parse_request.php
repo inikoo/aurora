@@ -1324,7 +1324,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 				}
 				elseif ($view_path[0]=='new') {
 					$section='supplier.new';
-					$object='';
+					$object='supplier';
 				}
 			}
 			break;

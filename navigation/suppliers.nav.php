@@ -102,11 +102,10 @@ function get_supplier_navigation($data, $smarty, $user, $db, $account) {
 
 
 
-	require_once 'class.Supplier.php';
 
 
 
-	$supplier=new Supplier($data['key']);
+	$supplier=$data['_object'];
 
 
 	$block_view=$data['section'];
@@ -183,7 +182,6 @@ function get_supplier_navigation($data, $smarty, $user, $db, $account) {
 							prepare_mysql($_order_field_value),
 							$supplier->id
 						);
-
 
 						if ($result=$db->query($sql)) {
 							if ($row = $result->fetch()) {
@@ -319,7 +317,7 @@ function get_supplier_navigation($data, $smarty, $user, $db, $account) {
 	$avatar='<div class="square_button left"><img id="avatar" style="height:100%" src="/art/avatar.jpg" style="cursor:pointer;"> </div> ';
 	$avatar='';
 
-	$title= '<span class="id Supplier_Name">'.$supplier->get('Name').' (<span class="Supplier_Code">'.$supplier->get('Code').'</span>)</span>';
+	$title= '<span class=" Supplier_Name">'.$supplier->get('Name').'</span> (<span class="id Supplier_Code">'.$supplier->get('Code').'</span>)';
 
 
 	$_content=array(

@@ -93,10 +93,15 @@ class Subject extends DB_Table {
 			$old_main_value=$this->data[$this->table_name.' Main Plain Email'];
 			$new_main_value=$this->get("$field $other_key");
 
+			//print $this->table_name.' Main Plain Email  -> '.$new_main_value."\n";
+			//print "$field $other_key  -> ".$old_main_value;
+			//exit;
+
 			$this->update(array(
-					$this->table_name.' Main Plain Email'=>$new_main_value,
 					"$field $other_key"=>$old_main_value,
-				), 'no_history');
+
+					$this->table_name.' Main Plain Email'=>$new_main_value,
+				), 'no_history ');
 
 
 			$this->add_changelog_record($this->table_name.' Main Email', $old_main_value, $new_main_value, '', $this->table_name, $this->id, 'set_as_main');
@@ -114,6 +119,9 @@ class Subject extends DB_Table {
 					'render'=>true,
 					'value'=>$this->get("$field $other_key"),
 					'formatted_value'=>$this->get(preg_replace('/'.$this->table_name.' /', '', "$field $other_key")),
+					'field_type'=>preg_replace('/ /', '_', $field),
+					'formatted_email'=>sprintf('<a href="mailto:%s" >%s</a>', $this->get("$field $other_key"), $this->get("$field $other_key")),
+
 				)
 			);
 
@@ -152,6 +160,8 @@ class Subject extends DB_Table {
 				'render'=>true,
 				'value'=>$this->get("$field $other_key"),
 				'formatted_value'=>$this->get(preg_replace('/'.$this->table_name.' /', '', "$field $other_key")),
+				'field_type'=>preg_replace('/ /', '_', $field),
+
 			);
 
 
@@ -756,7 +766,7 @@ class Subject extends DB_Table {
 				prepare_mysql($formatted_value)
 			);
 		}else {
-			$sql=sprintf('insert into `%s Other Telephone Dimension` (`%s Other Telephone %s Key`,`%s Other Telephone Number`,`%s Other Telephone Formatted Number`) values (%d,%d,%s,%s)',
+			$sql=sprintf('insert into `%s Other Telephone Dimension` (`%s Other Telephone %s Key`,`%s Other Telephone Number`,`%s Other Telephone Formatted Number`) values (%d,%s,%s)',
 				addslashes($this->table_name),
 				addslashes($this->table_name),
 				addslashes($this->table_name),
@@ -1024,7 +1034,6 @@ class Subject extends DB_Table {
 					exit;
 				}
 
-
 				$sql=sprintf('select `%s Key`,`%s Name` from `%s Other Email Dimension` left join `%s Dimension` on (`%s Key`=`%s Other Email %s Key`) where `%s Other Email Email`=%s and `%s Other Email Store Key`=%d ',
 					addslashes($this->table_name),
 					addslashes($this->table_name),
@@ -1098,6 +1107,7 @@ class Subject extends DB_Table {
 				}
 
 
+
 				$sql=sprintf('select `%s Key`,`%s Name` from `%s Other Email Dimension` left join `%s Dimension` on (`%s Key`=`%s Other Email %s Key`) where `%s Other Email Email`=%s ',
 					addslashes($this->table_name),
 					addslashes($this->table_name),
@@ -1134,15 +1144,22 @@ class Subject extends DB_Table {
 					exit;
 				}
 
-
-
-
 			}
-
 
 
 			$this->update_field($field, $value, $options);
 		}
+
+
+		$this->other_fields_updated=array(
+			$this->table_name.'_Main_Plain_Email'=>array(
+				'field'=>$this->table_name.'_Main_Plain_Email',
+				'render'=>true,
+				'value'=>$this->get($this->table_name.' Main Plain Email'),
+				'formatted_value'=>$this->get('Main Plain Email'),
+			),
+
+		);
 
 	}
 
@@ -1186,34 +1203,12 @@ class Subject extends DB_Table {
 
 			if ($value!='') {
 
-				include_once 'utils/get_phoneUtil.php';
-				$phoneUtil=get_phoneUtil();
-				try {
-					if ($this->get('Contact Address Country 2 Alpha Code')=='' or $this->get('Contact Address Country 2 Alpha Code')=='XX') {
-
-						if ($this->get('Store Key')) {
-							$store=new Store($this->get('Store Key'));
-							$country=$store->get('Home Country Code 2 Alpha');
-						}else {
-							$account=new Account();
-							$country=$account->get('Country 2 Alpha Code');
-						}
-
-					}else {
-						$country=$this->get('Contact Address Country 2 Alpha Code');
-					}
-					$proto_number = $phoneUtil->parse($value, $country);
-					$formated_value=$phoneUtil->format($proto_number, \libphonenumber\PhoneNumberFormat::INTERNATIONAL);
-
-					$value=$phoneUtil->format($proto_number, \libphonenumber\PhoneNumberFormat::E164);
+				list($value, $formatted_value)=$this->get_formatted_number($value);
 
 
-				} catch (\libphonenumber\NumberParseException $e) {
-
-				}
 
 			}else {
-				$formated_value='';
+				$formatted_value='';
 			}
 
 
@@ -1222,9 +1217,9 @@ class Subject extends DB_Table {
 
 
 
-			$this->update_field(preg_replace('/Plain/', 'XHTML', $field), $formated_value, 'no_history');
+			$this->update_field(preg_replace('/Plain/', 'XHTML', $field), $formatted_value, 'no_history');
 
-			$this->update_field_switcher($this->table_name.' Preferred Contact Number','', $options);
+			$this->update_field_switcher($this->table_name.' Preferred Contact Number', '', $options);
 
 
 			$this->other_fields_updated=array(
@@ -1256,18 +1251,18 @@ class Subject extends DB_Table {
 			'field'=>$this->table_name.'_Main_Plain_Telephone',
 			'render'=>true,
 			'label'=>ucfirst($this->get_field_label($this->table_name.' Main Plain Telephone')). ($this->get($this->table_name.' Main Plain Telephone')!=''?($this->get($this->table_name.' Preferred Contact Number')=='Telephone'?' <i title="'._('Main contact number').'" class="fa fa-star discret"></i>':' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discret button"></i>'):'')    ,
-			'value'=>$this->get('Customer Main Plain Telephone'),
+			'value'=>$this->get($this->table_name.' Main Plain Telephone'),
 			'formatted_value'=>$this->get('Main Plain Telephone')
 		);
 
 
-    
+
 
 	}
 
 
 	function update_subject_field_switcher($field, $value, $options='', $metadata) {
-		
+
 		switch ($field) {
 
 		case 'History Note':
@@ -1288,8 +1283,8 @@ class Subject extends DB_Table {
 		case $this->table_name.' Main Plain Telephone':
 
 			$this->update_telephone($field, $value, $options);
-			
-			
+
+
 			return true;
 			break;
 
@@ -1335,7 +1330,7 @@ class Subject extends DB_Table {
 				}
 
 			}else {
-				$formated_value='';
+				$formatted_value='';
 
 			}
 
@@ -1344,7 +1339,7 @@ class Subject extends DB_Table {
 			$this->update_field(preg_replace('/Plain/', 'XHTML', $field), $formatted_value, 'no_history');
 
 
-			if ($field=='Customer Main Plain Mobile') {
+			if ($field==$this->table_name.' Main Plain Mobile') {
 
 				$this->update_field_switcher($this->table_name.' Preferred Contact Number', '');
 
@@ -1361,7 +1356,18 @@ class Subject extends DB_Table {
 					'label'=>ucfirst($this->get_field_label($this->table_name.' Main Plain Telephone')). ($this->get($this->table_name.' Main Plain Telephone')!=''?($this->get($this->table_name.' Preferred Contact Number')=='Telephone'?' <i title="'._('Main contact number').'" class="fa fa-star discret"></i>':' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discret button"></i>'):'')    ,
 
 				);
+			}else {
+				$this->other_fields_updated[$this->table_name.'_Main_Plain_FAX']=array(
+					'field'=>$this->table_name.'_Main_Plain_FAX',
+					'render'=>true,
+					'label'=>ucfirst($this->get_field_label($this->table_name.' Main Plain FAX')),
+					'value'=>$this->get($this->table_name.' Main Plain FAX'),
+					'formatted_value'=>$this->get('Main Plain FAX')
+				);
+
 			}
+
+
 			return true;
 			break;
 		case 'new email':
@@ -1527,7 +1533,7 @@ class Subject extends DB_Table {
 			}
 
 			if (preg_match('/^'.$this->table_name.' Other Email (\d+)/i', $field, $matches)) {
-				$customer_email_key=$matches[1];
+				$other_email_key=$matches[1];
 				$old_value=$this->get($field);
 				if ($value=='') {
 					$old_value=$this->get(preg_replace('/^'.$this->table_name.' /', '', $field));
@@ -1537,7 +1543,7 @@ class Subject extends DB_Table {
 						addslashes($this->table_name),
 						$this->id,
 						addslashes($this->table_name),
-						$customer_email_key
+						$other_email_key
 					);
 					$prep=$this->db->prepare($sql);
 					$prep->execute();
@@ -1550,7 +1556,8 @@ class Subject extends DB_Table {
 					}else {
 
 					}
-				}else {
+				}
+				else {
 					$sql=sprintf('update `%s Other Email Dimension` set `%s Other Email Email`=%s where `%s Other Email %s Key`=%d and `%s Other Email Key`=%d ',
 						addslashes($this->table_name),
 						addslashes($this->table_name),
@@ -1559,7 +1566,7 @@ class Subject extends DB_Table {
 						addslashes($this->table_name),
 						$this->id,
 						addslashes($this->table_name),
-						$customer_email_key
+						$other_email_key
 					);
 					$tmp=$this->db->prepare($sql);
 					$tmp->execute();
@@ -1573,10 +1580,26 @@ class Subject extends DB_Table {
 
 				}
 
+				$this->other_fields_updated=array(
+					$this->table_name.'_Other_Email_'.$other_email_key=>array(
+						'field'=>$this->table_name.'_Other_Email_'.$other_email_key,
+						'render'=>true,
+						'value'=>$value,
+						'formatted_value'=>$value,
+						'formatted_email'=>sprintf('<a href="mailto:%s" >%s</a>', $value, $value),
+						'field_type'=>$this->table_name.'_Other_Email',
+					),
+
+				);
+
+
 				return true;
 			}
 
 			if (preg_match('/^'.$this->table_name.' Other Telephone (\d+)/i', $field, $matches)) {
+
+
+
 				$subject_telephone_key=$matches[1];
 				$old_value=$this->get($field);
 
@@ -1604,7 +1627,9 @@ class Subject extends DB_Table {
 					}else {
 
 					}
-				}else {
+					$formatted_value='';
+				}
+				else {
 
 					include_once 'utils/get_phoneUtil.php';
 					$phoneUtil=get_phoneUtil();
@@ -1633,13 +1658,23 @@ class Subject extends DB_Table {
 
 					}
 
-					$sql=sprintf('update `Customer Other Telephone Dimension` set `Customer Other Telephone Number`=%s, `Customer Other Telephone Formatted Number`=%s where `Customer Other Telephone Customer Key`=%d and `Customer Other Telephone Key`=%d ',
+					$sql=sprintf('update `%s Other Telephone Dimension` set `%s Other Telephone Number`=%s, `%s Other Telephone Formatted Number`=%s where `%s Other Telephone %s Key`=%d and `%s Other Telephone Key`=%d ',
+						$this->table_name,
+						$this->table_name,
 						prepare_mysql($value),
+						$this->table_name,
 						prepare_mysql($formatted_value),
+						$this->table_name,
+						$this->table_name,
+
 						$this->id,
+						$this->table_name,
 						$subject_telephone_key
 					);
 					$tmp=$this->db->prepare($sql);
+
+
+
 					$tmp->execute();
 					if ($tmp->rowCount()) {
 						$this->add_changelog_record('Customer Other Telephone', $old_value, $value, $options, $this->table_name, $this->id);
@@ -1651,6 +1686,17 @@ class Subject extends DB_Table {
 
 				}
 
+
+				$this->other_fields_updated=array(
+					$this->table_name.'_Other_Telephone_'.$subject_telephone_key=>array(
+						'field'=>$this->table_name.'_Other_Telephone_'.$subject_telephone_key,
+						'render'=>true,
+						'value'=>$value,
+						'formatted_value'=>$formatted_value,
+						'field_type'=>$this->table_name.'_Other_Telephone',
+					),
+
+				);
 				return true;
 			}
 
@@ -1863,6 +1909,38 @@ class Subject extends DB_Table {
 			return array(false, false);
 
 		}
+
+	}
+
+
+	function get_formatted_number($value) {
+		include_once 'utils/get_phoneUtil.php';
+		$phoneUtil=get_phoneUtil();
+		try {
+			if ($this->get('Contact Address Country 2 Alpha Code')=='' or $this->get('Contact Address Country 2 Alpha Code')=='XX') {
+
+				if ($this->get('Store Key')) {
+					$store=new Store($this->get('Store Key'));
+					$country=$store->get('Home Country Code 2 Alpha');
+				}else {
+					$account=new Account();
+					$country=$account->get('Country 2 Alpha Code');
+				}
+
+			}else {
+				$country=$this->get('Contact Address Country 2 Alpha Code');
+			}
+			$proto_number = $phoneUtil->parse($value, $country);
+			$formatted_value=$phoneUtil->format($proto_number, \libphonenumber\PhoneNumberFormat::INTERNATIONAL);
+
+			$value=$phoneUtil->format($proto_number, \libphonenumber\PhoneNumberFormat::E164);
+
+
+		} catch (\libphonenumber\NumberParseException $e) {
+
+		}
+		
+		return array($value,$formatted_value);
 
 	}
 

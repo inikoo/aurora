@@ -25,7 +25,7 @@ $employee=new Staff(0);
 
 
 
-$object_fields=get_object_fields($employee, $db,$user);
+$object_fields=get_object_fields($employee, $db, $user, $smarty);
 
 
 

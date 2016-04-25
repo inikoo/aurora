@@ -136,7 +136,7 @@ function change_table_view(view,save_state){
     $('#view_'+view).addClass('selected');
     
 
-close_columns_period_options()
+    close_columns_period_options()
     $('#columns_period').addClass('hide');
     
     grid.columns.findWhere({ name: 'unit_description'} ).set("renderable", false)

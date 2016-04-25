@@ -372,6 +372,15 @@ function create_warehouse($data) {
 		}
 
 
+        $country_code=$data['Supplier Contact Address country'];
+        if(strlen($country_code)==3){
+            include_once('class.Country.php');
+            $country=new Country('code',$country_code);
+            $country_code=$country->get('Country 2 Alpha Code');
+        
+        }
+        
+
 		$address_fields=array(
 			'Address Recipient'=>$data['Supplier Main Contact Name'],
 			'Address Organization'=>$data['Supplier Company Name'],
@@ -382,7 +391,7 @@ function create_warehouse($data) {
 			'Address Dependent Locality'=>'',
 			'Address Locality'=>'',
 			'Address Administrative Area'=>'',
-			'Address Country 2 Alpha Code'=>$data['Supplier Contact Address country'],
+			'Address Country 2 Alpha Code'=>$country_code,
 
 		);
 		unset($data['Supplier Contact Address country']);

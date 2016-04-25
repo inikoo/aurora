@@ -13,6 +13,7 @@
 	<link href="/css/jquery-ui.css" rel="stylesheet"> 
 	<link href="/css/font-awesome.css" rel="stylesheet"> 
 	<link href="/css/intlTelInput.css" rel="stylesheet"> 
+	<link href="/css/countrySelect.css" rel="stylesheet"> 
 	<link href="/css/d3fc.css" rel="stylesheet"> 
 	<link href="/css/backgrid.css" rel="stylesheet"> 
 	<link href="/css/backgrid-filter.css" rel="stylesheet"> 
@@ -28,6 +29,8 @@
 	<script type="text/javascript" src="/js/libs/backbone.paginator.js"></script>
 	<script type="text/javascript" src="/js/libs/backgrid.js"></script>
 	<script type="text/javascript" src="/js/libs/backgrid-filter.js"></script>
+	<script type="text/javascript" src="/js/libs/countrySelect.js"></script>
+
 	<script type="text/javascript" src="/js/libs/intlTelInput.js"></script>
 	<script type="text/javascript" src="/js/libs/d3.js"></script>
 	<script type="text/javascript" src="/js/libs/d3fc.layout.js"></script>
@@ -40,12 +43,16 @@
 	<script type="text/javascript" src="/js/edit.js"></script>
 	<script type="text/javascript" src="/js/new.js"></script>
 	<script type="text/javascript" src="/js/help.js"></script>
-	{else} 
+	<script type="text/javascript" src="/utils/country_data.js.php?locale={$locale}"></script> 
+
+	{else}
+	
+	 
 	<link href="/build/css/libs.min.css" rel="stylesheet">
 	<link href="/build/css/app.min.css" rel="stylesheet">
-    <script type="text/javascript" src="/utils/country_data.js.php?locale={$locale}"></script> 
 	<script type="text/javascript" src="/build/js/libs.js"></script> 
 	<script type="text/javascript" src="/build/js/app.js"></script> 
+    <script type="text/javascript" src="/utils/country_data.js.php?locale={$locale}"></script> 
 
 	{/if} 
 

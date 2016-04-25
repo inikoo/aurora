@@ -4,7 +4,7 @@
 {if isset($preferred_countries)}
 <input id="preferred_countries" type="hidden"  value="{$preferred_countries}">
 {/if}
-<table border=0>
+<table id="edit_container" border=0 data-default_telephone_data="{$default_telephone_data}" >
 {foreach from=$object_fields item=field_group } 
     <tr class="title" >
         <td  colspan=3>{$field_group.label}</td>
@@ -41,7 +41,7 @@
 		    <td id="{$field.id}_label" class="label" ><span>{$field.label}</span></td>
 		    <td class="show_buttons  {if $edit=='address'}address {/if}" > 
 		
-		<i id="{$field.id}_lock" class="fa fa-lock fw {if $edit!='' or $class=='new'  }hide{/if} edit"></i>
+		<i id="{$field.id}_lock" class="fa fa-lock fw {if $edit!='' or $class=='new'  }hide{/if} edit lock"></i>
 		<i class="fa fa-lock fw {if !$linked  }hide{/if} edit"></i>  
   
 		<i id="{$field.id}_reset_button" class="fa fa-sign-out fa-flip-horizontal fw reset hide reset_button" onclick="close_edit_this_field(this)"></i> 
@@ -65,10 +65,58 @@
 		<span id="{$field.id}_info" class="hide"></span>
 		
 		
+		{elseif $edit=='telephone'  or $edit=='new_telephone' } 
+	    <input  id="{$field.id}" class="input_field telephone_input_field hide" value="" has_been_valid="0"/>
+		<i id="{$field.id}_save_button" class="fa fa-cloud  save {$edit} hide" onclick="save_this_field(this)"></i> 
+		<span id="{$field.id}_msg" class="msg"></span> 
+	
+		{if !isset($field.clone_template)}
+		<script>
+		
+		var default_telephone_data= JSON.parse(atob(  $('#edit_container').data( "default_telephone_data" ))) 
+		
+		console.log(default_telephone_data.default_country)
+		$("#{$field.id}").intlTelInput(
+		{
+		utilsScript: "/js/libs/telephone_utils.js",
+		numberType:{if isset($field.mobile)}'MOBILE'{else}'FIXED_LINE'{/if},
+		initialCountry:default_telephone_data.default_country,
+		preferredCountries:default_telephone_data.preferred_countries
+		}
+		);
+		$("#{$field.id}").intlTelInput("setNumber", "{$field.value}");
+
+        $("#{$field.id}").on("countrychange", function(e, countryData) {
+            on_changed_value('{$field.id}', $('#{$field.id}').intlTelInput("getNumber"))
+            
+            
+            update_related_fields(countryData)
+            
+        });
+
+		</script>
+		{/if}
+		
+		{elseif $edit=='country_select'  } 
+
+        <input id="{$field.id}" class="input_field hide width_500"  value=""  />
+		<i id="{$field.id}_save_button" class="fa fa-cloud save {$edit} hide" onclick="save_this_field(this)"></i> 
+		<span id="{$field.id}_msg" class="msg"></span> 
+		<span id="{$field.id}_info" class="hide"></span>
+
+        <script>
+            $.fn.countrySelect.setCountryData({$field.options});
+            $("#{$field.id}").countrySelect();
+             $("#{$field.id}").countrySelect("selectCountryfromCode",'{$field.value}') ;
+              $("#{$field.id}").on("change", function(event,arg) {
+                 on_changed_value('{$field.id}',  $("#{$field.id}").countrySelect("getSelectedCountryData").code)  
+             })
+            
+        </script>
 		{elseif $edit=='dropdown_select'  } 
 		
 	
-			<input id="{$field.id}" type="hidden" class=" input_field" value="{$field.value}" has_been_valid="0"/>
+		<input id="{$field.id}" type="hidden" class=" input_field" value="{$field.value}" has_been_valid="0"/>
 		<input id="{$field.id}_dropdown_select_label" class="hide" field="{$field.id}" scope="{$field.scope}" class=" dropdown_select" value="{$field.stripped_formatted_value}" has_been_valid="0"/>
 
 		<span id="{$field.id}_msg" class="msg"></span> 
@@ -83,7 +131,7 @@
 			</tr>
 		</table>
 	
-	</div>
+	    </div>
 		
 		
 		<script>
@@ -178,6 +226,7 @@
 	            </table>
 	    </div>
 	    <div><span id="{$field.id}_msg" class="msg" ></span></div>
+	    
 	    {if  $edit!='address_to_clone'}
 	    <script>
 	
@@ -206,81 +255,33 @@
             
         {else}
     
-         var initial_country='{$default_country|lower}';
+        var initial_country='{$default_country|lower}';
         {/if}
 	
 	
-	
-	 telInput_{$field.id} = $("#{$field.id}_country_select")
-
-	  telInput_{$field.id}.intlTelInput({
-	     initialCountry: initial_country,
-	     preferredCountries: [{if isset($preferred_countries)}{$preferred_countries}{else}'gb'{/if}]
-	 });
-	 
-	 
-
-
-
-	 telInput_{$field.id}.on("country-change", function(event,arg) {
-
+        $.fn.countrySelect.setCountryData({$field.countries});
+            
+        var country_select=$("#{$field.id}_country_select")
+            
+        country_select.countrySelect();
+        country_select.countrySelect("selectCountry",initial_country) ;
         
-	        var country_name = telInput_{$field.id}.intlTelInput("getSelectedCountryData").name
-	        var country_code = telInput_{$field.id}.intlTelInput("getSelectedCountryData").iso2.toUpperCase()
-        
-	     
-	     if (country_name.match(/\)\s+\(.+\)$/)) {
-	         country_name = country_name.replace(/\)\s+\(.+\)$/, ")")
-	     } else {
-	         country_name = country_name.replace(/\s+\(.+\)$/, "")
+        update_address_fields('{$field.id}',initial_country, hide_recipient_fields=false)
+        $('#{$field.id}_country  input.address_input_field ').val(initial_country.toUpperCase())
 
-	     }
-        
-      
-      
-      
-        $('#{$field.id}_country  input.address_input_field ').val(country_code)
-
-
-	     
-	    update_address_fields('{$field.id}',country_code, hide_recipient_fields=false)
-	    $("#{$field.id}_country_select").val(country_name)
-	    if(arg!='init'){
-	   
-        on_changed_address_value("{$field.id}", '{$field.id}_country', country_code) 
-        }
-
-	 });
-
-	 telInput_{$field.id}.trigger("country-change",'init');
-
+        country_select.on("change", function(event,arg) {
+            var country_code=country_select.countrySelect("getSelectedCountryData").iso2
+            update_address_fields('{$field.id}',country_code, hide_recipient_fields=false)
+            on_changed_address_value("{$field.id}", '{$field.id}_country', country_code) 
+            $('#{$field.id}_country  input.address_input_field ').val(country_code.toUpperCase())
+        })
 	
-	
-	</script>
+	    </script>
 	{/if}
 	
 		 
 	 
-				{elseif $edit=='telephone'  or $edit=='new_telephone' } 
-	<input  id="{$field.id}" class="input_field telephone_input_field hide" value="" has_been_valid="0"/>
-		<i id="{$field.id}_save_button" class="fa fa-cloud  save {$edit} hide" onclick="save_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i> 
-		<span id="{$field.id}_msg" class="msg"></span> 
-	
 		
-		<script>
-		
-		$("#{$field.id}").intlTelInput(
-		{
-		utilsScript: "/js/libs/telephone_utils.js",
-		defaultCountry:'{$account->get('Account Country 2 Alpha Code')}',
-		preferredCountries:['{$account->get('Account Country 2 Alpha Code')}']
-		}
-		);
-		
-		
-		
-		$("#{$field.id}").intlTelInput("setNumber", "{$field.value}");
-		</script>
 		{elseif $edit=='pin' or  $edit=='password'} 
 		<input id="{$field.id}" type="password" class="input_field hide" value="{$field.value}" has_been_valid="0" />
 		<i id="{$field.id}_save_button" class="fa fa-cloud  save {$edit} hide" onclick="save_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i> 
@@ -293,7 +294,7 @@
 	
 		<input id="{$field.id}" type="password" class="input_field hide" value="{$field.value}" has_been_valid="0" />
 		<input id="{$field.id}_confirm" placeholder="{t}Retype new password{/t}" type="password" confirm_field="{$field.id}" class="confirm_input_field hide" value="{$field.value}"  />
-				<i id="{$field.id}_confirm_button"  class="fa fa-repeat  save {$edit} hide" onclick="confirm_field('{$field.id}')"></i> 
+		<i id="{$field.id}_confirm_button"  class="fa fa-repeat  save {$edit} hide" onclick="confirm_field('{$field.id}')"></i> 
 
 		
 		<i id="{$field.id}_save_button" class="fa fa-cloud  save {$edit} hide" onclick="save_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i> 
@@ -412,7 +413,6 @@
 </div>
  <script>
  $(document).on('input propertychange', '.input_field', function(evt) {
- 
  
      if ($('#' + $(this).attr('id') + '_container').attr('server_validation')) {
          var delay = 200;

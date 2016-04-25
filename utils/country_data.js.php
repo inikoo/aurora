@@ -30,18 +30,26 @@ if (isset($_REQUEST['locale'])) {
 }
 
 set_locale($locale);
-$countries_data=array();
-$sql=sprintf('select `Country Name`,`Country Local Name`,`Country 2 Alpha Code`,`Country Telephone Code`,`Country Telephone Code Metadata` from kbase.`Country Dimension` where `Country Display Address Field`="Yes"');
+
+$country_translator="var country_translator = { \n";
+$sql=sprintf('select `Country Name`,`Country Local Name`,`Country 2 Alpha Code`,`Country Telephone Code`,`Country Telephone Code Metadata`,`Country Currency Code` from kbase.`Country Dimension` where `Country Display Address Field`="Yes" order by `Country Code` desc');
 if ($result=$db->query($sql)) {
 
 	foreach ($result as $data) {
-		$countries_data[]=array(
-			'name'=>_trim(_($data['Country Name'])),
-			'local_name'=>   $data['Country Local Name'],
-			'code'=>$data['Country 2 Alpha Code'],
-			'telephone_code'=>$data['Country Telephone Code'],
-			'telephone_code_metadata'=>$data['Country Telephone Code Metadata'],
-		);
+	
+	$length = 5;
+
+$randomString = substr(str_shuffle("abcdefghijklmnopqrstuvwxyz"), 0, $length);
+
+	
+	$country_translator.=sprintf('%s:{name:"%s%s",currency:"%s"},',
+	strtolower($data['Country 2 Alpha Code']),
+		$data['Country Name'], 
+		(($data['Country Local Name']!='' and  $data['Country Local Name']!=$data['Country Name'])?' ('.$data['Country Local Name'].')':''),
+		$data['Country Currency Code']
+	);
+	
+	
 
 	}
 
@@ -49,52 +57,36 @@ if ($result=$db->query($sql)) {
 	print_r($error_info=$db->errorInfo());
 	exit;
 }
+$country_translator=preg_replace('/\, $/', '', $country_translator);
+$country_translator.='};';
+ // country.name = country_translator.country.name.name
 
-function cmp($a, $b) {
-	if ($a['name'] == $b['name']) {
-		return 0;
-	}
-	return ($a['name'] < $b['name']) ? -1 : 1;
-}
+print "
+$country_translator
+
+var countryData = $.fn.intlTelInput.getCountryData();
+$.each(countryData, function(i, country) {
+country.name = country_translator[country.iso2].name
+country.currency=country_translator[country.iso2].currency
+});
+
+var tuples = [];
+
+for (var key in countryData) tuples.push([key, countryData[key]]);
+
+tuples.sort(function(a, b) {
+    a = a[1].name;
+    b = b[1].name;
+
+    return a < b ? -1 : (a > b ? 1 : 0);
+});
+
+for (var i = 0; i < tuples.length; i++) {
+        countryData[i] =tuples[i][1];
+    }
 
 
-usort($countries_data, "cmp");
-
-$allCountries='var allCountries = [ ';
-foreach ($countries_data as $country_data) {
-
-	//print_r($country_data);
-
-	if (preg_match('/^(\d+)$/', $country_data['telephone_code_metadata'], $matches)) {
-
-
-		$priority=$matches[1];
-		$area_codes='';
-	}elseif (preg_match('/^(\d+),\[(.+)\]$/', $country_data['telephone_code_metadata'], $matches)) {
-		
-
-		$priority=$matches[1];
-		$area_codes=' [ "'.preg_replace('/\,/','","',$matches[2]).'" ]';
-		
-	}else {
-		$priority='';
-		$area_codes='';
-	}
-
-	$allCountries.=sprintf('[ "%s%s", "%s", "%s"%s%s ], ',
-		$country_data['name'], (($country_data['local_name']!='' and  $country_data['local_name']!=$country_data['name'])?' ('.$country_data['local_name'].')':''),
-		strtolower($country_data['code']),
-		$country_data['telephone_code'],
-		($priority!=''?', '.$priority:''),
-		($area_codes!=''?' ,'.$area_codes:'')
-	);
-}
-
-$allCountries=preg_replace('/\, $/', '', $allCountries);
-$allCountries.=']';
-header('Content-Type: application/javascript');
-
-print $allCountries;
-
+";
 
 ?>
+	

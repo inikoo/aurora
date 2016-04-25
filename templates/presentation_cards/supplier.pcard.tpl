@@ -6,7 +6,7 @@
 			<td> <span class=" results link" id="create_other" onclick="change_view(state.request)">{t}Add another{/t} <i class="fa fa-plus"></i> </span> <span class="hide results link" id="create_other" onclick="clone_it()">{t}Clone it{/t} <i class="fa fa-flask"></i> </span> </td>
 		</tr>
 		<tr class="title">
-			<td colspan="2">{t}Supplier{/t} <i onclick="change_view('suppliers/{$supplier->get('Store Key')}/{$supplier->id}')" class="fa fa-link link"></i></td>
+			<td colspan="2">{t}Supplier{/t} <i onclick="change_view('supplier/{$supplier->get('Store Key')}/{$supplier->id}')" class="fa fa-link link"></i></td>
 		</tr>
 		<tr>
 			<td class="label">{$supplier->get_field_label('Supplier Code')|capitalize}</td>

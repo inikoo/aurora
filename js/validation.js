@@ -8,9 +8,11 @@ function validate_field(field, new_value, field_type, required, server_validatio
     var validation = client_validation(field_type, required, new_value, field)
 
 
+//console.log(field+' '+validation.class)
+    if (validation.class == 'valid' && (server_validation_settings!=undefined  && server_validation_settings != ''  ) ) {
 
-    if (validation.class == 'valid' && server_validation_settings != '') {
 
+        
         var settings = JSON.parse(server_validation_settings)
 
 
@@ -40,6 +42,9 @@ function post_validate_field(validation, field) {
 }
 
 function validate_address(field) {
+
+  //  console.log('validating address')
+
     var valid_state = {
         class: 'valid',
         type: ''
@@ -185,10 +190,12 @@ function client_validation(type, required, value, field) {
     case 'telephone':
 
 
+  value = value.replace(/(\\s|\\-|\\(|\\))/g, '')
 
 
-        if (value.length == 1) {
-            if ($.isNumeric(value)) {
+        if (value.length <4) {
+        value = value.replace(/^\+/g, '')
+            if (value=='' || $.isNumeric(value)) {
                 return {
                     class: 'potentially_valid',
                     type: 'short'
@@ -200,12 +207,13 @@ function client_validation(type, required, value, field) {
                 }
             }
 
-        } else {
+        }
+         else {
 
 
             if (!$('#' + field).intlTelInput("isValidNumber")) {
                 var error = $('#' + field).intlTelInput("getValidationError");
-                //   console.log(error)
+                   console.log(error)
                 if (error == intlTelInputUtils.validationError.TOO_SHORT) {
                     return {
                         class: 'potentially_valid',
@@ -236,7 +244,6 @@ function client_validation(type, required, value, field) {
 
     case 'email':
     case 'new_email':
-
 
 
         var tmp = value.replace(/"[^"]*"/g, '')
@@ -567,7 +574,7 @@ function server_validation(settings, parent, parent_key, object, key, field, val
 
 
 
-    console.log(settings.setup)
+   // console.log(settings.setup)
 
     if (settings.parent != null) {
         parent = settings.parent;

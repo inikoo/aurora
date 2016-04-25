@@ -10,6 +10,8 @@
  Version 3.0
 */
 
+include_once('utils/static_data.php');
+
 if (isset($options['new']) and  $options['new'] ) {
 	$new=true;
 }else {
@@ -66,6 +68,8 @@ asort($options_yn);
 $company_field=array();
 
 $supplier_fields=array(
+
+	
 	array(
 		'label'=>_('Code, name'),
 		'show_title'=>true,
@@ -74,7 +78,6 @@ $supplier_fields=array(
 
 				'id'=>'Supplier_Code',
 				'edit'=>($edit?'string':''),
-
 				'value'=>$object->get('Supplier Code'),
 				'label'=>ucfirst($object->get_field_label('Code')),
 				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
@@ -88,7 +91,8 @@ $supplier_fields=array(
 				'value'=>htmlspecialchars($object->get('Supplier Company Name')),
 				'formatted_value'=>$object->get('Company Name'),
 				'label'=>ucfirst($object->get_field_label('Supplier Company Name')),
-				'required'=>false
+				'required'=>false,
+				'type'=>'value'
 			),
 
 			array(
@@ -99,7 +103,8 @@ $supplier_fields=array(
 				'value'=>htmlspecialchars($object->get('Supplier Main Contact Name')),
 				'formatted_value'=>$object->get('Main Contact Name'),
 				'label'=>ucfirst($object->get_field_label('Supplier Main Contact Name')),
-				'required'=>true
+				'required'=>true,
+				'type'=>'value'
 			),
 
 		)
@@ -118,7 +123,8 @@ $supplier_fields=array(
 				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 				'label'=>ucfirst($object->get_field_label('Supplier Main Plain Email')),
 				'invalid_msg'=>get_invalid_message('email'),
-				'required'=>true
+				'required'=>false,
+				'type'=>'value'
 			), array(
 				'id'=>'new_email',
 				'render'=>false,
@@ -129,7 +135,8 @@ $supplier_fields=array(
 				'label'=>ucfirst($object->get_field_label('Supplier Other Email')),
 				'invalid_msg'=>get_invalid_message('email'),
 
-				'required'=>false
+				'required'=>false,
+				'type'=>'ignore'
 			),
 
 			array(
@@ -142,7 +149,8 @@ $supplier_fields=array(
 				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 				'label'=>ucfirst($object->get_field_label('Supplier Other Email')).' <i onClick="set_this_as_main(this)" title="'._('Set as main email').'" class="fa fa-star-o very_discret button"></i>',
 				'invalid_msg'=>get_invalid_message('email'),
-				'required'=>false
+				'required'=>false,
+				'type'=>'value'
 			),
 
 			array(
@@ -151,7 +159,8 @@ $supplier_fields=array(
 				'class'=>'new',
 				'value'=>'',
 				'label'=>_('Add email').' <i class="fa fa-plus new_button button"></i>',
-				'reference'=>''
+				'reference'=>'',
+				'type'=>'value'
 			),
 
 		)
@@ -165,12 +174,13 @@ $supplier_fields=array(
 			array(
 				'id'=>'Supplier_Main_Plain_Mobile',
 				'edit'=>($edit?'telephone':''),
-
+				'mobile'=>true,
 				'value'=>$object->get('Supplier Main Plain Mobile'),
 				'formatted_value'=>$object->get('Main Plain Mobile'),
 				'label'=>ucfirst($object->get_field_label('Supplier Main Plain Mobile')). ($object->get('Supplier Main Plain Mobile')!=''?($object->get('Supplier Preferred Contact Number')=='Mobile'?'':' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discret button"></i>'):'')    ,
 				'invalid_msg'=>get_invalid_message('telephone'),
-				'required'=>false
+				'required'=>false,
+				'type'=>'value'
 			),
 			array(
 
@@ -183,7 +193,8 @@ $supplier_fields=array(
 				'formatted_value'=>$object->get('Main Plain Telephone'),
 				'label'=>ucfirst($object->get_field_label('Supplier Main Plain Telephone')).($object->get('Supplier Main Plain Telephone')!=''?($object->get('Supplier Preferred Contact Number')=='Telephone'?'':' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discret button"></i>'):'')    ,
 				'invalid_msg'=>get_invalid_message('telephone'),
-				'required'=>false
+				'required'=>false,
+				'type'=>'value'
 
 			), array(
 				'id'=>'new_telephone',
@@ -192,18 +203,20 @@ $supplier_fields=array(
 				'value'=>'',
 				'formatted_value'=>'',
 				'label'=>ucfirst($object->get_field_label('Supplier Other Telephone')).' <i onClick="set_this_as_main(this)" title="'._('Set as main telephone').'" class="fa fa-star-o very_discret button"></i>',
-				'required'=>false
+				'required'=>false,
+				'type'=>'ignore'
 			),
 
 			array(
 				'id'=>'Supplier_Other_Telephone',
 				'render'=>false,
 				'edit'=>($edit?'telephone':''),
-
+                 'clone_template'=>true,
 				'value'=>'',
 				'formatted_value'=>'',
 				'label'=>ucfirst($object->get_field_label('Supplier Other Telephone')).' <i onClick="set_this_as_main(this)" title="'._('Set as main telephone').'" class="fa fa-star-o very_discret button"></i>',
-				'required'=>false
+				'required'=>false,
+				'type'=>'ignore'
 			),
 
 			array(
@@ -213,7 +226,8 @@ $supplier_fields=array(
 				'value'=>'',
 				'label'=>_('Add telephone').' <i class="fa fa-plus new_button button"></i>',
 				'required'=>false,
-				'reference'=>''
+				'reference'=>'',
+				'type'=>'ignore'
 			),
 
 			array(
@@ -224,7 +238,8 @@ $supplier_fields=array(
 				'formatted_value'=>$object->get('Main Plain FAX'),
 				'label'=>ucfirst($object->get_field_label('Supplier Main Plain FAX')),
 				'invalid_msg'=>get_invalid_message('telephone'),
-				'required'=>false
+				'required'=>false,
+				'type'=>'value'
 			),
 
 		)
@@ -238,12 +253,14 @@ $supplier_fields=array(
 			array(
 				'id'=>'Supplier_Contact_Address',
 				'edit'=>($edit?'address':''),
+				'countries'=>get_countries($db),
 
 				'value'=>htmlspecialchars($object->get('Supplier Contact Address')),
 				'formatted_value'=>$object->get('Contact Address'),
 				'label'=>ucfirst($object->get_field_label('Supplier Contact Address')),
 				'invalid_msg'=>get_invalid_message('address'),
-				'required'=>false
+				'required'=>false,
+				'type'=>'value'
 			),
 
 
@@ -263,32 +280,37 @@ $supplier_fields=array(
 				'value'=>$object->get('Supplier Average Delivery Days'),
 				'formatted_value'=>$object->get('Average Delivery Days'),
 				'label'=>ucfirst($object->get_field_label('Supplier Average Delivery Days')),
-				'required'=>false
+				'required'=>false,
+				'type'=>'value'
 			),
 			array(
 				'id'=>'Supplier_Default_Currency_Code',
-				'edit'=>($edit?'option':''),
-
-				'options'=>$options_currencies,
-				'value'=>$object->get('Supplier Default Currency Code'),
+				'edit'=>($edit?'country_select':''),
+				'options'=>get_currencies($db),
+				'scope'=>'currencies',
+				'value'=>($new?$account->get('Account Currency'):$object->get('Supplier Default Currency Code')),
 				'formatted_value'=>$object->get('Default Currency'),
 				'label'=>ucfirst($object->get_field_label('Supplier Default Currency Code')),
-				'required'=>false
+				'required'=>false,
+				'type'=>'value'
 			),
 			array(
 				'id'=>'Supplier_Products_Origin_Country_Code',
-				'edit'=>'dropdown_select',
+				'edit'=>($edit?'country_select':''),
+				'options'=>get_countries($db),
 				'scope'=>'countries',
-				'value'=> htmlspecialchars($object->get('Supplier Products Origin Country Code')),
-				'formatted_value'=>$object->get('Products Origin Country Code'),
-				'stripped_formatted_value'=>$object->get('Products Origin Country Code'),
+				'value'=> ($new?$account->get('Account Country Code'):htmlspecialchars($object->get('Supplier Products Origin Country Code'))),
+				'formatted_value'=>($new?$account->get('Account Country Code'):$object->get('Products Origin Country Code')),
+				'stripped_formatted_value'=>($new?$account->get('Account Country Code'):$object->get('Products Origin Country Code')),
 				'label'=>ucfirst($object->get_field_label('Part Origin Country Code')),
 				'required'=>false,
-				'type'=>'value'
+				'type'=>'value',
+				
 			),
 
 		)
 	),
+	
 	array(
 		'label'=>_('Purchase order settings'),
 		'show_title'=>false,
@@ -303,7 +325,8 @@ $supplier_fields=array(
 				'value'=>$object->get('Supplier Default Incoterm'),
 				'formatted_value'=>$object->get('Default Incoterm'),
 				'label'=>ucfirst($object->get_field_label('Supplier Default Incoterm')),
-				'required'=>false
+				'required'=>false,
+				'type'=>'value'
 			),
 			array(
 				'id'=>'Supplier_Default_Port_of_Export',
@@ -312,7 +335,8 @@ $supplier_fields=array(
 				'value'=>$object->get('Supplier Default Port of Export'),
 				'formatted_value'=>$object->get('Default Port of Export'),
 				'label'=>ucfirst($object->get_field_label('Supplier Default Port of Export')),
-				'required'=>false
+				'required'=>false,
+				'type'=>'value'
 			),
 			array(
 				'id'=>'Supplier_Default_Port_of_Import',
@@ -321,7 +345,8 @@ $supplier_fields=array(
 				'value'=>$object->get('Supplier Default Port of Import'),
 				'formatted_value'=>$object->get('Default Port of Import'),
 				'label'=>ucfirst($object->get_field_label('Supplier Default Port of Import')),
-				'required'=>false
+				'required'=>false,
+				'type'=>'value'
 			),
 			array(
 				'id'=>'Supplier_Default_PO_Terms_and_Conditions',
@@ -330,22 +355,31 @@ $supplier_fields=array(
 				'value'=>$object->get('Supplier Default PO Terms and Conditions'),
 				'formatted_value'=>$object->get('Default PO Terms and Conditions'),
 				'label'=>ucfirst($object->get_field_label('Supplier Default PO Terms and Conditions')),
-				'required'=>false
+				'required'=>false,
+				'type'=>'value'
 			),
 			array(
 				'id'=>'Supplier_Show_Warehouse_TC_in_PO',
 				'edit'=>($edit?'option':''),
 
 				'options'=>$options_yn,
-				'value'=>$object->get('Supplier Show Warehouse TC in PO'),
-				'formatted_value'=>$object->get('Show Warehouse TC in PO'),
+				'value'=>($new?'Yes':$object->get('Supplier Show Warehouse TC in PO')),
+				'formatted_value'=>($new?_('Yes'):$object->get('Show Warehouse TC in PO')),
 				'label'=>ucfirst($object->get_field_label('Supplier Show Warehouse TC in PO')),
-				'required'=>false
+				'required'=>false,
+				'type'=>'value'
 			),
 
 		)
 	),
-	array(
+	
+
+);
+
+
+
+if (!$new) {
+	$operations=array(
 		'label'=>_('Operations'),
 		'show_title'=>true,
 		'class'=>'edit_fields',
@@ -356,14 +390,17 @@ $supplier_fields=array(
 				'class'=>'new',
 				'value'=>'',
 				'label'=>'<i class="fa fa-lock button" style="margin-right:20px"></i> <span class="disabled">'._('Delete supplier').' <i class="fa fa-trash new_button link"></i></span>',
-				'reference'=>''
+				'reference'=>'',
+				'type'=>'ignore'
 			),
 
 		)
 
-	),
+	);
+	
+	$supplier_fields[]=$operations;
+}
 
-);
 
 
 $other_emails=$object->get_other_emails_data();

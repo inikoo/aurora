@@ -21,7 +21,8 @@ $default=$user->get_tab_defaults($tab);
 $table_views=array(
 	'overview'=>array('label'=>_('Overview'), 'title'=>_('Overview')),
 	'contact'=>array('label'=>_('Contact'), 'title'=>_('Contact details')),
-	'products'=>array('label'=>_('Parts')),
+	'parts'=>array('label'=>_("Parts's stock")),
+	'sales'=>array('label'=>_("Parts's sales")),
 	'orders'=>array('label'=>_('Orders'), 'title'=>_('Purchase orders, deliveries & invoices')),
 
 

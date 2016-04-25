@@ -134,8 +134,6 @@ class Store extends DB_Table {
 	function load_acc_data() {
 		$sql=sprintf("select * from `Store Data Dimension` where `Store Key`=%d", $this->id);
 
-
-
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
 				foreach ($row as $key=>$value) {

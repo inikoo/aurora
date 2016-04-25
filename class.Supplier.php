@@ -87,7 +87,6 @@ class supplier extends Subject {
 
 
 
-
 		if ($tipo=='id' or $tipo=='key')
 			$sql=sprintf("select * from `Supplier Dimension` where `Supplier Key`=%d", $id);
 		elseif ($tipo=='code') {
@@ -97,14 +96,33 @@ class supplier extends Subject {
 			$sql=sprintf("select * from `Supplier Dimension` where `Supplier Code`=%s ", prepare_mysql($id));
 
 
+		}else {
+			return;
+		}
+		if ($this->data = $this->db->query($sql)->fetch()) {
+			$this->id=$this->data['Supplier Key'];
 		}
 
-		$result=mysql_query($sql);
-		if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
-			$this->id=$this->data['Supplier Key'];
+	}
+
+
+	function load_acc_data() {
+		$sql=sprintf("select * from `Supplier Data` where `Supplier Key`=%d", $this->id);
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				foreach ($row as $key=>$value) {
+					$this->data[$key]=$value;
+				}
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
 
 
 	}
+
 
 
 	function find($raw_data, $address_raw_data, $options) {
@@ -269,6 +287,7 @@ class supplier extends Subject {
 
 			break;
 		case 'Average Delivery Days':
+		    if($this->data['Supplier Average Delivery Days']=='')return '';
 			return number($this->data['Supplier Average Delivery Days']);
 			break;
 		case 'Delivery Time':
@@ -285,10 +304,6 @@ class supplier extends Subject {
 			}else {
 				return '';
 			}
-
-			break;
-
-
 
 			break;
 
@@ -346,6 +361,8 @@ class supplier extends Subject {
 	function create($raw_data, $address_raw_data) {
 
 
+
+
 		$this->data=$this->base_data();
 		foreach ($raw_data as $key=>$value) {
 			if (array_key_exists($key, $this->data)) {
@@ -355,29 +372,54 @@ class supplier extends Subject {
 
 
 
+		if ($this->data['Supplier Main Plain Mobile']!='') {
+			list($this->data['Supplier Main Plain Mobile'], $this->data['Supplier Main XHTML Mobile'])=$this->get_formatted_number($this->data['Supplier Main Plain Mobile']);
+		}
+		if ($this->data['Supplier Main Plain Telephone']!='') {
+			list($this->data['Supplier Main Plain Telephone'], $this->data['Supplier Main XHTML Telephone'])=$this->get_formatted_number($this->data['Supplier Main Plain Telephone']);
+		}
+		if ($this->data['Supplier Main Plain FAX']!='') {
+			list($this->data['Supplier Main Plain FAX'], $this->data['Supplier Main XHTML FAX'])=$this->get_formatted_number($this->data['Supplier Main Plain FAX']);
+		}
+
+
+
+
 
 		$this->data['Supplier ID']=$this->new_id();
 		$this->data['Supplier Code']=$this->check_repair_code($this->data['Supplier Code']);
 		$this->data['Supplier Valid From']=gmdate('Y-m-d H:i:s');
 
 
+
 		$keys='';
 		$values='';
 		foreach ($this->data as $key=>$value) {
 			$keys.=",`".$key."`";
-			$values.=','.prepare_mysql($value, false);
+
+			if (in_array($key, array('Supplier Average Delivery Days','Supplier Default Incoterm','Supplier Default Port of Export','Supplier Default Port of Import','Supplier Valid To'))) {
+				$values.=','.prepare_mysql($value, true);
+
+			}else {
+				$values.=','.prepare_mysql($value, false);
+
+			}
+
 		}
 		$values=preg_replace('/^,/', '', $values);
 		$keys=preg_replace('/^,/', '', $keys);
 
 		$sql="insert into `Supplier Dimension` ($keys) values ($values)";
-		//print $sql;
-
-		if (mysql_query($sql)) {
-
-			$this->id=mysql_insert_id();
+		
+		if ($this->db->exec($sql)) {
+			$this->id=$this->db->lastInsertId();
+		
+	
 			$this->get_data('id', $this->id);
 
+
+			$sql="insert into `Supplier Data` (`Supplier Key`) values(".$this->id.");";
+			$this->db->exec($sql);
 
 			if ($this->data['Supplier Company Name']!='') {
 				$supplier_name=$this->data['Supplier Company Name'];
@@ -431,7 +473,7 @@ class supplier extends Subject {
 
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
-				print_r($row);
+				//print_r($row);
 
 				$supplier_number_parts=$row['num'];
 				if ($row['num']>0) {
@@ -448,15 +490,7 @@ class supplier extends Subject {
 			exit;
 		}
 
-		print_r(array(
-				'Supplier Number Parts'=>$supplier_number_parts,
-				'Supplier Number Surplus Parts'=>$supplier_number_surplus_parts,
-				'Supplier Number Optimal Parts'=>$supplier_number_optimal_parts,
-				'Supplier Number Low Parts'=>$supplier_number_low_parts,
-				'Supplier Number Critical Parts'=>$supplier_number_critical_parts,
-				'Supplier Number Out Of Stock Parts'=>$supplier_number_out_of_stock_parts,
 
-			));
 		$this->update(array(
 				'Supplier Number Parts'=>$supplier_number_parts,
 				'Supplier Number Surplus Parts'=>$supplier_number_surplus_parts,
@@ -470,7 +504,7 @@ class supplier extends Subject {
 	}
 
 
-	
+
 
 
 	function update_up_today_sales() {
@@ -516,7 +550,7 @@ class supplier extends Subject {
 		$this->data['Supplier 4 Year Ago Sales Amount']=$sales_data['sold_amount'];
 
 
-		$sql=sprintf("update `Supplier Dimension` set `Supplier 1 Year Ago Sales Amount`=%.2f, `Supplier 2 Year Ago Sales Amount`=%.2f,`Supplier 3 Year Ago Sales Amount`=%.2f, `Supplier 4 Year Ago Sales Amount`=%.2f where `Supplier Key`=%d ",
+		$sql=sprintf("update `Supplier Data` set `Supplier 1 Year Ago Sales Amount`=%.2f, `Supplier 2 Year Ago Sales Amount`=%.2f,`Supplier 3 Year Ago Sales Amount`=%.2f, `Supplier 4 Year Ago Sales Amount`=%.2f where `Supplier Key`=%d ",
 
 			$this->data["Supplier 1 Year Ago Sales Amount"],
 			$this->data["Supplier 2 Year Ago Sales Amount"],
@@ -527,7 +561,7 @@ class supplier extends Subject {
 
 		);
 
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 
 	}
@@ -558,20 +592,22 @@ class supplier extends Subject {
 			($to_date?sprintf('and `Date`<%s', prepare_mysql($to_date)):'')
 
 		);
-		$result=mysql_query($sql);
 
 
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-			$sales_data['sold_amount']=$row['sold_amount'];
-			$sales_data['sold']=$row['sold'];
-			$sales_data['dispatched']=-1.0*$row['dispatched'];
-			$sales_data['required']=$row['required'];
-			$sales_data['no_dispatched']=$row['no_dispatched'];
-
-
-
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$sales_data['sold_amount']=$row['sold_amount'];
+				$sales_data['sold']=$row['sold'];
+				$sales_data['dispatched']=-1.0*$row['dispatched'];
+				$sales_data['required']=$row['required'];
+				$sales_data['no_dispatched']=$row['no_dispatched'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 
 		return $sales_data;
 	}
@@ -579,7 +615,7 @@ class supplier extends Subject {
 
 	function update_sales($interval) {
 
-
+		include_once 'utils/date_functions.php';
 
 
 		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb)=calculate_interval_dates($interval);
@@ -614,14 +650,18 @@ class supplier extends Subject {
 
 		);
 
-		$result=mysql_query($sql);
 
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$this->data["Supplier $db_interval Acc Parts Profit"]=$row['profit'];
+				$this->data["Supplier $db_interval Acc Parts Profit After Storing"]=$this->data["Supplier $db_interval Acc Parts Profit"]-$row['cost_storing'];
 
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$this->data["Supplier $db_interval Acc Parts Profit"]=$row['profit'];
-			$this->data["Supplier $db_interval Acc Parts Profit After Storing"]=$this->data["Supplier $db_interval Acc Parts Profit"]-$row['cost_storing'];
-
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
 
 		$sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought
                      from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type` like 'In'  and `Supplier Key`=%d %s %s" ,
@@ -631,14 +671,20 @@ class supplier extends Subject {
 			($to_date?sprintf('and `Date`<%s', prepare_mysql($to_date)):'')
 
 		);
-		$result=mysql_query($sql);
-		//print "$sql\n";
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-			$this->data["Supplier $db_interval Acc Parts Cost"]=$row['cost'];
-			$this->data["Supplier $db_interval Acc Parts Bought"]=$row['bought'];
 
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+
+				$this->data["Supplier $db_interval Acc Parts Cost"]=$row['cost'];
+				$this->data["Supplier $db_interval Acc Parts Bought"]=$row['bought'];
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
 
 		$sql=sprintf("select sum(`Amount In`) as sold_amount,
                      sum(`Inventory Transaction Quantity`) as dispatched,
@@ -653,19 +699,25 @@ class supplier extends Subject {
 			($to_date?sprintf('and `Date`<%s', prepare_mysql($to_date)):'')
 
 		);
-		$result=mysql_query($sql);
-
-		//print "$sql\n";
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-			$this->data["Supplier $db_interval Acc Parts Sold Amount"]=$row['sold_amount'];
-			$this->data["Supplier $db_interval Acc Parts Sold"]=$row['sold'];
-			$this->data["Supplier $db_interval Acc Parts Dispatched"]=-1.0*$row['dispatched'];
-			$this->data["Supplier $db_interval Acc Parts Required"]=$row['required'];
-			$this->data["Supplier $db_interval Acc Parts No Dispatched"]=$row['no_dispatched'];
 
 
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+
+				$this->data["Supplier $db_interval Acc Parts Sold Amount"]=$row['sold_amount'];
+				$this->data["Supplier $db_interval Acc Parts Sold"]=$row['sold'];
+				$this->data["Supplier $db_interval Acc Parts Dispatched"]=-1.0*$row['dispatched'];
+				$this->data["Supplier $db_interval Acc Parts Required"]=$row['required'];
+				$this->data["Supplier $db_interval Acc Parts No Dispatched"]=$row['no_dispatched'];
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
+
 
 		$sql=sprintf("select sum(`Inventory Transaction Quantity`) as broken
                      from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Broken' and `Supplier Key`=%d %s %s" ,
@@ -675,14 +727,18 @@ class supplier extends Subject {
 			($to_date?sprintf('and `Date`<%s', prepare_mysql($to_date)):'')
 
 		);
-		$result=mysql_query($sql);
 
-		//print "$sql\n";
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-			$this->data["Supplier $db_interval Acc Parts Broken"]=-1.*$row['broken'];
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$this->data["Supplier $db_interval Acc Parts Broken"]=-1.*$row['broken'];
 
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
 
 
 		$sql=sprintf("select sum(`Inventory Transaction Quantity`) as lost
@@ -693,15 +749,17 @@ class supplier extends Subject {
 			($to_date?sprintf('and `Date`<%s', prepare_mysql($to_date)):'')
 
 		);
-		$result=mysql_query($sql);
-		//print "$sql\n";
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-			$this->data["Supplier $db_interval Acc Parts Lost"]=-1.*$row['lost'];
 
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$this->data["Supplier $db_interval Acc Parts Lost"]=-1.*$row['lost'];
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
-
-
 
 
 		if ($this->data["Supplier $db_interval Acc Parts Sold Amount"]!=0)
@@ -710,7 +768,7 @@ class supplier extends Subject {
 			$margin=0;
 		$this->data["Supplier $db_interval Acc Parts Margin"]=$margin;
 
-		$sql=sprintf("update `Supplier Dimension` set
+		$sql=sprintf("update `Supplier Data` set
                      `Supplier $db_interval Acc Parts Profit`=%.2f,
                      `Supplier $db_interval Acc Parts Profit After Storing`=%.2f,
                      `Supplier $db_interval Acc Parts Cost`=%.2f,
@@ -741,8 +799,7 @@ class supplier extends Subject {
 
 		);
 
-		mysql_query($sql);
-
+		$this->db->exec($sql);
 
 		if ($from_date_1yb) {
 
@@ -771,13 +828,19 @@ class supplier extends Subject {
 				($to_date_1yb?sprintf('and `Date`<%s', prepare_mysql($to_date_1yb)):'')
 
 			);
-			$result=mysql_query($sql);
 
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$this->data["Supplier $db_interval Acc 1YB Parts Profit"]=$row['profit'];
-				$this->data["Supplier $db_interval Acc 1YB Parts Profit After Storing"]=$this->data["Supplier $db_interval Acc 1YB Parts Profit"]-$row['cost_storing'];
 
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$this->data["Supplier $db_interval Acc 1YB Parts Profit"]=$row['profit'];
+					$this->data["Supplier $db_interval Acc 1YB Parts Profit After Storing"]=$this->data["Supplier $db_interval Acc 1YB Parts Profit"]-$row['cost_storing'];
+
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
+
 
 			$sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought
                          from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type` like 'In'  and `Supplier Key`=%d %s %s" ,
@@ -787,14 +850,20 @@ class supplier extends Subject {
 				($to_date_1yb?sprintf('and `Date`<%s', prepare_mysql($to_date_1yb)):'')
 
 			);
-			$result=mysql_query($sql);
 
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-				$this->data["Supplier $db_interval Acc 1YB Parts Cost"]=$row['cost'];
-				$this->data["Supplier $db_interval Acc 1YB Parts Bought"]=$row['bought'];
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$this->data["Supplier $db_interval Acc 1YB Parts Cost"]=$row['cost'];
+					$this->data["Supplier $db_interval Acc 1YB Parts Bought"]=$row['bought'];
 
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
+
+
 
 			$sql=sprintf("select sum(`Amount In`) as sold_amount,
                          sum(`Inventory Transaction Quantity`) as dispatched,
@@ -809,18 +878,24 @@ class supplier extends Subject {
 				($to_date_1yb?sprintf('and `Date`<%s', prepare_mysql($to_date_1yb)):'')
 
 			);
-			$result=mysql_query($sql);
-			//print "$sql\n";
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-				$this->data["Supplier $db_interval Acc 1YB Parts Sold Amount"]=$row['sold_amount'];
-				$this->data["Supplier $db_interval Acc 1YB Parts Sold"]=$row['sold'];
-				$this->data["Supplier $db_interval Acc 1YB Parts Dispatched"]=-1.0*$row['dispatched'];
-				$this->data["Supplier $db_interval Acc 1YB Parts Required"]=$row['required'];
-				$this->data["Supplier $db_interval Acc 1YB Parts No Dispatched"]=$row['no_dispatched'];
 
 
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$this->data["Supplier $db_interval Acc 1YB Parts Sold Amount"]=$row['sold_amount'];
+					$this->data["Supplier $db_interval Acc 1YB Parts Sold"]=$row['sold'];
+					$this->data["Supplier $db_interval Acc 1YB Parts Dispatched"]=-1.0*$row['dispatched'];
+					$this->data["Supplier $db_interval Acc 1YB Parts Required"]=$row['required'];
+					$this->data["Supplier $db_interval Acc 1YB Parts No Dispatched"]=$row['no_dispatched'];
+
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
+
+
+
 
 			$sql=sprintf("select sum(`Inventory Transaction Quantity`) as broken
                          from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Broken' and `Supplier Key`=%d %s %s" ,
@@ -830,12 +905,16 @@ class supplier extends Subject {
 				($to_date_1yb?sprintf('and `Date`<%s', prepare_mysql($to_date_1yb)):'')
 
 			);
-			$result=mysql_query($sql);
-			//print "$sql\n";
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-				$this->data["Supplier $db_interval Acc 1YB Parts Broken"]=-1.*$row['broken'];
 
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$this->data["Supplier $db_interval Acc 1YB Parts Broken"]=-1.*$row['broken'];
+
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
 
 
@@ -847,13 +926,18 @@ class supplier extends Subject {
 				($to_date_1yb?sprintf('and `Date`<%s', prepare_mysql($to_date_1yb)):'')
 
 			);
-			$result=mysql_query($sql);
-			//print "$sql\n";
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-				$this->data["Supplier $db_interval Acc 1YB Parts Lost"]=-1.*$row['lost'];
 
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$this->data["Supplier $db_interval Acc 1YB Parts Lost"]=-1.*$row['lost'];
+
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
+
 
 			if ($this->data["Supplier $db_interval Acc 1YB Parts Sold Amount"]!=0)
 				$margin=$this->data["Supplier $db_interval Acc 1YB Parts Profit After Storing"]/$this->data["Supplier $db_interval Acc 1YB Parts Sold Amount"];
@@ -862,7 +946,7 @@ class supplier extends Subject {
 
 			$this->data["Supplier $db_interval Acc 1YB Parts Margin"]=$margin;
 
-			$sql=sprintf("update `Supplier Dimension` set
+			$sql=sprintf("update `Supplier Data` set
                          `Supplier $db_interval Acc 1YB Parts Profit`=%.2f,
                          `Supplier $db_interval Acc 1YB Parts Profit After Storing`=%.2f,
                          `Supplier $db_interval Acc 1YB Parts Cost`=%.2f,
@@ -893,7 +977,7 @@ class supplier extends Subject {
 
 			);
 
-			mysql_query($sql);
+			$this->db->exec($sql);
 
 
 		}

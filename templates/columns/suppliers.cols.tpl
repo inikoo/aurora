@@ -178,7 +178,79 @@ var columns = [
             "dblclick": "enterEditMode"
         }
     })
-}
+},
+{
+    name: "revenue",
+    label: "{t}Revenue{/t}",
+   editable: false,
+   
+    defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='money_in'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+    headerCell: integerHeaderCell
+},
+{
+    name: "revenue_1y",
+    label: "1YB",
+   editable: false,
+   
+    defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='revenue_1y'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.HtmlCell.extend({ className: "aright "} ),
+    headerCell: integerHeaderCell
+
+},
+{
+    name: "sales_year0",
+    label: new Date().getFullYear(),
+   editable: false,
+   
+    defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='sales_year0'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+    headerCell: integerHeaderCell
+},
+{
+    name: "sales_year1",
+    label: new Date().getFullYear()-1,
+   editable: false,
+   
+    defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='sales_year1'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+    headerCell: integerHeaderCell
+},
+{
+    name: "sales_year2",
+    label: new Date().getFullYear()-2,
+   editable: false,
+   
+    defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='sales_year2'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+    headerCell: integerHeaderCell
+},
+{
+    name: "sales_year3",
+    label: new Date().getFullYear()-3,
+   editable: false,
+   
+    defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='sales_year3'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+    headerCell: integerHeaderCell
+},
 
 ]
 
@@ -187,7 +259,10 @@ function change_table_view(view,save_state){
     $('.view').removeClass('selected');
     $('#view_'+view).addClass('selected');
     
-//    grid.columns.findWhere({ name: 'formatted_id'} ).set("renderable", false)
+     close_columns_period_options()
+        $('#columns_period').addClass('hide');
+
+    
     grid.columns.findWhere({ name: 'name'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'location'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'last_purchase_order'} ).set("renderable", false)
@@ -205,6 +280,15 @@ function change_table_view(view,save_state){
     grid.columns.findWhere({ name: 'email'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'telephone'} ).set("renderable", false)
  
+     grid.columns.findWhere({ name: 'revenue'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'revenue_1y'} ).set("renderable", false)
+    
+        grid.columns.findWhere({ name: 'sales_year0'} ).set("renderable", false)
+        grid.columns.findWhere({ name: 'sales_year1'} ).set("renderable", false)
+        grid.columns.findWhere({ name: 'sales_year2'} ).set("renderable", false)
+        grid.columns.findWhere({ name: 'sales_year3'} ).set("renderable", false)
+
+    
     
     if(view=='overview'){
         grid.columns.findWhere({ name: 'name'} ).set("renderable", true)
@@ -221,13 +305,23 @@ function change_table_view(view,save_state){
         grid.columns.findWhere({ name: 'contact'} ).set("renderable", true)
         grid.columns.findWhere({ name: 'email'} ).set("renderable", true)
         grid.columns.findWhere({ name: 'telephone'} ).set("renderable", true)
-    }else if(view=='products'){
+    }else if(view=='parts'){
         grid.columns.findWhere({ name: 'supplier_parts'} ).set("renderable", true)
          grid.columns.findWhere({ name: 'surplus'} ).set("renderable", true)
     grid.columns.findWhere({ name: 'optimal'} ).set("renderable", true)
     grid.columns.findWhere({ name: 'low'} ).set("renderable", true)
     grid.columns.findWhere({ name: 'critical'} ).set("renderable", true)
     grid.columns.findWhere({ name: 'out_of_stock'} ).set("renderable", true)
+  
+    }else if(view=='sales'){
+      $('#columns_period').removeClass('hide');
+        grid.columns.findWhere({ name: 'revenue'} ).set("renderable", true)
+    grid.columns.findWhere({ name: 'revenue_1y'} ).set("renderable", true)
+       grid.columns.findWhere({ name: 'sales_year0'} ).set("renderable", true)
+        grid.columns.findWhere({ name: 'sales_year1'} ).set("renderable", true)
+        grid.columns.findWhere({ name: 'sales_year2'} ).set("renderable", true)
+        grid.columns.findWhere({ name: 'sales_year3'} ).set("renderable", true)
+
   
     }else if(view=='orders'){
         grid.columns.findWhere({ name: 'last_purchase_order'} ).set("renderable", true)

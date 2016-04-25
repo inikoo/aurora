@@ -21,6 +21,8 @@ $color_background: #fcfcfc;
 
 
 $color_save:#0EBFE9;
+$color_realce:#08728b;
+
 $color_success:#26A65B;
 $color_warning:#ED9121;
 $color_error:tomato;
@@ -644,7 +646,7 @@ right connector from last child*/
 .very_discret{opacity:.6;color:#777}
 .super_discret{opacity:.3;color:#777}
 
-
+.realce{color:$color_realce}
 .success{color:$color_success}
 //.valid{color:$color_save}
 .deleted{text-decoration: line-through;opacity:.9;color:#777}

@@ -179,3 +179,35 @@ var isAdvancedUpload = function() {
         var div = document.createElement('div');
         return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window;
     }();
+    
+ArraySort = function(array, sortFunc){
+              var tmp = [];
+              var aSorted=[];
+              var oSorted={};
+
+              for (var k in array) {
+                if (array.hasOwnProperty(k)) 
+                    tmp.push({key: k, value:  array[k]});
+              }
+
+              tmp.sort(function(o1, o2) {
+                    
+              
+                    return sortFunc(o1.value, o2.value);
+              });                     
+
+              if(Object.prototype.toString.call(array) === '[object Array]'){
+                  $.each(tmp, function(index, value){
+                      aSorted.push(value.value);
+                  });
+                  return aSorted;                     
+              }
+
+              if(Object.prototype.toString.call(array) === '[object Object]'){
+                  $.each(tmp, function(index, value){
+                      oSorted[value.key]=value.value;
+                  });                     
+                  return oSorted;
+              }               
+     };    
+    

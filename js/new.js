@@ -38,6 +38,7 @@ function get_form_validation_state(submitting) {
             component_validation = 'potentially_valid'
         }
 
+
         //if (component_validation == 'invalid' || component_validation == 'potentially_valid') 
         if (component_validation == 'invalid') {
             form_validation = 'invalid';
@@ -128,8 +129,17 @@ function save_new_object(object, form_type) {
         $(".value").each(
 
         function(index) {
+        
+        
+            if($(this).closest('tr').hasClass('hide')){
+                return
+            }
+        
             var field = $(this).attr('field')
             var field_type = $(this).attr('field_type')
+
+
+
 
             if (field_type == 'time') {
                 value = clean_time($('#' + field).val())
@@ -138,10 +148,16 @@ function save_new_object(object, form_type) {
             } else if (field_type == 'attachment') {
                 form_data.append("file", $('#' + field).prop("files")[0])
                 value = ''
+            } else if (field_type == 'country_select') {
+                value = $('#' + field).countrySelect("getSelectedCountryData").code
+
+            } else if (field_type == 'telephone') {
+                value = $('#' + field).intlTelInput("getNumber");
+
             } else {
                 var value = $('#' + field).val()
             }
-            //console.log($(this).attr('id') + ' ' + field)
+            console.log($(this).attr('id') + ' ' + field+' '+$(this).closest('tr').hasClass('hide'))
             fields_data[field.replace(re, ' ')] = value
         });
 
@@ -155,6 +171,7 @@ function save_new_object(object, form_type) {
         // used only for debug
         var request = '/ar_edit.php?tipo=new_object&object=' + object + '&parent=' + $('#fields').attr('parent') + '&parent_key=' + $('#fields').attr('parent_key') + '&fields_data=' + JSON.stringify(fields_data)
         console.log(request)
+        //return;
         //=====
         form_data.append("tipo", (form_type != '' ? form_type : 'new_object'))
         form_data.append("object", object)
@@ -198,9 +215,9 @@ function save_new_object(object, form_type) {
 
             } else if (data.state == 400) {
                 $('#fields').addClass('error');
-                
-               
-                
+
+
+
                 $('#' + object + '_msg').html(data.msg).removeClass('hide')
 
             }
@@ -422,7 +439,7 @@ function update_new_address_fields(field, country_code, hide_recipient_fields, a
                 var field_data = data.fields[key]
 
                 field_tr.find('.label').html(field_data.label)
-                console.log(field_data)
+                // console.log(field_data)
                 if (field_data.required) {
                     //console.log('xxx #' + field + '_' + key + '_container')
                     container_tr.attr('_required', 1);
@@ -463,21 +480,39 @@ function update_new_address_fields(field, country_code, hide_recipient_fields, a
                 var _object = field_data.attr('object')
                 var key = field_data.attr('key')
 
-
+/*
                 if (field_data.attr('_required') == 1) {
                     var required = true
                 } else {
                     var required = false
                 }
+                
+                */
+                  if(field_data.hasClass('address_value')){
+                var required = field_data.closest('tbody.address_fields').attr('_required')
 
+        }else{
+        var required = field_data.attr('_required')
+        }
+                
+                
                 var validation = validate_field(field, value, type, required, server_validation, parent, parent_key, _object, key)
-                //console.log(validation)
+                console.log(validation)
+               
+               /*
                 if (arg == 'init') {
 
                     if (validation.class == 'invalid' && value == '') {
+                    
                         validation.class = 'potentially_valid'
                     }
                 }
+                */
+ console.log(field+' '+field_data.attr('_required')+' '+ validation.class )
+ if (field_data.attr('_required')==1 && value == '' &&   validation.class =='valid') {
+   validation.class = 'valid attention'
+ }
+            
 
                 $('#' + field + '_field').removeClass('invalid potentially_valid valid').addClass(validation.class)
 
@@ -492,5 +527,37 @@ function update_new_address_fields(field, country_code, hide_recipient_fields, a
 
         }
     })
+
+}
+
+
+function update_related_fields(country_data) {
+
+    // console.log(country_data.iso2)
+    $('#fields  .telephone_input_field').each(function(index) {
+
+        if ($(this).attr('has_been_changed') == 0) {
+            $(this).intlTelInput("setCountry", country_data.iso2);
+        }
+    })
+
+    $('#fields  .address_fields').each(function(index) {
+        if ($(this).attr('has_been_changed') == 0) {
+
+            var field = $(this).attr('field')
+            var country_select = $("#" + field + "_country_select")
+
+            country_select.countrySelect("selectCountry", country_data.iso2);
+
+            update_new_address_fields(field, country_data.iso2, hide_recipient_fields = true)
+            $('#' + field + '_country  ').val(country_data.iso2.toUpperCase())
+
+        }
+    })
+
+    post_update_related_fields(country_data)
+}
+
+function post_update_related_fields(country_data) {
 
 }

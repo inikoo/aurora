@@ -5,7 +5,12 @@
 
 
 function open_edit_this_field(scope) {
+
+
     var field = $(scope).closest('tr').attr('field')
+
+    console.log($('#' + field + '_lock'))
+
     if ($('#' + field + '_lock').hasClass('hide')) {
         open_edit_field($('#fields').attr('object'), $('#fields').attr('key'), field)
     }
@@ -15,14 +20,15 @@ function open_edit_this_field(scope) {
 function open_edit_field(object, key, field) {
 
 
-
     var type = $('#' + field + '_container').attr('field_type')
+
+
+
 
     $('#' + field + '_formatted_value').addClass('hide')
     $('#' + field + '_edit_button').addClass('hide')
     $('#' + field + '_reset_button').removeClass('hide')
     $('#' + field + '_msg').html('').removeClass('success error')
-
 
 
     switch (type) {
@@ -52,11 +58,27 @@ function open_edit_field(object, key, field) {
         $('#' + field).focus()
         $('#' + field + '_save_button').removeClass('hide')
         break;
+    case 'country_select':
+        $('#' + field).removeClass('hide')
+        $('#' + field).focus()
+        $('#' + field + '_save_button').removeClass('hide')
+
+        $('#' + field + '_field div.country-select.inside .flag-dropdown').css({
+            'display': 'block'
+        })
+
+        break;
+
+
+
+
     case 'telephone':
     case 'new_telephone':
 
         $('#' + field).removeClass('hide')
         $('#' + field).focus()
+
+        // console.log('#' + field + '_save_button')
         $('#' + field + '_save_button').removeClass('hide')
         $('#' + field + '_field .intl-tel-input .flag-container').css({
             'display': 'block'
@@ -71,7 +93,9 @@ function open_edit_field(object, key, field) {
         $('#' + field).removeClass('hide')
 
         $('#' + field + '_save_button').removeClass('hide')
-        $('#' + field + '_field .intl-tel-input .flag-container').css({
+
+
+        $('#' + field + '_field div.country-select.inside .flag-dropdown').css({
             'display': 'block'
         })
 
@@ -189,7 +213,16 @@ function close_edit_field(field) {
 
     case 'dimensions':
 
+        $('#' + field).addClass('hide')
 
+
+        //$('#' + field + '_editor').removeClass('changed')
+        break;
+    case 'country_select':
+
+        $('#' + field + '_field div.country-select.inside .flag-dropdown').css({
+            'display': 'none'
+        })
         $('#' + field).addClass('hide')
 
 
@@ -239,8 +272,8 @@ function close_edit_field(field) {
         $('#' + field).addClass('hide')
 
         $('#' + field + '_save_button').addClass('hide')
-        $('#' + field + '_field .intl-tel-input .flag-container').css({
-            'display': 'none'
+        $('#' + field + '_field div.country-select.inside .flag-dropdown').css({
+            'display': 'block'
         })
         break;
 
@@ -428,7 +461,10 @@ function on_changed_confirm_value(field, confirm_value) {
 
 function on_changed_value(field, new_value) {
 
-    // console.log('changed: ' + field)
+
+    
+
+    console.log('changed: ' + field)
     var object = $('#fields').attr('object');
 
     if ($('#' + object + '_save').hasClass('hide')) {
@@ -444,16 +480,24 @@ function on_changed_value(field, new_value) {
 
     if (new_value != $('#' + field + '_value').val()) {
         var changed = true;
+
+        //$('#' + field + '_field').addClass('changed')
     } else {
         var changed = false;
+        //$('#' + field + '_field').removeClass('changed')
     }
+
+
+ $('#' + field).closest('tbody.address_fields').attr('has_been_changed', 1)
+
+    $('#' + field).attr('has_been_changed', 1)
 
 
     $('#' + field + '_field').removeClass('invalid valid potentially_valid')
 
 
 
-    $('#' + field + '_field').addClass('changed')
+
 
     var validation = validate(field, new_value)
     process_validation(validation, field, false)
@@ -484,8 +528,15 @@ function validate(field, value) {
     var _object = field_data.attr('object')
     var key = field_data.attr('key')
     var type = field_data.attr('field_type')
-    var required = field_data.attr('_required')
 
+  if(field_data.hasClass('address_value')){
+                var required = field_data.closest('tbody.address_fields').attr('_required')
+
+        }else{
+        var required = field_data.attr('_required')
+        }
+
+console.log(required)
 
     if (type == 'salary') {
         return validate_salary_components();
@@ -724,7 +775,7 @@ function save_field(object, key, field) {
 
     if (!$("#" + field + '_field').hasClass('changed')) {
 
-        console.log('no_change')
+        console.log('no_change :(' + field)
         return;
     }
 
@@ -796,16 +847,10 @@ function save_field(object, key, field) {
         value = sha256_digest(value)
     } else if (type == 'telephone') {
         value = $('#' + field).intlTelInput("getNumber");
-/*
-        metadata = {
 
-            'extra_fields': [{
-                field: field + '_Formatted',
-                value: fixedEncodeURIComponent($('#' + field).intlTelInput("getNumber", intlTelInputUtils.numberFormat.INTERNATIONAL))
-            }]
+    } else if (type == 'country_select') {
+        value = $('#' + field).countrySelect("getSelectedCountryData").code
 
-        }
-        */
     }
 
     var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value) + '&metadata=' + JSON.stringify(metadata)
@@ -824,7 +869,7 @@ function save_field(object, key, field) {
 
             $('#' + field + '_value').val(data.value)
 
-
+//console.log(field)
 
             $('.' + field).html(data.formatted_value)
             if (type == 'option') {
@@ -905,7 +950,6 @@ function save_field(object, key, field) {
 }
 
 function post_save_actions(field, data) {
-
     switch (field) {
     case 'User_Preferred_Locale':
         change_view(state.request, {
@@ -928,14 +972,13 @@ function create_new_field(_data) {
 
 
 
-    // console.log(_data)
+    console.log(_data)
     var clone_field = _data.field
     var clone = $('#' + _data.clone_from + '_field').clone()
     clone.prop('id', clone_field + '_field');
-
+    clone.removeClass('hide')
     clone.attr('field', clone_field);
 
-    //clone.attr('field', clone_field);
     $('#' + _data.clone_from + '_field').after(clone)
 
 
@@ -943,6 +986,9 @@ function create_new_field(_data) {
     clone.find('.label').prop('id', clone_field + '_label')
     clone.find('i.reset_button').prop('id', clone_field + '_reset_button')
     clone.find('i.edit_button').prop('id', clone_field + '_edit_button')
+    clone.find('i.lock').prop('id', clone_field + '_lock')
+
+
     clone.find('td.container').prop('id', clone_field + '_container')
 
     clone.find('span.editor').prop('id', clone_field + '_editor')
@@ -957,6 +1003,23 @@ function create_new_field(_data) {
         clone.find('i.save').prop('id', clone_field + '_save_button').addClass(_data.edit)
 
         clone.find('span.msg').prop('id', clone_field + '_msg')
+
+    } else if (_data.edit == 'telephone' || _data.edit == 'new_telephone') {
+
+        clone.removeClass('hide')
+        clone.find('input.input_field').prop('id', clone_field).val(_data.value)
+        clone.find('i.save').prop('id', clone_field + '_save_button').addClass(_data.edit)
+
+        clone.find('span.msg').prop('id', clone_field + '_msg')
+
+
+        $("#" + clone_field).intlTelInput({
+            utilsScript: "/js/libs/telephone_utils.js",
+            defaultCountry: 'GB',
+            preferredCountries: ['GB', 'US']
+        });
+        $("#" + clone_field).intlTelInput("setNumber", _data.value);
+
 
     } else if (_data.edit == 'address') {
 
@@ -1040,12 +1103,15 @@ function create_new_field(_data) {
         $('#' + clone_field + '_label').html(_data.label)
     }
 
-
+    post_create_action(_data)
 
 
 
 }
 
+function post_create_action(_data) {
+
+}
 
 function delete_field(data) {
     var field = data.field
@@ -1095,7 +1161,6 @@ function update_field(data) {
             $("#" + field).val(data.value)
         }
     }
-
     post_update_field(data)
 
 }
@@ -1182,17 +1247,20 @@ function add_minutes_to_time(time, minutes) {
 function update_address_fields(field, country_code, hide_recipient_fields) {
 
     var request = '/ar_address.php?tipo=fields_data&country_code=' + country_code
-    console.log(request)
+    // console.log(request)
     $.getJSON(request, function(data) {
 
         //console.log(field)
         if (data.state == 200) {
+
+
+
             for (var key in data.fields) {
                 var field_tr = $('#' + field + '_' + key)
                 var field_data = data.fields[key]
 
                 field_tr.find('.label').html(field_data.label)
-                //console.log(field_data)
+                console.log(field_data)
                 if (field_data.required) {
 
 
@@ -1276,21 +1344,26 @@ function on_changed_address_value(field, address_field, new_address_field_value)
 
     var new_value = get_address_value(field);
 
-    //console.log(new_value)
+    console.log('xxxxx')
     //console.log($('#' + field + '_value').val())
     if (new_value != $('#' + field + '_value').val()) {
         $("#" + field + '_editor').addClass('changed')
         //console.log("#" + field + '_editor')
         var changed = true;
 
+    $('#' + field+'_address_fields').attr('has_been_changed', 1)
 
 
 
     } else {
         $("#" + field + '_editor').removeClass('changed')
         var changed = false;
+            $('#' + field+'_address_fields').attr('has_been_changed', 0)
+
     }
 
+
+  
 
 
     $('#' + field + '_save_button').removeClass('invalid valid potentially_valid')
@@ -1299,11 +1372,8 @@ function on_changed_address_value(field, address_field, new_address_field_value)
 
 
     if (changed) {
-
-
+        $('#' + field + '_field').addClass('waiting_validation changed')
         $('#' + field + '_save_button').removeClass('fa-cloud').addClass('fa-spinner fa-spin')
-
-
 
         var validation = validate_address(field)
 

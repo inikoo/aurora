@@ -10,151 +10,31 @@
 */
 
 include_once 'utils/country_functions.php';
-
 include_once 'utils/invalid_messages.php';
-include_once 'class.Supplier.php';
-
-
-$supplier=new Supplier(0);
-
-$options_valid_tax_number=array(
-	'Yes'=>_('Valid'), 'No'=>_('Not Valid'), 'Unknown'=>_('Unknown'), 'Auto'=>_('Check online'),
-);
-
-$options_yn=array(
-	'Yes'=>_('Yes'), 'No'=>_('No')
-);
+include_once 'conf/object_fields.php';
 
 
 
-asort($options_yn);
+$supplier=$state['_object'];
 
-$object_fields=array(
-	array(
-		'label'=>_('Code, name'),
-		'show_title'=>true,
-		'fields'=>array(
-		array(
+$object_fields=get_object_fields($supplier, $db, $user, $smarty ,array('new'=>true));
 
-				'id'=>'Supplier_Code',
-				'edit'=>'string',
-				'value'=>$supplier->get('Supplier Code'),
-				'label'=>ucfirst($supplier->get_field_label('Code')),
-				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
-				'invalid_msg'=>get_invalid_message('string'),
-				'type'=>'value'
-			),
+$smarty->assign('default_country', $account->get('Account Country 2 Alpha Code'));
+$smarty->assign('preferred_countries', '"'.join('", "', preferred_countries($account->get('Account Country 2 Alpha Code'))).'"');
+
+
+$default_country=($supplier->get('Contact Address Country 2 Alpha Code')==''?$account->get('Account Country 2 Alpha Code'):$supplier->get('Contact Address Country 2 Alpha Code'));
+$smarty->assign('default_telephone_data', base64_encode(json_encode(
 			array(
-				'id'=>'Supplier_Company_Name',
-				'edit'=>'string',
-				'value'=>htmlspecialchars($supplier->get('Supplier Company Name')),
-				'formatted_value'=>$supplier->get('Company Name'),
-				'label'=>ucfirst($supplier->get_field_label('Supplier Company Name')),
-				'required'=>false,
-				'type'=>'value'
-			),
-
-			array(
-
-				'id'=>'Supplier_Main_Contact_Name',
-				'edit'=>'string',
-				'value'=>htmlspecialchars($supplier->get('Supplier Main Contact Name')),
-				'formatted_value'=>$supplier->get('Main Contact Name'),
-				'label'=>ucfirst($supplier->get_field_label('Supplier Main Contact Name')),
-				'required'=>true,
-				'type'=>'value'
+				'default_country'=>strtolower($default_country),
+				'preferred_countries'=>array_map('strtolower', preferred_countries($default_country))  ,
 			)
 		)
-	)
-	
-	,array(
-		'label'=>_('Email'),
-		'show_title'=>false,
-		'fields'=>array(
-
-			array(
-				'id'=>'Supplier_Main_Plain_Email',
-				'edit'=>'email',
-				'value'=>$supplier->get('Supplier Main Plain Email'),
-				'formatted_value'=>$supplier->get('Main Plain Email'),
-				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
-				'label'=>ucfirst($supplier->get_field_label('Supplier Main Plain Email')),
-				'invalid_msg'=>get_invalid_message('email'),
-				'required'=>false,
-				'type'=>'value'
-			)
-
-		)
-	),
-
-	array(
-		'label'=>_('Telephones'),
-		'show_title'=>false,
-		'fields'=>array(
-
-			array(
-				'id'=>'Supplier_Main_Plain_Mobile',
-				'edit'=>'telephone',
-				'value'=>$supplier->get('Supplier Main Plain Mobile'),
-				'formatted_value'=>$supplier->get('Main Plain Mobile'),
-				'label'=>ucfirst($supplier->get_field_label('Supplier Main Plain Mobile')),
-				'invalid_msg'=>get_invalid_message('telephone'),
-				'required'=>false,
-				'type'=>'value'
-			),
-			array(
+	));
 
 
 
-				'id'=>'Supplier_Main_Plain_Telephone',
-				'edit'=>'telephone',
-				'value'=>$supplier->get('Supplier Main Plain Telephone'),
-				'formatted_value'=>$supplier->get('Main Plain Telephone'),
-				'label'=>ucfirst($supplier->get_field_label('Supplier Main Plain Telephone')),
-				'invalid_msg'=>get_invalid_message('telephone'),
-				'required'=>false,
-				'type'=>'value'
 
-			),
-			array(
-				'id'=>'Supplier_Main_Plain_FAX',
-				'edit'=>'telephone',
-				'value'=>$supplier->get('Supplier Main Plain FAX'),
-				'formatted_value'=>$supplier->get('Main Plain FAX'),
-				'label'=>ucfirst($supplier->get_field_label('Supplier Main Plain FAX')),
-				'invalid_msg'=>get_invalid_message('telephone'),
-				'required'=>false,
-				'type'=>'value'
-			),
-
-		)
-	),
-
-	array(
-		'label'=>_('Address'),
-		'show_title'=>false,
-		'fields'=>array(
-
-			array(
-				'id'=>'Supplier_Contact_Address',
-				'edit'=>'address',
-				'value'=>htmlspecialchars($supplier->get('Supplier Contact Address')),
-				'formatted_value'=>$supplier->get('Contact Address'),
-				'label'=>ucfirst($supplier->get_field_label('Supplier Contact Address')),
-				'invalid_msg'=>get_invalid_message('address'),
-				'required'=>false,
-				'type'=>'value'
-			),
-
-
-			
-
-		)
-	),
-
-
-
-);
 $smarty->assign('state', $state);
 $smarty->assign('object', $supplier);
 
@@ -167,6 +47,7 @@ $smarty->assign('object_fields', $object_fields);
 $smarty->assign('default_country', $account->get('Account Country 2 Alpha Code'));
 $smarty->assign('preferred_countries', '"'.join('", "', preferred_countries($account->get('Account Country 2 Alpha Code'))).'"');
 
+$smarty->assign('js_code', 'js/injections/supplier_new.'.(_DEVEL?'':'min.').'js');
 
 
 $html=$smarty->fetch('new_object.tpl');

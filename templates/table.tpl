@@ -251,8 +251,8 @@
 {/foreach}
 {if isset($f_period) }
 
-<div id="columns_period" class="aright padding_right_10">
-<span class="label">{$f_period_label}</span> <i class="fa fa-bars fa-fw padding_left_10 button" aria-hidden="true" onclick="show_columns_period_options()"></i>
+<div id="columns_period" class="hide aright padding_right_10">
+<span class="label realce">{$f_period_label}</span> <i class="fa fa-bars fa-fw padding_left_10 button" aria-hidden="true" onclick="show_columns_period_options()"></i>
 </div> 
 {/if}
 </div>

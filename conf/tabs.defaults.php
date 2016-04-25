@@ -504,6 +504,7 @@ $tab_defaults=array(
 		'sort_key'=>'code',
 		'sort_order'=>1,
 		'rpp'=>20,
+
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code'
 	),

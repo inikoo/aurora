@@ -12,8 +12,17 @@ margin-bottom:100px;
     tr.valid {
     .field_state.required{
      opacity: .7;
-                color: $color_success;
+      color: $color_success;
     }
+   
+    }
+    
+     tr.valid.attention {
+    .field_state.required{
+     opacity: .4;
+      color: orange;
+    }
+   
     }
     
     &.invalid {
