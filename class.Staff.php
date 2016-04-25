@@ -887,6 +887,17 @@ class Staff extends DB_Table{
 
 
 		switch ($field) {
+
+		case('Staff Telephone'):
+			if ($value=='') {
+				$formatted_value='';
+			}else {
+				list($value, $formatted_value)=$this->get_formatted_number($value);
+			}
+			$this->update_field($field, $value, 'no_history');
+			$this->update_field('Staff Telephone Formatted', $formatted_value, $options);
+
+			break;
 		case('Staff Working Hours'):
 			$this->update_field($field, $value, $options);
 
@@ -1143,9 +1154,9 @@ class Staff extends DB_Table{
 
 		foreach (preg_split( '/,/', $this->get('Staff Position')) as $role_code) {
 			if (array_key_exists($role_code, $roles)) {
-				
-				
-				
+
+
+
 				$groups=array_merge($groups, $roles[$role_code]['user_groups']);
 			}
 		}
@@ -1360,6 +1371,30 @@ class Staff extends DB_Table{
 		$diff=$diff/3600;
 
 		return array($diff, $metadata);
+
+	}
+
+
+	function get_formatted_number($value) {
+		include_once 'utils/get_phoneUtil.php';
+		$phoneUtil=get_phoneUtil();
+		try {
+
+			$account=new Account($this->db);
+			$country=$account->get('Account Country 2 Alpha Code');
+
+			$proto_number = $phoneUtil->parse($value, $country);
+			$formatted_value=$phoneUtil->format($proto_number, \libphonenumber\PhoneNumberFormat::INTERNATIONAL);
+
+			$value=$phoneUtil->format($proto_number, \libphonenumber\PhoneNumberFormat::E164);
+
+
+		} catch (\libphonenumber\NumberParseException $e) {
+
+		}
+
+
+		return array($value, $formatted_value);
 
 	}
 

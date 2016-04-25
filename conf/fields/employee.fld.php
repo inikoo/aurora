@@ -9,8 +9,22 @@
 
 */
 
+
+
+if (isset($options['new']) and  $options['new'] ) {
+	$new=true;
+}else {
+	$new=false;
+}
+
 $employee=$object;
 $account=new Account();
+
+$options_Staff_Payment_Terms=array(
+	'Monthy'=>_('Monthy (fixed)'), 'PerHour'=>_('Per hour (prorata)')
+);
+
+
 $options_Staff_Type=array(
 	'Employee'=>_('Employee'), 'Volunteer'=>_('Volunteer'), 'TemporalWorker'=>_('Temporal Worker'), 'WorkExperience'=>_('Work Experience')
 );
@@ -34,6 +48,13 @@ foreach ($roles as $_key=>$_data) {
 	}
 }
 
+foreach (preg_split('/,/', $employee->get('Staff Position')) as $current_position_key) {
+	if ( array_key_exists($current_position_key, $options_Staff_Position ) ) {
+
+		$options_Staff_Position[$current_position_key]['selected']=true;
+	}
+}
+
 $options_Staff_Supervisor=array();
 $sql=sprintf('select `Staff Name`,`Staff Key`,`Staff Alias` from `Staff Dimension` where `Staff Currently Working`="Yes" ');
 foreach ($db->query($sql) as $row) {
@@ -47,6 +68,8 @@ foreach ($db->query($sql) as $row) {
 asort($options_Staff_Position);
 asort($options_Staff_Supervisor);
 asort($options_Staff_Type);
+asort($options_Staff_Payment_Terms);
+
 asort($options_yn);
 
 $object_fields=array(
@@ -63,7 +86,7 @@ $object_fields=array(
 				'id'=>'Staff_ID',
 				'edit'=>($edit?'string':''),
 
-				'value'=>'',
+				'value'=>$employee->get('Staff ID'),
 				'label'=>ucfirst($employee->get_field_label('Staff ID')),
 				'invalid_msg'=>get_invalid_message('smallint_unsigned'),
 				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
@@ -191,8 +214,8 @@ $object_fields=array(
 				'id'=>'Staff_Type',
 				'edit'=>($edit?'option':''),
 
-				'value'=>'Employee',
-				'formatted_value'=>_('Employee'),
+				'value'=>($new?'Employee':$employee->get('Staff Type')),
+				'formatted_value'=>($new?_('Employee'):$employee->get('Type')),
 				'options'=>$options_Staff_Type,
 				'label'=>ucfirst($employee->get_field_label('Staff Type')),
 				'type'=>'value',
@@ -204,15 +227,15 @@ $object_fields=array(
 				'edit'=>($edit?'option':''),
 
 				'id'=>'Staff_Currently_Working',
-				'value'=>'Yes',
-				'formatted_value'=>_('Yes'),
+				'value'=>($new?'Yes':$employee->get('Staff Currently Working')),
+				'formatted_value'=>($new?_('Yes'):$employee->get('Staff Currently Working')),
 				'options'=>$options_yn,
 				'label'=>ucfirst($employee->get_field_label('Staff Currently Working')),
 				'type'=>'value',
 				'required'=>false,
 			),
 			array(
-				'render'=>false,
+				'render'=>($new?false:true),
 				'edit'=>'hidden',
 				'id'=>'Staff_Valid_From',
 
@@ -225,7 +248,7 @@ $object_fields=array(
 				'required'=>false,
 			),
 			array(
-				'render'=>false,
+				'render'=>($new?false:($employee->get('Staff Currently Working')=='Yes'?false:true)),
 				'edit'=>'hidden',
 				'id'=>'Staff_Valid_To',
 
@@ -264,7 +287,132 @@ $object_fields=array(
 
 		)
 	),
-	array(
+
+
+
+);
+
+if (!$new) {
+	$object_fields[]=array(
+		'label'=>_('Working hours & salary'),
+		'show_title'=>true,
+		'class'=>'edit_fields',
+		'fields'=>array(
+			array(
+
+				'id'=>'Staff_Working_Hours',
+				'edit'=>'working_hours',
+				'value'=>$employee->get('Staff Working Hours'),
+				'formatted_value'=>$employee->get('Working Hours'),
+				'options'=>$options_Staff_Type,
+				'label'=>ucfirst($employee->get_field_label('Staff Working Hours')),
+				'invalid_msg'=>get_invalid_message('working_hours'),
+			),
+
+			array(
+
+				'id'=>'Staff_Salary',
+				'edit'=>'salary',
+				'value'=>$employee->get('Staff Salary'),
+				'formatted_value'=>$employee->get('Salary'),
+				'label'=>ucfirst($employee->get_field_label('Staff Salary')),
+				'invalid_msg'=>get_invalid_message('salary'),
+			)
+
+
+		)
+	);
+
+	if ($employee->get('Staff User Key')) {
+
+
+		$object_fields[]=array(
+			'label'=>_('System user').' <i  onClick="change_view(\'account/user/'.$employee->get('Staff User Key').'\')" class="fa fa-link link"></i>',
+			'show_title'=>true,
+			'class'=>'edit_fields',
+			'fields'=>array(
+
+				array(
+
+					'id'=>'Staff_User_Active',
+					'edit'=>'option',
+					'value'=>$employee->get('Staff User Active'),
+					'formatted_value'=>$employee->get('User Active'),
+					'options'=>$options_yn,
+					'label'=>ucfirst($employee->get_field_label('Staff Active')),
+				),
+				array(
+					'id'=>'Staff_Position',
+					'edit'=>'radio_option',
+					'value'=>$employee->get('Staff Position'),
+					'formatted_value'=>$employee->get('Position'),
+					'options'=>$options_Staff_Position,
+					'label'=>ucfirst($employee->get_field_label('Staff Position')),
+				),
+				array(
+
+					'id'=>'Staff_User_Handle',
+					'edit'=>'handle',
+					'value'=>$employee->get('Staff User Handle'),
+					'formatted_value'=>$employee->get('User Handle'),
+					'label'=>ucfirst($employee->get_field_label('Staff User Handle')),
+					'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
+					'invalid_msg'=>get_invalid_message('handle'),
+				),
+
+				array(
+					'render'=>($employee->get('Staff User Active')=='Yes'?true:false),
+
+					'id'=>'Staff_User_Password',
+					'edit'=>'password',
+					'value'=>'',
+					'formatted_value'=>'******',
+					'label'=>ucfirst($employee->get_field_label('Staff User Password')),
+					'invalid_msg'=>get_invalid_message('password'),
+				),
+				array(
+					'render'=>($employee->get('Staff User Active')=='Yes'?true:false),
+
+					'id'=>'Staff_User_PIN',
+					'edit'=>'pin',
+					'value'=>'',
+					'formatted_value'=>'****',
+					'label'=>ucfirst($employee->get_field_label('Staff User PIN')),
+					'invalid_msg'=>get_invalid_message('pin'),
+				),
+
+
+
+			)
+		);
+
+	}
+	else {
+		$object_fields[]=array(
+			'label'=>_('System user'),
+			'show_title'=>true,
+			'class'=>'edit_fields',
+			'fields'=>array(
+				array(
+
+					'id'=>'new_user',
+					'class'=>'new',
+					'value'=>'',
+					'label'=>_('Set up system user').' <i class="fa fa-plus new_button link"></i>',
+					'reference'=>'employee/'.$employee->id.'/new/user'
+				),
+
+			)
+		);
+
+	}
+
+
+}
+else {
+
+
+	$object_fields[]=array(
 		'label'=>_('System user'),
 		'show_title'=>true,
 		'class'=>'edit_fields',
@@ -361,9 +509,8 @@ $object_fields=array(
 
 
 		)
-	)
+	);
 
-
-);
+}
 
 ?>

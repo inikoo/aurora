@@ -181,14 +181,15 @@ $('#salary').on('click', '#compress_rate_components', function() {
     else var field_type = 'day_of_month'
                 
              var component_validation = validate_field($(obj).attr('id'), $(obj).val(), field_type, true, false)
+             console.log(component_validation)
              if(component_validation.class=='invalid' && $(obj).val()==''){
              component_validation.class='potentially_valid'
              }
              
                  $(obj).removeClass('invalid potentially_valid valid').addClass(component_validation.class)
 
- console.log(component_validation)
- console.log($(obj).attr('id'))
+// console.log(component_validation)
+ //console.log($(obj).attr('id'))
 
             });
 
@@ -301,7 +302,7 @@ function validate_salary_components() {
             }
         }
     }
-    //console.log(validation)
+    console.log(validation)
     return validation;
 }
 
