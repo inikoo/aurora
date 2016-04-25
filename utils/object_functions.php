@@ -35,6 +35,7 @@ function get_object($object_name, $key, $load_other_data=false) {
 	case 'Store':
 		include_once 'class.Store.php';
 		$object=new Store($key);
+		$object->load_acc_data();
 		break;
 	case 'storeproduct':
 	case 'product':
@@ -83,6 +84,7 @@ function get_object($object_name, $key, $load_other_data=false) {
 	case 'Supplier':
 		include_once 'class.Supplier.php';
 		$object=new Supplier($key);
+		$object->load_acc_data();
 		break;
 	case 'employee':
 	case 'contractor':

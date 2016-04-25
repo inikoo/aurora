@@ -9,16 +9,16 @@
 
 */
 
-function preferred_countries($country_code){
-    include('conf/preferred_countries.php');
-    if(isset($preferred_countries_data[$country_code])){
-    $preferred_countries=$preferred_countries_data[$country_code];
-    array_unshift($preferred_countries,$country_code);
-    
-        return $preferred_countries ;
-    }else{
-        return array($country_code);
-    }
+function preferred_countries($country_code) {
+	include 'conf/preferred_countries.php';
+	if (isset($preferred_countries_data[$country_code])) {
+		$preferred_countries=$preferred_countries_data[$country_code];
+		array_unshift($preferred_countries, $country_code);
+
+		return $preferred_countries ;
+	}else {
+		return array($country_code);
+	}
 }
 
 

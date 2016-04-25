@@ -11,12 +11,20 @@
 */
 
 
-function get_object_fields($object, $db, $user,$options=false) {
+function get_object_fields($object, $db, $user,$smarty,$options=false) {
+
+
+$account=new Account($db);
 
  $edit=true;
 
 	switch ($object->get_object_name()) {
-
+	
+	case 'Customer':
+	
+		include 'fields/customer.fld.php';
+		return $customer_fields;
+		break;
 	case 'Product':
 	case 'StoreProduct':
 		include 'fields/product.fld.php';

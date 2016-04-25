@@ -15,13 +15,13 @@ include_once 'conf/object_fields.php';
 
 $part=$state['_object'];
 
-$object_fields=get_object_fields($part, $db,$user,array('show_full_label'=>false));
+$object_fields=get_object_fields($part, $db, $user, $smarty, array('show_full_label'=>false));
 
 $smarty->assign('object_fields', $object_fields);
 $smarty->assign('state', $state);
 $smarty->assign('preferred_countries', '"'.join('", "', preferred_countries(
-($part->get('Part Origin Country Code')==''?$account->get('Account Country 2 Alpha Code'):$part->get('Part Origin Country Code'))
-)).'"');
+			($part->get('Part Origin Country Code')==''?$account->get('Account Country 2 Alpha Code'):$part->get('Part Origin Country Code'))
+		)).'"');
 
 $html=$smarty->fetch('edit_object.tpl');
 

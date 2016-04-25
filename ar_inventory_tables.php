@@ -33,13 +33,13 @@ $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
 case 'parts':
-	parts(get_table_parameters(), $db, $user, 'active',$account);
+	parts(get_table_parameters(), $db, $user, 'active', $account);
 	break;
 case 'stock_transactions':
 	stock_transactions(get_table_parameters(), $db, $user);
 	break;
 case 'stock_history':
-	stock_history(get_table_parameters(), $db, $user,$account);
+	stock_history(get_table_parameters(), $db, $user, $account);
 	break;
 case 'discontinued_parts':
 	parts(get_table_parameters(), $db, $user, 'discontinued');
@@ -60,7 +60,7 @@ default:
 
 
 
-function parts($_data, $db, $user, $type,$account) {
+function parts($_data, $db, $user, $type, $account) {
 
 	if ($type=='discontinued') {
 		$extra_where=' and `Part Status`="Not In Use"';
@@ -118,13 +118,13 @@ function parts($_data, $db, $user, $type,$account) {
 				'unit_description'=>$data['Part Unit Description'],
 				'stock_status'=>$stock_status,
 				'stock'=>'<span class="'.($data['Part Current Stock']<0?'error':'').'">'.number(floor($data['Part Current Stock'])).'</span>',
-                'sold'=>number($data['sold']),
-                'sold_1y'=>delta($data['sold'],$data['sold_1y']),
-                'revenue'=>money($data['revenue'],$account->get('Currency')),
-                                'revenue_1y'=>delta($data['revenue'],$data['revenue_1y']),
+				'sold'=>number($data['sold']),
+				'sold_1y'=>delta($data['sold'], $data['sold_1y']),
+				'revenue'=>money($data['revenue'], $account->get('Currency')),
+				'revenue_1y'=>delta($data['revenue'], $data['revenue_1y']),
 
-                'lost'=>number($data['lost']),
-                'bought'=>number($data['bought']),
+				'lost'=>number($data['lost']),
+				'bought'=>number($data['bought']),
 
 			);
 
@@ -154,7 +154,7 @@ function parts($_data, $db, $user, $type,$account) {
 }
 
 
-function stock_history($_data, $db, $user,$account) {
+function stock_history($_data, $db, $user, $account) {
 
 
 	$rtext_label='days';

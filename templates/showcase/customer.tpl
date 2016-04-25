@@ -12,8 +12,16 @@
 			</div>
 		</div>
 		<div class="data_container">
-			<div class="data_field   {if !$customer->get('Customer Main Plain Email')}hide{/if}">
-				<i class="fa fa-fw fa-at"></i> <span id="showcase_Customer_Main_Plain_Email" class="Customer_Main_Plain_Email">{mailto address=$customer->get('Main Plain Email')}</span> 
+			<div id="Customer_Main_Plain_Email_display" class="data_field   {if !$customer->get('Customer Main Plain Email')}hide{/if}">
+				<i class="fa fa-fw fa-at"></i> <span id="Customer_Other_Email_mailto">{if $customer->get('Customer Main Plain Email')}{mailto address=$customer->get('Main Plain Email')}{/if}</span> 
+			</div>
+			{foreach $customer->get_other_emails_data() key=other_email_key item=other_email}
+			<div id="Customer_Other_Email_{$other_email_key}_display" class="data_field ">
+				<i  class="fa fa-fw fa-at discret"></i> <span id="Customer_Other_Email_{$other_email_key}_mailto">{mailto address=$other_email.email}</span> 
+			</div>
+			{/foreach}
+			<div id="Customer_Other_Email_display" class="data_field hide">
+				<i  class="fa fa-fw fa-at discret"></i> <span class="Customer_Other_Email_mailto"></span> 
 			</div>
 			<span id="display_telephones"></span> {if $customer->get('Customer Preferred Contact Number')=='Mobile'} 
 			<div id="Customer_Main_Plain_Mobile_display" class="data_field {if !$customer->get('Customer Main Plain Mobile')}hide{/if}">
@@ -33,6 +41,16 @@
 			<div id="Customer_Main_Plain_FAX_display" class="data_field {if !$customer->get('Customer Main Plain FAX')}hide{/if}">
 				<i title="Fax" class="fa fa-fw fa-fax"></i> <span>{$customer->get('Main Plain FAX')}</span> 
 			</div>
+			
+			{foreach $customer->get_other_telephones_data() key=other_telephone_key item=other_telephone}
+			<div id="Customer_Other_Telephone_{$other_telephone_key}_display" class="data_field ">
+				<i  class="fa fa-fw fa-phone discret"></i> <span>{$other_telephone.formatted_telephone}</span> 
+			</div>
+			{/foreach}
+			<div id="Customer_Other_Telephone_display" class="data_field hide">
+				<i  class="fa fa-fw fa-phone discret"></i> <span></span> 
+			</div>
+			
 		</div>
 		<div style="clear:both">
 		</div>

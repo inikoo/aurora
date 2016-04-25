@@ -16,23 +16,14 @@ include_once 'class.Staff.php';
 
 $employee=new Staff(0);
 
-$object_fields=get_object_fields($employee, $db, $user);
-
-
-
+$object_fields=get_object_fields($employee, $db, $user, $smarty);
 
 $smarty->assign('state', $state);
 $smarty->assign('object', $employee);
-
-
 $smarty->assign('object_name', $employee->get_object_name());
 
-
 $smarty->assign('object_fields', $object_fields);
-
-
 $smarty->assign('js_code', 'js/injections/employee.'.(_DEVEL?'':'min.').'js');
-
 
 $html=$smarty->fetch('new_object.tpl');
 

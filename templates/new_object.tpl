@@ -1,4 +1,7 @@
+
+
 	{if isset($form_type)}{assign "form_type" $form_type}{else}{assign "form_type" ""}{/if} 
+
 
 <div id="result" class="result hide">
 </div>
@@ -20,10 +23,15 @@
 	        </td>
         </tr>
         {/foreach}
-    {else}
+        {else}
 	{foreach from=$field_group.fields item=field name=fields} 
 	
+		{if isset($field.type)}{assign "type" $field.type}{else}{assign "type" "ignore"}{/if} 
+{if $type=='ignore'}{continue}{/if}
+	
+	
 	{if isset($field.edit)}{assign "edit" $field.edit}{else}{assign "edit" ""}{/if} 
+
 	{if isset($field.class)}{assign "class" $field.class}{else}{assign "class" ""}{/if} 
 	{if isset($field.render)}{assign "render" $field.render}{else}{assign "render" true}{/if} 
 	{if isset($field.required)}{assign "required" $field.required}{else}{assign "required" true}{/if} 
@@ -41,7 +49,7 @@
 
     {if $edit=='address'}
     
-    
+                <tbody id="{$field.id}_address_fields" class="address_fields"  field="{$field.id}" has_been_changed="0"  _required="{$required}" >
     	        <tr id="{$field.id}_recipient_field" class="hide" >
 	            
 	            <td class="label">{t}Recipient{/t}</td>
@@ -111,72 +119,43 @@
 	            <td class="label">{t}Country{/t}</td>
 	            <td class="show_buttons error super_discret"><i class="fa fa-asterisk field_state"></i></td>
 	            <td  id="{$field.id}_country_container"  _required="" field_type='string'  class="locality {$field.type} address_value "  field="{$field.id}_country" >
-	            <input  id="{$field.id}_country" value="" class="input_field" type="hidden" field_name="Address Country 2 Alpha Code" >
+	            <input  id="{$field.id}_country" class="input_field" value="x" type="hidden" field_name="Address Country 2 Alpha Code" >
 	            <input id="{$field.id}_country_select" value="" class="country_select"> 
 	            </td>
 	            </tr>
 	            
 	            
-	           
+	           </tbody>
 	   
 	    <script>
 	
 	
 	
     
-         var initial_country='{$default_country|lower}';
-      
+        var initial_country='{$default_country|lower}';
+        
+        $.fn.countrySelect.setCountryData({$field.countries});
+            
+        var country_select=$("#{$field.id}_country_select")
+            
+        country_select.countrySelect();
+        country_select.countrySelect("selectCountry",initial_country) ;
+        
+        update_new_address_fields('{$field.id}',initial_country, hide_recipient_fields=true)
+        $('#{$field.id}_country').val(initial_country.toUpperCase())
+
+        country_select.on("change", function(event,arg) {
+        
+        
+            var country_code=country_select.countrySelect("getSelectedCountryData").iso2
+            update_new_address_fields('{$field.id}',country_code, hide_recipient_fields=true)
+            on_changed_address_value("{$field.id}", '{$field.id}_country', country_code) 
+            console.log(country_code)
+            
+           $('#{$field.id}_country').val(country_code.toUpperCase())
+        })
+
 	
-	
-	
-	 telInput_{$field.id} = $("#{$field.id}_country_select")
-
-	  telInput_{$field.id}.intlTelInput({
-	     initialCountry: initial_country,
-	     preferredCountries: [{$preferred_countries}]
-	 });
-	 
-	 
-
-
-
-	 telInput_{$field.id}.on("country-change", function(event,arg) {
-
-        
-	        var country_name = telInput_{$field.id}.intlTelInput("getSelectedCountryData").name
-	        var country_code = telInput_{$field.id}.intlTelInput("getSelectedCountryData").iso2.toUpperCase()
-        
-	     
-	     if (country_name.match(/\)\s+\(.+\)$/)) {
-	         country_name = country_name.replace(/\)\s+\(.+\)$/, ")")
-	     } else {
-	         country_name = country_name.replace(/\s+\(.+\)$/, "")
-
-	     }
-        
-      
-      
-      
-        $('#{$field.id}_country').val(country_code)
-
-
-	     
-	    update_new_address_fields('{$field.id}',country_code, hide_recipient_fields=true,arg)
-	    $("#{$field.id}_country_select").val(country_name)
-	    if(arg!='init'){
-	   
-        on_changed_address_value("{$field.id}", '{$field.id}_country', country_code) 
-        }
-        
-        
-        
-       
-
-        
-
-	 });
-
-	 telInput_{$field.id}.trigger("country-change",'init');
 
 	
 	
@@ -249,11 +228,15 @@
 
 	
 		{elseif $edit=='telephone' } 
-	    <input  id="{$field.id}" class="input_field telephone_input_field " value="" has_been_valid="0"/>
+	    <input  id="{$field.id}" class="input_field telephone_input_field " value="" has_been_valid="0" has_been_changed="0"  />
 		<span id="{$field.id}_msg" class="msg"></span> 
 	
 		
 		<script>
+		
+	
+		
+		
 		$("#{$field.id}").intlTelInput(
 		{
 		utilsScript: "/js/libs/telephone_utils.js",
@@ -263,6 +246,14 @@
 		);
 		
 		$("#{$field.id}").intlTelInput("setNumber", "{$field.value}");
+		
+		 $("#{$field.id}").on("countrychange", function(e, countryData) {
+                
+               update_related_fields(countryData)
+        });
+				
+
+		
 		</script>
 		{elseif $edit=='pin' or  $edit=='password'} 
 		<input id="{$field.id}" type="password" class="input_field " value="{$field.value}" has_been_valid="0" />
@@ -300,7 +291,31 @@
 			</ul>
 			</div>
 			
-		
+			{elseif $edit=='country_select'  } 
+
+ 
+
+        <input id="{$field.id}" class="input_field  country_select width_500"  value="" has_been_changed="0"  />
+		<i id="{$field.id}_save_button" class="fa fa-cloud save {$edit} hide" onclick="save_this_field(this)"></i> 
+		<span id="{$field.id}_msg" class="msg"></span> 
+		<span id="{$field.id}_info" class="hide"></span>
+
+        <script>
+        
+        
+            $.fn.countrySelect.setCountryData({$field.options});
+            $("#{$field.id}").countrySelect();
+             $("#{$field.id}").countrySelect("selectCountryfromCode",'{$field.value}') ;
+              $("#{$field.id}").on("change", function(event,arg) {
+              if(event.type=='change'){
+                console.log(this)
+              //  $(this).attr('has_been_changed',1)
+              }
+              
+                 on_changed_value('{$field.id}',  $("#{$field.id}").countrySelect("getSelectedCountryData").code)  
+             })
+            
+        </script>
 
 
 		{elseif $edit=='radio_option' } 
@@ -430,17 +445,26 @@
 
      $(".value").each(function(index) {
      
-        if($(this).hasClass('address_value')){
-            return;
-        }
+       // if($(this).hasClass('address_value')){
+       //     return;
+       // }
      
         var field = $(this).attr('field')
-        //console.log(field)
+    
         var value = $('#' + field).val()
 
         var field_data = $('#' + field + '_container')
         var type = field_data.attr('field_type')
+        
+        
+        
+        if(field_data.hasClass('address_value')){
+                var required = field_data.closest('tbody.address_fields').attr('_required')
+
+        }else{
         var required = field_data.attr('_required')
+        }
+        
         var server_validation = field_data.attr('server_validation')
         var parent = field_data.attr('parent')
         var parent_key = field_data.attr('parent_key')
@@ -455,9 +479,8 @@
             if (validation.class == 'invalid' && value == '') {
                 validation.class = 'potentially_valid'
             }
-                          console.log(field)
-
-              console.log(validation)
+            //console.log(field)
+            //console.log(validation)
        
          $('#' + field + '_field').removeClass('invalid potentially_valid valid').addClass(validation.class)
 

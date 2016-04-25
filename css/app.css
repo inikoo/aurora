@@ -564,6 +564,9 @@ input {
   opacity: .3;
   color: #777; }
 
+.realce {
+  color: #08728b; }
+
 .success {
   color: #26A65B; }
 
@@ -1495,6 +1498,8 @@ textarea {
     cursor: pointer; }
   .edit_object .intl-tel-input .flag-container {
     display: none; }
+  .edit_object div.country-select.inside .flag-dropdown {
+    display: none; }
   .edit_object table {
     width: 100%; }
     .edit_object table .adr {
@@ -1648,6 +1653,9 @@ textarea {
   #fields tr.valid .field_state.required {
     opacity: .7;
     color: #26A65B; }
+  #fields tr.valid.attention .field_state.required {
+    opacity: .4;
+    color: orange; }
   #fields.invalid .save_form, #fields.invalid .msg {
     color: tomato; }
   #fields.invalid tr.valid .field_state {
