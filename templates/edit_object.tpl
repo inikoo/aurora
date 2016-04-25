@@ -4,7 +4,7 @@
 {if isset($preferred_countries)}
 <input id="preferred_countries" type="hidden"  value="{$preferred_countries}">
 {/if}
-<table id="edit_container" border=0 data-default_telephone_data="{$default_telephone_data}" >
+<table id="edit_container" border=0 data-default_telephone_data="{if isset($default_telephone_data)}{$default_telephone_data}{/if}" >
 {foreach from=$object_fields item=field_group } 
     <tr class="title" >
         <td  colspan=3>{$field_group.label}</td>
