@@ -75,7 +75,7 @@
 		
 		var default_telephone_data= JSON.parse(atob(  $('#edit_container').data( "default_telephone_data" ))) 
 		
-		console.log(default_telephone_data.default_country)
+		//console.log(default_telephone_data.default_country)
 		$("#{$field.id}").intlTelInput(
 		{
 		utilsScript: "/js/libs/telephone_utils.js",

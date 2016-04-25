@@ -10,11 +10,11 @@ function post_set_as_main(data) {
     if (data.action == 'set_main_contact_number_Mobile') {
 
 
-        $("#Supplier_Main_Plain_Mobile_display").insertAfter("#display_telephones");
+        $("#Customer_Main_Plain_Mobile_display").insertAfter("#display_telephones");
     } else if (data.action == 'set_main_contact_number_Telephone') {
 
 
-        $("#Supplier_Main_Plain_Telephone_display").insertAfter("#display_telephones");
+        $("#Customer_Main_Plain_Telephone_display").insertAfter("#display_telephones");
 
     }else if (data.action == 'set_main_delivery_address') {
 
@@ -43,7 +43,7 @@ function post_set_as_main(data) {
 function post_update_field(data) {
 
     if (data.value != undefined) {
-        if (data.field == 'Supplier_Main_Plain_Telephone') {
+        if (data.field == 'Customer_Main_Plain_Telephone') {
             console.log(data.field + ' --> ' + data.value)
             if (data.value == '') {
                 $('#' + data.field + '_display').addClass('hide')
@@ -54,7 +54,7 @@ function post_update_field(data) {
                 $('#show_new_telephone_field').removeClass('hide')
 
             }
-        } else if (data.field == 'Supplier_Main_Plain_Mobile' || data.field == 'Supplier_Main_Plain_FAX') {
+        } else if (data.field == 'Customer_Main_Plain_Mobile' || data.field == 'Customer_Main_Plain_FAX') {
             console.log(data.field + ' --> ' + data.value)
             if (data.value == '') {
                 $('#' + data.field + '_display').addClass('hide')
@@ -62,28 +62,28 @@ function post_update_field(data) {
                 $('#' + data.field + '_display').removeClass('hide')
 
             }
-        } else if (data.field == 'Supplier_Main_Plain_Email') {
+        } else if (data.field == 'Customer_Main_Plain_Email') {
             if (data.value == '') {
                 $('#' + data.field + '_display').addClass('hide')
                 $('#show_new_email_field').addClass('hide')
 
             } else {
                 $('#' + data.field + '_display').removeClass('hide')
-                $('#' + 'Supplier_Other_Email_mailto').html('<a href="mailto:' + data.value + '" >' + data.value + '</a>')
+                $('#' + 'Customer_Other_Email_mailto').html('<a href="mailto:' + data.value + '" >' + data.value + '</a>')
                 $('#show_new_email_field').removeClass('hide')
             }
         }
 
 
         if (data.field_type != undefined) {
-            if (data.field_type == 'Supplier_Other_Email') {
+            if (data.field_type == 'Customer_Other_Email') {
                 if (data.value != '') {
                     $('#' + data.field + '_mailto').html(data.formatted_email)
                 } else {
                     $('#' + data.field + '_display').addClass('hide')
 
                 }
-            } else if (data.field_type == 'Supplier_Other_Telephone') {
+            } else if (data.field_type == 'Customer_Other_Telephone') {
                 if (data.value != '') {
                     $('#' + data.field + '_display').find('span').html(data.formatted_value)
                 } else {
@@ -101,10 +101,10 @@ function post_create_action(data) {
     var clone = $('#' + data.clone_from + '_display').clone()
     clone.prop('id', data.field + '_display').removeClass('hide');
 
-    if (data.clone_from == 'Supplier_Other_Email') {
-        value = clone.find('.Supplier_Other_Email_mailto').prop('id', data.field + '_mailto').html('<a href="mailto:' + data.value + '" >' + data.value + '</a>')
+    if (data.clone_from == 'Customer_Other_Email') {
+        value = clone.find('.Customer_Other_Email_mailto').prop('id', data.field + '_mailto').html('<a href="mailto:' + data.value + '" >' + data.value + '</a>')
 
-    } else if (data.clone_from == 'Supplier_Other_Telephone') {
+    } else if (data.clone_from == 'Customer_Other_Telephone') {
         clone.find('span').html(data.formatted_value)
     }
 
@@ -113,3 +113,4 @@ function post_create_action(data) {
 
 }
 
+f

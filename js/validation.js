@@ -104,7 +104,7 @@ function validate_address(field) {
 
 function client_validation(type, required, value, field) {
 
-    //console.log(type + ' ' + required)
+    //console.log(type + ' ' + required+' '+value+' '+field)
     var valid_state = {
         class: 'valid',
         type: ''
@@ -466,6 +466,8 @@ function client_validation(type, required, value, field) {
         var re = new RegExp(comma, "g");
         value = value.replace(re, "")
 
+
+
         if (value == dot) {
             return {
                 class: 'potentially_valid',
@@ -474,7 +476,7 @@ function client_validation(type, required, value, field) {
         }
 
 
-        var regex = new RegExp('^\d*\.?\d{0,6}$');
+        var regex = new RegExp('^\\d*\.?\\d{0,6}$');
         if (!regex.test(value)) {
             return {
                 class: 'invalid',

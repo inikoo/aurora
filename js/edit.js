@@ -9,7 +9,7 @@ function open_edit_this_field(scope) {
 
     var field = $(scope).closest('tr').attr('field')
 
-    console.log($('#' + field + '_lock'))
+   // console.log($('#' + field + '_lock'))
 
     if ($('#' + field + '_lock').hasClass('hide')) {
         open_edit_field($('#fields').attr('object'), $('#fields').attr('key'), field)
@@ -464,7 +464,7 @@ function on_changed_value(field, new_value) {
 
     
 
-    console.log('changed: ' + field)
+    //console.log('changed: ' + field)
     var object = $('#fields').attr('object');
 
     if ($('#' + object + '_save').hasClass('hide')) {
@@ -500,6 +500,9 @@ function on_changed_value(field, new_value) {
 
 
     var validation = validate(field, new_value)
+    
+    
+    
     process_validation(validation, field, false)
 
 
@@ -536,7 +539,6 @@ function validate(field, value) {
         var required = field_data.attr('_required')
         }
 
-console.log(required)
 
     if (type == 'salary') {
         return validate_salary_components();
@@ -775,12 +777,12 @@ function save_field(object, key, field) {
 
     if (!$("#" + field + '_field').hasClass('changed')) {
 
-        console.log('no_change :(' + field)
+        //console.log('no_change :(' + field)
         return;
     }
 
     if (!$("#" + field + '_field').hasClass('valid')) {
-        console.log('invalid x')
+        //console.log('invalid x')
 
         show_invalid_messages(field)
 
