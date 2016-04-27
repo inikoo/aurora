@@ -305,8 +305,8 @@ function save_inline_new_object(trigger) {
 
 
     fields_data[field.replace(re, ' ')] = value
-    //var request = '/ar_edit.php?tipo=new_object&object=' + object + '&parent=' + parent + '&parent_key=' + parent_key + '&fields_data=' + JSON.stringify(fields_data)
-    //console.log(request)
+    var request = '/ar_edit.php?tipo=new_object&object=' + object + '&parent=' + parent + '&parent_key=' + parent_key + '&fields_data=' + JSON.stringify(fields_data)
+    console.log(request)
     var form_data = new FormData();
     form_data.append("tipo", 'new_object')
     form_data.append("object", object)
@@ -350,7 +350,7 @@ function save_inline_new_object(trigger) {
                 reset: true
             });
 
-
+ if (with_elements) get_elements_numbers(rows.tab, rows.parameters)
 
 
         } else if (data.state == 400) {
@@ -377,12 +377,19 @@ function save_inline_new_object(trigger) {
 
 function toggle_inline_new_object_form(trigger) {
 
+
+
+
     var field = $('#inline_new_object').attr('field')
     var field_edit = $('#' + field + '_container').attr('field_type')
 
     $('#inline_new_object_msg').html('').removeClass('error success')
 
     if ($('#icon_' + trigger).hasClass('fa-plus')) {
+
+
+        $('#inline_form').removeClass('hide')
+
         $('#inline_new_object').removeClass('hide')
         $('#icon_' + trigger).removeClass('fa-plus').addClass('fa-times')
 
@@ -392,6 +399,8 @@ function toggle_inline_new_object_form(trigger) {
 
     } else {
         $('#inline_new_object').addClass('hide')
+                $('#inline_form').addClass('hide')
+
         $('#icon_' + trigger).addClass('fa-plus').removeClass('fa-times')
 
     }

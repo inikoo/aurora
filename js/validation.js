@@ -8,11 +8,11 @@ function validate_field(field, new_value, field_type, required, server_validatio
     var validation = client_validation(field_type, required, new_value, field)
 
 
-//console.log(field+' '+validation.class)
-    if (validation.class == 'valid' && (server_validation_settings!=undefined  && server_validation_settings != ''  ) ) {
+    //console.log(field+' '+validation.class)
+    if (validation.class == 'valid' && (server_validation_settings != undefined && server_validation_settings != '')) {
 
 
-        
+
         var settings = JSON.parse(server_validation_settings)
 
 
@@ -43,8 +43,7 @@ function post_validate_field(validation, field) {
 
 function validate_address(field) {
 
-  //  console.log('validating address')
-
+    //  console.log('validating address')
     var valid_state = {
         class: 'valid',
         type: ''
@@ -134,6 +133,8 @@ function client_validation(type, required, value, field) {
     switch (type) {
 
 
+
+
     case 'string':
         break;
 
@@ -177,7 +178,6 @@ function client_validation(type, required, value, field) {
         if (value.length < 6) {
             return {
                 class: 'potentially_valid',
-
                 type: 'short'
             }
         }
@@ -187,15 +187,82 @@ function client_validation(type, required, value, field) {
     case 'date':
         break;
 
+    case 'barcode':
+
+        var res = validate_barcode(value, 12)
+
+        if (res) return res
+
+
+        break;
+
+
+
+    case 'barcode_range':
+
+        if (value.match(/\-/g)) {
+            barcodes = value.split('-')
+            if (barcodes.length > 2) {
+                return {
+                    class: 'invalid',
+                    type: 'invalid'
+                }
+            }
+
+
+            var res = validate_barcode(barcodes[0], 12, 12)
+
+
+
+            if (res) {
+                return {
+                    class: 'invalid',
+                    type: res.type
+                }
+            }
+
+            if(barcodes[1]==''){
+             return {
+                    class: 'potentially_valid',
+                    type: 'short'
+                }
+            }
+
+            res = validate_barcode(barcodes[1], 12, 12)
+            console.log(barcodes)
+            if (res) return res
+            
+
+            if(barcodes[1]<barcodes[0]){
+             return {
+                    class: 'invalid',
+                    type: 'range_minmax'
+                }
+            }
+            
+            
+        } else {
+            var res = validate_barcode(value, 12, 13)
+
+            
+            if (res) return res
+
+
+
+
+        }
+
+        break;
+
     case 'telephone':
 
 
-  value = value.replace(/(\\s|\\-|\\(|\\))/g, '')
+        value = value.replace(/(\s|\-|\(|\))/g, '')
 
 
-        if (value.length <4) {
-        value = value.replace(/^\+/g, '')
-            if (value=='' || $.isNumeric(value)) {
+        if (value.length < 4) {
+            value = value.replace(/^\+/g, '')
+            if (value == '' || $.isNumeric(value)) {
                 return {
                     class: 'potentially_valid',
                     type: 'short'
@@ -207,13 +274,12 @@ function client_validation(type, required, value, field) {
                 }
             }
 
-        }
-         else {
+        } else {
 
 
             if (!$('#' + field).intlTelInput("isValidNumber")) {
                 var error = $('#' + field).intlTelInput("getValidationError");
-                   console.log(error)
+                console.log(error)
                 if (error == intlTelInputUtils.validationError.TOO_SHORT) {
                     return {
                         class: 'potentially_valid',
@@ -476,7 +542,7 @@ function client_validation(type, required, value, field) {
         }
 
 
-        var regex = new RegExp('^\\d*\.?\\d{0,6}$');
+        var regex = new RegExp('^\d*\.?\d{0,6}$');
         if (!regex.test(value)) {
             return {
                 class: 'invalid',
@@ -510,7 +576,7 @@ function client_validation(type, required, value, field) {
         }
 
 
-        var regex = new RegExp('^\\d*\.?\\d{0,6}$');
+        var regex = new RegExp('^\d*\.?\d{0,6}$');
 
 
         if (!regex.test(value)) {
@@ -533,6 +599,49 @@ function client_validation(type, required, value, field) {
 
 
 
+function validate_barcode(value, min_length, max_length) {
+
+    if (!$.isNumeric(value)) {
+        return {
+            class: 'invalid',
+            type: 'invalid'
+        }
+    }
+    if (value < 0) {
+        return {
+            class: 'invalid',
+
+            type: 'negative'
+        }
+    }
+
+    if (Math.floor(value) != value) {
+        return {
+            class: 'invalid',
+
+            type: 'invalid'
+        }
+    }
+
+
+    if (value.length < min_length) {
+        return {
+            class: 'potentially_valid',
+            type: 'short'
+        }
+    }
+
+    if (value.length > max_length) {
+        return {
+            class: 'invalid',
+            type: 'long'
+        }
+    }
+
+
+
+    return false
+}
 
 
 function validate_signed_integer(value, max_value) {
@@ -576,8 +685,7 @@ function server_validation(settings, parent, parent_key, object, key, field, val
 
 
 
-   // console.log(settings.setup)
-
+    // console.log(settings.setup)
     if (settings.parent != null) {
         parent = settings.parent;
     }

@@ -661,6 +661,16 @@ $tab_defaults=array(
 		'elements_type'=>each(  $elements_options['barcodes']  ) ['key'],
 		'elements'=>$elements_options['barcodes'],
 	),
+	
+	'barcode.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'note'
+	),
+	
 	'operatives'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',

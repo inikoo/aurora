@@ -422,7 +422,9 @@ class Part extends Asset{
 
 	function update_field_switcher($field, $value, $options='', $metadata='') {
 
-
+		if ($this->update_asset_field_switcher($field, $value, $options, $metadata)) {
+			return;
+		}
 
 		switch ($field) {
 
@@ -1030,7 +1032,7 @@ class Part extends Asset{
 			if ($this->data['Part Origin Country Code']) {
 				include_once 'class.Country.php';
 				$country=new Country('code', $this->data['Part Origin Country Code']);
-				return $country->get('Country Name').' ('.$country->get('Code').')';
+				return $country->get('Country Name');
 			}else {
 				return '';
 			}
@@ -2543,7 +2545,7 @@ class Part extends Asset{
 			, $this->id);
 
 
-//print "$sql\n";
+		//print "$sql\n";
 
 		$this->db->exec($sql);
 
@@ -4055,9 +4057,11 @@ class Part extends Asset{
 			$label=_('country of origin');
 			break;
 		case 'Part Units':
-			$label=_('Units per SKO');
+			$label=_('units per SKO');
 			break;
-
+		case 'Part Barcode Number':
+			$label=_('barcode');
+			break;
 
 
 		default:

@@ -17,11 +17,31 @@ $part=$state['_object'];
 
 $object_fields=get_object_fields($part, $db, $user, $smarty, array('show_full_label'=>false));
 
+
+$available_barcodes=0;
+$sql=sprintf("select count(*) as num from `Barcode Dimension` where `Barcode Status`='Available'");
+if ($result=$db->query($sql)) {
+	if ($row = $result->fetch()) {
+		$available_barcodes=$row['num'];
+	}
+}else {
+	print_r($error_info=$db->errorInfo());
+	exit;
+}
+
+$smarty->assign('available_barcodes', $available_barcodes);
+
+
+
+
 $smarty->assign('object_fields', $object_fields);
 $smarty->assign('state', $state);
 $smarty->assign('preferred_countries', '"'.join('", "', preferred_countries(
 			($part->get('Part Origin Country Code')==''?$account->get('Account Country 2 Alpha Code'):$part->get('Part Origin Country Code'))
 		)).'"');
+
+$smarty->assign('js_code', 'js/injections/part_details.'.(_DEVEL?'':'min.').'js');
+
 
 $html=$smarty->fetch('edit_object.tpl');
 

@@ -17,11 +17,132 @@ include_once 'trait.NotesSubject.php';
 class Asset extends DB_Table{
 	use ImageSubject, NotesSubject, AttachmentSubject;
 
-	function update_subject_field_switcher($field, $value, $options='', $metadata) {
+	function update_asset_field_switcher($field, $value, $options='', $metadata) {
 
 
 		switch ($field) {
 
+		case $this->table_name.' Barcode Number':
+
+			if ($value=='') {
+				include_once 'class.Barcode.php';
+				$barcode=new Barcode($this->get('Barcode Key'));
+				$barcode->editor=$this->editor;
+				if ($barcode->id) {
+					$asset_data=array(
+						'Barcode Asset Type'=>$this->table_name,
+						'Barcode Asset Key'=>$this->id
+					);
+
+					$barcode->withdrawn_asset($asset_data);
+				}
+				$this->deleted_value=$this->get('Barcode Number');
+
+				$this->update_field($this->table_name.' Barcode Number', '', $options);
+				$this->update_field($this->table_name.' Barcode Key', '', 'no_history');
+
+			}else {
+
+				$available_barcodes=0;
+				$sql=sprintf("select `Barcode Key` ,`Barcode Status` from `Barcode Dimension` where `Barcode Number`=%s", $value);
+
+
+				if ($result=$this->db->query($sql)) {
+					if ($row = $result->fetch()) {
+
+
+
+
+						if ($row['Barcode Status']=='Available') {
+
+							include_once 'class.Barcode.php';
+							$barcode=new Barcode($row['Barcode Key']);
+							$barcode->editor=$this->editor;
+
+							if ($this->get('Barcode Key')) {
+
+								$asset_data=array(
+									'Barcode Asset Type'=>$this->table_name,
+									'Barcode Asset Key'=>$this->id
+								);
+
+								$barcode->withdrawn_asset($asset_data);
+							}
+
+
+
+							$asset_data=array(
+								'Barcode Asset Type'=>$this->table_name,
+								'Barcode Asset Key'=>$this->id,
+								'Barcode Asset Assigned Date'=>gmdate('Y-m-d H:i:s')
+							);
+
+
+
+							$barcode->assign_asset($asset_data);
+							$barcode_label=sprintf('<i class="fa fa-barcode fa-fw"></i> <span class="link" onClick="change_view(\'inventory/barcode/%d\')">%s</span>', $barcode->id, $barcode->get('Barcode Number'));
+
+
+							$history_data=array(
+								'History Abstract'=>sprintf(_('Barcode %s associated'), $barcode_label ),
+								'History Details'=>'',
+								'Action'=>'associated'
+							);
+
+							$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
+
+
+							$this->update_field($this->table_name.' Barcode Number', $value, 'no_history');
+							$this->update_field($this->table_name.' Barcode Key', $barcode->id, 'no_history');
+
+						}else {
+							$this->error;
+							$this->msg=_('Barcode no available');
+							return true;
+						}
+
+
+					}else {
+						if ($this->get('Barcode Key')) {
+							include_once 'class.Barcode.php';
+							$barcode=new Barcode($this->get('Barcode Key'));
+							$barcode->editor=$this->editor;
+							if ($barcode->id) {
+								$asset_data=array(
+									'Barcode Asset Type'=>$this->table_name,
+									'Barcode Asset Key'=>$this->id
+								);
+
+								$barcode->withdrawn_asset($asset_data);
+							}
+						}
+
+						$this->update_field($this->table_name.' Barcode Number', $value, $options);
+						$this->update_field($this->table_name.' Barcode Key', '', 'no_history');
+
+					}
+				}else {
+					print_r($error_info=$db->errorInfo());
+					exit;
+				}
+			}
+
+			$this->other_fields_updated=array(
+				$this->table_name.'_Barcode_Number'=>array(
+					'field'=>$this->table_name.'_Barcode_Number',
+					'render'=>true,
+					'value'=>$this->get($this->table_name.' Barcode Number'),
+					'formatted_value'=>$this->get('Barcode Number'),
+					'barcode_key'=>$this->get($this->table_name.' Barcode Key')
+
+
+				)
+			);
+
+
+
+			return true;
+			break;
 		case 'History Note':
 
 

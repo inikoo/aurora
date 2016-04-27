@@ -155,15 +155,26 @@ case 'views':
 
 		if (!$_object->id  and $modules[$state['module']]['sections'][$state['section']]['type']=='object') {
 
+			if ($state['object']=='barcode') {
+				$_object=new Barcode('deleted', $state['key']);
+				$state['_object']=$_object;
+				if ($_object->id) {
+					$state['section']='deleted_barcode';
+					$state['tab']='barcode.history';
 
-			$state=array('old_state'=>$state, 'module'=>'utils', 'section'=>'not_found', 'tab'=>'not_found', 'subtab'=>'', 'parent'=>$state['object'], 'parent_key'=>'', 'object'=>'',
-				'store'=>$store,
-				'website'=>$website,
-				'warehouse'=>$warehouse,
-				'key'=>'',
-				'request'=>$state['request']
-			);
+				}
+			}
 
+
+			if (!$_object->id) {
+				$state=array('old_state'=>$state, 'module'=>'utils', 'section'=>'not_found', 'tab'=>'not_found', 'subtab'=>'', 'parent'=>$state['object'], 'parent_key'=>'', 'object'=>'',
+					'store'=>$store,
+					'website'=>$website,
+					'warehouse'=>$warehouse,
+					'key'=>'',
+					'request'=>$state['request']
+				);
+			}
 
 		}else {
 
@@ -451,7 +462,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db) {
 
 		if ( !$user->can_view('locations') or   !in_array($data['key'], $user->warehouses)   ) {
 			$html=get_locked_warehouse_showcase($data, $smarty, $user, $db);
-			
+
 		}else {
 			$html=get_warehouse_showcase($data, $smarty, $user, $db);
 		}
@@ -931,6 +942,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case ('barcode'):
 			return get_barcode_navigation($data, $smarty, $user, $db, $account);
 			break;
+		case ('deleted_barcode'):
+			return get_deleted_barcode_navigation($data, $smarty, $user, $db, $account);
+			break;	
 		}
 
 		break;
@@ -1229,13 +1243,13 @@ function get_tabs($data, $modules, $user, $smarty) {
 	}
 
 	$smarty->assign('_content', $_content);
-	
-	
+
+
 	if ($data['section']=='warehouse') {
-	    if ( !$user->can_view('locations') or   !in_array($data['key'], $user->warehouses)   ) {
-            return array($data, '');
-        }
-	
+		if ( !$user->can_view('locations') or   !in_array($data['key'], $user->warehouses)   ) {
+			return array($data, '');
+		}
+
 	}
 
 	$html=$smarty->fetch('tabs.tpl');
@@ -1914,6 +1928,11 @@ function get_view_position($state) {
 			$branch[]=array('label'=>$state['_object']->get('Number'), 'icon'=>'barcode', 'reference'=>'');
 
 			break;
+		case 'deleted_barcode':
+			$branch[]=array('label'=>_('Barcodes'), 'icon'=>'', 'reference'=>'inventory/barcodes');
+			$branch[]=array('label'=>$state['_object']->get('Deleted Number').' <i class="fa fa-trash" aria-hidden="true"></i>', 'icon'=>'barcode', 'reference'=>'');
+
+			break;	
 		}
 		break;
 

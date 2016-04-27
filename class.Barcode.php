@@ -37,11 +37,30 @@ class Barcode extends DB_Table{
 
 		if ($key=='id')
 			$sql=sprintf("select * from `Barcode Dimension` where `Barcode Key`=%d", $tag);
-		else
+		elseif ($key=='deleted') {
+			$this->get_deleted_data($tag);
+			return;
+		}else
 			return;
 
 		if ($this->data = $this->db->query($sql)->fetch()) {
 			$this->id=$this->data['Barcode Key'];
+
+		}
+
+
+
+	}
+
+
+	function get_deleted_data( $tag) {
+
+		$this->deleted=true;
+		$sql=sprintf("select * from `Barcode Deleted Dimension` where `Barcode Deleted Key`=%d", $tag);
+
+
+		if ($this->data = $this->db->query($sql)->fetch()) {
+			$this->id=$this->data['Barcode Deleted Key'];
 
 		}
 
@@ -75,12 +94,16 @@ class Barcode extends DB_Table{
 		}
 
 
+		if (strlen($data['Barcode Number'])==12) {
+			$sql=sprintf("select `Barcode Key` from `Barcode Dimension` where  `Barcode Number`=%s  ",
+				prepare_mysql($data['Barcode Number'].$this->get_check_digit('EAN', $data['Barcode Number']))
+			);
+		}else {
 
-
-		$sql=sprintf("select `Barcode Key` from `Barcode Dimension` where  `Barcode Number`=%s  ",
-			prepare_mysql($data['Barcode Number'])
-		);
-
+			$sql=sprintf("select `Barcode Key` from `Barcode Dimension` where  `Barcode Number`=%s  ",
+				prepare_mysql($data['Barcode Number'])
+			);
+		}
 
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
@@ -118,7 +141,27 @@ class Barcode extends DB_Table{
 		}
 
 
+		if ($base_data['Barcode Type']=='EAN') {
 
+
+
+			if (strlen($base_data['Barcode Number'])==12) {
+				$base_data['Barcode Number']=$base_data['Barcode Number'].$this->get_check_digit($base_data['Barcode Type'], $base_data['Barcode Number']);
+			}elseif (strlen($base_data['Barcode Number'])==13) {
+
+				if ($this->get_check_digit($base_data['Barcode Type'], substr($base_data['Barcode Number'], 0, 12)  )!=substr($base_data['Barcode Number'], -1)) {
+
+					$this->error=true;
+					$this->msg=_('Barcode check digit error');
+					return;
+				}
+
+			}else {
+				$this->error=true;
+				$this->msg=_('EAN13 is a barcode format must consist in 12 digits plus 1 check digit');
+			}
+
+		}
 
 		$keys='(';$values='values(';
 		foreach ($base_data as $key=>$value) {
@@ -138,6 +181,14 @@ class Barcode extends DB_Table{
 			$this->get_data('id', $this->id);
 			$this->new=true;
 
+
+			$history_data=array(
+				'History Abstract'=>sprintf(_('Barcode record %s created'), $this->data['Barcode Number']),
+				'History Details'=>'',
+				'Action'=>'created'
+			);
+
+			$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
 
 
 			return;
@@ -161,6 +212,23 @@ class Barcode extends DB_Table{
 
 		switch ($key) {
 
+		case 'Parts':
+			$parts='';
+			$sql=sprintf('select `Part SKU`,`Part Reference` from `Barcode Asset Bridge` left join `Part Dimension` on (`Barcode Asset Type`="Part" and `Barcode Asset Key`=`Part SKU`) where `Barcode Asset Status`="Assigned" and `Barcode Asset Barcode Key`=%d',
+				$this->id);
+
+			if ($result=$this->db->query($sql)) {
+				foreach ($result as $row) {
+					$parts=sprintf(', <i class="fa fa-square fa-fw"></i> <span class="link" onClick="change_view(\'part/%d\')">%s</span>', $row['Part SKU'], $row['Part Reference']);
+				}
+				$parts=preg_replace('/^, /', '', $parts);
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+			return $parts;
+			break;
 		case 'Status':
 
 			switch ($this->data['Barcode Status']) {
@@ -199,6 +267,7 @@ class Barcode extends DB_Table{
 	function update_field_switcher($field, $value, $options='', $metadata='') {
 
 
+		if ($this->deleted)return;
 
 		switch ($field) {
 
@@ -262,30 +331,62 @@ class Barcode extends DB_Table{
 
 			$this->update_status();
 
-
 			if ($asset_data['Barcode Asset Type']=='Part') {
-				$part=new Part($asset_data['Barcode Asset Key']);
-				$part->update(
-					array(
-						'Part Barcode Number'=>$this->get('Barcode Number'),
-						'Part Barcode Key'=>$this->id,
-
-					),  'no_history');
+				$asset=get_object($asset_data['Barcode Asset Type'], $asset_data['Barcode Asset Key']);
+				$asset_label=sprintf('<i class="fa fa-square fa-fw"></i> <span class="link" onClick="change_view(\'part/%d\')">%s</span>', $asset->get('Part SKU'), $asset->get('Part Reference'));
+			}else {
+				$asset_label='asset';
 			}
 
+			$history_data=array(
+				'History Abstract'=>sprintf(_('%s associated'), $asset_label ),
+				'History Details'=>'',
+				'Action'=>'associated'
+			);
+
+			$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
 
 
 
 
 			return;
 		}else {
-			$this->msg=_("Error, can not create assing asset");
+			$this->msg=_("Error, can't assing asset");
 			print $sql;
 			exit;
 		}
 
 
 
+
+	}
+
+
+	function withdrawn_asset($asset_data) {
+
+
+		$sql=sprintf("update  `Barcode Asset Bridge` set `Barcode Asset Status`='Historic',`Barcode Asset Withdrawn Date`=%s  where `Barcode Asset Status`='Assigned' and `Barcode Asset Type`=%s and `Barcode Asset Key`=%d ",
+			prepare_mysql(gmdate('Y-m-d H:i:s')),
+			prepare_mysql($asset_data['Barcode Asset Type']),
+			$asset_data['Barcode Asset Key']
+		);
+
+
+		$this->db->exec($sql);
+		$this->update_status();
+
+		if ($asset_data['Barcode Asset Type']=='Part') {
+			$asset=get_object($asset_data['Barcode Asset Type'], $asset_data['Barcode Asset Key']);
+			$asset_label=sprintf('<i class="fa fa-square fa-fw"></i> <span class="link" onClick="change_view(\'part/%d\')">%s</span>', $asset->get('Part SKU'), $asset->get('Part Reference'));
+		}else {
+			$asset_label='asset';
+		}
+		$history_data=array(
+			'History Abstract'=>sprintf(_('%s disassociated'), $asset_label ),
+			'History Details'=>'',
+			'Action'=>'disassociate'
+		);
+			$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
 
 	}
 
@@ -342,7 +443,7 @@ class Barcode extends DB_Table{
 			$label=_('used from');
 			break;
 		case 'Barcode Sticky Note':
-			$label=_('sticky note');
+			$label=_('note');
 			break;
 		default:
 			$label=$field;
@@ -353,6 +454,83 @@ class Barcode extends DB_Table{
 
 	}
 
+
+	function delete($metadata=false) {
+
+
+		$sql=sprintf("select `Barcode Asset Type`,`Barcode Asset Key` from `Barcode Asset Bridge` where `Barcode Asset Status`='Assigned' and `Barcode Asset Barcode Key`=%d ",
+			$this->id
+		);
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$asset_data=array(
+					'Barcode Asset Type'=>$row['Barcode Asset Type'],
+					'Barcode Asset Key'=>$row['Barcode Asset Key']
+				);
+
+				$this->withdrawn_asset($asset_data);
+
+				$asset=get_object($row['Barcode Asset Type'], $row['Barcode Asset Key']);
+				$asset->update(array($asset->table_name.' Barcode Key'=>''), 'no_history');
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+		$sql=sprintf('insert into `Barcode Deleted Dimension`  (`Barcode Deleted Key`,`Barcode Deleted Type`,`Barcode Deleted Number`,`Barcode Deleted Sticky Note`) values (%d,%s,%s,%s) ',
+			$this->id,
+			prepare_mysql($this->get('Barcode Type')),
+			prepare_mysql($this->get('Barcode Number')),
+			prepare_mysql($this->get('Barcode Sticky Note'))
+
+
+		);
+		$this->db->exec($sql);
+
+
+
+		$sql=sprintf('delete from `Barcode Dimension`  where `Barcode Key`=%d ',
+			$this->id
+		);
+		$this->db->exec($sql);
+
+
+		$history_data=array(
+			'History Abstract'=>sprintf(_('Barcode record %s deleted'), $this->data['Barcode Number']),
+			'History Details'=>'',
+			'Action'=>'deleted'
+		);
+
+		$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
+
+
+		$this->deleted=true;
+	}
+
+
+	function get_check_digit($type, $digits) {
+
+		switch ($type) {
+		case 'EAN':
+			$digits =(string)$digits;
+			$even_sum = $digits{1} + $digits{3} + $digits{5} + $digits{7} + $digits{9} + $digits{11};
+			$even_sum_three = $even_sum * 3;
+			$odd_sum = $digits{0} + $digits{2} + $digits{4} + $digits{6} + $digits{8} + $digits{10};
+			$total_sum = $even_sum_three + $odd_sum;
+			$next_ten = (ceil($total_sum/10))*10;
+			$check_digit = $next_ten - $total_sum;
+			return  $check_digit;
+			break;
+		default:
+			return '';
+			break;
+		}
+
+
+	}
 
 
 }

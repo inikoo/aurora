@@ -30,7 +30,9 @@ if(isset($_REQUEST['scale']) and is_numeric($_REQUEST['scale'])){
 
 include_once('external_libs/barcodes/ean.php');
 
-$ean = new EAN($number,$scale);
+
+
+$ean = new EAN(substr($number,0,12),$scale);
 	
 $ean->display();
 
