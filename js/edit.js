@@ -9,8 +9,7 @@ function open_edit_this_field(scope) {
 
     var field = $(scope).closest('tr').attr('field')
 
-   // console.log($('#' + field + '_lock'))
-
+    // console.log($('#' + field + '_lock'))
     if ($('#' + field + '_lock').hasClass('hide')) {
         open_edit_field($('#fields').attr('object'), $('#fields').attr('key'), field)
     }
@@ -49,6 +48,20 @@ function open_edit_field(object, key, field) {
     case 'pin':
     case 'password':
     case 'dimensions':
+
+
+        $('#' + field).removeClass('hide')
+        $('#' + field).focus()
+        $('#' + field + '_save_button').removeClass('hide')
+        break;
+    case 'barcode':
+    
+    
+    if( $('#' + field + '_value').val()==''){
+    
+        $('#' + field + '_assign_available_barcode').removeClass('hide')
+}
+
         $('#' + field).removeClass('hide')
         $('#' + field).focus()
         $('#' + field + '_save_button').removeClass('hide')
@@ -210,7 +223,6 @@ function close_edit_field(field) {
     case 'numeric':
     case 'amount':
     case 'amount_margin':
-
     case 'dimensions':
 
         $('#' + field).addClass('hide')
@@ -218,6 +230,12 @@ function close_edit_field(field) {
 
         //$('#' + field + '_editor').removeClass('changed')
         break;
+
+    case 'barcode':
+        $('#' + field + '_assign_available_barcode').addClass('hide')
+        $('#' + field).addClass('hide')
+        break;
+
     case 'country_select':
 
         $('#' + field + '_field div.country-select.inside .flag-dropdown').css({
@@ -462,7 +480,7 @@ function on_changed_confirm_value(field, confirm_value) {
 function on_changed_value(field, new_value) {
 
 
-    
+
 
     //console.log('changed: ' + field)
     var object = $('#fields').attr('object');
@@ -488,7 +506,7 @@ function on_changed_value(field, new_value) {
     }
 
 
- $('#' + field).closest('tbody.address_fields').attr('has_been_changed', 1)
+    $('#' + field).closest('tbody.address_fields').attr('has_been_changed', 1)
 
     $('#' + field).attr('has_been_changed', 1)
 
@@ -500,9 +518,9 @@ function on_changed_value(field, new_value) {
 
 
     var validation = validate(field, new_value)
-    
-    
-    
+
+
+
     process_validation(validation, field, false)
 
 
@@ -532,12 +550,12 @@ function validate(field, value) {
     var key = field_data.attr('key')
     var type = field_data.attr('field_type')
 
-  if(field_data.hasClass('address_value')){
-                var required = field_data.closest('tbody.address_fields').attr('_required')
+    if (field_data.hasClass('address_value')) {
+        var required = field_data.closest('tbody.address_fields').attr('_required')
 
-        }else{
+    } else {
         var required = field_data.attr('_required')
-        }
+    }
 
 
     if (type == 'salary') {
@@ -777,13 +795,12 @@ function save_field(object, key, field) {
 
     if (!$("#" + field + '_field').hasClass('changed')) {
 
-        //console.log('no_change :(' + field)
+        console.log('no_change :(' + field)
         return;
     }
 
     if (!$("#" + field + '_field').hasClass('valid')) {
-        //console.log('invalid x')
-
+        console.log('field invalid x')
         show_invalid_messages(field)
 
         return;
@@ -871,8 +888,7 @@ function save_field(object, key, field) {
 
             $('#' + field + '_value').val(data.value)
 
-//console.log(field)
-
+            //console.log(field)
             $('.' + field).html(data.formatted_value)
             if (type == 'option') {
                 $('#' + field + '_options li .current_mark').removeClass('current')
@@ -1353,19 +1369,19 @@ function on_changed_address_value(field, address_field, new_address_field_value)
         //console.log("#" + field + '_editor')
         var changed = true;
 
-    $('#' + field+'_address_fields').attr('has_been_changed', 1)
+        $('#' + field + '_address_fields').attr('has_been_changed', 1)
 
 
 
     } else {
         $("#" + field + '_editor').removeClass('changed')
         var changed = false;
-            $('#' + field+'_address_fields').attr('has_been_changed', 0)
+        $('#' + field + '_address_fields').attr('has_been_changed', 0)
 
     }
 
 
-  
+
 
 
     $('#' + field + '_save_button').removeClass('invalid valid potentially_valid')
@@ -1604,5 +1620,73 @@ function select_dropdown_option(field, value, formatted_value) {
     on_changed_value(field, value)
 
     $('#' + field + '_results_container').addClass('hide').removeClass('show')
+
+}
+
+
+
+
+
+function assign_available_barcode(field) {
+    var request = '/ar_edit.php?tipo=get_available_barcode'
+
+    $.getJSON(request, function(data) {
+        if (data.state == 200) {
+            if (data.barcode_number == '') {
+
+            } else {
+                $('#' + field).val(data.barcode_number)
+                $("#" + field + '_field').addClass('changed').addClass('valid')
+                save_field($('#fields').attr('object'), $('#fields').attr('key'), field)
+            }
+
+        } else if (data.state == 400) {
+
+        }
+
+
+    })
+
+
+}
+
+
+
+function toggle_unlock_delete_object(element) {
+
+    if ($(element).hasClass('fa-lock')) {
+        $(element).removeClass('fa-lock').addClass('fa-unlock')
+        $(element).nextAll('span:first').removeClass('disabled').addClass('button')
+    } else {
+        $(element).addClass('fa-lock').removeClass('fa-unlock')
+        $(element).nextAll('span:first').addClass('disabled').removeClass('button')
+    }
+}
+
+
+function delete_object(element) {
+    if ($(element).hasClass('disabled')) {
+        return
+    }
+
+
+    if (!$(element).find('i.fa').removeClass('fa-trash')) return;
+
+    $(element).find('i.fa').removeClass('fa-trash').addClass('fa-spinner fa-spin')
+
+    var request = '/ar_edit.php?tipo=delete&object=' + $('#fields').attr('object') + '&key=' + $('#fields').attr('key')
+
+    $.getJSON(request, function(data) {
+        if (data.state == 200) {
+            change_view(state.request)
+
+        } else if (data.state == 400) {
+            $(element).find('i.fa').addClass('fa-trash').remove('fa-spinner fa-spin')
+ 
+        }
+
+
+    })
+
 
 }

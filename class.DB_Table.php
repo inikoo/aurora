@@ -7,6 +7,7 @@ abstract class DB_Table {
 	public $data=array();
 	public  $id=0;
 	public $warning=false;
+	public $deleted=false;
 	public $error=false;
 	public $msg='';
 	public $new=false;
@@ -308,7 +309,7 @@ abstract class DB_Table {
 
 
 			if (
-				preg_match('/attachment bridge|site|page|part|customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position|category/i', $table_name)
+				preg_match('/attachment bridge|site|page|part|barcode|customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position|category/i', $table_name)
 				and !$this->new
 				and $save_history
 			) {

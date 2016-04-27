@@ -41,7 +41,7 @@
 		    <td id="{$field.id}_label" class="label" ><span>{$field.label}</span></td>
 		    <td class="show_buttons  {if $edit=='address'}address {/if}" > 
 		
-		<i id="{$field.id}_lock" class="fa fa-lock fw {if $edit!='' or $class=='new'  }hide{/if} edit lock"></i>
+		<i id="{$field.id}_lock" class="fa fa-lock fw {if $edit!='' or $class=='new'  or $class=='operation'  }hide{/if} edit lock"></i>
 		<i class="fa fa-lock fw {if !$linked  }hide{/if} edit"></i>  
   
 		<i id="{$field.id}_reset_button" class="fa fa-sign-out fa-flip-horizontal fw reset hide reset_button" onclick="close_edit_this_field(this)"></i> 
@@ -64,7 +64,24 @@
 		<span id="{$field.id}_msg" class="msg"></span> 
 		<span id="{$field.id}_info" class="hide"></span>
 		
+		   
+		{elseif $edit=='barcode'  } 
 		
+	
+	<span id="{$field.id}_assign_available_barcode" class="fa-stack fa-lg button hide" available_barcodes="{$available_barcodes}" title="{t}Assign next available barcode{/t}" onClick="assign_available_barcode('{$field.id}')">
+  <i class="fa fa-barcode fa-stack-1x"></i>
+  <i class="fa fa-bolt fa-inverse fa-stack-1x"></i>
+</span>
+	
+		 
+		
+		
+		
+		<input id="{$field.id}" class="input_field hide" value="{$field.value}" has_been_valid="0" {if isset($field.placeholder)}placeholder="{$field.placeholder}"{/if} />
+		<i id="{$field.id}_save_button" class="fa fa-cloud save {$edit} hide" onclick="save_this_field(this)"></i> 
+		<span id="{$field.id}_msg" class="msg"></span> 
+		<span id="{$field.id}_info" class="hide"></span>
+	
 		{elseif $edit=='telephone'  or $edit=='new_telephone' } 
 	    <input  id="{$field.id}" class="input_field telephone_input_field hide" value="" has_been_valid="0"/>
 		<i id="{$field.id}_save_button" class="fa fa-cloud  save {$edit} hide" onclick="save_this_field(this)"></i> 

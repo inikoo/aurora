@@ -1,4 +1,5 @@
-	<span id="invalid_msg" class="hide">{t}Invalid value{/t}</span> 
+<div id="inline_form" style="float:right" class="hide">
+<span id="invalid_msg" class="hide">{t}Invalid value{/t}</span> 
 
 <span id="fields" object='{$data.object}' key='' parent='{$data.parent}' parent_key='{$data.parent_key}' >
 <span id="inline_new_object" class=" hide"   object='{$data.object}' key='' parent='{$data.parent}' parent_key='{$data.parent_key}' field='{$data.field_id}' >
@@ -12,7 +13,7 @@
 <i id="{$data.object}_save"  class=" fa fa-cloud fa-fw save"></i> </span> 
 </span> 
 </span>
-
+</div>
 <script>
 
 $('#{$trigger}').on("click", function() {

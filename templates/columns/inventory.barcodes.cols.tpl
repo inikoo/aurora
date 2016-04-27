@@ -6,13 +6,14 @@ var columns = [
      renderable: false,
     cell: "string",
 
-},{
-    name: "number",
-    label: "{t}Number{/t}",
+},
+{
+    name: "link",
+    label: "",
     editable: false,
-     sortType: "toggle",
+     
     
-    cell: Backgrid.StringCell.extend({
+    cell: Backgrid.HtmlCell.extend({
         orderSeparator: '',
         events: {
             "click": function() {
@@ -24,10 +25,27 @@ var columns = [
        
 })
    
-},{
+},
+{
+    name: "number",
+    label: "{t}Number{/t}",
+    editable: false,
+     sortType: "toggle",
+    
+    cell: Backgrid.StringCell.extend({
+        orderSeparator: '',
+        events: {
+          
+        },
+      
+       
+})
+   
+},
+{
     name: "status",
     label: "{t}Status{/t}",
-    editable: true,
+    editable: false,
      sortType: "toggle",
     
     cell: Backgrid.HtmlCell.extend({
@@ -38,7 +56,7 @@ var columns = [
 },{
     name: "notes",
     label: "{t}Notes{/t}",
-    editable: true,
+    editable: false,
      sortType: "toggle",
     
     cell: Backgrid.StringCell.extend({
@@ -49,7 +67,7 @@ var columns = [
 },{
     name: "assets",
     label: "{t}Parts{/t}",
-    editable: true,
+    editable: false,
      sortType: "toggle",
     
     cell: "html",

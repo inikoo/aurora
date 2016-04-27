@@ -36,8 +36,29 @@ $parameters=array(
 
 );
 
+$table_buttons=array();
+$table_buttons[]=array(
+	'icon'=>'plus',
+	'title'=>_('New timesheet record'),
+	'id'=>'new_record',
+	'inline_new_object'=>
+	array(
+		'field_id'=>'Barcode_Range',
+		'field_label'=>_('Add barcodes').':',
+		'field_edit'=>'barcode_range',
+		'object'=>'Barcode',
+		'parent'=>$state['parent'],
+		'parent_key'=>$state['parent_key'],
+
+	)
+
+);
+$smarty->assign('table_buttons', $table_buttons);
+
+
 
 include 'utils/get_table_html.php';
+$html=$html.'<div id="fields" object="Barcode"></div>';
 
 
 ?>

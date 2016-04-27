@@ -949,7 +949,17 @@ $modules=array(
 				'type'=>'object', 
 				'tabs'=>array(
 					'barcode.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+										'barcode.history'=>array('label'=>_('History'), 'icon'=>'history'),
+
 					'barcode.assets'=>array('label'=>_('Products/Parts'), 'icon'=>'cube'),
+
+				)
+			),
+				'deleted_barcode'=>array(
+				'type'=>'object', 
+				'tabs'=>array(
+										'barcode.history'=>array('label'=>_('History'), 'icon'=>'history'),
+
 
 				)
 			),

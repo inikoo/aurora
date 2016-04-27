@@ -91,10 +91,10 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
 					$barcode_data['Barcode Status']='Reserved';
 					$note=$data[2].', '.$note;
 					$note=preg_replace('/\, $/', '', $note);
-					
+
 					$barcode_data['Barcode Sticky Note']=$note;
-					
-					
+
+
 				}
 
 
@@ -112,6 +112,13 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
 
 				$barcode->assign_asset($asset_data);
 
+
+				$sql=sprintf('update `Part Dimension` set `Part Barcode Number`=%s,`Part Barcode Key`=%d where `Part SKU`=%d ',
+					prepare_mysql($barcode->get('Barcode Number')),
+					$barcode->id,
+					$part->id
+				);
+				$db->exec($sql);
 
 			}
 

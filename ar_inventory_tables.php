@@ -448,7 +448,8 @@ function barcodes($_data, $db, $user) {
 
 			$adata[]=array(
 				'id'=>(integer)$data['Barcode Key'],
-
+                'link'=>'<i class="fa fa-barcode "></i>',
+               // '<span class="fa-stack fa-lg"><i class="fa fa-barcode fa-stack-1x"></i><i class="fa fa-angle-down fa-inverse fa-stack-1x"></i></span>',
 				'number'=>$data['Barcode Number'],
 
 				'status'=>$status,

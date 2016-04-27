@@ -313,7 +313,77 @@ class Account extends DB_Table{
 	}
 
 
-function create_warehouse($data) {
+
+	function create_barcode($data) {
+
+		$this->new_object=false;
+
+		$data['editor']=$this->editor;
+
+		$this->errors=0;
+		$this->new=0;
+
+		$range=preg_split('/-/', $data['Barcode Range']);
+		unset($data['Barcode Range']);
+
+		if (count($range)==1) {
+			$data['Barcode Number']=$range[0];
+			$data['Barcode Used From']=gmdate('Y-m-d H:i:s');
+			$data['editor']['Date']=gmdate('Y-m-d H:i:s');
+
+			$barcode= new Barcode('find', $data, 'create');
+			if (!$barcode->id) {
+				$this->error=true;
+					$this->msg=$barcode->msg;
+					return;
+			}else {
+				if ($barcode->new) {
+					$this->new++;
+				}else {
+					$this->error=true;
+					$this->msg=$barcode->msg;
+					return;
+				}
+			}
+		}elseif (count($range)==2) {
+
+			for ($i=$range[0]; $i <=  $range[1];  $i++) {
+				$data['Barcode Number']=$i;
+				$data['Barcode Used From']=gmdate('Y-m-d H:i:s');
+				$data['editor']['Date']=gmdate('Y-m-d H:i:s');
+
+				$barcode= new Barcode('find', $data, 'create');
+				if (!$barcode->id) {
+					$this->errors++;
+				}else {
+					if ($barcode->new) {
+						$this->new++;
+					}else {
+						$this->errors++;
+					}
+				}
+			}
+		}else {
+			$this->error=true;
+			$this->msg=_('None of the barcodes cound be added');
+			return;
+		}
+
+
+
+
+		if ($this->new==0) {
+			$this->error=true;
+			$this->msg=_('None of the barcodes cound be added');
+			return;
+		}
+
+		return $barcode;
+	}
+
+
+
+	function create_warehouse($data) {
 
 		$this->new_object=false;
 
@@ -321,7 +391,7 @@ function create_warehouse($data) {
 
 		$data['Warehouse State']='Active';
 		$data['Warehouse Valid From']=gmdate('Y-m-d H:i:s');
-	
+
 		$warehouse= new Warehouse('find', $data, 'create');
 
 		if ($warehouse->id) {
@@ -372,14 +442,14 @@ function create_warehouse($data) {
 		}
 
 
-        $country_code=$data['Supplier Contact Address country'];
-        if(strlen($country_code)==3){
-            include_once('class.Country.php');
-            $country=new Country('code',$country_code);
-            $country_code=$country->get('Country 2 Alpha Code');
-        
-        }
-        
+		$country_code=$data['Supplier Contact Address country'];
+		if (strlen($country_code)==3) {
+			include_once 'class.Country.php';
+			$country=new Country('code', $country_code);
+			$country_code=$country->get('Country 2 Alpha Code');
+
+		}
+
 
 		$address_fields=array(
 			'Address Recipient'=>$data['Supplier Main Contact Name'],

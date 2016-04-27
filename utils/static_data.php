@@ -51,7 +51,7 @@ function get_countries($db) {
 		foreach ($result as $row) {
 			$name=_($row['Country Name']);
 			$data[]=array(
-				'name'=>($name==$row['Country Local Name'] ?$name:$name.' ('.$row['Country Local Name'].')'),
+				'name'=>(( $name==$row['Country Local Name'] or $row['Country Local Name']==''  )?$name:$name.' ('.$row['Country Local Name'].')'),
 				'iso2'=>strtolower($row['Country 2 Alpha Code']),
 				'code'=>$row['Country Code'],
 				'currency'=>$row['Country Currency Code'],

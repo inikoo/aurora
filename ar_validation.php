@@ -78,22 +78,22 @@ function check_for_duplicates($data, $db, $user, $account) {
 
 		break;
 	case 'Contractor':
-	
+
 		switch ($field) {
 		case 'Staff ID':
 			$invalid_msg=_('Another contractor is using this payroll Id');
 			$sql=sprintf("select `Staff Key` as `key` ,`Staff Alias` as field from `Staff Dimension` where `Staff ID`=%s",
-			prepare_mysql($data['value'])
+				prepare_mysql($data['value'])
 			);
-						$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
+			$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
 
 			break;
 		case 'Staff Alias':
 			$invalid_msg=_('Another contractor is using this code');
 			$sql=sprintf("select `Staff Key` as `key` ,`Staff Alias` as field from `Staff Dimension` where `Staff Alias`=%s",
-			prepare_mysql($data['value'])
+				prepare_mysql($data['value'])
 			);
-						$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
+			$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
 
 			break;
 		case 'Staff User Handle':
@@ -109,8 +109,8 @@ function check_for_duplicates($data, $db, $user, $account) {
 		}
 
 
-		break;	
-		
+		break;
+
 	case 'Staff':
 		switch ($field) {
 		case 'Staff ID':
@@ -275,14 +275,14 @@ function check_for_duplicates($data, $db, $user, $account) {
 
 
 		break;
-		
+
 	case 'Supplier':
 		switch ($field) {
 		case 'Supplier Main Plain Email':
 			$invalid_msg=_('Another supplier have this email');
 			$sql=sprintf("select `Supplier Key` as `key` ,`Supplier Main Plain Email` as field from `Supplier Dimension` where `Supplier Main Plain Email`=%s  ",
 				prepare_mysql($data['value'])
-				
+
 			);
 			$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
 
@@ -378,23 +378,37 @@ function check_for_duplicates($data, $db, $user, $account) {
 		}
 
 
-		break;	
+		break;
 	case 'Part':
-	switch ($field) {
+		switch ($field) {
+
+		case 'Part Barcode Number':
+		case 'Part Part Barcode Number':
+
+
+
+			$invalid_msg=_('Part barcode already used');
+			$sql=sprintf("select P.`Part SKU` as `key` ,`Part Barcode Number` as field from `Part Dimension` P where  `Part Barcode Number`=%s   ",
+				prepare_mysql($data['value'])
+			);
+			$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
+
+
+			break;
 		case 'Part Reference':
 		case 'Part Part Reference':
-		
-		
-		
-		$invalid_msg=_('Part reference already used');
-				$sql=sprintf("select P.`Part SKU` as `key` ,`Part Reference` as field from `Part Dimension` P where  `Part Reference`=%s  and `Part Status`='In Use' ",
-					prepare_mysql($data['value'])
-				);
-		$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
-		
+
+
+
+			$invalid_msg=_('Part reference already used');
+			$sql=sprintf("select P.`Part SKU` as `key` ,`Part Reference` as field from `Part Dimension` P where  `Part Reference`=%s  and `Part Status`='In Use' ",
+				prepare_mysql($data['value'])
+			);
+			$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
+
 		}
-	
-	break;	
+
+		break;
 
 	default:
 
@@ -415,7 +429,7 @@ function check_for_duplicates($data, $db, $user, $account) {
 			break;
 		case 'supplier':
 			$parent_where=sprintf(' and `%s Supplier Key`=%d ', $data['object'], $data['parent_key']);
-			break;	
+			break;
 		default:
 			$parent_where='';
 		}

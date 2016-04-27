@@ -93,6 +93,9 @@ elseif ($parameters['parent']=='user') {
 }elseif ($parameters['parent']=='supplier_part') {
 	$where=sprintf(' where   B.`Supplier Part Key`=%d   ', $parameters['parent_key']);
 	$subject='Supplier Part';
+}elseif ($parameters['parent']=='barcode') {
+	$where=sprintf(' where   B.`Barcode Key`=%d   ', $parameters['parent_key']);
+	$subject='Barcode';
 }else {
 	print_r($parameters);
 	exit('parent not set up '.$parameters['parent']);

@@ -39,6 +39,17 @@ case 'edit_field':
 
 	edit_field($account, $db, $user, $editor, $data, $smarty);
 	break;
+case 'delete':
+
+	$data=prepare_values($_REQUEST, array(
+			'object'=>array('type'=>'string'),
+			'key'=>array('type'=>'key'),
+			'metadata'=>array('type'=>'json array', 'optional'=>true),
+
+		));
+
+	delete($account, $db, $user, $editor, $data, $smarty);
+	break;
 case 'delete_object_component':
 
 	$data=prepare_values($_REQUEST, array(
@@ -84,12 +95,16 @@ case 'new_object':
 
 	new_object($account, $db, $user, $editor, $data, $smarty);
 	break;
+case 'get_available_barcode':
+	get_available_barcode($db);
+	break;
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
 	exit;
 	break;
 }
+
 
 
 function edit_field($account, $db, $user, $editor, $data, $smarty) {
@@ -127,18 +142,18 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 
 	if (isset($data['metadata'])) {
-	
-	
-	
+
+
+
 		$object->update(array($field=>$data['value']), $options, $data['metadata']);
-	
+
 	}else {
-	
+
 		$object->update(array($field=>$data['value']), $options);
 	}
 
 
-//print_r($data['metadata']);
+	//print_r($data['metadata']);
 
 	if (isset($data['metadata'])) {
 		if (isset($data['metadata']['extra_fields'])) {
@@ -157,8 +172,8 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 
 	}
-	
-	
+
+
 
 
 	if ($object->error) {
@@ -180,10 +195,16 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 		if ($object->updated) {
 			$msg=sprintf('<span class="success"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $data['field'], _('Updated'));
 
-			$formatted_value=$object->get($formatted_field);
+
+			if (isset($object->deleted_value)) {
+							$msg=sprintf('<span class="deleted">%s</span> <span class="discret"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $object->deleted_value,  $data['field'],_('Deleted'));
+
+					}
+
+            $formatted_value=$object->get($formatted_field);
 
 			$action='updated';
-		}elseif (isset($object->deleted)) {
+		}elseif (isset($object->field_deleted)) {
 			$msg=sprintf('<span class="discret"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $data['field'], _('Deleted'));
 			$formatted_value=sprintf('<span class="deleted">%s</span>', $object->deleted_value);
 			$action='deleted';
@@ -411,6 +432,34 @@ function delete_object_component($account, $db, $user, $editor, $data, $smarty) 
 }
 
 
+function delete($account, $db, $user, $editor, $data, $smarty) {
+
+
+	$object=get_object($data['object'], $data['key']);
+	$object->editor=$editor;
+
+	if (!$object->id) {
+		$response=array('state'=>405, 'resp'=>'Object not found');
+		echo json_encode($response);
+		exit;
+
+	}
+
+	$object->delete();
+
+	if ($object->deleted) {
+		$response=array('state'=>200);
+	}else {
+		$response=array('state'=>400, 'resp'=>$object->msg);
+	}
+
+
+	echo json_encode($response);
+
+
+}
+
+
 function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
@@ -419,6 +468,20 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 	$parent->editor=$editor;
 
 	switch ($data['object']) {
+
+	case 'Barcode':
+		include_once 'class.Barcode.php';
+		$object=$parent->create_barcode($data['fields_data']);
+		if (!$parent->error) {
+
+		}
+
+		$pcard='';
+		$updated_data=array();
+
+
+		break;
+
 	case 'Part':
 		include_once 'class.Part.php';
 		$object=$parent->create_part($data['fields_data']);
@@ -638,9 +701,9 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
 	if ($parent->error) {
-	
-	
-	
+
+
+
 		$response=array(
 			'state'=>400,
 			'msg'=>'<i class="fa fa-exclamation-circle"></i> '.$parent->msg,
@@ -711,6 +774,24 @@ function delete_image($account, $db, $user, $editor, $data, $smarty) {
 
 }
 
+
+function get_available_barcode($db) {
+	$barcode_number='';
+	$sql=sprintf("select `Barcode Number` from `Barcode Dimension` where `Barcode Status`='Available' order by `Barcode Number`");
+	if ($result=$db->query($sql)) {
+		if ($row = $result->fetch()) {
+			$barcode_number=$row['Barcode Number'];
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+	$response=array('state'=>200, 'barcode_number'=>$barcode_number);
+	echo json_encode($response);
+	exit;
+
+}
 
 
 

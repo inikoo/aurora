@@ -11,17 +11,30 @@
 */
 
 
-function get_object_fields($object, $db, $user,$smarty,$options=false) {
+function get_object_fields($object, $db, $user, $smarty, $options=false) {
 
 
-$account=new Account($db);
+	$account=new Account($db);
 
- $edit=true;
+	$edit=true;
+
+
 
 	switch ($object->get_object_name()) {
-	
+	case 'Barcode':
+
+			include 'fields/barcode.fld.php';
+		return $barcode_fields;
+		break;
+	case 'User':
+
+		if ($options['type']=='profile') {
+			include 'fields/profile.fld.php';
+		}
+		return $object_fields;
+		break;
 	case 'Customer':
-	
+
 		include 'fields/customer.fld.php';
 		return $customer_fields;
 		break;
@@ -57,10 +70,10 @@ $account=new Account($db);
 		break;
 
 	case 'Store':
-	
+
 		if (!in_array($object->id, $user->stores)) {
-            $edit=false;
-	    }
+			$edit=false;
+		}
 		include 'fields/store.fld.php';
 		return $object_fields;
 		break;

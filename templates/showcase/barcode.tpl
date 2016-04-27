@@ -17,22 +17,10 @@
 		<div style="clear:both">
 		</div>
 		<div class="data_container">
-			
-			
-			<div class="wraptocenter  " >
-				
+					
+			<div class="wraptocenter" style="height:100px" >
 				<img src="/barcode_asset.php?number={$barcode->get('Barcode Number')}&scale=10"  >
-				
-				</span>
-				
 			</div>	
-
-			
-			
-				
-				
-				
-			
 		</div>
 		{include file='sticky_note.tpl' object='Category'  key=$barcode->id sticky_note_field='Store_Product_Sticky_Note' _object=$barcode}
 
@@ -49,6 +37,7 @@
 			<table border="0" class="overview" style="">
 				<tr id="status_tr" class="main">
 					<td  class=" highlight">{$barcode->get('Status')} </td>
+					<td class="aright"> {$barcode->get('Parts')} </td>
 				</tr>
 				
 				

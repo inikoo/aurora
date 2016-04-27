@@ -1458,7 +1458,7 @@ class Subject extends DB_Table {
 			}
 
 			$this->other_fields_updated=array(
-				$this->table_name.'_ Name'=>array(
+				$this->table_name.'_Name'=>array(
 					'field'=>$this->table_name.'_Name',
 					'render'=>true,
 					'value'=>$this->get($this->table_name.' Name'),
