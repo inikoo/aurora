@@ -51,8 +51,6 @@ $smarty->assign('js_code', 'js/injections/timesheet_records.'.(_DEVEL?'':'min.')
 
 include 'utils/get_table_html.php';
 
-$html=$html.'<div id="fields" object="Timesheet_Record"></div>
-
-';
+$html=$html.'<div id="fields" object="Timesheet_Record"></div>';
 
 ?>

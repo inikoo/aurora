@@ -73,7 +73,9 @@ $order='B.'.$order;
 
 $sql_totals="select count(Distinct `Barcode Key`) as num from $table  $where  ";
 
-$fields.='`Barcode Key`,`Barcode Number`,`Barcode Status`,`Barcode Sticky Note`,(select CONCAT_WS(",",`Part SKU`,`Part Reference`) from `Barcode Asset Bridge` left join `Part Dimension` on (`Barcode Asset Type`="Part" and `Barcode Asset Key`=`Part SKU`) where `Barcode Asset Status`="Assigned" and `Barcode Asset Barcode Key`=B.`Barcode Key` limit 1 ) as parts';
+$fields.='`Barcode Key`,`Barcode Number`,`Barcode Status`,`Barcode Sticky Note`,
+(select CONCAT_WS(",",`Part SKU`,`Part Reference`) from `Barcode Asset Bridge` left join `Part Dimension` on (`Barcode Asset Type`="Part" and `Barcode Asset Key`=`Part SKU`) where `Barcode Asset Status`="Assigned" and `Barcode Asset Barcode Key`=B.`Barcode Key` limit 1 ) as parts
+';
 
 
 

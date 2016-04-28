@@ -173,7 +173,12 @@ function get_object($object_name, $key, $load_other_data=false) {
 	case 'Barcode':
 		require_once "class.Barcode.php";
 		$object=new Barcode($key);
-		break;			
+		break;	
+	case 'agent':
+	case 'Agent':
+		require_once "class.Agent.php";
+		$object=new Agent($key);
+		break;				
 	default:
 		exit('need to complete E1 '.$object_name);
 		break;

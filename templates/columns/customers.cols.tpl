@@ -126,7 +126,7 @@ var columns = [
 }, {
     name: "company_name",
     label: "{t}Company{/t}",
-    editable: true,
+    editable: false,
     sortType: "toggle",
     cell: Backgrid.StringCell.extend({
         events: {
@@ -136,7 +136,7 @@ var columns = [
 }, {
     name: "contact_name",
     label: "{t}Main contact{/t}",
-    editable: true,
+    editable: false,
     sortType: "toggle",
     cell: Backgrid.StringCell.extend({
         events: {
@@ -146,7 +146,7 @@ var columns = [
 }, {
     name: "email",
     label: "{t}Email{/t}",
-    editable: true,
+    editable: false,
     sortType: "toggle",
     cell: Backgrid.EmailCell.extend({
         events: {
@@ -156,7 +156,7 @@ var columns = [
 }, {
     name: "mobile",
     label: "{t}Mobile{/t}",
-    editable: true,
+    editable: false,
     sortType: "toggle",
     cell: Backgrid.StringCell.extend({
         events: {
@@ -166,7 +166,7 @@ var columns = [
 }, {
     name: "telephone",
     label: "{t}Telephone{/t}",
-    editable: true,
+    editable: false,
     sortType: "toggle",
     cell: Backgrid.StringCell.extend({
         events: {

@@ -540,6 +540,37 @@ $tab_defaults=array(
 		'elements_type'=>each($elements_options['supplier_part_history'])['key'],
 		'elements'=>$elements_options['supplier_part_history']
 	),
+	'agents'=>array(
+		'view'=>'overview',
+		'sort_key'=>'code',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'name',
+		'f_period'=>'ytd',
+	),
+	'agent.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'note',
+		'elements_type'=>each($elements_options['agent_history'])['key'],
+		'elements'=>$elements_options['agent_history']
+	),
+	'agent.supplier_parts'=>array(
+		'view'=>'overview',
+		'sort_key'=>'reference',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'reference',
+		'elements_type'=>each($elements_options['supplier_parts'])['key'],
+		'elements'=>$elements_options['supplier_parts']
+
+	),
+
 	'warehouses'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',

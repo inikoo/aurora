@@ -17,7 +17,7 @@ var columns = [
         orderSeparator: '',
         events: {
             "click": function() {
-                change_view('supplier{if $data.object=='list'}/list/{$data.key}{/if}/' + this.model.get("id"))
+                change_view('agent/' + this.model.get("id"))
             }
         },
         className: "link"

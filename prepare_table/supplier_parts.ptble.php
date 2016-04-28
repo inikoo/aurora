@@ -25,6 +25,10 @@ if ($parameters['parent']=='supplier') {
 
 }elseif ($parameters['parent']=='part') {
 	$where=sprintf(" where  SP.`Supplier Part Part SKU`=%d", $parameters['parent_key']);
+}elseif ($parameters['parent']=='agent') {
+	$where=sprintf(" where  `Agent Supplier Agent Key`=%d", $parameters['parent_key']);
+	$table.=' left join `Agent Supplier Bridge` on (SP.`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`)';
+
 }else {
 	exit("parent not found: ".$parameters['parent']);
 }
@@ -68,6 +72,9 @@ if (isset($parameters['elements_type'])) {
 		if ($_elements=='') {
 			$where.=' and false' ;
 		} elseif ($count_elements==1) {
+			if ($_elements=="'InUse'")$_elements="'In Use'";
+			elseif ($_elements=="'NotInUse'")$_elements="'Not In Use'";
+
 			$where.=' and `Part Status`='.$_elements.'' ;
 
 		}
@@ -76,7 +83,6 @@ if (isset($parameters['elements_type'])) {
 
 	}
 }
-
 
 if ($parameters['f_field']=='used_in' and $f_value!='')
 	$wheref.=" and  `Part XHTML Currently Used In` like '%".addslashes($f_value)."%'";
@@ -98,6 +104,8 @@ if ($order=='part_description') {
 	$order='`Supplier Part Reference`';
 }elseif ($order=='cost') {
 	$order='`Supplier Part Unit Cost`';
+}elseif ($order=='supplier_code') {
+	$order='`Supplier Code`';
 }elseif ($order=='stock') {
 	$order='`Part Current Stock`';
 }else {
@@ -109,7 +117,7 @@ if ($order=='part_description') {
 
 $sql_totals="select count(Distinct SP.`Supplier Part Key`) as num from $table  $where  ";
 
-$fields.='`Supplier Part Key`,`Supplier Part Part SKU`,`Part Reference`,`Part Unit Description`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Supplier Part Status`,`Supplier Part From`,`Supplier Part To`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,`Supplier Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,`Supplier Part Minimum Carton Order`,
+$fields.='`Supplier Code`,`Supplier Part Key`,`Supplier Part Part SKU`,`Part Reference`,`Part Unit Description`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Supplier Part Status`,`Supplier Part From`,`Supplier Part To`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,`Supplier Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,`Supplier Part Minimum Carton Order`,
 `Part Current Stock`,`Part Stock Status`,`Part Status`
 ';
 

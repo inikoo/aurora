@@ -6,7 +6,7 @@
 <span id="{$data.field_id}_container" class="value " _required="true" field_type='{$data.field_edit}' field='{$data.field_id}'  server_validation=''> 
 {$data.field_label} 
 
-<input id="{$data.field_id}" class="{$data.field_edit}_input_field " value="">
+<input id="{$data.field_id}" class="{$data.field_edit}_input_field " value="" placeholder="{if isset($data.placeholder)}{$data.placeholder}{/if}">
 {if $data.field_edit=='time'}
 <input type="hidden" id="{$data.field_id}_date"  value="{$data.date}">
 {/if}

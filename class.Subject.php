@@ -356,7 +356,6 @@ class Subject extends DB_Table {
 		list($address, $formatter, $postal_label_formatter)=get_address_formatter($country, $locale);
 
 
-
 		$address = $address
 		->withRecipient($this->get($type.' Address Recipient'))
 		->withOrganization($this->get($type.' Address Organization'))

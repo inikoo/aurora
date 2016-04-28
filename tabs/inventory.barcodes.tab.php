@@ -24,8 +24,8 @@ $table_views=array(
 );
 
 $table_filters=array(
-	'number'=>array('label'=>_('Number'), 'title'=>_('Barcode Number')),
-	'reference'=>array('label'=>_('Part Reference'), 'title'=>_('Part Reference')),
+	'number'=>array('label'=>_('Number'), 'title'=>_('Barcode number')),
+	'reference'=>array('label'=>_('Part Reference'), 'title'=>_('Part reference')),
 
 );
 
@@ -39,7 +39,7 @@ $parameters=array(
 $table_buttons=array();
 $table_buttons[]=array(
 	'icon'=>'plus',
-	'title'=>_('New timesheet record'),
+	'title'=>_('New barcode'),
 	'id'=>'new_record',
 	'inline_new_object'=>
 	array(

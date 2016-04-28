@@ -524,6 +524,103 @@ class Account extends DB_Table{
 		}
 	}
 
+function create_agent($data) {
+		$this->new_employee=false;
+
+		$data['editor']=$this->editor;
+
+
+
+		if ( !array_key_exists('Agent Code', $data)  or $data['Agent Code']==''  ) {
+			$this->error=true;
+			$this->msg='error, no agent code';
+
+			return;
+		}
+
+
+		$country_code=$data['Agent Contact Address country'];
+		if (strlen($country_code)==3) {
+			include_once 'class.Country.php';
+			$country=new Country('code', $country_code);
+			$country_code=$country->get('Country 2 Alpha Code');
+
+		}
+
+
+		$address_fields=array(
+			'Address Recipient'=>$data['Agent Main Contact Name'],
+			'Address Organization'=>$data['Agent Company Name'],
+			'Address Line 1'=>'',
+			'Address Line 2'=>'',
+			'Address Sorting Code'=>'',
+			'Address Postal Code'=>'',
+			'Address Dependent Locality'=>'',
+			'Address Locality'=>'',
+			'Address Administrative Area'=>'',
+			'Address Country 2 Alpha Code'=>$country_code,
+
+		);
+		unset($data['Agent Contact Address country']);
+
+		if (isset($data['Agent Contact Address addressLine1'])) {
+			$address_fields['Address Line 1']=$data['Agent Contact Address addressLine1'];
+			unset($data['Agent Contact Address addressLine1']);
+		}
+		if (isset($data['Agent Contact Address addressLine2'])) {
+			$address_fields['Address Line 2']=$data['Agent Contact Address addressLine2'];
+			unset($data['Agent Contact Address addressLine2']);
+		}
+		if (isset($data['Agent Contact Address sortingCode'])) {
+			$address_fields['Address Sorting Code']=$data['Agent Contact Address sortingCode'];
+			unset($data['Agent Contact Address sortingCode']);
+		}
+		if (isset($data['Agent Contact Address postalCode'])) {
+			$address_fields['Address Postal Code']=$data['Agent Contact Address postalCode'];
+			unset($data['Agent Contact Address postalCode']);
+		}
+
+		if (isset($data['Agent Contact Address dependentLocality'])) {
+			$address_fields['Address Dependent Locality']=$data['Agent Contact Address dependentLocality'];
+			unset($data['Agent Contact Address dependentLocality']);
+		}
+
+		if (isset($data['Agent Contact Address locality'])) {
+			$address_fields['Address Locality']=$data['Agent Contact Address locality'];
+			unset($data['Agent Contact Address locality']);
+		}
+
+		if (isset($data['Agent Contact Address administrativeArea'])) {
+			$address_fields['Address Administrative Area']=$data['Agent Contact Address administrativeArea'];
+			unset($data['Agent Contact Address administrativeArea']);
+		}
+
+		//print_r($address_fields);
+		// print_r($data);
+
+		//exit;
+
+		$agent= new Agent('new', $data, $address_fields);
+
+		if ($agent->id) {
+			$this->new_agent_msg=$agent->msg;
+
+			if ($agent->new) {
+				$this->new_agent=true;
+				//$this->update_agents_data();
+			} else {
+				$this->error=true;
+				$this->msg=$agent->msg;
+
+			}
+			return $agent;
+		}
+		else {
+			$this->error=true;
+			$this->msg=$agent->msg;
+		}
+	}
+
 
 	function create_manufacture_task($data) {
 		$this->new_manufacture_task=false;

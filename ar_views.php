@@ -441,6 +441,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db) {
 		include_once 'showcase/supplier.show.php';
 		$html=get_supplier_showcase($data, $smarty, $user, $db);
 		break;
+	case 'agent':
+		include_once 'showcase/agent.show.php';
+		$html=get_agent_showcase($data, $smarty, $user, $db);
+		break;
 	case 'order':
 		include_once 'showcase/order.show.php';
 		$html=get_order_showcase($data, $smarty, $user, $db);
@@ -876,9 +880,15 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case ('supplier'):
 			return get_supplier_navigation($data, $smarty, $user, $db, $account);
 			break;
+		case ('agent'):
+			return get_agent_navigation($data, $smarty, $user, $db, $account);
+			break;
 
 		case ('suppliers'):
 			return get_suppliers_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('agents'):
+			return get_agents_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('categories'):
 
@@ -894,6 +904,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 			break;
 		case ('supplier.new'):
 			return get_new_supplier_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('agent.new'):
+			return get_new_agent_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('supplier_part'):
 			return get_supplier_part_navigation($data, $smarty, $user, $db, $account);
@@ -944,7 +957,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 			break;
 		case ('deleted_barcode'):
 			return get_deleted_barcode_navigation($data, $smarty, $user, $db, $account);
-			break;	
+			break;
 		}
 
 		break;
@@ -1470,6 +1483,12 @@ function get_view_position($state) {
 	case 'suppliers':
 		if ($state['section']=='suppliers') {
 			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'ship', 'reference'=>'suppliers');
+		}if ($state['section']=='agents') {
+			$branch[]=array('label'=>_('Agents'), 'icon'=>'user-secret', 'reference'=>'agents');
+		}elseif ($state['section']=='agent.new') {
+			$branch[]=array('label'=>_('Agents'), 'icon'=>'', 'reference'=>'agents');
+			$branch[]=array('label'=>_('New agent'), 'icon'=>'user-secret', 'reference'=>'');
+
 		}elseif ($state['section']=='supplier') {
 			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
 			$branch[]=array('label'=>'<span class="Supplier_Code">'.$state['_object']->get('Code').'</span>', 'icon'=>'ship', 'reference'=>'supplier/'.$state['key']);
@@ -1477,6 +1496,14 @@ function get_view_position($state) {
 		}elseif ($state['section']=='supplier.new') {
 			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
 			$branch[]=array('label'=>_('New supplier'), 'icon'=>'ship', 'reference'=>'');
+
+		}elseif ($state['section']=='agent') {
+			$branch[]=array('label'=>_('Agents'), 'icon'=>'', 'reference'=>'agents');
+			$branch[]=array('label'=>'<span class="Agent_Code">'.$state['_object']->get('Code').'</span>', 'icon'=>'user-secret', 'reference'=>'agent/'.$state['key']);
+
+		}elseif ($state['section']=='agent.new') {
+			$branch[]=array('label'=>_('Agents'), 'icon'=>'', 'reference'=>'agents');
+			$branch[]=array('label'=>_('New agent'), 'icon'=>'user-secret', 'reference'=>'');
 
 		}elseif ($state['section']=='supplier_part') {
 			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
@@ -1932,7 +1959,7 @@ function get_view_position($state) {
 			$branch[]=array('label'=>_('Barcodes'), 'icon'=>'', 'reference'=>'inventory/barcodes');
 			$branch[]=array('label'=>$state['_object']->get('Deleted Number').' <i class="fa fa-trash" aria-hidden="true"></i>', 'icon'=>'barcode', 'reference'=>'');
 
-			break;	
+			break;
 		}
 		break;
 

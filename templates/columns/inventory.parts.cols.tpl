@@ -18,7 +18,7 @@ var columns = [
 },{
     name: "reference",
     label: "{t}Reference{/t}",
-    editable: true,
+    editable: false,
      sortType: "toggle",
     
     cell: Backgrid.StringCell.extend({
@@ -35,7 +35,7 @@ var columns = [
 {
     name: "unit_description",
     label: "{t}Unit description{/t}",
-    editable: true,
+    editable: false,
      sortType: "toggle",
     
     cell: Backgrid.StringCell.extend({

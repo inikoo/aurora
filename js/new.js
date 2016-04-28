@@ -129,12 +129,12 @@ function save_new_object(object, form_type) {
         $(".value").each(
 
         function(index) {
-        
-        
-            if($(this).closest('tr').hasClass('hide')){
+
+
+            if ($(this).closest('tr').hasClass('hide')) {
                 return
             }
-        
+
             var field = $(this).attr('field')
             var field_type = $(this).attr('field_type')
 
@@ -157,7 +157,7 @@ function save_new_object(object, form_type) {
             } else {
                 var value = $('#' + field).val()
             }
-            console.log($(this).attr('id') + ' ' + field+' '+$(this).closest('tr').hasClass('hide'))
+            console.log($(this).attr('id') + ' ' + field + ' ' + $(this).closest('tr').hasClass('hide'))
             fields_data[field.replace(re, ' ')] = value
         });
 
@@ -350,7 +350,7 @@ function save_inline_new_object(trigger) {
                 reset: true
             });
 
- if (with_elements) get_elements_numbers(rows.tab, rows.parameters)
+            if (with_elements) get_elements_numbers(rows.tab, rows.parameters)
 
 
         } else if (data.state == 400) {
@@ -385,23 +385,32 @@ function toggle_inline_new_object_form(trigger) {
 
     $('#inline_new_object_msg').html('').removeClass('error success')
 
-    if ($('#icon_' + trigger).hasClass('fa-plus')) {
+    if ($('#icon_' + trigger).hasClass('fa-plus') || $('#icon_' + trigger).hasClass('fa-link')) {
 
+
+        if ($('#icon_' + trigger).hasClass('fa-link')) {
+            var icon = 'fa-link';
+        } else {
+            var icon = 'fa-plus';
+        }
 
         $('#inline_form').removeClass('hide')
 
         $('#inline_new_object').removeClass('hide')
-        $('#icon_' + trigger).removeClass('fa-plus').addClass('fa-times')
+        $('#icon_' + trigger).removeClass('fa-plus').removeClass('fa-link').addClass('fa-times')
 
 
 
-        $('#' + field).val('')
+
+        $('#icon_' + trigger).attr('icon', icon)
+
+
 
     } else {
         $('#inline_new_object').addClass('hide')
-                $('#inline_form').addClass('hide')
+        $('#inline_form').addClass('hide')
 
-        $('#icon_' + trigger).addClass('fa-plus').removeClass('fa-times')
+        $('#icon_' + trigger).addClass($('#icon_' + trigger).attr('icon')).removeClass('fa-times')
 
     }
 
@@ -497,18 +506,18 @@ function update_new_address_fields(field, country_code, hide_recipient_fields, a
                 }
                 
                 */
-                  if(field_data.hasClass('address_value')){
-                var required = field_data.closest('tbody.address_fields').attr('_required')
+                if (field_data.hasClass('address_value')) {
+                    var required = field_data.closest('tbody.address_fields').attr('_required')
 
-        }else{
-        var required = field_data.attr('_required')
-        }
-                
-                
+                } else {
+                    var required = field_data.attr('_required')
+                }
+
+
                 var validation = validate_field(field, value, type, required, server_validation, parent, parent_key, _object, key)
                 console.log(validation)
-               
-               /*
+
+/*
                 if (arg == 'init') {
 
                     if (validation.class == 'invalid' && value == '') {
@@ -517,11 +526,11 @@ function update_new_address_fields(field, country_code, hide_recipient_fields, a
                     }
                 }
                 */
- console.log(field+' '+field_data.attr('_required')+' '+ validation.class )
- if (field_data.attr('_required')==1 && value == '' &&   validation.class =='valid') {
-   validation.class = 'valid attention'
- }
-            
+                console.log(field + ' ' + field_data.attr('_required') + ' ' + validation.class)
+                if (field_data.attr('_required') == 1 && value == '' && validation.class == 'valid') {
+                    validation.class = 'valid attention'
+                }
+
 
                 $('#' + field + '_field').removeClass('invalid potentially_valid valid').addClass(validation.class)
 

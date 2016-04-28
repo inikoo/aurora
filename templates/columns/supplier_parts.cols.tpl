@@ -6,6 +6,23 @@ var columns = [{
     cell: "string",
 
 }, {
+    name: "supplier_code",
+    label: "{t}Supplier{/t}",
+    editable: false,
+      renderable: {if $data['object']=='supplier' }false{else}true{/if},
+    sortType: "toggle",
+
+    cell: Backgrid.StringCell.extend({
+        events: {
+            "click": function() {
+                change_view('/supplier/' + this.model.get("supplier_key"))
+            }
+        },
+        className: "link"
+
+    })
+
+}, {
     name: "status",
     label: "",
     editable: false,
@@ -17,7 +34,7 @@ var columns = [{
 }, {
     name: "reference",
     label: "{t}Reference{/t}",
-    editable: true,
+    editable: false,
     sortType: "toggle",
 
     cell: Backgrid.StringCell.extend({
@@ -36,7 +53,7 @@ var columns = [{
 , {
     name: "part_reference",
     label: "{t}Part{/t}",
-    editable: true,
+    editable: false,
     sortType: "toggle",
 
     cell: Backgrid.StringCell.extend({
