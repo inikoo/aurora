@@ -35,7 +35,9 @@ switch ($tipo) {
 case 'suppliers':
 	suppliers(get_table_parameters(), $db, $user,$account);
 	break;
-
+case 'agents':
+	agents(get_table_parameters(), $db, $user,$account);
+	break;
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
@@ -147,6 +149,61 @@ function suppliers($_data, $db, $user,$account) {
 	echo json_encode($response);
 }
 
+function agents($_data, $db, $user,$account) {
+
+
+	$rtext_label='agent';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
+
+
+		
+
+			$adata[]=array(
+				'id'=>(integer)$data['Agent Key'],
+				'code'=>$data['Agent Code'],
+				'name'=>$data['Agent Name'],
+				'agent_suppliers'=>number($data['Agent Number Suppliers']),
+				'agent_parts'=>number($data['Agent Number Parts']),
+
+				'location'=>$data['Agent Location'],
+				'email'=>$data['Agent Main Plain Email'],
+				'telephone'=>$data['Agent Preferred Contact Number Formatted Number'],
+				'contact'=>$data['Agent Main Contact Name'],
+				'company'=>$data['Agent Company Name'],
+	
+
+			);
+
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
 
 
 

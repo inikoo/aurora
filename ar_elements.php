@@ -63,6 +63,7 @@ case 'invoices':
 	break;
 case 'customer.history':
 case 'supplier_part.history':
+case 'agent.history':
 
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
@@ -76,6 +77,7 @@ case 'inventory.barcodes':
 	get_barcodes_elements($db, $data['parameters'], $user);
 	break;
 case 'supplier.supplier_parts':
+case 'agent.supplier_parts':
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
 		));
@@ -196,7 +198,13 @@ function get_supplier_parts_elements($db, $data, $user) {
 	case 'supplier':
 		$where=sprintf(' where `Supplier Part Supplier Key`=%d  ', $data['parent_key']);
 		break;
-		break;
+		case 'agent':
+		
+			$where=sprintf(" where  `Agent Supplier Agent Key`=%d", $data['parent_key']);
+	$table.=' left join `Agent Supplier Bridge` on (SP.`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`)';
+
+		
+		break;	
 	default:
 		$response=array('state'=>405, 'resp'=>'product parent not found '.$data['parent']);
 		echo json_encode($response);
@@ -402,6 +410,9 @@ function get_history_elements($db, $data) {
 	elseif ($data['parent']=='supplier_part')
 		$sql=sprintf("select count(*) as num ,`Type` from  `Supplier Part History Bridge` where  `Supplier Part Key`=%d group by  `Type`",
 			$data['parent_key']);
+	elseif ($data['parent']=='agent')
+		$sql=sprintf("select count(*) as num ,`Type` from  `Agent History Bridge` where  `Agent Key`=%d group by  `Type`",
+			$data['parent_key']);		
 	elseif ($data['parent']=='store')
 		$sql=sprintf("select count(*) as num ,`Type` from  `%s Category History Bridge` where  `Store Key`=%d group by  `Type`",
 			$data['subject'],

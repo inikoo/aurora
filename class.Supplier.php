@@ -504,9 +504,6 @@ class supplier extends Subject {
 	}
 
 
-
-
-
 	function update_up_today_sales() {
 		$this->update_sales('Total');
 		$this->update_sales('Today');
@@ -1339,7 +1336,7 @@ class supplier extends Subject {
 
 			if ($supplier_part->new) {
 				$this->new_object=true;
-				$this->update_suplier_parts_data();
+				$this->update_supplier_parts_data();
 
 
 				$part=new Part('find', $data, 'create');
@@ -1433,7 +1430,7 @@ class supplier extends Subject {
 	}
 
 
-	function update_suplier_parts_data() {
+	function update_supplier_parts_data() {
 
 	}
 

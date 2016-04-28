@@ -423,6 +423,67 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 
 			break;
+			case 'agent':
+			if (!$user->can_view('suppliers')) {$module='utils';$section='forbidden';break;}
+
+			$module='suppliers';
+			$section='agent';
+			$parent='account';
+			$parent_key=1;
+
+			$object='agent';
+
+			if (isset($view_path[0])) {
+				if (is_numeric($view_path[0])) {
+					$key=$view_path[0];
+
+
+					if (isset($view_path[1])) {
+
+						if ($view_path[1]=='part') {
+							$section='agent_part';
+							$parent='agent';
+							$parent_key=$key;
+							$object='agent_part';
+							if (isset($view_path[2])) {
+								if (is_numeric($view_path[2])) {
+
+									$key=$view_path[2];
+								}elseif ($view_path[2]=='new') {
+									$key=0;
+									$section='agent_part.new';
+								}
+							}
+
+
+						}
+						elseif ($view_path[1]=='supplier') {
+							$section='supplier';
+							$parent='agent';
+							$parent_key=$key;
+							$object='agent_part';
+							if (isset($view_path[2])) {
+								if (is_numeric($view_path[2])) {
+
+									$key=$view_path[2];
+								}elseif ($view_path[2]=='new') {
+									$key=0;
+									$section='supplier.new';
+								}
+							}
+
+
+						}
+
+					}
+
+				}
+
+			}
+
+
+
+			break;	
 		case 'customers':
 			if (!$user->can_view('customers')) {$module='utils';$section='forbidden';break;}
 
@@ -1251,6 +1312,23 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			}
 			break;
 
+		case 'agents':
+			if (!$user->can_view('suppliers')) {$module='utils';$section='forbidden';break;}
+
+			$module='suppliers';
+			$section='agents';
+
+
+			if ( isset($view_path[0]) ) {
+
+
+				if ($view_path[0]=='new') {
+					$section='agent.new';
+					$object='agent';
+				}
+			}
+			break;
+
 		case 'suppliers':
 			if (!$user->can_view('suppliers')) {$module='utils';$section='forbidden';break;}
 
@@ -1263,10 +1341,6 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 				if (  $view_path[0]=='list') {
 					$section='list';
 					$object='list';
-
-
-
-
 					if (isset($view_path[0]) and is_numeric($view_path[0])) {
 						$key=$view_path[0];
 						include_once 'class.List.php';
@@ -1328,6 +1402,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 				}
 			}
 			break;
+
 		case 'hr':
 			if (!$user->can_view('staff')) {$module='utils';$section='forbidden';break;}
 

@@ -370,6 +370,7 @@ function supplier_parts($_data, $db, $user) {
 			$adata[]=array(
 				'id'=>(integer)$data['Supplier Part Key'],
 				'supplier_key'=>(integer)$data['Supplier Part Supplier Key'],
+				'supplier_code'=>$data['Supplier Code'],
 				'part_key'=>(integer)$data['Supplier Part Part SKU'],
 				'part_reference'=>$data['Part Reference'],
 				'reference'=>$data['Supplier Part Reference'],

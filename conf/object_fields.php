@@ -21,8 +21,11 @@ function get_object_fields($object, $db, $user, $smarty, $options=false) {
 
 
 	switch ($object->get_object_name()) {
+	case 'Agent':
+			include 'fields/agent.fld.php';
+		return $agent_fields;
+		break;
 	case 'Barcode':
-
 			include 'fields/barcode.fld.php';
 		return $barcode_fields;
 		break;

@@ -197,11 +197,11 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 
 			if (isset($object->deleted_value)) {
-							$msg=sprintf('<span class="deleted">%s</span> <span class="discret"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $object->deleted_value,  $data['field'],_('Deleted'));
+				$msg=sprintf('<span class="deleted">%s</span> <span class="discret"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $object->deleted_value,  $data['field'], _('Deleted'));
 
-					}
+			}
 
-            $formatted_value=$object->get($formatted_field);
+			$formatted_value=$object->get($formatted_field);
 
 			$action='updated';
 		}elseif (isset($object->field_deleted)) {
@@ -469,6 +469,54 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 	switch ($data['object']) {
 
+	case 'Agent_Supplier':
+
+		include_once 'class.Supplier.php';
+
+		if (isset($data['fields_data']['Supplier Code'])) {
+
+			$object=new Supplier('code', $data['fields_data']['Supplier Code']);
+		}else {
+			$object=new Supplier( $data['fields_data']['Supplier Key']);
+
+		}
+
+		if ($object->id) {
+
+			$parent->associate_supplier($object->id);
+
+
+		}else {
+
+			$response=array('state'=>400, 'resp'=>_('Supplier not found'));
+			echo json_encode($response);
+			exit;
+		}
+		$pcard='';
+		$updated_data=array();
+		break;
+		include_once 'class.Agent.php';
+		$object=$parent->create_agent($data['fields_data']);
+		if (!$parent->error) {
+			$smarty->assign('account', $account);
+			$smarty->assign('object', $object);
+
+			$pcard=$smarty->fetch('presentation_cards/agent.pcard.tpl');
+			$updated_data=array();
+		}
+		break;
+
+	case 'Agent':
+		include_once 'class.Agent.php';
+		$object=$parent->create_agent($data['fields_data']);
+		if (!$parent->error) {
+			$smarty->assign('account', $account);
+			$smarty->assign('object', $object);
+
+			$pcard=$smarty->fetch('presentation_cards/agent.pcard.tpl');
+			$updated_data=array();
+		}
+		break;
 	case 'Barcode':
 		include_once 'class.Barcode.php';
 		$object=$parent->create_barcode($data['fields_data']);

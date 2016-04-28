@@ -17,7 +17,7 @@ var columns = [
 },{
     name: "location",
     label: "{t}Location{/t}",
-    editable: true,
+    editable: false,
      sortType: "toggle",
     
     cell: Backgrid.StringCell.extend({
@@ -46,7 +46,7 @@ var columns = [
 },{
     name: "part",
     label: "{t}Part{/t}",
-    editable: true,
+    editable: false,
      sortType: "toggle",
     
     cell: Backgrid.StringCell.extend({

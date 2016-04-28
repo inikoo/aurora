@@ -73,84 +73,19 @@ elseif ($parameters['parent']=='category') {
 
 
 	$where=sprintf(" where `Subject`='Supplier' and  `Category Key`=%d", $parameters['parent_key']);
-	$table=' `Category Bridge` left join  `Supplier Dimension` C on (`Subject Key`=`Supplier Key`) ';
+	$table=' `Category Bridge` C left join  `Supplier Dimension` S on (`Subject Key`=`Supplier Key`)  left join `Supplier Data`  D on (S.`Supplier Key`=D.`Supplier Key`)';
 
 }
-elseif ($parameters['parent']=='store') {
+elseif ($parameters['parent']=='agent') {
 
-
-
-	$where.=$where_stores;
+$where=sprintf(" where `Agent Supplier Agent Key`=%d", $parameters['parent_key']);
+	$table=' `Agent Supplier Bridge` B left join  `Supplier Dimension` S on (`Agent Supplier Supplier Key`=`Supplier Key`)  left join `Supplier Data`  D on (S.`Supplier Key`=D.`Supplier Key`)';
 }
 else {
 
 
 }
 
-
-
-
-/*
-
-$where_type='';
-
-switch ($parameters['elements_type']) {
-case 'activity':
-	$_elements='';
-	$count_elements=0;
-	foreach ($elements['activity'] as $_key=>$_value) {
-		if ($_value) {
-			$count_elements++;
-			$_elements.=','.prepare_mysql($_key);
-
-		}
-	}
-	$_elements=preg_replace('/^\,/','',$_elements);
-	if ($_elements=='') {
-		$where.=' and false' ;
-	} elseif ($count_elements<3) {
-		$where.=' and `Supplier Type by Activity` in ('.$_elements.')' ;
-	}
-	break;
-case 'level_type':
-	$_elements='';
-	$count_elements=0;
-	foreach ($elements['level_type'] as $_key=>$_value) {
-		if ($_value) {
-			$count_elements++;
-			$_elements.=','.prepare_mysql($_key);
-
-		}
-	}
-	$_elements=preg_replace('/^\,/','',$_elements);
-	if ($_elements=='') {
-		$where.=' and false' ;
-	} elseif ($count_elements<4) {
-		$where.=' and `Supplier Level Type` in ('.$_elements.')' ;
-	}
-	break;
-case 'location':
-	$_elements='';
-	$count_elements=0;
-	foreach ($elements['location'] as $_key=>$_value) {
-		if ($_value) {
-			$count_elements++;
-			$_elements.=','.prepare_mysql($_key);
-
-		}
-	}
-	$_elements=preg_replace('/^\,/','',$_elements);
-	if ($_elements=='') {
-		$where.=' and false' ;
-	} elseif ($count_elements<2) {
-		$where.=' and `Supplier Location Type` in ('.$_elements.')' ;
-	}
-	break;
-
-
-
-}
-*/
 
 
 $filter_msg='';
