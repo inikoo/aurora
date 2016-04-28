@@ -169,8 +169,17 @@ function agents($_data, $db, $user,$account) {
 				'id'=>(integer)$data['Agent Key'],
 				'code'=>$data['Agent Code'],
 				'name'=>$data['Agent Name'],
-				'agent_suppliers'=>number($data['Agent Number Suppliers']),
-				'agent_parts'=>number($data['Agent Number Parts']),
+				'suppliers'=>number($data['Agent Number Suppliers']),
+				'supplier_parts'=>number($data['Agent Number Parts']),
+
+
+
+				'surplus'=>sprintf('<span class="%s" title="%s">%s</span>', (ratio($data['Agent Number Surplus Parts'], $data['Agent Number Parts'])>.75?'error':(ratio($data['Agent Number Surplus Parts'], $data['Agent Number Parts'])>.5?'warning':'')), percentage($data['Agent Number Surplus Parts'], $data['Agent Number Parts']), number($data['Agent Number Surplus Parts'])),
+				'optimal'=>sprintf('<span  title="%s">%s</span>', percentage($data['Agent Number Optimal Parts'], $data['Agent Number Parts']), number($data['Agent Number Optimal Parts'])),
+				'low'=>sprintf('<span class="%s" title="%s">%s</span>', (ratio($data['Agent Number Low Parts'], $data['Agent Number Parts'])>.5?'error':(ratio($data['Agent Number Low Parts'], $data['Agent Number Parts'])>.25?'warning':'')), percentage($data['Agent Number Low Parts'], $data['Agent Number Parts']), number($data['Agent Number Low Parts'])),
+				'critical'=>sprintf('<span class="%s" title="%s">%s</span>', ($data['Agent Number Critical Parts']==0?'': (ratio($data['Agent Number Critical Parts'], $data['Agent Number Parts'])>.25?'error':'warning')), percentage($data['Agent Number Critical Parts'], $data['Agent Number Parts']), number($data['Agent Number Critical Parts'])),
+				'out_of_stock'=>sprintf('<span class="%s" title="%s">%s</span>', ($data['Agent Number Out Of Stock Parts']==0?'':(ratio($data['Agent Number Out Of Stock Parts'], $data['Agent Number Parts'])>.10?'error':'warning')), percentage($data['Agent Number Out Of Stock Parts'], $data['Agent Number Parts']), number($data['Agent Number Out Of Stock Parts'])),
+
 
 				'location'=>$data['Agent Location'],
 				'email'=>$data['Agent Main Plain Email'],

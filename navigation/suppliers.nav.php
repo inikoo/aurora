@@ -336,6 +336,25 @@ function get_supplier_navigation($data, $smarty, $user, $db, $account) {
 	$title= '<span class=" Supplier_Name">'.$supplier->get('Name').'</span> (<span class="id Supplier_Code">'.$supplier->get('Code').'</span>)';
 
 
+
+	if ($supplier->get('Supplier Has Agent')) {
+		$agents='';
+		foreach ($supplier->get_agents_data() as $agent_data) {
+
+			$agents.=sprintf(', <span class="button"  onClick="change_view(\'agent/%d\')">%s</span>',
+				$agent_data['Agent Key'],
+				$agent_data['Agent Code']
+			);
+
+		}
+		$agents=preg_replace('/^, /', '', $agents);
+		$title.=sprintf(' <small class="padding_left_10"><i class="fa fa-user-secret" aria-hidden="true"></i> <span class="agents">%s</span></small>',
+			$agents
+
+		);
+	}
+
+
 	$_content=array(
 		'sections_class'=>'',
 		'sections'=>$sections,
@@ -543,8 +562,8 @@ function get_agent_navigation($data, $smarty, $user, $db, $account) {
 
 
 					}
-					else{
-					$left_buttons[]=$up_button;
+					else {
+						$left_buttons[]=$up_button;
 					}
 
 				}

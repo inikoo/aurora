@@ -508,16 +508,44 @@ class Agent extends Subject {
 
 		if (!$supplier_key) return;
 
-		$sql=sprintf("insert into `Agent Supplier Bridge` (`Agent Supplier Agent Key`,`Agent Supplier Supplier Key`) values (%d,%d)",
-			$this->id,
-			$supplier_key
 
-		);
+		$supplier=new Supplier($supplier_key);
 
-		$this->db->exec($sql);
+		if ($supplier->id) {
+			$sql=sprintf("insert into `Agent Supplier Bridge` (`Agent Supplier Agent Key`,`Agent Supplier Supplier Key`) values (%d,%d)",
+				$this->id,
+				$supplier_key
 
-        $this->update_supplier_parts() ;
+			);
+
+			$this->db->exec($sql);
+
+			$this->update_supplier_parts() ;
+			$supplier->update_has_agent();
+		}
 	}
+	
+	function disassociate_supplier($supplier_key) {
+
+		if (!$supplier_key) return;
+
+
+		$supplier=new Supplier($supplier_key);
+
+		if ($supplier->id) {
+			$sql=sprintf("delete from `Agent Supplier Bridge` where `Agent Supplier Agent Key`=%d and `Agent Supplier Supplier Key`=%d",
+				$this->id,
+				$supplier_key
+
+			);
+
+			$this->db->exec($sql);
+
+			$this->update_supplier_parts() ;
+			$supplier->update_has_agent();
+		}
+	}
+
 
 
 }

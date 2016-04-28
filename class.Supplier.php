@@ -287,7 +287,7 @@ class supplier extends Subject {
 
 			break;
 		case 'Average Delivery Days':
-		    if($this->data['Supplier Average Delivery Days']=='')return '';
+			if ($this->data['Supplier Average Delivery Days']=='')return '';
 			return number($this->data['Supplier Average Delivery Days']);
 			break;
 		case 'Delivery Time':
@@ -397,7 +397,7 @@ class supplier extends Subject {
 		foreach ($this->data as $key=>$value) {
 			$keys.=",`".$key."`";
 
-			if (in_array($key, array('Supplier Average Delivery Days','Supplier Default Incoterm','Supplier Default Port of Export','Supplier Default Port of Import','Supplier Valid To'))) {
+			if (in_array($key, array('Supplier Average Delivery Days', 'Supplier Default Incoterm', 'Supplier Default Port of Export', 'Supplier Default Port of Import', 'Supplier Valid To'))) {
 				$values.=','.prepare_mysql($value, true);
 
 			}else {
@@ -410,11 +410,11 @@ class supplier extends Subject {
 		$keys=preg_replace('/^,/', '', $keys);
 
 		$sql="insert into `Supplier Dimension` ($keys) values ($values)";
-		
+
 		if ($this->db->exec($sql)) {
 			$this->id=$this->db->lastInsertId();
-		
-	
+
+
 			$this->get_data('id', $this->id);
 
 
@@ -1520,6 +1520,51 @@ class supplier extends Subject {
 		}
 
 		return $label;
+
+	}
+
+
+	function update_has_agent() {
+		$has_agent='No';
+
+		$sql=sprintf('select count(*) as num from `Agent Supplier Bridge` where `Agent Supplier Supplier Key`=%d',
+			$this->id
+		);
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				if ($row['num']>0) {
+					$has_agent='Yes';
+				}
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+		$this->update(array('Supplier Has Agent'=>$has_agent), 'no_history');
+
+	}
+
+
+	function get_agents_data() {
+		$agents_data=array();
+		$sql=sprintf('select `Agent Code`,`Agent Key`,`Agent Name`  from `Agent Supplier Bridge` left join `Agent Dimension` on (`Agent Supplier Agent Key`=`Agent Key`)  where `Agent Supplier Supplier Key`=%d',
+			$this->id
+		);
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$agents_data[]=array(
+					'Agent Key'=>$row['Agent Key'],
+					'Agent Code'=>$row['Agent Code'],
+					'Agent Name'=>$row['Agent Name'],
+
+				);
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+return $agents_data;
 
 	}
 
