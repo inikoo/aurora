@@ -55,6 +55,18 @@ var columns = [
         headerCell: integerHeaderCell
 
 },
+{
+    name: "suppliers",
+    label: "{t}Suppliers{/t}",
+    editable: false,
+   
+    defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='suppliers'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.StringCell.extend({ className: "aright"} ),
+
+    headerCell: integerHeaderCell
+},
  {
     name: "supplier_parts",
     label: "{t}Parts{/t}",
@@ -267,6 +279,7 @@ function change_table_view(view,save_state){
     grid.columns.findWhere({ name: 'location'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'last_purchase_order'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'supplier_parts'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'suppliers'} ).set("renderable", false)
 
     grid.columns.findWhere({ name: 'surplus'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'optimal'} ).set("renderable", false)
@@ -295,7 +308,8 @@ function change_table_view(view,save_state){
         grid.columns.findWhere({ name: 'location'} ).set("renderable", true)
         grid.columns.findWhere({ name: 'last_purchase_order'} ).set("renderable", true)
         grid.columns.findWhere({ name: 'supplier_parts'} ).set("renderable", true)
-       
+           grid.columns.findWhere({ name: 'suppliers'} ).set("renderable", true)
+
     }else if(view=='weblog'){
         grid.columns.findWhere({ name: 'logins'} ).set("renderable", true)
         grid.columns.findWhere({ name: 'failed_logins'} ).set("renderable", true)
@@ -312,7 +326,8 @@ function change_table_view(view,save_state){
     grid.columns.findWhere({ name: 'low'} ).set("renderable", true)
     grid.columns.findWhere({ name: 'critical'} ).set("renderable", true)
     grid.columns.findWhere({ name: 'out_of_stock'} ).set("renderable", true)
-  
+             grid.columns.findWhere({ name: 'suppliers'} ).set("renderable", true)
+
     }else if(view=='sales'){
       $('#columns_period').removeClass('hide');
         grid.columns.findWhere({ name: 'revenue'} ).set("renderable", true)

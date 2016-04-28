@@ -83,6 +83,7 @@ $where=sprintf(" where `Agent Supplier Agent Key`=%d", $parameters['parent_key']
 }
 else {
 
+$where=sprintf(" where `Supplier Has Agent`='No'");
 
 }
 
