@@ -2,7 +2,7 @@
 /*
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created: 20 September 2015 13:22:27 GMT+8, Kuala Lumpur
+ Created: 28 April 2016 at 17:28:22 GMT+8, Lovina, Bali, Indonesia
  Copyright (c) 2015, Inikoo
 
  Version 3
@@ -13,19 +13,16 @@ include_once 'utils/invalid_messages.php';
 include_once 'conf/object_fields.php';
 
 
-
-if ( !$user->can_view('locations') or   !in_array($state['key'], $user->warehouses)   ) {
+if ( !$user->can_view('locations') or   !in_array($state['warehouse']->id, $user->warehouses)   ) {
 	$html='';
 }else {
 
 	include_once 'utils/invalid_messages.php';
 
-	$warehouse=$state['_object'];
+	$location=$state['_object'];
 
-$object_fields=get_object_fields($warehouse, $db, $user, $smarty);
+	$object_fields=get_object_fields($location, $db, $user, $smarty);
 
-
-	
 	$smarty->assign('object', $state['_object']);
 	$smarty->assign('key', $state['key']);
 

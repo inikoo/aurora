@@ -116,18 +116,8 @@ function locations($_data, $db, $user) {
 			break;
 		}
 
-		switch ($data['Warehouse Flag']) {
-		case 'Blue': $flag="<img  src='/art/icons/flag_blue.png' title='".$data['Warehouse Flag']."' />"; break;
-		case 'Green':  $flag="<img  src='/art/icons/flag_green.png' title='".$data['Warehouse Flag']."' />";break;
-		case 'Orange': $flag="<img src='/art/icons/flag_orange.png' title='".$data['Warehouse Flag']."'  />"; break;
-		case 'Pink': $flag="<img  src='/art/icons/flag_pink.png' title='".$data['Warehouse Flag']."'/>"; break;
-		case 'Purple': $flag="<img src='/art/icons/flag_purple.png' title='".$data['Warehouse Flag']."'/>"; break;
-		case 'Red':  $flag="<img src='/art/icons/flag_red.png' title='".$data['Warehouse Flag']."'/>";break;
-		case 'Yellow':  $flag="<img src='/art/icons/flag_yellow.png' title='".$data['Warehouse Flag']."'/>";break;
-		default:
-			$flag='';
-
-		}
+		
+		
 		if ($data['Location Max Weight']=='' or $data['Location Max Weight']<=0)
 			$max_weight=_('Unknown');
 		else
@@ -137,12 +127,14 @@ function locations($_data, $db, $user) {
 		else
 			$max_vol=number($data['Location Max Volume'])._('L');
 
+
+
 		$adata[]=array(
 			'id'=>(integer)$data['Location Key'],
 			'warehouse_key'=>(integer)$data['Location Warehouse Key'],
 			'warehouse_area_key'=>(integer)$data['Location Warehouse Area Key'],
 			'code'=>$data['Location Code'],
-			'flag'=>$flag,
+			'flag'=>($data['Warehouse Flag Key']?sprintf('<i class="fa fa-flag %s" aria-hidden="true" title="%s"></i>',strtolower($data['Warehouse Flag Color']),$data['Warehouse Flag Label']):'<i class="fa fa-flag-o discret" aria-hidden="true"></i>'),
 			'flag_key'=>$data['Warehouse Flag Key'],
 			'area'=>$data['Warehouse Area Code'],
 			'max_weight'=>$max_weight,

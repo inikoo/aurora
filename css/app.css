@@ -570,6 +570,27 @@ input {
 .success {
   color: #26A65B; }
 
+.blue {
+  color: #0099FF !important; }
+
+.red {
+  color: red !important; }
+
+.orange {
+  color: #FF6600 !important; }
+
+.green {
+  color: #33CC00 !important; }
+
+.purple {
+  color: #CC00FF !important; }
+
+.pink {
+  color: #FF66FF !important; }
+
+.yellow {
+  color: #FFCC66 !important; }
+
 .deleted {
   text-decoration: line-through;
   opacity: .9;

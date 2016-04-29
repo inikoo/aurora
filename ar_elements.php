@@ -34,6 +34,12 @@ case 'inventory.parts':
 		));
 	get_parts_elements($db, $data['parameters'], $user);
 	break;
+case 'warehouse.locations':
+	$data=prepare_values($_REQUEST, array(
+			'parameters'=>array('type'=>'json array')
+		));
+	get_warehouse_locations_elements($db, $data['parameters'], $user);
+	break;	
 case 'customers':
 case 'website.favourites.customers':
 	$data=prepare_values($_REQUEST, array(
@@ -64,6 +70,7 @@ case 'invoices':
 case 'customer.history':
 case 'supplier_part.history':
 case 'agent.history':
+case 'location.history':
 
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
@@ -229,6 +236,51 @@ function get_supplier_parts_elements($db, $data, $user) {
 		$elements_numbers['status'][$row['element']]=number($row['number']);
 
 	}
+
+
+
+	$response= array('state'=>200, 'elements_numbers'=>$elements_numbers);
+	echo json_encode($response);
+
+
+
+}
+
+function get_warehouse_locations_elements($db, $data, $user) {
+
+
+
+	$parent_key=$data['parent_key'];
+
+	$elements_numbers=array(
+		'flags'=>array('Blue'=>0, 'Green'=>0, 'Orange'=>0,'Pink'=>0,'Purple'=>0,'Red'=>0,'Yellow'=>0),
+
+	);
+
+
+	$table='`Location Dimension`  ';
+	switch ($data['parent']) {
+	case 'warehouse':
+		$where=sprintf(' where `Location Warehouse Key`=%d  ', $data['parent_key']);
+		break;
+			
+		break;	
+	default:
+		$response=array('state'=>405, 'resp'=>'product parent not found '.$data['parent']);
+		echo json_encode($response);
+
+		return;
+	}
+
+
+
+	$sql=sprintf("select count(*) as number,`Warehouse Flag` as element from $table $where  group by `Warehouse Flag` ");
+	foreach ($db->query($sql) as $row) {
+
+		$elements_numbers['flags'][preg_replace('/\s/','',$row['element'])]=number($row['number']);
+
+	}
+
 
 
 
@@ -406,6 +458,9 @@ function get_history_elements($db, $data) {
 			$data['parent_key']);
 	elseif ($data['parent']=='customer')
 		$sql=sprintf("select count(*) as num ,`Type` from  `Customer History Bridge` where  `Customer Key`=%d group by  `Type`",
+			$data['parent_key']);
+	elseif ($data['parent']=='location')
+		$sql=sprintf("select count(*) as num ,`Type` from  `Location History Bridge` where  `Location Key`=%d group by  `Type`",
 			$data['parent_key']);
 	elseif ($data['parent']=='supplier_part')
 		$sql=sprintf("select count(*) as num ,`Type` from  `Supplier Part History Bridge` where  `Supplier Part Key`=%d group by  `Type`",

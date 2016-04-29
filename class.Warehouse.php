@@ -61,6 +61,22 @@ class Warehouse extends DB_Table{
 	}
 
 
+	function get_flags_data() {
+		$this->flags=array();
+		$sql=sprintf("select * from `Warehouse Flag Dimension` where `Warehouse Key`=%d", $this->id);
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$this->flags[$row['Warehouse Flag Key']]=$row;
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+	}
+
+
 	function find($raw_data, $options) {
 		if (isset($raw_data['editor'])) {
 			foreach ($raw_data['editor'] as $key=>$value) {
@@ -239,14 +255,57 @@ class Warehouse extends DB_Table{
 			break;
 		default:
 
+
+
+
 			if (array_key_exists($key, $this->data))
 				return $this->data[$key];
 
 			if (array_key_exists('Warehouse '.$key, $this->data))
 				return $this->data['Warehouse '.$key];
+
+
+			if (preg_match('/(Warehouse )?Flag Label (.+)$/', $key, $match)) {
+
+				if (isset($this->flags[$match[2]])) {
+					return $this->flags[$match[2]]['Warehouse Flag Label'];
+				}
+			}
+
+
 		}
 		return '';
 	}
+
+
+	function update_field_switcher($field, $value, $options='', $metadata='') {
+
+
+		if ($this->deleted)return;
+
+		switch ($field) {
+		default:
+			$base_data=$this->base_data();
+			if (array_key_exists($field, $base_data)) {
+				if ($value!=$this->data[$field]) {
+					$this->update_field($field, $value, $options);
+				}
+			}
+			
+			if (preg_match('/(Warehouse Flag Label) (.+)$/', $field, $match)) {
+
+
+$this->update_flag($match[2], $match[1], $value);
+
+				
+			}
+
+			
+			
+		}
+	}
+
+
 
 
 	function add_area($data) {
@@ -566,7 +625,7 @@ class Warehouse extends DB_Table{
 					$default_flag_key=$this->get_default_flag_key();
 					if ($default_flag_key==$value and $field=='Warehouse Flag Active' and $value=='No') {
 						$this->error=true;
-						$this->msg='can not disable defaukt flag';
+						$this->msg='can not disable default flag';
 					}
 
 
@@ -607,7 +666,7 @@ class Warehouse extends DB_Table{
 					$this->updated=true;
 					$this->new_value=$value;
 
-
+                    $this->get_flags_data();
 
 				}else {
 					$this->error=true;
@@ -677,7 +736,6 @@ class Warehouse extends DB_Table{
 
 
 	function get_field_label($field) {
-		global $account;
 
 		switch ($field) {
 
@@ -687,8 +745,17 @@ class Warehouse extends DB_Table{
 		case 'Warehouse Name':
 			$label=_('name');
 			break;
+		case 'Warehouse Address':
+			$label=_('address');
+			break;
 
 		default:
+
+			if (preg_match('/Warehouse Flag Label (.+)$/', $field, $match)) {
+				$label='<i class="fa fa-flag '.strtolower($match[1]).'" aria-hidden="true"></i> ' ._($match[1]) ;
+				return $label;
+			}
+
 			$label=$field;
 
 		}

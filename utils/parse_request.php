@@ -1238,8 +1238,11 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 				$parent='warehouse';
 				$parent_key=$view_path[0];
 				if ( isset($view_path[1]) ) {
+					if(is_numeric($view_path[1])){
 					$section='location';
+					$object='location';
 					$key=$view_path[1];
+					}
 				}
 
 			}

@@ -188,6 +188,64 @@ function get_locations_navigation($data, $smarty, $user, $db, $account) {
 
 }
 
+function get_location_navigation($data, $smarty, $user, $db, $account) {
+
+
+
+
+
+
+	$warehouse=$data['warehouse'];
+
+
+
+	$left_buttons=array();
+	
+	
+	if($data['parent']=='warehouse'){
+	
+	
+	$left_buttons[]=array('icon'=>'arrow-up', 'title'=>_('Warehouse'), 'reference'=>'warehouse/'.$data['parent'], 'parent'=>'');
+}
+
+
+	$right_buttons=array();
+	$sections=get_sections($data['module'], $warehouse->id);
+
+	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
+
+
+	$title=_('Location').' <span  class="id Location_Code" >'.$data['_object']->get('Code').'</span>';
+
+	if ( !$user->can_view('locations')   ) {
+
+
+		$title=_('Access forbidden').' <i class="fa fa-lock "></i>';
+	}elseif (   !in_array($warehouse->id, $user->warehouses)   ) {
+
+
+		$title=' <i class="fa fa-lock padding_right_10"></i>'.$title;
+	}
+
+	$_content=array(
+
+		'sections_class'=>'',
+		'sections'=>$sections,
+
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>_('Search locations'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+}
+
+
 
 
 ?>

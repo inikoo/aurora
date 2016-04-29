@@ -269,6 +269,35 @@ $elements_options=array(
 
 		),
 	),
+	'locations'=>array(
+		'flags'=>array(
+			'label'=>_('Flags'),
+			'items'=>array(
+				'Blue'=>array('label'=>'Blue', 'selected'=>true),
+				'Green'=>array('label'=>'Green', 'selected'=>true),
+				'Orange'=>array('label'=>'Orange', 'selected'=>true),
+				'Pink'=>array('label'=>'Pink', 'selected'=>true),
+				'Purple'=>array('label'=>'Purple', 'selected'=>true),
+				'Red'=>array('label'=>'Red', 'selected'=>true),
+				'Yellow'=>array('label'=>'Yellow', 'selected'=>true),
+
+			)
+
+
+
+		),
+	),
+		'location_history'=>array(
+		'type'=>array(
+			'label'=>_('Type'),
+			'items'=>array(
+				'Notes'=>array('label'=>_('Notes'), 'selected'=>true),
+				'Changes'=>array('label'=>_('Changes'), 'selected'=>true),
+				'WebLog'=>array('label'=>_('WebLog'), 'selected'=>true),
+			),
+
+		)
+	),
 );
 
 ?>

@@ -68,10 +68,13 @@ function get_object_fields($object, $db, $user, $smarty, $options=false) {
 		break;
 
 	case 'Warehouse':
-		include 'fields/store.fld.php';
+		include 'fields/warehouse.fld.php';
 		return $object_fields;
 		break;
-
+case 'Location':
+		include 'fields/location.fld.php';
+		return $object_fields;
+		break;
 	case 'Store':
 
 		if (!in_array($object->id, $user->stores)) {

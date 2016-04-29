@@ -699,6 +699,8 @@ function server_validation(settings, parent, parent_key, object, key, field, val
     if (settings.key != null) {
         key = settings.key;
     }
+    
+  
 
 
     if (settings.parent_key_field != null) {
@@ -714,6 +716,12 @@ function server_validation(settings, parent, parent_key, object, key, field, val
     } else {
 
         var request = '/ar_validation.php?tipo=' + settings.tipo + '&parent=' + parent + '&parent_key=' + parent_key + '&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value
+  
+    if (settings.actual_field != null) {
+        request +='&actual_field='+settings.actual_field;
+    }
+  
+  
     }
 
     //  console.log(request)
