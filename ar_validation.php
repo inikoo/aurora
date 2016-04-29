@@ -33,6 +33,7 @@ case 'check_for_duplicates':
 			'parent_key'=>array('type'=>'string'),
 			'key'=>array('type'=>'string'),
 			'field'=>array('type'=>'string'),
+			'actual_field'=>array('type'=>'string', 'optional'=>true),
 			'value'=>array('type'=>'string'),
 
 		));
@@ -434,12 +435,18 @@ function check_for_duplicates($data, $db, $user, $account) {
 			$parent_where='';
 		}
 
+		if (isset($data['actual_field']))
+			$_field=$data['actual_field'];
+		else
+			$_field=$field;
+
+
 		$sql=sprintf('select `%s Key` as `key` ,`%s` as field from `%s Dimension` where `%s`=%s %s ',
 			addslashes(preg_replace('/_/', ' ', $data['object'])),
-			addslashes($field),
+			addslashes($_field),
 
 			addslashes(preg_replace('/_/', ' ', $data['object'])),
-			addslashes($field),
+			addslashes($_field),
 			prepare_mysql($data['value']),
 			$parent_where
 

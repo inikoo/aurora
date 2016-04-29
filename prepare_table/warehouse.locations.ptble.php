@@ -12,56 +12,70 @@
 
 switch ($parameters['parent']) {
 case('warehouse'):
-	$where=sprintf(' where  `Location Warehouse Key`=%d',$parameters['parent_key']);
+	$where=sprintf(' where  `Location Warehouse Key`=%d', $parameters['parent_key']);
 	break;
 case('warehouse_area'):
-	$where=sprintf(' where `Location Warehouse Area Key`=%d',$parameters['parent_key']);
+	$where=sprintf(' where `Location Warehouse Area Key`=%d', $parameters['parent_key']);
 	break;
 case('shelf'):
-	$where=sprintf(' where `Location Shelf Key`=%d',$parameters['parent_key']);
+	$where=sprintf(' where `Location Shelf Key`=%d', $parameters['parent_key']);
 	break;
 default:
 	$where='where false';
 }
 
 
-/*
-$_elements='';
-$count_elements=0;
-foreach ($elements as $_key=>$_value) {
-	if ($_value) {
-		$count_elements++;
-		if ($_key=='Blue') {
-			$_elements.=",'Blue'";
-		}
-		elseif ($_key=='Green') {
-			$_elements.=",'Green'";
-		}
-		elseif ($_key=='Orange') {
-			$_elements.=",'Orange'";
-		}
-		elseif ($_key=='Pink') {
-			$_elements.=",'Pink'";
-		}
-		elseif ($_key=='Purple') {
-			$_elements.=",'Purple'";
-		}
-		elseif ($_key=='Red') {
-			$_elements.=",'Red'";
-		}
-		elseif ($_key=='Yellow') {
-			$_elements.=",'Yellow'";
+
+switch ($parameters['elements_type']) {
+case 'flags':
+
+	$_elements='';
+	$count_elements=0;
+	foreach ($parameters['elements'][$parameters['elements_type']]['items'] as $_key=>$_value) {
+		if ($_value['selected']) {
+			$count_elements++;
+			if ($_key=='Blue') {
+				$_elements.=",'Blue'";
+			}
+			elseif ($_key=='Green') {
+				$_elements.=",'Green'";
+			}
+			elseif ($_key=='Orange') {
+				$_elements.=",'Orange'";
+			}
+			elseif ($_key=='Pink') {
+				$_elements.=",'Pink'";
+			}
+			elseif ($_key=='Purple') {
+				$_elements.=",'Purple'";
+			}
+			elseif ($_key=='Red') {
+				$_elements.=",'Red'";
+			}
+			elseif ($_key=='Yellow') {
+				$_elements.=",'Yellow'";
+			}
 		}
 	}
-}
-$_elements=preg_replace('/^\,/','',$_elements);
-if ($_elements=='') {
-	$where.=' and false' ;
-} elseif ( $count_elements<7) {
-	$where.=' and `Warehouse Flag` in ('.$_elements.')' ;
+
+	$_elements=preg_replace('/^\,/', '', $_elements);
+	if ($_elements=='') {
+		$where.=' and false' ;
+	} elseif ( $count_elements<7) {
+		$where.=' and `Warehouse Flag` in ('.$_elements.')' ;
+				
+
+	}
+
+	break;
+
+
 }
 
-*/
+
+
+
+
 
 
 
@@ -92,10 +106,13 @@ elseif ($order=='warehouse')
 else
 	$order='`Location Key`';
 
-$table='`Location Dimension` left join `Warehouse Area Dimension` WAD on (`Location Warehouse Area Key`=WAD.`Warehouse Area Key`) left join `Warehouse Dimension` WD on (`Location Warehouse Key`=WD.`Warehouse Key`) ';
-$fields="`Location Key`,`Warehouse Flag`,`Location Warehouse Key`,`Location Warehouse Area Key`,`Location Code`,`Location Distinct Parts`,`Location Max Volume`,`Location Max Weight`, `Location Mainly Used For`,`Warehouse Area Code`,`Warehouse Flag Key`,`Warehouse Code`";
+$table='`Location Dimension` L left join `Warehouse Area Dimension` WAD on (`Location Warehouse Area Key`=WAD.`Warehouse Area Key`) left join `Warehouse Dimension` WD on (`Location Warehouse Key`=WD.`Warehouse Key`) left join `Warehouse Flag Dimension`F  on (F.`Warehouse Flag Key`=L.`Warehouse Flag Key`)';
+$fields="`Location Key`,`Warehouse Flag Label`,`Warehouse Flag Color`,`Location Warehouse Key`,`Location Warehouse Area Key`,`Location Code`,`Location Distinct Parts`,`Location Max Volume`,`Location Max Weight`, `Location Mainly Used For`,`Warehouse Area Code`,L.`Warehouse Flag Key`,`Warehouse Code`";
 
 $sql_totals="select count(*) as num from $table $where ";
+
+
+
 
 
 ?>

@@ -622,7 +622,9 @@ $tab_defaults=array(
 		'sort_order'=>1,
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
-		'f_field'=>'code'
+		'f_field'=>'code',
+		'elements_type'=>each(  $elements_options['locations']  ) ['key'],
+		'elements'=>$elements_options['locations'],
 	),
 	'warehouse.replenishments'=>array(
 		'view'=>'overview',
@@ -639,6 +641,16 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'note'
+	),
+	'location.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'note',
+		'elements_type'=>each($elements_options['location_history'])['key'],
+		'elements'=>$elements_options['location_history']
 	),
 	'inventory.parts'=>array(
 		'view'=>'overview',

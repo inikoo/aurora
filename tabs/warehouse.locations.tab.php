@@ -37,6 +37,8 @@ if ( !$user->can_view('locations') or   !in_array($state['key'], $user->warehous
 
 	);
 
+$smarty->assign('js_code', 'js/injections/warehouse_locations.'.(_DEVEL?'':'min.').'js');
+
 
 	include 'utils/get_table_html.php';
 }

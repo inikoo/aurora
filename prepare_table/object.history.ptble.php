@@ -99,6 +99,9 @@ elseif ($parameters['parent']=='user') {
 }elseif ($parameters['parent']=='agent') {
 	$where=sprintf(' where   B.`Agent Key`=%d   ', $parameters['parent_key']);
 	$subject='Agent';
+}elseif ($parameters['parent']=='location') {
+	$where=sprintf(' where   B.`Location Key`=%d   ', $parameters['parent_key']);
+	$subject='Location';
 }else {
 	print_r($parameters);
 	exit('parent not set up '.$parameters['parent']);

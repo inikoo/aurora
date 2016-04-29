@@ -471,6 +471,18 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db) {
 			$html=get_warehouse_showcase($data, $smarty, $user, $db);
 		}
 		break;
+	case 'location':
+		include_once 'showcase/location.show.php';
+
+		if ( !$user->can_view('locations') or   !in_array($data['warehouse']->id, $user->warehouses)   ) {
+			$html=get_locked_location_showcase($data, $smarty, $user, $db);
+
+		}else {
+			$html=get_location_showcase($data, $smarty, $user, $db);
+		}
+		break;
+
+
 	case 'timesheet':
 		include_once 'showcase/timesheet.show.php';
 		$html=get_timesheet_showcase($data, $smarty, $user, $db);
@@ -979,6 +991,16 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case ('locations'):
 			return get_locations_navigation($data, $smarty, $user, $db, $account);
 			break;
+
+
+		case ('location'):
+			return get_location_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('location.new'):
+			return get_new_location_navigation($data, $smarty, $user, $db, $account);
+			break;
+
+
 
 		}
 
@@ -1983,7 +2005,15 @@ function get_view_position($state) {
 			$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'warehouses');
 
 			//}
-			$branch[]=array('label'=>_('warehouse').' <span class="id Warehouse_Code">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'map', 'reference'=>'');
+			$branch[]=array('label'=>'<span class="id Warehouse_Code">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'map', 'reference'=>'');
+
+			break;
+
+		case 'location':
+
+			$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'warehouses');
+			$branch[]=array('label'=>'<span class=" Warehouse_Code">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'map', 'reference'=>'warehouse/'.$state['parent_key']);
+			$branch[]=array('label'=>'<span class="id Location_Code">'.$state['_object']->get('Code').'</span>', 'icon'=>'map-marker', 'reference'=>'');
 
 			break;
 

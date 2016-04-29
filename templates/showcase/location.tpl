@@ -6,8 +6,8 @@
 			<table border="0" class="overview">
 				
 				<tr>
-					<td>{t}Locations{/t}:</td>
-					<td  class="aright">{$warehouse->get('Number Locations')}</td>
+					<td>{t}Used for{/t}:</td>
+					<td  class="aright">{$location->get('Used For')}</td>
 				</tr>
 				
 				
