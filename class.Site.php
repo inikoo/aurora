@@ -20,6 +20,10 @@ class Site extends DB_Table {
 	var $new=false;
 
 	function Site($arg1=false,$arg2=false) {
+	
+	global $db;
+		$this->db=$db;
+	
 		$this->table_name='Site';
 		$this->ignore_fields=array('Site Key');
 
