@@ -1,3 +1,19 @@
+.valid .save {color:$color_save;cursor:pointer}
+
+
+
+.invalid{
+
+
+     .save,.msg {color:$color_error;}
+      input{
+      background-color : #ffebeb; 
+      &.potentially_valid{ background-color : #fff;}
+      &.valid{ background-color : #fff;}
+      } 
+      }
+
+
 .edit_object{
    
    margin-bottom:100px;
@@ -243,16 +259,11 @@
     }
     
  
-    .valid .save {color:$color_save;cursor:pointer}
-    .invalid{
-     .save,.msg {color:$color_error;}
-      input{
-      background-color : #ffebeb; 
-      &.potentially_valid{ background-color : #fff;}
-      &.valid{ background-color : #fff;}
-      } }
+    
 
 }
+
+
 
 .show_buttons {
 

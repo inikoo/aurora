@@ -15,6 +15,11 @@ function get_part_showcase($data,$smarty,$user,$db) {
 
 
 	$part=$data['_object'];
+	
+	
+	
+	
+	//$part->fix_stock_transactions();
 	if (!$part->id) {
 		return "";
 	}

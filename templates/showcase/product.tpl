@@ -1,7 +1,7 @@
 
 <div class="asset_profile" >
 <div id="main_categories_position" >
-<div class="discret">
+<div class="discreet">
 {if $department_data.id}{t}Department{/t} <span onClick="change_view('products/{$product->get('Store Key')}/category/{$department_data.id}')" class="id link">{$department_data.code}</span> <i class="fa fa-angle-double-right separator"></i> {/if}
 {if $family_data.id}{t}Family{/t} <span onClick="change_view('products/{$product->get('Store Key')}/category/{$family_data.id}')" class="id link">{$family_data.code}</span>  {/if}
 

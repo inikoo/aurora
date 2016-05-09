@@ -333,7 +333,7 @@ migrate_history_note_details.php
 migrate_parts.oneoff.php
 
 
-
+update `Category Dimension` set `Category Scope`='Supplier' where `Category Subject`='Supplier';
 
 
 

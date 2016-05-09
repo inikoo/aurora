@@ -38,6 +38,7 @@ case 'views':
 		));
 
 
+
 	if (isset($data['metadata']['help']) and $data['metadata']['help'] ) {
 		get_help($data, $modules, $db);
 		return;
@@ -306,11 +307,27 @@ case 'views':
 
 	list($state, $response['tabs'])=get_tabs($state, $modules, $user, $smarty);// todo only calculate when is subtabs in the section
 
+
+
+
 	if ($state['object']!=''
-		and ($modules[$state['module']]['sections'][$state['section']]['type']=='object'  or isset($modules[$state['module']]['sections'][$state['section']]['showcase'])  )   ) {
-		$response['object_showcase']=get_object_showcase(
-			(isset($modules[$state['module']]['sections'][$state['section']]['showcase'])?$modules[$state['module']]['sections'][$state['section']]['showcase']:$state['object']),
-			$state, $smarty, $user, $db);
+		and ($modules[$state['module']]['sections'][$state['section']]['type']=='object'  or isset($modules[$state['module']]['sections'][$state['section']]['showcase'])  )
+
+
+
+
+	) {
+
+
+		if (!($data['old_state']['module']==$state['module']  and $data['old_state']['section']==$state['section'] and $data['old_state']['object']==$state['object'] and $data['old_state']['key']==$state['key'] )) {
+
+			$response['object_showcase']=get_object_showcase(
+				(isset($modules[$state['module']]['sections'][$state['section']]['showcase'])?$modules[$state['module']]['sections'][$state['section']]['showcase']:$state['object']),
+				$state, $smarty, $user, $db);
+
+		}
+
+
 	}else {
 		$response['object_showcase']='';
 	}
@@ -1537,7 +1554,16 @@ function get_view_position($state) {
 			$branch[]=array('label'=>'<span class="Supplier_Code">'.$state['_parent']->get('Code').'</span>', 'icon'=>'ship', 'reference'=>'supplier/'.$state['_parent']->id);
 			$branch[]=array('label'=>_("New supplier's part"), 'icon'=>'stop', 'reference'=>'');
 
+		}elseif ($state['section']=='categories') {
+			$branch[]=array('label'=>_("Suppliers's categories"), 'icon'=>'sitemap', 'reference'=>'supplier/categories/');
+
 		}
+
+
+
+
+
+
 		break;
 	case 'orders_server':
 		$branch[]=array('label'=>'', 'icon'=>'bars', 'reference'=>'account/orders');

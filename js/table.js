@@ -93,7 +93,7 @@ function get_elements_numbers(tab, parameters) {
             for (element in data.elements_numbers) {
 
                 for (item in data.elements_numbers[element]) {
-                    console.log(item)
+                   // console.log(item)
                     $("#element_qty_" + item).html('(' + data.elements_numbers[element][item] + ')')
 
 
@@ -134,7 +134,7 @@ function show_columns_period_options() {
         var offset = $('#columns_period .fa').position();
         var height = button.height();
 
-        console.log(icon.width())
+      //  console.log(icon.width())
 
         $('#columns_period_chooser').removeClass('hide').offset({
             top: $('#columns_period').position().top + height,

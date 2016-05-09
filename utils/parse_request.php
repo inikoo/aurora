@@ -423,7 +423,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 
 			break;
-			case 'agent':
+		case 'agent':
 			if (!$user->can_view('suppliers')) {$module='utils';$section='forbidden';break;}
 
 			$module='suppliers';
@@ -483,7 +483,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 
 
-			break;	
+			break;
 		case 'customers':
 			if (!$user->can_view('customers')) {$module='utils';$section='forbidden';break;}
 
@@ -1238,10 +1238,10 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 				$parent='warehouse';
 				$parent_key=$view_path[0];
 				if ( isset($view_path[1]) ) {
-					if(is_numeric($view_path[1])){
-					$section='location';
-					$object='location';
-					$key=$view_path[1];
+					if (is_numeric($view_path[1])) {
+						$section='location';
+						$object='location';
+						$key=$view_path[1];
 					}
 				}
 
@@ -1341,32 +1341,11 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 			if ( isset($view_path[0]) ) {
 
-				if (  $view_path[0]=='list') {
-					$section='list';
-					$object='list';
-					if (isset($view_path[0]) and is_numeric($view_path[0])) {
-						$key=$view_path[0];
-						include_once 'class.List.php';
-						$list=new SubjectList($key);
-						$parent='store';
-						$parent_key=$list->get('List Parent Key');
-
-
-						if (isset($view_path[1]) and is_numeric($view_path[1])) {
-							$section='supplier';
-
-							$parent='list';
-							$parent_key=$list->id;
-							$object='supplier';
-							$key=$view_path[1];
-
-						}
-
-
-					}else {
-						//error
-					}
-
+				if ($view_path[0]=='categories') {
+					$object='category';
+					$key='';
+					$section='categories';
+					
 				}
 				elseif ( $view_path[0]=='category') {
 					$section='category';

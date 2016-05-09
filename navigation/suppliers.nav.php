@@ -71,7 +71,40 @@ function get_agents_navigation($data, $smarty, $user, $db, $account) {
 }
 
 
-function get_suppliers_categories_navigation($data, $smarty, $user, $db, $account) {}
+
+function get_suppliers_categories_navigation($data, $smarty, $user, $db) {
+
+	
+
+
+	
+	$block_view=$data['section'];
+
+
+
+	$left_buttons=array();
+	
+	$right_buttons=array();
+
+//	$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit'), 'url'=>"edit_customer_categories.php?store_id=".$store->id);
+
+	$sections=get_sections('suppliers', '');
+	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>_("Suppliers's Categories"),
+		'search'=>array('show'=>true, 'placeholder'=>_('Search suppliers'))
+
+	);
+	$smarty->assign('_content', $_content);
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+}
 
 
 function get_suppliers_category_navigation($data, $smarty, $user, $db, $account) {}

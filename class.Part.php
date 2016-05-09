@@ -76,6 +76,24 @@ class Part extends Asset{
 	}
 
 
+	function load_acc_data() {
+		$sql=sprintf("select * from `Part Data` where `Part SKU`=%d", $this->id);
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				foreach ($row as $key=>$value) {
+					$this->data[$key]=$value;
+				}
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+	}
+
+
 	function find($raw_data, $options) {
 
 
@@ -1975,6 +1993,9 @@ class Part extends Asset{
 	}
 
 
+
+
+
 	function get_picking_location_historic($date, $qty) {
 
 
@@ -1987,55 +2008,70 @@ class Part extends Asset{
 		$was_associated=array();
 		$sql=sprintf("select ITF.`Location Key`  from `Inventory Transaction Fact` ITF    where `Inventory Transaction Type` like 'Associate' and  `Part SKU`=%d and `Date`<=%s   order by `Location Key`  desc  ", $this->sku, prepare_mysql($date));
 
-		$result=mysql_query($sql);
+
 		$_locations=array();
 
 
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-			if (in_array($row['Location Key'], $_locations)) {
-				continue;
-			}else {
-				$_locations[]=$row['Location Key'];
-			}
-			$part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
 
-
-			if ($part_location->location->data['Location Mainly Used For']=='Picking') {
-
-
-				if ($part_location->is_associated($date)) {
-					list($stock, $value, $in_process)=$part_location->get_stock($date);
-					$was_associated[]=array('location_key'=>$row['Location Key'], 'stock'=>$stock);
-
+				if (in_array($row['Location Key'], $_locations)) {
+					continue;
+				}else {
+					$_locations[]=$row['Location Key'];
 				}
-			}
+				$part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
 
+
+				if ($part_location->location->data['Location Mainly Used For']=='Picking') {
+
+
+					if ($part_location->is_associated($date)) {
+						list($stock, $value, $in_process)=$part_location->get_stock($date);
+						$was_associated[]=array('location_key'=>$row['Location Key'], 'stock'=>$stock);
+
+					}
+				}
+
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
+
 
 
 		$sql=sprintf("select ITF.`Location Key`  from `Inventory Transaction Fact` ITF    where `Inventory Transaction Type` like 'Associate' and  `Part SKU`=%d and `Date`<=%s   ", $this->sku, prepare_mysql($date));
 
-		$result=mysql_query($sql);
 
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-			if (in_array($row['Location Key'], $_locations)) {
-				continue;
-			}else {
-				$_locations[]=$row['Location Key'];
-			}
-			$part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
 
-			// print_r($part_location->location);
-			if ($part_location->location->data['Location Mainly Used For']!='Picking') {
-				if ($part_location->is_associated($date)) {
-					list($stock, $value, $in_process)=$part_location->get_stock($date);
-					$was_associated[]=array('location_key'=>$row['Location Key'], 'stock'=>$stock);
-
+				if (in_array($row['Location Key'], $_locations)) {
+					continue;
+				}else {
+					$_locations[]=$row['Location Key'];
 				}
+				$part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
+
+				// print_r($part_location->location);
+				if ($part_location->location->data['Location Mainly Used For']!='Picking') {
+					if ($part_location->is_associated($date)) {
+						list($stock, $value, $in_process)=$part_location->get_stock($date);
+						$was_associated[]=array('location_key'=>$row['Location Key'], 'stock'=>$stock);
+
+					}
+				}
+
+
 			}
-
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
-
 
 
 
@@ -2158,32 +2194,49 @@ class Part extends Asset{
 
 
 	function get_locations($for_smarty=false) {
-
-		$sql=sprintf("select * from `Part Location Dimension` where `Part SKU` in (%s)", $this->sku);
+		$sql=sprintf("select PL.`Location Key`,`Location Code`,`Quantity On Hand`,`Location Warehouse Key`,`Location Mainly Used For`,`Part SKU`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Can Pick` from `Part Location Dimension` PL left join `Location Dimension` L on (L.`Location Key`=PL.`Location Key`)  where `Part SKU`=%d", $this->sku);
 
 		$res=mysql_query($sql);
 		$part_locations=array();
+
+
+
+
 		while ($row=mysql_fetch_assoc($res)) {
 
-			$location=new Location($row['Location Key']);
-
-			$row['Formatted Quantity On Hand']=number($row['Quantity On Hand']);
-
-			$row['Part Formatted SKU']=$this->get_sku();
-
-			$row['Location Code']=$location->data['Location Code'];
-
-
-			if ($for_smarty) {
-				$row_for_smarty=array();
-				foreach ($row as $key=>$value) {
-					$row_for_smarty[preg_replace('/\s/', '', $key)]=$value;
-				}
-				$part_locations[$row['Part SKU'].'_'.$row['Location Key']]=$row_for_smarty;
-
-			} else {
-				$part_locations[$row['Part SKU'].'_'.$row['Location Key']]=$row;
+			switch ($row['Location Mainly Used For']) {
+			case 'Picking':
+				$used_for=sprintf('<i class="fa fa-fw fa-shopping-basket" aria-hidden="true" title="%s" ></i>', _('Picking'));
+				break;
+			case 'Storing':
+				$used_for=sprintf('<i class="fa fa-fw  fa-hdd-o" aria-hidden="true" title="%s"></i>', _('Storing'));
+				break;
+			default:
+				$used_for=sprintf('<i class="fa fa-fw  fa-map-maker" aria-hidden="true" title="%s"></i>', $row['Location Mainly Used For']);
 			}
+
+			$part_locations[]=array(
+				'formatted_stock'=>number($row['Quantity On Hand'], 3),
+				'stock'=>$row['Quantity On Hand'],
+				'warehouse_key'=>$row['Location Warehouse Key'],
+
+				'location_key'=>$row['Location Key'],
+				'part_sku'=>$row['Part SKU'],
+
+				'location_code'=>$row['Location Code'],
+				'location_used_for_icon'=>$used_for,
+				'location_used_for'=>$row['Location Mainly Used For'],
+				'formatted_min_qty'=>($row['Minimum Quantity']!=''?$row['Minimum Quantity']:'?'),
+				'formatted_max_qty'=>($row['Maximum Quantity']!=''?$row['Maximum Quantity']:'?'),
+				'formatted_move_qty'=>($row['Moving Quantity']!=''?$row['Moving Quantity']:'?'),
+				'min_qty'=>$row['Minimum Quantity'],
+				'max_qty'=>$row['Maximum Quantity'],
+				'move_qty'=>$row['Moving Quantity'],
+				
+				'can_pick'=>$row['Can Pick']
+			);
+
+
 		}
 
 		return $part_locations;
@@ -2297,21 +2350,104 @@ class Part extends Asset{
 	}
 
 
+	function fix_stock_transactions() {
 
+		include_once 'class.PartLocation.php';
+
+		$sql=sprintf("select `Location Key`  from `Inventory Transaction Fact` where `Part SKU`=%d group by `Location Key`", $this->sku);
+
+
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
+				$part_location->redo_adjusts();
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+		$sql=sprintf("select `Inventory Transaction Key`,`Date`,`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Location Key`,`Note`,`Inventory Transaction Quantity`,`Required`  from `Inventory Transaction Fact` where `Part SKU`=%d and `Inventory Transaction Section` in ('Out','OIP') order by `Date`", $this->sku);
+
+
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+
+				if ($row['Inventory Transaction Section']=='OIP') {
+					$qty=$row['Required'];
+				}else {
+					$qty=-1*$row['Inventory Transaction Quantity'];
+				}
+				$picking_locations=$this->get_picking_location_historic($row['Date'], $qty);
+
+				if (count($picking_locations==1) and $picking_locations[0]['location_key']!=$row['Location Key']) {
+
+					$_location=new Location($picking_locations[0]['location_key']);
+					$note=$row['Note'];
+
+					if (preg_match('/(<.*a> )(.*)/', $note, $matches)) {
+
+						if ($_location->id==1) {
+							$location_note.=' '._('Taken from an')." ".sprintf("<a href='location.php?id=1'>%s</a>", _('Unknown Location'));
+						} else {
+							$location_note=' '._('Taken from').": ".sprintf("<a href='location.php?id=%d'>%s</a>", $_location->id, $_location->data['Location Code']);
+						}
+
+
+						$note=$matches[1].$location_note;
+					}else {
+
+						$note.=' (WL)';
+					}
+
+
+
+					$sql=sprintf('update `Inventory Transaction Fact` set `Location Key`=%d ,`Note`=%s where `Inventory Transaction Key`=%d',
+						$_location->id,
+						prepare_mysql($note),
+						$row['Inventory Transaction Key']
+					);
+					print $sql;
+					$this->db->exec($sql);
+					print_r($row);
+					print_r($picking_locations);
+				}
+
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+		$this->update_stock();
+
+	}
 
 
 	function update_stock_history() {
 
 
 		$sql=sprintf("select `Location Key`  from `Inventory Transaction Fact` where `Part SKU`=%d group by `Location Key`", $this->sku);
-		//print $sql;
-		$result=mysql_query($sql);
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
-			//      print $this->sku.'_'.$row['Location Key']."\n";
-			$part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
-			$part_location->update_stock_history();
+
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
+				$part_location->update_stock_history();
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 	}
 
 
@@ -2758,6 +2894,8 @@ class Part extends Asset{
 
 
 	function update_available_forecast() {
+
+		$this->load_acc_data();
 
 		// -------------- simple forecast -------------------------
 

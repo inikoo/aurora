@@ -323,7 +323,6 @@ var integerHeaderCell= Backgrid.HeaderCell.extend({
 }
 );
 
-console.log('{$tab}')
 
 {include file="columns/`$tab`.cols.tpl" }
 

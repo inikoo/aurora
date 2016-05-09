@@ -43,7 +43,6 @@ $object_fields=array(
 				'label'=>ucfirst($object->get_field_label('Location Mainly Used For')),
 				'invalid_msg'=>get_invalid_message('string'),
 				'required'=>true,
-				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 				'type'=>'value'
 			),
 

@@ -112,10 +112,12 @@ function change_view(_request, metadata) {
         }
 
         if (typeof(data.object_showcase) != "undefined" && data.object_showcase !== null && data.object_showcase != '') {
+            
+            
             $('#object_showcase').removeClass('hide')
             $('#object_showcase').html(data.object_showcase);
         } else {
-            $('#object_showcase').addClass('hide')
+          //  $('#object_showcase').addClass('hide')
 
         }
         if (typeof(data.tab) != "undefined" && data.tab !== null) {

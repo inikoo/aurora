@@ -668,8 +668,10 @@ function validate_signed_integer(value, max_value) {
             type: 'negative'
         }
     }
-
     if (Math.floor(value) != value) {
+    
+   
+    
         return {
             class: 'invalid',
 

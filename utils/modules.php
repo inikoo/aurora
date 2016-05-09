@@ -807,7 +807,7 @@ $modules=array(
 		'parent'=>'store',
 		'parent_type'=>'key',
 		'sections'=>array(
-			'dashboard'=>array('type'=>'navigation', 'label'=>_('Dashboard'), 'title'=>_("Supplier's dashboard"), 'icon'=>'dashboard', 'reference'=>'suppliers/%d/dashboard',
+			'dashboard'=>array('type'=>'navigation', 'label'=>_('Dashboard'), 'title'=>_("Supplier's dashboard"), 'icon'=>'dashboard', 'reference'=>'suppliers/dashboard',
 				'tabs'=>array(
 					'suppliers.dashboard'=>array()
 				)
@@ -834,7 +834,7 @@ $modules=array(
 
 			),
 			
-			'categories'=>array('type'=>'navigation', 'label'=>_('Categories'), 'title'=>_('Categories'), 'icon'=>'sitemap', 'reference'=>'suppliers/%d/categories',
+			'categories'=>array('type'=>'navigation', 'label'=>_('Categories'), 'title'=>_('Categories'), 'icon'=>'sitemap', 'reference'=>'suppliers/categories',
 				'tabs'=>array(
 					'suppliers.categories'=>array()
 				)

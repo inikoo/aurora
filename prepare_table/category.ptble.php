@@ -21,6 +21,9 @@ case 'account':
 	case('customer'):
 		$where.=sprintf(" and `Category Scope`='Customer'");
 		break;
+	case('supplier'):
+		$where.=sprintf(" and `Category Scope`='Supplier'");
+		break;	
 	case('product'):
 		$where.=sprintf(" and `Category Scope`='Product' ");
 		break;
@@ -80,15 +83,11 @@ case 'category':
 	break;
 
 
-case '':
-	switch ($parameters['subject']) {
-	case('supplier'):
-		$where.=" and `Category Scope`='Supplier'";
-		break;
-	}
+
 default:
 	exit('error: unknown parent category: '.$parameters['parent']);
 }
+
 
 
 
