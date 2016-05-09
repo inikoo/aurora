@@ -22,11 +22,11 @@
 			</div>
 			{foreach $agent->get_other_emails_data() key=other_email_key item=other_email}
 			<div id="Agent_Other_Email_{$other_email_key}_display" class="data_field ">
-				<i  class="fa fa-fw fa-at discret"></i> <span id="Agent_Other_Email_{$other_email_key}_mailto">{mailto address=$other_email.email}</span> 
+				<i  class="fa fa-fw fa-at discreet"></i> <span id="Agent_Other_Email_{$other_email_key}_mailto">{mailto address=$other_email.email}</span> 
 			</div>
 			{/foreach}
 			<div id="Agent_Other_Email_display" class="data_field hide">
-				<i  class="fa fa-fw fa-at discret"></i> <span class="Agent_Other_Email_mailto"></span> 
+				<i  class="fa fa-fw fa-at discreet"></i> <span class="Agent_Other_Email_mailto"></span> 
 			</div>
 			<span id="display_telephones"></span> {if $agent->get('Agent Preferred Contact Number')=='Mobile'} 
 			<div id="Agent_Main_Plain_Mobile_display" class="data_field {if !$agent->get('Agent Main Plain Mobile')}hide{/if}">
@@ -49,11 +49,11 @@
 			
 			{foreach $agent->get_other_telephones_data() key=other_telephone_key item=other_telephone}
 			<div id="Agent_Other_Telephone_{$other_telephone_key}_display" class="data_field ">
-				<i  class="fa fa-fw fa-phone discret"></i> <span>{$other_telephone.formatted_telephone}</span> 
+				<i  class="fa fa-fw fa-phone discreet"></i> <span>{$other_telephone.formatted_telephone}</span> 
 			</div>
 			{/foreach}
 			<div id="Agent_Other_Telephone_display" class="data_field hide">
-				<i  class="fa fa-fw fa-phone discret"></i> <span></span> 
+				<i  class="fa fa-fw fa-phone discreet"></i> <span></span> 
 			</div>
 			
 		</div>

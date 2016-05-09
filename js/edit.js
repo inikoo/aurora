@@ -1559,7 +1559,6 @@ function delayed_on_change_dropdown_select_field(object, timeout) {
     }, timeout));
 }
 
-
 function get_dropdown_select(dropdown_input, new_value) {
 
     var scope = $('#' + dropdown_input).attr('scope')
@@ -1611,7 +1610,6 @@ function get_dropdown_select(dropdown_input, new_value) {
 
 
 }
-
 
 function select_dropdown_option(field, value, formatted_value) {
 

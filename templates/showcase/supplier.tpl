@@ -22,11 +22,11 @@
 			</div>
 			{foreach $supplier->get_other_emails_data() key=other_email_key item=other_email}
 			<div id="Supplier_Other_Email_{$other_email_key}_display" class="data_field ">
-				<i  class="fa fa-fw fa-at discret"></i> <span id="Supplier_Other_Email_{$other_email_key}_mailto">{mailto address=$other_email.email}</span> 
+				<i  class="fa fa-fw fa-at discreet"></i> <span id="Supplier_Other_Email_{$other_email_key}_mailto">{mailto address=$other_email.email}</span> 
 			</div>
 			{/foreach}
 			<div id="Supplier_Other_Email_display" class="data_field hide">
-				<i  class="fa fa-fw fa-at discret"></i> <span class="Supplier_Other_Email_mailto"></span> 
+				<i  class="fa fa-fw fa-at discreet"></i> <span class="Supplier_Other_Email_mailto"></span> 
 			</div>
 			<span id="display_telephones"></span> {if $supplier->get('Supplier Preferred Contact Number')=='Mobile'} 
 			<div id="Supplier_Main_Plain_Mobile_display" class="data_field {if !$supplier->get('Supplier Main Plain Mobile')}hide{/if}">
@@ -49,11 +49,11 @@
 			
 			{foreach $supplier->get_other_telephones_data() key=other_telephone_key item=other_telephone}
 			<div id="Supplier_Other_Telephone_{$other_telephone_key}_display" class="data_field ">
-				<i  class="fa fa-fw fa-phone discret"></i> <span>{$other_telephone.formatted_telephone}</span> 
+				<i  class="fa fa-fw fa-phone discreet"></i> <span>{$other_telephone.formatted_telephone}</span> 
 			</div>
 			{/foreach}
 			<div id="Supplier_Other_Telephone_display" class="data_field hide">
-				<i  class="fa fa-fw fa-phone discret"></i> <span></span> 
+				<i  class="fa fa-fw fa-phone discreet"></i> <span></span> 
 			</div>
 			
 		</div>

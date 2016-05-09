@@ -11,7 +11,7 @@
 
 $where="where true  ";
 $table="`Inventory Transaction Fact` ITF left join `Part Dimension` P on (ITF.`Part SKU`=P.`Part SKU`) left join `Delivery Note Dimension` DN on (DN.`Delivery Note Key`=ITF.`Delivery Note Key`)
- left join `Location Dimension` L on (ITF.`Location Key`=L.`Location Key`)
+ left join `Location Dimension` L on (ITF.`Location Key`=L.`Location Key`)  left join `User Dimension` U on (ITF.`User Key`=U.`User Key`)
  ";
 $filter_msg='';
 $sql_type='part';
@@ -39,11 +39,10 @@ if(isset($extra_where))
 $where.=$extra_where;
 
 
-
 if (isset($parameters['elements_type'])) {
 
 	switch ($parameters['elements_type']) {
-	case 'stock_status':
+	case 'type':
 		$_elements='';
 		$count_elements=0;
 		foreach ($parameters['elements'][$parameters['elements_type']]['items'] as $_key=>$_value) {
@@ -61,7 +60,7 @@ if (isset($parameters['elements_type'])) {
 		if ($_elements=='') {
 			$where.=' and false' ;
 		} elseif ($count_elements<5) {
-			$where.=' and `Part Stock Status` in ('.$_elements.')' ;
+			$where.=' and `Inventory Transaction Section` in ('.$_elements.')' ;
 
 		}
 		break;
@@ -85,107 +84,18 @@ elseif ($parameters['f_field']=='description' and $f_value!='')
 $_order=$order;
 $_dir=$order_direction;
 
-if ($order=='stock')
-	$order='`Part Current Stock`';
-elseif ($order=='sku')
-	$order='`Part SKU`';
-elseif ($order=='id')
-	$order='`Part SKU`';
-elseif ($order=='formatted_sku')
-	$order='`Part SKU`';
-elseif ($order=='reference')
-	$order='`Part Reference`';
-elseif ($order=='description')
-	$order='`Part Unit Description`';
-elseif ($order=='available_for')
-	$order='`Part Available Days Forecast`';
-elseif ($order=='supplied_by')
-	$order='`Part XHTML Currently Supplied By`';
-elseif ($order=='products')
-	$order='`Part Currently Used In`';
-elseif ($order=='margin') {
-	$order=' `Part '.$period_tag.' Acc Margin` ';
-} elseif ($order=='sold') {
-	$order=' `Part '.$period_tag.' Acc Sold` ';
-} elseif ($order=='money_in') {
-	$order=' `Part '.$period_tag.' Acc Sold Amount` ';
-} elseif ($order=='profit_sold') {
+$order_direction='';
 
-	$order=' `Part '.$period_tag.' Acc Profit` ';
-} elseif ($order=='avg_stock') {
+	$order='`Date` desc  ,`Inventory Transaction Key` desc ';
 
-	$order=' `Part '.$period_tag.' Acc AVG Stock` ';
-
-
-} elseif ($order=='avg_stockvalue') {
-
-	$order=' `Part '.$period_tag.' Acc AVG Stock Value` ';
-
-} elseif ($order=='keep_days') {
-
-	$order=' `Part '.$period_tag.' Acc Keeping Days` ';
-} elseif ($order=='outstock_days') {
-
-	$order=' `Part '.$period_tag.' Acc Out of Stock Days` ';
-
-} elseif ($order=='unknown_days') {
-
-	$order=' `Part '.$period_tag.' Acc Unknown Stock Days` ';
-
-} elseif ($order=='gmroi') {
-
-	$order=' `Part '.$period_tag.' Acc GMROI` ';
-
-}elseif ($order=='stock_value') {
-
-	$order=' `Part Current Value` ';
-
-}elseif ($order=='delta_money_in') {
-
-	$order=' `Part '.$period_tag.' Acc 1YD Sold`';
-
-}elseif ($order=='delta_sold') {
-
-	$order=' `Part '.$period_tag.' Acc 1YD Sold Amount`';
-
-}elseif ($order=='stock_days') {
-
-	$order=' `Part Days Available Forecast`';
-
-}elseif ($order=='next_shipment') {
-
-	$order=' `Part Next Supplier Shipment`';
-
-}elseif ($order=='package_type') {
-	$order='`Part Package Type`';
-}elseif ($order=='package_weight') {
-	$order='`Part Package Weight`';
-}elseif ($order=='Package') {
-	$order='`Part Package Dimensions Volume`';
-}elseif ($order=='package_volume') {
-	$order='`Part Package Dimensions Volume`';
-}elseif ($order=='unit_weight') {
-	$order='`Part Unit Weight`';
-}elseif ($order=='unit_dimension') {
-	$order='`Part Unit Dimensions Volume`';
-}elseif ($order=='from') {
-	$order='`Part Valid From`';
-}elseif ($order=='to') {
-	$order='`Part Valid To`';
-}elseif ($order=='last_update') {
-	$order='`Part Last Updated`';
-}else {
-
-	$order='`Date`';
-}
 
 
 
 $sql_totals="select count(Distinct `Inventory Transaction Key`) as num from $table  $where  ";
 
 $fields.='`Date`,`Inventory Transaction Section`,`Inventory Transaction Key`,`Inventory Transaction Quantity`,
-`Part Reference`,ITF.`Part SKU`,`Delivery Note ID`,ITF.`Delivery Note Key`,ITF.`Location Key`,`Location Code`,
-`Note`';
+`Part Reference`,ITF.`Part SKU`,`Delivery Note ID`,ITF.`Delivery Note Key`,ITF.`Location Key`,`Location Code`,`Required`,`Part Location Stock`,`Inventory Transaction Type`,`Metadata`,
+`Note`,`User Alias`,ITF.`User Key`,`User Handle`';
 
 
 

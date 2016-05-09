@@ -19,7 +19,18 @@ var columns = [
     cell: Backgrid.StringCell.extend({ className: "aright width_300"} ),
     headerCell: integerHeaderCell
  },
-
+{
+    name: "user",
+    label: "{t}User{/t}",
+     editable: false,
+     sortable: false,
+    
+    cell: Backgrid.HtmlCell.extend({
+       
+       
+})
+   
+},
 
 
 {
@@ -36,7 +47,7 @@ var columns = [
 },
 {
     name: "change",
-    label: "{t}Change{/t}",
+    label: "{t}Stock{/t}",
    editable: false,
  sortable: false,
     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),

@@ -217,6 +217,8 @@ function stock_transactions($_data, $db, $user) {
 	include_once 'prepare_table/init.php';
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+//print $sql;
 	$adata=array();
 
 	if ($result=$db->query($sql)) {
@@ -224,13 +226,40 @@ function stock_transactions($_data, $db, $user) {
 			//MossRB-04 227330 Taken from: 11A1
 
 			$note=$data['Note'];
-			switch ($data['Inventory Transaction Section']) {
+			$stock=$data['Inventory Transaction Quantity'];
+			switch ($data['Inventory Transaction Type']) {
 			case 'OIP':
-				$type='<i class="fa  fa-sign-out discret fa-fw" aria-hidden="true"></i>';
-				break;
-			case 'Out':
-				$type='<i class="fa fa-sign-out fa-fw" aria-hidden="true"></i>';
+				$type='<i class="fa  fa-clock-o discret fa-fw" aria-hidden="true"></i>';
+				
+				if ($parameters['parent']=='part') {
+					$note=sprintf(_('%s %s (%s) to be taken from %s'),
 
+						number($data['Required']),
+						'<span title="'._('Stock keeping outers').'">SKO</span>',
+
+						sprintf('<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-fw fa-shopping-basket" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'], $data['Delivery Note ID']),
+						sprintf('<span class="button" onClick="change_view(\'location/%d\')">%s</span>', $data['Location Key'], $data['Location Code'])
+
+
+					);
+				}else {
+					$note=sprintf(_('%sx %s (%s) to be taken from %s'),
+						number($data['Required']),
+
+						($parameters['parent']=='part'?
+							sprintf('<i class="fa fa-square" aria-hidden="true"></i> %s', $data['Part Reference']):
+							sprintf('<span class="button" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span>', $data['Part SKU'], $data['Part Reference'])
+						),
+						sprintf('<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-shopping-basket" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'], $data['Delivery Note ID']),
+						sprintf('<span class="button" onClick="change_view(\'location/%d\')">%s</span>', $data['Location Key'], $data['Location Code'])
+
+					);
+				}
+				
+				
+				break;
+			case 'Sale':
+				$type='<i class="fa fa-sign-out fa-fw" aria-hidden="true"></i>';
 				if ($parameters['parent']=='part') {
 					$note=sprintf(_('%s %s (%s) taken from %s'),
 
@@ -263,9 +292,27 @@ function stock_transactions($_data, $db, $user) {
 				$type='<i class="fa fa-sign-in fa-fw" aria-hidden="true"></i>';
 				break;
 			case 'Audit':
-				$type='<i class="fa  fa-pencil-square-o fa-fw" aria-hidden="true"></i>';
+			
+			    
+			
+				
+				$type='<i class="fa fa-fw fa-dot-circle-o" aria-hidden="true"></i>';
+				
+				$stock=sprintf('<b>'.$data['Part Location Stock'].'</b>');
 				break;
+			case 'Adjust':
+			
+			    if($stock>0){
+			        $stock='+'.number($stock);
+			    }
+			        
+				$type='<i class="fa fa-fw fa-sliders" aria-hidden="true"></i>';
+				
+				
+				break;	
+				
 			case 'Move':
+			$stock='±'.number($data['Metadata']);
 				$type='<i class="fa fa-refresh fa-fw" aria-hidden="true"></i>';
 				break;
 			case 'Error':
@@ -280,7 +327,9 @@ function stock_transactions($_data, $db, $user) {
 			$adata[]=array(
 				'id'=>(integer)$data['Inventory Transaction Key'],
 				'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Date'].' +0:00')),
-				'change'=>$data['Inventory Transaction Quantity'],
+				'user'=>sprintf('<span title="%s">%s</span>',$data['User Alias'],$data['User Handle']),
+
+				'change'=>$stock,
 				'note'=>$note,
 				'type'=>$type,
 

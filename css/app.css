@@ -552,15 +552,15 @@ input {
 .highlight {
   font-weight: 800; }
 
-.discret {
+.discreet {
   opacity: .9;
   color: #777; }
 
-.very_discret {
+.very_discreet {
   opacity: .6;
   color: #777; }
 
-.super_discret {
+.super_discreet {
   opacity: .3;
   color: #777; }
 
@@ -1497,6 +1497,19 @@ textarea {
   .textarea_dialog .save {
     float: right; }
 
+.valid .save {
+  color: #0EBFE9;
+  cursor: pointer; }
+
+.invalid .save, .invalid .msg {
+  color: tomato; }
+.invalid input {
+  background-color: #ffebeb; }
+  .invalid input.potentially_valid {
+    background-color: #fff; }
+  .invalid input.valid {
+    background-color: #fff; }
+
 .edit_object {
   margin-bottom: 100px;
   padding: 10px 20px; }
@@ -1611,17 +1624,6 @@ textarea {
     .edit_object table .label {
       width: 280px;
       vertical-align: top; }
-  .edit_object .valid .save {
-    color: #0EBFE9;
-    cursor: pointer; }
-  .edit_object .invalid .save, .edit_object .invalid .msg {
-    color: tomato; }
-  .edit_object .invalid input {
-    background-color: #ffebeb; }
-    .edit_object .invalid input.potentially_valid {
-      background-color: #fff; }
-    .edit_object .invalid input.valid {
-      background-color: #fff; }
 
 .show_buttons {
   width: 20px;

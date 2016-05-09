@@ -45,6 +45,9 @@ case 'find_object':
 	case 'stores':
 		find_stores($db, $account, $memcache_ip, $data);
 		break;
+	case 'locations':
+		find_locations($db, $account, $memcache_ip, $data);
+		break;
 	case 'countries':
 		find_countries($db, $account, $memcache_ip, $data);
 		break;
@@ -244,6 +247,152 @@ function find_stores($db, $account, $memcache_ip, $data) {
 
 	}
 	$response=array('state'=>200, 'number_results'=>$results_data['n'], 'results'=>$results_data['d'], 'q'=>$queries);
+
+	echo json_encode($response);
+
+}
+
+
+function find_locations($db, $account, $memcache_ip, $data) {
+
+
+
+	$cache=false;
+	$max_results=10;
+	$user=$data['user'];
+	$q=trim($data['query']);
+
+
+
+	if ($q=='') {
+		$response=array('state'=>200, 'results'=>0, 'data'=>'');
+		echo json_encode($response);
+		return;
+	}
+
+
+
+	$where_warehouses=sprintf(' and `Location Warehouse Key` in (%s)', join(',', $user->warehouses));
+
+	$memcache_fingerprint=$account->get('Account Code').'FIND_LOCATION'.md5($q);
+
+	$cache = new Memcached();
+	$cache->addServer($memcache_ip, 11211);
+
+
+	if (strlen($q)<=2) {
+		$memcache_time=295200;
+	}if (strlen($q)<=3) {
+		$memcache_time=86400;
+	}if (strlen($q)<=4) {
+		$memcache_time=3600;
+	}else {
+		$memcache_time=300;
+
+	}
+
+
+	$results_data=$cache->get($memcache_fingerprint);
+
+
+	if (!$results_data or true) {
+
+
+		$candidates=array();
+
+$candidates_data=array();
+
+
+
+
+
+
+
+
+		$sql=sprintf("select `Location Key`,`Location Code`,`Warehouse Key`,`Warehouse Code` from `Location Dimension` left join `Warehouse Dimension` on (`Warehouse Key`=`Location Warehouse Key`) where true $where_warehouses and `Location Code` like '%s%%' order by `Location File As` limit $max_results ",
+			$q);
+
+
+		if ($result=$db->query($sql)) {
+			foreach ($result as $row) {
+
+				if ($row['Location Code']==$q)
+					$candidates[$row['Location Key']]=1000;
+				else {
+
+					$len_name=strlen($row['Location Code']);
+					$len_q=strlen($q);
+					$factor=$len_q/$len_name;
+					$candidates[$row['Location Key']]=500*$factor;
+				}
+				
+				$candidates_data[$row['Location Key']]=array('Location Code'=>$row['Location Code'],'Warehouse Code'=>$row['Warehouse Code']);
+
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
+
+
+
+
+
+
+
+
+
+
+		arsort($candidates);
+
+
+		$total_candidates=count($candidates);
+
+		if ($total_candidates==0) {
+			$response=array('state'=>200, 'results'=>0, 'data'=>'');
+			echo json_encode($response);
+			return;
+		}
+
+
+		$results=array();
+		foreach ($candidates as $location_key=>$candidate) {
+
+
+
+
+			$results[$location_key]=array(
+			'code'=>$candidates_data[$location_key]['Warehouse Code'],
+				'description'=>highlightkeyword(sprintf('%s', $candidates_data[$location_key]['Location Code']), $q ),
+				
+
+				'value'=>$location_key,
+				'formatted_value'=>$candidates_data[$location_key]['Location Code']
+
+
+
+
+			);
+
+		}
+
+
+
+
+
+
+
+
+
+
+		$results_data=array('n'=>count($results), 'd'=>$results);
+		$cache->set($memcache_fingerprint, $results_data, $memcache_time);
+
+
+
+	}
+	$response=array('state'=>200, 'number_results'=>$results_data['n'], 'results'=>$results_data['d'], 'q'=>$q);
 
 	echo json_encode($response);
 
@@ -526,7 +675,7 @@ function find_countries($db, $account, $memcache_ip, $data) {
 
 
 			}
-			
+
 			if (strlen($q)==2) {
 
 
@@ -579,7 +728,7 @@ function find_countries($db, $account, $memcache_ip, $data) {
 				print_r($error_info=$db->errorInfo());
 				exit;
 			}
-			
+
 			$sql=sprintf("select `Country Key`,`Country Code`,`Country Local Name` from kbase.`Country Dimension` where  `Country Local Name`  REGEXP '[[:<:]]%s' limit 100 ",
 				$q);
 

@@ -183,7 +183,12 @@ function get_object($object_name, $key, $load_other_data=false) {
 	case 'Location':
 		require_once "class.Location.php";
 		$object=new Location($key);
-		break;					
+		break;		
+		case 'part_location':
+	case 'PartLocation':
+		require_once "class.PartLocation.php";
+		$object=new PartLocation($key);
+		break;						
 	default:
 		exit('need to complete E1 '.$object_name);
 		break;
