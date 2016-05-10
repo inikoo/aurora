@@ -119,7 +119,7 @@ if ($user->can_view('sites')) {
 if ($user->can_view('marketing')) {
 
 	if ($user->data['User Hooked Store Key']) {
-		$nav_menu[] = array('<i class="fa fa-bullhorn fa-fw"></i>',_('Marketing'), 'marketing/'.$user->data['User Hooked Store Key'], 'marketing', 'module', '');
+		$nav_menu[] = array('<i class="fa fa-bullhorn fa-fw"></i>',_('Marketing'), 'campaigns/'.$user->data['User Hooked Store Key'], 'marketing', 'module', '');
 
 	}else {
 		$nav_menu[] = array('<i class="fa fa-bullhorn fa-fw"></i>',_('Marketing'), 'marketing/all', 'marketing', 'module', '');

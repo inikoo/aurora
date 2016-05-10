@@ -309,7 +309,7 @@ abstract class DB_Table {
 
 
 			if (
-				preg_match('/attachment bridge|site|page|part|barcode|agent|customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position|category/i', $table_name)
+				preg_match('/deal|deal campaign|attachment bridge|site|page|part|barcode|agent|customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position|category/i', $table_name)
 				and !$this->new
 				and $save_history
 			) {

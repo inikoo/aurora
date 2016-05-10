@@ -28,6 +28,18 @@ if (!isset($_REQUEST['tab'])) {
 $tab=$_REQUEST['tab'];
 
 switch ($tab) {
+case 'campaigns':
+	$data=prepare_values($_REQUEST, array(
+			'parameters'=>array('type'=>'json array')
+		));
+	get_campaigns_element_numbers($db, $data['parameters'], $user);
+	break;
+case 'deals':
+	$data=prepare_values($_REQUEST, array(
+			'parameters'=>array('type'=>'json array')
+		));
+	get_deals_element_numbers($db, $data['parameters'], $user);
+	break;
 case 'inventory.parts':
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
@@ -39,7 +51,7 @@ case 'warehouse.locations':
 			'parameters'=>array('type'=>'json array')
 		));
 	get_warehouse_locations_elements($db, $data['parameters'], $user);
-	break;	
+	break;
 case 'customers':
 case 'website.favourites.customers':
 	$data=prepare_values($_REQUEST, array(
@@ -71,6 +83,8 @@ case 'customer.history':
 case 'supplier_part.history':
 case 'agent.history':
 case 'location.history':
+case 'deal.history':
+case 'campaign.history':
 
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
@@ -103,13 +117,116 @@ default:
 	break;
 }
 
+function get_deals_element_numbers($db, $data, $user) {
+
+
+
+	$parent_key=$data['parent_key'];
+
+	$elements_numbers=array(
+		'status'=>array('Active'=>0, 'Waiting'=>0, 'Suspended'=>0, 'Finish'=>0),
+		'trigger'=>array('Order'=>0, 'Product_Category'=>0, 'Product'=>0, 'Customer'=>0, 'Customer_Cateogory'=>0, 'Customer_List'=>0),
+
+	);
+
+
+	switch ($data['parent']) {
+	case 'store':
+		$where=sprintf(' where `Deal Store Key`=%d  ', $data['parent_key']);
+		break;
+	case 'campaign':
+		$where=sprintf(' where `Deal Campaign Key`=%d  ', $data['parent_key']);
+		break;
+	default:
+		$response=array('state'=>405, 'resp'=>'customer parent not found '.$data['parent']);
+		echo json_encode($response);
+
+		return;
+	}
+
+
+
+
+
+	$sql=sprintf("select count(*) as number,`Deal Status` as element from `Deal Dimension` D $where  group by `Deal Status` ");
+	foreach ($db->query($sql) as $row) {
+
+		$elements_numbers['status'][$row['element']]=number($row['number']);
+
+	}
+
+	$sql=sprintf("select count(*) as number,`Deal Trigger` as element from `Deal Dimension` D $where  group by `Deal Trigger` ");
+
+	foreach ($db->query($sql) as $row) {
+
+		$elements_numbers['trigger'][preg_replace('/\s/', '_', $row['element'])]=number($row['number']);
+
+	}
+
+
+
+
+
+	$response= array('state'=>200, 'elements_numbers'=>$elements_numbers);
+	echo json_encode($response);
+
+
+
+}
+
+
+function get_campaigns_element_numbers($db, $data, $user) {
+
+
+
+	$parent_key=$data['parent_key'];
+
+	$elements_numbers=array(
+		'status'=>array('Active'=>0, 'Waiting'=>0, 'Suspended'=>0, 'Finish'=>0),
+
+	);
+
+
+	switch ($data['parent']) {
+	case 'store':
+		$where=sprintf(' where `Deal Campaign Store Key`=%d  ', $data['parent_key']);
+		break;
+
+	default:
+		$response=array('state'=>405, 'resp'=>'customer parent not found '.$data['parent']);
+		echo json_encode($response);
+
+		return;
+	}
+
+
+
+
+
+	$sql=sprintf("select count(*) as number,`Deal Campaign Status` as element from `Deal Campaign Dimension` D $where  group by `Deal Campaign Status` ");
+	foreach ($db->query($sql) as $row) {
+
+		$elements_numbers['status'][$row['element']]=number($row['number']);
+
+	}
+
+	$sql=sprintf("select count(*) as number,`Deal Trigger` as element from `Deal Dimension` D $where  group by `Deal Trigger` ");
+
+	$response= array('state'=>200, 'elements_numbers'=>$elements_numbers);
+	echo json_encode($response);
+
+
+
+}
+
+
 function get_part_stock_transactions_elements($db, $data, $user) {
 
 
 
 	$parent_key=$data['parent_key'];
 	$elements_numbers=array(
-		'stock_status'=>array('OIP'=>0, 'In'=>0, 'Move'=>0,'Out'=>0,'Audit'=>0,'NoDispatched'=>0),
+		'stock_status'=>array('OIP'=>0, 'In'=>0, 'Move'=>0, 'Out'=>0, 'Audit'=>0, 'NoDispatched'=>0),
 
 	);
 
@@ -117,7 +234,7 @@ function get_part_stock_transactions_elements($db, $data, $user) {
 	$table='`Inventory Transaction Fact`  ITF  ';
 	switch ($data['parent']) {
 	case 'part':
-		$where=sprintf("where `Inventory Transaction Record Type`='Movement' and `Part SKU`=%d",$data['parent_key']);
+		$where=sprintf("where `Inventory Transaction Record Type`='Movement' and `Part SKU`=%d", $data['parent_key']);
 		break;
 	default:
 		$response=array('state'=>405, 'resp'=>'parent not found '.$data['parent']);
@@ -131,7 +248,7 @@ function get_part_stock_transactions_elements($db, $data, $user) {
 	$sql=sprintf("select count(*) as number,`Inventory Transaction Section` as element from $table $where  group by `Inventory Transaction Section` ");
 	foreach ($db->query($sql) as $row) {
 
-		$elements_numbers['stock_status'][preg_replace('/\s/','',$row['element'])]=number($row['number']);
+		$elements_numbers['stock_status'][preg_replace('/\s/', '', $row['element'])]=number($row['number']);
 
 	}
 
@@ -144,13 +261,14 @@ function get_part_stock_transactions_elements($db, $data, $user) {
 
 }
 
+
 function get_parts_elements($db, $data, $user) {
 
 
 
 	$parent_key=$data['parent_key'];
 	$elements_numbers=array(
-		'stock_status'=>array('Surplus'=>0, 'Optimal'=>0, 'Low'=>0,'Critical'=>0,'Out_Of_Stock'=>0,'Error'=>0),
+		'stock_status'=>array('Surplus'=>0, 'Optimal'=>0, 'Low'=>0, 'Critical'=>0, 'Out_Of_Stock'=>0, 'Error'=>0),
 
 	);
 
@@ -173,7 +291,7 @@ function get_parts_elements($db, $data, $user) {
 
 	foreach ($db->query($sql) as $row) {
 
-		$elements_numbers['stock_status'][preg_replace('/\s/','',$row['element'])]=number($row['number']);
+		$elements_numbers['stock_status'][preg_replace('/\s/', '', $row['element'])]=number($row['number']);
 
 	}
 
@@ -205,13 +323,13 @@ function get_supplier_parts_elements($db, $data, $user) {
 	case 'supplier':
 		$where=sprintf(' where `Supplier Part Supplier Key`=%d  ', $data['parent_key']);
 		break;
-		case 'agent':
-		
-			$where=sprintf(" where  `Agent Supplier Agent Key`=%d", $data['parent_key']);
-	$table.=' left join `Agent Supplier Bridge` on (SP.`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`)';
+	case 'agent':
 
-		
-		break;	
+		$where=sprintf(" where  `Agent Supplier Agent Key`=%d", $data['parent_key']);
+		$table.=' left join `Agent Supplier Bridge` on (SP.`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`)';
+
+
+		break;
 	default:
 		$response=array('state'=>405, 'resp'=>'product parent not found '.$data['parent']);
 		echo json_encode($response);
@@ -225,7 +343,7 @@ function get_supplier_parts_elements($db, $data, $user) {
 
 	foreach ($db->query($sql) as $row) {
 
-		$elements_numbers['part_status'][preg_replace('/\s/','',$row['element'])]=number($row['number']);
+		$elements_numbers['part_status'][preg_replace('/\s/', '', $row['element'])]=number($row['number']);
 
 	}
 
@@ -246,6 +364,7 @@ function get_supplier_parts_elements($db, $data, $user) {
 
 }
 
+
 function get_warehouse_locations_elements($db, $data, $user) {
 
 
@@ -253,7 +372,7 @@ function get_warehouse_locations_elements($db, $data, $user) {
 	$parent_key=$data['parent_key'];
 
 	$elements_numbers=array(
-		'flags'=>array('Blue'=>0, 'Green'=>0, 'Orange'=>0,'Pink'=>0,'Purple'=>0,'Red'=>0,'Yellow'=>0),
+		'flags'=>array('Blue'=>0, 'Green'=>0, 'Orange'=>0, 'Pink'=>0, 'Purple'=>0, 'Red'=>0, 'Yellow'=>0),
 
 	);
 
@@ -263,8 +382,8 @@ function get_warehouse_locations_elements($db, $data, $user) {
 	case 'warehouse':
 		$where=sprintf(' where `Location Warehouse Key`=%d  ', $data['parent_key']);
 		break;
-			
-		break;	
+
+		break;
 	default:
 		$response=array('state'=>405, 'resp'=>'product parent not found '.$data['parent']);
 		echo json_encode($response);
@@ -277,7 +396,7 @@ function get_warehouse_locations_elements($db, $data, $user) {
 	$sql=sprintf("select count(*) as number,`Warehouse Flag` as element from $table $where  group by `Warehouse Flag` ");
 	foreach ($db->query($sql) as $row) {
 
-		$elements_numbers['flags'][preg_replace('/\s/','',$row['element'])]=number($row['number']);
+		$elements_numbers['flags'][preg_replace('/\s/', '', $row['element'])]=number($row['number']);
 
 	}
 
@@ -373,6 +492,7 @@ function get_customers_element_numbers($db, $data) {
 		'location'=>array('Domestic'=>0, 'Export'=>0)
 	);
 
+$table='`Customer Dimension`  C';
 
 	switch ($data['parent']) {
 	case 'store':
@@ -384,6 +504,14 @@ function get_customers_element_numbers($db, $data) {
 	case 'list':
 		$tab='customers.list';
 		break;
+	case 'campaign':
+	$table='`Order Dimension` O  left join `Order Deal Bridge` DB on (DB.`Order Key`=O.`Order Key`) left join `Customer Dimension` C on (`Order Customer Key`=C.`Customer Key`) ';
+		$where=sprintf(' where `Deal Campaign Key`=%d', $data['parent_key']);
+		break;	
+		case 'deal':
+	$table='`Order Dimension` O  left join `Order Deal Bridge` DB on (DB.`Order Key`=O.`Order Key`) left join `Customer Dimension` C on (`Order Customer Key`=C.`Customer Key`) ';
+		$where=sprintf(' where `Deal Key`=%d', $data['parent_key']);
+		break;	
 	case 'favourites':
 		$where=sprintf(' where C.`Customer Key` in (select DISTINCT F.`Customer Key` from `Customer Favorite Product Bridge` F where `Site Key`=%d )', $data['parent_key']);
 		break;
@@ -398,14 +526,15 @@ function get_customers_element_numbers($db, $data) {
 
 
 
-	$sql=sprintf("select count(*) as number,`Customer With Orders` as element from `Customer Dimension`  C $where  group by `Customer With Orders` ");
+	$sql=sprintf("select count(Distinct C.`Customer Key`) as number,`Customer With Orders` as element from $table $where  group by `Customer With Orders` ");
 	foreach ($db->query($sql) as $row) {
 
 		$elements_numbers['orders'][$row['element']]=number($row['number']);
 
 	}
 
-	$sql=sprintf("select count(*) as number,`Customer Type by Activity` as element from `Customer Dimension` C $where group by `Customer Type by Activity` ");
+
+	$sql=sprintf("select count(Distinct C.`Customer Key`) as number,`Customer Type by Activity` as element from $table $where group by `Customer Type by Activity` ");
 
 	foreach ($db->query($sql) as $row) {
 
@@ -413,7 +542,7 @@ function get_customers_element_numbers($db, $data) {
 
 	}
 
-	$sql=sprintf("select count(*) as number,`Customer Level Type` as element from `Customer Dimension`  C $where group by `Customer Level Type` ");
+	$sql=sprintf("select count(Distinct C.`Customer Key`) as number,`Customer Level Type` as element from $table $where group by `Customer Level Type` ");
 	foreach ($db->query($sql) as $row) {
 
 		$elements_numbers['type'][$row['element']]=number($row['number']);
@@ -421,7 +550,7 @@ function get_customers_element_numbers($db, $data) {
 	}
 
 
-	$sql=sprintf("select count(*) as number,`Customer Location Type` as element from `Customer Dimension` C $where group by `Customer Location Type` ");
+	$sql=sprintf("select count(Distinct C.`Customer Key`) as number,`Customer Location Type` as element from $table $where group by `Customer Location Type` ");
 	foreach ($db->query($sql) as $row) {
 
 		$elements_numbers['location'][$row['element']]=number($row['number']);
@@ -467,10 +596,16 @@ function get_history_elements($db, $data) {
 			$data['parent_key']);
 	elseif ($data['parent']=='agent')
 		$sql=sprintf("select count(*) as num ,`Type` from  `Agent History Bridge` where  `Agent Key`=%d group by  `Type`",
-			$data['parent_key']);		
+			$data['parent_key']);
 	elseif ($data['parent']=='store')
 		$sql=sprintf("select count(*) as num ,`Type` from  `%s Category History Bridge` where  `Store Key`=%d group by  `Type`",
 			$data['subject'],
+			$data['parent_key']);
+	elseif ($data['parent']=='deal')
+		$sql=sprintf("select count(*) as num ,`Type` from  `Deal History Bridge` where  `Deal Key`=%d group by  `Type`",
+			$data['parent_key']);
+	elseif ($data['parent']=='campaign')
+		$sql=sprintf("select count(*) as num ,`Type` from  `Deal Campaign History Bridge` where  `Deal Campaign Key`=%d group by  `Type`",
 			$data['parent_key']);
 	elseif ($data['parent']=='none')
 		$sql=sprintf("select count(*) as num ,`Type` from  `%s Category History Bridge`  group by  `Type`",
@@ -505,6 +640,23 @@ function get_orders_element_numbers($db, $data) {
 	$parent_key=$data['parent_key'];
 
 
+	switch ($data['parent']) {
+	case 'store':
+		$table='`Order Dimension` O';
+		$where=sprintf('where  `Order Store Key`=%d', $parent_key);
+		break;
+	case 'campaign':
+		$table='`Order Dimension` O left join `Order Deal Bridge` DB on (DB.`Order Key`=O.`Order Key`) ';
+		$where=sprintf('where  `Deal Campaign Key`=%d', $parent_key);
+		break;
+	case 'deal':
+		$table='`Order Dimension` O left join `Order Deal Bridge` DB on (DB.`Order Key`=O.`Order Key`) ';
+		$where=sprintf('where  `Deal Key`=%d', $parent_key);
+		break;
+	default:
+		exit ($data['parent']);
+		break;
+	}
 
 	$where_interval=prepare_mysql_dates($from, $to, '`Order Date`');
 	$where_interval=$where_interval['mysql'];
@@ -517,26 +669,33 @@ function get_orders_element_numbers($db, $data) {
 	);
 
 
+//USE INDEX (`Main Source Type Store Key`)
+	$sql=sprintf("select count(*) as number,`Order Main Source Type` as element from %s    %s  %s group by `Order Main Source Type` ",
+		$table, $where, $where_interval);
 
-	$sql=sprintf("select count(*) as number,`Order Main Source Type` as element from `Order Dimension` USE INDEX (`Main Source Type Store Key`)  where `Order Store Key`=%d %s group by `Order Main Source Type` ",
-		$parent_key, $where_interval);
-	$res=mysql_query($sql);
-	//print $sql;
-	while ($row=mysql_fetch_assoc($res)) {
-
+if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
 		$elements_numbers['source'][$row['element']]=number($row['number']);
-	}
+		}
+}else {
+print "$sql";
+		print_r($error_info=$db->errorInfo());
+		exit;
+}
 
-	$sql=sprintf("select count(*) as number,`Order Type` as element from `Order Dimension` USE INDEX (`Type Store Key`)  where `Order Store Key`=%d %s group by `Order Type` ",
-		$parent_key, $where_interval);
+	
+
+// USE INDEX (`Type Store Key`) 
+	$sql=sprintf("select count(*) as number,`Order Type` as element from %s %s %s group by `Order Type` ",
+		$table, $where, $where_interval);
 	foreach ($db->query($sql) as $row) {
 
 		$elements_numbers['type'][$row['element']]=number($row['number']);
 	}
+//USE INDEX (`Current Dispatch State Store Key`)
 
-
-	$sql=sprintf("select count(*) as number,`Order Current Dispatch State` as element from `Order Dimension` USE INDEX (`Current Dispatch State Store Key`)    where `Order Store Key`=%d %s group by `Order Current Dispatch State` ",
-		$parent_key, $where_interval);
+	$sql=sprintf("select count(*) as number,`Order Current Dispatch State` as element from %s  %s %s group by `Order Current Dispatch State` ",
+		$table, $where, $where_interval);
 	foreach ($db->query($sql) as $row) {
 
 		if ($row['element']!='') {
@@ -560,9 +719,9 @@ function get_orders_element_numbers($db, $data) {
 	foreach ( $elements_numbers['dispatch'] as $key=>$value) {
 		$elements_numbers['dispatch'][$key]=number($value);
 	}
-
-	$sql=sprintf("select count(*) as number,`Order Current Payment State` as element from `Order Dimension` USE INDEX (`Current Payment State Store Key`)  where `Order Store Key`=%d %s group by `Order Current Payment State` ",
-		$parent_key, $where_interval);
+// USE INDEX (`Current Payment State Store Key`)
+	$sql=sprintf("select count(*) as number,`Order Current Payment State` as element from %s  %s %s group by `Order Current Payment State` ",
+		$table, $where, $where_interval);
 	foreach ($db->query($sql) as $row) {
 		if ($row['element']=='Waiting Payment' ) {
 			$_element='WaitingPayment';

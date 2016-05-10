@@ -15,28 +15,32 @@ include_once 'class.DB_Table.php';
 class DealCampaign extends DB_Table {
 
 
-	function DealCampaign($a1,$a2=false,$a3=false) {
+	function DealCampaign($a1, $a2=false, $a3=false) {
+
+		global $db;
+		$this->db=$db;
 
 		$this->table_name='Deal Campaign';
 		$this->ignore_fields=array('Deal Campaign Key');
 
 		if (is_numeric($a1) and !$a2) {
-			$this->get_data('id',$a1);
+			$this->get_data('id', $a1);
 		} else if (($a1=='new' or $a1=='create') and is_array($a2) ) {
-				$this->find($a2,'create');
+			$this->find($a2, 'create');
 
-			}
-		elseif (preg_match('/find/i',$a1))
-			$this->find($a2,$a1);
+		}
+		elseif (preg_match('/find/i', $a1))
+			$this->find($a2, $a1);
 		else
-			$this->get_data($a1,$a2,$a3);
+			$this->get_data($a1, $a2, $a3);
 
 	}
 
-	function get_data($tipo,$tag,$tag2=false) {
+
+	function get_data($tipo, $tag, $tag2=false) {
 
 		if ($tipo=='id') {
-			$sql=sprintf("select * from `Deal Campaign Dimension` where `Deal Campaign Key`=%d",$tag);
+			$sql=sprintf("select * from `Deal Campaign Dimension` where `Deal Campaign Key`=%d", $tag);
 		}
 		elseif ($tipo=='name_store') {
 			$sql=sprintf("select * from `Deal Campaign Dimension` where `Deal Campaign Name`=%s and `Deal Campaign Store Key`=%d",
@@ -56,11 +60,12 @@ class DealCampaign extends DB_Table {
 
 	}
 
-	function find($raw_data,$options) {
+
+	function find($raw_data, $options) {
 
 		if (isset($raw_data['editor']) and is_array($raw_data['editor'])) {
 			foreach ($raw_data['editor'] as $key=>$value) {
-				if (array_key_exists($key,$this->editor))
+				if (array_key_exists($key, $this->editor))
 					$this->editor[$key]=$value;
 			}
 		}
@@ -70,10 +75,10 @@ class DealCampaign extends DB_Table {
 		$this->found_key=0;
 		$create='';
 		$update='';
-		if (preg_match('/create/i',$options)) {
+		if (preg_match('/create/i', $options)) {
 			$create='create';
 		}
-		if (preg_match('/update/i',$options)) {
+		if (preg_match('/update/i', $options)) {
 			$update='update';
 		}
 
@@ -81,7 +86,7 @@ class DealCampaign extends DB_Table {
 
 
 		foreach ($raw_data as $key=>$value) {
-			if (array_key_exists($key,$data))
+			if (array_key_exists($key, $data))
 				$data[$key]=$value;
 		}
 
@@ -99,7 +104,7 @@ class DealCampaign extends DB_Table {
 
 		}
 		if ($this->found) {
-			$this->get_data('id',$this->found_key);
+			$this->get_data('id', $this->found_key);
 		}
 
 
@@ -120,25 +125,25 @@ class DealCampaign extends DB_Table {
 		foreach ($data as $key=>$value) {
 			$keys.="`$key`,";
 			if ($key=='Deal Campaign Description') {
-				$values.=prepare_mysql($value,false).",";
+				$values.=prepare_mysql($value, false).",";
 			}else {
 				$values.=prepare_mysql($value).",";
 			}
 		}
-		$keys=preg_replace('/,$/','',$keys);
-		$values=preg_replace('/,$/','',$values);
+		$keys=preg_replace('/,$/', '', $keys);
+		$values=preg_replace('/,$/', '', $values);
 
 
 
 		// print_r($data);
-		$sql=sprintf("insert into `Deal Campaign Dimension` (%s) values(%s)",$keys,$values);
+		$sql=sprintf("insert into `Deal Campaign Dimension` (%s) values(%s)", $keys, $values);
 
 		if (mysql_query($sql)) {
 			$this->id = mysql_insert_id();
-			$this->get_data('id',$this->id);
+			$this->get_data('id', $this->id);
 			$this->new=true;
 
-			$store=new Store('id',$this->data['Deal Campaign Store Key']);
+			$store=new Store('id', $this->data['Deal Campaign Store Key']);
 			$store->update_campaings_data();
 			$this->update_status_from_dates();
 
@@ -154,18 +159,18 @@ class DealCampaign extends DB_Table {
 
 	function get($key='') {
 
-		if (isset($this->data[$key]))
-			return $this->data[$key];
+        if (!$this->id)
+			return;
 
 		switch ($key) {
 		case 'Used Orders':
 		case 'Used Customers':
 		case 'Applied Orders':
 		case 'Applied Customers':
-		
-			
+
+
 			return number($this->data['Deal Campaign Total Acc '.$key]);
-		
+
 			break;
 		case 'Interval':
 		case 'Duration':
@@ -181,10 +186,18 @@ class DealCampaign extends DB_Table {
 			}
 			return $duration;
 
+		default:
+			if (array_key_exists($key, $this->data))
+				return $this->data[$key];
+
+			if (array_key_exists('Deal Campaign '.$key, $this->data))
+				return $this->data['Deal Campaign '.$key];
+
 		}
 
 		return false;
 	}
+
 
 	function get_formatted_status() {
 
@@ -216,15 +229,16 @@ class DealCampaign extends DB_Table {
 		if ($this->data['Deal Campaign Valid From']=='') {
 			return '';
 		}else {
-			return gmdate('d-m-Y',strtotime($this->data['Deal Campaign Valid From'].' +0:00' ));
+			return gmdate('d-m-Y', strtotime($this->data['Deal Campaign Valid From'].' +0:00' ));
 		}
 	}
+
 
 	function get_to_date() {
 		if ($this->data['Deal Campaign Valid To']=='') {
 			return '';
 		}else {
-			return gmdate('d-m-Y',strtotime($this->data['Deal Campaign Valid To'].' +0:00' ));
+			return gmdate('d-m-Y', strtotime($this->data['Deal Campaign Valid To'].' +0:00' ));
 		}
 	}
 
@@ -235,20 +249,20 @@ class DealCampaign extends DB_Table {
 		$data['Deal Store Key']=$this->data['Deal Campaign Store Key'];
 
 
-        if(strtotime($this->data['Deal Campaign Valid From'])>strtotime('now')){
-        		$data['Deal Begin Date']=$this->data['Deal Campaign Valid From'];
+		if (strtotime($this->data['Deal Campaign Valid From'])>strtotime('now')) {
+			$data['Deal Begin Date']=$this->data['Deal Campaign Valid From'];
 
-        }else{
-        		$data['Deal Begin Date']=gmdate('Y-m-d H:i:s');
+		}else {
+			$data['Deal Begin Date']=gmdate('Y-m-d H:i:s');
 
-        }
+		}
 
 		$data['Deal Expiration Date']=$this->data['Deal Campaign Valid To'];
 		$data['Deal Status']=$this->data['Deal Campaign Status'];
 
 
 
-		$deal=new Deal('find create',$data);
+		$deal=new Deal('find create', $data);
 		$deal->update_status_from_dates();
 
 		return $deal;
@@ -262,14 +276,14 @@ class DealCampaign extends DB_Table {
 
 
 		if ($this->data['Deal Campaign Status']=='Waiting' and strtotime($this->data['Deal Campaign Valid From'].' +0:00')<strtotime('now +0:00')) {
-			$this->update_field_switcher('Deal Campaign Status','Active','no_history');
+			$this->update_field_switcher('Deal Campaign Status', 'Active', 'no_history');
 		}
 
 
 
 		if ($this->data['Deal Campaign Valid To']!='' and  strtotime($this->data['Deal Campaign Valid To'].' +0:00')<strtotime('now +0:00')) {
 
-			$this->update_field_switcher('Deal Campaign Status','Finish','no_history');
+			$this->update_field_switcher('Deal Campaign Status', 'Finish', 'no_history');
 
 		}
 		/*
@@ -293,7 +307,7 @@ class DealCampaign extends DB_Table {
 
 	function get_deal_keys() {
 		$deal_keys=array();
-		$sql=sprintf("select `Deal Key` from `Deal Dimension` where `Deal Campaign Key`=%d ",$this->id);
+		$sql=sprintf("select `Deal Key` from `Deal Dimension` where `Deal Campaign Key`=%d ", $this->id);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 			$deal_keys[]=$row['Deal Key'];
@@ -302,9 +316,10 @@ class DealCampaign extends DB_Table {
 
 	}
 
+
 	function get_number_deals() {
 		$number_deals=0;
-		$sql=sprintf("select count(*) as num from `Deal Dimension` where `Deal Campaign Key`=%d ",$this->id);
+		$sql=sprintf("select count(*) as num from `Deal Dimension` where `Deal Campaign Key`=%d ", $this->id);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 			$number_deals=$row['num'];
@@ -312,9 +327,10 @@ class DealCampaign extends DB_Table {
 		return $number_deals;
 	}
 
+
 	function get_deal_component_keys() {
 		$deal_component_keys=array();
-		$sql=sprintf("select `Deal Component Key` from `Deal Component Dimension` where `Deal Component Campaign Key`=%d ",$this->id);
+		$sql=sprintf("select `Deal Component Key` from `Deal Component Dimension` where `Deal Component Campaign Key`=%d ", $this->id);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 			$deal_component_keys[]=$row['Deal Component Key'];
@@ -322,6 +338,7 @@ class DealCampaign extends DB_Table {
 		return $deal_component_keys;
 
 	}
+
 
 	function update_usage() {
 
@@ -376,6 +393,7 @@ class DealCampaign extends DB_Table {
 
 	}
 
+
 	function delete() {
 
 		if ($this->get_number_deals()>0 and $this->data['Deal Campaign Status']!='Waiting') {
@@ -405,8 +423,29 @@ class DealCampaign extends DB_Table {
 	}
 
 
+	function get_field_label($field) {
+		global $account;
+
+		switch ($field) {
+
+		case 'Deal Campaign Name':
+			$label=_('name');
+			break;
+
+
+
+
+		default:
+			$label=$field;
+
+		}
+
+		return $label;
+
+	}
 
 
 }
+
 
 ?>

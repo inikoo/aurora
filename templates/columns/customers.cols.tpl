@@ -8,7 +8,7 @@ var columns = [
 
 },{
     name: "formatted_id",
-    label: "{t}ID{/t}{$data.object}",
+    label: "{t}ID{/t}",
     editable: false,
      sortType: "toggle",
     {if $sort_key=='id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}

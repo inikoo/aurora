@@ -682,16 +682,46 @@ $modules=array(
 		'parent_type'=>'key',
 		'sections'=>array(
 
-			'deals'=>array(
-				'type'=>'navigation', 'label'=>_('Deals'), 'title'=>_('Deals'), 'icon'=>'tag', 'reference'=>'marketing/%d/deals',
+			'campaigns'=>array(
+				'type'=>'navigation', 'label'=>_('Deals'), 'title'=>_('Deals'), 'icon'=>'tag', 'reference'=>'campaigns/%d',
 				'tabs'=>array(
 					'campaigns'=>array('label'=>_('Campaigns'), 'title'=>_('Campaigns')),
-					'offers'=>array('label'=>_('Offers'), 'title'=>_('Offers')),
+					'deals'=>array('label'=>_('Offers'), 'title'=>_('Offers')),
 
 				)
 
 
 			),
+
+			'campaign'=>array(
+				'type'=>'object',
+
+
+				'tabs'=>array(
+					'campaign.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
+					'campaign.history'=>array('label'=>_('History, notes'), 'icon'=>'sticky-note-o'),
+					'campaign.deals'=>array('label'=>_('Offers'),'icon'=>'tag'),
+					'campaign.orders'=>array('label'=>_('Orders'),'icon'=>'shopping-cart'),
+					'campaign.customers'=>array('label'=>_('Customers'),'icon'=>'users')
+
+				)
+			),
+				'deal'=>array(
+				'type'=>'object',
+
+
+				'tabs'=>array(
+					'campaign.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
+					'campaign.history'=>array('label'=>_('History, notes'), 'icon'=>'sticky-note-o'),
+					'campaign.allowances'=>array('label'=>_('Allowances'),'icon'=>''),
+					'campaign.orders'=>array('label'=>_('Orders'),'icon'=>'shopping-cart'),
+					'campaign.customers'=>array('label'=>_('Customers'),'icon'=>'users')
+
+				)
+			),
+
+			/*
+			,
 			'enewsletters'=>array('type'=>'navigation', 'label'=>_('eNewsletters'), 'title'=>_('eNewsletters'), 'icon'=>'newspaper-o', 'reference'=>'marketing/%d/enewsletters',
 				'tabs'=>array(
 					'enewsletters'=>array()
@@ -716,7 +746,7 @@ $modules=array(
 					'ereminders'=>array()
 				)
 			),
-
+*/
 
 
 
@@ -833,7 +863,7 @@ $modules=array(
 
 
 			),
-			
+
 			'categories'=>array('type'=>'navigation', 'label'=>_('Categories'), 'title'=>_('Categories'), 'icon'=>'sitemap', 'reference'=>'suppliers/categories',
 				'tabs'=>array(
 					'suppliers.categories'=>array()
@@ -862,7 +892,7 @@ $modules=array(
 				)
 
 			),
-'agent'=>array(
+			'agent'=>array(
 				'type'=>'object',
 				'label'=>_('agent'),
 				'icon'=>'ship',
@@ -908,7 +938,7 @@ $modules=array(
 			),
 			'supplier_part'=>array('type'=>'object',
 				'subtabs_parent'=>array(
-	
+
 					'supplier_part.purchase_orders.purchase_orders'=>'supplier_part.purchase_orders',
 					'supplier_part.purchase_orders.delivery_notes'=>'supplier_part.purchase_orders',
 					'supplier_part.purchase_orders.invoices'=>'supplier_part.purchase_orders',
@@ -922,7 +952,7 @@ $modules=array(
 					'supplier_part.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 
 					'supplier_part.history'=>array('label'=>_('History/Notes'), 'icon'=>'history'),
-					
+
 					'supplier_part.purchase_orders'=>array('label'=>_('Purchase Orders'), 'icon'=>'clipboard',
 						'subtabs'=>array(
 							'supplier_part.purchase_orders.purchase_orders'=>array('label'=>_('Purchase Orders')),
@@ -967,7 +997,7 @@ $modules=array(
 				'type'=>'navigation', 'label'=>_('Inventory').' ('._('Parts').')', 'icon'=>'th-large', 'reference'=>'inventory',
 				'tabs'=>array(
 					'inventory.parts'=>array('label'=>_('Parts')),
-					'inventory.discontinued_parts'=>array('label'=>_('Discontinued parts'),'class'=>'right discret'),
+					'inventory.discontinued_parts'=>array('label'=>_('Discontinued parts'), 'class'=>'right discret'),
 
 				)
 			),
@@ -979,19 +1009,19 @@ $modules=array(
 				)
 			),
 			'barcode'=>array(
-				'type'=>'object', 
+				'type'=>'object',
 				'tabs'=>array(
 					'barcode.details'=>array('label'=>_('Data'), 'icon'=>'database'),
-										'barcode.history'=>array('label'=>_('History'), 'icon'=>'history'),
+					'barcode.history'=>array('label'=>_('History'), 'icon'=>'history'),
 
 					'barcode.assets'=>array('label'=>_('Products/Parts'), 'icon'=>'cube'),
 
 				)
 			),
-				'deleted_barcode'=>array(
-				'type'=>'object', 
+			'deleted_barcode'=>array(
+				'type'=>'object',
 				'tabs'=>array(
-										'barcode.history'=>array('label'=>_('History'), 'icon'=>'history'),
+					'barcode.history'=>array('label'=>_('History'), 'icon'=>'history'),
 
 
 				)
@@ -1017,7 +1047,7 @@ $modules=array(
 					'part.purchase_orders.invoices'=>'part.purchase_orders',
 					'part.supplier_parts'=>'part.purchase_orders',
 					'part.stock.history.annually'=>'part.stock',
-						'part.stock.history.monthy'=>'part.stock',
+					'part.stock.history.monthy'=>'part.stock',
 					'part.stock.history.weekly'=>'part.stock',
 					'part.stock.history.daily'=>'part.stock',
 					'part.stock.history.plot'=>'part.stock',
@@ -1032,7 +1062,7 @@ $modules=array(
 					'part.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 					'part.history'=>array('label'=>_('History/Notes'), 'icon'=>'history'),
 					'part.stock.transactions'=>array('label'=>_('Warehouse transactions'), 'icon'=>'',
-						
+
 
 					),
 					/*
@@ -1052,16 +1082,16 @@ $modules=array(
 							'part.stock.history.monthy'=>array('label'=>_('Monthy')),
 							'part.stock.history.weekly'=>array('label'=>_('Weekly')),
 							'part.stock.history.daily'=>array('label'=>_('Daily')),
-							'part.stock.history.plot'=>array('label'=>_('Chart'),'class'=>'right'),
+							'part.stock.history.plot'=>array('label'=>_('Chart'), 'class'=>'right'),
 
 
 						)
 
 
 					),
-					
+
 					/*
-					
+
 						'timeserie'=>array('type'=>'',
 
 				'subtabs_parent'=>array(
@@ -1089,15 +1119,15 @@ $modules=array(
 
 				)
 			),
-					
-			*/		
-					
-					
+
+			*/
+
+
 					'part.purchase_orders'=>array('label'=>_('Supplier & Purchase orders'), 'icon'=>'ship',
 						'subtabs'=>array(
-							'part.supplier_parts'=>array('label'=>_("Supplier's parts"),'icon'=>'stop'),
+							'part.supplier_parts'=>array('label'=>_("Supplier's parts"), 'icon'=>'stop'),
 
-							'part.purchase_orders.purchase_orders'=>array('label'=>_('Purchase orders'),'icon'=>'clipboard'),
+							'part.purchase_orders.purchase_orders'=>array('label'=>_('Purchase orders'), 'icon'=>'clipboard'),
 							'part.purchase_orders.delivery_notes'=>array('label'=>_("Supplier's delivery notes")),
 							'part.purchase_orders.invoices'=>array('label'=>_("Supplier's invoices")),
 
@@ -1128,7 +1158,7 @@ $modules=array(
 
 				)
 			),
-			
+
 			'transactions'=>array(
 				'type'=>'navigation', 'label'=>_('Stock Movements'), 'icon'=>'exchange', 'reference'=>'inventory/transactions',
 				'tabs'=>array(
@@ -1315,7 +1345,7 @@ $modules=array(
 			),
 			'employee'=>array('type'=>'object',
 
-				
+
 
 				'tabs'=>array(
 					'employee.details'=>array('label'=>_('Data'), 'icon'=>'database'),

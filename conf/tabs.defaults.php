@@ -704,7 +704,7 @@ $tab_defaults=array(
 		'elements_type'=>each(  $elements_options['barcodes']  ) ['key'],
 		'elements'=>$elements_options['barcodes'],
 	),
-	
+
 	'barcode.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
@@ -713,7 +713,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'note'
 	),
-	
+
 	'operatives'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
@@ -1223,6 +1223,70 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code'
+	),
+
+	'deals'=>array(
+		'view'=>'overview',
+		'sort_key'=>'name',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'name',
+		'elements_type'=>each($elements_options['deals'])['key'],
+		'elements'=>$elements_options['deals'],
+	),
+	'campaigns'=>array(
+		'view'=>'overview',
+		'sort_key'=>'name',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'name',
+		'elements_type'=>each($elements_options['campaigns'])['key'],
+		'elements'=>$elements_options['campaigns'],
+	),
+	'campaign.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'',
+		'elements_type'=>each($elements_options['campaign_history'])['key'],
+		'elements'=>$elements_options['campaign_history']
+	),
+	'campaign.deals'=>array(
+		'view'=>'overview',
+		'sort_key'=>'name',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'name',
+		'elements_type'=>each($elements_options['deals'])['key'],
+		'elements'=>$elements_options['deals'],
+	),
+		'campaign.orders'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'number',
+		'from'=>'',
+		'to'=>'',
+		'period'=>'all',
+		'elements_type'=>each($elements_options['orders'])['key'],
+		'elements'=>$elements_options['orders']
+	),
+	'deal.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'',
+		'elements_type'=>each($elements_options['deal_history'])['key'],
+		'elements'=>$elements_options['deal_history']
 	),
 
 );

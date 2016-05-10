@@ -14,7 +14,7 @@
 
 function get_object($object_name, $key, $load_other_data=false) {
 
-    if($object_name=='')return false;
+	if ($object_name=='')return false;
 
 
 	global $account;
@@ -163,32 +163,43 @@ function get_object($object_name, $key, $load_other_data=false) {
 	case 'upload':
 		require_once "class.Upload.php";
 		$object=new Upload($key);
-		break;	
+		break;
 	case 'supplier_part':
 	case 'Supplier Part':
 		require_once "class.SupplierPart.php";
 		$object=new SupplierPart($key);
-		break;	
+		break;
 	case 'barcode':
 	case 'Barcode':
 		require_once "class.Barcode.php";
 		$object=new Barcode($key);
-		break;	
+		break;
 	case 'agent':
 	case 'Agent':
 		require_once "class.Agent.php";
 		$object=new Agent($key);
-		break;	
+		break;
 	case 'location':
 	case 'Location':
 		require_once "class.Location.php";
 		$object=new Location($key);
-		break;		
-		case 'part_location':
+		break;
+	case 'part_location':
 	case 'PartLocation':
 		require_once "class.PartLocation.php";
 		$object=new PartLocation($key);
-		break;						
+		break;
+	case 'campaign':
+	case 'Campaign':
+	case 'Deal Campaign':
+		require_once "class.DealCampaign.php";
+		$object=new DealCampaign($key);
+		break;
+	case 'deal':
+	case 'Deal':
+		require_once "class.Deal.php";
+		$object=new Deal($key);
+		break;		
 	default:
 		exit('need to complete E1 '.$object_name);
 		break;

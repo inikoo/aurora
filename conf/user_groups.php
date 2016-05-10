@@ -89,7 +89,7 @@ $user_groups=array(
 		'Name'=>_('Marketing'),
 		'View'=>'<i title="'._('Customers').'" class="fa fa-users fa-fw"> <i title="'._('Orders').'" class="fa fa-shopping-cart fa-fw"> <i title="'._('Websites').'" class="fa fa-globe fa-fw"></i> <i title="'._('Marketing').'" class="fa fa-bullhorn fa-fw"></i> <i  title="'._('Products').'" class="fa fa-square-o fa-fw"></i> <i  title="'._('Inventory').'" class="fa fa-square fa-fw"></i> <i title="'._('Suppliers').'" class="fa fa-industry fa-fw"></i>',
 		'Edit'=>'<i title="'._('Websites').'" class="fa fa-globe fa-fw"></i> <i title="'._('Marketing').'" class="fa fa-bullhorn fa-fw"></i> <i  title="'._('Products').'" class="fa fa-square-o fa-fw"></i>',
-		'Rights'=>array('CV', 'SV')
+		'Rights'=>array('CV', 'SV','MV','ME','MC','MD')
 	),
 
 

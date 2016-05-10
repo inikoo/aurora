@@ -106,6 +106,12 @@ elseif ($parameters['parent']=='account') {
 		}
 
 	}
+}elseif ($parameters['parent']=='campaign') {
+	$table='`Order Dimension` O left join `Payment Account Dimension` P on (P.`Payment Account Key`=O.`Order Payment Account Key`) left join `Order Deal Bridge` DB on (DB.`Order Key`=O.`Order Key`)';
+	$where=sprintf('where `Deal Campaign Key`=%d  ', $parameters['parent_key']);
+}elseif ($parameters['parent']=='deal') {
+	$table='`Order Dimension` O left join `Payment Account Dimension` P on (P.`Payment Account Key`=O.`Order Payment Account Key`) left join `Order Deal Bridge` DB on (DB.`Order Key`=O.`Order Key`)';
+	$where=sprintf('where `Deal Key`=%d  ', $parameters['parent_key']);
 }elseif ($parameters['parent']=='product') {
 
 

@@ -13,7 +13,7 @@ var columns = [
         orderSeparator: '',
         events: {
             "click": function() {
-                change_view('marketing/' + this.model.get("id") )
+                change_view('store/' + this.model.get("id") )
             }
         },
         className: "link",
@@ -46,7 +46,56 @@ var columns = [
     sortType: "toggle",
     {if $sort_key=='name'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
     cell: Backgrid.StringCell.extend({  }),
-}
+},
+{
+    name: "campaigns",
+    label: "{t}Campaigns{/t}",
+     defautOrder:1,
+    editable: false,
+    sortType: "toggle",
+    {if $sort_key=='campaigns'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
+
+  cell: Backgrid.Cell.extend({
+        orderSeparator: '',
+        events: {
+            "click": function() {
+                change_view('campaigns/' + this.model.get("id") )
+            }
+        },
+        className: "link aright",
+        
+       
+        
+        
+    }),
+headerCell: integerHeaderCell
+  
+},
+{
+    name: "deals",
+    label: "{t}Offers{/t}",
+     defautOrder:1,
+    editable: false,
+    sortType: "toggle",
+    {if $sort_key=='deals'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+
+  cell: Backgrid.Cell.extend({
+        orderSeparator: '',
+        events: {
+            "click": function() {
+                change_view('deals/' + this.model.get("id") )
+            }
+        },
+        className: "link aright",
+        
+       
+        
+        
+    }),
+headerCell: integerHeaderCell
+  
+},
 ]
 function change_table_view(view,save_state){}

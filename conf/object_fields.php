@@ -19,19 +19,26 @@ function get_object_fields($object, $db, $user, $smarty, $options=false) {
 	$edit=true;
 
 
-
 	switch ($object->get_object_name()) {
+	case 'Deal Campaign':
+		include 'fields/campaign.fld.php';
+		return $object_fields;
+		break;
+	case 'Deal':
+		include 'fields/deal.fld.php';
+		return $object_fields;
+		break;
 	case 'Site':
 		include 'fields/website.fld.php';
 		return $object_fields;
 		break;
 
 	case 'Agent':
-			include 'fields/agent.fld.php';
+		include 'fields/agent.fld.php';
 		return $agent_fields;
 		break;
 	case 'Barcode':
-			include 'fields/barcode.fld.php';
+		include 'fields/barcode.fld.php';
 		return $barcode_fields;
 		break;
 	case 'User':
@@ -76,7 +83,7 @@ function get_object_fields($object, $db, $user, $smarty, $options=false) {
 		include 'fields/warehouse.fld.php';
 		return $object_fields;
 		break;
-case 'Location':
+	case 'Location':
 		include 'fields/location.fld.php';
 		return $object_fields;
 		break;
