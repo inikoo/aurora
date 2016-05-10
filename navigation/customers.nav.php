@@ -19,7 +19,7 @@ function get_customers_navigation($data, $smarty, $user, $db) {
 
 	switch ($data['parent']) {
 	case 'store':
-		$store=new Store($data['parent_key']);
+		
 		break;
 	default:
 
@@ -37,7 +37,7 @@ function get_customers_navigation($data, $smarty, $user, $db) {
 
 
 
-		list($prev_key, $next_key)=get_prev_next($store->id, $user->stores);
+		list($prev_key, $next_key)=get_prev_next($data['store']->id, $user->stores);
 
 		$sql=sprintf("select `Store Code` from `Store Dimension` where `Store Key`=%d", $prev_key);
 		if ($result=$db->query($sql)) {
@@ -74,7 +74,7 @@ function get_customers_navigation($data, $smarty, $user, $db) {
 
 
 	$right_buttons=array();
-	$sections=get_sections('customers', $store->id);
+	$sections=get_sections('customers', $data['store']->id);
 
 	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
 
@@ -86,7 +86,7 @@ function get_customers_navigation($data, $smarty, $user, $db) {
 
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
-		'title'=>_('Customers').' <span class="id">'.$store->get('Store Code').'</span>',
+		'title'=>_('Customers').' <span class="id">'.$data['store']->get('Store Code').'</span>',
 		'search'=>array('show'=>true, 'placeholder'=>_('Search customers'))
 
 	);
@@ -731,11 +731,7 @@ function get_customer_navigation($data, $smarty, $user, $db) {
 	
 
 
-	require_once 'class.Customer.php';
-
-
-
-	$customer=new Customer($data['key']);
+	$customer=$data['_object'];
 
 	if (!$customer->id) {
 		return;

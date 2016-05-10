@@ -70,12 +70,20 @@ case 'views':
 
 	switch ($state['parent']) {
 
+	case 'campaign':
+		
+		$_parent=get_object($state['parent'],$state['parent_key']);
+		
+	
+		break;
+		
 	case 'store':
 		include_once 'class.Store.php';
 		$_parent=new Store($state['parent_key']);
 		$state['current_store']=$_parent->id;
 		$store=$_parent;
-		break;
+		break;	
+		
 	case 'part':
 		include_once 'class.Part.php';
 		include_once 'class.Warehouse.php';
@@ -251,7 +259,7 @@ case 'views':
 
 	$response=array('state'=>array());
 
-	list($state, $response['view_position'])=get_view_position($state);
+	list($state, $response['view_position'])=get_view_position($state, $user, $smarty, $account);
 
 
 	if ($data['old_state']['module']!=$state['module']  or $reload ) {
@@ -329,7 +337,10 @@ case 'views':
 
 
 	}else {
-		$response['object_showcase']='';
+
+
+
+		$response['object_showcase']='_';
 	}
 
 
@@ -417,6 +428,14 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db) {
 	case 'website':
 	case 'dashboard':
 		$html='';
+		break;
+	case 'campaign':
+		include_once 'showcase/campaign.show.php';
+		$html=get_campaign_showcase($data, $smarty, $user, $db);
+		break;
+	case 'deal':
+		include_once 'showcase/deal.show.php';
+		$html=get_deal_showcase($data, $smarty, $user, $db);
 		break;
 	case 'store':
 		include_once 'showcase/store.show.php';
@@ -810,8 +829,14 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		require_once 'navigation/marketing.nav.php';
 		switch ($data['section']) {
 
-		case ('deals'):
-			return get_deals_navigation($data, $smarty, $user, $db, $account);
+		case ('campaigns'):
+			return get_campaigns_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('campaign'):
+			return get_campaign_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('deal'):
+			return get_deal_navigation($data, $smarty, $user, $db, $account);
 			break;
 
 		case ('enewsletters'):
@@ -1310,8 +1335,7 @@ function get_tabs($data, $modules, $user, $smarty) {
 }
 
 
-function get_view_position($state) {
-	global $user, $smarty, $account;
+function get_view_position($state, $user, $smarty, $account) {
 
 
 	$branch=array();
@@ -2423,6 +2447,43 @@ function get_view_position($state) {
 		}
 
 		break;
+
+
+
+	case 'marketing_server':
+		$branch[]=array('label'=>_('Marketing (All stores)'), 'icon'=>'bullhorn', 'reference'=>'');
+
+		break;
+
+		break;
+	case 'marketing':
+		$branch[]=array('label'=>_('(All stores)'), 'icon'=>'bullhorn', 'reference'=>'marketing/all');
+
+		if ($state['section']=='deals') {
+
+			$branch[]=array('label'=>_('Deals').' '.$state['store']->get('Code'), 'icon'=>'tag', 'reference'=>'');
+		}elseif ($state['section']=='campaigns') {
+			$branch[]=array('label'=>_('Campaigns').' <span class="Store_Code">'.$state['store']->get('Code').'</span>', 'icon'=>'tags', 'reference'=>'');
+		}elseif ($state['section']=='campaign') {
+			$branch[]=array('label'=>_('Campaigns').' <span class="Store_Code">'.$state['store']->get('Code').'</span>', 'icon'=>'tags', 'reference'=>'campaigns/'.$state['store']->id);
+
+			$branch[]=array('label'=>'<span class="Deal_Campaign_Name">'.$state['_object']->get('Name').'</span>', 'icon'=>'tags', 'reference'=>'');
+		}elseif ($state['section']=='deal') {
+
+			if ($state['parent']=='campaign') {
+						$branch[]=array('label'=>_('Campaigns').' <span class="Store_Code">'.$state['store']->get('Code').'</span>', 'icon'=>'tags', 'reference'=>'campaigns/'.$state['store']->id);
+
+				$branch[]=array('label'=>'<span class="Deal_Campaign_Name">'.$state['_parent']->get('Name').'</span>', 'icon'=>'tags', 'reference'=>'');
+
+			}
+
+			$branch[]=array('label'=>'<span class="Deal_Name">'.$state['_object']->get('Name').'</span>', 'icon'=>'tag', 'reference'=>'');
+		}
+		break;
+
+	default:
+
+
 
 	}
 

@@ -172,6 +172,10 @@ function get_rtext($record_label, $total_records) {
 		return sprintf(ngettext('%s image', '%s images', $total_records), number($total_records));
 	}elseif ($record_label=='transaction') {
 		return sprintf(ngettext('%s transaction', '%s transactions', $total_records), number($total_records));
+	}elseif ($record_label=='campaign') {
+		return sprintf(ngettext('%s campaign', '%s campaigns', $total_records), number($total_records));
+	}elseif ($record_label=='offer') {
+		return sprintf(ngettext('%s offer', '%s offers', $total_records), number($total_records));
 	}else {
 		return sprintf(ngettext('%s record', '%s records', $total_records), number($total_records));
 	}
@@ -265,6 +269,10 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
 		return sprintf(ngettext('%s image of %s', '%s images of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
 	}elseif ($record_label=='transaction') {
 		return sprintf(ngettext('%s transaction of %s', '%s transactions of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
+	}elseif ($record_label=='campaign') {
+		return sprintf(ngettext('%s campaign of %s', '%s campaigns of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
+	}elseif ($record_label=='offer') {
+		return sprintf(ngettext('%s offer of %s', '%s offers of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
 	}else {
 		return sprintf(ngettext('%s record of %s', '%s records of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
 	}

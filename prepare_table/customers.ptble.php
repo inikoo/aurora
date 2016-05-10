@@ -81,6 +81,25 @@ elseif ($parameters['parent']=='store') {
 	$store=new Store($parameters['parent_key']);
 	$currency=$store->data['Store Currency Code'];
 	$where.=$where_stores;
+}elseif ($parameters['parent']=='campaign') {
+	$table='`Order Dimension` O  left join `Order Deal Bridge` DB on (DB.`Order Key`=O.`Order Key`) left join `Customer Dimension` C on (`Order Customer Key`=C.`Customer Key`) ';
+
+		$where=sprintf(' where  `Deal Campaign Key`=%d ',$parameters['parent_key']);
+	include_once('class.DealCampaign.php');
+	$campaign=new DealCampaign($parameters['parent_key']);
+	$store=new Store($campaign->get('Deal Campaign Store Key'));
+	$currency=$store->get('Store Currency Code');
+	
+}elseif ($parameters['parent']=='deal') {
+	$table='`Order Dimension` O  left join `Order Deal Bridge` DB on (DB.`Order Key`=O.`Order Key`) left join `Customer Dimension` C on (`Order Customer Key`=C.`Customer Key`) ';
+
+		$where=sprintf(' where  `Deal Key`=%d ',$parameters['parent_key']);
+		include_once('class.Deal.php');
+
+	$deal=new Deal($parameters['parent_key']);
+	$store=new Store($deal->get('Deal Store Key'));
+	$currency=$store->get('Store Currency Code');
+	
 }elseif ($parameters['parent']=='favourites') {
 
 $table='`Customer Favorite Product Bridge` F  left join `Customer Dimension` C   on (C.`Customer Key`=F.`Customer Key`)  ';
@@ -314,7 +333,6 @@ else
 
 
 $sql_totals="select count(Distinct C.`Customer Key`) as num from $table  $where ";
-
 
 
 function customers_awhere($awhere) {

@@ -77,10 +77,12 @@ else
 
 
 
-$table='`Store Dimension` S left join `Store Data Dimension` D on (D.`Store Key`=S.`Store Key`) left join `Store Default Currency` DC on DC.`Store Key`=S.`Store Key`';
+$table='`Store Dimension` S ';
 
 $sql_totals="select count(Distinct S.`Store Key`) as num from $table  $where  ";
 
-$fields="*";
+$fields=" `Store Key`,`Store Code`,`Store Name`, (select count(*) from `Deal Campaign Dimension` where `Deal Campaign Status`='Active' and `Deal Campaign Store Key`=S.`Store Key` ) as campaigns
+, (select count(*) from `Deal Dimension` where `Deal Status`='Active' and `Deal Store Key`=S.`Store Key` ) as deals
+  ";
 
 ?>

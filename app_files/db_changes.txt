@@ -334,6 +334,37 @@ migrate_parts.oneoff.php
 
 
 update `Category Dimension` set `Category Scope`='Supplier' where `Category Subject`='Supplier';
+ALTER TABLE `History Dimension` CHANGE `History Abstract` `History Abstract` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+
+CREATE TABLE `Deal Campaign History Bridge` (
+  `Deal Campaign Key` mediumint(8) UNSIGNED NOT NULL,
+  `History Key` int(10) UNSIGNED NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes','Asset') NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `Deal Campaign History Bridge`
+  ADD PRIMARY KEY (`Deal Campaign Key`,`History Key`),
+  ADD KEY `Deal Campaign Key` (`Deal Campaign Key`),
+  ADD KEY `Deletable` (`Deletable`),
+  ADD KEY `History Key` (`History Key`),
+  ADD KEY `Type` (`Type`);
+
+CREATE TABLE `Deal History Bridge` (
+  `Deal Key` mediumint(8) UNSIGNED NOT NULL,
+  `History Key` int(10) UNSIGNED NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes','Asset') NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `Deal History Bridge`
+  ADD PRIMARY KEY (`Deal Key`,`History Key`),
+  ADD KEY `Deal Key` (`Deal Key`),
+  ADD KEY `Deletable` (`Deletable`),
+  ADD KEY `History Key` (`History Key`),
+  ADD KEY `Type` (`Type`);
 
 
 

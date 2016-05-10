@@ -36,8 +36,8 @@ case 'marketing_server':
 case 'campaigns':
 	campaigns(get_table_parameters(), $db, $user);
 	break;
-case 'offers':
-	offers(get_table_parameters(), $db, $user);
+case 'deals':
+	deals(get_table_parameters(), $db, $user);
 	break;
 
 default:
@@ -49,7 +49,7 @@ default:
 
 
 function marketing_server($_data, $db, $user) {
-	global $db;
+
 	$rtext_label='store';
 	include_once 'prepare_table/init.php';
 
@@ -58,16 +58,27 @@ function marketing_server($_data, $db, $user) {
 
 	// print $sql;
 
+	if ($result=$db->query($sql)) {
+		foreach ($result as $data) {
 
-	foreach ($db->query($sql) as $data) {
 
-		$adata[]=array(
-			'id'=>(integer) $data['Store Key'],
-			'code'=>$data['Store Code'],
-			'name'=>$data['Store Name'],
-		);
+			$adata[]=array(
+				'id'=>(integer) $data['Store Key'],
+				
+				'code'=>$data['Store Code'],
+				'name'=>$data['Store Name'],
+				'campaigns'=>number($data['campaigns']),
+				'deals'=>number($data['deals']),
+			);
 
+
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
 	}
+
+
 
 	$response=array('resultset'=>
 		array(
@@ -83,6 +94,218 @@ function marketing_server($_data, $db, $user) {
 	echo json_encode($response);
 }
 
+
+function deals($_data, $db, $user) {
+
+	$rtext_label='offer';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	// print $sql;
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $data) {
+
+
+
+
+			switch ($data['Deal Status']) {
+			case 'Waiting':
+				$status=sprintf('<i class="fa fa-clock-o discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Waiting'));
+				break;
+			case 'Active':
+				$status=sprintf('<i class="fa fa-play success fa-fw" aria-hidden="true" title="%s" ></i>', _('Active'));
+				break;
+			case 'Suspended':
+				$status=sprintf('<i class="fa fa-pause error fa-fw" aria-hidden="true" title="%s" ></i>', _('Suspended'));
+				break;
+			case 'Finish':
+				$status=sprintf('<i class="fa fa-stop discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Finished'));
+				break;
+			default:
+				$status=$data['Deal Status'];
+			}
+
+			$duration='';
+			if ($data['Deal Expiration Date']=='' and $data['Deal Begin Date']=='') {
+				$duration=_('Permanent');
+			}else {
+
+				if ($data['Deal Begin Date']!='') {
+					$duration=strftime("%x", strtotime($data['Deal Begin Date']." +00:00"));
+
+				}
+				$duration.=' - ';
+				if ($data['Deal Expiration Date']!='') {
+					$duration.=strftime("%x", strtotime($data['Deal Expiration Date']." +00:00"));
+
+				}else {
+					$duration.=_('Present');
+				}
+
+			}
+
+			if ($data['Deal Expiration Date']!='') {
+				$to=strftime("%x", strtotime($data['Deal Expiration Date']." +00:00"));
+			}else {
+				$to=_('Permanent');
+			}
+
+
+			if ($data['Deal Begin Date']!='') {
+				$from=strftime("%x", strtotime($data['Deal Begin Date']." +00:00"));
+			}else {
+				$from='';
+			}
+
+			if (strlen(strip_tags($data['Deal Term Allowances Label']))>75) {
+				$description_class='super_small';
+			}elseif (strlen(strip_tags($data['Deal Term Allowances Label']))>60) {
+				$description_class='very_small';
+			}elseif (strlen(strip_tags($data['Deal Term Allowances Label']))>50) {
+				$description_class='small';
+			}else {
+				$description_class='';
+			}
+			$adata[]=array(
+				'id'=>(integer) $data['Deal Key'],
+				'store_key'=>(integer) $data['Deal Store Key'],
+				'status'=>$status,
+				'name'=>$data['Deal Name'],
+				'description'=>sprintf('<span class="%s" title="%s">%s</span>', $description_class, strip_tags($data['Deal Term Allowances']), $data['Deal Term Allowances Label']),
+				'from'=>$from,
+				'to'=>$to,
+				'orders'=>number($data['Deal Total Acc Used Orders']),
+				'customers'=>number($data['Deal Total Acc Used Customers'])
+				
+			);
+	
+
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+function campaigns($_data, $db, $user) {
+
+	$rtext_label='campaign';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	// print $sql;
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $data) {
+
+
+
+
+			switch ($data['Deal Campaign Status']) {
+			case 'Waiting':
+				$status=sprintf('<i class="fa fa-clock-o discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Waiting'));
+				break;
+			case 'Active':
+				$status=sprintf('<i class="fa fa-play success fa-fw" aria-hidden="true" title="%s" ></i>', _('Active'));
+				break;
+			case 'Suspended':
+				$status=sprintf('<i class="fa fa-pause error fa-fw" aria-hidden="true" title="%s" ></i>', _('Suspended'));
+				break;
+			case 'Finish':
+				$status=sprintf('<i class="fa fa-stop discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Finished'));
+				break;
+			default:
+				$status=$data['Deal Campaign Status'];
+			}
+
+			$duration='';
+			if ($data['Deal Campaign Valid To']=='' and $data['Deal Campaign Valid From']=='') {
+				$duration=_('Permanent');
+			}else {
+
+				if ($data['Deal Campaign Valid From']!='') {
+					$duration=strftime("%x", strtotime($data['Deal Campaign Valid From']." +00:00"));
+
+				}
+				$duration.=' - ';
+				if ($data['Deal Campaign Valid To']!='') {
+					$duration.=strftime("%x", strtotime($data['Deal Campaign Valid To']." +00:00"));
+
+				}else {
+					$duration.=_('Present');
+				}
+
+			}
+
+			if ($data['Deal Campaign Valid To']!='') {
+				$to=strftime("%x", strtotime($data['Deal Campaign Valid To']." +00:00"));
+			}else {
+				$to=_('Permanent');
+			}
+
+
+			if ($data['Deal Campaign Valid From']!='') {
+				$from=strftime("%x", strtotime($data['Deal Campaign Valid From']." +00:00"));
+			}else {
+				$from='';
+			}
+
+			$adata[]=array(
+				'id'=>(integer) $data['Deal Campaign Key'],
+				'store_key'=>(integer) $data['Deal Campaign Store Key'],
+				'status'=>$status,
+				'name'=>$data['Deal Campaign Name'],
+				'from'=>$from,
+				'to'=>$to,
+				'deals'=>number($data['Deal Campaign Number Current Deals']),
+
+				'orders'=>number($data['Deal Campaign Total Acc Used Orders']),
+				'customers'=>number($data['Deal Campaign Total Acc Used Customers'])
+				
+			);
+	
+
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
 
 
 

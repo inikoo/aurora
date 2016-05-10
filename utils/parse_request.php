@@ -1080,6 +1080,82 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 			}
 			break;
+		case 'campaigns':
+			$module='marketing';
+
+			if (isset($view_path[0])) {
+				$section='campaigns';
+			
+			
+				$parent='store';
+				$parent_key=$view_path[0];
+
+
+				if (isset($view_path[1])) {
+
+					if (is_numeric($view_path[1])) {
+						$section='campaign';
+						$key=$view_path[1];
+	$object='campaign';
+
+						if (isset($view_path[2])) {
+							if ($view_path[2]=='deal') {
+
+								$section='deal';
+								$object='deal';
+								$parent='campaign';
+								$parent_key=$view_path[1];
+								if (isset($view_path[3])) {
+									if (is_numeric($view_path[3])) {
+										$key=$view_path[3];
+									}elseif ($view_path[3]=='new') {
+
+
+									}
+
+								}
+							}
+
+
+						}
+
+
+					}
+					elseif ($view_path[1]=='new') {
+						$section='campaign.new';
+					}
+
+
+				}
+
+			}
+			break;
+		case 'deals':
+			$module='marketing';
+
+			if (isset($view_path[0])) {
+				$section='deal';
+				$object='deal';
+				$key=$view_path[0];
+				$parent='store';
+
+
+				if (isset($view_path[1])) {
+
+					$parent='store';
+					$parent_key=$view_path[0];
+					if (is_numeric($view_path[1])) {
+						$key=$view_path[1];
+
+					}elseif ($view_path[1]=='new') {
+						$section='campaign.new';
+					}
+
+				}
+			}
+
+
+			break;
 		case 'warehouses':
 
 			if (!$user->can_view('locations')) {$module='utils';$section='forbidden';break;}
@@ -1345,7 +1421,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 					$object='category';
 					$key='';
 					$section='categories';
-					
+
 				}
 				elseif ( $view_path[0]=='category') {
 					$section='category';

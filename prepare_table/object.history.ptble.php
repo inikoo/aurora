@@ -102,6 +102,12 @@ elseif ($parameters['parent']=='user') {
 }elseif ($parameters['parent']=='location') {
 	$where=sprintf(' where   B.`Location Key`=%d   ', $parameters['parent_key']);
 	$subject='Location';
+}elseif ($parameters['parent']=='campaign') {
+	$where=sprintf(' where   B.`Deal Campaign Key`=%d   ', $parameters['parent_key']);
+	$subject='Deal Campaign';
+}elseif ($parameters['parent']=='deal') {
+	$where=sprintf(' where   B.`Deal Key`=%d   ', $parameters['parent_key']);
+	$subject='Deal';
 }else {
 	print_r($parameters);
 	exit('parent not set up '.$parameters['parent']);

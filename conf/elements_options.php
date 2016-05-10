@@ -89,7 +89,7 @@ $elements_options=array(
 
 		)
 	),
-		'agent_history'=>array(
+	'agent_history'=>array(
 		'type'=>array(
 			'label'=>_('Type'),
 			'items'=>array(
@@ -261,7 +261,7 @@ $elements_options=array(
 				'Audit'=>array('label'=>_('Audits'), 'selected'=>true),
 				'In'=>array('label'=>_('In'), 'selected'=>true),
 				'Out'=>array('label'=>_('Out'), 'selected'=>true),
-				'OIP'=>array('label'=>'OIP', 'selected'=>true,'title'=>_('Orders in Process'))
+				'OIP'=>array('label'=>'OIP', 'selected'=>true, 'title'=>_('Orders in Process'))
 
 			)
 
@@ -287,7 +287,7 @@ $elements_options=array(
 
 		),
 	),
-		'location_history'=>array(
+	'location_history'=>array(
 		'type'=>array(
 			'label'=>_('Type'),
 			'items'=>array(
@@ -298,6 +298,72 @@ $elements_options=array(
 
 		)
 	),
+	'campaigns'=>array(
+		'status'=>array(
+			'label'=>_('Status'),
+			'items'=>array(
+				'Active'=>array('label'=>_('Active'), 'selected'=>true),
+				'Waiting'=>array('label'=>_('Waiting'), 'selected'=>true),
+				'Suspended'=>array('label'=>_('Suspended'), 'selected'=>true),
+				'Finish'=>array('label'=>_('Finish'), 'selected'=>false),
+
+			),
+
+		)
+	),
+
+	'deals'=>array(
+		'status'=>array(
+			'label'=>_('Status'),
+			'items'=>array(
+				'Active'=>array('label'=>_('Active'), 'selected'=>true),
+				'Waiting'=>array('label'=>_('Waiting'), 'selected'=>true),
+				'Suspended'=>array('label'=>_('Suspended'), 'selected'=>true),
+				'Finish'=>array('label'=>_('Finish'), 'selected'=>false),
+
+			),
+
+		),
+		'trigger'=>array(
+			'label'=>_('Trigger'),
+			'items'=>array(
+
+				'Order'=>array('label'=>_('Order'), 'selected'=>true),
+				'Product_Category'=>array('label'=>_('Product category'), 'selected'=>true),
+				'Product'=>array('label'=>_('Product'), 'selected'=>false),
+				'Customer'=>array('label'=>_('Customer'), 'selected'=>true),
+				'Customer_Cateogory'=>array('label'=>_('Customer cateogry'), 'selected'=>true),
+				'Customer_List'=>array('label'=>_('Customer list'), 'selected'=>true),
+			),
+
+
+		)
+	),
+
+
+	'campaign_history'=>array(
+		'type'=>array(
+			'label'=>_('Type'),
+			'items'=>array(
+				'Notes'=>array('label'=>_('Notes'), 'selected'=>true),
+				'Changes'=>array('label'=>_('Changes'), 'selected'=>true),
+			),
+
+		)
+	),
+
+	'deal_history'=>array(
+		'type'=>array(
+			'label'=>_('Type'),
+			'items'=>array(
+				'Notes'=>array('label'=>_('Notes'), 'selected'=>true),
+				'Changes'=>array('label'=>_('Changes'), 'selected'=>true),
+			),
+
+		)
+	),
+
+
 );
 
 ?>
