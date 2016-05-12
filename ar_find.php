@@ -29,7 +29,15 @@ $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
 
+case 'number_orders_in_process':
+	$data=prepare_values($_REQUEST, array(
+			'customer_key'=>array('type'=>'key'),
 
+		));
+
+	number_orders_in_process($db, $data);
+
+	break;
 case 'find_object':
 
 	$data=prepare_values($_REQUEST, array(
@@ -63,7 +71,7 @@ case 'find_object':
 
 	break;
 default:
-	$response=array('state'=>405, 'resp'=>'Tab not found '.$tab);
+	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
 	exit;
 	break;
@@ -300,7 +308,7 @@ function find_locations($db, $account, $memcache_ip, $data) {
 
 		$candidates=array();
 
-$candidates_data=array();
+		$candidates_data=array();
 
 
 
@@ -325,8 +333,8 @@ $candidates_data=array();
 					$factor=$len_q/$len_name;
 					$candidates[$row['Location Key']]=500*$factor;
 				}
-				
-				$candidates_data[$row['Location Key']]=array('Location Code'=>$row['Location Code'],'Warehouse Code'=>$row['Warehouse Code']);
+
+				$candidates_data[$row['Location Key']]=array('Location Code'=>$row['Location Code'], 'Warehouse Code'=>$row['Warehouse Code']);
 
 			}
 		}else {
@@ -363,9 +371,9 @@ $candidates_data=array();
 
 
 			$results[$location_key]=array(
-			'code'=>$candidates_data[$location_key]['Warehouse Code'],
+				'code'=>$candidates_data[$location_key]['Warehouse Code'],
 				'description'=>highlightkeyword(sprintf('%s', $candidates_data[$location_key]['Location Code']), $q ),
-				
+
 
 				'value'=>$location_key,
 				'formatted_value'=>$candidates_data[$location_key]['Location Code']
@@ -821,6 +829,58 @@ function find_countries($db, $account, $memcache_ip, $data) {
 	$response=array('state'=>200, 'number_results'=>$results_data['n'], 'results'=>$results_data['d'], 'q'=>$queries);
 
 	echo json_encode($response);
+
+}
+
+
+function number_orders_in_process($db, $data) {
+
+	$number_orders_in_process=0;
+	$orders_list='';
+	$msg='';
+	$sql=sprintf("select `Order Key`,`Order Public ID`,`Order Store Key`  from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State`='In Process'",
+		$data['customer_key']
+	);
+
+
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+
+
+			$orders_list.=sprintf(", <span class='link'  onClick=\"change_view('orders/%d/%d')\" >%s</span>", $row['Order store Key'],$row['Order Key'], $row['Order Public ID']);
+			$number_orders_in_process++;
+
+			if ($number_orders_in_process==10)
+				break;
+
+
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+	$orders_list=preg_replace('/^,\s*/', '', $orders_list);
+
+	if ($number_orders_in_process==0) {
+		$response=array('state'=>200, 'orders_in_process'=>$number_orders_in_process, 'msg'=>'');
+		echo json_encode($response);
+		exit;
+	}
+
+	if ($number_orders_in_process==1) {
+		$orders_list=_('Current order in process').": ".$orders_list;
+		$msg=_('This customer has already one order in process. Are you sure you want to create a new one?');
+	}elseif ($number_orders_in_process>1) {
+		$orders_list=_('Current orders in process').": ".$orders_list;
+		$msg=_('This customer has already several orders in process. Are you sure you want to create a new one?');
+
+	}
+	$response=array('state'=>200, 'orders_in_process'=>$number_orders_in_process, 'msg'=>$msg, 'orders_list'=>$orders_list);
+	echo json_encode($response);
+	exit;
 
 }
 

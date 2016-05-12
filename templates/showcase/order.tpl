@@ -1,5 +1,5 @@
-<div class="order">
-<div id="contact_data" class="" style=";">
+<div class="order ">
+<div id="contact_data" class="block" style="float:left;padding:20px 20px;max-width:500px;">
 	<div class="data_container">
 		<div class="data_field">
 			<i class="fa fa-user"></i> <span>{$order->get('Order Customer Name')}</span> 
@@ -40,7 +40,7 @@
 	<div style="clear:both">
 	</div>
 </div>
-<div id="totals" class="block">
+<div id="totals" class="block totals">
 <div style="{if $order->data['Order Invoiced']=='Yes'}display:none{/if}">
 				<table border="0" class="info_block">
 						<tr {if $order->
@@ -130,7 +130,7 @@
 					<button id="add_credit" style="margin:0px;">{t}Add debit/credit{/t}</button> 
 				</div>
 			</div>
-			<div style="{if $order->data['Order Invoiced']=='No'}display:none{/if}">
+<div style="{if $order->data['Order Invoiced']=='No'}display:none{/if}">
 				<table border="0" class="info_block">
 					<tr>
 						<td class="aright">{t}Total Ordered{/t}</td>
@@ -256,7 +256,7 @@
 </div>
 
 </div>
-<div id="dates"  class="block">
+<div id="dates" class="block dates">
 	<table border="0" class="date_and_state" >
 		
 			<tr>
@@ -308,6 +308,8 @@
 		</table>
 		
 	</div>
+	<div style="clear:both">
+</div>
 </div>
 
 

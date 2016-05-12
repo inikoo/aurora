@@ -82,21 +82,39 @@ class Customer extends Subject {
 
 	function is_user_customer($data) {
 		$sql=sprintf("select * from `User Dimension` where `User Parent Key`=%d and `User Type`='Customer' ", $data);
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC))
-			return array(true, $row);
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				return array(true, $row);
+			}else {
+				return array(false, false);
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+
 	}
 
 
 	function number_of_user_logins() {
 		list($is_user, $row)=$this->is_user_customer($this->id);
 		if ($is_user) {
-			$sql=sprintf("select * from `User Log Dimension` where `User Key`=%d", $row['User Key']);
-			$result=mysql_query($sql);
-			if ($num=mysql_num_rows($result))
-				return $num;
-			else
-				return 0;
+			$sql=sprintf("select count(*) as num from `User Log Dimension` where `User Key`=%d", $row['User Key']);
+
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					return $row['num'];
+				}else {
+					return 0;
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+
 		} else
 			return 0;
 	}
@@ -184,70 +202,38 @@ class Customer extends Subject {
 	}
 
 
-	function update_correlations() {
+	function create_order() {
 
-		// TODO
-		return;
+		global $account;
 
-		$sql=sprintf("delete from  `Customer Correlation` where `Customer A Key`=%d or `Customer B Key`=%d  ", $this->id, $this->id);
-		mysql_query($sql);
+		$order_data=array(
 
-		$correlated_customers=array();
-		$data=$this->data;
-		if ($data['Customer Type']=='Person')
-			$subject=new contact('find from customer complete', $data);
-		else
-			$subject=new company('find from customer complete', $data);
+			'Customer Key'=>$this->id,
+			'Order Original Data MIME Type'=>'application/aurora',
+			'Order Type'=>'Order',
+			'editor'=>$this->editor
+		);
 
+		$order=new Order('new', $order_data);
 
 
-		foreach ($subject->candidate as $contact_key=>$score) {
-			if ($score<100)
-				continue;
-			$contact=new Contact($contact_key);
-			$customer_keys=$contact->get_customer_keys('Customer');
 
-			foreach ($customer_keys as $customer_key) {
-				$customer_correlated=new Customer($customer_key);
-				if ($customer_correlated->data['Customer Store Key']==$this->data['Customer Store Key'])
-					$correlated_customers[$customer_key]=array('name'=>$customer_correlated->data['Customer Name'], 'score'=>$score);
-			}
-
+		if ($order->error) {
+			$this->error=true;
+			$this->msg=$order->msg;
+			return $order;
 		}
 
 
-		foreach ($correlated_customers as $key=>$value) {
 
-			if ($key==$this->id) {
-				continue;
-			}
-			elseif ($key<$this->id) {
-				$customer_a=$key;
-				$customer_a_name=$value['name'];
+		require_once 'utils/new_fork.php';
+		list($fork_key, $msg)=new_fork('housekeeping', array('type'=>'order_created', 'subject_key'=>$order->id, 'editor'=>$order->editor), $account->get('Account Code'), $this->db);
 
-				$customer_b=$this->id;
-				$customer_b_name=$this->data['Customer Name'];
+        return $order;
 
-			}
-			else {
-				$customer_a=$this->id;
-				$customer_a_name=$this->data['Customer Name'];
-
-				$customer_b=$key;
-				$customer_b_name=$value['name'];
-			}
-
-			$sql=sprintf("insert into  `Customer Correlation` values (%d,%s,%d,%s,%f,%d)  ",
-				$customer_a,
-				prepare_mysql($customer_a_name),
-				$customer_b,
-				prepare_mysql($customer_b_name),
-				$value['score'],
-				$this->data['Customer Store Key']
-			);
-			mysql_query($sql);
-		}
 	}
+
+
 
 
 
@@ -373,7 +359,7 @@ class Customer extends Subject {
 
 
 
-	function update_field_switcher($field, $value, $options='',$metadata='') {
+	function update_field_switcher($field, $value, $options='', $metadata='') {
 
 
 
@@ -382,7 +368,7 @@ class Customer extends Subject {
 			$value=_trim($value);
 
 
-		if ($this->update_subject_field_switcher($field, $value, $options,$metadata)) {
+		if ($this->update_subject_field_switcher($field, $value, $options, $metadata)) {
 			return;
 		}
 
@@ -782,45 +768,6 @@ class Customer extends Subject {
 	}
 
 
-	public function update_no_normal_data() {
-
-		return;
-
-		$sql="select min(`Order Date`) as date   from `Order Dimension` where `Order Customer Key`=".$this->id;
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-			$first_order_date=date('U', strtotime($row['date']));
-			if ($row['date']!=''
-				and (
-					$this->data['Customer First Contacted Date']==''
-					or ( gmdate('U', strtotime($this->data['Customer First Contacted Date']))>$first_order_date  )
-				)
-			) {
-
-				//print $this->data['Customer First Contacted Date']." ->  ".$row['date']."\n";
-
-				$sql=sprintf("update `Customer Dimension` set `Customer First Contacted Date`=%s  where `Customer Key`=%d"
-					, prepare_mysql($row['date'])
-					, $this->id
-				);
-				mysql_query($sql);
-			}
-		}
-		// $address_fuzzy=false;
-		// $email_fuzzy=false;
-		// $tel_fuzzy=false;
-		// $contact_fuzzy=false;
-
-
-		// $address=new Address($this->get('Customer Main Address Key'));
-		// if($address->get('Fuzzy Address'))
-		//  $address_fuzzy=true;
-
-
-
-	}
-
 
 	public function update_activity() {
 
@@ -1114,7 +1061,14 @@ class Customer extends Subject {
 
 		switch ($key) {
 
+		case 'Fiscal Name':
+		case 'Invoice Name':
 
+			if ($this->data['Customer Invoice Address Organization']!='')return $this->data['Customer Invoice Address Organization'];
+			if ($this->data['Customer Invoice Address Recipient']!='')return $this->data['Customer Invoice Address Recipient'];
+			return $this->data['Customer Name'];
+
+			break;
 		case 'Tax Number':
 			if ($this->data['Customer Tax Number']!='') {
 				if ($this->data['Customer Tax Number Valid']=='Yes') {
@@ -1275,7 +1229,7 @@ class Customer extends Subject {
 				return $this->data[$key];
 
 			if (array_key_exists('Customer '.$key, $this->data))
-				 return $this->data[$this->table_name.' '.$key];
+				return $this->data[$this->table_name.' '.$key];
 
 
 

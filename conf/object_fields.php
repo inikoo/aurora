@@ -20,6 +20,10 @@ function get_object_fields($object, $db, $user, $smarty, $options=false) {
 
 
 	switch ($object->get_object_name()) {
+	case 'Order':
+		include 'fields/order.fld.php';
+		return $object_fields;
+		break;
 	case 'Deal Campaign':
 		include 'fields/campaign.fld.php';
 		return $object_fields;

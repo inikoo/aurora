@@ -12,6 +12,9 @@
 
 include_once 'utils/static_data.php';
 
+
+$smarty->assign('customer',$object);
+
 $countries=get_countries($db);
 
 $options_valid_tax_number=array(

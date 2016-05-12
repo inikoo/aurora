@@ -396,7 +396,7 @@ ALTER TABLE `Supplier Dimension`
     ALTER TABLE `Supplier Dimension` DROP `Supplier Active Supplier Products`;
 
 update `Category Dimension` set `Category Scope`='Supplier' where `Category Subject`='Supplier';
-
+ALTER TABLE `Order Dimension` DROP `Order XHTML Store`;
   
 
   

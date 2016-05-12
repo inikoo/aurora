@@ -42,6 +42,10 @@ class Order extends DB_Table {
 	var $skip_update_after_individual_transaction=true;
 	function __construct($arg1 = false, $arg2 = false) {
 
+		global $db;
+		$this->db=$db;
+
+
 		$this->table_name='Order';
 		$this->ignore_fields=array('Order Key');
 		$this->update_customer=true;
@@ -152,7 +156,7 @@ class Order extends DB_Table {
 				}
 			}
 
-			
+
 
 			if ($invoice_public_id=='') {
 				//Next Invoice ID
@@ -281,7 +285,9 @@ class Order extends DB_Table {
 
 
 	function create_order($data) {
-		global $myconf;
+
+		global $account;
+
 		if (isset($data['editor'])) {
 			foreach ($data['editor'] as $key=>$value) {
 				if (array_key_exists($key, $this->editor))
@@ -309,6 +315,8 @@ class Order extends DB_Table {
 		$this->data['Order Tax Operations']='';
 		$this->data['Order Tax Selection Type']='';
 
+		$this->set_data_from_customer($data['Customer Key']);
+
 
 		if (isset($data['Order Tax Code'])) {
 
@@ -319,11 +327,27 @@ class Order extends DB_Table {
 				$this->data['Order Tax Name']=$tax_cat->data['Tax Category Name'];
 				$this->data['Order Tax Operations']='';
 				$this->data['Order Tax Selection Type']='set';
+			}else {
+				$this->error=true;
+				$this->msg='Tax code not found';
+				exit();
 			}
+		}else {
+			$tax_code_data=$this->get_tax_data();
+			
+			$this->data['Order Tax Code']= $tax_code_data['code'];
+			$this->data['Order Tax Rate']= $tax_code_data['rate'];
+			$this->data['Order Tax Name']=$tax_code_data['name'];
+			$this->data['Order Tax Operations']=$tax_code_data['operations'];
+			$this->data['Order Tax Selection Type']='';
+
+
+
+			
+
 		}
 
-		$this->set_data_from_customer($data['Customer Key']);
-
+		
 		if (isset($data['Order Current Dispatch State']) and $data['Order Current Dispatch State']=='In Process by Customer') {
 			$this->data ['Order Current Dispatch State'] = 'In Process by Customer';
 			$this->data ['Order Current XHTML Payment State'] = _('Waiting for payment');
@@ -382,16 +406,6 @@ class Order extends DB_Table {
 
 
 		$this->data ['Order Currency Exchange']=1;
-		$sql=sprintf("select `Account Currency` from `Account Dimension`");
-
-
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_array($res)) {
-			$corporation_currency_code=$row['Account Currency'];
-		} else {
-			$corporation_currency_code='GBP';
-
-		}
 
 
 
@@ -399,16 +413,17 @@ class Order extends DB_Table {
 
 
 
-		if ($this->data ['Order Currency']!=$corporation_currency_code) {
+
+		if ($this->data ['Order Currency']!=$account->get('Account Currency')) {
 
 
 			//take off this and only use curret exchenge whan get rid off excel
 			$date_difference=date('U')-strtotime($this->data['Order Date'].' +0:00');
 			if ($date_difference>3600) {
-				$currency_exchange = new CurrencyExchange($this->data ['Order Currency'].$corporation_currency_code, $this->data['Order Date']);
+				$currency_exchange = new CurrencyExchange($this->data ['Order Currency'].$account->get('Account Currency'), $this->data['Order Date']);
 				$exchange= $currency_exchange->get_exchange();
 			}else {
-				$exchange=currency_conversion($this->data ['Order Currency'], $corporation_currency_code, 'now');
+				$exchange=currency_conversion($this->data ['Order Currency'], $account->get('Account Currency'), 'now');
 			}
 			$this->data ['Order Currency Exchange']=$exchange;
 		}
@@ -432,12 +447,12 @@ class Order extends DB_Table {
 
 		if (count( $this->data ['Order Sales Representative Keys'])==0) {
 			$sql = sprintf( "insert into `Order Sales Representative Bridge` values (%d,0,1)", $this->id);
-			mysql_query($sql);
+			$this->db->exec($sql);
 		}else {
 			$share=1/count( $this->data ['Order Sales Representative Keys']);
 			foreach ( $this->data ['Order Sales Representative Keys'] as $sale_rep_key ) {
 				$sql = sprintf( "insert into `Order Sales Representative Bridge` values (%d,%d,%f)", $this->id, $sale_rep_key , $share);
-				mysql_query($sql);
+				$this->db->exec($sql);
 			}
 		}
 
@@ -465,7 +480,7 @@ class Order extends DB_Table {
 			$this->data['Order Customer Key']
 		);
 
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 
 		$history_data=array(
@@ -473,7 +488,7 @@ class Order extends DB_Table {
 			'History Details'=>'',
 			'Action'=>'created'
 		);
-		$this->add_subject_history($history_data);
+			$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
 
 	}
 
@@ -2004,6 +2019,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 
 
+		
 
 		//calculate the order total
 		$this->data ['Order Items Gross Amount'] = 0;
@@ -2012,8 +2028,13 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 
 
-		$sql = sprintf( "insert into `Order Dimension` (`Order Show in Warehouse Orders`,`Order Telephone`,`Order Customer Fiscal Name`,`Order Email`,		`Order Apply Auto Customer Account Payment`,`Order Tax Number`,`Order Tax Number Valid`,`Order Created Date`,`Order Payment Method`,`Order Customer Order Number`,`Order Tax Code`,`Order Tax Rate`,`Order Customer Contact Name`,`Order For`,`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Store Key`,`Order Store Code`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML Payment State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Items Gross Amount`,`Order Items Discount Amount`,`Order Original Metadata`,`Order XHTML Store`,`Order Type`,`Order Currency`,`Order Currency Exchange`,`Order Original Data Filename`,`Order Original Data Source`,`Order Tax Name`,`Order Tax Operations`,`Order Tax Selection Type`) values
-		(%s,%s, %s,%s,%s,%s,%s,%s,%s,%d,%s,%f,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s ,%.2f,%.2f,%s,%s,%s,%s,   %f,%s,%s,%s,%s,%s)",
+		$sql = sprintf( "insert into `Order Dimension` (
+		`Order Show in Warehouse Orders`,`Order Telephone`,`Order Customer Fiscal Name`,`Order Email`,		`Order Apply Auto Customer Account Payment`,`Order Tax Number`,`Order Tax Number Valid`,`Order Created Date`,`Order Payment Method`,`Order Customer Order Number`,
+		`Order Tax Code`,`Order Tax Rate`,`Order Customer Contact Name`,`Order For`,`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Store Key`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML Payment State`,`Order Customer Message`,`Order Original Data MIME Type`,
+		`Order Items Gross Amount`,`Order Items Discount Amount`,`Order Original Metadata`,`Order Type`,`Order Currency`,`Order Currency Exchange`,`Order Original Data Filename`,`Order Original Data Source`,`Order Tax Name`,`Order Tax Operations`,`Order Tax Selection Type`) values
+		(%s,%s, %s,%s,%s,%s,%s,%s,%s,%d,
+		%s,%f,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s ,
+		%.2f,%.2f,%s,%s,%s,   %f,%s,%s,%s,%s,%s)",
 			prepare_mysql ( $this->data ['Order Show in Warehouse Orders'] ),
 			prepare_mysql ( $this->data ['Order Telephone'] ),
 			prepare_mysql ( $this->data ['Order Customer Fiscal Name'] ),
@@ -2038,7 +2059,6 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 			prepare_mysql ( $this->data ['Order Date'] ),
 			prepare_mysql ( $this->data ['Order Public ID'] ),
 			prepare_mysql ( $this->data ['Order Store Key'] ),
-			prepare_mysql ( $this->data ['Order Store Code'] ),
 
 			prepare_mysql ( $this->data ['Order Main Source Type'] ),
 			prepare_mysql ( $this->data ['Order Customer Key'] ),
@@ -2053,7 +2073,6 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 			$this->data ['Order Items Gross Amount'],
 			$this->data ['Order Items Discount Amount'],
 			prepare_mysql ( $this->data ['Order Original Metadata'] ),
-			prepare_mysql ( $this->data ['Order XHTML Store'] ),
 			prepare_mysql ( $this->data ['Order Type'] ),
 			prepare_mysql( $this->data ['Order Currency'] ),
 			$this->data ['Order Currency Exchange'],
@@ -2454,7 +2473,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 
 
-	function update_field_switcher($field, $value, $options='',$metadata='') {
+	function update_field_switcher($field, $value, $options='', $metadata='') {
 
 		switch ($field) {
 
@@ -4317,7 +4336,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		);
 
 
-		mysql_query( $sql );
+		$this->db->exec($sql);
 
 
 
@@ -4348,7 +4367,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 			, $this->data['Order Shipping Tax Amount']
 			, $this->id
 		);
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 		//print "$sql\n";
 
@@ -4370,7 +4389,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 			, $this->data['Order Charges Tax Amount']
 			, $this->id
 		);
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 
 
@@ -4392,7 +4411,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 			, $this->data['Order Insurance Tax Amount']
 			, $this->id
 		);
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 
 
@@ -4403,6 +4422,9 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		$this->data ['Order Total Net Amount']=$this->data ['Order Items Net Amount']+  ($this->data ['Order Shipping Net Amount']==''?0:$this->data ['Order Shipping Net Amount'])+  $this->data ['Order Charges Net Amount']+  $this->data ['Order Insurance Net Amount']- $this->data ['Order Deal Amount Off'];
 
 		$tax_rate=0;
+
+
+		// print_r($this->data);
 
 		$tax_category=new TaxCategory($this->data['Order Tax Code']);
 		$tax_rate=$tax_category->data['Tax Category Rate'];
@@ -4589,25 +4611,55 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 	// }
 
 
-	function set_data_from_customer($customer_key, $store_key=false) {
+	function set_data_from_customer($customer_key) {
 
 
 		$customer=new Customer($customer_key);
-		if (!$store_key) {
-			$store_key=$customer->data['Customer Store Key'];
-		}
+
+		$store_key=$customer->get('Store Key');
 
 
 
-		$this->billing_address=new Address($customer->data['Customer Main Address Key']);
+
 		$this->data ['Order Customer Key'] = $customer->id;
 		$this->data ['Order Customer Name'] = $customer->data[ 'Customer Name' ];
 		$this->data ['Order Customer Contact Name'] = $customer->data ['Customer Main Contact Name'];
 		$this->data ['Order Tax Number'] = $customer->data ['Customer Tax Number'];
 		$this->data ['Order Tax Number Valid'] = $customer->data ['Customer Tax Number Valid'];
-		$this->data ['Order Customer Fiscal Name'] = $customer->get_fiscal_name();
+		$this->data ['Order Customer Fiscal Name'] = $customer->get('Fiscal Name');
 		$this->data ['Order Email'] = $customer->data ['Customer Main Plain Email'];
 		$this->data ['Order Telephone'] = $customer->data ['Customer Main XHTML Telephone'];
+
+
+
+		$this->data['Order Invoice Address Recipient']=$customer->get('Customer Invoice Address Recipient');
+		$this->data['Order Invoice Address Organization']=$customer->get('Customer Invoice Address Organization');
+		$this->data['Order Invoice Address Line 1']=$customer->get('Customer Invoice Address Line 1');
+		$this->data['Order Invoice Address Line 2']=$customer->get('Customer Invoice Address Line 2');
+		$this->data['Order Invoice Address Sorting Code']=$customer->get('Customer Invoice Address Sorting Code');
+		$this->data['Order Invoice Address Postal Code']=$customer->get('Customer Invoice Address Postal Code');
+		$this->data['Order Invoice Address Dependent Locality']=$customer->get('Customer Invoice Address Dependent Locality');
+		$this->data['Order Invoice Address Locality']=$customer->get('Customer Invoice Address Locality');
+		$this->data['Order Invoice Address Administrative Area']=$customer->get('Customer Invoice Address Administrative Area');
+		$this->data['Order Invoice Address Country 2 Alpha Code']=$customer->get('Customer Invoice Address Country 2 Alpha Code');
+		$this->data['Order Invoice Address Checksum']=$customer->get('Customer Invoice Address Recipient');
+		$this->data['Order Invoice Address Formatted']=$customer->get('Customer Invoice Address Formatted');
+		$this->data['Order Invoice Address Postal Label']=$customer->get('Customer Invoice Address Postal Label');
+
+
+		$this->data['Order Delivery Address Recipient']=$customer->get('Customer Delivery Address Recipient');
+		$this->data['Order Delivery Address Organization']=$customer->get('Customer Delivery Address Organization');
+		$this->data['Order Delivery Address Line 1']=$customer->get('Customer Delivery Address Line 1');
+		$this->data['Order Delivery Address Line 2']=$customer->get('Customer Delivery Address Line 2');
+		$this->data['Order Delivery Address Sorting Code']=$customer->get('Customer Delivery Address Sorting Code');
+		$this->data['Order Delivery Address Postal Code']=$customer->get('Customer Delivery Address Postal Code');
+		$this->data['Order Delivery Address Dependent Locality']=$customer->get('Customer Delivery Address Dependent Locality');
+		$this->data['Order Delivery Address Locality']=$customer->get('Customer Delivery Address Locality');
+		$this->data['Order Delivery Address Administrative Area']=$customer->get('Customer Delivery Address Administrative Area');
+		$this->data['Order Delivery Address Country 2 Alpha Code']=$customer->get('Customer Delivery Address Country 2 Alpha Code');
+		$this->data['Order Delivery Address Checksum']=$customer->get('Customer Delivery Address Recipient');
+		$this->data['Order Delivery Address Formatted']=$customer->get('Customer Delivery Address Formatted');
+		$this->data['Order Delivery Address Postal Label']=$customer->get('Customer Delivery Address Postal Label');
 
 
 
@@ -4627,12 +4679,10 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		}
 
 		$this->data ['Order Store Key'] = $store->id;
-		$this->data ['Order Store Code'] = $store->data[ 'Store Code' ];
-		$this->data ['Order XHTML Store'] = sprintf( '<a href="store.php?id=%d">%s</a>', $store->id, $store->data[ 'Store Code' ] );
-		$this->data ['Order Currency']=$store->data[ 'Store Currency Code' ];
+		$this->data ['Order Currency']=$store->get( 'Store Currency Code' );
 		$this->data['Order Show in Warehouse Orders']=$store->data['Store Show in Warehouse Orders'];
 
-		$this->public_id_format=$store->data[ 'Store Order Public ID Format' ];
+		$this->public_id_format=$store->get('Store Order Public ID Format');
 
 
 
@@ -8490,9 +8540,9 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 			}
 
 
-			if ( $this->data['Order Ship To Country Code']=='ESP' and  $this->data['Order Billing To Country Code']=='ESP'
-				and preg_match('/^(35|38|51|52)/', $this->data['Order Ship To Postal Code'])
-				and preg_match('/^(35|38|51|52)/', $this->data['Order Billing To Postal Code'])
+			if ( $this->data['Order Delivery Address Country 2 Alpha Code']=='ES' and  $this->data['Order Invoice Address Country 2 Alpha Code']=='ES'
+				and preg_match('/^(35|38|51|52)/', $this->data['Order Delivery Address Postal Code'])
+				and preg_match('/^(35|38|51|52)/', $this->data['Order Invoice Address Postal Code'])
 			) {
 
 				return array(
@@ -8506,8 +8556,8 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 			}
 
 			// new rule seems that is valid to ESP, E.g. billing to Madrid and shipping to canarias
-			if ( $this->data['Order Ship To Country Code']=='ESP' and  $this->data['Order Billing To Country Code']=='ESP'
-				and preg_match('/^(35|38|51|52)/', $this->data['Order Ship To Postal Code'])
+			if ( $this->data['Order Delivery Address Country 2 Alpha Code']=='ES' and  $this->data['Order Invoice Address Country 2 Alpha Code']=='ES'
+				and preg_match('/^(35|38|51|52)/', $this->data['Order Delivery Address Postal Code'])
 			) {
 
 				return array(
@@ -8523,7 +8573,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 
 
-			if (in_array($this->data['Order Ship To Country Code'], array('ESP', 'UNK'))) {
+			if (in_array($this->data['Order Delivery Address Country 2 Alpha Code'], array('ES', 'XX'))) {
 
 				if ($customer->data['Recargo Equivalencia']=='Yes') {
 
@@ -8553,7 +8603,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 
 			}
-			elseif (in_array($this->data['Order Billing To Country Code'], array('ESP', 'UNK'))) {
+			elseif (in_array($this->data['Order Invoice Address Country 2 Alpha Code'], array('ES', 'XX'))) {
 
 				if ($customer->data['Recargo Equivalencia']=='Yes') {
 
@@ -8582,7 +8632,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 
 			}
-			elseif ( in_array($this->data['Order Billing To Country Code'], get_countries_EC_Fiscal_VAT_area())) {
+			elseif ( in_array($this->data['Order Invoice Address Country 2 Alpha Code'], get_countries_EC_Fiscal_VAT_area($this->db))) {
 
 
 
@@ -8647,7 +8697,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 			else {
 
 
-				if ( in_array($this->data['Order Ship To Country Code'], get_countries_EC_Fiscal_VAT_area())) {
+				if ( in_array($this->data['Order Delivery Address Country 2 Alpha Code'], get_countries_EC_Fiscal_VAT_area($this->db))) {
 
 
 					return array(
@@ -8678,48 +8728,62 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 			$tax_category=array();
 
 			$sql=sprintf("select `Tax Category Code`,`Tax Category Type`,`Tax Category Name`,`Tax Category Rate` from `Tax Category Dimension`  where `Tax Category Country Code`='GBR' and `Tax Category Active`='Yes'");
-			$res=mysql_query($sql);
-			while ($row=mysql_fetch_assoc($res)) {
 
 
-				switch ($row['Tax Category Name']) {
-				case 'Outside the scope of VAT':
-					$tax_category_name=_('Outside the scope of VAT');
-					break;
-				case 'VAT 17.5%':
-					$tax_category_name=_('VAT').' 17.5%';
-					break;
-				case 'VAT 20%':
-					$tax_category_name=_('VAT').' 20%';
-					break;
-				case 'VAT 15%':
-					$tax_category_name=_('VAT').' 15%';
-					break;
-				case 'No Tax':
-					$tax_category_name=_('No Tax');
-					break;
-				case 'Exempt from VAT':
-					$tax_category_name=_('Exempt from VAT');
-					break;
+
+			if ($result=$this->db->query($sql)) {
+				foreach ($result as $row) {
 
 
-				default:
-					$tax_category_name=$row['Tax Category Name'];
+
+					switch ($row['Tax Category Name']) {
+					case 'Outside the scope of VAT':
+						$tax_category_name=_('Outside the scope of VAT');
+						break;
+					case 'VAT 17.5%':
+						$tax_category_name=_('VAT').' 17.5%';
+						break;
+					case 'VAT 20%':
+						$tax_category_name=_('VAT').' 20%';
+						break;
+					case 'VAT 15%':
+						$tax_category_name=_('VAT').' 15%';
+						break;
+					case 'No Tax':
+						$tax_category_name=_('No Tax');
+						break;
+					case 'Exempt from VAT':
+						$tax_category_name=_('Exempt from VAT');
+						break;
+
+
+					default:
+						$tax_category_name=$row['Tax Category Name'];
+					}
+
+
+
+					$tax_category[$row['Tax Category Type']]= array(
+						'code'=>$row['Tax Category Code'],
+						'name'=>$tax_category_name,
+						'rate'=>$row['Tax Category Rate']);
+
+
+
+
 				}
-
-
-
-				$tax_category[$row['Tax Category Type']]= array(
-					'code'=>$row['Tax Category Code'],
-					'name'=>$tax_category_name,
-					'rate'=>$row['Tax Category Rate']);
-
-
-
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
 
 
-			if (in_array($this->data['Order Ship To Country Code'], array('GBR', 'UNK', 'IMN'))) {
+
+
+
+
+
+			if (in_array($this->data['Order Delivery Address Country 2 Alpha Code'], array('GB', 'XX', 'IM'))) {
 
 				return array(
 					'code'=>$tax_category['Standard']['code'],
@@ -8730,7 +8794,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 				);
 			}
-			elseif (in_array($this->data['Order Billing To Country Code'], array('GBR', 'UNK', 'IMN'))) {
+			elseif (in_array($this->data['Order Invoice Address Country 2 Alpha Code'], array('GBR', 'UNK', 'IM'))) {
 
 				return array(
 					'code'=>$tax_category['Standard']['code'],
@@ -8740,7 +8804,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 					'operations'=>''
 				);
 			}
-			elseif ( in_array($this->data['Order Billing To Country Code'], get_countries_EC_Fiscal_VAT_area())) {
+			elseif ( in_array($this->data['Order Invoice Address Country 2 Alpha Code'], get_countries_EC_Fiscal_VAT_area($this->db))) {
 
 
 
@@ -8808,7 +8872,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 			else {
 
 
-				if ( in_array($this->data['Order Ship To Country Code'], get_countries_EC_Fiscal_VAT_area())) {
+				if ( in_array($this->data['Order Delivery Address Country 2 Alpha Code'], get_countries_EC_Fiscal_VAT_area($this->db))) {
 
 
 					return array(
