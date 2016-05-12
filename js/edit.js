@@ -1278,7 +1278,7 @@ function update_address_fields(field, country_code, hide_recipient_fields) {
                 var field_data = data.fields[key]
 
                 field_tr.find('.label').html(field_data.label)
-                console.log(field_data)
+//                console.log(field_data)
                 if (field_data.required) {
 
 

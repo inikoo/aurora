@@ -10,102 +10,29 @@
 */
 
 
-$order=$state['_object'];
+include_once 'utils/invalid_messages.php';
+include_once 'conf/object_fields.php';
 
-$object_fields=array(
-	array(
-		'label'=>_('Id'),
-		'show_title'=>true,
-		'fields'=>array(
-			array(
-				'class'=>'locked',
-				'id'=>'Order_Key',
-				'value'=>$order->id  ,
-				'label'=>_('Id')
-			),
-            array(
-				'class'=>'locked',
-				'id'=>'Order_Public_ID',
-				'value'=>$order->get('Order Public ID')  ,
-				'label'=>_('Number')
-			),
-			
-			
-			
 
-		)
-	),
-	array(
-		'label'=>_('Customer'),
-		'show_title'=>true,
-		'fields'=>array(
-			
-			array(
-				'class'=>'locked',
-				'id'=>'Cutomer',
-				'value'=>$order->get('Order Customer Name').' (<span class="id">'.sprintf("%05d",$order->get('Order Customer Key')).'</span>)',
-				'label'=>_('Customer')
-			),
-			 array(
-				'id'=>'Order_Customer_Fiscal_Name',
-				'value'=>$order->get('Order Customer Fiscal Name')  ,
-				'label'=>_('Fiscal name')
-			),array(
-				'id'=>'Order_Customer_Contact_Name',
-				'value'=>$order->get('Order Customer Contact Name')  ,
-				'label'=>_('Contact name')
-			),array(
-				'id'=>'Order_Telephone',
-				'value'=>$order->get('Order Telephone')  ,
-				'label'=>_('Contact telephone')
-			),array(
-				'id'=>'Order_Email',
-				'value'=>$order->get('Order Email')  ,
-				'label'=>_('Contact email')
-			),
-			
-			
+if ( !$user->can_view('orders') or   !in_array($state['store']->id, $user->stores)   ) {
+	$html='';
+}else {
 
-		)
-	),
-	array(
-		'label'=>_('Billing'),
-		'show_title'=>true,
-		'fields'=>array(
-			
-            array(
-				'class'=>'address',
-				'id'=>'Order_Billing_Address',
-				'value'=>$order->get('Order XHTML Billing Tos')  ,
-				'label'=>_('Billing Address')
-			),
-			
-			
-			
+	include_once 'utils/invalid_messages.php';
 
-		)
-	),
-	array(
-		'label'=>_('Delivery'),
-		'show_title'=>true,
-		'fields'=>array(
-			
-            array(
-				'class'=>'address',
-				'id'=>'Order_Ship_To_Address',
-				'value'=>$order->get('Order XHTML Ship Tos')  ,
-				'label'=>_('Delivery Address')
-			),
-			
-			
-			
 
-		)
-	),
-	
-);
-$smarty->assign('object_fields',$object_fields);
+	$object_fields=get_object_fields($state['_object'], $db, $user, $smarty);
 
-$html=$smarty->fetch('edit_object.tpl');
+	$smarty->assign('object', $state['_object']);
+	$smarty->assign('key', $state['key']);
+
+	$smarty->assign('object_fields', $object_fields);
+	$smarty->assign('state', $state);
+
+
+	$html=$smarty->fetch('edit_object.tpl');
+}
+
+
 
 ?>
