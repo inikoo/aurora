@@ -700,22 +700,22 @@ $modules=array(
 				'tabs'=>array(
 					'campaign.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
 					'campaign.history'=>array('label'=>_('History, notes'), 'icon'=>'sticky-note-o'),
-					'campaign.deals'=>array('label'=>_('Offers'),'icon'=>'tag'),
-					'campaign.orders'=>array('label'=>_('Orders'),'icon'=>'shopping-cart'),
-					'campaign.customers'=>array('label'=>_('Customers'),'icon'=>'users')
+					'campaign.deals'=>array('label'=>_('Offers'), 'icon'=>'tag'),
+					'campaign.orders'=>array('label'=>_('Orders'), 'icon'=>'shopping-cart'),
+					'campaign.customers'=>array('label'=>_('Customers'), 'icon'=>'users')
 
 				)
 			),
-				'deal'=>array(
+			'deal'=>array(
 				'type'=>'object',
 
 
 				'tabs'=>array(
 					'campaign.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
 					'campaign.history'=>array('label'=>_('History, notes'), 'icon'=>'sticky-note-o'),
-					'campaign.allowances'=>array('label'=>_('Allowances'),'icon'=>''),
-					'campaign.orders'=>array('label'=>_('Orders'),'icon'=>'shopping-cart'),
-					'campaign.customers'=>array('label'=>_('Customers'),'icon'=>'users')
+					'campaign.allowances'=>array('label'=>_('Allowances'), 'icon'=>''),
+					'campaign.orders'=>array('label'=>_('Orders'), 'icon'=>'shopping-cart'),
+					'campaign.customers'=>array('label'=>_('Customers'), 'icon'=>'users')
 
 				)
 			),
@@ -854,15 +854,12 @@ $modules=array(
 
 			),
 			'agents'=>array(
-
 				'type'=>'navigation', 'label'=>_('Agents'), 'icon'=>'user-secret', 'reference'=>'agents',
 				'tabs'=>array(
 					'agents'=>array()
 				)
-
-
-
 			),
+
 
 			'categories'=>array('type'=>'navigation', 'label'=>_('Categories'), 'title'=>_('Categories'), 'icon'=>'sitemap', 'reference'=>'suppliers/categories',
 				'tabs'=>array(
@@ -870,16 +867,28 @@ $modules=array(
 				)
 
 			),
-
-			'list'=>array(
-				'type'=>'object',
+			'orders'=>array(
+				'type'=>'navigation', 'label'=>_('Orders'), 'title'=>_('Purchase orders'), 'icon'=>'clipboard', 'reference'=>'suppliers/orders',
 				'tabs'=>array(
-					'suppliers.list'=>array()
+					'suppliers.orders'=>array()
+				)
+			),
+
+			'order'=>array('type'=>'object',
+				'tabs'=>array(
+
+
+					'supplier.order.items'=>array('label'=>_('Items'), 'icon'=>'bars'),
+					'supplier.order.supplier_parts'=>array('label'=>_('Parts'), 'icon'=>'stop'),
+					'supplier.order.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+					'supplier.order.history'=>array('label'=>_('History'), 'icon'=>'history'),
+					'supplier.order.delivery_notes'=>array('label'=>_('Delivery notes'),  'icon'=>'truck'),
+					'supplier.order.invoices'=>array('label'=>_('Invoices'),  'icon'=>'usd'),
+
 				)
 
-
-
 			),
+
 			'category'=>array(
 				'type'=>'object',
 

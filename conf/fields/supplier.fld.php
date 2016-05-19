@@ -184,8 +184,6 @@ $supplier_fields=array(
 			),
 			array(
 
-
-
 				'id'=>'Supplier_Main_Plain_Telephone',
 				'edit'=>($edit?'telephone':''),
 

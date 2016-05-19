@@ -18,8 +18,11 @@ function get_object_fields($object, $db, $user, $smarty, $options=false) {
 
 	$edit=true;
 
-
 	switch ($object->get_object_name()) {
+	case 'Purchase Order':
+		include 'fields/supplier.order.fld.php';
+		return $object_fields;
+		break;
 	case 'Order':
 		include 'fields/order.fld.php';
 		return $object_fields;

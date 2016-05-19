@@ -13,6 +13,7 @@ require_once 'common.php';
 require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
 require_once 'utils/date_functions.php';
+require_once 'utils/object_functions.php';
 
 
 
@@ -99,11 +100,22 @@ case 'inventory.barcodes':
 	break;
 case 'supplier.supplier_parts':
 case 'agent.supplier_parts':
+case 'supplier.order.supplier_parts':
+
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
 		));
 	get_supplier_parts_elements($db, $data['parameters'], $user);
 	break;
+case 'supplier.orders':
+case 'agent.orders':
+
+	$data=prepare_values($_REQUEST, array(
+			'parameters'=>array('type'=>'json array')
+		));
+	get_supplier_orders_elements($db, $data['parameters'], $user);
+	break;
+
 case 'part.stock.transactions':
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
@@ -327,7 +339,26 @@ function get_supplier_parts_elements($db, $data, $user) {
 
 		$where=sprintf(" where  `Agent Supplier Agent Key`=%d", $data['parent_key']);
 		$table.=' left join `Agent Supplier Bridge` on (SP.`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`)';
+	case 'purchase_order':
 
+		$purchase_order=get_object('PurchaseOrder', $data['parent_key']);
+
+		if ($purchase_order->get('Purchase Order Parent')=='Supplier') {
+
+			$where=sprintf(" where  `Supplier Part Supplier Key`=%d", $purchase_order->get('Purchase Order Parent Key'));
+
+
+		}else {
+			$where=sprintf(" where  `Supplier Part Agent Key`=%d", $purchase_order->get('Purchase Order Parent Key'));
+
+
+        	$where=sprintf("  where  `Agent Supplier Agent Key`=%d", $purchase_order->get('Purchase Order Parent Key'));
+	$table.=' left join `Agent Supplier Bridge` on (SP.`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`)';
+
+
+
+
+		}
 
 		break;
 	default:
@@ -492,7 +523,7 @@ function get_customers_element_numbers($db, $data) {
 		'location'=>array('Domestic'=>0, 'Export'=>0)
 	);
 
-$table='`Customer Dimension`  C';
+	$table='`Customer Dimension`  C';
 
 	switch ($data['parent']) {
 	case 'store':
@@ -505,13 +536,13 @@ $table='`Customer Dimension`  C';
 		$tab='customers.list';
 		break;
 	case 'campaign':
-	$table='`Order Dimension` O  left join `Order Deal Bridge` DB on (DB.`Order Key`=O.`Order Key`) left join `Customer Dimension` C on (`Order Customer Key`=C.`Customer Key`) ';
+		$table='`Order Dimension` O  left join `Order Deal Bridge` DB on (DB.`Order Key`=O.`Order Key`) left join `Customer Dimension` C on (`Order Customer Key`=C.`Customer Key`) ';
 		$where=sprintf(' where `Deal Campaign Key`=%d', $data['parent_key']);
-		break;	
-		case 'deal':
-	$table='`Order Dimension` O  left join `Order Deal Bridge` DB on (DB.`Order Key`=O.`Order Key`) left join `Customer Dimension` C on (`Order Customer Key`=C.`Customer Key`) ';
+		break;
+	case 'deal':
+		$table='`Order Dimension` O  left join `Order Deal Bridge` DB on (DB.`Order Key`=O.`Order Key`) left join `Customer Dimension` C on (`Order Customer Key`=C.`Customer Key`) ';
 		$where=sprintf(' where `Deal Key`=%d', $data['parent_key']);
-		break;	
+		break;
 	case 'favourites':
 		$where=sprintf(' where C.`Customer Key` in (select DISTINCT F.`Customer Key` from `Customer Favorite Product Bridge` F where `Site Key`=%d )', $data['parent_key']);
 		break;
@@ -669,30 +700,30 @@ function get_orders_element_numbers($db, $data) {
 	);
 
 
-//USE INDEX (`Main Source Type Store Key`)
+	//USE INDEX (`Main Source Type Store Key`)
 	$sql=sprintf("select count(*) as number,`Order Main Source Type` as element from %s    %s  %s group by `Order Main Source Type` ",
 		$table, $where, $where_interval);
 
-if ($result=$db->query($sql)) {
+	if ($result=$db->query($sql)) {
 		foreach ($result as $row) {
-		$elements_numbers['source'][$row['element']]=number($row['number']);
+			$elements_numbers['source'][$row['element']]=number($row['number']);
 		}
-}else {
-print "$sql";
+	}else {
+		print "$sql";
 		print_r($error_info=$db->errorInfo());
 		exit;
-}
+	}
 
-	
 
-// USE INDEX (`Type Store Key`) 
+
+	// USE INDEX (`Type Store Key`)
 	$sql=sprintf("select count(*) as number,`Order Type` as element from %s %s %s group by `Order Type` ",
 		$table, $where, $where_interval);
 	foreach ($db->query($sql) as $row) {
 
 		$elements_numbers['type'][$row['element']]=number($row['number']);
 	}
-//USE INDEX (`Current Dispatch State Store Key`)
+	//USE INDEX (`Current Dispatch State Store Key`)
 
 	$sql=sprintf("select count(*) as number,`Order Current Dispatch State` as element from %s  %s %s group by `Order Current Dispatch State` ",
 		$table, $where, $where_interval);
@@ -719,7 +750,7 @@ print "$sql";
 	foreach ( $elements_numbers['dispatch'] as $key=>$value) {
 		$elements_numbers['dispatch'][$key]=number($value);
 	}
-// USE INDEX (`Current Payment State Store Key`)
+	// USE INDEX (`Current Payment State Store Key`)
 	$sql=sprintf("select count(*) as number,`Order Current Payment State` as element from %s  %s %s group by `Order Current Payment State` ",
 		$table, $where, $where_interval);
 	foreach ($db->query($sql) as $row) {
@@ -1045,6 +1076,76 @@ function get_barcodes_elements($db, $data, $user) {
 
 
 }
+
+
+function get_supplier_orders_elements($db, $data) {
+
+
+
+	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($data['period'], $data['from'], $data['to']);
+
+
+
+	$parent_key=$data['parent_key'];
+
+
+	switch ($data['parent']) {
+	case 'supplier':
+		$table='`Purchase Order Dimension` O';
+		$where=sprintf('where  `Purchase Order Parent`="Supplier" and `Purchase Order Parent Key`=%d', $parent_key);
+		break;
+	case 'agent':
+		$table='`Purchase Order Dimension` O';
+		$where=sprintf('where  `Purchase Order Parent`="Agent" and `Purchase Order Parent Key`=%d', $parent_key);
+
+
+
+
+
+		break;
+	case 'account':
+		$table='`Purchase Order Dimension` O';
+		$where=sprintf('where  true');
+		break;
+	default:
+		exit ($data['parent']);
+		break;
+	}
+
+	$where_interval=prepare_mysql_dates($from, $to, '`Order Date`');
+	$where_interval=$where_interval['mysql'];
+
+
+	$elements_numbers=array(
+		'state'=>array('InProcess'=>0, 'Submitted'=>0, 'Confirmed'=>0, 'InWarehouse'=>0, 'Done'=>0, 'Cancelled'=>0),
+	);
+
+
+	//USE INDEX (`Main Source Type Store Key`)
+	$sql=sprintf("select count(*) as number,`Purchase Order State` as element from %s    %s  %s group by `Purchase Order State` ",
+		$table, $where, $where_interval);
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+			$elements_numbers['state'][$row['element']]=number($row['number']);
+		}
+	}else {
+		print "$sql";
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+
+
+	$response= array('state'=>200, 'elements_numbers'=>$elements_numbers);
+	echo json_encode($response);
+
+
+
+}
+
 
 
 ?>

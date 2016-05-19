@@ -363,7 +363,26 @@ $elements_options=array(
 		)
 	),
 
+	'supplier_orders'=>array(
+		'state'=>array(
+			'label'=>_('State'),
+			'items'=>array(
+				'InProcess'=>array('label'=>_('In process'), 'selected'=>true),
+				'Submitted'=>array('label'=>_('Submitted'), 'selected'=>true),
+				'Confirmed'=>array('label'=>_('Confirmed'), 'selected'=>true),
+				'InWarehouse'=>array('label'=>_('In Warehouse'), 'selected'=>true),
+				'Done'=>array('label'=>_('Done'), 'selected'=>true),
+				'Cancelled'=>array('label'=>_('Cancelled'), 'selected'=>false),
+			),
 
-);
+
+
+		),
+
+
+
+	)
+	
+	);
 
 ?>

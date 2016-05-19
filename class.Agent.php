@@ -8,10 +8,10 @@
 
   Version 2.0
 */
-include_once 'class.Subject.php';
+include_once 'class.SubjectSupplier.php';
 
 
-class Agent extends Subject {
+class Agent extends SubjectSupplier {
 
 
 

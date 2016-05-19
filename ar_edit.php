@@ -647,7 +647,19 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 	$parent->editor=$editor;
 
 	switch ($data['object']) {
-	case 'Order':
+	case 'PurchaseOrder':
+		include_once 'class.PurchaseOrder.php';
+		
+		$data['fields_data']['user']=$user;
+		
+		$object=$parent->create_order($data['fields_data']);
+		if (!$parent->error) {
+
+			$pcard='';
+			$updated_data=array();
+		}
+		break;
+		case 'Order':
 		include_once 'class.Order.php';
 		$object=$parent->create_order($data['fields_data']);
 		if (!$parent->error) {

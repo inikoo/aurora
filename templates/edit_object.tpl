@@ -321,13 +321,11 @@
 		{elseif $edit=='option' } 
 		
 		<input id="{$field.id}" type="hidden" value="{$field.value}" has_been_valid="0" />
-		{*}
-		<input id="{$field.id}_formatted"  class="option_input_field hide" value="{$field.formatted_value|strip_tags}" readonly />
-		{*}
+		
 		<i id="{$field.id}_save_button" class="fa fa-cloud  save {$edit} radio_option hide" onclick="save_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i> 
 		<span id="{$field.id}_msg" class="msg"></span> 
 		
-		<div id="{$field.id}_options" class="dropcontainer radio_option hide" >
+		<div id="{$field.id}_options" class="dropcontainer radio_option hide" style="width:310px" >
 
 			<ul>
 				{foreach from=$field.options item=option key=value} 

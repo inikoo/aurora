@@ -11,10 +11,10 @@
 
   Version 2.0
 */
-include_once 'class.Subject.php';
+include_once 'class.SubjectSupplier.php';
 
 
-class supplier extends Subject {
+class Supplier extends SubjectSupplier {
 
 
 
@@ -1266,48 +1266,7 @@ class supplier extends Subject {
 	}
 
 
-	function update_orders() {
-		$number_purchase_orders=0;
-		$number_open_purchase_orders=0;
-		$number_delivery_notes=0;
-		$number_invoices=0;
-
-		$sql=sprintf("select count(*) as num from `Purchase Order Dimension` where `Purchase Order Supplier Key`=%d", $this->id);
-		$res=mysql_query($sql);
-
-		if ($row=mysql_fetch_array($res)) {
-			$number_purchase_orders=$row['num'];
-		}
-
-		$sql=sprintf("select count(*) as num from `Purchase Order Dimension` where `Purchase Order Supplier Key`=%d and `Purchase Order State` not in ('Done','Cancelled')", $this->id);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_array($res)) {
-			$number_open_purchase_orders=$row['num'];
-		}
-
-		$sql=sprintf("select count(*) as num from `Supplier Delivery Note Dimension` where `Supplier Delivery Note Supplier Key`=%d", $this->id);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_array($res)) {
-			$number_delivery_notes=$row['num'];
-		}
-
-		$sql=sprintf("select count(*) as num from `Supplier Invoice Dimension` where `Supplier Invoice Supplier Key`=%d", $this->id);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_array($res)) {
-			$number_invoices=$row['num'];
-		}
-
-
-		$sql=sprintf("update `Supplier Dimension` set `Supplier Purchase Orders`=%d,`Supplier Open Purchase Orders`=%d ,`Supplier Delivery Notes`=%d ,`Supplier Invoices`=%d where `Supplier Key`=%d"
-			, $number_purchase_orders
-			, $number_open_purchase_orders
-			, $number_delivery_notes
-			, $number_invoices
-			, $this->id);
-		mysql_query($sql);
-
-	}
-
+	
 
 
 
@@ -1564,9 +1523,13 @@ class supplier extends Subject {
 			print_r($error_info=$this->db->errorInfo());
 			exit;
 		}
-return $agents_data;
+		return $agents_data;
 
 	}
+
+
+	
+
 
 
 }

@@ -108,6 +108,9 @@ elseif ($parameters['parent']=='user') {
 }elseif ($parameters['parent']=='deal') {
 	$where=sprintf(' where   B.`Deal Key`=%d   ', $parameters['parent_key']);
 	$subject='Deal';
+}elseif ($parameters['parent']=='purchase_order') {
+	$where=sprintf(' where   B.`Purchase Order Key`=%d   ', $parameters['parent_key']);
+	$subject='Purchase Order';
 }else {
 	print_r($parameters);
 	exit('parent not set up '.$parameters['parent']);

@@ -16,6 +16,9 @@
 
 .edit_object{
    
+   
+   input{ width: 300px}
+   
    margin-bottom:100px;
    
    
@@ -30,7 +33,7 @@
         margin-left: 5px;
         opacity: .4;
         
-        &.radio_option {margin-left:265px;}
+        &.radio_option {margin-left:320px;}
     }
     .changed {
         .fa.save {

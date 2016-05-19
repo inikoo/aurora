@@ -39,7 +39,6 @@ $part_fields=array(
 			array(
 				'id'=>'Part_Reference',
 				'edit'=>($edit?'string':''),
-
 				'value'=>htmlspecialchars($object->get('Part Reference')),
 				'formatted_value'=>$object->get('Reference'),
 				'label'=>ucfirst($object->get_field_label('Part Reference')),

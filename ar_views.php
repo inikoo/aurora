@@ -38,7 +38,6 @@ case 'views':
 		));
 
 
-
 	if (isset($data['metadata']['help']) and $data['metadata']['help'] ) {
 		get_help($data, $modules, $db);
 		return;
@@ -275,8 +274,9 @@ case 'views':
 		$data['old_state']['key']!=$state['key'] or  $reload
 
 	) {
-		$response['navigation']=get_navigation($user, $smarty, $state, $db, $account);
+	
 
+		$response['navigation']=get_navigation($user, $smarty, $state, $db, $account);
 	}
 	if ($reload) {
 		$response['logout_label']=_('Logout');
@@ -429,6 +429,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db) {
 	case 'dashboard':
 		$html='';
 		break;
+	case 'purchase_order':
+		include_once 'showcase/supplier.order.show.php';
+		$html=get_supplier_order_showcase($data, $smarty, $user, $db);
+		break;	
 	case 'campaign':
 		include_once 'showcase/campaign.show.php';
 		$html=get_campaign_showcase($data, $smarty, $user, $db);
@@ -577,6 +581,7 @@ function get_menu($data, $user, $smarty) {
 
 
 function get_navigation($user, $smarty, $data, $db, $account) {
+
 
 
 	switch ($data['module']) {
@@ -941,6 +946,12 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case ('suppliers'):
 			return get_suppliers_navigation($data, $smarty, $user, $db, $account);
 			break;
+		case ('orders'):
+			return get_purchase_orders_navigation($data, $smarty, $user, $db, $account);
+			break;	
+		case ('order'):
+			return get_purchase_order_navigation($data, $smarty, $user, $db, $account);
+			break;		
 		case ('agents'):
 			return get_agents_navigation($data, $smarty, $user, $db, $account);
 			break;
@@ -1546,7 +1557,9 @@ function get_view_position($state, $user, $smarty, $account) {
 	case 'suppliers':
 		if ($state['section']=='suppliers') {
 			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'ship', 'reference'=>'suppliers');
-		}if ($state['section']=='agents') {
+		}elseif ($state['section']=='orders') {
+			$branch[]=array('label'=>_('Purchase orders'), 'icon'=>'clipboard', 'reference'=>'suppliers.orders');
+		}elseif ($state['section']=='agents') {
 			$branch[]=array('label'=>_('Agents'), 'icon'=>'user-secret', 'reference'=>'agents');
 		}elseif ($state['section']=='agent.new') {
 			$branch[]=array('label'=>_('Agents'), 'icon'=>'', 'reference'=>'agents');
@@ -1560,6 +1573,13 @@ function get_view_position($state, $user, $smarty, $account) {
 			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
 			$branch[]=array('label'=>_('New supplier'), 'icon'=>'ship', 'reference'=>'');
 
+		}elseif ($state['section']=='order') {
+			$branch[]=array('label'=>_('Purchase orders'), 'icon'=>'', 'reference'=>'suppliers/orders');
+						$branch[]=array('label'=>'<span class="Purchase_Order_Public_ID">'.$state['_object']->get('Public ID').'</span>', 'icon'=>'clipboard', 'reference'=>'suppliers.orders');
+
+			
+			
+			
 		}elseif ($state['section']=='agent') {
 			$branch[]=array('label'=>_('Agents'), 'icon'=>'', 'reference'=>'agents');
 			$branch[]=array('label'=>'<span class="Agent_Code">'.$state['_object']->get('Code').'</span>', 'icon'=>'user-secret', 'reference'=>'agent/'.$state['key']);

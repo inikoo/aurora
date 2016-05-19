@@ -29,13 +29,20 @@ $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
 
-case 'number_orders_in_process':
+case 'new_order_options':
+
 	$data=prepare_values($_REQUEST, array(
 			'customer_key'=>array('type'=>'key'),
-
 		));
+	new_order_options($db, $data);
+	break;
+case 'new_purchase_order_options':
 
-	number_orders_in_process($db, $data);
+	$data=prepare_values($_REQUEST, array(
+			'parent'=>array('type'=>'string'),
+			'parent_key'=>array('type'=>'key'),
+		));
+	new_purchase_order_options($db, $data);
 
 	break;
 case 'find_object':
@@ -838,7 +845,7 @@ function number_orders_in_process($db, $data) {
 	$number_orders_in_process=0;
 	$orders_list='';
 	$msg='';
-	$sql=sprintf("select `Order Key`,`Order Public ID`,`Order Store Key`  from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State`='In Process'",
+	$sql=sprintf("select `Purchase Order Key`,`Purchase Order Public ID`,`Purchase Order Store Key`  from `Purchase Order Dimension` where `Purchase Order Customer Key`=%d and `Purchase Order Current Dispatch State`='In Process'",
 		$data['customer_key']
 	);
 
@@ -848,7 +855,7 @@ function number_orders_in_process($db, $data) {
 		foreach ($result as $row) {
 
 
-			$orders_list.=sprintf(", <span class='link'  onClick=\"change_view('orders/%d/%d')\" >%s</span>", $row['Order store Key'],$row['Order Key'], $row['Order Public ID']);
+			$orders_list.=sprintf(", <span class='link'  onClick=\"change_view('orders/%d/%d')\" >%s</span>", $row['Order store Key'], $row['Order Key'], $row['Order Public ID']);
 			$number_orders_in_process++;
 
 			if ($number_orders_in_process==10)
@@ -879,6 +886,74 @@ function number_orders_in_process($db, $data) {
 
 	}
 	$response=array('state'=>200, 'orders_in_process'=>$number_orders_in_process, 'msg'=>$msg, 'orders_list'=>$orders_list);
+	echo json_encode($response);
+	exit;
+
+}
+
+
+function new_purchase_order_options($db, $data) {
+
+	$number_orders_in_process=0;
+	$orders_list='';
+	$warehouse_options=array();
+	$warehouse_key=false;
+	$sql=sprintf("select `Purchase Order Key`,`Purchase Order Public ID`,`Purchase Order Warehouse Key` from `Purchase Order Dimension` where `Purchase Order Parent`=%s and `Purchase Order Parent Key`=%d and `Purchase Order State`='In Process'",
+		prepare_mysql($data['parent']),
+		$data['parent_key']
+	);
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+			$orders_list.=sprintf(", <span class='link'  onClick=\"change_view('orders/%d/%d')\" >%s</span>", $row['Order store Key'], $row['Order Key'], $row['Order Public ID']);
+			$number_orders_in_process++;
+			if ($number_orders_in_process==10)
+				break;
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+	$sql=sprintf("select `Warehouse Key`,`Warehouse Code`,`Warehouse Name` from `Warehouse Dimension` where `Warehouse State`='Active'",
+		prepare_mysql($data['parent']),
+		$data['parent_key']
+	);
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+			if (!$warehouse_key) {
+				$warehouse_key=$row['Warehouse Key'];
+			}
+			$warehouse_options[$row['Warehouse Key']]=array('code'=>$row['Warehouse Code']);
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+	$orders_list=preg_replace('/^,\s*/', '', $orders_list);
+
+	if ($number_orders_in_process==0) {
+		$msg='';
+		$orders_list='';
+	}elseif ($number_orders_in_process==1) {
+		$orders_list=_('Current order in process').": ".$orders_list;
+		$msg=_('This customer has already one order in process. Are you sure you want to create a new one?');
+	}elseif ($number_orders_in_process>1) {
+		$orders_list=_('Current orders in process').": ".$orders_list;
+		$msg=_('This customer has already several orders in process. Are you sure you want to create a new one?');
+
+	}
+	$response=array(
+		'state'=>200,
+		'warehouses'=>count($warehouse_options),
+		'warehouse_key'=>$warehouse_key,
+		'warehouse_options'=>$warehouse_options,
+		'orders_in_process'=>$number_orders_in_process,
+		'msg'=>$msg,
+		'orders_list'=>$orders_list
+	);
 	echo json_encode($response);
 	exit;
 
