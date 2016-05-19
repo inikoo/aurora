@@ -214,6 +214,7 @@ class Part extends Asset{
 				'History Abstract'=>_('Part Created'),
 				'History Details'=>_('Part')." ".$this->get('SKU')." (".$this->data['Part Unit Description'].")"._('Created')
 			);
+			$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
 
 			$this->update_main_state();
 		} else {

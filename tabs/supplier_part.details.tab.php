@@ -24,6 +24,20 @@ $object_fields_supplier_part=get_object_fields($supplier_part, $db, $user, $smar
 	));
 
 
+$available_barcodes=0;
+$sql=sprintf("select count(*) as num from `Barcode Dimension` where `Barcode Status`='Available'");
+if ($result=$db->query($sql)) {
+	if ($row = $result->fetch()) {
+		$available_barcodes=$row['num'];
+	}
+}else {
+	print_r($error_info=$db->errorInfo());
+	exit;
+}
+
+$smarty->assign('available_barcodes', $available_barcodes);
+
+
 
 $part=$state['_object']->part;
 

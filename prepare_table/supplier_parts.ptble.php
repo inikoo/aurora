@@ -11,12 +11,16 @@
 
 $where="where true  ";
 $table="`Supplier Part Dimension` SP  left join `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`) left join `Supplier Dimension` S on (SP.`Supplier Part Supplier Key`=S.`Supplier Key`)  ";
+
+$fields='`Supplier Code`,`Supplier Part Key`,`Supplier Part Part SKU`,`Part Reference`,`Part Unit Description`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Supplier Part Status`,`Supplier Part From`,`Supplier Part To`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,`Supplier Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,`Supplier Part Minimum Carton Order`,
+`Part Current Stock`,`Part Stock Status`,`Part Status`
+';
+
 $filter_msg='';
 $sql_type='part';
 $filter_msg='';
 $wheref='';
 
-$fields='';
 
 if ($parameters['parent']=='supplier') {
 	$where=sprintf(" where  `Supplier Part Supplier Key`=%d", $parameters['parent_key']);
@@ -28,6 +32,21 @@ if ($parameters['parent']=='supplier') {
 }elseif ($parameters['parent']=='agent') {
 	$where=sprintf(" where  `Agent Supplier Agent Key`=%d", $parameters['parent_key']);
 	$table.=' left join `Agent Supplier Bridge` on (SP.`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`)';
+
+}elseif ($parameters['parent']=='purchase_order') {
+    if($purchase_order->get('Purchase Order Parent')=='Supplier'){
+    
+    	$where=sprintf(" where  `Supplier Part Supplier Key`=%d", $purchase_order->get('Purchase Order Parent Key'));
+
+    
+    }else{
+        	$where=sprintf("  where  `Agent Supplier Agent Key`=%d", $purchase_order->get('Purchase Order Parent Key'));
+	$table.=' left join `Agent Supplier Bridge` on (SP.`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`)';
+
+    
+    }
+  
+    $fields.='';
 
 }else {
 	exit("parent not found: ".$parameters['parent']);
@@ -117,9 +136,8 @@ if ($order=='part_description') {
 
 $sql_totals="select count(Distinct SP.`Supplier Part Key`) as num from $table  $where  ";
 
-$fields.='`Supplier Code`,`Supplier Part Key`,`Supplier Part Part SKU`,`Part Reference`,`Part Unit Description`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Supplier Part Status`,`Supplier Part From`,`Supplier Part To`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,`Supplier Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,`Supplier Part Minimum Carton Order`,
-`Part Current Stock`,`Part Stock Status`,`Part Status`
-';
 
+
+//print $sql_totals;
 
 ?>

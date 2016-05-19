@@ -235,12 +235,6 @@ class Customer extends Subject {
 
 
 
-
-
-
-
-
-
 	function get_data($tag, $id, $id2=false) {
 		if ($tag=='id')
 			$sql=sprintf("select * from `Customer Dimension` where `Customer Key`=%s", prepare_mysql($id));

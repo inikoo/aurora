@@ -508,6 +508,19 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code'
 	),
+		'suppliers.orders'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'number',
+		'from'=>'',
+		'to'=>'',
+		'period'=>'all',
+		'elements_type'=>each($elements_options['supplier_orders'])['key'],
+		'elements'=>$elements_options['supplier_orders']
+	),
 	'supplier.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
@@ -529,7 +542,49 @@ $tab_defaults=array(
 		'elements'=>$elements_options['supplier_parts']
 
 	),
+	'supplier.orders'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'number',
+		'from'=>'',
+		'to'=>'',
+		'period'=>'all',
+		'elements_type'=>each($elements_options['supplier_orders'])['key'],
+		'elements'=>$elements_options['supplier_orders']
+	),
+	'supplier.order.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'note',
+		'elements_type'=>each($elements_options['supplier_history'])['key'],
+		'elements'=>$elements_options['supplier_history']
+	),
+	'supplier.order.items'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>1000,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code',
 
+	),
+		'supplier.order.supplier_parts'=>array(
+		'view'=>'overview',
+		'sort_key'=>'reference',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'reference',
+		'elements_type'=>each($elements_options['supplier_parts'])['key'],
+		'elements'=>$elements_options['supplier_parts']
+
+	),
 	'supplier_part.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
@@ -570,7 +625,19 @@ $tab_defaults=array(
 		'elements'=>$elements_options['supplier_parts']
 
 	),
-
+'agent.orders'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'number',
+		'from'=>'',
+		'to'=>'',
+		'period'=>'all',
+		'elements_type'=>each($elements_options['supplier_orders'])['key'],
+		'elements'=>$elements_options['supplier_orders']
+	),
 	'warehouses'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',

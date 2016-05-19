@@ -199,7 +199,13 @@ function get_object($object_name, $key, $load_other_data=false) {
 	case 'Deal':
 		require_once "class.Deal.php";
 		$object=new Deal($key);
-		break;		
+		break;	
+	case 'purchase_order':
+	case 'Purchase Order':
+	case 'PurchaseOrder':
+		require_once "class.PurchaseOrder.php";
+		$object=new PurchaseOrder($key);
+		break;			
 	default:
 		exit('need to complete E1 '.$object_name);
 		break;

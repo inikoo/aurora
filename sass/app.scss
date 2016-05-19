@@ -167,7 +167,7 @@ a {
 input{
         position: relative;
         bottom: 2px;
-        width: 206px;
+       
         padding: 4px 6px;
         font-weight: normal;
         color: #555;
@@ -659,6 +659,7 @@ right connector from last child*/
 
 //.valid{color:$color_save}
 .deleted{text-decoration: line-through;opacity:.9;color:#777}
+.strong{font-weight: bold;}
 
 //.valid.save{color:$color_save;cursor:pointer}
 

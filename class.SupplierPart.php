@@ -184,6 +184,7 @@ class SupplierPart extends DB_Table{
 			$this->id=$this->db->lastInsertId();
 			$this->msg=_("Supplier part added");
 			$this->get_data('id', $this->id);
+			$this->update_historic_object();
 			$this->new=true;
 
 
@@ -304,8 +305,15 @@ class SupplierPart extends DB_Table{
 
 
 		switch ($field) {
-
-
+		case 'Supplier Part Carton CBM':
+		case 'Supplier Part Currency Code':
+		case 'Supplier Part Reference':
+		case 'Supplier Part Unit Cost':
+			$this->update_field($field, $value, $options);
+			if (!preg_match('/skip_update_historic_object/', $options)) {
+				$this->update_historic_object();
+			}
+			break;
 		case 'Supplier Part Units Per Package':
 			$this->update_field($field, $value, $options);
 			$this->other_fields_updated=array(
@@ -322,6 +330,10 @@ class SupplierPart extends DB_Table{
 					'formatted_value'=>$this->get('Packages Per Carton'),
 				)
 			);
+			$this->update_field($field, $value, $options);
+			if (!preg_match('/skip_update_historic_object/', $options)) {
+				$this->update_historic_object();
+			}
 			break;
 		case 'Supplier Part Packages Per Carton':
 			$this->update_field($field, $value, $options);
@@ -334,13 +346,17 @@ class SupplierPart extends DB_Table{
 				)
 
 			);
+			$this->update_field($field, $value, $options);
+			if (!preg_match('/skip_update_historic_object/', $options)) {
+				$this->update_historic_object();
+			}
 			break;
 		default:
 
 
 			if (preg_match('/^Part /', $field)) {
-			
-			        $field=preg_replace('/^Part /','',$field);
+
+				$field=preg_replace('/^Part /', '', $field);
 				$this->part->update(array($field=>$value), $options);
 				$this->updated=$this->part->updated;
 				$this->msg=$this->part->msg;
@@ -371,6 +387,53 @@ class SupplierPart extends DB_Table{
 
 	}
 
+
+	function update_historic_object() {
+
+		if (!$this->id)return;
+
+		$metadata=json_encode(array(
+				'u'=>$this->data['Supplier Part Units Per Package'],
+				'p'=>$this->data['Supplier Part Packages Per Carton'],
+				'cbm'=>$this->data['Supplier Part Carton CBM'],
+				'cur'=>$this->data['Supplier Part Currency Code']
+
+			));
+
+		$sql=sprintf('select `Supplier Part Historic Key` from `Supplier Part Historic Dimension` where `Supplier Part Historic Supplier Part Key`=%d and `Supplier Part Historic Reference`=%s and `Supplier Part Historic Unit Cost`=%f and `Supplier Part Historic Metadata`=%s',
+			$this->id,
+			prepare_mysql($this->data['Supplier Part Reference']),
+			$this->data['Supplier Part Unit Cost'],
+			prepare_mysql($metadata)
+
+
+		);
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$this->update(array('Supplier Part Historic Key'=>$row['Supplier Part Historic Key']), 'no_history');
+
+			}else {
+				$sql=sprintf('insert into `Supplier Part Historic Dimension` (`Supplier Part Historic Supplier Part Key`,`Supplier Part Historic Reference`,`Supplier Part Historic Unit Cost`,`Supplier Part Historic Metadata`) values (%d,%s,%f,%s) ',
+					$this->id,
+					prepare_mysql($this->data['Supplier Part Reference']),
+					$this->data['Supplier Part Unit Cost'],
+					prepare_mysql($metadata)
+				);
+				if ($this->db->exec($sql)) {
+					$this->update(array('Supplier Part Historic Key'=>$this->db->lastInsertId()), 'no_history');
+
+				}
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			print $sql;
+			exit;
+		}
+
+
+
+	}
 
 
 	function get_field_label($field) {
@@ -403,9 +466,9 @@ class SupplierPart extends DB_Table{
 			$label=_("carton CBM");
 			break;
 		case 'Supplier Part Average Delivery Days':
-		$label=_("average delivery time");
+			$label=_("average delivery time");
 			break;
-			
+
 		default:
 			$label=$field;
 

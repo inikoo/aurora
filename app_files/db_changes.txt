@@ -335,37 +335,9 @@ migrate_parts.oneoff.php
 
 update `Category Dimension` set `Category Scope`='Supplier' where `Category Subject`='Supplier';
 ALTER TABLE `History Dimension` CHANGE `History Abstract` `History Abstract` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-
-CREATE TABLE `Deal Campaign History Bridge` (
-  `Deal Campaign Key` mediumint(8) UNSIGNED NOT NULL,
-  `History Key` int(10) UNSIGNED NOT NULL,
-  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
-  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
-  `Type` enum('Notes','Changes','Asset') NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-ALTER TABLE `Deal Campaign History Bridge`
-  ADD PRIMARY KEY (`Deal Campaign Key`,`History Key`),
-  ADD KEY `Deal Campaign Key` (`Deal Campaign Key`),
-  ADD KEY `Deletable` (`Deletable`),
-  ADD KEY `History Key` (`History Key`),
-  ADD KEY `Type` (`Type`);
-
-CREATE TABLE `Deal History Bridge` (
-  `Deal Key` mediumint(8) UNSIGNED NOT NULL,
-  `History Key` int(10) UNSIGNED NOT NULL,
-  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
-  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
-  `Type` enum('Notes','Changes','Asset') NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-ALTER TABLE `Deal History Bridge`
-  ADD PRIMARY KEY (`Deal Key`,`History Key`),
-  ADD KEY `Deal Key` (`Deal Key`),
-  ADD KEY `Deletable` (`Deletable`),
-  ADD KEY `History Key` (`History Key`),
-  ADD KEY `Type` (`Type`);
-
 ALTER TABLE `Order Dimension`  ADD `Order Invoice Address Recipient` VARCHAR(255) NULL DEFAULT NULL  AFTER `Order Email`,  ADD `Order Invoice Address Organization` VARCHAR(255) NULL DEFAULT NULL  AFTER `Order Invoice Address Recipient`,  ADD `Order Invoice Address Line 1` VARCHAR(255) NULL DEFAULT NULL  AFTER `Order Invoice Address Organization`,  ADD `Order Invoice Address Line 2` VARCHAR(255) NULL DEFAULT NULL  AFTER `Order Invoice Address Line 1`,  ADD `Order Invoice Address Sorting Code` VARCHAR(255) NULL DEFAULT NULL  AFTER `Order Invoice Address Line 2`,  ADD `Order Invoice Address Postal Code` VARCHAR(255) NULL DEFAULT NULL  AFTER `Order Invoice Address Sorting Code`,  ADD `Order Invoice Address Dependent Locality` VARCHAR(255) NULL DEFAULT NULL  AFTER `Order Invoice Address Postal Code`,  ADD `Order Invoice Address Locality` VARCHAR(255) NULL DEFAULT NULL  AFTER `Order Invoice Address Dependent Locality`,  ADD `Order Invoice Address Administrative Area` VARCHAR(255) NULL DEFAULT NULL  AFTER `Order Invoice Address Locality`,  ADD `Order Invoice Address Country 2 Alpha Code` VARCHAR(2) NULL DEFAULT NULL  AFTER `Order Invoice Address Administrative Area`,  ADD `Order Invoice Address Checksum` VARCHAR(64) NULL DEFAULT NULL  AFTER `Order Invoice Address Country 2 Alpha Code`,  ADD `Order Invoice Address Formatted` TEXT NULL DEFAULT NULL  AFTER `Order Invoice Address Checksum`,  ADD `Order Invoice Address Postal Label` TEXT NULL DEFAULT NULL  AFTER `Order Invoice Address Formatted`,  ADD `Order Delivery Address Recipient` VARCHAR(255) NULL DEFAULT NULL  AFTER `Order Invoice Address Postal Label`,  ADD `Order Delivery Address Organization` VARCHAR(255) NULL DEFAULT NULL  AFTER `Order Delivery Address Recipient`,  ADD `Order Delivery Address Line 1` VARCHAR(255) NULL DEFAULT NULL  AFTER `Order Delivery Address Organization`,  ADD `Order Delivery Address Line 2` VARCHAR(255) NULL DEFAULT NULL  AFTER `Order Delivery Address Line 1`,  ADD `Order Delivery Address Sorting Code` VARCHAR(255) NULL DEFAULT NULL  AFTER `Order Delivery Address Line 2`,  ADD `Order Delivery Address Postal Code` VARCHAR(255) NULL DEFAULT NULL  AFTER `Order Delivery Address Sorting Code`,  ADD `Order Delivery Address Dependent Locality` VARCHAR(255) NULL DEFAULT NULL  AFTER `Order Delivery Address Postal Code`,  ADD `Order Delivery Address Locality` VARCHAR(255) NULL DEFAULT NULL  AFTER `Order Delivery Address Dependent Locality`,  ADD `Order Delivery Address Administrative Area` VARCHAR(255) NULL DEFAULT NULL  AFTER `Order Delivery Address Locality`,  ADD `Order Delivery Address Country 2 Alpha Code` VARCHAR(2) NULL DEFAULT NULL  AFTER `Order Delivery Address Administrative Area`,  ADD `Order Delivery Address Checksum` VARCHAR(64) NULL DEFAULT NULL  AFTER `Order Delivery Address Country 2 Alpha Code`,  ADD `Order Delivery Address Formatted` TEXT NULL DEFAULT NULL  AFTER `Order Delivery Address Checksum`,  ADD `Order Delivery Address Postal Label` TEXT NULL DEFAULT NULL  AFTER `Order Delivery Address Formatted`;
 
+ALTER TABLE `Agent Dimension` ADD `Agent Default Currency Code` VARCHAR(3) NULL DEFAULT 'USD' AFTER `Agent Website`, ADD `Agent Default Incoterm` VARCHAR(3) NULL DEFAULT NULL AFTER `Agent Default Currency Code`, ADD `Agent Default Port of Import` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `Agent Default Incoterm`, ADD `Agent Default Port of Export` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `Agent Default Port of Import`, ADD `Agent Default PO Terms and Conditions` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `Agent Default Port of Export`, ADD `Agent Show Warehouse TC in PO` ENUM('Yes','No') NULL DEFAULT 'Yes' AFTER `Agent Default PO Terms and Conditions`;
+ALTER TABLE `Agent Dimension` ADD `Agent Purchase Orders` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Agent Number Out Of Stock Parts`, ADD `Agent Open Purchase Orders` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Agent Purchase Orders`, ADD `Agent Purchase Delivery Notes` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Agent Open Purchase Orders`, ADD `Agent Purchase Invoices` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Agent Purchase Delivery Notes`;
+ALTER TABLE `Supplier Dimension` CHANGE `Supplier Delivery Notes` `Supplier Purchase Delivery Notes` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0', CHANGE `Supplier Invoices` `Supplier Purchase Invoices` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0';
 

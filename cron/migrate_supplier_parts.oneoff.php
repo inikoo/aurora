@@ -106,7 +106,9 @@ if ($result2=$db->query($sql)) {
 
 			if ($spart->found) {
 				print "Duplicate ".$spart->duplicated_field."\n";
-				print_r($sp_data);
+				$spart->update_historic_object();
+				
+				//print_r($sp_data);
 			}else {
 
 				if ($spart->error) {

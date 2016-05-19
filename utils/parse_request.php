@@ -413,6 +413,23 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 
 						}
+						elseif ($view_path[1]=='order') {
+                            $section='order';
+							
+							$parent='supplier';
+							$parent_key=$view_path[0];
+							$object='purchase_order';
+
+							if ( isset($view_path[2]) ) {
+								if (is_numeric($view_path[2])) {
+									$key=$view_path[2];
+								}
+
+							}
+
+
+						}
+
 
 					}
 
@@ -470,6 +487,22 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 									$key=0;
 									$section='supplier.new';
 								}
+							}
+
+
+						}
+						elseif ($view_path[1]=='order') {
+                            $section='order';
+							
+							$parent='agent';
+							$parent_key=$view_path[0];
+							$object='purchase_order';
+
+							if ( isset($view_path[2]) ) {
+								if (is_numeric($view_path[2])) {
+									$key=$view_path[2];
+								}
+
 							}
 
 
@@ -1085,8 +1118,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 			if (isset($view_path[0])) {
 				$section='campaigns';
-			
-			
+
+
 				$parent='store';
 				$parent_key=$view_path[0];
 
@@ -1096,7 +1129,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 					if (is_numeric($view_path[1])) {
 						$section='campaign';
 						$key=$view_path[1];
-	$object='campaign';
+						$object='campaign';
 
 						if (isset($view_path[2])) {
 							if ($view_path[2]=='deal') {
@@ -1421,6 +1454,23 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 					$object='category';
 					$key='';
 					$section='categories';
+
+				}if ($view_path[0]=='orders') {
+
+					$section='orders';
+
+				}if ($view_path[0]=='order') {
+
+					$section='order';
+					$object='purchase_order';
+
+					if ( isset($view_path[1]) ) {
+						if (is_numeric($view_path[1])) {
+							$key=$view_path[1];
+						}
+
+					}
+
 
 				}
 				elseif ( $view_path[0]=='category') {

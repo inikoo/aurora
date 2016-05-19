@@ -113,13 +113,19 @@
 	 {if isset($button.inline_new_object)} 
 	  {include file="inline_new_object.tpl" data=$button.inline_new_object trigger={$button.id}} 
 	 {/if} 
+	 
+	 
 	
-	<div  {if isset($button.id) and $button.id }id="{$button.id}"{/if}  class="square_button right "       {if isset($button.reference) and $button.reference!=''}onclick="change_view('{$button.reference}')"{/if} {if isset($button.title)}title="{$button.title}"{/if}>
+	<div  {if isset($button.id) and $button.id }id="{$button.id}"{/if}  {if isset($button.attr)} {foreach from=$button.attr key=attr_key item=attr_value }{$attr_key}="{$attr_value}" {/foreach}{/if}    class="square_button right "       {if isset($button.reference) and $button.reference!=''}onclick="change_view('{$button.reference}')"{/if} {if isset($button.title)}title="{$button.title}"{/if}>
 	 <i {if isset($button.id) and $button.id }id="icon_{$button.id}"{/if} class="fa fa-{$button.icon} fa-fw"></i> 
 	</div>
-	
+	 {if isset($button.add_item)} 
+	  {include file="add_item.tpl" data=$button.add_item trigger={$button.id}} 
+	 {/if} 
 	 {if isset($button.inline_new_object)} 
 	<span id="inline_new_object_msg" class="invalid"></span>
+	 {else if isset($button.add_item)} 
+	<span id="inline_add_item_msg" class="invalid"></span>
 		 {/if} 	
 	{/foreach}
 	
