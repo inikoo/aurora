@@ -45,6 +45,9 @@ case 'delivery_note.items':
 case 'suppliers':
 	suppliers(get_table_parameters(), $db, $user, $account);
 	break;
+case 'suppliers_edit':
+	suppliers_edit(get_table_parameters(), $db, $user, $account);
+	break;	
 case 'agents':
 	agents(get_table_parameters(), $db, $user, $account);
 	break;
@@ -141,6 +144,62 @@ function suppliers($_data, $db, $user, $account) {
 				//'delta_sales_year1'=>'<span title="'.money($data["Supplier 2 Year Ago Sales Amount"], $account->get('Account Currency')).'">'.delta($data["Supplier 1 Year Ago Sales Amount"], $data["Supplier 2 Year Ago Sales Amount"]).'</span>',
 				//'delta_sales_year2'=>'<span title="'.money($data["Supplier 3 Year Ago Sales Amount"], $account->get('Account Currency')).'">'.delta($data["Supplier 2 Year Ago Sales Amount"], $data["Supplier 3 Year Ago Sales Amount"]).'</span>',
 				//'delta_sales_year3'=>'<span title="'.money($data["Supplier 4 Year Ago Sales Amount"], $account->get('Account Currency')).'">'.delta($data["Supplier 3 Year Ago Sales Amount"], $data["Supplier 4 Year Ago Sales Amount"]).'</span>'
+
+			);
+
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+function suppliers_edit($_data, $db, $user, $account) {
+
+
+	$rtext_label='supplier';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
+
+
+
+			$adata[]=array(
+				'id'=>(integer)$data['Supplier Key'],
+				'link'=>$data['Supplier Code'],
+				'checkbox'=>sprintf('<i key="" class="fa fa-fw fa-square-o button" aria-hidden="true"></i>',$data['Supplier Key']),
+				'operations'=>sprintf('<i key="" class="fa fa-fw fa-cloud hide button" aria-hidden="true"></i>',$data['Supplier Key']),
+				'code'=>$data['Supplier Code'],
+				'name'=>$data['Supplier Name'],
+		
+				'email'=>$data['Supplier Main Plain Email'],
+				'mobile'=>$data['Supplier Main XHTML Mobile'],
+				'telephone'=>$data['Supplier Main XHTML Telephone'],
+				'contact'=>$data['Supplier Main Contact Name'],
+				'company'=>$data['Supplier Company Name'],
+
 
 			);
 

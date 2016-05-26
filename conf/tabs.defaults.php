@@ -491,6 +491,15 @@ $tab_defaults=array(
 		'f_field'=>'name',
 		'f_period'=>'ytd',
 	),
+	'suppliers_edit'=>array(
+		'view'=>'overview',
+		'sort_key'=>'formatted_id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'name',
+		
+	),
 	'suppliers.lists'=>array(
 		'view'=>'overview',
 		'sort_key'=>'creation_date',
