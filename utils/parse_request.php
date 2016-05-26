@@ -429,6 +429,21 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 
 						}
+						elseif ($view_path[1]=='upload') {
+							$module='account';
+							$section='upload';
+							$parent='supplier';
+							$parent_key=$key;
+							$object='upload';
+							if (isset($view_path[2])) {
+								if (is_numeric($view_path[2])) {
+
+									$key=$view_path[2];
+								}
+							}
+
+
+						}
 
 
 					}
@@ -1272,7 +1287,21 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 					}
 
 				}
+elseif ($view_path[0]=='upload') {
+							$module='account';
+							$section='upload';
+							$parent='inventory';
+							$parent_key=1;
+							$object='upload';
+							if (isset($view_path[1])) {
+								if (is_numeric($view_path[1])) {
 
+									$key=$view_path[1];
+								}
+							}
+
+
+						}
 
 			}
 
@@ -1878,6 +1907,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 							$section='osf';
 						}elseif ($view_path[1]=='isf') {
 							$section='isf';
+						}elseif ($view_path[1]=='uploads') {
+							$section='uploads';
 						}
 					}
 
@@ -1993,6 +2024,23 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 
 			break;
+		case 'upload':
+		    if (!$user->can_view('account')) {$module='utils';$section='forbidden';break;}
+		    
+		    $module='account';
+			$section='upload';
+			$object='upload';
+			
+			$parent='account';
+			$parent_key=1;
+			if (isset($view_path[0])) {
+			    if(is_numeric($view_path[0])){
+			        $key=$view_path[0];
+			    }
+			
+			}
+			break;
+			
 		case 'payment_service_providers':
 			if (!$user->can_view('orders')) {$module='utils';$section='forbidden';break;}
 

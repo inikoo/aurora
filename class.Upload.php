@@ -50,9 +50,26 @@ class Upload extends DB_Table {
 	}
 
 
+	function load_file_data() {
+		$sql=sprintf("select * from `Upload File Dimension` where `Upload File Upload Key`=%d", $this->id);
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				foreach ($row as $key=>$value) {
+					$this->data[$key]=$value;
+				}
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+	}
+
 
 	function create($data) {
-	
+
 		$this->new=false;
 
 		$data['Upload State']='Uploaded';
@@ -128,9 +145,37 @@ class Upload extends DB_Table {
 			return;
 
 		switch ($key) {
-		case ('Cancelled Date'):
-		case ('Finish Date'):
-		case ('Start Date'):
+		case 'User Alias':
+
+			$user=get_object('User', $this->data['Upload User Key']);
+			return $user->get('Alias');
+			break;
+
+		case 'File Size':
+			include_once 'utils/natural_language.php';
+			return file_size($this->data['Upload File Size']);
+			break;
+		case 'Object':
+			switch ($this->data['Upload Object']) {
+			case 'supplier_part':
+				$object=sprintf('<i  class="fa fa-fw fa-stop"></i> %s', _("Supplier's parts"));
+				break;
+			case 'supplier':
+				$object=sprintf('<i  class="fa fa-fw fa-ship"></i> %s', _("Suppliers"));
+				break;
+			case 'part':
+				$object=sprintf('<i  class="fa fa-fw fa-square"></i> %s', _("Parts"));
+				break;	
+			default:
+				$object=$this->data['Upload Object'];
+			}
+
+			return $object;
+
+			break;
+		case ('Created'):
+		case ('Date'):
+			$key='Created';
 			return strftime("%a %e %b %Y %H:%M %Z", strtotime($this->data['Upload '.$key].' +0:00'));
 			break;
 
@@ -138,21 +183,12 @@ class Upload extends DB_Table {
 			include_once 'utils/units_functions.php';
 			return file_size($this->data['Upload File Size']);
 			break;
-		case('Todo'):
-			return number($this->data['Imported Waiting Records']);
-			break;
-		case('Ignored'):
-			return number($this->data['Imported Ignored Records']);
-			break;
-		case('Imported'):
-			return number($this->data['Imported Imported Records']);
-			break;
-		case('Cancelled'):
-			return number($this->data['Imported Cancelled Records']);
-			break;
-		case('Error'):
+
+		case('Records'):
+		case('OK'):
+		case('Warnings'):
 		case('Errors'):
-			return number($this->data['Imported Error Records']);
+			return number($this->data['Upload '.$key]);
 			break;
 		default:
 
@@ -321,6 +357,35 @@ class Upload extends DB_Table {
 
 	}
 
+
+	function get_field_label($field) {
+
+		switch ($field) {
+		case 'Upload Object':
+			$label=_('Objects');
+			break;
+		case 'Account Websites':
+			$label=_('Websites');
+			break;
+		case 'Account Products':
+			$label=_('Products');
+			break;
+		case 'Account Customers':
+			$label=_('Customers');
+			break;
+		case 'Account Invoices':
+			$label=_('Invoices');
+			break;
+		case 'Account Order Transactions':
+			$label=_("Order's Items");
+			break;
+
+		default:
+			$label=$field;
+		}
+		return $label;
+
+	}
 
 
 

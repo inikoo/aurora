@@ -65,9 +65,9 @@ function get_help($data, $modules, $db, $account, $user, $smarty) {
 
 function get_title($state, $account, $user) {
 
-
-
-	if ($state['tab']=='employees') {
+	if ($state['tab']=='supplier.supplier_parts') {
+		return _("Supplier's part list & adding supplier parts");
+	}elseif ($state['tab']=='employees') {
 		if ($user->can_create('staff')) {
 			return _('Employees list & adding employees');
 		}else {
@@ -75,7 +75,7 @@ function get_title($state, $account, $user) {
 			return _('Employees list');
 		}
 	}elseif ($state['tab']=='employee.new') {
-				return _('Adding an employee');
+		return _('Adding an employee');
 
 	}
 	return '';
@@ -85,11 +85,18 @@ function get_title($state, $account, $user) {
 function get_content($state, $smarty, $account, $user) {
 
 	$smarty->assign('user', $user);
+	$smarty->assign('object', $state['object']);
+	$smarty->assign('key', $state['key']);
+
+   	$smarty->assign('account', $account);
+
+
+
 	$template='help/'.$state['module'].'.'.$state['tab'].'.quick.tpl';
 	if ($smarty->templateExists($template)) {
 		return $smarty->fetch($template);
 	}
-	return _('There is not help for this section');
+	return _('There is not help for this section').' '.$state['module'].'.'.$state['tab'];
 }
 
 

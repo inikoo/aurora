@@ -39,6 +39,9 @@ function get_form_validation_state(submitting) {
         }
 
 
+
+//console.log(field+' '+component_validation)
+
         //if (component_validation == 'invalid' || component_validation == 'potentially_valid') 
         if (component_validation == 'invalid') {
             form_validation = 'invalid';

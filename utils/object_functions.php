@@ -205,9 +205,13 @@ function get_object($object_name, $key, $load_other_data=false) {
 	case 'PurchaseOrder':
 		require_once "class.PurchaseOrder.php";
 		$object=new PurchaseOrder($key);
-		break;			
+		break;
+	case 'Upload':
+		require_once "class.Upload.php";
+		$object=new Upload($key);
+		break;					
 	default:
-		exit('need to complete E1 '.$object_name);
+		exit('need to complete E1: '.$object_name."\n");
 		break;
 	}
 

@@ -33,6 +33,7 @@
 	{if isset($field.edit)}{assign "edit" $field.edit}{else}{assign "edit" ""}{/if} 
 
 	{if isset($field.class)}{assign "class" $field.class}{else}{assign "class" ""}{/if} 
+	{if isset($field.locked)}{assign "locked" $field.locked}{else}{assign "locked" 0}{/if} 
 	{if isset($field.render)}{assign "render" $field.render}{else}{assign "render" true}{/if} 
 	{if isset($field.required)}{assign "required" $field.required}{else}{assign "required" true}{/if} 
 
@@ -168,8 +169,10 @@
     <tr id="{$field.id}_field"  class="{if $smarty.foreach.fields.last}last{/if} {if !$render}hide{/if}  {$class}"   >
 		<td id="{$field.id}_label" class="label" ><span>{$field.label}</span></td>
 		<td class="show_buttons" >
-		 		<i id="{$field.id}_validation" class="fa fa-asterisk {if $required and !( $edit=='option' and $field.value!='' ) }required{/if} {if !$required || ($edit=='option' and $field.value!='') }valid{/if}   field_state " ></i> 
-		 		 </td>
+		 		<i id="{$field.id}_validation" class="{if $locked==1}hide locked{/if} fa fa-asterisk fa-fw {if $required and !( $edit=='option' and $field.value!='' ) }required{/if} {if !$required || ($edit=='option' and $field.value!='') }valid{/if}   field_state " ></i> 
+		        <i id="{$field.id}_locked_tag"class="fa fa-lock fa-fw {if !$locked==1}hide{/if}" ></i>
+		 
+		 </td>
 
 		
 		<td  id="{$field.id}_container" class="{$field.type} new" field="{$field.id}" _required="{$required}" field_type='{$edit}' server_validation='{$server_validation}' object='{$object_name}' key='{$state.key}' parent='{$state.parent}' parent_key='{$state.parent_key}'> 
@@ -187,13 +190,13 @@
 		{elseif $edit=='dropdown_select'}
 			
 			<input id="{$field.id}" type="hidden" class=" input_field" value="{$field.value}" has_been_valid="0"/>
-		<input id="{$field.id}_dropdown_select_label"  field="{$field.id}" scope="{$field.scope}" class=" dropdown_select" value="{$field.formatted_value}" has_been_valid="0"/>
+		<input id="{$field.id}_dropdown_select_label"  field="{$field.id}" scope="{$field.scope}" class=" dropdown_select" value="{$field.formatted_value}" has_been_valid="0" placeholder="{if isset($field.placeholder)}{$field.placeholder}{/if}"/>
 
 		<span id="{$field.id}_msg" class="msg"></span> 
 		<div id="{$field.id}_results_container" class="search_results_container">
 		
 		<table id="{$field.id}_results" border="0"  >
-			<tr class="hide" id="{$field.id}_search_result_template" field="" value="" formatted_value="" onClick="select_dropdown_option(this.getAttribute('field'),this.getAttribute('value'),this.getAttribute('formatted_value'))">
+			<tr class="hide" id="{$field.id}_search_result_template" field="" value="" formatted_value="" data-metadata="" onClick="select_dropdown_option(this)">
 				<td class="code" ></td>
 				<td style="width:85%" class="label" ></td>
 				
@@ -275,7 +278,54 @@
 		{elseif $edit=='hidden' } 
 				<input id="{$field.id}" type="hidden" value="{$field.value}" has_been_valid="0" />
 
+			{elseif $edit=='barcode'  } 
 		
+	
+	
+	
+		 
+		
+		
+		
+		<input id="{$field.id}" class="input_field " value="{$field.value}" has_been_valid="0" {if isset($field.placeholder)}placeholder="{$field.placeholder}"{/if} />
+		<span id="{$field.id}_next_barcode_msg" class="hide discreet" style="font-style:italic" >{t}Next available barcode will be assigned{/t}</span>
+		<span id="{$field.id}_assign_available_barcode" class="fa-stack fa-lg button " available_barcodes="{$available_barcodes}" title="{t}Assign next available barcode{/t}" onClick="assign_available_barcode_to_new_object('{$field.id}')">
+  <i class="fa fa-barcode fa-stack-1x"></i>
+  <i class="fa fa-caret-right fa-inverse fa-stack-1x"></i>
+</span>
+		<i id="{$field.id}_input_barcode" class="fa fa-undo hide padding_left_10 button" aria-hidden="true" title="{t}Input barcode{/t}" onClick="input_barcode_to_new_object('{$field.id}')"></i>
+
+		<span id="{$field.id}_msg" class="msg"></span> 
+		<span id="{$field.id}_info" class="hide"></span>
+
+<script>
+
+
+function assign_available_barcode_to_new_object(field) {
+    $('#' + field).addClass('hide')
+    $('#' + field + '_assign_available_barcode').addClass('hide')
+    $('#' + field + '_next_barcode_msg').removeClass('hide')
+    $('#' + field + '_input_barcode').removeClass('hide')
+    $('#' + field +'_Next_Available').val('Yes')
+
+}
+
+function input_barcode_to_new_object(field) {
+    $('#' + field).removeClass('hide').val('')
+    $('#' + field + '_assign_available_barcode').removeClass('hide')
+    $('#' + field + '_next_barcode_msg').addClass('hide')
+    $('#' + field + '_input_barcode').addClass('hide')
+
+
+    $('#' + field+'_Next_Available').val('No')
+}
+
+
+
+
+
+</script>
+
 		{elseif $edit=='option' } 
 		
 		<input id="{$field.id}" type="hidden" value="{$field.value}" has_been_valid="0" />
@@ -449,6 +499,9 @@
        //     return;
        // }
      
+     
+    
+     
         var field = $(this).attr('field')
     
         var value = $('#' + field).val()
@@ -489,7 +542,9 @@
     });
 
    var form_validation = get_form_validation_state()
-           process_form_validation(form_validation)
+    
+    
+    process_form_validation(form_validation)
 
         
     $(".confirm_input_field").on("input propertychange", function(evt) {

@@ -86,6 +86,9 @@
 			
 			<div id="menu">
 			</div>
+			<ul style="margin-top:5px">
+				<li onclick="change_view('/fire')"><i class="fa fa-fire fa-fw" style="color:orange;opacity:.8"></i><span id="fire_label" class="label"> {t}Fire{/t}</span></li>
+			</ul>
 			<ul style="margin-top:20px">
 				<li onclick="logout()"><i class="fa fa-sign-out fa-fw"></i><span id="logout_label" class="label"> {t}Logout{/t}</span></li>
 			</ul>
@@ -106,9 +109,7 @@
 	<aside id="notifications">
 		<div class="top_buttons" >
 			
-			<div onclick="change_view('/fire')" class="square_button  button"  title="{t}Fire evacuation roll call{/t}">
-				<i class="fa fa-fire fa-fw" style="color:orange"></i> 
-			</div>
+			
 			<div id="help_button" onclick="show_help()" class="square_button {if $show_help}selected{/if}"  title="{t}Help{/t}">
 				<i class="fa fa-question-circle fa-fw  " ></i> 
 			</div>

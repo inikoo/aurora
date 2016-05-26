@@ -68,18 +68,40 @@ function fork_upload($job) {
 	$fields=array();
 	$fields_required=array();
 	$field_index=0;
-	$object_fields=get_object_fields($upload->get('Object'), $db);
+
+
+
+
+	$fields_options=array('new'=>true);
+
+	if ($upload->get('Upload Object')=='supplier_part') {
+
+
+		$fields_options['supplier']=get_object('supplier', $upload->get('Parent Key'));
+		$fields_options['supplier_part_scope']=true;
+	}if ($upload->get('Upload Object')=='part') {
+
+
+		$fields_options['part_scope']=true;
+	}
+
+
+	$object_fields=get_object_fields(get_object($upload->get('Upload Object'), 0), $db, $user, false, $fields_options);
+
+
+
+
 	foreach ($object_fields as $field_group) {
 		if (array_key_exists('fields', $field_group)) {
 			foreach ($field_group['fields'] as $field) {
 
 
 
-				if (array_key_exists('edit', $field)  and !array_key_exists('hidden', $field)     ) {
+				if (array_key_exists('edit', $field)  and !array_key_exists('hidden', $field)  and  !  (array_key_exists('render', $field) and !$field['render'])  ) {
 
 					$fields[]=preg_replace('/_/', ' ', $field['id']);
 
-					if (!(array_key_exists('required', $field) and !$field['required'])) {
+					if (!(array_key_exists('required', $field) and !$field['required'])    ) {
 						$fields_required[$field_index]=$field_index;
 					}
 					$field_index++;
@@ -93,6 +115,9 @@ function fork_upload($job) {
 	$sql=sprintf("select `Upload Record Key`, uncompress(`Upload Record Data`) as data  from `Upload Record Dimension` where `Upload Record Upload Key`=%d and `Upload Record Status`='InProcess' ",
 		$upload->id
 	);
+
+
+
 
 
 	if ($result=$db->query($sql)) {
@@ -164,6 +189,8 @@ function fork_upload($job) {
 			}
 
 
+
+
 			if ($error) {
 
 
@@ -186,7 +213,7 @@ function fork_upload($job) {
 
 				);
 				$db->exec($sql);
-				
+
 				continue;
 
 			}
@@ -196,12 +223,11 @@ function fork_upload($job) {
 			$_data=array(
 				'parent'=>$upload->get('Parent'),
 				'parent_key'=>$upload->get('Parent Key'),
-				'object'=>$upload->get('Object'),
+				'object'=>$upload->get('Upload Object'),
 				'upload_record_key'=>$row['Upload Record Key'],
 
 				'fields_data'=>$fields_data
 			);
-
 
 			$object_key=new_object($account, $db, $user, $editor, $_data);
 
@@ -257,8 +283,7 @@ function list_name_taken($list_name, $parent_key) {
 
 function new_object($account, $db, $user, $editor, $data) {
 
-
-
+	$error=false;
 
 	$parent=get_object($data['parent'], $data['parent_key']);
 
@@ -267,25 +292,53 @@ function new_object($account, $db, $user, $editor, $data) {
 
 	$parent->editor=$editor;
 
+
+
 	switch ($data['object']) {
+
+	case 'supplier_part':
+	case 'Supplier Part':
+		include_once 'class.SupplierPart.php';
+
+
+
+		$object=$parent->create_supplier_part_record($data['fields_data']);
+
+
+		$error=$parent->error;
+
+		break;
+	case 'part':
 	case 'Part':
 		include_once 'class.Part.php';
-		$object=$parent->create_part($data['fields_data']);
-
-		if ($parent->new_part) {
+		include_once 'class.Supplier.php';
 
 
+		$supplier=new Supplier('code', $data['fields_data']['Supplier Part Supplier Key']);
+
+		if (!$supplier->id) {
+			$msg=sprintf(_('Supplier with code %s not found', $data['Supplier Part Supplier Key']));
+			$error=true;
+			$error_code='parent_not_found';
+			$error_metadata=json_encode(array('msg'=>$msg));
 		}else {
 
-
-			$response=array(
-				'state'=>400,
-				'msg'=>$parent->msg
-
-			);
-			echo json_encode($response);
-			exit;
+			$data['fields_data']['Supplier Part Supplier Key']=$supplier->id;
+			
+			
+			$parent=$supplier;
+			$parent->editor=$editor;
+			$supplier_part=$parent->create_supplier_part_record($data['fields_data']);
+			print_r($parent);
+			if(!$parent->error){
+            $object=get_object('Part',$supplier_part->get('Part SKU'));
+			}
+			$error=$parent->error;
+			$error_metadata=$parent->error_metadata;
+			$error_code=$parent->error_code;
+			
 		}
+
 		break;
 	case 'Manufacture_Task':
 		include_once 'class.Manufacture_Task.php';
@@ -372,12 +425,12 @@ function new_object($account, $db, $user, $editor, $data) {
 
 
 
-	if ($parent->error) {
+	if ($error) {
 
 		$sql=sprintf("update `Upload Record Dimension` set `Upload Record Date`=%s , `Upload Record Message Code`=%s , `Upload Record Message Metadata`=%s ,`Upload Record Status`='Done' ,`Upload Record State`='Error' where `Upload Record Key`=%d ",
 			prepare_mysql(gmdate('Y-m-d H:i:s')),
-			prepare_mysql($parent->error_code),
-			prepare_mysql($parent->error_metadata),
+			prepare_mysql($error_code),
+			prepare_mysql($error_metadata),
 			$data['upload_record_key']
 
 		);

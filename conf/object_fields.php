@@ -39,7 +39,6 @@ function get_object_fields($object, $db, $user, $smarty, $options=false) {
 		include 'fields/website.fld.php';
 		return $object_fields;
 		break;
-
 	case 'Agent':
 		include 'fields/agent.fld.php';
 		return $agent_fields;
@@ -72,17 +71,70 @@ function get_object_fields($object, $db, $user, $smarty, $options=false) {
 		break;
 
 	case 'Supplier Part':
+		$object->get_supplier_data();
 		include 'fields/supplier_part.fld.php';
 		if (isset($options['new'])  ) {
 			$object=new Part(0);
 			include 'fields/part.fld.php';
 			$supplier_part_fields = array_merge($supplier_part_fields, $part_fields);
+
+
+
+
+
+
+
+
+		}else {
+
+
+			$part=get_object('Part', $object->get('Supplier Part Part SKU'));
+
+			$object_fields_part=get_object_fields($part, $db, $user, $smarty, array('supplier_part_scope'=>true));
+
+			$supplier_part_fields = array_merge($supplier_part_fields, $object_fields_part);
+
+			$operations=array(
+				'label'=>_('Operations'),
+				'show_title'=>true,
+				'class'=>'operations',
+				'fields'=>array(
+
+					array(
+						'id'=>'delete_supplier_part',
+						'class'=>'operation',
+						'value'=>'',
+						'label'=>'<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span onClick="delete_object(this)" class="delete_object disabled">'._("Delete supplier's part").' <i class="fa fa-trash new_button link"></i></span>',
+						'reference'=>'',
+						'type'=>'operation'
+					),
+
+
+
+
+				)
+
+			);
+
+			$supplier_part_fields[]=$operations;
+
 		}
 		return $supplier_part_fields;
 		break;
 
 	case 'Part':
-		include 'fields/part.fld.php';
+
+		if (isset($options['new'])  ) {
+			$object=get_object( 'Supplier Part', 0);
+			$object->get_supplier_data();
+			include 'fields/supplier_part.fld.php';
+
+			$object=new Part(0);
+			include 'fields/part.fld.php';
+			$part_fields = array_merge($supplier_part_fields, $part_fields);
+		}else {
+			include 'fields/part.fld.php';
+		}
 		return $part_fields;
 		break;
 

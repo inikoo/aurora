@@ -52,9 +52,12 @@ class Data_Sets extends DB_Table {
 		if ($this->data = $this->db->query($sql)->fetch()) {
 
 			$this->id=$this->data['Data Sets Key'];
+			
 		}
 
 	}
+
+
 
 
 	function update_field_switcher($field, $value, $options='',$metadata='') {
@@ -347,6 +350,25 @@ class Data_Sets extends DB_Table {
 				exit;
 			}
 
+		}elseif ($this->data['Data Sets Code']=='Uploads') {
+			$tables='"Upload Dimension","Upload File Dimension","Upload Record Dimension"';
+			$sql=sprintf('select count(*) as num  from `Upload Dimension`',
+				$this->id
+			);
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$num=$row['num'];
+
+				}else {
+					$num=0;
+
+				}
+				$this->update(array('Data Sets Number Sets'=>1, 'Data Sets Number Items'=>$num), 'no_history');
+
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
 		}
 
 

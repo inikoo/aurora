@@ -1,7 +1,4 @@
-
 <div class="asset_profile"  style="padding-top:10px">
-
-
 	<div id="asset_data">
 		
 		<div class="data_container" style="opacity:.4">
@@ -40,9 +37,6 @@
 	</div>
 	<div style="clear:both">
 	</div>
-	
-	
-	
 </div>
 
 

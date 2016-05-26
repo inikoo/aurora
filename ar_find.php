@@ -57,6 +57,9 @@ case 'find_object':
 
 
 	switch ($data['scope']) {
+	case 'suppliers':
+		find_suppliers($db, $account, $memcache_ip, $data);
+		break;
 	case 'stores':
 		find_stores($db, $account, $memcache_ip, $data);
 		break;
@@ -82,6 +85,208 @@ default:
 	echo json_encode($response);
 	exit;
 	break;
+}
+
+
+function find_suppliers($db, $account, $memcache_ip, $data) {
+
+
+
+	$cache=false;
+	$max_results=10;
+	$user=$data['user'];
+	$queries=trim($data['query']);
+
+	if ($queries=='') {
+		$response=array('state'=>200, 'results'=>0, 'data'=>'');
+		echo json_encode($response);
+		return;
+	}
+
+
+
+
+	$memcache_fingerprint=$account->get('Account Code').'SEARCH_SUP'.md5($queries);
+
+	$cache = new Memcached();
+	$cache->addServer($memcache_ip, 11211);
+
+
+	if (strlen($queries)<=2) {
+		$memcache_time=295200;
+	}if (strlen($queries)<=3) {
+		$memcache_time=86400;
+	}if (strlen($queries)<=4) {
+		$memcache_time=3600;
+	}else {
+		$memcache_time=300;
+
+	}
+
+
+	$results_data=$cache->get($memcache_fingerprint);
+
+
+	if (!$results_data or true) {
+
+
+		$candidates=array();
+
+		$query_array=preg_split('/\s+/', $queries);
+		$number_queries=count($query_array);
+
+
+
+
+		foreach ($query_array as $q) {
+
+
+
+
+			$sql=sprintf("select `Supplier Key`,`Supplier Code`,`Supplier Name` from `Supplier Dimension` where  `Supplier Code` like '%s%%' limit 20 ",
+				$q);
+
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+
+					if ($row['Supplier Code']==$q)
+						$candidates[$row['Supplier Key']]=1000;
+					else {
+
+						$len_name=strlen($row['Supplier Code']);
+						$len_q=strlen($q);
+						$factor=$len_q/$len_name;
+						$candidates[$row['Supplier Key']]=500*$factor;
+					}
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				exit;
+			}
+
+
+
+
+
+
+
+
+
+			$sql=sprintf("select `Supplier Key`,`Supplier Code`,`Supplier Name` from `Supplier Dimension` where  `Supplier Name`  REGEXP '[[:<:]]%s' limit 100 ",
+				$q);
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+					if ($row['Supplier Name']==$q)
+						$candidates[$row['Supplier Key']]=55;
+					else {
+
+						$len_name=strlen($row['Supplier Name']);
+						$len_q=strlen($q);
+						$factor=$len_q/$len_name;
+						$candidates[$row['Supplier Key']]=50*$factor;
+					}
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				exit;
+			}
+
+
+		}
+
+
+		arsort($candidates);
+
+
+
+		$total_candidates=count($candidates);
+
+		if ($total_candidates==0) {
+			$response=array('state'=>200, 'results'=>0, 'data'=>'');
+			echo json_encode($response);
+			return;
+		}
+
+		$counter=0;
+		$product_keys='';
+		$results=array();
+
+		foreach ($candidates as $key=>$val) {
+			$counter++;
+			$product_keys.=','.$key;
+			$results[$key]='';
+			if ($counter>$max_results) {
+				break;
+			}
+		}
+		$product_keys=preg_replace('/^,/', '', $product_keys);
+
+		$sql=sprintf("select `Supplier Code`,`Supplier Key`,`Supplier Name`,`Supplier Default Currency Code` from `Supplier Dimension` S where `Supplier Key` in (%s)",
+			$product_keys);
+
+		if ($result=$db->query($sql)) {
+			foreach ($result as $row) {
+
+				$results[$row['Supplier Key']]=array(
+					'code'=>highlightkeyword(sprintf('%s', $row['Supplier Code']), $queries ),
+					'description'=>highlightkeyword($row['Supplier Name'], $queries ),
+
+					'value'=>$row['Supplier Key'],
+					'formatted_value'=>$row['Supplier Name'].(($row['Supplier Code']!='' and $row['Supplier Code']!=$row['Supplier Name'])?' ('.$row['Supplier Code'].')':''),
+					'metadata'=>array('other_fields'=>array(
+							'Supplier_Part_Unit_Cost'=>array(
+								'field'=>'Supplier_Part_Unit_Cost',
+								'render'=>true,
+								'placeholder'=>sprintf(_('amount in %s'), $row['Supplier Default Currency Code']),
+								'value'=>'',
+								'formatted_value'=>'',
+								'locked'=>false
+
+
+							),
+							'Supplier_Part_Unit_Extra_Cost'=>array(
+								'field'=>'Supplier_Part_Unit_Extra_Cost',
+								'render'=>true,
+								'placeholder'=>sprintf(_('amount in %s or %%'), $row['Supplier Default Currency Code']),
+								'value'=>'',
+								'formatted_value'=>'',
+								'locked'=>false
+
+
+							)
+						)
+					)
+
+
+
+
+
+				);
+
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
+
+
+
+
+		$results_data=array('n'=>count($results), 'd'=>$results);
+		$cache->set($memcache_fingerprint, $results_data, $memcache_time);
+
+
+
+	}
+	$response=array('state'=>200, 'number_results'=>$results_data['n'], 'results'=>$results_data['d'], 'q'=>$queries);
+
+	echo json_encode($response);
+
 }
 
 

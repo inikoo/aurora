@@ -18,6 +18,14 @@ if (isset($options['new']) and  $options['new'] ) {
 	$new=false;
 }
 
+
+if (isset($options['part_scope']) and  $options['part_scope'] ) {
+	$part_scope=true;
+}else {
+	$part_scope=false;
+}
+
+
 if (isset($options['show_full_label']) and  $options['show_full_label'] ) {
 	$show_full_label=true;
 	$field_prefix='Part ';
@@ -31,12 +39,24 @@ if (isset($options['show_full_label']) and  $options['show_full_label'] ) {
 $options_status=array('Available'=>_('Available'), 'NoAvailable'=>_('No stock'), 'Discontinued'=>_('Discontinued'));
 $supplier_part_fields=array(
 	array(
-		'label'=>_('Id'),
 		'label'=>($show_full_label?_("Supplier's part Id"):_('Id')),
 
 		'show_title'=>true,
 		'fields'=>array(
+			array(
+				'id'=>'Supplier_Part_Supplier_Key',
+				'render'=>(($new and $part_scope)?true:false ),
+				'edit'=>'dropdown_select',
+				'scope'=>'suppliers',
 
+				'value'=>htmlspecialchars($object->get('Supplier Part Supplier Key')),
+				'formatted_value'=>$object->get('Supplier Key'),
+				'stripped_formatted_value'=>$object->get('Supplier Key'),
+				'label'=>("Supplier's code"),
+				'placeholder'=>_("Supplier's code"),
+				'required'=>($part_scope?true:false ),
+				'type'=>'value'
+			),
 			array(
 				'id'=>'Supplier_Part_Reference',
 				'edit'=>($edit?'string':''),
@@ -50,17 +70,37 @@ $supplier_part_fields=array(
 			),
 
 			array(
-				'id'=>'Part_Part_Reference',
+				'id'=>'Part_Reference',
 				'edit'=>($edit?'string':''),
 
 				'value'=>htmlspecialchars($object->get('Part Part Reference')),
 				'formatted_value'=>$object->get('Part Reference'),
-				'label'=>ucfirst($object->get_field_label('Part Part Reference')),
+				'label'=>ucfirst($object->get_field_label('Part Reference')),
 				'required'=>true,
-				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates', 'field'=>'Part_Reference', 'parent'=>'account', 'parent_key'=>1, 'object'=>'Part', 'key'=>$object->part->id)),
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates', 'field'=>'Part_Reference', 'parent'=>'account', 'parent_key'=>1, 'object'=>'Part', 'key'=>(isset($object->part->id)?$object->part->id:false))),
 				'type'=>'value'
 			),
+			array(
+				'id'=>'Part_Barcode_Number',
+				'edit'=>($edit?'barcode':''),
 
+				'value'=>htmlspecialchars($object->get('Part Part Barcode Number')),
+				'formatted_value'=>$object->get('Part Barcode Number'),
+				'label'=>ucfirst($object->get_field_label('Part Barcode Number')),
+				'required'=>false,
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates', 'parent'=>'account', 'parent_key'=>1, 'object'=>'Part', 'key'=>(isset($object->part)?$object->part->id:0))),
+				'type'=>'value'
+			),
+			array(
+				'id'=>'Part_Barcode_Number_Next_Available',
+				'edit'=>($edit?'string':''),
+				'render'=>false,
+				'value'=>'No',
+				'formatted_value'=>'No',
+				'label'=>'Next barcode',
+				'required'=>false,
+				'type'=>'value'
+			)
 
 		)
 	),
@@ -108,7 +148,7 @@ $supplier_part_fields=array(
 				'label'=>ucfirst($object->get_field_label('Supplier Part Average Delivery Days')),
 				'placeholder'=>_('days'),
 
-				'required'=>true,
+				'required'=>false,
 				'type'=>'value'
 			),
 			array(
@@ -137,8 +177,8 @@ $supplier_part_fields=array(
 				'id'=>'Supplier_Part_Currency_Code',
 				'edit'=>($edit?'string':''),
 
-				'value'=>($new?$options['supplier']->get('Supplier Default Currency Code'):htmlspecialchars($object->get('Supplier Part Currency Code'))),
-				'formatted_value'=>($new?$options['supplier']->get('Default Currency Code '):htmlspecialchars($object->get('Currency Code'))),
+				'value'=>($new? ($part_scope? '':  $options['supplier']->get('Supplier Default Currency Code')):htmlspecialchars($object->get('Supplier Part Currency Code'))),
+				'formatted_value'=>($new? ($part_scope? '':$options['supplier']->get('Default Currency Code ')):htmlspecialchars($object->get('Currency Code'))),
 				'label'=>ucfirst($object->get_field_label('Supplier Part Currency Code')),
 				'required'=>false,
 				'type'=>'value'
@@ -147,31 +187,33 @@ $supplier_part_fields=array(
 			array(
 				'id'=>'Supplier_Part_Unit_Cost',
 				'edit'=>($edit?'amount':''),
-
+                'locked'=>($part_scope?1:0),
 				'value'=>htmlspecialchars($object->get('Supplier Part Unit Cost')),
 				'formatted_value'=>$object->get('Unit Cost'),
 				'label'=>ucfirst($object->get_field_label('Supplier Part Unit Cost')),
 				'required'=>true,
-				'placeholder'=>sprintf(_('amount in %s '), $options['supplier']->get('Default Currency Code')),
+				'placeholder'=>($part_scope? '':sprintf(_('amount in %s '), $options['supplier']->get('Default Currency Code'))),
 				'type'=>'value'
 			),
 
 			array(
 				'id'=>'Supplier_Part_Unit_Extra_Cost',
 				'edit'=>'amount_margin',
+				 'locked'=>($part_scope?1:0),
 				'value'=>htmlspecialchars($object->get('Supplier Part Unit Extra Cost')),
 				'formatted_value'=>$object->get('Unit Extra Cost'),
 				'label'=>ucfirst($object->get_field_label('Supplier Part Unit Extra Cost')),
-				'required'=>true,
-				'placeholder'=>sprintf(_('amount in %s or %%'), $options['supplier']->get('Default Currency Code')),
+				'required'=>false,
+				'placeholder'=>($part_scope?'': sprintf(_('amount in %s or %%'), $options['supplier']->get('Default Currency Code'))),
 				'type'=>'value'
 			),
 			array(
 				'id'=>'Part_Part_Unit_Price',
 				'edit'=>'amount_margin',
+				
 				'value'=>htmlspecialchars($object->get('Part Part Unit Price')),
 				'formatted_value'=>$object->get('Part Unit Price'),
-				'label'=>ucfirst($object->get_field_label('Part Part Unit Price')),
+				'label'=>ucfirst($object->get_field_label('Part Unit Price')),
 				'required'=>true,
 				'placeholder'=>sprintf(_('amount in %s or margin (%%)'), $account->get('Currency')),
 				'type'=>'value'
@@ -181,7 +223,7 @@ $supplier_part_fields=array(
 				'edit'=>'amount_margin',
 				'value'=>htmlspecialchars($object->get('Part Part Unit RRP')),
 				'formatted_value'=>$object->get('Part Unit RRP'),
-				'label'=>ucfirst($object->get_field_label('Part Part Unit RRP')),
+				'label'=>ucfirst($object->get_field_label('Part Unit RRP')),
 				'required'=>true,
 				'placeholder'=>sprintf(_('amount in %s or margin (%%)'), $account->get('Currency')),
 				'type'=>'value'
@@ -222,6 +264,7 @@ $supplier_part_fields=array(
 	),
 
 );
+
 
 
 

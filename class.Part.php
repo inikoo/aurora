@@ -209,10 +209,10 @@ class Part extends Asset{
 
 
 			$this->get_data('id', $this->id);
-			$data_for_history=array(
+			$history_data=array(
 				'Action'=>'created',
-				'History Abstract'=>_('Part Created'),
-				'History Details'=>_('Part')." ".$this->get('SKU')." (".$this->data['Part Unit Description'].")"._('Created')
+				'History Abstract'=>_('Part created'),
+				'History Details'=>''
 			);
 			$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
 
@@ -1534,25 +1534,6 @@ class Part extends Asset{
 	}
 
 
-	function get_suppliers() {
-		$suppliers=array();
-		$sql=sprintf("select `Supplier Product Code`,  SD.`Supplier Key`, `Supplier Code` from `Supplier Product Part List` SPPL   left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`) where `Part SKU`=%d  order by `Supplier Key`;", $this->data['Part SKU']);
-
-
-
-		if ($result=$this->db->query($sql)) {
-			foreach ($result as $row) {
-				$suppliers[$row['Supplier Key']]=array('Supplier Key'=>$row['Supplier Key']);
-
-			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
-		}
-
-
-		return $suppliers;
-	}
 
 
 	function get_historic_locations() {
@@ -1569,218 +1550,6 @@ class Part extends Asset{
 
 	}
 
-
-	function get_all_supplier_products_pids() {
-
-
-		$supplier_products=array();
-		$sql=sprintf("select  SPPD.`Supplier Product ID` from `Supplier Product Part List` SPPL left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) where `Part SKU`=%d ",
-			$this->data['Part SKU']);
-
-
-
-		if ($result=$this->db->query($sql)) {
-			foreach ($result as $row) {
-				$supplier_products[$row['Supplier Product ID']]=$row['Supplier Product ID'];
-
-			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
-		}
-
-		return $supplier_products;
-	}
-
-
-	function get_number_historic_supplier_products() {
-
-		$number_historic_supplier_products=0;
-		$sql=sprintf("select count(distinct `Supplier Product ID`) as num from `Supplier Product Part List` L left join `Supplier Product Part Dimension` PP on (L.`Supplier Product Part Key`=PP.`Supplier Product Part Key`) where `Supplier Product Part Most Recent`='No' and `Part SKU`=%d",
-			$this->sku
-		);
-		//print $sql;
-		$res = mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)  ) {
-			$number_historic_supplier_products=$row['num'];
-		}
-		return $number_historic_supplier_products;
-
-	}
-
-
-	function get_supplier_products_new($date=false) {
-		//exit("xxxx");
-		if ($date) {
-			return $this->get_supplier_products_historic($date);
-		}
-
-		$supplier_products=array();
-		$sql=sprintf("
-
-																																																																																select `Supplier Product Valid To`, `Supplier Product Valid From`, SPPD.`Supplier Product ID` , `Supplier Product Current Key`, SPPD.`Supplier Product Part Key`, `Supplier Product Part In Use`, `Supplier Product Units Per Part`, SPD.`Supplier Product Code`,  SPD.`Supplier Key`, `Supplier Code`
-																																																																																from `Supplier Product Part List` SPPL
-																																																																																left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)
-																																																																																left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID`) where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes' order by `Supplier Product Valid To` desc;
-																																																																																", $this->data['Part SKU']);
-		// print $sql;
-		$result=mysql_query($sql);
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-
-			$supplier_products[]=array(
-				'Supplier Key'=>$row['Supplier Key'],
-				'Supplier Product ID'=>$row['Supplier Product ID'],
-				'Supplier Product Keys'=>$row['Supplier Product Current Key'],
-				'Supplier Product Current Key'=>$row['Supplier Product Current Key'],
-				'Supplier Product Code'=>$row['Supplier Product Code'],
-				'Supplier Product Units Per Part'=>$row['Supplier Product Units Per Part'],
-				'Supplier Product Part Key'=>$row['Supplier Product Part Key'],
-				'Supplier Product Part In Use'=>$row['Supplier Product Part In Use'],
-				'Supplier Product Valid From'=>$row['Supplier Product Valid From'],
-				'Supplier Product Valid To'=>$row['Supplier Product Valid To'],
-
-			);
-		}
-		//print_r($supplier_products);
-		return $supplier_products;
-	}
-
-
-	function update_supplied_by() {
-		$supplied_by='';
-		$sql=sprintf("select SPD.`Supplier Product ID`,  `Supplier Product Code`,  SD.`Supplier Key`, SD.`Supplier Code`
-																																																																																										from `Supplier Product Part List` SPPL
-																																																																																										left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)
-																																																																																										left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID`)
-																																																																																										left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPD.`Supplier Key`)
-																																																																																										where `Part SKU`=%d  and `Supplier Product Part Most Recent`='Yes' order by `Supplier Key`;",
-			$this->data['Part SKU']);
-
-
-		$sxql=sprintf("
-
-																																																																																										select `Supplier Product Valid To`, `Supplier Product Valid From`, SPPD.`Supplier Product ID` , `Supplier Product Current Key`, SPPD.`Supplier Product Part Key`, `Supplier Product Part In Use`, `Supplier Product Units Per Part`, SPD.`Supplier Product Code`,  SPD.`Supplier Key`, `Supplier Code`
-																																																																																										from `Supplier Product Part List` SPPL
-																																																																																										left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)
-																																																																																										left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID`) where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes' order by `Supplier Product Valid To` desc;
-																																																																																										", $this->data['Part SKU']);
-
-		$result=mysql_query($sql);
-		//print "$sql\n";
-		$supplier=array();
-		$current_supplier='_';
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-			$_current_supplier=$row['Supplier Key'];
-			if ($_current_supplier!=$current_supplier) {
-				$supplied_by.=sprintf(', <a href="supplier.php?id=%d">%s</a>(<a href="supplier_product.php?pid=%d">%s</a>',
-					$row['Supplier Key'],
-					$row['Supplier Code'],
-					$row['Supplier Product ID'],
-					$row['Supplier Product Code']);
-				$current_supplier=$_current_supplier;
-			} else {
-				$supplied_by.=sprintf(', <a href="supplier_product.php?pid=%d">%s</a>',
-					$row['Supplier Product ID'],
-					$row['Supplier Product Code']
-				);
-
-			}
-
-		}
-		$supplied_by.=")";
-
-		$supplied_by=_trim(preg_replace('/^, /', '', $supplied_by));
-		if ($supplied_by=='')
-			$supplied_by=_('Unknown Supplier');
-
-
-		$sql=sprintf("update `Part Dimension` set `Part XHTML Currently Supplied By`=%s where `Part SKU`=%d", prepare_mysql(_trim($supplied_by)), $this->id);
-		//print "$sql\n";
-		if (!mysql_query($sql))
-			exit("error can no suplied by part 498239048");
-
-
-	}
-
-
-	function get_supplier_products($date=false) {
-		//exit("xxxx");
-		if ($date) {
-			return $this->get_supplier_products_historic($date);
-		}
-
-		$supplier_products=array();
-		$sql=sprintf("
-
-																																																																																																select `Supplier Product Valid To`, `Supplier Product Valid From`, SPPD.`Supplier Product ID` , `Supplier Product Current Key`, SPPD.`Supplier Product Part Key`, `Supplier Product Part In Use`, `Supplier Product Units Per Part`, SPD.`Supplier Product Code`,  SPD.`Supplier Key`, `Supplier Code`
-																																																																																																from `Supplier Product Part List` SPPL
-																																																																																																left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)
-																																																																																																left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID`) where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes' order by `Supplier Product Valid To` desc;
-																																																																																																", $this->data['Part SKU']);
-		// print $sql;
-		$result=mysql_query($sql);
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-
-			$supplier_products[$row['Supplier Product ID']]=array(
-				'Supplier Key'=>$row['Supplier Key'],
-				'Supplier Product ID'=>$row['Supplier Product ID'],
-				'Supplier Product Keys'=>$row['Supplier Product Current Key'],
-				'Supplier Product Current Key'=>$row['Supplier Product Current Key'],
-				'Supplier Product Code'=>$row['Supplier Product Code'],
-				'Supplier Product Units Per Part'=>$row['Supplier Product Units Per Part'],
-				'Supplier Product Part Key'=>$row['Supplier Product Part Key'],
-				'Supplier Product Part In Use'=>$row['Supplier Product Part In Use'],
-				'Supplier Product Valid From'=>$row['Supplier Product Valid From'],
-				'Supplier Product Valid To'=>$row['Supplier Product Valid To'],
-
-			);
-		}
-		//print_r($supplier_products);
-		return $supplier_products;
-	}
-
-
-	function get_supplier_products_historic($date) {
-		$supplier_products=array();
-		$sql=sprintf("select SPD.`Supplier Product ID`, `SPH Key`,  `Supplier Product Units Per Part`, SPD.`Supplier Product Code`,  SD.`Supplier Key`, SD.`Supplier Code`     from `Supplier Product Part List` SPPL    left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)    left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product ID`=SPPD.`Supplier Product ID`)    left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPD.`Supplier Key`)     left join `Supplier Product History Dimension` H on ( H.`Supplier Product ID`=SPD.`Supplier Product ID` )    where `Part SKU`=%d
-																																																																																																												and ( (`SPH Valid From`<=%s and `SPH Valid To`>=%s and `SPH Type`='Historic') or (`SPH Valid From`<=%s and  `SPH Type`='Normal')     )
-																																																																																																												and ( (`Supplier Product Part Valid From`<=%s  and `Supplier Product Part Valid To`>=%s and `Supplier Product Part Most Recent`='No') or  (`Supplier Product Part Valid From`<=%s and `Supplier Product Part Most Recent`='Yes')
-																																																																																																												) ;"
-			, $this->data['Part SKU'],
-			prepare_mysql($date),
-			prepare_mysql($date),
-			prepare_mysql($date),
-			prepare_mysql($date),
-			prepare_mysql($date),
-			prepare_mysql($date)
-		);
-		//print "$sql\n\n";
-		$result=mysql_query($sql);
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-
-			if (isset($supplier_products[$row['Supplier Product ID']])) {
-
-				$supplier_products[$row['Supplier Product ID']]['Supplier Product Keys'].=','.$row['SPH Key'];
-
-
-			} else {
-
-				$supplier_products[$row['Supplier Product ID']]=array(
-					'Supplier Key'=>$row['Supplier Key'],
-					'Supplier Product Keys'=>$row['SPH Key'],
-					'Supplier Product ID'=>$row['Supplier Product ID'],
-					'Supplier Product Code'=>$row['Supplier Product Code'],
-					'Supplier Product Units Per Part'=>$row['Supplier Product Units Per Part']
-
-				);
-			}
-
-		}
-		return $supplier_products;
-	}
 
 
 	function load_locations($date='') {
@@ -2233,7 +2002,7 @@ class Part extends Asset{
 				'min_qty'=>$row['Minimum Quantity'],
 				'max_qty'=>$row['Maximum Quantity'],
 				'move_qty'=>$row['Moving Quantity'],
-				
+
 				'can_pick'=>$row['Can Pick']
 			);
 
@@ -3705,7 +3474,56 @@ class Part extends Asset{
 	}
 
 
-	function delete() {
+	function delete($metadata=false) {
+
+
+
+
+		$sql=sprintf('insert into `Part Deleted Dimension`  (`Part Deleted Key`,`Part Deleted Reference`,`Part Deleted From`,`	Part Deleted To`,`Part Deleted Metadata`) values (%d,%s,%s,%s,%s) ',
+			$this->id,
+			prepare_mysql($this->get('Part Type')),
+			prepare_mysql($this->get('Part Reference')),
+			prepare_mysql($this->get('Part Valid From')),
+			prepare_mysql(gmdate('Y-m-d H:i:s')),
+			prepare_mysql(gzcompress(json_encode($this->data), 9))
+
+		);
+		$this->db->exec($sql);
+
+
+
+
+		$sql=sprintf('delete from `Part Dimension`  where `Part SKU`=%d ',
+			$this->id
+		);
+		$this->db->exec($sql);
+
+
+		$history_data=array(
+			'History Abstract'=>sprintf(_("Part record %s deleted"), $this->data['Part Reference']),
+			'History Details'=>'',
+			'Action'=>'deleted'
+		);
+
+		$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
+
+
+
+
+		$this->deleted=true;
+
+
+		$sql=sprintf('select `Supplier Part Key` from `Supplier Part Dimension` where `Supplier Part Part SKU`=%d  ', $this->id);
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$supplier_part=get_object('Supplier Part', $row['Supplier Part Key']);
+				$supplier_part->delete();
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
 
 
 	}
@@ -4147,23 +3965,26 @@ class Part extends Asset{
 			$label=_('reference');
 			break;
 		case 'Part Unit Description':
-			$label=_('description');
+			$label=_('unit description');
+			break;
+		case 'Part Package Description':
+			$label=_('SKO description');
 			break;
 		case 'Store Product Price':
 			$label=_('Price');
 			break;
 
 		case 'Part Package Weight':
-			$label=_('weight');
+			$label=_('SKO weight');
 			break;
 		case 'Part Package Dimensions':
-			$label=_('dimensions');
+			$label=_('SKO dimensions');
 			break;
 		case 'Part Unit Weight':
-			$label=_('weight');
+			$label=_('unit weight');
 			break;
 		case 'Part Unit Dimensions':
-			$label=_('dimensions');
+			$label=_('unit dimensions');
 			break;
 		case 'Part Tariff Code':
 			$label=_('tariff code');
@@ -4189,7 +4010,7 @@ class Part extends Asset{
 		case 'Part Hazard Indentification Number':
 			$label=_('hazard indentification number');
 			break;
-		case 'Part Unit Materials':
+		case 'Part Materials':
 			$label=_('Materials/Ingredients');
 			break;
 		case 'Part Origin Country Code':

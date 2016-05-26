@@ -837,12 +837,13 @@ $modules=array(
 		'parent'=>'store',
 		'parent_type'=>'key',
 		'sections'=>array(
+			/*
 			'dashboard'=>array('type'=>'navigation', 'label'=>_('Dashboard'), 'title'=>_("Supplier's dashboard"), 'icon'=>'dashboard', 'reference'=>'suppliers/dashboard',
 				'tabs'=>array(
 					'suppliers.dashboard'=>array()
 				)
 			),
-
+            */
 			'suppliers'=>array(
 
 				'type'=>'navigation', 'label'=>_('Suppliers'), 'icon'=>'ship', 'reference'=>'suppliers',
@@ -945,6 +946,16 @@ $modules=array(
 				)
 
 			),
+
+			'deleted_supplier'=>array(
+				'type'=>'object',
+				'tabs'=>array(
+					'supplier.history'=>array('label'=>_('History'), 'icon'=>'history'),
+
+
+				)
+			),
+
 			'supplier_part'=>array('type'=>'object',
 				'subtabs_parent'=>array(
 
@@ -1563,13 +1574,25 @@ $modules=array(
 					'data_sets.attachments'=>array('label'=>_('Attachments')),
 				)
 			),
+			'uploads'=>array('type'=>'',
+				'tabs'=>array(
+					'data_sets.uploads'=>array('label'=>_('Uploads')),
+				)
+			),
 			'timeseries'=>array('type'=>'',
 				'tabs'=>array(
 					'timeseries'=>array('label'=>_('Timeseries')),
 				)
 			),
 
+			'upload'=>array('type'=>'object',
+				'tabs'=>array(
+					'upload.records'=>array('label'=>_('Records')),
 
+
+				)
+
+			),
 
 			'timeserie'=>array('type'=>'',
 

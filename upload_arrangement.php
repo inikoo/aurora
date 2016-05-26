@@ -11,14 +11,14 @@
 */
 
 require_once 'common.php';
+require_once 'utils/object_functions.php';
+
 require_once 'conf/object_fields.php';
 include_once 'utils/invalid_messages.php';
 
 require_once 'external_libs/PHPExcel/Classes/PHPExcel.php';
 require_once 'external_libs/PHPExcel/Classes/PHPExcel/IOFactory.php';
 require_once 'external_libs/PHPExcel/Classes/PHPExcel/Cell/AdvancedValueBinder.php';
-
-
 
 
 $creator='Aurora.systems';
@@ -31,24 +31,35 @@ $category='';
 $output_type='xls';
 
 if (!isset($_REQUEST['object']))exit();
-$object=$_REQUEST['object'];
+$object=get_object($_REQUEST['object'],0);
 
 
-
-switch ($object) {
-case 'employee':
+switch ($object->get_object_name()) {
+case 'Staff':
 	$filename=_('upload_employees');
+	$options=array();
 	break;
+case 'Part':
+
+	$filename=_('upload_part');
+	$options=array('new'=>true,'part_scope'=>true);
+	break;		
+case 'Supplier Part':
+
+	$filename=_('upload_supplier_part');
+	$supplier=get_object('Supplier',$_REQUEST['parent_key']);
+	$options=array('supplier'=>$supplier,'new'=>true,'supplier_part_scope'=>true);
+	break;	
 default:
-	exit;
+	exit('Object not defined '.$object->get_object_name());
 	break;
 }
 
-if (!$object_fields=get_object_fields($object, $db)) {
-	exit;
+if (!$object_fields=get_object_fields($object, $db, $user, $smarty, $options)) {
+	exit("Error. can't get object fields");
 }
 
-
+//print_r($object_fields);
 
 
 
@@ -81,7 +92,7 @@ foreach ($object_fields as $field_group) {
 	if (array_key_exists('fields', $field_group)) {
 		foreach ($field_group['fields'] as $field) {
 
-			if (array_key_exists('edit', $field)  and !array_key_exists('hidden', $field)     ) {
+			if (array_key_exists('edit', $field)  and !array_key_exists('hidden', $field)   and !( array_key_exists('render', $field)  and $field['render']==false)   ) {
 
 				$char=number2alpha($char_index);
 				$objPHPExcel->getActiveSheet()->setCellValue($char . $row_index, strip_tags($field['label']));

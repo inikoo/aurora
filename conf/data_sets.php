@@ -18,6 +18,9 @@ $data_sets=array(
 	array(
 		'Data Sets Code'=>'Images'
 	),
+array(
+		'Data Sets Code'=>'Uploads'
+	),
 
 
 	array(

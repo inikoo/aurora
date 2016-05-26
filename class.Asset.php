@@ -179,6 +179,10 @@ class Asset extends DB_Table{
 
 	function get_asset_common($key, $arg1='') {
 
+
+    if (!$this->id)
+			return;
+
 		switch ($key) {
 
 		case 'Stock Status Icon':

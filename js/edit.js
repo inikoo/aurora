@@ -55,12 +55,12 @@ function open_edit_field(object, key, field) {
         $('#' + field + '_save_button').removeClass('hide')
         break;
     case 'barcode':
-    
-    
-    if( $('#' + field + '_value').val()==''){
-    
-        $('#' + field + '_assign_available_barcode').removeClass('hide')
-}
+
+
+        if ($('#' + field + '_value').val() == '') {
+
+            $('#' + field + '_assign_available_barcode').removeClass('hide')
+        }
 
         $('#' + field).removeClass('hide')
         $('#' + field).focus()
@@ -1154,6 +1154,25 @@ function update_field(data) {
         $('#' + field + '_label').html(data.label)
     }
 
+    if (data.placeholder != undefined) {
+      
+    
+      $("#" + field).attr('placeholder',data.placeholder)
+    }
+
+
+ if (data.locked != undefined) {
+      
+        if(data.locked==1){
+         $("#" + field+'_validation').addClass('hide')
+         $("#" + field+'_locked_tag').removeClass('hide')
+        }else{
+           $("#" + field+'_validation').removeClass('hide')
+         $("#" + field+'_locked_tag').addClass('hide')
+        }
+     
+    }
+
 
     if (data.value != undefined) {
 
@@ -1278,7 +1297,7 @@ function update_address_fields(field, country_code, hide_recipient_fields) {
                 var field_data = data.fields[key]
 
                 field_tr.find('.label').html(field_data.label)
-//                console.log(field_data)
+                //                console.log(field_data)
                 if (field_data.required) {
 
 
@@ -1591,6 +1610,13 @@ function get_dropdown_select(dropdown_input, new_value) {
             clone.addClass('result').removeClass('hide')
             clone.attr('value', data.results[result_key].value)
             clone.attr('formatted_value', data.results[result_key].formatted_value)
+            
+            
+            //  console.log(data.results[result_key].metadata)
+            clone.data('metadata', data.results[result_key].metadata)
+          
+          
+          
             clone.attr('field', field)
             if (first) {
                 clone.addClass('selected')
@@ -1602,6 +1628,9 @@ function get_dropdown_select(dropdown_input, new_value) {
             clone.children(".label").html(data.results[result_key].description)
 
             $("#" + field + "_results").append(clone)
+            
+            
+            console.log($('#'+field + '_result_' + result_key).data('metadata'))
 
 
         }
@@ -1611,7 +1640,13 @@ function get_dropdown_select(dropdown_input, new_value) {
 
 }
 
-function select_dropdown_option(field, value, formatted_value) {
+function select_dropdown_option(element) {
+
+
+field=$(element).attr('field')
+value=$(element).attr('value')
+formatted_value=$(element).attr('formatted_value')
+metadata=$(element).data('metadata')
 
     $('#' + field + '_dropdown_select_label').val(formatted_value)
     $('#' + field).val(value)
@@ -1619,8 +1654,16 @@ function select_dropdown_option(field, value, formatted_value) {
 
     $('#' + field + '_results_container').addClass('hide').removeClass('show')
 
-}
 
+
+
+    if (metadata.other_fields) {
+        for (var key in metadata.other_fields) {
+            update_field(metadata.other_fields[key])
+        }
+    }
+
+}
 
 
 
@@ -1680,7 +1723,7 @@ function delete_object(element) {
 
         } else if (data.state == 400) {
             $(element).find('i.fa').addClass('fa-trash').remove('fa-spinner fa-spin')
- 
+
         }
 
 

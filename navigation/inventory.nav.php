@@ -850,23 +850,14 @@ function get_barcode_navigation($data, $smarty, $user, $db, $account) {
 
 }
 
+
 function get_deleted_barcode_navigation($data, $smarty, $user, $db, $account) {
 
 
-$_section='barcodes';
-
-
+	$_section='barcodes';
 	$object=$data['_object'];
-
 	$block_view=$data['section'];
-
-
-
 	$left_buttons=array();
-
-
-
-
 
 	$right_buttons=array();
 	$sections=get_sections('inventory');

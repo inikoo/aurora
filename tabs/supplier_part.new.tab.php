@@ -23,6 +23,21 @@ $smarty->assign('object', $state['_object']);
 $smarty->assign('object_name', $state['_object']->get_object_name());
 $smarty->assign('object_fields', $object_fields);
 
+
+$available_barcodes=0;
+$sql=sprintf("select count(*) as num from `Barcode Dimension` where `Barcode Status`='Available'");
+if ($result=$db->query($sql)) {
+	if ($row = $result->fetch()) {
+		$available_barcodes=$row['num'];
+	}
+}else {
+	print_r($error_info=$db->errorInfo());
+	exit;
+}
+
+$smarty->assign('available_barcodes', $available_barcodes);
+
+
 $html=$smarty->fetch('new_object.tpl');
 
 ?>

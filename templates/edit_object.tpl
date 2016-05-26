@@ -36,6 +36,10 @@
 	     <td class="label">{$field.label}</td>
 	     <td colspan="3" id="{$field.id}_directory" class="with_vertical_padding">{$field.formatted_value}</td>
 	     </tr>
+        {else if $class=='operation'}
+	     <tr id="{$field.id}_field" class="{if !$render}hide{/if} ">
+	     <td colspan="3" class="label">{$field.label}</td>
+	     </tr>
         {else}
         <tr id="{$field.id}_field" field="{$field.id}" class="{if $smarty.foreach.fields.last}last{/if} {if !$render}hide{/if}  {$class} "  {if $class=='new' and $field.reference!=''}onClick="change_view('{$field.reference}')"{/if} >
 		    <td id="{$field.id}_label" class="label" ><span>{$field.label}</span></td>

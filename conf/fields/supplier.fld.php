@@ -385,11 +385,11 @@ if (!$new) {
 			array(
 
 				'id'=>'delete_supplier',
-				'class'=>'new',
-				'value'=>'',
-				'label'=>'<i class="fa fa-lock button" style="margin-right:20px"></i> <span class="disabled">'._('Delete supplier').' <i class="fa fa-trash new_button link"></i></span>',
-				'reference'=>'',
-				'type'=>'ignore'
+						'class'=>'operation',
+						'value'=>'',
+						'label'=>'<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span onClick="delete_object(this)" class="delete_object disabled">'._("Delete supplier & supplier's parts").' <i class="fa fa-trash new_button link"></i></span>',
+						'reference'=>'',
+						'type'=>'operation'
 			),
 
 		)
@@ -399,6 +399,10 @@ if (!$new) {
 	$supplier_fields[]=$operations;
 }
 
+
+
+
+	
 
 
 $other_emails=$object->get_other_emails_data();
