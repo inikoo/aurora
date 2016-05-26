@@ -186,6 +186,10 @@ module.exports = function(grunt) {
                     expand: true,
                     src: ['conf/*.php'],
                     dest: 'build/fork/'
+                },{
+                    expand: true,
+                    src: ['conf/fields/*.php'],
+                    dest: 'build/fork/'
                 }, {
                     expand: true,
                     src: ['utils/*.php'],
@@ -229,7 +233,7 @@ module.exports = function(grunt) {
                 },
             },
              fork: {
-                files: ['fork/*.php','conf/*.php','utils/*','class.*.php','trait.*.php'],
+                files: ['fork/*.php','conf/*.php','conf/fields/*.php','utils/*','class.*.php','trait.*.php'],
                 tasks: ['copy:fork'],
                 options: {
                     spawn: false,

@@ -41,13 +41,12 @@ $smarty->assign('available_barcodes', $available_barcodes);
 
 $part=$state['_object']->part;
 
-$object_fields_part=get_object_fields($part, $db, $user, $smarty, array('supplier_part_scope'=>true));
 
 $smarty->assign('preferred_countries', '"'.join('", "', preferred_countries(
 			($part->get('Part Origin Country Code')==''?$account->get('Account Country 2 Alpha Code'):$part->get('Part Origin Country Code'))
 		)).'"');
 
-$smarty->assign('object_fields', array_merge($object_fields_supplier_part, $object_fields_part));
+$smarty->assign('object_fields',$object_fields_supplier_part);
 $smarty->assign('state', $state);
 
 $smarty->assign('js_code', 'js/injections/supplier_part_details.'.(_DEVEL?'':'min.').'js');

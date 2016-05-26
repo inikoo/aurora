@@ -689,50 +689,6 @@ $this->update_flag($match[2], $match[1], $value);
 	}
 
 
-	function create_part($data) {
-		$this->new_part=false;
-
-		$data['editor']=$this->editor;
-
-
-		if (!isset($data['Part From'])) {
-			$data['Part From']=gmdate('Y-m-d H:i:s');
-		}
-
-
-
-
-		$part= new Part('find', $data, 'create');
-
-		if ($part->id) {
-			$this->new_part_msg=$part->msg;
-
-			if ($part->new) {
-				$this->new_part=true;
-
-
-				$sql=sprintf("insert into `Part Warehouse Bridge` (`Part SKU`,`Warehouse Key`) values (%d,%d)", $part->sku, $this->id);
-
-				$this->db->exec($sql);
-
-				return $part;
-			} else {
-				$this->error=true;
-				if ($part->found) {
-					$this->msg=_('Duplicated part');
-				}else {
-					$this->msg='Error '.$part->msg;
-				}
-			}
-			return false;
-		}
-		else {
-			$this->error=true;
-			$this->msg='Error '.$part->msg;
-			return false;
-		}
-	}
-
 
 
 	function get_field_label($field) {

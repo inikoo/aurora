@@ -1772,7 +1772,7 @@ class Subject extends DB_Table {
 		case 'Invoice Address':
 		case 'Delivery Address':
 
-			return array(true, $this->data[$this->table_name.' '.$key.' Formatted']);
+			return array(true, $this->get($this->table_name.' '.$key.' Formatted'));
 			break;
 
 
@@ -1780,7 +1780,7 @@ class Subject extends DB_Table {
 		case 'Main Plain Mobile':
 		case 'Main Plain FAX':
 
-			return array(true, $this->data[$this->table_name.' '.preg_replace('/Plain/', 'XHTML', $key)]);
+			return array(true, $this->get($this->table_name.' '.preg_replace('/Plain/', 'XHTML', $key)));
 			break;
 
 		case('First Name'):

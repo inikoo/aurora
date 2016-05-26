@@ -546,6 +546,8 @@ function upload_objects($account, $db, $user, $editor, $data, $smarty) {
 			'user_key'=>$user->id
 		);
 
+		$upload->update(array('Upload Records'=>$number_records), 'no_history');
+
 		$upload_key=$upload->id;
 		list($fork_key, $msg)=new_fork('upload', $upload_data, $account->get('Account Code'), $db);
 

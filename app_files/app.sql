@@ -3,11 +3,6 @@
 -- Host: localhost    Database: aurora
 -- ------------------------------------------------------
 -- Server version	5.6.29
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -19,11 +14,10 @@
 -- Table structure for table `API Key Dimension`
 --
 
-DROP TABLE IF EXISTS `API Key Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `API Key Dimension` (
-  `API Key Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `API Key Key` mediumint(8) unsigned NOT NULL,
   `API Key Code` varchar(8) NOT NULL,
   `API Key Active` enum('Yes','No') NOT NULL DEFAULT 'Yes',
   `API Key User Key` mediumint(8) unsigned NOT NULL,
@@ -44,14 +38,13 @@ CREATE TABLE `API Key Dimension` (
   PRIMARY KEY (`API Key Key`),
   KEY `API Key User Key` (`API Key User Key`),
   KEY `API Key Code` (`API Key Code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `API Request Dimension`
 --
 
-DROP TABLE IF EXISTS `API Request Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `API Request Dimension` (
@@ -61,14 +54,13 @@ CREATE TABLE `API Request Dimension` (
   `Response` enum('OK','Fail_Attempt','Fail_Access','Fail_TimeLimit','Fail_Operation','Fail_IP') NOT NULL,
   `Response Code` varchar(8) NOT NULL,
   `IP` varchar(64) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Account Dimension`
 --
 
-DROP TABLE IF EXISTS `Account Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Account Dimension` (
@@ -99,14 +91,13 @@ CREATE TABLE `Account Dimension` (
   `Account Setup Metadata` text,
   PRIMARY KEY (`Account Key`),
   KEY `Account Currency` (`Account Currency`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Account History Bridge`
 --
 
-DROP TABLE IF EXISTS `Account History Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Account History Bridge` (
@@ -120,14 +111,13 @@ CREATE TABLE `Account History Bridge` (
   KEY `History Key` (`History Key`),
   KEY `Deletable` (`Deletable`),
   KEY `Type` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Address Bridge`
 --
 
-DROP TABLE IF EXISTS `Address Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Address Bridge` (
@@ -143,18 +133,17 @@ CREATE TABLE `Address Bridge` (
   KEY `FK` (`Subject Key`),
   KEY `Is Active` (`Is Active`),
   KEY `Is Main` (`Is Main`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Address Dimension`
 --
 
-DROP TABLE IF EXISTS `Address Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Address Dimension` (
-  `Address Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Address Key` mediumint(8) unsigned NOT NULL,
   `Address Description` varchar(255) NOT NULL,
   `Address Street Number` varchar(255) DEFAULT NULL,
   `Address Street Number Position` enum('Left','Right') NOT NULL DEFAULT 'Left',
@@ -187,7 +176,7 @@ CREATE TABLE `Address Dimension` (
   `Address Fuzzy Type` enum('All','Country','World Region','Town','Street','Post Code') DEFAULT NULL,
   `Address Location` varchar(255) DEFAULT NULL,
   `Address Data Creation` datetime NOT NULL,
-  `Address Data Last Update` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `Address Data Last Update` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `Military Address` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Military Installation Address` varchar(255) DEFAULT NULL,
   `Military Installation Name` varchar(255) DEFAULT NULL,
@@ -215,32 +204,85 @@ CREATE TABLE `Address Dimension` (
   KEY `Address World Region` (`Address World Region`(64)),
   KEY `Address Main Telephone Key` (`Address Main Telephone Key`),
   KEY `Address Main FAX Key` (`Address Main FAX Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Address Telecom Bridge`
 --
 
-DROP TABLE IF EXISTS `Address Telecom Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Address Telecom Bridge` (
   `Address Key` mediumint(8) unsigned NOT NULL,
   `Telecom Key` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`Address Key`,`Telecom Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Agent History Bridge`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Agent History Bridge` (
+  `Agent Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes','Asset') NOT NULL,
+  PRIMARY KEY (`Agent Key`,`History Key`),
+  KEY `Agent Key` (`Agent Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `History Key` (`History Key`),
+  KEY `Type` (`Type`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Agent Other Email Dimension`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Agent Other Email Dimension` (
+  `Agent Other Email Key` mediumint(8) unsigned NOT NULL,
+  `Agent Other Email Agent Key` mediumint(8) unsigned NOT NULL,
+  `Agent Other Email Email` varchar(255) NOT NULL,
+  `Agent Other Email Label` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`Agent Other Email Key`),
+  KEY `Agent Other Email Agent Key` (`Agent Other Email Agent Key`,`Agent Other Email Email`),
+  KEY `Agent Other Email Email` (`Agent Other Email Email`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Agent Other Telephone Dimension`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Agent Other Telephone Dimension` (
+  `Agent Other Telephone Key` mediumint(8) unsigned NOT NULL,
+  `Agent Other Telephone Agent Key` mediumint(8) unsigned NOT NULL,
+  `Agent Other Telephone Number` varchar(255) NOT NULL,
+  `Agent Other Telephone Formatted Number` varchar(255) NOT NULL,
+  `Agent Other Telephone Label` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`Agent Other Telephone Key`),
+  KEY `Agent Other Telephone Agent Key` (`Agent Other Telephone Agent Key`,`Agent Other Telephone Number`),
+  KEY `Agent Other Telephone Number` (`Agent Other Telephone Number`)
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Attachment Bridge`
 --
 
-DROP TABLE IF EXISTS `Attachment Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Attachment Bridge` (
-  `Attachment Bridge Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Attachment Bridge Key` mediumint(8) unsigned NOT NULL,
   `Attachment Key` mediumint(8) unsigned NOT NULL,
   `Subject` enum('Staff','Customer Communications','Customer History Attachment','Product History Attachment','Part History Attachment','Part MSDS','Product MSDS','Supplier Product MSDS','Product Info Sheet','Purchase Order History Attachment','Purchase Order','Supplier Delivery Note History Attachment','Supplier Delivery Note','Supplier Invoice History Attachment','Supplier Invoice','Order Note History Attachment','Delivery Note History Attachment','Invoice History Attachment') NOT NULL,
   `Subject Key` int(10) unsigned NOT NULL,
@@ -253,14 +295,13 @@ CREATE TABLE `Attachment Bridge` (
   KEY `Attachment Key` (`Attachment Key`),
   KEY `Subject` (`Subject`,`Subject Key`),
   KEY `Attachment Public` (`Attachment Public`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Attachment Bridge History Bridge`
 --
 
-DROP TABLE IF EXISTS `Attachment Bridge History Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Attachment Bridge History Bridge` (
@@ -274,18 +315,17 @@ CREATE TABLE `Attachment Bridge History Bridge` (
   KEY `Attachment Bridge Key_2` (`Attachment Bridge Key`),
   KEY `History Key` (`History Key`),
   KEY `Type` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Attachment Dimension`
 --
 
-DROP TABLE IF EXISTS `Attachment Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Attachment Dimension` (
-  `Attachment Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Attachment Key` mediumint(8) unsigned NOT NULL,
   `Attachment MIME Type` varchar(255) NOT NULL,
   `Attachment Type` enum('PDF','Image','Compresed','Spreadsheet','Text','Word','Other') NOT NULL DEFAULT 'Other',
   `Attachment Data` longblob NOT NULL,
@@ -294,18 +334,17 @@ CREATE TABLE `Attachment Dimension` (
   `Attachment Thumbnail Image Key` mediumint(8) unsigned DEFAULT NULL,
   PRIMARY KEY (`Attachment Key`),
   UNIQUE KEY `Attachment Checksum` (`Attachment File Checksum`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Audit Dimension`
 --
 
-DROP TABLE IF EXISTS `Audit Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Audit Dimension` (
-  `Data Audit Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Data Audit Key` mediumint(8) unsigned NOT NULL,
   `Data Audit Error Free ETL` enum('Yes','No') NOT NULL,
   `Data Audit Missing Data` enum('Yes','No') NOT NULL,
   `Data Audit ETL Description` text NOT NULL,
@@ -314,18 +353,89 @@ CREATE TABLE `Audit Dimension` (
   `Data Audit ETL Software` varchar(1024) NOT NULL COMMENT 'Staging Extract-Transformation-load (ETL) software',
   `Data Source` varchar(255) NOT NULL,
   PRIMARY KEY (`Data Audit Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Barcode Asset Bridge`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Barcode Asset Bridge` (
+  `Barcode Asset Barcode Key` mediumint(9) DEFAULT NULL,
+  `Barcode Asset Status` enum('Assigned','Historic') NOT NULL DEFAULT 'Assigned',
+  `Barcode Asset Type` enum('Product','Part') DEFAULT NULL,
+  `Barcode Asset Key` mediumint(9) DEFAULT NULL,
+  `Barcode Asset Assigned Date` datetime DEFAULT NULL,
+  `Barcode Asset Withdrawn Date` datetime DEFAULT NULL,
+  KEY `Barcode Asset Status` (`Barcode Asset Status`),
+  KEY `Barcode Asset Type` (`Barcode Asset Type`,`Barcode Asset Key`,`Barcode Asset Status`,`Barcode Asset Barcode Key`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Barcode Deleted Dimension`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Barcode Deleted Dimension` (
+  `Barcode Deleted Key` mediumint(9) NOT NULL,
+  `Barcode Deleted Type` enum('EAN') NOT NULL DEFAULT 'EAN',
+  `Barcode Deleted Number` bigint(20) unsigned NOT NULL,
+  `Barcode Deleted Sticky Note` text,
+  PRIMARY KEY (`Barcode Deleted Key`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Barcode Dimension`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Barcode Dimension` (
+  `Barcode Key` mediumint(9) NOT NULL,
+  `Barcode Status` enum('Available','Used','Reserved') NOT NULL DEFAULT 'Available',
+  `Barcode Type` enum('EAN') NOT NULL DEFAULT 'EAN',
+  `Barcode Number` bigint(20) unsigned NOT NULL,
+  `Barcode Used From` datetime DEFAULT NULL,
+  `Barcode Sticky Note` text,
+  PRIMARY KEY (`Barcode Key`),
+  UNIQUE KEY `Barcode Number` (`Barcode Number`),
+  KEY `Barcode Status` (`Barcode Status`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Barcode History Bridge`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Barcode History Bridge` (
+  `Barcode Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes','Asset') NOT NULL,
+  PRIMARY KEY (`Barcode Key`,`History Key`),
+  KEY `Barcode Key` (`Barcode Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `History Key` (`History Key`),
+  KEY `Type` (`Type`)
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Billing To Dimension`
 --
 
-DROP TABLE IF EXISTS `Billing To Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Billing To Dimension` (
-  `Billing To Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Billing To Key` mediumint(8) unsigned NOT NULL,
   `Billing To Contact Name` varchar(255) DEFAULT NULL,
   `Billing To Company Name` varchar(255) DEFAULT NULL,
   `Billing To Line 1` varchar(255) NOT NULL,
@@ -346,18 +456,17 @@ CREATE TABLE `Billing To Dimension` (
   KEY `Billing To Country Code` (`Billing To Country Code`),
   KEY `Billing To Country 2 Alpha Code` (`Billing To Country 2 Alpha Code`),
   KEY `Billing To Postal Code` (`Billing To Postal Code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Campaign Deal Schema`
 --
 
-DROP TABLE IF EXISTS `Campaign Deal Schema`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Campaign Deal Schema` (
-  `Deal Schema Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Deal Schema Key` mediumint(8) unsigned NOT NULL,
   `Campaign Key` mediumint(8) unsigned NOT NULL,
   `Deal Name` varchar(255) NOT NULL,
   `Deal Trigger` enum('Product','Order','Family') NOT NULL,
@@ -371,14 +480,13 @@ CREATE TABLE `Campaign Deal Schema` (
   PRIMARY KEY (`Deal Schema Key`),
   KEY `Campaign Key` (`Campaign Key`),
   KEY `Deal Name` (`Deal Name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Category Bridge`
 --
 
-DROP TABLE IF EXISTS `Category Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Category Bridge` (
@@ -391,18 +499,17 @@ CREATE TABLE `Category Bridge` (
   KEY `Subject` (`Subject`),
   KEY `Subject Key` (`Subject Key`),
   KEY `Category Head Key` (`Category Head Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Category Deleted Dimension`
 --
 
-DROP TABLE IF EXISTS `Category Deleted Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Category Deleted Dimension` (
-  `Category Deleted Key` smallint(11) unsigned NOT NULL AUTO_INCREMENT,
+  `Category Deleted Key` smallint(11) unsigned NOT NULL,
   `Category Deleted Branch Type` enum('Root','Head','Node') NOT NULL DEFAULT 'Node',
   `Category Deleted Store Key` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Category Deleted Warehouse Key` smallint(5) unsigned NOT NULL DEFAULT '0',
@@ -422,18 +529,17 @@ CREATE TABLE `Category Deleted Dimension` (
   KEY `Category Deleted Store Key` (`Category Deleted Store Key`),
   KEY `Category Deleted Warehouse Key` (`Category Deleted Warehouse Key`),
   KEY `Category Deleted Branch Type` (`Category Deleted Branch Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Category Dimension`
 --
 
-DROP TABLE IF EXISTS `Category Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Category Dimension` (
-  `Category Key` smallint(11) unsigned NOT NULL AUTO_INCREMENT,
+  `Category Key` smallint(11) unsigned NOT NULL,
   `Category Branch Type` enum('Root','Head','Node') NOT NULL DEFAULT 'Node',
   `Category Subject Multiplicity` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Category Can Have Other` enum('Yes','No') NOT NULL DEFAULT 'Yes',
@@ -479,14 +585,13 @@ CREATE TABLE `Category Dimension` (
   KEY `Category Locked` (`Category Locked`),
   KEY `Category Name` (`Category Code`(20)),
   KEY `Category Scope` (`Category Scope`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Category History Bridge`
 --
 
-DROP TABLE IF EXISTS `Category History Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Category History Bridge` (
@@ -500,18 +605,17 @@ CREATE TABLE `Category History Bridge` (
   KEY `History Key` (`History Key`),
   KEY `Deletable` (`Deletable`),
   KEY `Type` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Charge Dimension`
 --
 
-DROP TABLE IF EXISTS `Charge Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Charge Dimension` (
-  `Charge Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Charge Key` mediumint(8) unsigned NOT NULL,
   `Charge Name` varchar(256) NOT NULL,
   `Store Key` mediumint(8) unsigned NOT NULL,
   `Charge Trigger` enum('Product','Order') DEFAULT NULL,
@@ -531,49 +635,46 @@ CREATE TABLE `Charge Dimension` (
   KEY `z` (`Charge Type`),
   KEY `Charge Active` (`Charge Active`),
   KEY `Store Key` (`Store Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Comment Dimension`
 --
 
-DROP TABLE IF EXISTS `Comment Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Comment Dimension` (
-  `Comment Key` mediumint(10) NOT NULL AUTO_INCREMENT,
+  `Comment Key` mediumint(10) NOT NULL,
   `Name` varchar(255) NOT NULL,
   `Email` varchar(200) NOT NULL,
   `Comment` text NOT NULL,
   `Date Added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`Comment Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Company Area Department Bridge`
 --
 
-DROP TABLE IF EXISTS `Company Area Department Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Company Area Department Bridge` (
   `Area Key` smallint(5) unsigned NOT NULL,
   `Department Key` smallint(5) unsigned NOT NULL,
   PRIMARY KEY (`Area Key`,`Department Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Company Area Dimension`
 --
 
-DROP TABLE IF EXISTS `Company Area Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Company Area Dimension` (
-  `Company Area Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Company Area Key` mediumint(8) unsigned NOT NULL,
   `Company Key` mediumint(8) unsigned NOT NULL,
   `Company Area Code` varchar(255) DEFAULT NULL,
   `Company Area Name` varchar(255) DEFAULT NULL,
@@ -582,14 +683,13 @@ CREATE TABLE `Company Area Dimension` (
   `Company Area Number Positions` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Company Area Number Employees` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Company Area Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Company Bridge`
 --
 
-DROP TABLE IF EXISTS `Company Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Company Bridge` (
@@ -603,18 +703,17 @@ CREATE TABLE `Company Bridge` (
   KEY `Subject Key` (`Subject Key`),
   KEY `Subject Type` (`Subject Type`),
   KEY `Company Key_2` (`Company Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Company Department Dimension`
 --
 
-DROP TABLE IF EXISTS `Company Department Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Company Department Dimension` (
-  `Company Department Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Company Department Key` mediumint(8) unsigned NOT NULL,
   `Company Key` mediumint(8) unsigned NOT NULL,
   `Company Department Code` varchar(255) DEFAULT NULL,
   `Company Department Name` varchar(255) DEFAULT NULL,
@@ -622,31 +721,29 @@ CREATE TABLE `Company Department Dimension` (
   `Company Department Number Positions` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Company Department Number Employees` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Company Department Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Company Department Position Bridge`
 --
 
-DROP TABLE IF EXISTS `Company Department Position Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Company Department Position Bridge` (
   `Department Key` smallint(5) unsigned NOT NULL,
   `Position Key` smallint(5) unsigned NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Company Dimension`
 --
 
-DROP TABLE IF EXISTS `Company Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Company Dimension` (
-  `Company Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT COMMENT '(PK)',
+  `Company Key` mediumint(8) unsigned NOT NULL COMMENT '(PK)',
   `Company Name` varchar(255) DEFAULT NULL,
   `Company File As` varchar(255) DEFAULT NULL,
   `Company Fiscal Name` varchar(255) DEFAULT NULL,
@@ -690,14 +787,13 @@ CREATE TABLE `Company Dimension` (
   KEY `Company Main Telephone Key` (`Company Main Telephone Key`),
   KEY `Company Main FAX Key` (`Company Main FAX Key`),
   KEY `Company Main Address Key` (`Company Main Address Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Company Old ID Bridge`
 --
 
-DROP TABLE IF EXISTS `Company Old ID Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Company Old ID Bridge` (
@@ -706,45 +802,42 @@ CREATE TABLE `Company Old ID Bridge` (
   PRIMARY KEY (`Company Key`,`Company Old ID`),
   KEY `Company Key` (`Company Key`),
   KEY `Company Old ID` (`Company Old ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Company Position Dimension`
 --
 
-DROP TABLE IF EXISTS `Company Position Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Company Position Dimension` (
-  `Company Position Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Company Position Key` mediumint(8) unsigned NOT NULL,
   `Company Position Code` varchar(255) DEFAULT NULL,
   `Company Position Title` varchar(255) DEFAULT NULL,
   `Company Position Description` text,
   `Company Position Employees` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Company Position Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Company Position Staff Bridge`
 --
 
-DROP TABLE IF EXISTS `Company Position Staff Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Company Position Staff Bridge` (
   `Position Key` mediumint(8) unsigned NOT NULL,
   `Staff Key` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`Position Key`,`Staff Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Company Web Site Bridge`
 --
 
-DROP TABLE IF EXISTS `Company Web Site Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Company Web Site Bridge` (
@@ -752,26 +845,24 @@ CREATE TABLE `Company Web Site Bridge` (
   `Company Key` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`Company Key`),
   KEY `Page Key` (`Page Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Configuration Dimension`
 --
 
-DROP TABLE IF EXISTS `Configuration Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Configuration Dimension` (
   `Public Path` varchar(1024) CHARACTER SET latin1 NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Contact Bridge`
 --
 
-DROP TABLE IF EXISTS `Contact Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Contact Bridge` (
@@ -785,18 +876,17 @@ CREATE TABLE `Contact Bridge` (
   KEY `Subject Key` (`Subject Key`),
   KEY `Subject Type` (`Subject Type`),
   KEY `Contact Key_2` (`Contact Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Contact Dimension`
 --
 
-DROP TABLE IF EXISTS `Contact Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Contact Dimension` (
-  `Contact Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT COMMENT '(PK)',
+  `Contact Key` mediumint(8) unsigned NOT NULL COMMENT '(PK)',
   `Contact Tax Number` varchar(256) NOT NULL,
   `Contact Identification Number` varchar(256) NOT NULL DEFAULT '',
   `Contact Salutation` varchar(255) DEFAULT NULL,
@@ -852,14 +942,13 @@ CREATE TABLE `Contact Dimension` (
   KEY `Contact Main Email` (`Contact Main Plain Email`(8)),
   KEY `Contact Surname` (`Contact Surname`(128)),
   KEY `Contact First Name` (`Contact First Name`(128))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Personal Contact Information';
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Contact Old ID Bridge`
 --
 
-DROP TABLE IF EXISTS `Contact Old ID Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Contact Old ID Bridge` (
@@ -868,33 +957,31 @@ CREATE TABLE `Contact Old ID Bridge` (
   PRIMARY KEY (`Contact Key`,`Contact Old ID`),
   KEY `Contact Key` (`Contact Key`),
   KEY `Contact Old ID` (`Contact Old ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Contract Terms Dimension`
 --
 
-DROP TABLE IF EXISTS `Contract Terms Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Contract Terms Dimension` (
-  `Contract Terms Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Contract Terms Key` mediumint(8) unsigned NOT NULL,
   `Contract Text` text NOT NULL,
   PRIMARY KEY (`Contract Terms Key`),
   FULLTEXT KEY `Contract Text` (`Contract Text`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Custom Field Dimension`
 --
 
-DROP TABLE IF EXISTS `Custom Field Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Custom Field Dimension` (
-  `Custom Field Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Custom Field Key` mediumint(8) unsigned NOT NULL,
   `Custom Field Table` varchar(30) NOT NULL,
   `Custom Field Name` varchar(30) NOT NULL,
   `Custom Field Type` enum('Mediumint','Text','Longtext','Enum') NOT NULL,
@@ -910,14 +997,13 @@ CREATE TABLE `Custom Field Dimension` (
   KEY `Custom Field In Profile` (`Custom Field In Profile`),
   KEY `Custom Field Table` (`Custom Field Table`),
   KEY `Custom Field In Registration` (`Custom Field In Registration`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Customer Billing To Bridge`
 --
 
-DROP TABLE IF EXISTS `Customer Billing To Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Customer Billing To Bridge` (
@@ -930,14 +1016,13 @@ CREATE TABLE `Customer Billing To Bridge` (
   `Billing To Last Used` datetime DEFAULT NULL,
   `Billing To Current Key` mediumint(8) unsigned DEFAULT NULL,
   PRIMARY KEY (`Customer Key`,`Billing To Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Customer Category History Bridge`
 --
 
-DROP TABLE IF EXISTS `Customer Category History Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Customer Category History Bridge` (
@@ -947,14 +1032,13 @@ CREATE TABLE `Customer Category History Bridge` (
   `Type` enum('Changes','Assign') NOT NULL,
   UNIQUE KEY `Store Key` (`Store Key`,`Category Key`,`History Key`),
   KEY `Type` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Customer Correlation`
 --
 
-DROP TABLE IF EXISTS `Customer Correlation`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Customer Correlation` (
@@ -970,18 +1054,17 @@ CREATE TABLE `Customer Correlation` (
   KEY `Customer B` (`Customer B Key`),
   KEY `Customer Name B` (`Customer B Name`(8)),
   KEY `Customer Name A` (`Customer A Name`(8))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Customer Credit Card Token Dimension`
 --
 
-DROP TABLE IF EXISTS `Customer Credit Card Token Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Customer Credit Card Token Dimension` (
-  `Customer Credit Card Token Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Customer Credit Card Token Key` mediumint(8) unsigned NOT NULL,
   `Customer Key` mediumint(8) unsigned NOT NULL,
   `Billing To Key` mediumint(8) unsigned NOT NULL,
   `Ship To Key` mediumint(8) unsigned NOT NULL,
@@ -992,29 +1075,27 @@ CREATE TABLE `Customer Credit Card Token Dimension` (
   `Created` datetime NOT NULL,
   `Updated` datetime NOT NULL,
   PRIMARY KEY (`Customer Credit Card Token Key`),
-  UNIQUE KEY `Token` (`Customer Key`,`Billing To Key`,`Ship To Key`,`CCUI`(64)) USING BTREE,
+  UNIQUE KEY `Token` (`Customer Key`,`Billing To Key`,`Ship To Key`,`CCUI`(64)),
   KEY `Valid Until` (`Valid Until`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Customer Custom Field Dimension`
 --
 
-DROP TABLE IF EXISTS `Customer Custom Field Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Customer Custom Field Dimension` (
   `Customer Key` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`Customer Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Customer Deleted Dimension`
 --
 
-DROP TABLE IF EXISTS `Customer Deleted Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Customer Deleted Dimension` (
@@ -1027,18 +1108,17 @@ CREATE TABLE `Customer Deleted Dimension` (
   `Customer Deleted Date` datetime NOT NULL,
   `Customer Deleted Note` text NOT NULL,
   PRIMARY KEY (`Customer Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Customer Dimension`
 --
 
-DROP TABLE IF EXISTS `Customer Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Customer Dimension` (
-  `Customer Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Customer Key` mediumint(8) unsigned NOT NULL,
   `Customer Store Key` smallint(5) unsigned NOT NULL DEFAULT '1',
   `Customer Level Type` enum('Normal','VIP','Partner','Staff') NOT NULL DEFAULT 'Normal',
   `Customer Main Contact Key` mediumint(8) unsigned DEFAULT NULL,
@@ -1067,7 +1147,7 @@ CREATE TABLE `Customer Dimension` (
   `Customer Contact Address Dependent Locality` varchar(255) DEFAULT NULL,
   `Customer Contact Address Locality` varchar(255) DEFAULT NULL,
   `Customer Contact Address Administrative Area` varchar(255) DEFAULT NULL,
-  `Customer Contact Address Country 2 Alpha Code` varchar(255) DEFAULT NULL,
+  `Customer Contact Address Country 2 Alpha Code` varchar(2) DEFAULT NULL,
   `Customer Contact Address Checksum` varchar(64) DEFAULT NULL,
   `Customer Contact Address Formatted` text,
   `Customer Contact Address Postal Label` text,
@@ -1080,7 +1160,7 @@ CREATE TABLE `Customer Dimension` (
   `Customer Invoice Address Dependent Locality` varchar(255) DEFAULT NULL,
   `Customer Invoice Address Locality` varchar(255) DEFAULT NULL,
   `Customer Invoice Address Administrative Area` varchar(255) DEFAULT NULL,
-  `Customer Invoice Address Country 2 Alpha Code` varchar(255) DEFAULT NULL,
+  `Customer Invoice Address Country 2 Alpha Code` varchar(2) DEFAULT NULL,
   `Customer Invoice Address Checksum` varchar(64) DEFAULT NULL,
   `Customer Invoice Address Formatted` text,
   `Customer Invoice Address Postal Label` text,
@@ -1093,7 +1173,7 @@ CREATE TABLE `Customer Dimension` (
   `Customer Delivery Address Dependent Locality` varchar(255) DEFAULT NULL,
   `Customer Delivery Address Locality` varchar(255) DEFAULT NULL,
   `Customer Delivery Address Administrative Area` varchar(255) DEFAULT NULL,
-  `Customer Delivery Address Country 2 Alpha Code` varchar(255) DEFAULT NULL,
+  `Customer Delivery Address Country 2 Alpha Code` varchar(2) DEFAULT NULL,
   `Customer Delivery Address Checksum` varchar(64) DEFAULT NULL,
   `Customer Delivery Address Formatted` text,
   `Customer Delivery Address Postal Label` text,
@@ -1265,18 +1345,17 @@ CREATE TABLE `Customer Dimension` (
   KEY `Customer Last Dispatched Order Date` (`Customer Last Invoiced Dispatched Date`),
   KEY `Customer Billing Address Key` (`Customer Billing Address Key`),
   KEY `Customer Tax Number` (`Customer Tax Number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Customer Favorite Product Bridge`
 --
 
-DROP TABLE IF EXISTS `Customer Favorite Product Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Customer Favorite Product Bridge` (
-  `Customer Favorite Product Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Customer Favorite Product Key` mediumint(8) unsigned NOT NULL,
   `Customer Key` mediumint(8) unsigned NOT NULL,
   `Product ID` mediumint(8) unsigned NOT NULL,
   `Site Key` smallint(5) unsigned NOT NULL,
@@ -1285,15 +1364,14 @@ CREATE TABLE `Customer Favorite Product Bridge` (
   `Family Key` smallint(5) unsigned NOT NULL,
   `Date Created` datetime NOT NULL,
   PRIMARY KEY (`Customer Favorite Product Key`),
-  UNIQUE KEY `Customer Key` (`Customer Key`,`Product ID`,`Site Key`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  UNIQUE KEY `Customer Key` (`Customer Key`,`Product ID`,`Site Key`)
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Customer History Bridge`
 --
 
-DROP TABLE IF EXISTS `Customer History Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Customer History Bridge` (
@@ -1307,31 +1385,29 @@ CREATE TABLE `Customer History Bridge` (
   KEY `History Key` (`History Key`),
   KEY `Deletable` (`Deletable`),
   KEY `Type` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Customer Import Metadata`
 --
 
-DROP TABLE IF EXISTS `Customer Import Metadata`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Customer Import Metadata` (
-  `Customer Import Metadata Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Customer Import Metadata Key` mediumint(8) unsigned NOT NULL,
   `Metadata` varchar(15) NOT NULL,
   `Import Date` datetime NOT NULL,
   PRIMARY KEY (`Customer Import Metadata Key`),
   KEY `Metadata` (`Metadata`),
   KEY `Import Date` (`Import Date`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Customer Merge Bridge`
 --
 
-DROP TABLE IF EXISTS `Customer Merge Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Customer Merge Bridge` (
@@ -1340,32 +1416,30 @@ CREATE TABLE `Customer Merge Bridge` (
   `Date Merged` datetime DEFAULT NULL,
   PRIMARY KEY (`Merged Customer Key`,`Customer Key`),
   KEY `Date Merged` (`Date Merged`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Customer No Correlated Bridge`
 --
 
-DROP TABLE IF EXISTS `Customer No Correlated Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Customer No Correlated Bridge` (
   `Customer A Key` mediumint(8) unsigned NOT NULL,
   `Customer B Key` mediumint(8) unsigned NOT NULL,
   UNIQUE KEY `Customer A Key` (`Customer A Key`,`Customer B Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Customer Other Delivery Address Dimension`
 --
 
-DROP TABLE IF EXISTS `Customer Other Delivery Address Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Customer Other Delivery Address Dimension` (
-  `Customer Other Delivery Address Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Customer Other Delivery Address Key` mediumint(8) unsigned NOT NULL,
   `Customer Other Delivery Address Store Key` mediumint(8) unsigned NOT NULL,
   `Customer Other Delivery Address Customer Key` mediumint(8) unsigned NOT NULL,
   `Customer Other Delivery Address Recipient` varchar(255) NOT NULL DEFAULT '',
@@ -1385,59 +1459,56 @@ CREATE TABLE `Customer Other Delivery Address Dimension` (
   PRIMARY KEY (`Customer Other Delivery Address Key`),
   KEY `Customer Other Delivery Address Customer Key` (`Customer Other Delivery Address Customer Key`),
   KEY `Customer Other Delivery Address Store Key` (`Customer Other Delivery Address Store Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Customer Other Email Dimension`
 --
 
-DROP TABLE IF EXISTS `Customer Other Email Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Customer Other Email Dimension` (
-  `Customer Other Email Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Customer Other Email Key` mediumint(8) unsigned NOT NULL,
   `Customer Other Email Store Key` mediumint(8) unsigned NOT NULL,
   `Customer Other Email Customer Key` mediumint(8) unsigned NOT NULL,
   `Customer Other Email Email` varchar(255) NOT NULL,
   `Customer Other Email Label` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Customer Other Email Key`),
-  KEY `Customer Other Email Customer Key` (`Customer Other Email Customer Key`,`Customer Other Email Email`) USING BTREE,
+  KEY `Customer Other Email Customer Key` (`Customer Other Email Customer Key`,`Customer Other Email Email`),
   KEY `Customer Other Email Store Key` (`Customer Other Email Store Key`),
   KEY `Customer Other Email Email` (`Customer Other Email Email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Customer Other Telephone Dimension`
 --
 
-DROP TABLE IF EXISTS `Customer Other Telephone Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Customer Other Telephone Dimension` (
-  `Customer Other Telephone Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Customer Other Telephone Key` mediumint(8) unsigned NOT NULL,
   `Customer Other Telephone Store Key` mediumint(8) unsigned NOT NULL,
   `Customer Other Telephone Customer Key` mediumint(8) unsigned NOT NULL,
   `Customer Other Telephone Number` varchar(255) NOT NULL,
   `Customer Other Telephone Formatted Number` varchar(255) NOT NULL,
   `Customer Other Telephone Label` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Customer Other Telephone Key`),
-  KEY `Customer Other Telephone Customer Key` (`Customer Other Telephone Customer Key`,`Customer Other Telephone Number`) USING BTREE,
+  KEY `Customer Other Telephone Customer Key` (`Customer Other Telephone Customer Key`,`Customer Other Telephone Number`),
   KEY `Customer Other Telephone Store Key` (`Customer Other Telephone Store Key`),
   KEY `Customer Other Telephone Number` (`Customer Other Telephone Number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Customer Send Post`
 --
 
-DROP TABLE IF EXISTS `Customer Send Post`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Customer Send Post` (
-  `Customer Send Post Key` mediumint(11) NOT NULL AUTO_INCREMENT,
+  `Customer Send Post Key` mediumint(11) NOT NULL,
   `Customer Key` mediumint(11) NOT NULL,
   `Send Post Status` enum('To Send','Send','Cancelled') NOT NULL,
   `Date Creation` datetime NOT NULL,
@@ -1445,14 +1516,13 @@ CREATE TABLE `Customer Send Post` (
   `Post Type` enum('Catalogue','Advert','Letter') NOT NULL,
   PRIMARY KEY (`Customer Send Post Key`),
   KEY `Customer Key` (`Customer Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Customer Ship To Bridge`
 --
 
-DROP TABLE IF EXISTS `Customer Ship To Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Customer Ship To Bridge` (
@@ -1465,18 +1535,17 @@ CREATE TABLE `Customer Ship To Bridge` (
   `Ship To Last Used` datetime DEFAULT NULL,
   `Ship To Current Key` mediumint(8) unsigned DEFAULT NULL,
   PRIMARY KEY (`Customer Key`,`Ship To Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Dashboard Dimension`
 --
 
-DROP TABLE IF EXISTS `Dashboard Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Dashboard Dimension` (
-  `Dashboard Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Dashboard Key` mediumint(8) unsigned NOT NULL,
   `User key` mediumint(8) unsigned NOT NULL,
   `Dashboard Order` mediumint(8) unsigned NOT NULL DEFAULT '1',
   `Dashboard Default` enum('Yes','No') NOT NULL DEFAULT 'Yes',
@@ -1484,18 +1553,17 @@ CREATE TABLE `Dashboard Dimension` (
   KEY `User key` (`User key`),
   KEY `Dashboard Order` (`Dashboard Order`),
   KEY `Dashboard Default` (`Dashboard Default`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Dashboard Widget Bridge`
 --
 
-DROP TABLE IF EXISTS `Dashboard Widget Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Dashboard Widget Bridge` (
-  `Dashboard Widget Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Dashboard Widget Key` mediumint(8) unsigned NOT NULL,
   `Dashboard Key` smallint(5) unsigned NOT NULL,
   `Widget Key` mediumint(8) unsigned NOT NULL,
   `Dashboard Widget Order` float unsigned NOT NULL DEFAULT '1',
@@ -1504,36 +1572,34 @@ CREATE TABLE `Dashboard Widget Bridge` (
   PRIMARY KEY (`Dashboard Widget Key`),
   KEY `Widget Key` (`Widget Key`),
   KEY `Dashboard Key` (`Dashboard Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Data Sets Dimension`
 --
 
-DROP TABLE IF EXISTS `Data Sets Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Data Sets Dimension` (
-  `Data Sets Key` smallint(6) NOT NULL AUTO_INCREMENT,
+  `Data Sets Key` smallint(6) NOT NULL,
   `Data Sets Code` varchar(64) NOT NULL,
   `Data Sets Number Sets` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Data Sets Number Items` int(10) unsigned NOT NULL DEFAULT '0',
   `Data Sets Size` double unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Data Sets Key`),
   UNIQUE KEY `Data Sets Code` (`Data Sets Code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Deal Campaign Dimension`
 --
 
-DROP TABLE IF EXISTS `Deal Campaign Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Deal Campaign Dimension` (
-  `Deal Campaign Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Deal Campaign Key` mediumint(8) unsigned NOT NULL,
   `Deal Campaign Status` enum('Suspended','Active','Finish','Waiting') NOT NULL DEFAULT 'Waiting',
   `Deal Campaign Name` varchar(50) NOT NULL,
   `Deal Campaign Description` text NOT NULL,
@@ -1548,14 +1614,33 @@ CREATE TABLE `Deal Campaign Dimension` (
   PRIMARY KEY (`Deal Campaign Key`),
   UNIQUE KEY `Deal Campaign Store Key` (`Deal Campaign Store Key`,`Deal Campaign Name`),
   KEY `Deal Campaign Status` (`Deal Campaign Status`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Deal Campaign History Bridge`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Deal Campaign History Bridge` (
+  `Deal Campaign Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes','Asset') NOT NULL,
+  PRIMARY KEY (`Deal Campaign Key`,`History Key`),
+  KEY `Deal Campaign Key` (`Deal Campaign Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `History Key` (`History Key`),
+  KEY `Type` (`Type`)
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Deal Component Customer Preference Bridge`
 --
 
-DROP TABLE IF EXISTS `Deal Component Customer Preference Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Deal Component Customer Preference Bridge` (
@@ -1563,18 +1648,17 @@ CREATE TABLE `Deal Component Customer Preference Bridge` (
   `Customer Key` mediumint(8) unsigned NOT NULL,
   `Preference Metadata` varchar(256) DEFAULT NULL,
   PRIMARY KEY (`Deal Component Key`,`Customer Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Deal Component Dimension`
 --
 
-DROP TABLE IF EXISTS `Deal Component Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Deal Component Dimension` (
-  `Deal Component Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Deal Component Key` mediumint(8) unsigned NOT NULL,
   `Deal Component Store Key` mediumint(8) unsigned NOT NULL,
   `Deal Component Campaign Key` mediumint(8) unsigned DEFAULT NULL,
   `Deal Component Deal Key` mediumint(8) unsigned NOT NULL,
@@ -1616,18 +1700,17 @@ CREATE TABLE `Deal Component Dimension` (
   KEY `Deal Metadata Public` (`Deal Component Public`),
   KEY `Deal Component Allowance Target Type` (`Deal Component Allowance Target Type`),
   KEY `Deal Component Mirror Key` (`Deal Component Mirror Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Deal Dimension`
 --
 
-DROP TABLE IF EXISTS `Deal Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Deal Dimension` (
-  `Deal Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Deal Key` mediumint(8) unsigned NOT NULL,
   `Deal Campaign Key` mediumint(8) unsigned DEFAULT NULL,
   `Deal Store Key` mediumint(8) unsigned NOT NULL,
   `Deal Status` enum('Suspended','Active','Finish','Waiting') NOT NULL DEFAULT 'Waiting',
@@ -1662,14 +1745,33 @@ CREATE TABLE `Deal Dimension` (
   KEY `Deal Terms Object` (`Deal Trigger`),
   KEY `Deal Campaign Key` (`Deal Campaign Key`),
   KEY `Deal Mirror Key` (`Deal Mirror Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Deal History Bridge`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Deal History Bridge` (
+  `Deal Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes','Asset') NOT NULL,
+  PRIMARY KEY (`Deal Key`,`History Key`),
+  KEY `Deal Key` (`Deal Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `History Key` (`History Key`),
+  KEY `Type` (`Type`)
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Deal Target Bridge`
 --
 
-DROP TABLE IF EXISTS `Deal Target Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Deal Target Bridge` (
@@ -1681,18 +1783,17 @@ CREATE TABLE `Deal Target Bridge` (
   KEY `Deal Key_2` (`Deal Key`),
   KEY `Subject` (`Subject`,`Subject Key`),
   KEY `Deal Component Key` (`Deal Component Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Delivery Note Dimension`
 --
 
-DROP TABLE IF EXISTS `Delivery Note Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Delivery Note Dimension` (
-  `Delivery Note Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Delivery Note Key` mediumint(8) unsigned NOT NULL,
   `Delivery Note Warehouse Key` smallint(5) unsigned NOT NULL,
   `Delivery Note Order Date Placed` datetime DEFAULT NULL,
   `Delivery Note Date Created` datetime DEFAULT NULL,
@@ -1766,14 +1867,13 @@ CREATE TABLE `Delivery Note Dimension` (
   KEY `Delivery Note Show in Warehouse Orders` (`Delivery Note Show in Warehouse Orders`),
   KEY `Delivery Note Invoiced` (`Delivery Note Invoiced`),
   KEY `Delivery Note Waiting For Parts` (`Delivery Note Waiting For Parts`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Delivery Note History Bridge`
 --
 
-DROP TABLE IF EXISTS `Delivery Note History Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Delivery Note History Bridge` (
@@ -1787,14 +1887,13 @@ CREATE TABLE `Delivery Note History Bridge` (
   KEY `Deletable` (`Deletable`),
   KEY `History Key` (`History Key`),
   KEY `Type` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Email Bridge`
 --
 
-DROP TABLE IF EXISTS `Email Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Bridge` (
@@ -1810,32 +1909,30 @@ CREATE TABLE `Email Bridge` (
   KEY `Subject Type` (`Subject Type`),
   KEY `Is Main` (`Is Main`),
   KEY `Is Active` (`Is Active`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Email Campaign Content Bridge`
 --
 
-DROP TABLE IF EXISTS `Email Campaign Content Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Campaign Content Bridge` (
   `Email Campaign Key` mediumint(8) unsigned NOT NULL,
   `Email Content Key` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`Email Campaign Key`,`Email Content Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Email Campaign Dimension`
 --
 
-DROP TABLE IF EXISTS `Email Campaign Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Campaign Dimension` (
-  `Email Campaign Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Email Campaign Key` mediumint(8) unsigned NOT NULL,
   `Email Campaign Type` enum('Newsletter','Marketing','Reminder') NOT NULL DEFAULT 'Marketing',
   `Email Campaign Store Key` smallint(5) unsigned NOT NULL,
   `Email Campaign Creation Date` datetime NOT NULL,
@@ -1860,18 +1957,17 @@ CREATE TABLE `Email Campaign Dimension` (
   KEY `Email Campaign Status` (`Email Campaign Status`),
   KEY `Email Campaign Store Key` (`Email Campaign Store Key`),
   KEY `Email Campaign Type` (`Email Campaign Type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Email Campaign Mailing List`
 --
 
-DROP TABLE IF EXISTS `Email Campaign Mailing List`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Campaign Mailing List` (
-  `Email Campaign Mailing List Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Email Campaign Mailing List Key` mediumint(8) unsigned NOT NULL,
   `Email Campaign Key` mediumint(8) unsigned NOT NULL,
   `Email Content Key` mediumint(8) unsigned NOT NULL,
   `Email Key` mediumint(8) unsigned DEFAULT NULL,
@@ -1883,14 +1979,13 @@ CREATE TABLE `Email Campaign Mailing List` (
   UNIQUE KEY `Email Address` (`Email Address`,`Email Campaign Key`),
   KEY `Email Campaign Key` (`Email Campaign Key`,`Email Key`,`Email Send Key`),
   KEY `Email Content Key` (`Email Content Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Email Campaign Objective Dimension`
 --
 
-DROP TABLE IF EXISTS `Email Campaign Objective Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Campaign Objective Dimension` (
@@ -1905,32 +2000,30 @@ CREATE TABLE `Email Campaign Objective Dimension` (
   `Email Campaign Objetive Term Metadata` varchar(1028) NOT NULL,
   KEY `Email Campaign Scope Type` (`Email Campaign Scope Type`),
   KEY `Email Campaign Key` (`Email Campaign Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Email Campaign Objective Link Bridge`
 --
 
-DROP TABLE IF EXISTS `Email Campaign Objective Link Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Campaign Objective Link Bridge` (
   `Email Campaign Objective Key` mediumint(8) unsigned NOT NULL,
   `Email Link Key` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`Email Campaign Objective Key`,`Email Link Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Email Content Dimension`
 --
 
-DROP TABLE IF EXISTS `Email Content Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Content Dimension` (
-  `Email Content Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Email Content Key` mediumint(8) unsigned NOT NULL,
   `Email Content Type` enum('Plain','HTML Template','HTML') DEFAULT NULL,
   `Email Content Template Type` enum('Basic','Left Column','Right Column','Postcard') NOT NULL DEFAULT 'Basic',
   `Email Content Color Scheme Key` mediumint(9) NOT NULL DEFAULT '1',
@@ -1942,18 +2035,17 @@ CREATE TABLE `Email Content Dimension` (
   `Email Template Header Image Key` mediumint(8) unsigned DEFAULT NULL,
   `Email Content Template Postcard Key` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`Email Content Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Email Content Paragraph Dimension`
 --
 
-DROP TABLE IF EXISTS `Email Content Paragraph Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Content Paragraph Dimension` (
-  `Email Paragraph Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Email Paragraph Key` mediumint(8) unsigned NOT NULL,
   `Email Content Key` mediumint(8) unsigned NOT NULL,
   `Paragraph Order` smallint(6) NOT NULL,
   `Paragraph Type` enum('Main','Side') CHARACTER SET latin1 NOT NULL DEFAULT 'Main',
@@ -1963,19 +2055,18 @@ CREATE TABLE `Email Content Paragraph Dimension` (
   `Paragraph Content` mediumtext NOT NULL,
   PRIMARY KEY (`Email Paragraph Key`),
   KEY `Email Content Key` (`Email Content Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Email Credentials Dimension`
 --
 
-DROP TABLE IF EXISTS `Email Credentials Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Credentials Dimension` (
   `Email Credentials Method` enum('Amazon','SMTP','Direct') NOT NULL DEFAULT 'SMTP',
-  `Email Credentials Key` mediumint(8) NOT NULL AUTO_INCREMENT,
+  `Email Credentials Key` mediumint(8) NOT NULL,
   `Email Provider` enum('Gmail','Other','Inikoo','PHPMail','MadMimi') NOT NULL DEFAULT 'Other',
   `Email Address Gmail` varchar(255) DEFAULT NULL,
   `Password Gmail` varchar(1024) DEFAULT NULL,
@@ -1992,42 +2083,39 @@ CREATE TABLE `Email Credentials Dimension` (
   `API Key MadMimi` varchar(256) DEFAULT NULL,
   `Email Address MadMimi` varchar(256) DEFAULT NULL,
   PRIMARY KEY (`Email Credentials Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Email Credentials Scope Bridge`
 --
 
-DROP TABLE IF EXISTS `Email Credentials Scope Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Credentials Scope Bridge` (
   `Email Credentials Key` mediumint(8) unsigned NOT NULL,
   `Scope` enum('Customer Communications','Newsletters','Marketing Email','Site Registration','Bugs','Requests') NOT NULL,
   PRIMARY KEY (`Email Credentials Key`,`Scope`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Email Credentials Scope Mailbox`
 --
 
-DROP TABLE IF EXISTS `Email Credentials Scope Mailbox`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Credentials Scope Mailbox` (
   `Email Credentials Key` mediumint(8) unsigned NOT NULL,
   `Scope` enum('Customer Communications') CHARACTER SET latin1 NOT NULL,
   `Mailbox` varchar(256) CHARACTER SET latin1 NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Email Credentials Site Bridge`
 --
 
-DROP TABLE IF EXISTS `Email Credentials Site Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Credentials Site Bridge` (
@@ -2036,46 +2124,43 @@ CREATE TABLE `Email Credentials Site Bridge` (
   PRIMARY KEY (`Email Credentials Key`,`Site Key`),
   KEY `Site Key` (`Site Key`),
   KEY `Email Credentials Key` (`Email Credentials Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Email Credentials Store Bridge`
 --
 
-DROP TABLE IF EXISTS `Email Credentials Store Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Credentials Store Bridge` (
   `Email Credentials Key` mediumint(8) unsigned NOT NULL,
   `Store Key` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`Email Credentials Key`,`Store Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Email Credentials User Bridge`
 --
 
-DROP TABLE IF EXISTS `Email Credentials User Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Credentials User Bridge` (
   `Email Credentials Key` mediumint(8) unsigned NOT NULL,
   `User Key` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`Email Credentials Key`,`User Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Email Dimension`
 --
 
-DROP TABLE IF EXISTS `Email Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Dimension` (
-  `Email Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Email Key` mediumint(8) unsigned NOT NULL,
   `Email` varchar(320) NOT NULL,
   `Email Contact Name` varchar(255) DEFAULT NULL,
   `Email Validated` enum('Yes','No') NOT NULL DEFAULT 'No',
@@ -2084,14 +2169,13 @@ CREATE TABLE `Email Dimension` (
   UNIQUE KEY `Email_2` (`Email`(64)),
   KEY `Email Validated` (`Email Validated`),
   KEY `Email Verified` (`Email Correct`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Email Link Click Fact`
 --
 
-DROP TABLE IF EXISTS `Email Link Click Fact`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Link Click Fact` (
@@ -2101,32 +2185,30 @@ CREATE TABLE `Email Link Click Fact` (
   `OS` varchar(64) NOT NULL,
   `Browser` varchar(64) NOT NULL,
   KEY `Email Link Key` (`Email Link Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Email Link Dimension`
 --
 
-DROP TABLE IF EXISTS `Email Link Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Link Dimension` (
-  `Email Link Dimension Key` mediumint(8) NOT NULL AUTO_INCREMENT,
+  `Email Link Dimension Key` mediumint(8) NOT NULL,
   `Email Link URL` varchar(255) CHARACTER SET latin1 NOT NULL,
   PRIMARY KEY (`Email Link Dimension Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Email Queue Attachement Dimension`
 --
 
-DROP TABLE IF EXISTS `Email Queue Attachement Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Queue Attachement Dimension` (
-  `Attachement Key` int(11) NOT NULL AUTO_INCREMENT,
+  `Attachement Key` int(11) NOT NULL,
   `Email Queue Key` int(11) NOT NULL,
   `Data` varchar(255) DEFAULT NULL,
   `FileName` varchar(255) DEFAULT NULL,
@@ -2134,18 +2216,17 @@ CREATE TABLE `Email Queue Attachement Dimension` (
   `Content-Type` varchar(255) NOT NULL,
   `Disposition` varchar(255) NOT NULL,
   PRIMARY KEY (`Attachement Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Email Queue Dimension`
 --
 
-DROP TABLE IF EXISTS `Email Queue Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Queue Dimension` (
-  `Email Queue Key` mediumint(8) NOT NULL AUTO_INCREMENT,
+  `Email Queue Key` mediumint(8) NOT NULL,
   `To` varchar(255) NOT NULL,
   `Subject` varchar(255) NOT NULL,
   `Plain` longtext,
@@ -2155,36 +2236,34 @@ CREATE TABLE `Email Queue Dimension` (
   `Status` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Type` enum('Plain','HTML') NOT NULL DEFAULT 'Plain',
   PRIMARY KEY (`Email Queue Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Email Read Dimension`
 --
 
-DROP TABLE IF EXISTS `Email Read Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Read Dimension` (
-  `Email Read Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Email Read Key` mediumint(8) unsigned NOT NULL,
   `Email Credentials Key` mediumint(8) unsigned NOT NULL,
   `Email Uid` varchar(256) NOT NULL,
   `Customer Communications` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
   PRIMARY KEY (`Email Read Key`),
   KEY `Email Credentials Key` (`Email Credentials Key`),
   KEY `Email Uid` (`Email Uid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Email Send Dimension`
 --
 
-DROP TABLE IF EXISTS `Email Send Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Send Dimension` (
-  `Email Send Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Email Send Key` int(10) unsigned NOT NULL,
   `Email Send Type` enum('Test Email','Marketing','Registration','Password Reminder','Newsletter','Order Confirmation','Delivery Confirmation','Issue Reporting') NOT NULL,
   `Email Send Type Key` mediumint(9) NOT NULL DEFAULT '0',
   `Email Send Type Parent Key` mediumint(8) unsigned DEFAULT NULL,
@@ -2203,14 +2282,13 @@ CREATE TABLE `Email Send Dimension` (
   KEY `Email Send Parent Type` (`Email Send Recipient Type`),
   KEY `Email Send Type Key` (`Email Send Type Key`),
   KEY `Email Send Type Parent Key` (`Email Send Type Parent Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Email Send Read Fact`
 --
 
-DROP TABLE IF EXISTS `Email Send Read Fact`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Send Read Fact` (
@@ -2220,18 +2298,17 @@ CREATE TABLE `Email Send Read Fact` (
   `OS` varchar(64) NOT NULL,
   `Browser` varchar(64) NOT NULL,
   KEY `Email Send Key` (`Email Send Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Email Site Reminder Dimension`
 --
 
-DROP TABLE IF EXISTS `Email Site Reminder Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Site Reminder Dimension` (
-  `Email Site Reminder Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Email Site Reminder Key` mediumint(8) unsigned NOT NULL,
   `Email Site Reminder State` enum('Waiting','Ready','Sent','Cancelled') NOT NULL DEFAULT 'Waiting',
   `Email Site Reminder In Process` enum('Yes','No') NOT NULL DEFAULT 'Yes',
   `Email Site Reminder Subject` enum('Customer','User') NOT NULL DEFAULT 'User',
@@ -2256,18 +2333,17 @@ CREATE TABLE `Email Site Reminder Dimension` (
   KEY `Email Site Reminder State` (`Email Site Reminder State`,`Trigger Scope`,`Trigger Scope Key`),
   KEY `Trigger Scope Name` (`Trigger Scope Name`),
   KEY `Customer Name` (`Customer Name`(64))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Email Template Color Scheme Dimension`
 --
 
-DROP TABLE IF EXISTS `Email Template Color Scheme Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Template Color Scheme Dimension` (
-  `Email Template Color Scheme Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Email Template Color Scheme Key` mediumint(8) unsigned NOT NULL,
   `Email Template Color Scheme Name` varchar(256) NOT NULL,
   `Store Key` mediumint(8) unsigned NOT NULL,
   `Background Body` varchar(6) NOT NULL DEFAULT 'FFFFFF',
@@ -2285,35 +2361,33 @@ CREATE TABLE `Email Template Color Scheme Dimension` (
   `Header Image Source` varchar(256) NOT NULL,
   PRIMARY KEY (`Email Template Color Scheme Key`),
   KEY `Store Key` (`Store Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Email Template Dimension`
 --
 
-DROP TABLE IF EXISTS `Email Template Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Template Dimension` (
-  `Email Template Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Email Template Key` mediumint(8) unsigned NOT NULL,
   `Email Template Name` varchar(64) NOT NULL,
   `Email Template Type` enum('Basic','Newsletter Left','Newsletter Right','Postcard') NOT NULL,
   `Email Template Metadata` mediumtext NOT NULL,
   `Email Template Source Code` mediumtext NOT NULL,
   PRIMARY KEY (`Email Template Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Email Template Header Image Dimension`
 --
 
-DROP TABLE IF EXISTS `Email Template Header Image Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Template Header Image Dimension` (
-  `Email Template Header Image Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Email Template Header Image Key` mediumint(8) unsigned NOT NULL,
   `Email Template Header Image Name` varchar(256) NOT NULL,
   `Store Key` mediumint(8) unsigned NOT NULL,
   `Image Key` mediumint(8) unsigned NOT NULL,
@@ -2321,18 +2395,17 @@ CREATE TABLE `Email Template Header Image Dimension` (
   UNIQUE KEY `Store Key_2` (`Store Key`,`Image Key`),
   KEY `Store Key` (`Store Key`),
   KEY `Image Key` (`Image Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Email Template Historic Color Scheme Dimension`
 --
 
-DROP TABLE IF EXISTS `Email Template Historic Color Scheme Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Template Historic Color Scheme Dimension` (
-  `Email Template Historic Color Scheme Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Email Template Historic Color Scheme Key` mediumint(8) unsigned NOT NULL,
   `Background Body` varchar(6) NOT NULL DEFAULT 'FFFFFF',
   `Background Header` varchar(6) NOT NULL DEFAULT '000000',
   `Background Container` varchar(6) NOT NULL DEFAULT 'FFFFFF',
@@ -2346,34 +2419,32 @@ CREATE TABLE `Email Template Historic Color Scheme Dimension` (
   `H1` varchar(6) NOT NULL DEFAULT '000000',
   `H2` varchar(6) NOT NULL DEFAULT '000000',
   PRIMARY KEY (`Email Template Historic Color Scheme Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Email Template Postcard Dimension`
 --
 
-DROP TABLE IF EXISTS `Email Template Postcard Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Template Postcard Dimension` (
-  `Email Template Postcard Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Email Template Postcard Key` mediumint(8) unsigned NOT NULL,
   `Email Template Postcard Name` varchar(256) CHARACTER SET latin1 NOT NULL,
   `Store Key` mediumint(8) unsigned NOT NULL,
   `Image Key` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`Email Template Postcard Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Employee Dimension`
 --
 
-DROP TABLE IF EXISTS `Employee Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Employee Dimension` (
-  `Employee Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Employee Key` mediumint(8) unsigned NOT NULL,
   `Employee ID` varchar(255) NOT NULL COMMENT '(Natural Key)',
   `Employee Contact Key` mediumint(9) NOT NULL,
   `Employee Alias` varchar(255) DEFAULT NULL,
@@ -2390,18 +2461,17 @@ CREATE TABLE `Employee Dimension` (
   `Employee Status` enum('Working','No Working') NOT NULL,
   PRIMARY KEY (`Employee Key`),
   KEY `Most Recent Transaction Indicator` (`Employee Most Recent`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Export Map`
 --
 
-DROP TABLE IF EXISTS `Export Map`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Export Map` (
-  `Map Key` int(11) NOT NULL AUTO_INCREMENT,
+  `Map Key` int(11) NOT NULL,
   `Map Name` varchar(255) NOT NULL,
   `Map Description` text,
   `Map Type` enum('Customer','Supplier') NOT NULL,
@@ -2411,18 +2481,17 @@ CREATE TABLE `Export Map` (
   `Export Map Default` enum('yes','no') NOT NULL,
   `Exported Date` datetime NOT NULL,
   PRIMARY KEY (`Map Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Fork Dimension`
 --
 
-DROP TABLE IF EXISTS `Fork Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Fork Dimension` (
-  `Fork Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Fork Key` mediumint(8) unsigned NOT NULL,
   `Fork Type` enum('export','import','edit','ping_sitemap','housekeeping','sendemail','edit_pages') NOT NULL,
   `Fork Process Data` text NOT NULL,
   `Fork Token` varchar(64) DEFAULT NULL,
@@ -2440,18 +2509,17 @@ CREATE TABLE `Fork Dimension` (
   `Fork Result Metadata` varchar(256) DEFAULT NULL,
   PRIMARY KEY (`Fork Key`),
   KEY `Fork Token` (`Fork Token`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `HQ Event Dimension`
 --
 
-DROP TABLE IF EXISTS `HQ Event Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `HQ Event Dimension` (
-  `HQ Event Key` int(11) NOT NULL AUTO_INCREMENT,
+  `HQ Event Key` int(11) NOT NULL,
   `Subject` enum('Others','National Holiday','Bank Holiday','Festive Holiday') DEFAULT 'Others',
   `Location` varchar(200) DEFAULT NULL,
   `Description` varchar(255) DEFAULT NULL,
@@ -2461,14 +2529,13 @@ CREATE TABLE `HQ Event Dimension` (
   `Color` varchar(200) DEFAULT '3',
   `Recurring Rule` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`HQ Event Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `History Currency Exchange Dimension`
 --
 
-DROP TABLE IF EXISTS `History Currency Exchange Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `History Currency Exchange Dimension` (
@@ -2476,18 +2543,17 @@ CREATE TABLE `History Currency Exchange Dimension` (
   `Currency Pair` varchar(6) NOT NULL,
   `Exchange` decimal(18,8) NOT NULL,
   UNIQUE KEY `Date` (`Date`,`Currency Pair`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `History Dimension`
 --
 
-DROP TABLE IF EXISTS `History Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `History Dimension` (
-  `History Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `History Key` int(10) unsigned NOT NULL,
   `Author Name` varchar(256) DEFAULT NULL,
   `Subject` enum('Customer','Staff','Supplier','Administrator','System') DEFAULT NULL,
   `Subject Key` mediumint(8) unsigned DEFAULT NULL,
@@ -2510,18 +2576,17 @@ CREATE TABLE `History Dimension` (
   KEY `Deep` (`Deep`),
   KEY `Indirect Object` (`Indirect Object`(24),`Indirect Object Key`),
   KEY `Subject` (`Subject`,`Subject Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Human Resources Spanshot Fact`
 --
 
-DROP TABLE IF EXISTS `Human Resources Spanshot Fact`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Human Resources Spanshot Fact` (
-  `Human Resources Spanshot Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Human Resources Spanshot Key` mediumint(8) unsigned NOT NULL,
   `Date Key` date NOT NULL,
   `Employee Transition Key` mediumint(9) NOT NULL,
   `Organization Key` smallint(6) NOT NULL,
@@ -2539,18 +2604,17 @@ CREATE TABLE `Human Resources Spanshot Fact` (
   `Transfer Count` smallint(6) NOT NULL,
   `Promotion Count` smallint(6) NOT NULL,
   PRIMARY KEY (`Human Resources Spanshot Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Image Dimension`
 --
 
-DROP TABLE IF EXISTS `Image Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Image Dimension` (
-  `Image Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Image Key` mediumint(8) unsigned NOT NULL,
   `Image Data` longblob NOT NULL,
   `Image Thumbnail Data` longblob,
   `Image Small Data` longblob,
@@ -2567,18 +2631,17 @@ CREATE TABLE `Image Dimension` (
   PRIMARY KEY (`Image Key`),
   KEY `Image Checksum` (`Image File Checksum`),
   KEY `Image Public` (`Image Public`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Image Subject Bridge`
 --
 
-DROP TABLE IF EXISTS `Image Subject Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Image Subject Bridge` (
-  `Image Subject Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Image Subject Key` mediumint(8) unsigned NOT NULL,
   `Image Subject Object` enum('Store Product','Site Favicon','Product','Family','Department','Store','Part','Supplier Product','Store Logo','Store Email Template Header','Store Email Postcard','Email Image','Page','Page Header','Page Footer','Page Header Preview','Page Footer Preview','Page Preview','Site Menu','Site Search','User Profile','Attachment Thumbnail','Category') DEFAULT NULL,
   `Image Subject Object Key` mediumint(8) unsigned NOT NULL,
   `Image Subject Image Key` mediumint(8) unsigned NOT NULL,
@@ -2592,18 +2655,17 @@ CREATE TABLE `Image Subject Bridge` (
   KEY `Subject Key` (`Image Subject Object Key`),
   KEY `Image Key` (`Image Subject Image Key`),
   KEY `Subject Type` (`Image Subject Object`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Import Map`
 --
 
-DROP TABLE IF EXISTS `Import Map`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Import Map` (
-  `Map Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Map Key` mediumint(8) unsigned NOT NULL,
   `Subject` varchar(64) NOT NULL,
   `Parent Key` mediumint(8) NOT NULL,
   `Parent` varchar(64) NOT NULL,
@@ -2611,18 +2673,17 @@ CREATE TABLE `Import Map` (
   `Meta Data` text NOT NULL,
   PRIMARY KEY (`Map Key`),
   KEY `Scope` (`Parent`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Imported Record`
 --
 
-DROP TABLE IF EXISTS `Imported Record`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Imported Record` (
-  `Imported Record Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Imported Record Key` int(10) unsigned NOT NULL,
   `Imported Record Import State` enum('Ignored','Waiting','Importing','Imported','Error','Cancelled') NOT NULL DEFAULT 'Waiting',
   `Imported Record Date` datetime DEFAULT NULL,
   `Imported Record Index` mediumint(8) unsigned NOT NULL,
@@ -2634,19 +2695,18 @@ CREATE TABLE `Imported Record` (
   PRIMARY KEY (`Imported Record Key`),
   KEY `Imported Records Key` (`Imported Record Parent Key`),
   KEY `Imported Record Index` (`Imported Record Index`),
-  KEY `Imported Record Import State` (`Imported Record Import State`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  KEY `Imported Record Import State` (`Imported Record Import State`)
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Imported Records Dimension`
 --
 
-DROP TABLE IF EXISTS `Imported Records Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Imported Records Dimension` (
-  `Imported Records Key` mediumint(9) NOT NULL AUTO_INCREMENT,
+  `Imported Records Key` mediumint(9) NOT NULL,
   `Imported Records State` enum('Uploading','Review','Queued','InProcess','Finished') NOT NULL DEFAULT 'Uploading',
   `Imported Records File Checksum` varchar(64) CHARACTER SET latin1 DEFAULT NULL,
   `Imported Records Creation Date` datetime NOT NULL,
@@ -2677,18 +2737,17 @@ CREATE TABLE `Imported Records Dimension` (
   KEY `Imported Records User Key` (`Imported Records User Key`),
   KEY `Impoted Records State` (`Imported Records State`),
   KEY `Imported Records Cancelled Date` (`Imported Records Cancelled Date`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Insurance Dimension`
 --
 
-DROP TABLE IF EXISTS `Insurance Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Insurance Dimension` (
-  `Insurance Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Insurance Key` mediumint(8) unsigned NOT NULL,
   `Insurance Store Key` smallint(6) NOT NULL,
   `Insurance Tax Category Code` varchar(16) DEFAULT NULL,
   `Insurance Name` varchar(256) NOT NULL,
@@ -2705,18 +2764,17 @@ CREATE TABLE `Insurance Dimension` (
   `Insurance Expiration Date` datetime DEFAULT NULL,
   PRIMARY KEY (`Insurance Key`),
   KEY `Insurance Store Key` (`Insurance Store Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Inventory Audit Dimension`
 --
 
-DROP TABLE IF EXISTS `Inventory Audit Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Inventory Audit Dimension` (
-  `Inventory Audit Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Inventory Audit Key` mediumint(8) unsigned NOT NULL,
   `Inventory Audit Type` enum('Audit','Discontinued','Out of Stock','Disassociate','Identify') NOT NULL DEFAULT 'Audit',
   `Inventory Audit Date` datetime NOT NULL,
   `Inventory Audit Part SKU` mediumint(8) unsigned NOT NULL,
@@ -2729,14 +2787,13 @@ CREATE TABLE `Inventory Audit Dimension` (
   KEY `Inventory Audit Location Key` (`Inventory Audit Location Key`),
   KEY `Inventory Audit User Key` (`Inventory Audit User Key`),
   KEY `Inventory Audit Type` (`Inventory Audit Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Inventory Spanshot Fact`
 --
 
-DROP TABLE IF EXISTS `Inventory Spanshot Fact`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Inventory Spanshot Fact` (
@@ -2775,18 +2832,17 @@ CREATE TABLE `Inventory Spanshot Fact` (
   KEY `Warehouse Key` (`Warehouse Key`),
   KEY `Location Type` (`Location Type`),
   KEY `Dormant 1 Year` (`Dormant 1 Year`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Inventory Transaction Fact`
 --
 
-DROP TABLE IF EXISTS `Inventory Transaction Fact`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Inventory Transaction Fact` (
-  `Inventory Transaction Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Inventory Transaction Key` int(10) unsigned NOT NULL,
   `Date Created` datetime DEFAULT NULL,
   `Date Picked` datetime DEFAULT NULL,
   `Date Packed` datetime DEFAULT NULL,
@@ -2854,14 +2910,13 @@ CREATE TABLE `Inventory Transaction Fact` (
   KEY `Inventory Transaction Section` (`Inventory Transaction Section`),
   KEY `Inventory Transaction Record Type` (`Inventory Transaction Record Type`),
   KEY `Inventory Transaction Type` (`Inventory Transaction Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Inventory Warehouse Spanshot Fact`
 --
 
-DROP TABLE IF EXISTS `Inventory Warehouse Spanshot Fact`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Inventory Warehouse Spanshot Fact` (
@@ -2885,14 +2940,13 @@ CREATE TABLE `Inventory Warehouse Spanshot Fact` (
   UNIQUE KEY `Date_Warehouse` (`Date`,`Warehouse Key`),
   KEY `Date` (`Date`),
   KEY `Warehouse Key` (`Warehouse Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Invoice Category Dimension`
 --
 
-DROP TABLE IF EXISTS `Invoice Category Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Invoice Category Dimension` (
@@ -3195,14 +3249,13 @@ CREATE TABLE `Invoice Category Dimension` (
   KEY `Category Key` (`Invoice Category Key`,`Invoice Category Store Key`),
   KEY `Category Key_2` (`Invoice Category Key`),
   KEY `Store Key` (`Invoice Category Store Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Invoice Category History Bridge`
 --
 
-DROP TABLE IF EXISTS `Invoice Category History Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Invoice Category History Bridge` (
@@ -3212,14 +3265,13 @@ CREATE TABLE `Invoice Category History Bridge` (
   `Type` enum('Changes','Assign') CHARACTER SET latin1 NOT NULL,
   UNIQUE KEY `Store Key` (`Store Key`,`Category Key`,`History Key`),
   KEY `Type` (`Type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Invoice Charged By Bridge`
 --
 
-DROP TABLE IF EXISTS `Invoice Charged By Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Invoice Charged By Bridge` (
@@ -3227,14 +3279,13 @@ CREATE TABLE `Invoice Charged By Bridge` (
   `Staff Key` mediumint(8) unsigned NOT NULL,
   `Share` float NOT NULL DEFAULT '1',
   PRIMARY KEY (`Invoice Key`,`Staff Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Invoice Delivery Note Bridge`
 --
 
-DROP TABLE IF EXISTS `Invoice Delivery Note Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Invoice Delivery Note Bridge` (
@@ -3243,18 +3294,17 @@ CREATE TABLE `Invoice Delivery Note Bridge` (
   PRIMARY KEY (`Invoice Key`,`Delivery Note Key`),
   KEY `Delivery Note Key` (`Delivery Note Key`),
   KEY `Invoice Key` (`Invoice Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Invoice Dimension`
 --
 
-DROP TABLE IF EXISTS `Invoice Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Invoice Dimension` (
-  `Invoice Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Invoice Key` mediumint(8) unsigned NOT NULL,
   `Invoice Date` datetime DEFAULT NULL COMMENT 'Date when the order where first placed',
   `Invoice Paid Date` datetime DEFAULT NULL,
   `Invoice Type` enum('Invoice','Refund','CreditNote') NOT NULL DEFAULT 'Invoice',
@@ -3358,14 +3408,13 @@ CREATE TABLE `Invoice Dimension` (
   KEY `Invoice Customer Level Type` (`Invoice Customer Level Type`),
   KEY `Invoice Billing To Key` (`Invoice Billing To Key`),
   KEY `Invoice Billing Region` (`Invoice Billing Region`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Invoice History Bridge`
 --
 
-DROP TABLE IF EXISTS `Invoice History Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Invoice History Bridge` (
@@ -3379,14 +3428,13 @@ CREATE TABLE `Invoice History Bridge` (
   KEY `Deletable` (`Deletable`),
   KEY `History Key` (`History Key`),
   KEY `Type` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Invoice Payment Bridge`
 --
 
-DROP TABLE IF EXISTS `Invoice Payment Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Invoice Payment Bridge` (
@@ -3398,14 +3446,13 @@ CREATE TABLE `Invoice Payment Bridge` (
   PRIMARY KEY (`Invoice Key`,`Payment Key`),
   KEY `Payment Account Key` (`Payment Account Key`),
   KEY `Payment Service Provider Key` (`Payment Service Provider Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Invoice Processed By Bridge`
 --
 
-DROP TABLE IF EXISTS `Invoice Processed By Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Invoice Processed By Bridge` (
@@ -3413,14 +3460,13 @@ CREATE TABLE `Invoice Processed By Bridge` (
   `Staff Key` mediumint(8) unsigned NOT NULL,
   `Share` float NOT NULL DEFAULT '1',
   PRIMARY KEY (`Invoice Key`,`Staff Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Invoice Sales Representative Bridge`
 --
 
-DROP TABLE IF EXISTS `Invoice Sales Representative Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Invoice Sales Representative Bridge` (
@@ -3428,14 +3474,13 @@ CREATE TABLE `Invoice Sales Representative Bridge` (
   `Staff Key` mediumint(8) unsigned NOT NULL,
   `Share` float NOT NULL DEFAULT '1',
   PRIMARY KEY (`Invoice Key`,`Staff Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Invoice Tax Bridge`
 --
 
-DROP TABLE IF EXISTS `Invoice Tax Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Invoice Tax Bridge` (
@@ -3447,14 +3492,13 @@ CREATE TABLE `Invoice Tax Bridge` (
   KEY `Invoice Key_2` (`Invoice Key`),
   KEY `Tax Code` (`Tax Code`),
   KEY `Tax Code_2` (`Tax Code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Invoice Tax Dimension`
 --
 
-DROP TABLE IF EXISTS `Invoice Tax Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Invoice Tax Dimension` (
@@ -3466,14 +3510,13 @@ CREATE TABLE `Invoice Tax Dimension` (
   `S3` decimal(12,2) DEFAULT NULL,
   `OUT` decimal(12,2) DEFAULT NULL,
   KEY `Invoice Key` (`Invoice Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Language Country Bridge`
 --
 
-DROP TABLE IF EXISTS `Language Country Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Language Country Bridge` (
@@ -3488,31 +3531,29 @@ CREATE TABLE `Language Country Bridge` (
   `EAI Access` tinyint(1) NOT NULL,
   `EAI Locale Code` varchar(16) NOT NULL,
   KEY `Language Key` (`Language Key`,`Country Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Language Dimension`
 --
 
-DROP TABLE IF EXISTS `Language Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Language Dimension` (
-  `Language Key` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `Language Key` smallint(5) unsigned NOT NULL,
   `Language Code` varchar(5) NOT NULL,
   `Country 2 Alpha Code` varchar(2) DEFAULT NULL,
   `Language Name` varchar(60) NOT NULL,
   `Language Original Name` varchar(60) NOT NULL,
   PRIMARY KEY (`Language Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `List Customer Bridge`
 --
 
-DROP TABLE IF EXISTS `List Customer Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `List Customer Bridge` (
@@ -3520,31 +3561,29 @@ CREATE TABLE `List Customer Bridge` (
   `Customer Key` mediumint(8) unsigned NOT NULL,
   UNIQUE KEY `Customer List Key` (`List Key`,`Customer Key`),
   KEY `Customer List Key_2` (`List Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `List Delivery Note Bridge`
 --
 
-DROP TABLE IF EXISTS `List Delivery Note Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `List Delivery Note Bridge` (
   ` List Key` smallint(5) NOT NULL,
   `Delivery Note Key` mediumint(8) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `List Dimension`
 --
 
-DROP TABLE IF EXISTS `List Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `List Dimension` (
-  `List Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `List Key` mediumint(8) unsigned NOT NULL,
   `List Scope` enum('Customer','Order','Invoice','Delivery Note','Product','Part') NOT NULL DEFAULT 'Customer',
   `List Use Type` enum('UserCreated','ImportedRecords','User Defined','CSV Import') NOT NULL DEFAULT 'UserCreated',
   `List Parent Key` smallint(5) unsigned NOT NULL,
@@ -3557,67 +3596,62 @@ CREATE TABLE `List Dimension` (
   PRIMARY KEY (`List Key`),
   UNIQUE KEY `Customer List Store Key` (`List Parent Key`,`List Name`(36),`List Scope`),
   KEY `Customer List Use Type` (`List Use Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `List Invoice Bridge`
 --
 
-DROP TABLE IF EXISTS `List Invoice Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `List Invoice Bridge` (
   `List Key` smallint(5) NOT NULL,
   `Invoice Key` mediumint(8) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `List Order Bridge`
 --
 
-DROP TABLE IF EXISTS `List Order Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `List Order Bridge` (
   `List Key` smallint(5) NOT NULL,
   `Order Key` mediumint(8) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `List Part Bridge`
 --
 
-DROP TABLE IF EXISTS `List Part Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `List Part Bridge` (
   `List Key` smallint(5) NOT NULL,
   `Part SKU` mediumint(8) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `List Product Bridge`
 --
 
-DROP TABLE IF EXISTS `List Product Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `List Product Bridge` (
   `List Key` smallint(5) unsigned NOT NULL,
   `Product ID` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`List Key`,`Product ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Locale Dimension`
 --
 
-DROP TABLE IF EXISTS `Locale Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Locale Dimension` (
@@ -3626,24 +3660,23 @@ CREATE TABLE `Locale Dimension` (
   `Language Code` varchar(2) NOT NULL,
   `Currency Code` varchar(3) NOT NULL,
   PRIMARY KEY (`Locale Code`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Location Dimension`
 --
 
-DROP TABLE IF EXISTS `Location Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Location Dimension` (
-  `Location Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Location Key` mediumint(8) unsigned NOT NULL,
   `Location Warehouse Key` smallint(5) unsigned DEFAULT NULL,
   `Location Warehouse Area Key` mediumint(8) unsigned DEFAULT NULL,
   `Location Shelf Key` mediumint(9) DEFAULT NULL,
   `Location Code` varchar(16) NOT NULL,
   `Location File As` varchar(256) NOT NULL,
-  `Location Mainly Used For` enum('Picking','Storing','Loading','Displaying','Other') NOT NULL DEFAULT 'Picking',
+  `Location Mainly Used For` enum('Picking','Storing','Loading','Displaying','Other','Default') NOT NULL DEFAULT 'Picking',
   `Location Shape Type` enum('Box','Cylinder','Unknown') NOT NULL DEFAULT 'Unknown',
   `Location Radius` float DEFAULT NULL,
   `Location Deep` float DEFAULT NULL,
@@ -3663,18 +3696,37 @@ CREATE TABLE `Location Dimension` (
   KEY `Location Mainly Used For` (`Location Mainly Used For`),
   KEY `Location Flag Key` (`Warehouse Flag Key`),
   KEY `Location File As` (`Location File As`(16))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Location History Bridge`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Location History Bridge` (
+  `Location Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes','Asset') NOT NULL,
+  PRIMARY KEY (`Location Key`,`History Key`),
+  KEY `Location Key` (`Location Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `History Key` (`History Key`),
+  KEY `Type` (`Type`)
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Manufacture Task Dimension`
 --
 
-DROP TABLE IF EXISTS `Manufacture Task Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Manufacture Task Dimension` (
-  `Manufacture Task Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Manufacture Task Key` mediumint(8) unsigned NOT NULL,
   `Manufacture Task Code` varchar(16) DEFAULT NULL,
   `Manufacture Task Name` varchar(255) NOT NULL,
   `Manufacture Task Materials Cost` float DEFAULT NULL,
@@ -3692,66 +3744,62 @@ CREATE TABLE `Manufacture Task Dimension` (
   PRIMARY KEY (`Manufacture Task Key`),
   UNIQUE KEY `Manufacture Task Name` (`Manufacture Task Name`),
   UNIQUE KEY `Manufacture Task Code` (`Manufacture Task Code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Manufacturing Facility Dimension`
 --
 
-DROP TABLE IF EXISTS `Manufacturing Facility Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Manufacturing Facility Dimension` (
-  `Manufacturing Facility Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Manufacturing Facility Key` mediumint(8) unsigned NOT NULL,
   `Manufacturing Facility Code` varchar(16) NOT NULL,
   `Manufacturing Facility Contact Key` mediumint(9) NOT NULL,
   PRIMARY KEY (`Manufacturing Facility Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Marketing Post Dimension`
 --
 
-DROP TABLE IF EXISTS `Marketing Post Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Marketing Post Dimension` (
-  `Marketing Post Key` mediumint(8) NOT NULL AUTO_INCREMENT,
+  `Marketing Post Key` mediumint(8) NOT NULL,
   `Marketing Post Name` varchar(255) CHARACTER SET latin1 NOT NULL,
   `Store Key` mediumint(8) NOT NULL,
   PRIMARY KEY (`Marketing Post Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Marketing Post Sent Fact`
 --
 
-DROP TABLE IF EXISTS `Marketing Post Sent Fact`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Marketing Post Sent Fact` (
-  `Marketing Post Sent Fact Key` int(8) NOT NULL AUTO_INCREMENT,
+  `Marketing Post Sent Fact Key` int(8) NOT NULL,
   `Marketing Post Key` mediumint(8) NOT NULL DEFAULT '1',
   `Customer Key` mediumint(8) NOT NULL,
   `Store Key` mediumint(8) NOT NULL,
   `Requested Date` date NOT NULL,
   `Sent Date` date DEFAULT NULL,
   PRIMARY KEY (`Marketing Post Sent Fact Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `MasterKey Dimension`
 --
 
-DROP TABLE IF EXISTS `MasterKey Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `MasterKey Dimension` (
-  `MasterKey Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `MasterKey Key` mediumint(8) unsigned NOT NULL,
   `Key` varchar(1024) NOT NULL,
   `User Key` mediumint(9) NOT NULL,
   `Valid Until` datetime NOT NULL,
@@ -3763,53 +3811,50 @@ CREATE TABLE `MasterKey Dimension` (
   PRIMARY KEY (`MasterKey Key`),
   KEY `Key` (`Key`(8)),
   KEY `Used` (`Used`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `MasterKey Internal Dimension`
 --
 
-DROP TABLE IF EXISTS `MasterKey Internal Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `MasterKey Internal Dimension` (
-  `MasterKey Internal Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `MasterKey Internal Key` mediumint(8) unsigned NOT NULL,
   `User Key` mediumint(8) unsigned DEFAULT NULL,
   `Key` varchar(1024) NOT NULL,
   `Valid Until` datetime NOT NULL,
   `IP` varchar(64) NOT NULL,
   PRIMARY KEY (`MasterKey Internal Key`),
   KEY `Key` (`Key`(8))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Material Dimension`
 --
 
-DROP TABLE IF EXISTS `Material Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Material Dimension` (
-  `Material Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Material Key` mediumint(8) unsigned NOT NULL,
   `Material Name` varchar(256) NOT NULL,
   `Material Family` varchar(16) DEFAULT NULL,
   `Material XHTML Description` longtext NOT NULL,
   PRIMARY KEY (`Material Key`),
   KEY `Material Name` (`Material Name`(64))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Media Dimension`
 --
 
-DROP TABLE IF EXISTS `Media Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Media Dimension` (
-  `Media Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Media Key` mediumint(8) unsigned NOT NULL,
   `Media Type` enum('Web site','Physical Display','Printed Catalogue') NOT NULL,
   `Madia Type Outigger Key` mediumint(9) NOT NULL,
   `Media Name` varchar(255) NOT NULL,
@@ -3817,18 +3862,17 @@ CREATE TABLE `Media Dimension` (
   `Media Begin Date` datetime NOT NULL,
   `Media End Date` datetime NOT NULL,
   PRIMARY KEY (`Media Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Message Dimension`
 --
 
-DROP TABLE IF EXISTS `Message Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Message Dimension` (
-  `Message Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Message Key` mediumint(8) unsigned NOT NULL,
   `Message Author` varchar(255) DEFAULT NULL,
   `Message Title` varchar(255) DEFAULT NULL,
   `Message Location` varchar(255) DEFAULT NULL COMMENT 'Location in  the application',
@@ -3838,18 +3882,17 @@ CREATE TABLE `Message Dimension` (
   `Message Show From` datetime NOT NULL,
   `Message Show To` datetime NOT NULL,
   KEY `Message Key` (`Message Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Military Base Dimension`
 --
 
-DROP TABLE IF EXISTS `Military Base Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Military Base Dimension` (
-  `Military Base Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Military Base Key` mediumint(8) unsigned NOT NULL,
   `Military Base Country Key` mediumint(8) unsigned DEFAULT NULL,
   `Military Base Geographic Country Key` mediumint(8) unsigned DEFAULT NULL,
   `Military Base Name` varchar(255) DEFAULT NULL,
@@ -3857,18 +3900,17 @@ CREATE TABLE `Military Base Dimension` (
   `Military Base Type` varchar(255) DEFAULT NULL,
   `Military Base Post Code` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Military Base Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Order Basket History Dimension`
 --
 
-DROP TABLE IF EXISTS `Order Basket History Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Order Basket History Dimension` (
-  `Order Basket History Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Order Basket History Key` int(10) unsigned NOT NULL,
   `Date` datetime DEFAULT NULL,
   `Order Transaction Key` int(10) unsigned DEFAULT NULL,
   `Site Key` mediumint(8) unsigned NOT NULL,
@@ -3885,14 +3927,13 @@ CREATE TABLE `Order Basket History Dimension` (
   PRIMARY KEY (`Order Basket History Key`),
   KEY `Date` (`Date`),
   KEY `Order Key` (`Order Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Order Deal Bridge`
 --
 
-DROP TABLE IF EXISTS `Order Deal Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Order Deal Bridge` (
@@ -3909,14 +3950,13 @@ CREATE TABLE `Order Deal Bridge` (
   KEY `Used` (`Used`),
   KEY `Deal Component Key` (`Deal Component Key`),
   KEY `Deal Campaign Key` (`Deal Campaign Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Order Delivery Note Bridge`
 --
 
-DROP TABLE IF EXISTS `Order Delivery Note Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Order Delivery Note Bridge` (
@@ -3925,18 +3965,17 @@ CREATE TABLE `Order Delivery Note Bridge` (
   PRIMARY KEY (`Order Key`,`Delivery Note Key`),
   KEY `Order Key` (`Order Key`),
   KEY `Delivery Note Key` (`Delivery Note Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Order Dimension`
 --
 
-DROP TABLE IF EXISTS `Order Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Order Dimension` (
-  `Order Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Order Key` mediumint(8) unsigned NOT NULL,
   `Order Date` datetime DEFAULT NULL COMMENT 'Date when the order where first placed',
   `Order Created Date` datetime DEFAULT NULL,
   `Order Checkout Submitted Payment Date` datetime DEFAULT NULL,
@@ -3962,8 +4001,6 @@ CREATE TABLE `Order Dimension` (
   `Order Customer Order Number` mediumint(8) unsigned NOT NULL DEFAULT '1',
   `Order Site Key` mediumint(8) unsigned DEFAULT NULL,
   `Order Store Key` mediumint(8) unsigned DEFAULT NULL,
-  `Order Store Code` varchar(32) DEFAULT NULL,
-  `Order XHTML Store` text,
   `Order XHTML Sales Representative` text,
   `Order Payment Method` enum('Credit Card','Cash','Paypal','Check','Bank Transfer','Cash on Delivery','Other','Unknown') NOT NULL DEFAULT 'Unknown',
   `Order Payment Account Key` mediumint(9) DEFAULT NULL,
@@ -4120,14 +4157,13 @@ CREATE TABLE `Order Dimension` (
   KEY `Order Send to Warehouse Date` (`Order Send to Warehouse Date`),
   KEY `Order Dispatched Date` (`Order Dispatched Date`),
   KEY `Order Show in Warehouse Orders` (`Order Show in Warehouse Orders`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Order History Bridge`
 --
 
-DROP TABLE IF EXISTS `Order History Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Order History Bridge` (
@@ -4141,18 +4177,17 @@ CREATE TABLE `Order History Bridge` (
   KEY `Deletable` (`Deletable`),
   KEY `History Key` (`History Key`),
   KEY `Type` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Order Import Metadata`
 --
 
-DROP TABLE IF EXISTS `Order Import Metadata`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Order Import Metadata` (
-  `Order Import Metadata Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Order Import Metadata Key` mediumint(8) unsigned NOT NULL,
   `Metadata` varchar(64) DEFAULT NULL,
   `Name` varchar(15) DEFAULT NULL,
   `Import Date` datetime DEFAULT NULL,
@@ -4167,14 +4202,13 @@ CREATE TABLE `Order Import Metadata` (
   UNIQUE KEY `Metadata` (`Metadata`),
   KEY `Name` (`Name`),
   KEY `Import Date` (`Import Date`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Order Invoice Bridge`
 --
 
-DROP TABLE IF EXISTS `Order Invoice Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Order Invoice Bridge` (
@@ -4183,18 +4217,17 @@ CREATE TABLE `Order Invoice Bridge` (
   PRIMARY KEY (`Order Key`,`Invoice Key`),
   KEY `Order Key` (`Order Key`),
   KEY `Invoice Key` (`Invoice Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Order Meta Transaction Deal Dimension`
 --
 
-DROP TABLE IF EXISTS `Order Meta Transaction Deal Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Order Meta Transaction Deal Dimension` (
-  `Order Meta Transaction Deal Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Order Meta Transaction Deal Key` mediumint(8) unsigned NOT NULL,
   `Order Key` mediumint(8) unsigned NOT NULL,
   `Deal Campaign Key` mediumint(8) unsigned DEFAULT NULL,
   `Deal Key` mediumint(9) NOT NULL,
@@ -4213,14 +4246,13 @@ CREATE TABLE `Order Meta Transaction Deal Dimension` (
   KEY `Order Key` (`Order Key`),
   KEY `Bonus Order Transaction Fact Key` (`Bonus Order Transaction Fact Key`),
   KEY `Order Meta Transaction Deal Type` (`Order Meta Transaction Deal Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Order No Product Transaction Deal Bridge`
 --
 
-DROP TABLE IF EXISTS `Order No Product Transaction Deal Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Order No Product Transaction Deal Bridge` (
@@ -4234,18 +4266,17 @@ CREATE TABLE `Order No Product Transaction Deal Bridge` (
   `Fraction Discount` float NOT NULL DEFAULT '0',
   PRIMARY KEY (`Order No Product Transaction Fact Key`),
   KEY `Order Key` (`Order Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Order No Product Transaction Fact`
 --
 
-DROP TABLE IF EXISTS `Order No Product Transaction Fact`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Order No Product Transaction Fact` (
-  `Order No Product Transaction Fact Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Order No Product Transaction Fact Key` int(10) unsigned NOT NULL,
   `Order Date` datetime DEFAULT NULL,
   `Delivery Note Date` datetime DEFAULT NULL,
   `Invoice Date` datetime DEFAULT NULL,
@@ -4291,14 +4322,13 @@ CREATE TABLE `Order No Product Transaction Fact` (
   KEY `Transaction Type Key` (`Transaction Type Key`),
   KEY `Refund Key` (`Refund Key`),
   KEY `Affected Order Key` (`Affected Order Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Order Payment Bridge`
 --
 
-DROP TABLE IF EXISTS `Order Payment Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Order Payment Bridge` (
@@ -4311,18 +4341,17 @@ CREATE TABLE `Order Payment Bridge` (
   UNIQUE KEY `Order Key` (`Order Key`,`Payment Key`),
   KEY `Order Key_2` (`Order Key`),
   KEY `Is Account Payment` (`Is Account Payment`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Order Post Transaction Dimension`
 --
 
-DROP TABLE IF EXISTS `Order Post Transaction Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Order Post Transaction Dimension` (
-  `Order Post Transaction Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Order Post Transaction Key` mediumint(8) unsigned NOT NULL,
   `Order Transaction Fact Key` int(8) unsigned NOT NULL,
   `Order Post Transaction Fact Key` int(8) unsigned DEFAULT NULL,
   `Order Key` mediumint(8) unsigned DEFAULT NULL,
@@ -4346,18 +4375,17 @@ CREATE TABLE `Order Post Transaction Dimension` (
   KEY `Order Post Transaction Fact Key` (`Order Post Transaction Fact Key`),
   KEY `Order Post Transaction Metadata` (`Order Post Transaction Metadata`),
   KEY `Delivery Note Key` (`Delivery Note Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Order Post Transaction In Process Dimension`
 --
 
-DROP TABLE IF EXISTS `Order Post Transaction In Process Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Order Post Transaction In Process Dimension` (
-  `Order Post Transaction In Process Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Order Post Transaction In Process Key` mediumint(8) unsigned NOT NULL,
   `Order Transaction In Process Key` mediumint(8) unsigned NOT NULL,
   `Order Key` mediumint(8) unsigned NOT NULL,
   `Quantity` float NOT NULL,
@@ -4366,14 +4394,13 @@ CREATE TABLE `Order Post Transaction In Process Dimension` (
   `To Be Returned` enum('Yes','No') NOT NULL DEFAULT 'No',
   PRIMARY KEY (`Order Post Transaction In Process Key`),
   KEY `Order Transaction In Process Key` (`Order Transaction In Process Key`,`Order Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Order Sales Representative Bridge`
 --
 
-DROP TABLE IF EXISTS `Order Sales Representative Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Order Sales Representative Bridge` (
@@ -4381,14 +4408,13 @@ CREATE TABLE `Order Sales Representative Bridge` (
   `Staff Key` mediumint(8) unsigned NOT NULL,
   `Share` float NOT NULL DEFAULT '1',
   PRIMARY KEY (`Order Key`,`Staff Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Order Spanshot Fact`
 --
 
-DROP TABLE IF EXISTS `Order Spanshot Fact`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Order Spanshot Fact` (
@@ -4409,14 +4435,13 @@ CREATE TABLE `Order Spanshot Fact` (
   KEY `Product Family Key` (`Product Family Key`),
   KEY `Product Department Key` (`Product Department Key`),
   KEY `Product ID` (`Product ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Order Transaction Deal Bridge`
 --
 
-DROP TABLE IF EXISTS `Order Transaction Deal Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Order Transaction Deal Bridge` (
@@ -4436,18 +4461,17 @@ CREATE TABLE `Order Transaction Deal Bridge` (
   KEY `Order Transaction Fact Key` (`Order Transaction Fact Key`),
   KEY `Deal Key` (`Deal Key`),
   KEY `Deal Campaign Key` (`Deal Campaign Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Order Transaction Fact`
 --
 
-DROP TABLE IF EXISTS `Order Transaction Fact`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Order Transaction Fact` (
-  `Order Transaction Fact Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Order Transaction Fact Key` int(10) unsigned NOT NULL,
   `Order Date` datetime DEFAULT NULL,
   `Paid Date` datetime DEFAULT NULL,
   `Order Last Updated Date` datetime DEFAULT NULL,
@@ -4593,26 +4617,25 @@ CREATE TABLE `Order Transaction Fact` (
   KEY `Refund Metadata` (`Refund Metadata`),
   KEY `Product ID_2` (`Product ID`,`Customer Key`),
   KEY `Product Family Key_2` (`Product Family Key`,`Customer Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+)
 /*!50100 PARTITION BY RANGE (to_days(`Invoice Date`))
-(PARTITION p0 VALUES LESS THAN (732677) ENGINE = InnoDB,
- PARTITION p1 VALUES LESS THAN (733042) ENGINE = InnoDB,
- PARTITION p2 VALUES LESS THAN (733407) ENGINE = InnoDB,
- PARTITION p3 VALUES LESS THAN (733773) ENGINE = InnoDB,
- PARTITION p4 VALUES LESS THAN (734138) ENGINE = InnoDB,
- PARTITION p5 VALUES LESS THAN (734503) ENGINE = InnoDB,
- PARTITION p6 VALUES LESS THAN (734868) ENGINE = InnoDB,
- PARTITION p7 VALUES LESS THAN (735234) ENGINE = InnoDB,
- PARTITION p8 VALUES LESS THAN (735385) ENGINE = InnoDB,
- PARTITION p9 VALUES LESS THAN (735599) ENGINE = InnoDB,
- PARTITION p10 VALUES LESS THAN MAXVALUE ENGINE = InnoDB) */;
+(PARTITION p0 VALUES LESS THAN (732677),
+ PARTITION p1 VALUES LESS THAN (733042),
+ PARTITION p2 VALUES LESS THAN (733407),
+ PARTITION p3 VALUES LESS THAN (733773),
+ PARTITION p4 VALUES LESS THAN (734138),
+ PARTITION p5 VALUES LESS THAN (734503),
+ PARTITION p6 VALUES LESS THAN (734868),
+ PARTITION p7 VALUES LESS THAN (735234),
+ PARTITION p8 VALUES LESS THAN (735385),
+ PARTITION p9 VALUES LESS THAN (735599),
+ PARTITION p10 VALUES LESS THAN MAXVALUE) */;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Order Transaction Out of Stock in Basket Bridge`
 --
 
-DROP TABLE IF EXISTS `Order Transaction Out of Stock in Basket Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Order Transaction Out of Stock in Basket Bridge` (
@@ -4624,39 +4647,37 @@ CREATE TABLE `Order Transaction Out of Stock in Basket Bridge` (
   `Product ID` mediumint(8) unsigned NOT NULL,
   `Quantity` float NOT NULL,
   `Amount` decimal(14,2) NOT NULL DEFAULT '0.00' COMMENT 'Net',
-  UNIQUE KEY `Order Transaction Key` (`Order Transaction Fact Key`) USING BTREE,
+  UNIQUE KEY `Order Transaction Key` (`Order Transaction Fact Key`),
   KEY `Store Key` (`Store Key`),
   KEY `Order Key` (`Order Key`),
   KEY `Product ID` (`Product ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Organization Dimension`
 --
 
-DROP TABLE IF EXISTS `Organization Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Organization Dimension` (
-  `Organization Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Organization Key` mediumint(8) unsigned NOT NULL,
   `Organization Code` varchar(16) NOT NULL,
   `Organization Name` varchar(255) NOT NULL,
   `Organization Main Contact` mediumint(9) NOT NULL,
   `Organization Description` text NOT NULL,
   PRIMARY KEY (`Organization Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Page Dimension`
 --
 
-DROP TABLE IF EXISTS `Page Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Page Dimension` (
-  `Page Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Page Key` mediumint(8) unsigned NOT NULL,
   `Page Type` enum('External','Store','Internal') NOT NULL,
   `Page Title` varchar(128) NOT NULL,
   `Page Short Title` varchar(64) NOT NULL,
@@ -4669,18 +4690,17 @@ CREATE TABLE `Page Dimension` (
   `Page Published` enum('Yes','No') NOT NULL DEFAULT 'No',
   PRIMARY KEY (`Page Key`),
   KEY `Page URL` (`Page URL`(64))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Page Footer Dimension`
 --
 
-DROP TABLE IF EXISTS `Page Footer Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Page Footer Dimension` (
-  `Page Footer Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Page Footer Key` mediumint(8) unsigned NOT NULL,
   `Page Footer Name` varchar(256) CHARACTER SET latin1 NOT NULL,
   `Page Footer Preview Image Key` mediumint(9) DEFAULT NULL,
   `Page Footer Preview Snapshot Last Update` datetime DEFAULT NULL,
@@ -4690,14 +4710,13 @@ CREATE TABLE `Page Footer Dimension` (
   `CSS` longtext CHARACTER SET latin1 NOT NULL,
   `Javascript` longtext CHARACTER SET latin1 NOT NULL,
   PRIMARY KEY (`Page Footer Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Page Footer External File Bridge`
 --
 
-DROP TABLE IF EXISTS `Page Footer External File Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Page Footer External File Bridge` (
@@ -4706,18 +4725,17 @@ CREATE TABLE `Page Footer External File Bridge` (
   `External File Type` enum('Javascript','CSS') CHARACTER SET latin1 NOT NULL,
   PRIMARY KEY (`Page Store External File Key`,`Page Footer Key`),
   KEY `Page Footer Key` (`Page Footer Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Page Header Dimension`
 --
 
-DROP TABLE IF EXISTS `Page Header Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Page Header Dimension` (
-  `Page Header Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Page Header Key` mediumint(8) unsigned NOT NULL,
   `Page Header Name` varchar(256) CHARACTER SET latin1 NOT NULL,
   `Page Header Preview Image Key` mediumint(9) DEFAULT NULL,
   `Page Header Preview Snapshot Last Update` datetime DEFAULT NULL,
@@ -4730,14 +4748,13 @@ CREATE TABLE `Page Header Dimension` (
   PRIMARY KEY (`Page Header Key`),
   KEY `Default Site` (`Default Site`),
   KEY `Site Key` (`Site Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Page Header External File Bridge`
 --
 
-DROP TABLE IF EXISTS `Page Header External File Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Page Header External File Bridge` (
@@ -4746,14 +4763,13 @@ CREATE TABLE `Page Header External File Bridge` (
   `External File Type` enum('Javascript','CSS') CHARACTER SET latin1 NOT NULL,
   PRIMARY KEY (`Page Store External File Key`,`Page Header Key`),
   KEY `Page Header Key` (`Page Header Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Page Internal Dimension`
 --
 
-DROP TABLE IF EXISTS `Page Internal Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Page Internal Dimension` (
@@ -4764,18 +4780,17 @@ CREATE TABLE `Page Internal Dimension` (
   `Page Category` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Page Key`),
   KEY `Page Section` (`Page Section`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Page Product Button Dimension`
 --
 
-DROP TABLE IF EXISTS `Page Product Button Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Page Product Button Dimension` (
-  `Page Product Button Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Page Product Button Key` mediumint(8) unsigned NOT NULL,
   `Site Key` mediumint(8) unsigned NOT NULL,
   `Page Key` mediumint(8) unsigned NOT NULL,
   `Product ID` mediumint(8) unsigned NOT NULL,
@@ -4784,18 +4799,17 @@ CREATE TABLE `Page Product Button Dimension` (
   KEY `Product ID` (`Product ID`),
   KEY `Page Key` (`Page Key`),
   KEY `Site Key` (`Site Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Page Product Dimension`
 --
 
-DROP TABLE IF EXISTS `Page Product Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Page Product Dimension` (
-  `Page Product Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Page Product Key` mediumint(8) unsigned NOT NULL,
   `Site Key` mediumint(8) unsigned NOT NULL,
   `Parent Key` mediumint(8) unsigned NOT NULL,
   `Page Key` mediumint(8) unsigned NOT NULL,
@@ -4811,18 +4825,17 @@ CREATE TABLE `Page Product Dimension` (
   KEY `Site Key` (`Site Key`),
   KEY `Family Key` (`Family Key`),
   KEY `State` (`State`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Page Product List Dimension`
 --
 
-DROP TABLE IF EXISTS `Page Product List Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Page Product List Dimension` (
-  `Page Product List Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Page Product List Key` mediumint(8) unsigned NOT NULL,
   `Page Product List Code` varchar(12) NOT NULL DEFAULT 'default',
   `Site Key` mediumint(8) unsigned NOT NULL,
   `Page Key` mediumint(8) unsigned NOT NULL,
@@ -4837,18 +4850,17 @@ CREATE TABLE `Page Product List Dimension` (
   PRIMARY KEY (`Page Product List Key`),
   KEY `Page Key` (`Page Key`),
   KEY `Site Key` (`Site Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Page Redirection Dimension`
 --
 
-DROP TABLE IF EXISTS `Page Redirection Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Page Redirection Dimension` (
-  `Page Redirection Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Page Redirection Key` mediumint(8) unsigned NOT NULL,
   `Source Host` varchar(1024) NOT NULL,
   `Source Path` varchar(1024) NOT NULL,
   `Source File` varchar(1024) NOT NULL,
@@ -4859,14 +4871,13 @@ CREATE TABLE `Page Redirection Dimension` (
   PRIMARY KEY (`Page Redirection Key`),
   KEY `Page Target Key` (`Page Target Key`),
   KEY `Source Host` (`Source Host`(32),`Source Path`(32),`Source File`(32))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Page Snapshot Fact`
 --
 
-DROP TABLE IF EXISTS `Page Snapshot Fact`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Page Snapshot Fact` (
@@ -4880,18 +4891,17 @@ CREATE TABLE `Page Snapshot Fact` (
   KEY `Site Key` (`Site Key`),
   KEY `Page Key` (`Page Key`),
   KEY `Date` (`Date`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Page State Timeline`
 --
 
-DROP TABLE IF EXISTS `Page State Timeline`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Page State Timeline` (
-  `Page State Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Page State Key` mediumint(8) unsigned NOT NULL,
   `Page Key` mediumint(8) unsigned NOT NULL,
   `Site Key` mediumint(8) unsigned NOT NULL,
   `Store Key` mediumint(8) unsigned NOT NULL,
@@ -4900,18 +4910,17 @@ CREATE TABLE `Page State Timeline` (
   `Operation` enum('Created','Change','Deleted') NOT NULL,
   PRIMARY KEY (`Page State Key`),
   KEY `Operation` (`Operation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Page Store Data Dimension`
 --
 
-DROP TABLE IF EXISTS `Page Store Data Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Page Store Data Dimension` (
-  `Page Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Page Key` mediumint(8) unsigned NOT NULL,
   `Page Store Total Acc Visitors` mediumint(9) NOT NULL DEFAULT '0',
   `Page Store Total Acc Sessions` mediumint(9) NOT NULL DEFAULT '0',
   `Page Store Total Acc Requests` mediumint(9) NOT NULL DEFAULT '0',
@@ -5015,18 +5024,17 @@ CREATE TABLE `Page Store Data Dimension` (
   `Page Store Yesterday Acc Users Requests` mediumint(9) NOT NULL DEFAULT '0',
   `Page Store Yesterday Acc Users Sessions` mediumint(9) NOT NULL DEFAULT '0',
   PRIMARY KEY (`Page Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Page Store Deleted Dimension`
 --
 
-DROP TABLE IF EXISTS `Page Store Deleted Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Page Store Deleted Dimension` (
-  `Page Store Deleted Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Page Store Deleted Key` mediumint(8) unsigned NOT NULL,
   `Page Key` mediumint(8) unsigned DEFAULT NULL,
   `Page Code` varchar(256) NOT NULL,
   `Site Key` mediumint(8) unsigned NOT NULL,
@@ -5044,18 +5052,17 @@ CREATE TABLE `Page Store Deleted Dimension` (
   PRIMARY KEY (`Page Store Deleted Key`),
   KEY `Site Key` (`Site Key`),
   KEY `Store Key` (`Store Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Page Store Dimension`
 --
 
-DROP TABLE IF EXISTS `Page Store Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Page Store Dimension` (
-  `Page Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Page Key` mediumint(8) unsigned NOT NULL,
   `Page Code` varchar(64) NOT NULL,
   `Page State` enum('Online','Offline') NOT NULL DEFAULT 'Offline',
   `Page Stealth Mode` enum('Yes','No') CHARACTER SET ucs2 NOT NULL DEFAULT 'No',
@@ -5117,14 +5124,13 @@ CREATE TABLE `Page Store Dimension` (
   KEY `Page Code` (`Page Code`(5)),
   KEY `Page Store Section Type` (`Page Store Section Type`),
   KEY `Site Flag Key` (`Site Flag Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Page Store External File Bridge`
 --
 
-DROP TABLE IF EXISTS `Page Store External File Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Page Store External File Bridge` (
@@ -5133,44 +5139,41 @@ CREATE TABLE `Page Store External File Bridge` (
   `External File Type` enum('Javascript','CSS') CHARACTER SET latin1 NOT NULL,
   PRIMARY KEY (`Page Store External File Key`,`Page Key`),
   KEY `Page Key` (`Page Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Page Store External File Dimension`
 --
 
-DROP TABLE IF EXISTS `Page Store External File Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Page Store External File Dimension` (
-  `Page Store External File Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Page Store External File Key` mediumint(8) unsigned NOT NULL,
   `Page Store External File Name` varchar(256) CHARACTER SET latin1 NOT NULL,
   `Page Store External File Type` enum('Javascript','CSS') CHARACTER SET latin1 NOT NULL,
   `Page Store External File Content` longtext NOT NULL,
   PRIMARY KEY (`Page Store External File Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Page Store Found In Bridge`
 --
 
-DROP TABLE IF EXISTS `Page Store Found In Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Page Store Found In Bridge` (
   `Page Store Key` mediumint(8) unsigned NOT NULL,
   `Page Store Found In Key` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`Page Store Key`,`Page Store Found In Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Page Store Search Dimension`
 --
 
-DROP TABLE IF EXISTS `Page Store Search Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Page Store Search Dimension` (
@@ -5186,14 +5189,13 @@ CREATE TABLE `Page Store Search Dimension` (
   FULLTEXT KEY `Page Store Title_2` (`Page Store Title`),
   FULLTEXT KEY `Page Store Resume` (`Page Store Resume`),
   FULLTEXT KEY `Page Store Content` (`Page Store Content`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Page Store Search Query Dimension`
 --
 
-DROP TABLE IF EXISTS `Page Store Search Query Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Page Store Search Query Dimension` (
@@ -5207,18 +5209,17 @@ CREATE TABLE `Page Store Search Query Dimension` (
   KEY `Site Key` (`Site Key`),
   KEY `User Key` (`User Key`),
   KEY `Query` (`Query`(64))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Page Store Section Dimension`
 --
 
-DROP TABLE IF EXISTS `Page Store Section Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Page Store Section Dimension` (
-  `Page Store Section Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Page Store Section Key` mediumint(8) unsigned NOT NULL,
   `Site Key` smallint(5) unsigned NOT NULL,
   `Page Store Section Code` varchar(64) NOT NULL,
   `Page Store Section Logo Data` text,
@@ -5228,14 +5229,13 @@ CREATE TABLE `Page Store Section Dimension` (
   `Page Store Section Layout Data` text,
   PRIMARY KEY (`Page Store Section Key`),
   KEY `Site Key` (`Site Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Page Store See Also Bridge`
 --
 
-DROP TABLE IF EXISTS `Page Store See Also Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Page Store See Also Bridge` (
@@ -5244,18 +5244,17 @@ CREATE TABLE `Page Store See Also Bridge` (
   `Correlation Type` enum('Manual','Sales','Semantic','New') CHARACTER SET latin1 NOT NULL,
   `Correlation Value` float DEFAULT NULL,
   PRIMARY KEY (`Page Store Key`,`Page Store See Also Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Page URL Dimension`
 --
 
-DROP TABLE IF EXISTS `Page URL Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Page URL Dimension` (
-  `Page URL Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Page URL Key` mediumint(8) unsigned NOT NULL,
   `Page Key` mediumint(8) unsigned DEFAULT NULL,
   `Page URL Host` varchar(255) NOT NULL,
   `Page URL Path` varchar(255) NOT NULL,
@@ -5265,18 +5264,17 @@ CREATE TABLE `Page URL Dimension` (
   KEY `Page URL Host` (`Page URL Host`),
   KEY `Page URL Host_2` (`Page URL Host`,`Page URL Path`),
   KEY `Page URL` (`Page URL`(64))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Part Availability for Products Timeline`
 --
 
-DROP TABLE IF EXISTS `Part Availability for Products Timeline`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Part Availability for Products Timeline` (
-  `Part Availability for Products Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Part Availability for Products Key` mediumint(8) unsigned NOT NULL,
   `Part SKU` mediumint(8) unsigned NOT NULL,
   `Warehouse Key` smallint(5) unsigned NOT NULL,
   `User Key` mediumint(8) unsigned NOT NULL,
@@ -5290,18 +5288,17 @@ CREATE TABLE `Part Availability for Products Timeline` (
   KEY `Warehouse Key` (`Warehouse Key`),
   KEY `User Key` (`User Key`),
   KEY `Source` (`Source`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Part Category Dimension`
 --
 
-DROP TABLE IF EXISTS `Part Category Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Part Category Dimension` (
-  `Part Category Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Part Category Key` mediumint(8) unsigned NOT NULL,
   `Part Category Warehouse Key` smallint(5) unsigned DEFAULT '1',
   `Part Category Status` enum('NotInUse','InUse') NOT NULL DEFAULT 'InUse',
   `Part Category Current Stock Value` float NOT NULL DEFAULT '0',
@@ -5877,14 +5874,13 @@ CREATE TABLE `Part Category Dimension` (
   PRIMARY KEY (`Part Category Key`),
   KEY `Part Category Status` (`Part Category Status`),
   KEY `Part Category Warehouse Key` (`Part Category Warehouse Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Part Category History Bridge`
 --
 
-DROP TABLE IF EXISTS `Part Category History Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Part Category History Bridge` (
@@ -5894,27 +5890,25 @@ CREATE TABLE `Part Category History Bridge` (
   `Type` enum('Changes','Assign') NOT NULL,
   UNIQUE KEY `Warehouse Key` (`Warehouse Key`,`Category Key`,`History Key`),
   KEY `Type` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Part Custom Field Dimension`
 --
 
-DROP TABLE IF EXISTS `Part Custom Field Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Part Custom Field Dimension` (
   `Part SKU` mediumint(8) unsigned NOT NULL,
   KEY `Part SKU` (`Part SKU`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Part Data`
 --
 
-DROP TABLE IF EXISTS `Part Data`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Part Data` (
@@ -6488,19 +6482,33 @@ CREATE TABLE `Part Data` (
   `Part 1 Month Acc 1YD Margin` float NOT NULL DEFAULT '0',
   `Part 10 Day Acc 1YD Margin` float NOT NULL DEFAULT '0',
   `Part 1 Week Acc 1YD Margin` float NOT NULL DEFAULT '0',
-  KEY `Part SKU` (`Part SKU`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  UNIQUE KEY `Part SKU` (`Part SKU`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Part Deleted Dimension`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Part Deleted Dimension` (
+  `Part Deleted Key` mediumint(9) NOT NULL,
+  `Part Deleted Reference` varchar(255) DEFAULT NULL,
+  `Part Deleted Date` datetime DEFAULT NULL,
+  `Part Deleted Metadata` blob,
+  PRIMARY KEY (`Part Deleted Key`)
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Part Dimension`
 --
 
-DROP TABLE IF EXISTS `Part Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Part Dimension` (
-  `Part SKU` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Part SKU` mediumint(8) unsigned NOT NULL,
   `Part Reference` varchar(32) DEFAULT NULL,
   `Part Unit` enum('10','25','100','200','bag','ball','box','doz','dwt','ea','foot','gram','gross','hank','kilo','ib','m','oz','ozt','pair','pkg','set','skein','spool','strand','ten','tube','vial','yd') NOT NULL DEFAULT 'ea',
   `Part Status` enum('Not In Use','In Use') NOT NULL DEFAULT 'In Use',
@@ -6509,14 +6517,20 @@ CREATE TABLE `Part Dimension` (
   `Part Available for Products Configuration` enum('Yes','No','Automatic') NOT NULL DEFAULT 'No',
   `Part Main State` enum('Keeping','LastStock','Discontinued','NotKeeping') DEFAULT NULL,
   `Part Cost` decimal(12,4) DEFAULT '0.0000',
+  `Part Unit Price` float unsigned DEFAULT NULL,
+  `Part Unit RRP` float unsigned DEFAULT NULL,
   `Part XHTML Currently Used In` text,
+  `Part Stock Status` enum('Surplus','Optimal','Low','Critical','Out_Of_Stock','Error') NOT NULL DEFAULT 'Optimal',
   `Part Stock State` enum('Excess','Normal','Low','VeryLow','OutofStock','Error') NOT NULL DEFAULT 'Normal',
   `Part Last Stock` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Part Currently Used In` varchar(255) DEFAULT NULL,
   `Part XHTML Currently Supplied By` text,
   `Part XHTML Description` varchar(255) DEFAULT NULL,
+  `Part Package Description` varchar(255) DEFAULT NULL,
   `Part Unit Description` text,
   `Part Barcode` text,
+  `Part Barcode Key` mediumint(8) unsigned DEFAULT NULL,
+  `Part Barcode Number` bigint(20) unsigned DEFAULT NULL,
   `Part Barcode Type` enum('none','ean8','ean13',' code11','code39','code128','codabar') NOT NULL DEFAULT 'code128',
   `Part Barcode Data Source` enum('SKU','Reference','Other') NOT NULL DEFAULT 'SKU',
   `Part Barcode Data` text,
@@ -6555,6 +6569,8 @@ CREATE TABLE `Part Dimension` (
   `Part Unit Dimensions Diameter Display` float DEFAULT NULL,
   `Part Unit Dimensions Volume` float DEFAULT NULL,
   `Part Unit XHTML Dimensions` varchar(256) DEFAULT NULL,
+  `Part Unit Dimensions` varchar(255) DEFAULT NULL,
+  `Part Unit Volume` float DEFAULT NULL,
   `Part Materials` text,
   `Part Unit XHTML Materials` text,
   `Part Package Dimensions Type` enum('Rectangular','Cilinder','Sphere') DEFAULT 'Rectangular',
@@ -6618,15 +6634,16 @@ CREATE TABLE `Part Dimension` (
   KEY `Part Reference` (`Part Reference`),
   KEY `Part Available for Products Configuration` (`Part Available for Products Configuration`),
   KEY `Part Next Shipment State` (`Part Next Shipment State`),
-  KEY `Part Units` (`Part Units`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  KEY `Part Units` (`Part Units`),
+  KEY `Part Barcode Number` (`Part Barcode Number`),
+  KEY `Part Barcode Key` (`Part Barcode Key`)
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Part History Bridge`
 --
 
-DROP TABLE IF EXISTS `Part History Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Part History Bridge` (
@@ -6640,14 +6657,13 @@ CREATE TABLE `Part History Bridge` (
   KEY `Deletable` (`Deletable`),
   KEY `History Key` (`History Key`),
   KEY `Type` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Part Location Dimension`
 --
 
-DROP TABLE IF EXISTS `Part Location Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Part Location Dimension` (
@@ -6668,32 +6684,30 @@ CREATE TABLE `Part Location Dimension` (
   KEY `Part SKU` (`Part SKU`),
   KEY `Location Key` (`Location Key`),
   KEY `Part Location Warehouse Key` (`Part Location Warehouse Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Part Material Bridge`
 --
 
-DROP TABLE IF EXISTS `Part Material Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Part Material Bridge` (
-  `Part Material Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Part Material Key` int(10) unsigned NOT NULL,
   `Part SKU` mediumint(8) unsigned NOT NULL,
   `Material Key` mediumint(8) unsigned NOT NULL,
   `Ratio` double DEFAULT NULL,
   `May Contain` enum('Yes','No') NOT NULL DEFAULT 'No',
   PRIMARY KEY (`Part Material Key`),
   UNIQUE KEY `Part SKU` (`Part SKU`,`Material Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Part Picking Fact`
 --
 
-DROP TABLE IF EXISTS `Part Picking Fact`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Part Picking Fact` (
@@ -6711,56 +6725,39 @@ CREATE TABLE `Part Picking Fact` (
   KEY `Part SKU` (`Part SKU`),
   KEY `Delivery Note Key` (`Delivery Note Key`),
   KEY `Order Original Metadata` (`Original Metadata`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Part Supplier Bridge`
 --
 
-DROP TABLE IF EXISTS `Part Supplier Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Part Supplier Bridge` (
   `Part Key` mediumint(8) unsigned NOT NULL,
   `Supplier Key` mediumint(8) unsigned NOT NULL,
   UNIQUE KEY `Part Key` (`Part Key`,`Supplier Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Part Vendor Bridge`
 --
 
-DROP TABLE IF EXISTS `Part Vendor Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Part Vendor Bridge` (
   `Part Key` mediumint(8) unsigned NOT NULL,
   `Vendor Key` mediumint(8) unsigned NOT NULL,
   UNIQUE KEY `Part Key` (`Part Key`,`Vendor Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Part Warehouse Bridge`
---
-
-DROP TABLE IF EXISTS `Part Warehouse Bridge`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Part Warehouse Bridge` (
-  `Part SKU` mediumint(8) unsigned NOT NULL,
-  `Warehouse Key` smallint(5) unsigned NOT NULL,
-  PRIMARY KEY (`Part SKU`,`Warehouse Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Part Week Forecasting Dimension`
 --
 
-DROP TABLE IF EXISTS `Part Week Forecasting Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Part Week Forecasting Dimension` (
@@ -6769,18 +6766,17 @@ CREATE TABLE `Part Week Forecasting Dimension` (
   `Part Forecasting Week Value` float NOT NULL,
   KEY `Part Forecasting Part SKU` (`Part Forecasting Part SKU`),
   KEY `Part Forecasting Date` (`Part Forecasting Date`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Payment Account Dimension`
 --
 
-DROP TABLE IF EXISTS `Payment Account Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Payment Account Dimension` (
-  `Payment Account Key` mediumint(9) NOT NULL AUTO_INCREMENT,
+  `Payment Account Key` mediumint(9) NOT NULL,
   `Payment Service Provider Key` mediumint(9) NOT NULL,
   `Payment Account Code` varchar(64) NOT NULL,
   `Payment Account Name` varchar(32) NOT NULL,
@@ -6817,14 +6813,13 @@ CREATE TABLE `Payment Account Dimension` (
   PRIMARY KEY (`Payment Account Key`),
   UNIQUE KEY `Payment Account Code` (`Payment Account Code`),
   KEY `Payment Service Provider Key` (`Payment Service Provider Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Payment Account History Bridge`
 --
 
-DROP TABLE IF EXISTS `Payment Account History Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Payment Account History Bridge` (
@@ -6838,14 +6833,13 @@ CREATE TABLE `Payment Account History Bridge` (
   KEY `History Key` (`History Key`),
   KEY `Deletable` (`Deletable`),
   KEY `Type` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Payment Account Site Bridge`
 --
 
-DROP TABLE IF EXISTS `Payment Account Site Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Payment Account Site Bridge` (
@@ -6860,18 +6854,17 @@ CREATE TABLE `Payment Account Site Bridge` (
   PRIMARY KEY (`Payment Account Key`,`Site Key`),
   KEY `Site Key` (`Site Key`,`Show In Cart`),
   KEY `Show Cart Order` (`Show Cart Order`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Payment Dimension`
 --
 
-DROP TABLE IF EXISTS `Payment Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Payment Dimension` (
-  `Payment Key` mediumint(9) NOT NULL AUTO_INCREMENT,
+  `Payment Key` mediumint(9) NOT NULL,
   `Payment Account Key` mediumint(9) NOT NULL,
   `Payment Account Code` varchar(64) NOT NULL,
   `Payment Service Provider Key` mediumint(9) NOT NULL,
@@ -6922,14 +6915,13 @@ CREATE TABLE `Payment Dimension` (
   KEY `Payment Method` (`Payment Method`),
   KEY `Payment Order Key` (`Payment Order Key`),
   KEY `Payment Transaction Status` (`Payment Transaction Status`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Payment History Bridge`
 --
 
-DROP TABLE IF EXISTS `Payment History Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Payment History Bridge` (
@@ -6943,18 +6935,17 @@ CREATE TABLE `Payment History Bridge` (
   KEY `History Key` (`History Key`),
   KEY `Deletable` (`Deletable`),
   KEY `Type` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Payment Service Provider Dimension`
 --
 
-DROP TABLE IF EXISTS `Payment Service Provider Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Payment Service Provider Dimension` (
-  `Payment Service Provider Key` mediumint(9) unsigned NOT NULL AUTO_INCREMENT,
+  `Payment Service Provider Key` mediumint(9) unsigned NOT NULL,
   `Payment Service Provider Code` varchar(64) NOT NULL,
   `Payment Service Provider Name` varchar(128) NOT NULL,
   `Payment Service Provider Type` enum('EPS','EBeP','Bank','Cash','Account','ConD') NOT NULL,
@@ -6967,14 +6958,13 @@ CREATE TABLE `Payment Service Provider Dimension` (
   `Payment Service Provider Balance Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (`Payment Service Provider Key`),
   KEY `Payment Service Provider Code` (`Payment Service Provider Code`(16))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Payment Service Provider History Bridge`
 --
 
-DROP TABLE IF EXISTS `Payment Service Provider History Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Payment Service Provider History Bridge` (
@@ -6988,32 +6978,30 @@ CREATE TABLE `Payment Service Provider History Bridge` (
   KEY `History Key` (`History Key`),
   KEY `Deletable` (`Deletable`),
   KEY `Type` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Payment Service Provider Payment Method Bridge`
 --
 
-DROP TABLE IF EXISTS `Payment Service Provider Payment Method Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Payment Service Provider Payment Method Bridge` (
   `Payment Service Provider Key` smallint(5) unsigned NOT NULL,
   `Payment Method` enum('Credit Card','Cash','Paypal','Check','Bank Transfer','Cash on Delivery','Other','Customer Account') NOT NULL,
   UNIQUE KEY `Payment Service Provider Key` (`Payment Service Provider Key`,`Payment Method`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product Availability Timeline`
 --
 
-DROP TABLE IF EXISTS `Product Availability Timeline`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product Availability Timeline` (
-  `Product Availability Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Product Availability Key` mediumint(8) unsigned NOT NULL,
   `Product ID` mediumint(8) unsigned NOT NULL,
   `Store Key` mediumint(8) unsigned NOT NULL,
   `Department Key` mediumint(8) unsigned NOT NULL,
@@ -7032,28 +7020,26 @@ CREATE TABLE `Product Availability Timeline` (
   KEY `Store Key` (`Store Key`),
   KEY `User Key` (`User Key`),
   KEY `Source` (`Source`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product Category Bridge`
 --
 
-DROP TABLE IF EXISTS `Product Category Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product Category Bridge` (
   `Product Key` mediumint(8) unsigned NOT NULL,
   `Category Key` mediumint(8) unsigned NOT NULL,
   UNIQUE KEY `Product Key` (`Product Key`,`Category Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product Category Dimension`
 --
 
-DROP TABLE IF EXISTS `Product Category Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product Category Dimension` (
@@ -7160,14 +7146,13 @@ CREATE TABLE `Product Category Dimension` (
   `Product Category Currency Code` varchar(3) NOT NULL DEFAULT 'GBP',
   PRIMARY KEY (`Product Category Key`,`Product Category Store Key`),
   KEY `Product Category Store Key` (`Product Category Store Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product Category History Bridge`
 --
 
-DROP TABLE IF EXISTS `Product Category History Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product Category History Bridge` (
@@ -7177,14 +7162,13 @@ CREATE TABLE `Product Category History Bridge` (
   `Type` enum('Changes','Assign') NOT NULL,
   UNIQUE KEY `Store Key` (`Store Key`,`Category Key`,`History Key`),
   KEY `Type` (`Type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product Code Default Currency`
 --
 
-DROP TABLE IF EXISTS `Product Code Default Currency`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product Code Default Currency` (
@@ -7210,18 +7194,17 @@ CREATE TABLE `Product Code Default Currency` (
   `Product Code DC 1 Week Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product Code DC 1 Week Acc Profit` decimal(12,2) DEFAULT NULL,
   PRIMARY KEY (`Product Code`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product Data Dimension`
 --
 
-DROP TABLE IF EXISTS `Product Data Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product Data Dimension` (
-  `Product ID` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Product ID` mediumint(8) unsigned NOT NULL,
   `Product Total Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product Total Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product Total Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
@@ -7503,32 +7486,30 @@ CREATE TABLE `Product Data Dimension` (
   `Product 10 Day Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
   `Product 1 Week Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
   PRIMARY KEY (`Product ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product Department Bridge`
 --
 
-DROP TABLE IF EXISTS `Product Department Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product Department Bridge` (
   `Product Key` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Product Department Key` mediumint(8) unsigned NOT NULL DEFAULT '0',
   UNIQUE KEY `Product Key` (`Product Key`,`Product Department Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product Department Data Dimension`
 --
 
-DROP TABLE IF EXISTS `Product Department Data Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product Department Data Dimension` (
-  `Product Department Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Product Department Key` mediumint(8) unsigned NOT NULL,
   `Product Department Total Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product Department Total Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product Department Total Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
@@ -7820,18 +7801,17 @@ CREATE TABLE `Product Department Data Dimension` (
   `Product Department 10 Day Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
   `Product Department 3 Year Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (`Product Department Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product Department Default Currency`
 --
 
-DROP TABLE IF EXISTS `Product Department Default Currency`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product Department Default Currency` (
-  `Product Department Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Product Department Key` mediumint(8) unsigned NOT NULL,
   `Product Department DC Total Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product Department DC Total Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product Department DC Total Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
@@ -7893,18 +7873,17 @@ CREATE TABLE `Product Department Default Currency` (
   `Product Department DC Last Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product Department DC Last Month Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (`Product Department Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product Department Dimension`
 --
 
-DROP TABLE IF EXISTS `Product Department Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product Department Dimension` (
-  `Product Department Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Product Department Key` mediumint(8) unsigned NOT NULL,
   `Product Department Type` enum('Normal','Unknown','Historic') NOT NULL DEFAULT 'Normal',
   `Product Department Sales Type` enum('Public Sale','Private Sale','Not for Sale') NOT NULL DEFAULT 'Public Sale',
   `Product Department Store Key` smallint(5) unsigned NOT NULL,
@@ -7968,14 +7947,13 @@ CREATE TABLE `Product Department Dimension` (
   KEY `Product Department Name` (`Product Department Name`),
   KEY `Product Department Store Key` (`Product Department Store Key`),
   KEY `Product Department Sales Type` (`Product Department Sales Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product Department History Bridge`
 --
 
-DROP TABLE IF EXISTS `Product Department History Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product Department History Bridge` (
@@ -7989,19 +7967,19 @@ CREATE TABLE `Product Department History Bridge` (
   KEY `Deletable` (`Deletable`),
   KEY `History Key` (`History Key`),
   KEY `Type` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product Dimension`
 --
 
-DROP TABLE IF EXISTS `Product Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product Dimension` (
-  `Product ID` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Product ID` mediumint(8) unsigned NOT NULL,
   `Product Current Key` mediumint(8) unsigned NOT NULL,
+  `Product Status` enum('InProcess','Active','Suspended','Discontinued') DEFAULT 'Active',
   `Product Type` enum('Normal','Fuzzy') NOT NULL DEFAULT 'Normal',
   `Product Record Type` enum('Normal','Historic') NOT NULL DEFAULT 'Normal',
   `Product Stage` enum('In Process','New','Normal') NOT NULL,
@@ -8039,6 +8017,8 @@ CREATE TABLE `Product Dimension` (
   `Product Description` text,
   `Product Slogan` varchar(256) DEFAULT NULL,
   `Product Origin Country Code` varchar(256) DEFAULT NULL,
+  `Product Family Category Key` mediumint(8) unsigned DEFAULT NULL,
+  `Product Department Category Key` mediumint(8) unsigned DEFAULT NULL,
   `Product Family Key` mediumint(8) unsigned DEFAULT NULL,
   `Product Family Code` varchar(32) DEFAULT NULL,
   `Product Family Name` varchar(255) DEFAULT NULL,
@@ -8065,6 +8045,7 @@ CREATE TABLE `Product Dimension` (
   `Product Unit Dimensions Diameter Display` float DEFAULT NULL,
   `Product Unit Dimensions Volume` float DEFAULT NULL,
   `Product Unit XHTML Dimensions` varchar(256) DEFAULT NULL,
+  `Product Unit Dimensions` varchar(255) DEFAULT NULL,
   `Product Unit Materials` text,
   `Product Unit XHTML Materials` text,
   `Product Package Dimensions Type` enum('Rectangular','Cilinder','Sphere') NOT NULL DEFAULT 'Rectangular',
@@ -8158,15 +8139,15 @@ CREATE TABLE `Product Dimension` (
   KEY `Product Web State_2` (`Product Web State`),
   KEY `Product Main Type` (`Product Main Type`),
   KEY `Product Number of Parts` (`Product Number of Parts`),
-  KEY `Product Name` (`Product Name`(64))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  KEY `Product Name` (`Product Name`(64)),
+  KEY `Product Status` (`Product Status`)
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product Family Category Dimension`
 --
 
-DROP TABLE IF EXISTS `Product Family Category Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product Family Category Dimension` (
@@ -8273,14 +8254,13 @@ CREATE TABLE `Product Family Category Dimension` (
   `Product Family Category Currency Code` varchar(3) NOT NULL DEFAULT 'GBP',
   PRIMARY KEY (`Product Family Category Key`,`Product Family Category Store Key`),
   KEY `Product Family Category Store Key` (`Product Family Category Store Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product Family Category History Bridge`
 --
 
-DROP TABLE IF EXISTS `Product Family Category History Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product Family Category History Bridge` (
@@ -8290,18 +8270,17 @@ CREATE TABLE `Product Family Category History Bridge` (
   `Type` enum('Changes','Assign') NOT NULL,
   UNIQUE KEY `Store Key` (`Store Key`,`Category Key`,`History Key`),
   KEY `Type` (`Type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product Family Data Dimension`
 --
 
-DROP TABLE IF EXISTS `Product Family Data Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product Family Data Dimension` (
-  `Product Family Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Product Family Key` mediumint(8) unsigned NOT NULL,
   `Product Family Total Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product Family Total Acc Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Product Family Total Acc Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -8575,18 +8554,17 @@ CREATE TABLE `Product Family Data Dimension` (
   `Product Family 10 Day Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
   `Product Family 1 Week Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
   PRIMARY KEY (`Product Family Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product Family Default Currency`
 --
 
-DROP TABLE IF EXISTS `Product Family Default Currency`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product Family Default Currency` (
-  `Product Family Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Product Family Key` mediumint(8) unsigned NOT NULL,
   `Product Family DC Total Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product Family DC Total Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product Family DC Total Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
@@ -8648,32 +8626,30 @@ CREATE TABLE `Product Family Default Currency` (
   `Product Family DC Last Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product Family DC Last Month Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (`Product Family Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product Family Department Bridge`
 --
 
-DROP TABLE IF EXISTS `Product Family Department Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product Family Department Bridge` (
   `Product Family Key` mediumint(8) unsigned NOT NULL,
   `Product Department Key` mediumint(8) unsigned NOT NULL,
   UNIQUE KEY `Product Family Key` (`Product Family Key`,`Product Department Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product Family Dimension`
 --
 
-DROP TABLE IF EXISTS `Product Family Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product Family Dimension` (
-  `Product Family Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Product Family Key` mediumint(8) unsigned NOT NULL,
   `Product Family Stealth` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Product Family Code` varchar(255) DEFAULT NULL,
   `Product Family Name` varchar(255) DEFAULT NULL,
@@ -8746,14 +8722,13 @@ CREATE TABLE `Product Family Dimension` (
   KEY `Product Family Name` (`Product Family Name`(128)),
   KEY `Product Family Special Characteristic` (`Product Family Special Characteristic`(128)),
   KEY `Product Family Web Products` (`Product Family Web Products`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product Family History Bridge`
 --
 
-DROP TABLE IF EXISTS `Product Family History Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product Family History Bridge` (
@@ -8767,14 +8742,13 @@ CREATE TABLE `Product Family History Bridge` (
   KEY `Deletable` (`Deletable`),
   KEY `History Key` (`History Key`),
   KEY `Type` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product Family Sales Correlation`
 --
 
-DROP TABLE IF EXISTS `Product Family Sales Correlation`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product Family Sales Correlation` (
@@ -8783,14 +8757,13 @@ CREATE TABLE `Product Family Sales Correlation` (
   `Correlation` float NOT NULL,
   `Samples` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`Family A Key`,`Family B Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product Family Semantic Correlation`
 --
 
-DROP TABLE IF EXISTS `Product Family Semantic Correlation`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product Family Semantic Correlation` (
@@ -8798,14 +8771,13 @@ CREATE TABLE `Product Family Semantic Correlation` (
   `Family B Key` mediumint(8) unsigned NOT NULL,
   `Weight` float NOT NULL,
   PRIMARY KEY (`Family A Key`,`Family B Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product History Bridge`
 --
 
-DROP TABLE IF EXISTS `Product History Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product History Bridge` (
@@ -8819,18 +8791,17 @@ CREATE TABLE `Product History Bridge` (
   KEY `Deletable` (`Deletable`),
   KEY `History Key` (`History Key`),
   KEY `Type` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product History Dimension`
 --
 
-DROP TABLE IF EXISTS `Product History Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product History Dimension` (
-  `Product Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Product Key` mediumint(8) unsigned NOT NULL,
   `Product ID` mediumint(8) unsigned NOT NULL,
   `Product History Price` decimal(9,2) DEFAULT NULL,
   `Product History Name` varchar(1024) DEFAULT NULL,
@@ -9051,18 +9022,17 @@ CREATE TABLE `Product History Dimension` (
   KEY `Product ID` (`Product ID`),
   KEY `Product History Valid From` (`Product History Valid From`),
   KEY `Product History Valid To` (`Product History Valid To`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product ID Default Currency`
 --
 
-DROP TABLE IF EXISTS `Product ID Default Currency`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product ID Default Currency` (
-  `Product ID` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Product ID` mediumint(8) unsigned NOT NULL,
   `Product ID DC Total Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product ID DC Total Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product ID DC Total Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
@@ -9124,14 +9094,13 @@ CREATE TABLE `Product ID Default Currency` (
   `Product ID DC Last Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product ID DC Last Month Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (`Product ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product Image Bridge`
 --
 
-DROP TABLE IF EXISTS `Product Image Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product Image Bridge` (
@@ -9139,35 +9108,33 @@ CREATE TABLE `Product Image Bridge` (
   `Image Key` mediumint(8) unsigned NOT NULL,
   `Is Principal` enum('Yes','No') NOT NULL DEFAULT 'Yes',
   PRIMARY KEY (`Product ID`,`Image Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product Import Metadata`
 --
 
-DROP TABLE IF EXISTS `Product Import Metadata`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product Import Metadata` (
-  `Product Import Metadata Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Product Import Metadata Key` mediumint(8) unsigned NOT NULL,
   `Metadata` varchar(15) CHARACTER SET latin1 NOT NULL,
   `Import Date` datetime NOT NULL,
   PRIMARY KEY (`Product Import Metadata Key`),
   KEY `Metadata` (`Metadata`),
   KEY `Import Date` (`Import Date`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product Material Bridge`
 --
 
-DROP TABLE IF EXISTS `Product Material Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product Material Bridge` (
-  `Product Material Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Product Material Key` int(10) unsigned NOT NULL,
   `Product ID` mediumint(8) unsigned NOT NULL,
   `Material Key` mediumint(8) unsigned NOT NULL,
   `Ratio` float DEFAULT NULL,
@@ -9175,14 +9142,13 @@ CREATE TABLE `Product Material Bridge` (
   PRIMARY KEY (`Product Material Key`),
   UNIQUE KEY `Product ID` (`Product ID`,`Material Key`),
   UNIQUE KEY `Product ID_2` (`Product ID`,`Material Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product Page Bridge`
 --
 
-DROP TABLE IF EXISTS `Product Page Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product Page Bridge` (
@@ -9190,42 +9156,35 @@ CREATE TABLE `Product Page Bridge` (
   `Page Key` mediumint(8) unsigned NOT NULL,
   `Type` enum('List','Button') NOT NULL,
   PRIMARY KEY (`Product ID`,`Page Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `Product Part Dimension`
+-- Table structure for table `Product Part Bridge`
 --
 
-DROP TABLE IF EXISTS `Product Part Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Product Part Dimension` (
-  `Product Part Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `Product ID` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Part Type` enum('Simple','Mix') NOT NULL DEFAULT 'Simple',
-  `Product Part Metadata` varchar(1024) DEFAULT NULL,
-  `Product Part Valid From` datetime DEFAULT NULL,
-  `Product Part Valid To` datetime DEFAULT NULL,
-  `Product Part Most Recent` enum('Yes','No') NOT NULL DEFAULT 'Yes',
-  PRIMARY KEY (`Product Part Key`),
-  KEY `Product Part Valid From` (`Product Part Valid From`),
-  KEY `Product Part Valid To` (`Product Part Valid To`),
-  KEY `Product Part Most Recent` (`Product Part Most Recent`),
-  KEY `Product ID` (`Product ID`),
-  KEY `Product Part Type` (`Product Part Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `Product Part Bridge` (
+  `Product Part Product ID` mediumint(8) unsigned NOT NULL,
+  `Product Part Part SKU` mediumint(8) unsigned NOT NULL,
+  `Product Part Ratio` float NOT NULL DEFAULT '1',
+  `Product Part Note` varchar(255) DEFAULT NULL,
+  `Product Part Linked Fields` text NOT NULL,
+  PRIMARY KEY (`Product Part Product ID`,`Product Part Part SKU`),
+  KEY `Product Part Product ID` (`Product Part Product ID`),
+  KEY `Product Part Part SKU` (`Product Part Part SKU`)
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product Part List`
 --
 
-DROP TABLE IF EXISTS `Product Part List`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product Part List` (
-  `Product Part List Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Product Part List Key` int(10) unsigned NOT NULL,
   `Product Part Key` mediumint(8) unsigned NOT NULL,
   `Part SKU` mediumint(8) unsigned DEFAULT NULL,
   `Parts Per Product` decimal(12,6) DEFAULT '1.000000',
@@ -9233,14 +9192,13 @@ CREATE TABLE `Product Part List` (
   PRIMARY KEY (`Product Part List Key`),
   KEY `Part SKU` (`Part SKU`),
   KEY `Product Part Key` (`Product Part Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product Sales Correlation`
 --
 
-DROP TABLE IF EXISTS `Product Sales Correlation`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product Sales Correlation` (
@@ -9250,14 +9208,13 @@ CREATE TABLE `Product Sales Correlation` (
   `Samples` mediumint(8) unsigned NOT NULL,
   UNIQUE KEY `Product A ID` (`Product A ID`,`Product B ID`),
   KEY `Product A ID_2` (`Product A ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Product Same Code Dimension`
 --
 
-DROP TABLE IF EXISTS `Product Same Code Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Product Same Code Dimension` (
@@ -9327,35 +9284,167 @@ CREATE TABLE `Product Same Code Dimension` (
   KEY `Product Alphanumeric Code` (`Product Code File As`(16)),
   KEY `date` (`Product Same Code Valid From`),
   KEY `date2` (`Product Same Code Valid To`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Promotion Dimension`
 --
 
-DROP TABLE IF EXISTS `Promotion Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Promotion Dimension` (
-  `Promotion Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Promotion Key` mediumint(8) unsigned NOT NULL,
   `Promotion Name` varchar(255) NOT NULL,
   `Promotion Media Type` varchar(255) NOT NULL,
   `Promotion Begin Date` datetime NOT NULL,
   `Promotion End Date` datetime NOT NULL,
   PRIMARY KEY (`Promotion Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Purchase Delivery Note Dimension`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Purchase Delivery Note Dimension` (
+  `Purchase Delivery Note Key` mediumint(8) unsigned NOT NULL,
+  `Purchase Delivery Note Warehouse Key` smallint(5) unsigned NOT NULL,
+  `Purchase Delivery Note Receipt Confirmed Date` datetime DEFAULT NULL,
+  `Purchase Delivery Note Date` date DEFAULT NULL,
+  `Purchase Delivery Note Creation Date` datetime NOT NULL,
+  `Purchase Delivery Note Input Date` datetime DEFAULT NULL,
+  `Purchase Delivery Note Received Date` datetime DEFAULT NULL,
+  `Purchase Delivery Note Checked Date` datetime DEFAULT NULL,
+  `Purchase Delivery Note Damages Checked Date` datetime DEFAULT NULL,
+  `Purchase Delivery Note Consolidated Date` datetime DEFAULT NULL,
+  `Purchase Delivery Note Last Updated Date` datetime DEFAULT NULL,
+  `Purchase Delivery Note Main Inputter Key` mediumint(8) unsigned DEFAULT NULL,
+  `Purchase Delivery Note Main Receiver Key` mediumint(9) DEFAULT NULL,
+  `Purchase Delivery Note Main Checker Key` mediumint(9) DEFAULT NULL,
+  `Purchase Delivery Note Main Damages Checker Key` mediumint(9) DEFAULT NULL,
+  `Purchase Delivery Note Public ID` varchar(255) DEFAULT NULL,
+  `Purchase Delivery Note File As` varchar(255) DEFAULT NULL,
+  `Purchase Delivery Note XHTML Purchase Orders` varchar(4096) DEFAULT NULL,
+  `Purchase Delivery Note Parent` enum('Supplier','Agent') NOT NULL DEFAULT 'Supplier',
+  `Purchase Delivery Note Parent Key` mediumint(8) unsigned DEFAULT NULL,
+  `Purchase Delivery Note Current State` enum('In Process','Received','Inputted','Checked','Placing in the Warehouse','Done','Unknown') NOT NULL DEFAULT 'In Process',
+  `Purchase Delivery Note Todo Dispatch State` enum('None','Waiting for more products','Still cheking some products') NOT NULL DEFAULT 'None',
+  `Purchase Delivery Note Current Payment State` enum('No Applicable','Waiting Invoice','Paid','Parcially Paid','Unknown','Payment Refunded','Cancelled') NOT NULL DEFAULT 'No Applicable',
+  `Purchase Delivery Note Current XHTML State` varchar(1024) DEFAULT NULL,
+  `Purchase Delivery Note Our Feedback` enum('Praise','None','Shortages','Breakings','Different Product','Multiple','Low Quality','Not Like','Slow Delivery','Other') NOT NULL DEFAULT 'None',
+  `Purchase Delivery Note Actions Taken` enum('Refund','Credit','Replacement','Send Missing','Other','No Applicable') NOT NULL DEFAULT 'No Applicable',
+  `Purchase Delivery Note Number Items` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Purchase Delivery Note Number Ordered Items` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Purchase Delivery Note Number Items Without PO` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Purchase Delivery Note Main XHTML Ship From` varchar(4096) DEFAULT NULL,
+  `Purchase Delivery Note Main XHTML Ship To` varchar(4096) DEFAULT NULL,
+  `Purchase Delivery Note Supplier Message` text,
+  `Purchase Delivery Note POs` varchar(1024) NOT NULL,
+  PRIMARY KEY (`Purchase Delivery Note Key`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Purchase Delivery Note History Bridge`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Purchase Delivery Note History Bridge` (
+  `Purchase Delivery Note Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes','Attachments') CHARACTER SET latin1 NOT NULL,
+  PRIMARY KEY (`Purchase Delivery Note Key`,`History Key`),
+  KEY `Purchase Delivery Note Key` (`Purchase Delivery Note Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `History Key` (`History Key`),
+  KEY `Type` (`Type`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Purchase Invoice Dimension`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Purchase Invoice Dimension` (
+  `Purchase Invoice Key` mediumint(8) unsigned NOT NULL,
+  `Purchase Invoice Warehouse Key` smallint(5) unsigned NOT NULL,
+  `Purchase Invoice Receipt Confirmed Date` datetime DEFAULT NULL,
+  `Purchase Invoice Date` date DEFAULT NULL,
+  `Purchase Invoice Creation Date` datetime NOT NULL,
+  `Purchase Invoice Input Date` datetime DEFAULT NULL,
+  `Purchase Invoice Received Date` datetime DEFAULT NULL,
+  `Purchase Invoice Checked Date` datetime DEFAULT NULL,
+  `Purchase Invoice Damages Checked Date` datetime DEFAULT NULL,
+  `Purchase Invoice Consolidated Date` datetime DEFAULT NULL,
+  `Purchase Invoice Last Updated Date` datetime DEFAULT NULL,
+  `Purchase Invoice Main Inputter Key` mediumint(8) unsigned DEFAULT NULL,
+  `Purchase Invoice Main Receiver Key` mediumint(9) DEFAULT NULL,
+  `Purchase Invoice Main Checker Key` mediumint(9) DEFAULT NULL,
+  `Purchase Invoice Main Damages Checker Key` mediumint(9) DEFAULT NULL,
+  `Purchase Invoice Public ID` varchar(255) DEFAULT NULL,
+  `Purchase Invoice File As` varchar(255) DEFAULT NULL,
+  `Purchase Invoice XHTML Purchase Orders` varchar(4096) DEFAULT NULL,
+  `Purchase Invoice Parent` enum('Supplier','Agent') NOT NULL DEFAULT 'Supplier',
+  `Purchase Invoice Parent Key` mediumint(8) unsigned DEFAULT NULL,
+  `Purchase Invoice Current State` enum('In Process','Received','Inputted','Checked','Placing in the Warehouse','Done','Unknown') NOT NULL DEFAULT 'In Process',
+  `Purchase Invoice Todo Dispatch State` enum('None','Waiting for more products','Still cheking some products') NOT NULL DEFAULT 'None',
+  `Purchase Invoice Current Payment State` enum('No Applicable','Waiting Invoice','Paid','Parcially Paid','Unknown','Payment Refunded','Cancelled') NOT NULL DEFAULT 'No Applicable',
+  `Purchase Invoice Current XHTML State` varchar(1024) DEFAULT NULL,
+  `Purchase Invoice Our Feedback` enum('Praise','None','Shortages','Breakings','Different Product','Multiple','Low Quality','Not Like','Slow Delivery','Other') NOT NULL DEFAULT 'None',
+  `Purchase Invoice Actions Taken` enum('Refund','Credit','Replacement','Send Missing','Other','No Applicable') NOT NULL DEFAULT 'No Applicable',
+  `Purchase Invoice Number Items` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Purchase Invoice Main XHTML Ship From` varchar(4096) DEFAULT NULL,
+  `Purchase Invoice Main XHTML Ship To` varchar(4096) DEFAULT NULL,
+  `Purchase Invoice Supplier Message` text,
+  `Purchase Invoice POs` varchar(1024) NOT NULL,
+  PRIMARY KEY (`Purchase Invoice Key`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Purchase Invoice History Bridge`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Purchase Invoice History Bridge` (
+  `Purchase Invoice Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes','Attachments') CHARACTER SET latin1 NOT NULL,
+  PRIMARY KEY (`Purchase Invoice Key`,`History Key`),
+  KEY `Purchase Invoice Key` (`Purchase Invoice Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `History Key` (`History Key`),
+  KEY `Type` (`Type`)
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Purchase Order Dimension`
 --
 
-DROP TABLE IF EXISTS `Purchase Order Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Purchase Order Dimension` (
-  `Purchase Order Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Purchase Order Key` mediumint(8) unsigned NOT NULL,
+  `Purchase Order Parent` enum('Supplier','Agent') NOT NULL DEFAULT 'Supplier',
+  `Purchase Order Parent Key` mediumint(8) unsigned DEFAULT NULL,
+  `Purchase Order Parent Code` varchar(255) DEFAULT NULL,
+  `Purchase Order Parent Name` varchar(255) DEFAULT NULL,
+  `Purchase Order Parent Contact Name` varchar(255) DEFAULT NULL,
+  `Purchase Order Parent Email` varchar(255) DEFAULT NULL,
+  `Purchase Order Parent Telephone` varchar(255) DEFAULT NULL,
+  `Purchase Order Parent Address` text,
   `Purchase Order Creation Date` datetime DEFAULT NULL COMMENT 'Date when the purchase order where first placed',
   `Purchase Order Confirmed Date` datetime DEFAULT NULL,
   `Purchase Order Submitted Date` datetime DEFAULT NULL,
@@ -9370,13 +9459,6 @@ CREATE TABLE `Purchase Order Dimension` (
   `Purchase Order File As` varchar(255) DEFAULT NULL,
   `Purchase Order XHTML PO Invoices` text,
   `Purchase Order Warehouse Key` smallint(5) unsigned NOT NULL,
-  `Purchase Order Supplier Key` mediumint(8) unsigned DEFAULT NULL,
-  `Purchase Order Supplier Code` varchar(64) NOT NULL,
-  `Purchase Order Supplier Name` varchar(255) NOT NULL DEFAULT 'Unknown Customer',
-  `Purchase Order Supplier Contact Name` varchar(255) DEFAULT NULL,
-  `Purchase Order Supplier Email` varchar(255) DEFAULT NULL,
-  `Purchase Order Supplier Telephone` varchar(255) DEFAULT NULL,
-  `Purchase Order Supplier Address` text,
   `Purchase Order Main Buyer Key` mediumint(8) unsigned DEFAULT NULL,
   `Purchase Order Main Buyer Name` varchar(255) DEFAULT NULL,
   `Purchase Order Main Source Type` enum('Post','Internet','Telephone','Fax','In Person','Unknown','Email','Other') NOT NULL DEFAULT 'Unknown',
@@ -9404,6 +9486,7 @@ CREATE TABLE `Purchase Order Dimension` (
   `Purchase Order Data MIME Type` varchar(255) DEFAULT NULL COMMENT 'Two-part identifier for file formats (RFC 2046). Ref: http://www.iana.org/assignments/media-types/',
   `Purchase Order Data` blob COMMENT 'Original purchase order, E.G.: Email body message,cnversation audio file or a scaned document.',
   `Purchase Order Currency Code` varchar(3) NOT NULL DEFAULT 'GBP',
+  `Purchase Order Currency Exchange` float NOT NULL DEFAULT '1',
   `Purchase Order Cancel Note` text,
   `Purchase Order Warehouse Code` varchar(64) DEFAULT NULL,
   `Purchase Order Warehouse Name` varchar(255) DEFAULT NULL,
@@ -9417,15 +9500,15 @@ CREATE TABLE `Purchase Order Dimension` (
   `Purchase Order Port of Export` varchar(255) DEFAULT NULL,
   `Purchase Order Port of Import` varchar(255) DEFAULT NULL,
   `Purchase Order Terms and Conditions` text,
-  PRIMARY KEY (`Purchase Order Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`Purchase Order Key`),
+  KEY `Purchase Order Parent` (`Purchase Order Parent`)
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Purchase Order History Bridge`
 --
 
-DROP TABLE IF EXISTS `Purchase Order History Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Purchase Order History Bridge` (
@@ -9439,54 +9522,51 @@ CREATE TABLE `Purchase Order History Bridge` (
   KEY `Deletable` (`Deletable`),
   KEY `History Key` (`History Key`),
   KEY `Type` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Purchase Order SDN Bridge`
 --
 
-DROP TABLE IF EXISTS `Purchase Order SDN Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Purchase Order SDN Bridge` (
   `Purchase Order Key` mediumint(8) unsigned NOT NULL,
   `Supplier Delivery Note Key` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`Purchase Order Key`,`Supplier Delivery Note Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Purchase Order SI Bridge`
 --
 
-DROP TABLE IF EXISTS `Purchase Order SI Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Purchase Order SI Bridge` (
   `Purchase Order Key` mediumint(8) unsigned NOT NULL,
   `Supplier Invoice Key` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`Purchase Order Key`,`Supplier Invoice Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Purchase Order Transaction Fact`
 --
 
-DROP TABLE IF EXISTS `Purchase Order Transaction Fact`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Purchase Order Transaction Fact` (
-  `Purchase Order Transaction Fact Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Purchase Order Transaction Fact Key` mediumint(8) unsigned NOT NULL,
   `Purchase Order Key` mediumint(8) unsigned DEFAULT NULL,
   `Requisition Date` datetime DEFAULT NULL,
   `Requested Date` datetime DEFAULT NULL,
   `Purchase Order Last Updated Date` datetime DEFAULT NULL,
   `Supplier Delivery Note Last Updated Date` datetime DEFAULT NULL,
   `Supplier Invoice Last Updated Date` datetime DEFAULT NULL,
-  `Supplier Product ID` mediumint(8) unsigned DEFAULT NULL,
-  `Supplier Product Key` mediumint(8) unsigned DEFAULT NULL,
+  `Supplier Part Key` mediumint(8) unsigned DEFAULT NULL,
+  `Supplier Part Historic Key` mediumint(8) unsigned DEFAULT NULL,
   `Note to Supplier` text,
   `Note to Supplier Locked` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Supplier Key` mediumint(9) NOT NULL,
@@ -9519,18 +9599,17 @@ CREATE TABLE `Purchase Order Transaction Fact` (
   `Supplier Invoice Key` mediumint(8) unsigned DEFAULT NULL,
   PRIMARY KEY (`Purchase Order Transaction Fact Key`),
   KEY `Purchase Order Key` (`Purchase Order Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Purchase Requsition Fact`
 --
 
-DROP TABLE IF EXISTS `Purchase Requsition Fact`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Purchase Requsition Fact` (
-  `Purchase Requsition Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Purchase Requsition Key` mediumint(8) unsigned NOT NULL,
   `Requisition Date` datetime NOT NULL,
   `Requested Date` datetime NOT NULL,
   `Product Key` mediumint(9) NOT NULL,
@@ -9544,32 +9623,30 @@ CREATE TABLE `Purchase Requsition Fact` (
   `Purchase Requisition Amount` decimal(9,2) NOT NULL,
   `Units Factor` float NOT NULL,
   PRIMARY KEY (`Purchase Requsition Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Right Dimension`
 --
 
-DROP TABLE IF EXISTS `Right Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Right Dimension` (
-  `Right Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Right Key` mediumint(8) unsigned NOT NULL,
   `Right Type` enum('View','Edit','Delete','Create') NOT NULL,
   `Right Name` varchar(32) NOT NULL,
   `Right Access` enum('All','Some','Except','None') NOT NULL DEFAULT 'None',
   `Right Access Keys` text NOT NULL,
   UNIQUE KEY `define_name_i_idx` (`Right Type`,`Right Name`),
   UNIQUE KEY `right_id_idx` (`Right Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Search Full Text Dimension`
 --
 
-DROP TABLE IF EXISTS `Search Full Text Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Search Full Text Dimension` (
@@ -9588,14 +9665,13 @@ CREATE TABLE `Search Full Text Dimension` (
   FULLTEXT KEY `Full Text` (`First Search Full Text`),
   FULLTEXT KEY `Second Search Full Text` (`Second Search Full Text`),
   FULLTEXT KEY `First Search Full Text` (`First Search Full Text`,`Second Search Full Text`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Session Dimension`
 --
 
-DROP TABLE IF EXISTS `Session Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Session Dimension` (
@@ -9606,18 +9682,17 @@ CREATE TABLE `Session Dimension` (
   UNIQUE KEY `Session ID` (`Session ID`),
   KEY `Session Expire` (`Session Expire`),
   KEY `HTTP User Agent` (`HTTP User Agent`(8))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Shelf Dimension`
 --
 
-DROP TABLE IF EXISTS `Shelf Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Shelf Dimension` (
-  `Shelf Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Shelf Key` mediumint(8) unsigned NOT NULL,
   `Shelf Warehouse Key` mediumint(8) unsigned NOT NULL,
   `Shelf Area Key` smallint(6) DEFAULT NULL,
   `Shelf Code` varchar(16) NOT NULL,
@@ -9627,35 +9702,33 @@ CREATE TABLE `Shelf Dimension` (
   `Shelf Number Locations` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Shelf Distinct Parts` mediumint(8) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Shelf Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Shelf Location Type`
 --
 
-DROP TABLE IF EXISTS `Shelf Location Type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Shelf Location Type` (
-  `Shelf Location Type Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Shelf Location Type Key` mediumint(8) unsigned NOT NULL,
   `Shelf Type Key` smallint(5) unsigned NOT NULL,
   `Shelf Location Type Name` varchar(255) NOT NULL,
   `Shelf Location Type Max Weight` float NOT NULL,
   `Shelf Location Type Max Volume` float NOT NULL,
   PRIMARY KEY (`Shelf Location Type Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Shelf Type Dimension`
 --
 
-DROP TABLE IF EXISTS `Shelf Type Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Shelf Type Dimension` (
-  `Shelf Type Key` smallint(6) NOT NULL AUTO_INCREMENT,
+  `Shelf Type Key` smallint(6) NOT NULL,
   `Shelf Type Name` varchar(256) NOT NULL,
   `Shelf Type Description` text NOT NULL,
   `Shelf Type Type` enum('Pallet','Shelf','Drawer','Other') NOT NULL DEFAULT 'Other',
@@ -9667,18 +9740,17 @@ CREATE TABLE `Shelf Type Dimension` (
   `Shelf Type Location Max Weight` float DEFAULT NULL,
   `Shelf Type Location Max Volume` float DEFAULT NULL,
   PRIMARY KEY (`Shelf Type Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Ship To Dimension`
 --
 
-DROP TABLE IF EXISTS `Ship To Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Ship To Dimension` (
-  `Ship To Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Ship To Key` mediumint(8) unsigned NOT NULL,
   `Ship To Contact Name` varchar(255) DEFAULT NULL,
   `Ship To Company Name` varchar(255) DEFAULT NULL,
   `Ship To Line 1` varchar(255) NOT NULL,
@@ -9699,18 +9771,17 @@ CREATE TABLE `Ship To Dimension` (
   KEY `Ship To Country Code` (`Ship To Country Code`),
   KEY `Ship To Country 2 Alpha Code` (`Ship To Country 2 Alpha Code`),
   KEY `Ship To Postal Code` (`Ship To Postal Code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Ship to Contact Dimension`
 --
 
-DROP TABLE IF EXISTS `Ship to Contact Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Ship to Contact Dimension` (
-  `Ship to Contact Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Ship to Contact Key` mediumint(8) unsigned NOT NULL,
   `Ship to Contact Customer Key` mediumint(8) unsigned NOT NULL,
   `Ship to Contact Address Key` mediumint(8) unsigned NOT NULL,
   `Ship to Contact Name` varchar(255) NOT NULL,
@@ -9718,18 +9789,17 @@ CREATE TABLE `Ship to Contact Dimension` (
   `Ship to Contact Telephone` varchar(255) NOT NULL,
   `Ship to Contact Email` varchar(360) NOT NULL,
   PRIMARY KEY (`Ship to Contact Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Shipment Invoice Transaction Fact`
 --
 
-DROP TABLE IF EXISTS `Shipment Invoice Transaction Fact`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Shipment Invoice Transaction Fact` (
-  `Shipment Invoice Line Item Transaction Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Shipment Invoice Line Item Transaction Key` mediumint(8) unsigned NOT NULL,
   `Invoice Date Key` datetime NOT NULL,
   `Requested Ship Date Key` datetime NOT NULL,
   `Actual Ship Date Key` datetime NOT NULL,
@@ -9757,18 +9827,17 @@ CREATE TABLE `Shipment Invoice Transaction Fact` (
   `Shipment Line Item Damage Free Count` tinyint(1) NOT NULL DEFAULT '0',
   `Units Factor` float NOT NULL,
   PRIMARY KEY (`Shipment Invoice Line Item Transaction Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Shipper Dimension`
 --
 
-DROP TABLE IF EXISTS `Shipper Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Shipper Dimension` (
-  `Shipper Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Shipper Key` mediumint(8) unsigned NOT NULL,
   `Shipper Code` varchar(16) NOT NULL,
   `Shipper Name` varchar(255) NOT NULL,
   `Shipper Telephone` varchar(64) DEFAULT NULL,
@@ -9778,18 +9847,17 @@ CREATE TABLE `Shipper Dimension` (
   `Shipper Active` enum('Yes','No') NOT NULL DEFAULT 'Yes',
   PRIMARY KEY (`Shipper Key`),
   KEY `Shipper Active` (`Shipper Active`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Shipping Dimension`
 --
 
-DROP TABLE IF EXISTS `Shipping Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Shipping Dimension` (
-  `Shipping Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Shipping Key` mediumint(8) unsigned NOT NULL,
   `Store Key` mediumint(8) unsigned NOT NULL DEFAULT '1',
   `Shipping Type` enum('Normal','Next Day','Saturday Delivery') DEFAULT NULL,
   `Shipping Destination Type` enum('Default','Country','Country Primary Division','World Region','Country Post Code') DEFAULT NULL,
@@ -9804,18 +9872,17 @@ CREATE TABLE `Shipping Dimension` (
   KEY `y` (`Shipping Destination Code`),
   KEY `z` (`Shipping Destination Type`),
   KEY `Shipping Secondary Destination Check` (`Shipping Secondary Destination Check`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Shipping Notices Fact`
 --
 
-DROP TABLE IF EXISTS `Shipping Notices Fact`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Shipping Notices Fact` (
-  `Shipping Notices Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Shipping Notices Key` mediumint(8) unsigned NOT NULL,
   `Shipping Notification Date` datetime NOT NULL,
   `Ship Date` datetime NOT NULL,
   `Requested Date` datetime NOT NULL,
@@ -9833,42 +9900,39 @@ CREATE TABLE `Shipping Notices Fact` (
   `Case Factor` float NOT NULL,
   `Unit Factor` float NOT NULL,
   PRIMARY KEY (`Shipping Notices Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Similar Families`
 --
 
-DROP TABLE IF EXISTS `Similar Families`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Similar Families` (
   `Family Key A` mediumint(9) NOT NULL,
   `Family Key B` mediumint(9) NOT NULL,
   PRIMARY KEY (`Family Key A`,`Family Key B`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Similar Products`
 --
 
-DROP TABLE IF EXISTS `Similar Products`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Similar Products` (
   `Product ID A` mediumint(8) unsigned NOT NULL,
   `Product ID B` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`Product ID A`,`Product ID B`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Site Content Word Dimension`
 --
 
-DROP TABLE IF EXISTS `Site Content Word Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Site Content Word Dimension` (
@@ -9880,34 +9944,32 @@ CREATE TABLE `Site Content Word Dimension` (
   KEY `Word` (`Word`),
   KEY `Word Soundex` (`Word Soundex`),
   KEY `Multiplicity` (`Multiplicity`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Site Deleted Dimension`
 --
 
-DROP TABLE IF EXISTS `Site Deleted Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Site Deleted Dimension` (
-  `Site Deleted Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Site Deleted Key` mediumint(8) unsigned NOT NULL,
   `Store Key` mediumint(8) unsigned NOT NULL,
   `Site Key` mediumint(8) unsigned NOT NULL,
   `Site Code` varchar(64) NOT NULL,
   PRIMARY KEY (`Site Deleted Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Site Dimension`
 --
 
-DROP TABLE IF EXISTS `Site Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Site Dimension` (
-  `Site Key` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `Site Key` smallint(5) unsigned NOT NULL,
   `Site Store Key` smallint(5) unsigned NOT NULL,
   `Site Code` varchar(8) NOT NULL,
   `Site Name` varchar(128) NOT NULL,
@@ -10121,14 +10183,13 @@ CREATE TABLE `Site Dimension` (
   UNIQUE KEY `Site Name` (`Site Name`,`Site Store Key`),
   UNIQUE KEY `Site URL` (`Site URL`),
   KEY `Store Key` (`Site Store Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Site External File Bridge`
 --
 
-DROP TABLE IF EXISTS `Site External File Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Site External File Bridge` (
@@ -10137,18 +10198,17 @@ CREATE TABLE `Site External File Bridge` (
   `External File Type` enum('Javascript','CSS') CHARACTER SET latin1 NOT NULL,
   PRIMARY KEY (`Page Store External File Key`,`Site Key`),
   KEY `Site Key` (`Site Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Site Flag Dimension`
 --
 
-DROP TABLE IF EXISTS `Site Flag Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Site Flag Dimension` (
-  `Site Flag Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Site Flag Key` mediumint(8) unsigned NOT NULL,
   `Site Key` smallint(5) unsigned NOT NULL,
   `Site Flag Color` enum('Blue','Green','Orange','Pink','Purple','Red','Yellow') NOT NULL,
   `Site Flag Label` varchar(16) NOT NULL,
@@ -10157,32 +10217,30 @@ CREATE TABLE `Site Flag Dimension` (
   PRIMARY KEY (`Site Flag Key`),
   UNIQUE KEY `Site Key` (`Site Key`,`Site Flag Color`),
   KEY `Site Key_2` (`Site Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Site Header Image Dimension`
 --
 
-DROP TABLE IF EXISTS `Site Header Image Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Site Header Image Dimension` (
-  `Site Header Image Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Site Header Image Key` mediumint(8) unsigned NOT NULL,
   `Site Header Image Name` varchar(256) NOT NULL,
   `Store Key` mediumint(8) unsigned NOT NULL,
   `Image Key` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`Site Header Image Key`),
   KEY `Store Key` (`Store Key`),
   KEY `Image Key` (`Image Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Site History Bridge`
 --
 
-DROP TABLE IF EXISTS `Site History Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Site History Bridge` (
@@ -10191,14 +10249,13 @@ CREATE TABLE `Site History Bridge` (
   `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Type` enum('Notes','Changes','WebLog') NOT NULL DEFAULT 'Changes'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Site Image Bridge`
 --
 
-DROP TABLE IF EXISTS `Site Image Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Site Image Bridge` (
@@ -10211,18 +10268,17 @@ CREATE TABLE `Site Image Bridge` (
   KEY `Store Key` (`Store Key`,`Code`),
   KEY `Image Key_4` (`Image Key`),
   KEY `Store Key_2` (`Store Key`,`Code`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Sitemap Dimension`
 --
 
-DROP TABLE IF EXISTS `Sitemap Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Sitemap Dimension` (
-  `Sitemap Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Sitemap Key` mediumint(8) unsigned NOT NULL,
   `Sitemap Site Key` mediumint(8) unsigned NOT NULL,
   `Sitemap Date` datetime DEFAULT NULL,
   `Sitemap Name` varchar(64) DEFAULT NULL,
@@ -10230,18 +10286,17 @@ CREATE TABLE `Sitemap Dimension` (
   `Sitemap Content` longtext CHARACTER SET latin1,
   PRIMARY KEY (`Sitemap Key`),
   UNIQUE KEY `Sitemap Site Key` (`Sitemap Site Key`,`Sitemap Name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Staff Dimension`
 --
 
-DROP TABLE IF EXISTS `Staff Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Staff Dimension` (
-  `Staff Key` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `Staff Key` smallint(5) unsigned NOT NULL,
   `Staff ID` varchar(64) DEFAULT NULL,
   `Staff Alias` varchar(32) NOT NULL,
   `Staff Name` varchar(255) NOT NULL,
@@ -10276,18 +10331,17 @@ CREATE TABLE `Staff Dimension` (
   KEY `Staff Most Recent` (`Staff Most Recent`),
   KEY `Staff Valid from` (`Staff Valid From`),
   KEY `Staff Valid To` (`Staff Valid To`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Staff Event Dimension`
 --
 
-DROP TABLE IF EXISTS `Staff Event Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Staff Event Dimension` (
-  `Staff Event Key` mediumint(11) NOT NULL AUTO_INCREMENT,
+  `Staff Event Key` mediumint(11) NOT NULL,
   `Subject` varchar(1000) DEFAULT NULL,
   `Location` varchar(200) DEFAULT NULL,
   `Description` varchar(255) DEFAULT NULL,
@@ -10299,14 +10353,13 @@ CREATE TABLE `Staff Event Dimension` (
   `Staff Date Key` mediumint(11) NOT NULL,
   `Staff Key` mediumint(11) NOT NULL,
   PRIMARY KEY (`Staff Event Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Staff History Bridge`
 --
 
-DROP TABLE IF EXISTS `Staff History Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Staff History Bridge` (
@@ -10320,57 +10373,53 @@ CREATE TABLE `Staff History Bridge` (
   KEY `History Key` (`History Key`),
   KEY `Deletable` (`Deletable`),
   KEY `Type` (`Type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Staff Role Bridge`
 --
 
-DROP TABLE IF EXISTS `Staff Role Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Staff Role Bridge` (
   `Role Code` varchar(8) NOT NULL,
   `Staff Key` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`Role Code`,`Staff Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Staff Supervisor Bridge`
 --
 
-DROP TABLE IF EXISTS `Staff Supervisor Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Staff Supervisor Bridge` (
   `Staff Key` mediumint(8) unsigned NOT NULL,
   `Supervisor Key` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`Staff Key`,`Supervisor Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Staff Timesheet Dimension`
 --
 
-DROP TABLE IF EXISTS `Staff Timesheet Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Staff Timesheet Dimension` (
-  `Staff Timesheet Key` mediumint(9) NOT NULL AUTO_INCREMENT,
+  `Staff Timesheet Key` mediumint(9) NOT NULL,
   `Staff Key` mediumint(8) unsigned NOT NULL,
   `Date` datetime NOT NULL,
   PRIMARY KEY (`Staff Timesheet Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Staff Work Hours Dimension`
 --
 
-DROP TABLE IF EXISTS `Staff Work Hours Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Staff Work Hours Dimension` (
@@ -10380,18 +10429,17 @@ CREATE TABLE `Staff Work Hours Dimension` (
   `Finish Time` datetime NOT NULL,
   `Total Breaks Time` time NOT NULL,
   `Hours Worked` time NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Store Data Dimension`
 --
 
-DROP TABLE IF EXISTS `Store Data Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Store Data Dimension` (
-  `Store Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Store Key` mediumint(8) unsigned NOT NULL,
   `Store Total Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Store Total Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Store Total Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
@@ -10652,18 +10700,17 @@ CREATE TABLE `Store Data Dimension` (
   `Store 3 Year Lost Contacts With Orders` mediumint(9) NOT NULL DEFAULT '0',
   `Store Year To Day Lost Contacts With Orders` mediumint(9) NOT NULL DEFAULT '0',
   PRIMARY KEY (`Store Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Store Default Currency`
 --
 
-DROP TABLE IF EXISTS `Store Default Currency`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Store Default Currency` (
-  `Store Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Store Key` mediumint(8) unsigned NOT NULL,
   `Store DC Total Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Store DC Total Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Store DC Total Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
@@ -10752,18 +10799,17 @@ CREATE TABLE `Store Default Currency` (
   `Store DC 3 Year Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Store DC 3 Year Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (`Store Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Store Dimension`
 --
 
-DROP TABLE IF EXISTS `Store Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Store Dimension` (
-  `Store Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Store Key` mediumint(8) unsigned NOT NULL,
   `Store Code` varchar(16) DEFAULT NULL,
   `Store Name` varchar(255) DEFAULT NULL,
   `Store Contact Name` varchar(64) DEFAULT NULL,
@@ -10786,7 +10832,6 @@ CREATE TABLE `Store Dimension` (
   `Store STD with Sale Day Sales` float NOT NULL DEFAULT '0',
   `Store Max Day Sales` float NOT NULL DEFAULT '0',
   `Store Locale` enum('en_GB','de_DE','fr_FR','es_ES','pl_PL','it_IT','sk_SK','pt_PT') DEFAULT 'en_GB',
-  `Store Currency` varchar(3) DEFAULT NULL,
   `Store Timezone` varchar(64) NOT NULL DEFAULT 'Europe/London',
   `Store Sticky Note` text,
   `Store Page Key` mediumint(8) unsigned DEFAULT NULL,
@@ -10891,14 +10936,13 @@ CREATE TABLE `Store Dimension` (
   KEY `Store State` (`Store State`),
   KEY `Store Show in Warehouse Orders` (`Store Show in Warehouse Orders`),
   KEY `Store Customer Payment Account Key` (`Store Customer Payment Account Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Store History Bridge`
 --
 
-DROP TABLE IF EXISTS `Store History Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Store History Bridge` (
@@ -10912,14 +10956,13 @@ CREATE TABLE `Store History Bridge` (
   KEY `Deletable` (`Deletable`),
   KEY `History Key` (`History Key`),
   KEY `Type` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Store Product DC Data`
 --
 
-DROP TABLE IF EXISTS `Store Product DC Data`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Store Product DC Data` (
@@ -10985,14 +11028,13 @@ CREATE TABLE `Store Product DC Data` (
   `Store Product DC Last Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Store Product DC Last Month Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (`Store Product Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Store Product Data`
 --
 
-DROP TABLE IF EXISTS `Store Product Data`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Store Product Data` (
@@ -11278,14 +11320,13 @@ CREATE TABLE `Store Product Data` (
   `Store Product 10 Day Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
   `Store Product 1 Week Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
   UNIQUE KEY `Store Product Key` (`Store Product Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Store Product Dimension`
 --
 
-DROP TABLE IF EXISTS `Store Product Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Store Product Dimension` (
@@ -11320,48 +11361,29 @@ CREATE TABLE `Store Product Dimension` (
   PRIMARY KEY (`Store Product Key`),
   KEY `Store Product Store Key` (`Store Product Store Key`),
   KEY `Store Product State` (`Store Product Status`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Store Product Part Bridge`
---
-
-DROP TABLE IF EXISTS `Store Product Part Bridge`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Store Product Part Bridge` (
-  `Store Product Key` mediumint(8) unsigned NOT NULL,
-  `Part SKU` mediumint(8) unsigned NOT NULL,
-  `Parts Per Product` float NOT NULL DEFAULT '1',
-  `Note` varchar(255) DEFAULT NULL,
-  `Linked Fields` text NOT NULL,
-  PRIMARY KEY (`Store Product Key`,`Part SKU`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Store Product Part Linked Field`
 --
 
-DROP TABLE IF EXISTS `Store Product Part Linked Field`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Store Product Part Linked Field` (
   `Store Product Key` mediumint(9) NOT NULL,
   `Part SKU` mediumint(9) NOT NULL,
   `Field` enum('Tariff Code','Duty Rate','Outer Weight','Outer Dimensions') NOT NULL,
-  UNIQUE KEY `Unique` (`Store Product Key`,`Part SKU`,`Field`) USING BTREE,
-  UNIQUE KEY `Store Product Key` (`Store Product Key`) USING BTREE,
+  UNIQUE KEY `Unique` (`Store Product Key`,`Part SKU`,`Field`),
+  UNIQUE KEY `Store Product Key` (`Store Product Key`),
   UNIQUE KEY `Part SKU` (`Part SKU`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Supplier Category Dimension`
 --
 
-DROP TABLE IF EXISTS `Supplier Category Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Supplier Category Dimension` (
@@ -11458,14 +11480,13 @@ CREATE TABLE `Supplier Category Dimension` (
   `3 Year Ago Sales Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `4 Year Ago Sales Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   KEY `Category Key` (`Category Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Supplier Category History Bridge`
 --
 
-DROP TABLE IF EXISTS `Supplier Category History Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Supplier Category History Bridge` (
@@ -11474,195 +11495,17 @@ CREATE TABLE `Supplier Category History Bridge` (
   `Type` enum('Changes','Assign') NOT NULL,
   UNIQUE KEY `Category Key` (`Category Key`,`History Key`),
   KEY `Type` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `Supplier Delivery Note Dimension`
+-- Table structure for table `Supplier Data`
 --
 
-DROP TABLE IF EXISTS `Supplier Delivery Note Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Supplier Delivery Note Dimension` (
-  `Supplier Delivery Note Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `Supplier Delivery Note Warehouse Key` smallint(5) unsigned NOT NULL,
-  `Supplier Delivery Note Receipt Confirmed Date` datetime DEFAULT NULL,
-  `Supplier Delivery Note Date` date DEFAULT NULL,
-  `Supplier Delivery Note Creation Date` datetime NOT NULL,
-  `Supplier Delivery Note Input Date` datetime DEFAULT NULL,
-  `Supplier Delivery Note Received Date` datetime DEFAULT NULL,
-  `Supplier Delivery Note Checked Date` datetime DEFAULT NULL,
-  `Supplier Delivery Note Damages Checked Date` datetime DEFAULT NULL,
-  `Supplier Delivery Note Consolidated Date` datetime DEFAULT NULL,
-  `Supplier Delivery Note Last Updated Date` datetime DEFAULT NULL COMMENT 'Lastest Date when Adding/Modify Supplier Delivery Note Transaction or Data',
-  `Supplier Delivery Note Main Inputter Key` mediumint(8) unsigned DEFAULT NULL,
-  `Supplier Delivery Note Main Receiver Key` mediumint(9) DEFAULT NULL,
-  `Supplier Delivery Note Main Checker Key` mediumint(9) DEFAULT NULL,
-  `Supplier Delivery Note Main Damages Checker Key` mediumint(9) DEFAULT NULL,
-  `Supplier Delivery Note Public ID` varchar(255) DEFAULT NULL,
-  `Supplier Delivery Note File As` varchar(255) DEFAULT NULL,
-  `Supplier Delivery Note XHTML Purchase Orders` varchar(4096) DEFAULT NULL,
-  `Supplier Delivery Note Supplier Key` mediumint(8) unsigned DEFAULT NULL,
-  `Supplier Delivery Note Current State` enum('In Process','Received','Inputted','Checked','Placing in the Warehouse','Done','Unknown') NOT NULL DEFAULT 'In Process',
-  `Supplier Delivery Note Todo Dispatch State` enum('None','Waiting for more products','Still cheking some products') NOT NULL DEFAULT 'None',
-  `Supplier Delivery Note Current Payment State` enum('No Applicable','Waiting Invoice','Paid','Parcially Paid','Unknown','Payment Refunded','Cancelled') NOT NULL DEFAULT 'No Applicable',
-  `Supplier Delivery Note Current XHTML State` varchar(1024) DEFAULT NULL,
-  `Supplier Delivery Note Our Feedback` enum('Praise','None','Shortages','Breakings','Different Product','Multiple','Low Quality','Not Like','Slow Delivery','Other') NOT NULL DEFAULT 'None',
-  `Supplier Delivery Note Actions Taken` enum('Refund','Credit','Replacement','Send Missing','Other','No Applicable') NOT NULL DEFAULT 'No Applicable',
-  `Supplier Delivery Note Number Items` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Supplier Delivery Note Number Ordered Items` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Supplier Delivery Note Number Items Without PO` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Supplier Delivery Note Main XHTML Ship From` varchar(4096) DEFAULT NULL,
-  `Supplier Delivery Note Main XHTML Ship To` varchar(4096) DEFAULT NULL,
-  `Supplier Delivery Note Supplier Message` text,
-  `Supplier Delivery Note POs` varchar(1024) NOT NULL,
-  PRIMARY KEY (`Supplier Delivery Note Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Supplier Delivery Note History Bridge`
---
-
-DROP TABLE IF EXISTS `Supplier Delivery Note History Bridge`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Supplier Delivery Note History Bridge` (
-  `Supplier Delivery Note Key` mediumint(8) unsigned NOT NULL,
-  `History Key` int(10) unsigned NOT NULL,
-  `Deletable` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
-  `Strikethrough` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
-  `Type` enum('Notes','Changes','Attachments') CHARACTER SET latin1 NOT NULL,
-  PRIMARY KEY (`Supplier Delivery Note Key`,`History Key`),
-  KEY `Supplier Delivery Note Key` (`Supplier Delivery Note Key`),
-  KEY `Deletable` (`Deletable`),
-  KEY `History Key` (`History Key`),
-  KEY `Type` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Supplier Delivery Note Item Part Bridge`
---
-
-DROP TABLE IF EXISTS `Supplier Delivery Note Item Part Bridge`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Supplier Delivery Note Item Part Bridge` (
-  `Supplier Delivery Note Key` mediumint(8) unsigned NOT NULL,
-  `Purchase Order Transaction Fact Key` mediumint(5) unsigned NOT NULL,
-  `Part SKU` mediumint(8) unsigned NOT NULL,
-  `Part Quantity` float NOT NULL,
-  `Done` enum('Yes','No') NOT NULL DEFAULT 'No',
-  `Notes` text NOT NULL,
-  KEY `Supplier Delivery Note Key` (`Supplier Delivery Note Key`),
-  KEY `Supplier Delivery Note Key_2` (`Supplier Delivery Note Key`,`Purchase Order Transaction Fact Key`),
-  KEY `Part SKU` (`Part SKU`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Supplier Delivery Note SI Bridge`
---
-
-DROP TABLE IF EXISTS `Supplier Delivery Note SI Bridge`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Supplier Delivery Note SI Bridge` (
-  `Supplier Delivery Note Key` mediumint(8) unsigned NOT NULL,
-  `Supplier Invoice Key` mediumint(8) unsigned NOT NULL,
-  PRIMARY KEY (`Supplier Delivery Note Key`,`Supplier Invoice Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Supplier Dimension`
---
-
-DROP TABLE IF EXISTS `Supplier Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Supplier Dimension` (
-  `Supplier Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `Supplier Is Agent` enum('Yes','No') NOT NULL DEFAULT 'No',
-  `Supplier Products Origin Country Code` varchar(3) DEFAULT NULL,
-  `Supplier Products Origin` varchar(256) DEFAULT NULL,
-  `Supplier ID` mediumint(8) unsigned NOT NULL,
-  `Supplier Code` varchar(16) NOT NULL,
-  `Supplier Name` varchar(255) DEFAULT NULL,
-  `Supplier File As` varchar(256) NOT NULL,
-  `Supplier Fiscal Name` varchar(255) DEFAULT NULL,
-  `Supplier Company Key` mediumint(8) unsigned NOT NULL,
-  `Supplier Main Contact Key` mediumint(8) unsigned DEFAULT NULL,
-  `Supplier Accounts Payable Contact Key` mediumint(8) unsigned DEFAULT NULL,
-  `Supplier Sales Contact Key` mediumint(8) unsigned DEFAULT NULL,
-  `Supplier Main Address Key` mediumint(8) unsigned NOT NULL,
-  `Supplier Main XHTML Address` varchar(1024) DEFAULT '',
-  `Supplier Main Plain Address` varchar(1024) DEFAULT NULL,
-  `Supplier Main Country Key` smallint(5) unsigned NOT NULL,
-  `Supplier Main Country Code` varchar(3) NOT NULL,
-  `Supplier Main Country` varchar(256) NOT NULL,
-  `Supplier Main Location` varchar(255) DEFAULT NULL,
-  `Supplier Main XHTML Email` varchar(1024) DEFAULT NULL,
-  `Supplier Main Plain Email` varchar(255) NOT NULL,
-  `Supplier Location` varchar(255) DEFAULT NULL,
-  `Supplier Contact Address Recipient` varchar(255) DEFAULT NULL,
-  `Supplier Contact Address Organization` varchar(255) DEFAULT NULL,
-  `Supplier Contact Address Line 1` varchar(255) DEFAULT NULL,
-  `Supplier Contact Address Line 2` varchar(255) DEFAULT NULL,
-  `Supplier Contact Address Sorting Code` varchar(255) DEFAULT NULL,
-  `Supplier Contact Address Postal Code` varchar(255) DEFAULT NULL,
-  `Supplier Contact Address Dependent Locality` varchar(255) DEFAULT NULL,
-  `Supplier Contact Address Locality` varchar(255) DEFAULT NULL,
-  `Supplier Contact Address Administrative Area` varchar(255) DEFAULT NULL,
-  `Supplier Contact Address Country 2 Alpha Code` varchar(255) DEFAULT NULL,
-  `Supplier Contact Address Checksum` varchar(64) DEFAULT NULL,
-  `Supplier Contact Address Formatted` text,
-  `Supplier Contact Address Postal Label` text,
-  `Supplier Main Email Key` mediumint(8) unsigned DEFAULT NULL,
-  `Supplier Company Name` varchar(255) DEFAULT NULL,
-  `Supplier Main Contact Name` varchar(255) DEFAULT NULL,
-  `Supplier QQ` varchar(64) DEFAULT NULL,
-  `Supplier Preferred Contact Number` enum('Mobile','Telephone') NOT NULL DEFAULT 'Mobile',
-  `Supplier Preferred Contact Number Formatted Number` varchar(255) DEFAULT NULL,
-  `Supplier Main Plain Mobile` varchar(255) DEFAULT NULL,
-  `Supplier Main XHTML Mobile` varchar(255) DEFAULT NULL,
-  `Supplier Main XHTML Telephone` varchar(255) DEFAULT NULL,
-  `Supplier Main Telephone Key` mediumint(8) unsigned DEFAULT NULL,
-  `Supplier Main Plain Telephone` varchar(255) NOT NULL,
-  `Supplier Main XHTML FAX` varchar(100) DEFAULT NULL,
-  `Supplier Main FAX Key` mediumint(8) unsigned DEFAULT NULL,
-  `Supplier Main Plain FAX` varchar(100) NOT NULL DEFAULT '',
-  `Supplier Website` varchar(256) NOT NULL,
-  `Supplier Default Incoterm` varchar(3) DEFAULT NULL,
-  `Supplier Default Port of Export` varchar(255) DEFAULT NULL,
-  `Supplier Default Port of Import` varchar(255) DEFAULT NULL,
-  `Supplier Default PO Terms and Conditions` text,
-  `Supplier Show Warehouse TC in PO` enum('Yes','No') NOT NULL DEFAULT 'Yes',
-  `Supplier Active Supplier Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Supplier Discontinued Supplier Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Supplier Surplus Availability Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Supplier Optimal Availability Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Supplier Low Availability Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Supplier Critical Availability Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Supplier Out Of Stock Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Supplier Unknown Stock Products` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Supplier For Sale Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Supplier Not For Sale Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Supplier To Be Discontinued Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Supplier Discontinued Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Supplier Average Delivery Days` float DEFAULT NULL,
-  `Supplier Purchase Orders` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Supplier Open Purchase Orders` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Supplier Delivery Notes` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Supplier Invoices` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Supplier Valid From` datetime DEFAULT NULL,
-  `Supplier Valid To` datetime DEFAULT NULL,
-  `Supplier Sticky Note` text,
-  `Supplier Active` enum('Yes','No') NOT NULL DEFAULT 'Yes',
-  `Supplier Stock Value` decimal(14,2) DEFAULT NULL,
-  `Supplier Default Currency` varchar(3) NOT NULL DEFAULT 'USD',
+CREATE TABLE `Supplier Data` (
+  `Supplier Key` mediumint(8) unsigned NOT NULL,
   `Supplier 3 Year Acc Parts Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Supplier 3 Year Acc Parts Profit After Storing` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Supplier 3 Year Acc Parts Cost` decimal(12,2) NOT NULL DEFAULT '0.00',
@@ -12031,6 +11874,201 @@ CREATE TABLE `Supplier Dimension` (
   `Supplier 2 Year Ago Sales Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Supplier 3 Year Ago Sales Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Supplier 4 Year Ago Sales Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  PRIMARY KEY (`Supplier Key`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Supplier Deleted Dimension`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Supplier Deleted Dimension` (
+  `Supplier Deleted Key` mediumint(9) NOT NULL,
+  `Supplier Deleted Code` varchar(16) DEFAULT NULL,
+  `Supplier Deleted Name` varchar(255) DEFAULT NULL,
+  `Supplier Deleted Date` datetime DEFAULT NULL,
+  `Supplier Deleted Metadata` blob,
+  PRIMARY KEY (`Supplier Deleted Key`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Supplier Delivery Note Dimension`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Supplier Delivery Note Dimension` (
+  `Supplier Delivery Note Key` mediumint(8) unsigned NOT NULL,
+  `Supplier Delivery Note Warehouse Key` smallint(5) unsigned NOT NULL,
+  `Supplier Delivery Note Receipt Confirmed Date` datetime DEFAULT NULL,
+  `Supplier Delivery Note Date` date DEFAULT NULL,
+  `Supplier Delivery Note Creation Date` datetime NOT NULL,
+  `Supplier Delivery Note Input Date` datetime DEFAULT NULL,
+  `Supplier Delivery Note Received Date` datetime DEFAULT NULL,
+  `Supplier Delivery Note Checked Date` datetime DEFAULT NULL,
+  `Supplier Delivery Note Damages Checked Date` datetime DEFAULT NULL,
+  `Supplier Delivery Note Consolidated Date` datetime DEFAULT NULL,
+  `Supplier Delivery Note Last Updated Date` datetime DEFAULT NULL COMMENT 'Lastest Date when Adding/Modify Supplier Delivery Note Transaction or Data',
+  `Supplier Delivery Note Main Inputter Key` mediumint(8) unsigned DEFAULT NULL,
+  `Supplier Delivery Note Main Receiver Key` mediumint(9) DEFAULT NULL,
+  `Supplier Delivery Note Main Checker Key` mediumint(9) DEFAULT NULL,
+  `Supplier Delivery Note Main Damages Checker Key` mediumint(9) DEFAULT NULL,
+  `Supplier Delivery Note Public ID` varchar(255) DEFAULT NULL,
+  `Supplier Delivery Note File As` varchar(255) DEFAULT NULL,
+  `Supplier Delivery Note XHTML Purchase Orders` varchar(4096) DEFAULT NULL,
+  `Supplier Delivery Note Supplier Key` mediumint(8) unsigned DEFAULT NULL,
+  `Supplier Delivery Note Current State` enum('In Process','Received','Inputted','Checked','Placing in the Warehouse','Done','Unknown') NOT NULL DEFAULT 'In Process',
+  `Supplier Delivery Note Todo Dispatch State` enum('None','Waiting for more products','Still cheking some products') NOT NULL DEFAULT 'None',
+  `Supplier Delivery Note Current Payment State` enum('No Applicable','Waiting Invoice','Paid','Parcially Paid','Unknown','Payment Refunded','Cancelled') NOT NULL DEFAULT 'No Applicable',
+  `Supplier Delivery Note Current XHTML State` varchar(1024) DEFAULT NULL,
+  `Supplier Delivery Note Our Feedback` enum('Praise','None','Shortages','Breakings','Different Product','Multiple','Low Quality','Not Like','Slow Delivery','Other') NOT NULL DEFAULT 'None',
+  `Supplier Delivery Note Actions Taken` enum('Refund','Credit','Replacement','Send Missing','Other','No Applicable') NOT NULL DEFAULT 'No Applicable',
+  `Supplier Delivery Note Number Items` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Supplier Delivery Note Number Ordered Items` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Supplier Delivery Note Number Items Without PO` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Supplier Delivery Note Main XHTML Ship From` varchar(4096) DEFAULT NULL,
+  `Supplier Delivery Note Main XHTML Ship To` varchar(4096) DEFAULT NULL,
+  `Supplier Delivery Note Supplier Message` text,
+  `Supplier Delivery Note POs` varchar(1024) NOT NULL,
+  PRIMARY KEY (`Supplier Delivery Note Key`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Supplier Delivery Note History Bridge`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Supplier Delivery Note History Bridge` (
+  `Supplier Delivery Note Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes','Attachments') CHARACTER SET latin1 NOT NULL,
+  PRIMARY KEY (`Supplier Delivery Note Key`,`History Key`),
+  KEY `Supplier Delivery Note Key` (`Supplier Delivery Note Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `History Key` (`History Key`),
+  KEY `Type` (`Type`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Supplier Delivery Note Item Part Bridge`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Supplier Delivery Note Item Part Bridge` (
+  `Supplier Delivery Note Key` mediumint(8) unsigned NOT NULL,
+  `Purchase Order Transaction Fact Key` mediumint(5) unsigned NOT NULL,
+  `Part SKU` mediumint(8) unsigned NOT NULL,
+  `Part Quantity` float NOT NULL,
+  `Done` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Notes` text NOT NULL,
+  KEY `Supplier Delivery Note Key` (`Supplier Delivery Note Key`),
+  KEY `Supplier Delivery Note Key_2` (`Supplier Delivery Note Key`,`Purchase Order Transaction Fact Key`),
+  KEY `Part SKU` (`Part SKU`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Supplier Delivery Note SI Bridge`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Supplier Delivery Note SI Bridge` (
+  `Supplier Delivery Note Key` mediumint(8) unsigned NOT NULL,
+  `Supplier Invoice Key` mediumint(8) unsigned NOT NULL,
+  PRIMARY KEY (`Supplier Delivery Note Key`,`Supplier Invoice Key`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Supplier Dimension`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Supplier Dimension` (
+  `Supplier Key` mediumint(8) unsigned NOT NULL,
+  `Supplier Has Agent` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Supplier Products Origin Country Code` varchar(3) DEFAULT NULL,
+  `Supplier ID` mediumint(8) unsigned NOT NULL,
+  `Supplier Code` varchar(16) NOT NULL,
+  `Supplier Name` varchar(255) DEFAULT NULL,
+  `Supplier File As` varchar(256) NOT NULL,
+  `Supplier Fiscal Name` varchar(255) DEFAULT NULL,
+  `Supplier Company Key` mediumint(8) unsigned NOT NULL,
+  `Supplier Main Contact Key` mediumint(8) unsigned DEFAULT NULL,
+  `Supplier Accounts Payable Contact Key` mediumint(8) unsigned DEFAULT NULL,
+  `Supplier Sales Contact Key` mediumint(8) unsigned DEFAULT NULL,
+  `Supplier Main Address Key` mediumint(8) unsigned NOT NULL,
+  `Supplier Main XHTML Address` varchar(1024) DEFAULT '',
+  `Supplier Main Plain Address` varchar(1024) DEFAULT NULL,
+  `Supplier Main Country Key` smallint(5) unsigned NOT NULL,
+  `Supplier Main Country Code` varchar(3) NOT NULL,
+  `Supplier Main Country` varchar(256) NOT NULL,
+  `Supplier Main Location` varchar(255) DEFAULT NULL,
+  `Supplier Main XHTML Email` varchar(1024) DEFAULT NULL,
+  `Supplier Main Plain Email` varchar(255) NOT NULL,
+  `Supplier Location` varchar(255) DEFAULT NULL,
+  `Supplier Contact Address Recipient` varchar(255) DEFAULT NULL,
+  `Supplier Contact Address Organization` varchar(255) DEFAULT NULL,
+  `Supplier Contact Address Line 1` varchar(255) DEFAULT NULL,
+  `Supplier Contact Address Line 2` varchar(255) DEFAULT NULL,
+  `Supplier Contact Address Sorting Code` varchar(255) DEFAULT NULL,
+  `Supplier Contact Address Postal Code` varchar(255) DEFAULT NULL,
+  `Supplier Contact Address Dependent Locality` varchar(255) DEFAULT NULL,
+  `Supplier Contact Address Locality` varchar(255) DEFAULT NULL,
+  `Supplier Contact Address Administrative Area` varchar(255) DEFAULT NULL,
+  `Supplier Contact Address Country 2 Alpha Code` varchar(2) DEFAULT NULL,
+  `Supplier Contact Address Checksum` varchar(64) DEFAULT NULL,
+  `Supplier Contact Address Formatted` text,
+  `Supplier Contact Address Postal Label` text,
+  `Supplier Main Email Key` mediumint(8) unsigned DEFAULT NULL,
+  `Supplier Company Name` varchar(255) DEFAULT NULL,
+  `Supplier Main Contact Name` varchar(255) DEFAULT NULL,
+  `Supplier QQ` varchar(64) DEFAULT NULL,
+  `Supplier Preferred Contact Number` enum('Mobile','Telephone') NOT NULL DEFAULT 'Mobile',
+  `Supplier Preferred Contact Number Formatted Number` varchar(255) DEFAULT NULL,
+  `Supplier Main Plain Mobile` varchar(255) DEFAULT NULL,
+  `Supplier Main XHTML Mobile` varchar(255) DEFAULT NULL,
+  `Supplier Main XHTML Telephone` varchar(255) DEFAULT NULL,
+  `Supplier Main Telephone Key` mediumint(8) unsigned DEFAULT NULL,
+  `Supplier Main Plain Telephone` varchar(255) NOT NULL,
+  `Supplier Main XHTML FAX` varchar(100) DEFAULT NULL,
+  `Supplier Main FAX Key` mediumint(8) unsigned DEFAULT NULL,
+  `Supplier Main Plain FAX` varchar(100) NOT NULL DEFAULT '',
+  `Supplier Website` varchar(256) NOT NULL,
+  `Supplier Default Incoterm` varchar(3) DEFAULT NULL,
+  `Supplier Default Port of Export` varchar(255) DEFAULT NULL,
+  `Supplier Default Port of Import` varchar(255) DEFAULT NULL,
+  `Supplier Default PO Terms and Conditions` text,
+  `Supplier Show Warehouse TC in PO` enum('Yes','No') NOT NULL DEFAULT 'Yes',
+  `Supplier Active Supplier Products` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Supplier Average Delivery Days` float DEFAULT NULL,
+  `Supplier Purchase Orders` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Supplier Open Purchase Orders` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Supplier Delivery Notes` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Supplier Invoices` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Supplier Valid From` datetime DEFAULT NULL,
+  `Supplier Valid To` datetime DEFAULT NULL,
+  `Supplier Sticky Note` text,
+  `Supplier Active` enum('Yes','No') NOT NULL DEFAULT 'Yes',
+  `Supplier Stock Value` decimal(14,2) DEFAULT NULL,
+  `Supplier Default Currency Code` varchar(3) NOT NULL DEFAULT 'USD',
+  `Supplier Number Parts` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Supplier Number Surplus Parts` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Supplier Number Optimal Parts` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Supplier Number Low Parts` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Supplier Number Critical Parts` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Supplier Number Out Of Stock Parts` mediumint(8) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Supplier Key`),
   UNIQUE KEY `Supplier Code` (`Supplier Code`),
   KEY `Supplier Most Recent` (`Supplier Active`),
@@ -12043,15 +12081,14 @@ CREATE TABLE `Supplier Dimension` (
   KEY `Supplier Main Address Key` (`Supplier Main Address Key`),
   KEY `Supplier Main Telephone Key` (`Supplier Main Telephone Key`),
   KEY `Supplier Main FAX Key` (`Supplier Main FAX Key`),
-  KEY `Supplier Is Agent` (`Supplier Is Agent`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  KEY `Supplier Is Agent` (`Supplier Has Agent`)
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Supplier History Bridge`
 --
 
-DROP TABLE IF EXISTS `Supplier History Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Supplier History Bridge` (
@@ -12064,18 +12101,17 @@ CREATE TABLE `Supplier History Bridge` (
   KEY `Type` (`Type`),
   KEY `Deletable` (`Deletable`),
   KEY `Strikethrough` (`Strikethrough`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Supplier Invoice Dimension`
 --
 
-DROP TABLE IF EXISTS `Supplier Invoice Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Supplier Invoice Dimension` (
-  `Supplier Invoice Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Supplier Invoice Key` mediumint(8) unsigned NOT NULL,
   `Supplier Invoice Warehouse Key` smallint(5) unsigned NOT NULL,
   `Supplier Invoice Receipt Confirmed Date` datetime DEFAULT NULL,
   `Supplier Invoice Date` date DEFAULT NULL,
@@ -12106,14 +12142,13 @@ CREATE TABLE `Supplier Invoice Dimension` (
   `Supplier Invoice Supplier Message` text,
   `Supplier Invoice POs` varchar(1024) NOT NULL,
   PRIMARY KEY (`Supplier Invoice Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Supplier Invoice History Bridge`
 --
 
-DROP TABLE IF EXISTS `Supplier Invoice History Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Supplier Invoice History Bridge` (
@@ -12127,55 +12162,134 @@ CREATE TABLE `Supplier Invoice History Bridge` (
   KEY `Deletable` (`Deletable`),
   KEY `History Key` (`History Key`),
   KEY `Type` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Supplier Other Email Dimension`
 --
 
-DROP TABLE IF EXISTS `Supplier Other Email Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Supplier Other Email Dimension` (
-  `Supplier Other Email Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Supplier Other Email Key` mediumint(8) unsigned NOT NULL,
   `Supplier Other Email Supplier Key` mediumint(8) unsigned NOT NULL,
   `Supplier Other Email Email` varchar(255) NOT NULL,
   `Supplier Other Email Label` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Supplier Other Email Key`),
-  KEY `Supplier Other Email Supplier Key` (`Supplier Other Email Supplier Key`,`Supplier Other Email Email`) USING BTREE,
+  KEY `Supplier Other Email Supplier Key` (`Supplier Other Email Supplier Key`,`Supplier Other Email Email`),
   KEY `Supplier Other Email Email` (`Supplier Other Email Email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Supplier Other Telephone Dimension`
 --
 
-DROP TABLE IF EXISTS `Supplier Other Telephone Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Supplier Other Telephone Dimension` (
-  `Supplier Other Telephone Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Supplier Other Telephone Key` mediumint(8) unsigned NOT NULL,
   `Supplier Other Telephone Supplier Key` mediumint(8) unsigned NOT NULL,
   `Supplier Other Telephone Number` varchar(255) NOT NULL,
   `Supplier Other Telephone Formatted Number` varchar(255) NOT NULL,
   `Supplier Other Telephone Label` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Supplier Other Telephone Key`),
-  KEY `Supplier Other Telephone Supplier Key` (`Supplier Other Telephone Supplier Key`,`Supplier Other Telephone Number`) USING BTREE,
+  KEY `Supplier Other Telephone Supplier Key` (`Supplier Other Telephone Supplier Key`,`Supplier Other Telephone Number`),
   KEY `Supplier Other Telephone Number` (`Supplier Other Telephone Number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Supplier Part Deleted Dimension`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Supplier Part Deleted Dimension` (
+  `Supplier Part Deleted Key` mediumint(9) NOT NULL,
+  `Supplier Part Deleted Reference` varchar(255) DEFAULT NULL,
+  `Supplier Part Deleted Date` datetime DEFAULT NULL,
+  `Supplier Part Deleted Metadata` blob,
+  PRIMARY KEY (`Supplier Part Deleted Key`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Supplier Part Dimension`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Supplier Part Dimension` (
+  `Supplier Part Key` mediumint(8) unsigned NOT NULL,
+  `Supplier Part Historic Key` mediumint(8) unsigned DEFAULT NULL,
+  `Supplier Part Supplier Key` mediumint(8) unsigned NOT NULL,
+  `Supplier Part Agent Key` mediumint(8) unsigned DEFAULT NULL,
+  `Supplier Part Part SKU` mediumint(8) unsigned DEFAULT NULL,
+  `Supplier Part Reference` varchar(255) DEFAULT NULL,
+  `Supplier Part Status` enum('Available','NoAvailable','Discontinued') NOT NULL DEFAULT 'Available',
+  `Supplier Part From` datetime NOT NULL,
+  `Supplier Part To` datetime DEFAULT NULL,
+  `Supplier Part Unit Cost` float unsigned DEFAULT NULL,
+  `Supplier Part Currency Code` varchar(3) DEFAULT NULL,
+  `Supplier Part Units Per Package` smallint(6) NOT NULL DEFAULT '1',
+  `Supplier Part Packages Per Carton` smallint(6) NOT NULL DEFAULT '1',
+  `Supplier Part Carton CBM` float unsigned DEFAULT NULL COMMENT 'cubic meters',
+  `Supplier Part Minimum Carton Order` smallint(5) unsigned NOT NULL DEFAULT '1',
+  `Supplier Part Average Delivery Days` float unsigned DEFAULT NULL,
+  PRIMARY KEY (`Supplier Part Key`),
+  KEY `Supplier Part Agent Key` (`Supplier Part Agent Key`),
+  KEY `Supplier Part Supplier Part Historic Key` (`Supplier Part Historic Key`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Supplier Part Historic Dimension`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Supplier Part Historic Dimension` (
+  `Supplier Part Historic Key` mediumint(8) unsigned NOT NULL,
+  `Supplier Part Historic Supplier Part Key` mediumint(8) unsigned NOT NULL,
+  `Supplier Part Historic Reference` varchar(255) DEFAULT NULL,
+  `Supplier Part Historic Unit Cost` float unsigned DEFAULT NULL,
+  `Supplier Part Historic Metadata` text,
+  PRIMARY KEY (`Supplier Part Historic Key`),
+  KEY `Supplier Part Historic Supplier Part Key` (`Supplier Part Historic Supplier Part Key`),
+  KEY `Supplier Part Historic Unit Cost` (`Supplier Part Historic Unit Cost`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Supplier Part History Bridge`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Supplier Part History Bridge` (
+  `Supplier Part Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes','Part') NOT NULL,
+  PRIMARY KEY (`Supplier Part Key`,`History Key`),
+  KEY `Supplier Part Key` (`Supplier Part Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `History Key` (`History Key`),
+  KEY `Type` (`Type`)
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Supplier Payment Fact`
 --
 
-DROP TABLE IF EXISTS `Supplier Payment Fact`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Supplier Payment Fact` (
-  `Supplier Payment Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Supplier Payment Key` mediumint(8) unsigned NOT NULL,
   `Payment Date` date NOT NULL,
   `Ship Date` date NOT NULL,
   `Warehouse Receipt Date` date NOT NULL,
@@ -12193,31 +12307,29 @@ CREATE TABLE `Supplier Payment Fact` (
   `Supplier Payment Discount Amount` decimal(9,2) NOT NULL,
   `Supplier Net Payment` decimal(9,2) NOT NULL,
   PRIMARY KEY (`Supplier Payment Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Supplier Product Custom Field Dimension`
 --
 
-DROP TABLE IF EXISTS `Supplier Product Custom Field Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Supplier Product Custom Field Dimension` (
   `Supplier Product ID` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`Supplier Product ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Supplier Product Dimension`
 --
 
-DROP TABLE IF EXISTS `Supplier Product Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Supplier Product Dimension` (
-  `Supplier Product ID` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Supplier Product ID` mediumint(8) unsigned NOT NULL,
   `Supplier Product Code` varchar(64) NOT NULL,
   `Supplier Product Status` enum('In Use','Not In Use') NOT NULL DEFAULT 'In Use',
   `Supplier Product Available` enum('Yes','No') NOT NULL DEFAULT 'Yes',
@@ -12685,14 +12797,13 @@ CREATE TABLE `Supplier Product Dimension` (
   KEY `Supplier Product Delivery Days Set Up` (`Supplier Product Delivery Days Set Up`),
   KEY `Supplier Product Available` (`Supplier Product Available`),
   KEY `Supplier Product State` (`Supplier Product State`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Supplier Product History Bridge`
 --
 
-DROP TABLE IF EXISTS `Supplier Product History Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Supplier Product History Bridge` (
@@ -12706,18 +12817,17 @@ CREATE TABLE `Supplier Product History Bridge` (
   KEY `Deletable` (`Deletable`),
   KEY `History Key` (`History Key`),
   KEY `Type` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Supplier Product History Dimension`
 --
 
-DROP TABLE IF EXISTS `Supplier Product History Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Supplier Product History Dimension` (
-  `SPH Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `SPH Key` mediumint(8) unsigned NOT NULL,
   `Supplier Product ID` mediumint(8) unsigned DEFAULT NULL,
   `SPH Units Per Case` smallint(5) unsigned NOT NULL DEFAULT '1',
   `SPH Case Cost` decimal(16,2) DEFAULT NULL,
@@ -13094,35 +13204,33 @@ CREATE TABLE `Supplier Product History Dimension` (
   KEY `SPH To` (`SPH Valid To`),
   KEY `SPH Type` (`SPH Type`),
   KEY `Supplier Product Key` (`Supplier Product ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Supplier Product Material Bridge`
 --
 
-DROP TABLE IF EXISTS `Supplier Product Material Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Supplier Product Material Bridge` (
-  `Supplier Product Material Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Supplier Product Material Key` mediumint(8) unsigned NOT NULL,
   `Supplier Product ID` mediumint(8) unsigned NOT NULL,
   `Material Key` mediumint(8) unsigned NOT NULL,
   `Ratio` float DEFAULT NULL,
   `May Contain` enum('Yes','No') NOT NULL DEFAULT 'No',
   PRIMARY KEY (`Supplier Product Material Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Supplier Product Part Dimension`
 --
 
-DROP TABLE IF EXISTS `Supplier Product Part Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Supplier Product Part Dimension` (
-  `Supplier Product Part Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Supplier Product Part Key` mediumint(8) unsigned NOT NULL,
   `Supplier Product ID` mediumint(8) unsigned NOT NULL,
   `Supplier Product Historic Key` mediumint(8) unsigned NOT NULL,
   `Supplier Product Part Type` enum('Simple','Split') NOT NULL,
@@ -13136,36 +13244,34 @@ CREATE TABLE `Supplier Product Part Dimension` (
   KEY `Supplier Product Part Most Recent` (`Supplier Product Part Most Recent`),
   KEY `Supplier Product Part In Use` (`Supplier Product Part In Use`),
   KEY `Supplier Product Historic Key` (`Supplier Product Historic Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Supplier Product Part List`
 --
 
-DROP TABLE IF EXISTS `Supplier Product Part List`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Supplier Product Part List` (
-  `Supplier Product Part List Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Supplier Product Part List Key` mediumint(8) unsigned NOT NULL,
   `Part SKU` mediumint(8) unsigned NOT NULL,
   `Supplier Product Part Key` mediumint(8) unsigned NOT NULL,
   `Supplier Product Units Per Part` float DEFAULT '1',
   PRIMARY KEY (`Supplier Product Part List Key`),
   KEY `Supplier Product Part ID` (`Supplier Product Part Key`),
   KEY `Part SKU` (`Part SKU`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Supplier Refund Fact`
 --
 
-DROP TABLE IF EXISTS `Supplier Refund Fact`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Supplier Refund Fact` (
-  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `id` mediumint(8) unsigned NOT NULL,
   `Payment Date` date NOT NULL,
   `Ship Date` date NOT NULL,
   `Warehouse Receipt Date` date NOT NULL,
@@ -13183,33 +13289,31 @@ CREATE TABLE `Supplier Refund Fact` (
   `Supplier Refund Quantity` float NOT NULL,
   `Supplier Gross Refund Amount` decimal(9,2) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Table Dimension`
 --
 
-DROP TABLE IF EXISTS `Table Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Table Dimension` (
-  `Table Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Table Key` mediumint(8) unsigned NOT NULL,
   `Table Name` varchar(64) NOT NULL,
   `Table Export Fields` text NOT NULL,
   PRIMARY KEY (`Table Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Table User Export Fields`
 --
 
-DROP TABLE IF EXISTS `Table User Export Fields`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Table User Export Fields` (
-  `Table User Export Fields Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Table User Export Fields Key` mediumint(8) unsigned NOT NULL,
   `Table Key` smallint(5) unsigned NOT NULL,
   `User Key` mediumint(8) unsigned NOT NULL,
   `Map Name` varchar(64) NOT NULL,
@@ -13217,18 +13321,17 @@ CREATE TABLE `Table User Export Fields` (
   `Fields` varchar(900) NOT NULL,
   PRIMARY KEY (`Table User Export Fields Key`),
   KEY `Table Key` (`Table Key`,`User Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Tax Category Dimension`
 --
 
-DROP TABLE IF EXISTS `Tax Category Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Tax Category Dimension` (
-  `Tax Category Key` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `Tax Category Key` smallint(5) unsigned NOT NULL,
   `Tax Category Type` enum('Standard','Zero','Unknown','Reduced','Exempt','Outside') NOT NULL DEFAULT 'Standard',
   `Tax Category Type Name` varchar(64) NOT NULL,
   `Tax Category Code` varchar(16) NOT NULL,
@@ -13245,14 +13348,13 @@ CREATE TABLE `Tax Category Dimension` (
   KEY `Composite` (`Composite`),
   KEY `Tax Category Active` (`Tax Category Active`),
   KEY `Tax Category Country Code` (`Tax Category Country Code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Telecom Bridge`
 --
 
-DROP TABLE IF EXISTS `Telecom Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Telecom Bridge` (
@@ -13268,18 +13370,17 @@ CREATE TABLE `Telecom Bridge` (
   KEY `Subject Type` (`Subject Type`),
   KEY `Is Active` (`Is Active`),
   KEY `Is Main` (`Is Main`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Telecom Dimension`
 --
 
-DROP TABLE IF EXISTS `Telecom Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Telecom Dimension` (
-  `Telecom Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Telecom Key` mediumint(8) unsigned NOT NULL,
   `Telecom Type` enum('Telephone','Fax','Mobile') NOT NULL DEFAULT 'Telephone',
   `Telecom Technology Type` enum('Landline','Mobile','Unknown','Non-geographic') NOT NULL DEFAULT 'Unknown',
   `Telecom Country Telephone Code` varchar(4) DEFAULT NULL,
@@ -13292,63 +13393,59 @@ CREATE TABLE `Telecom Dimension` (
   PRIMARY KEY (`Telecom Key`),
   KEY `Telecom Plain Number` (`Telecom Plain Number`),
   KEY `Telecom Area Code` (`Telecom Area Code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Theme Background Bridge`
 --
 
-DROP TABLE IF EXISTS `Theme Background Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Theme Background Bridge` (
   `Theme Key` mediumint(9) NOT NULL,
   `Theme Background Key` mediumint(9) NOT NULL,
   PRIMARY KEY (`Theme Key`,`Theme Background Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Theme Background Dimension`
 --
 
-DROP TABLE IF EXISTS `Theme Background Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Theme Background Dimension` (
-  `Theme Background Key` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `Theme Background Key` smallint(5) unsigned NOT NULL,
   `Theme Background Name` varchar(256) NOT NULL,
   `Header CSS` text NOT NULL,
   `Background CSS` text NOT NULL,
   `Footer CSS` text NOT NULL,
   PRIMARY KEY (`Theme Background Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Theme Dimension`
 --
 
-DROP TABLE IF EXISTS `Theme Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Theme Dimension` (
-  `Theme Key` int(11) NOT NULL AUTO_INCREMENT,
+  `Theme Key` int(11) NOT NULL,
   `Theme Name` varchar(255) NOT NULL,
   `Theme CSS Buttons` text NOT NULL,
   `Theme CSS Header` text NOT NULL,
   `Theme CSS Tables` text NOT NULL,
   `Theme CSS Top Navigation` text NOT NULL,
   PRIMARY KEY (`Theme Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Time Series Dimension`
 --
 
-DROP TABLE IF EXISTS `Time Series Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Time Series Dimension` (
@@ -13378,18 +13475,17 @@ CREATE TABLE `Time Series Dimension` (
   KEY `Time Series Name` (`Time Series Name`(24)),
   KEY `Time Series Name Key` (`Time Series Name Key`),
   KEY `Time Series Label` (`Time Series Label`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Timeseries Dimension`
 --
 
-DROP TABLE IF EXISTS `Timeseries Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Timeseries Dimension` (
-  `Timeseries Key` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `Timeseries Key` smallint(5) unsigned NOT NULL,
   `Timeseries Type` varchar(64) NOT NULL,
   `Timeseries Frequency` enum('Daily','Weekly','Monthly','Quarterly','Yearly') NOT NULL,
   `Timeseries Parent` varchar(32) DEFAULT NULL,
@@ -13401,18 +13497,17 @@ CREATE TABLE `Timeseries Dimension` (
   `Timeseries Created` datetime DEFAULT NULL,
   `Timeseries Updated` datetime DEFAULT NULL,
   PRIMARY KEY (`Timeseries Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Timeseries Record Dimension`
 --
 
-DROP TABLE IF EXISTS `Timeseries Record Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Timeseries Record Dimension` (
-  `Timeseries Record Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Timeseries Record Key` mediumint(8) unsigned NOT NULL,
   `Timeseries Record Timeseries Key` smallint(6) NOT NULL,
   `Timeseries Record Date` date NOT NULL,
   `Timeseries Record Float A` float DEFAULT NULL,
@@ -13425,18 +13520,17 @@ CREATE TABLE `Timeseries Record Dimension` (
   PRIMARY KEY (`Timeseries Record Key`),
   KEY `Time Series Date` (`Timeseries Record Date`),
   KEY `Timeseries Key` (`Timeseries Record Timeseries Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Timesheet Dimension`
 --
 
-DROP TABLE IF EXISTS `Timesheet Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Timesheet Dimension` (
-  `Timesheet Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Timesheet Key` mediumint(8) unsigned NOT NULL,
   `Timesheet Date` date NOT NULL,
   `Timesheet Type` enum('WorkingDay','DayOff','NoFixedWorkingHours') DEFAULT 'NoFixedWorkingHours',
   `Timesheet Staff Key` mediumint(8) unsigned NOT NULL,
@@ -13454,18 +13548,17 @@ CREATE TABLE `Timesheet Dimension` (
   PRIMARY KEY (`Timesheet Key`),
   UNIQUE KEY `Timesheet Date` (`Timesheet Date`,`Timesheet Staff Key`),
   KEY `Timesheet Date_2` (`Timesheet Date`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Timesheet Record Dimension`
 --
 
-DROP TABLE IF EXISTS `Timesheet Record Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Timesheet Record Dimension` (
-  `Timesheet Record Key` mediumint(9) NOT NULL AUTO_INCREMENT,
+  `Timesheet Record Key` mediumint(9) NOT NULL,
   `Timesheet Record Timesheet Key` mediumint(8) unsigned DEFAULT NULL,
   `Timesheet Record Type` enum('WorkingHoursMark','OvertimeMark','ClockingRecord','BreakMark') NOT NULL DEFAULT 'ClockingRecord',
   `Timesheet Record Ignored` enum('Yes','No') NOT NULL DEFAULT 'No',
@@ -13477,21 +13570,20 @@ CREATE TABLE `Timesheet Record Dimension` (
   `Timesheet Authoriser Key` mediumint(8) unsigned DEFAULT NULL,
   `Timesheet Remover Key` mediumint(8) unsigned DEFAULT NULL,
   PRIMARY KEY (`Timesheet Record Key`),
-  UNIQUE KEY `Staff Key` (`Timesheet Record Staff Key`,`Timesheet Record Date`,`Timesheet Record Type`) USING BTREE,
+  UNIQUE KEY `Staff Key` (`Timesheet Record Staff Key`,`Timesheet Record Date`,`Timesheet Record Type`),
   KEY `Timesheet Key` (`Timesheet Record Timesheet Key`),
   KEY `Timesheet Record Ignored Due Missing End` (`Timesheet Record Ignored Due Missing End`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Upload Dimension`
 --
 
-DROP TABLE IF EXISTS `Upload Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Upload Dimension` (
-  `Upload Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Upload Key` mediumint(8) unsigned NOT NULL,
   `Upload State` enum('Uploaded','InProcess','Finished','Cancelled') NOT NULL DEFAULT 'Uploaded',
   `Upload Date` datetime DEFAULT NULL,
   `Upload Parent` varchar(16) NOT NULL,
@@ -13499,41 +13591,40 @@ CREATE TABLE `Upload Dimension` (
   `Upload Object` varchar(16) NOT NULL,
   `Upload User Key` mediumint(8) unsigned DEFAULT NULL,
   `Upload Created` datetime DEFAULT NULL,
+  `Upload Records` mediumint(9) NOT NULL DEFAULT '0',
   `Upload OK` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Upload Warnings` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Upload Errors` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Upload Metadata` text,
   PRIMARY KEY (`Upload Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Upload File Dimension`
 --
 
-DROP TABLE IF EXISTS `Upload File Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Upload File Dimension` (
-  `Upload File Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Upload File Key` mediumint(8) unsigned NOT NULL,
   `Upload File Upload Key` mediumint(8) unsigned DEFAULT NULL,
   `Upload File Checksum` varchar(64) DEFAULT NULL,
   `Upload File Name` varchar(255) NOT NULL,
   `Upload File Size` int(10) unsigned NOT NULL,
   `Upload File Metadata` text,
   PRIMARY KEY (`Upload File Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Upload Record Dimension`
 --
 
-DROP TABLE IF EXISTS `Upload Record Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Upload Record Dimension` (
-  `Upload Record Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Upload Record Key` int(10) unsigned NOT NULL,
   `Upload Record Upload Key` mediumint(8) unsigned NOT NULL,
   `Upload Record Upload File Key` smallint(5) unsigned DEFAULT NULL,
   `Upload Record Row Index` int(10) unsigned NOT NULL,
@@ -13545,18 +13636,17 @@ CREATE TABLE `Upload Record Dimension` (
   `Upload Record Data` longblob NOT NULL,
   `Upload Record Object Key` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`Upload Record Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `User Agent Dimension`
 --
 
-DROP TABLE IF EXISTS `User Agent Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `User Agent Dimension` (
-  `User Agent Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `User Agent Key` mediumint(8) unsigned NOT NULL,
   `User Agent Name` varchar(256) DEFAULT NULL,
   `User Agent String` text NOT NULL,
   `User Agent Description` text,
@@ -13565,18 +13655,17 @@ CREATE TABLE `User Agent Dimension` (
   PRIMARY KEY (`User Agent Key`),
   KEY `User Agent Type` (`User Agent Type`),
   KEY `User Agent String` (`User Agent String`(128))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `User Dimension`
 --
 
-DROP TABLE IF EXISTS `User Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `User Dimension` (
-  `User Key` mediumint(6) unsigned NOT NULL AUTO_INCREMENT,
+  `User Key` mediumint(6) unsigned NOT NULL,
   `User Handle` varchar(255) NOT NULL,
   `User Password` varchar(128) DEFAULT NULL,
   `User Active` enum('Yes','No') NOT NULL DEFAULT 'No',
@@ -13612,14 +13701,13 @@ CREATE TABLE `User Dimension` (
   KEY `User Parent Key` (`User Parent Key`),
   KEY `User Login Count` (`User Login Count`),
   KEY `User Has Login` (`User Has Login`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `User Failed Log Dimension`
 --
 
-DROP TABLE IF EXISTS `User Failed Log Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `User Failed Log Dimension` (
@@ -13637,29 +13725,27 @@ CREATE TABLE `User Failed Log Dimension` (
   KEY `Fail Main Reason` (`Fail Main Reason`),
   KEY `Handle` (`Handle`(64)),
   KEY `User Key` (`User Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `User Group Dimension`
 --
 
-DROP TABLE IF EXISTS `User Group Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `User Group Dimension` (
-  `User Group Key` smallint(6) unsigned NOT NULL AUTO_INCREMENT,
+  `User Group Key` smallint(6) unsigned NOT NULL,
   `User Group Name` varchar(255) NOT NULL,
   `User Group Description` text,
   PRIMARY KEY (`User Group Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `User Group Rights Bridge`
 --
 
-DROP TABLE IF EXISTS `User Group Rights Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `User Group Rights Bridge` (
@@ -13668,28 +13754,26 @@ CREATE TABLE `User Group Rights Bridge` (
   UNIQUE KEY `id_i_idx` (`Group Key`,`Right Key`),
   KEY `Group Key` (`Group Key`),
   KEY `Right Key` (`Right Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `User Group User Bridge`
 --
 
-DROP TABLE IF EXISTS `User Group User Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `User Group User Bridge` (
   `User Key` int(11) DEFAULT '0',
   `User Group Key` int(11) DEFAULT '0',
   UNIQUE KEY `id_i_idx` (`User Key`,`User Group Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `User History Bridge`
 --
 
-DROP TABLE IF EXISTS `User History Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `User History Bridge` (
@@ -13701,18 +13785,17 @@ CREATE TABLE `User History Bridge` (
   PRIMARY KEY (`User Key`,`History Key`),
   KEY `User Key` (`User Key`),
   KEY `History Key` (`History Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `User Log Dimension`
 --
 
-DROP TABLE IF EXISTS `User Log Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `User Log Dimension` (
-  `User Log Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `User Log Key` mediumint(8) unsigned NOT NULL,
   `Status` enum('Open','Close') NOT NULL DEFAULT 'Open',
   `User Key` mediumint(8) unsigned NOT NULL,
   `Site Key` smallint(5) unsigned NOT NULL DEFAULT '0',
@@ -13728,18 +13811,17 @@ CREATE TABLE `User Log Dimension` (
   KEY `Status` (`Status`),
   KEY `Site Key` (`Site Key`),
   KEY `Session ID` (`Session ID`(32))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `User Request Dimension`
 --
 
-DROP TABLE IF EXISTS `User Request Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `User Request Dimension` (
-  `User Request Key` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `User Request Key` bigint(20) unsigned NOT NULL,
   `Is User` enum('Yes','No') NOT NULL DEFAULT 'No',
   `User Key` mediumint(8) NOT NULL,
   `User Log Key` mediumint(8) unsigned DEFAULT NULL,
@@ -13759,14 +13841,13 @@ CREATE TABLE `User Request Dimension` (
   KEY `User Log Key` (`User Log Key`),
   KEY `Site Key` (`Site Key`),
   KEY `Is User` (`Is User`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `User Right Scope Bridge`
 --
 
-DROP TABLE IF EXISTS `User Right Scope Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `User Right Scope Bridge` (
@@ -13775,28 +13856,26 @@ CREATE TABLE `User Right Scope Bridge` (
   `Scope Key` mediumint(9) NOT NULL,
   PRIMARY KEY (`User Key`,`Scope Key`,`Scope`),
   KEY `Scope` (`Scope`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `User Rights Bridge`
 --
 
-DROP TABLE IF EXISTS `User Rights Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `User Rights Bridge` (
   `User Key` mediumint(8) unsigned NOT NULL,
   `Right Code` varchar(8) NOT NULL,
   UNIQUE KEY `id_i_idx` (`User Key`,`Right Code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `User Staff Settings Dimension`
 --
 
-DROP TABLE IF EXISTS `User Staff Settings Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `User Staff Settings Dimension` (
@@ -13809,18 +13888,17 @@ CREATE TABLE `User Staff Settings Dimension` (
   `User Hooked Site Key` mediumint(9) DEFAULT NULL,
   `User Hooked Warehouse Key` mediumint(9) DEFAULT NULL,
   PRIMARY KEY (`User Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `User System View Fact`
 --
 
-DROP TABLE IF EXISTS `User System View Fact`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `User System View Fact` (
-  `User System View Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `User System View Key` int(10) unsigned NOT NULL,
   `User Key` mediumint(9) NOT NULL,
   `Date` datetime NOT NULL,
   `Module` varchar(255) DEFAULT NULL,
@@ -13831,33 +13909,31 @@ CREATE TABLE `User System View Fact` (
   `Object` varchar(255) DEFAULT NULL,
   `Object Key` mediumint(9) DEFAULT NULL,
   PRIMARY KEY (`User System View Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Visitor Dimension`
 --
 
-DROP TABLE IF EXISTS `Visitor Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Visitor Dimension` (
-  `Visitor Key` int(11) NOT NULL AUTO_INCREMENT,
+  `Visitor Key` int(11) NOT NULL,
   `Visitor Site Key` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`Visitor Key`),
   KEY `User Visitor Site Key` (`Visitor Site Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Visitor Session Dimension`
 --
 
-DROP TABLE IF EXISTS `Visitor Session Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Visitor Session Dimension` (
-  `Visitor Session Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Visitor Session Key` int(10) unsigned NOT NULL,
   `Visitor Session Site Key` mediumint(8) unsigned NOT NULL,
   `Visitor Session Visitor Key` mediumint(8) unsigned NOT NULL,
   `Visitor Session Start Date` datetime NOT NULL,
@@ -13865,18 +13941,17 @@ CREATE TABLE `Visitor Session Dimension` (
   PRIMARY KEY (`Visitor Session Key`),
   KEY `User Session Visitor Key` (`Visitor Session Visitor Key`),
   KEY `User Session Site Key` (`Visitor Session Site Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Voucher Dimension`
 --
 
-DROP TABLE IF EXISTS `Voucher Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Voucher Dimension` (
-  `Voucher Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Voucher Key` mediumint(8) unsigned NOT NULL,
   `Voucher Store Key` mediumint(8) unsigned NOT NULL,
   `Voucher Deal Key` mediumint(8) unsigned DEFAULT NULL,
   `Voucher Code` varchar(32) NOT NULL,
@@ -13890,14 +13965,13 @@ CREATE TABLE `Voucher Dimension` (
   PRIMARY KEY (`Voucher Key`),
   UNIQUE KEY `Voucher Store Key` (`Voucher Store Key`,`Voucher Code`),
   KEY `Voucher Status` (`Voucher Status`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Voucher Order Bridge`
 --
 
-DROP TABLE IF EXISTS `Voucher Order Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Voucher Order Bridge` (
@@ -13908,18 +13982,17 @@ CREATE TABLE `Voucher Order Bridge` (
   `Customer Key` mediumint(8) unsigned DEFAULT NULL,
   `State` enum('In Process','Cancelled','Consolidated') NOT NULL DEFAULT 'In Process',
   UNIQUE KEY `Voucher Key` (`Voucher Key`,`Order Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Warehouse Area Dimension`
 --
 
-DROP TABLE IF EXISTS `Warehouse Area Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Warehouse Area Dimension` (
-  `Warehouse Area Key` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `Warehouse Area Key` smallint(5) unsigned NOT NULL,
   `Warehouse Area Code` varchar(16) NOT NULL,
   `Warehouse Area Name` varchar(64) NOT NULL,
   `Warehouse Area Description` text,
@@ -13930,18 +14003,17 @@ CREATE TABLE `Warehouse Area Dimension` (
   PRIMARY KEY (`Warehouse Area Key`),
   UNIQUE KEY `Warehouse Area Code_2` (`Warehouse Area Code`,`Warehouse Key`),
   KEY `Warehouse Area Code` (`Warehouse Area Code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Warehouse Dimension`
 --
 
-DROP TABLE IF EXISTS `Warehouse Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Warehouse Dimension` (
-  `Warehouse Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Warehouse Key` mediumint(8) unsigned NOT NULL,
   `Warehouse Code` varchar(16) NOT NULL,
   `Warehouse Name` varchar(255) NOT NULL,
   `Warehouse State` enum('Active','Closed') NOT NULL DEFAULT 'Active',
@@ -13987,18 +14059,17 @@ CREATE TABLE `Warehouse Dimension` (
   PRIMARY KEY (`Warehouse Key`),
   UNIQUE KEY `Warehouse Code` (`Warehouse Code`),
   UNIQUE KEY `Warehouse Name` (`Warehouse Name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Warehouse Flag Dimension`
 --
 
-DROP TABLE IF EXISTS `Warehouse Flag Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Warehouse Flag Dimension` (
-  `Warehouse Flag Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Warehouse Flag Key` mediumint(8) unsigned NOT NULL,
   `Warehouse Key` smallint(5) unsigned NOT NULL,
   `Warehouse Flag Color` enum('Blue','Green','Orange','Pink','Purple','Red','Yellow') NOT NULL,
   `Warehouse Flag Label` varchar(16) NOT NULL,
@@ -14007,14 +14078,13 @@ CREATE TABLE `Warehouse Flag Dimension` (
   PRIMARY KEY (`Warehouse Flag Key`),
   UNIQUE KEY `Warehouse Key` (`Warehouse Key`,`Warehouse Flag Color`),
   KEY `Warehouse Key_2` (`Warehouse Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Warehouse History Bridge`
 --
 
-DROP TABLE IF EXISTS `Warehouse History Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Warehouse History Bridge` (
@@ -14026,18 +14096,17 @@ CREATE TABLE `Warehouse History Bridge` (
   PRIMARY KEY (`Warehouse Key`,`History Key`),
   KEY `Warehouse Key` (`Warehouse Key`),
   KEY `History Key` (`History Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Warehouse Receipts Fact`
 --
 
-DROP TABLE IF EXISTS `Warehouse Receipts Fact`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Warehouse Receipts Fact` (
-  `Warehouse Receipts Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Warehouse Receipts Key` mediumint(8) unsigned NOT NULL,
   `Warehouse Receipt Date` date NOT NULL,
   `Requested Date` date NOT NULL,
   `Part Key` mediumint(8) unsigned DEFAULT NULL,
@@ -14051,18 +14120,17 @@ CREATE TABLE `Warehouse Receipts Fact` (
   `Received Quantity` float NOT NULL,
   PRIMARY KEY (`Warehouse Receipts Key`),
   KEY `Supplier Product Key` (`Supplier Product Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Widget Dimension`
 --
 
-DROP TABLE IF EXISTS `Widget Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Widget Dimension` (
-  `Widget Key` mediumint(8) NOT NULL AUTO_INCREMENT,
+  `Widget Key` mediumint(8) NOT NULL,
   `Widget Name` varchar(255) NOT NULL,
   `Widget Block` varchar(255) NOT NULL,
   `Widget Dimension` varchar(255) DEFAULT NULL,
@@ -14070,47 +14138,42 @@ CREATE TABLE `Widget Dimension` (
   `Widget Description` varchar(255) NOT NULL,
   `Widget Metadata` varchar(1024) NOT NULL,
   PRIMARY KEY (`Widget Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `debugtable`
 --
 
-DROP TABLE IF EXISTS `debugtable`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `debugtable` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `text` longtext NOT NULL,
   `date` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `todo_users`
 --
 
-DROP TABLE IF EXISTS `todo_users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `todo_users` (
-  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `id` mediumint(8) unsigned NOT NULL,
   `name` varchar(120) CHARACTER SET latin1 NOT NULL,
   `order_name` varchar(60) CHARACTER SET latin1 NOT NULL,
   `tipo` varchar(20) CHARACTER SET latin1 NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-04-01 16:03:53
+-- Dump completed on 2016-05-26  9:59:19

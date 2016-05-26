@@ -27,11 +27,6 @@ $barcode_fields=array(
 				'required'=>false,
 				'type'=>'value'
 			),
-
-		
-
-
-
 		)
 	),
 
@@ -43,14 +38,12 @@ $barcode_fields=array(
 
 );
 
-
 $operations=array(
 	'label'=>_('Operations'),
 	'show_title'=>true,
 	'class'=>'operations',
 	'fields'=>array(
 		array(
-
 			'id'=>'delete_barcode',
 			'class'=>'operation',
 			'value'=>'',

@@ -803,9 +803,8 @@ function get_supplier_part_navigation($data, $smarty, $user, $db, $account) {
 					if ( $row2['num']>1) {
 
 
-						$sql=sprintf("select `Supplier Part Reference` object_name,`Supplier Part Key` as object_key from $table   $where $wheref
-	                and ($_order_field < %s OR ($_order_field = %s AND `Supplier Part Key` < %d))  order by $_order_field desc , `Supplier Part Key` desc limit 1",
-
+						$sql=sprintf("select `Supplier Part Reference` object_name,`Supplier Part Key` as object_key from %s and ($_order_field < %s OR ($_order_field = %s AND `Supplier Part Key` < %d))  order by $_order_field desc , `Supplier Part Key` desc limit 1",
+                            "$table $where $wheref",
 							prepare_mysql($_order_field_value),
 							prepare_mysql($_order_field_value),
 							$data['key']
@@ -826,8 +825,8 @@ function get_supplier_part_navigation($data, $smarty, $user, $db, $account) {
 
 
 
-						$sql=sprintf("select `Supplier Part Reference` object_name,`Supplier Part Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND `Supplier Part Key` > %d))  order by $_order_field   , `Supplier Part Key`  limit 1",
+						$sql=sprintf("select `Supplier Part Reference` object_name,`Supplier Part Key` as object_key from %s and ($_order_field  > %s OR ($_order_field  = %s AND `Supplier Part Key` > %d))  order by $_order_field   , `Supplier Part Key`  limit 1",
+							"$table $where $wheref",
 							prepare_mysql($_order_field_value),
 							prepare_mysql($_order_field_value),
 							$data['key']
@@ -1301,6 +1300,37 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
 
 }
 
+function get_deleted_supplier_navigation($data, $smarty, $user, $db, $account) {
+
+
+	$_section='barcodes';
+	$object=$data['_object'];
+	$block_view=$data['section'];
+	$left_buttons=array();
+
+	$right_buttons=array();
+	$sections=get_sections('suppliers');
+	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
+
+
+	$title=_('Deleted supplier').' <span class="id Supplier_Code">'.$object->get('Deleted Code').'</span>';
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>_('Search suppliers'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+
+	return $html;
+
+}
 
 
 ?>

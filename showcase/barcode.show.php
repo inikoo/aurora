@@ -12,23 +12,17 @@
 
 function get_barcode_showcase($data, $smarty, $user, $db) {
 
-
-
 	$barcode=$data['_object'];
 	if (!$barcode->id) {
 		return "";
 	}
-	
-
-
 
 	$smarty->assign('barcode', $barcode);
-    if($barcode->deleted){
-    	return $smarty->fetch('showcase/deleted_barcode.tpl');
-
-    }else{
-	return $smarty->fetch('showcase/barcode.tpl');
-}
+	if ($barcode->deleted) {
+		return $smarty->fetch('showcase/deleted_barcode.tpl');
+	}else {
+		return $smarty->fetch('showcase/barcode.tpl');
+	}
 
 
 }

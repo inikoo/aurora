@@ -52,6 +52,21 @@ class SupplierPart extends DB_Table{
 	}
 
 
+	function get_supplier_data() {
+
+		$sql=sprintf('select * from `Supplier Dimension` where `Supplier Key`=%d ', $this->get('Supplier Part Supplier Key'));
+		if ($row = $this->db->query($sql)->fetch()) {
+
+			foreach ($row as $key=>$value) {
+				$this->data[$key]=$value;
+			}
+		}
+
+
+
+	}
+
+
 	function find($raw_data, $options) {
 		if (isset($raw_data['editor'])) {
 			foreach ($raw_data['editor'] as $key=>$value) {
@@ -80,6 +95,7 @@ class SupplierPart extends DB_Table{
 		if (!$data['Supplier Part Part SKU']) {
 
 			$sql=sprintf("select `Part SKU` from `Part Dimension` where `Part Reference`=%s", prepare_mysql($raw_data['Part Reference']));
+
 
 			if ($result=$this->db->query($sql)) {
 				if ($row = $result->fetch()) {
@@ -168,6 +184,7 @@ class SupplierPart extends DB_Table{
 		}
 
 
+
 		$keys='(';$values='values(';
 		foreach ($base_data as $key=>$value) {
 			$keys.="`$key`,";
@@ -179,6 +196,7 @@ class SupplierPart extends DB_Table{
 		$keys=preg_replace('/,$/', ')', $keys);
 		$values=preg_replace('/,$/', ')', $values);
 		$sql=sprintf("insert into `Supplier Part Dimension` %s %s", $keys, $values);
+
 
 		if ($this->db->exec($sql)) {
 			$this->id=$this->db->lastInsertId();
@@ -210,6 +228,18 @@ class SupplierPart extends DB_Table{
 
 		switch ($key) {
 
+		case 'Supplier Key':
+
+
+			return $this->get('Supplier Name').(($this->get('Supplier Code')!='' and $this->get('Supplier Code')!=$this->get('Supplier Name'))?' ('.$this->get('Supplier Code').')':'');
+
+
+			break;
+		case 'Average Delivery Days':
+			if ($this->data['Supplier Part Average Delivery Days']=='')return '';
+			return sprintf("%d %s", $this->data['Supplier Part Average Delivery Days'], ngettext("day", "days", $this->data['Supplier Part Average Delivery Days']));
+
+			break;
 		case 'Average Delivery':
 
 			if ($this->data['Supplier Part Status']!='Discontinued') {
@@ -356,7 +386,7 @@ class SupplierPart extends DB_Table{
 
 			if (preg_match('/^Part /', $field)) {
 
-				$field=preg_replace('/^Part /', '', $field);
+				//$field=preg_replace('/^Part /', '', $field);
 				$this->part->update(array($field=>$value), $options);
 				$this->updated=$this->part->updated;
 				$this->msg=$this->part->msg;
@@ -436,6 +466,45 @@ class SupplierPart extends DB_Table{
 	}
 
 
+	function delete($metadata=false) {
+
+
+
+
+		$sql=sprintf('insert into `Supplier Part Deleted Dimension`  (`Supplier Part Deleted Key`,`Supplier Part Deleted Reference`,`Supplier Part Deleted From`,`Supplier Part Deleted To`,`Supplier Part Metadata`) values (%d,%s,%s,%s,%s) ',
+			$this->id,
+			prepare_mysql($this->get('Supplier Part Reference')),
+			prepare_mysql($this->get('Supplier Part From')),
+			prepare_mysql(gmdate('Y-m-d H:i:s')),
+			prepare_mysql(gzcompress(json_encode($this->data), 9))
+
+		);
+		
+		//print "$sql\n";
+		
+		$this->db->exec($sql);
+
+
+
+		$sql=sprintf('delete from `Supplier Part Dimension`  where `Supplier Part Key`=%d ',
+			$this->id
+		);
+		$this->db->exec($sql);
+//print "$sql\n";
+
+		$history_data=array(
+			'History Abstract'=>sprintf(_("Supplier's part record %s deleted"), $this->data['Supplier Part Reference']),
+			'History Details'=>'',
+			'Action'=>'deleted'
+		);
+
+		$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
+
+
+		$this->deleted=true;
+	}
+
+
 	function get_field_label($field) {
 		global $account;
 
@@ -468,7 +537,24 @@ class SupplierPart extends DB_Table{
 		case 'Supplier Part Average Delivery Days':
 			$label=_("average delivery time");
 			break;
-
+		case 'Supplier Part Unit Cost':
+			$label=_("unit cost");
+			break;
+		case 'Supplier Part Unit Extra Cost':
+			$label=_("unit extra costs");
+			break;
+		case 'Part Reference':
+			$label=_("part reference");
+			break;
+		case 'Part Barcode Number':
+			$label=_("part barcode");
+			break;
+		case 'Part Unit Price':
+			$label=_("Unit price");
+			break;
+		case 'Part Unit RRP':
+			$label=_("unit RRP");
+			break;
 		default:
 			$label=$field;
 

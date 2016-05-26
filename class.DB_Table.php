@@ -176,7 +176,10 @@ abstract class DB_Table {
 		$value=_trim($value);
 
 
-		$old_value=_('Unknown');
+        $formatted_field=preg_replace('/'.$this->table_name.' /','',$field);
+        
+
+		//$old_value=_('Unknown');
 		$key_field=$table_name." Key";
 
 		if ($table_name=='Page' or $table_name=='Page Store') {
@@ -204,7 +207,7 @@ abstract class DB_Table {
 
 		if (preg_match('/^custom_field_part/i', $field)) {
 			$field1=preg_replace('/^custom_field_part_/', '', $field);
-			$sql=sprintf("select %s as value from `Part Custom Field Dimension` where `Part SKU`=%d", $field1, $table_key);
+			//$sql=sprintf("select %s as value from `Part Custom Field Dimension` where `Part SKU`=%d", $field1, $table_key);
 		}
 		elseif (preg_match('/^custom_field_customer/i', $field)) {
 			$field1=preg_replace('/^custom_field_customer_/', '', $field);
@@ -224,8 +227,10 @@ abstract class DB_Table {
 
 
 
-			$sql=sprintf("select `%s` as value from `Customer Custom Field Dimension` where `Customer Key`=%d", $field_key, $table_key);
+			//$sql=sprintf("select `%s` as value from `Customer Custom Field Dimension` where `Customer Key`=%d", $field_key, $table_key);
 		}
+		
+		/*
 		else {
 
 			$sql=sprintf("select `%s` as value from `%s` where `%s`=%d ",
@@ -247,6 +252,9 @@ abstract class DB_Table {
 			exit($sql);
 
 		}
+*/
+$old_formatted_value=$this->get($formatted_field);
+
 
 
 
@@ -314,11 +322,11 @@ abstract class DB_Table {
 			) {
 
 
-				$old_value=htmlentities($old_value);
-				$value=htmlentities($value);
+				$old_formatted_value=htmlentities($old_formatted_value);
+				$new_formatted_value=htmlentities($this->get($formatted_field));
 
 
-				$this->add_changelog_record($field, $old_value, $value, $options, $table_name, $table_key);
+				$this->add_changelog_record($field, $old_formatted_value, $new_formatted_value, $options, $table_name, $table_key);
 
 			}
 
@@ -487,7 +495,7 @@ abstract class DB_Table {
 					if ($raw_data['new_value']=='')
 						$data['History Abstract']=sprintf(_("%s %s %s was deleted"), $formatted_table, $formatted_indirect_object, $raw_data['old_value']);
 					elseif ($raw_data['old_value']=='')
-						$data['History Abstract']=sprintf(_("%s %s %s was inputted"), $formatted_table, $formatted_indirect_object, $raw_data['new_value']);
+						$data['History Abstract']=sprintf(_("%s %s set as %s"), $formatted_table, $formatted_indirect_object, $raw_data['new_value']);
 					else
 						$data['History Abstract']=sprintf(_("%s %s was changed to %s"), $formatted_table, $formatted_indirect_object, $raw_data['new_value']);
 				}

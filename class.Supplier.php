@@ -87,21 +87,46 @@ class Supplier extends SubjectSupplier {
 
 
 
-		if ($tipo=='id' or $tipo=='key')
+		if ($tipo=='id' or $tipo=='key') {
 			$sql=sprintf("select * from `Supplier Dimension` where `Supplier Key`=%d", $id);
-		elseif ($tipo=='code') {
+		}elseif ($tipo=='code') {
 			if ($id=='')
 				$id=_('Unknown');
 
 			$sql=sprintf("select * from `Supplier Dimension` where `Supplier Code`=%s ", prepare_mysql($id));
 
 
+		}elseif ($tipo=='deleted') {
+			$this->get_deleted_data($id);
+			return;
 		}else {
 			return;
 		}
 		if ($this->data = $this->db->query($sql)->fetch()) {
 			$this->id=$this->data['Supplier Key'];
 		}
+
+	}
+
+
+	function get_deleted_data( $tag) {
+
+		$this->deleted=true;
+		$sql=sprintf("select * from `Supplier Deleted Dimension` where `Supplier Deleted Key`=%d", $tag);
+
+		if ($this->data = $this->db->query($sql)->fetch()) {
+			$this->id=$this->data['Supplier Deleted Key'];
+
+			foreach (json_decode(gzuncompress($this->data['Supplier Deleted Metadata']), true) as $key=>$value) {
+				$this->data[$key]=$value;
+			}
+
+
+			
+
+		}
+
+
 
 	}
 
@@ -249,10 +274,10 @@ class Supplier extends SubjectSupplier {
 
 		case('Valid From'):
 		case('Valid To'):
-			if ($this->data['Supplier '.$key]=='') {
+			if ($this->get('Supplier '.$key)=='') {
 				return '';
 			}else {
-				return strftime("%a, %e %b %y", strtotime($this->data['Supplier '.$key].' +0:00'));
+				return strftime("%a, %e %b %y", strtotime($this->get('Supplier '.$key).' +0:00'));
 			}
 			break;
 		case ('Default Currency'):
@@ -292,12 +317,12 @@ class Supplier extends SubjectSupplier {
 			break;
 		case 'Delivery Time':
 			include_once 'utils/natural_language.php';
-			return seconds_to_string(24*3600*$this->data['Supplier Average Delivery Days']);
+			return seconds_to_string(24*3600*$this->get('Supplier Average Delivery Days'));
 			break;
 
 
 		case 'Products Origin Country Code':
-			if ($this->data['Supplier Products Origin Country Code']) {
+			if ($this->get('Supplier Products Origin Country Code')) {
 				include_once 'class.Country.php';
 				$country=new Country('code', $this->data['Supplier Products Origin Country Code']);
 				return _($country->get('Country Name')).' ('.$country->get('Country Code').')';
@@ -1266,7 +1291,7 @@ class Supplier extends SubjectSupplier {
 	}
 
 
-	
+
 
 
 
@@ -1286,8 +1311,11 @@ class Supplier extends SubjectSupplier {
 		}
 
 
+		$data['Supplier Part Currency Code']=$this->data['Supplier Default Currency Code'];
+
 
 		$supplier_part= new SupplierPart('find', $data, 'create');
+
 
 
 		if ($supplier_part->id) {
@@ -1528,7 +1556,60 @@ class Supplier extends SubjectSupplier {
 	}
 
 
-	
+
+	function delete($metadata=false) {
+
+		$this->load_acc_data();
+
+
+		$sql=sprintf('insert into `Supplier Deleted Dimension`  (`Supplier Deleted Key`,`Supplier Deleted Code`,`Supplier Deleted Name`,`Supplier Deleted From`,`Supplier Deleted To`,`Supplier Deleted Metadata`) values (%d,%s,%s,%s,%s,%s) ',
+			$this->id,
+			prepare_mysql($this->get('Supplier Code')),
+			prepare_mysql($this->get('Supplier Name')),
+			prepare_mysql($this->get('Supplier Valid From')),
+			prepare_mysql(gmdate('Y-m-d H:i:s')),
+			prepare_mysql(gzcompress(json_encode($this->data), 9))
+
+		);
+		$this->db->exec($sql);
+
+		//print $sql;
+
+
+		$sql=sprintf('delete from `Supplier Dimension`  where `Supplier Key`=%d ',
+			$this->id
+		);
+		$this->db->exec($sql);
+
+
+		$history_data=array(
+			'History Abstract'=>sprintf(_("Supplier record %s deleted"), $this->data['Supplier Name']),
+			'History Details'=>'',
+			'Action'=>'deleted'
+		);
+
+		$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
+
+
+
+
+		$this->deleted=true;
+
+
+		$sql=sprintf('select `Supplier Part Key` from `Supplier Part Dimension` where `Supplier Part Supplier Key`=%d  ', $this->id);
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$supplier_part=get_object('Supplier Part', $row['Supplier Part Key']);
+				$supplier_part->delete();
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+	}
 
 
 

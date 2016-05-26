@@ -1,0 +1,1 @@
+mysqldump --skip-opt --no_data -u root -p aurora > app.sql 

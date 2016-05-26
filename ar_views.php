@@ -70,19 +70,19 @@ case 'views':
 	switch ($state['parent']) {
 
 	case 'campaign':
-		
-		$_parent=get_object($state['parent'],$state['parent_key']);
-		
-	
+
+		$_parent=get_object($state['parent'], $state['parent_key']);
+
+
 		break;
-		
+
 	case 'store':
 		include_once 'class.Store.php';
 		$_parent=new Store($state['parent_key']);
 		$state['current_store']=$_parent->id;
 		$store=$_parent;
-		break;	
-		
+		break;
+
 	case 'part':
 		include_once 'class.Part.php';
 		include_once 'class.Warehouse.php';
@@ -163,6 +163,7 @@ case 'views':
 
 		if (!$_object->id  and $modules[$state['module']]['sections'][$state['section']]['type']=='object') {
 
+
 			if ($state['object']=='barcode') {
 				$_object=new Barcode('deleted', $state['key']);
 				$state['_object']=$_object;
@@ -171,8 +172,16 @@ case 'views':
 					$state['tab']='barcode.history';
 
 				}
-			}
+			}elseif ($state['object']=='supplier') {
+				$_object=new Supplier('deleted', $state['key']);
+				$state['_object']=$_object;
+				if ($_object->id) {
+					$state['section']='deleted_supplier';
+					$state['tab']='supplier.history';
 
+				}
+			}
+			//print_r($state);
 
 			if (!$_object->id) {
 				$state=array('old_state'=>$state, 'module'=>'utils', 'section'=>'not_found', 'tab'=>'not_found', 'subtab'=>'', 'parent'=>$state['object'], 'parent_key'=>'', 'object'=>'',
@@ -274,7 +283,7 @@ case 'views':
 		$data['old_state']['key']!=$state['key'] or  $reload
 
 	) {
-	
+
 
 		$response['navigation']=get_navigation($user, $smarty, $state, $db, $account);
 	}
@@ -429,10 +438,14 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db) {
 	case 'dashboard':
 		$html='';
 		break;
+	case 'upload':
+		include_once 'showcase/upload.show.php';
+		$html=get_upload_showcase($data, $smarty, $user, $db);
+		break;
 	case 'purchase_order':
 		include_once 'showcase/supplier.order.show.php';
 		$html=get_supplier_order_showcase($data, $smarty, $user, $db);
-		break;	
+		break;
 	case 'campaign':
 		include_once 'showcase/campaign.show.php';
 		$html=get_campaign_showcase($data, $smarty, $user, $db);
@@ -948,10 +961,10 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 			break;
 		case ('orders'):
 			return get_purchase_orders_navigation($data, $smarty, $user, $db, $account);
-			break;	
+			break;
 		case ('order'):
 			return get_purchase_order_navigation($data, $smarty, $user, $db, $account);
-			break;		
+			break;
 		case ('agents'):
 			return get_agents_navigation($data, $smarty, $user, $db, $account);
 			break;
@@ -978,6 +991,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 			break;
 		case ('supplier_part.new'):
 			return get_new_supplier_part_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('deleted_supplier'):
+			return get_deleted_supplier_navigation($data, $smarty, $user, $db, $account);
 			break;
 		}
 
@@ -1180,6 +1196,12 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 			break;
 		case ('attachments'):
 			return get_attachments_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('uploads'):
+			return get_uploads_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('upload'):
+			return get_upload_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('osf'):
 			return get_osf_navigation($data, $smarty, $user, $db, $account);
@@ -1575,11 +1597,11 @@ function get_view_position($state, $user, $smarty, $account) {
 
 		}elseif ($state['section']=='order') {
 			$branch[]=array('label'=>_('Purchase orders'), 'icon'=>'', 'reference'=>'suppliers/orders');
-						$branch[]=array('label'=>'<span class="Purchase_Order_Public_ID">'.$state['_object']->get('Public ID').'</span>', 'icon'=>'clipboard', 'reference'=>'suppliers.orders');
+			$branch[]=array('label'=>'<span class="Purchase_Order_Public_ID">'.$state['_object']->get('Public ID').'</span>', 'icon'=>'clipboard', 'reference'=>'suppliers.orders');
 
-			
-			
-			
+
+
+
 		}elseif ($state['section']=='agent') {
 			$branch[]=array('label'=>_('Agents'), 'icon'=>'', 'reference'=>'agents');
 			$branch[]=array('label'=>'<span class="Agent_Code">'.$state['_object']->get('Code').'</span>', 'icon'=>'user-secret', 'reference'=>'agent/'.$state['key']);
@@ -2364,6 +2386,10 @@ function get_view_position($state, $user, $smarty, $account) {
 			$branch[]=array('label'=>_('Data sets'), 'icon'=>'align-left', 'reference'=>'account/data_sets');
 			$branch[]=array('label'=>_('Attachments'), 'icon'=>'paperclip', 'reference'=>'account/data_sets/attachments');
 
+		}elseif ($state['section']=='uploads') {
+			$branch[]=array('label'=>_('Data sets'), 'icon'=>'align-left', 'reference'=>'account/data_sets');
+			$branch[]=array('label'=>_('Records uploads'), 'icon'=>'upload', 'reference'=>'account/data_sets/uploads');
+
 		}elseif ($state['section']=='osf') {
 			$branch[]=array('label'=>_('Data sets'), 'icon'=>'align-left', 'reference'=>'account/data_sets');
 			$branch[]=array('label'=>_('Transactions timeseries'), 'icon'=>'', 'reference'=>'account/data_sets/osf');
@@ -2372,6 +2398,25 @@ function get_view_position($state, $user, $smarty, $account) {
 			$branch[]=array('label'=>_('Data sets'), 'icon'=>'align-left', 'reference'=>'account/data_sets');
 			$branch[]=array('label'=>_('Inventory timeseries'), 'icon'=>'', 'reference'=>'account/data_sets/isf');
 
+		}elseif ($state['section']=='upload') {
+
+			if ($state['parent']=='supplier') {
+			$branch=array();
+			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
+			$branch[]=array('label'=>'<span class="Supplier_Code">'.$state['_parent']->get('Code').'</span>', 'icon'=>'ship', 'reference'=>'supplier/'.$state['parent_key']);
+				$branch[]=array('label'=>_('Upload').' '.sprintf('%04d', $state['_object']->get('Key')), 'icon'=>'upload', 'reference'=>'');
+
+			}elseif ($state['parent']=='inventory') {
+$branch=array();
+			$branch[]=array('label'=>_('Inventory'), 'icon'=>'th-large', 'reference'=>'inventory');
+				$branch[]=array('label'=>_('Upload').' '.sprintf('%04d', $state['_object']->get('Key')), 'icon'=>'upload', 'reference'=>'');
+
+			}else {
+
+				$branch[]=array('label'=>_('Data sets'), 'icon'=>'align-left', 'reference'=>'account/data_sets');
+				$branch[]=array('label'=>_('Records uploads'), 'icon'=>'', 'reference'=>'account/data_sets/uploads');
+				$branch[]=array('label'=>_('Upload').' '.sprintf('%04d', $state['_object']->get('Key')), 'icon'=>'upload', 'reference'=>'');
+			}
 		}
 
 		/*
@@ -2491,7 +2536,7 @@ function get_view_position($state, $user, $smarty, $account) {
 		}elseif ($state['section']=='deal') {
 
 			if ($state['parent']=='campaign') {
-						$branch[]=array('label'=>_('Campaigns').' <span class="Store_Code">'.$state['store']->get('Code').'</span>', 'icon'=>'tags', 'reference'=>'campaigns/'.$state['store']->id);
+				$branch[]=array('label'=>_('Campaigns').' <span class="Store_Code">'.$state['store']->get('Code').'</span>', 'icon'=>'tags', 'reference'=>'campaigns/'.$state['store']->id);
 
 				$branch[]=array('label'=>'<span class="Deal_Campaign_Name">'.$state['_parent']->get('Name').'</span>', 'icon'=>'tags', 'reference'=>'');
 

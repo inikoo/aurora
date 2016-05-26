@@ -21,9 +21,9 @@ case 'part':
 
 	break;
 case 'account':
-	$table='`Image Dimension` I ';
+//	$table='`Image Dimension` I ';
 	$where=' where true';
-
+break;
 default:
 
 	exit('image parent not done yet '.$parameters['parent']);

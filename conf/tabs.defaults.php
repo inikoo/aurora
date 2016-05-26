@@ -508,7 +508,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code'
 	),
-		'suppliers.orders'=>array(
+	'suppliers.orders'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
@@ -574,7 +574,7 @@ $tab_defaults=array(
 		'f_field'=>'code',
 
 	),
-		'supplier.order.supplier_parts'=>array(
+	'supplier.order.supplier_parts'=>array(
 		'view'=>'overview',
 		'sort_key'=>'reference',
 		'sort_order'=>1,
@@ -625,7 +625,7 @@ $tab_defaults=array(
 		'elements'=>$elements_options['supplier_parts']
 
 	),
-'agent.orders'=>array(
+	'agent.orders'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
@@ -1080,6 +1080,22 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'',
 	),
+	'data_sets.uploads'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'',
+	),
+	'upload.records'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'',
+	),
 
 	'account.users'=>array(
 		'view'=>'overview',
@@ -1332,7 +1348,7 @@ $tab_defaults=array(
 		'elements_type'=>each($elements_options['deals'])['key'],
 		'elements'=>$elements_options['deals'],
 	),
-		'campaign.orders'=>array(
+	'campaign.orders'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,

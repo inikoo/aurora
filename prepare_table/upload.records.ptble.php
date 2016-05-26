@@ -16,17 +16,30 @@ case 'upload':
 
 
 
-	$upload =new Upload($parameters['parent_key']);
+	$upload =get_object('Upload',$parameters['parent_key']);
 
-	switch ($upload->get('Object')) {
+	switch ($upload->get('Upload Object')) {
 	case 'employee':
-		$table='  `Upload Record Dimension` as R  left join `Upload File Dimension` F on (F.`Upload File Key`=`Upload Record Upload File Key`)  left join `Staff Dimension` SD on (SD.`Staff Key`=R.`Upload Record Object Key`) ';
+		$table='  `Upload Record Dimension` as R  left join `Upload File Dimension` F on (F.`Upload File Key`=`Upload Record Upload File Key`)  left join `Staff Dimension` O on (O.`Staff Key`=R.`Upload Record Object Key`) ';
 		$object_field=' `Staff Alias` as object_name ';
 		$where=sprintf(" where  `Upload Record Upload Key`=%d ", $parameters['parent_key']);
-		$link='/employee/';
+		
 		break;
+	case 'supplier_part':
+		$table='  `Upload Record Dimension` as R  left join `Upload File Dimension` F on (F.`Upload File Key`=`Upload Record Upload File Key`)  left join `Supplier Part Dimension` O on (O.`Supplier Part Key`=R.`Upload Record Object Key`)  left join `Supplier Part Deleted Dimension` OD on (OD.`Supplier Part Deleted Key`=R.`Upload Record Object Key`) ';
+		$object_field=' `Supplier Part Reference` as object_name,`Supplier Part Deleted Reference` as object_auxiliar_name,CONCAT("supplier/",`Supplier Part Supplier Key`,"/part/",`Upload Record Object Key`) as link ';
+		$where=sprintf(" where  `Upload Record Upload Key`=%d ", $parameters['parent_key']);
+		
+		break;	
+		case 'part':
+		$table='  `Upload Record Dimension` as R  left join `Upload File Dimension` F on (F.`Upload File Key`=`Upload Record Upload File Key`)  left join `Part Dimension` O on (O.`Part SKU`=R.`Upload Record Object Key`)  left join `Part Deleted Dimension` OD on (OD.`Part Deleted Key`=R.`Upload Record Object Key`) ';
+		$object_field=' `Part Reference` as object_name,`Part Deleted Reference` as object_auxiliar_name,CONCAT("part/",`Upload Record Object Key`) as link ';
+		$where=sprintf(" where  `Upload Record Upload Key`=%d ", $parameters['parent_key']);
+		
+		break;		
+		
 	default:
-		exit('object not suported');
+		exit('object not suported '.$upload->get('Upload Object'));
 		break;
 	}
 

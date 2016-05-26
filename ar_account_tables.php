@@ -12,6 +12,7 @@
 require_once 'common.php';
 require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
+require_once 'utils/object_functions.php';
 
 if (!$user->can_view('account')) {
 	echo json_encode(array('state'=>405, 'resp'=>'Forbidden'));
@@ -44,6 +45,12 @@ case 'images':
 	break;
 case 'attachments':
 	attachments(get_table_parameters(), $db, $user, $account);
+	break;
+case 'uploads':
+	uploads(get_table_parameters(), $db, $user, $account);
+	break;
+case 'upload_records':
+	upload_records(get_table_parameters(), $db, $user, $account);
 	break;
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
@@ -90,7 +97,11 @@ function data_sets($_data, $db, $user, $account) {
 				$request='account/data_sets/isf';
 
 				break;
+			case 'Uploads':
+				$name=_('Uploads');
+				$request='account/data_sets/uploads';
 
+				break;
 			default:
 				$name=$data['Data Sets Code'];
 				break;
@@ -388,6 +399,162 @@ function attachments($_data, $db, $user, $account) {
 	echo json_encode($response);
 }
 
+
+function uploads($_data, $db, $user, $account) {
+
+	$rtext_label='upload';
+	include_once 'prepare_table/init.php';
+	include_once 'utils/natural_language.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+	$adata=array();
+
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
+
+			switch ($data['Upload Object']) {
+			case 'supplier_part':
+				$object=sprintf('<i  class="fa fa-fw fa-stop"></i> %s', _("Supplier's parts"));
+				break;
+			case 'supplier':
+				$object=sprintf('<i  class="fa fa-fw fa-ship"></i> %s', _("Suppliers"));
+				break;
+			default:
+				$object=$data['Upload Object'];
+			}
+			switch ($data['Upload State']) {
+			case 'Uploaded':
+				$state=_('Uploaded');
+				break;
+			case 'InProcess':
+				$state=_('In process');
+				break;
+			case 'Finished':
+				$state=_('Finished');
+				break;
+			case 'Cancelled':
+				$state=_('Cancelled');
+				break;
+			default:
+				$state=$data['Upload State'];
+			}
+
+
+			$adata[]=array(
+				'id'=>(integer) $data['Upload Key'],
+				'formatted_id'=>sprintf('%04d', $data['Upload Key']),
+				'object'=>$object,
+				'state'=>$state,
+				'date'=>strftime("%a %e %b %Y", strtotime($data['Upload Date'].' +0:00')),
+				'ok'=>number($data['Upload OK']),
+				'records'=>number($data['Upload Records']),
+				'warnings'=>number($data['Upload Warnings']),
+				'errors'=>number($data['Upload Errors']),
+
+			);
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function upload_records($_data, $db, $user, $account) {
+
+	$rtext_label='record';
+	include_once 'prepare_table/init.php';
+	include_once 'utils/natural_language.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+//print $sql;
+	$adata=array();
+
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
+
+
+			switch ($data['Upload Record Status']) {
+			case 'Done':
+
+				switch ($data['Upload Record State']) {
+				case 'OK':
+					$state='<i class="fa fa-check success" aria-hidden="true"></i> ';
+					$state.=sprintf('<span class="button" onClick="change_view(\'%s\')">%s</span>',$data['link'],($data['object_name']!=''?$data['object_name']:$data['object_auxiliar_name']));
+					break;
+				case 'Error':
+					$state='<i class="fa fa-exclamation-circle error" aria-hidden="true" title="'._('Error').'"></i> ';
+					switch ($data['Upload Record Message Code']) {
+					    case 'duplicated_field':
+					        $state.=_('Duplicated value in a unique field').' '.$data['Upload Record Message Metadata'];
+					        break;
+					    default:
+					        $state.=$data['Upload Record Message Code'];
+					        break;
+					}
+					
+					$state.=sprintf('<span class="button" onClick="change_view(\'%s\')">%s</span>',$data['link'],($data['object_name']!=''?$data['object_name']:$data['object_auxiliar_name']));
+					break;	
+				default:
+					$state=$data['Upload Record State'];
+				}
+				break;
+			case 'InProcess':
+				$state='<i class="fa fa-clock-o fa-fw" aria-hidden="true"></i> '._('In process');
+				break;
+
+			}
+
+
+			$adata[]=array(
+				'id'=>(integer) $data['Upload Record Key'],
+				'row'=>sprintf('%04d', $data['Upload Record Row Index']),
+				'object'=>$data['object_name'],
+				'state'=>$state,
+
+
+			);
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
 
 
 ?>

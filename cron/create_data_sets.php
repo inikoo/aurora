@@ -29,9 +29,9 @@ $editor=array(
 
 foreach ($data_sets as $data_set_data) {
 	$data_set_data['editor']=$editor;
-	
-	$data_set=$account->create_data_sets($data_set_data);
 
+	$data_set=$account->create_data_sets($data_set_data);
+	$data_set->update_stats();
 }
 
 

@@ -398,6 +398,49 @@ function get_attachments_navigation($data, $smarty, $user, $db, $account) {
 	return $html;
 }
 
+function get_uploads_navigation($data, $smarty, $user, $db, $account) {
+
+	$sections=get_sections('account', '');
+	$sections['data_sets']['selected']=true;
+	$title=_('Records uploads');
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>array(),
+		'right_buttons'=>array(),
+		'title'=>$title,
+		'search'=>array('show'=>false, 'placeholder'=>_('Search account'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+}
+
+function get_upload_navigation($data, $smarty, $user, $db, $account) {
+
+	$sections=get_sections('account', '');
+	$sections['data_sets']['selected']=true;
+	$title=_('Upload').sprintf(' %04d',$data['_object']->id);
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>array(),
+		'right_buttons'=>array(),
+		'title'=>$title,
+		'search'=>array('show'=>false, 'placeholder'=>_('Search account'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+}
+
+
 
 function get_isf_navigation($data, $smarty, $user, $db, $account) {
 

@@ -334,8 +334,8 @@ class Account extends DB_Table{
 			$barcode= new Barcode('find', $data, 'create');
 			if (!$barcode->id) {
 				$this->error=true;
-					$this->msg=$barcode->msg;
-					return;
+				$this->msg=$barcode->msg;
+				return;
 			}else {
 				if ($barcode->new) {
 					$this->new++;
@@ -425,6 +425,9 @@ class Account extends DB_Table{
 			$this->msg=$warehouse->msg;
 		}
 	}
+
+
+
 
 
 	function create_supplier($data) {
@@ -524,7 +527,8 @@ class Account extends DB_Table{
 		}
 	}
 
-function create_agent($data) {
+
+	function create_agent($data) {
 		$this->new_employee=false;
 
 		$data['editor']=$this->editor;
@@ -760,7 +764,7 @@ function create_agent($data) {
 	function create_data_sets($data) {
 
 		$data_set=new Data_Sets('find', $data, 'create');
-
+		return $data_set;
 	}
 
 
