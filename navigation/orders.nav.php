@@ -1,5 +1,3 @@
-	$prev_key=$row['object_key'];
-						$prev_title=_("Invoice").' '.$row['object_name'].' ('.$row['object_key'].')';
 <?php
 /*
 

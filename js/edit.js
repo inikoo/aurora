@@ -1731,3 +1731,16 @@ function delete_object(element) {
 
 
 }
+
+
+  $(document).on("click", "#edit_table", function() {
+
+  change_view(state.request + '&tab=' + state.tab+'_edit')
+   
+ });
+ 
+  $(document).on("click", "#exit_edit_table", function() {
+
+  change_view(state.request + '&tab=' + state.tab.replace(/\_edit$/i, ""))
+   
+ });

@@ -2,8 +2,8 @@
 /*
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created: 27 September 2015 17:37:16 GMT+7, Bangkok, Thailand
- Copyright (c) 2015, Inikoo
+ Created: 26 May 2016 at 10:47:31 CEST, Mijas Costa, Spain
+ Copyright (c) 2016, Inikoo
 
  Version 3
 
@@ -11,19 +11,16 @@
 
 
 
-$tab='suppliers';
+$tab='suppliers_edit';
 $ar_file='ar_suppliers_tables.php';
-$tipo='suppliers';
+$tipo='suppliers_edit';
 
 $default=$user->get_tab_defaults($tab);
 
 
 $table_views=array(
-	'overview'=>array('label'=>_('Overview'), 'title'=>_('Overview')),
-	'contact'=>array('label'=>_('Contact'), 'title'=>_('Contact details')),
-	'parts'=>array('label'=>_("Parts's stock")),
-	'sales'=>array('label'=>_("Parts's sales")),
-	'orders'=>array('label'=>_('Orders'), 'title'=>_('Purchase orders, deliveries & invoices')),
+	'overview'=>array('label'=>_('Code, name')),
+	'contact'=>array('label'=>_('Email, telephones')),
 
 
 
@@ -45,9 +42,9 @@ $parameters=array(
 
 $table_buttons=array();
 
-$table_buttons[]=array('icon'=>'edit', 'title'=>_('Edit'),'id'=>'edit_table');
+$table_buttons[]=array('icon'=>'sign-out fa-flip-horizontal', 'title'=>_('Exit edit'),'id'=>'exit_edit_table');
 
-$table_buttons[]=array('icon'=>'plus', 'title'=>_('New supplier'), 'reference'=>"suppliers/new");
+//$table_buttons[]=array('icon'=>'plus', 'title'=>_('New supplier'), 'reference'=>"suppliers/new");
 
 $smarty->assign('table_buttons', $table_buttons);
 
