@@ -93,7 +93,7 @@ function get_elements_numbers(tab, parameters) {
             for (element in data.elements_numbers) {
 
                 for (item in data.elements_numbers[element]) {
-                   // console.log(item)
+                    // console.log(item)
                     $("#element_qty_" + item).html('(' + data.elements_numbers[element][item] + ')')
 
 
@@ -134,8 +134,7 @@ function show_columns_period_options() {
         var offset = $('#columns_period .fa').position();
         var height = button.height();
 
-      //  console.log(icon.width())
-
+        //  console.log(icon.width())
         $('#columns_period_chooser').removeClass('hide').offset({
             top: $('#columns_period').position().top + height,
             left: offset.left - $('#columns_period_chooser').width() + icon.width() + 20
@@ -178,9 +177,9 @@ function show_elements_types() {
 }
 
 
-function change_columns_period(period,period_label) {
+function change_columns_period(period, period_label) {
 
-$('#columns_period span.label').html(period_label)
+    $('#columns_period span.label').html(period_label)
 
 
 
@@ -193,12 +192,12 @@ $('#columns_period span.label').html(period_label)
     rows.fetch({
         reset: true
     });
-    
+
     close_columns_period_options()
-$('#columns_period_chooser div').removeClass('selected')
-$('#columns_period_chooser .fa').removeClass('fa-circle').addClass('fa-circle-o')
-$('#element_group_option_'+period).addClass('selected')
-$('#element_group_option_'+period+' .fa').removeClass('fa-circle-o').addClass('fa-circle')
+    $('#columns_period_chooser div').removeClass('selected')
+    $('#columns_period_chooser .fa').removeClass('fa-circle').addClass('fa-circle-o')
+    $('#element_group_option_' + period).addClass('selected')
+    $('#element_group_option_' + period + ' .fa').removeClass('fa-circle-o').addClass('fa-circle')
 
 }
 
@@ -448,6 +447,46 @@ function get_export_process_bar(fork_key, tag, type) {
 
         }
     })
+
+
+}
+
+
+function edit_category_subject(element) {
+
+    if($(element).hasClass('wait'))
+        return;
+
+    if ($(element).hasClass('fa-unlink')) {
+        $(element).removeClass('fa-unlink very_discreet').addClass('fa-link wait')
+        operation = 'link';
+    } else {
+        $(element).addClass('fa-unlink very_discreet wait').removeClass('fa-link')
+        operation = 'unlink';
+    }
+
+    var request = '/ar_edit.php?tipo=edit_category_subject&category_key=' + state.key + '&subject_key=' + $(element).attr('key')+'&operation='+operation
+
+    $.getJSON(request, function(data) {
+
+        $(element).removeClass('wait')
+
+        if (data.state == 200) {
+
+
+        } else if (data.state == 400) {
+            if (operation == 'link') {
+                $(element).addClass('fa-unlink very_discreet wait').removeClass('fa-link')
+            } else {
+                $(element).removeClass('fa-unlink very_discreet').addClass('fa-link wait')
+
+            }
+
+        }
+
+
+    })
+
 
 
 }

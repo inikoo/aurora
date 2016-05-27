@@ -24,19 +24,39 @@ $table_views=array(
 );
 
 $table_filters=array(
-	'label'=>array('label'=>_('Label'),'title'=>_('Category label')),
-	'code'=>array('label'=>_('Code'),'title'=>_('Category code')),
+	'label'=>array('label'=>_('Label'), 'title'=>_('Category label')),
+	'code'=>array('label'=>_('Code'), 'title'=>_('Category code')),
 
 );
 
 $parameters=array(
-		'parent'=>$state['object'],
-		'parent_key'=>$state['key'],
-		
+	'parent'=>$state['object'],
+	'parent_key'=>$state['key'],
+
 );
 
 
-include('utils/get_table_html.php');
+$table_buttons[]=array(
+	'icon'=>'plus',
+	'title'=>_('New category'),
+	'id'=>'new_record',
+	'inline_new_object'=>
+	array(
+		'field_id'=>'Category_Code',
+		'field_label'=>_('Add category').':',
+		'field_edit'=>'string',
+		'object'=>'Category',
+		'parent'=>$state['object'],
+		'parent_key'=>$state['key'],
+		'placeholder'=>_("Category's code")
+	)
+
+);
+
+$smarty->assign('table_buttons', $table_buttons);
+
+
+include 'utils/get_table_html.php';
 
 
 ?>

@@ -26,6 +26,17 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+case 'edit_category_subject':
+
+	$data=prepare_values($_REQUEST, array(
+			'category_key'=>array('type'=>'key'),
+			'subject_key'=>array('type'=>'key'),
+			'operation'=>array('type'=>'string'),
+
+		));
+	edit_category_subject($account, $db, $user, $editor, $data, $smarty);
+	break;
+
 
 case 'new_part_location':
 
@@ -647,11 +658,26 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 	$parent->editor=$editor;
 
 	switch ($data['object']) {
+
+	case 'Category':
+		include_once 'class.Category.php';
+
+		$data['fields_data']['user']=$user;
+
+		$object=$parent->create_category($data['fields_data']);
+		if (!$parent->error) {
+
+			$pcard='';
+			$updated_data=array();
+		}
+		break;
+
+
 	case 'PurchaseOrder':
 		include_once 'class.PurchaseOrder.php';
-		
+
 		$data['fields_data']['user']=$user;
-		
+
 		$object=$parent->create_order($data['fields_data']);
 		if (!$parent->error) {
 
@@ -659,7 +685,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 			$updated_data=array();
 		}
 		break;
-		case 'Order':
+	case 'Order':
 		include_once 'class.Order.php';
 		$object=$parent->create_order($data['fields_data']);
 		if (!$parent->error) {
@@ -668,6 +694,37 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 			$updated_data=array();
 		}
 		break;
+
+	case 'Category_Product':
+
+		include_once 'class.Product.php';
+
+		if (isset($data['fields_data']['Store Product Code'])) {
+
+
+			$object=new Product('store_code', $parent->get('Category Store Key'), $data['fields_data']['Store Product Code']);
+		}else {
+			$object=new Product( $data['fields_data']['Store Product Key']);
+
+		}
+
+		if ($object->id) {
+
+			$parent->associate_subject($object->id);
+
+
+		}else {
+
+			$response=array('state'=>400, 'resp'=>_('Product not found'));
+			echo json_encode($response);
+			exit;
+		}
+		$pcard='';
+		$updated_data=array();
+
+		break;
+
+
 	case 'Agent_Supplier':
 
 		include_once 'class.Supplier.php';
@@ -693,16 +750,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 		}
 		$pcard='';
 		$updated_data=array();
-		break;
-		include_once 'class.Agent.php';
-		$object=$parent->create_agent($data['fields_data']);
-		if (!$parent->error) {
-			$smarty->assign('account', $account);
-			$smarty->assign('object', $object);
-
-			$pcard=$smarty->fetch('presentation_cards/agent.pcard.tpl');
-			$updated_data=array();
-		}
 		break;
 
 	case 'Agent':
@@ -1040,6 +1087,22 @@ function get_available_barcode($db) {
 
 }
 
+
+function edit_category_subject($account, $db, $user, $editor, $data, $smarty) {
+
+	$category=get_object('category', $data['category_key']);
+	$category->editor=$editor;
+
+	if ($data['operation']=='link') {
+		$category->associate_subject($data['subject_key']);
+	}else {
+		$category->disassociate_subject($data['subject_key']);
+	}
+
+	$response=array('state'=>200);
+	echo json_encode($response);
+
+}
 
 
 ?>

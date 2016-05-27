@@ -194,7 +194,11 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 									}
 
 								}
-
+								elseif ($view_path[2]=='new') {
+								
+								$section='main_category.new';
+								
+								}
 							}else {
 								//error
 							}
@@ -414,8 +418,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 						}
 						elseif ($view_path[1]=='order') {
-                            $section='order';
-							
+							$section='order';
+
 							$parent='supplier';
 							$parent_key=$view_path[0];
 							$object='purchase_order';
@@ -507,8 +511,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 						}
 						elseif ($view_path[1]=='order') {
-                            $section='order';
-							
+							$section='order';
+
 							$parent='agent';
 							$parent_key=$view_path[0];
 							$object='purchase_order';
@@ -1287,21 +1291,21 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 					}
 
 				}
-elseif ($view_path[0]=='upload') {
-							$module='account';
-							$section='upload';
-							$parent='inventory';
-							$parent_key=1;
-							$object='upload';
-							if (isset($view_path[1])) {
-								if (is_numeric($view_path[1])) {
+				elseif ($view_path[0]=='upload') {
+					$module='account';
+					$section='upload';
+					$parent='inventory';
+					$parent_key=1;
+					$object='upload';
+					if (isset($view_path[1])) {
+						if (is_numeric($view_path[1])) {
 
-									$key=$view_path[1];
-								}
-							}
-
-
+							$key=$view_path[1];
 						}
+					}
+
+
+				}
 
 			}
 
@@ -2025,22 +2029,22 @@ elseif ($view_path[0]=='upload') {
 
 			break;
 		case 'upload':
-		    if (!$user->can_view('account')) {$module='utils';$section='forbidden';break;}
-		    
-		    $module='account';
+			if (!$user->can_view('account')) {$module='utils';$section='forbidden';break;}
+
+			$module='account';
 			$section='upload';
 			$object='upload';
-			
+
 			$parent='account';
 			$parent_key=1;
 			if (isset($view_path[0])) {
-			    if(is_numeric($view_path[0])){
-			        $key=$view_path[0];
-			    }
-			
+				if (is_numeric($view_path[0])) {
+					$key=$view_path[0];
+				}
+
 			}
 			break;
-			
+
 		case 'payment_service_providers':
 			if (!$user->can_view('orders')) {$module='utils';$section='forbidden';break;}
 

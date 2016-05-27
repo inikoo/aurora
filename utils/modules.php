@@ -600,7 +600,13 @@ $modules=array(
 				)
 
 			),
+	'main_category.new'=>array('type'=>'new_object',
+				'tabs'=>array(
+					'main_category.new'=>array('label'=>_('New category')),
 
+				)
+
+			),
 			'product'=>array(
 				'type'=>'object',
 				'subtabs_parent'=>array(

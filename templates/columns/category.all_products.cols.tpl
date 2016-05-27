@@ -6,32 +6,10 @@ var columns = [{
     renderable: false
 
 
-}, {
-    name: "store_key",
-    label: "",
-    editable: false,
-    renderable: false,
-    cell: "string"
-}, {
-    name: "store",
-    label: "{t}Store{/t}",
-     renderable: {if ($data['parent']=='account' or $data['parent']=='warehouse' ) }true{else}false{/if},
-    editable: false,
-      sortType: "toggle",
-    cell: Backgrid.StringCell.extend({
-        events: {
-            "click": function() {
-                change_view('products/'+this.model.get("store_key"))
-            }
-        },
-        className: "link width_150",
-    })
 },
-
  {
     name: "associated",
     label: "",
-    renderable: {if ($data['parent']=='category') }true{else}false{/if},
     editable: false,
     sortType: "toggle",
     cell: Backgrid.HtmlCell.extend({

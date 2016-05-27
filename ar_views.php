@@ -644,6 +644,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case ('category'):
 			return get_products_category_navigation($data, $smarty, $user, $db, $account);
 			break;
+		case ('main_category.new'):
+			return get_products_new_main_category_navigation($data, $smarty, $user, $db, $account);
+			break;	
 		}
 	case ('customers'):
 		require_once 'navigation/customers.nav.php';
@@ -1475,7 +1478,7 @@ function get_view_position($state, $user, $smarty, $account) {
 					continue;
 				}
 				if ($category_key==$state['key']) {
-					$branch[]=array('label'=>$category->get('Label'), 'icon'=>'', 'reference'=>'');
+					$branch[]=array('label'=>'<span class="Category_Label">'.$category->get('Label').'</span>', 'icon'=>'', 'reference'=>'');
 					break;
 				}else {
 
@@ -1488,7 +1491,12 @@ function get_view_position($state, $user, $smarty, $account) {
 				}
 			}
 		}
+		elseif ($state['section']=='main_category.new') {
+			$branch[]=array('label'=>_("Products's categories"), 'icon'=>'sitemap', 'reference'=>'products/'.$state['parent_key'].'/categories');
+			$branch[]=array('label'=>_('New main category'), 'icon'=>'', 'reference'=>'');
 
+
+		}
 
 		break;
 	case 'customers_server':
@@ -2401,14 +2409,14 @@ function get_view_position($state, $user, $smarty, $account) {
 		}elseif ($state['section']=='upload') {
 
 			if ($state['parent']=='supplier') {
-			$branch=array();
-			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
-			$branch[]=array('label'=>'<span class="Supplier_Code">'.$state['_parent']->get('Code').'</span>', 'icon'=>'ship', 'reference'=>'supplier/'.$state['parent_key']);
+				$branch=array();
+				$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
+				$branch[]=array('label'=>'<span class="Supplier_Code">'.$state['_parent']->get('Code').'</span>', 'icon'=>'ship', 'reference'=>'supplier/'.$state['parent_key']);
 				$branch[]=array('label'=>_('Upload').' '.sprintf('%04d', $state['_object']->get('Key')), 'icon'=>'upload', 'reference'=>'');
 
 			}elseif ($state['parent']=='inventory') {
-$branch=array();
-			$branch[]=array('label'=>_('Inventory'), 'icon'=>'th-large', 'reference'=>'inventory');
+				$branch=array();
+				$branch[]=array('label'=>_('Inventory'), 'icon'=>'th-large', 'reference'=>'inventory');
 				$branch[]=array('label'=>_('Upload').' '.sprintf('%04d', $state['_object']->get('Key')), 'icon'=>'upload', 'reference'=>'');
 
 			}else {

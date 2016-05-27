@@ -35,7 +35,7 @@ require_once 'class.Store.php';
 require_once 'class.Warehouse.php';
 require_once 'class.Part.php';
 
-require_once 'class.StoreProduct.php';
+require_once 'class.Product.php';
 include_once 'utils/parse_materials.php';
 $editor=array(
 	'Author Name'=>'',

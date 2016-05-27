@@ -1243,6 +1243,8 @@ tr.deleting_tr {
 #object_showcase {
   clear: both;
   font-size: 15px; }
+  #object_showcase div.container {
+    border-bottom: 1px solid #ccc; }
   #object_showcase .subject_profile {
     border-bottom: 1px solid #ccc; }
   #object_showcase .data_container {

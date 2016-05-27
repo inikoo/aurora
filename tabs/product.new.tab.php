@@ -14,7 +14,7 @@ include_once 'class.Store.php';
 include_once 'utils/invalid_messages.php';
 
 
-$product=new StoreProduct(0);
+$product=new Product(0);
 
 $options_Packing_Group=array(
 	'None'=>_('None'), 'I'=>'I', 'II'=>'II', 'III'=>'III'

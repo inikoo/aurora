@@ -305,13 +305,17 @@ class Category extends DB_Table{
 
 
 
-	function create_children($data) {
+	function create_category($data) {
 
 		if ($this->data['Category Deep']>$this->data['Category Max Deep']) {
 
 			$this->msg='max deep';
 			$this->error=true;
 			return;
+		}
+
+		if (!isset($data['Category Label']) or $data['Category Label']=='') {
+			$data['Category Label']=$data['Category Code'];
 		}
 
 
@@ -359,6 +363,7 @@ class Category extends DB_Table{
 				prepare_mysql($this->data['Category Children Other']),
 				$this->id
 			);
+			$this->db->exec($sql);
 		}
 
 		return $subcategory;
@@ -2207,9 +2212,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 				$details=_('Customer').': <a href="customer.php?id='.$customer->id.'">'.$customer->data['Customer Name'].'</a> ('.$customer->data['Customer Main Location'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']).' ('.$this->data['Category Label'].')';
 				break;
 			case('Product'):
-				include_once 'class.StoreProduct.php';
+				include_once 'class.Product.php';
 
-				$product=new StoreProduct($subject_key);
+				$product=new Product($subject_key);
 
 				$abstract=sprintf(_('Product %s disassociated from category %s'), $product->get('Code'), $this->get('Code'));
 				$details='';
@@ -2426,7 +2431,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 				case('Product'):
 					include_once 'class.Product.php';
 
-					$product=new StoreProduct( $subject_key);
+					$product=new Product( $subject_key);
 
 
 					$abstract=sprintf(_('Product %s associated with category %s'), $product->get('Code'), $this->get('Code'));
