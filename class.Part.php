@@ -426,7 +426,7 @@ class Part extends Asset{
 				$value=$value*$product_data['Parts Per Product'];
 			}
 			if (array_key_exists($field, $product_data['Linked Fields'])) {
-				$product=new StoreProduct($product_data['Store Product Key']);
+				$product=new Product($product_data['Store Product Key']);
 				$update_data=array();
 
 
@@ -4036,7 +4036,7 @@ class Part extends Asset{
 
 	function get_products_data($with_objects=false) {
 
-		include_once 'class.StoreProduct.php';
+		include_once 'class.Product.php';
 
 		$sql=sprintf("select `Linked Fields`,`Store Product Key`,`Parts Per Product`,`Note` from `Store Product Part Bridge` where `Part SKU`=%d ",
 			$this->id
@@ -4053,7 +4053,7 @@ class Part extends Asset{
 					$product_data['Number Linked Fields']=count($product_data['Linked Fields']);
 				}
 				if ($with_objects) {
-					$product_data['Product']=new StoreProduct($row['Store Product Key']);
+					$product_data['Product']=new Product($row['Store Product Key']);
 				}
 				$products_data[]=$product_data;
 			}

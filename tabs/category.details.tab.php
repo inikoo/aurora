@@ -10,41 +10,15 @@
 */
 
 include_once 'utils/invalid_messages.php';
+include_once 'utils/country_functions.php';
+include_once 'conf/object_fields.php';
 
 $category=$state['_object'];
 
+$object_fields=get_object_fields($category, $db, $user, $smarty, array('Category Scope'=>$category->get('Category Scope')));
 
-$object_fields=array(
-	array(
-		'label'=>_('Id'),
-		'show_title'=>true,
-		'fields'=>array(
-			
-			
-			array(
-				'edit'=>'string',
-				'id'=>'Category_Code',
-				'value'=>$category->get('Category Code'),
-				'formatted_value'=>$category->get('Code'),
-				'label'=>ucfirst($category->get_field_label('Category Code')),
-				'invalid_msg'=>get_invalid_message('string'),
-				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
-			),
-				array(
-				'edit'=>'string',
-				'id'=>'Category_Label',
-				'value'=>$category->get('Category Label'),
-				'formatted_value'=>$category->get('Label'),
-				'label'=>ucfirst($category->get_field_label('Category Label')),
-				'invalid_msg'=>get_invalid_message('string'),
-			),
 
-		)
-	),
-	
-	
-	
-);
+
 
 $smarty->assign('state', $state);
 $smarty->assign('object_fields', $object_fields);

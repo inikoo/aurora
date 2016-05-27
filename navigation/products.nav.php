@@ -924,7 +924,8 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
 	}
 
 
-	$title=$category_title_label.' <span class="Category_Code id">'.$data['_object']->get('Code').'</span>';
+	$title=$category_title_label.' <span class="Category_Label">'.$data['_object']->get('Label').'</span> (<span class="Category_Code id">'.$data['_object']->get('Code').'</span>)';
+
 
 
 	$right_buttons[]=array('icon'=>'sticky-note', 'title'=>_('Sticky note'), 'id'=>'sticky_note_button', 'click'=>"show_sticky_note_edit_dialog('sticky_note_button')",  'class'=> ($category->get('Sticky Note')==''?'':'hide'));
@@ -978,6 +979,38 @@ function get_new_store_navigation($data, $smarty, $user, $db, $account) {
 		'right_buttons'=>$right_buttons,
 		'title'=>_('New store'),
 		'search'=>array('show'=>true, 'placeholder'=>_('Search products all stores'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+
+}
+
+function get_products_new_main_category_navigation($data, $smarty, $user, $db, $account) {
+
+
+
+	$block_view=$data['section'];
+	$sections=get_sections('products',$data['parent_key']);
+	$left_buttons=array();
+	$left_buttons[]=array('icon'=>'arrow-up', 'title'=>_('Categories'), 'reference'=>'products/'.$data['parent_key'].'/categories', 'parent'=>'');
+
+	$right_buttons=array();
+
+	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
+
+
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>_("New main product's category"),
+		'search'=>array('show'=>true, 'placeholder'=>_('Search products'))
 
 	);
 	$smarty->assign('_content', $_content);

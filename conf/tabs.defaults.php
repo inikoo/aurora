@@ -358,6 +358,18 @@ $tab_defaults=array(
 		'elements'=>$elements_options['products'],
 
 	),
+		'category.all_products'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code',
+		'f_period'=>'ytd',
+		'elements_type'=>each(  $elements_options['products']  ) ['key'],
+		'elements'=>$elements_options['products'],
+
+	),
 	'products.categories'=>array(
 		'view'=>'overview',
 		'sort_key'=>'code',

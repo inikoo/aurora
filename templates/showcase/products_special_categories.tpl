@@ -1,4 +1,4 @@
-<div >
+<div class="container">
 <div class="half left" >
 <h1>{t}Families{/t}</h1>
 </div>

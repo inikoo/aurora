@@ -37,13 +37,10 @@ function get_object($object_name, $key, $load_other_data=false) {
 		$object=new Store($key);
 		$object->load_acc_data();
 		break;
-	case 'storeproduct':
 	case 'product':
-	case 'StoreProduct':
-	case 'Store Product':
 	case 'Product':
-		include_once 'class.StoreProduct.php';
-		$object=new StoreProduct($key);
+		include_once 'class.Product.php';
+		$object=new Product($key);
 
 		break;
 	case 'order':

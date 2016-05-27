@@ -2,7 +2,7 @@
 /*
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created:  16 February 2016 at 11:20:41 GMT+8, Kuala Lumpur, Malaysia
+ Created:  27 May 2016 at 12:26:25 CEST, Mijas Costa, Spain 
  Copyright (c) 2015, Inikoo
 
  Version 3
@@ -17,9 +17,9 @@ if ($category->get('Category Scope')=='Product') {
 
 	if ($category->get('Category Subject')=='Product') {
 
-		$tab='category.products';
+		$tab='category.all_products';
 		$ar_file='ar_products_tables.php';
-		$tipo='products';
+		$tipo='category_all_products';
 
 		$default=$user->get_tab_defaults($tab);
 
@@ -43,25 +43,10 @@ if ($category->get('Category Scope')=='Product') {
 		
 		
 		
-		$table_buttons[]=array('icon'=>'cube', 'title'=>_('All products'), 'change_tab'=>'category.all_subjects');
+		$table_buttons[]=array('icon'=>'leaf', 'title'=>_('Associated products'), 'change_tab'=>'category.subjects');
 
 
-		$table_buttons[]=array(
-			'icon'=>'link',
-			'title'=>_('Associate product'),
-			'id'=>'new_record',
-			'inline_new_object'=>
-			array(
-				'field_id'=>'Store_Product_Code',
-				'field_label'=>_('Associate product').':',
-				'field_edit'=>'string',
-				'object'=>'Category_Product',
-				'parent'=>$state['object'],
-				'parent_key'=>$state['key'],
-				'placeholder'=>_("Product's code")
-			)
-
-		);
+	
 		$smarty->assign('table_buttons', $table_buttons);
 
 

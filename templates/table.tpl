@@ -49,13 +49,17 @@
 	<div id="export_dialog" class="export_dialog hide">
         <table border=0 style="width:100%">
 	        <tr class="no_border"> 
-                <td class="export_progress_bar_container" ><a href=""  id="download_excel" download hidden ></a> 
+                <td class="export_progress_bar_container" >
+                 <a href=""  id="download_excel" download hidden ></a> 
                  <span class="hide export_progress_bar_bg" id="export_progress_bar_bg_excel"></span>
                  <div class="hide export_progress_bar" id="export_progress_bar_excel"  ></div>
                  <div class="export_download hide" id="export_download_excel"  > {t}Download{/t}</div>
                 </td>	   
-                <td class="width_20" ><i id="stop_export_table_excel" stop=0 onclick="stop_export('excel')" class="fa button fa-hand-stop-o error hide" title="{t}Stop{/t}"></td>
-                <td id="export_table_excel"  class="link" onclick="export_table('excel')"><i class="fa fa-file-excel-o" title="Excel"></i>Excel</td></tr>
+                <td class="width_20" >
+                <i id="stop_export_table_excel" stop=0 onclick="stop_export('excel')" class="fa button fa-hand-stop-o error hide" title="{t}Stop{/t}"></i>
+                </td>
+                <td id="export_table_excel"  class="link" onclick="export_table('excel')"><i class="fa fa-file-excel-o" title="Excel"></i>Excel</td>
+            </tr>
 	        <tr>
 	            <td class="export_progress_bar_container"><a href=""  id="download_csv" download hidden ></a> 
                     <span class="hide export_progress_bar_bg" id="export_progress_bar_bg_csv"></span>
@@ -63,7 +67,7 @@
                  <div class="export_download hide " id="export_download_csv"  > {t}Download{/t}</div>
 
 	            </td>
-	            <td class="width_20" ><i  id="stop_export_table_csv" onclick="stop_export('csv')" class="fa button fa-hand-stop-o error hide" title="{t}Stop{/t}"></td>
+	            <td class="width_20" ><i  id="stop_export_table_csv" onclick="stop_export('csv')" class="fa button fa-hand-stop-o error hide" title="{t}Stop{/t}"></i></td>
                 <td id="export_table_csv" class="link" onclick="export_table('csv')"><i class="fa fa-table" title="{t}Comma Separated Value{/t}"></i>CSV</td></tr>
 	        <tr>
 	            <td colspan="2"class=""><i onclick="open_export_config()" class="fa fa-cogs button"></i></td><td><div onclick="hide_export_dialog()" class="button disabled"  ><i class="fa fa-times" title="{t}Close dialog{/t}"></i>{t}Close{/t}</div></td>
@@ -71,7 +75,7 @@
 	   </table>
 	
       </div>
-       <div id="export_dialog_config" class="export_dialog hide" >
+    <div id="export_dialog_config" class="export_dialog hide" >
          {if isset($export_fields)}
        <table >
      
@@ -114,9 +118,8 @@
 	  {include file="inline_new_object.tpl" data=$button.inline_new_object trigger={$button.id}} 
 	 {/if} 
 	 
-	 
 	
-	<div  {if isset($button.id) and $button.id }id="{$button.id}"{/if}  {if isset($button.attr)} {foreach from=$button.attr key=attr_key item=attr_value }{$attr_key}="{$attr_value}" {/foreach}{/if}    class="square_button right "       {if isset($button.reference) and $button.reference!=''}onclick="change_view('{$button.reference}')"{/if} {if isset($button.title)}title="{$button.title}"{/if}>
+	<div  {if isset($button.id) and $button.id }id="{$button.id}"{/if}  {if isset($button.attr)} {foreach from=$button.attr key=attr_key item=attr_value }{$attr_key}="{$attr_value}" {/foreach}{/if}    class="square_button right "       {if isset($button.reference) and $button.reference!=''}onclick="change_view('{$button.reference}')"{else if isset($button.change_tab) and $button.change_tab!=''}onclick="change_view(state.request + '&tab={$button.change_tab}')"{/if} {if isset($button.title)}title="{$button.title}"{/if}>
 	 <i {if isset($button.id) and $button.id }id="icon_{$button.id}"{/if} class="fa fa-{$button.icon} fa-fw"></i> 
 	</div>
 	 {if isset($button.add_item)} 
@@ -128,7 +131,6 @@
 	<span id="inline_add_item_msg" class="invalid"></span>
 		 {/if} 	
 	{/foreach}
-	
 	
 	 
 	{/if}
@@ -248,6 +250,14 @@
 	 </div>
 	<span id="rtext"></span> 
 </div>
+
+<div id="table_edit_control_panel" class="hide" style="padding:10px 5px;border-bottom:1px solid #ccc">
+<div style="float:left"><i class="fa fa-fw fa-square-o button" style="padding:0px 5px 0px 0px" aria-hidden="true" onClick="select_all_rows(this)" ></i> {t}Check/Uncheck all{/t}</div>
+<div style="float:left;margin-left:20px"><span id="selected_checkboxes" data-keys=""></span></div>
+<div style="clear:both"></div>
+</div>
+
+
 {if isset($table_views) and count($table_views)>1}
 <div class="table_views tabs ">
 {foreach from=$table_views item=view key=id} 
@@ -272,6 +282,10 @@
 
 
 <script>
+
+
+var selected_checkbox={}
+
 {if isset($title)}
 $('#nav_title').html("{$title}")
 {/if}

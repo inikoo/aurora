@@ -35,6 +35,50 @@ $parameters=array(
 		'subject'=>'product',
 );
 
+$table_buttons=array();
+$table_buttons[]=array('icon'=>'plus', 'title'=>_('New category'), 'reference'=>"products/".$state['parent_key']."/category/new");
+
+
+/*
+
+$table_buttons[]=array(
+	'icon'=>'plus',
+	'title'=>_('New category'),
+	'id'=>'new_record',
+	'inline_new_object'=>
+	array(
+		'field_id'=>'Category_Code',
+		'field_label'=>_('Add category').':',
+		'field_edit'=>'string',
+		'object'=>'Category',
+		'parent'=>$state['parent'],
+		'parent_key'=>$state['parent_key'],
+'placeholder'=>_("Category's code")
+	)
+
+);
+
+*/
+/*
+$table_buttons[]=array(
+	'icon'=>'link',
+	'title'=>_('Associate supplier'),
+	'id'=>'new_record',
+	'inline_new_object'=>
+	array(
+		'field_id'=>'Supplier_Code',
+		'field_label'=>_('Associate supplier').':',
+		'field_edit'=>'string',
+		'object'=>'Agent_Supplier',
+		'parent'=>$state['object'],
+		'parent_key'=>$state['key'],
+		'placeholder'=>_("Supplier's code")
+	)
+
+);
+*/
+$smarty->assign('table_buttons', $table_buttons);
+
 
 include('utils/get_table_html.php');
 

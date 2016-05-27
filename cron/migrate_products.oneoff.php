@@ -32,7 +32,7 @@ require_once 'utils/get_addressing.php';
 require_once 'class.Customer.php';
 require_once 'class.Store.php';
 require_once 'class.Address.php';
-require_once 'class.StoreProduct.php';
+require_once 'class.Product.php';
 
 $editor=array(
 	'Author Name'=>'',
@@ -183,7 +183,7 @@ if ($result=$db->query($sql)) {
 
 				if ($result3=$db->query($sql)) {
 					foreach ($result3 as $row3) {
-						$product=new StoreProduct($row3['Product ID']);
+						$product=new Product($row3['Product ID']);
 						
 						if ($product->id) {
 							$product->update(array('Product Family Category Key'=>$family->id), 'no_history');
@@ -284,7 +284,7 @@ if ($result=$db->query($sql)) {
 
 		);
 		//print_r($data);
-		$product=new StoreProduct('find', $data, 'create');
+		$product=new Product('find', $data, 'create');
 
 
 		$sql=sprintf('update `Store Product Dimension` set  `Store Product Key`=%d  where  `Store Product Key`=%d',
@@ -293,11 +293,11 @@ if ($result=$db->query($sql)) {
 		);
 		$db->exec($sql);
 
-		$product=new StoreProduct($row['Product ID']);
+		$product=new Product($row['Product ID']);
 */
 		$product=new Product('pid', $row['Product ID']);
 
-		$new_product=new StoreProduct( $row['Product ID']);
+		$new_product=new Product( $row['Product ID']);
 
 		$new_product->update(array(
 				'Product Status'=>$status
