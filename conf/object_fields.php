@@ -39,7 +39,7 @@ function get_object_fields($object, $db, $user, $smarty, $options=false) {
 		include 'fields/deal.fld.php';
 		return $object_fields;
 		break;
-	case 'Site':
+	case 'Website':
 		include 'fields/website.fld.php';
 		return $object_fields;
 		break;

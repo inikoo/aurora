@@ -845,7 +845,7 @@ class User extends DB_Table {
 					'History Abstract'=>sprintf(_("User's rights for website %s were granted"), $website->data['Site Code']),
 					'History Details'=>'',
 					'Action'=>'disassociate',
-					'Indirect Object'=>'Site',
+					'Indirect Object'=>'Website',
 					'Indirect Object Key'=>$website->id
 				);
 
@@ -873,7 +873,7 @@ class User extends DB_Table {
 					'History Abstract'=>sprintf(_("User's rights for website %s were removed"), $website->data['Site Code']),
 					'History Details'=>'',
 					'Action'=>'disassociate',
-					'Indirect Object'=>'Site',
+					'Indirect Object'=>'Website',
 					'Indirect Object Key'=>$website->id
 				);
 				$history_key=$this->add_history($history_data);

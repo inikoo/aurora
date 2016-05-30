@@ -24,7 +24,7 @@ class Site extends DB_Table {
 	global $db;
 		$this->db=$db;
 	
-		$this->table_name='Site';
+		$this->table_name='Website';
 		$this->ignore_fields=array('Site Key');
 
 

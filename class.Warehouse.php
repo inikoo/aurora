@@ -291,17 +291,17 @@ class Warehouse extends DB_Table{
 					$this->update_field($field, $value, $options);
 				}
 			}
-			
+
 			if (preg_match('/(Warehouse Flag Label) (.+)$/', $field, $match)) {
 
 
-$this->update_flag($match[2], $match[1], $value);
+				$this->update_flag($match[2], $match[1], $value);
 
-				
+
 			}
 
-			
-			
+
+
 		}
 	}
 
@@ -666,7 +666,7 @@ $this->update_flag($match[2], $match[1], $value);
 					$this->updated=true;
 					$this->new_value=$value;
 
-                    $this->get_flags_data();
+					$this->get_flags_data();
 
 				}else {
 					$this->error=true;

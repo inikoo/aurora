@@ -476,6 +476,8 @@ $modules=array(
 					'website.reminders.customers'=>'website.reminders',
 					'website.reminders.families'=>'website.reminders',
 					'website.reminders.products'=>'website.reminders',
+					'website.root_nodes'=>'website.content',
+					'website.nodes'=>'website.content',
 
 				),
 
@@ -485,7 +487,17 @@ $modules=array(
 					'website.dashboard'=>array('label'=>_('Dashboard'), 'title'=>_('Website dashboard'), 'icon'=>'dashboard'),
 					'website.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 
-					'website.pages'=>array('label'=>_('Pages'), 'icon'=>'files-o'),
+					'website.content'=>array('label'=>_('Pages'), 'icon'=>'files-o',
+						'subtabs'=>array(
+							'website.root_nodes'=>array('label'=>_('Sitemap'), 'icon'=>'sitemap'),
+							'website.nodes'=>array('label'=>_('Webpages'), 'icon'=>'files-o'),
+
+						)
+
+					),
+
+
+
 					'website.pageviews'=>array('label'=>_('Pageviews'), 'icon'=>'eye'),
 					'website.users'=>array('label'=>_('Users'), 'icon'=>'male'),
 					'website.search'=>array('label'=>_('Queries'), 'title'=>_('Search Queries'), 'icon'=>'search',
@@ -526,6 +538,17 @@ $modules=array(
 					'page.users'=>array('label'=>_('Users'), 'icon'=>'male'),
 				)
 			),
+			'website.node'=>array('type'=>'object',
+				'tabs'=>array(
+
+
+					'website.node.dashboard'=>array('label'=>_('Dashboard'), 'title'=>_('Page dashboard'), 'icon'=>'dashboard'),
+					'website.node.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+					'website.node.pageviews'=>array('label'=>_('Pageviews'), 'icon'=>'eye'),
+					'website.node.users'=>array('label'=>_('Users'), 'icon'=>'male'),
+				)
+			),
+			
 			'website.user'=>array('type'=>'object',
 				'tabs'=>array(
 					'website.user.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
@@ -600,7 +623,7 @@ $modules=array(
 				)
 
 			),
-	'main_category.new'=>array('type'=>'new_object',
+			'main_category.new'=>array('type'=>'new_object',
 				'tabs'=>array(
 					'main_category.new'=>array('label'=>_('New category')),
 

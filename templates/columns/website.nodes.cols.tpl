@@ -47,8 +47,8 @@ var columns = [
     {if $sort_key=='items'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
     cell: 'html'
 }, {
-    name: "title",
-    label:"{t}Title{/t}",
+    name: "name",
+    label:"{t}Name{/t}",
     editable: false,
     defautOrder:1,
     sortType: "toggle",

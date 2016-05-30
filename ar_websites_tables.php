@@ -33,6 +33,14 @@ switch ($tipo) {
 case 'websites':
 	websites(get_table_parameters(), $db, $user);
 	break;
+case 'nodes':
+	nodes(get_table_parameters(), $db, $user);
+	break;
+case 'root_nodes':
+	root_nodes(get_table_parameters(), $db, $user);
+	break;
+
+
 case 'pages':
 	pages(get_table_parameters(), $db, $user);
 	break;
@@ -106,7 +114,7 @@ function queries($_data, $db, $user) {
 
 
 		$adata[]=array(
-			'site_key'=>$data['Site Key'],
+			'site_key'=>$data['Website Key'],
 			'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['date'].' +0:00')),
 			'query'=>$data['Query'],
 			'number'=>number($data['number']),
@@ -145,7 +153,7 @@ function search_history($_data, $db, $user) {
 		$user=$data['User Alias'];
 
 		$adata[]=array(
-			'site_key'=>$data['Site Key'],
+			'site_key'=>$data['Website Key'],
 			'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Date'].' +0:00')),
 			'query'=>$data['Query'],
 			'user_key'=>$data['User Key'],
@@ -178,34 +186,34 @@ function websites($_data, $db, $user) {
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
 
-	// print $sql;
+
 
 
 	foreach ($db->query($sql) as $data) {
 
 
 		$adata[]=array(
-			'id'=>(integer) $data['Site Key'],
-			'code'=>$data['Site Code'],
-			'name'=>$data['Site Name'],
-			'url'=>($data['Site SSL']=='Yes'?'https://':'http://').$data['Site URL'],
-			'users'=>number($data['Site Total Acc Users']),
-			'visitors'=>number($data['Site Total Acc Visitors']),
-			'requests'=>number($data['Site Total Acc Requests']),
-			'sessions'=>number($data['Site Total Acc Sessions']),
-			'pages'=>number($data['Site Number Pages']),
-			'pages_products'=>number($data['Site Number Pages with Products']),
-			'pages_out_of_stock'=>number($data['Site Number Pages with Out of Stock Products']),
-			'pages_out_of_stock_percentage'=>percentage($data['Site Number Pages with Out of Stock Products'], $data['Site Number Pages with Products']),
-			'products'=>number($data['Site Number Products']),
-			'out_of_stock'=>number($data['Site Number Out of Stock Products']),
-			'out_of_stock_percentage'=>percentage($data['Site Number Out of Stock Products'], $data['Site Number Products']),
-			'email_reminders_customers'=>number($data['Site Number Back in Stock Reminder Customers']),
-			'email_reminders_products'=>number($data['Site Number Back in Stock Reminder Products']),
-			'email_reminders_waiting'=>number($data['Site Number Back in Stock Reminder Waiting']),
-			'email_reminders_ready'=>number($data['Site Number Back in Stock Reminder Ready']),
-			'email_reminders_sent'=>number($data['Site Number Back in Stock Reminder Sent']),
-			'email_reminders_cancelled'=>number($data['Site Number Back in Stock Reminder Cancelled'])
+			'id'=>(integer) $data['Website Key'],
+			'code'=>$data['Website Code'],
+			'name'=>$data['Website Name'],
+			'url'=>$data['Website URL'],
+			'users'=>number($data['Website Total Acc Users']),
+			'visitors'=>number($data['Website Total Acc Visitors']),
+			'requests'=>number($data['Website Total Acc Requests']),
+			'sessions'=>number($data['Website Total Acc Sessions']),
+			'pages'=>number($data['Website Number WebPages']),
+			'pages_products'=>number($data['Website Number WebPages with Products']),
+			'pages_out_of_stock'=>number($data['Website Number WebPages with Out of Stock Products']),
+			'pages_out_of_stock_percentage'=>percentage($data['Website Number WebPages with Out of Stock Products'], $data['Website Number WebPages with Products']),
+			'products'=>number($data['Website Number Products']),
+			'out_of_stock'=>number($data['Website Number Out of Stock Products']),
+			'out_of_stock_percentage'=>percentage($data['Website Number Out of Stock Products'], $data['Website Number Products']),
+			//'email_reminders_customers'=>number($data['Website Number Back in Stock Reminder Customers']),
+			//'email_reminders_products'=>number($data['Website Number Back in Stock Reminder Products']),
+			//'email_reminders_waiting'=>number($data['Website Number Back in Stock Reminder Waiting']),
+			//'email_reminders_ready'=>number($data['Website Number Back in Stock Reminder Ready']),
+			//'email_reminders_sent'=>number($data['Website Number Back in Stock Reminder Sent']),
+			//'email_reminders_cancelled'=>number($data['Website Number Back in Stock Reminder Cancelled'])
 
 		);
 
@@ -306,14 +314,14 @@ function pages($_data, $db, $user) {
 		}
 
 
-		switch ($data['Site Flag']) {
-		case 'Blue': $flag="<img  src='art/icons/flag_blue.png' title='".$data['Site Flag']."' />"; break;
-		case 'Green':  $flag="<img  src='art/icons/flag_green.png' title='".$data['Site Flag']."' />";break;
-		case 'Orange': $flag="<img src='art/icons/flag_orange.png' title='".$data['Site Flag']."'  />"; break;
-		case 'Pink': $flag="<img  src='art/icons/flag_pink.png' title='".$data['Site Flag']."'/>"; break;
-		case 'Purple': $flag="<img src='art/icons/flag_purple.png' title='".$data['Site Flag']."'/>"; break;
-		case 'Red':  $flag="<img src='art/icons/flag_red.png' title='".$data['Site Flag']."'/>";break;
-		case 'Yellow':  $flag="<img src='art/icons/flag_yellow.png' title='".$data['Site Flag']."'/>";break;
+		switch ($data['Website Flag']) {
+		case 'Blue': $flag="<img  src='art/icons/flag_blue.png' title='".$data['Website Flag']."' />"; break;
+		case 'Green':  $flag="<img  src='art/icons/flag_green.png' title='".$data['Website Flag']."' />";break;
+		case 'Orange': $flag="<img src='art/icons/flag_orange.png' title='".$data['Website Flag']."'  />"; break;
+		case 'Pink': $flag="<img  src='art/icons/flag_pink.png' title='".$data['Website Flag']."'/>"; break;
+		case 'Purple': $flag="<img src='art/icons/flag_purple.png' title='".$data['Website Flag']."'/>"; break;
+		case 'Red':  $flag="<img src='art/icons/flag_red.png' title='".$data['Website Flag']."'/>";break;
+		case 'Yellow':  $flag="<img src='art/icons/flag_yellow.png' title='".$data['Website Flag']."'/>";break;
 		default:
 			$flag='';
 
@@ -354,7 +362,7 @@ function pages($_data, $db, $user) {
 			'id'=>(integer) $data['Page Key'],
 			'code'=>$data['Page Code'],
 			'type'=>$type,
-			'url'=>($data['Site SSL']=='Yes'?'https://':'http://').$data['Page URL'],
+			'url'=>($data['Website SSL']=='Yes'?'https://':'http://').$data['Page URL'],
 			'title'=>$data['Page Store Title'],
 			'state'=>$state,
 			'users'=>$users,
@@ -391,7 +399,7 @@ function pageviews($_data, $db, $user) {
 	$interval_db= get_interval_db_name($parameters['f_period']);
 	foreach ($db->query($sql) as $data) {
 
-switch ($data['Page Store Section']) {
+		switch ($data['Page Store Section']) {
 		case 'Department Catalogue':
 			$type=sprintf("d(<span class=\"link\" onClick=\"change_view('department/%d')\"  >%s</span>)", $data['Page Parent Key'], $data['Page Parent Code']);
 			break;
@@ -453,12 +461,81 @@ switch ($data['Page Store Section']) {
 			'id'=>(integer) $data['User Request Key'],
 			'page'=>$data['Page Code'],
 			'title'=>$data['Page Store Title'],
-						'type'=>$type,
+			'type'=>$type,
 
 			'page_key'=>$data['Page Key'],
 			'site_key'=>$data['Page Site Key'],
 			'date'=>strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($data['Date'])),
 
+		);
+
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function root_nodes($_data, $db, $user) {
+
+	$rtext_label='section';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	foreach ($db->query($sql) as $data) {
+
+		$adata[]=array(
+			'id'=>(integer) $data['Website Node Key'],
+			'code'=>$data['Website Node Code'],
+			'name'=>$data['Website Node Name'],
+
+	
+		);
+
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+function nodes($_data, $db, $user) {
+
+	$rtext_label='section';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	foreach ($db->query($sql) as $data) {
+
+		$adata[]=array(
+			'id'=>(integer) $data['Website Node Key'],
+			'code'=>$data['Website Node Code'],
+			'name'=>$data['Website Node Name'],
+
+	
 		);
 
 	}

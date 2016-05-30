@@ -1155,22 +1155,22 @@ function update_field(data) {
     }
 
     if (data.placeholder != undefined) {
-      
-    
-      $("#" + field).attr('placeholder',data.placeholder)
+
+
+        $("#" + field).attr('placeholder', data.placeholder)
     }
 
 
- if (data.locked != undefined) {
-      
-        if(data.locked==1){
-         $("#" + field+'_validation').addClass('hide')
-         $("#" + field+'_locked_tag').removeClass('hide')
-        }else{
-           $("#" + field+'_validation').removeClass('hide')
-         $("#" + field+'_locked_tag').addClass('hide')
+    if (data.locked != undefined) {
+
+        if (data.locked == 1) {
+            $("#" + field + '_validation').addClass('hide')
+            $("#" + field + '_locked_tag').removeClass('hide')
+        } else {
+            $("#" + field + '_validation').removeClass('hide')
+            $("#" + field + '_locked_tag').addClass('hide')
         }
-     
+
     }
 
 
@@ -1610,13 +1610,13 @@ function get_dropdown_select(dropdown_input, new_value) {
             clone.addClass('result').removeClass('hide')
             clone.attr('value', data.results[result_key].value)
             clone.attr('formatted_value', data.results[result_key].formatted_value)
-            
-            
+
+
             //  console.log(data.results[result_key].metadata)
             clone.data('metadata', data.results[result_key].metadata)
-          
-          
-          
+
+
+
             clone.attr('field', field)
             if (first) {
                 clone.addClass('selected')
@@ -1628,9 +1628,9 @@ function get_dropdown_select(dropdown_input, new_value) {
             clone.children(".label").html(data.results[result_key].description)
 
             $("#" + field + "_results").append(clone)
-            
-            
-            console.log($('#'+field + '_result_' + result_key).data('metadata'))
+
+
+            console.log($('#' + field + '_result_' + result_key).data('metadata'))
 
 
         }
@@ -1643,10 +1643,10 @@ function get_dropdown_select(dropdown_input, new_value) {
 function select_dropdown_option(element) {
 
 
-field=$(element).attr('field')
-value=$(element).attr('value')
-formatted_value=$(element).attr('formatted_value')
-metadata=$(element).data('metadata')
+    field = $(element).attr('field')
+    value = $(element).attr('value')
+    formatted_value = $(element).attr('formatted_value')
+    metadata = $(element).data('metadata')
 
     $('#' + field + '_dropdown_select_label').val(formatted_value)
     $('#' + field).val(value)
@@ -1719,7 +1719,12 @@ function delete_object(element) {
 
     $.getJSON(request, function(data) {
         if (data.state == 200) {
-            change_view(state.request)
+
+            if (data.request != undefined) {
+                change_view(data.request)
+            } else {
+                change_view(state.request)
+            }
 
         } else if (data.state == 400) {
             $(element).find('i.fa').addClass('fa-trash').remove('fa-spinner fa-spin')
@@ -1733,14 +1738,14 @@ function delete_object(element) {
 }
 
 
-  $(document).on("click", "#edit_table", function() {
+$(document).on("click", "#edit_table", function() {
 
-  change_view(state.request + '&tab=' + state.tab+'_edit')
-   
- });
- 
-  $(document).on("click", "#exit_edit_table", function() {
+    change_view(state.request + '&tab=' + state.tab + '_edit')
 
-  change_view(state.request + '&tab=' + state.tab.replace(/\_edit$/i, ""))
-   
- });
+});
+
+$(document).on("click", "#exit_edit_table", function() {
+
+    change_view(state.request + '&tab=' + state.tab.replace(/\_edit$/i, ""))
+
+});

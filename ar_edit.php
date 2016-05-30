@@ -639,6 +639,27 @@ function delete($account, $db, $user, $editor, $data, $smarty) {
 
 	if ($object->deleted) {
 		$response=array('state'=>200);
+
+		if ($object->get_object_name()=='Category') {
+
+			if ($object->get('Category Scope')=='Product') {
+			
+			if($object->get('Category Branch Type')=='Root'){
+			    $response['request']=sprintf('products/%d/categories',
+					$object->get('Category Store Key')
+				);
+			}else{
+			
+				$response['request']=sprintf('products/%d/category/%d',
+					$object->get('Category Store Key'),
+					$object->get('Category Parent Key')
+				);
+			}
+			}
+
+		}
+
+
 	}else {
 		$response=array('state'=>400, 'resp'=>$object->msg);
 	}

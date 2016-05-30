@@ -58,10 +58,10 @@ function get_object($object_name, $key, $load_other_data=false) {
 		$object=new DeliveryNote($key);
 		break;
 	case 'website':
-	case 'Site':
-		include_once 'class.Site.php';
+	case 'Website':
+		include_once 'class.Website.php';
 
-		$object=new Site($key);
+		$object=new Website($key);
 		break;
 	case 'page':
 		$object=new Page($key);
@@ -206,7 +206,12 @@ function get_object($object_name, $key, $load_other_data=false) {
 	case 'Upload':
 		require_once "class.Upload.php";
 		$object=new Upload($key);
-		break;					
+		break;	
+	case 'node':
+	case 'Website Node':
+		require_once "class.WebsiteNode.php";
+		$object=new WebsiteNode($key);
+		break;						
 	default:
 		exit('need to complete E1: '.$object_name."\n");
 		break;

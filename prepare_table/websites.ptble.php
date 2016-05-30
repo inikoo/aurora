@@ -21,12 +21,12 @@ if (count($user->websites)==0) {
 
 switch ($parameters['parent']) {
 case('store'):
-	$where.=sprintf(' and `Site Store Key`=%d and `Site Key` in (%s)', $parameters['parent_key'], join(',', $user->websites));
+	$where.=sprintf(' and `Website Store Key`=%d and W.`Website Key` in (%s)', $parameters['parent_key'], join(',', $user->websites));
 
 
 	break;
 default:
-	$where.=sprintf(' and `Site Key` in (%s)', join(',', $user->websites));
+	$where.=sprintf(' and W.`Website Key` in (%s)', join(',', $user->websites));
 
 
 	break;
@@ -39,9 +39,9 @@ $group='';
 
 $wheref='';
 if ($parameters['f_field']=='name'  and $f_value!='')
-	$wheref.=" and `Site Name` like '".addslashes($f_value)."%'";
+	$wheref.=" and `Website Name` like '".addslashes($f_value)."%'";
 elseif ($parameters['f_field']=='url' and $f_value!='')
-	$wheref.=" and  `Site URL` like '%".addslashes($f_value)."%'";
+	$wheref.=" and  `Website URL` like '%".addslashes($f_value)."%'";
 
 $_order=$order;
 $_dir=$order_direction;
@@ -49,60 +49,59 @@ $_dir=$order_direction;
 
 
 if ($order=='name') {
-	$order='`Site Name`';
+	$order='`Website Name`';
 }elseif ($order=='url') {
-	$order='`Site URL`';
+	$order='`Website URL`';
 }elseif ($order=='users') {
-	$order='`Site Total Acc Users`';
+	$order='`Website Total Acc Users`';
 }elseif ($order=='code') {
-	$order='`Site Code`';
+	$order='`Website Code`';
 
 }elseif ($order=='pages') {
-	$order='`Site Number Pages`';
+	$order='`Website Number WebPages`';
 }elseif ($order=='products') {
-	$order='`Site Number Products`';
+	$order='`Website Number Products`';
 }elseif ($order=='visitors') {
-	$order='`Site Total Acc Visitors`';
+	$order='`Website Total Acc Visitors`';
 }elseif ($order=='requests') {
-	$order='`Site Total Acc Requests`';
+	$order='`Website Total Acc Requests`';
 }elseif ($order=='sessions') {
-	$order='`Site Total Acc Sessions`';
+	$order='`Website Total Acc Sessions`';
 }elseif ($order=='pages_products') {
-	$order='`Site Number Pages with Products`';
+	$order='`Website Number WebPages with Products`';
 }elseif ($order=='pages_out_of_stock') {
-	$order='`Site Number Pages with Out of Stock Products`';
+	$order='`Website Number WebPages with Out of Stock Products`';
 }elseif ($order=='pages_out_of_stock_percentage') {
-	$order='`Site Number Pages with Out of Stock Products`/`Site Number Pages with Products`';
+	$order='`Website Number WebPages with Out of Stock Products`/`Website Number WebPages with Products`';
 }elseif ($order=='email_reminders_customers') {
-	$order='`Site Number Back in Stock Reminder Customers`';
+	$order='`Website Number Back in Stock Reminder Customers`';
 }elseif ($order=='email_reminders_products') {
-	$order='`Site Number Back in Stock Reminder Products`';
+	$order='`Website Number Back in Stock Reminder Products`';
 }elseif ($order=='email_reminders_waiting') {
-	$order='`Site Number Back in Stock Reminder Waiting`';
+	$order='`Website Number Back in Stock Reminder Waiting`';
 }elseif ($order=='email_reminders_ready') {
-	$order='`Site Number Back in Stock Reminder Ready`';
+	$order='`Website Number Back in Stock Reminder Ready`';
 }elseif ($order=='email_reminders_sent') {
-	$order='`Site Number Back in Stock Reminder Sent`';
+	$order='`Website Number Back in Stock Reminder Sent`';
 }elseif ($order=='email_reminders_cancelled') {
-	$order='`Site Number Back in Stock Reminder Cancelled`';
+	$order='`Website Number Back in Stock Reminder Cancelled`';
 }elseif ($order=='out_of_stock') {
-	$order='`Site Number Out of Stock Products`';
+	$order='`Website Number Out of Stock Products`';
 }elseif ($order=='out_of_stock_percentage') {
-	$order='`Site Number Out of Stock Products`/`Site Number Products`';
+	$order='`Website Number Out of Stock Products`/`Website Number Products`';
 }
 else {
 
-	$order='`Site Key`';
+	$order='W.`Website Key`';
 
 }
 
 
 
-$table='`Site Dimension`';
+$table='`Website Dimension` W left join `Website Data` D on (W.`Website Key`=D.`Website Key`)';
 
-$sql_totals="select count(Distinct `Site Key`) as num from $table  $where  ";
+$sql_totals="select count(Distinct W.`Website Key`) as num from $table  $where  ";
 
-$fields="`Site SSL`,
-	`Site Number Back in Stock Reminder Customers`,`Site Number Back in Stock Reminder Products`,`Site Number Back in Stock Reminder Waiting`,`Site Number Back in Stock Reminder Ready`,`Site Number Back in Stock Reminder Sent`,`Site Number Back in Stock Reminder Cancelled`,`Site Number Products`,`Site Number Out of Stock Products`,`Site Number Pages with Out of Stock Products`,`Site Number Pages with Products`,`Site Number Pages`,`Site Total Acc Requests`,`Site Total Acc Sessions`,`Site Total Acc Visitors`,`Site Total Acc Users`,`Site Code`,`Site Name`,`Site Key`,`Site URL`
+$fields="`Website Number Products`,`Website Number Out of Stock Products`,`Website Number WebPages with Out of Stock Products`,`Website Number WebPages with Products`,`Website Number WebPages`,`Website Total Acc Requests`,`Website Total Acc Sessions`,`Website Total Acc Visitors`,`Website Total Acc Users`,`Website Code`,`Website Name`,W.`Website Key`,`Website URL`
 ";
 ?>

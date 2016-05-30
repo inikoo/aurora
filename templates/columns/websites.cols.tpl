@@ -40,13 +40,13 @@ var columns = [
     })
 }, {
     name: "name",
-    label:"{t}Store Name{/t}",
+    label:"{t}Website name{/t}",
     editable: false,
     defautOrder:1,
     sortType: "toggle",
     {if $sort_key=='items'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-    cell: Backgrid.StringCell.extend({ className: "aright"} ),
-    headerCell: integerHeaderCell
+    cell: Backgrid.StringCell.extend({
+    } ),
 }, {
     name: "url",
     label:"URL",
