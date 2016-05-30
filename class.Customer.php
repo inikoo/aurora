@@ -1805,7 +1805,7 @@ class Customer extends Subject {
 			// 'login','logout','fail_login','password_request','password_reset'
 			'Date'=>$data['Date'],
 
-			'Direct Object'=>'Site',
+			'Direct Object'=>'Website',
 			'Direct Object Key'=>$data['Site Key'],
 			'History Details'=>$data['Details'],
 			'History Abstract'=>$data['Note'],

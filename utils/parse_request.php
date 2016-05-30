@@ -322,6 +322,18 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 
 				}
+				elseif ($view_path[1]=='node') {
+					$section='website.node';
+					$object='node';
+					$parent='website';
+					$parent_key=$key;
+
+					if (is_numeric($view_path[2])) {
+						$key=$view_path[2];
+					}
+
+
+				}
 
 			}
 

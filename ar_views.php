@@ -92,7 +92,7 @@ case 'views':
 
 		break;
 	case 'website':
-		$_parent=new Site($state['parent_key']);
+		$_parent=get_object('Website', $state['parent_key']);
 		$website=$_parent;
 		$state['current_website']=$_parent->id;
 		$website=$_parent;
@@ -438,6 +438,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db) {
 	case 'dashboard':
 		$html='';
 		break;
+	case 'node':
+		include_once 'showcase/website_node.show.php';
+		$html=get_website_node_showcase($data, $smarty, $user, $db);
+		break;
 	case 'upload':
 		include_once 'showcase/upload.show.php';
 		$html=get_upload_showcase($data, $smarty, $user, $db);
@@ -646,7 +650,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 			break;
 		case ('main_category.new'):
 			return get_products_new_main_category_navigation($data, $smarty, $user, $db, $account);
-			break;	
+			break;
 		}
 	case ('customers'):
 		require_once 'navigation/customers.nav.php';
@@ -814,6 +818,8 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 	case ('websites'):
 
 		require_once 'navigation/websites.nav.php';
+
+
 		switch ($data['section']) {
 		case ('websites'):
 
@@ -823,6 +829,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
 
 			return get_website_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('website.node'):
+			return get_node_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('page'):
 			return get_page_navigation($data, $smarty, $user, $db, $account);
@@ -2153,13 +2162,18 @@ function get_view_position($state, $user, $smarty, $account) {
 
 			$website=$state['_object'];
 
-			$branch[]=array('label'=>_('Website').' '.$website->data['Site Code'], 'icon'=>'globe', 'reference'=>'website/'.$website->id);
+			$branch[]=array('label'=>_('Website').' <span class="id Website_Code">'.$website->get('Code').'</span>', 'icon'=>'globe', 'reference'=>'website/'.$website->id);
+			break;
+		case 'website.node':
+			
+			$branch[]=array('label'=>$state['website']->get('Code'), 'icon'=>'globe', 'reference'=>'website/'.$state['website']->id);
+			$branch[]=array('label'=>$state['_object']->get('Code'), 'icon'=>'file', 'reference'=>'');
+
 			break;
 		case 'page':
-			$page=$state['_object'];
-			$website=new Site($page->get('Page Site Key'));
-			$branch[]=array('label'=>_('Website').' '.$website->data['Site Code'], 'icon'=>'globe', 'reference'=>'website/'.$website->id);
-			$branch[]=array('label'=>_('Page').' '.$page->data['Page Code'], 'icon'=>'file', 'reference'=>'website/'.$website->id.'/page/'.$website->id);
+			
+			$branch[]=array('label'=>_('Website').' '.$data['website']->get('Code'), 'icon'=>'globe', 'reference'=>'website/'.$website->id);
+			$branch[]=array('label'=>_('Page').' '.$page->get('Code'), 'icon'=>'file', 'reference'=>'website/'.$website->id.'/page/'.$website->id);
 
 			break;
 		case 'website.user':

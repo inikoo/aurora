@@ -20,7 +20,7 @@ switch ($parameters['parent']) {
 case('store'):
 	$where.=sprintf(' and `Page Store Key`=%d   ', $parameters['parent_key']);
 	break;
-case('site'):
+case('Website'):
 	$where.=sprintf(' and PS.`Page Site Key`=%d', $parameters['parent_key']);
 	break;
 case('department'):

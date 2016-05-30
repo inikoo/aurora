@@ -41,9 +41,9 @@ if ($parameters['parent']=='customer' or $parameters['parent']=='order_customer'
 }elseif ($parameters['parent']=='account') {
 	$where=sprintf(' where  true  ');
 	$subject='Account';
-}elseif ($parameters['parent']=='site') {
+}elseif ($parameters['parent']=='Website') {
 	$where=sprintf(' where   B.`Site Key`=%d   ', $parameters['parent_key']);
-	$subject='Site';
+	$subject='Website';
 }elseif ($parameters['parent']=='porder') {
 	$where=sprintf(' where   B.`Purchase Order Key`=%d   ', $parameters['parent_key']);
 	$subject='Purchase Order';

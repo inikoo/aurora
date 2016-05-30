@@ -27,7 +27,7 @@ $object_fields=array(
 			array(
 				'id'=>'Site_Code',
 				'edit'=>($edit?'string':''),
-				'value'=>$object->get('Site Code'),
+				'value'=>$object->get('Website Code'),
 				'label'=>ucfirst($object->get_field_label('Code')),
 				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 				'invalid_msg'=>get_invalid_message('string'),
@@ -35,82 +35,50 @@ $object_fields=array(
 			array(
 				'id'=>'Site_Name',
 				'edit'=>($edit?'string':''),
-				'value'=>$object->get('Site Name'),
+				'value'=>$object->get('Website Name'),
 				'label'=>ucfirst($object->get_field_label('Name')),
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
+				'invalid_msg'=>get_invalid_message('string'),
+			),
+			array(
+				'id'=>'Site_Name',
+				'edit'=>($edit?'string':''),
+				'value'=>$object->get('Website URL'),
+				'label'=>ucfirst($object->get_field_label('URL')),
 				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 				'invalid_msg'=>get_invalid_message('string'),
 			),
 
 		)
 	),
-	array(
-		'label'=>_('Contact'),
-		'show_title'=>false,
-		'fields'=>array(
-
-
-			array(
-				'class'=>'string',
-				'id'=>'Site_Main_Contact_Name',
-				'value'=>$object->get('Site Main Contact Name'),
-				'label'=>_('Contact name')
-			),
-			array(
-				'class'=>'string',
-				'id'=>'Site_Main_Plain_Email',
-				'value'=>$object->get('Site Main XHTML Email'),
-				'label'=>_('Email')
-			),
-			array(
-				'class'=>'string',
-				'id'=>'Site_Main_Plain_Telephone',
-				'value'=>$object->get('Site Main Plain Telephone'),
-				'label'=>_('Phone')
-			),
-			array(
-				'class'=>'string',
-				'id'=>'Site_Main_Plain_Mobile',
-				'value'=>$object->get('Site Main Plain Mobile'),
-				'label'=>_('Mobile')
-			),
-			array(
-				'class'=>'string',
-				'id'=>'Site_Main_Plain_FAX',
-				'value'=>$object->get('Site Main Plain FAX'),
-				'label'=>_('FAX')
-			),
-			array(
-				'class'=>'address',
-				'id'=>'Site_Main_Plain_Adresss',
-				'value'=>$object->get('Site Main XHTML Address'),
-				'label'=>_('Address')
-			)
-		)
-	),
+	
 
 );
 
 if (!$new) {
-	$operations=array(
+$operations=array(
 		'label'=>_('Operations'),
 		'show_title'=>true,
-		'class'=>'edit_fields',
+		'class'=>'operations',
 		'fields'=>array(
-			array(
-
-				'id'=>'delete_website',
-				'class'=>'new',
-				'value'=>'',
-				'label'=>'<i class="fa fa-lock button" style="margin-right:20px"></i> <span class="disabled">'._('Delete website').' <i class="fa fa-trash new_button link"></i></span>',
-				'reference'=>'',
-				'type'=>'ignore'
-			),
+		
+		array(
+			'id'=>'delete_website',
+			'class'=>'operation',
+			'value'=>'',
+			'label'=>'<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span onClick="delete_object(this)" class="delete_object disabled">'._("Delete website & all webpages").' <i class="fa fa-trash new_button link"></i></span>',
+			'reference'=>'',
+			'type'=>'operation'
+		),
+		
+		
+		
 
 		)
 
 	);
 
-	$agent_fields[]=$operations;
+	$object_fields[]=$operations;
 }
 
 

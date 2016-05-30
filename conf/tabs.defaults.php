@@ -409,7 +409,27 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code'
 	),
-	'website.pages'=>array(
+	'website.nodes'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code',
+		'f_period'=>'ytd',
+
+	),
+	'website.root_nodes'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code',
+		'f_period'=>'ytd',
+
+	),
+	'node.nodes'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,

@@ -11,10 +11,9 @@
 */
 
 
-function get_websites_navigation($data) {
+function get_websites_navigation($data, $smarty, $user, $db, $account)  {
 
-	global $user, $smarty;
-	require_once 'class.Store.php';
+	
 
 
 	$block_view=$data['section'];
@@ -51,14 +50,11 @@ function get_websites_navigation($data) {
 }
 
 
-function get_website_navigation($data) {
+function get_website_navigation($data, $smarty, $user, $db, $account)  {
 
-	global $user, $smarty;
-	require_once 'class.Site.php';
+	
 
-
-
-	$website=new Site($data['key']);
+	$website=$data['_object'];
 
 	$block_view=$data['section'];
 
@@ -77,15 +73,33 @@ function get_website_navigation($data) {
 
 		list($prev_key, $next_key)=get_prev_next($website->id, $user->websites);
 		$sql=sprintf("select `Site Code` from `Site Dimension` where `Site Key`=%d", $prev_key);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$prev_title=_('Website').' '.$row['Site Code'];
-		}else {$prev_title='';}
+
+
+
+		if ($result=$db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$prev_title=_('Website').' '.$row['Site Code'];
+			}else {
+				$prev_title='';
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
+
 		$sql=sprintf("select `Site Code` from `Site Dimension` where `Site Key`=%d", $next_key);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$next_title=_('Website').' '.$row['Site Code'];
-		}else {$next_title='';}
+		if ($result=$db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$next_title=_('Website').' '.$row['Site Code'];
+			}else {
+				$next_title='';
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
 
 
 		$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'website/'.$prev_key );
@@ -95,7 +109,7 @@ function get_website_navigation($data) {
 	}
 
 
-	$website=new Site($data['key']);
+
 	$sections=get_sections('websites', $website->id);
 	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
 
@@ -117,7 +131,7 @@ function get_website_navigation($data) {
 }
 
 
-function get_page_navigation($data) {
+function get_page_navigation($data, $smarty, $user, $db, $account)  {
 
 	global $user, $smarty;
 	require_once 'class.Page.php';
@@ -185,83 +199,112 @@ function get_page_navigation($data) {
 		$next_key=0;
 		$sql=trim($sql_totals." $wheref");
 
-		$res2=mysql_query($sql);
-		if ($row2=mysql_fetch_assoc($res2) and $row2['num']>1 ) {
 
-			$sql=sprintf("select `Page Code` object_name,PS.`Page Key` as object_key from $table   $where $wheref
+
+
+		if ($result2=$db->query($sql)) {
+			if ($row2 = $result2->fetch()) {
+				if ( $row2['num']>1) {
+
+
+
+					$sql=sprintf("select `Page Code` object_name,PS.`Page Key` as object_key from $table   $where $wheref
 	                and ($_order_field < %s OR ($_order_field = %s AND PS.`Page Key` < %d))  order by $_order_field desc , PS.`Page Key` desc limit 1",
 
-				prepare_mysql($_order_field_value),
-				prepare_mysql($_order_field_value),
-				$object->id
-			);
+						prepare_mysql($_order_field_value),
+						prepare_mysql($_order_field_value),
+						$object->id
+					);
 
 
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_assoc($res)) {
-				$prev_key=$row['object_key'];
-				$prev_title=_("Product").' '.$row['object_name'].' ('.$row['object_key'].')';
 
-			}
 
-			$sql=sprintf("select `Page Code` object_name,PS.`Page Key` as object_key from $table   $where $wheref
+					if ($result=$db->query($sql)) {
+						if ($row = $result->fetch()) {
+							$prev_key=$row['object_key'];
+							$prev_title=_("Product").' '.$row['object_name'].' ('.$row['object_key'].')';
+						}
+					}else {
+						print_r($error_info=$db->errorInfo());
+						exit;
+					}
+
+
+
+					$sql=sprintf("select `Page Code` object_name,PS.`Page Key` as object_key from $table   $where $wheref
 	                and ($_order_field  > %s OR ($_order_field  = %s AND PS.`Page Key` > %d))  order by $_order_field   , PS.`Page Key`  limit 1",
-				prepare_mysql($_order_field_value),
-				prepare_mysql($_order_field_value),
-				$object->id
-			);
+						prepare_mysql($_order_field_value),
+						prepare_mysql($_order_field_value),
+						$object->id
+					);
 
 
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_assoc($res)) {
-				$next_key=$row['object_key'];
-				$next_title=_("Product").' '.$row['object_name'].' ('.$row['object_key'].')';
-
-			}
-
-
-			if ($order_direction=='desc') {
-				$_tmp1=$prev_key;
-				$_tmp2=$prev_title;
-				$prev_key=$next_key;
-				$prev_title=$next_title;
-				$next_key=$_tmp1;
-				$next_title=$_tmp2;
-			}
+					if ($result=$db->query($sql)) {
+						if ($row = $result->fetch()) {
+							$next_key=$row['object_key'];
+							$next_title=_("Product").' '.$row['object_name'].' ('.$row['object_key'].')';
+						}
+					}else {
+						print_r($error_info=$db->errorInfo());
+						exit;
+					}
 
 
-			switch ($data['parent']) {
-			case 'website':
+					if ($order_direction=='desc') {
+						$_tmp1=$prev_key;
+						$_tmp2=$prev_title;
+						$prev_key=$next_key;
+						$prev_title=$next_title;
+						$next_key=$_tmp1;
+						$next_title=$_tmp2;
+					}
 
-				$website= new Site($object->get('Page Site Key'));
 
-				$up_button=array('icon'=>'arrow-up', 'title'=>_("Website").' ('.$website->get('Site Code').')', 'reference'=>'website/'.$object->get('Page Site Key'));
+					switch ($data['parent']) {
+					case 'website':
 
-				if ($prev_key) {
-					$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'website/'.$data['parent_key'].'/page/'.$prev_key);
+						$website= new Site($object->get('Page Site Key'));
 
-				}else {
-					$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'');
+						$up_button=array('icon'=>'arrow-up', 'title'=>_("Website").' ('.$website->get('Site Code').')', 'reference'=>'website/'.$object->get('Page Site Key'));
+
+						if ($prev_key) {
+							$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'website/'.$data['parent_key'].'/page/'.$prev_key);
+
+						}else {
+							$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'');
+
+						}
+						$left_buttons[]=$up_button;
+
+
+						if ($next_key) {
+							$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'website/'.$data['parent_key'].'/page/'.$next_key);
+
+						}else {
+							$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
+
+						}
+
+						break;
+
+
+					}
+
+
+
+
 
 				}
-				$left_buttons[]=$up_button;
-
-
-				if ($next_key) {
-					$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'website/'.$data['parent_key'].'/page/'.$next_key);
-
-				}else {
-					$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
-
-				}
-
-				break;
-
 
 			}
-
-
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
 		}
+
+
+
+
 
 
 	}
@@ -294,7 +337,7 @@ function get_page_navigation($data) {
 }
 
 
-function get_user_navigation($data) {
+function get_user_navigation($data, $smarty, $user, $db, $account)  {
 
 
 
@@ -358,52 +401,77 @@ function get_user_navigation($data) {
 		$next_key=0;
 		$sql=trim($sql_totals." $wheref");
 
-		$res2=mysql_query($sql);
-		if ($row2=mysql_fetch_assoc($res2) and $row2['num']>1 ) {
 
-			$sql=sprintf("select `User Handle` object_name,U.`User Key` as object_key from $table   $where $wheref
+
+
+		if ($result2=$db->query($sql)) {
+			if ($row2 = $result2->fetch()) {
+				if ($row2['num']>1 ) {
+
+
+
+					$sql=sprintf("select `User Handle` object_name,U.`User Key` as object_key from $table   $where $wheref
 	                and ($_order_field < %s OR ($_order_field = %s AND U.`User Key` < %d))  order by $_order_field desc , U.`User Key` desc limit 1",
 
-				prepare_mysql($_order_field_value),
-				prepare_mysql($_order_field_value),
-				$object->id
-			);
+						prepare_mysql($_order_field_value),
+						prepare_mysql($_order_field_value),
+						$object->id
+					);
 
-			//print $sql;
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_assoc($res)) {
-				$prev_key=$row['object_key'];
-				$prev_title=_("User").' '.$row['object_name'].' ('.$row['object_key'].')';
+					if ($result=$db->query($sql)) {
+						if ($row = $result->fetch()) {
+							$prev_key=$row['object_key'];
+							$prev_title=_("User").' '.$row['object_name'].' ('.$row['object_key'].')';
+						}
+					}else {
+						print_r($error_info=$db->errorInfo());
+						exit;
+					}
 
-			}
 
-			$sql=sprintf("select `User Handle` object_name,U.`User Key` as object_key from $table   $where $wheref
+					$sql=sprintf("select `User Handle` object_name,U.`User Key` as object_key from $table   $where $wheref
 	                and ($_order_field  > %s OR ($_order_field  = %s AND U.`User Key` > %d))  order by $_order_field   , U.`User Key`  limit 1",
-				prepare_mysql($_order_field_value),
-				prepare_mysql($_order_field_value),
-				$object->id
-			);
+						prepare_mysql($_order_field_value),
+						prepare_mysql($_order_field_value),
+						$object->id
+					);
+
+					if ($result=$db->query($sql)) {
+						if ($row = $result->fetch()) {
+							$next_key=$row['object_key'];
+							$next_title=_("User").' '.$row['object_name'].' ('.$row['object_key'].')';
+						}
+					}else {
+						print_r($error_info=$db->errorInfo());
+						exit;
+					}
 
 
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_assoc($res)) {
-				$next_key=$row['object_key'];
-				$next_title=_("User").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+					if ($order_direction=='desc') {
+						$_tmp1=$prev_key;
+						$_tmp2=$prev_title;
+						$prev_key=$next_key;
+						$prev_title=$next_title;
+						$next_key=$_tmp1;
+						$next_title=$_tmp2;
+					}
+
+
+
+
+				}
 
 			}
-
-
-			if ($order_direction=='desc') {
-				$_tmp1=$prev_key;
-				$_tmp2=$prev_title;
-				$prev_key=$next_key;
-				$prev_title=$next_title;
-				$next_key=$_tmp1;
-				$next_title=$_tmp2;
-			}
-
-
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
 		}
+
+
+
+
+
 
 		if ($data['parent']=='website') {
 
@@ -501,5 +569,206 @@ function get_user_navigation($data) {
 
 }
 
+
+function get_node_navigation($data, $smarty, $user, $db, $account) {
+
+	
+	$object=$data['_object'];
+	
+
+	$block_view=$data['section'];
+
+
+	$sections_class='';
+
+	$left_buttons=array();
+	$right_buttons=array();
+
+
+
+
+
+	if ($data['parent']) {
+
+		switch ($data['parent']) {
+		case 'website':
+			$tab='website.root_nodes';
+			$_section='websites';
+			break;
+
+		}
+
+
+		if (isset($_SESSION['table_state'][$tab])) {
+			$number_results=$_SESSION['table_state'][$tab]['nr'];
+			$start_from=0;
+			$order=$_SESSION['table_state'][$tab]['o'];
+			$order_direction=($_SESSION['table_state'][$tab]['od']==1 ?'desc':'');
+			$f_value=$_SESSION['table_state'][$tab]['f_value'];
+			$parameters=$_SESSION['table_state'][$tab];
+		}else {
+
+			$default=$user->get_tab_defaults($tab);
+			$number_results=$default['rpp'];
+			$start_from=0;
+			$order=$default['sort_key'];
+			$order_direction=($default['sort_order']==1 ?'desc':'');
+			$f_value='';
+			$parameters=$default;
+			$parameters['parent']=$data['parent'];
+			$parameters['parent_key']=$data['parent_key'];
+		}
+
+		include_once 'prepare_table/'.$tab.'.ptble.php';
+
+		$_order_field=$order;
+		$order=preg_replace('/^.*\.`/', '', $order);
+		$order=preg_replace('/^`/', '', $order);
+		$order=preg_replace('/`$/', '', $order);
+		$_order_field_value=$object->get($order);
+
+
+		$prev_title='';
+		$next_title='';
+		$prev_key=0;
+		$next_key=0;
+		$sql=trim($sql_totals." $wheref");
+
+
+
+
+		if ($result2=$db->query($sql)) {
+			if ($row2 = $result2->fetch()) {
+				if ( $row2['num']>1) {
+
+
+
+					$sql=sprintf("select `Website Node Code` object_name, N.`Website Node Key` as object_key from $table   $where $wheref
+	                and ($_order_field < %s OR ($_order_field = %s AND N.`Website Node Key` < %d))  order by $_order_field desc ,N.`Website Node Key` desc limit 1",
+
+						prepare_mysql($_order_field_value),
+						prepare_mysql($_order_field_value),
+						$object->id
+					);
+
+
+
+
+					if ($result=$db->query($sql)) {
+						if ($row = $result->fetch()) {
+							$prev_key=$row['object_key'];
+							$prev_title=_("Node").' '.$row['object_name'];
+						}
+					}else {
+						print_r($error_info=$db->errorInfo());
+						exit;
+					}
+
+
+
+					$sql=sprintf("select `Website Node Code` object_name,N.`Website Node Key` as object_key from $table   $where $wheref
+	                and ($_order_field  > %s OR ($_order_field  = %s AND N.`Website Node Key` > %d))  order by $_order_field   , N.`Website Node Key`  limit 1",
+						prepare_mysql($_order_field_value),
+						prepare_mysql($_order_field_value),
+						$object->id
+					);
+
+
+					if ($result=$db->query($sql)) {
+						if ($row = $result->fetch()) {
+							$next_key=$row['object_key'];
+							$next_title=_("Node").' '.$row['object_name'];
+						}
+					}else {
+						print_r($error_info=$db->errorInfo());
+						exit;
+					}
+
+
+					if ($order_direction=='desc') {
+						$_tmp1=$prev_key;
+						$_tmp2=$prev_title;
+						$prev_key=$next_key;
+						$prev_title=$next_title;
+						$next_key=$_tmp1;
+						$next_title=$_tmp2;
+					}
+
+
+					switch ($data['parent']) {
+					case 'website':
+
+
+						$up_button=array('icon'=>'arrow-up', 'title'=>_("Website").' ('.$data['_parent']->get('Code').')', 'reference'=>'websites/'.$object->get('Website Key'));
+
+						if ($prev_key) {
+							$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'websites/'.$object->get('Website Key').'/node/'.$prev_key);
+
+						}else {
+							$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'');
+
+						}
+						$left_buttons[]=$up_button;
+
+
+						if ($next_key) {
+							$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title,'reference'=>'websites/'.$object->get('Website Key').'/node/'.$next_key);
+
+						}else {
+							$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
+
+						}
+
+						break;
+
+
+					}
+
+
+
+
+
+				}
+
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
+
+
+
+
+
+	}
+	else {
+		$_section='products';
+
+	}
+
+
+	$title='<span class="id Website_Node_Code">'.$object->get('Code').'</span>';
+
+
+	$sections=get_sections('websites', $object->get('Website Key'));
+	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
+
+
+	$_content=array(
+		'sections_class'=>$sections_class,
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>_('Search website'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+}
 
 ?>

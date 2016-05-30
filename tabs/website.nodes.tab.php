@@ -10,9 +10,9 @@
 */
 
 
-$tab='website.pages';
+$tab='website.nodes';
 $ar_file='ar_websites_tables.php';
-$tipo='pages';
+$tipo='nodes';
 
 $default=$user->get_tab_defaults($tab);
 
@@ -20,8 +20,8 @@ $default=$user->get_tab_defaults($tab);
 $table_views=array();
 
 $table_filters=array(
-	'code'=>array('label'=>_('Code'),'title'=>_('Page code')),
-	'title'=>array('label'=>_('Title'),'title'=>_('Page title')),
+	'code'=>array('label'=>_('Code')),
+	'title'=>array('label'=>_('Name')),
 
 );
 
