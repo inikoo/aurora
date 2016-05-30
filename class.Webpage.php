@@ -247,6 +247,13 @@ class Webpage extends DB_Table{
 	}
 
 
+    function get_content(){
+    
+        return '';
+    
+    }
+
+
 }
 
 

@@ -31,14 +31,19 @@ class WebsiteNode extends DB_Table{
 			$this->find($a2, $a3);
 
 		}else
-			$this->get_data($a1, $a2);
+			$this->get_data($a1, $a2, $a3);
 	}
 
 
-	function get_data($key, $tag) {
+	function get_data($key, $tag, $tag2=false) {
 
 		if ($key=='id')
 			$sql=sprintf("select * from `Website Node Dimension` where `Website Node Key`=%d", $tag);
+		else if ($key=='website_code')
+			$sql=sprintf("select  * from `Website Node Dimension` where  `Website Node Website Key`=%d and `Website Node Code`=%s ",
+				$tag,
+				prepare_mysql($tag2)
+			);
 		else if ($key=='code')
 			$sql=sprintf("select  * from `Website Node Dimension` where `Website Node Code`=%s ", prepare_mysql($tag));
 		else
@@ -196,6 +201,38 @@ class WebsiteNode extends DB_Table{
 
 		}
 		return '';
+	}
+
+
+	function get_webpage_key() {
+
+		$webpages=array();
+		$sql=sprintf('select `Webpage Key`,`Webpage Display Probability` from `Webpage Dimension` where `Webpage Website Node Key`=%d and `Webpage Display Probability`>0', $this->id);
+
+		$base=0;
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$webpages[$row['Webpage Key']]=$base+$row['Webpage Display Probability'];
+				$base+=$base+$row['Webpage Display Probability'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+		if (count($webpages)==0) {
+			return false;
+		}elseif (count($webpages)==1) {
+
+			reset($webpages);
+			return  key($webpages);
+		}else {
+			exit("todo class.WebsiteNode.php line 226\n");
+		}
+
+
 	}
 
 

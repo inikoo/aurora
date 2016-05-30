@@ -23,6 +23,9 @@ require_once "utils/aes.php";
 require_once "class.Account.php";
 require_once "class.Auth.php";
 require_once "class.User.php";
+require_once "class.Website.php";
+
+
 
 $mem = new Memcached();
 $mem->addServer($memcache_ip, 11211);
@@ -52,6 +55,9 @@ if ($account->get('Account State')!='Active') {
 
 	exit();
 }
+
+
+$website=new Website($website_key);
 
 
 if ($account->get('Timezone')) {
