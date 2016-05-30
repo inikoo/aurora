@@ -5,3 +5,7 @@ server_files/
 keyring/dns.php
 
 keyring/key.php
+
+ecom/keyring/key.php
+
+ecom/keyring/dns.php

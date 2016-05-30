@@ -1,0 +1,14 @@
+SetEnv devel 1
+
+RewriteEngine On
+
+RewriteRule ^api/ api.php [L]
+
+
+RewriteRule ^$ /app.php [L]
+
+RewriteBase /
+RewriteRule ^(js|css|templates)($|/) - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*) app.php [QSA,L]
