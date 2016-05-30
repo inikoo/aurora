@@ -211,13 +211,13 @@ class Website extends DB_Table{
 			if ($website_node->new) {
 				$this->new_object=true;
 				$website_node->update(
-				array(
-				'Website Node Parent Key'=>$website_node->id,
-				'Website Node Parent Navigation Key'=>$website_node->id
-				),
-				'no_history'
+					array(
+						'Website Node Parent Key'=>$website_node->id,
+						'Website Node Parent Navigation Key'=>$website_node->id
+					),
+					'no_history'
 				);
-				
+
 				$this->update_website_nodes_data();
 			} else {
 				$this->error=true;
@@ -333,9 +333,10 @@ class Website extends DB_Table{
 
 
 	}
-	
-	function update_website_nodes_data(){
-	
+
+
+	function update_website_nodes_data() {
+
 	}
 
 
@@ -361,6 +362,17 @@ class Website extends DB_Table{
 		}
 
 		return $label;
+
+	}
+
+
+	function get_node($code) {
+	
+		if ($code=='')$code='home';
+
+		$node=new WebsiteNode('website_code', $this->id, $code);
+		return $node;
+
 
 	}
 
