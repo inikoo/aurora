@@ -29,7 +29,7 @@ case 'content':
 
 
 	$response=get_content($db, $smarty, $website, $user, $account, $data);
-	
+
 	break;
 case 'marginals':
 
@@ -40,8 +40,8 @@ case 'marginals':
 
 
 	$response=get_marginals($db, $smarty, $website, $user, $account, $data);
-	
-	break;	
+
+	break;
 
 default:
 	$response=array('state'=>404, 'resp'=>'Operation not found 2');
@@ -51,13 +51,13 @@ default:
 
 function get_marginals($db, $smarty, $website, $user, $account, $data) {
 
-	require_once 'utils/parse_request.php';
+	//require_once 'utils/parse_request.php';
 
 
-    $header=$smarty->fetch('header.tpl');
-    $footer=$smarty->fetch('footer.tpl');
+	$header=$smarty->fetch('header.tpl');
+	$footer=$smarty->fetch('footer.tpl');
 
-	$response=array('state'=>200, 'header'=>$header,'footer'=>$footer);
+	$response=array('state'=>200, 'header'=>$header, 'footer'=>$footer);
 
 
 
@@ -65,6 +65,55 @@ function get_marginals($db, $smarty, $website, $user, $account, $data) {
 
 }
 
+
+function get_breadcrumbs($smarty, $db, $node, $webpage) {
+
+	$breadcrumbs=array();
+	//$breadcrumbs[]=array('label'=>_('home'), 'icon'=>'home', 'reference'=>'home');
+
+	$level=0;
+	$breadcrumbs=array();
+
+	if ($node->get('Website Node Parent Key')!=$node->id) {
+		$breadcrumbs=create_breadcrumbs($db, $node->get('Website Node Parent Key'), $breadcrumbs);
+	}
+
+
+	$breadcrumbs[]=array('label'=>$node->get('Name'), 'icon'=>$node->get('Icon'), 'reference'=>preg_replace('/\./', '/', $node->get('Code')));
+
+
+	$smarty->assign('breadcrumbs', $breadcrumbs);
+
+	return $smarty->fetch('breadcrumbs.tpl');
+
+}
+
+
+function create_breadcrumbs($db, $node_key, $branch) {
+
+	$sql=sprintf('select `Website Node Parent Key`,`Website Node Code`,`Website Node Name`,`Website Node Icon` from `Website Node Dimension` where `Website Node Key`=%d',
+		$node_key
+	);
+
+	if ($result=$db->query($sql)) {
+		if ($row = $result->fetch()) {
+
+
+			array_unshift($branch, array('label'=>$row['Website Node Name'], 'icon'=>$row['Website Node Icon'], 'reference'=>preg_replace('/\./', '/', $row['Website Node Code'])));
+			if ($row['Website Node Parent Key']==$node_key) {
+				return  $branch;
+			}else {
+
+				$branch=create_breadcrumbs($db, $row['Website Node Parent Key'], $branch);
+				return $branch;
+			}
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+}
 
 
 function get_content($db, $smarty, $website, $user, $account, $data) {
@@ -85,7 +134,7 @@ function get_content($db, $smarty, $website, $user, $account, $data) {
 		$reload=false;
 	}
 
-	list($webpage,$request)=parse_request($data, $db, $website, $account, $user);
+	list($node, $webpage, $request)=parse_request($data, $db, $website, $account, $user);
 
 
 
@@ -107,9 +156,16 @@ function get_content($db, $smarty, $website, $user, $account, $data) {
 
 */
 
-$view=array('webpage_key'=>$webpage->id,'request',$request);
+	$view=array('webpage_key'=>$webpage->id, 'request'=>$request);
 
-	$response=array('state'=>200, 'content'=>$webpage->get_content(),'view'=>$view);
+	$breadcrumbs=get_breadcrumbs($smarty, $db, $node, $webpage);
+
+	$response=array('state'=>200,
+		'content'=>$webpage->get_content($smarty),
+		'view'=>$view,
+		'body_classes'=>$webpage->get_property('body_classes'),
+		'breadcrumbs'=>$breadcrumbs
+	);
 
 
 

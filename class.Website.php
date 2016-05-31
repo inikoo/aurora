@@ -212,8 +212,7 @@ class Website extends DB_Table{
 				$this->new_object=true;
 				$website_node->update(
 					array(
-						'Website Node Parent Key'=>$website_node->id,
-						'Website Node Parent Navigation Key'=>$website_node->id
+						'Website Node Parent Key'=>$website_node->id
 					),
 					'no_history'
 				);

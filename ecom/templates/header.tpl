@@ -1,12 +1,13 @@
-{if $_DEVEL}{strip}{/if}
+{*
 <!--
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 30 May 2016 at 14:10:01 CEST, Mijas Costa, Spain
+ Created: 30 May 2016 at 15:36:00 CEST, Mijas Costa, Spain
  Copyright (c) 2016, Inikoo
 
  Version 3
 -->
+*}
 
 			<div id="topbar" class="">
 				<div class="container">
@@ -50,7 +51,7 @@
 					<div class="header-wrap">
 						<div class="pull-left wrap-logo">
 							<div id="logo-theme" class="logo-store">
-								<a href="http://demopavothemes.com/pav_floral/index.php?route=common/home"> <span>Floral Store</span> </a> 
+								<a href="/home" > <span>Floral Store</span> </a> 
 							</div>
 						</div>
 						<div class="pull-left wrap-menu" >
@@ -326,5 +327,4 @@
 			</div>
 		
 		
-{if $_DEVEL}{/strip}{/if}
 		

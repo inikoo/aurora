@@ -7,13 +7,13 @@
 $(document).ready(function() {
 
 
-    var request=$('#_request').val()
+    var request = $('#_request').val()
 
     view = {
         webpage_key: '',
-        request:request 
+        request: request
     }
-  
+
 
 
     load_marginals()
@@ -22,6 +22,15 @@ $(document).ready(function() {
     $(document).keydown(function(e) {
         key_press(e)
     });
+
+})
+
+$(document).on('click', 'a', function(e) {
+    e.preventDefault();
+
+
+    load_content($(this).attr('href'))
+
 
 })
 
@@ -65,12 +74,16 @@ function load_content(_request, metadata) {
         view = data.view;
 
 
-
-
-        if (typeof(data.content) != "undefined" && data.content !== null) {
-            $('#content').html(data.content);
+        if (typeof(data.body_classes) != "undefined" && data.body_classes !== null) {
+            $('body').removeClass().addClass(data.body_classes);
         }
 
+        if (typeof(data.content) != "undefined" && data.content !== null) {
+            $('#webpage_content').html(data.content);
+        }
+        if (typeof(data.breadcrumbs) != "undefined" && data.breadcrumbs !== null) {
+            $('#breadcrumb').html(data.breadcrumbs);
+        }
 
 
 
@@ -93,7 +106,7 @@ function load_marginals(_request, metadata) {
 
     $.getJSON(request, function(data) {
 
-    
+
         if (typeof(data.header) != "undefined" && data.header !== null) {
             $('#header').html(data.header);
         }
@@ -112,7 +125,6 @@ function load_marginals(_request, metadata) {
 }
 
 
+function key_press() {
 
-
-
-
+}
