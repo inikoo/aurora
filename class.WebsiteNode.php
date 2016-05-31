@@ -293,7 +293,7 @@ class WebsiteNode extends DB_Table{
 		$data['Website Node Store Key']=$this->get('Store Key');
 		$data['Website Node Website Key']=$this->get('Website Key');
 		$data['Website Node Parent Key']=$this->id;
-		$data['Website Node Parent Navigation Key']=$this->id;
+
 
 		$data['Website Node Valid From']=gmdate('Y-m-d H:i:s');
 

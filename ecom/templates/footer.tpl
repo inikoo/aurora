@@ -1,4 +1,4 @@
-{if $_DEVEL}{strip}{/if}
+{*
 <!--
  About:
  Author: Raul Perusquia <raul@inikoo.com>
@@ -7,6 +7,7 @@
 
  Version 3
 -->
+*}
 
 	<div class="footer-top">
 		<div class="container">
@@ -188,7 +189,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-lg-12 col-md-12">
+					<div class="col-lg-12 col-md-12" style="display:none">
 						<div class=" box newsletter_block" id="newsletter_1889508040">
 							<div class="row">
 								<div class="col-sm-6 title_block">
@@ -300,7 +301,9 @@
 							</div>
 							<div class="box-content">
 								<ul class="list">
-									<li><span class="link" onClick=load_content('contact')>Contact Us</span></li>
+									<li><a href="p/contact">Contact Us</a></li>
+									<li><a href="p/delivery">Delivery</a></li>
+									<li><a href="p/gtc">Terms & Conditions</a></li>
 									<li><a href="http://demopavothemes.com/pav_floral/index.php?route=account/return/add">Returns</a></li>
 									<li><a href="http://demopavothemes.com/pav_floral/index.php?route=information/sitemap">Site Map</a></li>
 									<li><a href="http://demopavothemes.com/pav_floral/index.php?route=product/manufacturer">Brands</a></li>
@@ -359,8 +362,4 @@
 				</div>
 			</div>
 		</div>
-	</div>
-
-		
-{if $_DEVEL}{/strip}{/if}
-		
+	</div>		

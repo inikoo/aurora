@@ -48,6 +48,8 @@ class Webpage extends DB_Table{
 		if ($this->data = $this->db->query($sql)->fetch()) {
 			$this->id=$this->data['Webpage Key'];
 			$this->code=$this->data['Webpage Code'];
+			$this->properties=json_decode($this->data['Webpage Properties'],true);
+	
 		}
 
 
@@ -114,7 +116,7 @@ class Webpage extends DB_Table{
 			print_r($error_info=$this->db->errorInfo());
 			exit;
 		}
-		
+
 
 		if ($create and !$this->found) {
 			$this->create($data);
@@ -178,7 +180,7 @@ class Webpage extends DB_Table{
 
 
 		switch ($key) {
-		
+
 		default:
 
 
@@ -194,6 +196,20 @@ class Webpage extends DB_Table{
 		}
 		return '';
 	}
+
+    function get_property($key){
+    
+    	if (!$this->id or !$this->properties) {
+			return '';
+		}
+    
+        if(array_key_exists($key, $this->properties)){
+            return $this->properties[$key];
+        }else{
+            return false;
+        }
+    
+    }
 
 
 	function update_field_switcher($field, $value, $options='', $metadata='') {
@@ -247,11 +263,49 @@ class Webpage extends DB_Table{
 	}
 
 
-    function get_content(){
-    
-        return '';
-    
-    }
+	function append_block($data, $position=0) {
+
+
+
+		$sql=sprintf('insert into `Webpage Block Bridge` (`Webpage Block Website Key`,`Webpage Block Position`,`Webpage Block Template`,`Webpage Block Settings`) values (%d,%d,%s,%s) ',
+			$this->id,
+			(10*$position)+5,
+			prepare_mysql($data['Webpage Block Template']),
+			prepare_mysql(json_encode($data['Webpage Block Settings']))
+		);
+
+		$this->db->exec($sql);
+
+
+		$sql="SET @ordering_inc = 10;SET @new_ordering = 0;";
+		$sql.=sprintf("update  `Webpage Block Bridge` set `Webpage Block Position` = (@new_ordering := @new_ordering + @ordering_inc) where `Webpage Block Website Key`=%d order by `Webpage Block Position` desc",
+			$this->id
+		);
+		$this->db->exec($sql);
+	}
+
+
+	function get_content($smarty) {
+
+
+        $content='';
+
+		$sql=sprintf('select `Webpage Block Template`,`Webpage Block Settings` from  `Webpage Block Bridge` where `Webpage Block Website Key`=%d  order by `Webpage Block Position` desc', $this->id);
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+			    $smarty->assign('settings',json_decode($row['Webpage Block Settings'],true));
+			
+                $content.=$smarty->fetch($row['Webpage Block Template'].'.tpl');
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+        return $content;
+	}
 
 
 }

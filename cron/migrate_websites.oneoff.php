@@ -78,30 +78,91 @@ if ($result=$db->query($sql)) {
 
 		$website_key=$website->id;
 
-		$website_node[$website_key]['Home']=$website->create_website_node(array('Website Node Code'=>'Home', 'Website Node Name'=>_('Home'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Root'));
+		$website_node[$website_key]['Home']=$website->create_website_node(array('Website Node Code'=>'p.Home', 'Website Node Name'=>_('Home'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Root', 'Website Node Icon'=>'Home'));
+		$page=new Webpage($website_node[$website_key]['Home']->get_webpage_key());
+		$page->update(array('Webpage Properties'=>
+				json_encode(array('body_classes'=>'common-home page-common-home layout-fullwidth'))
+			), 'no_history');
 
 
 
-		$website_node[$website_key]['MyA']=$website_node[$website_key]['Home']->create_website_node(array('Website Node Code'=>'MyA', 'Website Node Name'=>_('My account'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Root'));
+		$website_node[$website_key]['MyA']=$website_node[$website_key]['Home']->create_website_node(array('Website Node Code'=>'p.MyA', 'Website Node Name'=>_('My account'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Root'));
 
 		$website_node[$website_key]['MyA']->create_website_node(
-			array('Website Node Code'=>'Login', 'Website Node Name'=>_('Login'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Head')
+			array('Website Node Code'=>'p.Login', 'Website Node Name'=>_('Login'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Head')
 		);
 		$website_node[$website_key]['MyA']->create_website_node(
-			array('Website Node Code'=>'Register', 'Website Node Name'=>_('Register'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Head')
+			array('Website Node Code'=>'p.Register', 'Website Node Name'=>_('Register'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Head')
 		);
 		$website_node[$website_key]['MyA']->create_website_node(
-			array('Website Node Code'=>'Passwd', 'Website Node Name'=>_('Forgotten password'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Head')
+			array('Website Node Code'=>'p.Pwd', 'Website Node Name'=>_('Forgotten password'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Head')
 		);
 		$website_node[$website_key]['MyA']->create_website_node(
-			array('Website Node Code'=>'Profile', 'Website Node Name'=>_('My account'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Head')
+			array('Website Node Code'=>'p.Profile', 'Website Node Name'=>_('My account'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Head')
 		);
-        
-        
 
-		$website_node[$website_key]['CS']=$website_node[$website_key]['Home']->create_website_node(array('Website Node Code'=>'CS', 'Website Node Name'=>_('Customer services'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Root'));
-		$website_node[$website_key]['Cat']=$website_node[$website_key]['Home']->create_website_node(array('Website Node Code'=>'Cat', 'Website Node Name'=>_('Catalogue'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Root'));
-		$website_node[$website_key]['Insp']=$website_node[$website_key]['Home']->create_website_node(array('Website Node Code'=>'Insp', 'Website Node Name'=>_('Inspiration'), 'Website Node Locked'=>'No','Website Node Type'=>'Root'));
+
+
+		$website_node[$website_key]['CS']=$website_node[$website_key]['Home']->create_website_node(array('Website Node Code'=>'p.CS', 'Website Node Name'=>_('Customer services'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Root'));
+$page=new Webpage($website_node[$website_key]['CS']->get_webpage_key());
+		$page->update(array('Webpage Properties'=>
+				json_encode(array('body_classes'=>'information-contact page-information-contact layout-fullwidth'))
+			), 'no_history');
+
+		$settings=array(
+			'title'=>array('edit'=>'string', 'id'=>'title', 'value'=>_('Customer services')),
+			'content'=>array('edit'=>'text', 'id'=>'content', 'value'=>_('This is a CMS block edited from admin panel'))
+		);
+
+		$page->append_block(array('Webpage Block Template'=>'info.blank', 'Webpage Block Settings'=>$settings));
+
+
+		$node=$website_node[$website_key]['CS']->create_website_node(
+			array('Website Node Code'=>'p.Contact', 'Website Node Name'=>_('Contact us'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Head')
+		);
+		$page=new Webpage($node->get_webpage_key());
+		$page->update(array('Webpage Properties'=>
+				json_encode(array('body_classes'=>'information-contact page-information-contact layout-fullwidth'))
+			), 'no_history');
+		$page->append_block(array('Webpage Block Template'=>'contact.map', 'Webpage Block Settings'=>array()));
+
+
+		$node=$website_node[$website_key]['CS']->create_website_node(
+			array('Website Node Code'=>'p.Delivery', 'Website Node Name'=>_('Delivery'), 'Website Node Locked'=>'No', 'Website Node Type'=>'Head', 'Website Node Icon'=>'truck fa-flip-horizontal')
+		);
+		$page=new Webpage($node->get_webpage_key());
+		$page->update(array('Webpage Properties'=>
+				json_encode(array('body_classes'=>'information-contact page-information-contact layout-fullwidth'))
+			), 'no_history');
+
+		$settings=array(
+			'title'=>array('edit'=>'string', 'id'=>'title', 'value'=>_('Delivery')),
+			'content'=>array('edit'=>'text', 'id'=>'content', 'value'=>_('This is a CMS block edited from admin panel'))
+		);
+
+		$page->append_block(array('Webpage Block Template'=>'info.blank', 'Webpage Block Settings'=>$settings));
+
+
+
+		$node=$website_node[$website_key]['CS']->create_website_node(
+			array('Website Node Code'=>'p.GTC', 'Website Node Name'=>_('Terms & Conditions'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Head')
+		);
+		$page=new Webpage($node->get_webpage_key());
+		$page->update(array('Webpage Properties'=>
+				json_encode(array('body_classes'=>'information-contact page-information-contact layout-fullwidth'))
+			), 'no_history');
+
+		$settings=array(
+			'title'=>array('edit'=>'string', 'id'=>'title', 'value'=>_('General Terms & Conditions')),
+			'content'=>array('edit'=>'text', 'id'=>'content', 'value'=>_('This is a CMS block edited from admin panel'))
+		);
+
+		$page->append_block(array('Webpage Block Template'=>'info.blank', 'Webpage Block Settings'=>$settings));
+
+
+
+		$website_node[$website_key]['Cat']=$website_node[$website_key]['Home']->create_website_node(array('Website Node Code'=>'p.Cat', 'Website Node Name'=>_('Catalogue'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Root'));
+		$website_node[$website_key]['Insp']=$website_node[$website_key]['Home']->create_website_node(array('Website Node Code'=>'p.Insp', 'Website Node Name'=>_('Inspiration'), 'Website Node Locked'=>'No', 'Website Node Type'=>'Root'));
 
 
 

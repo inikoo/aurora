@@ -1,3 +1,4 @@
+{*
 <!--
  About:
  Author: Raul Perusquia <raul@inikoo.com>
@@ -6,19 +7,18 @@
 
  Version 3
 -->
-
-
+*}
 <html lang="en">
 <head>
   <title>Bootstrap Example</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   {if $_DEVEL} 
-  <link rel="stylesheet" href="css/bootstrap.3.0.0.css">
-  <link rel="stylesheet" href="css/font-awesome.css" > 
-  <link rel="stylesheet" href="css/structures.css" > 
-  <link rel="stylesheet" href="css/paneltools.css" />
-  <link rel="stylesheet" href="css/app.css" />
+  <link rel="stylesheet" href="/css/bootstrap.3.0.0.css">
+  <link rel="stylesheet" href="/css/font-awesome.css" > 
+  <link rel="stylesheet" href="/css/structures.css" > 
+  <link rel="stylesheet" href="/css/paneltools.css" />
+  <link rel="stylesheet" href="/css/app.css" />
 
   
   <script type="text/javascript" src="/js/libs/jquery-2.2.1.js"></script> 
@@ -38,23 +38,32 @@
 
 </head>
 
-<body class="common-home page-home layout-fullwidth">
-<input type="hidden" id="_request" value="{$_request}">
-
+<body class="layout-fullwidth">
+<input type="hidden" id="_request" value="{$_request}"> 
 <div class="row-offcanvas row-offcanvas-left">
 	<div id="page">
-
-
-<div id="header"></div>
-<div id="content"></div>
-
-<footer id="footer"></footer>
-
-
-  </div>
-  <div class="sidebar-offcanvas  visible-xs visible-sm">
-  </div>
+		<div id="header">
+		</div>
+		<div class="container">
+			<div class="wrap-container">
+				<div class="row">
+					<div id="breadcrumb">
+						<ul class="breadcrumb container">
+							<li><a href="/home"><span><i class="fa fa-home"></i></span></a></li>
+							<li><a href=""><span>Contact Usxx</span></a></li>
+						</ul>
+					</div>
+					<div id="webpage_content">
+					</div>
+				</div>
+			</div>
+		</div>
+		<footer id="footer">
+		</footer>
+	</div>
+	<div class="sidebar-offcanvas  visible-xs visible-sm">
+	</div>
 </div>
-
 </body>
+
 </html>
