@@ -195,9 +195,9 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 								}
 								elseif ($view_path[2]=='new') {
-								
-								$section='main_category.new';
-								
+
+									$section='main_category.new';
+
 								}
 							}else {
 								//error
@@ -339,15 +339,27 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 
 			break;
-		case 'page':
+		case 'node':
 			if (!$user->can_view('sites')) {$module='utils';$section='forbidden';break;}
 
 			$module='websites';
-			$section='page';
-			$object='page';
+			$section='website.node';
+			$object='node';
 			$key=$view_path[0];
 			if (isset($view_path[1])) {
-				if ($view_path[1]=='user') {
+				if ($view_path[1]=='version') {
+					$section='page';
+					$object='page';
+					$parent='node';
+					$parent_key=$key;
+
+					if (is_numeric($view_path[2])) {
+						$key=$view_path[2];
+					}
+
+
+				}
+				elseif ($view_path[1]=='user') {
 					$section='website.user';
 					$object='user';
 					$parent='page';

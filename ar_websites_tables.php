@@ -30,6 +30,9 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+case 'blocks':
+	blocks(get_table_parameters(), $db, $user);
+	break;
 case 'websites':
 	websites(get_table_parameters(), $db, $user);
 	break;
@@ -39,8 +42,6 @@ case 'nodes':
 case 'root_nodes':
 	root_nodes(get_table_parameters(), $db, $user);
 	break;
-
-
 case 'pages':
 	pages(get_table_parameters(), $db, $user);
 	break;
@@ -246,7 +247,7 @@ function pages($_data, $db, $user) {
 
 	$interval_db= get_interval_db_name($parameters['f_period']);
 	foreach ($db->query($sql) as $data) {
-
+/*
 		$period_visitors=number($data["Page Store $interval_db Acc Visitors"]);
 		$period_sessions=number($data["Page Store $interval_db Acc Sessions"]);
 		$period_requests=number($data["Page Store $interval_db Acc Requests"]);
@@ -255,77 +256,10 @@ function pages($_data, $db, $user) {
 		$users=number($data["Page Store Total Acc Users"]);
 		$requests=number($data["Page Store Total Acc Requests"]);
 
-		switch ($data['Page Store Section']) {
-		case 'Department Catalogue':
-			$type=sprintf("d(<span class=\"link\" onClick=\"change_view('department/%d')\"  >%s</span>)", $data['Page Parent Key'], $data['Page Parent Code']);
-			break;
-		case 'Family Catalogue':
-			$type=sprintf("f(<span class=\"link\" onClick=\"change_view('family/%d')\"  >%s</span>)", $data['Page Parent Key'], $data['Page Parent Code']);
-			break;
-		case 'Product Description':
-			$type=sprintf("p(<span class=\"link\" onClick=\"change_view('product/%d')\"  >%s</span>)", $data['Page Parent Key'], $data['Page Parent Code']);
-			break;
-
-		case 'Welcome':
-			$type=_('Welcome');
-			break;
-		case 'Login':
-			$type=_('Login');
-			break;
-		case 'Information':
-			$type=_('Information');
-			break;
-		case 'Checkout':
-			$type=_('Checkout');
-			break;
-		case 'Reset':
-			$type=_('Reset');
-			break;
-		case 'Registration':
-			$type=_('Registration');
-			break;
-		case 'Not Found':
-			$type=_('Not Found');
-			break;
-		case 'Client Section':
-			$type=_('Client Section');
-			break;
-		case 'Client Section':
-			$type=_('Client Section');
-			break;
-		case 'Front Page Store':
-			$type=_('Home');
-			break;
-		case 'Basket':
-			$type=_('Basket');
-			break;
-		case 'Thanks':
-			$type=_('Thanks');
-			break;
-		case 'Payment Limbo':
-			$type=_('Payment Limbo');
-			break;
-		case 'Search':
-			$type=_('Search');
-			break;
-		default:
-			$type=_('Other').' '.$data['Page Store Section'];
-			break;
-		}
+		
 
 
-		switch ($data['Website Flag']) {
-		case 'Blue': $flag="<img  src='art/icons/flag_blue.png' title='".$data['Website Flag']."' />"; break;
-		case 'Green':  $flag="<img  src='art/icons/flag_green.png' title='".$data['Website Flag']."' />";break;
-		case 'Orange': $flag="<img src='art/icons/flag_orange.png' title='".$data['Website Flag']."'  />"; break;
-		case 'Pink': $flag="<img  src='art/icons/flag_pink.png' title='".$data['Website Flag']."'/>"; break;
-		case 'Purple': $flag="<img src='art/icons/flag_purple.png' title='".$data['Website Flag']."'/>"; break;
-		case 'Red':  $flag="<img src='art/icons/flag_red.png' title='".$data['Website Flag']."'/>";break;
-		case 'Yellow':  $flag="<img src='art/icons/flag_yellow.png' title='".$data['Website Flag']."'/>";break;
-		default:
-			$flag='';
-
-		}
+	
 
 		switch ($data['Page State']) {
 		case 'Online':
@@ -357,16 +291,18 @@ function pages($_data, $db, $user) {
 			$button_products='<span style="color:#777;font-style:italic">'.$button_products.'</span>';
 
 		}
-
+*/
 		$adata[]=array(
-			'id'=>(integer) $data['Page Key'],
-			'code'=>$data['Page Code'],
-			'type'=>$type,
-			'url'=>($data['Website SSL']=='Yes'?'https://':'http://').$data['Page URL'],
-			'title'=>$data['Page Store Title'],
-			'state'=>$state,
-			'users'=>$users,
-			'requests'=>$requests,
+			'id'=>(integer) $data['Webpage Key'],
+			'code'=>$data['Webpage Code'],
+			'name'=>$data['Webpage Name'],
+			'display'=>percentage($data['Webpage Display Probability'],1),
+			//'type'=>$type,
+			//'url'=>($data['Website SSL']=='Yes'?'https://':'http://').$data['Page URL'],
+			//'title'=>$data['Page Store Title'],
+			//'state'=>$state,
+			//'users'=>$users,
+			//'requests'=>$requests,
 		);
 
 	}
@@ -534,6 +470,40 @@ function nodes($_data, $db, $user) {
 			'id'=>(integer) $data['Website Node Key'],
 			'code'=>$data['Website Node Code'],
 			'name'=>$data['Website Node Name'],
+
+	
+		);
+
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+function blocks($_data, $db, $user) {
+
+	$rtext_label='webpage block';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	foreach ($db->query($sql) as $data) {
+
+		$adata[]=array(
+			'id'=>(integer) $data['Webpage Block Key'],
+			'template'=>$data['Webpage Block Template']
+			
 
 	
 		);

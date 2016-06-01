@@ -439,6 +439,27 @@ $tab_defaults=array(
 		'f_period'=>'ytd',
 
 	),
+	'website.node.pages'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code',
+		'f_period'=>'ytd',
+
+	),
+	'page.blocks'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code',
+		'f_period'=>'ytd',
+
+	),
+	
 	'website.favourites.customers'=>array(
 		'view'=>'overview',
 		'sort_key'=>'formatted_id',

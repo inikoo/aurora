@@ -178,6 +178,8 @@ function get_rtext($record_label, $total_records) {
 		return sprintf(ngettext('%s offer', '%s offers', $total_records), number($total_records));
 	}elseif ($record_label=='purchase order') {
 		return sprintf(ngettext('%s purchase order', '%s purchase orders', $total_records), number($total_records));
+	}elseif ($record_label=='webpage block') {
+		return sprintf(ngettext('%s webpage block', '%s webpage blocks', $total_records), number($total_records));
 	}else {
 		return sprintf(ngettext('%s record', '%s records', $total_records), number($total_records));
 	}
@@ -277,6 +279,8 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
 		return sprintf(ngettext('%s offer of %s', '%s offers of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
 	}elseif ($record_label=='purchase order') {
 		return sprintf(ngettext('%s purchase order of %s', '%s purchase orders of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
+	}elseif ($record_label=='webpage block') {
+		return sprintf(ngettext('%s webpage block of %s', '%s webpage blocks of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
 	}else {
 		return sprintf(ngettext('%s record of %s', '%s records of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
 	}
