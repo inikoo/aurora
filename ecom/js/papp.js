@@ -17,7 +17,7 @@ $(document).ready(function() {
 
 
     load_marginals()
-    load_content($('#_request').val())
+    load_content($('#_request').val(), {})
 
     $(document).keydown(function(e) {
         key_press(e)
@@ -29,7 +29,7 @@ $(document).on('click', 'a', function(e) {
     e.preventDefault();
 
 
-    load_content($(this).attr('href'))
+    change_node($(this).attr('href'))
 
 
 })
@@ -58,16 +58,22 @@ window.addEventListener('popstate', function(event) {
 });
 
 
-
-function load_content(_request, metadata) {
-
+function change_node(_request) {
 
     if (metadata == undefined) {
         metadata = {};
     }
+    load_content(_request, metadata)
+}
 
-    var request = "/ar_views.php?tipo=content&request=" + _request + '&metadata=' + JSON.stringify(metadata) + "&old_view=" + JSON.stringify(view)
+function load_content(_request, metadata) {
 
+
+
+
+    var request = "/ar_pviews.php?tipo=content&request=" + _request
+    // + '&metadata=' + fixedEncodeURIComponent(JSON.stringify(metadata)) 
+    //+ "&old_view=" + fixedEncodeURIComponent(JSON.stringify(view))
     $.getJSON(request, function(data) {
 
         console.log(data);
@@ -102,7 +108,7 @@ function load_marginals(_request, metadata) {
         metadata = {};
     }
 
-    var request = "/ar_views.php?tipo=marginals&request=" + _request + '&metadata=' + JSON.stringify(metadata)
+    var request = "/ar_pviews.php?tipo=marginals&request=" + _request + '&metadata=' + JSON.stringify(metadata)
 
     $.getJSON(request, function(data) {
 
@@ -127,4 +133,8 @@ function load_marginals(_request, metadata) {
 
 function key_press() {
 
+}
+
+function fixedEncodeURIComponent(str) {
+    return encodeURIComponent(str).replace(/[!'()]/g, escape).replace(/\*/g, "%2A");
 }

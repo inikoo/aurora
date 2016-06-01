@@ -17,9 +17,20 @@ function parse_request($_data, $db, $website, $account, $user) {
 	include_once 'class.Webpage.php';
 
 
-	$request=$_data['request'];
 
+	$request=$_data['request'];
 	$request=preg_replace('/\/+/', '/', $request);
+	
+	$request=preg_replace('/\?.*/', '', $request);
+	
+	
+$_request=$request;
+	if (_PREVIEW) {
+
+		$request=preg_replace('/\/ecom\//', '/', $request);
+	}
+
+
 
 	$original_request=preg_replace('/^\//', '', $request);
 	$view_path=preg_split('/\//', $original_request);
@@ -30,7 +41,6 @@ function parse_request($_data, $db, $website, $account, $user) {
 	$shorcut=false;
 	$is_main_section=false;
 
-
 	if ($count_view_path==1) {
 
 		$code=array_shift($view_path);
@@ -39,7 +49,7 @@ function parse_request($_data, $db, $website, $account, $user) {
 		$node=$website->get_node($code);
 
 
-		return get_webpage($node, $request);
+		return get_webpage($node, $_request);
 
 
 
@@ -48,7 +58,7 @@ function parse_request($_data, $db, $website, $account, $user) {
 		switch ($view_path[0]) {
 		case 'p':
 			$node=$website->get_node('p.'.$view_path[1]);
-			return get_webpage($node, $request);
+			return get_webpage($node, $_request);
 			break;
 		default:
 
@@ -66,7 +76,7 @@ function get_webpage($node, $request) {
 		if ($webpage_key=$node->get_webpage_key()) {
 			$webpage = new Webpage($webpage_key);
 			if ($webpage->id) {
-				return array($node,$webpage, $request);
+				return array($node, $webpage, $request);
 			}
 		}else {
 			print $node->get_webpage_key();

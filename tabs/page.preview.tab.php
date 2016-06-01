@@ -9,9 +9,16 @@
 
 */
 
+$node=get_object('node',$state['_object']->get('Webpage Website Node Key'));
 
 
-$smarty->assign('object', $state['_object']);
+$request=preg_replace('/\./','/',strtolower($node->get('Code')));
+$smarty->assign('request', $request);
+
+
+$smarty->assign('node', $node);
+
+$smarty->assign('page', $state['_object']);
 $smarty->assign('key', $state['key']);
 
 $smarty->assign('state', $state);

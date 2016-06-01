@@ -267,7 +267,7 @@ class Webpage extends DB_Table{
 
 
 
-		$sql=sprintf('insert into `Webpage Block Bridge` (`Webpage Block Website Key`,`Webpage Block Position`,`Webpage Block Template`,`Webpage Block Settings`) values (%d,%d,%s,%s) ',
+		$sql=sprintf('insert into `Webpage Block Bridge` (`Webpage Block Webpage Key`,`Webpage Block Position`,`Webpage Block Template`,`Webpage Block Settings`) values (%d,%d,%s,%s) ',
 			$this->id,
 			(10*$position)+5,
 			prepare_mysql($data['Webpage Block Template']),
@@ -278,7 +278,7 @@ class Webpage extends DB_Table{
 
 
 		$sql="SET @ordering_inc = 10;SET @new_ordering = 0;";
-		$sql.=sprintf("update  `Webpage Block Bridge` set `Webpage Block Position` = (@new_ordering := @new_ordering + @ordering_inc) where `Webpage Block Website Key`=%d order by `Webpage Block Position` desc",
+		$sql.=sprintf("update  `Webpage Block Bridge` set `Webpage Block Position` = (@new_ordering := @new_ordering + @ordering_inc) where `Webpage Block Webpage Key`=%d order by `Webpage Block Position` desc",
 			$this->id
 		);
 		$this->db->exec($sql);
@@ -290,13 +290,13 @@ class Webpage extends DB_Table{
 
         $content='';
 
-		$sql=sprintf('select `Webpage Block Template`,`Webpage Block Settings` from  `Webpage Block Bridge` where `Webpage Block Website Key`=%d  order by `Webpage Block Position` desc', $this->id);
+		$sql=sprintf('select `Webpage Block Template`,`Webpage Block Settings` from  `Webpage Block Bridge` where `Webpage Block Webpage Key`=%d  order by `Webpage Block Position` desc', $this->id);
 
 		if ($result=$this->db->query($sql)) {
 			foreach ($result as $row) {
 			    $smarty->assign('settings',json_decode($row['Webpage Block Settings'],true));
 			
-                $content.=$smarty->fetch($row['Webpage Block Template'].'.tpl');
+                $content.=$smarty->fetch('ecom/'.$row['Webpage Block Template'].'.tpl');
 			}
 		}else {
 			print_r($error_info=$this->db->errorInfo());

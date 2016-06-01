@@ -14,16 +14,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   {if $_DEVEL} 
-  <link rel="stylesheet" href="/css/bootstrap.3.0.0.css">
-  <link rel="stylesheet" href="/css/font-awesome.css" > 
-  <link rel="stylesheet" href="/css/structures.css" > 
-  <link rel="stylesheet" href="/css/paneltools.css" />
-  <link rel="stylesheet" href="/css/app.css" />
+  
+    
+  
+  <link rel="stylesheet" href="{if $_PREVIEW}/ecom{/if}/css/bootstrap.3.0.0.css">
+  <link rel="stylesheet" href="{if $_PREVIEW}/ecom{/if}/css/font-awesome.css" > 
+  <link rel="stylesheet" href="{if $_PREVIEW}/ecom{/if}/css/structures.css" > 
+  <link rel="stylesheet" href="{if $_PREVIEW}/ecom{/if}/css/paneltools.css" />
+  <link rel="stylesheet" href="{if $_PREVIEW}/ecom{/if}/css/app.css" />
 
   
-  <script type="text/javascript" src="/js/libs/jquery-2.2.1.js"></script> 
-  <script type="text/javascript" src="/js/libs/bootstrap.js"></script> 
-   <script type="text/javascript" src="/js/app.js"></script>
+  <script type="text/javascript" src="{if $_PREVIEW}/ecom{/if}/js/libs/jquery-2.2.1.js"></script> 
+  <script type="text/javascript" src="{if $_PREVIEW}/ecom{/if}/js/libs/bootstrap.js"></script> 
+   <script type="text/javascript" src="{if $_PREVIEW}/ecom{/if}/js/papp.js"></script>
   
   <link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700' rel='stylesheet' type='text/css'>
@@ -36,10 +39,16 @@
   {/if}
   
 
+{if $_PREVIEW}
+<script type="text/javascript" src="{if $_PREVIEW}/ecom{/if}/js/preview.js"></script>
+{/if}
+
 </head>
 
 <body class="layout-fullwidth">
 <input type="hidden" id="_request" value="{$_request}"> 
+<input type="hidden" id="aurora_preview" value="{$_PREVIEW}"> 
+
 <div class="row-offcanvas row-offcanvas-left">
 	<div id="page">
 		<div id="header">

@@ -26,7 +26,7 @@ html {
   padding: 0;
 }
 body {
-  background: url('../../art/default/bg.jpg') center top fixed;
+  background: url('../../art/ecom/default/bg.jpg') center top fixed;
   color: #555555;
   font-family: "Source Sans Pro", Helvetica, Arial, sans-serif;
   margin: 0px;
@@ -615,7 +615,7 @@ body.layout-boxed-lg #page {
   display: inline-block;
 }
 #header-main #logo-theme a {
-  background: url('../../art/default/logo.png') no-repeat;
+  background: url('../../art/ecom/default/logo.png') no-repeat;
   width: 200px;
   height: 60px;
   background-size: 100% 100%;
@@ -667,10 +667,10 @@ body.layout-boxed-lg #page {
   clear: both;
 }
 #footer .footer-top .wrap-fcenter {
-  background: url('../../art/default/fcenter.png');
+  background: url('../../art/ecom/default/fcenter.png');
 }
 #footer .footer-center .wrap-fcenter {
-  background: url('../../art/default/fcenter.png');
+  background: url('../../art/ecom/default/fcenter.png');
   padding: 20px;
 }
 #footer h3 {
@@ -685,7 +685,7 @@ body.layout-boxed-lg #page {
   color: #FFFFFF;
 }
 #powered .powered {
-  background: url('../../art/default/powered.png');
+  background: url('../../art/ecom/default/powered.png');
   padding: 10px 20px;
   overflow: hidden;
 }
@@ -817,7 +817,7 @@ body.layout-boxed-lg #page {
   border-width: 0 0 0 5px;
 }
 .box.productcarousel .box-heading span {
-  background: url('../../art/default/fcenter.png') !important;
+  background: url('../../art/ecom/default/fcenter.png') !important;
 }
 .box.productcarousel .box-content .product-block {
   background: #FFFFFF;
@@ -957,7 +957,7 @@ body.layout-boxed-lg #page {
   border: none;
   padding: 0px 0px 0 15px;
   margin-bottom: 9px;
-  background: url('../../art/default/flist-style.png') left center no-repeat;
+  background: url('../../art/ecom/default/flist-style.png') left center no-repeat;
 }
 #footer .box .box-content li a {
   text-decoration: none;
@@ -1091,7 +1091,7 @@ body.layout-boxed-lg #page {
   line-height: 14px;
 }
 #header #cart .heading a span {
-  background: url('../../art/default/arrow-down.png') 100% 50% no-repeat transparent;
+  background: url('../../art/ecom/default/arrow-down.png') 100% 50% no-repeat transparent;
   padding-right: 15px;
 }
 #header #cart .heading h4 {
