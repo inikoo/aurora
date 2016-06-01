@@ -1,3 +1,12 @@
+{*/*
+ About:
+ Author: Raul Perusquia <raul@inikoo.com>
+ Created: 31 May 2016 at 20:10:15 CEST, Mijas Costa, Spain
+ Copyright (c) 2016, Inikoo
+
+ Version 3
+*/*}
+
 var columns = [
  {
     name: "id",
@@ -12,7 +21,7 @@ var columns = [
      cell: Backgrid.Cell.extend({
         events: {
             "click": function() {
-                change_view( '{$data['object']}/{$data['key']}/node/' + this.model.get("id"))
+                change_view( '{$data['object']}/{$data['key']}/version/' + this.model.get("id"))
    
             }
         },
@@ -39,14 +48,6 @@ var columns = [
         
     })
 }, {
-    name: "type",
-    label:"{t}Type{/t}",
-    editable: false,
-    defautOrder:1,
-    sortType: "toggle",
-    {if $sort_key=='items'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-    cell: 'html'
-}, {
     name: "name",
     label:"{t}Name{/t}",
     editable: false,
@@ -55,8 +56,8 @@ var columns = [
     {if $sort_key=='title'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
     cell: "string"
 }, {
-    name: "state",
-    label:"{t}State{/t}",
+    name: "display",
+    label:"{t}Display{/t}",
     editable: false,
     defautOrder:1,
     sortType: "state",

@@ -25,29 +25,22 @@ $object_fields=array(
 		'fields'=>array(
 
 			array(
-				'id'=>'Website_Code',
+				'id'=>'Website_Node_Code',
 				'edit'=>($edit?'string':''),
-				'value'=>$object->get('Website Code'),
+				'value'=>$object->get('Website Node Code'),
 				'label'=>ucfirst($object->get_field_label('Code')),
 				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 				'invalid_msg'=>get_invalid_message('string'),
 			),
 			array(
-				'id'=>'Website_Name',
+				'id'=>'Website_Node_Name',
 				'edit'=>($edit?'string':''),
-				'value'=>$object->get('Website Name'),
+				'value'=>$object->get('Website Node Name'),
 				'label'=>ucfirst($object->get_field_label('Name')),
 				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 				'invalid_msg'=>get_invalid_message('string'),
 			),
-			array(
-				'id'=>'Website_URL',
-				'edit'=>($edit?'string':''),
-				'value'=>$object->get('Website URL'),
-				'label'=>ucfirst($object->get_field_label('URL')),
-				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
-				'invalid_msg'=>get_invalid_message('string'),
-			),
+			
 
 		)
 	),

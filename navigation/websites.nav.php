@@ -11,9 +11,9 @@
 */
 
 
-function get_websites_navigation($data, $smarty, $user, $db, $account)  {
+function get_websites_navigation($data, $smarty, $user, $db, $account) {
 
-	
+
 
 
 	$block_view=$data['section'];
@@ -50,9 +50,9 @@ function get_websites_navigation($data, $smarty, $user, $db, $account)  {
 }
 
 
-function get_website_navigation($data, $smarty, $user, $db, $account)  {
+function get_website_navigation($data, $smarty, $user, $db, $account) {
 
-	
+
 
 	$website=$data['_object'];
 
@@ -131,20 +131,18 @@ function get_website_navigation($data, $smarty, $user, $db, $account)  {
 }
 
 
-function get_page_navigation($data, $smarty, $user, $db, $account)  {
+function get_page_navigation($data, $smarty, $user, $db, $account) {
 
-	global $user, $smarty;
-	require_once 'class.Page.php';
 
 
 	$object=$data['_object'];
-	$object->load_data();
+	//$object->load_data();
 
 	$block_view=$data['section'];
 
 
 	$sections_class='';
-	$title=_('Page').' <span class="id">'.$object->get('Page Code').'</span>';
+	
 
 	$left_buttons=array();
 	$right_buttons=array();
@@ -152,13 +150,18 @@ function get_page_navigation($data, $smarty, $user, $db, $account)  {
 
 
 
-
 	if ($data['parent']) {
 
 		switch ($data['parent']) {
+		case 'node':
+			$tab='website.node.pages';
+			$_section='websites';
+			$title=_('Webpage').' <span class="id">'.$data['_parent']->get('Code').'</span> v. <span class="id Webpage_Code">'.$object->get('Code').'</span>';
+			break;
 		case 'website':
 			$tab='website.pages';
 			$_section='websites';
+			$title=_('Version').' <span class="id Webpage_Code">'.$object->get('Code').'</span>';
 			break;
 
 		}
@@ -208,14 +211,13 @@ function get_page_navigation($data, $smarty, $user, $db, $account)  {
 
 
 
-					$sql=sprintf("select `Page Code` object_name,PS.`Page Key` as object_key from $table   $where $wheref
-	                and ($_order_field < %s OR ($_order_field = %s AND PS.`Page Key` < %d))  order by $_order_field desc , PS.`Page Key` desc limit 1",
+					$sql=sprintf("select `Website Node Code` object_name,N.`Website Node Key` as object_key from $table   $where $wheref
+	                and ($_order_field < %s OR ($_order_field = %s AND N.`Website Node Key` < %d))  order by $_order_field desc , N.`Website Node Key` desc limit 1",
 
 						prepare_mysql($_order_field_value),
 						prepare_mysql($_order_field_value),
 						$object->id
 					);
-
 
 
 
@@ -231,8 +233,8 @@ function get_page_navigation($data, $smarty, $user, $db, $account)  {
 
 
 
-					$sql=sprintf("select `Page Code` object_name,PS.`Page Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND PS.`Page Key` > %d))  order by $_order_field   , PS.`Page Key`  limit 1",
+					$sql=sprintf("select `Website Node Code` object_name,N.`Website Node Key` as object_key from $table   $where $wheref
+	                and ($_order_field  > %s OR ($_order_field  = %s AND N.`Website Node Key` > %d))  order by $_order_field   , N.`Website Node Key`  limit 1",
 						prepare_mysql($_order_field_value),
 						prepare_mysql($_order_field_value),
 						$object->id
@@ -263,9 +265,8 @@ function get_page_navigation($data, $smarty, $user, $db, $account)  {
 					switch ($data['parent']) {
 					case 'website':
 
-						$website= new Site($object->get('Page Site Key'));
 
-						$up_button=array('icon'=>'arrow-up', 'title'=>_("Website").' ('.$website->get('Site Code').')', 'reference'=>'website/'.$object->get('Page Site Key'));
+						$up_button=array('icon'=>'arrow-up', 'title'=>_("Website").' ('.$data['_parent']->get('Code').')', 'reference'=>'website/'.$object->get('Page Site Key'));
 
 						if ($prev_key) {
 							$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'website/'.$data['parent_key'].'/page/'.$prev_key);
@@ -289,11 +290,6 @@ function get_page_navigation($data, $smarty, $user, $db, $account)  {
 
 
 					}
-
-
-
-
-
 				}
 
 			}
@@ -337,7 +333,7 @@ function get_page_navigation($data, $smarty, $user, $db, $account)  {
 }
 
 
-function get_user_navigation($data, $smarty, $user, $db, $account)  {
+function get_user_navigation($data, $smarty, $user, $db, $account) {
 
 
 
@@ -572,9 +568,9 @@ function get_user_navigation($data, $smarty, $user, $db, $account)  {
 
 function get_node_navigation($data, $smarty, $user, $db, $account) {
 
-	
+
 	$object=$data['_object'];
-	
+
 
 	$block_view=$data['section'];
 
@@ -712,7 +708,7 @@ function get_node_navigation($data, $smarty, $user, $db, $account) {
 
 
 						if ($next_key) {
-							$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title,'reference'=>'websites/'.$object->get('Website Key').'/node/'.$next_key);
+							$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'websites/'.$object->get('Website Key').'/node/'.$next_key);
 
 						}else {
 							$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
@@ -770,5 +766,6 @@ function get_node_navigation($data, $smarty, $user, $db, $account) {
 	return $html;
 
 }
+
 
 ?>

@@ -98,6 +98,13 @@ case 'views':
 		$website=$_parent;
 
 		break;
+	case 'node':
+		$_parent=get_object('WebsiteNode', $state['parent_key']);
+		$website=get_object('Website', $_parent->get('Website Node Website Key'));
+		$state['current_website']=$website->id;
+		
+
+		break;	
 	case 'warehouse':
 		include_once 'class.Warehouse.php';
 		$_parent=new Warehouse($state['parent_key']);
@@ -124,7 +131,6 @@ case 'views':
 		$_parent=false;
 	}
 	$state['_parent']=$_parent;
-
 
 
 	if ($state['object']!='') {
@@ -434,6 +440,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db) {
 
 	switch ($showcase) {
 
+case 'page':
+		include_once 'showcase/webpage.show.php';
+		$html=get_webpage_showcase($data, $smarty, $user, $db);
+		break;
 	case 'website':
 	case 'dashboard':
 		$html='';
@@ -2171,9 +2181,10 @@ function get_view_position($state, $user, $smarty, $account) {
 
 			break;
 		case 'page':
-			
-			$branch[]=array('label'=>_('Website').' '.$data['website']->get('Code'), 'icon'=>'globe', 'reference'=>'website/'.$website->id);
-			$branch[]=array('label'=>_('Page').' '.$page->get('Code'), 'icon'=>'file', 'reference'=>'website/'.$website->id.'/page/'.$website->id);
+	
+			$branch[]=array('label'=>$state['website']->get('Code'), 'icon'=>'globe', 'reference'=>'website/'.$state['website']->id);
+			$branch[]=array('label'=>$state['_parent']->get('Code'), 'icon'=>'file', 'reference'=>'website/'.$state['website']->id.'/node/'.$state['_parent']->id);
+			$branch[]=array('label'=>$state['_object']->get('Code'), 'icon'=>'code-fork', 'reference'=>'');
 
 			break;
 		case 'website.user':

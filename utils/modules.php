@@ -528,22 +528,25 @@ $modules=array(
 
 				)
 			),
+		
 			'page'=>array('type'=>'object',
 				'tabs'=>array(
 
 
-					'page.dashboard'=>array('label'=>_('Dashboard'), 'title'=>_('Page dashboard'), 'icon'=>'dashboard'),
+					'page.analytics'=>array('label'=>_('Anaytics'), 'icon'=>'line-chart'),
 					'page.details'=>array('label'=>_('Data'), 'icon'=>'database'),
-					'page.pageviews'=>array('label'=>_('Pageviews'), 'icon'=>'eye'),
-					'page.users'=>array('label'=>_('Users'), 'icon'=>'male'),
+					'page.preview'=>array('label'=>_('Preview'), 'icon'=>'eye'),
+					'page.blocks'=>array('label'=>_('Blocks'), 'icon'=>'align-justify'),
 				)
 			),
+
 			'website.node'=>array('type'=>'object',
 				'tabs'=>array(
 
 
 					'website.node.dashboard'=>array('label'=>_('Dashboard'), 'title'=>_('Page dashboard'), 'icon'=>'dashboard'),
 					'website.node.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+					'website.node.pages'=>array('label'=>_('Versions'), 'icon'=>'code-fork'),
 					'website.node.pageviews'=>array('label'=>_('Pageviews'), 'icon'=>'eye'),
 					'website.node.users'=>array('label'=>_('Users'), 'icon'=>'male'),
 				)

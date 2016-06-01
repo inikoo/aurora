@@ -3,7 +3,7 @@
 
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created: 9 May 2016 at 15:16:01 GMT+8, Puchong, Malaysia
+ Created: 31 May 2016 at 22:40:52 CEST, Mijas Costa, Spain
 
  Copyright (c) 2016, Inikoo
 
@@ -25,29 +25,22 @@ $object_fields=array(
 		'fields'=>array(
 
 			array(
-				'id'=>'Website_Code',
+				'id'=>'Webpage_Code',
 				'edit'=>($edit?'string':''),
-				'value'=>$object->get('Website Code'),
+				'value'=>$object->get('Webpage Code'),
 				'label'=>ucfirst($object->get_field_label('Code')),
 				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 				'invalid_msg'=>get_invalid_message('string'),
 			),
 			array(
-				'id'=>'Website_Name',
+				'id'=>'Webpage_Name',
 				'edit'=>($edit?'string':''),
-				'value'=>$object->get('Website Name'),
+				'value'=>$object->get('Webpage Name'),
 				'label'=>ucfirst($object->get_field_label('Name')),
 				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
 				'invalid_msg'=>get_invalid_message('string'),
 			),
-			array(
-				'id'=>'Website_URL',
-				'edit'=>($edit?'string':''),
-				'value'=>$object->get('Website URL'),
-				'label'=>ucfirst($object->get_field_label('URL')),
-				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
-				'invalid_msg'=>get_invalid_message('string'),
-			),
+			
 
 		)
 	),
@@ -66,7 +59,7 @@ $operations=array(
 			'id'=>'delete_website',
 			'class'=>'operation',
 			'value'=>'',
-			'label'=>'<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span onClick="delete_object(this)" class="delete_object disabled">'._("Delete website & all webpages").' <i class="fa fa-trash new_button link"></i></span>',
+			'label'=>'<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span onClick="delete_object(this)" class="delete_object disabled">'._("Delete webpage version").' <i class="fa fa-trash new_button link"></i></span>',
 			'reference'=>'',
 			'type'=>'operation'
 		),
