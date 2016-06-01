@@ -8,8 +8,10 @@
  Version 3
 
 */
+
 error_reporting(E_ALL ^ E_DEPRECATED);
 define("_DEVEL",   isset($_SERVER['devel']));
+define("_PREVIEW",   ((isset($_SERVER['preview']) and $_SERVER['preview'])?true:false) );
 
 
 require_once 'keyring/dns.php';
@@ -46,6 +48,12 @@ if (!$db_selected) {
 mysql_set_charset('utf8');
 mysql_query("SET time_zone='+0:00'");
 
+//session_save_path('server_files/tmp');
+ini_set('session.gc_maxlifetime', 57600); // 16 hours
+ini_set('session.gc_probability', 1);
+ini_set('session.gc_divisor', 100);
+session_start();
+
 
 
 $account=new Account($db);
@@ -56,7 +64,21 @@ if ($account->get('Account State')!='Active') {
 	exit();
 }
 
+if (_PREVIEW) {
 
+	if (isset($_REQUEST['website_key'])) {
+		$_SESSION['ecom_website_key']=$_REQUEST['website_key'];
+		$website_key=$_REQUEST['website_key'];
+	}else {
+
+		if (isset($_SESSION['ecom_website_key'])) {
+			$website_key=$_SESSION['ecom_website_key'];
+		}else {
+		    print_r($_SESSION);
+			exit('Error no website key');
+		}
+	}
+}
 $website=new Website($website_key);
 
 
@@ -69,11 +91,6 @@ if ($account->get('Timezone')) {
 
 //require_once 'utils/modules.php';
 
-session_save_path('server_files/tmp');
-ini_set('session.gc_maxlifetime', 57600); // 16 hours
-ini_set('session.gc_probability', 1);
-ini_set('session.gc_divisor', 100);
-session_start();
 
 
 

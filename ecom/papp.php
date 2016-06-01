@@ -10,10 +10,11 @@
 
 */
 
-require_once 'common.php';
+require_once 'pcommon.php';
 
 $smarty->assign('_request', $_SERVER['REQUEST_URI']);
+$smarty->assign('_PREVIEW', _PREVIEW);
 
-$smarty->display('app.tpl');
+$smarty->display('ecom/papp.tpl');
 
 ?>

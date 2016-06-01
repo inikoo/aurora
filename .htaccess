@@ -1,4 +1,5 @@
 SetEnv devel 1
+SetEnv preview 1
 
 RewriteEngine On
 

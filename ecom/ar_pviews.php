@@ -10,9 +10,8 @@
  Version 3.0
 */
 
-require_once 'common.php';
+require_once 'pcommon.php';
 require_once 'utils/ar_common.php';
-
 
 
 $tipo=$_REQUEST['tipo'];
@@ -23,8 +22,8 @@ case 'content':
 
 	$data=prepare_values($_REQUEST, array(
 			'request'=>array('type'=>'string'),
-			'metadata'=>array('type'=>'json array'),
-			'old_view'=>array('type'=>'json array'),
+			'metadata'=>array('type'=>'json array','optional'=>true),
+			'old_view'=>array('type'=>'json array','optional'=>true),
 		));
 
 
@@ -54,8 +53,8 @@ function get_marginals($db, $smarty, $website, $user, $account, $data) {
 	//require_once 'utils/parse_request.php';
 
 
-	$header=$smarty->fetch('header.tpl');
-	$footer=$smarty->fetch('footer.tpl');
+	$header=$smarty->fetch('ecom/header.tpl');
+	$footer=$smarty->fetch('ecom/footer.tpl');
 
 	$response=array('state'=>200, 'header'=>$header, 'footer'=>$footer);
 
@@ -84,7 +83,7 @@ function get_breadcrumbs($smarty, $db, $node, $webpage) {
 
 	$smarty->assign('breadcrumbs', $breadcrumbs);
 
-	return $smarty->fetch('breadcrumbs.tpl');
+	return $smarty->fetch('ecom/breadcrumbs.tpl');
 
 }
 
@@ -118,7 +117,7 @@ function create_breadcrumbs($db, $node_key, $branch) {
 
 function get_content($db, $smarty, $website, $user, $account, $data) {
 
-	require_once 'utils/parse_request.php';
+	require_once 'utils/pparse_request.php';
 
 
 
@@ -155,6 +154,8 @@ function get_content($db, $smarty, $website, $user, $account, $data) {
 	$db->exec($sql);
 
 */
+
+
 
 	$view=array('webpage_key'=>$webpage->id, 'request'=>$request);
 

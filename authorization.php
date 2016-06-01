@@ -64,7 +64,7 @@ include_once 'class.Auth.php';
 require_once "class.Session.php";
 include_once 'class.User.php';
 
-session_save_path('server_files/tmp');
+//session_save_path('server_files/tmp');
 ini_set('session.gc_maxlifetime', 57600); // 16 hours
 ini_set('session.gc_probability', 1);
 ini_set('session.gc_divisor', 100);
@@ -89,7 +89,6 @@ elseif ($handle) {
 }
 
 
-
 if ($auth->is_authenticated()) {
 
 
@@ -109,6 +108,8 @@ if ($auth->is_authenticated()) {
 
 
 	$_SESSION['state']=array();
+
+
 
 	if (isset($_REQUEST['url']) and $_REQUEST['url']!='' ) {
 
