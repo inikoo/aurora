@@ -142,7 +142,7 @@ function get_page_navigation($data, $smarty, $user, $db, $account) {
 
 
 	$sections_class='';
-	
+
 
 	$left_buttons=array();
 	$right_buttons=array();
@@ -588,7 +588,11 @@ function get_node_navigation($data, $smarty, $user, $db, $account) {
 
 		switch ($data['parent']) {
 		case 'website':
-			$tab='website.root_nodes';
+			$tab='website.nodes';
+			$_section='websites';
+			break;
+		case 'node':
+			$tab='website.node.nodes';
 			$_section='websites';
 			break;
 
@@ -602,6 +606,8 @@ function get_node_navigation($data, $smarty, $user, $db, $account) {
 			$order_direction=($_SESSION['table_state'][$tab]['od']==1 ?'desc':'');
 			$f_value=$_SESSION['table_state'][$tab]['f_value'];
 			$parameters=$_SESSION['table_state'][$tab];
+			$parameters['parent']=$data['parent'];
+			$parameters['parent_key']=$data['parent_key'];
 		}else {
 
 			$default=$user->get_tab_defaults($tab);
@@ -691,34 +697,6 @@ function get_node_navigation($data, $smarty, $user, $db, $account) {
 					}
 
 
-					switch ($data['parent']) {
-					case 'website':
-
-
-						$up_button=array('icon'=>'arrow-up', 'title'=>_("Website").' ('.$data['_parent']->get('Code').')', 'reference'=>'websites/'.$object->get('Website Key'));
-
-						if ($prev_key) {
-							$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'websites/'.$object->get('Website Key').'/node/'.$prev_key);
-
-						}else {
-							$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'');
-
-						}
-						$left_buttons[]=$up_button;
-
-
-						if ($next_key) {
-							$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'websites/'.$object->get('Website Key').'/node/'.$next_key);
-
-						}else {
-							$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
-
-						}
-
-						break;
-
-
-					}
 
 
 
@@ -733,7 +711,60 @@ function get_node_navigation($data, $smarty, $user, $db, $account) {
 		}
 
 
+		switch ($data['parent']) {
+		case 'website':
 
+
+			$up_button=array('icon'=>'arrow-up', 'title'=>_("Website").' ('.$data['_parent']->get('Code').')', 'reference'=>'website/'.$object->get('Website Key'));
+
+			if ($prev_key) {
+				$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'website/'.$object->get('Website Key').'/node/'.$prev_key);
+
+			}else {
+				$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'');
+
+			}
+			$left_buttons[]=$up_button;
+
+
+			if ($next_key) {
+				$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'website/'.$object->get('Website Key').'/node/'.$next_key);
+
+			}else {
+				$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
+
+			}
+
+			break;
+
+
+		case 'node':
+
+
+			$up_button=array('icon'=>'arrow-up', 'title'=>$data['_parent']->get('Name').' ('.$data['_parent']->get('Code').')', 'reference'=>'node/'.$data['_parent']->get('Website Node Parent Key').'/node/'.$data['_parent']->id);
+
+			if ($prev_key) {
+				$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'node/'.$object->get('Website Node Parent Key').'/node/'.$prev_key);
+
+			}else {
+				$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'');
+
+			}
+			$left_buttons[]=$up_button;
+
+
+			if ($next_key) {
+				$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'node/'.$object->get('Website Node Parent Key').'/node/'.$next_key);
+
+			}else {
+				$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
+
+			}
+
+			break;
+
+
+		}
 
 
 
@@ -744,7 +775,7 @@ function get_node_navigation($data, $smarty, $user, $db, $account) {
 	}
 
 
-	$title='<span class="id Website_Node_Code">'.$object->get('Code').'</span>';
+	$title='<span class="id Website_Node_Name">'.$object->get('Name').'</span>';
 
 
 	$sections=get_sections('websites', $object->get('Website Key'));
@@ -760,6 +791,8 @@ function get_node_navigation($data, $smarty, $user, $db, $account) {
 		'search'=>array('show'=>true, 'placeholder'=>_('Search website'))
 
 	);
+	
+	
 	$smarty->assign('_content', $_content);
 
 	$html=$smarty->fetch('navigation.tpl');

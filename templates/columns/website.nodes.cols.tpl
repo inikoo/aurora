@@ -12,8 +12,12 @@ var columns = [
      cell: Backgrid.Cell.extend({
         events: {
             "click": function() {
-                change_view( '{$data['object']}/{$data['key']}/node/' + this.model.get("id"))
-   
+                {if $data['parent']=='website'}
+                change_view( 'website/{$data['website']->id}/node/' + this.model.get("id"))
+                {else}
+                 change_view( '{$data['object']}/{$data['key']}/node/' + this.model.get("id"))
+               
+                {/if}
             }
         },
         className: "link",

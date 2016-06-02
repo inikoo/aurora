@@ -12,7 +12,7 @@ var columns = [
      cell: Backgrid.Cell.extend({
         events: {
             "click": function() {
-                change_view( 'website/{$data['key']}/node/' + this.model.get("id"))
+                change_view( 'node/{$parent_node_key}/node/' + this.model.get("id"))
    
             }
         },
@@ -32,7 +32,7 @@ var columns = [
     cell: "string"
 }, {
     name: "nodes",
-    label:"{t}Nodes{/t}",
+    label:"{t}Subnodes{/t}",
         editable: false,
     defautOrder:1,
     sortType: "toggle",
