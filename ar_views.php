@@ -102,9 +102,11 @@ case 'views':
 		$_parent=get_object('WebsiteNode', $state['parent_key']);
 		$website=get_object('Website', $_parent->get('Website Node Website Key'));
 		$state['current_website']=$website->id;
-		
 
-		break;	
+
+		break;
+
+
 	case 'warehouse':
 		include_once 'class.Warehouse.php';
 		$_parent=new Warehouse($state['parent_key']);
@@ -273,7 +275,7 @@ case 'views':
 
 	$response=array('state'=>array());
 
-	list($state, $response['view_position'])=get_view_position($state, $user, $smarty, $account);
+	list($state, $response['view_position'])=get_view_position($db, $state, $user, $smarty, $account);
 
 
 	if ($data['old_state']['module']!=$state['module']  or $reload ) {
@@ -440,7 +442,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db) {
 
 	switch ($showcase) {
 
-case 'page':
+	case 'page':
 		include_once 'showcase/webpage.show.php';
 		$html=get_webpage_showcase($data, $smarty, $user, $db);
 		break;
@@ -1390,7 +1392,7 @@ function get_tabs($data, $modules, $user, $smarty) {
 }
 
 
-function get_view_position($state, $user, $smarty, $account) {
+function get_view_position($db, $state, $user, $smarty, $account) {
 
 
 	$branch=array();
@@ -2172,16 +2174,30 @@ function get_view_position($state, $user, $smarty, $account) {
 
 			$website=$state['_object'];
 
-			$branch[]=array('label'=>_('Website').' <span class="id Website_Code">'.$website->get('Code').'</span>', 'icon'=>'globe', 'reference'=>'website/'.$website->id);
+			$branch[]=array('label'=>'<span class="id Website_Code">'.$website->get('Code').'</span>', 'icon'=>'globe', 'reference'=>'website/'.$website->id);
 			break;
 		case 'website.node':
-			
-			$branch[]=array('label'=>$state['website']->get('Code'), 'icon'=>'globe', 'reference'=>'website/'.$state['website']->id);
-			$branch[]=array('label'=>$state['_object']->get('Code'), 'icon'=>'file', 'reference'=>'');
+
+
+			if ($state['parent']=='node') {
+				$branch[]=array('label'=>$state['website']->get('Code'), 'icon'=>'sitemap', 'reference'=>'website/'.$state['website']->id);
+
+				if ($state['_object']->get('Website Node Parent Key')!=$state['_object']->id) {
+					$node_branches=array();
+					$node_branches=create_node_breadcrumbs($db, $state['_object']->get('Website Node Parent Key'), $node_branches);
+					$branch=array_merge($branch, $node_branches);
+				}
+
+			}else {
+				$branch[]=array('label'=>$state['website']->get('Code'), 'icon'=>'globe', 'reference'=>'website/'.$state['website']->id);
+
+			}
+
+			$branch[]=array('label'=>'<span class="id Website_Node_Name">'.$state['_object']->get('Name').'</span>', 'icon'=>($state['_object']->get('Website Node Icon')==''?'file-o':$state['_object']->get('Website Node Icon')), 'reference'=>'');
 
 			break;
 		case 'page':
-	
+
 			$branch[]=array('label'=>$state['website']->get('Code'), 'icon'=>'globe', 'reference'=>'website/'.$state['website']->id);
 			$branch[]=array('label'=>$state['_parent']->get('Code'), 'icon'=>'file', 'reference'=>'website/'.$state['website']->id.'/node/'.$state['_parent']->id);
 			$branch[]=array('label'=>$state['_object']->get('Code'), 'icon'=>'code-fork', 'reference'=>'');
@@ -2601,6 +2617,32 @@ function get_view_position($state, $user, $smarty, $account) {
 
 
 
+
+function create_node_breadcrumbs($db, $node_key, $branch) {
+
+	$sql=sprintf('select `Website Node Parent Key`,`Website Node Key`,`Website Node Website Key`,`Website Node Code`,`Website Node Name`,`Website Node Icon` from `Website Node Dimension` where `Website Node Key`=%d',
+		$node_key
+	);
+
+	if ($result=$db->query($sql)) {
+		if ($row = $result->fetch()) {
+
+
+			array_unshift($branch, array('label'=>$row['Website Node Name'], 'icon'=>($row['Website Node Icon']==''?'file-o':$row['Website Node Icon']), 'reference'=>'website/'.$row['Website Node Website Key'].'/node/'.$row['Website Node Key']  ));
+			if ($row['Website Node Parent Key']==$node_key) {
+				return  $branch;
+			}else {
+
+				$branch=create_node_breadcrumbs($db, $row['Website Node Parent Key'], $branch);
+				return $branch;
+			}
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+}
 
 
 

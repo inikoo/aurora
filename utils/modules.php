@@ -528,7 +528,7 @@ $modules=array(
 
 				)
 			),
-		
+
 			'page'=>array('type'=>'object',
 				'tabs'=>array(
 
@@ -541,17 +541,44 @@ $modules=array(
 			),
 
 			'website.node'=>array('type'=>'object',
+
+				'subtabs_parent'=>array(
+					'website.node.analytics.pageviews'=>'website.node.analytics',
+					'website.node.analytics.users'=>'website.node.analytics',
+					'website.node.page.preview'=>'website.node.page',
+					'website.node.page.versions'=>'website.node.page',
+				
+
+				),
+
+
 				'tabs'=>array(
 
 
-					'website.node.dashboard'=>array('label'=>_('Dashboard'), 'title'=>_('Page dashboard'), 'icon'=>'dashboard'),
+					'website.node.analytics'=>array('label'=>_('Analytics'), 'icon'=>'line-chart',
+
+						'subtabs'=>array(
+							'website.node.analytics.pageviews'=>array('label'=>_('Pageviews'), 'icon'=>''),
+							'website.node.analytics.users'=>array('label'=>_('Users'), 'icon'=>'male'),
+
+						)
+					),
 					'website.node.details'=>array('label'=>_('Data'), 'icon'=>'database'),
-					'website.node.pages'=>array('label'=>_('Versions'), 'icon'=>'code-fork'),
-					'website.node.pageviews'=>array('label'=>_('Pageviews'), 'icon'=>'eye'),
-					'website.node.users'=>array('label'=>_('Users'), 'icon'=>'male'),
+
+					'website.node.page'=>array('label'=>_('Webpage'), 'icon'=>'file-o',
+						'subtabs'=>array(
+							'website.node.page.preview'=>array('label'=>_('Preview'), 'icon'=>'eye'),
+							'website.node.page.versions'=>array('label'=>_('Versions'), 'icon'=>'code-fork',
+
+							)
+
+						),
+
+					),
+					'website.node.nodes'=>array('label'=>_('Subnodes'), 'icon'=>'pagelines'),
 				)
 			),
-			
+
 			'website.user'=>array('type'=>'object',
 				'tabs'=>array(
 					'website.user.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),

@@ -78,7 +78,7 @@ if ($result=$db->query($sql)) {
 
 		$website_key=$website->id;
 
-		$website_node[$website_key]['Home']=$website->create_website_node(array('Website Node Code'=>'p.Home', 'Website Node Name'=>_('Home'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Root', 'Website Node Icon'=>'Home'));
+		$website_node[$website_key]['Home']=$website->create_website_node(array('Website Node Code'=>'p.Home', 'Website Node Name'=>_('Home'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Root', 'Website Node Icon'=>'home'));
 		$page=new Webpage($website_node[$website_key]['Home']->get_webpage_key());
 		$page->update(array('Webpage Properties'=>
 				json_encode(array('body_classes'=>'common-home page-common-home layout-fullwidth'))
@@ -86,7 +86,7 @@ if ($result=$db->query($sql)) {
 
 
 
-		$website_node[$website_key]['MyA']=$website_node[$website_key]['Home']->create_website_node(array('Website Node Code'=>'p.MyA', 'Website Node Name'=>_('My account'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Root'));
+		$website_node[$website_key]['MyA']=$website_node[$website_key]['Home']->create_website_node(array('Website Node Code'=>'p.MyA', 'Website Node Name'=>_('My account'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Root', 'Website Node Icon'=>'user'));
 
 		$website_node[$website_key]['MyA']->create_website_node(
 			array('Website Node Code'=>'p.Login', 'Website Node Name'=>_('Login'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Head')
@@ -103,8 +103,8 @@ if ($result=$db->query($sql)) {
 
 
 
-		$website_node[$website_key]['CS']=$website_node[$website_key]['Home']->create_website_node(array('Website Node Code'=>'p.CS', 'Website Node Name'=>_('Customer services'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Root'));
-$page=new Webpage($website_node[$website_key]['CS']->get_webpage_key());
+		$website_node[$website_key]['CS']=$website_node[$website_key]['Home']->create_website_node(array('Website Node Code'=>'p.CS', 'Website Node Name'=>_('Customer services'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Root', 'Website Node Icon'=>'thumbs-o-up'));
+		$page=new Webpage($website_node[$website_key]['CS']->get_webpage_key());
 		$page->update(array('Webpage Properties'=>
 				json_encode(array('body_classes'=>'information-contact page-information-contact layout-fullwidth'))
 			), 'no_history');
