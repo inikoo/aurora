@@ -478,19 +478,78 @@ $modules=array(
 					'website.reminders.products'=>'website.reminders',
 					'website.root_nodes'=>'website.content',
 					'website.nodes'=>'website.content',
+					
+					'website.footer.preview'=>'website.footer',
+					'website.footer.versions'=>'website.footer',
+					'website.header.preview'=>'website.header',
+					'website.header.versions'=>'website.header',
 
 				),
 
 				'tabs'=>array(
 
+					'website.analytics'=>array('label'=>_('Analytics'), 'icon'=>'line-chart',
 
-					'website.dashboard'=>array('label'=>_('Dashboard'), 'title'=>_('Website dashboard'), 'icon'=>'dashboard'),
+						'subtabs'=>array(
+							'website.pageviews'=>array('label'=>_('Pageviews'), 'icon'=>'eye'),
+							'website.users'=>array('label'=>_('Users'), 'icon'=>'male'),
+							'website.search'=>array('label'=>_('Queries'), 'title'=>_('Search Queries'), 'icon'=>'search',
+								'subtabs'=>array(
+									'website.search.queries'=>array('label'=>_('Queries'), 'title'=>_('Search queries goruped by keywords')),
+									'website.search.history'=>array('label'=>_('Search History'), 'title'=>_('List of all search queries')),
+
+								)
+
+							),
+							'website.favourites'=>array('label'=>_('Favourites'), 'title'=>_('Favourites'), 'icon'=>'heart-o',
+								'subtabs'=>array(
+									'website.favourites.products'=>array('label'=>_('Products')),
+									'website.favourites.customers'=>array('label'=>_('Customers')),
+
+								)
+
+							),
+							'website.reminders'=>array('label'=>_('OOS Reminders'), 'title'=>_('Out of stock reminders'), 'icon'=>'hand-paper-o',
+								'subtabs'=>array(
+									'website.reminders.requests'=>array('label'=>_('Requests'), 'title'=>_('Out of stock notifications requests')),
+									'website.reminders.customers'=>array('label'=>_('Customers'), 'title'=>_('Customers who ask for a out of stock notification')),
+									'website.reminders.products'=>array('label'=>_('Products'), 'title'=>_('Out of stock notifications grouped by product')),
+
+								)
+
+							),
+
+						)
+
+
+					),
 					'website.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+
+					'website.header'=>array('label'=>_('Header'), 'icon'=>'header',
+						'subtabs'=>array(
+							'website.header.preview'=>array('label'=>_('Preview'), 'icon'=>'eye'),
+							'website.header.versions'=>array('label'=>_('Versions'), 'icon'=>'code-fork',
+
+							)
+
+						),
+
+					),
+					'website.footer'=>array('label'=>_('Footer'), 'icon'=>'minus',
+						'subtabs'=>array(
+							'website.footer.preview'=>array('label'=>_('Preview'), 'icon'=>'eye'),
+							'website.footer.versions'=>array('label'=>_('Versions'), 'icon'=>'code-fork',
+
+							)
+
+						),
+
+					),
 
 					'website.content'=>array('label'=>_('Pages'), 'icon'=>'files-o',
 						'subtabs'=>array(
 							'website.root_nodes'=>array('label'=>_('Sitemap'), 'icon'=>'sitemap'),
-							'website.nodes'=>array('label'=>_('Webpages'), 'icon'=>'files-o'),
+							'website.nodes'=>array('label'=>_('Page list'), 'icon'=>'files-o'),
 
 						)
 
@@ -498,33 +557,7 @@ $modules=array(
 
 
 
-					'website.pageviews'=>array('label'=>_('Pageviews'), 'icon'=>'eye'),
-					'website.users'=>array('label'=>_('Users'), 'icon'=>'male'),
-					'website.search'=>array('label'=>_('Queries'), 'title'=>_('Search Queries'), 'icon'=>'search',
-						'subtabs'=>array(
-							'website.search.queries'=>array('label'=>_('Queries'), 'title'=>_('Search queries goruped by keywords')),
-							'website.search.history'=>array('label'=>_('Search History'), 'title'=>_('List of all search queries')),
 
-						)
-
-					),
-					'website.favourites'=>array('label'=>_('Favourites'), 'title'=>_('Favourites'), 'icon'=>'heart-o',
-						'subtabs'=>array(
-							'website.favourites.products'=>array('label'=>_('Products')),
-							'website.favourites.customers'=>array('label'=>_('Customers')),
-
-						)
-
-					),
-					'website.reminders'=>array('label'=>_('OOS Reminders'), 'title'=>_('Out of stock reminders'), 'icon'=>'hand-paper-o',
-						'subtabs'=>array(
-							'website.reminders.requests'=>array('label'=>_('Requests'), 'title'=>_('Out of stock notifications requests')),
-							'website.reminders.customers'=>array('label'=>_('Customers'), 'title'=>_('Customers who ask for a out of stock notification')),
-							'website.reminders.products'=>array('label'=>_('Products'), 'title'=>_('Out of stock notifications grouped by product')),
-
-						)
-
-					),
 
 				)
 			),
@@ -547,7 +580,7 @@ $modules=array(
 					'website.node.analytics.users'=>'website.node.analytics',
 					'website.node.page.preview'=>'website.node.page',
 					'website.node.page.versions'=>'website.node.page',
-				
+
 
 				),
 
