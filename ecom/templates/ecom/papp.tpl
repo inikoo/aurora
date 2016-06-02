@@ -53,7 +53,7 @@
 	<div id="page">
 		<div id="header">
 		</div>
-		<div class="container">
+		<div id="page_content" class="container">
 			<div class="wrap-container">
 				<div class="row">
 					<div id="breadcrumb">
