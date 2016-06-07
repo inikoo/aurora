@@ -1,1 +1,1 @@
-website.nodes.cols.tpl
+webnodes.cols.tpl

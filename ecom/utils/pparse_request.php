@@ -20,11 +20,11 @@ function parse_request($_data, $db, $website, $account, $user) {
 
 	$request=$_data['request'];
 	$request=preg_replace('/\/+/', '/', $request);
-	
+
 	$request=preg_replace('/\?.*/', '', $request);
-	
-	
-$_request=$request;
+
+
+	$_request=$request;
 	if (_PREVIEW) {
 
 		$request=preg_replace('/\/ecom\//', '/', $request);
@@ -41,29 +41,28 @@ $_request=$request;
 	$shorcut=false;
 	$is_main_section=false;
 
+
 	if ($count_view_path==1) {
 
 		$code=array_shift($view_path);
 
+		$webpage=$website->get_webpage($code);
 
-		$node=$website->get_node($code);
 
-
-		return get_webpage($node, $_request);
+		return array($webpage, $_request);
 
 
 
 
 	}elseif ($count_view_path==2) {
-		switch ($view_path[0]) {
-		case 'p':
-			$node=$website->get_node('p.'.$view_path[1]);
-			return get_webpage($node, $_request);
-			break;
-		default:
 
-			break;
-		}
+		$webpage=$website->get_webpage(join($view_path, '.'));
+		
+		
+		
+		return array($webpage, $_request);
+
+
 
 	}
 
@@ -71,7 +70,7 @@ $_request=$request;
 }
 
 
-function get_webpage($node, $request) {
+function get_webpage_to_delete($node, $request) {
 	if ($node->id) {
 		if ($webpage_key=$node->get_webpage_key()) {
 			$webpage = new Webpage($webpage_key);

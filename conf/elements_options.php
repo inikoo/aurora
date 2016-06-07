@@ -381,7 +381,21 @@ $elements_options=array(
 
 
 
-	)
+	),
+	
+		'webpages'=>array(
+		'status'=>array(
+			'label'=>_('Status'),
+			'items'=>array(
+				'Online'=>array('label'=>_('Online'), 'selected'=>true),
+				'Offline'=>array('label'=>_('Offline'), 'selected'=>false),
+				
+			)
+
+
+
+		),
+	),
 	
 	);
 

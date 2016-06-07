@@ -166,10 +166,13 @@ class Website extends DB_Table{
 
 		if ($this->db->exec($sql)) {
 			$this->id=$this->db->lastInsertId();
-			$this->msg=_("Website Added");
+			$this->msg=_("Website added");
 			$this->get_data('id', $this->id);
 			$this->new=true;
 
+
+			$sql="insert into `Website Data` (`Website Key`) values(".$this->id.");";
+			$this->db->exec($sql);
 
 			if ( is_numeric($this->editor['User Key']) and $this->editor['User Key']>1) {
 
@@ -184,6 +187,9 @@ class Website extends DB_Table{
 
 
 
+
+
+
 			return;
 		}else {
 			$this->msg="Error can not create website";
@@ -193,7 +199,117 @@ class Website extends DB_Table{
 	}
 
 
-	function create_website_node($data) {
+	function create_no_product_webnodes() {
+
+		include_once 'class.WebsiteNode.php';
+		include_once 'class.Website.php';
+
+		$home_webnode=$this->create_webnode(array(
+				'Webpage Code'=>'p.Home',
+				'Webpage Name'=>_('Home'),
+				'Webpage Class'=>'Home',
+				'Webpage Locked'=>'Yes',
+				'Website Node Locked'=>'Yes',
+				'Website Node Type'=>'Root',
+				'Website Node Icon'=>'home'
+
+
+			));
+		$page=new Webpage($home_webnode->get('Website Node Webpage Key'));
+		$page->update(array('Webpage Properties'=>
+				json_encode(array('body_classes'=>'common-home page-common-home layout-fullwidth'))
+			), 'no_history');
+
+
+
+		$mya_webnode=$home_webnode->create_subnode(array(
+				'Webpage Code'=>'p.MyA',
+				'Webpage Name'=>_('My account'),
+				'Webpage Class'=>'Hub',
+				'Webpage Locked'=>'Yes',
+				'Website Node Locked'=>'Yes',
+				'Website Node Type'=>'Root',
+				'Website Node Icon'=>'user',
+
+			)
+		);
+
+		$mya_webnode->create_subnode(
+			array('Webpage Code'=>'p.Login', 'Webpage Name'=>_('Login'), 'Website Node Locked'=>'Yes','Webpage Class'=>'Login', 'Webpage Locked'=>'Yes','Website Node Type'=>'Head')
+		);
+		$mya_webnode->create_subnode(
+			array('Webpage Code'=>'p.Register', 'Webpage Name'=>_('Register'), 'Website Node Locked'=>'Yes', 'Webpage Class'=>'Register','Webpage Locked'=>'Yes','Website Node Type'=>'Head')
+		);
+		$mya_webnode->create_subnode(
+			array('Webpage Code'=>'p.Pwd', 'Webpage Name'=>_('Forgotten password'), 'Website Node Locked'=>'Yes','Webpage Class'=>'ResetPwd','Webpage Locked'=>'Yes', 'Website Node Type'=>'Head')
+		);
+		$mya_webnode->create_subnode(
+			array('Webpage Code'=>'p.Profile', 'Webpage Name'=>_('My account'), 'Website Node Locked'=>'Yes','Webpage Class'=>'Profile', 'Webpage Locked'=>'Yes','Website Node Type'=>'Head')
+		);
+
+
+
+		$cs_webnode=$home_webnode->create_subnode(array(
+				'Webpage Code'=>'p.CS',
+				'Webpage Name'=>_('Customer services'),
+				'Website Node Locked'=>'Yes',
+				'Website Node Type'=>'Root',
+				'Website Node Icon'=>'thumbs-o-up',
+				'Webpage Class'=>'Hub'
+			)
+		);
+		
+
+		$node=$cs_webnode->create_subnode(
+			array('Webpage Code'=>'p.Contact', 'Webpage Name'=>_('Contact us'), 'Website Node Locked'=>'Yes','Webpage Class'=>'Contact', 'Website Node Type'=>'Head')
+		);
+		
+
+		$node=$cs_webnode->create_subnode(
+			array('Webpage Code'=>'p.Delivery', 'Webpage Name'=>_('Delivery'), 'Website Node Locked'=>'No', 'Website Node Type'=>'Head','Webpage Class'=>'Info', 'Website Node Icon'=>'truck fa-flip-horizontal')
+		);
+		
+
+		$node=$cs_webnode->create_subnode(
+			array('Webpage Code'=>'p.GTC', 'Webpage Name'=>_('Terms & Conditions'), 'Website Node Locked'=>'Yes','Webpage Locked'=>'Yes','Webpage Class'=>'Info', 'Website Node Type'=>'Head')
+		);
+		
+
+
+		//$home_webnode->create_subnode(array('Webpage Code'=>'p.Insp', 'Webpage Name'=>_('Inspiration'), 'Website Node Locked'=>'No', 'Website Node Type'=>'Root'));
+
+
+
+
+	}
+
+
+	function create_product_webnodes() {
+
+
+		$homepage=new Webpage('website_code', $this->id, 'p.Home');
+
+		$home_webnode=new WebsiteNode($homepage->get('Webpage Website Node Key'));
+
+		$store=new Store($this->get('Website Store Key'));
+
+		$node=$home_webnode->create_subnode(array(
+				'Webpage Code'=>'p.Cat',
+				'Webpage Name'=>_('Catalogue'),
+				'Webpage Locked'=>'Yes',
+				'Website Node Locked'=>'Yes',
+				'Website Node Type'=>'Root',
+				'Website Node Icon'=>'th',
+				'Webpage Class'=>'Categories',
+				'Webpage Object'=>'Category',
+				'Webpage Object Key'=>$store->get('Store Department Category Key')
+			)
+		);
+
+	}
+
+
+	function create_webnode($data) {
 
 		$this->new_object=false;
 
@@ -202,6 +318,8 @@ class Website extends DB_Table{
 		$data['Website Node Store Key']=$this->get('Store Key');
 		$data['Website Node Website Key']=$this->id;
 		$data['Website Node Valid From']=gmdate('Y-m-d H:i:s');
+
+
 
 		$website_node= new WebsiteNode('find', $data, 'create');
 
@@ -225,9 +343,9 @@ class Website extends DB_Table{
 					$this->error_code='duplicated_field';
 					$this->error_metadata=json_encode(array($website_node->duplicated_field));
 
-					if ($website_node->duplicated_field=='Website Node Code') {
-						$this->msg=_('Duplicated website node code');
-					}
+					//if ($website_node->duplicated_field=='Webpage Code') {
+					// $this->msg=_('Duplicated Webpage Code');
+					//}
 
 
 				}else {
@@ -365,12 +483,14 @@ class Website extends DB_Table{
 	}
 
 
-	function get_node($code) {
-	
-		if ($code=='')$code='home';
 
-		$node=new WebsiteNode('website_code', $this->id, $code);
-		return $node;
+
+	function get_webpage($code) {
+
+		if ($code=='')$code='p.home';
+
+		$webpage=new Webpage('website_code', $this->id, $code);
+		return $webpage;
 
 
 	}

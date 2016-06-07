@@ -65,7 +65,9 @@ function get_marginals($db, $smarty, $website, $user, $account, $data) {
 }
 
 
-function get_breadcrumbs($smarty, $db, $node, $webpage) {
+function get_breadcrumbs($smarty, $db, $webpage) {
+
+    include_once('class.WebsiteNode.php');
 
 	$breadcrumbs=array();
 	//$breadcrumbs[]=array('label'=>_('home'), 'icon'=>'home', 'reference'=>'home');
@@ -73,12 +75,15 @@ function get_breadcrumbs($smarty, $db, $node, $webpage) {
 	$level=0;
 	$breadcrumbs=array();
 
+
+    $node=new WebsiteNode($webpage->get('Webpage Website Node Key'));
+
 	if ($node->get('Website Node Parent Key')!=$node->id) {
 		$breadcrumbs=create_breadcrumbs($db, $node->get('Website Node Parent Key'), $breadcrumbs);
 	}
 
 
-	$breadcrumbs[]=array('label'=>$node->get('Name'), 'icon'=>$node->get('Icon'), 'reference'=>preg_replace('/\./', '/', $node->get('Code')));
+	$breadcrumbs[]=array('label'=>$webpage->get('Name'), 'icon'=>$node->get('Icon'), 'reference'=>preg_replace('/\./', '/', $webpage->get('Code')));
 
 
 	$smarty->assign('breadcrumbs', $breadcrumbs);
@@ -90,7 +95,7 @@ function get_breadcrumbs($smarty, $db, $node, $webpage) {
 
 function create_breadcrumbs($db, $node_key, $branch) {
 
-	$sql=sprintf('select `Website Node Parent Key`,`Website Node Code`,`Website Node Name`,`Website Node Icon` from `Website Node Dimension` where `Website Node Key`=%d',
+	$sql=sprintf('select `Website Node Parent Key`,`Webpage Code`,`Webpage Name`,`Website Node Icon` from `Website Node Dimension` left join `Webpage Dimension` on (`Webpage Key`=`Website Node Webpage Key`) where `Website Node Key`=%d',
 		$node_key
 	);
 
@@ -98,7 +103,7 @@ function create_breadcrumbs($db, $node_key, $branch) {
 		if ($row = $result->fetch()) {
 
 
-			array_unshift($branch, array('label'=>$row['Website Node Name'], 'icon'=>$row['Website Node Icon'], 'reference'=>preg_replace('/\./', '/', $row['Website Node Code'])));
+			array_unshift($branch, array('label'=>$row['Webpage Name'], 'icon'=>$row['Website Node Icon'], 'reference'=>preg_replace('/\./', '/', $row['Webpage Code'])));
 			if ($row['Website Node Parent Key']==$node_key) {
 				return  $branch;
 			}else {
@@ -133,9 +138,9 @@ function get_content($db, $smarty, $website, $user, $account, $data) {
 		$reload=false;
 	}
 
-	list($node, $webpage, $request)=parse_request($data, $db, $website, $account, $user);
+	list($webpage, $request)=parse_request($data, $db, $website, $account, $user);
 
-
+    
 
 	/*
 
@@ -159,12 +164,14 @@ function get_content($db, $smarty, $website, $user, $account, $data) {
 
 	$view=array('webpage_key'=>$webpage->id, 'request'=>$request);
 
-	$breadcrumbs=get_breadcrumbs($smarty, $db, $node, $webpage);
+	$breadcrumbs=get_breadcrumbs($smarty, $db, $webpage);
+
+
 
 	$response=array('state'=>200,
 		'content'=>$webpage->get_content($smarty),
 		'view'=>$view,
-		'body_classes'=>$webpage->get_property('body_classes'),
+		'body_classes'=>$webpage->version->get_metadata('body_classes'),
 		'breadcrumbs'=>$breadcrumbs
 	);
 

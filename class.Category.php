@@ -70,7 +70,7 @@ class Category extends DB_Table{
 		if ($this->data = $this->db->query($sql)->fetch()) {
 			$this->id=$this->data['Category Key'];
 
-			if ($this->data['Category Subject']=='Part') {
+			if ($this->data['Category Scope']=='Part') {
 				$this->subject_table_name='Part Category';
 				$sql=sprintf("select * from `Part Category Dimension` where `Part Category Key`=%d", $this->id);
 				if ($result2=$this->db->query($sql)) {
@@ -82,7 +82,7 @@ class Category extends DB_Table{
 					exit;
 				}
 
-			}elseif ($this->data['Category Subject']=='Family') {
+			}elseif ($this->data['Category Scope']=='Family') {
 				$this->subject_table_name='Product Family';
 
 				$sql=sprintf("select * from `Product Family Category Dimension` where `Product Family Category Key`=%d", $this->id);
@@ -96,11 +96,10 @@ class Category extends DB_Table{
 				}
 
 
-			}elseif ($this->data['Category Subject']=='Product') {
+			}elseif ($this->data['Category Scope']=='Product') {
 				$this->subject_table_name='Product';
 
 				$sql=sprintf("select * from `Product Category Dimension` where `Product Category Key`=%d", $this->id);
-
 				if ($result2=$this->db->query($sql)) {
 					if ($row = $result2->fetch()) {
 						$this->data=array_merge($this->data, $row);
@@ -111,7 +110,7 @@ class Category extends DB_Table{
 				}
 
 
-			}elseif ($this->data['Category Subject']=='Supplier') {
+			}elseif ($this->data['Category Scope']=='Supplier') {
 
 
 
@@ -149,6 +148,8 @@ class Category extends DB_Table{
 
 
 	}
+
+
 
 
 	function find($raw_data, $options) {
@@ -272,21 +273,26 @@ class Category extends DB_Table{
 			$this->new=true;
 
 
-			if ($this->data['Category Subject']=='Invoice') {
+			if ($this->data['Category Scope']=='Invoice') {
 				$sql=sprintf("insert into `Invoice Category Dimension` (`Invoice Category Key`,`Invoice Category Store Key`) values (%d,%d)", $this->id, $this->data['Category Store Key']);
 				$this->db->exec($sql);
 			}
-			elseif ($this->data['Category Subject']=='Supplier') {
+			elseif ($this->data['Category Scope']=='Supplier') {
 				$sql=sprintf("insert into `Supplier Category Dimension` (`Category Key`) values (%d)", $this->id);
 				$this->db->exec($sql);
-			}elseif ($this->data['Category Subject']=='Part') {
+			}elseif ($this->data['Category Scope']=='Part') {
 				$sql=sprintf("insert into `Part Category Dimension` (`Part Category Key`,`Part Category Warehouse Key`) values (%d,%d)", $this->id, $this->data['Category Warehouse Key']);
 				$this->db->exec($sql);
-			}elseif ($this->data['Category Subject']=='Product') {
-				$sql=sprintf("insert into `Product Category Dimension` (`Product Category Key`,`Product Category Store Key`) values (%d,%d)", $this->id, $this->data['Category Store Key']);
-				$this->db->exec($sql);
-			}elseif ($this->data['Category Subject']=='Family') {
-				$sql=sprintf("insert into `Product Family Category Dimension` (`Product Family Category Key`,`Product Family Category Store Key`) values (%d,%d)", $this->id, $this->data['Category Store Key']);
+			}elseif ($this->data['Category Scope']=='Product') {
+				include_once 'class.Store.php';
+				$store=new Store($this->data['Category Store Key']);
+
+				$sql=sprintf("insert into `Product Category Dimension` (`Product Category Key`,`Product Category Store Key`,`Product Category Currency Code`,`Product Category Valid From`) values (%d,%d,%s,%s)",
+					$this->id,
+					$store->id,
+					prepare_mysql($store->get('Store Currency Code')),
+					prepare_mysql(gmdate('Y-m-d H:i:s'))
+				);
 				$this->db->exec($sql);
 			}
 
@@ -385,8 +391,6 @@ class Category extends DB_Table{
 
 		if (!$this->id)return false;
 
-		if (isset($this->data[$key]))
-			return $this->data[$key];
 
 
 		if ($key=='Subjects Not Assigned' or $key=='Number Subjects') {
@@ -398,6 +402,12 @@ class Category extends DB_Table{
 
 		switch ($key) {
 
+		case 'Subjects Not Assigned':
+		case 'Number Subjects':
+		case 'Children':
+			return number($this->data['Category '.$key]);
+			break;
+
 		default:
 			if (array_key_exists($key, $this->data))
 				return $this->data[$key];
@@ -407,7 +417,29 @@ class Category extends DB_Table{
 		}
 
 
-		switch ($this->data['Category Subject']) {
+		switch ($this->data['Category Scope']) {
+
+		case 'Product':
+
+			switch ($key) {
+			case 'Public':
+				if ($this->data['Product Category '.$key]=='Yes') {
+					return _('Yes');
+				}else {
+					return _('No');
+				}
+
+				break;
+			default:
+				if (array_key_exists('Product Category '.$key, $this->data))
+					return $this->data['Product Category '.$key];
+				break;
+			}
+
+
+
+
+			break;
 		case 'Part':
 
 
@@ -542,6 +574,9 @@ class Category extends DB_Table{
 
 
 	function delete() {
+
+		if (!$this->id)return;
+
 		$this->deleted=false;
 
 		$sql_new_deleted_category=sprintf("insert into `Category Deleted Dimension` (`Category Deleted Key`, `Category Deleted Branch Type`, `Category Deleted Store Key`, `Category Deleted Warehouse Key`, `Category Deleted XHTML Branch Tree`, `Category Deleted Plain Branch Tree`,
@@ -597,15 +632,18 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 
-		if ($this->data['Category Subject']=='Invoice') {
+		if ($this->data['Category Scope']=='Invoice') {
 			$sql=sprintf('delete from `Invoice Category Dimension` where `Category Key`=%d', $this->id);
 			$this->db->exec($sql);
 		}
-		elseif ($this->data['Category Subject']=='Supplier') {
+		elseif ($this->data['Category Scope']=='Supplier') {
 			$sql=sprintf('delete from `Supplier Category Dimension` where `Category Key`=%d', $this->id);
 			$this->db->exec($sql);
-		}elseif ($this->data['Category Subject']=='Part') {
+		}elseif ($this->data['Category Scope']=='Part') {
 			$sql=sprintf('delete from `Part Category Dimension`  where `Category Key`=%d', $this->id);
+			$this->db->exec($sql);
+		}elseif ($this->data['Category Scope']=='Product') {
+			$sql=sprintf('delete from `Product Category Dimension`  where `Category Key`=%d', $this->id);
 			$this->db->exec($sql);
 		}
 
@@ -707,6 +745,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 		$sql = sprintf("SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d ",
 			$this->id
 		);
+
+		
 		$children_keys=array();
 		if ($result=$this->db->query($sql)) {
 			foreach ($result as $row) {
@@ -827,7 +867,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 		$data=array();
 
-		$sql=sprintf('show columns from `%s Dimension`', addslashes($this->subject_table_name));
+		$sql=sprintf('show columns from `%s Category Dimension`', addslashes($this->subject_table_name));
 		foreach ($this->db->query($sql) as $row) {
 			if (!in_array($row['Field'], $this->ignore_fields))
 				$data[$row['Field']]=$row['Default'];
@@ -843,7 +883,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 	function update_field_switcher($field, $value, $options='', $metadata='') {
-
 
 
 
@@ -867,17 +906,61 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			}
 		}elseif (array_key_exists($field, $this->subject_base_data())) {
 
-			if ($value!=$this->data[$field]) {
+			if ($field=='Product Category Public') {
 
+				foreach ($this->get_children_keys() as $children_key) {
+					$subcategory=new Category($children_key);
+
+
+					$subcategory->update(array('Product Category Public'=>$value), $options);
+				}
 				$this->update_subject_field($field, $value, $options);
 
+				$sql=sprintf('select `Subject Key`,`Subject` from `Category Bridge` where `Category Key`=%d ', $this->id);
+
+				include_once 'class.Product.php';
+
+				if ($result=$this->db->query($sql)) {
+					foreach ($result as $row) {
+
+						if ($row['Subject']=='Product') {
+
+							$product=new Product($row['Subject Key']);
+							$product->update(array('Product Public'=>$value), $options);
+						}else if ($row['Subject']=='Category') {
+
+							$subcategory=new Category($row['Subject Key']);
+
+
+							$subcategory->update(array('Product Category Public'=>$value), $options);
+						}
+
+
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
+				}
+
+
+
+
+			}else {
+
+				$this->update_subject_field($field, $value, $options);
 			}
 		}
+
+
 
 	}
 
 
 	function update_subject_field($field, $value, $options='') {
+
+		//if ($value!=$this->data[$field]) return;
+
+
 
 		$this->updated=false;
 		$null_if_empty=true;
@@ -1239,6 +1322,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 	function update_subjects_data() {
+
+		include_once 'utils/date_functions.php';
+
 
 		if ($this->data['Category Branch Type']=='Root' or !$this->update_subjects_data) {
 			return;

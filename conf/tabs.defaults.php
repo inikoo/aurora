@@ -358,7 +358,7 @@ $tab_defaults=array(
 		'elements'=>$elements_options['products'],
 
 	),
-		'category.all_products'=>array(
+	'category.all_products'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
@@ -409,7 +409,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code'
 	),
-	'website.nodes'=>array(
+	'website.webpages'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
@@ -417,7 +417,8 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code',
 		'f_period'=>'ytd',
-
+		'elements_type'=>each($elements_options['webpages'])['key'],
+		'elements'=>$elements_options['webpages'],
 	),
 	'website.root_nodes'=>array(
 		'view'=>'overview',
@@ -469,7 +470,7 @@ $tab_defaults=array(
 		'f_period'=>'ytd',
 
 	),
-	
+
 	'website.favourites.customers'=>array(
 		'view'=>'overview',
 		'sort_key'=>'formatted_id',
@@ -561,7 +562,7 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'name',
-		
+
 	),
 	'suppliers.lists'=>array(
 		'view'=>'overview',

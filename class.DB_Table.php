@@ -386,9 +386,7 @@ $old_formatted_value=$this->get($formatted_field);
 
 	function get_main_id() {
 
-		if ($this->table_name=='Product' or $this->table_name=='Supplier Product')
-			return $this->pid;
-		else
+
 			return $this->id;
 
 	}

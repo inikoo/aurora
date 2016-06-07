@@ -153,15 +153,11 @@ function get_page_navigation($data, $smarty, $user, $db, $account) {
 	if ($data['parent']) {
 
 		switch ($data['parent']) {
-		case 'node':
-			$tab='website.node.pages';
-			$_section='websites';
-			$title=_('Webpage').' <span class="id">'.$data['_parent']->get('Code').'</span> v. <span class="id Webpage_Code">'.$object->get('Code').'</span>';
-			break;
+	
 		case 'website':
-			$tab='website.pages';
+			$tab='website.webpages';
 			$_section='websites';
-			$title=_('Version').' <span class="id Webpage_Code">'.$object->get('Code').'</span>';
+			$title=_('Webpage').' <span class="id Webpage_Code">'.$object->get('Code').'</span>';
 			break;
 
 		}
@@ -211,8 +207,8 @@ function get_page_navigation($data, $smarty, $user, $db, $account) {
 
 
 
-					$sql=sprintf("select `Website Node Code` object_name,N.`Website Node Key` as object_key from $table   $where $wheref
-	                and ($_order_field < %s OR ($_order_field = %s AND N.`Website Node Key` < %d))  order by $_order_field desc , N.`Website Node Key` desc limit 1",
+					$sql=sprintf("select `Webpage Code` object_name,N.`Webpage Key` as object_key from $table   $where $wheref
+	                and ($_order_field < %s OR ($_order_field = %s AND N.`Webpage Key` < %d))  order by $_order_field desc , N.`Webpage Key` desc limit 1",
 
 						prepare_mysql($_order_field_value),
 						prepare_mysql($_order_field_value),
@@ -233,8 +229,8 @@ function get_page_navigation($data, $smarty, $user, $db, $account) {
 
 
 
-					$sql=sprintf("select `Website Node Code` object_name,N.`Website Node Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND N.`Website Node Key` > %d))  order by $_order_field   , N.`Website Node Key`  limit 1",
+					$sql=sprintf("select `Webpage Code` object_name,N.`Webpage Key` as object_key from $table   $where $wheref
+	                and ($_order_field  > %s OR ($_order_field  = %s AND N.`Webpage Key` > %d))  order by $_order_field   , N.`Webpage Key`  limit 1",
 						prepare_mysql($_order_field_value),
 						prepare_mysql($_order_field_value),
 						$object->id
@@ -645,14 +641,13 @@ function get_node_navigation($data, $smarty, $user, $db, $account) {
 
 
 
-					$sql=sprintf("select `Website Node Code` object_name, N.`Website Node Key` as object_key from $table   $where $wheref
+					$sql=sprintf("select `Webpage Code` object_name, N.`Website Node Key` as object_key from $table   $where $wheref
 	                and ($_order_field < %s OR ($_order_field = %s AND N.`Website Node Key` < %d))  order by $_order_field desc ,N.`Website Node Key` desc limit 1",
 
 						prepare_mysql($_order_field_value),
 						prepare_mysql($_order_field_value),
 						$object->id
 					);
-
 
 
 
@@ -668,7 +663,7 @@ function get_node_navigation($data, $smarty, $user, $db, $account) {
 
 
 
-					$sql=sprintf("select `Website Node Code` object_name,N.`Website Node Key` as object_key from $table   $where $wheref
+					$sql=sprintf("select `Webpage Code` object_name,N.`Website Node Key` as object_key from $table   $where $wheref
 	                and ($_order_field  > %s OR ($_order_field  = %s AND N.`Website Node Key` > %d))  order by $_order_field   , N.`Website Node Key`  limit 1",
 						prepare_mysql($_order_field_value),
 						prepare_mysql($_order_field_value),
@@ -741,8 +736,14 @@ function get_node_navigation($data, $smarty, $user, $db, $account) {
 		case 'node':
 
 
+            if($object->get('Website Node Key')==$object->get('Website Node Parent Key')){
+            	$up_button=array('icon'=>'arrow-up', 'title'=>$data['website']->get('Name').' ('.$data['website']->get('Code').')', 'reference'=>'website/'.$data['website']->id);
+
+            }else{
+
 			$up_button=array('icon'=>'arrow-up', 'title'=>$data['_parent']->get('Name').' ('.$data['_parent']->get('Code').')', 'reference'=>'node/'.$data['_parent']->get('Website Node Parent Key').'/node/'.$data['_parent']->id);
 
+            }
 			if ($prev_key) {
 				$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'node/'.$object->get('Website Node Parent Key').'/node/'.$prev_key);
 

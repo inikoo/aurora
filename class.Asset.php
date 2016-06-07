@@ -180,7 +180,7 @@ class Asset extends DB_Table{
 	function get_asset_common($key, $arg1='') {
 
 
-    if (!$this->id)
+		if (!$this->id)
 			return;
 
 		switch ($key) {
@@ -428,6 +428,27 @@ class Asset extends DB_Table{
 	}
 
 
+	function get_image_key($index=1) {
+
+		$sql=sprintf("select `Image Subject Image Key` from  `Image Subject Bridge` where `Image Subject Object`=%s and `Image Subject Object Key`=%d order by `Image Subject Order`  limit %d,1 ",
+			prepare_mysql($this->table_name),
+			$this->id,
+			($index-1)
+		);
+
+		$image_key=0;
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$image_key=$row['Image Subject Image Key'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+        return $image_key;
+
+	}
 
 
 

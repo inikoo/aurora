@@ -45,6 +45,34 @@ $editor=array(
 
 
 
+// Delete categories if exists
+
+
+$sql=sprintf('select `Store Key` from `Store Dimension` ');
+
+if ($result=$db->query($sql)) {
+	foreach ($result as $row) {
+		$store=new Store($row['Store Key']);
+
+		$category=new Category($store->get('Store Family Category Key'));
+
+		$category->delete();
+
+		$category=new Category($store->get('Store Department Category Key'));
+		$category->delete();
+
+
+		$store->update(array(
+				'Store Family Category Key'=>'',
+				'Store Department Category Key'=>'',
+			), 'no_history');
+
+	}
+}
+
+
+
+
 $sql=sprintf('select `Store Key` from `Store Dimension` ');
 
 if ($result=$db->query($sql)) {
@@ -79,21 +107,28 @@ if ($result=$db->query($sql)) {
 					'Category Label'=>$row2['Product Department Name']
 				);
 
-        
+
 
 
 				$department=create_subcategory($departments, $editor, $data, $row2['Product Department Code']);
-				
-		        if(!$department){
-		        $department=new Category('find', array(
-						'Category Store Key'=>$store->id,
-						'Category Parent Key'=>$departments->id,
-						'Category Code'=>$row2['Product Department Code']
 
-					));
-		        }		  
-				
-				
+				if (!$department) {
+					$department=new Category('find', array(
+							'Category Store Key'=>$store->id,
+							'Category Parent Key'=>$departments->id,
+							'Category Code'=>$row2['Product Department Code']
+
+						));
+				}
+
+				$sql=sprintf('update `Product Category Dimension` set `Product Category Valid From`=%s,`Product Category Description`=%s where `Product Category Key`=%d ',
+					prepare_mysql($row2['Product Department Valid From']),
+					prepare_mysql($row2['Product Department Description']),
+					$department->id
+
+				);
+				$db->exec($sql);
+
 
 				$sql=sprintf("select * from `Image Bridge` where `Subject Type`='Department' and `Subject Key`=%d", $row2['Product Department Key']);
 				if ($result3=$db->query($sql)) {
@@ -123,7 +158,7 @@ if ($result=$db->query($sql)) {
 
 
 
-		$sql=sprintf('select `Product Family Key`,`Product Family Name`,`Product Family Code`,`Product Family Main Department Code`,`Product Family Main Department Code` from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Key`!=%d',
+		$sql=sprintf('select `Product Family Key`,`Product Family Name`,`Product Family Code`,`Product Family Main Department Code`,`Product Family Main Department Code`,`Product Family Valid From`,`Product Family Description` from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Key`!=%d',
 			$store->id,
 			$store->get('Store No Products Family Key')
 		);
@@ -137,16 +172,16 @@ if ($result=$db->query($sql)) {
 					'Category Label'=>$row2['Product Family Name']
 				);
 				$family=create_subcategory($families, $editor, $data, $row2['Product Family Code']);
-				
-				if(!$family){
-		        $family=new Category('find', array(
-						'Category Store Key'=>$store->id,
-						'Category Parent Key'=>$departments->id,
-						'Category Code'=>$row2['Product Family Code']
 
-					));
-		        }		
-				
+				if (!$family) {
+					$family=new Category('find', array(
+							'Category Store Key'=>$store->id,
+							'Category Parent Key'=>$departments->id,
+							'Category Code'=>$row2['Product Family Code']
+
+						));
+				}
+
 
 				$sql=sprintf("select * from `Image Bridge` where `Subject Type`='Family' and `Subject Key`=%d", $row2['Product Family Key']);
 				if ($result3=$db->query($sql)) {
@@ -168,6 +203,15 @@ if ($result=$db->query($sql)) {
 				}
 
 
+				$sql=sprintf('update `Product Category Dimension` set `Product Category Valid From`=%s,`Product Category Description`=%s where `Product Category Key`=%d ',
+					prepare_mysql($row2['Product Family Valid From']),
+					prepare_mysql($row2['Product Family Description']),
+					$family->id
+
+				);
+				$db->exec($sql);
+
+
 				$department=new Category('find', array(
 						'Category Store Key'=>$store->id,
 						'Category Parent Key'=>$category_dept_key,
@@ -179,15 +223,17 @@ if ($result=$db->query($sql)) {
 					$department->associate_subject($family->id);
 				}
 
-				$sql=sprintf('select * from `Product Dimension` where `Product Family Key`=%d ', $row2['Product Family Key']);
+				$sql=sprintf('select * from `Product Dimension` where  `Product Store Key`=%d and `Product Family Key`=%d ',
+					$store->id,
+					$row2['Product Family Key']);
 
 				if ($result3=$db->query($sql)) {
 					foreach ($result3 as $row3) {
 						$product=new Product($row3['Product ID']);
-						
+
 						if ($product->id) {
 							$product->update(array('Product Family Category Key'=>$family->id), 'no_history');
-							
+
 							$family->associate_subject($product->id);
 						}
 
@@ -221,11 +267,15 @@ if ($result=$db->query($sql)) {
 
 
 
-exit;
+
+
+
+$sql=sprintf('update `Product Dimension` set  `Product Status`="Discontinued"  ');
+$db->exec($sql);
 
 $sql=sprintf('select * from `Product Dimension` where `Product ID`=2021');
 
-$sql=sprintf('select * from `Product Dimension` ');
+$sql=sprintf('select * from `Product Dimension` order by `Product ID` desc');
 
 if ($result=$db->query($sql)) {
 
@@ -236,13 +286,51 @@ if ($result=$db->query($sql)) {
 
 		$status='Active';
 
-		if ($row['Product Sales Type']=='Not for Sale') {
-			$status='Suspended';
-		}
 
-		if ($row['Product Record Type']=='Historic' or $row['Product Main Type']=='Discontinued') {
+
+		if ($row['Product Record Type']=='Historic' or $row['Product Main Type']=='Discontinued' or $row['Product Sales Type']=='Not for Sale') {
 			$status='Discontinued';
 		}
+
+
+
+		if ($status=='Active') {
+			$sql=sprintf('select count(*) as num from  `Product Dimension` where `Product Store Key`=%d and `Product Status`="Active" and `Product Code`=%s ',
+				$row['Product Store Key'],
+				prepare_mysql($row['Product Code'])
+
+			);
+
+			if ($result2=$db->query($sql)) {
+				if ($row2 = $result2->fetch()) {
+					if ($row2['num']>0) {
+						$status='Discontinued';
+					}
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				exit;
+			}
+
+		}
+
+
+		$new_product=new Product( $row['Product ID']);
+
+
+
+
+
+		$new_product->update(array(
+				'Product Status'=>$status
+			), 'no_history');
+
+
+
+
+
+		continue;
+
 
 		/*
 		$outer_name=$row['Product Name'];
@@ -295,14 +383,10 @@ if ($result=$db->query($sql)) {
 
 		$product=new Product($row['Product ID']);
 */
-		$product=new Product('pid', $row['Product ID']);
+		//$product=new Product('pid', $row['Product ID']);
 
-		$new_product=new Product( $row['Product ID']);
 
-		$new_product->update(array(
-				'Product Status'=>$status
 
-			), 'no_history');
 
 		$parts_data=$product->get_part_list();
 		$_parts_data=$parts_data;
@@ -458,6 +542,12 @@ if ($result=$db->query($sql)) {
 }
 
 
+exit;
+
+
+
+
+
 
 
 
@@ -467,7 +557,7 @@ function create_subcategory($category, $editor, $data , $code, $suffix='') {
 
 	$data['Category Code']=$code.($suffix!=''?'.'.$suffix:'');
 
-	$subcategory=$category->create_children($data);
+	$subcategory=$category->create_category($data);
 	if ($subcategory->new) {
 		return $subcategory;
 
@@ -534,7 +624,7 @@ function create_main_category($store, $editor, $type , $suffix='') {
 	}
 
 	if (!$category->new) {
-	//print "dup\n";
+		//print "dup\n";
 		//print_r($data);
 
 	}

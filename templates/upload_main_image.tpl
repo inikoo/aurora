@@ -118,7 +118,7 @@
 
 					$.ajax(
 					{
-						url: "/ar_edit.php",
+						url: "/ar_upload.php",
 						 type: 'POST',
 						data: 			ajaxData,
 						dataType:		'json',

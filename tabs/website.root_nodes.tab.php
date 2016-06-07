@@ -9,7 +9,7 @@
 
 */
 
-include_once('class.WebsiteNode.php');
+include_once('class.Webpage.php');
 
 $tab='website.root_nodes';
 $ar_file='ar_websites_tables.php';
@@ -31,9 +31,9 @@ $parameters=array(
 		'parent_key'=>$state['key'],
 );
 
-$parent_node=new WebsiteNode('website_code',$state['key'],'p.Home');
+$homepage=new Webpage('website_code',$state['key'],'p.Home');
 
-$smarty->assign('parent_node_key',$parent_node->id);
+$smarty->assign('parent_node_key',$homepage->get('Webpage Website Node Key'));
 
 include('utils/get_table_html.php');
 

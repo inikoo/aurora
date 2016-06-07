@@ -2193,7 +2193,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 			}
 
-			$branch[]=array('label'=>'<span class="id Website_Node_Name">'.$state['_object']->get('Name').'</span>', 'icon'=>($state['_object']->get('Website Node Icon')==''?'file-o':$state['_object']->get('Website Node Icon')), 'reference'=>'');
+			$branch[]=array('label'=>'<span class="id Webpage_Name">'.$state['_object']->webpage->get('Name').'</span>', 'icon'=>($state['_object']->get('Website Node Icon')==''?'file-o':$state['_object']->get('Website Node Icon')), 'reference'=>'');
 
 			break;
 		case 'page':
@@ -2620,7 +2620,9 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 function create_node_breadcrumbs($db, $node_key, $branch) {
 
-	$sql=sprintf('select `Website Node Parent Key`,`Website Node Key`,`Website Node Website Key`,`Website Node Code`,`Website Node Name`,`Website Node Icon` from `Website Node Dimension` where `Website Node Key`=%d',
+    include_once('utils/text_functions.php');
+
+	$sql=sprintf('select `Website Node Parent Key`,`Website Node Key`,`Website Node Website Key`,`Webpage Code`,`Webpage Name`,`Website Node Icon` from `Website Node Dimension` left join `Webpage Dimension` on (`Website Node Webpage Key`=`Webpage Key`)  where `Website Node Key`=%d',
 		$node_key
 	);
 
@@ -2628,7 +2630,7 @@ function create_node_breadcrumbs($db, $node_key, $branch) {
 		if ($row = $result->fetch()) {
 
 
-			array_unshift($branch, array('label'=>$row['Website Node Name'], 'icon'=>($row['Website Node Icon']==''?'file-o':$row['Website Node Icon']), 'reference'=>'website/'.$row['Website Node Website Key'].'/node/'.$row['Website Node Key']  ));
+			array_unshift($branch, array('label'=>trimStringToFullWord(16,$row['Webpage Name']), 'icon'=>($row['Website Node Icon']==''?'file-o':$row['Website Node Icon']), 'reference'=>'website/'.$row['Website Node Website Key'].'/node/'.$row['Website Node Key']  ));
 			if ($row['Website Node Parent Key']==$node_key) {
 				return  $branch;
 			}else {
@@ -2639,6 +2641,7 @@ function create_node_breadcrumbs($db, $node_key, $branch) {
 		}
 	}else {
 		print_r($error_info=$db->errorInfo());
+		print $sql;
 		exit;
 	}
 

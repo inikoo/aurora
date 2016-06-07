@@ -11,6 +11,7 @@
 
 
 include_once 'class.DB_Table.php';
+include_once 'class.Webpage.php';
 
 class WebsiteNode extends DB_Table{
 
@@ -37,22 +38,19 @@ class WebsiteNode extends DB_Table{
 
 	function get_data($key, $tag, $tag2=false) {
 
+
+
 		if ($key=='id')
 			$sql=sprintf("select * from `Website Node Dimension` where `Website Node Key`=%d", $tag);
-		else if ($key=='website_code')
-			$sql=sprintf("select  * from `Website Node Dimension` where  `Website Node Website Key`=%d and `Website Node Code`=%s ",
-				$tag,
-				prepare_mysql($tag2)
-			);
-		else if ($key=='code')
-			$sql=sprintf("select  * from `Website Node Dimension` where `Website Node Code`=%s ", prepare_mysql($tag));
 		else
 			return;
 
 
 		if ($this->data = $this->db->query($sql)->fetch()) {
 			$this->id=$this->data['Website Node Key'];
-			$this->code=$this->data['Website Node Code'];
+
+			$this->webpage=new Webpage($this->get('Website Node Webpage Key'));
+
 		}
 
 
@@ -91,6 +89,7 @@ class WebsiteNode extends DB_Table{
 			return;
 		}
 
+		/*
 		if ($data['Website Node Code']=='' ) {
 			$this->error=true;
 			$this->msg='Website Node Code empty';
@@ -123,10 +122,10 @@ class WebsiteNode extends DB_Table{
 			exit;
 		}
 
-
+*/
 
 		if ($create and !$this->found) {
-			$this->create($data);
+			$this->create($data, $raw_data);
 			return;
 		}
 
@@ -136,7 +135,8 @@ class WebsiteNode extends DB_Table{
 	}
 
 
-	function create($data) {
+	function create($data, $raw_data) {
+
 		$this->new=false;
 		$base_data=$this->base_data();
 
@@ -160,9 +160,32 @@ class WebsiteNode extends DB_Table{
 			$this->get_data('id', $this->id);
 			$this->new=true;
 
-			$this->create_webpage(array());
+
+			$webpage=$this->create_webpage($raw_data);
+			if (!$this->error) {
 
 
+
+				$this->update(array('Website Node Webpage Key'=>$webpage->id), 'no_history');
+                $this->webpage=$webpage;
+                
+			}else {
+				print_r($raw_data);
+				print_r($this);
+				exit("Error");
+
+			}
+
+
+			switch ($this->webpage->get('Webpage Class')) {
+			case 'Categories':
+			case 'Products':
+				$this->create_categories_nodes();
+				break;
+			default:
+				// print "class not found ".$this->webpage->get('Webpage Class')."\n";
+				break;
+			}
 
 
 
@@ -204,7 +227,7 @@ class WebsiteNode extends DB_Table{
 	}
 
 
-	function get_webpage_key() {
+	function get_webpage_key_delete() {
 
 		$webpages=array();
 		$sql=sprintf('select `Webpage Key`,`Webpage Display Probability` from `Webpage Dimension` where `Webpage Website Node Key`=%d and `Webpage Display Probability`>0', $this->id);
@@ -284,7 +307,119 @@ class WebsiteNode extends DB_Table{
 	}
 
 
-	function create_website_node($data) {
+	function create_categories_nodes() {
+
+		include_once 'class.Category.php';
+		$category=new Category($this->webpage->get('Webpage Object Key'));
+		//print_r($category->data);
+		if ($category->get('Category Subject')=='Category') {
+
+
+			if ($category->get('Category Branch Type')=='Head') {
+				$sql=sprintf("select C.`Category Key`,`Category Branch Type`,`Category Code`,`Category Label`,`Category Subject` from `Category Bridge` B left join  `Category Dimension` C on (`Subject Key`=C.`Category Key`) left join `Product Category Dimension` PC on (PC.`Product Category Key`=C.`Category Key`)   where  B.`Category Key`=%d and `Product Category Public`='Yes'", $this->webpage->get('Webpage Object Key'));
+
+			}
+			else {
+				$sql=sprintf("select `Category Key`,`Category Branch Type`,`Category Code`,`Category Label`,`Category Subject` from   `Category Dimension` C left join `Product Category Dimension` PC on (PC.`Product Category Key`=C.`Category Key`)  where  `Category Parent Key`=%d and `Product Category Public`='Yes'  ", $this->webpage->get('Webpage Object Key'));
+
+			}
+			//print "$sql\n";
+
+			if ($result=$this->db->query($sql)) {
+				foreach ($result as $row) {
+
+					if ($category->get('Category Branch Type')=='Head') {
+						$branch_type=$row['Category Branch Type'];
+					}else {
+						$branch_type='Root';
+					
+					}
+
+
+					$subnode=$this->create_subnode(
+						array(
+							'Webpage Code'=>($branch_type=='Head'?'f':'d').'.'.$row['Category Code'],
+							'Webpage Name'=>$row['Category Label'],
+							'Webpage Class'=>($branch_type=='Head'?'Products':'Categories'),
+
+							'Website Node Type'=>'Branch',
+							'Website Node Icon'=>($branch_type=='Head'?'pagelines':'tree'),
+							'Webpage Object'=>'Category',
+							'Webpage Object Key'=>$row['Category Key'],
+						)
+					);
+
+                        print_r(array(
+							'Webpage Code'=>($branch_type=='Head'?'f':'d').'.'.$row['Category Code'],
+							'Webpage Name'=>$row['Category Label'],
+							'Website Node Locked'=>'No',
+							'Website Node Type'=>'Branch',
+							'Website Node Icon'=>($branch_type=='Head'?'pagelines':'tree'),
+							'Webpage Class'=>($branch_type=='Head'?'Products':'Categories'),
+							'Webpage Object'=>'Category',
+							'Webpage Object Key'=>$row['Category Key'],
+						));
+
+				}
+
+
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				print $sql;
+				exit;
+			}
+
+
+
+
+		}elseif ($category->get('Category Subject')=='Product') {
+			include_once 'class.Product.php';
+			$sql=sprintf("select  `Subject Key` ,`Product Code`,`Product Name`,`Product Status` from `Category Bridge` B left join `Product Dimension` P on (`Product ID`=`Subject Key`)  where  B.`Category Key`=%d and `Product Status`!='Discontinued'  and `Product Public`='Yes'  ", $this->webpage->get('Webpage Object Key'));
+
+			  print "$sql\n";
+
+
+			if ($result=$this->db->query($sql)) {
+				foreach ($result as $row) {
+
+					$product=new Product($row['Subject Key']);
+
+					$subnode=$this->create_subnode(
+						array(
+							'Webpage Code'=>'a.'.$row['Product Code'],
+							'Webpage Name'=>$row['Product Name'],
+							'Webpage Status'=>($row['Product Status']=='Active'?'Online':'Offline'),
+							'Website Node Locked'=>'No',
+							'Website Node Type'=>'Head',
+							'Website Node Icon'=>'leaf',
+							'Webpage Class'=>'Product',
+							'Webpage Object'=>'Product',
+							'Webpage Object Key'=>$row['Subject Key'],
+						)
+					);
+
+                   
+
+				}
+
+
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+
+		}
+
+
+
+
+
+
+	}
+
+
+	function create_subnode($data) {
 
 		$this->new_object=false;
 
@@ -307,15 +442,18 @@ class WebsiteNode extends DB_Table{
 				$this->new_object=true;
 				$this->update_website_nodes_data();
 			} else {
+			    print_r($data);
+			    exit();
+			
 				$this->error=true;
 				if ($website_node->found) {
 
 					$this->error_code='duplicated_field';
 					$this->error_metadata=json_encode(array($website_node->duplicated_field));
 
-					if ($website_node->duplicated_field=='Website Node Code') {
-						$this->msg=_('Duplicated website node code');
-					}
+					//if ($website_node->duplicated_field=='Website Node Code') {
+					// $this->msg=_('Duplicated website node code');
+					//}
 
 
 				}else {
@@ -344,17 +482,15 @@ class WebsiteNode extends DB_Table{
 		$data['Webpage Website Node Key']=$this->id;
 		$data['Webpage Valid From']=gmdate('Y-m-d H:i:s');
 
+
+
+
 		if (!array_key_exists('Webpage Code', $data) or $data['Webpage Code']=='') {
-
-			$number_webpages=$this->get_number_webpages();
-
-			if ($number_webpages<26) {
-				$alphabet = range('A', 'Z');
-				$data['Webpage Code']=$alphabet[$number_webpages];
-			}
-
-
+			$this->error=true;
+			$this->msg='Missing webpage code';
+			return;
 		}
+
 
 		if (!array_key_exists('Webpage Name', $data) or $data['Webpage Name']=='') {
 			$data['Webpage Name']=$data['Webpage Code'];

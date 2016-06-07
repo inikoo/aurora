@@ -19,13 +19,18 @@ function get_department_showcase($data,$smarty) {
         return "";
     }
     
-    $images=$category->get_images_slidesshow();
+ 	$images=$category->get_images_slidesshow();
 
 	if (count($images)>0) {
 		$main_image=$images[0];
 	}else {
 		$main_image='';
 	}
+
+
+	$smarty->assign('main_image', $main_image);
+	$smarty->assign('images', $images);
+
 
     
     $smarty->assign('category',$category);

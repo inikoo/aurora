@@ -55,9 +55,11 @@ case 'upload_attachment':
 
 case 'upload_images':
 
+//print_r($_REQUEST);
+
 	$data=prepare_values($_REQUEST, array(
-			'parent'=>array('type'=>'string'),
-			'parent_key'=>array('type'=>'numeric'),
+			//'parent'=>array('type'=>'string'),
+			'key'=>array('type'=>'numeric'),
 			'object'=>array('type'=>'string'),
 		));
 
@@ -238,7 +240,7 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
 
 
 
-	$object=get_object($data['parent'], $data['parent_key']);
+	$object=get_object($data['object'], $data['key']);
 	$object->editor=$editor;
 
 

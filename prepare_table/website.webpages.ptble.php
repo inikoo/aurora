@@ -13,15 +13,15 @@
 
 
 
-$table='`Website Node Dimension` N  left join `Webpage Dimension`  on (`Webpage Key`=`Website Node Webpage Key`) ';
+$table='`Webpage Dimension` N';
 
 switch ($parameters['parent']) {
 
 case('website'):
-	$where=sprintf(' where  `Website Node Website Key`=%d  ' , $parameters['parent_key']);
+	$where=sprintf(' where  `Webpage Website Key`=%d  ' , $parameters['parent_key']);
 	break;
 case('node'):
-	$where=sprintf(' where  `Website Node Parent Key`=%d and `Website Node Parent Key`!=`Website Node Key` ' , $parameters['parent_key']);
+	$where=sprintf(' where  `Webpage Parent Key`=%d  ' , $parameters['parent_key']);
 	break;	
 default:
     exit('parent not configured '.$parameters['parent']);
@@ -55,7 +55,7 @@ if (isset($parameters['elements_type'])) {
 		if ($_elements=='') {
 			$where.=' and false' ;
 		} elseif ($count_elements<2) {
-			$where.=' and `Website Node Status` in ('.$_elements.')' ;
+			$where.=' and `Webpage Status` in ('.$_elements.')' ;
 
 		}
 		break;
@@ -67,9 +67,9 @@ if (isset($parameters['elements_type'])) {
 
 $wheref='';
 if ($parameters['f_field']=='code'  and $f_value!='')
-	$wheref.=" and `Website Node Code` like '".addslashes($f_value)."%'";
+	$wheref.=" and `Webpage Code` like '".addslashes($f_value)."%'";
 elseif ($parameters['f_field']=='name' and $f_value!='')
-	$wheref.=" and  `Website Node Name` like '".addslashes($f_value)."%'";
+	$wheref.=" and  `Webpage Name` like '".addslashes($f_value)."%'";
 
 
 
@@ -82,13 +82,13 @@ if ($order=='code'){
 }if ($order=='name'){
 	$order='`Webpage Name`';
 }else {
-	$order='N.`Website Node Key`';
+	$order='N.`Webpage Key`';
 }
 
 
-$sql_totals="select count(Distinct N.`Website Node Key`) as num from $table  $where  ";
+$sql_totals="select count(Distinct N.`Webpage Key`) as num from $table  $where  ";
 
 $fields="
-`Website Node Key`,`Webpage Code`,`Webpage Name`
+`Webpage Key`,`Webpage Code`,`Webpage Name`
 ";
 ?>

@@ -91,9 +91,9 @@ class Image {
 						foreach ($row as $key=>$value) {
 							$this->data[$key]=$value;
 						}
-					}else{
-					
-					    $this->id=0;
+					}else {
+
+						$this->id=0;
 					}
 
 
@@ -282,6 +282,62 @@ class Image {
 
 
 
+	function get_resized($tn_w, $tn_h, $quality = 100, $watermark = false) {
+
+		$source=imagecreatefromstring($this->data['Image Data']);
+
+		//Figure out the dimensions of the image and the dimensions of the desired thumbnail
+		$src_w = imagesx($source);
+		$src_h = imagesy($source);
+
+
+
+
+		$mlt=$tn_w/$src_w;
+		$new_w=ceil($src_w * $mlt);
+		$new_h=ceil($src_h * $mlt);
+
+
+		$x_mid=$tn_w/2;
+		$y_mid=$tn_h/2;
+
+		if ($new_h>$tn_h) {
+		$mlt=$tn_h/$new_h;
+		
+		
+			
+			$new_w=ceil($new_w * $mlt);
+			$new_h=ceil($new_h * $mlt);
+
+
+
+		
+		}else {
+			$y_mid=10+($tn_h-$new_h)/2;
+		}
+
+
+
+		$newpic = imagecreatetruecolor(round($new_w), round($new_h));
+		imagecopyresampled($newpic, $source, 0, 0, 0, 0, $new_w, $new_h, $src_w, $src_h);
+		$final = imagecreatetruecolor($tn_w, $tn_h);
+		$backgroundColor = imagecolorallocate($final, 255, 255, 255);
+		imagefill($newpic, 0, 0, $backgroundColor);
+		imagefill($final, 0, 0, $backgroundColor);
+		//imagecopyresampled($final, $newpic, 0, 0, ($x_mid - ($tn_w / 2)), ($y_mid - ($tn_h / 2)), $tn_w, $tn_h, $tn_w, $tn_h);
+		imagecopy($final, $newpic, (($tn_w - $new_w)/ 2), (($tn_h - $new_h) / 2), 0, 0, $new_w, $new_h);
+
+		//if we need to add a watermark
+		if ($watermark) {
+
+			$wm_w = imagesx($watermark);
+			$wm_h = imagesy($watermark);
+			imagecopy($final, $watermark, $tn_w - $wm_w, $tn_h - $wm_h, 0, 0, $tn_w, $tn_h);
+
+		}
+
+		return $final;
+	}
 
 
 	function get_image_from_file($format, $srcImage) {
@@ -390,11 +446,6 @@ class Image {
 	}
 
 
-	function resizeImage($width, $height) {
-		$dst_img    = imagecreatetruecolor($width, $height);
-		imagecopyresampled($dst_img, $this->im, 0, 0, 0, 0, $width+1, $height+1, $this->data['Image Width'], $this->data['Image Height']);
-		return $dst_img;
-	}
 
 
 
@@ -490,6 +541,14 @@ class Image {
 
 		return $this->resizeImage($nx, $ny);
 	}
+
+
+	function resizeImage($width, $height) {
+		$dst_img    = imagecreatetruecolor($width, $height);
+		imagecopyresampled($dst_img, $this->im, 0, 0, 0, 0, $width+1, $height+1, $this->data['Image Width'], $this->data['Image Height']);
+		return $dst_img;
+	}
+
 
 
 	// speaks for itself
@@ -667,14 +726,15 @@ class Image {
 
 	}
 
-function get($key) {
+
+	function get($key) {
 
 
 		if (!$this->id)
 			return;
 
 		switch ($key) {
-	
+
 
 		default:
 			if (array_key_exists($key, $this->data))
@@ -687,5 +747,6 @@ function get($key) {
 
 
 	}
+
 
 }
