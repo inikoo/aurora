@@ -29,4 +29,15 @@ function highlightkeyword($str, $search) {
 }
 
 
+function trimStringToFullWord($length, $string,$html=true) {
+	if (mb_strlen($string) <= $length) {
+		$string = $string; //do nothing
+	}
+	else {
+		$string = preg_replace('/\s+?(\S+)?$/u', ($html?' &hellip;':''), mb_substr($string, 0, $length));
+	}
+	return $string;
+}
+
+
 ?>

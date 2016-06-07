@@ -477,7 +477,7 @@ $modules=array(
 					'website.reminders.families'=>'website.reminders',
 					'website.reminders.products'=>'website.reminders',
 					'website.root_nodes'=>'website.content',
-					'website.nodes'=>'website.content',
+					'website.webpages'=>'website.content',
 					
 					'website.footer.preview'=>'website.footer',
 					'website.footer.versions'=>'website.footer',
@@ -549,7 +549,7 @@ $modules=array(
 					'website.content'=>array('label'=>_('Pages'), 'icon'=>'files-o',
 						'subtabs'=>array(
 							'website.root_nodes'=>array('label'=>_('Sitemap'), 'icon'=>'sitemap'),
-							'website.nodes'=>array('label'=>_('Page list'), 'icon'=>'files-o'),
+							'website.webpages'=>array('label'=>_('Page list'), 'icon'=>'files-o'),
 
 						)
 

@@ -57,10 +57,7 @@
 			<div class="wrap-container">
 				<div class="row">
 					<div id="breadcrumb">
-						<ul class="breadcrumb container">
-							<li><a href="/home"><span><i class="fa fa-home"></i></span></a></li>
-							<li><a href=""><span>Contact Usxx</span></a></li>
-						</ul>
+						
 					</div>
 					<div id="webpage_content">
 					</div>

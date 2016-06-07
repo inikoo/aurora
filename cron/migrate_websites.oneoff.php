@@ -35,7 +35,8 @@ require_once 'class.Page.php';
 require_once 'class.Website.php';
 require_once 'class.WebsiteNode.php';
 require_once 'class.Webpage.php';
-
+require_once 'class.Product.php';
+require_once 'class.Store.php';
 
 $editor=array(
 	'Author Name'=>'',
@@ -46,130 +47,174 @@ $editor=array(
 	'Date'=>gmdate('Y-m-d H:i:s')
 );
 
+$sql='truncate `Website Dimension`;truncate `Website Node Dimension`;truncate `Webpage Dimension`; truncate `Webpage Version Block Bridge`;truncate `Webpage Version Dimension`';
+$db->exec($sql);
+$sql=sprintf('select * from `Site Dimension` where `Site Key`=1 ');
 
-//$sql=sprintf('select * from `Part Dimension` where `Part SKU`=5305');
-
-$sql=sprintf('select * from `Site Dimension`  ');
+$sql=sprintf('select * from `Site Dimension` ');
 
 if ($result=$db->query($sql)) {
 	foreach ($result as $row) {
 		$site=new Site($row['Site Key']);
+		$store=new Store($site->get('Site Store Key'));
+        $store->editor=$store;
 
-		$sql=sprintf("insert into `Website Dimension` (`Website Key`,`Website Store Key`,`Website Code`,`Website Name`,`Website URL`,`Website Locale`,`Website From`) values(%d,%s,%s,%s,%s,%s,%s);",
-			$site->id,
-			prepare_mysql($site->get('Site Store Key')),
-			prepare_mysql($site->get('Site Code')),
-			prepare_mysql($site->get('Site Name')),
-			prepare_mysql($site->get('Site URL')),
-			prepare_mysql($site->get('Site Locale')),
-			prepare_mysql($site->get('Site From'))
-
+		$website_data=array(
+			'Website Code'=>$site->get('Site Code'),
+			'Website Name'=>$site->get('Site Name'),
+			'Website URL'=>$site->get('Site URL'),
+			'Website Locale'=>$site->get('Site Locale'),
+			'Website Name'=>$site->get('Site Name'),
+			'editor'=>$editor
 		);
-		//print "$sql\n";
+
+		$website=$store->create_website( $website_data);
+		if ($site->get('Site From')!='')
+			$website->update(array('Website Valid From'=>$site->get('Site From'), 'no_history'));
 
 
-		$db->exec($sql);
-		$sql="insert into `Website Data` (`Website Key`) values(".$row['Site Key'].");";
-		$db->exec($sql);
+		$website->create_no_product_webnodes();
+		$website->create_product_webnodes();
 
 
-		$website=new Website($row['Site Key']);
-		$website->editor=$editor;
 
-		$website_key=$website->id;
+	exit;
 
-		$website_node[$website_key]['Home']=$website->create_website_node(array('Website Node Code'=>'p.Home', 'Website Node Name'=>_('Home'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Root', 'Website Node Icon'=>'home'));
-		$page=new Webpage($website_node[$website_key]['Home']->get_webpage_key());
+
+	//	$website_node[$website_key]['Insp']=$website_node[$website_key]['Home']->create_subnode(array('Website Node Code'=>'p.Insp', 'Website Node Name'=>_('Inspiration'), 'Website Node Locked'=>'No', 'Website Node Type'=>'Root'));
+
+
+
+		$node=$website_node[$website_key]['Home']->create_subnode(array(
+				'Website Node Code'=>'p.Cat',
+				'Website Node Name'=>_('Catalogue'),
+				'Website Node Locked'=>'Yes',
+				'Website Node Type'=>'Root',
+				'Website Node Icon'=>'th',
+				'Website Node Class'=>'Categories',
+				'Website Node Object'=>'Category',
+				'Website Node Object Key'=>$store->get('Store Department Category Key')
+			)
+		);
+
+		
+
+		$page=new Webpage($node->get_webpage_key());
 		$page->update(array('Webpage Properties'=>
-				json_encode(array('body_classes'=>'common-home page-common-home layout-fullwidth'))
-			), 'no_history');
-
-
-
-		$website_node[$website_key]['MyA']=$website_node[$website_key]['Home']->create_website_node(array('Website Node Code'=>'p.MyA', 'Website Node Name'=>_('My account'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Root', 'Website Node Icon'=>'user'));
-
-		$website_node[$website_key]['MyA']->create_website_node(
-			array('Website Node Code'=>'p.Login', 'Website Node Name'=>_('Login'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Head')
-		);
-		$website_node[$website_key]['MyA']->create_website_node(
-			array('Website Node Code'=>'p.Register', 'Website Node Name'=>_('Register'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Head')
-		);
-		$website_node[$website_key]['MyA']->create_website_node(
-			array('Website Node Code'=>'p.Pwd', 'Website Node Name'=>_('Forgotten password'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Head')
-		);
-		$website_node[$website_key]['MyA']->create_website_node(
-			array('Website Node Code'=>'p.Profile', 'Website Node Name'=>_('My account'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Head')
-		);
-
-
-
-		$website_node[$website_key]['CS']=$website_node[$website_key]['Home']->create_website_node(array('Website Node Code'=>'p.CS', 'Website Node Name'=>_('Customer services'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Root', 'Website Node Icon'=>'thumbs-o-up'));
-		$page=new Webpage($website_node[$website_key]['CS']->get_webpage_key());
-		$page->update(array('Webpage Properties'=>
-				json_encode(array('body_classes'=>'information-contact page-information-contact layout-fullwidth'))
+				json_encode(array('body_classes'=>'page-category layout-fullwidth'))
 			), 'no_history');
 
 		$settings=array(
-			'title'=>array('edit'=>'string', 'id'=>'title', 'value'=>_('Customer services')),
-			'content'=>array('edit'=>'text', 'id'=>'content', 'value'=>_('This is a CMS block edited from admin panel'))
+			'title'=>array('edit'=>'string', 'id'=>'title', 'value'=>_('Catalogue')),
 		);
-
-		$page->append_block(array('Webpage Block Template'=>'info.blank', 'Webpage Block Settings'=>$settings));
-
-
-		$node=$website_node[$website_key]['CS']->create_website_node(
-			array('Website Node Code'=>'p.Contact', 'Website Node Name'=>_('Contact us'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Head')
-		);
-		$page=new Webpage($node->get_webpage_key());
-		$page->update(array('Webpage Properties'=>
-				json_encode(array('body_classes'=>'information-contact page-information-contact layout-fullwidth'))
-			), 'no_history');
-		$page->append_block(array('Webpage Block Template'=>'contact.map', 'Webpage Block Settings'=>array()));
-
-
-		$node=$website_node[$website_key]['CS']->create_website_node(
-			array('Website Node Code'=>'p.Delivery', 'Website Node Name'=>_('Delivery'), 'Website Node Locked'=>'No', 'Website Node Type'=>'Head', 'Website Node Icon'=>'truck fa-flip-horizontal')
-		);
-		$page=new Webpage($node->get_webpage_key());
-		$page->update(array('Webpage Properties'=>
-				json_encode(array('body_classes'=>'information-contact page-information-contact layout-fullwidth'))
-			), 'no_history');
-
-		$settings=array(
-			'title'=>array('edit'=>'string', 'id'=>'title', 'value'=>_('Delivery')),
-			'content'=>array('edit'=>'text', 'id'=>'content', 'value'=>_('This is a CMS block edited from admin panel'))
-		);
-
-		$page->append_block(array('Webpage Block Template'=>'info.blank', 'Webpage Block Settings'=>$settings));
+		$page->append_block(array('Webpage Block Template'=>'product_nodes', 'Webpage Block Settings'=>$settings));
 
 
 
-		$node=$website_node[$website_key]['CS']->create_website_node(
-			array('Website Node Code'=>'p.GTC', 'Website Node Name'=>_('Terms & Conditions'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Head')
-		);
-		$page=new Webpage($node->get_webpage_key());
-		$page->update(array('Webpage Properties'=>
-				json_encode(array('body_classes'=>'information-contact page-information-contact layout-fullwidth'))
-			), 'no_history');
-
-		$settings=array(
-			'title'=>array('edit'=>'string', 'id'=>'title', 'value'=>_('General Terms & Conditions')),
-			'content'=>array('edit'=>'text', 'id'=>'content', 'value'=>_('This is a CMS block edited from admin panel'))
-		);
-
-		$page->append_block(array('Webpage Block Template'=>'info.blank', 'Webpage Block Settings'=>$settings));
 
 
+		$sql=sprintf("select `Page Key`,`Page Code`,`Page Store Title`,`Page Parent Key`,`Page State` from `Page Store Dimension` where `Page Store Section Type`='Department' and `Page Site Key`=%d", $website_key);
 
-		$website_node[$website_key]['Cat']=$website_node[$website_key]['Home']->create_website_node(array('Website Node Code'=>'p.Cat', 'Website Node Name'=>_('Catalogue'), 'Website Node Locked'=>'Yes', 'Website Node Type'=>'Root'));
-		$website_node[$website_key]['Insp']=$website_node[$website_key]['Home']->create_website_node(array('Website Node Code'=>'p.Insp', 'Website Node Name'=>_('Inspiration'), 'Website Node Locked'=>'No', 'Website Node Type'=>'Root'));
+		if ($result=$db->query($sql)) {
+			foreach ($result as $row) {
+				print 'd.'.$row['Page Code']."\n";
+				$dep_key=$row['Page Parent Key'];
+				$dep_node=$node->create_subnode(array('Website Node Code'=>'d.'.$row['Page Code'], 'Website Node Name'=>$row['Page Store Title'], 'Website Node Locked'=>'No', 'Website Node Type'=>'Branch', 'Website Node Icon'=>'th', 'Website Node Status'=>$row['Page State']));
+
+				$page=new Webpage($dep_node->get_webpage_key());
+				$page->update(array('Webpage Properties'=>
+						json_encode(array('body_classes'=>'page-category layout-fullwidth'))
+					), 'no_history');
+
+				$settings=array(
+					'title'=>array('edit'=>'string', 'id'=>'title', 'value'=>$row['Page Store Title']),
+				);
+				$page->append_block(array('Webpage Block Template'=>'product_nodes', 'Webpage Block Settings'=>$settings));
 
 
+				$sql=sprintf("select `Page Key`,`Page Code`,`Page Store Title`,`Product Family Code`,`Page Parent Key`,`Page State` from `Page Store Dimension` left join `Product Family Dimension` on (`Product Family Key`=`Page Parent Key`) where `Page Store Section Type`='Family' and `Product Family Main Department Key`=%d", $dep_key);
+				//print "$sql\n";
+				if ($result2=$db->query($sql)) {
+					foreach ($result2 as $row2) {
+
+						$fam_key=$row2['Page Parent Key'];
+						print ' f.'.$row2['Page Code']." $fam_key  ".$row2['Product Family Code']."   \n";
+						$fam_node=$dep_node->create_subnode(array('Website Node Code'=>'f.'.$row2['Page Code'], 'Website Node Name'=>$row2['Page Store Title'], 'Website Node Locked'=>'No', 'Website Node Type'=>'Branch', 'Website Node Icon'=>'pagelines', 'Website Node Status'=>$row2['Page State']));
+
+						$page=new Webpage($dep_node->get_webpage_key());
+						$page->update(array('Webpage Properties'=>
+								json_encode(array('body_classes'=>'page-category layout-fullwidth'))
+							), 'no_history');
+
+						$settings=array(
+							'title'=>array('edit'=>'string', 'id'=>'title', 'value'=>$row2['Page Store Title']),
+						);
+						$page->append_block(array('Webpage Block Template'=>'products', 'Webpage Block Settings'=>$settings));
+
+
+						$sql=sprintf("select `Page Key`,`Page Code`,`Page Store Title`,`Page State`,`Product ID` from `Page Store Dimension` left join `Product Dimension` on (`Product ID`=`Page Parent Key`) where `Page Store Section Type`='Product' and `Product Family Key`=%d", $fam_key);
+						//print "$sql\n";
+						if ($result3=$db->query($sql)) {
+							foreach ($result3 as $row3) {
+
+
+								$product_node=$fam_node->create_subnode(array('Website Node Code'=>'a.'.$row3['Page Code'], 'Website Node Name'=>$row3['Page Store Title'], 'Website Node Locked'=>'No', 'Website Node Type'=>'Branch', 'Website Node Icon'=>'leaf', 'Website Node Status'=>$row3['Page State']));
+								print '  a.'.$row3['Page Code']."\n";
+								$page=new Webpage($product_node->get_webpage_key());
+								$page->update(array('Webpage Properties'=>
+										json_encode(array('body_classes'=>'page-product layout-fullwidth'))
+									), 'no_history');
+
+								$product=new Product($row3['Product ID']);
+
+								$settings=array(
+									'title'=>array('edit'=>'string', 'id'=>'title', 'value'=>$row3['Page Store Title']),
+									'product'=>array(
+										'code'=>$product->get('Code'),
+										'name'=>$product->get('Name'),
+										'summary'=> array(
+											array('class'=>'', 'label'=>'Code', 'value'=>$product->get('Code'), 'ref'),
+											array('class'=>'', 'label'=>'Availability', 'value'=>'In Stock', 'ref')
+										)
+									)
+
+
+								);
+								$page->append_block(array('Webpage Block Template'=>'product', 'Webpage Block Settings'=>$settings));
+
+
+								exit;
+
+
+
+							}
+						}else {
+							print_r($error_info=$db->errorInfo());
+							exit;
+						}
+
+
+					}
+				}else {
+					print_r($error_info=$db->errorInfo());
+					exit;
+				}
+
+
+
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
 
 
 
 
 	}
+	
+	exit;
+	
 }
 
 exit;

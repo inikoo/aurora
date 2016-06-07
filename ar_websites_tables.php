@@ -39,6 +39,9 @@ case 'websites':
 case 'nodes':
 	nodes(get_table_parameters(), $db, $user);
 	break;
+case 'webpages':
+	webpages(get_table_parameters(), $db, $user);
+	break;	
 case 'root_nodes':
 	root_nodes(get_table_parameters(), $db, $user);
 	break;
@@ -434,8 +437,8 @@ function root_nodes($_data, $db, $user) {
 
 		$adata[]=array(
 			'id'=>(integer) $data['Website Node Key'],
-			'code'=>$data['Website Node Code'],
-			'name'=>$data['Website Node Name'],
+			'code'=>$data['Webpage Code'],
+			'name'=>$data['Webpage Name'],
 
 	
 		);
@@ -468,8 +471,8 @@ function nodes($_data, $db, $user) {
 
 		$adata[]=array(
 			'id'=>(integer) $data['Website Node Key'],
-			'code'=>$data['Website Node Code'],
-			'name'=>$data['Website Node Name'],
+			'code'=>$data['Webpage Code'],
+			'name'=>$data['Webpage Name'],
 
 	
 		);
@@ -489,6 +492,41 @@ function nodes($_data, $db, $user) {
 	);
 	echo json_encode($response);
 }
+
+function webpages($_data, $db, $user) {
+
+	$rtext_label='webpage';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	foreach ($db->query($sql) as $data) {
+
+		$adata[]=array(
+			'id'=>(integer) $data['Webpage Key'],
+			'code'=>$data['Webpage Code'],
+			'name'=>$data['Webpage Name'],
+
+	
+		);
+
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
 
 function blocks($_data, $db, $user) {
 

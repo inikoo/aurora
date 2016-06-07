@@ -30,6 +30,7 @@ $parameters=array(
 		'parent_key'=>$state['key'],
 );
 
+$smarty->assign('parent_node_key',$state['key']);
 
 include('utils/get_table_html.php');
 

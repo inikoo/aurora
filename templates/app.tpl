@@ -1,4 +1,3 @@
-{if $_DEVEL}{strip}{/if}
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html>
 <html lang='en' xml:lang='en' xmlns="http://www.w3.org/1999/xhtml">
@@ -131,4 +130,3 @@
 </div>
 </body>
 </html>
-{if $_DEVEL}{/strip}{/if}

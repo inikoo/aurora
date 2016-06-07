@@ -46,9 +46,9 @@ function categories($_data, $db, $user) {
 	$rtext_label='category';
 	include_once 'prepare_table/init.php';
 
+
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
-
 
 
 	foreach ($db->query($sql) as $data) {
@@ -99,7 +99,6 @@ function categories($_data, $db, $user) {
 
 
 function subject_categories($_data, $db, $user) {
-
 
 	$rtext_label='category';
 	include_once 'prepare_table/init.php';

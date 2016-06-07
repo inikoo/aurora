@@ -11,7 +11,7 @@
 
 <section id="sidebar-main" class="col-md-12">
 	<div id="content">
-		<h1 class="Title">{$settings.title.value}</h1>
-		<div class="Text">{$settings.content.value}</div>
+		<h1 class="Title">{$data.title.value}</h1>
+		<div class="Text">{$data.content.value}</div>
 	</div>
 </section>

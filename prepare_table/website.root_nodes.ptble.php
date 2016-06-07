@@ -13,7 +13,7 @@
 
 
 
-$table='`Website Node Dimension` N';
+$table='`Website Node Dimension` N  left join `Webpage Dimension` W on (W.`Webpage Key`=N.`Website Node Webpage Key`) ';
 
 switch ($parameters['parent']) {
 
@@ -127,9 +127,9 @@ $_dir=$order_direction;
 
 
 if ($order=='code'){
-	$order='`Website Node Code`';
+	$order='`Webpage Code`';
 }if ($order=='name'){
-	$order='`Website Node Name`';
+	$order='`Webpage Name`';
 }else {
 	$order='N.`Website Node Key`';
 }
@@ -138,6 +138,6 @@ if ($order=='code'){
 $sql_totals="select count(Distinct N.`Website Node Key`) as num from $table  $where  ";
 
 $fields="
-`Website Node Key`,`Website Node Code`,`Website Node Name`
+`Website Node Key`,`Webpage Code`,`Webpage Name`
 ";
 ?>

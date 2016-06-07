@@ -22,18 +22,31 @@
 		</div>
 		<div style="clear:both">
 		</div>
+		
 		<div class="data_container">
 			<div style="min-height:80px;float:left;width:28px">
 				<i class="fa fa-camera-retro"></i> 
 			</div>
-			<div class="wraptocenter main_image" >
-				{if $main_image!=''}
-				<img src="/{$main_image.small_url}"  >
+			
+			{assign "image_key" $product->get_main_image_key()}
+			<div class="wraptocenter main_image {if $image_key==''}hide{/if}" >
+				
+				<img src="/{if $image_key}image_root.php?id={$image_key}&size=small{else}art/nopic.png{/if}"  >
 				
 				</span>
-				{/if}
-			</div>
+				
+			</div>	
+			{include file='upload_main_image.tpl' object='Product'  key=$product->id class="{if $image_key!=''}hide{/if}"}
+
+			
+			
+				
+				
+				
+			
 		</div>
+		
+	
 		{include file='sticky_note.tpl' object='Category'  key=$product->id sticky_note_field='Store_Product_Sticky_Note' _object=$product}
 
 	

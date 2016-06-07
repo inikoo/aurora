@@ -10,9 +10,9 @@
 */
 
 
-$tab='website.nodes';
+$tab='website.webpages';
 $ar_file='ar_websites_tables.php';
-$tipo='nodes';
+$tipo='webpages';
 
 $default=$user->get_tab_defaults($tab);
 

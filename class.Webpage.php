@@ -9,6 +9,7 @@
 
 */
 
+include_once 'class.WebpageVersion.php';
 
 include_once 'class.DB_Table.php';
 
@@ -31,31 +32,57 @@ class Webpage extends DB_Table{
 			$this->find($a2, $a3);
 
 		}else
-			$this->get_data($a1, $a2);
+			$this->get_data($a1, $a2, $a3);
 	}
 
 
-	function get_data($key, $tag) {
+	function get_data($key, $tag, $tag2=false) {
 
 		if ($key=='id')
 			$sql=sprintf("select * from `Webpage Dimension` where `Webpage Key`=%d", $tag);
+		else if ($key=='website_code')
+			$sql=sprintf("select  * from `Webpage Dimension` where `Webpage Website Key`=%d and `Webpage Code`=%s ", $tag, prepare_mysql($tag2));
 		else if ($key=='code')
 			$sql=sprintf("select  * from `Webpage Dimension` where `Webpage Code`=%s ", prepare_mysql($tag));
 		else
 			return;
 
 
+
 		if ($this->data = $this->db->query($sql)->fetch()) {
 			$this->id=$this->data['Webpage Key'];
-			$this->code=$this->data['Webpage Code'];
-			$this->properties=json_decode($this->data['Webpage Properties'],true);
-	
+
+			$this->version=$this->get_version();
+
+
 		}
 
 
 
 	}
 
+
+	function get_version() {
+
+		if ($this->get('Webpage Number Displayable Versions')==0) {
+			return false;
+		}if ($this->get('Webpage Number Displayable Versions')==1) {
+			return new WebpageVersion($this->get('Webpage Version Key'));
+		}else {
+
+			$versions=$this->get_version_keys();
+			if (count($versions)>0) {
+				// TODO !! with probabilities
+
+				reset($versions);
+
+				$this->version= key($versions);
+			}else {
+				$this->version=false;
+			}
+
+		}
+	}
 
 
 	function find($raw_data, $options) {
@@ -97,11 +124,12 @@ class Webpage extends DB_Table{
 		}
 
 
-		$sql=sprintf("select `Webpage Key` from `Webpage Dimension` where `Webpage Website Node Key`=%d and  `Webpage Code`=%s",
-			$data['Webpage Website Node Key'],
+		$sql=sprintf("select `Webpage Key` from `Webpage Dimension` where `Webpage Website Key`=%d and  `Webpage Code`=%s",
+			$data['Webpage Website Key'],
 			prepare_mysql($data['Webpage Code'])
 		);
 
+		print "$sql\n";
 
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
@@ -157,6 +185,20 @@ class Webpage extends DB_Table{
 			$this->new=true;
 
 
+			$this->version=$this->create_version();
+
+
+			switch ($this->get('Webpage Class')) {
+			case 'Product':
+
+
+				exit;
+				break;
+			default:
+
+				break;
+			}
+
 
 
 
@@ -169,6 +211,131 @@ class Webpage extends DB_Table{
 	}
 
 
+
+	function create_version() {
+
+
+
+		$this->new_object=false;
+
+		$data['editor']=$this->editor;
+
+		$data['Webpage Version Webpage Key']=$this->id;
+		$data['Webpage Version Valid From']=gmdate('Y-m-d H:i:s');
+
+
+
+
+
+		if (!array_key_exists('Webpage Version Code', $data) or $data['Webpage Version Code']=='') {
+
+			$number_webpages=count($this->get_version_keys());
+
+			if ($number_webpages<26) {
+				$alphabet = range('A', 'Z');
+				$data['Webpage Version Code']=$alphabet[$number_webpages];
+			}
+
+
+		}
+
+		$version= new WebpageVersion('find', $data, 'create');
+
+		if ($version->id) {
+			$this->new_object_msg=$version->msg;
+
+			if ($version->new) {
+				$this->new_object=true;
+				$this->update_versions_data();
+
+
+				switch ($this->get('Webpage Class')) {
+				case 'Hub':
+					$version->update(array('Webpage Version Metadata'=>
+							json_encode(array('body_classes'=>'information-contact page-information-contact layout-fullwidth'))
+						), 'no_history');
+
+					$settings=array(
+						'title'=>array('edit'=>'string', 'id'=>'title', 'value'=>_('Editable Title')),
+						'content'=>array('edit'=>'text', 'id'=>'content', 'value'=>_('This is a CMS block edited from admin panel'))
+					);
+
+					$version->append_block(array('Webpage Version Block Template'=>'info.blank', 'Webpage Version Block Settings'=>$settings));
+
+					break;
+				case 'Info':
+					$version->update(array('Webpage Version Metadata'=>
+							json_encode(array('body_classes'=>'information-contact page-information-contact layout-fullwidth'))
+						), 'no_history');
+
+					$settings=array(
+						'title'=>array('edit'=>'string', 'id'=>'title', 'value'=>_('Editable Title')),
+						'content'=>array('edit'=>'text', 'id'=>'content', 'value'=>_('This is a CMS block edited from admin panel'))
+					);
+
+					$version->append_block(array('Webpage Version Block Template'=>'info.blank', 'Webpage Version Block Settings'=>$settings));
+
+					break;
+
+				case 'Product':
+
+					$version->update(array('Webpage Properties'=>
+							json_encode(array('body_classes'=>'page-product layout-fullwidth'))
+						), 'no_history');
+
+					$settings=array(
+						'title'=>array('edit'=>'string', 'id'=>'title', 'value'=>'xxx'),
+
+
+						'summary'=> array(
+							array('class'=>'', 'label'=>'Code', 'product_value_key'=>'Code', 'ref'=>''),
+							array('class'=>'', 'label'=>'Availability', 'product_value_key'=>'Fuzzy Availability', 'ref'=>'')
+						)
+
+
+
+					);
+					$version->append_block(array('Webpage Version Block Template'=>'product', 'Webpage Version Block Settings'=>$settings));
+
+
+					break;
+
+
+				default:
+
+					break;
+				}
+
+
+
+
+
+
+			} else {
+				$this->error=true;
+				if ($version->found) {
+
+					$this->error_code='duplicated_field';
+					$this->error_metadata=json_encode(array($version->duplicated_field));
+
+					if ($version->duplicated_field=='Webpage Code') {
+						$this->msg=_('Duplicated webpage version code');
+					}
+
+
+				}else {
+					$this->msg=$version->msg;
+				}
+			}
+			return $version;
+		}
+		else {
+			$this->error=true;
+			$this->msg=$version->msg;
+		}
+
+
+	}
 
 
 	function get($key, $data=false) {
@@ -197,19 +364,7 @@ class Webpage extends DB_Table{
 		return '';
 	}
 
-    function get_property($key){
-    
-    	if (!$this->id or !$this->properties) {
-			return '';
-		}
-    
-        if(array_key_exists($key, $this->properties)){
-            return $this->properties[$key];
-        }else{
-            return false;
-        }
-    
-    }
+
 
 
 	function update_field_switcher($field, $value, $options='', $metadata='') {
@@ -263,40 +418,31 @@ class Webpage extends DB_Table{
 	}
 
 
-	function append_block($data, $position=0) {
+
+	function get_version_keys($filter='all') {
+		$versions=array();
+
+		$sql=sprintf('select `Webpage Version Key`,`Webpage Version Display Probability` from `Webpage Version Dimension` where `Webpage Version Webpage Key`=%d order by `Webpage Version Display Probability` desc ', $this->id);
 
 
-
-		$sql=sprintf('insert into `Webpage Block Bridge` (`Webpage Block Webpage Key`,`Webpage Block Position`,`Webpage Block Template`,`Webpage Block Settings`) values (%d,%d,%s,%s) ',
-			$this->id,
-			(10*$position)+5,
-			prepare_mysql($data['Webpage Block Template']),
-			prepare_mysql(json_encode($data['Webpage Block Settings']))
-		);
-
-		$this->db->exec($sql);
-
-
-		$sql="SET @ordering_inc = 10;SET @new_ordering = 0;";
-		$sql.=sprintf("update  `Webpage Block Bridge` set `Webpage Block Position` = (@new_ordering := @new_ordering + @ordering_inc) where `Webpage Block Webpage Key`=%d order by `Webpage Block Position` desc",
-			$this->id
-		);
-		$this->db->exec($sql);
-	}
-
-
-	function get_content($smarty) {
-
-
-        $content='';
-
-		$sql=sprintf('select `Webpage Block Template`,`Webpage Block Settings` from  `Webpage Block Bridge` where `Webpage Block Webpage Key`=%d  order by `Webpage Block Position` desc', $this->id);
 
 		if ($result=$this->db->query($sql)) {
 			foreach ($result as $row) {
-			    $smarty->assign('settings',json_decode($row['Webpage Block Settings'],true));
-			
-                $content.=$smarty->fetch('ecom/'.$row['Webpage Block Template'].'.tpl');
+				if ($filter=='displayable') {
+					if ($row['Webpage Version Display Probability']>0) {
+						$versions[$row['Webpage Version Key']]=$row['Webpage Version Display Probability'];
+					}
+
+				}elseif ($filter=='displayable') {
+					if ($row['Webpage Version Display Probability']==0) {
+						$versions[$row['Webpage Version Key']]=$row['Webpage Version Display Probability'];
+					}
+
+				}else {
+					$versions[$row['Webpage Version Key']]=$row['Webpage Version Display Probability'];
+
+				}
+
 			}
 		}else {
 			print_r($error_info=$this->db->errorInfo());
@@ -304,7 +450,71 @@ class Webpage extends DB_Table{
 		}
 
 
-        return $content;
+		return $versions;
+	}
+
+
+	function update_versions_data() {
+
+		$displayable_versions=$this->get_version_keys('displayable');
+		$number_displayable_versions=count($displayable_versions);
+		$versions=$this->get_version_keys();
+		$number_versions=count($versions);
+
+		if ($number_versions==0) {
+			$main_version='';
+		}else {
+
+			reset($versions);
+			$main_version = key($versions);
+
+		}
+
+
+		$this->update(array(
+				'Webpage Number Displayable Versions'=>$number_displayable_versions,
+				'Webpage Version Key'=>$main_version
+			), 'no_history');
+	}
+
+
+	function get_content($smarty, $version_key=false) {
+
+		include_once 'utils/object_functions.php';
+
+		if (!$version_key)$version_key=$this->version->id;
+
+		$content='';
+
+		$object=get_object($this->get('Webpage Object'), $this->get('Webpage Object Key'));
+
+
+		$sql=sprintf('select `Webpage Version Block Template`,`Webpage Version Block Settings` from  `Webpage Version Block Bridge` where `Webpage Version Block Webpage Version Key`=%d  order by `Webpage Version Block Position` desc',
+			$version_key);
+
+
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$smarty->assign('data', json_decode($row['Webpage Version Block Settings'], true));
+
+				if ($row['Webpage Version Block Template']=='product') {
+					$smarty->assign('product', $object);
+
+				}
+
+				$content.=$smarty->fetch('ecom/'.$row['Webpage Version Block Template'].'.tpl');
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+		return $content;
+
+
+
 	}
 
 

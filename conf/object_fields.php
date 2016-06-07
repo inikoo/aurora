@@ -29,7 +29,8 @@ function get_object_fields($object, $db, $user, $smarty, $options=false) {
 		break;
 	case 'Category':
 		include 'fields/category.fld.php';
-		return $object_fields;
+			
+		return $category_fields;
 		break;
 	case 'Purchase Order':
 		include 'fields/supplier.order.fld.php';

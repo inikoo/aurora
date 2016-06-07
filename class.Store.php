@@ -1483,16 +1483,7 @@ class Store extends DB_Table {
 	}
 
 
-	function get_number_sites() {
-		$number_sites=0;
-		$sql=sprintf("select count(*) as number_sites from `Site Dimension` where `Site Store Key`=%d ", $this->id);
 
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$number_sites=$row['number_sites'];
-		}
-		return $number_sites;
-	}
 
 
 	function get_sites_data($smarty=false) {
@@ -1557,12 +1548,25 @@ class Store extends DB_Table {
 
 
 
-	function update_number_sites() {
-		$current_sites=$this->get_number_sites();
-		if ($this->data['Store Websites']!=$current_sites) {
+	function update_websites_data() {
 
-			$this->update_field_switcher('Store Websites', $current_sites);
+
+		$number_sites=0;
+		$sql=sprintf("select count(*) as number_sites from `Site Dimension` where `Site Store Key`=%d ", $this->id);
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$number_sites=$row['number_sites'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+		$this->update(array('Store Websites'=>$number_sites), 'no_history');
+
+
+
 
 	}
 
@@ -2120,7 +2124,7 @@ class Store extends DB_Table {
 		);
 
 
-		
+
 		$category=new Category('find create', $data);
 
 
@@ -2129,7 +2133,7 @@ class Store extends DB_Table {
 
 			if ($category->new) {
 				$this->new_category=true;
-				
+
 			} else {
 				$this->error=true;
 				$this->msg=$category->msg;
@@ -2143,6 +2147,54 @@ class Store extends DB_Table {
 		}
 
 	}
+
+
+	function create_website($data) {
+
+		$this->new_object=false;
+
+		$data['editor']=$this->editor;
+
+
+		$data['Website Store Key']=$this->id;
+		$data['Website Valid From']=gmdate('Y-m-d H:i:s');
+
+		$website= new Website('find', $data, 'create');
+
+		if ($website->id) {
+			$this->new_object_msg=$website->msg;
+
+			if ($website->new) {
+				$this->new_object=true;
+				$this->update_websites_data();
+			} else {
+				$this->error=true;
+				if ($website->found) {
+
+					$this->error_code='duplicated_field';
+					$this->error_metadata=json_encode(array($website->duplicated_field));
+
+					if ($website->duplicated_field=='Website Code') {
+						$this->msg=_('Duplicated website code');
+					}if ($website->duplicated_field=='Website URL') {
+						$this->msg=_('Duplicated website URL');
+					}else {
+						$this->msg=_('Duplicated website name');
+					}
+
+
+				}else {
+					$this->msg=$website->msg;
+				}
+			}
+			return $website;
+		}
+		else {
+			$this->error=true;
+			$this->msg=$website->msg;
+		}
+	}
+
 
 
 	function get_sales_timeseries_sql() {
