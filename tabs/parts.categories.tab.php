@@ -2,7 +2,7 @@
 /*
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created: 29 April 2016 at 16:33:04 GMT+8, Lovina, Bali, Indonesia
+ Created: 8 June 2016 at 13:49:17 CEST, Train (Nottingham-Sheffield) 
  Copyright (c) 2015, Inikoo
 
  Version 3
@@ -11,8 +11,8 @@
 
 
 
-$tab='suppliers.categories';
-$ar_file='ar_suppliers_tables.php';
+$tab='parts.categories';
+$ar_file='ar_inventory_tables.php';
 $tipo='categories';
 
 $default=$user->get_tab_defaults($tab);
@@ -32,11 +32,11 @@ $table_filters=array(
 $parameters=array(
 		'parent'=>$state['parent'],
 		'parent_key'=>$state['parent_key'],
-		'subject'=>'supplier',
+		'subject'=>'part',
 );
 
 $table_buttons=array();
-$table_buttons[]=array('icon'=>'plus', 'title'=>_('New category'), 'reference'=>"suppliers/category/new");
+$table_buttons[]=array('icon'=>'plus', 'title'=>_('New category'), 'reference'=>"inventory/category/new");
 
 $smarty->assign('table_buttons', $table_buttons);
 

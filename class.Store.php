@@ -2104,8 +2104,6 @@ class Store extends DB_Table {
 
 	function create_category($raw_data) {
 
-
-
 		if (!isset($raw_data['Category Label']) or $raw_data['Category Label']=='') {
 			$raw_data['Category Label']=$raw_data['Category Code'];
 		}
@@ -2122,8 +2120,6 @@ class Store extends DB_Table {
 			'editor'=>$this->editor
 
 		);
-
-
 
 		$category=new Category('find create', $data);
 

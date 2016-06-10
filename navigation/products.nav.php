@@ -991,10 +991,8 @@ function get_new_store_navigation($data, $smarty, $user, $db, $account) {
 
 function get_products_new_main_category_navigation($data, $smarty, $user, $db, $account) {
 
-
-
 	$block_view=$data['section'];
-	$sections=get_sections('products',$data['parent_key']);
+	$sections=get_sections('products', $data['parent_key']);
 	$left_buttons=array();
 	$left_buttons[]=array('icon'=>'arrow-up', 'title'=>_('Categories'), 'reference'=>'products/'.$data['parent_key'].'/categories', 'parent'=>'');
 

@@ -365,11 +365,17 @@ case 'views':
 
 	unset($state['_object']);
 	unset($state['_parent']);
+	
+	unset($state['old_state']['_parent']);
+	unset($state['old_state']['_object']);
+	unset($state['old_state']['store']);
+	unset($state['old_state']['website']);
+	unset($state['old_state']['warehouse']);
+	
 	unset($state['store']);
 	unset($state['website']);
 	unset($state['warehouse']);
 	$response['state']=$state;
-
 
 
 
@@ -1000,7 +1006,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
 			return get_suppliers_category_navigation($data, $smarty, $user, $db, $account);
 			break;
-
+		case ('main_category.new'):
+			return get_suppliers_new_main_category_navigation($data, $smarty, $user, $db, $account);
+			break;
 		case ('dashboard'):
 			return get_suppliers_dashboard_navigation($data, $smarty, $user, $db, $account);
 			break;
@@ -1052,7 +1060,10 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 			return get_categories_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('category'):
-			return get_category_navigation($data, $smarty, $user, $db, $account);
+			return get_parts_category_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('main_category.new'):
+			return get_parts_new_main_category_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('barcodes'):
 			return get_barcodes_navigation($data, $smarty, $user, $db, $account);
@@ -1650,7 +1661,11 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 			$branch[]=array('label'=>_("New supplier's part"), 'icon'=>'stop', 'reference'=>'');
 
 		}elseif ($state['section']=='categories') {
-			$branch[]=array('label'=>_("Suppliers's categories"), 'icon'=>'sitemap', 'reference'=>'supplier/categories/');
+			$branch[]=array('label'=>_("Suppliers's categories"), 'icon'=>'sitemap', 'reference'=>'suppliers/categories/');
+
+		}elseif ($state['section']=='main_category.new') {
+			$branch[]=array('label'=>_("Suppliers's categories"), 'icon'=>'sitemap', 'reference'=>'suppliers/categories/');
+			$branch[]=array('label'=>_("New main category"), 'icon'=>'', 'reference'=>'/');
 
 		}
 
@@ -2620,7 +2635,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 function create_node_breadcrumbs($db, $node_key, $branch) {
 
-    include_once('utils/text_functions.php');
+	include_once 'utils/text_functions.php';
 
 	$sql=sprintf('select `Website Node Parent Key`,`Website Node Key`,`Website Node Website Key`,`Webpage Code`,`Webpage Name`,`Website Node Icon` from `Website Node Dimension` left join `Webpage Dimension` on (`Website Node Webpage Key`=`Webpage Key`)  where `Website Node Key`=%d',
 		$node_key
@@ -2630,7 +2645,7 @@ function create_node_breadcrumbs($db, $node_key, $branch) {
 		if ($row = $result->fetch()) {
 
 
-			array_unshift($branch, array('label'=>trimStringToFullWord(16,$row['Webpage Name']), 'icon'=>($row['Website Node Icon']==''?'file-o':$row['Website Node Icon']), 'reference'=>'website/'.$row['Website Node Website Key'].'/node/'.$row['Website Node Key']  ));
+			array_unshift($branch, array('label'=>trimStringToFullWord(16, $row['Webpage Name']), 'icon'=>($row['Website Node Icon']==''?'file-o':$row['Website Node Icon']), 'reference'=>'website/'.$row['Website Node Website Key'].'/node/'.$row['Website Node Key']  ));
 			if ($row['Website Node Parent Key']==$node_key) {
 				return  $branch;
 			}else {

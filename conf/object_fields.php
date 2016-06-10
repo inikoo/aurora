@@ -19,17 +19,16 @@ function get_object_fields($object, $db, $user, $smarty, $options=false) {
 	$edit=true;
 
 	switch ($object->get_object_name()) {
-		case 'Webpage':
+	case 'Webpage':
 		include 'fields/webpage.fld.php';
 		return $object_fields;
 		break;
-		case 'Website Node':
+	case 'Website Node':
 		include 'fields/website.node.fld.php';
 		return $object_fields;
 		break;
 	case 'Category':
 		include 'fields/category.fld.php';
-			
 		return $category_fields;
 		break;
 	case 'Purchase Order':

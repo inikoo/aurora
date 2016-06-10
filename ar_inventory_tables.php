@@ -50,7 +50,9 @@ case 'barcodes':
 case 'supplier_parts':
 	supplier_parts(get_table_parameters(), $db, $user);
 	break;
-
+case 'categories':
+	categories(get_table_parameters(), $db, $user);
+	break;
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
@@ -518,6 +520,117 @@ function barcodes($_data, $db, $user) {
 
 
 
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+function categories($_data, $db, $user) {
+
+	$rtext_label='category';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
+
+			switch ($data['Category Branch Type']) {
+			case 'Root':
+				$level=_('Root');
+				break;
+			case 'Head':
+				$level=_('Head');
+				break;
+			case 'Node':
+				$level=_('Node');
+				break;
+			default:
+				$level=$data['Category Branch Type'];
+				break;
+			}
+			$level=$data['Category Branch Type'];
+
+
+			$adata[]=array(
+				'id'=>(integer) $data['Category Key'],
+				'store_key'=>(integer) $data['Category Store Key'],
+				'code'=>$data['Category Code'],
+				'label'=>$data['Category Label'],
+				'subjects'=>number($data['Category Number Subjects']),
+				'level'=>$level,
+				'subcategories'=>number($data['Category Children']),
+				'percentage_assigned'=>percentage($data['Category Number Subjects'], ($data['Category Number Subjects']+$data['Category Subjects Not Assigned']))
+			);
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+function category_all_parts($_data, $db, $user) {
+
+
+	$rtext_label='part';
+
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	$adata=array();
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
+
+			if ($data['associated'])
+				$associated=sprintf('<i key="%d" class="fa fa-fw fa-link button" aria-hidden="true" onClick="edit_category_subject(this)" ></i>', $data['Part SKU']);
+			else
+				$associated=sprintf('<i key="%d" class="fa fa-fw fa-unlink button very_discreet" aria-hidden="true" onClick="edit_category_subject(this)" ></i>', $data['Part SKU']);
+
+
+			$adata[]=array(
+				'id'=>(integer) $data['Part SKU'],
+				'associated'=>$associated,
+				'referene'=>$data['Part Reference'],
+				'name'=>$data['Part Name']
+			);
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
 
 	$response=array('resultset'=>
 		array(

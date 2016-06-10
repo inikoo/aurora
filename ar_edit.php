@@ -643,18 +643,18 @@ function delete($account, $db, $user, $editor, $data, $smarty) {
 		if ($object->get_object_name()=='Category') {
 
 			if ($object->get('Category Scope')=='Product') {
-			
-			if($object->get('Category Branch Type')=='Root'){
-			    $response['request']=sprintf('products/%d/categories',
-					$object->get('Category Store Key')
-				);
-			}else{
-			
-				$response['request']=sprintf('products/%d/category/%d',
-					$object->get('Category Store Key'),
-					$object->get('Category Parent Key')
-				);
-			}
+
+				if ($object->get('Category Branch Type')=='Root') {
+					$response['request']=sprintf('products/%d/categories',
+						$object->get('Category Store Key')
+					);
+				}else {
+
+					$response['request']=sprintf('products/%d/category/%d',
+						$object->get('Category Store Key'),
+						$object->get('Category Parent Key')
+					);
+				}
 			}
 
 		}
@@ -745,6 +745,34 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 		break;
 
+	case 'Category_Part':
+
+		include_once 'class.Part.php';
+
+		if (isset($data['fields_data']['Part Reference'])) {
+
+
+			$object=new Part('reference', $data['fields_data']['Part Reference']);
+		}else {
+			$object=new Part( $data['fields_data']['Part SKU']);
+
+		}
+
+		if ($object->id) {
+
+			$parent->associate_subject($object->id);
+
+
+		}else {
+
+			$response=array('state'=>400, 'resp'=>_('Part not found'));
+			echo json_encode($response);
+			exit;
+		}
+		$pcard='';
+		$updated_data=array();
+
+		break;
 
 	case 'Agent_Supplier':
 

@@ -226,7 +226,6 @@ function categories($_data, $db, $user) {
 	echo json_encode($response);
 }
 
-
 function category_all_products($_data, $db, $user) {
 
 

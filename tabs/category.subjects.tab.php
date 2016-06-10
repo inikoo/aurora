@@ -40,9 +40,9 @@ if ($category->get('Category Scope')=='Product') {
 			'parent_key'=>$state['key'],
 
 		);
-		
-		
-		
+
+
+
 		$table_buttons[]=array('icon'=>'cube', 'title'=>_('All products'), 'change_tab'=>'category.all_subjects');
 
 
@@ -99,7 +99,63 @@ if ($category->get('Category Scope')=='Product') {
 
 }
 
+elseif ($category->get('Category Scope')=='Part') {
 
+	
+
+		$tab='category.parts';
+		$ar_file='ar_inventory_tables.php';
+		$tipo='parts';
+
+		$default=$user->get_tab_defaults($tab);
+
+		$table_views=array(
+			'overview'=>array('label'=>_('Overview'), 'title'=>_('Overview')),
+			'sales'=>array('label'=>_('Sales'), 'title'=>_('Sales')),
+
+		);
+
+		$table_filters=array(
+			'reference'=>array('label'=>_('Referene'), 'title'=>_('Part reference')),
+			'name'=>array('label'=>_('Name'), 'title'=>_('Part name')),
+
+		);
+
+		$parameters=array(
+			'parent'=>$state['object'],
+			'parent_key'=>$state['key'],
+
+		);
+
+
+
+		$table_buttons[]=array('icon'=>'square', 'title'=>_('All parts'), 'change_tab'=>'category.all_subjects');
+
+
+		$table_buttons[]=array(
+			'icon'=>'link',
+			'title'=>_('Associate part'),
+			'id'=>'new_record',
+			'inline_new_object'=>
+			array(
+				'field_id'=>'Part_Reference',
+				'field_label'=>_('Associate part').':',
+				'field_edit'=>'string',
+				'object'=>'Category_Part',
+				'parent'=>$state['object'],
+				'parent_key'=>$state['key'],
+				'placeholder'=>_("Parts's reference")
+			)
+
+		);
+		$smarty->assign('table_buttons', $table_buttons);
+
+
+	
+
+
+
+}
 
 
 

@@ -15,11 +15,19 @@ if (isset($options['new']) and  $options['new'] ) {
 	$new=false;
 }
 
+$subject_render=false;
 switch ($options['Category Scope']) {
 case 'Product':
 	$subject_options=array('Product'=>_('Products'), 'Category'=>_('Categories'));
 	$subject_value='Product';
 	$subject_formatted_value=_('Products');
+	$subject_render=true;
+
+	break;
+case 'Part':
+	$subject_options=array('Part'=>_('Parts'));
+	$subject_value='Part';
+	$subject_formatted_value=_('Parts');
 	break;
 default:
 	$subject_options=array();
@@ -29,16 +37,26 @@ default:
 }
 
 
-
 $category_fields=array(
 	array(
 		'label'=>_('Id'),
 		'show_title'=>true,
 		'fields'=>array(
+			array(
+				'edit'=>'hidden',
+				'render'=>false,
+				'required'=>false,
+				'id'=>'Category_Scope',
+				'value'=> $options['Category Scope'],
+				'formatted_value'=> $options['Category Scope'],
+				'label'=>'Scope',
+				'type'=>'value'
+			),
 
 			array(
 				'edit'=>'option',
-				'render'=>($new?true:false),
+				'render'=>(($new and $subject_render)?true:false),
+				'required'=>(($new and $subject_render)?true:false),
 				'id'=>'Category_Subject',
 				'options'=>$subject_options,
 				'value'=> $subject_value,
@@ -77,14 +95,14 @@ $category_fields=array(
 
 switch ($options['Category Scope']) {
 case 'Product':
-	
-		
-			include 'category.product.fld.php';
-            $category_fields=array_merge($category_fields,$category_product_fields);
-		
-		
 
-	
+
+	include 'category.product.fld.php';
+	$category_fields=array_merge($category_fields, $category_product_fields);
+
+
+
+
 	break;
 default:
 

@@ -23,7 +23,16 @@ $options=array( 'new'=>true,'Category Scope'=>'');
 
 if($state['module']=='products'){
     $options['Category Scope']='Product';
+}elseif($state['module']=='inventory'){
+    $options['Category Scope']='Part';
+}elseif($state['module']=='suppliers'){
+    $options['Category Scope']='Supplier';
+}elseif($state['module']=='customers'){
+    $options['Category Scope']='Customer';
+}else{
+    exit('main_category.new.tab.php UNKNOWN module '.$state['module']);
 }
+
 
 $object_fields=get_object_fields($state['_object'], $db, $user, $smarty, $options);
 

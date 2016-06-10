@@ -166,7 +166,7 @@
     
 
     {else}
-    <tr id="{$field.id}_field"  class="{if $smarty.foreach.fields.last}last{/if} {if !$render}hide{/if}  {$class}"   >
+    <tr id="{$field.id}_field"  class="{if $smarty.foreach.fields.last}last{/if} {if !$render}hide{/if} {$edit} {$class}"   >
 		<td id="{$field.id}_label" class="label" ><span>{$field.label}</span></td>
 		<td class="show_buttons" >
 		 		<i id="{$field.id}_validation" class="{if $locked==1}hide locked{/if} fa fa-asterisk fa-fw {if $required and !( $edit=='option' and $field.value!='' ) }required{/if} {if !$required || ($edit=='option' and $field.value!='') }valid{/if}   field_state " ></i> 
