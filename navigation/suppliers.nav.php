@@ -804,7 +804,7 @@ function get_supplier_part_navigation($data, $smarty, $user, $db, $account) {
 
 
 						$sql=sprintf("select `Supplier Part Reference` object_name,`Supplier Part Key` as object_key from %s and ($_order_field < %s OR ($_order_field = %s AND `Supplier Part Key` < %d))  order by $_order_field desc , `Supplier Part Key` desc limit 1",
-                            "$table $where $wheref",
+							"$table $where $wheref",
 							prepare_mysql($_order_field_value),
 							prepare_mysql($_order_field_value),
 							$data['key']
@@ -1022,7 +1022,7 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
 		case 'agent':
 			$tab='agent.orders';
 			$_section='agents';
-			break;	
+			break;
 		case 'account':
 			$tab='suppliers.orders';
 			$_section='orders';
@@ -1300,6 +1300,7 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
 
 }
 
+
 function get_deleted_supplier_navigation($data, $smarty, $user, $db, $account) {
 
 
@@ -1329,6 +1330,37 @@ function get_deleted_supplier_navigation($data, $smarty, $user, $db, $account) {
 	$html=$smarty->fetch('navigation.tpl');
 
 	return $html;
+
+}
+
+
+function get_suppliers_new_main_category_navigation($data, $smarty, $user, $db, $account) {
+
+
+	$sections=get_sections('suppliers', $data['parent_key']);
+	$left_buttons=array();
+	$left_buttons[]=array('icon'=>'arrow-up', 'title'=>_('Categories'), 'reference'=>'suppliers/categories', 'parent'=>'');
+
+	$right_buttons=array();
+
+	$sections['categories']['selected']=true;
+
+
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>_("New main suppliers's category"),
+		'search'=>array('show'=>true, 'placeholder'=>_('Search suppliers'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
 
 }
 

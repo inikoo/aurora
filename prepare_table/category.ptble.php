@@ -15,7 +15,7 @@ $group_by='';
 switch ($parameters['parent']) {
 
 case 'account':
-	$where=sprintf("where `Category Parent Key`=0 and `Category Store Key`=0  ", $parameters['parent_key']);
+	$where=sprintf("where `Category Parent Key`=0  ");
 	switch ($parameters['subject']) {
 
 	case('customer'):
@@ -33,6 +33,9 @@ case 'account':
 	case('invoice'):
 		$where.=sprintf(" and `Category Scope`='Invoice' ");
 		break;
+	case('part'):
+		$where.=sprintf(" and `Category Scope`='Part' ");
+		break;	
 	default:
 		$where.=sprintf(" and false ");
 		break;

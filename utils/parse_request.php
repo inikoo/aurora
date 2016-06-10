@@ -270,8 +270,23 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 						$parent_key=$category->get('Category Store Key');
 					}
 					break;
+				case 'Part':
+					$module='inventory';
+					$section='category';
+
+					if ($category->get('Category Branch Type')=='Root') {
+						$parent='account';
+						$parent_key=1;
+					}
+					
+					print_r($view_path);
+					
+					break;	
 				default:
-					exit('error category '.$category->get('Category Subject').' not set up in parse_request');
+				
+				    print_r($category);
+				
+					exit('error category '.$category->get('Category Subject').' not set up in parse_request.php');
 					break;
 				}
 
@@ -1314,7 +1329,77 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 					$section='stock_history';
 				}elseif ($view_path[0]=='categories') {
 					$section='categories';
-				}elseif ($view_path[0]=='barcodes') {
+				}
+
+				else if ($view_path[0]=='category') {
+					$section='category';
+					$object='category';
+					if (isset($view_path[1]) ) {
+
+						$view_path[1]=preg_replace('/\>$/', '', $view_path[1]);
+						if (preg_match('/^(\d+\>)+(\d+)$/', $view_path[1])) {
+
+							$parent_categories=preg_split('/\>/', $view_path[1]);
+							$metadata=$parent_categories;
+							$key=array_pop($parent_categories);
+
+							$parent='category';
+							$parent_key=array_pop($parent_categories);
+
+							if (isset($view_path[2]) ) {
+								if ($view_path[2]=='part') {
+									$section='part';
+
+									if (isset($view_path[2]) and  is_numeric($view_path[2])) {
+
+										$key=$view_path[2];
+
+									}
+
+								}
+
+
+							}
+
+						}
+						elseif ( is_numeric($view_path[1])) {
+							$key=$view_path[1];
+							include_once 'class.Category.php';
+							$category=new Category($key);
+							if ($category->get('Category Branch Type')=='Root') {
+								$parent='account';
+								$parent_key=1;
+							}else {
+								$parent='category';
+								$parent_key=$category->get('Category Parent Key');
+
+							}
+        
+
+							if (isset($view_path[2]) and is_numeric($view_path[2])) {
+								
+								$section='part';
+								$parent='category';
+								$parent_key=$category->id;
+								$object='product';
+								$key=$view_path[2];
+
+							}
+
+						}
+						elseif ($view_path[1]=='new') {
+
+							$section='main_category.new';
+
+						}
+					}else {
+						//error
+					}
+
+				}
+
+
+				elseif ($view_path[0]=='barcodes') {
 					$section='barcodes';
 				}elseif ($view_path[0]=='barcode') {
 					$section='barcode';
@@ -1546,30 +1631,34 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 					$object='category';
 
 
+					if (isset($view_path[1])) {
 
-
-					if (isset($view_path[0]) and is_numeric($view_path[0])) {
-						$key=$view_path[0];
-						include_once 'class.Category.php';
-						$category=new Category($key);
-						$parent='store';
-						$parent_key=$category->get('Category Store Key');
-
-
-						if (isset($view_path[1]) and is_numeric($view_path[1])) {
-							$section='supplier';
-
-							$parent='category';
-							$parent_key=$category->id;
-							$object='supplier';
+						if ( is_numeric($view_path[1])) {
 							$key=$view_path[1];
+							include_once 'class.Category.php';
+							$category=new Category($key);
+							$parent='store';
+							$parent_key=$category->get('Category Store Key');
+
+
+							if (isset($view_path[1]) and is_numeric($view_path[1])) {
+								$section='supplier';
+
+								$parent='category';
+								$parent_key=$category->id;
+								$object='supplier';
+								$key=$view_path[1];
+
+							}
+
 
 						}
+						elseif ($view_path[1]=='new') {
+							$section='main_category.new';
+						}
 
-
-					}else {
-						//error
 					}
+
 
 				}
 				elseif ($view_path[0]=='new') {

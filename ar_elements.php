@@ -48,6 +48,7 @@ case 'deals':
 	get_deals_element_numbers($db, $data['parameters'], $user);
 	break;
 case 'inventory.parts':
+case 'category.parts':
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
 		));
@@ -143,7 +144,7 @@ function get_webnodes_element_numbers($db, $data, $user) {
 	$parent_key=$data['parent_key'];
 
 	$elements_numbers=array(
-		'status'=>array('Online'=>0, 'Offline'=>0,),
+		'status'=>array('Online'=>0, 'Offline'=>0, ),
 
 	);
 
@@ -173,7 +174,7 @@ function get_webnodes_element_numbers($db, $data, $user) {
 
 	}
 
-	
+
 
 
 	$response= array('state'=>200, 'elements_numbers'=>$elements_numbers);
@@ -182,6 +183,7 @@ function get_webnodes_element_numbers($db, $data, $user) {
 
 
 }
+
 
 function get_deals_element_numbers($db, $data, $user) {
 
@@ -343,6 +345,14 @@ function get_parts_elements($db, $data, $user) {
 	switch ($data['parent']) {
 	case 'account':
 		$where="where `Part Status`='In Use'";
+		break;
+	case 'category':
+
+		$where=sprintf(" where `Subject`='Part' and  `Category Key`=%d  and `Part Status`='In Use' ", $data['parent_key']);
+		$table=' `Category Bridge` left join  `Part Dimension` P on (`Subject Key`=`Part SKU`) ';
+
+
+
 		break;
 	default:
 		$response=array('state'=>405, 'resp'=>'product parent not found '.$data['parent']);

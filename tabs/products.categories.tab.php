@@ -35,8 +35,6 @@ $parameters=array(
 		'subject'=>'product',
 );
 
-$table_buttons=array();
-$table_buttons[]=array('icon'=>'plus', 'title'=>_('New category'), 'reference'=>"products/".$state['parent_key']."/category/new");
 
 
 /*
@@ -77,6 +75,10 @@ $table_buttons[]=array(
 
 );
 */
+
+$table_buttons=array();
+$table_buttons[]=array('icon'=>'plus', 'title'=>_('New category'), 'reference'=>"products/".$state['parent_key']."/category/new");
+
 $smarty->assign('table_buttons', $table_buttons);
 
 

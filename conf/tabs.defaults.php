@@ -812,6 +812,14 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'reference'
 	),
+	'parts.categories'=>array(
+		'view'=>'overview',
+		'sort_key'=>'code',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code'
+	),
 	'part.stock.transactions'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
@@ -833,7 +841,17 @@ $tab_defaults=array(
 
 	),
 
-
+	'category.parts'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'reference',
+		'f_period'=>'ytd',
+		'elements_type'=>each(  $elements_options['parts']  ) ['key'],
+		'elements'=>$elements_options['parts'],
+	),
 	'inventory.barcodes'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',

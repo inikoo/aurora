@@ -9,6 +9,7 @@
 
 */
 
+
 include_once 'utils/date_functions.php';
 
 $where="where true  ";
@@ -19,6 +20,7 @@ $filter_msg='';
 $wheref='';
 
 $fields='';
+
 
 if (isset($parameters['awhere']) and $parameters['awhere']) {
 
@@ -63,28 +65,14 @@ elseif ($parameters['parent']=='list') {
 }
 elseif ($parameters['parent']=='category') {
 
-	include_once 'class.Category.php';
-
-	$category=new Category($parameters['parent_key']);
-
-	if (!in_array($category->data['Category Warehouse Key'], $user->warehouses)) {
-		return;
-	}
+	
 
 	$fields=' "" as `Warehouse Code`,';
 
 	$where=sprintf(" where `Subject`='Part' and  `Category Key`=%d", $parameters['parent_key']);
-	$table=' `Category Bridge` left join  `Part Dimension` P on (`Subject Key`=`Part SKU`) ';
+	$table=' `Category Bridge` left join  `Part Dimension` P on (`Subject Key`=`Part SKU`) left join `Part Data` D on (D.`Part SKU`=P.`Part SKU`)';
 	$where_type='';
 
-
-
-}
-elseif ($parameters['parent']=='warehouse') {
-	$where=sprintf(" where  `Warehouse Key`=%d", $parameters['parent_key']);
-	$fields=' "" as `Warehouse Code`,';
-
-	$table="`Part Dimension` P left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`)";
 
 
 }elseif ($parameters['parent']=='account') {
@@ -95,6 +83,7 @@ elseif ($parameters['parent']=='warehouse') {
 }else {
 	exit("parent not found ".$parameters['parent']);
 }
+
 
 if (isset($extra_where))
 	$where.=$extra_where;
@@ -183,7 +172,6 @@ if ($order=='id') {
 
 	$order='`Part SKU`';
 }
-
 
 
 $sql_totals="select count(Distinct P.`Part SKU`) as num from $table  $where  ";

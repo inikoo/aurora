@@ -478,7 +478,7 @@ $modules=array(
 					'website.reminders.products'=>'website.reminders',
 					'website.root_nodes'=>'website.content',
 					'website.webpages'=>'website.content',
-					
+
 					'website.footer.preview'=>'website.footer',
 					'website.footer.versions'=>'website.footer',
 					'website.header.preview'=>'website.header',
@@ -960,6 +960,15 @@ $modules=array(
 				)
 
 			),
+
+			'main_category.new'=>array('type'=>'new_object',
+				'tabs'=>array(
+					'main_category.new'=>array('label'=>_('New category')),
+
+				)
+
+			),
+
 			'orders'=>array(
 				'type'=>'navigation', 'label'=>_('Orders'), 'title'=>_('Purchase orders'), 'icon'=>'clipboard', 'reference'=>'suppliers/orders',
 				'tabs'=>array(
@@ -1141,10 +1150,29 @@ $modules=array(
 			'categories'=>array('type'=>'navigation', 'label'=>_("Part's Categories"), 'icon'=>'sitemap', 'reference'=>'inventory/categories',
 
 				'tabs'=>array(
-					'inventory.categories'=>array('label'=>_("Part's Categories")),
+					'parts.categories'=>array('label'=>_("Part's Categories")),
 				)
 			),
+			'main_category.new'=>array('type'=>'new_object',
+				'tabs'=>array(
+					'main_category.new'=>array('label'=>_('New category')),
+ 
+				)
 
+			),
+			'category'=>array('type'=>'object',
+				'tabs'=>array(
+
+					'category.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+					'category.history'=>array('label'=>_('History'), 'icon'=>'clock'),
+					'category.subjects'=>array('label'=>_('Parts')),
+					'category.categories'=>array('label'=>_('Subcategories')),
+
+				)
+
+			),
+			
+			
 			'part'=>array('type'=>'object',
 				'subtabs_parent'=>array(
 					'part.sales.overview'=>'part.sales',

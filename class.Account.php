@@ -773,6 +773,54 @@ class Account extends DB_Table{
 	}
 
 
+	function create_category($raw_data) {
+
+		if (!isset($raw_data['Category Label']) or $raw_data['Category Label']=='') {
+			$raw_data['Category Label']=$raw_data['Category Code'];
+		}
+
+		if (!isset($raw_data['Category Subject']) or $raw_data['Category Subject']=='') {
+			$raw_data['Category Subject']=$raw_data['Category Scope'];
+		}
+
+
+		$data=array(
+			'Category Code'=>$raw_data['Category Code'],
+			'Category Label'=>$raw_data['Category Label'],
+			'Category Scope'=>$raw_data['Category Scope'],
+			'Category Subject'=>$raw_data['Category Subject'],
+			'Category Can Have Other'=>'No',
+			'Category Locked'=>'No',
+			'Category Branch Type'=>'Root',
+			'editor'=>$this->editor
+
+		);
+
+		$category=new Category('find create', $data);
+
+
+		if ($category->id) {
+			$this->new_category_msg=$category->msg;
+
+			if ($category->new) {
+				$this->new_category=true;
+
+			} else {
+				$this->error=true;
+				$this->msg=$category->msg;
+
+			}
+			return $category;
+		}
+		else {
+			$this->error=true;
+			$this->msg=$category->msg;
+		}
+
+	}
+
+
+
 }
 
 
