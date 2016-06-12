@@ -447,8 +447,47 @@ class Part extends Asset{
 
 		switch ($field) {
 
+		case 'Part Family Category Key';
+			global $account;
+			include_once 'class.Category.php';
+			$category=new Category($value);
+			if ($category->id and $category->get('Category Root Key')==$account->get('Account Part Family Category Key') ) {
+				$category->associate_subject($this->id);
+				$this->update_field($field, $value, $options);
+
+				$this->other_fields_updated=array(
+					'Part_Family_Code'=>array(
+						'field'=>'Part_Family_Code',
+						'value'=>$category->get('Code'),
+						'formatted_value'=>$category->get('Code'),
 
 
+					),
+					'Part_Family_Label'=>array(
+						'field'=>'Part_Family_Label',
+						'value'=>$category->get('Label'),
+						'formatted_value'=>$category->get('Label'),
+
+
+					),
+					'Part_Family_Key'=>array(
+						'field'=>'Part_Family_Key',
+						'value'=>$category->id,
+						'formatted_value'=>$category->id,
+
+
+					)
+				);
+
+			}else {
+				$this->error=true;
+				$this->msg='wrong category';
+
+			}
+
+
+
+			break;
 		case 'Part Materials':
 			include_once 'utils/parse_materials.php';
 
@@ -1018,6 +1057,8 @@ class Part extends Asset{
 
 	function get($key='', $args=false) {
 
+		global $account;
+
 		list($got, $result)=$this->get_asset_common($key, $args);
 		if ($got)return $result;
 
@@ -1029,6 +1070,28 @@ class Part extends Asset{
 
 		switch ($key) {
 
+		case 'Family':
+			include_once 'class.Category.php';
+			if ($this->get('Part Family Category Key')>0) {
+				$family=new Category($this->get('Part Family Category Key'));
+				if ($family->id) {
+					return $family;
+				}
+			}
+			return false;
+
+			break;
+		case 'Family Category Key':
+			include_once 'class.Category.php';
+			if ($this->get('Part Family Category Key')>0) {
+				$family=new Category($this->get('Part Family Category Key'));
+				if ($family->id) {
+					return $family->get('Code');
+				}
+			}
+			return '';
+
+			break;
 		case 'Available Forecast':
 
 			if ($this->data['Part Stock Status']=='Out_Of_Stock' or  $this->data['Part Stock Status']=='Error') return '';

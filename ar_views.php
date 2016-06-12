@@ -348,7 +348,7 @@ case 'views':
 
 			$response['object_showcase']=get_object_showcase(
 				(isset($modules[$state['module']]['sections'][$state['section']]['showcase'])?$modules[$state['module']]['sections'][$state['section']]['showcase']:$state['object']),
-				$state, $smarty, $user, $db);
+				$state, $smarty, $user, $db,$account);
 
 		}
 
@@ -365,13 +365,13 @@ case 'views':
 
 	unset($state['_object']);
 	unset($state['_parent']);
-	
+
 	unset($state['old_state']['_parent']);
 	unset($state['old_state']['_object']);
 	unset($state['old_state']['store']);
 	unset($state['old_state']['website']);
 	unset($state['old_state']['warehouse']);
-	
+
 	unset($state['store']);
 	unset($state['website']);
 	unset($state['warehouse']);
@@ -443,7 +443,7 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state=false, $me
 
 
 
-function get_object_showcase($showcase, $data, $smarty, $user, $db) {
+function get_object_showcase($showcase, $data, $smarty, $user, $db,$account) {
 
 
 	switch ($showcase) {
@@ -590,6 +590,9 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db) {
 		}elseif ($data['_object']->get('Root Key')==$data['store']->get('Store Department Category Key')) {
 			include_once 'showcase/department.show.php';
 			$html=get_department_showcase($data, $smarty, $user, $db);
+		}elseif ($data['_object']->get('Root Key')==$account->get('Account Part Family Category Key')) {
+			include_once 'showcase/part_family.show.php';
+			$html=get_part_family_showcase($data, $smarty, $user, $db);
 		}else {
 
 			include_once 'showcase/category.show.php';
@@ -2086,8 +2089,44 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 			break;
 		case 'part':
 
-			$branch[]=array('label'=>_('Inventory'), 'icon'=>'th-large', 'reference'=>'inventory');
-			$branch[]=array('label'=>'<span class="id Part_Reference">'.$state['_object']->get('Reference').'</span> (<span class="id">'.$state['_object']->get('SKU').'</span>)' , 'icon'=>'square', 'reference'=>'');
+
+			if ($state['parent']=='category') {
+				$category=$state['_parent'];
+				$branch[]=array('label'=>_("Parts's categories"), 'icon'=>'sitemap', 'reference'=>'inventory/categories');
+
+
+				if (isset($state['metadata'])) {
+					$parent_category_keys=$state['metadata'];
+				}else {
+
+					$parent_category_keys=preg_split('/\>/', $category->get('Category Position'));
+				}
+
+
+				foreach ( $parent_category_keys as $category_key) {
+					if (!is_numeric($category_key)) {
+						continue;
+					}
+					if ($category_key==$state['parent_key']) {
+						$branch[]=array('label'=>'<span class="Category_Label">'.$category->get('Label').'</span>', 'icon'=>'', 'reference'=>'');
+						break;
+					}else {
+
+						$parent_category=new Category($category_key);
+						if ($parent_category->id) {
+
+							$branch[]=array('label'=>$parent_category->get('Label'), 'icon'=>'', 'reference'=>'inventory/category/'.$parent_category->id);
+
+						}
+					}
+				}
+
+			}else {
+				$branch[]=array('label'=>_('Inventory'), 'icon'=>'th-large', 'reference'=>'inventory');
+
+			}
+
+			$branch[]=array('label'=>'<span class="id Part_Reference">'.$state['_object']->get('Reference').'</span>' , 'icon'=>'square', 'reference'=>'');
 
 			break;
 
@@ -2118,11 +2157,52 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 			$branch[]=array('label'=>$state['_object']->get('Deleted Number').' <i class="fa fa-trash" aria-hidden="true"></i>', 'icon'=>'barcode', 'reference'=>'');
 
 			break;
+		case 'categories':
+			$branch[]=array('label'=>_("Parts's categories"), 'icon'=>'sitemap', 'reference'=>'');
+			break;
+		case 'category':
+			$category=$state['_object'];
+			$branch[]=array('label'=>_("Parts's categories"), 'icon'=>'sitemap', 'reference'=>'inventory/categories');
+
+
+			if (isset($state['metadata'])) {
+				$parent_category_keys=$state['metadata'];
+			}else {
+
+				$parent_category_keys=preg_split('/\>/', $category->get('Category Position'));
+			}
+
+
+			foreach ( $parent_category_keys as $category_key) {
+				if (!is_numeric($category_key)) {
+					continue;
+				}
+				if ($category_key==$state['key']) {
+					$branch[]=array('label'=>'<span class="Category_Label">'.$category->get('Label').'</span>', 'icon'=>'', 'reference'=>'');
+					break;
+				}else {
+
+					$parent_category=new Category($category_key);
+					if ($parent_category->id) {
+
+						$branch[]=array('label'=>$parent_category->get('Label'), 'icon'=>'', 'reference'=>'inventory/category/'.$parent_category->id);
+
+					}
+				}
+			}
+
+			break;
+		case 'main_category.new':
+
+			$branch[]=array('label'=>_("Parts's categories"), 'icon'=>'sitemap', 'reference'=>'inventory/categories');
+			$branch[]=array('label'=>_('New main category'), 'icon'=>'', 'reference'=>'');
+
+
+
+			break;
 		}
+
 		break;
-
-
-
 	case 'warehouses_server':
 
 		$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'map', 'reference'=>'');

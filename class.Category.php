@@ -1720,7 +1720,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 								sum(`Part $db_interval Acc Broken`) as broken,
 								sum(`Part $db_interval Acc Lost`) as lost
 
-								from `Part Dimension` ITF left join `Category Bridge` on (`Part SKU`=`Subject Key` and `Subject`='Part')   where `Category Key`=%d" ,
+								from `Part Data` ITF left join `Category Bridge` on (`Part SKU`=`Subject Key` and `Subject`='Part')   where `Category Key`=%d" ,
 			$this->id);
 
 
@@ -1797,7 +1797,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 								sum(`Part $db_interval Acc 1YB Broken`) as broken,
 								sum(`Part $db_interval Acc 1YB Lost`) as lost
 
-								from `Part Dimension` ITF left join `Category Bridge` on (`Part SKU`=`Subject Key` and `Subject`='Part')   where `Category Key`=%d" ,
+								from `Part Data` ITF left join `Category Bridge` on (`Part SKU`=`Subject Key` and `Subject`='Part')   where `Category Key`=%d" ,
 				$this->id);
 
 
@@ -2469,7 +2469,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 		if ($this->data['Category Subject Multiplicity']=='Yes' or $force_associate) {
 
-			$sql=sprintf("insert into `Category Bridge` values (%d,%s,%d,%s,%d)",
+			$sql=sprintf("insert into `Category Bridge` (`Category Key`,`Subject`,`Subject Key`,`Other Note`,`Category Head Key`)  values (%d,%s,%d,%s,%d)",
 				$this->id,
 				prepare_mysql($this->data['Category Subject']),
 				$subject_key,
@@ -2569,7 +2569,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 
 				foreach ($this->get_parent_keys() as $parent_key) {
-					$sql=sprintf("insert into `Category Bridge` values (%d,%s,%d, NULL,%d)",
+					$sql=sprintf("insert into `Category Bridge` (`Category Key`,`Subject`,`Subject Key`,`Other Note`,`Category Head Key`) values (%d,%s,%d, NULL,%d)",
 						$parent_key,
 						prepare_mysql($this->data['Category Subject']),
 						$subject_key,

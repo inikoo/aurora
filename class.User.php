@@ -1583,17 +1583,19 @@ class User extends DB_Table {
 		$this->groups_key_list='';
 		$this->groups_key_array=array();
 
+
 		$sql=sprintf("select `User Group Key` from `User Group User Bridge`  where  `User Key`=%d", $this->id);
 
 		if ($result=$this->db->query($sql)) {
 
 			foreach ($result as $row) {
 
-
+                if(isset($user_groups[$row['User Group Key']])){
 
 				$this->groups[$row['User Group Key']]=array('User Group Name'=>$user_groups[$row['User Group Key']]['Name']);
 				$this->groups_key_list.=','.$row['User Group Key'];
 				$this->groups_key_array[]=$row['User Group Key'];
+				}
 			}
 		}else {
 			print_r($error_info=$this->db->errorInfo());

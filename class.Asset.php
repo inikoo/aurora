@@ -299,6 +299,8 @@ class Asset extends DB_Table{
 		case $this->table_name.' Unit Dimensions':
 			$dimensions='';
 
+			$tag=preg_replace('/ Dimensions$/', '', $key);
+
 			if ($this->data[$key]!='') {
 				$data=json_decode($this->data[$key], true);
 				include_once 'utils/units_functions.php';
@@ -310,13 +312,22 @@ class Asset extends DB_Table{
 
 					break;
 				case 'Cilinder':
-					if ( !$part->data['Part '.$tag.' Dimensions Length Display']  or  !$part->data['Part '.$tag.' Dimensions Diameter Display']) {
-						$dimensions='';
-					}else {
-						$dimensions='L:'.number($part->data['Part '.$tag.' Dimensions Length Display']).' &#8709;:'.number($part->data['Part '.$tag.' Dimensions Diameter Display']).' ('.$part->data['Part '.$tag.' Dimensions Display Units'].')';
-					}
+
+					$dimensions=number(convert_units($data['h'], 'm', $data['units'])).'x'.number(convert_units($data['w'], 'm', $data['units'])).' ('.$data['units'].')';
+
+
 					break;
+
+
+					break;
+
+
+
 				case 'Sphere':
+					$dimensions='D:'.number(convert_units($data['h'], 'm', $data['units'])).' ('.$data['units'].')';
+
+					break;
+
 					if (   !$part->data['Part '.$tag.' Dimensions Diameter Display']) {
 						$dimensions='';
 					}else {
@@ -324,6 +335,9 @@ class Asset extends DB_Table{
 					}
 					break;
 				case 'String':
+					$dimensions='L.'.number(convert_units($data['l'], 'm', $data['units'])).' ('.$data['units'].')';
+
+					break;
 					if (   !$part->data['Part '.$tag.' Dimensions Length Display']) {
 						$dimensions='';
 					}else {
@@ -349,6 +363,10 @@ class Asset extends DB_Table{
 			break;
 		case 'Package Dimensions':
 		case 'Unit Dimensions':
+
+			include_once 'utils/natural_language.php';
+
+
 			$dimensions='';
 
 
@@ -368,6 +386,15 @@ class Asset extends DB_Table{
 
 					break;
 				case 'Cilinder':
+					$dimensions=number(convert_units($data['h'], 'm', $data['units'])).'x'.number(convert_units($data['w'], 'm', $data['units'])).' ('.$data['units'].')';
+					$dimensions.=', <span class="discret">'.volume($data['vol']).'</span>';
+					if ($this->data[$this->table_name." $tag Weight"]>0) {
+						$dimensions.='<span class="discret">, '.number($this->data[$this->table_name." $tag Weight"]/$data['vol']).'Kg/L</span>';
+					}
+
+					break;
+					print_r($data);
+					exit;
 					if ( !$part->data['Part '.$tag.' Dimensions Length Display']  or  !$part->data['Part '.$tag.' Dimensions Diameter Display']) {
 						$dimensions='';
 					}else {
@@ -375,6 +402,15 @@ class Asset extends DB_Table{
 					}
 					break;
 				case 'Sphere':
+				
+				
+					$dimensions=_('Diameter').' '.number(convert_units($data['l'], 'm', $data['units'])).$data['units'];
+					$dimensions.=', <span class="discret">'.volume($data['vol']).'</span>';
+					if ($this->data[$this->table_name." $tag Weight"]>0) {
+						$dimensions.='<span class="discret">, '.number($this->data[$this->table_name." $tag Weight"]/$data['vol']).'Kg/L</span>';
+					}
+
+					break;
 					if (   !$part->data['Part '.$tag.' Dimensions Diameter Display']) {
 						$dimensions='';
 					}else {
@@ -382,6 +418,9 @@ class Asset extends DB_Table{
 					}
 					break;
 				case 'String':
+									$dimensions=number(convert_units($data['l'], 'm', $data['units'])).$data['units'];
+break;
+				
 					if (   !$part->data['Part '.$tag.' Dimensions Length Display']) {
 						$dimensions='';
 					}else {
@@ -446,7 +485,7 @@ class Asset extends DB_Table{
 			exit;
 		}
 
-        return $image_key;
+		return $image_key;
 
 	}
 

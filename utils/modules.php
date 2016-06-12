@@ -1167,6 +1167,7 @@ $modules=array(
 					'category.history'=>array('label'=>_('History'), 'icon'=>'clock'),
 					'category.subjects'=>array('label'=>_('Parts')),
 					'category.categories'=>array('label'=>_('Subcategories')),
+					'part_family.product_families'=>array('label'=>_('Product families')),
 
 				)
 

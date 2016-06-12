@@ -119,7 +119,10 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
 			$tab='inventory.parts';
 			$_section='inventory';
 			break;
-
+		case 'category':
+			$tab='category.parts';
+			$_section='inventory';
+			break;
 
 
 		}
@@ -237,7 +240,30 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
 
 					break;
 
+				case 'category':
 
+
+					$up_button=array('icon'=>'arrow-up', 'title'=>_("Parts's categories"), 'reference'=>'inventory/category/'.$data['parent_key']);
+
+					if ($prev_key) {
+						$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'category/'.$data['parent_key'].'/part/'.$prev_key);
+
+					}else {
+						$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'');
+
+					}
+					$left_buttons[]=$up_button;
+
+
+					if ($next_key) {
+						$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title,  'reference'=>'category/'.$data['parent_key'].'/part/'.$next_key);
+
+					}else {
+						$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
+
+					}
+
+					break;
 				}
 
 
@@ -273,7 +299,7 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
 
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
-		'title'=>_('Part').' <span class="id Part_Reference">'.$object->get('Part Reference').'</span> (<span class="id Part_SKU">'.$object->get('SKU').'</span>) ',
+		'title'=>_('Part').' <span class="id Part_Reference">'.$object->get('Part Reference').'</span>',
 		'search'=>array('show'=>true, 'placeholder'=>_('Search Inventory'))
 
 	);
@@ -441,7 +467,7 @@ function get_part_image_navigation($data, $smarty, $user, $db, $account) {
 	}
 
 	else {
-		$_section='products';
+		$_section='inventory';
 
 	}
 
@@ -884,6 +910,7 @@ function get_deleted_barcode_navigation($data, $smarty, $user, $db, $account) {
 
 }
 
+
 function get_parts_new_main_category_navigation($data, $smarty, $user, $db, $account) {
 
 
@@ -915,7 +942,7 @@ function get_parts_new_main_category_navigation($data, $smarty, $user, $db, $acc
 }
 
 
-function get_parts_category_navigation($data, $smarty, $user, $db) {
+function get_parts_category_navigation($data, $smarty, $user, $db, $account) {
 
 
 
@@ -932,7 +959,7 @@ function get_parts_category_navigation($data, $smarty, $user, $db) {
 
 
 
-		$up_button=array('icon'=>'arrow-up', 'title'=>_("Product's Categories").' '.$data['store']->data['Store Code'], 'reference'=>'products/'.$data['store']->id.'/category/'.$parent_category->id);
+		$up_button=array('icon'=>'arrow-up', 'title'=>_("Product's Categories").' '.$data['store']->data['Store Code'], 'reference'=>'inventory/category/'.$parent_category->id);
 
 		if ($data['tab']=='category.subjects') {
 			$tab='subject_categories';
@@ -1018,7 +1045,7 @@ function get_parts_category_navigation($data, $smarty, $user, $db) {
 			if ($result=$db->query($sql)) {
 				if ($row = $result->fetch()) {
 					$prev_key=$row['object_key'];
-					$prev_title=_("Product").' '.$row['object_name'].' ('.$row['object_key'].')';
+					$prev_title=_("Part").' '.$row['object_name'].' ('.$row['object_key'].')';
 					if ($extra_field) {
 						$prev_extra_field_value=$row['extra_field'];
 					}
@@ -1041,7 +1068,7 @@ function get_parts_category_navigation($data, $smarty, $user, $db) {
 			if ($result=$db->query($sql)) {
 				if ($row = $result->fetch()) {
 					$next_key=$row['object_key'];
-					$next_title=_("Product").' '.$row['object_name'].' ('.$row['object_key'].')';
+					$next_title=_("Part").' '.$row['object_name'].' ('.$row['object_key'].')';
 					if ($extra_field) {
 						$next_extra_field_value=$row['extra_field'];
 					}
@@ -1113,16 +1140,13 @@ function get_parts_category_navigation($data, $smarty, $user, $db) {
 
 
 
-	if ($data['store']->get('Store Department Category Key')==$data['_object']->get('Category Root Key')) {
-		$category_title_label=_('Department');
-	} if ($data['store']->get('Store Family Category Key')==$data['_object']->get('Category Root Key')) {
-		$category_title_label=_('Family');
+	if ($account->get('Account Part Family Category Key')==$data['_object']->get('Category Root Key')) {
+		$title='<span class="Category_Code id">'.$data['_object']->get('Code').'</span>';
 	}else {
-		$category_title_label=_('Category');
+		$title=_('Category').' <span class="Category_Label">'.$data['_object']->get('Label').'</span> (<span class="Category_Code id">'.$data['_object']->get('Code').'</span>)';
 	}
 
 
-	$title=$category_title_label.' <span class="Category_Label">'.$data['_object']->get('Label').'</span> (<span class="Category_Code id">'.$data['_object']->get('Code').'</span>)';
 
 
 
@@ -1130,7 +1154,7 @@ function get_parts_category_navigation($data, $smarty, $user, $db) {
 
 	//$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit'), 'url'=>"edit_product_categories.php?store_id=".$data['store']->id);
 
-	$sections=get_sections('products', $data['store']->id);
+	$sections=get_sections('inventory', $data['store']->id);
 	$sections['categories']['selected']=true;
 
 	$_content=array(

@@ -598,6 +598,9 @@ input {
 .strong {
   font-weight: bold; }
 
+.italic {
+  font-style: italic; }
+
 .warning {
   color: #ED9121; }
 
@@ -1364,18 +1367,7 @@ tr.deleting_tr {
     #object_showcase .order #account .block, #object_showcase .invoice #account .block, #object_showcase .delivery_note #account .block, #object_showcase .customer #account .block {
       min-width: 150px; }
   #object_showcase .asset_profile {
-    padding: 0px 20px 20px 20px; }
-    #object_showcase .asset_profile #main_categories_position {
-      height: 30px;
-      font-size: 80%;
-      display: table;
-      overflow: hidden; }
-      #object_showcase .asset_profile #main_categories_position div {
-        padding-top: 4px;
-        display: table-cell;
-        vertical-align: middle; }
-      #object_showcase .asset_profile #main_categories_position .id {
-        font-weight: 800; }
+    padding: 10px 20px 20px 20px; }
     #object_showcase .asset_profile #asset_data {
       float: left;
       padding: 0px 20px 0px 0px; }

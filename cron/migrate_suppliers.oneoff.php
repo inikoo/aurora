@@ -375,61 +375,7 @@ function address_fields($address_key, $recipient, $organization, $default_countr
 }
 
 
-function get_fiscal_name($supplier) {
-	if ($supplier->data['Supplier Type']=='Person') {
-		$supplier->data['Supplier Fiscal Name']=$supplier->data['Supplier Name'];
-		return $supplier->data['Supplier Fiscal Name'];
-	} else {
-		$subject='Company';
-		$subject_key=$supplier->data['Supplier Company Key'];
-	}
 
-	$sql=sprintf("select `$subject Fiscal Name` as fiscal_name from `$subject Dimension` where `$subject Key`=%d ", $subject_key);
-	$res=mysql_query($sql);
-
-	if ($row=mysql_fetch_assoc($res)) {
-		$supplier->data['Supplier Fiscal Name']=$row['fiscal_name'];
-
-		return $supplier->data['Supplier Fiscal Name'];
-	} else {
-		$supplier->error;
-		return '';
-	}
-
-
-}
-
-
-function get_delivery_address_keys($db, $supplier_key, $main_address_key) {
-
-
-	$sql=sprintf("select * from `Address Bridge` CB where  `Address Function` in ('Shipping')  and `Subject Type`='Supplier' and `Subject Key`=%d  group by `Address Key` order by `Address Key`   ",
-		$supplier_key);
-	$address_keys=array();
-
-
-
-	if ($result=$db->query($sql)) {
-		foreach ($result as $row) {
-			if ($row['Address Key']==$main_address_key) {
-				continue;
-			}
-
-			$address_keys[$row['Address Key']]= $row['Address Key'];
-		}
-
-	}else {
-		print_r($error_info=$db->errorInfo());
-		exit;
-	}
-
-
-	return $address_keys;
-
-
-
-
-}
 
 
 function get_other_emails_data($db, $supplier) {

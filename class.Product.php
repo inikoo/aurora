@@ -50,9 +50,10 @@ class Product extends Asset{
 		elseif ($key=='store_code')
 			$sql=sprintf("select * from `Product Dimension` where `Product Store Key`=%s  and `Product Code`=%s", $id, prepare_mysql($aux_id));
 
-		else
+		else {
+			exit ("wrong id in class.product get_data");
 			return;
-
+		}
 
 		if ($this->data = $this->db->query($sql)->fetch()) {
 			$this->id=$this->data['Product ID'];
@@ -127,23 +128,23 @@ class Product extends Asset{
 			return;
 
 		switch ($key) {
-		
+
 		case 'Price':
 			return money($this->data['Product Price'], $this->data['Store Currency Code']);
 			break;
 		case 'Unit Price':
 			return money($this->data['Product Price']/$this->data['Product Units Per Case'], $this->data['Store Currency Code']);
-			break;	
+			break;
 		case 'Formatted Per Outer':
 			return _('per outer');
 			break;
 		case 'RRP':
 			return money($this->data['Product RRP'], $this->data['Store Currency Code']);
-			break;	
+			break;
 		case 'Unit RRP':
 			return money($this->data['Product RRP']/$this->data['Product Units Per Case'], $this->data['Store Currency Code']);
-			break;		
-			
+			break;
+
 		case 'Unit Type':return '';
 			if ($this->data['Product Unit Type']=='')return '';
 			$unit_type_data=json_decode($this->data['Product Unit Type'], true);
@@ -413,13 +414,13 @@ class Product extends Asset{
 
 
 		switch ($field) {
-		
+
 		case 'Product Public':
-		if($value=='Yes' and in_array($this->get('Product Status'),array('Suspended','Discontinued')  )){
-		        return ;
-		}
-		$this->update_field($field, $value, $options);
-		    break;
+			if ($value=='Yes' and in_array($this->get('Product Status'), array('Suspended', 'Discontinued')  )) {
+				return ;
+			}
+			$this->update_field($field, $value, $options);
+			break;
 		case 'Product Outer Dimensions':
 
 			if ($value=='') {

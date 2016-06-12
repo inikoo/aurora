@@ -278,14 +278,33 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 						$parent='account';
 						$parent_key=1;
 					}
-					
-					print_r($view_path);
-					
-					break;	
+
+
+
+					if (isset($view_path[1])) {
+						if ($view_path[1]=='part') {
+							$section='part';
+							$object='part';
+							$parent='category';
+							$parent_key=$view_path[0];
+							if (isset($view_path[2])) {
+								if (is_numeric($view_path[2])) {
+
+									$key=$view_path[2];
+								}
+
+							}
+
+						}
+
+					}
+
+
+					break;
 				default:
-				
-				    print_r($category);
-				
+
+					print_r($category);
+
 					exit('error category '.$category->get('Category Subject').' not set up in parse_request.php');
 					break;
 				}
@@ -1336,6 +1355,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 					$object='category';
 					if (isset($view_path[1]) ) {
 
+
+
 						$view_path[1]=preg_replace('/\>$/', '', $view_path[1]);
 						if (preg_match('/^(\d+\>)+(\d+)$/', $view_path[1])) {
 
@@ -1362,6 +1383,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 							}
 
 						}
+
 						elseif ( is_numeric($view_path[1])) {
 							$key=$view_path[1];
 							include_once 'class.Category.php';
@@ -1374,18 +1396,21 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 								$parent_key=$category->get('Category Parent Key');
 
 							}
-        
 
-							if (isset($view_path[2]) and is_numeric($view_path[2])) {
-								
-								$section='part';
-								$parent='category';
-								$parent_key=$category->id;
-								$object='product';
-								$key=$view_path[2];
 
+							if (isset($view_path[2])) {
+								if ($view_path[2]=='part') {
+
+									if (isset($view_path[3]) and is_numeric($view_path[3])) {
+
+										$section='part';
+										$parent='category';
+										$parent_key=$category->id;
+										$object='part';
+										$key=$view_path[3];
+									}
+								}
 							}
-
 						}
 						elseif ($view_path[1]=='new') {
 

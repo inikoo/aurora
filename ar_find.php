@@ -75,6 +75,13 @@ case 'find_object':
 	case 'departments':
 		find_special_category('Department', $db, $account, $memcache_ip, $data);
 		break;
+	case 'part_families':
+		find_special_category('PartFamily', $db, $account, $memcache_ip, $data);
+		break;
+	default:
+		$response=array('state'=>405, 'resp'=>'Scope not found '.$data['scope']);
+		echo json_encode($response);
+		exit;
 	}
 
 
@@ -636,37 +643,44 @@ function find_special_category($type, $db, $account, $memcache_ip, $data) {
 
 	$root_keys='';
 
-	if ($data['scope']=='store') {
-		$store_keys=$data['scope_key'];
-	} else {
-		$store_keys=join(',', $user->stores);
-	}
 
-	$sql=sprintf("select GROUP_CONCAT(`Store %s Category Key`) as root_keys from  `Store Dimension` where `Store Key` in (%s)  ",
-		addslashes($type),
-		$store_keys);
+	if ($type=='PartFamily') {
+		$root_keys=$account->get('Account Part Family Category Key');
+		$where_root_categories=sprintf(' and `Category Root Key`=%d', $root_keys);
+	}else {
 
-	if ($result=$db->query($sql)) {
-		if ($row = $result->fetch()) {
-			$root_keys=$row['root_keys'];
+		if ($data['scope']=='store') {
+			$store_keys=$data['scope_key'];
+		} else {
+			$store_keys=join(',', $user->stores);
 		}
-	}else {
-		print_r($error_info=$db->errorInfo());
-		print $sql;
-		exit;
+
+		$sql=sprintf("select GROUP_CONCAT(`Store %s Category Key`) as root_keys from  `Store Dimension` where `Store Key` in (%s)  ",
+			addslashes($type),
+			$store_keys);
+
+		if ($result=$db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$root_keys=$row['root_keys'];
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			print $sql;
+			exit;
+		}
+
+
+
+		if ($root_keys!='') {
+			$where_root_categories=sprintf(' and `Category Root Key` in (%s)', $root_keys);
+		}else {
+			$response=array('state'=>200, 'results'=>0, 'data'=>'');
+			echo json_encode($response);
+			return;
+		}
 	}
 
-
-
-	if ($root_keys!='') {
-		$where_root_categories=sprintf(' and `Category Root Key` in (%s)', join(',', $user->stores));
-	}else {
-		$response=array('state'=>200, 'results'=>0, 'data'=>'');
-		echo json_encode($response);
-		return;
-	}
-
-	$memcache_fingerprint=$account->get('Account Code').'SEARCH_SPCL_CAT'.md5($queries);
+	$memcache_fingerprint=$account->get('Account Code').'SEARCH_SPCL_CAT'.$type.$root_keys.md5($queries);
 
 	$cache = new Memcached();
 	$cache->addServer($memcache_ip, 11211);
@@ -785,9 +799,10 @@ function find_special_category($type, $db, $account, $memcache_ip, $data) {
 			foreach ($result as $row) {
 				$results[$row['Category Key']]=array(
 					'value'=>$row['Category Key'],
-					'formatted_value'=>$row['Category Code'].', '.$row['Category Label'],
+					'formatted_value'=>$row['Category Code'],
 					'code'=>$row['Category Code'],
 					'description'=>$row['Category Label'],
+					'metadata'=>array()
 
 				);
 
@@ -812,6 +827,8 @@ function find_special_category($type, $db, $account, $memcache_ip, $data) {
 	echo json_encode($response);
 
 }
+
+
 
 
 function find_countries($db, $account, $memcache_ip, $data) {

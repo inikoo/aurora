@@ -1,17 +1,20 @@
 
 	    
-<div class="asset_profile" >
-<div id="main_categories_position" >
-<div class="discreet">
-{if $family_data.id}{t}Family{/t} <span onClick="change_view('products/{$part->get('Store Key')}/category/{$family_data.id}')" class="id link">{$family_data.code}</span>  {/if}
+<div class="asset_profile container" >
 
-</div>
-</div>
 
 	<div id="asset_data">
 		<div class="data_container">
+		    {assign "family" $part->get('Family')}
+			<div class="data_field small {if !$family}hide{/if}" >
+			    <input type="hidden" id="Part_Family_Key" value="{if $family}{$family->id}{/if}" />
+				<i class="fa fa-pagelines" aria-hidden="true"></i> <span   onClick="category_view()" class="button id Part_Family_Code">{if $family}{$family->get('Code')}{/if}</span>, <span class="Part_Family_Label">{if $family}{$family->get('Label')}{/if}</span>
+			</div>
+			<div class="data_field small discreet {if $family}hide{/if}" >
+				<i class="fa fa-pagelines" aria-hidden="true"></i> <span class="button italic" onClick="assign_family()" ">{t}Not set{/t}</span>
+			</div>
 			
-			<div class="data_field" >
+			<div class="data_field " >
 				<h1 ><span class="Part_Unit_Description">{$part->get('Part Unit Description')}</span> <span class="Store_Product_Price">{$part->get('Price')}</span></h1>
 			</div>
 			
@@ -54,7 +57,7 @@
 		<div style="clear:both">
 		</div>
 	</div>
-	<div id="info" style="position:relative;top:-10px">
+	<div id="info" >
 	
 	
 	
@@ -153,6 +156,10 @@
 
 
 <script>
+
+function category_view(){
+    change_view('category/'+$('#Part_Family_Key').val())
+}
 
 
 var movements = []
