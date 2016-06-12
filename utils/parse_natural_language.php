@@ -20,6 +20,8 @@ function parse_dimensions($dimension) {
 
 	$dimension=trim($dimension);
 	//print $dimension."<\n";
+	
+	
 	$units='cm';
 	if (preg_match('/\((cm|mm|m\yd"in|ft)\)$/', $dimension, $match)) {
 		//print_r($match);
@@ -32,8 +34,6 @@ function parse_dimensions($dimension) {
 
 	$dimensions=preg_split('/x/', $dimension);
 
-	//print_r($dimensions);
-
 	if (count($dimensions)==3) {
 		$l=convert_units(floatval($dimensions[0]), $units, 'm');
 		$w=convert_units(floatval($dimensions[1]), $units, 'm');
@@ -41,7 +41,9 @@ function parse_dimensions($dimension) {
 		$vol=convert_units($l*$w*$h, 'm3', 'l');
 		$type='Rectangular';
 	}elseif (count($dimensions)==1) {
-		if (preg_match('/^L:(.+)\s*(d|dia|&#8709;|∅):(.+)/', $dimension, $match)) {
+	
+//	print_r($dimensions);
+		if (preg_match('/^L:(.+)\s*(d|dia|&#8709;|∅):(.+)/i', $dimension, $match)) {
 			//print_r($match);
 			$l=convert_units(floatval($match[3]), $units, 'm');
 			$w=$l;
@@ -49,7 +51,7 @@ function parse_dimensions($dimension) {
 			$vol=convert_units($l*$w*$h, 'm3', 'l');
 			$type='Cilinder';
 
-		}elseif (preg_match('/^(d|dia|&#8709;|∅):(.+)/', $dimension, $match)) {
+		}elseif (preg_match('/^(d|dia|&#8709;|∅):(.+)/i', $dimension, $match)) {
 			//print_r($match);
 			$l=convert_units(floatval($match[2]), $units, 'm');
 			$w=$l;
@@ -58,8 +60,17 @@ function parse_dimensions($dimension) {
 			$type='Sphere';
 			//print json_encode(array('l'=>$l, 'w'=>$w, 'h'=>$h, 'units'=>$units, 'vol'=>$vol, 'type'=>$type));
              //   exit;
+		}elseif (preg_match('/^L:(.+)/i', $dimension, $match)) {
+			//print_r($match);
+			$l=convert_units(floatval($match[1]), $units, 'm');
+			$w=0;
+			$h=0;
+			$vol=0;
+			$type='String';
+			//print json_encode(array('l'=>$l, 'w'=>$w, 'h'=>$h, 'units'=>$units, 'vol'=>$vol, 'type'=>$type));
+             //   exit;
 		}else {
-			//exit("shit");
+			exit("shit");
 			return '';
 		}
 

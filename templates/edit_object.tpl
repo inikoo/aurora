@@ -145,7 +145,7 @@
 		<div id="{$field.id}_results_container" class="search_results_container">
 		
 		<table id="{$field.id}_results" border="0"  >
-			<tr class="hide" id="{$field.id}_search_result_template" field="" value="" formatted_value="" onClick="select_dropdown_option(this.getAttribute('field'),this.getAttribute('value'),this.getAttribute('formatted_value'))">
+			<tr class="hide" id="{$field.id}_search_result_template" field="" value="" formatted_value="" onClick="select_dropdown_option(this)">
 				<td class="code" ></td>
 				<td style="width:85%" class="label" ></td>
 				

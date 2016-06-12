@@ -66,7 +66,7 @@ ALTER TABLE `Image Subject Bridge` CHANGE `Image Subject Subject` `Image Subject
 */
 
 
-$sql=sprintf('select * from `Image Bridge` where `Subject Type`  ');
+$sql=sprintf('select * from `Image Bridge`  ');
 
 if ($result=$db->query($sql)) {
 	foreach ($result as $row) {
@@ -92,16 +92,26 @@ if ($result=$db->query($sql)) {
 	exit;
 }
 
+//'Store Product','Site Favicon','Product','Family','Department','Store','Part','Supplier Product','Store Logo','Store Email Template Header','Store Email Postcard','Email Image','Page','Page Header','Page Footer','Page Header Preview','Page Footer Preview','Page Preview','Site Menu','Site Search','User Profile','Attachment Thumbnail','Category'
+
 
 $sql=sprintf('select * from `Part Dimension`  ');
 
 if ($result=$db->query($sql)) {
 	foreach ($result as $row) {
-
 		set_order($db, 'Part', $row['Part SKU']);
+	}
 
+}else {
+	print_r($error_info=$db->errorInfo());
+	exit;
+}
 
+$sql=sprintf('select * from `Product Dimension`  ');
 
+if ($result=$db->query($sql)) {
+	foreach ($result as $row) {
+		set_order($db, 'Product', $row['Product ID']);
 	}
 
 }else {

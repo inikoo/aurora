@@ -53,6 +53,10 @@ case 'supplier_parts':
 case 'categories':
 	categories(get_table_parameters(), $db, $user);
 	break;
+case 'product_families':
+	product_families(get_table_parameters(), $db, $user);
+	break;
+
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
@@ -220,7 +224,7 @@ function stock_transactions($_data, $db, $user) {
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
-//print $sql;
+	//print $sql;
 	$adata=array();
 
 	if ($result=$db->query($sql)) {
@@ -232,7 +236,7 @@ function stock_transactions($_data, $db, $user) {
 			switch ($data['Inventory Transaction Type']) {
 			case 'OIP':
 				$type='<i class="fa  fa-clock-o discret fa-fw" aria-hidden="true"></i>';
-				
+
 				if ($parameters['parent']=='part') {
 					$note=sprintf(_('%s %s (%s) to be taken from %s'),
 
@@ -257,8 +261,8 @@ function stock_transactions($_data, $db, $user) {
 
 					);
 				}
-				
-				
+
+
 				break;
 			case 'Sale':
 				$type='<i class="fa fa-sign-out fa-fw" aria-hidden="true"></i>';
@@ -294,27 +298,27 @@ function stock_transactions($_data, $db, $user) {
 				$type='<i class="fa fa-sign-in fa-fw" aria-hidden="true"></i>';
 				break;
 			case 'Audit':
-			
-			    
-			
-				
+
+
+
+
 				$type='<i class="fa fa-fw fa-dot-circle-o" aria-hidden="true"></i>';
-				
+
 				$stock=sprintf('<b>'.$data['Part Location Stock'].'</b>');
 				break;
 			case 'Adjust':
-			
-			    if($stock>0){
-			        $stock='+'.number($stock);
-			    }
-			        
+
+				if ($stock>0) {
+					$stock='+'.number($stock);
+				}
+
 				$type='<i class="fa fa-fw fa-sliders" aria-hidden="true"></i>';
-				
-				
-				break;	
-				
+
+
+				break;
+
 			case 'Move':
-			$stock='±'.number($data['Metadata']);
+				$stock='±'.number($data['Metadata']);
 				$type='<i class="fa fa-refresh fa-fw" aria-hidden="true"></i>';
 				break;
 			case 'Error':
@@ -329,7 +333,7 @@ function stock_transactions($_data, $db, $user) {
 			$adata[]=array(
 				'id'=>(integer)$data['Inventory Transaction Key'],
 				'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Date'].' +0:00')),
-				'user'=>sprintf('<span title="%s">%s</span>',$data['User Alias'],$data['User Handle']),
+				'user'=>sprintf('<span title="%s">%s</span>', $data['User Alias'], $data['User Handle']),
 
 				'change'=>$stock,
 				'note'=>$note,
@@ -500,8 +504,8 @@ function barcodes($_data, $db, $user) {
 
 			$adata[]=array(
 				'id'=>(integer)$data['Barcode Key'],
-                'link'=>'<i class="fa fa-barcode "></i>',
-               // '<span class="fa-stack fa-lg"><i class="fa fa-barcode fa-stack-1x"></i><i class="fa fa-angle-down fa-inverse fa-stack-1x"></i></span>',
+				'link'=>'<i class="fa fa-barcode "></i>',
+				// '<span class="fa-stack fa-lg"><i class="fa fa-barcode fa-stack-1x"></i><i class="fa fa-angle-down fa-inverse fa-stack-1x"></i></span>',
 				'number'=>$data['Barcode Number'],
 
 				'status'=>$status,
@@ -535,6 +539,7 @@ function barcodes($_data, $db, $user) {
 	echo json_encode($response);
 }
 
+
 function categories($_data, $db, $user) {
 
 	$rtext_label='category';
@@ -542,7 +547,6 @@ function categories($_data, $db, $user) {
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
-
 	if ($result=$db->query($sql)) {
 
 		foreach ($result as $data) {
@@ -598,6 +602,7 @@ function categories($_data, $db, $user) {
 	echo json_encode($response);
 }
 
+
 function category_all_parts($_data, $db, $user) {
 
 
@@ -630,6 +635,45 @@ function category_all_parts($_data, $db, $user) {
 	}else {
 		print_r($error_info=$db->errorInfo());
 		exit;
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+function product_families($_data, $db, $user) {
+
+
+	$rtext_label='store';
+
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	// print $sql;
+	foreach ($db->query($sql) as $data) {
+
+
+		$adata[]=array(
+			'access'=>(in_array($data['Store Key'], $user->stores)?'':'<i class="fa fa-lock "></i>'),
+
+			'id'=>(integer) $data['Store Key'],
+			'code'=>$data['Store Code'],
+			'name'=>$data['Store Name'],
+
+		);
+
 	}
 
 	$response=array('resultset'=>

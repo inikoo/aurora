@@ -66,10 +66,31 @@ if ( !($supplier_part_scope or $new)) {
 		)
 	);
 
+    
 
 }
 
+$part_fields[]=array(
+		'label'=>_('Family'),
+		'show_title'=>true,
+		'fields'=>array(
+			array(
+				'id'=>'Part_Family_Category_Key',
+				'edit'=>'dropdown_select',
+				'scope'=>'part_families',
+				'value'=>htmlspecialchars($object->get('Part Family Category Key')),
+				'formatted_value'=>$object->get('Family Category Key'),
+				'stripped_formatted_value'=>'',
+				'label'=>_('Family'),
+				'required'=>true,
 
+
+			)
+
+			
+
+		)
+	);
 
 
 

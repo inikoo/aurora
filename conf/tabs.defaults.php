@@ -862,7 +862,15 @@ $tab_defaults=array(
 		'elements_type'=>each(  $elements_options['barcodes']  ) ['key'],
 		'elements'=>$elements_options['barcodes'],
 	),
-
+'part_family.product_families'=>array(
+		'view'=>'overview',
+		'sort_key'=>'code',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code',
+		'f_period'=>'ytd'
+	),
 	'barcode.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',

@@ -67,8 +67,8 @@ function open_edit_field(object, key, field) {
         $('#' + field + '_save_button').removeClass('hide')
         break;
     case 'dropdown_select':
-        $('#' + field + '_dropdown_select_label').removeClass('hide')
-        $('#' + field).focus()
+        $('#' + field + '_dropdown_select_label').removeClass('hide').focus()
+
         $('#' + field + '_save_button').removeClass('hide')
         break;
     case 'country_select':
@@ -1138,7 +1138,7 @@ function delete_field(data) {
 }
 
 function update_field(data) {
-
+console.log(data)
     var field = data.field
     var type = $('#' + field + '_container').attr('field_type')
 
@@ -1194,6 +1194,7 @@ function update_field(data) {
             $('#' + field + '_option_' + data.value.replace(".", "\.")).addClass('selected').addClass('current')
         } else {
 
+     
             $('.' + field).html(data.formatted_value)
             $("#" + field).val(data.value)
         }
@@ -1630,7 +1631,7 @@ function get_dropdown_select(dropdown_input, new_value) {
             $("#" + field + "_results").append(clone)
 
 
-            console.log($('#' + field + '_result_' + result_key).data('metadata'))
+         //   console.log($('#' + field + '_result_' + result_key).data('metadata'))
 
 
         }
@@ -1648,21 +1649,23 @@ function select_dropdown_option(element) {
     formatted_value = $(element).attr('formatted_value')
     metadata = $(element).data('metadata')
 
+
+
     $('#' + field + '_dropdown_select_label').val(formatted_value)
     $('#' + field).val(value)
     on_changed_value(field, value)
 
     $('#' + field + '_results_container').addClass('hide').removeClass('show')
 
+console.log(element)
+    if (metadata != undefined) {
 
-
-
-    if (metadata.other_fields) {
-        for (var key in metadata.other_fields) {
-            update_field(metadata.other_fields[key])
+        if (metadata.other_fields) {
+            for (var key in metadata.other_fields) {
+                update_field(metadata.other_fields[key])
+            }
         }
     }
-
 }
 
 
