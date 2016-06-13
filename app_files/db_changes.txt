@@ -334,6 +334,8 @@ migrate_products.oneoff.php
 migrate_history_note_details.php
 migrate_parts.oneoff.php
 
+ALTER TABLE `Product Dimension` CHANGE `Product Unit Type` `Product Unit Type` VARCHAR(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'Piece';
+
 
 update `Category Dimension` set `Category Scope`=`Category Subject` where `Category Scope` is null or `Category Scope`='';
 ALTER TABLE `History Dimension` CHANGE `History Abstract` `History Abstract` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;

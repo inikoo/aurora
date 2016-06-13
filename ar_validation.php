@@ -410,7 +410,21 @@ function check_for_duplicates($data, $db, $user, $account) {
 		}
 
 		break;
+	case 'Product':
+		switch ($field) {
+		case 'Product Code':
 
+
+
+			$invalid_msg=_('Product cde already used');
+			$sql=sprintf("select P.`Product ID` as `key` ,`Product Code` as field from `Product Dimension` P where  `Product Code`=%s   ",
+				prepare_mysql($data['value'])
+			);
+			$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
+
+		}
+
+		break;
 	default:
 
 

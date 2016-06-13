@@ -330,7 +330,7 @@ class Category extends DB_Table{
 		$data['Category Scope']=$this->data['Category Scope'];
 
 		$data['Category Subject']=$this->data['Category Subject'];
-		$data['Category Subject Key']=$this->data['Category Subject Key'];
+		//  $data['Category Subject Key']=$this->data['Category Subject Key'];
 
 		$data['Category Warehouse Key']=$this->data['Category Warehouse Key'];
 
@@ -580,8 +580,8 @@ class Category extends DB_Table{
 		$this->deleted=false;
 
 		$sql_new_deleted_category=sprintf("insert into `Category Deleted Dimension` (`Category Deleted Key`, `Category Deleted Branch Type`, `Category Deleted Store Key`, `Category Deleted Warehouse Key`, `Category Deleted XHTML Branch Tree`, `Category Deleted Plain Branch Tree`,
-`Category Deleted Deep`, `Category Deleted Children`, `Category Deleted Code`, `Category Deleted Label`, `Category Deleted Subject`, `Category Deleted Subject Key`, `Category Deleted Number Subjects`,`Category Deleted Date`)
-VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
+`Category Deleted Deep`, `Category Deleted Children`, `Category Deleted Code`, `Category Deleted Label`, `Category Deleted Subject`,  `Category Deleted Number Subjects`,`Category Deleted Date`)
+VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 			$this->id,
 
 
@@ -595,7 +595,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			prepare_mysql($this->data['Category Code']),
 			prepare_mysql($this->data['Category Label']),
 			prepare_mysql($this->data['Category Subject']),
-			$this->data['Category Subject Key'],
 			$this->data['Category Number Subjects']
 
 		);
@@ -746,7 +745,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			$this->id
 		);
 
-		
+
 		$children_keys=array();
 		if ($result=$this->db->query($sql)) {
 			foreach ($result as $row) {
@@ -2490,7 +2489,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 				$this->update_subjects_data();
 
 
-				switch ($this->data['Category Subject']) {
+				switch ($this->data['Category Scope']) {
 				case('Part'):
 					include_once 'class.Part.php';
 
@@ -2515,10 +2514,16 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 
 					break;
 				case('Product'):
-					include_once 'class.Product.php';
+					include_once 'class.Store.php';
 
+					include_once 'class.Product.php';
 					$product=new Product( $subject_key);
 
+					$store=new Store($this->get('Category Store Key'));
+					if ($this->get('Category Root Key')==$store->get('Store Family Category Key')) {
+						$product->update(array('Product Family Category Key'=>$this->id), 'no_history');
+
+					}
 
 					$abstract=sprintf(_('Product %s associated with category %s'), $product->get('Code'), $this->get('Code'));
 					$details='';

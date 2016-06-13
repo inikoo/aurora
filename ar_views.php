@@ -1480,7 +1480,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 				$_ref=$state['parent'].'/'.$state['parent_key'].'/item/'.$state['otf'];
 			}
 
-			$branch[]=array('label'=>'<span class="id Store_Product_Code">'.$state['_object']->get('Code').'</span>', 'icon'=>'cube', 'reference'=>$_ref);
+			$branch[]=array('label'=>'<span class="id Product_Code">'.$state['_object']->get('Code').'</span>', 'icon'=>'cube', 'reference'=>$_ref);
 
 		}elseif ($state['section']=='products') {
 			if ( $user->get_number_stores()>1) {

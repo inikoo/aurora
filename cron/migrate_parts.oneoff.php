@@ -54,9 +54,9 @@ $account=new Account();
 
 
 
-$sql=sprintf('select * from `Product Dimension` where `Product ID`=25088');
+//$sql=sprintf('select * from `Product Dimension` where `Product ID`=25088');
 
-//$sql=sprintf('select * from `Product Dimension` order by `Product ID` desc');
+$sql=sprintf('select * from `Product Dimension` order by `Product ID` desc');
 
 if ($result=$db->query($sql)) {
 
@@ -66,7 +66,7 @@ if ($result=$db->query($sql)) {
 		$editor['Date']=gmdate('Y-m-d H:i:s');
 
 
-$product=new Product($row['Product ID']);
+		$product=new Product($row['Product ID']);
 
 
 		$sql=sprintf('delete from `Product Part Bridge` where `Product Part Product ID`=%d',
@@ -78,7 +78,7 @@ $product=new Product($row['Product ID']);
 
 
 
-		$parts_data=get_part_list($db,$row['Product ID']);
+		$parts_data=get_part_list($db, $row['Product ID']);
 		$_parts_data=$parts_data;
 		foreach ($parts_data as $part_data) {
 
@@ -120,7 +120,7 @@ $product=new Product($row['Product ID']);
 
 							if ($_parts_data[$_key]['Parts Per Product']==1) {
 
-								$linked_fields['Part Unit Dimensions']='Store Product Outer Dimensions';
+								$linked_fields['Part Unit Dimensions']='Product Unit Dimensions';
 
 							}
 						}

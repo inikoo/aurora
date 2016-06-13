@@ -685,6 +685,10 @@ input {
 .super_small {
   font-size: 70%; }
 
+.bold {
+  font-family: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
+  font-weight: 700; }
+
 #table .icon_container i {
   display: inline; }
 

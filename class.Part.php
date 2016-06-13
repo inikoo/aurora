@@ -1070,28 +1070,7 @@ class Part extends Asset{
 
 		switch ($key) {
 
-		case 'Family':
-			include_once 'class.Category.php';
-			if ($this->get('Part Family Category Key')>0) {
-				$family=new Category($this->get('Part Family Category Key'));
-				if ($family->id) {
-					return $family;
-				}
-			}
-			return false;
-
-			break;
-		case 'Family Category Key':
-			include_once 'class.Category.php';
-			if ($this->get('Part Family Category Key')>0) {
-				$family=new Category($this->get('Part Family Category Key'));
-				if ($family->id) {
-					return $family->get('Code');
-				}
-			}
-			return '';
-
-			break;
+		
 		case 'Available Forecast':
 
 			if ($this->data['Part Stock Status']=='Out_Of_Stock' or  $this->data['Part Stock Status']=='Error') return '';
@@ -1122,11 +1101,7 @@ class Part extends Asset{
 			break;
 
 
-		case 'Package Weight':
-		case 'Unit Weight':
-			include_once 'utils/natural_language.php';
-			return weight($this->data['Part '.$key]);
-			break;
+
 		case 'SKU':
 			return sprintf("sku%05d", $this->sku);
 			break;

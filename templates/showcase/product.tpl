@@ -1,18 +1,20 @@
 
-<div class="asset_profile" >
-<div id="main_categories_position" >
-<div class="discreet">
-{if $department_data.id}{t}Department{/t} <span onClick="change_view('products/{$product->get('Store Key')}/category/{$department_data.id}')" class="id link">{$department_data.code}</span> <i class="fa fa-angle-double-right separator"></i> {/if}
-{if $family_data.id}{t}Family{/t} <span onClick="change_view('products/{$product->get('Store Key')}/category/{$family_data.id}')" class="id link">{$family_data.code}</span>  {/if}
+<div class="asset_profile container" >
 
-</div>
-</div>
 
 	<div id="asset_data">
 		<div class="data_container">
+			{assign "family" $product->get('Family')}
+			<div class="data_field small {if !$family}hide{/if}" >
+			    <input type="hidden" id="Product_Family_Key" value="{if $family}{$family->id}{/if}" />
+				<i class="fa fa-pagelines" aria-hidden="true"></i> <span   onClick="category_view()" class="button id bold Product_Family_Code">{if $family}{$family->get('Code')}{/if}</span>, <span class="Product_Family_Label">{if $family}{$family->get('Label')}{/if}</span>
+			</div>
+			<div class="data_field small discreet {if $family}hide{/if}" >
+				<i class="fa fa-pagelines" aria-hidden="true"></i> <span class="button italic" >{t}Not set{/t}</span>
+			</div>
 			
 			<div class="data_field" >
-				<h1 ><span class="Store_Product_Label">{$product->get('Label')}</span> <span class="Store_Product_Price">{$product->get('Price')}</span></h1>
+				<h1><span class="Product_Units_Per_Case">{$product->get('Units Per Case')}</span>x <span class="Store_Product_Price"> <span class="Product_Name">{$product->get('Name')}</span> </h1>
 			</div>
 			
 		</div>
@@ -51,16 +53,15 @@
 
 	
 		
-		
 		<div style="clear:both">
 		</div>
 	</div>
-	<div id="info" style="position:relative;top:-10px">
+	<div id="info" >
 		<div id="overviews">
 			<table border="0" class="overview" style="">
 				<tr id="account_balance_tr" class="main">
-					<td id="account_balance_label">{t}Sales{/t}</td>
-					<td id="account_balance" class="aright highlight">{$product->get('Account Balance')} </td>
+					<td id="account_balance_label">{t}Price{/t}</td>
+					<td id="account_balance" class="aright highlight">{$product->get('Price')} </td>
 				</tr>
 				<tr id="last_credit_note_tr" style="display:none">
 					<td colspan="2" class="aright" style="padding-right:20px">{t}Credit note{/t}: <span id="account_balance_last_credit_note"></span></td>
@@ -135,14 +136,11 @@
 
 
 <script>
-function email_width_hack() {
-    var email_length = $('#showcase_Customer_Main_Plain_Email').text().length
 
-    if (email_length > 30) {
-        $('#showcase_Customer_Main_Plain_Email').css("font-size", "90%");
-    }
+function category_view(){
+    change_view('products/{$product->get('Product Store Key')}/category/'+$('#Product_Family_Key').val())
 }
 
-email_width_hack();
+
 
 </script>

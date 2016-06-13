@@ -232,7 +232,6 @@ if ($result=$db->query($sql)) {
 						$product=new Product($row3['Product ID']);
 
 						if ($product->id) {
-							$product->update(array('Product Family Category Key'=>$family->id), 'no_history');
 
 							$family->associate_subject($product->id);
 						}
