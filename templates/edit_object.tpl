@@ -138,7 +138,7 @@
 		
 	
 		<input id="{$field.id}" type="hidden" class=" input_field" value="{$field.value}" has_been_valid="0"/>
-		<input id="{$field.id}_dropdown_select_label" class="hide" field="{$field.id}" scope="{$field.scope}" class=" dropdown_select" value="{$field.stripped_formatted_value}" has_been_valid="0"/>
+		<input id="{$field.id}_dropdown_select_label" class="hide" field="{$field.id}" scope="{$field.scope}" parent="{$field.parent}" parent_key="{$field.parent_key}" class=" dropdown_select" value="{$field.stripped_formatted_value}" has_been_valid="0"/>
 
 		<span id="{$field.id}_msg" class="msg"></span> 
 		<i id="{$field.id}_save_button" class="fa fa-cloud save {$edit} hide" onclick="save_this_field(this)"></i> 
@@ -324,14 +324,19 @@
 		
 		{elseif $edit=='option' } 
 		
-		<input id="{$field.id}" type="hidden" value="{$field.value}" has_been_valid="0" />
 		
-		<i id="{$field.id}_save_button" class="fa fa-cloud  save {$edit} radio_option hide" onclick="save_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i> 
-		<span id="{$field.id}_msg" class="msg"></span> 
 		
-		<div id="{$field.id}_options" class="dropcontainer radio_option hide" style="width:310px" >
-
-			<ul>
+		
+		<input id="{$field.id}" class="hide" value="{$field.value}" has_been_valid="0"  />
+		
+		<i id="{$field.id}_save_button" class="fa fa-cloud  save {$edit} radio_option hide"  xstyle="margin-left:5px" onclick="save_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i> 
+		<span id="{$field.id}_msg" class="msg"></span>
+		{if isset($field.allow_other) and  $field.allow_other} 
+		<i id="{$field.id}_add_other_option" class="fa fa-plus fw button hide"  onClick="show_add_other_option('{$field.id}')" style="cursor:pointer;float:left;margin-right:5px;padding-top:8px"></i>  
+        {/if}
+        
+		<div id="{$field.id}_options" class="dropcontainer radio_option hide" style="width:310px;xmargin-left:20px" >
+			<ul  id="{$field.id}_options_ul" sxtyle="float:left;width:292px">
 				{foreach from=$field.options item=option key=value} 
 				<li id="{$field.id}_option_{$value}" label="{$option}" value="{$value}" class="{if $value==$field.value}selected{/if}" onclick="select_option('{$field.id}','{$value}','{$option}' )">{$option} <i class="fa fa-circle fw current_mark {if $value==$field.value}current{/if}"></i></li>
 				{/foreach} 

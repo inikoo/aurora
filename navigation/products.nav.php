@@ -701,7 +701,7 @@ function get_product_navigation($data, $smarty, $user, $db, $account) {
 
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
-		'title'=>_('Product').' <span class="id Store_Product_Code">'.$object->get('Code').'</span>',
+		'title'=>'<i class="fa fa-cube" aria-hidden="true" title="'._('Product').'"></i> <span class="id Product_Code">'.$object->get('Code').'</span>',
 		'search'=>array('show'=>true, 'placeholder'=>_('Search products').' '.$object->get('Product Store Code'))
 
 	);

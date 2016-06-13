@@ -50,6 +50,8 @@ case 'find_object':
 	$data=prepare_values($_REQUEST, array(
 			'query'=>array('type'=>'string'),
 			'scope'=>array('type'=>'string'),
+			'parent'=>array('type'=>'string'),
+			'parent_key'=>array('type'=>'numeric'),
 			'state'=>array('type'=>'json array')
 		));
 
@@ -635,6 +637,7 @@ function find_special_category($type, $db, $account, $memcache_ip, $data) {
 	$user=$data['user'];
 	$queries=trim($data['query']);
 
+
 	if ($queries=='') {
 		$response=array('state'=>200, 'results'=>0, 'data'=>'');
 		echo json_encode($response);
@@ -649,8 +652,8 @@ function find_special_category($type, $db, $account, $memcache_ip, $data) {
 		$where_root_categories=sprintf(' and `Category Root Key`=%d', $root_keys);
 	}else {
 
-		if ($data['scope']=='store') {
-			$store_keys=$data['scope_key'];
+		if ($data['parent']=='store') {
+			$store_keys=$data['parent_key'];
 		} else {
 			$store_keys=join(',', $user->stores);
 		}
@@ -658,7 +661,6 @@ function find_special_category($type, $db, $account, $memcache_ip, $data) {
 		$sql=sprintf("select GROUP_CONCAT(`Store %s Category Key`) as root_keys from  `Store Dimension` where `Store Key` in (%s)  ",
 			addslashes($type),
 			$store_keys);
-
 		if ($result=$db->query($sql)) {
 			if ($row = $result->fetch()) {
 				$root_keys=$row['root_keys'];
@@ -708,7 +710,6 @@ function find_special_category($type, $db, $account, $memcache_ip, $data) {
 
 		$query_array=preg_split('/\s+/', $queries);
 		$number_queries=count($query_array);
-
 
 
 

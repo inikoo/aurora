@@ -185,6 +185,30 @@ class Asset extends DB_Table{
 
 		switch ($key) {
 
+		case 'Family':
+			include_once 'class.Category.php';
+			if ($this->get($this->table_name.' Family Category Key')>0) {
+				$family=new Category($this->get($this->table_name.' Family Category Key'));
+				if ($family->id) {
+					return array(true,$family);
+				}
+			}
+			return array(true,false);
+
+			break;
+		case 'Family Category Key':
+			include_once 'class.Category.php';
+			if ($this->get($this->table_name.' Family Category Key')>0) {
+				$family=new Category($this->get($this->table_name.' Family Category Key'));
+				if ($family->id) {
+					return array(true,$family->get('Code'));
+				}
+			}
+			return array(true,'');
+
+			break;
+
+
 		case 'Stock Status Icon':
 
 			switch ($this->data[$this->table_name.' Stock Status']) {
@@ -361,6 +385,14 @@ class Asset extends DB_Table{
 
 			return array(true, $dimensions);
 			break;
+		case 'Package Weight':
+		case 'Unit Weight':
+			include_once 'utils/natural_language.php';
+
+
+			return array(true, weight($this->data[$this->table_name.' '.$key]));
+			break;
+
 		case 'Package Dimensions':
 		case 'Unit Dimensions':
 
@@ -402,8 +434,8 @@ class Asset extends DB_Table{
 					}
 					break;
 				case 'Sphere':
-				
-				
+
+
 					$dimensions=_('Diameter').' '.number(convert_units($data['l'], 'm', $data['units'])).$data['units'];
 					$dimensions.=', <span class="discret">'.volume($data['vol']).'</span>';
 					if ($this->data[$this->table_name." $tag Weight"]>0) {
@@ -418,9 +450,9 @@ class Asset extends DB_Table{
 					}
 					break;
 				case 'String':
-									$dimensions=number(convert_units($data['l'], 'm', $data['units'])).$data['units'];
-break;
-				
+					$dimensions=number(convert_units($data['l'], 'm', $data['units'])).$data['units'];
+					break;
+
 					if (   !$part->data['Part '.$tag.' Dimensions Length Display']) {
 						$dimensions='';
 					}else {

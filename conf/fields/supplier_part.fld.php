@@ -48,7 +48,8 @@ $supplier_part_fields=array(
 				'render'=>(($new and $part_scope)?true:false ),
 				'edit'=>'dropdown_select',
 				'scope'=>'suppliers',
-
+				'parent'=>'account',
+				'parent_key'=>1,
 				'value'=>htmlspecialchars($object->get('Supplier Part Supplier Key')),
 				'formatted_value'=>$object->get('Supplier Key'),
 				'stripped_formatted_value'=>$object->get('Supplier Key'),
@@ -187,7 +188,7 @@ $supplier_part_fields=array(
 			array(
 				'id'=>'Supplier_Part_Unit_Cost',
 				'edit'=>($edit?'amount':''),
-                'locked'=>($part_scope?1:0),
+				'locked'=>($part_scope?1:0),
 				'value'=>htmlspecialchars($object->get('Supplier Part Unit Cost')),
 				'formatted_value'=>$object->get('Unit Cost'),
 				'label'=>ucfirst($object->get_field_label('Supplier Part Unit Cost')),
@@ -199,7 +200,7 @@ $supplier_part_fields=array(
 			array(
 				'id'=>'Supplier_Part_Unit_Extra_Cost',
 				'edit'=>'amount_margin',
-				 'locked'=>($part_scope?1:0),
+				'locked'=>($part_scope?1:0),
 				'value'=>htmlspecialchars($object->get('Supplier Part Unit Extra Cost')),
 				'formatted_value'=>$object->get('Unit Extra Cost'),
 				'label'=>ucfirst($object->get_field_label('Supplier Part Unit Extra Cost')),
@@ -210,7 +211,7 @@ $supplier_part_fields=array(
 			array(
 				'id'=>'Part_Part_Unit_Price',
 				'edit'=>'amount_margin',
-				
+
 				'value'=>htmlspecialchars($object->get('Part Part Unit Price')),
 				'formatted_value'=>$object->get('Part Unit Price'),
 				'label'=>ucfirst($object->get_field_label('Part Unit Price')),

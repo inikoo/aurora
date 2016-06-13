@@ -11,7 +11,7 @@
 				<i class="fa fa-pagelines" aria-hidden="true"></i> <span   onClick="category_view()" class="button id Part_Family_Code">{if $family}{$family->get('Code')}{/if}</span>, <span class="Part_Family_Label">{if $family}{$family->get('Label')}{/if}</span>
 			</div>
 			<div class="data_field small discreet {if $family}hide{/if}" >
-				<i class="fa fa-pagelines" aria-hidden="true"></i> <span class="button italic" onClick="assign_family()" ">{t}Not set{/t}</span>
+				<i class="fa fa-pagelines" aria-hidden="true"></i> <span class="button italic" >{t}Not set{/t}</span>
 			</div>
 			
 			<div class="data_field " >

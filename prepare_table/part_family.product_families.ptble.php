@@ -81,6 +81,6 @@ $table='`Store Dimension` S ';
 
 $sql_totals="select count(Distinct S.`Store Key`) as num from $table  $where  ";
 
-$fields="`Store Key`,`Store Code`,`Store Name`";
+$fields="`Store Key`,`Store Code`,`Store Name`,(select `Category Key` from `Category Dimension`)  ";
 
 ?>

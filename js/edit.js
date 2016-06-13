@@ -143,6 +143,7 @@ function open_edit_field(object, key, field) {
 
 
 
+        $('#' + field + '_add_other_option').removeClass('hide')
 
         $('#' + field + '_options').removeClass('hide')
         // $('#' + field + '_formatted').removeClass('hide')
@@ -187,6 +188,22 @@ function open_edit_field(object, key, field) {
         field: field
     };
 }
+
+function show_add_other_option(field) {
+
+    if ($('#' + field + '_add_other_option').hasClass('fa-plus')) {
+        $('#' + field).removeClass('hide')
+        $('#' + field + '_options').addClass('hide')
+        $('#' + field + '_add_other_option').removeClass('fa-plus').addClass('fa-list-ul')
+    } else {
+       $('#' + field).addClass('hide')
+        $('#' + field + '_options').removeClass('hide')
+        $('#' + field + '_add_other_option').addClass('fa-plus').removeClass('fa-list-ul')
+
+    }
+
+}
+
 
 function close_edit_this_field(scope) {
     close_edit_field($(scope).closest('tr').attr('field'))
@@ -1138,7 +1155,7 @@ function delete_field(data) {
 }
 
 function update_field(data) {
-console.log(data)
+    console.log(data)
     var field = data.field
     var type = $('#' + field + '_container').attr('field_type')
 
@@ -1194,7 +1211,7 @@ console.log(data)
             $('#' + field + '_option_' + data.value.replace(".", "\.")).addClass('selected').addClass('current')
         } else {
 
-     
+
             $('.' + field).html(data.formatted_value)
             $("#" + field).val(data.value)
         }
@@ -1581,9 +1598,12 @@ function delayed_on_change_dropdown_select_field(object, timeout) {
 
 function get_dropdown_select(dropdown_input, new_value) {
 
+    var parent_key = $('#' + dropdown_input).attr('parent_key')
+    var parent = $('#' + dropdown_input).attr('parent')
+
     var scope = $('#' + dropdown_input).attr('scope')
     var field = $('#' + dropdown_input).attr('field')
-    var request = '/ar_find.php?tipo=find_object&query=' + fixedEncodeURIComponent(new_value) + '&scope=' + scope + '&state=' + JSON.stringify(state)
+    var request = '/ar_find.php?tipo=find_object&query=' + fixedEncodeURIComponent(new_value) + '&scope=' + scope +'&parent=' + parent +'&parent_key=' + parent_key + '&state=' + JSON.stringify(state)
 
     $.getJSON(request, function(data) {
 
@@ -1631,9 +1651,7 @@ function get_dropdown_select(dropdown_input, new_value) {
             $("#" + field + "_results").append(clone)
 
 
-         //   console.log($('#' + field + '_result_' + result_key).data('metadata'))
-
-
+            //   console.log($('#' + field + '_result_' + result_key).data('metadata'))
         }
 
     })
@@ -1657,7 +1675,7 @@ function select_dropdown_option(element) {
 
     $('#' + field + '_results_container').addClass('hide').removeClass('show')
 
-console.log(element)
+    console.log(element)
     if (metadata != undefined) {
 
         if (metadata.other_fields) {

@@ -78,6 +78,8 @@ $part_fields[]=array(
 				'id'=>'Part_Family_Category_Key',
 				'edit'=>'dropdown_select',
 				'scope'=>'part_families',
+				'parent'=>'account',
+				'parent_key'=>1,
 				'value'=>htmlspecialchars($object->get('Part Family Category Key')),
 				'formatted_value'=>$object->get('Family Category Key'),
 				'stripped_formatted_value'=>'',
@@ -162,6 +164,7 @@ $part_fields[]=array(
 			'required'=>($supplier_part_scope?false:true),
 			'type'=>'value'
 		),
+
 		array(
 			'id'=>'Part_Package_Description',
 			'edit'=>($edit?'string':''),
@@ -228,6 +231,8 @@ $part_fields[]=array(
 			'id'=>'Part_Origin_Country_Code',
 			'edit'=>'dropdown_select',
 			'scope'=>'countries',
+			'parent'=>'earth',
+				'parent_key'=>1,
 			'value'=>(($new and $supplier_part_scope)?$options['supplier']->get('Supplier Products Origin Country Code'): htmlspecialchars($object->get('Part Origin Country Code'))),
 			'formatted_value'=>(($new and $supplier_part_scope)?$options['supplier']->get('Products Origin Country Code'):  $object->get('Origin Country Code')),
 			'stripped_formatted_value'=>(($new and $supplier_part_scope)?($options['supplier']->get('Part Origin Country Code')!=''?  $options['supplier']->get('Origin Country').' ('.$options['supplier']->get('Part Origin Country Code').')':''):   ($object->get('Part Origin Country Code')!=''?  $object->get('Origin Country').' ('.$object->get('Part Origin Country Code').')':'')),

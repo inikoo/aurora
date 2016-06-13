@@ -121,6 +121,9 @@ class Product extends Asset{
 
 	function get($key, $arg1='') {
 
+
+
+
 		list($got, $result)=$this->get_asset_common($key, $arg1);
 		if ($got)return $result;
 
@@ -145,7 +148,11 @@ class Product extends Asset{
 			return money($this->data['Product RRP']/$this->data['Product Units Per Case'], $this->data['Store Currency Code']);
 			break;
 
-		case 'Unit Type':return '';
+		case 'Unit Type':
+			if ($this->data['Product Unit Type']=='')return '';
+            return _($this->data['Product Unit Type']);
+	        
+		/*
 			if ($this->data['Product Unit Type']=='')return '';
 			$unit_type_data=json_decode($this->data['Product Unit Type'], true);
 			$unit_type_key=key($unit_type_data);
@@ -157,7 +164,7 @@ class Product extends Asset{
 			}else {
 				return $unit_type_key;
 			}
-
+*/
 			break;
 		case 'Parts':
 			$parts='';
@@ -180,11 +187,11 @@ class Product extends Asset{
 			return $parts;
 
 			break;
-		case 'Outer Weight':
+		case 'xOuter Weight':
 			return weight($this->data['Product Outer Weight']);
 
 
-		case 'Product Outer Weight':
+		case 'xProduct Outer Weight':
 			$str = number_format($this->data['Product Outer Weight'], 4);
 
 			return preg_replace('/(?<=\d{3})0+$/', '', $str);
