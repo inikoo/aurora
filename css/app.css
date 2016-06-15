@@ -1665,14 +1665,14 @@ textarea {
 
 #parts_list {
   margin-bottom: 30px; }
-  #parts_list .parts_per_product {
+  #parts_list .parts_per_products {
     width: 80px; }
-    #parts_list .parts_per_product input {
+    #parts_list .parts_per_products input {
       width: 30px; }
   #parts_list .notes input {
     width: 95%; }
   #parts_list .parts {
-    width: 275px; }
+    width: 175px; }
     #parts_list .parts input {
       width: 90%; }
   #parts_list .add_new_part_tr .fa {

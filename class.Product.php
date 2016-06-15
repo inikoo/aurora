@@ -81,7 +81,7 @@ class Product extends Asset{
 
 		include_once 'class.Part.php';
 
-		$sql=sprintf("select `Product Part Linked Fields`,`Product Part Part SKU`,`Product Part Ratio`,`Product Part Note` from `Product Part Bridge` where `Product Part Product ID`=%d ",
+		$sql=sprintf("select `Product Part Key`,`Product Part Linked Fields`,`Product Part Part SKU`,`Product Part Ratio`,`Product Part Note` from `Product Part Bridge` where `Product Part Product ID`=%d ",
 			$this->id
 		);
 		$parts_data=array();
@@ -90,7 +90,8 @@ class Product extends Asset{
 				$part_data=$row;
 
 				$part_data=array(
-					'Parts Per Product'=>$row['Product Part Ratio'],
+					'Key'=>$row['Product Part Key'],
+					'Ratio'=>$row['Product Part Ratio'],
 					'Note'=>$row['Product Part Note'],
 					'Part SKU'=>$row['Product Part Part SKU'],
 				);
@@ -150,9 +151,9 @@ class Product extends Asset{
 
 		case 'Unit Type':
 			if ($this->data['Product Unit Type']=='')return '';
-            return _($this->data['Product Unit Type']);
-	        
-		/*
+			return _($this->data['Product Unit Type']);
+
+			/*
 			if ($this->data['Product Unit Type']=='')return '';
 			$unit_type_data=json_decode($this->data['Product Unit Type'], true);
 			$unit_type_key=key($unit_type_data);
@@ -173,11 +174,14 @@ class Product extends Asset{
 
 			$parts_data=$this->get_parts_data(true);
 
-			$part_warehouse=$_SESSION['current_warehouse'];
-			//print_r($parts_data);
+
 			foreach ($parts_data as $part_data) {
 
-				$parts.=', '.number($part_data['Parts Per Product']).'x <span class="link" onClick="change_view(\'inventory/'.$part_warehouse.'/part/'.$part_data['Part']->id.'\')">'.$part_data['Part']->get('SKU').' ('.$part_data['Part']->get('Reference').')</span>';
+				$parts.=', '.number($part_data['Ratio']).'x <span class="link" onClick="change_view(\'part/'.$part_data['Part']->id.'\')">'.$part_data['Part']->get('Reference').'</span>';
+				if ($part_data['Note']!='') {
+					$parts.=' <span class="very_discreet">('.$part_data['Note'].')</span>';
+				}
+
 			}
 
 			if ($parts=='') {
@@ -413,7 +417,6 @@ class Product extends Asset{
 
 
 
-
 	function update_field_switcher($field, $value, $options='', $metadata='') {
 		if (is_string($value))
 			$value=_trim($value);
@@ -422,6 +425,11 @@ class Product extends Asset{
 
 		switch ($field) {
 
+		case 'Product Parts':
+
+			$this->update_part_list($value, $options);
+
+			break;
 		case 'Product Public':
 			if ($value=='Yes' and in_array($this->get('Product Status'), array('Suspended', 'Discontinued')  )) {
 				return ;
@@ -486,9 +494,6 @@ class Product extends Asset{
 				)
 			);
 
-
-
-
 		default:
 			$base_data=$this->base_data();
 			if (array_key_exists($field, $base_data)) {
@@ -499,6 +504,327 @@ class Product extends Asset{
 
 	}
 
+
+	function update_part_list($value, $options='') {
+
+
+		$value=json_decode($value, true);
+
+
+
+
+		$part_list=$this->get_parts_data();
+
+		$old_part_list_keys=array();
+		foreach ($part_list as $product_part) {
+			$old_part_list_keys[$product_part['Key']]=$product_part['Key'];
+		}
+
+
+		$new_part_list_keys=array();
+		foreach ($value as $product_part) {
+			if (isset($product_part['Key'])) {
+				$new_part_list_keys[$product_part['Key']]=$product_part['Key'];
+			}
+		}
+
+		if (count(array_diff($old_part_list_keys, $new_part_list_keys))!=0) {
+
+			//print_r($old_part_list_keys);
+			//print_r($new_part_list_keys);
+			$this->error=true;
+			$this->msg=_('Another user updated current part list, refresh and try again');
+			return;
+		}
+
+		foreach ($value as $product_part) {
+
+			//print_r($product_part);
+			if ($product_part['Key']>0) {
+
+				$sql=sprintf('update `Product Part Bridge` set `Product Part Note`=%s where `Product Part Key`=%d and `Product Part Product ID`=%d ',
+					prepare_mysql($product_part['Note']),
+					$product_part['Key'],
+					$this->id
+				);
+
+				$updt = $this->db->prepare($sql);
+				$updt->execute();
+				if ($updt->rowCount()) {
+					$this->updated=true;
+				}
+
+
+				if ($product_part['Ratio']==0) {
+					$sql=sprintf('delete from `Product Part Bridge` where `Product Part Key`=%d and `Product Part Product ID`=%d ',
+						$product_part['Key'],
+						$this->id
+					);
+
+					$updt = $this->db->prepare($sql);
+					$updt->execute();
+					if ($updt->rowCount()) {
+						$this->updated=true;
+					}
+
+				}else {
+
+					$sql=sprintf('update `Product Part Bridge` set `Product Part Ratio`=%f where `Product Part Key`=%d and `Product Part Product ID`=%d ',
+						$product_part['Ratio'],
+						$product_part['Key'],
+						$this->id
+					);
+
+					$updt = $this->db->prepare($sql);
+					$updt->execute();
+					if ($updt->rowCount()) {
+						$this->updated=true;
+					}
+				}
+
+			}
+			else {
+
+				if ($product_part['Part SKU']>0) {
+
+					$sql=sprintf('insert into `Product Part Bridge` (`Product Part Product ID`,`Product Part Part SKU`,`Product Part Ratio`,`Product Part Note`) values (%d,%d,%f,%s)',
+						$this->id,
+						$product_part['Part SKU'],
+						$product_part['Ratio'],
+						prepare_mysql($product_part['Note'], false)
+					);
+					//print $sql;
+					$this->db->exec($sql);
+					$this->updated=true;
+				}
+			}
+		}
+
+		$this->update_availability();
+
+
+	}
+
+
+	function update_availability() {
+
+
+		$sql=sprintf(" select `Part Stock State`,`Part Current On Hand Stock`-`Part Current Stock In Process` as stock,`Part Current Stock In Process`,`Part Current On Hand Stock`,`Product Part Ratio`
+		 from     `Product Part Bridge` B left join   `Part Dimension` P   on (P.`Part SKU`=B.`Product Part Part SKU`)   where B.`Product Part Product ID`=%d   ",
+			$this->id
+		);
+
+
+
+
+		$result=mysql_query($sql);
+		$stock=99999999999;
+		$tipo='Excess';
+		$change=false;
+		$stock_error=false;
+
+
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+
+
+				if ($row['Part Stock State']=='Error')
+					$tipo='Error';
+				elseif ($row['Part Stock State']=='OutofStock' and $tipo!='Error')
+					$tipo='OutofStock';
+				elseif ($row['Part Stock State']=='VeryLow' and $tipo!='Error' and $tipo!='OutofStock' )
+					$tipo='VeryLow';
+				else if ($row['Part Stock State']=='Low' and $tipo!='Error' and $tipo!='OutofStock' and $tipo!='VeryLow')
+					$tipo='Low';
+				elseif ($row['Part Stock State']=='Normal' and $tipo=='Excess' )
+					$tipo='Normal';
+
+				if (is_numeric($row['stock']) and is_numeric($row['Product Part Ratio'])  and $row['Product Part Ratio']>0 ) {
+
+					$_part_stock=$row['stock'];
+					if ($row['Part Current On Hand Stock']==0  and $row['Part Current Stock In Process']>0 ) {
+						$_part_stock=0;
+					}
+
+					$_stock=$_part_stock/$row['Product Part Ratio'];
+					if ($stock>$_stock) {
+						$stock=$_stock;
+						$change=true;
+					}
+				}
+				else {
+
+					$stock=0;
+					$stock_error=true;
+				}
+
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+
+		if (!$change or $stock_error)
+			$stock='';
+		if (is_numeric($stock) and $stock<0)
+			$stock='';
+
+		$old_web_state=$this->get('Product Web State');
+
+		if ($this->get('Product Status')=='Active') {
+
+			switch ($this->data['Product Web Configuration']) {
+			case 'Offline':
+				$web_state= 'Offline';
+				break;
+			case 'Online Force Out of Stock':
+				$web_state= 'Out of Stock';
+				break;
+			case 'Online Force For Sale':
+				$web_state= 'For Sale';
+				break;
+			case 'Online Auto':
+
+
+
+				if ($this->get('Product Availability')>0) {
+					$web_state= 'For Sale';
+				}else {
+					$web_state= 'Out of Stock';
+				}
+
+
+				break;
+
+			default:
+				$web_state= 'Offline';
+				break;
+			}
+
+		}else {
+			$web_state='Offline';
+		}
+
+
+		$this->update(array(
+				'Product Availability'=>$stock,
+				'Product Availability State'=>$tipo,
+				'Product Web State'=>$web_state,
+				//  'Product Available Days Forecast'=>$days_available
+			), 'no_history');
+
+
+		if ( ($old_web_state=='For Sale' and $web_state!='For Sale') or ($old_web_state!='For Sale' and  $web_state=='For Sale' )  ) {
+
+			if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
+				$user_key=$this->editor['User Key'];
+			else
+				$user_key=0;
+
+			//------
+
+			$sql=sprintf("select UNIX_TIMESTAMP(`Date`) as date,`Product Availability Key` from `Product Availability Timeline` where `Product ID`=%d  order by `Date`  desc limit 1",
+				$this->id
+			);
+
+
+
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$last_record_key=$row['Product Availability Key'];
+					$last_record_date=$row['date'];
+				}else {
+					$last_record_key=false;
+					$last_record_date=false;
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+
+
+
+			$new_date_formated=gmdate('Y-m-d H:i:s');
+			$new_date=gmdate('U');
+
+			$sql=sprintf("insert into `Product Availability Timeline`  (`Product ID`,`Store Key`,`Department Key`,`Family Key`,`User Key`,`Date`,`Availability`,`Web State`) values (%d,%d,%d,%d,%d,%s,%s,%s) ",
+				$this->id,
+				$this->data['Product Store Key'],
+				$this->data['Product Main Department Key'],
+				$this->data['Product Family Key'],
+				$user_key,
+				prepare_mysql($new_date_formated),
+				prepare_mysql(($web_state=='For Sale'?'Yes':'No')),
+				prepare_mysql($web_state)
+
+			);
+			$this->db->exec($sql);
+
+			if ($last_record_key) {
+				$sql=sprintf("update `Product Availability Timeline` set `Duration`=%d where `Product Availability Key`=%d",
+					$new_date-$last_record_date,
+					$last_record_key
+
+				);
+				$this->db->exec($sql);
+
+			}
+
+			//------
+
+			if ($web_state=='For Sale') {
+				$sql=sprintf("update `Email Site Reminder Dimension` set `Email Site Reminder State`='Ready' where `Email Site Reminder State`='Waiting' and `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d ",
+					$this->id
+				);
+
+			}else {
+				$sql=sprintf("update `Email Site Reminder Dimension` set `Email Site Reminder State`='Waiting' where `Email Site Reminder State`='Ready' and `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d ",
+					$this->id
+				);
+
+			}
+			$this->db->exec($sql);
+
+
+		}
+
+
+
+
+		$this->other_fields_updated=array(
+			'Product_Availability'=>array(
+				'field'=>'Product_Availability',
+				'value'=>$this->get('Product Availability'),
+				'formatted_value'=>$this->get('Availability'),
+
+
+			),
+			'Product_Web_State'=>array(
+				'field'=>'Product_Web_State',
+				'value'=>$this->get('Product Web State'),
+				'formatted_value'=>$this->get('Web State'),
+
+
+			)
+		);
+
+
+
+
+
+
+
+
+
+
+
+	}
 
 
 	function get_linked_fields_data() {

@@ -91,7 +91,6 @@ if ($result=$db->query($sql)) {
 				$part_data['Parts Per Product'],
 				prepare_mysql($part_data['Product Part List Note'], false)
 			);
-			// print "$sql\n";
 			$db->exec($sql);
 
 			if ($row['Product Use Part Properties']=='Yes') {

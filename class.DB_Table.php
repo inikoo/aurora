@@ -705,6 +705,17 @@ $old_formatted_value=$this->get($formatted_field);
 	}
 
 
+    function get_update_metadata(){
+    
+    if (isset($this->update_metadata)) {
+			return $this->update_metadata;
+		}else {
+			return array();
+		}
+    
+    }
+
+
 	function get_other_fields_update_info() {
 
 		if (isset($this->other_fields_updated)) {

@@ -60,37 +60,30 @@
 		<div id="overviews">
 			<table border="0" class="overview" style="">
 				<tr id="account_balance_tr" class="main">
-					<td id="account_balance_label">{t}Price{/t}</td>
-					<td id="account_balance" class="aright highlight">{$product->get('Price')} </td>
+					<td >{t}Price{/t}</td>
+					<td class="aright highlight Product_Price">{$product->get('Price')} </td>
 				</tr>
-				<tr id="last_credit_note_tr" style="display:none">
-					<td colspan="2" class="aright" style="padding-right:20px">{t}Credit note{/t}: <span id="account_balance_last_credit_note"></span></td>
-				</tr>
+				
 				
 			</table>
 			<table border="0" class="overview">
-				{if $product->get('Customer Level Type')=='VIP'} 
-				<td></td>
-				<td class="highlight">{t}VIP Customer{/t}</td>
-				{/if} {if $product->get('Customer Level Type')=='Partner'} 
-				<td></td>
-				<td class="highlight">{t}Partner Customer{/t}</td>
-				{/if} {if $product->get('Customer Type by Activity')=='Losing'} 
+ 
 				<tr>
-					<td colspan="2">{t}Losing Customer{/t}</td>
-				</tr>
-				{elseif $product->get('Customer Type by Activity')=='Lost'} 
-				<tr>
-					<td>{t}Lost Customer{/t}</td>
-					<td>{$product->get('Lost Date')}</td>
-				</tr>
-				{/if} 
-				<tr>
-					<td>{t}Contact Since{/t}:</td>
-					<td>{$product->get('First Contacted Date')}</td>
+					<td>{t}Stock{/t}:</td>
+					<td class="aright Product_Availability" >{$product->get('Availability')}</td>
 				</tr>
 				
 			</table>
+			
+			<table border="0" class="overview">
+ 
+				<tr>
+					<td>{t}Web status{/t}:</td>
+					<td class="aright Product_Web_State">{$product->get('Web State')}</td>
+				</tr>
+				
+			</table>
+			
 			{if $product->get('Customer Send Newsletter')=='No' or $product->get('Customer Send Email Marketing')=='No' or $product->get('Customer Send Postal Marketing')=='No'} 
 			<table border="0" class="overview compact">
 				<tr class="{if $product->get('Customer Send Newsletter')=='Yes'}hide{/if}">
