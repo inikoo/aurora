@@ -58,8 +58,6 @@ default:
 function stores($_data, $db, $user) {
 
 
-
-
 	$rtext_label='store';
 
 	include_once 'prepare_table/init.php';
@@ -68,8 +66,6 @@ function stores($_data, $db, $user) {
 	$adata=array();
 
 	// print $sql;
-
-
 	foreach ($db->query($sql) as $data) {
 
 

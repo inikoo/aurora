@@ -21,7 +21,7 @@ $object_fields=get_object_fields($product, $db, $user, $smarty, array('show_full
 
 $smarty->assign('object_fields', $object_fields);
 $smarty->assign('state', $state);
-$smarty->assign('parts_list', $product->get_parts_data(true));
+$smarty->assign('object', $product);
 
 $html=$smarty->fetch('edit_object.tpl');
 

@@ -156,12 +156,12 @@
 		
 		
 		<script>
-		  $("#{$field.id}_dropdown_select_label").on("input propertychange", function(evt) {
+		$("#{$field.id}_dropdown_select_label").on("input propertychange", function(evt) {
 		 
- var delay = 100;
+        var delay = 100;
         if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
         delayed_on_change_dropdown_select_field($(this), delay)
-    });
+         });
 		</script>
 		
 		{elseif $edit=='working_hours'  } 
@@ -169,7 +169,9 @@
 		{elseif $edit=='salary'  } 
 		{include file="salary.edit.tpl" field=$field salary=$salary } 
 		{elseif $edit=='parts_list'  } 
-		{include file="parts_list.edit.tpl" field=$field parts_list=$parts_list } 
+		
+		{include file="parts_list.edit.tpl" field=$field parts_list=$object->get_parts_data(true) } 
+		
 		{elseif $edit=='textarea'  } 
 		
 	

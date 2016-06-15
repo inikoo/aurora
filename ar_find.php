@@ -68,6 +68,9 @@ case 'find_object':
 	case 'locations':
 		find_locations($db, $account, $memcache_ip, $data);
 		break;
+	case 'parts':
+		find_parts($db, $account, $memcache_ip, $data);
+		break;	
 	case 'countries':
 		find_countries($db, $account, $memcache_ip, $data);
 		break;
@@ -614,6 +617,123 @@ function find_locations($db, $account, $memcache_ip, $data) {
 
 
 
+
+		$results_data=array('n'=>count($results), 'd'=>$results);
+		$cache->set($memcache_fingerprint, $results_data, $memcache_time);
+
+
+
+	}
+	$response=array('state'=>200, 'number_results'=>$results_data['n'], 'results'=>$results_data['d'], 'q'=>$q);
+
+	echo json_encode($response);
+
+}
+
+function find_parts($db, $account, $memcache_ip, $data) {
+
+
+
+	$cache=false;
+	$max_results=5;
+	$user=$data['user'];
+	$q=trim($data['query']);
+
+
+
+	if ($q=='') {
+		$response=array('state'=>200, 'results'=>0, 'data'=>'');
+		echo json_encode($response);
+		return;
+	}
+
+
+
+
+	$memcache_fingerprint=$account->get('Account Code').'FIND_PART'.md5($q);
+
+	$cache = new Memcached();
+	$cache->addServer($memcache_ip, 11211);
+
+
+	if (strlen($q)<=2) {
+		$memcache_time=295200;
+	}if (strlen($q)<=3) {
+		$memcache_time=86400;
+	}if (strlen($q)<=4) {
+		$memcache_time=3600;
+	}else {
+		$memcache_time=300;
+
+	}
+
+
+	$results_data=$cache->get($memcache_fingerprint);
+
+
+	if (!$results_data or true) {
+
+
+		$candidates=array();
+
+		$candidates_data=array();
+
+
+
+
+
+
+
+
+		$sql=sprintf("select `Part SKU`,`Part Reference`,`Part Unit Description` from `Part Dimension` where  `Part Reference` like '%s%%' and `Part Status`='In Use' order by `Part Reference` limit $max_results ",
+			$q);
+
+
+		if ($result=$db->query($sql)) {
+			foreach ($result as $row) {
+
+				if ($row['Part Reference']==$q)
+					$candidates[$row['Part SKUy']]=1000;
+				else {
+
+					$len_name=strlen($row['Part SKU']);
+					$len_q=strlen($q);
+					$factor=$len_q/$len_name;
+					$candidates[$row['Part SKU']]=500*$factor;
+				}
+
+				$candidates_data[$row['Part SKU']]=array('Part Reference'=>$row['Part Reference'],'Part Unit Description'=>$row['Part Unit Description']);
+
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
+
+		arsort($candidates);
+
+
+		$total_candidates=count($candidates);
+
+		if ($total_candidates==0) {
+			$response=array('state'=>200, 'results'=>0, 'data'=>'');
+			echo json_encode($response);
+			return;
+		}
+
+
+		$results=array();
+		foreach ($candidates as $part_sku=>$candidate) {
+
+			$results[$part_sku]=array(
+				'code'=>$candidates_data[$part_sku]['Part Reference'],
+				'description'=>$candidates_data[$part_sku]['Part Unit Description'],
+				'value'=>$part_sku,
+				'formatted_value'=>$candidates_data[$part_sku]['Part Reference']
+			);
+
+		}
 
 		$results_data=array('n'=>count($results), 'd'=>$results);
 		$cache->set($memcache_fingerprint, $results_data, $memcache_time);

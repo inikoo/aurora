@@ -26,6 +26,8 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+
+
 case 'edit_category_subject':
 
 	$data=prepare_values($_REQUEST, array(
@@ -272,7 +274,6 @@ function edit_stock($account, $db, $user, $editor, $data, $smarty) {
 
 
 		$smarty->assign('locations_data', $part->get_locations(true));
-
 		$part_locations=$smarty->fetch('part_locations.edit.tpl');
 
 		$response['updated_fields']=array(
@@ -377,6 +378,9 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 
 	}else {
+	
+	    $update_metadata=$object->get_update_metadata();
+	
 		$directory_field='';
 		$directory='';
 		$items_in_directory='';
@@ -385,16 +389,19 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 		if ($object->updated) {
 			$msg=sprintf('<span class="success"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $data['field'], _('Updated'));
-
-
 			if (isset($object->deleted_value)) {
 				$msg=sprintf('<span class="deleted">%s</span> <span class="discret"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $object->deleted_value,  $data['field'], _('Deleted'));
+			}
+			$formatted_value=$object->get($formatted_field);
+			$action='updated';
 
+			if ($field=='Product Parts') {
+				$smarty->assign('parts_list', $object->get_parts_data(true));
+				$update_metadata['parts_list_items']=$smarty->fetch('parts_list_items.edit.tpl');
+                
 			}
 
-			$formatted_value=$object->get($formatted_field);
 
-			$action='updated';
 		}elseif (isset($object->field_deleted)) {
 			$msg=sprintf('<span class="discret"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $data['field'], _('Deleted'));
 			$formatted_value=sprintf('<span class="deleted">%s</span>', $object->deleted_value);
@@ -429,6 +436,7 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 			'other_fields'=>$object->get_other_fields_update_info(),
 			'new_fields'=>$object->get_new_fields_info(),
 			'deleted_fields'=>$object->get_deleted_fields_info(),
+			'update_metadata'=>$update_metadata,
 			'directory_field'=>$directory_field,
 			'directory'=>$directory,
 			'items_in_directory'=>$items_in_directory,
@@ -1152,6 +1160,8 @@ function edit_category_subject($account, $db, $user, $editor, $data, $smarty) {
 	echo json_encode($response);
 
 }
+
+
 
 
 ?>

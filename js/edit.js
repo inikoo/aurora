@@ -177,6 +177,7 @@ function open_edit_field(object, key, field) {
         break;
     case 'parts_list':
         $('#parts_list').removeClass('hide')
+        $('#' + field + '_save_button').removeClass('hide')
         break;
     default:
 
@@ -196,7 +197,7 @@ function show_add_other_option(field) {
         $('#' + field + '_options').addClass('hide')
         $('#' + field + '_add_other_option').removeClass('fa-plus').addClass('fa-list-ul')
     } else {
-       $('#' + field).addClass('hide')
+        $('#' + field).addClass('hide')
         $('#' + field + '_options').removeClass('hide')
         $('#' + field + '_add_other_option').addClass('fa-plus').removeClass('fa-list-ul')
 
@@ -887,73 +888,83 @@ function save_field(object, key, field) {
     } else if (type == 'country_select') {
         value = $('#' + field).countrySelect("getSelectedCountryData").code
 
+    } else if (type == 'parts_list') {
+        var part_list_data = [];
+
+        $('#parts_list_items  tr.part_tr').each(function(i, obj) {
+
+            if (!$(obj).find('.sku').val()) return true;
+
+            if ($(obj).hasClass('very_discreet')) {
+                var ratio = 0;
+            } else {
+                var ratio = $(obj).find('.parts_per_product').val()
+            }
+            var part_data = {
+                'Key': $(obj).find('.product_part_key').val(),
+                'Part SKU': $(obj).find('.sku').val(),
+                'Ratio': ratio,
+                'Note': $(obj).find('.note').val(),
+
+            }
+            part_list_data.push(part_data)
+
+        });
+
+        value = JSON.stringify(part_list_data)
+
     }
 
     var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value) + '&metadata=' + JSON.stringify(metadata)
+    console.log(request)
     $.getJSON(request, function(data) {
-
-
-
 
         $('#' + field + '_save_button').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
         if (data.state == 200) {
 
             $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
-
-
-
-
             $('#' + field + '_value').val(data.value)
+
+
+            $("#" + field + '_field').removeClass('changed')
+            $("#" + field + '_field').removeClass('valid')
+
+
+
+
 
             //console.log(field)
             $('.' + field).html(data.formatted_value)
             if (type == 'option') {
                 $('#' + field + '_options li .current_mark').removeClass('current')
                 $('#' + field + '_option_' + value + ' .current_mark').addClass('current')
-
-
             } else if (type == 'radio_option') {
                 $('#' + field + '_options li .current_mark').removeClass('current')
                 $('#' + field + '_option_' + value + ' .current_mark').addClass('current')
-
-
             } else if (type == 'dropdown_select') {
                 //  $('#' + field + '').removeClass('current')
                 $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
-
-
             } else {
                 $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
-
             }
-
-
 
             if (data.action == 'deleted') {
-
                 $('#' + field + '_edit_button').parent('.show_buttons').css('visibility', 'hidden')
                 $('#' + field + '_label').find('.button').addClass('hide')
-
             }
-
 
             if (data.directory_field != '') {
                 $('#' + data.directory_field + '_directory').html(data.directory)
-
                 if (data.items_in_directory == 0) {
                     $('#' + data.directory_field + '_field').addClass('hide')
                 } else {
                     $('#' + data.directory_field + '_field').removeClass('hide')
                 }
-
             }
             if (data.action == 'new_field') {
                 if (data.new_fields) {
-
                     for (var key in data.new_fields) {
-
                         create_new_field(data.new_fields[key])
-
                     }
                 }
             }
@@ -985,14 +996,17 @@ function save_field(object, key, field) {
 }
 
 function post_save_actions(field, data) {
+    //console.log(field)
+
     switch (field) {
     case 'User_Preferred_Locale':
         change_view(state.request, {
             'reload': true
         })
         break;
-
-
+    case 'Product_Parts':
+        post_save_product_parts(data)
+        break;
     default:
 
     }
@@ -1155,7 +1169,7 @@ function delete_field(data) {
 }
 
 function update_field(data) {
-    console.log(data)
+    
     var field = data.field
     var type = $('#' + field + '_container').attr('field_type')
 
@@ -1211,8 +1225,9 @@ function update_field(data) {
             $('#' + field + '_option_' + data.value.replace(".", "\.")).addClass('selected').addClass('current')
         } else {
 
-
+  
             $('.' + field).html(data.formatted_value)
+            
             $("#" + field).val(data.value)
         }
     }
@@ -1600,10 +1615,10 @@ function get_dropdown_select(dropdown_input, new_value) {
 
     var parent_key = $('#' + dropdown_input).attr('parent_key')
     var parent = $('#' + dropdown_input).attr('parent')
-
     var scope = $('#' + dropdown_input).attr('scope')
     var field = $('#' + dropdown_input).attr('field')
-    var request = '/ar_find.php?tipo=find_object&query=' + fixedEncodeURIComponent(new_value) + '&scope=' + scope +'&parent=' + parent +'&parent_key=' + parent_key + '&state=' + JSON.stringify(state)
+
+    var request = '/ar_find.php?tipo=find_object&query=' + fixedEncodeURIComponent(new_value) + '&scope=' + scope + '&parent=' + parent + '&parent_key=' + parent_key + '&state=' + JSON.stringify(state)
 
     $.getJSON(request, function(data) {
 
