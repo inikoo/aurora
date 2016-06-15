@@ -179,7 +179,7 @@ function authenticate($db) {
 function get_db() {
 
 
-	include_once 'conf/dns.php';
+	include_once 'keyring/dns.php';
 
 
 
