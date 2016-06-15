@@ -427,6 +427,10 @@ input {
       float: right;
       border-right: none;
       border-left: 1px solid #ccc; }
+    .tabs .tab.icon_only, .tabs .element.icon_only, .subtabs .tab.icon_only, .subtabs .element.icon_only {
+      padding: 0 10px; }
+      .tabs .tab.icon_only .label, .tabs .element.icon_only .label, .subtabs .tab.icon_only .label, .subtabs .element.icon_only .label {
+        display: none; }
     .tabs .tab .fa, .tabs .element .fa, .subtabs .tab .fa, .subtabs .element .fa {
       font-size: 75%;
       color: #888;

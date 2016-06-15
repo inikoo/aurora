@@ -16,9 +16,8 @@ function get_timesheet_showcase($data) {
 
 	global $smarty;
 
-	// $timesheet= $data['_object'];
 
-	// $timesheet->update_clocked_hours();
+$data['_object']->update_working_time();
 
 
 	$smarty->assign('timesheet', $data['_object']);

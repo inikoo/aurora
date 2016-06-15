@@ -45,7 +45,6 @@ trait ImageSubject {
 				$subject_key,
 				$image->id);
 
-
 			if ($result=$this->db->query($sql)) {
 				if ($row = $result->fetch()) {
 					$this->nochange=true;
@@ -244,7 +243,6 @@ trait ImageSubject {
 		return $image_key;
 
 	}
-
 
 	function update_main_image($image_key) {
 

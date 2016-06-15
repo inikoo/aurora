@@ -15,9 +15,10 @@
 
 require_once 'class.User.php';
 include_once 'trait.AttachmentSubject.php';
+include_once 'trait.ImageSubject.php';
 
 class Staff extends DB_Table{
-
+	use ImageSubject;
 	function __construct($arg1=false, $arg2=false, $arg3=false) {
 		global $db;
 		$this->db=$db;
@@ -380,6 +381,59 @@ class Staff extends DB_Table{
 			}
 
 			return $type;
+			break;
+		case 'Staff Clocking Data':
+			$sql=sprintf("select ( CASE WHEN `Timesheet Clocking Records` = 0 THEN 'Off' WHEN (`Timesheet Clocking Records` %% 2) = 0 THEN 'Out' ELSE 'In' END) AS `Clocking Status`, (select max(`Timesheet Record Date`) from `Timesheet Record Dimension` where `Timesheet Record Timesheet Key`=TD.`Timesheet Key` ) as `Last Clocking`,  `Timesheet Clocking Records` , `Timesheet Ignored Clocking Records` , TD.`Timesheet Key` from `Timesheet Dimension` as TD where `Timesheet Staff Key`=%d and  date(`Timesheet Date`)=%s",
+				$this->id,
+				prepare_mysql(gmdate('Y-m-d'))
+			);
+
+
+
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+
+
+					return $row;
+				}else {
+					return array(
+						'Clocking Status' => 'Off',
+						'Last Clocking' => '',
+						'Timesheet Clocking Records' => 0,
+						'Timesheet Ignored Clocking Records' => 0,
+						'Timesheet Key' => ''
+					);
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+			break;
+
+		case 'Clocking Data':
+			$data=$this->get('Staff Clocking Data');
+
+			$data=array(
+				'Clocking Status' => 'In',
+				'Timesheet Clocking Records' => 2,
+				'Last Clocking' =>'2015-11-30 17:03:33',
+				'Timesheet Ignored Clocking Records' => 0,
+				'Timesheet Key' => ''
+			);
+
+			if ($data['Timesheet Clocking Records']==0) {
+				return _('No clockings today');
+			}else {
+                if($data['Clocking Status']=='Off'){
+                    $clocked_out_time=($data['Last Clocking']==''?'':' <span class="discreet">('.strftime("%H:%M", strtotime($data['Last Clocking'].' +0:00')).')</span>'  );
+                
+                    return '<span class="highlight">'._('Clocked out').'</span> '.$clocked_out_time;
+                }else{
+                 return '<span class="highlight success">'._('Clocked in').'</span> ';
+                }
+			}
+
 			break;
 
 		default:

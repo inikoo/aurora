@@ -456,6 +456,10 @@ input{
     }
 .tabs, .subtabs {
         @include unselectable;
+        
+        
+        
+        
         height: $height_short_row;
         line-height: $height_short_row;
         clear: both;
@@ -474,6 +478,11 @@ input{
                 border-right: none;
                 border-left: 1px solid #ccc;
             }
+             &.icon_only {
+               .label{display:none}
+               padding:0 10px
+            }
+            
             .fa {
                 font-size: 75%;
                 color: #888;

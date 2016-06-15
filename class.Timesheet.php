@@ -257,7 +257,7 @@ class Timesheet extends DB_Table {
 			$label=_('Clocked');
 			break;
 		case 'Timesheet Working Time':
-			$label=_('Worked');
+			$label=_('Clocked (working hours)');
 			break;
 		case 'Timesheet Breaks Time':
 			$label=_('Breaks');
@@ -429,7 +429,6 @@ class Timesheet extends DB_Table {
 
 	function update_working_time() {
 
-
 		$this->update_breaks_time();
 
 		$clocked_in=false;
@@ -444,51 +443,70 @@ class Timesheet extends DB_Table {
 		$sql=sprintf("select `Timesheet Record Action Type`,`Timesheet Record Date`,`Timesheet Record Key`, UNIX_TIMESTAMP(`Timesheet Record Date`) date from `Timesheet Record Dimension` where `Timesheet Record Timesheet Key`=%d and `Timesheet Record Ignored Due Missing End`='No' and `Timesheet Record Type` in ('WorkingHoursMark','ClockingRecord','BreakMark') order by `Timesheet Record Date`,`Timesheet Record Action Type`",
 			$this->id
 		);
+		// print "$sql\n";
+
+
+		$recording=false;
+		
+		$clocked_in=false;
+
+		$working_seconds=0;
 
 		if ($result=$this->db->query($sql)) {
 			foreach ($result as $row) {
 
+
+
+				if (!$recording and $row['Timesheet Record Action Type']!='MarkStart') continue;
+
 				if ($row['Timesheet Record Action Type']=='MarkStart') {
-					$valid_working_hours=true;
-				}elseif ($row['Timesheet Record Action Type']=='MarkEnd') {
-					$valid_working_hours=false;
-				}elseif ($row['Timesheet Record Action Type']=='Start') {
+					
+					
+					
+					
+					$recording=true;
+					
+					
+					
+					$start=$row['date'];
+
+
+
+					continue;
+				}
+
+
+				if ($recording and $row['Timesheet Record Action Type']=='MarkEnd' ) {
+					if($clocked_in){
+					
+					$working_seconds+=$row['date']-$start;
+					}
+					$recording=false;
+					continue;
+
+				}
+
+				if ($recording and $row['Timesheet Record Action Type']=='Start' ) {
+
+
+					$start=$row['date'];
 					$clocked_in=true;
-				}elseif ($row['Timesheet Record Action Type']=='End') {
+					continue;
+
+				}
+				if ($recording and $row['Timesheet Record Action Type']=='End' ) {
+
+
+					$working_seconds+=$row['date']-$start;
 					$clocked_in=false;
+					continue;
 
-					if ($end_working_seconds) {
-						$working_seconds=$working_seconds+$end_working_seconds;
-					}
 
 				}
 
-				if ($valid_working_hours and $clocked_in ) {
-					//print "-----------\n";
-					//if (!$start_date) {
-					$start_date=$row['date'];
-					//}
 
-				}elseif (!$valid_working_hours and $clocked_in ) {
 
-					if ($start_date) {
 
-						$end_working_seconds=$end_working_seconds+($row['date']-$start_date);
-						$start_date=false;
-					}
-
-				}elseif ($valid_working_hours and !$clocked_in ) {
-
-					if ($start_date) {
-
-						$working_seconds=$working_seconds+($row['date']-$start_date);
-						$start_date=false;
-					}
-
-				}
-
-				//print_r($row);
-				//print "v wh $valid_working_hours, in: $clocked_in ; $start_date -> ".($working_seconds/3600)."  ".($end_working_seconds/3600)."  \n";
 
 
 
@@ -497,6 +515,8 @@ class Timesheet extends DB_Table {
 			print_r($error_info=$this->db->errorInfo());
 			exit;
 		}
+
+	//	print $working_seconds/3600;
 
 		//$working_seconds=$working_seconds-$this->data['Timesheet Breaks Time'];
 

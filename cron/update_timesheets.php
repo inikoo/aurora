@@ -19,7 +19,7 @@ require_once 'class.Timesheet_Record.php';
 require_once 'utils/date_functions.php';
 
 //$sql=sprintf('select `Timesheet Key` from `Timesheet Dimension` where `Timesheet Staff Key`=21 order by `Timesheet Date` desc');
-//$sql=sprintf('select `Timesheet Key` from `Timesheet Dimension` where `Timesheet Key`=24 ');
+//$sql=sprintf('select `Timesheet Key` from `Timesheet Dimension` where `Timesheet Key`=158458 ');
 $sql=sprintf('select `Timesheet Key` from `Timesheet Dimension`  ');
 
 if ($result=$db->query($sql)) {
@@ -32,8 +32,12 @@ if ($result=$db->query($sql)) {
 		$timesheet->update_working_time();
 		$timesheet->update_unpaid_overtime();
 
+        $test=$timesheet->data['Timesheet Clocked Time']-$timesheet->data['Timesheet Working Time']-$timesheet->data['Timesheet Breaks Time']-$timesheet->data['Timesheet Unpaid Overtime']-$timesheet->data['Timesheet Paid Overtime'];
 
-
+    
+        if($test!=0){
+        print "Test fail:".$timesheet->id."\n";
+        }
 
 	}
 

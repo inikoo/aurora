@@ -20,6 +20,10 @@ case 'part':
 	$where=sprintf(" where `Image Subject Object`='Part' and `Image Subject Object Key`=%d",$parameters['parent_key']);
 
 	break;
+case 'employee':
+	$where=sprintf(" where `Image Subject Object`='Staff' and `Image Subject Object Key`=%d",$parameters['parent_key']);
+
+	break;	
 case 'account':
 //	$table='`Image Dimension` I ';
 	$where=' where true';
