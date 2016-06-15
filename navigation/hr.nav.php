@@ -155,7 +155,7 @@ function get_employee_navigation($data, $smarty, $user, $db) {
 			$_section='staff';
 			break;
 
-		}
+		}	
 
 
 		if (isset($_SESSION['table_state'][$tab])) {
@@ -300,7 +300,7 @@ function get_employee_navigation($data, $smarty, $user, $db) {
 
 
 
-	$title= '<span class="id Staff_Name">'.$object->get('Staff Name').'</span> <span class="id">('.$object->get_formatted_id().')</span>';
+	$title= '<span class="id Staff_Name">'.$object->get('Alias').'</span> (<span class="id Staff_ID ">'.$object->get('ID').'</span>)';
 
 
 	$_content=array(

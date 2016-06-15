@@ -80,7 +80,7 @@ function get_object($object_name, $key, $load_other_data=false) {
 		break;
 	case 'employee':
 	case 'contractor':
-	case 'Staff':
+	case 'staff':
 		include_once 'class.Staff.php';
 		$object=new Staff($key);
 		break;
@@ -199,7 +199,7 @@ function get_object($object_name, $key, $load_other_data=false) {
 		$object=new WebsiteNode($key);
 		break;
 	default:
-		exit('need to complete E1: '.$object_name."\n");
+		exit('need to complete E1: >'.strtolower($object_name)."<\n");
 		break;
 	}
 

@@ -862,7 +862,6 @@ function fire($_data, $db, $user) {
 	include_once 'utils/natural_language.php';
 
 	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction ";
-	// print $sql;
 	$adata=array();
 
 

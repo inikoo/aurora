@@ -1156,7 +1156,7 @@ $modules=array(
 			'main_category.new'=>array('type'=>'new_object',
 				'tabs'=>array(
 					'main_category.new'=>array('label'=>_('New category')),
- 
+
 				)
 
 			),
@@ -1172,8 +1172,8 @@ $modules=array(
 				)
 
 			),
-			
-			
+
+
 			'part'=>array('type'=>'object',
 				'subtabs_parent'=>array(
 					'part.sales.overview'=>'part.sales',
@@ -1491,8 +1491,10 @@ $modules=array(
 				'tabs'=>array(
 					'employee.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 					'employee.history'=>array('label'=>_('History, notes'), 'icon'=>'sticky-note-o'),
-					'employee.attachments'=>array('label'=>_('Attachments'), 'icon'=>'paperclip'),
 					'employee.timesheets'=>array('label'=>_('Timesheets')),
+					'employee.images'=>array('label'=>_('Images'), 'icon'=>'camera-retro','class'=>'right icon_only'),
+					'employee.attachments'=>array('label'=>_('Attachments'), 'icon'=>'paperclip','class'=>'right icon_only'),
+
 
 				)
 

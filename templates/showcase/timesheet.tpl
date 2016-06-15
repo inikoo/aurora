@@ -1,4 +1,4 @@
-<div style="margin-bottom:20px">
+<div class="asset_profile container">
 	<div class="presention_card" style="width:400px;">
 		<table class="showcase" style="" border="0">
 			<tr class="title">

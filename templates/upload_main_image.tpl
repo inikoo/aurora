@@ -45,7 +45,7 @@
 
 			// automatically submit the form on file select
 			$input.on( 'change', function( e )
-			{  console.log('x')
+			{  
 				showFiles( e.target.files );
 
 				
