@@ -425,13 +425,13 @@ class Staff extends DB_Table{
 			if ($data['Timesheet Clocking Records']==0) {
 				return _('No clockings today');
 			}else {
-                if($data['Clocking Status']=='Off'){
-                    $clocked_out_time=($data['Last Clocking']==''?'':' <span class="discreet">('.strftime("%H:%M", strtotime($data['Last Clocking'].' +0:00')).')</span>'  );
-                
-                    return '<span class="highlight">'._('Clocked out').'</span> '.$clocked_out_time;
-                }else{
-                 return '<span class="highlight success">'._('Clocked in').'</span> ';
-                }
+				if ($data['Clocking Status']=='Off') {
+					$clocked_out_time=($data['Last Clocking']==''?'':' <span class="discreet">('.strftime("%H:%M", strtotime($data['Last Clocking'].' +0:00')).')</span>'  );
+
+					return '<span class="highlight">'._('Clocked out').'</span> '.$clocked_out_time;
+				}else {
+					return '<span class="highlight success">'._('Clocked in').'</span> ';
+				}
 			}
 
 			break;
@@ -780,8 +780,8 @@ class Staff extends DB_Table{
 		//$start = microtime(true);
 		//exit;
 		$working_hours=json_decode($this->data['Staff Working Hours'], true);
-		
-		
+
+
 		if (!$working_hours) {
 
 			$timesheet_data=array(
@@ -805,9 +805,9 @@ class Staff extends DB_Table{
 				'Timesheet Staff Key'=>$this->id,
 				'editor'=>$this->editor
 			);
-			
-			
-			
+
+
+
 			$timesheet=new Timesheet('find', $timesheet_data, 'create');
 
 			if ($timesheet->get('Timesheet Working Hours Records')>=2 and $options=='') {
@@ -820,7 +820,7 @@ class Staff extends DB_Table{
 
 			$timesheet->remove_records('WorkingHoursMark');
 
-        
+
 
 			$record_data=array(
 				'Timesheet Record Timesheet Key'=>$timesheet->id,
@@ -942,6 +942,9 @@ class Staff extends DB_Table{
 
 
 	function update_field_switcher($field, $value, $options='', $metadata='') {
+
+		global $account;
+
 		if (is_string($value))
 			$value=_trim($value);
 
@@ -960,11 +963,47 @@ class Staff extends DB_Table{
 
 			break;
 		case('Staff Working Hours'):
+			require_once 'utils/date_functions.php';
+
 			$this->update_field($field, $value, $options);
 
 			list($working_hours_per_week, $working_hours_per_week_metadata)=$this->get_working_hours_per_week($this->data['Staff Working Hours']);
 			$this->update_field('Staff Working Hours Per Week', $working_hours_per_week, 'no_history');
 			$this->update_field('Staff Working Hours Per Week Metadata', json_encode($working_hours_per_week_metadata), 'no_history');
+
+
+
+
+			$to=date('Y-m-d', strtotime(date('Y', strtotime('now + 1 year')).'-'.$account->get('Account HR Start Year')));
+
+			$from=date('Y-m-d');
+
+			if ($from and $to) {
+
+
+
+				$dates=date_range($from, $to);
+				foreach ($dates as $date) {
+					$timesheet=$this->create_timesheet(strtotime($date.' 00:00:00'), 'force');
+					$timesheet->update_number_clocking_records();
+					$timesheet->process_clocking_records_action_type();
+					if ($timesheet->get('Timesheet Clocking Records')>0) {
+
+
+
+
+						$timesheet->update_clocked_time();
+						$timesheet->update_working_time();
+						$timesheet->update_unpaid_overtime();
+					}
+
+
+				}
+
+
+			}
+
+
 
 			$this->other_fields_updated=array(
 				'Staff_Salary'=>array(
@@ -972,10 +1011,10 @@ class Staff extends DB_Table{
 					'render'=>true,
 					'value'=>$this->get('Staff Salary'),
 					'formatted_value'=>$this->get('Salary'),
-
-
 				)
 			);
+
+
 
 			break;
 		case('Staff PIN'):

@@ -10,7 +10,7 @@
 */
 
 $tab='fire';
-$ar_file='ar_hr_tables.php';
+$ar_file='ar_fire_tables.php';
 $tipo='fire';
 
 
