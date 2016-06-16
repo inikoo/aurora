@@ -18,19 +18,29 @@ $tipo='timesheets.employees';
 $default=$user->get_tab_defaults($tab);
 
 
+
 $table_views=array(
-);
+	'overview'=>array('label'=>_('Overview'), 'title'=>_('Overview')),
+	'clocked_per_day'=>array('label'=>_('Clocked/d')),
+	'unpaid_overtime_per_day'=>array('label'=>_('nOKD overtime/d')),
+	'work_time_per_day'=>array('label'=>_('Paid time/d')),
+	'paid_overtime_per_day'=>array('label'=>_('OKD overtime/d')),
+
+	'worked_per_day'=>array('label'=>_('Worked/d')),
+	);
+
+	
 
 $table_filters=array(
-	'alias'=>array('label'=>_('Alias'),'title'=>_('Employee alias')),
-	'name'=>array('label'=>_('Name'),'title'=>_('Employee name')),
+	'alias'=>array('label'=>_('Alias'), 'title'=>_('Employee alias')),
+	'name'=>array('label'=>_('Name'), 'title'=>_('Employee name')),
 
 );
 
 $parameters=array(
 	'parent'=>$state['parent'],
 	'parent_key'=>$state['parent_key'],
-	
+
 
 );
 

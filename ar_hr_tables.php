@@ -86,7 +86,7 @@ function employees($_data, $db, $user, $type='') {
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
-	
+
 	$adata=array();
 	if ($result=$db->query($sql)) {
 		foreach ($result as $data) {
@@ -803,8 +803,55 @@ function timesheets_employees($_data, $db, $user) {
 			$paid_overtime=$data['paid_overtime']/3600;
 			$worked_time=$data['worked_time']/3600;
 
+			$worked_time_monday=$data['worked_time_monday']/3600;
+			$worked_time_tuesday=$data['worked_time_tuesday']/3600;
+			$worked_time_wednesday=$data['worked_time_wednesday']/3600;
+			$worked_time_thursday=$data['worked_time_thursday']/3600;
+			$worked_time_friday=$data['worked_time_friday']/3600;
+			$worked_time_saturday=$data['worked_time_saturday']/3600;
+			$worked_time_sunday=$data['worked_time_sunday']/3600;
+			$worked_time_workweek=$data['worked_time_workweek']/3600;
+			$worked_time_weekend=$data['worked_time_weekend']/3600;
 
+			$clocked_time_monday=$data['clocked_time_monday']/3600;
+			$clocked_time_tuesday=$data['clocked_time_tuesday']/3600;
+			$clocked_time_wednesday=$data['clocked_time_wednesday']/3600;
+			$clocked_time_thursday=$data['clocked_time_thursday']/3600;
+			$clocked_time_friday=$data['clocked_time_friday']/3600;
+			$clocked_time_saturday=$data['clocked_time_saturday']/3600;
+			$clocked_time_sunday=$data['clocked_time_sunday']/3600;
+			$clocked_time_workweek=$data['clocked_time_workweek']/3600;
+			$clocked_time_weekend=$data['clocked_time_weekend']/3600;
 
+			$work_time_monday=$data['work_time_monday']/3600;
+			$work_time_tuesday=$data['work_time_tuesday']/3600;
+			$work_time_wednesday=$data['work_time_wednesday']/3600;
+			$work_time_thursday=$data['work_time_thursday']/3600;
+			$work_time_friday=$data['work_time_friday']/3600;
+			$work_time_saturday=$data['work_time_saturday']/3600;
+			$work_time_sunday=$data['work_time_sunday']/3600;
+			$work_time_workweek=$data['work_time_workweek']/3600;
+			$work_time_weekend=$data['work_time_weekend']/3600;
+
+			$unpaid_overtime_monday=$data['unpaid_overtime_monday']/3600;
+			$unpaid_overtime_tuesday=$data['unpaid_overtime_tuesday']/3600;
+			$unpaid_overtime_wednesday=$data['unpaid_overtime_wednesday']/3600;
+			$unpaid_overtime_thursday=$data['unpaid_overtime_thursday']/3600;
+			$unpaid_overtime_friday=$data['unpaid_overtime_friday']/3600;
+			$unpaid_overtime_saturday=$data['unpaid_overtime_saturday']/3600;
+			$unpaid_overtime_sunday=$data['unpaid_overtime_sunday']/3600;
+			$unpaid_overtime_workweek=$data['unpaid_overtime_workweek']/3600;
+			$unpaid_overtime_weekend=$data['unpaid_overtime_weekend']/3600;
+
+			$paid_overtime_monday=$data['paid_overtime_monday']/3600;
+			$paid_overtime_tuesday=$data['paid_overtime_tuesday']/3600;
+			$paid_overtime_wednesday=$data['paid_overtime_wednesday']/3600;
+			$paid_overtime_thursday=$data['paid_overtime_thursday']/3600;
+			$paid_overtime_friday=$data['paid_overtime_friday']/3600;
+			$paid_overtime_saturday=$data['paid_overtime_saturday']/3600;
+			$paid_overtime_sunday=$data['paid_overtime_sunday']/3600;
+			$paid_overtime_workweek=$data['paid_overtime_workweek']/3600;
+			$paid_overtime_weekend=$data['paid_overtime_weekend']/3600;
 
 			$adata[]=array(
 				'staff_key'=>$data['Timesheet Staff Key'],
@@ -825,6 +872,59 @@ function timesheets_employees($_data, $db, $user) {
 				'unpaid_overtime'=> ($unpaid_overtime!=0? '<span title="'.sprintf("%s %s", number($unpaid_overtime, 3), _('h')).'">'.seconds_to_hourminutes($data['unpaid_overtime']).'</span>'  :'<span class="disabled">-</span>'),
 				'paid_overtime'=> ($paid_overtime!=0? '<span title="'.sprintf("%s %s", number($paid_overtime, 3), _('h')).'">'.seconds_to_hourminutes($data['paid_overtime']).'</span>'  :'<span class="disabled">-</span>'),
 				'worked_time'=> ($worked_time!=0? '<span title="'.sprintf("%s %s", number($worked_time, 3), _('h')).'">'.seconds_to_hourminutes($data['worked_time']).'</span>'  :'<span class="disabled">-</span>'),
+
+				'worked_time_monday'=> ($worked_time_monday!=0? '<span title="'.sprintf("%s %s", number($worked_time_monday, 3), _('h')).'">'.seconds_to_hourminutes($data['worked_time_monday']).'</span>'  :'<span class="disabled">-</span>'),
+				'worked_time_tuesday'=> ($worked_time_tuesday!=0? '<span title="'.sprintf("%s %s", number($worked_time_tuesday, 3), _('h')).'">'.seconds_to_hourminutes($data['worked_time_tuesday']).'</span>'  :'<span class="disabled">-</span>'),
+				'worked_time_wednesday'=> ($worked_time_wednesday!=0? '<span title="'.sprintf("%s %s", number($worked_time_wednesday, 3), _('h')).'">'.seconds_to_hourminutes($data['worked_time_wednesday']).'</span>'  :'<span class="disabled">-</span>'),
+				'worked_time_thursday'=> ($worked_time_thursday!=0? '<span title="'.sprintf("%s %s", number($worked_time_thursday, 3), _('h')).'">'.seconds_to_hourminutes($data['worked_time_thursday']).'</span>'  :'<span class="disabled">-</span>'),
+				'worked_time_friday'=> ($worked_time_friday!=0? '<span title="'.sprintf("%s %s", number($worked_time_friday, 3), _('h')).'">'.seconds_to_hourminutes($data['worked_time_friday']).'</span>'  :'<span class="disabled">-</span>'),
+				'worked_time_saturday'=> ($worked_time_saturday!=0? '<span title="'.sprintf("%s %s", number($worked_time_saturday, 3), _('h')).'">'.seconds_to_hourminutes($data['worked_time_saturday']).'</span>'  :'<span class="disabled">-</span>'),
+				'worked_time_sunday'=> ($worked_time_sunday!=0? '<span title="'.sprintf("%s %s", number($worked_time_sunday, 3), _('h')).'">'.seconds_to_hourminutes($data['worked_time_sunday']).'</span>'  :'<span class="disabled">-</span>'),
+				'worked_time_workweek'=> ($worked_time_workweek!=0? '<span title="'.sprintf("%s %s", number($worked_time_workweek, 3), _('h')).'">'.seconds_to_hourminutes($data['worked_time_workweek']).'</span>'  :'<span class="disabled">-</span>'),
+				'worked_time_weekend'=> ($worked_time_weekend!=0? '<span title="'.sprintf("%s %s", number($worked_time_weekend, 3), _('h')).'">'.seconds_to_hourminutes($data['worked_time_weekend']).'</span>'  :'<span class="disabled">-</span>'),
+
+				'clocked_time_monday'=> ($clocked_time_monday!=0? '<span title="'.sprintf("%s %s", number($clocked_time_monday, 3), _('h')).'">'.seconds_to_hourminutes($data['clocked_time_monday']).'</span>'  :'<span class="disabled">-</span>'),
+				'clocked_time_tuesday'=> ($clocked_time_tuesday!=0? '<span title="'.sprintf("%s %s", number($clocked_time_tuesday, 3), _('h')).'">'.seconds_to_hourminutes($data['clocked_time_tuesday']).'</span>'  :'<span class="disabled">-</span>'),
+				'clocked_time_wednesday'=> ($clocked_time_wednesday!=0? '<span title="'.sprintf("%s %s", number($clocked_time_wednesday, 3), _('h')).'">'.seconds_to_hourminutes($data['clocked_time_wednesday']).'</span>'  :'<span class="disabled">-</span>'),
+				'clocked_time_thursday'=> ($clocked_time_thursday!=0? '<span title="'.sprintf("%s %s", number($clocked_time_thursday, 3), _('h')).'">'.seconds_to_hourminutes($data['clocked_time_thursday']).'</span>'  :'<span class="disabled">-</span>'),
+				'clocked_time_friday'=> ($clocked_time_friday!=0? '<span title="'.sprintf("%s %s", number($clocked_time_friday, 3), _('h')).'">'.seconds_to_hourminutes($data['clocked_time_friday']).'</span>'  :'<span class="disabled">-</span>'),
+				'clocked_time_saturday'=> ($clocked_time_saturday!=0? '<span title="'.sprintf("%s %s", number($clocked_time_saturday, 3), _('h')).'">'.seconds_to_hourminutes($data['clocked_time_saturday']).'</span>'  :'<span class="disabled">-</span>'),
+				'clocked_time_sunday'=> ($clocked_time_sunday!=0? '<span title="'.sprintf("%s %s", number($clocked_time_sunday, 3), _('h')).'">'.seconds_to_hourminutes($data['clocked_time_sunday']).'</span>'  :'<span class="disabled">-</span>'),
+				'clocked_time_workweek'=> ($clocked_time_workweek!=0? '<span title="'.sprintf("%s %s", number($clocked_time_workweek, 3), _('h')).'">'.seconds_to_hourminutes($data['clocked_time_workweek']).'</span>'  :'<span class="disabled">-</span>'),
+				'clocked_time_weekend'=> ($clocked_time_weekend!=0? '<span title="'.sprintf("%s %s", number($clocked_time_weekend, 3), _('h')).'">'.seconds_to_hourminutes($data['clocked_time_weekend']).'</span>'  :'<span class="disabled">-</span>'),
+
+				'work_time_monday'=> ($work_time_monday!=0? '<span title="'.sprintf("%s %s", number($work_time_monday, 3), _('h')).'">'.seconds_to_hourminutes($data['work_time_monday']).'</span>'  :'<span class="disabled">-</span>'),
+				'work_time_tuesday'=> ($work_time_tuesday!=0? '<span title="'.sprintf("%s %s", number($work_time_tuesday, 3), _('h')).'">'.seconds_to_hourminutes($data['work_time_tuesday']).'</span>'  :'<span class="disabled">-</span>'),
+				'work_time_wednesday'=> ($work_time_wednesday!=0? '<span title="'.sprintf("%s %s", number($work_time_wednesday, 3), _('h')).'">'.seconds_to_hourminutes($data['work_time_wednesday']).'</span>'  :'<span class="disabled">-</span>'),
+				'work_time_thursday'=> ($work_time_thursday!=0? '<span title="'.sprintf("%s %s", number($work_time_thursday, 3), _('h')).'">'.seconds_to_hourminutes($data['work_time_thursday']).'</span>'  :'<span class="disabled">-</span>'),
+				'work_time_friday'=> ($work_time_friday!=0? '<span title="'.sprintf("%s %s", number($work_time_friday, 3), _('h')).'">'.seconds_to_hourminutes($data['work_time_friday']).'</span>'  :'<span class="disabled">-</span>'),
+				'work_time_saturday'=> ($work_time_saturday!=0? '<span title="'.sprintf("%s %s", number($work_time_saturday, 3), _('h')).'">'.seconds_to_hourminutes($data['work_time_saturday']).'</span>'  :'<span class="disabled">-</span>'),
+				'work_time_sunday'=> ($work_time_sunday!=0? '<span title="'.sprintf("%s %s", number($work_time_sunday, 3), _('h')).'">'.seconds_to_hourminutes($data['work_time_sunday']).'</span>'  :'<span class="disabled">-</span>'),
+				'work_time_workweek'=> ($work_time_workweek!=0? '<span title="'.sprintf("%s %s", number($work_time_workweek, 3), _('h')).'">'.seconds_to_hourminutes($data['work_time_workweek']).'</span>'  :'<span class="disabled">-</span>'),
+				'work_time_weekend'=> ($work_time_weekend!=0? '<span title="'.sprintf("%s %s", number($work_time_weekend, 3), _('h')).'">'.seconds_to_hourminutes($data['work_time_weekend']).'</span>'  :'<span class="disabled">-</span>'),
+
+
+				'unpaid_overtime_monday'=> ($unpaid_overtime_monday!=0? '<span title="'.sprintf("%s %s", number($unpaid_overtime_monday, 3), _('h')).'">'.seconds_to_hourminutes($data['unpaid_overtime_monday']).'</span>'  :'<span class="disabled">-</span>'),
+				'unpaid_overtime_tuesday'=> ($unpaid_overtime_tuesday!=0? '<span title="'.sprintf("%s %s", number($unpaid_overtime_tuesday, 3), _('h')).'">'.seconds_to_hourminutes($data['unpaid_overtime_tuesday']).'</span>'  :'<span class="disabled">-</span>'),
+				'unpaid_overtime_wednesday'=> ($unpaid_overtime_wednesday!=0? '<span title="'.sprintf("%s %s", number($unpaid_overtime_wednesday, 3), _('h')).'">'.seconds_to_hourminutes($data['unpaid_overtime_wednesday']).'</span>'  :'<span class="disabled">-</span>'),
+				'unpaid_overtime_thursday'=> ($unpaid_overtime_thursday!=0? '<span title="'.sprintf("%s %s", number($unpaid_overtime_thursday, 3), _('h')).'">'.seconds_to_hourminutes($data['unpaid_overtime_thursday']).'</span>'  :'<span class="disabled">-</span>'),
+				'unpaid_overtime_friday'=> ($unpaid_overtime_friday!=0? '<span title="'.sprintf("%s %s", number($unpaid_overtime_friday, 3), _('h')).'">'.seconds_to_hourminutes($data['unpaid_overtime_friday']).'</span>'  :'<span class="disabled">-</span>'),
+				'unpaid_overtime_saturday'=> ($unpaid_overtime_saturday!=0? '<span title="'.sprintf("%s %s", number($unpaid_overtime_saturday, 3), _('h')).'">'.seconds_to_hourminutes($data['unpaid_overtime_saturday']).'</span>'  :'<span class="disabled">-</span>'),
+				'unpaid_overtime_sunday'=> ($unpaid_overtime_sunday!=0? '<span title="'.sprintf("%s %s", number($unpaid_overtime_sunday, 3), _('h')).'">'.seconds_to_hourminutes($data['unpaid_overtime_sunday']).'</span>'  :'<span class="disabled">-</span>'),
+				'unpaid_overtime_workweek'=> ($unpaid_overtime_workweek!=0? '<span title="'.sprintf("%s %s", number($unpaid_overtime_workweek, 3), _('h')).'">'.seconds_to_hourminutes($data['unpaid_overtime_workweek']).'</span>'  :'<span class="disabled">-</span>'),
+				'unpaid_overtime_weekend'=> ($unpaid_overtime_weekend!=0? '<span title="'.sprintf("%s %s", number($unpaid_overtime_weekend, 3), _('h')).'">'.seconds_to_hourminutes($data['unpaid_overtime_weekend']).'</span>'  :'<span class="disabled">-</span>'),
+
+
+				'paid_overtime_monday'=> ($paid_overtime_monday!=0? '<span title="'.sprintf("%s %s", number($paid_overtime_monday, 3), _('h')).'">'.seconds_to_hourminutes($data['paid_overtime_monday']).'</span>'  :'<span class="disabled">-</span>'),
+				'paid_overtime_tuesday'=> ($paid_overtime_tuesday!=0? '<span title="'.sprintf("%s %s", number($paid_overtime_tuesday, 3), _('h')).'">'.seconds_to_hourminutes($data['paid_overtime_tuesday']).'</span>'  :'<span class="disabled">-</span>'),
+				'paid_overtime_wednesday'=> ($paid_overtime_wednesday!=0? '<span title="'.sprintf("%s %s", number($paid_overtime_wednesday, 3), _('h')).'">'.seconds_to_hourminutes($data['paid_overtime_wednesday']).'</span>'  :'<span class="disabled">-</span>'),
+				'paid_overtime_thursday'=> ($paid_overtime_thursday!=0? '<span title="'.sprintf("%s %s", number($paid_overtime_thursday, 3), _('h')).'">'.seconds_to_hourminutes($data['paid_overtime_thursday']).'</span>'  :'<span class="disabled">-</span>'),
+				'paid_overtime_friday'=> ($paid_overtime_friday!=0? '<span title="'.sprintf("%s %s", number($paid_overtime_friday, 3), _('h')).'">'.seconds_to_hourminutes($data['paid_overtime_friday']).'</span>'  :'<span class="disabled">-</span>'),
+				'paid_overtime_saturday'=> ($paid_overtime_saturday!=0? '<span title="'.sprintf("%s %s", number($paid_overtime_saturday, 3), _('h')).'">'.seconds_to_hourminutes($data['paid_overtime_saturday']).'</span>'  :'<span class="disabled">-</span>'),
+				'paid_overtime_sunday'=> ($paid_overtime_sunday!=0? '<span title="'.sprintf("%s %s", number($paid_overtime_sunday, 3), _('h')).'">'.seconds_to_hourminutes($data['paid_overtime_sunday']).'</span>'  :'<span class="disabled">-</span>'),
+				'paid_overtime_workweek'=> ($paid_overtime_workweek!=0? '<span title="'.sprintf("%s %s", number($paid_overtime_workweek, 3), _('h')).'">'.seconds_to_hourminutes($data['paid_overtime_workweek']).'</span>'  :'<span class="disabled">-</span>'),
+				'paid_overtime_weekend'=> ($paid_overtime_weekend!=0? '<span title="'.sprintf("%s %s", number($paid_overtime_weekend, 3), _('h')).'">'.seconds_to_hourminutes($data['paid_overtime_weekend']).'</span>'  :'<span class="disabled">-</span>'),
+
 
 
 			);

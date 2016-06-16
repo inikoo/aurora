@@ -423,6 +423,34 @@ class Timesheet extends DB_Table {
 		}
 		$this->update(array('Timesheet Clocked Time'=>($clocked_seconds)), 'no_history');
 
+
+		switch (date('N', strtotime($this->get('Timesheet Date')))) {
+		case 1:
+			$this->update(array('Timesheet Monday Clocked Time'=>$clocked_seconds), 'no_history');
+			break;
+		case 2:
+			$this->update(array('Timesheet Tuesday Clocked Time'=>$clocked_seconds), 'no_history');
+			break;
+		case 3:
+			$this->update(array('Timesheet Wednesday Clocked Time'=>$clocked_seconds), 'no_history');
+			break;
+		case 4:
+			$this->update(array('Timesheet Thursday Clocked Time'=>$clocked_seconds), 'no_history');
+			break;
+		case 5:
+			$this->update(array('Timesheet Friday Clocked Time'=>$clocked_seconds), 'no_history');
+			break;
+		case 6:
+			$this->update(array('Timesheet Saturday Clocked Time'=>$clocked_seconds), 'no_history');
+			break;
+		case 7:
+			$this->update(array('Timesheet Sunday Clocked Time'=>$clocked_seconds), 'no_history');
+			break;
+		default:
+
+			break;
+		}
+
 	}
 
 
@@ -447,39 +475,39 @@ class Timesheet extends DB_Table {
 
 
 		$recording=false;
-		
+
 		$clocked_in=false;
-$start ='';
+		$start ='';
 		$working_seconds=0;
 
 		if ($result=$this->db->query($sql)) {
 			foreach ($result as $row) {
 
 
-//print "-- $start  ||  $clocked_in -- \n";
-//print_r($row);
+				//print "-- $start  ||  $clocked_in -- \n";
+				//print_r($row);
 
 				if (!$recording and $row['Timesheet Record Action Type']!='MarkStart') {
-				
-				    if ($row['Timesheet Record Action Type']=='Start' ) {
-				   
-				        $clocked_in=true;
-				    }
-				     if ($row['Timesheet Record Action Type']=='End' ) {
-				        $clocked_in=false;
-				    }
-				    continue;
+
+					if ($row['Timesheet Record Action Type']=='Start' ) {
+
+						$clocked_in=true;
+					}
+					if ($row['Timesheet Record Action Type']=='End' ) {
+						$clocked_in=false;
+					}
+					continue;
 				}
 
 				if ($row['Timesheet Record Action Type']=='MarkStart') {
-					
-					
-					
-					
+
+
+
+
 					$recording=true;
-					
-					
-					
+
+
+
 					$start=$row['date'];
 
 
@@ -489,9 +517,9 @@ $start ='';
 
 
 				if ($recording and $row['Timesheet Record Action Type']=='MarkEnd' ) {
-					if($clocked_in){
-					
-					$working_seconds+=$row['date']-$start;
+					if ($clocked_in) {
+
+						$working_seconds+=$row['date']-$start;
 					}
 					$recording=false;
 					continue;
@@ -533,6 +561,37 @@ $start ='';
 		//$working_seconds=$working_seconds-$this->data['Timesheet Breaks Time'];
 
 		$this->update(array('Timesheet Working Time'=>$working_seconds), 'no_history');
+
+
+
+
+		switch (date('N', strtotime($this->get('Timesheet Date')))) {
+		case 1:
+			$this->update(array('Timesheet Monday Working Time'=>$working_seconds), 'no_history');
+			break;
+		case 2:
+			$this->update(array('Timesheet Tuesday Working Time'=>$working_seconds), 'no_history');
+			break;
+		case 3:
+			$this->update(array('Timesheet Wednesday Working Time'=>$working_seconds), 'no_history');
+			break;
+		case 4:
+			$this->update(array('Timesheet Thursday Working Time'=>$working_seconds), 'no_history');
+			break;
+		case 5:
+			$this->update(array('Timesheet Friday Working Time'=>$working_seconds), 'no_history');
+			break;
+		case 6:
+			$this->update(array('Timesheet Saturday Working Time'=>$working_seconds), 'no_history');
+			break;
+		case 7:
+			$this->update(array('Timesheet Sunday Working Time'=>$working_seconds), 'no_history');
+			break;
+		default:
+
+			break;
+		}
+
 
 	}
 
@@ -596,6 +655,35 @@ $start ='';
 			exit;
 		}
 		$this->update(array('Timesheet Breaks Time'=>$working_seconds), 'no_history');
+
+
+		switch (date('N', strtotime($this->get('Timesheet Date')))) {
+		case 1:
+			$this->update(array('Timesheet Monday Breaks Time'=>$working_seconds), 'no_history');
+			break;
+		case 2:
+			$this->update(array('Timesheet Tuesday Breaks Time'=>$working_seconds), 'no_history');
+			break;
+		case 3:
+			$this->update(array('Timesheet Wednesday Breaks Time'=>$working_seconds), 'no_history');
+			break;
+		case 4:
+			$this->update(array('Timesheet Thursday Breaks Time'=>$working_seconds), 'no_history');
+			break;
+		case 5:
+			$this->update(array('Timesheet Friday Breaks Time'=>$working_seconds), 'no_history');
+			break;
+		case 6:
+			$this->update(array('Timesheet Saturday Breaks Time'=>$working_seconds), 'no_history');
+			break;
+		case 7:
+			$this->update(array('Timesheet Sunday Breaks Time'=>$working_seconds), 'no_history');
+			break;
+		default:
+
+			break;
+		}
+
 
 	}
 
@@ -705,6 +793,34 @@ $start ='';
 
 		//print "v ".($clocked_seconds/60)." \n";
 		$this->update(array('Timesheet Unpaid Overtime'=>$clocked_seconds), 'no_history');
+
+
+		switch (date('N', strtotime($this->get('Timesheet Date')))) {
+		case 1:
+			$this->update(array('Timesheet Monday Unpaid Overtime'=>$clocked_seconds), 'no_history');
+			break;
+		case 2:
+			$this->update(array('Timesheet Tuesday Unpaid Overtime'=>$clocked_seconds), 'no_history');
+			break;
+		case 3:
+			$this->update(array('Timesheet Wednesday Unpaid Overtime'=>$clocked_seconds), 'no_history');
+			break;
+		case 4:
+			$this->update(array('Timesheet Thursday Unpaid Overtime'=>$clocked_seconds), 'no_history');
+			break;
+		case 5:
+			$this->update(array('Timesheet Friday Unpaid Overtime'=>$clocked_seconds), 'no_history');
+			break;
+		case 6:
+			$this->update(array('Timesheet Saturday Unpaid Overtime'=>$clocked_seconds), 'no_history');
+			break;
+		case 7:
+			$this->update(array('Timesheet Sunday Unpaid Overtime'=>$clocked_seconds), 'no_history');
+			break;
+		default:
+
+			break;
+		}
 
 	}
 
