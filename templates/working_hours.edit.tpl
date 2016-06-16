@@ -5,8 +5,8 @@
 <span id="{$field.id}_hours_label" class="hide ">{t}hrs/w{/t}</span>
 {*}
 <input id="{$field.id}" type="hidden" class="input_field " value="{$field.value}" has_been_valid="0"/>
-<div id="working_hours" class=" xhide" >
-	<table border="1" style="" >
+<div id="working_hours" class="hide" >
+	<table border="0" style="" >
 		<tr class="bold">
 			<td  colspan=2></td>
 			

@@ -337,7 +337,10 @@ class Staff extends DB_Table{
 		case ('Valid From'):
 		case ('Valid To'):
 		case ('Birthday'):
-			return ($this->data['Staff '.$key]=='' or $this->data['Staff '.$key]=='0000-00-00 00:00:00') ?'':strftime("%Y-%m-%d", strtotime($this->data['Staff '.$key]));
+		
+		
+		
+			return ($this->data['Staff '.$key]=='' or $this->data['Staff '.$key]=='0000-00-00 00:00:00') ?'':strftime("%x", strtotime($this->data['Staff '.$key]));
 
 			break;
 
@@ -961,6 +964,42 @@ class Staff extends DB_Table{
 			$this->update_field($field, $value, 'no_history');
 			$this->update_field('Staff Telephone Formatted', $formatted_value, $options);
 
+			break;
+		case 'Staff Valid From':	
+			require_once 'utils/date_functions.php';
+			
+			
+			
+			$this->update_field($field, $value, $options);
+			$from=date('Y-m-d', strtotime($this->get('Staff Valid From')));
+			$to=date('Y-m-d', strtotime(date('Y', strtotime('now + 1 year')).'-'.$account->get('Account HR Start Year')));
+			
+			if ($from and $to) {
+
+
+
+				$dates=date_range($from, $to);
+				foreach ($dates as $date) {
+					$timesheet=$this->create_timesheet(strtotime($date.' 00:00:00'), '');
+					$timesheet->update_number_clocking_records();
+					$timesheet->process_clocking_records_action_type();
+					if ($timesheet->get('Timesheet Clocking Records')>0) {
+
+
+
+
+						$timesheet->update_clocked_time();
+						$timesheet->update_working_time();
+						$timesheet->update_unpaid_overtime();
+					}
+
+
+				}
+
+
+			}
+			
+			
 			break;
 		case('Staff Working Hours'):
 			require_once 'utils/date_functions.php';
