@@ -909,6 +909,10 @@ input {
   position: relative;
   top: -10px;
   margin-top: 5px; }
+  #working_hours input {
+    width: 3em; }
+  #working_hours .minutes_input_field {
+    width: 2em; }
   #working_hours td.expand_days {
     width: 30px; }
     #working_hours td.expand_days .fa {
