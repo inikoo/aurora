@@ -236,7 +236,7 @@ $object_fields=array(
 			),
 			array(
 				'render'=>($new?false:true),
-				'edit'=>'hidden',
+				'edit'=>($edit?'date':''),
 				'id'=>'Staff_Valid_From',
 
 				'time'=>'09:00:00',
