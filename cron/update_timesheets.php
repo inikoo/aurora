@@ -20,7 +20,7 @@ require_once 'utils/date_functions.php';
 
 //$sql=sprintf('select `Timesheet Key` from `Timesheet Dimension` where `Timesheet Staff Key`=21 order by `Timesheet Date` desc');
 //$sql=sprintf('select `Timesheet Key` from `Timesheet Dimension` where `Timesheet Key`=158458 ');
-$sql=sprintf('select `Timesheet Key` from `Timesheet Dimension`  ');
+$sql=sprintf('select `Timesheet Key` from `Timesheet Dimension` where `Timesheet Clocking Records`>0  ');
 
 if ($result=$db->query($sql)) {
 	foreach ($result as $row) {

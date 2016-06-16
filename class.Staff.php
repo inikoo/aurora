@@ -780,6 +780,8 @@ class Staff extends DB_Table{
 		//$start = microtime(true);
 		//exit;
 		$working_hours=json_decode($this->data['Staff Working Hours'], true);
+		
+		
 		if (!$working_hours) {
 
 			$timesheet_data=array(
@@ -803,6 +805,9 @@ class Staff extends DB_Table{
 				'Timesheet Staff Key'=>$this->id,
 				'editor'=>$this->editor
 			);
+			
+			
+			
 			$timesheet=new Timesheet('find', $timesheet_data, 'create');
 
 			if ($timesheet->get('Timesheet Working Hours Records')>=2 and $options=='') {
@@ -814,6 +819,8 @@ class Staff extends DB_Table{
 			}
 
 			$timesheet->remove_records('WorkingHoursMark');
+
+        
 
 			$record_data=array(
 				'Timesheet Record Timesheet Key'=>$timesheet->id,

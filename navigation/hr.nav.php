@@ -821,7 +821,7 @@ function get_timesheet_navigation($data, $smarty, $user, $db) {
 
 
 
-	$title= '<span class=" Timesheet_Date">'.$object->get('Date').'</span>, <span class=" Timesheet_Staff_Name">'.$object->get('Timesheet Staff Name').'</span>  <span class="id hide">('.$object->get_formatted_id().')</span>';
+	$title= '<span class=" Timesheet_Date">'.$object->get('Date').'</span>, <span onCLick="change_view(\'employee/'.$object->get('Timesheet Staff Key').'\')" class="link Timesheet_Staff_Name">'.$object->get('Timesheet Staff Name').'</span>  <span class="id hide">('.$object->get_formatted_id().')</span>';
 
 
 	$_content=array(

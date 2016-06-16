@@ -14,12 +14,14 @@ require_once 'common.php';
 require_once 'class.Staff.php';
 require_once 'utils/date_functions.php';
 
-$sql=sprintf('select `Staff Key` from `Staff Dimension` where `Staff Type`!="Contractor" order by `Staff Key` desc ');
+$sql=sprintf('select `Staff Key` from `Staff Dimension` where `Staff Type`!="Contractor"  order by `Staff Key` desc ');
 
 if ($result=$db->query($sql)) {
 	foreach ($result as $row) {
 		$employee=new Staff($row['Staff Key']);
 		$from=$employee->get('Staff Valid From');
+
+
 
 		if ($from!='' and $from!='') {
 			$from=date('Y-m-d', strtotime($employee->get('Staff Valid From')));
@@ -37,18 +39,21 @@ if ($result=$db->query($sql)) {
 
 		if ($from and $to) {
 
-			//print $employee->get('Name')." $from $to\n";
+		
 
 			$dates=date_range($from, $to);
 			foreach ($dates as $date) {
-				$timesheet=$employee->create_timesheet(strtotime($date.' 00:00:00'), '');
+				$timesheet=$employee->create_timesheet(strtotime($date.' 00:00:00'),'force');
+                
+                
+                
+                
 
-
-				//$timesheet->update_number_clocking_records();
-				//$timesheet->process_clocking_records_action_type();
-				//$timesheet->update_clocked_time();
-				//$timesheet->update_working_time();
-				//$timesheet->update_unpaid_overtime();
+				$timesheet->update_number_clocking_records();
+				$timesheet->process_clocking_records_action_type();
+				$timesheet->update_clocked_time();
+				$timesheet->update_working_time();
+				$timesheet->update_unpaid_overtime();
 
 
 
