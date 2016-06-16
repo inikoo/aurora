@@ -449,15 +449,27 @@ class Timesheet extends DB_Table {
 		$recording=false;
 		
 		$clocked_in=false;
-
+$start ='';
 		$working_seconds=0;
 
 		if ($result=$this->db->query($sql)) {
 			foreach ($result as $row) {
 
 
+//print "-- $start  ||  $clocked_in -- \n";
+//print_r($row);
 
-				if (!$recording and $row['Timesheet Record Action Type']!='MarkStart') continue;
+				if (!$recording and $row['Timesheet Record Action Type']!='MarkStart') {
+				
+				    if ($row['Timesheet Record Action Type']=='Start' ) {
+				   
+				        $clocked_in=true;
+				    }
+				     if ($row['Timesheet Record Action Type']=='End' ) {
+				        $clocked_in=false;
+				    }
+				    continue;
+				}
 
 				if ($row['Timesheet Record Action Type']=='MarkStart') {
 					
@@ -516,7 +528,7 @@ class Timesheet extends DB_Table {
 			exit;
 		}
 
-	//	print $working_seconds/3600;
+		//print $working_seconds/3600;
 
 		//$working_seconds=$working_seconds-$this->data['Timesheet Breaks Time'];
 
