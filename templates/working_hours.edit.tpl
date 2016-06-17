@@ -626,7 +626,7 @@ $(".working_hours_input_field").on("input propertychange", function(evt) {
 });
 
 
-$('.working_hours').on('input propertychange', '.break_input_field', function() {
+$('#working_hours').on('input propertychange', '.break_input_field', function() {
 
 
     var delay = 200;
@@ -637,9 +637,9 @@ $('.working_hours').on('input propertychange', '.break_input_field', function() 
 
 
 
-$('.working_hours').on('click', '.delete_break', function() {
+$('#working_hours').on('click', '.delete_break', function() {
 
-
+console.log('caca')
     var i = $(this).parent().parent().attr('day_id') // 1 break only
     $(this).parent().parent().remove()
 
