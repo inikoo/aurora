@@ -30,9 +30,12 @@ function delete_image(image_bridge_key) {
 
             if (data.number_images == 0) {
 
-                $('div.main_image').addClass('hide')
-                $('form.main_image').removeClass('hide')
-                $('div.main_image img').attr('src', '/art/nopic.png')
+                //$('div.main_image').addClass('hide')
+                //$('form.main_image').removeClass('hide')
+                //$('div.main_image img').attr('src', '/art/nopic.png')
+
+                 $('#main_image').addClass('hide')
+						     $('#add_image_form').removeClass('hide')
 
             } else {
                 $('div.main_image').removeClass('hide')

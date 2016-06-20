@@ -348,7 +348,7 @@ case 'views':
 
 			$response['object_showcase']=get_object_showcase(
 				(isset($modules[$state['module']]['sections'][$state['section']]['showcase'])?$modules[$state['module']]['sections'][$state['section']]['showcase']:$state['object']),
-				$state, $smarty, $user, $db,$account);
+				$state, $smarty, $user, $db, $account);
 
 		}
 
@@ -443,7 +443,7 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state=false, $me
 
 
 
-function get_object_showcase($showcase, $data, $smarty, $user, $db,$account) {
+function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
 
 
 	switch ($showcase) {
@@ -1459,6 +1459,40 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
 				}
+			}elseif ($state['parent']=='category') {
+
+				$category=$state['_parent'];
+				$branch[]=array('label'=>_("Products's categories").' <span class="id">'.$state['store']->get('Code').'</span>', 'icon'=>'sitemap', 'reference'=>'products/'.$category->get('Store Key').'/categories');
+
+
+				if (isset($state['metadata'])) {
+					$parent_category_keys=$state['metadata'];
+				}else {
+
+					$parent_category_keys=preg_split('/\>/', $category->get('Category Position'));
+				}
+
+
+				foreach ( $parent_category_keys as $category_key) {
+					if (!is_numeric($category_key)) {
+						continue;
+					}
+				//	if ($category_key==$state['parent_key']) {
+					//	$branch[]=array('label'=>'<span class="Category_Code">'.$category->get('Code').'</span> <span class="italic hide Category_Label">'.$category->get('Label').'</span>', 'icon'=>'', 'reference'=>'');
+					//	break;
+					//}else {
+
+						$parent_category=new Category($category_key);
+						if ($parent_category->id) {
+
+							$branch[]=array('label'=>$parent_category->get('Code'), 'icon'=>'', 'reference'=>'products/'.$category->get('Store Key').'/category/'.$parent_category->id);
+
+						}
+				//}
+				}
+
+
+
 			}elseif ($state['parent']=='order') {
 				$order=new Order($state['parent_key']);
 				$store=new Store($order->get('Order Store Key'));
@@ -1494,10 +1528,10 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
 		}elseif ($state['section']=='categories') {
-			$branch[]=array('label'=>_("Products's categories"), 'icon'=>'sitemap', 'reference'=>'');
+			$branch[]=array('label'=>_("Products's categories").' <span class="id">'.$state['store']->get('Code').'</span>', 'icon'=>'sitemap', 'reference'=>'');
 		}elseif ($state['section']=='category') {
 			$category=$state['_object'];
-			$branch[]=array('label'=>_("Products's categories"), 'icon'=>'sitemap', 'reference'=>'products/'.$category->get('Store Key').'/categories');
+			$branch[]=array('label'=>_("Products's categories").' <span class="id">'.$state['store']->get('Code').'</span>', 'icon'=>'sitemap', 'reference'=>'products/'.$category->get('Store Key').'/categories');
 
 
 			if (isset($state['metadata'])) {
@@ -1513,14 +1547,14 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 					continue;
 				}
 				if ($category_key==$state['key']) {
-					$branch[]=array('label'=>'<span class="Category_Label">'.$category->get('Label').'</span>', 'icon'=>'', 'reference'=>'');
+					$branch[]=array('label'=>'<span class="Category_Code">'.$category->get('Code').'</span> <span class="italic hide Category_Label">'.$category->get('Label').'</span>', 'icon'=>'', 'reference'=>'');
 					break;
 				}else {
 
 					$parent_category=new Category($category_key);
 					if ($parent_category->id) {
 
-						$branch[]=array('label'=>$parent_category->get('Label'), 'icon'=>'', 'reference'=>'products/'.$category->get('Store Key').'/category/'.$parent_category->id);
+						$branch[]=array('label'=>$parent_category->get('Code'), 'icon'=>'', 'reference'=>'products/'.$category->get('Store Key').'/category/'.$parent_category->id);
 
 					}
 				}

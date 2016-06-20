@@ -21,7 +21,7 @@ $category_product_fields=array(
 		'label'=>_('Visibility'),
 		'show_title'=>true,
 		'fields'=>array(
-			
+
 			array(
 				'edit'=>'option',
 				'id'=>'Product_Category_Public',
@@ -31,14 +31,25 @@ $category_product_fields=array(
 				'label'=>_('Public'),
 				'type'=>'value'
 			),
-			
-			
+
+			array(
+
+				'id'=>'Product_Category_Description',
+				'edit'=>($edit?'html_editor':''),
+
+				'value'=>htmlentities($object->get('Product Category Description')),
+				'formatted_value'=>$object->get('Description'),
+				'label'=>ucfirst($object->get_field_label('Product Category Description')),
+				'invalid_msg'=>get_invalid_message('string'),
+				'required'=>false,
+				'type'=>'value'
+			),
 
 		)
 	),
-	
-	
-	
+
+
+
 );
 
 

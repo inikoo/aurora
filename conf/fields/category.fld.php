@@ -93,8 +93,12 @@ $category_fields=array(
 );
 
 
+
 switch ($options['Category Scope']) {
 case 'Product':
+
+
+    
 
 
 	include 'category.product.fld.php';

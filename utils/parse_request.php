@@ -151,12 +151,20 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 									$key=array_pop($parent_categories);
 
 									$parent='category';
+									
+							
+
 									$parent_key=array_pop($parent_categories);
 
-									if (isset($view_path[3]) ) {
-										if ($view_path[3]=='product') {
-											$section='product';
 
+									if (isset($view_path[3]) ) {
+
+										if ($view_path[3]=='product') {
+										
+										    $parent_key=$key;
+										
+											$section='product';
+											$object='product';
 											if (isset($view_path[4]) and  is_numeric($view_path[4])) {
 
 												$key=$view_path[4];
@@ -184,14 +192,30 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 									}
 
 
-									if (isset($view_path[3]) and is_numeric($view_path[3])) {
-										$section='product';
-										$parent='category';
-										$parent_key=$category->id;
-										$object='product';
-										$key=$view_path[3];
+									if (isset($view_path[3]) ) {
+										if (is_numeric($view_path[3])) {
+											$section='product';
+											$parent='category';
+											$parent_key=$category->id;
+											$object='product';
+											$key=$view_path[3];
+										}elseif ($view_path[3]=='product') {
+											$section='product';
+											$object='product';
+											if (isset($view_path[4]) and  is_numeric($view_path[4])) {
+
+												$key=$view_path[4];
+
+											}
+
+										}
+
 
 									}
+
+
+
+
 
 								}
 								elseif ($view_path[2]=='new') {

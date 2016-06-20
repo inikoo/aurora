@@ -1255,6 +1255,9 @@ tr.deleting_tr {
 .table div.tr > div {
   float: left; }
 
+#main_image {
+  border: 0; }
+
 #object_showcase {
   clear: both;
   font-size: 15px; }

@@ -178,6 +178,15 @@
 		<textarea id="{$field.id}" class="input_field hide"   has_been_valid="0">{$field.value}</textarea>
 		<i id="{$field.id}_save_button" class="fa fa-cloud  save {$edit} hide" onclick="save_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i> 
 		<span id="{$field.id}_msg" class="msg"></span> 
+	{elseif $edit=='html_editor'  } 
+		
+		<div>
+		<i id="{$field.id}_save_button" class="fa fa-cloud  save {$edit} hide" onclick="save_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i> 
+		<span id="{$field.id}_msg" class="msg"></span> 
+		</div>
+	<div>
+		<textarea id="{$field.id}" class="input_field hide" style="width:90%"   has_been_valid="0">{$field.value}</textarea>
+		</div>
 	    
 	    {elseif $edit=='address'  or $edit=='new_delivery_address' or $edit=='address_to_clone' } 
 	    
