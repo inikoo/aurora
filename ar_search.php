@@ -583,14 +583,19 @@ function search_products($db, $account, $memcache_ip, $data) {
 		if (in_array($data['scope_key'], $user->stores)) {
 			$stores=$data['scope_key'];
 			$where_store=sprintf(' and `Product Store Key`=%d', $data['scope_key']);
+			$where_cat_store=sprintf(' and `Category Store Key`=%d', $data['scope_key']);
+
 		}else {
 			$where_store=' and false';
+			$where_cat_store=' and false';
 		}
 	} else {
 		if (count($user->stores)==$account->data['Stores']) {
 			$where_store='';
+			$where_cat_store='';
 		}else {
 			$where_store=sprintf(' and `Product Store Key` in (%s)', join(',', $user->stores));
+			$where_cat_store=sprintf(' and `Category Store Key` in (%s)', join(',', $user->stores));
 		}
 
 		$stores=join(',', $user->stores);
@@ -633,7 +638,7 @@ function search_products($db, $account, $memcache_ip, $data) {
 
 				if ($result=$db->query($sql)) {
 					if ($row = $result->fetch()) {
-						$candidates[$row['Product ID']]=2000;
+						$candidates['P'.$row['Product ID']]=2000;
 					}
 				}else {
 					print_r($error_info=$db->errorInfo());
@@ -660,13 +665,13 @@ function search_products($db, $account, $memcache_ip, $data) {
 				foreach ($result as $row) {
 
 					if ($row['Product Code']==$q)
-						$candidates[$row['Product ID']]=1000;
+						$candidates['P'.$row['Product ID']]=1000;
 					else {
 
 						$len_name=strlen($row['Product Code']);
 						$len_q=strlen($q);
 						$factor=$len_q/$len_name;
-						$candidates[$row['Product ID']]=500*$factor;
+						$candidates['P'.$row['Product ID']]=500*$factor;
 					}
 
 				}
@@ -675,27 +680,61 @@ function search_products($db, $account, $memcache_ip, $data) {
 				exit;
 			}
 
-
-
-
-
-
-
-
-
 			$sql=sprintf("select `Product ID`,`Product Code`,`Product Name` from `Product Dimension` where true $where_store and `Product Name`  REGEXP '[[:<:]]%s' limit 100 ",
 				$q);
 
 			if ($result=$db->query($sql)) {
 				foreach ($result as $row) {
 					if ($row['Product Name']==$q)
-						$candidates[$row['Product ID']]=55;
+						$candidates['P'.$row['Product ID']]=55;
 					else {
 
 						$len_name=strlen($row['Product Name']);
 						$len_q=strlen($q);
 						$factor=$len_q/$len_name;
-						$candidates[$row['Product ID']]=50*$factor;
+						$candidates['P'.$row['Product ID']]=50*$factor;
+					}
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				exit;
+			}
+
+			$sql=sprintf("select `Category Key`,`Category Code`,`Category Label` from `Category Dimension` where `Category Scope`='Product'   $where_cat_store and `Category Code` like '%s%%' limit 20 ",
+				$q);
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+
+					if ($row['Category Code']==$q)
+						$candidates['C'.$row['Category Key']]=1000;
+					else {
+
+						$len_name=strlen($row['Category Code']);
+						$len_q=strlen($q);
+						$factor=$len_q/$len_name;
+						$candidates['C'.$row['Category Key']]=500*$factor;
+					}
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				exit;
+			}
+			$sql=sprintf("select `Category Key`,`Category Code`,`Category Label` from `Category Dimension` where `Category Scope`='Product'   $where_cat_store and  `Category Label`  REGEXP '[[:<:]]%s' limit 100 ",
+				$q);
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+					if ($row['Category Label']==$q)
+						$candidates['C'.$row['Category Key']]=55;
+					else {
+
+						$len_name=strlen($row['Category Label']);
+						$len_q=strlen($q);
+						$factor=$len_q/$len_name;
+						$candidates['C'.$row['Category Key']]=50*$factor;
 					}
 
 				}
@@ -722,43 +761,86 @@ function search_products($db, $account, $memcache_ip, $data) {
 
 		$counter=0;
 		$product_keys='';
-		$results=array();
+		$category_keys='';
 
-		foreach ($candidates as $key=>$val) {
+		$results=array();
+		$number_products_keys=0;
+		$number_categories_keys=0;
+
+		foreach ($candidates as $_key=>$val) {
 			$counter++;
-			$product_keys.=','.$key;
-			$results[$key]='';
+
+			if ($_key[0]=='P') {
+				$key=preg_replace('/^P/', '', $_key);
+				$product_keys.=','.$key;
+				$results[$_key]='';
+				$number_products_keys++;
+
+			}elseif ($_key[0]=='C') {
+				$key=preg_replace('/^C/', '', $_key);
+				$category_keys.=','.$key;
+				$results[$_key]='';
+				$number_categories_keys++;
+
+			}
+
 			if ($counter>$max_results) {
 				break;
 			}
 		}
 		$product_keys=preg_replace('/^,/', '', $product_keys);
-
-		$sql=sprintf("select `Store Code`,`Store Key`,`Product ID`,`Product Code`,`Product Name` from `Product Dimension` left join `Store Dimension` S on (`Product Store Key`=S.`Store Key`) where `Product ID` in (%s)",
-			$product_keys);
-
-		if ($result=$db->query($sql)) {
-			foreach ($result as $row) {
+		$category_keys=preg_replace('/^,/', '', $category_keys);
 
 
+		if ($number_products_keys) {
+			$sql=sprintf("select `Store Code`,`Store Key`,`Product ID`,`Product Code`,`Product Name` from `Product Dimension` left join `Store Dimension` S on (`Product Store Key`=S.`Store Key`) where `Product ID` in (%s)",
+				$product_keys);
 
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
 
-
-				$results[$row['Product ID']]=array(
-					'store'=>$row['Store Code'],
-					'label'=>highlightkeyword(sprintf('%s', $row['Product Code']), $queries ),
-					'details'=>highlightkeyword($row['Product Name'], $queries ),
-					'view'=>sprintf('products/%d/%d', $row['Store Key'], $row['Product ID'])
-
+					$results[$row['Product ID']]=array(
+						'store'=>$row['Store Code'],
+						'label'=>highlightkeyword(sprintf('%s', $row['Product Code']), $queries ),
+						'details'=>highlightkeyword($row['Product Name'], $queries ),
+						'view'=>sprintf('products/%d/%d', $row['Store Key'], $row['Product ID'])
 
 
 
-				);
 
+					);
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				print $sql;
+				exit;
 			}
-		}else {
-			print_r($error_info=$db->errorInfo());
-			exit;
+		}
+
+
+		if ($number_categories_keys) {
+			$sql=sprintf("select `Category Code`,`Category Store Key`,`Category Key`,`Category Code`,`Category Label`,`Store Code` from `Category Dimension` left join `Store Dimension` S on (`Category Store Key`=S.`Store Key`) where `Category Key` in (%s)",
+				$category_keys);
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+
+					$results[$row['Category Key']]=array(
+						'store'=>$row['Store Code'],
+						'label'=>highlightkeyword(sprintf('%s', $row['Category Code']), $queries ),
+						'details'=>highlightkeyword($row['Category Label'], $queries ),
+						'view'=>sprintf('products/%d/category/%d', $row['Category Store Key'], $row['Category Key'])
+
+
+
+
+					);
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				print $sql;
+				exit;
+			}
 		}
 
 
