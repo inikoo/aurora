@@ -8,7 +8,7 @@ var columns = [
 },
  {
     name: "code",
-    label: "{t}Code{/t}{$data._object->get('Category Position')}",
+    label: "{t}Code{/t}",
     editable: false,
      cell: Backgrid.StringCell.extend({
         orderSeparator: '',

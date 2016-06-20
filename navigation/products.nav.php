@@ -468,6 +468,10 @@ function get_product_navigation($data, $smarty, $user, $db, $account) {
 			$tab='order.items';
 			$_section='orders';
 			break;
+		case 'category':
+			$tab='category.products';
+			$_section='products';
+			break;
 		}
 
 
@@ -686,6 +690,32 @@ function get_product_navigation($data, $smarty, $user, $db, $account) {
 		}
 
 		break;
+
+	case 'category':
+
+
+		$up_button=array('icon'=>'arrow-up', 'title'=>$data['_parent']->get('Code'), 'reference'=>'products/'.$data['_parent']->get('Category Store Key').'/category/'.$data['_parent']->id);
+
+		if ($prev_key) {
+			$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'products/'.$data['_parent']->get('Category Store Key').'/category/'.$data['_parent']->get('Category Position').'/product/'.$prev_key);
+
+		}else {
+			$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'');
+
+		}
+		$left_buttons[]=$up_button;
+
+
+		if ($next_key) {
+			$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'products/'.$data['_parent']->get('Category Store Key').'/category/'.$data['_parent']->get('Category Position').'/product/'.$next_key);
+
+		}else {
+			$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
+
+		}
+
+		break;
+
 	}
 
 	$right_buttons=array();
@@ -733,16 +763,35 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
 		$parent_category=new Category($data['parent_key']);
 
 
-
 		$up_button=array('icon'=>'arrow-up', 'title'=>_("Product's Categories").' '.$data['store']->data['Store Code'], 'reference'=>'products/'.$data['store']->id.'/category/'.$parent_category->id);
 
-		if ($data['tab']=='category.subjects') {
-			$tab='subject_categories';
 
-		}else {
 
-			$tab='category.categories';
+		if ($parent_category->get('Category Subject')=='Product') {
+
+			$tab='category.products';
+
+
+
 		}
+		else {
+
+
+
+			if ($data['_parent']->id==$data['_parent']->get('Category Root Key')) {
+				$tab='category.categories';
+			}else {
+		
+				$tab='subject_categories';
+			}
+
+
+
+
+		}
+
+
+
 		$parent_categories=$parent_category->get('Category Position');
 		break;
 	case 'store':
@@ -758,6 +807,8 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
 		break;
 	}
 
+
+	//print $tab;
 
 	if (isset($_SESSION['table_state'][$tab])) {
 		$number_results=$_SESSION['table_state'][$tab]['nr'];
@@ -817,6 +868,7 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
 				$category->id
 			);
 
+
 			if ($result=$db->query($sql)) {
 				if ($row = $result->fetch()) {
 					$prev_key=$row['object_key'];
@@ -830,6 +882,7 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
 				exit;
 			}
 
+			//print $sql;
 
 			$sql=sprintf("select C.`Category Label` object_name,C.`Category Key` as object_key %s from $table   $where $wheref
 	                and ($_order_field  > %s OR ($_order_field  = %s AND C.`Category Key`> %d))  order by $_order_field   , C.`Category Key` limit 1",
@@ -916,15 +969,22 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
 
 
 	if ($data['store']->get('Store Department Category Key')==$data['_object']->get('Category Root Key')) {
-		$category_title_label=_('Department');
-	} if ($data['store']->get('Store Family Category Key')==$data['_object']->get('Category Root Key')) {
-		$category_title_label=_('Family');
+		if ($data['_object']->get('Category Root Key')!=$data['_object']->id)
+			$category_title_label=_('Department').' ';
+		else
+			$category_title_label='';
+		$title=$category_title_label.'<span class="Category_Code id">'.$data['_object']->get('Code').'</span>';
+
+	}elseif ($data['store']->get('Store Family Category Key')==$data['_object']->get('Category Root Key')) {
+		$title='<i class="fa fa-pagelines" aria-hidden="true"></i> <span class="Category_Code id">'.$data['_object']->get('Code').'</span>';
+
 	}else {
 		$category_title_label=_('Category');
+		$title=$category_title_label.' <span class="Category_Code id">'.$data['_object']->get('Code').'</span>';
+
 	}
 
 
-	$title=$category_title_label.' <span class="Category_Label">'.$data['_object']->get('Label').'</span> (<span class="Category_Code id">'.$data['_object']->get('Code').'</span>)';
 
 
 
@@ -988,6 +1048,7 @@ function get_new_store_navigation($data, $smarty, $user, $db, $account) {
 
 
 }
+
 
 function get_products_new_main_category_navigation($data, $smarty, $user, $db, $account) {
 

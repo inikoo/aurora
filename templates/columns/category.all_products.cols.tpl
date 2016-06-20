@@ -17,7 +17,18 @@ var columns = [{
     })
 
 }, 
-
+ {
+    name: "family",
+    label: "{t}Family{/t}",
+    editable: false,
+      sortType: "toggle",
+    cell: Backgrid.StringCell.extend({
+        events: {
+          
+        },
+        className: " width_150",
+    })
+},
  {
     name: "code",
     label: "{t}Code{/t}   ",

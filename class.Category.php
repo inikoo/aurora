@@ -422,6 +422,9 @@ class Category extends DB_Table{
 		case 'Product':
 
 			switch ($key) {
+			case 'Description':
+				return htmlentities($this->data['Product Category '.$key]);
+				break;
 			case 'Public':
 				if ($this->data['Product Category '.$key]=='Yes') {
 					return _('Yes');
@@ -431,6 +434,9 @@ class Category extends DB_Table{
 
 				break;
 			default:
+			
+			     
+			
 				if (array_key_exists('Product Category '.$key, $this->data))
 					return $this->data['Product Category '.$key];
 				break;
@@ -885,10 +891,25 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 
 
 
-
 		if (array_key_exists($field, $this->base_data())) {
 
+
 			if ($field=='Category Code') {
+
+				// Migration -----
+				if ($field=='Category Code') {
+
+					$sql=sprintf('update `Product Family Dimension` set `Product Family Code`=%s where `Product Family Store Key`=%d and `Product Family Code`=%s',
+						prepare_mysql($value),
+						$this->get('Category Store Key'),
+						prepare_mysql($this->get('Category Code'))
+					);
+					$this->db->exec($sql);
+
+				}
+				//-----------
+
+
 				$this->update_field($field, $value, $options);
 				$this->update_branch_tree();
 
@@ -898,6 +919,21 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 					$descendant=new Category($descendant_key);
 					$descendant->update_branch_tree();
 				}
+			}elseif ($field=='Category Label') {
+
+				// Migration -----
+				$this->update_field($field, $value, $options);
+
+				$sql=sprintf('update `Product Family Dimension` set `Product Family Name`=%s where `Product Family Store Key`=%d and `Product Family Code`=%s',
+					prepare_mysql($value),
+					$this->get('Category Store Key'),
+					prepare_mysql($this->get('Category Code'))
+				);
+				$this->db->exec($sql);
+				//-------------
+
+
+
 			}elseif ($value!=$this->data[$field]) {
 
 				$this->update_field($field, $value, $options);
@@ -905,13 +941,38 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 			}
 		}elseif (array_key_exists($field, $this->subject_base_data())) {
 
-			if ($field=='Product Category Public') {
+
+
+			if ($field=='Product Category Description') {
+
+				$value=html_entity_decode($value);
+				$this->update_subject_field($field, $value, $options);
+
+
+
+				// Migration -----
+				if ($this->get('Category Subject')=='Product') {
+
+					$sql=sprintf('update `Product Family Dimension` set `Product Family Description`=%s where `Product Family Store Key`=%d and `Product Family Code`=%s',
+						prepare_mysql($value),
+						$this->get('Category Store Key'),
+						prepare_mysql($this->get('Category Code'))
+					);
+					$this->db->exec($sql);
+
+				}
+
+
+				//-----------
+
+			}elseif ($field=='Product Category Public') {
 
 				foreach ($this->get_children_keys() as $children_key) {
 					$subcategory=new Category($children_key);
-
-
 					$subcategory->update(array('Product Category Public'=>$value), $options);
+
+
+
 				}
 				$this->update_subject_field($field, $value, $options);
 
@@ -2787,7 +2848,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 		case 'Category Label':
 			$label=_('label');
 			break;
-
+		case 'Product Category Description':
+			$label=_('description');
+			break;
 
 
 

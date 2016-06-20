@@ -22,6 +22,8 @@ case 'part':
 	break;
 case 'employee':
 	$where=sprintf(" where `Image Subject Object`='Staff' and `Image Subject Object Key`=%d",$parameters['parent_key']);
+case 'category':
+	$where=sprintf(" where `Image Subject Object`='Category' and `Image Subject Object Key`=%d",$parameters['parent_key']);
 
 	break;	
 case 'account':

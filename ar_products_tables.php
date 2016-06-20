@@ -249,6 +249,7 @@ function category_all_products($_data, $db, $user) {
 				'code'=>$data['Product Code'],
 				'name'=>$data['Product Name'],
 				'price'=>money($data['Product Price'], $data['Store Currency Code']),
+				'family'=>$data['Category Code']
 			);
 		}
 

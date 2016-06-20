@@ -112,7 +112,7 @@ function change_view(_request, metadata) {
             $('#view_position').html(data.view_position);
         }
 
-        if (typeof(data.object_showcase) != "undefined" && data.object_showcase !== null && data.object_showcase != '') {
+        if (typeof(data.object_showcase) != "undefined" && data.object_showcase !== null ) {
             
             
             if(data.object_showcase=='_'){

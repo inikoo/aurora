@@ -2,12 +2,12 @@
 			
 				
 	
-	<form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate class="box main_image wraptocenter {$class}" >
+	<form id="add_image_form" method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate class="box main_image wraptocenter {$class}" >
 		
 		<div class="box__input">
 
 			<input type="file" name="files[]" id="file" class="box__file hide" data-multiple-caption="*count* files selected" multiple />
-			<label for="file">Click to choose a file <span class="box__dragndrop"><br/> or drag it here</span>.</label>
+			<label for="file">{t}Click to choose a file{/t} <span class="box__dragndrop"><br/> {t}or drag it here{/t}</span>.</label>
 			<button type="submit" class="box__button hide">Upload</button>
 		</div>
 
@@ -137,8 +137,26 @@
 						},
 						success: function( data )
 						{
-							$form.addClass( data.success == true ? 'is-success' : 'is-error' );
-							if( !data.success ) $errorMsg.text( data.error );
+						
+						    if(data.state==200){
+						  
+						    if(data.number_images>0){
+						  
+						    
+						    $('#main_image').removeClass('hide')
+						     $('#add_image_form').addClass('hide')
+						    $('#main_image img').attr("src", '/image_root.php?id='+data.main_image_key+'&amp;size=small')
+						    }else{
+						      $form.addClass('is-error')
+						     $errorMsg.text( data.error );
+						    }
+						    
+						    }else{
+						    $form.addClass('is-error')
+						     $errorMsg.text( data.error );
+						    }
+						
+							
 						},
 						error: function()
 						{

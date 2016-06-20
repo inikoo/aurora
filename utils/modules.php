@@ -682,6 +682,8 @@ $modules=array(
 					'category.history'=>array('label'=>_('History'), 'icon'=>'sticky-note-o'),
 					'category.categories'=>array('label'=>_('Subcategories')),
 					'category.subjects'=>array('label'=>''),
+					'category.images'=>array('label'=>_('Images'), 'icon'=>'camera-retro', 'class'=>'right icon_only'),
+
 
 				)
 
@@ -1492,8 +1494,8 @@ $modules=array(
 					'employee.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 					'employee.history'=>array('label'=>_('History, notes'), 'icon'=>'sticky-note-o'),
 					'employee.timesheets'=>array('label'=>_('Timesheets')),
-					'employee.images'=>array('label'=>_('Images'), 'icon'=>'camera-retro','class'=>'right icon_only'),
-					'employee.attachments'=>array('label'=>_('Attachments'), 'icon'=>'paperclip','class'=>'right icon_only'),
+					'employee.images'=>array('label'=>_('Images'), 'icon'=>'camera-retro', 'class'=>'right icon_only'),
+					'employee.attachments'=>array('label'=>_('Attachments'), 'icon'=>'paperclip', 'class'=>'right icon_only'),
 
 
 				)

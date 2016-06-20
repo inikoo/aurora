@@ -65,10 +65,13 @@ if ($category->get('Category Scope')=='Product') {
 		$smarty->assign('table_buttons', $table_buttons);
 
 
-	}else {
+	}
+	else {
 
 
 		$tab='subject_categories';
+		
+		
 		$ar_file='ar_categories_tables.php';
 		$tipo='subject_categories';
 

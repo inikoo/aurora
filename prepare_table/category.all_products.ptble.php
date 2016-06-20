@@ -11,7 +11,7 @@
 */
 
 $group_by='';
-$table="`Product Dimension` P left join `Store Dimension` S on (`Product Store Key`=`Store Key`)";
+$table="`Product Dimension` P left join `Store Dimension` S on (`Product Store Key`=`Store Key`)   left join `Category Dimension` F on (`Product Family Category Key`=`Category Key`)   ";
 $where_interval='';
 $wheref='';
 
@@ -62,13 +62,6 @@ case 'status':
 
 
 
-
-
-
-
-
-
-
 if ($parameters['f_field']=='code' and $f_value!='')
 	$wheref.=" and  `Product Code` like '".addslashes($f_value)."%'";
 elseif ($parameters['f_field']=='description' and $f_value!='')
@@ -93,7 +86,7 @@ if ($order=='name') {
 
 $sql_totals="select count(distinct  P.`Product ID`) as num from $table $where";
 
-$fields=$associated_field." P.`Product ID`,`Product Code`,`Product Name`,`Product Price`,`Store Currency Code`,`Store Key`,`Store Code`";
+$fields=$associated_field." P.`Product ID`,`Product Code`,`Product Name`,`Product Price`,`Store Currency Code`,`Store Key`,`Store Code`,F.`Category Label`,`Category Code`,`Product Family Category Key`  ";
 
 
 

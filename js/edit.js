@@ -54,6 +54,12 @@ function open_edit_field(object, key, field) {
         $('#' + field).focus()
         $('#' + field + '_save_button').removeClass('hide')
         break;
+    case 'html_editor':
+        $('#' + field).removeClass('hide')
+        $('#' + field).focus()
+        $('#' + field + '_save_button').removeClass('hide')
+
+        break;
     case 'barcode':
 
 
@@ -247,6 +253,11 @@ function close_edit_field(field) {
 
 
         //$('#' + field + '_editor').removeClass('changed')
+        break;
+
+    case 'html_editor':
+        $('#' + field).addClass('hide')
+
         break;
 
     case 'barcode':
@@ -997,7 +1008,6 @@ function save_field(object, key, field) {
 
 function post_save_actions(field, data) {
     //console.log(field)
-
     switch (field) {
     case 'User_Preferred_Locale':
         change_view(state.request, {
@@ -1169,7 +1179,7 @@ function delete_field(data) {
 }
 
 function update_field(data) {
-    
+
     var field = data.field
     var type = $('#' + field + '_container').attr('field_type')
 
@@ -1225,9 +1235,9 @@ function update_field(data) {
             $('#' + field + '_option_' + data.value.replace(".", "\.")).addClass('selected').addClass('current')
         } else {
 
-  
+
             $('.' + field).html(data.formatted_value)
-            
+
             $("#" + field).val(data.value)
         }
     }
