@@ -56,6 +56,10 @@ case 'categories':
 case 'product_families':
 	product_families(get_table_parameters(), $db, $user);
 	break;
+case 'category_all_parts':
+	category_all_parts(get_table_parameters(), $db, $user);
+	break;
+
 
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
@@ -627,8 +631,9 @@ function category_all_parts($_data, $db, $user) {
 			$adata[]=array(
 				'id'=>(integer) $data['Part SKU'],
 				'associated'=>$associated,
-				'referene'=>$data['Part Reference'],
-				'name'=>$data['Part Name']
+				'reference'=>$data['Part Reference'],
+				'unit_description'=>$data['Part Unit Description'],
+				'family'=>$data['Category Code']
 			);
 		}
 
@@ -651,30 +656,54 @@ function category_all_parts($_data, $db, $user) {
 	echo json_encode($response);
 }
 
+
 function product_families($_data, $db, $user) {
 
 
 	$rtext_label='store';
-
 	include_once 'prepare_table/init.php';
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
 
-	// print $sql;
-	foreach ($db->query($sql) as $data) {
+	//print $sql;
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $data) {
 
 
-		$adata[]=array(
-			'access'=>(in_array($data['Store Key'], $user->stores)?'':'<i class="fa fa-lock "></i>'),
+			if ($data['category_data']=='') {
+				$family='<span class="super_discreet">'._('Family not set').'</span>';
+				$number_products ='<span class="super_discreet">-</span>';
+				$operations=(in_array($data['Store Key'], $user->stores)?'<i class="fa fa-plus button" aria-hidden="true" onClick="open_new_product_family('.$data['Store Key'].')" ></i>':'<i class="fa fa-lock "></i>');
+			}else {
+				$family_data=preg_split('/,/', $data['category_data']);
+				$family=sprintf('<span class="button" onClick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Store Key'], $family_data[1], $family_data[0]);
+				$number_products =number($data['number_products']);
+				$operations=(in_array($data['Store Key'], $user->stores)?'<i class="fa fa-refresh button" aria-hidden="true" onClick="open_new_product_family('.$data['Store Key'].')" )"></i>':'<i class="fa fa-lock "></i>');
 
-			'id'=>(integer) $data['Store Key'],
-			'code'=>$data['Store Code'],
-			'name'=>$data['Store Name'],
+			}
 
-		);
 
+			$adata[]=array(
+				'operations'=>$operations,
+
+				'id'=>(integer) $data['Store Key'],
+				'code'=>$data['Store Code'],
+				'name'=>$data['Store Name'],
+				'family'=>$family,
+				'number_products'=>$number_products
+			);
+
+
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		print $sql;
+		exit;
 	}
+
+
 
 	$response=array('resultset'=>
 		array(
@@ -689,6 +718,7 @@ function product_families($_data, $db, $user) {
 	);
 	echo json_encode($response);
 }
+
 
 
 ?>

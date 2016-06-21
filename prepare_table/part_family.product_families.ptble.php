@@ -9,6 +9,9 @@
 
 */
 
+include_once('class.Category.php');
+$category=new Category($parameters['parent_key']);
+
 $period_tag=get_interval_db_name($parameters['f_period']);
 
 
@@ -33,45 +36,8 @@ elseif ( $parameters['f_field']=='code'  and $f_value!='' )
 $_order=$order;
 $_dir=$order_direction;
 
-
-if ($order=='families')
-	$order='`Store Families`';
-elseif ($order=='departments')
-	$order='`Store Departments`';
-elseif ($order=='code')
+if ($order=='code')
 	$order='`Store Code`';
-elseif ($order=='todo')
-	$order='`Store In Process Products`';
-elseif ($order=='discontinued')
-	$order='`Store In Process Products`';
-elseif ($order=='profit') {
-	$order='`Store '.$period_tag.' Profit`';
-
-}
-elseif ($order=='sales') {
-	$order='`Store '.$period_tag.' Invoiced Amount`';
-
-
-
-}
-elseif ($order=='name')
-	$order='`Store Name`';
-elseif ($order=='active')
-	$order='`Store For Public Sale Products`';
-elseif ($order=='outofstock')
-	$order='`Store Out Of Stock Products`';
-elseif ($order=='stock_error')
-	$order='`Store Unknown Stock Products`';
-elseif ($order=='surplus')
-	$order='`Store Surplus Availability Products`';
-elseif ($order=='optimal')
-	$order='`Store Optimal Availability Products`';
-elseif ($order=='low')
-	$order='`Store Low Availability Products`';
-elseif ($order=='critical')
-	$order='`Store Critical Availability Products`';
-elseif ($order=='new')
-	$order='`Store New Products`';
 else
 	$order='S.`Store Key`';
 
@@ -81,6 +47,15 @@ $table='`Store Dimension` S ';
 
 $sql_totals="select count(Distinct S.`Store Key`) as num from $table  $where  ";
 
-$fields="`Store Key`,`Store Code`,`Store Name`,(select `Category Key` from `Category Dimension`)  ";
+$fields=sprintf("
+`Store Key`,`Store Code`,`Store Name`,
+(select Concat_ws(',',`Category Label`,`Category Code`) from `Category Dimension` where `Category Scope`='Product' and `Category Code`=%s and `Category Root Key`=`Store Family Category Key` ) as category_data ,
+(select `Category Number Subjects` from `Category Dimension` where `Category Scope`='Product' and `Category Code`=%s and `Category Root Key`=`Store Family Category Key` ) as number_products 
+
+",
+
+prepare_mysql($category->get('Category Code')),
+prepare_mysql($category->get('Category Code'))
+);
 
 ?>

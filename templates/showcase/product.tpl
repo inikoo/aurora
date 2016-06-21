@@ -14,7 +14,8 @@
 			</div>
 			
 			<div class="data_field" >
-				<h1><span class="Product_Units_Per_Case">{$product->get('Units Per Case')}</span>x <span class="Store_Product_Price"> <span class="Product_Name">{$product->get('Name')}</span> </h1>
+				<h1>
+				<span class="Product_Units_Per_Case">{$product->get('Units Per Case')}</span>x  <span class="Product_Name">{$product->get('Name')}</span> </h1>
 			</div>
 			
 		</div>
@@ -31,21 +32,11 @@
 			</div>
 			
 			{assign "image_key" $product->get_main_image_key()}
-			<div class="wraptocenter main_image {if $image_key==''}hide{/if}" >
-				
+			<div class="wraptocenter main_image {if $image_key==''}hide{/if}" >	
 				<img src="/{if $image_key}image_root.php?id={$image_key}&size=small{else}art/nopic.png{/if}"  >
-				
 				</span>
-				
 			</div>	
 			{include file='upload_main_image.tpl' object='Product'  key=$product->id class="{if $image_key!=''}hide{/if}"}
-
-			
-			
-				
-				
-				
-			
 		</div>
 		
 	
