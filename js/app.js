@@ -106,14 +106,15 @@ function change_view(_request, metadata) {
         }
 
 
-
         if (typeof(data.view_position) != "undefined" && data.view_position !== null) {
 
             $('#view_position').html(data.view_position);
         }
+ 
 
         if (typeof(data.object_showcase) != "undefined" && data.object_showcase !== null ) {
             
+
             
             if(data.object_showcase=='_'){
             $('#object_showcase').addClass('hide').html('')
@@ -126,15 +127,18 @@ function change_view(_request, metadata) {
           //  $('#object_showcase').addClass('hide')
 
         }
+        
         if (typeof(data.tab) != "undefined" && data.tab !== null) {
 
             $('#tab').html(data.tab);
         }
 
-
+  
 
 
         if (typeof(data.structure) != "undefined" && data.structure !== null) {
+        console.log(data.structure)
+        
             structure = data.structure
         }
 

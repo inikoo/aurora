@@ -49,9 +49,16 @@ case 'deals':
 	break;
 case 'inventory.parts':
 case 'category.parts':
+case 'category.all_parts':
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
 		));
+		
+	if($tab=='category.all_parts'){
+	    $data['parameters']['parent']='account';
+	    $data['parameters']['parent_key']=1;
+	}
+		
 	get_parts_elements($db, $data['parameters'], $user);
 	break;
 case 'warehouse.locations':
@@ -339,6 +346,8 @@ function get_parts_elements($db, $data, $user) {
 		'stock_status'=>array('Surplus'=>0, 'Optimal'=>0, 'Low'=>0, 'Critical'=>0, 'Out_Of_Stock'=>0, 'Error'=>0),
 
 	);
+
+    
 
 
 	$table='`Part Dimension`  P  ';

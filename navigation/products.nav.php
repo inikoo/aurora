@@ -767,28 +767,21 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
 
 
 
-		if ($parent_category->get('Category Subject')=='Product') {
-
-			$tab='category.products';
 
 
 
+
+		if ($data['_parent']->id==$data['_parent']->get('Category Root Key')) {
+			$tab='category.categories';
+		}else {
+
+			$tab='subject_categories';
 		}
-		else {
-
-
-
-			if ($data['_parent']->id==$data['_parent']->get('Category Root Key')) {
-				$tab='category.categories';
-			}else {
-		
-				$tab='subject_categories';
-			}
 
 
 
 
-		}
+
 
 
 
@@ -856,6 +849,9 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
 	$sql=trim($sql_totals." $wheref");
 	//print $sql;
 
+
+
+
 	if ($result2=$db->query($sql)) {
 		if ($row2 = $result2->fetch() and $row2['num']>1) {
 
@@ -879,10 +875,11 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
 				}
 			}else {
 				print_r($error_info=$db->errorInfo());
+				print $sql;
 				exit;
 			}
 
-			//print $sql;
+			//
 
 			$sql=sprintf("select C.`Category Label` object_name,C.`Category Key` as object_key %s from $table   $where $wheref
 	                and ($_order_field  > %s OR ($_order_field  = %s AND C.`Category Key`> %d))  order by $_order_field   , C.`Category Key` limit 1",
@@ -938,7 +935,6 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
 		print_r($error_info=$db->errorInfo());
 		exit;
 	}
-
 
 
 

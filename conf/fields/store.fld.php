@@ -41,8 +41,6 @@ if ($result=$db->query($sql)) {
 }
 
 asort($options_currencies);
-
-
 $object_fields=array(
 	array(
 		'label'=>_('Id'),
@@ -140,7 +138,7 @@ $object_fields=array(
 			),
 
 			array(
-								'edit'=>($edit?'textarea':''),
+				'edit'=>($edit?'textarea':''),
 				'id'=>'Store_Address',
 				'value'=>$object->get('Store Address'),
 				'formatted_value'=>$object->get('Address'),
@@ -165,6 +163,130 @@ $object_fields=array(
 	)
 
 );
+
+$object_fields=array(
+	array(
+		'label'=>_('Id'),
+		'show_title'=>true,
+		'fields'=>array(
+
+			array(
+				'edit'=>($edit?'string':''),
+				'id'=>'Store_Code',
+				'value'=>$object->get('Store Code')  ,
+				'label'=>ucfirst($object->get_field_label('Store Code')),
+				'invalid_msg'=>get_invalid_message('string'),
+				'required'=>true,
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
+				'type'=>'value'
+
+
+
+			),
+			array(
+				'edit'=>($edit?'string':''),
+				'id'=>'Store_Name',
+				'value'=>$object->get('Store Name'),
+				'label'=>ucfirst($object->get_field_label('Store Name')),
+				'invalid_msg'=>get_invalid_message('string'),
+				'required'=>true,
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
+
+				'type'=>'value'
+			),
+
+
+		)
+	),
+	array(
+		'label'=>_('Localization'),
+		'show_title'=>true,
+		'fields'=>array(
+			array(
+				'id'=>'Store_Locale',
+				'edit'=>($edit?'option':''),
+				'options'=>$options_locale,
+				'value'=>$object->get('Store Locale'),
+				'formatted_value'=>$object->get('Locale'),
+				'label'=>ucfirst($object->get_field_label('Store Locale')),
+				'type'=>'value'
+			),
+			array(
+				'id'=>'Store_Currency_Code',
+				'edit'=>($edit?'option':''),
+				'options'=>$options_currencies,
+				'value'=>$object->get('Store Currency Code') ,
+				'formatted_value'=>$object->get('Currency Code') ,
+				'label'=>ucfirst($object->get_field_label('Store Currency Code')),
+				'type'=>'value'
+			),
+			array(
+				'id'=>'Store_Timezone',
+				'edit'=>($edit?'option':''),
+				'options'=>$options_timezones,
+				'value'=>$object->get('Store Timezone') ,
+				'formatted_value'=>$object->get('Timezone'),
+				'label'=>ucfirst($object->get_field_label('Store Timezone')),
+				'type'=>'value'
+			)
+
+		)
+	),
+	array(
+		'label'=>_('Contact'),
+		'show_title'=>true,
+		'fields'=>array(
+
+			array(
+				'edit'=>($edit?'email':''),
+				'id'=>'Store_Email',
+				'value'=>$object->get('Store Email')  ,
+				'label'=>ucfirst($object->get_field_label('Store Email')),
+				'invalid_msg'=>get_invalid_message('email'),
+				'required'=>false,
+
+				'type'=>'value'
+
+
+			),
+			array(
+				'edit'=>($edit?'string':''),
+				'id'=>'Store_Telephone',
+				'value'=>$object->get('Store Telephone'),
+				'formatted_value'=>$object->get('Telephone'),
+				'label'=>ucfirst($object->get_field_label('Store Telephone')),
+				'invalid_msg'=>get_invalid_message('telephone'),
+				'required'=>false,
+				'type'=>'value'
+			),
+
+			array(
+				'edit'=>($edit?'textarea':''),
+				'id'=>'Store_Address',
+				'value'=>$object->get('Store Address'),
+				'formatted_value'=>$object->get('Address'),
+				'label'=>ucfirst($object->get_field_label('Store Address')),
+				'invalid_msg'=>get_invalid_message('string'),
+				'required'=>false,
+				'type'=>'value'
+			),
+			array(
+				'edit'=>($edit?'string':''),
+
+				'id'=>'Store_URL',
+				'value'=>$object->get('Store URL'),
+				'formatted_value'=>$object->get('Store URL'),
+				'label'=>ucfirst($object->get_field_label('Store URL')),
+				'invalid_msg'=>get_invalid_message('string'),
+				'required'=>false,
+				'type'=>'value'
+			),
+
+		)
+	)
+
+);
+
 
 
 

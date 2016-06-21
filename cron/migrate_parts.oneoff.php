@@ -53,6 +53,17 @@ $account=new Account();
 
 
 
+$sql=sprintf("select `Category Key`,`Subject Key` from `Category Bridge` where `Category Head Key`=`Category Key` and `Subject`='Part' ");
+if ($result=$db->query($sql)) {
+	foreach ($result as $row) {
+		$part=new Part($row['Subject Key']);
+		$part->update(
+		array('Part Family Category Key'=>$row['Category Key']),'no_history'
+		);
+
+	}
+}
+
 
 //$sql=sprintf('select * from `Product Dimension` where `Product ID`=25088');
 

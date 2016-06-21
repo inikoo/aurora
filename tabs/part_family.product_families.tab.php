@@ -18,7 +18,6 @@ $default=$user->get_tab_defaults($tab);
 
 $table_views=array(
 	'overview'=>array('label'=>_('Overview'),'title'=>_('Overview')),
-	'sales'=>array('label'=>_('Sales'),'title'=>_('Sales')),
 
 );
 
@@ -34,6 +33,7 @@ $parameters=array(
 		
 );
 
+$smarty->assign('js_code', 'js/injections/part_family.product_families.'.(_DEVEL?'':'min.').'js');
 
 include('utils/get_table_html.php');
 

@@ -580,29 +580,47 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
 		break;
 	case 'category':
 
-		if ($data['_object']->id==$data['store']->get('Store Family Category Key') or
-			$data['_object']->id==$data['store']->get('Store Department Category Key')
-		) {
-			$html='';
-		}elseif ($data['_object']->get('Root Key')==$data['store']->get('Store Family Category Key')) {
-			include_once 'showcase/family.show.php';
-			$html=get_family_showcase($data, $smarty, $user, $db);
-		}elseif ($data['_object']->get('Root Key')==$data['store']->get('Store Department Category Key')) {
-			include_once 'showcase/department.show.php';
-			$html=get_department_showcase($data, $smarty, $user, $db);
-		}elseif ($data['_object']->get('Root Key')==$account->get('Account Part Family Category Key')) {
-			include_once 'showcase/part_family.show.php';
-			$html=get_part_family_showcase($data, $smarty, $user, $db);
-		}else {
+		if ($data['_object']->get('Category Scope')=='Product') {
 
-			include_once 'showcase/category.show.php';
-			$html=get_category_showcase($data, $smarty, $user, $db);
+			if ($data['_object']->id==$data['store']->get('Store Family Category Key') or
+				$data['_object']->id==$data['store']->get('Store Department Category Key')
+			) {
+				$html='';
+			}elseif ($data['_object']->get('Root Key')==$data['store']->get('Store Family Category Key')) {
+				include_once 'showcase/family.show.php';
+				$html=get_family_showcase($data, $smarty, $user, $db);
+			}elseif ($data['_object']->get('Root Key')==$data['store']->get('Store Department Category Key')) {
+				include_once 'showcase/department.show.php';
+				$html=get_department_showcase($data, $smarty, $user, $db);
+			}
+
 		}
+		elseif ($data['_object']->get('Category Scope')=='Part') {
+
+    if ($data['_object']->id==$account->get('Account Part Family Category Key')) {
+				include_once 'showcase/part_families.show.php';
+				$html=get_part_familes_showcase($data, $smarty, $user, $db);
+			}
+
+			elseif ($data['_object']->get('Root Key')==$account->get('Account Part Family Category Key')) {
+				include_once 'showcase/part_family.show.php';
+				$html=get_part_family_showcase($data, $smarty, $user, $db);
+			}else {
+				return '_';
+			}
+
+		}else {
+			return '_';
+		}
+
+
 		break;
 	default:
 		$html=$data['object'].' -> '.$data['key'];
 		break;
 	}
+
+
 	return $html;
 
 }
@@ -1477,18 +1495,18 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 					if (!is_numeric($category_key)) {
 						continue;
 					}
-				//	if ($category_key==$state['parent_key']) {
-					//	$branch[]=array('label'=>'<span class="Category_Code">'.$category->get('Code').'</span> <span class="italic hide Category_Label">'.$category->get('Label').'</span>', 'icon'=>'', 'reference'=>'');
-					//	break;
+					// if ($category_key==$state['parent_key']) {
+					// $branch[]=array('label'=>'<span class="Category_Code">'.$category->get('Code').'</span> <span class="italic hide Category_Label">'.$category->get('Label').'</span>', 'icon'=>'', 'reference'=>'');
+					// break;
 					//}else {
 
-						$parent_category=new Category($category_key);
-						if ($parent_category->id) {
+					$parent_category=new Category($category_key);
+					if ($parent_category->id) {
 
-							$branch[]=array('label'=>$parent_category->get('Code'), 'icon'=>'', 'reference'=>'products/'.$category->get('Store Key').'/category/'.$parent_category->id);
+						$branch[]=array('label'=>$parent_category->get('Code'), 'icon'=>'', 'reference'=>'products/'.$category->get('Store Key').'/category/'.$parent_category->id);
 
-						}
-				//}
+					}
+					//}
 				}
 
 

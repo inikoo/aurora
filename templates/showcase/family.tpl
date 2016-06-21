@@ -1,5 +1,6 @@
-<div class="subject_profile">
-	<div id="contact_data">
+<div class="asset_profile container" >
+
+	<div id="asset_data">
 		<div class="data_container">
 			
 			<div class="data_field" >
@@ -15,16 +16,15 @@
 		</div>
 		<div class="data_container">
 			<div style="min-height:80px;float:left;width:28px">
-				<i class="fa fa-camera-retro" onClick="show_images_tab()"></i> 
+				<i class="fa fa-camera-retro"></i> 
 			</div>
-			<div class="wraptocenter main_image" >
-			{assign "image_key" $category->get_main_image_key()} 
-			<div id="main_image"  class="wraptocenter main_image {if $image_key==''}hide{/if}">
-				<img src="/{if $image_key}image_root.php?id={$image_key}&amp;size=small{else}art/nopic.png{/if}"> 
-			</div>
-			{include file='upload_main_image.tpl' object='Category' key=$category->id class="{if $image_key!=''}hide{/if}"} 
-
-			</div>
+			
+			{assign "image_key" $category->get_main_image_key()}
+			<div class="wraptocenter main_image {if $image_key==''}hide{/if}" >	
+				<img src="/{if $image_key}image_root.php?id={$image_key}&size=small{else}art/nopic.png{/if}"  >
+				</span>
+			</div>	
+			{include file='upload_main_image.tpl' object='Product'  key=$category->id class="{if $image_key!=''}hide{/if}"}
 		</div>
 		{include file='sticky_note.tpl' object='Category'  key=$category->id sticky_note_field='Category_Sticky_Note' _object=$category}
 
