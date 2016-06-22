@@ -188,9 +188,8 @@
 		<span id="{$field.id}_msg" class="msg"></span> 
 		
 		{elseif $edit=='dropdown_select'}
-			
 			<input id="{$field.id}" type="hidden" class=" input_field" value="{$field.value}" has_been_valid="0"/>
-		<input id="{$field.id}_dropdown_select_label"  field="{$field.id}" scope="{$field.scope}" class=" dropdown_select" value="{$field.formatted_value}" has_been_valid="0" placeholder="{if isset($field.placeholder)}{$field.placeholder}{/if}"/>
+		<input id="{$field.id}_dropdown_select_label"  field="{$field.id}" create_new="{if isset($field.create_new)}{$field.create_new}{else}0{/if}" scope="{$field.scope}" parent="{$field.parent}" parent_key="{$field.parent_key}" class=" dropdown_select" value="{$field.formatted_value}" has_been_valid="0" placeholder="{if isset($field.placeholder)}{$field.placeholder}{/if}"/>
 
 		<span id="{$field.id}_msg" class="msg"></span> 
 		<div id="{$field.id}_results_container" class="search_results_container">

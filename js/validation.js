@@ -103,7 +103,7 @@ function validate_address(field) {
 
 function client_validation(type, required, value, field) {
 
-    //console.log(type + ' ' + required+' '+value+' '+field)
+//    console.log(type + ' ' + required + ' ' + value + ' ' + field)
     var valid_state = {
         class: 'valid',
         type: ''
@@ -113,11 +113,32 @@ function client_validation(type, required, value, field) {
 
     if (value == '') {
         if (required) {
-            return {
-                class: 'invalid',
-                type: 'empty'
-            }
 
+
+            if (type == 'dropdown_select') {
+
+                if ($('#' + field + '_dropdown_select_label').val() == '') {
+                    
+                    return {
+                        class: 'invalid',
+                        type: 'empty'
+                    }
+                } else {
+                    return {
+                        class: 'invalid',
+                        type: 'not_found'
+                    }
+                }
+
+
+
+            } else {
+
+                return {
+                    class: 'invalid',
+                    type: 'empty'
+                }
+            }
 
         } else {
             return {
@@ -221,8 +242,8 @@ function client_validation(type, required, value, field) {
                 }
             }
 
-            if(barcodes[1]==''){
-             return {
+            if (barcodes[1] == '') {
+                return {
                     class: 'potentially_valid',
                     type: 'short'
                 }
@@ -231,20 +252,20 @@ function client_validation(type, required, value, field) {
             res = validate_barcode(barcodes[1], 12, 12)
             console.log(barcodes)
             if (res) return res
-            
 
-            if(barcodes[1]<barcodes[0]){
-             return {
+
+            if (barcodes[1] < barcodes[0]) {
+                return {
                     class: 'invalid',
                     type: 'range_minmax'
                 }
             }
-            
-            
+
+
         } else {
             var res = validate_barcode(value, 12, 13)
 
-            
+
             if (res) return res
 
 
@@ -669,9 +690,9 @@ function validate_signed_integer(value, max_value) {
         }
     }
     if (Math.floor(value) != value) {
-    
-   
-    
+
+
+
         return {
             class: 'invalid',
 
@@ -701,8 +722,8 @@ function server_validation(settings, parent, parent_key, object, key, field, val
     if (settings.key != null) {
         key = settings.key;
     }
-    
-  
+
+
 
 
     if (settings.parent_key_field != null) {
@@ -718,12 +739,12 @@ function server_validation(settings, parent, parent_key, object, key, field, val
     } else {
 
         var request = '/ar_validation.php?tipo=' + settings.tipo + '&parent=' + parent + '&parent_key=' + parent_key + '&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value
-  
-    if (settings.actual_field != null) {
-        request +='&actual_field='+settings.actual_field;
-    }
-  
-  
+
+        if (settings.actual_field != null) {
+            request += '&actual_field=' + settings.actual_field;
+        }
+
+
     }
 
     //  console.log(request)

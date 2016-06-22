@@ -6,7 +6,19 @@ var columns = [
      renderable: false,
     cell: "string",
 
-},{
+},
+ {
+    name: "operations",
+    label: "",
+    editable: false,
+    sortType: "toggle",
+    cell: Backgrid.HtmlCell.extend({
+        className: "width_20"
+    })
+
+},
+
+{
     name: "code",
     label: "{t}Code{/t}",
     editable: false,

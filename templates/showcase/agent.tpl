@@ -1,10 +1,18 @@
-<div class="subject_profile">
+<div class="subject_profile" style="padding-top:10px">
+
+ 
+
 	<div id="contact_data">
 		<div class="data_container">
+		
+			<div class="data_field" >
+				   <h1 >{$agent->get('Name')}</h1>
+			</div>
+		
 			<div class="data_field  {if $agent->get('Agent Company Name')==''}hide{/if}">
 				<i title="{t}Company name{/t}" class="fa fa-building-o"></i> <span class="Agent_Name">{$agent->get('Agent Name')}</span> 
 			</div>
-			<div class="data_field {if $agent->get('Agent Main Contact Name')==''}hide{/if}">
+			<div class="data_field {if $agent->get('Agent Main Contact Name')=='' or $agent->get('Main Contact Name')==$agent->get('Name')}hide{/if}">
 				<i title="{t}Contact name{/t}" class="fa fa-user"></i> <span class="Agent_Main_Contact_Name">{$agent->get('Agent Main Contact Name')}</span> 
 			</div>
 			<div class="data_container" style=";margin-top:10px">
@@ -78,11 +86,11 @@
 				
 				<tr>
 					<td>{t}Suppliers{/t}:</td>
-					<td  class="aright">{$agent->get('Number Suppliers')}</td>
+					<td  class="aright Agent_Number_Suppliers">{$agent->get('Number Suppliers')}</td>
 				</tr>
 				<tr>
 					<td>{t}Parts{/t}:</td>
-					<td class="aright">{$agent->get('Number Parts')}</td>
+					<td class="aright Agent_Number_Parts">{$agent->get('Number Parts')}</td>
 				</tr>
 				
 				<tr>

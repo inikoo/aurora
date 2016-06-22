@@ -134,19 +134,19 @@ function save_new_object(object, form_type) {
 
 
 
-            var field_tr=$(this).closest('tr')
-            
-            
+            var field_tr = $(this).closest('tr')
+
+
             if (!field_tr.hasClass('hidden') && field_tr.hasClass('hide')) {
                 return
             }
 
-          
+
 
             var field = $(this).attr('field')
             var field_type = $(this).attr('field_type')
 
-           console.log(field)
+            console.log(field)
 
 
             if (field_type == 'time') {
@@ -179,7 +179,7 @@ function save_new_object(object, form_type) {
         // used only for debug
         var request = '/ar_edit.php?tipo=new_object&object=' + object + '&parent=' + $('#fields').attr('parent') + '&parent_key=' + $('#fields').attr('parent_key') + '&fields_data=' + JSON.stringify(fields_data)
         console.log(request)
-       // return;
+        return;
         //=====
         form_data.append("tipo", (form_type != '' ? form_type : 'new_object'))
         form_data.append("object", object)
@@ -341,12 +341,14 @@ function save_inline_new_object(trigger) {
         if (data.state == 200) {
 
 
-            $('#inline_new_object_msg').html(data.msg).addClass('success')
-            $('#inline_new_object').addClass('hide')
-            $('#icon_' + trigger).addClass('fa-plus')
-            $('#icon_' + trigger).removeClass('fa-times')
+       //     $('#inline_new_object').addClass('hide')
+       //     $('#icon_' + trigger).addClass('fa-plus')
+       //     $('#icon_' + trigger).removeClass('fa-times')
             $('#' + field).val('').attr('has_been_valid', 0)
             $('#inline_new_object').addClass('potentially_valid')
+
+toggle_inline_new_object_form(trigger)
+            $('#inline_new_object_msg').html(data.msg).addClass('success').removeClass('hide')
 
 
             for (var updated_fields in data.updated_data) {
@@ -360,6 +362,13 @@ function save_inline_new_object(trigger) {
 
             if (with_elements) get_elements_numbers(rows.tab, rows.parameters)
 
+            if (
+            data.metadata != undefined && 
+            data.metadata.updated_showcase_fields!='') {
+                for (var key in data.metadata.updated_showcase_fields) {
+                    $('.' + key).html(data.metadata.updated_showcase_fields[key])
+                }
+            }
 
         } else if (data.state == 400) {
             $('#inline_new_object_msg').removeClass('invalid valid potentially_valid')
@@ -404,6 +413,8 @@ function toggle_inline_new_object_form(trigger) {
 
         $('#inline_form').removeClass('hide')
 
+
+
         $('#inline_new_object').removeClass('hide')
         $('#icon_' + trigger).removeClass('fa-plus').removeClass('fa-link').addClass('fa-times')
 
@@ -412,6 +423,7 @@ function toggle_inline_new_object_form(trigger) {
 
         $('#icon_' + trigger).attr('icon', icon)
 
+        $('#inline_form input.inline_input').focus()
 
 
     } else {

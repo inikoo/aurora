@@ -114,7 +114,9 @@
 	
 	{foreach from=$table_buttons item=button } 
 	
-	 {if isset($button.inline_new_object)} 
+	
+	
+	 {if isset($button.inline_new_object)}
 	  {include file="inline_new_object.tpl" data=$button.inline_new_object trigger={$button.id}} 
 	 {/if} 
 	 

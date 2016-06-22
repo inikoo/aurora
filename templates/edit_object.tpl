@@ -138,7 +138,7 @@
 		
 	
 		<input id="{$field.id}" type="hidden" class=" input_field" value="{$field.value}" has_been_valid="0"/>
-		<input id="{$field.id}_dropdown_select_label" class="hide" field="{$field.id}" scope="{$field.scope}" parent="{$field.parent}" parent_key="{$field.parent_key}" class=" dropdown_select" value="{$field.stripped_formatted_value}" has_been_valid="0"/>
+		<input id="{$field.id}_dropdown_select_label"  field="{$field.id}" scope="{$field.scope}" parent="{$field.parent}" parent_key="{$field.parent_key}" class=" dropdown_select" value="{$field.formatted_value}" has_been_valid="0" placeholder="{if isset($field.placeholder)}{$field.placeholder}{/if}"/>
 
 		<span id="{$field.id}_msg" class="msg"></span> 
 		<i id="{$field.id}_save_button" class="fa fa-cloud save {$edit} hide" onclick="save_this_field(this)"></i> 

@@ -45,7 +45,7 @@ $parameters=array(
 
 $table_buttons=array();
 
-$table_buttons[]=array('icon'=>'plus', 'title'=>_('New supplier'), 'reference'=>"suppliers/new");
+$table_buttons[]=array('icon'=>'plus', 'title'=>_('New supplier'), 'reference'=>"agent/".$state['key']."/supplier/new");
 
 $table_buttons[]=array(
 	'icon'=>'link',
@@ -67,6 +67,7 @@ $table_buttons[]=array(
 
 $smarty->assign('table_buttons', $table_buttons);
 
+$smarty->assign('js_code', 'js/injections/agent.suppliers.'.(_DEVEL?'':'min.').'js');
 
 include 'utils/get_table_html.php';
 

@@ -68,14 +68,10 @@ case 'views':
 
 
 	switch ($state['parent']) {
-
+	case 'agent':
 	case 'campaign':
-
 		$_parent=get_object($state['parent'], $state['parent_key']);
-
-
 		break;
-
 	case 'store':
 		include_once 'class.Store.php';
 		$_parent=new Store($state['parent_key']);
@@ -597,7 +593,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
 		}
 		elseif ($data['_object']->get('Category Scope')=='Part') {
 
-    if ($data['_object']->id==$account->get('Account Part Family Category Key')) {
+			if ($data['_object']->id==$account->get('Account Part Family Category Key')) {
 				include_once 'showcase/part_families.show.php';
 				$html=get_part_familes_showcase($data, $smarty, $user, $db);
 			}
@@ -1684,10 +1680,19 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 		}elseif ($state['section']=='supplier') {
 			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
-			$branch[]=array('label'=>'<span class="Supplier_Code">'.$state['_object']->get('Code').'</span>', 'icon'=>'ship', 'reference'=>'supplier/'.$state['key']);
+			$branch[]=array('label'=>'<span class="id Supplier_Code">'.$state['_object']->get('Code').'</span> <span class="Supplier_Name italic">'.$state['_object']->get('Name').'</span>', 'icon'=>'ship', 'reference'=>'supplier/'.$state['key']);
 
 		}elseif ($state['section']=='supplier.new') {
-			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
+
+			if ($state['parent']=='agent') {
+				$branch[]=array('label'=>_('Agents'), 'icon'=>'', 'reference'=>'agents');
+				$branch[]=array('label'=>'<span class="Agent_Code">'.$state['_parent']->get('Code').'</span>', 'icon'=>'user-secret', 'reference'=>'agent/'.$state['parent_key']);
+
+			}else {
+				$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
+
+			}
+
 			$branch[]=array('label'=>_('New supplier'), 'icon'=>'ship', 'reference'=>'');
 
 		}elseif ($state['section']=='order') {
@@ -1699,7 +1704,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 		}elseif ($state['section']=='agent') {
 			$branch[]=array('label'=>_('Agents'), 'icon'=>'', 'reference'=>'agents');
-			$branch[]=array('label'=>'<span class="Agent_Code">'.$state['_object']->get('Code').'</span>', 'icon'=>'user-secret', 'reference'=>'agent/'.$state['key']);
+			$branch[]=array('label'=>'<span class="Agent_Code">'.$state['_object']->get('Code').'</span> <span class="Agent_Name italic">'.$state['_object']->get('Name').'</span>', 'icon'=>'user-secret', 'reference'=>'agent/'.$state['key']);
 
 		}elseif ($state['section']=='agent.new') {
 			$branch[]=array('label'=>_('Agents'), 'icon'=>'', 'reference'=>'agents');

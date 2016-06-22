@@ -27,7 +27,19 @@ $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
 
+case 'bridge':
+	$data=prepare_values($_REQUEST, array(
+			'object'=>array('type'=>'string'),
+			'key'=>array('type'=>'key'),
+			'subject'=>array('type'=>'string'),
+			'subject_key'=>array('type'=>'key'),
+			'operation'=>array('type'=>'string'),
 
+		));
+	edit_bridge($account, $db, $user, $editor, $data, $smarty);
+
+
+	break;
 case 'edit_category_subject':
 
 	$data=prepare_values($_REQUEST, array(
@@ -686,6 +698,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 	$parent=get_object($data['parent'], $data['parent_key']);
 	$parent->editor=$editor;
 
+	$metadata=array();
+
 	switch ($data['object']) {
 
 	case 'Category':
@@ -1023,8 +1037,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 		if ($object->id) {
 
-			$parent->associate_supplier($object->id);
-
+			$parent->associate_subject($object->id);
+			$metadata=$parent->get_update_metadata();
 
 		}else {
 
@@ -1295,7 +1309,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 			'msg'=>'<i class="fa fa-check"></i> '._('Success'),
 			'pcard'=>$pcard,
 			'new_id'=>$object->id,
-			'updated_data'=>$updated_data
+			'updated_data'=>$updated_data,
+			'metadata'=>$metadata
 		);
 
 
@@ -1617,6 +1632,264 @@ function edit_category_subject($account, $db, $user, $editor, $data, $smarty) {
 	}
 
 	$response=array('state'=>200);
+	echo json_encode($response);
+
+}
+
+
+function edit_bridge($account, $db, $user, $editor, $data, $smarty) {
+
+	$object=get_object($data['object'], $data['key']);
+	$object->editor=$editor;
+
+
+
+	if ($data['operation']=='link') {
+		$object->associate_subject($data['subject_key']);
+
+
+		// Migration -----
+		if ($object->get_object_name()=='Category') {
+
+
+
+			if ($object->get('Category Scope')=='Product') {
+				if ($object->get('Category Subject')=='Product') {
+
+					$sql=sprintf("select * from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Code`=%s",
+						$object->get('Category Store Key'),
+						prepare_mysql($object->get('Category Code'))
+					);
+
+
+					if ($result=$db->query($sql)) {
+						if ($row = $result->fetch()) {
+
+							$sql=sprintf("update `Product Dimension`set `Product Family Key`=%d, `Product Family Code`=%s, `Product Family Name`=%s,`Product Main Department Key`=%d,
+                     `Product Main Department Code`=%s,
+                     `Product Main Department Name`=%s
+                     where `Product ID`=%d",
+								$row['Product Family Key'],
+								prepare_mysql($row['Product Family Code']),
+								prepare_mysql($row['Product Family Name']),
+								$row['Product Family Main Department Key'],
+								prepare_mysql($row['Product Family Main Department Code']),
+								prepare_mysql($row['Product Family Main Department Name']),
+								$data['subject_key']
+							);
+
+							$db->exec($sql);
+							//print $sql;
+						}
+					}else {
+						print_r($error_info=$db->errorInfo());
+						print $sql;
+						exit;
+					}
+
+
+
+
+
+				}else {
+					// DEpartment
+
+
+					$sql=sprintf("select * from `Product Department Dimension` where `Product Department Store Key`=%d and `Product Department Code`=%s",
+						$object->get('Category Store Key'),
+						prepare_mysql($object->get('Category Code'))
+					);
+
+
+					if ($result=$db->query($sql)) {
+						if ($department = $result->fetch()) {
+							$department_key=$department['Product Department Key'];
+						}else {
+							$department_key=false;
+						}
+					}else {
+						print_r($error_info=$db->errorInfo());
+						exit;
+					}
+
+
+					$family=new Category($data['subject_key']);
+
+
+					$sql=sprintf("select * from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Code`=%s",
+						$family->get('Category Store Key'),
+						prepare_mysql($family->get('Category Code'))
+					);
+
+
+					if ($result=$db->query($sql)) {
+						if ($family = $result->fetch()) {
+							$family_key=$department['Product Department Key'];
+						}else {
+							$family_key=false;
+						}
+					}else {
+						print_r($error_info=$db->errorInfo());
+						exit;
+					}
+
+
+					if ($family_key and $department_key) {
+
+
+						$sql=sprintf("update `Product Family Dimension` set `Product Family Main Department Key`=%d, `Product Family Main Department Code`=%s, `Product Family Main Department Name`=%s where `Product Family Key`=%d",
+							0,
+							'',
+							'',
+							$family_key);
+
+
+						$db->exec($sql);
+
+						$sql=sprintf("update `Product Dimension` set `Product Main Department Key`=%d, `Product Main Department Code`=%s, `Product Main Department Name`=%s where `Product Family Key`=%d",
+							0,
+							'',
+							'',
+							$family_key
+						);
+						$db->exec($sql);
+
+					}
+
+
+
+
+
+
+
+				}
+
+
+			}
+
+
+
+		}
+		// -----------
+	}
+	else {
+		$object->disassociate_subject($data['subject_key']);
+
+		// Migration -----
+		if ($object->get_object_name()=='Category') {
+
+
+			if ($object->get('Category Scope')=='Product') {
+				if ($object->get('Category Subject')=='Product') {
+
+					$sql=sprintf("select * from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Code`=%s",
+						$object->get('Category Store Key'),
+						prepare_mysql($object->get('Category Code'))
+					);
+
+
+					if ($result=$db->query($sql)) {
+						if ($row = $result->fetch()) {
+
+							$sql=sprintf("update `Product Dimension`set `Product Family Key`=0, `Product Family Code`='', `Product Family Name`='',`Product Main Department Key`=0,
+                     `Product Main Department Code`='',
+                     `Product Main Department Name`=''
+                     where `Product ID`=%d",
+
+								$data['subject_key']
+							);
+
+
+							//print $sql;
+							$db->exec($sql);
+
+						}
+					}else {
+						print_r($error_info=$db->errorInfo());
+						exit;
+					}
+
+
+
+
+
+				}else {
+					// DEpartment
+
+
+					$sql=sprintf("select * from `Product Department Dimension` where `Product Department Store Key`=%d and `Product Department Code`=%s",
+						$object->get('Category Store Key'),
+						prepare_mysql($object->get('Category Code'))
+					);
+
+
+					if ($result=$db->query($sql)) {
+						if ($department = $result->fetch()) {
+							$department_key=$department['Product Department Key'];
+						}else {
+							$department_key=false;
+						}
+					}else {
+						print_r($error_info=$db->errorInfo());
+						exit;
+					}
+
+
+					$family=new Category($data['subject_key']);
+
+
+					$sql=sprintf("select * from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Code`=%s",
+						$family->get('Category Store Key'),
+						prepare_mysql($family->get('Category Code'))
+					);
+
+
+					if ($result=$db->query($sql)) {
+						if ($family = $result->fetch()) {
+							$family_key=$department['Product Department Key'];
+						}else {
+							$family_key=false;
+						}
+					}else {
+						print_r($error_info=$db->errorInfo());
+						exit;
+					}
+
+
+					if ($family_key and $department_key) {
+
+
+						$sql=sprintf("update `Product Family Dimension` set `Product Family Main Department Key`=0, `Product Family Main Department Code`='', `Product Family Main Department Name`='' where `Product Family Key`=%d",
+
+							$family_key);
+
+
+						$db->exec($sql);
+
+						$sql=sprintf("update `Product Dimension` set `Product Main Department Key`=0, `Product Main Department Code`='', `Product Main Department Name`='' where `Product Family Key`=%d",
+
+							$family_key
+						);
+						$db->exec($sql);
+
+					}
+
+
+
+
+
+
+
+				}
+
+
+			}
+		}
+		//----------
+
+	}
+
+	$response=array('state'=>200, 'metadata'=>$object->get_update_metadata());
 	echo json_encode($response);
 
 }

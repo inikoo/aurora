@@ -91,3 +91,4 @@ function post_create_action(data) {
     $('#' + data.clone_from + '_display').before(clone)
 
 }
+

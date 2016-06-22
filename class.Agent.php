@@ -504,10 +504,11 @@ class Agent extends SubjectSupplier {
 	}
 
 
-	function associate_supplier($supplier_key) {
+	function associate_subject($supplier_key) {
 
 		if (!$supplier_key) return;
 
+		include_once 'class.Supplier.php';
 
 		$supplier=new Supplier($supplier_key);
 
@@ -523,12 +524,44 @@ class Agent extends SubjectSupplier {
 			$this->update_supplier_parts() ;
 			$supplier->update_has_agent();
 		}
+
+		$this->update_metadata['updated_showcase_fields']=array(
+			'Agent_Number_Suppliers'=>$this->get('Number Suppliers'),
+			'Agent_Number_Parts'=>$this->get('Number Parts'),
+
+		);
+
+
 	}
-	
-	function disassociate_supplier($supplier_key) {
+
+
+	function create_supplier($data) {
+
+		$data['editor']=$this->editor;
+
+        $account=new Account();
+        $account->editor=$this->editor;
+        
+        
+        
+        
+        $supplier= $account->create_supplier($data);
+        
+        
+        if($supplier->id){
+            $this->associate_subject($supplier->id);
+        }
+        return $supplier;
+        
+        
+	}
+
+
+	function disassociate_subject($supplier_key) {
 
 		if (!$supplier_key) return;
 
+		include_once 'class.Supplier.php';
 
 		$supplier=new Supplier($supplier_key);
 
@@ -544,6 +577,13 @@ class Agent extends SubjectSupplier {
 			$this->update_supplier_parts() ;
 			$supplier->update_has_agent();
 		}
+
+		$this->update_metadata['updated_showcase_fields']=array(
+			'Agent_Number_Suppliers'=>$this->get('Number Suppliers'),
+			'Agent_Number_Parts'=>$this->get('Number Parts'),
+
+		);
+
 	}
 
 
