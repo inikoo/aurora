@@ -1,108 +1,88 @@
-#fields {
-margin-bottom:100px;
+#new_object_from {
+    margin-bottom: 100px;
     padding: 10px 20px;
     .field_state {
         opacity: 0;
         &.required {
             opacity: .2;
         }
-     
     }
-    
     tr.valid {
-    .field_state.required{
-     opacity: .7;
-      color: $color_success;
+        .field_state.required {
+            opacity: .7;
+            color: $color_success;
+        }
     }
-   
+    tr.valid.attention {
+        .field_state.required {
+            opacity: .4;
+            color: orange;
+        }
     }
-    
-     tr.valid.attention {
-    .field_state.required{
-     opacity: .4;
-      color: orange;
-    }
-   
-    }
-    
     &.invalid {
-        .save_form,.msg {
+        .save_form, .msg {
             color: $color_error;
         }
-        
-        tr.valid{
-         .field_state {
-            opacity: 0;
-            &.required {
-                opacity: .7;
-                color: $color_success;
+        tr.valid {
+            .field_state {
+                opacity: 0;
+                &.required {
+                    opacity: .7;
+                    color: $color_success;
+                }
             }
-            
-           
         }
-        
-        }
-        
         .field_state {
             opacity: 0;
             &.required {
                 opacity: 1;
                 color: $color_error;
             }
-            
-           
         }
     }
-    
-    
-      &.valid {
+    &.valid {
         .save_form {
-            color: $color_save;cursor:pointer
+            color: $color_save;
+            cursor: pointer;
         }
-       
     }
 }
-
-.result{
-
-margin-top:20px;padding:0px 20px;
-
-  .results{
-        margin-left:20px;
-      &:first-of-type { margin-left:0px;
-      }
-      opacity: .9;
-       &:hover{opacity: 1;color:$color_save;
-        transition: color .2s ease-in-out;
-       }
+.result {
+    margin-top: 20px;
+    padding: 0px 20px;
+    .results {
+        margin-left: 20px;
+        opacity: .9;
+        &:first-of-type {
+            margin-left: 0px;
+        }
+        &:hover {
+            opacity: 1;
+            color: $color_save;
+            transition: color .2s ease-in-out;
+        }
     }
 }
-
-#inline_new_object{
-
-
-  float:right;margin:0px 20px 0px 10px;
-  &.valid{
-   .save{opacity:1;cursor:pointer;color:$color_save}
-  }
-  
-  &.invalid{
-  
-    .save{color:$color_error}
-  
-  }
-  
-   
-
+#inline_new_object {
+    float: right;
+    margin: 0px 20px 0px 10px;
+    &.valid {
+        .save {
+            opacity: 1;
+            cursor: pointer;
+            color: $color_save;
+        }
+    }
+    &.invalid {
+        .save {
+            color: $color_error;
+        }
+    }
 }
-
-
-#inline_new_object_msg{
-
-float:right;margin-right:10px;
- &.invalid{
-  
-color:$color_error
-  
-  }
+#inline_new_object_msg {
+    float: right;
+    margin-right: 10px;
+    &.invalid {
+        color: $color_error;
+    }
 }
