@@ -40,7 +40,6 @@ abstract class DB_Table {
 			if (!in_array($row['Field'], $this->ignore_fields))
 				$data[$row['Field']]=$row['Default'];
 		}
-
 		return $data;
 	}
 

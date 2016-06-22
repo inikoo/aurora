@@ -599,12 +599,13 @@ class Account extends DB_Table{
 			unset($data['Agent Contact Address administrativeArea']);
 		}
 
-		//print_r($address_fields);
-		// print_r($data);
-
+		
 		//exit;
 
 		$agent= new Agent('new', $data, $address_fields);
+
+      
+
 
 		if ($agent->id) {
 			$this->new_agent_msg=$agent->msg;

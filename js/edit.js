@@ -276,6 +276,10 @@ function close_edit_field(field) {
         //$('#' + field + '_editor').removeClass('changed')
         break;
     case 'dropdown_select':
+    
+    
+    
+    
         $('#' + field + '_dropdown_select_label').addClass('hide')
         // $('#' + field + '_save_button').removeClass('hide')
         break;
@@ -600,6 +604,7 @@ function validate(field, value) {
 
 function process_validation(validation, field, final_value) {
 
+
     var field_data = $('#' + field + '_container')
     var type = field_data.attr('field_type')
 
@@ -640,7 +645,7 @@ function process_validation(validation, field, final_value) {
 
         $('#' + field + '_field').removeClass('valid').addClass('invalid')
 
-        //  console.log($('#' + field + '_' + validation.type + '_invalid_msg'))
+         //console.log($('#' + field + '_' + validation.type + '_invalid_msg'))
         if ($('#' + field + '_' + validation.type + '_invalid_msg').length) {
             msg = $('#' + field + '_' + validation.type + '_invalid_msg').html()
         } else {
@@ -1627,7 +1632,6 @@ function get_dropdown_select(dropdown_input, new_value) {
     var parent = $('#' + dropdown_input).attr('parent')
     var scope = $('#' + dropdown_input).attr('scope')
     var field = $('#' + dropdown_input).attr('field')
-
     var request = '/ar_find.php?tipo=find_object&query=' + fixedEncodeURIComponent(new_value) + '&scope=' + scope + '&parent=' + parent + '&parent_key=' + parent_key + '&state=' + JSON.stringify(state)
 
     $.getJSON(request, function(data) {
@@ -1637,11 +1641,22 @@ function get_dropdown_select(dropdown_input, new_value) {
             $('#' + field + '_results_container').removeClass('hide').addClass('show')
         } else {
 
+            if ($('#' + dropdown_input).attr('create_new')==1 && new_value.length > 0) {
+
+                if ($('#' + field + '_new_object_invalid_msg').length) {
+                    msg = $('#' + field + '_new_object_invalid_msg').html()
+                    $('#' + field + '_msg').html(msg).removeClass('hide')
+                }
 
 
-            $('#' + field + '_results_container').addClass('hide').removeClass('show')
-            $('#' + field).val('')
-            on_changed_value(field, '')
+
+            } else {
+
+
+                $('#' + field + '_results_container').addClass('hide').removeClass('show')
+                $('#' + field).val('')
+                on_changed_value(field, '')
+            }
         }
 
 

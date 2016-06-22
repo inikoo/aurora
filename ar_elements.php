@@ -412,6 +412,8 @@ function get_supplier_parts_elements($db, $data, $user) {
 
 		$where=sprintf(" where  `Agent Supplier Agent Key`=%d", $data['parent_key']);
 		$table.=' left join `Agent Supplier Bridge` on (SP.`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`)';
+		
+		break;
 	case 'purchase_order':
 
 		$purchase_order=get_object('PurchaseOrder', $data['parent_key']);
@@ -444,6 +446,7 @@ function get_supplier_parts_elements($db, $data, $user) {
 
 
 	$sql=sprintf("select count(*) as number,`Part Status` as element from $table $where  group by `Part Status` ");
+
 
 	foreach ($db->query($sql) as $row) {
 

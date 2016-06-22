@@ -1,11 +1,26 @@
-<div class="subject_profile">
+<div class="subject_profile" style="padding-top:10px">
 	<div id="contact_data">
 		<div class="data_container">
-			<div class="data_field  {if $supplier->get('Supplier Company Name')==''}hide{/if}">
-				<i title="{t}Company name{/t}" class="fa fa-building-o"></i> <span class="Supplier_Name">{$supplier->get('Supplier Name')}</span> 
+		
+		
+
+		
+		
+			<div class="data_field small {if $supplier->get('Supplier Has Agent')=='No'}  hide{/if}" >
+			   <i class="fa fa-user-secret" aria-hidden="true"></i> 
+			   {foreach from=$supplier->get_agents_data() item=agent_data }
+				 <span   onClick="change_view('agent/{$agent_data['Agent Key']}')" class="button id bold ">{$agent_data['Agent Code']}</span>, <span>{$agent_data['Agent Name']}</span>
+			   {/foreach}
 			</div>
+			
+		
+		<div class="data_field">
+        <h1 class="Supplier_Name">{$supplier->get('Name')}</h1>
+			</div>
+		
+			
 			<div class="data_field {if $supplier->get('Supplier Main Contact Name')==''}hide{/if}">
-				<i title="{t}Contact name{/t}" class="fa fa-user"></i> <span class="Supplier_Main_Contact_Name">{$supplier->get('Supplier Main Contact Name')}</span> 
+				<i title="{t}Contact name{/t}" class="fa fa-user"></i> <span class="Supplier_Main_Contact_Name">{$supplier->get('Main Contact Name')}</span> 
 			</div>
 			<div class="data_container" style=";margin-top:10px">
 			<div style="min-height:80px;float:left;width:28px;">

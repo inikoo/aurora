@@ -590,7 +590,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 							$section='supplier';
 							$parent='agent';
 							$parent_key=$key;
-							$object='agent_part';
+							$object='supplier';
 							if (isset($view_path[2])) {
 								if (is_numeric($view_path[2])) {
 

@@ -66,33 +66,38 @@ if ( !($supplier_part_scope or $new)) {
 		)
 	);
 
-    
+
 
 }
 
 $part_fields[]=array(
-		'label'=>_('Family'),
-		'show_title'=>true,
-		'fields'=>array(
-			array(
-				'id'=>'Part_Family_Category_Key',
-				'edit'=>'dropdown_select',
-				'scope'=>'part_families',
-				'parent'=>'account',
-				'parent_key'=>1,
-				'value'=>htmlspecialchars($object->get('Part Family Category Key')),
-				'formatted_value'=>$object->get('Family Category Key'),
-				'stripped_formatted_value'=>'',
-				'label'=>_('Family'),
-				'required'=>true,
+	'label'=>_('Family'),
+	'show_title'=>true,
+	'fields'=>array(
+		array(
+			'id'=>'Part_Family_Category_Key',
+			'edit'=>($edit?'dropdown_select':''),
+			'scope'=>'part_families',
+			//'create_new'=>0,
+			'parent'=>'account',
+			'parent_key'=>1,
+			'value'=>htmlspecialchars($object->get('Part Family Category Key')),
+			'formatted_value'=>$object->get('Family Category Key'),
+			'stripped_formatted_value'=>'',
+			'label'=>_('Family'),
+			'required'=>true,
+			'invalid_msg'=>array('not_found'=>_("Part's family not found"),
+			'new_object'=>_("Part's family will be created")
+			),
+			'type'=>'value'
+
+		),
 
 
-			)
 
-			
 
-		)
-	);
+	)
+);
 
 
 
@@ -232,7 +237,7 @@ $part_fields[]=array(
 			'edit'=>'dropdown_select',
 			'scope'=>'countries',
 			'parent'=>'earth',
-				'parent_key'=>1,
+			'parent_key'=>1,
 			'value'=>(($new and $supplier_part_scope)?$options['supplier']->get('Supplier Products Origin Country Code'): htmlspecialchars($object->get('Part Origin Country Code'))),
 			'formatted_value'=>(($new and $supplier_part_scope)?$options['supplier']->get('Products Origin Country Code'):  $object->get('Origin Country Code')),
 			'stripped_formatted_value'=>(($new and $supplier_part_scope)?($options['supplier']->get('Part Origin Country Code')!=''?  $options['supplier']->get('Origin Country').' ('.$options['supplier']->get('Part Origin Country Code').')':''):   ($object->get('Part Origin Country Code')!=''?  $object->get('Origin Country').' ('.$object->get('Part Origin Country Code').')':'')),
@@ -351,18 +356,18 @@ if (!$new and !$supplier_part_scope ) {
 		'show_title'=>true,
 		'class'=>'operations',
 		'fields'=>array(
-		
-		array(
-			'id'=>'delete_part',
-			'class'=>'operation',
-			'value'=>'',
-			'label'=>'<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span onClick="delete_object(this)" class="delete_object disabled">'._("Delete part & related supplier's parts").' <i class="fa fa-trash new_button link"></i></span>',
-			'reference'=>'',
-			'type'=>'operation'
-		),
-		
-		
-		
+
+			array(
+				'id'=>'delete_part',
+				'class'=>'operation',
+				'value'=>'',
+				'label'=>'<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span onClick="delete_object(this)" class="delete_object disabled">'._("Delete part & related supplier's parts").' <i class="fa fa-trash new_button link"></i></span>',
+				'reference'=>'',
+				'type'=>'operation'
+			),
+
+
+
 
 		)
 

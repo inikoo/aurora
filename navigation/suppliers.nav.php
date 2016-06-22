@@ -391,31 +391,10 @@ function get_supplier_navigation($data, $smarty, $user, $db, $account) {
 	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
 
 
-	//  {if $supplier->get_image_src()} <img id="avatar" src="{$supplier->get_image_src()}" style="cursor:pointer;border:1px solid #eee;height:45px;max-width:100px"> {else} <img id="avatar" src="/art/avatar.jpg" style="cursor:pointer;"> {/if} {if $supplier->get('Supplier Level Type')=='VIP'}<img src="/art/icons/shield.png" style="position:absolute;xtop:-36px;left:40px">{/if} {if $supplier->get('Supplier Level Type')=='Partner'}<img src="/art/icons/group.png" style="position:absolute;xtop:-36px;left:40px">{/if}
-	$avatar='<div class="square_button"></div>';
-	$avatar='<div class="square_button left"><img id="avatar" style="height:100%" src="/art/avatar.jpg" style="cursor:pointer;"> </div> ';
-	$avatar='';
 
-	$title= '<span class=" Supplier_Name">'.$supplier->get('Name').'</span> (<span class="id Supplier_Code">'.$supplier->get('Code').'</span>)';
+	$title= '<span class="id Supplier_Code">'.$supplier->get('Code').'</span>';
 
 
-
-	if ($supplier->get('Supplier Has Agent')) {
-		$agents='';
-		foreach ($supplier->get_agents_data() as $agent_data) {
-
-			$agents.=sprintf(', <span class="button"  onClick="change_view(\'agent/%d\')">%s</span>',
-				$agent_data['Agent Key'],
-				$agent_data['Agent Code']
-			);
-
-		}
-		$agents=preg_replace('/^, /', '', $agents);
-		$title.=sprintf(' <small class="padding_left_10"><i class="fa fa-user-secret" aria-hidden="true"></i> <span class="agents">%s</span></small>',
-			$agents
-
-		);
-	}
 
 
 	$_content=array(
@@ -423,7 +402,6 @@ function get_supplier_navigation($data, $smarty, $user, $db, $account) {
 		'sections'=>$sections,
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
-		'avatar'=>$avatar,
 		'title'=>$title,
 		'search'=>array('show'=>true, 'placeholder'=>_('Search suppliers'))
 
@@ -446,11 +424,18 @@ function get_new_supplier_navigation($data, $smarty, $user, $db, $account) {
 
 	$sections=get_sections('suppliers', '');
 
-	$_section='suppliers';
+
 	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
 
-	$up_button=array('icon'=>'arrow-up', 'title'=>_("Suppliers"), 'reference'=>'suppliers');
 
+	if ($data['parent']=='agent') {
+		$up_button=array('icon'=>'arrow-up', 'title'=>_("Agent"), 'reference'=>'agent/'.$data['parent_key']);
+		$_section='agents';
+	}else {
+
+		$up_button=array('icon'=>'arrow-up', 'title'=>_("Suppliers"), 'reference'=>'suppliers');
+		$_section='suppliers';
+	}
 
 	$left_buttons[]=$up_button;
 
@@ -658,7 +643,7 @@ function get_agent_navigation($data, $smarty, $user, $db, $account) {
 
 
 
-	$title= '<span class="Agent_Name">'.$agent->get('Name').'</span> (<span class="id Agent_Code">'.$agent->get('Code').'</span>)';
+	$title= '<i class="fa fa-user-secret" aria-hidden="true"></i> <span class="id Agent_Code">'.$agent->get('Code').'</span>';
 
 
 	$_content=array(

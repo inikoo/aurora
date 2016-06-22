@@ -47,7 +47,7 @@ case 'suppliers':
 	break;
 case 'suppliers_edit':
 	suppliers_edit(get_table_parameters(), $db, $user, $account);
-	break;	
+	break;
 case 'agents':
 	agents(get_table_parameters(), $db, $user, $account);
 	break;
@@ -77,10 +77,21 @@ function suppliers($_data, $db, $user, $account) {
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
 
+
+
 	if ($result=$db->query($sql)) {
 
 		foreach ($result as $data) {
 
+
+			if ($_data['parameters']['parent']=='agent') {
+				$operations=sprintf('<i agent_key="%d" supplier_key="%d"  class="fa fa-chain-broken button" aria-hidden="true"  onClick="bridge_supplier(this)" ></i>',
+				$_data['parameters']['parent_key'],
+				$data['Supplier Key']
+				);
+			}else {
+				$operations='';
+			}
 
 			/*
 			$sales=money($data["Supplier $db_period Acc Parts Sold Amount"], $account->get('Account Currency'));
@@ -101,6 +112,7 @@ function suppliers($_data, $db, $user, $account) {
 
 			$adata[]=array(
 				'id'=>(integer)$data['Supplier Key'],
+				'operations'=>$operations,
 				'code'=>$data['Supplier Code'],
 				'name'=>$data['Supplier Name'],
 				'supplier_parts'=>number($data['Supplier Number Parts']),
@@ -171,6 +183,7 @@ function suppliers($_data, $db, $user, $account) {
 	echo json_encode($response);
 }
 
+
 function suppliers_edit($_data, $db, $user, $account) {
 
 
@@ -189,11 +202,12 @@ function suppliers_edit($_data, $db, $user, $account) {
 			$adata[]=array(
 				'id'=>(integer)$data['Supplier Key'],
 				'link'=>$data['Supplier Code'],
-				'checkbox'=>sprintf('<i key="" class="fa fa-fw fa-square-o button" aria-hidden="true"></i>',$data['Supplier Key']),
-				'operations'=>sprintf('<i key="" class="fa fa-fw fa-cloud hide button" aria-hidden="true"></i>',$data['Supplier Key']),
+
+				'checkbox'=>sprintf('<i key="" class="fa fa-fw fa-square-o button" aria-hidden="true"></i>', $data['Supplier Key']),
+				'operations'=>sprintf('<i key="" class="fa fa-fw fa-cloud hide button" aria-hidden="true"></i>', $data['Supplier Key']),
 				'code'=>$data['Supplier Code'],
 				'name'=>$data['Supplier Name'],
-		
+
 				'email'=>$data['Supplier Main Plain Email'],
 				'mobile'=>$data['Supplier Main XHTML Mobile'],
 				'telephone'=>$data['Supplier Main XHTML Telephone'],
