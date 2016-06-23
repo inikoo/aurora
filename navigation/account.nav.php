@@ -16,7 +16,7 @@ function get_account_setup_navigation($data, $smarty, $user, $db, $account) {
 
 	$sections=array();
 	//$sections['account']['selected']=true;
-$skip=false;
+	$skip=false;
 	if ($data['section']=='setup_add_employees') {
 		$title=_('Add employees');
 		$skip=true;
@@ -29,9 +29,9 @@ $skip=false;
 	}else {
 		$title=_('Account set up');
 	}
-	
-	
-	
+
+
+
 	$_content=array(
 		'sections_class'=>'',
 		'sections'=>$sections,
@@ -398,6 +398,7 @@ function get_attachments_navigation($data, $smarty, $user, $db, $account) {
 	return $html;
 }
 
+
 function get_uploads_navigation($data, $smarty, $user, $db, $account) {
 
 	$sections=get_sections('account', '');
@@ -419,11 +420,12 @@ function get_uploads_navigation($data, $smarty, $user, $db, $account) {
 	return $html;
 }
 
+
 function get_upload_navigation($data, $smarty, $user, $db, $account) {
 
 	$sections=get_sections('account', '');
 	$sections['data_sets']['selected']=true;
-	$title=_('Upload').sprintf(' %04d',$data['_object']->id);
+	$title=_('Upload').sprintf(' %04d', $data['_object']->id);
 
 	$_content=array(
 		'sections_class'=>'',
@@ -516,14 +518,12 @@ function get_users_navigation($data, $smarty, $user, $db, $account) {
 
 function get_staff_navigation($data, $smarty, $user, $db, $account) {
 
-	global $user, $smarty;
 
 	$block_view=$data['section'];
 
-
+	$up_button=array('icon'=>'arrow-up', 'title'=>_("Users"), 'reference'=>'account/users');
 	$left_buttons=array();
-
-
+	$left_buttons[]=$up_button;
 
 	$right_buttons=array();
 	$sections=get_sections('account', '');
@@ -538,7 +538,7 @@ function get_staff_navigation($data, $smarty, $user, $db, $account) {
 
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
-		'title'=>_('Staff users'),
+		'title'=>_('Employees users'),
 		'search'=>array('show'=>true, 'placeholder'=>_('Search account'))
 
 	);
@@ -548,6 +548,110 @@ function get_staff_navigation($data, $smarty, $user, $db, $account) {
 	return $html;
 
 }
+
+function get_contractors_navigation($data, $smarty, $user, $db, $account) {
+
+
+	$block_view=$data['section'];
+
+
+	$up_button=array('icon'=>'arrow-up', 'title'=>_("Users"), 'reference'=>'account/users');
+	$left_buttons=array();
+	$left_buttons[]=$up_button;
+
+	$right_buttons=array();
+	$sections=get_sections('account', '');
+
+	$sections['users']['selected']=true;
+
+
+	$_content=array(
+
+		'sections_class'=>'',
+		'sections'=>$sections,
+
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>_('Contractor users'),
+		'search'=>array('show'=>true, 'placeholder'=>_('Search account'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+}
+
+
+function get_suppliers_navigation($data, $smarty, $user, $db, $account) {
+
+
+	$block_view=$data['section'];
+
+
+	$up_button=array('icon'=>'arrow-up', 'title'=>_("Users"), 'reference'=>'account/users');
+	$left_buttons=array();
+	$left_buttons[]=$up_button;
+
+	$right_buttons=array();
+	$sections=get_sections('account', '');
+
+	$sections['users']['selected']=true;
+
+
+	$_content=array(
+
+		'sections_class'=>'',
+		'sections'=>$sections,
+
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>_('Suppliers users'),
+		'search'=>array('show'=>true, 'placeholder'=>_('Search account'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+}
+
+function get_agents_navigation($data, $smarty, $user, $db, $account) {
+
+
+	$block_view=$data['section'];
+
+
+	$up_button=array('icon'=>'arrow-up', 'title'=>_("Users"), 'reference'=>'account/users');
+	$left_buttons=array();
+	$left_buttons[]=$up_button;
+
+	$right_buttons=array();
+	$sections=get_sections('account', '');
+
+	$sections['users']['selected']=true;
+
+
+	$_content=array(
+
+		'sections_class'=>'',
+		'sections'=>$sections,
+
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>_('Agents users'),
+		'search'=>array('show'=>true, 'placeholder'=>_('Search account'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+}
+
 
 
 function get_staff_user_navigation($data, $smarty, $user, $db, $account) {

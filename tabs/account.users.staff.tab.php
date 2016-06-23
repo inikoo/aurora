@@ -11,7 +11,7 @@
 
 
 
-$tab='users.staff.users';
+$tab='account.users.staff';
 $ar_file='ar_users_tables.php';
 $tipo='staff';
 

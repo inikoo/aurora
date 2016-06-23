@@ -1308,7 +1308,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code'
 	),
-	'users.staff.users'=>array(
+	'account.users.staff'=>array(
 		'view'=>'privilegies',
 		'sort_key'=>'id',
 		'sort_order'=>1,
@@ -1316,6 +1316,10 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'handle'
 	),
+	
+	
+	
+	
 	'staff.user.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
@@ -1367,6 +1371,31 @@ $tab_defaults=array(
 		'f_period'=>'all',
 
 	),
+	
+	'account.users.suppliers'=>array(
+		'view'=>'privilegies',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'handle'
+	),
+	'account.users.contractors'=>array(
+		'view'=>'privilegies',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'handle'
+	),'account.users.agents'=>array(
+		'view'=>'privilegies',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'handle'
+	),
+	
 	'billingregion_taxcategory'=>array(
 		'view'=>'overview',
 		'sort_key'=>'billing_region',
