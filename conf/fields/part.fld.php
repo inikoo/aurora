@@ -75,14 +75,14 @@ $part_fields[]=array(
 	'show_title'=>true,
 	'fields'=>array(
 		array(
-			'id'=>'Part_Family_Category_Key',
+			'id'=>'Part_Family_Category_Code',
 			'edit'=>($edit?'dropdown_select':''),
 			'scope'=>'part_families',
 			//'create_new'=>0,
 			'parent'=>'account',
 			'parent_key'=>1,
-			'value'=>htmlspecialchars($object->get('Part Family Category Key')),
-			'formatted_value'=>$object->get('Family Category Key'),
+			'value'=>htmlspecialchars($object->get('Part Family Category Code')),
+			'formatted_value'=>$object->get('Family Category Code'),
 			'stripped_formatted_value'=>'',
 			'label'=>_('Family'),
 			'required'=>true,

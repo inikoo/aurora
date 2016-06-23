@@ -1,5 +1,7 @@
  
-<div class="asset_profile" style="padding-top:10px">
+	    
+<div class="asset_profile container" >
+
 	<div id="asset_data">
 		<div class="data_container">
 			<div class="data_field">

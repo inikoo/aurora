@@ -250,6 +250,9 @@ class Category extends DB_Table{
 			$this->get_data('id', $nodes->id);
 			//print_r($this->data);
 
+
+			/*
+
 			if ($this->data['Category Parent Key']==0) {
 				$abstract=_('Category')." (".$this->data['Category Subject'].")  ".$this->data['Category Code']." "._('Created');
 				$details=_trim(_('New Category')." (".$this->data['Category Subject'].")  \"".$this->data['Category Code']."\"  "._('added'));
@@ -270,8 +273,15 @@ class Category extends DB_Table{
 				'Action'=>'created'
 			);
 			$this->add_history($history_data);
+		*/
+
+
+
+
+
 			$this->new=true;
 
+			$created_msg=_('Category created');
 
 			if ($this->data['Category Scope']=='Invoice') {
 				$sql=sprintf("insert into `Invoice Category Dimension` (`Invoice Category Key`,`Invoice Category Store Key`) values (%d,%d)", $this->id, $this->data['Category Store Key']);
@@ -281,6 +291,8 @@ class Category extends DB_Table{
 				$sql=sprintf("insert into `Supplier Category Dimension` (`Category Key`) values (%d)", $this->id);
 				$this->db->exec($sql);
 			}elseif ($this->data['Category Scope']=='Part') {
+				$created_msg=_("Part's cartegory created");
+
 				$sql=sprintf("insert into `Part Category Dimension` (`Part Category Key`,`Part Category Warehouse Key`) values (%d,%d)", $this->id, $this->data['Category Warehouse Key']);
 				$this->db->exec($sql);
 			}elseif ($this->data['Category Scope']=='Product') {
@@ -295,6 +307,14 @@ class Category extends DB_Table{
 				);
 				$this->db->exec($sql);
 			}
+
+
+			$history_data=array(
+				'Action'=>'created',
+				'History Abstract'=>$created_msg,
+				'History Details'=>''
+			);
+			$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
 
 
 			$this->update_branch_tree();
@@ -312,6 +332,9 @@ class Category extends DB_Table{
 
 
 	function create_category($data) {
+
+
+    $data['editor']=$this->editor;
 
 		if ($this->data['Category Deep']>$this->data['Category Max Deep']) {
 
@@ -434,9 +457,9 @@ class Category extends DB_Table{
 
 				break;
 			default:
-			
-			     
-			
+
+
+
 				if (array_key_exists('Product Category '.$key, $this->data))
 					return $this->data['Product Category '.$key];
 				break;

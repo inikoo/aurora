@@ -5,7 +5,7 @@
 
 <div id="result" class="result hide">
 </div>
-<div  id="new_object_from" class="new_object   {if $form_type}$form_type{/if}" object="{$object_name}" parent='{$state.parent}' parent_key='{$state.parent_key}' key="{$state.key}" {if isset($step)}step="{$step}"{/if} has_been_fully_validated="0" >
+<div  id="fields" class="new_object   {if $form_type}$form_type{/if}" object="{$object_name}" parent='{$state.parent}' parent_key='{$state.parent_key}' key="{$state.key}" {if isset($step)}step="{$step}"{/if} has_been_fully_validated="0" >
     <table border=0>
     {foreach from=$object_fields item=field_group } 
         <tr class="title" >
@@ -459,7 +459,7 @@ function input_barcode_to_new_object(field) {
 	
 	</td>
 </tr>
-<tr id="{$object_name}_controls" class="controls" >
+<tr id="{$object_name}_controls " class="controls" >
 <td></td>
 <td></td>
 <td>

@@ -122,7 +122,7 @@ class Supplier extends SubjectSupplier {
 			}
 
 
-			
+
 
 		}
 
@@ -456,9 +456,9 @@ class Supplier extends SubjectSupplier {
 			$this->update_address('Contact', $address_raw_data);
 
 			$history_data=array(
-				'History Abstract'=>_('Supplier Created')
-				, 'History Details'=>_trim(_('New supplier')." \"".$this->data['Supplier Name']."\"  "._('added'))
-				, 'Action'=>'created'
+				'History Abstract'=>_('Supplier created'),
+				'History Details'=>'',
+				'Action'=>'created'
 			);
 			$this->add_history($history_data);
 			$this->new=true;
@@ -1302,6 +1302,9 @@ class Supplier extends SubjectSupplier {
 
 
 	function create_supplier_part_record($data) {
+
+		$data['editor']=$this->editor;
+
 
 		$data['Supplier Part Supplier Key']=$this->id;
 		if ($data['Supplier Part Minimum Carton Order']=='') {

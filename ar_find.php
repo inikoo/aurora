@@ -919,7 +919,7 @@ function find_special_category($type, $db, $account, $memcache_ip, $data) {
 		if ($result=$db->query($sql)) {
 			foreach ($result as $row) {
 				$results[$row['Category Key']]=array(
-					'value'=>$row['Category Key'],
+					'value'=>$row['Category Code'],
 					'formatted_value'=>$row['Category Code'],
 					'code'=>$row['Category Code'],
 					'description'=>$row['Category Label'],
