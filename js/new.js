@@ -70,9 +70,9 @@ function process_form_validation(validation, submitting) {
     if (submitting && validation == 'potentially_valid') {
         validation = 'invalid'
     }
-    $('#new_object_from').removeClass('invalid valid potentially_valid').addClass(validation)
+    $('#fields .controls').removeClass('invalid valid potentially_valid').addClass(validation)
 
-    //console.log(validation)
+   
 }
 
 
@@ -80,7 +80,7 @@ function check_if_form_is_valid() {
 
 
 
-    var object = $('#new_object_from').attr('object');
+    var object = $('#fields').attr('object');
     var valid = true;
     $(".value").each(function(index) {
         var field = $(this).attr('field')
@@ -114,10 +114,10 @@ function save_new_object(object, form_type) {
 
 
 
-    if ($('#new_object_from').hasClass('valid')) {
+    if ($('tr.controls').hasClass('valid')) {
 
 
-        $('#new_object_from').removeClass('valid').addClass('waiting')
+        $('tr.controls').removeClass('valid').addClass('waiting')
         $('#' + object + '_save_icon').removeClass('fa-cloud');
         $('#' + object + '_save_icon').addClass('fa-spinner fa-spin');
         $('#save_label').addClass('hide')
@@ -177,14 +177,14 @@ function save_new_object(object, form_type) {
         }
 
         // used only for debug
-        var request = '/ar_edit.php?tipo=new_object&object=' + object + '&parent=' + $('#new_object_from').attr('parent') + '&parent_key=' + $('#new_object_from').attr('parent_key') + '&fields_data=' + JSON.stringify(fields_data)
+        var request = '/ar_edit.php?tipo=new_object&object=' + object + '&parent=' + $('#fields').attr('parent') + '&parent_key=' + $('#fields').attr('parent_key') + '&fields_data=' + JSON.stringify(fields_data)
         console.log(request)
         return;
         //=====
         form_data.append("tipo", (form_type != '' ? form_type : 'new_object'))
         form_data.append("object", object)
-        form_data.append("parent", $('#new_object_from').attr('parent'))
-        form_data.append("parent_key", $('#new_object_from').attr('parent_key'))
+        form_data.append("parent", $('#fields').attr('parent'))
+        form_data.append("parent_key", $('#fields').attr('parent_key'))
         form_data.append("fields_data", JSON.stringify(fields_data))
 
         var request = $.ajax({
@@ -206,11 +206,11 @@ function save_new_object(object, form_type) {
             $('#' + object + '_save_icon').removeClass('fa-spinner fa-spin');
             $('#save_label').removeClass('hide')
             $('#saving_label').addClass('hide')
-            $('#new_object_from').removeClass('waiting');
+            $('tr.controls').removeClass('waiting');
             if (data.state == 200) {
                 $('#result').html(data.pcard).removeClass('hide')
 
-                $('#new_object_from').addClass('hide')
+                $('#fields').addClass('hide')
 
 
 
@@ -222,7 +222,7 @@ function save_new_object(object, form_type) {
                 post_new_actions(object, data)
 
             } else if (data.state == 400) {
-                $('#new_object_from').addClass('error');
+                $('tr.controls').addClass('error');
 
 
 
@@ -237,7 +237,7 @@ function save_new_object(object, form_type) {
 
             console.log(jqXHR.responseText)
             $('#' + object + '_save').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
-            $('#new_object_from').removeClass('waiting').addClass('valid')
+            $('tr.controls').removeClass('waiting').addClass('valid')
             $('#save_label').removeClass('hide')
             $('#saving_label').addClass('hide')
 
@@ -440,21 +440,21 @@ function toggle_inline_new_object_form(trigger) {
 function clone_it() {
     $('#result').html('')
 
-    $('#new_object_from').removeClass('hide');
+    $('#fields').removeClass('hide');
     $('#result').addClass('hide');
 
 }
 
 
 function change_to_new_object_view() {
-    var object = $('#new_object_from').attr('object');
+    var object = $('#fields').attr('object');
     request = $('#' + object + '_go_new').attr('request');
     change_view(request);
 }
 
 
 function reset_controls() {
-    var object = $('#new_object_from').attr('object');
+    var object = $('#fields').attr('object');
 
     $('#' + object + '_save').removeClass('hide');
     $('.results').addClass('hide')
@@ -572,14 +572,14 @@ function update_new_address_fields(field, country_code, hide_recipient_fields, a
 function update_related_fields(country_data) {
 
     // console.log(country_data.iso2)
-    $('#new_object_from  .telephone_input_field').each(function(index) {
+    $('#fields  .telephone_input_field').each(function(index) {
 
         if ($(this).attr('has_been_changed') == 0) {
             $(this).intlTelInput("setCountry", country_data.iso2);
         }
     })
 
-    $('#new_object_from  .address_fields').each(function(index) {
+    $('#fields  .address_fields').each(function(index) {
         if ($(this).attr('has_been_changed') == 0) {
 
             var field = $(this).attr('field')

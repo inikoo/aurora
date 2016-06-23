@@ -95,12 +95,13 @@ default:
 
 
 $filter_msg='';
-$wheref='';
-if ($parameters['f_field']=='code' and $f_value!='')
-	$wheref.=" and  `Category Code` like '%".addslashes($f_value)."%'";
-elseif ($parameters['f_field']=='label' and $f_value!='')
-	$wheref.=" and  `Category Label` like '%".addslashes($f_value)."%'";
 
+if ($parameters['f_field']=='code' and $f_value!='')
+	$wheref=" and  `Category Code` like '".addslashes($f_value)."%'";
+elseif ($parameters['f_field']=='label' and $f_value!='')
+	$wheref=sprintf(' and `Category Label` REGEXP "[[:<:]]%s" ',addslashes($f_value));
+else
+    $wheref='';
 
 
 $_dir=$order_direction;

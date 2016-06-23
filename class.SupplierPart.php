@@ -200,11 +200,17 @@ class SupplierPart extends DB_Table{
 
 		if ($this->db->exec($sql)) {
 			$this->id=$this->db->lastInsertId();
-			$this->msg=_("Supplier part added");
+			$this->msg="Supplier part added";
 			$this->get_data('id', $this->id);
 			$this->update_historic_object();
 			$this->new=true;
 
+			$history_data=array(
+				'Action'=>'created',
+				'History Abstract'=>_("Supplier's part created"),
+				'History Details'=>''
+			);
+			$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
 
 
 			return;
@@ -526,10 +532,10 @@ class SupplierPart extends DB_Table{
 			$label=_("minimum order");
 			break;
 		case 'Supplier Part Units Per Package':
-			$label=_("units per outer");
+			$label=_("units per outer (SKO)");
 			break;
 		case 'Supplier Part Packages Per Carton':
-			$label=_("outers per carton");
+			$label=_("outers (SKO) per carton");
 			break;
 		case 'Supplier Part Carton CBM':
 			$label=_("carton CBM");

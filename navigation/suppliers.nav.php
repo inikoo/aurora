@@ -422,10 +422,10 @@ function get_new_supplier_navigation($data, $smarty, $user, $db, $account) {
 	$right_buttons=array();
 
 
-	$sections=get_sections('suppliers', '');
 
 
-	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
+
+
 
 
 	if ($data['parent']=='agent') {
@@ -436,7 +436,9 @@ function get_new_supplier_navigation($data, $smarty, $user, $db, $account) {
 		$up_button=array('icon'=>'arrow-up', 'title'=>_("Suppliers"), 'reference'=>'suppliers');
 		$_section='suppliers';
 	}
+		if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
 
+	$sections=get_sections('suppliers', '');
 	$left_buttons[]=$up_button;
 
 

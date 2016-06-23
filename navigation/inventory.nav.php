@@ -1034,9 +1034,10 @@ function get_parts_category_navigation($data, $smarty, $user, $db, $account) {
 		if ($row2 = $result2->fetch() and $row2['num']>1) {
 
 
-			$sql=sprintf("select C.`Category Label` object_name,C.`Category Key` as object_key %s from $table   $where $wheref
+			$sql=sprintf("select C.`Category Label` object_name,C.`Category Key` as object_key %s from %s  
 	                and ($_order_field < %s OR ($_order_field = %s AND C.`Category Key` < %d))  order by $_order_field desc , C.`Category Key` desc limit 1",
 				$extra_field,
+				"$table $where $wheref",
 				prepare_mysql($_order_field_value),
 				prepare_mysql($_order_field_value),
 				$category->id
@@ -1056,9 +1057,10 @@ function get_parts_category_navigation($data, $smarty, $user, $db, $account) {
 			}
 
 
-			$sql=sprintf("select C.`Category Label` object_name,C.`Category Key` as object_key %s from $table   $where $wheref
+			$sql=sprintf("select C.`Category Label` object_name,C.`Category Key` as object_key %s from %s
 	                and ($_order_field  > %s OR ($_order_field  = %s AND C.`Category Key`> %d))  order by $_order_field   , C.`Category Key` limit 1",
 				$extra_field,
+				"$table $where $wheref",
 				prepare_mysql($_order_field_value),
 				prepare_mysql($_order_field_value),
 				$category->id

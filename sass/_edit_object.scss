@@ -1,6 +1,8 @@
-valid .save {
+.valid {
+.save {
     color: $color_save;
     cursor: pointer;
+}
 }
 .invalid {
     .save, .msg {
@@ -24,9 +26,11 @@ tr.invalid {
     input {
         width: 300px;
     }
-    //For displaying correctly the msg to the right of the formated value .formatted_value, .address_edit_fields_container {
+    //For displaying correctly the msg to the right of the formated value 
+    .formatted_value, .address_edit_fields_container {
         margin-right: 15px;
     }
+    
     .address_edit_fields_container, .address.formatted_value {
         float: left;
     }

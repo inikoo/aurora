@@ -1074,7 +1074,6 @@ $modules=array(
 
 					'supplier_part.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 
-					'supplier_part.history'=>array('label'=>_('History/Notes'), 'icon'=>'history'),
 
 					'supplier_part.purchase_orders'=>array('label'=>_('Purchase Orders'), 'icon'=>'clipboard',
 						'subtabs'=>array(
@@ -1085,7 +1084,12 @@ $modules=array(
 						)
 
 					),
-					'supplier_part.images'=>array('label'=>_('Images'), 'icon'=>'camera-retro'),
+
+					'supplier_part.images'=>array('label'=>_('Images'), 'icon'=>'camera-retro', 'class'=>'right icon_only'),
+					'supplier_part.history'=>array('label'=>_('History/Notes'), 'icon'=>'history', 'class'=>'right icon_only'),
+
+
+
 				)
 			),
 
@@ -1166,10 +1170,13 @@ $modules=array(
 				'tabs'=>array(
 
 					'category.details'=>array('label'=>_('Data'), 'icon'=>'database'),
-					'category.history'=>array('label'=>_('History'), 'icon'=>'clock'),
 					'category.subjects'=>array('label'=>_('Parts')),
 					'category.categories'=>array('label'=>_('Subcategories')),
 					'part_family.product_families'=>array('label'=>_('Product families')),
+
+					'category.images'=>array('label'=>_('Images'), 'icon'=>'camera-retro', 'class'=>'right icon_only'),
+					'category.history'=>array('label'=>_('History/Notes'), 'icon'=>'history', 'class'=>'right icon_only'),
+
 
 				)
 
@@ -1188,7 +1195,6 @@ $modules=array(
 					'part.purchase_orders.purchase_orders'=>'part.purchase_orders',
 					'part.purchase_orders.delivery_notes'=>'part.purchase_orders',
 					'part.purchase_orders.invoices'=>'part.purchase_orders',
-					'part.supplier_parts'=>'part.purchase_orders',
 					'part.stock.history.annually'=>'part.stock',
 					'part.stock.history.monthy'=>'part.stock',
 					'part.stock.history.weekly'=>'part.stock',
@@ -1203,7 +1209,6 @@ $modules=array(
 
 
 					'part.details'=>array('label'=>_('Data'), 'icon'=>'database'),
-					'part.history'=>array('label'=>_('History/Notes'), 'icon'=>'history'),
 					'part.stock.transactions'=>array('label'=>_('Warehouse transactions'), 'icon'=>'',
 
 
@@ -1266,9 +1271,8 @@ $modules=array(
 			*/
 
 
-					'part.purchase_orders'=>array('label'=>_('Supplier & Purchase orders'), 'icon'=>'ship',
+					'part.purchase_orders'=>array('label'=>_('Purchase orders'), 'icon'=>'clipboard',
 						'subtabs'=>array(
-							'part.supplier_parts'=>array('label'=>_("Supplier's parts"), 'icon'=>'stop'),
 
 							'part.purchase_orders.purchase_orders'=>array('label'=>_('Purchase orders'), 'icon'=>'clipboard'),
 							'part.purchase_orders.delivery_notes'=>array('label'=>_("Supplier's delivery notes")),
@@ -1277,8 +1281,14 @@ $modules=array(
 						)
 
 					),
+
+					'part.supplier_parts'=>array('label'=>_("Supplier's parts"), 'icon'=>'stop'),
+
 					'part.products'=>array('label'=>_('Products'), 'icon'=>'cube'),
-					'part.images'=>array('label'=>_('Images'), 'icon'=>'camera-retro'),
+
+					'part.images'=>array('label'=>_('Images'), 'icon'=>'camera-retro', 'class'=>'right icon_only'),
+					'part.history'=>array('label'=>_('History/Notes'), 'icon'=>'history', 'class'=>'right icon_only'),
+
 				)
 			),
 

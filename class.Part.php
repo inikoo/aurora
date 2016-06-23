@@ -153,37 +153,49 @@ class Part extends Asset{
 
 
 	function create($data) {
+
+		include_once 'class.Category.php';
+
 		// print_r($data);
-		$base_data=array(
-			'Part Status'=>'In Use',
-			'Part XHTML Currently Used In'=>'',
-			'Part XHTML Currently Supplied By'=>'',
-			'Part XHTML Description'=>'',
-			'Part Unit Description'=>'',
-			'Part Reference'=>'',
-			'Part Valid From'=>'',
-			'Part Valid To'=>'',
-		);
+		global $account;
+
+		if (array_key_exists('Part Family Category Code', $data)) {
+
+			$root_category=new Category($account->get('Account Part Family Category Key'));
+			if ($root_category->id) {
+				$root_category->editor=$this->editor;
+				$family=$root_category->create_category(array('Category Code'=>$data['Part Family Category Code']));
+				if ($family->id) {
+					$data['Part Family Category Key']=$family->id;
+				}
+			}
+		}
+
+		if (!isset($data['Part Valid From']) or $data['Part Valid From']=='') {
+			$data['Part Valid From']=gmdate('Y-m-d H:i:s');
+		}
+		$base_data=$this->base_data();
 		foreach ($data as $key=>$value) {
-			if (isset( $base_data[$key]) )
+			if (array_key_exists($key, $base_data)) {
 				$base_data[$key]=_trim($value);
+			}
 		}
 
-		//    if(!$this->valid_sku($base_data['part sku']) ){
 
-		// }
+     //   $base_data['Part Available']='No';
 
+		//  if ($base_data['Part XHTML Description']=='') {
+		//   $base_data['Part XHTML Description']=strip_tags($base_data['Part XHTML Description']);
+		//  }
 
-		if ($base_data['Part XHTML Description']=='') {
-			$base_data['Part XHTML Description']=strip_tags($base_data['Part XHTML Description']);
-		}
+		//print_r($base_data);
 
 		$keys='(';
 		$values='values(';
 		foreach ($base_data as $key=>$value) {
 			$keys.="`$key`,";
 
-			if ($key=='Part XHTML Next Supplier Shipment') {
+			if (in_array($key,array('Part XHTML Next Supplier Shipment','Part XHTML Picking Location'))) {
 				$values.=prepare_mysql($value, false).",";
 
 			}else {
@@ -197,7 +209,7 @@ class Part extends Asset{
 		//print_r($base_data);
 
 		$sql=sprintf("insert into `Part Dimension` %s %s", $keys, $values);
-		//print $sql;
+		
 
 		if ($this->db->exec($sql)) {
 			$this->id=$this->db->lastInsertId();
@@ -217,6 +229,19 @@ class Part extends Asset{
 			$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
 
 			$this->update_main_state();
+
+
+			if ($this->get('Part Family Category Key')) {
+				$family=new Category($this->get('Part Family Category Key'));
+				$family->editor=$this->editor;
+
+
+				if ($family->id) {
+					$family->associate_subject($this->id);
+				}
+			}
+
+
 		} else {
 			print "Error Part can not be created $sql\n";
 			$this->msg='Error Part can not be created';
@@ -1070,7 +1095,7 @@ class Part extends Asset{
 
 		switch ($key) {
 
-		
+
 		case 'Available Forecast':
 
 			if ($this->data['Part Stock Status']=='Out_Of_Stock' or  $this->data['Part Stock Status']=='Error') return '';

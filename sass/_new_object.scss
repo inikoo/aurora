@@ -1,4 +1,4 @@
-#new_object_from {
+#fields.new_object   {
     margin-bottom: 100px;
     padding: 10px 20px;
     .field_state {
@@ -7,6 +7,9 @@
             opacity: .2;
         }
     }
+  
+  
+  
     tr.valid {
         .field_state.required {
             opacity: .7;
@@ -42,7 +45,7 @@
     }
     &.valid {
         .save_form {
-            color: $color_save;
+            color: $color_save ;
             cursor: pointer;
         }
     }
