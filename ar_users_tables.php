@@ -36,6 +36,15 @@ case 'users':
 case 'staff':
 	staff(get_table_parameters(), $db, $user);
 	break;
+case 'contractors':
+	contractors(get_table_parameters(), $db, $user);
+	break;
+case 'suppliers':
+	suppliers(get_table_parameters(), $db, $user);
+	break;
+case 'agents':
+	agents(get_table_parameters(), $db, $user);
+	break;
 
 case 'login_history':
 	login_history(get_table_parameters(), $db, $user);
@@ -56,7 +65,59 @@ default:
 
 
 function staff($_data, $db, $user) {
-	
+
+	$rtext_label='user';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	foreach ($db->query($sql) as $data) {
+		if ($data['User Active']=='Yes')
+			$is_active=_('Yes');
+		else
+			$is_active=_('No');
+
+		$groups=preg_split('/,/', $data['Groups']);
+		$stores=preg_split('/,/', $data['Stores']);
+		$warehouses=preg_split('/,/', $data['Warehouses']);
+		$sites=preg_split('/,/', $data['Sites']);
+
+		$adata[]=array(
+			'id'=>(integer) $data['User Key'],
+			'handle'=>$data['User Handle'],
+			'name'=>$data['User Alias'],
+			'active'=>$is_active,
+			'logins'=>number($data['User Login Count']),
+			'last_login'=>($data ['User Last Login']==''?'':strftime( "%e %b %Y %H:%M %Z", strtotime( $data ['User Last Login']." +00:00" ) )),
+			'fail_logins'=>number($data['User Failed Login Count']),
+			'fail_last_login'=>($data ['User Last Failed Login']==''?'':strftime( "%e %b %Y %H:%M %Z", strtotime( $data ['User Last Failed Login']." +00:00" ) )),
+
+			'groups'=>$data['Groups'],
+			'stores'=>$stores,
+			'warehouses'=>$warehouses,
+			'websites'=>$data['Sites'],
+		);
+
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function agents($_data, $db, $user) {
+
 	$rtext_label='user';
 	include_once 'prepare_table/init.php';
 
@@ -108,7 +169,7 @@ function staff($_data, $db, $user) {
 
 
 function login_history($_data, $db, $user) {
-	
+
 	$rtext_label='session';
 	include_once 'prepare_table/init.php';
 
@@ -147,7 +208,7 @@ function login_history($_data, $db, $user) {
 
 
 function users($_data, $db, $user) {
-	
+
 	$rtext_label='user category';
 	include_once 'prepare_table/init.php';
 
@@ -160,6 +221,8 @@ function users($_data, $db, $user) {
 		'Warehouse'=>array('User Type'=>'Warehouse', 'active_users'=>0),
 		'Administrator'=>array('User Type'=>'Administrator', 'active_users'=>0),
 		'Supplier'=>array('User Type'=>'Supplier', 'active_users'=>0),
+		'Agent'=>array('User Type'=>'Agent', 'active_users'=>0),
+
 	);
 
 	foreach ($db->query($sql) as $data) {
@@ -174,6 +237,10 @@ function users($_data, $db, $user) {
 			$type=_('Employees');
 			$request='account/users/staff';
 			break;
+		case 'Contractor':
+			$type=_('Contractors');
+			$request='account/users/contractors';
+			break;
 		case 'Warehouse':
 			$type=_('Warehouse');
 			$request='account/users/warehouse';
@@ -183,11 +250,15 @@ function users($_data, $db, $user) {
 			$request='account/users/root';
 			break;
 		case 'Supplier':
-			$type=_('Supplier');
+			$type=_('Suppliers');
 			$request='account/users/suppliers';
 			break;
+		case 'Agent':
+			$type=_('Agents');
+			$request='account/users/agents';
+			break;
 		default:
-			$type=$data['User Type'];
+			$type='**'.$data['User Type'];
 			break;
 		}
 
@@ -198,8 +269,8 @@ function users($_data, $db, $user) {
 		);
 
 	}
-
-	$rtext=_('Users');
+	$total_records=6;
+	$rtext=sprintf(ngettext('%s user category', '%s user categories', $total_records), number($total_records));
 
 	$response=array('resultset'=>
 		array(
@@ -217,7 +288,7 @@ function users($_data, $db, $user) {
 
 
 function api_keys($_data, $db, $user) {
-	
+
 	$rtext_label='api_key';
 	include_once 'prepare_table/init.php';
 
@@ -291,7 +362,7 @@ function api_keys($_data, $db, $user) {
 
 
 function api_requests($_data, $db, $user) {
-	
+
 	$rtext_label='request';
 	include_once 'prepare_table/init.php';
 

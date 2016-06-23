@@ -2061,6 +2061,17 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 						if ( $view_path[1]=='staff') {
 							$section='staff';
 
+						}elseif ( $view_path[1]=='contractors') {
+							$section='contractors';
+						}elseif ( $view_path[1]=='warehouse') {
+							$section='warehouse';
+						}elseif ( $view_path[1]=='root') {
+							$section='root';
+						}elseif ( $view_path[1]=='suppliers') {
+							$section='suppliers';
+						}elseif ( $view_path[1]=='agents') {
+							$section='agents';
+						
 						}
 					}
 

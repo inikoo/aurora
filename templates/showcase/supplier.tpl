@@ -6,7 +6,7 @@
 
 		
 		
-			<div class="data_field small {if $supplier->get('Supplier Has Agent')=='No'}  hide{/if}" >
+			<div class="data_field small {if $supplier->get('Supplier Has Agent')=='No'}  hide{/if}" style="">
 			   <i class="fa fa-user-secret" aria-hidden="true"></i> 
 			   {foreach from=$supplier->get_agents_data() item=agent_data }
 				 <span   onClick="change_view('agent/{$agent_data['Agent Key']}')" class="button id bold ">{$agent_data['Agent Code']}</span>, <span>{$agent_data['Agent Name']}</span>

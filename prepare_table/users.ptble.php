@@ -10,59 +10,39 @@
 */
 
 
-
-
-$where=" where  `User Type`='Staff' ";
-
-
-/*
-
-$elements_count=0;
-$_elements='';
-foreach ($elements as $_key=>$_value) {
-	if ($_value) {
-		$_elements.=",".prepare_mysql($_key);
-		$elements_count++;
-	}
+switch ($parameters['tab']) {
+case 'account.users.staff':
+	$where=" where  `User Type`='Staff' ";
+	break;
+case 'account.users.contractors':
+	$where=" where  `User Type`='Contractors' ";
+	break;	
+case 'account.users.agents':
+	$where=" where  `User Type`='Agent' ";
+	break;
+case 'account.users.suppliers':
+	$where=" where  `User Type`='Supplier' ";
+	break;
+default:
+	exit('tab not configured (users.ptable.php)');
+	break;
 }
 
 
-$_elements=preg_replace('/^\,/', '', $_elements);
-if ($_elements=='') {
-	$where.=' and false' ;
-} elseif ($elements_count<2) {
-	$where.=' and `User Staff Type` in ('.$_elements.')' ;
-}
-$state_count=0;
-$_state='';
-foreach ($state as $_key=>$_value) {
-	if ($_value) {
-		if ($_key=='Active')$_state='Yes';
-		elseif ($_key=='Inactive')$_state='No';
-		$state_count++;
-	}
-}
-$_state=preg_replace('/^\,/', '', $_state);
 
-if ($_state=='') {
-	$where.=' and false' ;
-} elseif ($state_count<2) {
-	$where.=" and `User Active`='$_state'" ;
-}
 
-*/
 
 $wheref='';
-if ($parameters['f_field']=='name' and $f_value!=''  ){
+if ($parameters['f_field']=='name' and $f_value!=''  ) {
 	$wheref.=" and  `User Alias` like '".addslashes($f_value)."%'    ";
-}elseif ($parameters['f_field']=='handle' and $f_value!=''  ){
+}elseif ($parameters['f_field']=='handle' and $f_value!=''  ) {
 	$wheref.=" and  `User Handle` like '".addslashes($f_value)."%'    ";
-}else if ($parameters['f_field']=='position_id' or $parameters['f_field']=='area_id'   and is_numeric($f_value) ){
-	$wheref.=sprintf(" and  %s=%d ",$parameters['f_field'], $f_value);
+}else if ($parameters['f_field']=='position_id' or $parameters['f_field']=='area_id'   and is_numeric($f_value) ) {
+	$wheref.=sprintf(" and  %s=%d ", $parameters['f_field'], $f_value);
 }
 
 
-	
+
 
 $_order=$order;
 $_dir=$order_direction;
@@ -70,17 +50,17 @@ $_dir=$order_direction;
 if ($order=='name')
 	$order='`User Alias`';
 elseif ($order=='handle')
-	$order='`User Handle`';	
+	$order='`User Handle`';
 elseif ($order=='active')
-	$order='`User Active`';		
+	$order='`User Active`';
 elseif ($order=='logins')
 	$order='`User Login Count`';
 elseif ($order=='last_login')
-	$order='`User Last Login`';		
+	$order='`User Last Login`';
 elseif ($order=='fail_logins')
 	$order='`User Failed Login Count`';
 elseif ($order=='fail_last_login')
-	$order='`User Last Failed Login`';								
+	$order='`User Last Failed Login`';
 elseif ($order=='position')
 	$order='position';
 else

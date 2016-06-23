@@ -1679,6 +1679,7 @@ $modules=array(
 					'account.users'=>array('label'=>_('Users')),
 				)
 			),
+
 			'orders_index'=>array('type'=>'', 'label'=>_("Order's Index"), 'icon'=>'bars', 'reference'=>'account/orders',
 				'tabs'=>array(
 					'orders_index'=>array('label'=>_("Order's Index")),
@@ -1766,7 +1767,7 @@ $modules=array(
 
 			'staff'=>array('type'=>'object', 'label'=>_('Staff'), 'title'=>_("Staff users"), 'icon'=>'hand-rock-o', 'reference'=>'users',
 				'tabs'=>array(
-					'users.staff.users'=>array('label'=>_('Users')),
+					'account.users.staff'=>array('label'=>_('Users')),
 					'users.staff.groups'=>array('label'=>_("Groups")),
 					'users.staff.login_history'=>array('label'=>_('Login History')),
 
@@ -1806,9 +1807,21 @@ $modules=array(
 				)
 			),
 
-
-
-
+			'agents'=>array('type'=>'', 'label'=>_('Agents'), 'icon'=>'male',
+				'tabs'=>array(
+					'account.users.agents'=>array('label'=>_('Agents')),
+				)
+			),
+			'suppliers'=>array('type'=>'', 'label'=>_('Suppliers'), 'icon'=>'male',
+				'tabs'=>array(
+					'account.users.suppliers'=>array('label'=>_('Suppliers')),
+				)
+			),
+			'contractors'=>array('type'=>'', 'label'=>_('Contractors'), 'icon'=>'male',
+				'tabs'=>array(
+					'account.users.contractors'=>array('label'=>_('Contractors')),
+				)
+			),
 
 		)
 

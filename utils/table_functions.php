@@ -182,6 +182,8 @@ function get_rtext($record_label, $total_records) {
 		return sprintf(ngettext('%s webpage block', '%s webpage blocks', $total_records), number($total_records));
 	}elseif ($record_label=='agent') {
 		return sprintf(ngettext('%s agent', '%s agents', $total_records), number($total_records));
+	}elseif ($record_label=='user category') {
+		return sprintf(ngettext('%s user category', '%s user categories', $total_records), number($total_records));
 	}else {
 		return sprintf(ngettext('%s record', '%s records', $total_records), number($total_records));
 	}
