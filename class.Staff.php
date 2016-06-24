@@ -69,8 +69,18 @@ class Staff extends DB_Table{
 	function get($key) {
 
 
-		if (!$this->id)
-			return;
+		if (!$this->id) {
+			if ($key=='Staff Type') {
+				if (isset($this->data[$key]))
+					return $this->data[$key];
+				else
+					return 'Employee';
+
+			}
+			else {
+				return;
+			}
+		}
 
 		switch ($key) {
 		case 'Salary':
@@ -337,9 +347,9 @@ class Staff extends DB_Table{
 		case ('Valid From'):
 		case ('Valid To'):
 		case ('Birthday'):
-		
-		
-		
+
+
+
 			return ($this->data['Staff '.$key]=='' or $this->data['Staff '.$key]=='0000-00-00 00:00:00') ?'':strftime("%x", strtotime($this->data['Staff '.$key]));
 
 			break;
@@ -531,7 +541,20 @@ class Staff extends DB_Table{
 				$label=_('supervisor');
 			}
 			break;
-
+		case 'Staff Working Hours':
+			if ($this->data['Staff Type']=='Contractor') {
+				$label=_('insite working hours');
+			}else {
+				$label=_('working hours');
+			}
+			break;
+		case 'Staff Salary':
+			if ($this->data['Staff Type']=='Contractor') {
+				$label=_('cost');
+			}else {
+				$label=_('salary');
+			}
+			break;
 
 		case 'Staff User Active':
 			$label=_('active');
@@ -756,8 +779,13 @@ class Staff extends DB_Table{
 			$data['User Password']=hash('sha256', generatePassword(8, 3));
 		}
 
+		if ($this->get('Staff Type')=='Contractor') {
+			$data['User Type']='Contractor';
+		}else {
+			$data['User Type']='Staff';
 
-		$data['User Type']='Staff';
+		}
+
 		$data['User Parent Key']=$this->id;
 		$data['User Alias']=$this->get('Name');
 		$user= new User('find', $data, 'create');
@@ -965,15 +993,15 @@ class Staff extends DB_Table{
 			$this->update_field('Staff Telephone Formatted', $formatted_value, $options);
 
 			break;
-		case 'Staff Valid From':	
+		case 'Staff Valid From':
 			require_once 'utils/date_functions.php';
-			
-			
-			
+
+
+
 			$this->update_field($field, $value, $options);
 			$from=date('Y-m-d', strtotime($this->get('Staff Valid From')));
 			$to=date('Y-m-d', strtotime(date('Y', strtotime('now + 1 year')).'-'.$account->get('Account HR Start Year')));
-			
+
 			if ($from and $to) {
 
 
@@ -998,8 +1026,8 @@ class Staff extends DB_Table{
 
 
 			}
-			
-			
+
+
 			break;
 		case('Staff Working Hours'):
 			require_once 'utils/date_functions.php';

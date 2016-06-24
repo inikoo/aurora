@@ -2,7 +2,7 @@
 /*
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created: 16 April 2016 at 20:20:53 GMT+8, Kuala Lumpur, Malaysia
+ Created: 24 June 2016 at 09:13:01 BST, Plane (London-Jakarta) , Indian Ocean
  Copyright (c) 2016, Inikoo
 
  Version 3
@@ -127,31 +127,7 @@ $object_fields=array(
 				'type'=>'value'
 
 			),
-			array(
 
-				'id'=>'Staff_Birthday',
-				'edit'=>($edit?'date':''),
-
-				'time'=>'00:00:00',
-				'value'=>$employee->get('Staff Birthday'),
-				'formatted_value'=>$employee->get('Birthday'),
-				'label'=>ucfirst($employee->get_field_label('Staff Birthday')),
-				'invalid_msg'=>get_invalid_message('date'),
-				'required'=>false,
-				'type'=>'value'
-			),
-			array(
-
-				'id'=>'Staff_Official_ID',
-				'edit'=>($edit?'string':''),
-
-				'value'=>$employee->get('Staff Official ID'),
-				'label'=>ucfirst($employee->get_field_label('Staff Official ID')),
-				'invalid_msg'=>get_invalid_message('string'),
-				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
-				'required'=>false,
-				'type'=>'value'
-			),
 			array(
 
 				'id'=>'Staff_Email',
@@ -189,33 +165,22 @@ $object_fields=array(
 				'required'=>false,
 				'type'=>'value'
 			),
-			array(
 
-				'id'=>'Staff_Next_of_Kind',
-				'edit'=>($edit?'string':''),
-
-				'value'=>$employee->get('Staff Next of Kind'),
-				'label'=>ucfirst($employee->get_field_label('Staff Next of Kind')),
-				'invalid_msg'=>get_invalid_message('string'),
-				'required'=>false,
-				'type'=>'value'
-
-			),
 
 		)
 	),
 	array(
-		'label'=>_('Employment'),
+		'label'=>_('Contract'),
 		'show_title'=>true,
 		'class'=>'edit_fields',
 		'fields'=>array(
 			array(
 
 				'id'=>'Staff_Type',
-				'edit'=>($edit?'option':''),
-
-				'value'=>($new?'Employee':$employee->get('Staff Type')),
-				'formatted_value'=>($new?_('Employee'):$employee->get('Type')),
+				'edit'=>($new?'hidden':($edit?'option':'')),
+               
+				'value'=>($new?'Contractor':$employee->get('Staff Type')),
+				'formatted_value'=>($new?_('Contractor'):$employee->get('Type')),
 				'options'=>$options_Staff_Type,
 				'label'=>ucfirst($employee->get_field_label('Staff Type')),
 				'type'=>'value',
@@ -294,7 +259,7 @@ $object_fields=array(
 
 if (!$new) {
 	$object_fields[]=array(
-		'label'=>_('Working hours & salary'),
+		'label'=>_('Working hours & cost'),
 		'show_title'=>true,
 		'class'=>'edit_fields',
 		'fields'=>array(

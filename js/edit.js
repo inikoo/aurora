@@ -276,10 +276,10 @@ function close_edit_field(field) {
         //$('#' + field + '_editor').removeClass('changed')
         break;
     case 'dropdown_select':
-    
-    
-    
-    
+
+
+
+
         $('#' + field + '_dropdown_select_label').addClass('hide')
         // $('#' + field + '_save_button').removeClass('hide')
         break;
@@ -645,7 +645,7 @@ function process_validation(validation, field, final_value) {
 
         $('#' + field + '_field').removeClass('valid').addClass('invalid')
 
-         //console.log($('#' + field + '_' + validation.type + '_invalid_msg'))
+        //console.log($('#' + field + '_' + validation.type + '_invalid_msg'))
         if ($('#' + field + '_' + validation.type + '_invalid_msg').length) {
             msg = $('#' + field + '_' + validation.type + '_invalid_msg').html()
         } else {
@@ -1012,7 +1012,7 @@ function save_field(object, key, field) {
 }
 
 function post_save_actions(field, data) {
-    //console.log(field)
+
     switch (field) {
     case 'User_Preferred_Locale':
         change_view(state.request, {
@@ -1022,6 +1022,14 @@ function post_save_actions(field, data) {
     case 'Product_Parts':
         post_save_product_parts(data)
         break;
+    case 'Staff_Type':
+        if (state.section == 'contractor' && data.value != 'Contractor') {
+            change_view('/employee/'+state.key)
+        } if (state.section == 'employee' && data.value == 'Contractor') {
+            change_view('/contractor/'+state.key)
+        }  
+        break;
+
     default:
 
     }
@@ -1641,7 +1649,7 @@ function get_dropdown_select(dropdown_input, new_value) {
             $('#' + field + '_results_container').removeClass('hide').addClass('show')
         } else {
 
-            if ($('#' + dropdown_input).attr('create_new')==1 && new_value.length > 0) {
+            if ($('#' + dropdown_input).attr('create_new') == 1 && new_value.length > 0) {
 
                 if ($('#' + field + '_new_object_invalid_msg').length) {
                     msg = $('#' + field + '_new_object_invalid_msg').html()
