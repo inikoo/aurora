@@ -167,7 +167,16 @@ function get_object_fields($object, $db, $user, $smarty, $options=false) {
 		return $object_fields;
 		break;
 	case 'Staff':
-		include 'fields/employee.fld.php';
+	
+	
+	if($object->get('Staff Type')=='Contractor'){
+			include 'fields/contractor.fld.php';
+
+	}else{
+			include 'fields/employee.fld.php';
+
+	}
+	
 		return $object_fields;
 		break;
 

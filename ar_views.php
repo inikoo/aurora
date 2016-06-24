@@ -2113,13 +2113,30 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 		case 'employees':
 			$branch[]=array('label'=>_('Employees'), 'icon'=>'', 'reference'=>'hr');
 			break;
+		case 'contractors':
+			$branch[]=array('label'=>_('Contractors'), 'icon'=>'', 'reference'=>'hr/contractors');
+			break;
+	
 
 		case 'employee':
 			$branch[]=array('label'=>_('Employees'), 'icon'=>'', 'reference'=>'hr');
 
-			$branch[]=array('label'=>_('Employee').' <span class="id Staff_Alias">'.$state['_object']->get('Staff Alias').'</span>', 'icon'=>'', 'reference'=>'employee/'.$state['_object']->id);
+			$branch[]=array('label'=>'<span class="id Staff_Alias">'.$state['_object']->get('Staff Alias').'</span>', 'icon'=>'', 'reference'=>'employee/'.$state['_object']->id);
 
 			break;
+			case 'employee.new':
+			$branch[]=array('label'=>_('Employees'), 'icon'=>'', 'reference'=>'hr');
+			$branch[]=array('label'=>_('New employee'),'icon'=>'');
+			break;	
+		case 'contractor':
+			$branch[]=array('label'=>_('Contractors'), 'icon'=>'', 'reference'=>'hr/contractors');
+			$branch[]=array('label'=>'<span class="id Staff_Alias">'.$state['_object']->get('Staff Alias').'</span>', 'icon'=>'', 'reference'=>'employee/'.$state['_object']->id);
+			break;	
+		case 'contractor.new':
+			$branch[]=array('label'=>_('Contractors'), 'icon'=>'', 'reference'=>'hr/contractors');
+			$branch[]=array('label'=>_('New contractor'),'icon'=>'');
+			break;		
+			
 		case 'employee.attachment':
 			include_once 'class.Staff.php';
 			$employee=new Staff($state['parent_key']);

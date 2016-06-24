@@ -179,7 +179,7 @@ function save_new_object(object, form_type) {
         // used only for debug
         var request = '/ar_edit.php?tipo=new_object&object=' + object + '&parent=' + $('#fields').attr('parent') + '&parent_key=' + $('#fields').attr('parent_key') + '&fields_data=' + JSON.stringify(fields_data)
         console.log(request)
-        return;
+       // return;
         //=====
         form_data.append("tipo", (form_type != '' ? form_type : 'new_object'))
         form_data.append("object", object)

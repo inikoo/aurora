@@ -666,7 +666,7 @@ function get_staff_user_navigation($data, $smarty, $user, $db, $account) {
 
 		switch ($data['parent']) {
 		case 'account':
-			$tab='users.staff.users';
+			$tab='account.users.staff';
 			$_section='staff';
 			break;
 		case 'group':
