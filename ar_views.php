@@ -68,6 +68,13 @@ case 'views':
 
 
 	switch ($state['parent']) {
+	case 'staff':
+	case 'employee':
+	case 'contractor':
+
+		$_parent=get_object($state['parent'], $state['parent_key']);
+
+		break;
 	case 'agent':
 	case 'campaign':
 		$_parent=get_object($state['parent'], $state['parent_key']);
@@ -1044,6 +1051,12 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case ('deleted_supplier'):
 			return get_deleted_supplier_navigation($data, $smarty, $user, $db, $account);
 			break;
+		case ('supplier.user.new'):
+			return get_new_supplier_user_navigation($data, $smarty, $user, $db, $account);
+			break;	
+		case ('agent.user.new'):
+			return get_new_agent_user_navigation($data, $smarty, $user, $db, $account);
+			break;			
 		}
 
 		break;
@@ -1167,6 +1180,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case ('employee.user.new'):
 			return get_new_employee_user_navigation($data, $smarty, $user, $db, $account);
 			break;
+		case ('contractor.user.new'):
+			return get_new_contractor_user_navigation($data, $smarty, $user, $db, $account);
+			break;	
 		case ('employee.attachment'):
 			return get_employee_attachment_navigation($data, $smarty, $user, $db, $account);
 			break;
@@ -1758,6 +1774,16 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 			$branch[]=array('label'=>_("Suppliers's categories"), 'icon'=>'sitemap', 'reference'=>'suppliers/categories/');
 			$branch[]=array('label'=>_("New main category"), 'icon'=>'', 'reference'=>'/');
 
+		}elseif ($state['section']=='supplier.user.new') {
+			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
+			$branch[]=array('label'=>'<span class="id Supplier_Code">'.$state['_parent']->get('Code').'</span> <span class="Supplier_Name italic">'.$state['_parent']->get('Name').'</span>', 'icon'=>'ship', 'reference'=>'supplier/'.$state['parent_key']);
+			$branch[]=array('label'=>_('New system user'), 'icon'=>'male', 'reference'=>'');
+
+		}elseif ($state['section']=='agent.user.new') {
+			$branch[]=array('label'=>_('Agents'), 'icon'=>'', 'reference'=>'agents');
+			$branch[]=array('label'=>'<span class="Agent_Code">'.$state['_parent']->get('Code').'</span> <span class="Agent_Name italic">'.$state['_parent']->get('Name').'</span>', 'icon'=>'user-secret', 'reference'=>'agent/'.$state['parent_key']);
+			$branch[]=array('label'=>_('New system user'), 'icon'=>'male', 'reference'=>'');
+
 		}
 
 
@@ -2114,9 +2140,9 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 			$branch[]=array('label'=>_('Employees'), 'icon'=>'', 'reference'=>'hr');
 			break;
 		case 'contractors':
-			$branch[]=array('label'=>_('Contractors'), 'icon'=>'', 'reference'=>'hr/contractors');
+			$branch[]=array('label'=>_('Contractors'), 'icon'=>'hand-spock-o', 'reference'=>'hr/contractors');
 			break;
-	
+
 
 		case 'employee':
 			$branch[]=array('label'=>_('Employees'), 'icon'=>'', 'reference'=>'hr');
@@ -2124,19 +2150,25 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 			$branch[]=array('label'=>'<span class="id Staff_Alias">'.$state['_object']->get('Staff Alias').'</span>', 'icon'=>'', 'reference'=>'employee/'.$state['_object']->id);
 
 			break;
-			case 'employee.new':
+		case 'employee.new':
 			$branch[]=array('label'=>_('Employees'), 'icon'=>'', 'reference'=>'hr');
-			$branch[]=array('label'=>_('New employee'),'icon'=>'');
-			break;	
+			$branch[]=array('label'=>_('New employee'), 'icon'=>'');
+			break;
 		case 'contractor':
 			$branch[]=array('label'=>_('Contractors'), 'icon'=>'', 'reference'=>'hr/contractors');
-			$branch[]=array('label'=>'<span class="id Staff_Alias">'.$state['_object']->get('Staff Alias').'</span>', 'icon'=>'', 'reference'=>'employee/'.$state['_object']->id);
-			break;	
+			$branch[]=array('label'=>'<span class="id Staff_Alias">'.$state['_object']->get('Staff Alias').'</span>', 'icon'=>'hand-spock-o', 'reference'=>'employee/'.$state['_object']->id);
+			break;
+		case 'contractor.user.new':
+			$branch[]=array('label'=>_('Contractors'), 'icon'=>'', 'reference'=>'hr/contractors');
+			$branch[]=array('label'=>'<span class="id Staff_Alias">'.$state['_parent']->get('Staff Alias').'</span>', 'icon'=>'hand-spock-o', 'reference'=>'employee/'.$state['_parent']->id);
+			$branch[]=array('label'=>_('New system user'), 'icon'=>'');
+
+			break;
 		case 'contractor.new':
 			$branch[]=array('label'=>_('Contractors'), 'icon'=>'', 'reference'=>'hr/contractors');
-			$branch[]=array('label'=>_('New contractor'),'icon'=>'');
-			break;		
-			
+			$branch[]=array('label'=>_('New contractor'), 'icon'=>'');
+			break;
+
 		case 'employee.attachment':
 			include_once 'class.Staff.php';
 			$employee=new Staff($state['parent_key']);

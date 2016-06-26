@@ -349,4 +349,8 @@ migrate_parts.oneoff.php
 STICKY:::: --> update `Category Dimension` set `Category Scope`=`Category Subject` where `Category Scope` is null or `Category Scope`='';
 ALTER TABLE `History Dimension` CHANGE `History Abstract` `History Abstract` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 
+!Important do this:::bk2,aurora,costadw2etc
+ALTER TABLE `Part Dimension` CHANGE `Part Available` `Part Available` ENUM('Yes','No') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'No';
+ALTER TABLE `User Dimension` CHANGE `User Type` `User Type` ENUM('Customer','Staff','Supplier','Administrator','Warehouse','Contractor','Agent') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+
 

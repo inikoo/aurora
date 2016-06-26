@@ -16,7 +16,7 @@ include_once 'conf/object_fields.php';
 
 
 $agent=$state['_object'];
-
+$agent->get_user_data();
 $object_fields=get_object_fields($agent, $db, $user, $smarty ,array('show_full_label'=>false));
 
 $smarty->assign('default_country', $account->get('Account Country 2 Alpha Code'));

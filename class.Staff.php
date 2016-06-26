@@ -1115,6 +1115,7 @@ class Staff extends DB_Table{
 			$this->error=$system_user->error;
 			$this->msg=$system_user->msg;
 			$this->updated=$system_user->updated;
+			$this->get_user_data();
 
 
 			break;
@@ -1471,7 +1472,9 @@ class Staff extends DB_Table{
 
 	function get_user_data() {
 
-		$sql=sprintf('select * from `User Dimension` where `User Type`="Staff" and `User Parent Key`=%d ', $this->id);
+		$sql=sprintf('select * from `User Dimension` where `User Type`=%s and `User Parent Key`=%d ',
+			prepare_mysql($this->get('Staff Type')),
+			$this->id);
 		if ($row = $this->db->query($sql)->fetch()) {
 
 			foreach ($row as $key=>$value) {

@@ -10,7 +10,7 @@
  Version 3.0
 */
 
-include_once('utils/static_data.php');
+include_once 'utils/static_data.php';
 
 if (isset($options['new']) and  $options['new'] ) {
 	$new=true;
@@ -67,9 +67,9 @@ asort($options_yn);
 
 $company_field=array();
 
-$supplier_fields=array(
+$object_fields=array(
 
-	
+
 	array(
 		'label'=>_('Code, name'),
 		'show_title'=>true,
@@ -209,7 +209,7 @@ $supplier_fields=array(
 				'id'=>'Supplier_Other_Telephone',
 				'render'=>false,
 				'edit'=>($edit?'telephone':''),
-                 'clone_template'=>true,
+				'clone_template'=>true,
 				'value'=>'',
 				'formatted_value'=>'',
 				'label'=>ucfirst($object->get_field_label('Supplier Other Telephone')).' <i onClick="set_this_as_main(this)" title="'._('Set as main telephone').'" class="fa fa-star-o very_discret button"></i>',
@@ -303,12 +303,12 @@ $supplier_fields=array(
 				'label'=>ucfirst($object->get_field_label('Part Origin Country Code')),
 				'required'=>false,
 				'type'=>'value',
-				
+
 			),
 
 		)
 	),
-	
+
 	array(
 		'label'=>_('Purchase order settings'),
 		'show_title'=>false,
@@ -370,13 +370,92 @@ $supplier_fields=array(
 
 		)
 	),
-	
+
 
 );
 
 
 
 if (!$new) {
+
+	if ($object->get('Supplier User Key')) {
+
+
+		$object_fields[]=array(
+			'label'=>_('System user').' <i  onClick="change_view(\'account/user/'.$object->get('Supplier User Key').'\')" class="fa fa-link link"></i>',
+			'show_title'=>true,
+			'class'=>'edit_fields',
+			'fields'=>array(
+
+				array(
+
+					'id'=>'Supplier_User_Active',
+					'edit'=>'option',
+					'value'=>$object->get('Supplier User Active'),
+					'formatted_value'=>$object->get('User Active'),
+					'options'=>$options_yn,
+					'label'=>ucfirst($object->get_field_label('Supplier Active')),
+				),
+
+				array(
+
+					'id'=>'Supplier_User_Handle',
+					'edit'=>'handle',
+					'value'=>$object->get('Supplier User Handle'),
+					'formatted_value'=>$object->get('User Handle'),
+					'label'=>ucfirst($object->get_field_label('Supplier User Handle')),
+					'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates', 'parent'=>'account', 'parent_key'=>1,'actual_field'=>'User Handle', 'object'=>'User', 'key'=>$object->id)),
+					'invalid_msg'=>get_invalid_message('handle'),
+				),
+
+				array(
+					'render'=>($object->get('Supplier User Active')=='Yes'?true:false),
+
+					'id'=>'Supplier_User_Password',
+					'edit'=>'password',
+					'value'=>'',
+					'formatted_value'=>'******',
+					'label'=>ucfirst($object->get_field_label('Supplier User Password')),
+					'invalid_msg'=>get_invalid_message('password'),
+				),
+				array(
+					'render'=>($object->get('Supplier User Active')=='Yes'?true:false),
+
+					'id'=>'Supplier_User_PIN',
+					'edit'=>'pin',
+					'value'=>'',
+					'formatted_value'=>'****',
+					'label'=>ucfirst($object->get_field_label('Supplier User PIN')),
+					'invalid_msg'=>get_invalid_message('pin'),
+				),
+
+
+
+			)
+		);
+
+	}
+	else {
+		$object_fields[]=array(
+			'label'=>_('System user'),
+			'show_title'=>true,
+			'class'=>'edit_fields',
+			'fields'=>array(
+				array(
+
+					'id'=>'new_user',
+					'class'=>'new',
+					'value'=>'',
+					'label'=>_('Set up system user').' <i class="fa fa-plus new_button link"></i>',
+					'reference'=>'supplier/'.$object->id.'/user/new'
+				),
+
+			)
+		);
+
+	}
+
+
 	$operations=array(
 		'label'=>_('Operations'),
 		'show_title'=>true,
@@ -385,24 +464,118 @@ if (!$new) {
 			array(
 
 				'id'=>'delete_supplier',
-						'class'=>'operation',
-						'value'=>'',
-						'label'=>'<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span onClick="delete_object(this)" class="delete_object disabled">'._("Delete supplier & supplier's parts").' <i class="fa fa-trash new_button link"></i></span>',
-						'reference'=>'',
-						'type'=>'operation'
+				'class'=>'operation',
+				'value'=>'',
+				'label'=>'<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span onClick="delete_object(this)" class="delete_object disabled">'._("Delete supplier & supplier's parts").' <i class="fa fa-trash new_button link"></i></span>',
+				'reference'=>'',
+				'type'=>'operation'
 			),
 
 		)
 
 	);
-	
-	$supplier_fields[]=$operations;
+
+	$object_fields[]=$operations;
+}else {
+
+	$object_fields[]=array(
+		'label'=>_('System user'),
+		'show_title'=>true,
+		'class'=>'edit_fields',
+		'fields'=>array(
+
+
+			array(
+
+				'id'=>'add_new_user',
+				'class'=>'',
+				'value'=>'',
+				'label'=>_('Set up system user').' <i onClick="show_user_fields()" class="fa fa-plus new_button link"></i>',
+				'required'=>false,
+				'type'=>'util'
+			),
+
+			array(
+				'render'=>false,
+				'id'=>'dont_add_new_user',
+				'class'=>'',
+				'value'=>'',
+				'label'=>_("Don't set up system user").' <i onClick="hide_user_fields()" class="fa fa-minus new_button link"></i>',
+				'required'=>false,
+				'type'=>'util'
+			),
+
+
+			array(
+				'render'=>false,
+				'id'=>'Supplier_User_Active',
+				'edit'=>($edit?'option':''),
+
+				'options'=>$options_yn,
+				'value'=>'Yes',
+				'formatted_value'=>_('Yes'),
+				'label'=>ucfirst($object->get_field_label('Supplier User Active')),
+				'type'=>'user_value',
+				'hidden'=>true
+			),
+			array(
+				'render'=>false,
+				'id'=>'Supplier_User_Handle',
+				'edit'=>'handle',
+				'value'=>$object->get('Supplier User Handle'),
+				'formatted_value'=>$object->get('User Handle'),
+				'label'=>ucfirst($object->get_field_label('Supplier User Handle')),
+				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates')),
+				'invalid_msg'=>get_invalid_message('handle'),
+				'type'=>'user_value',
+				'required'=>false,
+
+			),
+
+
+
+			array(
+				'render'=>false,
+
+				'id'=>'Supplier_User_Password',
+				'edit'=>'password',
+				'value'=>'',
+				'formatted_value'=>'******',
+				'label'=>ucfirst($object->get_field_label('Supplier User Password')),
+				'invalid_msg'=>get_invalid_message('password'),
+				'type'=>'user_value',
+				'required'=>false,
+
+
+			),
+			array(
+				'render'=>false,
+				'id'=>'Supplier_PIN',
+				'edit'=>'pin',
+				'value'=>'',
+				'formatted_value'=>'****',
+				'label'=>ucfirst($object->get_field_label('Supplier PIN')),
+				'invalid_msg'=>get_invalid_message('pin'),
+				'type'=>'user_value',
+				'required'=>false,
+
+			),
+
+
+
+		)
+	);
 }
 
 
 
 
-	
+
+
+
+
+
+
 
 
 $other_emails=$object->get_other_emails_data();
@@ -420,7 +593,7 @@ if (count($other_emails)>0) {
 			'required'=>false
 		);
 	}
-	array_splice( $supplier_fields[1]['fields'], 1, 0, $other_emails_fields);
+	array_splice( $object_fields[1]['fields'], 1, 0, $other_emails_fields);
 }
 
 $other_telephones=$object->get_other_telephones_data();
@@ -437,7 +610,7 @@ if (count($other_telephones)>0) {
 			'required'=>false
 		);
 	}
-	array_splice( $supplier_fields[2]['fields'], 2, 0, $other_telephones_fields);
+	array_splice( $object_fields[2]['fields'], 2, 0, $other_telephones_fields);
 }
 
 

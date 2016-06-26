@@ -1520,6 +1520,13 @@ textarea {
   .textarea_dialog .save {
     float: right; }
 
+#edit_container tr.title {
+  font-size: 120%; }
+  #edit_container tr.title .fa {
+    font-size: 80%;
+    position: relative;
+    top: -1px; }
+
 .valid .save {
   color: #0EBFE9;
   cursor: pointer; }

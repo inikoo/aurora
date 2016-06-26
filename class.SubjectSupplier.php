@@ -169,6 +169,71 @@ class SubjectSupplier extends Subject {
 	}
 
 
+	function get_user_data() {
+
+		$sql=sprintf('select * from `User Dimension` where `User Type`=%s and `User Parent Key`=%d ',
+			prepare_mysql($this->table_name),
+			$this->id);
+		if ($row = $this->db->query($sql)->fetch()) {
+
+			foreach ($row as $key=>$value) {
+				$this->data['Supplier '.$key]=$value;
+			}
+		}
+
+
+
+	}
+
+
+	function create_user($data) {
+
+        
+    
+		if (isset($this->data[$this->table_name.' User Key']) and $this->data[$this->table_name.' User Key']) {
+			$this->create_user_error=true;
+			if ($this->table_name=='Supplier')
+				$this->create_user_msg=_('Supplier has already a system user');
+			else
+				$this->create_user_msg=_('Agent has already a system user');
+
+			$this->user=false;
+			return false;
+		}
+
+
+		$data['editor']=$this->editor;
+
+		if (!array_key_exists('User Handle', $data) or $data['User Handle']=='' ) {
+			$this->create_user_error=true;
+			$this->create_user_msg=_('User login must be provided');
+			$this->user=false;
+			return false;
+
+		}
+
+		if (!array_key_exists('User Password', $data) or $data['User Password']=='' ) {
+			include_once 'utils/password_functions.php';
+			$data['User Password']=hash('sha256', generatePassword(8, 3));
+		}
+
+		$data['User Type']=$this->table_name;
+
+
+		$data['User Parent Key']=$this->id;
+		$data['User Alias']=$this->get('Name');
+		$user= new User('find', $data, 'create');
+		$this->get_user_data();
+		$this->create_user_error=$user->error;
+		$this->create_user_msg=$user->msg;
+		$this->user=$user;
+
+		return $user;
+
+
+	}
+
+
 }
 
 

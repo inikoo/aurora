@@ -1100,6 +1100,20 @@ $modules=array(
 				)
 
 			),
+				'supplier.user.new'=>array('type'=>'new_object',
+				'tabs'=>array(
+					'supplier.user.new'=>array('label'=>_('New system user')),
+
+				)
+
+			),
+			'agent.user.new'=>array('type'=>'new_object',
+				'tabs'=>array(
+					'agent.user.new'=>array('label'=>_('New system user')),
+
+				)
+
+			),
 
 
 		)
@@ -1534,6 +1548,13 @@ $modules=array(
 				)
 
 			),
+			'contractor.user.new'=>array('type'=>'new_object',
+				'tabs'=>array(
+					'contractor.user.new'=>array('label'=>_('New system user')),
+
+				)
+
+			),
 
 			'employee.attachment'=>array('type'=>'object',
 				'tabs'=>array(
@@ -1822,6 +1843,8 @@ $modules=array(
 					'account.users.contractors'=>array('label'=>_('Contractors')),
 				)
 			),
+			
+		
 
 		)
 

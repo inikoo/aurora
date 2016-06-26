@@ -1264,6 +1264,29 @@ class Subject extends DB_Table {
 
 		switch ($field) {
 
+
+
+		case( $this->table_name.' User Handle'):
+		case( $this->table_name.' User Password'):
+		case( $this->table_name.' User Active'):
+
+			$this->get_user_data();
+
+
+			$system_user=new User($this->get($this->table_name.' User Key'));
+			$system_user->editor=$this->editor;
+			$user_field=preg_replace('/^'.$this->table_name.' /', '', $field);
+			//$old_value=$this->get($user_field);
+
+			$system_user->update(array($user_field=>$value), $options);
+			$this->error=$system_user->error;
+			$this->msg=$system_user->msg;
+			$this->updated=$system_user->updated;
+$this->get_user_data();
+			return true;
+			break;
+
+
 		case 'History Note':
 
 
@@ -1938,8 +1961,8 @@ class Subject extends DB_Table {
 		} catch (\libphonenumber\NumberParseException $e) {
 
 		}
-		
-		return array($value,$formatted_value);
+
+		return array($value, $formatted_value);
 
 	}
 

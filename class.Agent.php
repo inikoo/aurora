@@ -434,6 +434,17 @@ class Agent extends SubjectSupplier {
 		case 'Agent Show Warehouse TC in PO':
 			$label=_('Include general T&C');
 			break;
+		case 'Agent User Active':
+			$label=_('active');
+			break;
+		case 'Agent User Handle':
+			$label=_('login');
+			break;
+		case 'Agent User Password':
+			$label=_('password');
+			break;
+		case 'Agent User PIN':
+			$label=_('PIN');
 
 		default:
 			$label=$field;

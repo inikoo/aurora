@@ -1140,12 +1140,19 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
 		$smarty->assign('account', $account);
-		$smarty->assign('object', $object);
-		$smarty->assign('employee', $parent);
+		$smarty->assign('object', $parent);
 
 
+		if ($parent->get_object_name()=='Staff') {
+			$pcard=$smarty->fetch('presentation_cards/staff.system_user.pcard.tpl');
+		}elseif ($parent->get_object_name()=='Agent') {
+			$pcard=$smarty->fetch('presentation_cards/agent.system_user.pcard.tpl');
 
-		$pcard=$smarty->fetch('presentation_cards/system_user.pcard.tpl');
+		}elseif ($parent->get_object_name()=='Supplier') {
+			$pcard=$smarty->fetch('presentation_cards/supplier.system_user.pcard.tpl');
+
+		}
+
 		$updated_data=array();
 		break;
 	case 'Store':

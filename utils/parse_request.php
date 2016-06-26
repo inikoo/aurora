@@ -541,6 +541,30 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 
 						}
+						else if ($view_path[1]=='user') {
+
+
+							$parent='supplier';
+							$parent_key=$key;
+
+
+							if (isset($view_path[2])) {
+								if (is_numeric($view_path[2])) {
+
+									$section='supplier.user';
+									$object='user';
+									$key=$view_path[2];
+								}elseif ($view_path[2]=='new') {
+
+									$section='supplier.user.new';
+									$object='user';
+								}
+							}
+
+
+
+						}
+						
 
 
 					}
@@ -619,7 +643,29 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 
 						}
+else if ($view_path[1]=='user') {
 
+
+							$parent='agent';
+							$parent_key=$key;
+
+
+							if (isset($view_path[2])) {
+								if (is_numeric($view_path[2])) {
+
+									$section='agent.user';
+									$object='user';
+									$key=$view_path[2];
+								}elseif ($view_path[2]=='new') {
+
+									$section='agent.user.new';
+									$object='user';
+								}
+							}
+
+
+
+						}
 					}
 
 				}
@@ -1982,11 +2028,42 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			if (isset($view_path[0])) {
 				if (is_numeric($view_path[0])) {
 					$key=$view_path[0];
+					if (isset($view_path[1])) {
+					
+					
+					if ($view_path[1]=='user') {
+
+
+							$parent='staff';
+							$parent_key=$key;
+
+
+							if (isset($view_path[2])) {
+								if (is_numeric($view_path[2])) {
+
+									$section='contractor.user';
+									$object='user';
+									$key=$view_path[2];
+								}elseif ($view_path[2]=='new') {
+
+									$section='contractor.user.new';
+									$object='user';
+								}
+							}
+
+
+
+						}
+					}
+					
 				}elseif ($view_path[0]=='new') {
 					$section='contractor.new';
 					$object='';
 
 				}
+				
+				
+				
 			}
 
 			break;
