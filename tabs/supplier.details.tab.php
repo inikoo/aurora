@@ -16,6 +16,7 @@ include_once 'conf/object_fields.php';
 
 
 $supplier=$state['_object'];
+$supplier->get_user_data();
 
 $object_fields=get_object_fields($supplier, $db, $user, $smarty ,array('show_full_label'=>false));
 

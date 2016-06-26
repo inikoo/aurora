@@ -292,7 +292,7 @@ if (!$new) {
 
 
 		$object_fields[]=array(
-			'label'=>_('System user').' <i  onClick="change_view(\'account/user/'.$employee->get('Staff User Key').'\')" class="fa fa-link link"></i>',
+			'label'=>_('System user').' <i  onClick="change_view(\'account/user/'.$employee->get('Staff User Key').'\')" class="fa fa-database link"></i>',
 			'show_title'=>true,
 			'class'=>'edit_fields',
 			'fields'=>array(
@@ -364,7 +364,7 @@ if (!$new) {
 					'class'=>'new',
 					'value'=>'',
 					'label'=>_('Set up system user').' <i class="fa fa-plus new_button link"></i>',
-					'reference'=>'employee/'.$employee->id.'/new/user'
+					'reference'=>'contractor/'.$employee->id.'/user/new'
 				),
 
 			)

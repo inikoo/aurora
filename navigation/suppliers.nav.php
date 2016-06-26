@@ -1351,5 +1351,86 @@ function get_suppliers_new_main_category_navigation($data, $smarty, $user, $db, 
 
 }
 
+function get_new_supplier_user_navigation($data, $smarty, $user, $db) {
+
+
+	$left_buttons=array();
+	$right_buttons=array();
+
+
+	$sections=get_sections('suppliers', '');
+
+	$_section='suppliers';
+	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
+
+	
+
+	$up_button=array('icon'=>'arrow-up', 'title'=>sprintf(_('Supplier: %s'), $data['_parent']->get('Name')), 'reference'=>'supplier/'.$data['_parent']->id);
+
+
+	$left_buttons[]=$up_button;
+
+
+	$title= '<span >'.sprintf(_('New system user for %s'), '<span class="id">'.$data['_parent']->get('Name').'</span>').'</span>';
+
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>_('Search suppliers'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+
+	$html=$smarty->fetch('navigation.tpl');
+
+	return $html;
+
+}
+
+function get_new_agent_user_navigation($data, $smarty, $user, $db) {
+
+
+	$left_buttons=array();
+	$right_buttons=array();
+
+
+	$sections=get_sections('suppliers', '');
+
+	$_section='agents';
+	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
+
+	
+
+	$up_button=array('icon'=>'arrow-up', 'title'=>sprintf(_('Agent: %s'), $data['_parent']->get('Name')), 'reference'=>'agent/'.$data['_parent']->id);
+
+
+	$left_buttons[]=$up_button;
+
+
+	$title= '<span >'.sprintf(_('New system user for %s'), '<span class="id">'.$data['_parent']->get('Name').'</span>').'</span>';
+
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>_('Search suppliers'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+
+	$html=$smarty->fetch('navigation.tpl');
+
+	return $html;
+
+}
 
 ?>

@@ -17,7 +17,8 @@ function get_object_fields($object, $db, $user, $smarty, $options=false) {
 	$account=new Account($db);
 
 	$edit=true;
-
+	
+	
 	switch ($object->get_object_name()) {
 	case 'Webpage':
 		include 'fields/webpage.fld.php';
@@ -52,8 +53,14 @@ function get_object_fields($object, $db, $user, $smarty, $options=false) {
 		return $object_fields;
 		break;
 	case 'Agent':
-		include 'fields/agent.fld.php';
-		return $agent_fields;
+	
+		if (isset($options['type']) and $options['type']=='user') {
+			include 'fields/user.system.fld.php';
+		}else {
+		
+			include 'fields/agent.fld.php';
+		}
+		return $object_fields;
 		break;
 	case 'Barcode':
 		include 'fields/barcode.fld.php';
@@ -78,8 +85,13 @@ function get_object_fields($object, $db, $user, $smarty, $options=false) {
 		break;
 
 	case 'Supplier':
-		include 'fields/supplier.fld.php';
-		return $supplier_fields;
+
+		if (isset($options['type']) and $options['type']=='user') {
+			include 'fields/user.system.fld.php';
+		}else {
+			include 'fields/supplier.fld.php';
+		}
+		return $object_fields;
 		break;
 
 	case 'Supplier Part':
@@ -167,16 +179,27 @@ function get_object_fields($object, $db, $user, $smarty, $options=false) {
 		return $object_fields;
 		break;
 	case 'Staff':
-	
-	
-	if($object->get('Staff Type')=='Contractor'){
-			include 'fields/contractor.fld.php';
 
-	}else{
-			include 'fields/employee.fld.php';
 
-	}
-	
+		if ($object->get('Staff Type')=='Contractor') {
+
+			if (isset($options['type']) and $options['type']=='user') {
+				include 'fields/user.system.fld.php';
+			}else {
+				include 'fields/contractor.fld.php';
+			}
+
+		}else {
+
+			if (isset($options['type']) and $options['type']=='user') {
+				include 'fields/user.system.fld.php';
+			}else {
+				include 'fields/employee.fld.php';
+			}
+
+
+		}
+
 		return $object_fields;
 		break;
 

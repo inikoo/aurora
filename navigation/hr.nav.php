@@ -930,6 +930,47 @@ function get_new_employee_user_navigation($data, $smarty, $user, $db) {
 
 }
 
+function get_new_contractor_user_navigation($data, $smarty, $user, $db) {
+
+
+	$left_buttons=array();
+	$right_buttons=array();
+
+
+	$sections=get_sections('hr', '');
+
+	$_section='contractors';
+	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
+
+	
+
+	$up_button=array('icon'=>'arrow-up', 'title'=>sprintf(_('Contractor: %s'), $data['_parent']->get('Name')), 'reference'=>'contractor/'.$data['_parent']->id);
+
+
+	$left_buttons[]=$up_button;
+
+
+	$title= '<span >'.sprintf(_('New system user for %s'), '<span class="id">'.$data['_parent']->get('Name').'</span>').'</span>';
+
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>_('Search manpower'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+
+	$html=$smarty->fetch('navigation.tpl');
+
+	return $html;
+
+}
+
 
 function get_employee_attachment_navigation($data, $smarty, $user, $db) {
 

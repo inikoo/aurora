@@ -109,6 +109,7 @@ class Supplier extends SubjectSupplier {
 	}
 
 
+
 	function get_deleted_data( $tag) {
 
 		$this->deleted=true;
@@ -1502,6 +1503,18 @@ class Supplier extends SubjectSupplier {
 			break;
 		case 'Supplier Show Warehouse TC in PO':
 			$label=_('Include general T&C');
+			break;
+		case 'Supplier User Active':
+			$label=_('active');
+			break;
+		case 'Supplier User Handle':
+			$label=_('login');
+			break;
+		case 'Supplier User Password':
+			$label=_('password');
+			break;
+		case 'Supplier User PIN':
+			$label=_('PIN');
 			break;
 
 		default:
