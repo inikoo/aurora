@@ -137,7 +137,235 @@ function get_suppliers_categories_navigation($data, $smarty, $user, $db) {
 }
 
 
-function get_suppliers_category_navigation($data, $smarty, $user, $db, $account) {}
+
+function get_suppliers_category_navigation($data, $smarty, $user, $db, $account) {
+
+	$category=$data['_object'];
+
+	$left_buttons=array();
+	$right_buttons=array();
+
+	switch ($data['parent']) {
+	case 'category':
+
+		$parent_category=new Category($data['parent_key']);
+
+
+
+		$up_button=array('icon'=>'arrow-up', 'title'=>_("Supplier's categories").' '.$data['store']->data['Store Code'], 'reference'=>'suppliers/category/'.$parent_category->id);
+
+		if ($data['tab']=='category.subjects') {
+			$tab='subject_categories';
+
+		}else {
+
+			$tab='category.categories';
+		}
+		$parent_categories=$parent_category->get('Category Position');
+		break;
+	case 'account':
+
+
+		$up_button=array('icon'=>'arrow-up', 'title'=>_("Supplier's categories"), 'reference'=>'suppliers/categories');
+		$tab='parts.categories';
+		$parent_categories='';
+		break;
+
+	default:
+
+		break;
+	}
+
+
+	if (isset($_SESSION['table_state'][$tab])) {
+		$number_results=$_SESSION['table_state'][$tab]['nr'];
+		$start_from=0;
+		$order=$_SESSION['table_state'][$tab]['o'];
+		$order_direction=($_SESSION['table_state'][$tab]['od']==1 ?'desc':'');
+		$f_value=$_SESSION['table_state'][$tab]['f_value'];
+		$parameters=$_SESSION['table_state'][$tab];
+	}else {
+
+		$default=$user->get_tab_defaults($tab);
+		$number_results=$default['rpp'];
+		$start_from=0;
+		$order=$default['sort_key'];
+		$order_direction=($default['sort_order']==1 ?'desc':'');
+		$f_value='';
+		$parameters=$default;
+
+	}
+	$parameters['parent']=$data['parent'];
+	$parameters['parent_key']=$data['parent_key'];
+	include_once 'prepare_table/'.$tab.'.ptble.php';
+
+
+	$_order_field=$order;
+	$order=preg_replace('/^.*\.`/', '', $order);
+	$order=preg_replace('/^`/', '', $order);
+	$order=preg_replace('/`$/', '', $order);
+
+
+
+	$_order_field_value=$category->get($order);
+	$extra_field='';
+
+
+
+	$prev_title='';
+	$next_title='';
+	$prev_key=0;
+	$next_key=0;
+	$prev_extra_field_value='';
+	$next_extra_field_value='';
+
+
+	$sql=trim($sql_totals." $wheref");
+	//print $sql;
+
+	if ($result2=$db->query($sql)) {
+		if ($row2 = $result2->fetch() and $row2['num']>1) {
+
+
+			$sql=sprintf("select C.`Category Label` object_name,C.`Category Key` as object_key %s from %s
+	                and ($_order_field < %s OR ($_order_field = %s AND C.`Category Key` < %d))  order by $_order_field desc , C.`Category Key` desc limit 1",
+				$extra_field,
+				"$table $where $wheref",
+				prepare_mysql($_order_field_value),
+				prepare_mysql($_order_field_value),
+				$category->id
+			);
+
+			if ($result=$db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$prev_key=$row['object_key'];
+					$prev_title=_("Part").' '.$row['object_name'].' ('.$row['object_key'].')';
+					if ($extra_field) {
+						$prev_extra_field_value=$row['extra_field'];
+					}
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				exit;
+			}
+
+
+			$sql=sprintf("select C.`Category Label` object_name,C.`Category Key` as object_key %s from %s
+	                and ($_order_field  > %s OR ($_order_field  = %s AND C.`Category Key`> %d))  order by $_order_field   , C.`Category Key` limit 1",
+				$extra_field,
+				"$table $where $wheref",
+				prepare_mysql($_order_field_value),
+				prepare_mysql($_order_field_value),
+				$category->id
+			);
+
+
+			if ($result=$db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$next_key=$row['object_key'];
+					$next_title=_("Part").' '.$row['object_name'].' ('.$row['object_key'].')';
+					if ($extra_field) {
+						$next_extra_field_value=$row['extra_field'];
+					}
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				exit;
+			}
+
+
+
+
+
+			if ($order_direction=='desc') {
+				$_tmp1=$prev_key;
+				$_tmp2=$prev_title;
+				$prev_key=$next_key;
+				$prev_title=$next_title;
+				$next_key=$_tmp1;
+				$next_title=$_tmp2;
+				if ($extra_field) {
+					$_tmp3=$prev_extra_field_value;
+					$prev_extra_field_value=$next_extra_field_value;
+					$next_extra_field_value=$_tmp3;
+				}
+
+			}
+
+
+
+
+
+
+
+
+
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+
+	if ($prev_key) {
+		$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'suppliers/category/'.$parent_categories.$prev_key);
+
+	}else {
+		$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'');
+
+	}
+	$left_buttons[]=$up_button;
+
+
+	if ($next_key) {
+		$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'suppliers/category/'.$parent_categories.$next_key);
+
+	}else {
+		$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
+
+	}
+
+
+
+
+
+
+
+
+
+	if ($account->get('Account Part Family Category Key')==$data['_object']->get('Category Root Key')) {
+		$title='<span class="Category_Code id">'.$data['_object']->get('Code').'</span>';
+	}else {
+		$title=_('Category').' <span class="Category_Label">'.$data['_object']->get('Label').'</span> (<span class="Category_Code id">'.$data['_object']->get('Code').'</span>)';
+	}
+
+
+
+
+
+	$right_buttons[]=array('icon'=>'sticky-note', 'title'=>_('Sticky note'), 'id'=>'sticky_note_button', 'click'=>"show_sticky_note_edit_dialog('sticky_note_button')",  'class'=> ($category->get('Sticky Note')==''?'':'hide'));
+
+	//$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit'), 'url'=>"edit_product_categories.php?store_id=".$data['store']->id);
+
+	$sections=get_sections('inventory', $data['store']->id);
+	$sections['categories']['selected']=true;
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>_('Search suppliers'))
+
+	);
+	$smarty->assign('_content', $_content);
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+}
 
 
 function get_suppliers_dashboard_navigation($data, $smarty, $user, $db, $account) {

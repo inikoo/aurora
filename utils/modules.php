@@ -999,7 +999,7 @@ $modules=array(
 				'tabs'=>array(
 					'category.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
 					'category.history'=>array('label'=>_('History, notes'), 'icon'=>'sticky-note-o'),
-					'category.subjects'=>array('label'=>_('Customers'), 'title'=>_('Customers')),
+					'category.subjects'=>array('label'=>_('Suppliers')),
 					'category.categories'=>array('label'=>_('Subcategories')),
 
 				)

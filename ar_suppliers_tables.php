@@ -60,6 +60,9 @@ case 'orders':
 case 'supplier.order.supplier_parts':
 	order_supplier_parts(get_table_parameters(), $db, $user, $account);
 	break;
+case 'category_all_suppliers':
+    category_all_suppliers(get_table_parameters(), $db, $user, $account);
+    break;
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
@@ -110,9 +113,13 @@ function suppliers($_data, $db, $user, $account) {
 			$required=number($data["Supplier $db_period Acc Parts Required"], 0);
 */
 
+			$associated=sprintf('<i key="%d" class="fa fa-fw fa-link button" aria-hidden="true" onClick="edit_category_subject(this)" ></i>', $data['Supplier Key']);
+
 			$adata[]=array(
 				'id'=>(integer)$data['Supplier Key'],
 				'operations'=>$operations,
+					'associated'=>$associated,
+			
 				'code'=>$data['Supplier Code'],
 				'name'=>$data['Supplier Name'],
 				'supplier_parts'=>number($data['Supplier Number Parts']),
@@ -654,5 +661,69 @@ function order_supplier_parts($_data, $db, $user) {
 	echo json_encode($response);
 }
 
+function category_all_suppliers($_data, $db, $user,$account) {
+
+
+	$rtext_label='supplier';
+
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	$adata=array();
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
+
+			if ($data['associated'])
+				$associated=sprintf('<i key="%d" class="fa fa-fw fa-link button" aria-hidden="true" onClick="edit_category_subject(this)" ></i>', $data['Supplier Key']);
+			else
+				$associated=sprintf('<i key="%d" class="fa fa-fw fa-unlink button very_discreet" aria-hidden="true" onClick="edit_category_subject(this)" ></i>', $data['Supplier Key']);
+
+
+			$adata[]=array(
+				'id'=>(integer) $data['Supplier Key'],
+				'operations'=>$associated,
+				'code'=>$data['Supplier Code'],
+				'name'=>$data['Supplier Name'],
+							'supplier_parts'=>number($data['Supplier Number Parts']),
+
+				'surplus'=>sprintf('<span class="%s" title="%s">%s</span>', (ratio($data['Supplier Number Surplus Parts'], $data['Supplier Number Parts'])>.75?'error':(ratio($data['Supplier Number Surplus Parts'], $data['Supplier Number Parts'])>.5?'warning':'')), percentage($data['Supplier Number Surplus Parts'], $data['Supplier Number Parts']), number($data['Supplier Number Surplus Parts'])),
+				'optimal'=>sprintf('<span  title="%s">%s</span>', percentage($data['Supplier Number Optimal Parts'], $data['Supplier Number Parts']), number($data['Supplier Number Optimal Parts'])),
+				'low'=>sprintf('<span class="%s" title="%s">%s</span>', (ratio($data['Supplier Number Low Parts'], $data['Supplier Number Parts'])>.5?'error':(ratio($data['Supplier Number Low Parts'], $data['Supplier Number Parts'])>.25?'warning':'')), percentage($data['Supplier Number Low Parts'], $data['Supplier Number Parts']), number($data['Supplier Number Low Parts'])),
+				'critical'=>sprintf('<span class="%s" title="%s">%s</span>', ($data['Supplier Number Critical Parts']==0?'': (ratio($data['Supplier Number Critical Parts'], $data['Supplier Number Parts'])>.25?'error':'warning')), percentage($data['Supplier Number Critical Parts'], $data['Supplier Number Parts']), number($data['Supplier Number Critical Parts'])),
+				'out_of_stock'=>sprintf('<span class="%s" title="%s">%s</span>', ($data['Supplier Number Out Of Stock Parts']==0?'':(ratio($data['Supplier Number Out Of Stock Parts'], $data['Supplier Number Parts'])>.10?'error':'warning')), percentage($data['Supplier Number Out Of Stock Parts'], $data['Supplier Number Parts']), number($data['Supplier Number Out Of Stock Parts'])),
+
+
+				'location'=>$data['Supplier Location'],
+				'email'=>$data['Supplier Main Plain Email'],
+				'telephone'=>$data['Supplier Preferred Contact Number Formatted Number'],
+				'contact'=>$data['Supplier Main Contact Name'],
+				'company'=>$data['Supplier Company Name'],
+				'revenue'=>'<span class="realce">'.money($data['revenue'], $account->get('Currency')).'</span>',
+				'revenue_1y'=>'<span class="realce" title="'.money($data['revenue_1y'], $account->get('Currency')).'">'.delta($data['revenue'], $data['revenue_1y']).'</span>',
+
+			);
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
 
 ?>
