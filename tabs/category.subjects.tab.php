@@ -119,7 +119,7 @@ elseif ($category->get('Category Scope')=='Part') {
 		);
 
 		$table_filters=array(
-			'reference'=>array('label'=>_('Referene'), 'title'=>_('Part reference')),
+			'reference'=>array('label'=>_('Reference'), 'title'=>_('Part reference')),
 			'name'=>array('label'=>_('Name'), 'title'=>_('Part name')),
 
 		);
@@ -148,6 +148,63 @@ elseif ($category->get('Category Scope')=='Part') {
 				'parent'=>$state['object'],
 				'parent_key'=>$state['key'],
 				'placeholder'=>_("Parts's reference")
+			)
+
+		);
+		$smarty->assign('table_buttons', $table_buttons);
+
+
+	
+
+
+
+}
+elseif ($category->get('Category Scope')=='Supplier') {
+
+	
+
+		$tab='category.suppliers';
+		$ar_file='ar_suppliers_tables.php';
+		$tipo='suppliers';
+
+		$default=$user->get_tab_defaults($tab);
+
+		$table_views=array(
+			'overview'=>array('label'=>_('Overview'), 'title'=>_('Overview')),
+			'sales'=>array('label'=>_('Sales'), 'title'=>_('Sales')),
+
+		);
+
+		$table_filters=array(
+			'code'=>array('label'=>_('Code')),
+			'name'=>array('label'=>_('Name')),
+
+		);
+
+		$parameters=array(
+			'parent'=>$state['object'],
+			'parent_key'=>$state['key'],
+
+		);
+
+
+
+		$table_buttons[]=array('icon'=>'ship', 'title'=>_('All suppliers'), 'change_tab'=>'category.all_subjects');
+
+
+		$table_buttons[]=array(
+			'icon'=>'link',
+			'title'=>_('Associate supplier'),
+			'id'=>'new_record',
+			'inline_new_object'=>
+			array(
+				'field_id'=>'Supplier_Code',
+				'field_label'=>_('Associate supplier').':',
+				'field_edit'=>'string',
+				'object'=>'Category_Supplier',
+				'parent'=>$state['object'],
+				'parent_key'=>$state['key'],
+				'placeholder'=>_("Supplier's code")
 			)
 
 		);

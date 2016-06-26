@@ -15,7 +15,7 @@ include_once 'utils/date_functions.php';
 
 $where="where `Part Status`='In Use'  ";
 
-	$table='   `Part Dimension` P left join `Part Data` D on (D.`Part SKU`=P.`Part SKU`) left join `Category Dimension` F on (`Part Family Category Key`=F.`Category Key`) ';
+$table='   `Part Dimension` P left join `Part Data` D on (D.`Part SKU`=P.`Part SKU`) left join `Category Dimension` F on (`Part Family Category Key`=F.`Category Key`) ';
 $filter_msg='';
 $sql_type='part';
 $filter_msg='';
@@ -24,22 +24,11 @@ $wheref='';
 $fields='';
 
 
-if ($parameters['parent']=='category') {
+$associated_field=sprintf("(select `Category Key` from `Category Bridge` C  where C.`Category Key`=%d and `Subject Key`=P.`Part SKU` ) as associated, ",
+	$parameters['parent_key']);
 
-	
+$where_type='';
 
-
-	
-		$associated_field=sprintf("(select `Category Key` from `Category Bridge` C  where C.`Category Key`=%d and `Subject Key`=P.`Part SKU` ) as associated, ",
-		$parameters['parent_key']);
-	
-	$where_type='';
-
-
-
-}else {
-	exit("parent not found ".$parameters['parent']);
-}
 
 
 if (isset($extra_where))
@@ -77,11 +66,11 @@ if (isset($parameters['elements_type'])) {
 }
 
 $db_period=get_interval_db_name($parameters['f_period']);
-if(in_array($db_period,array('Total','3 Year'))){
-$yb_fields=" '' as sold_1y,'' as revenue_1y";
+if (in_array($db_period, array('Total', '3 Year'))) {
+	$yb_fields=" '' as sold_1y,'' as revenue_1y";
 
-}else{
-$yb_fields="`Part $db_period Acc 1YB Sold` as sold_1y,`Part $db_period Acc 1YB Sold Amount` as revenue_1y";
+}else {
+	$yb_fields="`Part $db_period Acc 1YB Sold` as sold_1y,`Part $db_period Acc 1YB Sold Amount` as revenue_1y";
 }
 
 if ($parameters['f_field']=='used_in' and $f_value!='')

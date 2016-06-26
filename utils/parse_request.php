@@ -151,8 +151,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 									$key=array_pop($parent_categories);
 
 									$parent='category';
-									
-							
+
+
 
 									$parent_key=array_pop($parent_categories);
 
@@ -160,9 +160,9 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 									if (isset($view_path[3]) ) {
 
 										if ($view_path[3]=='product') {
-										
-										    $parent_key=$key;
-										
+
+											$parent_key=$key;
+
 											$section='product';
 											$object='product';
 											if (isset($view_path[4]) and  is_numeric($view_path[4])) {
@@ -302,9 +302,6 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 						$parent='account';
 						$parent_key=1;
 					}
-
-
-
 					if (isset($view_path[1])) {
 						if ($view_path[1]=='part') {
 							$section='part';
@@ -313,18 +310,34 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 							$parent_key=$view_path[0];
 							if (isset($view_path[2])) {
 								if (is_numeric($view_path[2])) {
-
 									$key=$view_path[2];
 								}
-
 							}
-
 						}
-
 					}
-
-
 					break;
+				case 'Supplier':
+					$module='suppliers';
+					$section='category';
+
+					if ($category->get('Category Branch Type')=='Root') {
+						$parent='account';
+						$parent_key=1;
+					}
+					if (isset($view_path[1])) {
+						if ($view_path[1]=='supplier') {
+							$section='supplier';
+							$object='supplier';
+							$parent='category';
+							$parent_key=$view_path[0];
+							if (isset($view_path[2])) {
+								if (is_numeric($view_path[2])) {
+									$key=$view_path[2];
+								}
+							}
+						}
+					}
+					break;					
 				default:
 
 					print_r($category);
@@ -564,7 +577,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 
 						}
-						
+
 
 
 					}
@@ -643,7 +656,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 
 						}
-else if ($view_path[1]=='user') {
+						else if ($view_path[1]=='user') {
 
 
 							$parent='agent';
@@ -1703,11 +1716,13 @@ else if ($view_path[1]=='user') {
 					$key='';
 					$section='categories';
 
-				}if ($view_path[0]=='orders') {
+				}
+				elseif ($view_path[0]=='orders') {
 
 					$section='orders';
 
-				}if ($view_path[0]=='order') {
+				}
+				elseif ($view_path[0]=='order') {
 
 					$section='order';
 					$object='purchase_order';
@@ -1721,41 +1736,82 @@ else if ($view_path[1]=='user') {
 
 
 				}
-				elseif ( $view_path[0]=='category') {
+
+				else if ($view_path[0]=='category') {
 					$section='category';
 					$object='category';
+					if (isset($view_path[1]) ) {
 
 
-					if (isset($view_path[1])) {
 
-						if ( is_numeric($view_path[1])) {
+						$view_path[1]=preg_replace('/\>$/', '', $view_path[1]);
+						if (preg_match('/^(\d+\>)+(\d+)$/', $view_path[1])) {
+
+							$parent_categories=preg_split('/\>/', $view_path[1]);
+							$metadata=$parent_categories;
+							$key=array_pop($parent_categories);
+
+							$parent='category';
+							$parent_key=array_pop($parent_categories);
+
+							if (isset($view_path[2]) ) {
+								if ($view_path[2]=='part') {
+									$section='part';
+
+									if (isset($view_path[2]) and  is_numeric($view_path[2])) {
+
+										$key=$view_path[2];
+
+									}
+
+								}
+
+
+							}
+
+						}
+
+						elseif ( is_numeric($view_path[1])) {
 							$key=$view_path[1];
 							include_once 'class.Category.php';
 							$category=new Category($key);
-							$parent='store';
-							$parent_key=$category->get('Category Store Key');
-
-
-							if (isset($view_path[1]) and is_numeric($view_path[1])) {
-								$section='supplier';
-
+							if ($category->get('Category Branch Type')=='Root') {
+								$parent='account';
+								$parent_key=1;
+							}else {
 								$parent='category';
-								$parent_key=$category->id;
-								$object='supplier';
-								$key=$view_path[1];
+								$parent_key=$category->get('Category Parent Key');
 
 							}
 
 
+							if (isset($view_path[2])) {
+								if ($view_path[2]=='supplier') {
+
+									if (isset($view_path[3]) and is_numeric($view_path[3])) {
+
+										$section='supplier';
+										$parent='category';
+										$parent_key=$category->id;
+										$object='supplier';
+										$key=$view_path[3];
+									}
+								}
+							}
 						}
 						elseif ($view_path[1]=='new') {
-							$section='main_category.new';
-						}
 
+							$section='main_category.new';
+
+						}
+					}else {
+						//error
 					}
 
-
 				}
+
+
+				
 				elseif ($view_path[0]=='new') {
 					$section='supplier.new';
 					$object='supplier';
@@ -2029,9 +2085,9 @@ else if ($view_path[1]=='user') {
 				if (is_numeric($view_path[0])) {
 					$key=$view_path[0];
 					if (isset($view_path[1])) {
-					
-					
-					if ($view_path[1]=='user') {
+
+
+						if ($view_path[1]=='user') {
 
 
 							$parent='staff';
@@ -2055,15 +2111,15 @@ else if ($view_path[1]=='user') {
 
 						}
 					}
-					
+
 				}elseif ($view_path[0]=='new') {
 					$section='contractor.new';
 					$object='';
 
 				}
-				
-				
-				
+
+
+
 			}
 
 			break;
@@ -2148,7 +2204,7 @@ else if ($view_path[1]=='user') {
 							$section='suppliers';
 						}elseif ( $view_path[1]=='agents') {
 							$section='agents';
-						
+
 						}
 					}
 

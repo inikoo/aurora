@@ -153,7 +153,46 @@ elseif ($category->get('Category Scope')=='Part') {
 
 
 }
+elseif ($category->get('Category Scope')=='Supplier') {
 
+	
+
+		$tab='category.all_suppliers';
+		$ar_file='ar_suppliers_tables.php';
+		$tipo='category_all_suppliers';
+
+		$default=$user->get_tab_defaults($tab);
+
+		$table_views=array(
+			'overview'=>array('label'=>_('Overview'), 'title'=>_('Overview')),
+			'sales'=>array('label'=>_('Sales'), 'title'=>_('Sales')),
+
+		);
+
+		$table_filters=array(
+			'code'=>array('label'=>_('Code')),
+			'name'=>array('label'=>_('Name')),
+
+		);
+
+		$parameters=array(
+			'parent'=>$state['object'],
+			'parent_key'=>$state['key'],
+
+		);
+		
+		
+		$table_buttons[]=array('icon'=>'leaf', 'title'=>_('Associated suppliers'), 'change_tab'=>'category.subjects');
+
+
+	
+		$smarty->assign('table_buttons', $table_buttons);
+
+
+	
+
+
+}
 
 
 

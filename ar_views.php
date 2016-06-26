@@ -1053,10 +1053,10 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 			break;
 		case ('supplier.user.new'):
 			return get_new_supplier_user_navigation($data, $smarty, $user, $db, $account);
-			break;	
+			break;
 		case ('agent.user.new'):
 			return get_new_agent_user_navigation($data, $smarty, $user, $db, $account);
-			break;			
+			break;
 		}
 
 		break;
@@ -1182,7 +1182,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 			break;
 		case ('contractor.user.new'):
 			return get_new_contractor_user_navigation($data, $smarty, $user, $db, $account);
-			break;	
+			break;
 		case ('employee.attachment'):
 			return get_employee_attachment_navigation($data, $smarty, $user, $db, $account);
 			break;
@@ -1769,6 +1769,44 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 		}elseif ($state['section']=='categories') {
 			$branch[]=array('label'=>_("Suppliers's categories"), 'icon'=>'sitemap', 'reference'=>'suppliers/categories/');
+
+		}elseif ($state['section']=='category') {
+
+
+			$category=$state['_object'];
+			$branch[]=array('label'=>_("Suppliers's categories"), 'icon'=>'sitemap', 'reference'=>'suppliers/categories/');
+
+
+			if (isset($state['metadata'])) {
+				$parent_category_keys=$state['metadata'];
+			}else {
+
+				$parent_category_keys=preg_split('/\>/', $category->get('Category Position'));
+			}
+
+
+			foreach ( $parent_category_keys as $category_key) {
+				if (!is_numeric($category_key)) {
+					continue;
+				}
+				if ($category_key==$state['key']) {
+					$branch[]=array('label'=>'<span class="Category_Label">'.$category->get('Label').'</span>', 'icon'=>'', 'reference'=>'');
+					break;
+				}else {
+
+					$parent_category=new Category($category_key);
+					if ($parent_category->id) {
+
+						$branch[]=array('label'=>$parent_category->get('Label'), 'icon'=>'', 'reference'=>'suppliers/category/'.$parent_category->id);
+
+					}
+				}
+			}
+
+			break;
+
+
+
 
 		}elseif ($state['section']=='main_category.new') {
 			$branch[]=array('label'=>_("Suppliers's categories"), 'icon'=>'sitemap', 'reference'=>'suppliers/categories/');

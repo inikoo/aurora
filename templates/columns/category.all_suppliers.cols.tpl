@@ -9,8 +9,6 @@ var columns = [
 },
  {
     name: "operations",
-    renderable: {if ($data['parent']=='agent') }true{else}false{/if},
-    
     label: "",
     editable: false,
     sortType: "toggle",
@@ -19,18 +17,6 @@ var columns = [
     })
 
 },
-
-{
-    name: "associated",
-    label: "",
-    renderable: {if ($data['parent']=='category') }true{else}false{/if},
-    editable: false,
-    sortType: "toggle",
-    cell: Backgrid.HtmlCell.extend({
-        className: "width_20"
-    })
-
-}, 
 
 {
     name: "code",

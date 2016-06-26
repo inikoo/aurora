@@ -589,62 +589,6 @@ function get_categories_navigation($data, $smarty, $user, $db, $account) {
 }
 
 
-function get_customers_category_navigation($data, $smarty, $user, $db, $account) {
-
-
-
-
-	require_once 'class.Category.php';
-	require_once 'class.Store.php';
-
-
-	$category=new Category($data['key']);
-
-	$left_buttons=array();
-	$right_buttons=array();
-
-	switch ($data['parent']) {
-	case 'category':
-		$parent_category=new Category($data['parent_key']);
-		break;
-	case 'store':
-		$store=new Store($data['parent_key']);
-
-		$left_buttons[]=array('icon'=>'arrow-up', 'title'=>_("Customer's Categories").' '.$store->data['Store Code'], 'reference'=>'customers/'.$store->id.'/categories');
-
-
-
-		break;
-
-	default:
-
-		break;
-	}
-
-
-
-
-
-
-	$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit'), 'url'=>"edit_customer_categories.php?store_id=".$store->id);
-
-	$sections=get_sections('customers', $store->id);
-	$sections['categories']['selected']=true;
-
-	$_content=array(
-		'sections_class'=>'',
-		'sections'=>$sections,
-		'left_buttons'=>$left_buttons,
-		'right_buttons'=>$right_buttons,
-		'title'=>_("Category").' <span class="id">'.$category->get('Category Code').'</span>',
-		'search'=>array('show'=>true, 'placeholder'=>_('Search customers'))
-
-	);
-	$smarty->assign('_content', $_content);
-	$html=$smarty->fetch('navigation.tpl');
-	return $html;
-
-}
 
 
 function get_barcodes_navigation($data, $smarty, $user, $db, $account) {
@@ -944,9 +888,6 @@ function get_parts_new_main_category_navigation($data, $smarty, $user, $db, $acc
 
 function get_parts_category_navigation($data, $smarty, $user, $db, $account) {
 
-
-
-
 	$category=$data['_object'];
 
 	$left_buttons=array();
@@ -959,7 +900,7 @@ function get_parts_category_navigation($data, $smarty, $user, $db, $account) {
 
 
 
-		$up_button=array('icon'=>'arrow-up', 'title'=>_("Product's Categories").' '.$data['store']->data['Store Code'], 'reference'=>'inventory/category/'.$parent_category->id);
+		$up_button=array('icon'=>'arrow-up', 'title'=>_("Part's Categories"), 'reference'=>'inventory/category/'.$parent_category->id);
 
 		if ($data['tab']=='category.subjects') {
 			$tab='subject_categories';
@@ -1034,7 +975,7 @@ function get_parts_category_navigation($data, $smarty, $user, $db, $account) {
 		if ($row2 = $result2->fetch() and $row2['num']>1) {
 
 
-			$sql=sprintf("select C.`Category Label` object_name,C.`Category Key` as object_key %s from %s  
+			$sql=sprintf("select C.`Category Label` object_name,C.`Category Key` as object_key %s from %s
 	                and ($_order_field < %s OR ($_order_field = %s AND C.`Category Key` < %d))  order by $_order_field desc , C.`Category Key` desc limit 1",
 				$extra_field,
 				"$table $where $wheref",
