@@ -61,8 +61,8 @@ case 'supplier.order.supplier_parts':
 	order_supplier_parts(get_table_parameters(), $db, $user, $account);
 	break;
 case 'category_all_suppliers':
-    category_all_suppliers(get_table_parameters(), $db, $user, $account);
-    break;
+	category_all_suppliers(get_table_parameters(), $db, $user, $account);
+	break;
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
@@ -89,8 +89,8 @@ function suppliers($_data, $db, $user, $account) {
 
 			if ($_data['parameters']['parent']=='agent') {
 				$operations=sprintf('<i agent_key="%d" supplier_key="%d"  class="fa fa-chain-broken button" aria-hidden="true"  onClick="bridge_supplier(this)" ></i>',
-				$_data['parameters']['parent_key'],
-				$data['Supplier Key']
+					$_data['parameters']['parent_key'],
+					$data['Supplier Key']
 				);
 			}else {
 				$operations='';
@@ -118,8 +118,8 @@ function suppliers($_data, $db, $user, $account) {
 			$adata[]=array(
 				'id'=>(integer)$data['Supplier Key'],
 				'operations'=>$operations,
-					'associated'=>$associated,
-			
+				'associated'=>$associated,
+
 				'code'=>$data['Supplier Code'],
 				'name'=>$data['Supplier Name'],
 				'supplier_parts'=>number($data['Supplier Number Parts']),
@@ -466,36 +466,21 @@ function order_items($_data, $db, $user) {
 
 	$rtext_label='item';
 
+	include_once 'class.PurchaseOrder.php';
+	$purchase_order=new PurchaseOrder($_data['parameters']['parent_key']);
+
 	include_once 'prepare_table/init.php';
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
 
 	if ($result=$db->query($sql)) {
-		foreach ($result as $row) {
+		foreach ($result as $data) {
 
 
-			$quantity=number($data['Order Quantity']);
+			$quantity=number($data['Purchase Order Quantity']);
 
-			if ($data['Order Bonus Quantity']!=0) {
-				if ($data['Order Quantity']!=0) {
-					$quantity.='<br/> +'.number($data['Order Bonus Quantity']).' '._('free');
-				}else {
-					$quantity=number($data['Order Bonus Quantity']).' '._('free');
-				}
-			}
-
-
-			if (is_numeric($data['Product Availability']))
-				$stock=number($data['Product Availability']);
-			else
-				$stock='?';
-
-			$deal_info='';
-			if ($data['Deal Info']!='') {
-				$deal_info='<br/> <span class="deal_info">'.$data['Deal Info'].'</span>';
-			}
-
+			/*
 			$units=$data['Product Units Per Case'];
 			$name=$data['Product History Name'];
 			$price=$data['Product History Price'];
@@ -523,16 +508,38 @@ function order_items($_data, $db, $user) {
 				$class='out_of_stock';
 
 			}
+*/
+
+			$units_per_carton=$data['Supplier Part Units Per Package']*$data['Supplier Part Packages Per Carton'];
+
+
+			$subtotals=sprintf('<span  class="subtotals" >');
+			if ($data['Purchase Order Quantity']>0) {
+				$subtotals.=money($data['Purchase Order Quantity']*$units_per_carton*$data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code'));
+
+				if ($data['Part Package Weight']>0) {
+					$subtotals.=' '.weight($data['Part Package Weight']*$data['Purchase Order Quantity']*$data['Supplier Part Packages Per Carton']);
+				}
+				if ($data['Supplier Part Carton CBM']>0) {
+					$subtotals.=' '.number($data['Purchase Order Quantity']*$data['Supplier Part Carton CBM']).' m³';
+				}
+			}
+			$subtotals.='</span>';
 
 
 			$adata[]=array(
 
-				'id'=>(integer)$data['Order Transaction Fact Key'],
-				'product_pid'=>(integer)$data['Product ID'],
-				'code'=>$data['Product Code'],
-				'description'=>$description,
-				'quantity'=>$quantity,
-				'net'=>money($data['Order Transaction Amount'], $data['Order Currency Code']),
+				'id'=>(integer)$data['Purchase Order Transaction Fact Key'],
+				'supplier_part_key'=>(integer)$data['Supplier Part Key'],
+				'reference'=>$data['Supplier Part Reference'],
+				'description'=>$data['Part Unit Description'].' ('.number($units_per_carton).'/C)',
+				'quantity'=>sprintf('<span item_key="%d" item_historic_key=%d ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_order_qty_change(this)" class="fa  fa-plus fa-fw button" aria-hidden="true"></i></span>',
+					$data['Supplier Part Key'],
+					$data['Supplier Part Historic Key'],
+					$data['Purchase Order Quantity']+0,
+					$data['Purchase Order Quantity']+0
+				),
+				'subtotals'=>$subtotals
 
 
 			);
@@ -572,6 +579,9 @@ function order_supplier_parts($_data, $db, $user) {
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
+
+	print $sql;
+
 
 	if ($result=$db->query($sql)) {
 		foreach ($result as $data) {
@@ -661,7 +671,8 @@ function order_supplier_parts($_data, $db, $user) {
 	echo json_encode($response);
 }
 
-function category_all_suppliers($_data, $db, $user,$account) {
+
+function category_all_suppliers($_data, $db, $user, $account) {
 
 
 	$rtext_label='supplier';
@@ -687,7 +698,7 @@ function category_all_suppliers($_data, $db, $user,$account) {
 				'operations'=>$associated,
 				'code'=>$data['Supplier Code'],
 				'name'=>$data['Supplier Name'],
-							'supplier_parts'=>number($data['Supplier Number Parts']),
+				'supplier_parts'=>number($data['Supplier Number Parts']),
 
 				'surplus'=>sprintf('<span class="%s" title="%s">%s</span>', (ratio($data['Supplier Number Surplus Parts'], $data['Supplier Number Parts'])>.75?'error':(ratio($data['Supplier Number Surplus Parts'], $data['Supplier Number Parts'])>.5?'warning':'')), percentage($data['Supplier Number Surplus Parts'], $data['Supplier Number Parts']), number($data['Supplier Number Surplus Parts'])),
 				'optimal'=>sprintf('<span  title="%s">%s</span>', percentage($data['Supplier Number Optimal Parts'], $data['Supplier Number Parts']), number($data['Supplier Number Optimal Parts'])),
@@ -725,5 +736,6 @@ function category_all_suppliers($_data, $db, $user,$account) {
 	);
 	echo json_encode($response);
 }
+
 
 ?>

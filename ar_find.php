@@ -17,7 +17,6 @@ require_once 'utils/text_functions.php';
 
 
 
-
 if (!isset($_REQUEST['tipo'])) {
 	$response=array('state'=>405, 'resp'=>'Non acceptable request (t)');
 	echo json_encode($response);
@@ -50,15 +49,25 @@ case 'find_object':
 	$data=prepare_values($_REQUEST, array(
 			'query'=>array('type'=>'string'),
 			'scope'=>array('type'=>'string'),
-			'parent'=>array('type'=>'string'),
-			'parent_key'=>array('type'=>'numeric'),
-			'state'=>array('type'=>'json array')
+			'parent'=>array('type'=>'string', 'optional'=>true),
+			'parent_key'=>array('type'=>'numeric', 'optional'=>true),
+			'state'=>array('type'=>'json array'),
+			'metadata'=>array('type'=>'json array', 'optional'=>true)
 		));
 
 	$data['user']=$user;
 
 
 	switch ($data['scope']) {
+	case 'item':
+
+		if ($data['metadata']['scope']=='supplier_part') {
+			find_supplier_parts($db, $account, $memcache_ip, $data);
+
+		}
+
+
+		break;
 	case 'suppliers':
 		find_suppliers($db, $account, $memcache_ip, $data);
 		break;
@@ -70,7 +79,7 @@ case 'find_object':
 		break;
 	case 'parts':
 		find_parts($db, $account, $memcache_ip, $data);
-		break;	
+		break;
 	case 'countries':
 		find_countries($db, $account, $memcache_ip, $data);
 		break;
@@ -630,6 +639,7 @@ function find_locations($db, $account, $memcache_ip, $data) {
 
 }
 
+
 function find_parts($db, $account, $memcache_ip, $data) {
 
 
@@ -702,7 +712,7 @@ function find_parts($db, $account, $memcache_ip, $data) {
 					$candidates[$row['Part SKU']]=500*$factor;
 				}
 
-				$candidates_data[$row['Part SKU']]=array('Part Reference'=>$row['Part Reference'],'Part Unit Description'=>$row['Part Unit Description']);
+				$candidates_data[$row['Part SKU']]=array('Part Reference'=>$row['Part Reference'], 'Part Unit Description'=>$row['Part Unit Description']);
 
 			}
 		}else {
@@ -731,6 +741,169 @@ function find_parts($db, $account, $memcache_ip, $data) {
 				'description'=>$candidates_data[$part_sku]['Part Unit Description'],
 				'value'=>$part_sku,
 				'formatted_value'=>$candidates_data[$part_sku]['Part Reference']
+			);
+
+		}
+
+		$results_data=array('n'=>count($results), 'd'=>$results);
+		$cache->set($memcache_fingerprint, $results_data, $memcache_time);
+
+
+
+	}
+	$response=array('state'=>200, 'number_results'=>$results_data['n'], 'results'=>$results_data['d'], 'q'=>$q);
+
+	echo json_encode($response);
+
+}
+
+
+function find_supplier_parts($db, $account, $memcache_ip, $data) {
+
+
+	$cache=false;
+	$max_results=5;
+	$user=$data['user'];
+	$q=trim($data['query']);
+
+
+
+	if ($q=='') {
+		$response=array('state'=>200, 'results'=>0, 'data'=>'');
+		echo json_encode($response);
+		return;
+	}
+
+
+    if($data['metadata']['parent']=='Supplier'){
+    
+        $where=sprintf(' `Supplier Part Supplier Key`=%d and ',$data['metadata']['parent_key']);
+    
+    }
+
+	if (!isset($data['metadata']['options']['all_parts']))
+		$where.=" `Part Status`='In Use' and ";
+	if (!isset($data['metadata']['options']['all_supplier_parts']))
+		$where.=" `Supplier Part Status`='Available' and ";	
+		
+
+	$memcache_fingerprint=$account->get('Account Code').'FIND_PART'.md5($q);
+
+	$cache = new Memcached();
+	$cache->addServer($memcache_ip, 11211);
+
+
+	if (strlen($q)<=2) {
+		$memcache_time=295200;
+	}if (strlen($q)<=3) {
+		$memcache_time=86400;
+	}if (strlen($q)<=4) {
+		$memcache_time=3600;
+	}else {
+		$memcache_time=300;
+
+	}
+
+
+	$results_data=$cache->get($memcache_fingerprint);
+
+
+	if (!$results_data or true) {
+
+
+		$candidates=array();
+
+		$candidates_data=array();
+
+
+
+
+	$sql=sprintf("select `Supplier Part Reference`,`Supplier Part Historic Key`,`Supplier Part Key`,`Part Reference`,`Part Unit Description` from   `Supplier Part Dimension` SP left join  `Part Dimension` on (`Supplier Part Part SKU`=`Part SKU`) where %s `Supplier Part Reference` like '%s%%'  order by `Supplier Part Reference` limit %d ",
+			$where,
+			$q,
+			$max_results
+		);
+
+		if ($result=$db->query($sql)) {
+			foreach ($result as $row) {
+
+				if ($row['Supplier Part Reference']==$q)
+					$candidates[$row['Supplier Part Key']]=1000;
+				else {
+
+					$len_name=strlen($row['Supplier Part Reference']);
+					$len_q=strlen($q);
+					$factor=$len_q/$len_name;
+					$candidates[$row['Supplier Part Key']]=500*$factor;
+				}
+
+				$candidates_data[$row['Supplier Part Key']]=array('Supplier Part Historic Key'=>$row['Supplier Part Historic Key'],'Supplier Part Reference'=>$row['Supplier Part Reference'],'Part Reference'=>$row['Part Reference'], 'Part Unit Description'=>$row['Part Unit Description']);
+
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
+
+
+		$sql=sprintf("select `Supplier Part Key`,`Supplier Part Historic Key`,`Supplier Part Reference`,`Part Reference`,`Part Unit Description` from   `Supplier Part Dimension` SP left join  `Part Dimension` on (`Supplier Part Part SKU`=`Part SKU`) where %s `Part Reference` like '%s%%'  order by `Part Reference` limit %d ",
+			$where,
+			$q,
+			$max_results
+		);
+
+		if ($result=$db->query($sql)) {
+			foreach ($result as $row) {
+
+				if ($row['Part Reference']==$q)
+					$candidates[$row['Supplier Part Key']]=1000;
+				else {
+
+					$len_name=strlen($row['Part Reference']);
+					$len_q=strlen($q);
+					$factor=$len_q/$len_name;
+					$candidates[$row['Supplier Part Key']]=500*$factor;
+				}
+
+				$candidates_data[$row['Supplier Part Key']]=array('Supplier Part Historic Key'=>$row['Supplier Part Historic Key'],'Supplier Part Reference'=>$row['Supplier Part Reference'],'Part Reference'=>$row['Part Reference'], 'Part Unit Description'=>$row['Part Unit Description']);
+
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
+
+		arsort($candidates);
+
+
+		$total_candidates=count($candidates);
+
+		if ($total_candidates==0) {
+			$response=array('state'=>200, 'results'=>0, 'data'=>'');
+			echo json_encode($response);
+			return;
+		}
+
+
+		$results=array();
+		foreach ($candidates as $supplier_part_key=>$candidate) {
+
+
+
+        $description=$candidates_data[$supplier_part_key]['Part Unit Description'];
+        if($candidates_data[$supplier_part_key]['Part Reference']!=$candidates_data[$supplier_part_key]['Supplier Part Reference']){
+        $description.=' ('.highlightkeyword($candidates_data[$supplier_part_key]['Part Reference'], $q ).')';
+        }
+
+
+			$results[$supplier_part_key]=array(
+				'code'=>highlightkeyword($candidates_data[$supplier_part_key]['Supplier Part Reference'], $q ),
+				'description'=>$description,
+				'value'=>$supplier_part_key,
+				'item_historic_key'=>$candidates_data[$supplier_part_key]['Supplier Part Historic Key'],
+				'formatted_value'=>$candidates_data[$supplier_part_key]['Supplier Part Reference']
 			);
 
 		}

@@ -121,12 +121,15 @@
 	 {/if} 
 	 
 	
-	<div  {if isset($button.id) and $button.id }id="{$button.id}"{/if}  {if isset($button.attr)} {foreach from=$button.attr key=attr_key item=attr_value }{$attr_key}="{$attr_value}" {/foreach}{/if}    class="square_button right "       {if isset($button.reference) and $button.reference!=''}onclick="change_view('{$button.reference}')"{else if isset($button.change_tab) and $button.change_tab!=''}onclick="change_view(state.request + '&tab={$button.change_tab}')"{/if} {if isset($button.title)}title="{$button.title}"{/if}>
-	 <i {if isset($button.id) and $button.id }id="icon_{$button.id}"{/if} class="fa fa-{$button.icon} fa-fw"></i> 
+	<div  {if isset($button.id) and $button.id }id="{$button.id}"{/if}  {if isset($button.attr)} {foreach from=$button.attr key=attr_key item=attr_value }{$attr_key}="{$attr_value}" {/foreach}{/if}    class="table_button square_button right "       {if isset($button.reference) and $button.reference!=''}onclick="change_view('{$button.reference}')"{else if isset($button.change_tab) and $button.change_tab!=''}onclick="change_view(state.request + '&tab={$button.change_tab}')"{/if} {if isset($button.title)}title="{$button.title}"{/if}>
+	 <i {if isset($button.id) and $button.id }id="icon_{$button.id}"{/if} class=" fa fa-{$button.icon} fa-fw"></i> 
 	</div>
+	
 	 {if isset($button.add_item)} 
 	  {include file="add_item.tpl" data=$button.add_item trigger={$button.id}} 
 	 {/if} 
+	 
+	 
 	 {if isset($button.inline_new_object)} 
 	<span id="inline_new_object_msg" class="invalid"></span>
 	 {else if isset($button.add_item)} 
@@ -143,7 +146,7 @@
 		<form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate  >
 
 	<input type="file" name="image_upload" id="file_upload" class="inputfile" multiple/>
-	 <label for="file_upload"><i  class="fa fa-upload fa-fw button"></i><label>
+	 <label for="file_upload"><i  class="fa fa-upload fa-fw button"></i></label>
 	</form>
 	</div>
 	<span id="file_upload_msg" style="float:right;padding-right:10px"></span>
@@ -278,7 +281,7 @@
 
 
 
-<div class="table" id="table">
+<div class="table" id="table" data-metadata="{if isset($table_metadata)}{$table_metadata}{/if}">
 </div>
 
 
@@ -500,7 +503,6 @@ var with_elements=false;
 </div>
 {/foreach} 
 </div>
-
 <div id="columns_period_chooser" class="hide panel popout_chooser" >
 {foreach from=$f_periods item=period_label key=_f_period} 
 <div onClick="change_columns_period('{$_f_period}','{$period_label}')" id="element_group_option_{$_f_period}" elements_type="{$_f_period}" class="aright {if $f_period==$_f_period}selected{/if}" >
@@ -509,7 +511,6 @@ var with_elements=false;
 {/foreach} 
 
 </div>
-
 {if isset($aux_templates) }
 {foreach from=$aux_templates item=aux_template } 
 {include file="$aux_template" } 

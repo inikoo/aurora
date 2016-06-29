@@ -17,7 +17,7 @@ function get_object($object_name, $key, $load_other_data=false) {
 	if ($object_name=='')return false;
 
 
-	global $account;
+	global $account,$db;
 
 	switch (strtolower($object_name)) {
 	case 'account':
@@ -197,6 +197,19 @@ function get_object($object_name, $key, $load_other_data=false) {
 	case 'websitenode':
 		require_once "class.WebsiteNode.php";
 		$object=new WebsiteNode($key);
+		break;
+	case 'purchaseorderitem':
+
+		$sql=sprintf("select `Supplier Part Key` from `Purchase Order Transaction Fact` where `Purchase Order Transaction Fact Key`=%d ", $key);
+		if ($result=$db->query($sql)) {
+			if ($row = $result->fetch()) {
+				require_once "class.SupplierPart.php";
+				$object=new SupplierPart($row['Supplier Part Key']);
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
 		break;
 	default:
 		exit('need to complete E1: >'.strtolower($object_name)."<\n");

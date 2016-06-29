@@ -1520,6 +1520,15 @@ textarea {
   .textarea_dialog .save {
     float: right; }
 
+input.invalid {
+  background-color: #ffe5e5; }
+
+.save.invalid {
+  color: tomato; }
+
+.save.valid {
+  color: #0EBFE9; }
+
 #edit_container tr.title {
   font-size: 120%; }
   #edit_container tr.title .fa {

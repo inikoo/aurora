@@ -2,7 +2,7 @@
 	<div id="contact_data" class="block" style="float:left;padding:20px 20px;max-width:500px;">
 		<div class="data_container">
 			<div class="data_field">
-				<i class="fa fa-ship fa-fw" aria-hidden="true" title="{t}Supplier{/t}"></i> <span class="Purchase_Order_Parent_Name">{$order->get('Purchase Order Parent Name')}</span> 
+				<i class="fa fa-ship fa-fw" aria-hidden="true" title="{t}Supplier{/t}"></i> <span  onClick="change_view('{if $order->get('Purchase Order Parent')=='Supplier'}supplier{else}agent{/if}/{$order->get('Purchase Order Parent Key')}')"  class="link Purchase_Order_Parent_Name">{$order->get('Purchase Order Parent Name')}</span> 
 			</div>
 			<div class="data_field">
 				<i class="fa fa-share fa-fw" aria-hidden="true" title="Incoterm"></i> <span class="Purchase_Order_Incoterm" >{$order->get('Purchase Order Incoterm')}</span> 
@@ -21,17 +21,23 @@
 	</div>
 	<div id="totals" class="block totals" style="min-width:250px">
 		<table border="0" class="info_block">
+			
 			<tr>
-				<td class="label">{t}Currency{/t} </td>
-				<td class="aright">{$order->get('Currency Code')}</td>
-			</tr>
-			<tr>
-				<td class="label">{t}Total{/t} </td>
-				<td class="aright">{$order->get('Total Amount')}</td>
+				<td class="label">{t}Cost{/t} ({$order->get('Purchase Order Currency Code')}) </td>
+				<td class="aright Purchase_Order_Total_Amount">{$order->get('Total Amount')}</td>
 			</tr>
 			<tr class="{if $account->get('Account Currency')==$order->get('Purchase Order Currency Code')}hide{/if}">
-				<td colspan="2" class="total_corporate_currency aright ">{$order->get('Total Amount Corporate Currency')}</td>
+				<td colspan="2" class="Purchase_Order_Total_Amount_Account_Currency aright ">{$order->get('Total Amount Account Currency')}</td>
 			</tr>
+			<tr>
+				<td class="label">{t}Weight{/t}</td>
+				<td class="aright Purchase_Order_Weight">{$order->get('Weight')}</td>
+			</tr>
+			<tr>
+				<td class="label">{t}CBM{/t}</td>
+				<td class="aright Purchase_Order_CBM">{$order->get('CBM')}</td>
+			</tr>
+			
 		</table>
 		<div style="clear:both">
 		</div>

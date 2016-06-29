@@ -1,3 +1,7 @@
+input.invalid{background-color: $color_background_error}
+.save.invalid{color:$color_error}
+.save.valid{color:$color_save}
+
 #edit_container{
 tr.title{font-size:120%;
 .fa{font-size:80%;position:relative;top:-1px}

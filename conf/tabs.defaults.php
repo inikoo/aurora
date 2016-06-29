@@ -555,7 +555,7 @@ $tab_defaults=array(
 		'f_field'=>'name',
 		'f_period'=>'ytd',
 	),
-		'category.suppliers'=>array(
+	'category.suppliers'=>array(
 		'view'=>'overview',
 		'sort_key'=>'formatted_id',
 		'sort_order'=>1,
@@ -564,7 +564,7 @@ $tab_defaults=array(
 		'f_field'=>'name',
 		'f_period'=>'ytd',
 	),
-		'category.all_suppliers'=>array(
+	'category.all_suppliers'=>array(
 		'view'=>'overview',
 		'sort_key'=>'formatted_id',
 		'sort_order'=>1,
@@ -623,6 +623,17 @@ $tab_defaults=array(
 		'elements'=>$elements_options['supplier_history']
 	),
 	'supplier.supplier_parts'=>array(
+		'view'=>'overview',
+		'sort_key'=>'reference',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'reference',
+		'elements_type'=>each($elements_options['supplier_parts'])['key'],
+		'elements'=>$elements_options['supplier_parts']
+
+	),
+		'supplier.order.all_supplier_parts'=>array(
 		'view'=>'overview',
 		'sort_key'=>'reference',
 		'sort_order'=>1,
@@ -1334,10 +1345,10 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'handle'
 	),
-	
-	
-	
-	
+
+
+
+
 	'staff.user.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
@@ -1389,7 +1400,7 @@ $tab_defaults=array(
 		'f_period'=>'all',
 
 	),
-	
+
 	'account.users.suppliers'=>array(
 		'view'=>'privilegies',
 		'sort_key'=>'id',
@@ -1405,7 +1416,7 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'handle'
-	),'account.users.agents'=>array(
+	), 'account.users.agents'=>array(
 		'view'=>'privilegies',
 		'sort_key'=>'id',
 		'sort_order'=>1,
@@ -1413,7 +1424,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'handle'
 	),
-	
+
 	'billingregion_taxcategory'=>array(
 		'view'=>'overview',
 		'sort_key'=>'billing_region',
