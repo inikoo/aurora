@@ -44,6 +44,7 @@ $table_buttons[]=array(
 
 $smarty->assign('table_buttons', $table_buttons);
 
+
 $smarty->assign('js_code', 'js/injections/supplier.orders.'.(_DEVEL?'':'min.').'js');
 
 include 'utils/get_table_html.php';

@@ -17,45 +17,53 @@ $default=$user->get_tab_defaults($tab);
 
 
 $table_views=array(
-	'overview'=>array('label'=>_('Description'),'title'=>_('Description')),
-	'tariff_codes'=>array('label'=>_('Tariff Codes'),'title'=>_('Tariff Codes')),
+	'overview'=>array('label'=>_('Description'), 'title'=>_('Description')),
+	'tariff_codes'=>array('label'=>_('Tariff Codes'), 'title'=>_('Tariff Codes')),
 
 );
 
 $table_filters=array(
-	'code'=>array('label'=>_('Code'),'title'=>_('Product code')),
-	'name'=>array('label'=>_('Name'),'title'=>_('Product name')),
+	'code'=>array('label'=>_('Code'), 'title'=>_('Product code')),
+	'name'=>array('label'=>_('Name'), 'title'=>_('Product name')),
 
 );
 
 $parameters=array(
-		'parent'=>$state['object'],
-		'parent_key'=>$state['key'],
-		
+	'parent'=>$state['object'],
+	'parent_key'=>$state['key'],
+
 );
 
 $table_buttons=array();
+$table_buttons[]=array('icon'=>'stop', 'title'=>_("All supplier's parts"), 'change_tab'=>'supplier.order.all_supplier_parts');
+
+
 $table_buttons[]=array(
 	'icon'=>'plus',
 	'title'=>_('New item'),
 	'id'=>'new_record',
 	'add_item'=>
 	array(
-		'field_id'=>'Barcode_Range',
-		'field_label'=>_('Part Code').':',
-		'field_edit'=>'barcode_range',
-		'object'=>'Barcode',
-		'parent'=>$state['parent'],
-		'parent_key'=>$state['parent_key'],
+
+		'field_label'=>_("Supplier's part").':',
+		'metadata'=>base64_encode(json_encode(array(
+					'scope'=>'supplier_part',
+					'parent'=>$state['_object']->get('Purchase Order Parent'),
+					'parent_key'=>$state['_object']->get('Purchase Order Parent Key'),
+					'options'=>array()
+				)))
 
 	)
 
 );
 $smarty->assign('table_buttons', $table_buttons);
 
+$smarty->assign('js_code', 'js/injections/supplier.order.'.(_DEVEL?'':'min.').'js');
+$smarty->assign('table_metadata', base64_encode(json_encode(array('parent'=>$state['object'], 'parent_key'=>$state['key'])))  );
 
 
-include('utils/get_table_html.php');
+
+include 'utils/get_table_html.php';
 
 
 ?>

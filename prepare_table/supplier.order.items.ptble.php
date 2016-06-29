@@ -13,7 +13,7 @@
 
 
 
-$where=sprintf(' where OTF.`Order Key`=%d', $parameters['parent_key']);
+$where=sprintf(' where POTF.`Purchase Order Key`=%d', $parameters['parent_key']);
 $wheref='';
 if ($parameters['f_field']=='code'  and $f_value!='')
 	$wheref.=" and OTF.`Product Code` like '".addslashes($f_value)."%'";
@@ -30,18 +30,18 @@ elseif ($order=='last_updated')
 	$order='`Order Last Updated Date`';
 
 else {
-	$order='OTF.`Order Transaction Fact Key`';
+	$order='`Purchase Order Transaction Fact Key`';
 }
 
 $table="
-  `Order Transaction Fact` OTF
-left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`)
- left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)
- left join `Order Transaction Out of Stock in Basket Bridge` OO on (OO.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`)
+  `Purchase Order Transaction Fact` POTF
+left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Historic Key`=SPH.`Supplier Part Historic Key`)
+ left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
+ left join  `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`)
+
 ";
 
-$sql_totals="select count(distinct  P.`Product ID`) as num from $table $where";
-
+$sql_totals="select count(distinct  `Purchase Order Transaction Fact Key`) as num from $table $where";
 
 $fields="
 	OTF.`Order Transaction Fact Key`,`Product Units Per Case`,`Product History Name`,`Product History Price`,`Product Currency`,OTF.`Product ID`,OTF.`Product Code`,`Order Quantity`,`Order Bonus Quantity`,`Product Availability`,`Product History XHTML Short Description`,`Order Transaction Amount`,`Transaction Tax Rate`,`Product Tariff Code`,
@@ -49,5 +49,13 @@ $fields="
 		(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`
 
 ";
+
+$fields="
+`Purchase Order Transaction Fact Key`,`Purchase Order Quantity`,POTF.`Supplier Part Key`,`Supplier Part Reference`,POTF.`Supplier Part Historic Key`,
+`Part Unit Description`,`Supplier Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,
+`Supplier Part Unit Cost`,`Part Package Weight`
+
+";
+
 
 ?>

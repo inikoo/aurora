@@ -22,16 +22,14 @@ var columns = [
      cell: Backgrid.StringCell.extend({
       events: {
             "click": function() {
-                {if $data['parent']=='supplier'}
-                change_view("supplier/{$data['parent_key']}/order/{$data['key']}/item/"+this.model.get("id"))
-                {/if}
+                change_view("order/{$data['key']}/item/"+this.model.get("id"))
             }
         },
       className: "link"
      }),
 },{
     name: "description",
-    label: "{t}Unit description{/t}",
+    label: "{t}Unit Description{/t}",
     editable: false,
      cell: "html"
     
@@ -40,13 +38,13 @@ var columns = [
     label: "{t}Subtotals{/t}",
     defautOrder:1,
     editable: false,
-    sortType: "toggle",
+   sortable: false,
     {if $sort_key=='subtotals'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-    cell: Backgrid.HtmlCell.extend({ className: ""} ),
-        
-}, {
+    cell: Backgrid.HtmlCell.extend( ),
+},
+{
     name: "quantity",
-    label: "{t}Cartons{/t}",
+    label: "{t}Quantity{/t}",
     defautOrder:1,
     editable: false,
     sortType: "toggle",

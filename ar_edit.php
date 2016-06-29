@@ -27,6 +27,20 @@ $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
 
+
+case 'edit_item_in_order':
+	$data=prepare_values($_REQUEST, array(
+			'parent'=>array('type'=>'string'),
+			'parent_key'=>array('type'=>'key'),
+			'item_key'=>array('type'=>'key'),
+			'item_historic_key'=>array('type'=>'key'),
+			'transaction_key'=>array('type'=>'key','optional'=>true),
+			'qty'=>array('type'=>'numeric'),
+
+		));
+	edit_item_in_order($account, $db, $user, $editor, $data, $smarty);
+	break;
+
 case 'bridge':
 	$data=prepare_values($_REQUEST, array(
 			'object'=>array('type'=>'string'),
@@ -37,8 +51,6 @@ case 'bridge':
 
 		));
 	edit_bridge($account, $db, $user, $editor, $data, $smarty);
-
-
 	break;
 case 'edit_category_subject':
 
@@ -1881,12 +1893,6 @@ function edit_bridge($account, $db, $user, $editor, $data, $smarty) {
 
 					}
 
-
-
-
-
-
-
 				}
 
 
@@ -1901,6 +1907,20 @@ function edit_bridge($account, $db, $user, $editor, $data, $smarty) {
 
 }
 
+
+function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
+
+	$parent=get_object($data['parent'], $data['parent_key']);
+	$parent->editor=$editor;
+
+	$transaction_data=$parent->update_item($data['item_key'], $data['item_historic_key'],$data['qty']);
+
+
+
+	$response=array('state'=>200, 'transaction_data'=>$transaction_data, 'metadata'=>$parent->get_update_metadata());
+	echo json_encode($response);
+
+}
 
 
 

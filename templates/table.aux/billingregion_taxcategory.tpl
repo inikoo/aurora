@@ -1,5 +1,4 @@
- 
-<div id="report_config" class="export_dialog hide" style="width:400px">
+ <div id="report_config" class="export_dialog hide" style="width:400px">
 	<table border=0>
 		{foreach from=$stores_data item=store_field key=_key} 
 		<tr class="small_row">
@@ -15,7 +14,4 @@
 		</tr>
 		
 	</table>
-	
-	
-
 </div>
