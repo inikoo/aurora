@@ -763,6 +763,7 @@ path.ema {
 @import 'new_object';
 @import 'sticky_note';
 @import 'upload_image';
+@import 'timeline_horizontal';
 
 
 .adr{
@@ -779,6 +780,7 @@ line-height:$height_short_row;
         .address{float:left;min-width:140px}
     }
 }
+
 
 
 

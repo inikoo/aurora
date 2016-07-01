@@ -1,5 +1,61 @@
-<div class="order ">
-	<div id="contact_data" class="block" style="float:left;padding:20px 20px;max-width:500px;">
+<div style="border-bottom:1px solid #ccc;" class="timeline_horizontal">
+
+
+<ul class="timeline" id="timeline">
+  <li class="li ">
+    <div class="label">
+      <span class="state">{t}Submitted{/t}</span>
+
+    </div>
+     <div class="timestamp">
+      <span >&nbsp;{$order->get('Submitted Date')} &nbsp;</span>
+      <span class="start_date">{$order->get('Creation Date')} </span>
+    </div>
+    
+    <div class="dot"></div>
+  </li>
+   <li class="li">
+    <div class="label">
+      <span class="state">{t}Estimated delivery{/t}</span>
+    </div>
+     <div class="timestamp">
+      <span class="button">{t}after{/t} {$order->get_formatted_estimated_delivery_date()}</span>
+
+    </div>
+    <div class="dot"></div>
+  </li>
+  <li class="li">
+    <div class="label">
+      <span class="state">{t}Checked{/t}</span>
+    </div>
+     <div class="timestamp">
+      <span >&nbsp;{$order->get('Submitted Date')} &nbsp;</span>
+
+    </div>
+    <div class="dot">
+  
+    </div>
+  </li>
+  <li class="li">
+    <div class="label">
+      <span class="state">{t}Placed{/t}</span>
+    </div>
+     <div class="timestamp">
+      <span >&nbsp;{$order->get('Submitted Date')} &nbsp;</span>
+
+    </div>
+    <div class="dot"></div>
+  </li>
+  
+ </ul>      
+
+</div>
+
+<div class="order" style="display: flex;" >
+
+
+
+	<div  class="block" style=" align-items: stretch;flex: 1">
 		<div class="data_container">
 			<div class="data_field">
 				<i class="fa fa-ship fa-fw" aria-hidden="true" title="{t}Supplier{/t}"></i> <span  onClick="change_view('{if $order->get('Purchase Order Parent')=='Supplier'}supplier{else}agent{/if}/{$order->get('Purchase Order Parent Key')}')"  class="link Purchase_Order_Parent_Name">{$order->get('Purchase Order Parent Name')}</span> 
@@ -16,55 +72,34 @@
 		</div>
 		<div style="clear:both">
 		</div>
-		<div style="clear:both">
-		</div>
+		
 	</div>
-	<div id="totals" class="block totals" style="min-width:250px">
-		<table border="0" class="info_block">
-			
-			<tr>
-				<td class="label">{t}Cost{/t} ({$order->get('Purchase Order Currency Code')}) </td>
-				<td class="aright Purchase_Order_Total_Amount">{$order->get('Total Amount')}</td>
-			</tr>
-			<tr class="{if $account->get('Account Currency')==$order->get('Purchase Order Currency Code')}hide{/if}">
-				<td colspan="2" class="Purchase_Order_Total_Amount_Account_Currency aright ">{$order->get('Total Amount Account Currency')}</td>
-			</tr>
-			<tr>
-				<td class="label">{t}Weight{/t}</td>
-				<td class="aright Purchase_Order_Weight">{$order->get('Weight')}</td>
-			</tr>
-			<tr>
-				<td class="label">{t}CBM{/t}</td>
-				<td class="aright Purchase_Order_CBM">{$order->get('CBM')}</td>
-			</tr>
-			
-		</table>
-		<div style="clear:both">
+	
+	
+	<div  class="block " style="align-items: stretch;flex: 1;">
+		
+		<div class="state" style="height:25px">
+		
+		<span style="float:left;padding-left:10px">
+		{$order->get('State')}
+		</span>
+		
+		
+		
+		
+		
+		<div   class="square_button right"  style="padding:0;margin:0;position:relative;top:-5px"  title="{t}Submit{/t}">
+		  <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
+	    </div>
+
+
+
+	  
 		</div>
-	</div>
-	<div id="totals" class="block totals">
-		<div id="sticky_note_div" class="sticky_note pink" style="position:relative;left:-20px;width:270px;{if $order->get('Sticky Note')==''}display:none{/if}">
-			<img id="sticky_note_bis" style="float:right;cursor:pointer" src="/art/icons/edit.gif"> 
-			<div id="sticky_note_content" style="padding:10px 15px 10px 15px;">
-				{$order->get('Sticky Note')} 
-			</div>
-		</div>
-		<div style="clear:both">
-		</div>
-	</div>
-	<div id="dates" class="block dates" style="min-width:200px">
-		<table border="0" class="date_and_state">
-			<tr>
-				<td>{$order->get('Creation Date')}</td>
-			</tr>
-			<tr>
-				<td> {$order->get('State')} </td>
-			</tr>
-			<tr>
-				<td> <span class="discrete" title="{t}Estimated delivery date{/t}">&#x212e</span> <span class="Purchase_Order_Estimated_Receiving_Date">{$order->get_formatted_estimated_delivery_date()}</span></td>
-			</tr>
-		</table>
-		<table id="delivery_notes" border="0" class="ul_table">
+		
+		{*}
+		
+		<table id="delivery_notes" border="1" class="ul_table">
 			{foreach from=$order->get_sdn_objects() item=dn} 
 			<tr>
 				<td class="icon"><i class="fa fa-fw fa-truck"></i> </td>
@@ -90,7 +125,7 @@
 			</tr>
 			{/foreach} 
 		</table>
-		<table id="invoices" border="0" class="ul_table">
+		<table id="invoices" border="1" class="ul_table">
 			{foreach from=$order->get_invoices_objects() item=invoice} 
 			<tr>
 				<td class="icon"><i class="fa fa-fw fa-usd"></i> </td>
@@ -102,6 +137,30 @@
 			</tr>
 			{/foreach} 
 		</table>
+		{*}
+	</div>
+	<div  class="block " style="align-items: stretch;flex: 1 ">
+		<table border="0" class="info_block">
+			
+			<tr>
+				<td class="label">{t}Cost{/t} ({$order->get('Purchase Order Currency Code')}) </td>
+				<td class="aright Purchase_Order_Total_Amount">{$order->get('Total Amount')}</td>
+			</tr>
+			<tr class="{if $account->get('Account Currency')==$order->get('Purchase Order Currency Code')}hide{/if}">
+				<td colspan="2" class="Purchase_Order_Total_Amount_Account_Currency aright ">{$order->get('Total Amount Account Currency')}</td>
+			</tr>
+			<tr>
+				<td class="label">{t}Weight{/t}</td>
+				<td class="aright Purchase_Order_Weight">{$order->get('Weight')}</td>
+			</tr>
+			<tr>
+				<td class="label">{t}CBM{/t}</td>
+				<td class="aright Purchase_Order_CBM">{$order->get('CBM')}</td>
+			</tr>
+			
+		</table>
+		<div style="clear:both">
+		</div>
 	</div>
 	<div style="clear:both">
 	</div>

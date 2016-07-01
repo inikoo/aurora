@@ -1302,20 +1302,23 @@ tr.deleting_tr {
             height: 22px; }
           #object_showcase .subject_profile #info #overviews .overview tr {
             height: 28px; }
-  #object_showcase .order, #object_showcase .invoice, #object_showcase .delivery_note, #object_showcase .customer {
+  #object_showcase .order, #object_showcase .invoice, #object_showcase .delivery_note {
     border-bottom: 1px solid #ccc; }
-    #object_showcase .order .full_date, #object_showcase .invoice .full_date, #object_showcase .delivery_note .full_date, #object_showcase .customer .full_date {
+    #object_showcase .order .state, #object_showcase .invoice .state, #object_showcase .delivery_note .state {
+      height: 30px;
+      border-bottom: 1px solid #ccc; }
+    #object_showcase .order .full_date, #object_showcase .invoice .full_date, #object_showcase .delivery_note .full_date {
       width: 250px;
       text-align: right; }
-    #object_showcase .order .contact_name, #object_showcase .invoice .contact_name, #object_showcase .delivery_note .contact_name, #object_showcase .customer .contact_name {
+    #object_showcase .order .contact_name, #object_showcase .invoice .contact_name, #object_showcase .delivery_note .contact_name {
       width: 150px;
       white-space: normal;
       white-space: nowrap; }
-    #object_showcase .order .presention_card, #object_showcase .invoice .presention_card, #object_showcase .delivery_note .presention_card, #object_showcase .customer .presention_card {
+    #object_showcase .order .presention_card, #object_showcase .invoice .presention_card, #object_showcase .delivery_note .presention_card {
       padding: 10px 20px; }
-    #object_showcase .order .showcase, #object_showcase .invoice .showcase, #object_showcase .delivery_note .showcase, #object_showcase .customer .showcase {
+    #object_showcase .order .showcase, #object_showcase .invoice .showcase, #object_showcase .delivery_note .showcase {
       padding-top: 0px; }
-    #object_showcase .order h1, #object_showcase .invoice h1, #object_showcase .delivery_note h1, #object_showcase .customer h1 {
+    #object_showcase .order h1, #object_showcase .invoice h1, #object_showcase .delivery_note h1 {
       padding: 0px;
       margin: 0px;
       color: #555;
@@ -1323,63 +1326,62 @@ tr.deleting_tr {
       font-size: 21px;
       font-family: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
       font-weight: 700; }
-    #object_showcase .order .pdf_link img, #object_showcase .invoice .pdf_link img, #object_showcase .delivery_note .pdf_link img, #object_showcase .customer .pdf_link img {
+    #object_showcase .order .pdf_link img, #object_showcase .invoice .pdf_link img, #object_showcase .delivery_note .pdf_link img {
       height: 10px;
       vertical-align: 0px; }
-    #object_showcase .order #containers, #object_showcase .invoice #containers, #object_showcase .delivery_note #containers, #object_showcase .customer #containers {
+    #object_showcase .order #containers, #object_showcase .invoice #containers, #object_showcase .delivery_note #containers {
       padding: 20px 30px; }
-    #object_showcase .order .order #contact_data, #object_showcase .invoice .order #contact_data, #object_showcase .delivery_note .order #contact_data, #object_showcase .customer .order #contact_data {
+    #object_showcase .order .order #contact_data, #object_showcase .invoice .order #contact_data, #object_showcase .delivery_note .order #contact_data {
       width: 500px; }
-    #object_showcase .order .order #dates, #object_showcase .invoice .order #dates, #object_showcase .delivery_note .order #dates, #object_showcase .customer .order #dates {
+    #object_showcase .order .order #dates, #object_showcase .invoice .order #dates, #object_showcase .delivery_note .order #dates {
       width: 310px; }
-    #object_showcase .order .invoice #dates, #object_showcase .invoice .invoice #dates, #object_showcase .delivery_note .invoice #dates, #object_showcase .customer .invoice #dates {
+    #object_showcase .order .invoice #dates, #object_showcase .invoice .invoice #dates, #object_showcase .delivery_note .invoice #dates {
       width: 310px; }
-    #object_showcase .order .invoice #totals, #object_showcase .invoice .invoice #totals, #object_showcase .delivery_note .invoice #totals, #object_showcase .customer .invoice #totals {
+    #object_showcase .order .invoice #totals, #object_showcase .invoice .invoice #totals, #object_showcase .delivery_note .invoice #totals {
       width: 310px; }
-    #object_showcase .order .block, #object_showcase .invoice .block, #object_showcase .delivery_note .block, #object_showcase .customer .block {
+    #object_showcase .order .block, #object_showcase .invoice .block, #object_showcase .delivery_note .block {
       float: right;
-      border-left: 1px solid #ccc;
-      height: 100%; }
-    #object_showcase .order #dates .date_and_state, #object_showcase .invoice #dates .date_and_state, #object_showcase .delivery_note #dates .date_and_state, #object_showcase .customer #dates .date_and_state {
+      border-left: 1px solid #ccc; }
+    #object_showcase .order #dates .date_and_state, #object_showcase .invoice #dates .date_and_state, #object_showcase .delivery_note #dates .date_and_state {
       width: 100%;
       text-align: center; }
-      #object_showcase .order #dates .date_and_state .date, #object_showcase .invoice #dates .date_and_state .date, #object_showcase .delivery_note #dates .date_and_state .date, #object_showcase .customer #dates .date_and_state .date {
+      #object_showcase .order #dates .date_and_state .date, #object_showcase .invoice #dates .date_and_state .date, #object_showcase .delivery_note #dates .date_and_state .date {
         padding: 3px;
         border-bottom: 1px solid #ccc; }
-      #object_showcase .order #dates .date_and_state .state, #object_showcase .invoice #dates .date_and_state .state, #object_showcase .delivery_note #dates .date_and_state .state, #object_showcase .customer #dates .date_and_state .state {
+      #object_showcase .order #dates .date_and_state .state, #object_showcase .invoice #dates .date_and_state .state, #object_showcase .delivery_note #dates .date_and_state .state {
         font-size: 80%;
         border-bottom: 1px solid #ccc; }
-        #object_showcase .order #dates .date_and_state .state td, #object_showcase .invoice #dates .date_and_state .state td, #object_showcase .delivery_note #dates .date_and_state .state td, #object_showcase .customer #dates .date_and_state .state td {
+        #object_showcase .order #dates .date_and_state .state td, #object_showcase .invoice #dates .date_and_state .state td, #object_showcase .delivery_note #dates .date_and_state .state td {
           padding: 3px 0px; }
-      #object_showcase .order #dates .date_and_state .two-columns td:first-of-type, #object_showcase .invoice #dates .date_and_state .two-columns td:first-of-type, #object_showcase .delivery_note #dates .date_and_state .two-columns td:first-of-type, #object_showcase .customer #dates .date_and_state .two-columns td:first-of-type {
+      #object_showcase .order #dates .date_and_state .two-columns td:first-of-type, #object_showcase .invoice #dates .date_and_state .two-columns td:first-of-type, #object_showcase .delivery_note #dates .date_and_state .two-columns td:first-of-type {
         width: 50%;
         border-right: 1px solid #ccc; }
-    #object_showcase .order #dates .ul_table, #object_showcase .invoice #dates .ul_table, #object_showcase .delivery_note #dates .ul_table, #object_showcase .customer #dates .ul_table {
+    #object_showcase .order #dates .ul_table, #object_showcase .invoice #dates .ul_table, #object_showcase .delivery_note #dates .ul_table {
       width: 100%;
       padding: 5px;
       margin-top: 10px; }
-      #object_showcase .order #dates .ul_table .icon, #object_showcase .invoice #dates .ul_table .icon, #object_showcase .delivery_note #dates .ul_table .icon, #object_showcase .customer #dates .ul_table .icon {
+      #object_showcase .order #dates .ul_table .icon, #object_showcase .invoice #dates .ul_table .icon, #object_showcase .delivery_note #dates .ul_table .icon {
         width: 24px;
         text-align: right; }
-      #object_showcase .order #dates .ul_table .state, #object_showcase .invoice #dates .ul_table .state, #object_showcase .delivery_note #dates .ul_table .state, #object_showcase .customer #dates .ul_table .state {
+      #object_showcase .order #dates .ul_table .state, #object_showcase .invoice #dates .ul_table .state, #object_showcase .delivery_note #dates .ul_table .state {
         text-align: right;
         padding-right: 10px;
         font-size: 80%; }
-    #object_showcase .order #totals, #object_showcase .order .block, #object_showcase .invoice #totals, #object_showcase .invoice .block, #object_showcase .delivery_note #totals, #object_showcase .delivery_note .block, #object_showcase .customer #totals, #object_showcase .customer .block {
+    #object_showcase .order #totals, #object_showcase .order .block, #object_showcase .invoice #totals, #object_showcase .invoice .block, #object_showcase .delivery_note #totals, #object_showcase .delivery_note .block {
       padding-top: 5px; }
-      #object_showcase .order #totals table, #object_showcase .order .block table, #object_showcase .invoice #totals table, #object_showcase .invoice .block table, #object_showcase .delivery_note #totals table, #object_showcase .delivery_note .block table, #object_showcase .customer #totals table, #object_showcase .customer .block table {
+      #object_showcase .order #totals table, #object_showcase .order .block table, #object_showcase .invoice #totals table, #object_showcase .invoice .block table, #object_showcase .delivery_note #totals table, #object_showcase .delivery_note .block table {
         width: 100%; }
-      #object_showcase .order #totals td, #object_showcase .order .block td, #object_showcase .invoice #totals td, #object_showcase .invoice .block td, #object_showcase .delivery_note #totals td, #object_showcase .delivery_note .block td, #object_showcase .customer #totals td, #object_showcase .customer .block td {
+      #object_showcase .order #totals td, #object_showcase .order .block td, #object_showcase .invoice #totals td, #object_showcase .invoice .block td, #object_showcase .delivery_note #totals td, #object_showcase .delivery_note .block td {
         padding: 4px 8px; }
-      #object_showcase .order #totals .top-border, #object_showcase .order .block .top-border, #object_showcase .invoice #totals .top-border, #object_showcase .invoice .block .top-border, #object_showcase .delivery_note #totals .top-border, #object_showcase .delivery_note .block .top-border, #object_showcase .customer #totals .top-border, #object_showcase .customer .block .top-border {
+      #object_showcase .order #totals .top-border, #object_showcase .order .block .top-border, #object_showcase .invoice #totals .top-border, #object_showcase .invoice .block .top-border, #object_showcase .delivery_note #totals .top-border, #object_showcase .delivery_note .block .top-border {
         border-top: 1px solid #ccc; }
-      #object_showcase .order #totals .bottom-border, #object_showcase .order .block .bottom-border, #object_showcase .invoice #totals .bottom-border, #object_showcase .invoice .block .bottom-border, #object_showcase .delivery_note #totals .bottom-border, #object_showcase .delivery_note .block .bottom-border, #object_showcase .customer #totals .bottom-border, #object_showcase .customer .block .bottom-border {
+      #object_showcase .order #totals .bottom-border, #object_showcase .order .block .bottom-border, #object_showcase .invoice #totals .bottom-border, #object_showcase .invoice .block .bottom-border, #object_showcase .delivery_note #totals .bottom-border, #object_showcase .delivery_note .block .bottom-border {
         border-bottom: 1px solid #ccc; }
-      #object_showcase .order #totals .top-strong-border, #object_showcase .order .block .top-strong-border, #object_showcase .invoice #totals .top-strong-border, #object_showcase .invoice .block .top-strong-border, #object_showcase .delivery_note #totals .top-strong-border, #object_showcase .delivery_note .block .top-strong-border, #object_showcase .customer #totals .top-strong-border, #object_showcase .customer .block .top-strong-border {
+      #object_showcase .order #totals .top-strong-border, #object_showcase .order .block .top-strong-border, #object_showcase .invoice #totals .top-strong-border, #object_showcase .invoice .block .top-strong-border, #object_showcase .delivery_note #totals .top-strong-border, #object_showcase .delivery_note .block .top-strong-border {
         border-top: 1px solid #aaa; }
-      #object_showcase .order #totals .bottom-strong-border, #object_showcase .order .block .bottom-strong-border, #object_showcase .invoice #totals .bottom-strong-border, #object_showcase .invoice .block .bottom-strong-border, #object_showcase .delivery_note #totals .bottom-strong-border, #object_showcase .delivery_note .block .bottom-strong-border, #object_showcase .customer #totals .bottom-strong-border, #object_showcase .customer .block .bottom-strong-border {
+      #object_showcase .order #totals .bottom-strong-border, #object_showcase .order .block .bottom-strong-border, #object_showcase .invoice #totals .bottom-strong-border, #object_showcase .invoice .block .bottom-strong-border, #object_showcase .delivery_note #totals .bottom-strong-border, #object_showcase .delivery_note .block .bottom-strong-border {
         border-bottom: 1px solid #aaa; }
-    #object_showcase .order #account .block, #object_showcase .invoice #account .block, #object_showcase .delivery_note #account .block, #object_showcase .customer #account .block {
+    #object_showcase .order #account .block, #object_showcase .invoice #account .block, #object_showcase .delivery_note #account .block {
       min-width: 150px; }
   #object_showcase .asset_profile {
     padding: 10px 20px 20px 20px; }
@@ -1908,6 +1910,102 @@ input.inputfile {
 
 .box__button:hover, .box__button:focus {
   background-color: #0f3c4b; }
+
+.timeline_horizontal {
+  font-size: 80%; }
+  .timeline_horizontal .timeline {
+    list-style-type: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    top: -20px; }
+  .timeline_horizontal .li {
+    transition: all 200ms ease-in; }
+  .timeline_horizontal .timestamp {
+    margin-bottom: 10px;
+    padding: 0px 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: 100;
+    position: relative;
+    top: 35px;
+    left: 55%; }
+  .timeline_horizontal .timestamp .start_date {
+    margin-bottom: 10px;
+    padding: 0px 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: 100;
+    position: absolute;
+    top: 0px;
+    left: -80%; }
+  .timeline_horizontal .label {
+    margin-bottom: 0px;
+    padding: 0px 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: 100;
+    position: relative;
+    left: 55%;
+    top: 15px;
+    color: #aaa; }
+  .timeline_horizontal .dot {
+    padding: 0px 40px;
+    display: flex;
+    justify-content: center;
+    border-top: 2px solid #D6DCE0;
+    position: relative;
+    transition: all 200ms ease-in;
+    min-width: 50px; }
+  .timeline_horizontal .li:first-of-type .dot:before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    background-color: #66DC71;
+    border: 1px solid #66DC71;
+    position: absolute;
+    top: -7px;
+    left: 0%;
+    transition: all 200ms ease-in;
+    z-index: 10; }
+  .timeline_horizontal .dot:after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    background-color: #fff;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    position: absolute;
+    top: -7px;
+    left: 100%;
+    transition: all 200ms ease-in;
+    z-index: 10; }
+  .timeline_horizontal .li.complete .dot {
+    border-top: 2px solid #66DC71; }
+  .timeline_horizontal .li.complete .dot:after {
+    background-color: #66DC71;
+    border: 1px solid #66DC71;
+    transition: all 200ms ease-in; }
+  @media (min-device-width: 320px) and (max-device-width: 700px) {
+    .timeline_horizontal .timeline {
+      list-style-type: none;
+      display: block; }
+    .timeline_horizontal .li {
+      transition: all 200ms ease-in;
+      display: flex;
+      width: inherit; }
+    .timeline_horizontal .label {
+      width: 100px; }
+    .timeline_horizontal .dot:before {
+      left: -8%;
+      top: 30%;
+      transition: all 200ms ease-in; } }
 
 .adr {
   line-height: 22px; }

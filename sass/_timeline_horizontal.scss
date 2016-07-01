@@ -1,0 +1,137 @@
+.timeline_horizontal{
+
+font-size:80%;
+
+.timeline {
+  list-style-type: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+   position:relative;top:-20px;
+}
+
+
+
+
+
+.li {
+  transition: all 200ms ease-in;
+}
+
+.timestamp {
+  margin-bottom: 10px;
+  padding: 0px 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-weight: 100;
+  position:relative;top:35px;left:55%
+}
+
+.timestamp .start_date{
+  margin-bottom: 10px;
+  padding: 0px 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-weight: 100;
+  position:absolute;top:0px;left:-80%
+}
+
+
+.label {
+  margin-bottom: 0px;
+  padding: 0px 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-weight: 100;
+  position:relative;left:55%;top:15px;
+  color:#aaa
+}
+
+
+.dot {
+  padding: 0px 40px;
+  display: flex;
+  justify-content: center;
+  border-top: 2px solid #D6DCE0;
+  position: relative;
+  transition: all 200ms ease-in;
+  min-width: 50px;
+  
+}
+
+.li:first-of-type .dot:before{
+ content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  
+   background-color: #66DC71;
+   border: 1px solid #66DC71;
+  
+  
+  position: absolute;
+  top: -7px;
+  left: 0%;
+  transition: all 200ms ease-in;
+  z-index: 10;
+
+}
+
+
+.dot:after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background-color: #fff;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  position: absolute;
+  top: -7px;
+  left: 100%;
+  transition: all 200ms ease-in;
+  z-index: 10;
+}
+
+.li.complete .dot {
+  border-top: 2px solid #66DC71;
+}
+.li.complete .dot:after { 
+  background-color: #66DC71;
+   border: 1px solid #66DC71;
+  transition: all 200ms ease-in;
+}
+
+.li.complete .label span {
+ // color: #66DC71;
+}
+
+
+
+@media (min-device-width: 320px) and (max-device-width: 700px) {
+  .timeline {
+    list-style-type: none;
+    display: block;
+  }
+
+  .li {
+    transition: all 200ms ease-in;
+    display: flex;
+    width: inherit;
+  }
+
+  .label {
+    width: 100px;
+  }
+
+  .dot:before {
+    left: -8%;
+    top: 30%;
+    transition: all 200ms ease-in;
+  }
+}
+
+}

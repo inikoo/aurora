@@ -1,6 +1,10 @@
-.order,.invoice,.delivery_note,.customer{
+.order,.invoice,.delivery_note{
 
 border-bottom: 1px solid #ccc;
+
+
+.state{height:$height_header;border-bottom:1px solid #ccc}
+
 
    .full_date {
         width: 250px;
@@ -57,7 +61,8 @@ border-bottom: 1px solid #ccc;
     .block {
         float: right;
         border-left: 1px solid #ccc;
-        height: 100%;
+   //     padding:10px;
+//        xxheight: 200px;
     }
     #dates {
         .date_and_state {
