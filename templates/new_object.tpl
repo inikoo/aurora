@@ -403,8 +403,7 @@ function input_barcode_to_new_object(field) {
 		                $('#{$field.id}_formatted').val('xx');
 
 		                //     var date = $(this).datepicker("getDate");
-		                $('#{$field.id}_formatted').val($.datepicker.formatDate("yy-mm-dd", $(this).datepicker("getDate")))
-
+		                $('#{$field.id}_formatted').val($.datepicker.formatDate("dd/mm/yy", $(this).datepicker("getDate")))
 		                $('#{$field.id}_datepicker').addClass('hide')
 		            }
 		        });
