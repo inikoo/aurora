@@ -665,7 +665,7 @@ function validate_barcode(value, min_length, max_length) {
 }
 
 
-function validate_signed_integer(value, max_value) {
+function fvalidate_signed_integer(value, max_value) {
 
     if (!$.isNumeric(value)) {
         return {

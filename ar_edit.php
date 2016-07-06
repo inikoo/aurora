@@ -845,6 +845,18 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 			$updated_data=array();
 		}
 		break;
+		case 'SupplierDelivery':
+		include_once 'class.SupplierDelivery.php';
+
+		$data['fields_data']['user']=$user;
+
+		$object=$parent->create_delivery($data['fields_data']);
+		if (!$parent->error) {
+
+			$pcard='';
+			$updated_data=array();
+		}
+		break;	
 	case 'Order':
 		include_once 'class.Order.php';
 		$object=$parent->create_order($data['fields_data']);

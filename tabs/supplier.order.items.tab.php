@@ -18,13 +18,12 @@ $default=$user->get_tab_defaults($tab);
 
 $table_views=array(
 	'overview'=>array('label'=>_('Description'), 'title'=>_('Description')),
-	'tariff_codes'=>array('label'=>_('Tariff Codes'), 'title'=>_('Tariff Codes')),
 
 );
 
 $table_filters=array(
-	'code'=>array('label'=>_('Code'), 'title'=>_('Product code')),
-	'name'=>array('label'=>_('Name'), 'title'=>_('Product name')),
+	'code'=>array('label'=>_('Code')),
+	'name'=>array('label'=>_('Name')),
 
 );
 
@@ -35,13 +34,14 @@ $parameters=array(
 );
 
 $table_buttons=array();
-$table_buttons[]=array('icon'=>'stop', 'title'=>_("All supplier's parts"), 'change_tab'=>'supplier.order.all_supplier_parts');
+$table_buttons[]=array('icon'=>'stop','id'=>'all_available_items','class'=>'items_operation'.($state['_object']->get('Purchase Order State')!='In Process'?' hide':''), 'title'=>_("All supplier's parts"), 'change_tab'=>'supplier.order.all_supplier_parts');
 
 
 $table_buttons[]=array(
 	'icon'=>'plus',
 	'title'=>_('New item'),
-	'id'=>'new_record',
+	'id'=>'new_item',
+	'class'=>'items_operation'.($state['_object']->get('Purchase Order State')!='In Process'?' hide':''),
 	'add_item'=>
 	array(
 

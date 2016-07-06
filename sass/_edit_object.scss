@@ -9,6 +9,12 @@ tr.title{font-size:120%;
 
 }
 
+.save{
+opacity: .4;
+&.changed{opacity:1}
+&.valid{ cursor: pointer;}
+}
+
 .valid {
 .save {
     color: $color_save;
@@ -265,3 +271,11 @@ tr.invalid {
         }
     }
 }
+
+
+
+.table_new_fields{
+display: flex;border-bottom:1px solid #eee;
+}
+
+

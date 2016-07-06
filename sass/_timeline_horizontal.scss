@@ -1,5 +1,6 @@
 .timeline_horizontal{
 
+border-bottom:1px solid #ccc;
 font-size:80%;
 
 .timeline {
@@ -62,6 +63,38 @@ font-size:80%;
   
 }
 
+
+.truck {
+  padding: 0px 40px;
+  display: flex;
+  justify-content: center;
+  border-top: 2px solid #D6DCE0;
+  position: relative;
+  transition: all 200ms ease-in;
+  min-width: 50px;
+  
+}
+
+.truck:after {
+  font-family: FontAwesome;
+   content: "\f0d1";
+  
+  width: 20px;
+  height: 10px;
+  color:#aaa;
+  background-color: $color_background;
+ // border-radius: 15px;
+  border: 0px solid red;
+  padding-left:6px;
+    padding-top:5px;
+  position: absolute;
+  top: -12px;
+  left: 100%;
+  transition: all 200ms ease-in;
+  z-index: 10;
+}
+
+
 .li:first-of-type .dot:before{
  content: "";
   width: 10px;
@@ -106,7 +139,7 @@ font-size:80%;
 }
 
 .li.complete .label span {
- // color: #66DC71;
+  color: $color_success;
 }
 
 
