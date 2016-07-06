@@ -74,6 +74,9 @@ $user_rights=array(
 'FD'=>array( 'Right Type' => 'Delete', 'Right Name' => 'production'),
 'FC'=>array( 'Right Type' => 'Create', 'Right Name' => 'production'),
 
+'RV'=>array( 'Right Type' => 'View', 'Right Name' => 'reports'),
+
+
 );
 
 
