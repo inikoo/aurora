@@ -1585,7 +1585,8 @@ class User extends DB_Table {
 
 
 		$sql=sprintf("select `User Group Key` from `User Group User Bridge`  where  `User Key`=%d", $this->id);
-
+//print $sql;
+//exit;
 		if ($result=$this->db->query($sql)) {
 
 			foreach ($result as $row) {
@@ -1737,6 +1738,8 @@ class User extends DB_Table {
 			$rights=array_merge($rights, $user_groups[$group_key]['Rights']);
 			//print_r($rights);
 		}
+
+
 
 		//print "****";
 

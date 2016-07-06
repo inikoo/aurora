@@ -1293,6 +1293,9 @@ class Staff extends DB_Table{
 
 		}
 
+		// print_r($available_roles);
+
+
 		foreach ($available_roles as $key=>$value) {
 			if ($value['selected']) {
 				$this->add_role($key);
@@ -1331,7 +1334,9 @@ class Staff extends DB_Table{
 
 		$groups = join(',', array_unique($groups));
 
+
 		$this->get_user_data();
+
 		//print_r($this->data);
 		if ( isset($this->data['Staff User Key']) and   $this->data['Staff User Key']) {
 			$staff_user=new User($this->data['Staff User Key']);
@@ -1472,9 +1477,19 @@ class Staff extends DB_Table{
 
 	function get_user_data() {
 
+
+		if ($this->get('Staff Type')=='Employee') {
+			$staff_type='Staff';
+		}else {
+			$staff_type=$this->get('Staff Type');
+		}
+
 		$sql=sprintf('select * from `User Dimension` where `User Type`=%s and `User Parent Key`=%d ',
-			prepare_mysql($this->get('Staff Type')),
+			prepare_mysql($staff_type),
 			$this->id);
+
+
+
 		if ($row = $this->db->query($sql)->fetch()) {
 
 			foreach ($row as $key=>$value) {
