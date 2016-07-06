@@ -361,5 +361,10 @@ ALTER TABLE `History Dimension` CHANGE `History Abstract` `History Abstract` TEX
 
 !Important do this:::bk2,,costadw2etc
 ALTER TABLE `Purchase Order Transaction Fact` CHANGE `Purchase Order Shipping Amount` `Purchase Order Shipping Contribution Amount` DOUBLE(15,2) NOT NULL DEFAULT '0.00';
+ALTER TABLE `Purchase Order Dimension` CHANGE `Purchase Order State` `Purchase Order State` ENUM('In Process','Submitted','Confirmed','Send','Received','Checked','Placed','Cancelled') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'In Process';
+ALTER TABLE `Purchase Order Dimension` ADD `Purchase Order Metadata` TEXT NULL DEFAULT NULL AFTER `Purchase Order CBM`;
+ALTER TABLE `Purchase Order Dimension` ADD `Purchase Order Send Date` DATETIME NULL DEFAULT NULL AFTER `Purchase Order Submitted Date`;
+ALTER TABLE `Supplier Delivery Note Dimension` CHANGE `Supplier Delivery Note Supplier Key` `Supplier Delivery Note Parent Key` MEDIUMINT(8) UNSIGNED NULL DEFAULT NULL;
+ALTER TABLE `Supplier Delivery Note Dimension` ADD `Supplier Delivery Note Parent` ENUM('Supplier','Agent') NULL DEFAULT NULL AFTER `Supplier Delivery Note XHTML Purchase Orders`;
 
 

@@ -43,20 +43,16 @@ function get_suppliers_navigation($data, $smarty, $user, $db, $account) {
 
 function get_purchase_orders_navigation($data, $smarty, $user, $db, $account) {
 
-
 	$left_buttons=array();
-
 	$right_buttons=array();
 	$sections=get_sections('suppliers', '');
 
 	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
 
-
 	$_content=array(
 
 		'sections_class'=>'',
 		'sections'=>$sections,
-
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
 		'title'=>_('Purchase orders'),
@@ -64,11 +60,35 @@ function get_purchase_orders_navigation($data, $smarty, $user, $db, $account) {
 
 	);
 	$smarty->assign('_content', $_content);
-
 	$html=$smarty->fetch('navigation.tpl');
 	return $html;
 
 }
+
+function get_deliveries_navigation($data, $smarty, $user, $db, $account) {
+
+	$left_buttons=array();
+	$right_buttons=array();
+	$sections=get_sections('suppliers', '');
+
+	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
+
+	$_content=array(
+
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>_('Deliveries'),
+		'search'=>array('show'=>true, 'placeholder'=>_('Search suppliers'))
+
+	);
+	$smarty->assign('_content', $_content);
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+}
+
 
 
 function get_agents_navigation($data, $smarty, $user, $db, $account) {

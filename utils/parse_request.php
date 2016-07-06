@@ -1743,6 +1743,10 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 					$section='orders';
 
+				}elseif ($view_path[0]=='deliveries') {
+
+					$section='deliveries';
+
 				}
 				elseif ($view_path[0]=='order') {
 

@@ -16,6 +16,21 @@ var columns = [
 
 
 },{
+    name: "checkbox",
+    renderable:false,
+    label: "",
+    editable: false,
+    cell: Backgrid.HtmlCell.extend({ className: "width_20"} ),
+    
+},{
+    name: "operations",
+    renderable:false,
+    label: "",
+    editable: false,
+    cell: Backgrid.HtmlCell.extend({ className: "width_20"} ),
+    
+},
+{
     name: "reference",
     label: "{t}S. Code{/t}",
     editable: false,
@@ -47,6 +62,27 @@ var columns = [
 }, {
     name: "quantity",
     label: "{t}Cartons{/t}",
+    renderable: {if $data['_object']->get('Purchase Order State')=='In Process'}true{else}false{/if},
+    defautOrder:1,
+    editable: false,
+    sortType: "toggle",
+    {if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+        headerCell: integerHeaderCell
+}, {
+    name: "ordered",
+    label: "{t}Cartons{/t}",
+    renderable: {if $data['_object']->get('Purchase Order State')!='In Process'}true{else}false{/if},
+    defautOrder:1,
+    editable: false,
+    sortType: "toggle",
+    {if $sort_key=='ordered'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+        headerCell: integerHeaderCell
+}, {
+    name: "delivery_quantity",
+    label: "{t}Delivery{/t}",
+    renderable: false,
     defautOrder:1,
     editable: false,
     sortType: "toggle",

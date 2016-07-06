@@ -977,6 +977,12 @@ $modules=array(
 					'suppliers.orders'=>array()
 				)
 			),
+			'deliveries'=>array(
+				'type'=>'navigation', 'label'=>_('Deliveries'), 'icon'=>'truck', 'reference'=>'suppliers/deliveries',
+				'tabs'=>array(
+					'suppliers.deliveries'=>array()
+				)
+			),
 
 			'order'=>array('type'=>'object',
 				'tabs'=>array(

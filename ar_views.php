@@ -1004,9 +1004,15 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case ('orders'):
 			return get_purchase_orders_navigation($data, $smarty, $user, $db, $account);
 			break;
+		case ('deliveries'):
+			return get_deliveries_navigation($data, $smarty, $user, $db, $account);
+			break;	
 		case ('order'):
 			return get_purchase_order_navigation($data, $smarty, $user, $db, $account);
 			break;
+		case ('delivery'):
+			return get_delivery_navigation($data, $smarty, $user, $db, $account);
+			break;	
 		case ('agents'):
 			return get_agents_navigation($data, $smarty, $user, $db, $account);
 			break;
@@ -1724,6 +1730,8 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'ship', 'reference'=>'suppliers');
 		}elseif ($state['section']=='orders') {
 			$branch[]=array('label'=>_('Purchase orders'), 'icon'=>'clipboard', 'reference'=>'suppliers.orders');
+		}elseif ($state['section']=='deliveries') {
+			$branch[]=array('label'=>_('Deliveries'), 'icon'=>'truck', 'reference'=>'suppliers.deliveries');
 		}elseif ($state['section']=='agents') {
 			$branch[]=array('label'=>_('Agents'), 'icon'=>'user-secret', 'reference'=>'agents');
 		}elseif ($state['section']=='agent.new') {

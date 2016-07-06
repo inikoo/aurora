@@ -35,7 +35,7 @@ case 'check_for_duplicates':
 			'field'=>array('type'=>'string'),
 			'actual_field'=>array('type'=>'string', 'optional'=>true),
 			'value'=>array('type'=>'string'),
-
+			'metadata'=>array('type'=>'json array', 'optional'=>true),
 		));
 
 	check_for_duplicates($data, $db, $user, $account);
@@ -57,6 +57,8 @@ function check_for_duplicates($data, $db, $user, $account) {
 
 
 	$validation_sql_queries=array();
+
+	$options_where='';
 
 	switch ($data['object']) {
 	case 'User':
@@ -416,7 +418,7 @@ function check_for_duplicates($data, $db, $user, $account) {
 
 
 
-			$invalid_msg=_('Product cde already used');
+			$invalid_msg=_('Product code already used');
 			$sql=sprintf("select P.`Product ID` as `key` ,`Product Code` as field from `Product Dimension` P where  `Product Code`=%s   ",
 				prepare_mysql($data['value'])
 			);
@@ -425,17 +427,59 @@ function check_for_duplicates($data, $db, $user, $account) {
 		}
 
 		break;
+	case 'Supplier Delivery':
+
+
+		if (isset($data['metadata']['option']) and $data['metadata']['option']=='creating_dn_from_po') {
+			//'In Process','Send','Received','Checked','Placing','Done' TODO maybe he have to be more flaxivle with this
+
+			$options_where=" and `Supplier Delivery State` in ('Done','Checked','Placing')";
+		}
+
+		if (isset($data['actual_field']))
+			$_field=$data['actual_field'];
+		else
+			$_field=$field;
+
+		switch (strtolower($data['parent'])) {
+		case 'agent':
+			$parent_where=sprintf(' and `%s Parent Key`="Agent"  and `%s Parent Key`=%d ', $data['object'], $data['object'], $data['parent_key']);
+			break;
+
+		case 'supplier':
+			$parent_where=sprintf(' and `%s Parent Key`="Supplier"  and `%s Parent Key`=%d ', $data['object'], $data['object'], $data['parent_key']);
+			break;
+		default:
+			$parent_where='';
+		}
+
+		$invalid_msg=_('Delivery number already used');
+		$sql=sprintf('select `%s Key` as `key` ,`%s` as field from `%s Dimension` where `%s`=%s %s %s',
+			addslashes(preg_replace('/_/', ' ', $data['object'])),
+			addslashes($_field),
+
+			addslashes(preg_replace('/_/', ' ', $data['object'])),
+			addslashes($_field),
+			prepare_mysql($data['value']),
+			$parent_where,
+			$options_where
+
+		);
+
+		$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
+
+		break;
 	default:
 
 
 		break;
 	}
 
-
+	//print_r($data);
 
 
 	if (count($validation_sql_queries)==0) {
-		switch ($data['parent']) {
+		switch (strtolower($data['parent'])) {
 		case 'store':
 			$parent_where=sprintf(' and `%s Store Key`=%d ', $data['object'], $data['parent_key']);
 			break;
@@ -455,17 +499,19 @@ function check_for_duplicates($data, $db, $user, $account) {
 			$_field=$field;
 
 
-		$sql=sprintf('select `%s Key` as `key` ,`%s` as field from `%s Dimension` where `%s`=%s %s ',
+		$sql=sprintf('select `%s Key` as `key` ,`%s` as field from `%s Dimension` where `%s`=%s %s %s',
 			addslashes(preg_replace('/_/', ' ', $data['object'])),
 			addslashes($_field),
 
 			addslashes(preg_replace('/_/', ' ', $data['object'])),
 			addslashes($_field),
 			prepare_mysql($data['value']),
-			$parent_where
+			$parent_where,
+			$options_where
 
 		);
 
+		//  print $sql;
 
 
 
@@ -490,6 +536,8 @@ function check_for_duplicates($data, $db, $user, $account) {
 				$validation='invalid';
 				$msg=$invalid_msg;
 				break;
+			}else{
+			   
 			}
 		}else {
 			print_r($error_info=$db->errorInfo());

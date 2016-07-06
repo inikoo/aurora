@@ -57,6 +57,9 @@ case 'categories':
 case 'orders':
 	orders(get_table_parameters(), $db, $user, $account);
 	break;
+case 'deliveries':
+	deliveries(get_table_parameters(), $db, $user, $account);
+	break;
 case 'supplier.order.supplier_parts':
 	order_supplier_parts(get_table_parameters(), $db, $user, $account);
 	break;
@@ -389,12 +392,85 @@ function orders($_data, $db, $user) {
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
 
-
-
 	if ($result=$db->query($sql)) {
 		foreach ($result as $data) {
 
+			switch ($data['Purchase Order State']) {
+			case 'In Process':
+				$state=sprintf('%s', _('In Process'));
+				break;
+			case 'Submitted':
+				$state=sprintf('%s', _('Submitted'));
+				break;
+			case 'Confirmed':
+				$state=sprintf('%s', _('Confirmed'));
+				break;
+			case 'In Warehouse':
+				$state=sprintf('%s', _('In Warehouse'));
+				break;
+			case 'Done':
+				$state=sprintf('%s', _('Done'));
+				break;
+			case 'Cancelled':
+				$state=sprintf('%s', _('Cancelled'));
+				break;
 
+			default:
+				$state=$data['Purchase Order State'];
+				break;
+			}
+
+			$adata[]=array(
+				'id'=>(integer)$data['Purchase Order Key'],
+				'parent_key'=> (integer) $data['Purchase Order Parent Key'],
+				'public_id'=>$data['Purchase Order Public ID'],
+				'date'=>strftime("%e %b %Y", strtotime($data['Purchase Order Creation Date'].' +0:00')),
+				'last_date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Purchase Order Last Updated Date'].' +0:00')),
+				'parent_name'=>$data['Purchase Order Parent Name'],
+				'state'=>$state,
+
+				'total_amount'=>money($data['Purchase Order Total Amount'], $data['Purchase Order Currency Code'])
+
+
+			);
+
+
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function deliveries($_data, $db, $user) {
+	$rtext_label='delivery';
+
+
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $data) {
 
 			switch ($data['Purchase Order State']) {
 			case 'In Process':
@@ -527,10 +603,31 @@ function order_items($_data, $db, $user) {
 			$subtotals.='</span>';
 
 
+			if (!$data['Supplier Delivery Key']) {
+
+				$delivery_qty=$data['Purchase Order Quantity'];
+
+				$delivery_quantity=sprintf('<span class="delivery_quantity" id="delivery_quantity_%d" key="%d" item_key="%d" item_historic_key=%d on="1" ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_delivery_qty_change(this)" class="fa  fa-minus fa-fw button" aria-hidden="true"></i></span>',
+					$data['Purchase Order Transaction Fact Key'],
+					$data['Purchase Order Transaction Fact Key'],
+					$data['Supplier Part Key'],
+					$data['Supplier Part Historic Key'],
+					$delivery_qty+0,
+					$delivery_qty+0
+				);
+			}else {
+				$delivery_quantity=number($data['Purchase Order Delivery Quantity']);
+
+			}
+
 			$adata[]=array(
 
 				'id'=>(integer)$data['Purchase Order Transaction Fact Key'],
 				'supplier_part_key'=>(integer)$data['Supplier Part Key'],
+				'checkbox'=>sprintf('<i key="%d" class="fa fa-fw fa-square-o button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']),
+
+				'operations'=>sprintf('<i key="%d" class="fa fa-fw fa-truck fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']),
+
 				'reference'=>$data['Supplier Part Reference'],
 				'description'=>$data['Part Unit Description'].' ('.number($units_per_carton).'/C)',
 				'quantity'=>sprintf('<span item_key="%d" item_historic_key=%d ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_order_qty_change(this)" class="fa  fa-plus fa-fw button" aria-hidden="true"></i></span>',
@@ -539,7 +636,9 @@ function order_items($_data, $db, $user) {
 					$data['Purchase Order Quantity']+0,
 					$data['Purchase Order Quantity']+0
 				),
-				'subtotals'=>$subtotals
+				'delivery_quantity'=>$delivery_quantity,
+				'subtotals'=>$subtotals,
+				'ordered'=>number($data['Purchase Order Quantity'])
 
 
 			);

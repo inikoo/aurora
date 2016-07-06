@@ -147,6 +147,11 @@ html, body {
     }
    
 }
+
+
+
+
+
 .panel {
     border: 1px solid #ccc;
     border-top: none;
@@ -155,6 +160,12 @@ html, body {
 }
 
 .iti-flag {background-image: url("images/flags.png");}
+
+tr {
+height:$height_header;
+}
+
+
 .fa {
     @include unselectable;
 }

@@ -389,7 +389,7 @@
 		            altFormat: "yy-mm-dd",
 		            onSelect: function() {
 		                $('#{$field.id}').change();
-		                $('#{$field.id}_formatted').val($.datepicker.formatDate("yy-mm-dd", $(this).datepicker("getDate")))
+		                $('#{$field.id}_formatted').val($.datepicker.formatDate("dd/mm/yy", $(this).datepicker("getDate")))
 		            }
 		        });
 		    });

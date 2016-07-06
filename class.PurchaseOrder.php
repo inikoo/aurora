@@ -92,6 +92,49 @@ class PurchaseOrder extends DB_Table{
 	}
 
 
+    function create_delivery($data){
+    
+    
+        		$delivery_data=array(
+			'Supplier Delivery Parent'=>$this->get('Purchase Order Parent'),
+			'Supplier Delivery Parent Key'=>>$this->get('Purchase Order Parent Key'),
+			'Supplier Delivery Parent Name'=>$this->get('Purchase Order Parent Name'),
+			'Supplier Delivery Parent Code'=>$this->get('Purchase Order Parent Code'),
+			'Supplier Delivery Parent Contact Name'=>$this->get('Purchase Order Parent  Contact Name'),
+			'Supplier Delivery Parent Email'=>$this->get('Purchase Order Parent  Email'),
+			'Supplier Delivery Parent Telephone'=>$this->get('Purchase Order Parent Telephone'),
+			'Supplier Delivery Parent Address'=>$this->get('Purchase Order Parent Address'),
+
+			'Supplier Delivery Currency Code'=>$this->get('Default Currency Code'),
+			'Supplier Delivery Incoterm'=>$this->get('Default Incoterm'),
+			'Supplier Delivery Port of Import'=>$this->get('Default Port of Import'),
+			'Supplier Delivery Port of Export'=>$this->get('Default Port of Export'),
+
+
+			'Supplier Delivery Warehouse Key'=>$warehouse->data['Warehouse Key'],
+			'Supplier Delivery Warehouse Code'=>$warehouse->data['Warehouse Code'],
+			'Supplier Delivery Warehouse Name'=>$warehouse->data['Warehouse Name'],
+			'Supplier Delivery Warehouse Address'=>$warehouse->data['Warehouse Address'],
+			'Supplier Delivery Warehouse Company Name'=>$warehouse->data['Warehouse Company Name'],
+			'Supplier Delivery Warehouse Company Number'=>$warehouse->data['Warehouse Company Number'],
+			'Supplier Delivery Warehouse VAT Number'=>$warehouse->data['Warehouse VAT Number'],
+			'Supplier Delivery Warehouse Telephone'=>$warehouse->data['Warehouse Telephone'],
+			'Supplier Delivery Warehouse Email'=>$warehouse->data['Warehouse Email'],
+
+			'Supplier Delivery Terms and Conditions'=>$this->get('Default PO Terms and Conditions'),
+			'Supplier Delivery Main Buyer Key'=>$staff->id,
+			'Supplier Delivery Main Buyer Name'=>$staff->get('Staff Name'),
+			'editor'=>$this->editor
+		);
+    
+        print_r($data);
+    
+    
+    exit;
+    
+    }
+
+
 	function get_data($key, $id) {
 		if ($key=='id') {
 			$sql=sprintf("select * from `Purchase Order Dimension` where `Purchase Order Key`=%d", $id);
@@ -128,10 +171,84 @@ class PurchaseOrder extends DB_Table{
 		case 'Estimated Receiving Date':
 		case 'Agreed Receiving Date':
 		case 'Creation Date':
+		case 'Submitted Date':
+		case 'Send Date':
+			if ($this->data['Purchase Order '.$key]=='')return '';
 			return strftime("%e %b %Y", strtotime($this->data['Purchase Order '.$key].' +0:00'));
 
 			break;
 
+		case 'Received Date':
+			if ($this->get('State Index')<0) {
+				return '';
+
+			}elseif ($this->get('State Index')>=50) {
+
+				if ($this->get('Purchase Order Received Date')=='')return 'Error';
+				return strftime("%e %b %Y", strtotime($this->get('Purchase Order Received Date')));
+			}else {
+
+				if ($this->data['Purchase Order Estimated Receiving Date']) {
+					return '<span class="discreet"><i class="fa fa-thumb-tack" aria-hidden="true"></i> '.strftime("%e %b %Y", strtotime($this->get('Estimated Receiving Date'))).'</span>';
+				}else {
+
+					if ($this->data['Purchase Order State']=='In Process') {
+						$parent=get_object($this->data['Purchase Order Parent'], $this->data['Purchase Order Parent Key']);
+						if ($parent->get($parent->table_name.' Delivery Days') and is_numeric($parent->get($parent->table_name.' Delivery Days'))) {
+							return '<span class="discreet italic">'.strftime("%d-%m-%Y", strtotime('now +'.$parent->get($parent->table_name.' Delivery Days').' days')).'</span>';
+
+						}else {
+							return '&nbsp;';
+						}
+					}else {
+
+						$parent=get_object($this->data['Purchase Order Parent'], $this->data['Purchase Order Parent Key']);
+						if ($parent->get($parent->table_name.' Delivery Days') and is_numeric($parent->get($parent->table_name.' Delivery Days'))) {
+							return '<span class="discreet italic">'.strftime("%d-%m-%Y", strtotime($this->get('Purchase Order Submitted Date').' +'.$parent->get($parent->table_name.' Delivery Days').' days')).'</span>';
+
+						}else {
+							return '<span class="super_discreet">'._('Unknown').'</class>';
+						}
+					}
+
+				}
+			}
+
+			break;
+		case 'State Index':
+
+			switch ($this->data['Purchase Order State']) {
+			case 'In Process':
+				return 10;
+				break;
+			case 'Submitted':
+				return 30;
+				break;
+			case 'Confirmed':
+				return 40;
+				break;
+			case 'Send':
+				return 45;
+				break;
+			case 'Received':
+				return 50;
+				break;
+			case 'Checked':
+				return 60;
+				break;
+			case 'Placed':
+				return 100;
+				break;
+			case 'Cancelled':
+				return -10;
+				break;
+
+
+			default:
+				return 0;
+				break;
+			}
+			break;
 		case ('Main Source Type'):
 			switch ($this->data['Purchase Order Main Source Type']) {
 			case 'Post':
@@ -271,7 +388,7 @@ class PurchaseOrder extends DB_Table{
 
 
 		$date=gmdate('Y-m-d H:i:s');
-$transaction_key='';
+		$transaction_key='';
 
 		if ($qty==0) {
 
@@ -286,7 +403,7 @@ $transaction_key='';
 
 					$sql=sprintf("delete from `Purchase Order Transaction Fact` where `Purchase Order Transaction Fact Key`=%d ",
 						$row['Purchase Order Transaction Fact Key']
-						);
+					);
 					$this->db->exec($sql);
 					$transaction_key=$row['Purchase Order Transaction Fact Key'];
 
@@ -392,7 +509,7 @@ $transaction_key='';
 
 
 
-				$subtotals=money($amount,$this->get('Purchase Order Currency Code'));
+				$subtotals=money($amount, $this->get('Purchase Order Currency Code'));
 
 				if ($weight>0) {
 					$subtotals.=' '.weight($weight);
@@ -951,8 +1068,13 @@ $transaction_key='';
 	}
 
 
+
+
 	function update_field_switcher($field, $value, $options='', $metadata='') {
 		switch ($field) {
+		case 'Purchase Order State':
+			$this->update_state($value, $options, $metadata);
+			break;
 		case 'Purchase Order Estimated Receiving Date':
 			$this->update_estimated_receiving_date($value);
 			break;
@@ -973,6 +1095,82 @@ $transaction_key='';
 
 			break;
 		}
+
+
+
+	}
+
+
+	function update_state($value, $options, $metadata) {
+		$date=gmdate('Y-m-d H:i:s');
+
+
+
+
+
+		switch ($value) {
+		case 'In Process':
+
+			$this->update_field('Purchase Order Submitted Date', '', 'no_history');
+			$this->update_field('Purchase Order Estimated Receiving Date', '', 'no_history');
+			$this->update_field('Purchase Order State', $value, 'no_history');
+			$operations=array('delete_operations', 'submit_operations', 'all_available_items', 'new_item');
+
+			break;
+
+		case 'Submitted':
+
+			$this->update_field('Purchase Order Submitted Date', $date, 'no_history');
+			$this->update_field('Purchase Order Send Date', '', 'no_history');
+
+			$this->update_field('Purchase Order State', $value, 'no_history');
+			$operations=array('cancel_operations','undo_submit_operations', 'received_operations');
+
+			break;
+
+		case 'Send':
+
+			$this->update_field('Purchase Order Submitted Date', $date, 'no_history');
+			$this->update_field('Purchase Order State', $value, 'no_history');
+			foreach ($metadata as $key=>$_value) {
+				$this->update_field($key, $_value, 'no_history');
+			}
+
+			$operations=array('cancel_operations','undo_send_operations', 'received_operations');
+
+
+			break;
+		default:
+			exit('unknown state '.$value);
+			break;
+		}
+
+
+		$this->update_metadata=array(
+			'class_html'=>array(
+				'Purchase_Order_State'=>$this->get('State'),
+				'Purchase_Order_Submitted_Date'=>'&nbsp;'.$this->get('Submitted Date'),
+				'Purchase_Order_Received_Date'=>'&nbsp;'.$this->get('Received Date'),
+				'Purchase_Order_Send_Date'=>'&nbsp;'.$this->get('Send Date'),
+
+			),
+			'operations'=>$operations,
+			'state_index'=>$this->get('State Index')
+		);
+
+
+		$sql=sprintf('update `Purchase Order Transaction Fact` set `Purchase Order Last Updated Date`=%s where `Purchase Order Key`=%d ',
+			prepare_mysql($date),
+			$this->id
+		);
+		$this->db->exec($sql);
+
+		$sql=sprintf('update `Purchase Order Transaction Fact` set `Purchase Order Transaction State`=%s where `Purchase Order Key`=%d ',
+			prepare_mysql($value),
+			$this->id
+		);
+		$this->db->exec($sql);
+
 
 
 
@@ -1002,27 +1200,6 @@ $transaction_key='';
 
 
 
-	function get_formatted_estimated_delivery_date() {
-
-		if ($this->data['Purchase Order Estimated Receiving Date']) {
-			return strftime("%e %b %Y", strtotime($this->get('Estimated Receiving Date')));
-		}else {
-
-			if ($this->data['Purchase Order State']=='In Process') {
-				$parent=get_object($this->data['Purchase Order Parent'], $this->data['Purchase Order Parent Key']);
-				if ($parent->get($parent->table_name.' Delivery Days') and is_numeric($parent->get($parent->table_name.' Delivery Days'))) {
-					return '<span class="from_supplier_delivery_days">'.strftime("%d-%m-%Y", strtotime('now +'.$parent->get($parent->table_name.' Delivery Days').' days')).'</span>';
-
-				}else {
-					return _('Unknown');
-				}
-			}else {
-
-				return _('Unknown');
-			}
-
-		}
-	}
 
 
 	function get_sdn_keys() {

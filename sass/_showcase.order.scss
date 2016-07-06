@@ -1,4 +1,77 @@
-.order,.invoice,.delivery_note{
+.order_operation_dialog{
+border:1px solid #ccc;;min-width:300px;position:absolute;background:#fff;z-index:100;text-align: left;
+
+
+
+tr.buttons td {padding:0px 20px}
+
+td.label{padding:0px 20px}
+
+
+
+
+tr:first-child td{padding-top:10px}
+tr:last-child td{padding-bottom:10px}
+
+}
+
+
+
+.order{
+
+
+
+
+
+
+border-bottom: 1px solid #ccc;
+
+
+.state{height:$height_header;border-bottom:1px solid #ccc}
+
+
+  
+
+  
+  
+  
+   .block {
+    float: right;
+        border-left: 1px solid #ccc;
+        padding-top: 5px;
+        > table {
+            width: 100%;
+            
+              td {
+            padding: 4px 8px;
+        }
+        .top-border {
+            border-top: 1px solid #ccc;
+        }
+        .bottom-border {
+            border-bottom: 1px solid #ccc;
+        }
+        .top-strong-border {
+            border-top: 1px solid #aaa;
+        }
+        .bottom-strong-border {
+            border-bottom: 1px solid #aaa;
+        }
+            
+        }
+      
+    }
+  
+    
+   
+}
+
+
+.xorder,.invoice,.delivery_note{
+
+
+
+
 
 border-bottom: 1px solid #ccc;
 

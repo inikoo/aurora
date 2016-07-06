@@ -121,7 +121,7 @@
 	 {/if} 
 	 
 	
-	<div  {if isset($button.id) and $button.id }id="{$button.id}"{/if}  {if isset($button.attr)} {foreach from=$button.attr key=attr_key item=attr_value }{$attr_key}="{$attr_value}" {/foreach}{/if}    class="table_button square_button right "       {if isset($button.reference) and $button.reference!=''}onclick="change_view('{$button.reference}')"{else if isset($button.change_tab) and $button.change_tab!=''}onclick="change_view(state.request + '&tab={$button.change_tab}')"{/if} {if isset($button.title)}title="{$button.title}"{/if}>
+	<div  {if isset($button.id) and $button.id }id="{$button.id}"{/if}  {if isset($button.attr)} {foreach from=$button.attr key=attr_key item=attr_value }{$attr_key}="{$attr_value}" {/foreach}{/if}    class="table_button square_button right {if isset($button.class)}{$button.class}{/if} "       {if isset($button.reference) and $button.reference!=''}onclick="change_view('{$button.reference}')"{else if isset($button.change_tab) and $button.change_tab!=''}onclick="change_view(state.request + '&tab={$button.change_tab}')"{/if} {if isset($button.title)}title="{$button.title}"{/if}>
 	 <i {if isset($button.id) and $button.id }id="icon_{$button.id}"{/if} class=" fa fa-{$button.icon} fa-fw"></i> 
 	</div>
 	
