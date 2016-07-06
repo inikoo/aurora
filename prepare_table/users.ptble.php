@@ -10,6 +10,8 @@
 */
 
 
+//print_r($parameters);
+
 switch ($parameters['tab']) {
 case 'account.users.staff':
 	$where=" where  `User Type`='Staff' ";
@@ -27,7 +29,6 @@ default:
 	exit('tab not configured (users.ptable.php)');
 	break;
 }
-
 
 
 
