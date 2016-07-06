@@ -11,9 +11,9 @@
 
 
 
-$tab='account.users.agents';
+$tab='account.users.contractors';
 $ar_file='ar_users_tables.php';
-$tipo='agents';
+$tipo='contractors';
 
 $default=$user->get_tab_defaults($tab);
 
