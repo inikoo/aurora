@@ -17,7 +17,7 @@ case 'account.users.staff':
 	$where=" where  `User Type`='Staff' ";
 	break;
 case 'account.users.contractors':
-	$where=" where  `User Type`='Contractors' ";
+	$where=" where  `User Type`='Contractor' ";
 	break;	
 case 'account.users.agents':
 	$where=" where  `User Type`='Agent' ";
