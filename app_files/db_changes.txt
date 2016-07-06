@@ -360,6 +360,9 @@ STICKY:::: --> update `Category Dimension` set `Category Scope`=`Category Subjec
 ALTER TABLE `History Dimension` CHANGE `History Abstract` `History Abstract` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 
 !Important do this:::bk2,,costadw2etc
+export `Purchase Order Transaction Fact` `Purchase Order Dimension` and `Supplier Delivery Dimension`
+
+
 ALTER TABLE `Purchase Order Transaction Fact` CHANGE `Purchase Order Shipping Amount` `Purchase Order Shipping Contribution Amount` DOUBLE(15,2) NOT NULL DEFAULT '0.00';
 ALTER TABLE `Purchase Order Dimension` CHANGE `Purchase Order State` `Purchase Order State` ENUM('In Process','Submitted','Confirmed','Send','Received','Checked','Placed','Cancelled') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'In Process';
 ALTER TABLE `Purchase Order Dimension` ADD `Purchase Order Metadata` TEXT NULL DEFAULT NULL AFTER `Purchase Order CBM`;
