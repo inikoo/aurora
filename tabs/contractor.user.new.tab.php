@@ -13,7 +13,8 @@ include_once 'utils/invalid_messages.php';
 include_once 'conf/object_fields.php';
 include_once 'class.Staff.php';
 
-$contractor=$state['object'];
+$contractor=$state['_object'];
+
 
 $object_fields=get_object_fields($contractor, $db, $user, $smarty,array('new'=>true,'type'=>'user'));
 

@@ -492,7 +492,7 @@ $modules=array(
 
 						'subtabs'=>array(
 							'website.pageviews'=>array('label'=>_('Pageviews'), 'icon'=>'eye'),
-							'website.users'=>array('label'=>_('Users'), 'icon'=>'male'),
+							'website.users'=>array('label'=>_('Users'), 'icon'=>'terminal'),
 							'website.search'=>array('label'=>_('Queries'), 'title'=>_('Search Queries'), 'icon'=>'search',
 								'subtabs'=>array(
 									'website.search.queries'=>array('label'=>_('Queries'), 'title'=>_('Search queries goruped by keywords')),
@@ -592,7 +592,7 @@ $modules=array(
 
 						'subtabs'=>array(
 							'website.node.analytics.pageviews'=>array('label'=>_('Pageviews'), 'icon'=>''),
-							'website.node.analytics.users'=>array('label'=>_('Users'), 'icon'=>'male'),
+							'website.node.analytics.users'=>array('label'=>_('Users'), 'icon'=>'terminal'),
 
 						)
 					),
@@ -1735,7 +1735,7 @@ $modules=array(
 				)
 			),
 
-			'users'=>array('type'=>'navigation', 'label'=>_('Users'), 'icon'=>'male', 'reference'=>'account/users',
+			'users'=>array('type'=>'navigation', 'label'=>_('Users'), 'icon'=>'terminal', 'reference'=>'account/users',
 				'tabs'=>array(
 					'account.users'=>array('label'=>_('Users')),
 				)
@@ -1868,17 +1868,17 @@ $modules=array(
 				)
 			),
 
-			'agents'=>array('type'=>'', 'label'=>_('Agents'), 'icon'=>'male',
+			'agents'=>array('type'=>'', 'label'=>_('Agents'), 'icon'=>'terminal',
 				'tabs'=>array(
 					'account.users.agents'=>array('label'=>_('Agents')),
 				)
 			),
-			'suppliers'=>array('type'=>'', 'label'=>_('Suppliers'), 'icon'=>'male',
+			'suppliers'=>array('type'=>'', 'label'=>_('Suppliers'), 'icon'=>'terminal',
 				'tabs'=>array(
 					'account.users.suppliers'=>array('label'=>_('Suppliers')),
 				)
 			),
-			'contractors'=>array('type'=>'', 'label'=>_('Contractors'), 'icon'=>'male',
+			'contractors'=>array('type'=>'', 'label'=>_('Contractors'), 'icon'=>'terminal',
 				'tabs'=>array(
 					'account.users.contractors'=>array('label'=>_('Contractors')),
 				)

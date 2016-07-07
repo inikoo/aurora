@@ -22,8 +22,8 @@ $nav_menu[] = array('<i class="fa fa-dashboard fa-fw"></i>', _('Dashboard'), '/d
 if ($user->can_view('customers')) {
 
 
-	if ($user->data['User Hooked Store Key']) {
-		$nav_menu[] = array('<i class="fa fa-users fa-fw"></i>',_('Customers'), 'customers/'.$user->data['User Hooked Store Key'], 'customers', 'module', '');
+	if ($user->get('User Hooked Store Key')) {
+		$nav_menu[] = array('<i class="fa fa-users fa-fw"></i>',_('Customers'), 'customers/'.$user->get('User Hooked Store Key'), 'customers', 'module', '');
 
 	}else {
 		$nav_menu[] = array('<i class="fa fa-users fa-fw"></i>',_('Customers'), 'customers/all', 'customers', 'module', '');
@@ -43,7 +43,7 @@ if ($user->can_view('customers')) {
 
 if ($user->can_view('orders')) {
 
-	if ($user->data['User Hooked Store Key']) {
+	if ($user->get('User Hooked Store Key')) {
 		$nav_menu[] = array('<i class="fa fa-shopping-cart fa-fw"></i>',_('Orders'), 'orders', 'orders', 'module', '');
 	}
 	else {
@@ -56,7 +56,7 @@ if ($user->can_view('orders')) {
 	}
 */
 
-	if ($user->data['User Hooked Store Key']) {
+	if ($user->get('User Hooked Store Key')) {
 		$nav_menu[] = array('<i class="fa fa-truck fa-flip-horizontal fa-fw"></i>',_('Delivery notes'), 'delivery_notes', 'delivery_notes', 'module', '');
 	}
 	else {
@@ -71,7 +71,7 @@ if ($user->can_view('orders')) {
 
 
 
-	if ($user->data['User Hooked Store Key']) {
+	if ($user->get('User Hooked Store Key')) {
 		$nav_menu[] = array('<i class="fa fa-usd fa-fw"></i>',_('Invoices'), 'invoices', 'invoices', 'module', '');
 	}
 	else {
@@ -84,7 +84,7 @@ if ($user->can_view('orders')) {
 	}
 */
 
-	if ($user->data['User Hooked Store Key']) {
+	if ($user->get('User Hooked Store Key')) {
 		$nav_menu[] = array('<i class="fa fa-credit-card fa-fw"></i>',_('Payments'), 'payments', 'payments', 'module', '');
 	}
 	else {
@@ -118,8 +118,8 @@ if ($user->can_view('sites')) {
 
 if ($user->can_view('marketing')) {
 
-	if ($user->data['User Hooked Store Key']) {
-		$nav_menu[] = array('<i class="fa fa-bullhorn fa-fw"></i>',_('Marketing'), 'campaigns/'.$user->data['User Hooked Store Key'], 'marketing', 'module', '');
+	if ($user->get('User Hooked Store Key')) {
+		$nav_menu[] = array('<i class="fa fa-bullhorn fa-fw"></i>',_('Marketing'), 'campaigns/'.$user->get('User Hooked Store Key'), 'marketing', 'module', '');
 
 	}else {
 		$nav_menu[] = array('<i class="fa fa-bullhorn fa-fw"></i>',_('Marketing'), 'marketing/all', 'marketing', 'module', '');
@@ -139,8 +139,8 @@ if ($user->can_view('marketing')) {
 
 if ($user->can_view('stores')) {
 
-	if ($user->data['User Hooked Store Key']) {
-		$nav_menu[] = array('<i class="fa fa-cube fa-fw"></i>',_('Products'), 'store/'.$user->data['User Hooked Store Key'], 'products', 'module', '');
+	if ($user->get('User Hooked Store Key')) {
+		$nav_menu[] = array('<i class="fa fa-cube fa-fw"></i>',_('Products'), 'store/'.$user->get('User Hooked Store Key'), 'products', 'module', '');
 
 	}else {
 		$nav_menu[] = array('<i class="fa fa-cube fa-fw"></i>',_('Products'), 'stores', 'products', 'module', '');
@@ -226,20 +226,19 @@ elseif ($user->data['User Type']=='Warehouse') {
 else {
 
 
-	$nav_menu[] = array('<i class="fa fa-user fa-fw"></i>',_('My profile'), '/profile' , 'profile', 'module', 'jump');
+	$nav_menu[] = array('<i class="fa fa-star fa-fw"></i>',_('My profile'), '/profile' , 'profile', 'module', 'jump');
 	$prev_index=count($nav_menu)-2;
 
 	if (isset($nav_menu[$prev_index])) {
-		$nav_menu[$prev_index][4]='last';
+		$nav_menu[$prev_index][5]=$nav_menu[$prev_index][5].' last';
 	}
 }
 
 if ($user->can_view('account')) {
 
 
-	$nav_menu[] = array('<i class="fa fa-star fa-fw"></i>',_('Account'), '/account' , 'account', 'module', '');
+	$nav_menu[] = array('<i class="fa fa-certificate fa-fw"></i>',_('Account'), '/account' , 'account', 'module', '');
 }
-
 $current_item=$data['module'];
 if ($current_item=='customers_server')$current_item='customers';
 if ($current_item=='marketing_server')$current_item='marketing';
@@ -261,6 +260,7 @@ if ($data['object']=='order') {
 	}
 
 }
+//print_r($nav_menu);
 
 $smarty->assign('current_item', $current_item);
 $smarty->assign('current_section', $current_section);

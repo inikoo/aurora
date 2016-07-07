@@ -292,7 +292,7 @@ if (!$new) {
 
 
 		$object_fields[]=array(
-			'label'=>_('System user').' <i  onClick="change_view(\'account/user/'.$employee->get('Staff User Key').'\')" class="fa fa-database link"></i>',
+			'label'=>_('System user').' <i  onClick="change_view(\'account/user/'.$employee->get('Staff User Key').'\')" class="fa fa-terminal link"></i>',
 			'show_title'=>true,
 			'class'=>'edit_fields',
 			'fields'=>array(

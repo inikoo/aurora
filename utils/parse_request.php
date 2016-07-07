@@ -2023,7 +2023,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 
 
-						}if ($view_path[1]=='attachment') {
+						}
+						elseif ($view_path[1]=='attachment') {
 							$section='employee.attachment';
 							$object='attachment';
 							$parent='employee';
@@ -2031,34 +2032,39 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 							if (isset($view_path[2])) {
 								if (is_numeric($view_path[2])) {
 									$key=$view_path[2];
+								}elseif($view_path[2]=='new'){
+								$section='employee.attachment.new';
+									
+									$key=0;
 								}
 							}
 
 
 
-						}
-						else if ($view_path[1]=='new') {
-
-
+						}elseif ($view_path[1]=='user') {
+							$section='employee.user';
+							$object='user';
 							$parent='employee';
 							$parent_key=$key;
-
-
 							if (isset($view_path[2])) {
-								if ($view_path[2]=='attachment') {
-
-									$section='employee.attachment.new';
-									$object='attachment';
-								}elseif ($view_path[2]=='user') {
-
-									$section='employee.user.new';
-									$object='user';
+								if (is_numeric($view_path[2])) {
+									$key=$view_path[2];
+								}elseif($view_path[2]=='new'){
+								$section='employee.user.new';
+									
+									$key=0;
 								}
 							}
 
 
 
 						}
+						
+					
+						
+						
+						
+						
 					}
 
 
@@ -2067,6 +2073,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 				elseif ($view_path[0]=='new') {
 					$section='employee.new';
 					$object='';
+					
+					
 
 				}
 			}
@@ -2171,17 +2179,17 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 						if ( $view_path[1]=='invoices') {
 							$section='billingregion_taxcategory.invoices';
-							$parent='billingregion_taxcategory.invoices';
+//$parent='billingregion_taxcategory.invoices';
 						}elseif ( $view_path[1]=='refunds') {
 							$section='billingregion_taxcategory.refunds';
-							$parent='billingregion_taxcategory.refunds';
+					//		$parent='billingregion_taxcategory.refunds';
 
 						}
 
 
 						$parent_key=$view_path[2].'_'.$view_path[3];
 
-
+                            
 					}
 
 

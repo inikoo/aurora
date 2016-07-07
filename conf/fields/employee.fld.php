@@ -26,7 +26,7 @@ $options_Staff_Payment_Terms=array(
 
 
 $options_Staff_Type=array(
-	'Contractor'=>_('Contractor'),'Employee'=>_('Employee'), 'Volunteer'=>_('Volunteer'), 'TemporalWorker'=>_('Temporal Worker'), 'WorkExperience'=>_('Work Experience')
+	'Contractor'=>_('Contractor'), 'Employee'=>_('Employee'), 'Volunteer'=>_('Volunteer'), 'TemporalWorker'=>_('Temporal Worker'), 'WorkExperience'=>_('Work Experience')
 );
 $options_yn=array(
 	'Yes'=>_('Yes'), 'No'=>_('No')
@@ -327,7 +327,7 @@ if (!$new) {
 
 
 		$object_fields[]=array(
-			'label'=>_('System user').' <i  onClick="change_view(\'account/user/'.$employee->get('Staff User Key').'\')" class="fa fa-link link"></i>',
+			'label'=>_('System user').' <i  onClick="change_view(\'account/user/'.$employee->get('Staff User Key').'\')" class="fa fa-terminal link"></i>',
 			'show_title'=>true,
 			'class'=>'edit_fields',
 			'fields'=>array(
@@ -399,7 +399,7 @@ if (!$new) {
 					'class'=>'new',
 					'value'=>'',
 					'label'=>_('Set up system user').' <i class="fa fa-plus new_button link"></i>',
-					'reference'=>'employee/'.$employee->id.'/new/user'
+					'reference'=>'employee/'.$employee->id.'/user/new'
 				),
 
 			)

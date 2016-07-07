@@ -8,19 +8,19 @@ $group_by='';
 $currency='';
 
 
-if(isset($parameters['excluded_stores']) and is_array($parameters['excluded_stores']) and count($parameters['excluded_stores'])>0)
-$where=sprintf(' where `Invoice Store Key` not in (%s)  ',join($parameters['excluded_stores'],','));
+if (isset($parameters['excluded_stores']) and is_array($parameters['excluded_stores']) and count($parameters['excluded_stores'])>0)
+	$where=sprintf(' where `Invoice Store Key` not in (%s)  ', join($parameters['excluded_stores'], ','));
 else
-$where=' where true';
+	$where=' where true';
 
 
-$table='`Invoice Dimension` I left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)';
+$table='`Invoice Dimension` I left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)  ';
 $where_type='';
 
 
 if (isset($parameters['awhere']) and $parameters['awhere']) {
 
-include_once('invoices_awhere.php');
+	include_once 'invoices_awhere.php';
 
 	$tmp=preg_replace('/\\\"/', '"', $parameters['awhere']);
 	$tmp=preg_replace('/\\\\\"/', '"', $tmp);
@@ -36,7 +36,7 @@ include_once('invoices_awhere.php');
 elseif ($parameters['parent']=='category') {
 	$category=new Category($parameters['parent_key']);
 
-	
+
 
 	$where=sprintf(" where `Subject`='Invoice' and  `Category Key`=%d", $parameters['parent_key']);
 	$table=' `Category Bridge` left join  `Invoice Dimension` I on (`Subject Key`=`Invoice Key`) ';
@@ -92,15 +92,46 @@ elseif ($parameters['parent']=='store') {
 
 }
 elseif ($parameters['parent']=='account') {
-	if (is_numeric($parameters['parent_key']) and in_array($parameters['parent_key'], $user->stores)) {
 
-		if (count($user->stores)==0) {
-			$where=' where false';
-		}
-		else {
+	if ($parameters['tab']=='billingregion_taxcategory.invoices') {
 
-			$where=sprintf('where  `Invoice Store Key` in (%s)  ', join(',', $user->stores));
+		$fields='`Store Code`,`Store Name`,`Country Name`,';
+		$table='`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Billing Country 2 Alpha Code`=C.`Country 2 Alpha Code`)  left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)'   ;
 
+		$parents=preg_split('/_/', $parameters['parent_key']);
+		$where=sprintf('where  `Invoice Type`="Invoice" and  `Invoice Billing Region`=%s and `Invoice Tax Code`=%s  ',
+			prepare_mysql($parents[0]),
+			prepare_mysql($parents[1])
+		);
+
+
+	}
+	elseif ($parameters['tab']=='billingregion_taxcategory.refunds') {
+
+		$fields='`Store Code`,`Store Name`,`Country Name`,';
+		$table='`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Billing Country 2 Alpha Code`=C.`Country 2 Alpha Code`)  left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)'   ;
+
+		$parents=preg_split('/_/', $parameters['parent_key']);
+		$where=sprintf('where  `Invoice Type`!="Invoice"  and  `Invoice Billing Region`=%s and `Invoice Tax Code`=%s  ',
+			prepare_mysql($parents[0]),
+			prepare_mysql($parents[1])
+		);
+
+
+	}else {
+
+
+
+		if (is_numeric($parameters['parent_key']) and in_array($parameters['parent_key'], $user->stores)) {
+
+			if (count($user->stores)==0) {
+				$where=' where false';
+			}
+			else {
+
+				$where=sprintf('where  `Invoice Store Key` in (%s)  ', join(',', $user->stores));
+
+			}
 		}
 	}
 }
@@ -116,32 +147,8 @@ elseif ($parameters['parent']=='delivery_note') {
 	$where=sprintf('where  B.`Delivery Note Key`=%d  ', $parameters['parent_key']);
 
 }
-elseif ($parameters['parent']=='billingregion_taxcategory.invoices') {
+else {
 
-	$fields='`Store Code`,`Store Name`,`Country Name`,';
-	$table='`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Billing Country 2 Alpha Code`=C.`Country 2 Alpha Code`)  left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)'   ;
-
-	$parents=preg_split('/_/', $parameters['parent_key']);
-	$where=sprintf('where  `Invoice Type`="Invoice" and  `Invoice Billing Region`=%s and `Invoice Tax Code`=%s  ',
-		prepare_mysql($parents[0]),
-		prepare_mysql($parents[1])
-	);
-
-
-}
-elseif ($parameters['parent']=='billingregion_taxcategory.refunds') {
-
-	$fields='`Store Code`,`Store Name`,`Country Name`,';
-	$table='`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Billing Country 2 Alpha Code`=C.`Country 2 Alpha Code`)  left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)'   ;
-
-	$parents=preg_split('/_/', $parameters['parent_key']);
-	$where=sprintf('where  `Invoice Type`!="Invoice"  and  `Invoice Billing Region`=%s and `Invoice Tax Code`=%s  ',
-		prepare_mysql($parents[0]),
-		prepare_mysql($parents[1])
-	);
-
-
-}else {
 	exit("unknown parent ".$parameters['parent']." \n");
 }
 

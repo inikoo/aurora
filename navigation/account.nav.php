@@ -549,6 +549,7 @@ function get_staff_navigation($data, $smarty, $user, $db, $account) {
 
 }
 
+
 function get_contractors_navigation($data, $smarty, $user, $db, $account) {
 
 
@@ -618,6 +619,7 @@ function get_suppliers_navigation($data, $smarty, $user, $db, $account) {
 
 }
 
+
 function get_agents_navigation($data, $smarty, $user, $db, $account) {
 
 
@@ -656,7 +658,7 @@ function get_agents_navigation($data, $smarty, $user, $db, $account) {
 
 function get_staff_user_navigation($data, $smarty, $user, $db, $account) {
 
-	global $smarty, $user;
+
 
 	$object=$data['_object'];
 	$left_buttons=array();
@@ -695,8 +697,27 @@ function get_staff_user_navigation($data, $smarty, $user, $db, $account) {
 			$parameters=$default;
 			$parameters['parent']=$data['parent'];
 			$parameters['parent_key']=$data['parent_key'];
-		}
 
+
+			switch ($data['_object']->get('User Type')) {
+			case 'Staff':
+				$parameters['tab']='account.users.staff';
+				break;
+			case 'Contractor':
+				$parameters['tab']='account.users.contractors';
+				break;
+			case 'Agent':
+				$parameters['tab']='account.users.agents';
+				break;
+			case 'Supplier':
+				$parameters['tab']='account.users.suppliers';
+				break;
+			default:
+
+				break;
+			}
+
+		}
 
 
 
@@ -857,9 +878,30 @@ function get_staff_user_navigation($data, $smarty, $user, $db, $account) {
 
 	$sections['users']['selected']=true;
 
+	switch ($object->get('User Type')) {
+	case 'Staff':
+		$parent_reference='employee/'.$object->get('User Parent Key');
+		$parent_icon='<i style="font-size:80%;padding-left:10px" class="fa fa-hand-rock-o" aria-hidden="true"></i>';
+		break;
+	case 'Contractor':
+		$parent_reference='contractor/'.$object->get('User Parent Key');
+		$parent_icon='<i style="font-size:80%;padding-left:10px" class="fa fa-hand-spock-o" aria-hidden="true"></i>';
+		break;
+	case 'Supplier':
+		$parent_reference='supplier/'.$object->get('User Parent Key');
+		$parent_icon='<i style="font-size:80%;padding-left:10px" class="fa fa-ship" aria-hidden="true"></i>';
+		break;
+	case 'Agent':
+		$parent_reference='agent/'.$object->get('User Parent Key');
+		$parent_icon='<i style="font-size:80%;padding-left:10px" class="fa fa-user-secret" aria-hidden="true"></i>';
+		break;			
+	default:
+
+		break;
+	}
 
 
-	$title= '<span class="id">'.$object->get('User Alias').' ('.$object->get_formatted_id().')</span>';
+	$title= '<span class="id">'.$object->get('User Handle').'</span> <span class="small button" onClick="change_view(\''.$parent_reference.'\')"  > '.$parent_icon.' '.$object->get('User Alias').' </span> ';
 
 
 	$_content=array(
