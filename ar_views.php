@@ -118,6 +118,11 @@ case 'views':
 		}
 
 		break;
+	case 'day':
+	case 'month':	
+	case 'week':	
+	$_parent='';
+		break;
 	default:
 		$_parent=get_object($state['parent'], $state['parent_key']);
 
