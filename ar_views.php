@@ -605,7 +605,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
 
 
 		break;
-	case 'PurchaseOrderItem':	
+	case 'PurchaseOrderItem':
 		include_once 'showcase/supplier.order.item.show.php';
 		$html=get_showcase($data, $smarty, $user, $db);
 		break;
@@ -1006,13 +1006,13 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 			break;
 		case ('deliveries'):
 			return get_deliveries_navigation($data, $smarty, $user, $db, $account);
-			break;	
+			break;
 		case ('order'):
 			return get_purchase_order_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('delivery'):
 			return get_delivery_navigation($data, $smarty, $user, $db, $account);
-			break;	
+			break;
 		case ('agents'):
 			return get_agents_navigation($data, $smarty, $user, $db, $account);
 			break;
@@ -1053,7 +1053,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 			break;
 		case ('supplier.order.item'):
 			return get_supplier_order_item_navigation($data, $smarty, $user, $db, $account);
-			break;	
+			break;
 		}
 
 		break;
@@ -1845,12 +1845,12 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 		}elseif ($state['section']=='supplier.user.new') {
 			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
 			$branch[]=array('label'=>'<span class="id Supplier_Code">'.$state['_parent']->get('Code').'</span> <span class="Supplier_Name italic">'.$state['_parent']->get('Name').'</span>', 'icon'=>'ship', 'reference'=>'supplier/'.$state['parent_key']);
-			$branch[]=array('label'=>_('New system user'), 'icon'=>'male', 'reference'=>'');
+			$branch[]=array('label'=>_('New system user'), 'icon'=>'terminal', 'reference'=>'');
 
 		}elseif ($state['section']=='agent.user.new') {
 			$branch[]=array('label'=>_('Agents'), 'icon'=>'', 'reference'=>'agents');
 			$branch[]=array('label'=>'<span class="Agent_Code">'.$state['_parent']->get('Code').'</span> <span class="Agent_Name italic">'.$state['_parent']->get('Name').'</span>', 'icon'=>'user-secret', 'reference'=>'agent/'.$state['parent_key']);
-			$branch[]=array('label'=>_('New system user'), 'icon'=>'male', 'reference'=>'');
+			$branch[]=array('label'=>_('New system user'), 'icon'=>'terminal', 'reference'=>'');
 
 		}
 
@@ -2228,7 +2228,13 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 			break;
 		case 'contractor.user.new':
 			$branch[]=array('label'=>_('Contractors'), 'icon'=>'', 'reference'=>'hr/contractors');
-			$branch[]=array('label'=>'<span class="id Staff_Alias">'.$state['_parent']->get('Staff Alias').'</span>', 'icon'=>'hand-spock-o', 'reference'=>'employee/'.$state['_parent']->id);
+			$branch[]=array('label'=>'<span class="id Staff_Alias">'.$state['_parent']->get('Staff Alias').'</span>', 'icon'=>'hand-spock-o', 'reference'=>'contractor/'.$state['_parent']->id);
+			$branch[]=array('label'=>_('New system user'), 'icon'=>'');
+
+			break;
+		case 'employee.user.new':
+			$branch[]=array('label'=>_('Employees'), 'icon'=>'', 'reference'=>'hr');
+			$branch[]=array('label'=>'<span class="id Staff_Alias">'.$state['_parent']->get('Staff Alias').'</span>', 'icon'=>'', 'reference'=>'employee/'.$state['_parent']->id);
 			$branch[]=array('label'=>_('New system user'), 'icon'=>'');
 
 			break;
@@ -2696,25 +2702,44 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 		$branch[]=array('label'=>_('Account').' <span class="id">'.$account->get('Account Code').'</span>', 'icon'=>'', 'reference'=>'account');
 		if ($state['section']=='users') {
-			$branch[]=array('label'=>_('Users'), 'icon'=>'', 'reference'=>'account/users');
+			$branch[]=array('label'=>_('Users'), 'icon'=>'terminal', 'reference'=>'account/users');
 
 		}elseif ($state['section']=='staff') {
 			$branch[]=array('label'=>_('Users'), 'icon'=>'', 'reference'=>'account/users');
-			$branch[]=array('label'=>_('Employee users'), 'icon'=>'', 'reference'=>'account/users/staff');
+			$branch[]=array('label'=>_('Employees'), 'icon'=>'terminal', 'reference'=>'account/users/staff');
 		}elseif ($state['section']=='contractors') {
 			$branch[]=array('label'=>_('Users'), 'icon'=>'', 'reference'=>'account/users');
-			$branch[]=array('label'=>_('Contractor users'), 'icon'=>'', 'reference'=>'account/users/contractors');
+			$branch[]=array('label'=>_('Contractors'), 'icon'=>'terminal', 'reference'=>'account/users/contractors');
 		}elseif ($state['section']=='suppliers') {
 			$branch[]=array('label'=>_('Users'), 'icon'=>'', 'reference'=>'account/users');
-			$branch[]=array('label'=>_('Suppliers users'), 'icon'=>'', 'reference'=>'account/users/suppliers');
+			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'terminal', 'reference'=>'account/users/suppliers');
 		}elseif ($state['section']=='agents') {
 			$branch[]=array('label'=>_('Users'), 'icon'=>'', 'reference'=>'account/users');
-			$branch[]=array('label'=>_('Agents users'), 'icon'=>'', 'reference'=>'account/users/agents');
+			$branch[]=array('label'=>_('Agents'), 'icon'=>'terminal', 'reference'=>'account/users/agents');
 		}elseif ($state['section']=='staff.user') {
 			$branch[]=array('label'=>_('Users'), 'icon'=>'', 'reference'=>'account/users');
 
-			$branch[]=array('label'=>_('Staff users'), 'icon'=>'', 'reference'=>'account/users/staff');
-			$branch[]=array('label'=>_('User').' <span id="id">'.$state['_object']->data['User Alias'].'</span>', 'icon'=>'male', 'reference'=>'account/user/'.$state['_object']->id);
+
+			switch ($state['_object']->get('User Type')) {
+			case 'Staff':
+				$branch[]=array('label'=>_('Employees'), 'icon'=>'', 'reference'=>'account/users/staff');
+				break;
+			case 'Contractor':
+				$branch[]=array('label'=>_('Contractors'), 'icon'=>'', 'reference'=>'account/users/contractors');
+				break;
+			case 'Agent':
+				$branch[]=array('label'=>_('Contractors'), 'icon'=>'', 'reference'=>'account/users/agents');
+				break;	
+			case 'Suppliers':
+				$branch[]=array('label'=>_('Contractors'), 'icon'=>'', 'reference'=>'account/users/suppliers');
+				break;				
+			default:
+
+				break;
+			}
+
+
+			$branch[]=array('label'=>'<span id="id">'.$state['_object']->get('User Handle').'</span>', 'icon'=>'terminal', 'reference'=>'account/user/'.$state['_object']->id);
 
 		}elseif ($state['section']=='settings') {
 			$branch[]=array('label'=>_('Settings'), 'icon'=>'cog', 'reference'=>'account/settings');

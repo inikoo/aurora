@@ -557,13 +557,16 @@ class Staff extends DB_Table{
 			break;
 
 		case 'Staff User Active':
+		case 'User Active':
 			$label=_('active');
 			break;
 		case 'Staff User Handle':
+		case 'User Handle':
 			$label=_('login');
 			break;
 
 		case 'Staff User Password':
+		case 'User Password':
 			$label=_('password');
 			break;
 
@@ -1253,13 +1256,11 @@ class Staff extends DB_Table{
 
 
 
-
 		$account=new Account();
 
 		$old_value=$this->get('Position');
 
 		$available_roles=array();
-
 
 
 		include 'conf/roles.php';

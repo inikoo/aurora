@@ -121,7 +121,7 @@ $user_groups=array(
 		'Name'=>_('Supply Intelligence'),
 		'View'=>' <i title="'._('Orders').'" class="fa fa-shopping-cart fa-fw"> <i  title="'._('Products').'" class="fa fa-square-o fa-fw"></i> <i  title="'._('Inventory').'" class="fa fa-square fa-fw"></i> <i  title="'._('Warehouse (Locations)').'" class="fa fa-th-large fa-fw"></i> <i title="'._('Suppliers').'" class="fa fa-industry fa-fw"></i>',
 		'Edit'=>'',
-		'Rights'=>array('RV')
+		'Rights'=>array('RV','OV')
 
 	),
 

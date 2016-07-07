@@ -444,6 +444,7 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 
 		}else {
+		
 			$msg='';
 			$formatted_value=$object->get($formatted_field);
 			$action='';

@@ -522,11 +522,16 @@ class User extends DB_Table {
 
 		switch ($field) {
 		case('Staff Position'):
+		
+		    if(!in_array($this->get('User Type'),array('Staff','Contractor')))return;
+		
 			include_once 'class.Staff.php';
-			$employee=new Staff($this->get_staff_key());
+			$employee=new Staff($this->get('User Parent Key'));
+		
 			if ($employee->id) {
 				$employee->update_roles($value);
 			}
+			
 			break;
 
 		case('User Groups'):
@@ -1240,15 +1245,23 @@ class User extends DB_Table {
 			break;
 
 		case 'Preferred Locale':
-			$label=_('Language');
+			$label=_('language');
 			break;
 		case 'User Password Recovery Email':
-			$label=_("Recovery email");
+			$label=_("recovery email");
 			break;
 		case 'User Password Recovery Mobile':
-			$label=_("Recovery mobile");
+			$label=_("recovery mobile");
 			break;
-
+		case 'User Stores':
+			$label=_('stores');
+			break;
+		case 'User Websites':
+			$label=_('websites');
+			break;
+		case 'User Warehouses':
+			$label=_('warehouses');
+			break;		
 		default:
 			$label=$field;
 
@@ -1261,7 +1274,7 @@ class User extends DB_Table {
 
 	function get_staff_key() {
 		$staff_key=0;
-		if ($this->data['User Type']=='Staff') {
+		if ($this->data['User Type']=='Staff' or $this->data['User Type']=='Contractor') {
 			$staff_key=$this->data['User Parent Key'];
 		}else {
 			$staff_key=0;
@@ -1372,11 +1385,11 @@ class User extends DB_Table {
 			return false;
 		$tag=strtolower(_trim($tag));
 
-		
+
 
 		if ($tag_key==false) {
 			if (isset($this->rights_allow[$right_type][$tag])) {
-		
+
 				return true;
 			}else {
 				return false;
@@ -1585,17 +1598,17 @@ class User extends DB_Table {
 
 
 		$sql=sprintf("select `User Group Key` from `User Group User Bridge`  where  `User Key`=%d", $this->id);
-//print $sql;
-//exit;
+		//print $sql;
+		//exit;
 		if ($result=$this->db->query($sql)) {
 
 			foreach ($result as $row) {
 
-                if(isset($user_groups[$row['User Group Key']])){
+				if (isset($user_groups[$row['User Group Key']])) {
 
-				$this->groups[$row['User Group Key']]=array('User Group Name'=>$user_groups[$row['User Group Key']]['Name']);
-				$this->groups_key_list.=','.$row['User Group Key'];
-				$this->groups_key_array[]=$row['User Group Key'];
+					$this->groups[$row['User Group Key']]=array('User Group Name'=>$user_groups[$row['User Group Key']]['Name']);
+					$this->groups_key_list.=','.$row['User Group Key'];
+					$this->groups_key_array[]=$row['User Group Key'];
 				}
 			}
 		}else {

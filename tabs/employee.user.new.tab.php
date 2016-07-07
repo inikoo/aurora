@@ -13,9 +13,11 @@ include_once 'utils/invalid_messages.php';
 include_once 'conf/object_fields.php';
 include_once 'class.Staff.php';
 
-$employee=$state['object'];
 
-$object_fields=get_object_fields($employee, $db, $user, $smarty,array('new'=>true,'type'=>'user'));
+
+$employee=$state['_object'];
+
+$object_fields=get_object_fields($employee, $db, $user, $smarty,array('new'=>true,'type'=>'user','parent'=>'Staff','_parent'=>$state['_parent']));
 
 $smarty->assign('state', $state);
 $smarty->assign('object', $employee);
