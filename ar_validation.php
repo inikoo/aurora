@@ -85,7 +85,7 @@ function check_for_duplicates($data, $db, $user, $account) {
 		switch ($field) {
 		case 'Staff ID':
 			$invalid_msg=_('Another contractor is using this payroll Id');
-			$sql=sprintf("select `Staff Key` as `key` ,`Staff Alias` as field from `Staff Dimension` where `Staff ID`=%s",
+			$sql=sprintf("select `Staff Key` as `key` ,`Staff Alias` as field from `Staff Dimension` where `Staff Currently Working`='Yes' and  `Staff ID`=%s",
 				prepare_mysql($data['value'])
 			);
 			$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
@@ -93,7 +93,15 @@ function check_for_duplicates($data, $db, $user, $account) {
 			break;
 		case 'Staff Alias':
 			$invalid_msg=_('Another contractor is using this code');
-			$sql=sprintf("select `Staff Key` as `key` ,`Staff Alias` as field from `Staff Dimension` where `Staff Alias`=%s",
+			$sql=sprintf("select `Staff Key` as `key` ,`Staff Alias` as field from `Staff Dimension` where `Staff Currently Working`='Yes' and  `Staff Alias`=%s",
+				prepare_mysql($data['value'])
+			);
+			$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
+
+			break;
+		case 'Staff Email':
+			$invalid_msg=_('Another contractor is using this code');
+			$sql=sprintf("select `Staff Key` as `key` ,`Staff Alias` as field from `Staff Dimension` where `Staff Currently Working`='Yes' and  `Staff Email`=%s",
 				prepare_mysql($data['value'])
 			);
 			$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
@@ -101,7 +109,7 @@ function check_for_duplicates($data, $db, $user, $account) {
 			break;
 		case 'Staff User Handle':
 			$invalid_msg=_('Another user is using this login handle');
-			$sql=sprintf("select `User Key`as `key` ,`User Handle` as field from `User Dimension` where `User Type`='Staff' and `User Handle`=%s",
+			$sql=sprintf("select `User Key`as `key` ,`User Handle` as field from `User Dimension` where `User Type`!='Customer' and `User Handle`=%s",
 				prepare_mysql($data['value'])
 			);
 			$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
@@ -115,16 +123,53 @@ function check_for_duplicates($data, $db, $user, $account) {
 		break;
 
 	case 'Staff':
+	case 'ExStaff':
+
+
+		if ($data['object']=='Staff') {
+			$extra_where="`Staff Currently Working`='Yes' and";
+		}else {
+			$data['object']='Staff';
+			$extra_where='';
+		}
+
+
 		switch ($field) {
 		case 'Staff ID':
 			$invalid_msg=_('Another employee is using this payroll Id');
+			$sql=sprintf("select `Staff Key` as `key` ,`Staff Alias` as field from `Staff Dimension` where  $extra_where `Staff ID`=%s  ",
+				prepare_mysql($data['value'])
+			);
+			$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
+
 			break;
 		case 'Staff Alias':
 			$invalid_msg=_('Another employee is using this code');
+			$sql=sprintf("select `Staff Key` as `key` ,`Staff Alias` as field from `Staff Dimension` where $extra_where  `Staff Alias`=%s",
+				prepare_mysql($data['value'])
+			);
+			$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
+
+			break;
+		case 'Staff Email':
+			$invalid_msg=_('Another employee is using this email');
+			$sql=sprintf("select `Staff Key` as `key` ,`Staff Alias` as field from `Staff Dimension` where $extra_where  `Staff Email`=%s",
+				prepare_mysql($data['value'])
+			);
+			$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
+
+			break;
+		case 'Staff Official ID':
+			$invalid_msg=_('Another employee is using this Id');
+			$sql=sprintf("select `Staff Key` as `key` ,`Staff Alias` as field from `Staff Dimension` where $extra_where `Staff Official ID`=%s",
+				prepare_mysql($data['value'])
+			);
+			$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
+
 			break;
 		case 'Staff User Handle':
 			$invalid_msg=_('Another user is using this login handle');
-			$sql=sprintf("select `User Key`as `key` ,`User Handle` as field from `User Dimension` where `User Type`='Staff' and `User Handle`=%s",
+			$sql=sprintf("select `User Key`as `key` ,`User Handle` as field from `User Dimension` where `User Type`!='Customer' and `User Handle`=%s",
 				prepare_mysql($data['value'])
 			);
 			$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
@@ -511,7 +556,7 @@ function check_for_duplicates($data, $db, $user, $account) {
 
 		);
 
-		//  print $sql;
+		print $sql;
 
 
 
@@ -536,8 +581,8 @@ function check_for_duplicates($data, $db, $user, $account) {
 				$validation='invalid';
 				$msg=$invalid_msg;
 				break;
-			}else{
-			   
+			}else {
+
 			}
 		}else {
 			print_r($error_info=$db->errorInfo());
