@@ -29,6 +29,18 @@ if (!isset($_REQUEST['tab'])) {
 $tab=$_REQUEST['tab'];
 
 switch ($tab) {
+case 'suppliers.deliveries':
+	$data=prepare_values($_REQUEST, array(
+			'parameters'=>array('type'=>'json array')
+		));
+	get_supplier_deliveries_element_numbers($db, $data['parameters'], $user);
+	break;
+case 'suppliers.orders':
+	$data=prepare_values($_REQUEST, array(
+			'parameters'=>array('type'=>'json array')
+		));
+	get_purchase_orders_element_numbers($db, $data['parameters'], $user);
+	break;
 case 'website.nodes':
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
@@ -53,12 +65,12 @@ case 'category.all_parts':
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
 		));
-		
-	if($tab=='category.all_parts'){
-	    $data['parameters']['parent']='account';
-	    $data['parameters']['parent_key']=1;
+
+	if ($tab=='category.all_parts') {
+		$data['parameters']['parent']='account';
+		$data['parameters']['parent_key']=1;
 	}
-		
+
 	get_parts_elements($db, $data['parameters'], $user);
 	break;
 case 'warehouse.locations':
@@ -347,7 +359,7 @@ function get_parts_elements($db, $data, $user) {
 
 	);
 
-    
+
 
 
 	$table='`Part Dimension`  P  ';
@@ -412,7 +424,7 @@ function get_supplier_parts_elements($db, $data, $user) {
 
 		$where=sprintf(" where  `Agent Supplier Agent Key`=%d", $data['parent_key']);
 		$table.=' left join `Agent Supplier Bridge` on (SP.`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`)';
-		
+
 		break;
 	case 'purchase_order':
 
@@ -1111,6 +1123,7 @@ function get_delivery_note_element_numbers($db, $data) {
 }
 
 
+
 function get_barcodes_elements($db, $data, $user) {
 
 
@@ -1214,6 +1227,99 @@ function get_supplier_orders_elements($db, $data) {
 
 
 
+
+	$response= array('state'=>200, 'elements_numbers'=>$elements_numbers);
+	echo json_encode($response);
+
+
+
+}
+
+
+function get_supplier_deliveries_element_numbers($db, $data) {
+
+	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($data['period'], $data['from'], $data['to']);
+
+	$parent_key=$data['parent_key'];
+	$where_interval=prepare_mysql_dates($from, $to, '`Supplier Delivery Date`');
+	$where_interval=$where_interval['mysql'];
+
+	$table='`Supplier Delivery Dimension`  SD  ';
+	switch ($data['parent']) {
+	case 'account':
+		$where=sprintf(' where true');
+		break;
+	default:
+		$response=array('state'=>405, 'resp'=>'product parent not found '.$data['parent']);
+		echo json_encode($response);
+		return;
+	}
+
+	$elements_numbers=array(
+		'state'=>array('InProcess'=>0, 'Dispatched'=>0, 'Received'=>0, 'Checked'=>0, 'Placed'=>0, 'Cancelled'=>0),
+	);
+
+	$sql=sprintf("select count(*) as number,`Supplier Delivery State` as element from %s %s group by `Supplier Delivery State` ",
+		$table, $where
+
+	);
+
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+			$elements_numbers['state'][$row['element']]=number($row['number']);
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+	$response= array('state'=>200, 'elements_numbers'=>$elements_numbers);
+	echo json_encode($response);
+
+
+
+}
+
+
+function get_purchase_orders_element_numbers($db, $data) {
+
+	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($data['period'], $data['from'], $data['to']);
+
+	$parent_key=$data['parent_key'];
+	$where_interval=prepare_mysql_dates($from, $to, '`Purchase Order Date`');
+	$where_interval=$where_interval['mysql'];
+
+	$table='`Purchase Order Dimension`  PO  ';
+	switch ($data['parent']) {
+	case 'account':
+		$where=sprintf(' where true');
+		break;
+	default:
+		$response=array('state'=>405, 'resp'=>'product parent not found '.$data['parent']);
+		echo json_encode($response);
+		return;
+	}
+
+
+	$elements_numbers=array(
+		'state'=>array('InProcess'=>0, 'Submitted'=>0, 'Confirmed'=>0, 'Received'=>0, 'Placed'=>0, 'Cancelled'=>0),
+	);
+
+	$sql=sprintf("select count(*) as number,`Purchase Order State` as element from %s %s group by `Purchase Order State` ",
+		$table, $where
+
+	);
+
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+			$elements_numbers['state'][$row['element']]=number($row['number']);
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
 
 	$response= array('state'=>200, 'elements_numbers'=>$elements_numbers);
 	echo json_encode($response);

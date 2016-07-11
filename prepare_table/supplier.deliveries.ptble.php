@@ -53,13 +53,9 @@ if (isset($parameters['elements_type'])) {
 			$_value=$_value['selected'];
 			if ($_value) {
 				$num_elements_checked++;
-				if ($_key=='InProcess') {
-					$_elements.=",'In Process'";
-				}elseif ($_key=='In Warehouse') {
-					$_elements.=",'In Warehouse'";
-				}else {
-					$_elements.=",'".addslashes($_key)."'";
-				}
+
+				$_elements.=",'".addslashes($_key)."'";
+
 			}
 		}
 
@@ -67,7 +63,7 @@ if (isset($parameters['elements_type'])) {
 			$where.=' and false' ;
 		}elseif ($num_elements_checked<6) {
 
-		
+
 
 			$_elements=preg_replace('/^,/', '', $_elements);
 
@@ -113,6 +109,6 @@ $fields='`Supplier Delivery Parent`,`Supplier Delivery Parent Key`,D.`Supplier D
 ';
 
 $sql_totals="select count(Distinct D.`Supplier Delivery Key`) as num from $table   $where $wheref ";
-
+//print $sql_totals;
 
 ?>

@@ -107,7 +107,7 @@
 	<div class="block " style="align-items: stretch;flex: 1;">
 		<div class="state" style="height:30px;margin-bottom:10px;position:relative;top:-5px">
 			<div id="back_operations">
-				<div id="delete_operations" class="order_operation {if $delivery->get('Supplier Delivery State')!='In Process'}hide{/if}">
+				<div id="delete_operations" class="order_operation {if $delivery->get('Supplier Delivery State')!='InProcess'}hide{/if}">
 					<div class="square_button left" xstyle="padding:0;margin:0;position:relative;top:-5px" title="{t}delete{/t}">
 						<i class="fa fa-trash very_discreet " aria-hidden="true" onclick="toggle_order_operation_dialog('delete')"></i> 
 						<table id="delete_dialog" border="0" class="order_operation_dialog hide">
@@ -121,7 +121,7 @@
 						</table>
 					</div>
 				</div>
-				<div id="cancel_operations" class="order_operation {if $delivery->get('Supplier Delivery State')=='In Process'}hide{/if}">
+				<div id="cancel_operations" class="order_operation {if $delivery->get('Supplier Delivery State')=='InProcess'}hide{/if}">
 					<div class="square_button left" xstyle="padding:0;margin:0;position:relative;top:-5px" title="{t}Cancel{/t}">
 						<i class="fa fa-minus-circle error " aria-hidden="true" onclick="toggle_order_operation_dialog('cancel')"></i> 
 						<table id="cancel_dialog" border="0" class="order_operation_dialog hide">
@@ -148,7 +148,7 @@
 							</tr>
 							<tr class="buttons changed">
 								<td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('undo_dispatched')"></i></td>
-								<td class="aright"><span data-data='{ "value": "In Process","dialog_name":"undo_dispatched", "field": "Supplier Delivery State"}'  id="undo_dispatched_save_buttons" class="valid save button" onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span> </td>
+								<td class="aright"><span data-data='{ "value": "InProcess","dialog_name":"undo_dispatched", "field": "Supplier Delivery State"}'  id="undo_dispatched_save_buttons" class="valid save button" onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span> </td>
 							</tr>
 						</table>
 					</div>
@@ -165,7 +165,7 @@
 							</tr>
 							<tr class="buttons changed">
 								<td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('undo_received')"></i></td>
-								<td class="aright"><span data-data='{ "value": "In Process or Dispatched","dialog_name":"undo_received", "field": "Supplier Delivery State"}'  id="undo_received_save_buttons" class="valid save button" onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span> </td>
+								<td class="aright"><span data-data='{ "value": "InProcess or Dispatched","dialog_name":"undo_received", "field": "Supplier Delivery State"}'  id="undo_received_save_buttons" class="valid save button" onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span> </td>
 							</tr>
 						</table>
 					</div>
@@ -174,7 +174,7 @@
 			<span style="float:left;padding-left:10px;padding-top:5px" class="Supplier_Delivery_State"> {$delivery->get('State')} </span> 
 			<div id="forward_operations">
 				
-				<div id="received_operations" class=" order_operation {if !($delivery->get('Supplier Delivery State')=='In Process' or  $delivery->get('Supplier Delivery State')=='Dispatched') }hide{/if}">
+				<div id="received_operations" class=" order_operation {if !($delivery->get('Supplier Delivery State')=='InProcess' or  $delivery->get('Supplier Delivery State')=='Dispatched') }hide{/if}">
 					<div class="square_button right" title="{t}received{/t}">
 						<i class="fa fa-arrow-circle-down fa-fw" aria-hidden="true" onclick="toggle_order_operation_dialog('received')"></i> 
 						<table id="received_dialog" border="0" class="order_operation_dialog hide">
@@ -205,7 +205,7 @@
 					</div>
 				</div>
 
-				<div id="dispatched_operations" class="order_operation {if $delivery->get('Supplier Delivery State')!='In Process'}hide{/if}">
+				<div id="dispatched_operations" class="order_operation {if $delivery->get('Supplier Delivery State')!='InProcess'}hide{/if}">
 					<div class="square_button right"  title="{t}Mark as dispatched{/t}">
 						
 												<i class="fa fa-arrow-circle-right fa-fw" aria-hidden="true" onclick="toggle_order_operation_dialog('dispatched')"></i> 
