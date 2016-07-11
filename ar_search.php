@@ -1212,7 +1212,7 @@ function search_hr($db, $account, $memcache_ip, $data) {
 
 
 
-			$sql=sprintf("select `Staff Key`,`Staff Alias` from `Staff Dimension` where `Staff Alias` like '%s%%' limit 20 ",
+			$sql=sprintf("select `Staff Key`,`Staff Alias` from `Staff Dimension` where `Staff Currently Working`='Yes' and   `Staff Alias` like '%s%%' limit 20 ",
 				$q);
 
 
@@ -1238,7 +1238,7 @@ function search_hr($db, $account, $memcache_ip, $data) {
 
 
 
-			$sql=sprintf("select `Staff Key`,`Staff Name` from `Staff Dimension` where  `Staff Name`  REGEXP '[[:<:]]%s' limit 100 ",
+			$sql=sprintf("select `Staff Key`,`Staff Name` from `Staff Dimension` where `Staff Currently Working`='Yes' and  `Staff Name`  REGEXP '[[:<:]]%s' limit 100 ",
 				$q);
 
 
@@ -1289,7 +1289,7 @@ function search_hr($db, $account, $memcache_ip, $data) {
 			$_key=preg_split('/ /', $key);
 			if ($_key[0]=='S') {
 
-				$sql=sprintf("select `Staff Key`,`Staff ID`,`Staff Alias`,`Staff Name` from `Staff Dimension` where `Staff Key`=%d",
+				$sql=sprintf("select `Staff Key`,`Staff ID`,`Staff Alias`,`Staff Name` from `Staff Dimension` where  `Staff Key`=%d",
 					$_key[1]);
 				if ($result=$db->query($sql)) {
 					if ($row = $result->fetch()) {

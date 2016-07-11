@@ -427,13 +427,7 @@ class Staff extends DB_Table{
 		case 'Clocking Data':
 			$data=$this->get('Staff Clocking Data');
 
-			$data=array(
-				'Clocking Status' => 'In',
-				'Timesheet Clocking Records' => 2,
-				'Last Clocking' =>'2015-11-30 17:03:33',
-				'Timesheet Ignored Clocking Records' => 0,
-				'Timesheet Key' => ''
-			);
+		
 
 			if ($data['Timesheet Clocking Records']==0) {
 				return _('No clockings today');

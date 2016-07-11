@@ -30,9 +30,18 @@
 	<div id="info">
 		<div id="overviews">
 			<table border="0" class="overview" style="">
-				<tr class="main">
+			<tr class="main {if $employee->get('Staff Currently Working')=='Yes'}hide{/if} ">
+					<td class="aright title">{t}Ex-employee{/t}</td>
+				</tr>
+			<tr class="main {if $employee->get('Staff Currently Working')=='Yes'}hide{/if} ">
+					<td class="aright ">{$employee->get('Valid From')} - {$employee->get('Valid To')}</td>
+				</tr>
+				<tr class="main {if $employee->get('Staff Currently Working')=='No'}hide{/if} ">
 					<td class="aright  Staff_Clocking_Data">{$employee->get('Clocking Data')}</td>
 				</tr>
+				
+				
+				
 			</table>
 		</div>
 	</div>

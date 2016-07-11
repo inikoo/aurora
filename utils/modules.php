@@ -1515,15 +1515,17 @@ $modules=array(
 
 				'tabs'=>array(
 					'employees'=>array('label'=>_('Employees')),
-					'employees.history_uploads'=>array('label'=>_('History'),
-						'subtabs'=>array(
-							'employees.history'=>array('label'=>_('History'), 'icon'=>'road'),
-							'employees.uploads'=>array('label'=>_('Uploads'), 'icon'=>'upload'),
 
-						)
-					),
 
-					'exemployees'=>array('label'=>_('Ex employees'), 'title'=>_('Ex Employees'), 'class'=>'right'),
+
+
+					'employees.history'=>array('label'=>_('History'), 'icon'=>'road', 'class'=>'right icon_only'),
+					'employees.uploads'=>array('label'=>_('Uploads'), 'icon'=>'upload', 'class'=>'right icon_only'),
+
+
+
+
+					'exemployees'=>array('label'=>_('Ex employees'), 'title'=>_('Ex Employees'), 'class'=>''),
 
 
 
