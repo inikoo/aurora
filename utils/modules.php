@@ -998,6 +998,17 @@ $modules=array(
 				)
 
 			),
+			'delivery'=>array('type'=>'object',
+				'tabs'=>array(
+
+					'supplier.delivery.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+
+					'supplier.delivery.items'=>array('label'=>_('Items'), 'icon'=>'bars'),
+					'supplier.delivery.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
+
+				)
+
+			),
 
 			'category'=>array(
 				'type'=>'object',

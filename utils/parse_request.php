@@ -561,6 +561,26 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 
 						}
+						elseif ($view_path[1]=='delivery') {
+							$section='delivery';
+
+							$parent='supplier';
+							$parent_key=$view_path[0];
+							$object='supplierdelivery';
+
+							if ( isset($view_path[2]) ) {
+								if (is_numeric($view_path[2])) {
+									$key=$view_path[2];
+
+
+								
+
+								}
+
+							}
+
+
+						}
 						elseif ($view_path[1]=='upload') {
 							$module='account';
 							$section='upload';
@@ -1752,6 +1772,19 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 					$section='order';
 					$object='purchase_order';
+
+					if ( isset($view_path[1]) ) {
+						if (is_numeric($view_path[1])) {
+							$key=$view_path[1];
+						}
+
+					}
+
+
+				}elseif ($view_path[0]=='delivery') {
+
+					$section='delivery';
+					$object='supplierdelivery';
 
 					if ( isset($view_path[1]) ) {
 						if (is_numeric($view_path[1])) {

@@ -33,6 +33,24 @@ var columns = [
 {
     name: "reference",
     label: "{t}S. Code{/t}",
+        renderable: {if $data['_object']->get('State Index')>=40}false{else}true{/if},
+
+    editable: false,
+     cell: Backgrid.StringCell.extend({
+      events: {
+            "click": function() {
+                {if $data['parent']=='supplier'}
+                change_view("supplier/{$data['parent_key']}/order/{$data['key']}/item/"+this.model.get("id"))
+                {/if}
+            }
+        },
+      className: "link"
+     }),
+},{
+    name: "part_reference",
+    label: "{t}Part{/t}",
+        renderable: {if $data['_object']->get('State Index')>=40}true{else}false{/if},
+
     editable: false,
      cell: Backgrid.StringCell.extend({
       events: {
@@ -53,6 +71,8 @@ var columns = [
 }, {
     name: "subtotals",
     label: "{t}Subtotals{/t}",
+        renderable: {if $data['_object']->get('State Index')>=40}false{else}true{/if},
+
     defautOrder:1,
     editable: false,
     sortType: "toggle",
@@ -62,7 +82,7 @@ var columns = [
 }, {
     name: "quantity",
     label: "{t}Cartons{/t}",
-    renderable: {if $data['_object']->get('Purchase Order State')=='In Process'}true{else}false{/if},
+    renderable: {if $data['_object']->get('Supplier Delivery State')=='In Process'}true{else}false{/if},
     defautOrder:1,
     editable: false,
     sortType: "toggle",
@@ -70,9 +90,9 @@ var columns = [
     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
         headerCell: integerHeaderCell
 }, {
-    name: "ordered",
+    name: "qty",
     label: "{t}Cartons{/t}",
-    renderable: {if $data['_object']->get('Purchase Order State')!='In Process'}true{else}false{/if},
+    renderable: {if $data['_object']->get('Supplier Delivery State')!='In Process' and  $data['_object']->get('State Index')<40 }true{else}false{/if},
     defautOrder:1,
     editable: false,
     sortType: "toggle",
@@ -87,6 +107,35 @@ var columns = [
     editable: false,
     sortType: "toggle",
     {if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+        headerCell: integerHeaderCell
+}, {
+    name: "c_sko_u",
+    label: "{t}C/SKO/U{/t}",
+    renderable: {if $data['_object']->get('State Index')>=40}true{else}false{/if},
+    defautOrder:1,
+    editable: false,
+    sortType: "toggle",
+    {if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+        headerCell: integerHeaderCell
+}, {
+    name: "received_quantity",
+    label: "{t}Received SKO{/t}",
+    renderable: {if $data['_object']->get('State Index')>=40}true{else}false{/if},
+    defautOrder:1,
+    editable: false,
+    sortType: "toggle",
+    {if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+        headerCell: integerHeaderCell
+}, {
+    name: "placement",
+    label: "{t}Placements{/t}",
+    renderable: {if $data['_object']->get('State Index')>=40}true{else}false{/if},
+    
+    editable: false,
+   
     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
         headerCell: integerHeaderCell
 }

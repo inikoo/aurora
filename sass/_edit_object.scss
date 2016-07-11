@@ -9,6 +9,9 @@ tr.title{font-size:120%;
 
 }
 
+.changed{
+    .save{opacity:1}
+}
 .save{
 opacity: .4;
 &.changed{opacity:1}

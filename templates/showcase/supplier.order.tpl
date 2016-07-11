@@ -1,5 +1,5 @@
 <div class="timeline_horizontal">
-	{$order->get('State Index')} 
+
 	<ul class="timeline" id="timeline">
 		<li id="submitted_node" class="li {if $order->get('State Index')>=30}complete{/if}"> 
 		<div class="label">
@@ -168,105 +168,10 @@
 						</table>
 					</div>
 				</div>
-				<div id="received_operations" class=" order_operation {if !($order->get('Purchase Order State')=='Submitted' or  $order->get('Purchase Order State')=='Send') }hide{/if}">
-					<div class="square_button right" title="{t}received{/t}">
-						<i class="fa fa-sign-in fa-fw" aria-hidden="true" onclick="toggle_order_operation_dialog('received')"></i> 
-						<table id="received_dialog" border="0" class="order_operation_dialog hide">
-							<tr class="top">
-								<td colspan="2">{t}Mark purchase order as received{/t}</td>
-							</tr>
-							<tr class="changed">
-								<td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('received')"></i></td>
-								<td class="aright"><span id="received_save_buttons" class="valid save button" onclick="save_order_operation('received','Received')"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span> </td>
-							</tr>
-						</table>
-					</div>
 				</div>
-
-				<div id="send_operations" class="order_operation {if $order->get('Purchase Order State')!='Submitted'}hide{/if}">
-					<div class="square_button right" xstyle="padding:0;margin:0;position:relative;top:-5px" title="{t}send{/t}">
-						<i class="fa fa-plane fa-fw" aria-hidden="true" onclick="toggle_order_operation_dialog('send')"></i> 
-						<table id="send_dialog" border="0" class="order_operation_dialog hide">
-							<tr class="top">
-								<td class="label" colspan="2">{t}Purchase order send{/t}</td>
-							</tr>
-							<tr class="top">
-								<td class="label">{t}Date{/t}</td>
-								<td> 
-								<input id="send_date" type="hidden" value="{$smarty.now|date_format:'%Y-%m-%d'}" ovalue="{$smarty.now|date_format:'%Y-%m-%d'}" has_been_valid="0" />
-								<input id="send_date_time" type="hidden" value="{$smarty.now|date_format:'%H:%M:%S'}" />
-								<input id="send_date_formatted" class="option_input_field" data-settings='{ "type": "datetime","id":"send_date", "field": "Purchase Order Send Date"}'    style="width:8em" value="{$smarty.now|date_format:'%d/%m/%Y'}" />
-								<span id="send_date_msg" class="msg"></span> 
-								<script>
-		                            $(function() {
-		    $("#send_date_datepicker").datepicker({
-		        showOtherMonths: true,
-		        selectOtherMonths: true,
-		        defaultDate: new Date('{$smarty.now|date_format:"%Y-%m-%d %H:%M:%S"}'),
-		        altField: "#send_date",
-		        altFormat: "yy-mm-dd",
-		        //minDate: new Date({$mindate_send_order}),
-		        //maxDate: 0,
-
-		        onSelect: function() {
-		            $('#send_date').change();
-		            $('#send_date_formatted').val('xx');
-
-		            //     var date = $(this).datepicker("getDate");
-		            $('#send_date_formatted').val($.datepicker.formatDate("dd/mm/yy", $(this).datepicker("getDate")))
-
-		            $('#send_date_datepicker').addClass('hide')
-		        }
-		    });
-		});
-
-		                            $('#send_date_formatted').focusin(function() {
-		    $('#send_date_datepicker').removeClass('hide')
-
-		});
-
-		                            $('#send_date_formatted').on('input', function() {
-		    var date = chrono.parseDate($('#send_date_formatted').val())
-
-		    if (date == null) {
-		        var value = '';
-		    } else {
-		        var value = date.toISOString().slice(0, 10)
-		        $("#send_date_datepicker").datepicker("setDate", date);
-		    }
-
-
-		    $('#send_date').val(value)
-		    $('#send_date').change();
-
-		});
-		                            $('#send_date').on('change', function() {
-		    on_changed_value('send_date', $('#send_date').val())
-
-		});
-
-		                            if ('{$smarty.now|date_format:"%Y-%m-%d %H-%M-%S"}' == '') {
-		    $('#send_date').val('')
-		}
-		                        </script>
-		                       </td>
-							</tr>
-							<tr>
-								<td colspan="2">
-								<div id="send_date_datepicker" class="hide datepicker">
-								</div>
-								</td>
-							</tr>
-							<tr class="buttons changed">
-								<td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('send')"></i></td>
-								<td class="aright"><span id="send_save_buttons" class="valid save button" onclick="save_order_operation('send','Send')"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span> </td>
-							</tr>
-						</table>
-					</div>
-				</div>
-			</div>
 		</div>
-		<div class="delivery_node {if {$order->get('State Index')|intval}<30 }hide{/if}" style="height:30px;clear:both;border-top:1px solid #ccc;border-bottom:1px solid #ccc">
+		
+		<div class="delivery_node {if {$order->get('State Index')|intval}<30 or ($order->get('Purchase Order Ordered Number Items')-$order->get('Purchase Order Supplier Delivery Number Items'))==0  }hide{/if}" style="height:30px;clear:both;border-top:1px solid #ccc;border-bottom:1px solid #ccc">
 			<div id="back_operations"></div>
 			<span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic"><i class="fa fa-truck fa-flip-horizontal button" aria-hidden="true" ></i> {t}Delivery Note{/t} </span> 
 			<div id="forward_operations">
@@ -284,46 +189,17 @@
 			
 		</div>
 	
-		{*} 
-		<table id="delivery_notes" border="1" class="ul_table">
-			{foreach from=$order->get_sdn_objects() item=dn} 
-			<tr>
-				<td class="icon"><i class="fa fa-fw fa-truck"></i> </td>
-				<td colspan="2"> <span class="link" onclick="change_view('order/{$order->id}/delivery_note/{$dn->id}')" ">{$dn->get('Delivery Note ID')}</span> <a class="pdf_link" target='_blank' href="/dn.pdf.php?id={$dn->id}"> <img style="" src="/art/pdf.gif"></a> </td>
-				<td class="state">{$dn->get('Delivery Note XHTML State')} </td>
-			</tr>
-			<tr>
-				<td class="more_dn_opertions"> </td>
-				<td colspan="3" class="state"> {$dn->get_info()} </td>
-			</tr>
-			<tr id="dn_operations_tr_{$dn->id}" style="{if $dn->get('Delivery Note State')=='Dispatched'}display:none{/if}">
-				<td colspan="3" class="state" id="operations_container{$dn->id}">{$dn->get_operations($user,'order',$order->id)}</td>
-			</tr>
-			<tr style="{if $dn->get('Delivery Note State')=='Dispatched'}display:none{/if};border-bottom:1px solid #ccc;border-top:1px solid #eee">
-				<td colspan="4"> 
-				<table border="0" style="width:100%;margin:0px;font-size:80%;">
-					<tr>
-						<td style="border-right:1px solid #eee;width:50%;text-align:center" id="pick_aid_container{$dn->id}"><span class="link" onclick="change_view('order/{$order->id}/pick_aid/{$dn->id}')">{t}Picking Aid{/t}</span> <a class="pdf_link" target='_blank' href="pdf/order_pick_aid.pdf.php?id={$dn->id}"> <img src="/art/pdf.gif"></a> </td>
-						<td style="text-align:center" class="aright" id="pack_aid_container{$dn->id}"><span class="link" onclick="change_view('order/{$order->id}/pack_aid/{$dn->id}')">{t}Pack Aid{/t}</span></td>
-					</tr>
-				</table>
-				</td>
-			</tr>
+		
+		
+			{foreach from=$order->get_deliveries('objects') item=dn} 
+				<div class="delivery_node" style="height:30px;clear:both;border-top:1px solid #ccc;border-bottom:1px solid #ccc">
+			<span style="float:left;padding-left:10px;padding-top:5px" > <span class="button" onClick="change_view('{$order->get('Purchase Order Parent')|lower}/{$order->get('Purchase Order Parent Key')}/delivery/{$dn->id}')"> <i class="fa fa-truck fa-flip-horizontal " aria-hidden="true" ></i> {$dn->get('Public ID')}</span> ({$dn->get('State')}) </span> 
+
+</div>	
 			{/foreach} 
-		</table>
-		<table id="invoices" border="1" class="ul_table">
-			{foreach from=$order->get_invoices_objects() item=invoice} 
-			<tr>
-				<td class="icon"><i class="fa fa-fw fa-usd"></i> </td>
-				<td> <span class="link" onclick="change_view('order/{$order->id}/invoice/{$invoice->id}')">{$invoice->get('Invoice Public ID')}</span> <a class="pdf_link" target='_blank' href="/pdf/invoice.pdf.php?id={$invoice->id}"> <img src="/art/pdf.gif"></a> </td>
-				<td style="text-align:right;padding-right:10px;font-size:80%;"> {$invoice->get_formatted_payment_state()} </td>
-			</tr>
-			<tr>
-				<td colspan="2" class="right" style="text-align:right" id="operations_container{$invoice->id}">{$invoice->get_operations($user,'order',$order->id)}</td>
-			</tr>
-			{/foreach} 
-		</table>
-		{*} 
+	
+		
+		
 	</div>
 	<div class="block " style="align-items: stretch;flex: 1 ">
 		<table border="0" class="info_block">

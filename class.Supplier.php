@@ -1173,6 +1173,8 @@ class Supplier extends SubjectSupplier {
 
 
 
+
+
 	function update_default_currency($currency, $modify_products, $ratio) {
 
 		$this->update_field_switcher('Supplier Default Currency Code', $currency);

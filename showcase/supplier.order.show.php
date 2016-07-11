@@ -16,7 +16,6 @@ function get_supplier_order_showcase($data, $smarty, $user, $db) {
 	if (!$data['_object']->id) {
 		return "";
 	}
-
 	$smarty->assign('order', $data['_object']);
 
 	$smarty->assign('object_data', base64_encode(json_encode(
@@ -24,7 +23,8 @@ function get_supplier_order_showcase($data, $smarty, $user, $db) {
 					'object'=>$data['object'],
 					'key'=>$data['key'],
 					'order_parent'=>$data['_object']->get('Purchase Order Parent'),
-					'order_parent_key'=>$data['_object']->get('Purchase Order Parent Key')
+					'order_parent_key'=>$data['_object']->get('Purchase Order Parent Key'),
+					'tab'=>$data['tab']
 				)))  );
 
 

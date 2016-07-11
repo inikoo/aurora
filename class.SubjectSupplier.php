@@ -81,7 +81,7 @@ class SubjectSupplier extends Subject {
 		if ($order->error) {
 			$this->error=true;
 			$this->msg=$order->msg;
-			return $order;
+			
 		}
 
 

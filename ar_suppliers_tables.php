@@ -39,9 +39,12 @@ case 'order.items':
 case 'invoice.items':
 	invoice_items(get_table_parameters(), $db, $user, $account);
 	break;
-case 'delivery_note.items':
-	delivery_note_items(get_table_parameters(), $db, $user);
+case 'delivery.items':
+	delivery_items(get_table_parameters(), $db, $user);
 	break;
+case 'delivery.checking_items':
+	delivery_checking_items(get_table_parameters(), $db, $user);
+	break;	
 case 'suppliers':
 	suppliers(get_table_parameters(), $db, $user, $account);
 	break;
@@ -472,7 +475,7 @@ function deliveries($_data, $db, $user) {
 	if ($result=$db->query($sql)) {
 		foreach ($result as $data) {
 
-			switch ($data['Purchase Order State']) {
+			switch ($data['Supplier Delivery State']) {
 			case 'In Process':
 				$state=sprintf('%s', _('In Process'));
 				break;
@@ -493,20 +496,20 @@ function deliveries($_data, $db, $user) {
 				break;
 
 			default:
-				$state=$data['Purchase Order State'];
+				$state=$data['Supplier Delivery State'];
 				break;
 			}
 
 			$adata[]=array(
-				'id'=>(integer)$data['Purchase Order Key'],
-				'parent_key'=> (integer) $data['Purchase Order Parent Key'],
-				'public_id'=>$data['Purchase Order Public ID'],
-				'date'=>strftime("%e %b %Y", strtotime($data['Purchase Order Creation Date'].' +0:00')),
-				'last_date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Purchase Order Last Updated Date'].' +0:00')),
-				'parent_name'=>$data['Purchase Order Parent Name'],
+				'id'=>(integer)$data['Supplier Delivery Key'],
+				'parent_key'=> (integer) $data['Supplier Delivery Parent Key'],
+				'public_id'=>$data['Supplier Delivery Public ID'],
+				'date'=>strftime("%e %b %Y", strtotime($data['Supplier Delivery Creation Date'].' +0:00')),
+				'last_date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Supplier Delivery Last Updated Date'].' +0:00')),
+				'parent_name'=>$data['Supplier Delivery Parent Name'],
 				'state'=>$state,
 
-				'total_amount'=>money($data['Purchase Order Total Amount'], $data['Purchase Order Currency Code'])
+				'total_amount'=>money($data['Supplier Delivery Total Amount'], $data['Supplier Delivery Currency Code'])
 
 
 			);
@@ -556,35 +559,7 @@ function order_items($_data, $db, $user) {
 
 			$quantity=number($data['Purchase Order Quantity']);
 
-			/*
-			$units=$data['Product Units Per Case'];
-			$name=$data['Product History Name'];
-			$price=$data['Product History Price'];
-			$currency=$data['Product Currency'];
 
-
-			$description='';
-			if ($units>1) {
-				$description=number($units).'x ';
-			}
-			$description.=' '.$name;
-			if ($price>0) {
-				$description.=' ('.money($price, $currency, $_locale ).')';
-			}
-
-
-			$description.=' <span style="color:#777">['.$stock.']</span> '.$deal_info;
-
-
-
-			if ($data['Current Dispatching State']=='Out of Stock in Basket') {
-				$description.='<br> <span class="attention"><img src="/art/icons/error.png"> '._('Product out of stock, removed from basket').'</span>';
-				$quantity=number($data['Out of Stock Quantity']);
-
-				$class='out_of_stock';
-
-			}
-*/
 
 			$units_per_carton=$data['Supplier Part Units Per Package']*$data['Supplier Part Packages Per Carton'];
 
@@ -607,7 +582,7 @@ function order_items($_data, $db, $user) {
 
 				$delivery_qty=$data['Purchase Order Quantity'];
 
-				$delivery_quantity=sprintf('<span class="delivery_quantity" id="delivery_quantity_%d" key="%d" item_key="%d" item_historic_key=%d on="1" ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_delivery_qty_change(this)" class="fa  fa-minus fa-fw button" aria-hidden="true"></i></span>',
+				$delivery_quantity=sprintf('<span class="delivery_quantity" id="delivery_quantity_%d" key="%d" item_key="%d" item_historic_key=%d on="1" ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-minus fa-fw button" aria-hidden="true"></i></span>',
 					$data['Purchase Order Transaction Fact Key'],
 					$data['Purchase Order Transaction Fact Key'],
 					$data['Supplier Part Key'],
@@ -668,6 +643,193 @@ function order_items($_data, $db, $user) {
 	echo json_encode($response);
 }
 
+
+function delivery_items($_data, $db, $user) {
+
+
+	$rtext_label='item';
+
+	include_once 'class.PurchaseOrder.php';
+	$purchase_order=new PurchaseOrder($_data['parameters']['parent_key']);
+
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $data) {
+
+
+			$quantity=number($data['Supplier Delivery Quantity']);
+
+
+
+			$units_per_carton=$data['Supplier Part Units Per Package']*$data['Supplier Part Packages Per Carton'];
+
+
+			$subtotals=sprintf('<span  class="subtotals" >');
+			if ($data['Supplier Delivery Quantity']>0) {
+				$subtotals.=money($data['Supplier Delivery Net Amount'], $data['Currency Code']);
+
+				if ($data['Supplier Delivery Weight']>0) {
+					$subtotals.=' '.weight($data['Supplier Delivery Weight']);
+				}
+				if ($data['Supplier Delivery CBM']>0) {
+					$subtotals.=' '.number($data['Supplier Delivery CBM']).' m³';
+				}
+			}
+			$subtotals.='</span>';
+
+
+
+
+			$delivery_quantity=sprintf('<span class="delivery_quantity" id="delivery_quantity_%d" key="%d" item_key="%d" item_historic_key=%d on="1" ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-minus fa-fw button" aria-hidden="true"></i></span>',
+				$data['Purchase Order Transaction Fact Key'],
+				$data['Purchase Order Transaction Fact Key'],
+				$data['Supplier Part Key'],
+				$data['Supplier Part Historic Key'],
+				$quantity+0,
+				$quantity+0
+			);
+
+
+			$adata[]=array(
+
+				'id'=>(integer)$data['Purchase Order Transaction Fact Key'],
+				'supplier_part_key'=>(integer)$data['Supplier Part Key'],
+				'checkbox'=>sprintf('<i key="%d" class="fa fa-fw fa-square-o button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']),
+
+				'operations'=>sprintf('<i key="%d" class="fa fa-fw fa-truck fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']),
+
+				'reference'=>$data['Supplier Part Reference'],
+				'description'=>$data['Part Unit Description'].' ('.number($units_per_carton).'/C)',
+
+				'quantity'=>$delivery_quantity,
+				'subtotals'=>$subtotals,
+				'ordered'=>number($data['Purchase Order Quantity']),
+				'qty'=>number($quantity)
+
+			);
+
+
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+function delivery_checking_items($_data, $db, $user) {
+
+
+	$rtext_label='item';
+
+	include_once 'class.PurchaseOrder.php';
+	$purchase_order=new PurchaseOrder($_data['parameters']['parent_key']);
+
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $data) {
+
+
+			$quantity=number($data['Supplier Delivery Quantity']);
+
+
+
+			$units_per_carton=$data['Supplier Part Units Per Package']*$data['Supplier Part Packages Per Carton'];
+
+
+			$subtotals=sprintf('<span  class="subtotals" >');
+			if ($data['Supplier Delivery Quantity']>0) {
+				$subtotals.=money($data['Supplier Delivery Net Amount'], $data['Currency Code']);
+
+				if ($data['Supplier Delivery Weight']>0) {
+					$subtotals.=' '.weight($data['Supplier Delivery Weight']);
+				}
+				if ($data['Supplier Delivery CBM']>0) {
+					$subtotals.=' '.number($data['Supplier Delivery CBM']).' m³';
+				}
+			}
+			$subtotals.='</span>';
+
+
+
+
+			$delivery_quantity=sprintf('<span class="delivery_quantity" id="delivery_quantity_%d" key="%d" item_key="%d" item_historic_key=%d on="1" ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-minus fa-fw button" aria-hidden="true"></i></span>',
+				$data['Purchase Order Transaction Fact Key'],
+				$data['Purchase Order Transaction Fact Key'],
+				$data['Supplier Part Key'],
+				$data['Supplier Part Historic Key'],
+				$quantity+0,
+				$quantity+0
+			);
+
+
+			$adata[]=array(
+
+				'id'=>(integer)$data['Purchase Order Transaction Fact Key'],
+				'supplier_part_key'=>(integer)$data['Supplier Part Key'],
+				'checkbox'=>sprintf('<i key="%d" class="fa fa-fw fa-square-o button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']),
+
+				'operations'=>sprintf('<i key="%d" class="fa fa-fw fa-truck fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']),
+
+				'reference'=>$data['Supplier Part Reference'],
+				'part_reference'=>$data['Part Reference'],
+				'description'=>$data['Part Unit Description'].' ('.number($units_per_carton).'/C)',
+
+				'quantity'=>$delivery_quantity,
+				'subtotals'=>$subtotals,
+				'ordered'=>number($data['Purchase Order Quantity']),
+				'qty'=>number($quantity)
+
+			);
+
+
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
 
 function order_supplier_parts($_data, $db, $user) {
 

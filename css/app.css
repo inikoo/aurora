@@ -1577,6 +1577,9 @@ input.invalid {
     position: relative;
     top: -1px; }
 
+.changed .save {
+  opacity: 1; }
+
 .save {
   opacity: .4; }
   .save.changed {
@@ -2067,7 +2070,7 @@ input.inputfile {
     border: 1px solid #66DC71;
     transition: all 200ms ease-in; }
   .timeline_horizontal .li.complete .label span {
-    color: #26A65B; }
+    color: #888; }
   @media (min-device-width: 320px) and (max-device-width: 700px) {
     .timeline_horizontal .timeline {
       list-style-type: none;

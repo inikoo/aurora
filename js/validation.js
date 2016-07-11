@@ -747,7 +747,7 @@ function server_validation(settings, parent, parent_key, object, key, field, val
 
     }
 
-    //  console.log(request)
+     console.log(request)
     $.getJSON(request, function(data) {
 
 
