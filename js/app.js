@@ -68,12 +68,14 @@ function change_subtab(subtab) {
 
 function change_view(_request, metadata) {
 
+
+
     if (metadata == undefined) {
         metadata = {};
     }
 
     var request = "/ar_views.php?tipo=views&request=" + _request + '&metadata=' + JSON.stringify(metadata) + "&old_state=" + JSON.stringify(state)
-//console.log(request)
+console.log(metadata)
     $.getJSON(request, function(data) {
 
         //console.log(data);

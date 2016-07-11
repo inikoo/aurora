@@ -339,7 +339,9 @@ case 'views':
 	) {
 
 
-		if (!($data['old_state']['module']==$state['module']  and $data['old_state']['section']==$state['section'] and $data['old_state']['object']==$state['object'] and $data['old_state']['key']==$state['key'] )) {
+		if ( isset($data['metadata']['reload_showcase']) or
+		!($data['old_state']['module']==$state['module']  and $data['old_state']['section']==$state['section'] and $data['old_state']['object']==$state['object'] and $data['old_state']['key']==$state['key'])
+		) {
 
 			$response['object_showcase']=get_object_showcase(
 				(isset($modules[$state['module']]['sections'][$state['section']]['showcase'])?$modules[$state['module']]['sections'][$state['section']]['showcase']:$state['object']),
