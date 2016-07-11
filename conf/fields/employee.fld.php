@@ -223,15 +223,14 @@ $object_fields=array(
 			),
 
 			array(
-				'render'=>false,
 				'edit'=>($edit?'option':''),
 
 				'id'=>'Staff_Currently_Working',
 				'value'=>($new?'Yes':$employee->get('Staff Currently Working')),
-				'formatted_value'=>($new?_('Yes'):$employee->get('Staff Currently Working')),
+				'formatted_value'=>($new?_('Yes'):$employee->get('Currently Working')),
 				'options'=>$options_yn,
 				'label'=>ucfirst($employee->get_field_label('Staff Currently Working')),
-				'type'=>'value',
+				'type'=>'',
 				'required'=>false,
 			),
 			array(
@@ -247,6 +246,7 @@ $object_fields=array(
 				'type'=>'value',
 				'required'=>false,
 			),
+			
 			array(
 				'render'=>($new?false:($employee->get('Staff Currently Working')=='Yes'?false:true)),
 				'edit'=>($edit?'date':''),
