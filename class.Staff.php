@@ -427,7 +427,7 @@ class Staff extends DB_Table{
 		case 'Clocking Data':
 			$data=$this->get('Staff Clocking Data');
 
-		
+
 
 			if ($data['Timesheet Clocking Records']==0) {
 				return _('No clockings today');
@@ -1135,9 +1135,10 @@ class Staff extends DB_Table{
 		require_once 'utils/date_functions.php';
 
 
-		$this->update_field('Staff Currently Working', $value, $options);
+
 
 		if ($value=='No' ) {
+			$this->update_field('Staff Currently Working', $value, $options);
 			$this->update_field('Staff Valid To', gmdate('Y-m-d H:i:s'), 'no_history');
 
 
@@ -1213,6 +1214,79 @@ class Staff extends DB_Table{
 
 
 		}else {
+
+
+
+			if ($this->get('Staff Official ID')!='') {
+				$sql=sprintf("select `Staff Key` ,`Staff Alias`  from `Staff Dimension` where`Staff Currently Working`='Yes' and `Staff Official ID`=%s",
+					prepare_mysql($this->get('Staff Official ID'))
+				);
+
+				if ($result=$this->db->query($sql)) {
+					if ($row = $result->fetch()) {
+						$this->error=true;
+						$this->msg=sprintf(_('%s has same %s'), '<span class="link" onClick="change_view(\'employee/'.$row['Staff Key'].'\')">'.$row['Staff Alias'].'</span>', $this->get_field_label('Staff Official ID'));
+						return;
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
+				}
+			}
+			
+			if ($this->get('Staff Email')!='') {
+			$sql=sprintf("select `Staff Key` ,`Staff Alias`  from `Staff Dimension` where`Staff Currently Working`='Yes' and `Staff Email`=%s",
+				prepare_mysql($this->get('Staff Email'))
+			);
+
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$this->error=true;
+					$this->msg=sprintf(_('%s has same %s'), '<span class="link" onClick="change_view(\'employee/'.$row['Staff Key'].'\')">'.$row['Staff Alias'].'</span>', $this->get_field_label('Staff Email'));
+					return;
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+			}
+
+
+
+			$sql=sprintf("select `Staff Key` ,`Staff Alias`  from `Staff Dimension` where`Staff Currently Working`='Yes' and `Staff Alias`=%s",
+				prepare_mysql($this->get('Staff Alias'))
+			);
+
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$this->error=true;
+					$this->msg=sprintf(_('%s has same %s'), '<span class="link" onClick="change_view(\'employee/'.$row['Staff Key'].'\')">'.$row['Staff Alias'].'</span>', $this->get_field_label('Staff Alias'));
+					return;
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+			$sql=sprintf("select `Staff Key` ,`Staff Alias`  from `Staff Dimension` where`Staff Currently Working`='Yes' and `Staff ID`=%s",
+				prepare_mysql($this->get('Staff ID'))
+			);
+
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$this->error=true;
+					$this->msg=sprintf(_('%s has same %s'), '<span class="link" onClick="change_view(\'employee/'.$row['Staff Key'].'\')">'.$row['Staff Alias'].'</span>', $this->get_field_label('Staff ID'));
+					return;
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+
+			$this->update_field('Staff Currently Working', $value, $options);
+
+
 			$this->update_field('Staff Valid To', '', 'no_history');
 
 			$from=date('Y-m-d');
