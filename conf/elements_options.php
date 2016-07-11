@@ -340,7 +340,6 @@ $elements_options=array(
 		)
 	),
 
-
 	'campaign_history'=>array(
 		'type'=>array(
 			'label'=>_('Type'),
@@ -370,8 +369,8 @@ $elements_options=array(
 				'InProcess'=>array('label'=>_('In process'), 'selected'=>true),
 				'Submitted'=>array('label'=>_('Submitted'), 'selected'=>true),
 				'Confirmed'=>array('label'=>_('Confirmed'), 'selected'=>true),
-				'InWarehouse'=>array('label'=>_('In Warehouse'), 'selected'=>true),
-				'Done'=>array('label'=>_('Done'), 'selected'=>true),
+				'Received'=>array('label'=>_('Received'), 'selected'=>true),
+				'Placed'=>array('label'=>_('Placed'), 'selected'=>true),
 				'Cancelled'=>array('label'=>_('Cancelled'), 'selected'=>false),
 			),
 
@@ -382,15 +381,15 @@ $elements_options=array(
 
 
 	),
-'supplier_deliveries'=>array(
+	'supplier_deliveries'=>array(
 		'state'=>array(
 			'label'=>_('State'),
 			'items'=>array(
 				'InProcess'=>array('label'=>_('In process'), 'selected'=>true),
-				'Submitted'=>array('label'=>_('Submitted'), 'selected'=>true),
-				'Confirmed'=>array('label'=>_('Confirmed'), 'selected'=>true),
-				'InWarehouse'=>array('label'=>_('In Warehouse'), 'selected'=>true),
-				'Done'=>array('label'=>_('Done'), 'selected'=>true),
+				'Dispatched'=>array('label'=>_('Dispatched'), 'selected'=>true),
+				'Received'=>array('label'=>_('Received'), 'selected'=>true),
+				'Checked'=>array('label'=>_('Checked'), 'selected'=>true),
+				'Placed'=>array('label'=>_('Placed'), 'selected'=>true),
 				'Cancelled'=>array('label'=>_('Cancelled'), 'selected'=>false),
 			),
 

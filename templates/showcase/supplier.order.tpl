@@ -87,7 +87,7 @@
 	<div class="block " style="align-items: stretch;flex: 1;">
 		<div class="state" style="height:30px;margin-bottom:10px;position:relative;top:-5px">
 			<div id="back_operations">
-				<div id="delete_operations" class="order_operation {if $order->get('Purchase Order State')!='In Process'}hide{/if}">
+				<div id="delete_operations" class="order_operation {if $order->get('Purchase Order State')!='InProcess'}hide{/if}">
 					<div class="square_button left" xstyle="padding:0;margin:0;position:relative;top:-5px" title="{t}delete{/t}">
 						<i class="fa fa-trash very_discreet " aria-hidden="true" onclick="toggle_order_operation_dialog('delete')"></i> 
 						<table id="delete_dialog" border="0" class="order_operation_dialog hide">
@@ -101,7 +101,7 @@
 						</table>
 					</div>
 				</div>
-				<div id="cancel_operations" class="order_operation {if $order->get('Purchase Order State')=='In Process'}hide{/if}">
+				<div id="cancel_operations" class="order_operation {if $order->get('Purchase Order State')=='InProcess'}hide{/if}">
 					<div class="square_button left" xstyle="padding:0;margin:0;position:relative;top:-5px" title="{t}Cancel{/t}">
 						<i class="fa fa-minus-circle error " aria-hidden="true" onclick="toggle_order_operation_dialog('cancel')"></i> 
 						<table id="cancel_dialog" border="0" class="order_operation_dialog hide">
@@ -129,7 +129,7 @@
 							</tr>
 							<tr class="changed">
 								<td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('undo_submit')"></i></td>
-								<td class="aright"><span id="undo_submit_save_buttons" class="valid save button" onclick="save_order_operation('undo_submit','In Process')"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span> </td>
+								<td class="aright"><span id="undo_submit_save_buttons" class="valid save button" onclick="save_order_operation('undo_submit','InProcess')"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span> </td>
 							</tr>
 						</table>
 					</div>
@@ -154,7 +154,7 @@
 			</div>
 			<span style="float:left;padding-left:10px;padding-top:5px" class="Purchase_Order_State"> {$order->get('State')} </span> 
 			<div id="forward_operations">
-				<div id="submit_operations" class="order_operation {if $order->get('Purchase Order State')!='In Process'}hide{/if}">
+				<div id="submit_operations" class="order_operation {if $order->get('Purchase Order State')!='InProcess'}hide{/if}">
 					<div class="square_button right" xstyle="padding:0;margin:0;position:relative;top:-5px" title="{t}Submit{/t}">
 						<i class="fa fa-paper-plane-o" aria-hidden="true" onclick="toggle_order_operation_dialog('submit')"></i> 
 						<table id="submit_dialog" border="0" class="order_operation_dialog hide">

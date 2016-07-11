@@ -171,7 +171,7 @@ class PurchaseOrder extends DB_Table{
 							$tax,
 							$qty,
 							$delivery->id,
-							prepare_mysql('In Process'),
+							prepare_mysql('InProcess'),
 							$potf_key
 						);
 						$this->db->exec($sql);
@@ -249,7 +249,7 @@ class PurchaseOrder extends DB_Table{
 					return '<span class="discreet"><i class="fa fa-thumb-tack" aria-hidden="true"></i> '.strftime("%e %b %Y", strtotime($this->get('Estimated Receiving Date'))).'</span>';
 				}else {
 
-					if ($this->data['Purchase Order State']=='In Process') {
+					if ($this->data['Purchase Order State']=='InProcess') {
 						$parent=get_object($this->data['Purchase Order Parent'], $this->data['Purchase Order Parent Key']);
 						if ($parent->get($parent->table_name.' Delivery Days') and is_numeric($parent->get($parent->table_name.' Delivery Days'))) {
 							return '<span class="discreet italic">'.strftime("%d-%m-%Y", strtotime('now +'.$parent->get($parent->table_name.' Delivery Days').' days')).'</span>';
@@ -275,7 +275,7 @@ class PurchaseOrder extends DB_Table{
 		case 'State Index':
 
 			switch ($this->data['Purchase Order State']) {
-			case 'In Process':
+			case 'InProcess':
 				return 10;
 				break;
 			case 'Submitted':
@@ -340,7 +340,7 @@ class PurchaseOrder extends DB_Table{
 
 
 			switch ($this->data['Purchase Order State']) {
-			case 'In Process':
+			case 'InProcess':
 				return _('In Process');
 				break;
 
@@ -742,7 +742,7 @@ class PurchaseOrder extends DB_Table{
 
 	function delete() {
 		include_once 'class.Attachment.php';
-		if ($this->data['Purchase Order State']=='In Process') {
+		if ($this->data['Purchase Order State']=='InProcess') {
 			$sql=sprintf("delete from `Purchase Order Dimension` where `Purchase Order Key`=%d", $this->id);
 			mysql_query($sql);
 			$sql=sprintf("delete from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d", $this->id);
@@ -891,32 +891,7 @@ class PurchaseOrder extends DB_Table{
 	}
 
 
-	function back_to_process() {
-
-
-
-
-		$sql=sprintf("update `Purchase Order Dimension` set `Purchase Order Submitted Date`=NULL,`Purchase Order Confirmed Date`=NULL,`Purchase Order Main Source Type`=NULL ,`Purchase Order State`='In Process'   where `Purchase Order Key`=%d",
-
-			$this->id);
-
-
-		mysql_query($sql);
-
-		$sql=sprintf("update `Purchase Order Transaction Fact` set  `Purchase Order Last Updated Date`=NOW() ,`Purchase Order Transaction State`='In Process'  where `Purchase Order Key`=%d",
-			$this->id);
-		mysql_query($sql);
-
-
-		$this->update_affected_products();
-
-		$history_data=array(
-			'History Abstract'=>_('Purchase order send back to process'),
-			'History Details'=>''
-		);
-		$this->add_subject_history($history_data);
-
-	}
+	
 
 
 	function update_affected_products() {
@@ -939,107 +914,6 @@ class PurchaseOrder extends DB_Table{
 			}
 
 		}
-	}
-
-
-	function update_state_old() {
-
-		$cancelled=0;
-		$in_process=0;
-		$submitted=0;
-		$in_delivery_note=0;
-		$items=0;
-		$deliver_note_keys=array();
-		$sql=sprintf("select `Supplier Delivery Note Key`,`Supplier Invoice Key`,`Purchase Order Transaction State` from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d   ", $this->id);
-		$res=mysql_query($sql);
-		while ($row=mysql_fetch_array($res)) {
-			if ($row['Supplier Delivery Note Key']!=0  and $row['Purchase Order Transaction State']=='In Warehouse') {
-				$deliver_note_keys[$row['Supplier Delivery Note Key']]=1;
-			}
-			$items++;
-			if ($row['Purchase Order Transaction State']=='Cancelled')
-				$cancelled++;
-			if ($row['Purchase Order Transaction State']=='Submitted')
-				$submitted++;
-			if ($row['Purchase Order Transaction State']=='In Process')
-				$in_process++;
-			if ($row['Purchase Order Transaction State']=='In Warehouse')
-				$in_delivery_note++;
-
-		}
-		//  print_r($deliver_note_keys);
-		//   print "xx i:$items  c:$cancelled  d: $in_delivery_note kk: ".count($deliver_note_keys)." \n";
-
-
-		if ($items==0 ) {
-			$status='In Process';
-			$xhtml_state='In Process';
-		}if ($items==$cancelled) {
-			$status='Cancelled';
-			$xhtml_state=_('Cancelled');
-
-		}elseif ($in_delivery_note==0 and $submitted==0  ) {
-			$status='In Process';
-			$xhtml_state=_('In Process');
-
-		}elseif ($in_delivery_note==0  ) {
-			$status='Submitted';
-			$xhtml_state=_('Submitted');
-
-		}else {
-			//print "xxx  $in_delivery_note\n";
-
-			if (count($deliver_note_keys)>0  and  $in_delivery_note>0) {
-				if ($in_delivery_note==($items-$cancelled)) {
-					$status='Matched With DN';
-					$xhtml_state='';
-					foreach ($deliver_note_keys as $dn_key) {
-						$supplier_dn=new SupplierDeliveryNote($dn_key);
-						if ($supplier_dn->id) {
-							$xhtml_state.=sprintf(',<a href="supplier_dn.php?id=%d">%s</a>', $supplier_dn->id, $supplier_dn->data['Supplier Delivery Note Public ID']);
-						}
-
-					}
-					$xhtml_state=preg_replace('/^\,/', _('Matched With DN')." ", $xhtml_state);
-
-				}else {
-					$status='Partially Matched With DN';
-					$xhtml_state='';
-					foreach ($deliver_note_keys as $dn_key) {
-						$supplier_dn=new SupplierDeliveryNote($dn_key);
-						if ($supplier_dn->id) {
-							$xhtml_state.=sprintf(',<a href="supplier_dn.php?id=%d">%s</a>', $supplier_dn->id, $supplier_dn->data['Supplier Delivery Note Public ID']);
-						}
-
-					}
-					$xhtml_state=preg_replace('/^\,/', _('Matched With DN')." ", $xhtml_state);
-
-				}
-
-
-
-
-
-
-
-			}else {
-				$status='Submitted';
-				$xhtml_state=_('Submitted')." (*)";
-
-
-			}
-		}
-		//   print $status;
-		$this->update(
-			array(
-				'Purchase Order State'=>$status,
-				'Purchase Order Current XHTML Payment State'=>$xhtml_state
-			)
-
-		);
-
-
-
 	}
 
 
@@ -1135,13 +1009,22 @@ class PurchaseOrder extends DB_Table{
 
 
 		switch ($value) {
-		case 'In Process':
+		case 'InProcess':
 
 			$this->update_field('Purchase Order Submitted Date', '', 'no_history');
 			$this->update_field('Purchase Order Estimated Receiving Date', '', 'no_history');
 			$this->update_field('Purchase Order State', $value, 'no_history');
 			$operations=array('delete_operations', 'submit_operations', 'all_available_items', 'new_item');
 
+
+/*
+
+		$history_data=array(
+			'History Abstract'=>_('Purchase order send back to process'),
+			'History Details'=>''
+		);
+		$this->add_subject_history($history_data);
+*/
 			break;
 
 		case 'Submitted':
@@ -1197,6 +1080,7 @@ class PurchaseOrder extends DB_Table{
 		);
 		$this->db->exec($sql);
 
+$this->update_affected_products();
 
 
 
@@ -1208,7 +1092,7 @@ class PurchaseOrder extends DB_Table{
 			return strftime("%d-%m-%Y", strtotime($this->data['Purchase Order Estimated Receiving Date']));
 		}else {
 
-			if ($this->data['Purchase Order State']=='In Process') {
+			if ($this->data['Purchase Order State']=='InProcess') {
 				$parent=get_object($this->data['Purchase Order Parent'], $this->data['Purchase Order Parent Key']);
 				if ($parent->get($parent->table_name.' Delivery Days') and is_numeric($parent->get($parent->table_name.' Delivery Days'))) {
 					return strftime("%d-%M-%Y", strtotime('now +'.$parent->get($parent->table_name.' Delivery Days').' days'));

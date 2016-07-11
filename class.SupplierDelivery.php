@@ -186,6 +186,8 @@ class SupplierDelivery extends DB_Table {
 		}
 		elseif ($key=='public id' or $key=='public_id') {
 			$sql=sprintf("select * from `Supplier Delivery Dimension` where `Supplier Delivery Public ID`=%s", prepare_mysql($id));
+		}else{
+		    exit('unknown key:'.$key);
 		}
 
 		if ($this->data = $this->db->query($sql)->fetch()) {
@@ -256,7 +258,7 @@ class SupplierDelivery extends DB_Table {
 					return '<span class="discreet"><i class="fa fa-thumb-tack" aria-hidden="true"></i> '.strftime("%e %b %Y", strtotime($this->get('Estimated Receiving Date'))).'</span>';
 				}else {
 
-					if ($this->data['Supplier Delivery State']=='In Process') {
+					if ($this->data['Supplier Delivery State']=='InProcess') {
 						$parent=get_object($this->data['Supplier Delivery Parent'], $this->data['Supplier Delivery Parent Key']);
 						if ($parent->get($parent->table_name.' Delivery Days') and is_numeric($parent->get($parent->table_name.' Delivery Days'))) {
 							return '<span class="discreet italic">'.strftime("%d-%m-%Y", strtotime('now +'.$parent->get($parent->table_name.' Delivery Days').' days')).'</span>';
@@ -299,7 +301,7 @@ class SupplierDelivery extends DB_Table {
 			return number($this->data ['Supplier Delivery '.$key]);
 		case 'State Index':
 			switch ($this->data['Supplier Delivery State']) {
-			case 'In Process':
+			case 'InProcess':
 				return 10;
 				break;
 			case 'Dispatched':
@@ -805,7 +807,7 @@ class SupplierDelivery extends DB_Table {
 
 	function delete() {
 
-		if ($this->data['Supplier Delivery Current State']=='In Process') {
+		if ($this->data['Supplier Delivery Current State']=='InProcess') {
 
 
 
@@ -1438,9 +1440,9 @@ class SupplierDelivery extends DB_Table {
 
 
 
-		if ($value=='In Process or Dispatched') {
+		if ($value=='InProcess or Dispatched') {
 			if ($this->get('Supplier Delivery Dispatched Date')=='') {
-				$value='In Process';
+				$value='InProcess';
 			}else {
 				$value='Dispatched';
 				$metadata=array('Supplier Delivery Dispatched Date'=>$this->get('Supplier Delivery Dispatched Date'));
@@ -1450,7 +1452,7 @@ class SupplierDelivery extends DB_Table {
 
 
 		switch ($value) {
-		case 'In Process':
+		case 'InProcess':
 
 			$this->update_field('Supplier Delivery Dispatched Date', '', 'no_history');
 			//$this->update_field('Supplier Delivery Estimated Receiving Date', '', 'no_history');
