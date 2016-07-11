@@ -1013,6 +1013,7 @@ function save_field(object, key, field) {
 
 function post_save_actions(field, data) {
 
+
     switch (field) {
     case 'User_Preferred_Locale':
         change_view(state.request, {
@@ -1024,12 +1025,24 @@ function post_save_actions(field, data) {
         break;
     case 'Staff_Type':
         if (state.section == 'contractor' && data.value != 'Contractor') {
-            change_view('/employee/'+state.key)
-        } if (state.section == 'employee' && data.value == 'Contractor') {
-            change_view('/contractor/'+state.key)
-        }  
+            change_view('/employee/' + state.key)
+        }
+        if (state.section == 'employee' && data.value == 'Contractor') {
+            change_view('/contractor/' + state.key)
+        }
         break;
-
+    case 'Staff_Currently_Working':
+        if (state.section == 'employee') {
+            change_view('/employee/' + state.key, {
+                reload_showcase: 1
+            })
+        }
+        if (state.section == 'contractor') {
+            change_view('/contractor/' + state.key, {
+                reload_showcase: 1
+            })
+        }
+        break;
     default:
 
     }
