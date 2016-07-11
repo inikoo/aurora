@@ -355,8 +355,13 @@ case 'views':
 		$response['object_showcase']='_';
 	}
 
+    $state['metadata']=(isset($data['metadata'])?$data['metadata']:array());
+
 
 	$response['tab']=get_tab($db, $smarty, $user, $account, $state['tab'], $state['subtab'], $state, $data['metadata']);
+
+
+  
 
 	unset($state['_object']);
 	unset($state['_parent']);
@@ -411,6 +416,8 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state=false, $me
 
 	$actual_tab=($subtab!=''?$subtab:$tab);
 	$state['tab']=$actual_tab;
+
+
 
 	$smarty->assign('data', $state);
 
@@ -615,6 +622,11 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
 		$html=get_showcase($data, $smarty, $user, $db);
 		break;
 		break;
+	case 'supplierdelivery':
+		include_once 'showcase/supplier.delivery.show.php';
+		$html=get_showcase($data, $smarty, $user, $db);
+		break;
+		break;	
 	default:
 		$html=$data['object'].' -> '.$data['key'];
 		break;
@@ -1766,9 +1778,24 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 				$branch[]=array('label'=>_('Purchase orders'), 'icon'=>'', 'reference'=>'suppliers/orders');
 			}elseif ($state['parent']=='supplier') {
 				$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
-				$branch[]=array('label'=>'<span class="id Supplier_Code">'.$state['_parent']->get('Purchase Order Parent Code'), 'icon'=>'ship', 'reference'=>'supplier/'.$state['parent_key']);
+				$branch[]=array('label'=>'<span class="id Supplier_Code">'.$state['_parent']->get('Code'), 'icon'=>'ship', 'reference'=>'supplier/'.$state['parent_key']);
+			}elseif ($state['parent']=='agent') {
+				$branch[]=array('label'=>_('Agents'), 'icon'=>'', 'reference'=>'agents');
+				$branch[]=array('label'=>'<span class="id Agent_Code">'.$state['_parent']->get('Code'), 'icon'=>'user-secret', 'reference'=>'agent/'.$state['parent_key']);
 			}
-			$branch[]=array('label'=>'<span class="Purchase_Order_Public_ID">'.$state['_object']->get('Public ID').'</span>', 'icon'=>'clipboard', 'reference'=>'suppliers.orders');
+			$branch[]=array('label'=>'<span class="Purchase_Order_Public_ID">'.$state['_object']->get('Public ID').'</span>', 'icon'=>'clipboard', 'reference'=>'');
+		}elseif ($state['section']=='delivery') {
+
+			if ($state['parent']=='account') {
+				$branch[]=array('label'=>_('Deliveries'), 'icon'=>'', 'reference'=>'suppliers/deliveries');
+			}elseif ($state['parent']=='supplier') {
+				$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
+				$branch[]=array('label'=>'<span class="id Supplier_Code">'.$state['_parent']->get('Code'), 'icon'=>'ship', 'reference'=>'supplier/'.$state['parent_key']);
+			}elseif ($state['parent']=='agent') {
+				$branch[]=array('label'=>_('Agents'), 'icon'=>'', 'reference'=>'agents');
+				$branch[]=array('label'=>'<span class="id Agent_Code">'.$state['_parent']->get('Code'), 'icon'=>'user-secret', 'reference'=>'agent/'.$state['parent_key']);
+			}
+			$branch[]=array('label'=>'<span class="Supplier_Delivery_Public_ID">'.$state['_object']->get('Public ID').'</span>', 'icon'=>'truck', 'reference'=>'');
 		}elseif ($state['section']=='supplier.order.item') {
 
 			if ($state['_parent']->get('Purchase Order Parent')=='Supplier') {

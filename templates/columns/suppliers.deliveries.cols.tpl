@@ -14,11 +14,11 @@ var columns= [{
      cell: Backgrid.StringCell.extend({
          events: {
              "click": function() {
-                 {if $tab=='suppliers.orders'}   
-                 change_view("suppliers/order/" + this.model.get("id")  )
+                 {if $tab=='suppliers.deliveries'}   
+                 change_view("suppliers/delivery/" + this.model.get("id")  )
                 
                {else}
-                   change_view("{$data['object']}/{$data['key']}/order/" + this.model.get("id")  )
+                   change_view("{$data['object']}/{$data['key']}/delivery/" + this.model.get("id")  )
                
                  {/if}
              }

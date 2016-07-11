@@ -72,11 +72,14 @@ class PurchaseOrder extends DB_Table{
 		$values=preg_replace('/,$/', ')', $values);
 		$sql=sprintf("insert into `Purchase Order Dimension` %s %s", $keys, $values);
 
-		//  print($sql);
+		if ($this->db->exec($sql)) {
+			$this->id=$this->db->lastInsertId();
 
-		if (mysql_query($sql)) {
-			$this->id = mysql_insert_id();
+
 			$this->get_data('id', $this->id);
+
+
+
 			$history_data=array(
 				'History Abstract'=>_('Purchase order created'),
 				'History Details'=>'',
@@ -84,72 +87,126 @@ class PurchaseOrder extends DB_Table{
 			);
 			$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
 
+			$this->new=true;
+
 			$parent->update_orders();
-		}else
-			exit(" error can no create purchse order ".mysql_error().' '.$sql);
+
+		} else {
+			// print "Error can not create supplier $sql\n";
+		}
+
+
+
+
 
 
 	}
 
 
-    function create_delivery($data){
-    
-    
-        		$delivery_data=array(
+	function create_delivery($data) {
+
+
+		// $warehouse=ger_object('Warehouse',$data['Supplier Delivery Warehouse Key']);
+
+
+
+
+		$delivery_data=array(
+			'Supplier Delivery Public ID'=>$data['Supplier Delivery Public ID'],
 			'Supplier Delivery Parent'=>$this->get('Purchase Order Parent'),
-			'Supplier Delivery Parent Key'=>>$this->get('Purchase Order Parent Key'),
+			'Supplier Delivery Parent Key'=>$this->get('Purchase Order Parent Key'),
 			'Supplier Delivery Parent Name'=>$this->get('Purchase Order Parent Name'),
 			'Supplier Delivery Parent Code'=>$this->get('Purchase Order Parent Code'),
 			'Supplier Delivery Parent Contact Name'=>$this->get('Purchase Order Parent  Contact Name'),
 			'Supplier Delivery Parent Email'=>$this->get('Purchase Order Parent  Email'),
 			'Supplier Delivery Parent Telephone'=>$this->get('Purchase Order Parent Telephone'),
 			'Supplier Delivery Parent Address'=>$this->get('Purchase Order Parent Address'),
+			'Supplier Delivery Currency Code'=>$this->get('Purchase Order Currency Code'),
+			'Supplier Delivery Incoterm'=>$this->get('Purchase Order Incoterm'),
+			'Supplier Delivery Port of Import'=>$this->get('Purchase Order Port of Import'),
+			'Supplier Delivery Port of Export'=>$this->get('Purchase Order Port of Export'),
+			'Supplier Delivery Purchase Order Key'=>$this->id,
+			//'Supplier Delivery Warehouse Key'=>$warehouse->id,
+			//'Supplier Delivery Warehouse Metadata'=>json_encode($warehouse->data),
 
-			'Supplier Delivery Currency Code'=>$this->get('Default Currency Code'),
-			'Supplier Delivery Incoterm'=>$this->get('Default Incoterm'),
-			'Supplier Delivery Port of Import'=>$this->get('Default Port of Import'),
-			'Supplier Delivery Port of Export'=>$this->get('Default Port of Export'),
-
-
-			'Supplier Delivery Warehouse Key'=>$warehouse->data['Warehouse Key'],
-			'Supplier Delivery Warehouse Code'=>$warehouse->data['Warehouse Code'],
-			'Supplier Delivery Warehouse Name'=>$warehouse->data['Warehouse Name'],
-			'Supplier Delivery Warehouse Address'=>$warehouse->data['Warehouse Address'],
-			'Supplier Delivery Warehouse Company Name'=>$warehouse->data['Warehouse Company Name'],
-			'Supplier Delivery Warehouse Company Number'=>$warehouse->data['Warehouse Company Number'],
-			'Supplier Delivery Warehouse VAT Number'=>$warehouse->data['Warehouse VAT Number'],
-			'Supplier Delivery Warehouse Telephone'=>$warehouse->data['Warehouse Telephone'],
-			'Supplier Delivery Warehouse Email'=>$warehouse->data['Warehouse Email'],
-
-			'Supplier Delivery Terms and Conditions'=>$this->get('Default PO Terms and Conditions'),
-			'Supplier Delivery Main Buyer Key'=>$staff->id,
-			'Supplier Delivery Main Buyer Name'=>$staff->get('Staff Name'),
 			'editor'=>$this->editor
 		);
-    
-        print_r($data);
-    
-    
-    exit;
-    
-    }
+
+		//  print_r($delivery_data);
+
+
+
+		$delivery=new SupplierDelivery('new', $delivery_data);
+
+
+
+		if ($delivery->error) {
+			$this->error=true;
+			$this->msg=$delivery->msg;
+
+		}elseif ($delivery->new or true) {
+
+
+
+
+			foreach ($data['items'] as $potf_key=>$qty) {
+
+
+				$sql=sprintf('select `Purchase Order Net Amount`,`Purchase Order Tax Amount`,`Purchase Order Quantity` from `Purchase Order Transaction Fact`  where `Purchase Order Transaction Fact Key`=%d',
+
+					$potf_key
+				);
+				if ($result=$this->db->query($sql)) {
+					if ($row = $result->fetch()) {
+
+						if ($row['Purchase Order Quantity']!=0) {
+							$net=$qty*$row['Purchase Order Net Amount']/$row['Purchase Order Quantity'];
+							$tax=$qty*$row['Purchase Order Tax Amount']/$row['Purchase Order Quantity'];
+						}else {
+							$net=0;
+							$tax=0;
+						}
+						$sql=sprintf('update `Purchase Order Transaction Fact` set `Supplier Delivery Net Amount`=%f,`Supplier Delivery Tax Amount`=%f,`Supplier Delivery Quantity`=%f,`Supplier Delivery Key`=%d,`Supplier Delivery Transaction State`=%s where `Purchase Order Transaction Fact Key`=%d',
+							$net,
+							$tax,
+							$qty,
+							$delivery->id,
+							prepare_mysql('In Process'),
+							$potf_key
+						);
+						$this->db->exec($sql);
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
+				}
+
+
+
+			}
+			$delivery->update_totals();
+			$this->update_totals();
+		}
+
+
+		return $delivery;
+
+	}
 
 
 	function get_data($key, $id) {
 		if ($key=='id') {
 			$sql=sprintf("select * from `Purchase Order Dimension` where `Purchase Order Key`=%d", $id);
-			$result=mysql_query($sql);
-			if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$this->id=$this->data['Purchase Order Key'];
-			}
+
 		}elseif ($key=='public id' ) {
 			$sql=sprintf("select * from `Purchase Order Dimension` where `Purchase Order Public ID`=%s", prepare_mysql($id));
-			$result=mysql_query($sql);
-			print "$sql\n";
-			if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$this->id=$this->data['Purchase Order Key'];
-			}
+
 		}
+
+		if ($this->data = $this->db->query($sql)->fetch()) {
+			$this->id=$this->data['Purchase Order Key'];
+		}
+
 	}
 
 
@@ -448,7 +505,7 @@ class PurchaseOrder extends DB_Table{
 			if ($result=$this->db->query($sql)) {
 				if ($row = $result->fetch()) {
 
-					$sql = sprintf( "update`Purchase Order Transaction Fact` set  `Purchase Order Quantity`=%f,`Purchase Order Last Updated Date`=%s,`Purchase Order Net Amount`=%f ,`Purchase Order Tax Amount`=%f ,CBM=%s,`Weight`=%s  where  `Purchase Order Transaction Fact Key`=%d ",
+					$sql = sprintf( "update`Purchase Order Transaction Fact` set  `Purchase Order Quantity`=%f,`Purchase Order Last Updated Date`=%s,`Purchase Order Net Amount`=%f ,`Purchase Order Tax Amount`=%f ,`Purchase Order CBM`=%s,`Purchase Order Weight`=%s  where  `Purchase Order Transaction Fact Key`=%d ",
 						$qty,
 						prepare_mysql ($date),
 						$amount,
@@ -472,7 +529,7 @@ class PurchaseOrder extends DB_Table{
 				}else {
 
 					$sql = sprintf( "insert into `Purchase Order Transaction Fact` (`Supplier Part Key`,`Supplier Part Historic Key`,`Purchase Order Tax Code`,`Currency Code`,`Purchase Order Last Updated Date`,`Purchase Order Transaction State`,
-					`Supplier Key`,`Agent Key`,`Purchase Order Key`,`Purchase Order Quantity`,`Purchase Order Net Amount`,`Purchase Order Tax Amount`,`Note to Supplier`,`CBM`,`Weight`,
+					`Supplier Key`,`Agent Key`,`Purchase Order Key`,`Purchase Order Quantity`,`Purchase Order Net Amount`,`Purchase Order Tax Amount`,`Note to Supplier`,`Purchase Order CBM`,`Purchase Order Weight`,
 					`User Key`,`Creation Date`
 					)
 					values (%d,%d,%s,%s,%s,%s,
@@ -634,12 +691,8 @@ class PurchaseOrder extends DB_Table{
 
 	function update_totals() {
 
-		$sql = sprintf("select sum(`Weight`) as  weight,sum(`CBM` )as cbm ,count(Distinct `Supplier Part Key`) as num_items ,sum(`Purchase Order Net Amount`) as items_net, sum(`Purchase Order Tax Amount`) as tax,  sum(`Purchase Order Shipping Contribution Amount`) as shipping from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d" ,
+		$sql = sprintf("select sum(`Purchase Order Weight`) as  weight,sum(`Purchase Order CBM` )as cbm ,count(*) as num_items ,sum(if(`Purchase Order Quantity`>0,1,0)) as num_ordered_items ,sum(`Purchase Order Net Amount`) as items_net, sum(`Purchase Order Tax Amount`) as tax,  sum(`Purchase Order Shipping Contribution Amount`) as shipping from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d" ,
 			$this->id);
-		//print "$sql\n";
-
-
-
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
 
@@ -651,63 +704,34 @@ class PurchaseOrder extends DB_Table{
 				$this->update(array(
 						'Purchase Order Items Net Amount'=>$row['items_net'],
 						'Purchase Order Items Tax Amount'=>$row['tax'],
-						'Purchase Order Items Number Items'=>$row['num_items'],
+						'Purchase Order Number Items'=>$row['num_items'],
+						'Purchase Order Ordered Number Items'=>$row['num_ordered_items'],
 						'Purchase Order Weight'=>$row['weight'],
 						'Purchase Order CBM'=>$row['cbm'],
 						'Purchase Order Total Net Amount'=>$total_net,
 						'Purchase Order Total Amount'=>$total
 					), 'no_history');
-
-
-
-
-
-
 			}
 		}else {
 			print_r($error_info=$this->db->errorInfo());
 			exit;
 		}
 
+		$sql = sprintf("select count(*) as num_items from `Purchase Order Transaction Fact` where `Supplier Delivery Key`>0" ,
+			$this->id);
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
 
 
+				$this->update(array(
+						'Purchase Order Supplier Delivery Number Items'=>$row['num_items'],
 
-	}
-
-
-	function update_totals_from_order_transactions_old($force_total=false) {
-
-
-		if (!$force_total)
-			$force_total=array();
-
-
-
-		$this->data ['Purchase Order Total Tax Amount'] = $this->data ['Purchase Order Items Tax Amount'] + $this->data ['Purchase Order Shipping Tax Amount']+  $this->data ['Purchase Order Charges Tax Amount']+  $this->data ['Purchase Order Tax Credited Amount'];
-		$this->data ['Purchase Order Total Net Amount']=$this->data ['Purchase Order Items Net Amount']+  $this->data ['Purchase Order Shipping Net Amount']+  $this->data ['Purchase Order Charges Net Amount']+  $this->data ['Purchase Order Net Credited Amount'];
-
-		$this->data ['Purchase Order Total Amount'] = $this->data ['Purchase Order Total Tax Amount'] + $this->data ['Purchase Order Total Net Amount'];
-		$this->data ['Purchase Order Total To Pay Amount'] = $this->data ['Purchase Order Total Amount'];
-		$sql = sprintf( "update `Purchase Order Dimension` set `Purchase Order Total Net Amount`=%.2f ,`Purchase Order Total Tax Amount`=%.2f ,`Purchase Order Shipping Net Amount`=%.2f ,`Purchase Order Shipping Tax Amount`=%.2f ,`Purchase Order Charges Net Amount`=%.2f ,`Purchase Order Charges Tax Amount`=%.2f ,`Purchase Order Total Amount`=%.2f , `Purchase Order Total To Pay Amount`=%.2f  where  `Purchase Order Key`=%d "
-			, $this->data ['Purchase Order Total Net Amount']
-			, $this->data ['Purchase Order Total Tax Amount']
-			, $this->data ['Purchase Order Shipping Net Amount']
-			, $this->data ['Purchase Order Shipping Tax Amount']
-
-			, $this->data ['Purchase Order Charges Net Amount']
-			, $this->data ['Purchase Order Charges Tax Amount']
-
-			, $this->data ['Purchase Order Total Amount']
-			, $this->data ['Purchase Order Total To Pay Amount']
-			, $this->data ['Purchase Order Key']
-		);
-
-
-		//exit;
-
-
-		if (! mysql_query( $sql ))
-			exit ( "$sql eroro2 con no update totals" );
+					), 'no_history');
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
 
 
 
@@ -1076,7 +1100,9 @@ class PurchaseOrder extends DB_Table{
 			$this->update_state($value, $options, $metadata);
 			break;
 		case 'Purchase Order Estimated Receiving Date':
-			$this->update_estimated_receiving_date($value);
+			$this->update_field($field, $value, $options);
+			$this->update_affected_products();
+			
 			break;
 		default:
 
@@ -1124,7 +1150,7 @@ class PurchaseOrder extends DB_Table{
 			$this->update_field('Purchase Order Send Date', '', 'no_history');
 
 			$this->update_field('Purchase Order State', $value, 'no_history');
-			$operations=array('cancel_operations','undo_submit_operations', 'received_operations');
+			$operations=array('cancel_operations', 'undo_submit_operations', 'received_operations');
 
 			break;
 
@@ -1136,7 +1162,7 @@ class PurchaseOrder extends DB_Table{
 				$this->update_field($key, $_value, 'no_history');
 			}
 
-			$operations=array('cancel_operations','undo_send_operations', 'received_operations');
+			$operations=array('cancel_operations', 'undo_send_operations', 'received_operations');
 
 
 			break;
@@ -1202,48 +1228,42 @@ class PurchaseOrder extends DB_Table{
 
 
 
-	function get_sdn_keys() {
+	function get_deliveries($scope='keys') {
 
-		$sdns_keys=array();
-		$sql=sprintf("select `Supplier Delivery Note Key` from `Purchase Order SDN Bridge` where `Purchase Order Key`=%d ",
+		if ($scope=='objects') {
+			include_once 'class.SupplierDelivery.php';
+		}
+
+
+		$deliveries=array();
+		$sql=sprintf("select `Supplier Delivery Key` from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d  group by `Supplier Delivery Key`",
 			$this->id);
-		$res = mysql_query( $sql );
-		while ($row = mysql_fetch_array( $res, MYSQL_ASSOC )) {
-			if ($row['Supplier Delivery Note Key']) {
-				$sdns_keys[$row['Supplier Delivery Note Key']]=$row['Supplier Delivery Note Key'];
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				if ($scope=='objects') {
+					$deliveries[$row['Supplier Delivery Key']]=new SupplierDelivery($row['Supplier Delivery Key']);
+
+				}else {
+					$deliveries[$row['Supplier Delivery Key']]=$row['Supplier Delivery Key'];
+				}
 			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
-		return $sdns_keys;
+
+
+		return $deliveries;
 
 	}
 
 
-	function get_number_sdn() {
-
-		return count($this->get_sdn_keys());
-	}
 
 
-	function get_sdn_objects() {
-
-		include_once 'class.SupplierDeliveryNote.php';
-
-		$sdns=array();
-		$sdns_keys=$this->get_sdn_keys();
-		foreach ($sdns_keys as $sdns_key) {
-			$sdns[$sdns_key]=new SupplierDeliveryNote($sdns_key);
-		}
-		return $sdns;
-	}
-
-
-	function get_invoices_objects() {
-
-	}
 
 
 	function get_field_label($field) {
-		global $account;
 
 		switch ($field) {
 

@@ -51,10 +51,10 @@ window.addEventListener('popstate', function(event) {
 
 });
 
-function change_tab(tab) {
+function change_tab(tab,metadata) {
     $('#maintabs .tab').removeClass('selected')
     $('#tab_' + tab.replace(/(:|\.|\[|\])/g, "\$1")).addClass('selected')
-    change_view(state.request + '&tab=' + tab)
+    change_view(state.request + '&tab=' + tab,metadata)
 }
 
 function change_subtab(subtab) {
@@ -68,13 +68,12 @@ function change_subtab(subtab) {
 
 function change_view(_request, metadata) {
 
-    //console.log(metadata)
     if (metadata == undefined) {
         metadata = {};
     }
 
     var request = "/ar_views.php?tipo=views&request=" + _request + '&metadata=' + JSON.stringify(metadata) + "&old_state=" + JSON.stringify(state)
-
+//console.log(request)
     $.getJSON(request, function(data) {
 
         //console.log(data);

@@ -6,13 +6,13 @@
 
 function toggle_order_operation_dialog(dialog_name) {
 
-    console.log($('#' + dialog_name + '_dialog'))
+   // console.log($('#' + dialog_name + '_dialog'))
 
     if ($('#' + dialog_name + '_dialog').hasClass('hide')) {
 
         $('.order_operation_dialog').addClass('hide')
 
-        console.log($('#' + dialog_name + '_operations').parents('#back_operations').length)
+       // console.log($('#' + dialog_name + '_operations').parents('#back_operations').length)
 
         if ($('#' + dialog_name + '_operations').parent('div#back_operations').length) {
             $('#' + dialog_name + '_dialog').removeClass('hide').css({
@@ -34,10 +34,20 @@ function close_dialog(dialog_name) {
     $('#' + dialog_name + '_dialog').addClass('hide');
 }
 
-function save_order_operation(dialog_name, value) {
+function save_order_operation(element) {
 
+    var data = $(element).data("data")
 
-    field = 'Purchase_Order_State';
+    console.log(data)
+
+    var object_data = JSON.parse(atob($('#object_showcase div.order').data("object")))
+
+    var dialog_name = data.dialog_name
+    var field = data.field
+    var value = data.value
+    var object = object_data.object
+    var key = object_data.key
+
 
 
     if (!$('#' + dialog_name + '_save_buttons').hasClass('button')) {
@@ -52,6 +62,8 @@ function save_order_operation(dialog_name, value) {
 
     var metadata = {}
 
+console.log('#' + dialog_name + '_dialog')
+
     $('#' + dialog_name + '_dialog  .option_input_field').each(function() {
         var settings = $(this).data("settings")
         if (settings.type == 'datetime') {
@@ -63,16 +75,15 @@ function save_order_operation(dialog_name, value) {
     });
 
 
-    var object_data = JSON.parse(atob($('#object_showcase div.order').data("object")))
-    var request = '/ar_edit.php?tipo=edit_field&object=' + object_data.object + '&key=' + object_data.key + '&field=' + field + '&value=' + value + '&metadata=' + JSON.stringify(metadata)
+    var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value + '&metadata=' + JSON.stringify(metadata)
     console.log(request)
-    //   return;
+     //  return;
     //=====
     var form_data = new FormData();
 
     form_data.append("tipo", 'edit_field')
-    form_data.append("object", object_data.object)
-    form_data.append("key", object_data.key)
+    form_data.append("object", object)
+    form_data.append("key", key)
     form_data.append("field", field)
     form_data.append("value", value)
     form_data.append("metadata", JSON.stringify(metadata))
@@ -149,7 +160,7 @@ function save_order_operation(dialog_name, value) {
 }
 
 
-function save_order_qty_change(element) {
+function save_item_qty_change(element) {
 
     $(element).addClass('fa-spinner fa-spin');
 
@@ -162,6 +173,16 @@ function save_order_qty_change(element) {
             var qty = 1
         } else {
             qty = parseFloat(input.val()) + 1
+        }
+
+        input.val(qty).addClass('discreet')
+
+    } else if ($(element).hasClass('fa-minus')) {
+
+        if (isNaN(input.val()) || input.val() == '' || input.val() ==0) {
+            var qty = 0
+        } else {
+            qty = parseFloat(input.val()) - 1
         }
 
         input.val(qty).addClass('discreet')
@@ -250,22 +271,27 @@ function show_create_delivery() {
     if ($('#new_delivery').hasClass('hide')) {
 
 
+        if (state.tab == 'supplier.order.items') {
+            grid.columns.findWhere({
+                name: 'checkbox'
+            }).set("renderable", true)
 
+            grid.columns.findWhere({
+                name: 'operations'
+            }).set("renderable", true)
+
+            grid.columns.findWhere({
+                name: 'delivery_quantity'
+            }).set("renderable", true)
+        } else {
+
+            change_tab('supplier.order.items',{'create_delivery':1})
+        }
 
         $('#tabs').addClass('hide')
         $('#new_delivery').removeClass('hide')
 
-        grid.columns.findWhere({
-            name: 'checkbox'
-        }).set("renderable", true)
 
-        grid.columns.findWhere({
-            name: 'operations'
-        }).set("renderable", true)
-
-        grid.columns.findWhere({
-            name: 'delivery_quantity'
-        }).set("renderable", true)
 
         $('#delivery_number').val('').focus()
 
@@ -292,8 +318,8 @@ function close_create_delivery() {
     }).set("renderable", false)
 }
 
-function save_delivery_qty_change() {
-
+function save_delivery_qty_change(element) {
+console.log('x')
 
 
 

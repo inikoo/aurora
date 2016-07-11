@@ -3,7 +3,7 @@
 
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created: 13 May 2016 at 14:15:15 GMT+8, Kuala Lumpur, Malaysia
+ Created: 10 July 2016 at 11:13:06 GMT+8, Kuala Lumpur, Malaysia
 
  Copyright (c) 2015, Inikoo
 
@@ -13,7 +13,7 @@
 
 
 
-$where=sprintf(' where POTF.`Purchase Order Key`=%d', $parameters['parent_key']);
+$where=sprintf(' where POTF.`Supplier Delivery Key`=%d', $parameters['parent_key']);
 $wheref='';
 if ($parameters['f_field']=='code'  and $f_value!='')
 	$wheref.=" and OTF.`Product Code` like '".addslashes($f_value)."%'";
@@ -43,17 +43,12 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
 
 $sql_totals="select count(distinct  `Purchase Order Transaction Fact Key`) as num from $table $where";
 
-$fields="
-	OTF.`Order Transaction Fact Key`,`Product Units Per Case`,`Product History Name`,`Product History Price`,`Product Currency`,OTF.`Product ID`,OTF.`Product Code`,`Order Quantity`,`Order Bonus Quantity`,`Product Availability`,`Product History XHTML Short Description`,`Order Transaction Amount`,`Transaction Tax Rate`,`Product Tariff Code`,
-	`Order Transaction Gross Amount`,`Order Currency Code`,`Order Transaction Total Discount Amount`,`Order Date`,`Order Last Updated Date`,`Current Dispatching State`,OO.`Quantity` as `Out of Stock Quantity`,
-		(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`
 
-";
-
-$fields="`Supplier Delivery Quantity`,`Supplier Delivery Key`,
+$fields="`Supplier Delivery Quantity`,`Supplier Delivery Key`,`Part Reference`,P.`Part SKU`,
 `Purchase Order Transaction Fact Key`,`Purchase Order Quantity`,POTF.`Supplier Part Key`,`Supplier Part Reference`,POTF.`Supplier Part Historic Key`,
 `Part Unit Description`,`Supplier Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,
-`Supplier Part Unit Cost`,`Part Package Weight`,`Purchase Order CBM`,`Purchase Order Weight`
+`Supplier Part Unit Cost`,`Part Package Weight`,`Supplier Delivery CBM`,`Supplier Delivery Weight`,
+`Supplier Delivery Net Amount`,`Currency Code`
 
 ";
 
