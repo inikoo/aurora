@@ -11,7 +11,7 @@
 
 
 <div class="timeline_horizontal">
-	{$delivery->get('State Index')} 
+	
 	<ul class="timeline" id="timeline">
 		
 		{if $delivery->get('Supplier Delivery Key')}
@@ -53,7 +53,7 @@
 		<div class="dot">
 		</div>
 		</li>
-		<li id="receveived_node" class="li  {if $delivery->get('State Index')>=40}complete{/if}"> 
+		<li id="received_node" class="li  {if $delivery->get('State Index')>=40}complete{/if}"> 
 		<div class="label">
 			<span class="state ">{t}Received{/t}</span> 
 		</div>
@@ -63,22 +63,22 @@
 		<div class="dot">
 		</div>
 		</li>
-		<li class="li"> 
+		<li id="checked_node" class="li  {if $delivery->get('State Index')>=50}complete{/if}"> 
 		<div class="label">
 			<span class="state">{t}Checked{/t}</span> 
 		</div>
 		<div class="timestamp">
-			<span>&nbsp;{$delivery->get('Checked Date')}</span> 
+			<span class="Supplier_Delivery_Checked_Date">&nbsp;{$delivery->get('Checked Percentage or Date')}</span> 
 		</div>
 		<div class="dot">
 		</div>
 		</li>
-		<li class="li"> 
+		<li class="li {if $delivery->get('State Index')>=100}complete{/if}"> 
 		<div class="label">
 			<span class="state">{t}Placed{/t}</span> 
 		</div>
 		<div class="timestamp">
-			<span>&nbsp;{$delivery->get('Consolidated Date')} &nbsp;</span> 
+			<span class="Supplier_Delivery_Placed_Date">&nbsp;{$delivery->get('Placed Percentage or Date')}</span> 
 		</div>
 		<div class="dot">
 		</div>
@@ -87,7 +87,7 @@
 </div>
 <div class="order" style="display: flex;" data-object="{$object_data}">
 	<div class="block" style=" align-items: stretch;flex: 1">
-		<div class="data_container">
+		<div class="data_container" style="padding:5px 10px">
 			<div class="data_field">
 				<i class="fa fa-ship fa-fw" aria-hidden="true" title="{t}Supplier{/t}"></i> <span onclick="change_view('{if $delivery->get('Supplier Delivery Parent')=='Supplier'}supplier{else}agent{/if}/{$delivery->get('Supplier Delivery Parent Key')}')" class="link Supplier_Delivery_Parent_Name">{$delivery->get('Supplier Delivery Parent Name')}</span> 
 			</div>
@@ -104,6 +104,7 @@
 		<div style="clear:both">
 		</div>
 	</div>
+	
 	<div class="block " style="align-items: stretch;flex: 1;">
 		<div class="state" style="height:30px;margin-bottom:10px;position:relative;top:-5px">
 			<div id="back_operations">
@@ -248,7 +249,7 @@
 		</div>
 		<div class="delivery_node {if {$delivery->get('State Index')|intval}<30 }hide{/if}" style="height:30px;clear:both;border-top:1px solid #ccc;border-bottom:1px solid #ccc">
 			<div id="back_operations"></div>
-			<span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic"><i class="fa fa-truck fa-flip-horizontal button" aria-hidden="true" ></i> {t}Delivery Note{/t} </span> 
+			<span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic"><i class="fa fa-dollar button" aria-hidden="true" ></i> {t}Invoice{/t} </span> 
 			<div id="forward_operations">
 
 				<div id="received_operations" class="order_operation {if !($delivery->get('Supplier Delivery State')=='Submitted' or  $delivery->get('Supplier Delivery State')=='Send') }hide{/if}">
@@ -267,6 +268,30 @@
 		
 	</div>
 	<div class="block " style="align-items: stretch;flex: 1 ">
+		<table border="0" class="info_block acenter"  >
+		
+		<tr>
+				
+				<td > 
+				<span style="padding-right:20px"><i class="fa fa-arrow-circle-right fa-fw discreet" aria-hidden="true" ></i> <span>{$delivery->get('Number Items')}</span></span>
+				<span ><i class="fa fa-arrow-circle-down fa-fw discreet" aria-hidden="true" ></i> <span>{$delivery->get('Number Received Items')}</span></span>
+				<span style="padding-left:20px"><i class="fa fa-map-marker fa-fw discreet" aria-hidden="true" ></i> <span>{$delivery->get('Number Placed Items')}</span></span>
+				</td>
+			</tr>
+		
+			<tr>
+				
+				<td class=" Supplier_Delivery_Weight"  title="{t}Weight{/t}">{$delivery->get('Weight')}</td>
+			</tr>
+			<tr>
+				
+				<td class=" Supplier_Delivery_CBM" title="{t}CBM{/t}" >{$delivery->get('CBM')}</td>
+			</tr>
+		</table>
+		<div style="clear:both">
+		</div>
+	</div>
+	<div class="block " style="align-items: stretch;flex: 1 ">
 		<table border="0" class="info_block">
 			<tr>
 				<td class="label">{t}Cost{/t} ({$delivery->get('Supplier Delivery Currency Code')}) </td>
@@ -275,14 +300,7 @@
 			<tr class="{if $account->get('Account Currency')==$delivery->get('Supplier Delivery Currency Code')}hide{/if}">
 				<td colspan="2" class="Supplier_Delivery_Total_Amount_Account_Currency aright ">{$delivery->get('Total Amount Account Currency')}</td>
 			</tr>
-			<tr>
-				<td class="label">{t}Weight{/t}</td>
-				<td class="aright Supplier_Delivery_Weight">{$delivery->get('Weight')}</td>
-			</tr>
-			<tr>
-				<td class="label">{t}CBM{/t}</td>
-				<td class="aright Supplier_Delivery_CBM">{$delivery->get('CBM')}</td>
-			</tr>
+			
 		</table>
 		<div style="clear:both">
 		</div>
@@ -311,6 +329,13 @@
 	</div>
 </div>
 
+<div id="location_results_container" class="search_results_container" style="width:220px;">
+	<table id="location_results" border="0" style="background:white;">
+		<tr class="hide" style=";" id="location_search_result_template" field="" value="" formatted_value="" onclick="select_location_option(this)">
+			<td class="label" style="padding-left:5px;"></td>
+		</tr>
+	</table>
+</div>
 
 
 <script>
@@ -383,7 +408,7 @@ $('#'+field_id).closest('table').find('td.buttons').removeClass('waiting invalid
 
 
 
-		                            $(function() {
+$(function() {
      $("#received_date_datepicker").datepicker({
          showOtherMonths: true,
          selectOtherMonths: true,
@@ -425,6 +450,7 @@ $('#'+field_id).closest('table').find('td.buttons').removeClass('waiting invalid
      $('#received_date').change();
 
  });
+
  $('#received_date').on('change', function() {
      on_changed_value('received_date', $('#received_date').val())
 
@@ -436,7 +462,7 @@ $('#'+field_id).closest('table').find('td.buttons').removeClass('waiting invalid
 
 		
 		
-		                            $(function() {
+$(function() {
 		    $("#send_date_datepicker").datepicker({
 		        showOtherMonths: true,
 		        selectOtherMonths: true,
@@ -488,5 +514,18 @@ $('#'+field_id).closest('table').find('td.buttons').removeClass('waiting invalid
 		}
 		                        
 		                        
+$('#tab').on('input propertychange', '.location_code', function(evt) {
+    var delay = 100;
+    if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
+    delayed_on_change_location_code_field($(this), delay)
+});
+$('#tab').on('input propertychange', '.place_qty', function(evt) {
+    var delay = 100;
+    if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
+    delayed_on_change_place_qty_field($(this), delay)
+});
+
+
+
 
 </script>

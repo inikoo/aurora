@@ -731,6 +731,7 @@ $tab_defaults=array(
 		'f_field'=>'code',
 
 	),
+
 	'supplier.delivery.supplier_parts'=>array(
 		'view'=>'overview',
 		'sort_key'=>'reference',

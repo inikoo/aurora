@@ -44,7 +44,7 @@ case 'delivery.items':
 	break;
 case 'delivery.checking_items':
 	delivery_checking_items(get_table_parameters(), $db, $user);
-	break;	
+	break;
 case 'suppliers':
 	suppliers(get_table_parameters(), $db, $user, $account);
 	break;
@@ -737,6 +737,7 @@ function delivery_items($_data, $db, $user) {
 	echo json_encode($response);
 }
 
+
 function delivery_checking_items($_data, $db, $user) {
 
 
@@ -775,7 +776,30 @@ function delivery_checking_items($_data, $db, $user) {
 			$subtotals.='</span>';
 
 
+			$description=$data['Part Package Description'].' ('.number($units_per_carton).'/'.number($data['Supplier Part Packages Per Carton']).'/C)';
 
+			$locations_data=preg_split('/,/', $data['location_data']);
+
+			$locations='<div  class="part_locations mini_table left hide" transaction_key="'.$data['Purchase Order Transaction Fact Key'].'" >';
+			$number_locations=0;
+			foreach ($locations_data as $location_data) {
+				$number_locations++;
+				$location_data=preg_split('/\:/', $location_data);
+				$locations.='<div class="button" style="clear:both;" onClick="set_placement_location(this)"  location_key="'.$location_data[0].'" >
+				<div  class="code data w150"  >'.$location_data[1].'</div>
+				<div class="data w30 aright" >'.number($location_data[3]).'</div>
+				</div>';
+
+			}
+			$locations.='<div style="clear:both"></div></div>';
+
+
+
+			$description.=' <i style="margin-left:4px" class="fa fa-map-marker button discreet '.($number_locations==0?'hide':'').'" aria-hidden="true" title="'._('Show locations').'"  show_title="'._('Show locations').'" hide_title="'._('Hide locations').'"    onClick="show_part_locations(this)" ></i>';
+
+
+
+			$description.= $locations;
 
 			$delivery_quantity=sprintf('<span class="delivery_quantity" id="delivery_quantity_%d" key="%d" item_key="%d" item_historic_key=%d on="1" ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-minus fa-fw button" aria-hidden="true"></i></span>',
 				$data['Purchase Order Transaction Fact Key'],
@@ -787,23 +811,73 @@ function delivery_checking_items($_data, $db, $user) {
 			);
 
 
+			$sko_checked_quantity=$data['Supplier Delivery Received Quantity']*$data['Supplier Part Packages Per Carton'];
+			$edit_sko_checked_quantity=sprintf('<span data-settings=\'{"field": "Supplier Delivery Received Quantity", "transaction_key":%d,"item_key":%d, "item_historic_key":%d ,"on":1 }\' class="delivery_quantity" id="delivery_quantity_%d" ><input class="received_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-cloud fa-fw button %s" aria-hidden="true"></span>',
+				$data['Purchase Order Transaction Fact Key'],
+				$data['Supplier Part Key'],
+				$data['Supplier Part Historic Key'],
+				$data['Purchase Order Transaction Fact Key'],
+
+				$sko_checked_quantity+0,
+				$sko_checked_quantity+0,
+				($data['Supplier Delivery Received Quantity']==''?'':'invisible')
+			);
+
+			$quantity=($data['Supplier Delivery Received Quantity']-$data['Supplier Delivery Placed Quantity'])*$data['Supplier Part Packages Per Carton'];
+
+
+			if ($data['Metadata']=='') {
+				$metadata=array();
+			}else {
+				$metadata=json_decode($data['Metadata'], true);
+			}
+
+			$placement='<div  class="placement_data mini_table right no_padding" style="padding-right:2px">';
+			if (  isset($metadata['placement_data'])) {
+
+				foreach ($metadata['placement_data'] as $placement_data) {
+					$placement.='<div style="clear:both;">
+				<div class="data w150 aright link" onClick="change_view(\'\')" >'.$placement_data['l'].'</div>
+				<div  class=" data w75 aleft"  >'.$placement_data['qty'].' '._('SKO').' <i class="fa fa-sign-out" aria-hidden="true"></i></div>
+				</div>';
+
+
+				}
+			}
+			$placement.='<div style="clear:both"></div></div>';
+
+
+			$placement.='
+			    <div style="clear:both"  id="place_item_'.$data['Purchase Order Transaction Fact Key'].'" class="place_item '.($data['Supplier Delivery Transaction Placed']=='No'?'':'hide').' " part_sku="'.$data['Part SKU'].'" transaction_key="'.$data['Purchase Order Transaction Fact Key'].'"  >
+			    <input class="place_qty width_50 changed" value="'.($quantity+0).'" ovalue="'.($quantity+0).'"  min="1" max="'.$quantity.'"  >
+				<input class="location_code"  placeholder="'._('Location code').'"  >
+				<i  class="fa  fa-cloud  fa-fw save " aria-hidden="true" title="'._('Place to location').'"  location_key="" onClick="place_item(this)"  ></i>
+                <div>
+
+			';
+
+
 			$adata[]=array(
 
 				'id'=>(integer)$data['Purchase Order Transaction Fact Key'],
 				'supplier_part_key'=>(integer)$data['Supplier Part Key'],
+				'part_sku'=>(integer)$data['Part SKU'],
 				'checkbox'=>sprintf('<i key="%d" class="fa fa-fw fa-square-o button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']),
 
 				'operations'=>sprintf('<i key="%d" class="fa fa-fw fa-truck fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']),
 
 				'reference'=>$data['Supplier Part Reference'],
 				'part_reference'=>$data['Part Reference'],
-				'description'=>$data['Part Unit Description'].' ('.number($units_per_carton).'/C)',
+				'description'=>$description,
 
-				'quantity'=>$delivery_quantity,
+				'sko_edit_checked_quantity'=>$edit_sko_checked_quantity,
+				'sko_checked_quantity'=>number($sko_checked_quantity),
+				
 				'subtotals'=>$subtotals,
 				'ordered'=>number($data['Purchase Order Quantity']),
-				'qty'=>number($quantity)
-
+				'qty'=>number($quantity),
+				'c_sko_u'=>sprintf('<span data-metadata=\'{"qty":%d}\' onClick="copy_qty(this)" class="button"><span class="very_discreet">%s/</span> <span>%s</span> <span class="super_discreet">/%s</span></span>', $data['Supplier Part Packages Per Carton']*$data['Supplier Delivery Quantity'], number($data['Supplier Delivery Quantity']), number($data['Supplier Part Packages Per Carton']*$data['Supplier Delivery Quantity']), number($data['Supplier Part Packages Per Carton']*$data['Supplier Part Units Per Package']*$data['Supplier Delivery Quantity'])),
+				'placement'=>$placement
 			);
 
 
@@ -830,6 +904,7 @@ function delivery_checking_items($_data, $db, $user) {
 	);
 	echo json_encode($response);
 }
+
 
 function order_supplier_parts($_data, $db, $user) {
 

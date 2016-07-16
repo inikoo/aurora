@@ -15,7 +15,7 @@ module.exports = function(grunt) {
                 dest: 'build/app/js/libs.js',
             },
             js_aurora: {
-                src: ['js/app.js', 'js/keyboard_shorcuts.js', 'js/search.js', 'js/table.js', 'js/validation.js', 'js/edit.js', 'js/new.js', 'js/order.js', 'js/help.js'],
+                src: ['js/app.js', 'js/keyboard_shorcuts.js', 'js/search.js', 'js/table.js', 'js/validation.js', 'js/edit.js', 'js/new.js', 'js/order.js', 'js/supplier.order.js', 'js/supplier.delivery.js', 'js/help.js'],
                 dest: 'build/app/js/app.js',
             }
 

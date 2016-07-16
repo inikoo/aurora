@@ -186,8 +186,8 @@ class SupplierDelivery extends DB_Table {
 		}
 		elseif ($key=='public id' or $key=='public_id') {
 			$sql=sprintf("select * from `Supplier Delivery Dimension` where `Supplier Delivery Public ID`=%s", prepare_mysql($id));
-		}else{
-		    exit('unknown key:'.$key);
+		}else {
+			exit('unknown key:'.$key);
 		}
 
 		if ($this->data = $this->db->query($sql)->fetch()) {
@@ -227,6 +227,33 @@ class SupplierDelivery extends DB_Table {
 
 
 		switch ($key) {
+
+		case 'Checked Percentage or Date':
+			if ($this->get('State Index')<40) {
+				return '';
+			}elseif ($this->get('State Index')<50) {
+				return percentage($this->get('Supplier Delivery Number Received Items'), $this->get('Supplier Delivery Number Dispatched Items'));
+			}else {
+				if ($this->data['Supplier Delivery Checked Date']=='')return '';
+				return strftime("%e %b %Y", strtotime($this->data['Supplier Delivery Checked Date'].' +0:00'));
+			}
+
+			break;
+		case 'Placed Percentage or Date':
+			if ($this->get('State Index')<40) {
+				return '';
+			}elseif ($this->get('State Index')<=50) {
+				if ($this->get('Supplier Delivery Number Placed Items')>0) {
+					return percentage($this->get('Supplier Delivery Number Placed Items'), $this->get('Supplier Delivery Number Dispatched Items'));
+				}
+			}elseif ($this->get('State Index')<100) {
+				return percentage($this->get('Supplier Delivery Number Placed Items'), $this->get('Supplier Delivery Number Received Items'));
+			}else {
+				if ($this->data['Supplier Delivery Checked Date']=='')return '';
+				return strftime("%e %b %Y", strtotime($this->data['Supplier Delivery Placed Date'].' +0:00'));
+			}
+
+			break;
 		case 'Weight':
 			include_once 'utils/natural_language.php';
 			return weight($this->get('Supplier Delivery Weight'));
@@ -313,12 +340,10 @@ class SupplierDelivery extends DB_Table {
 			case 'Checked':
 				return 50;
 				break;
-			case 'Placing':
-				return 80;
-				break;
-			case 'Done':
+			case 'Placed':
 				return 100;
 				break;
+
 
 			case 'Cancelled':
 				return -10;
@@ -622,7 +647,31 @@ class SupplierDelivery extends DB_Table {
 
 
 
-	function update_item($item_key, $item_historic_key, $qty) {
+	function update_item($data) {
+
+		switch ($data['field']) {
+		case 'Supplier Delivery Quantity':
+			return $this->update_item_delivery_quantity($data);
+			break;
+		case 'Supplier Delivery Received Quantity':
+			return $this->update_item_delivery_received_quantity($data);
+			break;
+		case 'Supplier Delivery Placed Quantity':
+			return $this->update_item_delivery_placed_quantity($data);
+			break;
+		default:
+
+			break;
+		}
+
+	}
+
+
+	function update_item_delivery_quantity($data) {
+
+		$item_key=$data['item_key'];
+		$item_historic_key=$data['item_historic_key'];
+		$qty=$data['qty'];
 
 
 		// Todo calculate taxed, 0 tax for now
@@ -801,6 +850,199 @@ class SupplierDelivery extends DB_Table {
 	}
 
 
+	function update_item_delivery_received_quantity($data) {
+
+		include_once 'class.SupplierPart.php';
+		$supplier_part=new SupplierPart($data['item_key']);
+
+
+		$date=gmdate('Y-m-d H:i:s');
+		$transaction_key=$data['transaction_key'];
+
+
+		$qty=$data['qty']/$supplier_part->get('Supplier Part Units Per Package');
+		if ($qty<0)$qty=0;
+
+
+		$sql=sprintf('select `Supplier Delivery Placed Quantity` from `Purchase Order Transaction Fact`  where  `Purchase Order Transaction Fact Key`=%d ',
+			$transaction_key
+		);
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+
+				if ($qty==0) {
+
+					if ($row['Supplier Delivery Placed Quantity']>$qty) {
+						$placed='Yes';
+					}else {
+						$placed='NA';
+					}
+				}else {
+
+					if ($row['Supplier Delivery Placed Quantity']>=$qty) {
+						$placed='Yes';
+					}else {
+						$placed='No';
+					}
+
+				}
+
+				$sql = sprintf( "update`Purchase Order Transaction Fact` set  `Supplier Delivery Received Quantity`=%f,`Supplier Delivery Last Updated Date`=%s ,`Supplier Delivery Transaction Placed`=%s where  `Purchase Order Transaction Fact Key`=%d ",
+					$qty,
+					prepare_mysql ($date),
+					prepare_mysql ($placed),
+					$transaction_key
+				);
+
+				$this->db->exec($sql);
+
+
+
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+		$this->update_totals();
+
+		if ($this->get('Supplier Delivery State')=='Received') {
+			if ($this->get('Supplier Delivery Number Dispatched Items')==$this->get('Supplier Delivery Number Received Items')) {
+				$this->update_state('Checked');
+			}
+
+		}
+
+
+		$this->update_metadata=array(
+			'class_html'=>array(
+
+			)
+		);
+
+
+		return array('transaction_key'=>$transaction_key, 'qty'=>$qty+0);
+
+
+
+
+	}
+
+
+	function update_item_delivery_placed_quantity($data) {
+
+		include_once 'class.SupplierPart.php';
+
+
+
+		$date=gmdate('Y-m-d H:i:s');
+		$transaction_key=$data['transaction_key'];
+
+
+
+
+		$sql=sprintf('select `Supplier Delivery Placed Quantity`,`Supplier Part Key`,`Supplier Delivery Received Quantity`,`Metadata` from `Purchase Order Transaction Fact`  where  `Purchase Order Transaction Fact Key`=%d ',
+			$transaction_key
+		);
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+
+
+
+				$supplier_part=new SupplierPart($row['Supplier Part Key']);
+				$qty=$data['qty']/$supplier_part->get('Supplier Part Units Per Package');
+				if ($qty<0)$qty=0;
+
+
+
+				if ($row['Supplier Delivery Received Quantity']>$qty) {
+					$this->error=true;
+					$this->msg='Placed qty > than delivery qqty';
+
+					return;
+				}elseif ($row['Supplier Delivery Received Quantity']==$qty) {
+					$placed='Yes';
+				}else {
+					$placed='No';
+				}
+
+				if ($row['Metadata']=='') {
+					$metadata=array('placement_data'=>array($data['placement_data']));
+				}else {
+					$metadata=json_decode($row['Metadata'], true);
+					if (isset($metadata['placement_data'])) {
+						$metadata['placement_data'][]=$data['placement_data'];
+					}else {
+						$metadata['placement_data']=array($data['placement_data']);
+					}
+				}
+
+				$placement_data=$metadata['placement_data'];
+
+				$metadata=json_encode($metadata);
+
+				$sql = sprintf( "update`Purchase Order Transaction Fact` set  `Supplier Delivery Placed Quantity`=%f,`Supplier Delivery Last Updated Date`=%s ,`Supplier Delivery Transaction Placed`=%s ,`Metadata`=%s where  `Purchase Order Transaction Fact Key`=%d ",
+					$qty,
+					prepare_mysql ($date),
+					prepare_mysql ($placed),
+					prepare_mysql ($metadata),
+					$transaction_key
+				);
+
+				$this->db->exec($sql);
+
+			}else {
+				$this->error=true;
+				$this->msg='po transaction not found';
+				return;
+			}
+
+
+
+
+
+
+
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+		$this->update_totals();
+
+		if ($this->get('Supplier Delivery State')=='Checked') {
+			if ($this->get('Supplier Delivery Number Received Items')==$this->get('Supplier Delivery Number Placed Items')) {
+				$this->update_state('Placed');
+			}
+
+		}
+
+
+
+
+		$this->update_metadata=array(
+			'class_html'=>array(
+				'Supplier_Delivery_State'=>$this->get('State'),
+
+				'Supplier_Delivery_Checked_Date'=>'&nbsp;'.$this->get('Checked Percentage or Date'),
+				'Supplier_Delivery_Placed_Date'=>'&nbsp;'.$this->get('Placed Percentage or Date'),
+
+			),
+			//'operations'=>$operations,
+			'state_index'=>$this->get('State Index')
+		);
+
+
+
+		return array('transaction_key'=>$transaction_key, 'qty'=>$qty+0, 'placement_data'=>$placement_data,'placed'=>$placed);
+
+
+
+
+	}
 
 
 
@@ -1435,7 +1677,7 @@ class SupplierDelivery extends DB_Table {
 	}
 
 
-	function update_state($value, $options, $metadata) {
+	function update_state($value, $options='', $metadata=array()) {
 		$date=gmdate('Y-m-d H:i:s');
 
 
@@ -1459,6 +1701,20 @@ class SupplierDelivery extends DB_Table {
 			$this->update_field('Supplier Delivery State', $value, 'no_history');
 			$operations=array('delete_operations', 'submit_operations', 'all_available_items', 'new_item');
 
+			$sql=sprintf('update `Purchase Order Transaction Fact` set `Supplier Delivery Last Updated Date`=%s where `Supplier Delivery Key`=%d ',
+				prepare_mysql($date),
+				$this->id
+			);
+			$this->db->exec($sql);
+
+			$sql=sprintf('update `Purchase Order Transaction Fact` set `Supplier Delivery Transaction State`=%s where `Supplier Delivery Key`=%d ',
+				prepare_mysql($value),
+				$this->id
+			);
+			$this->db->exec($sql);
+
+
+
 			break;
 
 
@@ -1474,6 +1730,18 @@ class SupplierDelivery extends DB_Table {
 
 			$operations=array('cancel_operations', 'undo_send_operations', 'received_operations');
 
+			$sql=sprintf('update `Purchase Order Transaction Fact` set `Supplier Delivery Last Updated Date`=%s where `Supplier Delivery Key`=%d ',
+				prepare_mysql($date),
+				$this->id
+			);
+			$this->db->exec($sql);
+
+			$sql=sprintf('update `Purchase Order Transaction Fact` set `Supplier Delivery Transaction State`=%s where `Supplier Delivery Key`=%d ',
+				prepare_mysql($value),
+				$this->id
+			);
+			$this->db->exec($sql);
+
 
 			break;
 		case 'Received':
@@ -1486,8 +1754,45 @@ class SupplierDelivery extends DB_Table {
 
 			$operations=array('cancel_operations', 'undo_send_operations', 'received_operations');
 
+			$sql=sprintf('update `Purchase Order Transaction Fact` set `Supplier Delivery Last Updated Date`=%s where `Supplier Delivery Key`=%d ',
+				prepare_mysql($date),
+				$this->id
+			);
+			$this->db->exec($sql);
+
+			$sql=sprintf('update `Purchase Order Transaction Fact` set `Supplier Delivery Transaction State`=%s where `Supplier Delivery Key`=%d ',
+				prepare_mysql($value),
+				$this->id
+			);
+			$this->db->exec($sql);
+
 
 			break;
+		case 'Checked':
+
+			$this->update_field('Supplier Delivery Checked Date', $date, 'no_history');
+			$this->update_field('Supplier Delivery State', $value, 'no_history');
+			foreach ($metadata as $key=>$_value) {
+				$this->update_field($key, $_value, 'no_history');
+			}
+
+			$operations=array('cancel_operations', 'undo_send_operations', 'received_operations');
+
+
+			break;
+		case 'Placed':
+
+			$this->update_field('Supplier Delivery Placed Date', $date, 'no_history');
+			$this->update_field('Supplier Delivery State', $value, 'no_history');
+			foreach ($metadata as $key=>$_value) {
+				$this->update_field($key, $_value, 'no_history');
+			}
+
+			$operations=array();
+
+
+			break;
+
 		default:
 			exit('unknown state '.$value);
 			break;
@@ -1507,17 +1812,6 @@ class SupplierDelivery extends DB_Table {
 		);
 
 
-		$sql=sprintf('update `Purchase Order Transaction Fact` set `Supplier Delivery Last Updated Date`=%s where `Supplier Delivery Key`=%d ',
-			prepare_mysql($date),
-			$this->id
-		);
-		$this->db->exec($sql);
-
-		$sql=sprintf('update `Purchase Order Transaction Fact` set `Supplier Delivery Transaction State`=%s where `Supplier Delivery Key`=%d ',
-			prepare_mysql($value),
-			$this->id
-		);
-		$this->db->exec($sql);
 
 
 
@@ -1528,17 +1822,13 @@ class SupplierDelivery extends DB_Table {
 	function update_totals() {
 
 
-		$this->data ['Supplier Delivery Number Items'] = $row['num_items'];
-		$this->data ['Supplier Delivery Number Items Without PO'] =  $row['num_items']-$row['ordered_products'];
-		$this->data ['Supplier Delivery Number Ordered Items'] = $row['ordered_products'];
 
 
 
-		$sql = sprintf("select sum(`Supplier Delivery Weight`) as  weight,sum(`Supplier Delivery CBM` )as cbm , sum(if(`Purchase Order Key`>0,1,0)) as ordered_items, count(*) as num_items ,sum(`Supplier Delivery Net Amount`) as net,sum(`Supplier Delivery Tax Amount`) as tax from `Purchase Order Transaction Fact` where `Supplier Delivery Key`=%d" ,
+		$sql = sprintf("select  sum(if(`Supplier Delivery Transaction Placed`='Yes',1,0)) as placed_items, sum(if(`Supplier Delivery Transaction Placed`='No',1,0)) as no_placed_items,  sum(`Supplier Delivery Weight`) as  weight,sum(`Supplier Delivery CBM` )as cbm ,  sum( if( `Supplier Delivery Received Quantity` is null,0,1)) as received_items,sum(if(`Purchase Order Key`>0,1,0)) as ordered_items, count(*) num_items,sum(if(`Supplier Delivery Quantity`>0,1,0)) as num_dispatched_items ,sum(`Supplier Delivery Net Amount`) as net,sum(`Supplier Delivery Tax Amount`) as tax from `Purchase Order Transaction Fact` where `Supplier Delivery Key`=%d" ,
 			$this->id);
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
-
 
 				$total_net=$row['net']+$this->get('Supplier Delivery Shipping Net Amount')+$this->get('Supplier Delivery Charges Net Amount')+  $this->get('Supplier Delivery Other Net Amount');
 				$total_tax=$row['tax']+$this->get('Supplier Delivery Shipping Tax Amount')+$this->get('Supplier Delivery Charges Tax Amount')+  $this->get('Supplier Delivery Other Tax Amount');
@@ -1548,6 +1838,9 @@ class SupplierDelivery extends DB_Table {
 						'Supplier Delivery Items Net Amount'=>$row['net'],
 						'Supplier Delivery Items Tax Amount'=>$row['tax'],
 						'Supplier Delivery Number Items'=>$row['num_items'],
+						'Supplier Delivery Number Dispatched Items'=>$row['num_dispatched_items'],
+						'Supplier Delivery Number Received Items'=>$row['received_items'],
+						'Supplier Delivery Number Placed Items'=>$row['placed_items'],
 						'Supplier Delivery Number Ordered Items'=>$row['ordered_items'],
 						'Supplier Delivery Number Items Without PO'=>$row['num_items']-$row['ordered_items'],
 						'Supplier Delivery Weight'=>$row['weight'],
@@ -1556,6 +1849,10 @@ class SupplierDelivery extends DB_Table {
 						'Supplier Delivery Total Tax Amount'=>$total_tax,
 						'Supplier Delivery Total Amount'=>$total
 					), 'no_history');
+
+
+
+
 			}
 		}else {
 			print_r($error_info=$this->db->errorInfo());

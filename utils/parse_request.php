@@ -540,14 +540,14 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 											if ( isset($view_path[4]) ) {
 												if (is_numeric($view_path[4])) {
-												
-												    $parent='PurchaseOrder';
-												    $parent_key=$view_path[2];
-												    $object='PurchaseOrderItem';
-												    $key=$view_path[4];
-												    $section='supplier.order.item';
-												
-												
+
+													$parent='PurchaseOrder';
+													$parent_key=$view_path[2];
+													$object='PurchaseOrderItem';
+													$key=$view_path[4];
+													$section='supplier.order.item';
+
+
 												}
 											}
 
@@ -573,7 +573,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 									$key=$view_path[2];
 
 
-								
+
 
 								}
 
@@ -1763,28 +1763,11 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 					$section='orders';
 
-				}elseif ($view_path[0]=='deliveries') {
-
-					$section='deliveries';
-
 				}
 				elseif ($view_path[0]=='order') {
 
 					$section='order';
 					$object='purchase_order';
-
-					if ( isset($view_path[1]) ) {
-						if (is_numeric($view_path[1])) {
-							$key=$view_path[1];
-						}
-
-					}
-
-
-				}elseif ($view_path[0]=='delivery') {
-
-					$section='delivery';
-					$object='supplierdelivery';
 
 					if ( isset($view_path[1]) ) {
 						if (is_numeric($view_path[1])) {
@@ -1876,6 +1859,35 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 					$object='supplier';
 				}
 			}
+			break;
+
+		case 'deliveries':
+			if (!$user->can_view('suppliers')) {$module='utils';$section='forbidden';break;}
+
+			$module='suppliers';
+			$section='deliveries';
+			break;
+
+		case 'delivery':
+			if (!$user->can_view('suppliers')) {$module='utils';$section='forbidden';break;}
+
+			$module='suppliers';
+
+
+
+			$section='delivery';
+			$object='supplierdelivery';
+
+			if ( isset($view_path[0]) ) {
+				if (is_numeric($view_path[0])) {
+					$key=$view_path[0];
+				}
+
+			}
+
+
+
+
 			break;
 
 		case 'hr':
@@ -2065,9 +2077,9 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 							if (isset($view_path[2])) {
 								if (is_numeric($view_path[2])) {
 									$key=$view_path[2];
-								}elseif($view_path[2]=='new'){
-								$section='employee.attachment.new';
-									
+								}elseif ($view_path[2]=='new') {
+									$section='employee.attachment.new';
+
 									$key=0;
 								}
 							}
@@ -2082,9 +2094,9 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 							if (isset($view_path[2])) {
 								if (is_numeric($view_path[2])) {
 									$key=$view_path[2];
-								}elseif($view_path[2]=='new'){
-								$section='employee.user.new';
-									
+								}elseif ($view_path[2]=='new') {
+									$section='employee.user.new';
+
 									$key=0;
 								}
 							}
@@ -2092,12 +2104,12 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 
 						}
-						
-					
-						
-						
-						
-						
+
+
+
+
+
+
 					}
 
 
@@ -2106,8 +2118,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 				elseif ($view_path[0]=='new') {
 					$section='employee.new';
 					$object='';
-					
-					
+
+
 
 				}
 			}
@@ -2212,17 +2224,17 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 						if ( $view_path[1]=='invoices') {
 							$section='billingregion_taxcategory.invoices';
-//$parent='billingregion_taxcategory.invoices';
+							//$parent='billingregion_taxcategory.invoices';
 						}elseif ( $view_path[1]=='refunds') {
 							$section='billingregion_taxcategory.refunds';
-					//		$parent='billingregion_taxcategory.refunds';
+							//  $parent='billingregion_taxcategory.refunds';
 
 						}
 
 
 						$parent_key=$view_path[2].'_'.$view_path[3];
 
-                            
+
 					}
 
 

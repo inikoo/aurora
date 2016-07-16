@@ -44,11 +44,15 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
 $sql_totals="select count(distinct  `Purchase Order Transaction Fact Key`) as num from $table $where";
 
 
-$fields="`Supplier Delivery Quantity`,`Supplier Delivery Key`,`Part Reference`,P.`Part SKU`,
+$locations="
+, IFNULL((select GROUP_CONCAT(L.`Location Key`,':',L.`Location Code`,':',`Can Pick`,':',`Quantity On Hand` SEPARATOR ',') from `Part Location Dimension` PLD  left join `Location Dimension` L on (L.`Location Key`=PLD.`Location Key`) where PLD.`Part SKU`=P.`Part SKU`),'') as location_data
+";
+
+$fields="`Supplier Delivery Quantity`,`Supplier Delivery Key`,`Part Reference`,P.`Part SKU`,`Supplier Delivery Received Quantity`,`Part Package Description`,`Supplier Delivery Transaction Placed`,`Supplier Delivery Placed Quantity`,`Metadata`,
 `Purchase Order Transaction Fact Key`,`Purchase Order Quantity`,POTF.`Supplier Part Key`,`Supplier Part Reference`,POTF.`Supplier Part Historic Key`,
 `Part Unit Description`,`Supplier Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,
 `Supplier Part Unit Cost`,`Part Package Weight`,`Supplier Delivery CBM`,`Supplier Delivery Weight`,
-`Supplier Delivery Net Amount`,`Currency Code`
+`Supplier Delivery Net Amount`,`Currency Code` $locations
 
 ";
 

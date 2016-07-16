@@ -522,7 +522,8 @@ class PurchaseOrder extends DB_Table{
 							prepare_mysql ( $data['Note to Supplier']),
 							$row['Purchase Order Transaction Fact Key']
 						);
-						mysql_query($sql);
+						
+						$this->db->exec($sql);
 					}
 */
 					$transaction_key=$row['Purchase Order Transaction Fact Key'];
@@ -668,7 +669,7 @@ class PurchaseOrder extends DB_Table{
 
 
 			//exit;
-			mysql_query( $sql );
+			$this->db->exec($sql);
 
 
 		}
@@ -744,9 +745,9 @@ class PurchaseOrder extends DB_Table{
 		include_once 'class.Attachment.php';
 		if ($this->data['Purchase Order State']=='InProcess') {
 			$sql=sprintf("delete from `Purchase Order Dimension` where `Purchase Order Key`=%d", $this->id);
-			mysql_query($sql);
+			$this->db->exec($sql);
 			$sql=sprintf("delete from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d", $this->id);
-			mysql_query($sql);
+			$this->db->exec($sql);
 
 
 			$sql=sprintf("select `History Key`,`Type` from `Purchase Order History Bridge` where `Purchase Order Key`=%d", $this->id);
@@ -760,17 +761,17 @@ class PurchaseOrder extends DB_Table{
 					$res2=mysql_query($sql);
 					while ($row2=mysql_fetch_assoc($res2)) {
 						$sql=sprintf("delete from `Attachment Bridge` where `Attachment Bridge Key`=%d", $row2['Attachment Bridge Key']);
-						mysql_query($sql);
+						$this->db->exec($sql);
 						$attachment=new Attachment($row2['Attachment Key']);
 						$attachment->delete();
 					}
 				}
 
 				$sql=sprintf("delete from `Purchase Order History Bridge` where `History Key`=%d ", $row['History Key']);
-				mysql_query($sql);
+				$this->db->exec($sql);
 
 				$sql=sprintf("delete from `History Dimension` where `History Key`=%d", $row['History Key']);
-				mysql_query($sql);
+				$this->db->exec($sql);
 
 			}
 
@@ -780,7 +781,7 @@ class PurchaseOrder extends DB_Table{
 			$res2=mysql_query($sql);
 			while ($row2=mysql_fetch_assoc($res2)) {
 				$sql=sprintf("delete from `Attachment Bridge` where `Attachment Bridge Key`=%d", $row2['Attachment Bridge Key']);
-				mysql_query($sql);
+				$this->db->exec($sql);
 				$attachment=new Attachment($row2['Attachment Key']);
 				$attachment->delete();
 			}
@@ -818,12 +819,12 @@ class PurchaseOrder extends DB_Table{
 			$this->id);
 
 
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 		$sql=sprintf("update `Purchase Order Transaction Fact` set  `Purchase Order Last Updated Date`=%s ,`Purchase Order Transaction State`='Confirmed'  where `Purchase Order Key`=%d",
 			prepare_mysql($data['Purchase Order Confirmed Date']),
 			$this->id);
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 		$this->get_data('id', $this->id);
 		$this->update_affected_products();
@@ -856,12 +857,12 @@ class PurchaseOrder extends DB_Table{
 		);
 
 
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 		$sql=sprintf("update `Purchase Order Transaction Fact` set  `Purchase Order Last Updated Date`=%s ,`Purchase Order Transaction State`='Submitted'  where `Purchase Order Key`=%d",
 			prepare_mysql($data['Purchase Order Submitted Date']),
 			$this->id);
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 
 		$this->update_affected_products();
@@ -880,7 +881,7 @@ class PurchaseOrder extends DB_Table{
 		$sql=sprintf("update `Purchase Order Dimension` set `Purchase Order State`='In Warehouse' where `Purchase Order Key`=%d",
 			$this->id
 		);
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 		$history_data=array(
 			'History Abstract'=>sprintf(_('Purchase order associeted with delivery %s'), '<a href="supplier_dn.php?id='.$sdn_key.'">'.$sdn_name.'</a>'),
@@ -929,13 +930,13 @@ class PurchaseOrder extends DB_Table{
 			, prepare_mysql($this->data['Purchase Order Cancelled Date'])
 			, prepare_mysql($this->data['Purchase Order Cancel Note'], false)
 			, $this->id);
-		mysql_query($sql);
+		$this->db->exec($sql);
 		//print $sql;
 		$sql=sprintf("update `Purchase Order Transaction Fact` set  `Purchase Order Last Updated Date`=%s `Purchase Order Transaction State`='Cancelled'  where `Purchase Order Key`=%d"
 			, prepare_mysql($data['Purchase Order Cancelled Date'])
 			, $this->id
 		);
-		mysql_query($sql);
+		$this->db->exec($sql);
 
 		$this->update_affected_products();
 

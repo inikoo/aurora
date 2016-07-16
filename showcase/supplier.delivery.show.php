@@ -18,6 +18,8 @@ function get_showcase($data, $smarty, $user, $db) {
 	}
 
 $data['_object']->get_order_data();
+$data['_object']->update_totals();
+
 
 	$smarty->assign('delivery', $data['_object']);
 
