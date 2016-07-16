@@ -30,6 +30,7 @@ switch ($tipo) {
 
 case 'edit_item_in_order':
 	$data=prepare_values($_REQUEST, array(
+	'field'=>array('type'=>'field'),
 			'parent'=>array('type'=>'string'),
 			'parent_key'=>array('type'=>'key'),
 			'item_key'=>array('type'=>'key'),
@@ -64,39 +65,7 @@ case 'edit_category_subject':
 	break;
 
 
-case 'new_part_location':
 
-	$data=prepare_values($_REQUEST, array(
-			'object'=>array('type'=>'string'),
-			'part_sku'=>array('type'=>'key'),
-			'location_key'=>array('type'=>'key'),
-
-		));
-
-
-
-
-	new_part_location($account, $db, $user, $editor, $data, $smarty);
-	break;
-
-
-case 'edit_stock':
-
-	$data=prepare_values($_REQUEST, array(
-			'object'=>array('type'=>'string'),
-			'key'=>array('type'=>'key'),
-			//'field'=>array('type'=>'string'),
-			//'value'=>array('type'=>'string'),
-			'parts_locations_data'=>array('type'=>'json array'),
-			'movements'=>array('type'=>'json array'),
-
-		));
-
-
-
-
-	edit_stock($account, $db, $user, $editor, $data, $smarty);
-	break;
 case 'edit_field':
 
 	$data=prepare_values($_REQUEST, array(
@@ -175,153 +144,6 @@ default:
 	exit;
 	break;
 }
-
-
-function new_part_location($account, $db, $user, $editor, $data, $smarty) {
-
-	include_once 'class.PartLocation.php';
-
-
-	$part_location_data=array(
-		'Location Key'=>$data['location_key'],
-		'Part SKU'=>$data['part_sku'],
-		'editor'=>$editor
-	);
-
-
-
-	$part_location=new PartLocation('find', $part_location_data, 'create');
-
-	if ($part_location->new) {
-
-
-		switch ($part_location->part->get('Location Mainly Used For')) {
-		case 'Picking':
-			$used_for=sprintf('<i class="fa fa-fw fa-shopping-basket" aria-hidden="true" title="%s" ></i>', _('Picking'));
-			break;
-		case 'Storing':
-			$used_for=sprintf('<i class="fa fa-fw  fa-hdd-o" aria-hidden="true" title="%s"></i>', _('Storing'));
-			break;
-		default:
-			$used_for=sprintf('<i class="fa fa-fw  fa-shopping-basket" aria-hidden="true" title="%s"></i>', $part_location->part->get('Location Mainly Used For'));
-		}
-
-
-
-
-		$response=array('state'=>200,
-			'part_sku'=>$part_location->part->id,
-			'location_key'=>$part_location->location->id,
-			'location_code'=>$part_location->location->get('Code'),
-			'formatted_stock'=>number($part_location->get('Quantity On Hand'), 3),
-			'stock'=>($part_location->get('Quantity On Hand')==0?'':$part_location->get('Quantity On Hand')),
-			'location_used_for_icon'=>$used_for,
-			'location_used_for'=>$part_location->location->get('Location Mainly Used For'),
-			'location_link'=>sprintf('locations/%d/%d', $part_location->location->get('Warehouse Key'), $part_location->location->id)
-
-		);
-	}elseif ($part_location->ok) {
-		$response=array('state'=>400, 'msg'=>_('Location already associated with the part'));
-
-	}else {
-		$response=array('state'=>400, 'msg'=>$part_location->msg);
-
-	}
-
-
-
-	echo json_encode($response);
-	exit;
-
-
-}
-
-
-
-
-function edit_stock($account, $db, $user, $editor, $data, $smarty) {
-
-	include_once 'class.PartLocation.php';
-
-
-
-	$parts_locations_data=$data['parts_locations_data'];
-
-	foreach ($data['movements'] as $movement) {
-
-		$part_location_from=new PartLocation($movement['part_sku'], $movement['from_location_key']);
-		$part_location_from->editor=$editor;
-
-
-		if ($part_location_from->get('Quantity On Hand')!=$movement['from_location_stock']) {
-			$part_location_from->audit($movement['from_location_stock'], ' '.$part_location_from->get('Quantity On Hand').'->'.$movement['from_location_stock'], $editor['Date']);
-
-		}
-
-		$part_location_to=new PartLocation($movement['part_sku'], $movement['to_location_key']);
-		$part_location_to->editor=$editor;
-
-		if ($part_location_to->get('Quantity On Hand')!=$movement['to_location_stock']) {
-			$part_location_to->audit($movement['to_location_stock'], '', $editor['Date']);
-		}
-
-		$part_location_from->move_stock(array('Destination Key'=>$movement['to_location_key'], 'Quantity To Move'=>$movement['move_qty']), $editor['Date']);
-
-	}
-
-	foreach ($parts_locations_data as $key=>$part_locations_data) {
-		$part_location=new PartLocation($part_locations_data['part_sku'], $part_locations_data['location_key']);
-		$part_location->editor=$editor;
-
-		if (!$part_location->ok) {
-			$response=array('state'=>400, 'msg'=>_('Error, please try again').' location part not assiated');
-
-
-			echo json_encode($response);
-			exit;
-
-		}
-
-		if ( $parts_locations_data[$key]['disassociate'] ) {
-			$part_location->delete();
-		}else if ($parts_locations_data[$key]['qty']!=$part_location->get('Quantity On Hand')  or $parts_locations_data[$key]['audit'] ) {
-			$part_location->audit($parts_locations_data[$key]['qty'], '', $editor['Date']);
-		}
-	}
-
-
-	$response=array('state'=>200 );
-
-	if ($data['object']=='part') {
-		$part=get_object($data['object'], $data['key'], $load_other_data=true);
-
-
-
-		$smarty->assign('locations_data', $part->get_locations(true));
-		$part_locations=$smarty->fetch('part_locations.edit.tpl');
-
-		$response['updated_fields']=array(
-			'Current_On_Hand_Stock'=>$part->get('Current On Hand Stock'),
-			'Stock_Status_Icon'=>$part->get('Stock Status Icon'),
-			'Current_Stock'=>$part->get('Current Stock'),
-			'Current_Stock_Picked'=>$part->get('Current Stock Picked'),
-			'Current_Stock_In_Process'=>$part->get('Current Stock In Process'),
-			'Current_Stock_Available'=>$part->get('Current Stock Available'),
-			'Available_Forecast'=>$part->get('Available Forecast'),
-			'Part_Locations'=>$part_locations
-		);
-	}
-
-
-
-
-	echo json_encode($response);
-	exit;
-
-
-}
-
-
 
 
 function edit_field($account, $db, $user, $editor, $data, $smarty) {
@@ -1926,7 +1748,7 @@ function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
 	$parent=get_object($data['parent'], $data['parent_key']);
 	$parent->editor=$editor;
 
-	$transaction_data=$parent->update_item($data['item_key'], $data['item_historic_key'],$data['qty']);
+	$transaction_data=$parent->update_item($data);
 
 
 

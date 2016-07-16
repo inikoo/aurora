@@ -15,7 +15,7 @@ var columns= [{
          events: {
              "click": function() {
                  {if $tab=='suppliers.deliveries'}   
-                 change_view("suppliers/delivery/" + this.model.get("id")  )
+                 change_view("delivery/" + this.model.get("id")  )
                 
                {else}
                    change_view("{$data['object']}/{$data['key']}/delivery/" + this.model.get("id")  )

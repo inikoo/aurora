@@ -66,6 +66,22 @@ class SupplierPart extends DB_Table{
 
 	}
 	
+	function get_historic_data($key) {
+
+		$sql=sprintf('select * from `Supplier Part Historic Dimension` where `Supplier Part Historic Dimension`=%d ',
+		$key
+		);
+		if ($row = $this->db->query($sql)->fetch()) {
+
+			foreach ($row as $key=>$value) {
+				$this->data[$key]=$value;
+			}
+		}
+
+
+
+	}
+	
 
 
 

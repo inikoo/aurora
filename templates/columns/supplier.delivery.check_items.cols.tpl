@@ -55,16 +55,15 @@ var columns = [
      cell: Backgrid.StringCell.extend({
       events: {
             "click": function() {
-                {if $data['parent']=='supplier'}
-                change_view("supplier/{$data['parent_key']}/order/{$data['key']}/item/"+this.model.get("id"))
-                {/if}
+                change_view("part/"+this.model.get("part_sku"))
+                
             }
         },
       className: "link"
      }),
 },{
     name: "description",
-    label: "{t}Unit description{/t}",
+    label: "{t}SKO description{/t}",
     editable: false,
      cell: "html"
     
@@ -117,12 +116,22 @@ var columns = [
     editable: false,
     sortType: "toggle",
     {if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.HtmlCell.extend( ),
+       
+}, {
+    name: "sko_edit_checked_quantity",
+    label: "{t}Checked SKO{/t}",
+    renderable: {if $data['_object']->get('State Index')>=40 and $data['_object']->get('State Index')<100 }true{else}false{/if},
+    defautOrder:1,
+    editable: false,
+    sortType: "toggle",
+    {if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
         headerCell: integerHeaderCell
 }, {
-    name: "received_quantity",
-    label: "{t}Received SKO{/t}",
-    renderable: {if $data['_object']->get('State Index')>=40}true{else}false{/if},
+ name: "sko_checked_quantity",
+    label: "{t}Checked SKO{/t}",
+    renderable: {if $data['_object']->get('State Index')==100}true{else}false{/if},
     defautOrder:1,
     editable: false,
     sortType: "toggle",

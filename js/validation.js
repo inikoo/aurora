@@ -665,6 +665,45 @@ function validate_barcode(value, min_length, max_length) {
 }
 
 
+
+function validate_number(value,min,max) {
+
+   
+
+    if (!$.isNumeric(value)) {
+       return {
+            class: 'invalid',
+            type: 'no_numeric'
+        }
+    }
+    
+    
+    if (min!= undefined && value < min) {
+
+       return {
+            class: 'invalid',
+            type: 'negative'
+        }
+
+    }
+    
+    if (max!= undefined && value >max) {
+
+        return  {
+            class: 'invalid',
+            type: 'max_limit'
+        }
+
+    }
+
+  
+
+}
+
+
+
+
+
 function validate_signed_integer(value, max_value) {
 
     if (!$.isNumeric(value)) {

@@ -724,7 +724,7 @@ function save_add_location() {
 
 
 
-    var request = '/ar_edit.php?tipo=new_part_location&object=part&part_sku='+$('#locations_table').attr('part_sku')+'&location_key=' + $('#save_add_location').attr('location_key')
+    var request = '/ar_edit_stock.php?tipo=new_part_location&object=part&part_sku='+$('#locations_table').attr('part_sku')+'&location_key=' + $('#save_add_location').attr('location_key')
     console.log(request)
     //return;
     //=====
@@ -811,7 +811,7 @@ function save_stock() {
 
 
     // used only for debug
-    var request = '/ar_edit.php?tipo=edit_stock&object=part&key='+$('#locations_table').attr('part_sku')+'&parts_locations_data=' + JSON.stringify(parts_locations_data) + '&movements=' + JSON.stringify(movements)
+    var request = '/ar_edit_stock.php?tipo=edit_stock&object=part&key='+$('#locations_table').attr('part_sku')+'&parts_locations_data=' + JSON.stringify(parts_locations_data) + '&movements=' + JSON.stringify(movements)
     console.log(request)
     //return;
     //=====

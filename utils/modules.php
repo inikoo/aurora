@@ -978,7 +978,7 @@ $modules=array(
 				)
 			),
 			'deliveries'=>array(
-				'type'=>'navigation', 'label'=>_('Deliveries'), 'icon'=>'truck', 'reference'=>'suppliers/deliveries',
+				'type'=>'navigation', 'label'=>_('Deliveries'), 'icon'=>'truck', 'reference'=>'deliveries',
 				'tabs'=>array(
 					'suppliers.deliveries'=>array()
 				)

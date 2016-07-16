@@ -49,6 +49,23 @@ $editor=array(
 );
 
 
+$sql=sprintf('update  `Part Dimension` set `Part Package Description`=`Part Unit Description`;  ');
+$db->exec($sql);
+
+
+$sql=sprintf('select `Part SKU` from `Part Dimension`  ');
+
+if ($result=$db->query($sql)) {
+	foreach ($result as $row) {
+		$sql="insert into `Part Data` (`Part SKU`) values(".$row['Part SKU'].");";
+		$db->exec($sql);
+
+
+	}
+}
+
+exit;
+
 $account=new Account();
 
 
@@ -245,20 +262,6 @@ if ($result=$db->query($sql)) {
 exit;
 
 
-$sql=sprintf('update  `Part Dimension` set `Part Package Description`=`Part Unit Description`;  ');
-$db->exec($sql);
-
-
-$sql=sprintf('select `Part SKU` from `Part Dimension`  ');
-
-if ($result=$db->query($sql)) {
-	foreach ($result as $row) {
-		$sql="insert into `Part Data` (`Part SKU`) values(".$row['Part SKU'].");";
-		$db->exec($sql);
-
-
-	}
-}
 
 
 

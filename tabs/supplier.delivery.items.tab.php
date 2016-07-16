@@ -15,6 +15,8 @@ $ar_file='ar_suppliers_tables.php';
 if ($state['_object']->get('State Index')>=40) {
 	$tab='supplier.delivery.check_items';
 	$tipo='delivery.checking_items';
+	$smarty->assign('js_code', 'js/injections/supplier.delivery.checking.'.(_DEVEL?'':'min.').'js');
+
 }else {
 
 	$tab='supplier.delivery.items';
@@ -70,7 +72,6 @@ $table_buttons[]=array(
 );
 $smarty->assign('table_buttons', $table_buttons);
 
-$smarty->assign('js_code', 'js/injections/supplier.order.'.(_DEVEL?'':'min.').'js');
 $smarty->assign('table_metadata', base64_encode(json_encode(array('parent'=>$state['object'], 'parent_key'=>$state['key'])))  );
 
 
