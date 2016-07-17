@@ -69,6 +69,9 @@ case 'supplier.order.supplier_parts':
 case 'category_all_suppliers':
 	category_all_suppliers(get_table_parameters(), $db, $user, $account);
 	break;
+case 'order.supplier_parts':
+	order_supplier_all_parts(get_table_parameters(), $db, $user);
+	break;
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
@@ -542,7 +545,6 @@ function deliveries($_data, $db, $user) {
 
 function order_items($_data, $db, $user) {
 
-
 	$rtext_label='item';
 
 	include_once 'class.PurchaseOrder.php';
@@ -605,7 +607,7 @@ function order_items($_data, $db, $user) {
 
 				'reference'=>$data['Supplier Part Reference'],
 				'description'=>$data['Part Unit Description'].' ('.number($units_per_carton).'/C)',
-				'quantity'=>sprintf('<span item_key="%d" item_historic_key=%d ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_order_qty_change(this)" class="fa  fa-plus fa-fw button" aria-hidden="true"></i></span>',
+				'quantity'=>sprintf('<span item_key="%d" item_historic_key=%d ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button" aria-hidden="true"></i></span>',
 					$data['Supplier Part Key'],
 					$data['Supplier Part Historic Key'],
 					$data['Purchase Order Quantity']+0,
@@ -872,7 +874,7 @@ function delivery_checking_items($_data, $db, $user) {
 
 				'sko_edit_checked_quantity'=>$edit_sko_checked_quantity,
 				'sko_checked_quantity'=>number($sko_checked_quantity),
-				
+
 				'subtotals'=>$subtotals,
 				'ordered'=>number($data['Purchase Order Quantity']),
 				'qty'=>number($quantity),
@@ -1058,6 +1060,139 @@ function category_all_suppliers($_data, $db, $user, $account) {
 		print_r($error_info=$db->errorInfo());
 		exit;
 	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function order_supplier_all_parts($_data, $db, $user) {
+
+	include_once 'class.PurchaseOrder.php';
+
+	$rtext_label='supplier part';
+
+
+	$purchase_order=new PurchaseOrder($_data['parameters']['parent_key']);
+
+	include_once 'prepare_table/init.php';
+
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+
+
+	$adata=array();
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $data) {
+
+			switch ($data['Supplier Part Status']) {
+			case 'Available':
+				$status=sprintf('<i class="fa fa-stop success" title="%s"></i>', _('Available'));
+				break;
+			case 'NoAvailable':
+				$status=sprintf('<i class="fa fa-stop warning" title="%s"></i>', _('No available'));
+
+				break;
+			case 'Discontinued':
+				$status=sprintf('<i class="fa fa-ban error" title="%s"></i>', _('Discontinued'));
+
+				break;
+			default:
+				$status=$data['Supplier Part Status'];
+				break;
+			}
+
+			switch ($data['Part Stock Status']) {
+			case 'Surplus':
+				$stock_status='<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Optimal':
+				$stock_status='<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Low':
+				$stock_status='<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Critical':
+				$stock_status='<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Out_Of_Stock':
+				$stock_status='<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Error':
+				$stock_status='<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+				break;
+			default:
+				$stock_status=$data['Part Stock Status'];
+				break;
+			}
+
+
+			$units_per_carton=$data['Supplier Part Units Per Package']*$data['Supplier Part Packages Per Carton'];
+
+			$subtotals=sprintf('<span  class="subtotals" >');
+			if ($data['Purchase Order Quantity']>0) {
+				$subtotals=money($data['Purchase Order Quantity']*$units_per_carton*$data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code'));
+
+				if ($data['Part Package Weight']>0) {
+					$subtotals.=' '.weight($data['Part Package Weight']*$data['Purchase Order Quantity']*$data['Supplier Part Packages Per Carton']);
+				}
+				if ($data['Supplier Part Carton CBM']>0) {
+					$subtotals.=' '.number($data['Purchase Order Quantity']*$data['Supplier Part Carton CBM']).' m³';
+				}
+			}
+			$subtotals.='</span>';
+
+			$transaction_key='';
+
+			$adata[]=array(
+				'id'=>(integer)$data['Supplier Part Key'],
+				'supplier_key'=>(integer)$data['Supplier Part Supplier Key'],
+				'supplier_code'=>$data['Supplier Code'],
+				'part_key'=>(integer)$data['Supplier Part Part SKU'],
+				'part_reference'=>$data['Part Reference'],
+				'reference'=>$data['Supplier Part Reference'],
+				'formatted_sku'=>sprintf("SKU%05d", $data['Supplier Part Part SKU']),
+				'part_description'=>'<span style="min-width:80px;display: inline-block;" class="link padding_right_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$data['Part Reference'].'</span> '.$data['Part Unit Description'],
+
+				'description'=>$data['Part Unit Description'].' <span class="discreet">('.number($units_per_carton).'/C '.money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')).')</span>',
+				'status'=>$status,
+				'cost'=>money($data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']),
+				'packing'=>'<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Supplier Part Units Per Package'].'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discret padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discret">'.($data['Supplier Part Units Per Package']*$data['Supplier Part Packages Per Carton'].'</span>'),
+				'stock'=>number(floor($data['Part Current Stock']))." $stock_status",
+				'quantity'=>sprintf('<span    data-settings=\'{"field": "Purchase Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button" aria-hidden="true"></i></span>',
+					$transaction_key,
+					$data['Supplier Part Key'],
+					$data['Supplier Part Historic Key'],
+					($data['Purchase Order Quantity']==0?'':$data['Purchase Order Quantity']+0),
+					($data['Purchase Order Quantity']==0?'':$data['Purchase Order Quantity']+0)
+				),
+				'subtotals'=>$subtotals
+
+
+			);
+
+
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		print $sql;
+		exit;
+	}
+
+
+
 
 	$response=array('resultset'=>
 		array(

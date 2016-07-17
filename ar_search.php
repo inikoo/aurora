@@ -118,7 +118,7 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 	$results_data=$cache->get($memcache_fingerprint);
 
 
-	if (!$results_data ) {
+	if (!$results_data or true) {
 
 
 		$candidates=array();
@@ -155,7 +155,7 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 				exit;
 			}
 
-			$sql=sprintf("select `Supplier Key`,`Supplier Name` from `Supplier Dimension` where `Supplier Code`  REGEXP '[[:<:]]%s' limit 20 ",
+			$sql=sprintf("select `Supplier Key`,`Supplier Name` from `Supplier Dimension` where `Supplier Name`  REGEXP '[[:<:]]%s' limit 20 ",
 				$q);
 
 
@@ -170,6 +170,55 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 						$len_q=strlen($q);
 						$factor=$len_q/$len_name;
 						$candidates['S'.$row['Supplier Key']]=400*$factor;
+					}
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				print $sql;
+				exit;
+			}
+
+
+	$sql=sprintf("select `Agent Key`,`Agent Code` from `Agent Dimension` where `Agent Code` like '%s%%' limit 20 ",
+				$q);
+
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+
+					if ($row['Agent Code']==$q)
+						$candidates['A'.$row['Agent Key']]=1000;
+					else {
+
+						$len_name=strlen($row['Agent Code']);
+						$len_q=strlen($q);
+						$factor=$len_q/$len_name;
+						$candidates['A'.$row['Agent Key']]=500*$factor;
+					}
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				print $sql;
+				exit;
+			}
+
+			$sql=sprintf("select `Agent Key`,`Agent Name` from `Agent Dimension` where `Agent Name`  REGEXP '[[:<:]]%s' limit 20 ",
+				$q);
+
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+
+					if ($row['Agent Name']==$q)
+						$candidates['A'.$row['Agent Key']]=800;
+					else {
+
+						$len_name=strlen($row['Agent Name']);
+						$len_q=strlen($q);
+						$factor=$len_q/$len_name;
+						$candidates['A'.$row['Agent Key']]=400*$factor;
 					}
 
 				}
@@ -277,9 +326,11 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 		$counter=0;
 		$supplier_parts_keys='';
 		$supplier_keys='';
+		$agent_keys='';
 		$results=array();
 		$number_supplier_parts_keys=0;
 		$number_supplier_keys=0;
+		$number_agent_keys=0;
 
 		foreach ($candidates as $_key=>$val) {
 			$counter++;
@@ -296,6 +347,12 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 				$results[$_key]='';
 				$number_supplier_keys++;
 
+			}elseif ($_key[0]=='A') {
+				$key=preg_replace('/^A/', '', $_key);
+				$agent_keys.=','.$key;
+				$results[$_key]='';
+				$number_agent_keys++;
+
 			}
 
 			if ($counter>$max_results) {
@@ -304,6 +361,7 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 		}
 		$supplier_parts_keys=preg_replace('/^,/', '', $supplier_parts_keys);
 		$supplier_keys=preg_replace('/^,/', '', $supplier_keys);
+		$agent_keys=preg_replace('/^,/', '', $agent_keys);
 
 
 		if ($number_supplier_parts_keys) {
@@ -351,6 +409,38 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 						'label'=>'<i class="fa fa-ship fa-fw "></i> '.highlightkeyword(sprintf('%s', $row['Supplier Code']), $queries ),
 						'details'=>highlightkeyword($row['Supplier Name'], $queries ),
 						'view'=>sprintf('supplier/%d', $row['Supplier Key'] )
+
+
+
+
+					);
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				print $sql;
+				exit;
+			}
+
+
+		}
+		
+		if ($number_agent_keys) {
+
+			$sql=sprintf("select `Agent Key`,`Agent Code`,`Agent Name` from `Agent Dimension`  where `Agent Key` in (%s)",
+				$agent_keys);
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+
+
+
+
+
+					$results['A'.$row['Agent Key']]=array(
+						'label'=>'<i class="fa fa-user-secret fa-fw "></i> '.highlightkeyword(sprintf('%s', $row['Agent Code']), $queries ),
+						'details'=>highlightkeyword($row['Agent Name'], $queries ),
+						'view'=>sprintf('agent/%d', $row['Agent Key'] )
 
 
 
