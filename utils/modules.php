@@ -991,7 +991,6 @@ $modules=array(
 
 					'supplier.order.items'=>array('label'=>_('Items'), 'icon'=>'bars'),
 					// 'supplier.order.supplier_parts'=>array('label'=>_('Parts'), 'icon'=>'stop'),
-					'supplier.order.delivery_notes'=>array('label'=>_('Delivery notes'),  'icon'=>'truck'),
 					// 'supplier.order.invoices'=>array('label'=>_('Invoices'),  'icon'=>'usd'),
 					'supplier.order.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
 
@@ -1094,6 +1093,40 @@ $modules=array(
 
 
 					'supplier.order.item.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+
+
+					'supplier_part.purchase_orders'=>array('label'=>_('Purchase Orders'), 'icon'=>'clipboard', 'class'=>'right icon_only',
+						'subtabs'=>array(
+							'supplier_part.purchase_orders.purchase_orders'=>array('label'=>_('Purchase Orders')),
+							'supplier_part.purchase_orders.delivery_notes'=>array('label'=>_('Delivery Notes')),
+							'supplier_part.purchase_orders.invoices'=>array('label'=>_('Invoices')),
+
+						)
+
+					),
+
+					'supplier_part.images'=>array('label'=>_('Images'), 'icon'=>'camera-retro', 'class'=>'right icon_only'),
+					'supplier_part.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
+
+
+
+				)
+			),
+
+			'agent.order.item'=>array('type'=>'object',
+				'subtabs_parent'=>array(
+
+					'supplier_part.purchase_orders.purchase_orders'=>'supplier_part.purchase_orders',
+					'supplier_part.purchase_orders.delivery_notes'=>'supplier_part.purchase_orders',
+					'supplier_part.purchase_orders.invoices'=>'supplier_part.purchase_orders',
+				),
+
+
+
+				'tabs'=>array(
+
+
+					'agent.order.item.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 
 
 					'supplier_part.purchase_orders'=>array('label'=>_('Purchase Orders'), 'icon'=>'clipboard', 'class'=>'right icon_only',

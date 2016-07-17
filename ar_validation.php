@@ -60,6 +60,8 @@ function check_for_duplicates($data, $db, $user, $account) {
 
 	$options_where='';
 
+    
+
 	switch ($data['object']) {
 	case 'User':
 		switch ($field) {
@@ -514,7 +516,12 @@ function check_for_duplicates($data, $db, $user, $account) {
 		$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
 
 		break;
+	case 'PurchaseOrder':
+	$data['object']='Purchase Order';
+	    break;
 	default:
+	
+	
 
 
 		break;
@@ -556,7 +563,7 @@ function check_for_duplicates($data, $db, $user, $account) {
 
 		);
 
-		print $sql;
+	//	print $sql;
 
 
 

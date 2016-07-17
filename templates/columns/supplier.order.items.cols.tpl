@@ -31,15 +31,32 @@ var columns = [
     
 },
 {
-    name: "reference",
-    label: "{t}S. Code{/t}",
+    name: "item_index",
+    label: "",
     editable: false,
      cell: Backgrid.StringCell.extend({
       events: {
             "click": function() {
                 {if $data['parent']=='supplier'}
                 change_view("supplier/{$data['parent_key']}/order/{$data['key']}/item/"+this.model.get("id"))
+                {else if $data['parent']=='agent'}
+                change_view("agent/{$data['parent_key']}/order/{$data['key']}/item/"+this.model.get("id"))
                 {/if}
+            }
+        },
+      className: "button"
+     }),
+},
+{
+    name: "reference",
+    label: "{t}S. Code{/t}",
+    editable: false,
+     cell: Backgrid.StringCell.extend({
+      events: {
+            "click": function() {
+                          change_view(this.model.get("parent_type")+"/"+this.model.get("parent_key")+"/part/"+this.model.get("supplier_part_key"))
+
+            
             }
         },
       className: "link"
@@ -62,7 +79,7 @@ var columns = [
 }, {
     name: "quantity",
     label: "{t}Cartons{/t}",
-    renderable: {if $data['_object']->get('Purchase Order State')=='In Process'}true{else}false{/if},
+    renderable: {if $data['_object']->get('Purchase Order State')=='InProcess'}true{else}false{/if},
     defautOrder:1,
     editable: false,
     sortType: "toggle",
@@ -72,7 +89,7 @@ var columns = [
 }, {
     name: "ordered",
     label: "{t}Cartons{/t}",
-    renderable: {if $data['_object']->get('Purchase Order State')!='In Process'}true{else}false{/if},
+    renderable: {if $data['_object']->get('Purchase Order State')!='InProcess'}true{else}false{/if},
     defautOrder:1,
     editable: false,
     sortType: "toggle",

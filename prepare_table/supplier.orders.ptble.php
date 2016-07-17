@@ -41,6 +41,7 @@ if (isset($parameters['period'])) {
 	$where.=$where_interval['mysql'];
 }
 
+
 if (isset($parameters['elements_type'])) {
 
 
@@ -53,13 +54,9 @@ if (isset($parameters['elements_type'])) {
 			$_value=$_value['selected'];
 			if ($_value) {
 				$num_elements_checked++;
-				if ($_key=='InProcess') {
-					$_elements.=",'In Process'";
-				}elseif ($_key=='In Warehouse') {
-					$_elements.=",'In Warehouse'";
-				}else {
+				
 					$_elements.=",'".addslashes($_key)."'";
-				}
+				
 			}
 		}
 

@@ -67,7 +67,7 @@
 </div>
 <div class="order" style="display: flex;" data-object="{$object_data}">
 	<div class="block" style=" align-items: stretch;flex: 1">
-		<div class="data_container">
+		<div class="data_container"  style="padding:5px 10px">
 			<div class="data_field">
 				<i class="fa fa-ship fa-fw" aria-hidden="true" title="{t}Supplier{/t}"></i> <span onclick="change_view('{if $order->get('Purchase Order Parent')=='Supplier'}supplier{else}agent{/if}/{$order->get('Purchase Order Parent Key')}')" class="link Purchase_Order_Parent_Name">{$order->get('Purchase Order Parent Name')}</span> 
 			</div>
@@ -155,8 +155,8 @@
 			<span style="float:left;padding-left:10px;padding-top:5px" class="Purchase_Order_State"> {$order->get('State')} </span> 
 			<div id="forward_operations">
 				<div id="submit_operations" class="order_operation {if $order->get('Purchase Order State')!='InProcess'}hide{/if}">
-					<div class="square_button right" xstyle="padding:0;margin:0;position:relative;top:-5px" title="{t}Submit{/t}">
-						<i class="fa fa-paper-plane-o" aria-hidden="true" onclick="toggle_order_operation_dialog('submit')"></i> 
+					<div id="submit_operation"  class="square_button right {if $order->get('Purchase Order Number Items')==0}hide{/if} "  title="{t}Submit{/t}">
+						<i class="fa fa-paper-plane-o   " aria-hidden="true" onclick="toggle_order_operation_dialog('submit')"></i> 
 						<table id="submit_dialog" border="0" class="order_operation_dialog hide">
 							<tr class="top">
 								<td colspan="2">{t}Submit purchase order{/t}</td>
@@ -202,6 +202,29 @@
 		
 	</div>
 	<div class="block " style="align-items: stretch;flex: 1 ">
+		<table border="0" class="info_block acenter"  >
+		
+		<tr>
+				
+				<td > 
+				<span style="padding-right:20px"><i class="fa fa-clipboard fa-fw discreet" aria-hidden="true" ></i> <span class="Purchase_Order_Number_items">{$order->get('Number Items')}</span></span>
+				<span style="padding-left:20px"><i class="fa fa-map-marker fa-fw discreet" aria-hidden="true" ></i> <span class="Purchase_Order_Number_Placed_Items" >{$order->get('Number Placed Items')}</span></span>
+				</td>
+			</tr>
+		
+			<tr>
+				
+				<td class="Purchase_Order_Weight"  title="{t}Weight{/t}">{$order->get('Weight')}</td>
+			</tr>
+			<tr>
+				
+				<td class="Purchase_Order_CBM" title="{t}CBM{/t}" >{$order->get('CBM')}</td>
+			</tr>
+		</table>
+		<div style="clear:both">
+		</div>
+	</div>
+	<div class="block " style="align-items: stretch;flex: 1 ">
 		<table border="0" class="info_block">
 			<tr>
 				<td class="label">{t}Cost{/t} ({$order->get('Purchase Order Currency Code')}) </td>
@@ -210,14 +233,7 @@
 			<tr class="{if $account->get('Account Currency')==$order->get('Purchase Order Currency Code')}hide{/if}">
 				<td colspan="2" class="Purchase_Order_Total_Amount_Account_Currency aright ">{$order->get('Total Amount Account Currency')}</td>
 			</tr>
-			<tr>
-				<td class="label">{t}Weight{/t}</td>
-				<td class="aright Purchase_Order_Weight">{$order->get('Weight')}</td>
-			</tr>
-			<tr>
-				<td class="label">{t}CBM{/t}</td>
-				<td class="aright Purchase_Order_CBM">{$order->get('CBM')}</td>
-			</tr>
+			
 		</table>
 		<div style="clear:both">
 		</div>

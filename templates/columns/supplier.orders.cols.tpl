@@ -25,7 +25,25 @@ var columns= [{
          },
          className: "link",
      })
- }, {
+ },
+  {
+     name: "parent",
+     label: "{t}Supplier/Agent{/t}",
+     renderable:{if ($data['object']=='supplier' or $data['object']=='agent'  )}false{else}true{/if},
+      sortType: "toggle",
+     editable: false,
+     cell: Backgrid.StringCell.extend({
+         events: {
+             "click": function() {
+             
+             
+                 change_view( this.model.get("parent_type")+'/' + this.model.get("parent_key")  )
+             }
+         },
+         className: "link",
+     })
+ },
+  {
      name: "date",
      label: "{t}Date{/t}",
      editable: false,
@@ -34,20 +52,6 @@ var columns= [{
     {if $sort_key=='date'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
     cell: Backgrid.StringCell.extend({ className: "aright"} ),
     headerCell: integerHeaderCell
- }, {
-     name: "supplier",
-     label: "{t}Supplier{/t}",
-     renderable:{if $data['parent']=='supplier'}false{else}true{/if},
-      sortType: "toggle",
-     editable: false,
-     cell: Backgrid.StringCell.extend({
-         events: {
-             "click": function() {
-                 change_view('supplier/' + this.model.get("supplier_key")  )
-             }
-         },
-         className: "link",
-     })
  }, {
      name: "state",
      label: "{t}State{/t}",

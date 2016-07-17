@@ -693,6 +693,27 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 								if (is_numeric($view_path[2])) {
 									$key=$view_path[2];
 								}
+								
+									if ( isset($view_path[3]) ) {
+										if ($view_path[3]=='item') {
+
+											if ( isset($view_path[4]) ) {
+												if (is_numeric($view_path[4])) {
+
+													$parent='PurchaseOrder';
+													$parent_key=$view_path[2];
+													$object='PurchaseOrderItem';
+													$key=$view_path[4];
+													$section='agent.order.item';
+
+
+												}
+											}
+
+
+										}
+									}
+								
 
 							}
 
