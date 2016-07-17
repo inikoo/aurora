@@ -21,8 +21,8 @@ var columns = [
     editable: false,
      cell: Backgrid.StringCell.extend({
       events: {
-            "click": function() {
-                change_view("order/{$data['key']}/item/"+this.model.get("id"))
+             "click": function() {
+              change_view(this.model.get("parent_type")+"/"+this.model.get("parent_key")+"/part/"+this.model.get("id"))
             }
         },
       className: "link"

@@ -29,6 +29,9 @@ elseif ($order=='created')
 elseif ($order=='last_updated')
 	$order='`Order Last Updated Date`';
 
+elseif ($order=='item_index')
+	$order='`Purchase Order Item Index`';
+
 else {
 	$order='`Purchase Order Transaction Fact Key`';
 }
@@ -50,7 +53,7 @@ $fields="
 
 ";
 
-$fields="`Supplier Delivery Quantity`,`Supplier Delivery Key`,
+$fields="`Supplier Delivery Quantity`,`Supplier Delivery Key`,`Purchase Order Item Index`,
 `Purchase Order Transaction Fact Key`,`Purchase Order Quantity`,POTF.`Supplier Part Key`,`Supplier Part Reference`,POTF.`Supplier Part Historic Key`,
 `Part Unit Description`,`Supplier Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,
 `Supplier Part Unit Cost`,`Part Package Weight`,`Purchase Order CBM`,`Purchase Order Weight`

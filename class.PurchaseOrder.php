@@ -205,6 +205,13 @@ class PurchaseOrder extends DB_Table{
 
 		if ($this->data = $this->db->query($sql)->fetch()) {
 			$this->id=$this->data['Purchase Order Key'];
+
+			if ($this->data['Purchase Order Metadata']=='') {
+				$this->metadata=array();
+			}else {
+				$this->metadata=json_decode($this->data['Purchase Order Metadata'], true);
+			}
+
 		}
 
 	}
@@ -219,11 +226,20 @@ class PurchaseOrder extends DB_Table{
 
 		case 'Weight':
 			include_once 'utils/natural_language.php';
-			return weight($this->get('Purchase Order Weight'));
+			if ($this->data['Purchase Order CBM']=='') {
+				if ($this->get('Purchase Order Number Items')>0)
+					return '<span class="italic very_discreet">'._('Unknown Weight').'</span>';
+			}else {
+				return ($this->get('Purchase Order Missing Weights')>0?'<i class="fa fa-exclamation-circle warning" aria-hidden="true" title="'._("Some supplier's parts without weight").'" ></i> ':'').weight($this->get('Purchase Order Weight'));
+			}
 			break;
 		case 'CBM':
-			if ($this->data['Purchase Order CBM']=='')return '';
-			return number($this->data['Purchase Order CBM']).' m³';
+			if ($this->data['Purchase Order CBM']=='') {
+				if ($this->get('Purchase Order Number Items')>0)
+					return '<span class="italic very_discreet">'._('Unknown CBM').'</span>';
+			}else {
+				return ($this->get('Purchase Order Missing CBMs')>0?'<i class="fa fa-exclamation-circle warning" aria-hidden="true" title="'._("Some supplier's parts without CBM").'" ></i> ':'').number($this->data['Purchase Order CBM']).' m³';
+			}
 			break;
 		case 'Estimated Receiving Date':
 		case 'Agreed Receiving Date':
@@ -375,8 +391,20 @@ class PurchaseOrder extends DB_Table{
 		case 'Total Amount':
 			return money($this->data['Purchase Order Total Amount'], $this->data['Purchase Order Currency Code']);
 			break;
-
-
+		case 'Number Items':
+			return number($this->data ['Purchase Order Number Items']);
+			break;
+		case 'Number Placed Items':
+			
+			if($this->get('State Index')<40){
+			    return '<span class="super_discreet">-</span>';
+			}elseif($this->get('State Index')==40){
+			return number($this->data ['Purchase Order Number Placed Items']);
+			}else{
+			return '<span class="discreet">'.number($this->data ['Purchase Order Number Placed Items']).'</span>';
+			}
+			
+			break;	
 		default:
 
 
@@ -384,8 +412,7 @@ class PurchaseOrder extends DB_Table{
 
 
 
-			if ($key=='Number Items')
-				return number($this->data ['Purchase Order Number Items']);
+			
 			if (preg_match('/^(Total|Items|(Shipping |Charges )?Net).*(Amount)$/', $key)) {
 				$amount='Purchase Order '.$key;
 				return money($this->data[$amount], $this->data['Purchase Order Currency Code']);
@@ -428,9 +455,23 @@ class PurchaseOrder extends DB_Table{
 	}
 
 
+	function update_item($data) {
+
+		switch ($data['field']) {
+		case 'Purchase Order Quantity':
+			return $this->update_item_quantity($data);
+			break;
+
+		default:
+
+			break;
+		}
+
+	}
 
 
-	function update_item($item_key, $item_historic_key, $qty) {
+
+	function update_item_quantity($data) {
 
 
 		// Todo calculate taxed, 0 tax for now
@@ -439,6 +480,9 @@ class PurchaseOrder extends DB_Table{
 		//$tax_amount=$tax_category->calculate_tax($data ['amount']);
 
 
+		$item_key=$data['item_key'];
+		$item_historic_key=$data['item_historic_key'];
+		$qty=$data['qty'];
 
 		include_once 'class.SupplierPart.php';
 		$supplier_part=new SupplierPart($item_key);
@@ -522,21 +566,39 @@ class PurchaseOrder extends DB_Table{
 							prepare_mysql ( $data['Note to Supplier']),
 							$row['Purchase Order Transaction Fact Key']
 						);
-						
+
 						$this->db->exec($sql);
 					}
 */
 					$transaction_key=$row['Purchase Order Transaction Fact Key'];
 				}else {
 
-					$sql = sprintf( "insert into `Purchase Order Transaction Fact` (`Supplier Part Key`,`Supplier Part Historic Key`,`Purchase Order Tax Code`,`Currency Code`,`Purchase Order Last Updated Date`,`Purchase Order Transaction State`,
+
+					$item_index=1;
+					$sql=sprintf('select max(`Purchase Order Item Index`) item_index from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d ',
+						$this->id);
+					if ($result2=$this->db->query($sql)) {
+						if ($row2 = $result2->fetch()) {
+							if (is_numeric($row2['item_index'])) {
+								$item_index=$row2['item_index']+1;
+							}
+						}
+					}else {
+						print_r($error_info=$this->db->errorInfo());
+						exit;
+					}
+
+
+
+					$sql = sprintf( "insert into `Purchase Order Transaction Fact` (`Purchase Order Item Index`,`Supplier Part Key`,`Supplier Part Historic Key`,`Purchase Order Tax Code`,`Currency Code`,`Purchase Order Last Updated Date`,`Purchase Order Transaction State`,
 					`Supplier Key`,`Agent Key`,`Purchase Order Key`,`Purchase Order Quantity`,`Purchase Order Net Amount`,`Purchase Order Tax Amount`,`Note to Supplier`,`Purchase Order CBM`,`Purchase Order Weight`,
 					`User Key`,`Creation Date`
 					)
-					values (%d,%d,%s,%s,%s,%s,
+					values (%d,%d,%d,%s,%s,%s,%s,
 					 %d,%s,%d,%.6f,%.2f,%.2f,%s,%s,%s,
 					 %d,%s
 					 )",
+						$item_index,
 						$item_key,
 						$item_historic_key,
 						prepare_mysql ( $tax_code ),
@@ -595,9 +657,16 @@ class PurchaseOrder extends DB_Table{
 				'Purchase_Order_Total_Amount_Account_Currency'=>$this->get('Total Amount Account Currency'),
 				'Purchase_Order_Weight'=>$this->get('Weight'),
 				'Purchase_Order_CBM'=>$this->get('CBM'),
-
+				'Purchase_Order_Number_items'=>$this->get('Number Items'),
 			)
 		);
+
+		if ($this->get('Purchase Order Number Items')==0) {
+			$this->update_metadata['hide']=array('submit_operation');
+		}else {
+			$this->update_metadata['show']=array('submit_operation');
+
+		}
 
 
 		return array('transaction_key'=>$transaction_key, 'subtotals'=>$subtotals, 'to_charge'=>money($amount, $this->data['Purchase Order Currency Code']), 'qty'=>$qty+0);
@@ -692,7 +761,7 @@ class PurchaseOrder extends DB_Table{
 
 	function update_totals() {
 
-		$sql = sprintf("select sum(`Purchase Order Weight`) as  weight,sum(`Purchase Order CBM` )as cbm ,count(*) as num_items ,sum(if(`Purchase Order Quantity`>0,1,0)) as num_ordered_items ,sum(`Purchase Order Net Amount`) as items_net, sum(`Purchase Order Tax Amount`) as tax,  sum(`Purchase Order Shipping Contribution Amount`) as shipping from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d" ,
+		$sql = sprintf("select sum(`Purchase Order Weight`) as  weight,sum(if(isNULL(`Purchase Order Weight`),1,0) )as missing_weights ,sum(if(isNULL(`Purchase Order CBM`),1,0) )as missing_cbms , sum(`Purchase Order CBM` )as cbm ,count(*) as num_items ,sum(if(`Purchase Order Quantity`>0,1,0)) as num_ordered_items ,sum(`Purchase Order Net Amount`) as items_net, sum(`Purchase Order Tax Amount`) as tax,  sum(`Purchase Order Shipping Contribution Amount`) as shipping from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d" ,
 			$this->id);
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
@@ -709,6 +778,8 @@ class PurchaseOrder extends DB_Table{
 						'Purchase Order Ordered Number Items'=>$row['num_ordered_items'],
 						'Purchase Order Weight'=>$row['weight'],
 						'Purchase Order CBM'=>$row['cbm'],
+						'Purchase Order Missing Weights'=>$row['missing_weights'],
+						'Purchase Order Missing CBMs'=>$row['missing_cbms'],
 						'Purchase Order Total Net Amount'=>$total_net,
 						'Purchase Order Total Amount'=>$total
 					), 'no_history');
@@ -892,7 +963,7 @@ class PurchaseOrder extends DB_Table{
 	}
 
 
-	
+
 
 
 	function update_affected_products() {
@@ -977,7 +1048,7 @@ class PurchaseOrder extends DB_Table{
 		case 'Purchase Order Estimated Receiving Date':
 			$this->update_field($field, $value, $options);
 			$this->update_affected_products();
-			
+
 			break;
 		default:
 
@@ -1018,7 +1089,7 @@ class PurchaseOrder extends DB_Table{
 			$operations=array('delete_operations', 'submit_operations', 'all_available_items', 'new_item');
 
 
-/*
+			/*
 
 		$history_data=array(
 			'History Abstract'=>_('Purchase order send back to process'),
@@ -1081,7 +1152,7 @@ class PurchaseOrder extends DB_Table{
 		);
 		$this->db->exec($sql);
 
-$this->update_affected_products();
+		$this->update_affected_products();
 
 
 
@@ -1126,7 +1197,10 @@ $this->update_affected_products();
 
 		if ($result=$this->db->query($sql)) {
 			foreach ($result as $row) {
+				if ($row['Supplier Delivery Key']=='')continue;
+
 				if ($scope=='objects') {
+
 					$deliveries[$row['Supplier Delivery Key']]=new SupplierDelivery($row['Supplier Delivery Key']);
 
 				}else {

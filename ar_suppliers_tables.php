@@ -402,7 +402,7 @@ function orders($_data, $db, $user) {
 		foreach ($result as $data) {
 
 			switch ($data['Purchase Order State']) {
-			case 'In Process':
+			case 'InProcess':
 				$state=sprintf('%s', _('In Process'));
 				break;
 			case 'Submitted':
@@ -429,10 +429,12 @@ function orders($_data, $db, $user) {
 			$adata[]=array(
 				'id'=>(integer)$data['Purchase Order Key'],
 				'parent_key'=> (integer) $data['Purchase Order Parent Key'],
+				'parent_type'=> strtolower($data['Purchase Order Parent']),
+				'parent'=> strtolower($data['Purchase Order Parent Name']),
+
 				'public_id'=>$data['Purchase Order Public ID'],
 				'date'=>strftime("%e %b %Y", strtotime($data['Purchase Order Creation Date'].' +0:00')),
 				'last_date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Purchase Order Last Updated Date'].' +0:00')),
-				'parent_name'=>$data['Purchase Order Parent Name'],
 				'state'=>$state,
 
 				'total_amount'=>money($data['Purchase Order Total Amount'], $data['Purchase Order Currency Code'])
@@ -600,6 +602,9 @@ function order_items($_data, $db, $user) {
 			$adata[]=array(
 
 				'id'=>(integer)$data['Purchase Order Transaction Fact Key'],
+				'item_index'=>$data['Purchase Order Item Index'],
+				'parent_key'=>$purchase_order->get('Purchase Order Parent Key'),
+				'parent_type'=>strtolower($purchase_order->get('Purchase Order Parent')),
 				'supplier_part_key'=>(integer)$data['Supplier Part Key'],
 				'checkbox'=>sprintf('<i key="%d" class="fa fa-fw fa-square-o button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']),
 
@@ -1162,6 +1167,8 @@ function order_supplier_all_parts($_data, $db, $user) {
 				'supplier_code'=>$data['Supplier Code'],
 				'part_key'=>(integer)$data['Supplier Part Part SKU'],
 				'part_reference'=>$data['Part Reference'],
+				'parent_key'=>$purchase_order->get('Purchase Order Parent Key'),
+				'parent_type'=>strtolower($purchase_order->get('Purchase Order Parent')),
 				'reference'=>$data['Supplier Part Reference'],
 				'formatted_sku'=>sprintf("SKU%05d", $data['Supplier Part Part SKU']),
 				'part_description'=>'<span style="min-width:80px;display: inline-block;" class="link padding_right_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$data['Part Reference'].'</span> '.$data['Part Unit Description'],

@@ -1928,7 +1928,7 @@ function get_new_agent_user_navigation($data, $smarty, $user, $db) {
 }
 
 
-function get_supplier_order_item_navigation($data, $smarty, $user, $db, $account) {
+function get_order_item_navigation($data, $smarty, $user, $db, $account) {
 
 
 
@@ -2003,13 +2003,13 @@ function get_supplier_order_item_navigation($data, $smarty, $user, $db, $account
 			if ( $row2['num']>1) {
 
 
-				$sql=sprintf("select `Supplier Part Reference` object_name,`Supplier Part Key` as object_key from %s and ($_order_field < %s OR ($_order_field = %s AND `Supplier Part Key` < %d))  order by $_order_field desc , `Supplier Part Key` desc limit 1",
+				$sql=sprintf("select `Supplier Part Reference` object_name,POTF.`Supplier Part Key` as object_key from %s and ($_order_field < %s OR ($_order_field = %s AND POTF.`Supplier Part Key` < %d))  order by $_order_field desc , POTF.`Supplier Part Key` desc limit 1",
 					"$table $where $wheref",
 					prepare_mysql($_order_field_value),
 					prepare_mysql($_order_field_value),
 					$data['key']
 				);
-				//print $sql;
+				
 				if ($result=$db->query($sql)) {
 					if ($row = $result->fetch()) {
 
@@ -2025,7 +2025,7 @@ function get_supplier_order_item_navigation($data, $smarty, $user, $db, $account
 
 
 
-				$sql=sprintf("select `Supplier Part Reference` object_name,`Supplier Part Key` as object_key from %s and ($_order_field  > %s OR ($_order_field  = %s AND `Supplier Part Key` > %d))  order by $_order_field   , `Supplier Part Key`  limit 1",
+				$sql=sprintf("select `Supplier Part Reference` object_name,POTF.`Supplier Part Key` as object_key from %s and ($_order_field  > %s OR ($_order_field  = %s AND POTF.`Supplier Part Key` > %d))  order by $_order_field   , POTF.`Supplier Part Key`  limit 1",
 					"$table $where $wheref",
 					prepare_mysql($_order_field_value),
 					prepare_mysql($_order_field_value),
@@ -2099,7 +2099,7 @@ function get_supplier_order_item_navigation($data, $smarty, $user, $db, $account
 
 
 
-	$sections=get_sections($_section, '');
+	$sections=get_sections('suppliers', '');
 
 
 	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;

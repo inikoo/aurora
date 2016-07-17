@@ -1071,7 +1071,8 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 			return get_new_agent_user_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('supplier.order.item'):
-			return get_supplier_order_item_navigation($data, $smarty, $user, $db, $account);
+		case ('agent.order.item'):
+			return get_order_item_navigation($data, $smarty, $user, $db, $account);
 			break;
 		}
 
@@ -1800,17 +1801,23 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 			$branch[]=array('label'=>'<span class="Supplier_Delivery_Public_ID">'.$state['_object']->get('Public ID').'</span>', 'icon'=>'truck', 'reference'=>'');
 		}elseif ($state['section']=='supplier.order.item') {
 
-			if ($state['_parent']->get('Purchase Order Parent')=='Supplier') {
 				$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
 				$branch[]=array('label'=>'<span class="id Supplier_Code">'.$state['_parent']->get('Parent Code'), 'icon'=>'ship', 'reference'=>'supplier/'.$state['_parent']->get('Purchase Order Parent Key'));
 				$branch[]=array('label'=>'<span class="Purchase_Order_Public_ID">'.$state['_parent']->get('Public ID').'</span>', 'icon'=>'clipboard', 'reference'=>'supplier/'.$state['_parent']->get('Purchase Order Parent Key').'/order/'.$state['parent_key']);
 
-			}else {
+		
+			$branch[]=array('label'=>'<span class="Supplier_Part_Reference">'.$state['_object']->get('Reference').'</span>', 'icon'=>'bars', 'reference'=>'');
+
+		}elseif ($state['section']=='agent.order.item') {
+
+
+
+	
 				$branch[]=array('label'=>_('Agents'), 'icon'=>'', 'reference'=>'agents');
-				$branch[]=array('label'=>'<span class="id Agent_Code">'.$state['_parent']->get('Code'), 'icon'=>'user-secret', 'reference'=>'agent/'.$state['_parent']->get('Purchase Order Parent Key'));
+				$branch[]=array('label'=>'<span class="id Agent_Code">'.$state['_parent']->get('Parent Code'), 'icon'=>'user-secret', 'reference'=>'agent/'.$state['_parent']->get('Purchase Order Parent Key'));
 				$branch[]=array('label'=>'<span class="Purchase_Order_Public_ID">'.$state['_parent']->get('Public ID').'</span>', 'icon'=>'clipboard', 'reference'=>'supplier/'.$state['_parent']->get('Purchase Order Parent Key').'/order/'.$state['parent_key']);
 
-			}
+			
 			$branch[]=array('label'=>'<span class="Supplier_Part_Reference">'.$state['_object']->get('Reference').'</span>', 'icon'=>'bars', 'reference'=>'');
 
 		}elseif ($state['section']=='agent') {

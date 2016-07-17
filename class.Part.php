@@ -183,7 +183,7 @@ class Part extends Asset{
 		}
 
 
-     //   $base_data['Part Available']='No';
+		//   $base_data['Part Available']='No';
 
 		//  if ($base_data['Part XHTML Description']=='') {
 		//   $base_data['Part XHTML Description']=strip_tags($base_data['Part XHTML Description']);
@@ -196,7 +196,7 @@ class Part extends Asset{
 		foreach ($base_data as $key=>$value) {
 			$keys.="`$key`,";
 
-			if (in_array($key,array('Part XHTML Next Supplier Shipment','Part XHTML Picking Location'))) {
+			if (in_array($key, array('Part XHTML Next Supplier Shipment', 'Part XHTML Picking Location'))) {
 				$values.=prepare_mysql($value, false).",";
 
 			}else {
@@ -210,7 +210,7 @@ class Part extends Asset{
 		//print_r($base_data);
 
 		$sql=sprintf("insert into `Part Dimension` %s %s", $keys, $values);
-		
+
 
 		if ($this->db->exec($sql)) {
 			$this->id=$this->db->lastInsertId();
@@ -603,6 +603,40 @@ class Part extends Asset{
 				)
 			);
 			$this->update_linked_products($field, $value, $options, $metadata);
+
+
+			if ($field=='Part Package Weight') {
+
+				if ($value!='') {
+					$purchase_order_keys=array();
+					$sql=sprintf("select `Purchase Order Transaction Fact Key`,`Purchase Order Key`,`Purchase Order Quantity`,`Supplier Part Packages Per Carton` from `Purchase Order Transaction Fact` POTF left join `Supplier Part Dimension` S on (POTF.`Supplier Part Key`=S.`Supplier Part Key`)  where `Supplier Part Part SKU`=%d  and `Purchase Order Weight` is NULL and `Purchase Order Transaction State` in ('InProcess','Submitted')  ",
+						$this->id
+					);
+					//print $sql;
+					if ($result=$this->db->query($sql)) {
+						foreach ($result as $row) {
+							$purchase_order_keys[$row['Purchase Order Key']]=$row['Purchase Order Key'];
+							$sql=sprintf('update `Purchase Order Transaction Fact` set  `Purchase Order Weight`=%f where `Purchase Order Transaction Fact Key`=%d',
+								$this->get('Part Package Weight')*$row['Supplier Part Packages Per Carton']*$row['Purchase Order Quantity'],
+								$row['Purchase Order Transaction Fact Key']
+							);
+							$this->db->exec($sql);
+						}
+						include_once 'class.PurchaseOrder.php';
+						foreach ($purchase_order_keys as $purchase_order_key) {
+							$purchase_order=new PurchaseOrder($purchase_order_key);
+							$purchase_order->update_totals();
+						}
+
+					}else {
+						print_r($error_info=$this->db->errorInfo());
+						exit;
+					}
+				}
+
+			}
+
+
 			break;
 		case('Part Tariff Code'):
 
@@ -2730,7 +2764,7 @@ class Part extends Asset{
 	function update_available_forecast() {
 
 		$this->load_acc_data();
-		
+
 
 		// -------------- simple forecast -------------------------
 
