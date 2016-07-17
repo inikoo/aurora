@@ -63,6 +63,7 @@ if ($result=$db->query($sql)) {
 
 
 asort($options_yn);
+asort($options_incoterms);
 
 
 $company_field=array();

@@ -170,6 +170,18 @@ class Agent extends SubjectSupplier {
 			break;
 
 
+		case 'Average Delivery Days':
+			if ($this->data['Agent Average Delivery Days']=='')return '';
+			return number($this->data['Agent Average Delivery Days']);
+			break;
+		case 'Delivery Time':
+			include_once 'utils/natural_language.php';
+			if ($this->get('Agent Average Delivery Days')=='') {
+				return '<span class="italic very_discreet">'._('Unknown').'</span>';
+			}else {
+				return seconds_to_natural_string(24*3600*$this->get('Agent Average Delivery Days'));
+			}
+			break;
 
 
 
@@ -298,7 +310,6 @@ class Agent extends SubjectSupplier {
 
 
 
-
 		switch ($field) {
 		case('Agent Valid From'):
 		case('Agent Valid To'):
@@ -320,8 +331,15 @@ class Agent extends SubjectSupplier {
 		case('Attach'):
 			$this->add_attach($value);
 			break;
+		case('Agent Average Delivery Days'):
+			$this->update_field($field, $value, $options);
+			$this->update_metadata=array(
+				'class_html'=>array(
+					'Delivery_Time'=>$this->get('Delivery Time'),
+				)
 
-
+			);
+			break;
 		default:
 
 			$this->update_field($field, $value, $options);
@@ -550,21 +568,21 @@ class Agent extends SubjectSupplier {
 
 		$data['editor']=$this->editor;
 
-        $account=new Account();
-        $account->editor=$this->editor;
-        
-        
-        
-        
-        $supplier= $account->create_supplier($data);
-        
-        
-        if($supplier->id){
-            $this->associate_subject($supplier->id);
-        }
-        return $supplier;
-        
-        
+		$account=new Account();
+		$account->editor=$this->editor;
+
+
+
+
+		$supplier= $account->create_supplier($data);
+
+
+		if ($supplier->id) {
+			$this->associate_subject($supplier->id);
+		}
+		return $supplier;
+
+
 	}
 
 

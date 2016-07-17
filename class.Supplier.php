@@ -318,7 +318,11 @@ class Supplier extends SubjectSupplier {
 			break;
 		case 'Delivery Time':
 			include_once 'utils/natural_language.php';
-			return seconds_to_string(24*3600*$this->get('Supplier Average Delivery Days'));
+			if ($this->get('Agent Average Delivery Days')=='') {
+				return '<span class="italic very_discreet">'._('Unknown').'</span>';
+			}else {
+				return seconds_to_natural_string(24*3600*$this->get('Supplier Average Delivery Days'));
+			}
 			break;
 
 
@@ -1114,10 +1118,6 @@ class Supplier extends SubjectSupplier {
 		case('Supplier Stock Value'):
 		case('Supplier Company Key'):
 		case('Supplier Accounts Payable Contact Key'):
-
-
-
-
 			break;
 
 		case('Supplier Sticky Note'):
@@ -1133,36 +1133,49 @@ class Supplier extends SubjectSupplier {
 		case('Attach'):
 			$this->add_attach($value);
 			break;
-
-
-			// case('Supplier Products Origin Country Code'):
-			// $this->update_field($field, $value, $options);
-			//$this->update_field('Supplier Products Origin', $this->get('Products Origin'), $options);
-
-			/*
-			$sql=sprintf("select `Supplier Product ID` from `Supplier Product Dimension` where `Supplier Key`=%d", $this->id);
-			$res=mysql_query($sql);
-			while ($row=mysql_fetch_assoc($res)) {
-				$supplier_product=new SupplierProduct('pid', $row['Supplier Product ID']);
-				$supplier_product->update(array('Supplier Product Origin Country Code'=>$value));
-			}
-			*/
-			// break;
-			/*
 		case('Supplier Average Delivery Days'):
+			$this->update_field($field, $value, $options);
+			$this->update_metadata=array(
+				'class_html'=>array(
+					'Delivery_Time'=>$this->get('Delivery Time'),
+				)
+
+			);
+
+			if ($value!='') {
+				include_once 'class.SupplierProduct.php';
+
+				$sql=sprintf("select `Supplier Product ID` from `Supplier Product Dimension` where `Supplier Key`=%d and  `Supplier Product Delivery Days` is NULL", $this->id);
+				if ($result=$this->db->query($sql)) {
+					foreach ($result as $row) {
+						$supplier_product=new SupplierProduct( $row['Supplier Product key']);
+
+						$supplier_product->update(array('Supplier Product Delivery Days'=>$value));
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
+				}
+			}
+
+			break;
+		case('Supplier Products Origin Country Code'):
 			$this->update_field($field, $value, $options);
 
 			include_once 'class.SupplierProduct.php';
 
-			$sql=sprintf("select `Supplier Product ID` from `Supplier Product Dimension` where `Supplier Key`=%d", $this->id);
-			$res=mysql_query($sql);
-			while ($row=mysql_fetch_assoc($res)) {
-				$supplier_product=new SupplierProduct('pid', $row['Supplier Product ID']);
+			$sql=sprintf("select `Supplier Product ID` from `Supplier Product Dimension` where `Supplier Key`=%d and  `Supplier Product Delivery Days` is NULL", $this->id);
+			if ($result=$this->db->query($sql)) {
+				foreach ($result as $row) {
+					$supplier_product=new SupplierProduct( $row['Supplier Product key']);
 
-				$supplier_product->update(array('Supplier Product Delivery Days'=>$value));
+					$supplier_product->update(array('Supplier Product Origin Country Code'=>$value));
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
-			break;
-			*/
+
 		default:
 
 			$this->update_field($field, $value, $options);
@@ -1170,9 +1183,6 @@ class Supplier extends SubjectSupplier {
 
 
 	}
-
-
-
 
 
 	function update_default_currency($currency, $modify_products, $ratio) {
@@ -1187,11 +1197,8 @@ class Supplier extends SubjectSupplier {
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_assoc($res)) {
 				$supplier_product=new SupplierProduct('pid', $row['Supplier Product ID']);
-
 				$amount=$supplier_product->data['Supplier Product Cost Per Case']*$ratio;
-
 				$supplier_product->update_sph($amount, $supplier_product->data['Supplier Product Units Per Case'], $currency);
-
 			}
 		}
 

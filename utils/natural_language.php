@@ -1,8 +1,16 @@
 <?php
 
 
-function days_to_string($days, $short=false) {
-	$days=round($days);
+function seconds_to_natural_string($seconds, $short=false) {
+
+
+
+	$days=round($seconds/86400);
+	
+	
+	
+	
+	
 	if ($days<1) {
 
 		if ($short) {
@@ -12,16 +20,18 @@ function days_to_string($days, $short=false) {
 
 		}
 
-	}elseif ($days<10) {
+	}elseif ($days<100) {
 
 		if ($short) {
 			return sprintf(_('%sd'), $days);
 		}else {
+			
+			
 			return sprintf("%d %s", $days , ngettext("day", "days", intval($days)));
 
 		}
 
-	}elseif ($days<100) {
+	}elseif ($days<700) {
 		$weeks=floor($days/7);
 
 		if ($short) {
@@ -60,6 +70,10 @@ function days_to_string($days, $short=false) {
 
 
 function seconds_to_string($seconds, $until='seconds', $short=false) {
+
+    
+
+
 	$units = array(
 		"weeks"   => 604800,
 		"days"    => 86400,

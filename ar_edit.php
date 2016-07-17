@@ -35,7 +35,7 @@ case 'edit_item_in_order':
 			'parent_key'=>array('type'=>'key'),
 			'item_key'=>array('type'=>'key'),
 			'item_historic_key'=>array('type'=>'key'),
-			'transaction_key'=>array('type'=>'key','optional'=>true),
+			'transaction_key'=>array('type'=>'numeric','optional'=>true),
 			'qty'=>array('type'=>'numeric'),
 
 		));

@@ -1029,12 +1029,16 @@ $modules=array(
 				'reference'=>'agent/%d',
 				'tabs'=>array(
 					'agent.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
-					'agent.history'=>array('label'=>_('History, notes'), 'icon'=>'sticky-note-o'),
 					'agent.suppliers'=>array('label'=>_("Agent's suppliers"), 'icon'=>'ship'),
 
 					'agent.supplier_parts'=>array('label'=>_("Agent's Parts"), 'icon'=>'stop'),
-					'agent.orders'=>array('label'=>_('Orders'), 'icon'=>'clipboard'),
-					'agent.users'=>array('label'=>_('System users'), 'icon'=>'user'),
+					'agent.orders'=>array('label'=>_('Purchase orders'), 'icon'=>'clipboard'),
+					'agent.deliveries'=>array('label'=>_('Deliveries'), 'icon'=>'arrow-circle-down'),
+					'agent.agent_orders'=>array('label'=>_("Agent's PO"), 'icon'=>'clipboard fa-flip-horizontal'),
+
+					'agent.users'=>array('label'=>_('System users'), 'icon'=>'user', 'class'=>'right icon_only'),
+					'agent.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
+
 
 				)
 			),

@@ -1000,6 +1000,10 @@ function save_field(object, key, field) {
                 }
             }
 
+            for (var key in data.update_metadata.class_html) {
+                $('.' + key).html(data.update_metadata.class_html[key])
+            }
+
             post_save_actions(field, data)
 
         } else if (data.state == 400) {

@@ -268,7 +268,7 @@ class SupplierPart extends DB_Table{
 
 			if ($this->data['Supplier Part Status']!='Discontinued') {
 				include_once 'utils/natural_language.php';
-				return '<i class="fa fa-hourglass-end fa-fw" aria-hidden="true" title="'._('Delivery time').'" ></i>  <span title="'.sprintf("%s %s", number($this->data['Supplier Part Average Delivery Days'], 1) , ngettext("day", "days", number($this->data['Supplier Part Average Delivery Days'], 1))).'">'.days_to_string($this->data['Supplier Part Average Delivery Days'], true).'</span>';
+				return '<i class="fa fa-hourglass-end fa-fw" aria-hidden="true" title="'._('Delivery time').'" ></i>  <span title="'.sprintf("%s %s", number($this->data['Supplier Part Average Delivery Days'], 1) , ngettext("day", "days", number($this->data['Supplier Part Average Delivery Days'], 1))).'">'.seconds_to_natural_string($this->data['Supplier Part Average Delivery Days']*86400, true).'</span>';
 			}
 			break;
 

@@ -21,6 +21,33 @@ $options_yn=array(
 	'Yes'=>_('Yes'), 'No'=>_('No')
 );
 
+$options_incoterms=array();
+$sql="select `Incoterm Transport Type`,`Incoterm Name`,`Incoterm Code` from kbase.`Incoterm Dimension` order by `Incoterm Code` ";
+
+if ($result=$db->query($sql)) {
+	foreach ($result as $row) {
+		if ($row['Incoterm Transport Type']=='Sea') {
+			$transport_method=sprintf('<img style="height:12px" src="art/icons/transport_sea.png" alt="sea" title="%s">', _('Maritime and inland waterways'));
+		}else {
+			$transport_method=sprintf('<img  style="height:12px" src="art/icons/transport_land.png" alt="land" title="%s"> <img style="height:12px" src="art/icons/transport_sea.png" alt="sea" title="%s"> <img  style="height:12px" src="art/icons/transport_air.png" alt="air" title="%s">',
+				_('Land'),
+				_('Maritime and inland waterway'),
+				_('Air')
+			);
+
+		}
+		$options_incoterms[$row['Incoterm Code']]=sprintf("%s %s", $row['Incoterm Code'], $row['Incoterm Name']);
+	}
+
+}else {
+	print_r($error_info=$db->errorInfo());
+	exit;
+}
+
+
+
+asort($options_yn);
+asort($options_incoterms);
 
 $object_fields=array(
 
@@ -225,7 +252,97 @@ $object_fields=array(
 	),
 
 
-	
+		array(
+		'label'=>_("Agent's delivery time & currency"),
+		'show_title'=>false,
+		'fields'=>array(
+
+			array(
+				'id'=>'Agent_Average_Delivery_Days',
+				'edit'=>'mediumint_unsigned',
+				'value'=>$object->get('Agent Average Delivery Days'),
+				'formatted_value'=>$object->get('Average Delivery Days'),
+				'label'=>ucfirst($object->get_field_label('Agent Average Delivery Days')),
+				'required'=>false,
+				'type'=>'value'
+			),
+			array(
+				'id'=>'Agent_Default_Currency_Code',
+				'edit'=>($edit?'country_select':''),
+				'options'=>get_currencies($db),
+				'scope'=>'currencies',
+				'value'=>($new?$account->get('Account Currency'):$object->get('Agent Default Currency Code')),
+				'formatted_value'=>$object->get('Default Currency'),
+				'label'=>ucfirst($object->get_field_label('Agent Default Currency Code')),
+				'required'=>false,
+				'type'=>'value'
+			),
+			
+
+		)
+	),
+
+	array(
+		'label'=>_('Purchase order settings'),
+		'show_title'=>false,
+		'fields'=>array(
+
+
+			array(
+				'id'=>'Agent_Default_Incoterm',
+				'edit'=>($edit?'option':''),
+
+				'options'=>$options_incoterms,
+				'value'=>$object->get('Agent Default Incoterm'),
+				'formatted_value'=>$object->get('Default Incoterm'),
+				'label'=>ucfirst($object->get_field_label('Agent Default Incoterm')),
+				'required'=>false,
+				'type'=>'value'
+			),
+			array(
+				'id'=>'Agent_Default_Port_of_Export',
+				'edit'=>($edit?'string':''),
+
+				'value'=>$object->get('Agent Default Port of Export'),
+				'formatted_value'=>$object->get('Default Port of Export'),
+				'label'=>ucfirst($object->get_field_label('Agent Default Port of Export')),
+				'required'=>false,
+				'type'=>'value'
+			),
+			array(
+				'id'=>'Agent_Default_Port_of_Import',
+				'edit'=>($edit?'string':''),
+
+				'value'=>$object->get('Agent Default Port of Import'),
+				'formatted_value'=>$object->get('Default Port of Import'),
+				'label'=>ucfirst($object->get_field_label('Agent Default Port of Import')),
+				'required'=>false,
+				'type'=>'value'
+			),
+			array(
+				'id'=>'Agent_Default_PO_Terms_and_Conditions',
+				'edit'=>($edit?'textarea':''),
+
+				'value'=>$object->get('Agent Default PO Terms and Conditions'),
+				'formatted_value'=>$object->get('Default PO Terms and Conditions'),
+				'label'=>ucfirst($object->get_field_label('Agent Default PO Terms and Conditions')),
+				'required'=>false,
+				'type'=>'value'
+			),
+			array(
+				'id'=>'Agent_Show_Warehouse_TC_in_PO',
+				'edit'=>($edit?'option':''),
+
+				'options'=>$options_yn,
+				'value'=>($new?'Yes':$object->get('Agent Show Warehouse TC in PO')),
+				'formatted_value'=>($new?_('Yes'):$object->get('Show Warehouse TC in PO')),
+				'label'=>ucfirst($object->get_field_label('Agent Show Warehouse TC in PO')),
+				'required'=>false,
+				'type'=>'value'
+			),
+
+		)
+	),
 	
 	
 

@@ -1102,7 +1102,7 @@ class Part extends Asset{
 			if ($this->data['Part Stock Status']=='Out_Of_Stock' or  $this->data['Part Stock Status']=='Error') return '';
 			include_once 'utils/natural_language.php';
 			return '<i class="fa fa-ban error fa-fw" aria-hidden="true" title="'._('Out of stock').'" ></i> '._('in').' <span title="'.sprintf("%s %s", number($this->data['Part Days Available Forecast'], 1) ,
-				ngettext("day", "days", intval($this->data['Part Days Available Forecast'] ) )).'">'.days_to_string($this->data['Part Days Available Forecast'], true).'</span>';
+				ngettext("day", "days", intval($this->data['Part Days Available Forecast'] ) )).'">'.seconds_to_natural_string($this->data['Part Days Available Forecast']*86400, true).'</span>';
 			break;
 
 		case 'Origin Country Code':

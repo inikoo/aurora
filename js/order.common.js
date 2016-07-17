@@ -112,8 +112,6 @@ function save_order_operation(element) {
             console.log(data)
 
             for (var key in data.update_metadata.class_html) {
-                console.log(key + ' ' + data.update_metadata.class_html[key])
-
                 $('.' + key).html(data.update_metadata.class_html[key])
             }
 
