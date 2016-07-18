@@ -690,10 +690,19 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'note',
-		'elements_type'=>each($elements_options['supplier_history'])['key'],
-		'elements'=>$elements_options['supplier_history']
+		'elements_type'=>each($elements_options['supplier_order_history'])['key'],
+		'elements'=>$elements_options['supplier_order_history']
 	),
 	'supplier.order.items'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>1000,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code',
+
+	),
+	'deleted.supplier.order.items'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
@@ -722,6 +731,7 @@ $tab_defaults=array(
 		'f_field'=>'code',
 
 	),
+	
 	'supplier.delivery.check_items'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',

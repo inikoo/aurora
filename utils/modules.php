@@ -997,6 +997,18 @@ $modules=array(
 				)
 
 			),
+
+			'deleted_order'=>array('type'=>'object',
+				'tabs'=>array(
+
+
+					'deleted.supplier.order.items'=>array('label'=>_('Items'), 'icon'=>'bars'),
+					'deleted.supplier.order.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
+
+				)
+
+			),
+
 			'delivery'=>array('type'=>'object',
 				'tabs'=>array(
 
@@ -1148,6 +1160,40 @@ $modules=array(
 			),
 
 			'supplier_part'=>array('type'=>'object',
+				'subtabs_parent'=>array(
+
+					'supplier_part.purchase_orders.purchase_orders'=>'supplier_part.purchase_orders',
+					'supplier_part.purchase_orders.delivery_notes'=>'supplier_part.purchase_orders',
+					'supplier_part.purchase_orders.invoices'=>'supplier_part.purchase_orders',
+				),
+
+
+
+				'tabs'=>array(
+
+
+					'supplier_part.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+
+
+					'supplier_part.purchase_orders'=>array('label'=>_('Purchase Orders'), 'icon'=>'clipboard',
+						'subtabs'=>array(
+							'supplier_part.purchase_orders.purchase_orders'=>array('label'=>_('Purchase Orders')),
+							'supplier_part.purchase_orders.delivery_notes'=>array('label'=>_('Delivery Notes')),
+							'supplier_part.purchase_orders.invoices'=>array('label'=>_('Invoices')),
+
+						)
+
+					),
+
+					'supplier_part.images'=>array('label'=>_('Images'), 'icon'=>'camera-retro', 'class'=>'right icon_only'),
+					'supplier_part.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
+
+
+
+				)
+			),
+			
+			'supplier_part.historic'=>array('type'=>'object',
 				'subtabs_parent'=>array(
 
 					'supplier_part.purchase_orders.purchase_orders'=>'supplier_part.purchase_orders',

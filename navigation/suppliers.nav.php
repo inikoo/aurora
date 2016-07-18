@@ -1754,12 +1754,12 @@ function get_delivery_navigation($data, $smarty, $user, $db, $account) {
 
 
 	$title= _('Delivery').' <span class="id Supplier_Delivery_Public_ID">'.$object->get('Public ID').'</span> ';
-	
-	
-	if($object->get('Purchase Order Key')){
-	
-	$title.=' <small class="padding_left_10 button"  onClick="change_view(\'/'.strtolower($object->get('Purchase Order Parent')).'/'.$object->get('Purchase Order Parent Key').'/order/'.$object->get('Purchase Order Key').'\')"  > <i class="fa fa-clipboard button" title="'._('Purchase order').'"  ></i> <span class="Purchase_Order_Public_ID " >'.$object->get('Purchase Order Public ID').'</small>';
-}
+
+
+	if ($object->get('Purchase Order Key')) {
+
+		$title.=' <small class="padding_left_10 button"  onClick="change_view(\'/'.strtolower($object->get('Purchase Order Parent')).'/'.$object->get('Purchase Order Parent Key').'/order/'.$object->get('Purchase Order Key').'\')"  > <i class="fa fa-clipboard button" title="'._('Purchase order').'"  ></i> <span class="Purchase_Order_Public_ID " >'.$object->get('Purchase Order Public ID').'</small>';
+	}
 
 	$_content=array(
 		'sections_class'=>'',
@@ -2009,7 +2009,7 @@ function get_order_item_navigation($data, $smarty, $user, $db, $account) {
 					prepare_mysql($_order_field_value),
 					$data['key']
 				);
-				
+
 				if ($result=$db->query($sql)) {
 					if ($row = $result->fetch()) {
 
@@ -2128,6 +2128,44 @@ function get_order_item_navigation($data, $smarty, $user, $db, $account) {
 
 }
 
+
+function get_deleted_purchase_order_navigation($data, $smarty, $user, $db, $account) {
+
+
+
+	$object=$data['_object'];
+	$left_buttons=array();
+	$right_buttons=array();
+
+
+
+
+	$_section='suppliers';
+	$sections=get_sections('suppliers', '');
+	$search_placeholder=_('Search suppliers');
+
+	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
+
+	$title= '<i class="fa fa-clipboard" aria-hidden="true"></i> <span class="id">'.$object->get('Public ID').'</span> <span class="error">('._('Deleted').')</span>';
+
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>$search_placeholder)
+
+	);
+	$smarty->assign('_content', $_content);
+
+
+	$html=$smarty->fetch('navigation.tpl');
+
+	return $html;
+
+}
 
 
 ?>

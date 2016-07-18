@@ -6,7 +6,6 @@
 
 function toggle_order_operation_dialog(dialog_name) {
 
-    // console.log($('#' + dialog_name + '_dialog'))
     if ($('#' + dialog_name + '_dialog').hasClass('hide')) {
 
         $('.order_operation_dialog').addClass('hide')
