@@ -3578,11 +3578,9 @@ class Part extends Asset{
 
 
 
-		$sql=sprintf('insert into `Part Deleted Dimension`  (`Part Deleted Key`,`Part Deleted Reference`,`Part Deleted From`,`	Part Deleted To`,`Part Deleted Metadata`) values (%d,%s,%s,%s,%s) ',
+		$sql=sprintf('insert into `Part Deleted Dimension`  (`Part Deleted Key`,`Part Deleted Reference`,`Part Deleted Date`,`Part Deleted Metadata`) values (%d,%s,%s,%s) ',
 			$this->id,
-			prepare_mysql($this->get('Part Type')),
 			prepare_mysql($this->get('Part Reference')),
-			prepare_mysql($this->get('Part Valid From')),
 			prepare_mysql(gmdate('Y-m-d H:i:s')),
 			prepare_mysql(gzcompress(json_encode($this->data), 9))
 

@@ -201,6 +201,9 @@ class PurchaseOrder extends DB_Table{
 		}elseif ($key=='public id' ) {
 			$sql=sprintf("select * from `Purchase Order Dimension` where `Purchase Order Public ID`=%s", prepare_mysql($id));
 
+		}elseif ($key=='deleted') {
+			$this->get_deleted_data($id);
+			return;
 		}
 
 		if ($this->data = $this->db->query($sql)->fetch()) {
@@ -214,6 +217,22 @@ class PurchaseOrder extends DB_Table{
 
 		}
 
+	}
+
+
+	function get_deleted_data( $tag) {
+
+		$this->deleted=true;
+		$sql=sprintf("select * from `Purchase Order Deleted Dimension` where `Purchase Order Deleted Key`=%d", $tag);
+
+		if ($this->data = $this->db->query($sql)->fetch()) {
+			$this->id=$this->data['Purchase Order Deleted Key'];
+			$deleted_data=json_decode(gzuncompress($this->data['Purchase Order Deleted Metadata']), true);
+			foreach ( $deleted_data['data'] as $key=>$value) {
+				$this->data[$key]=$value;
+			}
+			$this->items=$deleted_data['items'];
+		}
 	}
 
 
@@ -395,16 +414,16 @@ class PurchaseOrder extends DB_Table{
 			return number($this->data ['Purchase Order Number Items']);
 			break;
 		case 'Number Placed Items':
-			
-			if($this->get('State Index')<40){
-			    return '<span class="super_discreet">-</span>';
-			}elseif($this->get('State Index')==40){
-			return number($this->data ['Purchase Order Number Placed Items']);
-			}else{
-			return '<span class="discreet">'.number($this->data ['Purchase Order Number Placed Items']).'</span>';
+
+			if ($this->get('State Index')<40) {
+				return '<span class="super_discreet">-</span>';
+			}elseif ($this->get('State Index')==40) {
+				return number($this->data ['Purchase Order Number Placed Items']);
+			}else {
+				return '<span class="discreet">'.number($this->data ['Purchase Order Number Placed Items']).'</span>';
 			}
-			
-			break;	
+
+			break;
 		default:
 
 
@@ -412,7 +431,7 @@ class PurchaseOrder extends DB_Table{
 
 
 
-			
+
 			if (preg_match('/^(Total|Items|(Shipping |Charges )?Net).*(Amount)$/', $key)) {
 				$amount='Purchase Order '.$key;
 				return money($this->data[$amount], $this->data['Purchase Order Currency Code']);
@@ -813,8 +832,60 @@ class PurchaseOrder extends DB_Table{
 
 
 	function delete() {
+
 		include_once 'class.Attachment.php';
 		if ($this->data['Purchase Order State']=='InProcess') {
+
+
+
+
+			$items=array();
+			$sql=sprintf("select POTF.`Supplier Part Historic Key`,`Purchase Order Quantity`,`Supplier Part Reference` from `Purchase Order Transaction Fact` POTF
+			left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Historic Key`=SPH.`Supplier Part Historic Key`)
+            left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
+			
+			 where `Purchase Order Key`=%d", $this->id);
+			 
+			 
+			if ($result=$this->db->query($sql)) {
+			
+				foreach ($result as $row) {
+					$items[]=array($row['Supplier Part Historic Key'],$row['Supplier Part Reference'], $row['Purchase Order Quantity']);
+				}
+			}
+
+
+
+			$data=array('data'=>$this->data, 'items'=>$items);
+			$metadata=json_encode($data);
+
+
+			$sql=sprintf("insert into `Purchase Order Deleted Dimension`  (`Purchase Order Deleted Key`,`Purchase Order Deleted Public ID`,`Purchase Order Deleted Date`,`Purchase Order Deleted Metadata`) values (%d,%s,%s,%s) ",
+				$this->id,
+				prepare_mysql($this->get('Purchase Order Public ID')),
+				prepare_mysql(gmdate('Y-m-d H:i:s')),
+				prepare_mysql(gzcompress($metadata, 9))
+
+			);
+
+
+
+
+			$stmt =  $this->db->prepare($sql);
+			$stmt->execute();
+
+			
+
+
+
+			$history_data=array(
+				'History Abstract'=>_('Purchase order deleted'),
+				'History Details'=>'',
+				'Action'=>'created'
+			);
+			$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
+
+
 			$sql=sprintf("delete from `Purchase Order Dimension` where `Purchase Order Key`=%d", $this->id);
 			$this->db->exec($sql);
 			$sql=sprintf("delete from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d", $this->id);
@@ -822,49 +893,66 @@ class PurchaseOrder extends DB_Table{
 
 
 			$sql=sprintf("select `History Key`,`Type` from `Purchase Order History Bridge` where `Purchase Order Key`=%d", $this->id);
-			$res=mysql_query($sql);
-			while ($row=mysql_fetch_assoc($res)) {
+			if ($result=$this->db->query($sql)) {
+				foreach ($result as $row) {
 
-				if ($row['Type']=='Attachments') {
-					$sql=sprintf("select `Attachment Bridge Key`,`Attachment Key` from `Attachment Bridge` where `Subject`='Purchase Order History Attachment' and `Subject Key`=%d",
-						$row['History Key']
-					);
-					$res2=mysql_query($sql);
-					while ($row2=mysql_fetch_assoc($res2)) {
-						$sql=sprintf("delete from `Attachment Bridge` where `Attachment Bridge Key`=%d", $row2['Attachment Bridge Key']);
-						$this->db->exec($sql);
-						$attachment=new Attachment($row2['Attachment Key']);
-						$attachment->delete();
+
+					if ($row['Type']=='Attachments') {
+						$sql=sprintf("select `Attachment Bridge Key`,`Attachment Key` from `Attachment Bridge` where `Subject`='Purchase Order History Attachment' and `Subject Key`=%d",
+							$row['History Key']
+						);
+
+						if ($result2=$this->db->query($sql)) {
+							foreach ($result2 as $row2) {
+								$sql=sprintf("delete from `Attachment Bridge` where `Attachment Bridge Key`=%d", $row2['Attachment Bridge Key']);
+								$this->db->exec($sql);
+								$attachment=new Attachment($row2['Attachment Key']);
+								$attachment->delete();
+							}
+						}else {
+							print_r($error_info=$this->db->errorInfo());
+							exit;
+						}
+
+
+						$res2=mysql_query($sql);
+						while ($row2=mysql_fetch_assoc($res2)) {
+
+						}
 					}
+
+
+
+
 				}
-
-				$sql=sprintf("delete from `Purchase Order History Bridge` where `History Key`=%d ", $row['History Key']);
-				$this->db->exec($sql);
-
-				$sql=sprintf("delete from `History Dimension` where `History Key`=%d", $row['History Key']);
-				$this->db->exec($sql);
-
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
+
+
+
+
 
 			$sql=sprintf("select `Attachment Bridge Key`,`Attachment Key` from `Attachment Bridge` where `Subject`='Purchase Order' and `Subject Key`=%d",
 				$this->id
 			);
-			$res2=mysql_query($sql);
-			while ($row2=mysql_fetch_assoc($res2)) {
-				$sql=sprintf("delete from `Attachment Bridge` where `Attachment Bridge Key`=%d", $row2['Attachment Bridge Key']);
-				$this->db->exec($sql);
-				$attachment=new Attachment($row2['Attachment Key']);
-				$attachment->delete();
+			if ($result=$this->db->query($sql)) {
+				foreach ($result as $row) {
+					$sql=sprintf("delete from `Attachment Bridge` where `Attachment Bridge Key`=%d", $row['Attachment Bridge Key']);
+					$this->db->exec($sql);
+					$attachment=new Attachment($row['Attachment Key']);
+					$attachment->delete();
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
 
-			$supplier=new Supplier($this->data['Purchase Order Supplier Key']);
-			$supplier->editor=$this->editor;
-			$history_data=array(
-				'History Abstract'=>_('Purchase order in process deleted'),
-				'History Details'=>''
-			);
-			$supplier->add_subject_history($history_data);
 
+
+
+$this->deleted=true;
 
 		}else {
 

@@ -518,6 +518,16 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 								}elseif ($view_path[2]=='new') {
 									$key=0;
 									$section='supplier_part.new';
+								}elseif ($view_path[2]=='hk') {
+									$object='supplier_part_historic';
+									$section='supplier_part.historic';
+									if (isset($view_path[3])) {
+										if (is_numeric($view_path[3])) {
+											$key=$view_path[3];
+										}
+									}
+
+
 								}
 							}
 
@@ -693,27 +703,27 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 								if (is_numeric($view_path[2])) {
 									$key=$view_path[2];
 								}
-								
-									if ( isset($view_path[3]) ) {
-										if ($view_path[3]=='item') {
 
-											if ( isset($view_path[4]) ) {
-												if (is_numeric($view_path[4])) {
+								if ( isset($view_path[3]) ) {
+									if ($view_path[3]=='item') {
 
-													$parent='PurchaseOrder';
-													$parent_key=$view_path[2];
-													$object='PurchaseOrderItem';
-													$key=$view_path[4];
-													$section='agent.order.item';
+										if ( isset($view_path[4]) ) {
+											if (is_numeric($view_path[4])) {
+
+												$parent='PurchaseOrder';
+												$parent_key=$view_path[2];
+												$object='PurchaseOrderItem';
+												$key=$view_path[4];
+												$section='agent.order.item';
 
 
-												}
 											}
-
-
 										}
+
+
 									}
-								
+								}
+
 
 							}
 

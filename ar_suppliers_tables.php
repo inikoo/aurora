@@ -72,6 +72,9 @@ case 'category_all_suppliers':
 case 'order.supplier_parts':
 	order_supplier_all_parts(get_table_parameters(), $db, $user);
 	break;
+case 'deleted.order.items':
+	deleted_order_items(get_table_parameters(), $db, $user, $account);
+	break;
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
@@ -1199,6 +1202,57 @@ function order_supplier_all_parts($_data, $db, $user) {
 	}
 
 
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function deleted_order_items($_data, $db, $user) {
+
+	$rtext_label='item';
+
+	include_once 'class.PurchaseOrder.php';
+	$purchase_order=new PurchaseOrder('deleted', $_data['parameters']['parent_key']);
+
+	$adata=array();
+	$total=0;
+
+	foreach ($purchase_order->items as $data) {
+
+		$total++;
+
+		$adata[]=array(
+			'id'=>$total,
+			'supplier_part_historic_key'=>$data[0],
+			'parent_type'=>strtolower($purchase_order->get('Purchase Order Parent')),
+			'parent_key'=>$purchase_order->get('Purchase Order Parent Key'),
+			'reference'=>$data[1],
+			'quantity'=>$data[2]
+
+
+		);
+
+
+	}
+
+
+
+	$rtext=sprintf(ngettext('%s item', '%s items', $total), number($total));
+
+	$_order='code';
+	$_dir='';
 
 
 	$response=array('resultset'=>

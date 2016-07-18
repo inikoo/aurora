@@ -114,21 +114,12 @@ class Supplier extends SubjectSupplier {
 
 		$this->deleted=true;
 		$sql=sprintf("select * from `Supplier Deleted Dimension` where `Supplier Deleted Key`=%d", $tag);
-
 		if ($this->data = $this->db->query($sql)->fetch()) {
 			$this->id=$this->data['Supplier Deleted Key'];
-
 			foreach (json_decode(gzuncompress($this->data['Supplier Deleted Metadata']), true) as $key=>$value) {
 				$this->data[$key]=$value;
 			}
-
-
-
-
 		}
-
-
-
 	}
 
 

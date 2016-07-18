@@ -200,7 +200,7 @@
 							</tr>
 							<tr class="changed buttons">
 								<td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('received')"></i></td>
-								<td class="aright"><span data-data='{ "value": "Received","dialog_name":"received", "field": "Supplier Delivery State"}' id="received_save_buttons" class="valid save button" onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span> </td>
+								<td class="aright"><span data-data='{  "field": "Supplier Delivery State","value": "Received","dialog_name":"received"}' id="received_save_buttons" class="valid save button" onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span> </td>
 							</tr>
 						</table>
 					</div>
