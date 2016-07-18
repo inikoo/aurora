@@ -405,7 +405,7 @@ if (!$new) {
 					'value'=>$object->get('Supplier User Handle'),
 					'formatted_value'=>$object->get('User Handle'),
 					'label'=>ucfirst($object->get_field_label('Supplier User Handle')),
-					'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates', 'parent'=>'account', 'parent_key'=>1,'actual_field'=>'User Handle', 'object'=>'User', 'key'=>$object->id)),
+					'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates', 'parent'=>'account', 'parent_key'=>1, 'actual_field'=>'User Handle', 'object'=>'User', 'key'=>$object->id)),
 					'invalid_msg'=>get_invalid_message('handle'),
 				),
 
@@ -467,7 +467,7 @@ if (!$new) {
 				'id'=>'delete_supplier',
 				'class'=>'operation',
 				'value'=>'',
-				'label'=>'<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span onClick="delete_object(this)" class="delete_object disabled">'._("Delete supplier & supplier's parts").' <i class="fa fa-trash new_button link"></i></span>',
+				'label'=>'<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data='{ "object": "{$object->get_object_name()}", "key":"{$object->id}"}' onClick="delete_object(this)" class="delete_object disabled">'._("Delete supplier & supplier's parts").' <i class="fa fa-trash new_button link"></i></span>',
 				'reference'=>'',
 				'type'=>'operation'
 			),
