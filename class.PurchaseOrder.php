@@ -319,7 +319,7 @@ class PurchaseOrder extends DB_Table{
 			case 'Confirmed':
 				return 40;
 				break;
-			case 'Send':
+			case 'Dispatched':
 				return 45;
 				break;
 			case 'Received':
@@ -843,14 +843,14 @@ class PurchaseOrder extends DB_Table{
 			$sql=sprintf("select POTF.`Supplier Part Historic Key`,`Purchase Order Quantity`,`Supplier Part Reference` from `Purchase Order Transaction Fact` POTF
 			left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Historic Key`=SPH.`Supplier Part Historic Key`)
             left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
-			
+
 			 where `Purchase Order Key`=%d", $this->id);
-			 
-			 
+
+
 			if ($result=$this->db->query($sql)) {
-			
+
 				foreach ($result as $row) {
-					$items[]=array($row['Supplier Part Historic Key'],$row['Supplier Part Reference'], $row['Purchase Order Quantity']);
+					$items[]=array($row['Supplier Part Historic Key'], $row['Supplier Part Reference'], $row['Purchase Order Quantity']);
 				}
 			}
 
@@ -874,7 +874,7 @@ class PurchaseOrder extends DB_Table{
 			$stmt =  $this->db->prepare($sql);
 			$stmt->execute();
 
-			
+
 
 
 
@@ -952,7 +952,7 @@ class PurchaseOrder extends DB_Table{
 
 
 
-$this->deleted=true;
+			$this->deleted=true;
 
 		}else {
 
@@ -1165,7 +1165,7 @@ $this->deleted=true;
 		$date=gmdate('Y-m-d H:i:s');
 
 
-
+		$old_value=$this->get('Purchase Order State');
 
 
 		switch ($value) {
@@ -1177,23 +1177,44 @@ $this->deleted=true;
 			$operations=array('delete_operations', 'submit_operations', 'all_available_items', 'new_item');
 
 
-			/*
+			$history_data=array(
+				'History Abstract'=>_('Purchase order send back to process'),
+				'History Details'=>'',
+				'Action'=>'created'
+			);
+			$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
 
-		$history_data=array(
-			'History Abstract'=>_('Purchase order send back to process'),
-			'History Details'=>''
-		);
-		$this->add_subject_history($history_data);
-*/
+
+
 			break;
 
 		case 'Submitted':
+
+
 
 			$this->update_field('Purchase Order Submitted Date', $date, 'no_history');
 			$this->update_field('Purchase Order Send Date', '', 'no_history');
 
 			$this->update_field('Purchase Order State', $value, 'no_history');
 			$operations=array('cancel_operations', 'undo_submit_operations', 'received_operations');
+
+			if ($old_value!='Submitted') {
+				if ($this->get('State Index')<=30) {
+					$history_abstract=_('Purchase order submitted');
+				}else {
+					$history_abstract=_('Purchase order set back as submitted');
+
+				}
+
+
+				$history_data=array(
+					'History Abstract'=>$history_abstract,
+					'History Details'=>'',
+					'Action'=>'created'
+				);
+				$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
+
+			}
 
 			break;
 
@@ -1224,7 +1245,8 @@ $this->deleted=true;
 
 			),
 			'operations'=>$operations,
-			'state_index'=>$this->get('State Index')
+			'state_index'=>$this->get('State Index'),
+			'pending_items_in_delivery'=>$this->get('Purchase Order Ordered Number Items')-$this->get('Purchase Order Supplier Delivery Number Items')
 		);
 
 

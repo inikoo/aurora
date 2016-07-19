@@ -132,6 +132,52 @@ function save_order_operation(element) {
             }
 
 
+            if (field == 'Purchase Order State') {
+                if (data.value == 'InProcess') {
+                    $('#crete_delivery').addClass('hide')
+                } else if (data.value == 'Submitted') {
+
+                    if (data.update_metadata.pending_items_in_delivery > 0) {
+                        $('#crete_delivery').removeClass('hide')
+
+                    } else {
+                        $('#crete_delivery').addClass('hide')
+
+                    }
+
+                }
+
+            }
+
+            if (state.tab == 'supplier.order.items') {
+                if (data.value == 'InProcess') {
+
+                    grid.columns.findWhere({
+                        name: 'ordered'
+                    }).set("renderable", false)
+
+                    grid.columns.findWhere({
+                        name: 'quantity'
+                    }).set("renderable", true)
+
+                } else if (data.value == 'Submitted') {
+
+                    grid.columns.findWhere({
+                        name: 'ordered'
+                    }).set("renderable", true)
+
+                    grid.columns.findWhere({
+                        name: 'quantity'
+                    }).set("renderable", false)
+
+
+                }
+
+            } else if (state.tab == 'supplier.order.history' || state.tab == 'supplier.delivery.history') {
+                rows.fetch({
+                    reset: true
+                });
+            }
 
 
         } else if (data.state == 400) {
@@ -231,25 +277,24 @@ function save_item_qty_change(element) {
 
             input.val(data.transaction_data.qty).removeClass('discreet')
 
-            //$('#subtotals_potf_' + data.transaction_data.transaction_key).html(data.transaction_data.subtotals)
             $(element).closest('tr').find('.subtotals').html(data.transaction_data.subtotals)
 
             console.log('#subtotals_potf_' + data.transaction_data.transaction_key)
             console.log(data.transaction_data.subtotals)
 
             for (var key in data.metadata.class_html) {
-               
+
                 $('.' + key).html(data.metadata.class_html[key])
             }
 
             for (var key in data.metadata.hide) {
-                        console.log(key)
+                console.log(key)
 
                 $('#' + data.metadata.hide[key]).addClass('hide')
             }
 
             for (var key in data.metadata.show) {
-            console.log(key)
+                console.log(key)
                 $('#' + data.metadata.show[key]).removeClass('hide')
 
             }
