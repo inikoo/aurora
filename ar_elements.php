@@ -112,6 +112,7 @@ case 'agent.history':
 case 'location.history':
 case 'deal.history':
 case 'campaign.history':
+case 'supplier.order.history':
 
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
@@ -726,6 +727,9 @@ function get_history_elements($db, $data) {
 	elseif ($data['parent']=='campaign')
 		$sql=sprintf("select count(*) as num ,`Type` from  `Deal Campaign History Bridge` where  `Deal Campaign Key`=%d group by  `Type`",
 			$data['parent_key']);
+	elseif ($data['parent']=='purchase_order')
+		$sql=sprintf("select count(*) as num ,`Type` from  `Purchase Order History Bridge` where  `Purchase Order Key`=%d group by  `Type`",
+			$data['parent_key']);		
 	elseif ($data['parent']=='none')
 		$sql=sprintf("select count(*) as num ,`Type` from  `%s Category History Bridge`  group by  `Type`",
 			$data['subject']);

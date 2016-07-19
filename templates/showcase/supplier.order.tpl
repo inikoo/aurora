@@ -126,11 +126,11 @@
 						
 						<table id="undo_submit_dialog" border="0" class="order_operation_dialog hide">
 							<tr class="top">
-								<td colspan="2">{t}Undo submission{/t}</td>
+								<td class="label" colspan="2">{t}Undo submition{/t}</td>
 							</tr>
-							<tr class="changed">
+							<tr class="changed buttons">
 								<td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('undo_submit')"></i></td>
-								<td class="aright"><span id="undo_submit_save_buttons" class="valid save button" onclick="save_order_operation('undo_submit','InProcess')"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span> </td>
+								<td class="aright"><span  data-data='{  "field": "Purchase Order State","value": "InProcess","dialog_name":"undo_submit"}' id="undo_submit_save_buttons" class="valid save button" onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span> </td>
 							</tr>
 						</table>
 					</div>
@@ -160,11 +160,11 @@
 						<i class="fa fa-paper-plane-o   " aria-hidden="true" onclick="toggle_order_operation_dialog('submit')"></i> 
 						<table id="submit_dialog" border="0" class="order_operation_dialog hide">
 							<tr class="top">
-								<td colspan="2">{t}Submit purchase order{/t}</td>
+								<td class="label" colspan="2">{t}Submit purchase order{/t}</td>
 							</tr>
-							<tr class="changed">
+							<tr class="changed buttons">
 								<td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('submit')"></i></td>
-								<td class="aright"><span id="submit_save_buttons" class="valid save button" onclick="save_order_operation('submit','Submitted')"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span> </td>
+								<td class="aright"><span data-data='{  "field": "Purchase Order State","value": "Submitted","dialog_name":"submit"}' id="submit_save_buttons" class="valid save button" onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span> </td>
 							</tr>
 						</table>
 					</div>
@@ -172,7 +172,9 @@
 				</div>
 		</div>
 		
-		<div class="delivery_node {if {$order->get('State Index')|intval}<30 or ($order->get('Purchase Order Ordered Number Items')-$order->get('Purchase Order Supplier Delivery Number Items'))==0  }hide{/if}" style="height:30px;clear:both;border-top:1px solid #ccc;border-bottom:1px solid #ccc">
+		
+		<div id="crete_delivery" class="delivery_node {if {$order->get('State Index')|intval}<30 or ($order->get('Purchase Order Ordered Number Items')-$order->get('Purchase Order Supplier Delivery Number Items'))==0  }hide{/if}" style="height:30px;clear:both;border-top:1px solid #ccc;border-bottom:1px solid #ccc">
+			
 			<div id="back_operations"></div>
 			<span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic"><i class="fa fa-truck fa-flip-horizontal button" aria-hidden="true" ></i> {t}Delivery Note{/t} </span> 
 			<div id="forward_operations">

@@ -114,7 +114,7 @@ function change_table_view(view, save_state) {
 
 {if isset($data['metadata']['create_delivery']) and $data['metadata']['create_delivery'] }
 
- grid.columns.findWhere({
+            grid.columns.findWhere({
                 name: 'checkbox'
             }).set("renderable", true)
 
