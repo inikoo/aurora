@@ -42,7 +42,7 @@ case 'delivery_notes':
 	break;
 case 'orders_index':
 	orders_index(get_table_parameters(), $db, $user);
-	break;	
+	break;
 
 case 'invoice_categories':
 	invoice_categories(get_table_parameters(), $db, $user);
@@ -58,7 +58,7 @@ case 'delivery_note.items':
 	break;
 case 'invoice_categories':
 	invoice_categories(get_table_parameters(), $db, $user);
-	break;	
+	break;
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
@@ -123,7 +123,6 @@ function delivery_notes($_data, $db, $user) {
 	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
 	$adata=array();
-
 
 
 	foreach ($db->query($sql) as $data) {
@@ -220,7 +219,7 @@ function invoices($_data, $db, $user) {
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
 
-
+//print $sql;
 
 	foreach ($db->query($sql) as $data) {
 
@@ -298,29 +297,29 @@ function orders_index($_data, $db, $user) {
 
 		foreach ($result as $data) {
 
-		$total_orders+=$data['orders'];
-		$total_invoices+=$data['invoices'];
-		$total_delivery_notes+=$data['delivery_notes'];
-		$total_payments+=$data['payments'];
+			$total_orders+=$data['orders'];
+			$total_invoices+=$data['invoices'];
+			$total_delivery_notes+=$data['delivery_notes'];
+			$total_payments+=$data['payments'];
 
-		$adata[]=array(
-			'store_key'=>$data['Store Key'],
-			'code'=>$data['Store Code'],
-			'name'=>$data['Store Name'],
-			'orders'=>number($data['orders']),
-			'delivery_notes'=>number($data['delivery_notes']),
-			'invoices'=>number($data['invoices']),
-			'payments'=>number($data['payments']),
-		);
+			$adata[]=array(
+				'store_key'=>$data['Store Key'],
+				'code'=>$data['Store Code'],
+				'name'=>$data['Store Name'],
+				'orders'=>number($data['orders']),
+				'delivery_notes'=>number($data['delivery_notes']),
+				'invoices'=>number($data['invoices']),
+				'payments'=>number($data['payments']),
+			);
 
-	}
+		}
 
 	}else {
 		print_r($error_info=$db->errorInfo());
 		exit;
 	}
 
-	
+
 
 
 	if ($parameters['percentages']) {
@@ -410,7 +409,7 @@ function order_items($_data, $db, $user) {
 		}
 		$description.=' '.$name;
 		if ($price>0) {
-			$description.=' ('.money($price,$currency, $_locale ).')';
+			$description.=' ('.money($price, $currency, $_locale ).')';
 		}
 
 
@@ -428,7 +427,7 @@ function order_items($_data, $db, $user) {
 
 
 		$adata[]=array(
-	
+
 			'id'=>(integer)$data['Order Transaction Fact Key'],
 			'product_pid'=>(integer)$data['Product ID'],
 			'code'=>$data['Product Code'],
@@ -436,7 +435,7 @@ function order_items($_data, $db, $user) {
 			'quantity'=>$quantity,
 			'net'=>money($data['Order Transaction Amount'], $data['Order Currency Code']),
 
-	
+
 		);
 
 	}
@@ -464,8 +463,12 @@ function invoice_items($_data, $db, $user) {
 	include_once 'utils/geography_functions.php';
 
 	include_once 'prepare_table/init.php';
+		include_once 'class.Invoice.php';
+
+	
+	
 	$invoice=new Invoice($_data['parameters']['parent_key']);
-	if ( in_array($invoice->data['Invoice Delivery Country Code'], get_countries_EC_Fiscal_VAT_area())) {
+	if ( in_array($invoice->data['Invoice Delivery Country Code'], get_countries_EC_Fiscal_VAT_area($db))) {
 		$print_tariff_code=false;
 	}else {
 		$print_tariff_code=true;
@@ -495,7 +498,7 @@ function invoice_items($_data, $db, $user) {
 		}
 		$desc.=' '.$name;
 		if ($price>0) {
-			$desc.=' ('.money($price, $currency,$_locale).')';
+			$desc.=' ('.money($price, $currency, $_locale).')';
 		}
 
 		$description=$desc;
@@ -606,19 +609,19 @@ function delivery_note_items($_data, $db, $user) {
 		$description='<b>'.number($data['Required']).'x</b> '.$data['Part Unit Description'];
 		if ($data['Product Code']!=$data['Part Reference']) {
 			$description.=' (<i>'.$data['Part Reference'].', <span class="link" onClick="change_view(\'part/'.$data['Part SKU'].'\')">SKU'.$data['Part SKU'].'</span></i>)';
-		}else{
-		    $description.=' (<i><span class="link" onClick="change_view(\'part/'.$data['Part SKU'].'\')">SKU'.$data['Part SKU'].'</span></i>)';
+		}else {
+			$description.=' (<i><span class="link" onClick="change_view(\'part/'.$data['Part SKU'].'\')">SKU'.$data['Part SKU'].'</span></i>)';
 		}
-		
-		
-		
+
+
+
 		if ($data['Part UN Number']) {
 			$description.=' <span style="background-color:#f6972a;border:.5px solid #231e23;color:#231e23;padding:0px;font-size:90%">'.$data['Part UN Number'].'</span>';
 		}
 
 
 		$adata[]=array(
-				'id'=>(integer)$data['Inventory Transaction Key'],
+			'id'=>(integer)$data['Inventory Transaction Key'],
 
 			'code'=>$data['Product Code'],
 			'product_pid'=>$data['Product ID'],
@@ -648,9 +651,10 @@ function delivery_note_items($_data, $db, $user) {
 	echo json_encode($response);
 }
 
+
 function invoice_categories($_data, $db, $user) {
-	
-	
+
+
 	$rtext_label='category';
 	include_once 'prepare_table/init.php';
 

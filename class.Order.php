@@ -334,7 +334,7 @@ class Order extends DB_Table {
 			}
 		}else {
 			$tax_code_data=$this->get_tax_data();
-			
+
 			$this->data['Order Tax Code']= $tax_code_data['code'];
 			$this->data['Order Tax Rate']= $tax_code_data['rate'];
 			$this->data['Order Tax Name']=$tax_code_data['name'];
@@ -343,11 +343,11 @@ class Order extends DB_Table {
 
 
 
-			
+
 
 		}
 
-		
+
 		if (isset($data['Order Current Dispatch State']) and $data['Order Current Dispatch State']=='In Process by Customer') {
 			$this->data ['Order Current Dispatch State'] = 'In Process by Customer';
 			$this->data ['Order Current XHTML Payment State'] = _('Waiting for payment');
@@ -488,7 +488,7 @@ class Order extends DB_Table {
 			'History Details'=>'',
 			'Action'=>'created'
 		);
-			$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
+		$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
 
 	}
 
@@ -2019,7 +2019,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 
 
-		
+
 
 		//calculate the order total
 		$this->data ['Order Items Gross Amount'] = 0;
@@ -2178,7 +2178,62 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		switch ($key) {
 
 
+		case ('State Index'):
+			//'In Process by Customer','Waiting for Payment Confirmation','In Process','Submitted by Customer','Ready to Pick',
+			//'Picking & Packing','Packing','Packed','Packed Done','Ready to Ship','Dispatched','Cancelled','Suspended','Cancelled by Customer'
 
+			switch ($this->data['Order Current Dispatch State']) {
+			case 'In Process':
+				return 10;
+				break;
+			case 'In Process by Customer':
+				return 20;
+				break;
+			case 'Waiting for Payment Confirmation':
+				return 25;
+				break;
+			case 'Submitted by Customer':
+				return 30;
+				break;
+			case 'Ready to Pick':
+				return 40;
+				break;
+			case 'Picking & Packing':
+				return 50;
+				break;
+			case 'Packing':
+				return 60;
+				break;
+			case 'Packed':
+				return 70;
+				break;
+			case 'Packed Done':
+				return 80;
+				break;
+			case 'Ready to Ship':
+				return 90;
+				break;
+			case 'Dispatched':
+				return 100;
+				break;
+
+
+			case 'Cancelled':
+				return -10;
+				break;
+			case 'Cancelled by Customer':
+				return -8;
+				break;
+			case 'Suspended':
+				return -5;
+				break;
+
+			default:
+				return 0;
+				break;
+			}
+
+			break;
 
 		case('Corporate Currency Invoiced Total Amount'):
 
@@ -2247,7 +2302,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		case('Post Transactions Dispatched Date'):
 		case('Packed Done Date'):
 
-			return strftime("%a %e %b %Y %H:%M %Z", strtotime($this->data['Order '.$key].' +0:00'));
+			return strftime("%e %b %Y %H:%M", strtotime($this->data['Order '.$key].' +0:00'));
 			break;
 		case('Submitted by Customer Interval'):
 			if ($this->data['Order Submitted by Customer Date']=='') {
@@ -2319,9 +2374,9 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 			break;
 
 
-		case ('Current Dispatch State'):
+		case ('State'):
 			//'In Process by Customer','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Dispatched','Unknown','Packing','Packed','Cancelled','Suspended'  case('Current Dispatch State'):
-			switch ($key) {
+			switch ($this->data['Order Current Dispatch State']) {
 			case 'In Process':
 				return _('In Process');
 				break;
@@ -2374,6 +2429,106 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 	}
 
 
+	function get_deliveries($scope='keys') {
+
+		if ($scope=='objects') {
+			include_once 'class.DeliveryNote.php';
+		}
+
+
+		$deliveries=array();
+		$sql=sprintf("select `Delivery Note Key` from `Order Transaction Fact` where `Order Key`=%d  group by `Delivery Note Key`",
+			$this->id);
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				if ($row['Delivery Note Key']=='')continue;
+
+				if ($scope=='objects') {
+
+					$deliveries[$row['Delivery Note Key']]=new DeliveryNote($row['Delivery Note Key']);
+
+				}else {
+					$deliveries[$row['Delivery Note Key']]=$row['Delivery Note Key'];
+				}
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+		return $deliveries;
+
+	}
+
+
+	function get_invoices($scope='keys') {
+
+		if ($scope=='objects') {
+			include_once 'class.Invoice.php';
+		}
+
+
+		$invoices=array();
+		$sql=sprintf("select `Invoice Key` from `Order Transaction Fact` where `Order Key`=%d  group by `Invoice Key`",
+			$this->id);
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				if ($row['Invoice Key']=='')continue;
+
+				if ($scope=='objects') {
+
+					$invoices[$row['Invoice Key']]=new Invoice($row['Invoice Key']);
+
+				}else {
+					$invoices[$row['Invoice Key']]=$row['Invoice Key'];
+				}
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+		return $invoices;
+
+	}
+
+
+	function get_payments($scope='keys') {
+
+		if ($scope=='objects') {
+			include_once 'class.Payment.php';
+		}
+
+
+		$payments=array();
+		$sql=sprintf("select `Payment Key` from `Order Payment Bridge` where `Order Key`=%d  ",
+			$this->id);
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				if ($row['Payment Key']=='')continue;
+
+				if ($scope=='objects') {
+
+					$payments[$row['Payment Key']]=new Payment($row['Payment Key']);
+
+				}else {
+					$payments[$row['Payment Key']]=$row['Payment Key'];
+				}
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+		return $payments;
+
+	}
 
 
 

@@ -146,6 +146,7 @@ function payments($_data, $db, $user) {
 
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	
 	$adata=array();
 
 	if ($result=$db->query($sql)) {

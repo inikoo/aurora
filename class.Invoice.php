@@ -2597,11 +2597,35 @@ class Invoice extends DB_Table {
 			break;
 		case('Payment State'):
 			return $this->get_formatted_payment_state();
+			
+		case 'State':
+		
+		switch ($this->data['Invoice Paid']) {
+		    case 'Yes':
+		        return _('Paid');
+		        break;
+		       case 'No':
+		        return _('Not paid');
+		        break;
+		        case 'Partially':
+		        return _('Partially paid');
+		        break;   
+		    default:
+		        return $this->data['Invoice Paid'];
+		        break;
+		}
+			
+			
 		}
 
 
 		if (isset($this->data[$key]))
 			return $this->data[$key];
+
+
+	if (array_key_exists('Invoice '.$key, $this->data))
+			return $this->data[$this->table_name.' '.$key];
+
 
 		return false;
 	}

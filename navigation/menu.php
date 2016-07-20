@@ -72,10 +72,10 @@ if ($user->can_view('orders')) {
 
 
 	if ($user->get('User Hooked Store Key')) {
-		$nav_menu[] = array('<i class="fa fa-usd fa-fw"></i>',_('Invoices'), 'invoices', 'invoices', 'module', '');
+		$nav_menu[] = array('<i class="fa fa-file-text-o fa-fw"></i>',_('Invoices'), 'invoices', 'invoices', 'module', '');
 	}
 	else {
-		$nav_menu[] = array('<i class="fa fa-usd fa-fw"></i>',_('Invoices'), 'invoices/all', 'invoices', 'module', '');
+		$nav_menu[] = array('<i class="fa fa-file-text-o fa-fw"></i>',_('Invoices'), 'invoices/all', 'invoices', 'module', '');
 	}
 	/*
 	$sections=get_sections('invoices', $data['parent_key']);
@@ -85,10 +85,10 @@ if ($user->can_view('orders')) {
 */
 
 	if ($user->get('User Hooked Store Key')) {
-		$nav_menu[] = array('<i class="fa fa-credit-card fa-fw"></i>',_('Payments'), 'payments', 'payments', 'module', '');
+		$nav_menu[] = array('<i class="fa fa-usd fa-fw"></i>',_('Payments'), 'payments', 'payments', 'module', '');
 	}
 	else {
-		$nav_menu[] = array('<i class="fa fa-credit-card fa-fw"></i>',_('Payments'), 'payments/all', 'payments', 'module', '');
+		$nav_menu[] = array('<i class="fa fa-usd fa-fw"></i>',_('Payments'), 'payments/all', 'payments', 'module', '');
 	}
 	/*
 	$sections=get_sections('payments', $data['parent_key']);

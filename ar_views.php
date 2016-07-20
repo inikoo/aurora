@@ -2043,7 +2043,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
 
-			$branch[]=array('label'=>$state['_object']->get('Invoice Public ID'), 'icon'=>'usd', 'reference'=>'');
+			$branch[]=array('label'=>$state['_object']->get('Invoice Public ID'), 'icon'=>'file-text-o', 'reference'=>'');
 			break;
 
 		}
@@ -2136,7 +2136,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
 
-			$branch[]=array('label'=>$state['_object']->get('Invoice Public ID'), 'icon'=>'usd', 'reference'=>'');
+			$branch[]=array('label'=>$state['_object']->get('Invoice Public ID'), 'icon'=>'file-text-o', 'reference'=>'');
 			$branch[]=array('label'=>$state['_object']->get('Delivery Note ID'), 'icon'=>'truck fa-flip-horizontal', 'reference'=>'');
 
 			break;
@@ -2200,7 +2200,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
 			}
-			$branch[]=array('label'=>$state['_object']->get('Invoice Public ID'), 'icon'=>'usd', 'reference'=>'');
+			$branch[]=array('label'=>$state['_object']->get('Invoice Public ID'), 'icon'=>'file-text-o', 'reference'=>'');
 
 			break;
 
@@ -2215,7 +2215,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 			$branch[]=array('label'=>_('Invoices').' '.$store->data['Store Code'], 'icon'=>'', 'reference'=>'invoices/'.$store->id);
 
 			$parent=new Invoice($state['parent_key']);
-			$branch[]=array('label'=>$parent->get('Invoice Public ID'), 'icon'=>'usd', 'reference'=>'invoices/'.$store->id.'/'.$state['parent_key']);
+			$branch[]=array('label'=>$parent->get('Invoice Public ID'), 'icon'=>'file-text-o', 'reference'=>'invoices/'.$store->id.'/'.$state['parent_key']);
 
 
 
@@ -2236,7 +2236,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 			$branch[]=array('label'=>_('Invoices').' '.$store->data['Store Code'], 'icon'=>'', 'reference'=>'invoices/'.$store->id);
 
 			$parent=new Invoice($state['parent_key']);
-			$branch[]=array('label'=>$parent->get('Invoice Public ID'), 'icon'=>'usd', 'reference'=>'invoices/'.$store->id.'/'.$state['parent_key']);
+			$branch[]=array('label'=>$parent->get('Invoice Public ID'), 'icon'=>'file-text-o', 'reference'=>'invoices/'.$store->id.'/'.$state['parent_key']);
 
 
 
