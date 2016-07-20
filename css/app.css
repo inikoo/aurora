@@ -1329,6 +1329,11 @@ tr.deleting_tr {
             height: 22px; }
           #object_showcase .subject_profile #info #overviews .overview tr {
             height: 28px; }
+  #object_showcase table.totals .subtotal td {
+    border-top: 1px solid #ddd; }
+  #object_showcase table.totals .total td {
+    border-bottom: 1px solid #aaa;
+    border-top: 1px solid #aaa; }
   #object_showcase .order_operation_dialog {
     border: 1px solid #ccc;
     min-width: 300px;
@@ -1997,7 +2002,8 @@ input.inputfile {
     align-items: center;
     justify-content: center;
     position: relative;
-    top: -20px; }
+    top: -20px;
+    left: -20px; }
   .timeline_horizontal .li {
     transition: all 200ms ease-in; }
   .timeline_horizontal .timestamp {
@@ -2032,7 +2038,7 @@ input.inputfile {
     top: 15px;
     color: #aaa; }
   .timeline_horizontal .dot {
-    padding: 0px 40px;
+    padding: 0px 50px;
     display: flex;
     justify-content: center;
     border-top: 2px solid #D6DCE0;
@@ -2087,11 +2093,14 @@ input.inputfile {
     left: 100%;
     transition: all 200ms ease-in;
     z-index: 10; }
-  .timeline_horizontal .li.complete .dot {
+  .timeline_horizontal .li.complete .dot, .timeline_horizontal .li.complete .truck {
     border-top: 2px solid #66DC71; }
   .timeline_horizontal .li.complete .dot:after {
     background-color: #66DC71;
     border: 1px solid #66DC71;
+    transition: all 200ms ease-in; }
+  .timeline_horizontal .li.complete .truck:after {
+    color: #777;
     transition: all 200ms ease-in; }
   .timeline_horizontal .li.complete .label span {
     color: #888; }

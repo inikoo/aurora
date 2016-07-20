@@ -598,7 +598,7 @@ function order_items($_data, $db, $user) {
 					$delivery_qty+0
 				);
 			}else {
-				$delivery_quantity=number($data['Purchase Order Delivery Quantity']);
+				$delivery_quantity=number($data['Supplier Delivery Quantity']);
 
 			}
 
@@ -609,7 +609,7 @@ function order_items($_data, $db, $user) {
 				'parent_key'=>$purchase_order->get('Purchase Order Parent Key'),
 				'parent_type'=>strtolower($purchase_order->get('Purchase Order Parent')),
 				'supplier_part_key'=>(integer)$data['Supplier Part Key'],
-				'checkbox'=>sprintf('<i key="%d" class="fa fa-fw fa-square-o button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']),
+				'checkbox'=>sprintf('<i key="%d" class="invisible fa fa-fw fa-square-o button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']),
 
 				'operations'=>sprintf('<i key="%d" class="fa fa-fw fa-truck fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']),
 

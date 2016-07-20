@@ -29,7 +29,7 @@
 		
 		<li id="creation_node" class="li  complete"> 
 		<div class="label">
-			<span class="state" >&nbsp; <span></i></span></span> 
+			<span class="state" >&nbsp; <span>{t}Inputted{/t}</span></span> 
 		</div>
 		<div class="timestamp">
 			<span class="Supplier_Delivery_Creation_Date">&nbsp;{$delivery->get('Creation Date')}</span> 

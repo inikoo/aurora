@@ -88,7 +88,9 @@ function change_on_delivery(element) {
 }
 
 
-function save_create_delivery() {
+function save_create_delivery(element) {
+
+    $(element).find('i').addClass('fa-spinner fa-spin fa-cloud').removeClass('fa-plus');
 
     var object_data = JSON.parse(atob($('#object_showcase div.order').data("object")))
 
@@ -98,20 +100,14 @@ function save_create_delivery() {
     fields_data['items'] = {}
 
     $('.delivery_quantity').each(function() {
-
         if ($(this).attr('on') == 1) {
-
             fields_data['items'][$(this).attr('key')] = $(this).find('input').val()
         }
     });
 
-
-
     var request = '/ar_edit.php?tipo=new_object&object=SupplierDelivery&parent=' + object_data.object + '&parent_key=' + object_data.key + '&fields_data=' + JSON.stringify(fields_data)
 
 
-    console.log(request)
-    return;
     //=====
     var form_data = new FormData();
 
@@ -135,17 +131,12 @@ function save_create_delivery() {
 
     request.done(function(data) {
 
-        $(element).removeClass('fa-spinner fa-spin fa-cloud').addClass('fa-plus');
+        $(element).find('i').removeClass('fa-spinner fa-spin fa-cloud').addClass('fa-plus');
 
         if (data.state == 200) {
-
-            input.val(data.transaction_data.qty).removeClass('discreet')
-
-            //$('#subtotals_potf_' + data.transaction_data.transaction_key).html(data.transaction_data.subtotals)
+        
+        
             $(element).closest('tr').find('.subtotals').html(data.transaction_data.subtotals)
-
-            console.log('#subtotals_potf_' + data.transaction_data.transaction_key)
-            console.log(data.transaction_data.subtotals)
 
             for (var key in data.metadata.class_html) {
                 console.log(key)
@@ -172,6 +163,3 @@ function save_create_delivery() {
 
 
 }
-
-
-

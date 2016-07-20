@@ -1610,14 +1610,13 @@ function get_delivery_navigation($data, $smarty, $user, $db, $account) {
 				if ($row2['num']>1) {
 
 
-					$sql=sprintf("select `Supplier Delivery Public ID` object_name,O.`Supplier Delivery Key` as object_key from $table   $where $wheref
-	                and ($_order_field < %s OR ($_order_field = %s AND O.`Supplier Delivery Key` < %d))  order by $_order_field desc , O.`Supplier Delivery Key` desc limit 1",
+					$sql=sprintf("select `Supplier Delivery Public ID` object_name,D.`Supplier Delivery Key` as object_key from $table   $where $wheref
+	                and ($_order_field < %s OR ($_order_field = %s AND D.`Supplier Delivery Key` < %d))  order by $_order_field desc , D.`Supplier Delivery Key` desc limit 1",
 
 						prepare_mysql($_order_field_value),
 						prepare_mysql($_order_field_value),
 						$object->id
 					);
-
 
 					if ($result=$db->query($sql)) {
 						if ($row = $result->fetch()) {
@@ -1631,8 +1630,8 @@ function get_delivery_navigation($data, $smarty, $user, $db, $account) {
 
 
 
-					$sql=sprintf("select `Supplier Delivery Public ID` object_name,O.`Supplier Delivery Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND O.`Supplier Delivery Key` > %d))  order by $_order_field   , O.`Supplier Delivery Key`  limit 1",
+					$sql=sprintf("select `Supplier Delivery Public ID` object_name,D.`Supplier Delivery Key` as object_key from $table   $where $wheref
+	                and ($_order_field  > %s OR ($_order_field  = %s AND D.`Supplier Delivery Key` > %d))  order by $_order_field   , D.`Supplier Delivery Key`  limit 1",
 						prepare_mysql($_order_field_value),
 						prepare_mysql($_order_field_value),
 						$object->id

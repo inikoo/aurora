@@ -1,3 +1,5 @@
+{assign deliveries $order->get_deliveries('objects')}
+
 <div class="timeline_horizontal">
 
 	<ul class="timeline" id="timeline">
@@ -12,53 +14,62 @@
 		</div>
 		</li>
 		
-		<li id="send_node" class="li  "> 
+		<li id="send_node" class="li  {if $order->get('State Index')>=60}complete{/if} "> 
 		<div class="label">
 			<span class="state" style="position:relative;left:5px">{t}Delivery{/t} <span></i></span></span> 
 		</div>
 		<div class="timestamp">
-			<span class="Purchase_Order_Send_Date">&nbsp;</span> 
+			<span class="Deliveries_Public_IDs" style="position:relative;left:5px">&nbsp;{foreach from=$deliveries item=dn}{$dn->get('Public ID')}{/foreach}&nbsp;</span> 
 		</div>
 		<div class="truck">
 		</div>
 		</li>
-		
-		<li id="send_node" class="li  {if $order->get('State Index')>=45}complete{/if}"> 
+		<li id="send_node" class="li  {if $order->get('State Index')>=60}complete{/if}"> 
 		<div class="label">
-			<span class="state ">{t}Send{/t} <span></i></span></span> 
+			<span class="state ">{t}Inputted{/t} <span></i></span></span> 
 		</div>
 		<div class="timestamp">
-			<span class="Purchase_Order_Send_Date">&nbsp;{$order->get('Send Date')}</span> 
+			<span class="Purchase_Order_Inputted_Date">&nbsp;{foreach from=$deliveries item=dn}{$dn->get('Creation Date')}{/foreach}&nbsp;</span> 
 		</div>
 		<div class="dot">
 		</div>
 		</li>
-		<li class="li "> 
+		<li id="send_node" class="li {if $order->get('State Index')>=70}complete{/if}"> 
 		<div class="label">
-			<span class="state ">{t}Delivered{/t}</span> 
+			<span class="state ">{t}Dispatched{/t} <span></i></span></span> 
 		</div>
 		<div class="timestamp">
-			<span class="Purchase_Order_Received_Date">&nbsp;{$order->get('Received Date')}</span> 
+			<span class="Purchase_Order_Dispatched_Date">&nbsp;{foreach from=$deliveries item=dn}{$dn->get('Dispatched Date')}{/foreach}&nbsp;</span> 
 		</div>
 		<div class="dot">
 		</div>
 		</li>
-		<li class="li"> 
+		<li class="li {if $order->get('State Index')>=80}complete{/if}"> 
+		<div class="label">
+			<span class="state ">{t}Received{/t}</span> 
+		</div>
+		<div class="timestamp">
+			<span class="Purchase_Order_Received_Date">&nbsp;{foreach from=$deliveries item=dn}{$dn->get('Received Date')}{/foreach}&nbsp;</span> 
+		</div>
+		<div class="dot">
+		</div>
+		</li>
+		<li class="li {if $order->get('State Index')>=90}complete{/if}"> 
 		<div class="label">
 			<span class="state">{t}Checked{/t}</span> 
 		</div>
 		<div class="timestamp">
-			<span>&nbsp;{$order->get('Checked Date')}</span> 
+			<span>&nbsp;{foreach from=$deliveries item=dn}{$dn->get('Checked Percentage or Date')}{/foreach}&nbsp;</span> 
 		</div>
 		<div class="dot">
 		</div>
 		</li>
-		<li class="li"> 
+		<li class="li {if $order->get('State Index')==100}complete{/if}"> 
 		<div class="label">
 			<span class="state">{t}Placed{/t}</span> 
 		</div>
 		<div class="timestamp">
-			<span>&nbsp;{$order->get('Consolidated Date')} &nbsp;</span> 
+			<span>&nbsp;{foreach from=$deliveries item=dn}{$dn->get('Placed Percentage or Date')}{/foreach}&nbsp;</span> 
 		</div>
 		<div class="dot">
 		</div>
@@ -173,10 +184,10 @@
 		</div>
 		
 		
-		<div id="crete_delivery" class="delivery_node {if {$order->get('State Index')|intval}<30 or ($order->get('Purchase Order Ordered Number Items')-$order->get('Purchase Order Supplier Delivery Number Items'))==0  }hide{/if}" style="height:30px;clear:both;border-top:1px solid #ccc;border-bottom:1px solid #ccc">
+		<div id="crete_delivery" class="delivery_node {if {$order->get('State Index')|intval}<30 or ($order->get('Purchase Order Ordered Number Items')-$order->get('Purchase Order Number Supplier Delivery Items'))==0  }hide{/if}" style="height:30px;clear:both;border-top:1px solid #ccc;border-bottom:1px solid #ccc">
 			
 			<div id="back_operations"></div>
-			<span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic"><i class="fa fa-truck fa-flip-horizontal button" aria-hidden="true" ></i> {t}Delivery Note{/t} </span> 
+			<span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic"><i class="fa fa-truck  button" aria-hidden="true" ></i> {t}Delivery{/t} </span> 
 			<div id="forward_operations">
 
 				<div id="received_operations" class="order_operation {if !($order->get('Purchase Order State')=='Submitted' or  $order->get('Purchase Order State')=='Send') }hide{/if}">
@@ -194,9 +205,9 @@
 	
 		
 		
-			{foreach from=$order->get_deliveries('objects') item=dn} 
+			{foreach from=$deliveries item=dn} 
 				<div class="delivery_node" style="height:30px;clear:both;border-top:1px solid #ccc;border-bottom:1px solid #ccc">
-			<span style="float:left;padding-left:10px;padding-top:5px" > <span class="button" onClick="change_view('{$order->get('Purchase Order Parent')|lower}/{$order->get('Purchase Order Parent Key')}/delivery/{$dn->id}')"> <i class="fa fa-truck fa-flip-horizontal " aria-hidden="true" ></i> {$dn->get('Public ID')}</span> ({$dn->get('State')}) </span> 
+			<span style="float:left;padding-left:10px;padding-top:5px" > <span class="button" onClick="change_view('{$order->get('Purchase Order Parent')|lower}/{$order->get('Purchase Order Parent Key')}/delivery/{$dn->id}')"> <i class="fa fa-truck  " aria-hidden="true" ></i> {$dn->get('Public ID')}</span> ({$dn->get('State')}) </span> 
 
 </div>	
 			{/foreach} 
@@ -210,7 +221,8 @@
 		<tr>
 				
 				<td > 
-				<span style="padding-right:20px"><i class="fa fa-clipboard fa-fw discreet" aria-hidden="true" ></i> <span class="Purchase_Order_Number_items">{$order->get('Number Items')}</span></span>
+				<span style=""><i class="fa fa-clipboard fa-fw discreet" aria-hidden="true" ></i> <span class="Purchase_Order_Number_items">{$order->get('Number Items')}</span></span>
+				<span style="padding-left:20px"><i class="fa fa-truck fa-fw discreet" aria-hidden="true" ></i> <span class="Purchase_Order_Number_Supplier_Delivery_Items" >{$order->get('Purchase Order Number Supplier Delivery Items')}</span></span>
 				<span style="padding-left:20px"><i class="fa fa-map-marker fa-fw discreet" aria-hidden="true" ></i> <span class="Purchase_Order_Number_Placed_Items" >{$order->get('Number Placed Items')}</span></span>
 				</td>
 			</tr>
@@ -247,19 +259,19 @@
 
  
 <div id="new_delivery" class="table_new_fields hide" >
-	<div style="align-items: stretch;flex: 1;padding:20px 5px;border-right:1px solid #eee">
+	<div class="invisible" style="align-items: stretch;flex: 1;padding:20px 5px;">
 		<i key="" class="fa fa-fw fa-square-o button" aria-hidden="true"></i> <span>{t}Select all{/t}</span> 
 	</div>
-	<div style="align-items: stretch;flex: 1;padding:10px 20px;">
+	<div style="align-items: stretch;flex: 1;padding:10px 20px;border-left:1px solid #eee">
 		<table border="0" style="width:50%;float:right;xborder-left:1px solid #ccc;width:100%;">
 			<tr>
-				<td class="label ">{t}Delivery Number{/t}</td>
+				<td class="label ">{t}Delivery number{/t}</td>
 				<td>
 				<input class="new_delivery_field" id="delivery_number" placeholder="{t}Delivery number{/t}"></td>
 			</tr>
 			<tr>
 				<td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_create_delivery()"></i></td>
-				<td class="buttons save" onclick="save_create_delivery()" ><span>{t}Save{/t}</span> <i class=" fa fa-cloud fa-flip-horizontal " aria-hidden="true" ></i></td>
+				<td class="buttons save" onclick="save_create_delivery(this)" ><span>{t}Save{/t}</span> <i class=" fa fa-cloud fa-flip-horizontal " aria-hidden="true" ></i></td>
 			</tr>
 		</table>
 	</div>

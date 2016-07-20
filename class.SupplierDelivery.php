@@ -227,7 +227,33 @@ class SupplierDelivery extends DB_Table {
 
 
 		switch ($key) {
+		case 'State Index':
+			switch ($this->data['Supplier Delivery State']) {
+			case 'InProcess':
+				return 10;
+				break;
+			case 'Dispatched':
+				return 30;
+				break;
+			case 'Received':
+				return 40;
+				break;
+			case 'Checked':
+				return 50;
+				break;
+			case 'Placed':
+				return 100;
+				break;
+			case 'Cancelled':
+				return -10;
+				break;
 
+
+			default:
+				return 0;
+				break;
+			}
+			break;
 		case 'Checked Percentage or Date':
 			if ($this->get('State Index')<40) {
 				return '';
@@ -326,40 +352,36 @@ class SupplierDelivery extends DB_Table {
 		case 'Number Ordered Items':
 		case 'Number Items Without PO':
 			return number($this->data ['Supplier Delivery '.$key]);
-		case 'State Index':
+			break;
+
+		case ('State'):
 			switch ($this->data['Supplier Delivery State']) {
 			case 'InProcess':
-				return 10;
+				return _('Inputted');
 				break;
 			case 'Dispatched':
-				return 30;
+				return _('Dispatched');
+				break;
+			case 'Confirmed':
+				return _('Confirmed');
 				break;
 			case 'Received':
-				return 40;
-				break;
-			case 'Checked':
-				return 50;
+				return _('Received');
 				break;
 			case 'Placed':
-				return 100;
+				return _('Placed');
 				break;
-
-
 			case 'Cancelled':
-				return -10;
+				return _('Cancelled');
 				break;
-
 
 			default:
-				return 0;
+
 				break;
 			}
-			break;
-		default:
 
 			break;
 		}
-
 
 
 
@@ -860,7 +882,7 @@ class SupplierDelivery extends DB_Table {
 		$transaction_key=$data['transaction_key'];
 
 
-		$qty=$data['qty']/$supplier_part->get('Supplier Part Units Per Package');
+		$qty=$data['qty']/$supplier_part->get('Supplier Part Packages Per Carton');
 		if ($qty<0)$qty=0;
 
 
@@ -940,6 +962,7 @@ class SupplierDelivery extends DB_Table {
 		$date=gmdate('Y-m-d H:i:s');
 		$transaction_key=$data['transaction_key'];
 
+		$qty=$data['qty']/$supplier_part->get('Supplier Part Packages Per Carton');
 
 
 
@@ -953,7 +976,7 @@ class SupplierDelivery extends DB_Table {
 
 
 				$supplier_part=new SupplierPart($row['Supplier Part Key']);
-				$qty=$data['qty']/$supplier_part->get('Supplier Part Units Per Package');
+				$qty=$data['qty']/$supplier_part->get('Supplier Part Packages Per Carton');
 				if ($qty<0)$qty=0;
 
 
@@ -1037,7 +1060,7 @@ class SupplierDelivery extends DB_Table {
 
 
 
-		return array('transaction_key'=>$transaction_key, 'qty'=>$qty+0, 'placement_data'=>$placement_data,'placed'=>$placed);
+		return array('transaction_key'=>$transaction_key, 'qty'=>$qty+0, 'placement_data'=>$placement_data, 'placed'=>$placed);
 
 
 

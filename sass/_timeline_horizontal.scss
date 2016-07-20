@@ -8,7 +8,7 @@ font-size:80%;
   display: flex;
   align-items: center;
   justify-content: center;
-   position:relative;top:-20px;
+   position:relative;top:-20px;left:-20px
 }
 
 
@@ -53,7 +53,7 @@ font-size:80%;
 
 
 .dot {
-  padding: 0px 40px;
+  padding: 0px 50px;
   display: flex;
   justify-content: center;
   border-top: 2px solid #D6DCE0;
@@ -129,12 +129,17 @@ font-size:80%;
   z-index: 10;
 }
 
-.li.complete .dot {
+.li.complete .dot, .li.complete .truck{
   border-top: 2px solid #66DC71;
 }
 .li.complete .dot:after { 
   background-color: #66DC71;
-   border: 1px solid #66DC71;
+  border: 1px solid #66DC71;
+  transition: all 200ms ease-in;
+}
+
+.li.complete .truck:after { 
+  color: #777;
   transition: all 200ms ease-in;
 }
 

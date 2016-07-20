@@ -242,6 +242,40 @@ class PurchaseOrder extends DB_Table{
 		if (!$this->id)return false;
 
 		switch ($key) {
+		case 'State Index':
+
+			switch ($this->data['Purchase Order State']) {
+			case 'InProcess':
+				return 10;
+				break;
+			case 'Submitted':
+				return 30;
+				break;
+			case 'Inputted':
+				return 60;
+				break;
+			case 'Dispatched':
+				return 70;
+				break;
+			case 'Received':
+				return 80;
+				break;
+			case 'Checked':
+				return 90;
+				break;
+			case 'Placed':
+				return 100;
+				break;
+			case 'Cancelled':
+				return -10;
+				break;
+
+
+			default:
+				return 0;
+				break;
+			}
+			break;
 
 		case 'Weight':
 			include_once 'utils/natural_language.php';
@@ -264,20 +298,15 @@ class PurchaseOrder extends DB_Table{
 		case 'Agreed Receiving Date':
 		case 'Creation Date':
 		case 'Submitted Date':
-		case 'Send Date':
 			if ($this->data['Purchase Order '.$key]=='')return '';
 			return strftime("%e %b %Y", strtotime($this->data['Purchase Order '.$key].' +0:00'));
 
 			break;
 
 		case 'Received Date':
-			if ($this->get('State Index')<0) {
+			if ($this->get('State Index')<0 or $this->get('State Index')>=60 ) {
 				return '';
 
-			}elseif ($this->get('State Index')>=50) {
-
-				if ($this->get('Purchase Order Received Date')=='')return 'Error';
-				return strftime("%e %b %Y", strtotime($this->get('Purchase Order Received Date')));
 			}else {
 
 				if ($this->data['Purchase Order Estimated Receiving Date']) {
@@ -306,40 +335,6 @@ class PurchaseOrder extends DB_Table{
 				}
 			}
 
-			break;
-		case 'State Index':
-
-			switch ($this->data['Purchase Order State']) {
-			case 'InProcess':
-				return 10;
-				break;
-			case 'Submitted':
-				return 30;
-				break;
-			case 'Confirmed':
-				return 40;
-				break;
-			case 'Dispatched':
-				return 45;
-				break;
-			case 'Received':
-				return 50;
-				break;
-			case 'Checked':
-				return 60;
-				break;
-			case 'Placed':
-				return 100;
-				break;
-			case 'Cancelled':
-				return -10;
-				break;
-
-
-			default:
-				return 0;
-				break;
-			}
 			break;
 		case ('Main Source Type'):
 			switch ($this->data['Purchase Order Main Source Type']) {
@@ -371,9 +366,6 @@ class PurchaseOrder extends DB_Table{
 			break;
 
 		case ('State'):
-
-
-
 			switch ($this->data['Purchase Order State']) {
 			case 'InProcess':
 				return _('In Process');
@@ -458,7 +450,6 @@ class PurchaseOrder extends DB_Table{
 
 			break;
 		}
-
 
 
 		if (array_key_exists($key, $this->data))
@@ -676,7 +667,7 @@ class PurchaseOrder extends DB_Table{
 				'Purchase_Order_Total_Amount_Account_Currency'=>$this->get('Total Amount Account Currency'),
 				'Purchase_Order_Weight'=>$this->get('Weight'),
 				'Purchase_Order_CBM'=>$this->get('CBM'),
-				'Purchase_Order_Number_items'=>$this->get('Number Items'),
+				'Purchase_Order_Number_Items'=>$this->get('Number Items'),
 			)
 		);
 
@@ -808,15 +799,13 @@ class PurchaseOrder extends DB_Table{
 			exit;
 		}
 
-		$sql = sprintf("select count(*) as num_items from `Purchase Order Transaction Fact` where `Supplier Delivery Key`>0" ,
+		$sql = sprintf("select count(*) as num_items from `Purchase Order Transaction Fact` where `Supplier Delivery Key`>0 and  `Purchase Order Key`=%d" ,
 			$this->id);
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
 
-
 				$this->update(array(
-						'Purchase Order Supplier Delivery Number Items'=>$row['num_items'],
-
+						'Purchase Order Number Supplier Delivery Items'=>$row['num_items'],
 					), 'no_history');
 			}
 		}else {
@@ -825,7 +814,69 @@ class PurchaseOrder extends DB_Table{
 		}
 
 
+		if ($this->get('Purchase Order State')=='InProcess'   ) {
 
+		}else {
+
+
+			if ($this->get('Purchase Order State')=='Submitted' ) {
+
+				$pending_items_delivery=$this->get('Purchase Order Ordered Number Items')-$this->get('Purchase Order Number Supplier Delivery Items');
+				if (!$pending_items_delivery>0 ) {
+
+					$this->update_state('Inputted');
+
+				}
+			}
+
+
+			$max_index=0;
+			$max_delivery_state='NA';
+
+			$min_index=100;
+
+
+			$min_delivery_state='Inputted';
+
+
+			foreach ($this->get_deliveries('objects') as $delivery) {
+				$index=$delivery->get('State Index');
+
+
+				if ($index<0)continue;
+
+				if ($index>$max_index) {
+					$max_index=$index;
+					$max_delivery_state=$delivery->get('Supplier Delivery State');
+				}
+
+				if ($index<=$min_index) {
+
+
+					$min_index=$index;
+					$min_delivery_state=$delivery->get('Supplier Delivery State');
+				}
+
+
+			}
+
+
+
+			$this->update(array(
+					'Purchase Order Max Supplier Delivery State'=>$max_delivery_state,
+				), 'no_history');
+
+
+			if ($this->get('State Index')>=60) {
+				if ($min_delivery_state=='InProcess') {
+					$min_delivery_state='Inputted';
+				}
+
+				$this->update_state($min_delivery_state);
+			}
+
+
+		}
 
 	}
 
@@ -1161,80 +1212,101 @@ class PurchaseOrder extends DB_Table{
 	}
 
 
-	function update_state($value, $options, $metadata) {
+	function update_state($value, $options='', $metadata=array()) {
 		$date=gmdate('Y-m-d H:i:s');
 
 
 		$old_value=$this->get('Purchase Order State');
+		$operations=array();
 
 
-		switch ($value) {
-		case 'InProcess':
+		if ($old_value!=$value) {
+			switch ($value) {
+			case 'InProcess':
 
-			$this->update_field('Purchase Order Submitted Date', '', 'no_history');
-			$this->update_field('Purchase Order Estimated Receiving Date', '', 'no_history');
-			$this->update_field('Purchase Order State', $value, 'no_history');
-			$operations=array('delete_operations', 'submit_operations', 'all_available_items', 'new_item');
-
-
-			$history_data=array(
-				'History Abstract'=>_('Purchase order send back to process'),
-				'History Details'=>'',
-				'Action'=>'created'
-			);
-			$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
-
-
-
-			break;
-
-		case 'Submitted':
-
-
-
-			$this->update_field('Purchase Order Submitted Date', $date, 'no_history');
-			$this->update_field('Purchase Order Send Date', '', 'no_history');
-
-			$this->update_field('Purchase Order State', $value, 'no_history');
-			$operations=array('cancel_operations', 'undo_submit_operations', 'received_operations');
-
-			if ($old_value!='Submitted') {
-				if ($this->get('State Index')<=30) {
-					$history_abstract=_('Purchase order submitted');
-				}else {
-					$history_abstract=_('Purchase order set back as submitted');
-
-				}
+				$this->update_field('Purchase Order Submitted Date', '', 'no_history');
+				$this->update_field('Purchase Order Estimated Receiving Date', '', 'no_history');
+				$this->update_field('Purchase Order State', $value, 'no_history');
+				$operations=array('delete_operations', 'submit_operations', 'all_available_items', 'new_item');
 
 
 				$history_data=array(
-					'History Abstract'=>$history_abstract,
+					'History Abstract'=>_('Purchase order send back to process'),
 					'History Details'=>'',
 					'Action'=>'created'
 				);
 				$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
 
+
+
+				break;
+
+			case 'Submitted':
+
+
+
+				$this->update_field('Purchase Order Submitted Date', $date, 'no_history');
+				$this->update_field('Purchase Order Send Date', '', 'no_history');
+
+				$this->update_field('Purchase Order State', $value, 'no_history');
+				$operations=array('cancel_operations', 'undo_submit_operations', 'received_operations');
+
+				if ($old_value!='Submitted') {
+					if ($this->get('State Index')<=30) {
+						$history_abstract=_('Purchase order submitted');
+					}else {
+						$history_abstract=_('Purchase order set back as submitted');
+
+					}
+
+
+					$history_data=array(
+						'History Abstract'=>$history_abstract,
+						'History Details'=>'',
+						'Action'=>'created'
+					);
+					$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
+
+				}
+
+				break;
+
+			case 'Inputted':
+			case 'Dispatched':
+			case 'Received':
+			case 'Checked':
+			case 'Placed':
+
+
+				$this->update_field('Purchase Order State', $value, 'no_history');
+				foreach ($metadata as $key=>$_value) {
+					$this->update_field($key, $_value, 'no_history');
+				}
+
+
+
+				break;
+			default:
+				exit('unknown state:'.$value);
+				break;
 			}
 
-			break;
 
-		case 'Send':
+			$sql=sprintf('update `Purchase Order Transaction Fact` set `Purchase Order Last Updated Date`=%s where `Purchase Order Key`=%d ',
+				prepare_mysql($date),
+				$this->id
+			);
+			$this->db->exec($sql);
 
-			$this->update_field('Purchase Order Submitted Date', $date, 'no_history');
-			$this->update_field('Purchase Order State', $value, 'no_history');
-			foreach ($metadata as $key=>$_value) {
-				$this->update_field($key, $_value, 'no_history');
-			}
+			$sql=sprintf('update `Purchase Order Transaction Fact` set `Purchase Order Transaction State`=%s where `Purchase Order Key`=%d ',
+				prepare_mysql($value),
+				$this->id
+			);
+			$this->db->exec($sql);
 
-			$operations=array('cancel_operations', 'undo_send_operations', 'received_operations');
+			$this->update_affected_products();
 
-
-			break;
-		default:
-			exit('unknown state '.$value);
-			break;
 		}
-
 
 		$this->update_metadata=array(
 			'class_html'=>array(
@@ -1246,23 +1318,10 @@ class PurchaseOrder extends DB_Table{
 			),
 			'operations'=>$operations,
 			'state_index'=>$this->get('State Index'),
-			'pending_items_in_delivery'=>$this->get('Purchase Order Ordered Number Items')-$this->get('Purchase Order Supplier Delivery Number Items')
+			'pending_items_in_delivery'=>$this->get('Purchase Order Ordered Number Items')-$this->get('Purchase Order Number Supplier Delivery Items')
 		);
 
 
-		$sql=sprintf('update `Purchase Order Transaction Fact` set `Purchase Order Last Updated Date`=%s where `Purchase Order Key`=%d ',
-			prepare_mysql($date),
-			$this->id
-		);
-		$this->db->exec($sql);
-
-		$sql=sprintf('update `Purchase Order Transaction Fact` set `Purchase Order Transaction State`=%s where `Purchase Order Key`=%d ',
-			prepare_mysql($value),
-			$this->id
-		);
-		$this->db->exec($sql);
-
-		$this->update_affected_products();
 
 
 

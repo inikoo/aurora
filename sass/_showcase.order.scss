@@ -1,6 +1,11 @@
 
 
+table.totals{
 
+.subtotal td{border-top: 1px solid #ddd;}
+.total td{border-bottom: 1px solid #aaa;border-top: 1px solid #aaa;}
+
+}
 
 .order_operation_dialog{
 border:1px solid #ccc;;min-width:300px;position:absolute;background:#fff;z-index:100;text-align: left;

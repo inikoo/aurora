@@ -26,6 +26,12 @@ switch ($parameters['parent']) {
      case 'account':
       $where=sprintf("where true");
         break;   
+       case 'order':
+      $where=sprintf("where `Payment Order Key`=%d",$parameters['parent_key']);
+        break;   
+        case 'invoice':
+      $where=sprintf("where `Payment Invoice Key`=%d",$parameters['parent_key']);
+        break;    
     default:
       $where="where false";
   

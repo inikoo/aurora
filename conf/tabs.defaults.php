@@ -164,6 +164,15 @@ $tab_defaults=array(
 		'export_fields'=>$export_fields['delivery_notes']
 
 	),
+	'order.payments'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>-1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'reference'
+
+	),
 	'delivery_note.invoices'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
@@ -612,7 +621,7 @@ $tab_defaults=array(
 		'elements_type'=>each($elements_options['supplier_orders'])['key'],
 		'elements'=>$elements_options['supplier_orders']
 	),
-		'suppliers.deliveries'=>array(
+	'suppliers.deliveries'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
@@ -646,7 +655,7 @@ $tab_defaults=array(
 		'elements'=>$elements_options['supplier_parts']
 
 	),
-		'supplier.order.all_supplier_parts'=>array(
+	'supplier.order.all_supplier_parts'=>array(
 		'view'=>'overview',
 		'sort_key'=>'reference',
 		'sort_order'=>1,
@@ -731,7 +740,7 @@ $tab_defaults=array(
 		'f_field'=>'code',
 
 	),
-	
+
 	'supplier.delivery.check_items'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',

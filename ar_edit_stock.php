@@ -250,7 +250,13 @@ function place_part($account, $db, $user, $editor, $data, $smarty) {
 
 
 
-	$sql=sprintf('select `Purchase Order Transaction Fact Key`,`Supplier Delivery Received Quantity`,`Supplier Delivery Placed Quantity` from `Purchase Order Transaction Fact` where `Purchase Order Transaction Fact Key`=%d', $data['transaction_key']);
+	$sql=sprintf('select `Purchase Order Transaction Fact Key`,`Supplier Delivery Received Quantity`,`Supplier Delivery Placed Quantity` ,`Supplier Part Packages Per Carton`
+	from
+	  `Purchase Order Transaction Fact` POTF
+left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Historic Key`=SPH.`Supplier Part Historic Key`)
+ left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
+	
+	 where `Purchase Order Transaction Fact Key`=%d', $data['transaction_key']);
 
 
 
@@ -269,7 +275,7 @@ function place_part($account, $db, $user, $editor, $data, $smarty) {
 			}else {
 
 
-				if ($data['qty']>($row['Supplier Delivery Received Quantity']-$row['Supplier Delivery Placed Quantity'])) {
+				if (($data['qty']/$row['Supplier Part Packages Per Carton'])>($row['Supplier Delivery Received Quantity']-$row['Supplier Delivery Placed Quantity'])) {
 					$response=array('state'=>400, 'msg'=>_('Placement quantity greater than the checked quantity'));
 					echo json_encode($response);
 					exit;
