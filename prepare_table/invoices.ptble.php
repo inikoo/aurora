@@ -290,7 +290,7 @@ $fields.='I.`Invoice Key`,`Invoice Paid`,`Invoice Type`,`Invoice Main Payment Me
 `Invoice Total Net Amount`,`Invoice Total Tax Amount`,`Invoice Shipping Net Amount`,`Invoice Items Net Amount`,`Invoice Total Net Amount`,`Invoice Shipping Net Amount`,
 `Invoice Billing Country 2 Alpha Code`,`Invoice Delivery Country 2 Alpha Code`
 ';
-$sql_totals="select count(Distinct I.`Invoice Key`) as num from $table   $where $wheref ";
+$sql_totals="select count(Distinct I.`Invoice Key`) as num from $table $where ";
 
 
 

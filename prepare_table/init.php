@@ -30,6 +30,12 @@ if (isset($_data['f_value']) and $_data['f_value']!='') {
 	$f_value='';
 }
 
+if (isset($_data['f_field']) and $_data['f_field']!='') {
+	$parameters['f_field']=$_data['f_field'];
+}
+
+
+
 foreach ( $parameters as $parameter=>$parameter_value) {
 	$_SESSION['table_state'][$_data['parameters']['tab']][$parameter]=$parameter_value;
 

@@ -109,7 +109,7 @@ $fields='`Purchase Order Parent`,`Purchase Order Parent Key`,O.`Purchase Order K
 `Purchase Order Parent Code`,`Purchase Order Parent Name`,`Purchase Order Total Amount`,`Purchase Order Currency Code`
 ';
 
-$sql_totals="select count(Distinct O.`Purchase Order Key`) as num from $table   $where $wheref ";
+$sql_totals="select count(Distinct O.`Purchase Order Key`) as num from $table $where ";
 //print "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 

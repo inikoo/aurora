@@ -147,12 +147,54 @@ function show_columns_period_options() {
 
 }
 
+function show_f_options(element) {
+
+    if (!$('#filter_field').hasClass('button')) return
+
+    if ($('#f_options_chooser').hasClass('hide')) {
+
+        var offset = $('#filter_field').position();
+        var height = $('#filter_field').height();
+
+        $('#f_options_chooser').removeClass('hide').offset({
+            top: offset.top + height,
+            left: offset.left - 27.2
+        })
+
+    } else {
+        $('#f_options_chooser').addClass('hide')
+    }
+
+
+}
+
+function change_f_option(option) {
+
+    if (!$(option).hasClass('selected')) {
+        $('#f_options_chooser div').removeClass('selected')
+        $('#f_options_chooser div i').removeClass('fa-circle').addClass('fa-circle-o')
+        $(option).addClass('selected')
+        $(option).find('i').addClass('fa-circle')
+        $('#filter').attr('f_field',$(option).attr('f_field')).find('input').val('')
+        
+        
+        $('#filter_field .label').html( $(option).find('.label').html())
+        
+        rows.fetch({
+                    reset: true
+                });
+        show_f_options()
+        
+    }
+}
+
 
 function show_elements_types() {
 
     var button = $('#element_type')
     var icon = $('#element_type .fa')
     if (icon.hasClass('fa-bars')) {
+      $('#f_options_chooser').addClass('hide')
         icon.removeClass('fa-bars')
         icon.addClass('fa-chevron-up')
 
@@ -454,8 +496,7 @@ function get_export_process_bar(fork_key, tag, type) {
 
 function edit_category_subject(element) {
 
-    if($(element).hasClass('wait'))
-        return;
+    if ($(element).hasClass('wait')) return;
 
     if ($(element).hasClass('fa-unlink')) {
         $(element).removeClass('fa-unlink very_discreet').addClass('fa-link wait')
@@ -465,7 +506,7 @@ function edit_category_subject(element) {
         operation = 'unlink';
     }
 
-    var request = '/ar_edit.php?tipo=edit_category_subject&category_key=' + state.key + '&subject_key=' + $(element).attr('key')+'&operation='+operation
+    var request = '/ar_edit.php?tipo=edit_category_subject&category_key=' + state.key + '&subject_key=' + $(element).attr('key') + '&operation=' + operation
 
     $.getJSON(request, function(data) {
 

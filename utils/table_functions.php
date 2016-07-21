@@ -19,6 +19,7 @@ function get_table_parameters() {
 			'o'=>array('type'=>'string', 'optional'=>true),
 			'od'=>array('type'=>'string', 'optional'=>true),
 			'f_value'=>array('type'=>'string', 'optional'=>true),
+			'f_field'=>array('type'=>'string', 'optional'=>true),
 
 		));
 }
@@ -32,6 +33,7 @@ function get_table_totals($db,$sql_totals, $wheref='', $record_label='', $metada
 
 	if ($sql_totals) {
 		$sql=trim($sql_totals." $wheref");
+//print $sql;
 
 		if ($result=$db->query($sql)) {
 			if ($row = $result->fetch()) {
@@ -72,7 +74,6 @@ function get_table_totals($db,$sql_totals, $wheref='', $record_label='', $metada
 		return array('', 0, 0);
 
 	}
-
 
 
 	if ($filtered==0) {

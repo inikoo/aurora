@@ -20,8 +20,8 @@ $table_views=array(
 );
 
 $table_filters=array(
-	'customer'=>array('label'=>_('Customer'),'title'=>_('Customer name')),
-	'number'=>array('label'=>_('Number'),'title'=>_('Order number')),
+	'customer'=>array('label'=>_('Customer')),
+	'number'=>array('label'=>_('Number')),
 
 );
 

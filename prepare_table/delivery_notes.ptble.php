@@ -219,7 +219,7 @@ elseif ($parameters['f_field']=='country' and  $f_value!='') {
 }
 
 $fields='*';
-$sql_totals="select count(Distinct D.`Delivery Note Key`) as num from $table   $where $wheref ";
+$sql_totals="select count(Distinct D.`Delivery Note Key`) as num from $table $where ";
 
 
 function dn_awhere($awhere) {

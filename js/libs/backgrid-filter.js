@@ -160,7 +160,10 @@
       if (query) data[this.name] = query;
 
       var collection = this.collection;
-
+      
+      // Inikoo:
+            data['f_field']=$('#filter').attr('f_field')
+console.log(data)
       // go back to the first page on search
       if (Backbone.PageableCollection &&
           collection instanceof Backbone.PageableCollection) {
@@ -176,24 +179,28 @@
        If the collection is a PageableCollection, clearing will go back to the
        first page.
     */
-    clear: function (e) {
-      if (e) e.preventDefault();
-      this.clearSearchBox();
+    clear: function(e) {
+        if (e) e.preventDefault();
+        this.clearSearchBox();
 
-      var collection = this.collection;
+        var collection = this.collection;
 
-      // go back to the first page on clear
-      if (Backbone.PageableCollection &&
-          collection instanceof Backbone.PageableCollection) {
-        collection.getFirstPage({reset: true, fetch: true});
-        
-        // Inikoo hide filter
-         $('#show_filter').removeClass('hide')
-          $('.filter').addClass('hide')
-        
-      }
-      else collection.fetch({reset: true});
+        // go back to the first page on clear
+        if (Backbone.PageableCollection && collection instanceof Backbone.PageableCollection) {
+            collection.getFirstPage({
+                reset: true,
+                fetch: true
+            });
+
+            // Inikoo hide filter
+            $('#show_filter').removeClass('hide')
+            $('.filter').addClass('hide')
+            $('#f_options_chooser').addClass('hide')
+        } else collection.fetch({
+            reset: true
+        });
     },
+
 
     /**
        Renders a search form with a text box, optionally with a placeholder and

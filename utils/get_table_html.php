@@ -117,6 +117,10 @@ if (isset($parameters['period'])) {
 
 $smarty->assign('f_field', $parameters['f_field']);
 $smarty->assign('f_label', ($parameters['f_field'] ? $table_filters[$parameters['f_field']]['label']:''  ));
+
+$smarty->assign('f_options', $table_filters);
+
+
 $table_view=$parameters['view'];
 $smarty->assign('table_view', $parameters['view']);
 
