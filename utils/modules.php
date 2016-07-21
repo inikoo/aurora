@@ -973,7 +973,7 @@ $modules=array(
 			),
 
 			'orders'=>array(
-				'type'=>'navigation', 'label'=>_('Orders'), 'title'=>_('Purchase orders'), 'icon'=>'clipboard', 'reference'=>'suppliers/orders',
+				'type'=>'navigation', 'label'=>_('Purchase orders'), 'icon'=>'clipboard', 'reference'=>'suppliers/orders',
 				'tabs'=>array(
 					'suppliers.orders'=>array()
 				)
@@ -1045,7 +1045,7 @@ $modules=array(
 
 					'agent.supplier_parts'=>array('label'=>_("Agent's Parts"), 'icon'=>'stop'),
 					'agent.orders'=>array('label'=>_('Purchase orders'), 'icon'=>'clipboard'),
-					'agent.deliveries'=>array('label'=>_('Deliveries'), 'icon'=>'arrow-circle-down'),
+					'agent.deliveries'=>array('label'=>_('Deliveries'), 'icon'=>'truck'),
 					'agent.agent_orders'=>array('label'=>_("Agent's PO"), 'icon'=>'clipboard fa-flip-horizontal'),
 
 					'agent.users'=>array('label'=>_('System users'), 'icon'=>'user', 'class'=>'right icon_only'),
@@ -1068,10 +1068,13 @@ $modules=array(
 				'reference'=>'supplier/%d',
 				'tabs'=>array(
 					'supplier.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
-					'supplier.history'=>array('label'=>_('History, notes'), 'icon'=>'sticky-note-o'),
 					'supplier.supplier_parts'=>array('label'=>_("Supplier's Parts"), 'icon'=>'stop'),
-					'supplier.orders'=>array('label'=>_('Orders'), 'icon'=>'clipboard'),
-					'supplier.users'=>array('label'=>_('System users'), 'icon'=>'user'),
+					'supplier.orders'=>array('label'=>_('Purchase orders'), 'icon'=>'clipboard'),
+					'supplier.deliveries'=>array('label'=>_('Deliveries'), 'icon'=>'truck'),
+
+					'supplier.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
+					'supplier.users'=>array('label'=>_('System users'), 'icon'=>'user', 'class'=>'right icon_only'),
+
 
 				)
 			),
@@ -1193,7 +1196,7 @@ $modules=array(
 
 				)
 			),
-			
+
 			'supplier_part.historic'=>array('type'=>'object',
 				'subtabs_parent'=>array(
 
