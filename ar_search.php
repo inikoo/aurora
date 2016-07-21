@@ -1527,21 +1527,21 @@ function search_delivery_notes($db, $account, $memcache_ip, $data) {
 		}
 
 		$counter=0;
-		$order_keys='';
+		$delivery_note_keys='';
 		$results=array();
 
 		foreach ($candidates as $key=>$val) {
 			$counter++;
-			$order_keys.=','.$key;
+			$delivery_note_keys.=','.$key;
 			$results[$key]='';
 			if ($counter>$max_results) {
 				break;
 			}
 		}
-		$order_keys=preg_replace('/^,/', '', $order_keys);
+		$delivery_note_keys=preg_replace('/^,/', '', $delivery_note_keys);
 
 		$sql=sprintf("select `Delivery Note Key`,`Store Code`,`Delivery Note Store Key`,`Delivery Note ID`,`Delivery Note State` from `Delivery Note Dimension` left join `Store Dimension` on (`Delivery Note Store Key`=`Store Key`) where `Delivery Note Key` in (%s)",
-			$order_keys);
+			$delivery_note_keys);
 			
 			
 			
@@ -1606,6 +1606,158 @@ function search_delivery_notes($db, $account, $memcache_ip, $data) {
 				'label'=>highlightkeyword(sprintf('%s', $row['Delivery Note ID']), $queries ),
 				'details'=>highlightkeyword($details, $queries ),
 				'view'=>sprintf('delivery_notes/%d/%d', $row['Delivery Note Store Key'], $row['Delivery Note Key'])
+
+
+
+
+			);
+		}
+		$results_data=array('n'=>count($results), 'd'=>$results);
+		$cache->set($memcache_fingerprint, $results_data, $memcache_time);
+
+
+
+	}
+	$response=array('state'=>200, 'number_results'=>$results_data['n'], 'results'=>$results_data['d'], 'q'=>$q);
+
+	echo json_encode($response);
+
+}
+
+function search_invoices($db, $account, $memcache_ip, $data) {
+
+	$cache=false;
+	$max_results=10;
+	$user=$data['user'];
+	$queries=trim($data['query']);
+
+	if ($queries=='') {
+		$response=array('state'=>200, 'results'=>0, 'data'=>'');
+		echo json_encode($response);
+		return;
+	}
+
+	if ($data['scope']=='store') {
+		if (in_array($data['scope_key'], $user->stores)) {
+			$stores=$data['scope_key'];
+			$where_store=sprintf(' and `Invoice Store Key`=%d', $data['scope_key']);
+		}else {
+			$where_store=' and false';
+		}
+	} else {
+		if (count($user->stores)==$account->data['Stores']) {
+			$where_store='';
+		}else {
+			$where_store=sprintf(' and `Invoice Store Key` in (%s)', join(',', $user->stores));
+		}
+
+		$stores=join(',', $user->stores);
+	}
+	$memcache_fingerprint=$account->get('Account Code').'SEARCH_INVOICE'.$stores.md5($queries);
+
+	$cache = new Memcached();
+	$cache->addServer($memcache_ip, 11211);
+
+
+	if (strlen($queries)<=2) {
+		$memcache_time=295200;
+	}if (strlen($queries)<=3) {
+		$memcache_time=86400;
+	}if (strlen($queries)<=4) {
+		$memcache_time=3600;
+	}else {
+		$memcache_time=300;
+
+	}
+
+
+	$results_data=$cache->get($memcache_fingerprint);
+
+
+	if (!$results_data or $cache) {
+
+
+		$candidates=array();
+
+		$q=$queries;
+
+
+
+		$sql=sprintf("select `Invoice Key`,`Invoice Public ID` from `Invoice Dimension` where true $where_store and `Invoice Public ID` like '%s%%'  order by `Invoice Key` desc limit 10 ",
+			$q);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_array($res)) {
+			if ($row['Invoice Public ID']==$q)
+				$candidates[$row['Invoice Key']]=30;
+			else {
+
+				$len_name=strlen($row['Invoice Public ID']);
+				$len_q=strlen($q);
+				$factor=$len_q/$len_name;
+				$candidates[$row['Invoice Key']]=20*$factor;
+			}
+		}
+
+
+
+
+		arsort($candidates);
+
+
+
+		$total_candidates=count($candidates);
+
+		if ($total_candidates==0) {
+			$response=array('state'=>200, 'results'=>0, 'data'=>'');
+			echo json_encode($response);
+			return;
+		}
+
+		$counter=0;
+		$invoice_keys='';
+		$results=array();
+
+		foreach ($candidates as $key=>$val) {
+			$counter++;
+			$invoice_keys.=','.$key;
+			$results[$key]='';
+			if ($counter>$max_results) {
+				break;
+			}
+		}
+		$invoice_keys=preg_replace('/^,/', '', $invoice_keys);
+
+		$sql=sprintf("select `Invoice Key`,`Store Code`,`Invoice Store Key`,`Invoice Public ID`,`Invoice Paid`,`Invoice Total Amount`,`Invoice Currency`,`Invoice Customer Name` from `Invoice Dimension` left join `Store Dimension` on (`Invoice Store Key`=`Store Key`) where `Invoice Key` in (%s)",
+			$invoice_keys);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_array($res)) {
+
+
+			switch ($row['Invoice Paid']) {
+			case 'Yes':
+				$details= _('Paid');
+				break;
+			case 'No':
+				$details= _('Not paid');
+				break;
+			case 'Partially':
+				$details= _('Partially paid');
+				break;
+			
+
+			default:
+				$details= $row['Invoice Paid'];
+				break;
+			}
+
+
+			$details.='<span class="padding_left_20">'.$row['Invoice Customer Name'].'</span>';
+
+			$results[$row['Invoice Key']]=array(
+				'store'=>$row['Store Code'],
+				'label'=>highlightkeyword(sprintf('%s', $row['Invoice Public ID']), $queries ),
+				'details'=>highlightkeyword($details, $queries ),
+				'view'=>sprintf('invoices/%d/%d', $row['Invoice Store Key'], $row['Invoice Key'])
 
 
 
