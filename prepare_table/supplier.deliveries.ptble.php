@@ -108,7 +108,7 @@ $fields='`Supplier Delivery Parent`,`Supplier Delivery Parent Key`,D.`Supplier D
 `Supplier Delivery Parent Code`,`Supplier Delivery Parent Name`,`Supplier Delivery Total Amount`,`Supplier Delivery Currency Code`
 ';
 
-$sql_totals="select count(Distinct D.`Supplier Delivery Key`) as num from $table   $where $wheref ";
+$sql_totals="select count(Distinct D.`Supplier Delivery Key`) as num from $table $where ";
 //print $sql_totals;
 
 ?>

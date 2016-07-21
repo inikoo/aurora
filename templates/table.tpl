@@ -2,8 +2,6 @@
  {include file="utils/date_chooser.tpl" period=$period from=$from to=$to from_mmddyy=$from_mmddyy  to_mmddyy=$to_mmddyy from_locale=$from_locale  to_locale=$to_locale  } 
 {/if}
 {if isset($elements) and count(elements)>0}
-
-
 <div id="elements" class="elements tabs ">
 <div  id="element_type" onClick="show_elements_types()"><i id="element_type_select_icon"  class="fa fa-bars" "></i></div>
 {foreach from=$elements item=element_group key=_elements_type} 
@@ -17,6 +15,11 @@
 {/foreach} 
 </div>
 {/if} 
+
+
+
+
+
 <div class="table_info" >
 	<div id="last_page" onclick="rows.getLastPage()" class="square_button right hide" title="{t}Last page{/t}" style="position:relative">
 		<i class="fa fa-chevron-right fa-fw" style="position:absolute;left:2px;bottom:6px"></i> <i style="position:absolute;left:9px;bottom:6px" class="fa fa-chevron-right fa-fw"></i> 
@@ -102,13 +105,22 @@
 	<div id="filter_submit" onclick="$('#filter form.backgrid-filter').submit()" class="square_button right filter hide" title="{t}Apply filter{/t}" >
 		 <i class="fa fa-filter fa-fw"></i> 
 	</div>
-	<div id="filter" class="filter hide">
+	<div id="filter" class="filter hide" f_field="{$f_field}" >
 	
 	</div>
-	<div id="filter_field" class="filter hide">
-	{$f_label}:
+	<div id="filter_field" class="filter hide {if $f_options|@count gt 1}button{/if}" onClick="show_f_options()">
+	
+	<span class="label">{$f_label}</span>:
 	</div>
+	<div>
+	
 	</div>
+	
+	</div>
+
+
+
+
 	<div id="table_buttons">
 	{if (isset($table_buttons) and count(table_buttons)>0)  }
 	
@@ -496,14 +508,24 @@ var with_elements=false;
 
 </script> 
 
-<div id="elements_chooser" class="hide panel popout_chooser" >
+<div id="elements_chooser" class="hide panel popout_chooser corner" >
 {foreach from=$elements item=element_group key=_elements_type} 
 <div onClick="change_elements_type('{$_elements_type}')" id="element_group_option_{$_elements_type}" elements_type="{$_elements_type}" class="{if $_elements_type==$elements_type}selected{/if}" >
 <i class="fa fw {if $_elements_type==$elements_type}fa-circle{else}fa-circle-o{/if}"></i> {$element_group['label']}
 </div>
 {/foreach} 
 </div>
-<div id="columns_period_chooser" class="hide panel popout_chooser" >
+
+<div id="f_options_chooser" class="hide panel popout_chooser" >
+{foreach from=$f_options item=f_option key=_f_option} 
+<div onClick="change_f_option(this)" id="element_group_option_{$_f_option}" f_field="{$_f_option}" class="{if $_f_option==$f_field}selected{/if}" >
+<i class="fa fw {if $_f_option==$f_field}fa-circle{else}fa-circle-o{/if}"></i> <span class="label">{$f_option['label']}</span>
+</div>
+{/foreach} 
+</div>
+
+
+<div id="columns_period_chooser" class="hide panel popout_chooser corner" >
 {foreach from=$f_periods item=period_label key=_f_period} 
 <div onClick="change_columns_period('{$_f_period}','{$period_label}')" id="element_group_option_{$_f_period}" elements_type="{$_f_period}" class="aright {if $f_period==$_f_period}selected{/if}" >
  {$period_label} <i class="fa fw {if $f_period==$_f_period}fa-circle{else}fa-circle-o{/if} padding_left_10 padding_right_10"></i>

@@ -1,6 +1,6 @@
 .popout_chooser {
     width: 200px;
-    border-left: none;
+    &.corner{border-left: none;}
     div {
         border-top: 1px solid #eee;
         padding: 4px 0px 4px 15px;
