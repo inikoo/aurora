@@ -45,7 +45,7 @@ case 'search':
 			$data['scope']='stores';
 		}
 		search_customers($db, $account, $memcache_ip, $data);
-	}if ($data['state']['module']=='orders') {
+	}elseif ($data['state']['module']=='orders') {
 		if ($data['state']['current_store']) {
 			$data['scope']='store';
 			$data['scope_key']=$data['state']['current_store'];
@@ -75,6 +75,22 @@ case 'search':
 	}elseif ($data['state']['module']=='suppliers') {
 		search_suppliers($db, $account, $memcache_ip, $data);
 
+	}elseif ($data['state']['module']=='delivery_notes') {
+		if ($data['state']['current_store']) {
+			$data['scope']='store';
+			$data['scope_key']=$data['state']['current_store'];
+		}else {
+			$data['scope']='stores';
+		}
+		search_delivery_notes($db, $account, $memcache_ip, $data);
+	}elseif ($data['state']['module']=='invoices') {
+		if ($data['state']['current_store']) {
+			$data['scope']='store';
+			$data['scope_key']=$data['state']['current_store'];
+		}else {
+			$data['scope']='stores';
+		}
+		search_invoices($db, $account, $memcache_ip, $data);
 	}
 
 	break;
@@ -1245,9 +1261,6 @@ function search_customers($db, $account, $memcache_ip, $data) {
 
 function search_orders($db, $account, $memcache_ip, $data) {
 
-
-
-
 	$cache=false;
 	$max_results=10;
 	$user=$data['user'];
@@ -1406,6 +1419,193 @@ function search_orders($db, $account, $memcache_ip, $data) {
 				'label'=>highlightkeyword(sprintf('%s', $row['Order Public ID']), $queries ),
 				'details'=>highlightkeyword($details, $queries ),
 				'view'=>sprintf('orders/%d/%d', $row['Order Store Key'], $row['Order Key'])
+
+
+
+
+			);
+		}
+		$results_data=array('n'=>count($results), 'd'=>$results);
+		$cache->set($memcache_fingerprint, $results_data, $memcache_time);
+
+
+
+	}
+	$response=array('state'=>200, 'number_results'=>$results_data['n'], 'results'=>$results_data['d'], 'q'=>$q);
+
+	echo json_encode($response);
+
+}
+
+function search_delivery_notes($db, $account, $memcache_ip, $data) {
+
+	$cache=false;
+	$max_results=10;
+	$user=$data['user'];
+	$queries=trim($data['query']);
+
+	if ($queries=='') {
+		$response=array('state'=>200, 'results'=>0, 'data'=>'');
+		echo json_encode($response);
+		return;
+	}
+
+	if ($data['scope']=='store') {
+		if (in_array($data['scope_key'], $user->stores)) {
+			$stores=$data['scope_key'];
+			$where_store=sprintf(' and `Delivery Note Store Key`=%d', $data['scope_key']);
+		}else {
+			$where_store=' and false';
+		}
+	} else {
+		if (count($user->stores)==$account->data['Stores']) {
+			$where_store='';
+		}else {
+			$where_store=sprintf(' and `Delivery Note Store Key` in (%s)', join(',', $user->stores));
+		}
+
+		$stores=join(',', $user->stores);
+	}
+	$memcache_fingerprint=$account->get('Account Code').'SEARCH_DN'.$stores.md5($queries);
+
+	$cache = new Memcached();
+	$cache->addServer($memcache_ip, 11211);
+
+	if (strlen($queries)<=2) {
+		$memcache_time=295200;
+	}if (strlen($queries)<=3) {
+		$memcache_time=86400;
+	}if (strlen($queries)<=4) {
+		$memcache_time=3600;
+	}else {
+		$memcache_time=300;
+
+	}
+
+
+	$results_data=$cache->get($memcache_fingerprint);
+
+
+	if (!$results_data or $cache) {
+
+
+		$candidates=array();
+
+		$q=$queries;
+
+
+
+		$sql=sprintf("select `Delivery Note Key`,`Delivery Note ID` from `Delivery Note Dimension` where true $where_store and `Delivery Note ID` like '%s%%'  order by `Delivery Note Key` desc limit 10 ",
+			$q);
+			
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_array($res)) {
+			if ($row['Delivery Note ID']==$q)
+				$candidates[$row['Delivery Note Key']]=30;
+			else {
+
+				$len_name=strlen($row['Delivery Note ID']);
+				$len_q=strlen($q);
+				$factor=$len_q/$len_name;
+				$candidates[$row['Delivery Note Key']]=20*$factor;
+			}
+		}
+
+
+
+
+		arsort($candidates);
+
+
+
+		$total_candidates=count($candidates);
+
+		if ($total_candidates==0) {
+			$response=array('state'=>200, 'results'=>0, 'data'=>'');
+			echo json_encode($response);
+			return;
+		}
+
+		$counter=0;
+		$order_keys='';
+		$results=array();
+
+		foreach ($candidates as $key=>$val) {
+			$counter++;
+			$order_keys.=','.$key;
+			$results[$key]='';
+			if ($counter>$max_results) {
+				break;
+			}
+		}
+		$order_keys=preg_replace('/^,/', '', $order_keys);
+
+		$sql=sprintf("select `Delivery Note Key`,`Store Code`,`Delivery Note Store Key`,`Delivery Note ID`,`Delivery Note State` from `Delivery Note Dimension` left join `Store Dimension` on (`Delivery Note Store Key`=`Store Key`) where `Delivery Note Key` in (%s)",
+			$order_keys);
+			
+			
+			
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_array($res)) {
+
+
+			switch ($row['Delivery Note State']) {
+
+			case 'Picker & Packer Assigned':
+				$details= _('Picker & packer assigned');
+				break;
+			case 'Picking & Packing':
+				$details= _('Picking & packing');
+				break;
+			case 'Packer Assigned':
+				$details= _('Packer assigned');
+				break;
+			case 'Ready to be Picked':
+				$details= _('Ready to be picked');
+				break;
+			case 'Picker Assigned':
+				$details= _('Picker assigned');
+				break;
+			case 'Picking':
+				$details= _('Picking');
+				break;
+			case 'Picked':
+				$details= _('Picked');
+				break;
+			case 'Packing':
+				$details= _('Packing');
+				break;
+			case 'Packed':
+				$details= _('Packed');
+				break;
+			case 'Approved':
+				$details= _('Approved');
+				break;
+			case 'Dispatched':
+				$details= _('Dispatched');
+				break;
+			case 'Cancelled':
+				$details= _('Cancelled');
+				break;
+			case 'Cancelled to Restock':
+				$details= _('Cancelled to restock');
+				break;
+			case 'Packed Done':
+				$details= _('Packed done');
+				break;
+			default:
+				$details= $row['Delivery Note State'];
+				break;
+			}
+
+
+			//$details.='<span class="padding_left_20">'.$row['Delivery Note Customer Name'].'</span>';
+
+			$results[$row['Delivery Note Key']]=array(
+				'store'=>$row['Store Code'],
+				'label'=>highlightkeyword(sprintf('%s', $row['Delivery Note ID']), $queries ),
+				'details'=>highlightkeyword($details, $queries ),
+				'view'=>sprintf('delivery_notes/%d/%d', $row['Delivery Note Store Key'], $row['Delivery Note Key'])
 
 
 
