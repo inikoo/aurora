@@ -450,27 +450,51 @@ class DeliveryNote extends DB_Table {
 
 		case ('State'):
 			switch ($this->data['Delivery Note State']) {
-			case 'InProcess':
-				return _('Inputted');
+
+			case 'Picker & Packer Assigned':
+				return _('Picker & packer assigned');
+				break;
+			case 'Picking & Packing':
+				return _('Picking & packing');
+				break;
+			case 'Packer Assigned':
+				return _('Packer assigned');
+				break;
+			case 'Ready to be Picked':
+				return _('Ready to be picked');
+				break;
+			case 'Picker Assigned':
+				return _('Picker assigned');
+				break;
+			case 'Picking':
+				return _('Picking');
+				break;
+			case 'Picked':
+				return _('Picked');
+				break;
+			case 'Packing':
+				return _('Packing');
+				break;
+			case 'Packed':
+				return _('Packed');
+				break;
+			case 'Approved':
+				return _('Approved');
 				break;
 			case 'Dispatched':
 				return _('Dispatched');
 				break;
-			case 'Confirmed':
-				return _('Confirmed');
-				break;
-			case 'Received':
-				return _('Received');
-				break;
-			case 'Placed':
-				return _('Placed');
-				break;
 			case 'Cancelled':
 				return _('Cancelled');
 				break;
-
+			case 'Cancelled to Restock':
+				return _('Cancelled to restock');
+				break;
+			case 'Packed Done':
+				return _('Packed done');
+				break;
 			default:
-
+				return $this->data['Delivery Note State'];
 				break;
 			}
 
@@ -486,9 +510,9 @@ class DeliveryNote extends DB_Table {
 		case('Finish Picking Date'):
 		case('Start Packing Date'):
 		case('Finish Packing Date'):
-		
-		    $key='Date '.preg_replace('/ Date$/','',$key);
-		
+
+			$key='Date '.preg_replace('/ Date$/', '', $key);
+
 			if ($this->data["Delivery Note $key"]=='')return'';
 			return strftime("%e %b %y %H:%M", strtotime($this->data["Delivery Note $key"].' +0:00'));
 			break;
