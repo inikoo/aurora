@@ -75,7 +75,7 @@ case 'search':
 	}elseif ($data['state']['module']=='suppliers') {
 		search_suppliers($db, $account, $memcache_ip, $data);
 
-	}elseif ($data['state']['module']=='delivery_notes') {
+	}elseif ($data['state']['module']=='delivery_notes' ) {
 		if ($data['state']['current_store']) {
 			$data['scope']='store';
 			$data['scope_key']=$data['state']['current_store'];
@@ -83,6 +83,17 @@ case 'search':
 			$data['scope']='stores';
 		}
 		search_delivery_notes($db, $account, $memcache_ip, $data);
+	}elseif ($data['state']['module']=='delivery_notes_server' ) {
+
+		$data['scope']='stores';
+
+		search_delivery_notes($db, $account, $memcache_ip, $data);
+	}elseif ($data['state']['module']=='orders_server') {
+		$data['scope']='stores';
+		search_orders($db, $account, $memcache_ip, $data);
+	}elseif ($data['state']['module']=='invoices_server') {
+		$data['scope']='stores';
+		search_invoices($db, $account, $memcache_ip, $data);
 	}elseif ($data['state']['module']=='invoices') {
 		if ($data['state']['current_store']) {
 			$data['scope']='store';
@@ -1280,7 +1291,7 @@ function search_orders($db, $account, $memcache_ip, $data) {
 			$where_store=' and false';
 		}
 	} else {
-		if (count($user->stores)==$account->data['Stores']) {
+		if (count($user->stores)==$account->get('Account Stores')) {
 			$where_store='';
 		}else {
 			$where_store=sprintf(' and `Order Store Key` in (%s)', join(',', $user->stores));
@@ -1411,8 +1422,11 @@ function search_orders($db, $account, $memcache_ip, $data) {
 				break;
 			}
 
+			if ($data['scope']!='store') {
+				$details='<span style="float:left;min-width:40px">'.$row['Store Code'].'</span> <span style="float:left;min-width:90px">'.$details.'</span>';
+			}
 
-			$details.='<span class="padding_left_20">'.$row['Order Customer Name'].'</span>';
+			$details.=' <span style="">'.$row['Order Customer Name'].'</span>';
 
 			$results[$row['Order Key']]=array(
 				'store'=>$row['Store Code'],
@@ -1437,6 +1451,7 @@ function search_orders($db, $account, $memcache_ip, $data) {
 
 }
 
+
 function search_delivery_notes($db, $account, $memcache_ip, $data) {
 
 	$cache=false;
@@ -1450,6 +1465,7 @@ function search_delivery_notes($db, $account, $memcache_ip, $data) {
 		return;
 	}
 
+
 	if ($data['scope']=='store') {
 		if (in_array($data['scope_key'], $user->stores)) {
 			$stores=$data['scope_key'];
@@ -1458,7 +1474,7 @@ function search_delivery_notes($db, $account, $memcache_ip, $data) {
 			$where_store=' and false';
 		}
 	} else {
-		if (count($user->stores)==$account->data['Stores']) {
+		if (count($user->stores)==$account->get('Account Stores')) {
 			$where_store='';
 		}else {
 			$where_store=sprintf(' and `Delivery Note Store Key` in (%s)', join(',', $user->stores));
@@ -1497,7 +1513,7 @@ function search_delivery_notes($db, $account, $memcache_ip, $data) {
 
 		$sql=sprintf("select `Delivery Note Key`,`Delivery Note ID` from `Delivery Note Dimension` where true $where_store and `Delivery Note ID` like '%s%%'  order by `Delivery Note Key` desc limit 10 ",
 			$q);
-			
+
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_array($res)) {
 			if ($row['Delivery Note ID']==$q)
@@ -1542,9 +1558,9 @@ function search_delivery_notes($db, $account, $memcache_ip, $data) {
 
 		$sql=sprintf("select `Delivery Note Key`,`Store Code`,`Delivery Note Store Key`,`Delivery Note ID`,`Delivery Note State` from `Delivery Note Dimension` left join `Store Dimension` on (`Delivery Note Store Key`=`Store Key`) where `Delivery Note Key` in (%s)",
 			$delivery_note_keys);
-			
-			
-			
+
+
+
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_array($res)) {
 
@@ -1598,6 +1614,9 @@ function search_delivery_notes($db, $account, $memcache_ip, $data) {
 				break;
 			}
 
+			if ($data['scope']!='store') {
+				$details='<span style="float:left;min-width:40px">'.$row['Store Code'].'</span> '.$details;
+			}
 
 			//$details.='<span class="padding_left_20">'.$row['Delivery Note Customer Name'].'</span>';
 
@@ -1624,6 +1643,7 @@ function search_delivery_notes($db, $account, $memcache_ip, $data) {
 
 }
 
+
 function search_invoices($db, $account, $memcache_ip, $data) {
 
 	$cache=false;
@@ -1645,7 +1665,7 @@ function search_invoices($db, $account, $memcache_ip, $data) {
 			$where_store=' and false';
 		}
 	} else {
-		if (count($user->stores)==$account->data['Stores']) {
+		if (count($user->stores)==$account->get('Account Stores')) {
 			$where_store='';
 		}else {
 			$where_store=sprintf(' and `Invoice Store Key` in (%s)', join(',', $user->stores));
@@ -1743,15 +1763,16 @@ function search_invoices($db, $account, $memcache_ip, $data) {
 			case 'Partially':
 				$details= _('Partially paid');
 				break;
-			
-
 			default:
 				$details= $row['Invoice Paid'];
 				break;
 			}
 
+			if ($data['scope']!='store') {
+				$details='<span style="float:left;min-width:40px">'.$row['Store Code'].'</span> '.$details;
+			}
 
-			$details.='<span class="padding_left_20">'.$row['Invoice Customer Name'].'</span>';
+			$details.=' <span style="padding-left:20px">'.$row['Invoice Customer Name'].'</span>';
 
 			$results[$row['Invoice Key']]=array(
 				'store'=>$row['Store Code'],
