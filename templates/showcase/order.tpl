@@ -21,7 +21,11 @@
 			<span class="state" style="position:relative;left:5px">{t}Delivery note{/t} <span></i></span></span> 
 		</div>
 		<div class="timestamp">
-			<span class="Deliveries_Public_IDs" style="position:relative;left:5px">&nbsp;{foreach from=$deliveries item=dn}{$dn->get('ID')}{/foreach}&nbsp;</span> 
+			<span class="Deliveries_Public_IDs" style="position:relative;left:5px">&nbsp;
+			{foreach from=$deliveries item=dn name=delivery_notes}
+			<span class="{if $smarty.foreach.delivery_notes.index != 0}hide{/if}" >{$dn->get('ID')}</span>
+			{/foreach} 
+			&nbsp;</span> 
 		</div>
 		<div class="truck">
 		</div>
@@ -31,7 +35,7 @@
 			<span class="state ">{t}Send to warehouse{/t} <span></i></span></span> 
 		</div>
 		<div class="timestamp">
-			<span class="Order_Inputted_Date">&nbsp;{foreach from=$deliveries item=dn}{$dn->get('Creation Date')}{/foreach}&nbsp;</span> 
+			<span class="Order_Inputted_Date">&nbsp;{foreach from=$deliveries item=dn name=delivery_notes}<span class="{if $smarty.foreach.delivery_notes.index != 0}hide{/if}" >{$dn->get('Creation Date')}</span>{/foreach}&nbsp;</span> 
 		</div>
 		<div class="dot">
 		</div>
@@ -41,7 +45,7 @@
 			<span class="state ">{t}Start Picking{/t} <span></i></span></span> 
 		</div>
 		<div class="timestamp">
-			<span class="Order_Inputted_Date">&nbsp;{foreach from=$deliveries item=dn}{$dn->get('Start Picking Date')}{/foreach}&nbsp;</span> 
+			<span class="Order_Inputted_Date">&nbsp;{foreach from=$deliveries item=dn name=delivery_notes}<span class="{if $smarty.foreach.delivery_notes.index != 0}hide{/if}" >{$dn->get('Start Picking Date')}</span>{/foreach}&nbsp;</span> 
 		</div>
 		<div class="dot">
 		</div>
@@ -51,7 +55,7 @@
 			<span class="state ">{t}Packed{/t} <span></i></span></span> 
 		</div>
 		<div class="timestamp">
-			<span class="Order_Inputted_Date">&nbsp;{foreach from=$deliveries item=dn}{$dn->get('Picking and Packing Percentage or Date')}{/foreach}&nbsp;</span> 
+			<span class="Order_Inputted_Date">&nbsp;{foreach from=$deliveries item=dn name=delivery_notes}<span class="{if $smarty.foreach.delivery_notes.index != 0}hide{/if}" >{$dn->get('Picking and Packing Percentage or Date')}</span>{/foreach}&nbsp;</span> 
 		</div>
 		<div class="dot">
 		</div>
@@ -62,7 +66,7 @@
 			<span class="state">{t}Dispatched{/t}</span> 
 		</div>
 		<div class="timestamp">
-			<span>&nbsp;{foreach from=$deliveries item=dn}{$dn->get('Dispatched Date')}{/foreach}&nbsp;</span> 
+			<span>&nbsp;{foreach from=$deliveries item=dn name=delivery_notes}<span class="{if $smarty.foreach.delivery_notes.index != 0}hide{/if}" >{$dn->get('Dispatched Date')}</span>{/foreach}&nbsp;</span> 
 		</div>
 		<div class="dot">
 		</div>
@@ -187,20 +191,14 @@
 		<tr>
 				
 				<td > 
-				<span style=""><i class="fa fa-clipboard fa-fw discreet" aria-hidden="true" ></i> <span class="Order_Number_items">{$order->get('Number Items')}</span></span>
-				<span style="padding-left:20px"><i class="fa fa-truck fa-fw discreet" aria-hidden="true" ></i> <span class="Order_Number_Supplier_Delivery_Items" >{$order->get('Order Number Supplier Delivery Items')}</span></span>
-				<span style="padding-left:20px"><i class="fa fa-map-marker fa-fw discreet" aria-hidden="true" ></i> <span class="Order_Number_Placed_Items" >{$order->get('Number Placed Items')}</span></span>
+				<span style=""><i class="fa fa-cube fa-fw discreet" aria-hidden="true" ></i> <span class="Order_Number_items">{$order->get('Number Items')}</span></span>
+				<span style="padding-left:20px"><i class="fa fa-tag fa-fw  " aria-hidden="true" ></i> <span class="Order_Number_Items_with_Deals" >{$order->get('Number Items with Deals')}</span></span>
+				<span class="error {if $order->get('Order Number Items Out of Stock')==0}hide{/if}" style="padding-left:20px"><i class="fa fa-cube fa-fw  " aria-hidden="true" ></i> <span class="Order_Number_Items_with_Out_of_Stock" >{$order->get('Number Items Out of Stock')}</span></span>
+				<span class="error {if $order->get('Order Number Items Returned')==0}hide{/if}" style="padding-left:20px"><i class="fa fa-thumbs-o-down fa-fw   " aria-hidden="true" ></i> <span class="Order_Number_Items_with_Returned" >{$order->get('Number Items Returned')}</span></span>
 				</td>
 			</tr>
 		
-			<tr>
-				
-				<td class="Order_Weight"  title="{t}Weight{/t}">{$order->get('Weight')}</td>
-			</tr>
-			<tr>
-				
-				<td class="Order_CBM" title="{t}CBM{/t}" >{$order->get('CBM')}</td>
-			</tr>
+			
 		</table>
 		
 	</div>
@@ -228,7 +226,7 @@
 		</div>
 				{foreach from=$deliveries item=dn} 
 				<div class="delivery_node" style="height:30px;clear:both;border-bottom:1px solid #ccc">
-			<span style="float:left;padding-left:10px;padding-top:5px" > <span class="button" onClick="change_view('order/{$order->id}/delivery_note/{$dn->id}')"> <i class="fa fa-truck fa-fw " aria-hidden="true" ></i> {$dn->get('ID')}</span> ({$dn->get('State')}) </span> 
+			<span style="float:left;padding-left:10px;padding-top:5px" > <span class="button" onClick="change_view('order/{$order->id}/delivery_note/{$dn->id}')"> <i class="fa fa-truck fa-fw " aria-hidden="true" ></i> {$dn->get('ID')}</span> ({$dn->get('Abbreviated State')}) </span> 
                 </div>	
 			{/foreach} 
 	    </div>
@@ -253,7 +251,7 @@
 		</div>
 				{foreach from=$invoices item=invoice} 
 				<div class="delivery_node" style="height:30px;clear:both;border-top:1px solid #ccc;border-bottom:1px solid #ccc">
-			<span style="float:left;padding-left:10px;padding-top:5px" > <span class="button" onClick="change_view('{$order->get('Order Parent')|lower}/{$order->get('Order Parent Key')}/delivery/{$invoice->id}')"> <i class="fa fa-file-text-o fa-fw  " aria-hidden="true" ></i> {$invoice->get('Public ID')}</span> ({$invoice->get('State')}) </span> 
+			<span style="float:left;padding-left:10px;padding-top:5px" > <span class="button" onClick="change_view('order/{$order->id}/invoice/{$invoice->id}')"> <i class="fa fa-file-text-o fa-fw  " aria-hidden="true" ></i> {$invoice->get('Public ID')}</span> ({$invoice->get('State')}) </span> 
                 </div>	
 			{/foreach} 
 	    </div>

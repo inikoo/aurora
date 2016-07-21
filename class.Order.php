@@ -1244,7 +1244,7 @@ class Order extends DB_Table {
 
 
 
-		$this->update_number_items();
+
 		$this->update_number_products();
 		$this->update_insurance();
 
@@ -1263,7 +1263,7 @@ class Order extends DB_Table {
 		$this->update_deals_usage();
 
 		$this->update_totals();
-		$this->update_number_items();
+
 		$this->update_number_products();
 
 		$this->apply_payment_from_customer_account();
@@ -1964,7 +1964,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 		if (!$this->skip_update_after_individual_transaction) {
 
-			$this->update_number_items();
+
 			$this->update_number_products();
 			$this->update_insurance();
 
@@ -1984,7 +1984,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 			$this->update_totals();
 
-			$this->update_number_items();
+
 			$this->update_number_products();
 
 			$this->apply_payment_from_customer_account();
@@ -2216,8 +2216,6 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 			case 'Dispatched':
 				return 100;
 				break;
-
-
 			case 'Cancelled':
 				return -10;
 				break;
@@ -2363,9 +2361,9 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 
 		case ('Weight'):
-		
-		    include_once('utils/natural_language.php');
-		
+
+			include_once 'utils/natural_language.php';
+
 			if ($this->data['Order Current Dispatch State']=='Dispatched') {
 				if ($this->data['Order Weight']=='')
 					return "&#8494;" .weight($this->data['Order Dispatched Estimated Weight']);
@@ -2423,6 +2421,16 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 			}
 
 			break;
+
+		case 'Number Items':
+		case 'Number Items Out of Stock':
+		case 'Number Items Returned':
+		case 'Number Items with Deals':
+
+			return number($this->data['Order '.$key]);
+			break;
+
+
 		}
 		$_key = ucwords( $key );
 		if (array_key_exists( $_key, $this->data ))
@@ -3382,6 +3390,58 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 
 	function update_totals() {
+
+		$number_items=0;
+		$number_with_deals=0;
+		$number_with_out_of_stock=0;
+		$number_with_problems=0;
+
+		$sql=sprintf("select 
+		count(*) as number_items,
+		sum(if(`Order Transaction Total Discount Amount`!=0,1,0)) as number_with_deals ,
+		sum(if(`No Shipped Due Out of Stock`!=0,1,0)) as number_with_out_of_stock
+		from `Order Transaction Fact` where `Order Key`=%d  ",
+			$this->id);
+
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$number_items=$row['number_items'];
+				$number_with_deals=$row['number_with_deals'];
+				$number_with_out_of_stock=$row['number_with_out_of_stock'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+		$sql=sprintf("select 
+		count(Distinct `Order Transaction Fact Key`) as number_with_problems
+		from `Order Post Transaction Dimension` where `Order Key`=%d  ",
+			$this->id);
+
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$number_with_problems=$row['number_with_problems'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+		$this->update(
+			array(
+				'Order Number Items'=>$number_items,
+				'Order Number Items with Deals'=>$number_with_deals,
+				'Order Number Items Out of Stock'=>$number_with_out_of_stock,
+				'Order Number Items Returned'=>$number_with_problems
+			)
+		);
+
+
+		return;
 
 		include_once 'class.Account.php';
 
@@ -7974,35 +8034,9 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 	}
 
 
-	function get_number_items($type='ordered') {
-
-		switch ($type) {
-		default:
-			$qty_query=' sum(CEIL(`Order Quantity`))';
-			break;
-
-		}
-
-		$sql=sprintf("select %s as num from `Order Transaction Fact` where `Order Key`=%d  ",
-			$qty_query,
-			$this->id);
-		$res=mysql_query($sql);
-		$number=0;
-		if ($row=mysql_fetch_assoc($res)) {
-			$number=($row['num']==''?0:$row['num']);
-		}
-		return $number;
-	}
 
 
-	function update_number_items() {
-		$this->data['Order Number Items']=$this->get_number_items();
-		$sql=sprintf("update `Order Dimension` set `Order Number Items`=%d where `Order Key`=%d",
-			$this->data['Order Number Items'],
-			$this->id
-		);
-		mysql_query($sql);
-	}
+
 
 
 	function mark_all_transactions_for_refund_to_be_deleted($data) {
@@ -9711,7 +9745,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 
 		$dn_key=0;
-		$this->update_number_items();
+
 		$this->update_number_products();
 		$this->update_insurance();
 
@@ -9731,7 +9765,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 		$this->update_totals();
 
-		$this->update_number_items();
+
 		$this->update_number_products();
 
 		$this->apply_payment_from_customer_account();
@@ -9780,7 +9814,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 
 		$dn_key=0;
-		$this->update_number_items();
+
 		$this->update_number_products();
 		$this->update_insurance();
 
@@ -9800,7 +9834,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 
 		$this->update_totals();
 
-		$this->update_number_items();
+
 		$this->update_number_products();
 
 		$this->apply_payment_from_customer_account();

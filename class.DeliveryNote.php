@@ -502,8 +502,57 @@ class DeliveryNote extends DB_Table {
 				return $this->data['Delivery Note State'];
 				break;
 			}
-
 			break;
+		case ('Abbreviated State'):
+			switch ($this->data['Delivery Note State']) {
+
+			case 'Picker & Packer Assigned':
+				return _('Picker & packer assigned');
+				break;
+			case 'Picking & Packing':
+				return _('Picking & packing');
+				break;
+			case 'Packer Assigned':
+				return _('Packer assigned');
+				break;
+			case 'Ready to be Picked':
+				return _('Waiting');
+				break;
+			case 'Picker Assigned':
+				return _('Picker assigned');
+				break;
+			case 'Picking':
+				return _('Picking');
+				break;
+			case 'Picked':
+				return _('Picked');
+				break;
+			case 'Packing':
+				return _('Packing');
+				break;
+			case 'Packed':
+				return _('Packed');
+				break;
+			case 'Approved':
+				return _('Approved');
+				break;
+			case 'Dispatched':
+				return _('Dispatched');
+				break;
+			case 'Cancelled':
+				return _('Cancelled');
+				break;
+			case 'Cancelled to Restock':
+				return _('Cancelled to restock');
+				break;
+			case 'Packed Done':
+				return _('Packed done');
+				break;
+			default:
+				return $this->data['Delivery Note State'];
+				break;
+			}
+			break;			
 		case('Date'):
 		case('Dispatched Date'):
 			return strftime("%e %b %y %H:%M", strtotime($this->data['Delivery Note Date'].' +0:00'));
