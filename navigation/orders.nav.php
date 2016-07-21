@@ -1448,7 +1448,7 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
 		'title'=>$title,
-		'search'=>array('show'=>true, 'placeholder'=>_('Search orders'))
+		'search'=>array('show'=>true, 'placeholder'=>_('Search invoices'))
 
 	);
 	$smarty->assign('_content', $_content);
