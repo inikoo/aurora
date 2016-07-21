@@ -2363,6 +2363,9 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 
 		case ('Weight'):
+		
+		    include_once('utils/natural_language.php');
+		
 			if ($this->data['Order Current Dispatch State']=='Dispatched') {
 				if ($this->data['Order Weight']=='')
 					return "&#8494;" .weight($this->data['Order Dispatched Estimated Weight']);
