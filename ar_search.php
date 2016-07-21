@@ -45,6 +45,14 @@ case 'search':
 			$data['scope']='stores';
 		}
 		search_customers($db, $account, $memcache_ip, $data);
+	}if ($data['state']['module']=='orders') {
+		if ($data['state']['current_store']) {
+			$data['scope']='store';
+			$data['scope_key']=$data['state']['current_store'];
+		}else {
+			$data['scope']='stores';
+		}
+		search_orders($db, $account, $memcache_ip, $data);
 	}elseif ($data['state']['module']=='products') {
 		if ($data['state']['current_store']) {
 			$data['scope']='store';
@@ -180,7 +188,7 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 			}
 
 
-	$sql=sprintf("select `Agent Key`,`Agent Code` from `Agent Dimension` where `Agent Code` like '%s%%' limit 20 ",
+			$sql=sprintf("select `Agent Key`,`Agent Code` from `Agent Dimension` where `Agent Code` like '%s%%' limit 20 ",
 				$q);
 
 
@@ -424,7 +432,7 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 
 
 		}
-		
+
 		if ($number_agent_keys) {
 
 			$sql=sprintf("select `Agent Key`,`Agent Code`,`Agent Name` from `Agent Dimension`  where `Agent Key` in (%s)",
@@ -1216,6 +1224,188 @@ function search_customers($db, $account, $memcache_ip, $data) {
 				'label'=>highlightkeyword(sprintf('%06d', $row['Customer Key']), $queries ),
 				'details'=>highlightkeyword($name, $queries ),
 				'view'=>sprintf('customers/%d/%d', $row['Customer Store Key'], $row['Customer Key'])
+
+
+
+
+			);
+		}
+		$results_data=array('n'=>count($results), 'd'=>$results);
+		$cache->set($memcache_fingerprint, $results_data, $memcache_time);
+
+
+
+	}
+	$response=array('state'=>200, 'number_results'=>$results_data['n'], 'results'=>$results_data['d'], 'q'=>$q);
+
+	echo json_encode($response);
+
+}
+
+
+function search_orders($db, $account, $memcache_ip, $data) {
+
+
+
+
+	$cache=false;
+	$max_results=10;
+	$user=$data['user'];
+	$queries=trim($data['query']);
+
+	if ($queries=='') {
+		$response=array('state'=>200, 'results'=>0, 'data'=>'');
+		echo json_encode($response);
+		return;
+	}
+
+	if ($data['scope']=='store') {
+		if (in_array($data['scope_key'], $user->stores)) {
+			$stores=$data['scope_key'];
+			$where_store=sprintf(' and `Order Store Key`=%d', $data['scope_key']);
+		}else {
+			$where_store=' and false';
+		}
+	} else {
+		if (count($user->stores)==$account->data['Stores']) {
+			$where_store='';
+		}else {
+			$where_store=sprintf(' and `Order Store Key` in (%s)', join(',', $user->stores));
+		}
+
+		$stores=join(',', $user->stores);
+	}
+	$memcache_fingerprint=$account->get('Account Code').'SEARCH_ORDER'.$stores.md5($queries);
+
+	$cache = new Memcached();
+	$cache->addServer($memcache_ip, 11211);
+
+
+	if (strlen($queries)<=2) {
+		$memcache_time=295200;
+	}if (strlen($queries)<=3) {
+		$memcache_time=86400;
+	}if (strlen($queries)<=4) {
+		$memcache_time=3600;
+	}else {
+		$memcache_time=300;
+
+	}
+
+
+	$results_data=$cache->get($memcache_fingerprint);
+
+
+	if (!$results_data or $cache) {
+
+
+		$candidates=array();
+
+		$q=$queries;
+
+
+
+		$sql=sprintf("select `Order Key`,`Order Public ID` from `Order Dimension` where true $where_store and `Order Public ID` like '%s%%'  order by `Order Key` desc limit 10 ",
+			$q);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_array($res)) {
+			if ($row['Order Public ID']==$q)
+				$candidates[$row['Order Key']]=30;
+			else {
+
+				$len_name=strlen($row['Order Public ID']);
+				$len_q=strlen($q);
+				$factor=$len_q/$len_name;
+				$candidates[$row['Order Key']]=20*$factor;
+			}
+		}
+
+
+
+
+		arsort($candidates);
+
+
+
+		$total_candidates=count($candidates);
+
+		if ($total_candidates==0) {
+			$response=array('state'=>200, 'results'=>0, 'data'=>'');
+			echo json_encode($response);
+			return;
+		}
+
+		$counter=0;
+		$order_keys='';
+		$results=array();
+
+		foreach ($candidates as $key=>$val) {
+			$counter++;
+			$order_keys.=','.$key;
+			$results[$key]='';
+			if ($counter>$max_results) {
+				break;
+			}
+		}
+		$order_keys=preg_replace('/^,/', '', $order_keys);
+
+		$sql=sprintf("select `Order Key`,`Store Code`,`Order Store Key`,`Order Public ID`,`Order Current Dispatch State`,`Order Customer Name` from `Order Dimension` left join `Store Dimension` on (`Order Store Key`=`Store Key`) where `Order Key` in (%s)",
+			$order_keys);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_array($res)) {
+
+
+			switch ($row['Order Current Dispatch State']) {
+			case 'In Process':
+				$details= _('In Process');
+				break;
+			case 'In Process by Customer':
+				$details= _('In Process by Customer');
+				break;
+			case 'Submitted by Customer':
+				$details= _('Submitted by Customer');
+				break;
+			case 'Ready to Pick':
+				$details= _('Ready to Pick');
+				break;
+			case 'Picking & Packing':
+				$details= _('Picking & Packing');
+				break;
+			case 'Packed Done':
+				$details= _('Packed & Checked');
+				break;
+			case 'Ready to Ship':
+				$details= _('Ready to Ship');
+				break;
+			case 'Dispatched':
+				$details= _('Dispatched');
+				break;
+			case 'Unknown':
+				$details= _('Unknown');
+				break;
+			case 'Packing':
+				$details= _('Packing');
+				break;
+			case 'Cancelled':
+				$details= _('Cancelled');
+				break;
+			case 'Suspended':
+				$details= _('Suspended');
+				break;
+
+			default:
+				$details= $row['Order Current Dispatch State'];
+				break;
+			}
+
+
+			$details.='<span class="padding_left_20">'.$row['Order Customer Name'].'</span>';
+
+			$results[$row['Order Key']]=array(
+				'store'=>$row['Store Code'],
+				'label'=>highlightkeyword(sprintf('%s', $row['Order Public ID']), $queries ),
+				'details'=>highlightkeyword($details, $queries ),
+				'view'=>sprintf('orders/%d/%d', $row['Order Store Key'], $row['Order Key'])
 
 
 
