@@ -73,9 +73,18 @@ function change_view(_request, metadata) {
     if (metadata == undefined) {
         metadata = {};
     }
+    
+    
 
     var request = "/ar_views.php?tipo=views&request=" + _request + '&metadata=' + JSON.stringify(metadata) + "&old_state=" + JSON.stringify(state)
-console.log(metadata)
+    
+    if(metadata.tab!=undefined){
+        request=request+'&tab='+metadata.tab;
+    }else if(metadata.subtab!=undefined){
+        request=request+'&subtab='+metadata.subtab;
+    }
+    
+    
     $.getJSON(request, function(data) {
 
         //console.log(data);

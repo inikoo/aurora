@@ -2784,6 +2784,7 @@ function parse_tabs($module, $section, $_data, $modules) {
 		$tab=$modules[$module]['sections'][$section]['subtabs_parent'][$subtab];
 	}
 	elseif (isset($_data['tab'])) {
+
 		$tab=$_data['tab'];
 		$subtab=parse_subtab($module, $section, $tab, $modules);
 	}
@@ -2791,6 +2792,15 @@ function parse_tabs($module, $section, $_data, $modules) {
 
 		if (isset ( $_SESSION['state'][$module][$section]['tab'])   ) {
 			$tab=$_SESSION['state'][$module][$section]['tab'];
+			//Special default tabs
+
+			if ($module=='suppliers') {
+				if ($section=='order') {
+					if ($tab=='supplier.order.all_supplier_parts') {
+						$tab='supplier.order.items';
+					}
+				}
+			}
 
 		}
 		else {

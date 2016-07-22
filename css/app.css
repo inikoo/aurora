@@ -1995,6 +1995,7 @@ input.inputfile {
   background-color: #0f3c4b; }
 
 .timeline_horizontal {
+  padding: 10px 0px 5px 0px;
   border-bottom: 1px solid #ccc;
   font-size: 80%; }
   .timeline_horizontal .timeline {
@@ -2039,7 +2040,7 @@ input.inputfile {
     top: 15px;
     color: #aaa; }
   .timeline_horizontal .dot {
-    padding: 0px 50px;
+    padding: 0px 40px;
     display: flex;
     justify-content: center;
     border-top: 2px solid #D6DCE0;
@@ -2054,6 +2055,8 @@ input.inputfile {
     position: relative;
     transition: all 200ms ease-in;
     min-width: 50px; }
+  .timeline_horizontal.with_time .dot, .timeline_horizontal.with_time .truck {
+    padding: 0px 50px; }
   .timeline_horizontal .truck:after {
     font-family: FontAwesome;
     content: "\f0d1";
