@@ -662,8 +662,6 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'reference',
-		'elements_type'=>each($elements_options['supplier_parts'])['key'],
-		'elements'=>$elements_options['supplier_parts']
 
 	),
 	'supplier.orders'=>array(
