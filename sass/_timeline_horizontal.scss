@@ -1,5 +1,6 @@
 .timeline_horizontal{
 
+padding:10px 0px 5px 0px;
 border-bottom:1px solid #ccc;
 font-size:80%;
 
@@ -53,7 +54,7 @@ font-size:80%;
 
 
 .dot {
-  padding: 0px 50px;
+  padding: 0px 40px;
   display: flex;
   justify-content: center;
   border-top: 2px solid #D6DCE0;
@@ -74,6 +75,14 @@ font-size:80%;
   min-width: 50px;
   
 }
+
+&.with_time{
+.dot,.truck {
+  padding: 0px 50px;
+  }
+
+}
+
 
 .truck:after {
   font-family: FontAwesome;

@@ -339,6 +339,8 @@ case 'views':
 		}
 	}
 
+
+
 	list($state, $response['tabs'])=get_tabs($state, $db, $account, $modules, $user, $smarty);// todo only calculate when is subtabs in the section
 
 
@@ -432,7 +434,7 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state=false, $me
 	$actual_tab=($subtab!=''?$subtab:$tab);
 	$state['tab']=$actual_tab;
 
-
+//print $tab;
 
 	$smarty->assign('data', $state);
 
@@ -1410,6 +1412,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
 
 	);
 
+
 	if ($data['section']=='category') {
 
 		if ($data['_object']->get('Category Scope')=='Product') {
@@ -1483,17 +1486,23 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
 		//print_r($_content);
 
 
-	}elseif ($data['module']=='suppliers' and $data['section']=='order' ) {
-		if ($data['_object']->get('Purchase Order State')=='In Process') {
-			$_content['tabs']['supplier.order.delivery_notes']['class']='hide';
+	}
+	elseif ($data['module']=='suppliers' and $data['section']=='order' ) {
+		if ($data['_object']->get('Purchase Order State')=='InProcess') {
+		
+		//$data['tab']='supplier.order.items';
+		
+		//print_r($data);
+		
+			//$_content['tabs']['supplier.order.delivery_notes']['class']='hide';
 
-			if (isset($_content['tabs']['supplier.order.delivery_notes']['selected']) and  $_content['tabs']['supplier.order.delivery_notes']['selected']) {
-				$_content['tabs']['supplier.order.delivery_notes']['selected']=false;
-				$_content['tabs']['supplier.order.details']['selected']=true;
+			//if (isset($_content['tabs']['supplier.order.delivery_notes']['selected']) and  $_content['tabs']['supplier.order.delivery_notes']['selected']) {
+			//	$_content['tabs']['supplier.order.delivery_notes']['selected']=false;
+			//	$_content['tabs']['supplier.order.details']['selected']=true;
 
-				$data['tab']='supplier.order.details';
+			//	$data['tab']='supplier.order.details';
 
-			}
+		//	}
 
 
 		}
