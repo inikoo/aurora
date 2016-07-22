@@ -405,14 +405,21 @@ class PurchaseOrder extends DB_Table{
 		case 'Number Items':
 			return number($this->data ['Purchase Order Number Items']);
 			break;
+		case 'Number Supplier Delivery Items':
+
+			if ($this->get('State Index')<60) {
+				return '-';
+			}else {
+				return number($this->data ['Purchase Order Number Supplier Delivery Items']);
+			}
+
+			break;	
 		case 'Number Placed Items':
 
-			if ($this->get('State Index')<40) {
-				return '<span class="super_discreet">-</span>';
-			}elseif ($this->get('State Index')==40) {
-				return number($this->data ['Purchase Order Number Placed Items']);
+			if ($this->get('State Index')<80) {
+				return '-';
 			}else {
-				return '<span class="discreet">'.number($this->data ['Purchase Order Number Placed Items']).'</span>';
+				return number($this->data ['Purchase Order Number Placed Items']);
 			}
 
 			break;
