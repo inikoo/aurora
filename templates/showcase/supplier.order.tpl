@@ -16,7 +16,9 @@
 			<span class="state" style="position:relative;left:5px">{t}Delivery{/t} <span></i></span></span> 
 		</div>
 		<div class="timestamp">
-			<span class="Deliveries_Public_IDs" style="position:relative;left:5px">&nbsp;{foreach from=$deliveries item=dn}{$dn->get('Public ID')}{/foreach}&nbsp;</span> 
+			<span class="Deliveries_Public_IDs" style="position:relative;left:5px">&nbsp;{foreach from=$deliveries item=dn name=deliveries}
+			<span i class="{if $smarty.foreach.deliveries.index != 0}hide{/if} index_{$smarty.foreach.deliveries.index}" >{$dn->get('Public ID')}</span>
+			{/foreach}&nbsp;</span> 
 		</div>
 		<div class="truck">
 		</div>
@@ -26,7 +28,9 @@
 			<span class="state ">{t}Inputted{/t} <span></i></span></span> 
 		</div>
 		<div class="timestamp">
-			<span class="Purchase_Order_Inputted_Date">&nbsp;{foreach from=$deliveries item=dn}{$dn->get('Creation Date')}{/foreach}&nbsp;</span> 
+			<span class="Purchase_Order_Inputted_Date">&nbsp;{foreach from=$deliveries item=dn name=deliveries}
+			<span i class="{if $smarty.foreach.deliveries.index != 0}hide{/if} index_{$smarty.foreach.deliveries.index}" >{$dn->get('Creation Date')}</span>
+			{/foreach}&nbsp;</span> 
 		</div>
 		<div class="dot">
 		</div>
@@ -36,7 +40,9 @@
 			<span class="state ">{t}Dispatched{/t} <span></i></span></span> 
 		</div>
 		<div class="timestamp">
-			<span class="Purchase_Order_Dispatched_Date">&nbsp;{foreach from=$deliveries item=dn}{$dn->get('Dispatched Date')}{/foreach}&nbsp;</span> 
+			<span class="Purchase_Order_Dispatched_Date">&nbsp;{foreach from=$deliveries item=dn name=deliveries}
+			<span i class="{if $smarty.foreach.deliveries.index != 0}hide{/if} index_{$smarty.foreach.deliveries.index}" >{$dn->get('Dispatched Date')}</span>
+			{/foreach}&nbsp;</span>  
 		</div>
 		<div class="dot">
 		</div>
@@ -46,7 +52,11 @@
 			<span class="state ">{t}Received{/t}</span> 
 		</div>
 		<div class="timestamp">
-			<span class="Purchase_Order_Received_Date">&nbsp;{foreach from=$deliveries item=dn}{$dn->get('Received Date')}{/foreach}&nbsp;</span> 
+			
+			<span class="Purchase_Order_Received_Date">&nbsp;<span class="Purchase_Order_Received_Date">{$order->get('Received Date')}</span>{foreach from=$deliveries item=dn name=deliveries}
+			<span i class="{if $smarty.foreach.deliveries.index != 0}hide{/if} index_{$smarty.foreach.deliveries.index}" >{$dn->get('Received Date')}</span>
+			{/foreach}&nbsp;</span>
+			
 		</div>
 		<div class="dot">
 		</div>
@@ -56,8 +66,10 @@
 			<span class="state">{t}Checked{/t}</span> 
 		</div>
 		<div class="timestamp">
-			<span>&nbsp;{foreach from=$deliveries item=dn}{$dn->get('Checked Percentage or Date')}{/foreach}&nbsp;</span> 
-		</div>
+		<span class="Purchase_Order_Checked_Date">&nbsp;{foreach from=$deliveries item=dn name=deliveries}
+			<span i class="{if $smarty.foreach.deliveries.index != 0}hide{/if} index_{$smarty.foreach.deliveries.index}" >{$dn->get('Checked Percentage or Date')}</span>
+			{/foreach}&nbsp;</span>  
+			</div>
 		<div class="dot">
 		</div>
 		</li>
@@ -66,7 +78,9 @@
 			<span class="state">{t}Placed{/t}</span> 
 		</div>
 		<div class="timestamp">
-			<span>&nbsp;{foreach from=$deliveries item=dn}{$dn->get('Placed Percentage or Date')}{/foreach}&nbsp;</span> 
+		<span class="Purchase_Order_Placed_Date">&nbsp;{foreach from=$deliveries item=dn name=deliveries}
+			<span i class="{if $smarty.foreach.deliveries.index != 0}hide{/if} index_{$smarty.foreach.deliveries.index}" >{$dn->get('Placed Percentage or Date')}</span>
+			{/foreach}&nbsp;</span>  
 		</div>
 		<div class="dot">
 		</div>

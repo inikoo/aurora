@@ -9,7 +9,7 @@
 
 */
 
-$where="where true  ";
+$where="where `Supplier Part Status`='Available'  ";
 $table="`Supplier Part Dimension` SP  left join `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`) left join `Supplier Dimension` S on (SP.`Supplier Part Supplier Key`=S.`Supplier Key`)  ";
 
 

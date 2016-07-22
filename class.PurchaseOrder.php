@@ -313,10 +313,14 @@ class PurchaseOrder extends DB_Table{
 					return '<span class="discreet"><i class="fa fa-thumb-tack" aria-hidden="true"></i> '.strftime("%e %b %Y", strtotime($this->get('Estimated Receiving Date'))).'</span>';
 				}else {
 
+					$parent=get_object($this->data['Purchase Order Parent'], $this->data['Purchase Order Parent Key']);
+
 					if ($this->data['Purchase Order State']=='InProcess') {
-						$parent=get_object($this->data['Purchase Order Parent'], $this->data['Purchase Order Parent Key']);
-						if ($parent->get($parent->table_name.' Delivery Days') and is_numeric($parent->get($parent->table_name.' Delivery Days'))) {
-							return '<span class="discreet italic">'.strftime("%d-%m-%Y", strtotime('now +'.$parent->get($parent->table_name.' Delivery Days').' days')).'</span>';
+
+
+
+						if ($parent->get($parent->table_name.' Average Delivery Days') and is_numeric($parent->get($parent->table_name.' Average Delivery Days'))) {
+							return '<span class="discreet italic">'.strftime("%d %b %Y", strtotime('now +'.$parent->get($parent->table_name.' Average Delivery Days').' days')).'</span>';
 
 						}else {
 							return '&nbsp;';
@@ -324,11 +328,11 @@ class PurchaseOrder extends DB_Table{
 					}else {
 
 						$parent=get_object($this->data['Purchase Order Parent'], $this->data['Purchase Order Parent Key']);
-						if ($parent->get($parent->table_name.' Delivery Days') and is_numeric($parent->get($parent->table_name.' Delivery Days'))) {
-							return '<span class="discreet italic">'.strftime("%d-%m-%Y", strtotime($this->get('Purchase Order Submitted Date').' +'.$parent->get($parent->table_name.' Delivery Days').' days')).'</span>';
+						if ($parent->get($parent->table_name.' Average Delivery Days') and is_numeric($parent->get($parent->table_name.' Average Delivery Days'))) {
+							return '<span class="discreet italic">'.strftime("%d %b %Y", strtotime($this->get('Purchase Order Submitted Date').' +'.$parent->get($parent->table_name.' Average Delivery Days').' days')).'</span>';
 
 						}else {
-							return '<span class="super_discreet">'._('Unknown').'</class>';
+							return '&nbsp;';
 						}
 					}
 
@@ -413,7 +417,7 @@ class PurchaseOrder extends DB_Table{
 				return number($this->data ['Purchase Order Number Supplier Delivery Items']);
 			}
 
-			break;	
+			break;
 		case 'Number Placed Items':
 
 			if ($this->get('State Index')<80) {
@@ -1194,6 +1198,13 @@ class PurchaseOrder extends DB_Table{
 		case 'Purchase Order Estimated Receiving Date':
 			$this->update_field($field, $value, $options);
 			$this->update_affected_products();
+
+			$this->update_metadata=array(
+				'class_html'=>array(
+					'Purchase_Order_Received_Date'=>$this->get('Received Date'),
+
+				)
+			);
 
 			break;
 		default:

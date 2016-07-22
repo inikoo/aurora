@@ -1514,7 +1514,7 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
 
 
 
-	$title= _('Purchase Order').' <span class="id">'.$object->get('Public ID').'</span>';
+	$title= _('Purchase Order').' <span class="Purchase_Order_Public_ID id">'.$object->get('Public ID').'</span>';
 
 
 	$_content=array(
