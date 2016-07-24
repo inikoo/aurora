@@ -94,6 +94,7 @@ function save_create_delivery(element) {
 
     var object_data = JSON.parse(atob($('#object_showcase div.order').data("object")))
 
+
     var fields_data = {};
 
     fields_data['Supplier Delivery Public ID'] = $('#delivery_number').val()
@@ -136,13 +137,10 @@ function save_create_delivery(element) {
         if (data.state == 200) {
         
         
-            $(element).closest('tr').find('.subtotals').html(data.transaction_data.subtotals)
+            change_view(object_data.order_parent.toLowerCase()+'/'+ object_data.order_parent_key+'/delivery/'+data.new_id,{tab:'supplier.delivery.item'})
 
-            for (var key in data.metadata.class_html) {
-                console.log(key)
-                $('.' + key).html(data.metadata.class_html[key])
-            }
-
+        
+           
 
 
         } else if (data.state == 400) {

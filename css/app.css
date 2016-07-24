@@ -2108,6 +2108,12 @@ input.inputfile {
     transition: all 200ms ease-in; }
   .timeline_horizontal .li.complete .label span {
     color: #888; }
+  .timeline_horizontal .li.cancelled .dot, .timeline_horizontal .li.cancelled .truck {
+    border-top: 2px solid tomato; }
+  .timeline_horizontal .li.cancelled .dot:after {
+    background-color: tomato;
+    border: 1px solid tomato;
+    transition: all 200ms ease-in; }
   @media (min-device-width: 320px) and (max-device-width: 700px) {
     .timeline_horizontal .timeline {
       list-style-type: none;

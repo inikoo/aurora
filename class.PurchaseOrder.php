@@ -298,6 +298,7 @@ class PurchaseOrder extends DB_Table{
 		case 'Agreed Receiving Date':
 		case 'Creation Date':
 		case 'Submitted Date':
+		case 'Cancelled Date':
 			if ($this->data['Purchase Order '.$key]=='')return '';
 			return strftime("%e %b %Y", strtotime($this->data['Purchase Order '.$key].' +0:00'));
 
@@ -1139,31 +1140,6 @@ class PurchaseOrder extends DB_Table{
 	}
 
 
-	function cancel($data) {
-		foreach ($data as $key=>$value) {
-			if (array_key_exists($key, $this->data)) {
-				$this->data[$key]=$value;
-			}
-
-		}
-
-		$sql=sprintf("update `Purchase Order Dimension` set `Purchase Order Cancelled Date`=%s,`Purchase Order Cancel Note`=%s, `Purchase Order State`='Cancelled'   where `Purchase Order Key`=%d"
-			, prepare_mysql($this->data['Purchase Order Cancelled Date'])
-			, prepare_mysql($this->data['Purchase Order Cancel Note'], false)
-			, $this->id);
-		$this->db->exec($sql);
-		//print $sql;
-		$sql=sprintf("update `Purchase Order Transaction Fact` set  `Purchase Order Last Updated Date`=%s `Purchase Order Transaction State`='Cancelled'  where `Purchase Order Key`=%d"
-			, prepare_mysql($data['Purchase Order Cancelled Date'])
-			, $this->id
-		);
-		$this->db->exec($sql);
-
-		$this->update_affected_products();
-
-
-
-	}
 
 
 	function update_estimated_receiving_date($date) {
@@ -1288,6 +1264,24 @@ class PurchaseOrder extends DB_Table{
 				}
 
 				break;
+				
+			case 'Cancelled':
+
+				$this->update_field('Purchase Order Cancelled Date', $date, 'no_history');
+				$this->update_field('Purchase Order Estimated Receiving Date', '', 'no_history');
+				$this->update_field('Purchase Order State', $value, 'no_history');
+
+
+				$history_data=array(
+					'History Abstract'=>_('Purchase order cancelled'),
+					'History Details'=>'',
+					'Action'=>'created'
+				);
+				$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
+
+
+
+				break;	
 
 			case 'Inputted':
 			case 'Dispatched':

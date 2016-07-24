@@ -156,6 +156,17 @@ font-size:80%;
   color: #888;
 }
 
+.li.cancelled .dot, .li.cancelled .truck{
+  border-top: 2px solid $color_error;
+}
+.li.cancelled .dot:after { 
+  background-color: $color_error;
+  border: 1px solid $color_error;
+  transition: all 200ms ease-in;
+}
+
+
+
 
 
 @media (min-device-width: 320px) and (max-device-width: 700px) {
