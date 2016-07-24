@@ -90,6 +90,7 @@ case 'delete':
 
 	delete($account, $db, $user, $editor, $data, $smarty);
 	break;
+
 case 'delete_object_component':
 
 	$data=prepare_values($_REQUEST, array(
@@ -102,6 +103,8 @@ case 'delete_object_component':
 
 	delete_object_component($account, $db, $user, $editor, $data, $smarty);
 	break;
+
+	
 case 'set_as_main':
 
 	$data=prepare_values($_REQUEST, array(
@@ -524,6 +527,7 @@ function delete($account, $db, $user, $editor, $data, $smarty) {
 
 
 }
+
 
 
 function new_object($account, $db, $user, $editor, $data, $smarty) {

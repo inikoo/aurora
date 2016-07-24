@@ -110,6 +110,12 @@ function save_order_operation(element) {
 
             console.log(data)
 
+
+            if(data.value=='Cancelled'){
+                change_view(state.request,{reload_showcase:true})
+            }
+
+
             for (var key in data.update_metadata.class_html) {
                 $('.' + key).html(data.update_metadata.class_html[key])
             }
@@ -320,3 +326,4 @@ function save_item_qty_change(element) {
 
 
 }
+

@@ -1,5 +1,5 @@
 {assign deliveries $order->get_deliveries('objects')} 
-<div class="timeline_horizontal">
+<div class="timeline_horizontal {if $order->get('Purchase Order State')=='Cancelled'}hide{/if}">
 	<ul class="timeline" id="timeline">
 		<li id="submitted_node" class="li {if $order->get('State Index')>=30}complete{/if}"> 
 		<div class="label">
@@ -87,6 +87,35 @@
 		</li>
 	</ul>
 </div>
+<div class="timeline_horizontal  {if $order->get('Purchase Order State')!='Cancelled'}hide{/if}" >
+	<ul class="timeline" id="timeline">
+		<li id="submitted_node" class="li complete"> 
+		<div class="label">
+			<span class="state ">{t}Submitted{/t}</span> 
+		</div>
+		<div class="timestamp">
+			<span class="Purchase_Order_Submitted_Date">&nbsp;{$order->get('Submitted Date')}</span> <span class="start_date">{$order->get('Creation Date')} </span> 
+		</div>
+		<div class="dot">
+		</div>
+		</li>
+		
+		<li id="send_node" class="li  cancelled"> 
+		<div class="label">
+			<span class="state ">{t}Cancelled{/t} <span></i></span></span> 
+		</div>
+		<div class="timestamp">
+			<span class="Cancelled_Date">{$order->get('Cancelled Date')} </span> 
+		</div>
+		<div class="dot">
+		</div>
+		</li>
+		
+		
+		
+		
+	</ul>
+</div>
 <div class="order" style="display: flex;" data-object="{$object_data}">
 	<div class="block" style=" align-items: stretch;flex: 1">
 		<div class="data_container" style="padding:5px 10px">
@@ -123,16 +152,16 @@
 						</table>
 					</div>
 				</div>
-				<div id="cancel_operations" class="order_operation {if $order->get('Purchase Order State')=='InProcess'}hide{/if}">
+				<div id="cancel_operations" class="order_operation {if $order->get('Purchase Order State')!='Submitted'  }hide{/if}">
 					<div class="square_button left" title="{t}Cancel{/t}">
 						<i class="fa fa-minus-circle error " aria-hidden="true" onclick="toggle_order_operation_dialog('cancel')"></i> 
 						<table id="cancel_dialog" border="0" class="order_operation_dialog hide">
-							<tr class="top">
-								<td colspan="2">{t}Cancel purchase order{/t}</td>
+							<tr class="top ">
+								<td class="label" colspan="2">{t}Cancel purchase order{/t}</td>
 							</tr>
-							<tr class="changed">
+							<tr class="changed buttons">
 								<td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('cancel')"></i></td>
-								<td class="aright"><span id="received_save_buttons" class="error save button" onclick="save_order_operation('cancel','Cancelled')"><span class="label">{t}Cancel{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span> </td>
+								<td class="aright"><span data-data='{  "field": "Purchase Order State","value": "Cancelled","dialog_name":"cancel"}'id="cancel_save_buttons" class="error save button" onclick="save_order_operation(this)"><span class="label">{t}Cancel{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span> </td>
 							</tr>
 						</table>
 					</div>
@@ -151,20 +180,7 @@
 						</table>
 					</div>
 				</div>
-				<div id="undo_send_operations" class="order_operation {if $order->get('Purchase Order State')!='Send'}hide{/if}">
-					<div class="square_button left" xstyle="padding:0;margin:0;position:relative;top:-5px" title="{t}Unmark as send{/t}">
-						<span class="fa-stack" onclick="toggle_order_operation_dialog('undo_send')"> <i class="fa fa-plane discreet " aria-hidden="true"></i> <i class="fa fa-ban fa-stack-1x very_discreet error"></i> </span> 
-						<table id="undo_send_dialog" border="0" class="order_operation_dialog hide">
-							<tr class="top">
-								<td colspan="2" class="label">{t}Unmark as send{/t}</td>
-							</tr>
-							<tr class="buttons changed">
-								<td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('undo_send')"></i></td>
-								<td class="aright"><span id="undo_send_save_buttons" class="valid save button" onclick="save_order_operation('undo_send','Submitted')"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span> </td>
-							</tr>
-						</table>
-					</div>
-				</div>
+				
 			</div>
 			<span style="float:left;padding-left:10px;padding-top:5px" class="Purchase_Order_State"> {$order->get('State')} </span> 
 			<div id="forward_operations">
@@ -187,7 +203,7 @@
 		<div id="crete_delivery" class="delivery_node {if ({$order->get('State Index')|intval} < 30 or ($order->get('Purchase Order Ordered Number Items')-$order->get('Purchase Order Number Supplier Delivery Items'))==0)  }hide{/if}" style="height:30px;clear:both;border-top:1px solid #ccc;border-bottom:1px solid #ccc">
 			<div id="back_operations">
 			</div>
-			<span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic"><i class="fa fa-truck  button" aria-hidden="true"></i> {t}Delivery{/t} </span> 
+			<span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic"><i class="fa fa-truck" aria-hidden="true"></i> {t}Delivery{/t} </span> 
 			<div id="forward_operations">
 				<div id="received_operations" class="order_operation {if !($order->get('Purchase Order State')=='Submitted' or  $order->get('Purchase Order State')=='Send') }hide{/if}">
 					<div class="square_button right" style="padding:0;margin:0;position:relative;top:0px" title="{t}Input delivery note{/t}">
@@ -196,11 +212,14 @@
 				</div>
 			</div>
 		</div>
+		<div>
 		{foreach from=$deliveries item=dn} 
 		<div class="delivery_node" style="height:30px;clear:both;border-top:1px solid #ccc;border-bottom:1px solid #ccc">
 			<span style="float:left;padding-left:10px;padding-top:5px"> <span class="button" onclick="change_view('{$order->get('Purchase Order Parent')|lower}/{$order->get('Purchase Order Parent Key')}/delivery/{$dn->id}')"> <i class="fa fa-truck  " aria-hidden="true"></i> {$dn->get('Public ID')}</span> ({$dn->get('State')}) </span> 
 		</div>
+		
 		{/foreach} 
+		</div>
 	</div>
 	<div class="block " style="align-items: stretch;flex: 1 ">
 		<table border="0" class="info_block acenter">
