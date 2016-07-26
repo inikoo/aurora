@@ -189,12 +189,12 @@ case 'views':
 
 				if ($_object->id) {
 					$state['section']='deleted_order';
-					
-					if(!array_key_exists( $state['tab'], $modules[$state['module']]['sections'][$state['section']]['tabs'])){
-										$state['tab']='deleted.supplier.order.history';
+
+					if (!array_key_exists( $state['tab'], $modules[$state['module']]['sections'][$state['section']]['tabs'])) {
+						$state['tab']='deleted.supplier.order.history';
 
 					}
-					
+
 
 				}
 			}
@@ -434,7 +434,7 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state=false, $me
 	$actual_tab=($subtab!=''?$subtab:$tab);
 	$state['tab']=$actual_tab;
 
-//print $tab;
+	//print $tab;
 
 	$smarty->assign('data', $state);
 
@@ -1489,20 +1489,20 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
 	}
 	elseif ($data['module']=='suppliers' and $data['section']=='order' ) {
 		if ($data['_object']->get('Purchase Order State')=='InProcess') {
-		
-		//$data['tab']='supplier.order.items';
-		
-		//print_r($data);
-		
+
+			//$data['tab']='supplier.order.items';
+
+			//print_r($data);
+
 			//$_content['tabs']['supplier.order.delivery_notes']['class']='hide';
 
 			//if (isset($_content['tabs']['supplier.order.delivery_notes']['selected']) and  $_content['tabs']['supplier.order.delivery_notes']['selected']) {
-			//	$_content['tabs']['supplier.order.delivery_notes']['selected']=false;
-			//	$_content['tabs']['supplier.order.details']['selected']=true;
+			// $_content['tabs']['supplier.order.delivery_notes']['selected']=false;
+			// $_content['tabs']['supplier.order.details']['selected']=true;
 
-			//	$data['tab']='supplier.order.details';
+			// $data['tab']='supplier.order.details';
 
-		//	}
+			// }
 
 
 		}
@@ -2281,10 +2281,17 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 		case 'employee':
 			$branch[]=array('label'=>_('Employees'), 'icon'=>'', 'reference'=>'hr');
+			$branch[]=array('label'=>'<span class="id Staff_Alias">'.$state['_object']->get('Staff Alias').'</span>', 'icon'=>'hand-rock-o', 'reference'=>'employee/'.$state['_object']->id);
+			break;
 
-			$branch[]=array('label'=>'<span class="id Staff_Alias">'.$state['_object']->get('Staff Alias').'</span>', 'icon'=>'', 'reference'=>'employee/'.$state['_object']->id);
+		case 'employee.attachment.new':
+			$branch[]=array('label'=>_('Employees'), 'icon'=>'', 'reference'=>'hr');
+			$branch[]=array('label'=>'<span class="id Staff_Alias">'.$state['_parent']->get('Staff Alias').'</span>', 'icon'=>'hand-rock-o', 'reference'=>'employee/'.$state['_parent']->id);
+			$branch[]=array('label'=>_('New attachment'), 'icon'=>'paperclip');
 
 			break;
+
+
 		case 'employee.new':
 			$branch[]=array('label'=>_('Employees'), 'icon'=>'', 'reference'=>'hr');
 			$branch[]=array('label'=>_('New employee'), 'icon'=>'');
@@ -2315,9 +2322,9 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 			$employee=new Staff($state['parent_key']);
 			$branch[]=array('label'=>_('Employees'), 'icon'=>'', 'reference'=>'hr');
 
-			$branch[]=array('label'=>_('Employee').' <span class="id Staff_Alias">'.$employee->get('Staff Alias').'</span>', 'icon'=>'', 'reference'=>'employee/'.$employee->id);
-			$branch[]=array('label'=>_('Attachment').' <span class="id Attachment_Caption">'.$state['_object']->get('Caption').'</span>', 'icon'=>'', 'reference'=>'employee/'.$employee->id.'/attachment/'.$state['_object']->id);
-
+			$branch[]=array('label'=>'<span class="id Staff_Alias">'.$employee->get('Staff Alias').'</span>', 'icon'=>'hand-rock-o', 'reference'=>'employee/'.$employee->id);
+			$branch[]=array('label'=>'<span class="id Attachment_Caption">'.$state['_object']->get('Caption').'</span>', 'icon'=>'paperclip', 'reference'=>'employee/'.$employee->id.'/attachment/'.$state['_object']->id);
+			break;
 		case 'timesheets':
 			$branch[]=array('label'=>_("Employees' calendar"), 'icon'=>'', 'reference'=>'timesheets/day/'.date('Ymd'));
 			if ($state['parent']=='year') {

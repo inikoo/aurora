@@ -273,7 +273,7 @@
 		<tr>
 				
 				<td > 
-				<span style="padding-right:20px"><i class="fa fa-arrow-circle-right fa-fw discreet" aria-hidden="true" ></i> <span>{$delivery->get('Number Items')}</span></span>
+				<span style="padding-right:20px"><i class="fa fa-arrow-circle-right fa-fw discreet" aria-hidden="true" ></i> <span class="Supplier_Delivery_Number_Dispatched_Items" >{$delivery->get('Number Dispatched Items')}</span></span>
 				<span ><i class="fa fa-arrow-circle-down fa-fw discreet" aria-hidden="true" ></i> <span>{$delivery->get('Number Received Items')}</span></span>
 				<span style="padding-left:20px"><i class="fa fa-map-marker fa-fw discreet" aria-hidden="true" ></i> <span>{$delivery->get('Number Placed Items')}</span></span>
 				</td>

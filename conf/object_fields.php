@@ -17,9 +17,19 @@ function get_object_fields($object, $db, $user, $smarty, $options=false) {
 	$account=new Account($db);
 
 	$edit=true;
-	
-	
+
+
 	switch ($object->get_object_name()) {
+
+	case 'Attachment':
+
+		$object_fields=array();
+		if ($options['type']=='employee') {
+			include 'fields/employee.attachment.fld.php';
+		}
+		return $object_fields;
+		break;
+
 	case 'Supplier Delivery':
 		include 'fields/supplier.delivery.fld.php';
 		return $object_fields;
@@ -57,11 +67,11 @@ function get_object_fields($object, $db, $user, $smarty, $options=false) {
 		return $object_fields;
 		break;
 	case 'Agent':
-	
+
 		if (isset($options['type']) and $options['type']=='user') {
 			include 'fields/user.system.fld.php';
 		}else {
-		
+
 			include 'fields/agent.fld.php';
 		}
 		return $object_fields;
@@ -74,7 +84,7 @@ function get_object_fields($object, $db, $user, $smarty, $options=false) {
 
 		if ($options['type']=='profile') {
 			include 'fields/profile.fld.php';
-		}else{
+		}else {
 			include 'fields/user.system.fld.php';
 		}
 		return $object_fields;

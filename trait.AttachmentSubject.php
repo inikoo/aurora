@@ -168,48 +168,35 @@ trait AttachmentSubject {
 		return  $attachment_data;
 	}
 
+	function delete_attachment($attachment_bridge_key) {
 
-	function get_number_attachments_formatted() {
-		$attachments=0;
-
-		if ($this->table_name=='Product' or $this->table_name=='Supplier Product')
-			$subject_key=$this->pid;
-		else
-			$subject_key=$this->id;
-
-		if ($this->table_name=='Product Family') {
-			$subject='Family';
-		}elseif ($this->table_name=='Product Department') {
-			$subject='Department';
-		}else {
-
-			$subject=$this->table_name;
-		}
-
-
-		$sql=sprintf('select count(*) as num from `Attachment Bridge`where `Subject`=%s and `Subject Key`=%d',
-			prepare_mysql($subject),
-			$subject_key
-		);
-
-
-
+		$sql=sprintf('select `Subject Key`,`Attachment Bridge Key` from `Attachment Bridge` where `Attachment Bridge Key`=%d ', $attachment_bridge_key);
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
-				$attachments=number($row['num']);
 
+
+
+				$sql=sprintf('delete from `Attachment Bridge` where `Attachment Bridge Key`=%d ', $attachment_bridge_key);
+				$this->db->exec($sql);
+
+				$attachment=new Attachment('bridge_key',$row['Attachment Bridge Key']);
+				$attachment->editor=$this->editor;
+
+				$attachment->delete();
+				
+
+			}else {
+				$this->error;
+				$this->msg=_('Attachment not found');
 			}
 		}else {
-			print_r($error_info=$this->db->errorInfo());
+			print_r($error_info=$this->db->errorInfo()); print "$sql";
 			exit;
 		}
 
 
-
-
-		return $attachments;
-
 	}
+
 
 
 }

@@ -5,13 +5,12 @@
 <td><span id="result_msg" class="msg success"><i class="fa fa-check"  ></i> {t}Success{/t}</span></td>
 <td>
  
-<span class=" results link" id="create_other" onClick="change_view(state.request)">{t}Add another{/t} <i class="fa fa-plus"></i>  </span> 
-<span class=" results link" id="create_other" onClick="clone_it()">{t}Clone it{/t} <i class="fa fa-flask"></i>  </span> 
+<span class=" results link" onClick="change_view(state.request)">{t}Attach other file{/t} <i class="fa fa-plus"></i>  </span> 
 
 </td>
 </tr>
 <tr class="title">
-<td colspan=2>{t}Attachment{/t} <i  onClick="change_view('{$parent}/{$parent_key}/attachment/{$object->get('Attachment Bridge Key')}')" class="fa fa-link link"></i></td>
+<td colspan=2>{t}Attachment{/t} <i  onClick="change_view('{$parent}/{$parent_key}/attachment/{$object->get('Attachment Bridge Key')}')" class="fa fa-paperclip link"></i></td>
 </tr>
 <tr>
 <td class="label">{$object->get_field_label('Attachment Subject Type')|capitalize}</td><td>{$object->get('Subject Type')}</td>
@@ -40,3 +39,4 @@
 
 
 </div>
+

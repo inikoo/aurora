@@ -8,79 +8,21 @@
  Version 3
 
 */
+
+
+
 include_once 'utils/invalid_messages.php';
-
-
-$options_Attachment_Subject_Type=array(
-	'CV'=>_('Curriculum vitae'),
-	'Contract'=>_('Employment contract'),
-	'Other'=>_('Other'),
-
-);
-$options_yn=array(
-	'Yes'=>_('Yes'), 'No'=>_('No')
-);
-asort($options_Attachment_Subject_Type);
-asort($options_yn);
-
+include_once 'conf/object_fields.php';
 
 $attachment=$state['_object'];
 
-$object_fields=array(
-	array(
-		'label'=>_('Id'),
-		'show_title'=>true,
-		'fields'=>array(
-			array(
-				'id'=>'Attachment_Subject_Type',
-				'edit'=>'option',
-				'value'=>$attachment->get('Attachment Subject Type'),
-				'formatted_value'=>$attachment->get('Subject Type'),
-				'options'=>$options_Attachment_Subject_Type,
-				'label'=>ucfirst($attachment->get_field_label('Attachment Subject Type')),
-				'required'=>true,
-
-				'type'=>'value'
-			),
-
-			array(
-				'id'=>'Attachment_Caption',
-				'edit'=>'string',
-				'value'=>$attachment->get('Attachment Caption'),
-				'formatted_value'=>$attachment->get('Caption'),
-
-				'label'=>$attachment->get_field_label('Attachment Caption'),
-				'invalid_msg'=>get_invalid_message('string'),
-				'required'=>true
-			),
-
-
-		)
-	),
-	array(
-		'label'=>_('Restrictions'),
-		'show_title'=>true,
-		'fields'=>array(
-			array(
-				'id'=>'Attachment_Public',
-				'edit'=>'option',
-				'value'=>$attachment->get('Attachment Public'),
-				'formatted_value'=>$attachment->get('Public'),
-				'options'=>$options_yn,
-				'label'=>ucfirst($attachment->get_field_label('Attachment Public')),
-				'required'=>true,
-
-			)
-		)
-	),
-
-
-
-);
+$object_fields=get_object_fields($attachment, $db, $user, $smarty,array('type'=>'employee'));
 
 $smarty->assign('state', $state);
-$smarty->assign('object_fields', $object_fields);
+$smarty->assign('object', $attachment);
+$smarty->assign('object_name', $attachment->get_object_name());
 
+$smarty->assign('object_fields', $object_fields);
 
 $html=$smarty->fetch('edit_object.tpl');
 
