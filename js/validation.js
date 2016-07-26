@@ -103,7 +103,6 @@ function validate_address(field) {
 
 function client_validation(type, required, value, field) {
 
-//    console.log(type + ' ' + required + ' ' + value + ' ' + field)
     var valid_state = {
         class: 'valid',
         type: ''
@@ -118,7 +117,7 @@ function client_validation(type, required, value, field) {
             if (type == 'dropdown_select') {
 
                 if ($('#' + field + '_dropdown_select_label').val() == '') {
-                    
+
                     return {
                         class: 'invalid',
                         type: 'empty'
@@ -561,9 +560,8 @@ function client_validation(type, required, value, field) {
                 type: 'invalid'
             }
         }
+        var regex = new RegExp('^\\d*\.?\\d{0,6}$');
 
-
-        var regex = new RegExp('^\d*\.?\d{0,6}$');
         if (!regex.test(value)) {
             return {
                 class: 'invalid',
@@ -597,7 +595,7 @@ function client_validation(type, required, value, field) {
         }
 
 
-        var regex = new RegExp('^\d*\.?\d{0,6}$');
+        var regex = new RegExp('^\\d*\.?\\d{0,6}$');
 
 
         if (!regex.test(value)) {
@@ -666,37 +664,37 @@ function validate_barcode(value, min_length, max_length) {
 
 
 
-function validate_number(value,min,max) {
+function validate_number(value, min, max) {
 
-   
+
 
     if (!$.isNumeric(value)) {
-       return {
+        return {
             class: 'invalid',
             type: 'no_numeric'
         }
     }
-    
-    
-    if (min!= undefined && value < min) {
 
-       return {
+
+    if (min != undefined && value < min) {
+
+        return {
             class: 'invalid',
             type: 'negative'
         }
 
     }
-    
-    if (max!= undefined && value >max) {
 
-        return  {
+    if (max != undefined && value > max) {
+
+        return {
             class: 'invalid',
             type: 'max_limit'
         }
 
     }
 
-  
+
 
 }
 
@@ -786,7 +784,7 @@ function server_validation(settings, parent, parent_key, object, key, field, val
 
     }
 
-     console.log(request)
+    console.log(request)
     $.getJSON(request, function(data) {
 
 
