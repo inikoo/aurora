@@ -14,10 +14,11 @@
 
 
 require_once 'class.User.php';
-include_once 'trait.AttachmentSubject.php';
-include_once 'trait.ImageSubject.php';
+require_once 'trait.AttachmentSubject.php';
+require_once 'trait.ImageSubject.php';
 
 class Staff extends DB_Table{
+	use AttachmentSubject;
 	use ImageSubject;
 	function __construct($arg1=false, $arg2=false, $arg3=false) {
 		global $db;
@@ -1233,22 +1234,22 @@ class Staff extends DB_Table{
 					exit;
 				}
 			}
-			
-			if ($this->get('Staff Email')!='') {
-			$sql=sprintf("select `Staff Key` ,`Staff Alias`  from `Staff Dimension` where`Staff Currently Working`='Yes' and `Staff Email`=%s",
-				prepare_mysql($this->get('Staff Email'))
-			);
 
-			if ($result=$this->db->query($sql)) {
-				if ($row = $result->fetch()) {
-					$this->error=true;
-					$this->msg=sprintf(_('%s has same %s'), '<span class="link" onClick="change_view(\'employee/'.$row['Staff Key'].'\')">'.$row['Staff Alias'].'</span>', $this->get_field_label('Staff Email'));
-					return;
+			if ($this->get('Staff Email')!='') {
+				$sql=sprintf("select `Staff Key` ,`Staff Alias`  from `Staff Dimension` where`Staff Currently Working`='Yes' and `Staff Email`=%s",
+					prepare_mysql($this->get('Staff Email'))
+				);
+
+				if ($result=$this->db->query($sql)) {
+					if ($row = $result->fetch()) {
+						$this->error=true;
+						$this->msg=sprintf(_('%s has same %s'), '<span class="link" onClick="change_view(\'employee/'.$row['Staff Key'].'\')">'.$row['Staff Alias'].'</span>', $this->get_field_label('Staff Email'));
+						return;
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
 				}
-			}else {
-				print_r($error_info=$this->db->errorInfo());
-				exit;
-			}
 			}
 
 
@@ -1649,6 +1650,114 @@ class Staff extends DB_Table{
 
 
 		return array($value, $formatted_value);
+
+	}
+
+
+	function delete() {
+
+		include_once 'class.Attachment.php';
+
+
+
+		$timesheet_records=array();
+		$sql=sprintf("select `Timesheet Record Date`,`Timesheet Record Source` from `Timesheet Record Dimension`   where  `Timesheet Record Source`!='System' and  `Timesheet Record Staff Key`=%d  ", $this->id);
+
+		$clockings=array();
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$timesheet_records[]=array($row['Timesheet Record Source'], $row['Timesheet Record Date']);
+			}
+
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+
+
+
+		$data=array('data'=>$this->data,'timesheet_records'=>$timesheet_records);
+		$metadata=json_encode($data);
+
+
+
+
+		$sql=sprintf("insert into `Staff Deleted Dimension`  (`Staff Deleted Key`,`Staff Deleted ID`,`Staff Deleted Alias`,`Staff Deleted Name`,`Staff Deleted Date`,`Staff Deleted Metadata`) values (%d,%s,%s,%s,%s,%s) ",
+			$this->id,
+			prepare_mysql($this->get('Staff ID'),true),
+			prepare_mysql($this->get('Staff Alias'),true),
+			prepare_mysql($this->get('Staff Name'),true),
+			prepare_mysql(gmdate('Y-m-d H:i:s')),
+			prepare_mysql(gzcompress($metadata, 9))
+
+		);
+
+//print $sql;
+
+
+		$stmt =  $this->db->prepare($sql);
+		$stmt->execute();
+
+exit;
+
+
+		$history_data=array(
+			'History Abstract'=>_('Employee deleted'),
+			'History Details'=>'',
+			'Action'=>'deleted'
+		);
+		$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
+
+
+		$sql=sprintf("delete from `Timesheet Record Dimension` where `Timesheet Record Staff Key`=%d  ", $this->id);
+		$this->db->exec($sql);
+
+
+		$sql=sprintf("delete from `Timesheet Dimension` where `Timesheet Staff Key`=%d  ", $this->id);
+		$this->db->exec($sql);
+
+$sql=sprintf("delete from `Staff Role Bridge` where `Staff Key`=%d  ", $this->id);
+		$this->db->exec($sql);
+
+$sql=sprintf("delete from `Staff Supervisor Bridge` where `Staff Key`=%d  ", $this->id);
+		$this->db->exec($sql);
+
+
+
+
+		$sql=sprintf("delete from `Staff Dimension` where `Staff Key`=%d  ", $this->id);
+		$this->db->exec($sql);
+
+
+
+
+
+
+
+
+
+		$sql=sprintf("select `Attachment Bridge Key`,`Attachment Key` from `Attachment Bridge` where `Subject`='Staff' and `Subject Key`=%d",
+			$this->id
+		);
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$sql=sprintf("delete from `Attachment Bridge` where `Attachment Bridge Key`=%d", $row['Attachment Bridge Key']);
+				$this->db->exec($sql);
+				$attachment=new Attachment($row['Attachment Key']);
+				$attachment->delete();
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+
+
+		$this->deleted=true;
+
 
 	}
 

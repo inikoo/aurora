@@ -72,7 +72,7 @@ function process_form_validation(validation, submitting) {
     }
     $('#fields .controls').removeClass('invalid valid potentially_valid').addClass(validation)
 
-   
+
 }
 
 
@@ -176,12 +176,27 @@ function save_new_object(object, form_type) {
             return;
         }
 
+
+
+
+        if (object == 'Attachment') {
+            var ar_file = 'ar_upload.php';
+            var tipo = 'upload_attachment';
+        } else {
+            var ar_file = 'ar_edit.php';
+            var tipo = 'new_object';
+
+        }
+
+
         // used only for debug
-        var request = '/ar_edit.php?tipo=new_object&object=' + object + '&parent=' + $('#fields').attr('parent') + '&parent_key=' + $('#fields').attr('parent_key') + '&fields_data=' + JSON.stringify(fields_data)
+        var request = '/' + ar_file + '.php?tipo=' + tipo + '&object=' + object + '&parent=' + $('#fields').attr('parent') + '&parent_key=' + $('#fields').attr('parent_key') + '&fields_data=' + JSON.stringify(fields_data)
         console.log(request)
-       // return;
+
+
+      //  return;
         //=====
-        form_data.append("tipo", (form_type != '' ? form_type : 'new_object'))
+        form_data.append("tipo", (form_type != '' ? form_type : tipo))
         form_data.append("object", object)
         form_data.append("parent", $('#fields').attr('parent'))
         form_data.append("parent_key", $('#fields').attr('parent_key'))
@@ -189,7 +204,7 @@ function save_new_object(object, form_type) {
 
         var request = $.ajax({
 
-            url: "/ar_edit.php",
+            url: "/" + ar_file,
             data: form_data,
             processData: false,
             contentType: false,
@@ -341,13 +356,13 @@ function save_inline_new_object(trigger) {
         if (data.state == 200) {
 
 
-       //     $('#inline_new_object').addClass('hide')
-       //     $('#icon_' + trigger).addClass('fa-plus')
-       //     $('#icon_' + trigger).removeClass('fa-times')
+            //     $('#inline_new_object').addClass('hide')
+            //     $('#icon_' + trigger).addClass('fa-plus')
+            //     $('#icon_' + trigger).removeClass('fa-times')
             $('#' + field).val('').attr('has_been_valid', 0)
             $('#inline_new_object').addClass('potentially_valid')
 
-toggle_inline_new_object_form(trigger)
+            toggle_inline_new_object_form(trigger)
             $('#inline_new_object_msg').html(data.msg).addClass('success').removeClass('hide')
 
 
@@ -363,8 +378,7 @@ toggle_inline_new_object_form(trigger)
             if (with_elements) get_elements_numbers(rows.tab, rows.parameters)
 
             if (
-            data.metadata != undefined && 
-            data.metadata.updated_showcase_fields!='') {
+            data.metadata != undefined && data.metadata.updated_showcase_fields != '') {
                 for (var key in data.metadata.updated_showcase_fields) {
                     $('.' + key).html(data.metadata.updated_showcase_fields[key])
                 }

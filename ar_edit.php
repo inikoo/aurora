@@ -125,6 +125,14 @@ case 'delete_image':
 
 	delete_image($account, $db, $user, $editor, $data, $smarty);
 	break;
+case 'delete_attachment':
+	$data=prepare_values($_REQUEST, array(
+			'attachment_bridge_key'=>array('type'=>'key'),
+		));
+
+	delete_attachment($account, $db, $user, $editor, $data, $smarty);
+	break;
+
 
 case 'new_object':
 
@@ -1136,6 +1144,11 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 			$updated_data=array();
 		}
 		break;
+		
+	
+	
+	break;	
+		
 	default:
 		$response=array(
 			'state'=>400,
@@ -1220,10 +1233,69 @@ function delete_image($account, $db, $user, $editor, $data, $smarty) {
 		print_r($error_info=$db->errorInfo());
 		exit;
 	}
-
-
-
 }
+
+function delete_attachment($account, $db, $user, $editor, $data, $smarty) {
+
+	include_once 'class.Attachment.php';
+
+
+	$sql=sprintf('select `Subject`,`Subject Key`,`Attachment Key` from `Attachment Bridge` where `Attachment Bridge Key`=%d ', $data['attachment_bridge_key']);
+	if ($result=$db->query($sql)) {
+		if ($row = $result->fetch()) {
+
+//'Staff','Customer Communications','Customer History Attachment','Product History Attachment','Part History Attachment','Part MSDS','Product MSDS','Supplier Product MSDS','Product Info Sheet','Purchase Order History Attachment','Purchase Order','Supplier Delivery Note History Attachment','Supplier Delivery Note','Supplier Invoice History Attachment','Supplier Invoice','Order Note History Attachment','Delivery Note History Attachment','Invoice History Attachment'
+            switch ($row['Subject']) {
+                case 'Customer Communications':
+                case 'Customer History Attachment':
+                    $_object='Customer';
+                    break;
+                   case 'Staff':
+                    $_object='Staff';
+                    $request='employee/'.$row['Subject Key'];
+                    break;  
+                default:
+                    $_object=$row['Subject'];
+                    break;
+            }
+
+			$object=get_object($_object, $row['Subject Key']);
+			$object->editor=$editor;
+
+			if (!$object->id) {
+				$msg= 'object key not found';
+				$response= array('state'=>400, 'msg'=>$msg);
+				echo json_encode($response);
+				exit;
+			}
+
+			$object->delete_attachment($data['attachment_bridge_key']);
+
+			$response= array(
+				'state'=>200,
+				'msg'=>_('Attachment deleted')
+
+			);
+			
+			if(isset($request)){
+			$response['request']=$request;
+			}
+			
+			echo json_encode($response);
+			exit;
+
+		}else {
+			$msg=_('Attachment not found');
+			$response= array('state'=>400, 'msg'=>$msg);
+			echo json_encode($response);
+			exit;
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+}
+
 
 
 function get_available_barcode($db) {

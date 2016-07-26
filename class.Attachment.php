@@ -198,8 +198,10 @@ class Attachment extends DB_Table {
 			return;
 
 		if ($this->data = $this->db->query($sql)->fetch()) {
+			unset($this->data['Attachment Data']);
 			$this->id=$this->data['Attachment Key'];
 		}
+
 
 	}
 
@@ -251,6 +253,9 @@ class Attachment extends DB_Table {
 
 
 	function get($key, $data=false) {
+
+		if (!$this->id)return;
+
 		switch ($key) {
 
 
@@ -401,11 +406,19 @@ class Attachment extends DB_Table {
 	function get_subjects() {
 		$subjects=array();
 		$sql=sprintf('select * from `Attachment Bridge` where `Attachment Key`=%d', $this->id);
-		$res=mysql_query($sql);
 
-		while ($row=mysql_fetch_assoc($res)) {
-			$subjects[]=$row;
+
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$subjects[]=$row;
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 		return $subjects;
 	}
 
@@ -416,10 +429,10 @@ class Attachment extends DB_Table {
 		if ($num_subjects==0 or $force) {
 			$sql=sprintf("delete from `Attachment Dimension` where `Attachment Key`=%d", $this->id);
 
-			mysql_query($sql);
+			$this->db->exec($sql);
 			$sql=sprintf("delete from `Attachment Bridge` where `Attachment Key`=%d", $this->id);
 			mysql_query($sql);
-			$this->deleted=true;
+			$this->db->exec($sql);
 		}
 	}
 
@@ -580,7 +593,7 @@ class Attachment extends DB_Table {
 	}
 
 
-	function update_field_switcher($field, $value, $options='',$metadata='') {
+	function update_field_switcher($field, $value, $options='', $metadata='') {
 		if (is_string($value))
 			$value=_trim($value);
 

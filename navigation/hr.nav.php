@@ -866,7 +866,7 @@ function get_new_employee_attachment_navigation($data, $smarty, $user, $db) {
 	$left_buttons[]=$up_button;
 
 
-	$title= '<span>'.sprintf(_('New attachment for %s'), '<span class="id">'.$employee->get('Name').'</span>').'</span>';
+	$title= '<span>'.sprintf(_('New attachment for %s'), '<span onClick="change_view(\'employee/'.$employee->id.'\')" class="button id">'.$employee->get('Name').'</span>').'</span>';
 
 
 	$_content=array(

@@ -1828,6 +1828,43 @@ function delete_object(element) {
 
 }
 
+function delete_attachment(element) {
+
+
+
+    if ($(element).hasClass('disabled')) {
+        return
+    }
+
+
+
+    if (!$(element).find('i.fa').removeClass('fa-trash')) return;
+
+    $(element).find('i.fa').removeClass('fa-trash').addClass('fa-spinner fa-spin')
+
+    var request = '/ar_edit.php?tipo=delete_attachment&attachment_bridge_key=' + $(element).data('data').attachment_bridge_key
+   
+    $.getJSON(request, function(data) {
+        if (data.state == 200) {
+
+    console.log(data)
+            if (data.request != undefined) {
+                change_view(data.request)
+            } else {
+                change_view(state.request)
+            }
+
+        } else if (data.state == 400) {
+            $(element).find('i.fa').addClass('fa-trash').removeClass('fa-spinner fa-spin')
+
+        }
+
+
+    })
+
+
+}
+
 
 $(document).on("click", "#edit_table", function() {
 

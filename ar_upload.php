@@ -165,7 +165,6 @@ function upload_attachment($account, $db, $user, $editor, $data, $smarty) {
 		case 'Attachment':
 
 
-
 			$object=$parent->add_attachment($data['fields_data']);
 
 			switch ($parent->get_object_name()) {
