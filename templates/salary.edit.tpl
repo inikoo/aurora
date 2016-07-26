@@ -181,7 +181,7 @@ $('#salary').on('click', '#compress_rate_components', function() {
     else var field_type = 'day_of_month'
                 
              var component_validation = validate_field($(obj).attr('id'), $(obj).val(), field_type, true, false)
-             console.log(component_validation)
+          //   console.log(component_validation)
              if(component_validation.class=='invalid' && $(obj).val()==''){
              component_validation.class='potentially_valid'
              }
@@ -246,6 +246,9 @@ function validate_salary_components() {
         class: 'valid',
         type: ''
     }
+    
+   
+    
     if ($('#salary_frequency_monthy').hasClass('selected')) {
         var pay_day_day_of_the_month = $('#pay_day_day_of_the_month');
         if (pay_day_day_of_the_month.hasClass('invalid')) {
@@ -302,7 +305,7 @@ function validate_salary_components() {
             }
         }
     }
-    console.log(validation)
+    //console.log(validation)
     return validation;
 }
 
