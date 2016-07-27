@@ -105,7 +105,7 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'number',
-				'from'=>'',
+		'from'=>'',
 		'to'=>'',
 		'period'=>'all',
 		'elements_type'=>'dispatch',
@@ -1069,7 +1069,23 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'name'
 	),
+	'deleted.employees'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'name'
+	),
 	'contractors'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'name'
+	),
+	'deleted.contractors'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
@@ -1205,7 +1221,22 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'caption'
 	),
-
+	'deleted.employee.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'note'
+	),
+	'hr.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'note'
+	),
 	'timesheet.records'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
@@ -1241,7 +1272,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'object_name'
 	),
-	'employees.uploads'=>array(
+	'hr.uploads'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
 		'sort_order'=>0,
@@ -1463,6 +1494,27 @@ $tab_defaults=array(
 		'period'=>'all',
 
 	),
+
+	'deleted.staff.user.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'note'
+	),
+	'deleted.staff.user.login_history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'ip',
+		'from'=>'',
+		'to'=>'',
+		'period'=>'all',
+
+	),
 	'users.staff.login_history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
@@ -1497,7 +1549,14 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'handle'
 	),
-
+	'account.deleted.users'=>array(
+		'view'=>'privilegies',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'handle'
+	),
 	'billingregion_taxcategory'=>array(
 		'view'=>'overview',
 		'sort_key'=>'billing_region',

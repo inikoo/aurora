@@ -11,7 +11,7 @@
 
 
 
-$tab='employees.uploads';
+$tab='hr.uploads';
 $ar_file='ar_upload_tables.php';
 $tipo='uploads';
 
@@ -33,7 +33,8 @@ $parameters=array(
 
 $smarty->assign('upload_objects','employees');
 
-$smarty->assign('title',_('Uploads'));
+//$smarty->assign('title',_('Uploads'));
+//$smarty->assign('view_position', _('Employee uploads'));
 
 include('utils/get_table_html.php');
 

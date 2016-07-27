@@ -382,6 +382,11 @@ input{
                 &:hover, &.selected > .fa {
                     color: #666;
                 }
+                
+                &.icon_only{
+                padding: 0px 10px 0px 15px;
+                }
+                
             }
             .right {
                 float: right;
@@ -695,11 +700,13 @@ right connector from last child*/
 
 .invalid_value{padding-left:5px}
 
+.padding_left_5{padding-left:5px}
 .padding_left_10{padding-left:10px}
  .padding_left_20{padding-left:20px}
  .padding_left_30{padding-left:30px}
-
- .padding_right_10{padding-right:10px}
+ 
+ .padding_right_5{padding-right:5px}
+.padding_right_10{padding-right:10px}
  .padding_right_20{padding-right:20px}
  .padding_right_30{padding-right:30px}
 

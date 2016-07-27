@@ -2,7 +2,7 @@
 /*
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created: 17 November 2015 at 23:37:02 GMT, Sheffield, UK
+ Created: 27 July 2016 at 13:34:06 GMT+8, Kuala Lumpur, Malaysa
  Copyright (c) 2015, Inikoo
 
  Version 3
@@ -11,9 +11,9 @@
 
 
 
-$tab='exemployees';
+$tab='deleted.employees';
 $ar_file='ar_hr_tables.php';
-$tipo='exemployees';
+$tipo='deleted.employees';
 
 $default=$user->get_tab_defaults($tab);
 
@@ -33,8 +33,9 @@ $parameters=array(
 );
 
 
-$smarty->assign('title', _('Ex employees'));
-$smarty->assign('view_position', _('Ex employees'));
+$smarty->assign('title', _('Deleted employees'));
+$smarty->assign('view_position', _('Deleted employees'));
+
 
 $smarty->assign('tipo', $tipo);
 

@@ -1606,8 +1606,7 @@ $modules=array(
 
 
 
-					'employees.history'=>array('label'=>_('History'), 'icon'=>'road', 'class'=>'right icon_only'),
-					'employees.uploads'=>array('label'=>_('Uploads'), 'icon'=>'upload', 'class'=>'right icon_only'),
+					'deleted.employees'=>array('label'=>_('Deleted employees'), 'icon'=>'trash-o', 'class'=>'right icon_only'),
 
 
 
@@ -1665,7 +1664,18 @@ $modules=array(
 				)
 
 			),
+				'deleted.employee'=>array('type'=>'object',
 
+
+
+				'tabs'=>array(
+					'deleted.employee.history'=>array('label'=>_('History'), 'icon'=>'sticky-note-o'),
+	
+
+				)
+
+			),
+          
 			'employee.new'=>array('type'=>'new_object',
 				'tabs'=>array(
 					'employee.new'=>array('label'=>_('New employee')),
@@ -1770,6 +1780,17 @@ $modules=array(
 				)
 
 			),
+			 'hr.history'=>array(
+				'type'=>'navigation', 'label'=>'', 'icon'=>'road', 'reference'=>'hr/history','class'=>'icon_only',
+				'tabs'=>array(
+										'hr.history'=>array('label'=>_('History'), 'icon'=>'road', 'class'=>''),
+					'hr.uploads'=>array('label'=>_('Uploads'), 'icon'=>'upload', 'class'=>''),
+
+
+				)
+
+
+			),
 
 		)
 	),
@@ -1837,7 +1858,8 @@ $modules=array(
 
 			'users'=>array('type'=>'navigation', 'label'=>_('Users'), 'icon'=>'terminal', 'reference'=>'account/users',
 				'tabs'=>array(
-					'account.users'=>array('label'=>_('Users')),
+					'account.users'=>array('label'=>_('Users categories')),
+					'account.deleted.users'=>array('label'=>_('Deleted users'), 'class'=>'right'),
 				)
 			),
 
@@ -1948,12 +1970,27 @@ $modules=array(
 			'staff.user'=>array('type'=>'object',
 				'tabs'=>array(
 					'staff.user.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
-					'staff.user.history'=>array('label'=>_('History, notes'), 'icon'=>'sticky-note-o'),
 					'staff.user.login_history'=>array('label'=>_('Login history'), 'title'=>_('Login history')),
 					'staff.user.api_keys'=>array('label'=>_('API keys'), 'title'=>_('API keys')),
 
+					'staff.user.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
+
+
 				)
 			),
+
+
+			'deleted.staff.user'=>array('type'=>'object',
+				'tabs'=>array(
+
+					'deleted.staff.user.login_history'=>array('label'=>_('Login history'), 'title'=>_('Login history')),
+					'deleted.staff.user.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only')
+
+				)
+
+			),
+
+
 			'staff.user.api_key.new'=>array('type'=>'new_object',
 				'tabs'=>array(
 					'staff.user.api_key.new'=>array('label'=>_('New API')),

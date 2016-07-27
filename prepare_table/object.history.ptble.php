@@ -111,10 +111,14 @@ elseif ($parameters['parent']=='user') {
 }elseif ($parameters['parent']=='purchase_order') {
 	$where=sprintf(' where   B.`Purchase Order Key`=%d   ', $parameters['parent_key']);
 	$subject='Purchase Order';
+}elseif ($parameters['parent']=='hr') {
+	$where=sprintf(' where   B.`HR Key`=%d   ', $parameters['parent_key']);
+	$subject='HR';
 }else {
 	print_r($parameters);
 	exit('parent not set up '.$parameters['parent']);
 }
+
 
 if (isset($parameters['elements']['type']['items'])) {
 	$elements=$parameters['elements']['type']['items'];
