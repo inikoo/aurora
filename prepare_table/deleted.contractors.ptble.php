@@ -2,7 +2,7 @@
 /*
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Refurbished: 27 July 2016 at 14:15:08 GMT+8, Kuala Lumpur, Malysia
+ Refurbished: 27 July 2016 at 15:32:24 GMT+8, Kuala Lumpur, Malysia
  Copyright (c) 2015, Inikoo
 
  Version 3
@@ -10,7 +10,7 @@
 */
 
 
-$where=" where  `Staff Deleted Type`='Employee' ";
+$where=" where  `Staff Deleted Type`='Contractor' ";
 
 
 

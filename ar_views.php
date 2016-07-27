@@ -216,6 +216,16 @@ case 'views':
 					}
 
 				}
+			}elseif ($state['object']=='contractor') {
+				$_object=new Staff('deleted', $state['key']);
+				$state['_object']=$_object;
+				if ($_object->id) {
+					$state['section']='deleted.contractor';
+					if (!array_key_exists( $state['tab'], $modules[$state['module']]['sections'][$state['section']]['tabs'])) {
+						$state['tab']='deleted.contractor.history';
+					}
+
+				}
 			}
 
 			if (!$_object->id) {
@@ -1222,6 +1232,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case ('contractor'):
 			return get_contractor_navigation($data, $smarty, $user, $db, $account);
 			break;
+		case ('deleted.contractor'):
+			return get_deleted_contractor_navigation($data, $smarty, $user, $db, $account);
+			break;	
 		case ('contractor.new'):
 			return get_new_contractor_navigation($data, $smarty, $user, $db, $account);
 			break;
@@ -2345,6 +2358,10 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 			$branch[]=array('label'=>_('New system user'), 'icon'=>'');
 
 			break;
+		case 'deleted.contractor':
+			$branch[]=array('label'=>_('Deleted contractors'), 'icon'=>'', 'reference'=>'hr/deleted_contractors');
+			$branch[]=array('label'=>'<span class="id Staff_Alias">'.$state['_object']->get('Staff Alias').'</span> <i class="fa fa-trash-o padding_left_5" aria-hidden="true"></i> ', 'icon'=>'hand-spock-o', 'reference'=>'employee/'.$state['_object']->id);
+			break;	
 		case 'contractor.new':
 			$branch[]=array('label'=>_('Contractors'), 'icon'=>'', 'reference'=>'hr/contractors');
 			$branch[]=array('label'=>_('New contractor'), 'icon'=>'hand-spock-o');

@@ -1264,6 +1264,14 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'note'
 	),
+		'deleted.contractor.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'note'
+	),
 	'upload.employees'=>array(
 		'view'=>'overview',
 		'sort_key'=>'row',
