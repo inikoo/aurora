@@ -112,7 +112,7 @@ elseif ($parameters['parent']=='user') {
 	$where=sprintf(' where   B.`Purchase Order Key`=%d   ', $parameters['parent_key']);
 	$subject='Purchase Order';
 }elseif ($parameters['parent']=='hr') {
-	$where=sprintf(' where   B.`HR Key`=%d   ', $parameters['parent_key']);
+	$where=sprintf(' where  true ');
 	$subject='HR';
 }else {
 	print_r($parameters);

@@ -190,7 +190,7 @@ function save_new_object(object, form_type) {
 
 
         // used only for debug
-        var request = '/' + ar_file + '.php?tipo=' + tipo + '&object=' + object + '&parent=' + $('#fields').attr('parent') + '&parent_key=' + $('#fields').attr('parent_key') + '&fields_data=' + JSON.stringify(fields_data)
+        var request = '/' + ar_file +'?tipo=' + tipo + '&object=' + object + '&parent=' + $('#fields').attr('parent') + '&parent_key=' + $('#fields').attr('parent_key') + '&fields_data=' + JSON.stringify(fields_data)
         console.log(request)
 
 

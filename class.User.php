@@ -884,6 +884,9 @@ class User extends DB_Table {
 
 
 	function delete_website($to_delete, $history=true) {
+	
+	include_once('class.Site.php');
+	
 		$changed=0;
 		foreach ($to_delete as $website_key) {
 
