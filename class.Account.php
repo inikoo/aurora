@@ -58,6 +58,22 @@ class Account extends DB_Table{
 
 
 		switch ($key) {
+		case('Locale'):
+
+
+			include 'utils/available_locales.php';
+
+			if (array_key_exists($this->data['Account Locale'].'.UTF-8', $available_locales)) {
+				$locale=$available_locales[$this->data['Account Locale'].'.UTF-8'];
+
+				return $locale['Language Name'].($locale['Language Name']!=$locale['Language Original Name']?' ('.$locale['Language Original Name'].')':'');
+			}else {
+
+				return $this->data['Account Locale'];
+			}
+			break;
+
+
 		case 'Setup Metadata':
 			return json_decode($this->data['Account Setup Metadata'], true);
 			break;
@@ -599,12 +615,12 @@ class Account extends DB_Table{
 			unset($data['Agent Contact Address administrativeArea']);
 		}
 
-		
+
 		//exit;
 
 		$agent= new Agent('new', $data, $address_fields);
 
-      
+
 
 
 		if ($agent->id) {

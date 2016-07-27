@@ -226,7 +226,7 @@ class User extends DB_Table {
 
 			if ($result=$this->db->query($sql)) {
 				if ($row = $result->fetch()) {
-					$this->msg=_('The staff member with id ')." ".$data['User Parent Key']." "._("is already in the database as")." ".$row['User Handle'];
+					$this->msg=_('Employee has already a user set up');
 					return;
 				}
 			}else {

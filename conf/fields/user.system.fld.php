@@ -274,8 +274,8 @@ $object_fields[]=array(
 		array(
 			'id'=>'User_Preferred_Locale',
 			'edit'=>'option',
-			'value'=>$object->get('User Preferred Locale') ,
-			'formatted_value'=>$object->get('Preferred Locale') ,
+			'value'=>($new?$account->get('Account Locale'):$object->get('User Preferred Locale')) ,
+			'formatted_value'=>($new?$account->get('Locale'):$object->get('Preferred Locale')) ,
 			'label'=>ucfirst($object->get_field_label('Preferred Locale')),
 			'options'=>$options_locales,
 			'type'=>'value'
