@@ -808,6 +808,8 @@ class Staff extends DB_Table{
 			return false;
 
 		}
+		
+	
 
 		if (!array_key_exists('User Password', $data) or $data['User Password']=='' ) {
 			include_once 'utils/password_functions.php';
@@ -821,9 +823,13 @@ class Staff extends DB_Table{
 
 		}
 
+	
+
 		$data['User Parent Key']=$this->id;
 		$data['User Alias']=$this->get('Name');
 		$user= new User('find', $data, 'create');
+		
+		
 		$this->get_user_data();
 		$this->create_user_error=$user->error;
 		$this->create_user_msg=$user->msg;
@@ -1585,17 +1591,15 @@ class Staff extends DB_Table{
 	function get_user_data() {
 
 
-		if ($this->get('Staff Type')=='Employee') {
-			$staff_type='Staff';
+		if ($this->get('Staff Type')=='Contractor') {
+			$staff_type='Contractor';
 		}else {
-			$staff_type=$this->get('Staff Type');
+			$staff_type='Staff';
 		}
 
 		$sql=sprintf('select * from `User Dimension` where `User Type`=%s and `User Parent Key`=%d ',
 			prepare_mysql($staff_type),
 			$this->id);
-
-
 
 		if ($row = $this->db->query($sql)->fetch()) {
 

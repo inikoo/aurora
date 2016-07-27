@@ -982,9 +982,9 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 		include_once 'class.User.php';
 
 		$parent->get_user_data();
-		$parent->create_user($data['fields_data']);
+		$object=$parent->create_user($data['fields_data']);
 
-		if ($parent->create_user_error) {
+		if ($parent->create_user_error or !$object->id ) {
 			$response=array(
 				'state'=>400,
 				'msg'=>$parent->create_user_msg
@@ -999,7 +999,9 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
 		$smarty->assign('account', $account);
-		$smarty->assign('object', $parent);
+		$smarty->assign('parent', $parent);
+
+		$smarty->assign('object', $object);
 
 
 		if ($parent->get_object_name()=='Staff') {
