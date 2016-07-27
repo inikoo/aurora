@@ -10,19 +10,24 @@
  Version 3.0
 */
 
-function get_employee_showcase($data) {
+function get_employee_showcase($data, $smarty, $user, $db) {
 
-    global $smarty;
     
  
     if(!$data['_object']->id){
         return "";
     }
     
+    
     $smarty->assign('employee',$data['_object']);
 
+    if($data['_object']->deleted){
+        return $smarty->fetch('showcase/deleted_employee.tpl');
+
+    }else{
+
     return $smarty->fetch('showcase/employee.tpl');
-    
+    }
 
 
 }

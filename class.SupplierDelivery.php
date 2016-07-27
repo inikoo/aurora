@@ -1753,17 +1753,14 @@ class SupplierDelivery extends DB_Table {
 
 			$operations=array('cancel_operations', 'undo_send_operations', 'received_operations');
 
-			$sql=sprintf('update `Purchase Order Transaction Fact` set `Supplier Delivery Last Updated Date`=%s where `Supplier Delivery Key`=%d ',
+			$sql=sprintf('update `Purchase Order Transaction Fact` set `Supplier Delivery Transaction State`=%s ,`Supplier Delivery Last Updated Date`=%s where `Supplier Delivery Key`=%d ',
+				prepare_mysql($value),
 				prepare_mysql($date),
 				$this->id
 			);
 			$this->db->exec($sql);
 
-			$sql=sprintf('update `Purchase Order Transaction Fact` set `Supplier Delivery Transaction State`=%s where `Supplier Delivery Key`=%d ',
-				prepare_mysql($value),
-				$this->id
-			);
-			$this->db->exec($sql);
+			
 
 
 			break;
@@ -1848,7 +1845,9 @@ class SupplierDelivery extends DB_Table {
 
 
 
-		$sql = sprintf("select  sum(if(`Supplier Delivery Transaction Placed`='Yes',1,0)) as placed_items, sum(if(`Supplier Delivery Transaction Placed`='No',1,0)) as no_placed_items,  sum(`Supplier Delivery Weight`) as  weight,sum(`Supplier Delivery CBM` )as cbm ,  sum( if( `Supplier Delivery Received Quantity` is null,0,1)) as received_items,sum(if(`Purchase Order Key`>0,1,0)) as ordered_items, count(*) num_items,sum(if(`Supplier Delivery Quantity`>0,1,0)) as num_dispatched_items ,sum(`Supplier Delivery Net Amount`) as net,sum(`Supplier Delivery Tax Amount`) as tax from `Purchase Order Transaction Fact` where `Supplier Delivery Key`=%d" ,
+		$sql = sprintf("select  sum(if(`Supplier Delivery Transaction Placed`='Yes',1,0)) as placed_items, sum(if(`Supplier Delivery Transaction Placed`='No',1,0)) as no_placed_items,  sum(`Supplier Delivery Weight`) as  weight,sum(`Supplier Delivery CBM` )as cbm ,  sum( if( `Supplier Delivery Received Quantity` is null,0,1)) as received_items,sum(if(`Purchase Order Key`>0,1,0)) as ordered_items, 
+		sum(if(`Supplier Delivery Quantity`>0,1,0))  num_items,
+		sum(if(`Supplier Delivery Dispatched Quantity`>0,1,0)) as num_dispatched_items ,sum(`Supplier Delivery Net Amount`) as net,sum(`Supplier Delivery Tax Amount`) as tax from `Purchase Order Transaction Fact` where `Supplier Delivery Key`=%d" ,
 			$this->id);
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {

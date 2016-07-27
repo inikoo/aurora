@@ -10,7 +10,21 @@
  Version 3.0
 */
 
+include 'utils/available_locales.php';
 
+if (isset($options['new']) and  $options['new'] ) {
+	$new=true;
+}else {
+	$new=false;
+}
+
+
+
+$options_locales=array();
+foreach ($available_locales as $locale) {
+
+	$options_locales[$locale['Locale']]=$locale['Language Name'].($locale['Language Name']!=$locale['Language Original Name']?' ('.$locale['Language Original Name'].')':'');
+}
 
 
 if (isset($options['new']) and  $options['new'] ) {
@@ -23,6 +37,7 @@ $options_yn=array(
 	'Yes'=>_('Yes'), 'No'=>_('No')
 );
 asort($options_yn);
+asort($options_locales);
 
 
 $object_fields=array(
@@ -94,8 +109,8 @@ if (!$new) {
 
 	if (in_array($object->get('User Type'), array('Staff', 'Contractor'))) {
 
-include 'utils/available_locales.php';
-include 'conf/user_groups.php';
+		include 'utils/available_locales.php';
+		include 'conf/user_groups.php';
 
 
 		$employee=get_object($object->get('User Type'), ($object->get('User Parent Key')));
@@ -252,22 +267,51 @@ include 'conf/user_groups.php';
 
 
 $object_fields[]=array(
-		'label'=>_('Preferences'),
-		'show_title'=>true,
-		'class'=>'edit_fields',
-		'fields'=>array(
-			array(
-				'id'=>'User_Preferred_Locale',
-				'edit'=>'option',
-				'value'=>$object->get('User Preferred Locale') ,
-				'formatted_value'=>$object->get('Preferred Locale') ,
-				'label'=>ucfirst($object->get_field_label('Preferred Locale')),
-				'options'=>$options_locales,
-'type'=>'value'
-
-			)
+	'label'=>_('Preferences'),
+	'show_title'=>true,
+	'class'=>'edit_fields',
+	'fields'=>array(
+		array(
+			'id'=>'User_Preferred_Locale',
+			'edit'=>'option',
+			'value'=>$object->get('User Preferred Locale') ,
+			'formatted_value'=>$object->get('Preferred Locale') ,
+			'label'=>ucfirst($object->get_field_label('Preferred Locale')),
+			'options'=>$options_locales,
+			'type'=>'value'
 
 		)
+
+	)
+);
+
+if(!$new){
+
+$operations=array(
+		'label'=>_('Operations'),
+		'show_title'=>true,
+		'class'=>'operations',
+		'fields'=>array(
+
+			array(
+				'id'=>'delete_user',
+				'class'=>'operation',
+				'value'=>'',
+				'label'=>'<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete user").' <i class="fa fa-trash new_button link"></i></span>',
+				'reference'=>'',
+				'type'=>'operation'
+			),
+
+
+
+
+		)
+
 	);
+
+	$object_fields[]=$operations;
+
+}
+
 
 ?>

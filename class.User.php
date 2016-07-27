@@ -306,23 +306,26 @@ class User extends DB_Table {
 
 	function get_data($key, $data, $data2='Staff') {
 		global $_group;
-		if ($key=='handle')
+		if ($key=='handle') {
 			$sql=sprintf("select * from  `User Dimension` where `User Handle`=%s and `User Type`=%s"
 				, prepare_mysql($data)
 				, prepare_mysql($data2)
 			);
-		elseif ($key=='Administrator')
+		}elseif ($key=='Administrator') {
 			$sql=sprintf("select * from  `User Dimension` where  `User Type`='Administrator'"
 
 			);
-		elseif ($key=='Warehouse')
+		}elseif ($key=='Warehouse') {
 			$sql=sprintf("select * from  `User Dimension` where  `User Type`='Warehouse'"
 
 			);
-
-		else
+		}elseif ($key=='deleted') {
+			$this->get_deleted_data($data);
+			return;
+		}
+		else {
 			$sql=sprintf("select * from `User Dimension` where `User Key`=%d", $data);
-
+		}
 
 		if ($this->data = $this->db->query($sql)->fetch()) {
 
@@ -345,6 +348,22 @@ class User extends DB_Table {
 
 
 	}
+
+
+	function get_deleted_data( $tag) {
+
+		$this->deleted=true;
+		$sql=sprintf("select * from `User Deleted Dimension` where `User Deleted Key`=%d", $tag);
+
+		if ($this->data = $this->db->query($sql)->fetch()) {
+			$this->id=$this->data['User Deleted Key'];
+			$deleted_data=json_decode(gzuncompress($this->data['User Deleted Metadata']), true);
+			foreach ( $deleted_data['data'] as $key=>$value) {
+				$this->data[$key]=$value;
+			}
+		}
+	}
+
 
 
 	function update_active($value) {
@@ -522,16 +541,16 @@ class User extends DB_Table {
 
 		switch ($field) {
 		case('Staff Position'):
-		
-		    if(!in_array($this->get('User Type'),array('Staff','Contractor')))return;
-		
+
+			if (!in_array($this->get('User Type'), array('Staff', 'Contractor')))return;
+
 			include_once 'class.Staff.php';
 			$employee=new Staff($this->get('User Parent Key'));
-		
+
 			if ($employee->id) {
 				$employee->update_roles($value);
 			}
-			
+
 			break;
 
 		case('User Groups'):
@@ -1261,7 +1280,7 @@ class User extends DB_Table {
 			break;
 		case 'User Warehouses':
 			$label=_('warehouses');
-			break;		
+			break;
 		default:
 			$label=$field;
 
@@ -2393,6 +2412,59 @@ class User extends DB_Table {
 		return $this->api_key;
 
 	}
+
+
+	function delete() {
+
+		$data=array('data'=>$this->data);
+		$metadata=json_encode($data);
+
+		$sql=sprintf("insert into `User Deleted Dimension`  (`User Deleted Key`,`User Deleted Handle`,`User Deleted Alias`,`User Deleted Type`,`User Deleted Date`,`User Deleted Metadata`) values (%d,%s,%s,%s,%s,%s) ",
+			$this->id,
+			prepare_mysql($this->get('User Handle'), true),
+			prepare_mysql($this->get('User Alias'), true),
+			prepare_mysql($this->get('User Type'), true),
+			prepare_mysql(gmdate('Y-m-d H:i:s')),
+			prepare_mysql(gzcompress($metadata, 9))
+
+		);
+
+		//print $sql;
+
+
+		$stmt =  $this->db->prepare($sql);
+		$stmt->execute();
+
+
+
+		$history_data=array(
+			'History Abstract'=>_('User deleted'),
+			'History Details'=>'',
+			'Action'=>'deleted'
+		);
+		$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
+
+
+
+
+
+
+		$sql=sprintf("delete from `User Dimension` where `User Key`=%d  ", $this->id);
+		$this->db->exec($sql);
+
+
+
+
+
+
+
+
+
+		$this->deleted=true;
+
+
+	}
+
 
 
 }

@@ -55,7 +55,9 @@ case 'api_keys':
 case 'api_requests':
 	api_requests(get_table_parameters(), $db, $user);
 	break;
-
+case 'deleted_users':
+	deleted_users(get_table_parameters(), $db, $user);
+	break;
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
@@ -340,10 +342,9 @@ function users($_data, $db, $user) {
 	echo json_encode($response);
 }
 
+function deleted_users($_data, $db, $user) {
 
-function api_keys($_data, $db, $user) {
-
-	$rtext_label='api_key';
+	$rtext_label='users';
 	include_once 'prepare_table/init.php';
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
@@ -352,50 +353,32 @@ function api_keys($_data, $db, $user) {
 
 	foreach ($db->query($sql) as $data) {
 
-
-
-
-		switch ($data['API Key Scope']) {
-		case 'Timesheet':
-			$scope=_('Timesheet');
+		switch ($data['User Deleted Type']) {
+		case 'Staff':
+			$type=_('Employee');
 			break;
+		case 'Supplier':
+			$type=_('Supplier');
+			break;
+		case 'Contractor':
+			$type=_('Contractor');
+			break;
+		case 'Agent':
+			$type=_('Agent');
+			break;		
 		default:
-			$scope=$data['API Key Scope'];
+			$type=$data['User Deleted Type'];
 			break;
 		}
-
-		switch ($data['API Key Active']) {
-		case 'Yes':
-			$active=_('Active');
-			break;
-		case 'No':
-			$active=_('Suspended');
-			break;
-		default:
-			$active=$data['API Key Active'];
-			break;
-		}
-
-
-
 
 
 		$adata[]=array(
-			'id'=>(integer) $data['API Key Key'],
-			'user_key'=>(integer) $data['API Key User Key'],
-			'handle'=>$data['User Handle'],
-			'scope'=>$scope,
-			'active'=>$active,
-			'formatted_id'=>sprintf('%04d', $data['API Key Key']),
-			'user'=>$data['User Alias'],
-			'from'=>($data['API Key Valid From']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['API Key Valid From'])):''),
-			'to'=>($data['API Key Valid To']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['API Key Valid To'])):''),
-			'valid_ip'=>$data['API Key Allowed IP'],
-			'ok_requests'=>number($data['API Key Successful Requests']),
-			'fail_ip'=>number($data['API Key Successful Requests']),
-			'fail_limit'=>number($data['API Key Successful Requests']),
-			'last_request_date'=>($data['API Key Last Request Date']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['API Key Last Request Date'])):''),
-
+			'id'=>(integer) $data['User Deleted Key'],
+			'handle'=>$data['User Deleted Handle'],
+			'alias'=>$data['User Deleted Alias'],
+			'type'=>$type,
+			'date'=>($data['User Deleted Date']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['User Deleted Date'])):''),
+	
 		);
 
 	}
@@ -413,6 +396,47 @@ function api_keys($_data, $db, $user) {
 	);
 	echo json_encode($response);
 }
+
+
+function api_keys($_data, $db, $user) {
+
+		$rtext_label='session';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+	$adata=array();
+
+	foreach ($db->query($sql) as $data) {
+
+		$adata[]=array(
+			'id'=>(integer) $data['User Log Key'],
+			'user_key'=>(integer) $data['User Key'],
+			'handle'=>$data['User Handle'],
+			'user'=>$data['User Alias'],
+			'parent_key'=>$data['User Parent Key'],
+			'ip'=>$data['IP'],
+			'login_date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Start Date'])),
+			'logout_date'=>($data['Logout Date']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Logout Date'])):''),
+		);
+
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
 
 
 function api_requests($_data, $db, $user) {

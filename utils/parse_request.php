@@ -1971,6 +1971,11 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 				}elseif ( $view_path[0]=='organization') {
 
 					$section='organization';
+				}elseif ($view_path[0]=='history') {
+					$section='hr.history';
+
+
+
 				}elseif ($view_path[0]=='timesheet') {
 					$section='timesheet';
 					$object='timesheet';
@@ -2086,6 +2091,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 					$key=$view_path[0];
 
 					if (isset($view_path[1])) {
+
 						if ($view_path[1]=='timesheet') {
 							$section='timesheet';
 							$object='timesheet';
@@ -2319,12 +2325,20 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 					}
 
 				}
+				elseif ($view_path[0]=='deleted_users') {
+					$section='users';
+					if (!isset($_data['tab'])) {
+						$_data['tab']='account.deleted.users';
+					}
+
+				}
 				elseif ($view_path[0]=='settings') {
 					$section='settings';
 
 
 
 				}
+				
 				elseif ($view_path[0]=='data_sets') {
 					$section='data_sets';
 					if (isset($view_path[1])) {

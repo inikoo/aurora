@@ -287,6 +287,8 @@ input {
           color: #000; }
         #app_main #navigation #address_bar .section:hover, #app_main #navigation #address_bar .section.selected > .fa {
           color: #666; }
+        #app_main #navigation #address_bar .section.icon_only {
+          padding: 0px 10px 0px 15px; }
       #app_main #navigation #address_bar .right {
         float: right;
         border-left: 1px solid #ccc; }
@@ -632,6 +634,9 @@ input {
 .invalid_value {
   padding-left: 5px; }
 
+.padding_left_5 {
+  padding-left: 5px; }
+
 .padding_left_10 {
   padding-left: 10px; }
 
@@ -640,6 +645,9 @@ input {
 
 .padding_left_30 {
   padding-left: 30px; }
+
+.padding_right_5 {
+  padding-right: 5px; }
 
 .padding_right_10 {
   padding-right: 10px; }

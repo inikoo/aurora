@@ -191,14 +191,32 @@ case 'views':
 					$state['section']='deleted_order';
 
 					if (!array_key_exists( $state['tab'], $modules[$state['module']]['sections'][$state['section']]['tabs'])) {
-						$state['tab']='deleted.supplier.order.history';
-
+						$state['tab']='deleted.staff.user.history';
 					}
 
 
 				}
+			}elseif ($state['object']=='user') {
+				$_object=new User('deleted', $state['key']);
+				$state['_object']=$_object;
+				if ($_object->id) {
+					$state['section']='deleted.staff.user';
+					if (!array_key_exists( $state['tab'], $modules[$state['module']]['sections'][$state['section']]['tabs'])) {
+						$state['tab']='deleted.staff.user.history';
+					}
+
+				}
+			}elseif ($state['object']=='employee') {
+				$_object=new Staff('deleted', $state['key']);
+				$state['_object']=$_object;
+				if ($_object->id) {
+					$state['section']='deleted.employee';
+					if (!array_key_exists( $state['tab'], $modules[$state['module']]['sections'][$state['section']]['tabs'])) {
+						$state['tab']='deleted.employee.history';
+					}
+
+				}
 			}
-			//print_r($state);
 
 			if (!$_object->id) {
 				$state=array('old_state'=>$state, 'module'=>'utils', 'section'=>'not_found', 'tab'=>'not_found', 'subtab'=>'', 'parent'=>$state['object'], 'parent_key'=>'', 'object'=>'',
@@ -1195,6 +1213,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case ('employee'):
 			return get_employee_navigation($data, $smarty, $user, $db, $account);
 			break;
+		case ('deleted.employee'):
+			return get_deleted_employee_navigation($data, $smarty, $user, $db, $account);
+			break;
 		case ('employee.new'):
 			return get_new_employee_navigation($data, $smarty, $user, $db, $account);
 			break;
@@ -1227,6 +1248,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 			break;
 		case ('overtimes'):
 			return get_overtimes_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('hr.history'):
+			return get_history_navigation($data, $smarty, $user, $db, $account);
 			break;
 		}
 
@@ -1336,6 +1360,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 			break;
 		case ('staff.user'):
 			return get_staff_user_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('deleted.staff.user'):
+			return get_deleted_staff_user_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('suppliers.user'):
 			return get_supplierss_user_navigation($data, $smarty, $user, $db, $account);
@@ -2277,11 +2304,17 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 		case 'contractors':
 			$branch[]=array('label'=>_('Contractors'), 'icon'=>'hand-spock-o', 'reference'=>'hr/contractors');
 			break;
-
+		case 'hr.history':
+			$branch[]=array('label'=>_('Manpower history'), 'icon'=>'', 'reference'=>'hr/history');
+			break;
 
 		case 'employee':
 			$branch[]=array('label'=>_('Employees'), 'icon'=>'', 'reference'=>'hr');
 			$branch[]=array('label'=>'<span class="id Staff_Alias">'.$state['_object']->get('Staff Alias').'</span>', 'icon'=>'hand-rock-o', 'reference'=>'employee/'.$state['_object']->id);
+			break;
+		case 'deleted.employee':
+			$branch[]=array('label'=>_('Deleted employees'), 'icon'=>'', 'reference'=>'hr/deleted_employees');
+			$branch[]=array('label'=>'<span class="id Staff_Alias">'.$state['_object']->get('Staff Alias').'</span> <i class="fa fa-trash-o padding_left_5" aria-hidden="true"></i> ', 'icon'=>'hand-rock-o', 'reference'=>'employee/'.$state['_object']->id);
 			break;
 
 		case 'employee.attachment.new':
@@ -2308,13 +2341,13 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 			break;
 		case 'employee.user.new':
 			$branch[]=array('label'=>_('Employees'), 'icon'=>'', 'reference'=>'hr');
-			$branch[]=array('label'=>'<span class="id Staff_Alias">'.$state['_parent']->get('Staff Alias').'</span>', 'icon'=>'', 'reference'=>'employee/'.$state['_parent']->id);
+			$branch[]=array('label'=>'<span class="id Staff_Alias">'.$state['_parent']->get('Staff Alias').'</span>', 'icon'=>'hand-rock-o', 'reference'=>'employee/'.$state['_parent']->id);
 			$branch[]=array('label'=>_('New system user'), 'icon'=>'');
 
 			break;
 		case 'contractor.new':
 			$branch[]=array('label'=>_('Contractors'), 'icon'=>'', 'reference'=>'hr/contractors');
-			$branch[]=array('label'=>_('New contractor'), 'icon'=>'');
+			$branch[]=array('label'=>_('New contractor'), 'icon'=>'hand-spock-o');
 			break;
 
 		case 'employee.attachment':
@@ -2814,6 +2847,14 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
 			$branch[]=array('label'=>'<span id="id">'.$state['_object']->get('User Handle').'</span>', 'icon'=>'terminal', 'reference'=>'account/user/'.$state['_object']->id);
+
+		}elseif ($state['section']=='deleted.staff.user') {
+			$branch[]=array('label'=>_('Deteted users'), 'icon'=>'', 'reference'=>'account/deleted_users');
+
+
+
+
+			$branch[]=array('label'=>'<span id="id">'.$state['_object']->get('User Handle').'</span>  <i class="fa fa-trash-o padding_left_5" aria-hidden="true"></i> ', 'icon'=>'terminal', 'reference'=>'account/user/'.$state['_object']->id);
 
 		}elseif ($state['section']=='settings') {
 			$branch[]=array('label'=>_('Settings'), 'icon'=>'cog', 'reference'=>'account/settings');

@@ -60,7 +60,9 @@ case 'days':
 case 'timesheets.employees':
 	timesheets_employees(get_table_parameters(), $db, $user);
 	break;
-
+case 'deleted.employees':
+	deleted_employees(get_table_parameters(), $db, $user, 'current');
+	break;
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
@@ -952,6 +954,43 @@ function timesheets_employees($_data, $db, $user) {
 	echo json_encode($response);
 }
 
+function deleted_employees($_data, $db, $user) {
+
+	$rtext_label='deleted employee';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+	$adata=array();
+
+	foreach ($db->query($sql) as $data) {
+
+	
+
+		$adata[]=array(
+			'id'=>(integer) $data['Staff Deleted Key'],
+			'employee_id'=>$data['Staff Deleted ID'],
+			'alias'=>$data['Staff Deleted Alias'],
+			'name'=>$data['Staff Deleted Name'],
+			'date'=>($data['Staff Deleted Date']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Staff Deleted Date'])):''),
+	
+		);
+
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
 
 
 ?>

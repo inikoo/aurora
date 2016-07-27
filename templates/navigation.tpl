@@ -2,7 +2,7 @@
  <div id="address_bar" >
 	<div id="section_links" class="{if isset($_content.sections_class)}{$_content.sections_class}{/if} {if count($_content.sections)<=1}hide{/if}">
 		{foreach from=$_content.sections|@array_reverse item=section_link } 
-		<div {if isset($section_link.id) and $section_link.id }id="{$section_link.id}"{/if} class="section right  {if isset($section_link.selected) and $section_link.selected}selected{/if}"  {if isset($section_link.reference) and $section_link.reference!=''}onclick="change_view('{$section_link.reference}')"{/if}  title="{if isset($section_link.title)}{$section_link.title}{else}{$section_link.label}{/if}">
+		<div {if isset($section_link.id) and $section_link.id }id="{$section_link.id}"{/if} class="section right {if isset($section_link.class)}{$section_link.class}{/if} {if isset($section_link.selected) and $section_link.selected}selected{/if}"  {if isset($section_link.reference) and $section_link.reference!=''}onclick="change_view('{$section_link.reference}')"{/if}  title="{if isset($section_link.title)}{$section_link.title}{else}{$section_link.label}{/if}">
 			{if $section_link.icon!=''}<i class="fa fa-{$section_link.icon} "></i>{/if} <span class="section_label"> {$section_link.label}</span> 
 		</div>
 		{/foreach} 

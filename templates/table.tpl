@@ -306,6 +306,9 @@ var selected_checkbox={}
 {if isset($title)}
 $('#nav_title').html("{$title}")
 {/if}
+{if isset($view_position)}
+$('#view_position').html("{$view_position}")
+{/if}
 
 var HtmlCell = Backgrid.HtmlCell = Backgrid.Cell.extend({
 

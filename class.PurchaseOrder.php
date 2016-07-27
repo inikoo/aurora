@@ -944,7 +944,7 @@ class PurchaseOrder extends DB_Table{
 			$history_data=array(
 				'History Abstract'=>_('Purchase order deleted'),
 				'History Details'=>'',
-				'Action'=>'created'
+				'Action'=>'deleted'
 			);
 			$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
 

@@ -364,3 +364,12 @@ export `Purchase Order Transaction Fact` `Purchase Order Dimension` and `Supplie
 
 
 ALTER TABLE `Inventory Transaction Fact` CHANGE `Note` `Note` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+
+CREATE TABLE IF NOT EXISTS `HR History Bridge` (
+  `HR Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Notes'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
