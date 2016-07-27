@@ -230,9 +230,9 @@ function get_employee_navigation($data, $smarty, $user, $db) {
 
 
 
-				$sql=sprintf("select `Staff Name` object_name,SD.`Staff Key` as object_key from $table   $where $wheref
+				$sql=sprintf("select `Staff Name` object_name,SD.`Staff Key` as object_key from  %s  
 	                and ($_order_field < %s OR ($_order_field = %s AND SD.`Staff Key` < %d))  order by $_order_field desc , SD.`Staff Key` desc limit 1",
-
+                    "$table   $where $wheref",
 					prepare_mysql($_order_field_value),
 					prepare_mysql($_order_field_value),
 					$object->id
@@ -250,8 +250,9 @@ function get_employee_navigation($data, $smarty, $user, $db) {
 
 
 
-				$sql=sprintf("select `Staff Name` object_name,SD.`Staff Key` as object_key from $table   $where $wheref
+				$sql=sprintf("select `Staff Name` object_name,SD.`Staff Key` as object_key from %s  
 	                and ($_order_field  > %s OR ($_order_field  = %s AND SD.`Staff Key` > %d))  order by $_order_field   , SD.`Staff Key`  limit 1",
+					 "$table   $where $wheref",
 					prepare_mysql($_order_field_value),
 					prepare_mysql($_order_field_value),
 					$object->id
