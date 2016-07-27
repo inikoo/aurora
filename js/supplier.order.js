@@ -137,7 +137,7 @@ function save_create_delivery(element) {
         if (data.state == 200) {
         
         
-            change_view(object_data.order_parent.toLowerCase()+'/'+ object_data.order_parent_key+'/delivery/'+data.new_id,{tab:'supplier.delivery.item'})
+            change_view(object_data.order_parent.toLowerCase()+'/'+ object_data.order_parent_key+'/delivery/'+data.new_id,{tab:'supplier.delivery.items'})
 
         
            

@@ -1602,15 +1602,7 @@ $modules=array(
 
 				'tabs'=>array(
 					'employees'=>array('label'=>_('Employees')),
-
-
-
-
 					'deleted.employees'=>array('label'=>_('Deleted employees'), 'icon'=>'trash-o', 'class'=>'right icon_only'),
-
-
-
-
 					'exemployees'=>array('label'=>_('Ex employees'), 'title'=>_('Ex Employees'), 'class'=>''),
 
 
@@ -1623,7 +1615,8 @@ $modules=array(
 			'contractors'=>array(
 				'type'=>'navigation', 'label'=>_('Contractors'), 'icon'=>'hand-spock-o', 'reference'=>'hr/contractors',
 				'tabs'=>array(
-					'contractors'=>array('label'=>_('Employees')),
+					'contractors'=>array('label'=>_('Contractors')),
+					'deleted.contractors'=>array('label'=>_('Deleted contractors'), 'icon'=>'trash-o', 'class'=>'right icon_only'),
 
 				)
 
@@ -1723,7 +1716,14 @@ $modules=array(
 				)
 
 			),
+'deleted.contractor'=>array('type'=>'object',
+				'tabs'=>array(
+					'deleted.contractor.history'=>array('label'=>_('History'), 'icon'=>'sticky-note-o'),
+	
 
+				)
+
+			),
 			'contractor.new'=>array('type'=>'new_object',
 				'tabs'=>array(
 					'contractor.new'=>array('label'=>_('New contractor')),

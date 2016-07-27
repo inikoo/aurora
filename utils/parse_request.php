@@ -1935,7 +1935,27 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 				}elseif ( $view_path[0]=='contractors') {
 
 					$section='contractors';
-				}elseif ($view_path[0]=='overtimes') {
+
+					if (!isset($_data['tab'])) {
+						$_data['tab']='contractors';
+					}
+
+				}elseif ($view_path[0]=='deleted_employees') {
+					$section='employees';
+					if (!isset($_data['tab'])) {
+						$_data['tab']='deleted.employees';
+					}
+
+				}elseif ($view_path[0]=='deleted_contractors') {
+					$section='contractors';
+					if (!isset($_data['tab'])) {
+						$_data['tab']='deleted.contractors';
+					}
+
+				}
+
+
+				elseif ($view_path[0]=='overtimes') {
 
 
 					$section='overtimes';
@@ -2023,10 +2043,13 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 				}
 
 			}
+			else {
 
 
-
-
+				if (!isset($_data['tab'])) {
+					$_data['tab']='employees';
+				}
+			}
 			break;
 
 		case 'timesheet':
@@ -2338,7 +2361,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 
 				}
-				
+
 				elseif ($view_path[0]=='data_sets') {
 					$section='data_sets';
 					if (isset($view_path[1])) {
