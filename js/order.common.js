@@ -111,8 +111,10 @@ function save_order_operation(element) {
             console.log(data)
 
 
-            if(data.value=='Cancelled'){
-                change_view(state.request,{reload_showcase:true})
+            if (data.value == 'Cancelled') {
+                change_view(state.request, {
+                    reload_showcase: true
+                })
             }
 
 
@@ -133,57 +135,107 @@ function save_order_operation(element) {
 
             $('.timeline .li').removeClass('complete')
 
-            if (data.update_metadata.state_index >= 30) {
-                $('#submitted_node').addClass('complete')
-            }
 
 
-            if (field == 'Purchase Order State') {
-                if (data.value == 'InProcess') {
-                    $('#crete_delivery').addClass('hide')
-                } else if (data.value == 'Submitted') {
+            if (object == 'supplierdelivery') {
 
-                    if (data.update_metadata.pending_items_in_delivery > 0) {
-                        $('#crete_delivery').removeClass('hide')
+                $('#inputted_node').addClass('complete')
+                $('#purchase_order_node').addClass('complete')
 
-                    } else {
+                if (data.update_metadata.state_index >= 30) {
+                    $('#dispatched_node').addClass('complete')
+                }
+                if (data.update_metadata.state_index >= 40) {
+                    $('#received_node').addClass('complete')
+                }
+
+                if (data.update_metadata.state_index >= 50) {
+                    $('#checked_node').addClass('complete')
+                }
+                if (data.update_metadata.state_index == 100) {
+                    $('#placed_node').addClass('complete')
+
+                    if (state.tab == 'supplier.delivery.items') {
+
+
+                        change_tab('supplier.delivery.items')
+
+                    }
+
+
+                }
+
+
+                if ((dialog_name == 'undo_received' || dialog_name == 'received') && state.tab == 'supplier.delivery.items') {
+
+
+                    change_tab('supplier.delivery.items')
+
+                }
+
+
+
+            } else if (object == 'purchase_order') {
+                if (data.update_metadata.state_index >= 30) {
+                    $('#submitted_node').addClass('complete')
+                }
+
+                if (field == 'Purchase Order State') {
+                    if (data.value == 'InProcess') {
                         $('#crete_delivery').addClass('hide')
+                    } else if (data.value == 'Submitted') {
+
+                        if (data.update_metadata.pending_items_in_delivery > 0) {
+                            $('#crete_delivery').removeClass('hide')
+
+                        } else {
+                            $('#crete_delivery').addClass('hide')
+
+                        }
 
                     }
 
                 }
 
-            }
+                if (state.tab == 'supplier.order.items') {
+                    if (data.value == 'InProcess') {
 
-            if (state.tab == 'supplier.order.items') {
-                if (data.value == 'InProcess') {
+                        grid.columns.findWhere({
+                            name: 'ordered'
+                        }).set("renderable", false)
 
-                    grid.columns.findWhere({
-                        name: 'ordered'
-                    }).set("renderable", false)
+                        grid.columns.findWhere({
+                            name: 'quantity'
+                        }).set("renderable", true)
 
-                    grid.columns.findWhere({
-                        name: 'quantity'
-                    }).set("renderable", true)
+                    } else if (data.value == 'Submitted') {
 
-                } else if (data.value == 'Submitted') {
+                        grid.columns.findWhere({
+                            name: 'ordered'
+                        }).set("renderable", true)
 
-                    grid.columns.findWhere({
-                        name: 'ordered'
-                    }).set("renderable", true)
-
-                    grid.columns.findWhere({
-                        name: 'quantity'
-                    }).set("renderable", false)
+                        grid.columns.findWhere({
+                            name: 'quantity'
+                        }).set("renderable", false)
 
 
+                    }
+
+                } else if (state.tab == 'supplier.order.history' || state.tab == 'supplier.delivery.history') {
+                    rows.fetch({
+                        reset: true
+                    });
                 }
 
-            } else if (state.tab == 'supplier.order.history' || state.tab == 'supplier.delivery.history') {
-                rows.fetch({
-                    reset: true
-                });
+
             }
+
+
+
+
+
+
+
 
 
         } else if (data.state == 400) {
@@ -280,13 +332,45 @@ function save_item_qty_change(element) {
         $(element).removeClass('fa-spinner fa-spin fa-cloud').addClass('fa-plus');
 
         if (data.state == 200) {
-
             input.val(data.transaction_data.qty).removeClass('discreet')
 
             $(element).closest('tr').find('.subtotals').html(data.transaction_data.subtotals)
+            console.log(data)
 
-            console.log('#subtotals_potf_' + data.transaction_data.transaction_key)
-            console.log(data.transaction_data.subtotals)
+
+            $(element).closest('tr').find('.placement').html(data.metadata.placement)
+            $(element).closest('.checked_quantity').find('.checked_qty').attr('ovalue', data.transaction_data.qty)
+
+          
+
+            $('#inputted_node').addClass('complete')
+            $('#purchase_order_node').addClass('complete')
+
+            if (data.metadata.state_index >= 30) {
+                $('#dispatched_node').addClass('complete')
+            }
+            if (data.metadata.state_index >= 40) {
+                $('#received_node').addClass('complete')
+            }
+
+            if (data.metadata.state_index >= 50) {
+                $('#checked_node').addClass('complete')
+            }
+            if (data.metadata.state_index == 100) {
+                $('#placed_node').addClass('complete')
+
+                if (state.tab == 'supplier.delivery.items') {
+
+
+                    change_tab('supplier.delivery.items')
+
+                }
+
+
+            }
+
+
+
 
             for (var key in data.metadata.class_html) {
 
@@ -326,4 +410,3 @@ function save_item_qty_change(element) {
 
 
 }
-

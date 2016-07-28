@@ -813,6 +813,19 @@ $tab_defaults=array(
 		'elements_type'=>each($elements_options['supplier_orders'])['key'],
 		'elements'=>$elements_options['supplier_orders']
 	),
+	'agent.deliveries'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'number',
+		'from'=>'',
+		'to'=>'',
+		'period'=>'all',
+		'elements_type'=>each($elements_options['supplier_deliveries'])['key'],
+		'elements'=>$elements_options['supplier_deliveries']
+	),
 	'warehouses'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',

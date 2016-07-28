@@ -729,6 +729,26 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 
 						}
+						elseif ($view_path[1]=='delivery') {
+							$section='delivery';
+
+							$parent='agent';
+							$parent_key=$view_path[0];
+							$object='supplierdelivery';
+
+							if ( isset($view_path[2]) ) {
+								if (is_numeric($view_path[2])) {
+									$key=$view_path[2];
+
+
+
+
+								}
+
+							}
+
+
+						}
 						else if ($view_path[1]=='user') {
 
 

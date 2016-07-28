@@ -1748,7 +1748,7 @@ function get_delivery_navigation($data, $smarty, $user, $db, $account) {
 
 	//$right_buttons[]=array('icon'=>'share-alt', 'title'=>'{t}Share{/t}');
 
-	$right_buttons[]=array('icon'=>'print', 'title'=>'{t}Print{/t}');
+//	$right_buttons[]=array('icon'=>'print', 'title'=>'{t}Print{/t}');
 
 
 

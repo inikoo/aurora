@@ -30,12 +30,12 @@ switch ($tipo) {
 
 case 'edit_item_in_order':
 	$data=prepare_values($_REQUEST, array(
-	'field'=>array('type'=>'field'),
+			'field'=>array('type'=>'field'),
 			'parent'=>array('type'=>'string'),
 			'parent_key'=>array('type'=>'key'),
 			'item_key'=>array('type'=>'key'),
 			'item_historic_key'=>array('type'=>'key'),
-			'transaction_key'=>array('type'=>'numeric','optional'=>true),
+			'transaction_key'=>array('type'=>'numeric', 'optional'=>true),
 			'qty'=>array('type'=>'numeric'),
 
 		));
@@ -104,7 +104,7 @@ case 'delete_object_component':
 	delete_object_component($account, $db, $user, $editor, $data, $smarty);
 	break;
 
-	
+
 case 'set_as_main':
 
 	$data=prepare_values($_REQUEST, array(
@@ -277,7 +277,7 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 
 		}else {
-		
+
 			$msg='';
 			$formatted_value=$object->get($formatted_field);
 			$action='';
@@ -501,7 +501,7 @@ function delete($account, $db, $user, $editor, $data, $smarty) {
 
 	}
 
-	$object->delete();
+	$request=$object->delete();
 
 	if ($object->deleted) {
 		$response=array('state'=>200);
@@ -521,6 +521,12 @@ function delete($account, $db, $user, $editor, $data, $smarty) {
 						$object->get('Category Parent Key')
 					);
 				}
+			}
+
+		}else {
+
+			if (is_string($request) and $request!='') {
+				$response['request']=$request;
 			}
 
 		}
@@ -680,7 +686,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 			$updated_data=array();
 		}
 		break;
-		case 'SupplierDelivery':
+	case 'SupplierDelivery':
 		include_once 'class.SupplierDelivery.php';
 
 		$data['fields_data']['user']=$user;
@@ -691,7 +697,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 			$pcard='';
 			$updated_data=array();
 		}
-		break;	
+		break;
 	case 'Order':
 		include_once 'class.Order.php';
 		$object=$parent->create_order($data['fields_data']);
@@ -1146,11 +1152,11 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 			$updated_data=array();
 		}
 		break;
-		
-	
-	
-	break;	
-		
+
+
+
+		break;
+
 	default:
 		$response=array(
 			'state'=>400,
@@ -1237,6 +1243,7 @@ function delete_image($account, $db, $user, $editor, $data, $smarty) {
 	}
 }
 
+
 function delete_attachment($account, $db, $user, $editor, $data, $smarty) {
 
 	include_once 'class.Attachment.php';
@@ -1246,20 +1253,20 @@ function delete_attachment($account, $db, $user, $editor, $data, $smarty) {
 	if ($result=$db->query($sql)) {
 		if ($row = $result->fetch()) {
 
-//'Staff','Customer Communications','Customer History Attachment','Product History Attachment','Part History Attachment','Part MSDS','Product MSDS','Supplier Product MSDS','Product Info Sheet','Purchase Order History Attachment','Purchase Order','Supplier Delivery Note History Attachment','Supplier Delivery Note','Supplier Invoice History Attachment','Supplier Invoice','Order Note History Attachment','Delivery Note History Attachment','Invoice History Attachment'
-            switch ($row['Subject']) {
-                case 'Customer Communications':
-                case 'Customer History Attachment':
-                    $_object='Customer';
-                    break;
-                   case 'Staff':
-                    $_object='Staff';
-                    $request='employee/'.$row['Subject Key'];
-                    break;  
-                default:
-                    $_object=$row['Subject'];
-                    break;
-            }
+			//'Staff','Customer Communications','Customer History Attachment','Product History Attachment','Part History Attachment','Part MSDS','Product MSDS','Supplier Product MSDS','Product Info Sheet','Purchase Order History Attachment','Purchase Order','Supplier Delivery Note History Attachment','Supplier Delivery Note','Supplier Invoice History Attachment','Supplier Invoice','Order Note History Attachment','Delivery Note History Attachment','Invoice History Attachment'
+			switch ($row['Subject']) {
+			case 'Customer Communications':
+			case 'Customer History Attachment':
+				$_object='Customer';
+				break;
+			case 'Staff':
+				$_object='Staff';
+				$request='employee/'.$row['Subject Key'];
+				break;
+			default:
+				$_object=$row['Subject'];
+				break;
+			}
 
 			$object=get_object($_object, $row['Subject Key']);
 			$object->editor=$editor;
@@ -1278,11 +1285,11 @@ function delete_attachment($account, $db, $user, $editor, $data, $smarty) {
 				'msg'=>_('Attachment deleted')
 
 			);
-			
-			if(isset($request)){
-			$response['request']=$request;
+
+			if (isset($request)) {
+				$response['request']=$request;
 			}
-			
+
 			echo json_encode($response);
 			exit;
 

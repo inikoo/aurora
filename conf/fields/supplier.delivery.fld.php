@@ -44,6 +44,8 @@ $object_fields=array(
 	),
 );
 
+if($object->get('State Index')<40){
+
 $object_fields[]=array(
 		'label'=>_('Estimated delivery'),
 		'show_title'=>true,
@@ -74,7 +76,7 @@ $object_fields[]=array(
 	);
 
 
-
+}
 $object_fields[]=	array(
 		'label'=>_('Delivery rules'),
 		'show_title'=>true,

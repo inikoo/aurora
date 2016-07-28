@@ -54,17 +54,35 @@ if (isset($parameters['elements_type'])) {
 			$_value=$_value['selected'];
 			if ($_value) {
 				$num_elements_checked++;
-				
+
+				/*
+if ($row['element']=='Submitted' or $row['element']=='Inputted' or $row['element']=='Dispatched') {
+				$element='SubmittedInputtedDispatched';
+			}elseif ($row['element']=='Received' or $row['element']=='Checked') {
+				$element='ReceivedChecked';
+			}else {
+				$element=$row['element'];
+			}
+			if (isset($elements_numbers['state'][$element]))
+				$elements_numbers['state'][$element]+=$row['number'];
+		*/
+
+				if ($_key=='SubmittedInputtedDispatched') {
+					$_elements.=",'Submitted','Inputted','Dispatched'";
+				}elseif ($_key=='ReceivedChecked') {
+					$_elements.=",'Received','Checked'";
+				}else {
+
 					$_elements.=",'".addslashes($_key)."'";
-				
+				}
 			}
 		}
 
 		if ($_elements=='') {
 			$where.=' and false' ;
-		}elseif ($num_elements_checked<6) {
+		}elseif ($num_elements_checked<5) {
 
-		
+
 
 			$_elements=preg_replace('/^,/', '', $_elements);
 
