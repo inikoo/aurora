@@ -3,7 +3,8 @@
  Copyright (c) 2015, Inikoo
  Version 3.0*/
 
-$(document).on('input propertychange', '.received_qty', function(evt) {
+
+$(document).on('input propertychange', '.checked_qty', function(evt) {
 
 delivery_qty_changed(this)
   
@@ -12,7 +13,7 @@ delivery_qty_changed(this)
 
 function delivery_qty_changed(element){
   if ($(element).val() == $(element).attr('ovalue')) {
-        $(element).closest('span').find('i').removeClass('fa-cloud exclamation-circle error').addClass('invisible')
+        $(element).closest('span').find('i').removeClass('fa-cloud exclamation-circle error').addClass('fa-plus')
 
     } else {
 
@@ -31,7 +32,7 @@ function copy_qty(element){
 var qty=$(element).data('metadata').qty
 console.log(qty)
 
-var input=$(element).closest('tr').find('input.received_qty')
+var input=$(element).closest('tr').find('input.checked_qty')
 
 input.val(qty)
 

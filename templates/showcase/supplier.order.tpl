@@ -312,7 +312,7 @@ $('#new_delivery').on('input propertychange', '.new_delivery_field', function(ev
 
 
             $('#'+field_id).removeClass('waiting invalid valid')
-$('#'+field_id).closest('table').find('td.buttons').removeClass('waiting invalid valid')
+            $('#'+field_id).closest('table').find('td.buttons').removeClass('waiting invalid valid')
 
             $('#'+field_id).closest('table').find('td.buttons i').removeClass('fa-spinner fa-spin').addClass('fa-cloud')
 

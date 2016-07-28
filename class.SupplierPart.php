@@ -625,6 +625,10 @@ class SupplierPart extends DB_Table{
 
 	}
 
+    function update_next_supplier_shippment(){
+        
+    }
+
 
 }
 

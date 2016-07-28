@@ -9,16 +9,12 @@
 function set_placement_location(element) {
 
     $(element).closest('tr').find('.location_code').val($(element).find('.code').html())
-
-
     $(element).closest('tr').find('i.save').attr('location_key', $(element).attr('location_key'))
-
-
-
     validate_place_item($(element).closest('tr').find('.place_item'))
-
-
 }
+
+
+
 
 function delayed_on_change_place_qty_field(object, timeout) {
 
@@ -35,7 +31,6 @@ function on_change_place_qty_field(element) {
     var max = element.attr('max')
 
     error = validate_number(element.val(), 0, max);
-
 
     if (!error) {
 
@@ -74,7 +69,7 @@ function delayed_on_change_location_code_field(object, timeout) {
 
 function get_placement_locations_select(object) {
 
-    $('#place_item').removeClass('invalid')
+    object.removeClass('invalid')
 
     var request = '/ar_find.php?tipo=find_object&query=' + fixedEncodeURIComponent(object.val()) + '&scope=locations&state=' + JSON.stringify(state)
     console.log(request)
@@ -83,26 +78,25 @@ function get_placement_locations_select(object) {
 
         var offset = object.offset();
 
-        $('#location_results_container').offset({
-            top: (offset.top + object.outerHeight() - 1),
-            left: offset.left
-        })
+
 
         if (data.number_results > 0) {
             $('#location_results_container').removeClass('hide').addClass('show')
+            $('#location_results_container').offset({
+                top: (offset.top + object.outerHeight() - 1),
+                left: offset.left
+            })
+
         } else {
 
 
 
             $('#location_results_container').addClass('hide').removeClass('show')
-
-            //console.log(data)
-            if ($('#location').val() != '') {
-                $('#place_item').addClass('invalid')
+            if (object.val() != '') {
+                object.addClass('invalid')
             }
 
-            // $('#location').val('')
-            // on_changed_value(field, '')
+
         }
 
 
@@ -112,6 +106,7 @@ function get_placement_locations_select(object) {
 
         for (var result_key in data.results) {
 
+            //console.log(result_key)
             var clone = $("#location_search_result_template").clone()
             clone.prop('id', 'location_result_' + result_key);
             clone.addClass('result').removeClass('hide')
@@ -195,8 +190,8 @@ function place_item(element) {
 
 
     var request = '/ar_edit_stock.php?tipo=place_part&object=' + object + '&key=' + key + '&transaction_key=' + transaction_key + '&part_sku=' + part_sku + '&location_key=' + location_key + '&qty=' + qty
-    console.log(request)
-
+    //  console.log(request)
+    //return;
     //=====
     var form_data = new FormData();
     form_data.append("tipo", 'place_part')
@@ -223,25 +218,73 @@ function place_item(element) {
 
         console.log(data)
 
-        if (state.tab == 'part.stock.transactions') {
-            rows.fetch({
-                reset: true
-            });
-        }
+
 
 
         $(element).addClass('fa-cloud').removeClass('fa-spinner fa-spin')
 
-        var place_item= $('#place_item_' + transaction_key)
-        var tr =place_item.closest('tr')
-        tr.find('.placement_data').html(data.placement)
+        var place_item = $('#place_item_' + transaction_key)
+        var tr = place_item.closest('tr')
+        tr.find('.placement').html(data.update_metadata.placement)
         tr.find('.part_locations').html(data.part_locations)
 
-        if(data.placed=='Yes'){
-        place_item.addClass('hide')
-        }else{
+
+        tr.find('.place_qty').val(data.place_qty)
+        tr.find('.place_qty').attr('ovalue', data.place_qty)
+        tr.find('.place_qty').attr('max', data.place_qty)
+
+
+
+        $('.order_operation').addClass('hide')
+        $('.items_operation').addClass('hide')
+
+        for (var key in data.update_metadata.operations) {
+            $('#' + data.update_metadata.operations[key]).removeClass('hide')
+        }
+
+
+
+
+        $('.timeline .li').removeClass('complete')
+
+
+        $('#inputted_node').addClass('complete')
+        $('#purchase_order_node').addClass('complete')
+
+        if (data.update_metadata.state_index >= 30) {
+            $('#dispatched_node').addClass('complete')
+        }
+        if (data.update_metadata.state_index >= 40) {
+            $('#received_node').addClass('complete')
+        }
+
+        if (data.update_metadata.state_index >= 50) {
+            $('#checked_node').addClass('complete')
+        }
+        if (data.update_metadata.state_index == 100) {
+            $('#placed_node').addClass('complete')
+
+            if (state.tab == 'supplier.delivery.items') {
+
+
+                change_tab('supplier.delivery.items')
+
+            }
+
+
+        }
+
+
+
+
+
+
+
+        if (data.placed == 'Yes') {
+            place_item.addClass('hide')
+        } else {
             place_item.removeClass('hide')
-    
+
         }
 
         for (var key in data.update_metadata.class_html) {

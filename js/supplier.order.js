@@ -90,6 +90,15 @@ function change_on_delivery(element) {
 
 function save_create_delivery(element) {
 
+
+
+    if (!$(element).hasClass('valid') || $(element).hasClass('wait')) {
+        return;
+    }
+
+    $(element).addClass('wait')
+
+
     $(element).find('i').addClass('fa-spinner fa-spin fa-cloud').removeClass('fa-plus');
 
     var object_data = JSON.parse(atob($('#object_showcase div.order').data("object")))
@@ -132,15 +141,20 @@ function save_create_delivery(element) {
 
     request.done(function(data) {
 
+        $(element).removeClass('wait')
+
+
         $(element).find('i').removeClass('fa-spinner fa-spin fa-cloud').addClass('fa-plus');
 
         if (data.state == 200) {
-        
-        
-            change_view(object_data.order_parent.toLowerCase()+'/'+ object_data.order_parent_key+'/delivery/'+data.new_id,{tab:'supplier.delivery.items'})
 
-        
-           
+
+            change_view(object_data.order_parent.toLowerCase() + '/' + object_data.order_parent_key + '/delivery/' + data.new_id, {
+                tab: 'supplier.delivery.items'
+            })
+
+
+
 
 
         } else if (data.state == 400) {

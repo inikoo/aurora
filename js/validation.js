@@ -666,7 +666,9 @@ function validate_barcode(value, min_length, max_length) {
 
 function validate_number(value, min, max) {
 
-
+var value=parseFloat(value)
+var min=parseFloat(min)
+var max=parseFloat(max)
 
     if (!$.isNumeric(value)) {
         return {
@@ -686,6 +688,9 @@ function validate_number(value, min, max) {
     }
 
     if (max != undefined && value > max) {
+
+console.log(value)
+console.log(max)
 
         return {
             class: 'invalid',

@@ -1264,7 +1264,7 @@ class PurchaseOrder extends DB_Table{
 				}
 
 				break;
-				
+
 			case 'Cancelled':
 
 				$this->update_field('Purchase Order Cancelled Date', $date, 'no_history');
@@ -1281,7 +1281,7 @@ class PurchaseOrder extends DB_Table{
 
 
 
-				break;	
+				break;
 
 			case 'Inputted':
 			case 'Dispatched':

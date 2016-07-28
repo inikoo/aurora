@@ -39,7 +39,7 @@ case 'suppliers.orders':
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
 		));
-	get_purchase_orders_element_numbers($db, $data['parameters'], $user);
+	get_supplier_orders_elements($db, $data['parameters'], $user);
 	break;
 case 'website.nodes':
 	$data=prepare_values($_REQUEST, array(
@@ -729,7 +729,7 @@ function get_history_elements($db, $data) {
 			$data['parent_key']);
 	elseif ($data['parent']=='purchase_order')
 		$sql=sprintf("select count(*) as num ,`Type` from  `Purchase Order History Bridge` where  `Purchase Order Key`=%d group by  `Type`",
-			$data['parent_key']);		
+			$data['parent_key']);
 	elseif ($data['parent']=='none')
 		$sql=sprintf("select count(*) as num ,`Type` from  `%s Category History Bridge`  group by  `Type`",
 			$data['subject']);
@@ -1174,9 +1174,7 @@ function get_barcodes_elements($db, $data, $user) {
 function get_supplier_orders_elements($db, $data) {
 
 
-
 	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($data['period'], $data['from'], $data['to']);
-
 
 
 	$parent_key=$data['parent_key'];
@@ -1210,8 +1208,10 @@ function get_supplier_orders_elements($db, $data) {
 
 
 	$elements_numbers=array(
-		'state'=>array('InProcess'=>0, 'Submitted'=>0, 'Confirmed'=>0, 'InWarehouse'=>0, 'Done'=>0, 'Cancelled'=>0),
+		'state'=>array('InProcess'=>0, 'SubmittedInputtedDispatched'=>0, 'ReceivedChecked'=>0, 'Placed'=>0,  'Cancelled'=>0),
 	);
+
+
 
 
 	//USE INDEX (`Main Source Type Store Key`)
@@ -1220,7 +1220,17 @@ function get_supplier_orders_elements($db, $data) {
 
 	if ($result=$db->query($sql)) {
 		foreach ($result as $row) {
-			$elements_numbers['state'][$row['element']]=number($row['number']);
+
+
+			if ($row['element']=='Submitted' or $row['element']=='Inputted' or $row['element']=='Dispatched') {
+				$element='SubmittedInputtedDispatched';
+			}elseif ($row['element']=='Received' or $row['element']=='Checked') {
+				$element='ReceivedChecked';
+			}else {
+				$element=$row['element'];
+			}
+			if (isset($elements_numbers['state'][$element]))
+				$elements_numbers['state'][$element]+=$row['number'];
 		}
 	}else {
 		print "$sql";
@@ -1286,51 +1296,6 @@ function get_supplier_deliveries_element_numbers($db, $data) {
 }
 
 
-function get_purchase_orders_element_numbers($db, $data) {
-
-	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($data['period'], $data['from'], $data['to']);
-
-	$parent_key=$data['parent_key'];
-	$where_interval=prepare_mysql_dates($from, $to, '`Purchase Order Date`');
-	$where_interval=$where_interval['mysql'];
-
-	$table='`Purchase Order Dimension`  PO  ';
-	switch ($data['parent']) {
-	case 'account':
-		$where=sprintf(' where true');
-		break;
-	default:
-		$response=array('state'=>405, 'resp'=>'product parent not found '.$data['parent']);
-		echo json_encode($response);
-		return;
-	}
-
-
-	$elements_numbers=array(
-		'state'=>array('InProcess'=>0, 'Submitted'=>0, 'Confirmed'=>0, 'Received'=>0, 'Placed'=>0, 'Cancelled'=>0),
-	);
-
-	$sql=sprintf("select count(*) as number,`Purchase Order State` as element from %s %s group by `Purchase Order State` ",
-		$table, $where
-
-	);
-
-
-	if ($result=$db->query($sql)) {
-		foreach ($result as $row) {
-			$elements_numbers['state'][$row['element']]=number($row['number']);
-		}
-	}else {
-		print_r($error_info=$db->errorInfo());
-		exit;
-	}
-
-	$response= array('state'=>200, 'elements_numbers'=>$elements_numbers);
-	echo json_encode($response);
-
-
-
-}
 
 
 

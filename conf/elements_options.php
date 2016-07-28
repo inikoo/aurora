@@ -376,10 +376,11 @@ $elements_options=array(
 		'state'=>array(
 			'label'=>_('State'),
 			'items'=>array(
+
+
 				'InProcess'=>array('label'=>_('In process'), 'selected'=>true),
-				'Submitted'=>array('label'=>_('Submitted'), 'selected'=>true),
-				'Confirmed'=>array('label'=>_('Confirmed'), 'selected'=>true),
-				'Received'=>array('label'=>_('Received'), 'selected'=>true),
+				'SubmittedInputtedDispatched'=>array('label'=>_('Submitted, in transit'), 'selected'=>true),
+				'ReceivedChecked'=>array('label'=>_('In warehouse'), 'selected'=>true),
 				'Placed'=>array('label'=>_('Placed'), 'selected'=>true),
 				'Cancelled'=>array('label'=>_('Cancelled'), 'selected'=>false),
 			),

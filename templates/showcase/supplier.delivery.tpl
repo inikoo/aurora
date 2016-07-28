@@ -27,7 +27,7 @@
 		</div>
 		</li>
 		
-		<li id="creation_node" class="li  complete"> 
+		<li id="inputted_node" class="li  complete"> 
 		<div class="label">
 			<span class="state" >&nbsp; <span>{t}Inputted{/t}</span></span> 
 		</div>
@@ -39,11 +39,23 @@
 		</li>
 		{/if}
 		
+		{if $delivery->get('State Index')<0 and $delivery->get('Dispatched Date')=='' and  $delivery->get('Received Date')==''  }
 		
+		<li id="received_node" class="li  cancelled"> 
+		<div class="label">
+			<span class="state ">{t}Cancelled{/t}</span> 
+		</div>
+		<div class="timestamp">
+			<span class="">&nbsp;{$delivery->get('Cancelled Date')}</span> 
+		</div>
+		<div class="dot">
+		</div>
+		</li>
 		
+		{/if}
 		
-		
-		<li id="dispatched_node" class="li  {if $delivery->get('State Index')>=30}complete{/if}">  
+	
+		<li id="dispatched_node" class="li  {if $delivery->get('State Index')>=30 or ($delivery->get('State Index')<0 and ($delivery->get('Dispatched Date')!=''  or $delivery->get('Received Date')!=''))  }complete{/if}">  
 		<div class="label">
 			<span class="state ">{t}Dispatched{/t} <span></i></span></span> 
 		</div>
@@ -53,7 +65,24 @@
 		<div class="dot">
 		</div>
 		</li>
-		<li id="received_node" class="li  {if $delivery->get('State Index')>=40}complete{/if}"> 
+		
+		{if $delivery->get('State Index')<0 and $delivery->get('Dispatched Date')!='' and  $delivery->get('Received Date')=='' and    $delivery->get('Checked Date')==''     }
+		
+		<li id="received_node" class="li  cancelled"> 
+		<div class="label">
+			<span class="state ">{t}Cancelled{/t}</span> 
+		</div>
+		<div class="timestamp">
+			<span class="">&nbsp;{$delivery->get('Cancelled Date')}</span> 
+		</div>
+		<div class="dot">
+		</div>
+		</li>
+		
+		{/if}
+		
+		
+		<li id="received_node" class="li  {if $delivery->get('State Index')>=40  or ($delivery->get('State Index')<0 and  $delivery->get('Received Date')!='')  }complete{/if}"> 
 		<div class="label">
 			<span class="state ">{t}Received{/t}</span> 
 		</div>
@@ -63,22 +92,55 @@
 		<div class="dot">
 		</div>
 		</li>
-		<li id="checked_node" class="li  {if $delivery->get('State Index')>=50}complete{/if}"> 
+		
+			{if $delivery->get('State Index')<0  and  $delivery->get('Received Date')!='' and  $delivery->get('Checked Date')==''   }
+		
+		<li id="received_node" class="li  cancelled"> 
 		<div class="label">
-			<span class="state">{t}Checked{/t}</span> 
+			<span class="state ">{t}Cancelled{/t}</span> 
 		</div>
 		<div class="timestamp">
-			<span class="Supplier_Delivery_Checked_Date">&nbsp;{$delivery->get('Checked Percentage or Date')}</span> 
+			<span class="">&nbsp;{$delivery->get('Cancelled Date')}</span> 
 		</div>
 		<div class="dot">
 		</div>
 		</li>
-		<li class="li {if $delivery->get('State Index')>=100}complete{/if}"> 
+		
+		{/if}
+		
+		<li id="checked_node" class="li  {if $delivery->get('State Index')>=50  or ($delivery->get('State Index')<0 and  $delivery->get('Checked Date')!='')   }complete{/if}"> 
+		<div class="label">
+			<span class="state">{t}Checked{/t}</span> 
+		</div>
+		<div class="timestamp">
+			<span class="Supplier_Delivery_Checked_Percentage_or_Date">&nbsp;{$delivery->get('Checked Percentage or Date')}</span> 
+		</div>
+		<div class="dot">
+		</div>
+		</li>
+		
+		{if $delivery->get('State Index')<0  and  $delivery->get('Checked Date')!=''  }
+		
+		<li id="received_node" class="li  cancelled"> 
+		<div class="label">
+			<span class="state ">{t}Cancelled{/t}</span> 
+		</div>
+		<div class="timestamp">
+			<span class="">&nbsp;{$delivery->get('Cancelled Date')}</span> 
+		</div>
+		<div class="dot">
+		</div>
+		</li>
+		
+		{/if}
+		
+		
+		<li id="placed_node" class=" {if $delivery->get('State Index')<0}hide{/if} li {if $delivery->get('State Index')>=100}complete{/if}"> 
 		<div class="label">
 			<span class="state">{t}Placed{/t}</span> 
 		</div>
 		<div class="timestamp">
-			<span class="Supplier_Delivery_Placed_Date">&nbsp;{$delivery->get('Placed Percentage or Date')}</span> 
+			<span class="Supplier_Delivery_Placed_Percentage_or_Date">&nbsp;{$delivery->get('Placed Percentage or Date')}</span> 
 		</div>
 		<div class="dot">
 		</div>
@@ -113,25 +175,25 @@
 						<i class="fa fa-trash very_discreet " aria-hidden="true" onclick="toggle_order_operation_dialog('delete')"></i> 
 						<table id="delete_dialog" border="0" class="order_operation_dialog hide">
 							<tr class="top">
-								<td colspan="2">{t}Delete delivery{/t}</td>
+								<td colspan="2" class="label">{t}Delete delivery{/t}</td>
 							</tr>
-							<tr class="changed">
+							<tr class="buttons changed">
 								<td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('delete')"></i></td>
-								<td class="aright"><span id="received_save_buttons" class="error save button" onclick="save_order_operation('Delete')"><span class="label">{t}Delete{/t}</span> <i class="fa fa-trash fa-fw  " aria-hidden="true"></i></span> </td>
+								<td class="aright"><span data-data='{ "object": "SupplierDelivery", "key":"{$delivery->id}"}' id="received_save_buttons" class="error save button" onClick="delete_object(this)"><span class="label">{t}Delete{/t}</span> <i class="fa fa-trash fa-fw  " aria-hidden="true"></i></span> </td>
 							</tr>
 						</table>
 					</div>
 				</div>
-				<div id="cancel_operations" class="order_operation {if $delivery->get('Supplier Delivery State')=='InProcess'}hide{/if}">
+				<div id="cancel_operations" class="order_operation {if $delivery->get('Supplier Delivery State')=='InProcess' or $delivery->get('Supplier Delivery State')=='Cancelled' or $delivery->get('Supplier Delivery Placed Items')=='Yes'   }hide{/if}">
 					<div class="square_button left" xstyle="padding:0;margin:0;position:relative;top:-5px" title="{t}Cancel{/t}">
 						<i class="fa fa-minus-circle error " aria-hidden="true" onclick="toggle_order_operation_dialog('cancel')"></i> 
 						<table id="cancel_dialog" border="0" class="order_operation_dialog hide">
 							<tr class="top">
-								<td colspan="2">{t}Cancel delivery{/t}</td>
+								<td colspan="2"  class="label">{t}Cancel delivery{/t}</td>
 							</tr>
-							<tr class="changed">
+							<tr class="buttons changed">
 								<td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('cancel')"></i></td>
-								<td class="aright"><span id="received_save_buttons" class="error save button" onclick="save_order_operation('cancel','Cancelled')"><span class="label">{t}Cancel{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span> </td>
+								<td class="aright"><span data-data='{ "value": "Cancelled","dialog_name":"cancel", "field": "Supplier Delivery State"}' id="cancel_save_buttons" class="error save button" onclick="save_order_operation(this)"><span class="label">{t}Cancel{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span> </td>
 							</tr>
 						</table>
 					</div>
@@ -145,7 +207,7 @@
 						</span>
 						<table id="undo_dispatched_dialog" border="0" class="order_operation_dialog hide">
 							<tr class="top">
-								<td colspan="2" class="label">{t}Unmark as send{/t}</td>
+								<td colspan="2" class="label">{t}Unmark as dispatched{/t}</td>
 							</tr>
 							<tr class="buttons changed">
 								<td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('undo_dispatched')"></i></td>
@@ -154,7 +216,7 @@
 						</table>
 					</div>
 				</div>
-				<div id="undo_received_operations" class="order_operation {if $delivery->get('Supplier Delivery State')!='Received'}hide{/if}">
+				<div id="undo_received_operations" class="order_operation {if $delivery->get('Supplier Delivery State')!='Received'  or $delivery->get('Supplier Delivery Placed Items')=='Yes' }hide{/if}">
 					<div class="square_button left" title="{t}Unmark as received{/t}">
 						<span class="fa-stack" style="position:relative;top:-1px"onclick="toggle_order_operation_dialog('undo_received')">
 						<i class="fa fa-arrow-circle-down discreet "  aria-hidden="true" ></i> 
@@ -176,7 +238,7 @@
 			<div id="forward_operations">
 				
 				<div id="received_operations" class=" order_operation {if !($delivery->get('Supplier Delivery State')=='InProcess' or  $delivery->get('Supplier Delivery State')=='Dispatched') }hide{/if}">
-					<div class="square_button right" title="{t}received{/t}">
+					<div class="square_button right" title="{t}Mark delivery as received{/t}">
 						<i class="fa fa-arrow-circle-down fa-fw" aria-hidden="true" onclick="toggle_order_operation_dialog('received')"></i> 
 						<table id="received_dialog" border="0" class="order_operation_dialog hide">
 							<tr class="top">
@@ -274,8 +336,8 @@
 				
 				<td > 
 				<span style="padding-right:20px"><i class="fa fa-arrow-circle-right fa-fw discreet" aria-hidden="true" ></i> <span class="Supplier_Delivery_Number_Dispatched_Items" >{$delivery->get('Number Dispatched Items')}</span></span>
-				<span ><i class="fa fa-arrow-circle-down fa-fw discreet" aria-hidden="true" ></i> <span>{$delivery->get('Number Received Items')}</span></span>
-				<span style="padding-left:20px"><i class="fa fa-map-marker fa-fw discreet" aria-hidden="true" ></i> <span>{$delivery->get('Number Placed Items')}</span></span>
+				<span ><i class="fa fa-arrow-circle-down fa-fw discreet" aria-hidden="true" ></i>  <span class="Supplier_Delivery_Number_Received_and_Checked_Items" >{$delivery->get('Number Received and Checked Items')}</span></span>
+				<span style="padding-left:20px"><i class="fa fa-map-marker fa-fw discreet" aria-hidden="true" ></i>  <span class="Supplier_Delivery_Number_Placed_Items" >{$delivery->get('Number Placed Items')}</span></span>
 				</td>
 			</tr>
 		

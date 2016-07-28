@@ -484,7 +484,7 @@ function deliveries($_data, $db, $user) {
 		foreach ($result as $data) {
 
 			switch ($data['Supplier Delivery State']) {
-			case 'In Process':
+			case 'InProcess':
 				$state=sprintf('%s', _('In Process'));
 				break;
 			case 'Submitted':
@@ -787,21 +787,24 @@ function delivery_checking_items($_data, $db, $user) {
 
 			$description=$data['Part Package Description'].' ('.number($units_per_carton).'/'.number($data['Supplier Part Packages Per Carton']).'/C)';
 
-			$locations_data=preg_split('/,/', $data['location_data']);
-
-			$locations='<div  class="part_locations mini_table left hide" transaction_key="'.$data['Purchase Order Transaction Fact Key'].'" >';
 			$number_locations=0;
-			foreach ($locations_data as $location_data) {
-				$number_locations++;
-				$location_data=preg_split('/\:/', $location_data);
-				$locations.='<div class="button" style="clear:both;" onClick="set_placement_location(this)"  location_key="'.$location_data[0].'" >
+			$locations='';
+			if ($data['location_data']!='') {
+				$locations_data=preg_split('/,/', $data['location_data']);
+
+				$locations='<div  class="part_locations mini_table left hide" transaction_key="'.$data['Purchase Order Transaction Fact Key'].'" >';
+
+				foreach ($locations_data as $location_data) {
+					$number_locations++;
+					$location_data=preg_split('/\:/', $location_data);
+					$locations.='<div class="button" style="clear:both;" onClick="set_placement_location(this)"  location_key="'.$location_data[0].'" >
 				<div  class="code data w150"  >'.$location_data[1].'</div>
 				<div class="data w30 aright" >'.number($location_data[3]).'</div>
 				</div>';
 
+				}
+				$locations.='<div style="clear:both"></div></div>';
 			}
-			$locations.='<div style="clear:both"></div></div>';
-
 
 
 			$description.=' <i style="margin-left:4px" class="fa fa-map-marker button discreet '.($number_locations==0?'hide':'').'" aria-hidden="true" title="'._('Show locations').'"  show_title="'._('Show locations').'" hide_title="'._('Hide locations').'"    onClick="show_part_locations(this)" ></i>';
@@ -820,20 +823,20 @@ function delivery_checking_items($_data, $db, $user) {
 			);
 
 
-			$sko_checked_quantity=$data['Supplier Delivery Received Quantity']*$data['Supplier Part Packages Per Carton'];
-			$edit_sko_checked_quantity=sprintf('<span data-settings=\'{"field": "Supplier Delivery Received Quantity", "transaction_key":%d,"item_key":%d, "item_historic_key":%d ,"on":1 }\' class="delivery_quantity" id="delivery_quantity_%d" ><input class="received_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-cloud fa-fw button %s" aria-hidden="true"></span>',
+
+			$sko_checked_quantity=$data['Supplier Delivery Checked Quantity']*$data['Supplier Part Packages Per Carton'];
+			$edit_sko_checked_quantity=sprintf('<span data-settings=\'{"field": "Supplier Delivery Checked Quantity", "transaction_key":%d,"item_key":%d, "item_historic_key":%d ,"on":1 }\' class="checked_quantity"  ><input class="checked_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button %s" aria-hidden="true"></span>',
 				$data['Purchase Order Transaction Fact Key'],
 				$data['Supplier Part Key'],
 				$data['Supplier Part Historic Key'],
-				$data['Purchase Order Transaction Fact Key'],
 
 				$sko_checked_quantity+0,
 				$sko_checked_quantity+0,
-				($data['Supplier Delivery Received Quantity']==''?'':'invisible')
+				''
 			);
 
-			$quantity=($data['Supplier Delivery Received Quantity']-$data['Supplier Delivery Placed Quantity'])*$data['Supplier Part Packages Per Carton'];
 
+			$quantity=($data['Supplier Delivery Checked Quantity']-$data['Supplier Delivery Placed Quantity'])*$data['Supplier Part Packages Per Carton'];
 
 			if ($data['Metadata']=='') {
 				$metadata=array();
@@ -841,12 +844,13 @@ function delivery_checking_items($_data, $db, $user) {
 				$metadata=json_decode($data['Metadata'], true);
 			}
 
-			$placement='<div  class="placement_data mini_table right no_padding" style="padding-right:2px">';
+			$placement='<div class="placement" ><div  class="placement_data mini_table right no_padding" style="padding-right:2px">';
+
 			if (  isset($metadata['placement_data'])) {
 
 				foreach ($metadata['placement_data'] as $placement_data) {
 					$placement.='<div style="clear:both;">
-				<div class="data w150 aright link" onClick="change_view(\'\')" >'.$placement_data['l'].'</div>
+				<div class="data w150 aright link" onClick="change_view(\'locations/'.$placement_data['wk'].'/'.$placement_data['lk'].'\')" >'.$placement_data['l'].'</div>
 				<div  class=" data w75 aleft"  >'.$placement_data['qty'].' '._('SKO').' <i class="fa fa-sign-out" aria-hidden="true"></i></div>
 				</div>';
 
@@ -858,11 +862,11 @@ function delivery_checking_items($_data, $db, $user) {
 
 			$placement.='
 			    <div style="clear:both"  id="place_item_'.$data['Purchase Order Transaction Fact Key'].'" class="place_item '.($data['Supplier Delivery Transaction Placed']=='No'?'':'hide').' " part_sku="'.$data['Part SKU'].'" transaction_key="'.$data['Purchase Order Transaction Fact Key'].'"  >
-			    <input class="place_qty width_50 changed" value="'.($quantity+0).'" ovalue="'.($quantity+0).'"  min="1" max="'.$quantity.'"  >
+			    <input class="place_qty width_50 changed" value="'.($quantity+0).'" ovalue="'.($quantity+0).'"  min="1" max="'.($quantity+0).'"  >
 				<input class="location_code"  placeholder="'._('Location code').'"  >
 				<i  class="fa  fa-cloud  fa-fw save " aria-hidden="true" title="'._('Place to location').'"  location_key="" onClick="place_item(this)"  ></i>
-                <div>
-
+                </div>
+                </div>
 			';
 
 

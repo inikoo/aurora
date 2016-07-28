@@ -476,11 +476,11 @@ function check_for_duplicates($data, $db, $user, $account) {
 		break;
 	case 'Supplier Delivery':
 
-
+$options_where='';
 		if (isset($data['metadata']['option']) and $data['metadata']['option']=='creating_dn_from_po') {
 			//'In Process','Send','Received','Checked','Placing','Done' TODO maybe he have to be more flaxivle with this
 
-			$options_where=" and `Supplier Delivery State` in ('Done','Checked','Placing')";
+		//	$options_where=" and `Supplier Delivery State` in ('Done','Checked','Placing')";
 		}
 
 		if (isset($data['actual_field']))
@@ -490,11 +490,11 @@ function check_for_duplicates($data, $db, $user, $account) {
 
 		switch (strtolower($data['parent'])) {
 		case 'agent':
-			$parent_where=sprintf(' and `%s Parent Key`="Agent"  and `%s Parent Key`=%d ', $data['object'], $data['object'], $data['parent_key']);
+			$parent_where=sprintf(' and `%s Parent`="Agent"  and `%s Parent Key`=%d ', $data['object'], $data['object'], $data['parent_key']);
 			break;
 
 		case 'supplier':
-			$parent_where=sprintf(' and `%s Parent Key`="Supplier"  and `%s Parent Key`=%d ', $data['object'], $data['object'], $data['parent_key']);
+			$parent_where=sprintf(' and `%s Parent`="Supplier"  and `%s Parent Key`=%d ', $data['object'], $data['object'], $data['parent_key']);
 			break;
 		default:
 			$parent_where='';
@@ -512,6 +512,8 @@ function check_for_duplicates($data, $db, $user, $account) {
 			$options_where
 
 		);
+
+//print $sql;
 
 		$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
 

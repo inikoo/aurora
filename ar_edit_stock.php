@@ -250,12 +250,12 @@ function place_part($account, $db, $user, $editor, $data, $smarty) {
 
 
 
-	$sql=sprintf('select `Purchase Order Transaction Fact Key`,`Supplier Delivery Received Quantity`,`Supplier Delivery Placed Quantity` ,`Supplier Part Packages Per Carton`
+	$sql=sprintf('select `Purchase Order Transaction Fact Key`,`Supplier Delivery Checked Quantity`,`Supplier Delivery Placed Quantity` ,`Supplier Part Packages Per Carton`
 	from
 	  `Purchase Order Transaction Fact` POTF
 left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Historic Key`=SPH.`Supplier Part Historic Key`)
  left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
-	
+
 	 where `Purchase Order Transaction Fact Key`=%d', $data['transaction_key']);
 
 
@@ -275,7 +275,7 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
 			}else {
 
 
-				if (($data['qty']/$row['Supplier Part Packages Per Carton'])>($row['Supplier Delivery Received Quantity']-$row['Supplier Delivery Placed Quantity'])) {
+				if (($data['qty']/$row['Supplier Part Packages Per Carton'])>($row['Supplier Delivery Checked Quantity']-$row['Supplier Delivery Placed Quantity'])) {
 					$response=array('state'=>400, 'msg'=>_('Placement quantity greater than the checked quantity'));
 					echo json_encode($response);
 					exit;
@@ -297,16 +297,25 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
 					exit;
 				}
 
-				$result_placement=$object->update_item_delivery_placed_quantity(array(
-						'transaction_key'=>$row['Purchase Order Transaction Fact Key'],
-						'qty'=>$data['qty'],
-						'placement_data'=>array(
-							'oif_key'=>$oif_key,
-							'lk'=>$part_location->location->get('Location Warehouse Key'),
-							'lk'=>$part_location->location->id,
-							'l'=>$part_location->location->get('Code'),
-							'qty'=>$data['qty'])
-					));
+				$_data=array(
+					'transaction_key'=>$row['Purchase Order Transaction Fact Key'],
+					'qty'=>$data['qty'],
+					'placement_data'=>array(
+						'oif_key'=>$oif_key,
+						'wk'=>$part_location->location->get('Location Warehouse Key'),
+						'lk'=>$part_location->location->id,
+						'l'=>$part_location->location->get('Code'),
+						'qty'=>$data['qty'])
+				);
+
+
+				$result_placement=$object->update_item_delivery_placed_quantity($_data);
+
+				if ($object->error) {
+					$response=array('state'=>400, 'msg'=>$object->msg);
+					echo json_encode($response);
+					exit;
+				}
 
 
 				$number_part_locations=0;
@@ -328,18 +337,9 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
 
 
 
-				$placements='';
-				if (  isset($result_placement['placement_data'])) {
-
-					foreach ($result_placement['placement_data'] as $placement_data) {
-						$placements.='<div style="clear:both;">
-				<div class="data w150 aright link" onClick="change_view(\'\')" >'.$placement_data['l'].'</div>
-				<div  class=" data w75 aleft"  >'.$placement_data['qty'].' '._('SKO').' <i class="fa fa-sign-out" aria-hidden="true"></i></div>
-				</div>';
 
 
-					}
-				}
+
 
 
 
@@ -348,9 +348,9 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
 					'update_metadata'=>$object->get_update_metadata(),
 					'part_locations'=>$part_locations,
 					'number_part_locations'=>$number_part_locations,
-					'placement'=>$placements,
-					'placed'=>$result_placement['placed']
-					
+					'placed'=>$result_placement['placed'],
+					'place_qty'=>$result_placement['place_qty']
+
 				);
 				echo json_encode($response);
 				exit;
