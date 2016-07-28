@@ -29,8 +29,24 @@ if ($parameters['parent']=='account') {
 	$where=sprintf('where  `Supplier Delivery Parent`="Supplier" and `Supplier Delivery Parent Key`=%d  ', $parameters['parent_key']);
 }elseif ($parameters['parent']=='agent') {
 	$where=sprintf('where  `Supplier Delivery Parent`="Agent" and `Supplier Delivery Parent Key`=%d  ', $parameters['parent_key']);
+}elseif ($parameters['parent']=='supplier_part') {
+
+	$table=' `Purchase Order Transaction Fact` POTF  left join  `Supplier Delivery Dimension` D on (POTF.`Supplier Delivery Key`=D.`Supplier Delivery Key`) ';
+	$where=sprintf('where `Supplier Part Key`=%d  ', $parameters['parent_key']);
+
+}elseif ($parameters['parent']=='part') {
+
+	$table=' `Purchase Order Transaction Fact` POTF  left join  `Supplier Delivery Dimension` D on (POTF.`Supplier Delivery Key`=D.`Supplier Delivery Key`) 
+ left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
+
+	 left join  `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`)
+
+	
+	';
+	$where=sprintf('where `Part SKU`=%d  ', $parameters['parent_key']);
+
 }else {
-	exit("unknown parent ".$parameters['parent']." \n");
+	exit("unknown parent: ".$parameters['parent']." \n");
 }
 
 if (isset($parameters['period'])) {
@@ -104,7 +120,7 @@ elseif ($order=='total_amount')
 else
 	$order='D.`Supplier Delivery Key`';
 
-$fields='`Supplier Delivery Parent`,`Supplier Delivery Parent Key`,D.`Supplier Delivery Key`,`Supplier Delivery State`,`Supplier Delivery Public ID`,`Supplier Delivery Last Updated Date`,`Supplier Delivery Creation Date`,
+$fields='`Supplier Delivery Parent`,`Supplier Delivery Parent Key`,D.`Supplier Delivery Key`,`Supplier Delivery State`,`Supplier Delivery Public ID`,D.`Supplier Delivery Last Updated Date`,`Supplier Delivery Creation Date`,
 `Supplier Delivery Parent Code`,`Supplier Delivery Parent Name`,`Supplier Delivery Total Amount`,`Supplier Delivery Currency Code`
 ';
 

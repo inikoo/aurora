@@ -770,6 +770,35 @@ $tab_defaults=array(
 		'elements_type'=>each($elements_options['supplier_part_history'])['key'],
 		'elements'=>$elements_options['supplier_part_history']
 	),
+
+	'supplier_part.supplier.orders'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'number',
+		'from'=>'',
+		'to'=>'',
+		'period'=>'all',
+		'elements_type'=>each($elements_options['supplier_orders'])['key'],
+		'elements'=>$elements_options['supplier_orders']
+	),
+	'supplier_part.supplier.deliveries'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'number',
+		'from'=>'',
+		'to'=>'',
+		'period'=>'all',
+		'elements_type'=>each($elements_options['supplier_deliveries'])['key'],
+		'elements'=>$elements_options['supplier_deliveries']
+	),
+
+
 	'agents'=>array(
 		'view'=>'overview',
 		'sort_key'=>'code',
@@ -870,6 +899,33 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'reference',
 
+	),
+
+	'part.supplier.orders'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'number',
+		'from'=>'',
+		'to'=>'',
+		'period'=>'all',
+		'elements_type'=>each($elements_options['supplier_orders'])['key'],
+		'elements'=>$elements_options['supplier_orders']
+	),
+	'part.supplier.deliveries'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'number',
+		'from'=>'',
+		'to'=>'',
+		'period'=>'all',
+		'elements_type'=>each($elements_options['supplier_deliveries'])['key'],
+		'elements'=>$elements_options['supplier_deliveries']
 	),
 	'warehouse.locations'=>array(
 		'view'=>'overview',
@@ -1277,7 +1333,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'note'
 	),
-		'deleted.contractor.history'=>array(
+	'deleted.contractor.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
 		'sort_order'=>1,

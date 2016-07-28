@@ -29,6 +29,17 @@ if ($parameters['parent']=='account') {
 	$where=sprintf('where  `Purchase Order Parent`="Supplier" and `Purchase Order Parent Key`=%d  ', $parameters['parent_key']);
 }elseif ($parameters['parent']=='agent') {
 	$where=sprintf('where  `Purchase Order Parent`="Agent" and `Purchase Order Parent Key`=%d  ', $parameters['parent_key']);
+}elseif ($parameters['parent']=='supplier_part') {
+	$table=' `Purchase Order Transaction Fact` POTF  left join  `Purchase Order Dimension` O on (POTF.`Purchase Order Key`=O.`Purchase Order Key`) ';
+	$where=sprintf('where `Supplier Part Key`=%d  ', $parameters['parent_key']);
+}elseif ($parameters['parent']=='part') {
+	$table=' `Purchase Order Transaction Fact` POTF  left join  `Purchase Order Dimension` O on (POTF.`Purchase Order Key`=O.`Purchase Order Key`)
+	left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
+
+	 left join  `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`)
+
+	 ';
+	$where=sprintf('where `Part SKU`=%d  ', $parameters['parent_key']);
 }else {
 	exit("unknown parent ".$parameters['parent']." \n");
 }
@@ -123,7 +134,7 @@ elseif ($order=='total_amount')
 else
 	$order='O.`Purchase Order Key`';
 
-$fields='`Purchase Order Parent`,`Purchase Order Parent Key`,O.`Purchase Order Key`,`Purchase Order State`,`Purchase Order Public ID`,`Purchase Order Last Updated Date`,`Purchase Order Creation Date`,
+$fields='`Purchase Order Parent`,`Purchase Order Parent Key`,O.`Purchase Order Key`,`Purchase Order State`,`Purchase Order Public ID`,O.`Purchase Order Last Updated Date`,`Purchase Order Creation Date`,
 `Purchase Order Parent Code`,`Purchase Order Parent Name`,`Purchase Order Total Amount`,`Purchase Order Currency Code`
 ';
 

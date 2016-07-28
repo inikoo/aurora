@@ -1166,9 +1166,8 @@ $modules=array(
 			'supplier_part'=>array('type'=>'object',
 				'subtabs_parent'=>array(
 
-					'supplier_part.purchase_orders.purchase_orders'=>'supplier_part.purchase_orders',
-					'supplier_part.purchase_orders.delivery_notes'=>'supplier_part.purchase_orders',
-					'supplier_part.purchase_orders.invoices'=>'supplier_part.purchase_orders',
+					'supplier_part.supplier.orders'=>'supplier_part.purchase_orders',
+					'supplier_part.supplier.deliveries'=>'supplier_part.purchase_orders',
 				),
 
 
@@ -1179,11 +1178,12 @@ $modules=array(
 					'supplier_part.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 
 
-					'supplier_part.purchase_orders'=>array('label'=>_('Purchase Orders'), 'icon'=>'clipboard',
+
+					'supplier_part.purchase_orders'=>array('label'=>_('Purchase orders / deliveries'), 'icon'=>'clipboard',
 						'subtabs'=>array(
-							'supplier_part.purchase_orders.purchase_orders'=>array('label'=>_('Purchase Orders')),
-							'supplier_part.purchase_orders.delivery_notes'=>array('label'=>_('Delivery Notes')),
-							'supplier_part.purchase_orders.invoices'=>array('label'=>_('Invoices')),
+
+							'supplier_part.supplier.orders'=>array('label'=>_('Purchase orders'), 'icon'=>'clipboard'),
+							'supplier_part.supplier.deliveries'=>array('label'=>_("Supplier's deliveries"), 'icon'=>'truck'),
 
 						)
 
@@ -1344,9 +1344,8 @@ $modules=array(
 					'part.stock.transactions'=>'part.stock',
 					'part.stock.history'=>'part.stock',
 					'part.stock.availability'=>'part.stock',
-					'part.purchase_orders.purchase_orders'=>'part.purchase_orders',
-					'part.purchase_orders.delivery_notes'=>'part.purchase_orders',
-					'part.purchase_orders.invoices'=>'part.purchase_orders',
+					'part.supplier.orders'=>'part.purchase_orders',
+					'part.supplier.deliveries'=>'part.purchase_orders',
 					'part.stock.history.annually'=>'part.stock',
 					'part.stock.history.monthy'=>'part.stock',
 					'part.stock.history.weekly'=>'part.stock',
@@ -1423,12 +1422,11 @@ $modules=array(
 			*/
 
 
-					'part.purchase_orders'=>array('label'=>_('Purchase orders'), 'icon'=>'clipboard',
+					'part.purchase_orders'=>array('label'=>_('Purchase orders / deliveries'), 'icon'=>'clipboard',
 						'subtabs'=>array(
 
-							'part.purchase_orders.purchase_orders'=>array('label'=>_('Purchase orders'), 'icon'=>'clipboard'),
-							'part.purchase_orders.delivery_notes'=>array('label'=>_("Supplier's delivery notes")),
-							'part.purchase_orders.invoices'=>array('label'=>_("Supplier's invoices")),
+							'part.supplier.orders'=>array('label'=>_('Purchase orders'), 'icon'=>'clipboard'),
+							'part.supplier.deliveries'=>array('label'=>_("Supplier's deliveries"), 'icon'=>'truck'),
 
 						)
 
@@ -1657,18 +1655,18 @@ $modules=array(
 				)
 
 			),
-				'deleted.employee'=>array('type'=>'object',
+			'deleted.employee'=>array('type'=>'object',
 
 
 
 				'tabs'=>array(
 					'deleted.employee.history'=>array('label'=>_('History'), 'icon'=>'sticky-note-o'),
-	
+
 
 				)
 
 			),
-          
+
 			'employee.new'=>array('type'=>'new_object',
 				'tabs'=>array(
 					'employee.new'=>array('label'=>_('New employee')),
@@ -1716,10 +1714,10 @@ $modules=array(
 				)
 
 			),
-'deleted.contractor'=>array('type'=>'object',
+			'deleted.contractor'=>array('type'=>'object',
 				'tabs'=>array(
 					'deleted.contractor.history'=>array('label'=>_('History'), 'icon'=>'sticky-note-o'),
-	
+
 
 				)
 
@@ -1780,10 +1778,10 @@ $modules=array(
 				)
 
 			),
-			 'hr.history'=>array(
-				'type'=>'navigation', 'label'=>'', 'icon'=>'road', 'reference'=>'hr/history','class'=>'icon_only',
+			'hr.history'=>array(
+				'type'=>'navigation', 'label'=>'', 'icon'=>'road', 'reference'=>'hr/history', 'class'=>'icon_only',
 				'tabs'=>array(
-										'hr.history'=>array('label'=>_('History'), 'icon'=>'road', 'class'=>''),
+					'hr.history'=>array('label'=>_('History'), 'icon'=>'road', 'class'=>''),
 					'hr.uploads'=>array('label'=>_('Uploads'), 'icon'=>'upload', 'class'=>''),
 
 
