@@ -145,6 +145,7 @@ case 'agent.orders':
 
 case 'part.stock.transactions':
 case 'inventory.stock.transactions':
+case 'location.stock.transactions':
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
 		));
@@ -328,6 +329,9 @@ function get_stock_transactions_elements($db, $data, $user) {
 	case 'account':
 		$where=sprintf("where `Inventory Transaction Record Type`='Movement' ");
 		break;	
+		case 'location':
+		$where=sprintf("where `Inventory Transaction Record Type`='Movement' and `Location Key`=%d", $data['parent_key']);
+		break;		
 	default:
 		$response=array('state'=>405, 'resp'=>'parent not found '.$data['parent']);
 		echo json_encode($response);

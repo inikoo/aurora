@@ -29,6 +29,13 @@ if ($parameters['parent']=='part') {
 }elseif ($parameters['parent']=='account') {
 
 
+	$where=sprintf(" where  `Inventory Transaction Record Type`='Movement' " );
+
+
+}elseif ($parameters['parent']=='location') {
+
+	$where=sprintf(" where  `Inventory Transaction Record Type`='Movement' and ITF.`Location Key`=%d", $parameters['parent_key']);
+
 
 
 }else{

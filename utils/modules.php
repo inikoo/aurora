@@ -1540,9 +1540,9 @@ $modules=array(
 				'type'=>'object', 'label'=>_('Location'), 'icon'=>'map-sings', 'reference'=>'',
 				'tabs'=>array(
 					'location.details'=>array('label'=>_('Data'), 'title'=>_('Location detais'), 'icon'=>'database'),
-					'location.history'=>array('label'=>_('History/Notes'), 'title'=>_('History/Notes'), 'icon'=>'road'),
-
 					'location.parts'=>array('label'=>_('Parts'), 'icon'=>'square'),
+					'location.stock.transactions'=>array('label'=>_('Stock movements'), 'icon'=>'exchange'),
+					'location.history'=>array('label'=>_('History/Notes'), 'title'=>_('History/Notes'), 'icon'=>'road','class'=>'right icon_only'),
 
 				)
 

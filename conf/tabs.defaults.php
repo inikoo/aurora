@@ -945,6 +945,15 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'location'
 	),
+	'warehouse.parts'=>array(
+		'view'=>'overview',
+		'sort_key'=>'reference',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'reference',
+		
+	),
 	'warehouse.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
@@ -962,7 +971,27 @@ $tab_defaults=array(
 		'f_field'=>'note',
 		'elements_type'=>each($elements_options['location_history'])['key'],
 		'elements'=>$elements_options['location_history']
+	),	
+	'location.parts'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'reference',
+		
 	),
+	'location.stock.transactions'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>100,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'note',
+		'elements_type'=>each(  $elements_options['part_stock_transactions']  ) ['key'],
+		'elements'=>$elements_options['part_stock_transactions'],
+	),
+	
 	'inventory.parts'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',

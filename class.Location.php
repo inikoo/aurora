@@ -503,33 +503,17 @@ class Location extends DB_Table {
 	}
 
 
-	function update_used_for($value) {
-		$value=_trim($value);
-		if ($value==$this->data['Location Mainly Used For']) {
-			$this->msg=_('Nothing to change');
-			$this->updated=false;
-			return;
-		}
+	function update_used_for($value,$options='') {
+		
 		if (!preg_match('/^(Picking|Storing|Displaying|Loading|Other)$/', $value)) {
 			$this->msg=_('Wrong location type');
 			$this->updated=false;
 			return;
 		}
+		
+		$this->update_field('Location Mainly Used For',$value,$options);
 
-		$old_value=$this->data['Location Mainly Used For'];
-
-		$sql=sprintf("update `Location Dimension` set `Location Mainly Used For`=%s where `Location Key`=%d"
-			, prepare_mysql($value)
-			, $this->id
-		);
-		//print $sql; exit;
-		$this->db->exec($sql);
-		$this->data['Location Mainly Used For']=$value;
-		$this->new_value=$value;
-		$this->new_data=array('old_value'=>$old_value, 'type'=>'used_for' );
-		$this->msg=_('Location type changed');
-		$this->updated=true;
-
+		
 
 
 	}
@@ -715,6 +699,32 @@ class Location extends DB_Table {
 
 
 		switch ($key) {
+		case 'Mainly Used For':
+		switch ($this->data['Location Mainly Used For']) {
+		    case 'Picking':
+		        return _('Picking');
+		        break;
+		          case 'Storing':
+		        return _('Storing');
+		        break;
+		          case 'Loading':
+		        return _('Loading');
+		        break;
+		          case 'Displaying':
+		        return _('Displaying');
+		        break;
+		          case 'Other':
+		        return _('Other');
+		        break;
+		          case 'Default':
+		        return _('Default');
+		        break;
+		    default:
+		        return $this->data['Lcoation Mainly Used For'];
+		        break;
+		}
+		
+		break;
 		default:
 
 			if (array_key_exists($key, $this->data))
@@ -829,6 +839,29 @@ class Location extends DB_Table {
 
 	}
 
+function get_field_label($field) {
+		global $account;
+
+		switch ($field) {
+
+		case 'Location Code':
+			$label=_('code');
+			break;
+
+		case 'Location Mainly Used For':
+			$label=_('used for');
+			break;
+
+
+
+		default:
+			$label=$field;
+
+		}
+
+		return $label;
+
+	}
 
 }
 
