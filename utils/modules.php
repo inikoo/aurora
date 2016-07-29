@@ -1360,7 +1360,7 @@ $modules=array(
 
 
 					'part.details'=>array('label'=>_('Data'), 'icon'=>'database'),
-					'part.stock.transactions'=>array('label'=>_('Warehouse transactions'), 'icon'=>'',
+					'part.stock.transactions'=>array('label'=>_('Stock movements'), 'icon'=>'exchange',
 
 
 					),
@@ -1375,7 +1375,7 @@ $modules=array(
 						)
 					),
 					*/
-					'part.stock'=>array('label'=>_('Stock History'),
+					'part.stock'=>array('label'=>_('Stock History'), 'icon'=>'area-chart',
 						'subtabs'=>array(
 							'part.stock.history.annually'=>array('label'=>_('Annually')),
 							'part.stock.history.monthy'=>array('label'=>_('Monthy')),
@@ -1461,40 +1461,73 @@ $modules=array(
 
 				)
 			),
-
+/*
 			'transactions'=>array(
 				'type'=>'navigation', 'label'=>_('Stock Movements'), 'icon'=>'exchange', 'reference'=>'inventory/transactions',
 				'tabs'=>array(
-					'inventory.transactions'=>array('label'=>_('Stock movements'))
+					'inventory.stock.transactions'=>array('label'=>_('Stock movements'))
 
 				)
 			),
+			*/
+			
 			'stock_history'=>array(
-				'type'=>'navigation', 'label'=>_('Stock History'), 'icon'=>'road', 'reference'=>'inventory/stock_history',
+				'type'=>'navigation', 'label'=>_('Stock History'), 'icon'=>'area-chart', 'reference'=>'inventory/stock_history',
 				'tabs'=>array(
-					'inventory.stock_history.dashboard'=>array('label'=>_('Dashboard')),
-					'inventory.stock_history.timeline'=>array('label'=>_('Timeline')),
+					'inventory.stock.history.annually'=>array('label'=>_('Annually')),
+					'inventory.stock.history.monthy'=>array('label'=>_('Monthy')),
+					'inventory.stock.history.weekly'=>array('label'=>_('Weekly')),
+					'inventory.stock.history.daily'=>array('label'=>_('Daily')),
+					'inventory.stock.history.plot'=>array('label'=>_('Chart'), 'class'=>'right'),
+
 
 				)
 			),
+			'stock_history.day'=>array('type'=>'',
+				'tabs'=>array(
+					'inventory.stock.history.day'=>array('label'=>''),
+			
+
+				)
+			),
+			
+			
 
 		)
 	),
 	'warehouses'=>array(
 		'sections'=>array(
+		
+		
+	
+			
+			
+		
+		
 			'warehouse'=>array(
 
-				'type'=>'object', 'label'=>_('Warehouse'), 'title'=>_('Warehouse'), 'icon'=>'th-large', 'reference'=>'warehouse/%d',
+				'type'=>'navigation', 'label'=>_('Warehouse'), 'title'=>_('Warehouse'), 'icon'=>'map', 'reference'=>'warehouse/%d',
 				'tabs'=>array(
-					'warehouse.details'=>array('label'=>_('Data'), 'title'=>_('Warehouse detais')),
-					'warehouse.history'=>array('label'=>_('History/Notes'), 'title'=>_('History/Notes'), 'icon'=>'road'),
-					'warehouse.locations'=>array('label'=>_('Locations'), 'title'=>_('Locations')),
+					'warehouse.details'=>array('label'=>_('Data'), 'title'=>_('Warehouse detais'),'icon'=>'database'),
 					'warehouse.replenishments'=>array('label'=>_("Replenishments"), 'title'=>_("Replenishments")),
 					'warehouse.parts'=>array('label'=>_('Part-Locations'), 'title'=>_('Part-Locations')),
+					'warehouse.history'=>array('label'=>_('History/Notes'), 'title'=>_('History/Notes'), 'icon'=>'road','class'=>'right icon_only'),
 
 				)
 
 			),
+			
+				'locations'=>array(
+
+				'type'=>'navigation', 'label'=>_('Locations'), 'icon'=>'map-marker', 'reference'=>'warehouse/%d/locations',
+				'tabs'=>array(
+										'warehouse.locations'=>array('label'=>_('Locations'), 'title'=>_('Locations')),
+
+
+				)
+
+			),
+			
 			'warehouse.new'=>array('type'=>'new_object',
 				'tabs'=>array(
 					'warehouse.new'=>array('label'=>_('New warehouse')),

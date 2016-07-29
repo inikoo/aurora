@@ -41,6 +41,9 @@ case 'stock_transactions':
 case 'stock_history':
 	stock_history(get_table_parameters(), $db, $user, $account);
 	break;
+case 'inventory_stock_history':
+	inventory_stock_history(get_table_parameters(), $db, $user, $account);
+	break;	
 case 'discontinued_parts':
 	parts(get_table_parameters(), $db, $user, 'discontinued');
 	break;
@@ -168,7 +171,18 @@ function parts($_data, $db, $user, $type, $account) {
 function stock_history($_data, $db, $user, $account) {
 
 
-	$rtext_label='days';
+
+	if ($_data['parameters']['frequency']=='annually') {
+		$rtext_label='year';
+
+	}elseif ($_data['parameters']['frequency']=='monthy') {
+		$rtext_label='month';
+	}elseif ($_data['parameters']['frequency']=='weekly') {
+		$rtext_label='week';
+	}else {
+		$rtext_label='day';
+	}
+
 
 	include_once 'prepare_table/init.php';
 
@@ -191,6 +205,75 @@ function stock_history($_data, $db, $user, $account) {
 				'in'=>number($data['Quantity In']),
 				'sold'=>number($data['Quantity Sold']),
 				'lost'=>number($data['Quantity Lost']),
+
+			);
+
+
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		print $sql;
+		exit;
+	}
+
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+function inventory_stock_history($_data, $db, $user, $account) {
+
+
+
+	if ($_data['parameters']['frequency']=='annually') {
+		$rtext_label='year';
+
+	}elseif ($_data['parameters']['frequency']=='monthy') {
+		$rtext_label='month';
+	}elseif ($_data['parameters']['frequency']=='weekly') {
+		$rtext_label='week';
+	}else {
+		$rtext_label='day';
+	}
+
+
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+	$adata=array();
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $data) {
+
+
+
+			$adata[]=array(
+				'date'=>$data['Date'],
+				'day'=>strftime("%a %e %b %Y", strtotime($data['Date'].' +0:00')),
+				'year'=>strftime("%Y", strtotime($data['Date'].' +0:00')),
+				'month_year'=>strftime("%b %Y", strtotime($data['Date'].' +0:00')),
+				'week_year'=>strftime("(%e %b) %Y %W ", strtotime($data['Date'].' +0:00')),
+				'parts'=>number($data['Parts']),
+				'locations'=>number($data['Locations']),
+
+				'value'=>money($data['Value At Day Cost'], $account->get('Currency')),
+				'commercial_value'=>money($data['Value Commercial'], $account->get('Currency')),
+				//'in'=>number($data['Quantity In']),
+				//'sold'=>number($data['Quantity Sold']),
+				//'lost'=>number($data['Quantity Lost']),
 
 			);
 

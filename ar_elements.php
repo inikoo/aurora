@@ -144,10 +144,11 @@ case 'agent.orders':
 	break;
 
 case 'part.stock.transactions':
+case 'inventory.stock.transactions':
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
 		));
-	get_part_stock_transactions_elements($db, $data['parameters'], $user);
+	get_stock_transactions_elements($db, $data['parameters'], $user);
 	break;
 default:
 	$response=array('state'=>405, 'resp'=>'Tab not found '.$tab);
@@ -308,7 +309,7 @@ function get_campaigns_element_numbers($db, $data, $user) {
 }
 
 
-function get_part_stock_transactions_elements($db, $data, $user) {
+function get_stock_transactions_elements($db, $data, $user) {
 
 
 
@@ -324,6 +325,9 @@ function get_part_stock_transactions_elements($db, $data, $user) {
 	case 'part':
 		$where=sprintf("where `Inventory Transaction Record Type`='Movement' and `Part SKU`=%d", $data['parent_key']);
 		break;
+	case 'account':
+		$where=sprintf("where `Inventory Transaction Record Type`='Movement' ");
+		break;	
 	default:
 		$response=array('state'=>405, 'resp'=>'parent not found '.$data['parent']);
 		echo json_encode($response);
