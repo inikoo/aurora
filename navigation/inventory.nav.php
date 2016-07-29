@@ -542,6 +542,100 @@ function get_transactions_navigation($data, $smarty, $user, $db, $account) {
 }
 
 
+function get_stock_history_navigation($data, $smarty, $user, $db, $account) {
+
+
+
+	$block_view=$data['section'];
+
+	switch ($data['parent']) {
+	case 'account':
+		break;
+	default:
+		break;
+	}
+
+
+	$left_buttons=array();
+
+
+
+	$right_buttons=array();
+	$sections=get_sections('inventory', '');
+
+	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
+
+
+	$_content=array(
+
+		'sections_class'=>'',
+		'sections'=>$sections,
+
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>_('Stock history'),
+		'search'=>array('show'=>true, 'placeholder'=>_('Search inventory'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+}
+
+
+function get_stock_history_day_navigation($data, $smarty, $user, $db, $account) {
+
+
+
+	$block_view=$data['section'];
+
+	switch ($data['parent']) {
+	case 'account':
+		break;
+	default:
+		break;
+	}
+
+
+	$left_buttons=array();
+	$right_buttons=array();
+
+	$sections=get_sections('inventory', '');
+
+	$left_buttons[]=array('icon'=>'arrow-left', 'title'=>strftime("%a %e %b %Y", strtotime($data['key'].' -1 day  +0:00')), 'reference'=>'inventory/stock_history/day/'.strftime("%Y-%m-%d", strtotime($data['key'].' - 1 day +0:00')));
+	$left_buttons[]=array('icon'=>'arrow-up', 'title'=>_("Stock history"), 'reference'=>'inventory/stock_history');
+	$left_buttons[]=array('icon'=>'arrow-right', 'title'=>strftime("%a %e %b %Y", strtotime($data['key'].' +1 day  +0:00')), 'reference'=>'inventory/stock_history/day/'.strftime("%Y-%m-%d", strtotime($data['key'].' + 1 day +0:00')));
+
+
+
+
+
+	$sections['stock_history']['selected']=true;
+
+
+	$title=_('Stock history').' <span class="id">'.strftime("%a %e %b %Y", strtotime($data['key'].' +0:00')).'</span>' ;
+
+	$_content=array(
+
+		'sections_class'=>'',
+		'sections'=>$sections,
+
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>_('Search inventory'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+}
+
+
 function get_categories_navigation($data, $smarty, $user, $db, $account) {
 
 
@@ -1114,6 +1208,7 @@ function get_parts_category_navigation($data, $smarty, $user, $db, $account) {
 	return $html;
 
 }
+
 
 
 ?>

@@ -43,11 +43,12 @@ if ($parameters['parent']=='part') {
 
 }elseif ($parameters['parent']=='account') {
 
+		$where_sub=sprintf(" where  true");
 
 
 
 }else {
-	exit("parent not found ".$parameters['parent']);
+	exit("parent not found: ".$parameters['parent']);
 }
 
 if (isset($extra_where))

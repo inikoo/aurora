@@ -1522,6 +1522,16 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 					$section='transactions';
 				}elseif ($view_path[0]=='stock_history') {
 					$section='stock_history';
+
+					if (isset($view_path[1])) {
+						if ($view_path[1]=='day') {
+							$section='stock_history.day';
+							if (isset($view_path[2])) {
+								$key=$view_path[2];
+							}
+						}
+					}
+
 				}elseif ($view_path[0]=='categories') {
 					$section='categories';
 				}

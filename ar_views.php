@@ -1127,6 +1127,8 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
 	case ('inventory'):
 		require_once 'navigation/inventory.nav.php';
+
+
 		switch ($data['section']) {
 
 
@@ -1149,6 +1151,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 			break;
 		case ('stock_history'):
 			return get_stock_history_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('stock_history.day'):
+			return get_stock_history_day_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('categories'):
 			return get_categories_navigation($data, $smarty, $user, $db, $account);
@@ -1234,7 +1239,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 			break;
 		case ('deleted.contractor'):
 			return get_deleted_contractor_navigation($data, $smarty, $user, $db, $account);
-			break;	
+			break;
 		case ('contractor.new'):
 			return get_new_contractor_navigation($data, $smarty, $user, $db, $account);
 			break;
@@ -2361,7 +2366,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 		case 'deleted.contractor':
 			$branch[]=array('label'=>_('Deleted contractors'), 'icon'=>'', 'reference'=>'hr/deleted_contractors');
 			$branch[]=array('label'=>'<span class="id Staff_Alias">'.$state['_object']->get('Staff Alias').'</span> <i class="fa fa-trash-o padding_left_5" aria-hidden="true"></i> ', 'icon'=>'hand-spock-o', 'reference'=>'employee/'.$state['_object']->id);
-			break;	
+			break;
 		case 'contractor.new':
 			$branch[]=array('label'=>_('Contractors'), 'icon'=>'', 'reference'=>'hr/contractors');
 			$branch[]=array('label'=>_('New contractor'), 'icon'=>'hand-spock-o');
@@ -2535,6 +2540,14 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
 			break;
+		case 'stock_history':
+			$branch[]=array('label'=>_('Stock History'), 'icon'=>'area-chart', 'reference'=>'');
+			break;	
+		case 'stock_history.day':
+			$branch[]=array('label'=>_('Stock History'), 'icon'=>'area-chart', 'reference'=>'inventory/stock_history');
+			$branch[]=array('label'=>strftime("%a %e %b %Y", strtotime($state['key'].' +0:00')), 'icon'=>'', 'reference'=>'');
+			break;		
+			
 		}
 
 		break;
