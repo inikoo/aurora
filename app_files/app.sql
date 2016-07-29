@@ -9832,13 +9832,11 @@ CREATE TABLE `Purchase Order Transaction Fact` (
   `Supplier Delivery Key` mediumint(8) unsigned DEFAULT NULL,
   `Supplier Delivery Received Location Key` mediumint(8) unsigned NOT NULL DEFAULT '1',
   `Supplier Delivery Quantity` float NOT NULL DEFAULT '0',
-  `Supplier Delivery Dispatched Quantity` float unsigned DEFAULT NULL,
-  `Supplier Delivery Received Quantity` float DEFAULT NULL,
-  `Supplier Delivery Damaged Quantity` float NOT NULL DEFAULT '0',
+  `Supplier Delivery Checked Quantity` float DEFAULT NULL,
   `Supplier Delivery Placed Quantity` float DEFAULT NULL,
   `Supplier Delivery Net Amount` float NOT NULL DEFAULT '0',
   `Supplier Delivery Tax Amount` float NOT NULL DEFAULT '0',
-  `Supplier Delivery Transaction State` enum('In Process','Dispatched','Received','Checked','Placed') DEFAULT NULL,
+  `Supplier Delivery Transaction State` enum('InProcess','Dispatched','Received','Checked','Placed','Cancelled') DEFAULT NULL,
   `Supplier Delivery Transaction Placed` enum('Yes','No','NA') DEFAULT NULL,
   `Supplier Invoice Key` mediumint(8) unsigned DEFAULT NULL,
   `Purchase Order CBM` float DEFAULT NULL COMMENT 'In m3',
@@ -11791,6 +11789,7 @@ CREATE TABLE `Supplier Delivery Dimension` (
   `Supplier Delivery Checked Date` datetime DEFAULT NULL,
   `Supplier Delivery Damages Checked Date` datetime DEFAULT NULL,
   `Supplier Delivery Placed Date` datetime DEFAULT NULL,
+  `Supplier Delivery Cancelled Date` datetime DEFAULT NULL,
   `Supplier Delivery Last Updated Date` datetime DEFAULT NULL COMMENT 'Lastest Date when Adding/Modify Supplier Delivery Transaction or Data',
   `Supplier Delivery Main Inputter Key` mediumint(8) unsigned DEFAULT NULL,
   `Supplier Delivery Main Receiver Key` mediumint(9) DEFAULT NULL,
@@ -11799,16 +11798,16 @@ CREATE TABLE `Supplier Delivery Dimension` (
   `Supplier Delivery Public ID` varchar(255) DEFAULT NULL,
   `Supplier Delivery File As` varchar(255) DEFAULT NULL,
   `Supplier Delivery XHTML Purchase Orders` varchar(4096) DEFAULT NULL,
-  `Supplier Delivery Todo Dispatch State` enum('None','Waiting for more products','Still cheking some products') NOT NULL DEFAULT 'None',
-  `Supplier Delivery Current Payment State` enum('No Applicable','Waiting Invoice','Paid','Partially Paid','Unknown','Payment Refunded','Cancelled') NOT NULL DEFAULT 'No Applicable',
   `Supplier Delivery Our Feedback` enum('Praise','None','Shortages','Breakings','Different Product','Multiple','Low Quality','Not Like','Slow Delivery','Other') NOT NULL DEFAULT 'None',
   `Supplier Delivery Actions Taken` enum('Refund','Credit','Replacement','Send Missing','Other','No Applicable') NOT NULL DEFAULT 'No Applicable',
   `Supplier Delivery Number Items` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Supplier Delivery Number Ordered Items` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Supplier Delivery Number Items Without PO` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Supplier Delivery Number Dispatched Items` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Supplier Delivery Number Received Items` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Supplier Delivery Number Checked Items` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Supplier Delivery Number Received and Checked Items` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Supplier Delivery Number Placed Items` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Supplier Delivery Placed Items` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Supplier Delivery Currency Code` varchar(3) NOT NULL DEFAULT 'GBP',
   `Supplier Delivery Currency Exchange` float NOT NULL DEFAULT '1',
   `Supplier Delivery Items Net Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
@@ -11823,8 +11822,6 @@ CREATE TABLE `Supplier Delivery Dimension` (
   `Supplier Delivery Total Tax Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Supplier Delivery Total Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Supplier Delivery Total To Pay Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Supplier Delivery Main XHTML Ship From` varchar(4096) DEFAULT NULL,
-  `Supplier Delivery Main XHTML Ship To` varchar(4096) DEFAULT NULL,
   `Supplier Delivery Supplier Message` text,
   `Supplier Delivery Incoterm` varchar(3) DEFAULT NULL,
   `Supplier Delivery Port of Export` varchar(255) DEFAULT NULL,
@@ -14144,6 +14141,234 @@ CREATE TABLE `Warehouse Receipts Fact` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Webpage Dimension`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Webpage Dimension` (
+  `Webpage Key` smallint(5) unsigned NOT NULL,
+  `Webpage Website Key` smallint(5) unsigned NOT NULL,
+  `Webpage Store Key` smallint(5) unsigned NOT NULL,
+  `Webpage Website Node Key` smallint(5) unsigned NOT NULL,
+  `Webpage Code` varchar(255) NOT NULL,
+  `Webpage Name` varchar(128) NOT NULL,
+  `Webpage Status` enum('Online','Offline') NOT NULL DEFAULT 'Online',
+  `Webpage Class` varchar(255) DEFAULT NULL,
+  `Webpage Object` varchar(64) DEFAULT NULL,
+  `Webpage Object Key` mediumint(8) unsigned DEFAULT NULL,
+  `Webpage Version Key` mediumint(8) unsigned DEFAULT NULL,
+  `Webpage Number Displayable Versions` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Webpage Valid From` datetime DEFAULT NULL,
+  `Webpage Locked` enum('Yes','No') NOT NULL DEFAULT 'No',
+  PRIMARY KEY (`Webpage Key`),
+  UNIQUE KEY `Webpage Website Key` (`Webpage Website Node Key`,`Webpage Code`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Webpage Version Block Bridge`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Webpage Version Block Bridge` (
+  `Webpage Version Block Key` int(10) unsigned NOT NULL,
+  `Webpage Version Block Webpage Version Key` mediumint(8) unsigned NOT NULL,
+  `Webpage Version Block Position` smallint(5) unsigned NOT NULL DEFAULT '10',
+  `Webpage Version Block Template` varchar(255) NOT NULL,
+  `Webpage Version Block Objects` text,
+  `Webpage Version Block Settings` text NOT NULL,
+  PRIMARY KEY (`Webpage Version Block Key`),
+  KEY `Webpage Block Website Key` (`Webpage Version Block Webpage Version Key`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Webpage Version Dimension`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Webpage Version Dimension` (
+  `Webpage Version Key` mediumint(9) NOT NULL,
+  `Webpage Version Webpage Key` mediumint(9) NOT NULL,
+  `Webpage Version Code` varchar(64) DEFAULT NULL,
+  `Webpage Version Display Probability` float NOT NULL DEFAULT '1',
+  `Webpage Version Metadata` text,
+  `Webpage Version Valid From` datetime NOT NULL,
+  PRIMARY KEY (`Webpage Version Key`),
+  KEY `Webpage Version Webpage Key` (`Webpage Version Webpage Key`),
+  KEY `Webpage Version Code` (`Webpage Version Code`,`Webpage Version Webpage Key`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Website Data`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Website Data` (
+  `Website Key` smallint(5) unsigned NOT NULL,
+  `Website Total Acc Visitors` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Total Acc Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Total Acc Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Total Acc Users` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 3 Year Acc Visitors` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 3 Year Acc Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 3 Year Acc Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 3 Year Acc Users` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Year Acc Visitors` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Year Acc Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Year Acc Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Year Acc Users` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 6 Month Acc Visitors` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 6 Month Acc Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 6 Month Acc Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 6 Month Acc Users` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Quarter Acc Visitors` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Quarter Acc Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Quarter Acc Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Quarter Acc Users` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Month Acc Visitors` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Month Acc Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Month Acc Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Month Acc Users` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 10 Day Acc Visitors` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 10 Day Acc Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 10 Day Acc Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 10 Day Acc Users` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Week Acc Visitors` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Week Acc Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Week Acc Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Week Acc Users` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Day Acc Visitors` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Day Acc Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Day Acc Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Day Acc Users` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Hour Acc Visitors` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Hour Acc Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Hour Acc Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Hour Acc Users` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Today Acc Visitors` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Today Acc Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Today Acc Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Today Acc Users` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Year To Day Acc Visitors` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Year To Day Acc Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Year To Day Acc Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Year To Day Acc Users` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Month To Day Acc Visitors` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Month To Day Acc Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Month To Day Acc Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Month To Day Acc Users` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Week To Day Acc Visitors` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Week To Day Acc Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Week To Day Acc Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Week To Day Acc Users` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Last Month Acc Visitors` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Last Month Acc Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Last Month Acc Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Last Month Acc Users` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Last Week Acc Visitors` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Last Week Acc Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Last Week Acc Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Last Week Month Acc Users` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Yesterday Acc Visitors` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Yesterday Acc Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Yesterday Acc Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Yesterday Acc Users` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Total Acc Users Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Total Acc Users Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 3 Year Acc Users Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 3 Year Acc Users Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Year Acc Users Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Year Acc Users Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 6 Month Acc Users Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 6 Month Acc Users Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Yesterday Acc Users Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Yesterday Acc Users Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Quarter Acc Users Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Quarter Acc Users Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Month Acc Users Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Month Acc Users Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 10 Day Acc Users Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 10 Day Acc Users Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Week Acc Users Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Week Acc Users Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Day Acc Users Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Day Acc Users Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Hour Acc Users Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website 1 Hour Acc Users Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Today Acc Users Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Today Acc Users Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Year To Day Acc Users Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Year To Day Acc Users Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Month To Day Acc Users Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Month To Day Acc Users Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Week To Day Acc Users Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Week To Day Acc Users Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Last Month Acc Users Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Last Month Acc Users Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Last Week Acc Users Requests` mediumint(9) NOT NULL DEFAULT '0',
+  `Website Last Week Acc Users Sessions` mediumint(9) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`Website Key`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Website Dimension`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Website Dimension` (
+  `Website Key` smallint(5) unsigned NOT NULL,
+  `Website Store Key` smallint(5) unsigned NOT NULL,
+  `Website From` datetime DEFAULT NULL,
+  `Website Active` enum('Yes','No') NOT NULL DEFAULT 'Yes',
+  `Website Code` varchar(8) NOT NULL,
+  `Website Name` varchar(128) NOT NULL,
+  `Website URL` varchar(255) NOT NULL,
+  `Website Locale` varchar(5) NOT NULL DEFAULT 'en_GB',
+  `Website Number Webpages` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Website Number Webpages with Products` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Website Number Webpages with Out of Stock Products` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Website Number Products` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Website Number Out of Stock Products` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Website Number Users` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`Website Key`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Website Node Dimension`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Website Node Dimension` (
+  `Website Node Key` mediumint(8) unsigned NOT NULL,
+  `Website Node Store Key` mediumint(8) unsigned NOT NULL,
+  `Website Node Website Key` mediumint(8) unsigned NOT NULL,
+  `Website Node Parent Key` mediumint(8) unsigned DEFAULT NULL,
+  `Website Node Class` varchar(64) DEFAULT NULL,
+  `Website Node Object` varchar(64) DEFAULT NULL,
+  `Website Node Object Key` mediumint(8) unsigned DEFAULT NULL,
+  `Website Node Type` enum('Root','Branch','Head') NOT NULL,
+  `Website Node Webpage Key` mediumint(8) unsigned DEFAULT NULL,
+  `Website Node Icon` varchar(255) DEFAULT NULL,
+  `Website Node Locked` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Website Node Valid From` datetime DEFAULT NULL,
+  PRIMARY KEY (`Website Node Key`),
+  KEY `Website Node Website Key` (`Website Node Website Key`),
+  KEY `Website Node Parent Key` (`Website Node Parent Key`),
+  KEY `Website Node Webpage Key` (`Website Node Webpage Key`)
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Widget Dimension`
 --
 
@@ -14196,4 +14421,4 @@ CREATE TABLE `todo_users` (
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-07-27 18:52:28
+-- Dump completed on 2016-07-29 22:28:48
