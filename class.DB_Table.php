@@ -175,8 +175,8 @@ abstract class DB_Table {
 		$value=_trim($value);
 
 
-        $formatted_field=preg_replace('/'.$this->table_name.' /','',$field);
-        
+		$formatted_field=preg_replace('/'.$this->table_name.' /', '', $field);
+
 
 		//$old_value=_('Unknown');
 		$key_field=$table_name." Key";
@@ -202,7 +202,7 @@ abstract class DB_Table {
 		}else if ($table_name=='Product') {
 			$key_field='Product ID';
 		}
-		
+
 
 		if (preg_match('/^custom_field_part/i', $field)) {
 			$field1=preg_replace('/^custom_field_part_/', '', $field);
@@ -228,7 +228,7 @@ abstract class DB_Table {
 
 			//$sql=sprintf("select `%s` as value from `Customer Custom Field Dimension` where `Customer Key`=%d", $field_key, $table_key);
 		}
-		
+
 		/*
 		else {
 
@@ -252,7 +252,7 @@ abstract class DB_Table {
 
 		}
 */
-$old_formatted_value=$this->get($formatted_field);
+		$old_formatted_value=$this->get($formatted_field);
 
 
 
@@ -288,8 +288,6 @@ $old_formatted_value=$this->get($formatted_field);
 		$update_op->execute();
 		$affected=$update_op->rowCount();
 
-
-
 		if ($affected==0) {
 			$this->data[$field]=$value;
 
@@ -315,7 +313,7 @@ $old_formatted_value=$this->get($formatted_field);
 
 
 			if (
-				preg_match('/deal|deal campaign|attachment bridge|site|page|part|barcode|agent|customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position|category/i', $table_name)
+				preg_match('/deal|deal campaign|attachment bridge|location|site|page|part|barcode|agent|customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position|category/i', $table_name)
 				and !$this->new
 				and $save_history
 			) {
@@ -386,7 +384,7 @@ $old_formatted_value=$this->get($formatted_field);
 	function get_main_id() {
 
 
-			return $this->id;
+		return $this->id;
 
 	}
 
@@ -704,15 +702,15 @@ $old_formatted_value=$this->get($formatted_field);
 	}
 
 
-    function get_update_metadata(){
-    
-    if (isset($this->update_metadata)) {
+	function get_update_metadata() {
+
+		if (isset($this->update_metadata)) {
 			return $this->update_metadata;
 		}else {
 			return array();
 		}
-    
-    }
+
+	}
 
 
 	function get_other_fields_update_info() {

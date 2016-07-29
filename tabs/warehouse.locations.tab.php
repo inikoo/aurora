@@ -32,8 +32,8 @@ if ( !$user->can_view('locations') or   !in_array($state['key'], $user->warehous
 	);
 
 	$parameters=array(
-		'parent'=>$state['object'],
-		'parent_key'=>$state['key'],
+		'parent'=>$state['parent'],
+		'parent_key'=>$state['parent_key'],
 
 	);
 

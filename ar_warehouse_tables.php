@@ -41,6 +41,12 @@ case 'locations':
 case 'replenishments':
 	replenishments(get_table_parameters(), $db, $user);
 	break;
+case 'parts':
+	parts(get_table_parameters(), $db, $user);
+	break;
+case 'stock_transactions':
+	stock_transactions(get_table_parameters(), $db, $user);
+	break;
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
@@ -49,7 +55,7 @@ default:
 }
 
 function warehouses($_data, $db, $user) {
-	
+
 	$rtext_label='warehouse';
 	include_once 'prepare_table/init.php';
 
@@ -62,7 +68,7 @@ function warehouses($_data, $db, $user) {
 	foreach ($db->query($sql) as $data) {
 
 		$adata[]=array(
-		    'access'=>(in_array($data['Warehouse Key'],$user->warehouses)?'':'<i class="fa fa-lock error"></i>'),
+			'access'=>(in_array($data['Warehouse Key'], $user->warehouses)?'':'<i class="fa fa-lock error"></i>'),
 			'id'=>(integer) $data['Warehouse Key'],
 			'code'=>$data['Warehouse Code'],
 			'name'=>$data['Warehouse Name'],
@@ -116,8 +122,8 @@ function locations($_data, $db, $user) {
 			break;
 		}
 
-		
-		
+
+
 		if ($data['Location Max Weight']=='' or $data['Location Max Weight']<=0)
 			$max_weight=_('Unknown');
 		else
@@ -134,7 +140,7 @@ function locations($_data, $db, $user) {
 			'warehouse_key'=>(integer)$data['Location Warehouse Key'],
 			'warehouse_area_key'=>(integer)$data['Location Warehouse Area Key'],
 			'code'=>$data['Location Code'],
-			'flag'=>($data['Warehouse Flag Key']?sprintf('<i class="fa fa-flag %s" aria-hidden="true" title="%s"></i>',strtolower($data['Warehouse Flag Color']),$data['Warehouse Flag Label']):'<i class="fa fa-flag-o discret" aria-hidden="true"></i>'),
+			'flag'=>($data['Warehouse Flag Key']?sprintf('<i class="fa fa-flag %s" aria-hidden="true" title="%s"></i>', strtolower($data['Warehouse Flag Color']), $data['Warehouse Flag Label']):'<i class="fa fa-flag-o discret" aria-hidden="true"></i>'),
 			'flag_key'=>$data['Warehouse Flag Key'],
 			'area'=>$data['Warehouse Area Code'],
 			'max_weight'=>$max_weight,
@@ -232,6 +238,210 @@ function replenishments($_data, $db, $user) {
 	echo json_encode($response);
 }
 
+
+function parts($_data, $db, $user) {
+
+
+	if ($_data['parameters']['tab']=='warehouse.parts') {
+		$rtext_label='part location';
+	}else {
+		$rtext_label='part';
+
+	}
+
+
+
+
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	//print $sql;
+
+
+	foreach ($db->query($sql) as $data) {
+
+		$adata[]=array(
+			// 'id'=>(integer) $data['Part SKU'],
+			'reference'=>$data['Part Reference'],
+			'unit_description'=>$data['Part Unit Description'],
+			'location'=>$data['Location Code'],
+			'location_key'=>$data['Location Key'],
+			'warehouse_key'=>$data['Part Location Warehouse Key'],
+			'part_sku'=>$data['Part SKU'],
+			'can_pick'=>($data['Can Pick']=='Yes'?_('Yes'):_('No')),
+			'quantity'=>number($data['Quantity On Hand'])
+
+		);
+
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function stock_transactions($_data, $db, $user) {
+
+
+	$rtext_label='transaction';
+
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+	//print $sql;
+	$adata=array();
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $data) {
+			//MossRB-04 227330 Taken from: 11A1
+
+			$note=$data['Note'];
+			$stock=$data['Inventory Transaction Quantity'];
+			switch ($data['Inventory Transaction Type']) {
+			case 'OIP':
+				$type='<i class="fa  fa-clock-o discret fa-fw" aria-hidden="true"></i>';
+
+				if ($parameters['parent']=='part') {
+					$note=sprintf(_('%s %s (%s) to be taken from %s'),
+
+						number($data['Required']),
+						'<span title="'._('Stock keeping outers').'">SKO</span>',
+
+						sprintf('<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-fw fa-shopping-basket" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'], $data['Delivery Note ID']),
+						sprintf('<span class="button" onClick="change_view(\'location/%d\')">%s</span>', $data['Location Key'], $data['Location Code'])
+
+
+					);
+				}else {
+					$note=sprintf(_('%sx %s (%s) to be taken from %s'),
+						number($data['Required']),
+
+						($parameters['parent']=='part'?
+							sprintf('<i class="fa fa-square" aria-hidden="true"></i> %s', $data['Part Reference']):
+							sprintf('<span class="button" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span>', $data['Part SKU'], $data['Part Reference'])
+						),
+						sprintf('<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-shopping-basket" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'], $data['Delivery Note ID']),
+						sprintf('<span class="button" onClick="change_view(\'location/%d\')">%s</span>', $data['Location Key'], $data['Location Code'])
+
+					);
+				}
+
+
+				break;
+			case 'Sale':
+				$type='<i class="fa fa-sign-out fa-fw" aria-hidden="true"></i>';
+				if ($parameters['parent']=='part') {
+					$note=sprintf(_('%s %s (%s) taken from %s'),
+
+						number(-1*$data['Inventory Transaction Quantity']),
+						'<span title="'._('Stock keeping outers').'">SKO</span>',
+
+						sprintf('<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-truck" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'], $data['Delivery Note ID']),
+						sprintf('<span class="button" onClick="change_view(\'location/%d\')">%s</span>', $data['Location Key'], $data['Location Code'])
+
+
+					);
+				}else {
+					$note=sprintf(_('%sx %s (%s) taken from %s'),
+						number(-1*$data['Inventory Transaction Quantity']),
+
+						($parameters['parent']=='part'?
+							sprintf('<i class="fa fa-square" aria-hidden="true"></i> %s', $data['Part Reference']):
+							sprintf('<span class="button" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span>', $data['Part SKU'], $data['Part Reference'])
+						),
+						sprintf('<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-truck" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'], $data['Delivery Note ID']),
+						sprintf('<span class="button" onClick="change_view(\'location/%d\')">%s</span>', $data['Location Key'], $data['Location Code'])
+
+					);
+				}
+
+
+
+				break;
+			case 'In':
+				$type='<i class="fa fa-sign-in fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Audit':
+
+
+
+
+				$type='<i class="fa fa-fw fa-dot-circle-o" aria-hidden="true"></i>';
+
+				$stock=sprintf('<b>'.$data['Part Location Stock'].'</b>');
+				break;
+			case 'Adjust':
+
+				if ($stock>0) {
+					$stock='+'.number($stock);
+				}
+
+				$type='<i class="fa fa-fw fa-sliders" aria-hidden="true"></i>';
+
+
+				break;
+
+			case 'Move':
+				$stock='±'.number($data['Metadata']);
+				$type='<i class="fa fa-refresh fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Error':
+				$type='<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+				break;
+			default:
+				$type=$data['Inventory Transaction Section'];
+				break;
+			}
+
+
+			$adata[]=array(
+				'id'=>(integer)$data['Inventory Transaction Key'],
+				'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Date'].' +0:00')),
+				'user'=>sprintf('<span title="%s">%s</span>', $data['User Alias'], $data['User Handle']),
+
+				'change'=>$stock,
+				'note'=>$note,
+				'type'=>$type,
+
+			);
+
+
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		print $sql;
+		exit;
+	}
+
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
 
 
 ?>

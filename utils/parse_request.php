@@ -1470,24 +1470,34 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			$module='warehouses';
 			$section='warehouse';
 
-			$object='warehouse';
+
 
 			if (isset($view_path[0])) {
 
 				if (is_numeric($view_path[0])) {
+					$object='warehouse';
 					$key=$view_path[0];
 
+					if (isset($view_path[1])) {
+						if ($view_path[1]=='locations') {
+							$section='locations';
+							$object='';
 
+							$parent='warehouse';
+							$parent_key=$key;
 
+						}
+
+					}
 				}
 				elseif ($view_path[0]=='new') {
+					$object='warehouse';
 					$section='warehouse.new';
-					$object='';
+
 
 
 
 				}
-
 
 
 			}else {

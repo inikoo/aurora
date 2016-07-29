@@ -7,7 +7,7 @@
 				
 				<tr>
 					<td>{t}Used for{/t}:</td>
-					<td  class="aright">{$location->get('Used For')}</td>
+					<td  class="aright">{$location->get('Mainly Used For')}</td>
 				</tr>
 				
 				

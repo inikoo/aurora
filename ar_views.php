@@ -2564,19 +2564,20 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 		switch ($state['section']) {
 		case 'warehouse':
-			//if ( $user->get_number_warehouses()>1 or $user->can_create('warehouses') ) {
-
 			$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'warehouses');
-
-			//}
 			$branch[]=array('label'=>'<span class="id Warehouse_Code">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'map', 'reference'=>'');
-
 			break;
+		case 'locations':
+			$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'warehouses');
+			$branch[]=array('label'=>'<span class="id Warehouse_Code">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'map', 'reference'=>'warehouse/'.$state['parent_key']);
+			$branch[]=array('label'=>_('Locations'), 'icon'=>'', 'reference'=>'');
+			break;	
 
 		case 'location':
 
 			$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'warehouses');
 			$branch[]=array('label'=>'<span class=" Warehouse_Code">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'map', 'reference'=>'warehouse/'.$state['parent_key']);
+			$branch[]=array('label'=>_('Locations'), 'icon'=>'', 'reference'=>'warehouse/'.$state['parent_key'].'/locations');
 			$branch[]=array('label'=>'<span class="id Location_Code">'.$state['_object']->get('Code').'</span>', 'icon'=>'map-marker', 'reference'=>'');
 
 			break;

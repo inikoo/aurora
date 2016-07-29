@@ -301,9 +301,8 @@ $elements_options=array(
 		'type'=>array(
 			'label'=>_('Type'),
 			'items'=>array(
-				'Notes'=>array('label'=>_('Notes'), 'selected'=>true),
+//				'Notes'=>array('label'=>_('Notes'), 'selected'=>true),
 				'Changes'=>array('label'=>_('Changes'), 'selected'=>true),
-				'WebLog'=>array('label'=>_('WebLog'), 'selected'=>true),
 			),
 
 		)

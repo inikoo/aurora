@@ -21,7 +21,7 @@ case('shelf'):
 	$where=sprintf(' where `Location Shelf Key`=%d', $parameters['parent_key']);
 	break;
 default:
-	$where='where false';
+	exit ('parent not found '.$parameters['parent']);
 }
 
 
@@ -105,6 +105,8 @@ elseif ($order=='warehouse')
 	$order='`Warehouse Code`';
 else
 	$order='`Location Key`';
+
+
 
 $table='`Location Dimension` L left join `Warehouse Area Dimension` WAD on (`Location Warehouse Area Key`=WAD.`Warehouse Area Key`) left join `Warehouse Dimension` WD on (`Location Warehouse Key`=WD.`Warehouse Key`) left join `Warehouse Flag Dimension`F  on (F.`Warehouse Flag Key`=L.`Warehouse Flag Key`)';
 $fields="`Location Key`,`Warehouse Flag Label`,`Warehouse Flag Color`,`Location Warehouse Key`,`Location Warehouse Area Key`,`Location Code`,`Location Distinct Parts`,`Location Max Volume`,`Location Max Weight`, `Location Mainly Used For`,`Warehouse Area Code`,L.`Warehouse Flag Key`,`Warehouse Code`";
