@@ -9528,132 +9528,6 @@ CREATE TABLE `Promotion Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `Purchase Delivery Note Dimension`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Purchase Delivery Note Dimension` (
-  `Purchase Delivery Note Key` mediumint(8) unsigned NOT NULL,
-  `Purchase Delivery Note Warehouse Key` smallint(5) unsigned NOT NULL,
-  `Purchase Delivery Note Receipt Confirmed Date` datetime DEFAULT NULL,
-  `Purchase Delivery Note Date` date DEFAULT NULL,
-  `Purchase Delivery Note Creation Date` datetime NOT NULL,
-  `Purchase Delivery Note Input Date` datetime DEFAULT NULL,
-  `Purchase Delivery Note Received Date` datetime DEFAULT NULL,
-  `Purchase Delivery Note Checked Date` datetime DEFAULT NULL,
-  `Purchase Delivery Note Damages Checked Date` datetime DEFAULT NULL,
-  `Purchase Delivery Note Consolidated Date` datetime DEFAULT NULL,
-  `Purchase Delivery Note Last Updated Date` datetime DEFAULT NULL,
-  `Purchase Delivery Note Main Inputter Key` mediumint(8) unsigned DEFAULT NULL,
-  `Purchase Delivery Note Main Receiver Key` mediumint(9) DEFAULT NULL,
-  `Purchase Delivery Note Main Checker Key` mediumint(9) DEFAULT NULL,
-  `Purchase Delivery Note Main Damages Checker Key` mediumint(9) DEFAULT NULL,
-  `Purchase Delivery Note Public ID` varchar(255) DEFAULT NULL,
-  `Purchase Delivery Note File As` varchar(255) DEFAULT NULL,
-  `Purchase Delivery Note XHTML Purchase Orders` varchar(4096) DEFAULT NULL,
-  `Purchase Delivery Note Parent` enum('Supplier','Agent') NOT NULL DEFAULT 'Supplier',
-  `Purchase Delivery Note Parent Key` mediumint(8) unsigned DEFAULT NULL,
-  `Purchase Delivery Note Current State` enum('In Process','Received','Inputted','Checked','Placing in the Warehouse','Done','Unknown') NOT NULL DEFAULT 'In Process',
-  `Purchase Delivery Note Todo Dispatch State` enum('None','Waiting for more products','Still cheking some products') NOT NULL DEFAULT 'None',
-  `Purchase Delivery Note Current Payment State` enum('No Applicable','Waiting Invoice','Paid','Parcially Paid','Unknown','Payment Refunded','Cancelled') NOT NULL DEFAULT 'No Applicable',
-  `Purchase Delivery Note Current XHTML State` varchar(1024) DEFAULT NULL,
-  `Purchase Delivery Note Our Feedback` enum('Praise','None','Shortages','Breakings','Different Product','Multiple','Low Quality','Not Like','Slow Delivery','Other') NOT NULL DEFAULT 'None',
-  `Purchase Delivery Note Actions Taken` enum('Refund','Credit','Replacement','Send Missing','Other','No Applicable') NOT NULL DEFAULT 'No Applicable',
-  `Purchase Delivery Note Number Items` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Purchase Delivery Note Number Ordered Items` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Purchase Delivery Note Number Items Without PO` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Purchase Delivery Note Main XHTML Ship From` varchar(4096) DEFAULT NULL,
-  `Purchase Delivery Note Main XHTML Ship To` varchar(4096) DEFAULT NULL,
-  `Purchase Delivery Note Supplier Message` text,
-  `Purchase Delivery Note POs` varchar(1024) NOT NULL,
-  PRIMARY KEY (`Purchase Delivery Note Key`)
-);
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Purchase Delivery Note History Bridge`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Purchase Delivery Note History Bridge` (
-  `Purchase Delivery Note Key` mediumint(8) unsigned NOT NULL,
-  `History Key` int(10) unsigned NOT NULL,
-  `Deletable` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
-  `Strikethrough` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
-  `Type` enum('Notes','Changes','Attachments') CHARACTER SET latin1 NOT NULL,
-  PRIMARY KEY (`Purchase Delivery Note Key`,`History Key`),
-  KEY `Purchase Delivery Note Key` (`Purchase Delivery Note Key`),
-  KEY `Deletable` (`Deletable`),
-  KEY `History Key` (`History Key`),
-  KEY `Type` (`Type`)
-);
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Purchase Invoice Dimension`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Purchase Invoice Dimension` (
-  `Purchase Invoice Key` mediumint(8) unsigned NOT NULL,
-  `Purchase Invoice Warehouse Key` smallint(5) unsigned NOT NULL,
-  `Purchase Invoice Receipt Confirmed Date` datetime DEFAULT NULL,
-  `Purchase Invoice Date` date DEFAULT NULL,
-  `Purchase Invoice Creation Date` datetime NOT NULL,
-  `Purchase Invoice Input Date` datetime DEFAULT NULL,
-  `Purchase Invoice Received Date` datetime DEFAULT NULL,
-  `Purchase Invoice Checked Date` datetime DEFAULT NULL,
-  `Purchase Invoice Damages Checked Date` datetime DEFAULT NULL,
-  `Purchase Invoice Consolidated Date` datetime DEFAULT NULL,
-  `Purchase Invoice Last Updated Date` datetime DEFAULT NULL,
-  `Purchase Invoice Main Inputter Key` mediumint(8) unsigned DEFAULT NULL,
-  `Purchase Invoice Main Receiver Key` mediumint(9) DEFAULT NULL,
-  `Purchase Invoice Main Checker Key` mediumint(9) DEFAULT NULL,
-  `Purchase Invoice Main Damages Checker Key` mediumint(9) DEFAULT NULL,
-  `Purchase Invoice Public ID` varchar(255) DEFAULT NULL,
-  `Purchase Invoice File As` varchar(255) DEFAULT NULL,
-  `Purchase Invoice XHTML Purchase Orders` varchar(4096) DEFAULT NULL,
-  `Purchase Invoice Parent` enum('Supplier','Agent') NOT NULL DEFAULT 'Supplier',
-  `Purchase Invoice Parent Key` mediumint(8) unsigned DEFAULT NULL,
-  `Purchase Invoice Current State` enum('In Process','Received','Inputted','Checked','Placing in the Warehouse','Done','Unknown') NOT NULL DEFAULT 'In Process',
-  `Purchase Invoice Todo Dispatch State` enum('None','Waiting for more products','Still cheking some products') NOT NULL DEFAULT 'None',
-  `Purchase Invoice Current Payment State` enum('No Applicable','Waiting Invoice','Paid','Parcially Paid','Unknown','Payment Refunded','Cancelled') NOT NULL DEFAULT 'No Applicable',
-  `Purchase Invoice Current XHTML State` varchar(1024) DEFAULT NULL,
-  `Purchase Invoice Our Feedback` enum('Praise','None','Shortages','Breakings','Different Product','Multiple','Low Quality','Not Like','Slow Delivery','Other') NOT NULL DEFAULT 'None',
-  `Purchase Invoice Actions Taken` enum('Refund','Credit','Replacement','Send Missing','Other','No Applicable') NOT NULL DEFAULT 'No Applicable',
-  `Purchase Invoice Number Items` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Purchase Invoice Main XHTML Ship From` varchar(4096) DEFAULT NULL,
-  `Purchase Invoice Main XHTML Ship To` varchar(4096) DEFAULT NULL,
-  `Purchase Invoice Supplier Message` text,
-  `Purchase Invoice POs` varchar(1024) NOT NULL,
-  PRIMARY KEY (`Purchase Invoice Key`)
-);
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Purchase Invoice History Bridge`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Purchase Invoice History Bridge` (
-  `Purchase Invoice Key` mediumint(8) unsigned NOT NULL,
-  `History Key` int(10) unsigned NOT NULL,
-  `Deletable` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
-  `Strikethrough` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
-  `Type` enum('Notes','Changes','Attachments') CHARACTER SET latin1 NOT NULL,
-  PRIMARY KEY (`Purchase Invoice Key`,`History Key`),
-  KEY `Purchase Invoice Key` (`Purchase Invoice Key`),
-  KEY `Deletable` (`Deletable`),
-  KEY `History Key` (`History Key`),
-  KEY `Type` (`Type`)
-);
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `Purchase Order Deleted Dimension`
 --
 
@@ -9755,52 +9629,6 @@ CREATE TABLE `Purchase Order Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `Purchase Order History Bridge`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Purchase Order History Bridge` (
-  `Purchase Order Key` mediumint(8) unsigned NOT NULL,
-  `History Key` int(10) unsigned NOT NULL,
-  `Deletable` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
-  `Strikethrough` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
-  `Type` enum('Notes','Changes','Attachments') CHARACTER SET latin1 NOT NULL,
-  PRIMARY KEY (`Purchase Order Key`,`History Key`),
-  KEY `Purchase Order Key` (`Purchase Order Key`),
-  KEY `Deletable` (`Deletable`),
-  KEY `History Key` (`History Key`),
-  KEY `Type` (`Type`)
-);
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Purchase Order SDN Bridge`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Purchase Order SDN Bridge` (
-  `Purchase Order Key` mediumint(8) unsigned NOT NULL,
-  `Supplier Delivery Note Key` mediumint(8) unsigned NOT NULL,
-  PRIMARY KEY (`Purchase Order Key`,`Supplier Delivery Note Key`)
-);
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Purchase Order SI Bridge`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Purchase Order SI Bridge` (
-  `Purchase Order Key` mediumint(8) unsigned NOT NULL,
-  `Supplier Invoice Key` mediumint(8) unsigned NOT NULL,
-  PRIMARY KEY (`Purchase Order Key`,`Supplier Invoice Key`)
-);
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `Purchase Order Transaction Fact`
 --
 
@@ -9848,30 +9676,6 @@ CREATE TABLE `Purchase Order Transaction Fact` (
   KEY `Purchase Order Key` (`Purchase Order Key`),
   KEY `User Key` (`User Key`),
   KEY `Purchase Order Item Index` (`Purchase Order Item Index`)
-);
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Purchase Requsition Fact`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Purchase Requsition Fact` (
-  `Purchase Requsition Key` mediumint(8) unsigned NOT NULL,
-  `Requisition Date` datetime NOT NULL,
-  `Requested Date` datetime NOT NULL,
-  `Product Key` mediumint(9) NOT NULL,
-  `Part Key` mediumint(9) NOT NULL,
-  `Supplier Key` smallint(6) NOT NULL,
-  `Contract Terms Key` mediumint(9) NOT NULL,
-  `Requested By Key` smallint(6) NOT NULL,
-  `Contract Number` varchar(255) NOT NULL,
-  `Purchase Requisition Number` varchar(255) NOT NULL,
-  `Purchase Requisition Quantity` float NOT NULL,
-  `Purchase Requisition Amount` decimal(9,2) NOT NULL,
-  `Units Factor` float NOT NULL,
-  PRIMARY KEY (`Purchase Requsition Key`)
 );
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -11835,110 +11639,6 @@ CREATE TABLE `Supplier Delivery Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `Supplier Delivery Note Dimension`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Supplier Delivery Note Dimension` (
-  `Supplier Delivery Note Key` mediumint(8) unsigned NOT NULL,
-  `Supplier Delivery Note Purchase Order Key` mediumint(8) unsigned DEFAULT NULL,
-  `Supplier Delivery Note Parent` enum('Supplier','Agent') DEFAULT NULL,
-  `Supplier Delivery Note Parent Key` mediumint(8) unsigned DEFAULT NULL,
-  `Supplier Delivery Note Parent Code` varchar(255) DEFAULT NULL,
-  `Supplier Delivery Parent Note Name` varchar(255) DEFAULT NULL,
-  `Supplier Delivery Note Parent Contact Name` varchar(255) DEFAULT NULL,
-  `Supplier Delivery Note Parent Email` varchar(255) DEFAULT NULL,
-  `Supplier Delivery Note Parent Telephone` varchar(255) DEFAULT NULL,
-  `Supplier Delivery Note Parent Address` text,
-  `Supplier Delivery Note Warehouse Key` smallint(5) unsigned NOT NULL,
-  `Supplier Delivery Note Receipt Confirmed Date` datetime DEFAULT NULL,
-  `Supplier Delivery Note Date` date DEFAULT NULL,
-  `Supplier Delivery Note Creation Date` datetime NOT NULL,
-  `Supplier Delivery Note Input Date` datetime DEFAULT NULL,
-  `Supplier Delivery Note Received Date` datetime DEFAULT NULL,
-  `Supplier Delivery Note Checked Date` datetime DEFAULT NULL,
-  `Supplier Delivery Note Damages Checked Date` datetime DEFAULT NULL,
-  `Supplier Delivery Note Consolidated Date` datetime DEFAULT NULL,
-  `Supplier Delivery Note Last Updated Date` datetime DEFAULT NULL COMMENT 'Lastest Date when Adding/Modify Supplier Delivery Note Transaction or Data',
-  `Supplier Delivery Note Main Inputter Key` mediumint(8) unsigned DEFAULT NULL,
-  `Supplier Delivery Note Main Receiver Key` mediumint(9) DEFAULT NULL,
-  `Supplier Delivery Note Main Checker Key` mediumint(9) DEFAULT NULL,
-  `Supplier Delivery Note Main Damages Checker Key` mediumint(9) DEFAULT NULL,
-  `Supplier Delivery Note Public ID` varchar(255) DEFAULT NULL,
-  `Supplier Delivery Note File As` varchar(255) DEFAULT NULL,
-  `Supplier Delivery Note XHTML Purchase Orders` varchar(4096) DEFAULT NULL,
-  `Supplier Delivery Note State` enum('In Process','Received','Inputted','Checked','Placing in the Warehouse','Done','Unknown') NOT NULL DEFAULT 'In Process',
-  `Supplier Delivery Note Todo Dispatch State` enum('None','Waiting for more products','Still cheking some products') NOT NULL DEFAULT 'None',
-  `Supplier Delivery Note Current Payment State` enum('No Applicable','Waiting Invoice','Paid','Parcially Paid','Unknown','Payment Refunded','Cancelled') NOT NULL DEFAULT 'No Applicable',
-  `Supplier Delivery Note Current XHTML State` varchar(1024) DEFAULT NULL,
-  `Supplier Delivery Note Our Feedback` enum('Praise','None','Shortages','Breakings','Different Product','Multiple','Low Quality','Not Like','Slow Delivery','Other') NOT NULL DEFAULT 'None',
-  `Supplier Delivery Note Actions Taken` enum('Refund','Credit','Replacement','Send Missing','Other','No Applicable') NOT NULL DEFAULT 'No Applicable',
-  `Supplier Delivery Note Number Items` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Supplier Delivery Note Number Ordered Items` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Supplier Delivery Note Number Items Without PO` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Supplier Delivery Note Main XHTML Ship From` varchar(4096) DEFAULT NULL,
-  `Supplier Delivery Note Main XHTML Ship To` varchar(4096) DEFAULT NULL,
-  `Supplier Delivery Note Supplier Message` text,
-  `Supplier Delivery Note POs` varchar(1024) NOT NULL,
-  PRIMARY KEY (`Supplier Delivery Note Key`),
-  KEY `Supplier Delivery Note Purchase Order Key` (`Supplier Delivery Note Purchase Order Key`)
-);
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Supplier Delivery Note History Bridge`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Supplier Delivery Note History Bridge` (
-  `Supplier Delivery Note Key` mediumint(8) unsigned NOT NULL,
-  `History Key` int(10) unsigned NOT NULL,
-  `Deletable` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
-  `Strikethrough` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
-  `Type` enum('Notes','Changes','Attachments') CHARACTER SET latin1 NOT NULL,
-  PRIMARY KEY (`Supplier Delivery Note Key`,`History Key`),
-  KEY `Supplier Delivery Note Key` (`Supplier Delivery Note Key`),
-  KEY `Deletable` (`Deletable`),
-  KEY `History Key` (`History Key`),
-  KEY `Type` (`Type`)
-);
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Supplier Delivery Note Item Part Bridge`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Supplier Delivery Note Item Part Bridge` (
-  `Supplier Delivery Note Key` mediumint(8) unsigned NOT NULL,
-  `Purchase Order Transaction Fact Key` mediumint(5) unsigned NOT NULL,
-  `Part SKU` mediumint(8) unsigned NOT NULL,
-  `Part Quantity` float NOT NULL,
-  `Done` enum('Yes','No') NOT NULL DEFAULT 'No',
-  `Notes` text NOT NULL,
-  KEY `Supplier Delivery Note Key` (`Supplier Delivery Note Key`),
-  KEY `Supplier Delivery Note Key_2` (`Supplier Delivery Note Key`,`Purchase Order Transaction Fact Key`),
-  KEY `Part SKU` (`Part SKU`)
-);
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Supplier Delivery Note SI Bridge`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Supplier Delivery Note SI Bridge` (
-  `Supplier Delivery Note Key` mediumint(8) unsigned NOT NULL,
-  `Supplier Invoice Key` mediumint(8) unsigned NOT NULL,
-  PRIMARY KEY (`Supplier Delivery Note Key`,`Supplier Invoice Key`)
-);
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `Supplier Dimension`
 --
 
@@ -11948,7 +11648,6 @@ CREATE TABLE `Supplier Dimension` (
   `Supplier Key` mediumint(8) unsigned NOT NULL,
   `Supplier Has Agent` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Supplier Products Origin Country Code` varchar(3) DEFAULT NULL,
-  `Supplier Products Origin` varchar(255) DEFAULT NULL,
   `Supplier ID` mediumint(8) unsigned NOT NULL,
   `Supplier Code` varchar(16) NOT NULL,
   `Supplier Name` varchar(255) DEFAULT NULL,
@@ -12001,7 +11700,6 @@ CREATE TABLE `Supplier Dimension` (
   `Supplier Default Port of Import` varchar(255) DEFAULT NULL,
   `Supplier Default PO Terms and Conditions` text,
   `Supplier Show Warehouse TC in PO` enum('Yes','No') NOT NULL DEFAULT 'Yes',
-  `Supplier Active Supplier Products` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Supplier Discontinued Supplier Products` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Supplier Surplus Availability Products` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Supplier Optimal Availability Products` smallint(5) unsigned NOT NULL DEFAULT '0',
@@ -12023,7 +11721,6 @@ CREATE TABLE `Supplier Dimension` (
   `Supplier Sticky Note` text,
   `Supplier Active` enum('Yes','No') NOT NULL DEFAULT 'Yes',
   `Supplier Stock Value` decimal(14,2) DEFAULT NULL,
-  `Supplier Default Currency` varchar(3) NOT NULL DEFAULT 'USD',
   `Supplier Default Currency Code` varchar(3) NOT NULL DEFAULT 'USD',
   `Supplier Number Parts` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Supplier Number Surplus Parts` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -12063,67 +11760,6 @@ CREATE TABLE `Supplier History Bridge` (
   KEY `Type` (`Type`),
   KEY `Deletable` (`Deletable`),
   KEY `Strikethrough` (`Strikethrough`)
-);
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Supplier Invoice Dimension`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Supplier Invoice Dimension` (
-  `Supplier Invoice Key` mediumint(8) unsigned NOT NULL,
-  `Supplier Invoice Warehouse Key` smallint(5) unsigned NOT NULL,
-  `Supplier Invoice Receipt Confirmed Date` datetime DEFAULT NULL,
-  `Supplier Invoice Date` date DEFAULT NULL,
-  `Supplier Invoice Creation Date` datetime NOT NULL,
-  `Supplier Invoice Input Date` datetime DEFAULT NULL,
-  `Supplier Invoice Received Date` datetime DEFAULT NULL,
-  `Supplier Invoice Checked Date` datetime DEFAULT NULL,
-  `Supplier Invoice Damages Checked Date` datetime DEFAULT NULL,
-  `Supplier Invoice Consolidated Date` datetime DEFAULT NULL,
-  `Supplier Invoice Last Updated Date` datetime DEFAULT NULL COMMENT 'Lastest Date when Adding/Modify Supplier Invoice Transaction or Data',
-  `Supplier Invoice Main Inputter Key` mediumint(8) unsigned DEFAULT NULL,
-  `Supplier Invoice Main Receiver Key` mediumint(9) DEFAULT NULL,
-  `Supplier Invoice Main Checker Key` mediumint(9) DEFAULT NULL,
-  `Supplier Invoice Main Damages Checker Key` mediumint(9) DEFAULT NULL,
-  `Supplier Invoice Public ID` varchar(255) DEFAULT NULL,
-  `Supplier Invoice File As` varchar(255) DEFAULT NULL,
-  `Supplier Invoice XHTML Purchase Orders` varchar(4096) DEFAULT NULL,
-  `Supplier Invoice Supplier Key` mediumint(8) unsigned DEFAULT NULL,
-  `Supplier Invoice Current State` enum('In Process','Received','Inputted','Checked','Placing in the Warehouse','Done','Unknown') NOT NULL DEFAULT 'In Process',
-  `Supplier Invoice Todo Dispatch State` enum('None','Waiting for more products','Still cheking some products') NOT NULL DEFAULT 'None',
-  `Supplier Invoice Current Payment State` enum('No Applicable','Waiting Invoice','Paid','Parcially Paid','Unknown','Payment Refunded','Cancelled') NOT NULL DEFAULT 'No Applicable',
-  `Supplier Invoice Current XHTML State` varchar(1024) DEFAULT NULL,
-  `Supplier Invoice Our Feedback` enum('Praise','None','Shortages','Breakings','Different Product','Multiple','Low Quality','Not Like','Slow Delivery','Other') NOT NULL DEFAULT 'None',
-  `Supplier Invoice Actions Taken` enum('Refund','Credit','Replacement','Send Missing','Other','No Applicable') NOT NULL DEFAULT 'No Applicable',
-  `Supplier Invoice Number Items` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Supplier Invoice Main XHTML Ship From` varchar(4096) DEFAULT NULL,
-  `Supplier Invoice Main XHTML Ship To` varchar(4096) DEFAULT NULL,
-  `Supplier Invoice Supplier Message` text,
-  `Supplier Invoice POs` varchar(1024) NOT NULL,
-  PRIMARY KEY (`Supplier Invoice Key`)
-);
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Supplier Invoice History Bridge`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Supplier Invoice History Bridge` (
-  `Supplier Invoice Key` mediumint(8) unsigned NOT NULL,
-  `History Key` int(10) unsigned NOT NULL,
-  `Deletable` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
-  `Strikethrough` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
-  `Type` enum('Notes','Changes','Attachments') CHARACTER SET latin1 NOT NULL,
-  PRIMARY KEY (`Supplier Invoice Key`,`History Key`),
-  KEY `Supplier Invoice Key` (`Supplier Invoice Key`),
-  KEY `Deletable` (`Deletable`),
-  KEY `History Key` (`History Key`),
-  KEY `Type` (`Type`)
 );
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -12242,34 +11878,6 @@ CREATE TABLE `Supplier Part History Bridge` (
   KEY `Deletable` (`Deletable`),
   KEY `History Key` (`History Key`),
   KEY `Type` (`Type`)
-);
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Supplier Payment Fact`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Supplier Payment Fact` (
-  `Supplier Payment Key` mediumint(8) unsigned NOT NULL,
-  `Payment Date` date NOT NULL,
-  `Ship Date` date NOT NULL,
-  `Warehouse Receipt Date` date NOT NULL,
-  `Part Key` mediumint(9) NOT NULL,
-  `Supplier Key` mediumint(9) NOT NULL,
-  `Contracts Terms Key` mediumint(9) NOT NULL,
-  `Discount Taken Key` mediumint(9) NOT NULL,
-  `Contract Number` mediumint(9) NOT NULL,
-  `Purchase Requisition Number` varchar(255) NOT NULL,
-  `Purchase Order Number` varchar(255) NOT NULL,
-  `Shipping Notification Number` varchar(255) NOT NULL,
-  `Acounts Payable Clerk Key` mediumint(9) NOT NULL,
-  `Supplier Payment Quantity` float NOT NULL,
-  `Supplier Gross Paiment Amount` decimal(9,2) NOT NULL,
-  `Supplier Payment Discount Amount` decimal(9,2) NOT NULL,
-  `Supplier Net Payment` decimal(9,2) NOT NULL,
-  PRIMARY KEY (`Supplier Payment Key`)
 );
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -13224,34 +12832,6 @@ CREATE TABLE `Supplier Product Part List` (
   PRIMARY KEY (`Supplier Product Part List Key`),
   KEY `Supplier Product Part ID` (`Supplier Product Part Key`),
   KEY `Part SKU` (`Part SKU`)
-);
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Supplier Refund Fact`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Supplier Refund Fact` (
-  `id` mediumint(8) unsigned NOT NULL,
-  `Payment Date` date NOT NULL,
-  `Ship Date` date NOT NULL,
-  `Warehouse Receipt Date` date NOT NULL,
-  `Supplier Payment Date` date NOT NULL,
-  `Part Key` mediumint(9) NOT NULL,
-  `Supplier Key` mediumint(9) NOT NULL,
-  `Contracts Terms Key` mediumint(9) NOT NULL,
-  `Received Condition Key` mediumint(9) NOT NULL,
-  `Contract Number` mediumint(9) NOT NULL,
-  `Purchase Requisition Number` varchar(255) NOT NULL,
-  `Purchase Order Number` varchar(255) NOT NULL,
-  `Shipping Notification Number` varchar(255) NOT NULL,
-  `Supplier Payment Number` varchar(255) NOT NULL,
-  `Acounts Payable Clerk Key` mediumint(9) NOT NULL,
-  `Supplier Refund Quantity` float NOT NULL,
-  `Supplier Gross Refund Amount` decimal(9,2) NOT NULL,
-  PRIMARY KEY (`id`)
 );
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -14421,4 +14001,4 @@ CREATE TABLE `todo_users` (
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-07-29 22:28:48
+-- Dump completed on 2016-07-30 12:56:27
