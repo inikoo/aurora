@@ -269,7 +269,7 @@ class SupplierPart extends DB_Table{
 			break;
 		case 'Average Delivery':
 
-			if ($this->data['Supplier Part Status']!='Discontinued') {
+			if ($this->data['Supplier Part Status']!='Discontinued' and  $this->data['Supplier Part Average Delivery Days']!='') {
 				include_once 'utils/natural_language.php';
 				return '<i class="fa fa-hourglass-end fa-fw" aria-hidden="true" title="'._('Delivery time').'" ></i>  <span title="'.sprintf("%s %s", number($this->data['Supplier Part Average Delivery Days'], 1) , ngettext("day", "days", number($this->data['Supplier Part Average Delivery Days'], 1))).'">'.seconds_to_natural_string($this->data['Supplier Part Average Delivery Days']*86400, true).'</span>';
 			}
