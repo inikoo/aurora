@@ -242,6 +242,7 @@ class Supplier extends SubjectSupplier {
 
 		if (!$this->id)return false;
 		list($got, $result)=$this->get_subject_supplier_common($key);
+
 		if ($got)return $result;
 
 
@@ -933,33 +934,38 @@ class Supplier extends SubjectSupplier {
 			);
 
 			if ($value!='') {
-				include_once 'class.SupplierProduct.php';
 
-				$sql=sprintf("select `Supplier Product ID` from `Supplier Product Dimension` where `Supplier Key`=%d and  `Supplier Product Delivery Days` is NULL", $this->id);
+				include_once 'class.SupplierPart.php';
+
+				$sql=sprintf("select `Supplier Part Key` from `Supplier Part Dimension` where `Supplier Part Supplier Key`=%d  and  `Supplier Part Average Delivery Days` is NULL ", $this->id);
 				if ($result=$this->db->query($sql)) {
 					foreach ($result as $row) {
-						$supplier_product=new SupplierProduct( $row['Supplier Product key']);
+						$supplier_part=new SupplierPart( $row['Supplier Part Key']);
 
-						$supplier_product->update(array('Supplier Product Delivery Days'=>$value));
+						$supplier_part->update(array('Supplier Part Average Delivery Days'=>$this->get('Supplier Average Delivery Days')), $options);
 					}
 				}else {
-					print_r($error_info=$this->db->errorInfo());
+					print_r($error_info=$db->errorInfo());
 					exit;
 				}
+
+
+
+
 			}
 
 			break;
 		case('Supplier Products Origin Country Code'):
 			$this->update_field($field, $value, $options);
 
-			include_once 'class.SupplierProduct.php';
+				include_once 'class.SupplierPart.php';
 
-			$sql=sprintf("select `Supplier Product ID` from `Supplier Product Dimension` where `Supplier Key`=%d and  `Supplier Product Delivery Days` is NULL", $this->id);
+			$sql=sprintf("select  `Supplier Part Key`  from `Supplier Part Dimension`  where `Supplier Part Supplier Key`=%d and  `Supplier Part Average Delivery Days` is NULL", $this->id);
 			if ($result=$this->db->query($sql)) {
 				foreach ($result as $row) {
-					$supplier_product=new SupplierProduct( $row['Supplier Product key']);
+						$supplier_part=new SupplierPart( $row['Supplier Part Key']);
 
-					$supplier_product->update(array('Supplier Product Origin Country Code'=>$value));
+					$supplier_part->update(array('Supplier Part Average Delivery Days'=>$value));
 				}
 			}else {
 				print_r($error_info=$this->db->errorInfo());
@@ -1304,10 +1310,10 @@ class Supplier extends SubjectSupplier {
 
 			break;
 		case 'Archived':
-		
-		
-		
-		
+
+
+
+
 			$this->update(array(
 					'Supplier Type'=>'Archived',
 					'Supplier Has Agent'=>$has_agent,

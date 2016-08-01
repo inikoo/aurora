@@ -279,7 +279,7 @@ function get_subject_supplier_common($key) {
 
 			break;
 		case 'Average Delivery Days':
-			if ($this->data[$this->table_name.' Average Delivery Days']=='')return '';
+			if ($this->data[$this->table_name.' Average Delivery Days']=='') return array(true,'');
 			return array(true,number($this->data[$this->table_name.' Average Delivery Days']));
 			break;
 		case 'Delivery Time':

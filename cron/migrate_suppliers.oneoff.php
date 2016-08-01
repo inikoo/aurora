@@ -67,6 +67,22 @@ if ($result=$db->query($sql)) {
 	foreach ($result as $row) {
 		$supplier=new Supplier($row['Supplier Key']);
 
+
+		if (!$supplier->get('Supplier Average Delivery Days')>0) {
+
+			$supplier->update(array('Supplier Average Delivery Days'=>''), 'no_history');
+
+
+
+
+
+		}
+
+
+	
+
+
+
 		$supplier->update_supplier_parts();
 
 
