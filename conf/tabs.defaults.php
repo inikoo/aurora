@@ -563,6 +563,9 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'name',
 		'f_period'=>'ytd',
+		'elements_type'=>each($elements_options['suppliers'])['key'],
+		'elements'=>$elements_options['suppliers']
+		
 	),
 	'category.suppliers'=>array(
 		'view'=>'overview',
@@ -817,6 +820,18 @@ $tab_defaults=array(
 		'f_field'=>'note',
 		'elements_type'=>each($elements_options['agent_history'])['key'],
 		'elements'=>$elements_options['agent_history']
+	),
+	'agent.suppliers'=>array(
+		'view'=>'overview',
+		'sort_key'=>'formatted_id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'name',
+		'f_period'=>'ytd',
+		'elements_type'=>each($elements_options['agent_suppliers'])['key'],
+		'elements'=>$elements_options['agent_suppliers']
+		
 	),
 	'agent.supplier_parts'=>array(
 		'view'=>'overview',

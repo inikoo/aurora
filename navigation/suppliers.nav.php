@@ -443,196 +443,203 @@ function get_supplier_navigation($data, $smarty, $user, $db, $account) {
 	$left_buttons=array();
 	$right_buttons=array();
 
-	if ($data['parent']) {
-
-		switch ($data['parent']) {
-		case 'account':
-			$tab='suppliers';
-			$_section='suppliers';
-			break;
-		case 'category':
-			$tab='supplier.categories';
-			$_section='categories';
-			break;
-		default:
-			return '';
-
-		}
 
 
-		if (isset($_SESSION['table_state'][$tab])) {
-			$number_results=$_SESSION['table_state'][$tab]['nr'];
-			$start_from=0;
-			$order=$_SESSION['table_state'][$tab]['o'];
-			$order_direction=($_SESSION['table_state'][$tab]['od']==1 ?'desc':'');
-			$f_value=$_SESSION['table_state'][$tab]['f_value'];
-			$parameters=$_SESSION['table_state'][$tab];
-		}else {
+	switch ($data['parent']) {
+	case 'account':
+		$tab='suppliers';
+		$_section='suppliers';
+		break;
+	case 'category':
+		$tab='supplier.categories';
+		$_section='categories';
+		break;
+	default:
+		return '';
 
-			$default=$user->get_tab_defaults($tab);
-			$number_results=$default['rpp'];
-			$start_from=0;
-			$order=$default['sort_key'];
-			$order_direction=($default['sort_order']==1 ?'desc':'');
-			$f_value='';
-			$parameters=$default;
-			$parameters['parent']=$data['parent'];
-			$parameters['parent_key']=$data['parent_key'];
-		}
-
-		include_once 'prepare_table/'.$tab.'.ptble.php';
-
-		$_order_field=$order;
-		$order=preg_replace('/^.*\.`/', '', $order);
-		$order=preg_replace('/^`/', '', $order);
-		$order=preg_replace('/`$/', '', $order);
-		$_order_field_value=$supplier->get($order);
+	}
 
 
-		$prev_title='';
-		$next_title='';
-		$prev_key=0;
-		$next_key=0;
-		$sql=trim($sql_totals." $wheref");
+	if (isset($_SESSION['table_state'][$tab])) {
+		$number_results=$_SESSION['table_state'][$tab]['nr'];
+		$start_from=0;
+		$order=$_SESSION['table_state'][$tab]['o'];
+		$order_direction=($_SESSION['table_state'][$tab]['od']==1 ?'desc':'');
+		$f_value=$_SESSION['table_state'][$tab]['f_value'];
+		$parameters=$_SESSION['table_state'][$tab];
+	}else {
+
+		$default=$user->get_tab_defaults($tab);
+		$number_results=$default['rpp'];
+		$start_from=0;
+		$order=$default['sort_key'];
+		$order_direction=($default['sort_order']==1 ?'desc':'');
+		$f_value='';
+		$parameters=$default;
+		$parameters['parent']=$data['parent'];
+		$parameters['parent_key']=$data['parent_key'];
+	}
+
+	include_once 'prepare_table/'.$tab.'.ptble.php';
+
+	$_order_field=$order;
+	$order=preg_replace('/^.*\.`/', '', $order);
+	$order=preg_replace('/^`/', '', $order);
+	$order=preg_replace('/`$/', '', $order);
+	$_order_field_value=$supplier->get($order);
 
 
-		if ($data['parent']=='account') {
+	$prev_title='';
+	$next_title='';
+	$prev_key=0;
+	$next_key=0;
+	$sql=trim($sql_totals." $wheref");
 
-			if ($result2=$db->query($sql)) {
-				if ($row2 = $result2->fetch()) {
-					if ( $row2['num']>1) {
+
+	if ($data['parent']=='account') {
+
+		if ($result2=$db->query($sql)) {
+			if ($row2 = $result2->fetch()) {
+				if ( $row2['num']>1) {
 
 
-						$sql=sprintf("select `Supplier Name` object_name,S.`Supplier Key` as object_key from $table   $where $wheref
+					$sql=sprintf("select `Supplier Name` object_name,S.`Supplier Key` as object_key from %s
 	                and ($_order_field < %s OR ($_order_field = %s AND S.`Supplier Key` < %d))  order by $_order_field desc , S.`Supplier Key` desc limit 1",
+						"$table $where $wheref",
+						prepare_mysql($_order_field_value),
+						prepare_mysql($_order_field_value),
+						$supplier->id
+					);
 
-							prepare_mysql($_order_field_value),
-							prepare_mysql($_order_field_value),
-							$supplier->id
-						);
-
-						if ($result=$db->query($sql)) {
-							if ($row = $result->fetch()) {
-								$prev_key=$row['object_key'];
-								$prev_title=_("Supplier").' '.$row['object_name'].' ('.$row['object_key'].')';
-							}
-						}else {
-							print_r($error_info=$db->errorInfo());
-							exit;
+					if ($result=$db->query($sql)) {
+						if ($row = $result->fetch()) {
+							$prev_key=$row['object_key'];
+							$prev_title=_("Supplier").' '.$row['object_name'].' ('.$row['object_key'].')';
 						}
+					}else {
+						print_r($error_info=$db->errorInfo());
+						exit;
+					}
 
 
 
 
 
-						$sql=sprintf("select `Supplier Name` object_name,S.`Supplier Key` as object_key from $table   $where $wheref
+					$sql=sprintf("select `Supplier Name` object_name,S.`Supplier Key` as object_key from %s
 	                and ($_order_field  > %s OR ($_order_field  = %s AND S.`Supplier Key` > %d))  order by $_order_field   , S.`Supplier Key`  limit 1",
-							prepare_mysql($_order_field_value),
-							prepare_mysql($_order_field_value),
-							$supplier->id
-						);
+						"$table $where $wheref",
+						prepare_mysql($_order_field_value),
+						prepare_mysql($_order_field_value),
+						$supplier->id
+					);
 
-						if ($result=$db->query($sql)) {
-							if ($row = $result->fetch()) {
-								$next_key=$row['object_key'];
-								$next_title=_("Supplier").' '.$row['object_name'].' ('.$row['object_key'].')';
-
-							}
-						}else {
-							print_r($error_info=$db->errorInfo());
-							exit;
-						}
-
-
-
-						if ($order_direction=='desc') {
-							$_tmp1=$prev_key;
-							$_tmp2=$prev_title;
-							$prev_key=$next_key;
-							$prev_title=$next_title;
-							$next_key=$_tmp1;
-							$next_title=$_tmp2;
-						}
-
-
-
-						$up_button=array('icon'=>'arrow-up', 'title'=>_("Suppliers"), 'reference'=>'suppliers');
-
-						if ($prev_key) {
-							$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'supplier/'.$prev_key);
-
-						}else {
-							$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'', 'url'=>'');
+					if ($result=$db->query($sql)) {
+						if ($row = $result->fetch()) {
+							$next_key=$row['object_key'];
+							$next_title=_("Supplier").' '.$row['object_name'].' ('.$row['object_key'].')';
 
 						}
-						$left_buttons[]=$up_button;
+					}else {
+						print_r($error_info=$db->errorInfo());
+						exit;
+					}
 
 
-						if ($next_key) {
-							$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'supplier/'.$next_key);
 
-						}else {
-							$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
+					if ($order_direction=='desc') {
+						$_tmp1=$prev_key;
+						$_tmp2=$prev_title;
+						$prev_key=$next_key;
+						$prev_title=$next_title;
+						$next_key=$_tmp1;
+						$next_title=$_tmp2;
+					}
 
-						}
 
+
+					$up_button=array('icon'=>'arrow-up', 'title'=>_("Suppliers"), 'reference'=>'suppliers');
+
+					if ($prev_key) {
+						$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'supplier/'.$prev_key);
+
+					}else {
+						$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'', 'url'=>'');
+
+					}
+					$left_buttons[]=$up_button;
+
+
+					if ($next_key) {
+						$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'supplier/'.$next_key);
+
+					}else {
+						$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
 
 					}
 
+
 				}
-			}else {
-				print_r($error_info=$db->errorInfo());
-				exit;
-			}
+				else {
+					$up_button=array('icon'=>'arrow-up', 'title'=>_("Suppliers"), 'reference'=>'suppliers');
 
 
-
-
-
-
-
-
-
-		}
-		elseif ($data['parent']=='category') {
-
-
-
-			include_once 'class.Category.php';
-			$category=new Category($data['parent_key']);
-
-
-			$category_keys=preg_split('/\>/', preg_replace('/\>$/', '', $category->data['Category Position']));
-			array_pop($category_keys);
-			if (count($category_keys)>0) {
-				$sql=sprintf("select `Category Code`,`Category Key` from `Category Dimension` where `Category Key` in (%s)", join(',', $category_keys));
-				//print $sql;
-				$result=mysql_query($sql);
-				while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-					$branch[]=array('label'=>$row['Category Code'], 'icon'=>'', 'url'=>'supplier_category.php?id='.$row['Category Key']);
+					$left_buttons[]=$up_button;
 
 				}
 			}
-
-
-			$up_button=array('icon'=>'arrow-up', 'title'=>_("Category").' '.$category->data['Category Code'], 'url'=>'supplier_category.php?id='.$category->id);
-
-
-
-
-
-
-
-			//$right_buttons[]=array('icon'=>'edit','title'=>_('Edit supplier'),'url'=>'edit_supplier.php?id='.$supplier->id);
-			$right_buttons[]=array('icon'=>'sticky-note', 'title'=>_('Sticky note'), 'id'=>'sticky_note_button');
-			//$right_buttons[]=array('icon'=>'sticky-note-o','title'=>_('History note'),'id'=>'note');
-			//$right_buttons[]=array('icon'=>'paperclip','title'=>_('Attachement'),'id'=>'attach');
-			//$right_buttons[]=array('icon'=>'shopping-cart','title'=>_('New order'),'id'=>'take_order');
-
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
 		}
+
+
+
+
+
+
+
+
 
 	}
+	elseif ($data['parent']=='category') {
+
+
+
+		include_once 'class.Category.php';
+		$category=new Category($data['parent_key']);
+
+
+		$category_keys=preg_split('/\>/', preg_replace('/\>$/', '', $category->data['Category Position']));
+		array_pop($category_keys);
+		if (count($category_keys)>0) {
+			$sql=sprintf("select `Category Code`,`Category Key` from `Category Dimension` where `Category Key` in (%s)", join(',', $category_keys));
+			//print $sql;
+			$result=mysql_query($sql);
+			while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+				$branch[]=array('label'=>$row['Category Code'], 'icon'=>'', 'url'=>'supplier_category.php?id='.$row['Category Key']);
+
+			}
+		}
+
+
+		$up_button=array('icon'=>'arrow-up', 'title'=>_("Category").' '.$category->data['Category Code'], 'url'=>'supplier_category.php?id='.$category->id);
+
+
+
+
+
+
+
+		//$right_buttons[]=array('icon'=>'edit','title'=>_('Edit supplier'),'url'=>'edit_supplier.php?id='.$supplier->id);
+		$right_buttons[]=array('icon'=>'sticky-note', 'title'=>_('Sticky note'), 'id'=>'sticky_note_button');
+		//$right_buttons[]=array('icon'=>'sticky-note-o','title'=>_('History note'),'id'=>'note');
+		//$right_buttons[]=array('icon'=>'paperclip','title'=>_('Attachement'),'id'=>'attach');
+		//$right_buttons[]=array('icon'=>'shopping-cart','title'=>_('New order'),'id'=>'take_order');
+
+	}
+
+
 
 	$sections=get_sections('suppliers', '');
 
@@ -641,8 +648,16 @@ function get_supplier_navigation($data, $smarty, $user, $db, $account) {
 
 
 
-	$title= '<span class="id Supplier_Code">'.$supplier->get('Code').'</span>';
 
+	if ($supplier->get('Supplier Type')=='Archived') {
+		$title= ' <span class="disabled padding_right_5"><i class="fa fa-archive" aria-hidden="true"></i>  '._('Archived').'</span> <span class="id disabled Supplier_Code">'.$supplier->get('Code').'</span>';
+
+
+	}else {
+
+		$title= '<span class="id Supplier_Code">'.$supplier->get('Code').'</span>';
+
+	}
 
 
 
@@ -786,9 +801,9 @@ function get_agent_navigation($data, $smarty, $user, $db, $account) {
 					if ( $row2['num']>1) {
 
 
-						$sql=sprintf("select `Agent Name` object_name,A.`Agent Key` as object_key from $table   $where $wheref
+						$sql=sprintf("select `Agent Name` object_name,A.`Agent Key` as object_key from %s
 	                and ($_order_field < %s OR ($_order_field = %s AND A.`Agent Key` < %d))  order by $_order_field desc , A.`Agent Key` desc limit 1",
-
+							"$table $where $wheref",
 							prepare_mysql($_order_field_value),
 							prepare_mysql($_order_field_value),
 							$agent->id
@@ -808,8 +823,9 @@ function get_agent_navigation($data, $smarty, $user, $db, $account) {
 
 
 
-						$sql=sprintf("select `Agent Name` object_name,A.`Agent Key` as object_key from $table   $where $wheref
+						$sql=sprintf("select `Agent Name` object_name,A.`Agent Key` as object_key from %s
 	                and ($_order_field  > %s OR ($_order_field  = %s AND A.`Agent Key` > %d))  order by $_order_field   , A.`Agent Key`  limit 1",
+							"$table $where $wheref",
 							prepare_mysql($_order_field_value),
 							prepare_mysql($_order_field_value),
 							$agent->id
@@ -1313,9 +1329,9 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
 				if ($row2['num']>1) {
 
 
-					$sql=sprintf("select `Purchase Order Public ID` object_name,O.`Purchase Order Key` as object_key from $table   $where $wheref
+					$sql=sprintf("select `Purchase Order Public ID` object_name,O.`Purchase Order Key` as object_key from %s
 	                and ($_order_field < %s OR ($_order_field = %s AND O.`Purchase Order Key` < %d))  order by $_order_field desc , O.`Purchase Order Key` desc limit 1",
-
+						"$table $where $wheref",
 						prepare_mysql($_order_field_value),
 						prepare_mysql($_order_field_value),
 						$object->id
@@ -1334,8 +1350,9 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
 
 
 
-					$sql=sprintf("select `Purchase Order Public ID` object_name,O.`Purchase Order Key` as object_key from $table   $where $wheref
+					$sql=sprintf("select `Purchase Order Public ID` object_name,O.`Purchase Order Key` as object_key from %s
 	                and ($_order_field  > %s OR ($_order_field  = %s AND O.`Purchase Order Key` > %d))  order by $_order_field   , O.`Purchase Order Key`  limit 1",
+						"$table $where $wheref",
 						prepare_mysql($_order_field_value),
 						prepare_mysql($_order_field_value),
 						$object->id
@@ -1610,9 +1627,11 @@ function get_delivery_navigation($data, $smarty, $user, $db, $account) {
 				if ($row2['num']>1) {
 
 
-					$sql=sprintf("select `Supplier Delivery Public ID` object_name,D.`Supplier Delivery Key` as object_key from $table   $where $wheref
+					$sql=sprintf("select `Supplier Delivery Public ID` object_name,D.`Supplier Delivery Key` as object_key from %s
 	                and ($_order_field < %s OR ($_order_field = %s AND D.`Supplier Delivery Key` < %d))  order by $_order_field desc , D.`Supplier Delivery Key` desc limit 1",
 
+
+						"$table $where $wheref",
 						prepare_mysql($_order_field_value),
 						prepare_mysql($_order_field_value),
 						$object->id
@@ -1630,8 +1649,9 @@ function get_delivery_navigation($data, $smarty, $user, $db, $account) {
 
 
 
-					$sql=sprintf("select `Supplier Delivery Public ID` object_name,D.`Supplier Delivery Key` as object_key from $table   $where $wheref
+					$sql=sprintf("select `Supplier Delivery Public ID` object_name,D.`Supplier Delivery Key` as object_key from %s
 	                and ($_order_field  > %s OR ($_order_field  = %s AND D.`Supplier Delivery Key` > %d))  order by $_order_field   , D.`Supplier Delivery Key`  limit 1",
+						"$table $where $wheref",
 						prepare_mysql($_order_field_value),
 						prepare_mysql($_order_field_value),
 						$object->id
@@ -1748,7 +1768,7 @@ function get_delivery_navigation($data, $smarty, $user, $db, $account) {
 
 	//$right_buttons[]=array('icon'=>'share-alt', 'title'=>'{t}Share{/t}');
 
-//	$right_buttons[]=array('icon'=>'print', 'title'=>'{t}Print{/t}');
+	// $right_buttons[]=array('icon'=>'print', 'title'=>'{t}Print{/t}');
 
 
 

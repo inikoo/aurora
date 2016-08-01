@@ -44,6 +44,9 @@ if ($result=$db->query($sql)) {
 	foreach ($result as $row) {
 		$supplier=new Supplier($row['Supplier Key']);
 
+		$sql="insert into `Supplier Data` (`Supplier Key`) values(".$supplier->id.");";
+		$db->exec($sql);
+
 		if ($supplier->data['Supplier Main Country Code']=='UNK') {
 			$supplier->update(array(
 					'Supplier Main Country Key'=>30,
@@ -68,15 +71,6 @@ if ($result=$db->query($sql)) {
 
 
 		$default_country=$account->get('Account Country 2 Alpha Code');
-
-
-
-
-
-		// print "**".$supplier->id."**** ".$supplier->get('Name')."**\n";
-
-		//
-
 
 		$other_emails=get_other_emails_data($db, $supplier);
 		if (count($other_emails)>0) {

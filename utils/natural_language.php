@@ -3,6 +3,11 @@
 
 function seconds_to_natural_string($seconds, $short=false) {
 
+
+    if($seconds==0){
+        return _('Instantaneity');
+    }
+
 	$days=round($seconds/86400);
 	
 	if ($days<1) {

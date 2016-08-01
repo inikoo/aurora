@@ -17,6 +17,7 @@ class Agent extends SubjectSupplier {
 
 	var $new=false;
 	public $locale='en_GB';
+
 	function Agent($arg1=false, $arg2=false, $arg3=false) {
 
 
@@ -116,12 +117,21 @@ class Agent extends SubjectSupplier {
 
 		if ($data['Agent Code']!='') {
 			$sql=sprintf("select `Agent Key` from `Agent Dimension` where `Agent Code`=%s ", prepare_mysql($data['Agent Code']));
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-				$this->found=true;
-				$this->found_key=$row['Agent Key'];
 
+
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+
+					$this->found=true;
+					$this->found_key=$row['Agent Key'];
+
+
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
+
 		}
 
 		if ($this->found) {
@@ -152,38 +162,10 @@ class Agent extends SubjectSupplier {
 
 		if (!$this->id)return false;
 
-		list($got, $result)=$this->get_subject_common($key);
+		list($got, $result)=$this->get_subject_supplier_common($key);
 		if ($got)return $result;
 
-
-
-
 		switch ($key) {
-
-		case('Valid From'):
-		case('Valid To'):
-			if ($this->data['Agent '.$key]=='') {
-				return '';
-			}else {
-				return strftime("%a, %e %b %y", strtotime($this->data['Agent '.$key].' +0:00'));
-			}
-			break;
-
-
-		case 'Average Delivery Days':
-			if ($this->data['Agent Average Delivery Days']=='')return '';
-			return number($this->data['Agent Average Delivery Days']);
-			break;
-		case 'Delivery Time':
-			include_once 'utils/natural_language.php';
-			if ($this->get('Agent Average Delivery Days')=='') {
-				return '<span class="italic very_discreet">'._('Unknown').'</span>';
-			}else {
-				return seconds_to_natural_string(24*3600*$this->get('Agent Average Delivery Days'));
-			}
-			break;
-
-
 
 		default;
 
@@ -551,7 +533,7 @@ class Agent extends SubjectSupplier {
 			$this->db->exec($sql);
 
 			$this->update_supplier_parts() ;
-			$supplier->update_has_agent();
+			$supplier->update_type('Agent');
 		}
 
 		$this->update_metadata['updated_showcase_fields']=array(
@@ -604,7 +586,7 @@ class Agent extends SubjectSupplier {
 			$this->db->exec($sql);
 
 			$this->update_supplier_parts() ;
-			$supplier->update_has_agent();
+			$supplier->update_type('Free');
 		}
 
 		$this->update_metadata['updated_showcase_fields']=array(

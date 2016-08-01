@@ -29,21 +29,23 @@ $parameters=array(
 );
 
 
-$table_buttons=array();
-$table_buttons[]=array(
-	'icon'=>'plus',
-	'title'=>_('New purchase order'),
-	'id'=>'new_purchase_order',
-	'attr'=>array(
-		'parent'=>$state['object'],
-		'parent_key'=>$state['key'],
-	)
+if (!$state['_object']->get('Supplier Type')=='Archived') {
+
+	$table_buttons=array();
+	$table_buttons[]=array(
+		'icon'=>'plus',
+		'title'=>_('New purchase order'),
+		'id'=>'new_purchase_order',
+		'attr'=>array(
+			'parent'=>$state['object'],
+			'parent_key'=>$state['key'],
+		)
 
 
-);
+	);
 
-$smarty->assign('table_buttons', $table_buttons);
-
+	$smarty->assign('table_buttons', $table_buttons);
+}
 
 $smarty->assign('js_code', 'js/injections/supplier.orders.'.(_DEVEL?'':'min.').'js');
 

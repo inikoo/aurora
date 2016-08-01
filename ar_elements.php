@@ -29,6 +29,13 @@ if (!isset($_REQUEST['tab'])) {
 $tab=$_REQUEST['tab'];
 
 switch ($tab) {
+case 'suppliers':
+case 'agent.suppliers':
+	$data=prepare_values($_REQUEST, array(
+			'parameters'=>array('type'=>'json array')
+		));
+	get_suppliers_element_numbers($db, $data['parameters'], $user);
+	break;
 case 'suppliers.deliveries':
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
@@ -682,6 +689,55 @@ function get_customers_element_numbers($db, $data) {
 	foreach ($db->query($sql) as $row) {
 
 		$elements_numbers['location'][$row['element']]=number($row['number']);
+
+	}
+
+
+
+
+
+	$response= array('state'=>200, 'elements_numbers'=>$elements_numbers);
+	echo json_encode($response);
+
+
+
+}
+
+function get_suppliers_element_numbers($db, $data) {
+
+	global $user;
+
+	$parent_key=$data['parent_key'];
+
+	$elements_numbers=array(
+		'type'=>array('Free'=>0, 'Agent'=>0, 'Archived'=>0),
+	);
+
+	$table='`Supplier Dimension` S';
+
+	switch ($data['parent']) {
+	case 'account':
+		$where=sprintf(' where true ');
+		break;
+		case 'agent':
+		$where=sprintf(" where `Agent Supplier Agent Key`=%d", $parent_key);
+	$table=' `Agent Supplier Bridge` B left join  `Supplier Dimension` S on (`Agent Supplier Supplier Key`=`Supplier Key`) ';
+
+		break;	
+	default:
+		$response=array('state'=>405, 'resp'=>'parent not found '.$data['parent']);
+		echo json_encode($response);
+
+		return;
+	}
+
+
+
+
+	$sql=sprintf("select count(*) as number,`Supplier Type` as element from $table $where group by `Supplier Type` ");
+	foreach ($db->query($sql) as $row) {
+
+		$elements_numbers['type'][$row['element']]=number($row['number']);
 
 	}
 

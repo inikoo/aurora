@@ -11,7 +11,7 @@
 
 
 
-$tab='suppliers';
+$tab='agent.suppliers';
 $ar_file='ar_suppliers_tables.php';
 $tipo='suppliers';
 

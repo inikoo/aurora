@@ -105,7 +105,7 @@ if ($result2=$db->query($sql)) {
 			$spart=new SupplierPart('find', $sp_data, 'create');
 
 			if ($spart->found) {
-				print "Duplicate ".$spart->duplicated_field."\n";
+				print "Duplicate ".$spart->duplicated_field.": ".$spart->get('Reference')."   \n";
 				$spart->update_historic_object();
 				
 				//print_r($sp_data);

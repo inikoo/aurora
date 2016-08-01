@@ -80,6 +80,10 @@
 					<td>{t}Contact since{/t}:</td>
 					<td>{$supplier->get('Valid From')}</td>
 				</tr>
+				<tr class="Supplier_Valid_To {if $supplier->get('Supplier Type')!='Archived'}hide{/if}">
+					<td><i class="fa fa-archive" aria-hidden="true"></i> {t}Archived{/t}:</td>
+					<td>{$supplier->get('Valid To')}</td>
+				</tr>
 				<tr>
 					<td>{t}Products origin{/t}:</td>
 					<td class="Supplier_Products_Origin_Country_Code" >{$supplier->get('Products Origin Country Code')}</td>

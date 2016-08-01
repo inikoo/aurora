@@ -79,16 +79,17 @@ case 'edit_field':
 
 	edit_field($account, $db, $user, $editor, $data, $smarty);
 	break;
-case 'delete':
+case 'object_operation':
 
 	$data=prepare_values($_REQUEST, array(
+			'operation'=>array('type'=>'string'),
 			'object'=>array('type'=>'string'),
 			'key'=>array('type'=>'key'),
 			'metadata'=>array('type'=>'json array', 'optional'=>true),
 
 		));
 
-	delete($account, $db, $user, $editor, $data, $smarty);
+	object_operation($account, $db, $user, $editor, $data, $smarty);
 	break;
 
 case 'delete_object_component':
@@ -488,7 +489,7 @@ function delete_object_component($account, $db, $user, $editor, $data, $smarty) 
 }
 
 
-function delete($account, $db, $user, $editor, $data, $smarty) {
+function object_operation($account, $db, $user, $editor, $data, $smarty) {
 
 
 	$object=get_object($data['object'], $data['key']);
@@ -501,9 +502,24 @@ function delete($account, $db, $user, $editor, $data, $smarty) {
 
 	}
 
-	$request=$object->delete();
+	switch ($data['operation']) {
+	case 'delete':
+		$request=$object->delete();
+		break;
+	case 'archive':
+		$request=$object->archive();
+		break;
+	case 'unarchive':
+		$request=$object->unarchive();
+		break;	
+	default:
+		exit('unknown operation');
+		break;
+	}
 
-	if ($object->deleted) {
+
+
+	if (!$object->error) {
 		$response=array('state'=>200);
 
 		if ($object->get_object_name()=='Category') {

@@ -322,16 +322,7 @@ function get_location_navigation($data, $smarty, $user, $db, $account) {
 				}
 
 				break;
-
-
-
-
-
-
 			}
-
-
-
 		}
 
 

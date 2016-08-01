@@ -862,7 +862,13 @@ class Subject extends DB_Table {
 
 			$this->update_address_formatted_fields($type, $options);
 
-			$this->add_changelog_record($this->table_name." $type Address", $old_value, $this->get("$type Address"), '', $this->table_name, $this->id );
+
+			if (!preg_match('/no( |\_)history|nohistory/i', $options)) {
+
+				$this->add_changelog_record($this->table_name." $type Address", $old_value, $this->get("$type Address"), '', $this->table_name, $this->id );
+
+			}
+
 
 			if ($type=='Contact') {
 
@@ -1282,7 +1288,7 @@ class Subject extends DB_Table {
 			$this->error=$system_user->error;
 			$this->msg=$system_user->msg;
 			$this->updated=$system_user->updated;
-$this->get_user_data();
+			$this->get_user_data();
 			return true;
 			break;
 
