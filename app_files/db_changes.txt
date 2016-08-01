@@ -350,6 +350,7 @@ ALTER TABLE `Part Dimension` DROP `Part Unit Material`;
     ALTER TABLE `Supplier Dimension` DROP `Supplier Active Supplier Products`;
 ALTER TABLE `History Dimension` CHANGE `History Abstract` `History Abstract` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 DROP TABLE `Purchase Delivery Note Dimension`, `Purchase Delivery Note History Bridge`, `Purchase Invoice Dimension`, `Purchase Invoice History Bridge`, `Purchase Order Dimension`, `Purchase Order History Bridge`, `Purchase Order SDN Bridge`, `Purchase Order SI Bridge`, `Purchase Order Transaction Fact`, `Purchase Requsition Fact`, `Supplier Delivery Note Dimension`, `Supplier Delivery Note History Bridge`, `Supplier Delivery Note Item Part Bridge`, `Supplier Delivery Note SI Bridge`, `Supplier Invoice Dimension`, `Supplier Invoice History Bridge`, `Supplier Payment Fact`, `Supplier Refund Fact`;
+ALTER TABLE `Supplier Dimension` ADD `Supplier Type` ENUM('Free','Agent','Archived') NOT NULL DEFAULT 'Free' AFTER `Supplier Key`, ADD INDEX (`Supplier Type`);
 
 // From HERe  ==================== 15/04/2016, 10:45
 
@@ -358,9 +359,11 @@ Only for bali dw:
 migrate_suppliers.oneoff.php
 migrate_images.oneoff.php 
 migrate_supplier_parts.oneoff.php 
+migrate_parts.oneoff.php
+
+
 migrate_products.oneoff.php 
 migrate_history_note_details.php
-migrate_parts.oneoff.php
 
 
 

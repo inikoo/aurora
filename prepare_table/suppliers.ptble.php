@@ -78,15 +78,41 @@ elseif ($parameters['parent']=='category') {
 }
 elseif ($parameters['parent']=='agent') {
 
-$where=sprintf(" where `Agent Supplier Agent Key`=%d", $parameters['parent_key']);
+	$where=sprintf(" where `Agent Supplier Agent Key`=%d", $parameters['parent_key']);
 	$table=' `Agent Supplier Bridge` B left join  `Supplier Dimension` S on (`Agent Supplier Supplier Key`=`Supplier Key`)  left join `Supplier Data`  D on (S.`Supplier Key`=D.`Supplier Key`)';
 }
 else {
 
-$where=sprintf(" where `Supplier Has Agent`='No'");
+	$where=sprintf(" where `Supplier Has Agent`='No'");
 
 }
 
+
+
+switch ($parameters['elements_type']) {
+
+case 'type':
+	$_elements='';
+	$count_elements=0;
+	foreach ($parameters['elements'][$parameters['elements_type']]['items'] as $_key=>$_value) {
+		if ($_value['selected']) {
+			$count_elements++;
+			$_elements.=','.prepare_mysql($_key);
+
+		}
+	}
+	$_elements=preg_replace('/^\,/','',$_elements);
+	if ($_elements=='') {
+		$where.=' and false' ;
+	} elseif ($count_elements<3) {
+		$where.=' and `Supplier Type` in ('.$_elements.')' ;
+	}
+	break;
+
+
+
+
+}
 
 
 $filter_msg='';
@@ -99,6 +125,10 @@ elseif ($parameters['f_field']=='low' and is_numeric($f_value))
 	$wheref.=" and lowstock>=$f_value  ";
 elseif ($parameters['f_field']=='outofstock' and is_numeric($f_value))
 	$wheref.=" and outofstock>=$f_value  ";
+
+
+
+
 
 
 
@@ -142,13 +172,13 @@ if ($order=='code') {
 		$order="`Supplier $db_period Acc Parts Sold Amount`";
 
 	}else {
-		
-		
+
+
 		$order="per $order_direction,`Supplier $db_period Acc Parts Sold Amount` $order_direction";
-		
-		
+
+
 		$order_direction='';
-		
+
 	}
 }
 

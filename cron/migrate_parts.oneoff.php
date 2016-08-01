@@ -64,7 +64,6 @@ if ($result=$db->query($sql)) {
 	}
 }
 
-exit;
 
 $account=new Account();
 
@@ -259,7 +258,6 @@ if ($result=$db->query($sql)) {
 }
 
 
-exit;
 
 
 

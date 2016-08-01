@@ -20,6 +20,7 @@ class Supplier extends SubjectSupplier {
 
 	var $new=false;
 	public $locale='en_GB';
+
 	function Supplier($arg1=false, $arg2=false, $arg3=false) {
 
 
@@ -27,41 +28,7 @@ class Supplier extends SubjectSupplier {
 		$this->db=$db;
 
 		$this->table_name='Supplier';
-		$this->ignore_fields=array('Supplier Key', 'Supplier 1 Year Acc Parts Profit'
-			, 'Supplier 1 Year Acc Parts Profit After Storing'
-			, 'Supplier 1 Year Acc Cost'
-			, 'Supplier 1 Year Acc Parts Sold Amount'
-			, 'Supplier 1 Quarter Acc Parts Profit'
-			, 'Supplier Total Parts Profit'
-			, 'Supplier Total Parts Profit After Storing'
-			, 'Supplier Total Cost'
-			, 'Supplier Total Parts Sold Amount'
-			, 'Supplier 1 Quarter Acc Parts Profit After Storing'
-			, 'Supplier 1 Quarter Acc Cost'
-			, 'Supplier 1 Quarter Acc Parts Sold Amount'
-			, 'Supplier 1 Month Acc Parts Profit'
-			, 'Supplier 1 Month Acc Parts Profit After Storing'
-			, 'Supplier 1 Month Acc Cost'
-			, 'Supplier 1 Month Acc Parts Sold Amount'
-			, 'Supplier 1 Month Acc Parts Broken'
-			, 'Supplier 1 Week Acc Parts Profit'
-			, 'Supplier 1 Week Acc Parts Profit After Storing'
-			, 'Supplier 1 Week Acc Cost'
-			, 'Supplier 1 Week Acc Parts Sold Amount'
-			, 'Supplier Stock Value'
-			, 'Supplier Active Company Products'
-			, 'Supplier Discontinued Company Products'
-			, 'Supplier Surplus Availability Products'
-			, 'Supplier Optimal Availability Products'
-			, 'Supplier Low Availability Products'
-			, 'Supplier Critical Availability Products'
-			, 'Supplier Out Of Stock Products'
-			, 'Supplier For Sale Products'
-			, 'Supplier Not For Sale Products'
-			, 'Supplier To Be Discontinued Products'
-			, 'Supplier Discontinued Products'
-
-		);
+		$this->ignore_fields=array('Supplier Key');
 
 
 		if (is_numeric($arg1)) {
@@ -82,10 +49,8 @@ class Supplier extends SubjectSupplier {
 
 
 	function get_data($tipo, $id) {
+
 		$this->data=$this->base_data();
-
-
-
 
 		if ($tipo=='id' or $tipo=='key') {
 			$sql=sprintf("select * from `Supplier Dimension` where `Supplier Key`=%d", $id);
@@ -107,7 +72,6 @@ class Supplier extends SubjectSupplier {
 		}
 
 	}
-
 
 
 	function get_deleted_data( $tag) {
@@ -139,7 +103,6 @@ class Supplier extends SubjectSupplier {
 
 
 	}
-
 
 
 	function find($raw_data, $address_raw_data, $options) {
@@ -190,12 +153,20 @@ class Supplier extends SubjectSupplier {
 
 		if ($data['Supplier Code']!='') {
 			$sql=sprintf("select `Supplier Key` from `Supplier Dimension` where `Supplier Code`=%s ", prepare_mysql($data['Supplier Code']));
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-				$this->found=true;
-				$this->found_key=$row['Supplier Key'];
 
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+
+					$this->found=true;
+					$this->found_key=$row['Supplier Key'];
+
+
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
+
 		}
 
 		if ($this->found) {
@@ -221,74 +192,22 @@ class Supplier extends SubjectSupplier {
 		$sql=sprintf("select `Category Root Key`,`Other Note`,`Category Label`,`Category Code`,`Is Category Field Other` from `Category Bridge` B left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`) where  `Category Branch Type`='Head'  and B.`Subject Key`=%d and B.`Subject`='Supplier'", $this->id);
 
 		$category_data=array();
-		$result=mysql_query($sql);
-		while ($row=mysql_fetch_assoc($result)) {
 
 
 
-			$sql=sprintf("select `Category Label`,`Category Code` from `Category Dimension` where `Category Key`=%d", $row['Category Root Key']);
-
-			$res=mysql_query($sql);
-			if ($row2=mysql_fetch_assoc($res)) {
-				$root_label=$row2['Category Label'];
-				$root_code=$row2['Category Code'];
-			}
-
-
-			if ($row['Is Category Field Other']=='Yes' and $row['Other Note']!='') {
-				$value=$row['Other Note'];
-			}
-			else {
-				$value=$row['Category Label'];
-			}
-			$category_data[]=array('root_label'=>$root_label, 'root_code'=>$root_code, 'label'=>$row['Category Label'], 'label'=>$row['Category Code'], 'value'=>$value);
-		}
-
-		return $category_data;
-	}
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
 
 
 
 
-
-	function get($key) {
-
-
-		if (!$this->id)return false;
-
-		list($got, $result)=$this->get_subject_common($key);
-		if ($got)return $result;
+				$sql=sprintf("select `Category Label`,`Category Code` from `Category Dimension` where `Category Key`=%d", $row['Category Root Key']);
 
 
-
-
-		switch ($key) {
-
-		case('Valid From'):
-		case('Valid To'):
-			if ($this->get('Supplier '.$key)=='') {
-				return '';
-			}else {
-				return strftime("%a, %e %b %y", strtotime($this->get('Supplier '.$key).' +0:00'));
-			}
-			break;
-		case ('Default Currency'):
-
-			if ($this->data['Supplier Default Currency Code']!='') {
-
-
-
-				$options_currencies=array();
-				$sql=sprintf("select `Currency Code`,`Currency Name`,`Currency Symbol` from kbase.`Currency Dimension` where `Currency Code`=%s",
-					prepare_mysql($this->data['Supplier Default Currency Code']));
-
-
-
-				if ($result=$this->db->query($sql)) {
-					if ($row = $result->fetch()) {
-						return sprintf("%s (%s)", $row['Currency Name'], $row['Currency Code']);
-					}else {
-						return $this->data['Supplier Default Currency Code'];
+				if ($result2=$this->db->query($sql)) {
+					if ($row2 = $result2->fetch()) {
+						$root_label=$row2['Category Label'];
+						$root_code=$row2['Category Code'];
 					}
 				}else {
 					print_r($error_info=$this->db->errorInfo());
@@ -297,61 +216,39 @@ class Supplier extends SubjectSupplier {
 
 
 
+				if ($row['Is Category Field Other']=='Yes' and $row['Other Note']!='') {
+					$value=$row['Other Note'];
+				}
+				else {
+					$value=$row['Category Label'];
+				}
+				$category_data[]=array('root_label'=>$root_label, 'root_code'=>$root_code, 'label'=>$row['Category Label'], 'label'=>$row['Category Code'], 'value'=>$value);
 
-			}else {
-				return '';
 			}
-
-			break;
-		case 'Average Delivery Days':
-			if ($this->data['Supplier Average Delivery Days']=='')return '';
-			return number($this->data['Supplier Average Delivery Days']);
-			break;
-		case 'Delivery Time':
-			include_once 'utils/natural_language.php';
-			if ($this->get('Agent Average Delivery Days')=='') {
-				return '<span class="italic very_discreet">'._('Unknown').'</span>';
-			}else {
-				return seconds_to_natural_string(24*3600*$this->get('Supplier Average Delivery Days'));
-			}
-			break;
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
 
 
-		case 'Products Origin Country Code':
-			if ($this->get('Supplier Products Origin Country Code')) {
-				include_once 'class.Country.php';
-				$country=new Country('code', $this->data['Supplier Products Origin Country Code']);
-				return _($country->get('Country Name')).' ('.$country->get('Country Code').')';
-			}else {
-				return '';
-			}
-
-			break;
 
 
-		case('Purchase Orders'):
-		case('Open Purchase Orders'):
-		case('Delivery Notes'):
-		case('Invoices'):
-			return number($this->data['Supplier '.$key]);
-			break;
+		return $category_data;
+	}
 
-		case('Formatted ID'):
-		case("ID"):
-			return $this->get_formatted_id();
-		case('Total Acc Parts Sold Amount'):
-			return money($this->data['Supplier Total Acc Parts Sold Amount']);
-			break;
-		case('Total Acc Parts Profit'):
-			return money($this->data['Supplier Total Acc Parts Profit After Storing']);
-			break;
-		case('Stock Value'):
 
-			if (!is_numeric($this->data['Supplier Stock Value']))
-				return _('Unknown');
-			else
-				return money($this->data['Supplier Stock Value']);
-			break;
+	function get($key) {
+
+
+		if (!$this->id)return false;
+		list($got, $result)=$this->get_subject_supplier_common($key);
+		if ($got)return $result;
+
+
+
+
+		switch ($key) {
+
 		default;
 
 			if (array_key_exists($key, $this->data))
@@ -364,18 +261,6 @@ class Supplier extends SubjectSupplier {
 
 		return '';
 
-	}
-
-
-	function get_formatted_number_products_to_buy() {
-		$formatted_number_products_to_buy=0;
-		$sql=sprintf("select count(*) as total from `Supplier Product Dimension` PD where `Supplier Key`=%d",
-			$this->id);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$formatted_number_products_to_buy=$row['total'];
-		}
-		return $formatted_number_products_to_buy;
 	}
 
 
@@ -407,8 +292,6 @@ class Supplier extends SubjectSupplier {
 
 
 
-		$this->data['Supplier ID']=$this->new_id();
-		$this->data['Supplier Code']=$this->check_repair_code($this->data['Supplier Code']);
 		$this->data['Supplier Valid From']=gmdate('Y-m-d H:i:s');
 
 
@@ -456,7 +339,7 @@ class Supplier extends SubjectSupplier {
 				'History Details'=>'',
 				'Action'=>'created'
 			);
-			$this->add_history($history_data);
+			$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
 			$this->new=true;
 
 		} else {
@@ -1004,89 +887,6 @@ class Supplier extends SubjectSupplier {
 	}
 
 
-
-	function create_code($name) {
-		$code=preg_replace('/[!a-z]/i', '', $name);
-		$code=preg_replace('/^(the|el|la|les|los|a)\s+/i', '', $name);
-		$code=preg_replace('/\s+(plc|inc|co|ltd)$/i', '', $name);
-		$code=preg_split('/\s*/', $name);
-		$code=$code[0];
-		$code=$this->check_repair_code($code);
-
-		return $code;
-	}
-
-
-	protected function check_repair_code($code) {
-
-
-
-		$code=_trim($code);
-		if (!$this->is_valid_code($code)) {
-			if ($code=='') {
-				$code='sup';
-				if ($this->is_valid_code($code))
-					return $code;
-			}
-			if (preg_match('/\d+$/', $code, $match[0]))
-				$index=(int)$match[0]+1 ;
-			else
-				$index=2;
-			$_code=$code;
-			$ok=false;
-			while ($ok or $index<100) {
-				$code=$_code.$index;
-
-				if ($this->is_valid_code($code))
-					return $code;
-				$index++;
-			}
-			exit("Error can no create code");
-		} else
-			return $code;
-
-	}
-
-
-	public static function is_valid_code($code) {
-		//  print "------------ $code\n";
-		$code=_trim($code);
-		if ($code=='')
-			return false;
-		$sql=sprintf("select `Supplier Key`  from `Supplier Dimension` where `Supplier Code`=%s", prepare_mysql($code));
-
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-
-
-
-	function new_id() {
-		$sql="select max(`Supplier ID`) as id from `Supplier Dimension`";
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$id=$row['id']+1;
-		} else {
-			$id=1;
-		}
-
-
-		return $id;
-	}
-
-
-	function valid_id($id) {
-		if (is_numeric($id) and $id>0 and $id<9223372036854775807)
-			return true;
-		else
-			return false;
-	}
-
-
 	function update_field_switcher($field, $value, $options='', $metadata='') {
 
 
@@ -1105,7 +905,6 @@ class Supplier extends SubjectSupplier {
 		switch ($field) {
 		case('Supplier ID'):
 		case('Supplier Valid From'):
-		case('Supplier Valid To'):
 		case('Supplier Stock Value'):
 		case('Supplier Company Key'):
 		case('Supplier Accounts Payable Contact Key'):
@@ -1174,132 +973,6 @@ class Supplier extends SubjectSupplier {
 
 
 	}
-
-
-	function update_default_currency($currency, $modify_products, $ratio) {
-
-		$this->update_field_switcher('Supplier Default Currency Code', $currency);
-
-		if ($modify_products=='Yes') {
-
-			$sql=sprintf("select `Supplier Product ID` from `Supplier Product Dimension` where `Supplier Key`=%d ",
-				$this->id
-			);
-			$res=mysql_query($sql);
-			while ($row=mysql_fetch_assoc($res)) {
-				$supplier_product=new SupplierProduct('pid', $row['Supplier Product ID']);
-				$amount=$supplier_product->data['Supplier Product Cost Per Case']*$ratio;
-				$supplier_product->update_sph($amount, $supplier_product->data['Supplier Product Units Per Case'], $currency);
-			}
-		}
-
-
-	}
-
-
-	function post_add_history($history_key, $type=false) {
-
-		if (!$type) {
-			$type='Changes';
-		}
-
-		$sql=sprintf("insert into  `Supplier History Bridge` (`Supplier Key`,`History Key`,`Type`) values (%d,%d,%s)",
-			$this->id,
-			$history_key,
-			prepare_mysql($type)
-		);
-		mysql_query($sql);
-
-	}
-
-
-
-
-	function normalize_purchase_orders_old($po_keys=false) {
-
-		return;
-
-		if (!is_array($po_keys)) {
-			$sql=sprintf("select `Purchase Order Key` from `Purchase Order Dimension` where `Purchase Order Supplier Key`=%d and `Purchase Order State` in ('In Process','Submitted')  ", $this->id);
-			$res=mysql_query($sql);
-			$po_keys=array();
-			while ($row=mysql_fetch_array($res)) {
-				$po_keys[$row['Purchase Order Key']]=$row['Purchase Order Key'];
-			}
-		}
-
-
-		if (count($po_keys)==1) {
-			$sql=sprintf("update  `Purchase Order Transaction Fact` set `Purchase Order Normalized Quantity`=`Purchase Order Quantity` ,`Purchase Order Normalized Quantity Type`=`Purchase Order Quantity Type` where  `Purchase Order Key`=%d",
-				join('', $po_keys)
-
-			);
-			mysql_query($sql);
-			//print $sql;
-			return;
-		}
-		$supplier_product_keys=array();
-		foreach ($po_keys as $po_key) {
-			$sql=sprintf("select `Purchase Order Transaction Fact Key`,`Supplier Product ID`,`Purchase Order Quantity`,`Purchase Order Quantity Type` from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d and `Supplier Key`=%d "
-
-				, $po_key
-				, $this->id
-			);
-
-			$res=mysql_query($sql);
-			while ($row=mysql_fetch_array($res)) {
-
-				if (array_key_exists($row['Supplier Product ID'], $supplier_product_keys)) {
-					$line= $supplier_product_keys[$row['Supplier Product ID']];
-
-					if ($items[$line]['Purchase Order Quantity Type']!=$row['Purchase Order Quantity Type']) {
-						$supplier_product=new SupplierProduct($row['Supplier Product ID']);
-						$row['Purchase Order Quantity']=$row['Purchase Order Quantity'] *$supplier_product->units_convertion_factor($row['Purchase Order Quantity Type'], $items[$line]['Purchase Order Quantity Type']);
-						$row['Purchase Order Quantity Type']=$items[$line]['Purchase Order Quantity Type'];
-					}
-
-
-				}
-
-
-				$supplier_product_keys[$row['Supplier Product ID']]=$row['Purchase Order Line'];
-				$items[$row['Purchase Order Line']]=array(
-					'Supplier Product ID'=>$row['Supplier Product ID'],
-					'Purchase Order Quantity'=>$row['Purchase Order Quantity'],
-					'Purchase Order Quantity Type'=>$row['Purchase Order Quantity Type'],
-					'Purchase Order Line'=>$row['Purchase Order Line'],
-					'Purchase Order Key'=>$po_key
-				);
-
-			}
-
-		}
-
-
-		foreach ($items as $item) {
-			$sql=sprintf("update  `Purchase Order Transaction Fact` set `Purchase Order Normalized Quantity`=%f ,`Purchase Order Normalized Quantity Type`=%s where  `Purchase Order Key`=%d and `Purchase Order Line`=%d"
-
-				, $item['Purchase Order Quantity']
-				, prepare_mysql($item['Purchase Order Quantity Type'])
-				, $item['Purchase Order Key']
-				, $item['Purchase Order Line']
-			);
-			mysql_query($sql);
-			//  print $sql;
-		}
-
-
-	}
-
-
-
-
-
-
-	function get_image_src() {
-		return '';
-	}
-
 
 
 	function create_supplier_part_record($data) {
@@ -1421,11 +1094,6 @@ class Supplier extends SubjectSupplier {
 	}
 
 
-	function update_supplier_parts_data() {
-
-	}
-
-
 	function get_field_label($field) {
 		global $account;
 
@@ -1527,26 +1195,6 @@ class Supplier extends SubjectSupplier {
 	}
 
 
-	function update_has_agent() {
-		$has_agent='No';
-
-		$sql=sprintf('select count(*) as num from `Agent Supplier Bridge` where `Agent Supplier Supplier Key`=%d',
-			$this->id
-		);
-		if ($result=$this->db->query($sql)) {
-			if ($row = $result->fetch()) {
-				if ($row['num']>0) {
-					$has_agent='Yes';
-				}
-			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
-		}
-
-		$this->update(array('Supplier Has Agent'=>$has_agent), 'no_history');
-
-	}
 
 
 	function get_agents_data() {
@@ -1571,6 +1219,110 @@ class Supplier extends SubjectSupplier {
 
 	}
 
+
+	function archive() {
+
+		$this->update_type('Archived', 'no_history');
+
+
+		$history_data=array(
+			'History Abstract'=>sprintf(_("Supplier %s archived"), $this->data['Supplier Code']),
+			'History Details'=>'',
+			'Action'=>'edited'
+		);
+
+		$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
+
+
+
+	}
+
+
+	function unarchive() {
+
+		$this->update_type('Free', 'no_history');
+
+
+		$history_data=array(
+			'History Abstract'=>sprintf(_("Supplier %s unarchived"), $this->data['Supplier Code']),
+			'History Details'=>'',
+			'Action'=>'edited'
+		);
+
+		$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
+
+
+
+	}
+
+
+	function update_type($value, $options='') {
+
+		$has_agent='No';
+		$sql=sprintf('select count(*) as num from `Agent Supplier Bridge` where `Agent Supplier Supplier Key`=%d',
+			$this->id
+		);
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				if ($row['num']>0) {
+					$has_agent='Yes';
+				}
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+		if ($value!='Archived') {
+			if ($has_agent=='Yes') {
+				$value='Agent';
+			}else {
+				$value='Free';
+
+			}
+
+		}
+
+
+
+		switch ($value) {
+		case 'Free':
+			$this->update(array(
+					'Supplier Type'=>'Free',
+					'Supplier Has Agent'=>$has_agent,
+					'Supplier Valid To'=>''
+
+				), 'no_history');
+			break;
+		case 'Agent':
+			$this->update(array(
+					'Supplier Type'=>'Agent',
+					'Supplier Has Agent'=>$has_agent,
+					'Supplier Valid To'=>''
+				), 'no_history');
+
+			break;
+		case 'Archived':
+		
+		
+		
+		
+			$this->update(array(
+					'Supplier Type'=>'Archived',
+					'Supplier Has Agent'=>$has_agent,
+					'Supplier Valid To'=>gmdate('Y-m-d H:i:s')
+
+				), 'no_history');
+
+			break;
+		default:
+			$this->error=true;
+			$this->msg='Not valid supplirt type value '.$value;
+			break;
+		}
+
+	}
 
 
 	function delete($metadata=false) {
@@ -1626,7 +1378,6 @@ class Supplier extends SubjectSupplier {
 
 
 	}
-
 
 
 }

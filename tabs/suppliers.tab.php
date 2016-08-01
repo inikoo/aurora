@@ -38,14 +38,14 @@ $table_filters=array(
 );
 
 $parameters=array(
-	'parent'=>'',
-	'parent_key'=>'',
+	'parent'=>'account',
+	'parent_key'=>'1',
 
 );
 
 $table_buttons=array();
 
-$table_buttons[]=array('icon'=>'edit', 'title'=>_('Edit'),'id'=>'edit_table');
+//$table_buttons[]=array('icon'=>'edit', 'title'=>_('Edit'),'id'=>'edit_table');
 
 $table_buttons[]=array('icon'=>'plus', 'title'=>_('New supplier'), 'reference'=>"suppliers/new");
 

@@ -325,7 +325,7 @@ case 'views':
 		$data['old_state']['module']!=$state['module'] or
 		$data['old_state']['section']!=$state['section'] or
 		$data['old_state']['parent_key']!=$state['parent_key'] or
-		$data['old_state']['key']!=$state['key'] or  $reload
+		$data['old_state']['key']!=$state['key'] or  $reload or isset($data['metadata']['reload_showcase']) 
 
 	) {
 

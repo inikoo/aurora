@@ -226,6 +226,31 @@ $elements_options=array(
 
 		),
 	),
+
+	'suppliers'=>array(
+		'type'=>array(
+			'label'=>_('Type'),
+			'items'=>array(
+				'Free'=>array('label'=>_('Free'), 'selected'=>true),
+				'Agent'=>array('label'=>_("Through agent"), 'selected'=>false),
+				'Archived'=>array('label'=>_('Archived'), 'selected'=>false),
+
+			),
+
+		)
+	),
+		'agent_suppliers'=>array(
+		'type'=>array(
+			'label'=>_('Type'),
+			'items'=>array(
+				'Free'=>array('label'=>_('Active'), 'selected'=>true),
+				'Archived'=>array('label'=>_('Archived'), 'selected'=>false),
+
+			),
+
+		)
+	),
+
 	'supplier_parts'=>array(
 		'status'=>array(
 			'label'=>_('Status'),
@@ -301,7 +326,7 @@ $elements_options=array(
 		'type'=>array(
 			'label'=>_('Type'),
 			'items'=>array(
-//				'Notes'=>array('label'=>_('Notes'), 'selected'=>true),
+				//    'Notes'=>array('label'=>_('Notes'), 'selected'=>true),
 				'Changes'=>array('label'=>_('Changes'), 'selected'=>true),
 			),
 

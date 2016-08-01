@@ -268,7 +268,14 @@ $object_fields=array(
 		)
 	),
 
-	array(
+
+);
+
+
+
+if ($object->get('Supplier Type')!='Archived') {
+
+	$object_fields[]= array(
 		'label'=>_("Supplier's parts defaults"),
 		'show_title'=>false,
 		'fields'=>array(
@@ -308,9 +315,9 @@ $object_fields=array(
 			),
 
 		)
-	),
+	);
 
-	array(
+	$object_fields[]=array(
 		'label'=>_('Purchase order settings'),
 		'show_title'=>false,
 		'fields'=>array(
@@ -370,114 +377,161 @@ $object_fields=array(
 			),
 
 		)
-	),
-
-
-);
-
-
-
-if (!$new) {
-
-	if ($object->get('Supplier User Key')) {
-
-
-		$object_fields[]=array(
-			'label'=>_('System user').' <i  onClick="change_view(\'account/user/'.$object->get('Supplier User Key').'\')" class="fa fa-link link"></i>',
-			'show_title'=>true,
-			'class'=>'edit_fields',
-			'fields'=>array(
-
-				array(
-
-					'id'=>'Supplier_User_Active',
-					'edit'=>'option',
-					'value'=>$object->get('Supplier User Active'),
-					'formatted_value'=>$object->get('User Active'),
-					'options'=>$options_yn,
-					'label'=>ucfirst($object->get_field_label('Supplier Active')),
-				),
-
-				array(
-
-					'id'=>'Supplier_User_Handle',
-					'edit'=>'handle',
-					'value'=>$object->get('Supplier User Handle'),
-					'formatted_value'=>$object->get('User Handle'),
-					'label'=>ucfirst($object->get_field_label('Supplier User Handle')),
-					'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates', 'parent'=>'account', 'parent_key'=>1, 'actual_field'=>'User Handle', 'object'=>'User', 'key'=>$object->id)),
-					'invalid_msg'=>get_invalid_message('handle'),
-				),
-
-				array(
-					'render'=>($object->get('Supplier User Active')=='Yes'?true:false),
-
-					'id'=>'Supplier_User_Password',
-					'edit'=>'password',
-					'value'=>'',
-					'formatted_value'=>'******',
-					'label'=>ucfirst($object->get_field_label('Supplier User Password')),
-					'invalid_msg'=>get_invalid_message('password'),
-				),
-				array(
-					'render'=>($object->get('Supplier User Active')=='Yes'?true:false),
-
-					'id'=>'Supplier_User_PIN',
-					'edit'=>'pin',
-					'value'=>'',
-					'formatted_value'=>'****',
-					'label'=>ucfirst($object->get_field_label('Supplier User PIN')),
-					'invalid_msg'=>get_invalid_message('pin'),
-				),
-
-
-
-			)
-		);
-
-	}
-	else {
-		$object_fields[]=array(
-			'label'=>_('System user'),
-			'show_title'=>true,
-			'class'=>'edit_fields',
-			'fields'=>array(
-				array(
-
-					'id'=>'new_user',
-					'class'=>'new',
-					'value'=>'',
-					'label'=>_('Set up system user').' <i class="fa fa-plus new_button link"></i>',
-					'reference'=>'supplier/'.$object->id.'/user/new'
-				),
-
-			)
-		);
-
-	}
-
-
-	$operations=array(
-		'label'=>_('Operations'),
-		'show_title'=>true,
-		'class'=>'edit_fields',
-		'fields'=>array(
-			array(
-
-				'id'=>'delete_supplier',
-				'class'=>'operation',
-				'value'=>'',
-				'label'=>'<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete supplier & supplier's parts").' <i class="fa fa-trash new_button link"></i></span>',
-				'reference'=>'',
-				'type'=>'operation'
-			),
-
-		)
-
 	);
 
-	$object_fields[]=$operations;
-}else {
+
+	if (!$new) {
+	
+		if ($object->get('Supplier User Key')) {
+
+
+			$object_fields[]=array(
+				'label'=>_('System user').' <i  onClick="change_view(\'account/user/'.$object->get('Supplier User Key').'\')" class="fa fa-link link"></i>',
+				'show_title'=>true,
+				'class'=>'edit_fields',
+				'fields'=>array(
+
+					array(
+
+						'id'=>'Supplier_User_Active',
+						'edit'=>'option',
+						'value'=>$object->get('Supplier User Active'),
+						'formatted_value'=>$object->get('User Active'),
+						'options'=>$options_yn,
+						'label'=>ucfirst($object->get_field_label('Supplier Active')),
+					),
+
+					array(
+
+						'id'=>'Supplier_User_Handle',
+						'edit'=>'handle',
+						'value'=>$object->get('Supplier User Handle'),
+						'formatted_value'=>$object->get('User Handle'),
+						'label'=>ucfirst($object->get_field_label('Supplier User Handle')),
+						'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates', 'parent'=>'account', 'parent_key'=>1, 'actual_field'=>'User Handle', 'object'=>'User', 'key'=>$object->id)),
+						'invalid_msg'=>get_invalid_message('handle'),
+					),
+
+					array(
+						'render'=>($object->get('Supplier User Active')=='Yes'?true:false),
+
+						'id'=>'Supplier_User_Password',
+						'edit'=>'password',
+						'value'=>'',
+						'formatted_value'=>'******',
+						'label'=>ucfirst($object->get_field_label('Supplier User Password')),
+						'invalid_msg'=>get_invalid_message('password'),
+					),
+					array(
+						'render'=>($object->get('Supplier User Active')=='Yes'?true:false),
+
+						'id'=>'Supplier_User_PIN',
+						'edit'=>'pin',
+						'value'=>'',
+						'formatted_value'=>'****',
+						'label'=>ucfirst($object->get_field_label('Supplier User PIN')),
+						'invalid_msg'=>get_invalid_message('pin'),
+					),
+
+
+
+				)
+			);
+
+		}
+		else {
+			$object_fields[]=array(
+				'label'=>_('System user'),
+				'show_title'=>true,
+				'class'=>'edit_fields',
+				'fields'=>array(
+					array(
+
+						'id'=>'new_user',
+						'class'=>'new',
+						'value'=>'',
+						'label'=>_('Set up system user').' <i class="fa fa-plus new_button link"></i>',
+						'reference'=>'supplier/'.$object->id.'/user/new'
+					),
+
+				)
+			);
+
+		}
+
+
+
+		$operations=array(
+			'label'=>_('Operations'),
+			'show_title'=>true,
+			'class'=>'edit_fields',
+			'fields'=>array(
+				array(
+
+					'id'=>'archive_supplier',
+					'class'=>'operation',
+					'value'=>'',
+					'label'=>'<i class="fa fa-fw fa-lock button invisible" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="archive_object(this)" class="delete_object ">'._("Archive supplier").' <i class="fa fa-archive new_button button"></i></span>',
+					'reference'=>'',
+					'type'=>'operation'
+				),
+				array(
+
+					'id'=>'delete_supplier',
+					'class'=>'operation',
+					'value'=>'',
+					'label'=>'<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete supplier & supplier's parts").' <i class="fa fa-trash new_button "></i></span>',
+					'reference'=>'',
+					'type'=>'operation'
+				),
+
+			)
+
+		);
+
+		$object_fields[]=$operations;
+	
+	}
+
+
+}else{
+
+		$operations=array(
+			'label'=>_('Operations'),
+			'show_title'=>true,
+			'class'=>'edit_fields',
+			'fields'=>array(
+				array(
+
+					'id'=>'unarchive_supplier',
+					'class'=>'operation',
+					'value'=>'',
+					'label'=>'<i class="fa fa-fw fa-lock button invisible" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="unarchive_object(this)" class="delete_object ">'._("Unarchive supplier").' <i class="fa fa-folder-open new_button button"></i></span>',
+					'reference'=>'',
+					'type'=>'operation'
+				),
+				array(
+
+					'id'=>'delete_supplier',
+					'class'=>'operation',
+					'value'=>'',
+					'label'=>'<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete supplier & supplier's parts").' <i class="fa fa-trash new_button "></i></span>',
+					'reference'=>'',
+					'type'=>'operation'
+				),
+
+			)
+
+		);
+
+		$object_fields[]=$operations;
+
+}
+
+
+
+
+if ($new) {
 
 	$object_fields[]=array(
 		'label'=>_('System user'),
@@ -567,7 +621,6 @@ if (!$new) {
 		)
 	);
 }
-
 
 
 

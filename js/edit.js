@@ -1791,7 +1791,22 @@ function toggle_unlock_delete_object(element) {
 }
 
 
+
+
 function delete_object(element) {
+    save_object_operation('delete', element)
+}
+
+function archive_object(element) {
+    save_object_operation('archive', element)
+}
+
+function unarchive_object(element) {
+    save_object_operation('unarchive', element)
+}
+
+
+function save_object_operation(type, element) {
 
 
 
@@ -1800,25 +1815,27 @@ function delete_object(element) {
     }
 
 
+    if (type == 'delete') var icon = 'fa-trash';
+    else if (type == 'archive') var icon = 'fa-archive';
+    else if (type == 'unarchive') var icon = 'fa-folder-open';
 
-    if (!$(element).find('i.fa').removeClass('fa-trash')) return;
+    if (!$(element).find('i.fa').removeClass(icon)) return;
 
-    $(element).find('i.fa').removeClass('fa-trash').addClass('fa-spinner fa-spin')
+    $(element).find('i.fa').removeClass(icon).addClass('fa-spinner fa-spin')
 
-    var request = '/ar_edit.php?tipo=delete&object=' + $(element).data('data').object + '&key=' + $(element).data('data').key
-   
+    var request = '/ar_edit.php?tipo=object_operation&operation=' + type + '&object=' + $(element).data('data').object + '&key=' + $(element).data('data').key
     $.getJSON(request, function(data) {
         if (data.state == 200) {
 
-    console.log(data)
+            console.log(data)
             if (data.request != undefined) {
                 change_view(data.request)
             } else {
-                change_view(state.request)
+                change_view(state.request,{'reload_showcase':1})
             }
 
         } else if (data.state == 400) {
-            $(element).find('i.fa').addClass('fa-trash').removeClass('fa-spinner fa-spin')
+            $(element).find('i.fa').addClass(icon).removeClass('fa-spinner fa-spin')
 
         }
 
@@ -1843,11 +1860,11 @@ function delete_attachment(element) {
     $(element).find('i.fa').removeClass('fa-trash').addClass('fa-spinner fa-spin')
 
     var request = '/ar_edit.php?tipo=delete_attachment&attachment_bridge_key=' + $(element).data('data').attachment_bridge_key
-   
+
     $.getJSON(request, function(data) {
         if (data.state == 200) {
 
-    console.log(data)
+            console.log(data)
             if (data.request != undefined) {
                 change_view(data.request)
             } else {
