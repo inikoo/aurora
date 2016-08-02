@@ -72,6 +72,7 @@ elseif ($parameters['parent']=='category') {
 
 }
 elseif ($parameters['parent']=='store') {
+    include_once('class.Store.php');
 
 	if (in_array($parameters['parent_key'],$user->stores))
 		$where_stores=sprintf(' and  `Customer Store Key`=%d ',$parameters['parent_key']);
@@ -86,6 +87,8 @@ elseif ($parameters['parent']=='store') {
 
 		$where=sprintf(' where  `Deal Campaign Key`=%d ',$parameters['parent_key']);
 	include_once('class.DealCampaign.php');
+	    include_once('class.Store.php');
+
 	$campaign=new DealCampaign($parameters['parent_key']);
 	$store=new Store($campaign->get('Deal Campaign Store Key'));
 	$currency=$store->get('Store Currency Code');
@@ -95,6 +98,7 @@ elseif ($parameters['parent']=='store') {
 
 		$where=sprintf(' where  `Deal Key`=%d ',$parameters['parent_key']);
 		include_once('class.Deal.php');
+    include_once('class.Store.php');
 
 	$deal=new Deal($parameters['parent_key']);
 	$store=new Store($deal->get('Deal Store Key'));

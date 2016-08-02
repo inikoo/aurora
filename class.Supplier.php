@@ -409,31 +409,33 @@ class Supplier extends SubjectSupplier {
 	}
 
 
+    
+
 	function update_up_today_sales() {
-		$this->update_sales('Total');
-		$this->update_sales('Today');
-		$this->update_sales('Week To Day');
-		$this->update_sales('Month To Day');
-		$this->update_sales('Year To Day');
+		$this->update_period_sales('Total');
+		$this->update_period_sales('Today');
+		$this->update_period_sales('Week To Day');
+		$this->update_period_sales('Month To Day');
+		$this->update_period_sales('Year To Day');
 	}
 
 
 	function update_last_period_sales() {
 
-		$this->update_sales('Yesterday');
-		$this->update_sales('Last Week');
-		$this->update_sales('Last Month');
+		$this->update_period_sales('Yesterday');
+		$this->update_period_sales('Last Week');
+		$this->update_period_sales('Last Month');
 	}
 
 
 	function update_interval_sales() {
-		$this->update_sales('3 Year');
-		$this->update_sales('1 Year');
-		$this->update_sales('6 Month');
-		$this->update_sales('1 Quarter');
-		$this->update_sales('1 Month');
-		$this->update_sales('10 Day');
-		$this->update_sales('1 Week');
+		$this->update_period_sales('3 Year');
+		$this->update_period_sales('1 Year');
+		$this->update_period_sales('6 Month');
+		$this->update_period_sales('1 Quarter');
+		$this->update_period_sales('1 Month');
+		$this->update_period_sales('10 Day');
+		$this->update_period_sales('1 Week');
 	}
 
 
@@ -515,7 +517,7 @@ class Supplier extends SubjectSupplier {
 	}
 
 
-	function update_sales($interval) {
+	function update_period_sales($interval) {
 
 		include_once 'utils/date_functions.php';
 

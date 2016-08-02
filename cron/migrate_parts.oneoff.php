@@ -62,10 +62,16 @@ if ($result=$db->query($sql)) {
 
 
 	}
+			$part=new Part($row['Part SKU']);
+
+	$part->update(
+		array('Part Family Category Key'=>''),'no_history'
+		);
 }
 
 
 $account=new Account();
+
 
 
 
@@ -444,6 +450,8 @@ function get_xhtml_dimensions($part, $tag) {
 	return $dimensions;
 
 }
+
+$families="'CUB','JUNG','DVE','JCB','FLBP','EBP','PWS','BLBJ','SEB','RHSB','JSS','BPT','WWJS','JUTEB','HIPB','JUTEP','JSACK','ECOBAG','SPATR','JUTEBSK','JUTELB','DOORST','JUTESK','JUTESHOP','JUTEYM','STYLE','JGBAG','BJB'";
 
 
 function get_part_list($db, $product_id) {

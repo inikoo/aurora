@@ -4,13 +4,11 @@
 	<div id="asset_data">
 		<div class="data_container">
 		    {assign "family" $part->get('Family')}
-			<div class="data_field small {if !$family}hide{/if}" >
+			<div class="data_field small " >
 			    <input type="hidden" id="Part_Family_Key" value="{if $family}{$family->id}{/if}" />
-				<i class="fa fa-pagelines" aria-hidden="true"></i> <span   onClick="category_view()" class="button id Part_Family_Code">{if $family}{$family->get('Code')}{/if}</span>, <span class="Part_Family_Label">{if $family}{$family->get('Label')}{/if}</span>
+				<i class="fa fa-pagelines" aria-hidden="true"></i> <span   onClick="category_view()" class="button id Part_Family_Code">{if $family}{$family->get('Code')}{/if}</span> <span class="Part_Family_Label">{if $family}{$family->get('Label')}{else}<span class="italic discreet">{t}Not set{/t}</span>{/if}</span> 
 			</div>
-			<div class="data_field small discreet {if $family}hide{/if}" >
-				<i class="fa fa-pagelines" aria-hidden="true"></i> <span class="button italic" >{t}Not set{/t}</span>
-			</div>
+			
 			
 			<div class="data_field " >
 				<h1 ><span class="Part_Unit_Description">{$part->get('Part Unit Description')}</span> <span class="Store_Product_Price">{$part->get('Price')}</span></h1>

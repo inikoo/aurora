@@ -476,42 +476,90 @@ class Part extends Asset{
 		case 'Part Family Category Key';
 			global $account;
 			include_once 'class.Category.php';
-			$category=new Category($value);
-			if ($category->id and $category->get('Category Root Key')==$account->get('Account Part Family Category Key') ) {
-				$category->associate_subject($this->id);
-				$this->update_field($field, $value, $options);
 
+
+			$category=$this->get('Family');
+			
+			
+			if($value!='') {
+
+
+				$category=new Category($value);
+				if ($category->id and $category->get('Category Root Key')==$account->get('Account Part Family Category Key') ) {
+					$category->associate_subject($this->id);
+					$this->update_field($field, $value, $options);
+
+
+
+				}else {
+					$this->error=true;
+					$this->msg='wrong category';
+
+				}
+				
 				$this->other_fields_updated=array(
-					'Part_Family_Code'=>array(
-						'field'=>'Part_Family_Code',
-						'value'=>$category->get('Code'),
-						'formatted_value'=>$category->get('Code'),
+				'Part_Family_Code'=>array(
+					'field'=>'Part_Family_Code',
+					'value'=>$category->get('Code'),
+					'formatted_value'=>$category->get('Code'),
 
 
-					),
-					'Part_Family_Label'=>array(
-						'field'=>'Part_Family_Label',
-						'value'=>$category->get('Label'),
-						'formatted_value'=>$category->get('Label'),
+				),
+				'Part_Family_Label'=>array(
+					'field'=>'Part_Family_Label',
+					'value'=>$category->get('Label'),
+					'formatted_value'=>$category->get('Label'),
 
 
-					),
-					'Part_Family_Key'=>array(
-						'field'=>'Part_Family_Key',
-						'value'=>$category->id,
-						'formatted_value'=>$category->id,
+				),
+				'Part_Family_Key'=>array(
+					'field'=>'Part_Family_Key',
+					'value'=>$category->id,
+					'formatted_value'=>$category->id,
 
 
-					)
-				);
+				)
+			);
 
-			}else {
-				$this->error=true;
-				$this->msg='wrong category';
+			}elseif ($value=='' and $category) {
+
+
+				$category->disassociate_subject($this->id);
+
+$this->other_fields_updated=array(
+				'Part_Family_Code'=>array(
+					'field'=>'Part_Family_Code',
+					'value'=>'',
+					'formatted_value'=>'',
+
+
+				),
+				'Part_Family_Label'=>array(
+					'field'=>'Part_Family_Label',
+					'value'=>'',
+					'formatted_value'=>'<span class="italic discreet">'._('Not set').'</span>',
+
+
+				),
+				'Part_Family_Key'=>array(
+					'field'=>'Part_Family_Key',
+					'value'=>'',
+					'formatted_value'=>'',
+
+
+				)
+			);
 
 			}
+			
+			
+			else {
+				return;
+			}
+			
+			$this->update_field('Part Family Category Key',$value,'no_history');
 
-
+			
 
 			break;
 		case 'Part Materials':
@@ -1124,7 +1172,6 @@ class Part extends Asset{
 
 		if (!$this->id)
 			return;
-
 
 
 

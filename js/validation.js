@@ -103,6 +103,9 @@ function validate_address(field) {
 
 function client_validation(type, required, value, field) {
 
+
+    console.log(type + ' ' + value + ' ' + field)
+
     var valid_state = {
         class: 'valid',
         type: ''
@@ -153,7 +156,27 @@ function client_validation(type, required, value, field) {
     switch (type) {
 
 
+    case 'dropdown_select':
 
+        if (value == '__error__' && $('#' + field ).val() == '') {
+            return {
+                class: 'invalid',
+                type: 'not_found'
+            }
+        }else if ( $('#' + field ).val() == '') {
+        
+        
+            return {
+                class: 'potentially_valid',
+                type: 'not_selected'
+            }
+        }
+
+
+
+
+
+        break;
 
     case 'string':
         break;
@@ -560,7 +583,7 @@ function client_validation(type, required, value, field) {
                 type: 'invalid'
             }
         }
-        var regex = new RegExp('^\\d*\.?\\d{0,6}$');
+        var regex = new RegExp('^\d*\.?\d{0,6}$');
 
         if (!regex.test(value)) {
             return {
@@ -595,7 +618,7 @@ function client_validation(type, required, value, field) {
         }
 
 
-        var regex = new RegExp('^\\d*\.?\\d{0,6}$');
+        var regex = new RegExp('^\d*\.?\d{0,6}$');
 
 
         if (!regex.test(value)) {
@@ -666,9 +689,9 @@ function validate_barcode(value, min_length, max_length) {
 
 function validate_number(value, min, max) {
 
-var value=parseFloat(value)
-var min=parseFloat(min)
-var max=parseFloat(max)
+    var value = parseFloat(value)
+    var min = parseFloat(min)
+    var max = parseFloat(max)
 
     if (!$.isNumeric(value)) {
         return {
@@ -689,8 +712,8 @@ var max=parseFloat(max)
 
     if (max != undefined && value > max) {
 
-console.log(value)
-console.log(max)
+        console.log(value)
+        console.log(max)
 
         return {
             class: 'invalid',

@@ -891,7 +891,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 		if ($object->id) {
 
 			$parent->associate_subject($object->id);
-
+            $object->update('Part Family Category Key',$parent->id);
+        
 
 		}else {
 

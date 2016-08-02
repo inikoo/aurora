@@ -334,7 +334,7 @@ class Category extends DB_Table{
 	function create_category($data) {
 
 
-    $data['editor']=$this->editor;
+		$data['editor']=$this->editor;
 
 		if ($this->data['Category Deep']>$this->data['Category Max Deep']) {
 
@@ -2301,6 +2301,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 
 	function disassociate_subject($subject_key) {
 
+
+
 		if (!$this->is_subject_associated($subject_key)) {
 			return true;
 		}
@@ -2521,7 +2523,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 
 	function is_subject_associated($subject_key) {
 		$sql=sprintf("select `Subject Key` from `Category Bridge` where `Category Key`=%d and `Subject Key`=%d ", $this->id, $subject_key);
-
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
 				return true;

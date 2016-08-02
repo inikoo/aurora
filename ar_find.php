@@ -703,7 +703,7 @@ function find_parts($db, $account, $memcache_ip, $data) {
 			foreach ($result as $row) {
 
 				if ($row['Part Reference']==$q)
-					$candidates[$row['Part SKUy']]=1000;
+					$candidates[$row['Part SKU']]=1000;
 				else {
 
 					$len_name=strlen($row['Part SKU']);
@@ -1092,7 +1092,7 @@ function find_special_category($type, $db, $account, $memcache_ip, $data) {
 		if ($result=$db->query($sql)) {
 			foreach ($result as $row) {
 				$results[$row['Category Key']]=array(
-					'value'=>$row['Category Code'],
+					'value'=>$row['Category Key'],
 					'formatted_value'=>$row['Category Code'],
 					'code'=>$row['Category Code'],
 					'description'=>$row['Category Label'],

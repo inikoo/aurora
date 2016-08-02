@@ -1017,6 +1017,8 @@ function save_field(object, key, field) {
 
 function post_save_actions(field, data) {
 
+console.log(field)
+console.log(data)
 
     switch (field) {
     case 'User_Preferred_Locale':
@@ -1047,6 +1049,11 @@ function post_save_actions(field, data) {
             })
         }
         break;
+     case 'Supplier_Part_Supplier_Key':
+          change_view(data.update_metadata.request, {
+                reload_showcase: 1
+            })
+        
     default:
 
     }
@@ -1664,23 +1671,38 @@ function get_dropdown_select(dropdown_input, new_value) {
 
         if (data.number_results > 0) {
             $('#' + field + '_results_container').removeClass('hide').addClass('show')
+            $('#' + field + '_msg').html('').addClass('hide')
+            $('#' + field).val('')
+            on_changed_value(field, new_value)
+            
+             
+            
+            
         } else {
 
-            if ($('#' + dropdown_input).attr('create_new') == 1 && new_value.length > 0) {
+            if (new_value.length > 0) {
 
-                if ($('#' + field + '_new_object_invalid_msg').length) {
-                    msg = $('#' + field + '_new_object_invalid_msg').html()
-                    $('#' + field + '_msg').html(msg).removeClass('hide')
+
+                if ($('#' + dropdown_input).attr('create_new') == 1) {
+
+                    if ($('#' + field + '_new_object_invalid_msg').length) {
+                        msg = $('#' + field + '_new_object_invalid_msg').html()
+                        $('#' + field + '_msg').html(msg).removeClass('hide')
+                    }
+
+
+
+                } else {
+
+
+                    $('#' + field + '_results_container').addClass('hide').removeClass('show')
+                    $('#' + field).val('')
+                    on_changed_value(field, '__error__')
                 }
-
-
-
-            } else {
-
-
-                $('#' + field + '_results_container').addClass('hide').removeClass('show')
+            }else{
+            
                 $('#' + field).val('')
-                on_changed_value(field, '')
+            on_changed_value(field, '')
             }
         }
 
@@ -1735,6 +1757,9 @@ function select_dropdown_option(element) {
 
 
     $('#' + field + '_dropdown_select_label').val(formatted_value)
+
+    console.log(value)
+
     $('#' + field).val(value)
     on_changed_value(field, value)
 
@@ -1831,7 +1856,9 @@ function save_object_operation(type, element) {
             if (data.request != undefined) {
                 change_view(data.request)
             } else {
-                change_view(state.request,{'reload_showcase':1})
+                change_view(state.request, {
+                    'reload_showcase': 1
+                })
             }
 
         } else if (data.state == 400) {
