@@ -70,22 +70,27 @@ if ( !($supplier_part_scope or $new)) {
 
 }
 
+$family=$object->get('Family');
+
+
+
 $part_fields[]=array(
 	'label'=>_('Family'),
 	'show_title'=>true,
 	'fields'=>array(
 		array(
-			'id'=>'Part_Family_Category_Code',
+			'id'=>'Part_Family_Category_Key',
 			'edit'=>($edit?'dropdown_select':''),
 			'scope'=>'part_families',
 			//'create_new'=>0,
 			'parent'=>'account',
 			'parent_key'=>1,
-			'value'=>htmlspecialchars($object->get('Part Family Category Code')),
-			'formatted_value'=>$object->get('Family Category Code'),
-			'stripped_formatted_value'=>'',
+			'value'=>($family?$family->id:''),
+			'formatted_value'=>($family?$family->get('Code'):''),
+			'stripped_formatted_value'=>($family?$family->get('Code'):''),
 			'label'=>_('Family'),
-			'required'=>true,
+			'required'=>false,
+			'placeholder'=>_("Part's family code"),
 			'invalid_msg'=>array('not_found'=>_("Part's family not found"),
 				'new_object'=>_("Part's family will be created")
 			),

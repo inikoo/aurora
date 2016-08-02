@@ -231,7 +231,7 @@ class SupplierPart extends DB_Table{
 			);
 			$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
 
-            
+
 
 
 			return;
@@ -362,6 +362,67 @@ class SupplierPart extends DB_Table{
 
 
 		switch ($field) {
+
+		case 'Supplier Part Supplier Key':
+			include_once 'class.Supplier.php';
+
+			if ($value==$this->get('Supplier Part Supplier Key')) {
+
+				return;
+			}
+
+			$supplier=new Supplier($value);
+
+			$old_supplier=new Supplier($this->get('Supplier Part Supplier Key'));
+
+			if (!$supplier->id) {
+				$this->error=true;
+				$this->msg='Supplier not found';
+				return;
+
+			}
+
+			$this->update_field($field, $supplier->id, 'no_history');
+
+			$supplier->update_supplier_parts();
+			$supplier->update_up_today_sales();
+			$supplier->update_last_period_sales();
+			$supplier->update_interval_sales();
+			$supplier->update_previous_years_data();
+
+
+			if ($old_supplier->id) {
+				$old_supplier->update_supplier_parts();
+				$old_supplier->update_up_today_sales();
+				$old_supplier->update_last_period_sales();
+				$old_supplier->update_interval_sales();
+				$old_supplier->update_previous_years_data();
+			    $old_supplier_label=sprintf(' from <span class="discreet button" onClick="change_view(\'supplier/%d\')">%s</span>', $old_supplier->id,$old_supplier->get('Code'));
+			
+			}else{
+			$old_supplier_label='';
+			}
+
+
+			$this->update_metadata=array(
+					'request'=>sprintf('supplier/%d/part/%d', $supplier->id, $this->id)
+			);
+			
+				$history_data=array(
+				'Action'=>'edited',
+				'History Abstract'=>sprintf("Suppier's part %s supplier moved to supplier %s%s",
+				sprintf('<span class="button" onClick="change_view(\'supplier/%d/part/%d\')">%s</span>', $supplier->id, $this->id,$this->get('Reference')),
+				sprintf('<span class="button" onClick="change_view(\'supplier/%d\')">%s</span>', $supplier->id,$supplier->get('Code')),
+				$old_supplier_label
+				
+				),
+				'History Details'=>''
+			);
+			$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
+
+
+
+			break;
 		case 'Supplier Part Currency Code':
 		case 'Supplier Part Reference':
 		case 'Supplier Part Unit Cost':
@@ -370,8 +431,8 @@ class SupplierPart extends DB_Table{
 				$this->update_historic_object();
 			}
 			break;
-		
-			
+
+
 		case 'Supplier Part Carton CBM':
 
 			$this->update_field($field, $value, $options);
@@ -381,24 +442,24 @@ class SupplierPart extends DB_Table{
 			if ($value!='') {
 				$purchase_order_keys=array();
 				$sql=sprintf("select `Purchase Order Transaction Fact Key`,`Purchase Order Key`,`Purchase Order Quantity` from `Purchase Order Transaction Fact` where `Supplier Part Key`=%d  and `Purchase Order CBM` is NULL and `Purchase Order Transaction State` in ('InProcess','Submitted')  ",
-				$this->id
+					$this->id
 				);
 				//print $sql;
 				if ($result=$this->db->query($sql)) {
 					foreach ($result as $row) {
 						$purchase_order_keys[$row['Purchase Order Key']]=$row['Purchase Order Key'];
 						$sql=sprintf('update `Purchase Order Transaction Fact` set  `Purchase Order CBM`=%f where `Purchase Order Transaction Fact Key`=%d',
-						$row['Purchase Order Quantity']*$this->get('Supplier Part Carton CBM'),
-						$row['Purchase Order Transaction Fact Key']
+							$row['Purchase Order Quantity']*$this->get('Supplier Part Carton CBM'),
+							$row['Purchase Order Transaction Fact Key']
 						);
 						$this->db->exec($sql);
 					}
-					include_once('class.PurchaseOrder.php');
-					foreach($purchase_order_keys as $purchase_order_key){
-					    $purchase_order=new PurchaseOrder($purchase_order_key);
-					    $purchase_order->update_totals();
+					include_once 'class.PurchaseOrder.php';
+					foreach ($purchase_order_keys as $purchase_order_key) {
+						$purchase_order=new PurchaseOrder($purchase_order_key);
+						$purchase_order->update_totals();
 					}
-					
+
 				}else {
 					print_r($error_info=$this->db->errorInfo());
 					exit;
@@ -627,9 +688,10 @@ class SupplierPart extends DB_Table{
 
 	}
 
-    function update_next_supplier_shippment(){
-        
-    }
+
+	function update_next_supplier_shippment() {
+
+	}
 
 
 }

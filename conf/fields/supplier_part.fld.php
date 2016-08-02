@@ -37,8 +37,47 @@ if (isset($options['show_full_label']) and  $options['show_full_label'] ) {
 
 
 $options_status=array('Available'=>_('Available'), 'NoAvailable'=>_('No stock'), 'Discontinued'=>_('Discontinued'));
-$supplier_part_fields=array(
-	array(
+
+
+$supplier_part_fields=array();
+
+if(!$new){
+$supplier_part_fields[]=array(
+	'label'=>_('Supplier'),
+	'show_title'=>true,
+	'fields'=>array(
+		array(
+			'id'=>'Supplier_Part_Supplier_Key',
+			'edit'=>($edit?'dropdown_select':''),
+			'scope'=>'suppliers',
+			//'create_new'=>0,
+			'parent'=>'account',
+			'parent_key'=>1,
+			'value'=>$object->get('Supplier Part Supplier Key'),
+			'formatted_value'=>$object->get('Supplier Key'),
+			'stripped_formatted_value'=>$object->get('Supplier Key'),
+			'label'=>_('Supplier'),
+			'required'=>true,
+			'placeholder'=>_("Supplier code"),
+			'invalid_msg'=>array('not_found'=>_("Supplier not found"),
+				'new_object'=>_("Supplier will be created")
+			),
+			'type'=>'value'
+
+		),
+
+
+
+
+	)
+);
+
+}
+
+
+
+
+	$supplier_part_fields[]=array(
 		'label'=>($show_full_label?_("Supplier's part Id"):_('Id')),
 
 		'show_title'=>true,
@@ -104,11 +143,11 @@ $supplier_part_fields=array(
 			)
 
 		)
-	),
+	);
 
 
 
-	array(
+	$supplier_part_fields[]=array(
 		'label'=>($show_full_label?_("Supplier's part ordering"):_('Ordering')),
 
 		'show_title'=>true,
@@ -166,9 +205,9 @@ $supplier_part_fields=array(
 
 
 		)
-	),
+	);
 
-	array(
+	$supplier_part_fields[]=array(
 		'label'=>($show_full_label?_("Supplier's part cost/price"):_('Cost/price')),
 
 		'show_title'=>true,
@@ -231,9 +270,9 @@ $supplier_part_fields=array(
 			),
 
 		)
-	),
+	);
 
-	array(
+	$supplier_part_fields[]=array(
 		'label'=>($show_full_label?_("Supplier's part packing"):_('Packing')),
 
 		'show_title'=>true,
@@ -262,9 +301,9 @@ $supplier_part_fields=array(
 
 
 		)
-	),
+	);
 
-);
+
 
 
 
