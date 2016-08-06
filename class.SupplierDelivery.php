@@ -549,7 +549,7 @@ class SupplierDelivery extends DB_Table {
 		}else {
 
 
-			$amount=$qty*$supplier_part->get('Supplier Part Unit Cost')*$supplier_part->get('Supplier Part Units Per Package')*$supplier_part->get('Supplier Part Packages Per Carton');
+			$amount=$qty*$supplier_part->get('Supplier Part Unit Cost')*$supplier_part->part->get('Part Units Per Package')*$supplier_part->get('Supplier Part Packages Per Carton');
 			if (is_numeric($supplier_part->get('Supplier Part Carton CBM'))) {
 				$cbm=$qty*$supplier_part->get('Supplier Part Carton CBM');
 			}else {

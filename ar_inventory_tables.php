@@ -45,7 +45,7 @@ case 'inventory_stock_history':
 	inventory_stock_history(get_table_parameters(), $db, $user, $account);
 	break;	
 case 'discontinued_parts':
-	parts(get_table_parameters(), $db, $user, 'discontinued');
+	parts(get_table_parameters(), $db, $user, 'discontinued', $account);
 	break;
 case 'barcodes':
 	barcodes(get_table_parameters(), $db, $user);
@@ -323,7 +323,7 @@ function stock_transactions($_data, $db, $user) {
 			$stock=$data['Inventory Transaction Quantity'];
 			switch ($data['Inventory Transaction Type']) {
 			case 'OIP':
-				$type='<i class="fa  fa-clock-o discret fa-fw" aria-hidden="true"></i>';
+				$type='<i class="fa  fa-clock-o discreet fa-fw" aria-hidden="true"></i>';
 
 				if ($parameters['parent']=='part') {
 					$note=sprintf(_('%s %s (%s) to be taken from %s'),
@@ -522,7 +522,7 @@ function supplier_parts($_data, $db, $user) {
 				'description'=>$data['Part Unit Description'],
 				'status'=>$status,
 				'cost'=>money($data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']),
-				'packing'=>'<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Supplier Part Units Per Package'].'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discret padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discret">'.($data['Supplier Part Units Per Package']*$data['Supplier Part Packages Per Carton'].'</span>'),
+				'packing'=>'<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package'].'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discreet">'.($data['Part Units Per Package']*$data['Supplier Part Packages Per Carton'].'</span>'),
 				'stock'=>number(floor($data['Part Current Stock']))." $stock_status",
 
 

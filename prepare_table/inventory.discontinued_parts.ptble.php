@@ -1,1 +1,1 @@
-inventory.parts.ptble.php
+parts.ptble.php

@@ -76,6 +76,38 @@ class Part extends Asset{
 	}
 
 
+	function get_supplier_parts($scope='keys') {
+
+		include_once 'class.SupplierPart.php';
+
+		if ($scope=='objects') {
+			include_once 'class.Part.php';
+		}
+
+		$sql=sprintf('select `Supplier Part Key` from `Supplier Part Dimension` where `Supplier Part Part SKU`=%d ', $this->id);
+
+		$supplier_parts=array();
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+				if ($scope=='objects') {
+					$supplier_parts[$row['Supplier Part Key']]=new SupplierPart($row['Supplier Part Key']);
+				}else {
+					$supplier_parts[$row['Supplier Part Key']]=$row['Supplier Part Key'];
+				}
+
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+		return $supplier_parts;
+	}
+
+
 	function load_acc_data() {
 		$sql=sprintf("select * from `Part Data` where `Part SKU`=%d", $this->id);
 
@@ -473,15 +505,21 @@ class Part extends Asset{
 
 		switch ($field) {
 
+		case 'Part Units Per Package':
+			$this->update_field('Part Units Per Package', $value, $options);
+
+			$supplier_parts=$this->get_supplier_parts('objects');
+			//$supplier_parts->update(array('Part Units Per Package'=>$value));
+			break;
 		case 'Part Family Category Key';
 			global $account;
 			include_once 'class.Category.php';
 
 
 			$category=$this->get('Family');
-			
-			
-			if($value!='') {
+
+
+			if ($value!='') {
 
 
 				$category=new Category($value);
@@ -496,77 +534,94 @@ class Part extends Asset{
 					$this->msg='wrong category';
 
 				}
-				
+
 				$this->other_fields_updated=array(
-				'Part_Family_Code'=>array(
-					'field'=>'Part_Family_Code',
-					'value'=>$category->get('Code'),
-					'formatted_value'=>$category->get('Code'),
+					'Part_Family_Code'=>array(
+						'field'=>'Part_Family_Code',
+						'value'=>$category->get('Code'),
+						'formatted_value'=>$category->get('Code'),
 
 
-				),
-				'Part_Family_Label'=>array(
-					'field'=>'Part_Family_Label',
-					'value'=>$category->get('Label'),
-					'formatted_value'=>$category->get('Label'),
+					),
+					'Part_Family_Label'=>array(
+						'field'=>'Part_Family_Label',
+						'value'=>$category->get('Label'),
+						'formatted_value'=>$category->get('Label'),
 
 
-				),
-				'Part_Family_Key'=>array(
-					'field'=>'Part_Family_Key',
-					'value'=>$category->id,
-					'formatted_value'=>$category->id,
+					),
+					'Part_Family_Key'=>array(
+						'field'=>'Part_Family_Key',
+						'value'=>$category->id,
+						'formatted_value'=>$category->id,
 
 
-				)
-			);
+					)
+				);
 
 			}elseif ($value=='' and $category) {
 
 
 				$category->disassociate_subject($this->id);
 
-$this->other_fields_updated=array(
-				'Part_Family_Code'=>array(
-					'field'=>'Part_Family_Code',
-					'value'=>'',
-					'formatted_value'=>'',
+				$this->other_fields_updated=array(
+					'Part_Family_Code'=>array(
+						'field'=>'Part_Family_Code',
+						'value'=>'',
+						'formatted_value'=>'',
 
 
-				),
-				'Part_Family_Label'=>array(
-					'field'=>'Part_Family_Label',
-					'value'=>'',
-					'formatted_value'=>'<span class="italic discreet">'._('Not set').'</span>',
+					),
+					'Part_Family_Label'=>array(
+						'field'=>'Part_Family_Label',
+						'value'=>'',
+						'formatted_value'=>'<span class="italic discreet">'._('Not set').'</span>',
 
 
-				),
-				'Part_Family_Key'=>array(
-					'field'=>'Part_Family_Key',
-					'value'=>'',
-					'formatted_value'=>'',
+					),
+					'Part_Family_Key'=>array(
+						'field'=>'Part_Family_Key',
+						'value'=>'',
+						'formatted_value'=>'',
 
 
-				)
-			);
+					)
+				);
 
 			}
-			
-			
+
+
 			else {
 				return;
 			}
-			
-			$this->update_field('Part Family Category Key',$value,'no_history');
 
-			
+			$this->update_field('Part Family Category Key', $value, 'no_history');
+
+
 
 			break;
 		case 'Part Materials':
 			include_once 'utils/parse_materials.php';
 
+
+			$materials_to_update=array();
+			$sql=sprintf('select `Material Key` from `Part Material Bridge` where `Part SKU`=%d', $this->id);
+			if ($result=$this->db->query($sql)) {
+				foreach ($result as $row) {
+					$materials_to_update[$row['Material Key']]=true;
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+
 			if ($value=='') {
 				$materials='';
+
+
+
+
 				$sql=sprintf("delete from `Part Material Bridge` where `Part SKU`=%d ", $this->sku);
 				$this->db->exec($sql);
 
@@ -590,6 +645,11 @@ $this->other_fields_updated=array(
 						);
 						$this->db->exec($sql);
 
+						if (isset($materials_to_update[$material_data['id']])) {
+							$materials_to_update[$material_data['id']]=false;
+						}else {
+							$materials_to_update[$material_data['id']]=true;
+						}
 
 					}
 
@@ -599,6 +659,16 @@ $this->other_fields_updated=array(
 
 				$materials=json_encode($materials_data);
 			}
+
+
+			foreach ($materials_to_update as  $material_key=>$update) {
+				if ($update) {
+					$material=new Material($material_key);
+					$material->update_stats();
+
+				}
+			}
+
 
 			$this->update_field('Part Materials', $materials, $options);
 			$this->update_linked_products($field, $value, $options, $metadata);
@@ -773,6 +843,52 @@ $this->other_fields_updated=array(
 		}
 
 
+
+
+	}
+
+
+	function update_cost() {
+
+		$supplier_parts=get_supplier_parts('objects');
+
+		$cost_available=false;
+		$cost_no_available=false;
+		$cost_discontinued=false;
+		foreach ($supplier_parts as $supplier_part) {
+			if ($supplier_part->get('Supplier Part Status')) {
+
+				if ($cost_available==false or $cost_available>$supplier_part->get('Supplier Part Unit Cost')) {
+					$cost_available=$supplier_part->get('Supplier Part Unit Cost');
+				}elseif ($cost_no_available==false or $cost_no_available>$supplier_part->get('Supplier Part Unit Cost')) {
+					$cost_no_available=$supplier_part->get('Supplier Part Unit Cost');
+				}elseif ($cost_discontinued==false or $cost_discontinued>$supplier_part->get('Supplier Part Unit Cost')) {
+					$cost_discontinued=$supplier_part->get('Supplier Part Unit Cost');
+				}
+
+
+			}
+
+		}
+
+		$cost='';
+		if ($cost_available!=false) {
+			$cost=$cost_available;
+		}
+
+		if ($cost==false and $cost_no_available!=false) {
+			$cost=$cost_no_available;
+		}
+
+		if ($cost==false and $cost_no_available!=false) {
+			$cost=$cost_no_available;
+		}
+
+		if ($cost!=false) {
+			$cost=$code*$this->data['Part Units Per Package'];
+		}
+
+		$this->update_field('Part Cost');
 
 
 	}
@@ -1174,16 +1290,69 @@ $this->other_fields_updated=array(
 			return;
 
 
-
 		switch ($key) {
 
+
+
+		case 'Unit Price':
+			include_once 'utils/natural_language.php';
+			$unit_price= money($this->data['Part Unit Price'], $account->get('Account Currency'));
+
+			$price_other_info='';
+			if ($this->data['Part Units Per Package']!=1 and  is_numeric($this->data['Part Units Per Package'])) {
+				$price_other_info='('.money($this->data['Part Unit Price']*$this->data['Part Units Per Package'], $account->get('Account Currency')).' '._('per SKO').'), ';
+			}
+
+
+			if ($this->data['Part Units Per Package']!=0 and  is_numeric($this->data['Part Units Per Package'])) {
+
+				$unit_margin=$this->data['Part Unit Price']-($this->data['Part Cost']/$this->data['Part Units Per Package']);
+
+				$price_other_info.=sprintf('<span class="'.($unit_margin<0?'error':'').'">'._('margin %s').'</span>', percentage($unit_margin, $this->data['Part Unit Price']));
+			}
+
+			$price_other_info=preg_replace('/^, /', '', $price_other_info);
+			if ($price_other_info!='') {
+				$unit_price.=' <span class="discreet">'.$price_other_info.'</span>';
+			}
+
+			return $unit_price;
+			break;
+		case 'Unit RRP':
+			if ($this->data['Part Unit RRP']=='')return '';
+
+			include_once 'utils/natural_language.php';
+			$rrp= money($this->data['Part Unit RRP'], $account->get('Account Currency'));
+
+
+			$unit_margin=$this->data['Part Unit RRP']-$this->data['Part Unit Price'];
+			$rrp_other_info=sprintf(_('margin %s'), percentage($unit_margin, $this->data['Part Unit RRP']));
+
+
+
+			$rrp_other_info=preg_replace('/^, /', '', $rrp_other_info);
+			if ($rrp_other_info!='') {
+				$rrp.=' <span class="'.($unit_margin<0?'error':'').'  discreet">'.$rrp_other_info.'</span>';
+			}
+			return $rrp;
+			break;
+		case 'Barcode':
+
+			if ($this->get('Part Barcode Number')=='')return '';
+
+			return '<i '.
+				($this->get('Part Barcode Key')?
+				'class="fa fa-barcode button" onClick="change_view(\'inventory/barcode/'.$this->get('Part Barcode Key').'\')"':'class="fa fa-barcode"').
+				' ></i><span class="Part_Barcode_Number ">'.$this->get('Part Barcode Number').'</span>';
+
+			break;
 
 		case 'Available Forecast':
 
 			if ($this->data['Part Stock Status']=='Out_Of_Stock' or  $this->data['Part Stock Status']=='Error') return '';
 			include_once 'utils/natural_language.php';
-			return '<i class="fa fa-ban error fa-fw" aria-hidden="true" title="'._('Out of stock').'" ></i> '._('in').' <span title="'.sprintf("%s %s", number($this->data['Part Days Available Forecast'], 1) ,
-				ngettext("day", "days", intval($this->data['Part Days Available Forecast'] ) )).'">'.seconds_to_natural_string($this->data['Part Days Available Forecast']*86400, true).'</span>';
+			return '<span style="font-size:80%">'.sprintf(_('%s until out of stock'), '<span style="font-size:120%" title="'.sprintf("%s %s", number($this->data['Part Days Available Forecast'], 1) ,
+					ngettext("day", "days", intval($this->data['Part Days Available Forecast'] ) )).'">'.seconds_to_natural_string($this->data['Part Days Available Forecast']*86400, true).'</span>').'</span>';
 			break;
 
 		case 'Origin Country Code':
@@ -1242,13 +1411,6 @@ $this->other_fields_updated=array(
 		case('Valid To'):
 			return strftime("%a %e %b %Y %H:%M %Z", strtotime($this->data['Part Valid To']+' 0:00'));
 			break;
-
-
-			break;
-
-
-			break;
-
 		default:
 
 			if (preg_match('/No Supplied$/', $key)) {
@@ -2994,74 +3156,8 @@ $this->other_fields_updated=array(
 	}
 
 
-	function update_cost_from_supplier_products() {
-		$cost=$this->get_cost_from_supplier_products();
-		$sql=sprintf("update `Part Dimension` set `Part Cost`=%.4f where `Part SKU`=%d",
-			$cost,
-			$this->sku
-		);
-		mysql_query($sql);
-	}
 
 
-	function get_cost_from_supplier_products($date=false) {
-		//this will be replace by getting the cost from the PO
-
-
-		if ($date) {
-			// print "from date";
-
-			$sql=sprintf("select AVG(`SPH case Cost`/`SPH Units Per case`*`Supplier Product Units Per Part`) as cost
-                         from `Supplier Product Dimension` SP
-                         left join `Supplier Product Part Dimension` SPPD  on (SP.`Supplier Product ID`=SPPD.`Supplier Product ID` )
-                         left join `Supplier Product Part List` B  on (SPPD.`Supplier Product Part Key`=B.`Supplier Product Part Key` )
-                         left join  `Supplier Product History Dimension` SPHD on (SPHD.`Supplier Product ID`=SP.`Supplier Product ID`)
-                         where `Part SKU`=%d and
-                         (
-                         ( `Supplier Product Part Most Recent`='Yes'  and `Supplier Product Part Valid From`<=%s ) or
-                         ( `Supplier Product Part Most Recent`='No' and `Supplier Product Part Valid From`<=%s and `Supplier Product Part Valid To`>=%s) ) and
-                         (`SPH Valid From`<=%s and `SPH Valid To`>=%s)
-                         ",
-				$this->sku
-				, prepare_mysql($date)
-				, prepare_mysql($date)
-				, prepare_mysql($date)
-				, prepare_mysql($date)
-				, prepare_mysql($date)
-			);
-
-
-
-			//   print "$sql\n\n";
-			//exit;
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_array($res)) {
-				if (is_numeric($row['cost']))
-					return $row['cost'];
-			}
-		}
-		// print "not found in date";
-
-		$sql=sprintf("select AVG(`SPH case Cost`/`SPH Units Per case`*`Supplier Product Units Per Part`) as cost
-                     from `Supplier Product Dimension` SP
-                     left join `Supplier Product Part Dimension` SPPD  on (SP.`Supplier Product ID`=SPPD.`Supplier Product ID` )
-                     left join `Supplier Product Part List` B  on (SPPD.`Supplier Product Part Key`=B.`Supplier Product Part Key` )
-                     left join  `Supplier Product History Dimension` SPHD ON (SPHD.`SPH Key`=SP.`Supplier Product Current Key`)
-                     where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes' ", $this->sku);
-		//print "$sql\n\n";
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_array($res)) {
-			return $row['cost'];
-		}
-
-		print "Error can not fount part (SKU".$this->id.") unit cost on $dates\n";
-
-		return 0;
-
-
-
-
-	}
 
 
 	function get_estimated_future_cost() {

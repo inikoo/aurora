@@ -41,6 +41,20 @@ class Asset extends DB_Table{
 				$this->update_field($this->table_name.' Barcode Number', '', $options);
 				$this->update_field($this->table_name.' Barcode Key', '', 'no_history');
 
+
+				if ($this->table_name=='Part') {
+
+					$this->update_metadata=array(
+						'class_html'=>array(
+							'SKO_Barcode'=>$this->get('Status'),
+							'Average_Delivery'=>$this->get('Average Delivery')
+
+						)
+					);
+				}
+
+
+
 			}else {
 
 				$available_barcodes=0;
@@ -180,6 +194,7 @@ class Asset extends DB_Table{
 	function get_asset_common($key, $arg1='') {
 
 
+
 		if (!$this->id)
 			return;
 
@@ -190,10 +205,10 @@ class Asset extends DB_Table{
 			if ($this->get($this->table_name.' Family Category Key')>0) {
 				$family=new Category($this->get($this->table_name.' Family Category Key'));
 				if ($family->id) {
-					return array(true,$family);
+					return array(true, $family);
 				}
 			}
-			return array(true,false);
+			return array(true, false);
 
 			break;
 		case 'Family Category Key':
@@ -201,10 +216,10 @@ class Asset extends DB_Table{
 			if ($this->get($this->table_name.' Family Category Key')>0) {
 				$family=new Category($this->get($this->table_name.' Family Category Key'));
 				if ($family->id) {
-					return array(true,$family->get('Code'));
+					return array(true, $family->get('Code'));
 				}
 			}
-			return array(true,'');
+			return array(true, '');
 
 			break;
 
@@ -296,7 +311,7 @@ class Asset extends DB_Table{
 					}
 
 					if ($material_data['id']>0) {
-						$xhtml_materials.=sprintf(', %s<span onCLick="change_view(matarial/%d)" class="link" >%s</span>',
+						$xhtml_materials.=sprintf(', %s<span onCLick="change_view(\'material/%d\')" class="link" >%s</span>',
 							$may_contain_tag,
 							$material_data['id'],
 							$material_data['name']);
@@ -411,17 +426,17 @@ class Asset extends DB_Table{
 				case 'Rectangular':
 
 					$dimensions=number(convert_units($data['l'], 'm', $data['units'])).'x'.number(convert_units($data['w'], 'm', $data['units'])).'x'.number(convert_units($data['h'], 'm', $data['units'])).' ('.$data['units'].')';
-					$dimensions.=', <span class="discret">'.volume($data['vol']).'</span>';
+					$dimensions.='<span class="discreet volume">, '.volume($data['vol']).'</span>';
 					if ($this->data[$this->table_name." $tag Weight"]>0) {
-						$dimensions.='<span class="discret">, '.number($this->data[$this->table_name." $tag Weight"]/$data['vol']).'Kg/L</span>';
+						$dimensions.='<span class="discreet density">, '.number($this->data[$this->table_name." $tag Weight"]/$data['vol']).'Kg/L</span>';
 					}
 
 					break;
 				case 'Cilinder':
 					$dimensions=number(convert_units($data['h'], 'm', $data['units'])).'x'.number(convert_units($data['w'], 'm', $data['units'])).' ('.$data['units'].')';
-					$dimensions.=', <span class="discret">'.volume($data['vol']).'</span>';
+					$dimensions.='<span class="discreet volume">, '.volume($data['vol']).'</span>';
 					if ($this->data[$this->table_name." $tag Weight"]>0) {
-						$dimensions.='<span class="discret">, '.number($this->data[$this->table_name." $tag Weight"]/$data['vol']).'Kg/L</span>';
+						$dimensions.='<span class="discreet density">, '.number($this->data[$this->table_name." $tag Weight"]/$data['vol']).'Kg/L</span>';
 					}
 
 					break;
@@ -437,9 +452,9 @@ class Asset extends DB_Table{
 
 
 					$dimensions=_('Diameter').' '.number(convert_units($data['l'], 'm', $data['units'])).$data['units'];
-					$dimensions.=', <span class="discret">'.volume($data['vol']).'</span>';
+					$dimensions.=', <span class="discreet">'.volume($data['vol']).'</span>';
 					if ($this->data[$this->table_name." $tag Weight"]>0) {
-						$dimensions.='<span class="discret">, '.number($this->data[$this->table_name." $tag Weight"]/$data['vol']).'Kg/L</span>';
+						$dimensions.='<span class="discreet">, '.number($this->data[$this->table_name." $tag Weight"]/$data['vol']).'Kg/L</span>';
 					}
 
 					break;

@@ -49,6 +49,9 @@ case 'attachments':
 case 'uploads':
 	uploads(get_table_parameters(), $db, $user, $account);
 	break;
+case 'materials':
+	materials(get_table_parameters(), $db, $user, $account);
+	break;	
 case 'upload_records':
 	upload_records(get_table_parameters(), $db, $user, $account);
 	break;
@@ -85,25 +88,27 @@ function data_sets($_data, $db, $user, $account) {
 			case 'Attachments':
 				$name=_('Attachments');
 				$request='account/data_sets/attachments';
-
 				break;
 			case 'OSF':
 				$name=_('Order transactions timeseries');
 				$request='account/data_sets/osf';
-
 				break;
 			case 'ISF':
 				$name=_('Inventory transactions timeseries');
 				$request='account/data_sets/isf';
-
 				break;
 			case 'Uploads':
 				$name=_('Uploads');
 				$request='account/data_sets/uploads';
-
 				break;
+			case 'Materials':
+				$name=_('Materials');
+				$request='account/data_sets/materials';
+
+				break;	
 			default:
 				$name=$data['Data Sets Code'];
+				$request='';
 				break;
 			}
 
@@ -452,6 +457,64 @@ function uploads($_data, $db, $user, $account) {
 				'records'=>number($data['Upload Records']),
 				'warnings'=>number($data['Upload Warnings']),
 				'errors'=>number($data['Upload Errors']),
+
+			);
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+function materials($_data, $db, $user, $account) {
+
+	$rtext_label='material';
+	include_once 'prepare_table/init.php';
+	include_once 'utils/natural_language.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+	$adata=array();
+
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
+
+		
+	switch ($data['Material Type']) {
+			case 'Material':
+				$type=  _('Material');
+				break;
+			case 'Ingredient':
+				$type=  _('Ingredient');
+				break;
+			default:
+				$type= $data['Material Type'];
+				break;
+			}
+
+			$adata[]=array(
+				'id'=>(integer) $data['Material Key'],
+				'name'=>$data['Material Name'],
+				'type'=>$type,
+				'parts'=>number($data['Material Parts Number']),
+				
 
 			);
 

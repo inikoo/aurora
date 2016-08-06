@@ -20,7 +20,10 @@ function get_object_fields($object, $db, $user, $smarty, $options=false) {
 
 
 	switch ($object->get_object_name()) {
-
+	case 'Material':
+		include 'fields/material.fld.php';
+		return $object_fields;
+		break;
 	case 'Attachment':
 
 		$object_fields=array();

@@ -247,6 +247,29 @@ class Data_Sets extends DB_Table {
 			}
 
 
+		}if ($this->data['Data Sets Code']=='Materials') {
+			$tables='"Material Dimension"';
+			$sql=sprintf('select count(*) as num  from `Material Dimension`',
+				$this->id
+			);
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$num=$row['num'];
+
+				}else {
+					$num=0;
+
+				}
+
+				$this->update(array('Data Sets Number Sets'=>1, 'Data Sets Number Items'=>$num), 'no_history');
+
+
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+
 		}
 		elseif ($this->data['Data Sets Code']=='Attachments') {
 			$tables='"Attachment Bridge","Attachment Bridge History Bridge","Attachment Dimension"';

@@ -1020,12 +1020,6 @@ function get_ordinal_suffix( $n, $locale=false ) {
 }
 
 
-function money($amount, $currency='', $locale=false) {
-	if (!$locale) {global $locale;}
-
-	$money = new NumberFormatter($locale, NumberFormatter::CURRENCY);
-	return $money->formatCurrency($amount,$currency);
-}
 
 
 ?>

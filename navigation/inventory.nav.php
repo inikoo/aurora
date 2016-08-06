@@ -293,13 +293,29 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
 	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
 
 
+$title=_('Part').' <span class="id Part_Reference">'.$object->get('Part Reference').'</span>';
+
+$supplier_parts=$object->get_supplier_parts('objects');
+
+if(count($supplier_parts)==1){
+
+$supplier_part=array_values($supplier_parts)[0];
+	$title.=' <small class="padding_left_10"> <i class="fa fa-long-arrow-left padding_left_10"></i> <i class="fa fa-stop button" title="'._('Supplier part').'" onCLick="change_view(\'/supplier/'.$supplier_part->get('Supplier Part Supplier Key').'/part/'.$supplier_part->id.'\')" ></i> <span class="Supplier_Part_Reference button"  onCLick="change_view(\'supplier/'.$supplier_part->get('Supplier Part Supplier Key').'/part/'.$supplier_part->id.'\')">'.$supplier_part->get('Reference').'</small>';
+
+
+}elseif(count($supplier_parts)>1){
+$title.='<span class="small disceet padding_left_20">'._('Multiple suppliers').'</span>';
+
+}
+
+
 	$_content=array(
 		'sections_class'=>'',
 		'sections'=>$sections,
 
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
-		'title'=>_('Part').' <span class="id Part_Reference">'.$object->get('Part Reference').'</span>',
+		'title'=>$title,
 		'search'=>array('show'=>true, 'placeholder'=>_('Search Inventory'))
 
 	);

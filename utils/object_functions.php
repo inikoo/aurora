@@ -217,6 +217,10 @@ function get_object($object_name, $key, $load_other_data=false) {
 		$object=new SupplierDelivery($key);
 		$object->get_order_data();
 		break;	
+	case 'material':
+		require_once "class.Material.php";
+		$object=new Material($key);
+		break;		
 	default:
 		exit('need to complete E1: >'.strtolower($object_name)."<\n");
 		break;

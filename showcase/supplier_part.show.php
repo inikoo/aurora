@@ -10,29 +10,16 @@
  Version 3.0
 */
 
-function get_supplier_part_showcase($data,$smarty,$user,$db) {
+function get_supplier_part_showcase($data, $smarty, $user, $db) {
 
 
-    $supplier_part=$data['_object'];
+	$supplier_part=$data['_object'];
 	$part=$data['_object']->part;
 	if (!$part->id) {
 		return "";
 	}
 
-/*
-	$images=$part->get_images_slidesshow();
 
-	if (count($images)>0) {
-		$main_image=$images[0];
-	}else {
-		$main_image='';
-	}
-
-
-	$smarty->assign('main_image', $main_image);
-	$smarty->assign('images', $images);
-*/
-	
 
 	$sql=sprintf("select `Category Label`,`Category Code`,`Category Key` from `Category Dimension` where `Category Key`=%d ",
 		$part->get('Part Family Category Key'));

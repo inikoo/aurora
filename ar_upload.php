@@ -24,6 +24,7 @@ if (!isset($_REQUEST['tipo'])) {
 }
 
 
+
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
@@ -58,8 +59,8 @@ case 'upload_images':
 //print_r($_REQUEST);
 
 	$data=prepare_values($_REQUEST, array(
-			//'parent'=>array('type'=>'string'),
-			'key'=>array('type'=>'numeric'),
+			'parent'=>array('type'=>'string'),
+			'parent_key'=>array('type'=>'numeric'),
 			'object'=>array('type'=>'string'),
 		));
 
@@ -239,11 +240,11 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
 
 
 
-	$object=get_object($data['object'], $data['key']);
-	$object->editor=$editor;
+	$parent=get_object($data['parent'], $data['parent_key']);
+	$parent->editor=$editor;
 
 
-	if (!$object->id) {
+	if (!$parent->id) {
 		$msg= 'object key not found';
 		$response= array('state'=>400, 'msg'=>$msg);
 		echo json_encode($response);
@@ -311,15 +312,15 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
 
 		);
 
-		$image=$object->add_image($image_data);
+		$image=$parent->add_image($image_data);
 
 
-		if ($object->error) {
+		if ($parent->error) {
 
 
 			$errors++;
 
-			$error_msg[]=$object->msg;
+			$error_msg[]=$parent->msg;
 
 		}
 		else {
@@ -349,8 +350,8 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
 		'errors'=>$errors,
 		'error_msg'=>$error_msg,
 		'uploads'=>$uploads,
-		'number_images'=>$object->get_number_images(),
-		'main_image_key'=>$object->get_main_image_key()
+		'number_images'=>$parent->get_number_images(),
+		'main_image_key'=>$parent->get_main_image_key()
 
 	);
 
