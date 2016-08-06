@@ -2353,6 +2353,20 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			$key=$user->id;
 
 			break;
+
+		case 'material':
+			$module='account';
+
+			$section='materials';
+			if (isset($view_path[0])) {
+				if (is_numeric($view_path[0])) {
+					$section='material';
+					$object='material';
+					$key=$view_path[0];
+				}
+			}
+
+			break;
 		case 'account':
 			if (!$user->can_view('account')) {$module='utils';$section='forbidden';break;}
 
@@ -2417,6 +2431,16 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 							$section='isf';
 						}elseif ($view_path[1]=='uploads') {
 							$section='uploads';
+						}elseif ($view_path[1]=='materials') {
+							$section='materials';
+							if (isset($view_path[2])) {
+								if (is_numeric($view_path[2])) {
+									$section='material';
+									$object='material';
+									$key=$view_path[2];
+								}
+							}
+
 						}
 					}
 

@@ -158,14 +158,14 @@ function client_validation(type, required, value, field) {
 
     case 'dropdown_select':
 
-        if (value == '__error__' && $('#' + field ).val() == '') {
+        if (value == '__error__' && $('#' + field).val() == '') {
             return {
                 class: 'invalid',
                 type: 'not_found'
             }
-        }else if ( $('#' + field ).val() == '') {
-        
-        
+        } else if ($('#' + field).val() == '') {
+
+
             return {
                 class: 'potentially_valid',
                 type: 'not_selected'
@@ -583,8 +583,9 @@ function client_validation(type, required, value, field) {
                 type: 'invalid'
             }
         }
-        var regex = new RegExp('^\d*\.?\d{0,6}$');
 
+
+        var regex = /^\d*\.?\d{0,6}$/
         if (!regex.test(value)) {
             return {
                 class: 'invalid',
@@ -618,9 +619,7 @@ function client_validation(type, required, value, field) {
         }
 
 
-        var regex = new RegExp('^\d*\.?\d{0,6}$');
-
-
+        var regex = /^\d*\.?\d{0,6}$/
         if (!regex.test(value)) {
             /// console.log('ccc')
             return {

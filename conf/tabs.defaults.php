@@ -565,7 +565,7 @@ $tab_defaults=array(
 		'f_period'=>'ytd',
 		'elements_type'=>each($elements_options['suppliers'])['key'],
 		'elements'=>$elements_options['suppliers']
-		
+
 	),
 	'category.suppliers'=>array(
 		'view'=>'overview',
@@ -831,7 +831,7 @@ $tab_defaults=array(
 		'f_period'=>'ytd',
 		'elements_type'=>each($elements_options['agent_suppliers'])['key'],
 		'elements'=>$elements_options['agent_suppliers']
-		
+
 	),
 	'agent.supplier_parts'=>array(
 		'view'=>'overview',
@@ -967,7 +967,7 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'reference',
-		
+
 	),
 	'warehouse.history'=>array(
 		'view'=>'overview',
@@ -986,7 +986,7 @@ $tab_defaults=array(
 		'f_field'=>'note',
 		'elements_type'=>each($elements_options['location_history'])['key'],
 		'elements'=>$elements_options['location_history']
-	),	
+	),
 	'location.parts'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
@@ -994,7 +994,7 @@ $tab_defaults=array(
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'reference',
-		
+
 	),
 	'location.stock.transactions'=>array(
 		'view'=>'overview',
@@ -1006,7 +1006,7 @@ $tab_defaults=array(
 		'elements_type'=>each(  $elements_options['part_stock_transactions']  ) ['key'],
 		'elements'=>$elements_options['part_stock_transactions'],
 	),
-	
+
 	'inventory.parts'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
@@ -1024,6 +1024,7 @@ $tab_defaults=array(
 		'sort_key'=>'to',
 		'sort_order'=>1,
 		'rpp'=>20,
+		'f_period'=>'all',
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'reference'
 	),
@@ -1055,8 +1056,8 @@ $tab_defaults=array(
 		'f_field'=>'note',
 
 	),
-	
-		'inventory.stock.transactions'=>array(
+
+	'inventory.stock.transactions'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
 		'sort_order'=>1,
@@ -1482,6 +1483,14 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'',
 	),
+	'data_sets.materials'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'',
+	),
 	'upload.records'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
@@ -1828,6 +1837,17 @@ $tab_defaults=array(
 		'f_field'=>'',
 		'elements_type'=>each($elements_options['deal_history'])['key'],
 		'elements'=>$elements_options['deal_history']
+	),
+	'material.parts'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'reference',
+		'f_period'=>'ytd',
+		'elements_type'=>each(  $elements_options['parts']  ) ['key'],
+		'elements'=>$elements_options['parts'],
 	),
 
 );

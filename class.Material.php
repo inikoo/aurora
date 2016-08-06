@@ -28,8 +28,14 @@ class Material extends DB_Table{
 		}if ($a1=='find create') {
 			$this->find($a2, $a1);
 
-		}else
-			$this->get_data($a1, $s2);
+		}else {
+			if (is_numeric($a1) and !$a2) {
+				$this->get_data('id', $a1);
+
+			}else {
+				$this->get_data($a1, $a2);
+			}
+		}
 	}
 
 
@@ -37,7 +43,6 @@ class Material extends DB_Table{
 
 
 		$sql=sprintf("select * from `Material Dimension` where `Material Key`=%d ", $key);
-
 		if ($this->data = $this->db->query($sql)->fetch()) {
 			$this->id=$this->data['Material Key'];
 		}
@@ -170,11 +175,31 @@ class Material extends DB_Table{
 	function get($key, $data=false) {
 		switch ($key) {
 
+		case 'Parts Number':
+			return number($this->data['Material '.$key]);
+			break;
+		case 'Type':
+			switch ($this->data['Material Type']) {
+			case 'Material':
+				return _('Material');
+				break;
+			case 'Ingredient':
+				return _('Ingredient');
+				break;
+			default:
+				return $this->data['Material Type'];
+				break;
+			}
+			break;
 		default:
-			if (isset($this->data[$key]))
+
+			if (array_key_exists($key, $this->data))
 				return $this->data[$key];
-			else
-				return '';
+
+			if (array_key_exists('Material '.$key, $this->data))
+				return $this->data['Material '.$key];
+
+
 		}
 		return '';
 	}
@@ -195,6 +220,23 @@ class Material extends DB_Table{
 	}
 
 
+	function update_stats() {
+
+		$parts=0;
+		$sql=sprintf('select count(distinct `Part SKU`) parts from `Part Material Bridge` where `Material Key`=%d ', $this->id);
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$parts=$row['parts'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+		$this->update(array('Material Parts Number'=>$parts), 'no_history');
+
+	}
 
 
 }

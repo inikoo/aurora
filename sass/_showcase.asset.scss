@@ -14,30 +14,31 @@
         float: right;
         #overviews {
             min-width: 350px;
-            .overview {
-                font-size: 95%;
-                float: left;
-                margin-bottom: 10px;
-                padding: 0 5px;
-                border-top: 1px solid #ccc;
-                border-bottom: 1px solid #ddd;
-                width: 100%;
-                .text {
-                    padding: 10px 0px;
-                    p {
-                        margin-bottom: 0px;
-                    }
-                }
-                &.compact tr {
-                    height: $height_short_row;
-                }
-                tr {
-                    height: $height_medium_row;
-                }
-            }
+           
         }
     }
 }
     
+    
+    
+.carton_sko_units{
+padding-left:5px;padding-top:0px;font-size:90%;color:$color_font_soft;
+
+td.canvas{
+padding:0 5px 10px 0;
+canvas{border:1px solid #ccc;}
+
+
+}
+td.info{padding:0px 10px;vertical-align: top;
+
+div{margin-top:4px}
+div:first-of-type{margin-top:0px;margin-bottom:2px}
+}
+
+
+.volume,.density{display:none}
+
+}    
     
     

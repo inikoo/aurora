@@ -960,14 +960,16 @@ class Supplier extends SubjectSupplier {
 		case('Supplier Products Origin Country Code'):
 			$this->update_field($field, $value, $options);
 
-				include_once 'class.SupplierPart.php';
+				include_once 'class.Part.php';
 
-			$sql=sprintf("select  `Supplier Part Key`  from `Supplier Part Dimension`  where `Supplier Part Supplier Key`=%d and  `Supplier Part Average Delivery Days` is NULL", $this->id);
+			$sql=sprintf("select  `Part SKU`  from `Supplier Part Dimension` left join `Part Dimension` on (`Part SKU`=`Supplier Part Part SKU`)  where `Supplier Part Supplier Key`=%d and  `Part Origin Country Code` is NULL", $this->id);
+			
+			
 			if ($result=$this->db->query($sql)) {
 				foreach ($result as $row) {
-						$supplier_part=new SupplierPart( $row['Supplier Part Key']);
+						$part=new Part($row['Part SKU']);
 
-					$supplier_part->update(array('Supplier Part Average Delivery Days'=>$value));
+					$part->update(array('Part Origin Country Code'=>$value));
 				}
 			}else {
 				print_r($error_info=$this->db->errorInfo());

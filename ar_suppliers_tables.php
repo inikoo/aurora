@@ -568,7 +568,7 @@ function order_items($_data, $db, $user) {
 
 
 
-			$units_per_carton=$data['Supplier Part Units Per Package']*$data['Supplier Part Packages Per Carton'];
+			$units_per_carton=$data['Part Units Per Package']*$data['Supplier Part Packages Per Carton'];
 
 
 			$subtotals=sprintf('<span  class="subtotals" >');
@@ -674,7 +674,7 @@ function delivery_items($_data, $db, $user) {
 
 
 
-			$units_per_carton=$data['Supplier Part Units Per Package']*$data['Supplier Part Packages Per Carton'];
+			$units_per_carton=$data['Part Units Per Package']*$data['Supplier Part Packages Per Carton'];
 
 
 			$subtotals=sprintf('<span  class="subtotals" >');
@@ -768,7 +768,7 @@ function delivery_checking_items($_data, $db, $user) {
 
 
 
-			$units_per_carton=$data['Supplier Part Units Per Package']*$data['Supplier Part Packages Per Carton'];
+			$units_per_carton=$data['Part Units Per Package']*$data['Supplier Part Packages Per Carton'];
 
 
 			$subtotals=sprintf('<span  class="subtotals" >');
@@ -889,7 +889,7 @@ function delivery_checking_items($_data, $db, $user) {
 				'subtotals'=>$subtotals,
 				'ordered'=>number($data['Purchase Order Quantity']),
 				'qty'=>number($quantity),
-				'c_sko_u'=>sprintf('<span data-metadata=\'{"qty":%d}\' onClick="copy_qty(this)" class="button"><span class="very_discreet">%s/</span> <span>%s</span> <span class="super_discreet">/%s</span></span>', $data['Supplier Part Packages Per Carton']*$data['Supplier Delivery Quantity'], number($data['Supplier Delivery Quantity']), number($data['Supplier Part Packages Per Carton']*$data['Supplier Delivery Quantity']), number($data['Supplier Part Packages Per Carton']*$data['Supplier Part Units Per Package']*$data['Supplier Delivery Quantity'])),
+				'c_sko_u'=>sprintf('<span data-metadata=\'{"qty":%d}\' onClick="copy_qty(this)" class="button"><span class="very_discreet">%s/</span> <span>%s</span> <span class="super_discreet">/%s</span></span>', $data['Supplier Part Packages Per Carton']*$data['Supplier Delivery Quantity'], number($data['Supplier Delivery Quantity']), number($data['Supplier Part Packages Per Carton']*$data['Supplier Delivery Quantity']), number($data['Supplier Part Packages Per Carton']*$data['Part Units Per Package']*$data['Supplier Delivery Quantity'])),
 				'placement'=>$placement
 			);
 
@@ -991,7 +991,7 @@ function order_supplier_parts($_data, $db, $user) {
 				'description'=>$data['Part Unit Description'],
 				'status'=>$status,
 				'cost'=>money($data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']),
-				'packing'=>'<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Supplier Part Units Per Package'].'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discret padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discret">'.($data['Supplier Part Units Per Package']*$data['Supplier Part Packages Per Carton'].'</span>'),
+				'packing'=>'<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package'].'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discret padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discret">'.($data['Part Units Per Package']*$data['Supplier Part Packages Per Carton'].'</span>'),
 				'stock'=>number(floor($data['Part Current Stock']))." $stock_status"
 			);
 
@@ -1150,7 +1150,7 @@ function order_supplier_all_parts($_data, $db, $user) {
 			}
 
 
-			$units_per_carton=$data['Supplier Part Units Per Package']*$data['Supplier Part Packages Per Carton'];
+			$units_per_carton=$data['Part Units Per Package']*$data['Supplier Part Packages Per Carton'];
 
 			$subtotals=sprintf('<span  class="subtotals" >');
 			if ($data['Purchase Order Quantity']>0) {
@@ -1182,7 +1182,7 @@ function order_supplier_all_parts($_data, $db, $user) {
 				'description'=>$data['Part Unit Description'].' <span class="discreet">('.number($units_per_carton).'/C '.money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')).')</span>',
 				'status'=>$status,
 				'cost'=>money($data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']),
-				'packing'=>'<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Supplier Part Units Per Package'].'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discret padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discret">'.($data['Supplier Part Units Per Package']*$data['Supplier Part Packages Per Carton'].'</span>'),
+				'packing'=>'<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package'].'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discret padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discret">'.($data['Part Units Per Package']*$data['Supplier Part Packages Per Carton'].'</span>'),
 				'stock'=>number(floor($data['Part Current Stock']))." $stock_status",
 				'quantity'=>sprintf('<span    data-settings=\'{"field": "Purchase Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button" aria-hidden="true"></i></span>',
 					$transaction_key,

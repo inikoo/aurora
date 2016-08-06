@@ -13,7 +13,7 @@ $where="where `Supplier Part Status`='Available'  ";
 $table="`Supplier Part Dimension` SP  left join `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`) left join `Supplier Dimension` S on (SP.`Supplier Part Supplier Key`=S.`Supplier Key`)  ";
 
 
-$fields='`Supplier Part Historic Key`,`Supplier Code`,`Supplier Part Key`,`Supplier Part Part SKU`,`Part Reference`,`Part Unit Description`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Supplier Part Status`,`Supplier Part From`,`Supplier Part To`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,`Supplier Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,`Supplier Part Minimum Carton Order`,
+$fields='`Supplier Part Historic Key`,`Supplier Code`,`Supplier Part Key`,`Supplier Part Part SKU`,`Part Reference`,`Part Unit Description`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Supplier Part Status`,`Supplier Part From`,`Supplier Part To`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,`Supplier Part Minimum Carton Order`,
 `Part Current Stock`,`Part Stock Status`,`Part Status`,`Part Package Weight`
 ';
 

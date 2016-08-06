@@ -12,6 +12,7 @@
 
 include_once 'class.DB_Table.php';
 include_once 'class.Part.php';
+include_once 'utils/natural_language.php';
 
 class SupplierPart extends DB_Table{
 
@@ -255,6 +256,20 @@ class SupplierPart extends DB_Table{
 
 		switch ($key) {
 
+
+		case 'Supplier Part Units Per Package':
+		case 'Supplier Part Unit Description':
+		case 'Supplier Part Package Description':
+			$key=preg_replace('/Supplier /', '', $key);
+			return $this->part->get($key);
+			break;
+
+		case 'Unit Description':
+		case 'Package Description':
+
+
+			return $this->part->get($key);
+			break;
 		case 'Supplier Key':
 
 
@@ -267,11 +282,23 @@ class SupplierPart extends DB_Table{
 			return sprintf("%d %s", $this->data['Supplier Part Average Delivery Days'], ngettext("day", "days", $this->data['Supplier Part Average Delivery Days']));
 
 			break;
+
+		case 'SKO Barcode':
+
+			return $this->part->get('Barcode');
+
 		case 'Average Delivery':
 
-			if ($this->data['Supplier Part Status']!='Discontinued' and  $this->data['Supplier Part Average Delivery Days']!='') {
-				include_once 'utils/natural_language.php';
-				return '<i class="fa fa-hourglass-end fa-fw" aria-hidden="true" title="'._('Delivery time').'" ></i>  <span title="'.sprintf("%s %s", number($this->data['Supplier Part Average Delivery Days'], 1) , ngettext("day", "days", number($this->data['Supplier Part Average Delivery Days'], 1))).'">'.seconds_to_natural_string($this->data['Supplier Part Average Delivery Days']*86400, true).'</span>';
+
+			if ($this->data['Supplier Part Status']=='Available' ) {
+				if ( $this->data['Supplier Part Average Delivery Days']!='') {
+					return '<span class="discreet"><i class="fa fa-hourglass-end fa-fw" aria-hidden="true" title="'._('Delivery time').'" ></i>  <span title="'.sprintf("%s %s", number($this->data['Supplier Part Average Delivery Days'], 1) , ngettext("day", "days", number($this->data['Supplier Part Average Delivery Days'], 1))).'">'.seconds_to_natural_string($this->data['Supplier Part Average Delivery Days']*86400, true).'</span></span>';
+				}else {
+					return '<span class="error">'._('Unknown delivery time').'</span>';
+				}
+
+			}elseif ($this->data['Supplier Part Status']=='NoAvailable' ) {
+				return '<span class="discreet error">'._('Supplier has not stock').'</span>';
 			}
 			break;
 
@@ -285,34 +312,85 @@ class SupplierPart extends DB_Table{
 			if ($this->data['Supplier Part Carton CBM']=='')return '';
 			return number($this->data['Supplier Part Carton CBM']).' m³';
 			break;
+		case 'SKO Dimensions':
+			return $this->part->get('Package Dimensions');
+			break;
+		case 'Unit Dimensions':
+			return $this->part->get('Unit Dimensions');
+			break;
+
+		case 'SKO Barcode':
+
+
+			break;
+		case 'Carton Weight':
+
+			return weight($this->part->data['Part Package Weight']*$this->data['Supplier Part Packages Per Carton']);
+			break;
+		case 'SKO Weight':
+			return $this->part->get('Package Weight');
+			break;
+		case 'Unit Weight':
+			return $this->part->get('Unit Weight');
+			break;
+		case 'Carton Cost':
+			if ($this->data['Supplier Part Unit Cost']=='')return '';
+
+			return money($this->data['Supplier Part Unit Cost']*$this->part->data['Part Units Per Package']*$this->data['Supplier Part Packages Per Carton'], $this->data['Supplier Part Currency Code']);
+			break;
+		case 'SKO Cost':
+			if ($this->data['Supplier Part Unit Cost']=='')return '';
+
+			return money($this->data['Supplier Part Unit Cost']*$this->part->data['Part Units Per Package'], $this->data['Supplier Part Currency Code']);
+			break;
+
+		case 'Units Per Carton':
+			if ($this->data['Supplier Part Packages Per Carton']=='' or  $this->part->data['Part Units Per Package']=='')return '';
+			return number($this->data['Supplier Part Packages Per Carton']*$this->part->data['Part Units Per Package']);
+			break;
+			
 		case 'Packages Per Carton':
 			if ($this->data['Supplier Part Packages Per Carton']=='')return '';
 			$value=number($this->data['Supplier Part Packages Per Carton']);
-			if ($this->data['Supplier Part Units Per Package']!=1 and is_numeric($this->data['Supplier Part Units Per Package'])) {
-				$value.=' <span class="very_discret">('.number($this->data['Supplier Part Packages Per Carton']*$this->data['Supplier Part Units Per Package']).' '._('units').')</span>';
+			if ($this->part->data['Part Units Per Package']!=1 and is_numeric($this->part->data['Part Units Per Package'])) {
+				$value.=' <span class="very_discreet">('.number($this->data['Supplier Part Packages Per Carton']*$this->part->data['Part Units Per Package']).' '._('units').')</span>';
 			}
 
 			return $value;
 			break;
 
-		case 'Unit Cost':
+		case 'Unit Cost Amount':
 
 			if ($this->data['Supplier Part Unit Cost']=='')return '';
 
-			$cost= money($this->data['Supplier Part Unit Cost'], $this->data['Supplier Part Currency Code']).' '._('per unit');
+			$cost= money($this->data['Supplier Part Unit Cost'], $this->data['Supplier Part Currency Code']);
+
+
+
+
+			return $cost;
+			break;
+
+		case 'Unit Cost':
+
+        
+
+			if ($this->data['Supplier Part Unit Cost']=='')return '';
+
+			$cost= money($this->data['Supplier Part Unit Cost'], $this->data['Supplier Part Currency Code']);
 
 
 			$cost_other_info='';
-			if ($this->data['Supplier Part Units Per Package']!=1 and  is_numeric($this->data['Supplier Part Units Per Package'])) {
-				$cost_other_info=money($this->data['Supplier Part Unit Cost']*$this->data['Supplier Part Units Per Package'], $this->data['Supplier Part Currency Code']).' '._('per outer');
+			if ($this->part->data['Part Units Per Package']!=1 and  is_numeric($this->part->data['Part Units Per Package'])) {
+				$cost_other_info=money($this->data['Supplier Part Unit Cost']*$this->part->data['Part Units Per Package'], $this->data['Supplier Part Currency Code']).' '._('per SKO');
 			}
 			if ($this->data['Supplier Part Packages Per Carton']!=1 and  is_numeric($this->data['Supplier Part Packages Per Carton'])) {
-				$cost_other_info.=', '.money($this->data['Supplier Part Unit Cost']*$this->data['Supplier Part Units Per Package']*$this->data['Supplier Part Packages Per Carton'], $this->data['Supplier Part Currency Code']).' '._('per carton');
+				$cost_other_info.=', '.money($this->data['Supplier Part Unit Cost']*$this->part->data['Part Units Per Package']*$this->data['Supplier Part Packages Per Carton'], $this->data['Supplier Part Currency Code']).' '._('per carton');
 			}
 
 			$cost_other_info=preg_replace('/^, /', '', $cost_other_info);
 			if ($cost_other_info!='') {
-				$cost.=' <span class="very_discret">('.$cost_other_info.')</span>';
+				$cost.=' <span class="discreet">('.$cost_other_info.')</span>';
 			}
 
 
@@ -360,9 +438,38 @@ class SupplierPart extends DB_Table{
 	function update_field_switcher($field, $value, $options='', $metadata='') {
 
 
-
 		switch ($field) {
 
+		case 'Supplier Part Unit Description':
+
+
+			$this->part->update(array('Part Unit Description'=>$value), $options);
+			$this->updated=$this->part->updated;
+
+
+			break;
+		case 'Supplier Part Status':
+
+			$this->update_field($field, $value, $options);
+			$this->update_metadata=array(
+				'class_html'=>array(
+					'Status'=>$this->get('Status'),
+					'Average_Delivery'=>$this->get('Average Delivery')
+
+				)
+			);
+
+			break;
+		case 'Supplier Part Average Delivery Days':
+
+			$this->update_field($field, $value, $options);
+			$this->update_metadata=array(
+				'class_html'=>array(
+					'Average_Delivery'=>$this->get('Average Delivery')
+				)
+			);
+
+			break;
 		case 'Supplier Part Supplier Key':
 			include_once 'class.Supplier.php';
 
@@ -397,24 +504,24 @@ class SupplierPart extends DB_Table{
 				$old_supplier->update_last_period_sales();
 				$old_supplier->update_interval_sales();
 				$old_supplier->update_previous_years_data();
-			    $old_supplier_label=sprintf(' from <span class="discreet button" onClick="change_view(\'supplier/%d\')">%s</span>', $old_supplier->id,$old_supplier->get('Code'));
-			
-			}else{
-			$old_supplier_label='';
+				$old_supplier_label=sprintf(' from <span class="discreet button" onClick="change_view(\'supplier/%d\')">%s</span>', $old_supplier->id, $old_supplier->get('Code'));
+
+			}else {
+				$old_supplier_label='';
 			}
 
 
 			$this->update_metadata=array(
-					'request'=>sprintf('supplier/%d/part/%d', $supplier->id, $this->id)
+				'request'=>sprintf('supplier/%d/part/%d', $supplier->id, $this->id)
 			);
-			
-				$history_data=array(
+
+			$history_data=array(
 				'Action'=>'edited',
 				'History Abstract'=>sprintf("Suppier's part %s supplier moved to supplier %s%s",
-				sprintf('<span class="button" onClick="change_view(\'supplier/%d/part/%d\')">%s</span>', $supplier->id, $this->id,$this->get('Reference')),
-				sprintf('<span class="button" onClick="change_view(\'supplier/%d\')">%s</span>', $supplier->id,$supplier->get('Code')),
-				$old_supplier_label
-				
+					sprintf('<span class="button" onClick="change_view(\'supplier/%d/part/%d\')">%s</span>', $supplier->id, $this->id, $this->get('Reference')),
+					sprintf('<span class="button" onClick="change_view(\'supplier/%d\')">%s</span>', $supplier->id, $supplier->get('Code')),
+					$old_supplier_label
+
 				),
 				'History Details'=>''
 			);
@@ -430,6 +537,16 @@ class SupplierPart extends DB_Table{
 			if (!preg_match('/skip_update_historic_object/', $options)) {
 				$this->update_historic_object();
 			}
+
+			$this->update_metadata=array(
+				'class_html'=>array(
+					'Carton_Cost'=>$this->get('Carton Cost'),
+					'SKO_Cost'=>$this->get('SKO Cost'),
+					'Unit_Cost_Amount'=>$this->get('Unit Cost Amount'),
+
+				)
+			);
+
 			break;
 
 
@@ -466,16 +583,28 @@ class SupplierPart extends DB_Table{
 				}
 			}
 
+			$this->update_metadata=array(
+				'class_html'=>array(
+					'Carton_CBM'=>$this->get('Carton CBM')
+				)
+			);
+
+
 			break;
 
-		case 'Supplier Part Units Per Package':
-			$this->update_field($field, $value, $options);
+
+		case 'Part Units Per Package':
+
+
+			$this->part->update(array($field=>$value), $options);
+			$this->updated=$this->part->updated;
+
 			$this->other_fields_updated=array(
-				'Supplier_Part_Cost'=>array(
-					'field'=>'Supplier_Part_Cost',
+				'Supplier_Part_Unit_Cost'=>array(
+					'field'=>'Supplier_Part_Unit_Cost',
 					'render'=>true,
-					'value'=>$this->get('Supplier Part Cost'),
-					'formatted_value'=>$this->get('Cost'),
+					'value'=>$this->get('Supplier Part Unit Cost'),
+					'formatted_value'=>$this->get('Unit Cost'),
 				),
 				'Supplier_Part_Packages_Per_Carton'=>array(
 					'field'=>'Supplier_Part_Packages_Per_Carton',
@@ -484,26 +613,63 @@ class SupplierPart extends DB_Table{
 					'formatted_value'=>$this->get('Packages Per Carton'),
 				)
 			);
+			
+			
+			
+			
+		
+			
 			$this->update_field($field, $value, $options);
 			if (!preg_match('/skip_update_historic_object/', $options)) {
 				$this->update_historic_object();
 			}
+
+
+			$this->update_metadata=array(
+				'class_html'=>array(
+					'Carton_Weight'=>$this->get('Carton Weight'),
+					'Carton_Cost'=>$this->get('Carton Cost'),
+					'SKO_Weight'=>$this->get('SKO Weight'),
+					'SKO_Cost'=>$this->get('SKO Cost'),
+					'Packages_Per_Carton'=>$this->get('Supplier Part Packages Per Carton'),
+										'Supplier_Part_Units_Per_Package'=>$this->get('Supplier Part Units Per Package'),
+					'Supplier_Part_Units_Per_Carton'=>$this->get('Units Per Carton')
+
+	
+								
+				)
+			);
+
 			break;
 		case 'Supplier Part Packages Per Carton':
 			$this->update_field($field, $value, $options);
 			$this->other_fields_updated=array(
-				'Supplier_Part_Cost'=>array(
-					'field'=>'Supplier_Part_Cost',
+	'Supplier_Part_Unit_Cost'=>array(
+					'field'=>'Supplier_Part_Unit_Cost',
 					'render'=>true,
-					'value'=>$this->get('Supplier Part Cost'),
-					'formatted_value'=>$this->get('Cost'),
-				)
+					'value'=>$this->get('Supplier Part Unit Cost'),
+					'formatted_value'=>$this->get('Unit Cost'),
+				),
 
 			);
+
 			$this->update_field($field, $value, $options);
+
 			if (!preg_match('/skip_update_historic_object/', $options)) {
 				$this->update_historic_object();
 			}
+
+			$this->update_metadata=array(
+				'class_html'=>array(
+					'Carton_Weight'=>$this->get('Carton Weight'),
+					'Carton_Cost'=>$this->get('Carton Cost'),
+					'Supplier_Part_Packages_Per_Carton'=>$this->get('Supplier Part Packages Per Carton'),
+					'Supplier_Part_Units_Per_Carton'=>$this->get('Units Per Carton')
+
+
+				)
+			);
+
 			break;
 		default:
 
@@ -511,6 +677,8 @@ class SupplierPart extends DB_Table{
 			if (preg_match('/^Part /', $field)) {
 
 				//$field=preg_replace('/^Part /', '', $field);
+
+
 				$this->part->update(array($field=>$value), $options);
 				$this->updated=$this->part->updated;
 				$this->msg=$this->part->msg;
@@ -547,7 +715,7 @@ class SupplierPart extends DB_Table{
 		if (!$this->id)return;
 
 		$metadata=json_encode(array(
-				'u'=>$this->data['Supplier Part Units Per Package'],
+				'u'=>$this->part->data['Part Units Per Package'],
 				'p'=>$this->data['Supplier Part Packages Per Carton'],
 				'cbm'=>$this->data['Supplier Part Carton CBM'],
 				'cur'=>$this->data['Supplier Part Currency Code']
@@ -649,9 +817,7 @@ class SupplierPart extends DB_Table{
 		case 'Supplier Part Minimum Carton Order':
 			$label=_("minimum order");
 			break;
-		case 'Supplier Part Units Per Package':
-			$label=_("units per outer (SKO)");
-			break;
+
 		case 'Supplier Part Packages Per Carton':
 			$label=_("outers (SKO) per carton");
 			break;
@@ -674,10 +840,19 @@ class SupplierPart extends DB_Table{
 			$label=_("part barcode");
 			break;
 		case 'Part Unit Price':
-			$label=_("Unit price");
+			$label=_("unit recommended price");
 			break;
 		case 'Part Unit RRP':
-			$label=_("unit RRP");
+			$label=_("unit recommended RRP");
+			break;
+		case 'Part Package Description':
+			$label=_("Outers (SKO) description");
+			break;
+		case 'Part Unit Description':
+			$label=_("Unit description");
+			break;
+		case 'Part Units Per Package':
+			$label=_("units per SKO");
 			break;
 		default:
 			$label=$field;

@@ -281,6 +281,9 @@ function close_edit_field(field) {
 
 
         $('#' + field + '_dropdown_select_label').addClass('hide')
+        
+         $('#' + field + '_results_container').addClass('hide').removeClass('show')
+        
         // $('#' + field + '_save_button').removeClass('hide')
         break;
 

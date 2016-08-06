@@ -368,6 +368,9 @@ migrate_history_note_details.php
 
 
 
+ALTER TABLE `Supplier Part Dimension` DROP ` Supplier Part Units Per Package `;
+ALTER TABLE `Material Dimension` ADD `Material Parts Number` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Material Family`;
+ALTER TABLE `Material Dimension` ADD `Material Type` ENUM('Material','Ingredient') NOT NULL DEFAULT 'Material' AFTER `Material Key`, ADD INDEX (`Material Type`);
 
 
 STICKY:::: --> update `Category Dimension` set `Category Scope`=`Category Subject` where `Category Scope` is null or `Category Scope`='';

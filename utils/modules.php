@@ -1929,6 +1929,11 @@ $modules=array(
 					'data_sets.uploads'=>array('label'=>_('Uploads')),
 				)
 			),
+			'materials'=>array('type'=>'',
+				'tabs'=>array(
+					'data_sets.materials'=>array('label'=>_('Materials')),
+				)
+			),
 			'timeseries'=>array('type'=>'',
 				'tabs'=>array(
 					'timeseries'=>array('label'=>_('Timeseries')),
@@ -1938,6 +1943,16 @@ $modules=array(
 			'upload'=>array('type'=>'object',
 				'tabs'=>array(
 					'upload.records'=>array('label'=>_('Records')),
+
+
+				)
+
+			),
+			'material'=>array('type'=>'object',
+				'tabs'=>array(
+					'material.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+					'material.parts'=>array('label'=>_('Parts')),
+					'material.history'=>array('label'=>_('History'), 'icon'=>'road', 'class'=>'right icon_only'),
 
 
 				)

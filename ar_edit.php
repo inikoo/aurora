@@ -250,6 +250,9 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 			if (isset($object->deleted_value)) {
 				$msg=sprintf('<span class="deleted">%s</span> <span class="discret"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $object->deleted_value,  $data['field'], _('Deleted'));
 			}
+			
+			
+			
 			$formatted_value=$object->get($formatted_field);
 			$action='updated';
 
@@ -283,7 +286,6 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 			$formatted_value=$object->get($formatted_field);
 			$action='';
 		}
-
 
 
 		$response=array(

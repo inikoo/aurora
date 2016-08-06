@@ -10,6 +10,9 @@
  Version 3.0
 */
 
+include_once 'utils/static_data.php';
+
+
 if (isset($options['new']) and  $options['new'] ) {
 	$new=true;
 }else {
@@ -114,6 +117,7 @@ $part_fields[]=array(
 
 		array(
 			'id'=>'Part_Unit_Description',
+			'class'=>($supplier_part_scope?'hide':''),
 			'edit'=>($edit?'string':''),
 
 			'value'=>htmlspecialchars($object->get('Part Unit Description')),
@@ -151,7 +155,30 @@ $part_fields[]=array(
 		),
 
 
+		array(
+			'id'=>'Part_Unit_Price',
+			'edit'=>'amount_margin',
+			'render'=>(!($supplier_part_scope or $new) ?true:false),
 
+			'value'=>htmlspecialchars($object->get('Part Unit Price')),
+			'formatted_value'=>$object->get('Unit Price'),
+			'label'=>ucfirst($object->get_field_label('Unit Price')),
+			'required'=>true,
+			'placeholder'=>sprintf(_('amount in %s or margin (%%)'), $account->get('Currency')),
+			'type'=>'value'
+		),
+		array(
+			'id'=>'Part_Unit_RRP',
+			'edit'=>'amount_margin',
+			'render'=>(!($supplier_part_scope or $new) ?true:false),
+
+			'value'=>htmlspecialchars($object->get('Part Unit RRP')),
+			'formatted_value'=>$object->get('Unit RRP'),
+			'label'=>ucfirst($object->get_field_label('Unit RRP')),
+			'required'=>true,
+			'placeholder'=>sprintf(_('amount in %s or margin (%%)'), $account->get('Currency')),
+			'type'=>'value'
+		),
 
 
 	)
@@ -176,6 +203,8 @@ $part_fields[]=array(
 		),
 
 		array(
+			'render'=>(!($supplier_part_scope or $new) ?true:false),
+
 			'id'=>'Part_Package_Description',
 			'edit'=>($edit?'string':''),
 
@@ -239,10 +268,9 @@ $part_fields[]=array(
 
 		array(
 			'id'=>'Part_Origin_Country_Code',
-			'edit'=>'dropdown_select',
+			'edit'=>'country_select',
+			'options'=>get_countries($db),
 			'scope'=>'countries',
-			'parent'=>'earth',
-			'parent_key'=>1,
 			'value'=>(($new and $supplier_part_scope)?$options['supplier']->get('Supplier Products Origin Country Code'): htmlspecialchars($object->get('Part Origin Country Code'))),
 			'formatted_value'=>(($new and $supplier_part_scope)?$options['supplier']->get('Products Origin Country Code'):  $object->get('Origin Country Code')),
 			'stripped_formatted_value'=>(($new and $supplier_part_scope)?($options['supplier']->get('Part Origin Country Code')!=''?  $options['supplier']->get('Origin Country').' ('.$options['supplier']->get('Part Origin Country Code').')':''):   ($object->get('Part Origin Country Code')!=''?  $object->get('Origin Country').' ('.$object->get('Part Origin Country Code').')':'')),
@@ -250,6 +278,10 @@ $part_fields[]=array(
 			'required'=>false,
 			'type'=>'value'
 		),
+
+
+
+
 		array(
 			'id'=>'Part_Tariff_Code',
 			'edit'=>($edit?'numeric':''),

@@ -50,7 +50,7 @@ $locations="
 
 $fields="`Supplier Delivery Quantity`,`Supplier Delivery Key`,`Part Reference`,P.`Part SKU`,`Supplier Delivery Checked Quantity`,`Part Package Description`,`Supplier Delivery Transaction Placed`,`Supplier Delivery Placed Quantity`,`Metadata`,
 `Purchase Order Transaction Fact Key`,`Purchase Order Quantity`,POTF.`Supplier Part Key`,`Supplier Part Reference`,POTF.`Supplier Part Historic Key`,
-`Part Unit Description`,`Supplier Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,
+`Part Unit Description`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,
 `Supplier Part Unit Cost`,`Part Package Weight`,`Supplier Delivery CBM`,`Supplier Delivery Weight`,
 `Supplier Delivery Net Amount`,`Currency Code` $locations
 

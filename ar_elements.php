@@ -69,6 +69,7 @@ case 'deals':
 case 'inventory.parts':
 case 'category.parts':
 case 'category.all_parts':
+case 'material.parts':
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
 		));
@@ -335,10 +336,10 @@ function get_stock_transactions_elements($db, $data, $user) {
 		break;
 	case 'account':
 		$where=sprintf("where `Inventory Transaction Record Type`='Movement' ");
-		break;	
-		case 'location':
+		break;
+	case 'location':
 		$where=sprintf("where `Inventory Transaction Record Type`='Movement' and `Location Key`=%d", $data['parent_key']);
-		break;		
+		break;
 	default:
 		$response=array('state'=>405, 'resp'=>'parent not found '.$data['parent']);
 		echo json_encode($response);
@@ -384,15 +385,15 @@ function get_parts_elements($db, $data, $user) {
 		$where="where `Part Status`='In Use'";
 		break;
 	case 'category':
-
 		$where=sprintf(" where `Subject`='Part' and  `Category Key`=%d  and `Part Status`='In Use' ", $data['parent_key']);
 		$table=' `Category Bridge` left join  `Part Dimension` P on (`Subject Key`=`Part SKU`) ';
-
-
-
+		break;
+	case 'material':
+		$where=sprintf(" where `Material Key`=%d", $data['parent_key']);
+		$table=' `Part Material Bridge` B left join  `Part Dimension` P on (B.`Part SKU`=P.`Part SKU`) ';
 		break;
 	default:
-		$response=array('state'=>405, 'resp'=>'product parent not found '.$data['parent']);
+		$response=array('state'=>405, 'resp'=>'part parent not found '.$data['parent']);
 		echo json_encode($response);
 
 		return;
@@ -703,6 +704,7 @@ function get_customers_element_numbers($db, $data) {
 
 }
 
+
 function get_suppliers_element_numbers($db, $data) {
 
 	global $user;
@@ -719,11 +721,11 @@ function get_suppliers_element_numbers($db, $data) {
 	case 'account':
 		$where=sprintf(' where true ');
 		break;
-		case 'agent':
+	case 'agent':
 		$where=sprintf(" where `Agent Supplier Agent Key`=%d", $parent_key);
-	$table=' `Agent Supplier Bridge` B left join  `Supplier Dimension` S on (`Agent Supplier Supplier Key`=`Supplier Key`) ';
+		$table=' `Agent Supplier Bridge` B left join  `Supplier Dimension` S on (`Agent Supplier Supplier Key`=`Supplier Key`) ';
 
-		break;	
+		break;
 	default:
 		$response=array('state'=>405, 'resp'=>'parent not found '.$data['parent']);
 		echo json_encode($response);

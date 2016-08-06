@@ -325,7 +325,7 @@ case 'views':
 		$data['old_state']['module']!=$state['module'] or
 		$data['old_state']['section']!=$state['section'] or
 		$data['old_state']['parent_key']!=$state['parent_key'] or
-		$data['old_state']['key']!=$state['key'] or  $reload or isset($data['metadata']['reload_showcase']) 
+		$data['old_state']['key']!=$state['key'] or  $reload or isset($data['metadata']['reload_showcase'])
 
 	) {
 
@@ -494,7 +494,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
 
 
 	switch ($showcase) {
-
+	case 'material':
+		include_once 'showcase/material.show.php';
+		$html=get_showcase($data, $smarty, $user, $db);
+		break;
 	case 'page':
 		include_once 'showcase/webpage.show.php';
 		$html=get_webpage_showcase($data, $smarty, $user, $db);
@@ -1345,6 +1348,12 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 			break;
 		case ('uploads'):
 			return get_uploads_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('materials'):
+			return get_materials_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('material'):
+			return get_material_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('upload'):
 			return get_upload_navigation($data, $smarty, $user, $db, $account);
@@ -2542,12 +2551,12 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 			break;
 		case 'stock_history':
 			$branch[]=array('label'=>_('Stock History'), 'icon'=>'area-chart', 'reference'=>'');
-			break;	
+			break;
 		case 'stock_history.day':
 			$branch[]=array('label'=>_('Stock History'), 'icon'=>'area-chart', 'reference'=>'inventory/stock_history');
 			$branch[]=array('label'=>strftime("%a %e %b %Y", strtotime($state['key'].' +0:00')), 'icon'=>'', 'reference'=>'');
-			break;		
-			
+			break;
+
 		}
 
 		break;
@@ -2571,7 +2580,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 			$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'warehouses');
 			$branch[]=array('label'=>'<span class="id Warehouse_Code">'.$state['warehouse']->get('Code').'</span>', 'icon'=>'map', 'reference'=>'warehouse/'.$state['parent_key']);
 			$branch[]=array('label'=>_('Locations'), 'icon'=>'', 'reference'=>'');
-			break;	
+			break;
 
 		case 'location':
 
@@ -2916,6 +2925,15 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 		}elseif ($state['section']=='uploads') {
 			$branch[]=array('label'=>_('Data sets'), 'icon'=>'align-left', 'reference'=>'account/data_sets');
 			$branch[]=array('label'=>_('Records uploads'), 'icon'=>'upload', 'reference'=>'account/data_sets/uploads');
+
+		}elseif ($state['section']=='materials') {
+			$branch[]=array('label'=>_('Data sets'), 'icon'=>'align-left', 'reference'=>'account/data_sets');
+			$branch[]=array('label'=>_('Materials'), 'icon'=>'puzzle-piece', 'reference'=>'account/data_sets/materials');
+
+		}elseif ($state['section']=='material') {
+			$branch[]=array('label'=>_('Data sets'), 'icon'=>'align-left', 'reference'=>'account/data_sets');
+			$branch[]=array('label'=>_('Materials'), 'icon'=>'', 'reference'=>'account/data_sets/materials');
+			$branch[]=array('label'=> '<span class="Material_Name">'.$state['_object']->get('Name').'</span>', 'icon'=>'puzzle-piece', 'reference'=>'');
 
 		}elseif ($state['section']=='osf') {
 			$branch[]=array('label'=>_('Data sets'), 'icon'=>'align-left', 'reference'=>'account/data_sets');

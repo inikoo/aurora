@@ -1297,6 +1297,8 @@ tr.deleting_tr {
 #object_showcase {
   clear: both;
   font-size: 15px; }
+  #object_showcase tr.top {
+    border-bottom: 1px solid #ccc; }
   #object_showcase div.container {
     border-bottom: 1px solid #ccc; }
   #object_showcase .subject_profile {
@@ -1471,28 +1473,50 @@ tr.deleting_tr {
       float: right; }
       #object_showcase .asset_profile #info #overviews {
         min-width: 350px; }
-        #object_showcase .asset_profile #info #overviews .overview {
-          font-size: 95%;
-          float: left;
-          margin-bottom: 10px;
-          padding: 0 5px;
-          border-top: 1px solid #ccc;
-          border-bottom: 1px solid #ddd;
-          width: 100%; }
-          #object_showcase .asset_profile #info #overviews .overview .text {
-            padding: 10px 0px; }
-            #object_showcase .asset_profile #info #overviews .overview .text p {
-              margin-bottom: 0px; }
-          #object_showcase .asset_profile #info #overviews .overview.compact tr {
-            height: 22px; }
-          #object_showcase .asset_profile #info #overviews .overview tr {
-            height: 28px; }
+  #object_showcase .carton_sko_units {
+    padding-left: 5px;
+    padding-top: 0px;
+    font-size: 90%;
+    color: #5f5f5f; }
+    #object_showcase .carton_sko_units td.canvas {
+      padding: 0 5px 10px 0; }
+      #object_showcase .carton_sko_units td.canvas canvas {
+        border: 1px solid #ccc; }
+    #object_showcase .carton_sko_units td.info {
+      padding: 0px 10px;
+      vertical-align: top; }
+      #object_showcase .carton_sko_units td.info div {
+        margin-top: 4px; }
+      #object_showcase .carton_sko_units td.info div:first-of-type {
+        margin-top: 0px;
+        margin-bottom: 2px; }
+    #object_showcase .carton_sko_units .volume, #object_showcase .carton_sko_units .density {
+      display: none; }
   #object_showcase h1 {
     font-size: 140%;
     padding: 0px;
     margin: 0px; }
     #object_showcase h1 .id {
       color: #000; }
+
+.overview {
+  font-size: 95%;
+  float: left;
+  margin-bottom: 10px;
+  padding: 0 5px;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ddd;
+  width: 100%; }
+  .overview.with_title {
+    border-top: none; }
+  .overview .text {
+    padding: 10px 0px; }
+    .overview .text p {
+      margin-bottom: 0px; }
+  .overview.compact tr {
+    height: 22px; }
+  .overview tr {
+    height: 28px; }
 
 .half {
   float: left;
