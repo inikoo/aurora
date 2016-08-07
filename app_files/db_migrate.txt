@@ -1,5 +1,5 @@
 
-
+ALTER TABLE `Part Dimension` DROP ` Part Units `;
 
 
 

@@ -23,7 +23,7 @@ if (!isset($_REQUEST['tipo'])) {
 	exit;
 }
 
-
+//print_r($_REQUEST);
 
 $tipo=$_REQUEST['tipo'];
 
@@ -61,7 +61,6 @@ case 'upload_images':
 	$data=prepare_values($_REQUEST, array(
 			'parent'=>array('type'=>'string'),
 			'parent_key'=>array('type'=>'numeric'),
-			'object'=>array('type'=>'string'),
 		));
 
 	upload_images($account, $db, $user, $editor, $data, $smarty);

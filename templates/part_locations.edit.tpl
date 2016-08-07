@@ -31,7 +31,7 @@
 	<td class="aright button formatted_stock"></td>
 	<td class="aright  hide stock_input"> <span class="stock_change"></span>
 	 <i class="fa fa-dot-circle-o button super_discreet set_as_audit" aria-hidden="true" title="{t}Mark as audited{/t}"  onclick="set_as_audit(this)"></i>
-	<input class="_stock" style="width:60px" action="" location_key="" ovalue="" value="">
+	<input class="_stock" style="width:60px" action="" location_key="" ovalue="0" value="">
 	<i class="fa fa-fw fa-caret-square-o-right _move_trigger button super_discreet" aria-hidden="true" title="{t}Move from{/t}" onclick="move(this)"></i> </td>
 </tr>
  
@@ -55,3 +55,8 @@
 	</td>
 	
 </tr>
+<tr>
+<td></td>
+<td colspan="2" class="small" id="location_data_msg"></td>
+<tr>
+

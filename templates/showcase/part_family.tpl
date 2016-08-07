@@ -15,16 +15,14 @@
 		<div style="clear:both">
 		</div>
 		<div class="data_container">
-			<div style="min-height:80px;float:left;width:28px">
-				<i class="fa fa-camera-retro"></i> 
-			</div>
+			
 			
 			{assign "image_key" $category->get_main_image_key()}
 			<div class="wraptocenter main_image {if $image_key==''}hide{/if}" >	
 				<img src="/{if $image_key}image_root.php?id={$image_key}&size=small{else}art/nopic.png{/if}"  >
 				</span>
 			</div>	
-			{include file='upload_main_image.tpl' object='Product'  key=$category->id class="{if $image_key!=''}hide{/if}"}
+			{include file='upload_main_image.tpl' object='Category'  key=$category->id class="{if $image_key!=''}hide{/if}"}
 		</div>
 		{include file='sticky_note.tpl' object='Category'  key=$category->id sticky_note_field='Category_Sticky_Note' _object=$category}
 

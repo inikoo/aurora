@@ -371,7 +371,7 @@ function migrate_part_fields() {
 
 			if ($num_uk_prod==0) {
 				$part->update(array(
-						'Part Units'=>1,
+					//	'Part Units'=>1,
 						'Part Units Per Package'=>1,
 						'Part Unit RRP'=>''
 
@@ -381,7 +381,7 @@ function migrate_part_fields() {
 				//print_r($prod_uk);
 
 				$part->update(array(
-						'Part Units'=>$prod_uk->get('Product Units Per Case'),
+					//	'Part Units'=>$prod_uk->get('Product Units Per Case'),
 						'Part Units Per Package'=>$prod_uk->get('Product Units Per Case'),
 						'Part Unit Description'=>$prod_uk->get('Product Name'),
 						'Part Unit Price'=>$prod_uk->get('Product Price')/$prod_uk->get('Product Units Per Case'),
@@ -393,7 +393,7 @@ function migrate_part_fields() {
 				if ($part->data['Part Status']=='In Use') {
 
 					$part->update(array(
-							'Part Units'=>$min_units,
+						//	'Part Units'=>$min_units,
 							'Part Units Per Package'=>$min_units,
 							'Part Unit Price'=>$price,
 							'Part Unit RRP'=>$rrp

@@ -348,7 +348,7 @@ class SupplierPart extends DB_Table{
 			if ($this->data['Supplier Part Packages Per Carton']=='' or  $this->part->data['Part Units Per Package']=='')return '';
 			return number($this->data['Supplier Part Packages Per Carton']*$this->part->data['Part Units Per Package']);
 			break;
-			
+
 		case 'Packages Per Carton':
 			if ($this->data['Supplier Part Packages Per Carton']=='')return '';
 			$value=number($this->data['Supplier Part Packages Per Carton']);
@@ -373,7 +373,7 @@ class SupplierPart extends DB_Table{
 
 		case 'Unit Cost':
 
-        
+
 
 			if ($this->data['Supplier Part Unit Cost']=='')return '';
 
@@ -613,12 +613,12 @@ class SupplierPart extends DB_Table{
 					'formatted_value'=>$this->get('Packages Per Carton'),
 				)
 			);
-			
-			
-			
-			
-		
-			
+
+
+
+
+
+
 			$this->update_field($field, $value, $options);
 			if (!preg_match('/skip_update_historic_object/', $options)) {
 				$this->update_historic_object();
@@ -632,11 +632,11 @@ class SupplierPart extends DB_Table{
 					'SKO_Weight'=>$this->get('SKO Weight'),
 					'SKO_Cost'=>$this->get('SKO Cost'),
 					'Packages_Per_Carton'=>$this->get('Supplier Part Packages Per Carton'),
-										'Supplier_Part_Units_Per_Package'=>$this->get('Supplier Part Units Per Package'),
+					'Supplier_Part_Units_Per_Package'=>$this->get('Supplier Part Units Per Package'),
 					'Supplier_Part_Units_Per_Carton'=>$this->get('Units Per Carton')
 
-	
-								
+
+
 				)
 			);
 
@@ -644,7 +644,7 @@ class SupplierPart extends DB_Table{
 		case 'Supplier Part Packages Per Carton':
 			$this->update_field($field, $value, $options);
 			$this->other_fields_updated=array(
-	'Supplier_Part_Unit_Cost'=>array(
+				'Supplier_Part_Unit_Cost'=>array(
 					'field'=>'Supplier_Part_Unit_Cost',
 					'render'=>true,
 					'value'=>$this->get('Supplier Part Unit Cost'),
@@ -653,7 +653,6 @@ class SupplierPart extends DB_Table{
 
 			);
 
-			$this->update_field($field, $value, $options);
 
 			if (!preg_match('/skip_update_historic_object/', $options)) {
 				$this->update_historic_object();

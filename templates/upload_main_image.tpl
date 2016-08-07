@@ -1,21 +1,19 @@
-			
-			
-				
-	
-	<form id="add_image_form" method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate class="box main_image wraptocenter {$class}" >
-		
-		<div class="box__input">
-
-			<input type="file" name="files[]" id="file" class="box__file hide" data-multiple-caption="*count* files selected" multiple />
-			<label for="file">{t}Click to choose a file{/t} <span class="box__dragndrop"><br/> {t}or drag it here{/t}</span>.</label>
-			<button type="submit" class="box__button hide">Upload</button>
-		</div>
-
-		
-		<div class="box__uploading">Uploading&hellip;</div>
-		<div class="box__success">Done! <a href="https://css-tricks.com/examples/DragAndDropFileUploading//?submit-on-demand" class="box__restart" role="button">Upload more?</a></div>
-		<div class="box__error">Error! <span></span>. <a href="https://css-tricks.com/examples/DragAndDropFileUploading//?submit-on-demand" class="box__restart" role="button">Try again!</a></div>
-	</form>
+<form id="add_image_form" method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate class="box main_image wraptocenter {$class}">
+	<div class="box__input">
+		<input type="file" name="files[]" id="file" class="box__file hide" data-multiple-caption="*count* files selected" multiple />
+		<label for="file">{t}Click to choose a file{/t} <span class="box__dragndrop"><br />
+		{t}or drag it here{/t}</span>.</label> <button type="submit" class="box__button hide">{t}Upload{/t}</button> 
+	</div>
+	<div class="box__uploading">
+		Uploading&hellip;
+	</div>
+	<div class="box__success">
+		Done! <a href="https://css-tricks.com/examples/DragAndDropFileUploading//?submit-on-demand" class="box__restart" role="button">{t}Upload more?{/t}</a>
+	</div>
+	<div class="box__error">
+		Error! <span></span>. <a href="https://css-tricks.com/examples/DragAndDropFileUploading//?submit-on-demand" class="box__restart" role="button">{t}Try again!{/t}</a>
+	</div>
+</form>
 	
 	
 	
@@ -113,8 +111,8 @@
 					}
 
                      ajaxData.append("tipo", 'upload_images')
-                     ajaxData.append("object", '{$object}')
-                     ajaxData.append("key", '{$key}')
+                     ajaxData.append("parent", '{$object}')
+                     ajaxData.append("parent_key", '{$key}')
 
 					$.ajax(
 					{
@@ -137,7 +135,7 @@
 						},
 						success: function( data )
 						{
-						
+						console.log(data)
 						    if(data.state==200){
 						  
 						    if(data.number_images>0){
