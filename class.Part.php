@@ -505,11 +505,43 @@ class Part extends Asset{
 
 		switch ($field) {
 
+
+		case 'Part Unit Price':
+			$this->update_field('Part Unit Price', $value, $options);
+
+			$this->other_fields_updated=array(
+
+				'Part_Unit_RRP'=>array(
+					'field'=>'Part_Unit_RRP',
+					'render'=>true,
+					'value'=>$this->get('Part Unit RRP'),
+					'formatted_value'=>$this->get('Unit RRP'),
+				),
+
+			);
+
+			break;
+
 		case 'Part Units Per Package':
 			$this->update_field('Part Units Per Package', $value, $options);
 
-			$supplier_parts=$this->get_supplier_parts('objects');
-			//$supplier_parts->update(array('Part Units Per Package'=>$value));
+
+			$this->other_fields_updated=array(
+				'Part_Unit_Price'=>array(
+					'field'=>'Part_Unit_Price',
+					'render'=>true,
+					'value'=>$this->get('Part Unit Price'),
+					'formatted_value'=>$this->get('Unit Price'),
+				),
+				'Part_Unit_RRP'=>array(
+					'field'=>'Part_Unit_RRP',
+					'render'=>true,
+					'value'=>$this->get('Part Unit RRP'),
+					'formatted_value'=>$this->get('Unit RRP'),
+				),
+
+			);
+
 			break;
 		case 'Part Family Category Key';
 			global $account;
@@ -559,7 +591,8 @@ class Part extends Asset{
 					)
 				);
 
-			}elseif ($value=='' and $category) {
+			}
+			elseif ($value=='' and $category) {
 
 
 				$category->disassociate_subject($this->id);
@@ -785,37 +818,7 @@ class Part extends Asset{
 		case('Part Available for Products Configuration'):
 			$this->update_availability_for_products_configuration($value, $options);
 			break;
-			/*
-		case('Part Tariff Code'):
-		case('Part Duty Rate'):
-		case 'Part UN Number':
-		case 'Part UN Class':
-		case 'Part Health And Safety':
-		case 'Part Packing Group':
-		case 'Part Proper Shipping Name':
-		case 'Part Hazard Indentification Number':
-		case 'Part Unit Dimensions Type':
-		case 'Part Unit Dimensions Display Units':
-		case 'Part Unit Dimensions Width Display':
-		case 'Part Unit Dimensions Depth Display':
-		case 'Part Unit Dimensions Length Display':
-		case 'Part Unit Dimensions Diameter Display':
-		case 'Part Package Dimensions Type':
-		case 'Part Package Dimensions Display Units':
-		case 'Part Package Dimensions Width Display':
-		case 'Part Package Dimensions Depth Display':
-		case 'Part Package Dimensions Length Display':
-		case 'Part Package Dimensions Diameter Display':
-		case 'Part Unit Weight Display':
-		case 'Part Unit Weight Display Units':
-		case 'Part Package Weight Display':
-		case 'Part Package Weight Display Units':
-		case 'Part Unit Materials':
-		case 'Part Origin Country Code':
 
-			$this->update_fields_used_in_products($field, $value, $options);
-			break;
-		*/
 
 		case 'Part Next Set Supplier Shipment':
 			$this->update_set_next_supplier_shipment($value, $options);
@@ -3952,9 +3955,12 @@ class Part extends Asset{
 		case 'Part Package Description':
 			$label=_('SKO description');
 			break;
-		case 'Store Product Price':
-			$label=_('Price');
+		case 'Part Unit Price':
+			$label=_('init recommended price');
 			break;
+		case 'Part Unit RRP':
+			$label=_('init recommended RRP');
+			break;	
 
 		case 'Part Package Weight':
 			$label=_('SKO weight');
@@ -3998,7 +4004,7 @@ class Part extends Asset{
 		case 'Part Origin Country Code':
 			$label=_('country of origin');
 			break;
-		case 'Part Units':
+		case 'Part Units Per Package':
 			$label=_('units per SKO');
 			break;
 		case 'Part Barcode Number':

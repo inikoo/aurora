@@ -721,7 +721,7 @@ function validate_number(value, min, max) {
 
     }
 
-
+ return false
 
 }
 

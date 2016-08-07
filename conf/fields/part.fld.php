@@ -162,7 +162,7 @@ $part_fields[]=array(
 
 			'value'=>htmlspecialchars($object->get('Part Unit Price')),
 			'formatted_value'=>$object->get('Unit Price'),
-			'label'=>ucfirst($object->get_field_label('Unit Price')),
+			'label'=>ucfirst($object->get_field_label('Part Unit Price')),
 			'required'=>true,
 			'placeholder'=>sprintf(_('amount in %s or margin (%%)'), $account->get('Currency')),
 			'type'=>'value'
@@ -174,7 +174,7 @@ $part_fields[]=array(
 
 			'value'=>htmlspecialchars($object->get('Part Unit RRP')),
 			'formatted_value'=>$object->get('Unit RRP'),
-			'label'=>ucfirst($object->get_field_label('Unit RRP')),
+			'label'=>ucfirst($object->get_field_label('Part Unit RRP')),
 			'required'=>true,
 			'placeholder'=>sprintf(_('amount in %s or margin (%%)'), $account->get('Currency')),
 			'type'=>'value'
@@ -191,12 +191,12 @@ $part_fields[]=array(
 		array(
 			'render'=>(!($supplier_part_scope or $new) ?true:false),
 
-			'id'=>'Part_Units',
+			'id'=>'Part_Units_Per_Package',
 			'edit'=>($edit?'numeric':''),
 
-			'value'=>$object->get('Part Units') ,
-			'formatted_value'=>$object->get('Units') ,
-			'label'=>ucfirst($object->get_field_label('Part Units')),
+			'value'=>$object->get('Part Units Per Package') ,
+			'formatted_value'=>$object->get('Units Per Package') ,
+			'label'=>ucfirst($object->get_field_label('Part Units Per Package')),
 			'invalid_msg'=>get_invalid_message('string'),
 			'required'=>($supplier_part_scope?false:true),
 			'type'=>'value'
