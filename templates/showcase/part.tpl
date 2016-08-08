@@ -25,7 +25,7 @@
 			
 			
 			{assign "image_key" $part->get_main_image_key()}
-			<div class="wraptocenter main_image {if $image_key==''}hide{/if}" >
+			<div id="main_image" class="wraptocenter main_image {if $image_key==''}hide{/if}" >
 				
 				<img src="/{if $image_key}image_root.php?id={$image_key}&size=small{else}art/nopic.png{/if}"  >
 				
