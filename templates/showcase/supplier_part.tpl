@@ -16,7 +16,7 @@
 		<div class="data_container"  style="xborder:1px solid blue">
 			
 			{assign "image_key" $part->get_main_image_key()} 
-			<div class="wraptocenter main_image {if $image_key==''}hide{/if}">
+			<div id="main_image" class="wraptocenter main_image {if $image_key==''}hide{/if}">
 				<img src="/{if $image_key}image_root.php?id={$image_key}&amp;size=small{else}art/nopic.png{/if}"> </span> 
 			</div>
 			{include file='upload_main_image.tpl' object='Part' key=$part->id class="{if $image_key!=''}hide{/if}"} 

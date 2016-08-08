@@ -18,7 +18,7 @@
 				<i onclick="show_images_tab()" class="fa fa-camera-retro button"></i> 
 			</div>
 			{assign "image_key" $employee->get_main_image_key()} 
-			<div class="wraptocenter main_image {if $image_key==''}hide{/if}">
+			<div id="main_image" class="wraptocenter main_image {if $image_key==''}hide{/if}">
 				<img src="/{if $image_key}image_root.php?id={$image_key}&amp;size=small{else}art/nopic.png{/if}"> </span> 
 			</div>
 			{include file='upload_main_image.tpl' object='Employee' key=$employee->id class="{if $image_key!=''}hide{/if}"} 
