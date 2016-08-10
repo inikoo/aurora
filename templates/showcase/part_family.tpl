@@ -4,7 +4,7 @@
 		<div class="data_container">
 			
 			<div class="data_field" >
-				<h1>{$category->get('Label')}</h1>
+				<h1 class="Category_Label">{$category->get('Label')}</h1>
 			</div>
 			
 		</div>

@@ -57,7 +57,6 @@ case 'find_object':
 
 	$data['user']=$user;
 
-
 	switch ($data['scope']) {
 	case 'item':
 
@@ -643,12 +642,10 @@ function find_locations($db, $account, $memcache_ip, $data) {
 function find_parts($db, $account, $memcache_ip, $data) {
 
 
-
 	$cache=false;
 	$max_results=5;
 	$user=$data['user'];
 	$q=trim($data['query']);
-
 
 
 	if ($q=='') {

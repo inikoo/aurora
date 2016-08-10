@@ -58,7 +58,6 @@ class SubjectSupplier extends Subject {
 
 
 
-
 		if ($this->get('Show Warehouse TC in PO')=='Yes') {
 
 			if ($order_data['Purchase Order Terms and Conditions']!='') {
@@ -123,7 +122,7 @@ class SubjectSupplier extends Subject {
 		}
 
 
-		$sql=sprintf("select count(*) as num from `Purchase Delivery Note Dimension` where `Purchase Delivery Note Parent`=%s and  `Purchase Delivery Note Parent Key`=%d",
+		$sql=sprintf("select count(*) as num from `Supplier Delivery Dimension` where `Supplier Delivery Parent`=%s and  `Supplier Delivery Parent Key`=%d",
 			prepare_mysql($this->table_name),
 			$this->id);
 		if ($result=$this->db->query($sql)) {
@@ -137,21 +136,8 @@ class SubjectSupplier extends Subject {
 
 
 
-		$sql=sprintf("select count(*) as num from `Purchase Invoice Dimension` where `Purchase Invoice Parent`=%s and  `Purchase Invoice Parent Key`=%d",
-			prepare_mysql($this->table_name),
-			$this->id);
-		if ($result=$this->db->query($sql)) {
-			if ($row = $result->fetch()) {
-				$number_invoices=$row['num'];
-			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
-		}
 
-
-
-		$sql=sprintf("update `%s Dimension` set `%s Purchase Orders`=%d,`%s Open Purchase Orders`=%d ,`%s Purchase Delivery Notes`=%d ,`%s Purchase Invoices`=%d where `%s Key`=%d",
+		$sql=sprintf("update `%s Dimension` set `%s Purchase Orders`=%d,`%s Open Purchase Orders`=%d ,`%s Supplier Deliveries`=%d  where `%s Key`=%d",
 			$this->table_name,
 			$this->table_name,
 			$number_purchase_orders,
@@ -160,7 +146,7 @@ class SubjectSupplier extends Subject {
 			$this->table_name,
 			$number_delivery_notes,
 			$this->table_name,
-			$number_invoices,
+			
 			$this->table_name,
 			$this->id);
 		$this->db->exec($sql);

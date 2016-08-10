@@ -352,6 +352,11 @@ ALTER TABLE `History Dimension` CHANGE `History Abstract` `History Abstract` TEX
 DROP TABLE `Purchase Delivery Note Dimension`, `Purchase Delivery Note History Bridge`, `Purchase Invoice Dimension`, `Purchase Invoice History Bridge`, `Purchase Order Dimension`, `Purchase Order History Bridge`, `Purchase Order SDN Bridge`, `Purchase Order SI Bridge`, `Purchase Order Transaction Fact`, `Purchase Requsition Fact`, `Supplier Delivery Note Dimension`, `Supplier Delivery Note History Bridge`, `Supplier Delivery Note Item Part Bridge`, `Supplier Delivery Note SI Bridge`, `Supplier Invoice Dimension`, `Supplier Invoice History Bridge`, `Supplier Payment Fact`, `Supplier Refund Fact`;
 ALTER TABLE `Supplier Dimension` ADD `Supplier Type` ENUM('Free','Agent','Archived') NOT NULL DEFAULT 'Free' AFTER `Supplier Key`, ADD INDEX (`Supplier Type`);
 
+ALTER TABLE `Supplier Part Dimension` DROP ` Supplier Part Units Per Package `;
+ALTER TABLE `Material Dimension` ADD `Material Parts Number` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Material Family`;
+ALTER TABLE `Material Dimension` ADD `Material Type` ENUM('Material','Ingredient') NOT NULL DEFAULT 'Material' AFTER `Material Key`, ADD INDEX (`Material Type`);
+
+
 // From HERe  ==================== 15/04/2016, 10:45
 
 Only for bali dw:
@@ -362,15 +367,47 @@ migrate_supplier_parts.oneoff.php
 migrate_parts.oneoff.php
 
 
+
+ALTER TABLE `Purchase Order Dimension` CHANGE `Purchase Order Key` `Purchase Order Key` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT;
+ALTER TABLE `Purchase Order Transaction Fact` CHANGE `Purchase Order Transaction Fact Key` `Purchase Order Transaction Fact Key` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT;
+ALTER TABLE `Supplier Delivery Dimension` CHANGE `Supplier Delivery Key` `Supplier Delivery Key` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+CREATE TABLE `Supplier Delivery History Bridge` (
+  `Supplier Delivery Key` mediumint(8) UNSIGNED NOT NULL,
+  `History Key` int(10) UNSIGNED NOT NULL,
+  `Deletable` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') CHARACTER SET latin1 NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `Supplier Delivery History Bridge`
+  ADD UNIQUE KEY `Supplier Delivery Key` (`Supplier Delivery Key`,`History Key`),
+  ADD KEY `Type` (`Type`),
+  ADD KEY `Deletable` (`Deletable`),
+  ADD KEY `Strikethrough` (`Strikethrough`);
+
+
+CREATE TABLE `Purchase Order History Bridge` (
+  `Purchase Order Key` mediumint(8) UNSIGNED NOT NULL,
+  `History Key` int(10) UNSIGNED NOT NULL,
+  `Deletable` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') CHARACTER SET latin1 NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `Purchase Order History Bridge`
+  ADD UNIQUE KEY `Purchase Order Key` (`Purchase Order Key`,`History Key`),
+  ADD KEY `Type` (`Type`),
+  ADD KEY `Deletable` (`Deletable`),
+  ADD KEY `Strikethrough` (`Strikethrough`);
+
+
 migrate_products.oneoff.php 
 migrate_history_note_details.php
 
 
 
 
-ALTER TABLE `Supplier Part Dimension` DROP ` Supplier Part Units Per Package `;
-ALTER TABLE `Material Dimension` ADD `Material Parts Number` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Material Family`;
-ALTER TABLE `Material Dimension` ADD `Material Type` ENUM('Material','Ingredient') NOT NULL DEFAULT 'Material' AFTER `Material Key`, ADD INDEX (`Material Type`);
 
 
 STICKY:::: --> update `Category Dimension` set `Category Scope`=`Category Subject` where `Category Scope` is null or `Category Scope`='';

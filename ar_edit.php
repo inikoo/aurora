@@ -30,7 +30,7 @@ switch ($tipo) {
 
 case 'edit_item_in_order':
 	$data=prepare_values($_REQUEST, array(
-			'field'=>array('type'=>'field'),
+			'field'=>array('type'=>'string'),
 			'parent'=>array('type'=>'string'),
 			'parent_key'=>array('type'=>'key'),
 			'item_key'=>array('type'=>'key'),
@@ -1201,6 +1201,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 		);
 
 	}else {
+
 
 		$response=array(
 			'state'=>200,

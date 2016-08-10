@@ -31,13 +31,13 @@ $("#add_item_form").on("input propertychange", function(evt) {
 
 
 
-    if($(evt.target).attr('id')=='add_item'){
+    if ($(evt.target).attr('id') == 'add_item') {
 
-    var delay = 100;
-    if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
-    delayed_on_change_add_item_field($(this), delay)
-    }else{
-     validate_add_item()
+        var delay = 100;
+        if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
+        delayed_on_change_add_item_field($(this), delay)
+    } else {
+        validate_add_item()
     }
 });
 
@@ -82,8 +82,8 @@ function get_items_select() {
                 $('#add_item').removeClass('invalid')
             }
 
-   $('#save_add_item').attr('item_key', '')
-    $('#save_add_item').attr('item_historic_key', '')
+            $('#save_add_item').attr('item_key', '')
+            $('#save_add_item').attr('item_historic_key', '')
 
             validate_add_item()
 
@@ -132,13 +132,13 @@ function select_add_item_option(element) {
     $('#add_item_save').attr('item_key', $(element).attr('value'))
     $('#add_item_save').attr('item_historic_key', $(element).attr('item_historic_key'))
 
-     $('#add_item_results_container').addClass('hide').removeClass('show')
-    
+    $('#add_item_results_container').addClass('hide').removeClass('show')
+
     $('#add_item_qty').focus()
-    
+
 
     validate_add_item()
-   
+
 }
 
 function validate_add_item() {
@@ -166,7 +166,7 @@ function validate_add_item() {
 
     }
 
-        console.log(invalid)
+    console.log(invalid)
 
 
     if (invalid) {
@@ -207,29 +207,30 @@ function show_add_item_form() {
 
 
 function close_add_item() {
-  $('#add_item_form').addClass('hide')
+    $('#add_item_form').addClass('hide')
     $('.table_button').removeClass('hide')
 }
 
-function save_add_item(){
+function save_add_item() {
 
 
 
     $('#add_item_save').addClass('fa-spinner fa-spin');
     var table_metadata = JSON.parse(atob($('#table').data("metadata")))
 
-    var request = '/ar_edit.php?tipo=edit_item_in_order&parent=' + table_metadata.parent + '&parent_key=' + table_metadata.parent_key + '&item_key=' +  $('#add_item_save').attr('item_key') + '&item_historic_key=' +  $('#add_item_save').attr('item_historic_key') + '&qty=' +  $('#add_item_qty').val()
+    var request = '/ar_edit.php?tipo=edit_item_in_order&field=' + table_metadata.field + '&parent=' + table_metadata.parent + '&parent_key=' + table_metadata.parent_key + '&item_key=' + $('#add_item_save').attr('item_key') + '&item_historic_key=' + $('#add_item_save').attr('item_historic_key') + '&qty=' + $('#add_item_qty').val()
     console.log(request)
     // return;
     //=====
     var form_data = new FormData();
 
     form_data.append("tipo", 'edit_item_in_order')
+    form_data.append("field", table_metadata.field)
     form_data.append("parent", table_metadata.parent)
     form_data.append("parent_key", table_metadata.parent_key)
-    form_data.append("item_key", $('#add_item_save').attr('item_key') )
-    form_data.append("item_historic_key",  $('#add_item_save').attr('item_historic_key'))
-    form_data.append("qty",  $('#add_item_qty').val())
+    form_data.append("item_key", $('#add_item_save').attr('item_key'))
+    form_data.append("item_historic_key", $('#add_item_save').attr('item_historic_key'))
+    form_data.append("qty", $('#add_item_qty').val())
 
     var request = $.ajax({
 
@@ -245,28 +246,33 @@ function save_add_item(){
 
     request.done(function(data) {
 
-         $('#add_item_save').removeClass('fa-spinner fa-spin');
+        $('#add_item_save').removeClass('fa-spinner fa-spin');
 
         console.log(data)
         if (data.state == 200) {
 
-    $('#save_add_item').attr('item_key', '')
-    $('#save_add_item').attr('item_historic_key', '')
-    $('#add_item').val('').focus().removeClass('invalid')
-    $('#add_item_qty').val('').removeClass('invalid')
-    $('#add_item_save').addClass('super_discreet').removeClass('invalid valid button')
+            $('#save_add_item').attr('item_key', '')
+            $('#save_add_item').attr('item_historic_key', '')
+            $('#add_item').val('').focus().removeClass('invalid')
+            $('#add_item_qty').val('').removeClass('invalid')
+            $('#add_item_save').addClass('super_discreet').removeClass('invalid valid button')
 
 
- rows.fetch({
-            reset: true
-        });
+            rows.fetch({
+                reset: true
+            });
 
             for (var key in data.metadata.class_html) {
                 console.log(key)
                 $('.' + key).html(data.metadata.class_html[key])
             }
 
-        
+              for (var key in data.metadata.hide) {
+                $('#' + data.metadata.hide[key]).addClass('hide')
+            }
+            for (var key in data.metadata.show) {
+                $('#' + data.metadata.show[key]).removeClass('hide')
+            }
 
 
 

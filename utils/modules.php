@@ -993,6 +993,7 @@ $modules=array(
 					'supplier.order.items'=>array('label'=>_('Items'), 'icon'=>'bars'),
 					// 'supplier.order.supplier_parts'=>array('label'=>_('Parts'), 'icon'=>'stop'),
 					// 'supplier.order.invoices'=>array('label'=>_('Invoices'),  'icon'=>'file-text-o'),
+					'supplier.order.tac'=>array('label'=>_('Terms and conditions'), 'icon'=>'gavel', 'class'=>''),
 					'supplier.order.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
 
 				)

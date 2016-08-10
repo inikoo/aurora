@@ -1,4 +1,5 @@
 <?php
+
 include_once 'class.DB_Table.php';
 include_once 'class.Supplier.php';
 
@@ -71,7 +72,6 @@ class PurchaseOrder extends DB_Table{
 		$keys=preg_replace('/,$/', ')', $keys);
 		$values=preg_replace('/,$/', ')', $values);
 		$sql=sprintf("insert into `Purchase Order Dimension` %s %s", $keys, $values);
-
 		if ($this->db->exec($sql)) {
 			$this->id=$this->db->lastInsertId();
 
@@ -567,7 +567,6 @@ class PurchaseOrder extends DB_Table{
 				$item_key
 			);
 
-
 			if ($result=$this->db->query($sql)) {
 				if ($row = $result->fetch()) {
 
@@ -642,7 +641,7 @@ class PurchaseOrder extends DB_Table{
 
 
 					);
-
+//print $sql;
 					$this->db->exec($sql);
 					$transaction_key=$this->db->lastInsertId();
 

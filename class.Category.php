@@ -470,7 +470,7 @@ class Category extends DB_Table{
 
 			break;
 		case 'Part':
-
+            include_once('utils/natural_language.php');
 
 			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Month To|Today|Week To).*(Margin|GMROI)$/', $key)) {
 
@@ -497,6 +497,7 @@ class Category extends DB_Table{
 			break;
 		case 'Invoice':
 
+            include_once('utils/natural_language.php');
 
 
 

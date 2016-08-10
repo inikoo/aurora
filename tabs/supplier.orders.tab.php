@@ -29,7 +29,7 @@ $parameters=array(
 );
 
 
-if (!$state['_object']->get('Supplier Type')=='Archived') {
+if ($state['_object']->get('Supplier Type')!='Archived') {
 
 	$table_buttons=array();
 	$table_buttons[]=array(
