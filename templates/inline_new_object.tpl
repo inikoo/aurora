@@ -1,4 +1,4 @@
-<div id="inline_form" style="float:right" class="hide">
+<div id="inline_form" style="float:right" class="hide" data-metadata="{$data.metadata}" field_id="{$data.field_id}" >
 <span id="invalid_msg" class="hide">{t}Invalid value{/t}</span> 
 
 <span id="fields" object='{$data.object}' key='' parent='{$data.parent}' parent_key='{$data.parent_key}' >
@@ -10,6 +10,20 @@
 {if $data.field_edit=='time'}
 <input type="hidden" id="{$data.field_id}_date"  value="{$data.date}">
 {/if}
+
+
+<div id="inline_new_object_results_container" class="search_results_container hide" style="width:400px;">
+		
+		<table id="inline_new_object_results" border="0" style="background:white;font-size:90%" >
+			<tr class="hide" style="" id="inline_new_object_search_result_template" field="" value="" item_historic_key="" formatted_value="" onClick="select_inline_new_object_option(this)">
+				<td class="code" style="padding-left:5px;"></td>
+				<td class="label" style="padding-left:5px;"></td>
+				
+			</tr>
+		</table>
+	
+</div>
+
 <i id="{$data.object}_save"  class=" fa fa-cloud fa-fw save"></i> </span> 
 </span> 
 </span>
@@ -41,7 +55,7 @@ $("#{$data.field_id}").on("input propertychange", function(evt) {
     }
     var delay = 50;
     if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
-    delayed_on_change_field($(this), delay)
+    delayed_on_change_inline_new_object_field($(this), delay)
 
 });
 
@@ -53,6 +67,91 @@ $("#inline_new_object_msg").on("click", function(evt) {
    $("#inline_new_object_msg").html('').removeClass('success error')
    
 });
+
+
+function delayed_on_change_inline_new_object_field(object, timeout) {
+
+    window.clearTimeout(object.data("timeout"));
+
+    object.data("timeout", setTimeout(function() {
+
+        get_inline_new_object_items_select()
+    }, timeout));
+}
+
+function get_inline_new_object_items_select() {
+
+var form_element=$('#inline_form');
+
+
+      form_element.removeClass('invalid')
+  input_element=$('#'+form_element.attr('field_id'))
+  
+
+    var request = '/ar_find.php?tipo=find_object&query=' + fixedEncodeURIComponent(input_element.val()) + '&scope='+jQuery.parseJSON(atob(form_element.data("metadata"))).scope + '&metadata=' + atob(form_element.data("metadata")) + '&state=' + JSON.stringify(state)
+
+    $.getJSON(request, function(data) {
+
+
+        if (data.number_results > 0) {
+            $('#inline_new_object_results_container').removeClass('hide').addClass('show')
+            input_element.removeClass('invalid')
+
+        } else {
+
+
+
+            $('#inline_new_object_results_container').addClass('hide').removeClass('show')
+
+            //console.log(data)
+            if (input_element.val() != '') {
+                input_element.addClass('invalid')
+            } else {
+                input_element.removeClass('invalid')
+            }
+
+            $('#save_inline_new_object').attr('item_key', '')
+            $('#save_inline_new_object').attr('item_historic_key', '')
+
+            validate_inline_new_object()
+
+        }
+
+
+        $("#inline_new_object_results .result").remove();
+
+        var first = true;
+
+        for (var result_key in data.results) {
+
+            var clone = $("#inline_new_object_search_result_template").clone()
+            clone.prop('id', 'inline_new_object_result_' + result_key);
+            clone.addClass('result').removeClass('hide')
+            clone.attr('value', data.results[result_key].value)
+            clone.attr('item_historic_key', data.results[result_key].item_historic_key)
+
+            clone.attr('formatted_value', data.results[result_key].formatted_value)
+            // clone.attr('field', field)
+            if (first) {
+                clone.addClass('selected')
+                first = false
+            }
+
+            clone.children(".label").html(data.results[result_key].description)
+            clone.children(".code").html(data.results[result_key].code)
+
+            $("#inline_new_object_results").append(clone)
+
+
+        }
+
+    })
+
+
+
+}
+
+
 
 
 </script>

@@ -135,6 +135,7 @@ elseif ($category->get('Category Scope')=='Part') {
 		$table_buttons[]=array('icon'=>'square', 'title'=>_('All parts'), 'change_tab'=>'category.all_subjects');
 
 
+
 		$table_buttons[]=array(
 			'icon'=>'link',
 			'title'=>_('Associate part'),
@@ -147,7 +148,14 @@ elseif ($category->get('Category Scope')=='Part') {
 				'object'=>'Category_Part',
 				'parent'=>$state['object'],
 				'parent_key'=>$state['key'],
-				'placeholder'=>_("Parts's reference")
+				'placeholder'=>_("Parts's reference"),
+				'metadata'=>base64_encode(json_encode(array(
+					'scope'=>'parts',
+					'parent'=>'account',
+					'parent_key'=>1,
+					'options'=>array()
+				)))
+
 			)
 
 		);
