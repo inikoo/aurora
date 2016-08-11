@@ -1830,7 +1830,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 					$section='categories';
 
 				}elseif ($view_path[0]=='settings') {
-
+					$object='account';
+					$key=1;
 					$section='settings';
 
 				}

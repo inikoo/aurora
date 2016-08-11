@@ -46,7 +46,7 @@
         <tr id="{$field.id}_field" field="{$field.id}" class="{if $smarty.foreach.fields.last}last{/if} {if !$render}hide{/if}  {$class} "  {if $class=='new' and $field.reference!=''}onClick="change_view('{$field.reference}')"{/if} >
 		    <td id="{$field.id}_label" class="label" ><span>{$field.label}</span>
 		     {if $edit=='editor'}
-	     <span id="{$field.id}_msg" class="msg">xx</span> 
+	     <span id="{$field.id}_msg" class="msg"></span> 
 	     {/if}
 		    </td>
 		    <td class="show_buttons  {if $edit=='address'}address {/if}" > 

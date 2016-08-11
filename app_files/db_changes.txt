@@ -355,6 +355,7 @@ ALTER TABLE `Supplier Dimension` ADD `Supplier Type` ENUM('Free','Agent','Archiv
 ALTER TABLE `Supplier Part Dimension` DROP ` Supplier Part Units Per Package `;
 ALTER TABLE `Material Dimension` ADD `Material Parts Number` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Material Family`;
 ALTER TABLE `Material Dimension` ADD `Material Type` ENUM('Material','Ingredient') NOT NULL DEFAULT 'Material' AFTER `Material Key`, ADD INDEX (`Material Type`);
+ALTER TABLE `Account Dimension` ADD `Account Suppliers Terms and Conditions` TEXT NULL DEFAULT NULL AFTER `Account Part Family Category Key`;
 
 
 // From HERe  ==================== 15/04/2016, 10:45
