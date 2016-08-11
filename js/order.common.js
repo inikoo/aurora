@@ -377,16 +377,13 @@ function save_item_qty_change(element) {
                 $('.' + key).html(data.metadata.class_html[key])
             }
 
-            for (var key in data.metadata.hide) {
-                console.log(key)
 
+
+            for (var key in data.metadata.hide) {
                 $('#' + data.metadata.hide[key]).addClass('hide')
             }
-
             for (var key in data.metadata.show) {
-                console.log(key)
                 $('#' + data.metadata.show[key]).removeClass('hide')
-
             }
 
 

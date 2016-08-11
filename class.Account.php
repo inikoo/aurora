@@ -755,21 +755,23 @@ class Account extends DB_Table{
 			$label=_('stores');
 			break;
 		case 'Account Websites':
-			$label=_('Websites');
+			$label=_('websites');
 			break;
 		case 'Account Products':
-			$label=_('Products');
+			$label=_('products');
 			break;
 		case 'Account Customers':
-			$label=_('Customers');
+			$label=_('customers');
 			break;
 		case 'Account Invoices':
-			$label=_('Invoices');
+			$label=_('invoices');
 			break;
 		case 'Account Order Transactions':
 			$label=_("Order's Items");
 			break;
-
+		case 'Account Suppliers Terms and Conditions':
+			$label=_('Purchases Terms & Conditions');
+			break;
 		default:
 			$label=$field;
 		}
