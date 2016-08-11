@@ -16,6 +16,24 @@
 	<link href="/css/d3fc.css" rel="stylesheet"> 
 	<link href="/css/backgrid.css" rel="stylesheet"> 
 	<link href="/css/backgrid-filter.css" rel="stylesheet"> 
+	
+	<link href="/css/editor/froala_editor.css" rel="stylesheet"> 
+	<link href="/css/editor/froala_style.css" rel="stylesheet"> 
+	<link href="/css/editor/codemirror.css" rel="stylesheet"> 
+    <link href="/css/editor/plugins/char_counter.css" rel="stylesheet">
+    <link href="/css/editor/plugins/code_view.css" rel="stylesheet">
+    <link href="/css/editor/plugins/colors.css" rel="stylesheet">
+    <link href="/css/editor/plugins/emoticons.css" rel="stylesheet">
+    <link href="/css/editor/plugins/file.css" rel="stylesheet">
+    <link href="/css/editor/plugins/fullscreen.css" rel="stylesheet">
+    <link href="/css/editor/plugins/image.css" rel="stylesheet">
+    <link href="/css/editor/plugins/image_manager.css" rel="stylesheet">
+    <link href="/css/editor/plugins/line_breaker.css" rel="stylesheet">
+    <link href="/css/editor/plugins/quick_insert.css" rel="stylesheet">
+    <link href="/css/editor/plugins/table.css" rel="stylesheet">
+    <link href="/css/editor/plugins/video.css" rel="stylesheet">
+  
+  	
 	<link href="/css/app.css" rel="stylesheet"> 
 
     <script type="text/javascript" src="/js/libs/jquery-2.2.1.js"></script> 
@@ -48,6 +66,37 @@
 
 	<script type="text/javascript" src="/js/help.js"></script>
 	<script type="text/javascript" src="/utils/country_data.js.php?locale={$locale}"></script> 
+	
+	  <script type="text/javascript" src="/js/libs/editor/froala_editor.min.js"></script>
+ <script type="text/javascript" src="/js/libs/editor/codemirror.js"></script>
+  <script type="text/javascript" src="/js/libs/editor/codemirror.xml.js"></script>
+  <script type="text/javascript" src="/js/libs/editor/plugins/align.min.js"></script>
+
+	 <script type="text/javascript" src="/js/libs/editor/plugins/char_counter.min.js"></script>
+  <script type="text/javascript" src="/js/libs/editor/plugins/code_beautifier.min.js"></script>
+  <script type="text/javascript" src="/js/libs/editor/plugins/code_view.min.js"></script>
+  <script type="text/javascript" src="/js/libs/editor/plugins/colors.min.js"></script>
+  <script type="text/javascript" src="/js/libs/editor/plugins/emoticons.min.js"></script>
+  <script type="text/javascript" src="/js/libs/editor/plugins/entities.min.js"></script>
+  <script type="text/javascript" src="/js/libs/editor/plugins/file.min.js"></script>
+  <script type="text/javascript" src="/js/libs/editor/plugins/font_family.min.js"></script>
+  <script type="text/javascript" src="/js/libs/editor/plugins/font_size.min.js"></script>
+  <script type="text/javascript" src="/js/libs/editor/plugins/fullscreen.min.js"></script>
+  <script type="text/javascript" src="/js/libs/editor/plugins/image.min.js"></script>
+  <script type="text/javascript" src="/js/libs/editor/plugins/image_manager.min.js"></script>
+  <script type="text/javascript" src="/js/libs/editor/plugins/inline_style.min.js"></script>
+  <script type="text/javascript" src="/js/libs/editor/plugins/line_breaker.min.js"></script>
+  <script type="text/javascript" src="/js/libs/editor/plugins/link.min.js"></script>
+  <script type="text/javascript" src="/js/libs/editor/plugins/lists.min.js"></script>
+  <script type="text/javascript" src="/js/libs/editor/plugins/paragraph_format.min.js"></script>
+  <script type="text/javascript" src="/js/libs/editor/plugins/paragraph_style.min.js"></script>
+  <script type="text/javascript" src="/js/libs/editor/plugins/quick_insert.min.js"></script>
+  <script type="text/javascript" src="/js/libs/editor/plugins/quote.min.js"></script>
+  <script type="text/javascript" src="/js/libs/editor/plugins/table.min.js"></script>
+  <script type="text/javascript" src="/js/libs/editor/plugins/save.min.js"></script>
+  <script type="text/javascript" src="/js/libs/editor/plugins/url.min.js"></script>
+  <script type="text/javascript" src="/js/libs/editor/plugins/video.min.js"></script>
+
 
 	{else}
 	

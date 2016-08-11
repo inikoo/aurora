@@ -32,8 +32,10 @@
 	    {if isset($field.invalid_msg)}{assign "invalid_msg" $field.invalid_msg}{else}{assign "invalid_msg" ""}{/if} 
 	
         {if $class=='directory'}
-	     <tr id="{$field.id}_field" class="{if !$render}hide{/if} ">
-	     <td class="label">{$field.label}</td>
+	     <tr id="{$field.id}_field" class="{if !$render}hide{/if}  ">
+	     <td class="label">{$field.label}
+	    
+	     </td>
 	     <td colspan="3" id="{$field.id}_directory" class="with_vertical_padding">{$field.formatted_value}</td>
 	     </tr>
         {else if $class=='operation'}
@@ -42,7 +44,11 @@
 	     </tr>
         {else}
         <tr id="{$field.id}_field" field="{$field.id}" class="{if $smarty.foreach.fields.last}last{/if} {if !$render}hide{/if}  {$class} "  {if $class=='new' and $field.reference!=''}onClick="change_view('{$field.reference}')"{/if} >
-		    <td id="{$field.id}_label" class="label" ><span>{$field.label}</span></td>
+		    <td id="{$field.id}_label" class="label" ><span>{$field.label}</span>
+		     {if $edit=='editor'}
+	     <span id="{$field.id}_msg" class="msg">xx</span> 
+	     {/if}
+		    </td>
 		    <td class="show_buttons  {if $edit=='address'}address {/if}" > 
 		
 		<i id="{$field.id}_lock" class="fa fa-lock fw {if $edit!='' or $class=='new'  or $class=='operation'  }hide{/if} edit lock"></i>
@@ -54,9 +60,12 @@
 		</td>
 		<td  id="{$field.id}_container" class="container value  " _required="{$required}" field_type='{$field_type}' server_validation='{$server_validation}' object='{$state._object->get_object_name()}' key='{$state.key}' parent='{$state.parent}' parent_key='{$state.parent_key}'> 
 		
-		
-		<span id="{$field.id}_formatted_value"   class="{$field.id} {$edit}  formatted_value " ondblclick="open_edit_this_field(this)">{if isset($field.formatted_value)}{$field.formatted_value}{else}{$field.value}{/if}</span>
-		
+		{if $edit=='editor'}
+				<div id="{$field.id}_formatted_value"   class="{$field.id} {$edit} fr-view  formatted_value " ondblclick="open_edit_this_field(this)">{if isset($field.formatted_value)}{$field.formatted_value}{else}{$field.value}{/if}</div>
+
+		{else}
+		<span id="{$field.id}_formatted_value"   class="{$field.id} {$edit} formatted_value " ondblclick="open_edit_this_field(this)">{if isset($field.formatted_value)}{$field.formatted_value}{else}{$field.value}{/if}</span>
+		{/if}
        <input id="{$field.id}_value" type='hidden' class="unformatted_value" value="{$field.value}" />
     
         
@@ -117,6 +126,11 @@
 
 		</script>
 		{/if}
+		
+		{elseif $edit=='editor'  } 
+<div id="editor_container_{$field.id}" class="hide">
+       		{include file="editor.tpl" editor_data=$field.editor_data } 
+</div>
 		
 		{elseif $edit=='country_select'  } 
 

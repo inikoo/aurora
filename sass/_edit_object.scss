@@ -40,12 +40,20 @@ tr.invalid {
         }
     }
 }
+
+
 .edit_object {
     margin-bottom: 100px;
     padding: 10px 20px;
+    
     input {
         width: 300px;
     }
+    
+    .formatted_value{
+  
+    }
+    
     //For displaying correctly the msg to the right of the formated value 
     .formatted_value, .address_edit_fields_container {
         margin-right: 15px;
@@ -176,8 +184,18 @@ tr.invalid {
         tr {
             border-bottom: 1px solid #ddd;
             height: $height_row;
-            line-height: $height_row;
+           td { line-height: $height_row;}
         }
+        
+        tr.editor{
+          td.container{
+            line-height: normal;;padding:0px;
+            
+            p{;margin-top:0px;padding-top:0px}
+            
+            }
+        }
+        
         tr.small_row {
             height: $height_short_row;
             line-height: $height_short_row;
@@ -280,5 +298,6 @@ tr.invalid {
 .table_new_fields{
 display: flex;border-bottom:1px solid #eee;
 }
+
 
 
