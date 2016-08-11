@@ -1829,6 +1829,10 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 					$key='';
 					$section='categories';
 
+				}elseif ($view_path[0]=='settings') {
+
+					$section='settings';
+
 				}
 				elseif ($view_path[0]=='orders') {
 

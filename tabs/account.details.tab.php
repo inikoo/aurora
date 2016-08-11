@@ -9,63 +9,26 @@
 
 */
 
-global $account;
+
+include_once 'utils/country_functions.php';
+include_once 'utils/invalid_messages.php';
+include_once 'conf/object_fields.php';
 
 
-$object_fields=array(
-	array(
-		'label'=>_('Id'),
-		'show_title'=>true,
-		'fields'=>array(
-			
-			
-			
-			array(
-			
-				
-				'id'=>'Account_Name',
-				'edit'=>'string',
-				'value'=>htmlspecialchars($account->get('Account Name')),
-				'formatted_value'=>$account->get('Name'),
-				'label'=>ucfirst($account->get_field_label('Account Name')),
-				'required'=>false
-				
-				
-			),
 
-		)
-	),
-	array(
-		'label'=>_('Localization'),
-		'show_title'=>true,
-		'fields'=>array(
-			array(
-				'id'=>'Account_Country',
-				'value'=>$account->get('Account Country Code') ,
-				'label'=>_('Country')
-			),
-			array(
-				'id'=>'Account_Currency',
-				'value'=>$account->get('Account Currency') ,
-				'label'=>_('Currency')
-			),
-			array(
-				'id'=>'Account_Timezone',
-				'value'=>$account->get('Account Timezone') ,
-				'label'=>_('Timezone')
-			)
+$account=$state['_object'];
 
-		)
-	),
-	
-	
-	
-);
+$object_fields=get_object_fields($account, $db, $user, $smarty ,array('type'=>'account','show_full_label'=>false));
 
-$smarty->assign('state', $state);
+
+$smarty->assign('object', $state['_object']);
+$smarty->assign('key', $state['key']);
+
 $smarty->assign('object_fields', $object_fields);
+$smarty->assign('state', $state);
 
 
 $html=$smarty->fetch('edit_object.tpl');
+
 
 ?>
