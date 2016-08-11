@@ -54,6 +54,11 @@ function open_edit_field(object, key, field) {
         $('#' + field).focus()
         $('#' + field + '_save_button').removeClass('hide')
         break;
+    case 'editor':    
+        
+                $('#editor_container_' + field).removeClass('hide')
+
+        break;
     case 'html_editor':
         $('#' + field).removeClass('hide')
         $('#' + field).focus()
@@ -254,7 +259,11 @@ function close_edit_field(field) {
 
         //$('#' + field + '_editor').removeClass('changed')
         break;
+  case 'editor':    
+        
+                $('#editor_container_' + field).addClass('hide')
 
+        break;
     case 'html_editor':
         $('#' + field).addClass('hide')
 

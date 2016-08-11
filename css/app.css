@@ -1753,8 +1753,15 @@ tr.invalid input {
       vertical-align: text-top; }
     .edit_object table tr {
       border-bottom: 1px solid #ddd;
-      height: 32px;
-      line-height: 32px; }
+      height: 32px; }
+      .edit_object table tr td {
+        line-height: 32px; }
+    .edit_object table tr.editor td.container {
+      line-height: normal;
+      padding: 0px; }
+      .edit_object table tr.editor td.container p {
+        margin-top: 0px;
+        padding-top: 0px; }
     .edit_object table tr.small_row {
       height: 22px;
       line-height: 22px; }

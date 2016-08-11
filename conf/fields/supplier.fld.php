@@ -356,8 +356,29 @@ if ($object->get('Supplier Type')!='Archived') {
 			),
 			array(
 				'id'=>'Supplier_Default_PO_Terms_and_Conditions',
-				'edit'=>($edit?'textarea':''),
+				'edit'=>($edit?'editor':''),
+				'class'=>'editor',
+				'editor_data'=>array(
+					'id'=>'Supplier_Default_PO_Terms_and_Conditions',
+					'content'=>$object->get('Supplier Default PO Terms and Conditions'),
 
+					'data'=>base64_encode(json_encode(array(
+								'mode'=>'edit_object',
+								'field'=>'Supplier_Default_PO_Terms_and_Conditions',
+								'plugins'=>array('align', 'draggable', 'image', 'link', 'save', 'entities', 'emoticons', 'fullscreen', 'lineBreaker', 'table', 'codeView', 'codeBeautifier'),
+								'metadata'=>array(
+									'tipo'=>'edit_field',
+									'object'=>'Supplier',
+									'key'=>$object->id,
+									'field'=>'Supplier Default PO Terms and Conditions',
+
+
+
+								)
+							)
+						))
+
+				),
 				'value'=>$object->get('Supplier Default PO Terms and Conditions'),
 				'formatted_value'=>$object->get('Default PO Terms and Conditions'),
 				'label'=>ucfirst($object->get_field_label('Supplier Default PO Terms and Conditions')),
@@ -381,7 +402,7 @@ if ($object->get('Supplier Type')!='Archived') {
 
 
 	if (!$new) {
-	
+
 		if ($object->get('Supplier User Key')) {
 
 
@@ -490,41 +511,41 @@ if ($object->get('Supplier Type')!='Archived') {
 		);
 
 		$object_fields[]=$operations;
-	
+
 	}
 
 
-}else{
+}else {
 
-		$operations=array(
-			'label'=>_('Operations'),
-			'show_title'=>true,
-			'class'=>'edit_fields',
-			'fields'=>array(
-				array(
+	$operations=array(
+		'label'=>_('Operations'),
+		'show_title'=>true,
+		'class'=>'edit_fields',
+		'fields'=>array(
+			array(
 
-					'id'=>'unarchive_supplier',
-					'class'=>'operation',
-					'value'=>'',
-					'label'=>'<i class="fa fa-fw fa-lock button invisible" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="unarchive_object(this)" class="delete_object ">'._("Unarchive supplier").' <i class="fa fa-folder-open new_button button"></i></span>',
-					'reference'=>'',
-					'type'=>'operation'
-				),
-				array(
+				'id'=>'unarchive_supplier',
+				'class'=>'operation',
+				'value'=>'',
+				'label'=>'<i class="fa fa-fw fa-lock button invisible" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="unarchive_object(this)" class="delete_object ">'._("Unarchive supplier").' <i class="fa fa-folder-open new_button button"></i></span>',
+				'reference'=>'',
+				'type'=>'operation'
+			),
+			array(
 
-					'id'=>'delete_supplier',
-					'class'=>'operation',
-					'value'=>'',
-					'label'=>'<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete supplier & supplier's parts").' <i class="fa fa-trash new_button "></i></span>',
-					'reference'=>'',
-					'type'=>'operation'
-				),
+				'id'=>'delete_supplier',
+				'class'=>'operation',
+				'value'=>'',
+				'label'=>'<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete supplier & supplier's parts").' <i class="fa fa-trash new_button "></i></span>',
+				'reference'=>'',
+				'type'=>'operation'
+			),
 
-			)
+		)
 
-		);
+	);
 
-		$object_fields[]=$operations;
+	$object_fields[]=$operations;
 
 }
 

@@ -957,12 +957,15 @@ $modules=array(
 			),
 
 
+
 			'categories'=>array('type'=>'navigation', 'label'=>_('Categories'), 'title'=>_('Categories'), 'icon'=>'sitemap', 'reference'=>'suppliers/categories',
 				'tabs'=>array(
 					'suppliers.categories'=>array()
 				)
 
 			),
+
+
 
 			'main_category.new'=>array('type'=>'new_object',
 				'tabs'=>array(
@@ -993,7 +996,7 @@ $modules=array(
 					'supplier.order.items'=>array('label'=>_('Items'), 'icon'=>'bars'),
 					// 'supplier.order.supplier_parts'=>array('label'=>_('Parts'), 'icon'=>'stop'),
 					// 'supplier.order.invoices'=>array('label'=>_('Invoices'),  'icon'=>'file-text-o'),
-					'supplier.order.tac'=>array('label'=>_('Terms and conditions'), 'icon'=>'gavel', 'class'=>''),
+					'supplier.order.tac.editor'=>array('label'=>_('Terms and conditions'), 'icon'=>'gavel', 'class'=>''),
 					'supplier.order.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
 
 				)
@@ -1254,7 +1257,16 @@ $modules=array(
 
 			),
 
+            'settings'=>array(
+				'type'=>'navigation', 'label'=>'', 'icon'=>'sliders', 'reference'=>'suppliers/settings', 'class'=>'icon_only',
+				'tabs'=>array(
+					'suppliers.settings'=>array('label'=>_('Setting'), 'icon'=>'sliders', 'class'=>''),
 
+
+				)
+
+
+			),
 		)
 	),
 	'warehouses_server'=>array(
