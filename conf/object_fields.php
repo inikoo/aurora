@@ -20,6 +20,16 @@ function get_object_fields($object, $db, $user, $smarty, $options=false) {
 
 
 	switch ($object->get_object_name()) {
+	
+		case 'Account':
+
+		if ($options['type']=='suppliers') {
+			include 'fields/suppliers.settings.fld.php';
+		}else {
+			include 'fields/account.fld.php';
+		}
+		return $object_fields;
+		break;
 	case 'Material':
 		include 'fields/material.fld.php';
 		return $object_fields;

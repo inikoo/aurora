@@ -2186,5 +2186,42 @@ function get_deleted_purchase_order_navigation($data, $smarty, $user, $db, $acco
 
 }
 
+function get_settings_navigation($data, $smarty, $user, $db, $account) {
+
+
+
+	$left_buttons=array();
+	$right_buttons=array();
+
+
+
+
+	$_section='settings';
+	$sections=get_sections('suppliers', '');
+	$search_placeholder=_('Search suppliers');
+
+	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
+
+	$title= _('Suppliers settings');
+
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>$search_placeholder)
+
+	);
+	$smarty->assign('_content', $_content);
+
+
+	$html=$smarty->fetch('navigation.tpl');
+
+	return $html;
+
+}
+
 
 ?>
