@@ -51,9 +51,11 @@ $editor=array(
 
 $account=new Account();
 
-update_materials_stats();
-migrate_part_fields();
-
+//create_part_data_dimension();
+//setup_part_families();
+//update_materials_stats();
+//migrate_part_fields();
+create_families($db, $account);
 
 function create_part_data_dimension() {
 	global $db;
@@ -76,7 +78,8 @@ function create_part_data_dimension() {
 
 
 function setup_part_families() {
-	global $db;
+	global $db, $account;
+
 	$sql=sprintf("select `Category Key`,`Subject Key` from `Category Bridge` where `Category Head Key`=`Category Key` and `Subject`='Part' ");
 	if ($result=$db->query($sql)) {
 		foreach ($result as $row) {
@@ -101,6 +104,16 @@ function setup_part_families() {
 	}else {
 		print_r($error_info=$this->db->errorInfo());
 		exit;
+	}
+
+
+	$sql=sprintf("select `Category Key`,`Subject Key` from `Category Bridge` where  `Subject`='Part' ");
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+			$category=new Category($row['Category Key']);
+			$category->update_number_of_subjects();
+
+		}
 	}
 
 }
@@ -289,7 +302,7 @@ function setup_product_part_bridge() {
 
 function update_materials_stats() {
 
-global $db;
+	global $db;
 
 	$sql=sprintf('select * from `Material Dimension`  ');
 
@@ -371,7 +384,7 @@ function migrate_part_fields() {
 
 			if ($num_uk_prod==0) {
 				$part->update(array(
-					//	'Part Units'=>1,
+						// 'Part Units'=>1,
 						'Part Units Per Package'=>1,
 						'Part Unit RRP'=>''
 
@@ -381,7 +394,7 @@ function migrate_part_fields() {
 				//print_r($prod_uk);
 
 				$part->update(array(
-					//	'Part Units'=>$prod_uk->get('Product Units Per Case'),
+						// 'Part Units'=>$prod_uk->get('Product Units Per Case'),
 						'Part Units Per Package'=>$prod_uk->get('Product Units Per Case'),
 						'Part Unit Description'=>$prod_uk->get('Product Name'),
 						'Part Unit Price'=>$prod_uk->get('Product Price')/$prod_uk->get('Product Units Per Case'),
@@ -393,7 +406,7 @@ function migrate_part_fields() {
 				if ($part->data['Part Status']=='In Use') {
 
 					$part->update(array(
-						//	'Part Units'=>$min_units,
+							// 'Part Units'=>$min_units,
 							'Part Units Per Package'=>$min_units,
 							'Part Unit Price'=>$price,
 							'Part Unit RRP'=>$rrp
@@ -489,8 +502,6 @@ function get_xhtml_dimensions($part, $tag) {
 }
 
 
-
-
 function get_part_list($db, $product_id) {
 	$part_list=array();
 
@@ -571,6 +582,75 @@ function get_materials($sku) {
 	$xhtml_materials=preg_replace('/^\, /', '', $xhtml_materials);
 	return $materials;
 	return array($materials, $xhtml_materials);
+
+}
+
+
+function create_families($db, $account) {
+
+	$sql=sprintf("select `Part SKU` from `Part Dimension` ");
+
+	$main_cat=new Category($account->get('Account Part Family Category Key'));
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+
+			$part=new Part($row['Part SKU']);
+			if (preg_match('/^([a-z0-9]+)\-/i', $part->get('Reference'), $match)) {
+				$fam_code=$match[1];
+				$sql=sprintf("select `Product Family Code`,`Product Family Name` from `Product Family Dimension` where `Product Family Code`=%s and `Product Family Store Key`=%d ",
+					prepare_mysql($fam_code),
+					1);
+
+
+				if ($result2=$db->query($sql)) {
+					if ($row2 = $result2->fetch()) {
+
+
+						$data=array(
+							'Category Parent Key'=>$main_cat->id,
+							'Category Code'=>$row2['Product Family Code'],
+							'Category Label'=>$row2['Product Family Name'],
+							'Category Show Subject User Interface'=>'No',
+							'Category Show Public New Subject'=>'No'
+						);
+
+
+						$cat=$main_cat->create_category($data);
+						$cat->skip_update_sales=true;
+
+
+						$cat->associate_subject($part->sku);
+
+						$part->update(
+							array('Part Family Category Key'=>$cat->id), 'no_history'
+						);
+
+
+
+
+					}
+				}else {
+					print_r($error_info=$db->errorInfo());
+					exit;
+				}
+
+
+
+
+
+
+			}
+
+
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
 
 }
 

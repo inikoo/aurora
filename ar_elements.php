@@ -159,7 +159,17 @@ case 'location.stock.transactions':
 		));
 	get_stock_transactions_elements($db, $data['parameters'], $user);
 	break;
+case 'category_root.all_parts':
+
+	$data=prepare_values($_REQUEST, array(
+			'parameters'=>array('type'=>'json array')
+		));
+	get_category_root_all_parts_elements($db, $data['parameters'], $user);
+	break;
+
 default:
+
+
 	$response=array('state'=>405, 'resp'=>'Tab not found '.$tab);
 	echo json_encode($response);
 	exit;
@@ -1362,7 +1372,50 @@ function get_supplier_deliveries_element_numbers($db, $data) {
 }
 
 
+function get_category_root_all_parts_elements($db, $data) {
 
+
+	
+
+	$elements_numbers=array(
+		'status'=>array('Assigned'=>0, 'NoAssigned'=>0),
+	);
+
+	$sql=sprintf("select count(*) as number from `Category Bridge` where `Subject`='Part' and `Category Key`=%d ",
+		$data['parent_key']
+
+	);
+
+    $assigned=0;
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+		 $assigned=$row['number'];
+			$elements_numbers['status']['Assigned']=number($row['number']);
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+	
+		$sql=sprintf("select count(*) as number from `Part Dimension`");
+
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+			$elements_numbers['status']['NoAssigned']=number($row['number']-$assigned);
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+	$response= array('state'=>200, 'elements_numbers'=>$elements_numbers);
+	echo json_encode($response);
+
+
+
+}
 
 
 ?>

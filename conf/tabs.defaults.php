@@ -1028,6 +1028,18 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'reference'
 	),
+	'category.part_categories'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code',
+		'f_period'=>'ytd',
+//		'elements_type'=>each(  $elements_options['parts']  ) ['key'],
+//		'elements'=>$elements_options['parts'],
+	),
+
 	'parts.categories'=>array(
 		'view'=>'overview',
 		'sort_key'=>'code',
@@ -1101,6 +1113,19 @@ $tab_defaults=array(
 		'elements'=>$elements_options['parts'],
 
 	),
+	'category_root.all_parts'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'reference',
+		'f_period'=>'ytd',
+		'elements_type'=>each(  $elements_options['category_root_subjects']  ) ['key'],
+		'elements'=>$elements_options['category_root_subjects'],
+
+	),
+	
 	'inventory.barcodes'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',

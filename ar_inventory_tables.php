@@ -43,7 +43,7 @@ case 'stock_history':
 	break;
 case 'inventory_stock_history':
 	inventory_stock_history(get_table_parameters(), $db, $user, $account);
-	break;	
+	break;
 case 'discontinued_parts':
 	parts(get_table_parameters(), $db, $user, 'discontinued', $account);
 	break;
@@ -53,17 +53,21 @@ case 'barcodes':
 case 'supplier_parts':
 	supplier_parts(get_table_parameters(), $db, $user);
 	break;
-
+case 'part_categories':
+	part_categories(get_table_parameters(), $db, $user, $account);
+	break;
 case 'categories':
 	categories(get_table_parameters(), $db, $user);
 	break;
 case 'product_families':
 	product_families(get_table_parameters(), $db, $user);
 	break;
-case 'category_all_parts':
-	category_all_parts(get_table_parameters(), $db, $user);
+case 'category_all_availeable_parts':
+	category_all_availeable_parts(get_table_parameters(), $db, $user);
 	break;
-
+case 'category_all_parts':
+category_all_parts(get_table_parameters(), $db, $user);
+	break;
 
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
@@ -95,35 +99,50 @@ function parts($_data, $db, $user, $type, $account) {
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
-
 	if ($result=$db->query($sql)) {
 		foreach ($result as $data) {
-
 
 
 			switch ($data['Part Stock Status']) {
 			case 'Surplus':
 				$stock_status='<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
+				$stock_status_label=_('Surplus');
 				break;
 			case 'Optimal':
 				$stock_status='<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
+				$stock_status_label=_('Ok');
 				break;
 			case 'Low':
 				$stock_status='<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
+				$stock_status_label=_('Low');
 				break;
 			case 'Critical':
 				$stock_status='<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
+				$stock_status_label=_('Critical');
 				break;
 			case 'Out_Of_Stock':
 				$stock_status='<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
+				$stock_status_label=_('Out of stock');
 				break;
 			case 'Error':
 				$stock_status='<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+				$stock_status_label=_('Error');
 				break;
 			default:
 				$stock_status=$data['Part Stock Status'];
+				$stock_status_label=$data['Part Stock Status'];
 				break;
 			}
+
+
+			if ($data['Part Current Stock']<=0) {
+				$weeks_available='-';
+			}else {
+				$weeks_available=number($data['Part Days Available Forecast']/7, 0);
+			}
+
+			$dispatched_per_week=number($data['Part 1 Quarter Acc Provided']*4/52, 0);
+
 
 
 			$adata[]=array(
@@ -131,15 +150,30 @@ function parts($_data, $db, $user, $type, $account) {
 				'reference'=>$data['Part Reference'],
 				'unit_description'=>$data['Part Unit Description'],
 				'stock_status'=>$stock_status,
+				'stock_status_label'=>$stock_status_label,
 				'stock'=>'<span class="'.($data['Part Current Stock']<0?'error':'').'">'.number(floor($data['Part Current Stock'])).'</span>',
-				'sold'=>number($data['sold']),
-				'sold_1y'=>delta($data['sold'], $data['sold_1y']),
-				'revenue'=>money($data['revenue'], $account->get('Currency')),
+				'dispatched'=>number($data['dispatched'], 0),
+				'dispatched_1y'=>delta($data['dispatched'], $data['dispatched_1y']),
+				//'sold'=>number($data['sold']),
+				//'sold_1y'=>delta($data['sold'], $data['sold_1y']),
+				'revenue'=>money($data['revenue'], $account->get('Account Currency')),
 				'revenue_1y'=>delta($data['revenue'], $data['revenue_1y']),
 
 				'lost'=>number($data['lost']),
 				'bought'=>number($data['bought']),
+				'dispatched_year0'=>sprintf('<span title="%s">%s</span>', delta($data["Part Year To Day Acc Provided"], $data["Part Year To Day Acc 1YB Provided"]), number($data['Part Year To Day Acc Provided'], 0)),
+				'dispatched_year1'=>sprintf('<span title="%s">%s</span>', delta($data["Part 1 Year Ago Provided"], $data["Part 2 Year Ago Provided"]), number($data['Part 1 Year Ago Provided'], 0)),
+				'dispatched_year2'=>sprintf('<span title="%s">%s</span>', delta($data["Part 2 Year Ago Provided"], $data["Part 3 Year Ago Provided"]), number($data['Part 2 Year Ago Provided'], 0)),
+				'dispatched_year3'=>sprintf('<span title="%s">%s</span>', delta($data["Part 3 Year Ago Provided"], $data["Part 4 Year Ago Provided"]), number($data['Part 3 Year Ago Provided'], 0)),
+				'dispatched_year4'=>number($data['Part 4 Year Ago Provided']),
 
+				'revenue_year0'=>sprintf('<span title="%s">%s</span>', delta($data["Part Year To Day Acc Sold Amount"], $data["Part Year To Day Acc 1YB Sold Amount"]), money($data['Part Year To Day Acc Sold Amount'], $account->get('Account Currency'))),
+				'revenue_year1'=>sprintf('<span title="%s">%s</span>', delta($data["Part 1 Year Ago Sold Amount"], $data["Part 2 Year Ago Sold Amount"]), money($data['Part 1 Year Ago Sold Amount'], $account->get('Account Currency'))),
+				'revenue_year2'=>sprintf('<span title="%s">%s</span>', delta($data["Part 2 Year Ago Sold Amount"], $data["Part 3 Year Ago Sold Amount"]), money($data['Part 2 Year Ago Sold Amount'], $account->get('Account Currency'))),
+				'revenue_year3'=>sprintf('<span title="%s">%s</span>', delta($data["Part 3 Year Ago Sold Amount"], $data["Part 4 Year Ago Sold Amount"]), money($data['Part 3 Year Ago Sold Amount'], $account->get('Account Currency'))),
+				'revenue_year4'=>money($data['Part 4 Year Ago Sold Amount'], $account->get('Account Currency')),
+				'weeks_available'=>$weeks_available,
+				'dispatched_per_week'=>$dispatched_per_week
 			);
 
 
@@ -232,6 +266,7 @@ function stock_history($_data, $db, $user, $account) {
 	);
 	echo json_encode($response);
 }
+
 
 function inventory_stock_history($_data, $db, $user, $account) {
 
@@ -631,6 +666,94 @@ function barcodes($_data, $db, $user) {
 }
 
 
+function part_categories($_data, $db, $user, $account) {
+
+
+	if ($_data['parameters']['parent_key']==$account->get('Account Part Family Category Key')) {
+		$rtext_label='family';
+	}else {
+		$rtext_label='category';
+	}
+	
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
+
+			switch ($data['Category Branch Type']) {
+			case 'Root':
+				$level=_('Root');
+				break;
+			case 'Head':
+				$level=_('Head');
+				break;
+			case 'Node':
+				$level=_('Node');
+				break;
+			default:
+				$level=$data['Category Branch Type'];
+				break;
+			}
+			$level=$data['Category Branch Type'];
+
+
+			$adata[]=array(
+				'id'=>(integer) $data['Category Key'],
+				'store_key'=>(integer) $data['Category Store Key'],
+				'code'=>$data['Category Code'],
+				'label'=>$data['Category Label'],
+				'subjects'=>number($data['Category Number Subjects']),
+				'subjects_active'=>number($data['Category Number Active Subjects']),
+				'subjects_no_active'=>number($data['Category Number No Active Subjects']),
+				'level'=>$level,
+				'subcategories'=>number($data['Category Children']),
+				'percentage_assigned'=>percentage($data['Category Number Subjects'], ($data['Category Number Subjects']+$data['Category Subjects Not Assigned'])),
+				'revenue'=>money($data['revenue'], $account->get('Account Currency')),
+				'revenue_1y'=>delta($data['revenue'], $data['revenue_1y']),
+
+				'revenue_year0'=>sprintf('<span title="%s">%s</span>', delta($data["Part Category Year To Day Acc Sold Amount"], $data["Part Category Year To Day Acc 1YB Sold Amount"]), money($data['Part Category Year To Day Acc Sold Amount'], $account->get('Account Currency'))),
+				'revenue_year1'=>sprintf('<span title="%s">%s</span>', delta($data["Part Category 1 Year Ago Sold Amount"], $data["Part Category 2 Year Ago Sold Amount"]), money($data['Part Category 1 Year Ago Sold Amount'], $account->get('Account Currency'))),
+				'revenue_year2'=>sprintf('<span title="%s">%s</span>', delta($data["Part Category 2 Year Ago Sold Amount"], $data["Part Category 3 Year Ago Sold Amount"]), money($data['Part Category 2 Year Ago Sold Amount'], $account->get('Account Currency'))),
+				'revenue_year3'=>sprintf('<span title="%s">%s</span>', delta($data["Part Category 3 Year Ago Sold Amount"], $data["Part Category 4 Year Ago Sold Amount"]), money($data['Part Category 3 Year Ago Sold Amount'], $account->get('Account Currency'))),
+				'revenue_year4'=>money($data['Part Category 4 Year Ago Sold Amount'], $account->get('Account Currency')),
+
+				'surplus'=>sprintf('<span class="%s" title="%s">%s</span>', (ratio($data['Part Category Number Surplus Parts'], $data['Category Number Active Subjects'])>.75?'error':(ratio($data['Part Category Number Surplus Parts'], $data['Category Number Active Subjects'])>.5?'warning':'')), percentage($data['Part Category Number Surplus Parts'], $data['Category Number Active Subjects']), number($data['Part Category Number Surplus Parts'])),
+				'optimal'=>sprintf('<span  title="%s">%s</span>', percentage($data['Part Category Number Optimal Parts'], $data['Category Number Active Subjects']), number($data['Part Category Number Optimal Parts'])),
+				'low'=>sprintf('<span class="%s" title="%s">%s</span>', (ratio($data['Part Category Number Low Parts'], $data['Category Number Active Subjects'])>.5?'error':(ratio($data['Part Category Number Low Parts'], $data['Category Number Active Subjects'])>.25?'warning':'')), percentage($data['Part Category Number Low Parts'], $data['Category Number Active Subjects']), number($data['Part Category Number Low Parts'])),
+				'critical'=>sprintf('<span class="%s" title="%s">%s</span>', ($data['Part Category Number Critical Parts']==0?'': (ratio($data['Part Category Number Critical Parts'], $data['Category Number Active Subjects'])>.25?'error':'warning')), percentage($data['Part Category Number Critical Parts'], $data['Category Number Active Subjects']), number($data['Part Category Number Critical Parts'])),
+				'out_of_stock'=>sprintf('<span class="%s" title="%s">%s</span>', ($data['Part Category Number Out Of Stock Parts']==0?'':(ratio($data['Part Category Number Out Of Stock Parts'], $data['Category Number Active Subjects'])>.10?'error':'warning')), percentage($data['Part Category Number Out Of Stock Parts'], $data['Category Number Active Subjects']), number($data['Part Category Number Out Of Stock Parts'])),
+				'stock_error'=>sprintf('<span class="%s" title="%s">%s</span>', ($data['Part Category Number Error Parts']==0?'':(ratio($data['Part Category Number Error Parts'], $data['Category Number Active Subjects'])>.10?'error':'warning')), percentage($data['Part Category Number Error Parts'], $data['Category Number Active Subjects']), number($data['Part Category Number Error Parts'])),
+
+
+			);
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
 function categories($_data, $db, $user) {
 
 	$rtext_label='category';
@@ -665,6 +788,8 @@ function categories($_data, $db, $user) {
 				'code'=>$data['Category Code'],
 				'label'=>$data['Category Label'],
 				'subjects'=>number($data['Category Number Subjects']),
+				'subjects_active'=>number($data['Category Number Active Subjects']),
+				'subjects_no_active'=>number($data['Category Number No Active Subjects']),
 				'level'=>$level,
 				'subcategories'=>number($data['Category Children']),
 				'percentage_assigned'=>percentage($data['Category Number Subjects'], ($data['Category Number Subjects']+$data['Category Subjects Not Assigned']))
@@ -694,7 +819,7 @@ function categories($_data, $db, $user) {
 }
 
 
-function category_all_parts($_data, $db, $user) {
+function category_all_availeable_parts($_data, $db, $user) {
 
 
 	$rtext_label='part';
@@ -721,6 +846,63 @@ function category_all_parts($_data, $db, $user) {
 				'reference'=>$data['Part Reference'],
 				'unit_description'=>$data['Part Unit Description'],
 				'family'=>$data['Category Code']
+			);
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+function category_all_parts($_data, $db, $user) {
+
+
+	$rtext_label='part';
+
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	$adata=array();
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
+
+        	switch ($data['Part Status']) {
+			case 'In Use':
+				$status=sprintf('<span class="" >%s</span>', _('Active'));
+				break;
+			case 'Not in Use':
+				$status=sprintf('<span class="warning" ></span>', _('Discontined'));
+
+				break;
+		
+			default:
+				$status=$data['Part Status'];
+				break;
+			}			
+
+			$adata[]=array(
+				'id'=>(integer) $data['Part SKU'],
+				'reference'=>$data['Part Reference'],
+				'unit_description'=>$data['Part Unit Description'],
+				'family'=>($data['Category Code']==''?'<span class="very_discreet italic">'._('Not associated').'</span>':'<span class="link" onClick="change_view(\'category/'.$data['Category Key'].'\')">'.$data['Category Code'].'</span>'),
+				'status'=>$status
 			);
 		}
 

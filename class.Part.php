@@ -2610,6 +2610,7 @@ class Part extends Asset{
 		$this->data["Part $db_interval Acc Profit"]=0;
 		$this->data["Part $db_interval Acc Profit After Storing"]=0;
 		$this->data["Part $db_interval Acc Sold"]=0;
+		$this->data["Part $db_interval Acc Dispatched"]=0;
 		$this->data["Part $db_interval Acc Margin"]=0;
 
 
@@ -2968,6 +2969,92 @@ class Part extends Asset{
 	}
 
 
+
+	function update_previous_years_data() {
+
+		$data_1y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-1 year')), date('Y-01-01 00:00:00'));
+		$data_2y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-2 year')), date('Y-01-01 00:00:00', strtotime('-1 year')));
+		$data_3y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-3 year')), date('Y-01-01 00:00:00', strtotime('-2 year')));
+		$data_4y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-4 year')), date('Y-01-01 00:00:00', strtotime('-3 year')));
+
+
+		$sql=sprintf("update `Part Data` set
+`Part 1 Year Ago Provided`=%f, `Part 2 Year Ago Provided`=%f,`Part 3 Year Ago Provided`=%f, `Part 4 Year Ago Provided`=%f ,
+`Part 1 Year Ago Sold Amount`=%.2f, `Part 2 Year Ago Sold Amount`=%.2f,`Part 3 Year Ago Sold Amount`=%.2f, `Part 4 Year Ago Sold Amount`=%.2f
+
+where `Part SKU`=%d ",
+			$data_1y_ago['dispatched'],
+			$data_2y_ago['dispatched'],
+			$data_3y_ago['dispatched'],
+			$data_4y_ago['dispatched'],
+			$data_1y_ago['sold_amount'],
+			$data_2y_ago['sold_amount'],
+			$data_3y_ago['sold_amount'],
+			$data_4y_ago['sold_amount'],
+
+			$this->id
+
+		);
+
+		$this->db->exec($sql);
+		$this->load_acc_data();
+
+
+
+
+	}
+
+
+	function get_sales_data($from_date, $to_date) {
+
+		$sales_data=array(
+			'sold_amount'=>0,
+			'sold'=>0,
+			'dispatched'=>0,
+			'required'=>0,
+			'no_dispatched'=>0,
+
+		);
+
+
+		$sql=sprintf("select
+		            count(*) as num_items,
+		             sum(`Amount In`) as sold_amount,
+                     sum(`Inventory Transaction Quantity`) as dispatched,
+                     sum(`Required`) as required,
+                     sum(`Given`) as given,
+                     sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,
+                     sum(-`Given`-`Inventory Transaction Quantity`) as sold
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type` like 'Sale' and `Part SKU`=%d %s %s" ,
+			$this->id,
+			($from_date?sprintf('and  `Date`>=%s', prepare_mysql($from_date)):''),
+
+			($to_date?sprintf('and `Date`<%s', prepare_mysql($to_date)):'')
+
+		);
+
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+
+				if ($row['num_items']>0) {
+
+					$sales_data['sold_amount']=$row['sold_amount'];
+					$sales_data['sold']=$row['sold'];
+					$sales_data['dispatched']=-1.0*$row['dispatched'];
+					$sales_data['required']=$row['required'];
+					$sales_data['no_dispatched']=$row['no_dispatched'];
+				}
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+
+		return $sales_data;
+	}
 
 
 
@@ -3960,7 +4047,7 @@ class Part extends Asset{
 			break;
 		case 'Part Unit RRP':
 			$label=_('init recommended RRP');
-			break;	
+			break;
 
 		case 'Part Package Weight':
 			$label=_('SKO weight');

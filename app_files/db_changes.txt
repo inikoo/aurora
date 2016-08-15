@@ -357,18 +357,6 @@ ALTER TABLE `Material Dimension` ADD `Material Parts Number` MEDIUMINT UNSIGNED 
 ALTER TABLE `Material Dimension` ADD `Material Type` ENUM('Material','Ingredient') NOT NULL DEFAULT 'Material' AFTER `Material Key`, ADD INDEX (`Material Type`);
 ALTER TABLE `Account Dimension` ADD `Account Suppliers Terms and Conditions` TEXT NULL DEFAULT NULL AFTER `Account Part Family Category Key`;
 
-
-// From HERe  ==================== 15/04/2016, 10:45
-
-Only for bali dw:
-
-migrate_suppliers.oneoff.php
-migrate_images.oneoff.php 
-migrate_supplier_parts.oneoff.php 
-migrate_parts.oneoff.php
-
-
-
 ALTER TABLE `Purchase Order Dimension` CHANGE `Purchase Order Key` `Purchase Order Key` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT;
 ALTER TABLE `Purchase Order Transaction Fact` CHANGE `Purchase Order Transaction Fact Key` `Purchase Order Transaction Fact Key` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT;
 ALTER TABLE `Supplier Delivery Dimension` CHANGE `Supplier Delivery Key` `Supplier Delivery Key` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT;
@@ -403,10 +391,28 @@ ALTER TABLE `Purchase Order History Bridge`
   ADD KEY `Strikethrough` (`Strikethrough`);
 
 
+ALTER TABLE `Part Data` ADD `Part 1 Year Ago Provided` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Part 1 Week Acc 1YD Margin`, ADD `Part 2 Year Ago Provided` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Part 1 Year Ago Provided`, ADD `Part 3 Year Ago Provided` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Part 2 Year Ago Provided`, ADD `Part 4 Year Ago Provided` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Part 3 Year Ago Provided`, ADD `Part 1 Year Ago Sold Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Part 4 Year Ago Provided`, ADD `Part 2 Year Ago Sold Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Part 1 Year Ago Sold Amount`, ADD `Part 3 Year Ago Sold Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Part 2 Year Ago Sold Amount`, ADD `Part 4 Year Ago Sold Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Part 3 Year Ago Sold Amount`;
+ALTER TABLE `Category Dimension` ADD `Category Number Active Subjects` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Category Number Subjects`, ADD `Category Number No Active Subjects` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Category Number Active Subjects`;
+
+ALTER TABLE `Part Category Dimension`  ADD `Part Category 1 Year Ago Sold Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00' , ADD `Part Category 2 Year Ago Sold Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Part Category 1 Year Ago Sold Amount`, ADD `Part Category 3 Year Ago Sold Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Part Category 2 Year Ago Sold Amount`, ADD `Part Category 4 Year Ago Sold Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Part Category 3 Year Ago Sold Amount`;
+ALTER TABLE `Part Category Dimension` ADD `Part Category Number Surplus Parts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Category 1 Week Acc 1YD Margin`, ADD `Part Category Number Optimal Parts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Category Number Surplus Parts`, ADD `Part Category Number Low Parts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Category Number Optimal Parts`, ADD `Part Category Number Critical Parts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Category Number Low Parts`, ADD `Part Category Number Out Of Stock Parts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Category Number Critical Parts`, ADD `Part Category Number Error Parts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Category Number Out Of Stock Parts`;
+
+
+
+// From HERe  ==================== 15/04/2016, 10:45
+
+Only for bali dw:
+
+migrate_suppliers.oneoff.php
+migrate_images.oneoff.php 
+migrate_supplier_parts.oneoff.php 
+migrate_parts.oneoff.php
+
+
+
+
 migrate_products.oneoff.php 
 migrate_history_note_details.php
-
-
 
 
 

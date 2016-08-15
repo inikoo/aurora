@@ -21,7 +21,9 @@ $default=$user->get_tab_defaults($tab);
 
 $table_views=array(
 	'overview'=>array('label'=>_('Overview')),
-	'sales'=>array('label'=>_('Sales')),
+	'dispatched'=>array('label'=>_('Dispatched')),
+	'revenue'=>array('label'=>_('Revenue')),
+	'stock'=>array('label'=>_('Stock')),
 
 );
 

@@ -227,6 +227,8 @@ $elements_options=array(
 		),
 	),
 
+
+
 	'suppliers'=>array(
 		'type'=>array(
 			'label'=>_('Type'),
@@ -448,6 +450,20 @@ $elements_options=array(
 
 		),
 	),
+	
+	'category_root_subjects'=>array(
+		'status'=>array(
+			'label'=>_('Status'),
+			'items'=>array(
+				'Assigned'=>array('label'=>_('Assigned'), 'selected'=>true),
+				'NoAssigned'=>array('label'=>_('No Assigned'), 'selected'=>false),
+
+			)
+
+
+
+		),
+	)
 
 );
 

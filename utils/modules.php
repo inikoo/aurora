@@ -1341,6 +1341,7 @@ $modules=array(
 
 					'category.images'=>array('label'=>_('Images'), 'icon'=>'camera-retro', 'class'=>'right icon_only'),
 					'category.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
+					'category.all_subjects'=>array('label'=>_('Parts'), 'icon'=>'square', 'class'=>'right icon_only'),
 
 
 				)
