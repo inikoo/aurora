@@ -22,7 +22,6 @@ function get_part_familes_showcase($data, $smarty) {
 	$smarty->assign('category', $category);
 
 
-
 	return $smarty->fetch('showcase/part_families.tpl');
 
 

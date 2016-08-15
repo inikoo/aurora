@@ -29,12 +29,14 @@ var columns = [
         
         
     })
-}, {
+}, 
+{
     name: "label",
     label:"{t}Label{/t}",
     editable: false,
     cell: "string"
-}, {
+}, 
+{
     name: "level",
     label:"{t}Level{/t}",
     editable: false,

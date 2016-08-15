@@ -67,6 +67,7 @@ abstract class DB_Table {
 
 	public function update($data, $options='', $metadata='') {
 
+
 		if (!is_array($data)) {
 
 			$this->error=true;
@@ -90,7 +91,6 @@ abstract class DB_Table {
 
 			if (is_string($value))
 				$value=_trim($value);
-
 			$this->update_field_switcher($key, $value, $options, $metadata);
 
 
@@ -283,7 +283,6 @@ abstract class DB_Table {
 
 
 		}
-
 		$update_op=$this->db->prepare($sql);
 		$update_op->execute();
 		$affected=$update_op->rowCount();

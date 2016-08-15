@@ -16,6 +16,9 @@ include_once 'trait.ImageSubject.php';
 include_once 'trait.AttachmentSubject.php';
 include_once 'trait.NotesSubject.php';
 
+include_once 'trait.PartCategory.php';
+include_once 'trait.SupplierCategory.php';
+include_once 'trait.InvoiceCategory.php';
 
 
 
@@ -23,6 +26,7 @@ include_once 'trait.NotesSubject.php';
 
 class Category extends DB_Table{
 	use ImageSubject, NotesSubject, AttachmentSubject;
+use PartCategory,SupplierCategory,InvoiceCategory;
 
 
 	function Category($a1, $a2=false, $a3=false) {
@@ -71,6 +75,9 @@ class Category extends DB_Table{
 			$this->id=$this->data['Category Key'];
 
 			if ($this->data['Category Scope']=='Part') {
+			
+			
+			
 				$this->subject_table_name='Part Category';
 				$sql=sprintf("select * from `Part Category Dimension` where `Part Category Key`=%d", $this->id);
 				if ($result2=$this->db->query($sql)) {
@@ -470,7 +477,7 @@ class Category extends DB_Table{
 
 			break;
 		case 'Part':
-            include_once('utils/natural_language.php');
+			include_once 'utils/natural_language.php';
 
 			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Month To|Today|Week To).*(Margin|GMROI)$/', $key)) {
 
@@ -497,7 +504,7 @@ class Category extends DB_Table{
 			break;
 		case 'Invoice':
 
-            include_once('utils/natural_language.php');
+			include_once 'utils/natural_language.php';
 
 
 
@@ -1227,6 +1234,11 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 
 	function update_number_of_subjects() {
 
+		$num=0;
+		$num_active=0;
+		$num_no_active=0;
+
+
 		if ($this->data['Category Subject']=='Category') {
 
 			$sql=sprintf("select sum(`Category Number Subjects`)  as num from `Category Bridge` B left join `Category Dimension` C on (B.`Subject Key`=C.`Category Key`) where B.`Category Key`=%d  ",
@@ -1236,14 +1248,13 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 			if ($result=$this->db->query($sql)) {
 				if ($row = $result->fetch()) {
 					$num=$row['num'];
-				}else {
-					$num=0;
 				}
 			}else {
 				print_r($error_info=$this->db->errorInfo());
 				exit;
 			}
-
+			$num_active=$num;
+			$num_no_active=0;
 
 		}else {
 
@@ -1254,24 +1265,53 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 			if ($result=$this->db->query($sql)) {
 				if ($row = $result->fetch()) {
 					$num=$row['num'];
-				}else {
-					$num=0;
 				}
 			}else {
 				print_r($error_info=$this->db->errorInfo());
 				exit;
 			}
 
+			if ($this->get('Category Scope')=='Part') {
 
+				$sql=sprintf("select count(*) as num, `Part Status` from `Category Bridge` B left join `Part Dimension` P on (B.`Subject Key`=P.`Part SKU`) where B.`Category Key`=%d group by `Part Status` ",
+					$this->id
+				);
+
+				if ($result=$this->db->query($sql)) {
+					foreach ($result as $row) {
+						if ($row['Part Status']=='In Use') {
+							$num_active=$row['num'];
+						}else {
+							$num_no_active=$row['num'];
+						}
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
+				}
+
+
+
+
+
+			}else {
+				$num_active=$num;
+				$num_no_active=0;
+			}
 
 
 		}
-		$sql=sprintf("update `Category Dimension` set `Category Number Subjects`=%d where `Category Key`=%d ",
+
+
+
+
+		$sql=sprintf("update `Category Dimension` set `Category Number Subjects`=%d ,`Category Number Active Subjects`=%d ,`Category Number No Active Subjects`=%d where `Category Key`=%d ",
 			$num,
+			$num_active,
+			$num_no_active,
 			$this->id
 		);
 		$this->db->exec($sql);
-
 		$this->update_no_assigned_subjects();
 
 	}
@@ -1370,39 +1410,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 
 
 
-	function get_number_invoices($from, $to) {
-		$number_invoices=0;
-		if ($this->data['Category Subject']=='Invoice') {
-
-			$where=sprintf(" where `Subject`='Invoice' and  `Category Key`=%d", $this->id);
-			$table=' `Category Bridge` left join  `Invoice Dimension` I on (`Subject Key`=`Invoice Key`) ';
-
-
-			if ($from)$from=$from.' 00:00:00';
-			if ($to)$to=$to.' 23:59:59';
-			$where_interval=prepare_mysql_dates($from, $to, '`Invoice Date`');
-			$where.=$where_interval['mysql'];
-
-
-			$sql="select count(Distinct I.`Invoice Key`) as total from $table   $where  ";
-
-
-			if ($result=$this->db->query($sql)) {
-				if ($row = $result->fetch()) {
-					$number_invoices=$row['total'];
-				}
-			}else {
-				print_r($error_info=$this->db->errorInfo());
-				exit;
-			}
-
-
-
-
-		}
-		return $number_invoices;
-
-	}
 
 
 	function update_subjects_data() {
@@ -1487,674 +1494,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 
 
 
-	function update_supplier_category_up_today_sales() {
-		if (!$this->skip_update_sales) {
-			$this->update_supplier_category_sales('Today');
-			$this->update_supplier_category_sales('Week To Day');
-			$this->update_supplier_category_sales('Month To Day');
-			$this->update_supplier_category_sales('Year To Day');
-		}
-	}
-
-
-	function update_supplier_category_last_period_sales() {
-		if (!$this->skip_update_sales) {
-			$this->update_supplier_category_sales('Yesterday');
-			$this->update_supplier_category_sales('Last Week');
-			$this->update_supplier_category_sales('Last Month');
-		}
-	}
-
-
-	function update_supplier_category_interval_sales() {
-		if (!$this->skip_update_sales) {
-			$this->update_supplier_category_sales('Total');
-			$this->update_supplier_category_sales('3 Year');
-			$this->update_supplier_category_sales('1 Year');
-			$this->update_supplier_category_sales('6 Month');
-			$this->update_supplier_category_sales('1 Quarter');
-			$this->update_supplier_category_sales('1 Month');
-			$this->update_supplier_category_sales('10 Day');
-			$this->update_supplier_category_sales('1 Week');
-		}
-	}
-
-
-	function update_invoice_category_up_today_sales() {
-		if (!$this->skip_update_sales) {
-			$this->update_invoice_category_sales('Today');
-			$this->update_invoice_category_sales('Week To Day');
-			$this->update_invoice_category_sales('Month To Day');
-			$this->update_invoice_category_sales('Year To Day');
-		}
-	}
-
-
-	function update_invoice_category_last_period_sales() {
-		if (!$this->skip_update_sales) {
-			$this->update_invoice_category_sales('Yesterday');
-			$this->update_invoice_category_sales('Last Week');
-			$this->update_invoice_category_sales('Last Month');
-		}
-	}
-
-
-	function update_invoice_category_interval_sales() {
-		if (!$this->skip_update_sales) {
-			$this->update_invoice_category_sales('Total');
-			$this->update_invoice_category_sales('3 Year');
-			$this->update_invoice_category_sales('1 Year');
-			$this->update_invoice_category_sales('6 Month');
-			$this->update_invoice_category_sales('1 Quarter');
-			$this->update_invoice_category_sales('1 Month');
-			$this->update_invoice_category_sales('10 Day');
-			$this->update_invoice_category_sales('1 Week');
-		}
-	}
-
-
-	function update_part_category_up_today_sales() {
-
-		if (!$this->skip_update_sales) {
-			$this->update_part_category_sales('Today');
-			$this->update_part_category_sales('Week To Day');
-			$this->update_part_category_sales('Month To Day');
-			$this->update_part_category_sales('Year To Day');
-		}
-	}
-
-
-	function update_part_category_last_period_sales() {
-		if (!$this->skip_update_sales) {
-			$this->update_part_category_sales('Yesterday');
-			$this->update_part_category_sales('Last Week');
-			$this->update_part_category_sales('Last Month');
-		}
-	}
-
-
-	function update_part_category_interval_sales() {
-		if (!$this->skip_update_sales) {
-			$this->update_part_category_sales('Total');
-			$this->update_part_category_sales('3 Year');
-			$this->update_part_category_sales('1 Year');
-			$this->update_part_category_sales('6 Month');
-			$this->update_part_category_sales('1 Quarter');
-			$this->update_part_category_sales('1 Month');
-			$this->update_part_category_sales('10 Day');
-			$this->update_part_category_sales('1 Week');
-		}
-	}
-
-
-	function update_supplier_category_previous_years_data() {
-
-		$sales_data=$this->get_supplier_category_sales_data('1');
-		$this->data['1 Year Ago Sales Amount']=$sales_data['sold_amount'];
-
-		$sales_data=$this->get_supplier_category_sales_data('2');
-		$this->data['2 Year Ago Sales Amount']=$sales_data['sold_amount'];
-
-		$sales_data=$this->get_supplier_category_sales_data('3');
-		$this->data['3 Year Ago Sales Amount']=$sales_data['sold_amount'];
-
-		$sales_data=$this->get_supplier_category_sales_data('4');
-		$this->data['4 Year Ago Sales Amount']=$sales_data['sold_amount'];
-
-
-		$sql=sprintf("update `Supplier Category Dimension` set `1 Year Ago Sales Amount`=%.2f, `2 Year Ago Sales Amount`=%.2f,`3 Year Ago Sales Amount`=%.2f, `4 Year Ago Sales Amount`=%.2f where `Category Key`=%d ",
-
-			$this->data["1 Year Ago Sales Amount"],
-			$this->data["2 Year Ago Sales Amount"],
-			$this->data["3 Year Ago Sales Amount"],
-			$this->data["4 Year Ago Sales Amount"],
-
-			$this->id
-
-		);
-
-		$this->db->exec($sql);
-
-
-	}
-
-
-	function get_supplier_category_sales_data($year_tag) {
-
-		$sales_data=array(
-			'sold_amount'=>0,
-
-
-		);
-
-
-		$sql=sprintf("select sum(`Supplier %s Year Ago Sales Amount`) as sold_amount   from `Category Bridge` B left join  `Supplier Dimension` I  on ( `Subject Key`=`Supplier Key`)  where `Subject`='Supplier' and `Category Key`=%d " ,
-			$year_tag,
-			$this->id
-
-
-		);
-
-
-		if ($result=$this->db->query($sql)) {
-			if ($row = $result->fetch()) {
-				$sales_data['sold_amount']=$row['sold_amount'];
-			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
-		}
-
-
-
-
-		return $sales_data;
-	}
-
-
-	function update_supplier_category_sales($interval) {
-
-		//  print $interval;
-
-
-
-
-		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($interval);
-
-
-
-
-		$supplier_category_data["$db_interval Acc Cost"]=0;
-		$supplier_category_data["$db_interval Acc Part Sales"]=0;
-		$supplier_category_data["$db_interval Acc Profit"]=0;
-
-
-		$sql=sprintf("select sum(`Supplier $db_interval Acc Parts Cost`) as cost, sum(`Supplier $db_interval Acc Parts Sold Amount`) as sold, sum(`Supplier $db_interval Acc Parts Profit`) as profit   from `Category Bridge` B left join  `Supplier Dimension` I  on ( `Subject Key`=`Supplier Key`)  where `Subject`='Supplier' and `Category Key`=%d " ,
-			$this->id
-
-
-		);
-
-
-		if ($result=$this->db->query($sql)) {
-			if ($row = $result->fetch()) {
-				$supplier_category_data["$db_interval Acc Cost"]=$row["cost"];
-				$supplier_category_data["$db_interval Acc Part Sales"]=$row["sold"];
-				$supplier_category_data["$db_interval Acc Profit"]=$row["profit"];
-			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
-		}
-
-
-
-		$sql=sprintf("update `Supplier Category Dimension` set
-                     `$db_interval Acc Cost`=%.2f,
-                     `$db_interval Acc Part Sales`=%.2f,
-                     `$db_interval Acc Profit`=%.2f
-                     where `Category Key`=%d "
-			, $supplier_category_data["$db_interval Acc Cost"]
-			, $supplier_category_data["$db_interval Acc Part Sales"]
-			, $supplier_category_data["$db_interval Acc Profit"]
-			, $this->id
-		);
-
-		$this->db->exec($sql);
-
-		//     print "$sql\n";
-
-		if ($from_date_1yb) {
-			$supplier_category_data["$db_interval Acc 1YB Cost"]=0;
-			$supplier_category_data["$db_interval Acc 1YB Part Sales"]=0;
-			$supplier_category_data["$db_interval Acc 1YB Profit"]=0;
-
-			$sql=sprintf("select sum(`Supplier $db_interval Acc 1YB Parts Cost`) as cost, sum(`Supplier $db_interval Acc 1YB Parts Sold Amount`) as sold, sum(`Supplier $db_interval Acc 1YB Parts Profit`) as profit   from `Category Bridge` B left join  `Supplier Dimension` I  on ( `Subject Key`=`Supplier Key`)  where `Subject`='Supplier' and `Category Key`=%d " ,
-				$this->id
-
-
-			);
-
-
-			if ($result=$this->db->query($sql)) {
-				if ($row = $result->fetch()) {
-					$supplier_category_data["$db_interval Acc 1YB Cost"]=$row["cost"];
-					$supplier_category_data["$db_interval Acc 1YB Part Sales"]=$row["sold"];
-					$supplier_category_data["$db_interval Acc 1YB Profit"]=$row["profit"];
-				}
-			}else {
-				print_r($error_info=$this->db->errorInfo());
-				exit;
-			}
-
-
-
-			$sql=sprintf("update `Supplier Category Dimension` set
-                         `$db_interval Acc 1YB Cost`=%.2f,
-                         `$db_interval Acc 1YB Part Sales`=%.2f,
-                         `$db_interval Acc 1YB Profit`=%.2f
-                         where `Category Key`=%d "
-				, $supplier_category_data["$db_interval Acc 1YB Cost"]
-				, $supplier_category_data["$db_interval Acc 1YB Part Sales"]
-				, $supplier_category_data["$db_interval Acc 1YB Profit"]
-				, $this->id
-			);
-			$this->db->exec($sql);
-
-		}
-
-
-	}
-
-
-
-
-	function update_part_category_status() {
-
-		$elements_numbers=array(
-			'In Use'=>0, 'Not In Use'=>0
-		);
-
-		$sql=sprintf("select count(*) as num ,`Part Status` from  `Part Dimension` P left join `Category Bridge` B on (P.`Part SKU`=B.`Subject Key`)  where B.`Category Key`=%d and `Subject`='Part' group by  `Part Status`   ",
-			$this->id);
-
-
-		if ($result=$this->db->query($sql)) {
-			foreach ($result as $row) {
-				$elements_numbers[$row['Part Status']]=number($row['num']);
-			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
-		}
-
-
-
-		if ($elements_numbers['Not In Use']>0 and $elements_numbers['In Use']==0) {
-			$this->data['Part Category Status`']='NotInUse';
-		}else {
-			$this->data['Part Category Status`']='InUse';
-		}
-
-		$sql=sprintf("update `Part Category Dimension` set `Part Category Status`=%s  where `Part Category Key`=%d",
-			prepare_mysql($this->data['Part Category Status`']),
-			$this->id
-		);
-
-		$this->db->exec($sql);
-
-
-	}
-
-
-	function update_part_category_sales($interval) {
-
-		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($interval);
-
-
-
-		$sql=sprintf("select 	sum(`Part $db_interval Acc Profit`) as profit,
-								sum(`Part $db_interval Acc Profit After Storing`) as profit_after_storing,
-								sum(`Part $db_interval Acc Acquired`) as bought,
-								sum(`Part $db_interval Acc Sold Amount`) as sold_amount,
-								sum(`Part $db_interval Acc Sold`) as sold,
-								sum(`Part $db_interval Acc Provided`) as dispatched,
-								sum(`Part $db_interval Acc Required`) as required,
-								sum(`Part $db_interval Acc Given`) as given,
-								sum(`Part $db_interval Acc Broken`) as broken,
-								sum(`Part $db_interval Acc Lost`) as lost
-
-								from `Part Data` ITF left join `Category Bridge` on (`Part SKU`=`Subject Key` and `Subject`='Part')   where `Category Key`=%d" ,
-			$this->id);
-
-
-		if ($result=$this->db->query($sql)) {
-			if ($row = $result->fetch()) {
-				$this->data["Part Category $db_interval Acc Profit"]=$row['profit'];
-				$this->data["Part Category $db_interval Acc Profit After Storing"]=$row['profit_after_storing'];
-				$this->data["Part Category $db_interval Acc Acquired"]=$row['bought'];
-				$this->data["Part Category $db_interval Acc Sold Amount"]=$row['sold_amount'];
-				$this->data["Part Category $db_interval Acc Sold"]=$row['sold'];
-				$this->data["Part Category $db_interval Acc Provided"]=-1.0*$row['dispatched'];
-				$this->data["Part Category $db_interval Acc Required"]=$row['required'];
-				$this->data["Part Category $db_interval Acc Given"]=$row['given'];
-				$this->data["Part Category $db_interval Acc Broken"]=$row['broken'];
-				$this->data["Part Category $db_interval Acc Lost"]=$row['lost'];
-			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
-		}
-
-
-
-
-
-		if ($this->data["Part Category $db_interval Acc Sold Amount"]!=0)
-			$margin=$this->data["Part Category $db_interval Acc Profit After Storing"]/$this->data["Part Category $db_interval Acc Sold Amount"];
-		else
-			$margin=0;
-		$this->data["Part Category $db_interval Acc Margin"]=$margin;
-
-
-		$sql=sprintf("update `Part Category Dimension` set
-                     `Part Category $db_interval Acc Required`=%f ,
-                     `Part Category $db_interval Acc Provided`=%f,
-                     `Part Category $db_interval Acc Given`=%f ,
-                     `Part Category $db_interval Acc Sold Amount`=%f ,
-                     `Part Category $db_interval Acc Profit`=%f ,
-                     `Part Category $db_interval Acc Profit After Storing`=%f ,
-                     `Part Category $db_interval Acc Sold`=%f ,
-                     `Part Category $db_interval Acc Margin`=%s,
-                     `Part Category $db_interval Acc Acquired`=%s,
-                     `Part Category $db_interval Acc Broken`=%s,
-                     `Part Category $db_interval Acc Lost`=%s
-                      where
-                     `Part Category Key`=%d "
-			, $this->data["Part Category $db_interval Acc Required"]
-			, $this->data["Part Category $db_interval Acc Provided"]
-			, $this->data["Part Category $db_interval Acc Given"]
-			, $this->data["Part Category $db_interval Acc Sold Amount"]
-			, $this->data["Part Category $db_interval Acc Profit"]
-			, $this->data["Part Category $db_interval Acc Profit After Storing"]
-			, $this->data["Part Category $db_interval Acc Sold"]
-			, $this->data["Part Category $db_interval Acc Margin"]
-			, $this->data["Part Category $db_interval Acc Acquired"]
-			, $this->data["Part Category $db_interval Acc Broken"]
-			, $this->data["Part Category $db_interval Acc Lost"]
-
-			, $this->id);
-
-		$this->db->exec($sql);
-		//print "$sql\n";
-
-		if ($from_date_1yb) {
-
-			$sql=sprintf("select 	sum(`Part $db_interval Acc 1YB Profit`) as profit,
-								sum(`Part $db_interval Acc 1YB Profit After Storing`) as profit_after_storing,
-								sum(`Part $db_interval Acc 1YB Acquired`) as bought,
-								sum(`Part $db_interval Acc 1YB Sold Amount`) as sold_amount,
-								sum(`Part $db_interval Acc 1YB Sold`) as sold,
-								sum(`Part $db_interval Acc 1YB Provided`) as dispatched,
-								sum(`Part $db_interval Acc 1YB Required`) as required,
-								sum(`Part $db_interval Acc 1YB Given`) as given,
-								sum(`Part $db_interval Acc 1YB Broken`) as broken,
-								sum(`Part $db_interval Acc 1YB Lost`) as lost
-
-								from `Part Data` ITF left join `Category Bridge` on (`Part SKU`=`Subject Key` and `Subject`='Part')   where `Category Key`=%d" ,
-				$this->id);
-
-
-			if ($result=$this->db->query($sql)) {
-				if ($row = $result->fetch()) {
-					$this->data["Part Category $db_interval Acc 1YB Profit"]=$row['profit'];
-					$this->data["Part Category $db_interval Acc 1YB Profit After Storing"]=$row['profit_after_storing'];
-					$this->data["Part Category $db_interval Acc 1YB Acquired"]=$row['bought'];
-					$this->data["Part Category $db_interval Acc 1YB Sold Amount"]=$row['sold_amount'];
-					$this->data["Part Category $db_interval Acc 1YB Sold"]=$row['sold'];
-					$this->data["Part Category $db_interval Acc 1YB Provided"]=-1.0*$row['dispatched'];
-					$this->data["Part Category $db_interval Acc 1YB Required"]=$row['required'];
-					$this->data["Part Category $db_interval Acc 1YB Given"]=$row['given'];
-					$this->data["Part Category $db_interval Acc 1YB Broken"]=$row['broken'];
-					$this->data["Part Category $db_interval Acc 1YB Lost"]=$row['lost'];
-				}
-			}else {
-				print_r($error_info=$this->db->errorInfo());
-				exit;
-			}
-
-
-
-			if ($this->data["Part Category $db_interval Acc 1YB Sold Amount"]!=0)
-				$margin=$this->data["Part Category $db_interval Acc 1YB Profit After Storing"]/$this->data["Part Category $db_interval Acc 1YB Sold Amount"];
-			else
-				$margin=0;
-			$this->data["Part Category $db_interval Acc 1YB Margin"]=$margin;
-
-
-			$sql=sprintf("update `Part Category Dimension` set
-                     `Part Category $db_interval Acc 1YB Required`=%f ,
-                     `Part Category $db_interval Acc 1YB Provided`=%f,
-                     `Part Category $db_interval Acc 1YB Given`=%f ,
-                     `Part Category $db_interval Acc 1YB Sold Amount`=%f ,
-                     `Part Category $db_interval Acc 1YB Profit`=%f ,
-                     `Part Category $db_interval Acc 1YB Profit After Storing`=%f ,
-                     `Part Category $db_interval Acc 1YB Sold`=%f ,
-                     `Part Category $db_interval Acc 1YB Margin`=%s,
-                     `Part Category $db_interval Acc 1YB Acquired`=%s,
-                     `Part Category $db_interval Acc 1YB Broken`=%s,
-                     `Part Category $db_interval Acc 1YB Lost`=%s
-                      where
-                     `Part Category Key`=%d "
-				, $this->data["Part Category $db_interval Acc 1YB Required"]
-				, $this->data["Part Category $db_interval Acc 1YB Provided"]
-				, $this->data["Part Category $db_interval Acc 1YB Given"]
-				, $this->data["Part Category $db_interval Acc 1YB Sold Amount"]
-				, $this->data["Part Category $db_interval Acc 1YB Profit"]
-				, $this->data["Part Category $db_interval Acc 1YB Profit After Storing"]
-				, $this->data["Part Category $db_interval Acc 1YB Sold"]
-				, $this->data["Part Category $db_interval Acc 1YB Margin"]
-				, $this->data["Part Category $db_interval Acc 1YB Acquired"]
-				, $this->data["Part Category $db_interval Acc 1YB Broken"]
-				, $this->data["Part Category $db_interval Acc 1YB Lost"]
-
-				, $this->id);
-
-			$this->db->exec($sql);
-			//print "$sql\n";
-
-
-
-			$this->data["Part Category $db_interval Acc 1YD Required"]=($this->data["Part Category $db_interval Acc 1YB Required"]==0?0:($this->data["Part Category $db_interval Acc Required"]-$this->data["Part Category $db_interval Acc 1YB Required"])/$this->data["Part Category $db_interval Acc 1YB Required"]);
-			$this->data["Part Category $db_interval Acc 1YD Provided"]=($this->data["Part Category $db_interval Acc 1YB Provided"]==0?0:($this->data["Part Category $db_interval Acc Provided"]-$this->data["Part Category $db_interval Acc 1YB Provided"])/$this->data["Part Category $db_interval Acc 1YB Provided"]);
-			$this->data["Part Category $db_interval Acc 1YD Given"]=($this->data["Part Category $db_interval Acc 1YB Given"]==0?0:($this->data["Part Category $db_interval Acc Given"]-$this->data["Part Category $db_interval Acc 1YB Given"])/$this->data["Part Category $db_interval Acc 1YB Given"]);
-			$this->data["Part Category $db_interval Acc 1YD Sold Amount"]=($this->data["Part Category $db_interval Acc 1YB Sold Amount"]==0?0:($this->data["Part Category $db_interval Acc Sold Amount"]-$this->data["Part Category $db_interval Acc 1YB Sold Amount"])/$this->data["Part Category $db_interval Acc 1YB Sold Amount"]);
-			$this->data["Part Category $db_interval Acc 1YD Profit"]=($this->data["Part Category $db_interval Acc 1YB Profit"]==0?0:($this->data["Part Category $db_interval Acc Profit"]-$this->data["Part Category $db_interval Acc 1YB Profit"])/$this->data["Part Category $db_interval Acc 1YB Profit"]);
-			$this->data["Part Category $db_interval Acc 1YD Profit After Storing"]=($this->data["Part Category $db_interval Acc 1YB Profit After Storing"]==0?0:($this->data["Part Category $db_interval Acc Profit After Storing"]-$this->data["Part Category $db_interval Acc 1YB Profit After Storing"])/$this->data["Part Category $db_interval Acc 1YB Profit After Storing"]);
-			$this->data["Part Category $db_interval Acc 1YD Sold"]=($this->data["Part Category $db_interval Acc 1YB Sold"]==0?0:($this->data["Part Category $db_interval Acc Sold"]-$this->data["Part Category $db_interval Acc 1YB Sold"])/$this->data["Part Category $db_interval Acc 1YB Sold"]);
-			$this->data["Part Category $db_interval Acc 1YD Margin"]=($this->data["Part Category $db_interval Acc 1YB Margin"]==0?0:($this->data["Part Category $db_interval Acc Margin"]-$this->data["Part Category $db_interval Acc 1YB Margin"])/$this->data["Part Category $db_interval Acc 1YB Margin"]);
-
-
-			$sql=sprintf("update `Part Category Dimension` set
-                     `Part Category $db_interval Acc 1YD Required`=%f ,
-                     `Part Category $db_interval Acc 1YD Provided`=%f,
-                     `Part Category $db_interval Acc 1YD Given`=%f ,
-                     `Part Category $db_interval Acc 1YD Sold Amount`=%f ,
-                     `Part Category $db_interval Acc 1YD Profit`=%f ,
-                     `Part Category $db_interval Acc 1YD Profit After Storing`=%f ,
-                     `Part Category $db_interval Acc 1YD Sold`=%f ,
-                     `Part Category $db_interval Acc 1YD Margin`=%s where
-                      `Part Category Key`=%d "
-				, $this->data["Part Category $db_interval Acc 1YD Required"]
-				, $this->data["Part Category $db_interval Acc 1YD Provided"]
-				, $this->data["Part Category $db_interval Acc 1YD Given"]
-				, $this->data["Part Category $db_interval Acc 1YD Sold Amount"]
-				, $this->data["Part Category $db_interval Acc 1YD Profit"]
-				, $this->data["Part Category $db_interval Acc 1YD Profit After Storing"]
-				, $this->data["Part Category $db_interval Acc 1YD Sold"]
-				, $this->data["Part Category $db_interval Acc 1YD Margin"]
-
-				, $this->id);
-
-			$this->db->exec($sql);
-			//print "$sql\n";
-
-
-
-
-		}
-
-
-	}
-
-
-
-
-
-
-
-	function update_invoice_category_sales($interval) {
-
-		$to_date='';
-
-		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($interval);
-
-
-		//   print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
-
-		$invoice_category_data["Invoice Category $db_interval Acc Discount Amount"]=0;
-		$invoice_category_data["Invoice Category $db_interval Acc Invoiced Amount"]=0;
-		$invoice_category_data["Invoice Category $db_interval Acc Invoices"]=0;
-		$invoice_category_data["Invoice Category $db_interval Acc Refunds"]=0;
-		$invoice_category_data["Invoice Category $db_interval Acc Paid"]=0;
-		$invoice_category_data["Invoice Category $db_interval Acc To Pay"]=0;
-
-		$invoice_category_data["Invoice Category $db_interval Acc Profit"]=0;
-		$invoice_category_data["Invoice Category DC $db_interval Acc Invoiced Amount"]=0;
-		$invoice_category_data["Invoice Category DC $db_interval Acc Discount Amount"]=0;
-		$invoice_category_data["Invoice Category DC $db_interval Acc Profit"]=0;
-
-		$sql=sprintf("select sum(if(`Invoice Paid`='Yes',1,0)) as paid  ,sum(if(`Invoice Paid`='No',1,0)) as to_pay  , sum(if(`Invoice Type`='Invoice',1,0)) as invoices  ,sum(if(`Invoice Type`!='Invoice'  ,1,0)) as refunds  ,IFNULL(sum(`Invoice Items Discount Amount`),0) as discounts,IFNULL(sum(`Invoice Total Net Amount`),0) net  ,IFNULL(sum(`Invoice Total Profit`),0) as profit ,IFNULL(sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`),0) as dc_discounts,IFNULL(sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`),0) dc_net  ,IFNULL(sum(`Invoice Total Profit`*`Invoice Currency Exchange`),0) as dc_profit from `Category Bridge` B left join  `Invoice Dimension` I  on ( `Subject Key`=`Invoice Key`)  where `Subject`='Invoice' and `Category Key`=%d and  `Invoice Store Key`=%d %s %s" ,
-			$this->id,
-			$this->data['Category Store Key'],
-
-			($from_date?sprintf('and `Invoice Date`>%s', prepare_mysql($from_date)):''),
-
-			($to_date?sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)):'')
-
-		);
-
-
-
-		if ($result=$this->db->query($sql)) {
-			if ($row = $result->fetch()) {
-				$invoice_category_data["Invoice Category $db_interval Acc Discount Amount"]=$row["discounts"];
-				$invoice_category_data["Invoice Category $db_interval Acc Invoiced Amount"]=$row["net"];
-				$invoice_category_data["Invoice Category $db_interval Acc Invoices"]=$row["invoices"];
-				$invoice_category_data["Invoice Category $db_interval Acc Refunds"]=$row["refunds"];
-				$invoice_category_data["Invoice Category $db_interval Acc Paid"]=$row["paid"];
-				$invoice_category_data["Invoice Category $db_interval Acc To Pay"]=$row["to_pay"];
-
-				$invoice_category_data["Invoice Category $db_interval Acc Profit"]=$row["profit"];
-				$invoice_category_data["Invoice Category DC $db_interval Acc Invoiced Amount"]=$row["dc_net"];
-				$invoice_category_data["Invoice Category DC $db_interval Acc Discount Amount"]=$row["dc_discounts"];
-				$invoice_category_data["Invoice Category DC $db_interval Acc Profit"]=$row["dc_profit"];
-
-			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
-		}
-
-
-
-
-
-		$sql=sprintf("update `Invoice Category Dimension` set
-                     `Invoice Category $db_interval Acc Discount Amount`=%.2f,
-                     `Invoice Category $db_interval Acc Invoiced Amount`=%.2f,
-                     `Invoice Category $db_interval Acc Invoices`=%d,
-                     `Invoice Category $db_interval Acc Refunds`=%d,
-                     `Invoice Category $db_interval Acc Paid`=%d,
-                     `Invoice Category $db_interval Acc To Pay`=%d,
-
-                     `Invoice Category $db_interval Acc Profit`=%.2f
-                     where `Invoice Category Key`=%d "
-			, $invoice_category_data["Invoice Category $db_interval Acc Discount Amount"]
-			, $invoice_category_data["Invoice Category $db_interval Acc Invoiced Amount"]
-			, $invoice_category_data["Invoice Category $db_interval Acc Invoices"]
-			, $invoice_category_data["Invoice Category $db_interval Acc Refunds"]
-			, $invoice_category_data["Invoice Category $db_interval Acc Paid"]
-			, $invoice_category_data["Invoice Category $db_interval Acc To Pay"]
-
-			, $invoice_category_data["Invoice Category $db_interval Acc Profit"]
-			, $this->id
-		);
-
-		$this->db->exec($sql);
-		//print "$sql\n\n";
-		$sql=sprintf("update `Invoice Category Dimension` set
-                     `Invoice Category DC $db_interval Acc Discount Amount`=%.2f,
-                     `Invoice Category DC $db_interval Acc Invoiced Amount`=%.2f,
-                     `Invoice Category DC $db_interval Acc Profit`=%.2f
-                     where `Invoice Category Key`=%d "
-			, $invoice_category_data["Invoice Category DC $db_interval Acc Discount Amount"]
-			, $invoice_category_data["Invoice Category DC $db_interval Acc Invoiced Amount"]
-			, $invoice_category_data["Invoice Category DC $db_interval Acc Profit"]
-			, $this->id
-		);
-
-		$this->db->exec($sql);
-
-
-
-		if ($from_date_1yb) {
-			$invoice_category_data["Invoice Category $db_interval Acc 1YB Invoices"]=0;
-			$invoice_category_data["Invoice Category $db_interval Acc 1YB Discount Amount"]=0;
-			$invoice_category_data["Invoice Category $db_interval Acc 1YB Invoiced Amount"]=0;
-			$invoice_category_data["Invoice Category $db_interval Acc 1YB Profit"]=0;
-			$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Discount Amount"]=0;
-			$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Invoiced Amount"]=0;
-			$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Profit"]=0;
-
-			$sql=sprintf("select count(*) as invoices,sum(`Invoice Items Discount Amount`) as discounts,sum(`Invoice Total Net Amount`) net  ,sum(`Invoice Total Profit`) as profit,sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`) as dc_discounts,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) dc_net  ,sum(`Invoice Total Profit`*`Invoice Currency Exchange`) as dc_profit  from `Category Bridge` B left join  `Invoice Dimension` I  on ( `Subject Key`=`Invoice Key`)  where `Subject`='Invoice' and `Category Key`=%d and  `Invoice Store Key`=%d and  `Invoice Date`>%s and `Invoice Date`<%s" ,
-				$this->id,
-				$this->data['Category Store Key'],
-				prepare_mysql($from_date_1yb),
-				prepare_mysql($to_1yb)
-			);
-			// print "$sql\n\n";
-
-
-			if ($result=$this->db->query($sql)) {
-				if ($row = $result->fetch()) {
-					$invoice_category_data["Invoice Category $db_interval Acc 1YB Discount Amount"]=$row["discounts"];
-					$invoice_category_data["Invoice Category $db_interval Acc 1YB Invoiced Amount"]=$row["net"];
-					$invoice_category_data["Invoice Category $db_interval Acc 1YB Invoices"]=$row["invoices"];
-					$invoice_category_data["Invoice Category $db_interval Acc 1YB Profit"]=$row["profit"];
-					$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Invoiced Amount"]=$row["dc_net"];
-					$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Discount Amount"]=$row["dc_discounts"];
-					$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Profit"]=$row["dc_profit"];
-
-				}
-			}else {
-				print_r($error_info=$this->db->errorInfo());
-				exit;
-			}
-
-
-
-			$sql=sprintf("update `Invoice Category Dimension` set
-                         `Invoice Category $db_interval Acc 1YB Discount Amount`=%.2f,
-                         `Invoice Category $db_interval Acc 1YB Invoiced Amount`=%.2f,
-                         `Invoice Category $db_interval Acc 1YB Invoices`=%.2f,
-                         `Invoice Category $db_interval Acc 1YB Profit`=%.2f
-                         where `Invoice Category Key`=%d "
-				, $invoice_category_data["Invoice Category $db_interval Acc 1YB Discount Amount"]
-				, $invoice_category_data["Invoice Category $db_interval Acc 1YB Invoiced Amount"]
-				, $invoice_category_data["Invoice Category $db_interval Acc 1YB Invoices"]
-				, $invoice_category_data["Invoice Category $db_interval Acc 1YB Profit"]
-				, $this->id
-			);
-
-			$this->db->exec($sql);
-			// print "$sql\n";
-			$sql=sprintf("update `Invoice Category Dimension` set
-                         `Invoice Category DC $db_interval Acc 1YB Discount Amount`=%.2f,
-                         `Invoice Category DC $db_interval Acc 1YB Invoiced Amount`=%.2f,
-                         `Invoice Category DC $db_interval Acc 1YB Profit`=%.2f
-                         where `Invoice Category Key`=%d "
-				, $invoice_category_data["Invoice Category DC $db_interval Acc 1YB Discount Amount"]
-				, $invoice_category_data["Invoice Category DC $db_interval Acc 1YB Invoiced Amount"]
-				, $invoice_category_data["Invoice Category DC $db_interval Acc 1YB Profit"]
-				, $this->id
-			);
-			// print "$sql\n";
-			$this->db->exec($sql);
-		}
-
-
-	}
 
 
 	function get_other_categories() {

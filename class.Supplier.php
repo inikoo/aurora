@@ -409,7 +409,7 @@ class Supplier extends SubjectSupplier {
 	}
 
 
-    
+
 
 	function update_up_today_sales() {
 		$this->update_period_sales('Total');
@@ -439,37 +439,25 @@ class Supplier extends SubjectSupplier {
 	}
 
 
+
 	function update_previous_years_data() {
 
-		$sales_data=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-1 year')), date('Y-01-01 00:00:00'));
-		$this->data['Supplier 1 Year Ago Sales Amount']=$sales_data['sold_amount'];
-
-		$sales_data=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-2 year')), date('Y-01-01 00:00:00', strtotime('-1 year')));
-		$this->data['Supplier 2 Year Ago Sales Amount']=$sales_data['sold_amount'];
-
-		$sales_data=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-3 year')), date('Y-01-01 00:00:00', strtotime('-2 year')));
-		$this->data['Supplier 3 Year Ago Sales Amount']=$sales_data['sold_amount'];
-
-		$sales_data=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-4 year')), date('Y-01-01 00:00:00', strtotime('-3 year')));
-		$this->data['Supplier 4 Year Ago Sales Amount']=$sales_data['sold_amount'];
-
+		$data_1y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-1 year')), date('Y-01-01 00:00:00'));
+		$data_2y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-2 year')), date('Y-01-01 00:00:00', strtotime('-1 year')));
+		$data_3y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-3 year')), date('Y-01-01 00:00:00', strtotime('-2 year')));
+		$data_4y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-4 year')), date('Y-01-01 00:00:00', strtotime('-3 year')));
 
 		$sql=sprintf("update `Supplier Data` set `Supplier 1 Year Ago Sales Amount`=%.2f, `Supplier 2 Year Ago Sales Amount`=%.2f,`Supplier 3 Year Ago Sales Amount`=%.2f, `Supplier 4 Year Ago Sales Amount`=%.2f where `Supplier Key`=%d ",
-
-			$this->data["Supplier 1 Year Ago Sales Amount"],
-			$this->data["Supplier 2 Year Ago Sales Amount"],
-			$this->data["Supplier 3 Year Ago Sales Amount"],
-			$this->data["Supplier 4 Year Ago Sales Amount"],
-
+			$data_1y_ago['sold_amount'],
+			$data_2y_ago['sold_amount'],
+			$data_3y_ago['sold_amount'],
+			$data_4y_ago['sold_amount'],
 			$this->id
-
 		);
 
 		$this->db->exec($sql);
-
-
+		$this->load_acc_data();
 	}
-
 
 	function get_sales_data($from_date, $to_date) {
 
@@ -960,14 +948,14 @@ class Supplier extends SubjectSupplier {
 		case('Supplier Products Origin Country Code'):
 			$this->update_field($field, $value, $options);
 
-				include_once 'class.Part.php';
+			include_once 'class.Part.php';
 
 			$sql=sprintf("select  `Part SKU`  from `Supplier Part Dimension` left join `Part Dimension` on (`Part SKU`=`Supplier Part Part SKU`)  where `Supplier Part Supplier Key`=%d and  `Part Origin Country Code` is NULL", $this->id);
-			
-			
+
+
 			if ($result=$this->db->query($sql)) {
 				foreach ($result as $row) {
-						$part=new Part($row['Part SKU']);
+					$part=new Part($row['Part SKU']);
 
 					$part->update(array('Part Origin Country Code'=>$value));
 				}

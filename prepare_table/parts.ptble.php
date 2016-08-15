@@ -129,10 +129,10 @@ if (isset($parameters['elements_type'])) {
 
 $db_period=get_interval_db_name($parameters['f_period']);
 if(in_array($db_period,array('Total','3 Year'))){
-$yb_fields=" '' as sold_1y,'' as revenue_1y";
+$yb_fields=" '' as dispatched_1y,'' as revenue_1y";
 
 }else{
-$yb_fields="`Part $db_period Acc 1YB Sold` as sold_1y,`Part $db_period Acc 1YB Sold Amount` as revenue_1y";
+$yb_fields="`Part $db_period Acc 1YB Provided` as dispatched_1y,`Part $db_period Acc 1YB Sold Amount` as revenue_1y";
 }
 
 if ($parameters['f_field']=='used_in' and $f_value!='')
@@ -153,6 +153,8 @@ if ($order=='id') {
 	$order='P.`Part SKU`';
 }elseif ($order=='stock') {
 	$order='`Part Current Stock`';
+}elseif ($order=='dispatched') {
+	$order='dispatched';
 }elseif ($order=='stock_status') {
 	$order='`Part Stock Status`';
 }elseif ($order=='reference') {
@@ -176,7 +178,27 @@ if ($order=='id') {
 	$order='`Part Valid To`';
 }elseif ($order=='last_update') {
 	$order='`Part Last Updated`';
-}else {
+}
+elseif ($order=='delta_revenue_year0') {$order="(-1*(`Part Year To Day Acc Sold Amount`-`Part Year To Day Acc 1YB Sold Amount`)/`Part Year To Day Acc 1YB Sold Amount`)";}
+elseif ($order=='delta_revenue_year1') {$order="(-1*(`Part 2 Year Ago Sold Amount`-`Part 1 Year Ago Sold Amount`)/`Part 2 Year Ago Sold Amount`)";}
+elseif ($order=='delta_revenue_year2') {$order="(-1*(`Part 3 Year Ago Sold Amount`-`Part 2 Year Ago Sold Amount`)/`Part 3 Year Ago Sold Amount`)";}
+elseif ($order=='delta_revenue_year3') {$order="(-1*(`Part 4 Year Ago Sold Amount`-`Part 3 Year Ago Sold Amount`)/`Part 4 Year Ago Sold Amount`)";}
+elseif ($order=='revenue_year1') {$order="`Part 1 Year Ago Sold Amount`";}
+elseif ($order=='revenue_year2') {$order="`Part 2 Year Ago Sold Amount`";}
+elseif ($order=='revenue_year3') {$order="`Part 3 Year Ago Sold Amount`";}
+elseif ($order=='revenue_year4') {$order="`Part 4 Year Ago Sold Amount`";}
+elseif ($order=='revenue_year0') {$order="`Part Year To Day Acc Sold Amount`";}
+elseif ($order=='delta_dispatched_year0') {$order="(-1*(`Part Year To Day Acc Provided`-`Part Year To Day Acc 1YB Provided`)/`Part Year To Day Acc 1YB Provided`)";}
+elseif ($order=='delta_dispatched_year1') {$order="(-1*(`Part 2 Year Ago Provided`-`Part 1 Year Ago Provided`)/`Part 2 Year Ago Provided`)";}
+elseif ($order=='delta_dispatched_year2') {$order="(-1*(`Part 3 Year Ago Provided`-`Part 2 Year Ago Provided`)/`Part 3 Year Ago Provided`)";}
+elseif ($order=='delta_dispatched_year3') {$order="(-1*(`Part 4 Year Ago Provided`-`Part 3 Year Ago Provided`)/`Part 4 Year Ago Provided`)";}
+elseif ($order=='dispatched_year1') {$order="`Part 1 Year Ago Provided`";}
+elseif ($order=='dispatched_year2') {$order="`Part 2 Year Ago Provided`";}
+elseif ($order=='dispatched_year3') {$order="`Part 3 Year Ago Provided`";}
+elseif ($order=='dispatched_year4') {$order="`Part 4 Year Ago Provided`";}
+elseif ($order=='dispatched_year0') {$order="`Part Year To Day Acc Provided`";}
+
+else {
 
 	$order='`Part SKU`';
 }
@@ -186,14 +208,17 @@ $sql_totals="select count(Distinct P.`Part SKU`) as num from $table  $where  ";
 
 $fields.="P.`Part SKU`,`Part Reference`,`Part Unit Description`,`Part Current Stock`,`Part Stock Status`,`Part Days Available Forecast`,
 `Part $db_period Acc Sold` as sold,
-
-
 `Part $db_period Acc Given` as given,
+`Part $db_period Acc Provided` as dispatched,
 (`Part $db_period Acc Broken`+`Part $db_period Acc Lost`) as lost,
 
 `Part $db_period Acc Sold Amount` as revenue,
 `Part $db_period Acc Acquired` as bought,
-`Part Days Available Forecast`,$yb_fields
+`Part Days Available Forecast`,$yb_fields,
+`Part 1 Year Ago Provided`,`Part 2 Year Ago Provided`,`Part 3 Year Ago Provided`,`Part 4 Year Ago Provided`,
+`Part 1 Year Ago Sold Amount`,`Part 2 Year Ago Sold Amount`,`Part 3 Year Ago Sold Amount`,`Part 4 Year Ago Sold Amount`,
+`Part Year To Day Acc Sold Amount`,`Part Year To Day Acc 1YB Sold Amount`,`Part Year To Day Acc Provided`,`Part Year To Day Acc 1YB Provided`,
+`Part 1 Quarter Acc Provided`
 
 ";
 

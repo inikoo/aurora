@@ -24,9 +24,9 @@ $sql=sprintf('select `Part SKU` from `Part Dimension`  ');
 if ($result=$db->query($sql)) {
 	foreach ($result as $row) {
 		$part=new Part($row['Part SKU']);
-
+		$part->update_available_forecast();
 		$part->update_stock_status();
-	
+
 
 
 
@@ -46,7 +46,7 @@ if ($result=$db->query($sql)) {
 		$supplier=new Supplier($row['Supplier Key']);
 
 		$supplier->update_supplier_parts();
-	
+
 
 
 

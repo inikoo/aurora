@@ -11,7 +11,6 @@
 
 $group_by='';
 
-
 switch ($parameters['parent']) {
 
 case 'account':
@@ -114,6 +113,10 @@ elseif ($order=='label')
 	$order='`Category Label`';
 elseif ($order=='subjects')
 	$order='`Category Number Subjects`';
+elseif ($order=='subjects_active')
+	$order='`Category Number Active Subjects`';
+elseif ($order=='subjects_no_active')
+	$order='`Category Number No Active Subjects`';		
 elseif ($order=='subcategories')
 	$order='`Category Children`';
 elseif ($order=='percentage_assigned')
@@ -122,7 +125,7 @@ else
 	$order='`Category Key`';
 
 
-$fields='`Category Key`,`Category Branch Type`,`Category Children`,`Category Subject`,`Category Store Key`,`Category Warehouse Key`,`Category Code`,`Category Label`,`Category Number Subjects`,`Category Subjects Not Assigned` ';
+$fields='`Category Number No Active Subjects`,`Category Number Active Subjects`,`Category Key`,`Category Branch Type`,`Category Children`,`Category Subject`,`Category Store Key`,`Category Warehouse Key`,`Category Code`,`Category Label`,`Category Number Subjects`,`Category Subjects Not Assigned` ';
 $table='`Category Dimension` C';
 
 $sql_totals="select count(distinct `Category Key`) as num from $table $where";

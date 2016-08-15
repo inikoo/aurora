@@ -11,50 +11,105 @@
 
 
 
-$tab='category.categories';
-$ar_file='ar_categories_tables.php';
-$tipo='categories';
-
-$default=$user->get_tab_defaults($tab);
 
 
-
-$table_views=array(
-
-);
-
-$table_filters=array(
-	'label'=>array('label'=>_('Label'), 'title'=>_('Category label')),
-	'code'=>array('label'=>_('Code'), 'title'=>_('Category code')),
-
-);
-
-$parameters=array(
-	'parent'=>$state['object'],
-	'parent_key'=>$state['key'],
-
-);
+if ($state['module']=='inventory') {
+	$tab='category.part_categories';
+	$ar_file='ar_inventory_tables.php';
+	$tipo='part_categories';
+	
+	
+	$default=$user->get_tab_defaults($tab);
 
 
-$table_buttons[]=array(
-	'icon'=>'plus',
-	'title'=>_('New category'),
-	'id'=>'new_record',
-	'inline_new_object'=>
-	array(
-		'field_id'=>'Category_Code',
-		'field_label'=>_('Add category').':',
-		'field_edit'=>'string',
-		'object'=>'Category',
+
+	$table_views=array(
+	'overview'=>array('label'=>_('Overview')),
+	'revenue'=>array('label'=>_('Revenue')),
+	'stock'=>array('label'=>_('Stock')),
+
+	);
+
+	$table_filters=array(
+		'label'=>array('label'=>_('Label'), 'title'=>_('Family label')),
+		'code'=>array('label'=>_('Code'), 'title'=>_('Family code')),
+
+	);
+
+	$parameters=array(
 		'parent'=>$state['object'],
 		'parent_key'=>$state['key'],
-		'placeholder'=>_("Category's code")
-	)
 
-);
+	);
 
-$smarty->assign('table_buttons', $table_buttons);
 
+	$table_buttons[]=array(
+		'icon'=>'plus',
+		'title'=>_('New family'),
+		'id'=>'new_record',
+		'inline_new_object'=>
+		array(
+			'field_id'=>'Category_Code',
+			'field_label'=>_('Add category').':',
+			'field_edit'=>'string',
+			'object'=>'Category',
+			'parent'=>$state['object'],
+			'parent_key'=>$state['key'],
+			'placeholder'=>_("Family's code")
+		)
+
+	);
+
+	$smarty->assign('table_buttons', $table_buttons);
+	
+}else {
+
+	$tab='category.categories';
+	$ar_file='ar_categories_tables.php';
+	$tipo='categories';
+
+
+
+	$default=$user->get_tab_defaults($tab);
+
+
+
+	$table_views=array(
+
+	);
+
+	$table_filters=array(
+		'label'=>array('label'=>_('Label'), 'title'=>_('Category label')),
+		'code'=>array('label'=>_('Code'), 'title'=>_('Category code')),
+
+	);
+
+	$parameters=array(
+		'parent'=>$state['object'],
+		'parent_key'=>$state['key'],
+
+	);
+
+
+	$table_buttons[]=array(
+		'icon'=>'plus',
+		'title'=>_('New category'),
+		'id'=>'new_record',
+		'inline_new_object'=>
+		array(
+			'field_id'=>'Category_Code',
+			'field_label'=>_('Add category').':',
+			'field_edit'=>'string',
+			'object'=>'Category',
+			'parent'=>$state['object'],
+			'parent_key'=>$state['key'],
+			'placeholder'=>_("Category's code")
+		)
+
+	);
+
+	$smarty->assign('table_buttons', $table_buttons);
+}
 
 include 'utils/get_table_html.php';
 

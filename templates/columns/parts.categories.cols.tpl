@@ -51,8 +51,19 @@ var columns = [
         headerCell: integerHeaderCell
 
 }, {
-    name: "subjects",
+    name: "subjects_active",
     label:"{t}Parts{/t}",
+    editable: false,
+        defautOrder:1,
+    sortType: "toggle",
+            {if $sort_key=='subjects'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+ 
+    cell: Backgrid.StringCell.extend({ className: "aright"} ),
+        headerCell: integerHeaderCell
+
+}, {
+    name: "subjects_no_active",
+    label:"{t}Discontinued{/t}",
     editable: false,
         defautOrder:1,
     sortType: "toggle",
