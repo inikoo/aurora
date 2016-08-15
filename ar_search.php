@@ -932,7 +932,7 @@ function search_products($db, $account, $memcache_ip, $data) {
 			if ($result=$db->query($sql)) {
 				foreach ($result as $row) {
 
-					$results[$row['Product ID']]=array(
+					$results['P'.$row['Product ID']]=array(
 						'store'=>$row['Store Code'],
 						'label'=>highlightkeyword(sprintf('%s', $row['Product Code']), $queries ),
 						'details'=>highlightkeyword($row['Product Name'], $queries ),
@@ -951,7 +951,7 @@ function search_products($db, $account, $memcache_ip, $data) {
 		}
 
 
-		if ($number_categories_keys) {
+		if ($number_categories_keys ) {
 			$sql=sprintf("select `Category Code`,`Category Store Key`,`Category Key`,`Category Code`,`Category Label`,`Store Code` from `Category Dimension` left join `Store Dimension` S on (`Category Store Key`=S.`Store Key`) where `Category Key` in (%s)",
 				$category_keys);
 
@@ -975,7 +975,6 @@ function search_products($db, $account, $memcache_ip, $data) {
 				exit;
 			}
 		}
-
 
 
 

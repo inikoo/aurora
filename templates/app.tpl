@@ -32,8 +32,11 @@
     <link href="/css/editor/plugins/quick_insert.css" rel="stylesheet">
     <link href="/css/editor/plugins/table.css" rel="stylesheet">
     <link href="/css/editor/plugins/video.css" rel="stylesheet">
+      <link href="/css/amcharts/style.css" rel="stylesheet">
+
   
-  	
+
+
 	<link href="/css/app.css" rel="stylesheet"> 
 
     <script type="text/javascript" src="/js/libs/jquery-2.2.1.js"></script> 
@@ -67,8 +70,8 @@
 	<script type="text/javascript" src="/js/help.js"></script>
 	<script type="text/javascript" src="/utils/country_data.js.php?locale={$locale}"></script> 
 	
-	  <script type="text/javascript" src="/js/libs/editor/froala_editor.min.js"></script>
- <script type="text/javascript" src="/js/libs/editor/codemirror.js"></script>
+	<script type="text/javascript" src="/js/libs/editor/froala_editor.min.js"></script>
+    <script type="text/javascript" src="/js/libs/editor/codemirror.js"></script>
   <script type="text/javascript" src="/js/libs/editor/codemirror.xml.js"></script>
   <script type="text/javascript" src="/js/libs/editor/plugins/align.min.js"></script>
 
@@ -96,6 +99,13 @@
   <script type="text/javascript" src="/js/libs/editor/plugins/save.min.js"></script>
   <script type="text/javascript" src="/js/libs/editor/plugins/url.min.js"></script>
   <script type="text/javascript" src="/js/libs/editor/plugins/video.min.js"></script>
+
+	<script type="text/javascript" src="/js/libs/amcharts/amcharts.js"></script>
+	<script type="text/javascript" src="/js/libs/amcharts/serial.js"></script>
+	<script type="text/javascript" src="/js/libs/amcharts/amstock.js"></script>
+	<script type="text/javascript" src="/js/libs/amcharts/plugins/dataloader/dataloader.min.js"></script>
+	<script type="text/javascript" src="/js/libs/amcharts/plugins/export/export.min.js"></script>
+
 
 
 	{else}

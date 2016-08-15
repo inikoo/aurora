@@ -45,6 +45,9 @@ case 'categories':
 case 'category_all_products':
 	category_all_products(get_table_parameters(), $db, $user);
 	break;
+case 'sales_history':
+	sales_history(get_table_parameters(), $db, $user, $account);
+	break;
 
 
 default:
@@ -222,6 +225,7 @@ function categories($_data, $db, $user) {
 	echo json_encode($response);
 }
 
+
 function category_all_products($_data, $db, $user) {
 
 
@@ -272,6 +276,91 @@ function category_all_products($_data, $db, $user) {
 	echo json_encode($response);
 }
 
+
+function sales_history($_data, $db, $user, $account) {
+
+
+	if ($_data['parameters']['frequency']=='annually') {
+		$rtext_label='year';
+	}elseif ($_data['parameters']['frequency']=='monthy') {
+		$rtext_label='month';
+	}elseif ($_data['parameters']['frequency']=='weekly') {
+		$rtext_label='week';
+	}elseif ($_data['parameters']['frequency']=='daily') {
+		$rtext_label='day';
+	}
+	include_once 'prepare_table/init.php';
+	include_once 'utils/natural_language.php';
+	include_once 'class.Store.php';
+
+    switch ($_data['parameters']['parent']) {
+        case 'product':
+        include_once('class.Product.php');
+            $product=new Product($_data['parameters']['parent_key']);
+           $currency=$product->get('Product Currency');
+            break;
+        default:
+           exit('parent not configurated');
+            break;
+    }
+
+
+
+	
+	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+	
+
+	$adata=array();
+
+	if ($result=$db->query($sql)) {
+
+
+
+		foreach ($result as $data) {
+			if ($_data['parameters']['frequency']=='annually') {
+				$date=strftime("%Y", strtotime($data['Invoice Date'].' +0:00'));
+			}elseif ($_data['parameters']['frequency']=='monthy') {
+				$date=strftime("%b %Y", strtotime($data['Invoice Date'].' +0:00'));
+			}elseif ($_data['parameters']['frequency']=='weekly') {
+				$date=strftime("(%e %b) %Y %W ", strtotime($data['Invoice Date'].' +0:00'));
+			}elseif ($_data['parameters']['frequency']=='daily') {
+				$date=strftime("%a %e %b %Y", strtotime($data['Invoice Date'].' +0:00'));
+			}
+
+			$adata[]=array(
+				'sales'=>money($data['sales'], $currency),
+				'customers'=>number($data['customers']),
+				'invoices'=>number($data['invoices']),
+				'date'=>$date
+
+				//'date'=>strftime("%a %e %b %Y", strtotime($data['Invoice Date'].' +0:00')),
+				//'year'=>strftime("%Y", strtotime($data['Invoice Date'].' +0:00')),
+				//'month_year'=>strftime("%b %Y", strtotime($data['Invoice Date'].' +0:00')),
+				//'week_year'=>strftime("(%e %b) %Y %W ", strtotime($data['Invoice Date'].' +0:00')),
+
+			);
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
 
 
 ?>
