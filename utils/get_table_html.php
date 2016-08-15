@@ -20,8 +20,9 @@ if (isset($_SESSION['table_state'][$tab])) {
 }
 
 
+
 foreach ($default as $key=>$value) {
-	if ($key=='rpp_options' or $key=='frequency' ) {
+	if ($key=='rpp_options' ) {
 
 		$parameters[$key]=$value;
 	}elseif ($key=='export_fields') {
@@ -62,7 +63,9 @@ foreach ($default as $key=>$value) {
 	}
 }
 
-//print_r($parameters['elements']['type']);
+
+
+
 
 if (isset($metadata['parameters'])) {
 	foreach ($metadata['parameters'] as $_key=>$_value) {
@@ -138,6 +141,25 @@ if (array_key_exists('f_period', $parameters)) {
 	);
 	$smarty->assign('f_periods', $f_periods);
 
+
+}
+
+
+if (array_key_exists('frequency', $parameters)) {
+
+	$frequencies=array(
+		'annually'=>_('Annually'),
+		'monthy'=>_('Monthy'),
+		'weekly'=>_('Weekly'),
+		'daily'=>_('Daily'),
+
+	);
+
+	$smarty->assign('frequency', $parameters['frequency']);
+	$smarty->assign('frequency_label', $frequencies[$parameters['frequency']]);
+
+
+	$smarty->assign('frequencies', $frequencies);
 
 }
 
