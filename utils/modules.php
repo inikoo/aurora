@@ -1975,25 +1975,11 @@ $modules=array(
 
 			'timeserie'=>array('type'=>'',
 
-				'subtabs_parent'=>array(
-					'timeserie.records.annually'=>'timeserie.records',
-					'timeserie.records.monthy'=>'timeserie.records',
-					'timeserie.records.weekly'=>'timeserie.records',
-					'timeserie.records.daily'=>'timeserie.records',
-
-				),
-
+				
 				'tabs'=>array(
 					'timeserie.plot'=>array('label'=>_('Plot')),
 					'timeserie.records'=>array('label'=>_('Records'),
-						'subtabs'=>array(
-							'timeserie.records.annually'=>array('label'=>_('Annually')),
-							'timeserie.records.monthy'=>array('label'=>_('Monthy')),
-							'timeserie.records.weekly'=>array('label'=>_('Weekly')),
-							'timeserie.records.daily'=>array('label'=>_('Daily')),
-
-
-						)
+						
 
 
 					),

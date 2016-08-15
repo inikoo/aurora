@@ -115,13 +115,19 @@ function close_columns_period_options() {
 
 }
 
+function close_columns_frequency_options() {
+    var icon = $('#columns_frequency .fa')
+
+    icon.addClass('fa-bars')
+    icon.removeClass('fa-chevron-up')
+    $('#columns_frequency_chooser').addClass('hide')
+
+}
+
 
 function show_columns_period_options() {
 
-
-
-
-    var button = $('#columns_period')
+   var button = $('#columns_period')
     var icon = $('#columns_period .fa')
 
     if (!icon.hasClass('fa-bars')) {
@@ -138,6 +144,35 @@ function show_columns_period_options() {
         $('#columns_period_chooser').removeClass('hide').offset({
             top: $('#columns_period').position().top + height,
             left: offset.left - $('#columns_period_chooser').width() + icon.width() + 20
+        })
+
+
+
+
+    }
+
+}
+
+function show_columns_frequency_options() {
+
+   var button = $('#columns_frequency')
+    var icon = $('#columns_frequency .fa')
+    if (!icon.hasClass('fa-bars')) {
+
+        close_columns_frequency_options()
+    } else {
+        icon.removeClass('fa-bars')
+        icon.addClass('fa-chevron-up')
+
+        var offset = $('#columns_frequency .fa').position();
+        var height = button.height();
+
+          console.log($('#columns_frequency').position().top + height)
+                    console.log(offset.left - $('#columns_frequency_chooser').width() + icon.width() + 20)
+
+        $('#columns_frequency_chooser').removeClass('hide').offset({
+            top: $('#columns_frequency').position().top + height,
+            left: offset.left - $('#columns_frequency_chooser').width() + icon.width() + 20
         })
 
 
@@ -218,6 +253,29 @@ function show_elements_types() {
 
 }
 
+function change_columns_frequency(frequency, frequency_label) {
+
+    $('#columns_frequency span.label').html(frequency_label)
+
+
+
+    var parameters = jQuery.parseJSON(rows.parameters);
+    parameters.frequency = frequency;
+
+    rows.parameters = JSON.stringify(parameters)
+
+    rows.url = '/' + rows.ar_file + '?tipo=' + rows.tipo + '&parameters=' + rows.parameters
+    rows.fetch({
+        reset: true
+    });
+
+    close_columns_frequency_options()
+    $('#columns_frequency_chooser div').removeClass('selected')
+    $('#columns_frequency_chooser .fa').removeClass('fa-circle').addClass('fa-circle-o')
+    $('#element_group_option_' + frequency).addClass('selected')
+    $('#element_group_option_' + frequency + ' .fa').removeClass('fa-circle-o').addClass('fa-circle')
+
+}
 
 function change_columns_period(period, period_label) {
 

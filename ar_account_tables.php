@@ -51,7 +51,7 @@ case 'uploads':
 	break;
 case 'materials':
 	materials(get_table_parameters(), $db, $user, $account);
-	break;	
+	break;
 case 'upload_records':
 	upload_records(get_table_parameters(), $db, $user, $account);
 	break;
@@ -105,7 +105,7 @@ function data_sets($_data, $db, $user, $account) {
 				$name=_('Materials');
 				$request='account/data_sets/materials';
 
-				break;	
+				break;
 			default:
 				$name=$data['Data Sets Code'];
 				$request='';
@@ -233,17 +233,32 @@ function timeserie_records($_data, $db, $user, $account) {
 
 	if ($result=$db->query($sql)) {
 
+
+
 		if ($timeseries->get('Type')=='StoreSales') {
 			foreach ($result as $data) {
+
+				if ($_data['parameters']['frequency']=='annually') {
+					$date=strftime("%Y", strtotime($data['Timeseries Record Date'].' +0:00'));
+				}elseif ($_data['parameters']['frequency']=='monthy') {
+					$date=strftime("%b %Y", strtotime($data['Timeseries Record Date'].' +0:00'));
+				}elseif ($_data['parameters']['frequency']=='weekly') {
+					$date=strftime("(%e %b) %Y %W ", strtotime($data['Timeseries Record Date'].' +0:00'));
+				}elseif ($_data['parameters']['frequency']=='daily') {
+					$date=strftime("%a %e %b %Y", strtotime($data['Timeseries Record Date'].' +0:00'));
+				}
+
 				$adata[]=array(
 					'float_a'=>money($data['Timeseries Record Float A'], $timeseries->parent->get('Currency Code')),
 					'float_b'=>money($data['Timeseries Record Float B'], $account->get('Currency')),
 					'int_a'=>number($data['Timeseries Record Integer A']),
 					'int_b'=>number($data['Timeseries Record Integer B']),
-					'date'=>strftime("%a %e %b %Y", strtotime($data['Timeseries Record Date'].' +0:00')),
-					'year'=>strftime("%Y", strtotime($data['Timeseries Record Date'].' +0:00')),
-					'month_year'=>strftime("%b %Y", strtotime($data['Timeseries Record Date'].' +0:00')),
-					'week_year'=>strftime("(%e %b) %Y %W ", strtotime($data['Timeseries Record Date'].' +0:00')),
+					'date'=>$date
+
+					//'date'=>strftime("%a %e %b %Y", strtotime($data['Timeseries Record Date'].' +0:00')),
+					//'year'=>strftime("%Y", strtotime($data['Timeseries Record Date'].' +0:00')),
+					//'month_year'=>strftime("%b %Y", strtotime($data['Timeseries Record Date'].' +0:00')),
+					//'week_year'=>strftime("(%e %b) %Y %W ", strtotime($data['Timeseries Record Date'].' +0:00')),
 
 				);
 			}
@@ -482,6 +497,7 @@ function uploads($_data, $db, $user, $account) {
 	echo json_encode($response);
 }
 
+
 function materials($_data, $db, $user, $account) {
 
 	$rtext_label='material';
@@ -496,8 +512,8 @@ function materials($_data, $db, $user, $account) {
 
 		foreach ($result as $data) {
 
-		
-	switch ($data['Material Type']) {
+
+			switch ($data['Material Type']) {
 			case 'Material':
 				$type=  _('Material');
 				break;
@@ -514,7 +530,7 @@ function materials($_data, $db, $user, $account) {
 				'name'=>$data['Material Name'],
 				'type'=>$type,
 				'parts'=>number($data['Material Parts Number']),
-				
+
 
 			);
 
@@ -548,7 +564,7 @@ function upload_records($_data, $db, $user, $account) {
 	include_once 'utils/natural_language.php';
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-//print $sql;
+	//print $sql;
 	$adata=array();
 
 	if ($result=$db->query($sql)) {
@@ -562,21 +578,21 @@ function upload_records($_data, $db, $user, $account) {
 				switch ($data['Upload Record State']) {
 				case 'OK':
 					$state='<i class="fa fa-check success" aria-hidden="true"></i> ';
-					$state.=sprintf('<span class="button" onClick="change_view(\'%s\')">%s</span>',$data['link'],($data['object_name']!=''?$data['object_name']:$data['object_auxiliar_name']));
+					$state.=sprintf('<span class="button" onClick="change_view(\'%s\')">%s</span>', $data['link'], ($data['object_name']!=''?$data['object_name']:$data['object_auxiliar_name']));
 					break;
 				case 'Error':
 					$state='<i class="fa fa-exclamation-circle error" aria-hidden="true" title="'._('Error').'"></i> ';
 					switch ($data['Upload Record Message Code']) {
-					    case 'duplicated_field':
-					        $state.=_('Duplicated value in a unique field').' '.$data['Upload Record Message Metadata'];
-					        break;
-					    default:
-					        $state.=$data['Upload Record Message Code'];
-					        break;
+					case 'duplicated_field':
+						$state.=_('Duplicated value in a unique field').' '.$data['Upload Record Message Metadata'];
+						break;
+					default:
+						$state.=$data['Upload Record Message Code'];
+						break;
 					}
-					
-					$state.=sprintf('<span class="button" onClick="change_view(\'%s\')">%s</span>',$data['link'],($data['object_name']!=''?$data['object_name']:$data['object_auxiliar_name']));
-					break;	
+
+					$state.=sprintf('<span class="button" onClick="change_view(\'%s\')">%s</span>', $data['link'], ($data['object_name']!=''?$data['object_name']:$data['object_auxiliar_name']));
+					break;
 				default:
 					$state=$data['Upload Record State'];
 				}

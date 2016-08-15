@@ -6,42 +6,12 @@ var columns = [
     renderable: false,
     cell: "string"
 },
- {
+{
     name: "date",
     label: "{t}Date{/t}",
-        renderable:{if $data['subtab']=='timeserie.records.daily'}true{else}false{/if},
+        renderable:true,
 
     editable: false,
-     cell: Backgrid.Cell.extend({
-              className: "aright width_150"     
-    }),
-         headerCell: integerHeaderCell,
-     sortType: "toggle",
-}, {
-    name: "year",
-    label: "{t}Year{/t}",
-    editable: false,
-    renderable:{if $data['subtab']=='timeserie.records.annually'}true{else}false{/if},
-     cell: Backgrid.Cell.extend({
-              className: "aright width_150"     
-    }),
-         headerCell: integerHeaderCell,
-     sortType: "toggle",
-}, {
-    name: "month_year",
-    label: "{t}Month{/t}",
-    editable: false,
-    renderable:{if $data['subtab']=='timeserie.records.monthy'}true{else}false{/if},
-     cell: Backgrid.Cell.extend({
-              className: "aright width_150"     
-    }),
-         headerCell: integerHeaderCell,
-     sortType: "toggle",
-}, {
-    name: "week_year",
-    label: "{t}Week{/t}",
-    editable: false,
-    renderable:{if $data['subtab']=='timeserie.records.weekly'}true{else}false{/if},
      cell: Backgrid.Cell.extend({
               className: "aright width_150"     
     }),

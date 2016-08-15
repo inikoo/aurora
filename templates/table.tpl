@@ -274,8 +274,8 @@
 <div style="clear:both"></div>
 </div>
 
+{if  (isset($table_views) and count($table_views)>1) or  isset($f_period)  or  isset($frequency) }
 
-{if isset($table_views) and count($table_views)>1}
 <div class="table_views tabs ">
 {foreach from=$table_views item=view key=id} 
 <div id="view_{$id}" class="view tab left {if isset($view.selected) and $view.selected}selected{/if}"  onclick="change_table_view('{$id}',true)" title="{if isset($view.title)}{$view.title}{else}{$view.label}{/if}">
@@ -283,11 +283,17 @@
 </div>
 {/foreach}
 {if isset($f_period) }
-
 <div id="columns_period" class="hide aright padding_right_10">
 <span class="label realce">{$f_period_label}</span> <i class="fa fa-bars fa-fw padding_left_10 button" aria-hidden="true" onclick="show_columns_period_options()"></i>
 </div> 
 {/if}
+{if isset($frequency) }
+<div id="columns_frequency" class=" aright padding_right_10">
+<span class="label realce">{$frequency_label}</span> <i class="fa fa-bars fa-fw padding_left_10 button" aria-hidden="true" onclick="show_columns_frequency_options()"></i>
+</div> 
+{/if}
+
+
 </div>
 {/if}
 
@@ -532,6 +538,15 @@ var with_elements=false;
 {foreach from=$f_periods item=period_label key=_f_period} 
 <div onClick="change_columns_period('{$_f_period}','{$period_label}')" id="element_group_option_{$_f_period}" elements_type="{$_f_period}" class="aright {if $f_period==$_f_period}selected{/if}" >
  {$period_label} <i class="fa fw {if $f_period==$_f_period}fa-circle{else}fa-circle-o{/if} padding_left_10 padding_right_10"></i>
+</div>
+{/foreach} 
+</div>
+
+
+<div id="columns_frequency_chooser" class="hide panel popout_chooser " >
+{foreach from=$frequencies item=frequency_label key=_f_frequency} 
+<div onClick="change_columns_frequency('{$_f_frequency}','{$frequency_label}')" id="element_group_option_{$_f_frequency}" elements_type="{$_f_frequency}" class="aright {if $frequency==$_f_frequency}selected{/if}" >
+ {$frequency_label} <i class="fa fw {if $frequency==$_f_frequency}fa-circle{else}fa-circle-o{/if} padding_left_10 padding_right_10"></i>
 </div>
 {/foreach} 
 
