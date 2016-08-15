@@ -699,7 +699,7 @@ $modules=array(
 			'product'=>array(
 				'type'=>'object',
 				'subtabs_parent'=>array(
-					'product.sales.overview'=>'product.sales',
+					'product.sales.plot'=>'product.sales',
 					'product.sales.history'=>'product.sales',
 					'product.sales.calendar'=>'product.sales',
 					'product.customers.customers'=>'product.customers',
@@ -709,12 +709,11 @@ $modules=array(
 				),
 
 				'tabs'=>array(
-					'product.dashboard'=>array('label'=>_('Dashboard'), 'title'=>_('Dashboard')),
 					'product.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
 					'product.history'=>array('label'=>_('History, notes'), 'icon'=>'sticky-note-o'),
 					'product.sales'=>array('label'=>_('Sales'), 'title'=>_('Sales'),
 						'subtabs'=>array(
-							'product.sales.overview'=>array('label'=>_('Overview'), 'title'=>_('Overview')),
+							'product.sales.plot'=>array('label'=>_('Plot'), 'title'=>_('Plot')),
 							'product.sales.history'=>array('label'=>_('Sales history'), 'title'=>_('Sales history')),
 							'product.sales.calendar'=>array('label'=>_('Calendar'), 'title'=>_('Sales calendar')),
 
@@ -739,6 +738,8 @@ $modules=array(
 
 						)
 					),
+					'product.history'=>array('label'=>_('History'), 'icon'=>'road', 'class'=>'right icon_only'),
+					'category.images'=>array('label'=>_('Images'), 'icon'=>'camera-retro', 'class'=>'right icon_only'),
 
 				)
 			),

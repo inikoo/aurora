@@ -396,6 +396,17 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'note'
 	),
+	'product.sales.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'frequency'=>'monthy',
+		'f_field'=>'',
+//		'export_fields'=>$export_fields['timeserie_records']
+
+	),
 	'product.orders'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',

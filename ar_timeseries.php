@@ -29,6 +29,16 @@ $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
 
+case 'asset_sales':
+	$data=prepare_values($_REQUEST, array(
+			'parent'=>array('type'=>'string'),
+			'parent_key'=>array('type'=>'string'),
+			'from'=>array('type'=>'string'),
+			'to'=>array('type'=>'string')
+
+		));
+	asset_sales($db, $data, $account);
+	break;
 
 
 case 'csv':
@@ -149,6 +159,105 @@ function outputCSV($data) {
 	}
 	fclose($output);
 }
+
+
+function asset_sales($db, $data, $account) {
+
+	global $memcache_ip;
+
+	switch ($data['parent']) {
+	case 'product':
+		$fields=' `Date`,`Sales`,`Invoices`';
+		$where=sprintf("where `Product ID`=%d", $data['parent_key']);
+		$group='';
+		break;
+	case 'family':
+		$fields=' `Date`,sum(`Sales`) as Sales';
+		$where=sprintf("where `Product Family Key`=%d", $data['parent_key']);
+		$group='group by `Date`';
+		break;
+	case 'department':
+		$fields=' `Date`,sum(`Sales`) as Sales';
+
+		$where=sprintf("where `Product Department Key`=%d", $data['parent_key']);
+		$group='group by `Date`';
+		break;
+	case 'store':
+		$fields=' `Date`,sum(`Sales`) as Sales';
+		$where=sprintf("where `Store Key`=%d", $data['parent_key']);
+		$group='group by `Date`';
+		break;
+	default:
+		return;
+
+	}
+
+	$where_interval=prepare_mysql_dates($data['from'], $data['to'], '`Date`');
+	$where.=$where_interval['mysql'];
+
+	$cache = new Memcached();
+	$cache->addServer($memcache_ip, 11211);
+
+	$sql=sprintf("select %s from `Order Spanshot Fact` %s %s order by `Date` desc",
+		$fields,
+		$where,
+		$group
+	);
+
+	$result=$cache->get($account->get('Code').'SQL'.md5($sql));
+	if ($result and false) {
+		print "date,sales\n";
+		foreach ($result as $row) {
+			print sprintf("%s,%s\n", $row['Date'], $row['Sales']);
+		}
+
+	}else {
+
+		$res=mysql_query($sql);
+		$res=array();
+		print "Date,Open,High,Low,Close,Volume,Adj Close\n";
+
+
+		if ($result=$db->query($sql)) {
+			foreach ($result as $row) {
+
+
+       if($row['Invoices']==0){
+      // continue;
+       }
+
+				print sprintf("%s,%s,%s,%s,%s,%d,%s\n",
+					$row['Date'],
+					$row['Sales'],
+					$row['Sales'],
+					$row['Sales'],
+					$row['Sales'],
+					$row['Invoices'],
+					$row['Sales']
+
+				);
+				
+				$res[]=$row;
+
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
+
+		$cache->set($account->get('Code').'SQL'.md5($sql), $res, 86400 );
+	}
+
+
+
+
+
+
+
+
+}
+
 
 
 ?>
