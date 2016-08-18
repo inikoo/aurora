@@ -220,6 +220,8 @@ class Timesheet extends DB_Table {
 
 	function create_timesheet_record($data) {
 
+
+
 		$data['Timesheet Record Timesheet Key']=$this->id;
 		$data['Timesheet Record Staff Key']=$this->data['Timesheet Staff Key'];
 		$data['editor']=$this->editor;

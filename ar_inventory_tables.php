@@ -66,9 +66,11 @@ case 'category_all_availeable_parts':
 	category_all_availeable_parts(get_table_parameters(), $db, $user);
 	break;
 case 'category_all_parts':
-category_all_parts(get_table_parameters(), $db, $user);
+	category_all_parts(get_table_parameters(), $db, $user);
 	break;
-
+case 'sales_history':
+	sales_history(get_table_parameters(), $db, $user, $account);
+	break;
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
@@ -208,7 +210,6 @@ function stock_history($_data, $db, $user, $account) {
 
 	if ($_data['parameters']['frequency']=='annually') {
 		$rtext_label='year';
-
 	}elseif ($_data['parameters']['frequency']=='monthy') {
 		$rtext_label='month';
 	}elseif ($_data['parameters']['frequency']=='weekly') {
@@ -674,7 +675,7 @@ function part_categories($_data, $db, $user, $account) {
 	}else {
 		$rtext_label='category';
 	}
-	
+
 	include_once 'prepare_table/init.php';
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
@@ -868,6 +869,7 @@ function category_all_availeable_parts($_data, $db, $user) {
 	echo json_encode($response);
 }
 
+
 function category_all_parts($_data, $db, $user) {
 
 
@@ -883,7 +885,7 @@ function category_all_parts($_data, $db, $user) {
 
 		foreach ($result as $data) {
 
-        	switch ($data['Part Status']) {
+			switch ($data['Part Status']) {
 			case 'In Use':
 				$status=sprintf('<span class="" >%s</span>', _('Active'));
 				break;
@@ -891,11 +893,11 @@ function category_all_parts($_data, $db, $user) {
 				$status=sprintf('<span class="warning" ></span>', _('Discontined'));
 
 				break;
-		
+
 			default:
 				$status=$data['Part Status'];
 				break;
-			}			
+			}
 
 			$adata[]=array(
 				'id'=>(integer) $data['Part SKU'],
@@ -988,6 +990,233 @@ function product_families($_data, $db, $user) {
 	echo json_encode($response);
 }
 
+
+function sales_history($_data, $db, $user, $account) {
+
+
+	$skip_get_table_totals=true;
+
+	include_once 'prepare_table/init.php';
+	include_once 'utils/natural_language.php';
+	include_once 'class.Store.php';
+
+
+	if ($_data['parameters']['frequency']=='annually') {
+		$rtext_label='year';
+		$_group_by=' group by Year(`Date`) ';
+		$sql_totals_fields='Year(`Date`)';
+	}elseif ($_data['parameters']['frequency']=='monthy') {
+		$rtext_label='month';
+		$_group_by='  group by DATE_FORMAT(`Date`,"%Y-%m") ';
+		$sql_totals_fields='DATE_FORMAT(`Date`,"%Y-%m")';
+	}elseif ($_data['parameters']['frequency']=='weekly') {
+		$rtext_label='week';
+		$_group_by=' group by Yearweek(`Date`) ';
+		$sql_totals_fields='Yearweek(`Date`)';
+	}elseif ($_data['parameters']['frequency']=='daily') {
+		$rtext_label='day';
+
+		$_group_by=' group by Date(`Date`) ';
+		$sql_totals_fields='`Date`';
+	}
+
+	switch ($_data['parameters']['parent']) {
+	case 'part':
+		include_once 'class.Part.php';
+		$part=new Part($_data['parameters']['parent_key']);
+		$currency=$account->get('Account Currency');
+		$from=$part->get('Part Valid From');
+		$to=($part->get('Part Status')=='Not In Use'?$product->get('Part Valid To'):gmdate('Y-m-d'));
+		$date_field='`Date`';
+		break;
+	case 'category':
+		include_once 'class.Category.php';
+		$category=new Category($_data['parameters']['parent_key']);
+		$currency=$account->get('Account Currency');
+		$from=$category->get('Part Category Valid From');
+		$to=($category->get('Part Category Status')=='NotInUse'?$product->get('Part Category Valid To'):gmdate('Y-m-d'));
+		$date_field='`Timeseries Record Date`';
+		break;
+	default:
+		print_r($_data);
+		exit('parent not configurated '.$_data['parameters']['parent']);
+		break;
+	}
+
+
+	$sql_totals=sprintf('select count(distinct %s) as num from kbase.`Date Dimension` where `Date`>=date(%s) and `Date`<=date(%s) ',
+		$sql_totals_fields,
+		prepare_mysql($from),
+		prepare_mysql($to)
+
+	);
+	
+	//print $sql_totals;
+	
+	list($rtext, $total, $filtered)=get_table_totals($db, $sql_totals, '', $rtext_label, false);
+
+
+	$sql=sprintf('select `Date` from kbase.`Date Dimension` where `Date`>=date(%s) and `Date`<=date(%s) %s order by %s  limit %s',
+		prepare_mysql($from),
+		prepare_mysql($to),
+		$_group_by,
+		"`Date` $order_direction ",
+		"$start_from,$number_results"
+	);
+	//print $sql;
+
+
+	$adata=array();
+
+	$from_date='';
+	$to_date='';
+	if ($result=$db->query($sql)) {
+
+
+		foreach ($result as $data) {
+
+			if ($to_date=='') {
+				$to_date=$data['Date'];
+			}
+			$from_date=$data['Date'];
+
+			if ($_data['parameters']['frequency']=='annually') {
+				$date=strftime("%Y", strtotime($data['Date'].' +0:00'));
+				$_date=$date;
+			}elseif ($_data['parameters']['frequency']=='monthy') {
+				$date=strftime("%b %Y", strtotime($data['Date'].' +0:00'));
+				$_date=$date;
+			}elseif ($_data['parameters']['frequency']=='weekly') {
+				$date=strftime("(%e %b) %Y %W ", strtotime($data['Date'].' +0:00'));
+				$_date=strftime("%Y%W ", strtotime($data['Date'].' +0:00'));
+			}elseif ($_data['parameters']['frequency']=='daily') {
+				$date=strftime("%a %e %b %Y", strtotime($data['Date'].' +0:00'));
+				$_date=$date;
+			}
+
+			$adata[$_date]=array(
+				'sales'=>'<span class="very_discreet">'.money(0, $currency).'</span>',
+				'customers'=>'<span class="very_discreet">'.number(0).'</span>',
+				'invoices'=>'<span class="very_discreet">'.number(0).'</span>',
+				'date'=>$date
+
+
+
+			);
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		print "$sql";
+		exit;
+	}
+
+
+
+
+	switch ($_data['parameters']['parent']) {
+	case 'part':
+		if ($_data['parameters']['frequency']=='annually') {
+			$from_date=gmdate("Y-01-01 00:00:00", strtotime($from_date.' +0:00'));
+			$to_date=gmdate("Y-12-31 23:59:59", strtotime($to_date.' +0:00'));
+		}elseif ($_data['parameters']['frequency']=='monthy') {
+			$from_date=gmdate("Y-m-01 00:00:00", strtotime($from_date.' +0:00'));
+			$to_date=gmdate("Y-m-01 00:00:00", strtotime($to_date.' + 1 month +0:00'));
+		}elseif ($_data['parameters']['frequency']=='weekly') {
+			$from_date=gmdate("Y-m-d 00:00:00", strtotime($from_date.'  -1 week  +0:00'));
+			$to_date=gmdate("Y-m-d 00:00:00", strtotime($to_date.' + 1 week +0:00'));
+		}elseif ($_data['parameters']['frequency']=='daily') {
+			$from_date=$from_date.' 00:00:00';
+			$to_date=$to_date.' 23:59:59';
+		}
+		break;
+	case 'category':
+		if ($_data['parameters']['frequency']=='annually') {
+			$from_date=gmdate("Y-01-01", strtotime($from_date.' +0:00'));
+			$to_date=gmdate("Y-12-31", strtotime($to_date.' +0:00'));
+		}elseif ($_data['parameters']['frequency']=='monthy') {
+			$from_date=gmdate("Y-m-01", strtotime($from_date.' +0:00'));
+			$to_date=gmdate("Y-m-01", strtotime($to_date.' + 1 month +0:00'));
+		}elseif ($_data['parameters']['frequency']=='weekly') {
+			$from_date=gmdate("Y-m-d", strtotime($from_date.'  -1 week  +0:00'));
+			$to_date=gmdate("Y-m-d", strtotime($to_date.' + 1 week +0:00'));
+		}elseif ($_data['parameters']['frequency']=='daily') {
+			$from_date=$from_date.'';
+			$to_date=$to_date.'';
+		}
+		
+		break;
+	default:
+		print_r($_data);
+		exit('parent not configurated '.$_data['parameters']['parent']);
+		break;
+	}
+
+
+
+
+	$sql=sprintf("select $fields from $table $where $wheref and %s>=%s and  %s<=%s %s",
+		$date_field,
+		prepare_mysql($from_date),
+		$date_field,
+		prepare_mysql($to_date),
+		" $group_by "
+	);
+
+	//print $sql;
+	if ($result=$db->query($sql)) {
+
+
+
+		foreach ($result as $data) {
+			if ($_data['parameters']['frequency']=='annually') {
+				$date=strftime("%Y", strtotime($data['Date'].' +0:00'));
+				$_date=$date;
+			}elseif ($_data['parameters']['frequency']=='monthy') {
+				$date=strftime("%b %Y", strtotime($data['Date'].' +0:00'));
+				$_date=$date;
+			}elseif ($_data['parameters']['frequency']=='weekly') {
+				$date=strftime("(%e %b) %Y %W ", strtotime($data['Invoice Date'].' +0:00'));
+				$_date=strftime("%Y%W ", strtotime($data['Date'].' +0:00'));
+			}elseif ($_data['parameters']['frequency']=='daily') {
+				$date=strftime("%a %e %b %Y", strtotime($data['Date'].' +0:00'));
+				$_date=$date;
+			}
+
+			if (array_key_exists($_date, $adata)) {
+
+
+				$adata[$_date]=array(
+					'sales'=>money($data['sales'], $currency),
+					'deliveries'=>number($data['deliveries']),
+					'date'=>$date
+
+
+				);
+			}
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		print "$sql";
+		exit;
+	}
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>array_values($adata),
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
 
 
 ?>

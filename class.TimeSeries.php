@@ -320,6 +320,11 @@ class Timeseries extends DB_Table {
 			);
 
 			$this->db->exec($sql);
+			include_once('class.Data_Sets.php');
+			$data_set=new Data_Sets('code','Timeseries');
+			if($data_set->id){
+			    $data_set->update_stats();
+			}
 
 
 		}else {

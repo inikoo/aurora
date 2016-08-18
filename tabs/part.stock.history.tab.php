@@ -17,15 +17,6 @@ $tipo='stock_history';
 
 $default=$user->get_tab_defaults($tab);
 
-if ($state['subtab']=='part.stock.history.weekly') {
-	$default['frequency']='weekly';
-}elseif ($state['subtab']=='part.stock.history.daily') {
-	$default['frequency']='daily';
-}elseif ($state['subtab']=='part.stock.history.monthy') {
-	$default['frequency']='monthy';
-}elseif ($state['subtab']=='part.stock.history.annually') {
-	$default['frequency']='annually';
-}
 
 
 

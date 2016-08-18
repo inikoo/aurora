@@ -47,6 +47,8 @@ class Data_Sets extends DB_Table {
 
 		if ($tipo=='id')
 			$sql=sprintf("select * from `Data Sets Dimension` where `Data Sets Key`=%d", $tag);
+		if ($tipo=='code')
+			$sql=sprintf("select * from `Data Sets Dimension` where `Data Sets Code`=%s", prepare_mysql($tag));	
 		else
 			return;
 		if ($this->data = $this->db->query($sql)->fetch()) {
@@ -403,6 +405,9 @@ class Data_Sets extends DB_Table {
 
 
 			);
+			
+			//print "$sql\n";
+			
 			if ($result=$this->db->query($sql)) {
 				if ($row = $result->fetch()) {
 					$size=$row['data_size'];

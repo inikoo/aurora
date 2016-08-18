@@ -44,7 +44,33 @@ $editor=array(
 );
 
 //create_categories($db,$editor);
-migrate_products($db, $editor);
+//migrate_products($db, $editor);
+fix_product_categries($db);
+
+
+function fix_product_categries($db) {
+	$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Product"');
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+
+			$category=new Category($row['Category Key']);
+
+			$store=new Store($category->data['Category Store Key']);
+
+			$sql=sprintf("insert into `Product Category Dimension` (`Product Category Key`,`Product Category Store Key`,`Product Category Currency Code`,`Product Category Valid From`) values (%d,%d,%s,%s)",
+				$category->id,
+				$store->id,
+				prepare_mysql($store->get('Store Currency Code')),
+				prepare_mysql(gmdate('Y-m-d H:i:s'))
+			);
+			$db->exec($sql);
+		}
+
+	}else {print_r($error_info=$db->errorInfo());exit;}
+
+}
+
 
 function create_categories($db, $editor) {
 

@@ -369,7 +369,7 @@ class Part extends Asset{
 
 		$products=$this->get_product_ids();
 		foreach ($products as $product_pid) {
-			$product=new Product ('pid', $product_pid);
+			$product=new Product ('id', $product_pid);
 			$product->update_availability_type();
 
 		}
@@ -484,7 +484,7 @@ class Part extends Asset{
 				$value=$value*$product_data['Parts Per Product'];
 			}
 			if (array_key_exists($field, $product_data['Linked Fields'])) {
-				$product=new Product($product_data['Store Product Key']);
+				$product=new Product('id',$product_data['Store Product Key']);
 				$update_data=array();
 
 
@@ -1590,7 +1590,7 @@ class Part extends Asset{
 		$products=$this->get_current_product_ids();
 
 		foreach ($products as  $product_id=>$values) {
-			$product=new Product('pid', $product_id);
+			$product=new Product('id', $product_id);
 			if ($product->id) {
 				$product->update_availability();
 			}
@@ -1688,7 +1688,7 @@ class Part extends Asset{
 
 		$products=$this->get_product_ids();
 		foreach ($products as $product_pid) {
-			$product=new Product ('pid', $product_pid);
+			$product=new Product ('id', $product_pid);
 			$product->update_availability_type();
 
 		}
@@ -2264,7 +2264,7 @@ class Part extends Asset{
 		$res=mysql_query($sql);
 		$products=array();
 		while ($row=mysql_fetch_array($res)) {
-			$products[]=new Product('pid', $row['Product ID']);
+			$products[]=new Product('id', $row['Product ID']);
 		}
 
 		return $products;
@@ -2363,17 +2363,7 @@ class Part extends Asset{
 	}
 
 
-	function get_fomated_unit_commercial_value($datetime='') {
-
-		return money($this->get_unit_commercial_value($datetime));
-	}
-
-
-	function get_current_formatted_commercial_value() {
-
-		return money($this->data['Part Current On Hand Stock']*$this->get_unit_commercial_value());
-	}
-
+	
 
 	function get_current_formatted_value_at_cost() {
 		//return number($this->data['Part Current Value'],2);
@@ -2389,45 +2379,6 @@ class Part extends Asset{
 		return money($this->data['Part Current On Hand Stock']*$this->data['Part Cost']  );
 	}
 
-
-	function get_unit_commercial_value($datetime='') {
-
-
-
-		$commercial_value=0;
-		$sum_commercial_value=0;
-		$count_commercial_value_samples=0;
-
-		$product_part_lists=$this->get_product_part_list($datetime);
-
-		// print_r($product_part_lists);
-
-		foreach ($product_part_lists as $product_part_list) {
-
-
-
-			$product=new Product('pid', $product_part_list['Product ID']);
-
-
-			if ($product->pid and $product_part_list['Parts Per Product']>0) {
-				$price=$product->get_historic_price_corporate_currency($datetime)/$product_part_list['Parts Per Product'];
-
-				if ($price>0) {
-					$sum_commercial_value+=$price;
-					$count_commercial_value_samples++;
-				}
-			}
-
-		}
-
-
-		if ($count_commercial_value_samples) {
-			$commercial_value=$sum_commercial_value/$count_commercial_value_samples;
-		}
-		// print "xx $commercial_value";
-
-		return $commercial_value;
-	}
 
 
 	function fix_stock_transactions() {
@@ -3674,7 +3625,7 @@ where `Part SKU`=%d ",
 
 		foreach ($this->get_product_ids()   as $pid) {
 
-			$product=new Product('pid', $pid);
+			$product=new Product('id', $pid);
 
 			$product_from=$product->data['Product Valid From'];
 			$product_to=$product->data['Product Valid To'];
@@ -4128,7 +4079,7 @@ where `Part SKU`=%d ",
 					$product_data['Number Linked Fields']=count($product_data['Linked Fields']);
 				}
 				if ($with_objects) {
-					$product_data['Product']=new Product($row['Store Product Key']);
+					$product_data['Product']=new Product('id',$row['Store Product Key']);
 				}
 				$products_data[]=$product_data;
 			}

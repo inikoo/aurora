@@ -415,6 +415,10 @@ migrate_products.oneoff.php
 migrate_history_note_details.php
 
 
+ALTER TABLE `Product Category Dimension` ADD `Product Category Status` ENUM('Active','Discontinued') NOT NULL DEFAULT 'Active' AFTER `Product Category Description`, ADD INDEX (`Product Category Status`);
+ALTER TABLE `Product Category Dimension` DROP PRIMARY KEY`
+ALTER TABLE `Product Category Dimension` ADD PRIMARY KEY (`Product Category Key`);
+ALTER TABLE `Part Category Dimension` ADD `Part Category Valid From` DATETIME NULL AFTER `Part Category Warehouse Key`, ADD `Part Category Valid To` DATETIME NULL AFTER `Part Category Valid From`;
 
 
 STICKY:::: --> update `Category Dimension` set `Category Scope`=`Category Subject` where `Category Scope` is null or `Category Scope`='';

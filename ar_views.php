@@ -642,6 +642,8 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
 			}elseif ($data['_object']->get('Root Key')==$data['store']->get('Store Department Category Key')) {
 				include_once 'showcase/department.show.php';
 				$html=get_department_showcase($data, $smarty, $user, $db);
+			}else{
+			    $html='';
 			}
 
 		}

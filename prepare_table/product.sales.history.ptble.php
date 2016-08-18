@@ -47,20 +47,6 @@ $_dir=$order_direction;
 
 if ($order=='date')
 	$order='`Invoice Date`';
-elseif ($order=='type')
-	$order='`Timeseries Record Type`';
-elseif ($order=='float_a')
-	$order='`Timeseries Record Float A`';
-elseif ($order=='float_b')
-	$order='`Timeseries Record Float B`';
-elseif ($order=='float_c')
-	$order='`Timeseries Record Float C`';
-elseif ($order=='float_d')
-	$order='`Timeseries Record Float D`';
-elseif ($order=='int_a')
-	$order='`Timeseries Record Integer A`';
-elseif ($order=='int_b')
-	$order='`Timeseries Record Integer B`';
 
 else
 	$order='`Invoice Date`';

@@ -12,6 +12,191 @@
 
 trait PartCategory {
 
+
+	function create_part_timeseries($data) {
+
+		
+
+		$data['Timeseries Parent']='Category';
+		$data['Timeseries Parent Key']=$this->id;
+
+		$timeseries=new Timeseries('find', $data, 'create');
+		if ($timeseries->new or true) {
+
+
+
+
+			require_once 'utils/date_functions.php';
+
+			if ($this->data['Part Category Valid From']!='') {
+				$from=date('Y-m-d', strtotime($this->get('Part Category Valid From')));
+
+			}else {
+				$from='';
+			}
+
+			if ($this->get('Part Category Status')=='NotInUse') {
+				$to=date('Y-m-d', strtotime($this->get('Part Category Valid To')));
+			}else {
+				$to=date('Y-m-d');
+			}
+
+
+
+
+			if ($from and $to) {
+
+
+				$dates=date_frequency_range($this->db, $timeseries->get('Timeseries Frequency'), $from, $to);
+
+				foreach ($dates as $date_frequency_period) {
+
+					list($sold_amount,$deliveries,$skos)=$this->get_part_timeseries_record_data($timeseries, $date_frequency_period);
+
+
+					$_date=gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00')) ;
+
+					if ($skos!=0 or $deliveries!=0 or $sold_amount!=0) {
+						list($timeseries_record_key, $date)=$timeseries->create_record(array('Timeseries Record Date'=> $_date ));
+						$sql=sprintf('update `Timeseries Record Dimension` set
+                    `Timeseries Record Integer A`=%d ,
+                    `Timeseries Record Integer B`=%d ,
+                    `Timeseries Record Float A`=%.2f ,
+                    
+                    `Timeseries Record Type`=%s
+                    where `Timeseries Record Key`=%d
+                      ',
+							$deliveries,
+							$skos,
+							$sold_amount,
+							prepare_mysql('Data'),
+							$timeseries_record_key
+
+						);
+
+						$update_sql = $this->db->prepare($sql);
+						$update_sql->execute();
+
+						if ($update_sql->rowCount() or $date==date('Y-m-d')) {
+							$timeseries->update(array('Timeseries Updated'=>gmdate('Y-m-d H:i:s')), 'no_history');
+						}
+
+					}else {
+						$sql=sprintf('delete from `Timeseries Record Dimension` where `Timeseries Record Timeseries Key`=%d and `Timeseries Record Date`=%s ',
+							$timeseries->id,
+							prepare_mysql($_date)
+						);
+
+						$update_sql = $this->db->prepare($sql);
+						$update_sql->execute();
+						if ($update_sql->rowCount()) {
+							$timeseries->update(array('Timeseries Updated'=>gmdate('Y-m-d H:i:s')), 'no_history');
+
+						}
+
+					}
+					$timeseries->update_stats();
+					//$updated=$this->update_product_timeseries_record($timeseries, $timeseries_record_key, $date);
+
+					//$timeseries->update_stats();
+					//if ($updated) {
+					// $timeseries->update(array('Timeseries Updated'=>gmdate('Y-m-d H:i:s')), 'no_history');
+					//}
+
+				}
+
+
+			}
+
+			if ($timeseries->get('Timeseries Number Records')==0)
+				$timeseries->update(array('Timeseries Updated'=>gmdate('Y-m-d H:i:s')), 'no_history');
+
+
+		}
+
+	}
+
+	function get_part_timeseries_record_data($timeseries, $date_frequency_period) {
+		$part_skus='';
+		$sql=sprintf('select group_concat(`Subject Key`) as part_skus ,`Subject` from `Category Bridge` where `Category Key`=%d and `Subject Key`>0 ', $this->id);
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				if ($row['Subject']=='Part') {
+					$part_skus=$row['part_skus'];
+				}elseif ($row['Subject']=='Category') {
+                
+					$sql=sprintf('select group_concat(`Subject Key`) as part_skus ,`Subject` from `Category Bridge` where `Category Key` in (%s) and `Subject Key`>0 ', $row['part_skus']);
+					if ($result2=$this->db->query($sql)) {
+						if ($row2 = $result2->fetch()) {
+							$part_skus=$row2['part_skus'];
+
+						}
+					}else {
+						print_r($error_info=$this->db->errorInfo());
+						print $sql;
+						exit;
+					}
+
+
+				}
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+	
+
+
+		if ($part_skus=='') {
+			return array(0, 0, 0);
+		}
+
+		if ($timeseries->get('Timeseries Scope')=='Sales') {
+
+
+
+			$sql=sprintf("select count(distinct `Delivery Note Key`)  as deliveries,sum(`Amount In`) net,sum(`Inventory Transaction Quantity`) skos
+
+			from `Inventory Transaction Fact` where `Part SKU` in (%s) and `Inventory Transaction Type`='Sale' and  `Date`>=%s  and   `Date`<=%s  " ,
+				$part_skus,
+				prepare_mysql($date_frequency_period['from']),
+				prepare_mysql($date_frequency_period['to'])
+			);
+
+
+
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+
+
+					$deliveries=$row['deliveries'];
+					$skos=round(-1*$row['skos']);
+					$net=$row['net'];
+				}else {
+					$deliveries=0;
+					$skos=0;
+					$net=0;
+				}
+
+				return array($net, $deliveries, $skos);
+
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				print "$sql\n";
+				exit;
+			}
+
+
+
+		}
+
+
+	}
+
+
+
 	function update_part_category_up_today_sales() {
 
 		if (!$this->skip_update_sales) {

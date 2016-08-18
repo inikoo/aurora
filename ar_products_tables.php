@@ -280,63 +280,112 @@ function category_all_products($_data, $db, $user) {
 function sales_history($_data, $db, $user, $account) {
 
 
-	if ($_data['parameters']['frequency']=='annually') {
-		$rtext_label='year';
-	}elseif ($_data['parameters']['frequency']=='monthy') {
-		$rtext_label='month';
-	}elseif ($_data['parameters']['frequency']=='weekly') {
-		$rtext_label='week';
-	}elseif ($_data['parameters']['frequency']=='daily') {
-		$rtext_label='day';
-	}
+
+
+	$skip_get_table_totals=true;
+
 	include_once 'prepare_table/init.php';
 	include_once 'utils/natural_language.php';
 	include_once 'class.Store.php';
 
-    switch ($_data['parameters']['parent']) {
-        case 'product':
-        include_once('class.Product.php');
-            $product=new Product($_data['parameters']['parent_key']);
-           $currency=$product->get('Product Currency');
-            break;
-        default:
-           exit('parent not configurated');
-            break;
-    }
+
+	if ($_data['parameters']['frequency']=='annually') {
+		$rtext_label='year';
+		$_group_by=' group by Year(`Date`) ';
+		$sql_totals_fields='Year(`Date`)';
+	}elseif ($_data['parameters']['frequency']=='monthy') {
+		$rtext_label='month';
+		$_group_by='  group by DATE_FORMAT(`Date`,"%Y-%m") ';
+		$sql_totals_fields='DATE_FORMAT(`Date`,"%Y-%m")';
+	}elseif ($_data['parameters']['frequency']=='weekly') {
+		$rtext_label='week';
+		$_group_by=' group by Yearweek(`Date`) ';
+		$sql_totals_fields='Yearweek(`Date`)';
+	}elseif ($_data['parameters']['frequency']=='daily') {
+		$rtext_label='day';
+
+		$_group_by=' group by Date(`Date`) ';
+		$sql_totals_fields='`Date`';
+	}
+
+	switch ($_data['parameters']['parent']) {
+	case 'product':
+		include_once 'class.Product.php';
+		$product=new Product($_data['parameters']['parent_key']);
+		$currency=$product->get('Product Currency');
+		$from=$product->get('Product Valid From');
+		$to=($product->get('Product Status')=='Discontinued'?$product->get('Product Valid To'):gmdate('Y-m-d'));
+		$date_field='`Invoice Date`';
+		break;
+	case 'category':
+		include_once 'class.Category.php';
+		$category=new Category($_data['parameters']['parent_key']);
+		$currency=$category->get('Product Category Currency Code');
+		$from=$category->get('Product Category Valid From');
+		$to=($category->get('Product Category Status')=='Discontinued'?$product->get('Product Category Valid To'):gmdate('Y-m-d'));
+		$date_field='`Timeseries Record Date`';
+		break;
+	default:
+		print_r($_data);
+		exit('parent not configurated');
+		break;
+	}
 
 
+	$sql_totals=sprintf('select count(distinct %s) as num from kbase.`Date Dimension` where `Date`>=date(%s) and `Date`<=date(%s) ',
+		$sql_totals_fields,
+		prepare_mysql($from),
+		prepare_mysql($to)
 
-	
-	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
-	
+	);
+	list($rtext, $total, $filtered)=get_table_totals($db, $sql_totals, '', $rtext_label, false);
+
+
+	$sql=sprintf('select `Date` from kbase.`Date Dimension` where `Date`>=date(%s) and `Date`<=date(%s) %s order by %s  limit %s',
+		prepare_mysql($from),
+		prepare_mysql($to),
+		$_group_by,
+		"`Date` $order_direction ",
+		"$start_from,$number_results"
+	);
+	//print $sql;
+
 
 	$adata=array();
 
+	$from_date='';
+	$to_date='';
 	if ($result=$db->query($sql)) {
 
 
-
 		foreach ($result as $data) {
+
+			if ($to_date=='') {
+				$to_date=$data['Date'];
+			}
+			$from_date=$data['Date'];
+
 			if ($_data['parameters']['frequency']=='annually') {
-				$date=strftime("%Y", strtotime($data['Invoice Date'].' +0:00'));
+				$date=strftime("%Y", strtotime($data['Date'].' +0:00'));
+				$_date=$date;
 			}elseif ($_data['parameters']['frequency']=='monthy') {
-				$date=strftime("%b %Y", strtotime($data['Invoice Date'].' +0:00'));
+				$date=strftime("%b %Y", strtotime($data['Date'].' +0:00'));
+				$_date=$date;
 			}elseif ($_data['parameters']['frequency']=='weekly') {
-				$date=strftime("(%e %b) %Y %W ", strtotime($data['Invoice Date'].' +0:00'));
+				$date=strftime("(%e %b) %Y %W ", strtotime($data['Date'].' +0:00'));
+				$_date=strftime("%Y%W ", strtotime($data['Date'].' +0:00'));
 			}elseif ($_data['parameters']['frequency']=='daily') {
-				$date=strftime("%a %e %b %Y", strtotime($data['Invoice Date'].' +0:00'));
+				$date=strftime("%a %e %b %Y", strtotime($data['Date'].' +0:00'));
+				$_date=$date;
 			}
 
-			$adata[]=array(
-				'sales'=>money($data['sales'], $currency),
-				'customers'=>number($data['customers']),
-				'invoices'=>number($data['invoices']),
+			$adata[$_date]=array(
+				'sales'=>'<span class="very_discreet">'.money(0, $currency).'</span>',
+				'customers'=>'<span class="very_discreet">'.number(0).'</span>',
+				'invoices'=>'<span class="very_discreet">'.number(0).'</span>',
 				'date'=>$date
 
-				//'date'=>strftime("%a %e %b %Y", strtotime($data['Invoice Date'].' +0:00')),
-				//'year'=>strftime("%Y", strtotime($data['Invoice Date'].' +0:00')),
-				//'month_year'=>strftime("%b %Y", strtotime($data['Invoice Date'].' +0:00')),
-				//'week_year'=>strftime("(%e %b) %Y %W ", strtotime($data['Invoice Date'].' +0:00')),
+
 
 			);
 
@@ -344,6 +393,98 @@ function sales_history($_data, $db, $user, $account) {
 
 	}else {
 		print_r($error_info=$db->errorInfo());
+		print "$sql";
+		exit;
+	}
+
+
+
+
+	switch ($_data['parameters']['parent']) {
+	case 'product':
+		if ($_data['parameters']['frequency']=='annually') {
+			$from_date=gmdate("Y-01-01 00:00:00", strtotime($from_date.' +0:00'));
+			$to_date=gmdate("Y-12-31 23:59:59", strtotime($to_date.' +0:00'));
+		}elseif ($_data['parameters']['frequency']=='monthy') {
+			$from_date=gmdate("Y-m-01 00:00:00", strtotime($from_date.' +0:00'));
+			$to_date=gmdate("Y-m-01 00:00:00", strtotime($to_date.' + 1 month +0:00'));
+		}elseif ($_data['parameters']['frequency']=='weekly') {
+			$from_date=gmdate("Y-m-d 00:00:00", strtotime($from_date.'  -1 week  +0:00'));
+			$to_date=gmdate("Y-m-d 00:00:00", strtotime($to_date.' + 1 week +0:00'));
+		}elseif ($_data['parameters']['frequency']=='daily') {
+			$from_date=$from_date.' 00:00:00';
+			$to_date=$to_date.' 23:59:59';
+		}
+		break;
+	case 'category':
+		if ($_data['parameters']['frequency']=='annually') {
+			$from_date=gmdate("Y-01-01", strtotime($from_date.' +0:00'));
+			$to_date=gmdate("Y-12-31", strtotime($to_date.' +0:00'));
+		}elseif ($_data['parameters']['frequency']=='monthy') {
+			$from_date=gmdate("Y-m-01", strtotime($from_date.' +0:00'));
+			$to_date=gmdate("Y-m-01", strtotime($to_date.' + 1 month +0:00'));
+		}elseif ($_data['parameters']['frequency']=='weekly') {
+			$from_date=gmdate("Y-m-d", strtotime($from_date.'  -1 week  +0:00'));
+			$to_date=gmdate("Y-m-d", strtotime($to_date.' + 1 week +0:00'));
+		}elseif ($_data['parameters']['frequency']=='daily') {
+			$from_date=$from_date.'';
+			$to_date=$to_date.'';
+		}
+		
+		break;
+	default:
+		print_r($_data);
+		exit('parent not configurated');
+		break;
+	}
+
+
+
+
+	$sql=sprintf("select $fields from $table $where $wheref and %s>=%s and  %s<=%s %s",
+		$date_field,
+		prepare_mysql($from_date),
+		$date_field,
+		prepare_mysql($to_date),
+		" $group_by "
+	);
+
+	//print $sql;
+	if ($result=$db->query($sql)) {
+
+
+
+		foreach ($result as $data) {
+			if ($_data['parameters']['frequency']=='annually') {
+				$date=strftime("%Y", strtotime($data['Date'].' +0:00'));
+				$_date=$date;
+			}elseif ($_data['parameters']['frequency']=='monthy') {
+				$date=strftime("%b %Y", strtotime($data['Date'].' +0:00'));
+				$_date=$date;
+			}elseif ($_data['parameters']['frequency']=='weekly') {
+				$date=strftime("(%e %b) %Y %W ", strtotime($data['Invoice Date'].' +0:00'));
+				$_date=strftime("%Y%W ", strtotime($data['Date'].' +0:00'));
+			}elseif ($_data['parameters']['frequency']=='daily') {
+				$date=strftime("%a %e %b %Y", strtotime($data['Date'].' +0:00'));
+				$_date=$date;
+			}
+
+			if (array_key_exists($_date, $adata)) {
+
+				$adata[$_date]=array(
+					'sales'=>money($data['sales'], $currency),
+					'customers'=>number($data['customers']),
+					'invoices'=>number($data['invoices']),
+					'date'=>$date
+
+
+				);
+			}
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		print "$sql";
 		exit;
 	}
 
@@ -351,7 +492,7 @@ function sales_history($_data, $db, $user, $account) {
 	$response=array('resultset'=>
 		array(
 			'state'=>200,
-			'data'=>$adata,
+			'data'=>array_values($adata),
 			'rtext'=>$rtext,
 			'sort_key'=>$_order,
 			'sort_dir'=>$_dir,

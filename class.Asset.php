@@ -491,6 +491,14 @@ class Asset extends DB_Table{
 
 			return array(true, $dimensions);
 
+		case 'Valid From':
+
+			return array(true,
+				strftime("%a %e %b %Y", strtotime($this->data[$this->table_name.' '.$key].' +0:00')));
+
+
+
+			break;
 		default:
 
 			if (preg_match('/'.$this->table_name.' History Note (\d+)/i', $key, $matches)) {

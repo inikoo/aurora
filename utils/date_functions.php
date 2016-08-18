@@ -25,6 +25,128 @@ function date_range($first, $last, $step = '+1 day', $output_format = 'Y-m-d' ) 
 }
 
 
+function date_frequency_range($db, $frequency, $first, $last) {
+
+	/*
+if ($_data['parameters']['frequency']=='annually') {
+		$from_date=gmdate("Y-01-01 00:00:00", strtotime($from_date.' +0:00'));
+		$to_date=gmdate("Y-12-31 23:59:59", strtotime($to_date.' +0:00'));
+	}elseif ($_data['parameters']['frequency']=='monthy') {
+		$from_date=gmdate("Y-m-01 00:00:00", strtotime($from_date.' +0:00'));
+		$to_date=gmdate("Y-m-01 00:00:00", strtotime($to_date.' + 1 month +0:00'));
+	}elseif ($_data['parameters']['frequency']=='weekly') {
+		$from_date=gmdate("Y-m-d 00:00:00", strtotime($from_date.'  -1 week  +0:00'));
+		$to_date=gmdate("Y-m-d 00:00:00", strtotime($to_date.' + 1 week +0:00'));
+	}elseif ($_data['parameters']['frequency']=='daily') {
+		$from_date=$from_date.' 00:00:00';
+		$to_date=$to_date.' 23:59:59';
+	}
+
+*/
+
+
+	$dates=array();
+
+	switch ($frequency) {
+
+	case 'Daily':
+
+		$sql=sprintf("select  `Date` as date_index from kbase.`Date Dimension` where `Date`>=date(%s) and `Date`<=date(%s)  ",
+			prepare_mysql($first),
+			prepare_mysql($last)
+		);
+
+
+		if ($result=$db->query($sql)) {
+			foreach ($result as $row) {
+				$dates[$row['date_index']]=array('from'=>$row['date_index']." 00:00:00", 'to'=>$row['date_index']." 23:59:59");
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
+		break;
+	case 'Yearly':
+
+		$sql=sprintf("select Year(`Date`) as date_index from kbase.`Date Dimension` where `Date`>=date(%s) and `Date`<=date(%s) group by Year(`Date`)",
+			prepare_mysql($first),
+			prepare_mysql($last)
+		);
+
+
+		if ($result=$db->query($sql)) {
+			foreach ($result as $row) {
+				$dates[$row['date_index']]=array('from'=>$row['date_index']."-01-01 00:00:00", 'to'=>$row['date_index']."-12-31 23:59:59");
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+		break;
+	case 'Monthly':
+
+		$sql=sprintf("select DATE_FORMAT(`Date`,'%%Y-%%m') as date_index ,DATE_FORMAT(Last_day(`Date`),'%%Y-%%m-%%d') as last_day  from kbase.`Date Dimension` where `Date`>=date(%s) and `Date`<=date(%s)  group by DATE_FORMAT(`Date`,'%%Y-%%m')",
+			prepare_mysql($first),
+			prepare_mysql($last)
+		);
+
+
+		if ($result=$db->query($sql)) {
+			foreach ($result as $row) {
+				$dates[$row['date_index']]=array('from'=>$row['date_index']."-01 00:00:00", 'to'=>$row['last_day']." 23:59:59");
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+		break;
+	case 'Weekly':
+
+		$sql=sprintf("select  Yearweek(`Date`)  as date_index ,DATE_ADD(`Date`, INTERVAL(-WEEKDAY(`Date`)) DAY) as start ,DATE_ADD(`Date`, INTERVAL(6-WEEKDAY(`Date`)) DAY) as end from kbase.`Date Dimension` where `Date`>=date(%s) and `Date`<=date(%s)  group by Yearweek(`Date`) ",
+			prepare_mysql($first),
+			prepare_mysql($last)
+		);
+
+
+		if ($result=$db->query($sql)) {
+			foreach ($result as $row) {
+				$dates[$row['date_index']]=array('from'=>$row['start']." 00:00:00", 'to'=>$row['end']." 23:59:59");
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+		break;
+	case 'Quarterly':
+
+		$sql=sprintf("select  CONCAT( YEAR(`Date`),' Q',QUARTER(`Date`) )  as date_index ,MAKEDATE(YEAR(`Date`), 1) + INTERVAL QUARTER(`Date`) QUARTER - INTERVAL 1 QUARTER  AS start,MAKEDATE(YEAR(`Date`), 1) + INTERVAL QUARTER(`Date`) QUARTER -INTERVAL 1 DAY AS end from kbase.`Date Dimension` where `Date`>=date(%s) and `Date`<=date(%s)  group by date_index",
+			prepare_mysql($first),
+			prepare_mysql($last)
+		);
+
+
+		if ($result=$db->query($sql)) {
+			foreach ($result as $row) {
+				$dates[$row['date_index']]=array('from'=>$row['start']." 00:00:00", 'to'=>$row['end']." 23:59:59");
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
+
+		break;
+	default:
+
+		break;
+	}
+
+	return $dates;
+
+}
+
+
 function gettext_relative_time($difference) {
 
 
@@ -575,7 +697,7 @@ function calculate_interval_dates($interval, $from='', $to='') {
 		return;
 		break;
 	}
-	
+
 	return array($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb);
 
 }

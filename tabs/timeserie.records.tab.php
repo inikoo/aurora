@@ -18,7 +18,7 @@ $default=$user->get_tab_defaults($tab);
 
 
 
-
+/*
 include 'conf/export_fields.php';
 $default['export_fields']=$export_fields['timeserie_records_'.$state['_object']->get('Type')];
 if ($state['_object']->get('Type')=='StoreSales') {
@@ -28,7 +28,7 @@ if ($state['_object']->get('Type')=='StoreSales') {
 		unset($default['export_fields'][2]);
 	}
 }
-
+*/
 $table_views=array();
 
 $table_filters=array(
@@ -48,6 +48,16 @@ if ($state['_object']->get('Type')=='StoreSales') {
 		'd'=>array('render'=>'false', 'label'=>''),
 		'int_a'=>array('render'=>'true', 'label'=>_('Invoices')),
 		'int_b'=>array('render'=>'true', 'label'=>_('Refunds')),
+
+	);
+}elseif ($state['_object']->get('Type')=='PartCategorySales') {
+	$columns_parameters=array(
+		'a'=>array('render'=>'true', 'label'=>_('Sold Amount')),
+		'b'=>array('render'=>'false','label'=>''),
+		'c'=>array('render'=>'false', 'label'=>''),
+		'd'=>array('render'=>'false', 'label'=>''),
+		'int_a'=>array('render'=>'true', 'label'=>_('Deliveries')),
+		'int_b'=>array('render'=>'true', 'label'=>_('SKOs')),
 
 	);
 }else {
