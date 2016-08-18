@@ -2185,65 +2185,28 @@ input.inputfile {
   stroke: #000;
   stroke-width: 1.5px; }
 
-.RdYlGn .q0-11 {
-  fill: #a50026; }
-
-.RdYlGn .q1-11 {
-  fill: #d73027; }
-
-.RdYlGn .q2-11 {
-  fill: #f46d43; }
-
-.RdYlGn .q3-11 {
-  fill: #fdae61; }
-
-.RdYlGn .q4-11 {
-  fill: #fee08b; }
-
-.RdYlGn .q5-11 {
-  fill: #ffffbf; }
-
-.RdYlGn .q6-11 {
-  fill: #d9ef8b; }
-
-.RdYlGn .q7-11 {
-  fill: #a6d96a; }
-
-.RdYlGn .q8-11 {
-  fill: #66bd63; }
-
-.RdYlGn .q9-11 {
-  fill: #1a9850; }
-
-.RdYlGn .q10-11 {
-  fill: #006837; }
-
-.PuBuGn .q0-9 {
-  fill: #fff7fb; }
-
-.PuBuGn .q1-9 {
-  fill: #ece2f0; }
-
-.PuBuGn .q2-9 {
-  fill: #d0d1e6; }
-
-.PuBuGn .q3-9 {
-  fill: #a6bddb; }
-
-.PuBuGn .q4-9 {
-  fill: #67a9cf; }
-
-.PuBuGn .q5-9 {
-  fill: #3690c0; }
-
-.PuBuGn .q6-9 {
-  fill: #02818a; }
-
-.PuBuGn .q7-9 {
-  fill: #016c59; }
-
-.PuBuGn .q8-9 {
-  fill: #014636; }
+.PuBuGn .q0-11 {
+  fill: rgba(146, 141, 171, 0.75); }
+.PuBuGn .q1-11 {
+  fill: rgba(134, 129, 158, 0.75); }
+.PuBuGn .q2-11 {
+  fill: rgba(123, 118, 145, 0.75); }
+.PuBuGn .q3-11 {
+  fill: rgba(111, 107, 132, 0.75); }
+.PuBuGn .q4-11 {
+  fill: rgba(100, 95, 120, 0.75); }
+.PuBuGn .q5-11 {
+  fill: rgba(88, 84, 107, 0.75); }
+.PuBuGn .q6-11 {
+  fill: rgba(77, 73, 94, 0.75); }
+.PuBuGn .q7-11 {
+  fill: rgba(65, 61, 82, 0.75); }
+.PuBuGn .q8-11 {
+  fill: rgba(54, 50, 69, 0.75); }
+.PuBuGn .q9-11 {
+  fill: rgba(42, 39, 56, 0.75); }
+.PuBuGn .q10-11 {
+  fill: rgba(31, 28, 44, 0.75); }
 
 .adr {
   line-height: 22px; }

@@ -421,6 +421,17 @@ $tab_defaults=array(
 		'elements'=>$elements_options['orders'],
 		'export_fields'=>$export_fields['orders']
 	),
+	'category.product.sales.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'frequency'=>'monthy',
+		'f_field'=>'',
+//		'export_fields'=>$export_fields['timeserie_records']
+
+	),
 	'websites'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
@@ -953,6 +964,28 @@ $tab_defaults=array(
 		'elements_type'=>each($elements_options['supplier_deliveries'])['key'],
 		'elements'=>$elements_options['supplier_deliveries']
 	),
+		'part.sales.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'frequency'=>'monthy',
+		'f_field'=>'',
+//		'export_fields'=>$export_fields['timeserie_records']
+
+	),
+	'category.part.sales.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'frequency'=>'monthy',
+		'f_field'=>'',
+//		'export_fields'=>$export_fields['timeserie_records']
+
+	),
 	'warehouse.locations'=>array(
 		'view'=>'overview',
 		'sort_key'=>'code',
@@ -1077,6 +1110,7 @@ $tab_defaults=array(
 		'rpp'=>100,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'note',
+		'frequency'=>'monthy',
 
 	),
 

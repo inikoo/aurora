@@ -19,6 +19,7 @@ include_once 'trait.NotesSubject.php';
 include_once 'trait.PartCategory.php';
 include_once 'trait.SupplierCategory.php';
 include_once 'trait.InvoiceCategory.php';
+include_once 'trait.ProductCategory.php';
 
 
 
@@ -26,7 +27,7 @@ include_once 'trait.InvoiceCategory.php';
 
 class Category extends DB_Table{
 	use ImageSubject, NotesSubject, AttachmentSubject;
-use PartCategory,SupplierCategory,InvoiceCategory;
+	use PartCategory, SupplierCategory, InvoiceCategory, ProductCategory;
 
 
 	function Category($a1, $a2=false, $a3=false) {
@@ -75,9 +76,9 @@ use PartCategory,SupplierCategory,InvoiceCategory;
 			$this->id=$this->data['Category Key'];
 
 			if ($this->data['Category Scope']=='Part') {
-			
-			
-			
+
+
+
 				$this->subject_table_name='Part Category';
 				$sql=sprintf("select * from `Part Category Dimension` where `Part Category Key`=%d", $this->id);
 				if ($result2=$this->db->query($sql)) {
@@ -106,7 +107,11 @@ use PartCategory,SupplierCategory,InvoiceCategory;
 			}elseif ($this->data['Category Scope']=='Product') {
 				$this->subject_table_name='Product';
 
+				//print_r($this->data);
+
 				$sql=sprintf("select * from `Product Category Dimension` where `Product Category Key`=%d", $this->id);
+				//  print $sql;
+				// exit;
 				if ($result2=$this->db->query($sql)) {
 					if ($row = $result2->fetch()) {
 						$this->data=array_merge($this->data, $row);
@@ -1313,6 +1318,24 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 		);
 		$this->db->exec($sql);
 		$this->update_no_assigned_subjects();
+
+	}
+
+
+	function create_timeseries($data) {
+		switch ($this->data['Category Scope']) {
+		case('Part'):
+
+			$this->create_part_timeseries($data);
+			break;
+		case('Product'):
+
+			$this->create_product_timeseries($data);
+
+			break;
+
+
+		}
 
 	}
 

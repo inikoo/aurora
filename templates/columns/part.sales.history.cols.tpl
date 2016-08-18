@@ -19,18 +19,8 @@ var columns = [
      sortType: "toggle",
 },
 {
-    name: "invoices",
-    label: "{t}Invoices{/t}",
-    editable: false,
- sortable: false,
-    cell: Backgrid.HtmlCell.extend({
-      className: "aright"
-     }),
-     headerCell: integerHeaderCell,
-      sortType: "toggle",
-},{
-    name: "customers",
-    label: "{t}Customers{/t}",
+    name: "deliveries",
+    label: "{t}Deliveries{/t}",
     editable: false,
  sortable: false,
     cell: Backgrid.HtmlCell.extend({

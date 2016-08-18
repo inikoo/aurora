@@ -39,7 +39,16 @@ case 'asset_sales':
 		));
 	asset_sales($db, $data, $account);
 	break;
+case 'part_stock':
+	$data=prepare_values($_REQUEST, array(
+			'parent'=>array('type'=>'string'),
+			'parent_key'=>array('type'=>'string'),
+			'from'=>array('type'=>'string'),
+			'to'=>array('type'=>'string')
 
+		));
+	part_stock($db, $data, $account);
+	break;
 
 case 'csv':
 	$data=prepare_values($_REQUEST, array(
@@ -166,22 +175,68 @@ function asset_sales($db, $data, $account) {
 	global $memcache_ip;
 
 	switch ($data['parent']) {
+	
+	
+	case 'part':
+		$fields=' `Date`,sum(`Sold Amount`)  as `Sales`, sum(`Quantity Sold`)  as  `Volume`';
+		$where=sprintf("where `Part SKU`=%d", $data['parent_key']);
+		$table="`Inventory Spanshot Fact`";
+		$group='group by `Date`';
+		break;
 	case 'product':
-		$fields=' `Date`,`Sales`,`Invoices`';
+		$fields=' `Date`,`Sales`,`Invoices` as Volume';
 		$where=sprintf("where `Product ID`=%d", $data['parent_key']);
+		$table="`Order Spanshot Fact`";
 		$group='';
 		break;
-	case 'family':
-		$fields=' `Date`,sum(`Sales`) as Sales';
-		$where=sprintf("where `Product Family Key`=%d", $data['parent_key']);
-		$group='group by `Date`';
-		break;
-	case 'department':
-		$fields=' `Date`,sum(`Sales`) as Sales';
+	case 'product_category':
 
-		$where=sprintf("where `Product Department Key`=%d", $data['parent_key']);
+
+		$sql=sprintf('select `Timeseries Key` from `Timeseries Dimension` where `Timeseries Parent`="Category" and `Timeseries Parent Key`=%s and `Timeseries Frequency`="Daily" and  `Timeseries Type`="ProductCategorySales" ',
+		$data['parent_key']
+		);
+		if ($result=$db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$timeseries_key=$row['Timeseries Key'];
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
+        
+
+		$fields=' `Timeseries Record Date` as Date,sum(`Timeseries Record Float A`) as Sales ,sum(`Timeseries Record Integer A`) as Invoices';
+		$where=sprintf("where `Timeseries Record Timeseries Key`=%d", $timeseries_key);
+		$table="`Timeseries Record Dimension`  ";
+
 		$group='group by `Date`';
 		break;
+	case 'part_category':
+
+
+		$sql=sprintf('select `Timeseries Key` from `Timeseries Dimension` where `Timeseries Parent`="Category" and `Timeseries Parent Key`=%s and `Timeseries Frequency`="Daily" and  `Timeseries Type`="PartCategorySales" ',
+		$data['parent_key']
+		);
+		if ($result=$db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$timeseries_key=$row['Timeseries Key'];
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
+        
+
+		$fields=' `Timeseries Record Date` as Date,sum(`Timeseries Record Float A`) as Sales ,sum(`Timeseries Record Integer A`) as Volume';
+		$where=sprintf("where `Timeseries Record Timeseries Key`=%d", $timeseries_key);
+		$table="`Timeseries Record Dimension`  ";
+
+		$group='group by `Date`';
+		break;
+
+
 	case 'store':
 		$fields=' `Date`,sum(`Sales`) as Sales';
 		$where=sprintf("where `Store Key`=%d", $data['parent_key']);
@@ -198,45 +253,44 @@ function asset_sales($db, $data, $account) {
 	$cache = new Memcached();
 	$cache->addServer($memcache_ip, 11211);
 
-	$sql=sprintf("select %s from `Order Spanshot Fact` %s %s order by `Date` desc",
+	$sql=sprintf("select %s from %s %s %s order by `Date` desc",
 		$fields,
+		$table,
 		$where,
 		$group
 	);
 
+//	print $sql;
+
 	$result=$cache->get($account->get('Code').'SQL'.md5($sql));
 	if ($result and false) {
-		print "date,sales\n";
+		print "Date,Open,Volume\n";
 		foreach ($result as $row) {
-			print sprintf("%s,%s\n", $row['Date'], $row['Sales']);
+			print sprintf("%s,%s\n", $row['Date'], $row['Sales'],$row['Volume']);
 		}
 
 	}else {
 
 		$res=mysql_query($sql);
 		$res=array();
-		print "Date,Open,High,Low,Close,Volume,Adj Close\n";
+		print "Date,Open,Volume\n";
 
 
 		if ($result=$db->query($sql)) {
 			foreach ($result as $row) {
 
 
-       if($row['Invoices']==0){
-      // continue;
-       }
+				if ($row['Volume']==0) {
+					// continue;
+				}
 
-				print sprintf("%s,%s,%s,%s,%s,%d,%s\n",
+				print sprintf("%s,%.1f,%d\n",
 					$row['Date'],
 					$row['Sales'],
-					$row['Sales'],
-					$row['Sales'],
-					$row['Sales'],
-					$row['Invoices'],
-					$row['Sales']
+					$row['Volume']
 
 				);
-				
+
 				$res[]=$row;
 
 			}
@@ -258,6 +312,92 @@ function asset_sales($db, $data, $account) {
 
 }
 
+
+function part_stock($db, $data, $account) {
+
+	global $memcache_ip;
+
+	switch ($data['parent']) {
+	case 'part':
+		$fields='`Date`,sum(`Quantity Open`) as open ,sum(`Quantity High`) as high,sum(`Quantity Low`) as low,sum(`Quantity On Hand`) as close';
+		$where=sprintf("where `Part SKU`=%d", $data['parent_key']);
+		$group=' group by `Date`';
+		break;
+
+	default:
+		return;
+
+	}
+
+	$where_interval=prepare_mysql_dates($data['from'], $data['to'], '`Date`');
+	$where.=$where_interval['mysql'];
+
+	$cache = new Memcached();
+	$cache->addServer($memcache_ip, 11211);
+
+	$sql=sprintf("select %s from `Inventory Spanshot Fact` %s   %s  order by `Date` desc ",
+		$fields,
+		$where,
+		$group
+	);
+	$result=$cache->get($account->get('Code').'SQL'.md5($sql));
+	if ($result and false) {
+		print "Date,Open,High,Low,Close,Volume,Adj Close\n";
+		foreach ($result as $row) {
+
+			print sprintf("%s,%s,%s,%s,%s\n",
+				$row['Date'],
+				$row['open'],
+				$row['high'],
+				$row['low'],
+				$row['close']
+			);
+
+		}
+
+	}else {
+
+
+
+		$res=array();
+		print "Date,Open,High,Low,Close,Volume,Adj Close\n";
+
+
+		if ($result=$db->query($sql)) {
+			foreach ($result as $row) {
+
+
+
+
+				print sprintf("%s,%.1f,%.1f,%.1f,%.1f\n",
+					$row['Date'],
+					$row['open'],
+					$row['high'],
+					$row['low'],
+					$row['close']
+				);
+
+				$res[]=$row;
+
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			print $sql;
+			exit;
+		}
+
+
+		$cache->set($account->get('Code').'SQL'.md5($sql), $res, 86400 );
+	}
+
+
+
+
+
+
+
+
+}
 
 
 ?>

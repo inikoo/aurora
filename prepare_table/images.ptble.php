@@ -17,19 +17,21 @@ $fields="`Image Subject Key`,I.`Image Key`,`Image Width`,	`Image Height`,`Image 
 
 switch ($parameters['parent']) {
 case 'part':
-	$where=sprintf(" where `Image Subject Object`='Part' and `Image Subject Object Key`=%d",$parameters['parent_key']);
-
+	$where=sprintf(" where `Image Subject Object`='Part' and `Image Subject Object Key`=%d", $parameters['parent_key']);
 	break;
-case 'employee':
-	$where=sprintf(" where `Image Subject Object`='Staff' and `Image Subject Object Key`=%d",$parameters['parent_key']);
-case 'category':
-	$where=sprintf(" where `Image Subject Object`='Category' and `Image Subject Object Key`=%d",$parameters['parent_key']);
-
+case 'product':
+	$where=sprintf(" where `Image Subject Object`='Product' and `Image Subject Object Key`=%d", $parameters['parent_key']);
 	break;	
+case 'employee':
+	$where=sprintf(" where `Image Subject Object`='Staff' and `Image Subject Object Key`=%d", $parameters['parent_key']);
+	break;
+case 'category':
+	$where=sprintf(" where `Image Subject Object`='Category' and `Image Subject Object Key`=%d", $parameters['parent_key']);
+	break;
 case 'account':
-//	$table='`Image Dimension` I ';
+	// $table='`Image Dimension` I ';
 	$where=' where true';
-break;
+	break;
 default:
 
 	exit('image parent not done yet '.$parameters['parent']);

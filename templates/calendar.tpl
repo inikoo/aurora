@@ -48,7 +48,7 @@ var day = d3.time.format("%w"),
 
 var color = d3.scale.quantize()
     .domain([0, data.sales_max_sample_domain])
-    .range(d3.range(9).map(function(d) { return "q" + d + "-9"; }));
+    .range(d3.range(11).map(function(d) { return "q" + d + "-11"; }));
 
 var svg = d3.select("#d3_calendar_asset_sales").selectAll("svg")
     .data(d3.range(from.getFullYear(),to.getFullYear()+1).reverse())
@@ -128,10 +128,21 @@ d3.csv(request, function(error, csv) {
     .map(csv);
 
   rect.filter(function(d) { return d in data; })
-      .attr("class", function(d) { return "day " + color(data[d]); })
+      .attr("class", function(d) { 
+      //console.log(data[d]+' '+color(data[d]));  
+      if(data[d]!=0){
+      return "day " + color(data[d]);
+      }else{
+         return "day "
+      }
+      
+       }
+      
+      )
     .select("title")
-      .text(function(d) { return d + ": " + data[d]; });
-});
+      .text(function(d) { return d + ": " + data[d]+' '+ color(data[d]); });
+}
+);
 
 
 function monthPath(t0) {

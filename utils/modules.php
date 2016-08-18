@@ -677,14 +677,28 @@ $modules=array(
 			),
 			'category'=>array(
 				'type'=>'object',
+				'subtabs_parent'=>array(
+					'category.product.sales.plot'=>'category.sales',
+					'category.product.sales.history'=>'category.sales',
+					'category.product.sales.calendar'=>'category.sales',
 
+				),
 				'tabs'=>array(
 					'category.details'=>array('label'=>_('Data'), 'icon'=>'database'),
-					'category.history'=>array('label'=>_('History'), 'icon'=>'sticky-note-o'),
 					'category.categories'=>array('label'=>_('Subcategories')),
 					'category.subjects'=>array('label'=>''),
-					'category.images'=>array('label'=>_('Images'), 'icon'=>'camera-retro', 'class'=>'right icon_only'),
+					'category.sales'=>array('label'=>_('Sales'),
+						'subtabs'=>array(
+							'category.product.sales.plot'=>array('label'=>_('Plot'), 'title'=>_('Plot')),
+							'category.product.sales.history'=>array('label'=>_('Sales history'), 'title'=>_('Sales history')),
+							'category.product.sales.calendar'=>array('label'=>_('Calendar'), 'title'=>_('Sales calendar')),
 
+						)
+
+					),
+
+					'category.history'=>array('label'=>_('History'), 'icon'=>'road', 'class'=>'right icon_only'),
+					'category.images'=>array('label'=>_('Images'), 'icon'=>'camera-retro', 'class'=>'right icon_only'),
 
 				)
 
@@ -1258,7 +1272,7 @@ $modules=array(
 
 			),
 
-            'settings'=>array(
+			'settings'=>array(
 				'type'=>'navigation', 'label'=>'', 'icon'=>'sliders', 'reference'=>'suppliers/settings', 'class'=>'icon_only',
 				'tabs'=>array(
 					'suppliers.settings'=>array('label'=>_('Setting'), 'icon'=>'sliders', 'class'=>''),
@@ -1333,9 +1347,27 @@ $modules=array(
 
 			),
 			'category'=>array('type'=>'object',
+				'subtabs_parent'=>array(
+
+					'category.part.sales.plot'=>'category.part.sales',
+					'category.part.sales.history'=>'category.part.sales',
+					'category.part.sales.calendar'=>'category.part.sales'
+
+				),
 				'tabs'=>array(
 
 					'category.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+
+					'category.part.sales'=>array('label'=>_('Sales'), 'icon'=>'',
+						'subtabs'=>array(
+							'category.part.sales.plot'=>array('label'=>_('Plot'), 'title'=>_('Plot')),
+							'category.part.sales.history'=>array('label'=>_('Sales history'), 'title'=>_('Sales history')),
+							'category.part.sales.calendar'=>array('label'=>_('Calendar'), 'title'=>_('Sales calendar')),
+
+						)
+
+					),
+
 					'category.subjects'=>array('label'=>_('Parts')),
 					'category.categories'=>array('label'=>_('Subcategories')),
 					'part_family.product_families'=>array('label'=>_('Product families')),
@@ -1361,11 +1393,12 @@ $modules=array(
 					'part.stock.availability'=>'part.stock',
 					'part.supplier.orders'=>'part.purchase_orders',
 					'part.supplier.deliveries'=>'part.purchase_orders',
-					'part.stock.history.annually'=>'part.stock',
-					'part.stock.history.monthy'=>'part.stock',
-					'part.stock.history.weekly'=>'part.stock',
-					'part.stock.history.daily'=>'part.stock',
+					'part.stock.history'=>'part.stock',
+					'part.stock.transactions'=>'part.stock',
 					'part.stock.history.plot'=>'part.stock',
+					'part.sales.plot'=>'part.sales',
+					'part.sales.history'=>'part.sales',
+					'part.sales.calendar'=>'part.sales',
 
 				),
 
@@ -1375,66 +1408,33 @@ $modules=array(
 
 
 					'part.details'=>array('label'=>_('Data'), 'icon'=>'database'),
-					'part.stock.transactions'=>array('label'=>_('Stock movements'), 'icon'=>'exchange',
 
 
-					),
-					/*
-					'part.stock'=>array('label'=>_('Stock'), 'icon'=>'th',
+
+
+
+
+					'part.sales'=>array('label'=>_('Sales'), 'icon'=>'',
 						'subtabs'=>array(
-							'part.stock.overview'=>array('label'=>_('Overview')),
-							'part.stock.transactions'=>array('label'=>_('Transactions history')),
-							'part.stock.history'=>array('label'=>_('Stock history')),
-							'part.stock.availability'=>array('label'=>_('Availability history')),
+							'part.sales.plot'=>array('label'=>_('Plot'), 'title'=>_('Plot')),
+							'part.sales.history'=>array('label'=>_('Sales history'), 'title'=>_('Sales history')),
+							'part.sales.calendar'=>array('label'=>_('Calendar'), 'title'=>_('Sales calendar')),
 
 						)
+
 					),
-					*/
+
 					'part.stock'=>array('label'=>_('Stock History'), 'icon'=>'area-chart',
 						'subtabs'=>array(
-							'part.stock.history.annually'=>array('label'=>_('Annually')),
-							'part.stock.history.monthy'=>array('label'=>_('Monthy')),
-							'part.stock.history.weekly'=>array('label'=>_('Weekly')),
-							'part.stock.history.daily'=>array('label'=>_('Daily')),
-							'part.stock.history.plot'=>array('label'=>_('Chart'), 'class'=>'right'),
-
-
+							'part.stock.history'=>array('label'=>_('Stock history'), 'icon'=>'bars'),
+							'part.stock.history.plot'=>array('label'=>_('Stock history chart'), 'icon'=>'area-chart'),
+							'part.stock.transactions'=>array('label'=>_('Stock movements'), 'icon'=>'exchange', ),
 						)
 
 
 					),
 
-					/*
 
-						'timeserie'=>array('type'=>'',
-
-				'subtabs_parent'=>array(
-					'timeserie.records.annually'=>'timeserie.records',
-					'timeserie.records.monthy'=>'timeserie.records',
-					'timeserie.records.weekly'=>'timeserie.records',
-					'timeserie.records.daily'=>'timeserie.records',
-
-				),
-
-				'tabs'=>array(
-					'timeserie.plot'=>array('label'=>_('Plot')),
-					'timeserie.records'=>array('label'=>_('Records'),
-						'subtabs'=>array(
-							'timeserie.records.annually'=>array('label'=>_('Annually')),
-							'timeserie.records.monthy'=>array('label'=>_('Monthy')),
-							'timeserie.records.weekly'=>array('label'=>_('Weekly')),
-							'timeserie.records.daily'=>array('label'=>_('Daily')),
-
-
-						)
-
-
-					),
-
-				)
-			),
-
-			*/
 
 
 					'part.purchase_orders'=>array('label'=>_('Purchase orders / deliveries'), 'icon'=>'clipboard',
@@ -1459,7 +1459,7 @@ $modules=array(
 
 			'part.new'=>array('type'=>'new_object',
 				'tabs'=>array(
-					'part.new'=>array('label'=>_('New part')),
+					'part.new'=>array('label'=>_('new part')),
 
 				)
 
@@ -1476,7 +1476,7 @@ $modules=array(
 
 				)
 			),
-/*
+			/*
 			'transactions'=>array(
 				'type'=>'navigation', 'label'=>_('Stock Movements'), 'icon'=>'exchange', 'reference'=>'inventory/transactions',
 				'tabs'=>array(
@@ -1485,7 +1485,7 @@ $modules=array(
 				)
 			),
 			*/
-			
+
 			'stock_history'=>array(
 				'type'=>'navigation', 'label'=>_('Stock History'), 'icon'=>'area-chart', 'reference'=>'inventory/stock_history',
 				'tabs'=>array(
@@ -1501,51 +1501,51 @@ $modules=array(
 			'stock_history.day'=>array('type'=>'',
 				'tabs'=>array(
 					'inventory.stock.history.day'=>array('label'=>''),
-			
+
 
 				)
 			),
-			
-			
+
+
 
 		)
 	),
 	'warehouses'=>array(
 		'sections'=>array(
-		
-		
-	
-			
-			
-		
-		
+
+
+
+
+
+
+
 			'warehouse'=>array(
 
 				'type'=>'navigation', 'label'=>_('Warehouse'), 'title'=>_('Warehouse'), 'icon'=>'map', 'reference'=>'warehouse/%d',
 				'tabs'=>array(
-					'warehouse.details'=>array('label'=>_('Data'), 'title'=>_('Warehouse detais'),'icon'=>'database'),
+					'warehouse.details'=>array('label'=>_('Data'), 'title'=>_('Warehouse detais'), 'icon'=>'database'),
 					'warehouse.replenishments'=>array('label'=>_("Replenishments"), 'title'=>_("Replenishments")),
 					'warehouse.parts'=>array('label'=>_('Part-Locations'), 'title'=>_('Part-Locations')),
-					'warehouse.history'=>array('label'=>_('History/Notes'), 'title'=>_('History/Notes'), 'icon'=>'road','class'=>'right icon_only'),
+					'warehouse.history'=>array('label'=>_('History/Notes'), 'title'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
 
 				)
 
 			),
-			
-				'locations'=>array(
+
+			'locations'=>array(
 
 				'type'=>'navigation', 'label'=>_('Locations'), 'icon'=>'map-marker', 'reference'=>'warehouse/%d/locations',
 				'tabs'=>array(
-										'warehouse.locations'=>array('label'=>_('Locations'), 'title'=>_('Locations')),
+					'warehouse.locations'=>array('label'=>_('Locations'), 'title'=>_('Locations')),
 
 
 				)
 
 			),
-			
+
 			'warehouse.new'=>array('type'=>'new_object',
 				'tabs'=>array(
-					'warehouse.new'=>array('label'=>_('New warehouse')),
+					'warehouse.new'=>array('label'=>_('new warehouse')),
 
 				)
 
@@ -1557,7 +1557,7 @@ $modules=array(
 					'location.details'=>array('label'=>_('Data'), 'title'=>_('Location detais'), 'icon'=>'database'),
 					'location.parts'=>array('label'=>_('Parts'), 'icon'=>'square'),
 					'location.stock.transactions'=>array('label'=>_('Stock movements'), 'icon'=>'exchange'),
-					'location.history'=>array('label'=>_('History/Notes'), 'title'=>_('History/Notes'), 'icon'=>'road','class'=>'right icon_only'),
+					'location.history'=>array('label'=>_('History/Notes'), 'title'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
 
 				)
 
@@ -1717,7 +1717,7 @@ $modules=array(
 
 			'employee.new'=>array('type'=>'new_object',
 				'tabs'=>array(
-					'employee.new'=>array('label'=>_('New employee')),
+					'employee.new'=>array('label'=>_('new employee')),
 
 				)
 
@@ -1725,21 +1725,21 @@ $modules=array(
 
 			'employee.attachment.new'=>array('type'=>'new_object',
 				'tabs'=>array(
-					'employee.attachment.new'=>array('label'=>_('New attachment')),
+					'employee.attachment.new'=>array('label'=>_('new attachment')),
 
 				)
 
 			),
 			'employee.user.new'=>array('type'=>'new_object',
 				'tabs'=>array(
-					'employee.user.new'=>array('label'=>_('New system user')),
+					'employee.user.new'=>array('label'=>_('new system user')),
 
 				)
 
 			),
 			'contractor.user.new'=>array('type'=>'new_object',
 				'tabs'=>array(
-					'contractor.user.new'=>array('label'=>_('New system user')),
+					'contractor.user.new'=>array('label'=>_('new system user')),
 
 				)
 
@@ -1772,7 +1772,7 @@ $modules=array(
 			),
 			'contractor.new'=>array('type'=>'new_object',
 				'tabs'=>array(
-					'contractor.new'=>array('label'=>_('New contractor')),
+					'contractor.new'=>array('label'=>_('new contractor')),
 
 				)
 
@@ -1976,11 +1976,11 @@ $modules=array(
 
 			'timeserie'=>array('type'=>'',
 
-				
+
 				'tabs'=>array(
 					'timeserie.plot'=>array('label'=>_('Plot')),
 					'timeserie.records'=>array('label'=>_('Records'),
-						
+
 
 
 					),

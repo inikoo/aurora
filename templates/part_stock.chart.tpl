@@ -2,7 +2,7 @@
 <!--
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 15 August 2016 at 18:07:06 GMT+8, Kuala Lumpur, Malaysia
+ Created: 16 August 2016 at 22:53:37 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2016, Inikoo
 
  Version 3
@@ -29,12 +29,19 @@ var chart = AmCharts.makeChart( "chartdiv",
 
    {
     "title": "GBP",
-    "fieldMappings": [ 
-    {
+    "fieldMappings": [ {
       "fromField": "Open",
       "toField": "open"
-    },
-     {
+    }, {
+      "fromField": "High",
+      "toField": "high"
+    }, {
+      "fromField": "Low",
+      "toField": "low"
+    }, {
+      "fromField": "Close",
+      "toField": "close"
+    }, {
       "fromField": "Volume",
       "toField": "volume"
     } ],
@@ -44,7 +51,7 @@ var chart = AmCharts.makeChart( "chartdiv",
     
 
     
-      "url": "/ar_timeseries.php?tipo=asset_sales&parent="+data.parent+'&parent_key='+data.parent_key+"&from=&to=",
+      "url": "/ar_timeseries.php?tipo=part_stock&parent="+data.parent+'&parent_key='+data.parent_key+"&from=&to=",
       "format": "csv",
       "showCurtain": true,
       "showErrors": true,
@@ -56,29 +63,30 @@ var chart = AmCharts.makeChart( "chartdiv",
   }
   ],
   "dataDateFormat": "YYYY-MM-DD",
-
   "panels": [
-   {
+  
+    
+     {
       "title": data.title_value,
       "percentHeight": 70,
 
       "stockGraphs": [ {
-        "type": "line",
+        "type": "candlestick",
         "id": "g1",
-        "valueField": "open",
-        "periodValue":'Sum',
+      
+       // "periodValue":'Sum',
         
         
-
-      //  "closeField": "close",
-      //  "highField": "high",
-      //  "lowField": "low",
-      //  "valueField": "close",
-       // "lineColor": "#fff",
-       // "fillColors": "#fff",
-       // "negativeLineColor": "#db4c3c",
-       // "negativeFillColors": "#db4c3c",
-       // "fillAlphas": 1,
+"openField": "open",
+        "closeField": "close",
+        "highField": "high",
+        "lowField": "low",
+        "valueField": "close",
+        "lineColor": "#fff",
+        "fillColors": "#fff",
+        "negativeLineColor": "#db4c3c",
+        "negativeFillColors": "#db4c3c",
+        "fillAlphas": 1,
 //        "comparedGraphLineThickness": 2,
         "columnWidth": 0.7,
         "useDataSetColors": false,
@@ -95,38 +103,7 @@ var chart = AmCharts.makeChart( "chartdiv",
 
     },
 
-    {
-      "title": "Volume",
-      "percentHeight": 30,
-      "marginTop": 1,
-      "columnWidth": 0.6,
-      "showCategoryAxis": false,
-
-      "stockGraphs": [ {
-        "valueField": "volume",
-        "type": "column",
-        "showBalloon": true,
-                "periodValue":'Sum',
-
-        "fillAlphas": 1,
-        "lineColor": "#fff",
-        "fillColors": "#fff",
-      //  "negativeLineColor": "#db4c3c",
-      //  "negativeFillColors": "#db4c3c",
-        "useDataSetColors": false
-      } ],
-
-      "stockLegend": {
-        "markerType": "none",
-        "markerSize": 0,
-        "labelText": "",
-        "periodValueTextRegular": "[[value.Sum]]"
-      },
-
-      "valueAxes": [ {
-        "usePrefixes": true
-      } ]
-    }
+ 
   ],
 
   "panelsSettings": {

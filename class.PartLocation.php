@@ -38,7 +38,7 @@ class PartLocation extends DB_Table {
 				$this->location_key=$data['Location Key'];
 				$this->part_sku=$data['Part SKU'];
 			}
-			$this->date=date("Y-m-d");
+			$this->date=gmdate("Y-m-d");
 		} else {
 
 			if ($arg1=='find') {
@@ -659,7 +659,7 @@ class PartLocation extends DB_Table {
 			$details=_('Part')." ".'<a href="part.php?sku='.$this->part_sku.'">'.$this->part->id.'</a>'.' '._('associated with location').": <a href='location.php?id=".$this->location->id."'>".$this->location->data['Location Code'].'</a>';
 
 
-			//$date=date("Y-m-d H:i:s");
+			//$date=gmdate("Y-m-d H:i:s");
 
 			//print_r($this->editor);
 			if (array_key_exists('Date', $data))
@@ -790,13 +790,13 @@ class PartLocation extends DB_Table {
 
 		if (!$transaction_id) {
 			$this->error=true;
-$this->msg='Can add stock';
-		}else{
-		    
-		
+			$this->msg='Can add stock';
+		}else {
+
+
 		}
 
-    return $transaction_id;
+		return $transaction_id;
 
 
 	}
@@ -1135,7 +1135,7 @@ $this->msg='Can add stock';
 
 	function disassociate($data=false) {
 
-		$date=date("Y-m-d H:i:s");
+		$date=gmdate("Y-m-d H:i:s");
 
 		if (!$this->editor['Date'])
 			$date=$this->editor['Date'];
@@ -1373,9 +1373,9 @@ $this->msg='Can add stock';
 
 	function get_sales($date='') {
 		if (!$date)
-			$date=date('Y-m-d');
+			$date=gmdate('Y-m-d');
 
-		$sql=sprintf("select ifnull(sum(`Inventory Transaction Quantity`),0) as stock ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  Date(`Date`)=%s and `Part SKU`=%d and `Location Key`=%d and `Inventory Transaction Type` like 'Sale'"
+		$sql=sprintf("select ifnull(sum(`Inventory Transaction Quantity`),0) as stock ,ifnull(sum(`Amount In`),0) as value from `Inventory Transaction Fact` where  Date(`Date`)=%s and `Part SKU`=%d and `Location Key`=%d and `Inventory Transaction Type` like 'Sale'"
 			, prepare_mysql(date('Y-m-d', strtotime($date)))
 			, $this->part_sku
 			, $this->location_key
@@ -1386,7 +1386,7 @@ $this->msg='Can add stock';
 		$value=0;
 		if ($row=mysql_fetch_array($res)) {
 			$stock=-$row['stock'];
-			$value=-$row['value'];
+			$value=$row['value'];
 		}
 		//print "$stock,$value\n";
 		return array($stock, $value);
@@ -1396,7 +1396,7 @@ $this->msg='Can add stock';
 
 	function get_in($date='') {
 		if (!$date)
-			$date=date('Y-m-d');
+			$date=gmdate('Y-m-d');
 
 		$sql=sprintf("select ifnull(sum(`Inventory Transaction Quantity`),0) as stock ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  Date(`Date`)=%s and `Part SKU`=%d and `Location Key`=%d and ( `Inventory Transaction Type` in ('In','Move In','Move Out') or  (`Inventory Transaction Type` like 'Audit' and `Inventory Transaction Quantity`>0 ) )   "
 			, prepare_mysql(date('Y-m-d', strtotime($date)))
@@ -1419,7 +1419,7 @@ $this->msg='Can add stock';
 
 	function get_lost($date='') {
 		if (!$date)
-			$date=date('Y-m-d');
+			$date=gmdate('Y-m-d');
 
 		$sql=sprintf("select ifnull(sum(`Inventory Transaction Quantity`),0) as stock ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  Date(`Date`)=%s and `Part SKU`=%d and `Location Key`=%d and ( `Inventory Transaction Type` in ('Broken','Lost') or  (`Inventory Transaction Type` like 'Audit' and `Inventory Transaction Quantity`<0 ))    "
 			, prepare_mysql(date('Y-m-d', strtotime($date)))
@@ -1464,7 +1464,7 @@ $this->msg='Can add stock';
 
 	function exist_on_date($date) {
 		//print $date;
-		$date=date('U', strtotime($date));
+		$date=gmdate('U', strtotime($date));
 
 		$intervals=$this->get_history_intervals();
 
@@ -1482,12 +1482,12 @@ $this->msg='Can add stock';
 					exit;
 				}
 
-				if ($date>=date('U', strtotime($interval['From']))  and  $date<=date('U', strtotime($interval['To']))  ) {
+				if ($date>=gmdate('U', strtotime($interval['From']))  and  $date<=gmdate('U', strtotime($interval['To']))  ) {
 					return true;
 				}
 
 			}else {
-				if ($date>=date('U', strtotime($interval['From'])) ) {
+				if ($date>=gmdate('U', strtotime($interval['From'])) ) {
 					return true;
 				}
 
@@ -1506,10 +1506,17 @@ $this->msg='Can add stock';
 		);
 		// print "$sql\n";
 		$dates=array();
-		$result=mysql_query($sql);
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-			$dates[$row['Date']]= $row['Inventory Transaction Type'];
+
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$dates[$row['Date']]= $row['Inventory Transaction Type'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
 
 		$intervals=array();
 
@@ -1525,7 +1532,7 @@ $this->msg='Can add stock';
 			if ($type=='Associate')
 				$intervals[]=array('From'=>date("Y-m-d", strtotime($date)), 'To'=>false);
 			if ($type=='Disassociate')
-				$intervals[count($intervals)-1]['To']=date("Y-m-d", strtotime($date));
+				$intervals[count($intervals)-1]['To']=gmdate("Y-m-d", strtotime($date));
 
 			$index++;
 		}
@@ -1560,7 +1567,7 @@ print "++++++++++\n";
 			if ($type=='Associate')
 				$intervals[]=array('From'=>date("Y-m-d H:i:s", strtotime($date)), 'To'=>false);
 			if ($type=='Disassociate')
-				$intervals[count($intervals)-1]['To']=date("Y-m-d H:i:s", strtotime($date));
+				$intervals[count($intervals)-1]['To']=gmdate("Y-m-d H:i:s", strtotime($date));
 		}
 
 
@@ -1607,10 +1614,10 @@ print "++++++++++\n";
 	function update_stock_history_date($date) {
 
 		if ($this->exist_on_date($date)) {
-			//print "a\n";
+			
 			$this->update_stock_history_interval($date, $date);
 		}else {
-
+	
 			$sql=sprintf("delete from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d and `Date`=%s",
 				$this->part_sku,
 				$this->location_key,
@@ -1625,12 +1632,24 @@ print "++++++++++\n";
 
 
 	function update_stock_history() {
-		$sql=sprintf("delete from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d", $this->part_sku, $this->location_key);
-		mysql_query($sql);
+		//$sql=sprintf("delete from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d", $this->part_sku, $this->location_key);
+		//$this->db->exec($sql);
 
 		$intervals=$this->get_history_intervals();
 		foreach ($intervals as $interval) {
-			$this->update_stock_history_interval($interval['From'], ($interval['To']?$interval['To']:date('Y-m-d', strtotime('now'))));
+
+			$from=$interval['From'];
+			$to=($interval['To']?$interval['To']:date('Y-m-d', strtotime('now')));
+
+			$sql=sprintf("delete from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d and (`Date`<%s  or `Date`>%s  )",
+				$this->part_sku,
+				$this->location_key,
+				prepare_mysql($from),
+				prepare_mysql($to)
+			);
+			$this->db->exec($sql);
+
+			$this->update_stock_history_interval($from, $to);
 		}
 
 	}
@@ -1644,72 +1663,82 @@ print "++++++++++\n";
 			, prepare_mysql($from)
 			, prepare_mysql($to)
 		);
-		$result=mysql_query($sql);
 
-		//print $this->part_sku." ".$this->location_key." $from $to \n";
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
-			//print $this->part->data['Part Valid From'].' '.date('Y-m-d ',strtotime($row['Date'].' 23:59:59 -1 year'))."\n";
-			//print strtotime($this->part->data['Part Valid From']).' '.strtotime($row['Date'].' 23:59:59 -1 year')."\n\n";
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
 
-			if (strtotime($this->part->data['Part Valid From'])<=strtotime($row['Date'].' 23:59:59 -1 year')) {
 
-				$sql=sprintf("select count(*) as num from `Inventory Transaction Fact` where `Part SKU`=%d and `Location Key`=%d and `Inventory Transaction Type`='Sale' and `Date`>=%s and `Date`<=%s ",
-					$this->part->sku,
-					$this->location->id,
-					prepare_mysql(date("Y-m-d H:i:s", strtotime($row['Date'].' 23:59:59 -1 year'))),
-					prepare_mysql($row['Date'].' 23:59:59')
-				);
-				//print "$sql\n";
-				$res3=mysql_query($sql);
-				if ($row3=mysql_fetch_array($res3)) {
-					if ($row3['num']==0) {
-						$dormant_1year='Yes';
+				//print $this->part->data['Part Valid From'].' '.date('Y-m-d ',strtotime($row['Date'].' 23:59:59 -1 year'))."\n";
+				//print strtotime($this->part->data['Part Valid From']).' '.strtotime($row['Date'].' 23:59:59 -1 year')."\n\n";
+
+				if (strtotime($this->part->data['Part Valid From'])<=strtotime($row['Date'].' 23:59:59 -1 year')) {
+
+					$sql=sprintf("select count(*) as num from `Inventory Transaction Fact` where `Part SKU`=%d and `Location Key`=%d and `Inventory Transaction Type`='Sale' and `Date`>=%s and `Date`<=%s ",
+						$this->part->sku,
+						$this->location->id,
+						prepare_mysql(date("Y-m-d H:i:s", strtotime($row['Date'].' 23:59:59 -1 year'))),
+						prepare_mysql($row['Date'].' 23:59:59')
+					);
+
+
+
+					if ($result3=$this->db->query($sql)) {
+						if ($row3 = $result3->fetch()) {
+							if ($row3['num']==0) {
+								$dormant_1year='Yes';
+							}else {
+								$dormant_1year='No';
+							}
+						}else {
+							$dormant_1year='Yes';
+						}
 					}else {
-						$dormant_1year='No';
+						print_r($error_info=$this->db->errorInfo());
+						exit;
 					}
+
+
+
+
+
 				}else {
-					$dormant_1year='Yes';
+					$dormant_1year='NA';
 				}
 
-			}else {
-				$dormant_1year='NA';
-			}
+
+				list($stock, $value, $in_process)=$this->get_stock($row['Date'].' 23:59:59');
+				list($sold, $sales_value)=$this->get_sales($row['Date'].' 23:59:59');
+				list($in, $in_value)=$this->get_in($row['Date'].' 23:59:59');
+				list($lost, $lost_value)=$this->get_lost($row['Date'].' 23:59:59');
+				list($open, $high, $low, $close, $value_open, $value_high, $value_low, $value_close)=$this->get_ohlc($row['Date']);
 
 
-			list($stock, $value, $in_process)=$this->get_stock($row['Date'].' 23:59:59');
-			list($sold, $sales_value)=$this->get_sales($row['Date'].' 23:59:59');
-			list($in, $in_value)=$this->get_in($row['Date'].' 23:59:59');
-			list($lost, $lost_value)=$this->get_lost($row['Date'].' 23:59:59');
-			list($open, $high, $low, $close, $value_open, $value_high, $value_low, $value_close)=$this->get_ohlc($row['Date']);
+				$storing_cost=0;
+
+				$location_type="Unknown";
+				$warehouse_key=1;
 
 
-			$storing_cost=0;
+				//$commercial_value_unit_cost=$this->part->get_unit_commercial_value($row['Date'].' 23:59:59');
+				$commercial_value_unit_cost=$this->part->get('Part Unit Price');
+				$value_day_cost_unit_cost=$this->part->get('Part Cost');
+				$value_day_cost=$stock*$value_day_cost_unit_cost;
+				$commercial_value=$stock*$commercial_value_unit_cost;
 
-			$location_type="Unknown";
-			$warehouse_key=1;
+				$value_day_cost_open=$open*$value_day_cost_unit_cost;
+				$commercial_value_open=$open*$commercial_value_unit_cost;
 
-			$commercial_value_unit_cost=$this->part->get_unit_commercial_value($row['Date'].' 23:59:59');
+				$value_day_cost_high=$high*$value_day_cost_unit_cost;
+				$commercial_value_high=$high*$commercial_value_unit_cost;
 
-			$value_day_cost_unit_cost=$this->part->data['Part Cost'];
-			$value_day_cost=$stock*$value_day_cost_unit_cost;
-			$commercial_value=$stock*$commercial_value_unit_cost;
+				$value_day_cost_low=$low*$value_day_cost_unit_cost;
+				$commercial_value_low=$low*$commercial_value_unit_cost;
 
-			$value_day_cost_open=$open*$value_day_cost_unit_cost;
-			$commercial_value_open=$open*$commercial_value_unit_cost;
-
-			$value_day_cost_high=$high*$value_day_cost_unit_cost;
-			$commercial_value_high=$high*$commercial_value_unit_cost;
-
-			$value_day_cost_low=$low*$value_day_cost_unit_cost;
-			$commercial_value_low=$low*$commercial_value_unit_cost;
-
-
-
-			//print $row['Date']." $stock v: $value $value_day_cost_value  $commercial_value \n";
-			//print $row['Date']." $stock v: $value $value_open  $value_low $value_clos \n";
-
-			$sql=sprintf("insert into `Inventory Spanshot Fact` (
+				//print $row['Date']." $stock v: $value $value_day_cost_value  $commercial_value \n";
+				//print $row['Date']." $stock v: $value $value_open  $value_low $value_clos \n";
+				
+				$sql=sprintf("insert into `Inventory Spanshot Fact` (
 			`Sold Amount`,`Date`,`Part SKU`,`Warehouse Key`,`Location Key`,`Quantity On Hand`,
 			`Value At Cost`,`Value At Day Cost`,`Value Commercial`,`Storing Cost`,
 			`Quantity Sold`,`Quantity In`,`Quantity Lost`,`Quantity Open`,`Quantity High`,`Quantity Low`,
@@ -1729,77 +1758,82 @@ print "++++++++++\n";
 			`Value At Cost Open`=%f,`Value At Cost High`=%f,`Value At Cost Low`=%f,
 			`Value At Day Cost Open`=%f,`Value At Day Cost High`=%f,`Value At Day Cost Low`=%f,
 			`Value Commercial Open`=%f,`Value Commercial High`=%f,`Value Commercial Low`=%f,`Location Type`=%s ,`Sold Amount`=%.2f ,`Dormant 1 Year`=%s",
-				$sales_value,
-				prepare_mysql($row['Date']),
-				$this->part_sku,
-				$warehouse_key,
-				$this->location_key,
-				$stock,
+					$sales_value,
+					prepare_mysql($row['Date']),
+					$this->part_sku,
+					$warehouse_key,
+					$this->location_key,
+					$stock,
 
-				$value,
-				$value_day_cost,
-				$commercial_value,
-				$storing_cost,
+					$value,
+					$value_day_cost,
+					$commercial_value,
+					$storing_cost,
 
-				$sold,
-				$in,
-				$lost,
-				$open,
-				$high,
-				$low,
+					$sold,
+					$in,
+					$lost,
+					$open,
+					$high,
+					$low,
 
-				$value_open,
-				$value_high,
-				$value_low,
+					$value_open,
+					$value_high,
+					$value_low,
 
-				$value_day_cost_open,
-				$value_day_cost_high,
-				$value_day_cost_low,
+					$value_day_cost_open,
+					$value_day_cost_high,
+					$value_day_cost_low,
 
-				$commercial_value_open,
-				$commercial_value_high,
-				$commercial_value_low,
+					$commercial_value_open,
+					$commercial_value_high,
+					$commercial_value_low,
 
-				prepare_mysql($location_type),
-				prepare_mysql($dormant_1year),
+					prepare_mysql($location_type),
+					prepare_mysql($dormant_1year),
 
-				$warehouse_key,
-				$stock,
-				$value,
+					$warehouse_key,
+					$stock,
+					$value,
 
-				$sales_value,
-				$commercial_value,
-				$value_day_cost,
-				$storing_cost,
+					$sales_value,
+					$commercial_value,
+					$value_day_cost,
+					$storing_cost,
 
-				$sold,
-				$in,
-				$lost,
-				$open,
-				$high,
-				$low,
-				$value_open,
-				$value_high,
-				$value_low,
-				$value_day_cost_open,
-				$value_day_cost_high,
-				$value_day_cost_low,
-				$commercial_value_open,
-				$commercial_value_high,
-				$commercial_value_low,
-				prepare_mysql($location_type),
-				$sales_value,
-				prepare_mysql($dormant_1year)
-
-
-			);
-			mysql_query($sql);
+					$sold,
+					$in,
+					$lost,
+					$open,
+					$high,
+					$low,
+					$value_open,
+					$value_high,
+					$value_low,
+					$value_day_cost_open,
+					$value_day_cost_high,
+					$value_day_cost_low,
+					$commercial_value_open,
+					$commercial_value_high,
+					$commercial_value_low,
+					prepare_mysql($location_type),
+					$sales_value,
+					prepare_mysql($dormant_1year)
 
 
+				);
+				$this->db->exec($sql);
 
-			//print "$sql\n\n";
-			//exit;
+
+				//print "$sql\n";
+				//exit;
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
 
 	}
 

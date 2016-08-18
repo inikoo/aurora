@@ -28,5 +28,7 @@ update `Category Dimension` set `Category Scope`='Supplier' where `Category Subj
 ALTER TABLE `Order Dimension` DROP `Order XHTML Store`;
 ALTER TABLE `Category Dimension` DROP `Category Subject Key`;
   
+ ALTER TABLE `Order Spanshot Fact`  DROP `Store Key`,  DROP `Product Family Key`,  DROP `Product Department Key`; 
+ delete from `Order Spanshot Fact`  where `Invoices`=0 and `Customers`=0 and `Sales`=0 and `Outers Out`=0 and `Availability`=1 ;
 
   

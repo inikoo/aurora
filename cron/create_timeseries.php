@@ -14,18 +14,76 @@ require_once 'common.php';
 require_once 'class.Timeseries.php';
 require_once 'class.Store.php';
 require_once 'class.Invoice.php';
+require_once 'class.Category.php';
 
 require_once 'utils/date_functions.php';
 require_once 'conf/timeseries.php';
 
 $editor=array(
-		'Author Name'=>'',
-		'Author Alias'=>'',
-		'Author Type'=>'',
-		'Author Key'=>'',
-		'User Key'=>0,
-		'Date'=>gmdate('Y-m-d H:i:s')
-	);
+	'Author Name'=>'',
+	'Author Alias'=>'',
+	'Author Type'=>'',
+	'Author Key'=>'',
+	'User Key'=>0,
+	'Date'=>gmdate('Y-m-d H:i:s')
+);
+
+
+
+$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" and `Category Key`=11899  ');
+$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" ');
+
+if ($result=$db->query($sql)) {
+	foreach ($result as $row) {
+
+		$category=new Category($row['Category Key']);
+
+		if (!array_key_exists($category->get('Category Scope').'Category', $timeseries))
+			continue;
+
+		$timeseries_data=$timeseries[$category->get('Category Scope').'Category'];
+
+		foreach ($timeseries_data as $timeserie_data) {
+
+			$editor['Date']=gmdate('Y-m-d H:i:s');
+			$timeserie_data['editor']=$editor;
+			$category->create_timeseries($timeserie_data);
+
+		}
+	}
+
+}else {print_r($error_info=$db->errorInfo());
+print $sql;
+exit;}
+
+exit;
+
+$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Product" and `Category Key`=14797  ');
+$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Product" ');
+
+if ($result=$db->query($sql)) {
+	foreach ($result as $row) {
+
+		$category=new Category($row['Category Key']);
+
+		if (!array_key_exists($category->get('Category Scope').'Category', $timeseries))
+			continue;
+
+		$timeseries_data=$timeseries[$category->get('Category Scope').'Category'];
+
+		foreach ($timeseries_data as $timeserie_data) {
+
+			$editor['Date']=gmdate('Y-m-d H:i:s');
+			$timeserie_data['editor']=$editor;
+			$category->create_timeseries($timeserie_data);
+
+		}
+	}
+
+}else {print_r($error_info=$db->errorInfo());
+print $sql;
+exit;}
+
 
 $sql=sprintf('select `Store Key` from `Store Dimension` ');
 
@@ -34,12 +92,12 @@ if ($result=$db->query($sql)) {
 
 		$store=new Store($row['Store Key']);
 
-		$store_timeseries_data=$timeseries['Store'];
+		$timeseries_data=$timeseries['Store'];
 
-		foreach ($store_timeseries_data as $timeserie_data) {
-		    
-		    $editor['Date']=gmdate('Y-m-d H:i:s');
-		    $timeserie_data['editor']=$editor;
+		foreach ($timeseries_data as $timeserie_data) {
+
+			$editor['Date']=gmdate('Y-m-d H:i:s');
+			$timeserie_data['editor']=$editor;
 			$store->create_timeseries($timeserie_data);
 
 		}

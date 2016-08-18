@@ -55,7 +55,287 @@ $account=new Account();
 //setup_part_families();
 //update_materials_stats();
 //migrate_part_fields();
-create_families($db, $account);
+//create_families($db, $account);
+//setup_product_part_bridge();
+set_valid_dates($db);
+
+
+//set_valid_dates_and_status_to_part_families($db);
+
+
+function set_valid_dates($db) {
+
+
+	$sql=sprintf('select `Part SKU` from `Part Dimension` where `Part Valid From` is null or `Part Valid From`="" ');
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+			$from_date_itf='';
+			$part=new Part($row['Part SKU']);
+
+			$sql=sprintf('select min(`Date`) as date from `Inventory Transaction Fact` where `Part SKU`=%d and `Date` is not null and `Date`!="0000-00-00 00:00:00" ', $part->sku);
+
+
+			if ($result2=$db->query($sql)) {
+				foreach ($result2 as $row2) {
+					$from_date_itf=$row2['date'];
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				exit;
+			}
+
+
+
+
+			if ( $from_date_itf=='') {
+				$from_date=gmdate('Y-m-d H:i:s');
+			}else {
+				$from_date= $from_date_itf;
+			}
+
+			$sql=sprintf('update `Part Dimension` set `Part Valid From`=%s where `Part SKU`=%d',
+				prepare_mysql($from_date),
+				$part->sku
+			);
+			//print "$sql\n";
+			$db->exec($sql);
+
+		
+
+
+		}
+
+	}else {print_r($error_info=$db->errorInfo());
+		print $sql;
+		exit;}
+
+
+
+	$sql=sprintf('select `Part SKU` from `Part Dimension` where `Part Valid To` is null or `Part Valid To`="" and `Part Status`="Not In Use" ');
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+			$from_date_itf='';
+			$part=new Part($row['Part SKU']);
+
+			$sql=sprintf('select max(`Date`) as date from `Inventory Transaction Fact` where `Part SKU`=%d and `Date` is not null and `Date`!="0000-00-00 00:00:00" ', $part->sku);
+
+
+			if ($result2=$db->query($sql)) {
+				foreach ($result2 as $row2) {
+					$from_date_itf=$row2['date'];
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				exit;
+			}
+
+
+
+
+			if ( $from_date_itf=='') {
+				$from_date=gmdate('Y-m-d H:i:s');
+			}else {
+				$from_date= $from_date_itf;
+			}
+
+			$sql=sprintf('update `Part Dimension` set `Part Valid To`=%s where `Part SKU`=%d',
+				prepare_mysql($from_date),
+				$part->sku
+			);
+
+			//print "$sql\n";
+			$db->exec($sql);
+
+
+
+
+
+
+		}
+
+	}else {print_r($error_info=$db->errorInfo());
+		print $sql;
+		exit;}
+
+
+
+
+}
+
+
+function set_valid_dates_and_status_to_part_families($db) {
+
+
+	//$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" and `Category Key`=11899  ');
+	$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" ');
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+
+			$category=new Category($row['Category Key']);
+
+
+			$part_skus='';
+			$sql=sprintf('select group_concat(`Subject Key`) as part_skus ,`Subject` from `Category Bridge` where `Category Key`=%d and `Subject Key`>0 ', $category->id);
+
+			if ($result=$db->query($sql)) {
+				if ($row = $result->fetch()) {
+					if ($row['Subject']=='Part') {
+						$part_skus=$row['part_skus'];
+					}elseif ($row['Subject']=='Category') {
+
+						$sql=sprintf('select group_concat(`Subject Key`) as part_skus ,`Subject` from `Category Bridge` where `Category Key` in (%s) and `Subject Key`>0 ', $row['part_skus']);
+						if ($result2=$db->query($sql)) {
+							if ($row2 = $result2->fetch()) {
+								$part_skus=$row2['part_skus'];
+
+							}
+						}else {
+							print_r($error_info=$db->errorInfo());
+							print $sql;
+							exit;
+						}
+
+
+					}
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				exit;
+			}
+			$from_date_parts='';
+			$from_date_itf='';
+			if ($part_skus!='') {
+				$sql=sprintf('select min(`Part Valid From`) as date from `Part Dimension` where `Part SKU` in (%s) and `Part Valid From` is not null and `Part Valid From`!="0000-00-00 00:00:00" ', $part_skus);
+
+
+				if ($result2=$db->query($sql)) {
+					foreach ($result2 as $row2) {
+						$from_date_parts=$row2['date'];
+					}
+				}else {
+					print_r($error_info=$db->errorInfo());
+					exit;
+				}
+
+			}
+
+
+
+			if ($part_skus!='') {
+				$sql=sprintf('select min(`Date`) as date from `Inventory Transaction Fact` where `Part SKU` in (%s) and `Date` is not null and `Date`!="0000-00-00 00:00:00" ', $part_skus);
+
+
+				if ($result2=$db->query($sql)) {
+					foreach ($result2 as $row2) {
+						$from_date_itf=$row2['date'];
+					}
+				}else {
+					print_r($error_info=$db->errorInfo());
+					exit;
+				}
+
+			}
+
+
+			if ($from_date_parts=='' and $from_date_itf=='') {
+				$from_date=gmdate('Y-m-d H:i:s');
+			}elseif ($from_date_parts=='' and $from_date_itf!='') {
+				$from_date= $from_date_itf;
+			}elseif ($from_date_parts!='' and $from_date_itf=='') {
+				$from_date= $from_date_parts;
+			}else {
+				if (strtotime($from_date_parts)<strtotime($from_date_itf)) {
+					$from_date= $from_date_parts;
+
+				}else {
+					$from_date= $from_date_itf;
+
+				}
+			}
+
+			$sql=sprintf('update `Part Category Dimension` set `Part Category Valid From`=%s where `Part Category Key`=%d',
+				prepare_mysql($from_date),
+				$category->id
+			);
+			//print "$sql\n";
+			$db->exec($sql);
+
+			$category->update_part_category_status();
+
+			if ($category->get('Part Category Status')=='NotInUse') {
+
+				$to_date_parts='';
+				$to_date_itf='';
+				if ($part_skus!='') {
+					$sql=sprintf('select max(`Part Valid To`) as date from `Part Dimension` where `Part SKU` in (%s) and `Part Valid To` is not null and `Part Valid To`!="0000-00-00 00:00:00" ', $part_skus);
+
+
+					if ($result2=$db->query($sql)) {
+						foreach ($result2 as $row2) {
+							$to_date_parts=$row2['date'];
+						}
+					}else {
+						print_r($error_info=$db->errorInfo());
+						exit;
+					}
+
+				}
+
+
+
+				if ($part_skus!='') {
+					$sql=sprintf('select max(`Date`) as date from `Inventory Transaction Fact` where `Part SKU` in (%s) and `Date` is not null and `Date`!="0000-00-00 00:00:00" ', $part_skus);
+
+
+					if ($result2=$db->query($sql)) {
+						foreach ($result2 as $row2) {
+							$to_date_itf=$row2['date'];
+						}
+					}else {
+						print_r($error_info=$db->errorInfo());
+						exit;
+					}
+
+				}
+
+
+				if ($to_date_parts=='' and $to_date_itf=='') {
+					$to_date=gmdate('Y-m-d H:i:s');
+				}elseif ($to_date_parts=='' and $to_date_itf!='') {
+					$to_date= $to_date_itf;
+				}elseif ($to_date_parts!='' and $to_date_itf=='') {
+					$to_date= $to_date_parts;
+				}else {
+					if (strtotime($to_date_parts)>strtotime($to_date_itf)) {
+						$to_date= $to_date_parts;
+
+					}else {
+						$to_date= $to_date_itf;
+
+					}
+				}
+
+				$sql=sprintf('update `Part Category Dimension` set `Part Category Valid To`=%s where `Part Category Key`=%d',
+					prepare_mysql($to_date),
+					$category->id
+				);
+
+				print "$sql\n";
+				$db->exec($sql);
+			}
+
+
+		}
+
+	}else {print_r($error_info=$db->errorInfo());
+		print $sql;
+		exit;}
+
+
+
+}
+
 
 function create_part_data_dimension() {
 	global $db;
@@ -102,7 +382,7 @@ function setup_part_families() {
 
 		}
 	}else {
-		print_r($error_info=$this->db->errorInfo());
+		print_r($error_info=$db->errorInfo());
 		exit;
 	}
 
@@ -117,6 +397,10 @@ function setup_part_families() {
 	}
 
 }
+
+
+
+
 
 
 function setup_product_part_bridge() {
