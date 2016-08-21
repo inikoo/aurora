@@ -54,11 +54,17 @@ if ($category->get('Category Scope')=='Product') {
 			array(
 				'field_id'=>'Store_Product_Code',
 				'field_label'=>_('Associate product').':',
-				'field_edit'=>'string',
+				'field_edit'=>'dropdown',
 				'object'=>'Category_Product',
 				'parent'=>$state['object'],
 				'parent_key'=>$state['key'],
-				'placeholder'=>_("Product's code")
+				'placeholder'=>_("Product's code"),
+				'dropdown_select_metadata'=>base64_encode(json_encode(array(
+						'scope'=>'products',
+						'parent'=>'store',
+						'parent_key'=>$state['_object']->get('Product Category Store Key'),
+						'options'=>array()
+					)))
 			)
 
 		);
@@ -146,12 +152,12 @@ elseif ($category->get('Category Scope')=='Part') {
 		array(
 			'field_id'=>'Part_Reference',
 			'field_label'=>_('Associate part').':',
-			'field_edit'=>'string',
+			'field_edit'=>'dropdown',
 			'object'=>'Category_Part',
 			'parent'=>$state['object'],
 			'parent_key'=>$state['key'],
 			'placeholder'=>_("Parts's reference"),
-			'metadata'=>base64_encode(json_encode(array(
+			'dropdown_select_metadata'=>base64_encode(json_encode(array(
 						'scope'=>'parts',
 						'parent'=>'account',
 						'parent_key'=>1,
@@ -210,11 +216,17 @@ elseif ($category->get('Category Scope')=='Supplier') {
 		array(
 			'field_id'=>'Supplier_Code',
 			'field_label'=>_('Associate supplier').':',
-			'field_edit'=>'string',
+			'field_edit'=>'dropdown',
 			'object'=>'Category_Supplier',
 			'parent'=>$state['object'],
 			'parent_key'=>$state['key'],
-			'placeholder'=>_("Supplier's code")
+			'placeholder'=>_("Supplier's code"),
+			'dropdown_select_metadata'=>base64_encode(json_encode(array(
+						'scope'=>'suppliers',
+						'parent'=>'account',
+						'parent_key'=>1,
+						'options'=>array()
+					)))
 		)
 
 	);

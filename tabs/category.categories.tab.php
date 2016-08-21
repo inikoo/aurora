@@ -9,32 +9,45 @@
 
 */
 
-
-
-
-
 if ($state['module']=='inventory') {
 	$tab='category.part_categories';
 	$ar_file='ar_inventory_tables.php';
 	$tipo='part_categories';
-	
-	
+
+
 	$default=$user->get_tab_defaults($tab);
 
 
 
 	$table_views=array(
-	'overview'=>array('label'=>_('Overview')),
-	'revenue'=>array('label'=>_('Revenue')),
-	'stock'=>array('label'=>_('Stock')),
+		'overview'=>array('label'=>_('Overview')),
+		'revenue'=>array('label'=>_('Revenue')),
+		'stock'=>array('label'=>_('Stock')),
 
 	);
 
-	$table_filters=array(
-		'label'=>array('label'=>_('Label'), 'title'=>_('Family label')),
-		'code'=>array('label'=>_('Code'), 'title'=>_('Family code')),
 
-	);
+	if ($state['key']==$account->get('Account Part Family Category Key')) {
+		$title=_('New family');
+		$field_label=_('Add family').':';
+		$placeholder=_("Family code");
+		$table_filters=array(
+			'label'=>array('label'=>_('Label')),
+			'code'=>array('label'=>_('Name')),
+
+		);
+	}else {
+		$title=_('New category');
+		$field_label=_('Add category').':';
+		$placeholder=_("Categoy code");
+		$table_filters=array(
+			'label'=>array('label'=>_('Label')),
+			'code'=>array('label'=>_('Code')),
+
+		);
+	}
+
+
 
 	$parameters=array(
 		'parent'=>$state['object'],
@@ -43,14 +56,16 @@ if ($state['module']=='inventory') {
 	);
 
 
+
+
 	$table_buttons[]=array(
 		'icon'=>'plus',
-		'title'=>_('New family'),
+		'title'=>$title,
 		'id'=>'new_record',
 		'inline_new_object'=>
 		array(
 			'field_id'=>'Category_Code',
-			'field_label'=>_('Add category').':',
+			'field_label'=>$field_label,
 			'field_edit'=>'string',
 			'object'=>'Category',
 			'parent'=>$state['object'],
@@ -61,7 +76,7 @@ if ($state['module']=='inventory') {
 	);
 
 	$smarty->assign('table_buttons', $table_buttons);
-	
+
 }else {
 
 	$tab='category.categories';
