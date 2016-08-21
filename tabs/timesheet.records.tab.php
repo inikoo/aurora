@@ -39,7 +39,7 @@ $table_buttons[]=array(
 		'date'=>$state['_object']->get('IsoDate'),
 		'object'=>'Timesheet_Record',
 		'parent'=>$state['object'],
-		'parent_key'=>$state['key'],
+		'parent_key'=>$state['key']
 
 	)
 

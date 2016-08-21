@@ -1,4 +1,4 @@
-<div id="inline_form" style="float:right" class="hide" data-metadata="{$data.metadata}" field_id="{$data.field_id}" >
+<div id="inline_form" style="float:right" class="hide" data-dropdown_select_metadata="{if isset($data.dropdown_select_metadata)}{$data.dropdown_select_metadata}{/if}" field_id="{$data.field_id}" >
 <span id="invalid_msg" class="hide">{t}Invalid value{/t}</span> 
 
 <span id="fields" object='{$data.object}' key='' parent='{$data.parent}' parent_key='{$data.parent_key}' >
@@ -55,8 +55,14 @@ $("#{$data.field_id}").on("input propertychange", function(evt) {
     }
     var delay = 50;
     if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
-    delayed_on_change_inline_new_object_field($(this), delay)
-
+ 
+ if('{$data.field_edit}'=='dropdown'){
+  delayed_on_change_inline_new_object_dropdown_field($(this), delay)
+  }else{
+ delayed_on_change_field($(this), delay)
+ }
+ 
+ 
 });
 
 $("#{$data.object}_save").on("click", function(evt) {
@@ -69,7 +75,7 @@ $("#inline_new_object_msg").on("click", function(evt) {
 });
 
 
-function delayed_on_change_inline_new_object_field(object, timeout) {
+function delayed_on_change_inline_new_object_dropdown_field(object, timeout) {
 
     window.clearTimeout(object.data("timeout"));
 
@@ -88,7 +94,7 @@ var form_element=$('#inline_form');
   input_element=$('#'+form_element.attr('field_id'))
   
 
-    var request = '/ar_find.php?tipo=find_object&query=' + fixedEncodeURIComponent(input_element.val()) + '&scope='+jQuery.parseJSON(atob(form_element.data("metadata"))).scope + '&metadata=' + atob(form_element.data("metadata")) + '&state=' + JSON.stringify(state)
+    var request = '/ar_find.php?tipo=find_object&query=' + fixedEncodeURIComponent(input_element.val()) + '&scope='+jQuery.parseJSON(atob(form_element.data("dropdown_select_metadata"))).scope + '&metadata=' + atob(form_element.data("dropdown_select_metadata")) + '&state=' + JSON.stringify(state)
 
     $.getJSON(request, function(data) {
 
@@ -113,7 +119,6 @@ var form_element=$('#inline_form');
             $('#save_inline_new_object').attr('item_key', '')
             $('#save_inline_new_object').attr('item_historic_key', '')
 
-            validate_inline_new_object()
 
         }
 
@@ -151,7 +156,14 @@ var form_element=$('#inline_form');
 
 }
 
+function select_inline_new_object_option(element){
+    
+  $('#{$data.field_id}').val($(element).attr('formatted_value'))
+              $('#inline_new_object_results_container').addClass('hide').removeClass('show')
 
+   on_changed_value('{$data.field_id}', $(element).attr('formatted_value'))
+    
+}
 
 
 </script>

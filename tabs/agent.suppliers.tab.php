@@ -9,7 +9,10 @@
 
 */
 
-
+if (!  ($user->can_view('suppliers') or ($user->get('User Type')=='Agent' and $state['key']==$user->get('User Parent Key')) )  ) {
+	$html=_('Forbidden');
+	return;
+}
 
 $tab='agent.suppliers';
 $ar_file='ar_suppliers_tables.php';
@@ -47,23 +50,31 @@ $table_buttons=array();
 
 $table_buttons[]=array('icon'=>'plus', 'title'=>_('New supplier'), 'reference'=>"agent/".$state['key']."/supplier/new");
 
-$table_buttons[]=array(
-	'icon'=>'link',
-	'title'=>_('Associate supplier'),
-	'id'=>'new_record',
-	'inline_new_object'=>
-	array(
-		'field_id'=>'Supplier_Code',
-		'field_label'=>_('Associate supplier').':',
-		'field_edit'=>'string',
-		'object'=>'Agent_Supplier',
-		'parent'=>$state['object'],
-		'parent_key'=>$state['key'],
-		'placeholder'=>_("Supplier's code")
-	)
+if ($user->can_edit('suppliers')) {
+	$table_buttons[]=array(
+		'icon'=>'link',
+		'title'=>_('Associate supplier'),
+		'id'=>'new_record',
+		'inline_new_object'=>
+		array(
+		    
+			'field_id'=>'Supplier_Code',
+			'field_label'=>_('Associate supplier').':',
+			'field_edit'=>'dropdown',
+			'object'=>'Agent_Supplier',
+			'parent'=>$state['object'],
+			'parent_key'=>$state['key'],
+			'placeholder'=>_("Supplier's code"),
+			'dropdown_select_metadata'=>base64_encode(json_encode(array(
+						'scope'=>'suppliers',
+						'parent'=>'account',
+						'parent_key'=>1,
+						'options'=>array()
+					)))
+		)
 
-);
-
+	);
+}
 
 $smarty->assign('table_buttons', $table_buttons);
 
