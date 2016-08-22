@@ -450,6 +450,14 @@ class SupplierPart extends DB_Table{
 
 
 			break;
+		case 'Supplier Part Package Description':
+
+
+			$this->part->update(array('Part Package Description'=>$value), $options);
+			$this->updated=$this->part->updated;
+
+
+			break;	
 		case 'Supplier Part Status':
 
 			$this->update_field($field, $value, $options);
