@@ -504,19 +504,19 @@ class SupplierPart extends DB_Table{
 			$this->update_field('Supplier Part Currency Code', $supplier->get('Supplier Default Currency Code'), 'no_history');
 			
 
-			$supplier->update_supplier_parts();
-			$supplier->update_up_today_sales();
-			$supplier->update_last_period_sales();
-			$supplier->update_interval_sales();
-			$supplier->update_previous_years_data();
+			//$supplier->update_supplier_parts();
+			//$supplier->update_up_today_sales();
+			//$supplier->update_last_period_sales();
+			//$supplier->update_interval_sales();
+			//$supplier->update_previous_years_data();
 
 
 			if ($old_supplier->id) {
-				$old_supplier->update_supplier_parts();
-				$old_supplier->update_up_today_sales();
-				$old_supplier->update_last_period_sales();
-				$old_supplier->update_interval_sales();
-				$old_supplier->update_previous_years_data();
+				//$old_supplier->update_supplier_parts();
+				//$old_supplier->update_up_today_sales();
+				//$old_supplier->update_last_period_sales();
+				//$old_supplier->update_interval_sales();
+				//$old_supplier->update_previous_years_data();
 				$old_supplier_label=sprintf(' from <span class="discreet button" onClick="change_view(\'supplier/%d\')">%s</span>', $old_supplier->id, $old_supplier->get('Code'));
 
 			}else {
