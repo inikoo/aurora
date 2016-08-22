@@ -460,7 +460,7 @@ if (!$new) {
 	$object_fields[]=$operations;
 }
 else {
-
+/*
 	$object_fields[]=array(
 		'label'=>_('System user'),
 		'show_title'=>true,
@@ -537,6 +537,7 @@ else {
 
 		)
 	);
+	*/
 }
 
 
