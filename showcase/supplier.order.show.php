@@ -11,7 +11,7 @@
 
 function get_supplier_order_showcase($data, $smarty, $user, $db) {
 
-$data['_object']->update_totals();
+	$data['_object']->update_totals();
 
 	if (!$data['_object']->id) {
 		return "";
@@ -19,8 +19,8 @@ $data['_object']->update_totals();
 
 	if ($data['_object']->deleted) {
 
-        return '';
-        
+		return '';
+
 	}else {
 
 		$smarty->assign('order', $data['_object']);
@@ -44,10 +44,11 @@ $data['_object']->update_totals();
 		}
 		$smarty->assign('mindate_send_order', 1000*$mindate_send_order);
 
-
-
-
+        if($user->get('User Type')=='Staff'){
 		return $smarty->fetch('showcase/supplier.order.tpl');
+		}elseif($user->get('User Type')=='Agent'){
+		return $smarty->fetch('showcase/client_order.tpl');
+		}
 	}
 
 }

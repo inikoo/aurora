@@ -43,12 +43,12 @@ $editor=array(
 	'Date'=>gmdate('Y-m-d H:i:s')
 );
 
-//create_categories($db,$editor);
-//migrate_products($db, $editor);
-fix_product_categries($db);
+migrate_products($db, $editor);
+create_categories($db,$editor);
+fix_product_categories($db);
 
 
-function fix_product_categries($db) {
+function fix_product_categories($db) {
 	$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Product"');
 
 	if ($result=$db->query($sql)) {

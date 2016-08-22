@@ -91,3 +91,47 @@ function post_create_action(data) {
     $('#' + data.clone_from + '_display').before(clone)
 
 }
+
+function unlink_agent(element) {
+
+
+
+    if ($(element).hasClass('disabled')) {
+        return
+    }
+
+
+
+    if (!$(element).find('i.fa').removeClass('chain-broken')) return;
+
+    $(element).find('i.fa').removeClass('fa-chain-broken').addClass('fa-spinner fa-spin')
+    
+   // console.log( $(element).data('data'))
+
+    var request = '/ar_edit.php?tipo=edit_field&object=' + $(element).data('data').object + '&key=' + $(element).data('data').key+'&field=unlink_agent&value='+$(element).data('data').agent_key
+   
+  // console.log(request)
+    $.getJSON(request, function(data) {
+        if (data.state == 200) {
+
+            console.log(data)
+           
+            if (data.request != undefined) {
+                change_view(data.request)
+            } else {
+                change_view(state.request, {
+                    'reload_showcase': 1
+                })
+            }
+
+        } else if (data.state == 400) {
+            $(element).find('i.fa').addClass('fa-chain-broken').removeClass('fa-spinner fa-spin')
+
+        }
+
+
+    })
+
+
+}
+

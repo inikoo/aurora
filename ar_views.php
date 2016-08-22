@@ -49,6 +49,7 @@ case 'views':
 		$reload=false;
 	}
 
+
 	$state=parse_request($data, $db, $modules, $account, $user);
 
 
@@ -128,7 +129,6 @@ case 'views':
 	}
 	$state['_parent']=$_parent;
 
-
 	if ($state['object']!='') {
 
 
@@ -191,7 +191,7 @@ case 'views':
 					$state['section']='deleted_order';
 
 					if (!array_key_exists( $state['tab'], $modules[$state['module']]['sections'][$state['section']]['tabs'])) {
-						$state['tab']='deleted.staff.user.history';
+						$state['tab']='deleted.user.history';
 					}
 
 
@@ -200,9 +200,9 @@ case 'views':
 				$_object=new User('deleted', $state['key']);
 				$state['_object']=$_object;
 				if ($_object->id) {
-					$state['section']='deleted.staff.user';
+					$state['section']='deleted.user';
 					if (!array_key_exists( $state['tab'], $modules[$state['module']]['sections'][$state['section']]['tabs'])) {
-						$state['tab']='deleted.staff.user.history';
+						$state['tab']='deleted.user.history';
 					}
 
 				}
@@ -642,8 +642,8 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
 			}elseif ($data['_object']->get('Root Key')==$data['store']->get('Store Department Category Key')) {
 				include_once 'showcase/department.show.php';
 				$html=get_department_showcase($data, $smarty, $user, $db);
-			}else{
-			    $html='';
+			}else {
+				$html='';
 			}
 
 		}
@@ -1389,11 +1389,11 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case ('root'):
 			return get_root_navigation($data, $smarty, $user, $db, $account);
 			break;
-		case ('staff.user'):
-			return get_staff_user_navigation($data, $smarty, $user, $db, $account);
+		case ('user'):
+			return get_user_navigation($data, $smarty, $user, $db, $account);
 			break;
-		case ('deleted.staff.user'):
-			return get_deleted_staff_user_navigation($data, $smarty, $user, $db, $account);
+		case ('deleted.user'):
+			return get_deleted_user_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('suppliers.user'):
 			return get_supplierss_user_navigation($data, $smarty, $user, $db, $account);
@@ -1408,10 +1408,10 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case ('settings'):
 			return get_settings_navigation($data, $smarty, $user, $db, $account);
 			break;
-		case ('staff.user.api_key') :
+		case ('user.api_key') :
 			return get_api_key_navigation($data, $smarty, $user, $db, $account);
 			break;
-		case ('staff.user.api_key.new') :
+		case ('user.api_key.new') :
 			return get_new_api_key_navigation($data, $smarty, $user, $db, $account);
 			break;
 
@@ -1425,6 +1425,56 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 	case ('settings'):
 		require_once 'navigation/account.nav.php';
 		return get_settings_navigation($data);
+		break;
+	case 'agent_profile':
+		require_once 'navigation/agent.nav.php';
+		switch ($data['section']) {
+		case ('profile'):
+			return get_agent_navigation($data, $smarty, $user, $db, $account);
+			break;
+
+
+
+		}
+		break;
+	case 'agent_suppliers':
+		require_once 'navigation/agent.nav.php';
+		switch ($data['section']) {
+		case ('suppliers'):
+			return get_suppliers_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('supplier'):
+			return get_supplier_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('supplier_part'):
+			return get_supplier_part_navigation($data, $smarty, $user, $db, $account);
+			break;
+
+		}
+	case 'agent_client_orders':
+		require_once 'navigation/agent.nav.php';
+		switch ($data['section']) {
+		case ('orders'):
+			return get_agent_client_orders_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('client_order'):
+			return get_agent_client_order_navigation($data, $smarty, $user, $db, $account);
+			break;
+		
+
+		}
+	case 'agent_client_deliveries':
+		require_once 'navigation/agent.nav.php';
+		switch ($data['section']) {
+		case ('agent_deliveries'):
+			return get_agent_client_deliveries_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('agent_delivery'):
+			return get_agent_client_delivery_navigation($data, $smarty, $user, $db, $account);
+			break;
+		
+
+		}		
 		break;
 	default:
 		return 'Module not found';
@@ -2869,7 +2919,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 		}elseif ($state['section']=='agents') {
 			$branch[]=array('label'=>_('Users'), 'icon'=>'', 'reference'=>'account/users');
 			$branch[]=array('label'=>_('Agents'), 'icon'=>'terminal', 'reference'=>'account/users/agents');
-		}elseif ($state['section']=='staff.user') {
+		}elseif ($state['section']=='user') {
 			$branch[]=array('label'=>_('Users'), 'icon'=>'', 'reference'=>'account/users');
 
 
@@ -2881,10 +2931,10 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 				$branch[]=array('label'=>_('Contractors'), 'icon'=>'', 'reference'=>'account/users/contractors');
 				break;
 			case 'Agent':
-				$branch[]=array('label'=>_('Contractors'), 'icon'=>'', 'reference'=>'account/users/agents');
+				$branch[]=array('label'=>_('Agents'), 'icon'=>'', 'reference'=>'account/users/agents');
 				break;
 			case 'Suppliers':
-				$branch[]=array('label'=>_('Contractors'), 'icon'=>'', 'reference'=>'account/users/suppliers');
+				$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'account/users/suppliers');
 				break;
 			default:
 
@@ -2894,7 +2944,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 			$branch[]=array('label'=>'<span id="id">'.$state['_object']->get('User Handle').'</span>', 'icon'=>'terminal', 'reference'=>'account/user/'.$state['_object']->id);
 
-		}elseif ($state['section']=='deleted.staff.user') {
+		}elseif ($state['section']=='deleted.user') {
 			$branch[]=array('label'=>_('Deteted users'), 'icon'=>'', 'reference'=>'account/deleted_users');
 
 
@@ -3096,6 +3146,105 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 			$branch[]=array('label'=>'<span class="Deal_Name">'.$state['_object']->get('Name').'</span>', 'icon'=>'tag', 'reference'=>'');
 		}
 		break;
+
+
+	case 'agent_suppliers':
+		if ($state['section']=='suppliers') {
+			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'ship', 'reference'=>'suppliers');
+		}elseif ($state['section']=='settings') {
+			$branch[]=array('label'=>_("Suppliers' settings"), 'icon'=>'sliders', 'reference'=>'');
+		}elseif ($state['section']=='orders') {
+			$branch[]=array('label'=>_('Purchase orders'), 'icon'=>'clipboard', 'reference'=>'suppliers.orders');
+		}elseif ($state['section']=='deliveries') {
+			$branch[]=array('label'=>_('Deliveries'), 'icon'=>'truck', 'reference'=>'suppliers.deliveries');
+		}elseif ($state['section']=='agents') {
+			$branch[]=array('label'=>_('Agents'), 'icon'=>'user-secret', 'reference'=>'agents');
+		}elseif ($state['section']=='supplier') {
+			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
+			$branch[]=array('label'=>'<span class="id Supplier_Code">'.$state['_object']->get('Code').'</span> <span class="Supplier_Name italic">'.$state['_object']->get('Name').'</span>', 'icon'=>'ship', 'reference'=>'supplier/'.$state['key']);
+
+		}elseif ($state['section']=='supplier.new') {
+
+			if ($state['parent']=='agent') {
+				$branch[]=array('label'=>_('Agents'), 'icon'=>'', 'reference'=>'agents');
+				$branch[]=array('label'=>'<span class="Agent_Code">'.$state['_parent']->get('Code').'</span>', 'icon'=>'user-secret', 'reference'=>'agent/'.$state['parent_key']);
+
+			}else {
+				$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
+
+			}
+
+			$branch[]=array('label'=>_('New supplier'), 'icon'=>'ship', 'reference'=>'');
+
+		}elseif ($state['section']=='order' or $state['section']=='deleted_order') {
+
+			if ($state['parent']=='account') {
+				$branch[]=array('label'=>_('Purchase orders'), 'icon'=>'', 'reference'=>'suppliers/orders');
+			}elseif ($state['parent']=='supplier') {
+				$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
+				$branch[]=array('label'=>'<span class="id Supplier_Code">'.$state['_parent']->get('Code'), 'icon'=>'ship', 'reference'=>'supplier/'.$state['parent_key']);
+			}elseif ($state['parent']=='agent') {
+				$branch[]=array('label'=>_('Agents'), 'icon'=>'', 'reference'=>'agents');
+				$branch[]=array('label'=>'<span class="id Agent_Code">'.$state['_parent']->get('Code'), 'icon'=>'user-secret', 'reference'=>'agent/'.$state['parent_key']);
+			}
+			$branch[]=array('label'=>'<span class="Purchase_Order_Public_ID">'.$state['_object']->get('Public ID').'</span>', 'icon'=>'clipboard', 'reference'=>'');
+		}elseif ($state['section']=='delivery') {
+
+			if ($state['parent']=='account') {
+				$branch[]=array('label'=>_('Deliveries'), 'icon'=>'', 'reference'=>'suppliers/deliveries');
+			}elseif ($state['parent']=='supplier') {
+				$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
+				$branch[]=array('label'=>'<span class="id Supplier_Code">'.$state['_parent']->get('Code'), 'icon'=>'ship', 'reference'=>'supplier/'.$state['parent_key']);
+			}elseif ($state['parent']=='agent') {
+				$branch[]=array('label'=>_('Agents'), 'icon'=>'', 'reference'=>'agents');
+				$branch[]=array('label'=>'<span class="id Agent_Code">'.$state['_parent']->get('Code'), 'icon'=>'user-secret', 'reference'=>'agent/'.$state['parent_key']);
+			}
+			$branch[]=array('label'=>'<span class="Supplier_Delivery_Public_ID">'.$state['_object']->get('Public ID').'</span>', 'icon'=>'truck', 'reference'=>'');
+		}elseif ($state['section']=='supplier.order.item') {
+
+			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
+			$branch[]=array('label'=>'<span class="id Supplier_Code">'.$state['_parent']->get('Parent Code'), 'icon'=>'ship', 'reference'=>'supplier/'.$state['_parent']->get('Purchase Order Parent Key'));
+			$branch[]=array('label'=>'<span class="Purchase_Order_Public_ID">'.$state['_parent']->get('Public ID').'</span>', 'icon'=>'clipboard', 'reference'=>'supplier/'.$state['_parent']->get('Purchase Order Parent Key').'/order/'.$state['parent_key']);
+
+
+			$branch[]=array('label'=>'<span class="Supplier_Part_Reference">'.$state['_object']->get('Reference').'</span>', 'icon'=>'bars', 'reference'=>'');
+
+		}elseif ($state['section']=='agent.order.item') {
+
+
+
+
+			$branch[]=array('label'=>_('Agents'), 'icon'=>'', 'reference'=>'agents');
+			$branch[]=array('label'=>'<span class="id Agent_Code">'.$state['_parent']->get('Parent Code'), 'icon'=>'user-secret', 'reference'=>'agent/'.$state['_parent']->get('Purchase Order Parent Key'));
+			$branch[]=array('label'=>'<span class="Purchase_Order_Public_ID">'.$state['_parent']->get('Public ID').'</span>', 'icon'=>'clipboard', 'reference'=>'supplier/'.$state['_parent']->get('Purchase Order Parent Key').'/order/'.$state['parent_key']);
+
+
+			$branch[]=array('label'=>'<span class="Supplier_Part_Reference">'.$state['_object']->get('Reference').'</span>', 'icon'=>'bars', 'reference'=>'');
+
+		}elseif ($state['section']=='supplier_part') {
+			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
+			$branch[]=array('label'=>'<span class="Supplier_Code">'.$state['_parent']->get('Code').'</span>', 'icon'=>'ship', 'reference'=>'supplier/'.$state['_parent']->id);
+			$branch[]=array('label'=>'<span class="Supplier_Part_Reference">'.$state['_object']->get('Reference').'</span>', 'icon'=>'stop', 'reference'=>'');
+
+		}elseif ($state['section']=='supplier_part.new') {
+			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
+			$branch[]=array('label'=>'<span class="Supplier_Code">'.$state['_parent']->get('Code').'</span>', 'icon'=>'ship', 'reference'=>'supplier/'.$state['_parent']->id);
+			$branch[]=array('label'=>_("New supplier's part"), 'icon'=>'stop', 'reference'=>'');
+
+		}elseif ($state['section']=='agent.user.new') {
+			$branch[]=array('label'=>_('Agents'), 'icon'=>'', 'reference'=>'agents');
+			$branch[]=array('label'=>'<span class="Agent_Code">'.$state['_parent']->get('Code').'</span> <span class="Agent_Name italic">'.$state['_parent']->get('Name').'</span>', 'icon'=>'user-secret', 'reference'=>'agent/'.$state['parent_key']);
+			$branch[]=array('label'=>_('New system user'), 'icon'=>'terminal', 'reference'=>'');
+
+		}
+
+
+
+
+
+
+		break;
+
 
 	default:
 

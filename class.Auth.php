@@ -39,23 +39,22 @@ class Auth {
 	}
 
 
-	function authenticate($handle=false,$sk=false,$page='inikoo',$page_key='f0') {
+	function authenticate($handle=false,$sk=false,$page='system',$page_key='f0') {
+
+
 
 		$this->log_page=$page;
 
 		switch ($this->log_page) {
-		case 'staff':
-			$this->user_type="'Administrator','Staff','Warehouse','Contractor'";
-			$this->where_user_type=" and `User Type` in ('Administrator','Staff','Warehouse','Contractor')";
+		case 'system':
+			$this->user_type="'Administrator','Staff','Warehouse','Contractor','Supplier','Agent'";
+			$this->where_user_type=" and `User Type` in ('Administrator','Staff','Warehouse','Contractor','Supplier','Agent')";
 			break;
-		case 'customer':
+		case 'website':
 			$this->user_type="'Customer'";
 			$this->where_user_type=sprintf(" and `User Type`='Customer' and `User Site Key`=%d ",$page_key);
 			break;
-		case 'supplier':
-			$this->user_type="'Supplier'";
-			$this->where_user_type=sprintf(" and `User Type`='Supplier'  ");
-			break;
+		
 		}
 
 		if ($handle and $sk) {

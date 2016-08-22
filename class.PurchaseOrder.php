@@ -80,6 +80,8 @@ class PurchaseOrder extends DB_Table{
 
 
 
+
+
 			$history_data=array(
 				'History Abstract'=>_('Purchase order created'),
 				'History Details'=>'',
@@ -90,6 +92,17 @@ class PurchaseOrder extends DB_Table{
 			$this->new=true;
 
 			$parent->update_orders();
+
+
+			if ($this->get('Purchase Order Parent')=='Agent') {
+				$sql=sprintf('insert into `Purchase Order Agent Coda` (`Purchase Order Key`,`Purchase Order Agent Key`,`Purchase Order Agent Last Updated Date`) values (%d,%d,%s) ',
+					$this->id,
+					$this->get('Purchase Order Parent Key'),
+					prepare_mysql($this->get('Purchase Order Last Updated Date'))
+				);
+				$this->exec($sql);
+
+			}
 
 		} else {
 			// print "Error can not create supplier $sql\n";
@@ -404,6 +417,70 @@ class PurchaseOrder extends DB_Table{
 
 			break;
 
+		case ('Agent State'):
+			switch ($this->data['Purchase Order State']) {
+			case 'InProcess':
+				return _('In process by client');
+				break;
+
+			case 'Submitted':
+				return _("Client's order received");
+				break;
+			case 'Confirmed':
+				return _("Suppliers orders");
+				break;
+			case 'Checking':
+				return _('Checking');
+				break;
+			case 'In Warehouse':
+			case 'Done':
+				return _('Dispatched');
+				break;
+			case 'Cancelled':
+				return _('Cancelled');
+				break;
+
+
+
+			default:
+				return $this->data['Purchase Order State'];
+				break;
+			}
+
+			break;
+
+		case ('Agent State Short'):
+			switch ($this->data['Purchase Order State']) {
+			case 'InProcess':
+				return _('In process by client');
+				break;
+
+			case 'Submitted':
+				return _('CO received');
+				break;
+			case 'Confirmed':
+				return _("Suppliers orders");
+				break;
+			case 'Checking':
+				return _('Checking');
+				break;
+			case 'In Warehouse':
+			case 'Done':
+				return _('Dispatched');
+				break;
+			case 'Cancelled':
+				return _('Cancelled');
+				break;
+
+
+
+			default:
+				return $this->data['Purchase Order State'];
+				break;
+			}
+
+			break;
+
 		case 'Total Amount':
 			return money($this->data['Purchase Order Total Amount'], $this->data['Purchase Order Currency Code']);
 			break;
@@ -641,7 +718,7 @@ class PurchaseOrder extends DB_Table{
 
 
 					);
-//print $sql;
+					//print $sql;
 					$this->db->exec($sql);
 					$transaction_key=$this->db->lastInsertId();
 
@@ -782,7 +859,7 @@ class PurchaseOrder extends DB_Table{
 
 	function update_totals() {
 
-		$sql = sprintf("select sum(`Purchase Order Weight`) as  weight,sum(if(isNULL(`Purchase Order Weight`),1,0) )as missing_weights ,sum(if(isNULL(`Purchase Order CBM`),1,0) )as missing_cbms , sum(`Purchase Order CBM` )as cbm ,count(*) as num_items ,sum(if(`Purchase Order Quantity`>0,1,0)) as num_ordered_items ,sum(`Purchase Order Net Amount`) as items_net, sum(`Purchase Order Tax Amount`) as tax,  sum(`Purchase Order Shipping Contribution Amount`) as shipping from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d" ,
+		$sql = sprintf("select sum(`Purchase Order Weight`) as  weight,sum(if(isNULL(`Purchase Order Weight`),1,0) )as missing_weights ,sum(if(isNULL(`Purchase Order CBM`),1,0) )as missing_cbms , sum(`Purchase Order CBM` )as cbm ,count(distinct `Supplier Key`) as num_suppliers ,count(*) as num_items ,sum(if(`Purchase Order Quantity`>0,1,0)) as num_ordered_items ,sum(`Purchase Order Net Amount`) as items_net, sum(`Purchase Order Tax Amount`) as tax,  sum(`Purchase Order Shipping Contribution Amount`) as shipping from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d" ,
 			$this->id);
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
@@ -795,6 +872,7 @@ class PurchaseOrder extends DB_Table{
 				$this->update(array(
 						'Purchase Order Items Net Amount'=>$row['items_net'],
 						'Purchase Order Items Tax Amount'=>$row['tax'],
+						'Purchase Order Number Suppliers'=>$row['num_suppliers'],
 						'Purchase Order Number Items'=>$row['num_items'],
 						'Purchase Order Ordered Number Items'=>$row['num_ordered_items'],
 						'Purchase Order Weight'=>$row['weight'],

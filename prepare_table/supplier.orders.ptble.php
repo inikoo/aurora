@@ -41,8 +41,9 @@ if ($parameters['parent']=='account') {
 	 ';
 	$where=sprintf('where `Part SKU`=%d  ', $parameters['parent_key']);
 }else {
-	exit("unknown parent ".$parameters['parent']." \n");
+	exit("unknown parent :".$parameters['parent']." \n");
 }
+
 
 if (isset($parameters['period'])) {
 	include_once 'utils/date_functions.php';
@@ -66,17 +67,7 @@ if (isset($parameters['elements_type'])) {
 			if ($_value) {
 				$num_elements_checked++;
 
-				/*
-if ($row['element']=='Submitted' or $row['element']=='Inputted' or $row['element']=='Dispatched') {
-				$element='SubmittedInputtedDispatched';
-			}elseif ($row['element']=='Received' or $row['element']=='Checked') {
-				$element='ReceivedChecked';
-			}else {
-				$element=$row['element'];
-			}
-			if (isset($elements_numbers['state'][$element]))
-				$elements_numbers['state'][$element]+=$row['number'];
-		*/
+
 
 				if ($_key=='SubmittedInputtedDispatched') {
 					$_elements.=",'Submitted','Inputted','Dispatched'";
@@ -100,6 +91,40 @@ if ($row['element']=='Submitted' or $row['element']=='Inputted' or $row['element
 			$where.=' and `Purchase Order State` in ('.$_elements.')' ;
 		}
 		break;
+	case('state_agent'):
+		$_elements='';
+		$num_elements_checked=0;
+
+		foreach ($parameters['elements'][$parameters['elements_type']]['items'] as $_key=>$_value) {
+			$_value=$_value['selected'];
+			if ($_value) {
+				$num_elements_checked++;
+
+				if ($_key=='InProcessbyClient') {
+					$_elements.=",'InProcess'";
+				}elseif ($_key=='InProcess') {
+					$_elements.=",'Submitted'";
+				}elseif ($_key=='Send') {
+					$_elements.=",'Dispatched','Received','Checked','Placed'";
+				}else {
+
+					$_elements.=",'".addslashes($_key)."'";
+				}
+			}
+		}
+
+		if ($_elements=='') {
+			$where.=' and false' ;
+		}elseif ($num_elements_checked<4) {
+
+
+
+			$_elements=preg_replace('/^,/', '', $_elements);
+
+			$where.=' and `Purchase Order State` in ('.$_elements.')' ;
+		}
+		break;
+
 	}
 }
 

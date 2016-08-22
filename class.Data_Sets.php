@@ -45,24 +45,24 @@ class Data_Sets extends DB_Table {
 
 	function get_data($tipo, $tag) {
 
-		if ($tipo=='id')
+
+		if ($tipo=='id') {
 			$sql=sprintf("select * from `Data Sets Dimension` where `Data Sets Key`=%d", $tag);
-		if ($tipo=='code')
-			$sql=sprintf("select * from `Data Sets Dimension` where `Data Sets Code`=%s", prepare_mysql($tag));	
-		else
+		}elseif ($tipo=='code') {
+			$sql=sprintf("select * from `Data Sets Dimension` where `Data Sets Code`=%s", prepare_mysql($tag));
+		}else {
 			return;
+		}
+
 		if ($this->data = $this->db->query($sql)->fetch()) {
 
 			$this->id=$this->data['Data Sets Key'];
-			
+
 		}
 
 	}
 
-
-
-
-	function update_field_switcher($field, $value, $options='',$metadata='') {
+	function update_field_switcher($field, $value, $options='', $metadata='') {
 		if (is_string($value))
 			$value=_trim($value);
 
@@ -223,6 +223,9 @@ class Data_Sets extends DB_Table {
 
 
 	function update_stats() {
+
+
+
 
 		global $dns_db;
 
@@ -405,9 +408,9 @@ class Data_Sets extends DB_Table {
 
 
 			);
-			
+
 			//print "$sql\n";
-			
+
 			if ($result=$this->db->query($sql)) {
 				if ($row = $result->fetch()) {
 					$size=$row['data_size'];

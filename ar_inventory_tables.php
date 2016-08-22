@@ -15,10 +15,7 @@ require_once 'utils/table_functions.php';
 require_once 'utils/natural_language.php';
 
 
-if (!$user->can_view('parts')) {
-	echo json_encode(array('state'=>405, 'resp'=>'Forbidden'));
-	exit;
-}
+
 
 
 if (!isset($_REQUEST['tipo'])) {
@@ -81,6 +78,12 @@ default:
 
 
 function parts($_data, $db, $user, $type, $account) {
+
+
+	if (!$user->can_view('parts')) {
+		echo json_encode(array('state'=>405, 'resp'=>'Forbidden'));
+		exit;
+	}
 
 	if ($type=='discontinued') {
 		$extra_where=' and `Part Status`="Not In Use"';
@@ -492,6 +495,40 @@ function stock_transactions($_data, $db, $user) {
 
 
 function supplier_parts($_data, $db, $user) {
+
+	if ($user->get('User Type')=='Agent') {
+		// $_data['parameters']['parent']=='supplier' and $_data['parameters']['parent_key']==$user->get('User Parent Key')
+		if (!$_data['parameters']['parent']=='supplier') {
+			echo json_encode(array('state'=>405, 'resp'=>'Forbidden'));
+			exit;
+		}else {
+			$sql=sprintf('select count(*) as num from `Agent Supplier Bridge` where `Agent Supplier Agent Key`=%d and `Agent Supplier Supplier Key`=%d ',
+				$user->get('User Parent Key'),
+				$_data['parameters']['parent_key']
+			);
+
+			$ok=0;
+			if ($result=$db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$ok=$row['num'];
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				exit;
+			}
+			if ($ok==0) {
+				echo json_encode(array('state'=>405, 'resp'=>'Forbidden'));
+				exit;
+			}
+
+		}
+
+
+	}elseif (!$user->can_view('suppliers')) {
+		echo json_encode(array('state'=>405, 'resp'=>'Forbidden'));
+		exit;
+	}
+
 
 
 	$rtext_label='supplier part';
@@ -1050,9 +1087,9 @@ function sales_history($_data, $db, $user, $account) {
 		prepare_mysql($to)
 
 	);
-	
+
 	//print $sql_totals;
-	
+
 	list($rtext, $total, $filtered)=get_table_totals($db, $sql_totals, '', $rtext_label, false);
 
 
@@ -1145,7 +1182,7 @@ function sales_history($_data, $db, $user, $account) {
 			$from_date=$from_date.'';
 			$to_date=$to_date.'';
 		}
-		
+
 		break;
 	default:
 		print_r($_data);

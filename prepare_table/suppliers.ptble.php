@@ -88,7 +88,6 @@ else {
 }
 
 
-
 switch ($parameters['elements_type']) {
 
 case 'type':
@@ -225,7 +224,6 @@ else {
 }
 
 $sql_totals="select count(Distinct S.`Supplier Key`) as num from $table  $where  $where_type";
-
 $fields="
 S.`Supplier Key`,`Supplier Code`,`Supplier Name`,
 `Supplier Location`,`Supplier Main Plain Email`,`Supplier Preferred Contact Number`,`Supplier Preferred Contact Number Formatted Number`,`Supplier Main Contact Name`,`Supplier Company Name`,

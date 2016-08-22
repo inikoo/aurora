@@ -613,13 +613,23 @@ function get_supplier_navigation($data, $smarty, $user, $db, $account) {
 		array_pop($category_keys);
 		if (count($category_keys)>0) {
 			$sql=sprintf("select `Category Code`,`Category Key` from `Category Dimension` where `Category Key` in (%s)", join(',', $category_keys));
-			//print $sql;
-			$result=mysql_query($sql);
-			while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
-				$branch[]=array('label'=>$row['Category Code'], 'icon'=>'', 'url'=>'supplier_category.php?id='.$row['Category Key']);
 
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+
+
+					$branch[]=array('label'=>$row['Category Code'], 'icon'=>'', 'url'=>'supplier_category.php?id='.$row['Category Key']);
+
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				exit;
 			}
+
+
+
 		}
 
 
@@ -659,6 +669,15 @@ function get_supplier_navigation($data, $smarty, $user, $db, $account) {
 
 	}
 
+	//    <i class="fa fa-user-secret" aria-hidden="true"></i> {foreach from=$supplier->get_agents_data() item=agent_data } <span onclick="change_view('agent/{$agent_data['Agent Key']}')" class="button id bold ">{$agent_data['Agent Code']}</span>, <span>{$agent_data['Agent Name']}</span> {/foreach}
+
+	$title.=' <span class=" padding_left_10 very_small  '.($supplier->get('Supplier Has Agent')=='No'?'hide':'').'">';
+	$count=0;
+	foreach ($supplier->get_agents_data() as $agent_data) {
+		$title.=($count>0?', ':' ').'<span onclick="change_view(\'agent/'.$agent_data['Agent Key'].'\')" class="button  "><i class="fa fa-user-secret" aria-hidden="true" style="font-size:90%"></i> '.$agent_data['Agent Code'].'</span>';
+		$count++;
+	}
+	$title.='</span>';
 
 
 	$_content=array(
@@ -973,11 +992,7 @@ function get_new_agent_navigation($data, $smarty, $user, $db, $account) {
 
 function get_supplier_part_navigation($data, $smarty, $user, $db, $account) {
 
-
-
 	$block_view=$data['section'];
-
-
 
 	$left_buttons=array();
 	$right_buttons=array();
@@ -1151,12 +1166,19 @@ function get_supplier_part_navigation($data, $smarty, $user, $db, $account) {
 			if (count($category_keys)>0) {
 				$sql=sprintf("select `Category Code`,`Category Key` from `Category Dimension` where `Category Key` in (%s)", join(',', $category_keys));
 				//print $sql;
-				$result=mysql_query($sql);
-				while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
-					$branch[]=array('label'=>$row['Category Code'], 'icon'=>'', 'url'=>'supplier_category.php?id='.$row['Category Key']);
 
+				if ($result=$db->query($sql)) {
+					foreach ($result as $row) {
+						$branch[]=array('label'=>$row['Category Code'], 'icon'=>'', 'url'=>'supplier_category.php?id='.$row['Category Key']);
+
+					}
+				}else {
+					print_r($error_info=$db->errorInfo());
+					exit;
 				}
+
+
 			}
 
 
@@ -2185,6 +2207,7 @@ function get_deleted_purchase_order_navigation($data, $smarty, $user, $db, $acco
 	return $html;
 
 }
+
 
 function get_settings_navigation($data, $smarty, $user, $db, $account) {
 

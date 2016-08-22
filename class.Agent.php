@@ -322,6 +322,23 @@ class Agent extends SubjectSupplier {
 
 			);
 			break;
+		case 'Agent Default Currency Code':
+
+			$this->update_field($field, $value, $options);
+
+			include_once 'class.Supplier.php';
+			$sql=sprintf('select `Agent Supplier Supplier Key` from `Agent Supplier Bridge` where `Agent Supplier Agent Key`=%d ', $this->id);
+
+			if ($result=$this->db->query($sql)) {
+				foreach ($result as $row) {
+					$supplier=new Supplier($row['Agent Supplier Supplier Key']);
+					$supplier->update_field_switcher('Supplier Default Currency Code', $this->get('Agent Default Currency Code'), $options);
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
 		default:
 
 			$this->update_field($field, $value, $options);
@@ -533,6 +550,10 @@ class Agent extends SubjectSupplier {
 			$this->db->exec($sql);
 
 			$this->update_supplier_parts() ;
+
+
+			$supplier->update(array('Supplier Default Currency Code'=>$this->get('Agent Default Currency Code')));
+
 			$supplier->update_type('Agent');
 		}
 

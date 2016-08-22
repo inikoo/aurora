@@ -92,7 +92,7 @@ case 'website.favourites.customers':
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
 		));
-	get_customers_element_numbers($db, $data['parameters']);
+	get_customers_element_numbers($db, $data['parameters'],$user);
 	break;
 case 'store.products':
 case 'category.products':
@@ -106,13 +106,13 @@ case 'orders':
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
 		));
-	get_orders_element_numbers($db, $data['parameters']);
+	get_orders_element_numbers($db, $data['parameters'],$user);
 	break;
 case 'invoices':
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
 		));
-	get_invoices_element_numbers($db, $data['parameters']);
+	get_invoices_element_numbers($db, $data['parameters'],$user);
 	break;
 case 'customer.history':
 case 'supplier_part.history':
@@ -125,7 +125,7 @@ case 'supplier.order.history':
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
 		));
-	get_history_elements($db, $data['parameters']);
+	get_history_elements($db, $data['parameters'],$user);
 	break;
 case 'inventory.barcodes':
 	$data=prepare_values($_REQUEST, array(
@@ -463,7 +463,6 @@ function get_supplier_parts_elements($db, $data, $user) {
 
 
 		}else {
-			$where=sprintf(" where  `Supplier Part Agent Key`=%d", $purchase_order->get('Purchase Order Parent Key'));
 
 
 			$where=sprintf("  where  `Agent Supplier Agent Key`=%d", $purchase_order->get('Purchase Order Parent Key'));
@@ -830,7 +829,13 @@ function get_history_elements($db, $data) {
 }
 
 
-function get_orders_element_numbers($db, $data) {
+function get_orders_element_numbers($db, $data, $user) {
+
+	if (!$user->can_view('orders')) {
+		echo json_encode(array('state'=>405, 'resp'=>'Forbidden'));
+		exit;
+	}
+
 
 	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($data['period'], $data['from'], $data['to']);
 
@@ -1375,7 +1380,7 @@ function get_supplier_deliveries_element_numbers($db, $data) {
 function get_category_root_all_parts_elements($db, $data) {
 
 
-	
+
 
 	$elements_numbers=array(
 		'status'=>array('Assigned'=>0, 'NoAssigned'=>0),
@@ -1386,19 +1391,19 @@ function get_category_root_all_parts_elements($db, $data) {
 
 	);
 
-    $assigned=0;
+	$assigned=0;
 
 	if ($result=$db->query($sql)) {
 		foreach ($result as $row) {
-		 $assigned=$row['number'];
+			$assigned=$row['number'];
 			$elements_numbers['status']['Assigned']=number($row['number']);
 		}
 	}else {
 		print_r($error_info=$db->errorInfo());
 		exit;
 	}
-	
-		$sql=sprintf("select count(*) as number from `Part Dimension`");
+
+	$sql=sprintf("select count(*) as number from `Part Dimension`");
 
 
 	if ($result=$db->query($sql)) {

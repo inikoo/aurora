@@ -51,16 +51,14 @@ $editor=array(
 
 $account=new Account();
 
-//create_part_data_dimension();
-//setup_part_families();
-//update_materials_stats();
-//migrate_part_fields();
-//create_families($db, $account);
-//setup_product_part_bridge();
+create_part_data_dimension();
+setup_part_families();
+update_materials_stats();
+migrate_part_fields();
+create_families($db, $account);
+setup_product_part_bridge();
 set_valid_dates($db);
-
-
-//set_valid_dates_and_status_to_part_families($db);
+set_valid_dates_and_status_to_part_families($db);
 
 
 function set_valid_dates($db) {

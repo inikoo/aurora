@@ -1,9 +1,7 @@
 <div class="subject_profile" style="padding-top:10px">
 	<div id="contact_data">
 		<div class="data_container">
-			<div class="data_field small {if $supplier->get('Supplier Has Agent')=='No'}  hide{/if}" style="">
-				<i class="fa fa-user-secret" aria-hidden="true"></i> {foreach from=$supplier->get_agents_data() item=agent_data } <span onclick="change_view('agent/{$agent_data['Agent Key']}')" class="button id bold ">{$agent_data['Agent Code']}</span>, <span>{$agent_data['Agent Name']}</span> {/foreach} 
-			</div>
+			
 			<div class="data_field">
 				<h1 class="Supplier_Name">
 					{$supplier->get('Name')}
@@ -83,6 +81,10 @@
 				<tr class="Supplier_Valid_To {if $supplier->get('Supplier Type')!='Archived'}hide{/if}">
 					<td><i class="fa fa-archive" aria-hidden="true"></i> {t}Archived{/t}:</td>
 					<td>{$supplier->get('Valid To')}</td>
+				</tr>
+				<tr>
+					<td>{t}Currency{/t}:</td>
+					<td class="Supplier_Default_Currency_Code" title="{$supplier->get('Default Currency')}" >{$supplier->get('Default Currency Code')}</td>
 				</tr>
 				<tr>
 					<td>{t}Products origin{/t}:</td>

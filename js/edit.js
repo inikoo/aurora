@@ -642,6 +642,7 @@ function process_validation(validation, field, final_value) {
 
     if (validation.class == 'waiting') return;
 
+
     $('#' + field + '_field').removeClass('waiting_validation')
     $('#' + field + '_save_button').removeClass('fa-spinner fa-spin').addClass('fa-cloud')
 
@@ -652,7 +653,7 @@ function process_validation(validation, field, final_value) {
 
         $('#' + field).attr('has_been_valid', 1)
         $('#' + field + '_field').removeClass('invalid potentially_valid').addClass('valid')
-        //console.log('#' + field + '_field')
+        console.log('#' + field + '_field')
     } else if (validation.class == 'invalid') {
 
         $('#' + field + '_field').removeClass('valid').addClass('invalid')
@@ -948,7 +949,13 @@ function save_field(object, key, field) {
     $.getJSON(request, function(data) {
 
         $('#' + field + '_save_button').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
-        if (data.state == 200) {
+          if (data.state == 100) {
+            pre_save_actions(field,data)
+          
+        }if (data.state == 200) {
+
+
+
 
             $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
             $('#' + field + '_value').val(data.value)
@@ -1018,13 +1025,18 @@ function save_field(object, key, field) {
 
             post_save_actions(field, data)
 
-        } else if (data.state == 400) {
+        } 
+        else if (data.state == 400) {
             $('#' + field + '_editor').removeClass('valid potentially_valid').addClass('invalid')
 
             $('#' + field + '_msg').html(data.msg).removeClass('hide')
 
         }
     })
+}
+
+function pre_save_actions(field,data){
+
 }
 
 function post_save_actions(field, data) {

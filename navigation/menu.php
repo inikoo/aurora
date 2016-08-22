@@ -210,14 +210,23 @@ if ($user->can_view('reports')) {
 }
 
 
-if ($user->data['User Type']=='Supplier') {
+if ($user->get('User Type')=='Agent') {
+
+	$nav_menu[] = array('<i class="fa fa-shopping-cart fa-fw"></i>',_('Incoming orders'), 'orders', 'orders', 'module', '');
+	$nav_menu[] = array('<i class="fa fa-truck fa-fw"></i>',_('Deliveries'), 'deliveries', 'deliveries', 'module', '');
+
+	$nav_menu[] = array('<i class="fa fa-ship fa-fw"></i>',_('Suppliers'), 'suppliers', 'agent_suppliers', 'module', '');
+	$nav_menu[] = array('<i class="fa fa-user-secret fa-fw"></i>',_('Suppliers'), 'profile', 'agent_profile', 'module', 'jump');
+
+
+}elseif ($user->get('User Type')=='Supplier') {
 
 
 	//$nav_menu[] = array(_('Orders'), 'suppliers.php?orders'  ,'orders');
 	$nav_menu[] = array(_('Products'), 'suppliers.php'  , 'suppliers', 'module', '');
 	$nav_menu[] = array(_('Dashboard'), 'index.php', 'home', 'module', '');
 }
-elseif ($user->data['User Type']=='Warehouse') {
+elseif ($user->get('User Type')=='Warehouse') {
 
 	$nav_menu[] = array(_('Pending Orders'), 'warehouse_orders.php?id='.$user->data['User Parent Key'], 'orders', 'module', 'last');
 
@@ -239,6 +248,11 @@ if ($user->can_view('account')) {
 
 	$nav_menu[] = array('<i class="fa fa-certificate fa-fw"></i>',_('Account'), '/account' , 'account', 'module', '');
 }
+
+
+
+
+
 $current_item=$data['module'];
 if ($current_item=='customers_server')$current_item='customers';
 if ($current_item=='marketing_server')$current_item='marketing';

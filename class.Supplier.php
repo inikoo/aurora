@@ -459,6 +459,7 @@ class Supplier extends SubjectSupplier {
 		$this->load_acc_data();
 	}
 
+
 	function get_sales_data($from_date, $to_date) {
 
 		$sales_data=array(
@@ -891,9 +892,8 @@ class Supplier extends SubjectSupplier {
 		}
 
 
-
-
 		switch ($field) {
+
 		case('Supplier ID'):
 		case('Supplier Valid From'):
 		case('Supplier Stock Value'):
@@ -963,6 +963,52 @@ class Supplier extends SubjectSupplier {
 				print_r($error_info=$this->db->errorInfo());
 				exit;
 			}
+			break;
+
+		case 'Supplier Default Currency Code':
+
+			$this->update_field($field, $value, $options);
+
+			include_once 'class.SupplierPart.php';
+			$sql=sprintf('select `Supplier Part Key` from `Supplier Part Dimension` where `Supplier Part Supplier Key`=%d ', $this->id);
+
+			if ($result=$this->db->query($sql)) {
+				foreach ($result as $row) {
+					$supplier_part=new SupplierPart($row['Supplier Part Key']);
+
+					$supplier_part->update(array('Supplier Part Currency Code'=>$this->get('Supplier Default Currency Code')), $options);
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+
+			break;
+		case 'unlink agent':
+
+
+			include_once 'class.Agent.php';
+			$agent=new Agent($value);
+
+			$sql=sprintf('delete from `Agent Supplier Bridge` where `Agent Supplier Agent Key`=%d and `Agent Supplier Supplier Key`=%d',
+				$value,
+				$this->id
+			);
+			$this->db->exec($sql);
+
+			$this->update_type('Free', 'no_history');
+			$agent->update_supplier_parts() ;
+
+			$history_data=array(
+				'History Abstract'=>sprintf(_("Supplier %s inlinked from agent %s"), $this->data['Supplier Code'], $agent->get('Code')),
+				'History Details'=>'',
+				'Action'=>'edited'
+			);
+
+			$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
+
+			break;
 
 		default:
 
@@ -998,13 +1044,18 @@ class Supplier extends SubjectSupplier {
 
 			if ($supplier_part->new) {
 				$this->new_object=true;
-				$this->update_supplier_parts_data();
+				$this->update_supplier_parts();
 
 
 				$part=new Part('find', $data, 'create');
-				if ($supplier_part->new) {
+				// print_r($part);
+
+				if ($part->new) {
 					$supplier_part->update(array('Supplier Part Part SKU'=>$part->sku));
 					$supplier_part->get_data('id', $supplier_part->id);
+
+					$supplier_part->update_historic_object();
+
 				}else {
 
 					$this->error=true;

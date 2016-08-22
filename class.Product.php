@@ -854,6 +854,74 @@ class Product extends Asset{
 	}
 
 
+	function create_time_series($date=false) {
+		if (!$date) {
+			$date=gmdate("Y-m-d");
+		}
+		$sql=sprintf("select sum(`Invoice Quantity`) as outers,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as sales,  sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)) as dc_sales, count(Distinct `Customer Key`) as customers , count(Distinct `Invoice Key`) as invoices from `Order Transaction Fact` where `Product ID`=%d and `Current Dispatching State`='Dispatched' and `Invoice Date`>=%s  and `Invoice Date`<=%s   ",
+			$this->id,
+			prepare_mysql($date.' 00:00:00'),
+			prepare_mysql($date.' 23:59:59')
+
+		);
+		$outers=0;
+		$sales=0;
+		$dc_sales=0;
+		$customers=0;
+		$invoices=0;
+
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+
+				$sales=$row['sales'];
+				$dc_sales=$row['dc_sales'];
+				$customers=$row['customers'];
+				$invoices=$row['invoices'];
+				$outers=$row['outers'];
+
+
+
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+
+
+		if ($invoices!=0 and $customers!=0 and $sales!=0 and $outers!=0) {
+
+
+			$sql=sprintf("insert into `Order Spanshot Fact`(`Date`, `Product ID`, `Availability`, `Outers Out`, `Sales`, `Sales DC`, `Customers`, `Invoices`) values (%s,%d   ,%f,%f, %.2f,%.2f,  %d,%d) ON DUPLICATE KEY UPDATE `Outers Out`=%f,`Sales`=%.2f,`Sales DC`=%.2f,`Customers`=%d,`Invoices`=%d ",
+				prepare_mysql($date),
+				
+				$this->id,
+				1,
+				$outers,
+				$sales,
+				$dc_sales,
+				$customers,
+				$invoices,
+
+				$outers,
+				$sales,
+				$dc_sales,
+				$customers,
+				$invoices
+
+
+			);
+			$this->db->exec($sql);
+
+			//$this->update_sales_averages();
+		}
+
+	}
+
+
 }
 
 

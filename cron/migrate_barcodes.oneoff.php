@@ -10,8 +10,10 @@
 
 */
 
+
 $handle = fopen("barcodes.csv", "r");
 require_once 'common.php';
+include_once 'utils/object_functions.php';
 
 
 $default_DB_link=@mysql_connect($dns_host, $dns_user, $dns_pwd );
@@ -54,81 +56,96 @@ $editor=array(
 
 $row = 1;
 while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+
+	//print_r($data);
 	$num = count($data);
 	$row++;
 	if ($num>1 and strlen($data[1])==12) {
 		$number=$data[1];
 
-		if (isset($data[8]) and   strlen($data[8])==13) {
 
 
 
-			$note=$data[6].', '.$data[7];
-			$note=preg_replace('/\, $/', '', $note);
+		$note=$data[6].', '.$data[7];
+		$note=preg_replace('/\, $/', '', $note);
 
+
+		$check_digit=ean_checkdigit($number);
+
+		if ( isset($data[8])  and strlen($data[8])==13 ) {
 			$cross_reference_number=$data[8];
-
-			$check_digit=ean_checkdigit($number);
 
 			if ($number.$check_digit!=$cross_reference_number) {
 				print "Error check digit  $number $check_digit  $cross_reference_number \n";
 				continue;
 			}
-			$barcode_data=array(
-				'Barcode Number'=>$number.$check_digit,
-				'Barcode Sticky Note'=>$note
-			);
+		}
+		$barcode_data=array(
+			'Barcode Number'=>$number.$check_digit,
+			'Barcode Sticky Note'=>$note
+		);
 
-			$add_asset=false;
+		$add_asset=false;
 
-			if ($data[2]!='') {
-				$part=new Part('reference', $data[2]);
-				if ($part->id) {
-					$add_asset=true;
+		if ($data[2]!='' or $data[3]!='' or $number<505579657595) {
+			$part=new Part('reference', $data[2]);
+			if ($part->id) {
+				$add_asset=true;
 
+
+			}else {
+				$barcode_data['Barcode Status']='Reserved';
+
+                if($data[2]=='' and $data[3]==''){
+                    $data[2]='empty';
+                }
+
+				if ($data[2]=='') {
+					$note=$data[3].', '.$note;
 
 				}else {
-					$barcode_data['Barcode Status']='Reserved';
 					$note=$data[2].', '.$note;
-					$note=preg_replace('/\, $/', '', $note);
-
-					$barcode_data['Barcode Sticky Note']=$note;
-
 
 				}
 
+				$note=preg_replace('/\, $/', '', $note);
 
-			}
+				$barcode_data['Barcode Sticky Note']=$note;
 
-
-			$barcode=new Barcode('find', $barcode_data, 'create');
-
-			if ($add_asset ) {
-				$asset_data=array(
-					'Barcode Asset Type'=>'Part',
-					'Barcode Asset Key'=>$part->id,
-					'Barcode Asset Assigned Date'=>$part->get('Part Valid From')
-				);
-
-				$barcode->assign_asset($asset_data);
-
-
-				$sql=sprintf('update `Part Dimension` set `Part Barcode Number`=%s,`Part Barcode Key`=%d where `Part SKU`=%d ',
-					prepare_mysql($barcode->get('Barcode Number')),
-					$barcode->id,
-					$part->id
-				);
-				$db->exec($sql);
 
 			}
 
 
 		}
 
+
+		$barcode=new Barcode('find', $barcode_data, 'create');
+
+		if ($add_asset ) {
+			$asset_data=array(
+				'Barcode Asset Type'=>'Part',
+				'Barcode Asset Key'=>$part->id,
+				'Barcode Asset Assigned Date'=>$part->get('Part Valid From')
+			);
+
+			$barcode->assign_asset($asset_data);
+
+
+			$sql=sprintf('update `Part Dimension` set `Part Barcode Number`=%s,`Part Barcode Key`=%d where `Part SKU`=%d ',
+				prepare_mysql($barcode->get('Barcode Number')),
+				$barcode->id,
+				$part->id
+			);
+			$db->exec($sql);
+
+		}
+
+
 	}
 
-
 }
+
+
 fclose($handle);
 
 

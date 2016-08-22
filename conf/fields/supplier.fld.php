@@ -290,11 +290,12 @@ if ($object->get('Supplier Type')!='Archived') {
 				'type'=>'value'
 			),
 			array(
+				'render'=>($options['parent']=='agent'?false:true),
 				'id'=>'Supplier_Default_Currency_Code',
 				'edit'=>($edit?'country_select':''),
 				'options'=>get_currencies($db),
 				'scope'=>'currencies',
-				'value'=>($new?$account->get('Account Currency'):$object->get('Supplier Default Currency Code')),
+				'value'=>($new?$options['currency']:$object->get('Supplier Default Currency Code')),
 				'formatted_value'=>$object->get('Default Currency'),
 				'label'=>ucfirst($object->get_field_label('Supplier Default Currency Code')),
 				'required'=>false,
@@ -305,9 +306,9 @@ if ($object->get('Supplier Type')!='Archived') {
 				'edit'=>($edit?'country_select':''),
 				'options'=>get_countries($db),
 				'scope'=>'countries',
-				'value'=> ($new?$account->get('Account Country Code'):htmlspecialchars($object->get('Supplier Products Origin Country Code'))),
-				'formatted_value'=>($new?$account->get('Account Country Code'):$object->get('Products Origin Country Code')),
-				'stripped_formatted_value'=>($new?$account->get('Account Country Code'):$object->get('Products Origin Country Code')),
+				'value'=> ($new?$options['country_origin']:htmlspecialchars($object->get('Supplier Products Origin Country Code'))),
+				'formatted_value'=>($new?$options['country_origin']:$object->get('Products Origin Country Code')),
+				'stripped_formatted_value'=>($new?$options['country_origin']:$object->get('Products Origin Country Code')),
 				'label'=>ucfirst($object->get_field_label('Part Origin Country Code')),
 				'required'=>false,
 				'type'=>'value',
@@ -317,92 +318,95 @@ if ($object->get('Supplier Type')!='Archived') {
 		)
 	);
 
-	$object_fields[]=array(
-		'label'=>_('Purchase order settings'),
-		'show_title'=>false,
-		'fields'=>array(
+
+	if ($options['parent']!='agent') {
+
+		$object_fields[]=array(
+			'label'=>_('Purchase order settings'),
+			'show_title'=>false,
+			'fields'=>array(
 
 
-			array(
-				'id'=>'Supplier_Default_Incoterm',
-				'edit'=>($edit?'option':''),
+				array(
+					'id'=>'Supplier_Default_Incoterm',
+					'edit'=>($edit?'option':''),
 
-				'options'=>$options_incoterms,
-				'value'=>$object->get('Supplier Default Incoterm'),
-				'formatted_value'=>$object->get('Default Incoterm'),
-				'label'=>ucfirst($object->get_field_label('Supplier Default Incoterm')),
-				'required'=>false,
-				'type'=>'value'
-			),
-			array(
-				'id'=>'Supplier_Default_Port_of_Export',
-				'edit'=>($edit?'string':''),
-
-				'value'=>$object->get('Supplier Default Port of Export'),
-				'formatted_value'=>$object->get('Default Port of Export'),
-				'label'=>ucfirst($object->get_field_label('Supplier Default Port of Export')),
-				'required'=>false,
-				'type'=>'value'
-			),
-			array(
-				'id'=>'Supplier_Default_Port_of_Import',
-				'edit'=>($edit?'string':''),
-
-				'value'=>$object->get('Supplier Default Port of Import'),
-				'formatted_value'=>$object->get('Default Port of Import'),
-				'label'=>ucfirst($object->get_field_label('Supplier Default Port of Import')),
-				'required'=>false,
-				'type'=>'value'
-			),
-			array(
-				'id'=>'Supplier_Default_PO_Terms_and_Conditions',
-				'edit'=>($edit?'editor':''),
-				'class'=>'editor',
-				'editor_data'=>array(
-					'id'=>'Supplier_Default_PO_Terms_and_Conditions',
-					'content'=>$object->get('Supplier Default PO Terms and Conditions'),
-
-					'data'=>base64_encode(json_encode(array(
-								'mode'=>'edit_object',
-								'field'=>'Supplier_Default_PO_Terms_and_Conditions',
-								'plugins'=>array('align', 'draggable', 'image', 'link', 'save', 'entities', 'emoticons', 'fullscreen', 'lineBreaker', 'table', 'codeView', 'codeBeautifier'),
-								'metadata'=>array(
-									'tipo'=>'edit_field',
-									'object'=>'Supplier',
-									'key'=>$object->id,
-									'field'=>'Supplier Default PO Terms and Conditions',
-
-
-
-								)
-							)
-						))
-
+					'options'=>$options_incoterms,
+					'value'=>$object->get('Supplier Default Incoterm'),
+					'formatted_value'=>$object->get('Default Incoterm'),
+					'label'=>ucfirst($object->get_field_label('Supplier Default Incoterm')),
+					'required'=>false,
+					'type'=>'value'
 				),
-				'value'=>$object->get('Supplier Default PO Terms and Conditions'),
-				'formatted_value'=>$object->get('Default PO Terms and Conditions'),
-				'label'=>ucfirst($object->get_field_label('Supplier Default PO Terms and Conditions')),
-				'required'=>false,
-				'type'=>'value'
-			),
-			array(
-				'id'=>'Supplier_Show_Warehouse_TC_in_PO',
-				'edit'=>($edit?'option':''),
+				array(
+					'id'=>'Supplier_Default_Port_of_Export',
+					'edit'=>($edit?'string':''),
 
-				'options'=>$options_yn,
-				'value'=>($new?'Yes':$object->get('Supplier Show Warehouse TC in PO')),
-				'formatted_value'=>($new?_('Yes'):$object->get('Show Warehouse TC in PO')),
-				'label'=>ucfirst($object->get_field_label('Supplier Show Warehouse TC in PO')),
-				'required'=>false,
-				'type'=>'value'
-			),
+					'value'=>$object->get('Supplier Default Port of Export'),
+					'formatted_value'=>$object->get('Default Port of Export'),
+					'label'=>ucfirst($object->get_field_label('Supplier Default Port of Export')),
+					'required'=>false,
+					'type'=>'value'
+				),
+				array(
+					'id'=>'Supplier_Default_Port_of_Import',
+					'edit'=>($edit?'string':''),
 
-		)
-	);
+					'value'=>$object->get('Supplier Default Port of Import'),
+					'formatted_value'=>$object->get('Default Port of Import'),
+					'label'=>ucfirst($object->get_field_label('Supplier Default Port of Import')),
+					'required'=>false,
+					'type'=>'value'
+				),
+				array(
+					'id'=>'Supplier_Default_PO_Terms_and_Conditions',
+					'edit'=>($edit?'editor':''),
+					'class'=>'editor',
+					'editor_data'=>array(
+						'id'=>'Supplier_Default_PO_Terms_and_Conditions',
+						'content'=>$object->get('Supplier Default PO Terms and Conditions'),
 
+						'data'=>base64_encode(json_encode(array(
+									'mode'=>'edit_object',
+									'field'=>'Supplier_Default_PO_Terms_and_Conditions',
+									'plugins'=>array('align', 'draggable', 'image', 'link', 'save', 'entities', 'emoticons', 'fullscreen', 'lineBreaker', 'table', 'codeView', 'codeBeautifier'),
+									'metadata'=>array(
+										'tipo'=>'edit_field',
+										'object'=>'Supplier',
+										'key'=>$object->id,
+										'field'=>'Supplier Default PO Terms and Conditions',
+
+
+
+									)
+								)
+							))
+
+					),
+					'value'=>$object->get('Supplier Default PO Terms and Conditions'),
+					'formatted_value'=>$object->get('Default PO Terms and Conditions'),
+					'label'=>ucfirst($object->get_field_label('Supplier Default PO Terms and Conditions')),
+					'required'=>false,
+					'type'=>'value'
+				),
+				array(
+					'id'=>'Supplier_Show_Warehouse_TC_in_PO',
+					'edit'=>($edit?'option':''),
+
+					'options'=>$options_yn,
+					'value'=>($new?'Yes':$object->get('Supplier Show Warehouse TC in PO')),
+					'formatted_value'=>($new?_('Yes'):$object->get('Show Warehouse TC in PO')),
+					'label'=>ucfirst($object->get_field_label('Supplier Show Warehouse TC in PO')),
+					'required'=>false,
+					'type'=>'value'
+				),
+
+			)
+		);
+	}
 
 	if (!$new) {
-
+		/*
 		if ($object->get('Supplier User Key')) {
 
 
@@ -479,34 +483,70 @@ if ($object->get('Supplier Type')!='Archived') {
 			);
 
 		}
+*/
 
 
+		if ($options['parent']=='agent') {
+
+
+			$sql=sprintf('select `Agent Key`,`Agent Code` from `Agent Supplier Bridge`  left join `Agent Dimension` on (`Agent Key`=`Agent Supplier Agent Key`) where `Agent Supplier Supplier Key`=%d ', $object->id);
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+
+
+
+
+			$fields[]=array(
+
+				'id'=>'unlink_agent_'.$row['Agent Key'],
+				'class'=>'operation',
+				'value'=>'',
+				'label'=>'<i class="fa fa-fw fa-lock button invisible" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'", "agent_key":"'.$row['Agent Key'].'"}\' onClick="unlink_agent(this)" class="delete_object ">'.sprintf(_("Unlink agent %s"), $row['Agent Code']).' <i class="fa fa-chain-broken new_button button"></i></span>',
+				'reference'=>'',
+				'type'=>'operation'
+			);
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				exit;
+			}
+
+
+
+
+
+		}
+
+		$fields[]=array(
+
+			'id'=>'archive_supplier',
+			'class'=>'operation',
+			'value'=>'',
+			'label'=>'<i class="fa fa-fw fa-lock button invisible" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="archive_object(this)" class="delete_object ">'._("Archive supplier").' <i class="fa fa-archive new_button button"></i></span>',
+			'reference'=>'',
+			'type'=>'operation'
+		);
+
+		if ($user->get('User Type')=='Staff') {
+			$fields[]=array(
+
+				'id'=>'delete_supplier',
+				'class'=>'operation',
+				'value'=>'',
+				'label'=>'<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete supplier & supplier's parts").' <i class="fa fa-trash new_button "></i></span>',
+				'reference'=>'',
+				'type'=>'operation'
+			);
+		}
 
 		$operations=array(
 			'label'=>_('Operations'),
 			'show_title'=>true,
 			'class'=>'edit_fields',
-			'fields'=>array(
-				array(
+			'fields'=>$fields
 
-					'id'=>'archive_supplier',
-					'class'=>'operation',
-					'value'=>'',
-					'label'=>'<i class="fa fa-fw fa-lock button invisible" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="archive_object(this)" class="delete_object ">'._("Archive supplier").' <i class="fa fa-archive new_button button"></i></span>',
-					'reference'=>'',
-					'type'=>'operation'
-				),
-				array(
 
-					'id'=>'delete_supplier',
-					'class'=>'operation',
-					'value'=>'',
-					'label'=>'<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete supplier & supplier's parts").' <i class="fa fa-trash new_button "></i></span>',
-					'reference'=>'',
-					'type'=>'operation'
-				),
-
-			)
 
 		);
 
@@ -516,32 +556,36 @@ if ($object->get('Supplier Type')!='Archived') {
 
 
 }else {
+	$fields=array();
+	$fields[]=array(
+
+		'id'=>'unarchive_supplier',
+		'class'=>'operation',
+		'value'=>'',
+		'label'=>'<i class="fa fa-fw fa-lock button invisible" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="unarchive_object(this)" class="delete_object ">'._("Unarchive supplier").' <i class="fa fa-folder-open new_button button"></i></span>',
+		'reference'=>'',
+		'type'=>'operation'
+	);
+
+	if ($user->get('User Type')=='Staff') {
+		$fields[]=array(
+
+			'id'=>'delete_supplier',
+			'class'=>'operation',
+			'value'=>'',
+			'label'=>'<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete supplier & supplier's parts").' <i class="fa fa-trash new_button "></i></span>',
+			'reference'=>'',
+			'type'=>'operation'
+		);
+	}
+
+
 
 	$operations=array(
 		'label'=>_('Operations'),
 		'show_title'=>true,
 		'class'=>'edit_fields',
-		'fields'=>array(
-			array(
-
-				'id'=>'unarchive_supplier',
-				'class'=>'operation',
-				'value'=>'',
-				'label'=>'<i class="fa fa-fw fa-lock button invisible" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="unarchive_object(this)" class="delete_object ">'._("Unarchive supplier").' <i class="fa fa-folder-open new_button button"></i></span>',
-				'reference'=>'',
-				'type'=>'operation'
-			),
-			array(
-
-				'id'=>'delete_supplier',
-				'class'=>'operation',
-				'value'=>'',
-				'label'=>'<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete supplier & supplier's parts").' <i class="fa fa-trash new_button "></i></span>',
-				'reference'=>'',
-				'type'=>'operation'
-			),
-
-		)
+		'fields'=>$fields
 
 	);
 
@@ -551,7 +595,7 @@ if ($object->get('Supplier Type')!='Archived') {
 
 
 
-
+/*
 if ($new) {
 
 	$object_fields[]=array(
@@ -642,7 +686,7 @@ if ($new) {
 		)
 	);
 }
-
+*/
 
 
 

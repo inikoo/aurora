@@ -32,7 +32,6 @@ date_default_timezone_set('UTC');
 $db = new PDO("mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd , array(\PDO::MYSQL_ATTR_INIT_COMMAND =>"SET time_zone = '+0:00';"));
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
-
 $con=@mysql_connect($dns_host, $dns_user, $dns_pwd );
 
 if (!$con) {
@@ -55,6 +54,7 @@ mysql_set_charset('utf8');
 setlocale(LC_MONETARY, 'en_GB.UTF-8');
 
 
+
 $account=new Account();
 date_default_timezone_set($account->data['Account Timezone']) ;
 define("TIMEZONE", $account->data['Account Timezone']);
@@ -71,21 +71,22 @@ ini_set('session.gc_divisor', 100);
 session_start();
 
 
+
 $auth=new Auth(IKEY, SKEY);
 $handle = (array_key_exists('login__username', $_REQUEST)) ? $_REQUEST['login__username'] : false;
 $sk = (array_key_exists('ep', $_REQUEST)) ? base64_decode($_REQUEST['ep']) : false;
 
 
-if (isset($_REQUEST['user_type']) and $_REQUEST['user_type']=='supplier')
-	$user_type="supplier";
-else
-	$user_type="staff";
+
+
+
+
 
 if (!$sk and array_key_exists('mk', $_REQUEST)    ) {
 	$auth->authenticate_from_inikoo_masterkey($_REQUEST['mk']);
 }
 elseif ($handle) {
-	$auth->authenticate($handle, $sk, $user_type, 0);
+	$auth->authenticate($handle, $sk,'system', 0);
 }
 
 

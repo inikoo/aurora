@@ -90,6 +90,7 @@ class SubjectSupplier extends Subject {
 
 	}
 
+
 	function update_orders() {
 		$number_purchase_orders=0;
 		$number_open_purchase_orders=0;
@@ -146,12 +147,13 @@ class SubjectSupplier extends Subject {
 			$this->table_name,
 			$number_delivery_notes,
 			$this->table_name,
-			
+
 			$this->table_name,
 			$this->id);
 		$this->db->exec($sql);
 
 	}
+
 
 	function get_user_data() {
 
@@ -168,6 +170,45 @@ class SubjectSupplier extends Subject {
 
 
 	}
+
+
+	function get_users($scope='keys') {
+
+		if ($scope=='objects') {
+			include_once 'class.User.php';
+		}
+
+
+		$users=array();
+		$sql=sprintf("select `User Key` from `User Dimension` whereUser Type`=%s and `User Parent Key`=%d  ",
+			prepare_mysql($this->table_name),
+			$this->id);
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+				if ($scope=='objects') {
+
+					$users[$row['User Key']]=new User($row['User Key']);
+
+				}else {
+					$users[$row['User Key']]=$row['User Key'];
+				}
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+		return $users;
+
+	}
+
+
+
+
+
 
 	function create_user($data) {
 
@@ -216,13 +257,14 @@ class SubjectSupplier extends Subject {
 
 	}
 
-function get_subject_supplier_common($key) {
+
+	function get_subject_supplier_common($key) {
 
 
 		if (!$this->id)return array(false, false);;
 
 		list($got, $result)=$this->get_subject_common($key);
-		if ($got)return array(true,$result);
+		if ($got)return array(true, $result);
 
 
 
@@ -232,9 +274,9 @@ function get_subject_supplier_common($key) {
 		case('Valid From'):
 		case('Valid To'):
 			if ($this->get($this->table_name.' '.$key)=='') {
-				return array(true,'');
+				return array(true, '');
 			}else {
-				return array(true,strftime("%a, %e %b %y", strtotime($this->get($this->table_name.' '.$key).' +0:00')));
+				return array(true, strftime("%a, %e %b %y", strtotime($this->get($this->table_name.' '.$key).' +0:00')));
 			}
 			break;
 		case ('Default Currency'):
@@ -251,31 +293,31 @@ function get_subject_supplier_common($key) {
 
 				if ($result=$this->db->query($sql)) {
 					if ($row = $result->fetch()) {
-						 return array(true,sprintf("%s (%s)", $row['Currency Name'], $row['Currency Code']));
+						return array(true, sprintf("%s (%s)", $row['Currency Name'], $row['Currency Code']));
 					}else {
-						return array(true,$this->data[$this->table_name.' Default Currency Code']);
+						return array(true, $this->data[$this->table_name.' Default Currency Code']);
 					}
 				}else {
 					print_r($error_info=$this->db->errorInfo());
 					exit;
 				}
 			}else {
-				return array(true,'');
+				return array(true, '');
 			}
 
 			break;
 		case 'Average Delivery Days':
-			if ($this->data[$this->table_name.' Average Delivery Days']=='') return array(true,'');
-			return array(true,number($this->data[$this->table_name.' Average Delivery Days']));
+			if ($this->data[$this->table_name.' Average Delivery Days']=='') return array(true, '');
+			return array(true, number($this->data[$this->table_name.' Average Delivery Days']));
 			break;
 		case 'Delivery Time':
-		
-			
+
+
 			include_once 'utils/natural_language.php';
 			if ($this->get($this->table_name.' Average Delivery Days')=='') {
-				return array(true,'<span class="italic very_discreet">'._('Unknown').'</span>');
+				return array(true, '<span class="italic very_discreet">'._('Unknown').'</span>');
 			}else {
-				return array(true,seconds_to_natural_string(24*3600*$this->get($this->table_name.' Average Delivery Days')));
+				return array(true, seconds_to_natural_string(24*3600*$this->get($this->table_name.' Average Delivery Days')));
 			}
 			break;
 
@@ -284,9 +326,9 @@ function get_subject_supplier_common($key) {
 			if ($this->get($this->table_name.' Products Origin Country Code')) {
 				include_once 'class.Country.php';
 				$country=new Country('code', $this->data[$this->table_name.' Products Origin Country Code']);
-				return array(true,_($country->get('Country Name')).' ('.$country->get('Country Code').')');
+				return array(true, _($country->get('Country Name')).' ('.$country->get('Country Code').')');
 			}else {
-				return array(true,'');
+				return array(true, '');
 			}
 
 			break;
@@ -296,33 +338,34 @@ function get_subject_supplier_common($key) {
 		case('Open Purchase Orders'):
 		case('Delivery Notes'):
 		case('Invoices'):
-			return array(true,number($this->data[$this->table_name.' '.$key]));
+			return array(true, number($this->data[$this->table_name.' '.$key]));
 			break;
 
 		case('Formatted ID'):
 		case("ID"):
-			return array(true,$this->get_formatted_id());
+			return array(true, $this->get_formatted_id());
 		case('Total Acc Parts Sold Amount'):
-			return array(true,money($this->data[$this->table_name.' Total Acc Parts Sold Amount']));
+			return array(true, money($this->data[$this->table_name.' Total Acc Parts Sold Amount']));
 			break;
 		case('Total Acc Parts Profit'):
-			return array(true,money($this->data[$this->table_name.' Total Acc Parts Profit After Storing']));
+			return array(true, money($this->data[$this->table_name.' Total Acc Parts Profit After Storing']));
 			break;
 		case('Stock Value'):
 
 			if (!is_numeric($this->data[$this->table_name.' Stock Value']))
-				return array(true,_('Unknown'));
+				return array(true, _('Unknown'));
 			else
-				return array(true,money($this->data[$this->table_name.' Stock Value']));
+				return array(true, money($this->data[$this->table_name.' Stock Value']));
 			break;
 		default;
 
-		
+
 		}
 
 		return array(false, false);
 
 	}
+
 
 }
 
