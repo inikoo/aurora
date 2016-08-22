@@ -48,13 +48,13 @@ $object_fields=array(
 		'fields'=>array(
 
 			array(
-				'render'=>(in_array($object->get('User Type'), array('Supplier', 'Agent', 'Contractor'))?true:false),
+				'render'=>(in_array($options['parent'], array('supplier', 'agent', 'xontractor'))?true:false),
 				'id'=>'User_Alias',
 				'edit'=>'string',
 				'value'=>$object->get('User Alias'),
 				'formatted_value'=>$object->get('Alias'),
 				'label'=>ucfirst($object->get_field_label('User Alias')),
-				'type'=>'value'
+				'type'=>(in_array($options['parent'], array('aupplier', 'agent', 'contractor'))?'value':'')
 
 			),
 
