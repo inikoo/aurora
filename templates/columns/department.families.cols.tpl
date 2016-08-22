@@ -1,1 +1,0 @@
-store.families.cols.tpl

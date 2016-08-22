@@ -27,39 +27,56 @@ function create_otf($from, $to) {
 		prepare_mysql($from), prepare_mysql($to));
 
 
+
 	if ($result=$db->query($sql)) {
 		foreach ($result as $row) {
 
 
-			$where=sprintf(" `Product Main Type` in ('Historic','Discontinued')  and  `Product Valid From`<=%s and `Product Valid To`>=%s ",
+			$where=sprintf(" `Product Status`='Discontinued'  and  `Product Valid From`<=%s and `Product Valid To`>=%s ",
 				prepare_mysql($row['Date'].' 00:00:00'),
 				prepare_mysql($row['Date'].' 23:59:59')
 
 			);
 			$sql=sprintf('select `Product ID`  from `Product Dimension` where %s     ', $where);
-			$res2=mysql_query($sql);
-			$count=0;
-			while ($row2=mysql_fetch_array($res2)) {
-				$product=new Product("pid", $row2['Product ID']);
-				$product->create_time_series($row['Date']);
-				// $product->update_sales_averages();
-				//print $row['Date']." disc ".$product->code."\n";
 
+			$count=0;
+			if ($result2=$db->query($sql)) {
+				foreach ($result2 as $row2) {
+
+					$product=new Product($row2['Product ID']);
+					$product->create_time_series($row['Date']);
+
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				exit;
 			}
 
+			$count=0;
 
-			$where=sprintf("   `Product Main Type` not in ('Historic','Discontinued')  and  `Product Valid From`<=%s  ",
+
+
+			$where=sprintf("   `Product Status`!='Discontinued'  and  `Product Valid From`<=%s  ",
 				prepare_mysql($row['Date'].' 00:00:00')
 			);
 			$sql=sprintf('select `Product ID`  from `Product Dimension` where %s     ', $where);
-			$res2=mysql_query($sql);
-			//print "$sql\n";
-			$count=0;
-			while ($row2=mysql_fetch_assoc($res2)) {
-				$product=new Product("pid", $row2['Product ID']);
-				$product->create_time_series($row['Date']);
 
+
+			if ($resul2t=$db->query($sql)) {
+				foreach ($result2 as $row2) {
+
+					$product=new Product($row2['Product ID']);
+					$product->create_time_series($row['Date']);
+
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				exit;
 			}
+
+
 
 
 
@@ -73,7 +90,7 @@ function create_otf($from, $to) {
 
 
 
-mod
+
 
 }
 

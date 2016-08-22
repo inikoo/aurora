@@ -84,7 +84,6 @@ $smarty->config_dir = 'server_files/smarty/configs';
 $smarty->assign('_DEVEL', _DEVEL);
 
 
-$smarty->assign('account', $account);
 
 
 $is_already_logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);
@@ -130,7 +129,7 @@ set_locale($locale);
 
 
 
-$smarty->assign('user', $user);
+
 
 $user->read_groups();
 
@@ -144,29 +143,10 @@ if ($user->data['User Type']=='Supplier') {
 }
 
 
-
-
+$smarty->assign('user', $user);
 $smarty->assign('account', $account);
 
 
-/*
-$lang_menu=$mem->get('EPRLANG'.$account_code.$account->data['Inikoo Version']);
-if (!$lang_menu) {
-	$lang_menu=array();
-	$sql=sprintf("select `Language Code`,`Country 2 Alpha Code`,`Language Original Name` from `Language Dimension` order by `Language Original Name`");
-	$res=mysql_query($sql);
-
-	while ($row=mysql_fetch_assoc($res) ) {
-		$_locale=$row['Language Code'].'_'.$row['Country 2 Alpha Code'].'.UTF-8';
-		$lang_menu[]=array($_SERVER['PHP_SELF'].$args.'_locale='.$_locale,strtolower($row['Country 2 Alpha Code']),$row['Language Original Name']);
-	}
-	$mem->set('EPRLANG'.$account_code.$account->data['Inikoo Version'], $lang_menu, 1728000);
-}
-
-
-
-$smarty->assign('lang_menu',$lang_menu);
-*/
 
 $common='';
 

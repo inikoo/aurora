@@ -884,9 +884,9 @@ class User extends DB_Table {
 
 
 	function delete_website($to_delete, $history=true) {
-	
-	include_once('class.Site.php');
-	
+
+		include_once 'class.Site.php';
+
 		$changed=0;
 		foreach ($to_delete as $website_key) {
 
@@ -1256,6 +1256,10 @@ class User extends DB_Table {
 			break;
 		case 'User Handle':
 			$label=_('login');
+			break;
+
+		case 'User Alias':
+			$label=_('name');
 			break;
 
 		case 'User Password':
@@ -2468,6 +2472,15 @@ class User extends DB_Table {
 
 	}
 
+
+	function get_dashboard_items() {
+
+		$dashboard_items=array();
+		
+		return $dashboard_items;
+
+
+	}
 
 
 }

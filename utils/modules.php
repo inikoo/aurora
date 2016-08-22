@@ -1067,8 +1067,8 @@ $modules=array(
 					'agent.deliveries'=>array('label'=>_('Deliveries'), 'icon'=>'truck'),
 					'agent.agent_orders'=>array('label'=>_("Agent's PO"), 'icon'=>'clipboard fa-flip-horizontal'),
 
-					'agent.users'=>array('label'=>_('System users'), 'icon'=>'user', 'class'=>'right icon_only'),
 					'agent.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
+					'agent.users'=>array('label'=>_('System users'), 'icon'=>'terminal', 'class'=>'right icon_only'),
 
 
 				)
@@ -2014,40 +2014,40 @@ $modules=array(
 			'root'=>array(
 				'type'=>'object', 'label'=>'Root', 'title'=>_('Root user'), 'icon'=>'dot-circle-o', 'reference'=>'suppliers',
 			),
-			'staff.user'=>array('type'=>'object',
+			'user'=>array('type'=>'object',
 				'tabs'=>array(
-					'staff.user.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
-					'staff.user.login_history'=>array('label'=>_('Login history'), 'title'=>_('Login history')),
-					'staff.user.api_keys'=>array('label'=>_('API keys'), 'title'=>_('API keys')),
+					'user.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
+					'user.login_history'=>array('label'=>_('Login history'), 'title'=>_('Login history')),
+					'user.api_keys'=>array('label'=>_('API keys'), 'title'=>_('API keys')),
 
-					'staff.user.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
+					'user.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
 
 
 				)
 			),
 
 
-			'deleted.staff.user'=>array('type'=>'object',
+			'deleted.user'=>array('type'=>'object',
 				'tabs'=>array(
 
-					'deleted.staff.user.login_history'=>array('label'=>_('Login history'), 'title'=>_('Login history')),
-					'deleted.staff.user.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only')
+					'deleted.user.login_history'=>array('label'=>_('Login history'), 'title'=>_('Login history')),
+					'deleted.user.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only')
 
 				)
 
 			),
 
 
-			'staff.user.api_key.new'=>array('type'=>'new_object',
+			'user.api_key.new'=>array('type'=>'new_object',
 				'tabs'=>array(
-					'staff.user.api_key.new'=>array('label'=>_('New API')),
+					'user.api_key.new'=>array('label'=>_('New API')),
 
 				)
 			),
-			'staff.user.api_key'=>array('type'=>'new_object',
+			'user.api_key'=>array('type'=>'new_object',
 				'tabs'=>array(
-					'staff.user.api_key.details'=>array('label'=>_('Data'), 'icon'=>'database'),
-					'staff.user.api_key.requests'=>array('label'=>_('Requests'), 'icon'=>'arrow-circle-right'),
+					'user.api_key.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+					'user.api_key.requests'=>array('label'=>_('Requests'), 'icon'=>'arrow-circle-right'),
 
 				)
 			),
@@ -2112,7 +2112,298 @@ $modules=array(
 				)
 			)
 		)
-	)
+	),
+	'agent_profile'=>array(
+		'sections'=>array(
+			'profile'=>array('type'=>'object', 'label'=>_('Profile'), 'icon'=>'user_secret', 'id'=>'',
+				'tabs'=>array(
+					'agent.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
+					'agent.suppliers'=>array('label'=>_("Agent's suppliers"), 'icon'=>'ship'),
+
+					'agent.supplier_parts'=>array('label'=>_("Agent's Parts"), 'icon'=>'stop'),
+					'agent.orders'=>array('label'=>_('Purchase orders'), 'icon'=>'clipboard'),
+					'agent.deliveries'=>array('label'=>_('Deliveries'), 'icon'=>'truck'),
+					'agent.agent_orders'=>array('label'=>_("Agent's PO"), 'icon'=>'clipboard fa-flip-horizontal'),
+
+					'agent.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
+					'agent.users'=>array('label'=>_('System users'), 'icon'=>'terminal', 'class'=>'right icon_only'),
+				)
+			)
+		),
+	),
+	'agent_suppliers'=>array(
+
+
+		'sections'=>array(
+
+			'suppliers'=>array(
+
+				'type'=>'navigation', 'label'=>_('Suppliers'), 'icon'=>'ship', 'reference'=>'suppliers',
+				'tabs'=>array(
+					'agent.suppliers'=>array()
+				)
+
+
+
+			),
+
+
+
+
+
+
+
+
+			'orders'=>array(
+				'type'=>'navigation', 'label'=>_("Agent's purchase orders"), 'icon'=>'clipboard', 'reference'=>'suppliers/orders',
+				'tabs'=>array(
+					'agent_orders'=>array()
+				)
+			),
+
+			'order'=>array('type'=>'object',
+				'tabs'=>array(
+
+					'supplier.order.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+
+					'supplier.order.items'=>array('label'=>_('Items'), 'icon'=>'bars'),
+					// 'supplier.order.supplier_parts'=>array('label'=>_('Parts'), 'icon'=>'stop'),
+					// 'supplier.order.invoices'=>array('label'=>_('Invoices'),  'icon'=>'file-text-o'),
+					'supplier.order.tac.editor'=>array('label'=>_('Terms and conditions'), 'icon'=>'gavel', 'class'=>''),
+					'supplier.order.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
+
+				)
+
+			),
+
+			'deleted_order'=>array('type'=>'object',
+				'tabs'=>array(
+
+
+					'deleted.supplier.order.items'=>array('label'=>_('Items'), 'icon'=>'bars'),
+					'deleted.supplier.order.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
+
+				)
+
+			),
+
+			'delivery'=>array('type'=>'object',
+				'tabs'=>array(
+
+					'supplier.delivery.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+
+					'supplier.delivery.items'=>array('label'=>_('Items'), 'icon'=>'bars'),
+					'supplier.delivery.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
+
+				)
+
+			),
+
+			'supplier'=>array(
+				'type'=>'object',
+				'label'=>_('Supplier'),
+				'icon'=>'ship',
+				'reference'=>'supplier/%d',
+				'tabs'=>array(
+					'supplier.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
+					'supplier.supplier_parts'=>array('label'=>_("Supplier's Parts"), 'icon'=>'stop'),
+					'supplier.orders'=>array('label'=>_('Purchase orders'), 'icon'=>'clipboard'),
+
+					'supplier.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
+
+
+				)
+			),
+			'supplier.new'=>array('type'=>'new_object',
+				'tabs'=>array(
+					'supplier.new'=>array('label'=>_('New supplier')),
+
+				)
+
+			),
+
+			'deleted_supplier'=>array(
+				'type'=>'object',
+				'tabs'=>array(
+					'supplier.history'=>array('label'=>_('History'), 'icon'=>'road'),
+
+
+				)
+			),
+
+			'supplier.order.item'=>array('type'=>'object',
+				'subtabs_parent'=>array(
+
+					'supplier_part.purchase_orders.purchase_orders'=>'supplier_part.purchase_orders',
+					'supplier_part.purchase_orders.delivery_notes'=>'supplier_part.purchase_orders',
+					'supplier_part.purchase_orders.invoices'=>'supplier_part.purchase_orders',
+				),
+
+
+
+				'tabs'=>array(
+
+
+					'supplier.order.item.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+
+
+					'supplier_part.purchase_orders'=>array('label'=>_('Purchase Orders'), 'icon'=>'clipboard', 'class'=>'right icon_only',
+						'subtabs'=>array(
+							'supplier_part.purchase_orders.purchase_orders'=>array('label'=>_('Purchase Orders')),
+							'supplier_part.purchase_orders.delivery_notes'=>array('label'=>_('Delivery Notes')),
+							'supplier_part.purchase_orders.invoices'=>array('label'=>_('Invoices')),
+
+						)
+
+					),
+
+					'supplier_part.images'=>array('label'=>_('Images'), 'icon'=>'camera-retro', 'class'=>'right icon_only'),
+					'supplier_part.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
+
+
+
+				)
+			),
+
+
+
+			'supplier_part'=>array('type'=>'object',
+				'subtabs_parent'=>array(
+
+					'supplier_part.supplier.orders'=>'supplier_part.purchase_orders',
+					'supplier_part.supplier.deliveries'=>'supplier_part.purchase_orders',
+				),
+
+
+
+				'tabs'=>array(
+
+
+					'supplier_part.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+
+
+
+					'supplier_part.purchase_orders'=>array('label'=>_('Purchase orders / deliveries'), 'icon'=>'clipboard',
+						'subtabs'=>array(
+
+							'supplier_part.supplier.orders'=>array('label'=>_('Purchase orders'), 'icon'=>'clipboard'),
+							'supplier_part.supplier.deliveries'=>array('label'=>_("Supplier's deliveries"), 'icon'=>'truck'),
+
+						)
+
+					),
+
+					'supplier_part.images'=>array('label'=>_('Images'), 'icon'=>'camera-retro', 'class'=>'right icon_only'),
+					'supplier_part.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
+
+
+
+				)
+			),
+
+			'supplier_part.historic'=>array('type'=>'object',
+				'subtabs_parent'=>array(
+
+					'supplier_part.purchase_orders.purchase_orders'=>'supplier_part.purchase_orders',
+					'supplier_part.purchase_orders.delivery_notes'=>'supplier_part.purchase_orders',
+					'supplier_part.purchase_orders.invoices'=>'supplier_part.purchase_orders',
+				),
+
+
+
+				'tabs'=>array(
+
+
+					'supplier_part.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+
+
+					'supplier_part.purchase_orders'=>array('label'=>_('Purchase Orders'), 'icon'=>'clipboard',
+						'subtabs'=>array(
+							'supplier_part.purchase_orders.purchase_orders'=>array('label'=>_('Purchase Orders')),
+							'supplier_part.purchase_orders.delivery_notes'=>array('label'=>_('Delivery Notes')),
+							'supplier_part.purchase_orders.invoices'=>array('label'=>_('Invoices')),
+
+						)
+
+					),
+
+					'supplier_part.images'=>array('label'=>_('Images'), 'icon'=>'camera-retro', 'class'=>'right icon_only'),
+					'supplier_part.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
+
+
+
+				)
+			),
+
+			'supplier_part.new'=>array('type'=>'new_object',
+				'tabs'=>array(
+					'supplier_part.new'=>array('label'=>_('New part')),
+
+				)
+
+			),
+			'supplier.user.new'=>array('type'=>'new_object',
+				'tabs'=>array(
+					'supplier.user.new'=>array('label'=>_('New system user')),
+
+				)
+
+			),
+
+
+			'settings'=>array(
+				'type'=>'navigation', 'label'=>'', 'icon'=>'sliders', 'reference'=>'suppliers/settings', 'class'=>'icon_only',
+				'tabs'=>array(
+					'suppliers.settings'=>array('label'=>_('Setting'), 'icon'=>'sliders', 'class'=>''),
+
+
+				)
+
+
+			),
+		)
+	),
+
+	'agent_client_orders'=>array(
+		'sections'=>array(
+			'orders'=>array(
+				'type'=>'navigation', 'label'=>_("Client's orders"), 'icon'=>'shopping-cart', 'reference'=>'agent_orders',
+				'tabs'=>array(
+					'agent.client_orders'=>array()
+				)
+			),
+
+
+			'client_order'=>array('type'=>'object',
+				'tabs'=>array(
+
+					//'supplier.order.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+
+					'client_order.items'=>array('label'=>_('Items'), 'icon'=>'bars'),
+					'client_order.orders'=>array('label'=>_('Purchase orders'), 'icon'=>'clipboard'),
+					'supplier.order.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
+
+				)
+
+			),
+
+			'deleted_order'=>array('type'=>'object',
+				'tabs'=>array(
+
+
+					'deleted.supplier.order.items'=>array('label'=>_('Items'), 'icon'=>'bars'),
+					'deleted.supplier.order.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
+
+				)
+
+			),
+
+
+
+
+
+		)
+	),
 
 );
 

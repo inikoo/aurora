@@ -12,21 +12,36 @@
 
 //print_r($parameters);
 
+$group_by='';
+
 switch ($parameters['tab']) {
 case 'account.users.staff':
+$table='`User Dimension` U left join `Staff Dimension` SD  on (`User Parent Key`=`Staff Key`)';
+
 	$where=" where  `User Type`='Staff' ";
 	break;
 case 'account.users.contractors':
+$table='`User Dimension` U left join `Staff Dimension` SD  on (`User Parent Key`=`Staff Key`)';
+
 	$where=" where  `User Type`='Contractor' ";
 	break;	
 case 'account.users.agents':
+$table='`User Dimension` U left join `Agent Dimension`   on (`User Parent Key`=`Agent Key`)';
+
 	$where=" where  `User Type`='Agent' ";
 	break;
 case 'account.users.suppliers':
+$table='`User Dimension` U left join `Supplier Dimension`   on (`User Parent Key`=`Supplier Key`)';
+
 	$where=" where  `User Type`='Supplier' ";
 	break;
+case 'agent.users':
+$table='`User Dimension` U ';
+
+	$where=sprintf(" where  `User Type`='Agent' and `User Parent Key`=%d ",$parameters['parent_key']);
+	break;	
 default:
-	exit('tab not configured (users.ptable.php)');
+	exit('tab not configured (users.ptable.php) ->'.$parameters['tab']);
 	break;
 }
 
@@ -68,15 +83,17 @@ else
 	$order='`User Key`';
 
 
-$table='`User Dimension` U left join `Staff Dimension` SD  on (`User Parent Key`=`Staff Key`)';
 
 $sql_totals="select count(Distinct U.`User Key`) as num from $table  $where  ";
+
+//print $sql_totals;
+
 
 $fields="`User Failed Login Count`,`User Last Failed Login`,`User Last Login`,`User Login Count`,`User Alias`,`User Handle`,
 	(select GROUP_CONCAT(S.`Store Code` SEPARATOR ', ') from `User Right Scope Bridge` URSB  left join `Store Dimension` S on (URSB.`Scope Key`=S.`Store Key`) where URSB.`User Key`=U.`User Key` and `Scope`='Store' ) as Stores,
 	(select GROUP_CONCAT(S.`Warehouse Code` SEPARATOR ', ') from `User Right Scope Bridge` URSB left join `Warehouse Dimension` S on (URSB.`Scope Key`=S.`Warehouse Key`) where URSB.`User Key`=U.`User Key`and `Scope`='Warehouse'  ) as Warehouses ,
 	(select GROUP_CONCAT(S.`Site Code` SEPARATOR ', ') from `User Right Scope Bridge` URSB left join `Site Dimension` S on (URSB.`Scope Key`=S.`Site Key`)  where URSB.`User Key`=U.`User Key`and `Scope`='Website'  ) as Sites ,
 
-	(select GROUP_CONCAT(S.`User Group Name` SEPARATOR ', ') from `User Group User Bridge` URSB left join `User Group Dimension` S on (URSB.`User Group Key`=S.`User Group Key`)   where URSB.`User Key`=U.`User Key` ) as Groups,`User Key`,`User Active`,`Staff Key`
+	(select GROUP_CONCAT(S.`User Group Name` SEPARATOR ', ') from `User Group User Bridge` URSB left join `User Group Dimension` S on (URSB.`User Group Key`=S.`User Group Key`)   where URSB.`User Key`=U.`User Key` ) as Groups,`User Key`,`User Active`
 ";
 ?>

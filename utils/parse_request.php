@@ -490,12 +490,24 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 			break;
 		case 'supplier':
-			if (!$user->can_view('suppliers')) {$module='utils';$section='forbidden';break;}
 
-			$module='suppliers';
+
+			if (!( $user->can_view('suppliers') or $user->get('User Type')=='Agent' )) {
+				$module='utils';$section='forbidden';break;
+			}
+
+			if ($user->get('User Type')=='Agent') {
+				$module='agent_suppliers';
+				$parent='agent';
+				$parent_key=$user->get('User Parent Key');
+			}else {
+				$module='suppliers';
+				$parent='account';
+				$parent_key=1;
+			}
+
 			$section='supplier';
-			$parent='account';
-			$parent_key=1;
+
 
 			$object='supplier';
 
@@ -642,7 +654,11 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 			break;
 		case 'agent':
-			if (!$user->can_view('suppliers')) {$module='utils';$section='forbidden';break;}
+
+
+			if (!( $user->can_view('suppliers') or $user->get('User Type')=='Agent' )) {
+				$module='utils';$section='forbidden';break;
+			}
 
 			$module='suppliers';
 			$section='agent';
@@ -654,6 +670,10 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			if (isset($view_path[0])) {
 				if (is_numeric($view_path[0])) {
 					$key=$view_path[0];
+
+					if ( $user->get('User Type')=='Agent'  and $user->get('User Parent Key')!=$key ) {
+						$module='utils';$section='forbidden';break;
+					}
 
 
 					if (isset($view_path[1])) {
@@ -919,48 +939,57 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 			break;
 		case 'orders':
-			if (!$user->can_view('orders')) {$module='utils';$section='forbidden';break;}
 
-			$module='orders';
-			if ($count_view_path==0) {
-				$section='orders';
-
-				$parent='store';
-				if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'], $user->stores)) {
-					$parent_key=$user->data['User Hooked Store Key'];
-				}else {
-					$_tmp=$user->stores;
-					$parent_key=array_shift($_tmp);
-				}
-
-			}
-			$arg1=array_shift($view_path);
-			if ($arg1=='all') {
-				$module='orders_server';
-				$section='orders';
-				$parent='account';
-				$parent_key=1;
+			if ($user->get('User Type')=='Staff') {
 
 
+				if (!$user->can_view('orders')) {$module='utils';$section='forbidden';break;}
 
-			}
-			elseif (is_numeric($arg1)) {
-				$section='orders';
-				$parent='store';
-				$parent_key=$arg1;
-
-				if (isset($view_path[0]) and is_numeric($view_path[0])) {
-					$section='order';
-					$object='order';
+				$module='orders';
+				if ($count_view_path==0) {
+					$section='orders';
 
 					$parent='store';
-					$parent_key=$arg1;
-					$key=$view_path[0];
+					if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'], $user->stores)) {
+						$parent_key=$user->data['User Hooked Store Key'];
+					}else {
+						$_tmp=$user->stores;
+						$parent_key=array_shift($_tmp);
+					}
 
 				}
+				$arg1=array_shift($view_path);
+				if ($arg1=='all') {
+					$module='orders_server';
+					$section='orders';
+					$parent='account';
+					$parent_key=1;
 
+
+
+				}
+				elseif (is_numeric($arg1)) {
+					$section='orders';
+					$parent='store';
+					$parent_key=$arg1;
+
+					if (isset($view_path[0]) and is_numeric($view_path[0])) {
+						$section='order';
+						$object='order';
+
+						$parent='store';
+						$parent_key=$arg1;
+						$key=$view_path[0];
+
+					}
+
+				}
+			}elseif ($user->get('User Type')=='Agent') {
+				$module='agent_client_orders';
+				$section='orders';
+				$parent='agent';
+				$parent_key=$user->get('User Parent Key');
 			}
-
 			break;
 		case 'invoices':
 			if (!$user->can_view('orders')) {$module='utils';$section='forbidden';break;}
@@ -1816,125 +1845,139 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			break;
 
 		case 'suppliers':
-			if (!$user->can_view('suppliers')) {$module='utils';$section='forbidden';break;}
 
-			$module='suppliers';
-			$section='suppliers';
+			if ($user->get('User Type')=='Staff') {
+				if (!$user->can_view('suppliers')) {$module='utils';$section='forbidden';break;}
+
+				$module='suppliers';
+				$section='suppliers';
 
 
-			if ( isset($view_path[0]) ) {
+				if ( isset($view_path[0]) ) {
 
-				if ($view_path[0]=='categories') {
-					$object='category';
-					$key='';
-					$section='categories';
+					if ($view_path[0]=='categories') {
+						$object='category';
+						$key='';
+						$section='categories';
 
-				}elseif ($view_path[0]=='settings') {
-					$object='account';
-					$key=1;
-					$section='settings';
-
-				}
-				elseif ($view_path[0]=='orders') {
-
-					$section='orders';
-
-				}
-				elseif ($view_path[0]=='order') {
-
-					$section='order';
-					$object='purchase_order';
-
-					if ( isset($view_path[1]) ) {
-						if (is_numeric($view_path[1])) {
-							$key=$view_path[1];
-						}
+					}elseif ($view_path[0]=='settings') {
+						$object='account';
+						$key=1;
+						$section='settings';
 
 					}
+					elseif ($view_path[0]=='orders') {
 
+						$section='orders';
 
-				}
+					}
+					elseif ($view_path[0]=='order') {
 
-				else if ($view_path[0]=='category') {
-					$section='category';
-					$object='category';
-					if (isset($view_path[1]) ) {
+						$section='order';
+						$object='purchase_order';
 
-
-
-						$view_path[1]=preg_replace('/\>$/', '', $view_path[1]);
-						if (preg_match('/^(\d+\>)+(\d+)$/', $view_path[1])) {
-
-							$parent_categories=preg_split('/\>/', $view_path[1]);
-							$metadata=$parent_categories;
-							$key=array_pop($parent_categories);
-
-							$parent='category';
-							$parent_key=array_pop($parent_categories);
-
-							if (isset($view_path[2]) ) {
-								if ($view_path[2]=='part') {
-									$section='part';
-
-									if (isset($view_path[2]) and  is_numeric($view_path[2])) {
-
-										$key=$view_path[2];
-
-									}
-
-								}
-
-
+						if ( isset($view_path[1]) ) {
+							if (is_numeric($view_path[1])) {
+								$key=$view_path[1];
 							}
 
 						}
 
-						elseif ( is_numeric($view_path[1])) {
-							$key=$view_path[1];
-							include_once 'class.Category.php';
-							$category=new Category($key);
-							if ($category->get('Category Branch Type')=='Root') {
-								$parent='account';
-								$parent_key=1;
-							}else {
+
+					}
+
+					else if ($view_path[0]=='category') {
+						$section='category';
+						$object='category';
+						if (isset($view_path[1]) ) {
+
+
+
+							$view_path[1]=preg_replace('/\>$/', '', $view_path[1]);
+							if (preg_match('/^(\d+\>)+(\d+)$/', $view_path[1])) {
+
+								$parent_categories=preg_split('/\>/', $view_path[1]);
+								$metadata=$parent_categories;
+								$key=array_pop($parent_categories);
+
 								$parent='category';
-								$parent_key=$category->get('Category Parent Key');
+								$parent_key=array_pop($parent_categories);
+
+								if (isset($view_path[2]) ) {
+									if ($view_path[2]=='part') {
+										$section='part';
+
+										if (isset($view_path[2]) and  is_numeric($view_path[2])) {
+
+											$key=$view_path[2];
+
+										}
+
+									}
+
+
+								}
 
 							}
 
+							elseif ( is_numeric($view_path[1])) {
+								$key=$view_path[1];
+								include_once 'class.Category.php';
+								$category=new Category($key);
+								if ($category->get('Category Branch Type')=='Root') {
+									$parent='account';
+									$parent_key=1;
+								}else {
+									$parent='category';
+									$parent_key=$category->get('Category Parent Key');
 
-							if (isset($view_path[2])) {
-								if ($view_path[2]=='supplier') {
+								}
 
-									if (isset($view_path[3]) and is_numeric($view_path[3])) {
 
-										$section='supplier';
-										$parent='category';
-										$parent_key=$category->id;
-										$object='supplier';
-										$key=$view_path[3];
+								if (isset($view_path[2])) {
+									if ($view_path[2]=='supplier') {
+
+										if (isset($view_path[3]) and is_numeric($view_path[3])) {
+
+											$section='supplier';
+											$parent='category';
+											$parent_key=$category->id;
+											$object='supplier';
+											$key=$view_path[3];
+										}
 									}
 								}
 							}
-						}
-						elseif ($view_path[1]=='new') {
+							elseif ($view_path[1]=='new') {
 
-							$section='main_category.new';
+								$section='main_category.new';
 
+							}
+						}else {
+							//error
 						}
-					}else {
-						//error
+
 					}
 
+
+
+					elseif ($view_path[0]=='new') {
+						$section='supplier.new';
+						$object='supplier';
+					}
 				}
+			}elseif ($user->get('User Type')=='Agent') {
 
 
+				$module='agent_suppliers';
+				$section='suppliers';
+				$object='agent';
+				$key=$user->get('User Parent Key');
 
-				elseif ($view_path[0]=='new') {
-					$section='supplier.new';
-					$object='supplier';
-				}
+
 			}
+
+
 			break;
 
 		case 'deliveries':
@@ -1965,6 +2008,27 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 
 			break;
+		case 'client_order':
+
+
+			$module='agent_client_orders';
+			$section='client_order';
+			$object='purchase_order';
+			$parent='agent';
+			$parent_key=$user->get('User Parent Key');
+
+			if ( isset($view_path[0]) ) {
+				if (is_numeric($view_path[0])) {
+					$key=$view_path[0];
+				}
+
+			}
+
+
+
+
+			break;
+
 
 		case 'hr':
 			if (!$user->can_view('staff')) {$module='utils';$section='forbidden';break;}
@@ -2351,11 +2415,29 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 
 		case 'profile':
-			$module='profile';
-			$section='profile';
+			if ($user->get('User Type')=='Staff') {
+				$module='profile';
+				$section='profile';
 
-			$object='user';
-			$key=$user->id;
+				$object='user';
+				$key=$user->id;
+			}
+			else if ($user->get('User Type')=='Agent') {
+				$module='agent_profile';
+				$section='profile';
+				$object='agent';
+				$key=$user->get('User Parent Key');
+
+			}
+
+
+
+
+
+
+
+
+
 
 			break;
 
@@ -2463,7 +2545,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 						$parent='account';
 						$parent_key=1;
-						$section='staff.user';
+						$section='user';
 						$object='user';
 						$key=$view_path[1];
 
@@ -2478,7 +2560,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 										$parent='user';
 										$parent_key=$key;
-										$section='staff.user.api_key.new';
+										$section='user.api_key.new';
 										$object='api_key';
 
 									}
@@ -2493,7 +2575,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 										$parent='user';
 										$parent_key=$key;
-										$section='staff.user.api_key';
+										$section='user.api_key';
 										$object='api_key';
 
 										$key=$view_path[3];
@@ -2873,7 +2955,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 	}
 
 
-
+//print_r($state);
 	return $state;
 
 }

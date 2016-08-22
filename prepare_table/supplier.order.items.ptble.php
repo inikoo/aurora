@@ -41,6 +41,7 @@ $table="
 left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Historic Key`=SPH.`Supplier Part Historic Key`)
  left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
  left join  `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`)
+ left join `Supplier Dimension` S on (`Supplier Part Supplier Key`=S.`Supplier Key`)
 
 ";
 
@@ -56,7 +57,7 @@ $fields="
 $fields="`Supplier Delivery Quantity`,`Supplier Delivery Key`,`Purchase Order Item Index`,
 `Purchase Order Transaction Fact Key`,`Purchase Order Quantity`,POTF.`Supplier Part Key`,`Supplier Part Reference`,POTF.`Supplier Part Historic Key`,
 `Part Unit Description`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,
-`Supplier Part Unit Cost`,`Part Package Weight`,`Purchase Order CBM`,`Purchase Order Weight`
+`Supplier Part Unit Cost`,`Part Package Weight`,`Purchase Order CBM`,`Purchase Order Weight`,S.`Supplier Key`,`Supplier Code`
 
 ";
 

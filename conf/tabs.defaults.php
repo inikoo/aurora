@@ -754,6 +754,15 @@ $tab_defaults=array(
 		'elements'=>$elements_options['supplier_parts']
 
 	),
+	'client_order.items'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>1000,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code',
+
+	),
 	'supplier.delivery.items'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
@@ -879,6 +888,19 @@ $tab_defaults=array(
 		'elements_type'=>each($elements_options['supplier_orders'])['key'],
 		'elements'=>$elements_options['supplier_orders']
 	),
+	'agent.client_orders'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'number',
+		'from'=>'',
+		'to'=>'',
+		'period'=>'all',
+		'elements_type'=>each($elements_options['agent_client_orders'])['key'],
+		'elements'=>$elements_options['agent_client_orders']
+	),
 	'agent.deliveries'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
@@ -891,6 +913,27 @@ $tab_defaults=array(
 		'period'=>'all',
 		'elements_type'=>each($elements_options['supplier_deliveries'])['key'],
 		'elements'=>$elements_options['supplier_deliveries']
+	),
+	'agent.client_deliveries'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'number',
+		'from'=>'',
+		'to'=>'',
+		'period'=>'all',
+		'elements_type'=>each($elements_options['agent_client_deliveries'])['key'],
+		'elements'=>$elements_options['agent_client_deliveries']
+	),
+	'agent.users'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'handle'
 	),
 	'warehouses'=>array(
 		'view'=>'overview',

@@ -18,7 +18,9 @@ include_once 'conf/object_fields.php';
 $supplier=$state['_object'];
 $supplier->get_user_data();
 
-$object_fields=get_object_fields($supplier, $db, $user, $smarty ,array('show_full_label'=>false));
+
+
+$object_fields=get_object_fields($supplier, $db, $user, $smarty ,array('show_full_label'=>false,'parent'=>($state['_object']->get('Supplier Has Agent')=='Yes'?'agent':'supplier')  ));
 
 $smarty->assign('default_country', $account->get('Account Country 2 Alpha Code'));
 $smarty->assign('preferred_countries', '"'.join('", "', preferred_countries($account->get('Account Country 2 Alpha Code'))).'"');

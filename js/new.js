@@ -39,8 +39,8 @@ function get_form_validation_state(submitting) {
         }
 
 
-
-        //console.log(field+' '+component_validation)
+if(component_validation!='valid')
+        console.log(field+' '+component_validation)
         //if (component_validation == 'invalid' || component_validation == 'potentially_valid') 
         if (component_validation == 'invalid') {
             form_validation = 'invalid';
@@ -70,7 +70,7 @@ function process_form_validation(validation, submitting) {
     if (submitting && validation == 'potentially_valid') {
         validation = 'invalid'
     }
-    $('#fields .controls').removeClass('invalid valid potentially_valid').addClass(validation)
+    $('#fields .controls').removeClass('invalid valid potentially_valid').addClass(validation).addClass('changed')
 
 
 }

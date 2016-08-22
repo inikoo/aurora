@@ -31,7 +31,7 @@ $editor=array(
 
 
 $sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" and `Category Key`=11899  ');
-$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" ');
+$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" order by  `Category Key` desc');
 
 if ($result=$db->query($sql)) {
 	foreach ($result as $row) {

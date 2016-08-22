@@ -222,7 +222,9 @@ class SupplierPart extends DB_Table{
 			$this->id=$this->db->lastInsertId();
 			$this->msg="Supplier part added";
 			$this->get_data('id', $this->id);
-			$this->update_historic_object();
+			
+			//$this->update_historic_object();
+			
 			$this->new=true;
 
 			$history_data=array(
@@ -490,6 +492,9 @@ class SupplierPart extends DB_Table{
 			}
 
 			$this->update_field($field, $supplier->id, 'no_history');
+			
+			$this->update_field('Supplier Part Currency Code', $supplier->get('Supplier Default Currency Code'), 'no_history');
+			
 
 			$supplier->update_supplier_parts();
 			$supplier->update_up_today_sales();

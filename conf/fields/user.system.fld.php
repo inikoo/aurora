@@ -47,7 +47,16 @@ $object_fields=array(
 		'class'=>'edit_fields',
 		'fields'=>array(
 
+			array(
+				'render'=>(in_array($object->get('User Type'), array('Supplier', 'Agent', 'Contractor'))?true:false),
+				'id'=>'User_Alias',
+				'edit'=>'string',
+				'value'=>$object->get('User Alias'),
+				'formatted_value'=>$object->get('Alias'),
+				'label'=>ucfirst($object->get_field_label('User Alias')),
+				'type'=>'value'
 
+			),
 
 
 			array(
@@ -285,9 +294,9 @@ $object_fields[]=array(
 	)
 );
 
-if(!$new){
+if (!$new) {
 
-$operations=array(
+	$operations=array(
 		'label'=>_('Operations'),
 		'show_title'=>true,
 		'class'=>'operations',

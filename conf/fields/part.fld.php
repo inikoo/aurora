@@ -117,8 +117,9 @@ $part_fields[]=array(
 
 		array(
 			'id'=>'Part_Unit_Description',
-			'class'=>($supplier_part_scope?'hide':''),
-			'edit'=>($edit?'string':''),
+			//'class'=>($supplier_part_scope?'hide':''),
+			'render'=>($supplier_part_scope?false:true),
+			'edit'=>(($edit and !$supplier_part_scope  )?'string':''),
 
 			'value'=>htmlspecialchars($object->get('Part Unit Description')),
 			'formatted_value'=>$object->get('Unit Description'),
@@ -206,7 +207,7 @@ $part_fields[]=array(
 			'render'=>(!($supplier_part_scope or $new) ?true:false),
 
 			'id'=>'Part_Package_Description',
-			'edit'=>($edit?'string':''),
+			'edit'=>(($edit and !$supplier_part_scope  )?'string':''),
 
 			'value'=>htmlspecialchars($object->get('Part Package Description')),
 			'formatted_value'=>$object->get('Package Description'),

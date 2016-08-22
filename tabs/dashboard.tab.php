@@ -10,26 +10,39 @@
  Version 3.0
 */
 
-$period='1y';
 
-include_once('widgets/sales_overview.wget.php');
+$html='';
+foreach ($user->get_dashboard_items() as $item) {
 
-if (isset($_SESSION['dashboard_state']['sales_overview']['type'])) {
-	$type=$_SESSION['dashboard_state']['sales_overview']['type'];
-}else {
-	$type='invoices';
+	if ($item=='sales_overview') {
+
+		$period='1y';
+
+		include_once 'widgets/sales_overview.wget.php';
+
+		if (isset($_SESSION['dashboard_state']['sales_overview']['type'])) {
+			$type=$_SESSION['dashboard_state']['sales_overview']['type'];
+		}else {
+			$type='invoices';
+		}
+		if (isset($_SESSION['dashboard_state']['sales_overview']['period'])) {
+			$period=$_SESSION['dashboard_state']['sales_overview']['period'];
+		}else {
+			$period='ytd';
+		}
+		if (isset($_SESSION['dashboard_state']['sales_overview']['currency'])) {
+			$currency=$_SESSION['dashboard_state']['sales_overview']['currency'];
+		}else {
+			$currency='account';
+		}
+		$html.=get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $period, $currency);
+
+	}
+
 }
-if (isset($_SESSION['dashboard_state']['sales_overview']['period'])) {
-	$period=$_SESSION['dashboard_state']['sales_overview']['period'];
-}else {
-	$period='ytd';
-}
-if (isset($_SESSION['dashboard_state']['sales_overview']['currency'])) {
-	$currency=$_SESSION['dashboard_state']['sales_overview']['currency'];
-}else {
-	$currency='account';
-}
-$html=get_dashbord_sales_overview($db,$account,$user,$smarty,$type,$period,$currency);
+
+
+
 
 
 

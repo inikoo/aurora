@@ -17,10 +17,7 @@ require_once 'utils/date_functions.php';
 require_once 'utils/object_functions.php';
 
 
-if (!$user->can_view('suppliers')) {
-	echo json_encode(array('state'=>405, 'resp'=>'Forbidden'));
-	exit;
-}
+
 
 
 if (!isset($_REQUEST['tipo'])) {
@@ -60,6 +57,9 @@ case 'categories':
 case 'orders':
 	orders(get_table_parameters(), $db, $user, $account);
 	break;
+case 'agent_client_orders':
+	agent_client_orders(get_table_parameters(), $db, $user, $account);
+	break;	
 case 'deliveries':
 	deliveries(get_table_parameters(), $db, $user, $account);
 	break;
@@ -84,6 +84,26 @@ default:
 
 
 function suppliers($_data, $db, $user, $account) {
+
+
+	if ($user->get('User Type')=='Agent') {
+
+		if ( !($_data['parameters']['parent']=='agent' and  $_data['parameters']['parent_key']==$user->get('User Parent Key') )  ) {
+			echo json_encode(array('state'=>405, 'resp'=>'Forbidden'));
+			exit;
+		}
+
+
+	}else {
+
+
+		if (!$user->can_view('suppliers')) {
+			echo json_encode(array('state'=>405, 'resp'=>'Forbidden'));
+			exit;
+		}
+
+	}
+
 
 
 	$rtext_label='supplier';
@@ -263,6 +283,10 @@ function suppliers_edit($_data, $db, $user, $account) {
 
 function agents($_data, $db, $user, $account) {
 
+if (!$user->can_view('suppliers')) {
+	echo json_encode(array('state'=>405, 'resp'=>'Forbidden'));
+	exit;
+}
 
 	$rtext_label='agent';
 	include_once 'prepare_table/init.php';
@@ -393,6 +417,13 @@ function categories($_data, $db, $user) {
 
 
 function orders($_data, $db, $user) {
+
+	if (!$user->can_view('suppliers')) {
+		echo json_encode(array('state'=>405, 'resp'=>'Forbidden'));
+		exit;
+	}
+
+
 	$rtext_label='purchase order';
 
 
@@ -469,6 +500,94 @@ function orders($_data, $db, $user) {
 	);
 	echo json_encode($response);
 }
+
+function agent_client_orders($_data, $db, $user) {
+
+	if ($user->get('User Type')!='Agent') {
+		echo json_encode(array('state'=>405, 'resp'=>'Forbidden'));
+		exit;
+	}
+    $_data['parameters']['parent']='agent';
+    $_data['parameters']['parent_key']=$user->get('User Parent Key');
+
+
+	$rtext_label='client order';
+
+
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $data) {
+
+			switch ($data['Purchase Order State']) {
+			case 'InProcess':
+				$state=sprintf('%s', _('In Process'));
+				break;
+			case 'Submitted':
+				$state=sprintf('%s', _('Submitted'));
+				break;
+			case 'Confirmed':
+				$state=sprintf('%s', _('Confirmed'));
+				break;
+			case 'In Warehouse':
+				$state=sprintf('%s', _('In Warehouse'));
+				break;
+			case 'Done':
+				$state=sprintf('%s', _('Done'));
+				break;
+			case 'Cancelled':
+				$state=sprintf('%s', _('Cancelled'));
+				break;
+
+			default:
+				$state=$data['Purchase Order State'];
+				break;
+			}
+
+			$adata[]=array(
+				'id'=>(integer)$data['Purchase Order Key'],
+				'parent_key'=> (integer) $data['Purchase Order Parent Key'],
+				'parent_type'=> strtolower($data['Purchase Order Parent']),
+				'parent'=> strtolower($data['Purchase Order Parent Name']),
+
+				'public_id'=>$data['Purchase Order Public ID'],
+				'date'=>strftime("%e %b %Y", strtotime($data['Purchase Order Creation Date'].' +0:00')),
+				'last_date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Purchase Order Last Updated Date'].' +0:00')),
+				'state'=>$state,
+
+				'total_amount'=>money($data['Purchase Order Total Amount'], $data['Purchase Order Currency Code'])
+
+
+			);
+
+
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
 
 
 function deliveries($_data, $db, $user) {
@@ -622,7 +741,10 @@ function order_items($_data, $db, $user) {
 				),
 				'delivery_quantity'=>$delivery_quantity,
 				'subtotals'=>$subtotals,
-				'ordered'=>number($data['Purchase Order Quantity'])
+				'ordered'=>number($data['Purchase Order Quantity']),
+				'supplier_key'=>$data['Supplier Key'],
+								'supplier'=>$data['Supplier Code'],
+
 
 
 			);

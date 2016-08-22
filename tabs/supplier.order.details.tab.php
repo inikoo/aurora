@@ -15,6 +15,10 @@ include_once 'conf/object_fields.php';
 
 
 if ( !$user->can_view('suppliers')    ) {
+
+    
+
+
 	$html='';
 }else {
 

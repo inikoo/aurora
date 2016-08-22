@@ -12,7 +12,7 @@
 
 $tab='account.users';
 $ar_file='ar_users_tables.php';
-$tipo='users';
+$tipo='user_categories';
 
 $default=$user->get_tab_defaults($tab);
 
@@ -25,7 +25,6 @@ $parameters=array(
 		'parent'=>'',
 		'parent_key'=>'',
 );
-
 
 include('utils/get_table_html.php');
 

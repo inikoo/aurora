@@ -12,11 +12,11 @@
 
 require_once 'common.php';
 
-if (!$user->can_view('account')) {
-	header('HTTP/1.0 403 Forbidden');
-	echo _('Forbidden');
-	exit;
-}
+//if (!$user->can_view('account')) {
+//	header('HTTP/1.0 403 Forbidden');
+//	echo _('Forbidden');
+//	exit;
+//}
 
 
 if (!isset($_REQUEST['id'])) {

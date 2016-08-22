@@ -149,9 +149,11 @@
 			
 			<div id="menu">
 			</div>
+			{if $user->get('User Type')=='Staff' }
 			<ul style="margin-top:5px">
 				<li onclick="change_view('/fire')"><i class="fa fa-fire fa-fw" style="color:orange;opacity:.8"></i><span id="fire_label" class="label"> {t}Fire{/t}</span></li>
 			</ul>
+			{/if}
 			<ul style="margin-top:20px">
 				<li onclick="logout()"><i class="fa fa-sign-out fa-fw"></i><span id="logout_label" class="label"> {t}Logout{/t}</span></li>
 			</ul>

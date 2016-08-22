@@ -33,6 +33,9 @@ switch ($tipo) {
 case 'users':
 	users(get_table_parameters(), $db, $user);
 	break;
+case 'user_categories':
+	user_categories(get_table_parameters(), $db, $user);
+	break;	
 case 'staff':
 	staff(get_table_parameters(), $db, $user);
 	break;
@@ -66,12 +69,14 @@ default:
 }
 
 
-function staff($_data, $db, $user) {
+function users($_data, $db, $user) {
 
 	$rtext_label='user';
 	include_once 'prepare_table/init.php';
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	
+	//print $sql;
 	$adata=array();
 
 	foreach ($db->query($sql) as $data) {
@@ -263,7 +268,7 @@ function login_history($_data, $db, $user) {
 }
 
 
-function users($_data, $db, $user) {
+function user_categories($_data, $db, $user) {
 
 	$rtext_label='user category';
 	include_once 'prepare_table/init.php';

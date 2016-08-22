@@ -24,7 +24,6 @@ if (!isset($_REQUEST['tipo'])) {
 	exit;
 }
 
-
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
@@ -37,81 +36,85 @@ case 'search':
 
 	$data['user']=$user;
 
-	if ($data['state']['module']=='customers') {
-		if ($data['state']['current_store']) {
-			$data['scope']='store';
-			$data['scope_key']=$data['state']['current_store'];
-		}else {
-			$data['scope']='stores';
-		}
-		search_customers($db, $account, $memcache_ip, $data);
-	}elseif ($data['state']['module']=='orders') {
-		if ($data['state']['current_store']) {
-			$data['scope']='store';
-			$data['scope_key']=$data['state']['current_store'];
-		}else {
-			$data['scope']='stores';
-		}
-		search_orders($db, $account, $memcache_ip, $data);
-	}elseif ($data['state']['module']=='products') {
-		if ($data['state']['current_store']) {
-			$data['scope']='store';
-			$data['scope_key']=$data['state']['current_store'];
-		}else {
-			$data['scope']='stores';
-		}
-		search_products($db, $account, $memcache_ip, $data);
-	}elseif ($data['state']['module']=='inventory') {
-		if ($data['state']['current_warehouse']) {
-			$data['scope']='warehouse';
-			$data['scope_key']=$data['state']['current_warehouse'];
-		}else {
-			$data['scope']='warehouses';
-		}
-		search_inventory($db, $account, $memcache_ip, $data);
-	}elseif ($data['state']['module']=='hr') {
-		search_hr($db, $account, $memcache_ip, $data);
+	if ($user->get('User Type')=='Agent') {
+		agent_search($db, $account,$user, $memcache_ip, $data);
+	}else {
 
-	}elseif ($data['state']['module']=='suppliers') {
-		search_suppliers($db, $account, $memcache_ip, $data);
+		if ($data['state']['module']=='customers') {
+			if ($data['state']['current_store']) {
+				$data['scope']='store';
+				$data['scope_key']=$data['state']['current_store'];
+			}else {
+				$data['scope']='stores';
+			}
+			search_customers($db, $account, $memcache_ip, $data);
+		}elseif ($data['state']['module']=='orders') {
+			if ($data['state']['current_store']) {
+				$data['scope']='store';
+				$data['scope_key']=$data['state']['current_store'];
+			}else {
+				$data['scope']='stores';
+			}
+			search_orders($db, $account, $memcache_ip, $data);
+		}elseif ($data['state']['module']=='products') {
+			if ($data['state']['current_store']) {
+				$data['scope']='store';
+				$data['scope_key']=$data['state']['current_store'];
+			}else {
+				$data['scope']='stores';
+			}
+			search_products($db, $account, $memcache_ip, $data);
+		}elseif ($data['state']['module']=='inventory') {
+			if ($data['state']['current_warehouse']) {
+				$data['scope']='warehouse';
+				$data['scope_key']=$data['state']['current_warehouse'];
+			}else {
+				$data['scope']='warehouses';
+			}
+			search_inventory($db, $account, $memcache_ip, $data);
+		}elseif ($data['state']['module']=='hr') {
+			search_hr($db, $account, $memcache_ip, $data);
 
-	}elseif ($data['state']['module']=='delivery_notes' ) {
-		if ($data['state']['current_store']) {
-			$data['scope']='store';
-			$data['scope_key']=$data['state']['current_store'];
-		}else {
+		}elseif ($data['state']['module']=='suppliers') {
+			search_suppliers($db, $account, $memcache_ip, $data);
+
+		}elseif ($data['state']['module']=='delivery_notes' ) {
+			if ($data['state']['current_store']) {
+				$data['scope']='store';
+				$data['scope_key']=$data['state']['current_store'];
+			}else {
+				$data['scope']='stores';
+			}
+			search_delivery_notes($db, $account, $memcache_ip, $data);
+		}elseif ($data['state']['module']=='delivery_notes_server' ) {
+
 			$data['scope']='stores';
-		}
-		search_delivery_notes($db, $account, $memcache_ip, $data);
-	}elseif ($data['state']['module']=='delivery_notes_server' ) {
 
-		$data['scope']='stores';
-
-		search_delivery_notes($db, $account, $memcache_ip, $data);
-	}elseif ($data['state']['module']=='orders_server') {
-		$data['scope']='stores';
-		search_orders($db, $account, $memcache_ip, $data);
-	}elseif ($data['state']['module']=='invoices_server') {
-		$data['scope']='stores';
-		search_invoices($db, $account, $memcache_ip, $data);
-	}elseif ($data['state']['module']=='invoices') {
-		if ($data['state']['current_store']) {
-			$data['scope']='store';
-			$data['scope_key']=$data['state']['current_store'];
-		}else {
+			search_delivery_notes($db, $account, $memcache_ip, $data);
+		}elseif ($data['state']['module']=='orders_server') {
 			$data['scope']='stores';
+			search_orders($db, $account, $memcache_ip, $data);
+		}elseif ($data['state']['module']=='invoices_server') {
+			$data['scope']='stores';
+			search_invoices($db, $account, $memcache_ip, $data);
+		}elseif ($data['state']['module']=='invoices') {
+			if ($data['state']['current_store']) {
+				$data['scope']='store';
+				$data['scope_key']=$data['state']['current_store'];
+			}else {
+				$data['scope']='stores';
+			}
+			search_invoices($db, $account, $memcache_ip, $data);
+		}elseif ($data['state']['module']=='warehouses') {
+			if ($data['state']['current_warehouse']) {
+				$data['scope']='warehouse';
+				$data['scope_key']=$data['state']['current_warehouse'];
+			}else {
+				$data['scope']='warehouses';
+			}
+			search_locations($db, $account, $memcache_ip, $data);
 		}
-		search_invoices($db, $account, $memcache_ip, $data);
-	}elseif ($data['state']['module']=='warehouses') {
-		if ($data['state']['current_warehouse']) {
-			$data['scope']='warehouse';
-			$data['scope_key']=$data['state']['current_warehouse'];
-		}else {
-			$data['scope']='warehouses';
-		}
-		search_locations($db, $account, $memcache_ip, $data);
 	}
-
 	break;
 
 
@@ -2265,7 +2268,7 @@ function search_locations($db, $account, $memcache_ip, $data) {
 			foreach ($result as $row) {
 
 
-				
+
 
 				$results[$row['Location Key']]=array(
 					'warehouse'=>$row['Warehouse Code'],
@@ -2297,6 +2300,356 @@ function search_locations($db, $account, $memcache_ip, $data) {
 	echo json_encode($response);
 
 }
+
+
+function agent_search($db, $account, $user,$memcache_ip, $data) {
+
+	$agent_key=$user->get('User Parent Key');
+
+	$cache=false;
+	$max_results=10;
+	$user=$data['user'];
+	$queries=trim($data['query']);
+
+	if ($queries=='' ) {
+		$response=array('state'=>200, 'results'=>0, 'data'=>'');
+		echo json_encode($response);
+		return;
+	}
+
+
+
+
+	$memcache_fingerprint=$account->get('Account Code').'AGENTSERCH'.md5($queries);
+
+	$cache = new Memcached();
+	$cache->addServer($memcache_ip, 11211);
+
+
+	if (strlen($queries)<=2) {
+		$memcache_time=295200;
+	}if (strlen($queries)<=3) {
+		$memcache_time=86400;
+	}if (strlen($queries)<=4) {
+		$memcache_time=3600;
+	}else {
+		$memcache_time=300;
+
+	}
+
+
+	$results_data=$cache->get($memcache_fingerprint);
+
+
+	if (!$results_data or true) {
+
+
+		$candidates=array();
+
+		$query_array=preg_split('/\s+/', $queries);
+		$number_queries=count($query_array);
+
+
+
+		foreach ($query_array as $q) {
+
+
+			$sql=sprintf("select `Supplier Key`,`Supplier Code` from `Supplier Dimension` left join `Agent Supplier Bridge` on (`Supplier Key`=`Agent Supplier Supplier Key`) where `Agent Supplier Agent Key`=%d  and `Supplier Code` like '%s%%' limit 20 ",
+				$agent_key,
+				$q);
+
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+
+					if ($row['Supplier Code']==$q)
+						$candidates['S'.$row['Supplier Key']]=1000;
+					else {
+
+						$len_name=strlen($row['Supplier Code']);
+						$len_q=strlen($q);
+						$factor=$len_q/$len_name;
+						$candidates['S'.$row['Supplier Key']]=500*$factor;
+					}
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				print $sql;
+				exit;
+			}
+
+			$sql=sprintf("select `Supplier Key`,`Supplier Name` from `Supplier Dimension` left join `Agent Supplier Bridge` on (`Supplier Key`=`Agent Supplier Supplier Key`) where `Agent Supplier Agent Key`=%d  and  `Supplier Name`  REGEXP '[[:<:]]%s' limit 20 ",
+				$agent_key,
+				$q);
+
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+
+					if ($row['Supplier Name']==$q)
+						$candidates['S'.$row['Supplier Key']]=800;
+					else {
+
+						$len_name=strlen($row['Supplier Name']);
+						$len_q=strlen($q);
+						$factor=$len_q/$len_name;
+						$candidates['S'.$row['Supplier Key']]=400*$factor;
+					}
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				print $sql;
+				exit;
+			}
+
+
+		
+
+			$sql=sprintf("select `Supplier Part Key`,`Supplier Part Reference` from `Supplier Part Dimension` left join `Agent Supplier Bridge` on (`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`) where `Agent Supplier Agent Key`=%d  and  `Supplier Part Reference` like '%s%%' limit 20 ",
+				$agent_key,
+				$q);
+
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+
+					if ($row['Supplier Part Reference']==$q)
+						$candidates['P'.$row['Supplier Part Key']]=1000;
+					else {
+
+						$len_name=strlen($row['Supplier Part Reference']);
+						$len_q=strlen($q);
+						$factor=$len_q/$len_name;
+						$candidates['P'.$row['Supplier Part Key']]=500*$factor;
+					}
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				print $sql;
+				exit;
+			}
+
+
+
+
+			$sql=sprintf("select `Supplier Part Key`,`Part Reference` from `Supplier Part Dimension`  left join `Agent Supplier Bridge` on (`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`)  left join   `Part Dimension`  on (`Supplier Part Part SKU`=`Part SKU`) where `Agent Supplier Agent Key`=%d  and  `Part Reference` like '%s%%' limit 20 ",
+				$agent_key,
+				$q);
+//print $sql;
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+
+					if ($row['Part Reference']==$q)
+						$candidates['P'.$row['Supplier Part Key']]=750;
+					else {
+
+						$len_name=strlen($row['Part Reference']);
+						$len_q=strlen($q);
+						$factor=$len_q/$len_name;
+						$candidates['P'.$row['Supplier Part Key']]=375*$factor;
+					}
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				print $sql;
+				exit;
+			}
+
+
+
+
+
+			$sql=sprintf("select `Supplier Part Key`,`Part Unit Description` from `Supplier Part Dimension`  left join `Agent Supplier Bridge` on (`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`) left join   `Part Dimension`  on (`Supplier Part Part SKU`=`Part SKU`)  where `Agent Supplier Agent Key`=%d  and  `Part Unit Description`  REGEXP '[[:<:]]%s' limit 100 ",
+				$agent_key,
+				$q);
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+					if ($row['Part Unit Description']==$q)
+						$candidates['P'.$row['Supplier Part Key']]=55;
+					else {
+
+						$len_name=strlen($row['Part Unit Description']);
+						$len_q=strlen($q);
+						$factor=$len_q/$len_name;
+						$candidates['P'.$row['Supplier Part Key']]=50*$factor;
+					}
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				print $sql;
+				exit;
+			}
+
+
+		}
+
+
+		arsort($candidates);
+
+
+
+		$total_candidates=count($candidates);
+
+		if ($total_candidates==0) {
+			$response=array('state'=>200, 'results'=>0, 'data'=>'');
+			echo json_encode($response);
+			return;
+		}
+
+		$counter=0;
+		$supplier_parts_keys='';
+		$supplier_keys='';
+		$agent_keys='';
+		$results=array();
+		$number_supplier_parts_keys=0;
+		$number_supplier_keys=0;
+		$number_agent_keys=0;
+
+		foreach ($candidates as $_key=>$val) {
+			$counter++;
+
+			if ($_key[0]=='P') {
+				$key=preg_replace('/^P/', '', $_key);
+				$supplier_parts_keys.=','.$key;
+				$results[$_key]='';
+				$number_supplier_parts_keys++;
+
+			}elseif ($_key[0]=='S') {
+				$key=preg_replace('/^S/', '', $_key);
+				$supplier_keys.=','.$key;
+				$results[$_key]='';
+				$number_supplier_keys++;
+
+			}elseif ($_key[0]=='A') {
+				$key=preg_replace('/^A/', '', $_key);
+				$agent_keys.=','.$key;
+				$results[$_key]='';
+				$number_agent_keys++;
+
+			}
+
+			if ($counter>$max_results) {
+				break;
+			}
+		}
+		$supplier_parts_keys=preg_replace('/^,/', '', $supplier_parts_keys);
+		$supplier_keys=preg_replace('/^,/', '', $supplier_keys);
+		$agent_keys=preg_replace('/^,/', '', $agent_keys);
+
+
+		if ($number_supplier_parts_keys) {
+			$sql=sprintf("select `Supplier Part Key`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Part Unit Description` from `Supplier Part Dimension` left join   `Part Dimension`  on (`Supplier Part Part SKU`=`Part SKU`)   where `Supplier Part Key` in (%s)",
+				$supplier_parts_keys);
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+
+
+
+
+
+					$results['P'.$row['Supplier Part Key']]=array(
+						'label'=>'<i class="fa fa-stop fa-fw "></i> '.highlightkeyword(sprintf('%s', $row['Supplier Part Reference']), $queries ),
+						'details'=>highlightkeyword($row['Part Unit Description'], $queries ),
+						'view'=>sprintf('supplier/%d/part/%d', $row['Supplier Part Supplier Key'] , $row['Supplier Part Key'])
+
+
+
+
+					);
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				print $sql;
+				exit;
+			}
+		}
+
+		if ($number_supplier_keys) {
+
+			$sql=sprintf("select `Supplier Key`,`Supplier Code`,`Supplier Name` from `Supplier Dimension`  where `Supplier Key` in (%s)",
+				$supplier_keys);
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+
+
+
+
+
+					$results['S'.$row['Supplier Key']]=array(
+						'label'=>'<i class="fa fa-ship fa-fw "></i> '.highlightkeyword(sprintf('%s', $row['Supplier Code']), $queries ),
+						'details'=>highlightkeyword($row['Supplier Name'], $queries ),
+						'view'=>sprintf('supplier/%d', $row['Supplier Key'] )
+
+
+
+
+					);
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				print $sql;
+				exit;
+			}
+
+
+		}
+
+		if ($number_agent_keys) {
+
+			$sql=sprintf("select `Agent Key`,`Agent Code`,`Agent Name` from `Agent Dimension`  where `Agent Key` in (%s)",
+				$agent_keys);
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+
+
+
+
+
+					$results['A'.$row['Agent Key']]=array(
+						'label'=>'<i class="fa fa-user-secret fa-fw "></i> '.highlightkeyword(sprintf('%s', $row['Agent Code']), $queries ),
+						'details'=>highlightkeyword($row['Agent Name'], $queries ),
+						'view'=>sprintf('agent/%d', $row['Agent Key'] )
+
+
+
+
+					);
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				print $sql;
+				exit;
+			}
+
+
+		}
+
+
+		$results_data=array('n'=>count($results), 'd'=>$results);
+		$cache->set($memcache_fingerprint, $results_data, $memcache_time);
+
+
+
+	}
+	$response=array('state'=>200, 'number_results'=>$results_data['n'], 'results'=>$results_data['d'], 'q'=>$queries);
+
+	echo json_encode($response);
+
+}
+
 
 
 ?>

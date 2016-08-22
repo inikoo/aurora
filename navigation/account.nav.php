@@ -869,7 +869,7 @@ function get_agents_navigation($data, $smarty, $user, $db, $account) {
 
 
 
-function get_staff_user_navigation($data, $smarty, $user, $db, $account) {
+function get_user_navigation($data, $smarty, $user, $db, $account) {
 
 
 
@@ -1091,6 +1091,8 @@ function get_staff_user_navigation($data, $smarty, $user, $db, $account) {
 
 	$sections['users']['selected']=true;
 
+	$parent_label=$object->get('User Alias');
+
 	switch ($object->get('User Type')) {
 	case 'Staff':
 		$parent_reference='employee/'.$object->get('User Parent Key');
@@ -1107,6 +1109,9 @@ function get_staff_user_navigation($data, $smarty, $user, $db, $account) {
 	case 'Agent':
 		$parent_reference='agent/'.$object->get('User Parent Key');
 		$parent_icon='<i style="font-size:80%;padding-left:10px" class="fa fa-user-secret" aria-hidden="true"></i>';
+		include_once 'class.Agent.php';
+		$agent=new Agent($object->get('User Parent Key'));
+		$parent_label=$agent->get('Code');
 		break;
 	default:
 
@@ -1114,7 +1119,7 @@ function get_staff_user_navigation($data, $smarty, $user, $db, $account) {
 	}
 
 
-	$title= '<span class="id">'.$object->get('User Handle').'</span> <span class="small button" onClick="change_view(\''.$parent_reference.'\')"  > '.$parent_icon.' '.$object->get('User Alias').' </span> ';
+	$title= '<span class="id">'.$object->get('User Handle').'</span> <span class="small button" onClick="change_view(\''.$parent_reference.'\')"  > '.$parent_icon.' '.$parent_label.' </span> ';
 
 
 	$_content=array(
@@ -1136,7 +1141,7 @@ function get_staff_user_navigation($data, $smarty, $user, $db, $account) {
 }
 
 
-function get_deleted_staff_user_navigation($data, $smarty, $user, $db, $account) {
+function get_deleted_user_navigation($data, $smarty, $user, $db, $account) {
 
 
 

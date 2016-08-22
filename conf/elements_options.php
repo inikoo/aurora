@@ -245,7 +245,7 @@ $elements_options=array(
 		'type'=>array(
 			'label'=>_('Type'),
 			'items'=>array(
-				'Free'=>array('label'=>_('Active'), 'selected'=>true),
+				'Agent'=>array('label'=>_('Active'), 'selected'=>true),
 				'Archived'=>array('label'=>_('Archived'), 'selected'=>false),
 
 			),
@@ -437,6 +437,46 @@ $elements_options=array(
 
 
 	),
+	
+	'agent_client_orders'=>array(
+		'state_agent'=>array(
+			'label'=>_('State'),
+			'items'=>array(
+
+
+				'InProcessbyClient'=>array('label'=>_('In process by client'), 'selected'=>true),
+				'InProcess'=>array('label'=>_('In process'), 'selected'=>true),
+				'Send'=>array('label'=>_('Dispatched'), 'selected'=>true),
+				'Cancelled'=>array('label'=>_('Cancelled'), 'selected'=>false),
+			),
+
+
+
+		),
+
+
+
+	),
+	'agent_client_deliveries'=>array(
+		'state_agent'=>array(
+			'label'=>_('State'),
+			'items'=>array(
+				'InProcess'=>array('label'=>_('In process'), 'selected'=>true),
+				'Dispatched'=>array('label'=>_('Dispatched'), 'selected'=>true),
+				'Received'=>array('label'=>_('Received'), 'selected'=>true),
+				'Checked'=>array('label'=>_('Checked'), 'selected'=>true),
+				'Placed'=>array('label'=>_('Placed'), 'selected'=>true),
+				'Cancelled'=>array('label'=>_('Cancelled'), 'selected'=>false),
+			),
+
+
+
+		),
+
+
+
+	),
+	
 	'webpages'=>array(
 		'status'=>array(
 			'label'=>_('Status'),

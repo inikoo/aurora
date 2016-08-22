@@ -21,6 +21,7 @@ $options_yn=array(
 	'Yes'=>_('Yes'), 'No'=>_('No')
 );
 
+
 $options_incoterms=array();
 $sql="select `Incoterm Transport Type`,`Incoterm Name`,`Incoterm Code` from kbase.`Incoterm Dimension` order by `Incoterm Code` ";
 
@@ -277,6 +278,20 @@ $object_fields=array(
 				'required'=>false,
 				'type'=>'value'
 			),
+			array(
+				'id'=>'Agent_Products_Origin_Country_Code',
+				'edit'=>($edit?'country_select':''),
+				'options'=>get_countries($db),
+				'scope'=>'countries',
+				'value'=> ($new?$account->get('Account Country Code'):htmlspecialchars($object->get('Agent Products Origin Country Code'))),
+				'formatted_value'=>($new?$account->get('Account Country Code'):$object->get('Products Origin Country Code')),
+				'stripped_formatted_value'=>($new?$account->get('Account Country Code'):$object->get('Products Origin Country Code')),
+				'label'=>ucfirst($object->get_field_label('Products Origin Country Code')),
+				'required'=>false,
+				'type'=>'value',
+
+			),
+
 			
 
 		)
@@ -353,6 +368,7 @@ $object_fields=array(
 
 if (!$new) {
 
+/*
 	if ($object->get('Agent User Key')) {
 
 
@@ -403,7 +419,7 @@ if (!$new) {
 	}
 	else {
 		$object_fields[]=array(
-			'label'=>_('System user'),
+			'label'=>_('System user').$users_info,
 			'show_title'=>true,
 			'class'=>'edit_fields',
 			'fields'=>array(
@@ -420,7 +436,7 @@ if (!$new) {
 		);
 
 	}
-
+*/
 
 	$operations=array(
 		'label'=>_('Operations'),
