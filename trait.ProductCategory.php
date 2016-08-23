@@ -337,7 +337,7 @@ trait ProductCategory {
 
 	function update_product_category_sales($interval) {
 
-		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($interval);
+		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($this->db,$interval);
 
 
 

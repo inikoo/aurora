@@ -187,10 +187,11 @@ class Part extends Asset{
 
 	function create($data) {
 
+		include_once 'class.Account.php';
 		include_once 'class.Category.php';
 
 		// print_r($data);
-		global $account;
+		$account=new Account($this->db);
 
 		if (array_key_exists('Part Family Category Code', $data)) {
 
@@ -2567,7 +2568,7 @@ class Part extends Asset{
 	function update_sales_from_invoices($interval) {
 
 		include_once 'utils/date_functions.php';
-		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb)=calculate_interval_dates($interval);
+		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb)=calculate_interval_dates($this->db,$interval);
 		//print "$db_interval,$from_date,$to_date,$from_date_1yb,$to_date_1yb  \n";
 
 		setlocale(LC_ALL, 'en_GB');

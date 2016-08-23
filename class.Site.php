@@ -1514,7 +1514,7 @@ class Site extends DB_Table {
 	}
 
 	function update_requests($interval) {
-		list($db_interval,$from_date,$from_date_1yb,$to_1yb)=calculate_interval_dates($interval);
+		list($db_interval,$from_date,$from_date_1yb,$to_1yb)=calculate_interval_dates($this->db,$interval);
 
 		$sql=sprintf("select count(*) as num_requests ,count(distinct `User Session Key`) num_sessions ,count(Distinct `User Visitor Key`) as num_visitors   from  `User Request Dimension`  R  where  `Site Key`=%d  %s",
 			$this->id,

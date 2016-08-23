@@ -1043,7 +1043,7 @@ class Store extends DB_Table {
 
 		$to_date='';
 
-		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($interval);
+		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($this->db,$interval);
 
 		setlocale(LC_ALL, 'en_GB');
 
@@ -1108,7 +1108,7 @@ class Store extends DB_Table {
 
 		$to_date='';
 
-		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($interval);
+		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($this->db,$interval);
 
 		setlocale(LC_ALL, 'en_GB');
 

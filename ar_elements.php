@@ -837,7 +837,7 @@ function get_orders_element_numbers($db, $data, $user) {
 	}
 
 
-	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($data['period'], $data['from'], $data['to']);
+	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($db,$data['period'], $data['from'], $data['to']);
 
 
 
@@ -953,7 +953,7 @@ function get_orders_element_numbers($db, $data, $user) {
 
 function get_invoices_element_numbers($db, $parameters) {
 
-	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($parameters['period'], $parameters['from'], $parameters['to']);
+	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($db,$parameters['period'], $parameters['from'], $parameters['to']);
 
 
 
@@ -1130,7 +1130,7 @@ function get_invoices_element_numbers($db, $parameters) {
 
 function get_delivery_note_element_numbers($db, $data) {
 
-	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($data['period'], $data['from'], $data['to']);
+	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($db,$data['period'], $data['from'], $data['to']);
 
 
 
@@ -1255,7 +1255,7 @@ function get_barcodes_elements($db, $data, $user) {
 function get_supplier_orders_elements($db, $data) {
 
 
-	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($data['period'], $data['from'], $data['to']);
+	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($db,$data['period'], $data['from'], $data['to']);
 
 
 	$parent_key=$data['parent_key'];
@@ -1333,7 +1333,7 @@ function get_supplier_orders_elements($db, $data) {
 
 function get_supplier_deliveries_element_numbers($db, $data) {
 
-	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($data['period'], $data['from'], $data['to']);
+	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($db,$data['period'], $data['from'], $data['to']);
 
 	$parent_key=$data['parent_key'];
 	$where_interval=prepare_mysql_dates($from, $to, '`Supplier Delivery Date`');
