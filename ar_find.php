@@ -256,7 +256,8 @@ function find_suppliers($db, $account, $memcache_ip, $data) {
 					'description'=>highlightkeyword($row['Supplier Name'], $queries ),
 
 					'value'=>$row['Supplier Key'],
-					'formatted_value'=>$row['Supplier Name'].(($row['Supplier Code']!='' and $row['Supplier Code']!=$row['Supplier Name'])?' ('.$row['Supplier Code'].')':''),
+					//'formatted_value'=>$row['Supplier Name'].(($row['Supplier Code']!='' and $row['Supplier Code']!=$row['Supplier Name'])?' ('.$row['Supplier Code'].')':''),
+					'formatted_value'=>$row['Supplier Code'],
 					'metadata'=>array('other_fields'=>array(
 							'Supplier_Part_Unit_Cost'=>array(
 								'field'=>'Supplier_Part_Unit_Cost',
