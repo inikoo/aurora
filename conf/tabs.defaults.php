@@ -1615,7 +1615,7 @@ $tab_defaults=array(
 	),
 	'upload.records'=>array(
 		'view'=>'overview',
-		'sort_key'=>'id',
+		'sort_key'=>'row',
 		'sort_order'=>1,
 		'rpp'=>20,
 		'rpp_options'=>$default_rrp_options,

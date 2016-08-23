@@ -12,15 +12,19 @@
 					<td class="label">{t}Uploaded by{/t}</td>
 					<td>{$upload->get('User Alias')} </td>
 				</tr>
-				<tr>
-					<td class="label">{t}Date{/t}</td>
-					<td>{$upload->get('Date')}</td>
-				</tr>
+				
 				<tr>
 					<td class="label">{t}File{/t}</td>
 					<td>{$upload->get('Upload File Name')} ({$upload->get('File Size')})</td>
 				</tr>
-				
+				<tr>
+					<td class="label">{t}State{/t}</td>
+					<td class="Upload_State">{$upload->get('State')}</td>
+				</tr>
+				<tr>
+					<td class="label">{t}Date{/t}</td>
+					<td class="Upload_Date">{$upload->get('Date')}</td>
+				</tr>
 			</table>
 		</div>
 		<div style="clear:both">
@@ -31,10 +35,52 @@
 	<div style="margin-top:3px;max-width:370px;float:right;margin-right:60px">
 
 <table>
-<tr><td  rowspan="2" style="border:1px solid #ccc;padding:10px 20px;font-size:200%">{$upload->get('Records')}</td><td class="success" style="border:1px solid #ccc;padding:10px 20px">{$upload->get('OK')}</td>  </tr>
-<tr><td  class="error" style="border:1px solid #ccc;padding:10px 20px">{$upload->get('Errors')}</td></tr>
+<tr>
+<td  rowspan="2" style="border:1px solid #ccc;padding:10px 20px;font-size:200%"  class="Upload_Records" >{$upload->get('Records')}</td>
+<td class="Upload_OK" style="border:1px solid #ccc;padding:10px 20px">{$upload->get('OK')}</td>  </tr>
+<tr><td  class="Upload_Errors" style="border:1px solid #ccc;padding:10px 20px">{$upload->get('Errors')}</td></tr>
 </table>
 	</div>
 	<div style="clear:both">
 	</div>
 </div>
+
+<script>
+(function() {
+    // do some stuff
+    var refreshIntervalId = setInterval(reload_upload_data, 1000);
+
+    function reload_upload_data() {
+
+        var request = '/ar_upload.php?tipo=get_data&object=Upload&key={$upload->id}'
+
+        //  console.log(request)
+        $.getJSON(request, function(data) {
+
+            if (data.state == 200) {
+
+                if (data.upload.state == 'Finished' || data.upload.state == 'Cancelled') {
+                    clearInterval(refreshIntervalId)
+                }
+
+                for (var key in data.upload.class_html) {
+                    $('.' + key).html(data.upload.class_html[key])
+                }
+
+                if(state.tab=='upload.records'){
+                     rows.fetch({
+                reset: true
+            });
+                }
+
+            } else {
+                clearInterval(refreshIntervalId)
+            }
+        })
+
+    }
+
+})();
+
+
+</script>

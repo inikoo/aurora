@@ -242,19 +242,21 @@ module.exports = function(grunt) {
             },
             fork: {
                 options: {
-                 deploy_path: 'fork',
+                 local_path: 'build/fork/',
+                 deploy_path: '/home/fork/fork',
                     host: '<%= secret.fork.host %>',
                     username: '<%= secret.fork.username %>',
                     password: '<%= secret.fork.password %>',
                     port: '<%= secret.fork.port %>',
                     debug: true,
-                    releases_to_keep: '3'
+                    releases_to_keep: '3',
+                     exclude:['keyring','external_libs','server_files']
                 }
             },
              fork_external_libs: {
                 options: {
                  local_path: 'build/fork/external_libs',
-                 deploy_path: 'external_libs',
+                 deploy_path: '/external_libs',
                     host: '<%= secret.fork.host %>',
                     username: '<%= secret.fork.username %>',
                     password: '<%= secret.fork.password %>',

@@ -69,7 +69,8 @@ class nodes {
 	function nodes($table_name = NULL) {
 
 		$this->table_name = $table_name;
-
+		global $db;
+		$this->db=$db;
 
 		//  --> use direct fields names from your mysql table into the following template variables.
 		//  --> just put the field name inside square brackets!
@@ -107,6 +108,7 @@ class nodes {
 		if ($this->sql_condition != "") $this->sql_condition_where = " WHERE ".$this->sql_condition;
 	}
 
+
 	// ********************************************************
 	//  Add New Node
 	// ********************************************************
@@ -132,42 +134,42 @@ class nodes {
 		foreach ($fields as $key=>$value) {
 
 
-			if (!preg_match('/^\`.+\`$/',$key)) {
+			if (!preg_match('/^\`.+\`$/', $key)) {
 				$key="`".$key."`";
 			}
 
 			$_keys.=",".$key."";
-			$_values.=','.prepare_mysql($value,false);
+			$_values.=','.prepare_mysql($value, false);
 		}
-		$_values=preg_replace('/^,/','',$_values);
-		$_keys=preg_replace('/^,/','',$_keys);
+		$_values=preg_replace('/^,/', '', $_values);
+		$_keys=preg_replace('/^,/', '', $_keys);
 
 		$sql="insert into ".$this->table_name." ($_keys) values ($_values)";
 
 
 		//.$this->table_fields['position'].", ".implode("," , $keys).") VALUES('', '".implode("','" , $values)."' )";
 
-
+		$this->db->exec($sql);
 
 		//print "$sql\n";
-		mysql_query($sql) or
-			die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
-		$this->id=mysql_insert_id();
+		//mysql_query($sql) or
+		// die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
+		$this->id=$this->db->lastInsertId();
 
 
 
 
-		$node_id   = mysql_insert_id();
+		$node_id   =$this->id;
 		$position .= $node_id.">";
-		$deep= count(preg_split('/>/',$position))-1;
+		$deep= count(preg_split('/>/', $position))-1;
 
-		$inserted_key=mysql_insert_id();
+		$inserted_key=$this->id;
 
 		$sql = "UPDATE ".$this->table_name."
                SET ".$this->table_fields['position']." = '".$position."' ,  ".$this->table_fields['deep']." = '".$deep."'
                WHERE ".$this->table_fields['id']." = '".$inserted_key."' ".$this->sql_condition;
 
-		mysql_query($sql);
+		$this->db->exec($sql);
 		if ($fields['Category Branch Type']=='Root') {
 			$sql = sprintf("update %s set %s=%s where %s=%d %s  ",
 				$this->table_name,
@@ -177,7 +179,7 @@ class nodes {
 				$inserted_key,
 				$this->sql_condition
 			);
-			mysql_query($sql);
+			$this->db->exec($sql);
 
 		}
 
@@ -188,6 +190,7 @@ class nodes {
 
 		$this->_optimize_orders($position);
 	}
+
 
 	// ********************************************************
 	//  Delete Node
@@ -200,7 +203,7 @@ class nodes {
 		$sql1 = "SELECT ".$this->table_fields['id']."
                 FROM ".$this->table_name." ".$this->sql_condition_where;
 
-		$res1 = mysql_query($sql1) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql1."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
+		$res1 = mysql_query($sql1) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql1."<br><br><storng><u>Info:</u></strong><br>", E_USER_ERROR));
 		$before_ids = array();
 		while ($crd_id = mysql_fetch_array($res1)) {
 			$before_ids[] = $crd_id;
@@ -214,12 +217,12 @@ class nodes {
                 LIKE
                 '".$position."%' ".$this->sql_condition;
 
-		mysql_query($sql2) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql2."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
+		mysql_query($sql2) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql2."<br><br><storng><u>Info:</u></strong><br>", E_USER_ERROR));
 
 		// ok now lets get the ids after the deletion.
 		$sql3 = "SELECT ".$this->table_fields['id']."
                 FROM ".$this->table_name." ".$this->sql_condition_where;
-		$res3 = mysql_query($sql1) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql3."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
+		$res3 = mysql_query($sql1) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql3."<br><br><storng><u>Info:</u></strong><br>", E_USER_ERROR));
 		$after_ids = array();
 		while ($crd_id = mysql_fetch_array($res1)) {
 			$after_ids[] = $crd_id;
@@ -253,16 +256,16 @@ class nodes {
 			$sql1 = "SELECT ".$this->table_fields['id'].",".$this->table_fields['position']."
                     FROM ".$this->table_name."
                     WHERE ".$this->table_fields['position']."	RLIKE '^".$position."([0-9]+>)+' ".$this->sql_condition;
-			$res = mysql_query($sql1) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql1."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
+			$res = mysql_query($sql1) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql1."<br><br><storng><u>Info:</u></strong><br>", E_USER_ERROR));
 
 			while ($sub = mysql_fetch_array($res)) {
 
 
-				$new_sub_position = str_replace($position,$new_position,$sub[$this->table_fields['position']]);
+				$new_sub_position = str_replace($position, $new_position, $sub[$this->table_fields['position']]);
 				$sql2 = "UPDATE ".$this->table_name."
                         SET ".$this->table_fields['position']." = '".$new_sub_position."'
                         WHERE ".$this->table_fields['position']."	=  '".$sub[$this->table_fields['position']]."' ".$this->sql_condition;
-				mysql_query($sql2) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql2."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
+				mysql_query($sql2) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql2."<br><br><storng><u>Info:</u></strong><br>", E_USER_ERROR));
 			}
 
 		}
@@ -271,7 +274,7 @@ class nodes {
 		$sql3 = "UPDATE ".$this->table_name."
                 SET ".$this->table_fields['position']." = '".$new_position."'
                 WHERE ".$this->table_fields['position']."	=  '".$position."' ".$this->sql_condition;
-		mysql_query($sql3) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql3."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
+		mysql_query($sql3) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql3."<br><br><storng><u>Info:</u></strong><br>", E_USER_ERROR));
 
 		$this->_optimize_orders($position);
 		$this->_optimize_orders($new_position);
@@ -286,23 +289,24 @@ class nodes {
 			$sql .= "".$key." = '".$value."',";
 		}
 
-		$sql = substr_replace($sql,"",-1); // remove the extra comma ,
+		$sql = substr_replace($sql, "", -1); // remove the extra comma ,
 		$sql .= "WHERE ".$this->table_fields['id']." =".$id." ".$this->sql_condition;
 
-		mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
+		mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>", E_USER_ERROR));
 	}
+
 
 	// ********************************************************
 	//  Build Nodes Array
 	// ********************************************************
 
-	function build_list($id=0,$clickable = true) { //return an array with the categories ordered by position
+	function build_list($id=0, $clickable = true) { //return an array with the categories ordered by position
 		$RootPos = "";
 		$this->c_list = array();
 
 		if ($id != 0) {
 			$this_category  = $this->fetch($id);
-			$positions      = explode(">",$this_category['position']);
+			$positions      = explode(">", $this_category['position']);
 			$RootPos        = $positions[0];
 		}
 
@@ -310,7 +314,7 @@ class nodes {
 		$sql = "SELECT *
                FROM ".$this->table_name."
                WHERE ".$this->table_fields['position']."	RLIKE '^([0-9]+>){1,1}$' ".$this->sql_condition." order by ".$this->table_fields['ord']."  ASC";
-		$res = mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
+		$res = mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>", E_USER_ERROR));
 
 		while ($root = mysql_fetch_array($res)) {
 			$root["prefix"] = $this->get_prefix($root['position']);
@@ -325,7 +329,7 @@ class nodes {
 				// lets check if there is sub-categories
 				if ($clickable == "" and $id==0) {
 					$has_children = $this->has_children($root[$this->table_fields['position']]);
-					if ($has_children == TRUE) $this->load_children($root[$this->table_fields['position']],0);
+					if ($has_children == TRUE) $this->load_children($root[$this->table_fields['position']], 0);
 				}
 			}
 		}
@@ -343,32 +347,33 @@ class nodes {
 		$check = mysql_fetch_array($check_res);
 
 		//print "--> $check_sql\n";
-		if ($check[preg_replace('/`/','',$this->table_fields['id'])] != "") return TRUE;
+		if ($check[preg_replace('/`/', '', $this->table_fields['id'])] != "") return TRUE;
 		else return FALSE;
 	}
+
 
 	// ********************************************************
 	//  Load  Childrens
 	// ********************************************************
 
-	function load_children($position , $id = 0,$recursive=true) {
+	function load_children($position , $id = 0, $recursive=true) {
 
 		$sql = "SELECT * FROM ".$this->table_name." WHERE ".$this->table_fields['position']."	RLIKE '^".$position."[0-9]+>$' ".$this->sql_condition." order by ".$this->table_fields['ord']." ";
-		$res = mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
+		$res = mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>", E_USER_ERROR));
 		print "$sql\n";
 		while ($child = mysql_fetch_array($res)) {
-			$child["prefix"] = $this->get_prefix($child[ preg_replace('/`/','',$this->table_fields['position']) ]);
+			$child["prefix"] = $this->get_prefix($child[ preg_replace('/`/', '', $this->table_fields['position']) ]);
 
 			if ($id != 0) {
 
 
-				$has_children = $this->has_children($child[preg_replace('/`/','',$this->table_fields['position'])]);
+				$has_children = $this->has_children($child[preg_replace('/`/', '', $this->table_fields['position'])]);
 				$child['has_children']= $has_children ;
 				$this->c_list_by_id[$child[$this->table_fields['id']]] = $child;
 				if ($recursive) {
-					$has_children = $this->has_children($child[preg_replace('/`/','',$this->table_fields['position'])]);
+					$has_children = $this->has_children($child[preg_replace('/`/', '', $this->table_fields['position'])]);
 					if ($has_children == TRUE) {
-						$this->load_children($child[preg_replace('/`/','',$this->table_fields['position'])]);
+						$this->load_children($child[preg_replace('/`/', '', $this->table_fields['position'])]);
 					}
 				}
 				continue;
@@ -376,13 +381,13 @@ class nodes {
 			} else {
 
 				// lets check if there is sub-categories
-				$has_children = $this->has_children($child[preg_replace('/`/','',$this->table_fields['position'])]);
+				$has_children = $this->has_children($child[preg_replace('/`/', '', $this->table_fields['position'])]);
 				$child['has_children']= $has_children ;
-				$child['position']= $child[preg_replace('/`/','',$this->table_fields['position'])] ;
-				$this->c_list[$child[preg_replace('/`/','',$this->table_fields['id'])]] = $child;
+				$child['position']= $child[preg_replace('/`/', '', $this->table_fields['position'])] ;
+				$this->c_list[$child[preg_replace('/`/', '', $this->table_fields['id'])]] = $child;
 				if ($recursive) {
 
-					if ($has_children == TRUE)$this->load_children($child[preg_replace('/`/','',$this->table_fields['position'])]);
+					if ($has_children == TRUE)$this->load_children($child[preg_replace('/`/', '', $this->table_fields['position'])]);
 				}
 			}
 		}
@@ -398,23 +403,24 @@ class nodes {
 		$children=array();
 
 		$sql = "SELECT * FROM ".$this->table_name." WHERE ".$this->table_fields['position']."	RLIKE '^".$position."[0-9]+>$' ".$this->sql_condition." order by ".$this->table_fields['name']." ";
-		$res = mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
+		$res = mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>", E_USER_ERROR));
 		//print "$sql\n";
 		$contador=0;
 		while ($child = mysql_fetch_assoc($res)) {
-			$child["prefix"] = $this->get_prefix($child[ preg_replace('/`/','',$this->table_fields['position']) ]);
-			$has_children = $this->has_children($child[preg_replace('/`/','',$this->table_fields['position'])]);
+			$child["prefix"] = $this->get_prefix($child[ preg_replace('/`/', '', $this->table_fields['position']) ]);
+			$has_children = $this->has_children($child[preg_replace('/`/', '', $this->table_fields['position'])]);
 			$child['has_children']= $has_children ;
-			$child['position']= $child[preg_replace('/`/','',$this->table_fields['position'])] ;
-			$child['is_default']= $child[preg_replace('/`/','',$this->table_fields['is_default'])] ;
+			$child['position']= $child[preg_replace('/`/', '', $this->table_fields['position'])] ;
+			$child['is_default']= $child[preg_replace('/`/', '', $this->table_fields['is_default'])] ;
 			$child['contador']=$contador++;
-			$children[$child[preg_replace('/`/','',$this->table_fields['id'])]] = $child;
+			$children[$child[preg_replace('/`/', '', $this->table_fields['id'])]] = $child;
 
 
 		}
 		return $children;
 
 	}
+
 
 	// ********************************************************
 	//  Get children of Specific nodes only.
@@ -423,7 +429,7 @@ class nodes {
 	function list_by_id($id) { //return an array with the categories under the given ID and ordered by name
 		$this_category  = $this->fetch($id);
 
-		$positions = explode(">",$this_category[$this->table_fields['position']]);
+		$positions = explode(">", $this_category[$this->table_fields['position']]);
 		$pCount = count($positions);
 		$i = 0;
 
@@ -466,6 +472,7 @@ class nodes {
 
 	}
 
+
 	/***************************************
         Get array of nodes under specific category.
      ****************************************/
@@ -479,7 +486,7 @@ class nodes {
                FROM ".$this->table_name."
                WHERE ".$this->table_fields['position']."	RLIKE '^".$position."(([0-9])+\>){1}$' ".$this->sql_condition."
                order by ".$this->table_fields['ord']." ";
-		$res = mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
+		$res = mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>", E_USER_ERROR));
 
 		while ($child = mysql_fetch_array($res)) {
 			$child["prefix"] = $this->get_prefix($child['position']);
@@ -487,6 +494,7 @@ class nodes {
 		}
 		return $children;
 	}
+
 
 	// ********************************************************
 	//  Get Position
@@ -497,19 +505,33 @@ class nodes {
 		$sql = "SELECT ".$this->table_fields['position']." as position
                FROM ".$this->table_name."
                WHERE ".$this->table_fields['id']." = '".$id."' ".$this->sql_condition;
-		$res = mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
-		$record =  mysql_fetch_array($res);
-		return $record['position'];
+
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				return $row['position'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+
+		//$res = mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
+		// $record =  mysql_fetch_array($res);
+		// return $record['position'];
 	}
+
 
 	function get_deep($id) {
 		if ($id == 0)return "";
 		$sql = "SELECT ".$this->table_fields['position']." as position
                FROM ".$this->table_name."
                WHERE ".$this->table_fields['id']." = '".$id."' ".$this->sql_condition;
-		$res = mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
+		$res = mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>", E_USER_ERROR));
 		$record =  mysql_fetch_array($res);
-		return count(preg_split('/>/',$record['position']))-1;
+		return count(preg_split('/>/', $record['position']))-1;
 	}
 
 
@@ -520,10 +542,11 @@ class nodes {
 
 	function get_prefix($position) {
 		$prefix = "";
-		$position_slices = explode(">",$position);
+		$position_slices = explode(">", $position);
 		$count = count($position_slices) - 1;
 		return ($count < 1 ) ? 1 : $count;
 	}
+
 
 	// ********************************************************
 	//  Fetch Node Record
@@ -544,8 +567,8 @@ class nodes {
 
 
 
-			$record["prefix"] = $this->get_prefix($record[ preg_replace('/`/','',$this->table_fields['position'])  ]);
-			$position_slices  = explode(">",$record[ preg_replace('/`/','',$this->table_fields['position'])]);
+			$record["prefix"] = $this->get_prefix($record[ preg_replace('/`/', '', $this->table_fields['position'])  ]);
+			$position_slices  = explode(">", $record[ preg_replace('/`/', '', $this->table_fields['position'])]);
 			$key              = count($position_slices)-3;
 			if ($key < 0) $key = 0;
 			$record["parent"] = $position_slices["$key"];
@@ -649,7 +672,7 @@ class nodes {
 				}
 
 				foreach ($c as $key => $value) {
-					$body = str_replace("[$key]" ,$value, $body);
+					$body = str_replace("[$key]" , $value, $body);
 				}
 
 				$next_loop_level--;
@@ -691,7 +714,7 @@ class nodes {
 
 			// now lets replace the keys in the templates with the values
 			foreach ($c as $key => $value) {
-				$body = str_replace("[$key]" ,$value, $body);
+				$body = str_replace("[$key]" , $value, $body);
 			}
 			$output .= $body;
 		}
@@ -700,6 +723,7 @@ class nodes {
 
 		return $output;
 	}
+
 
 	// get the count of sub-nodes of a parent node
 	// requires an ID of the parent node
@@ -710,11 +734,12 @@ class nodes {
 		$sql = "SELECT *
                FROM ".$this->table_name."
                WHERE ".$this->table_fields['position']." LIKE '".$thisPosition."%' ".$this->sql_condition;
-		$res   = mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
+		$res   = mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>", E_USER_ERROR));
 		$count = mysql_num_rows($res);
 		$count-= 1; // remove the category itself from the count
 		return $count;
 	}
+
 
 	// Change the order of a inside its level.
 	// requires an ID of and the New ORDER ...
@@ -737,7 +762,7 @@ class nodes {
 		$sql = "SELECT *
                FROM ".$this->table_name."
                WHERE ".$this->table_fields['position']." RLIKE '^".$parentPosition."(([0-9])+\>){1}$' ".$this->sql_condition;
-		$res   = mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
+		$res   = mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>", E_USER_ERROR));
 
 		$current_order = $myNode[$this->table_fields['ord']];
 
@@ -754,19 +779,20 @@ class nodes {
 		$sql2 = "UPDATE ".$this->table_name."
                 SET ".$this->table_fields['ord']." = '".$current_order."'
                 WHERE ".$this->table_fields['position']." RLIKE '^".$parentPosition."(([0-9])+\>){1}$' AND ".$this->table_fields['ord']." = '".$new_order."' ".$this->sql_condition;
-		$res2   = mysql_query($sql2) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql2."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
+		$res2   = mysql_query($sql2) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql2."<br><br><storng><u>Info:</u></strong><br>", E_USER_ERROR));
 
 		// update the selected Node.
 		$sql3 = "UPDATE ".$this->table_name."
                 SET ".$this->table_fields['ord']." = '".$new_order."'
                 WHERE ".$this->table_fields['position']." = '".$thisPosition."' ".$this->sql_condition;
-		$res3   = mysql_query($sql3) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql3."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
+		$res3   = mysql_query($sql3) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql3."<br><br><storng><u>Info:</u></strong><br>", E_USER_ERROR));
 
 		// done.
 
 		$this->_optimize_orders($thisPosition);
 
 	}
+
 
 	// Walk through the level and fix false nodes order.
 	// requires a given level position.
@@ -787,9 +813,12 @@ class nodes {
                FROM ".$this->table_name."
                WHERE ".$this->table_fields['position']." RLIKE '^".$parentPosition."(([0-9])+\>){1}$' ".$this->sql_condition." order by ".$this->table_fields['ord']."  ASC";
 		//print $sql;
-		$res   = mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
+//		$res   = mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>", E_USER_ERROR));
 
-		$max      = mysql_num_rows($res); // total;
+        $res = $this->db->query($sql);
+$max = $res->fetchColumn();
+
+	//	$max      = mysql_num_rows($res); // total;
 		// now we got an ordered list of the nodes inside level .. it should be 1 , 2, 3 ... $max , what if something wasn't there ? lets fix that.
 		for ($i = 1; $i <= $max ; $i++) {
 			$node = mysql_fetch_array($res);
@@ -800,7 +829,9 @@ class nodes {
 				$sql2 = "UPDATE ".$this->table_name."
                         SET ".$this->table_fields['ord']." = '".$i."'
                         WHERE ".$this->table_fields['id']." = '".$node['id']."' ".$this->sql_condition." LIMIT 1";
-				$res2   = mysql_query($sql2) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql2."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
+				$this->db->exec($sql);
+				
+				//$res2   = mysql_query($sql2) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql2."<br><br><storng><u>Info:</u></strong><br>", E_USER_ERROR));
 
 			}
 		}
@@ -809,7 +840,7 @@ class nodes {
 
 
 	function load_comb() {
-		$id_field=preg_replace('/`/','',$this->table_fields['id']);
+		$id_field=preg_replace('/`/', '', $this->table_fields['id']);
 		$this->comb=array();
 		$this->root=array();
 		foreach ($this->get_children('')    as $child) {
@@ -818,12 +849,12 @@ class nodes {
 			$this->root[]=$child[$id_field];
 			$this->comb[$child[$id_field]]=
 				array(
-				'name'=>$child[ preg_replace('/`/','',$this->table_fields['name'])]
-				,'has_child'=>$child['has_children']
-				,'contador'=>$child['contador']
+				'name'=>$child[ preg_replace('/`/', '', $this->table_fields['name'])]
+				, 'has_child'=>$child['has_children']
+				, 'contador'=>$child['contador']
 			);
 			if ($child['has_children']) {
-				$this->get_teeth($child[preg_replace('/`/','',$this->table_fields['position'])],$child[$id_field]);
+				$this->get_teeth($child[preg_replace('/`/', '', $this->table_fields['position'])], $child[$id_field]);
 			}
 
 		}
@@ -835,34 +866,34 @@ class nodes {
 	}
 
 
-	function get_teeth($position,$father) {
-		$id_field=preg_replace('/`/','',$this->table_fields['id']);
-		$position_field=preg_replace('/`/','',$this->table_fields['position']);
-		$is_default_field=preg_replace('/`/','',$this->table_fields['is_default']);
+	function get_teeth($position, $father) {
+		$id_field=preg_replace('/`/', '', $this->table_fields['id']);
+		$position_field=preg_replace('/`/', '', $this->table_fields['position']);
+		$is_default_field=preg_replace('/`/', '', $this->table_fields['is_default']);
 		$teeth=array();
 		$the_default=0;
 		foreach ( $this->get_children($position)   as $child) {
 
-			$parent=preg_replace('/>$/','',$position);
-			$parent=preg_replace('/^.*>/','',$parent);
+			$parent=preg_replace('/>$/', '', $position);
+			$parent=preg_replace('/^.*>/', '', $parent);
 
 			if ($child[$is_default_field]=='Yes')
 				$the_default=$child[$id_field];
 			$this->comb[$father]['teeth'][$position]['elements'][$child[$id_field]]=array(
 				'key'=>$child[$id_field]
-				,'name'=>$child[ preg_replace('/`/','',$this->table_fields['name'])]
-				,'has_child'=>$child['has_children']
-				,'selected'=>0
-				,'parent'=>$parent
-				,'position'=>$child[$position_field]
-				,'default'=>($child[$is_default_field]=='Yes'?1:0)
-				,'contador'=>$child['contador']
-				,'mod5'=>fmod($child['contador'],5)
+				, 'name'=>$child[ preg_replace('/`/', '', $this->table_fields['name'])]
+				, 'has_child'=>$child['has_children']
+				, 'selected'=>0
+				, 'parent'=>$parent
+				, 'position'=>$child[$position_field]
+				, 'default'=>($child[$is_default_field]=='Yes'?1:0)
+				, 'contador'=>$child['contador']
+				, 'mod5'=>fmod($child['contador'], 5)
 			);
 
 
 			if ($child['has_children']) {
-				$this->get_teeth($child[$position_field],$father);
+				$this->get_teeth($child[$position_field], $father);
 			}
 		}
 		$this->comb[$father]['teeth'][$position]['default_id']=$the_default;
@@ -878,13 +909,13 @@ class nodes {
 		$this->tree=array();
 
 		foreach ($this->get_children('')    as $child) {
-			$this->tree[$child[ preg_replace('/`/','',$this->table_fields['id'])]]=
+			$this->tree[$child[ preg_replace('/`/', '', $this->table_fields['id'])]]=
 				array(
-				'name'=>$child[ preg_replace('/`/','',$this->table_fields['name'])]
-				,'has_child'=>$child['has_children']
+				'name'=>$child[ preg_replace('/`/', '', $this->table_fields['name'])]
+				, 'has_child'=>$child['has_children']
 			);
 			if ($child['has_children']) {
-				$this->tree[$child[ preg_replace('/`/','',$this->table_fields['id'])]]['children']=$this->get_branch($child[preg_replace('/`/','',$this->table_fields['position'])]);
+				$this->tree[$child[ preg_replace('/`/', '', $this->table_fields['id'])]]['children']=$this->get_branch($child[preg_replace('/`/', '', $this->table_fields['position'])]);
 			}
 
 		}
@@ -895,19 +926,20 @@ class nodes {
 
 	}
 
+
 	function get_branch($position) {
 
 		// print "$position\n";
 		$branch=array();
 
 		foreach ( $this->get_children($position)   as $child) {
-			$branch[$child[ preg_replace('/`/','',$this->table_fields['id'])]]=
+			$branch[$child[ preg_replace('/`/', '', $this->table_fields['id'])]]=
 				array(
-				'name'=>$child[ preg_replace('/`/','',$this->table_fields['name'])]
-				,'has_child'=>$child['has_children']
+				'name'=>$child[ preg_replace('/`/', '', $this->table_fields['name'])]
+				, 'has_child'=>$child['has_children']
 			);
 			if ($child['has_children']) {
-				$branch[$child[ preg_replace('/`/','',$this->table_fields['id'])]]['children']=$this->get_branch($child[preg_replace('/`/','',$this->table_fields['position'])]);
+				$branch[$child[ preg_replace('/`/', '', $this->table_fields['id'])]]['children']=$this->get_branch($child[preg_replace('/`/', '', $this->table_fields['position'])]);
 			}
 
 		}
@@ -916,6 +948,7 @@ class nodes {
 		return $branch;
 
 	}
+
 
 } // Class END
 ?>

@@ -28,7 +28,16 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+case 'get_data':
 
+	$data=prepare_values($_REQUEST, array(
+			'object'=>array('type'=>'string'),
+			'key'=>array('type'=>'numeric')
+
+		));
+
+	get_data($account, $db, $user, $data, $smarty);
+	break;
 case 'upload_objects':
 
 	$data=prepare_values($_REQUEST, array(
@@ -56,7 +65,7 @@ case 'upload_attachment':
 
 case 'upload_images':
 
-//print_r($_REQUEST);
+	//print_r($_REQUEST);
 
 	$data=prepare_values($_REQUEST, array(
 			'parent'=>array('type'=>'string'),
@@ -394,7 +403,7 @@ function upload_objects($account, $db, $user, $editor, $data, $smarty) {
 
 	if (empty($_FILES) ) {
 		$msg= '_FILES array empty';
-		$response= array('state'=>400, 'msg'=>_("Image can't be uploaded").", ".$msg);
+		$response= array('state'=>400, 'msg'=>_("File can't be uploaded").", ".$msg);
 		echo json_encode($response);
 		exit;
 
@@ -444,7 +453,7 @@ function upload_objects($account, $db, $user, $editor, $data, $smarty) {
 		$tmp_name='up_'.microtime(true).'_'.$user->id.'_'.md5_file($original_tmp_name).'.'.pathinfo($name, PATHINFO_EXTENSION);
 		$tmp_path='server_files/uploads/';
 
-		rename($original_tmp_name, $tmp_path.$tmp_name);
+	//	rename($original_tmp_name, $tmp_path.$tmp_name);
 
 
 
@@ -453,10 +462,10 @@ function upload_objects($account, $db, $user, $editor, $data, $smarty) {
 
 		$upload_files_data[]=array(
 			'editor'=>$editor,
-			'Upload File Checksum'=>md5_file($tmp_path.$tmp_name),
+			'Upload File Checksum'=>md5_file($original_tmp_name),
 			'Upload File Name'=>$name,
-			'Upload File Size'=>filesize($tmp_path.$tmp_name),
-			'Upload File Filename'=>$tmp_path.$tmp_name,
+			'Upload File Size'=>filesize($original_tmp_name),
+			'Upload File Filename'=>$original_tmp_name,
 			'Upload File Type'=>$type,
 			'Upload File Metadata'=>json_encode(array('extension'=>$extension, 'type'=>$type, 'tmp_name'=>$tmp_name))
 
@@ -491,6 +500,7 @@ function upload_objects($account, $db, $user, $editor, $data, $smarty) {
 
 			$upload_file_key=create_upload_file($db, $upload->id, $upload_file_data);
 
+//print_r($upload_file_data);
 
 			$inputFileType = PHPExcel_IOFactory::identify($upload_file_data['Upload File Filename']);
 			$objReader = PHPExcel_IOFactory::createReader($inputFileType);
@@ -550,7 +560,7 @@ function upload_objects($account, $db, $user, $editor, $data, $smarty) {
 		$upload->update(array('Upload Records'=>$number_records), 'no_history');
 
 		$upload_key=$upload->id;
-		list($fork_key, $msg)=new_fork('upload', $upload_data, $account->get('Account Code'), $db);
+		list($fork_key, $msg)=new_fork('au_upload', $upload_data, $account->get('Account Code'), $db);
 
 		$sql=sprintf('update `Fork Dimension` set `Fork Operations Total Operations`=%d where `Fork Key`=%d ',
 			$number_records,
@@ -675,6 +685,44 @@ function create_upload_file($db, $upload_key, $upload_file_data) {
 	}
 
 	return $upload_file_key;
+
+}
+
+
+function get_data($account, $db, $user, $data, $smarty) {
+
+	$object=get_object($data['object'], $data['key']);
+
+	if (!$object->id) {
+		$response=array('state'=>400, 'resp'=>'object not found');
+		echo json_encode($response);
+		exit;
+
+	}
+	if ($object->get_object_name()=='Upload') {
+
+		$response=array(
+			'state'=>200,
+			'upload'=>array(
+				'state'=>$object->get('Upload State'),
+				'class_html'=>array(
+					'Upload_State'=>$object->get('State'),
+					'Upload_Date'=>$object->get('Date'),
+					'Upload_Records'=>$object->get('Records'),
+					'Upload_OK'=>$object->get('OK'),
+					'Upload_Errors'=>$object->get('Errors'),
+
+				)
+			)
+		);
+
+		echo json_encode($response);
+		exit;
+
+	}
+
+
+
 
 }
 
