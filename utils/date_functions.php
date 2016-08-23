@@ -479,7 +479,7 @@ function get_interval_db_name($interval) {
 }
 
 
-function calculate_interval_dates($interval, $from='', $to='') {
+function calculate_interval_dates($db, $interval, $from='', $to='') {
 
 	$from_date=false;
 	$to_date=false;
@@ -518,14 +518,22 @@ function calculate_interval_dates($interval, $from='', $to='') {
 
 
 		$sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d", date('Y'), date('W'));
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$from_date=date('Y-m-d 00:00:00', strtotime($row['First Day'].' -1 week'));
-			$to_date=date('Y-m-d 23:59:59', strtotime($row['First Day'].' -1 second'  ));
 
-		} else {
-			return;
+
+		if ($result=$db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$from_date=date('Y-m-d 00:00:00', strtotime($row['First Day'].' -1 week'));
+				$to_date=date('Y-m-d 23:59:59', strtotime($row['First Day'].' -1 second'  ));
+			}else {
+				return;
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
 		}
+
+
+
 
 
 
@@ -552,21 +560,36 @@ function calculate_interval_dates($interval, $from='', $to='') {
 
 		$sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d", date('Y'), date('W'));
 
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$from_date=$row['First Day'].' 00:00:00';
-			$lapsed_seconds=strtotime('now')-strtotime($from_date);
 
-		} else {
-			return;
+
+		if ($result=$db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$from_date=$row['First Day'].' 00:00:00';
+				$lapsed_seconds=strtotime('now')-strtotime($from_date);
+			}else {
+				return;
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
 		}
+
+
+
 		$to_date=gmdate('Y-m-d 23:59:59');
 
 
 		$sql=sprintf("select `First Day`  from  kbase.`Week Dimension` where `Year`=%d and `Week`=%d", date('Y')-1, date('W'));
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$from_date_1yb=$row['First Day'].' 00:00:00';
+
+		if ($result=$db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$from_date_1yb=$row['First Day'].' 00:00:00';
+			}else {
+				return;
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
 		}
 
 

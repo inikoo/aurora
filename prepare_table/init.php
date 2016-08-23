@@ -55,7 +55,7 @@ if (!isset($skip_get_table_totals)) {
 if (isset($parameters['period']) and $parameters['period']!='all' ) {
 	include_once 'utils/date_functions.php';
 
-	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($parameters['period'], $parameters['from'], $parameters['to']);
+	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($db,$parameters['period'], $parameters['from'], $parameters['to']);
 
 	$_from=strftime('%d %b %Y', strtotime($from));
 	$_to=strftime('%d %b %Y', strtotime($to));
