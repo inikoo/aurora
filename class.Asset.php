@@ -265,7 +265,6 @@ class Asset extends DB_Table{
 				$materials='';
 
 
-
 				$materials_data=json_decode($this->data[$this->table_name.' Materials'], true);
 
 

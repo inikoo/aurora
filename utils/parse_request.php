@@ -641,7 +641,24 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 
 						}
+elseif ($view_path[1]=='attachment') {
+							$section='supplier.attachment';
+							$object='attachment';
+							$parent='supplier';
+							$parent_key=$key;
+							if (isset($view_path[2])) {
+								if (is_numeric($view_path[2])) {
+									$key=$view_path[2];
+								}elseif ($view_path[2]=='new') {
+									$section='supplier.attachment.new';
 
+									$key=0;
+								}
+							}
+
+
+
+						}
 
 
 					}
@@ -2255,7 +2272,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 
 
-						}elseif ($view_path[1]=='user') {
+						}
+						elseif ($view_path[1]=='user') {
 							$section='employee.user';
 							$object='user';
 							$parent='employee';

@@ -423,7 +423,9 @@ class Order extends DB_Table {
 				$currency_exchange = new CurrencyExchange($this->data ['Order Currency'].$account->get('Account Currency'), $this->data['Order Date']);
 				$exchange= $currency_exchange->get_exchange();
 			}else {
-				$exchange=currency_conversion($this->data ['Order Currency'], $account->get('Account Currency'), 'now');
+				include_once 'utils/currency_functions.php';
+
+				$exchange=currency_conversion($this->db, $this->data ['Order Currency'], $account->get('Account Currency'), 'now');
 			}
 			$this->data ['Order Currency Exchange']=$exchange;
 		}
@@ -3396,7 +3398,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		$number_with_out_of_stock=0;
 		$number_with_problems=0;
 
-		$sql=sprintf("select 
+		$sql=sprintf("select
 		count(*) as number_items,
 		sum(if(`Order Transaction Total Discount Amount`!=0,1,0)) as number_with_deals ,
 		sum(if(`No Shipped Due Out of Stock`!=0,1,0)) as number_with_out_of_stock
@@ -3415,7 +3417,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 			exit;
 		}
 
-		$sql=sprintf("select 
+		$sql=sprintf("select
 		count(Distinct `Order Transaction Fact Key`) as number_with_problems
 		from `Order Post Transaction Dimension` where `Order Key`=%d  ",
 			$this->id);

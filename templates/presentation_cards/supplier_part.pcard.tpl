@@ -12,11 +12,11 @@
 </td>
 </tr>
 <tr class="title">
-<td colspan=2>{t}Part{/t} <i  onClick="change_view('supplier/{$supplier_part->get('Supplier Key')}/part/{$supplier_part->id}')" class="fa fa-link link"></i></td>
+<td colspan=2>{t}Supplier part{/t} <i  onClick="change_view('supplier/{$supplier_part->get('Supplier Part Supplier Key')}/part/{$supplier_part->id}')" class="fa fa-stop link"></i></td>
 </tr>
 
 <tr>
-<td class="label">{$supplier_part->get_field_label('Supplier Part Reference')|capitalize}</td><td>{$supplier_part->get('SKU')}</td>
+<td class="label">{$supplier_part->get_field_label('Supplier Part Reference')|capitalize}</td><td>{$supplier_part->get('Reference')}</td>
 </tr>
 <tr>
 <td class="label">{$supplier_part->part->get_field_label('Part Reference')|capitalize}</td><td>{$supplier_part->part->get('Reference')}</td>

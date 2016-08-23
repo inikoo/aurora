@@ -233,8 +233,9 @@ $supplier_part_fields[]=array(
 			'id'=>'Supplier_Part_Average_Delivery_Days',
 			'edit'=>($edit?'numeric':''),
 
-			'value'=>($new?1:htmlspecialchars($object->get('Supplier Part Average Delivery Days'))),
-			'formatted_value'=>($new?7:$object->get('Average Delivery Days')),
+			'value'=>($new?  ($part_scope? '': $options['supplier']->get('Supplier Average Delivery Days'))  :htmlspecialchars($object->get('Supplier Part Average Delivery Days'))),
+		
+				'formatted_value'=>($new? ($part_scope? '':  $options['supplier']->get('Supplier Average Delivery Days')):$object->get('Average Delivery Days')),
 			'label'=>ucfirst($object->get_field_label('Supplier Part Average Delivery Days')),
 			'placeholder'=>_('days'),
 
@@ -289,7 +290,7 @@ $supplier_part_fields[]=array(
 		array(
 			'id'=>'Supplier_Part_Unit_Extra_Cost',
 			'class'=>'',
-			'edit'=>'amount_margin',
+			'edit'=>'amount_percentage',
 			'locked'=>($part_scope?1:0),
 			'value'=>htmlspecialchars($object->get('Supplier Part Unit Extra Cost')),
 			'formatted_value'=>$object->get('Unit Extra Cost'),

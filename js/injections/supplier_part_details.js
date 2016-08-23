@@ -21,15 +21,17 @@ function post_validate_field(validation, field) {
         var regex = /\%$/
         if (regex.test(value)) {
             var percentage = parseFloat(value)
-            var amount = cost * (1 + percentage / 100)
+            var amount = cost * (percentage / 100)
+
+            info = amount.toFixed(2) 
         } else {
             var amount = parseFloat(value)
-            var percentage = parseFloat(100*((value / cost)-1))
+            var percentage = parseFloat(100 * ((value / cost)))
 
-
+            info =  percentage.toFixed(2) + "%"
         }
 
-        info=amount+' '+percentage.toFixed(2) + "%"
+
 
     }
 

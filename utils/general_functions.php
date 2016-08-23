@@ -517,81 +517,9 @@ function deviation($array) {
 
 
 
-function currency_conversion($currency_from, $currency_to, $update_interval="-1 hour") {
-	$reload=false;
-	$in_db=false;
-	$exchange_rate=1;
-	//get info from database;
-	$sql=sprintf("select * from kbase.`Currency Exchange Dimension` where `Currency Pair`=%s", prepare_mysql($currency_from.$currency_to));
-
-	$res = mysql_query($sql);
-	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-
-		if (strtotime($row['Currency Exchange Last Updated'])<date("U", strtotime($update_interval)))
-			$reload=true;
-		$exchange_rate=$row['Exchange'];
-	} else {
-		$reload=true;
-		$in_db=false;
-	}
-	if ($reload) {
-		$url = "http://quote.yahoo.com/d/quotes.csv?s=". $currency_from . $currency_to . "=X". "&f=l1&e=.csv";
-
-		$handle = fopen($url, "r");
-		$contents = floatval(fread($handle, 2000));
-		fclose($handle);
 
 
 
-		if (is_numeric($contents) and $contents>0) {
-			$exchange_rate=$contents;
-
-
-
-			$sql=sprintf("insert into kbase.`Currency Exchange Dimension`  (`Currency Pair`,`Exchange`,`Currency Exchange Last Updated`,`Currency Exchange Source`) values (%s,%f,NOW(),'Yahoo')  ON DUPLICATE KEY update `Exchange`=%f,`Currency Exchange Last Updated`=NOW(),`Currency Exchange Source`='Yahoo'",
-				prepare_mysql($currency_from.$currency_to), $exchange_rate, $exchange_rate);
-
-			mysql_query($sql);
-
-
-		}
-
-
-	}
-
-	return $exchange_rate;
-}
-
-
-
-
-
-function get_currency_other($from_Currency, $to_Currency) {
-
-	$url    = 'http://download.finance.yahoo.com/d/quotes.csv?e=.csv&f=sl1d1t1&s='. $from_Currency . $to_Currency .'=X';
-
-
-
-	$handle = @fopen($url, 'r');
-	if ($handle) {
-		$result = fgets($handle, 4096);
-		fclose($handle);
-	}
-
-
-	$allData = explode(',', $result);
-
-
-
-	$bace_rate =  $allData[1];
-
-
-	$bace_rate_amount = $bace_rate;
-
-	return  round($bace_rate_amount, 4);
-
-}
 
 
 

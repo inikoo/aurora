@@ -1035,6 +1035,11 @@ class Supplier extends SubjectSupplier {
 		$data['Supplier Part Currency Code']=$this->data['Supplier Default Currency Code'];
 
 
+
+		$data['Part Package Description']=$data['Supplier Part Package Description'];
+		$data['Part Unit Description']=$data['Supplier Part Unit Description'];
+
+
 		$supplier_part= new SupplierPart('find', $data, 'create');
 
 
@@ -1047,10 +1052,30 @@ class Supplier extends SubjectSupplier {
 				$this->update_supplier_parts();
 
 
+				$materials=$data['Part Materials'];
+				$package_dimensions=$data['Part Package Dimensions'];
+				$unit_dimensions=$data['Part Unit Dimensions'];
+
+
+				unset($data['Part Materials']);
+				unset($data['Part Package Dimensions']);
+				unset($data['Part Unit Dimensions']);
+
 				$part=new Part('find', $data, 'create');
-				// print_r($part);
+
 
 				if ($part->new) {
+
+					$part->update(
+						array(
+							'Part Materials'=>$materials,
+							'Part Package Dimensions'=>$package_dimensions,
+							'Part Unit Dimensions'=>$unit_dimensions,
+
+						)
+						, 'no_history'
+					);
+
 					$supplier_part->update(array('Supplier Part Part SKU'=>$part->sku));
 					$supplier_part->get_data('id', $supplier_part->id);
 
