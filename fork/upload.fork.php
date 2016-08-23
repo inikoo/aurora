@@ -99,7 +99,13 @@ function fork_upload($job) {
 
 				if (array_key_exists('edit', $field)  and !array_key_exists('hidden', $field)  and  !  (array_key_exists('render', $field) and !$field['render'])  ) {
 
+					if ($field['id']=='Part_Family_Category_Key') {
+						$field['id']='Part_Family_Category_Code';
+					}
+
 					$fields[]=preg_replace('/_/', ' ', $field['id']);
+
+
 
 					if (!(array_key_exists('required', $field) and !$field['required'])    ) {
 						$fields_required[$field_index]=$field_index;
@@ -172,6 +178,10 @@ function fork_upload($job) {
 			$fields_data='';
 			$error=false;
 			$error_required=array();
+
+
+			//print_r($fields);
+
 			foreach ($fields as $_key=>$_value) {
 
 				$value=(array_key_exists($_key, $record_data)?$record_data[$_key]:'');
@@ -187,7 +197,6 @@ function fork_upload($job) {
 				$fields_data[$_value]=$value;
 
 			}
-
 
 
 
@@ -293,6 +302,7 @@ function new_object($account, $db, $user, $editor, $data) {
 	$parent->editor=$editor;
 
 
+	//print_r($data);
 
 	switch ($data['object']) {
 
@@ -301,11 +311,16 @@ function new_object($account, $db, $user, $editor, $data) {
 		include_once 'class.SupplierPart.php';
 
 
-
 		$object=$parent->create_supplier_part_record($data['fields_data']);
+		//print_r($object);
+
+		if ($parent->error) {
+			$error=$parent->error;
+			$error_metadata=$parent->error_metadata;
+			$error_code=$parent->error_code;
+		}
 
 
-		$error=$parent->error;
 
 		break;
 	case 'part':
@@ -324,19 +339,19 @@ function new_object($account, $db, $user, $editor, $data) {
 		}else {
 
 			$data['fields_data']['Supplier Part Supplier Key']=$supplier->id;
-			
-			
+
+
 			$parent=$supplier;
 			$parent->editor=$editor;
 			$supplier_part=$parent->create_supplier_part_record($data['fields_data']);
-			print_r($parent);
-			if(!$parent->error){
-            $object=get_object('Part',$supplier_part->get('Part SKU'));
+			//print_r($parent);
+			if (!$parent->error) {
+				$object=get_object('Part', $supplier_part->get('Part SKU'));
 			}
 			$error=$parent->error;
 			$error_metadata=$parent->error_metadata;
 			$error_code=$parent->error_code;
-			
+
 		}
 
 		break;
@@ -434,6 +449,9 @@ function new_object($account, $db, $user, $editor, $data) {
 			$data['upload_record_key']
 
 		);
+
+		print $sql;
+
 		$db->exec($sql);
 		return false;
 

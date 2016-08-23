@@ -16,7 +16,7 @@ function get_upload_showcase($data, $smarty, $user, $db) {
 	if (!$object->id) {
 		return "";
 	}
-$object->load_file_data();
+	$object->load_file_data();
 	$smarty->assign('upload', $object);
 	return $smarty->fetch('showcase/upload.tpl');
 

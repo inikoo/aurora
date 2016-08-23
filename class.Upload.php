@@ -145,6 +145,27 @@ class Upload extends DB_Table {
 			return;
 
 		switch ($key) {
+		case  'State':
+			switch ($this->data['Upload State']) {
+			case 'InProcess':
+			case 'Uploaded':
+				return _('In process');
+				break;
+			case 'Finished':
+				return _('Finished');
+
+
+				break;
+			case 'Cancelled':
+				return _('Cancelled');
+
+				break;
+
+			default:
+				return $this->data['Upload State'];
+				break;
+			}
+
 		case 'User Alias':
 
 			$user=get_object('User', $this->data['Upload User Key']);
@@ -165,7 +186,7 @@ class Upload extends DB_Table {
 				break;
 			case 'part':
 				$object=sprintf('<i  class="fa fa-fw fa-square"></i> %s', _("Parts"));
-				break;	
+				break;
 			default:
 				$object=$this->data['Upload Object'];
 			}

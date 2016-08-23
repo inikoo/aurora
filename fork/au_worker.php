@@ -33,8 +33,8 @@ $count_number_used=0;
 
 $worker= new GearmanWorker();
 $worker->addServer('127.0.0.1');
-$worker->addFunction("export", "fork_export");
-$worker->addFunction("upload", "fork_upload");
+$worker->addFunction("au_export", "fork_export");
+$worker->addFunction("au_upload", "fork_upload");
 
 
 //$worker->addFunction("ping_sitemap", "fork_ping_sitemap");

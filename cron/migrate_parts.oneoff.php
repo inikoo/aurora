@@ -606,6 +606,8 @@ function update_materials_stats() {
 }
 
 
+
+
 function migrate_part_fields() {
 	global $db;
 
