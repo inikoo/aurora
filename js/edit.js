@@ -39,6 +39,7 @@ function open_edit_field(object, key, field) {
     case 'numeric':
     case 'amount':
     case 'amount_margin':
+    case 'amount_percentage':
     case 'int_unsigned':
     case 'smallint_unsigned':
     case 'mediumint_unsigned':
@@ -54,9 +55,9 @@ function open_edit_field(object, key, field) {
         $('#' + field).focus()
         $('#' + field + '_save_button').removeClass('hide')
         break;
-    case 'editor':    
-        
-                $('#editor_container_' + field).removeClass('hide')
+    case 'editor':
+
+        $('#editor_container_' + field).removeClass('hide')
 
         break;
     case 'html_editor':
@@ -252,6 +253,7 @@ function close_edit_field(field) {
     case 'numeric':
     case 'amount':
     case 'amount_margin':
+    case 'amount_percentage':
     case 'dimensions':
 
         $('#' + field).addClass('hide')
@@ -259,9 +261,9 @@ function close_edit_field(field) {
 
         //$('#' + field + '_editor').removeClass('changed')
         break;
-  case 'editor':    
-        
-                $('#editor_container_' + field).addClass('hide')
+    case 'editor':
+
+        $('#editor_container_' + field).addClass('hide')
 
         break;
     case 'html_editor':
@@ -290,9 +292,9 @@ function close_edit_field(field) {
 
 
         $('#' + field + '_dropdown_select_label').addClass('hide')
-        
-         $('#' + field + '_results_container').addClass('hide').removeClass('show')
-        
+
+        $('#' + field + '_results_container').addClass('hide').removeClass('show')
+
         // $('#' + field + '_save_button').removeClass('hide')
         break;
 
@@ -949,10 +951,11 @@ function save_field(object, key, field) {
     $.getJSON(request, function(data) {
 
         $('#' + field + '_save_button').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
-          if (data.state == 100) {
-            pre_save_actions(field,data)
-          
-        }if (data.state == 200) {
+        if (data.state == 100) {
+            pre_save_actions(field, data)
+
+        }
+        if (data.state == 200) {
 
 
 
@@ -1025,8 +1028,7 @@ function save_field(object, key, field) {
 
             post_save_actions(field, data)
 
-        } 
-        else if (data.state == 400) {
+        } else if (data.state == 400) {
             $('#' + field + '_editor').removeClass('valid potentially_valid').addClass('invalid')
 
             $('#' + field + '_msg').html(data.msg).removeClass('hide')
@@ -1035,14 +1037,14 @@ function save_field(object, key, field) {
     })
 }
 
-function pre_save_actions(field,data){
+function pre_save_actions(field, data) {
 
 }
 
 function post_save_actions(field, data) {
 
-console.log(field)
-console.log(data)
+    console.log(field)
+    console.log(data)
 
     switch (field) {
     case 'User_Preferred_Locale':
@@ -1073,11 +1075,11 @@ console.log(data)
             })
         }
         break;
-     case 'Supplier_Part_Supplier_Key':
-          change_view(data.update_metadata.request, {
-                reload_showcase: 1
-            })
-        
+    case 'Supplier_Part_Supplier_Key':
+        change_view(data.update_metadata.request, {
+            reload_showcase: 1
+        })
+
     default:
 
     }
@@ -1698,10 +1700,10 @@ function get_dropdown_select(dropdown_input, new_value) {
             $('#' + field + '_msg').html('').addClass('hide')
             $('#' + field).val('')
             on_changed_value(field, new_value)
-            
-             
-            
-            
+
+
+
+
         } else {
 
             if (new_value.length > 0) {
@@ -1723,10 +1725,10 @@ function get_dropdown_select(dropdown_input, new_value) {
                     $('#' + field).val('')
                     on_changed_value(field, '__error__')
                 }
-            }else{
-            
+            } else {
+
                 $('#' + field).val('')
-            on_changed_value(field, '')
+                on_changed_value(field, '')
             }
         }
 

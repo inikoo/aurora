@@ -39,6 +39,8 @@ function get_object_fields($object, $db, $user, $smarty, $options=false) {
 		$object_fields=array();
 		if ($options['type']=='employee') {
 			include 'fields/employee.attachment.fld.php';
+		}if ($options['type']=='supplier') {
+			include 'fields/employee.supplier.fld.php';
 		}
 		return $object_fields;
 		break;

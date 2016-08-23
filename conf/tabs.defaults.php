@@ -794,6 +794,14 @@ $tab_defaults=array(
 		'elements'=>$elements_options['supplier_parts']
 
 	),
+	'supplier.attachments'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'caption'
+	),
 	'supplier_part.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',

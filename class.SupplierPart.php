@@ -222,9 +222,9 @@ class SupplierPart extends DB_Table{
 			$this->id=$this->db->lastInsertId();
 			$this->msg="Supplier part added";
 			$this->get_data('id', $this->id);
-			
+
 			//$this->update_historic_object();
-			
+
 			$this->new=true;
 
 			$history_data=array(
@@ -396,8 +396,20 @@ class SupplierPart extends DB_Table{
 			}
 
 
+
 			return $cost;
 			break;
+
+		case 'Unit Extra Cost':
+			if ($this->data['Supplier Part Unit Extra Cost']=='')return '';
+
+			$extra_cost= money($this->data['Supplier Part Unit Extra Cost'], $this->data['Supplier Part Currency Code']);
+
+			if ($this->data['Supplier Part Unit Cost']>0) {
+				$extra_cost.=' <span class="discreet">'.percentage($this->data['Supplier Part Unit Extra Cost'], $this->data['Supplier Part Unit Cost']).'</span>';
+			}
+			return $extra_cost;
+
 		case 'Status':
 
 			switch ($this->data['Supplier Part Status']) {
@@ -457,7 +469,7 @@ class SupplierPart extends DB_Table{
 			$this->updated=$this->part->updated;
 
 
-			break;	
+			break;
 		case 'Supplier Part Status':
 
 			$this->update_field($field, $value, $options);
@@ -500,9 +512,9 @@ class SupplierPart extends DB_Table{
 			}
 
 			$this->update_field($field, $supplier->id, 'no_history');
-			
+
 			$this->update_field('Supplier Part Currency Code', $supplier->get('Supplier Default Currency Code'), 'no_history');
-			
+
 
 			//$supplier->update_supplier_parts();
 			//$supplier->update_up_today_sales();
@@ -550,6 +562,12 @@ class SupplierPart extends DB_Table{
 			if (!preg_match('/skip_update_historic_object/', $options)) {
 				$this->update_historic_object();
 			}
+
+			if ($field=='Supplier Part Unit Cost') {
+				$this->part->update_cost();
+
+			}
+
 
 			$this->update_metadata=array(
 				'class_html'=>array(
@@ -682,6 +700,10 @@ class SupplierPart extends DB_Table{
 				)
 			);
 
+			break;
+		case 'Supplier Part Unit Extra Cost':
+			$this->update_field($field, $value, $options);
+			$this->part->update_cost();
 			break;
 		default:
 

@@ -39,8 +39,7 @@ function get_form_validation_state(submitting) {
         }
 
 
-if(component_validation!='valid')
-        console.log(field+' '+component_validation)
+        if (component_validation != 'valid') console.log(field + ' ' + component_validation)
         //if (component_validation == 'invalid' || component_validation == 'potentially_valid') 
         if (component_validation == 'invalid') {
             form_validation = 'invalid';
@@ -72,6 +71,7 @@ function process_form_validation(validation, submitting) {
     }
     $('#fields .controls').removeClass('invalid valid potentially_valid').addClass(validation).addClass('changed')
 
+reset_controls()
 
 }
 
@@ -190,11 +190,11 @@ function save_new_object(object, form_type) {
 
 
         // used only for debug
-        var request = '/' + ar_file +'?tipo=' + tipo + '&object=' + object + '&parent=' + $('#fields').attr('parent') + '&parent_key=' + $('#fields').attr('parent_key') + '&fields_data=' + JSON.stringify(fields_data)
+        var request = '/' + ar_file + '?tipo=' + tipo + '&object=' + object + '&parent=' + $('#fields').attr('parent') + '&parent_key=' + $('#fields').attr('parent_key') + '&fields_data=' + JSON.stringify(fields_data)
         console.log(request)
 
 
-      //  return;
+        //  return;
         //=====
         form_data.append("tipo", (form_type != '' ? form_type : tipo))
         form_data.append("object", object)
@@ -242,6 +242,9 @@ function save_new_object(object, form_type) {
 
 
                 $('#' + object + '_msg').html(data.msg).removeClass('hide')
+                $('#save_msg').html(data.msg).removeClass('hide')
+
+
 
             }
 
@@ -473,6 +476,7 @@ function reset_controls() {
     $('#' + object + '_save').removeClass('hide');
     $('.results').addClass('hide')
     $('#' + object + '_msg').html('').addClass('hide').removeClass('success');
+    $('#save_msg').html('').addClass('hide').removeClass('success');
     $('#' + object + '_go_new').attr('request', '')
 }
 

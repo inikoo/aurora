@@ -484,7 +484,7 @@ class Part extends Asset{
 				$value=$value*$product_data['Parts Per Product'];
 			}
 			if (array_key_exists($field, $product_data['Linked Fields'])) {
-				$product=new Product('id',$product_data['Store Product Key']);
+				$product=new Product('id', $product_data['Store Product Key']);
 				$update_data=array();
 
 
@@ -853,20 +853,39 @@ class Part extends Asset{
 
 	function update_cost() {
 
-		$supplier_parts=get_supplier_parts('objects');
+		global $account;
+
+		$supplier_parts=$this->get_supplier_parts('objects');
 
 		$cost_available=false;
 		$cost_no_available=false;
 		$cost_discontinued=false;
+
+
+
+
 		foreach ($supplier_parts as $supplier_part) {
+
+
+			if ($supplier_part->get('Supplier Part Currency Code')!= $account->get('Account Currency')) {
+				include_once 'utils/currency_functions.php';
+				$exchange=currency_conversion($this->db, $supplier_part->get('Supplier Part Currency Code'), $account->get('Account Currency'), '- 15 minutes');
+
+			}else {
+				$exchange=1;
+			}
+
+
+
+
 			if ($supplier_part->get('Supplier Part Status')) {
 
 				if ($cost_available==false or $cost_available>$supplier_part->get('Supplier Part Unit Cost')) {
-					$cost_available=$supplier_part->get('Supplier Part Unit Cost');
+					$cost_available=$exchange*($supplier_part->get('Supplier Part Unit Cost')+$supplier_part->get('Supplier Part Unit Extra Cost'));
 				}elseif ($cost_no_available==false or $cost_no_available>$supplier_part->get('Supplier Part Unit Cost')) {
-					$cost_no_available=$supplier_part->get('Supplier Part Unit Cost');
+					$cost_no_available=$exchange*($supplier_part->get('Supplier Part Unit Cost')+$supplier_part->get('Supplier Part Unit Extra Cost'));
 				}elseif ($cost_discontinued==false or $cost_discontinued>$supplier_part->get('Supplier Part Unit Cost')) {
-					$cost_discontinued=$supplier_part->get('Supplier Part Unit Cost');
+					$cost_discontinued=$exchange*($supplier_part->get('Supplier Part Unit Cost')+$supplier_part->get('Supplier Part Unit Extra Cost'));
 				}
 
 
@@ -888,10 +907,10 @@ class Part extends Asset{
 		}
 
 		if ($cost!=false) {
-			$cost=$code*$this->data['Part Units Per Package'];
+			$cost=$cost*$this->data['Part Units Per Package'];
 		}
 
-		$this->update_field('Part Cost');
+		$this->update_field('Part Cost',$cost,'no_history');
 
 
 	}
@@ -2363,7 +2382,7 @@ class Part extends Asset{
 	}
 
 
-	
+
 
 	function get_current_formatted_value_at_cost() {
 		//return number($this->data['Part Current Value'],2);
@@ -4079,7 +4098,7 @@ where `Part SKU`=%d ",
 					$product_data['Number Linked Fields']=count($product_data['Linked Fields']);
 				}
 				if ($with_objects) {
-					$product_data['Product']=new Product('id',$row['Store Product Key']);
+					$product_data['Product']=new Product('id', $row['Store Product Key']);
 				}
 				$products_data[]=$product_data;
 			}

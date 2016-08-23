@@ -402,16 +402,18 @@ ALTER TABLE `Agent Dimension` DROP `Agent Default Currency`;
 ALTER TABLE `Agent Dimension` DROP `Agent Products Origin`;
 ALTER TABLE `Purchase Order Dimension` ADD `Purchase Order Number Suppliers` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Purchase Order Actions Taken`;
 
-
-// From HERe  ==================== 15/04/2016, 10:45
-
-Only for bali dw:
-
 migrate_suppliers.oneoff.php
 migrate_images.oneoff.php 
 migrate_supplier_parts.oneoff.php 
 migrate_parts.oneoff.php
 
+
+// From HERe  ==================== 15/04/2016, 10:45
+
+Only for bali dw:
+
+
+ALTER TABLE `Supplier Part Dimension` ADD `Supplier Part Unit Extra Cost` FLOAT NOT NULL DEFAULT '0' AFTER `Supplier Part Unit Cost`;
 
 
 

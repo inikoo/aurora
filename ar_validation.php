@@ -60,7 +60,6 @@ function check_for_duplicates($data, $db, $user, $account) {
 
 	$options_where='';
 
-    
 
 	switch ($data['object']) {
 	case 'User':
@@ -451,11 +450,12 @@ function check_for_duplicates($data, $db, $user, $account) {
 
 
 			$invalid_msg=_('Part reference already used');
-			$sql=sprintf("select P.`Part SKU` as `key` ,`Part Reference` as field from `Part Dimension` P where  `Part Reference`=%s  and `Part Status`='In Use' ",
+	//		$sql=sprintf("select P.`Part SKU` as `key` ,`Part Reference` as field from `Part Dimension` P where  `Part Reference`=%s  and `Part Status`='In Use' ",
+			
+			$sql=sprintf("select P.`Part SKU` as `key` ,`Part Reference` as field from `Part Dimension` P where  `Part Reference`=%s   ",
 				prepare_mysql($data['value'])
 			);
 			$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
-
 		}
 
 		break;
