@@ -2,13 +2,13 @@ module.exports = function(grunt) {
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
+        secret: grunt.file.readJSON('deployment.secret.json'),
 
         clean: {
             app: ["build/app/*", "!build/app/keyring/**", "!build/app/server_files/**"],
             fork: ["build/fork/*", "!build/fork/keyring/**", "!build/fork/server_files/**"],
 
         },
-
         concat: {
             js_libs: {
                 src: ['js/libs/jquery-2.2.1.js', 'js/libs/jquery-ui.js', 'js/libs/moment-with-locales.js', 'js/libs/chrono.js', 'js/libs/sha256.js', 'js/libs/underscore.js', 'js/libs/backbone.js', 'js/libs/backbone.paginator.js', 'js/libs/backgrid.js', 'js/libs/backgrid-filter.js', 'js/libs/intlTelInput.js', 'js/libs/d3.js', 'js/libs/d3fc.layout.js', 'js/libs/d3fc.js'],
@@ -67,7 +67,7 @@ module.exports = function(grunt) {
                     'css/app.css': 'sass/app.scss'
                 }
             },
-             ecom: {
+            ecom: {
                 options: {
                     // style: 'compressed'
                 },
@@ -162,8 +162,8 @@ module.exports = function(grunt) {
                 ],
             },
 
-            fork_stones:{
-             files: [ {
+            fork_stones: {
+                files: [{
                     expand: true,
                     src: ['external_libs/**'],
                     dest: 'build/fork/'
@@ -186,15 +186,15 @@ module.exports = function(grunt) {
                     expand: true,
                     src: ['class.*.php'],
                     dest: 'build/fork/'
-                },{
+                }, {
                     expand: true,
                     src: ['trait.*.php'],
                     dest: 'build/fork/'
-                },{
+                }, {
                     expand: true,
                     src: ['conf/*.php'],
                     dest: 'build/fork/'
-                },{
+                }, {
                     expand: true,
                     src: ['conf/fields/*.php'],
                     dest: 'build/fork/'
@@ -215,7 +215,6 @@ module.exports = function(grunt) {
 
 
         },
-
         imagemin: {
             aurora: {
                 options: {
@@ -231,6 +230,43 @@ module.exports = function(grunt) {
             }
         },
 
+
+        environments: {
+
+            options: {
+               
+                current_symlink: 'current',
+               
+                zip_deploy: true,
+                max_buffer: 200 * 1024 * 1024
+            },
+            fork: {
+                options: {
+                 deploy_path: 'fork',
+                    host: '<%= secret.fork.host %>',
+                    username: '<%= secret.fork.username %>',
+                    password: '<%= secret.fork.password %>',
+                    port: '<%= secret.fork.port %>',
+                    debug: true,
+                    releases_to_keep: '3'
+                }
+            },
+             fork_external_libs: {
+                options: {
+                 local_path: 'build/fork/external_libs',
+                 deploy_path: 'external_libs',
+                    host: '<%= secret.fork.host %>',
+                    username: '<%= secret.fork.username %>',
+                    password: '<%= secret.fork.password %>',
+                    port: '<%= secret.fork.port %>',
+                    debug: true,
+                    releases_to_keep: '3'
+                }
+            }
+
+
+        },
+
         watch: {
 
             sass: {
@@ -240,8 +276,8 @@ module.exports = function(grunt) {
                     spawn: false,
                 },
             },
-             fork: {
-                files: ['fork/*.php','conf/*.php','conf/fields/*.php','utils/*','class.*.php','trait.*.php'],
+            fork: {
+                files: ['fork/*.php', 'conf/*.php', 'conf/fields/*.php', 'utils/*', 'class.*.php', 'trait.*.php'],
                 tasks: ['copy:fork'],
                 options: {
                     spawn: false,
@@ -259,10 +295,14 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-imagemin');
+    grunt.loadNpmTasks('grunt-ssh-deploy');
+
+
     grunt.registerTask('default', ['sass']);
 
     grunt.registerTask('app', ['clean:app', 'imagemin', 'sass', 'concat', 'uglify', 'cssmin', 'copy:app']);
     grunt.registerTask('fork', ['clean:fork', 'copy:fork_stones', 'copy:fork']);
-    grunt.registerTask('qfork', [ 'copy:fork']);
+    grunt.registerTask('qfork', ['copy:fork']);
+    grunt.registerTask('deploy_fork', ['clean:fork', 'copy:fork_stones', 'copy:fork', 'ssh_deploy:environment']);
 
 };
