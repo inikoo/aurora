@@ -182,13 +182,12 @@ module.exports = function(grunt) {
             },
 
             fork: {
-                files: [
-                 {
+                files: [{
                     expand: true,
-                     cwd: 'fork/',
+                    cwd: 'fork/',
                     src: ['tmp/*.txt'],
                     dest: 'build/fork/'
-                },{
+                }, {
                     expand: true,
                     src: ['class.*.php'],
                     dest: 'build/fork/'
@@ -240,29 +239,30 @@ module.exports = function(grunt) {
         environments: {
 
             options: {
-               
+
                 current_symlink: 'current',
-               
+
                 zip_deploy: true,
                 max_buffer: 200 * 1024 * 1024
             },
             fork: {
                 options: {
-                 local_path: 'build/fork/',
-                 deploy_path: '/home/fork/fork',
+                    local_path: 'build/fork/',
+                    deploy_path: '/home/fork/fork',
                     host: '<%= secret.fork.host %>',
                     username: '<%= secret.fork.username %>',
                     password: '<%= secret.fork.password %>',
                     port: '<%= secret.fork.port %>',
                     debug: true,
                     releases_to_keep: '3',
-                     exclude:['keyring','external_libs','server_files']
+                    exclude: ['keyring', 'external_libs', 'server_files'],
+                    after_deploy: 'cd /home/fork/fork/current && ln -s /home/fork/external_libs/current/ external_libs & ln -s /home/fork/external_libs/current/ keyring && sudo service supervisor restart'
                 }
             },
             fork_external_libs: {
                 options: {
-                 local_path: 'build/fork/external_libs',
-                 deploy_path: '/home/fork/external_libs',
+                    local_path: 'build/fork/external_libs',
+                    deploy_path: '/home/fork/external_libs',
                     host: '<%= secret.fork.host %>',
                     username: '<%= secret.fork.username %>',
                     password: '<%= secret.fork.password %>',
@@ -311,7 +311,7 @@ module.exports = function(grunt) {
     grunt.registerTask('app', ['clean:app', 'imagemin', 'sass', 'concat', 'uglify', 'cssmin', 'copy:app']);
     grunt.registerTask('fork', ['clean:fork', 'copy:fork_stones', 'copy:fork']);
     grunt.registerTask('qfork', ['copy:fork']);
-    grunt.registerTask('deploy_fork', ['clean:fork', 'copy:fork_stones', 'copy:fork', 'ssh_deploy:fork_external_libs','ssh_deploy:fork']);
-    grunt.registerTask('deploy_qfork', ['copy:fork','ssh_deploy:fork']);
+    grunt.registerTask('deploy_fork', ['clean:fork', 'copy:fork_stones', 'copy:fork', 'ssh_deploy:fork_external_libs', 'ssh_deploy:fork']);
+    grunt.registerTask('deploy_qfork', ['copy:fork', 'ssh_deploy:fork']);
 
 };

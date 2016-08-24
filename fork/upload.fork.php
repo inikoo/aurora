@@ -238,7 +238,7 @@ function fork_upload($job) {
 			);
 
 
-print_r($_data);
+			//print_r($_data);
 
 			$object_key=new_object($account, $db, $user, $editor, $_data);
 
@@ -452,7 +452,7 @@ function new_object($account, $db, $user, $editor, $data) {
 
 		);
 
-		
+
 
 		$db->exec($sql);
 		return false;
