@@ -1,5 +1,5 @@
 <div class="subject_profile">
-	<div id="contact_data" style="float:left;width:600px">
+	<div style="float:left;width:600px">
 		<div class="showcase">
 			<div class="data_field" style="padding-bottom:20px">
 				<span class="Public_Info">{$attachment->get('Public Info')}</span> 
@@ -15,7 +15,7 @@
 				</tr>
 				<tr>
 					<td class="label">{$attachment->get_field_label('Attachment File Original Name')|capitalize}</td>
-					<td>{$attachment->get('File Original Name')}</td>
+					<td id="download_button_vis" class="button">{$attachment->get('File Original Name')} <i class="fa fa-download padding_left_5  " aria-hidden="true"></i></td>
 				</tr>
 				<tr>
 					<td class="label">{$attachment->get_field_label('Attachment Type')|capitalize}</td>
@@ -44,6 +44,10 @@
 
 <script>
 $('#navigation').on('click', '#download_button', 
+function() { $( "#download" )[0].click();}
+);
+
+$(document).on('click', '#download_button_vis', 
 function() { $( "#download" )[0].click();}
 );
 </script>

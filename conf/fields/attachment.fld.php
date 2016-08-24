@@ -17,12 +17,7 @@ if (isset($options['new']) and  $options['new'] ) {
 	$new=false;
 }
 
-$options_Attachment_Subject_Type=array(
-	'CV'=>_('Curriculum vitae'),
-	'Contract'=>_('Employment contract'),
-	'Other'=>_('Other'),
 
-);
 $options_yn=array(
 	'Yes'=>_('Yes'), 'No'=>_('No')
 );
@@ -41,10 +36,10 @@ $object_fields=array(
 			array(
 				'id'=>'Attachment_Subject_Type',
 				'edit'=>'option',
-				
+
 				'value'=>($new?'Other':$object->get('Attachment Subject Type')),
 				'formatted_value'=>($new?_('Other'):$object->get('Subject Type')),
-				
+
 				'options'=>$options_Attachment_Subject_Type,
 				'label'=>ucfirst($object->get_field_label('Attachment Subject Type')),
 				'required'=>true,
@@ -52,7 +47,6 @@ $object_fields=array(
 				'type'=>'value'
 			),
 			array(
-
 				'id'=>'Attachment_Caption',
 				'edit'=>'string',
 				'value'=>$object->get('Attachment Caption'),
@@ -72,19 +66,20 @@ $object_fields=array(
 	array(
 		'label'=>_('Restrictions'),
 		'show_title'=>true,
-		'class'=>'edit_fields',
+		'class'=>'edit_fields hide',
 		'fields'=>array(
 
 			array(
+				'render'=>($options['type']=='supplier'?false:true),
 
 				'id'=>'Attachment_Public',
 				'edit'=>'option',
 				'value'=>'No',
 				'formatted_value'=>_('No'),
-				
+
 				'value'=>($new?'No':$object->get('Attachment Public')),
 				'formatted_value'=>($new?_('No'):$object->get('Public')),
-				
+
 				'options'=>$options_yn,
 				'label'=>ucfirst($object->get_field_label('Attachment Public')),
 				'required'=>true,
@@ -125,15 +120,15 @@ if ($new) {
 		)
 	);
 
-}else{
-$operations=array(
+}else {
+	$operations=array(
 		'label'=>_('Operations'),
 		'show_title'=>true,
 		'class'=>'operations',
 		'fields'=>array(
 
 			array(
-				'id'=>'delete_employee',
+				'id'=>'delete_attachment',
 				'class'=>'operation',
 				'value'=>'',
 				'label'=>'<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{  "attachment_bridge_key":"'.$object->get('Attachment Bridge Key').'"}\' onClick="delete_attachment(this)" class="delete_object disabled">'._("Delete attachment").' <i class="fa fa-trash new_button link"></i></span>',

@@ -14,8 +14,11 @@ switch ($parameters['parent']) {
 case 'employee':
 	$where=sprintf(" where `Subject`='Staff' and `Subject Key`=%d ", $parameters['parent_key']);
 	break;
+case 'supplier':
+	$where=sprintf(" where `Subject`='Supplier' and `Subject Key`=%d ", $parameters['parent_key']);
+	break;	
 default:
-	$where=" where  false ";
+	exit('error parent not set up '.$parameters['parent']);
 	break;
 }
 

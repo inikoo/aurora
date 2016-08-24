@@ -30,7 +30,7 @@ if ($result=$db->query($sql)) {
 	if ($row = $result->fetch()) {
 
 
-		if (authorize_file_view($user, $row['Attachment Public'], $row['Subject'], $row['Subject Key'])) {
+		if (authorize_file_view($db,$user, $row['Attachment Public'], $row['Subject'], $row['Subject Key'])) {
 
 			header('Content-Type: '.$row['Attachment MIME Type']);
 			header('Content-Disposition: inline; filename='.$row['Attachment File Original Name']);
