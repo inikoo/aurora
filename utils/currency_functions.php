@@ -51,7 +51,7 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
 
 	if ($reload) {
 		$url = "http://quote.yahoo.com/d/quotes.csv?s=". $currency_from . $currency_to . "=X". "&f=l1&e=.csv";
-		print "$url\n";
+		
 		$handle = fopen($url, "r");
 		$contents = floatval(fread($handle, 2000));
 		fclose($handle);
