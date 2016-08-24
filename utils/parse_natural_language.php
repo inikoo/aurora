@@ -70,7 +70,7 @@ function parse_dimensions($dimension) {
 			//print json_encode(array('l'=>$l, 'w'=>$w, 'h'=>$h, 'units'=>$units, 'vol'=>$vol, 'type'=>$type));
 			//   exit;
 		}else {
-			exit("shit");
+			//exit("shit");
 			return '';
 		}
 

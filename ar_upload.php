@@ -518,7 +518,7 @@ function upload_objects($account, $db, $user, $editor, $data, $smarty) {
 				$row_data=array();
 				$empty=true;
 				for ($col = 0; $col <= $highestColumnIndex; ++$col) {
-					$value=$objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
+					$value=$objWorksheet->getCellByColumnAndRow($col, $row)->getCalculatedValue();
 					$row_data[$col] = $value;
 					if ($value!='') {
 						$empty=false;

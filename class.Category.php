@@ -72,6 +72,9 @@ class Category extends DB_Table{
 
 			break;
 		}
+
+
+
 		if ($this->data = $this->db->query($sql)->fetch()) {
 			$this->id=$this->data['Category Key'];
 
@@ -255,11 +258,21 @@ class Category extends DB_Table{
 		// $data=array('`Category Code`'=>$data['Category Code']);
 
 		$nodes=new Nodes('`Category Dimension`');
+		
+		
+		
 		$nodes->add_new($data['Category Parent Key'] , $data);
+		
+		
+		$node_id=$nodes->id;
+		
+		unset($nodes);
+		
+		
+	
+		if ($node_id) {
 
-		if ($nodes->id) {
-
-			$this->get_data('id', $nodes->id);
+			$this->get_data('id', $node_id);
 			//print_r($this->data);
 
 

@@ -289,7 +289,6 @@ $supplier_part_fields[]=array(
 
 		array(
 			'id'=>'Supplier_Part_Unit_Extra_Cost',
-			'class'=>'',
 			'edit'=>'amount_percentage',
 			'locked'=>($part_scope?1:0),
 			'value'=>htmlspecialchars($object->get('Supplier Part Unit Extra Cost')),

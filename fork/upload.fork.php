@@ -172,7 +172,6 @@ function fork_upload($job) {
 
 
 
-
 			$record_data=json_decode($row['data'], true);
 
 			$fields_data='';
@@ -237,6 +236,9 @@ function fork_upload($job) {
 
 				'fields_data'=>$fields_data
 			);
+
+
+print_r($_data);
 
 			$object_key=new_object($account, $db, $user, $editor, $_data);
 
@@ -450,7 +452,7 @@ function new_object($account, $db, $user, $editor, $data) {
 
 		);
 
-		print $sql;
+		
 
 		$db->exec($sql);
 		return false;
