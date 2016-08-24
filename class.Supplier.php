@@ -511,7 +511,7 @@ class Supplier extends SubjectSupplier {
 		include_once 'utils/date_functions.php';
 
 
-		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb)=calculate_interval_dates($this->db,$interval);
+		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb)=calculate_interval_dates($this->db, $interval);
 		setlocale(LC_ALL, 'en_GB');
 
 
@@ -1080,7 +1080,7 @@ class Supplier extends SubjectSupplier {
 					$supplier_part->get_data('id', $supplier_part->id);
 
 					$supplier_part->update_historic_object();
-
+					$part->update_cost();
 				}else {
 
 					$this->error=true;

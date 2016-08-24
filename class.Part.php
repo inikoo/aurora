@@ -263,7 +263,7 @@ class Part extends Asset{
 			$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
 
 			$this->update_main_state();
-			$this->update_cost();
+			
 
 			if ($this->get('Part Family Category Key')) {
 				$family=new Category($this->get('Part Family Category Key'));
@@ -866,7 +866,6 @@ class Part extends Asset{
 
 
 
-
 		foreach ($supplier_parts as $supplier_part) {
 
 
@@ -913,7 +912,6 @@ class Part extends Asset{
 			$cost=$cost*$this->data['Part Units Per Package'];
 		}
 
-//print "cost $cost\n";
 
 		$this->update_field('Part Cost', $cost, 'no_history');
 
