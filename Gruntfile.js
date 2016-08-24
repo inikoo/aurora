@@ -259,10 +259,10 @@ module.exports = function(grunt) {
                      exclude:['keyring','external_libs','server_files']
                 }
             },
-             fork_external_libs: {
+            fork_external_libs: {
                 options: {
                  local_path: 'build/fork/external_libs',
-                 deploy_path: '/external_libs',
+                 deploy_path: '/home/fork/external_libs',
                     host: '<%= secret.fork.host %>',
                     username: '<%= secret.fork.username %>',
                     password: '<%= secret.fork.password %>',
@@ -311,6 +311,7 @@ module.exports = function(grunt) {
     grunt.registerTask('app', ['clean:app', 'imagemin', 'sass', 'concat', 'uglify', 'cssmin', 'copy:app']);
     grunt.registerTask('fork', ['clean:fork', 'copy:fork_stones', 'copy:fork']);
     grunt.registerTask('qfork', ['copy:fork']);
-    grunt.registerTask('deploy_fork', ['clean:fork', 'copy:fork_stones', 'copy:fork', 'ssh_deploy:environment']);
+    grunt.registerTask('deploy_fork', ['clean:fork', 'copy:fork_stones', 'copy:fork', 'ssh_deploy:fork_external_libs','ssh_deploy:fork']);
+    grunt.registerTask('deploy_qfork', ['copy:fork','ssh_deploy:fork']);
 
 };
