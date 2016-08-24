@@ -263,7 +263,7 @@ class Part extends Asset{
 			$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
 
 			$this->update_main_state();
-
+			$this->update_cost();
 
 			if ($this->get('Part Family Category Key')) {
 				$family=new Category($this->get('Part Family Category Key'));
@@ -712,6 +712,8 @@ class Part extends Asset{
 		case 'Part Package Dimensions':
 		case 'Part Unit Dimensions':
 
+			include_once 'utils/parse_natural_language.php';
+
 			$tag=preg_replace('/ Dimensions$/', '', $field);
 
 			if ($value=='') {
@@ -854,7 +856,7 @@ class Part extends Asset{
 
 	function update_cost() {
 
-		global $account;
+		$account=new Account($this->db);
 
 		$supplier_parts=$this->get_supplier_parts('objects');
 
@@ -911,7 +913,9 @@ class Part extends Asset{
 			$cost=$cost*$this->data['Part Units Per Package'];
 		}
 
-		$this->update_field('Part Cost',$cost,'no_history');
+print "cost $cost\n";
+
+		$this->update_field('Part Cost', $cost, 'no_history');
 
 
 	}
@@ -2568,7 +2572,7 @@ class Part extends Asset{
 	function update_sales_from_invoices($interval) {
 
 		include_once 'utils/date_functions.php';
-		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb)=calculate_interval_dates($this->db,$interval);
+		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb)=calculate_interval_dates($this->db, $interval);
 		//print "$db_interval,$from_date,$to_date,$from_date_1yb,$to_date_1yb  \n";
 
 		setlocale(LC_ALL, 'en_GB');

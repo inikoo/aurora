@@ -72,38 +72,6 @@ class nodes {
 		global $db;
 		$this->db=$db;
 
-		//  --> use direct fields names from your mysql table into the following template variables.
-		//  --> just put the field name inside square brackets!
-		//  --> [fieldname] will be replaced with the correct value...
-		//////////////////////////////////////////////////////////////
-
-		// HtmlTree is used with $this->html_output() method to print a nested list
-
-		$this->HtmlTree = array(
-			"OpenTag"   => '<ul>' , // this is the overall tag opener , example <ul>
-			"FirstLevelOpenTag"   => '<li><a href="?id=[id]">[id]</a><ul>', // this is printed for the ROOT parent ( node has children/sub-nodes) ie : <ul><li><h2>[name]</h2>
-			"FirstLevelOpenTagSelected" => '<li><a href="?id=[id]"><b>[id]</b></a><ul>', // this is printed for the ROOT parent ( node has children/sub-nodes) ie : <ul><li><h2>[name]</h2>
-			"LevelOpenTag"     => '<li><a href="?id=[id]">[id]</a><ul>', // this is printed for the parent ( node has children/sub-nodes) ie : <ul><li><h2>[name]</h2>
-			"LevelOpenTagSelected"   => '<li><a href="?id=[id]"><b>[id]</b></a><ul>' , // // this is printed for the parent ( node has children/sub-nodes) .. WHEN SELECTED! ie : <ul><li><h2><STRONG>[name]cp </STRONG></h2>
-			"Node"        => '<li><a href="?id=[id]">[id]</a></li>', // node item tag ..
-			"NodeSelected"      => '<li><a href="?id=[id]"><b>[id]</b></a></li>' , // node item tag .. when selected !
-			"FirstLevelCloseTag"    => '</ul></li>', // ROOT parent tag closer. ( when getting out of sub-level)
-			"FirstLevelCloseTagSelected"=> '</ul></li>', // ROOT parent tag closer, while selected.
-			"LevelCloseTag"     => '</ul></li>', // parent tag closer. ( when getting out of sub-level)
-			"LevelCloseTagSelected"  => '</ul></li>', // parent tag closer, while selected.
-			"CloseTag"   => '</ul>' , // this is the overall tag opener , example <ul>
-		);
-
-
-		// HtmlTree is used with $this->html_row_output() method to print a You>Are>Here like menu
-		$this->HtmlRow = array(
-			"OpenTag"  => '<div>' , // this is the overall tag opener , example <ul>
-			"Seprator"   => ' &gt; ', // seprator between the items. example " &gt; " which means " > "
-			"NodeUnselected"   => '<a href="?id=[id]">[id]</a>', // item tag ..
-			"NodeSelected"    => '<a href="?id=[id]"><strong>[id]</strong></a>' , // item tag .. when selected !
-			"CloseTag"  => '</div>' , // this is the overall tag opener , example <ul>
-		);
-
 
 		if ($this->sql_condition != "") $this->sql_condition_where = " WHERE ".$this->sql_condition;
 	}
@@ -808,33 +776,37 @@ class nodes {
 		else
 			$parentPosition=0;
 
+
+
 		// ok lets count the nodes in the same level;
 		$sql = "SELECT *,".$this->table_fields['id']." as id,".$this->table_fields['ord']." as ord
                FROM ".$this->table_name."
                WHERE ".$this->table_fields['position']." RLIKE '^".$parentPosition."(([0-9])+\>){1}$' ".$this->sql_condition." order by ".$this->table_fields['ord']."  ASC";
-		//print $sql;
-//		$res   = mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>", E_USER_ERROR));
 
-        $res = $this->db->query($sql);
-$max = $res->fetchColumn();
+		$i=1;
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $node) {
 
-	//	$max      = mysql_num_rows($res); // total;
-		// now we got an ordered list of the nodes inside level .. it should be 1 , 2, 3 ... $max , what if something wasn't there ? lets fix that.
-		for ($i = 1; $i <= $max ; $i++) {
-			$node = mysql_fetch_array($res);
+				if ($i != $node['ord']) {
 
-			if (!$node) break;
-			if ($i != $node['ord']) {
-
-				$sql2 = "UPDATE ".$this->table_name."
+					$sql2 = "UPDATE ".$this->table_name."
                         SET ".$this->table_fields['ord']." = '".$i."'
                         WHERE ".$this->table_fields['id']." = '".$node['id']."' ".$this->sql_condition." LIMIT 1";
-				$this->db->exec($sql);
-				
-				//$res2   = mysql_query($sql2) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql2."<br><br><storng><u>Info:</u></strong><br>", E_USER_ERROR));
+					$this->db->exec($sql2);
 
+				}
+
+				$i++;
 			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
+
+
+
 
 	}
 
