@@ -913,7 +913,7 @@ class Part extends Asset{
 			$cost=$cost*$this->data['Part Units Per Package'];
 		}
 
-print "cost $cost\n";
+//print "cost $cost\n";
 
 		$this->update_field('Part Cost', $cost, 'no_history');
 
