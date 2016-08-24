@@ -15,7 +15,7 @@ require_once 'common.php';
 
 
 // hide notices
-@ini_set('error_reporting', E_ALL & ~ E_NOTICE);
+//@ini_set('error_reporting', E_ALL & ~ E_NOTICE);
 
 //- turn off compression on the server
 @apache_setenv('no-gzip', 1);
@@ -140,8 +140,6 @@ if (is_file($file_path)) {
 			header("Content-Length: $file_size");
 
 		header('Accept-Ranges: bytes');
-
-
 		$sql=sprintf('insert into  `Download Attempt Dimension` (`Download Attempt Download Key`,`Download Attempt User Key`,`Download Attempt Date`)  values (%d,%d,%s)',
 			$download_id,
 			$user->id,
