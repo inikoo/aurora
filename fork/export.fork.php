@@ -13,10 +13,13 @@
 
 function fork_export($job) {
 
- 
+
 
 	if (!$_data=get_fork_data($job))
 		return;
+
+
+	//print_r($_data);
 
 	$db=$_data['db'];
 	$fork_data=$_data['fork_data'];
@@ -26,8 +29,10 @@ function fork_export($job) {
 	$output_type=$fork_data['output'];
 	$sql_count=$fork_data['sql_count'];
 	$sql_data=$fork_data['sql_data'];
+	$user_key=$fork_data['user_key'];
+	$download_type=$fork_data['table'];
 
-	$creator='Inikoo';
+	$creator='aurora.systems';
 	$title=_('Report');
 	$subject=_('Report');
 	$description='';
@@ -121,16 +126,16 @@ function fork_export($job) {
 		exit;
 	}
 
-	
 
 
+	/*
 	if (isset($_data['fork_data']['download_path'])) {
 		$download_path=$_data['fork_data']['download_path']."_$inikoo_account_code/";
 	}else {
 		$download_path="downloads_$inikoo_account_code/";
 	}
-
-
+*/
+	$download_path='tmp/';
 
 	switch ($output_type) {
 
@@ -183,9 +188,24 @@ function fork_export($job) {
 
 	}
 
+
+	$sql=sprintf("insert into `Download Dimension` (`Download Date`,`Download Type`,`Download Filename`,`Download User Key`,`Download Fork Key`,`Download Data`) values (%s,%s,%s,%d,%d,%s) ",
+		prepare_mysql(gmdate('Y-m-d H:i:s')),
+		prepare_mysql($download_type),
+		prepare_mysql($output_filename.'.'.$output_type),
+		$user_key,
+		$fork_key,
+		prepare_mysql(file_get_contents($output_file))
+	);
+
+	$db->exec($sql);
+
+	$download_id=$db->lastInsertId();
+
+
 	$sql=sprintf("update `Fork Dimension` set `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%s where `Fork Key`=%d ",
 		($row_index-2),
-		prepare_mysql('downloads/'.$output_filename.'.'.$output_type),
+		prepare_mysql($download_id),
 		$fork_key
 	);
 

@@ -11,6 +11,7 @@
  Version 3.0
 */
 
+require_once 'common.php';
 
 
 // hide notices
@@ -25,13 +26,44 @@ if (!isset($_REQUEST['file']) || empty($_REQUEST['file'])) {
 	exit;
 }
 
+
+$download_id=$_REQUEST['file'];
+
+
+
+
+$sql=sprintf('select `Download Filename`,`Download Data` from `Download Dimension` where `Download Key`=%d',
+	$download_id
+);
+
+if ($result=$db->query($sql)) {
+	if ($row = $result->fetch()) {
+		$file_path  = $row['Download Filename'];
+		$blob_data= $row['Download Data'];
+	}else {
+		header("HTTP/1.0 404 Not Found");
+		exit;
+	}
+}else {
+	print_r($error_info=$db->errorInfo());
+	exit;
+}
+
+
+
 // sanitize the file request, keep just the name and extension
 // also, replaces the file location with a preset one ('./myfiles/' in this example)
-$file_path  = $_REQUEST['file'];
+
 $path_parts = pathinfo($file_path);
 $file_name  = $path_parts['basename'];
 $file_ext   = $path_parts['extension'];
-$file_path  = './downloads/' . $file_name;
+$file_path  = 'server_files/tmp/' . $file_name;
+
+
+	
+file_put_contents( 'server_files/tmp/' . $file_name, $blob_data);
+
+
 
 // allow a file to be streamed instead of sent as an attachment
 $is_attachment = isset($_REQUEST['stream']) ? false : true;
@@ -42,8 +74,8 @@ if (is_file($file_path)) {
 	$file = @fopen($file_path, "rb");
 	if ($file) {
 		// set the headers, prevent caching
-		
-		
+
+
 		header("Pragma: public");
 		header("Expires: -1");
 		header("Cache-Control: public, must-revalidate, post-check=0, pre-check=0");
@@ -57,7 +89,7 @@ if (is_file($file_path)) {
 
 		// set the mime type based on extension, add yours if needed.
 		$ctype_default = "application/octet-stream";
-		
+
 		$content_types = array(
 			"exe" => "application/octet-stream",
 			"zip" => "application/zip",
@@ -78,6 +110,7 @@ if (is_file($file_path)) {
 			}
 			else {
 				$range = '';
+				unlink( 'server_files/tmp/' . $file_name);
 				header('HTTP/1.1 416 Requested Range Not Satisfiable');
 				exit;
 			}
@@ -94,6 +127,9 @@ if (is_file($file_path)) {
 		$seek_end   = (empty($seek_end)) ? ($file_size - 1) : min(abs(intval($seek_end)), ($file_size - 1));
 		$seek_start = (empty($seek_start) || $seek_end < abs(intval($seek_start))) ? 0 : max(abs(intval($seek_start)), 0);
 
+
+
+
 		//Only send partial content header if downloading a piece of the file (IE workaround)
 		if ($seek_start > 0 || $seek_end < ($file_size - 1)) {
 			header('HTTP/1.1 206 Partial Content');
@@ -104,6 +140,24 @@ if (is_file($file_path)) {
 			header("Content-Length: $file_size");
 
 		header('Accept-Ranges: bytes');
+
+
+		$sql=sprintf('insert into  `Download Attempt Dimension` (`Download Attempt Download Key`,`Download Attempt User Key`,`Download Attempt Date`)  values (%d,%d,%s)',
+			$download_id,
+			$user->id,
+			prepare_mysql(gmdate('Y-m-d H:i:s'))
+
+		);
+		$db->exec($sql);
+
+		$sql=sprintf('update `Download Dimension` set `Download Attempts`=`Download Attempts`+1 ,`Download Attempt Last Date`=%s where `Download Key`=%d',
+			prepare_mysql(gmdate('Y-m-d H:i:s')),
+			$download_id
+		);
+
+		$db->exec($sql);
+
+
 
 		set_time_limit(0);
 		fseek($file, $seek_start);
@@ -121,19 +175,22 @@ if (is_file($file_path)) {
 		// file save was a success
 		@fclose($file);
 
+		unlink( 'server_files/tmp/' . $file_name);
 
-		
 		exit;
 	}
 	else {
 		// file couldn't be opened
+		unlink( 'server_files/tmp/' . $file_name);
 		header("HTTP/1.0 500 Internal Server Error");
+
 		exit;
 	}
 }
 else {
 	// file does not exist
 	header("HTTP/1.0 404 Not Found");
+	unlink( 'server_files/tmp/' . $file_name);
 	exit;
 }
 
