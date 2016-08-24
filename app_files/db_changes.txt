@@ -414,7 +414,7 @@ Only for bali dw:
 
 
 ALTER TABLE `Supplier Part Dimension` ADD `Supplier Part Unit Extra Cost` FLOAT NOT NULL DEFAULT '0' AFTER `Supplier Part Unit Cost`;
-
+ALTER TABLE `Attachment Bridge` CHANGE `Subject` `Subject` ENUM('Staff','Customer Communications','Customer History Attachment','Product History Attachment','Part History Attachment','Part MSDS','Product MSDS','Supplier Product MSDS','Product Info Sheet','Purchase Order History Attachment','Purchase Order','Supplier Delivery Note History Attachment','Supplier Delivery Note','Supplier Invoice History Attachment','Supplier Invoice','Order Note History Attachment','Delivery Note History Attachment','Invoice History Attachment','Supplier') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
 
 
 migrate_products.oneoff.php 

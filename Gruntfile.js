@@ -182,7 +182,13 @@ module.exports = function(grunt) {
             },
 
             fork: {
-                files: [{
+                files: [
+                 {
+                    expand: true,
+                     cwd: 'fork/',
+                    src: ['tmp/*.txt'],
+                    dest: 'build/fork/'
+                },{
                     expand: true,
                     src: ['class.*.php'],
                     dest: 'build/fork/'
