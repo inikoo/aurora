@@ -38,10 +38,26 @@ function get_object_fields($object, $db, $user, $smarty, $options=false) {
 
 		$object_fields=array();
 		if ($options['type']=='employee') {
-			include 'fields/employee.attachment.fld.php';
+
+			$options_Attachment_Subject_Type=array(
+				'CV'=>_('Curriculum vitae'),
+				'Contract'=>_('Employment contract'),
+				'Other'=>_('Other'),
+
+			);
+
 		}if ($options['type']=='supplier') {
-			include 'fields/employee.supplier.fld.php';
+			$options_Attachment_Subject_Type=array(
+				'Invoice'=>_('Invoice'),
+				'Purchase order'=>_('Purchase order'),
+				'Catalogue'=>_('Catalogue'),
+				'Other'=>_('Other'),
+
+			);
+
 		}
+
+		include 'fields/attachment.fld.php';
 		return $object_fields;
 		break;
 

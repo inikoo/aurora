@@ -26,7 +26,7 @@ else
 
 
 $attachement_not_found_image='art/error_404.png';
-$no_preview_image='art/error_404.png';
+$no_preview_image='art/attachment_no_preview.png';
 $forbidden_image='art/error_403.jpg';
 
 

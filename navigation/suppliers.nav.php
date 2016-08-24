@@ -2246,5 +2246,90 @@ function get_settings_navigation($data, $smarty, $user, $db, $account) {
 
 }
 
+function get_new_supplier_attachment_navigation($data, $smarty, $user, $db) {
+
+
+
+
+	$left_buttons=array();
+	$right_buttons=array();
+
+
+	$sections=get_sections('suppliers', '');
+
+	$_section='suppliers';
+	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
+
+	$supplier=$data['_parent'];
+
+	$up_button=array('icon'=>'arrow-up', 'title'=>sprintf(_('Supplier: %s'), $supplier->get('Code')), 'reference'=>'supplier/'.$data['parent_key']);
+
+
+	$left_buttons[]=$up_button;
+
+
+	$title= '<span>'.sprintf(_('New attachment for %s'), '<span onClick="change_view(\'supplier/'.$supplier->id.'\')" class="button id">'.$supplier->get('Name').'</span>').'</span>';
+
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>_('Search suppliers'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+
+	$html=$smarty->fetch('navigation.tpl');
+
+	return $html;
+
+}
+
+function get_supplier_attachment_navigation($data, $smarty, $user, $db) {
+
+
+
+
+	$left_buttons=array();
+	$right_buttons=array();
+
+
+	$sections=get_sections('suppliers', '');
+
+	$_section='suppliers';
+	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
+
+		$supplier=$data['_parent'];
+
+
+	$up_button=array('icon'=>'arrow-up', 'title'=>sprintf(_('Supplier: %s'), $supplier->get('Code')), 'reference'=>'supplier/'.$data['parent_key']);
+
+	$right_buttons[]=array('icon'=>'download', 'title'=>_('Download'), 'id'=>'download_button' );
+	$left_buttons[]=$up_button;
+
+	$title= _('Attachment').' <span class="id Attachment_Caption">'.$data['_object']->get('Caption').'</span>';
+
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>_('Search suppliers'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+
+	$html=$smarty->fetch('navigation.tpl');
+
+	return $html;
+
+}
 
 ?>

@@ -802,6 +802,15 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'caption'
 	),
+	
+	'supplier.attachment.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>20,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'note'
+	),
 	'supplier_part.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',

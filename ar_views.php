@@ -1128,6 +1128,12 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case ('agent.order.item'):
 			return get_order_item_navigation($data, $smarty, $user, $db, $account);
 			break;
+		case ('supplier.attachment'):
+			return get_supplier_attachment_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('supplier.attachment.new'):
+			return get_new_supplier_attachment_navigation($data, $smarty, $user, $db, $account);
+			break;
 		}
 
 		break;
@@ -1256,6 +1262,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case ('timesheets'):
 			return get_timesheets_navigation($data, $smarty, $user, $db, $account);
 			break;
+		case ('employee.attachment'):
+			return get_employee_attachment_navigation($data, $smarty, $user, $db, $account);
+			break;
 		case ('employee.attachment.new'):
 			return get_new_employee_attachment_navigation($data, $smarty, $user, $db, $account);
 			break;
@@ -1265,9 +1274,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case ('contractor.user.new'):
 			return get_new_contractor_user_navigation($data, $smarty, $user, $db, $account);
 			break;
-		case ('employee.attachment'):
-			return get_employee_attachment_navigation($data, $smarty, $user, $db, $account);
-			break;
+
 		case ('upload'):
 			return get_upload_navigation($data, $smarty, $user, $db, $account);
 			break;
@@ -1449,7 +1456,12 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case ('supplier_part'):
 			return get_supplier_part_navigation($data, $smarty, $user, $db, $account);
 			break;
-
+		case ('supplier.attachment'):
+			return get_supplier_attachment_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('supplier.attachment.new'):
+			return get_new_supplier_attachment_navigation($data, $smarty, $user, $db, $account);
+			break;
 		}
 	case 'agent_client_orders':
 		require_once 'navigation/agent.nav.php';
@@ -1460,7 +1472,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case ('client_order'):
 			return get_agent_client_order_navigation($data, $smarty, $user, $db, $account);
 			break;
-		
+
 
 		}
 	case 'agent_client_deliveries':
@@ -1472,9 +1484,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case ('agent_delivery'):
 			return get_agent_client_delivery_navigation($data, $smarty, $user, $db, $account);
 			break;
-		
 
-		}		
+
+		}
 		break;
 	default:
 		return 'Module not found';
@@ -1910,6 +1922,16 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 			}
 
 			$branch[]=array('label'=>_('New supplier'), 'icon'=>'ship', 'reference'=>'');
+
+		}elseif ($state['section']=='supplier.attachment.new') {
+			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
+			$branch[]=array('label'=>'<span class="id Supplier_Code">'.$state['_parent']->get('Code').'</span>', 'icon'=>'ship', 'reference'=>'supplier/'.$state['parent_key']);
+			$branch[]=array('label'=>_('Upload attachment'), 'icon'=>'paperclip', 'reference'=>'');
+
+		}elseif ($state['section']=='supplier.attachment') {
+			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
+			$branch[]=array('label'=>'<span class="id Supplier_Code">'.$state['_parent']->get('Code').'</span>', 'icon'=>'ship', 'reference'=>'supplier/'.$state['parent_key']);
+			$branch[]=array('label'=>'<span class="id Attachment_Caption">'.$state['_object']->get('Caption').'</span>', 'icon'=>'paperclip', 'reference'=>'');
 
 		}elseif ($state['section']=='order' or $state['section']=='deleted_order') {
 
@@ -3163,7 +3185,21 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
 			$branch[]=array('label'=>'<span class="id Supplier_Code">'.$state['_object']->get('Code').'</span> <span class="Supplier_Name italic">'.$state['_object']->get('Name').'</span>', 'icon'=>'ship', 'reference'=>'supplier/'.$state['key']);
 
-		}elseif ($state['section']=='supplier.new') {
+		}elseif ($state['section']=='supplier.attachment.new') {
+			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
+			$branch[]=array('label'=>'<span class="id Supplier_Code">'.$state['_parent']->get('Code').'</span>', 'icon'=>'ship', 'reference'=>'supplier/'.$state['parent_key']);
+			$branch[]=array('label'=>_('Upload attachment'), 'icon'=>'paperclip', 'reference'=>'');
+
+		}elseif ($state['section']=='supplier.attachment') {
+			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
+			$branch[]=array('label'=>'<span class="id Supplier_Code">'.$state['_parent']->get('Code').'</span>', 'icon'=>'ship', 'reference'=>'supplier/'.$state['parent_key']);
+			$branch[]=array('label'=>'<span class="id Attachment_Caption">'.$state['_object']->get('Caption').'</span>', 'icon'=>'paperclip', 'reference'=>'');
+
+		}
+
+
+
+		elseif ($state['section']=='supplier.new') {
 
 			if ($state['parent']=='agent') {
 				$branch[]=array('label'=>_('Agents'), 'icon'=>'', 'reference'=>'agents');

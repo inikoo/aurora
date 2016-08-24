@@ -1094,6 +1094,7 @@ $modules=array(
 					'supplier.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
 					'supplier.users'=>array('label'=>_('System users'), 'icon'=>'user', 'class'=>'right icon_only'),
 
+					'supplier.attachments'=>array('label'=>_('Attachments'), 'icon'=>'paperclip', 'class'=>'right icon_only'),
 
 				)
 			),
@@ -1104,7 +1105,21 @@ $modules=array(
 				)
 
 			),
+'supplier.attachment.new'=>array('type'=>'new_object',
+				'tabs'=>array(
+					'supplier.attachment.new'=>array('label'=>_('new attachment')),
 
+				)
+
+			),
+			'supplier.attachment'=>array('type'=>'object',
+				'tabs'=>array(
+					'supplier.attachment.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+					'supplier.attachment.history'=>array('label'=>_('History'), 'icon'=>'clock-o'),
+
+				)
+
+			),
 			'deleted_supplier'=>array(
 				'type'=>'object',
 				'tabs'=>array(
