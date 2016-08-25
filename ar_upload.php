@@ -49,6 +49,17 @@ case 'upload_objects':
 
 	upload_objects($account, $db, $user, $editor, $data, $smarty);
 	break;
+case 'edit_objects':
+
+	$data=prepare_values($_REQUEST, array(
+			'parent'=>array('type'=>'string'),
+			'parent_key'=>array('type'=>'numeric'),
+			'objects'=>array('type'=>'string'),
+
+		));
+
+	edit_objects($account, $db, $user, $editor, $data, $smarty);
+	break;
 
 case 'upload_attachment':
 
@@ -174,7 +185,7 @@ function upload_attachment($account, $db, $user, $editor, $data, $smarty) {
 		case 'Attachment':
 
 			$object=$parent->add_attachment($data['fields_data']);
-                
+
 			switch ($parent->get_object_name()) {
 			case 'Staff':
 				$parent_reference='employee';
@@ -452,7 +463,7 @@ function upload_objects($account, $db, $user, $editor, $data, $smarty) {
 		$tmp_name='up_'.microtime(true).'_'.$user->id.'_'.md5_file($original_tmp_name).'.'.pathinfo($name, PATHINFO_EXTENSION);
 		$tmp_path='server_files/uploads/';
 
-	//	rename($original_tmp_name, $tmp_path.$tmp_name);
+		// rename($original_tmp_name, $tmp_path.$tmp_name);
 
 
 
@@ -483,11 +494,12 @@ function upload_objects($account, $db, $user, $editor, $data, $smarty) {
 	if ($number_files_uploaded) {
 		$upload_data=array(
 			'editor'=>$editor,
+			'Upload Type'=>'NewObjects',
 			'Upload Object'=>$data['object'],
 			'Upload Parent'=>$data['parent'],
 			'Upload Parent Key'=>$data['parent_key'],
 			'Upload User Key'=>$user->id,
-			'Upload Metadata'=>json_encode(array('uploaded_files'=>$number_files_uploaded, 'files_with_errors'=>count($files_with_errors) , 'files_data'=>$upload_files_data  )  )
+			'Upload Metadata'=>json_encode(array('uploaded_files'=>$number_files_uploaded, 'files_with_errors'=>count($files_with_errors) , 'files_data'=>$upload_files_data)  )
 
 		);
 
@@ -497,56 +509,60 @@ function upload_objects($account, $db, $user, $editor, $data, $smarty) {
 		$number_records=0;
 		foreach ($upload_files_data as $upload_file_data) {
 
-			$upload_file_key=create_upload_file($db, $upload->id, $upload_file_data);
+			if ($file_index==0) {
 
-//print_r($upload_file_data);
+				$upload_file_key=create_upload_file($db, $upload->id, $upload_file_data);
 
-			$inputFileType = PHPExcel_IOFactory::identify($upload_file_data['Upload File Filename']);
-			$objReader = PHPExcel_IOFactory::createReader($inputFileType);
-			$objReader->setReadDataOnly(true);
+				//print_r($upload_file_data);
 
-			$objPHPExcel = @$objReader->load($upload_file_data['Upload File Filename']);
+				$inputFileType = PHPExcel_IOFactory::identify($upload_file_data['Upload File Filename']);
+				$objReader = PHPExcel_IOFactory::createReader($inputFileType);
+				$objReader->setReadDataOnly(true);
+
+				$objPHPExcel = @$objReader->load($upload_file_data['Upload File Filename']);
 
 
-			$objWorksheet = $objPHPExcel->getActiveSheet();
+				$objWorksheet = $objPHPExcel->getActiveSheet();
 
-			$highestRow = $objWorksheet->getHighestRow();
-			$highestColumn = $objWorksheet->getHighestColumn();
-			$highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
+				$highestRow = $objWorksheet->getHighestRow();
+				$highestColumn = $objWorksheet->getHighestColumn();
+				$highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
 
-			for ($row = 2; $row <= $highestRow; ++$row) {
-				$row_data=array();
-				$empty=true;
-				for ($col = 0; $col <= $highestColumnIndex; ++$col) {
-					$value=$objWorksheet->getCellByColumnAndRow($col, $row)->getCalculatedValue();
-					$row_data[$col] = $value;
-					if ($value!='') {
-						$empty=false;
+
+
+				for ($row = 2; $row <= $highestRow; ++$row) {
+					$row_data=array();
+					$empty=true;
+					for ($col = 0; $col <= $highestColumnIndex; ++$col) {
+						$value=$objWorksheet->getCellByColumnAndRow($col, $row)->getCalculatedValue();
+						$row_data[$col] = $value;
+						if ($value!='') {
+							$empty=false;
+						}
 					}
+
+
+					if (!$empty) {
+						$sql=sprintf('insert into `Upload Record Dimension` (`Upload Record Upload Key`,`Upload Record Data`,`Upload Record Upload File Key`,`Upload Record Row Index`) value (%d,COMPRESS(%s),%d,%d)',
+							$upload->id,
+							prepare_mysql(json_encode($row_data)),
+							$upload_file_key,
+							($row)
+						);
+
+						$db->exec($sql);
+						$number_records++;
+					}
+
 				}
 
 
-				if (!$empty) {
-					$sql=sprintf('insert into `Upload Record Dimension` (`Upload Record Upload Key`,`Upload Record Data`,`Upload Record Upload File Key`,`Upload Record Row Index`) value (%d,COMPRESS(%s),%d,%d)',
-						$upload->id,
-						prepare_mysql(json_encode($row_data)),
-						$upload_file_key,
-						($row)
-					);
 
-					$db->exec($sql);
-					$number_records++;
-				}
 
+
+
+				$file_index++;
 			}
-
-
-
-
-
-
-			$file_index++;
-
 			unlink($upload_file_data['Upload File Filename']);
 
 		}
@@ -720,6 +736,275 @@ function get_data($account, $db, $user, $data, $smarty) {
 
 	}
 
+
+
+
+}
+
+
+function edit_objects($account, $db, $user, $editor, $data, $smarty) {
+	require_once 'class.Upload.php';
+
+	require_once 'external_libs/PHPExcel/Classes/PHPExcel.php';
+	require_once 'external_libs/PHPExcel/Classes/PHPExcel/IOFactory.php';
+
+	$valid_extensions=array('xls', 'xlt', 'xlm', 'xlsx', 'xlsm', 'xltx', 'xltm', 'xlsb', 'ods', 'slk', 'gnumeric', 'tsv', 'tab', 'csv');
+
+	$parent=get_object($data['parent'], $data['parent_key']);
+	$parent->editor=$editor;
+
+
+
+	if (!$parent->id) {
+		$msg= 'parent key not found';
+		$response= array('state'=>400, 'msg'=>$msg);
+		echo json_encode($response);
+		exit;
+	}
+
+
+
+	if (empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD']) && strtolower($_SERVER['REQUEST_METHOD']) == 'post') { //catch file overload error...
+		$postMax = ini_get('post_max_size'); //grab the size limits...
+		$msg= sprintf(_("File can not be attached, please note files larger than %s will result in this error!, let's us know, an we will increase the size limits"), $postMax);
+		$response= array('state'=>400, 'msg'=>$msg, 'key'=>'attach');
+		echo json_encode($response);
+		exit;
+
+	}
+
+	if (empty($_FILES) ) {
+		$msg= '_FILES array empty';
+		$response= array('state'=>400, 'msg'=>_("File can't be uploaded").", ".$msg);
+		echo json_encode($response);
+		exit;
+
+	}
+
+	$upload_files_data=array();
+	$files_with_errors=array();
+
+	foreach ($_FILES['files']['name'] as $file_key=>$name) {
+
+
+
+		$error=$_FILES['files']['error'][$file_key];
+		$size=$_FILES['files']['size'][$file_key];
+		$original_tmp_name=$_FILES['files']['tmp_name'][$file_key];
+		$type=$_FILES['files']['type'][$file_key];
+		$extension=strtolower(pathinfo($name, PATHINFO_EXTENSION));
+
+
+
+
+
+		if ($error) {
+			$msg=parse_upload_file_error_msg($error);
+
+			$files_with_errors[]=array('msg'=>$msg, 'filename'=>$name);
+			continue;
+
+		}
+
+		if ($size==0) {
+			$msg= _("This file seems that is empty, have a look and try again").'.';
+			$files_with_errors[]=array('msg'=>$msg, 'filename'=>$name);
+			continue;
+
+
+		}
+
+		if (!in_array($extension, $valid_extensions)) {
+			$msg=_('Invalid file type').' <b>'.$extension.'</b> <i>('.$type.')</i>';
+
+			$files_with_errors[]=array('msg'=>$msg, 'filename'=>$name);
+			continue;
+
+		}
+
+		$tmp_name='up_'.microtime(true).'_'.$user->id.'_'.md5_file($original_tmp_name).'.'.pathinfo($name, PATHINFO_EXTENSION);
+		$tmp_path='server_files/uploads/';
+
+		// rename($original_tmp_name, $tmp_path.$tmp_name);
+
+
+
+
+
+
+		$upload_files_data[]=array(
+			'editor'=>$editor,
+			'Upload File Checksum'=>md5_file($original_tmp_name),
+			'Upload File Name'=>$name,
+			'Upload File Size'=>filesize($original_tmp_name),
+			'Upload File Filename'=>$original_tmp_name,
+			'Upload File Type'=>$type,
+			'Upload File Metadata'=>json_encode(array('extension'=>$extension, 'type'=>$type, 'tmp_name'=>$tmp_name))
+
+		);
+
+
+
+
+
+	}
+
+	$number_files_uploaded=count($upload_files_data);
+	$fork_key=false;
+	$upload_key=false;
+
+	if ($number_files_uploaded) {
+		$upload_data=array(
+			'editor'=>$editor,
+			'Upload Type'=>'EditObjects',
+			'Upload Object'=>$data['objects'],
+			'Upload Parent'=>$data['parent'],
+			'Upload Parent Key'=>$data['parent_key'],
+			'Upload User Key'=>$user->id,
+			'Upload Metadata'=>json_encode(array('uploaded_files'=>$number_files_uploaded, 'files_with_errors'=>count($files_with_errors) , 'files_data'=>$upload_files_data  )  )
+
+		);
+
+		$upload=new Upload('create', $upload_data);
+
+		$file_index=0;
+		$number_records=0;
+		foreach ($upload_files_data as $upload_file_data) {
+
+			$upload_file_key=create_upload_file($db, $upload->id, $upload_file_data);
+
+			//print_r($upload_file_data);
+
+			$inputFileType = PHPExcel_IOFactory::identify($upload_file_data['Upload File Filename']);
+			$objReader = PHPExcel_IOFactory::createReader($inputFileType);
+			$objReader->setReadDataOnly(true);
+
+			$objPHPExcel = @$objReader->load($upload_file_data['Upload File Filename']);
+
+
+			$objWorksheet = $objPHPExcel->getActiveSheet();
+
+			$highestRow = $objWorksheet->getHighestRow();
+			$highestColumn = $objWorksheet->getHighestColumn();
+			$highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
+			$row_data=array();
+			for ($col = 0; $col <= $highestColumnIndex; ++$col) {
+
+				$value=$objWorksheet->getCellByColumnAndRow($col, 1)->getCalculatedValue();
+				$row_data[$col] = $value;
+
+			}
+			
+			$upload->update( array(
+			'Upload Metadata'=>json_encode(array('uploaded_files'=>$number_files_uploaded, 'files_with_errors'=>count($files_with_errors) , 'files_data'=>$upload_files_data ,'fields'=>$row_data )  )
+			) ,'no_history');
+			
+			
+
+
+			for ($row = 2; $row <= $highestRow; ++$row) {
+				$row_data=array();
+				$empty=true;
+				for ($col = 0; $col <= $highestColumnIndex; ++$col) {
+					$value=$objWorksheet->getCellByColumnAndRow($col, $row)->getCalculatedValue();
+					$row_data[$col] = $value;
+					if ($value!='') {
+						$empty=false;
+					}
+				}
+
+
+				if (!$empty) {
+					$sql=sprintf('insert into `Upload Record Dimension` (`Upload Record Upload Key`,`Upload Record Data`,`Upload Record Upload File Key`,`Upload Record Row Index`) value (%d,COMPRESS(%s),%d,%d)',
+						$upload->id,
+						prepare_mysql(json_encode($row_data)),
+						$upload_file_key,
+						($row)
+					);
+
+					$db->exec($sql);
+					$number_records++;
+				}
+
+			}
+
+
+
+
+
+
+			$file_index++;
+
+			unlink($upload_file_data['Upload File Filename']);
+
+		}
+
+		$upload_data=array(
+			'upload_key'=>$upload->id,
+			'user_key'=>$user->id
+		);
+
+		$upload->update(array('Upload Records'=>$number_records), 'no_history');
+
+		$upload_key=$upload->id;
+		list($fork_key, $msg)=new_fork('au_upload_edit', $upload_data, $account->get('Account Code'), $db);
+
+		$sql=sprintf('update `Fork Dimension` set `Fork Operations Total Operations`=%d where `Fork Key`=%d ',
+			$number_records,
+			$fork_key);
+		$db->exec($sql);
+
+
+	}
+
+
+
+
+
+
+
+
+	if ($number_files_uploaded==1) {
+		$msg='<i class="fa fa-spinner fa-spin"></i> '._('Processing');
+		$state=200;
+	}elseif ($number_files_uploaded>1) {
+
+		$msg='<i class="fa fa-spinner fa-spin"></i> '.sprintf(_('Processing %s files'), $number_files_uploaded);
+		$state=200;
+	}else if (count($files_with_errors)==1) {
+
+		foreach ($files_with_errors as $file_with_errors) {
+			$error_msg=$file_with_errors['msg'];
+		}
+
+		$msg='<i class="fa fa-exclamation-circle"></i> '.$error_msg;
+		$state=400;
+	}else if (count($files_with_errors)>0) {
+		$error_msg='';
+		foreach ($files_with_errors as $file_with_errors) {
+			$error_msg.=$file_with_errors['filename'].': '.$file_with_errors['msg'].', ';
+		}
+		$error_msg=preg_replace('/,$/', '', $error_msg);
+
+		$msg='<i class="fa fa-exclamation-circle"></i> '.$error_msg;
+		$state=400;
+	}else {
+		$msg='<i class="fa fa-exclamation-circle"></i> '._('No files uploaded');
+		$state=400;
+	}
+
+	$response=array(
+		'state'=>$state,
+		'msg'=>$msg,
+		'tipo'=>'upload_objects',
+		'files_with_errors'=>$files_with_errors,
+		'fork_key'=>$fork_key,
+		'upload_key'=>$upload_key
+
+
+	);
+
+	echo json_encode($response);
 
 
 

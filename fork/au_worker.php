@@ -17,7 +17,9 @@ include 'utils/general_functions.php';
 include 'utils/system_functions.php';
 
 include 'export.fork.php';
+include 'export_edit_template.fork.php';
 include 'upload.fork.php';
+include 'upload_edit.fork.php';
 
 
 //include 'ping_sitemap.fork.php';
@@ -35,6 +37,8 @@ $worker= new GearmanWorker();
 $worker->addServer('127.0.0.1');
 $worker->addFunction("au_export", "fork_export");
 $worker->addFunction("au_upload", "fork_upload");
+$worker->addFunction("au_export_edit_template", "fork_export_edit_template");
+$worker->addFunction("au_upload_edit", "fork_upload_edit");
 
 
 //$worker->addFunction("ping_sitemap", "fork_ping_sitemap");

@@ -76,7 +76,27 @@ $export_fields=array(
 	  		array('name'=>'`Timeseries Record Integer A`', 'label'=>_('Invoices'), 'checked'=>1),
 	  		array('name'=>'`Timeseries Record Integer B`', 'label'=>_('Refunds'), 'checked'=>1),
   
-	)
+	),
+	'supplier_parts'=>array(
+		array('name'=>'`Supplier Part Reference`', 'label'=>_("Supplier's SKU"), 'checked'=>1),
+		array('name'=>'`Part Reference`', 'label'=>_('Part reference'), 'checked'=>1),
+		array('name'=>'`Part Barcode Number`', 'label'=>_('Part barcode'), 'checked'=>1),
+		array('name'=>'`Part Package Description`', 'label'=>_('Outers (SKO) description'), 'checked'=>1),
+		array('name'=>'`Part Unit Description`', 'label'=>_('Unit description'), 'checked'=>1),
+		array('name'=>'`Supplier Part Packages Per Carton`', 'label'=>_('Outers (SKO) per carton'), 'checked'=>1),
+		array('name'=>'`Part Units Per Package`', 'label'=>_('Units per SKO'), 'checked'=>1),
+		array('name'=>'`Supplier Part Status`', 'label'=>_('Availability'), 'checked'=>1),
+		array('name'=>'`Supplier Part Minimum Carton Order`', 'label'=>_('Minimum order (cartons)'), 'checked'=>1),
+		array('name'=>'`Supplier Part Average Delivery Days`', 'label'=>_('Average delivery time (days)'), 'checked'=>1),
+		array('name'=>'`Supplier Part Carton CBM`', 'label'=>_('Carton CBM'), 'checked'=>1),
+		array('name'=>'`Supplier Part Unit Cost`', 'label'=>_('Unit cost'), 'checked'=>1),
+		array('name'=>'`Supplier Part Unit Extra Cost`', 'label'=>_('Unit extra costs'), 'checked'=>1),
+		array('name'=>'`Part Unit Price`', 'label'=>_('Unit recommended price'), 'checked'=>1),
+		array('name'=>'`Part Unit RRP`', 'label'=>_('Unit recommended RRP'), 'checked'=>1),
+		
+		
+		
+	),
 
 );
 

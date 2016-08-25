@@ -49,7 +49,7 @@
 	</div>
 	<div id="export_dialog_container" style="position:relative;float:right" class="  ">
 	<span class="hide" id="export_queued_msg"><i class="fa background fa-spinner fa-spin"></i> {t}Queued{/t}</span>
-	<div id="export_dialog" class="export_dialog hide">
+	<div id="export_dialog" class="export_dialog hide" style="z-index: 2">
         <table border=0 style="width:100%">
 	        <tr class="no_border"> 
                 <td class="export_progress_bar_container" >
@@ -78,7 +78,7 @@
 	   </table>
 	
       </div>
-    <div id="export_dialog_config" class="export_dialog hide" >
+    <div id="export_dialog_config" class="export_dialog hide" style="z-index: 3">
          {if isset($export_fields)}
        <table >
      
@@ -86,7 +86,7 @@
        <tr class="small_row">
        <td>{$export_field.label}</td>
        <td style="width_20" class="field_export" >
-            <i id="field_export_{$_key}"  onclick="toggle_export_field({$_key})" key="{$_key}"  class="button fa {if $export_field.checked }fa-check-square-o{else}fa-square-o{/if}"></i>
+            <i id="field_export_{$_key}"  onclick="toggle_export_field({$_key})" key="{$_key}"  class="button fa-fw fa {if $export_field.checked }fa-check-square-o{else}fa-square-o{/if}"></i>
         </td>
         </tr>
        {/foreach}

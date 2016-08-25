@@ -211,6 +211,12 @@ class Upload extends DB_Table {
 		case('Errors'):
 			return number($this->data['Upload '.$key]);
 			break;
+		case 'Metadata':
+			if ($this->data['Upload Metadata']=='')return false;
+			return json_decode($this->data['Upload Metadata'], true);
+
+
+
 		default:
 
 			if (array_key_exists($key, $this->data))

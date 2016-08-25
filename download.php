@@ -61,7 +61,7 @@ $file_ext   = $path_parts['extension'];
 $file_path  = 'server_files/tmp/' . $file_name;
 
 
-	
+
 file_put_contents( 'server_files/tmp/' . $file_name, $blob_data);
 
 
@@ -76,7 +76,7 @@ if (is_file($file_path)) {
 	if ($file) {
 		// set the headers, prevent caching
 
-
+		
 		header("Pragma: public");
 		header("Expires: -1");
 		header("Cache-Control: public, must-revalidate, post-check=0, pre-check=0");
@@ -121,7 +121,13 @@ if (is_file($file_path)) {
 		}
 
 		//figure out download piece from range (if set)
-		list($seek_start, $seek_end) = explode('-', $range, 2);
+		if ($range=='') {
+			$seek_start=''; $seek_end='';
+		}else {
+
+			list($seek_start, $seek_end) = explode('-', $range, 2);
+
+		}
 
 		//set start and end based on range (if set), else set defaults
 		//also check for invalid ranges.

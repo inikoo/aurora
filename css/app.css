@@ -578,6 +578,9 @@ input {
 .success {
   color: #26A65B; }
 
+.valid_save {
+  color: #0EBFE9; }
+
 .blue {
   color: #0099FF !important; }
 
