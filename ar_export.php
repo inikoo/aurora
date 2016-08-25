@@ -72,7 +72,7 @@ if ($_data['tipo']=='timeserie_records') {
 }
 
 
-
+$group_by='';
 include_once 'prepare_table/init.php';
 
 
@@ -98,8 +98,7 @@ $export_data=array(
 	'user_key'=>$user->id,
 	'sql_count'=>$sql_totals,
 	'sql_data'=>$sql,
-	'fetch_type'=>'simple',
-	'download_path'=>'downloads_aurora'
+	'fetch_type'=>'simple'
 );
 
 

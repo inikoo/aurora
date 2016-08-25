@@ -398,7 +398,6 @@ function change_table_element(event, item) {
 
 
 function show_export_dialog() {
-
     if ($('#export_dialog').hasClass('hide')) {
         $('#export_dialog').removeClass('hide')
         $("#export_dialog").css('left', -1 * $("#export_dialog").width());
@@ -421,8 +420,6 @@ function hide_export_dialog() {
 
 }
 
-
-
 function open_export_config() {
     if ($('#export_dialog_config').hasClass('hide')) {
         $('#export_dialog_config').removeClass('hide')
@@ -435,11 +432,6 @@ function open_export_config() {
 
 function hide_export_config_dialog() {
     $('#export_dialog_config').addClass('hide')
-
-
-
-
-
 }
 
 function toggle_export_field(key) {
@@ -525,7 +517,9 @@ function get_export_process_bar(fork_key, tag, type) {
 
                 $('#download_' + type).attr('href', '/download.php?file=' + data.result)
                 $('#export_download_' + type).removeClass('hide').attr('title', data.result_info).click(function() {
-                    $("#download_" + type)[0].click();
+                   
+                   download_exported_file(type)
+                   
                 });
                 $('#export_progress_bar_bg_' + type).addClass('hide').html('')
                 $('#export_progress_bar_' + type).css('width', '0px').removeClass('hide').attr('title', '').html('')
@@ -549,6 +543,10 @@ function get_export_process_bar(fork_key, tag, type) {
     })
 
 
+}
+
+function download_exported_file(type){
+$("#download_" + type)[0].click();
 }
 
 

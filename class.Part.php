@@ -263,7 +263,7 @@ class Part extends Asset{
 			$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
 
 			$this->update_main_state();
-			
+
 
 			if ($this->get('Part Family Category Key')) {
 				$family=new Category($this->get('Part Family Category Key'));
@@ -1306,7 +1306,7 @@ class Part extends Asset{
 
 	function get($key='', $args=false) {
 
-		global $account;
+		$account=new Account($this->db);
 
 		list($got, $result)=$this->get_asset_common($key, $args);
 		if ($got)return $result;
@@ -1317,8 +1317,7 @@ class Part extends Asset{
 
 		switch ($key) {
 
-
-
+		
 		case 'Unit Price':
 			include_once 'utils/natural_language.php';
 			$unit_price= money($this->data['Part Unit Price'], $account->get('Account Currency'));
