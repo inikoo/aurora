@@ -414,7 +414,13 @@ migrate_parts.oneoff.php
 
 Only for bali dw:
 
-
+ALTER TABLE `Supplier Part Historic Dimension` ADD `Supplier Part Historic Units Per Package` SMALLINT UNSIGNED NOT NULL AFTER `Supplier Part Historic Unit Cost`, ADD `Supplier Part Historic Packages Per Carton` SMALLINT UNSIGNED NOT NULL AFTER `Part Historic Units Per Package`, ADD `Supplier Part Historic Carton CBM` FLOAT NULL DEFAULT NULL AFTER `Supplier Part Historic Packages Per Carton`, ADD `Supplier Part Historic Currency Code` VARCHAR(3) NOT NULL AFTER `Supplier Part Historic Carton CBM`;
+ALTER TABLE  `Supplier Part Historic Dimension` DROP COLUMN `Supplier Part Historic Metadata`;
+ALTER TABLE `Supplier Part Historic Dimension` ADD INDEX (`Supplier Part Historic Reference`);
+ALTER TABLE `Supplier Part Historic Dimension` CHANGE `Supplier Part Historic Unit Cost` `Supplier Part Historic Unit Cost` DECIMAL(24,6) UNSIGNED NULL DEFAULT NULL;
+ALTER TABLE `Supplier Part Historic Dimension` CHANGE `Supplier Part Historic Carton CBM` `Supplier Part Historic Carton CBM` FLOAT(16,4) NULL DEFAULT NULL;
+ALTER TABLE `Upload Record Dimension` CHANGE `Upload Record State` `Upload Record State` ENUM('InProcess','OK','Error','Warning','Cancelled','NoChange') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'InProcess';
+ALTER TABLE `Upload Dimension` ADD `Upload No Change` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Upload OK`;
 
 
 migrate_products.oneoff.php 

@@ -43,7 +43,7 @@
 	<div id="first_page" onclick="rows.getFirstPage()" class="square_button right hide" title="{t}First page{/t}" style="position:relative">
 		<i class="fa fa-chevron-left fa-fw" style="position:absolute;left:2px;bottom:6px"></i> <i style="position:absolute;left:9px;bottom:6px" class="fa fa-chevron-left fa-fw"></i> 
 	</div>
-	<div  id="show_export_dialog"  class=" square_button right {if !isset($export_fields)}hide{/if}  " title="{t}Export{/t}" >
+	<div  id="show_export_dialog"  class="left square_button  {if !isset($export_fields)}hide{/if}  " title="{t}Export{/t}" >
 		 <i onclick="show_export_dialog()" class="fa fa-download fa-fw"></i> 
 		
 	</div>
@@ -81,7 +81,14 @@
     <div id="export_dialog_config" class="export_dialog hide" style="z-index: 3">
          {if isset($export_fields)}
        <table >
-     
+        <tr class="small_row ">
+       <td></td>
+       <td style="width_20" class="field_export " >
+            <i id="toggle_all_export_fields"  onclick="toggle_all_export_fields(this)"   class="button fa-fw fa fa-check-square-o"></i>
+        </td>
+        </tr>
+       
+       <tbody id="export_fields">
        {foreach from=$export_fields item=export_field key=_key} 
        <tr class="small_row">
        <td>{$export_field.label}</td>
@@ -90,7 +97,7 @@
         </td>
         </tr>
        {/foreach}
-       
+       </tbody>
        </table>
        {/if}
 	      </div>
@@ -265,7 +272,7 @@
 	{/if}
 	
 	 </div>
-	<span id="rtext"></span> 
+	<span class="padding_left_10" id="rtext"></span> 
 </div>
 
 <div id="table_edit_control_panel" class="hide" style="padding:10px 5px;border-bottom:1px solid #ccc">

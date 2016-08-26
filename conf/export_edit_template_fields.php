@@ -35,13 +35,13 @@ $export_edit_template_fields=array(
 		array('field'=>'Part Package Dimensions','name'=>'Part Part Package Dimensions', 'label'=>_('Package dimensions'), 'checked'=>0),
 		array('field'=>'Part Materials','name'=>'Part Part Materials', 'label'=>_('Materials'), 'checked'=>0),
 		array('field'=>'Part Origin Country Code','name'=>'Part Part Origin Country Code', 'label'=>_('Country of origin'), 'checked'=>0),
-		array('field'=>'Part Tariff Code','name'=>'Part Part Tariff Code', 'label'=>_('Tariff code'), 'checked'=>0),
-		array('field'=>'Part Duty Rate','name'=>'Part Part Duty Rate', 'label'=>_('Duty rate'), 'checked'=>0),
-		array('field'=>'Part UN Number','name'=>'Part UN Number', 'label'=>_('UN number'), 'checked'=>0),
-		array('field'=>'Part UN Class','name'=>'Part Part UN Class', 'label'=>_('UN class'), 'checked'=>0),
-		array('field'=>'Part Packing Group','name'=>'Part Part Packing Group', 'label'=>_('Packing group'), 'checked'=>0),
-		array('field'=>'Part Proper Shipping Name','name'=>'Part Part Proper Shipping Name', 'label'=>_('Proper shipping name'), 'checked'=>0),
-		array('field'=>'Part Hazard Indentification Number','name'=>'Part Part Hazard Indentification Number', 'label'=>_('Hazard indentification number'), 'checked'=>0),
+		array('field'=>'Part Tariff Code','name'=>'Part Part Tariff Code', 'label'=>_('Tariff code'), 'checked'=>0 ,'cell_type'=>'string'),
+		array('field'=>'Part Duty Rate','name'=>'Part Part Duty Rate', 'label'=>_('Duty rate'), 'checked'=>0,'cell_type'=>'string'),
+		array('field'=>'Part UN Number','name'=>'Part UN Number', 'label'=>_('UN number'), 'checked'=>0,'cell_type'=>'string'),
+		array('field'=>'Part UN Class','name'=>'Part Part UN Class', 'label'=>_('UN class'), 'checked'=>0,'cell_type'=>'string'),
+		array('field'=>'Part Packing Group','name'=>'Part Part Packing Group', 'label'=>_('Packing group'), 'checked'=>0,'cell_type'=>'string'),
+		array('field'=>'Part Proper Shipping Name','name'=>'Part Part Proper Shipping Name', 'label'=>_('Proper shipping name'), 'checked'=>0,'cell_type'=>'string'),
+		array('field'=>'Part Hazard Indentification Number','name'=>'Part Part Hazard Indentification Number', 'label'=>_('Hazard indentification number'), 'checked'=>0,'cell_type'=>'string'),
 	
 
 

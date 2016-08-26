@@ -12,9 +12,17 @@ var columns = [{
     label: "{t}Row{/t}",
     editable: false,
     cell: Backgrid.StringCell.extend({
-     
+     className: 'width_150'
      }),
    
+},{
+    name: "object",
+    label: "{t}Object{/t}",
+    editable: false,
+    cell: Backgrid.HtmlCell.extend({
+     className: 'width_200'
+     })
+    
 },{
     name: "state",
     label: "{t}State{/t}",

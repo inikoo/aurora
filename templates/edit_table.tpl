@@ -54,8 +54,15 @@
     <div id="export_dialog_config" class="export_dialog hide" >
          {if isset($edit_fields)}
        <table >
-     
+     <tr class="small_row ">
+       <td></td>
+       <td style="width_20" class="field_export " >
+            <i id="toggle_all_export_fields"  onclick="toggle_all_export_fields(this)"   class="button fa-fw fa fa-square-o"></i>
+        </td>
+        </tr>
+       <tbody id="export_fields">
        {foreach from=$edit_fields item=export_field key=_key} 
+       
        <tr class="small_row">
        <td>{$export_field.label}</td>
        <td style="width_20" class="field_export" >
@@ -63,7 +70,7 @@
         </td>
         </tr>
        {/foreach}
-       
+         </tbody>
        </table>
        {/if}
 	      </div>
@@ -173,7 +180,7 @@
 
                 
                
-                //    change_view(state.request+'/upload/'+data.upload_key);
+                   change_view(state.request+'/upload/'+data.upload_key);
                
 
             } else if (data.state == '400') {

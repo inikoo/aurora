@@ -256,7 +256,7 @@ module.exports = function(grunt) {
                     debug: true,
                     releases_to_keep: '3',
                     exclude: ['keyring', 'external_libs', 'server_files'],
-                    after_deploy: 'cd /home/fork/fork/current && ln -s /home/fork/external_libs/current/ external_libs & ln -s /home/fork/external_libs/current/ keyring && sudo service supervisor restart'
+                    after_deploy: 'cd /home/fork/fork/current && ln -s /home/fork/external_libs/current/ external_libs && ln -s /home/fork/keyring/ keyring && sudo service supervisor restart'
                 }
             },
             fork_external_libs: {

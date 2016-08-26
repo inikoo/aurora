@@ -19,27 +19,33 @@ function parse_dimensions($dimension) {
 
 
 	$dimension=trim($dimension);
-	//print $dimension."<\n";
+	//print "\n".$dimension."<\n";
 
 
-	$units='cm';
+	//$units='cm';
 	if (preg_match('/\((cm|mm|m\yd"in|ft)\)$/', $dimension, $match)) {
 		//print_r($match);
 		$units=$match[1];
 	}
-	$dimension=preg_replace('/\s*\((cm|mm|m)\)$/', '', $dimension);
+	$dimension=preg_replace('/\((cm|mm|m\yd"in|ft)\)$/', '', $dimension);
 
 
 	//print $dimension."<\n";
 
 	$dimensions=preg_split('/x/', $dimension);
-
+	//print_r($dimensions);
 	if (count($dimensions)==3) {
 		$l=convert_units(floatval($dimensions[0]), $units, 'm');
 		$w=convert_units(floatval($dimensions[1]), $units, 'm');
 		$h=convert_units(floatval($dimensions[2]), $units, 'm');
 		$vol=convert_units($l*$w*$h, 'm3', 'l');
 		$type='Rectangular';
+	}elseif (count($dimensions)==2) {
+		$l=convert_units(floatval($dimensions[0]), $units, 'm');
+		$w=convert_units(floatval($dimensions[1]), $units, 'm');
+		$h=0;
+		$vol=0;
+		$type='Sheet';
 	}elseif (count($dimensions)==1) {
 
 		// print_r($dimensions);

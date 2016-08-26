@@ -350,6 +350,12 @@ class Asset extends DB_Table{
 
 
 					break;
+					
+				case 'Sheet':
+									$dimensions=number(convert_units($data['l'], 'm', $data['units'])).'x'.number(convert_units($data['w'], 'm', $data['units'])).' ('.$data['units'].')';
+
+					break;	
+					
 				case 'Cilinder':
 
 					$dimensions=number(convert_units($data['h'], 'm', $data['units'])).'x'.number(convert_units($data['w'], 'm', $data['units'])).' ('.$data['units'].')';
@@ -432,6 +438,11 @@ class Asset extends DB_Table{
 					}
 
 					break;
+				case 'Sheet':
+					$dimensions=number(convert_units($data['l'], 'm', $data['units'])).'x'.number(convert_units($data['w'], 'm', $data['units'])).' ('.$data['units'].')';
+
+					break;	
+					
 				case 'Cilinder':
 					$dimensions=number(convert_units($data['h'], 'm', $data['units'])).'x'.number(convert_units($data['w'], 'm', $data['units'])).' ('.$data['units'].')';
 					$dimensions.='<span class="discreet volume">, '.volume($data['vol']).'</span>';
@@ -474,13 +485,7 @@ class Asset extends DB_Table{
 						$dimensions='L:'.number($part->data['Part '.$tag.' Dimensions Length Display']).' ('.$part->data['Part '.$tag.' Dimensions Display Units'].')';
 					}
 					break;
-				case 'Sheet':
-					if ( !$part->data['Part '.$tag.' Dimensions Width Display']  or  !$part->data['Part '.$tag.' Dimensions Length Display']) {
-						$dimensions='';
-					}else {
-						$dimensions=number($part->data['Part '.$tag.' Dimensions Width Display']).'x'.number($part->data['Part '.$tag.' Dimensions Length Display']).' ('.$part->data['Part '.$tag.' Dimensions Display Units'].')';
-					}
-					break;
+				
 				default:
 					$dimensions='';
 				}
