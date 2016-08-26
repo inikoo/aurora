@@ -970,7 +970,7 @@ class SupplierPart extends DB_Table{
 
 		if (!$this->id)return;
 
-		
+
 
 		$sql=sprintf('select `Supplier Part Historic Key` from `Supplier Part Historic Dimension` where
 		`Supplier Part Historic Supplier Part Key`=%d and `Supplier Part Historic Reference`=%s and `Supplier Part Historic Unit Cost`=%f and
@@ -984,7 +984,7 @@ class SupplierPart extends DB_Table{
 			prepare_mysql($this->data['Supplier Part Currency Code'])
 		);
 
-//print "$sql\n";
+		//print "$sql\n";
 
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
@@ -1055,6 +1055,15 @@ class SupplierPart extends DB_Table{
 		);
 
 		$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
+
+
+		if (count(  $this->part->get_supplier_parts())==0) {
+			$this->part->delete();
+		}
+
+
+
+
 
 
 		$this->deleted=true;
