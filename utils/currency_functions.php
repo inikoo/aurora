@@ -12,6 +12,9 @@
 
 
 function currency_conversion($db, $currency_from, $currency_to, $update_interval="-1 hour") {
+	
+	if($currency_from==$currency_to)return 1;
+	
 	$reload=false;
 	$in_db=false;
 	$exchange_rate=1;
