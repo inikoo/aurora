@@ -34,6 +34,8 @@ class PurchaseOrder extends DB_Table{
 	function create_order($data) {
 
 
+		global $account;
+
 		$parent=get_object($data['Purchase Order Parent'], $data['Purchase Order Parent Key']);
 
 		$this->editor=$data['editor'];
@@ -43,6 +45,16 @@ class PurchaseOrder extends DB_Table{
 		$data['Purchase Order Last Updated Date']=gmdate('Y-m-d H:i:s');
 		$data['Purchase Order Public ID']=$this->get_next_public_id($parent);
 		$data['Purchase Order File As']=$this->get_file_as($data['Purchase Order Public ID']);
+
+
+		include_once 'utils/currency_functions.php';
+		$data['Purchase Order Currency Exchange']=currency_conversion($this->db, $data['Purchase Order Currency Code'], $account->get('Account Currency'), '- 15 minutes');
+
+
+
+
+
+
 		$base_data=$this->base_data();
 
 
@@ -94,13 +106,16 @@ class PurchaseOrder extends DB_Table{
 			$parent->update_orders();
 
 
+
+
+
 			if ($this->get('Purchase Order Parent')=='Agent') {
 				$sql=sprintf('insert into `Purchase Order Agent Coda` (`Purchase Order Key`,`Purchase Order Agent Key`,`Purchase Order Agent Last Updated Date`) values (%d,%d,%s) ',
 					$this->id,
 					$this->get('Purchase Order Parent Key'),
 					prepare_mysql($this->get('Purchase Order Last Updated Date'))
 				);
-				$this->exec($sql);
+				$this->db->exec($sql);
 
 			}
 
