@@ -15,23 +15,32 @@ require_once 'class.Part.php';
 require_once 'class.Product.php';
 require_once 'class.Page.php';
 require_once 'class.Supplier.php';
+require_once 'class.Agent.php';
 
 
 
+$sql=sprintf('select `Agent Key` from `Agent Dimension`  ');
+
+if ($result=$db->query($sql)) {
+	foreach ($result as $row) {
+		$agent=new Agent($row['Agent Key']);
+		$agent->update_supplier_parts();
+		
+
+
+	}
+
+}else {
+	print_r($error_info=$db->errorInfo());
+	exit;
+}
 
 
 $sql=sprintf('select `Supplier Key` from `Supplier Dimension`  ');
 
 if ($result=$db->query($sql)) {
 	foreach ($result as $row) {
-
-
-
-
 		$supplier=new Supplier($row['Supplier Key']);
-
-	
-
 		$supplier->update_supplier_parts();
 		$supplier->update_up_today_sales();
 		$supplier->update_last_period_sales();
@@ -45,5 +54,7 @@ if ($result=$db->query($sql)) {
 	print_r($error_info=$db->errorInfo());
 	exit;
 }
+
+
 
 ?>
