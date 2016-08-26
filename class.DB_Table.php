@@ -68,6 +68,8 @@ abstract class DB_Table {
 	public function update($data, $options='', $metadata='') {
 
 
+		$this->error=false;
+		$this->msg='';
 		if (!is_array($data)) {
 
 			$this->error=true;

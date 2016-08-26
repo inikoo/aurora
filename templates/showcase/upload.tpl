@@ -34,12 +34,34 @@
 	</div>
 	<div style="margin-top:3px;max-width:370px;float:right;margin-right:60px">
 
+{if $upload->get('Update Type')=='NewObjects'}
+
 <table>
 <tr>
 <td  rowspan="2" style="border:1px solid #ccc;padding:10px 20px;font-size:200%"  class="Upload_Records" >{$upload->get('Records')}</td>
-<td class="Upload_OK" style="border:1px solid #ccc;padding:10px 20px">{$upload->get('OK')}</td>  </tr>
-<tr><td  class="Upload_Errors" style="border:1px solid #ccc;padding:10px 20px">{$upload->get('Errors')}</td></tr>
+<td class="Upload_OK success" style="border:1px solid #ccc;padding:10px 20px">{$upload->get('OK')}</td>  </tr>
+<tr>
+<td  class="Upload_Errors error" style="border:1px solid #ccc;padding:10px 20px">{$upload->get('Errors')}</td>
+</tr>
 </table>
+{else}
+<table>
+<tr>
+<td  rowspan="4" style="border:1px solid #ccc;padding:10px 20px;font-size:200%"  class="Upload_Records" >{$upload->get('Records')}</td>
+<td class="Upload_OK success" style="border:1px solid #ccc;padding:10px 20px">{$upload->get('OK')}</td>  </tr>
+<tr>
+<td  class="Upload_No_Change very_discreet" style="border:1px solid #ccc;padding:10px 20px">{$upload->get('No Change')}</td>
+</tr>
+<tr>
+<td  class="Upload_Warnings warning" style="border:1px solid #ccc;padding:10px 20px">{$upload->get('Warnings')}</td>
+</tr>
+<tr>
+<td  class="Upload_Errors error" style="border:1px solid #ccc;padding:10px 20px">{$upload->get('Errors')}</td>
+</tr>
+</table>
+{/if}
+
+
 	</div>
 	<div style="clear:both">
 	</div>

@@ -127,7 +127,7 @@ function close_columns_frequency_options() {
 
 function show_columns_period_options() {
 
-   var button = $('#columns_period')
+    var button = $('#columns_period')
     var icon = $('#columns_period .fa')
 
     if (!icon.hasClass('fa-bars')) {
@@ -155,7 +155,7 @@ function show_columns_period_options() {
 
 function show_columns_frequency_options() {
 
-   var button = $('#columns_frequency')
+    var button = $('#columns_frequency')
     var icon = $('#columns_frequency .fa')
     if (!icon.hasClass('fa-bars')) {
 
@@ -167,8 +167,8 @@ function show_columns_frequency_options() {
         var offset = $('#columns_frequency .fa').position();
         var height = button.height();
 
-          console.log($('#columns_frequency').position().top + height)
-                    console.log(offset.left - $('#columns_frequency_chooser').width() + icon.width() + 20)
+        console.log($('#columns_frequency').position().top + height)
+        console.log(offset.left - $('#columns_frequency_chooser').width() + icon.width() + 20)
 
         $('#columns_frequency_chooser').removeClass('hide').offset({
             top: $('#columns_frequency').position().top + height,
@@ -210,16 +210,16 @@ function change_f_option(option) {
         $('#f_options_chooser div i').removeClass('fa-circle').addClass('fa-circle-o')
         $(option).addClass('selected')
         $(option).find('i').addClass('fa-circle')
-        $('#filter').attr('f_field',$(option).attr('f_field')).find('input').val('')
-        
-        
-        $('#filter_field .label').html( $(option).find('.label').html())
-        
+        $('#filter').attr('f_field', $(option).attr('f_field')).find('input').val('')
+
+
+        $('#filter_field .label').html($(option).find('.label').html())
+
         rows.fetch({
-                    reset: true
-                });
+            reset: true
+        });
         show_f_options()
-        
+
     }
 }
 
@@ -229,7 +229,7 @@ function show_elements_types() {
     var button = $('#element_type')
     var icon = $('#element_type .fa')
     if (icon.hasClass('fa-bars')) {
-      $('#f_options_chooser').addClass('hide')
+        $('#f_options_chooser').addClass('hide')
         icon.removeClass('fa-bars')
         icon.addClass('fa-chevron-up')
 
@@ -434,6 +434,26 @@ function hide_export_config_dialog() {
     $('#export_dialog_config').addClass('hide')
 }
 
+
+function toggle_all_export_fields(element) {
+    if ($(element).hasClass('fa-check-square-o')) {
+        $(element).removeClass('fa-check-square-o')
+        $(element).addClass('fa-square-o')
+
+        $('#export_fields i').removeClass('fa-check-square-o')
+        $('#export_fields i').addClass('fa-square-o')
+
+
+    } else {
+        $(element).addClass('fa-check-square-o')
+        $(element).removeClass('fa-square-o')
+        $('#export_fields i').addClass('fa-check-square-o')
+        $('#export_fields i').removeClass('fa-square-o')
+    }
+
+
+}
+
 function toggle_export_field(key) {
 
     var field_element = $('#field_export_' + key)
@@ -517,9 +537,9 @@ function get_export_process_bar(fork_key, tag, type) {
 
                 $('#download_' + type).attr('href', '/download.php?file=' + data.result)
                 $('#export_download_' + type).removeClass('hide').attr('title', data.result_info).click(function() {
-                   
-                   download_exported_file(type)
-                   
+
+                    download_exported_file(type)
+
                 });
                 $('#export_progress_bar_bg_' + type).addClass('hide').html('')
                 $('#export_progress_bar_' + type).css('width', '0px').removeClass('hide').attr('title', '').html('')
@@ -545,8 +565,8 @@ function get_export_process_bar(fork_key, tag, type) {
 
 }
 
-function download_exported_file(type){
-$("#download_" + type)[0].click();
+function download_exported_file(type) {
+    $("#download_" + type)[0].click();
 }
 
 

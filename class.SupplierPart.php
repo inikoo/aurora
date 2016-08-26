@@ -272,9 +272,9 @@ class SupplierPart extends DB_Table{
 
 			return $this->part->get($key);
 			break;
-			
-		
-			
+
+
+
 		case 'Supplier Key':
 			return $this->get('Supplier Name').(($this->get('Supplier Code')!='' and $this->get('Supplier Code')!=$this->get('Supplier Name'))?' ('.$this->get('Supplier Code').')':'');
 			break;
@@ -449,11 +449,16 @@ class SupplierPart extends DB_Table{
 
 	function update_field_switcher($field, $value, $options='', $metadata='') {
 
-
 		switch ($field) {
 
 		case 'Supplier Part Unit Description':
 
+
+			if ($value==''   ) {
+				$this->error=true;
+				$this->msg=_('Unit description missing');
+				return;
+			}
 
 			$this->part->update(array('Part Unit Description'=>$value), $options);
 			$this->updated=$this->part->updated;
@@ -461,6 +466,11 @@ class SupplierPart extends DB_Table{
 
 			break;
 		case 'Supplier Part Package Description':
+			if ($value==''   ) {
+				$this->error=true;
+				$this->msg=_('Outers (SKO) description');
+				return;
+			}
 
 
 			$this->part->update(array('Part Package Description'=>$value), $options);
@@ -469,6 +479,13 @@ class SupplierPart extends DB_Table{
 
 			break;
 		case 'Supplier Part Status':
+
+
+			if (! in_array($value, array('Available', 'NoAvailable', 'Discontinued'))) {
+				$this->error=true;
+				$this->msg=_('Invalid availability value');
+				return;
+			}
 
 			$this->update_field($field, $value, $options);
 			$this->update_metadata=array(
@@ -482,6 +499,12 @@ class SupplierPart extends DB_Table{
 			break;
 		case 'Supplier Part Average Delivery Days':
 
+			if ($value!='' and (!is_numeric($value) or $value<0  ) ) {
+				$this->error=true;
+				$this->msg=sprintf(_('Invalid delivery time (%s)'), $value);
+				return;
+			}
+
 			$this->update_field($field, $value, $options);
 			$this->update_metadata=array(
 				'class_html'=>array(
@@ -490,6 +513,25 @@ class SupplierPart extends DB_Table{
 			);
 
 			break;
+
+		case 'Supplier Part Supplier Code':
+
+			if ($value=='') {
+				$this->error=true;
+				$this->msg=_("Supplier's code missing");
+				return;
+			}
+
+			include_once 'class.Supplier.php';
+			$supplier=new Supplier('code', $value);
+			if (!$supplier->id) {
+				$this->error=true;
+				$this->msg=sprintf(_("Supplier %s not found"), $value);
+				return;
+			}
+			$this->update_field_switcher('Supplier Part Supplier Key', $supplier->id, $options);
+			break;
+
 		case 'Supplier Part Supplier Key':
 			include_once 'class.Supplier.php';
 
@@ -499,6 +541,13 @@ class SupplierPart extends DB_Table{
 			}
 
 			$supplier=new Supplier($value);
+			if (!$supplier->id) {
+				$this->error=true;
+				$this->msg=_("Supplier not found");
+				return;
+			}
+
+
 
 			$old_supplier=new Supplier($this->get('Supplier Part Supplier Key'));
 
@@ -508,6 +557,29 @@ class SupplierPart extends DB_Table{
 				return;
 
 			}
+
+
+			$sql=sprintf('select count(*) as num from `Supplier Part Dimension` where `Supplier Part Reference`=%s and `Supplier Part Supplier Key`=%d and `Supplier Part key`!=%d ',
+				prepare_mysql($this->get('Supplier Part Reference')),
+				$supplier->id,
+				$this->id
+			);
+
+
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					if ($row['num']>0) {
+						$this->error=true;
+						$this->msg=sprintf(_("Can't move supplier, another supplier part has same reference (%s)"), $this->get('Supplier Part Reference'));
+						return;
+					}
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+
 
 			$this->update_field($field, $supplier->id, 'no_history');
 
@@ -553,18 +625,29 @@ class SupplierPart extends DB_Table{
 
 
 			break;
-		case 'Supplier Part Currency Code':
-		case 'Supplier Part Reference':
+
 		case 'Supplier Part Unit Cost':
+
+			if ($value==''   ) {
+				$this->error=true;
+				$this->msg=_('Cost missing');
+				return;
+			}
+
+			if (!is_numeric($value) or $value<0  ) {
+				$this->error=true;
+				$this->msg=sprintf(_('Invalid cost (%s)'), $value);
+				return;
+			}
+
 			$this->update_field($field, $value, $options);
+
+			$updated=$this->updated;
+
 			if (!preg_match('/skip_update_historic_object/', $options)) {
 				$this->update_historic_object();
 			}
-
-			if ($field=='Supplier Part Unit Cost') {
-				$this->part->update_cost();
-
-			}
+			$this->part->update_cost();
 
 
 			$this->update_metadata=array(
@@ -575,11 +658,110 @@ class SupplierPart extends DB_Table{
 
 				)
 			);
+			$this->updated= $updated;
+			break;
+		case 'Supplier Part Currency Code':
 
+			if ($value=='') {
+				$this->error=true;
+				$this->msg=sprintf(_('Currency code missing'));
+				return;
+			}
+
+			$sql=sprintf('select count(*) as num from kbase.`Currency Dimension` where `Currency Code`=%s and `Currency Status`="Active" ',
+				prepare_mysql($value)
+			);
+
+
+
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					if ($row['num']==0) {
+						$this->error=true;
+						$this->msg=sprintf(_('Currency code not found (%s)'), $value);
+						return;
+					}
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+
+
+
+			$this->update_field($field, $value, $options);
+
+			$updated=$this->updated;
+
+			if (!preg_match('/skip_update_historic_object/', $options)) {
+				$this->update_historic_object();
+			}
+
+			$this->update_metadata=array(
+				'class_html'=>array(
+					'Carton_Cost'=>$this->get('Carton Cost'),
+					'SKO_Cost'=>$this->get('SKO Cost'),
+					'Unit_Cost_Amount'=>$this->get('Unit Cost Amount'),
+
+				)
+			);
+			$this->updated= $updated;
+			break;
+		case 'Supplier Part Reference':
+
+			if ($value=='') {
+				$this->error=true;
+				$this->msg=sprintf(_('Reference mising'));
+				return;
+			}
+
+			$sql=sprintf('select count(*) as num from `Supplier Part Dimension` where `Supplier Part Reference`=%s and `Supplier Part Supplier Key`=%d and `Supplier Part key`!=%d ',
+				prepare_mysql($value),
+				$this->get('Supplier Part Supplier Key'),
+				$this->id
+			);
+
+
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					if ($row['num']>0) {
+						$this->error=true;
+						$this->msg=sprintf(_('Duplicated reference (%s)'), $value);
+						return;
+					}
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+
+
+			$this->update_field($field, $value, $options);
+
+			$updated=$this->updated;
+
+			if (!preg_match('/skip_update_historic_object/', $options)) {
+				$this->update_historic_object();
+			}
+
+
+			$this->updated= $updated;
 			break;
 
-
 		case 'Supplier Part Carton CBM':
+
+
+
+
+			if ( $value!=''  and (!is_numeric($value) or $value<0 )  ) {
+				$this->error=true;
+				$this->msg=sprintf(_('Invalid carton CBM (%s)'), $value);
+				return;
+			}
+
+
 
 			$this->update_field($field, $value, $options);
 			if (!preg_match('/skip_update_historic_object/', $options)) {
@@ -623,6 +805,19 @@ class SupplierPart extends DB_Table{
 
 
 		case 'Part Units Per Package':
+
+			if ($value==''   ) {
+				$this->error=true;
+				$this->msg=_('Units per SKO missing');
+				return;
+			}
+
+			if (!is_numeric($value) or $value<0  ) {
+				$this->error=true;
+				$this->msg=sprintf(_('Invalid units per SKO (%s)'), $value);
+				return;
+			}
+
 
 
 			$this->part->update(array($field=>$value), $options);
@@ -671,7 +866,25 @@ class SupplierPart extends DB_Table{
 
 			break;
 		case 'Supplier Part Packages Per Carton':
+
+			if ($value==''   ) {
+				$this->error=true;
+				$this->msg=_('Outers (SKO) per carton missing');
+				return;
+			}
+
+			if (!is_numeric($value) or $value<0  ) {
+				$this->error=true;
+				$this->msg=sprintf(_('Invalid outers (SKO) per carton (%s)'), $value);
+				return;
+			}
+
+
+
 			$this->update_field($field, $value, $options);
+
+
+
 			$this->other_fields_updated=array(
 				'Supplier_Part_Unit_Cost'=>array(
 					'field'=>'Supplier_Part_Unit_Cost',
@@ -700,6 +913,17 @@ class SupplierPart extends DB_Table{
 
 			break;
 		case 'Supplier Part Unit Extra Cost':
+
+			if ($value=='') {
+				$value=0;
+			}
+
+			if (!is_numeric($value) or $value<0  ) {
+				$this->error=true;
+				$this->msg=sprintf(_('Invalid extra cost (%s)'), $value);
+				return;
+			}
+
 			$this->update_field($field, $value, $options);
 			$this->part->update_cost();
 			break;
@@ -746,34 +970,42 @@ class SupplierPart extends DB_Table{
 
 		if (!$this->id)return;
 
-		$metadata=json_encode(array(
-				'u'=>$this->part->data['Part Units Per Package'],
-				'p'=>$this->data['Supplier Part Packages Per Carton'],
-				'cbm'=>$this->data['Supplier Part Carton CBM'],
-				'cur'=>$this->data['Supplier Part Currency Code']
+		
 
-			));
-
-		$sql=sprintf('select `Supplier Part Historic Key` from `Supplier Part Historic Dimension` where `Supplier Part Historic Supplier Part Key`=%d and `Supplier Part Historic Reference`=%s and `Supplier Part Historic Unit Cost`=%f and `Supplier Part Historic Metadata`=%s',
+		$sql=sprintf('select `Supplier Part Historic Key` from `Supplier Part Historic Dimension` where
+		`Supplier Part Historic Supplier Part Key`=%d and `Supplier Part Historic Reference`=%s and `Supplier Part Historic Unit Cost`=%f and
+		`Supplier Part Historic Units Per Package`=%d and `Supplier Part Historic Packages Per Carton`=%d  and `Supplier Part Historic Carton CBM`=%f and `Supplier Part Historic Currency Code`=%s',
 			$this->id,
 			prepare_mysql($this->data['Supplier Part Reference']),
 			$this->data['Supplier Part Unit Cost'],
-			prepare_mysql($metadata)
-
-
+			$this->part->data['Part Units Per Package'],
+			$this->data['Supplier Part Packages Per Carton'],
+			$this->data['Supplier Part Carton CBM'],
+			prepare_mysql($this->data['Supplier Part Currency Code'])
 		);
+
+//print "$sql\n";
 
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
+
+
 				$this->update(array('Supplier Part Historic Key'=>$row['Supplier Part Historic Key']), 'no_history');
 
 			}else {
-				$sql=sprintf('insert into `Supplier Part Historic Dimension` (`Supplier Part Historic Supplier Part Key`,`Supplier Part Historic Reference`,`Supplier Part Historic Unit Cost`,`Supplier Part Historic Metadata`) values (%d,%s,%f,%s) ',
+				$sql=sprintf('insert into `Supplier Part Historic Dimension` (`Supplier Part Historic Supplier Part Key`,`Supplier Part Historic Reference`,`Supplier Part Historic Unit Cost`,
+						`Supplier Part Historic Units Per Package`, `Supplier Part Historic Packages Per Carton`,`Supplier Part Historic Carton CBM`, `Supplier Part Historic Currency Code`
+
+				) values (%d,%s,%f,%d,%d,%f,%s) ',
 					$this->id,
 					prepare_mysql($this->data['Supplier Part Reference']),
 					$this->data['Supplier Part Unit Cost'],
-					prepare_mysql($metadata)
+					$this->part->data['Part Units Per Package'],
+					$this->data['Supplier Part Packages Per Carton'],
+					$this->data['Supplier Part Carton CBM'],
+					prepare_mysql($this->data['Supplier Part Currency Code'])
 				);
+				//print "$sql\n";
 				if ($this->db->exec($sql)) {
 					$this->update(array('Supplier Part Historic Key'=>$this->db->lastInsertId()), 'no_history');
 

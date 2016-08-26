@@ -324,7 +324,8 @@ class Part extends Asset{
 		if ($value=='In Use') {
 
 
-		} elseif ($value=='Not In Use') {
+		}
+		elseif ($value=='Not In Use') {
 
 			$locations=$this->get_location_keys();
 
@@ -351,6 +352,8 @@ class Part extends Asset{
 
 
 		}
+
+
 		$this->update_main_state();
 
 
@@ -508,6 +511,21 @@ class Part extends Asset{
 
 
 		case 'Part Unit Price':
+
+			if ($value==''   ) {
+				$this->error=true;
+				$this->msg=_('Unit recommended price missing');
+				return;
+			}
+
+			if (!is_numeric($value) or $value<0  ) {
+				$this->error=true;
+				$this->msg=sprintf(_('Invalid unit recommended price (%s)'), $value);
+				return;
+			}
+
+
+
 			$this->update_field('Part Unit Price', $value, $options);
 
 			$this->other_fields_updated=array(
@@ -524,6 +542,18 @@ class Part extends Asset{
 			break;
 
 		case 'Part Units Per Package':
+			if ($value==''   ) {
+				$this->error=true;
+				$this->msg=_('Units per SKO missing');
+				return;
+			}
+
+			if (!is_numeric($value) or $value<0  ) {
+				$this->error=true;
+				$this->msg=sprintf(_('Invalid units per SKO (%s)'), $value);
+				return;
+			}
+
 			$this->update_field('Part Units Per Package', $value, $options);
 
 
@@ -544,8 +574,48 @@ class Part extends Asset{
 			);
 
 			break;
+
+		case 'Part Family Code':
+			$account= new Account($this->db);
+			if ($value=='') {
+				$this->error=true;
+				$this->msg=_("Family's code missing");
+				return;
+			}
+
+			include_once 'class.Category.php';
+
+
+			$root_category=new Category($account->get('Account Part Family Category Key'));
+			if ($root_category->id) {
+				$root_category->editor=$this->editor;
+				$family=$root_category->create_category(array('Category Code'=>$value));
+				if ($family->id) {
+
+					$this->update_field_switcher('Part Family Category Key', $family->id, $options);
+
+
+				}else {
+					$this->error=true;
+					$this->msg=_("Can't create family");
+					return;
+				}
+			}else {
+				$this->error=true;
+				$this->msg=_("Part's families not configured");
+				return;
+			}
+
+
+
+
+			break;
+
+
+			break;
 		case 'Part Family Category Key';
-			global $account;
+
+			$account=new Account($this->db);
 			include_once 'class.Category.php';
 
 
@@ -565,6 +635,7 @@ class Part extends Asset{
 				}else {
 					$this->error=true;
 					$this->msg='wrong category';
+					return;
 
 				}
 
@@ -591,9 +662,13 @@ class Part extends Asset{
 
 					)
 				);
+				return;
 
 			}
-			elseif ($value=='' and $category) {
+
+
+
+			if ($category) {
 
 
 				$category->disassociate_subject($this->id);
@@ -623,13 +698,8 @@ class Part extends Asset{
 				);
 
 			}
-
-
-			else {
-				return;
-			}
-
 			$this->update_field('Part Family Category Key', $value, 'no_history');
+
 
 
 
@@ -705,8 +775,9 @@ class Part extends Asset{
 
 
 			$this->update_field('Part Materials', $materials, $options);
+			$updated=$this->updated;
 			$this->update_linked_products($field, $value, $options, $metadata);
-
+			$this->updated=$updated;
 			break;
 
 		case 'Part Package Dimensions':
@@ -723,7 +794,7 @@ class Part extends Asset{
 				$dim=parse_dimensions($value);
 				if ($dim=='') {
 					$this->error=true;
-					$this->msg=_("Dimensions can't be parsed");
+					$this->msg=sprintf(_("Dimensions can't be parsed (%s)"), $value);
 					return;
 				}
 				$_tmp=json_decode($dim, true);
@@ -731,9 +802,10 @@ class Part extends Asset{
 			}
 
 			$this->update_field($tag.' Dimensions', $dim, $options);
+			$updated=$this->updated;
 			$this->update_field($tag.' Volume', $vol,  'no_history');
 			$this->update_linked_products($field, $value, $options, $metadata);
-
+			$this->updated=$updated;
 
 			break;
 		case 'Part Package Weight':
@@ -745,7 +817,7 @@ class Part extends Asset{
 			$tag3=preg_replace('/ /', '_', $tag);
 
 			$this->update_field($field, $value, $options);
-
+			$updated=$this->updated;
 			$this->other_fields_updated=array(
 				$tag3.'_Dimensions'=>array(
 					'field'=>$tag3.'_Dimensions',
@@ -789,8 +861,7 @@ class Part extends Asset{
 				}
 
 			}
-
-
+			$this->updated=$updated;
 			break;
 		case('Part Tariff Code'):
 
@@ -801,9 +872,15 @@ class Part extends Asset{
 				$tariff_code_valid=validate_tariff_code($value, $this->db);
 			}
 
+
+
+
 			$this->update_field($field, $value, $options);
+			$updated=$this->updated;
 			$this->update_field('Part Tariff Code Valid', $tariff_code_valid, 'no_history');
+
 			$this->update_linked_products($field, $value, $options, $metadata);
+			$this->updated=$updated;
 
 			break;
 		case 'Part UN Number':
@@ -813,9 +890,18 @@ class Part extends Asset{
 		case 'Part Hazard Indentification Number':
 		case('Part Duty Rate'):
 			$this->update_field($field, $value, $options);
+			$updated=$this->updated;
 			$this->update_linked_products($field, $value, $options, $metadata);
+			$this->updated=$updated;
 			break;
 		case('Part Status'):
+
+			if (! in_array($value, array('In Use', 'Not In Use', ))) {
+				$this->error=true;
+				$this->msg=_('Invalid part status').' ('.$value.')';
+				return;
+			}
+
 			$this->update_status($value, $options);
 			break;
 		case('Part Available for Products Configuration'):
@@ -1317,7 +1403,7 @@ class Part extends Asset{
 
 		switch ($key) {
 
-		
+
 		case 'Unit Price':
 			include_once 'utils/natural_language.php';
 			$unit_price= money($this->data['Part Unit Price'], $account->get('Account Currency'));
@@ -4015,10 +4101,10 @@ where `Part SKU`=%d ",
 			$label=_('SKO description');
 			break;
 		case 'Part Unit Price':
-			$label=_('init recommended price');
+			$label=_('unit recommended price');
 			break;
 		case 'Part Unit RRP':
-			$label=_('init recommended RRP');
+			$label=_('unit recommended RRP');
 			break;
 
 		case 'Part Package Weight':

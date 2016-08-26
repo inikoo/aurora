@@ -162,7 +162,7 @@ function fork_export_edit_template($job) {
 				break;
 			}
 
-			print_r($data_rows);
+			//print_r($data_rows);
 
 			if ($row_index==1) {
 				$char_index=1;

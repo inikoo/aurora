@@ -456,14 +456,16 @@ default:
 
 function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state=false, $metadata=false) {
 
+
+
+
 	$_tab=$tab;
 	$_subtab=$subtab;
 
 	$actual_tab=($subtab!=''?$subtab:$tab);
 	$state['tab']=$actual_tab;
 
-	//print $tab;
-
+	//print_r($state);
 	$smarty->assign('data', $state);
 
 
@@ -475,7 +477,8 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state=false, $me
 	}
 
 
-	if (is_array($state)) {
+	if (is_array($state)  and !in_array($tab, array('supplier.supplier_parts_edit'))   ) {
+
 
 
 		$_SESSION['state'][$state['module']][$state['section']]['tab']=$_tab;
@@ -1501,6 +1504,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
 
 
 
+
+
 	if (isset($modules[$data['module']]['sections'][$data['section']]['tabs'])) {
 		$tabs=$modules[$data['module']]['sections'][$data['section']]['tabs'];
 	}else {
@@ -1531,6 +1536,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
 
 
 	);
+
 
 
 	if ($data['section']=='category') {
