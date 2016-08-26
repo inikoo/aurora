@@ -22,7 +22,7 @@ function parse_dimensions($dimension) {
 	//print "\n".$dimension."<\n";
 
 
-	//$units='cm';
+	$units='cm';
 	if (preg_match('/\((cm|mm|m\yd"in|ft)\)$/', $dimension, $match)) {
 		//print_r($match);
 		$units=$match[1];
