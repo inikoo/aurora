@@ -483,9 +483,28 @@ class Agent extends SubjectSupplier {
 		$supplier_number_critical_parts=0;
 		$supplier_number_out_of_stock_parts=0;
 
+
+
+		$sql=sprintf('select count(*) as num from  `Agent Supplier Bridge`  where `Agent Supplier Agent Key`=%d  ',
+			$this->id
+		);
+
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+
+				$supplier_number_suppliers=$row['num'];
+			
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
 		$sql=sprintf('select
 		count(*) as num ,
-		count(distinct `Agent Supplier Supplier Key`) as suppliers ,
 		sum(if(`Part Stock Status`="Surplus",1,0)) as surplus,
 		sum(if(`Part Stock Status`="Optimal",1,0)) as optimal,
 		sum(if(`Part Stock Status`="Low",1,0)) as low,
@@ -500,7 +519,6 @@ class Agent extends SubjectSupplier {
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
 
-				$supplier_number_suppliers=$row['suppliers'];
 				$supplier_number_parts=$row['num'];
 				if ($row['num']>0) {
 
