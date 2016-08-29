@@ -884,6 +884,10 @@ class PurchaseOrder extends DB_Table{
 				$total_tax=$row['tax'];
 				$total=$total_net+$total_tax;
 
+				//print $sql;
+
+
+
 				$this->update(array(
 						'Purchase Order Items Net Amount'=>$row['items_net'],
 						'Purchase Order Items Tax Amount'=>$row['tax'],
@@ -1359,6 +1363,8 @@ class PurchaseOrder extends DB_Table{
 
 			case 'Cancelled':
 
+				$this->update_field('Purchase Order Locaked', 'Yes', 'no_history');
+
 				$this->update_field('Purchase Order Cancelled Date', $date, 'no_history');
 				$this->update_field('Purchase Order Estimated Receiving Date', '', 'no_history');
 				$this->update_field('Purchase Order State', $value, 'no_history');
@@ -1375,10 +1381,24 @@ class PurchaseOrder extends DB_Table{
 
 				break;
 
+
+			case 'Checked':
+
+
+				$this->update_field('Purchase Order Locaked', 'Yes', 'no_history');
+
+				$this->update_field('Purchase Order State', $value, 'no_history');
+				foreach ($metadata as $key=>$_value) {
+					$this->update_field($key, $_value, 'no_history');
+				}
+
+
+
+				break;
+
 			case 'Inputted':
 			case 'Dispatched':
 			case 'Received':
-			case 'Checked':
 			case 'Placed':
 
 
@@ -1390,6 +1410,8 @@ class PurchaseOrder extends DB_Table{
 
 
 				break;
+
+
 			default:
 				exit('unknown state:'.$value);
 				break;

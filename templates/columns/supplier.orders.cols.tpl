@@ -16,7 +16,8 @@ var columns= [{
              "click": function() {
                  {if $tab=='suppliers.orders'}   
                  change_view("suppliers/order/" + this.model.get("id")  )
-                
+                  {elseif $tab=='supplier_part.supplier.orders'}   
+                 change_view("supplier/{$data['_object']->get('Supplier Part Supplier Key')}/part/{$data['key']}/order/" + this.model.get("id")  )
                {else}
                    change_view("{$data['object']}/{$data['key']}/order/" + this.model.get("id")  )
                

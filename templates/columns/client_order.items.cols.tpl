@@ -100,8 +100,8 @@ var columns = [
         
 }, {
     name: "quantity",
-    label: "{t}Cartons{/t}",
-    renderable: {if $data['_object']->get('Purchase Order State')=='InProcess'}true{else}false{/if},
+    label: "{t}E Cartons{/t}",
+    renderable: {if $data['_object']->get('Purchase Order State')!='InProcess'}true{else}false{/if},
     defautOrder:1,
     editable: false,
     sortType: "toggle",
@@ -111,7 +111,7 @@ var columns = [
 }, {
     name: "ordered",
     label: "{t}Cartons{/t}",
-    renderable: {if $data['_object']->get('Purchase Order State')!='InProcess'}true{else}false{/if},
+    renderable: {if $data['_object']->get('Purchase Order State')=='InProcess'}true{else}false{/if},
     defautOrder:1,
     editable: false,
     sortType: "toggle",

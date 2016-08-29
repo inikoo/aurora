@@ -1278,266 +1278,259 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
 	$left_buttons=array();
 	$right_buttons=array();
 
-	if ($data['parent']) {
 
-		switch ($data['parent']) {
-		case 'supplier':
-			$tab='supplier.orders';
-			$_section='suppliers';
-			break;
-		case 'agent':
-			$tab='agent.orders';
-			$_section='agents';
-			break;
-		case 'account':
-			$tab='suppliers.orders';
-			$_section='orders';
-			break;
-		case 'delivery_note':
-			$tab='delivery_note.orders';
-			$_section='delivery_notes';
-			break;
-		case 'invoice':
-			$tab='invoice.orders';
-			$_section='invoices';
-			break;
-		}
+
+	switch ($data['parent']) {
+	case 'supplier':
+		$tab='supplier.orders';
+		$_section='suppliers';
+		break;
+	case 'supplier_part':
+		$tab='supplier_part.supplier.orders';
+		$_section='suppliers';
+		break;
+	case 'agent':
+		$tab='agent.orders';
+		$_section='agents';
+		break;
+	case 'account':
+		$tab='suppliers.orders';
+		$_section='orders';
+		break;
+
+
+	}
 
 
 
 
-		if (isset($_SESSION['table_state'][$tab])) {
-			$number_results=$_SESSION['table_state'][$tab]['nr'];
-			$start_from=0;
-			$order=$_SESSION['table_state'][$tab]['o'];
-			$order_direction=($_SESSION['table_state'][$tab]['od']==1 ?'desc':'');
-			$f_value=$_SESSION['table_state'][$tab]['f_value'];
-			$parameters=$_SESSION['table_state'][$tab];
+	if (isset($_SESSION['table_state'][$tab])) {
+		$number_results=$_SESSION['table_state'][$tab]['nr'];
+		$start_from=0;
+		$order=$_SESSION['table_state'][$tab]['o'];
+		$order_direction=($_SESSION['table_state'][$tab]['od']==1 ?'desc':'');
+		$f_value=$_SESSION['table_state'][$tab]['f_value'];
+		$parameters=$_SESSION['table_state'][$tab];
 
-		}else {
+	}else {
 
-			$default=$user->get_tab_defaults($tab);
-			$number_results=$default['rpp'];
-			$start_from=0;
-			$order=$default['sort_key'];
-			$order_direction=($default['sort_order']==1 ?'desc':'');
-			$f_value='';
-			$parameters=$default;
+		$default=$user->get_tab_defaults($tab);
+		$number_results=$default['rpp'];
+		$start_from=0;
+		$order=$default['sort_key'];
+		$order_direction=($default['sort_order']==1 ?'desc':'');
+		$f_value='';
+		$parameters=$default;
 
-		}
+	}
 
-		$parameters['parent']=$data['parent'];
-		$parameters['parent_key']=$data['parent_key'];
-
-
-
-		include_once 'prepare_table/'.$tab.'.ptble.php';
-
-		$_order_field=$order;
-		$order=preg_replace('/^.*\.`/', '', $order);
-		$order=preg_replace('/^`/', '', $order);
-		$order=preg_replace('/`$/', '', $order);
-		$_order_field_value=$object->get($order);
+	$parameters['parent']=$data['parent'];
+	$parameters['parent_key']=$data['parent_key'];
 
 
-		$prev_title='';
-		$next_title='';
-		$prev_key=0;
-		$next_key=0;
-		$sql=trim($sql_totals." $wheref");
 
-		if ($result2=$db->query($sql)) {
-			if ($row2 = $result2->fetch()) {
-				if ($row2['num']>1) {
+	include_once 'prepare_table/'.$tab.'.ptble.php';
+
+	$_order_field=$order;
+	$order=preg_replace('/^.*\.`/', '', $order);
+	$order=preg_replace('/^`/', '', $order);
+	$order=preg_replace('/`$/', '', $order);
+	$_order_field_value=$object->get($order);
 
 
-					$sql=sprintf("select `Purchase Order Public ID` object_name,O.`Purchase Order Key` as object_key from %s
+	$prev_title='';
+	$next_title='';
+	$prev_key=0;
+	$next_key=0;
+	$sql=trim($sql_totals." $wheref");
+
+	if ($result2=$db->query($sql)) {
+		if ($row2 = $result2->fetch()) {
+			if ($row2['num']>1) {
+
+
+				$sql=sprintf("select `Purchase Order Public ID` object_name,O.`Purchase Order Key` as object_key from %s
 	                and ($_order_field < %s OR ($_order_field = %s AND O.`Purchase Order Key` < %d))  order by $_order_field desc , O.`Purchase Order Key` desc limit 1",
-						"$table $where $wheref",
-						prepare_mysql($_order_field_value),
-						prepare_mysql($_order_field_value),
-						$object->id
-					);
+					"$table $where $wheref",
+					prepare_mysql($_order_field_value),
+					prepare_mysql($_order_field_value),
+					$object->id
+				);
 
 
-					if ($result=$db->query($sql)) {
-						if ($row = $result->fetch()) {
-							$prev_key=$row['object_key'];
-							$prev_title=_("Order").' '.$row['object_name'].' ('.$row['object_key'].')';
-						}
-					}else {
-						print_r($error_info=$db->errorInfo());
-						exit;
+				if ($result=$db->query($sql)) {
+					if ($row = $result->fetch()) {
+						$prev_key=$row['object_key'];
+						$prev_title=_("Order").' '.$row['object_name'].' ('.$row['object_key'].')';
 					}
-
-
-
-					$sql=sprintf("select `Purchase Order Public ID` object_name,O.`Purchase Order Key` as object_key from %s
-	                and ($_order_field  > %s OR ($_order_field  = %s AND O.`Purchase Order Key` > %d))  order by $_order_field   , O.`Purchase Order Key`  limit 1",
-						"$table $where $wheref",
-						prepare_mysql($_order_field_value),
-						prepare_mysql($_order_field_value),
-						$object->id
-					);
-
-					if ($result=$db->query($sql)) {
-						if ($row = $result->fetch()) {
-							$next_key=$row['object_key'];
-							$next_title=_("Order").' '.$row['object_name'].' ('.$row['object_key'].')';
-
-						}
-					}else {
-						print_r($error_info=$db->errorInfo());
-						exit;
-					}
-
-
-
-
-
-					if ($order_direction=='desc') {
-						$_tmp1=$prev_key;
-						$_tmp2=$prev_title;
-						$prev_key=$next_key;
-						$prev_title=$next_title;
-						$next_key=$_tmp1;
-						$next_title=$_tmp2;
-					}
-
-
-
+				}else {
+					print_r($error_info=$db->errorInfo());
+					exit;
 				}
 
 
-			}
-		}else {
-			print_r($error_info=$db->errorInfo());
-			exit;
-		}
+
+				$sql=sprintf("select `Purchase Order Public ID` object_name,O.`Purchase Order Key` as object_key from %s
+	                and ($_order_field  > %s OR ($_order_field  = %s AND O.`Purchase Order Key` > %d))  order by $_order_field   , O.`Purchase Order Key`  limit 1",
+					"$table $where $wheref",
+					prepare_mysql($_order_field_value),
+					prepare_mysql($_order_field_value),
+					$object->id
+				);
+
+				if ($result=$db->query($sql)) {
+					if ($row = $result->fetch()) {
+						$next_key=$row['object_key'];
+						$next_title=_("Order").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+					}
+				}else {
+					print_r($error_info=$db->errorInfo());
+					exit;
+				}
 
 
 
 
-		if ($data['parent']=='supplier') {
+
+				if ($order_direction=='desc') {
+					$_tmp1=$prev_key;
+					$_tmp2=$prev_title;
+					$prev_key=$next_key;
+					$prev_title=$next_title;
+					$next_key=$_tmp1;
+					$next_title=$_tmp2;
+				}
 
 
-			$up_button=array('icon'=>'arrow-up', 'title'=>_("Supplier").' '.$data['_parent']->get('Code'), 'reference'=>'supplier/'.$data['parent_key']);
-
-			if ($prev_key) {
-				$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'supplier/'.$data['parent_key'].'/order/'.$prev_key);
-
-			}else {
-				$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'', 'url'=>'');
-
-			}
-			$left_buttons[]=$up_button;
-
-
-			if ($next_key) {
-				$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'supplier/'.$data['parent_key'].'/order/'.$next_key);
-
-			}else {
-				$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
-
-			}
-			$sections=get_sections('customers', $object->get('Order Store Key'));
-			$search_placeholder=_('Search customers');
-
-
-		}
-		elseif ($data['parent']=='account') {
-			$up_button=array('icon'=>'arrow-up', 'title'=>_("Purchase orders"), 'reference'=>'suppliers/orders');
-
-			if ($prev_key) {
-				$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'suppliers/order/'.$prev_key);
-
-			}else {
-				$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'', 'url'=>'');
 
 			}
-			$left_buttons[]=$up_button;
-
-
-			if ($next_key) {
-				$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'suppliers/order/'.$next_key);
-
-			}else {
-				$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
-
-			}
-
-
-
-			$sections=get_sections('orders', $object->get('Order Store Key'));
-
-			$search_placeholder=_('Search orders');
 
 
 		}
-		elseif ($data['parent']=='delivery_note') {
-			$delivery_note=new DeliveryNote($data['parent_key']);
-			$up_button=array('icon'=>'arrow-up', 'title'=>_("Delivery Note").' ('.$delivery_note->get('Delivery Note ID').')', 'reference'=>'/delivery_notes/'.$delivery_note->get('Delivery Note Store Key').'/'.$data['parent_key']);
-
-			if ($prev_key) {
-				$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'order/'.$data['parent_key'].'/invoice/'.$prev_key);
-
-			}else {
-				$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'', 'url'=>'');
-
-			}
-			$left_buttons[]=$up_button;
-
-
-			if ($next_key) {
-				$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'order/'.$data['parent_key'].'/invoice/'.$next_key);
-
-			}else {
-				$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
-
-			}
-
-
-
-			$sections=get_sections('delivery_notes', $delivery_note->get('Delivery Note Store Key'));
-			$search_placeholder=_('Search delivery notes');
-
-
-
-		}
-		elseif ($data['parent']=='invoice') {
-			$invoice=new Invoice($data['parent_key']);
-			$up_button=array('icon'=>'arrow-up', 'title'=>_("Invoice").' ('.$invoice->get('Invoice Public ID').')', 'reference'=>'/delivery_notes/'.$invoice->get('Invoice Store Key').'/'.$data['parent_key']);
-
-			if ($prev_key) {
-				$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'order/'.$data['parent_key'].'/invoice/'.$prev_key);
-
-			}else {
-				$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'', 'url'=>'');
-
-			}
-			$left_buttons[]=$up_button;
-
-
-			if ($next_key) {
-				$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'order/'.$data['parent_key'].'/invoice/'.$next_key);
-
-			}else {
-				$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
-
-			}
-
-
-
-			$sections=get_sections('invoices', $invoice->get('Invoice Store Key'));
-
-			$search_placeholder=_('Search invoices');
-
-		}
-	}
-	else {
+	}else {
+		print_r($error_info=$db->errorInfo());
 		exit;
+	}
+
+
+
+
+
+	if ($data['parent']=='supplier') {
+
+
+		$up_button=array('icon'=>'arrow-up', 'title'=>_("Supplier").' '.$data['_parent']->get('Code'), 'reference'=>'supplier/'.$data['parent_key']);
+
+		if ($prev_key) {
+			$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'supplier/'.$data['parent_key'].'/order/'.$prev_key);
+
+		}else {
+			$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'', 'url'=>'');
+
+		}
+		$left_buttons[]=$up_button;
+
+
+		if ($next_key) {
+			$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'supplier/'.$data['parent_key'].'/order/'.$next_key);
+
+		}else {
+			$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
+
+		}
+		$sections=get_sections('suppliers', '');
+		$search_placeholder=_('Search suppliers');
+
+
+	}elseif ($data['parent']=='agent') {
+
+
+		$up_button=array('icon'=>'arrow-up', 'title'=>_("Agent").' '.$data['_parent']->get('Code'), 'reference'=>'agent/'.$data['parent_key']);
+
+		if ($prev_key) {
+			$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'supplier/'.$data['parent_key'].'/order/'.$prev_key);
+
+		}else {
+			$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'', 'url'=>'');
+
+		}
+		$left_buttons[]=$up_button;
+
+
+		if ($next_key) {
+			$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'supplier/'.$data['parent_key'].'/order/'.$next_key);
+
+		}else {
+			$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
+
+		}
+		$sections=get_sections('suppliers', '');
+		$search_placeholder=_('Search suppliers');
+
 
 	}
+	elseif ($data['parent']=='account') {
+		$up_button=array('icon'=>'arrow-up', 'title'=>_("Purchase orders"), 'reference'=>'suppliers/orders');
+
+		if ($prev_key) {
+			$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'suppliers/order/'.$prev_key);
+
+		}else {
+			$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'', 'url'=>'');
+
+		}
+		$left_buttons[]=$up_button;
+
+
+		if ($next_key) {
+			$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'suppliers/order/'.$next_key);
+
+		}else {
+			$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
+
+		}
+
+
+
+		$sections=get_sections('orders', $object->get('Order Store Key'));
+
+		$search_placeholder=_('Search orders');
+
+
+	}
+	elseif ($data['parent']=='supplier_part') {
+
+
+		$up_button=array('icon'=>'arrow-up', 'title'=>_("Supplier part").' '.$data['_parent']->get('Reference'), 'reference'=>'supplier/'.$data['_parent']->get('Supplier Part Supplier Key').'/part/'.$data['_parent']->id);
+
+		if ($prev_key) {
+			$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'supplier/'.$data['_parent']->get('Supplier Part Supplier Key').'/part/'.$data['_parent']->id.'/order/'.$prev_key
+			
+			);
+
+		}else {
+			$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'', 'url'=>'');
+
+		}
+		$left_buttons[]=$up_button;
+
+
+		if ($next_key) {
+			$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title, 'reference'=>'supplier/'.$data['_parent']->get('Supplier Part Supplier Key').'/part/'.$data['_parent']->id.'/order/'.$next_key);
+
+		}else {
+			$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
+
+		}
+
+
+		$sections=get_sections('suppliers', '');
+
+		$search_placeholder=_('Search suppliers');
+
+	}
+
 
 	$sections=get_sections('suppliers', '');
 	$search_placeholder=_('Search suppliers');
@@ -1590,6 +1583,7 @@ function get_delivery_navigation($data, $smarty, $user, $db, $account) {
 			$tab='supplier.deliveries';
 			$_section='suppliers';
 			break;
+
 		case 'agent':
 			$tab='agent.deliveries';
 			$_section='agents';
@@ -2246,6 +2240,7 @@ function get_settings_navigation($data, $smarty, $user, $db, $account) {
 
 }
 
+
 function get_new_supplier_attachment_navigation($data, $smarty, $user, $db) {
 
 
@@ -2289,6 +2284,7 @@ function get_new_supplier_attachment_navigation($data, $smarty, $user, $db) {
 
 }
 
+
 function get_supplier_attachment_navigation($data, $smarty, $user, $db) {
 
 
@@ -2303,7 +2299,7 @@ function get_supplier_attachment_navigation($data, $smarty, $user, $db) {
 	$_section='suppliers';
 	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
 
-		$supplier=$data['_parent'];
+	$supplier=$data['_parent'];
 
 
 	$up_button=array('icon'=>'arrow-up', 'title'=>sprintf(_('Supplier: %s'), $supplier->get('Code')), 'reference'=>'supplier/'.$data['parent_key']);
@@ -2331,5 +2327,6 @@ function get_supplier_attachment_navigation($data, $smarty, $user, $db) {
 	return $html;
 
 }
+
 
 ?>

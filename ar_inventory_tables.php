@@ -48,7 +48,7 @@ case 'barcodes':
 	barcodes(get_table_parameters(), $db, $user);
 	break;
 case 'supplier_parts':
-	supplier_parts(get_table_parameters(), $db, $user);
+	supplier_parts(get_table_parameters(), $db, $user,$account);
 	break;
 case 'part_categories':
 	part_categories(get_table_parameters(), $db, $user, $account);
@@ -494,7 +494,11 @@ function stock_transactions($_data, $db, $user) {
 }
 
 
-function supplier_parts($_data, $db, $user) {
+function supplier_parts($_data, $db, $user,$account) {
+
+
+
+	include_once 'utils/currency_functions.php';
 
 	if ($user->get('User Type')=='Agent') {
 		// $_data['parameters']['parent']=='supplier' and $_data['parameters']['parent_key']==$user->get('User Parent Key')
@@ -537,8 +541,20 @@ function supplier_parts($_data, $db, $user) {
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
 
+
+	$exchange=-1;
+
+
 	if ($result=$db->query($sql)) {
+
+
+
 		foreach ($result as $data) {
+
+
+			if ($exchange<0) {
+				$exchange=currency_conversion($db, $data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 24 hours');
+			}
 
 			switch ($data['Supplier Part Status']) {
 			case 'Available':
@@ -595,7 +611,12 @@ function supplier_parts($_data, $db, $user) {
 				'description'=>$data['Part Unit Description'],
 				'status'=>$status,
 				'cost'=>money($data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']),
-				'packing'=>'<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package'].'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discreet">'.($data['Part Units Per Package']*$data['Supplier Part Packages Per Carton'].'</span>'),
+				'delivered_cost'=>money($exchange*($data['Supplier Part Unit Cost']+$data['Supplier Part Unit Extra Cost']), $account->get('Account Currency')),
+				'packing'=>'
+				 <div style="float:right;min-width:30px;;text-align:right" title="'._('Units per carton').'"><span class="discreet" >'.($data['Part Units Per Package']*$data['Supplier Part Packages Per Carton'].'</span></div>
+				<div style="float:right;min-width:70px;text-align:center;"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div>
+				<div style="float:right;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package'].'</span></div>
+				 '),
 				'stock'=>number(floor($data['Part Current Stock']))." $stock_status",
 
 

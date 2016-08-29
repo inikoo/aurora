@@ -54,7 +54,7 @@ var columns = [
      cell: Backgrid.StringCell.extend({
       events: {
             "click": function() {
-                          change_view(this.model.get("parent_type")+"/"+this.model.get("parent_key")+"/part/"+this.model.get("supplier_part_key"))
+                          change_view("supplier/"+this.model.get("supplier_key")+"/part/"+this.model.get("supplier_part_key"))
 
             
             }

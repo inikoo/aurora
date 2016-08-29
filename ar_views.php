@@ -1914,7 +1914,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 		}elseif ($state['section']=='supplier') {
 			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
-			$branch[]=array('label'=>'<span class="id Supplier_Code">'.$state['_object']->get('Code').'</span> <span class="Supplier_Name italic">'.$state['_object']->get('Name').'</span>', 'icon'=>'ship', 'reference'=>'supplier/'.$state['key']);
+			$branch[]=array('label'=>'<span class="id Supplier_Code">'.$state['_object']->get('Code').'</span>', 'icon'=>'ship', 'reference'=>'supplier/'.$state['key']);
 
 		}elseif ($state['section']=='supplier.new') {
 
@@ -1949,6 +1949,14 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 			}elseif ($state['parent']=='agent') {
 				$branch[]=array('label'=>_('Agents'), 'icon'=>'', 'reference'=>'agents');
 				$branch[]=array('label'=>'<span class="id Agent_Code">'.$state['_parent']->get('Code'), 'icon'=>'user-secret', 'reference'=>'agent/'.$state['parent_key']);
+			}elseif ($state['parent']=='supplier_part') {
+			
+			    $supplier=new Supplier($state['_parent']->get('Supplier Part Supplier Key'));
+			
+				$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
+				$branch[]=array('label'=>'<span class="Supplier_Code">'. $supplier->get('Code').'</span>', 'icon'=>'ship', 'reference'=>'supplier/'. $supplier->id);
+				$branch[]=array('label'=>'<span class="Supplier_Part_Reference">'.$state['_parent']->get('Reference').'</span>', 'icon'=>'stop', 'reference'=>'supplier/'. $supplier->id.'/part/'.$state['_parent']->id);
+
 			}
 			$branch[]=array('label'=>'<span class="Purchase_Order_Public_ID">'.$state['_object']->get('Public ID').'</span>', 'icon'=>'clipboard', 'reference'=>'');
 		}elseif ($state['section']=='delivery') {

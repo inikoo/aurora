@@ -54,7 +54,7 @@ $fields="
 
 ";
 
-$fields="`Supplier Delivery Quantity`,`Supplier Delivery Key`,`Purchase Order Item Index`,
+$fields="`Supplier Delivery Quantity`,`Supplier Delivery Key`,`Purchase Order Item Index`,`Supplier Part Currency Code`,
 `Purchase Order Transaction Fact Key`,`Purchase Order Quantity`,POTF.`Supplier Part Key`,`Supplier Part Reference`,POTF.`Supplier Part Historic Key`,
 `Part Unit Description`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,
 `Supplier Part Unit Cost`,`Part Package Weight`,`Purchase Order CBM`,`Purchase Order Weight`,S.`Supplier Key`,`Supplier Code`

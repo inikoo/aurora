@@ -83,10 +83,9 @@ elseif ($parameters['parent']=='agent') {
 }
 else {
 
-	$where=sprintf(" where `Supplier Has Agent`='No'");
+	$where=sprintf(" where true ");
 
 }
-
 
 switch ($parameters['elements_type']) {
 
@@ -112,7 +111,6 @@ case 'type':
 
 
 }
-
 
 $filter_msg='';
 $wheref='';

@@ -11,7 +11,7 @@
 
 function get_supplier_order_showcase($data, $smarty, $user, $db) {
 
-	$data['_object']->update_totals();
+	//$data['_object']->update_totals();
 
 	if (!$data['_object']->id) {
 		return "";

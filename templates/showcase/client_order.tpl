@@ -187,9 +187,7 @@
 				<td class="label">{t}Cost{/t} ({$order->get('Purchase Order Currency Code')}) </td>
 				<td class="aright Purchase_Order_Total_Amount">{$order->get('Total Amount')}</td>
 			</tr>
-			<tr class="{if $account->get('Account Currency')==$order->get('Purchase Order Currency Code')}hide{/if}">
-				<td colspan="2" class="Purchase_Order_Total_Amount_Account_Currency aright ">{$order->get('Total Amount Account Currency')}</td>
-			</tr>
+			
 		</table>
 		<div style="clear:both">
 		</div>
