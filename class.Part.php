@@ -556,6 +556,12 @@ class Part extends Asset{
 
 			$this->update_field('Part Units Per Package', $value, $options);
 
+			if (!preg_match('/skip_update_historic_object/', $options)) {
+				foreach ($this->get_supplier_parts('objects') as $supplier_part) {
+					$supplier_part->update_historic_object();
+				}
+			}
+
 
 			$this->other_fields_updated=array(
 				'Part_Unit_Price'=>array(

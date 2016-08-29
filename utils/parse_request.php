@@ -527,6 +527,55 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 								if (is_numeric($view_path[2])) {
 
 									$key=$view_path[2];
+
+
+									if (isset($view_path[3])) {
+
+
+
+										if ($view_path[3]=='order') {
+											$section='order';
+
+											$parent='supplier_part';
+											$parent_key=$key;
+											$object='purchase_order';
+
+											if ( isset($view_path[4]) ) {
+												if (is_numeric($view_path[4])) {
+													$key=$view_path[4];
+
+
+													if ( isset($view_path[5]) ) {
+														if ($view_path[5]=='item') {
+
+															if ( isset($view_path[6]) ) {
+																if (is_numeric($view_path[6])) {
+
+																	$parent='PurchaseOrder';
+																	$parent_key=$view_path[4];
+																	$object='PurchaseOrderItem';
+																	$key=$view_path[6];
+																	$section='supplier.order.item';
+
+
+																}
+															}
+
+
+														}
+													}
+
+												}
+
+											}
+
+
+										}
+
+									}
+
+
+
 								}elseif ($view_path[2]=='new') {
 									$key=0;
 									$section='supplier_part.new';
@@ -641,7 +690,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 
 						}
-elseif ($view_path[1]=='attachment') {
+						elseif ($view_path[1]=='attachment') {
 							$section='supplier.attachment';
 							$object='attachment';
 							$parent='supplier';
@@ -2973,7 +3022,7 @@ elseif ($view_path[1]=='attachment') {
 	}
 
 
-//print_r($state);
+	//print_r($state);
 	return $state;
 
 }

@@ -100,7 +100,6 @@ var columns = [{
     sortType: "toggle",
     {if $sort_key=='stock'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-
     headerCell: integerHeaderCell
 }
 , {
@@ -108,14 +107,24 @@ var columns = [{
     label: "{t}Cost{/t}",
     editable: false,
     sortType: "toggle",
-    cell: Backgrid.HtmlCell.extend({})
+     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+    headerCell: integerHeaderCell
+
+}, {
+    name: "delivered_cost",
+    label: "{t}Delivered Cost{/t}",
+    editable: false,
+    sortType: "toggle",
+     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+    headerCell: integerHeaderCell
 
 }, {
     name: "packing",
     label: "{t}Packing{/t}",
     editable: false,
     sortType: "toggle",
-    cell: Backgrid.HtmlCell.extend({})
+    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+    headerCell: integerHeaderCell
 
 }
 
@@ -133,13 +142,15 @@ function change_table_view(view,save_state){
     grid.columns.findWhere({ name: 'part_reference'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'stock'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'cost'} ).set("renderable", false)
-    grid.columns.findWhere({ name: 'packing'} ).set("renderable", false)
+     grid.columns.findWhere({ name: 'delivered_cost'} ).set("renderable", false)
+   grid.columns.findWhere({ name: 'packing'} ).set("renderable", false)
 
     if(view=='overview'){
                grid.columns.findWhere({ name: 'part_description'} ).set("renderable", true)
                grid.columns.findWhere({ name: 'status'} ).set("renderable", true)
                grid.columns.findWhere({ name: 'cost'} ).set("renderable", true)
-               grid.columns.findWhere({ name: 'packing'} ).set("renderable", true)
+      grid.columns.findWhere({ name: 'delivered_cost'} ).set("renderable", true)
+              grid.columns.findWhere({ name: 'packing'} ).set("renderable", true)
 
     }else if(view=='parts'){
             grid.columns.findWhere({ name: 'part_reference'} ).set("renderable", true)

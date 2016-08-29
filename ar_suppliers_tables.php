@@ -59,7 +59,7 @@ case 'orders':
 	break;
 case 'agent_client_orders':
 	agent_client_orders(get_table_parameters(), $db, $user, $account);
-	break;	
+	break;
 case 'deliveries':
 	deliveries(get_table_parameters(), $db, $user, $account);
 	break;
@@ -283,10 +283,10 @@ function suppliers_edit($_data, $db, $user, $account) {
 
 function agents($_data, $db, $user, $account) {
 
-if (!$user->can_view('suppliers')) {
-	echo json_encode(array('state'=>405, 'resp'=>'Forbidden'));
-	exit;
-}
+	if (!$user->can_view('suppliers')) {
+		echo json_encode(array('state'=>405, 'resp'=>'Forbidden'));
+		exit;
+	}
 
 	$rtext_label='agent';
 	include_once 'prepare_table/init.php';
@@ -501,14 +501,15 @@ function orders($_data, $db, $user) {
 	echo json_encode($response);
 }
 
+
 function agent_client_orders($_data, $db, $user) {
 
 	if ($user->get('User Type')!='Agent') {
 		echo json_encode(array('state'=>405, 'resp'=>'Forbidden'));
 		exit;
 	}
-    $_data['parameters']['parent']='agent';
-    $_data['parameters']['parent_key']=$user->get('User Parent Key');
+	$_data['parameters']['parent']='agent';
+	$_data['parameters']['parent_key']=$user->get('User Parent Key');
 
 
 	$rtext_label='client order';
@@ -667,7 +668,9 @@ function deliveries($_data, $db, $user) {
 }
 
 
-function order_items($_data, $db, $user) {
+function order_items($_data, $db, $user, $account) {
+
+
 
 	$rtext_label='item';
 
@@ -679,9 +682,13 @@ function order_items($_data, $db, $user) {
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
 
+	$exchange=-1;
+
 	if ($result=$db->query($sql)) {
 		foreach ($result as $data) {
 
+
+		
 
 			$quantity=number($data['Purchase Order Quantity']);
 
@@ -692,7 +699,15 @@ function order_items($_data, $db, $user) {
 
 			$subtotals=sprintf('<span  class="subtotals" >');
 			if ($data['Purchase Order Quantity']>0) {
-				$subtotals.=money($data['Purchase Order Quantity']*$units_per_carton*$data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code'));
+			
+			    $amount=$data['Purchase Order Quantity']*$units_per_carton*$data['Supplier Part Unit Cost'];
+			
+				$subtotals.=money($amount, $purchase_order->get('Purchase Order Currency Code'));
+
+				if ( $data['Supplier Part Currency Code']!=$account->get('Account Currency')) {
+				$subtotals.=' <span class="">('.money($amount*$purchase_order->get('Purchase Order Currency Exchange'), $account->get('Account Currency')).')</span>';
+
+				}
 
 				if ($data['Part Package Weight']>0) {
 					$subtotals.=' '.weight($data['Part Package Weight']*$data['Purchase Order Quantity']*$data['Supplier Part Packages Per Carton']);
@@ -728,6 +743,7 @@ function order_items($_data, $db, $user) {
 				'parent_key'=>$purchase_order->get('Purchase Order Parent Key'),
 				'parent_type'=>strtolower($purchase_order->get('Purchase Order Parent')),
 				'supplier_part_key'=>(integer)$data['Supplier Part Key'],
+				'supplier_key'=>(integer)$data['Supplier Key'],
 				'checkbox'=>sprintf('<i key="%d" class="invisible fa fa-fw fa-square-o button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']),
 				'operations'=>sprintf('<i key="%d" class="fa fa-fw fa-truck fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']),
 				'reference'=>$data['Supplier Part Reference'],
@@ -743,7 +759,7 @@ function order_items($_data, $db, $user) {
 				'subtotals'=>$subtotals,
 				'ordered'=>number($data['Purchase Order Quantity']),
 				'supplier_key'=>$data['Supplier Key'],
-								'supplier'=>$data['Supplier Code'],
+				'supplier'=>$data['Supplier Code'],
 
 
 

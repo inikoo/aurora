@@ -311,7 +311,7 @@ class SupplierPart extends DB_Table{
 
 		case 'Carton CBM':
 			if ($this->data['Supplier Part Carton CBM']=='')return '';
-			return number($this->data['Supplier Part Carton CBM']).' m³';
+			return number($this->data['Supplier Part Carton CBM'],4).' m³';
 			break;
 		case 'SKO Dimensions':
 			return $this->part->get('Package Dimensions');
@@ -712,7 +712,7 @@ class SupplierPart extends DB_Table{
 
 			if ($value=='') {
 				$this->error=true;
-				$this->msg=sprintf(_('Reference mising'));
+				$this->msg=sprintf(_('Reference missing'));
 				return;
 			}
 
@@ -766,32 +766,6 @@ class SupplierPart extends DB_Table{
 			$this->update_field($field, $value, $options);
 			if (!preg_match('/skip_update_historic_object/', $options)) {
 				$this->update_historic_object();
-			}
-			if ($value!='') {
-				$purchase_order_keys=array();
-				$sql=sprintf("select `Purchase Order Transaction Fact Key`,`Purchase Order Key`,`Purchase Order Quantity` from `Purchase Order Transaction Fact` where `Supplier Part Key`=%d  and `Purchase Order CBM` is NULL and `Purchase Order Transaction State` in ('InProcess','Submitted')  ",
-					$this->id
-				);
-				//print $sql;
-				if ($result=$this->db->query($sql)) {
-					foreach ($result as $row) {
-						$purchase_order_keys[$row['Purchase Order Key']]=$row['Purchase Order Key'];
-						$sql=sprintf('update `Purchase Order Transaction Fact` set  `Purchase Order CBM`=%f where `Purchase Order Transaction Fact Key`=%d',
-							$row['Purchase Order Quantity']*$this->get('Supplier Part Carton CBM'),
-							$row['Purchase Order Transaction Fact Key']
-						);
-						$this->db->exec($sql);
-					}
-					include_once 'class.PurchaseOrder.php';
-					foreach ($purchase_order_keys as $purchase_order_key) {
-						$purchase_order=new PurchaseOrder($purchase_order_key);
-						$purchase_order->update_totals();
-					}
-
-				}else {
-					print_r($error_info=$this->db->errorInfo());
-					exit;
-				}
 			}
 
 			$this->update_metadata=array(
@@ -856,7 +830,7 @@ class SupplierPart extends DB_Table{
 					'SKO_Weight'=>$this->get('SKO Weight'),
 					'SKO_Cost'=>$this->get('SKO Cost'),
 					'Packages_Per_Carton'=>$this->get('Supplier Part Packages Per Carton'),
-					'Supplier_Part_Units_Per_Package'=>$this->get('Supplier Part Units Per Package'),
+					'Supplier_Part_Units_Per_Package'=>$this->get('Part Units Per Package'),
 					'Supplier_Part_Units_Per_Carton'=>$this->get('Units Per Carton')
 
 
@@ -970,7 +944,8 @@ class SupplierPart extends DB_Table{
 
 		if (!$this->id)return;
 
-
+		$old_value=$this->get('Supplier Part Historic Key');
+		$changed=false;
 
 		$sql=sprintf('select `Supplier Part Historic Key` from `Supplier Part Historic Dimension` where
 		`Supplier Part Historic Supplier Part Key`=%d and `Supplier Part Historic Reference`=%s and `Supplier Part Historic Unit Cost`=%f and
@@ -991,6 +966,7 @@ class SupplierPart extends DB_Table{
 
 
 				$this->update(array('Supplier Part Historic Key'=>$row['Supplier Part Historic Key']), 'no_history');
+				$changed=true;
 
 			}else {
 				$sql=sprintf('insert into `Supplier Part Historic Dimension` (`Supplier Part Historic Supplier Part Key`,`Supplier Part Historic Reference`,`Supplier Part Historic Unit Cost`,
@@ -1008,7 +984,7 @@ class SupplierPart extends DB_Table{
 				//print "$sql\n";
 				if ($this->db->exec($sql)) {
 					$this->update(array('Supplier Part Historic Key'=>$this->db->lastInsertId()), 'no_history');
-
+					$changed=true;
 				}
 			}
 		}else {
@@ -1016,6 +992,51 @@ class SupplierPart extends DB_Table{
 			print $sql;
 			exit;
 		}
+
+
+		if ($changed) {
+
+			$purchase_order_keys=array();
+			$sql=sprintf("select `Purchase Order Transaction Fact Key`,PO.`Purchase Order Key`,`Purchase Order Quantity` from `Purchase Order Transaction Fact` POTF  left join `Purchase Order Dimension` PO on (POTF.`Purchase Order Key`=PO.`Purchase Order Key`) where `Supplier Part Key`=%d  and `Purchase Order Locked`='No'  ",
+				$this->id
+			);
+			//print $sql;
+			if ($result=$this->db->query($sql)) {
+				foreach ($result as $row) {
+					$purchase_order_keys[$row['Purchase Order Key']]=$row['Purchase Order Key'];
+
+					$units_per_carton=$this->part->get('Part Units Per Package')*$this->get('Supplier Part Packages Per Carton');
+
+					$sql=sprintf('update `Purchase Order Transaction Fact` set
+						  `Supplier Part Historic Key`=%d,
+						 `Purchase Order CBM`=%f,
+						 `Purchase Order Weight`=%f,
+						 `Purchase Order Net Amount`=%.2f
+						  where `Purchase Order Transaction Fact Key`=%d',
+						$this->get('Supplier Part Historic Key'),
+						$row['Purchase Order Quantity']*$this->get('Supplier Part Carton CBM'),
+						$row['Purchase Order Quantity']*$this->get('Supplier Part Packages Per Carton')*$this->get('Part Package Weight'),
+						$row['Purchase Order Quantity']*$units_per_carton*$this->get('Supplier Part Unit Cost'),
+
+						$row['Purchase Order Transaction Fact Key']
+					);
+					
+					$this->db->exec($sql);
+				}
+				include_once 'class.PurchaseOrder.php';
+				foreach ($purchase_order_keys as $purchase_order_key) {
+					$purchase_order=new PurchaseOrder($purchase_order_key);
+					$purchase_order->update_totals();
+				}
+
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+		}
+
+
+
 
 
 
