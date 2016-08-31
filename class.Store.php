@@ -852,6 +852,7 @@ class Store extends DB_Table {
 
 
 
+		$sql="select count(*) as `Store Total Acc Orders`,sum(IF(`Order Current Dispatch State`='Dispatched',1,0 )) as `Store Dispatched Orders` ,sum(IF(`Order Current Dispatch State`='Suspended',1,0 )) as `Store Suspended Orders`,sum(IF(`Order Current Dispatch State`='Cancelled',1,0 )) as `Store Cancelled Orders`,sum(IF(`Order Current Dispatch State`='Unknown',1,0 )) as `Store Unknown Orders` from `Order Dimension`   where `Order Store Key`=".$this->id;
 
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
