@@ -363,6 +363,26 @@ class Supplier extends SubjectSupplier {
 		$supplier_number_low_parts=0;
 		$supplier_number_critical_parts=0;
 		$supplier_number_out_of_stock_parts=0;
+		
+		$sql=sprintf('select count(*) as num ,
+		from `Supplier Part Dimension` SP  where `Supplier Part Supplier Key`=%d  ',
+			$this->id
+		);
+
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				//print_r($row);
+
+				$supplier_number_parts=$row['num'];
+				
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+		
 
 		$sql=sprintf('select count(*) as num ,
 		sum(if(`Part Stock Status`="Surplus",1,0)) as surplus,
