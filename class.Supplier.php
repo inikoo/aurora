@@ -364,7 +364,7 @@ class Supplier extends SubjectSupplier {
 		$supplier_number_critical_parts=0;
 		$supplier_number_out_of_stock_parts=0;
 		
-		$sql=sprintf('select count(*) as num ,
+		$sql=sprintf('select count(*) as num 
 		from `Supplier Part Dimension` SP  where `Supplier Part Supplier Key`=%d  ',
 			$this->id
 		);
