@@ -384,7 +384,7 @@ class Supplier extends SubjectSupplier {
 
 		
 
-		$sql=sprintf('select count(*) as num ,
+		$sql=sprintf('select 
 		sum(if(`Part Stock Status`="Surplus",1,0)) as surplus,
 		sum(if(`Part Stock Status`="Optimal",1,0)) as optimal,
 		sum(if(`Part Stock Status`="Low",1,0)) as low,
@@ -400,7 +400,6 @@ class Supplier extends SubjectSupplier {
 			if ($row = $result->fetch()) {
 				//print_r($row);
 
-				$supplier_number_parts=$row['num'];
 				if ($row['num']>0) {
 					$supplier_number_surplus_parts=$row['surplus'];
 					$supplier_number_optimal_parts=$row['optimal'];
