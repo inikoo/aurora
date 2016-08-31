@@ -406,6 +406,15 @@ ALTER TABLE `Attachment Bridge` CHANGE `Subject` `Subject` ENUM('Staff','Custome
 ALTER TABLE `Upload Record Dimension` CHANGE `Upload Record State` `Upload Record State` ENUM('InProcess','OK','Error','Warning','Cancelled','NoChange') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'InProcess';
 ALTER TABLE `Upload Dimension` ADD `Upload No Change` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Upload OK`;
 
+
+ALTER TABLE `Supplier Part Dimension` DROP `Supplier Part Units Per Package`;
+ALTER TABLE `Attachment Bridge` CHANGE `Attachment Subject Type` `Attachment Subject Type` ENUM('Other','CV','Contract','Invoice','PurchaseOrder','Catalogue','MSDS') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Other';
+ALTER TABLE `Attachment Bridge` CHANGE `Subject` `Subject` ENUM('Part','Staff','Customer Communications','Customer History Attachment','Product History Attachment','Part History Attachment','Part MSDS','Product MSDS','Supplier Product MSDS','Product Info Sheet','Purchase Order History Attachment','Purchase Order','Supplier Delivery Note History Attachment','Supplier Delivery Note','Supplier Invoice History Attachment','Supplier Invoice','Order Note History Attachment','Delivery Note History Attachment','Invoice History Attachment','Supplier') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+ALTER TABLE `Product Part Bridge` CHANGE `Product Part Ratio` `Product Part Ratio` DECIMAL(15,5) NOT NULL DEFAULT '1';
+ALTER TABLE `Part Dimension` CHANGE `Part Status` `Part Status` ENUM('Not In Use','In Use','Discontinuing') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'In Use';
+ALTER TABLE `Part Dimension` CHANGE `Part Current Stock` `Part Current Stock` DECIMAL(24,6) NULL DEFAULT NULL, CHANGE `Part Current On Hand Stock` `Part Current On Hand Stock` DECIMAL(24,6) NOT NULL DEFAULT '0', CHANGE `Part Current Stock In Process` `Part Current Stock In Process` DECIMAL(24,6) NOT NULL DEFAULT '0', CHANGE `Part Current Stock Picked` `Part Current Stock Picked` DECIMAL(24,6) NOT NULL DEFAULT '0', CHANGE `Part Current Value` `Part Current Value` DECIMAL(24,4) NOT NULL DEFAULT '0', CHANGE `Part Current Stock Negative Discrepancy` `Part Current Stock Negative Discrepancy` DECIMAL(24,6) NOT NULL DEFAULT '0';
+
+
 migrate_suppliers.oneoff.php
 migrate_images.oneoff.php 
 migrate_supplier_parts.oneoff.php 
@@ -417,7 +426,10 @@ migrate_parts.oneoff.php
 Only for bali dw:
 
 
-ALTER TABLE `Supplier Part Dimension` DROP `Supplier Part Units Per Package`;
+
+
+ALTER TABLE `Inventory Transaction Fact` CHANGE `Inventory Transaction Quantity` `Inventory Transaction Quantity` DECIMAL(24,6) NULL DEFAULT NULL;
+
 
 
 migrate_products.oneoff.php 

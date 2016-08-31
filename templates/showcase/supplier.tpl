@@ -1,6 +1,36 @@
 <div class="subject_profile" style="padding-top:10px">
-	<div id="contact_data">
-		<div class="data_container">
+	
+	
+	<div id="contact_data" >
+	<div style="width:100%" >
+	
+	<ul class="tags" >
+			{foreach from=$supplier->get_category_data() item=item key=key} 
+	<li><span class="button" onClick="change_view('category/{$item.category_key}')">{$item.value}</span></li>
+	{/foreach} 
+</ul>
+
+
+	</div>
+		<div class="data_container" style="clear:both">
+			
+			
+			
+			
+			
+			
+			<div class="categories hide">
+			
+			{foreach from=$supplier->get_category_data() item=item key=key} 
+				<tr>
+					<td>{$item.root_label}:</td>
+					<td>{$item.value}</td>
+				</tr>
+				{/foreach} 
+			
+			</div>
+			
+			
 			
 			<div class="data_field">
 				<h1 class="Supplier_Name">
@@ -94,12 +124,7 @@
 					<td>{t}Delivery time{/t}:</td>
 					<td class="Delivery_Time">{$supplier->get('Delivery Time')}</td>
 				</tr>
-				{foreach from=$supplier->get_category_data() item=item key=key} 
-				<tr>
-					<td>{$item.root_label}:</td>
-					<td>{$item.value}</td>
-				</tr>
-				{/foreach} 
+				
 			</table>
 			
 		</div>

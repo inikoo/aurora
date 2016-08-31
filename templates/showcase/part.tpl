@@ -11,7 +11,7 @@
 			
 			
 			<div class="data_field " >
-				<h1 ><span class="Part_Unit_Description">{$part->get('Part Unit Description')}</span> <span class="Store_Product_Price">{$part->get('Price')}</span></h1>
+				<h1 ><span class="Part_Unit_Description">{$part->get('Part Package Description')}</span></h1>
 			</div>
 			
 		</div>
@@ -60,12 +60,17 @@
 		
 			<table id="stock_table" border="0" class="overview">
 				<tbody class="info">
+				
+				
+				
 				<tr  class="main ">
 					
-					<td class=" highlight">{$part->get('Status')} </td>
+					<td class=" highlight Part_Status">{$part->get('Status')} </td>
 					
-					<td class="aright highlight" style="font-size:200%">
-					<span class="button Current_On_Hand_Stock" onClick="open_edit_stock()"  >{$part->get('Current On Hand Stock')}</span> <span class="Stock_Status_Icon">{$part->get('Stock Status Icon')}</span>
+					<td class="aright " >
+					
+					<span class="big highlight  Current_On_Hand_Stock"  >{$part->get('Current On Hand Stock')}</span> 
+					<span class="big highlight Stock_Status_Icon">{$part->get('Stock Status Icon')}</span>
 					
 					</td>
 					
@@ -85,7 +90,7 @@
 					
 					<td   colspan=2> 
 					
-					<table style="width:100%">
+					<table style="width:100%">                                                       
 					<tr >
 					<td class="super_discreet highlight Current_On_Hand_Stock" style="font-size:200%">{$part->get('Current On Hand Stock')}</td>
 					<td id="stock_diff" class="acenter"> </td>
@@ -94,7 +99,9 @@
 					<tr>
 					<td><i class="fa  fa-times button discreet" aria-hidden="true" title="{t}Close edit{/t}"  onClick="close_edit_stock()"></i> </td>
 					<td></td>
-					<td  id="saving_buttons" class="aright discreet  "><span class="save">{t}Save{/t} </span><i class="fa  fa-cloud   save " aria-hidden="true" title="{t}Save{/t}" id="save_stock" onClick="save_stock()" ></i> </td>
+					<td  id="saving_buttons" class="aright discreet  ">
+					<span  id="saving_buttons" class="aright discreet   ><span class="save">{t}Save{/t}</span ><i class="fa  fa-cloud   save " aria-hidden="true" title="{t}Save{/t}" id="save_stock" onClick="save_stock()" ></i></span>
+					 </td>
 
 					</tr>
 					
@@ -104,6 +111,16 @@
 					
 				</tr>
 				
+			</table>
+			
+			
+			<table style="width:100%">
+			<td>
+			 <i id="close_edit_stock" class="fa fa-sign-out fa-flip-horizontal button hide" aria-hidden="true" title="{t}Exit edit stock{/t}" onClick="close_edit_stock()"></i></td>
+			<td class="aright">
+			<i  id="open_edit_stock"  class="fa fa-pencil button very_discreet " aria-hidden="true" title="{t}Edit stock{/t}" onClick="open_edit_stock()" ></i>
+			<span  id="edit_stock_saving_buttons" class="aright discreet hide"  ><span class="save">{t}Save{/t}</span ><i class="fa  fa-cloud   save padding_left_5" aria-hidden="true" title="{t}Save{/t}" id="save_stock" onClick="save_stock()" ></i></span>
+			</td>
 			</table>
 			
 			<table id="locations_table" border="0" class="overview" part_sku="{$part->id}">
@@ -118,8 +135,11 @@
 			</td>
 			
 				</tr>
+				
+			
+				
 			<tbody id="part_locations" class="Part_Locations">
-			{include file='part_locations.edit.tpl' locations_data=$part->get_locations(true)}
+			{include file='part_locations.edit.tpl' locations_data=$part->get_locations('data')}
 			</tbody>	
 			
 				

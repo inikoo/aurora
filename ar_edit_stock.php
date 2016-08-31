@@ -181,7 +181,7 @@ function edit_stock($account, $db, $user, $editor, $data, $smarty) {
 		$part_location->editor=$editor;
 
 		if (!$part_location->ok) {
-			$response=array('state'=>400, 'msg'=>_('Error, please try again').' location part not assiated');
+			$response=array('state'=>400, 'msg'=>_('Error, please try again').' location part not associated');
 
 
 			echo json_encode($response);
@@ -204,7 +204,7 @@ function edit_stock($account, $db, $user, $editor, $data, $smarty) {
 
 
 
-		$smarty->assign('locations_data', $part->get_locations(true));
+		$smarty->assign('locations_data', $part->get_locations('data'));
 		$part_locations=$smarty->fetch('part_locations.edit.tpl');
 
 		$response['updated_fields']=array(
@@ -215,7 +215,8 @@ function edit_stock($account, $db, $user, $editor, $data, $smarty) {
 			'Current_Stock_In_Process'=>$part->get('Current Stock In Process'),
 			'Current_Stock_Available'=>$part->get('Current Stock Available'),
 			'Available_Forecast'=>$part->get('Available Forecast'),
-			'Part_Locations'=>$part_locations
+			'Part_Locations'=>$part_locations,
+			'Part_Status'=>$part->get('Status'),
 		);
 	}
 

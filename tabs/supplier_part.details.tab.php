@@ -20,7 +20,8 @@ $supplier_part=$state['_object'];
 $object_fields_supplier_part=get_object_fields($supplier_part, $db, $user, $smarty,
 	array(
 		'show_full_label'=>true,
-		'supplier'=>$state['_parent']
+		'parent'=>'supplier',
+		'parent_object'=>$state['_parent']
 	));
 
 

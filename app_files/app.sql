@@ -450,9 +450,9 @@ CREATE TABLE `Agent Supplier Bridge` (
 CREATE TABLE `Attachment Bridge` (
   `Attachment Bridge Key` mediumint(8) unsigned NOT NULL,
   `Attachment Key` mediumint(8) unsigned NOT NULL,
-  `Subject` enum('Staff','Customer Communications','Customer History Attachment','Product History Attachment','Part History Attachment','Part MSDS','Product MSDS','Supplier Product MSDS','Product Info Sheet','Purchase Order History Attachment','Purchase Order','Supplier Delivery Note History Attachment','Supplier Delivery Note','Supplier Invoice History Attachment','Supplier Invoice','Order Note History Attachment','Delivery Note History Attachment','Invoice History Attachment','Supplier') NOT NULL,
+  `Subject` enum('Part','Staff','Customer Communications','Customer History Attachment','Product History Attachment','Part History Attachment','Part MSDS','Product MSDS','Supplier Product MSDS','Product Info Sheet','Purchase Order History Attachment','Purchase Order','Supplier Delivery Note History Attachment','Supplier Delivery Note','Supplier Invoice History Attachment','Supplier Invoice','Order Note History Attachment','Delivery Note History Attachment','Invoice History Attachment','Supplier') NOT NULL,
   `Subject Key` int(10) unsigned NOT NULL,
-  `Attachment Subject Type` enum('Other','CV','Contract') NOT NULL DEFAULT 'Other',
+  `Attachment Subject Type` enum('Other','CV','Contract','Invoice','PurchaseOrder','Catalogue','MSDS') NOT NULL DEFAULT 'Other',
   `Attachment Caption` text,
   `Attachment File Original Name` varchar(255) DEFAULT NULL,
   `Attachment Public` enum('Yes','No') NOT NULL DEFAULT 'No',
@@ -2697,7 +2697,7 @@ CREATE TABLE `Export Map` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Fork Dimension` (
   `Fork Key` mediumint(8) unsigned NOT NULL,
-  `Fork Type` enum('au_export_edit_template','au_upload_edit','au_export','au_upload','au_housekeeping','export','import','edit','ping_sitemap','housekeeping','sendemail','edit_pages') NOT NULL,
+  `Fork Type` enum('au_export','au_upload','au_housekeeping','export','import','edit','ping_sitemap','housekeeping','sendemail','edit_pages') NOT NULL,
   `Fork Process Data` text NOT NULL,
   `Fork Token` varchar(64) DEFAULT NULL,
   `Fork State` enum('Queued','In Process','Finished','Cancelled') NOT NULL DEFAULT 'Queued',
@@ -3099,7 +3099,7 @@ CREATE TABLE `Inventory Transaction Fact` (
   `Inventory Transaction Record Type` enum('Movement','Helper') NOT NULL DEFAULT 'Helper',
   `Inventory Transaction Type` enum('Move','Order In Process','No Dispatched','Sale','Audit','In','Adjust','Broken','Lost','Not Found','Associate','Disassociate','Move In','Move Out','Other Out') NOT NULL,
   `Inventory Transaction Section` enum('OIP','In','Move','Out','Audit','NoDispatched','Other') NOT NULL DEFAULT 'Other',
-  `Inventory Transaction Quantity` float DEFAULT NULL,
+  `Inventory Transaction Quantity` decimal(24,6) DEFAULT NULL,
   `Inventory Transaction Amount` decimal(12,3) DEFAULT NULL,
   `Inventory Transaction Weight` float DEFAULT NULL,
   `Inventory Transaction Storing Charge Amount` decimal(9,2) NOT NULL DEFAULT '0.00',
@@ -4714,6 +4714,9 @@ CREATE TABLE `Order Sales Representative Bridge` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Order Spanshot Fact` (
   `Date` date NOT NULL,
+  `Store Key` mediumint(8) unsigned NOT NULL,
+  `Product Family Key` mediumint(8) unsigned NOT NULL,
+  `Product Department Key` mediumint(8) unsigned NOT NULL,
   `Product ID` mediumint(8) unsigned NOT NULL,
   `Availability` decimal(3,2) NOT NULL DEFAULT '1.00',
   `Outers Out` float NOT NULL DEFAULT '0',
@@ -4723,6 +4726,9 @@ CREATE TABLE `Order Spanshot Fact` (
   `Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
   UNIQUE KEY `Date` (`Date`,`Product ID`),
   KEY `Date_2` (`Date`),
+  KEY `Store Key` (`Store Key`),
+  KEY `Product Family Key` (`Product Family Key`),
+  KEY `Product Department Key` (`Product Department Key`),
   KEY `Product ID` (`Product ID`)
 );
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -6821,7 +6827,7 @@ CREATE TABLE `Part Dimension` (
   `Part SKU` mediumint(8) unsigned NOT NULL,
   `Part Reference` varchar(32) DEFAULT NULL,
   `Part Unit` enum('10','25','100','200','bag','ball','box','doz','dwt','ea','foot','gram','gross','hank','kilo','ib','m','oz','ozt','pair','pkg','set','skein','spool','strand','ten','tube','vial','yd') NOT NULL DEFAULT 'ea',
-  `Part Status` enum('Not In Use','In Use') NOT NULL DEFAULT 'In Use',
+  `Part Status` enum('Not In Use','In Use','Discontinuing') NOT NULL DEFAULT 'In Use',
   `Part Available` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Part Available for Products` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Part Available for Products Configuration` enum('Yes','No','Automatic') NOT NULL DEFAULT 'No',
@@ -6896,12 +6902,12 @@ CREATE TABLE `Part Dimension` (
   `Part Package Dimensions Volume` float DEFAULT NULL,
   `Part Package XHTML Dimensions` varchar(255) DEFAULT NULL,
   `Part Comercial Value` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Part Current Stock` float DEFAULT NULL,
-  `Part Current On Hand Stock` float NOT NULL DEFAULT '0',
-  `Part Current Stock In Process` float NOT NULL DEFAULT '0',
-  `Part Current Stock Picked` float NOT NULL DEFAULT '0',
-  `Part Current Value` float NOT NULL DEFAULT '0',
-  `Part Current Stock Negative Discrepancy` float NOT NULL DEFAULT '0',
+  `Part Current Stock` decimal(24,6) DEFAULT NULL,
+  `Part Current On Hand Stock` decimal(24,6) NOT NULL DEFAULT '0.000000',
+  `Part Current Stock In Process` decimal(24,6) NOT NULL DEFAULT '0.000000',
+  `Part Current Stock Picked` decimal(24,6) NOT NULL DEFAULT '0.000000',
+  `Part Current Value` decimal(24,4) NOT NULL DEFAULT '0.0000',
+  `Part Current Stock Negative Discrepancy` decimal(24,6) NOT NULL DEFAULT '0.000000',
   `Part Current Stock Negative Discrepancy Value` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Part Current Stock Cost Per Unit` decimal(12,2) DEFAULT NULL,
   `Part Current Storing Cost Per Unit` decimal(12,2) DEFAULT NULL,
@@ -7371,7 +7377,6 @@ CREATE TABLE `Product Category Dimension` (
   `Product Category Key` mediumint(8) unsigned NOT NULL,
   `Product Category Store Key` mediumint(8) unsigned NOT NULL DEFAULT '1',
   `Product Category Description` mediumtext NOT NULL,
-  `Product Category Status` enum('Active','Discontinued') NOT NULL DEFAULT 'Active',
   `Product Category Valid From` datetime DEFAULT NULL,
   `Product Category Valid To` datetime DEFAULT NULL,
   `Product Category Part Family Category Key` mediumint(8) unsigned DEFAULT NULL,
@@ -7472,9 +7477,8 @@ CREATE TABLE `Product Category Dimension` (
   `Product Category DC 1 Week Acc Profit` decimal(12,2) DEFAULT '0.00',
   `Product Category Currency Code` varchar(3) NOT NULL DEFAULT 'GBP',
   `Product Category Public` enum('Yes','No') NOT NULL DEFAULT 'Yes',
-  PRIMARY KEY (`Product Category Key`),
-  KEY `Product Category Store Key` (`Product Category Store Key`),
-  KEY `Product Category Status` (`Product Category Status`)
+  PRIMARY KEY (`Product Category Key`,`Product Category Store Key`),
+  KEY `Product Category Store Key` (`Product Category Store Key`)
 );
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -9501,7 +9505,7 @@ CREATE TABLE `Product Part Bridge` (
   `Product Part Key` int(10) unsigned NOT NULL,
   `Product Part Product ID` mediumint(8) unsigned NOT NULL,
   `Product Part Part SKU` mediumint(8) unsigned NOT NULL,
-  `Product Part Ratio` float NOT NULL DEFAULT '1',
+  `Product Part Ratio` decimal(15,5) NOT NULL DEFAULT '1.00000',
   `Product Part Note` varchar(255) DEFAULT NULL,
   `Product Part Linked Fields` text NOT NULL,
   PRIMARY KEY (`Product Part Key`),
@@ -9703,6 +9707,7 @@ CREATE TABLE `Purchase Order Deleted Dimension` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Purchase Order Dimension` (
   `Purchase Order Key` mediumint(8) unsigned NOT NULL,
+  `Purchase Order Locked` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Purchase Order Parent` enum('Supplier','Agent') NOT NULL DEFAULT 'Supplier',
   `Purchase Order Parent Key` mediumint(8) unsigned DEFAULT NULL,
   `Purchase Order Parent Code` varchar(255) DEFAULT NULL,
@@ -9730,7 +9735,6 @@ CREATE TABLE `Purchase Order Dimension` (
   `Purchase Order Main Buyer Name` varchar(255) DEFAULT NULL,
   `Purchase Order Main Source Type` enum('Post','Internet','Telephone','Fax','In Person','Unknown','Email','Other') NOT NULL DEFAULT 'Unknown',
   `Purchase Order State` enum('InProcess','Submitted','Inputted','Dispatched','Received','Checked','Placed','Cancelled') NOT NULL DEFAULT 'InProcess',
-  `Purchase Order Agent State` enum('ClientOrderReceived','SupplierOrdersCreated','SupplierOrdersReceived','Checked','Dispatched') DEFAULT NULL,
   `Purchase Order Max Supplier Delivery State` enum('NA','InProcess','Dispatched','Received','Checked','Placed') NOT NULL DEFAULT 'NA',
   `Purchase Order Our Feedback` enum('Praise','None','Shortages','Breakings','Different Product','Multiple','Low Quality','Not Like','Slow Delivery','Other') NOT NULL DEFAULT 'None',
   `Purchase Order Actions Taken` enum('Refund','Credit','Replacement','Send Missing','Other','No Applicable') NOT NULL DEFAULT 'No Applicable',
@@ -12024,7 +12028,6 @@ CREATE TABLE `Supplier Part Dimension` (
   `Supplier Part Unit Cost` float unsigned DEFAULT NULL,
   `Supplier Part Unit Extra Cost` float NOT NULL DEFAULT '0',
   `Supplier Part Currency Code` varchar(3) DEFAULT NULL,
-  `Supplier Part Units Per Package` smallint(6) NOT NULL DEFAULT '1',
   `Supplier Part Packages Per Carton` smallint(6) NOT NULL DEFAULT '1',
   `Supplier Part Carton CBM` float unsigned DEFAULT NULL COMMENT 'cubic meters',
   `Supplier Part Minimum Carton Order` smallint(5) unsigned NOT NULL DEFAULT '1',
@@ -14199,4 +14202,4 @@ CREATE TABLE `todo_users` (
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-08-28  1:22:14
+-- Dump completed on 2016-08-31 11:19:22

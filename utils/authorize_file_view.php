@@ -16,8 +16,18 @@ function authorize_file_view($db,$user, $public, $subject, $subject_key) {
 		return true;
 	}
 
-
 	switch ($subject) {
+	
+		case 'Part':
+
+		if ($user->can_view('inventory')) {
+			return true;
+		}
+
+
+		
+
+	
 	case 'Staff':
 
 		if ($user->can_view('staff')) {

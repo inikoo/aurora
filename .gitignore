@@ -13,3 +13,5 @@ ecom/keyring/dns.php
 css/app.css.map
 
 deployment.secret.json
+
+app_files/app.tmp.sql

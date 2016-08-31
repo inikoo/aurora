@@ -703,7 +703,7 @@ function get_menu($data, $user, $smarty) {
 
 function get_navigation($user, $smarty, $data, $db, $account) {
 
-
+	//print $data['module'];
 
 	switch ($data['module']) {
 
@@ -1144,7 +1144,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 	case ('inventory'):
 		require_once 'navigation/inventory.nav.php';
 
-
+		//print $data['section'];
 		switch ($data['section']) {
 
 
@@ -1157,6 +1157,13 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 			break;
 		case ('part.new'):
 			return get_new_part_navigation($data, $smarty, $user, $db, $account, $account);
+			break;
+		case ('supplier_part.new'):
+			return get_new_supplier_part_navigation($data, $smarty, $user, $db, $account, $account);
+			break;	
+		case ('product'):
+
+			return get_product_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case ('part.image'):
 			return get_part_image_navigation($data, $smarty, $user, $db, $account);
@@ -1188,6 +1195,12 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 			break;
 		case ('deleted_barcode'):
 			return get_deleted_barcode_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('part.attachment'):
+			return get_part_attachment_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('part.attachment.new'):
+			return get_new_part_attachment_navigation($data, $smarty, $user, $db, $account);
 			break;
 		}
 
@@ -1950,9 +1963,9 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 				$branch[]=array('label'=>_('Agents'), 'icon'=>'', 'reference'=>'agents');
 				$branch[]=array('label'=>'<span class="id Agent_Code">'.$state['_parent']->get('Code'), 'icon'=>'user-secret', 'reference'=>'agent/'.$state['parent_key']);
 			}elseif ($state['parent']=='supplier_part') {
-			
-			    $supplier=new Supplier($state['_parent']->get('Supplier Part Supplier Key'));
-			
+
+				$supplier=new Supplier($state['_parent']->get('Supplier Part Supplier Key'));
+
 				$branch[]=array('label'=>_('Suppliers'), 'icon'=>'', 'reference'=>'suppliers');
 				$branch[]=array('label'=>'<span class="Supplier_Code">'. $supplier->get('Code').'</span>', 'icon'=>'ship', 'reference'=>'supplier/'. $supplier->id);
 				$branch[]=array('label'=>'<span class="Supplier_Part_Reference">'.$state['_parent']->get('Reference').'</span>', 'icon'=>'stop', 'reference'=>'supplier/'. $supplier->id.'/part/'.$state['_parent']->id);
@@ -2574,7 +2587,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 		case 'part.image':
 
 			$branch[]=array('label'=>_('Inventory'), 'icon'=>'th-large', 'reference'=>'inventory');
-			$branch[]=array('label'=>'<span class="id Part_Reference">'.$state['_parent']->get('Reference').'</span> (<span class="id">'.$state['_parent']->get('SKU').'</span>)' , 'icon'=>'square', 'reference'=>'inventory/'.$state['warehouse']->id.'/part/'.$state['_parent']->sku);
+			$branch[]=array('label'=>'<span class="id Part_Reference">'.$state['_parent']->get('Reference').'</span>' , 'icon'=>'square', 'reference'=>'part/'.$state['_parent']->sku);
 			$branch[]=array('label'=>_('Image'), 'icon'=>'camera-retro', 'reference'=>'');
 
 			break;
@@ -2585,6 +2598,61 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 			$branch[]=array('label'=>_('New part') , 'icon'=>'square', 'reference'=>'');
 
 			break;
+
+
+case 'supplier_part.new':
+
+
+			if ($state['parent']=='category') {
+				$category=$state['_parent'];
+				$branch[]=array('label'=>_("Parts's categories"), 'icon'=>'sitemap', 'reference'=>'inventory/categories');
+
+
+				if (isset($state['metadata'])) {
+					$parent_category_keys=$state['metadata'];
+				}else {
+
+					$parent_category_keys=preg_split('/\>/', $category->get('Category Position'));
+				}
+
+
+				foreach ( $parent_category_keys as $category_key) {
+					if (!is_numeric($category_key)) {
+						continue;
+					}
+					if ($category_key==$state['parent_key']) {
+						$branch[]=array('label'=>'<span class="Category_Label">'.$category->get('Label').'</span>', 'icon'=>'', 'reference'=>'');
+						break;
+					}else {
+
+						$parent_category=new Category($category_key);
+						if ($parent_category->id) {
+
+							$branch[]=array('label'=>$parent_category->get('Label'), 'icon'=>'', 'reference'=>'inventory/category/'.$parent_category->id);
+
+						}
+					}
+				}
+
+			}else {
+				$branch[]=array('label'=>_('Inventory'), 'icon'=>'th-large', 'reference'=>'inventory');
+
+			}
+
+			$branch[]=array('label'=>'<span class="id Part_Reference">'.$state['_object']->get('Reference').'</span>' , 'icon'=>'square', 'reference'=>'part/'.$state['_object']->id);
+				$branch[]=array('label'=>_('New supplier part'), 'icon'=>'', 'reference'=>'');
+
+			break;
+
+		case 'product':
+			$branch[]=array('label'=>_('Inventory'), 'icon'=>'th-large', 'reference'=>'inventory');
+			$branch[]=array('label'=>'<span class="id Part_Reference">'.$state['_parent']->get('Reference').'</span>' , 'icon'=>'square', 'reference'=>'part/'.$state['parent_key']);
+
+
+			$branch[]=array('label'=>'<span class="id Product_Code">'.$state['_object']->get('Code').'</span>', 'icon'=>'cube', 'reference'=>'products/'.$state['_object']->get('Product Store Key').'/'.$state['_object']->id);
+
+			break;
+
 		case 'barcodes':
 			$branch[]=array('label'=>_('Barcodes'), 'icon'=>'barcode', 'reference'=>'');
 			break;
@@ -2648,7 +2716,17 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 			$branch[]=array('label'=>_('Stock History'), 'icon'=>'area-chart', 'reference'=>'inventory/stock_history');
 			$branch[]=array('label'=>strftime("%a %e %b %Y", strtotime($state['key'].' +0:00')), 'icon'=>'', 'reference'=>'');
 			break;
+		case 'part.attachment.new':
+		$branch[]=array('label'=>_('Inventory'), 'icon'=>'th-large', 'reference'=>'inventory');
+			$branch[]=array('label'=>'<span class="id Part_Reference">'.$state['_parent']->get('Reference').'</span>' , 'icon'=>'square', 'reference'=>'part/'.$state['_parent']->sku);
+			$branch[]=array('label'=>_('Upload attachment'), 'icon'=>'paperclip', 'reference'=>'');
+			break;
+		case 'part.attachment':
+		$branch[]=array('label'=>_('Inventory'), 'icon'=>'th-large', 'reference'=>'inventory');
+			$branch[]=array('label'=>'<span class="id Part_Reference">'.$state['_parent']->get('Reference').'</span>' , 'icon'=>'square', 'reference'=>'part/'.$state['_parent']->sku);
+			$branch[]=array('label'=>'<span class="id Attachment_Caption">'.$state['_object']->get('Caption').'</span>', 'icon'=>'paperclip', 'reference'=>'');
 
+			break;
 		}
 
 		break;

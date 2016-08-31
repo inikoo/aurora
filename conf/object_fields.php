@@ -46,12 +46,20 @@ function get_object_fields($object, $db, $user, $smarty, $options=false) {
 
 			);
 
-		}if ($options['type']=='supplier') {
+		}elseif ($options['type']=='supplier') {
 			$options_Attachment_Subject_Type=array(
 				'Invoice'=>_('Invoice'),
-				'Purchase order'=>_('Purchase order'),
+				'PurchaseOrder'=>_('Purchase order'),
 				'Catalogue'=>_('Catalogue'),
 				'Other'=>_('Other'),
+
+			);
+
+		}elseif ($options['type']=='part') {
+			$options_Attachment_Subject_Type=array(
+				'Other'=>_('Other'),
+				'MSDS'=>_('MSDS'),
+
 
 			);
 
@@ -143,55 +151,54 @@ function get_object_fields($object, $db, $user, $smarty, $options=false) {
 
 	case 'Supplier Part':
 		$object->get_supplier_data();
-		include 'fields/supplier_part.fld.php';
-		if (isset($options['new'])  ) {
-			$object=new Part(0);
-			include 'fields/part.fld.php';
-			$supplier_part_fields = array_merge($supplier_part_fields, $part_fields);
+
+
+		if ($options['parent']=='supplier') {
+			include 'fields/supplier_part.fld.php';
+			if (isset($options['new'])  ) {
+				$object=new Part(0);
+				include 'fields/part.fld.php';
+				$supplier_part_fields = array_merge($supplier_part_fields, $part_fields);
+			}else {
+
+
+				$part=get_object('Part', $object->get('Supplier Part Part SKU'));
+
+				$object_fields_part=get_object_fields($part, $db, $user, $smarty, array('supplier_part_scope'=>true));
+
+				$supplier_part_fields = array_merge($supplier_part_fields, $object_fields_part);
+
+				$operations=array(
+					'label'=>_('Operations'),
+					'show_title'=>true,
+					'class'=>'operations',
+					'fields'=>array(
+
+						array(
+							'id'=>'delete_supplier_part',
+							'class'=>'operation',
+							'value'=>'',
+							'label'=>'<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete supplier's part & related part").' <i class="fa fa-trash new_button link"></i></span>',
+
+							'reference'=>'',
+							'type'=>'operation'
+						),
 
 
 
 
+					)
 
+				);
 
+				$supplier_part_fields[]=$operations;
 
-
-		}else {
-
-
-			$part=get_object('Part', $object->get('Supplier Part Part SKU'));
-
-			$object_fields_part=get_object_fields($part, $db, $user, $smarty, array('supplier_part_scope'=>true));
-
-			$supplier_part_fields = array_merge($supplier_part_fields, $object_fields_part);
-
-			$operations=array(
-				'label'=>_('Operations'),
-				'show_title'=>true,
-				'class'=>'operations',
-				'fields'=>array(
-
-					array(
-						'id'=>'delete_supplier_part',
-						'class'=>'operation',
-						'value'=>'',
-				        'label'=>'<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete supplier's part & related part").' <i class="fa fa-trash new_button link"></i></span>',
-
-						'reference'=>'',
-						'type'=>'operation'
-					),
-
-
-
-
-				)
-
-			);
-
-			$supplier_part_fields[]=$operations;
-
+			}
+			return $supplier_part_fields;
+		}elseif ($options['parent']=='part') {
+			include 'fields/part.supplier_part.new.fld.php';
+			return $supplier_part_fields;
 		}
-		return $supplier_part_fields;
 		break;
 
 	case 'Part':

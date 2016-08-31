@@ -243,8 +243,8 @@ function get_products_navigation($data, $smarty, $user, $db, $account) {
 
 
 	$right_buttons=array();
-	$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit store'), 'reference'=>'store/'.$data['store']->id.'/edit');
-	$right_buttons[]=array('icon'=>'plus', 'title'=>_('New store'), 'id'=>"new_store");
+	//$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit store'), 'reference'=>'store/'.$data['store']->id.'/edit');
+	//$right_buttons[]=array('icon'=>'plus', 'title'=>_('New store'), 'id'=>"new_store");
 
 	$sections=get_sections('products', $data['store']->id);
 	$_section='products';
@@ -641,15 +641,11 @@ function get_product_navigation($data, $smarty, $user, $db, $account) {
 		break;
 	case 'part':
 
-		$part_warehouse=$data['current_warehouse'];
-		if (!$part_warehouse) {
-			$part_warehouse=array_pop($data['_parent']->get('Warehouse Keys'));
-		}
-
-		$up_button=array('icon'=>'arrow-up', 'title'=>_("Part").' ('.$data['_parent']->get('SKU').')', 'reference'=>'inventory/'.$part_warehouse.'/part/'.$data['_parent']->id);
+		
+		$up_button=array('icon'=>'arrow-up', 'title'=>_("Part").' ('.$data['_parent']->get('SKU').')', 'reference'=>'part/'.$data['_parent']->id);
 
 		if ($prev_key) {
-			$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'inventory/'.$part_warehouse.'/part/'.$data['_parent']->id.'/product/'.$prev_key);
+			$left_buttons[]=array('icon'=>'arrow-left', 'title'=>$prev_title, 'reference'=>'part/'.$data['_parent']->id.'/product/'.$prev_key);
 
 		}else {
 			$left_buttons[]=array('icon'=>'arrow-left disabled', 'title'=>'');
@@ -659,7 +655,7 @@ function get_product_navigation($data, $smarty, $user, $db, $account) {
 
 
 		if ($next_key) {
-			$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title,  'reference'=>'inventory/'.$part_warehouse.'/part/'.$data['_parent']->id.'/product/'.$next_key);
+			$left_buttons[]=array('icon'=>'arrow-right', 'title'=>$next_title,  'reference'=>'part/'.$data['_parent']->id.'/product/'.$next_key);
 
 		}else {
 			$left_buttons[]=array('icon'=>'arrow-right disabled', 'title'=>'', 'url'=>'');
@@ -720,9 +716,26 @@ function get_product_navigation($data, $smarty, $user, $db, $account) {
 
 	$right_buttons=array();
 	//$right_buttons[]=array('icon'=>'edit','title'=>_('Edit store'),'reference'=>'store/'.$data['store']->id.'/edit');
-	$sections=get_sections('products', $data['store']->id);
-	$_section='products';
+	$sections=get_sections($_section, $data['store']->id);
+	//$_section='products';
 	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
+
+
+
+	$title='<i class="fa fa-cube" aria-hidden="true" title="'._('Product').'"></i> <span class="id Product_Code">'.$object->get('Code').'</span>';
+
+	$product_parts=$object->get_parts('objects');
+
+	if (count($product_parts)==1) {
+
+		$part=array_values($product_parts)[0];
+		$title.=' <small class="padding_left_10"> <i class="fa fa-long-arrow-left padding_left_10"></i> <i class="fa fa-stop button" title="'._('Part').'" onCLick="change_view(\'/part/'.$part->id.'\')" ></i> <span class="Part_Reference button"  onCLick="change_view(\'part/'.$part->id.'\')">'.$part->get('Reference').'</small>';
+
+
+	}elseif (count($product_parts)>1) {
+		$title.='<span class="small disceet padding_left_20">'._('Multiple parts').'</span>';
+
+	}
 
 
 	$_content=array(
@@ -731,7 +744,7 @@ function get_product_navigation($data, $smarty, $user, $db, $account) {
 
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
-		'title'=>'<i class="fa fa-cube" aria-hidden="true" title="'._('Product').'"></i> <span class="id Product_Code">'.$object->get('Code').'</span>',
+		'title'=>$title,
 		'search'=>array('show'=>true, 'placeholder'=>_('Search products').' '.$object->get('Product Store Code'))
 
 	);

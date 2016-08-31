@@ -233,9 +233,9 @@ $supplier_part_fields[]=array(
 			'id'=>'Supplier_Part_Average_Delivery_Days',
 			'edit'=>($edit?'numeric':''),
 
-			'value'=>($new?  ($part_scope? '': $options['supplier']->get('Supplier Average Delivery Days'))  :htmlspecialchars($object->get('Supplier Part Average Delivery Days'))),
+			'value'=>($new?  ($part_scope? '': $options['parent_object']->get('Supplier Average Delivery Days'))  :htmlspecialchars($object->get('Supplier Part Average Delivery Days'))),
 		
-				'formatted_value'=>($new? ($part_scope? '':  $options['supplier']->get('Supplier Average Delivery Days')):$object->get('Average Delivery Days')),
+				'formatted_value'=>($new? ($part_scope? '':  $options['parent_object']->get('Supplier Average Delivery Days')):$object->get('Average Delivery Days')),
 			'label'=>ucfirst($object->get_field_label('Supplier Part Average Delivery Days')),
 			'placeholder'=>_('days'),
 
@@ -268,8 +268,8 @@ $supplier_part_fields[]=array(
 			'id'=>'Supplier_Part_Currency_Code',
 			'edit'=>($edit?'string':''),
 
-			'value'=>($new? ($part_scope? '':  $options['supplier']->get('Supplier Default Currency Code')):htmlspecialchars($object->get('Supplier Part Currency Code'))),
-			'formatted_value'=>($new? ($part_scope? '':$options['supplier']->get('Default Currency Code ')):htmlspecialchars($object->get('Currency Code'))),
+			'value'=>($new? ($part_scope? '':  $options['parent_object']->get('Supplier Default Currency Code')):htmlspecialchars($object->get('Supplier Part Currency Code'))),
+			'formatted_value'=>($new? ($part_scope? '':$options['parent_object']->get('Default Currency Code ')):htmlspecialchars($object->get('Currency Code'))),
 			'label'=>ucfirst($object->get_field_label('Supplier Part Currency Code')),
 			'required'=>false,
 			'type'=>'value'
@@ -283,7 +283,7 @@ $supplier_part_fields[]=array(
 			'formatted_value'=>$object->get('Unit Cost'),
 			'label'=>ucfirst($object->get_field_label('Supplier Part Unit Cost')),
 			'required'=>true,
-			'placeholder'=>($part_scope? '':sprintf(_('amount in %s '), $options['supplier']->get('Default Currency Code'))),
+			'placeholder'=>($part_scope? '':sprintf(_('amount in %s '), $options['parent_object']->get('Default Currency Code'))),
 			'type'=>'value'
 		),
 
@@ -295,7 +295,7 @@ $supplier_part_fields[]=array(
 			'formatted_value'=>$object->get('Unit Extra Cost'),
 			'label'=>ucfirst($object->get_field_label('Supplier Part Unit Extra Cost')),
 			'required'=>false,
-			'placeholder'=>($part_scope?'': sprintf(_('amount in %s or %%'), $options['supplier']->get('Default Currency Code'))),
+			'placeholder'=>($part_scope?'': sprintf(_('amount in %s or %%'), $options['parent_object']->get('Default Currency Code'))),
 			'type'=>'value'
 		),
 		array(

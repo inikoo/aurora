@@ -1270,9 +1270,12 @@ function update_field(data) {
         if (data.locked == 1) {
             $("#" + field + '_validation').addClass('hide')
             $("#" + field + '_locked_tag').removeClass('hide')
+             $("#" + field ).attr("readonly", true);
         } else {
             $("#" + field + '_validation').removeClass('hide')
             $("#" + field + '_locked_tag').addClass('hide')
+                         $("#" + field ).attr("readonly", false);
+
         }
 
     }
@@ -1791,7 +1794,7 @@ function select_dropdown_option(element) {
 
     $('#' + field + '_results_container').addClass('hide').removeClass('show')
 
-    console.log(element)
+//    console.log(element)
     if (metadata != undefined) {
 
         if (metadata.other_fields) {

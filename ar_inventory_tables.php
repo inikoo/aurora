@@ -32,6 +32,12 @@ switch ($tipo) {
 case 'parts':
 	parts(get_table_parameters(), $db, $user, 'active', $account);
 	break;
+case 'discontinued_parts':
+	parts(get_table_parameters(), $db, $user, 'discontinued', $account);
+	break;
+case 'discontinuing_parts':
+	parts(get_table_parameters(), $db, $user, 'discontinuing', $account);
+	break;
 case 'stock_transactions':
 	stock_transactions(get_table_parameters(), $db, $user);
 	break;
@@ -41,14 +47,12 @@ case 'stock_history':
 case 'inventory_stock_history':
 	inventory_stock_history(get_table_parameters(), $db, $user, $account);
 	break;
-case 'discontinued_parts':
-	parts(get_table_parameters(), $db, $user, 'discontinued', $account);
-	break;
+
 case 'barcodes':
 	barcodes(get_table_parameters(), $db, $user);
 	break;
 case 'supplier_parts':
-	supplier_parts(get_table_parameters(), $db, $user,$account);
+	supplier_parts(get_table_parameters(), $db, $user, $account);
 	break;
 case 'part_categories':
 	part_categories(get_table_parameters(), $db, $user, $account);
@@ -85,13 +89,17 @@ function parts($_data, $db, $user, $type, $account) {
 		exit;
 	}
 
-	if ($type=='discontinued') {
-		$extra_where=' and `Part Status`="Not In Use"';
-		$rtext_label='discontinued part';
-
-	}elseif ($type=='active') {
+	if ($type=='active') {
 		$extra_where=' and `Part Status`="In Use"';
 		$rtext_label='part';
+
+	}elseif ($type=='discontinuing') {
+		$extra_where=' and `Part Status`="Discontinuing"';
+		$rtext_label='part';
+
+	}elseif ($type=='discontinued') {
+		$extra_where=' and `Part Status`="Not In Use"';
+		$rtext_label='discontinued part';
 
 	}else {
 		$extra_where='';
@@ -494,7 +502,7 @@ function stock_transactions($_data, $db, $user) {
 }
 
 
-function supplier_parts($_data, $db, $user,$account) {
+function supplier_parts($_data, $db, $user, $account) {
 
 
 
@@ -597,7 +605,17 @@ function supplier_parts($_data, $db, $user,$account) {
 				break;
 			}
 
+			if ($data['Part Status']=='Not In Use') {
+				$part_status='<i class="fa fa-square-o fa-fw  very_discreet" aria-hidden="true"></i> ';
 
+			}elseif ($data['Part Status']=='Discontinuing') {
+				$part_status='<i class="fa fa-square fa-fw  very_discreet" aria-hidden="true"></i> ';
+
+			}else {
+				$part_status='<i class="fa fa-square fa-fw " aria-hidden="true"></i> ';
+			}
+
+			$part_description=$part_status.'<span style="min-width:80px;display: inline-block;" class="link padding_right_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$data['Part Reference'].'</span> ';
 
 			$adata[]=array(
 				'id'=>(integer)$data['Supplier Part Key'],
@@ -606,7 +624,8 @@ function supplier_parts($_data, $db, $user,$account) {
 				'part_key'=>(integer)$data['Supplier Part Part SKU'],
 				'part_reference'=>$data['Part Reference'],
 				'reference'=>$data['Supplier Part Reference'],
-				'part_description'=>'<span style="min-width:80px;display: inline-block;" class="link padding_right_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$data['Part Reference'].'</span> '.$data['Part Unit Description'],
+				'part_description'=>$part_description,
+
 
 				'description'=>$data['Part Unit Description'],
 				'status'=>$status,
@@ -1275,6 +1294,7 @@ function sales_history($_data, $db, $user, $account) {
 	);
 	echo json_encode($response);
 }
+
 
 
 ?>

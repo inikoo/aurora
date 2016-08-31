@@ -96,6 +96,7 @@ case 'website.favourites.customers':
 	break;
 case 'store.products':
 case 'category.products':
+case 'part.products':
 
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
@@ -595,6 +596,8 @@ function get_products_element_numbers($db, $data, $user) {
 	case 'favourites':
 		$where=sprintf(' where C.`Customer Key` in (select DISTINCT F.`Customer Key` from `Customer Favorite Product Bridge` F where `Site Key`=%d )', $data['parent_key']);
 		break;
+		
+		
 	default:
 		$response=array('state'=>405, 'resp'=>'product parent not found '.$data['parent']);
 		echo json_encode($response);

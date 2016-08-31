@@ -20,6 +20,7 @@ ALTER TABLE `Account Dimension` DROP `Apply Tax Method`;
 drop table `Part Warehouse Bridge`;
 
 
+ALTER TABLE `Part Dimension`  DROP `Part Average Future Cost Per Unit`, DROP `Part Minimum Future Cost Per Unit`;
 
   
   

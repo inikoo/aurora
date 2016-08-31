@@ -74,7 +74,7 @@ function fix_product_categories($db) {
 
 function create_categories($db, $editor) {
 
-	// Delete categories if exists
+print "Deleting categories if exists\n";
 
 
 	$sql=sprintf('select `Store Key` from `Store Dimension` ');
@@ -100,6 +100,7 @@ function create_categories($db, $editor) {
 	}
 
 
+print "Looping old dpt and fam\n";
 
 
 	$sql=sprintf('select `Store Key` from `Store Dimension` ');
@@ -428,12 +429,6 @@ function migrate_products($db, $editor) {
 
 
 }
-
-
-
-
-
-
 
 
 function create_subcategory($category, $editor, $data , $code, $suffix='') {

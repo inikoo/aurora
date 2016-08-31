@@ -677,9 +677,9 @@ class PartLocation extends DB_Table {
 
 			$this->new=true;
 			$part=new Part($this->part_sku);
-			$part->load('locations');
+			
 			$location=new Location($this->location_key);
-			$location->load('parts');
+			
 
 		} else {
 			exit($sql);

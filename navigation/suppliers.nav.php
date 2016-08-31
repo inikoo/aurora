@@ -216,6 +216,7 @@ function get_suppliers_category_navigation($data, $smarty, $user, $db, $account)
 		$parameters=$default;
 
 	}
+	$parameters['subject']='supplier';
 	$parameters['parent']=$data['parent'];
 	$parameters['parent_key']=$data['parent_key'];
 	include_once 'prepare_table/'.$tab.'.ptble.php';

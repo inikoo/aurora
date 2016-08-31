@@ -31,11 +31,35 @@ if (isset($options['supplier_part_scope']) and  $options['supplier_part_scope'] 
 $options_Packing_Group=array(
 	'None'=>_('None'), 'I'=>'I', 'II'=>'II', 'III'=>'III'
 );
+
+$options_status=array('In Use'=>_('Active'), 'Discontinuing'=>_('Discontinued'));
+
+
+
 $part_fields=array();
 
 
-
 if ( !($supplier_part_scope or $new)) {
+
+	$part_fields[]=array(
+		'label'=>_('Status'),
+		'show_title'=>true,
+		'fields'=>array(
+			array(
+				'render'=>($new?false:true),
+				'id'=>'Part_Status',
+				'edit'=>($edit?'option':''),
+
+				'options'=>$options_status,
+				'value'=>htmlspecialchars($object->get('Part Status')),
+				'formatted_value'=>$object->get('Status'),
+				'label'=>ucfirst($object->get_field_label('Part Status')),
+				'required'=>($new?false:true),
+				'type'=>'skip'
+			),
+		)
+	);
+
 	$part_fields[]=array(
 		'label'=>($supplier_part_scope?_('Part Id'):_('Id')),
 		'show_title'=>true,
@@ -272,9 +296,9 @@ $part_fields[]=array(
 			'edit'=>'country_select',
 			'options'=>get_countries($db),
 			'scope'=>'countries',
-			'value'=>(($new and $supplier_part_scope)?$options['supplier']->get('Supplier Products Origin Country Code'): htmlspecialchars($object->get('Part Origin Country Code'))),
-			'formatted_value'=>(($new and $supplier_part_scope)?$options['supplier']->get('Products Origin Country Code'):  $object->get('Origin Country Code')),
-			'stripped_formatted_value'=>(($new and $supplier_part_scope)?($options['supplier']->get('Part Origin Country Code')!=''?  $options['supplier']->get('Origin Country').' ('.$options['supplier']->get('Part Origin Country Code').')':''):   ($object->get('Part Origin Country Code')!=''?  $object->get('Origin Country').' ('.$object->get('Part Origin Country Code').')':'')),
+			'value'=>(($new and $supplier_part_scope)?$options['parent_object']->get('Supplier Products Origin Country Code'): htmlspecialchars($object->get('Part Origin Country Code'))),
+			'formatted_value'=>(($new and $supplier_part_scope)?$options['parent_object']->get('Products Origin Country Code'):  $object->get('Origin Country Code')),
+			'stripped_formatted_value'=>(($new and $supplier_part_scope)?($options['parent_object']->get('Part Origin Country Code')!=''?  $options['parent_object']->get('Origin Country').' ('.$options['parent_object']->get('Part Origin Country Code').')':''):   ($object->get('Part Origin Country Code')!=''?  $object->get('Origin Country').' ('.$object->get('Part Origin Country Code').')':'')),
 			'label'=>ucfirst($object->get_field_label('Part Origin Country Code')),
 			'required'=>false,
 			'type'=>'value'

@@ -51,16 +51,19 @@ $editor=array(
 
 $account=new Account();
 
+/*
 create_part_data_dimension();
 setup_part_families();
 update_materials_stats();
 migrate_part_fields();
 create_families($db, $account);
-setup_product_part_bridge();
+
 set_valid_dates($db);
 set_valid_dates_and_status_to_part_families($db);
+move_MSDS_attachments($db);
 
-
+*/
+setup_product_part_bridge();
 function set_valid_dates($db) {
 
 
@@ -98,7 +101,7 @@ function set_valid_dates($db) {
 			//print "$sql\n";
 			$db->exec($sql);
 
-		
+
 
 
 		}
@@ -344,13 +347,13 @@ function create_part_data_dimension() {
 			$sql="insert into `Part Data` (`Part SKU`) values(".$row['Part SKU'].");";
 			$db->exec($sql);
 
+			$part=new Part($row['Part SKU']);
 
+			$part->update(
+				array('Part Family Category Key'=>''), 'no_history'
+			);
 		}
-		$part=new Part($row['Part SKU']);
 
-		$part->update(
-			array('Part Family Category Key'=>''), 'no_history'
-		);
 	}
 }
 
@@ -404,7 +407,7 @@ function setup_part_families() {
 function setup_product_part_bridge() {
 	global $db;
 	// Create product part bridge
-	$sql=sprintf('select * from `Product Dimension` order by `Product ID` desc');
+	$sql=sprintf('select * from `Product Dimension` where `Product Code` like "jbb-01"  order by `Product ID` desc');
 
 	if ($result=$db->query($sql)) {
 
@@ -415,6 +418,8 @@ function setup_product_part_bridge() {
 
 
 			$product=new Product($row['Product ID']);
+
+            print $product->get('Code')."\n";
 
 
 			$sql=sprintf('delete from `Product Part Bridge` where `Product Part Product ID`=%d',
@@ -427,6 +432,8 @@ function setup_product_part_bridge() {
 
 
 			$parts_data=get_part_list($db, $row['Product ID']);
+			
+			
 			$_parts_data=$parts_data;
 			foreach ($parts_data as $part_data) {
 
@@ -440,7 +447,7 @@ function setup_product_part_bridge() {
 					prepare_mysql($part_data['Product Part List Note'], false)
 				);
 				$db->exec($sql);
-
+            print "$sql\n";
 				if ($row['Product Use Part Properties']=='Yes') {
 					$sql=sprintf("select `Product Part Linked Fields` from `Product Part Bridge` where `Product Part Product ID`=%d and `Product Part Part SKU`=%d ",
 						$product->id,
@@ -638,7 +645,7 @@ function migrate_part_fields() {
 			$price='';
 			$rrp='';
 
-			foreach ($part->get_product_ids() as $product_pid) {
+			foreach (get_product_ids($part) as $product_pid) {
 				$product=new Product($product_pid);
 
 				if ($product->id and $product->data['Product Record Type']=='Normal') {
@@ -932,6 +939,43 @@ function create_families($db, $account) {
 		print_r($error_info=$db->errorInfo());
 		exit;
 	}
+
+
+
+
+}
+
+
+function get_product_ids($part) {
+	$sql=sprintf("select `Product Part Dimension`.`Product ID` from `Product Part List` left join `Product Part Dimension` on (`Product Part List`.`Product Part Key`=`Product Part Dimension`.`Product Part Key`)   where `Part SKU`=%d and `Product Part Most Recent`='Yes' ", $part->sku);
+
+	$result=mysql_query($sql);
+	$product_ids=array();
+
+	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+		$product_ids[$row['Product ID']]= $row['Product ID'];
+	}
+	return $product_ids;
+}
+
+
+function move_MSDS_attachments($db) {
+
+	$sql=sprintf('select `Part SKU`,`Part MSDS Attachment Bridge Key` from `Part Dimension` where `Part MSDS Attachment Bridge Key`>0  ');
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+
+			print $row['Part SKU']."\n";
+			$sql=sprintf('update `Attachment Bridge` set `Subject`="Part" , `Attachment Subject Type`="MSDS" ,`Attachment Public`="Yes" ,`Attachment Caption`=%s where `Attachment Bridge Key`=%s  ',
+			prepare_mysql('MSDS file'),
+			$row['Part MSDS Attachment Bridge Key']
+			);
+            $db->exec($sql);
+		}
+
+	}
+
 
 
 

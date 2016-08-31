@@ -1764,12 +1764,15 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 					if ($view_path[1]=='product') {
 
 						if (is_numeric($view_path[2])) {
-							$module='products';
+							//$module='products';
 							$section='product';
 							$object='product';
 							$parent_key=$key;
-							$key=$view_path[4];
+							$key=$view_path[2];
 							$parent='part';
+							
+							
+							
 
 						}elseif ($view_path[2]=='new') {
 							$module='products';
@@ -1780,7 +1783,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 						}
 
 					}
-					if ($view_path[1]=='image') {
+					elseif ($view_path[1]=='image') {
 
 						if (is_numeric($view_path[2])) {
 							$section='part.image';
@@ -1792,7 +1795,45 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 						}
 
 					}
+					elseif ($view_path[1]=='attachment') {
+							$section='part.attachment';
+							$object='attachment';
+							$parent='part';
+							$parent_key=$key;
+							if (isset($view_path[2])) {
+								if (is_numeric($view_path[2])) {
+									$key=$view_path[2];
+								}elseif ($view_path[2]=='new') {
+									$section='part.attachment.new';
 
+									$key=0;
+								}
+							}
+
+
+
+						}
+if ($view_path[1]=='supplier_part') {
+
+						if (is_numeric($view_path[2])) {
+							//$module='products';
+							$section='supplier_part';
+							$object='supplier_part';
+							$parent_key=$key;
+							$key=$view_path[2];
+							$parent='part';
+							
+							
+							
+
+						}elseif ($view_path[2]=='new') {
+							$section='supplier_part.new';
+							
+							$parent_key=$key;
+							$parent='part';
+						}
+
+					}
 				}
 
 			}

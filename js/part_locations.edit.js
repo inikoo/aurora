@@ -4,8 +4,18 @@ function open_edit_stock() {
 
     $('.unlink_operations').removeClass('hide')
 
-    $('#stock_table tbody.info').addClass('hide')
-    $('#edit_stock_controls').removeClass('hide')
+
+$('#stock_table').addClass('super_discreet')
+$('#close_edit_stock').removeClass('hide')
+$('#edit_stock_saving_buttons').removeClass('hide')
+$('#open_edit_stock').addClass('hide')
+
+   // $('#stock_table tbody.info').addClass('hide')
+   
+   
+ //   $('#edit_stock_controls').removeClass('hide')
+
+
 
     $('#locations_table .formatted_stock').addClass('hide')
     $('#locations_table .stock_input').removeClass('hide')
@@ -19,8 +29,14 @@ function close_edit_stock() {
 
     $('.unlink_operations').addClass('hide')
 
-    $('#stock_table tbody.info').removeClass('hide')
-    $('#edit_stock_controls').addClass('hide')
+    //$('#stock_table tbody.info').removeClass('hide')
+   // $('#edit_stock_controls').addClass('hide')
+
+$('#stock_table').removeClass('super_discreet')
+$('#close_edit_stock').addClass('hide')
+$('#edit_stock_saving_buttons').addClass('hide')
+$('#open_edit_stock').removeClass('hide')
+
 
     $('#locations_table .formatted_stock').removeClass('hide')
     $('#locations_table .stock_input').addClass('hide')
@@ -38,7 +54,7 @@ function close_edit_stock() {
 
 function move(element) {
 
-    $('#saving_buttons').addClass('hide')
+    $('#edit_stock_saving_buttons').addClass('hide')
 
 
     if ($(element).hasClass('fa-caret-square-o-right')) {
@@ -91,7 +107,7 @@ function move(element) {
 
 function close_move() {
 
-    $('#saving_buttons').removeClass('hide')
+    $('#edit_stock_saving_buttons').removeClass('hide')
 
 
     $('#move_from').html('')
@@ -363,14 +379,14 @@ function process_edit_stock() {
     $('#stock_diff').html(diff_msg)
 
     if (has_invalid) {
-        $('#saving_buttons').removeClass('valid changed').addClass('invalid')
+        $('#edit_stock_saving_buttons').removeClass('valid changed').addClass('invalid')
     } else {
-        $('#saving_buttons').removeClass('invalid')
+        $('#edit_stock_saving_buttons').removeClass('invalid')
 
         if (diff_down != 0 || diff_up != 0 || set_as_audit > 0 || disassociate > 0) {
-            $('#saving_buttons').addClass('valid changed')
+            $('#edit_stock_saving_buttons').addClass('valid changed')
         } else {
-            $('#saving_buttons').removeClass('valid changed')
+            $('#edit_stock_saving_buttons').removeClass('valid changed')
         }
     }
 
@@ -650,6 +666,8 @@ function save_stock() {
 
     request.done(function(data) {
 
+    console.log(data.updated_fields)
+
         if (state.tab == 'part.stock.transactions') {
             rows.fetch({
                 reset: true
@@ -658,14 +676,15 @@ function save_stock() {
 
 
         $('#save_stock').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
-        $('#saving_buttons').removeClass('valid')
+        $('#edit_stock_saving_buttons').removeClass('valid')
 
 
 
         close_edit_stock()
 
         for (var key in data.updated_fields) {
-
+            console.log(key)
+              console.log(data.updated_fields[key])
             $('.' + key).html(data.updated_fields[key])
         }
 

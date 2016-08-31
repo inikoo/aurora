@@ -76,12 +76,43 @@ class Part extends Asset{
 	}
 
 
+	function get_products($scope='keys') {
+
+
+		if (   $scope=='objects') {
+			include_once 'class.Product.php';
+		}
+
+		$sql=sprintf('select `Product Part Product ID` from `Product Part Bridge` where `Product Part Part SKU`=%d ', $this->id);
+
+		$products=array();
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+				if ($scope=='objects') {
+					$products[$row['Product Part Product ID']]=new Product($row['Product Part Product ID']);
+				}else {
+					$products[$row['Product Part Product ID']]=$row['Product Part Product ID'];
+				}
+
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+		return $products;
+	}
+
+
+
 	function get_supplier_parts($scope='keys') {
 
-		include_once 'class.SupplierPart.php';
 
-		if ($scope=='objects') {
-			include_once 'class.Part.php';
+		if (   $scope=='objects') {
+			include_once 'class.SupplierPart.php';
 		}
 
 		$sql=sprintf('select `Supplier Part Key` from `Supplier Part Dimension` where `Supplier Part Part SKU`=%d ', $this->id);
@@ -290,73 +321,70 @@ class Part extends Asset{
 	}
 
 
-	function update_main_state() {
-		if ($this->data['Part Status']=='In Use') {
 
-			if ($this->data['Part Available']=='Yes') {
-				$this->data['Part Main State']='Keeping';
-			} else {
-				$this->data['Part Main State']='LastStock';
-			}
+	function discontinue_trigger() {
 
+		if ($this->get('Part Status')=='Discontinuing' and   ($this->data['Part Current On Hand Stock']<=0 and $this->data['Part Current Stock In Process']==0  ) ) {
+			$this->update_status('Not In Use');
+			return;
 		}
-		else {
-			if ($this->data['Part Available']=='Yes') {
-				$this->data['Part Main State']='NotKeeping';
-			} else {
-				$this->data['Part Main State']='Discontinued';
-			}
+		if ($this->get('Part Status')=='Not In Use' and   ($this->data['Part Current On Hand Stock']>0 or $this->data['Part Current Stock In Process']>0  ) ) {
+			$this->update_status('Discontinuing');
+			return;
 		}
-
-		$sql=sprintf("update `Part Dimension`  set `Part Main State`=%s where  `Part SKU`=%d   "
-			, prepare_mysql($this->data['Part Main State'])
-			, $this->id
-		);
-		$this->db->exec($sql);
 
 	}
 
 
 	function update_status($value, $options='') {
 
+
+		if ($value=='Not In Use' and  ($this->data['Part Current On Hand Stock']-$this->data['Part Current Stock In Process'])>0) {
+			$value='Discontinuing';
+		}
+
+
+		if ($value==$this->get('Part Status')) return;
+
 		$this->update_field('Part Status', $value, $options);
 
-		if ($value=='In Use') {
-
+		if ($value=='Discontinuing') {
+			$this->discontinue_trigger();
 
 		}
 		elseif ($value=='Not In Use') {
 
-			$locations=$this->get_location_keys();
 
 
 
-			foreach ($locations as $location_key) {
-				$part_location=new PartLocation($this->sku.'_'.$location_key);
 
+
+			foreach ($this->get_locations('part_location_object') as $part_location) {
 				$part_location->disassociate();
-
 			}
 
 			$this->update_stock();
 
-			$this->data['Part Valid To']=gmdate("Y-m-d H:i:s");
-			$sql=sprintf("update `Part Dimension` set `Part Valid To`=%s where `Part SKU`=%d", prepare_mysql($this->data['Part Valid To']), $this->sku);
-			$this->db->exec($sql);
+
+			$this->update(array('Part Valid To'=>gmdate("Y-m-d H:i:s")), 'no_history');
+
 
 			$this->get_data('sku', $this->sku);
 			$this->update_availability_for_products_configuration('Automatic', $options);
 
 
 
-
-
 		}
 
 
-		$this->update_main_state();
 
 
+
+		$this->update_stock_status();
+		$this->update_available_forecast();
+
+
+		include_once 'class.Category.php';
 		$sql=sprintf("select `Category Key` from `Category Bridge` where `Subject`='Part' and `Subject Key`=%d", $this->sku);
 
 		if ($result=$this->db->query($sql)) {
@@ -371,10 +399,9 @@ class Part extends Asset{
 
 
 
-		$products=$this->get_product_ids();
-		foreach ($products as $product_pid) {
-			$product=new Product ('id', $product_pid);
-			$product->update_availability_type();
+		$products=$this->get_products('objects');
+		foreach ($products as $product) {
+			//$product->update_availability_type();
 
 		}
 
@@ -467,10 +494,9 @@ class Part extends Asset{
 			}
 
 
-			$products=$this->get_current_products_objects();
-			foreach ($products as $product) {
+			foreach ($this->get_products('objects') as $product) {
 				$product->editor=$this->editor;
-				$product->update_web_state($update_pages);
+				//$product->update_web_state($update_pages);
 
 			}
 
@@ -902,11 +928,21 @@ class Part extends Asset{
 			break;
 		case('Part Status'):
 
-			if (! in_array($value, array('In Use', 'Not In Use', ))) {
+			if (! in_array($value, array('In Use', 'Not In Use' , 'Discontinuing'))) {
 				$this->error=true;
 				$this->msg=_('Invalid part status').' ('.$value.')';
 				return;
 			}
+
+
+			if ($value=='Not In Use') {
+				if ($this->get('Part Stock In Hand')>0) {
+					$value='Discontinuing';
+				}elseif ($this->get('Part Stock In Hand')<0) {
+
+				}
+			}
+
 
 			$this->update_status($value, $options);
 			break;
@@ -1099,295 +1135,6 @@ class Part extends Asset{
 
 
 
-	function load($data_to_be_read, $args='') {
-		switch ($data_to_be_read) {
-
-
-		case('locations'):
-			$this->load_locations($args);
-
-
-			break;
-
-		case('stock_data'):
-			$astock=0;
-			$avaue=0;
-
-			$sql=sprintf("select ifnull(avg(`Quantity On Hand`), 'ERROR') as stock, avg(`Value At Cost`) as value from `Inventory Spanshot Fact` where  `Part SKU`=%d and `Date`>=%s and `Date`<=%s group by `Date`", $this->data['Part SKU'], prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid From']))), prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid To']))  ));
-			// print "$sql\n";
-			$result=mysql_query($sql);
-			$days=0;
-			$errors=0;
-			$outstock=0;
-			while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-				if (is_numeric($row['stock']))
-					$astock+=$row['stock'];
-				if (is_numeric($row['value']))
-					$avalue+=$row['value'];
-				$days++;
-
-				if (is_numeric($row['stock']) and $row['stock']==0)
-					$outstock++;
-				if ($row['stock']=='ERROR')
-					$errors++;
-			}
-
-			$days_ok=$days-$errors;
-
-			$gmroi='NULL';
-			if ($days_ok>0) {
-				$astock=$astock/$days_ok;
-				$avalue=$avalue/$days_ok;
-				if ($avalue>0)
-					$gmroi=$this->data['Part Total Profit']/$avalue;
-			} else {
-				$astock='NULL';
-				$avalue='NULL';
-			}
-
-			$tdays = (strtotime($this->data['Part Valid To']) - strtotime($this->data['Part Valid From'])) / (60 * 60 * 24);
-			//print "$tdays $days o: $outstock e: $errors \n";
-			$unknown=$tdays-$days_ok;
-			$sql=sprintf("update `Part Dimension` set `Part Total AVG Stock`=%s , `Part Total AVG Stock Value`=%s, `Part Total Keeping Days`=%f , `Part Total Out of Stock Days`=%f , `Part Total Unknown Stock Days`=%s, `Part Total GMROI`=%s where `Part SKU`=%d"
-				, $astock
-				, $avalue
-				, $tdays
-				, $outstock
-				, $unknown
-				, $gmroi
-				, $this->id);
-			// print "$sql\n";
-			if (!mysql_query($sql))
-				exit("$sql  ** errot con not update part stock history all");
-
-			$astock=0;
-			$avalue=0;
-
-			$sql=sprintf("select ifnull(avg(`Quantity On Hand`), 'ERROR') as stock, avg(`Value At Cost`) as value from `Inventory Spanshot Fact` where   `Part SKU`=%d and `Date`>=%s and `Date`<=%s  and `Date`>=%s    group by `Date`", $this->data['Part SKU'], prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid From']))), prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid To']))  )  , prepare_mysql(date("Y-m-d H:i:s", strtotime("now -1 year")))  );
-			//print "$sql\n";
-			$result=mysql_query($sql);
-			$days=0;
-			$errors=0;
-			$outstock=0;
-			while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-				if (is_numeric($row['stock']))
-					$astock+=$row['stock'];
-				if (is_numeric($row['value']))
-					$avalue+=$row['value'];
-				$days++;
-
-				if (is_numeric($row['stock']) and $row['stock']==0)
-					$outstock++;
-				if ($row['stock']=='ERROR')
-					$errors++;
-			}
-
-			$days_ok=$days-$errors;
-
-			$gmroi='NULL';
-			if ($days_ok>0) {
-				$astock=$astock/$days_ok;
-				$avalue=$avalue/$days_ok;
-				if ($avalue>0)
-					$gmroi=$this->data['Part 1 Year Acc Profit']/$avalue;
-			} else {
-				$astock='NULL';
-				$avalue='NULL';
-			}
-
-			$tdays = (strtotime($this->data['Part Valid To']) - strtotime($this->data['Part Valid From'])) / (60 * 60 * 24);
-			//print "$tdays $days o: $outstock e: $errors \n";
-			$unknown=$tdays-$days_ok;
-			$sql=sprintf("update `Part Dimension` set `Part 1 Year Acc AVG Stock`=%s , `Part 1 Year Acc AVG Stock Value`=%s, `Part 1 Year Acc Keeping Days`=%f , `Part 1 Year Acc Out of Stock Days`=%f , `Part 1 Year Acc Unknown Stock Days`=%s, `Part 1 Year Acc GMROI`=%s where `Part SKU`=%d"
-				, $astock
-				, $avalue
-				, $tdays
-				, $outstock
-				, $unknown
-				, $gmroi
-				, $this->id);
-			// print "$sql\n";
-			if (!mysql_query($sql))
-				exit("$sql **  errot con not update part stock history yr aa");
-
-
-			$astock=0;
-			$avalue=0;
-
-			$sql=sprintf("select ifnull(avg(`Quantity On Hand`), 'ERROR') as stock, avg(`Value At Cost`) as value from `Inventory Spanshot Fact` where   `Part SKU`=%d and `Date`>=%s and `Date`<=%s  and `Date`>=%s    group by `Date`", $this->data['Part SKU'], prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid From']))), prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid To']))  )  , prepare_mysql(date("Y-m-d H:i:s", strtotime("now -3 month")))  );
-			// print "$sql\n";
-			$result=mysql_query($sql);
-			$days=0;
-			$errors=0;
-			$outstock=0;
-			while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-				if (is_numeric($row['stock']))
-					$astock+=$row['stock'];
-				if (is_numeric($row['value']))
-					$avalue+=$row['value'];
-				$days++;
-
-				if (is_numeric($row['stock']) and $row['stock']==0)
-					$outstock++;
-				if ($row['stock']=='ERROR')
-					$errors++;
-			}
-
-			$days_ok=$days-$errors;
-
-			$gmroi='NULL';
-			if ($days_ok>0) {
-				$astock=$astock/$days_ok;
-				$avalue=$avalue/$days_ok;
-				if ($avalue>0)
-					$gmroi=$this->data['Part 1 Quarter Acc Profit']/$avalue;
-			} else {
-				$astock='NULL';
-				$avalue='NULL';
-			}
-
-			$tdays = (strtotime($this->data['Part Valid To']) - strtotime($this->data['Part Valid From'])) / (60 * 60 * 24);
-			//print "$tdays $days o: $outstock e: $errors \n";
-			$unknown=$tdays-$days_ok;
-			$sql=sprintf("update `Part Dimension` set `Part 1 Quarter Acc AVG Stock`=%s , `Part 1 Quarter Acc AVG Stock Value`=%s, `Part 1 Quarter Acc Keeping Days`=%f , `Part 1 Quarter Acc Out of Stock Days`=%f , `Part 1 Quarter Acc Unknown Stock Days`=%s, `Part 1 Quarter Acc GMROI`=%s where `Part SKU`=%d"
-				, $astock
-				, $avalue
-				, $tdays
-				, $outstock
-				, $unknown
-				, $gmroi
-				, $this->id);
-			//   print "$sql\n";
-			if (!mysql_query($sql))
-				exit("$sql z errot con not update part stock history yr bb");
-
-			$astock=0;
-			$avalue=0;
-
-			$sql=sprintf("select ifnull(avg(`Quantity On Hand`), 'ERROR') as stock, avg(`Value At Cost`) as value from `Inventory Spanshot Fact` where `Part SKU`=%d and `Date`>=%s and `Date`<=%s  and `Date`>=%s    group by `Date`", $this->data['Part SKU'], prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid From']))), prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid To']))  )  , prepare_mysql(date("Y-m-d H:i:s", strtotime("now -1 month")))  );
-			// print "$sql\n";
-			$result=mysql_query($sql);
-			$days=0;
-			$errors=0;
-			$outstock=0;
-			while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-				if (is_numeric($row['stock']))
-					$astock+=$row['stock'];
-				if (is_numeric($row['value']))
-					$avalue+=$row['value'];
-				$days++;
-
-				if (is_numeric($row['stock']) and $row['stock']==0)
-					$outstock++;
-				if ($row['stock']=='ERROR')
-					$errors++;
-			}
-
-			$days_ok=$days-$errors;
-
-			$gmroi='NULL';
-			if ($days_ok>0) {
-				$astock=$astock/$days_ok;
-				$avalue=$avalue/$days_ok;
-				if ($avalue>0)
-					$gmroi=$this->data['Part 1 Month Acc Profit']/$avalue;
-			} else {
-				$astock='NULL';
-				$avalue='NULL';
-			}
-
-			$tdays = (strtotime($this->data['Part Valid To']) - strtotime($this->data['Part Valid From'])) / (60 * 60 * 24);
-			//print "$tdays $days o: $outstock e: $errors \n";
-			$unknown=$tdays-$days_ok;
-			$sql=sprintf("update `Part Dimension` set `Part 1 Month Acc AVG Stock`=%s , `Part 1 Month Acc AVG Stock Value`=%s, `Part 1 Month Acc Keeping Days`=%f , `Part 1 Month Acc Out of Stock Days`=%f , `Part 1 Month Acc Unknown Stock Days`=%s, `Part 1 Month Acc GMROI`=%s where `Part SKU`=%d"
-				, $astock
-				, $avalue
-				, $tdays
-				, $outstock
-				, $unknown
-				, $gmroi
-				, $this->id);
-			//   print "$sql\n";
-			if (!mysql_query($sql))
-				exit(" $sql x errot con not update part stock history yr cc");
-
-
-			$astock=0;
-			$avalue=0;
-
-			$sql=sprintf("select ifnull(avg(`Quantity On Hand`), 'ERROR') as stock, avg(`Value At Cost`) as value from `Inventory Spanshot Fact` where `Part SKU`=%d and `Date`>=%s and `Date`<=%s  and `Date`>=%s    group by `Date`", $this->data['Part SKU'], prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid From']))), prepare_mysql(date("Y-m-d", strtotime($this->data['Part Valid To']))  )  , prepare_mysql(date("Y-m-d H:i:s", strtotime("now -1 week")))  );
-			// print "$sql\n";
-			$result=mysql_query($sql);
-			$days=0;
-			$errors=0;
-			$outstock=0;
-			while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-				if (is_numeric($row['stock']))
-					$astock+=$row['stock'];
-				if (is_numeric($row['value']))
-					$avalue+=$row['value'];
-				$days++;
-
-				if (is_numeric($row['stock']) and $row['stock']==0)
-					$outstock++;
-				if ($row['stock']=='ERROR')
-					$errors++;
-			}
-
-			$days_ok=$days-$errors;
-
-			$gmroi='NULL';
-			if ($days_ok>0) {
-				$tmp=1.0000001/$days_ok;
-				$astock=$astock*$tmp;
-				$avalue=$avalue*$tmp;
-				if ($avalue>0)
-					$gmroi=$this->data['Part 1 Week Acc Profit']/$avalue;
-			} else {
-				$astock='NULL';
-				$avalue='NULL';
-			}
-
-			$tdays = (strtotime($this->data['Part Valid To']) - strtotime($this->data['Part Valid From'])) / (60 * 60 * 24);
-			//print "$tdays $days o: $outstock e: $errors \n";
-			$unknown=$tdays-$days_ok;
-			$sql=sprintf("update `Part Dimension` set `Part 1 Week Acc AVG Stock`=%s , `Part 1 Week Acc AVG Stock Value`=%s, `Part 1 Week Acc Keeping Days`=%f , `Part 1 Week Acc Out of Stock Days`=%f , `Part 1 Week Acc Unknown Stock Days`=%s, `Part 1 Week Acc GMROI`=%s where `Part SKU`=%d"
-				, $astock
-				, $avalue
-				, $tdays
-				, $outstock
-				, $unknown
-				, $gmroi
-				, $this->id);
-			//   print "$sql\n";
-			if (!mysql_query($sql))
-				exit("$sql q errot con not update part stock history wk");
-
-			break;
-		case('used in list'):
-
-			$sql=sprintf("select `Product ID` from `Product Part Dimension` PPD  left join  `Product Part List` PPL on (PPL.`Product Part Key`=PPD.`Product Part Key`)  where `Part SKU`=%d group by `Product ID`", $this->data['Part SKU']);
-			// print $sql;
-			$result=mysql_query($sql);
-			$this->used_in_list=array();
-
-			while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-				$this->used_in_list[]=$row['Product ID'];
-			}
-			//   print_r($this->used_in_list);
-			break;
-
-
-
-
-
-
-		}
-
-	}
-
-
-
 
 
 
@@ -1408,8 +1155,17 @@ class Part extends Asset{
 
 
 		switch ($key) {
-
-
+		case 'Status':
+			if ($this->data['Part Status']=='In Use') {
+				return _('Active');
+			}elseif ($this->data['Part Status']=='Discontinuing') {
+				return _('Discontinuing');
+			}elseif ($this->data['Part Status']=='Not In Use') {
+				return _('Discontinued');
+			}else {
+				return $this->data['Part Status'];
+			}
+			break;
 		case 'Unit Price':
 			include_once 'utils/natural_language.php';
 			$unit_price= money($this->data['Part Unit Price'], $account->get('Account Currency'));
@@ -1494,11 +1250,6 @@ class Part extends Asset{
 
 
 
-		case 'SKU':
-			return sprintf("sku%05d", $this->sku);
-			break;
-
-			break;
 		case 'Next Supplier Shipment':
 			if ($this->data['Part Next Supplier Shipment']=='') {
 				return '';
@@ -1509,7 +1260,7 @@ class Part extends Asset{
 
 		case('Current Stock Available'):
 
-			return number($this->data['Part Current On Hand Stock']-$this->data['Part Current Stock In Process']);
+			return number($this->data['Part Current On Hand Stock']-$this->data['Part Current Stock In Process'], 6);
 
 		case('Cost'):
 			global $corporate_currency;
@@ -1518,7 +1269,16 @@ class Part extends Asset{
 
 			break;
 
+		case('Current On Hand Stock'):
+		case('Current Stock'):
+		case ('Current Stock Picked'):
+		case ('Current Stock In Process'):
+			return number($this->data['Part '.$key], 6);
+
+
 			break;
+
+
 		case('Valid From'):
 		case('Valid From Datetime'):
 
@@ -1603,7 +1363,7 @@ class Part extends Asset{
 	}
 
 
-	function get_current_stock() {
+	function get_current_stock_old() {
 		$stock=0;
 		$value=0;
 		$in_process=0;
@@ -1628,14 +1388,35 @@ class Part extends Asset{
 
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
-			$stock=round($row['stock'], 5);
+
+			$stock = ceil($row['stock'] * 10000) / 10000; // 6.26
+			if ($stock==-0)$stock=0;
+			//$stock=round($row['stock'], 4);
 			$value=$row['value'];
 		}
 
 
+		return array($stock, $value, $in_process);
+
+	}
+
+
+	function get_current_stock() {
+		$stock=0;
+		$value=0;
+		$in_process=0;
 
 
 
+		$sql=sprintf("select sum(`Quantity On Hand`) as stock , sum(`Quantity In Process`) as in_process , sum(`Stock Value`) as value from `Part Location Dimension` where `Part SKU`=%d ", $this->id);
+		$res=mysql_query($sql);
+		//print $sql;
+		if ($row=mysql_fetch_array($res)) {
+			$stock=round($row['stock'], 3);
+			$in_process=round($row['in_process'], 3);
+			$value=$row['value'];
+
+		}
 
 
 
@@ -1661,17 +1442,6 @@ class Part extends Asset{
 
 
 
-
-	function get_all_product_ids() {
-		$sql=sprintf("select `Product Part Dimension`.`Product ID` from `Product Part List` left join `Product Part Dimension` on (`Product Part List`.`Product Part Key`=`Product Part Dimension`.`Product Part Key`)   where `Part SKU`=%d  group by `Product ID`", $this->data['Part SKU']);
-		// print $sql;
-		$result=mysql_query($sql);
-		$products=array();
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-			$products[$row['Product ID']]=array('Product ID'=>$row['Product ID']);
-		}
-		return $products;
-	}
 
 
 	function update_stock_status() {
@@ -1723,12 +1493,19 @@ class Part extends Asset{
 		$sql=sprintf("select sum(`Picked`) as picked, sum(`Required`) as required from `Inventory Transaction Fact` where `Part SKU`=%d and `Inventory Transaction Type`='Order In Process'"
 			, $this->id
 		);
-		$res=mysql_query($sql);
 
-		if ($row=mysql_fetch_array($res)) {
-			$picked=round($row['picked'], 3);
-			$required=round($row['required'], 3);
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$picked=round($row['picked'], 3);
+				$required=round($row['required'], 3);
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 
 
 		list($stock, $value, $in_process)=$this->get_current_stock();
@@ -1752,7 +1529,15 @@ class Part extends Asset{
 		);
 		$this->db->exec($sql);
 		//print "-> $stock , $picked, $required, , , ";
+
+
+		$this->discontinue_trigger();
+
+
 		$this->update_stock_status();
+
+
+
 
 		$this->update_available_forecast();
 
@@ -1762,70 +1547,8 @@ class Part extends Asset{
 	}
 
 
-	function update_availability() {
 
 
-		$availability='No';
-
-		$supplier_products=$this->get_supplier_products();
-		// if (count($supplier_products)>0) {
-		//   $availability='Yes';
-		// }
-
-
-
-
-		//print_r($supplier_products);
-
-		//TODO meka it work if you have more that 2 suppliers, for now all parts are 1-1 (1-n,n-1) are treated as production
-
-		foreach ($supplier_products as $supplier_product) {
-
-			if ($supplier_product['Supplier Product Part In Use']=='Yes')
-				$availability='Yes';
-		}
-
-
-		$sql=sprintf("update `Part Dimension`  set `Part Available`=%s where  `Part SKU`=%d   "
-			, prepare_mysql($availability)
-			, $this->sku
-		);
-		$this->db->exec($sql);
-
-
-
-
-		//print "$sql\n";
-		$this->update_main_state();
-
-
-		$products=$this->get_product_ids();
-		foreach ($products as $product_pid) {
-			$product=new Product ('id', $product_pid);
-			$product->update_availability_type();
-
-		}
-
-	}
-
-
-	function update_valid_to($date) {
-		$this->data['Part Valid To']=$date;
-		$sql=sprintf("update `Part Dimension`  set `Part Valid To`=%s where  `Part SKU`=%d    "
-			, prepare_mysql($date)
-			, $this->id
-		);
-
-		$op=$this->db->prepare($sql);
-		$op->execute();
-		if ($op->rowCount()) {
-			//print "sdasdas asdkokk; $date\n";
-			$this->update_product_part_list_dates();
-		}
-
-
-
-	}
 
 
 	function update_last_date_from_transactions($type) {
@@ -1877,455 +1600,6 @@ class Part extends Asset{
 
 
 
-	function update_valid_from($date) {
-		$this->data['Part Valid To']=$date;
-		$sql=sprintf("update `Part Dimension`  set `Part Valid From`=%s where  `Part SKU`=%d    "
-			, prepare_mysql($date)
-			, $this->id
-		);
-		mysql_query($sql);
-
-		$this->update_product_part_list_dates();
-
-
-	}
-
-
-	function update_picking_location() {
-
-		$sql=sprintf("select * from `Part Location Dimension` PL left join `Location Dimension` L on (L.`Location Key`=PL.`Location Key`) where `Part SKU`=%d and `Can Pick`='Yes'  ", $this->sku);
-
-		$picking_location='';
-
-
-		if ($result=$this->db->query($sql)) {
-			foreach ($result as $row) {
-				$picking_location.=sprintf(", <href='location.php?id=%d'>%s</a>", $row['Location Key'], $row['Location Code']);
-
-			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
-		}
-
-
-		$picking_location=preg_replace('/^,/', '', $picking_location);
-		$this->data['Part XHTML Picking Location']=$picking_location;
-
-		$sql=sprintf("update `Part Dimension`  set `Part XHTML Picking Location`=%s where  `Part SKU`=%d   "
-			, prepare_mysql($this->data['Part XHTML Picking Location'], false)
-			, $this->id
-		);
-		$this->db->exec($sql);
-
-	}
-
-
-	function update_valid_dates($date) {
-		$affected_from=0;
-		$affected_to=0;
-		$sql=sprintf("update `Part Dimension`  set `Part Valid From`=%s where  `Part SKU`=%d and `Part Valid From`>%s   "
-			, prepare_mysql($date)
-			, $this->id
-			, prepare_mysql($date)
-
-		);
-
-		$op=$this->db->prepare($sql);
-		$op->execute();
-		if ($affected_from=$op->rowCount()) {
-			$this->data['Part Valid From']=$date;
-		}
-		$sql=sprintf("update `Part Dimension`  set `Part Valid To`=%s where  `Part SKU`=%d and `Part Valid To`<%s   "
-			, prepare_mysql($date)
-			, $this->id
-			, prepare_mysql($date)
-
-		);
-
-
-		$op=$this->db->prepare($sql);
-		$op->execute();
-		if ($affected_to=$op->rowCount()) {
-			$this->data['Part Valid To']=$date;
-		}
-
-
-
-
-		return $affected_to+$affected_from;
-	}
-
-
-
-
-	function get_historic_locations() {
-		$locations=array();
-
-		$sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where `Inventory Transaction Type` like 'Associate' and `Part SKU`=%d   group by `Location Key`  ", $this->data['Part SKU']);
-		//print $sql;
-		$res=mysql_query($sql);
-		while ($row=mysql_fetch_array($res)) {
-			$locations[$row['Location Key']]=$row['Location Key'];
-		}
-
-		return $locations;
-
-	}
-
-
-
-	function load_locations($date='') {
-
-		if (preg_match('/\d{4}-\{d}2-\d{2}/', $date))
-			$this->load_locations_historic($date);
-		else
-			$this->load_current_locations();
-	}
-
-
-	function load_current_historic($date) {
-		$this->all_historic_associated_locations=array();
-		$this->associated_location_on_date=array();
-
-		$sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where `Inventory Transaction Type` like 'Associate' and `Part SKU`=%d  `Date`=%s  group by `Location Key`  ", $this->data['Part SKU'], $date);
-		// print $sql;
-		$res=mysql_query($sql);
-		while ($row=mysql_fetch_array($res)) {
-			$this->all_historic_associated_locations[]=$row['Location Key'];
-		}
-		foreach ($this->all_historic_associated_locations as $location_key) {
-			$sql=sprintf("select `Inventory Transaction Type` from `Inventory Transaction Fact` where (`Inventory Transaction Type` like 'Associate' or `Inventory Transaction Type` like 'Disassociate') and `Part SKU`=%d and `Location Key`=%d %s order by `Date` desc limit 1 ", $this->data['Part SKU'], $location_key, $date);
-			//   print $sql;
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_array($res)) {
-
-				if ($row['Inventory Transaction Type']=='Associate')
-					$this->associated_location_on_date[]=$location_key;
-			}
-
-		}
-
-	}
-
-
-	function get_picking_location_key($date=false, $qty=1, $historic=false) {
-		if ($historic) {
-			return $this->get_picking_location_historic($date, $qty);
-		}
-
-		//FORCING PICKING FOR PICKING LOCAtION EVEN IF IS NEGATIVE
-
-		$this->unknown_location_associated=false;
-		$locations=array();
-		$sql=sprintf("select `Location Key` from `Part Location Dimension` where `Part SKU` in (%s) order by `Can Pick` ;", $this->sku);
-		//print "$sql\n";
-		$res=mysql_query($sql);
-		$locations_data=array();
-		while ($row=mysql_fetch_assoc($res)) {
-			$part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
-			//list($stock,$value,$in_process)=$part_location->get_stock();
-			$stock=$part_location->data['Quantity On Hand'];
-
-			$locations_data[]=array('location_key'=>$row['Location Key'], 'stock'=>$stock);
-
-		}
-
-		$number_associated_locations=count($locations_data);
-
-		if ($number_associated_locations==0) {
-			$this->unknown_location_associated=true;
-			$locations[]= array('location_key'=>1, 'qty'=>$qty);
-			$qty=0;
-		}else {
-
-			foreach ($locations_data as $location_data) {
-
-				$locations[]=array('location_key'=>$location_data['location_key'], 'qty'=>$qty);
-				break;
-
-
-
-
-
-			}
-			//print_r($locations);
-			//print "--- $qty\n";
-
-
-
-		}
-
-		//print_r($locations);
-		return $locations;
-
-	}
-
-
-	function get_picking_location_key_origial($date=false, $qty=1) {
-		if ($date) {
-			return $this->get_picking_location_historic($date, $qty);
-		}
-		$this->unknown_location_associated=false;
-		$locations=array();
-		$sql=sprintf("select `Location Key` from `Part Location Dimension` where `Part SKU` in (%s) order by `Can Pick` ;", $this->sku);
-		//print "$sql\n";
-		$res=mysql_query($sql);
-		$locations_data=array();
-		while ($row=mysql_fetch_assoc($res)) {
-			$part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
-			list($stock, $value, $in_process)=$part_location->get_stock();
-			$locations_data[]=array('location_key'=>$row['Location Key'], 'stock'=>$stock);
-
-		}
-
-		$number_associated_locations=count($locations_data);
-
-		if ($number_associated_locations==0) {
-			$this->unknown_location_associated=true;
-			$locations[]= array('location_key'=>1, 'qty'=>$qty);
-			$qty=0;
-		}else {
-
-			foreach ($locations_data as $location_data) {
-				if ($qty>0) {
-					if ($location_data['stock']>=$qty) {
-						$locations[]=array('location_key'=>$location_data['location_key'], 'qty'=>$qty);
-						$qty=0;
-					}
-					elseif ($location_data['stock']>0) {
-						$locations[]=array('location_key'=>$location_data['location_key'], 'qty'=>$location_data['stock']);
-						$qty=$qty-$location_data['stock'];
-					}
-				}
-
-
-
-			}
-			//print_r($locations);
-			//print "--- $qty\n";
-
-			if (count($locations)==0) {
-
-				$locations[]= array('location_key'=>$locations_data[0]['location_key'], 'qty'=>$qty);
-				$qty=0;
-			}
-			if ($qty>0) {
-				$locations[0]['qty']=$locations[0]['qty']+$qty;
-			}
-
-
-		}
-
-		//print_r($locations);
-		return $locations;
-
-	}
-
-
-	function associate_unknown_location_historic($date=false) {
-
-		if (!$date) {
-			$date=gmdate("Y-m-d H:i:s");
-		}
-		$date=date("Y-m-d H:i:s", strtotime("$date -1 second"));
-		$location_key=1;
-
-
-		$sql=sprintf("select `Inventory Transaction Key` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  and `Inventory Transaction Type` like 'Associate' and `Date`>%s order by `Date`  ", $this->sku, $location_key, prepare_mysql($date));
-
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_array($res)) {
-			$sql=sprintf("delete from  `Inventory Transaction Fact` where `Inventory Transaction Key`=%d  "
-				, $row['Inventory Transaction Key']
-			);
-			$this->db->exec($sql);
-
-			$details=_('Part')." SKU".sprintf("%05d", $this->sku)." "._('associated with unknown location');
-			$sql=sprintf("insert into `Inventory Transaction Fact` (`Inventory Transaction Record Type`, `Inventory Transaction Section`, `Part SKU`, `Location Key`, `Inventory Transaction Type`, `Inventory Transaction Quantity`, `Inventory Transaction Amount`, `User Key`, `Note`, `Date`) values (%s, %s, %d, %d, %s, %f, %.2f, %s, %s, %s)",
-				"'Helper'",
-				"'Other'",
-				$this->sku,
-				$location_key,
-				"'Associate'",
-				0,
-				0,
-				0,
-				prepare_mysql($details),
-				prepare_mysql($date)
-
-			);
-			$this->db->exec($sql);
-
-		}
-
-		else {
-
-			$sql=sprintf("select `Inventory Transaction Key` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  and `Inventory Transaction Type` like 'Disassociate' and `Date`>%s order by `Date`  ", $this->sku, $location_key, prepare_mysql($date));
-
-			$res2=mysql_query($sql);
-			// print $sql;
-			if ($row2=mysql_fetch_array($res2)) {
-
-			}else {
-
-
-
-				$pl_data=array(
-					'Part SKU'=>$this->sku,
-					'Location Key'=>$location_key,
-					'Date'=>$date);
-				//print_r($pl_data);
-				$part_location=new PartLocation('find', $pl_data, 'create');
-			}
-
-			//print_r($part_location);
-		}
-
-
-	}
-
-
-
-
-
-	function get_picking_location_historic($date, $qty) {
-
-
-		include_once 'class.PartLocation.php';
-
-		$this->unknown_location_associated=false;
-
-
-		$locations=array();
-		$was_associated=array();
-		$sql=sprintf("select ITF.`Location Key`  from `Inventory Transaction Fact` ITF    where `Inventory Transaction Type` like 'Associate' and  `Part SKU`=%d and `Date`<=%s   order by `Location Key`  desc  ", $this->sku, prepare_mysql($date));
-
-
-		$_locations=array();
-
-
-		if ($result=$this->db->query($sql)) {
-			foreach ($result as $row) {
-
-				if (in_array($row['Location Key'], $_locations)) {
-					continue;
-				}else {
-					$_locations[]=$row['Location Key'];
-				}
-				$part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
-
-
-				if ($part_location->location->data['Location Mainly Used For']=='Picking') {
-
-
-					if ($part_location->is_associated($date)) {
-						list($stock, $value, $in_process)=$part_location->get_stock($date);
-						$was_associated[]=array('location_key'=>$row['Location Key'], 'stock'=>$stock);
-
-					}
-				}
-
-
-			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
-		}
-
-
-
-
-
-		$sql=sprintf("select ITF.`Location Key`  from `Inventory Transaction Fact` ITF    where `Inventory Transaction Type` like 'Associate' and  `Part SKU`=%d and `Date`<=%s   ", $this->sku, prepare_mysql($date));
-
-
-		if ($result=$this->db->query($sql)) {
-			foreach ($result as $row) {
-
-				if (in_array($row['Location Key'], $_locations)) {
-					continue;
-				}else {
-					$_locations[]=$row['Location Key'];
-				}
-				$part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
-
-				// print_r($part_location->location);
-				if ($part_location->location->data['Location Mainly Used For']!='Picking') {
-					if ($part_location->is_associated($date)) {
-						list($stock, $value, $in_process)=$part_location->get_stock($date);
-						$was_associated[]=array('location_key'=>$row['Location Key'], 'stock'=>$stock);
-
-					}
-				}
-
-
-			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
-		}
-
-
-
-		//print "------------------".$this->data['Part Currently Used In']."\n";
-		// print_r($was_associated);
-
-		//print "==================\n";
-
-
-		$number_associated_locations=count($was_associated);
-
-		if ($number_associated_locations==0) {
-			$this->unknown_location_associated=true;
-			$locations[]= array('location_key'=>1, 'qty'=>$qty);
-			$qty=0;
-		}else {
-			//foreach ($was_associated as $key => $row) {
-			// $_location_key[$key]  = $row['location_key'];
-			//}
-			//array_multisort($_location_key, SORT_DESC, $was_associated);
-
-			foreach ($was_associated as $location_data) {
-				if ($qty>0) {
-					if ($location_data['stock']>=$qty) {
-						$locations[]=array('location_key'=>$location_data['location_key'], 'qty'=>$qty);
-						$qty=0;
-					}
-					elseif ($location_data['stock']>0) {
-						$locations[]=array('location_key'=>$location_data['location_key'], 'qty'=>$location_data['stock']);
-						$qty=$qty-$location_data['stock'];
-					}
-				}
-
-
-
-			}
-			//print_r($locations);
-			//print "--- $qty\n";
-
-			if (count($locations)==0) {
-
-				$locations[]= array('location_key'=>$was_associated[0]['location_key'], 'qty'=>$qty);
-				$qty=0;
-			}
-			if ($qty>0) {
-				$locations[0]['qty']=$locations[0]['qty']+$qty;
-			}
-
-
-		}
-		//if ($this->unknown_location_associated)
-		// print "\n".$this->sku." unknown location addes\n";
-
-
-		//print_r($locations);
-		//print "`~~~~~~~~~~~~~~~\n";
-
-		return $locations;
-
-
-	}
 
 
 	function get_barcode_data() {
@@ -2344,136 +1618,87 @@ class Part extends Asset{
 	}
 
 
-	function get_current_products($for_smarty=false) {
 
-		$sql=sprintf("select  `Product Number Web Pages`,`Product Web Configuration`,`Product Web State`,`Store Key`,`Store Code`,P.`Product ID`,`Product Code`,`Product Store Key` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` P on (P.`Product ID`=PPD.`Product ID`) left join `Store Dimension` on (`Product Store Key`=`Store Key`)  where  `Part SKU`=%d  and  `Product Part Most Recent`='Yes'  and `Product Record Type`='Normal'",
-			$this->sku
-		);
-		//print $sql;
-		$res=mysql_query($sql);
-		$products=array();
-		while ($row=mysql_fetch_array($res)) {
-			$products[$row['Product ID']]= array(
-				'ProductID'=>$row['Product ID'],
-				'ProductCode'=>$row['Product Code'],
-				'StoreCode'=>$row['Store Code'],
-				'StoreKey'=>$row['Store Key'],
-				'ProductNumberWebPages'=>$row['Product Number Web Pages'],
-				'ProductWebConfiguration'=>$row['Product Web Configuration'],
-				'ProductWebState'=>$row['Product Web State'],
-			);
+
+
+
+	function get_locations($scope='keys') {
+
+
+		if ($scope=='objects') {
+			include_once 'class.Location.php';
+		}elseif ($scope=='part_location_object') {
+			include_once 'class.PartLocation.php';
 		}
 
-		return $products;
-	}
+		$sql=sprintf("select PL.`Location Key`,`Location Code`,`Quantity On Hand`,`Location Warehouse Key`,`Location Mainly Used For`,`Part SKU`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Can Pick` from `Part Location Dimension` PL left join `Location Dimension` L on (L.`Location Key`=PL.`Location Key`)  where `Part SKU`=%d",
+			$this->sku);
 
 
-	function get_current_products_objects() {
-
-		$sql=sprintf("select  P.`Product ID` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` P on (P.`Product ID`=PPD.`Product ID`) left join `Store Dimension` on (`Product Store Key`=`Store Key`)  where  `Part SKU`=%d  and  `Product Part Most Recent`='Yes'  and `Product Record Type`='Normal'",
-			$this->sku
-		);
-		//print $sql;
-		$res=mysql_query($sql);
-		$products=array();
-		while ($row=mysql_fetch_array($res)) {
-			$products[]=new Product('id', $row['Product ID']);
-		}
-
-		return $products;
-	}
-
-
-
-
-	function get_locations($for_smarty=false) {
-		$sql=sprintf("select PL.`Location Key`,`Location Code`,`Quantity On Hand`,`Location Warehouse Key`,`Location Mainly Used For`,`Part SKU`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Can Pick` from `Part Location Dimension` PL left join `Location Dimension` L on (L.`Location Key`=PL.`Location Key`)  where `Part SKU`=%d", $this->sku);
-
-		$res=mysql_query($sql);
 		$part_locations=array();
 
 
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+				if ($scope=='keys') {
+					$part_locations[$row['Location Key']]=$row['Location Key'];
+				}elseif ($scope=='objects') {
+					$part_locations[$row['Location Key']]=new Location($row['Location Key']);
+				}elseif ($scope=='part_location_object') {
+					$part_locations[$row['Location Key']]=new  PartLocation($this->sku.'_'.$row['Location Key']);
+				}else {
 
 
-		while ($row=mysql_fetch_assoc($res)) {
+					switch ($row['Location Mainly Used For']) {
+					case 'Picking':
+						$used_for=sprintf('<i class="fa fa-fw fa-shopping-basket" aria-hidden="true" title="%s" ></i>', _('Picking'));
+						break;
+					case 'Storing':
+						$used_for=sprintf('<i class="fa fa-fw  fa-hdd-o" aria-hidden="true" title="%s"></i>', _('Storing'));
+						break;
+					default:
+						$used_for=sprintf('<i class="fa fa-fw  fa-map-maker" aria-hidden="true" title="%s"></i>', $row['Location Mainly Used For']);
+					}
 
-			switch ($row['Location Mainly Used For']) {
-			case 'Picking':
-				$used_for=sprintf('<i class="fa fa-fw fa-shopping-basket" aria-hidden="true" title="%s" ></i>', _('Picking'));
-				break;
-			case 'Storing':
-				$used_for=sprintf('<i class="fa fa-fw  fa-hdd-o" aria-hidden="true" title="%s"></i>', _('Storing'));
-				break;
-			default:
-				$used_for=sprintf('<i class="fa fa-fw  fa-map-maker" aria-hidden="true" title="%s"></i>', $row['Location Mainly Used For']);
+					$part_locations[]=array(
+						'formatted_stock'=>number($row['Quantity On Hand'], 3),
+						'stock'=>$row['Quantity On Hand'],
+						'warehouse_key'=>$row['Location Warehouse Key'],
+
+						'location_key'=>$row['Location Key'],
+						'part_sku'=>$row['Part SKU'],
+
+						'location_code'=>$row['Location Code'],
+						'location_used_for_icon'=>$used_for,
+						'location_used_for'=>$row['Location Mainly Used For'],
+						'formatted_min_qty'=>($row['Minimum Quantity']!=''?$row['Minimum Quantity']:'?'),
+						'formatted_max_qty'=>($row['Maximum Quantity']!=''?$row['Maximum Quantity']:'?'),
+						'formatted_move_qty'=>($row['Moving Quantity']!=''?$row['Moving Quantity']:'?'),
+						'min_qty'=>$row['Minimum Quantity'],
+						'max_qty'=>$row['Maximum Quantity'],
+						'move_qty'=>$row['Moving Quantity'],
+
+						'can_pick'=>$row['Can Pick']
+					);
+
+				}
+
 			}
-
-			$part_locations[]=array(
-				'formatted_stock'=>number($row['Quantity On Hand'], 3),
-				'stock'=>$row['Quantity On Hand'],
-				'warehouse_key'=>$row['Location Warehouse Key'],
-
-				'location_key'=>$row['Location Key'],
-				'part_sku'=>$row['Part SKU'],
-
-				'location_code'=>$row['Location Code'],
-				'location_used_for_icon'=>$used_for,
-				'location_used_for'=>$row['Location Mainly Used For'],
-				'formatted_min_qty'=>($row['Minimum Quantity']!=''?$row['Minimum Quantity']:'?'),
-				'formatted_max_qty'=>($row['Maximum Quantity']!=''?$row['Maximum Quantity']:'?'),
-				'formatted_move_qty'=>($row['Moving Quantity']!=''?$row['Moving Quantity']:'?'),
-				'min_qty'=>$row['Minimum Quantity'],
-				'max_qty'=>$row['Maximum Quantity'],
-				'move_qty'=>$row['Moving Quantity'],
-
-				'can_pick'=>$row['Can Pick']
-			);
-
-
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
 
 		return $part_locations;
 	}
 
 
-	function get_location_keys() {
-		$this->load_current_locations();
-		return $this->current_associated_locations;
-	}
 
 
-	function load_current_locations() {
-		$this->current_associated_locations=array();
-		$sql=sprintf("select `Location Key` from `Part Location Dimension` where   `Part SKU`=%d    group by `Location Key`  ", $this->data['Part SKU']);
-		//  print $sql;
-		$res=mysql_query($sql);
-		while ($row=mysql_fetch_array($res)) {
-			$this->current_associated_locations[]=$row['Location Key'];
-		}
-		$this->current_locations_loaded=true;
 
-	}
-
-
-	function items_per_product($product_ID, $date=false) {
-		$where_date='';
-
-		$sql=sprintf("select AVG(`Parts Per Product`) as parts_per_product from `Product Part Dimension` PPD left join `Product Part List` PPL on (PPD.`Product Part Key`=PPL.`Product Part Key`) where `Part SKU`=%d and  `Product ID`=%d %s  "
-			, $this->id
-			, $product_ID
-			, $where_date
-		);
-		//  print "$sql\n";
-		$parts_per_product=0;
-		$result3=mysql_query($sql);
-		if ($row3=mysql_fetch_array($result3, MYSQL_ASSOC)   ) {
-			if (is_numeric($row3['parts_per_product']))
-				$parts_per_product=$row3['parts_per_product'];
-		}
-		return $parts_per_product;
-
-
-	}
 
 
 
@@ -3289,548 +2514,10 @@ where `Part SKU`=%d ",
 	}
 
 
-	function update_estimated_future_cost() {
-		list($avg_cost, $min_cost)=$this->get_estimated_future_cost();
 
 
 
-		$sql=sprintf("update `Part Dimension` set `Part Average Future Cost Per Unit`=%s,`Part Minimum Future Cost Per Unit`=%s where `Part SKU`=%d "
-			, prepare_mysql($avg_cost)
-			, prepare_mysql($min_cost)
-			, $this->id);
 
-		//print "$sql\n";
-		mysql_query($sql);
-	}
-
-
-	function get_formatted_unit_cost($date=false) {
-
-		return money($this->data['Part Cost'] );
-	}
-
-
-
-
-
-
-	function get_estimated_future_cost() {
-		$sql=sprintf("select min(`Supplier Product Cost Per case`*`Supplier Product Units Per Part`/`Supplier Product Units Per case`) as min_cost ,avg(`Supplier Product Cost Per case`*`Supplier Product Units Per Part`/`Supplier Product Units Per case`) as avg_cost   from `Supplier Product Part List` SPPL left join  `Supplier Product Part Dimension` SPPD on (  SPPL.`Supplier Product Part Key`=SPPD.`Supplier Product Part Key`)    left join  `Supplier Product Dimension` SPD  on (SPPD.`Supplier Product ID`=SPD.`Supplier Product ID`)      where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes'", $this->sku);
-		// print "$sql\n";
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			if (is_numeric($row['avg_cost']))
-				$avg_cost=$row['avg_cost'];
-			else
-				$avg_cost='';
-			if (is_numeric($row['min_cost']))
-				$min_cost=$row['min_cost'];
-			else
-				$min_cost='';
-
-		} else {
-			$avg_cost='';
-			$min_cost='';
-		}
-
-		// print "($avg_cost,$min_cost\n";
-		return array($avg_cost, $min_cost);
-
-	}
-
-
-	function update_used_in() {
-		$used_in_products='';
-		$raw_used_in_products='';
-		$sql=sprintf("select `Store Code`,PD.`Product ID`,`Product Code` from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` PD on (PD.`Product ID`=PPD.`Product ID`) left join `Store Dimension`  on (PD.`Product Store Key`=`Store Key`)  where PPL.`Part SKU`=%d and `Product Part Most Recent`='Yes' and `Product Record Type`='Normal' order by `Product Code`,`Store Code`", $this->data['Part SKU']);
-		$result=mysql_query($sql);
-		//   print "$sql\n";
-		$used_in=array();
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-
-			if (!array_key_exists(strtolower($row['Product Code']), $used_in))
-				$used_in[strtolower($row['Product Code'])]=array();
-			if (!array_key_exists($row['Store Code'], $used_in[strtolower($row['Product Code'])]))
-				$used_in[strtolower($row['Product Code'])][$row['Store Code']]=array();
-			$used_in[strtolower($row['Product Code'])][$row['Store Code']][$row['Product ID']]=1;
-
-		}
-		//print_r($used_in);
-		foreach ($used_in as $code=>$store_data) {
-			$raw_used_in_products.=' '.$code;
-			$used_in_products.=sprintf(', <a href="product.php?code=%s">%s</a>', $code, $code);
-			$used_in_products_2='';
-			foreach ($store_data as $store_code=>$product_id_data) {
-				foreach ($product_id_data as $product_id=>$tmp) {
-					$used_in_products_2.=sprintf(',<a href="product.php?pid=%d">%s</a>', $product_id, $store_code);
-				}
-			}
-			$used_in_products_2=preg_replace('/^,/', '', $used_in_products_2);
-			$used_in_products.=" ($used_in_products_2)";
-
-		}
-
-		//$used_in_products.=sprintf(', <a href="product.php?code=%s">%s</a>',$row['Product Code'],$row['Product Code']);
-		//$raw_used_in_products=' '.$row['Product Code'];
-
-		$used_in_products=preg_replace('/^, /', '', $used_in_products);
-		$sql=sprintf("update `Part Dimension` set `Part XHTML Currently Used In`=%s ,`Part Currently Used In`=%s  where `Part SKU`=%d",
-			prepare_mysql(_trim($used_in_products)),
-			prepare_mysql(_trim($raw_used_in_products)),
-			$this->id);
-		//  print "$sql\n";
-		mysql_query($sql);
-	}
-
-
-	function wrap_transactions() {
-
-		$sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where  `Part SKU`=%d  group by `Location Key`  ", $this->sku);
-		$locations=array();
-		$res2=mysql_query($sql);
-		while ($row2=mysql_fetch_array($res2)) {
-			$locations[$row2['Location Key']]=$row2['Location Key'];
-
-		}
-
-		if (count($locations)==0)return;
-
-
-		foreach ($locations as $location_key) {
-			/*
-			$sql=sprintf("select `Date`,`Inventory Transaction Type` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  order by `Date`,`Inventory Transaction Key`   ",$this->sku,$location_key);
-			//print "$sql\n";
-			$res3=mysql_query($sql);
-			if ($row3=mysql_fetch_array($res3)) {
-				if ($row3['Inventory Transaction Type']=='Associate') {
-					$sql=sprintf("delete from  `Inventory Transaction Fact` where `Part SKU`=%d  and `Inventory Transaction Type` in ('Associate') and `Date`=%s and `Location Key`=%d  "
-						,$this->sku
-						,prepare_mysql($row3['Date'])
-						,$location_key
-					);
-					// print "$sql\n";
-					mysql_query($sql);
-				}
-			}
-
-			$sql=sprintf("select `Date`,`Inventory Transaction Type` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  order by `Date` desc ,`Inventory Transaction Key` desc ",$this->sku,$location_key);
-			$last_itf_date='none';
-			$res3=mysql_query($sql);
-			//print "$sql\n";
-			if ($row3=mysql_fetch_array($res3)) {
-				if ($row3['Inventory Transaction Type']=='Disassociate') {
-					$sql=sprintf("delete from  `Inventory Transaction Fact` where `Part SKU`=%d  and `Inventory Transaction Type` in ('Disassociate') and `Date`=%s and `Location Key`=%d  "
-						,$this->sku
-						,prepare_mysql($row3['Date'])
-						,$location_key
-					);
-					//print "$sql\n";
-					mysql_query($sql);
-				}
-			}
-
-
-*/
-
-
-			$sql=sprintf('select `Inventory Audit Date` from `Inventory Audit Dimension` where `Inventory Audit Part SKU`=%d and `Inventory Audit Location Key`=%d  order by `Inventory Audit Date`' , $this->sku, $location_key);
-			$first_audit_date='none';
-			$res3=mysql_query($sql);
-			if ($row3=mysql_fetch_array($res3)) {
-				$first_audit_date=($row3['Inventory Audit Date']);
-			}
-			//   print "\n$sql\n";
-			$sql=sprintf("select `Date` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  order by `Date`  ", $this->sku, $location_key);
-			$first_itf_date='none';
-			$res3=mysql_query($sql);
-			if ($row3=mysql_fetch_array($res3)) {
-				$first_itf_date=($row3['Date']);
-			}
-			// print "$sql\n";
-			//print "R: $first_audit_date $first_itf_date \n ";
-			if ($first_audit_date=='none' and $first_itf_date=='none') {
-				//    print "\nError1 : Part ".$this->sku." ".$this->data['Part XHTML Currently Used In']."  \n";
-				//    exit;
-				//    return;
-				$first_date=$this->data['Part Valid From'];
-				// print "\nError1 : Part ".$this->sku." ".$this->data['Part XHTML Currently Used In']." ".$this->data['Part Valid From']." \n";
-
-			}
-			elseif ($first_audit_date=='none') {
-				$first_date=$first_itf_date;
-			}
-			elseif ($first_itf_date=='none') {
-				$first_date=$first_audit_date;
-			}
-			else {
-				if (strtotime($first_itf_date)< strtotime($first_audit_date) )
-					$first_date=$first_itf_date;
-				else
-					$first_date=$first_audit_date;
-
-			}
-
-			// $first_date=date("Y-m-d H:i:s",strtotime($first_date." -1 second"));
-
-			//   print $first_date;
-
-
-			$replace_associate=true;
-			$sql=sprintf("select `Date`,`Inventory Transaction Type` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  and `Date`=%d and `Inventory Transaction Type` like 'Associate'   ",
-				$this->sku,
-				$location_key,
-				prepare_mysql($first_date)
-			);
-			//print "$sql\n";
-			$res3=mysql_query($sql);
-			if ($row3=mysql_fetch_array($res3)) {
-				$replace_associate=false;
-			}
-
-
-
-
-			$part_location=new PartLocation($this->sku.'_'.$location_key);
-			if ($replace_associate) {
-
-
-
-
-
-				$sql=sprintf("delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Associate') and `Part SKU`=%d and `Location Key`=%d order by `Date`  limit 1 "
-					, $this->sku
-					, $location_key
-				);
-				$this->db->exec($sql);
-
-				$sql=sprintf("delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Audit') and `Note` like '%%Part associated with location%%'   and  `Part SKU`=%d and `Location Key`=%d  order by `Date` limit 1 "
-					, $this->sku
-					, $location_key
-				);
-				$this->db->exec($sql);
-				//print $sql;
-				$first_date=date("Y-m-d H:i:s", strtotime($first_date." -1 second"));
-				$part_location->associate(array('date'=>$first_date));
-				$this->update_valid_from($first_date);
-			}
-
-
-
-
-
-
-
-
-			if ($this->data['Part Status']=='Not In Use') {
-
-				$sql=sprintf('select `Inventory Audit Date` from `Inventory Audit Dimension` where `Inventory Audit Part SKU`=%d and `Inventory Audit Location Key`=%d  order by `Inventory Audit Date` desc' , $this->sku, $location_key);
-				$last_audit_date='none';
-				$res3=mysql_query($sql);
-				if ($row3=mysql_fetch_array($res3)) {
-					$last_audit_date=($row3['Inventory Audit Date']);
-				}
-
-				$sql=sprintf("select `Date` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  order by `Date` desc  ", $this->sku, $location_key);
-				$last_itf_date='none';
-				$res3=mysql_query($sql);
-				if ($row3=mysql_fetch_array($res3)) {
-					$last_itf_date=($row3['Date']);
-				}
-				//print "$sql\n";
-
-				if ($last_audit_date=='none' and $last_itf_date=='none') {
-					print "\nError2: Part ".$this->sku." ".$this->data['Part XHTML Currently Used In']."  \n";
-					return;
-				}
-				elseif ($last_audit_date=='none') {
-					$last_date=$last_itf_date;
-				}
-
-
-				elseif ($last_itf_date=='none') {
-
-					$last_date=$last_audit_date;
-				}
-				else {
-					if (strtotime($last_itf_date)>strtotime($last_audit_date) )
-						$last_date=$last_itf_date;
-					else
-						$last_date=$last_audit_date;
-
-				}
-
-
-
-				$replace_disassociate=true;
-				$sql=sprintf("select `Date`,`Inventory Transaction Type` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  and `Date`=%d and `Inventory Transaction Type` like 'Disassociate'   ",
-					$this->sku,
-					$location_key,
-					prepare_mysql($last_date)
-				);
-				//print "$sql\n";
-				$res3=mysql_query($sql);
-				if ($row3=mysql_fetch_array($res3)) {
-					$replace_disassociate=false;
-				}
-
-
-
-				if ($replace_disassociate) {
-
-
-					$sql=sprintf("delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Disassociate') and `Part SKU`=%d and `Location Key`=%d order by `Date` desc limit 1 "
-						, $this->sku
-						, $location_key
-					);
-					mysql_query($sql);
-
-					$sql=sprintf("delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Audit') and `Note` like '%%disassociate %%'   and  `Part SKU`=%d and `Location Key`=%d  order by `Date` desc limit 1 "
-						, $this->sku
-						, $location_key
-					);
-					mysql_query($sql);
-
-
-					//$part_location->audit(0,_('Audit due to discontinued'),$last_date);
-
-					$last_date=date("Y-m-d H:i:s", strtotime($last_date." +1 second"));
-					$data=array('Date'=>$last_date, 'Note'=>_('Discontinued'));
-					//print_r($data);
-
-					$part_location->disassociate($data);
-
-				}
-				$this->update_valid_to($last_date);
-
-
-
-			}
-			$this->update_stock();
-
-
-		}
-
-
-
-		//Todo wrap by valid_dates
-
-
-	}
-
-
-	function get_description() {
-		return $this->data['Part Unit Description'];
-	}
-
-
-	function get_product_ids($date=false) {
-
-		if (!$date) {
-			return $this->get_current_product_ids();
-		}
-		$product_ids=array();
-
-		$sql=sprintf("select  `Product ID` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and  `Product Part Valid From`<=%s  and `Product Part Most Recent`='Yes'  "
-			, $this->sku
-			, prepare_mysql($date)
-
-		);
-		$res=mysql_query($sql);
-
-		while ($row=mysql_fetch_array($res)) {
-			$product_ids[$row['Product ID']]= $row['Product ID'];
-		}
-
-		$sql=sprintf("select  `Product ID` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and `Product Part Valid From`<=%s  and `Product Part Valid To`>=%s and `Product Part Most Recent`='No'  "
-			, $this->sku
-			, prepare_mysql($date)
-			, prepare_mysql($date)
-		);
-		$res=mysql_query($sql);
-
-		while ($row=mysql_fetch_array($res)) {
-			$product_ids[$row['Product ID']]= $row['Product ID'];
-		}
-
-		return $product_ids;
-	}
-
-
-	function get_current_product_ids() {
-		$sql=sprintf("select `Product Part Dimension`.`Product ID` from `Product Part List` left join `Product Part Dimension` on (`Product Part List`.`Product Part Key`=`Product Part Dimension`.`Product Part Key`)   where `Part SKU`=%d and `Product Part Most Recent`='Yes' ", $this->sku);
-
-		$result=mysql_query($sql);
-		$product_ids=array();
-
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-			$product_ids[$row['Product ID']]= $row['Product ID'];
-		}
-		return $product_ids;
-	}
-
-
-
-
-
-
-	function get_product_part_list($date=false) {
-
-		if (!$date) {
-			$sql=sprintf("select * from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and  `Product Part Most Recent`='Yes'  "
-				, $this->sku
-
-			)
-			;  $result=mysql_query($sql);
-			$product_part_list=array();
-			while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-				$product_part_list[$row['Product Part Key']]= $row;
-			}
-			return $product_part_list;
-		}
-
-		$product_part_list=array();
-		$sql=sprintf("select * from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and  `Product Part Valid From`<=%s  and `Product Part Most Recent`='Yes'  "
-			, $this->sku
-			, prepare_mysql($date)
-
-		);
-		$res=mysql_query($sql);
-
-		while ($row=mysql_fetch_array($res)) {
-			$product_part_list[$row['Product Part Key']]= $row;
-		}
-
-		$sql=sprintf("select * from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and `Product Part Valid From`<=%s  and `Product Part Valid To`<=%s and `Product Part Most Recent`='No'  "
-			, $this->sku
-			, prepare_mysql($date)
-			, prepare_mysql($date)
-		);
-		$res=mysql_query($sql);
-
-		while ($row=mysql_fetch_array($res)) {
-			$product_part_list[$row['Product Part Key']]= $row;
-		}
-
-		return $product_part_list;
-	}
-
-
-	function get_current_product_part_list() {
-		$sql=sprintf("select * from `Product Part List` left join `Product Part Dimension` on (`Product Part List`.`Product Part Key`=`Product Part Dimension`.`Product Part Key`)   where `Part SKU`=%d and `Product Part Most Recent`='Yes' ", $this->data['Part SKU']);
-		// print $sql;
-		$result=mysql_query($sql);
-		$product_part_list=array();
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-			$product_part_list[$row['Product Part Key']]= $row;
-		}
-		return $product_part_list;
-	}
-
-
-
-
-
-	function update_product_part_list_dates() {
-
-		$part_from=$this->data['Part Valid From'];
-		$part_to=$this->data['Part Valid To'];
-
-		foreach ($this->get_product_ids()   as $pid) {
-
-			$product=new Product('id', $pid);
-
-			$product_from=$product->data['Product Valid From'];
-			$product_to=$product->data['Product Valid To'];
-			$store_key=$product->data['Product Store Key'];
-
-			$from=$part_from;
-
-			if ($this->data['Part Status']=='In Use') {
-				$to='';
-			} else {
-				$to=$part_to;
-				if (strtotime($to)<strtotime($product_to))
-					$to=$product_to;
-			}
-
-			$from=$part_from;
-			if (strtotime($from)>strtotime($product_from))
-				$from=$product_from;
-
-			$sql=sprintf("select  PPD.`Product Part Key` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where `Part SKU`=%d  and PPD.`Product ID`=%d "
-				, $this->sku, $pid);
-			$res2=mysql_query($sql);
-
-			if ($row2=mysql_fetch_array($res2)) {
-
-				// $status='No';
-				// if ($to=='')
-				//    $status='Yes';
-
-				$sql=sprintf("update `Product Part Dimension` set `Product Part Valid From`=%s , `Product Part Valid To`=%s  where `Product Part Key`=%d"
-					, prepare_mysql($from)
-					, prepare_mysql($to)
-					, $row2['Product Part Key']
-				);
-
-				if (!mysql_query($sql))
-					print "$sql\n";
-
-			}
-
-		}
-
-
-
-
-
-	}
-
-
-	function update_full_search() {
-
-		$first_full_search=$this->get_sku().' '.strip_tags($this->data['Part Unit Description']);
-		$second_full_search=strip_tags($this->data['Part XHTML Currently Supplied By']);
-
-		$sql=sprintf("insert into `Search Full Text Dimension` (`Store Key`,`Subject`,`Subject Key`,`First Search Full Text`,`Second Search Full Text`,`Search Result Name`,`Search Result Description`,`Search Result Image`)  values  (%s,'Part',%d,%s,%s,%s,%s,%s) on duplicate key
-                     update `First Search Full Text`=%s ,`Second Search Full Text`=%s ,`Search Result Name`=%s,`Search Result Description`=%s,`Search Result Image`=%s "
-			, 0
-			, $this->sku
-			, prepare_mysql($first_full_search)
-			, prepare_mysql($second_full_search, false)
-			, prepare_mysql($this->get_sku(), false)
-			, prepare_mysql($this->data['Part Unit Description'], false)
-			, prepare_mysql('', false)
-			, prepare_mysql($first_full_search)
-			, prepare_mysql($second_full_search, false)
-			, prepare_mysql($this->get_sku(), false)
-			, prepare_mysql($this->data['Part Unit Description'], false)
-
-			, prepare_mysql('', false)
-		);
-		mysql_query($sql);
-
-	}
-
-
-
-
-
-	function get_warehouse_keys() {
-		$warehouse_keys=array();
-
-		$sql=sprintf("select `Warehouse Key` from `Part Warehouse Bridge` where `Part SKU`=%d",
-			$this->sku
-		);
-		$res=mysql_query($sql);
-		while ($row=mysql_fetch_assoc($res)) {
-			$warehouse_keys[$row['Warehouse Key']]=$row['Warehouse Key'];
-		}
-
-		return $warehouse_keys;
-
-	}
 
 
 
@@ -3940,151 +2627,7 @@ where `Part SKU`=%d ",
 	}
 
 
-	function get_MSDS_attachment_key() {
 
-
-
-		if (!$this->data['Part MSDS Attachment Bridge Key']) {
-			return 0;
-		}
-		$attachment_key=0;
-		$sql=sprintf("select `Attachment Key` from `Attachment Bridge` where `Subject`='Part MSDS' and `Subject Key`=%d ",
-			$this->id
-		);
-
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($result)) {
-			$attachment_key=$row['Attachment Key'];
-		}
-		return $attachment_key;
-
-	}
-
-
-	function delete_MSDS_attachment() {
-
-		//print_r($this->data);
-
-		if ($this->data['Part MSDS Attachment Bridge Key']=='') {
-			$this->msg=_('No file is set up as MSDS');
-			return;
-		}
-
-		$sql=sprintf("delete from `Attachment Bridge` where `Attachment Bridge Key`=%d",
-			$this->data['Part MSDS Attachment Bridge Key']
-		);
-		mysql_query($sql);
-		//print "$sql  xx\n";
-
-		$attach=new Attachment($this->get_MSDS_attachment_key());
-		$attach->delete();
-		$attach_info=$this->data['Part MSDS Attachment XHTML Info'];
-		$sql=sprintf("update `Part Dimension` set `Part MSDS Attachment Bridge Key`=0, `Part MSDS Attachment XHTML Info`='' where `Part SKU`=%d ",
-			$this->sku
-
-		);
-		$this->db->exec($sql);
-		$this->data['Part MSDS Attachment XHTML Info']='';
-		$this->data['Part MSDS Attachment Bridge Key']='';
-		$history_data=array(
-			'History Abstract'=>_('MSDS Attachment deleted').'.',
-			'History Details'=>$attach_info,
-			'Action'=>'edited',
-			'Direct Object'=>'Attachment',
-			'Prepostion'=>'',
-			'Indirect Object'=>$this->table_name,
-			'Indirect Object Key'=>$this->sku
-		);
-
-		$history_key=$this->add_subject_history($history_data, true, 'No', 'Changes');
-	}
-
-
-	function update_MSDS_attachment($attach, $filename, $caption) {
-
-		if (!is_object($attach)) {
-			$this->error=true;
-			$this->msg='error attach not an object';
-			return;
-		}elseif (!$attach->id) {
-			$this->error=true;
-			$this->msg='error attach not found';
-			return;
-
-		}
-
-		//print $attach->id."att id \n";
-
-
-		if ($attach->id==$this->get_MSDS_attachment_key()) {
-			$this->msg=_('This file already set up as MSDS');
-			return;
-		}
-
-		if ($this->data['Part MSDS Attachment Bridge Key']) {
-			$this->delete_MSDS_attachment();
-
-		}
-
-
-
-		$sql=sprintf("insert into `Attachment Bridge` (`Attachment Key`,`Subject`,`Subject Key`,`Attachment File Original Name`,`Attachment Caption`) values (%d,'Part MSDS',%d,%s,%s)",
-			$attach->id,
-			$this->sku,
-			prepare_mysql($filename),
-			prepare_mysql($caption)
-		);
-		mysql_query($sql);
-		//print $sql;
-
-		$attach_bridge_key=mysql_insert_id();
-		$attach_info=$attach->get_abstract($filename, $caption, $attach_bridge_key);
-
-		if ($this->data['Part MSDS Attachment Bridge Key']) {
-			$history_data=array(
-				'History Abstract'=>_('MSDS Attachment replaced').'. '.$attach_info,
-				'History Details'=>$attach->get_details(),
-				'Action'=>'edited',
-				'Direct Object'=>'Attachment',
-				'Prepostion'=>'',
-				'Indirect Object'=>$this->table_name,
-				'Indirect Object Key'=>$this->sku
-			);
-
-		}else {
-			$history_data=array(
-				'History Abstract'=>_('MSDS Attachment uploaded').'; '.$attach_info,
-				'History Details'=>$attach->get_details(),
-				'Action'=>'associated',
-				'Direct Object'=>'Attachment',
-				'Prepostion'=>'',
-				'Indirect Object'=>$this->table_name,
-				'Indirect Object Key'=>$this->sku
-			);
-
-		}
-
-
-		$history_key=$this->add_subject_history($history_data, true, 'No', 'Changes');
-
-		$sql=sprintf("update `Part Dimension` set `Part MSDS Attachment Bridge Key`=%d, `Part MSDS Attachment XHTML Info`=%s where `Part SKU`=%d ",
-			$attach_bridge_key,
-			prepare_mysql($attach_info),
-			$this->sku
-
-		);
-		$this->db->exec($sql);
-		$this->data['Part MSDS Attachment Bridge Key']=$attach_bridge_key;
-		$this->data['Part MSDS Attachment XHTML Info']=$attach_info;
-
-
-		$this->updated=true;
-
-
-
-
-
-	}
 
 
 
@@ -4203,6 +2746,110 @@ where `Part SKU`=%d ",
 
 		return $products_data;
 	}
+
+
+	function create_supplier_part_record($data) {
+
+
+		include_once 'class.Supplier.php';
+
+		$data['editor']=$this->editor;
+
+
+		$supplier=new Supplier($data['Supplier Part Supplier Key']);
+		if (!$supplier->id) {
+			$this->error=true;
+			$this->error_code='supplier_not_found';
+			$this->msg=_('Supplier not found');
+		}
+
+		if ($data['Supplier Part Minimum Carton Order']=='') {
+			$data['Supplier Part Minimum Carton Order']=1;
+		}else {
+			$data['Supplier Part Minimum Carton Order']=ceil($data['Supplier Part Minimum Carton Order']);
+		}
+
+
+		$data['Supplier Part Currency Code']=$supplier->get('Supplier Default Currency Code');
+
+
+		if ($data['Supplier Part Unit Extra Cost']=='' ) {
+			$data['Supplier Part Unit Extra Cost']=0;
+		}
+
+
+
+
+		$supplier_part= new SupplierPart('find', $data, 'create');
+
+
+
+		if ($supplier_part->id) {
+			$this->new_object_msg=$supplier_part->msg;
+
+			if ($supplier_part->new) {
+				$this->new_object=true;
+				$supplier->update_supplier_parts();
+
+
+				$supplier_part->update(array('Supplier Part Part SKU'=>$this->sku));
+				$supplier_part->get_data('id', $supplier_part->id);
+
+				$supplier_part->update_historic_object();
+				$this->update_cost();
+
+
+
+
+
+
+
+
+			}
+			else {
+
+				$this->error=true;
+				if ($supplier_part->found) {
+
+					$this->error_code='duplicated_field';
+					$this->error_metadata=json_encode(array($supplier_part->duplicated_field));
+
+					if ($supplier_part->duplicated_field=='Supplier Part Reference') {
+						$this->msg=_("Duplicated supplier's part reference");
+					}else {
+						$this->msg='Duplicated '.$supplier_part->duplicated_field;
+					}
+
+
+				}else {
+					$this->msg=$supplier_part->msg;
+				}
+			}
+			return $supplier_part;
+		}
+		else {
+			$this->error=true;
+
+			if ($supplier_part->found) {
+				$this->error_code='duplicated_field';
+				$this->error_metadata=json_encode(array($supplier_part->duplicated_field));
+
+				if ($supplier_part->duplicated_field=='Part Reference') {
+					$this->msg=_("Duplicated part reference");
+				}else {
+					$this->msg='Duplicated '.$supplier_part->duplicated_field;
+				}
+
+			}else {
+
+
+
+				$this->msg=$supplier_part->msg;
+			}
+		}
+
+	}
+
 
 
 }
