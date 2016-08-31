@@ -162,6 +162,8 @@ if ($order=='code') {
 	$order="`Supplier Company Name`";
 }elseif ($order=='supplier_parts') {
 	$order='`Supplier Number Parts`';
+}elseif ($order=='active_supplier_parts') {
+	$order='`Supplier Number Active Parts`';
 }elseif ($order=='revenue') {
 	$order="`Supplier $db_period Acc Parts Sold Amount`";
 }elseif ($order=='revenue_1y') {
@@ -225,7 +227,7 @@ else {
 
 $sql_totals="select count(Distinct S.`Supplier Key`) as num from $table  $where  $where_type";
 $fields="
-S.`Supplier Key`,`Supplier Code`,`Supplier Name`,
+S.`Supplier Key`,`Supplier Code`,`Supplier Name`,`Supplier Number Active Parts`,
 `Supplier Location`,`Supplier Main Plain Email`,`Supplier Preferred Contact Number`,`Supplier Preferred Contact Number Formatted Number`,`Supplier Main Contact Name`,`Supplier Company Name`,
 `Supplier Number Parts`,`Supplier Number Surplus Parts`,`Supplier Number Optimal Parts`,`Supplier Number Low Parts`,`Supplier Number Critical Parts`,`Supplier Number Critical Parts`,`Supplier Number Out Of Stock Parts`,
 `Supplier $db_period Acc Parts Sold Amount` as revenue,$fields_1yb,

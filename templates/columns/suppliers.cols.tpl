@@ -83,12 +83,24 @@ var columns = [
 },
  {
     name: "supplier_parts",
-    label: "{t}Parts{/t}",
+    label: "{t}Supplier's parts{/t}",
     editable: false,
    
     defautOrder:1,
     sortType: "toggle",
     {if $sort_key=='supplier_parts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.StringCell.extend({ className: "aright"} ),
+
+    headerCell: integerHeaderCell
+},
+ {
+    name: "active_supplier_parts",
+    label: "{t}Active parts{/t}",
+    editable: false,
+   
+    defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='active_supplier_parts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
     cell: Backgrid.StringCell.extend({ className: "aright"} ),
 
     headerCell: integerHeaderCell
@@ -292,6 +304,7 @@ function change_table_view(view,save_state){
     grid.columns.findWhere({ name: 'name'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'location'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'last_purchase_order'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'active_supplier_parts'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'supplier_parts'} ).set("renderable", false)
 
     grid.columns.findWhere({ name: 'surplus'} ).set("renderable", false)
@@ -320,8 +333,9 @@ function change_table_view(view,save_state){
         grid.columns.findWhere({ name: 'name'} ).set("renderable", true)
         grid.columns.findWhere({ name: 'location'} ).set("renderable", true)
         grid.columns.findWhere({ name: 'last_purchase_order'} ).set("renderable", true)
-        grid.columns.findWhere({ name: 'supplier_parts'} ).set("renderable", true)
-       
+        grid.columns.findWhere({ name: 'active_supplier_parts'} ).set("renderable", true)
+               grid.columns.findWhere({ name: 'supplier_parts'} ).set("renderable", true)
+
     }else if(view=='weblog'){
         grid.columns.findWhere({ name: 'logins'} ).set("renderable", true)
         grid.columns.findWhere({ name: 'failed_logins'} ).set("renderable", true)
@@ -332,7 +346,7 @@ function change_table_view(view,save_state){
         grid.columns.findWhere({ name: 'email'} ).set("renderable", true)
         grid.columns.findWhere({ name: 'telephone'} ).set("renderable", true)
     }else if(view=='parts'){
-        grid.columns.findWhere({ name: 'supplier_parts'} ).set("renderable", true)
+        grid.columns.findWhere({ name: 'active_supplier_parts'} ).set("renderable", true)
          grid.columns.findWhere({ name: 'surplus'} ).set("renderable", true)
     grid.columns.findWhere({ name: 'optimal'} ).set("renderable", true)
     grid.columns.findWhere({ name: 'low'} ).set("renderable", true)

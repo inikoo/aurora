@@ -331,12 +331,19 @@ class Part extends Asset{
 		if ($this->get('Part Status')=='Not In Use' and   ($this->data['Part Current On Hand Stock']>0 or $this->data['Part Current Stock In Process']>0  ) ) {
 			$this->update_status('Discontinuing');
 			return;
+		}if ($this->get('Part Status')=='Not In Use' and   ($this->data['Part Current On Hand Stock']<0  ) ) {
+			
+			
+			$this->update_status('Not In Use','',true);
+			
+			
 		}
 
 	}
 
 
-	function update_status($value, $options='') {
+
+	function update_status($value, $options='',$force=false) {
 
 
 		if ($value=='Not In Use' and  ($this->data['Part Current On Hand Stock']-$this->data['Part Current Stock In Process'])>0) {
@@ -344,7 +351,7 @@ class Part extends Asset{
 		}
 
 
-		if ($value==$this->get('Part Status')) return;
+		if ($value==$this->get('Part Status') and !$force) return;
 
 		$this->update_field('Part Status', $value, $options);
 

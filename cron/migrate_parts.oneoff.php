@@ -57,13 +57,14 @@ setup_part_families();
 update_materials_stats();
 migrate_part_fields();
 create_families($db, $account);
-
+setup_product_part_bridge();
 set_valid_dates($db);
 set_valid_dates_and_status_to_part_families($db);
+*/
+fix_orphan_dn($db);
+update_stock($db);
 move_MSDS_attachments($db);
 
-*/
-setup_product_part_bridge();
 function set_valid_dates($db) {
 
 
@@ -338,6 +339,145 @@ function set_valid_dates_and_status_to_part_families($db) {
 }
 
 
+function fix_orphan_dn() {
+	global $db;
+
+	include_once 'class.DeliveryNote.php';
+	include_once 'class.PartLocation.php';
+
+	$sql='
+	select `Order Public ID`,`Order Date`,`Current Dispatching State`,I.`Delivery Note Key` from `Order Transaction Fact` O left join `Inventory Transaction Fact` I on (`Order Transaction Fact Key`=`Map To Order Transaction Fact Key`) where I.`Delivery Note Key`>0 and O.`Delivery Note Key` is NULL group by I.`Delivery Note Key`
+	';
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+
+
+			$dn=new DeliveryNote($row['Delivery Note Key']);
+			if ($dn->id) {
+				$dn->delete();
+			}else {
+				$parts_to_update_stock=array();
+				$sql=sprintf("select `Part SKU`,`Location Key` from  `Inventory Transaction Fact` where `Delivery Note Key`=%d  and `Inventory Transaction Type`='Order In Process'  ",
+					$row['Delivery Note Key']);
+				$res2=mysql_query($sql);
+				while ($row2=mysql_fetch_assoc($res2)) {
+					$parts_to_update_stock[]=$row2['Part SKU'].'_'.$row2['Location Key'];
+				}
+
+				$sql=sprintf("delete from  `Inventory Transaction Fact` where `Delivery Note Key`=%d  and `Inventory Transaction Type`='Order In Process'  ",
+					$row['Delivery Note Key']);
+				mysql_query($sql);
+
+				foreach ($parts_to_update_stock as $part_to_update_stock) {
+					$part_location=new PartLocation($part_to_update_stock);
+					$part_location->update_stock();
+				}
+
+
+
+
+
+				$sql=sprintf("delete from  `Order Delivery Note Bridge` where `Delivery Note Key`=%d  ",
+					$row['Delivery Note Key']);
+				mysql_query($sql);
+
+				if (in_array($dn->data['Delivery Note Type'], array('Replacement & Shortages', 'Replacement', 'Shortages'))) {
+					$sql = sprintf("update `Order Post Transaction Dimension` set `State`=%s  where `Delivery Note Key`=%d   ",
+						prepare_mysql('In Process'),
+						$row['Delivery Note Key']
+					);
+					mysql_query($sql);
+
+
+					$sql=sprintf("delete from `Order Transaction Fact` where `Delivery Note Key`=%d and `Order Transaction Type`='Resend'", $row['Delivery Note Key']);
+					mysql_query($sql);
+
+				}
+
+
+			}
+		}
+
+	}
+
+
+	$sql='select `Order Public ID`,`Order Date`,`Current Dispatching State`,I.`Delivery Note Key` from `Order Transaction Fact` O left join `Inventory Transaction Fact` I on (`Order Transaction Fact Key`=`Map To Order Transaction Fact Key`) where I.`Delivery Note Key`!=O.`Delivery Note Key` and O.`Delivery Note Key`>0 group by I.`Delivery Note Key`;';
+	print "$sql\n";
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+
+			print_r($row);
+			$dn=new DeliveryNote($row['Delivery Note Key']);
+			if ($dn->id) {
+				$dn->delete();
+			}else {
+
+				$parts_to_update_stock=array();
+				$sql=sprintf("select `Part SKU`,`Location Key` from  `Inventory Transaction Fact` where `Delivery Note Key`=%d   ",
+					$row['Delivery Note Key']);
+				$res2=mysql_query($sql);
+				while ($row2=mysql_fetch_assoc($res2)) {
+					$parts_to_update_stock[]=$row2['Part SKU'].'_'.$row2['Location Key'];
+				}
+
+				$sql=sprintf("delete from  `Inventory Transaction Fact` where `Delivery Note Key`=%d   ",
+					$row['Delivery Note Key']);
+				mysql_query($sql);
+
+				print "$sql\n";
+				foreach ($parts_to_update_stock as $part_to_update_stock) {
+					$part_location=new PartLocation($part_to_update_stock);
+					$part_location->update_stock();
+				}
+
+
+				$sql=sprintf("delete from  `Order Delivery Note Bridge` where `Delivery Note Key`=%d  ",
+					$row['Delivery Note Key']);
+				mysql_query($sql);
+
+				if (in_array($dn->data['Delivery Note Type'], array('Replacement & Shortages', 'Replacement', 'Shortages'))) {
+					$sql = sprintf("update `Order Post Transaction Dimension` set `State`=%s  where `Delivery Note Key`=%d   ",
+						prepare_mysql('In Process'),
+						$row['Delivery Note Key']
+					);
+					mysql_query($sql);
+
+
+					$sql=sprintf("delete from `Order Transaction Fact` where `Delivery Note Key`=%d and `Order Transaction Type`='Resend'", $row['Delivery Note Key']);
+					mysql_query($sql);
+
+				}
+
+
+			}
+		}
+
+	}
+
+}
+
+
+function update_stock() {
+
+	global $db;
+	print "updating stock\n";
+
+	$sql=sprintf('select `Part SKU` from `Part Dimension`  ');
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+
+
+			$part=new Part($row['Part SKU']);
+
+			$part->update_stock();
+		}
+
+	}
+}
+
+
 function create_part_data_dimension() {
 	global $db;
 	$sql=sprintf('select `Part SKU` from `Part Dimension`  ');
@@ -407,7 +547,7 @@ function setup_part_families() {
 function setup_product_part_bridge() {
 	global $db;
 	// Create product part bridge
-	$sql=sprintf('select * from `Product Dimension` where `Product Code` like "jbb-01"  order by `Product ID` desc');
+	$sql=sprintf('select * from `Product Dimension` order by `Product ID` desc');
 
 	if ($result=$db->query($sql)) {
 
@@ -418,8 +558,6 @@ function setup_product_part_bridge() {
 
 
 			$product=new Product($row['Product ID']);
-
-            print $product->get('Code')."\n";
 
 
 			$sql=sprintf('delete from `Product Part Bridge` where `Product Part Product ID`=%d',
@@ -432,8 +570,6 @@ function setup_product_part_bridge() {
 
 
 			$parts_data=get_part_list($db, $row['Product ID']);
-			
-			
 			$_parts_data=$parts_data;
 			foreach ($parts_data as $part_data) {
 
@@ -447,7 +583,7 @@ function setup_product_part_bridge() {
 					prepare_mysql($part_data['Product Part List Note'], false)
 				);
 				$db->exec($sql);
-            print "$sql\n";
+
 				if ($row['Product Use Part Properties']=='Yes') {
 					$sql=sprintf("select `Product Part Linked Fields` from `Product Part Bridge` where `Product Part Product ID`=%d and `Product Part Part SKU`=%d ",
 						$product->id,
@@ -968,10 +1104,10 @@ function move_MSDS_attachments($db) {
 
 			print $row['Part SKU']."\n";
 			$sql=sprintf('update `Attachment Bridge` set `Subject`="Part" , `Attachment Subject Type`="MSDS" ,`Attachment Public`="Yes" ,`Attachment Caption`=%s where `Attachment Bridge Key`=%s  ',
-			prepare_mysql('MSDS file'),
-			$row['Part MSDS Attachment Bridge Key']
+				prepare_mysql('MSDS file'),
+				$row['Part MSDS Attachment Bridge Key']
 			);
-            $db->exec($sql);
+			$db->exec($sql);
 		}
 
 	}

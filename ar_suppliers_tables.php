@@ -155,6 +155,7 @@ function suppliers($_data, $db, $user, $account) {
 				'code'=>$data['Supplier Code'],
 				'name'=>$data['Supplier Name'],
 				'supplier_parts'=>number($data['Supplier Number Parts']),
+				'active_supplier_parts'=>number($data['Supplier Number Active Parts']),
 
 				'surplus'=>sprintf('<span class="%s" title="%s">%s</span>', (ratio($data['Supplier Number Surplus Parts'], $data['Supplier Number Parts'])>.75?'error':(ratio($data['Supplier Number Surplus Parts'], $data['Supplier Number Parts'])>.5?'warning':'')), percentage($data['Supplier Number Surplus Parts'], $data['Supplier Number Parts']), number($data['Supplier Number Surplus Parts'])),
 				'optimal'=>sprintf('<span  title="%s">%s</span>', percentage($data['Supplier Number Optimal Parts'], $data['Supplier Number Parts']), number($data['Supplier Number Optimal Parts'])),

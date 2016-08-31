@@ -222,7 +222,7 @@ class Supplier extends SubjectSupplier {
 				else {
 					$value=$row['Category Label'];
 				}
-				$category_data[]=array('root_label'=>$root_label, 'root_code'=>$root_code, 'label'=>$row['Category Label'], 'label'=>$row['Category Code'], 'value'=>$value,'category_key'=>$row['Category Key']);
+				$category_data[]=array('root_label'=>$root_label, 'root_code'=>$root_code, 'label'=>$row['Category Label'], 'label'=>$row['Category Code'], 'value'=>$value, 'category_key'=>$row['Category Key']);
 
 			}
 		}else {
@@ -358,13 +358,14 @@ class Supplier extends SubjectSupplier {
 	function update_supplier_parts() {
 
 		$supplier_number_parts=0;
+		$supplier_number_active_parts=0;
 		$supplier_number_surplus_parts=0;
 		$supplier_number_optimal_parts=0;
 		$supplier_number_low_parts=0;
 		$supplier_number_critical_parts=0;
 		$supplier_number_out_of_stock_parts=0;
-		
-		$sql=sprintf('select count(*) as num 
+
+		$sql=sprintf('select count(*) as num
 		from `Supplier Part Dimension` SP  where `Supplier Part Supplier Key`=%d  ',
 			$this->id
 		);
@@ -375,14 +376,14 @@ class Supplier extends SubjectSupplier {
 				//print_r($row);
 
 				$supplier_number_parts=$row['num'];
-				
+
 			}
 		}else {
 			print_r($error_info=$this->db->errorInfo());
 			exit;
 		}
 
-		
+
 
 		$sql=sprintf('select count(*) as num ,
 		sum(if(`Part Stock Status`="Surplus",1,0)) as surplus,
@@ -399,7 +400,7 @@ class Supplier extends SubjectSupplier {
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
 				//print_r($row);
-
+				$supplier_number_active_parts=$row['num'];
 				if ($row['num']>0) {
 					$supplier_number_surplus_parts=$row['surplus'];
 					$supplier_number_optimal_parts=$row['optimal'];
@@ -417,6 +418,7 @@ class Supplier extends SubjectSupplier {
 
 		$this->update(array(
 				'Supplier Number Parts'=>$supplier_number_parts,
+				'Supplier Number Active Parts'=>$supplier_number_active_parts,
 				'Supplier Number Surplus Parts'=>$supplier_number_surplus_parts,
 				'Supplier Number Optimal Parts'=>$supplier_number_optimal_parts,
 				'Supplier Number Low Parts'=>$supplier_number_low_parts,
