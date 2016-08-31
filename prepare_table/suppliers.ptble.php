@@ -87,31 +87,33 @@ else {
 
 }
 
-switch ($parameters['elements_type']) {
 
-case 'type':
-	$_elements='';
-	$count_elements=0;
-	foreach ($parameters['elements'][$parameters['elements_type']]['items'] as $_key=>$_value) {
-		if ($_value['selected']) {
-			$count_elements++;
-			$_elements.=','.prepare_mysql($_key);
+if (isset($parameters['elements_type'])) {
+	switch ($parameters['elements_type']) {
 
+	case 'type':
+		$_elements='';
+		$count_elements=0;
+		foreach ($parameters['elements'][$parameters['elements_type']]['items'] as $_key=>$_value) {
+			if ($_value['selected']) {
+				$count_elements++;
+				$_elements.=','.prepare_mysql($_key);
+
+			}
 		}
+		$_elements=preg_replace('/^\,/', '', $_elements);
+		if ($_elements=='') {
+			$where.=' and false' ;
+		} elseif ($count_elements<3) {
+			$where.=' and `Supplier Type` in ('.$_elements.')' ;
+		}
+		break;
+
+
+
+
 	}
-	$_elements=preg_replace('/^\,/','',$_elements);
-	if ($_elements=='') {
-		$where.=' and false' ;
-	} elseif ($count_elements<3) {
-		$where.=' and `Supplier Type` in ('.$_elements.')' ;
-	}
-	break;
-
-
-
-
 }
-
 $filter_msg='';
 $wheref='';
 if ($parameters['f_field']=='code'  and $f_value!='')

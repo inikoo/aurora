@@ -48,7 +48,9 @@ case 'category_all_products':
 case 'sales_history':
 	sales_history(get_table_parameters(), $db, $user, $account);
 	break;
-
+case 'parts':
+	parts(get_table_parameters(), $db, $user, $account);
+	break;
 
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
@@ -430,7 +432,7 @@ function sales_history($_data, $db, $user, $account) {
 			$from_date=$from_date.'';
 			$to_date=$to_date.'';
 		}
-		
+
 		break;
 	default:
 		print_r($_data);
@@ -493,6 +495,109 @@ function sales_history($_data, $db, $user, $account) {
 		array(
 			'state'=>200,
 			'data'=>array_values($adata),
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function parts($_data, $db, $user, $account) {
+
+
+	if (!$user->can_view('stores')) {
+		echo json_encode(array('state'=>405, 'resp'=>'Forbidden'));
+		exit;
+	}
+
+
+	$rtext_label='part';
+
+
+
+
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+	if ($result=$db->query($sql)) {
+		foreach ($result as $data) {
+
+
+			switch ($data['Part Stock Status']) {
+			case 'Surplus':
+				$stock_status='<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
+				$stock_status_label=_('Surplus');
+				break;
+			case 'Optimal':
+				$stock_status='<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
+				$stock_status_label=_('Ok');
+				break;
+			case 'Low':
+				$stock_status='<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
+				$stock_status_label=_('Low');
+				break;
+			case 'Critical':
+				$stock_status='<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
+				$stock_status_label=_('Critical');
+				break;
+			case 'Out_Of_Stock':
+				$stock_status='<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
+				$stock_status_label=_('Out of stock');
+				break;
+			case 'Error':
+				$stock_status='<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+				$stock_status_label=_('Error');
+				break;
+			default:
+				$stock_status=$data['Part Stock Status'];
+				$stock_status_label=$data['Part Stock Status'];
+				break;
+			}
+
+
+			if ($data['Part Current Stock']<=0) {
+				$weeks_available='-';
+			}else {
+				$weeks_available=number($data['Part Days Available Forecast']/7, 0);
+			}
+
+			$dispatched_per_week=number($data['Part 1 Quarter Acc Provided']*4/52, 0);
+
+
+
+			$adata[]=array(
+				'id'=>(integer)$data['Part SKU'],
+				'reference'=>$data['Part Reference'],
+				'package_description'=>$data['Part Package Description'],
+				'picking_ratio'=>number($data['Product Part Ratio'],5),
+				'picking_note'=>$data['Product Part Note'],
+				'stock_status'=>$stock_status,
+				'stock_status_label'=>$stock_status_label,
+				'stock'=>'<span class="'.($data['Part Current Stock']<0?'error':'').'">'.number(floor($data['Part Current Stock'])).'</span>',
+				'weeks_available'=>$weeks_available,
+				'dispatched_per_week'=>$dispatched_per_week
+			);
+
+
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		print $sql;
+		exit;
+	}
+
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
 			'rtext'=>$rtext,
 			'sort_key'=>$_order,
 			'sort_dir'=>$_dir,

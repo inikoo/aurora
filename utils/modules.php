@@ -10,6 +10,57 @@
  Version 3.0
 */
 
+
+$_product=array(
+	'type'=>'object',
+	'subtabs_parent'=>array(
+		'product.sales.plot'=>'product.sales',
+		'product.sales.history'=>'product.sales',
+		'product.sales.calendar'=>'product.sales',
+		'product.customers.customers'=>'product.customers',
+		'product.customers.favourites'=>'product.customers',
+		'product.website.webpage'=>'product.website',
+		'product.website.pages'=>'product.website',
+	),
+
+	'tabs'=>array(
+		'product.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
+		'product.history'=>array('label'=>_('History, notes'), 'icon'=>'sticky-note-o'),
+		'product.sales'=>array('label'=>_('Sales'), 'title'=>_('Sales'),
+			'subtabs'=>array(
+				'product.sales.plot'=>array('label'=>_('Plot'), 'title'=>_('Plot')),
+				'product.sales.history'=>array('label'=>_('Sales history'), 'title'=>_('Sales history')),
+				'product.sales.calendar'=>array('label'=>_('Calendar'), 'title'=>_('Sales calendar')),
+
+			)
+		),
+		'product.orders'=>array('label'=>_('Orders'),
+
+		),
+		'product.customers'=>array('label'=>_('Customers'),
+			'subtabs'=>array(
+				'product.customers.customers'=>array('label'=>_('Customers'), 'title'=>_('Customers')),
+				'product.customers.favourites'=>array('label'=>_('Customers who favorited'), 'title'=>_('Customers who favorited')),
+
+			)
+		),
+		'product.offers'=>array('label'=>_('Offers'), 'title'=>_('Offers')),
+
+		'product.website'=>array('label'=>_('Website'), 'title'=>_('Website'),
+			'subtabs'=>array(
+				'product.website.webpage'=>array('label'=>_('Webpage'), 'title'=>_('Product webpage')),
+				'product.sales.pages'=>array('label'=>_('Webpages'), 'title'=>_('Webpages where this product is on sale')),
+
+			)
+		),
+		'product.history'=>array('label'=>_('History'), 'icon'=>'road', 'class'=>'right icon_only'),
+		'category.images'=>array('label'=>_('Images'), 'icon'=>'camera-retro', 'class'=>'right icon_only'),
+		'product.parts'=>array('label'=>_('Parts'), 'icon'=>'square', 'class'=>'right icon_only'),
+
+	)
+);
+
+
 $modules=array(
 	'dashboard'=>array(
 
@@ -632,12 +683,13 @@ $modules=array(
 	'products'=>array(
 		'section'=>'products',
 		'sections'=>array(
+			/*
 			'dashboard'=>array('type'=>'navigation', 'label'=>_('Dashboard'), 'title'=>_("Products's dashboard"), 'icon'=>'dashboard', 'reference'=>'store/%d/dashboard',
 				'tabs'=>array(
 					'store.dashboard'=>array()
 				)
 			),
-
+*/
 			'store'=>array(
 				'type'=>'navigation',
 				'label'=>_('Store'),
@@ -647,7 +699,7 @@ $modules=array(
 				'reference'=>'store/%d',
 				'tabs'=>array(
 					'store.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
-					'store.history'=>array('label'=>_('History, notes'), 'icon'=>'sticky-note-o'),
+					'store.history'=>array('label'=>_('History'), 'icon'=>'road', 'class'=>'right icon_only'),
 
 
 				)
@@ -710,53 +762,7 @@ $modules=array(
 				)
 
 			),
-			'product'=>array(
-				'type'=>'object',
-				'subtabs_parent'=>array(
-					'product.sales.plot'=>'product.sales',
-					'product.sales.history'=>'product.sales',
-					'product.sales.calendar'=>'product.sales',
-					'product.customers.customers'=>'product.customers',
-					'product.customers.favourites'=>'product.customers',
-					'product.website.webpage'=>'product.website',
-					'product.website.pages'=>'product.website',
-				),
-
-				'tabs'=>array(
-					'product.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
-					'product.history'=>array('label'=>_('History, notes'), 'icon'=>'sticky-note-o'),
-					'product.sales'=>array('label'=>_('Sales'), 'title'=>_('Sales'),
-						'subtabs'=>array(
-							'product.sales.plot'=>array('label'=>_('Plot'), 'title'=>_('Plot')),
-							'product.sales.history'=>array('label'=>_('Sales history'), 'title'=>_('Sales history')),
-							'product.sales.calendar'=>array('label'=>_('Calendar'), 'title'=>_('Sales calendar')),
-
-						)
-					),
-					'product.orders'=>array('label'=>_('Orders'),
-
-					),
-					'product.customers'=>array('label'=>_('Customers'),
-						'subtabs'=>array(
-							'product.customers.customers'=>array('label'=>_('Customers'), 'title'=>_('Customers')),
-							'product.customers.favourites'=>array('label'=>_('Customers who favorited'), 'title'=>_('Customers who favorited')),
-
-						)
-					),
-					'product.offers'=>array('label'=>_('Offers'), 'title'=>_('Offers')),
-
-					'product.website'=>array('label'=>_('Website'), 'title'=>_('Website'),
-						'subtabs'=>array(
-							'product.website.webpage'=>array('label'=>_('Webpage'), 'title'=>_('Product webpage')),
-							'product.sales.pages'=>array('label'=>_('Webpages'), 'title'=>_('Webpages where this product is on sale')),
-
-						)
-					),
-					'product.history'=>array('label'=>_('History'), 'icon'=>'road', 'class'=>'right icon_only'),
-					'category.images'=>array('label'=>_('Images'), 'icon'=>'camera-retro', 'class'=>'right icon_only'),
-
-				)
-			),
+			'product'=>$_product,
 			'product.new'=>array('type'=>'new_object',
 				'tabs'=>array(
 					'product.new'=>array('label'=>_('New product')),
@@ -1105,7 +1111,7 @@ $modules=array(
 				)
 
 			),
-'supplier.attachment.new'=>array('type'=>'new_object',
+			'supplier.attachment.new'=>array('type'=>'new_object',
 				'tabs'=>array(
 					'supplier.attachment.new'=>array('label'=>_('new attachment')),
 
@@ -1318,8 +1324,9 @@ $modules=array(
 
 				'type'=>'navigation', 'label'=>_('Inventory').' ('._('Parts').')', 'icon'=>'th-large', 'reference'=>'inventory',
 				'tabs'=>array(
-					'inventory.parts'=>array('label'=>_('Parts')),
-					'inventory.discontinued_parts'=>array('label'=>_('Discontinued parts'), 'class'=>'right discret'),
+					'inventory.parts'=>array('label'=>_('Active')),
+					'inventory.discontinuing_parts'=>array('label'=>_('Discontinuing'), 'class'=>'discret'),
+					'inventory.discontinued_parts'=>array('label'=>_('Discontinued'), 'class'=>'very_discret'),
 
 				)
 			),
@@ -1465,9 +1472,10 @@ $modules=array(
 					'part.supplier_parts'=>array('label'=>_("Supplier's parts"), 'icon'=>'stop'),
 
 					'part.products'=>array('label'=>_('Products'), 'icon'=>'cube'),
-
-					'part.images'=>array('label'=>_('Images'), 'icon'=>'camera-retro', 'class'=>'right icon_only'),
 					'part.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
+					'part.images'=>array('label'=>_('Images'), 'icon'=>'camera-retro', 'class'=>'right icon_only'),
+					'part.attachments'=>array('label'=>_('Attachments'), 'icon'=>'paperclip', 'class'=>'right icon_only'),
+
 
 				)
 			),
@@ -1491,6 +1499,22 @@ $modules=array(
 
 				)
 			),
+
+			'part.attachment.new'=>array('type'=>'new_object',
+				'tabs'=>array(
+					'part.attachment.new'=>array('label'=>_('new attachment')),
+
+				)
+
+			),
+			'part.attachment'=>array('type'=>'object',
+				'tabs'=>array(
+					'part.attachment.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+					'part.attachment.history'=>array('label'=>_('History'), 'icon'=>'clock-o'),
+
+				)
+
+			),
 			/*
 			'transactions'=>array(
 				'type'=>'navigation', 'label'=>_('Stock Movements'), 'icon'=>'exchange', 'reference'=>'inventory/transactions',
@@ -1500,7 +1524,13 @@ $modules=array(
 				)
 			),
 			*/
+			'supplier_part.new'=>array('type'=>'new_object',
+				'tabs'=>array(
+					'part.supplier_part.new'=>array('label'=>_('New supplier part')),
 
+				)
+
+			),
 			'stock_history'=>array(
 				'type'=>'navigation', 'label'=>_('Stock History'), 'icon'=>'area-chart', 'reference'=>'inventory/stock_history',
 				'tabs'=>array(
@@ -1521,6 +1551,17 @@ $modules=array(
 				)
 			),
 
+
+
+			'product'=>$_product,
+
+			'product.new'=>array('type'=>'new_object',
+				'tabs'=>array(
+					'product.new'=>array('label'=>_('New product')),
+
+				)
+
+			),
 
 
 		)

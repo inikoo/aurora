@@ -48,7 +48,7 @@ var columns = [{
     cell: Backgrid.StringCell.extend({
         events: {
             "click": function() {
-                change_view( {if $data['section']=='part'}'inventory/{$data['parent_key']}/part/{$data['key']}/product/' + this.model.get("id"){else if $data['section']=='category'}'products/{$data['store']->id}/category/{$data['_object']->get('Category Position')}/product/' + this.model.get("id"){else}'products/{$data['parent_key']}/'+this.model.get("id"){/if})
+                change_view( {if $data['section']=='part'}'part/{$data['key']}/product/' + this.model.get("id"){else if $data['section']=='category'}'products/{$data['store']->id}/category/{$data['_object']->get('Category Position')}/product/' + this.model.get("id"){else}'products/{$data['parent_key']}/'+this.model.get("id"){/if})
             }
         },
         className: "link width_150",

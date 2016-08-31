@@ -687,6 +687,8 @@ right connector from last child*/
 //.valid{color:$color_save}
 .deleted{text-decoration: line-through;opacity:.9;color:#777}
 .strong{font-weight: bold;}
+.big{font-size: 200%}
+
 .italic{ font-style: italic}
 //.valid.save{color:$color_save;cursor:pointer}
 
@@ -784,6 +786,7 @@ path.ema {
 @import 'upload_image';
 @import 'timeline_horizontal';
 @import 'd3_calendar';
+@import 'category_tags';
 
 
 .adr{

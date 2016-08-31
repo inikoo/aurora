@@ -21,7 +21,7 @@ $fields='';
 
 
 if ($parameters['parent']=='location') {
-	$where=sprintf("where `Location Key`=%d  ", $parameters['parent_key']);
+	$where=sprintf("where PLD.`Location Key`=%d  ", $parameters['parent_key']);
 }elseif ($parameters['parent']=='warehouse') {
 	$where=sprintf("where `Part Location Warehouse Key`=%d  ", $parameters['parent_key']);
 }else {

@@ -14,8 +14,9 @@
 			</div>
 			
 			<div class="data_field" >
-				<h1>
-				<span class="Product_Units_Per_Case">{$product->get('Units Per Case')}</span>x  <span class="Product_Name">{$product->get('Name')}</span> </h1>
+				<h1 style=" max-width: 600px;">
+				<span class="Product_Units_Per_Case">{$product->get('Units Per Case')}</span>x  <span class="Product_Name">{$product->get('Name')}</span> 
+				</h1>
 			</div>
 			
 		</div>
@@ -49,6 +50,19 @@
 		<div id="overviews">
 		
 		<table border="0" class="overview">
+ <tr>
+					<td>{t}Status{/t}:</td>
+					<td class="aright Product_Web_State">{$product->get('Status')}</td>
+				</tr>
+ 
+				<tr>
+					<td>{t}Web status{/t}:</td>
+					<td class="aright Product_Web_State">{$product->get('Web State')}</td>
+				</tr>
+				
+			</table>
+		
+		<table border="0" class="overview">
  
 				<tr>
 					<td>{t}From{/t}:</td>
@@ -74,14 +88,7 @@
 				
 			</table>
 			
-			<table border="0" class="overview">
- 
-				<tr>
-					<td>{t}Web status{/t}:</td>
-					<td class="aright Product_Web_State">{$product->get('Web State')}</td>
-				</tr>
-				
-			</table>
+			
 			
 		
 		</div>

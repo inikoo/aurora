@@ -7,17 +7,17 @@
 	        <span class="location_code">{$location_data.location_code}</span></span> 
 	        
 	        <span class="very_discreet recommendations">
-	        <span onClick="open_edit_min_max(this)" class="min_max button {if $location_data.can_pick=='No'}hide{/if}">{literal}{<span class="formatted_recommended_min">{/literal}{$location_data.formatted_min_qty}</span>,<span class="formatted_recommended_max">{$location_data.formatted_max_qty}</span>}</span> 
+	        <span onClick="open_edit_min_max(this)" class="min_max  {if $location_data.can_pick=='No'}hide{/if}">{literal}{<span class="formatted_recommended_min">{/literal}{$location_data.formatted_min_qty}</span>,<span class="formatted_recommended_max">{$location_data.formatted_max_qty}</span>}</span> 
 	        <span class="edit_min_max hide" ><i onClick="close_edit_min_max(this)" class="close_min_max button fa fa-times" aria-hidden="true" ></i> <input class="recommended_min min_max" style="width:30px" ovalue="{$location_data.min_qty}" value="{$location_data.min_qty}" placeholder="{t}min{/t}"/><input class="recommended_max min_max" style="width:30px"  ovalue="{$location_data.max_qty}" value="{$location_data.max_qty}" placeholder="{t}max{/t}"/> <i onClick="save_recomendations('min_max',this)" class="fa fa-cloud save" aria-hidden="true" ></i></span> 
 	        
-	        <span onClick="open_edit_recommended_move(this)" class="recommended_move button {if $location_data.can_pick=='Yes'}hide{/if}">[<span class="formatted_recommended_move">{$location_data.formatted_move_qty}</span>]</span>
+	        <span onClick="open_edit_recommended_move(this)" class="recommended_move  {if $location_data.can_pick=='Yes'}hide{/if}">[<span class="formatted_recommended_move">{$location_data.formatted_move_qty}</span>]</span>
 	        <span class="edit_move hide" ><i onClick="close_edit_recommended_move(this)" class="close_move button fa fa-times" aria-hidden="true" ></i> <input class="recommended_move" style="width:30px" ovalue="{$location_data.move_qty}" value="{$location_data.move_qty}" /> <i onClick="save_recomendations('move',this)" class="fa fa-cloud save" aria-hidden="true" ></i></span> 
 
 
 	        </span>
 	        </td>
 
-	<td class="aright button formatted_stock">{$location_data.formatted_stock}</td>
+	<td class="aright  formatted_stock">{$location_data.formatted_stock}</td>
 	<td class="aright  hide stock_input"  > <span class="stock_change"></span>
 	 <i class="fa fa-dot-circle-o button super_discreet set_as_audit" aria-hidden="true" title="{t}Mark as audited{/t}"  onclick="set_as_audit(this)"></i>
 	<input class="stock" style="width:60px" action="" location_key="{$location_data.location_key}" ovalue="{$location_data.stock}" value="{$location_data.stock}">

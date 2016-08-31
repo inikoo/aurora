@@ -68,7 +68,7 @@ var columns = [{
 
 }, {
     name: "description",
-    label: "{t}Description{/t}",
+    label: "{t}Unit description{/t}",
     editable: false,
     sortType: "toggle",
 
@@ -151,6 +151,7 @@ function change_table_view(view,save_state){
                grid.columns.findWhere({ name: 'cost'} ).set("renderable", true)
       grid.columns.findWhere({ name: 'delivered_cost'} ).set("renderable", true)
               grid.columns.findWhere({ name: 'packing'} ).set("renderable", true)
+    grid.columns.findWhere({ name: 'description'} ).set("renderable", true)
 
     }else if(view=='parts'){
             grid.columns.findWhere({ name: 'part_reference'} ).set("renderable", true)

@@ -2,7 +2,7 @@
 /*
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created: 8 April 2016 at 22:18:21 GMT+8, Kuala Lumpur, Malaysia
+ Created: 31 August 2016 at 12:52:16 GMT+8, Kuta, Bali, Indonesia
  Copyright (c) 2015, Inikoo
 
  Version 3
@@ -13,14 +13,16 @@ include_once 'utils/invalid_messages.php';
 
 include_once 'conf/object_fields.php';
 include_once 'class.SupplierPart.php';
-include_once 'class.Part.php';
 
-$object_fields=get_object_fields($state['_object'], $db, $user, $smarty, array('parent'=>'supplier','parent_object'=>$state['_parent'], 'new'=>true, 'supplier_part_scope'=>true));
+
+$supplier_part=new SupplierPart(0);
+
+$object_fields=get_object_fields($supplier_part, $db, $user, $smarty, array('parent'=>'part','parent_object'=>$state['_parent']));
 
 $smarty->assign('state', $state);
-$smarty->assign('object', $state['_object']);
+$smarty->assign('object', $supplier_part);
 
-$smarty->assign('object_name', $state['_object']->get_object_name());
+$smarty->assign('object_name', $supplier_part->get_object_name());
 $smarty->assign('object_fields', $object_fields);
 
 

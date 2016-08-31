@@ -37,7 +37,7 @@ case 'search':
 	$data['user']=$user;
 
 	if ($user->get('User Type')=='Agent') {
-		agent_search($db, $account,$user, $memcache_ip, $data);
+		agent_search($db, $account, $user, $memcache_ip, $data);
 	}else {
 
 		if ($data['state']['module']=='customers') {
@@ -177,21 +177,32 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 		foreach ($query_array as $q) {
 
 
-			$sql=sprintf("select `Supplier Key`,`Supplier Code` from `Supplier Dimension` where `Supplier Code` like '%s%%' limit 20 ",
+			$sql=sprintf("select `Supplier Key`,`Supplier Code`,`Supplier Type` from `Supplier Dimension` where `Supplier Code` like '%s%%' limit 20 ",
 				$q);
 
 
 			if ($result=$db->query($sql)) {
 				foreach ($result as $row) {
 
-					if ($row['Supplier Code']==$q)
-						$candidates['S'.$row['Supplier Key']]=1000;
-					else {
+					if ($row['Supplier Code']==$q) {
+						if ($row['Supplier Type']=='Archived') {
+							$candidates['S'.$row['Supplier Key']]=500;
+
+						}else {
+							$candidates['S'.$row['Supplier Key']]=1000;
+						}
+
+					}else {
 
 						$len_name=strlen($row['Supplier Code']);
 						$len_q=strlen($q);
 						$factor=$len_q/$len_name;
-						$candidates['S'.$row['Supplier Key']]=500*$factor;
+						if ($row['Supplier Type']=='Archived') {
+							$candidates['S'.$row['Supplier Key']]=250*$factor;
+
+						}else {
+							$candidates['S'.$row['Supplier Key']]=500*$factor;
+						}
 					}
 
 				}
@@ -201,21 +212,31 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 				exit;
 			}
 
-			$sql=sprintf("select `Supplier Key`,`Supplier Name` from `Supplier Dimension` where `Supplier Name`  REGEXP '[[:<:]]%s' limit 20 ",
+			$sql=sprintf("select `Supplier Key`,`Supplier Name`,`Supplier Type` from `Supplier Dimension` where `Supplier Name`  REGEXP '[[:<:]]%s' limit 20 ",
 				$q);
 
 
 			if ($result=$db->query($sql)) {
 				foreach ($result as $row) {
 
-					if ($row['Supplier Name']==$q)
-						$candidates['S'.$row['Supplier Key']]=800;
-					else {
+					if ($row['Supplier Name']==$q) {
+						if ($row['Supplier Type']=='Archived') {
+							$candidates['S'.$row['Supplier Key']]=400;
+						}else {
+							$candidates['S'.$row['Supplier Key']]=800;
+
+						}
+					}else {
 
 						$len_name=strlen($row['Supplier Name']);
 						$len_q=strlen($q);
 						$factor=$len_q/$len_name;
-						$candidates['S'.$row['Supplier Key']]=400*$factor;
+						if ($row['Supplier Type']=='Archived') {
+							$candidates['S'.$row['Supplier Key']]=200*$factor;
+						}else {
+							$candidates['S'.$row['Supplier Key']]=400*$factor;
+
+						}
 					}
 
 				}
@@ -441,18 +462,22 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 
 		if ($number_supplier_keys) {
 
-			$sql=sprintf("select `Supplier Key`,`Supplier Code`,`Supplier Name` from `Supplier Dimension`  where `Supplier Key` in (%s)",
+			$sql=sprintf("select `Supplier Key`,`Supplier Code`,`Supplier Name`,`Supplier Type` from `Supplier Dimension`  where `Supplier Key` in (%s)",
 				$supplier_keys);
 
 			if ($result=$db->query($sql)) {
 				foreach ($result as $row) {
 
+					if ($row['Supplier Type']=='Archived') {
+						$icon='<i class="fa fa-archive fa-fw discreet"></i> ';
 
-
+					}else {
+						$icon='<i class="fa fa-ship fa-fw "></i> ';
+					}
 
 
 					$results['S'.$row['Supplier Key']]=array(
-						'label'=>'<i class="fa fa-ship fa-fw "></i> '.highlightkeyword(sprintf('%s', $row['Supplier Code']), $queries ),
+						'label'=>$icon.highlightkeyword(sprintf('%s', $row['Supplier Code']), $queries ),
 						'details'=>highlightkeyword($row['Supplier Name'], $queries ),
 						'view'=>sprintf('supplier/%d', $row['Supplier Key'] )
 
@@ -556,7 +581,7 @@ function search_inventory($db, $account, $memcache_ip, $data) {
 	$results_data=$cache->get($memcache_fingerprint);
 
 
-	if (!$results_data ) {
+	if (!$results_data or true) {
 
 
 		$candidates=array();
@@ -572,21 +597,29 @@ function search_inventory($db, $account, $memcache_ip, $data) {
 
 
 
-			$sql=sprintf("select `Part SKU`,`Part Reference`,`Part Unit Description` from `Part Dimension` where `Part Reference` like '%s%%' limit 20 ",
+			$sql=sprintf("select `Part SKU`,`Part Reference`,`Part Unit Description`,`Part Status` from `Part Dimension` where `Part Reference` like '%s%%' limit 20 ",
 				$q);
 
 
 			if ($result=$db->query($sql)) {
 				foreach ($result as $row) {
 
-					if ($row['Part Reference']==$q)
-						$candidates[$row['Part SKU']]=1000;
-					else {
+					if ($row['Part Reference']==$q) {
+						if ($row['Part Status']=='In Use') {
+							$candidates[$row['Part SKU']]=1000;
+						}else {
+							$candidates[$row['Part SKU']]=800;
+						}
+					}else {
 
 						$len_name=strlen($row['Part Reference']);
 						$len_q=strlen($q);
 						$factor=$len_q/$len_name;
-						$candidates[$row['Part SKU']]=500*$factor;
+						if ($row['Part Status']=='In Use') {
+							$candidates[$row['Part SKU']]=500*$factor;
+						}else {
+							$candidates[$row['Part SKU']]=400*$factor;
+						}
 					}
 
 				}
@@ -604,19 +637,28 @@ function search_inventory($db, $account, $memcache_ip, $data) {
 
 
 
-			$sql=sprintf("select `Part SKU`,`Part Reference`,`Part Unit Description` from `Part Dimension` where `Part Unit Description`  REGEXP '[[:<:]]%s' limit 100 ",
+			$sql=sprintf("select `Part SKU`,`Part Reference`,`Part Unit Description`,`Part Status` from `Part Dimension` where `Part Unit Description`  REGEXP '[[:<:]]%s' limit 100 ",
 				$q);
 
 			if ($result=$db->query($sql)) {
 				foreach ($result as $row) {
-					if ($row['Part Unit Description']==$q)
-						$candidates[$row['Part SKU']]=55;
-					else {
+					if ($row['Part Unit Description']==$q) {
+						if ($row['Part Status']=='In Use') {
+							$candidates[$row['Part SKU']]=55;
+						}else {
+							$candidates[$row['Part SKU']]=35;
+						}
+					}else {
 
 						$len_name=strlen($row['Part Unit Description']);
 						$len_q=strlen($q);
 						$factor=$len_q/$len_name;
-						$candidates[$row['Part SKU']]=50*$factor;
+						if ($row['Part Status']=='In Use') {
+							$candidates[$row['Part SKU']]=50*$factor;
+						}else {
+							$candidates[$row['Part SKU']]=30*$factor;
+
+						}
 					}
 
 				}
@@ -656,18 +698,24 @@ function search_inventory($db, $account, $memcache_ip, $data) {
 		}
 		$product_keys=preg_replace('/^,/', '', $customer_keys);
 
-		$sql=sprintf("select P.`Part SKU`,`Part Reference`,`Part Unit Description` from `Part Dimension` P  where P.`Part SKU` in (%s)",
+		$sql=sprintf("select P.`Part SKU`,`Part Reference`,`Part Unit Description`,`Part Status` from `Part Dimension` P  where P.`Part SKU` in (%s)",
 			$product_keys);
 
 		if ($result=$db->query($sql)) {
 			foreach ($result as $row) {
 
+				if ($row['Part Status']=='Not In Use') {
+					$status='<i class="fa fa-square-o fa-fw padding_right_5 very_discreet" aria-hidden="true"></i> ';
 
+				}elseif ($row['Part Status']=='Discontinuing') {
+					$status='<i class="fa fa-square fa-fw padding_right_5 very_discreet" aria-hidden="true"></i> ';
 
-
+				}else {
+					$status='<i class="fa fa-square fa-fw padding_right_5" aria-hidden="true"></i> ';
+				}
 
 				$results[$row['Part SKU']]=array(
-					'label'=>highlightkeyword(sprintf('%s', $row['Part Reference']), $queries ),
+					'label'=>$status.highlightkeyword(sprintf('%s', $row['Part Reference']), $queries ),
 					'details'=>highlightkeyword($row['Part Unit Description'], $queries ),
 					'view'=>sprintf('part/%d', $row['Part SKU'])
 
@@ -705,7 +753,7 @@ function search_products($db, $account, $memcache_ip, $data) {
 
 
 	$cache=false;
-	$max_results=10;
+	$max_results=16;
 	$user=$data['user'];
 	$queries=trim($data['query']);
 
@@ -793,21 +841,30 @@ function search_products($db, $account, $memcache_ip, $data) {
 
 
 
-			$sql=sprintf("select `Product ID`,`Product Code`,`Product Name` from `Product Dimension` where true $where_store and `Product Code` like '%s%%' limit 20 ",
+			$sql=sprintf("select `Product ID`,`Product Code`,`Product Name`,`Product Status` from `Product Dimension` where true $where_store and `Product Code` like '%s%%' limit 20 ",
 				$q);
 
 
 			if ($result=$db->query($sql)) {
 				foreach ($result as $row) {
 
-					if ($row['Product Code']==$q)
-						$candidates['P'.$row['Product ID']]=1000;
-					else {
+					if ($row['Product Code']==$q) {
+						if ($row['Product Status']=='Discontinued') {
+							$candidates['P'.$row['Product ID']]=550;
+						}else {
+							$candidates['P'.$row['Product ID']]=1000;
+						}
+					}else {
 
 						$len_name=strlen($row['Product Code']);
 						$len_q=strlen($q);
 						$factor=$len_q/$len_name;
-						$candidates['P'.$row['Product ID']]=500*$factor;
+						if ($row['Product Status']=='Discontinued') {
+							$candidates['P'.$row['Product ID']]=270*$factor;
+						}else {
+							$candidates['P'.$row['Product ID']]=500*$factor;
+						}
+
 					}
 
 				}
@@ -883,9 +940,11 @@ function search_products($db, $account, $memcache_ip, $data) {
 		}
 
 
+		//print_r($candidates);
+
 		arsort($candidates);
 
-
+		//print_r($candidates);
 
 		$total_candidates=count($candidates);
 
@@ -929,15 +988,27 @@ function search_products($db, $account, $memcache_ip, $data) {
 
 
 		if ($number_products_keys) {
-			$sql=sprintf("select `Store Code`,`Store Key`,`Product ID`,`Product Code`,`Product Name` from `Product Dimension` left join `Store Dimension` S on (`Product Store Key`=S.`Store Key`) where `Product ID` in (%s)",
+			$sql=sprintf("select `Product Status`,`Store Code`,`Store Key`,`Product ID`,`Product Code`,`Product Name` from `Product Dimension` left join `Store Dimension` S on (`Product Store Key`=S.`Store Key`) where `Product ID` in (%s)",
 				$product_keys);
 
 			if ($result=$db->query($sql)) {
 				foreach ($result as $row) {
 
+
+
+					if ($row['Product Status']=='Discontinued') {
+						$icon='<i class="fa fa-cube fa-fw padding_right_5 error" aria-hidden="true" ></i> ';
+
+					}elseif ($row['Product Status']=='Discontinued') {
+						$icon='<i class="fa fa-cube fa-fw padding_right_5 warning" aria-hidden="true" ></i> ';
+
+					}else {
+						$icon='<i class="fa fa-cube fa-fw padding_right_5" aria-hidden="true" ></i> ';
+					}
+
 					$results['P'.$row['Product ID']]=array(
 						'store'=>$row['Store Code'],
-						'label'=>highlightkeyword(sprintf('%s', $row['Product Code']), $queries ),
+						'label'=>$icon.highlightkeyword(sprintf('%s', $row['Product Code']), $queries ),
 						'details'=>highlightkeyword($row['Product Name'], $queries ),
 						'view'=>sprintf('products/%d/%d', $row['Store Key'], $row['Product ID'])
 
@@ -961,9 +1032,12 @@ function search_products($db, $account, $memcache_ip, $data) {
 			if ($result=$db->query($sql)) {
 				foreach ($result as $row) {
 
-					$results[$row['Category Key']]=array(
+
+					$icon='<i class="fa fa-sitemap fa-fw padding_right_5" aria-hidden="true" ></i> ';
+
+					$results['C'.$row['Category Key']]=array(
 						'store'=>$row['Store Code'],
-						'label'=>highlightkeyword(sprintf('%s', $row['Category Code']), $queries ),
+						'label'=>$icon.highlightkeyword(sprintf('%s', $row['Category Code']), $queries ),
 						'details'=>highlightkeyword($row['Category Label'], $queries ),
 						'view'=>sprintf('products/%d/category/%d', $row['Category Store Key'], $row['Category Key'])
 
@@ -2302,7 +2376,7 @@ function search_locations($db, $account, $memcache_ip, $data) {
 }
 
 
-function agent_search($db, $account, $user,$memcache_ip, $data) {
+function agent_search($db, $account, $user, $memcache_ip, $data) {
 
 	$agent_key=$user->get('User Parent Key');
 
@@ -2405,7 +2479,7 @@ function agent_search($db, $account, $user,$memcache_ip, $data) {
 			}
 
 
-		
+
 
 			$sql=sprintf("select `Supplier Part Key`,`Supplier Part Reference` from `Supplier Part Dimension` left join `Agent Supplier Bridge` on (`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`) where `Agent Supplier Agent Key`=%d  and  `Supplier Part Reference` like '%s%%' limit 20 ",
 				$agent_key,
@@ -2438,7 +2512,7 @@ function agent_search($db, $account, $user,$memcache_ip, $data) {
 			$sql=sprintf("select `Supplier Part Key`,`Part Reference` from `Supplier Part Dimension`  left join `Agent Supplier Bridge` on (`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`)  left join   `Part Dimension`  on (`Supplier Part Part SKU`=`Part SKU`) where `Agent Supplier Agent Key`=%d  and  `Part Reference` like '%s%%' limit 20 ",
 				$agent_key,
 				$q);
-//print $sql;
+			//print $sql;
 
 			if ($result=$db->query($sql)) {
 				foreach ($result as $row) {

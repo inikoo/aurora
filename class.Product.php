@@ -76,6 +76,36 @@ class Product extends Asset{
 
 	}
 
+ function get_parts($scope='keys') {
+
+
+		if ($scope=='objects') {
+			include_once 'class.Part.php';
+		}
+
+		$sql=sprintf('select `Product Part Part SKU` as `Part SKU` from `Product Part Bridge` where `Product Part Product ID`=%d ', $this->id);
+
+		$parts=array();
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+				if ($scope=='objects') {
+					$parts[$row['Part SKU']]=new Part($row['Part SKU']);
+				}else {
+					$parts[$row['Part SKU']]=$row['Part SKU'];
+				}
+
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+		return $parts;
+	}
+
 
 	function get_parts_data($with_objects=false) {
 

@@ -41,10 +41,11 @@ if ($result=$db->query($sql)) {
 
 		if ($row['Attachment Thumbnail Image Key']) {
 
-			if ( authorize_file_view($user, $row['Attachment Public'], $row['Subject'], $row['Subject Key'])  ) {
+			if ( authorize_file_view($db,$user, $row['Attachment Public'], $row['Subject'], $row['Subject Key'])  ) {
 
 				display_database_image($db, $row['Attachment Thumbnail Image Key']);
 			}else {
+		
 				header('Content-type:image/jpg');
 				readfile($forbidden_image);
 				exit;

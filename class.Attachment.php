@@ -163,17 +163,15 @@ class Attachment extends DB_Table {
 
 		$sql=sprintf("insert into `Attachment Dimension` %s %s", $keys, $values);
 
-		// exit;
-		if (mysql_query($sql)) {
-			$this->id= mysql_insert_id();
+
+		if ($this->db->exec($sql)) {
+			$this->id=$this->db->lastInsertId();
 			$this->new=true;
-			$this->get_data('id', $this->id);
+			$this->get_data('id', $this->id, true);
 
 			$this->update_type();
 			$this->create_thumbnail();
-
-
-		} else {
+		}else {
 			$error=mysql_error();
 			if (preg_match('/max_allowed_packet/i', $error)) {
 				$this->msg="Got a packet bigger than 'max_allowed_packet' bytes ";
@@ -187,7 +185,7 @@ class Attachment extends DB_Table {
 	}
 
 
-	function get_data($key, $tag) {
+	function get_data($key, $tag, $with_data=false) {
 
 		if ($key=='id') {
 			$sql=sprintf("select * from `Attachment Dimension` where `Attachment Key`=%d", $tag);
@@ -198,7 +196,9 @@ class Attachment extends DB_Table {
 			return;
 
 		if ($this->data = $this->db->query($sql)->fetch()) {
-			unset($this->data['Attachment Data']);
+			if (!$with_data) {
+				unset($this->data['Attachment Data']);
+			}
 			$this->id=$this->data['Attachment Key'];
 		}
 
@@ -298,8 +298,14 @@ class Attachment extends DB_Table {
 			case 'CV':
 				$type=_('Curriculum vitae');
 				break;
+			case 'Other':
+				$type=_('Curriculum vitae');
+				break;	
+			case 'MSDS':
+				$type=_('Material Safety Data Sheet (MSDS)');
+				break;		
 			default:
-				$type=_('Other');
+				$type=$this->data['Attachment Subject Type'].'*';
 				break;
 			}
 			return $type;
@@ -491,19 +497,22 @@ class Attachment extends DB_Table {
 		}
 
 
-
 		$im->setImageFormat('jpg');
 		$im->thumbnailImage(500, 0);
 		$im->writeImage ($tmp_file.'.jpg');
 
 
 		$image_data=array(
-			'file'=>$tmp_file.'.jpg',
-			'source_path'=>'',
-			'name'=>'attachment_thumbnail',
-			'caption'=>''
+			'Image Width' => 0,
+			'Image Height' =>  0,
+			'Image File Size'=> 0,
+			'Image File Checksum'=>'',
+			'Image Filename'=>'attachment_thumbnail',
+			'Image File Format'=>'',
+			'Image Data'=>'',
+			'upload_data'=>array('tmp_name'=>$tmp_file.'.jpg'),
+			'editor'=>$this->editor
 		);
-
 
 
 		$image=new Image('find', $image_data, 'create');

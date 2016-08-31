@@ -112,7 +112,7 @@ class SupplierPart extends DB_Table{
 		}
 
 
-		if (!$data['Supplier Part Part SKU']) {
+		if (!$data['Supplier Part Part SKU']  and  isset($raw_data['Part Reference'])) {
 
 			$sql=sprintf("select `Part SKU` from `Part Dimension` where `Part Reference`=%s", prepare_mysql($raw_data['Part Reference']));
 
@@ -311,7 +311,7 @@ class SupplierPart extends DB_Table{
 
 		case 'Carton CBM':
 			if ($this->data['Supplier Part Carton CBM']=='')return '';
-			return number($this->data['Supplier Part Carton CBM'],4).' m³';
+			return number($this->data['Supplier Part Carton CBM'], 4).' m³';
 			break;
 		case 'SKO Dimensions':
 			return $this->part->get('Package Dimensions');
@@ -582,6 +582,8 @@ class SupplierPart extends DB_Table{
 
 
 			$this->update_field($field, $supplier->id, 'no_history');
+			$updated=$this->updated;
+
 
 			$this->update_field('Supplier Part Currency Code', $supplier->get('Supplier Default Currency Code'), 'no_history');
 
@@ -623,7 +625,7 @@ class SupplierPart extends DB_Table{
 			$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
 
 
-
+			$this->updated=$updated;
 			break;
 
 		case 'Supplier Part Unit Cost':
@@ -1020,7 +1022,7 @@ class SupplierPart extends DB_Table{
 
 						$row['Purchase Order Transaction Fact Key']
 					);
-					
+
 					$this->db->exec($sql);
 				}
 				include_once 'class.PurchaseOrder.php';
