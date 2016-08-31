@@ -17,7 +17,7 @@ require_once 'class.Page.php';
 require_once 'class.Supplier.php';
 require_once 'class.Category.php';
 
-//update_parts($db);
+update_parts($db);
 update_categories($db);
 
 function update_parts($db) {
@@ -33,8 +33,6 @@ function update_parts($db) {
 			$part->update_last_period_sales();
 			$part->update_interval_sales();
 			$part->update_previous_years_data();
-
-
 
 		}
 
@@ -53,7 +51,7 @@ function update_categories($db) {
 			$category->update_number_of_subjects();
 			$category->update_subjects_data();
 			$category->update_part_category_previous_years_data();
-$category->update_part_stock_status();
+			$category->update_part_stock_status();
 		}
 	}
 }

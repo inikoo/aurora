@@ -152,7 +152,7 @@ $_dir=$order_direction;
 if ($order=='id') {
 	$order='P.`Part SKU`';
 }elseif ($order=='stock') {
-	$order='`Part Current Stock`';
+	$order='`Part Current On Hand Stock`';
 }elseif ($order=='dispatched') {
 	$order='dispatched';
 }elseif ($order=='stock_status') {
@@ -206,7 +206,7 @@ else {
 
 $sql_totals="select count(Distinct P.`Part SKU`) as num from $table  $where  ";
 
-$fields.="P.`Part SKU`,`Part Reference`,`Part Unit Description`,`Part Current Stock`,`Part Stock Status`,`Part Days Available Forecast`,
+$fields.="P.`Part SKU`,`Part Reference`,`Part Unit Description`,`Part Current Stock`,`Part Stock Status`,`Part Days Available Forecast`,`Part Current On Hand Stock`,
 `Part $db_period Acc Sold` as sold,
 `Part $db_period Acc Given` as given,
 `Part $db_period Acc Provided` as dispatched,

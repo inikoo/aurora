@@ -164,7 +164,7 @@ function parts($_data, $db, $user, $type, $account) {
 				'unit_description'=>$data['Part Unit Description'],
 				'stock_status'=>$stock_status,
 				'stock_status_label'=>$stock_status_label,
-				'stock'=>'<span class="'.($data['Part Current Stock']<0?'error':'').'">'.number(floor($data['Part Current Stock'])).'</span>',
+				'stock'=>'<span class="'.($data['Part Current On Hand Stock']<0?'error':'').'">'.number(floor($data['Part Current On Hand Stock'])).'</span>',
 				'dispatched'=>number($data['dispatched'], 0),
 				'dispatched_1y'=>delta($data['dispatched'], $data['dispatched_1y']),
 				//'sold'=>number($data['sold']),
