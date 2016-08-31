@@ -384,7 +384,7 @@ class Supplier extends SubjectSupplier {
 
 		
 
-		$sql=sprintf('select 
+		$sql=sprintf('select count(*) as num ,
 		sum(if(`Part Stock Status`="Surplus",1,0)) as surplus,
 		sum(if(`Part Stock Status`="Optimal",1,0)) as optimal,
 		sum(if(`Part Stock Status`="Low",1,0)) as low,
