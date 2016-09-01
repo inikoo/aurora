@@ -30,33 +30,8 @@ $editor=array(
 
 
 
-$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" and `Category Key`=11899  ');
-$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" order by  `Category Key` desc');
 
-if ($result=$db->query($sql)) {
-	foreach ($result as $row) {
 
-		$category=new Category($row['Category Key']);
-
-		if (!array_key_exists($category->get('Category Scope').'Category', $timeseries))
-			continue;
-
-		$timeseries_data=$timeseries[$category->get('Category Scope').'Category'];
-
-		foreach ($timeseries_data as $timeserie_data) {
-
-			$editor['Date']=gmdate('Y-m-d H:i:s');
-			$timeserie_data['editor']=$editor;
-			$category->create_timeseries($timeserie_data);
-
-		}
-	}
-
-}else {print_r($error_info=$db->errorInfo());
-print $sql;
-exit;}
-
-exit;
 
 $sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Product" and `Category Key`=14797  ');
 $sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Product" ');
@@ -81,8 +56,8 @@ if ($result=$db->query($sql)) {
 	}
 
 }else {print_r($error_info=$db->errorInfo());
-print $sql;
-exit;}
+	print $sql;
+	exit;}
 
 
 $sql=sprintf('select `Store Key` from `Store Dimension` ');
@@ -105,6 +80,32 @@ if ($result=$db->query($sql)) {
 
 }else {print_r($error_info=$db->errorInfo());exit;}
 
+$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" and `Category Key`=11899  ');
+$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" order by  `Category Key` desc');
 
+if ($result=$db->query($sql)) {
+	foreach ($result as $row) {
+
+		$category=new Category($row['Category Key']);
+
+		if (!array_key_exists($category->get('Category Scope').'Category', $timeseries))
+			continue;
+
+		$timeseries_data=$timeseries[$category->get('Category Scope').'Category'];
+
+		foreach ($timeseries_data as $timeserie_data) {
+
+			$editor['Date']=gmdate('Y-m-d H:i:s');
+			$timeserie_data['editor']=$editor;
+			$category->create_timeseries($timeserie_data);
+
+		}
+	}
+
+}else {
+	print_r($error_info=$db->errorInfo());
+	print $sql;
+	exit;
+}
 
 ?>
