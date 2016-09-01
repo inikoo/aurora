@@ -60,10 +60,87 @@ create_families($db, $account);
 setup_product_part_bridge();
 set_valid_dates($db);
 set_valid_dates_and_status_to_part_families($db);
-*/
 fix_orphan_dn($db);
 update_stock($db);
 move_MSDS_attachments($db);
+*/
+
+set_unit_label($db);
+
+
+function set_unit_label($db) {
+
+	$sql=sprintf('select * from `Part Dimension`  ');
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+			$part=new Part($row['Part SKU']);
+
+
+			
+
+			$num_uk_prod=0;
+			$prod_uk=false;
+			$products=array();
+			$min_units=9999;
+			$price='';
+			$rrp='';
+
+			foreach (get_product_ids($part) as $product_pid) {
+				$product=new Product($product_pid);
+
+				if ($product->id and $product->data['Product Record Type']=='Normal') {
+
+					if ($product->data['Product Store Key']==1 and get_number_of_parts($db, $product)==1) {
+						$products[]=array(
+							'code'=>$product->data['Product Code'],
+							// 'store'=>$product->data['Product Store Key'],
+							// 'parts'=>get_number_of_parts($db, $product)
+						);
+
+						if ($product->data['Product Units Per Case']<$min_units) {
+							$min_units=$product->data['Product Units Per Case'];
+						}
+						if ($product->get('Product Price')!='')
+							$price=$product->get('Product Price')/$product->get('Product Units Per Case');
+						if ($product->get('Product RRP')!='')
+							$rrp=$product->get('Product RRP')/$product->get('Product Units Per Case');
+
+						$num_uk_prod++;
+						$prod_uk=$product;
+					}
+				}
+			}
+
+			if ($num_uk_prod==1) {
+
+				//print_r($prod_uk);
+
+				$part->update(array(
+						// 'Part Units'=>$prod_uk->get('Product Units Per Case'),
+						'Part Unit Label'=>$prod_uk->get('Product Unit Label'),
+						
+
+					), 'no_history');
+			}
+
+
+
+
+
+
+
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+}
+
 
 function set_valid_dates($db) {
 

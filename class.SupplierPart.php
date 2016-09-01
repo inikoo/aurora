@@ -261,12 +261,14 @@ class SupplierPart extends DB_Table{
 
 		case 'Supplier Part Units Per Package':
 		case 'Supplier Part Unit Description':
+		case 'Supplier Part Unit Label':
 		case 'Supplier Part Package Description':
 			$key=preg_replace('/Supplier /', '', $key);
 			return $this->part->get($key);
 			break;
 
 		case 'Unit Description':
+		case 'Unit Label':
 		case 'Package Description':
 
 
@@ -450,6 +452,22 @@ class SupplierPart extends DB_Table{
 	function update_field_switcher($field, $value, $options='', $metadata='') {
 
 		switch ($field) {
+
+
+		case 'Supplier Part Unit Label':
+
+
+			if ($value==''   ) {
+				$this->error=true;
+				$this->msg=_('Unit label missing');
+				return;
+			}
+
+			$this->part->update(array('Part Unit Label'=>$value), $options);
+			$this->updated=$this->part->updated;
+
+
+			break;
 
 		case 'Supplier Part Unit Description':
 
@@ -1142,10 +1160,13 @@ class SupplierPart extends DB_Table{
 			$label=_("unit recommended RRP");
 			break;
 		case 'Part Package Description':
-			$label=_("Outers (SKO) description");
+			$label=_("outers (SKO) description");
 			break;
 		case 'Part Unit Description':
-			$label=_("Unit description");
+			$label=_("unit description");
+			break;
+		case 'Part Unit Label':
+			$label=_("unit label");
 			break;
 		case 'Part Units Per Package':
 			$label=_("units per SKO");

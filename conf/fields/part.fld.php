@@ -153,6 +153,21 @@ $part_fields[]=array(
 
 
 		),
+		
+			array(
+			'id'=>'Part_Unit_Label',
+			//'class'=>($supplier_part_scope?'hide':''),
+			'render'=>($supplier_part_scope?false:true),
+			'edit'=>(($edit and !$supplier_part_scope  )?'string':''),
+
+			'value'=>htmlspecialchars($object->get('Part Unit Label')),
+			'formatted_value'=>$object->get('Unit Label'),
+			'label'=>ucfirst($object->get_field_label('Part Unit Label')),
+			'required'=>true,
+			'type'=>'value'
+
+
+		),
 
 		array(
 			'id'=>'Part_Unit_Weight',

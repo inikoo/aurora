@@ -42,10 +42,12 @@ $editor=array(
 	'User Key'=>0,
 	'Date'=>gmdate('Y-m-d H:i:s')
 );
-
+/*
 migrate_products($db, $editor);
 create_categories($db,$editor);
 fix_product_categories($db);
+*/
+migrate_historic_products($db, $editor);
 
 
 function fix_product_categories($db) {

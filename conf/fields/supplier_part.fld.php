@@ -175,6 +175,16 @@ $supplier_part_fields[]=array(
 			'type'=>'value'
 		),
 		array(
+			'id'=>'Supplier_Part_Unit_Label',
+			'edit'=>($edit?'string':''),
+
+			'value'=>($new?_('Piece'):htmlspecialchars($object->get('Part Part Unit Label'))),
+			'formatted_value'=>($new?_('Piece'):$object->get('Part Unit Label')),
+			'label'=>ucfirst($object->get_field_label('Part Unit Label')),
+			'required'=>true,
+			'type'=>'value'
+		),
+		array(
 			'id'=>'Supplier_Part_Packages_Per_Carton',
 			'edit'=>'smallint_unsigned',
 			'value'=>($new?1:htmlspecialchars($object->get('Supplier Part Packages Per Carton'))),

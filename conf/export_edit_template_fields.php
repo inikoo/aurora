@@ -18,6 +18,7 @@ $export_edit_template_fields=array(
 		array('field'=>'Part Barcode Number', 'name'=>'Part Barcode Number', 'label'=>_('Part barcode'), 'checked'=>0, 'cell_type'=>'string'),
 		array('field'=>'Part Package Description','name'=>'Part Package Description', 'label'=>_('Outers (SKO) description'), 'checked'=>0),
 		array('field'=>'Part Unit Description','name'=>'Part Unit Description', 'label'=>_('Unit description'), 'checked'=>0),
+		array('field'=>'Part Unit Label','name'=>'Part Unit Label', 'label'=>_('Unit label'), 'checked'=>0),
 		array('field'=>'Supplier Part Packages Per Carton', 'name'=>'Supplier Part Packages Per Carton', 'label'=>_('Outers (SKO) per carton'), 'checked'=>0),
 		array('field'=>'Part Units Per Package', 'name'=>'Part Units Per Package', 'label'=>_('Units per SKO'), 'checked'=>0),
 		array('field'=>'Supplier Part Status', 'name'=>'Supplier Part Status', 'label'=>_('Availability'), 'checked'=>0),

@@ -48,7 +48,7 @@ case 'Supplier Part':
 
 	$filename=_('upload_supplier_part');
 	$supplier=get_object('Supplier',$_REQUEST['parent_key']);
-	$options=array('supplier'=>$supplier,'new'=>true,'supplier_part_scope'=>true);
+	$options=array('parent'=>'supplier','parent_object'=>$supplier,'new'=>true,'supplier_part_scope'=>true);
 	break;	
 default:
 	exit('Object not defined '.$object->get_object_name());

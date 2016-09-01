@@ -120,13 +120,12 @@ $product_fields=array(
 		'show_title'=>true,
 		'fields'=>array(
 			array(
-				'id'=>'Product_Unit_Type',
-				'edit'=>($edit?'option':''),
-				'options'=>$options_Unit_Type,
-				'allow_other'=>false,
-				'value'=>$object->get('Product Unit Type') ,
-				'formatted_value'=>$object->get('Unit Type'),
-				'label'=>ucfirst($object->get_field_label('Product Unit Type')),
+				'id'=>'Product_Unit_Label',
+				'edit'=>($edit?'string':''),
+				
+				'value'=>$object->get('Product Unit Label') ,
+				'formatted_value'=>$object->get('Unit Label'),
+				'label'=>ucfirst($object->get_field_label('Product Unit Label')),
 			),
 
 			array(
@@ -140,6 +139,18 @@ $product_fields=array(
 
 
 			),
+			
+				array(
+				'id'=>'Product_Unit_RRP',
+				'edit'=>($edit?'amount':''),
+
+				'value'=>$object->get('Product Unit RRP') ,
+				'formatted_value'=>$object->get('Unit RRP') ,
+				'label'=>ucfirst($object->get_field_label('Product Unit RRP')),
+				'invalid_msg'=>get_invalid_message('amount'),
+				'required'=>true,
+			),
+			
 			array(
 				'id'=>'Product_Unit_Weight',
 				'edit'=>  ($edit?
