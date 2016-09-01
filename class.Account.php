@@ -31,7 +31,7 @@ class Account extends DB_Table{
 
 	function get_data() {
 
-        print_r($this);
+       
         
 		$sql=sprintf("select * from `Account Dimension` where `Account Key`=1 ");
 
