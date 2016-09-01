@@ -3,14 +3,22 @@
 
 	<div id="asset_data">
 		<div class="data_container">
-		    {assign "family" $part->get('Family')}
-			<div class="data_field small " >
-			    <input type="hidden" id="Part_Family_Key" value="{if $family}{$family->id}{/if}" />
-				<i class="fa fa-pagelines" aria-hidden="true"></i> <span   onClick="category_view()" class="button id Part_Family_Code">{if $family}{$family->get('Code')}{/if}</span> <span class="Part_Family_Label">{if $family}{$family->get('Label')}{else}<span class="italic discreet">{t}Not set{/t}</span>{/if}</span> 
-			</div>
+		
+		<div style="width:100%" >
+	
+	<ul class="tags" >
+			{foreach from=$part->get_category_data() item=item key=key} 
+	<li><span class="button" onClick="change_view('category/{$item.category_key}')" title="{$item.label}">{$item.code}</span></li>
+	{/foreach} 
+</ul>
+
+
+	</div>
+		
+		   
 			
 			
-			<div class="data_field " >
+			<div class="data_field " style="clear:both">
 				<h1 ><span class="Part_Unit_Description">{$part->get('Part Package Description')}</span></h1>
 			</div>
 			

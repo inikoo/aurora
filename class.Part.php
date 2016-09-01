@@ -332,18 +332,18 @@ class Part extends Asset{
 			$this->update_status('Discontinuing');
 			return;
 		}if ($this->get('Part Status')=='Not In Use' and   ($this->data['Part Current On Hand Stock']<0  ) ) {
-			
-			
-			$this->update_status('Not In Use','',true);
-			
-			
+
+
+			$this->update_status('Not In Use', '', true);
+
+
 		}
 
 	}
 
 
 
-	function update_status($value, $options='',$force=false) {
+	function update_status($value, $options='', $force=false) {
 
 
 		if ($value=='Not In Use' and  ($this->data['Part Current On Hand Stock']-$this->data['Part Current Stock In Process'])>0) {
@@ -2488,7 +2488,7 @@ where `Part SKU`=%d ",
 			return array($days, $days_formatted);
 		}
 
-		//include_once('class.TimeSeries.php');
+		//include_once('class.Timeserie.php');
 		/*
 
 		$sql=sprintf("select `First Day` from kbase.`Week Dimension` where `Year Week`=%s",date("YW"));
@@ -2857,6 +2857,68 @@ where `Part SKU`=%d ",
 
 	}
 
+
+	function get_category_data() {
+
+
+		$type='Part';
+
+		$sql=sprintf("select B.`Category Key`,`Category Root Key`,`Other Note`,`Category Label`,`Category Code`,`Is Category Field Other` from `Category Bridge` B left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`) where  `Category Branch Type`='Head'  and B.`Subject Key`=%d and B.`Subject`=%s",
+			$this->id,
+			prepare_mysql($type)
+		);
+
+		$category_data=array();
+
+
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+
+
+
+				$sql=sprintf("select `Category Label`,`Category Code` from `Category Dimension` where `Category Key`=%d", $row['Category Root Key']);
+
+
+				if ($result2=$this->db->query($sql)) {
+					if ($row2 = $result2->fetch()) {
+						$root_label=$row2['Category Label'];
+						$root_code=$row2['Category Code'];
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
+				}
+
+
+
+				if ($row['Is Category Field Other']=='Yes' and $row['Other Note']!='') {
+					$value=$row['Other Note'];
+				}
+				else {
+					$value=$row['Category Label'];
+				}
+				$category_data[]=array(
+					'root_label'=>$root_label,
+					'root_code'=>$root_code,
+					'label'=>$row['Category Label'],
+					'code'=>$row['Category Code'],
+					'value'=>$value,
+					'category_key'=>$row['Category Key']
+				);
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+
+
+		return $category_data;
+	}
 
 
 }
