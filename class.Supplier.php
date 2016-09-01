@@ -189,8 +189,8 @@ class Supplier extends SubjectSupplier {
 
 
 	function get_category_data() {
-		$sql=sprintf("select B.`Category Key`,`Category Root Key`,`Other Note`,`Category Label`,`Category Code`,`Is Category Field Other` from `Category Bridge` B left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`) where  `Category Branch Type`='Head'  and B.`Subject Key`=%d and B.`Subject`='Supplier'", 
-		$this->id);
+		$sql=sprintf("select B.`Category Key`,`Category Root Key`,`Other Note`,`Category Label`,`Category Code`,`Is Category Field Other` from `Category Bridge` B left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`) where  `Category Branch Type`='Head'  and B.`Subject Key`=%d and B.`Subject`='Supplier'",
+			$this->id);
 
 		$category_data=array();
 
@@ -1056,7 +1056,9 @@ class Supplier extends SubjectSupplier {
 
 		$data['Supplier Part Currency Code']=$this->data['Supplier Default Currency Code'];
 
-
+		if ($data['Supplier Part Unit Extra Cost']=='' or !is_numeric()) {
+			$data['Supplier Part Unit Extra Cost']=0;
+		}
 
 		$data['Part Package Description']=$data['Supplier Part Package Description'];
 		$data['Part Unit Description']=$data['Supplier Part Unit Description'];
