@@ -20,6 +20,7 @@ class Account extends DB_Table{
 		}
 		$this->db=$db;
 
+        print "test";
 
 		$this->table_name='Account';
 
