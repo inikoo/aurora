@@ -293,7 +293,7 @@ class Part extends Asset{
 			);
 			$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
 
-		
+
 
 
 			if ($this->get('Part Family Category Key')) {
@@ -542,16 +542,81 @@ class Part extends Asset{
 
 		switch ($field) {
 
+		case 'Part Unit Label':
 
+
+			if ($value==''   ) {
+				$this->error=true;
+				$this->msg=_('Unit label missing');
+				return;
+			}
+
+			$this->update_field($field, $value, $options);
+
+			break;
+
+		case 'Part Unit Description':
+
+
+			if ($value==''   ) {
+				$this->error=true;
+				$this->msg=_('Unit description missing');
+				return;
+			}
+
+			$this->update_field($field, $value, $options);
+
+
+			break;
+		case 'Part Package Description':
+			if ($value==''   ) {
+				$this->error=true;
+				$this->msg=_('Outers (SKO) description');
+				return;
+			}
+
+			$this->update_field($field, $value, $options);
+
+			break;
+
+		case 'Part Reference':
+
+			if ($value=='') {
+				$this->error=true;
+				$this->msg=sprintf(_('Reference missing'));
+				return;
+			}
+
+			$sql=sprintf('select count(*) as num from `Part Dimension` where `Part Reference`=%s and `Part SKU`!=%d ',
+				prepare_mysql($value),
+				$this->id
+			);
+
+
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					if ($row['num']>0) {
+						$this->error=true;
+						$this->msg=sprintf(_('Duplicated reference (%s)'), $value);
+						return;
+					}
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+			$this->update_field($field, $value, $options);
+			break;
 		case 'Part Unit Price':
 
+			/*
 			if ($value==''   ) {
 				$this->error=true;
 				$this->msg=_('Unit recommended price missing');
 				return;
 			}
-
-			if (!is_numeric($value) or $value<0  ) {
+*/
+			if (  $value!=''and (    !is_numeric($value) or $value<0  )) {
 				$this->error=true;
 				$this->msg=sprintf(_('Invalid unit recommended price (%s)'), $value);
 				return;
@@ -571,6 +636,30 @@ class Part extends Asset{
 				),
 
 			);
+
+			break;
+
+
+		case 'Part Unit RRP':
+
+			/*
+			if ($value==''   ) {
+				$this->error=true;
+				$this->msg=_('Unit recommended price missing');
+				return;
+			}
+*/
+			if (  $value!=''and (    !is_numeric($value) or $value<0  )) {
+				$this->error=true;
+				$this->msg=sprintf(_('Invalid unit recommended RRP (%s)'), $value);
+				return;
+			}
+
+
+
+			$this->update_field('Part Unit RRP', $value, $options);
+
+
 
 			break;
 
@@ -1174,6 +1263,7 @@ class Part extends Asset{
 			}
 			break;
 		case 'Unit Price':
+			if ($this->data['Part Unit Price']=='')return '';
 			include_once 'utils/natural_language.php';
 			$unit_price= money($this->data['Part Unit Price'], $account->get('Account Currency'));
 
@@ -2655,7 +2745,7 @@ where `Part SKU`=%d ",
 			break;
 		case 'Part Unit Label':
 			$label=_('unit label');
-			break;	
+			break;
 		case 'Part Package Description':
 			$label=_('SKO description');
 			break;

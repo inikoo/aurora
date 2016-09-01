@@ -61,10 +61,10 @@ function fork_upload_edit($job) {
 
 
 	switch ($upload->get('Upload Object')) {
-	case 'supplier_parts':
+	case 'supplier_part':
 		include_once 'class.SupplierPart.php';
 		$valid_keys=array('Supplier Part Key');
-		$valid_fields=$export_edit_template_fields['supplier_parts'];
+		$valid_fields=$export_edit_template_fields['supplier_part'];
 		$object_name='supplier_part';
 		break;
 	default:
@@ -195,10 +195,36 @@ function fork_upload_edit($job) {
 
 			$record_data=json_decode($row['data'], true);
 
-			//print_r($record_data);
 
 
-			if ($record_data[$key_index]=='') {
+			if (strtolower($record_data[$key_index])=='new') {
+
+
+				$fields_data=array();
+
+				foreach ($valid_indexes as $index=>$field) {
+					$fields_data[$field]=$record_data[ $index];
+
+
+
+				}
+
+
+				$_data=array(
+					'parent'=>$upload->get('Parent'),
+					'parent_key'=>$upload->get('Parent Key'),
+					'object'=>$upload->get('Upload Object'),
+					'upload_record_key'=>$row['Upload Record Key'],
+					'fields_data'=>$fields_data
+				);
+
+    
+				$object_key=new_object($account, $db, $user, $editor, $_data);
+
+
+
+			}
+			else if ($record_data[$key_index]=='') {
 
 				$sql=sprintf("update `Upload Record Dimension` set `Upload Record Date`=%s ,`Upload Record Message Code`=%s ,`Upload Record Message Metadata`=%s ,`Upload Record Status`='Done' ,`Upload Record State`=%s  where `Upload Record Key`=%d ",
 					prepare_mysql(gmdate('Y-m-d H:i:s')),
@@ -212,109 +238,110 @@ function fork_upload_edit($job) {
 				continue;
 
 			}
+			else {
 
-			$object=get_object($object_name, $record_data[$key_index]);
+				$object=get_object($object_name, $record_data[$key_index]);
 
-			if (!$object->id) {
+				if (!$object->id) {
 
-				$sql=sprintf("update `Upload Record Dimension` set `Upload Record Date`=%s ,`Upload Record Message Code`=%s ,`Upload Record Message Metadata`=%s ,`Upload Record Status`='Done' ,`Upload Record State`=%s  where `Upload Record Key`=%d ",
+					$sql=sprintf("update `Upload Record Dimension` set `Upload Record Date`=%s ,`Upload Record Message Code`=%s ,`Upload Record Message Metadata`=%s ,`Upload Record Status`='Done' ,`Upload Record State`=%s  where `Upload Record Key`=%d ",
+						prepare_mysql(gmdate('Y-m-d H:i:s')),
+						prepare_mysql('object_not_found'),
+						prepare_mysql(''),
+						prepare_mysql('Error'),
+						$row['Upload Record Key']
+					);
+					$db->exec($sql);
+					update_upload_edit_stats($fork_key, $upload->id, $db);
+					continue;
+
+				}
+
+
+				$edit_data=array();
+
+
+				$row_results=array();
+
+				$errors=0;
+				$updated_records=0;
+				$msg='';
+				$message_code='';
+
+				//print_r($object->data);
+
+				//print $object->id;
+
+				foreach ($valid_indexes as $index=>$field) {
+					$object->update(array($field=>$record_data[$index]));
+
+
+
+
+					if ($object->updated) {
+						//print "$field ".$record_data[$index]." ";
+						//print "updated\n";
+						$msg.='<i class="fa fa-check success fa-fw" aria-hidden="true" title="'.$field.'"></i>, ';
+						$updated_records++;
+					}elseif ($object->error) {
+						//print "$field ".$record_data[$index]." ";
+						//print "error ".$object->msg."\n";
+
+						$msg.='<span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true" title="'.$field.'"></i> '.$object->msg.'</span>, ';
+						$errors++;
+					}else {
+						//print "$field ".$record_data[$index]." ";
+						//print "nochange \n";
+						$msg.='<i class="fa fa-minus very_discreet fa-fw" aria-hidden="true" title="'.$field.'"></i>, ';
+					}
+
+
+				}
+				// print "\n";
+				$msg=preg_replace('/, $/', '', $msg);
+
+
+
+
+				if ($errors) {
+					// exit();
+					if ($updated_records==0) {
+						$record_state='Error';
+					}else {
+						$record_state='Warning';
+					}
+
+				}else {
+					$record_state='OK';
+				}
+
+				if ($errors==0 and $updated_records==0) {
+					$message_code='no_change';
+					$record_state='NoChange';
+				}else {
+					//exit();
+					if ($updated_records and $errors==0) {
+						$message_code='updated';
+					}
+
+				}
+
+
+
+				$sql=sprintf("update `Upload Record Dimension` set `Upload Record Date`=%s ,`Upload Record Message Code`=%s ,`Upload Record Message Metadata`=%s ,`Upload Record Status`='Done' ,`Upload Record State`=%s,`Upload Record Object Key`=%d where `Upload Record Key`=%d ",
 					prepare_mysql(gmdate('Y-m-d H:i:s')),
-					prepare_mysql('object_not_found'),
-					prepare_mysql(''),
-					prepare_mysql('Error'),
+					prepare_mysql($message_code),
+					prepare_mysql($msg),
+					prepare_mysql($record_state),
+					$object->id,
 					$row['Upload Record Key']
+
 				);
+
+				//print "$sql\n";
 				$db->exec($sql);
-				update_upload_edit_stats($fork_key, $upload->id, $db);
-				continue;
 
 			}
-
-
-			$edit_data=array();
-
-
-			$row_results=array();
-
-			$errors=0;
-			$updated_records=0;
-			$msg='';
-			$message_code='';
-
-			//print_r($object->data);
-
-			//print $object->id;
-
-			foreach ($valid_indexes as $index=>$field) {
-				$object->update(array($field=>$record_data[$index]));
-
-
-
-
-				if ($object->updated) {
-					//print "$field ".$record_data[$index]." ";
-					//print "updated\n";
-					$msg.='<i class="fa fa-check success fa-fw" aria-hidden="true" title="'.$field.'"></i>, ';
-					$updated_records++;
-				}elseif ($object->error) {
-					//print "$field ".$record_data[$index]." ";
-					//print "error ".$object->msg."\n";
-
-					$msg.='<span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true" title="'.$field.'"></i> '.$object->msg.'</span>, ';
-					$errors++;
-				}else {
-					//print "$field ".$record_data[$index]." ";
-					//print "nochange \n";
-					$msg.='<i class="fa fa-minus very_discreet fa-fw" aria-hidden="true" title="'.$field.'"></i>, ';
-				}
-
-
-			}
-			// print "\n";
-			$msg=preg_replace('/, $/', '', $msg);
-
-
-
-
-			if ($errors) {
-				// exit();
-				if ($updated_records==0) {
-					$record_state='Error';
-				}else {
-					$record_state='Warning';
-				}
-
-			}else {
-				$record_state='OK';
-			}
-
-			if ($errors==0 and $updated_records==0) {
-				$message_code='no_change';
-				$record_state='NoChange';
-			}else {
-				//exit();
-				if ($updated_records and $errors==0) {
-					$message_code='updated';
-				}
-
-			}
-
-
-
-			$sql=sprintf("update `Upload Record Dimension` set `Upload Record Date`=%s ,`Upload Record Message Code`=%s ,`Upload Record Message Metadata`=%s ,`Upload Record Status`='Done' ,`Upload Record State`=%s,`Upload Record Object Key`=%d where `Upload Record Key`=%d ",
-				prepare_mysql(gmdate('Y-m-d H:i:s')),
-				prepare_mysql($message_code),
-				prepare_mysql($msg),
-				prepare_mysql($record_state),
-				$object->id,
-				$row['Upload Record Key']
-
-			);
-
-			//print "$sql\n";
-			$db->exec($sql);
-
-
 
 			update_upload_edit_stats($fork_key, $upload->id, $db);
 
@@ -350,7 +377,7 @@ function fork_upload_edit($job) {
 
 function update_upload_edit_stats($fork_key, $upload_key, $db) {
 
-	$elements=array('InProcess'=>0, 'OK'=>0, 'Error'=>0, 'Warning'=>0, 'Cancelled'=>0,'NoChange'=>0);
+	$elements=array('InProcess'=>0, 'OK'=>0, 'Error'=>0, 'Warning'=>0, 'Cancelled'=>0, 'NoChange'=>0);
 
 	$sql=sprintf('select `Upload Record State`,count(*) as num  from `Upload Record Dimension` where `Upload Record Upload Key`=%d group by `Upload Record State`', $upload_key);
 	if ($result=$db->query($sql)) {
@@ -381,6 +408,189 @@ function update_upload_edit_stats($fork_key, $upload_key, $db) {
 	$db->exec($sql);
 
 }
+
+
+function new_object($account, $db, $user, $editor, $data) {
+
+	$error=false;
+
+	$parent=get_object($data['parent'], $data['parent_key']);
+
+
+	$editor['Date']=gmdate('Y-m-d H:i:s');
+
+	$parent->editor=$editor;
+
+
+	//print_r($data);
+
+	switch ($data['object']) {
+
+	case 'supplier_part':
+	case 'Supplier Part':
+		include_once 'class.SupplierPart.php';
+
+
+		$object=$parent->create_supplier_part_record($data['fields_data']);
+		//print_r($object);
+
+		if ($parent->error) {
+			$error=$parent->error;
+			$error_metadata=(isset($parent->error_metadata)?$parent->error_metadata:'');
+			$error_code=$parent->error_code;
+		}
+
+       
+
+		break;
+	case 'part':
+	case 'Part':
+		include_once 'class.Part.php';
+		include_once 'class.Supplier.php';
+
+
+		$supplier=new Supplier('code', $data['fields_data']['Supplier Part Supplier Key']);
+
+		if (!$supplier->id) {
+			$msg=sprintf(_('Supplier with code %s not found', $data['Supplier Part Supplier Key']));
+			$error=true;
+			$error_code='parent_not_found';
+			$error_metadata=json_encode(array('msg'=>$msg));
+		}else {
+
+			$data['fields_data']['Supplier Part Supplier Key']=$supplier->id;
+
+
+			$parent=$supplier;
+			$parent->editor=$editor;
+			$supplier_part=$parent->create_supplier_part_record($data['fields_data']);
+			//print_r($parent);
+			if (!$parent->error) {
+				$object=get_object('Part', $supplier_part->get('Part SKU'));
+			}
+			$error=$parent->error;
+			$error_metadata=$parent->error_metadata;
+			$error_code=$parent->error_code;
+
+		}
+
+		break;
+	case 'Manufacture_Task':
+		include_once 'class.Manufacture_Task.php';
+		$object=$parent->create_manufacture_task($data['fields_data']);
+
+		if ($parent->new_manufacture_task) {
+
+
+		}else {
+
+
+			$response=array(
+				'state'=>400,
+				'msg'=>$parent->msg
+
+			);
+			echo json_encode($response);
+			exit;
+		}
+		break;
+	case 'User':
+		include_once 'class.User.php';
+
+		$parent->get_user_data();
+		$object=$parent->create_user($data['fields_data']);
+
+
+
+
+
+
+		break;
+	case 'Customer':
+		include_once 'class.Customer.php';
+		$object=$parent->create_customer($data['fields_data']);
+
+		break;
+	case 'Supplier':
+		include_once 'class.Supplier.php';
+		$object=$parent->create_supplier($data['fields_data']);
+
+		break;
+	case 'Contractor':
+		include_once 'class.Staff.php';
+
+		$data['fields_data']['Staff Type']='Contractor';
+
+		$object=$parent->create_staff($data['fields_data']);
+
+		break;
+	case 'Staff':
+	case 'employee':
+		include_once 'class.Staff.php';
+
+		$object=$parent->create_staff($data['fields_data']);
+
+
+
+
+
+		break;
+	case 'API_Key':
+		include_once 'class.API_Key.php';
+
+		$object=$parent->create_api_key($data['fields_data']);
+		if (!$parent->error) {
+
+		}
+		break;
+	case 'Timesheet_Record':
+		include_once 'class.Timesheet_Record.php';
+		$object=$parent->create_timesheet_record($data['fields_data']);
+		if (!$parent->error) {
+			$updated_data=array(
+				'Timesheet_Clocked_Hours'=>$parent->get('Clocked Hours')
+			);
+		}
+		break;
+	default:
+		return false;
+
+		break;
+	}
+
+
+
+	if ($error) {
+
+		$sql=sprintf("update `Upload Record Dimension` set `Upload Record Date`=%s , `Upload Record Message Code`=%s , `Upload Record Message Metadata`=%s ,`Upload Record Status`='Done' ,`Upload Record State`='Error' where `Upload Record Key`=%d ",
+			prepare_mysql(gmdate('Y-m-d H:i:s')),
+			prepare_mysql($error_code),
+			prepare_mysql($error_metadata),
+			$data['upload_record_key']
+
+		);
+
+
+
+		$db->exec($sql);
+		return false;
+
+
+	}else {
+
+		$sql=sprintf("update `Upload Record Dimension` set `Upload Record Date`=%s ,`Upload Record Message Code`='created' ,`Upload Record Status`='Done' ,`Upload Record State`='OK',`Upload Record Object Key`=%d where `Upload Record Key`=%d ",
+			prepare_mysql(gmdate('Y-m-d H:i:s')),
+			$object->id,
+			$data['upload_record_key']
+		);
+		$db->exec($sql);
+		return $object->id;
+	}
+
+
+
+}
+
 
 
 ?>

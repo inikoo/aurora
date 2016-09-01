@@ -573,78 +573,50 @@ function upload_records($_data, $db, $user, $account) {
 
 		foreach ($result as $data) {
 			$object='';
-			if ($type=='NewObjects') {
 
-				switch ($data['Upload Record Status']) {
-				case 'Done':
 
-					switch ($data['Upload Record State']) {
-					case 'OK':
-						$state='<i class="fa fa-check success" aria-hidden="true"></i> '._('Created');
-						$object=sprintf('<span class="button" onClick="change_view(\'%s\')">%s</span>', $data['link'], ($data['object_name']!=''?$data['object_name']:$data['object_auxiliar_name']));
-						break;
-					case 'Error':
-						$state='<i class="fa fa-exclamation-circle error" aria-hidden="true" title="'._('Error').'"></i> ';
-						switch ($data['Upload Record Message Code']) {
-						case 'duplicated_field':
-							$state.=_('Duplicated value in a unique field').' '.$data['Upload Record Message Metadata'];
-							break;
-						default:
-							$state.=$data['Upload Record Message Code'];
-							break;
-						}
 
-						$state.=sprintf('<span class="button" onClick="change_view(\'%s\')">%s</span>', $data['link'], ($data['object_name']!=''?$data['object_name']:$data['object_auxiliar_name']));
-						break;
-					default:
-						$state=$data['Upload Record State'];
-					}
+			switch ($data['Upload Record Status']) {
+			case 'Done':
+
+				$object=sprintf('<span class="button" onClick="change_view(\'%s\')">%s</span>', $data['link'], ($data['object_name']!=''?$data['object_name']:$data['object_auxiliar_name']));
+				$state='<span >'.$data['Upload Record Message Metadata'].'</span>';
+
+				switch ($data['Upload Record Message Code']) {
+				case 'no_change':
+					$state.=' <span class="very_discreet ">'._('Record not changed').'</span>';
 					break;
-				case 'InProcess':
-					$state='<i class="fa fa-clock-o fa-fw" aria-hidden="true"></i> '._('In process');
+				case 'updated':
+					$state.=' <span class="success">'._('Updated').'</span>';
 					break;
-
-				}
-			}else {
-
-
-				switch ($data['Upload Record Status']) {
-				case 'Done':
-
-					$object=sprintf('<span class="button" onClick="change_view(\'%s\')">%s</span>', $data['link'], ($data['object_name']!=''?$data['object_name']:$data['object_auxiliar_name']));
-					$state='<span >'.$data['Upload Record Message Metadata'].'</span>';
-
-					switch ($data['Upload Record Message Code']) {
-					case 'no_change':
-						$state.=' <span class="very_discreet ">'._('Record not changed').'</span>';
-						break;
-					case 'updated':
-						$state.=' <span class="success">'._('Updated').'</span>';
-						break;
-					case 'not_found':
-						$state.=' <span class="error">'._('Record not found').'</span>';
-						break;
-					case 'object_not_found':
-						$state.=' <span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true"></i> '._('Record not found').'</span>';
-						break;	
-					case 'skip':
-						$state.=' <span class="warning"><i class="fa fa-share fa-fw" aria-hidden="true"></i> '._('Record skipped').'</span>';
-						break;		
-					default:
-						$state.=$data['Upload Record Message Code'];
-						break;
-					}
+				case 'not_found':
+					$state.=' <span class="error">'._('Record not found').'</span>';
+					break;
+				case 'object_not_found':
+					$state.=' <span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true"></i> '._('Record not found').'</span>';
+					break;
+				case 'skip':
+					$state.=' <span class="warning"><i class="fa fa-share fa-fw" aria-hidden="true"></i> '._('Record skipped').'</span>';
+					break;
+				case 'created':
+					$state='<i class="fa fa-check success" aria-hidden="true"></i>  <span class="success">'._('Created').'</span>';
+					break;
+				default:
+					$state.=' <span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true"></i> '.$data['Upload Record Message Code'].'</span>';
 
 					break;
-				case 'InProcess':
-					$state='<i class="fa fa-clock-o fa-fw" aria-hidden="true"></i> '._('In process');
-					break;
-
 				}
 
-
+				break;
+			case 'InProcess':
+				$state='<i class="fa fa-clock-o fa-fw" aria-hidden="true"></i> '._('In process');
+				break;
 
 			}
+
+
+
+
 
 			$adata[]=array(
 				'id'=>(integer) $data['Upload Record Key'],

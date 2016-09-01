@@ -18,7 +18,7 @@ include 'utils/system_functions.php';
 
 include 'export.fork.php';
 include 'export_edit_template.fork.php';
-include 'upload.fork.php';
+//include 'upload.fork.php';
 include 'upload_edit.fork.php';
 
 
@@ -36,7 +36,7 @@ $count_number_used=0;
 $worker= new GearmanWorker();
 $worker->addServer('127.0.0.1');
 $worker->addFunction("au_export", "fork_export");
-$worker->addFunction("au_upload", "fork_upload");
+//$worker->addFunction("au_upload", "fork_upload");
 $worker->addFunction("au_export_edit_template", "fork_export_edit_template");
 $worker->addFunction("au_upload_edit", "fork_upload_edit");
 

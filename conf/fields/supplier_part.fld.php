@@ -315,7 +315,7 @@ $supplier_part_fields[]=array(
 			'value'=>htmlspecialchars($object->get('Part Part Unit Price')),
 			'formatted_value'=>$object->get('Part Unit Price'),
 			'label'=>ucfirst($object->get_field_label('Part Unit Price')),
-			'required'=>true,
+			'required'=>false,
 			'placeholder'=>sprintf(_('amount in %s or margin (%%)'), $account->get('Currency')),
 			'type'=>'value'
 		),
@@ -325,7 +325,7 @@ $supplier_part_fields[]=array(
 			'value'=>htmlspecialchars($object->get('Part Part Unit RRP')),
 			'formatted_value'=>$object->get('Part Unit RRP'),
 			'label'=>ucfirst($object->get_field_label('Part Unit RRP')),
-			'required'=>true,
+			'required'=>false,
 			'placeholder'=>sprintf(_('amount in %s or margin (%%)'), $account->get('Currency')),
 			'type'=>'value'
 		),

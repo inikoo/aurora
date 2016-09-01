@@ -134,7 +134,7 @@ class SupplierPart extends DB_Table{
 		}
 
 
-		if ($data['Supplier Part Status']!='Discontinued') {
+		if ($data['Supplier Part Part SKU']>0 and $data['Supplier Part Status']!='Discontinued') {
 			$sql=sprintf("select `Supplier Part Key` from `Supplier Part Dimension` where `Supplier Part Supplier Key`=%d and `Supplier Part Part SKU`=%d and `Supplier Part Status`!='Discontinued' ",
 				$data['Supplier Part Supplier Key'],
 				$data['Supplier Part Part SKU']
@@ -156,6 +156,7 @@ class SupplierPart extends DB_Table{
 			}
 
 		}
+
 
 		$sql=sprintf("select `Supplier Part Key` from `Supplier Part Dimension` where  `Supplier Part Supplier Key`=%d and `Supplier Part Reference`=%s  ",
 			$data['Supplier Part Supplier Key'],
@@ -197,6 +198,9 @@ class SupplierPart extends DB_Table{
 			if (array_key_exists($key, $base_data))
 				$base_data[$key]=_trim($value);
 		}
+
+
+
 
 
 		if ($base_data['Supplier Part From']=='') {
@@ -454,6 +458,23 @@ class SupplierPart extends DB_Table{
 		switch ($field) {
 
 
+		case 'Supplier Part Minimum Carton Order':
+
+			if ($value==''   ) {
+				$this->error=true;
+				$this->msg=_('Minimum missing');
+				return;
+			}
+
+			if (!is_numeric($value) or $value<0  ) {
+				$this->error=true;
+				$this->msg=sprintf(_('Invalid minimum order (%s)'), $value);
+				return;
+			}
+
+			$this->update_field($field, $value, $options);
+
+			break;
 		case 'Supplier Part Unit Label':
 
 
@@ -736,7 +757,7 @@ class SupplierPart extends DB_Table{
 				return;
 			}
 
-			$sql=sprintf('select count(*) as num from `Supplier Part Dimension` where `Supplier Part Reference`=%s and `Supplier Part Supplier Key`=%d and `Supplier Part key`!=%d ',
+			$sql=sprintf('select count(*) as num from `Supplier Part Dimension` where `Supplier Part Reference`=%s and `Supplier Part Supplier Key`=%d and `Supplier Part Key`!=%d ',
 				prepare_mysql($value),
 				$this->get('Supplier Part Supplier Key'),
 				$this->id

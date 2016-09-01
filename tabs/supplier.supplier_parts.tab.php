@@ -49,14 +49,18 @@ if ($state['_object']->get('Supplier Type')!='Archived') {
 	$table_buttons[]=array('icon'=>'plus', 'title'=>_("New supplier's part"), 'reference'=>"supplier/".$state['key']."/part/new");
 
 	$smarty->assign('table_buttons', $table_buttons);
+
 	$smarty->assign('upload_file', array(
-			'tipo'=>'upload_objects',
+			'tipo'=>'edit_objects',
+			'icon'=>'fa-cloud-upload',
 			'parent'=>$state['object'],
 			'parent_key'=>$state['key'],
 			'object'=>'supplier_part',
 			'label'=>_("Upload supplier's parts")
 
 		));
+		
+		
 }
 
 include 'utils/get_table_html.php';

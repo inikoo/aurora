@@ -52,7 +52,7 @@ function fork_export_edit_template($job) {
 
 
 	switch ($objects) {
-	case 'supplier_parts':
+	case 'supplier_part':
 		include_once 'class.SupplierPart.php';
 		$object_id_name='Id: Supplier Part Key';
 		$download_type='edit_supplier_parts';
@@ -134,7 +134,7 @@ function fork_export_edit_template($job) {
 		foreach ($result as $row) {
 			//print_r($row);
 			switch ($objects) {
-			case 'supplier_parts':
+			case 'supplier_part':
 				$object=new SupplierPart($row['id']);
 				$object->get_supplier_data();
 
