@@ -41,7 +41,7 @@ include 'conf/export_fields.php';
 
 if ($_data['tipo']=='timeserie_records') {
 
-	include_once 'class.Timeseries.php';
+	include_once 'class.Timeserie.php';
 	$timeseries=new Timeseries($_data['parameters']['parent_key']);
 
 	$field_set=$export_fields['timeserie_records_'.$timeseries->get('Type')];

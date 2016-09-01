@@ -222,7 +222,7 @@ function timeserie_records($_data, $db, $user, $account) {
 	}
 	include_once 'prepare_table/init.php';
 	include_once 'utils/natural_language.php';
-	include_once 'class.Timeseries.php';
+	include_once 'class.Timeserie.php';
 
 
 	$timeseries=new Timeseries($_data['parameters']['parent_key']);

@@ -12,7 +12,7 @@
 
 require_once 'common.php';
 
-require_once 'class.Timeseries.php';
+require_once 'class.Timeserie.php';
 require_once 'class.Store.php';
 require_once 'class.Invoice.php';
 require_once 'class.Category.php';

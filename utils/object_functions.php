@@ -139,7 +139,7 @@ function get_object($object_name, $key, $load_other_data=false) {
 		break;
 	case 'timeserie':
 	case 'timeseries':
-		require_once "class.Timeseries.php";
+		require_once "class.Timeserie.php";
 		$object=new Timeseries($key);
 		break;
 
