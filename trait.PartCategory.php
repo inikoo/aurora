@@ -15,7 +15,7 @@ trait PartCategory {
 
 	function create_part_timeseries($data) {
 
-		
+
 
 		$data['Timeseries Parent']='Category';
 		$data['Timeseries Parent Key']=$this->id;
@@ -51,7 +51,7 @@ trait PartCategory {
 
 				foreach ($dates as $date_frequency_period) {
 
-					list($sold_amount,$deliveries,$skos)=$this->get_part_timeseries_record_data($timeseries, $date_frequency_period);
+					list($sold_amount, $deliveries, $skos)=$this->get_part_timeseries_record_data($timeseries, $date_frequency_period);
 
 
 					$_date=gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00')) ;
@@ -62,7 +62,7 @@ trait PartCategory {
                     `Timeseries Record Integer A`=%d ,
                     `Timeseries Record Integer B`=%d ,
                     `Timeseries Record Float A`=%.2f ,
-                    
+
                     `Timeseries Record Type`=%s
                     where `Timeseries Record Key`=%d
                       ',
@@ -116,37 +116,45 @@ trait PartCategory {
 
 	}
 
+
 	function get_part_timeseries_record_data($timeseries, $date_frequency_period) {
+
+
 		$part_skus='';
-		$sql=sprintf('select group_concat(`Subject Key`) as part_skus ,`Subject` from `Category Bridge` where `Category Key`=%d and `Subject Key`>0 ', $this->id);
-
+		$sql=sprintf('select `Subject Key`,`Subject` from `Category Bridge` where `Category Key`=%d and `Subject Key`>0 ', $this->id);
+		$part_skus='';
+		$subject_type='';
 		if ($result=$this->db->query($sql)) {
-			if ($row = $result->fetch()) {
-				if ($row['Subject']=='Part') {
-					$part_skus=$row['part_skus'];
-				}elseif ($row['Subject']=='Category') {
-                
-					$sql=sprintf('select group_concat(`Subject Key`) as part_skus ,`Subject` from `Category Bridge` where `Category Key` in (%s) and `Subject Key`>0 ', $row['part_skus']);
-					if ($result2=$this->db->query($sql)) {
-						if ($row2 = $result2->fetch()) {
-							$part_skus=$row2['part_skus'];
-
-						}
-					}else {
-						print_r($error_info=$this->db->errorInfo());
-						print $sql;
-						exit;
-					}
-
-
-				}
+			foreach ($result as $row) {
+				$part_skus.=$row['Subject Key'].',';
+				$subject_type=$row['Subject'];
 			}
 		}else {
 			print_r($error_info=$this->db->errorInfo());
 			exit;
 		}
+		$part_skus=preg_replace('/\,$/', '', $part_skus);
 
-	
+		if ($subject_type=='Category') {
+			$category_ids=$part_skus;
+			$part_skus='';
+			$sql=sprintf('select `Subject Key` ,`Subject` from `Category Bridge` where `Category Key` in (%s) and `Subject Key`>0 ',
+				$category_ids);
+			if ($result=$this->db->query($sql)) {
+				foreach ($result as $row) {
+					$part_skus.=$row['Subject Key'].',';
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+			$part_skus=preg_replace('/\,$/', '', $part_skus);
+
+		}
+
+
+
+
 
 
 		if ($part_skus=='') {
@@ -255,7 +263,7 @@ trait PartCategory {
 			exit;
 		}
 
-    return $elements_numbers;
+		return $elements_numbers;
 
 	}
 
@@ -337,7 +345,7 @@ trait PartCategory {
 
 	function update_part_category_sales($interval) {
 
-		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($this->db,$interval);
+		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($this->db, $interval);
 
 
 
