@@ -165,7 +165,7 @@
 		<form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate  >
 
 	<input type="file" name="image_upload" id="file_upload" class="inputfile" multiple/>
-	 <label for="file_upload"><i  class="fa fa-upload fa-fw button"></i></label>
+	 <label for="file_upload"><i  class="fa {if isset($upload_file.icon)}{$upload_file.icon}{else}fa-upload{/if} fa-fw button"></i></label>
 	</form>
 	</div>
 	<span id="file_upload_msg" style="float:right;padding-right:10px"></span>
@@ -199,7 +199,7 @@
     ajaxData.append("tipo", '{$upload_file.tipo}')
     ajaxData.append("parent", '{$upload_file.parent}')
     ajaxData.append("parent_key", '{$upload_file.parent_key}')
-    ajaxData.append("object", '{$upload_file.object}')
+    ajaxData.append("objects", '{$upload_file.object}')
 
     $.ajax({
         url: "/ar_upload.php",

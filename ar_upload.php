@@ -23,7 +23,6 @@ if (!isset($_REQUEST['tipo'])) {
 	exit;
 }
 
-//print_r($_REQUEST);
 
 $tipo=$_REQUEST['tipo'];
 
@@ -38,7 +37,7 @@ case 'get_data':
 
 	get_data($account, $db, $user, $data, $smarty);
 	break;
-case 'upload_objects':
+case 'upload_objects_to_delete':
 
 	$data=prepare_values($_REQUEST, array(
 			'parent'=>array('type'=>'string'),
@@ -380,7 +379,7 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
 }
 
 
-function upload_objects($account, $db, $user, $editor, $data, $smarty) {
+function upload_objects_to_deete($account, $db, $user, $editor, $data, $smarty) {
 	require_once 'class.Upload.php';
 
 	require_once 'external_libs/PHPExcel/Classes/PHPExcel.php';
@@ -494,12 +493,15 @@ function upload_objects($account, $db, $user, $editor, $data, $smarty) {
 	if ($number_files_uploaded) {
 		$upload_data=array(
 			'editor'=>$editor,
-			'Upload Type'=>'NewObjects',
+			'Upload Type'=>'EditObjects',
 			'Upload Object'=>$data['object'],
 			'Upload Parent'=>$data['parent'],
 			'Upload Parent Key'=>$data['parent_key'],
 			'Upload User Key'=>$user->id,
-			'Upload Metadata'=>json_encode(array('uploaded_files'=>$number_files_uploaded, 'files_with_errors'=>count($files_with_errors) , 'files_data'=>$upload_files_data)  )
+			'Upload Metadata'=>json_encode(array(
+			'uploaded_files'=>$number_files_uploaded,
+			 'files_with_errors'=>count($files_with_errors) , 
+			 'files_data'=>$upload_files_data)  )
 
 		);
 
@@ -861,7 +863,10 @@ function edit_objects($account, $db, $user, $editor, $data, $smarty) {
 			'Upload Parent'=>$data['parent'],
 			'Upload Parent Key'=>$data['parent_key'],
 			'Upload User Key'=>$user->id,
-			'Upload Metadata'=>json_encode(array('uploaded_files'=>$number_files_uploaded, 'files_with_errors'=>count($files_with_errors) , 'files_data'=>$upload_files_data  )  )
+			'Upload Metadata'=>json_encode(array(
+			'uploaded_files'=>$number_files_uploaded, 
+			'files_with_errors'=>count($files_with_errors) ,
+			 'files_data'=>$upload_files_data  )  )
 
 		);
 

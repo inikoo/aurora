@@ -1045,24 +1045,252 @@ class Supplier extends SubjectSupplier {
 
 		$data['editor']=$this->editor;
 
+		unset($data['Supplier Part Supplier Code']);
+
+
+		if (isset($data['Supplier Part Package Description']) and !isset($data['Part Package Description'])) {
+			$data['Part Package Description']=$data['Supplier Part Package Description'];
+			unset($data['Supplier Part Package Description']);
+		}
+
+
+		if (isset($data['Supplier Part Unit Description']) and !isset($data['Part Unit Description'])) {
+			$data['Part Unit Description']=$data['Supplier Part Unit Description'];
+			unset($data['Supplier Part Unit Description']);
+		}
+
+		if (isset($data['Supplier Part Unit Label']) and !isset($data['Part Unit Label'])) {
+			$data['Part Unit Label']=$data['Supplier Part Unit Label'];
+			unset($data['Supplier Part Unit Label']);
+		}
+
+
+
+		if ( !isset($data['Supplier Part Reference']) or $data['Supplier Part Reference']=='') {
+			$this->error=true;
+			$this->msg=_("Supplier's part reference missing");
+			$this->error_code='supplier_part_reference_missing';
+			$this->metadata='';
+			return;
+		}
+
+		$sql=sprintf('select count(*) as num from `Supplier Part Dimension` where `Supplier Part Reference`=%s and `Supplier Part Supplier Key`=%d  ',
+			prepare_mysql($data['Supplier Part Reference']),
+			$this->id
+
+		);
+
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				if ($row['num']>0) {
+					$this->error=true;
+					$this->msg=sprintf(_('Duplicated reference (%s)'), $data['Supplier Part Reference']);
+					$this->error_code='duplicate_supplier_part_reference';
+					$this->metadata=$data['Supplier Part Reference'];
+					return;
+				}
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+		if ( !isset($data['Part Reference']) or $data['Part Reference']=='') {
+			$this->error=true;
+			$this->msg=_("Part reference missing");
+			$this->error_code='part_reference_missing';
+			$this->metadata='';
+			return;
+		}
+
+
+		$sql=sprintf('select count(*) as num from `Part Dimension` where `Part Reference`=%s ',
+			prepare_mysql($data['Part Reference'])
+		);
+
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				if ($row['num']>0) {
+					$this->error=true;
+					$this->msg=sprintf(_('Duplicated reference (%s)'), $data['Part Reference']);
+					$this->error_code='duplicate_part_reference';
+					$this->metadata=$data['Part Reference'];
+					return;
+				}
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+		if ( !isset($data['Part Unit Label']) or $data['Part Unit Label']=='') {
+
+
+			$this->error=true;
+			$this->msg=_('Unit label missing');
+			$this->error_code='part_unit_label_missing';
+			return;
+		}
+
+		if ( !isset($data['Part Unit Description']) or $data['Part Unit Description']=='') {
+
+
+			$this->error=true;
+			$this->msg=_('Unit description missing');
+			$this->error_code='part_unit_description_missing';
+			return;
+		}
+
+		if ( !isset($data['Part Package Description']) or $data['Part Package Description']=='') {
+
+
+			$this->error=true;
+			$this->msg=_('Outers (SKO) description missing');
+			$this->error_code='part_package_description_missing';
+			return;
+		}
+
+		if (  !isset($data['Supplier Part Packages Per Carton']) or $data['Supplier Part Packages Per Carton']==''   ) {
+			$this->error=true;
+			$this->msg=_('Outers (SKO) per carton missing');
+			$this->error_code='supplier_part_packages_per_carton_missing';
+			return;
+		}
+
+		if (!is_numeric($data['Supplier Part Packages Per Carton']) or $data['Supplier Part Packages Per Carton']<0  ) {
+			$this->error=true;
+			$this->msg=sprintf(_('Invalid outers (SKO) per carton (%s)'), $data['Supplier Part Packages Per Carton']);
+			$this->error_code='invalid_supplier_part_packages_per_carton';
+			$this->metadata=$data['Supplier Part Packages Per Carton'];
+			return;
+		}
+
+
+
+		if (  !isset($data['Part Units Per Package']) or $data['Part Units Per Package']==''   ) {
+			$this->error=true;
+			$this->msg=_('Units per SKO missing');
+			$this->error_code='part_unit_per_package_missing';
+
+			return;
+		}
+
+		if (!is_numeric($data['Part Units Per Package']) or $data['Part Units Per Package']<0  ) {
+			$this->error=true;
+			$this->msg=sprintf(_('Invalid units per SKO (%s)'), $data['Part Units Per Package']);
+			$this->error_code='invalid_part_unit_per_package';
+			$this->metadata=$data['Part Units Per Package'];
+			return;
+		}
+
+
+
+		if (  !isset($data['Supplier Part Minimum Carton Order']) or $data['Supplier Part Minimum Carton Order']==''   ) {
+			$this->error=true;
+			$this->msg=_('Minimum order missing');
+			$this->error_code='supplier_part_minimum_carton_order_missing';
+
+			return;
+		}
+
+		if (!is_numeric($data['Supplier Part Minimum Carton Order']) or $data['Supplier Part Minimum Carton Order']<0  ) {
+			$this->error=true;
+			$this->msg=sprintf(_('Invalid minimum order (%s)'), $data['Supplier Part Minimum Carton Order']);
+			$this->error_code='invalid_supplier_part_minimum_carton_order';
+			$this->metadata=$data['Supplier Part Minimum Carton Order'];
+			return;
+		}
+
+
+		if (  !isset($data['Supplier Part Unit Cost']) or $data['Supplier Part Unit Cost']==''   ) {
+			$this->error=true;
+			$this->msg=_('Cost missing');
+			$this->error_code='supplier_part_unit_cost_missing';
+
+			return;
+		}
+
+		if (!is_numeric($data['Supplier Part Unit Cost']) or $data['Supplier Part Unit Cost']<0  ) {
+			$this->error=true;
+			$this->msg=sprintf(_('Invalid cost (%s)'), $data['Supplier Part Unit Cost']);
+			$this->error_code='invalid_supplier_part_unit_cost';
+			$this->metadata=$data['Supplier Part Unit Cost'];
+			return;
+		}
+
+
+
+		if (  !isset($data['Supplier Part Unit Extra Cost']) or $data['Supplier Part Unit Extra Cost']==''   ) {
+			$data['Supplier Part Unit Extra Cost']=0;
+		}
+
+		if (!is_numeric($data['Supplier Part Unit Extra Cost']) or $data['Supplier Part Unit Extra Cost']<0  ) {
+			$this->error=true;
+			$this->msg=sprintf(_('Invalid extra cost (%s)'), $data['Supplier Part Unit Extra Cost']);
+			$this->error_code='invalid_supplier_part_unit_extra_cost';
+			$this->metadata=$data['Supplier Part Unit Extra Cost'];
+			return;
+		}
+
+		if (isset($data['Part Unit Price']) and $data['Part Unit Price']!='' ) {
+			if (!is_numeric($data['Part Unit Price']) or $data['Part Unit Price']<0  ) {
+				$this->error=true;
+				$this->msg=sprintf(_('Invalid unit recommended price (%s)'), $data['Part Unit Price']);
+				$this->error_code='invalid_part_unit_price';
+				$this->metadata=$data['Part Unit Price'];
+				return;
+			}
+		}
+		if (isset($data['Part Unit RRP']) and $data['Part Unit RRP']!='' ) {
+			if (!is_numeric($data['Part Unit RRP']) or $data['Part Unit RRP']<0  ) {
+				$this->error=true;
+				$this->msg=sprintf(_('Invalid unit recommended RRP (%s)'), $data['Part Unit RRP']);
+				$this->error_code='invalid_part_unit_rrp';
+				$this->metadata=$data['Part Unit RRP'];
+				return;
+			}
+		}
+		if (isset($data['Supplier Part Carton CBM']) and $data['Supplier Part Carton CBM']!='' ) {
+			if (!is_numeric($data['Supplier Part Carton CBM']) or $data['Supplier Part Carton CBM']<0  ) {
+				$this->error=true;
+				$this->msg=sprintf(_('Invalid carton CBM (%s)'), $data['Supplier Part Carton CBM']);
+				$this->error_code='invalid_supplier_part_carton_cbm';
+				$this->metadata=$data['Supplier Part Carton CBM'];
+				return;
+			}
+		}
+
+		if (  !isset($data['Supplier Part Average Delivery Days']) or $data['Supplier Part Average Delivery Days']==''   ) {
+			$data['Supplier Part Average Delivery Days']=$this->get('Supplier Average Delivery Days');
+		}else {
+			if (!is_numeric($data['Supplier Part Average Delivery Days']) or $data['Supplier Part Average Delivery Days']<0  ) {
+				$this->error=true;
+				$this->msg=sprintf(_('Invalid delivery time (%s)'), $data['Supplier Part Average Delivery Days']);
+				$this->error_code='invalid_supplier_delivery_days';
+				$this->metadata=$data['Supplier Part Average Delivery Days'];
+				return;
+			}
+
+		}
+
 
 		$data['Supplier Part Supplier Key']=$this->id;
-		if ($data['Supplier Part Minimum Carton Order']=='') {
-			$data['Supplier Part Minimum Carton Order']=1;
-		}else {
-			$data['Supplier Part Minimum Carton Order']=ceil($data['Supplier Part Minimum Carton Order']);
-		}
+
+		$data['Supplier Part Minimum Carton Order']=ceil($data['Supplier Part Minimum Carton Order']);
+
 
 
 		$data['Supplier Part Currency Code']=$this->data['Supplier Default Currency Code'];
 
-		if ($data['Supplier Part Unit Extra Cost']=='' or !is_numeric()) {
-			$data['Supplier Part Unit Extra Cost']=0;
-		}
 
-		$data['Part Package Description']=$data['Supplier Part Package Description'];
-		$data['Part Unit Description']=$data['Supplier Part Unit Description'];
 
+
+
+
+		$data['Supplier Part Status']='Available';
 
 		$supplier_part= new SupplierPart('find', $data, 'create');
 

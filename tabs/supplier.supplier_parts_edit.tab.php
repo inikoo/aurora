@@ -12,7 +12,7 @@
 include_once 'conf/export_edit_template_fields.php';
 
 
-$objects='supplier_parts';
+$objects='supplier_part';
 
 $smarty->assign('title', _("Supplier's parts edit"));
 
