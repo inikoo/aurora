@@ -76,7 +76,8 @@ class Product extends Asset{
 
 	}
 
- function get_parts($scope='keys') {
+
+	function get_parts($scope='keys') {
 
 
 		if ($scope=='objects') {
@@ -164,7 +165,14 @@ class Product extends Asset{
 		switch ($key) {
 
 		case 'Price':
-			return money($this->data['Product Price'], $this->data['Store Currency Code']);
+
+			$price= money($this->data['Product Price'], $this->data['Store Currency Code']);
+
+			if ($this->data['Product Units Per Case']!=1) {
+				$price.=' ('.sprintf(_('%s per %s'), money($this->data['Product Price']/$this->data['Product Units Per Case'], $this->data['Store Currency Code']), $this->data['Product Unit Label']).')';
+			}
+
+			return $price;
 			break;
 		case 'Unit Price':
 			return money($this->data['Product Price']/$this->data['Product Units Per Case'], $this->data['Store Currency Code']);
@@ -176,7 +184,31 @@ class Product extends Asset{
 			return money($this->data['Product RRP'], $this->data['Store Currency Code']);
 			break;
 		case 'Unit RRP':
+
+			if ($this->data['Product RRP']=='')return '';
+
+			include_once 'utils/natural_language.php';
+			$rrp= money($this->data['Product RRP']/$this->data['Product Units Per Case'], $this->data['Store Currency Code']);
+
+
+			$unit_margin=$this->data['Product RRP']-$this->data['Product Price'];
+			$rrp_other_info=sprintf(_('margin %s'), percentage($unit_margin, $this->data['Product RRP']));
+
+
+
+			$rrp_other_info=preg_replace('/^, /', '', $rrp_other_info);
+			if ($rrp_other_info!='') {
+				$rrp.=' <span class="'.($unit_margin<0?'error':'').'  discreet">'.$rrp_other_info.'</span>';
+			}
+			return $rrp;
+			break;
+
+
+
 			return money($this->data['Product RRP']/$this->data['Product Units Per Case'], $this->data['Store Currency Code']);
+			break;
+		case 'Product Unit RRP':
+			return $this->data['Product RRP']/$this->data['Product Units Per Case'];
 			break;
 
 		case 'Unit Type':
@@ -300,7 +332,22 @@ class Product extends Asset{
 		case 'Product Unit Dimensions':
 			$label=_('unit dimensions');
 			break;
+		case 'Product Units Per Case':
+			$label=_('units per outer');
+			break;
+		case 'Product Unit Label':
+			$label=_('unit label');
+			break;
+		case 'Product Unit Label':
+			$label=_('unit label');
+			break;
+		case 'Product Name':
+			$label=_('unit name');
+			break;
 
+		case 'Product Unit RRP':
+			$label=_('unit RRP');
+			break;
 		default:
 			$label=$field;
 
@@ -455,6 +502,12 @@ class Product extends Asset{
 
 		switch ($field) {
 
+		case 'Product Unit RRP':
+
+
+			$this->update_field('Product RRP', $value*$this->data['Product Units Per Case'], $options);
+
+			break;
 		case 'Product Parts':
 
 			$this->update_part_list($value, $options);
@@ -927,7 +980,7 @@ class Product extends Asset{
 
 			$sql=sprintf("insert into `Order Spanshot Fact`(`Date`, `Product ID`, `Availability`, `Outers Out`, `Sales`, `Sales DC`, `Customers`, `Invoices`) values (%s,%d   ,%f,%f, %.2f,%.2f,  %d,%d) ON DUPLICATE KEY UPDATE `Outers Out`=%f,`Sales`=%.2f,`Sales DC`=%.2f,`Customers`=%d,`Invoices`=%d ",
 				prepare_mysql($date),
-				
+
 				$this->id,
 				1,
 				$outers,
@@ -948,6 +1001,141 @@ class Product extends Asset{
 
 			//$this->update_sales_averages();
 		}
+
+	}
+
+
+	function update_historic_object() {
+
+		if (!$this->id)return;
+
+		$old_value=$this->get('Product Current Key');
+		$changed=false;
+
+		$sql=sprintf('select `Product Key` from `Product History Dimension` where
+		Product History Code`=%s and `Product History Units Per Case`=%d and `Product History Price`=%.2f and
+		`Product History Name`=%s and `	Product ID`=%d',
+
+			prepare_mysql($this->data['Product Code']),
+			$this->data['Product Units Per Case'],
+			$this->data['Product Price'],
+			$this->data['Product Name'],
+			$this->id
+		);
+
+		//print "$sql\n";
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+
+
+				$this->update(array('Product Current Key'=>$row['Product Key']), 'no_history');
+				$changed=true;
+
+			}else {
+				$sql=sprintf('insert into `Product History Dimension` (`Product ID`,`Product History Code`,`Product History Units Per Case`,
+						`Product History Price`, `Product History Name`,`Product History Valid From`
+
+				) values (%d,%s,%f,%d,%d,%f,%s) ',
+					$this->id,
+					prepare_mysql($this->data['Product Code']),
+					$this->data['Product Units Per Case'],
+					$this->data['Product Price'],
+					prepare_mysql($this->data['Product Name']),
+					prepare_mysql(gmdate('Y-m-d H:i:s'))
+				);
+				//print "$sql\n";
+				if ($this->db->exec($sql)) {
+					$this->update(array('Product Current Key'=>$this->db->lastInsertId()), 'no_history');
+					$changed=true;
+				}
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			print $sql;
+			exit;
+		}
+
+
+
+
+		$change_orders_in_basket=true;
+		$change_orders_in_process=false;
+
+		$states_to_change='';
+		if ($change_orders_in_basket) {
+			$states_to_change="'In Process by Customer','In Process','Out of Stock in Basket',";
+		}
+		if ($change_orders_in_process) {
+			$states_to_change.="'Submitted by Customer','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Packing','Packed','Packed Done','No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other'";
+		}
+
+		if ($changed and  $states_to_change!='') {
+
+
+
+
+			include_once 'class.Order.php';
+			//'In Process by Customer','Submitted by Customer','In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Dispatched','Unknown','Packing','Packed','Packed Done','Cancelled','No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Suspended','Cancelled by Customer','Out of Stock in Basket'
+
+			$orders=array();
+			$sql=sprintf("select `Order Key`,`Delivery Note Key`,`Order Quantity`,`Order Transaction Fact Key` from `Order Transaction Fact` OTF  where `Product Key`=%d  and `Current Dispatching State` in (%s) and `Invoice Key` is NULL  ",
+				$this->id,
+				$states_to_change
+
+			);
+			//print $sql;
+			if ($result=$this->db->query($sql)) {
+				foreach ($result as $row) {
+
+
+                    
+                    
+					$sql=sprintf('update `Order Transaction Fact` set
+						  `Product Key`=%d,
+						 `Product Code`=%s,
+						 `Order Transaction Gross Amount`=%.sf,
+						 `Order Transaction Total Discount Amount`=0
+						 `Order Transaction Amount`=%.2f
+						  where `Purchase Order Transaction Fact Key`=%d',
+						$this->get('Product Current Key'),
+						$this->get('Product Code'),
+						$this->get('Product Price')*$row['Order Quantity'],
+						$this->get('Product Price')*$row['Order Quantity'],
+
+						$row['Order Transaction Fact Key']
+					);
+
+					$this->db->exec($sql);
+
+					$order=new Order($row['Order Key']);
+					$order->update_number_products();
+					$order->update_insurance();
+
+					$order->update_discounts_items();
+					$order->update_totals();
+					$order->update_shipping($row['Delivery Note Key'], false);
+					$order->update_charges($row['Delivery Note Key'], false);
+					$order->update_discounts_no_items($row['Delivery Note Key']);
+					$order->update_deal_bridge();
+					$order->update_totals();
+					$order->update_number_products();
+					$order->apply_payment_from_customer_account();
+
+				}
+
+
+
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+		}
+
+
+
+
+
 
 	}
 

@@ -2653,6 +2653,9 @@ where `Part SKU`=%d ",
 		case 'Part Unit Description':
 			$label=_('unit description');
 			break;
+		case 'Part Unit Label':
+			$label=_('unit label');
+			break;	
 		case 'Part Package Description':
 			$label=_('SKO description');
 			break;
