@@ -14,7 +14,7 @@ trait ProductCategory {
 
 	function create_product_timeseries($data) {
 
-		
+
 
 		$data['Timeseries Parent']='Category';
 		$data['Timeseries Parent Key']=$this->id;
@@ -116,37 +116,40 @@ trait ProductCategory {
 
 	}
 
+
 	function get_product_timeseries_record_data($timeseries, $date_frequency_period) {
+		
 		$product_ids='';
-		$sql=sprintf('select group_concat(`Subject Key`) as product_ids ,`Subject` from `Category Bridge` where `Category Key`=%d and `Subject Key`>0 ', $this->id);
-
+		$sql=sprintf('select `Subject Key`,`Subject` from `Category Bridge` where `Category Key`=%d and `Subject Key`>0 ', $this->id);
+		$product_ids='';
+		$subject_type='';
 		if ($result=$this->db->query($sql)) {
-			if ($row = $result->fetch()) {
-				if ($row['Subject']=='Product') {
-					$product_ids=$row['product_ids'];
-				}elseif ($row['Subject']=='Category') {
-                
-					$sql=sprintf('select group_concat(`Subject Key`) as product_ids ,`Subject` from `Category Bridge` where `Category Key` in (%s) and `Subject Key`>0 ', $row['product_ids']);
-					if ($result2=$this->db->query($sql)) {
-						if ($row2 = $result2->fetch()) {
-							$product_ids=$row2['product_ids'];
-
-						}
-					}else {
-						print_r($error_info=$this->db->errorInfo());
-						print $sql;
-						exit;
-					}
-
-
-				}
+			foreach ($result as $row) {
+				$product_ids.=$row['Subject Key'].',';
+				$subject_type=$row['Subject'];
 			}
 		}else {
 			print_r($error_info=$this->db->errorInfo());
 			exit;
 		}
+		$product_ids=preg_replace('/\,$/', '', $product_ids);
 
-	
+		if ($subject_type=='Category') {
+			$category_ids=$product_ids;
+			$product_ids='';
+			$sql=sprintf('select `Subject Key` ,`Subject` from `Category Bridge` where `Category Key` in (%s) and `Subject Key`>0 ',
+				$category_ids);
+			if ($result=$this->db->query($sql)) {
+				foreach ($result as $row) {
+					$product_ids.=$row['Subject Key'].',';
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+			$product_ids=preg_replace('/\,$/', '', $product_ids);
+
+		}
 
 
 		if ($product_ids=='') {
@@ -196,6 +199,7 @@ trait ProductCategory {
 
 
 	}
+
 
 	function update_product_category_up_today_sales() {
 
@@ -337,7 +341,7 @@ trait ProductCategory {
 
 	function update_product_category_sales($interval) {
 
-		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($this->db,$interval);
+		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($this->db, $interval);
 
 
 

@@ -2237,7 +2237,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 
 
 	function get_field_label($field) {
-		global $account;
+	
 
 		switch ($field) {
 
