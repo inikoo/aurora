@@ -33,6 +33,7 @@ require_once 'class.Customer.php';
 require_once 'class.Store.php';
 require_once 'class.Address.php';
 require_once 'class.Product.php';
+require_once 'class.Part.php';
 
 $editor=array(
 	'Author Name'=>'',
@@ -46,23 +47,50 @@ $editor=array(
 migrate_products($db, $editor);
 create_categories($db,$editor);
 fix_product_categories($db);
-*/
 migrate_historic_products($db);
+
+*/
+
+update_fields_from_parts($db);
+
+function update_fields_from_parts($db) {
+
+	$sql=sprintf('select `Part SKU` from `Part Dimension` order by `Part SKU` desc ');
+
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+			$part=new Part($row['Part SKU']);
+            print $part->id."\r";
+			$part->updated_linked_products();
+
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+}
+
 
 
 function migrate_historic_products($db) {
 	$sql=sprintf('select `Product Key`,H.`Product ID`,`Product Code`,`Product Units Per Case` from `Product History Dimension` H left join   `Product Dimension` P on  (H.`Product ID`=P.`Product ID`)  ');
 	if ($result=$db->query($sql)) {
 		foreach ($result as $row) {
-//print_r($row);
+			//print_r($row);
 
 			$product=new Product($row['Product ID']);
-			
-			
-			
-			if(!$product->id){
-			    
-			   continue;
+
+
+
+			if (!$product->id) {
+
+				continue;
 			}
 			/*
 			//print $row['Product Key'].' '.$product->get('Code')."\n";
@@ -75,7 +103,7 @@ function migrate_historic_products($db) {
 				$row['Product Key']
 			);
 			$db->exec($sql);
-			
+
 			*/
 
 			$sql=sprintf('update `Product History Dimension` set `Product History Code`=%s ,`Product History Units Per Case`=%d where `Product Key`=%s  ',
