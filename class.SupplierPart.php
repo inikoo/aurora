@@ -598,7 +598,7 @@ class SupplierPart extends DB_Table{
 			}
 
 
-			$sql=sprintf('select count(*) as num from `Supplier Part Dimension` where `Supplier Part Reference`=%s and `Supplier Part Supplier Key`=%d and `Supplier Part key`!=%d ',
+			$sql=sprintf('select count(*) as num from `Supplier Part Dimension` where `Supplier Part Reference`=%s and `Supplier Part Supplier Key`=%d and `Supplier Part Key`!=%d ',
 				prepare_mysql($this->get('Supplier Part Reference')),
 				$supplier->id,
 				$this->id

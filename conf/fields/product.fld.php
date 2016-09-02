@@ -108,7 +108,7 @@ $product_fields=array(
 				'value'=>htmlspecialchars($object->get('Product Label in Family')),
 				'formatted_value'=>$object->get('Label in Family'),
 				'label'=>ucfirst($object->get_field_label('Product Label in Family')),
-				'required'=>true,
+				'required'=>false,
 
 
 			),
@@ -122,10 +122,12 @@ $product_fields=array(
 			array(
 				'id'=>'Product_Unit_Label',
 				'edit'=>($edit?'string':''),
-				
+
 				'value'=>$object->get('Product Unit Label') ,
 				'formatted_value'=>$object->get('Unit Label'),
 				'label'=>ucfirst($object->get_field_label('Product Unit Label')),
+				'required'=>true,
+
 			),
 
 			array(
@@ -139,8 +141,8 @@ $product_fields=array(
 
 
 			),
-			
-				array(
+
+			array(
 				'id'=>'Product_Unit_RRP',
 				'edit'=>($edit?'amount':''),
 
@@ -148,9 +150,9 @@ $product_fields=array(
 				'formatted_value'=>$object->get('Unit RRP') ,
 				'label'=>ucfirst($object->get_field_label('Product Unit RRP')),
 				'invalid_msg'=>get_invalid_message('amount'),
-				'required'=>true,
+				'required'=>false,
 			),
-			
+
 			array(
 				'id'=>'Product_Unit_Weight',
 				'edit'=>  ($edit?

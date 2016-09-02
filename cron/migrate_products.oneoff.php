@@ -47,7 +47,52 @@ migrate_products($db, $editor);
 create_categories($db,$editor);
 fix_product_categories($db);
 */
-migrate_historic_products($db, $editor);
+migrate_historic_products($db);
+
+
+function migrate_historic_products($db) {
+	$sql=sprintf('select `Product Key`,H.`Product ID`,`Product Code`,`Product Units Per Case` from `Product History Dimension` H left join   `Product Dimension` P on  (H.`Product ID`=P.`Product ID`)  ');
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+//print_r($row);
+
+			$product=new Product($row['Product ID']);
+			
+			
+			
+			if(!$product->id){
+			    
+			   continue;
+			}
+			/*
+			//print $row['Product Key'].' '.$product->get('Code')."\n";
+			$desc=$product->get('Product Units Per Case').'x '.$product->get('Product Name').' ('.$product->get('Price').')';
+
+			$sql=sprintf('update `Product History Dimension` set `Product History Short Description`=%s ,`Product History XHTML Short Description`=%s,`Product History Special Characteristic`=%s  where `Product Key`=%s  ',
+				prepare_mysql($desc),
+				prepare_mysql($desc),
+				prepare_mysql($product->get('Product Special Characteristic'),false),
+				$row['Product Key']
+			);
+			$db->exec($sql);
+			
+			*/
+
+			$sql=sprintf('update `Product History Dimension` set `Product History Code`=%s ,`Product History Units Per Case`=%d where `Product Key`=%s  ',
+				prepare_mysql($row['Product Code']),
+				$row['Product Units Per Case'],
+				$row['Product Key']
+			);
+			$db->exec($sql);
+
+			$product->update_historic_object();
+
+		}
+
+	}else {print_r($error_info=$db->errorInfo());exit;}
+
+
+}
 
 
 function fix_product_categories($db) {
@@ -76,7 +121,7 @@ function fix_product_categories($db) {
 
 function create_categories($db, $editor) {
 
-print "Deleting categories if exists\n";
+	print "Deleting categories if exists\n";
 
 
 	$sql=sprintf('select `Store Key` from `Store Dimension` ');
@@ -102,7 +147,7 @@ print "Deleting categories if exists\n";
 	}
 
 
-print "Looping old dpt and fam\n";
+	print "Looping old dpt and fam\n";
 
 
 	$sql=sprintf('select `Store Key` from `Store Dimension` ');
