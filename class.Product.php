@@ -15,6 +15,7 @@ include_once 'class.Asset.php';
 class Product extends Asset{
 
 	function __construct($arg1=false, $arg2=false, $arg3=false) {
+
 		global $db;
 		$this->db=$db;
 
@@ -45,19 +46,44 @@ class Product extends Asset{
 
 	function get_data($key, $id, $aux_id=false) {
 
-		if ($key=='id')
+		if ($key=='id') {
 			$sql=sprintf("select * from `Product Dimension` where `Product ID`=%d", $id);
-		elseif ($key=='store_code')
+			if ($this->data = $this->db->query($sql)->fetch()) {
+				$this->id=$this->data['Product ID'];
+				$this->historic_id=$this->data['Product Current Key'];
+			}
+		}elseif ($key=='store_code') {
 			$sql=sprintf("select * from `Product Dimension` where `Product Store Key`=%s  and `Product Code`=%s", $id, prepare_mysql($aux_id));
+			if ($this->data = $this->db->query($sql)->fetch()) {
+				$this->id=$this->data['Product ID'];
+				$this->historic_id=$this->data['Product Current Key'];
+			}
+		}elseif ($key=='historic_key') {
+			$sql=sprintf("select * from `Product History Dimension` where `Product Key`=%s", $id);
+			if ($this->data = $this->db->query($sql)->fetch()) {
+				$this->historic_id=$this->data['Product Key'];
+				$this->id=$this->data['Product ID'];
 
+
+				$sql=sprintf("select * from `Product Dimension` where `Product ID`=%d", $this->data['Product ID']);
+				if ($row = $this->db->query($sql)->fetch()) {
+
+					foreach ($row as $key=>$value) {
+						$this->data[$key]=$value;
+					}
+				}
+
+
+
+			}
+		}
 		else {
-			exit ("wrong id in class.product get_data");
+			sdasdas();
+			exit ("wrong id in class.product get_data :$key  \n");
 			return;
 		}
 
-		if ($this->data = $this->db->query($sql)->fetch()) {
-			$this->id=$this->data['Product ID'];
-		}
+
 		$this->get_store_data();
 	}
 
@@ -154,7 +180,7 @@ class Product extends Asset{
 	function get($key, $arg1='') {
 
 
-
+		include_once 'utils/natural_language.php';
 
 		list($got, $result)=$this->get_asset_common($key, $arg1);
 		if ($got)return $result;
@@ -169,8 +195,23 @@ class Product extends Asset{
 			$price= money($this->data['Product Price'], $this->data['Store Currency Code']);
 
 			if ($this->data['Product Units Per Case']!=1) {
-				$price.=' ('.sprintf(_('%s per %s'), money($this->data['Product Price']/$this->data['Product Units Per Case'], $this->data['Store Currency Code']), $this->data['Product Unit Label']).')';
+
+				$price.=' ('.money($this->data['Product Price']/$this->data['Product Units Per Case'], $this->data['Store Currency Code']).'/'.$this->data['Product Unit Label'].')';
+
+
+				//$price.=' ('.sprintf(_('%s per %s'), money($this->data['Product Price']/$this->data['Product Units Per Case'], $this->data['Store Currency Code']), $this->data['Product Unit Label']).')';
 			}
+
+			$unit_margin=$this->data['Product Price']-$this->data['Product Cost'];
+			$price_other_info=sprintf(_('margin %s'), percentage($unit_margin, $this->data['Product RRP']));
+
+
+
+			$price_other_info=preg_replace('/^, /', '', $price_other_info);
+			if ($price_other_info!='') {
+				$price.=' <span class="'.($unit_margin<0?'error':'').'  discreet padding_left_10">'.$price_other_info.'</span>';
+			}
+
 
 			return $price;
 			break;
@@ -181,14 +222,18 @@ class Product extends Asset{
 			return _('per outer');
 			break;
 		case 'RRP':
+			if ($this->data['Product RRP']=='')return '';
 			return money($this->data['Product RRP'], $this->data['Store Currency Code']);
 			break;
 		case 'Unit RRP':
 
 			if ($this->data['Product RRP']=='')return '';
 
-			include_once 'utils/natural_language.php';
 			$rrp= money($this->data['Product RRP']/$this->data['Product Units Per Case'], $this->data['Store Currency Code']);
+			if ($this->get('Product Units Per Case')!=1) {
+				$rrp.='/'.$this->get('Product Unit Label');
+			}
+
 
 
 			$unit_margin=$this->data['Product RRP']-$this->data['Product Price'];
@@ -198,7 +243,7 @@ class Product extends Asset{
 
 			$rrp_other_info=preg_replace('/^, /', '', $rrp_other_info);
 			if ($rrp_other_info!='') {
-				$rrp.=' <span class="'.($unit_margin<0?'error':'').'  discreet">'.$rrp_other_info.'</span>';
+				$rrp.=' <span class="'.($unit_margin<0?'error':'').'  discreet padding_left_10">'.$rrp_other_info.'</span>';
 			}
 			return $rrp;
 			break;
@@ -338,8 +383,8 @@ class Product extends Asset{
 		case 'Product Unit Label':
 			$label=_('unit label');
 			break;
-		case 'Product Unit Label':
-			$label=_('unit label');
+		case 'Product Parts':
+			$label=_('parts');
 			break;
 		case 'Product Name':
 			$label=_('unit name');
@@ -501,13 +546,216 @@ class Product extends Asset{
 
 
 		switch ($field) {
+		case 'Product Code':
+			$value=_trim($value);
+
+			if ($value==''   ) {
+				$this->error=true;
+				$this->msg=_('Code missing');
+				return;
+			}
+
+			if (preg_match('/\s/', $value)  ) {
+				$this->error=true;
+				$this->msg=_("Code can't have spaces");
+				return;
+			}
+
+			if (preg_match('/\,/', $value)  ) {
+				$this->error=true;
+				$this->msg=_("Code can't have commas");
+				return;
+			}
+
+			$sql=sprintf('select count(*) as num from `Product Dimension` where `Product Code`=%s and `Product Store Key`=%d and  `Product Status`!="Discontinued"  and `Product ID`!=%d ',
+				prepare_mysql($value),
+				$this->get('Product Store Key'),
+				$this->id
+			);
+
+
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					if ($row['num']>0) {
+						$this->error=true;
+						$this->msg=sprintf(_("Another product has this code (%s)"), $value);
+						return;
+					}
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+
+
+
+			$this->update_field($field, $value, $options);
+			$updated=$this->updated;
+			$this->update_historic_object();
+			$this->updated=$updated;
+
+			break;
+
+		case 'Product Name':
+			if ($value==''   ) {
+				$this->error=true;
+				$this->msg=_('Unit name missing');
+				return;
+			}
+
+			$this->update_field($field, $value, $options);
+			$updated=$this->updated;
+			$this->update_historic_object();
+			$this->updated=$updated;
+
+			break;
+		case 'Product Unit Label':
+			if ($value==''   ) {
+				$this->error=true;
+				$this->msg=_('Unit label missing');
+				return;
+			}
+
+			$this->update_field($field, $value, $options);
+
+			$this->other_fields_updated=array(
+				'Product_Price'=>array(
+					'field'=>'Product_Price',
+					'render'=>true,
+					'value'=>$this->get('Product Price'),
+					'formatted_value'=>$this->get('Price'),
+				),
+				'Product_Unit_RRP'=>array(
+					'field'=>'Product_Unit_RRP',
+					'render'=>true,
+					'value'=>$this->get('Product Unit RRP'),
+					'formatted_value'=>$this->get('Unit RRP'),
+				),
+
+			);
+
+			break;
+		case 'Product Label in Family':
+
+			$this->update_field('Product Special Characteristic', $value, $options);// Migration
+
+			$this->update_field($field, $value, $options);
+
+			break;
+
+
+		case 'Product Price':
+
+
+			if ($value==''   ) {
+				$this->error=true;
+				$this->msg=_('Price missing');
+				return;
+			}
+
+			if (  $value!=''and (    !is_numeric($value) or $value<0  )) {
+				$this->error=true;
+				$this->msg=sprintf(_('Invalid price (%s)'), $value);
+				return;
+			}
+
+
+
+			$this->update_field($field, $value, $options);
+
+			$this->other_fields_updated=array(
+
+				'Product_Unit_RRP'=>array(
+					'field'=>'Product_Unit_RRP',
+					'render'=>true,
+					'value'=>$this->get('Product Unit RRP'),
+					'formatted_value'=>$this->get('Unit RRP'),
+				),
+
+			);
+
+			$updated=$this->updated;
+			$this->update_historic_object();
+			$this->updated=$updated;
+
+			break;
+
 
 		case 'Product Unit RRP':
 
 
-			$this->update_field('Product RRP', $value*$this->data['Product Units Per Case'], $options);
+			if (  $value!=''and (    !is_numeric($value) or $value<0  )) {
+				$this->error=true;
+				$this->msg=sprintf(_('Invalid unit RRP (%s)'), $value);
+				return;
+			}
+
+			if ($value=='') {
+				$this->update_field('Product RRP', '', $options);
+
+			}else {
+				$this->update_field('Product RRP', $value*$this->data['Product Units Per Case'], $options);
+
+			}
+
+
+
+
+
 
 			break;
+
+		case 'Product Units Per Case':
+			if ($value==''   ) {
+				$this->error=true;
+				$this->msg=_('Units per outer missing');
+				return;
+			}
+
+			if (!is_numeric($value) or $value<0  ) {
+				$this->error=true;
+				$this->msg=sprintf(_('Invalid units per outer (%s)'), $value);
+				return;
+			}
+
+			$old_value=$this->get('Product Units Per Case');
+
+			$this->update_field('Product Units Per Case', $value, $options);
+			$updated=$this->updated;
+			if (is_numeric($old_value) and $old_value>0) {
+				$rrp_per_unit=$this->get('Product RRP')/$old_value;
+				$this->update_field('Product RRP', $rrp_per_unit*$this->get('Product Units Per Case'), $options);
+
+			}
+
+
+
+
+			$this->other_fields_updated=array(
+				'Product_Price'=>array(
+					'field'=>'Product_Price',
+					'render'=>true,
+					'value'=>$this->get('Product Price'),
+					'formatted_value'=>$this->get('Price'),
+				),
+				'Product_Unit_RRP'=>array(
+					'field'=>'Product_Unit_RRP',
+					'render'=>true,
+					'value'=>$this->get('Product Unit RRP'),
+					'formatted_value'=>$this->get('Unit RRP'),
+				),
+
+			);
+
+
+			$this->update_historic_object();
+			$this->updated=$updated;
+
+			break;
+
+
+
 		case 'Product Parts':
 
 			$this->update_part_list($value, $options);
@@ -1012,14 +1260,18 @@ class Product extends Asset{
 		$old_value=$this->get('Product Current Key');
 		$changed=false;
 
+
+
+		$desc=$this->get('Product Units Per Case').'x '.$this->get('Product Name').' ('.$this->get('Price').')';
+
 		$sql=sprintf('select `Product Key` from `Product History Dimension` where
-		Product History Code`=%s and `Product History Units Per Case`=%d and `Product History Price`=%.2f and
-		`Product History Name`=%s and `	Product ID`=%d',
+		`Product History Code`=%s and `Product History Units Per Case`=%d and `Product History Price`=%.2f and
+		`Product History Name`=%s and `Product ID`=%d',
 
 			prepare_mysql($this->data['Product Code']),
 			$this->data['Product Units Per Case'],
 			$this->data['Product Price'],
-			$this->data['Product Name'],
+			prepare_mysql($this->data['Product Name']),
 			$this->id
 		);
 
@@ -1033,18 +1285,26 @@ class Product extends Asset{
 				$changed=true;
 
 			}else {
-				$sql=sprintf('insert into `Product History Dimension` (`Product ID`,`Product History Code`,`Product History Units Per Case`,
-						`Product History Price`, `Product History Name`,`Product History Valid From`
 
-				) values (%d,%s,%f,%d,%d,%f,%s) ',
+
+
+
+				$sql=sprintf('insert into `Product History Dimension` (`Product ID`,`Product History Code`,`Product History Units Per Case`,
+						`Product History Price`, `Product History Name`,`Product History Valid From`,`Product History Short Description`,`Product History XHTML Short Description`,`Product History Special Characteristic`
+
+				) values (%d,%s,%d,%.2f,%s,%s,%s,%s,%s) ',
 					$this->id,
 					prepare_mysql($this->data['Product Code']),
 					$this->data['Product Units Per Case'],
 					$this->data['Product Price'],
 					prepare_mysql($this->data['Product Name']),
-					prepare_mysql(gmdate('Y-m-d H:i:s'))
+					prepare_mysql(gmdate('Y-m-d H:i:s')),
+					prepare_mysql($desc),
+					prepare_mysql($desc),
+					prepare_mysql($this->get('Product Special Characteristic'))
 				);
 				//print "$sql\n";
+				// exit;
 				if ($this->db->exec($sql)) {
 					$this->update(array('Product Current Key'=>$this->db->lastInsertId()), 'no_history');
 					$changed=true;
@@ -1070,45 +1330,44 @@ class Product extends Asset{
 			$states_to_change.="'Submitted by Customer','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Packing','Packed','Packed Done','No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other'";
 		}
 
-		if ($changed and  $states_to_change!='') {
+		$states_to_change=preg_replace('/\,$/', '', $states_to_change);
+		if ($changed and  $old_value>0 and $states_to_change!='' ) {
 
 
 
 
 			include_once 'class.Order.php';
-			//'In Process by Customer','Submitted by Customer','In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Dispatched','Unknown','Packing','Packed','Packed Done','Cancelled','No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Suspended','Cancelled by Customer','Out of Stock in Basket'
 
 			$orders=array();
-			$sql=sprintf("select `Order Key`,`Delivery Note Key`,`Order Quantity`,`Order Transaction Fact Key` from `Order Transaction Fact` OTF  where `Product Key`=%d  and `Current Dispatching State` in (%s) and `Invoice Key` is NULL  ",
+			$sql=sprintf("select `Order Key`,`Delivery Note Key`,`Order Quantity`,`Order Transaction Fact Key` from `Order Transaction Fact` OTF  where `Product ID`=%d   and `Product Key`!=%d and  `Current Dispatching State` in (%s) and `Invoice Key` is NULL ",
 				$this->id,
+				$this->get('Product Current Key'),
 				$states_to_change
 
 			);
-			//print $sql;
+
 			if ($result=$this->db->query($sql)) {
 				foreach ($result as $row) {
 
 
-                    
-                    
-					$sql=sprintf('update `Order Transaction Fact` set
-						  `Product Key`=%d,
-						 `Product Code`=%s,
-						 `Order Transaction Gross Amount`=%.sf,
-						 `Order Transaction Total Discount Amount`=0
-						 `Order Transaction Amount`=%.2f
-						  where `Purchase Order Transaction Fact Key`=%d',
+
+
+					$sql=sprintf('update `Order Transaction Fact` set  `Product Key`=%d, `Product Code`=%s, `Order Transaction Gross Amount`=%.2f, `Order Transaction Total Discount Amount`=0	, `Order Transaction Amount`=%.2f  where `Order Transaction Fact Key`=%d',
 						$this->get('Product Current Key'),
-						$this->get('Product Code'),
+						prepare_mysql($this->get('Product Code')),
 						$this->get('Product Price')*$row['Order Quantity'],
 						$this->get('Product Price')*$row['Order Quantity'],
 
 						$row['Order Transaction Fact Key']
 					);
 
+					//    print "$sql\n";
 					$this->db->exec($sql);
 
 					$order=new Order($row['Order Key']);
+					
+				
+					
 					$order->update_number_products();
 					$order->update_insurance();
 
@@ -1121,7 +1380,7 @@ class Product extends Asset{
 					$order->update_totals();
 					$order->update_number_products();
 					$order->apply_payment_from_customer_account();
-
+					$order->update_payment_state();
 				}
 
 

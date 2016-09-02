@@ -413,10 +413,18 @@ ALTER TABLE `Attachment Bridge` CHANGE `Subject` `Subject` ENUM('Part','Staff','
 ALTER TABLE `Product Part Bridge` CHANGE `Product Part Ratio` `Product Part Ratio` DECIMAL(15,5) NOT NULL DEFAULT '1';
 ALTER TABLE `Part Dimension` CHANGE `Part Status` `Part Status` ENUM('Not In Use','In Use','Discontinuing') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'In Use';
 ALTER TABLE `Part Dimension` CHANGE `Part Current Stock` `Part Current Stock` DECIMAL(24,6) NULL DEFAULT NULL, CHANGE `Part Current On Hand Stock` `Part Current On Hand Stock` DECIMAL(24,6) NOT NULL DEFAULT '0', CHANGE `Part Current Stock In Process` `Part Current Stock In Process` DECIMAL(24,6) NOT NULL DEFAULT '0', CHANGE `Part Current Stock Picked` `Part Current Stock Picked` DECIMAL(24,6) NOT NULL DEFAULT '0', CHANGE `Part Current Value` `Part Current Value` DECIMAL(24,4) NOT NULL DEFAULT '0', CHANGE `Part Current Stock Negative Discrepancy` `Part Current Stock Negative Discrepancy` DECIMAL(24,6) NOT NULL DEFAULT '0';
+
+
 ALTER TABLE `Part Dimension` ADD `Part Unit Label` VARCHAR(255) NOT NULL DEFAULT 'unit' AFTER `Part Unit`;
 ALTER TABLE `Product Dimension` ADD `Product Unit Label` VARCHAR(255) NOT NULL DEFAULT 'Unit' AFTER `Product Part Metadata`;
 update `Product Dimension` set `Product Unit Label`=`Product Unit Type`;
 update `Part Dimension` set `Part Unit Label`='Piece';
+
+ALTER TABLE `Product Dimension` CHANGE `Product Units Per Case` `Product Units Per Case` SMALLINT UNSIGNED NULL DEFAULT NULL;
+
+ALTER TABLE `Product Dimension` ADD `Product Label in Family` VARCHAR(255) NULL DEFAULT NULL AFTER `Product Unit Label`;
+update  `Product Dimension`  set  `Product Label in Family`=`Product Special Characteristic`;
+
 
 migrate_suppliers.oneoff.php
 migrate_images.oneoff.php 

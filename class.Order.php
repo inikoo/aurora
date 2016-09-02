@@ -1649,7 +1649,7 @@ class Order extends DB_Table {
 			}
 
 
-			$product=new Product('id', $data['Product Key']);
+			$product=new Product('historic_key', $data['Product Key']);
 			$gross=$quantity*$product->data['Product History Price'];
 			$estimated_weight=$total_quantity*$product->data['Product Package Weight'];
 			$gross_discounts=0;
@@ -1669,7 +1669,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 				$estimated_weight,
 				prepare_mysql ( $data ['date'] ),
 				prepare_mysql ( $data ['date'] ),
-				$product->id,
+				$product->historic_id,
 				$product->data['Product ID'],
 				prepare_mysql($product->data['Product Code']),
 				$product->data['Product Family Key'],
@@ -1754,7 +1754,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 
 				//   print "\n**** $old_quantity $old_bonus_quantity   ;  ($quantity_set,$bonus_quantity_set) ; QTY    $quantity ==     $total_quantity\n";
-				$product=new Product('id', $data['Product Key']);
+				$product=new Product('historic_key', $data['Product Key']);
 				if ($total_quantity==0) {
 
 					$this->delete_transaction($row['Order Transaction Fact Key']);
@@ -1837,7 +1837,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 					);
 				}
 
-				$product=new Product('id', $data['Product Key']);
+				$product=new Product('historic_key', $data['Product Key']);
 				$gross=$quantity*$product->data['Product History Price'];
 				$estimated_weight=$total_quantity*$product->data['Product Package Weight'];
 
@@ -1859,7 +1859,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 					prepare_mysql ( $data ['date'] ),
 
 					prepare_mysql ( $data ['date'] ),
-					$product->id,
+					$product->historic_id,
 					$product->data['Product ID'],
 					prepare_mysql($product->data['Product Code']),
 					$product->data['Product Family Key'],
@@ -1926,15 +1926,15 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 			}else {
 				$history_abstract='';
 				if ($delta_qty>0) {
-					$history_abstract=sprintf(_('%1$s %2$s added'), $delta_qty, sprintf('<a href="product.php?pid=%d">%s</a>', $product->pid, $product->data['Product Code']));
+					$history_abstract=sprintf(_('%1$s %2$s added'), $delta_qty, sprintf('<a href="product.php?pid=%d">%s</a>', $product->id, $product->data['Product Code']));
 				}elseif ($delta_qty<0) {
 
 					if ($quantity==0) {
-						$history_abstract=sprintf(_('%s %s removed, none in the order anymore'), -$delta_qty, sprintf('<a href="product.php?pid=%d">%s</a>', $product->pid, $product->data['Product Code']));
+						$history_abstract=sprintf(_('%s %s removed, none in the order anymore'), -$delta_qty, sprintf('<a href="product.php?pid=%d">%s</a>', $product->id, $product->data['Product Code']));
 
 					}else {
 
-						$history_abstract=sprintf(_('%s %s removed'), -$delta_qty, sprintf('<a href="product.php?pid=%d">%s</a>', $product->pid, $product->data['Product Code']));
+						$history_abstract=sprintf(_('%s %s removed'), -$delta_qty, sprintf('<a href="product.php?pid=%d">%s</a>', $product->id, $product->data['Product Code']));
 					}
 				}
 
@@ -3443,11 +3443,13 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		);
 
 
-		return;
+		
 
 		include_once 'class.Account.php';
 
-		$account=new Account();
+		$account=new Account($this->db);
+
+
 
 		if ($account->data['Apply Tax Method']=='Per Item') {
 			$this->update_item_totals_from_order_transactions();
@@ -7170,13 +7172,18 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 
 	function get_allowances_from_deal_component_data($deal_component_data) {
 
-		$deal_info=sprintf("%s: %s, %s",
-			($deal_component_data['Deal Label']==''?_('Offer'):$deal_component_data['Deal Label']),
-			$deal_component_data['Deal XHTML Terms Description Label'],
-			$deal_component_data['Deal Component XHTML Allowance Description Label']
 
-		);
+		if (isset($deal_component_data['Deal Label'])) {
 
+			$deal_info=sprintf("%s: %s, %s",
+				($deal_component_data['Deal Label']==''?_('Offer'):$deal_component_data['Deal Label']),
+				(isset($deal_component_data['Deal XHTML Terms Description Label'])?$deal_component_data['Deal XHTML Terms Description Label']:''),
+				$deal_component_data['Deal Component XHTML Allowance Description Label']
+
+			);
+		}else {
+			$deal_info='Discount';
+		}
 
 		switch ($deal_component_data['Deal Component Allowance Type']) {
 
@@ -7390,12 +7397,12 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 						$this->allowance[$allowance_index][$product_pid]['Get Free']+=$get_free_allowance[0];
 					} else {
 
-						$product=new Product('pid', $product_pid);
+						$product=new Product('id', $product_pid);
 
 
 						$this->allowance[$allowance_index][$product_pid]=array(
-							'Product ID'=>$product->pid,
-							'Product Key'=>$product->id,
+							'Product ID'=>$product->id,
+							'Product Key'=>$product->historic_id,
 							'Product Family Key'=>$product->data['Product Family Key'],
 							'Get Free'=>$get_free_allowance[0],
 							'Deal Campaign Key'=>$deal_component_data['Deal Component Campaign Key'],
@@ -7414,7 +7421,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 			case('Product'):
 				$product_pid=$deal_component_data['Deal Component Allowance Target Key'];
 
-				$product=new Product('pid', $deal_component_data['Deal Component Allowance Target Key']);
+				$product=new Product('id', $deal_component_data['Deal Component Allowance Target Key']);
 
 				$get_free_allowance=$deal_component_data['Deal Component Allowance'];
 
@@ -7424,8 +7431,8 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 					$this->allowance['Order Get Free'][$product_pid]['Get Free']+=$get_free_allowance;
 				} else {
 					$this->allowance['Order Get Free'][$product_pid]=array(
-						'Product ID'=>$product->pid,
-						'Product Key'=>$product->id,
+						'Product ID'=>$product->id,
+						'Product Key'=>$product->historic_id,
 						'Product Family Key'=>$product->data['Product Family Key'],
 						'Get Free'=>$get_free_allowance,
 						'Deal Campaign Key'=>$deal_component_data['Deal Component Campaign Key'],
@@ -8475,7 +8482,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 			$order_date=gmdate('Y-m-d H:i:s');
 			$order_public_id=$this->data['Order Public ID'];
 
-			$product=new Product('pid', $row['Product ID']);
+			$product=new Product('id', $row['Product ID']);
 
 			$bonus_quantity=0;
 			$sql = sprintf( "insert into `Order Transaction Fact` (`Order Date`,`Order Key`,`Order Public ID`,`Delivery Note Key`,`Delivery Note ID`,`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Last Updated Date`,
@@ -8501,7 +8508,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 				$row['Product Package Weight']*$row['Quantity'],
 
 				prepare_mysql($order_date),
-				$product->id,
+				$product->historic_id,
 				$product->data['Product ID'],
 				prepare_mysql($product->data['Product Code']),
 				$product->data['Product Family Key'],
@@ -9793,7 +9800,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 
-			$product=new Product('pid', $product_pid);
+			$product=new Product('id', $product_pid);
 
 			$gross=$row['Quantity']*$product->data['Product Price'];
 

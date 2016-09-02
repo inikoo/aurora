@@ -285,6 +285,8 @@ abstract class DB_Table {
 
 
 		}
+		
+		
 		$update_op=$this->db->prepare($sql);
 		$update_op->execute();
 		$affected=$update_op->rowCount();

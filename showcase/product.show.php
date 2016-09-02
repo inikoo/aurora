@@ -19,7 +19,6 @@ function get_product_showcase($data,$smarty,$user,$db) {
 		return "";
 	}
 
-
 	$images=$product->get_images_slidesshow();
 
 	if (count($images)>0) {
