@@ -16,8 +16,8 @@ function get_part_showcase($data,$smarty,$user,$db) {
 
 	$part=$data['_object'];
 	
-	$part->update_stock();
-//	$part->discontinue_trigger();
+	//$part->update_stock();
+//	$part->updated_linked_products();
 
 
 
