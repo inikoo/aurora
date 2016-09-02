@@ -546,6 +546,112 @@ class Product extends Asset{
 
 
 		switch ($field) {
+		case 'Product Package Dimensions':
+		case 'Product Unit Dimensions':
+
+
+			include_once 'utils/parse_natural_language.php';
+
+			$tag=preg_replace('/ Dimensions$/', '', $field);
+
+			if ($value=='') {
+				$dim='';
+				$vol='';
+			}else {
+				$dim=parse_dimensions($value);
+				if ($dim=='') {
+					$this->error=true;
+					$this->msg=sprintf(_("Dimensions can't be parsed (%s)"), $value);
+					return;
+				}
+				$_tmp=json_decode($dim, true);
+				$vol=$_tmp['vol'];
+			}
+
+			$this->update_field($tag.' Dimensions', $dim, $options);
+			
+
+			break;
+		
+		case 'Product Materials':
+			include_once 'utils/parse_materials.php';
+
+
+			$materials_to_update=array();
+			$sql=sprintf('select `Material Key` from `Product Material Bridge` where `Product ID`=%d', $this->id);
+			if ($result=$this->db->query($sql)) {
+				foreach ($result as $row) {
+					$materials_to_update[$row['Material Key']]=true;
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+
+			if ($value=='') {
+				$materials='';
+
+
+
+
+				$sql=sprintf("delete from `Product Material Bridge` where `Product ID`=%d ", $this->id);
+				$this->db->exec($sql);
+
+			}else {
+
+				$materials_data=parse_materials($value, $this->editor);
+
+				$sql=sprintf("delete from `Product Material Bridge` where `Product ID`=%d ", $this->id);
+
+				$this->db->exec($sql);
+
+				foreach ($materials_data as $material_data) {
+
+					if ($material_data['id']>0) {
+						$sql=sprintf("insert into `Product Material Bridge` (`Product ID`, `Material Key`, `Ratio`, `May Contain`) values (%d, %d, %s, %s) ",
+							$this->id,
+							$material_data['id'],
+							prepare_mysql($material_data['ratio']),
+							prepare_mysql($material_data['may_contain'])
+
+						);
+						$this->db->exec($sql);
+
+						if (isset($materials_to_update[$material_data['id']])) {
+							$materials_to_update[$material_data['id']]=false;
+						}else {
+							$materials_to_update[$material_data['id']]=true;
+						}
+
+					}
+
+
+				}
+
+
+				$materials=json_encode($materials_data);
+			}
+
+
+			foreach ($materials_to_update as  $material_key=>$update) {
+				if ($update) {
+					$material=new Material($material_key);
+					$material->update_stats();
+
+				}
+			}
+
+
+			$this->update_field('Product Materials', $materials, $options);
+			$updated=$this->updated;
+			
+
+
+			$this->updated=$updated;
+			break;
+		
+		
 		case 'Product Code':
 			$value=_trim($value);
 

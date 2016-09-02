@@ -38,6 +38,38 @@ trait ImageSubject {
 		$image=new Image('find', $data, 'create');
 
 		if ($image->id) {
+			$this->link_image($image->id);
+
+			if ($this->table_name=='Part') {
+
+				foreach ($this->get_products('objects') as $product) {
+
+					if ( count($product->get_parts())==1 ) {
+						$product->editor=$this->editor;
+						$product->link_image($image->id);
+					}
+
+				}
+
+			}
+
+		}else {
+			$this->error=true;
+			$this->msg="Can't create/found image, ".$image->msg;
+			return false;
+		}
+
+	}
+
+
+	function link_image($image_key) {
+
+
+
+
+		$image=new Image($image_key);
+
+		if ($image->id) {
 			$subject_key=$this->id;
 			$subject=$this->table_name;
 			$sql=sprintf("select `Image Subject Image Key`,`Image Subject Is Principal` from `Image Subject Bridge` where `Image Subject Object`=%s and `Image Subject Object Key`=%d  and `Image Subject Image Key`=%d",
@@ -136,6 +168,7 @@ trait ImageSubject {
 		}
 
 	}
+
 
 
 	function get_images_slidesshow() {
@@ -244,6 +277,7 @@ trait ImageSubject {
 
 	}
 
+
 	function update_main_image($image_key) {
 
 
@@ -325,7 +359,7 @@ trait ImageSubject {
 
 	function delete_image($image_bridge_key) {
 
-		$sql=sprintf('select `Image Subject Key` from `Image Subject Bridge` where `Image Subject Key`=%d ', $image_bridge_key);
+		$sql=sprintf('select `Image Subject Key`,`Image Subject Image Key` from `Image Subject Bridge` where `Image Subject Key`=%d ', $image_bridge_key);
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
 
@@ -334,13 +368,44 @@ trait ImageSubject {
 				$sql=sprintf('delete from `Image Subject Bridge` where `Image Subject Key`=%d ', $image_bridge_key);
 				$this->db->exec($sql);
 
-				$image=new Image($row['Image Subject Key']);
+				$image=new Image($row['Image Subject Image Key']);
 				$image->editor=$this->editor;
 
 				$image->delete();
 				$order_index=$this->reindex_order();
 
 				$this->update_main_image(array_shift($order_index));
+
+
+				if ($this->table_name=='Part') {
+
+					foreach ($this->get_products('objects') as $product) {
+
+						if ( count($product->get_parts())==1 ) {
+							$product->editor=$this->editor;
+
+
+							$sql=sprintf('select `Image Subject Key` from `Image Subject Bridge` where  `Image Subject Image Key`=%d  and `Image Subject Object`="Product" and   `Image Subject Object Key`=%d ',
+								$row['Image Subject Image Key'],
+								$product->id);
+
+
+							if ($result2=$this->db->query($sql)) {
+								foreach ($result2 as $row2) {
+									$product->delete_image($row2['Image Subject Key']);
+								}
+							}else {
+								print_r($error_info=$this->db->errorInfo());
+								exit;
+							}
+
+						}
+
+					}
+
+				}
+
+
 
 			}else {
 				$this->error;
@@ -350,6 +415,7 @@ trait ImageSubject {
 			print_r($error_info=$this->db->errorInfo()); print "$sql";
 			exit;
 		}
+
 
 
 	}
@@ -381,7 +447,7 @@ trait ImageSubject {
 			print_r($error_info=$this->db->errorInfo()); print "$sql";
 			exit;
 		}
-		
+
 		return $order_index;
 	}
 
