@@ -575,7 +575,7 @@ class Product extends Asset{
 		
 		case 'Product Materials':
 			include_once 'utils/parse_materials.php';
-
+            include_once 'class.Material.php';
 
 			$materials_to_update=array();
 			$sql=sprintf('select `Material Key` from `Product Material Bridge` where `Product ID`=%d', $this->id);
