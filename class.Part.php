@@ -514,7 +514,8 @@ class Part extends Asset{
 
 	function update_linked_products($field, $value, $options, $metadata) {
 
-
+		// thinking of not giveing this option, to complicated
+		return;
 
 		foreach ($this->get_products_data() as $product_data) {
 			if ($field=='Part Package Weight') {
@@ -904,12 +905,25 @@ class Part extends Asset{
 
 			$this->update_field('Part Materials', $materials, $options);
 			$updated=$this->updated;
-			$this->update_linked_products($field, $value, $options, $metadata);
+			//$this->update_linked_products($field, $value, $options, $metadata);
+
+
+			foreach ($this->get_products('objects') as $product) {
+
+				if ( count($product->get_parts())==1 ) {
+					$product->editor=$this->editor;
+					$product->update(array('Product Materials'=>$value), $options);
+				}
+
+			}
+
+
 			$this->updated=$updated;
 			break;
 
 		case 'Part Package Dimensions':
 		case 'Part Unit Dimensions':
+
 
 			include_once 'utils/parse_natural_language.php';
 
@@ -932,12 +946,25 @@ class Part extends Asset{
 			$this->update_field($tag.' Dimensions', $dim, $options);
 			$updated=$this->updated;
 			$this->update_field($tag.' Volume', $vol,  'no_history');
-			$this->update_linked_products($field, $value, $options, $metadata);
+			//$this->update_linked_products($field, $value, $options, $metadata);
+
+			if ($field=='Part Unit Dimensions') {
+				foreach ($this->get_products('objects') as $product) {
+
+					if ( count($product->get_parts())==1 ) {
+						$product->editor=$this->editor;
+						$product->update(array('Product Unit Dimensions'=>$value), $options);
+					}
+
+				}
+			}
 			$this->updated=$updated;
 
 			break;
 		case 'Part Package Weight':
 		case 'Part Unit Weight':
+
+
 
 
 			$tag=preg_replace('/ Weight$/', '', $field);
@@ -989,6 +1016,19 @@ class Part extends Asset{
 				}
 
 			}
+
+			if ($field=='Part Unit Weight') {
+
+				foreach ($this->get_products('objects') as $product) {
+
+					if ( count($product->get_parts())==1 ) {
+						$product->editor=$this->editor;
+						$product->update(array('Product Unit Weight'=>$this->get('Part Unit Weight')), $options);
+					}
+
+				}
+			}
+
 			$this->updated=$updated;
 			break;
 		case('Part Tariff Code'):

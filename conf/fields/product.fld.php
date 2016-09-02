@@ -19,7 +19,13 @@ if ($number_parts==1 and isset($parts_data[0]['Linked Fields']) and is_array($pa
 	$linked_fields=array_flip($parts_data[0]['Linked Fields']);
 }
 
+if(count($object->get_parts())==1 ){
 
+$fields_linked=true;
+}else{
+$fields_linked=false;
+
+}
 
 if (isset($options['new']) and  $options['new'] ) {
 	$new=true;
@@ -156,25 +162,38 @@ $product_fields=array(
 			array(
 				'id'=>'Product_Unit_Weight',
 				'edit'=>  ($edit?
-					(isset($linked_fields['Product Unit Weight'])?'linked':'numeric'):''),
-
+					($fields_linked?'linked':'numeric'):''),
+ 'linked'=>$fields_linked,
 				'value'=>$object->get('Product Unit Weight') ,
 				'formatted_value'=>$object->get('Unit Weight') ,
-				'label'=>ucfirst($object->get_field_label('Product Unit Weight')),
+				'label'=>ucfirst($object->get_field_label('Product Unit Weight')).($fields_linked?' <i  class="discret fa fa-chain"  title="'._('Linked to part value').'"></i>':'')   ,
 				'invalid_msg'=>get_invalid_message('numeric'),
 				'required'=>true,
 			),
 			array(
 				'id'=>'Product_Unit_Dimensions',
-				'edit'=>($edit?'numeric':''),
-
+				'edit'=>  ($edit?
+					($fields_linked?'linked':'string'):''),
+ 'linked'=>$fields_linked,
 				'value'=>$object->get('Product Unit Dimensions') ,
 				'formatted_value'=>$object->get('Unit Dimensions') ,
-				'label'=>ucfirst($object->get_field_label('Product Unit Dimensions')),
+				'label'=>ucfirst($object->get_field_label('Product Unit Dimensions')).($fields_linked?' <i  class="discret fa fa-chain"  title="'._('Linked to part value').'"></i>':'')   ,
 				'invalid_msg'=>get_invalid_message('numeric'),
 				'required'=>true,
 			),
+			array(
+				'id'=>'Product_Materials',
+                'linked'=>$fields_linked,
+				'edit'=>  ($edit?
+					($fields_linked?'linked':'textarea'):''),
 
+
+				'value'=>htmlspecialchars($object->get('Product Materials')),
+				'formatted_value'=>$object->get('Materials'),
+				'label'=>ucfirst($object->get_field_label('Product Materials')).($fields_linked?' <i  class="discret fa fa-chain"  title="'._('Linked to part value').'"></i>':'')   ,
+				'required'=>false,
+				'type'=>'value'
+			),
 
 
 		)
@@ -274,7 +293,7 @@ $product_fields=array(
 
 );
 
-//print_r($linked_fields);
+/*
 foreach ($product_fields as $key=>$object_field) {
 	foreach ( $object_field['fields'] as $key2=>$fields) {
 		if (array_key_exists($fields['id'], $linked_fields)) {
@@ -290,5 +309,6 @@ foreach ($product_fields as $key=>$object_field) {
 	}
 
 }
+*/
 
 ?>

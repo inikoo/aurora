@@ -265,7 +265,6 @@ class Asset extends DB_Table{
 			if ($this->data[$this->table_name.' Materials']!='') {
 				$materials='';
 
-
 				$materials_data=json_decode($this->data[$this->table_name.' Materials'], true);
 
 
@@ -299,6 +298,7 @@ class Asset extends DB_Table{
 				$materials_data=json_decode($this->data[$this->table_name.' Materials'], true);
 				$xhtml_materials='';
 
+            
 				foreach ($materials_data as $material_data) {
 					if (!array_key_exists('id', $material_data)) {
 						continue;
