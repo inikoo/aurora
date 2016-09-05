@@ -43,7 +43,7 @@ $(function() {
            
 
 
-            //console.log(field)
+            console.log(field)
             $('.' + field).html(data.formatted_value)
             
            
