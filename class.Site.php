@@ -19,11 +19,11 @@ class Site extends DB_Table {
 
 	var $new=false;
 
-	function Site($arg1=false,$arg2=false) {
-	
-	global $db;
+	function Site($arg1=false, $arg2=false) {
+
+		global $db;
 		$this->db=$db;
-	
+
 		$this->table_name='Website';
 		$this->ignore_fields=array('Site Key');
 
@@ -33,29 +33,30 @@ class Site extends DB_Table {
 			$this->msg='No arguments';
 		}
 		if (is_numeric($arg1)) {
-			$this->get_data('id',$arg1);
+			$this->get_data('id', $arg1);
 			return;
 		}
 
 
 
-		if (is_array($arg2) and preg_match('/create|new/i',$arg1)) {
-			$this->find($arg2,'create');
+		if (is_array($arg2) and preg_match('/create|new/i', $arg1)) {
+			$this->find($arg2, 'create');
 			return;
 		}
 
 
-		$this->get_data($arg1,$arg2);
+		$this->get_data($arg1, $arg2);
 
 	}
 
 
-	function get_data($tipo,$tag) {
+	function get_data($tipo, $tag) {
 
 
-		$sql=sprintf("select * from `Site Dimension` where  `Site Key`=%d",$tag);
-		$result =mysql_query($sql);
-		if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$sql=sprintf("select * from `Site Dimension` where  `Site Key`=%d", $tag);
+
+		if ($this->data = $this->db->query($sql)->fetch()) {
+
 			$this->id=$this->data['Site Key'];
 			//print_r($this->data);
 			if ($this->data['Site Logo Data']!='')
@@ -71,13 +72,16 @@ class Site extends DB_Table {
 			if ($this->data['Site Checkout Metadata']!='')
 				$this->data['Site Checkout Metadata']=unserialize($this->data['Site Checkout Metadata']);
 			else {
-				$this->data['Site Checkout Metadata']=array('id'=>'','url'=>'','url_multi'=>'');
+				$this->data['Site Checkout Metadata']=array('id'=>'', 'url'=>'', 'url_multi'=>'');
 			}
 
 
 
 
+
 		}
+
+
 
 
 	}
@@ -88,7 +92,8 @@ class Site extends DB_Table {
 		return $this->data['Site Checkout Metadata'][$item];
 	}
 
-	function find($raw_data,$options) {
+
+	function find($raw_data, $options) {
 
 
 
@@ -97,7 +102,7 @@ class Site extends DB_Table {
 
 		if (isset($raw_data['editor'])) {
 			foreach ($raw_data['editor'] as $key=>$value) {
-				if (array_key_exists($key,$this->editor))
+				if (array_key_exists($key, $this->editor))
 					$this->editor[$key]=$value;
 			}
 		}
@@ -107,10 +112,10 @@ class Site extends DB_Table {
 
 		$create='';
 		$update='';
-		if (preg_match('/create/i',$options)) {
+		if (preg_match('/create/i', $options)) {
 			$create='create';
 		}
-		if (preg_match('/update/i',$options)) {
+		if (preg_match('/update/i', $options)) {
 			$update='update';
 		}
 
@@ -131,7 +136,7 @@ class Site extends DB_Table {
 		if ($row=mysql_fetch_assoc($res)) {
 			$this->found=true;
 			$this->found_key=$row['Site Key'];
-			$this->get_data('id',$this->found_key);
+			$this->get_data('id', $this->found_key);
 			return;
 		}
 
@@ -148,7 +153,7 @@ class Site extends DB_Table {
 		if ($row=mysql_fetch_assoc($res)) {
 			$this->found=true;
 			$this->found_key=$row['Site Key'];
-			$this->get_data('id',$this->found_key);
+			$this->get_data('id', $this->found_key);
 			return;
 		}
 
@@ -170,7 +175,7 @@ class Site extends DB_Table {
 
 
 		foreach ($raw_data as $key=>$value) {
-			if (array_key_exists($key,$data))
+			if (array_key_exists($key, $data))
 
 
 
@@ -191,25 +196,25 @@ class Site extends DB_Table {
 		foreach ($data as $key=>$value) {
 			$keys.="`$key`,";
 
-			if (in_array($key,array('Site Contact Address','Site Contact Telephone','Site Slogan','Site Checkout Metadata','Site Menu HTML','Site Menu CSS','Site Menu Javascript','Site Search HTML','Site Search CSS','Site Search Javascript','Site FTP Directory','Site Direct Subscribe Madmimi'))) {
-				$values.=prepare_mysql($value,false).",";
+			if (in_array($key, array('Site Contact Address', 'Site Contact Telephone', 'Site Slogan', 'Site Checkout Metadata', 'Site Menu HTML', 'Site Menu CSS', 'Site Menu Javascript', 'Site Search HTML', 'Site Search CSS', 'Site Search Javascript', 'Site FTP Directory', 'Site Direct Subscribe Madmimi'))) {
+				$values.=prepare_mysql($value, false).",";
 			}else {
 				$values.=prepare_mysql($value).",";
 			}
 		}
-		$keys=preg_replace('/,$/',')',$keys);
-		$values=preg_replace('/,$/',')',$values);
-		$sql=sprintf("insert into `Site Dimension` %s %s",$keys,$values);
+		$keys=preg_replace('/,$/', ')', $keys);
+		$values=preg_replace('/,$/', ')', $values);
+		$sql=sprintf("insert into `Site Dimension` %s %s", $keys, $values);
 
 
 		if (mysql_query($sql)) {
 			$this->id=mysql_insert_id();
-			$this->get_data('id',$this->id);
+			$this->get_data('id', $this->id);
 			$this->new=true;
 
 
 
-			$flags=array('Blue'=>_('Blue'),'Green'=>_('Green'),'Orange'=>_('Orange'),'Pink'=>_('Pink'),'Purple'=>_('Purple'),'Red'=>_('Red'),'Yellow'=>_('Yellow'));
+			$flags=array('Blue'=>_('Blue'), 'Green'=>_('Green'), 'Orange'=>_('Orange'), 'Pink'=>_('Pink'), 'Purple'=>_('Purple'), 'Red'=>_('Red'), 'Yellow'=>_('Yellow'));
 			foreach ($flags as $flag=>$flag_label) {
 				$sql=sprintf("INSERT INTO `Site Flag Dimension` (`Site Flag Key`, `Site Key`, `Site Flag Color`, `Site Flag Label`, `Site Flag Active`) VALUES ( %d, %s,%s, 'Yes')",
 					$this->id,
@@ -284,7 +289,7 @@ class Site extends DB_Table {
                          VALUES (
                          NULL , %s, %s, NULL , NULL , NULL , NULL , NULL
                          );
-                         ",$this->id,prepare_mysql($section));
+                         ", $this->id, prepare_mysql($section));
 
 			mysql_query($sql);
 
@@ -301,17 +306,17 @@ class Site extends DB_Table {
 
 		switch ($key) {
 		case ('Percentage Number Pages with Products'):
-			return percentage($this->data['Site Number Pages with Out of Stock Products'],$this->data['Site Number Pages with Products']);
+			return percentage($this->data['Site Number Pages with Out of Stock Products'], $this->data['Site Number Pages with Products']);
 			break;
 		case ('Percentage Number Out of Stock Products'):
-			return percentage($this->data['Site Number Out of Stock Products'],$this->data['Site Number Products']);
+			return percentage($this->data['Site Number Out of Stock Products'], $this->data['Site Number Products']);
 			break;
 
 
 
 		case('Sitemap Last Update'):
 
-			return strftime("%a %e %b %Y %H:%M %Z",strtotime($this->data['Site Sitemap Last Update'].' +0:00'));
+			return strftime("%a %e %b %Y %H:%M %Z", strtotime($this->data['Site Sitemap Last Update'].' +0:00'));
 			break;
 		case('Total Users'):
 			return number($this->data['Site Total Users']);
@@ -321,16 +326,16 @@ class Site extends DB_Table {
 
 
 
-			if (array_key_exists($key,$this->data))
+			if (array_key_exists($key, $this->data))
 				return $this->data[$key];
 		}
-		if (preg_match('/ Acc /',$key)) {
+		if (preg_match('/ Acc /', $key)) {
 
 			$amount='Site '.$key;
 
 			return number($this->data[$amount]);
 		}
-		if (preg_match('/^Number /',$key)) {
+		if (preg_match('/^Number /', $key)) {
 
 			$amount='Site '.$key;
 
@@ -347,7 +352,7 @@ class Site extends DB_Table {
 
 
 
-	function update_checkout_data($field,$value) {
+	function update_checkout_data($field, $value) {
 
 		$old_value=$this->data['Site Checkout Metadata'][$field];
 
@@ -386,7 +391,7 @@ class Site extends DB_Table {
 
 
 
-	function update_field_switcher($field, $value, $options='',$metadata='') {
+	function update_field_switcher($field, $value, $options='', $metadata='') {
 
 		switch ($field) {
 
@@ -399,7 +404,7 @@ class Site extends DB_Table {
 			}else {
 				$site_protocol='http';
 			}
-			$this->update_field($field,$value,'diff');
+			$this->update_field($field, $value, 'diff');
 			$template_response=@file_get_contents($site_protocol.'://'.$this->data['Site URL']."/maintenance/write_templates.php?parent=site_elements&parent_key=".$this->id."&sk=x");
 
 			break;
@@ -416,13 +421,13 @@ class Site extends DB_Table {
 		case('Site Welcome Email Plain Body'):
 		case('Site Welcome Email Subject'):
 		case('Site Welcome Source'):
-			$this->update_field($field,$value,'diff');
+			$this->update_field($field, $value, 'diff');
 			break;
 		case 'checkout_id':
-			$this->update_checkout_data('id',$value);
+			$this->update_checkout_data('id', $value);
 			break;
 		case 'checkout_url':
-			$this->update_checkout_data('url',$value);
+			$this->update_checkout_data('url', $value);
 			break;
 
 		case 'Email Address':
@@ -435,11 +440,11 @@ class Site extends DB_Table {
 		default:
 			$base_data=$this->base_data();
 
-			if (array_key_exists($field,$base_data)) {
+			if (array_key_exists($field, $base_data)) {
 
 				if ($value!=$this->data[$field]) {
 
-					$this->update_field($field,$value,$options);
+					$this->update_field($field, $value, $options);
 				}
 			}
 
@@ -481,11 +486,11 @@ class Site extends DB_Table {
 		}
 
 
-		$page_section=new PageStoreSection('code',$page_data['Page Store Section']);
+		$page_section=new PageStoreSection('code', $page_data['Page Store Section']);
 		$page_data['Page Store Section Key']=$page_section->id;
 
 
-		$page=new Page('find',$page_data,'create');
+		$page=new Page('find', $page_data, 'create');
 
 		$this->new_page=$page->new;
 		$this->new_page_key=$page->id;
@@ -497,7 +502,9 @@ class Site extends DB_Table {
 
 
 	}
-	function add_department_page($department_key,$raw_data) {
+
+
+	function add_department_page($department_key, $raw_data) {
 
 		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Department Catalogue' and `Page Parent Key`=%d  and `Page Site Key`=%d ",
 			$department_key,
@@ -556,7 +563,7 @@ class Site extends DB_Table {
 		);
 
 		foreach ($raw_data as $key=>$value) {
-			if (in_array($key,array('Page Code','Page URL','Page Site Key','Page Type','Page Store Key','Page Parent Key','Page Parent Code','Page Store Section Type','Page Store Section','Page Store Last Update Date','Page Store Last Structural Change Date'))) {
+			if (in_array($key, array('Page Code', 'Page URL', 'Page Site Key', 'Page Type', 'Page Store Key', 'Page Parent Key', 'Page Parent Code', 'Page Store Section Type', 'Page Store Section', 'Page Store Last Update Date', 'Page Store Last Structural Change Date'))) {
 				continue;
 			}
 			$page_data[$key]=$value;
@@ -565,12 +572,12 @@ class Site extends DB_Table {
 
 
 
-		$page_section=new PageStoreSection('code',$page_data['Page Store Section']);
+		$page_section=new PageStoreSection('code', $page_data['Page Store Section']);
 		$page_data['Page Store Section Key']=$page_section->id;
 
 
 
-		$page=new Page('find',$page_data,'create');
+		$page=new Page('find', $page_data, 'create');
 		if ($page->new) {
 			$page->update_see_also();
 		}
@@ -588,20 +595,37 @@ class Site extends DB_Table {
 	}
 
 
-	function add_family_page($family_key,$raw_data) {
+	function add_family_page($family_key, $raw_data) {
 
 		$this->new_page=false;
 
 
-		$family=new Family($family_key);
-		if ($family->data['Product Family Store Key']!=$this->data['Site Store Key']) {
+		$sql=sprintf('select * from `Product Family Dimension` where `Product Family Key`=%d ', $family_key);
+		if ($result=$this->db->query($sql)) {
+			if ($family = $result->fetch()) {
+
+			}else{
+			    $this->error=true;
+			$this->msg='family store and site store dont match';
+			return;
+			}
+			
+			
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+	
+		if ($family['Product Family Store Key']!=$this->data['Site Store Key']) {
 			$this->error=true;
 			$this->msg='family store and site store dont match';
 			return;
 		}
 
 
-		$store=new Store($family->data['Product Family Store Key']);
+		$store=new Store($family['Product Family Store Key']);
 
 
 
@@ -613,8 +637,8 @@ class Site extends DB_Table {
 			'Page Site Key'=>$this->id,
 			'Page Type'=>'Store',
 			'Page Store Key'=>$store->id,
-			'Page Parent Key'=>$family->id,
-			'Page Parent Code'=>$family->data['Product Family Code'],
+			'Page Parent Key'=>$family['Product Family Key'],
+			'Page Parent Code'=>$family['Product Family Code'],
 			'Page Store Section Type'=>'Family',
 			'Page Store Section'=>'Family Catalogue',
 			'Page Store Last Update Date'=>gmdate('Y-m-d H:i:s'),
@@ -623,9 +647,9 @@ class Site extends DB_Table {
 			'Page Store Content Display Type'=>'Source',
 			'Page Store Content Template Filename'=>'',
 			'Page Description'=>'',
-			'Page Title'=>$family->data['Product Family Name'].' | '.$this->data['Site Name'],
-			'Page Short Title'=>$family->data['Product Family Name'],
-			'Page Store Title'=>$family->data['Product Family Name'],
+			'Page Title'=>$family['Product Family Name'].' | '.$this->data['Site Name'],
+			'Page Short Title'=>$family['Product Family Name'],
+			'Page Store Title'=>$family['Product Family Name'],
 			'Page Locale'=>$this->data['Site Locale'],
 
 			'Page Header Key'=>$this->data['Site Default Header Key'],
@@ -636,7 +660,7 @@ class Site extends DB_Table {
 		);
 
 		foreach ($raw_data as $key=>$value) {
-			if (in_array($key,array('Page Code','Page URL','Page Site Key','Page Type','Page Store Key','Page Parent Key','Page Parent Code','Page Store Section Type','Page Store Section','Page Store Last Update Date','Page Store Last Structural Change Date'
+			if (in_array($key, array('Page Code', 'Page URL', 'Page Site Key', 'Page Type', 'Page Store Key', 'Page Parent Key', 'Page Parent Code', 'Page Store Section Type', 'Page Store Section', 'Page Store Last Update Date', 'Page Store Last Structural Change Date'
 					))) {
 				continue;
 			}
@@ -647,15 +671,16 @@ class Site extends DB_Table {
 
 
 
-		$page_section=new PageStoreSection('code',$page_data['Page Store Section']);
+		$page_section=new PageStoreSection('code', $page_data['Page Store Section']);
 		$page_data['Page Store Section Key']=$page_section->id;
 
 
-		$page=new Page('find',$page_data,'create');
+		$page=new Page('find', $page_data, 'create');
 
 		if ($page->new) {
+		/*
 			include_once 'class.Department.php';
-			$department=new Department($family->data['Product Family Main Department Key']);
+			$department=new Department($family['Product Family Main Department Key']);
 			if ($department->id) {
 				$parent_pages_keys=$department->get_pages_keys();
 				foreach ($parent_pages_keys as $parent_page_key) {
@@ -663,6 +688,7 @@ class Site extends DB_Table {
 					break;
 				}
 			}
+			*/
 			$page->update_see_also();
 		}
 
@@ -680,7 +706,8 @@ class Site extends DB_Table {
 
 	}
 
-	function add_product_page($product_pid,$raw_data) {
+
+	function add_product_page($product_pid, $raw_data) {
 
 
 		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Product Description' and `Page Parent Key`=%d and `Page Site Key`=%d",
@@ -692,7 +719,7 @@ class Site extends DB_Table {
 			return $row['Page Key'];
 		}
 
-		$product=new Product('pid',$product_pid);
+		$product=new Product('id', $product_pid);
 		if ($product->data['Product Store Key']!=$this->data['Site Store Key']) {
 			$this->error=true;
 			$this->msg='product store and site store dont match';
@@ -712,7 +739,7 @@ class Site extends DB_Table {
 			'Page Site Key'=>$this->id,
 			'Page Type'=>'Store',
 			'Page Store Key'=>$store->id,
-			'Page Parent Key'=>$product->pid,
+			'Page Parent Key'=>$product->id,
 			'Page Parent Code'=>$product->data['Product Family Code'],
 			'Page Store Section Type'=>'Product',
 			'Page Store Section'=>'Product Description',
@@ -736,7 +763,7 @@ class Site extends DB_Table {
 		);
 
 		foreach ($raw_data as $key=>$value) {
-			if (in_array($key,array('Page Code','Page URL','Page Site Key','Page Type','Page Store Key','Page Parent Key','Page Parent Code','Page Store Section Type','Page Store Section','Page Store Last Update Date','Page Store Last Structural Change Date'
+			if (in_array($key, array('Page Code', 'Page URL', 'Page Site Key', 'Page Type', 'Page Store Key', 'Page Parent Key', 'Page Parent Code', 'Page Store Section Type', 'Page Store Section', 'Page Store Last Update Date', 'Page Store Last Structural Change Date'
 					))) {
 				continue;
 			}
@@ -747,11 +774,11 @@ class Site extends DB_Table {
 
 
 
-		$page_section=new PageStoreSection('code',$page_data['Page Store Section']);
+		$page_section=new PageStoreSection('code', $page_data['Page Store Section']);
 		$page_data['Page Store Section Key']=$page_section->id;
 
 
-		$page=new Page('find',$page_data,'create');
+		$page=new Page('find', $page_data, 'create');
 		if ($page->new) {
 
 			include_once 'class.Family.php';
@@ -780,6 +807,7 @@ class Site extends DB_Table {
 		return $page->id;
 	}
 
+
 	function base_data() {
 
 
@@ -791,9 +819,9 @@ class Site extends DB_Table {
 		}
 		if (mysql_num_rows($result) > 0) {
 			while ($row = mysql_fetch_assoc($result)) {
-				if (!in_array($row['Field'],$this->ignore_fields)) {
+				if (!in_array($row['Field'], $this->ignore_fields)) {
 					$data[$row['Field']]=$row['Default'];
-					if (preg_match('/ Data$/',$row['Field'])) {
+					if (preg_match('/ Data$/', $row['Field'])) {
 						$data[$row['Field']]='a:0:{}';
 					}
 
@@ -804,11 +832,12 @@ class Site extends DB_Table {
 		return $data;
 	}
 
-	function get_page_object($tipo,$key=false) {
+
+	function get_page_object($tipo, $key=false) {
 		$page=false;
 		switch ($tipo) {
 		case 'index':
-			$page=new Page('id',$this->data['Site Index Page Key']);
+			$page=new Page('id', $this->data['Site Index Page Key']);
 			break;
 		case 'department':
 			$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Department Catalogue' and `Page Parent Key`=%d ",
@@ -817,7 +846,7 @@ class Site extends DB_Table {
 			);
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_assoc($res)) {
-				$page=new Page('id',$row['Page Key']);
+				$page=new Page('id', $row['Page Key']);
 			}
 			break;
 		case 'family':
@@ -827,7 +856,7 @@ class Site extends DB_Table {
 			);
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_assoc($res)) {
-				$page=new Page('id',$row['Page Key']);
+				$page=new Page('id', $row['Page Key']);
 			}
 			break;
 
@@ -835,18 +864,21 @@ class Site extends DB_Table {
 		return $page;
 	}
 
+
 	function get_page_section_object($code) {
-		$page_section=new PageStoreSection('code',$code,$this->id);
+		$page_section=new PageStoreSection('code', $code, $this->id);
 		return $page_section;
 	}
+
 
 	function get_welcome_template() {
 		return $this->data['Site Welcome Source'];
 	}
 
+
 	function get_page_key_from_code($code) {
 		$page_key=0;
-		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Site Key`=%d and `Page Code`=%s ",$this->id,prepare_mysql($code));
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Site Key`=%d and `Page Code`=%s ", $this->id, prepare_mysql($code));
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$page_key=$row['Page Key'];
@@ -855,13 +887,14 @@ class Site extends DB_Table {
 		return $page_key;
 	}
 
+
 	function get_page_key_from_url($url) {
 
 		//$url=preg_replace('http:\/\/', '', $url);
 		$page_key=0;
 		//        print "url: ".$url;
 		$sql=sprintf("select PS.`Page Key` from `Page Store Dimension` PS left join `Page Dimension` P on (PS.`Page Key`=P.`Page Key`) where `Page Site Key`=%d and `Page URL`=%s ",
-			$this->id,prepare_mysql($url));
+			$this->id, prepare_mysql($url));
 		//print $sql;
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
@@ -895,8 +928,8 @@ class Site extends DB_Table {
 
 	function get_unique_family_page_code($family) {
 
-		if (!$this->is_page_store_code($family->data['Product Family Code']))
-			return $family->data['Product Family Code'];
+		if (!$this->is_page_store_code($family['Product Family Code']))
+			return $family['Product Family Code'];
 
 		for ($i = 2; $i <= 200; $i++) {
 
@@ -906,12 +939,13 @@ class Site extends DB_Table {
 				$suffix=uniqid('', true);
 			}
 
-			if (!$this->is_page_store_code($family->data['Product Family Code'].$suffix))
-				return $family->data['Product Family Code'].$suffix;
+			if (!$this->is_page_store_code($family['Product Family Code'].$suffix))
+				return $family['Product Family Code'].$suffix;
 		}
 
 		return $suffix;
 	}
+
 
 	function get_unique_product_page_code($product) {
 
@@ -961,8 +995,8 @@ class Site extends DB_Table {
 	function is_page_store_code($query) {
 
 		$sql=sprintf("select PS.`Page Code`,PS.`Page Key` from `Page Store Dimension`  PS where `Page Site Key`=%d and `Page Code`=%s  "
-			,$this->id
-			,prepare_mysql($query)
+			, $this->id
+			, prepare_mysql($query)
 		);
 
 		$res=mysql_query($sql);
@@ -978,13 +1012,14 @@ class Site extends DB_Table {
 
 	}
 
+
 	function update_headers($new_header_key) {
 
-		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Header Type`='SiteDefault' and `Page Site Key`=%d",$this->id);
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Header Type`='SiteDefault' and `Page Site Key`=%d", $this->id);
 		$res=mysql_query($sql);
 
 		while ($row=mysql_fetch_array($res)) {
-			$sql=sprintf("update  `Page Store Dimension` set `Page Header Key`=%d where `Page Key`=%d ",$new_header_key,$row['Page Key']);
+			$sql=sprintf("update  `Page Store Dimension` set `Page Header Key`=%d where `Page Key`=%d ", $new_header_key, $row['Page Key']);
 			mysql_query($sql);
 
 		}
@@ -993,11 +1028,12 @@ class Site extends DB_Table {
 
 	}
 
+
 	function set_default_header($new_header_key) {
 
 
 		$old_header_key=$this->data['Site Default Header Key'];
-		$this->update_field_switcher('Site Default Header Key',$new_header_key,'no history');
+		$this->update_field_switcher('Site Default Header Key', $new_header_key, 'no history');
 
 
 		if ($this->updated) {
@@ -1022,22 +1058,24 @@ class Site extends DB_Table {
 
 	}
 
+
 	function update_footers($new_footer_key) {
-		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Footer Type`='SiteDefault' and `Page Site Key`=%d",$this->id);
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Footer Type`='SiteDefault' and `Page Site Key`=%d", $this->id);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_array($res)) {
-			$sql=sprintf("update  `Page Store Dimension` set `Page Footer Key`=%d where `Page Key`=%d ",$new_footer_key,$row['Page Key']);
+			$sql=sprintf("update  `Page Store Dimension` set `Page Footer Key`=%d where `Page Key`=%d ", $new_footer_key, $row['Page Key']);
 			//  print "$sql<br>";
 			mysql_query($sql);
 		}
 
 	}
 
+
 	function set_default_footer($new_footer_key) {
 
 
 		$old_footer_key=$this->data['Site Default Footer Key'];
-		$this->update_field_switcher('Site Default Footer Key',$new_footer_key,'no history');
+		$this->update_field_switcher('Site Default Footer Key', $new_footer_key, 'no history');
 
 
 		if ($this->updated) {
@@ -1061,6 +1099,7 @@ class Site extends DB_Table {
 		}
 
 	}
+
 
 	function display_search() {
 
@@ -1088,7 +1127,7 @@ class Site extends DB_Table {
 		$number_pages_with_products=0;
 		$number_pages_with_out_of_stock_products=0;
 
-		$sql=sprintf("select count(*) as number_pages, SUM(IF(`Page Store Number Products`>0,1,0)) as number_pages_with_products ,  SUM(IF(`Page Store Number Out of Stock Products`>0,1,0)) as number_pages_with_out_of_stock_products  from `Page Store Dimension` where `Page Site Key`=%d and `Page State`='Online'",$this->id);
+		$sql=sprintf("select count(*) as number_pages, SUM(IF(`Page Store Number Products`>0,1,0)) as number_pages_with_products ,  SUM(IF(`Page Store Number Out of Stock Products`>0,1,0)) as number_pages_with_out_of_stock_products  from `Page Store Dimension` where `Page Site Key`=%d and `Page State`='Online'", $this->id);
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($result)) {
 			$number_pages=$row['number_pages'];
@@ -1166,6 +1205,7 @@ class Site extends DB_Table {
 		return $email_credentials;
 	}
 
+
 	function get_email_credential_key() {
 		$sql=sprintf("select E.`Email Credentials Key` from `Email Credentials Dimension` E left join `Email Credentials Site Bridge` B on (E.`Email Credentials Key`=B.`Email Credentials Key`) where B.`Site Key`=%d",
 			$this->id);
@@ -1181,6 +1221,7 @@ class Site extends DB_Table {
 		return $email_credentials_key;
 	}
 
+
 	function get_credential_type() {
 		include_once 'class.EmailCredentials.php';
 		$keys=$this->get_email_credential_key();
@@ -1191,6 +1232,7 @@ class Site extends DB_Table {
 		else
 			return false;
 	}
+
 
 	function associate_email_credentials($email_credentials_key) {
 
@@ -1219,10 +1261,10 @@ class Site extends DB_Table {
 		$old_email_credentials=new EmailCredentials($current_email_credentials_key);
 		$old_email_credentials->delete();
 
-		$sql=sprintf("insert into `Email Credentials Site Bridge` values (%d,%d)",$email_credentials_key, $this->id);
+		$sql=sprintf("insert into `Email Credentials Site Bridge` values (%d,%d)", $email_credentials_key, $this->id);
 		mysql_query($sql);
 
-		$sql=sprintf("insert into `Email Credentials Scope Bridge` values (%d, 'Site Registration')",$email_credentials_key);
+		$sql=sprintf("insert into `Email Credentials Scope Bridge` values (%d, 'Site Registration')", $email_credentials_key);
 		mysql_query($sql);
 
 
@@ -1235,6 +1277,7 @@ class Site extends DB_Table {
 
 	}
 
+
 	function create_ftp_connection() {
 
 		if ($this->data['Site FTP Server']=='') {
@@ -1244,7 +1287,7 @@ class Site extends DB_Table {
 
 		include_once 'class.FTP.php';
 
-		$ftp_connection=new FTP($this->data['Site FTP Server'],$this->data['Site FTP User'],$this->data['Site FTP Password'],$this->data['Site FTP Protocol'],$this->data['Site FTP Port'],$this->data['Site FTP Passive']);
+		$ftp_connection=new FTP($this->data['Site FTP Server'], $this->data['Site FTP User'], $this->data['Site FTP Password'], $this->data['Site FTP Protocol'], $this->data['Site FTP Port'], $this->data['Site FTP Passive']);
 		return  $ftp_connection;
 
 	}
@@ -1253,10 +1296,10 @@ class Site extends DB_Table {
 
 
 
-	function get_redirections_htaccess($host,$path) {
+	function get_redirections_htaccess($host, $path) {
 		$htaccess='';
 		$redirect_lines=array();
-		$host_bis=strtolower(preg_replace('/^www\./','',$host));
+		$host_bis=strtolower(preg_replace('/^www\./', '', $host));
 		$ftp_sever=strtolower($this->data['Site FTP Server']);
 
 		//print "\n$host $ftp_sever\n";
@@ -1264,7 +1307,7 @@ class Site extends DB_Table {
 		if ($ftp_sever==strtolower($host) or $ftp_sever==$host_bis) {
 			$sql=sprintf("select * from `Page Redirection Dimension` where `Source Host`=%s and `Source Path`=%s",
 				prepare_mysql($host),
-				prepare_mysql($path,false)
+				prepare_mysql($path, false)
 			);
 			$result=mysql_query($sql);
 			// print $sql;
@@ -1294,10 +1337,10 @@ class Site extends DB_Table {
 
 
 
-	function upload_redirections($host,$path) {
+	function upload_redirections($host, $path) {
 
 
-		$htaccess=$this->get_redirections_htaccess($host,$path);
+		$htaccess=$this->get_redirections_htaccess($host, $path);
 
 
 
@@ -1318,7 +1361,7 @@ class Site extends DB_Table {
 			}else {
 
 				//print $path."/.htaccess";
-				$ftp_connection->upload_string($htaccess,$path."/.htaccess");
+				$ftp_connection->upload_string($htaccess, $path."/.htaccess");
 				$ftp_connection->end();
 			}
 
@@ -1330,9 +1373,10 @@ class Site extends DB_Table {
 
 	}
 
+
 	function get_home_page_key() {
 		$page_key=0;
-		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Front Page Store' and `Page Site Key`=%d ",$this->id);
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Front Page Store' and `Page Site Key`=%d ", $this->id);
 		$res=mysql_query($sql);
 		//print $sql;
 		if ($row=mysql_fetch_assoc($res)) {
@@ -1340,10 +1384,11 @@ class Site extends DB_Table {
 		}
 		return $page_key;
 	}
+
 
 	function get_search_page_key() {
 		$page_key=0;
-		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Search' and `Page Site Key`=%d ",$this->id);
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Search' and `Page Site Key`=%d ", $this->id);
 		$res=mysql_query($sql);
 		//print $sql;
 		if ($row=mysql_fetch_assoc($res)) {
@@ -1352,18 +1397,10 @@ class Site extends DB_Table {
 		return $page_key;
 	}
 
+
 	function get_registration_page_key() {
 		$page_key=0;
-		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Registration' and `Page Site Key`=%d ",$this->id);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$page_key=$row['Page Key'];
-		}
-		return $page_key;
-	}
-	function get_login_page_key() {
-		$page_key=0;
-		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Login' and `Page Site Key`=%d ",$this->id);
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Registration' and `Page Site Key`=%d ", $this->id);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$page_key=$row['Page Key'];
@@ -1371,15 +1408,28 @@ class Site extends DB_Table {
 		return $page_key;
 	}
 
-	function get_reset_page_key() {
+
+	function get_login_page_key() {
 		$page_key=0;
-		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Reset' and `Page Site Key`=%d ",$this->id);
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Login' and `Page Site Key`=%d ", $this->id);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$page_key=$row['Page Key'];
 		}
 		return $page_key;
 	}
+
+
+	function get_reset_page_key() {
+		$page_key=0;
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Reset' and `Page Site Key`=%d ", $this->id);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$page_key=$row['Page Key'];
+		}
+		return $page_key;
+	}
+
 
 	function get_page_key_from_section($section) {
 		$page_key=0;
@@ -1396,25 +1446,7 @@ class Site extends DB_Table {
 
 	function get_profile_page_key() {
 		$page_key=0;
-		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Client Section' and `Page Site Key`=%d ",$this->id);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$page_key=$row['Page Key'];
-		}
-		return $page_key;
-	}
-	function get_welcome_page_key() {
-		$page_key=0;
-		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Welcome' and `Page Site Key`=%d ",$this->id);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$page_key=$row['Page Key'];
-		}
-		return $page_key;
-	}
-	function get_not_found_page_key() {
-		$page_key=0;
-		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Not Found' and `Page Site Key`=%d ",$this->id);
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Client Section' and `Page Site Key`=%d ", $this->id);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$page_key=$row['Page Key'];
@@ -1422,15 +1454,39 @@ class Site extends DB_Table {
 		return $page_key;
 	}
 
-	function get_login_help_page_key() {
+
+	function get_welcome_page_key() {
 		$page_key=0;
-		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Login Help' and `Page Site Key`=%d ",$this->id);
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Welcome' and `Page Site Key`=%d ", $this->id);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$page_key=$row['Page Key'];
 		}
 		return $page_key;
 	}
+
+
+	function get_not_found_page_key() {
+		$page_key=0;
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Not Found' and `Page Site Key`=%d ", $this->id);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$page_key=$row['Page Key'];
+		}
+		return $page_key;
+	}
+
+
+	function get_login_help_page_key() {
+		$page_key=0;
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Login Help' and `Page Site Key`=%d ", $this->id);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$page_key=$row['Page Key'];
+		}
+		return $page_key;
+	}
+
 
 	function update_up_today_requests() {
 		$this->update_requests('Today');
@@ -1438,6 +1494,7 @@ class Site extends DB_Table {
 		$this->update_requests('Month To Day');
 		$this->update_requests('Year To Day');
 	}
+
 
 	function update_last_period_requests() {
 
@@ -1459,6 +1516,7 @@ class Site extends DB_Table {
 		$this->update_requests('1 Day');
 		$this->update_requests('1 Hour');
 	}
+
 
 	function update_email_reminders() {
 
@@ -1513,8 +1571,9 @@ class Site extends DB_Table {
 
 	}
 
+
 	function update_requests($interval) {
-		list($db_interval,$from_date,$from_date_1yb,$to_1yb)=calculate_interval_dates($this->db,$interval);
+		list($db_interval, $from_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($this->db, $interval);
 
 		$sql=sprintf("select count(*) as num_requests ,count(distinct `User Session Key`) num_sessions ,count(Distinct `User Visitor Key`) as num_visitors   from  `User Request Dimension`  R  where  `Site Key`=%d  %s",
 			$this->id,
@@ -1576,7 +1635,7 @@ class Site extends DB_Table {
 
 
 	function update_customer_data() {
-		$sql=sprintf("select count(*) as num    from `User Dimension` where `User Active`='Yes' and  `User Type`='Customer'  and `User Site Key`=%d",$this->id);
+		$sql=sprintf("select count(*) as num    from `User Dimension` where `User Active`='Yes' and  `User Type`='Customer'  and `User Site Key`=%d", $this->id);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$this->data['Site Total Users']=$row['num'];
@@ -1592,13 +1651,13 @@ class Site extends DB_Table {
 
 	function add_favicon($image_key) {
 
-		$sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`='Site Favicon' and `Subject Key`=%d  and `Image Key`!=%d",$this->id,$image_key);
+		$sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`='Site Favicon' and `Subject Key`=%d  and `Image Key`!=%d", $this->id, $image_key);
 
 
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 
-			$sql=sprintf("delete from `Image Bridge` where `Subject Type`='Site Favicon' and `Subject Key`=%d  and `Image Key`=%d  ",$this->id,$row['Image Key']);
+			$sql=sprintf("delete from `Image Bridge` where `Subject Type`='Site Favicon' and `Subject Key`=%d  and `Image Key`=%d  ", $this->id, $row['Image Key']);
 			mysql_query($sql);
 
 
@@ -1612,9 +1671,9 @@ class Site extends DB_Table {
 
 
 		$sql=sprintf("insert into `Image Bridge` values ('Site Favicon',%d,%d,%s,'')"
-			,$this->id
-			,$image_key
-			,prepare_mysql('Yes')
+			, $this->id
+			, $image_key
+			, prepare_mysql('Yes')
 
 		);
 
@@ -1649,7 +1708,7 @@ class Site extends DB_Table {
 
 	function get_number_of_images() {
 		$number_of_images=0;
-		$sql=sprintf("select count(*) as num from `Image Bridge` where `Subject Type`='Site Favicon' and `Subject Key`=%d ",$this->id);
+		$sql=sprintf("select count(*) as num from `Image Bridge` where `Subject Type`='Site Favicon' and `Subject Key`=%d ", $this->id);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$number_of_images=$row['num'];
@@ -1663,7 +1722,7 @@ class Site extends DB_Table {
 
 		include_once 'utils/units_functions.php';
 
-		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Site Favicon' and   `Subject Key`=%d",$this->id);
+		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Site Favicon' and   `Subject Key`=%d", $this->id);
 		$res=mysql_query($sql);
 		$images_slideshow=array();
 		while ($row=mysql_fetch_array($res)) {
@@ -1678,8 +1737,8 @@ class Site extends DB_Table {
 				'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
 				'normal_url'=>'image.php?id='.$row['Image Key'],
 				'filename'=>$row['Image Filename'],
-				'ratio'=>$ratio,'caption'=>$row['Image Caption'],
-				'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key'],
+				'ratio'=>$ratio, 'caption'=>$row['Image Caption'],
+				'is_principal'=>$row['Is Principal'], 'id'=>$row['Image Key'],
 				'size'=>file_size($row['Image File Size'])
 			);
 		}
@@ -1688,8 +1747,9 @@ class Site extends DB_Table {
 		return $images_slideshow;
 	}
 
+
 	function get_favicon_url() {
-		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Site Favicon' and   `Subject Key`=%d and `Is Principal`='Yes'",$this->id);
+		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Site Favicon' and   `Subject Key`=%d and `Is Principal`='Yes'", $this->id);
 
 		$res=mysql_query($sql);
 		$favicon_url='art/nopic.png';
@@ -1699,11 +1759,12 @@ class Site extends DB_Table {
 		return $favicon_url;
 	}
 
+
 	function get_main_image_key() {
 
 		$images_slideshow=array();
 
-		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Site Favicon' and   `Subject Key`=%d and `Is Principal`='Yes'",$this->id);
+		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Site Favicon' and   `Subject Key`=%d and `Is Principal`='Yes'", $this->id);
 
 		$res=mysql_query($sql);
 
@@ -1713,11 +1774,12 @@ class Site extends DB_Table {
 		return $images_slideshow;
 	}
 
+
 	function get_current_active_logged_users($time=300) {
 		$users=0;
 		$sql=sprintf("select count(*) user from `User Log Dimension` where `Status`='Open' and `Site Key`=%d and `Last Visit Date`>%s ",
 			$this->id,
-			prepare_mysql(gmdate("Y-m-d H:i:s",strtotime("now -$time second")))
+			prepare_mysql(gmdate("Y-m-d H:i:s", strtotime("now -$time second")))
 		);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
@@ -1725,6 +1787,7 @@ class Site extends DB_Table {
 		}
 		return number($users);
 	}
+
 
 	function get_open_logged_users_sessions() {
 		$sessions=0;
@@ -1789,13 +1852,14 @@ class Site extends DB_Table {
 
 	}
 
+
 	function ping_sitemap() {
 
 		$sitemap = $this->data['Site URL'] .'/'. 'sitemap_index.xml.php';
 		$engines = array();
-		$engines['Google'] = array('host'=>'www.google.com','path'=>'/webmasters/tools/ping?sitemap=' . urlencode($sitemap));
-		$engines['Bing'] = array('host'=>'www.bing.com','path'=>'/webmaster/ping.aspx?siteMap=' . urlencode($sitemap));
-		$engines['Ask'] = array('host'=>'submissions.ask.com','path'=>'/ping?sitemap=' . urlencode($sitemap));
+		$engines['Google'] = array('host'=>'www.google.com', 'path'=>'/webmasters/tools/ping?sitemap=' . urlencode($sitemap));
+		$engines['Bing'] = array('host'=>'www.bing.com', 'path'=>'/webmaster/ping.aspx?siteMap=' . urlencode($sitemap));
+		$engines['Ask'] = array('host'=>'submissions.ask.com', 'path'=>'/ping?sitemap=' . urlencode($sitemap));
 		foreach ($engines as $engine_code => $data) {
 
 			$host=$data['host'];
@@ -1828,9 +1892,12 @@ class Site extends DB_Table {
 
 
 	}
+
+
 	function get_site_key() {
 		return $this->id;
 	}
+
 
 	function update_content_words() {
 
@@ -1868,17 +1935,17 @@ $sql = 'SELECT word FROM words_list
 			$page=new Page($row['Page Key']);
 			$content=$page->get_plain_content();
 
-			$content=preg_replace('/(\?|\;|\:|\"|\)|\(|\&|\'|\*|\“|\”)/','',$content);
-			$content=str_replace('?','',$content);
+			$content=preg_replace('/(\?|\;|\:|\"|\)|\(|\&|\'|\*|\“|\”)/', '', $content);
+			$content=str_replace('?', '', $content);
 
 
-			$words=preg_split('/\s+/',$content);
+			$words=preg_split('/\s+/', $content);
 
 			foreach ($words as $word) {
 				$word=_trim($word);
 
-				$word=preg_replace('/^(\.+|\,+)/','',$word);
-				$word=preg_replace('/(\.+|\,+)$/','',$word);
+				$word=preg_replace('/^(\.+|\,+)/', '', $word);
+				$word=preg_replace('/(\.+|\,+)$/', '', $word);
 
 
 
@@ -1894,7 +1961,7 @@ $sql = 'SELECT word FROM words_list
 					continue;
 				}
 
-				if (preg_match('/\d\+vat/',$word,$match))continue;
+				if (preg_match('/\d\+vat/', $word, $match))continue;
 
 				$word=strtolower($word);
 				$sql=sprintf("insert into `Site Content Word Dimension` (`Site Key`,`Word`,`Word Soundex`,`Multiplicity`) values (%d,%s,%s,1) on duplicate key update `Multiplicity`=`Multiplicity`+1",
@@ -1927,17 +1994,17 @@ $sql = 'SELECT word FROM words_list
 			return;
 		}
 
-		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Site Key`=%d ",$this->id);
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Site Key`=%d ", $this->id);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 			$page=new Page($row['Page Key']);
 			$page->delete();
 		}
 
-		$sql=sprintf("delete from `Site Dimension` where `Site Key`=%d ",$this->id);
+		$sql=sprintf("delete from `Site Dimension` where `Site Key`=%d ", $this->id);
 		mysql_query($sql);
 
-		$sql=sprintf("delete from `Page Store Section Dimension` where `Site Key`=%d ",$this->id);
+		$sql=sprintf("delete from `Page Store Section Dimension` where `Site Key`=%d ", $this->id);
 		mysql_query($sql);
 
 
@@ -1958,7 +2025,7 @@ $sql = 'SELECT word FROM words_list
 	function update_page_flags_numbers() {
 
 
-		$sql=sprintf("select * from  `Site Flag Dimension` where `Site Key`=%d  ",$this->id);
+		$sql=sprintf("select * from  `Site Flag Dimension` where `Site Key`=%d  ", $this->id);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 
@@ -1967,9 +2034,10 @@ $sql = 'SELECT word FROM words_list
 		}
 	}
 
+
 	function update_page_flag_number($flag_key) {
 		$num=0;
-		$sql=sprintf("select count(*) as num  from  `Page Store Dimension` where `Site Flag Key`=%d ",$flag_key);
+		$sql=sprintf("select count(*) as num  from  `Page Store Dimension` where `Site Flag Key`=%d ", $flag_key);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$num=$row['num'];
@@ -1983,6 +2051,7 @@ $sql = 'SELECT word FROM words_list
 
 
 	}
+
 
 	function get_default_flag_key() {
 		$flag_key=0;
@@ -2000,9 +2069,10 @@ $sql = 'SELECT word FROM words_list
 
 	}
 
-	function update_flag($flag_key,$field,$value) {
 
-		if (in_array($field,array('Site Flag Label','Site Flag Active'))) {
+	function update_flag($flag_key, $field, $value) {
+
+		if (in_array($field, array('Site Flag Label', 'Site Flag Active'))) {
 
 
 			$sql=sprintf("select * from  `Site Flag Dimension` where  `Site Flag Key`=%d and `Site Key`=%d",
@@ -2064,6 +2134,7 @@ $sql = 'SELECT word FROM words_list
 
 	}
 
+
 	function get_payment_options_data() {
 
 		$payment_options_data=array();
@@ -2116,4 +2187,6 @@ $sql = 'SELECT word FROM words_list
 
 
 }
+
+
 ?>

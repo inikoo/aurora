@@ -147,10 +147,26 @@ case 'views':
 		}
 
 
-		if ($state['object']=='product' or $state['object']=='customer') {
+		if ($state['object']=='product' and  $state['tab']!='product.new' ) {
 
 
-			if ($state['parent']=='store' and $_object->get('Store Key')!=$state['parent_key']) {
+			if ($state['parent']=='store' and $_object->get('Store Key')!=$state['parent_key'] ) {
+				$state=array('old_state'=>$state, 'module'=>'utils', 'section'=>'not_found', 'tab'=>'not_found', 'subtab'=>'', 'parent'=>$state['object'], 'parent_key'=>'', 'object'=>'',
+					'store'=>'',
+					'website'=>'',
+					'warehouse'=>'',
+					'key'=>'',
+					'request'=>$state['request']
+				);
+
+			}
+		}
+
+
+		if ( $state['object']=='customer' and    $state['tab']!='customer.new'  ) {
+
+
+			if ($state['parent']=='store' and $_object->get('Store Key')!=$state['parent_key'] ) {
 				$state=array('old_state'=>$state, 'module'=>'utils', 'section'=>'not_found', 'tab'=>'not_found', 'subtab'=>'', 'parent'=>$state['object'], 'parent_key'=>'', 'object'=>'',
 					'store'=>'',
 					'website'=>'',
@@ -246,6 +262,8 @@ case 'views':
 
 	}
 
+
+
 	if ($state['section']=='setup') {
 
 		$state=array('old_state'=>$state, 'module'=>'utils', 'section'=>'not_found', 'tab'=>'not_found', 'subtab'=>'', 'parent'=>$state['parent'], 'parent_key'=>'', 'object'=>'', 'key'=>'',
@@ -280,7 +298,6 @@ case 'views':
 	$state['store']=$store;
 	$state['website']=$website;
 	$state['warehouse']=$warehouse;
-
 
 
 	$sql=sprintf('insert into `User System View Fact`  (`User Key`,`Date`,`Module`,`Section`,`Tab`,`Parent`,`Parent Key`,`Object`,`Object Key`)  values (%d,%s,%s,%s,%s,%s,%s,%s,%s)',
@@ -477,7 +494,7 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state=false, $me
 	}
 
 
-	if (is_array($state)  and !in_array($tab, array('supplier.supplier_parts_edit'))   ) {
+	if (is_array($state)  and     !preg_match('/\_edit$/', $tab)        ) {
 
 
 
@@ -495,6 +512,12 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state=false, $me
 
 function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
 
+
+
+
+	if (preg_match('/\_edit$/', $data['tab'])) {
+		return '';
+	}
 
 	switch ($showcase) {
 	case 'material':
@@ -742,6 +765,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case 'product':
 			return get_product_navigation($data, $smarty, $user, $db, $account);
 			break;
+		case 'product.new':
+			return get_new_product_navigation($data, $smarty, $user, $db, $account);
+			break;	
 		case ('categories'):
 			return get_products_categories_navigation($data, $smarty, $user, $db, $account);
 			break;
@@ -1160,7 +1186,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 			break;
 		case ('supplier_part.new'):
 			return get_new_supplier_part_navigation($data, $smarty, $user, $db, $account, $account);
-			break;	
+			break;
 		case ('product'):
 
 			return get_product_navigation($data, $smarty, $user, $db, $account);
@@ -1184,6 +1210,10 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case ('category'):
 			return get_parts_category_navigation($data, $smarty, $user, $db, $account);
 			break;
+		case ('upload'):
+			return get_upload_navigation($data, $smarty, $user, $db, $account);
+			break;
+
 		case ('main_category.new'):
 			return get_parts_new_main_category_navigation($data, $smarty, $user, $db, $account);
 			break;
@@ -1514,6 +1544,11 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
 
 function get_tabs($data, $db, $account, $modules, $user, $smarty) {
+
+
+	if (preg_match('/\_edit$/', $data['tab'])) {
+		return array($data, '');
+	}
 
 
 
@@ -2600,7 +2635,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 			break;
 
 
-case 'supplier_part.new':
+		case 'supplier_part.new':
 
 
 			if ($state['parent']=='category') {
@@ -2640,7 +2675,7 @@ case 'supplier_part.new':
 			}
 
 			$branch[]=array('label'=>'<span class="id Part_Reference">'.$state['_object']->get('Reference').'</span>' , 'icon'=>'square', 'reference'=>'part/'.$state['_object']->id);
-				$branch[]=array('label'=>_('New supplier part'), 'icon'=>'', 'reference'=>'');
+			$branch[]=array('label'=>_('New supplier part'), 'icon'=>'', 'reference'=>'');
 
 			break;
 
@@ -2709,6 +2744,44 @@ case 'supplier_part.new':
 
 
 			break;
+		case 'upload':
+
+			if ($state['parent']=='category') {
+				$category=$state['_parent'];
+				$branch[]=array('label'=>_("Parts's categories"), 'icon'=>'sitemap', 'reference'=>'inventory/categories');
+
+
+				if (isset($state['metadata'])) {
+					$parent_category_keys=$state['metadata'];
+				}else {
+
+					$parent_category_keys=preg_split('/\>/', $category->get('Category Position'));
+				}
+
+
+				foreach ( $parent_category_keys as $category_key) {
+					if (!is_numeric($category_key)) {
+						continue;
+					}
+					if ($category_key==$state['key']) {
+						$branch[]=array('label'=>'<span class="Category_Label">'.$category->get('Label').'</span>', 'icon'=>'', 'reference'=>'');
+						break;
+					}else {
+
+						$parent_category=new Category($category_key);
+						if ($parent_category->id) {
+
+							$branch[]=array('label'=>$parent_category->get('Label'), 'icon'=>'', 'reference'=>'inventory/category/'.$parent_category->id);
+
+						}
+					}
+				}
+
+			}
+
+			$branch[]=array('label'=>_('Upload').' '.sprintf('%04d', $state['_object']->get('Key')), 'icon'=>'upload', 'reference'=>'');
+
+			break;
 		case 'stock_history':
 			$branch[]=array('label'=>_('Stock History'), 'icon'=>'area-chart', 'reference'=>'');
 			break;
@@ -2717,12 +2790,12 @@ case 'supplier_part.new':
 			$branch[]=array('label'=>strftime("%a %e %b %Y", strtotime($state['key'].' +0:00')), 'icon'=>'', 'reference'=>'');
 			break;
 		case 'part.attachment.new':
-		$branch[]=array('label'=>_('Inventory'), 'icon'=>'th-large', 'reference'=>'inventory');
+			$branch[]=array('label'=>_('Inventory'), 'icon'=>'th-large', 'reference'=>'inventory');
 			$branch[]=array('label'=>'<span class="id Part_Reference">'.$state['_parent']->get('Reference').'</span>' , 'icon'=>'square', 'reference'=>'part/'.$state['_parent']->sku);
 			$branch[]=array('label'=>_('Upload attachment'), 'icon'=>'paperclip', 'reference'=>'');
 			break;
 		case 'part.attachment':
-		$branch[]=array('label'=>_('Inventory'), 'icon'=>'th-large', 'reference'=>'inventory');
+			$branch[]=array('label'=>_('Inventory'), 'icon'=>'th-large', 'reference'=>'inventory');
 			$branch[]=array('label'=>'<span class="id Part_Reference">'.$state['_parent']->get('Reference').'</span>' , 'icon'=>'square', 'reference'=>'part/'.$state['_parent']->sku);
 			$branch[]=array('label'=>'<span class="id Attachment_Caption">'.$state['_object']->get('Caption').'</span>', 'icon'=>'paperclip', 'reference'=>'');
 

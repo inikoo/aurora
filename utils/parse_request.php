@@ -129,7 +129,17 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 					$parent_key=$view_path[0];
 					if (isset($view_path[1]) ) {
 
-						if ($view_path[1]=='categories') {
+if ($view_path[1]=='new') {
+							$object='product';
+							$key=0;
+							$section='product.new';
+							$parent='store';
+							$parent_key=$view_path[0];
+							
+							
+						}
+
+						elseif ($view_path[1]=='categories') {
 							$object='store';
 							$key=$view_path[0];
 							$section='categories';
@@ -302,6 +312,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 						$parent='account';
 						$parent_key=1;
 					}
+
 					if (isset($view_path[1])) {
 						if ($view_path[1]=='part') {
 							$section='part';
@@ -313,8 +324,23 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 									$key=$view_path[2];
 								}
 							}
+						}elseif ($view_path[1]=='upload') {
+							//$module='account';
+							$section='upload';
+							$parent='category';
+							$parent_key=$key;
+							$object='upload';
+							if (isset($view_path[2])) {
+								if (is_numeric($view_path[2])) {
+
+									$key=$view_path[2];
+								}
+							}
+
 						}
 					}
+
+
 					break;
 				case 'Supplier':
 					$module='suppliers';
@@ -1668,6 +1694,19 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 									}
 
+								}elseif ($view_path[2]=='upload') {
+									//$module='account';
+									$section='upload';
+									$parent='category';
+									$parent_key=$key;
+									$object='upload';
+									if (isset($view_path[3])) {
+										if (is_numeric($view_path[3])) {
+
+											$key=$view_path[3];
+										}
+									}
+
 								}
 
 
@@ -1676,6 +1715,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 						}
 
 						elseif ( is_numeric($view_path[1])) {
+						
 							$key=$view_path[1];
 							include_once 'class.Category.php';
 							$category=new Category($key);
@@ -1700,7 +1740,22 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 										$object='part';
 										$key=$view_path[3];
 									}
+								}elseif ($view_path[2]=='upload') {
+									//$module='account';
+									$section='upload';
+									$parent='category';
+									$parent_key=$key;
+									$object='upload';
+									if (isset($view_path[3])) {
+										if (is_numeric($view_path[3])) {
+
+											$key=$view_path[3];
+										}
+									}
+
 								}
+								
+
 							}
 						}
 						elseif ($view_path[1]=='new') {
@@ -1770,9 +1825,9 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 							$parent_key=$key;
 							$key=$view_path[2];
 							$parent='part';
-							
-							
-							
+
+
+
 
 						}elseif ($view_path[2]=='new') {
 							$module='products';
@@ -1796,24 +1851,24 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 					}
 					elseif ($view_path[1]=='attachment') {
-							$section='part.attachment';
-							$object='attachment';
-							$parent='part';
-							$parent_key=$key;
-							if (isset($view_path[2])) {
-								if (is_numeric($view_path[2])) {
-									$key=$view_path[2];
-								}elseif ($view_path[2]=='new') {
-									$section='part.attachment.new';
+						$section='part.attachment';
+						$object='attachment';
+						$parent='part';
+						$parent_key=$key;
+						if (isset($view_path[2])) {
+							if (is_numeric($view_path[2])) {
+								$key=$view_path[2];
+							}elseif ($view_path[2]=='new') {
+								$section='part.attachment.new';
 
-									$key=0;
-								}
+								$key=0;
 							}
-
-
-
 						}
-if ($view_path[1]=='supplier_part') {
+
+
+
+					}
+					if ($view_path[1]=='supplier_part') {
 
 						if (is_numeric($view_path[2])) {
 							//$module='products';
@@ -1822,13 +1877,13 @@ if ($view_path[1]=='supplier_part') {
 							$parent_key=$key;
 							$key=$view_path[2];
 							$parent='part';
-							
-							
-							
+
+
+
 
 						}elseif ($view_path[2]=='new') {
 							$section='supplier_part.new';
-							
+
 							$parent_key=$key;
 							$parent='part';
 						}

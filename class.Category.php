@@ -258,18 +258,18 @@ class Category extends DB_Table{
 		// $data=array('`Category Code`'=>$data['Category Code']);
 
 		$nodes=new Nodes('`Category Dimension`');
-		
-		
-		
+
+
+
 		$nodes->add_new($data['Category Parent Key'] , $data);
-		
-		
+
+
 		$node_id=$nodes->id;
-		
+
 		unset($nodes);
-		
-		
-	
+
+
+
 		if ($node_id) {
 
 			$this->get_data('id', $node_id);
@@ -350,6 +350,10 @@ class Category extends DB_Table{
 			}
 
 
+
+
+
+
 		}
 
 	}
@@ -419,6 +423,161 @@ class Category extends DB_Table{
 			);
 			$this->db->exec($sql);
 		}
+
+
+
+		//-----Migration ---
+
+
+
+		if ($this->get('Category Scope')=='Product') {
+			include_once 'class.Store.php';
+			$store=new Store($this->get('Category Store Key'));
+
+			if ($this->get('Category Subject')=='Product') {
+
+				// creating family
+
+
+
+				$sql=sprintf("select * from `Product Department Dimension` where `Product Department Store Key`=%d and `Product Department Code`=%s",
+					$this->get('Category Store Key'),
+					prepare_mysql($this->get('Category Code'))
+				);
+
+				$code=$subcategory->get('Category Code');
+				if ($result=$this->db->query($sql)) {
+					if ($department = $result->fetch()) {
+						$department_key=$department['Product Department Key'];
+
+
+
+
+						$sql=sprintf('insert into `Product Family Dimension` (`Product Family Store Code`,
+				    `Product Family Store Key`,`Product Family Currency Code`,
+				    `Product Family Main Department Key`,`Product Family Main Department Code`,`Product Family Main Department Name`,
+				    `Product Family Code`,`Product Family Name`,`Product Family Description`,`Product Family Special Characteristic`)
+				    values (%s,%d,%s,
+				    %d,%s,%s,
+				    %s,%s,"","")',
+							prepare_mysql($store->get('Store Code')),
+							$this->get('Category Store Key'),
+							prepare_mysql($store->get('Store Currency Code')),
+							$department['Product Department Key'],
+							prepare_mysql($department['Product Department Code']),
+							prepare_mysql($department['Product Department Name']),
+							prepare_mysql($code),
+							prepare_mysql($code)
+						);
+
+
+						if ($this->db->exec($sql)) {
+							$fam_key=$this->db->lastInsertId();
+
+							$sql=sprintf("insert into `Product Family Default Currency` (`Product Family Key`) values (%d)", $fam_key);
+							$this->db->exec($sql);
+
+							$sql=sprintf("insert into `Product Family Data Dimension` (`Product Family Key`) values (%d)", $fam_key);
+							$this->db->exec($sql);
+
+							$page_data=array(
+								'Page Store Content Display Type'=>'Template',
+								'Page Store Content Template Filename'=>'family_buttons',
+								'Page State'=>'Online'
+							);
+							foreach ($store->get_sites('objects') as $site) {
+								$family_page_key=$site->add_family_page($fam_key, $page_data);
+								$family_page=new Page($family_page_key);
+								$family_page->update_button_products('Parent');
+								$family_page->update_list_products();
+							}
+						}
+
+					}else {
+					
+					include_once 'class.Family.php';
+					
+						$sql=sprintf('insert into `Product Family Dimension` (`Product Family Store Code`,
+				    `Product Family Store Key`,`Product Family Currency Code`,
+				    `Product Family Main Department Key`,`Product Family Main Department Code`,`Product Family Main Department Name`,
+				    `Product Family Code`,`Product Family Name`,`Product Family Description`,`Product Family Special Characteristic`)
+				    values (%s,%d,%s,
+				    %d,%s,%s,
+				    %s,%s,"","")',
+							prepare_mysql($store->get('Store Code')),
+							$this->get('Category Store Key'),
+							prepare_mysql($store->get('Store Currency Code')),
+
+							0, prepare_mysql(""), prepare_mysql(""),
+							prepare_mysql($code),
+							prepare_mysql($code)
+						);
+
+						if ($this->db->exec($sql)) {
+							$fam_key=$this->db->lastInsertId();
+
+							$sql=sprintf("insert into `Product Family Default Currency` (`Product Family Key`) values (%d)", $fam_key);
+
+							$this->db->exec($sql);
+
+							$sql=sprintf("insert into `Product Family Data Dimension` (`Product Family Key`) values (%d)", $fam_key);
+							$this->db->exec($sql);
+
+
+							$page_data=array(
+								'Page Store Content Display Type'=>'Template',
+								'Page Store Content Template Filename'=>'family_buttons',
+								'Page State'=>'Online'
+							);
+							foreach ($store->get_sites('objects') as $site) {
+								$family_page_key=$site->add_family_page($fam_key, $page_data);
+								$family_page=new Page($family_page_key);
+								print_r($family_page);
+								
+								$family_page->update_button_products('Parent');
+								$family_page->update_list_products();
+							}
+
+						}
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
+				}
+
+
+			}
+			else {
+				// insert department
+				$code=$subcategory->get('Category Code');
+				$sql=sprintf('insert into `Product Department Dimension` (
+				    `Product Department Store Key`,`Product Department Store Code`,`Product Department Currency Code`,
+				    `Product Department Code`,`Product Department Name`,`Product Department Description`)
+				    values (%d,%s,%s,
+				    %s,%s,"")',
+					$this->get('Category Store Key'),
+					prepare_mysql($store->get('Store Code')),
+					prepare_mysql($store->get('Store Currency Code')),
+
+					0, prepare_mysql(""), prepare_mysql(""),
+					prepare_mysql($code),
+					prepare_mysql($code)
+				);
+				//print $sql;
+				$this->db->exec($sql);
+
+
+			}
+
+
+		}
+
+
+		// -----
+
+
+
+
 
 		return $subcategory;
 
@@ -968,7 +1127,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 					$descendant=new Category($descendant_key);
 					$descendant->update_branch_tree();
 				}
-			}elseif ($field=='Category Label') {
+			}
+			elseif ($field=='Category Label') {
 
 				// Migration -----
 				$this->update_field($field, $value, $options);
@@ -988,7 +1148,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 				$this->update_field($field, $value, $options);
 
 			}
-		}elseif (array_key_exists($field, $this->subject_base_data())) {
+		}
+		elseif (array_key_exists($field, $this->subject_base_data())) {
 
 
 
@@ -1675,7 +1836,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 
 
 
-	function disassociate_subject($subject_key) {
+	function disassociate_subject($subject_key, $options='') {
 
 
 
@@ -1701,7 +1862,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 				foreach ($result as $row) {
 
 					$head_category=new Category($row['Category Head Key']);
-					if ($head_category->disassociate_subject($subject_key))
+					if ($head_category->disassociate_subject($subject_key, $options))
 						$return_value=true;
 				}
 			}else {
@@ -1736,7 +1897,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 			$this->update_subjects_data();
 
 
-			switch ($this->data['Category Subject']) {
+			switch ($this->data['Category Scope']) {
 			case('Part'):
 				include_once 'class.Part.php';
 
@@ -1767,6 +1928,138 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 				$details='';
 				//$abstract=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']);
 				//$details=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> ('.$product->data['Product Name'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']).' ('.$this->data['Category Label'].')';
+
+
+				//  Migration  ----
+
+
+				if ($this->get('Category Root Key')==$store->get('Store Family Category Key')) {
+
+
+					$sql=sprintf("select * from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Code`=%s",
+						$this->get('Category Store Key'),
+						prepare_mysql($this->get('Category Code'))
+					);
+
+
+					if ($result=$this->db->query($sql)) {
+						if ($row = $result->fetch()) {
+
+							$sql=sprintf("update `Product Dimension`set `Product Family Key`=0, `Product Family Code`='', `Product Family Name`='',`Product Main Department Key`=0,
+                     `Product Main Department Code`='',
+                     `Product Main Department Name`=''
+                     where `Product ID`=%d",
+
+								$subject_key
+							);
+
+
+							//print $sql;
+							$this->db->exec($sql);
+
+
+							include_once 'class.Page.php';
+							$sql=sprintf("Select `Page Key` from `Page Store Dimension` where `Page Store Section Type`='Family' and  `Page Parent Key`=%d", $row['Product Family Key']);
+							$res2=mysql_query($sql);
+							while ($row2=mysql_fetch_array($res2)) {
+								$family_page=new Page($row2['Page Key']);
+								$family_page->update_button_products('Parent');
+								$family_page->update_list_products();
+
+							}
+
+						}
+					}else {
+						print_r($error_info=$this->db->errorInfo());
+						exit;
+					}
+
+
+
+					if (!preg_match('/skip_direct_update/', $options)) {
+						$product->update(array(
+								'Direct Product Family Category Key'=>''
+							), 'no_history');
+					}
+
+
+
+				}
+
+				if ($this->get('Category Root Key')==$store->get('Store Department Category Key')) {
+
+					// DEpartment
+
+
+					$sql=sprintf("select * from `Product Department Dimension` where `Product Department Store Key`=%d and `Product Department Code`=%s",
+						$this->get('Category Store Key'),
+						prepare_mysql($this->get('Category Code'))
+					);
+
+
+					if ($result=$this->db->query($sql)) {
+						if ($department = $result->fetch()) {
+							$department_key=$department['Product Department Key'];
+						}else {
+							$department_key=false;
+						}
+					}else {
+						print_r($error_info=$this->db->errorInfo());
+						exit;
+					}
+
+
+					$family=new Category($subject_key);
+
+
+					$sql=sprintf("select * from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Code`=%s",
+						$family->get('Category Store Key'),
+						prepare_mysql($family->get('Category Code'))
+					);
+
+
+					if ($result=$this->db->query($sql)) {
+						if ($family = $result->fetch()) {
+							$family_key=$department['Product Department Key'];
+						}else {
+							$family_key=false;
+						}
+					}else {
+						print_r($error_info=$this->db->errorInfo());
+						exit;
+					}
+
+
+					if ($family_key and $department_key) {
+
+
+						$sql=sprintf("update `Product Family Dimension` set `Product Family Main Department Key`=0, `Product Family Main Department Code`='', `Product Family Main Department Name`='' where `Product Family Key`=%d",
+
+							$family_key);
+
+
+						$this->db->exec($sql);
+
+						$sql=sprintf("update `Product Dimension` set `Product Main Department Key`=0, `Product Main Department Code`='', `Product Main Department Name`='' where `Product Family Key`=%d",
+
+							$family_key
+						);
+						$this->db->exec($sql);
+
+					}
+
+                    
+
+
+				}
+
+
+
+
+
+				//--------
+
+
 
 				break;
 
@@ -1915,7 +2208,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 	}
 
 
-	function associate_subject($subject_key, $force_associate=false, $other_value='') {
+	function associate_subject($subject_key, $force_associate=false, $other_value='', $options='') {
 
 		if ($this->data['Category Branch Type']=='Root') {
 			$this->msg=_("Subject can't be associated with category").' (Node is Root)';
@@ -1988,6 +2281,155 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 
 					$abstract=sprintf(_('Product %s associated with category %s'), $product->get('Code'), $this->get('Code'));
 					$details='';
+
+
+					if ($this->get('Category Root Key')==$store->get('Store Family Category Key')) {
+
+						// Migration -----
+
+						$sql=sprintf("select * from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Code`=%s",
+							$this->get('Category Store Key'),
+							prepare_mysql($this->get('Category Code'))
+						);
+
+
+						if ($result=$this->db->query($sql)) {
+							if ($row = $result->fetch()) {
+
+								$sql=sprintf("update `Product Dimension`set `Product Family Key`=%d, `Product Family Code`=%s, `Product Family Name`=%s,`Product Main Department Key`=%d,`Product Main Department Code`=%s, `Product Main Department Name`=%s   where `Product ID`=%d",
+									$row['Product Family Key'],
+									prepare_mysql($row['Product Family Code']),
+									prepare_mysql($row['Product Family Name']),
+									$row['Product Family Main Department Key'],
+									prepare_mysql($row['Product Family Main Department Code']),
+									prepare_mysql($row['Product Family Main Department Name']),
+									$subject_key
+								);
+
+								$this->db->exec($sql);
+
+								include_once 'class.Page.php';
+								$sql=sprintf("Select `Page Key` from `Page Store Dimension` where `Page Store Section Type`='Family' and  `Page Parent Key`=%d", $row['Product Family Key']);
+								$res2=mysql_query($sql);
+								while ($row2=mysql_fetch_array($res2)) {
+									$family_page=new Page($row2['Page Key']);
+									$family_page->update_button_products('Parent');
+									$family_page->update_list_products();
+
+								}
+
+
+
+
+								// print $sql;
+							}
+						}else {
+							print_r($error_info=$this->db->errorInfo());
+							print $sql;
+							exit;
+						}
+
+
+						// Migration -----
+
+						if (!preg_match('/skip_direct_update/', $options)) {
+							$product->update(array(
+									'Direct Product Family Category Key'=>$this->id
+								), 'no_history');
+						}
+
+					}
+
+
+					if ($this->get('Category Root Key')==$store->get('Store Dpartment Category Key')) {
+
+
+
+
+						$sql=sprintf("select * from `Product Department Dimension` where `Product Department Store Key`=%d and `Product Department Code`=%s",
+							$this->get('Category Store Key'),
+							prepare_mysql($this->get('Category Code'))
+						);
+
+
+						if ($result=$this->db->query($sql)) {
+							if ($department = $result->fetch()) {
+								$department_key=$department['Product Department Key'];
+								$department_code=$department['Product Department Code'];
+								$department_name=$department['Product Department Name'];
+							}else {
+								$department_key=false;
+							}
+						}else {
+							print_r($error_info=$this->db->errorInfo());
+							exit;
+						}
+
+
+						$family=new Category($subject_key);
+
+
+						$sql=sprintf("select * from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Code`=%s",
+							$family->get('Category Store Key'),
+							prepare_mysql($family->get('Category Code'))
+						);
+
+
+						if ($result=$this->db->query($sql)) {
+							if ($family = $result->fetch()) {
+								$family_key=$department['Product Department Key'];
+							}else {
+								$family_key=false;
+							}
+						}else {
+							print_r($error_info=$this->db->errorInfo());
+							exit;
+						}
+
+
+						if ($family_key and $department_key) {
+
+
+							$sql=sprintf("update `Product Family Dimension` set `Product Family Main Department Key`=%d, `Product Family Main Department Code`=%s, `Product Family Main Department Name`=%s where `Product Family Key`=%d",
+								$department_key,
+								prepare_mysql($department_code),
+								prepare_mysql($department_name),
+								$family_key);
+
+
+							$this->db->exec($sql);
+
+							$sql=sprintf("update `Product Dimension` set `Product Main Department Key`=%d, `Product Main Department Code`=%s, `Product Main Department Name`=%s where `Product Family Key`=%d",
+								$department_key,
+								prepare_mysql($department_code),
+								prepare_mysql($department_name),
+								$family_key
+							);
+							$this->db->exec($sql);
+
+
+							if (!preg_match('/skip_direct_update/', $options)) {
+								$product->update(array(
+										'Direct Product Department Category Key'=>$this->id
+									), 'no_history');
+							}
+
+
+						}
+
+
+
+
+
+
+
+
+					}
+
+
+
+
+
 
 					//$abstract=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']);
 					//$details=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> ('.$product->data['Product Name'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']).' ('.$this->data['Category Label'].')';
@@ -2086,7 +2528,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 
 					$other_category=new Category($row['Category Key']);
 					$other_category->editor=$this->editor;
-					$other_category->disassociate_subject($subject_key);
+					$other_category->disassociate_subject($subject_key, $options);
 				}
 			}else {
 				print_r($error_info=$this->db->errorInfo());
@@ -2237,7 +2679,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 
 
 	function get_field_label($field) {
-	
+
 
 		switch ($field) {
 

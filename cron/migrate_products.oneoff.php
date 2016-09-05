@@ -45,13 +45,36 @@ $editor=array(
 );
 /*
 migrate_products($db, $editor);
+update_number_of_parts($db)
 create_categories($db,$editor);
 fix_product_categories($db);
 migrate_historic_products($db);
+update_fields_from_parts($db);
 
 */
+update_number_of_parts($db);
+function update_number_of_parts($db) {
 
-update_fields_from_parts($db);
+	$sql=sprintf('select `Product ID` from `Product Dimension` order by `Product ID` desc ');
+
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+			$product=new Product('id',$row['Product ID']);
+         
+			$product->update_part_numbers();
+
+  print $product->id."\r";
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+}
 
 function update_fields_from_parts($db) {
 

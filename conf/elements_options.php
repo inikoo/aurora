@@ -199,9 +199,12 @@ $elements_options=array(
 		'status'=>array(
 			'label'=>_('Status'),
 			'items'=>array(
-				'InProcess'=>array('label'=>_('In process'), 'selected'=>true),
+				//'InProcess'=>array('label'=>_('In process'), 'selected'=>true),
 				'Active'=>array('label'=>_('Active'), 'selected'=>true),
-				'Suspended'=>array('label'=>_('Suspended'), 'selected'=>true),
+
+				'Discontinuing'=>array('label'=>_('Discontinuing'), 'selected'=>true),
+
+				'Suspended'=>array('label'=>_('Suspended'), 'selected'=>false),
 				'Discontinued'=>array('label'=>_('Discontinued'), 'selected'=>false)
 			)
 

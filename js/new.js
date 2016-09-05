@@ -71,7 +71,7 @@ function process_form_validation(validation, submitting) {
     }
     $('#fields .controls').removeClass('invalid valid potentially_valid').addClass(validation).addClass('changed')
 
-reset_controls()
+    reset_controls()
 
 }
 
@@ -162,6 +162,31 @@ function save_new_object(object, form_type) {
             } else if (field_type == 'telephone') {
                 value = $('#' + field).intlTelInput("getNumber");
 
+            } else if (field_type == 'parts_list') {
+                var part_list_data = [];
+
+                $('#parts_list_items  tr.part_tr').each(function(i, obj) {
+
+                 //   if (!$(obj).find('.sku').val()) return true;
+
+                    if ($(obj).hasClass('very_discreet')) {
+                        var ratio = 0;
+                    } else {
+                        var ratio = $(obj).find('.parts_per_product').val()
+                    }
+                    var part_data = {
+                        'Key': $(obj).find('.product_part_key').val(),
+                        'Part SKU': $(obj).find('.sku').val(),
+                        'Ratio': ratio,
+                        'Note': $(obj).find('.note').val(),
+
+                    }
+                    part_list_data.push(part_data)
+
+                });
+
+                value = JSON.stringify(part_list_data)
+
             } else {
                 var value = $('#' + field).val()
             }
@@ -194,7 +219,7 @@ function save_new_object(object, form_type) {
         console.log(request)
 
 
-        //  return;
+       // return;
         //=====
         form_data.append("tipo", (form_type != '' ? form_type : tipo))
         form_data.append("object", object)
@@ -474,7 +499,7 @@ function reset_controls() {
     var object = $('#fields').attr('object');
 
     $('#' + object + '_save').removeClass('hide');
-    $('.results').addClass('hide')
+    $('.new_object_results').addClass('hide')
     $('#' + object + '_msg').html('').addClass('hide').removeClass('success');
     $('#save_msg').html('').addClass('hide').removeClass('success');
     $('#' + object + '_go_new').attr('request', '')

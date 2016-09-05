@@ -334,7 +334,7 @@ class Asset extends DB_Table{
 				return array(true, '');
 			}
 			break;
-			
+
 		case $this->table_name.' Package Dimensions':
 		case $this->table_name.' Unit Dimensions':
 			$dimensions='';
@@ -488,6 +488,18 @@ class Asset extends DB_Table{
 				strftime("%a %e %b %Y", strtotime($this->data[$this->table_name.' '.$key].' +0:00')));
 
 
+
+			break;
+		case 'Valid To':
+
+			if ($this->data[$this->table_name.' '.$key]=='') {
+				return array(true, '');
+			}else {
+
+				return array(true,
+					strftime("%a %e %b %Y", strtotime($this->data[$this->table_name.' '.$key].' +0:00')));
+
+			}
 
 			break;
 		default:

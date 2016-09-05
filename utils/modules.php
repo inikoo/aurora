@@ -1524,6 +1524,16 @@ $modules=array(
 				)
 			),
 			*/
+
+			'upload'=>array('type'=>'object',
+				'tabs'=>array(
+					'upload.records'=>array('label'=>_('Records')),
+
+
+				)
+
+			),
+
 			'supplier_part.new'=>array('type'=>'new_object',
 				'tabs'=>array(
 					'part.supplier_part.new'=>array('label'=>_('New supplier part')),

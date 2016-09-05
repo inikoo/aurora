@@ -264,6 +264,16 @@ tr.invalid {
         }
     }
 }
+
+
+
+
+.table_new_fields{
+display: flex;border-bottom:1px solid #eee;
+}
+
+
+
 #parts_list {
     margin-bottom: 30px;
     .parts_per_products {
@@ -292,12 +302,3 @@ tr.invalid {
         }
     }
 }
-
-
-
-.table_new_fields{
-display: flex;border-bottom:1px solid #eee;
-}
-
-
-

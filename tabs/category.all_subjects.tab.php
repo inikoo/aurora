@@ -118,7 +118,10 @@ elseif ($category->get('Category Scope')=='Part') {
 
 
 			$table_buttons[]=array('icon'=>'leaf', 'title'=>_('Associated parts'), 'change_tab'=>'category.subjects');
+			
 			$smarty->assign('table_buttons', $table_buttons);
+			
+			
 		}elseif ($category->get('Category Branch Type')=='Root'){
 		
 			$tab='category_root.all_parts';

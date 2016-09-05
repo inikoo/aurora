@@ -19,7 +19,7 @@ function fork_export_edit_template($job) {
 		return;
 
 
-	//print_r($_data);
+
 
 	$db=$_data['db'];
 	$fork_data=$_data['fork_data'];
@@ -35,6 +35,7 @@ function fork_export_edit_template($job) {
 	$parent_code=$fork_data['parent_code'];
 	$objects=$fork_data['objects'];
 	$field_keys=$fork_data['fields'];
+	$metadata=$fork_data['metadata'];
 
 	$creator='aurora.systems';
 	$title=_('Report');
@@ -67,14 +68,64 @@ function fork_export_edit_template($job) {
 
 			break;
 		}
-
-
 		break;
+
+	case 'part':
+		include_once 'class.Part.php';
+		$object_id_name='Id: Part SKU';
+		$download_type='edit_parts';
+		switch ($parent) {
+		case 'category':
+
+			$sql_count=sprintf('select count(*) as num from `Category Bridge` where `Subject`="Part" and  `Category Key`=%d', $parent_key);
+			$sql_data=sprintf('select `Subject Key` as id from `Category Bridge` where `Subject`="Part" and `Category Key`=%d', $parent_key);
+
+			break;
+		default:
+
+			break;
+		}
+		break;
+
+	case 'product':
+		include_once 'class.Product.php';
+		include_once 'class.Store.php';
+
+		$object_id_name='Id: Product ID';
+		$download_type='edit_products';
+
+		switch ($parent) {
+		case 'part_category':
+			include_once 'class.Part.php';
+			include_once 'class.Category.php';
+			include_once 'utils/currency_functions.php';
+
+			$account= new Account($db);
+
+			$sql_count=sprintf('select count(*) as num from `Category Bridge` where `Subject`="Part" and  `Category Key`=%d', $parent_key);
+			$sql_data=sprintf('select `Subject Key` as id from `Category Bridge` where `Subject`="Part" and `Category Key`=%d', $parent_key);
+
+
+			$store=new Store($metadata['store_key']);
+
+			$family=new Category($parent_key);
+
+
+			$exchange=currency_conversion($db, $account->get('Account Currency'), $store->get('Store Currency Code'));
+
+
+			break;
+		default:
+
+			break;
+		}
+		break;
+
+
 	default:
 
 		break;
 	}
-
 
 
 
@@ -86,8 +137,6 @@ function fork_export_edit_template($job) {
 		print_r($error_info=$db->errorInfo());
 		exit;
 	}
-
-
 
 
 
@@ -157,13 +206,142 @@ function fork_export_edit_template($job) {
 				}
 
 				break;
+
+			case 'part':
+				$object=new Part($row['id']);
+
+				$data_rows=array();
+
+				$data_rows[]=array(
+					'cell_type'=>'auto',
+					'value'=>$object->id
+				);
+
+				foreach ($fields as $field) {
+
+					$data_rows[]=array(
+						'cell_type'=>(isset($field['cell_type'])?$field['cell_type']:'auto'),
+						'value'=>$object->get($field['name']),
+						'field'=>$field['name']
+					);
+				}
+
+				break;
+
+			case 'product':
+
+
+
+
+				switch ($parent) {
+				case 'part_category':
+
+
+					$data_rows=array();
+
+					$object=new Part($row['id']);
+
+					$sql=sprintf('select `Product ID` from `Product Dimension` where `Product Status`!="Discontinues" and `Product Store Key`=%d and `Product Code`=%s ',
+						$store->id,
+						prepare_mysql($object->get('Code'))
+					);
+
+
+					if ($result=$db->query($sql)) {
+						if ($row = $result->fetch()) {
+							continue;
+						}else {
+
+							$data_rows[]=array(
+								'cell_type'=>'auto',
+								'value'=>'NEW'
+							);
+
+
+							foreach ($fields as $field) {
+
+
+
+
+								switch ($field['name']) {
+								case 'Product Code':
+									$value=$object->get('Reference');
+									break;
+								case 'Parts':
+									$value='1x '.$object->get('Reference');
+									break;
+								case 'Product Name':
+									$value=$object->get('Part Unit Description');
+									break;
+								case 'Product Family Category Code':
+									$value=$family->get('Code');
+									break;
+								case 'Product Label in Family':
+									$value=$object->get('Part Label in Family');
+									break;
+								case 'Product Units Per Case':
+									$value=$object->get('Part Units Per Package');
+									break;
+								case 'Product Unit Label':
+									$value=$object->get('Part Unit Label');
+									break;	
+								case 'Product Price':
+									if ($object->get('Part Unit Price')=='') {
+										$value='';
+										}else {
+										$value=round($exchange*$object->get('Part Unit Price')*$object->get('Part Units Per Package'),2);
+									}
+									break;
+								case 'Product Unit RRP':
+
+									if ($object->get('Part Unit RRP')=='') {
+										$value='';
+									}else {
+										$value=round($exchange*$object->get('Part Unit RRP'),2);
+									}
+									break;
+								default:
+									$value=$object->get($field['name']);
+									break;
+								}
+
+
+
+								$data_rows[]=array(
+									'cell_type'=>(isset($field['cell_type'])?$field['cell_type']:'auto'),
+									'value'=>$value,
+									'field'=>$field['name']
+								);
+							}
+
+						}
+					}else {
+						print_r($error_info=$db->errorInfo());
+						exit;
+					}
+
+
+
+
+
+
+
+					break;
+				default:
+
+					break;
+				}
+
+
+
+				break;
+
 			default:
 
 				break;
 			}
 
-			//print_r($data_rows);
-
+			
 			if ($row_index==1) {
 				$char_index=1;
 
@@ -266,8 +444,9 @@ function fork_export_edit_template($job) {
 		//header('Content-Disposition: attachment;filename="'.$filename.'.xls"');
 		//header('Cache-Control: max-age=0');
 
-		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5')
-		->save($output_file);
+
+
+		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5')->save($output_file);
 		break;
 	case('pdf'):
 		$output_file=$download_path.$output_filename.'.'.$output_type;

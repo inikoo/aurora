@@ -25,9 +25,15 @@ class Page extends DB_Table {
 	var $set_currency='GBP';
 	var $set_currency_exchange=1;
 
-	function Page($arg1=false,$arg2=false,$arg3=false) {
+	function Page($arg1=false, $arg2=false, $arg3=false) {
+
+
+		global $db;
+		$this->db=$db;
+
 		$this->table_name='Page';
 		$this->ignore_fields=array('Page Key');
+
 
 
 		if (!$arg1 and !$arg2) {
@@ -35,33 +41,33 @@ class Page extends DB_Table {
 			$this->msg='No arguments';
 		}
 		if (is_numeric($arg1)) {
-			$this->get_data('id',$arg1);
+			$this->get_data('id', $arg1);
 			return;
 		}
 		if (is_string($arg1) and !$arg2) {
-			$this->get_data('url',$arg1);
+			$this->get_data('url', $arg1);
 			return;
 		}
 
 
-		if (is_array($arg2) and preg_match('/create|new/i',$arg1)) {
-			$this->find($arg2,$arg3.' create');
+		if (is_array($arg2) and preg_match('/create|new/i', $arg1)) {
+			$this->find($arg2, $arg3.' create');
 			return;
 		}
-		if (  preg_match('/find/i',$arg1)) {
-			$this->find($arg2,$arg3);
+		if (  preg_match('/find/i', $arg1)) {
+			$this->find($arg2, $arg3);
 			return;
 		}
 
-		$this->get_data($arg1,$arg2,$arg3);
+		$this->get_data($arg1, $arg2, $arg3);
 
 	}
 
 
-	function get_data($tipo,$tag,$tag2=false) {
+	function get_data($tipo, $tag, $tag2=false) {
 
-		if (preg_match('/url|address|www/i',$tipo)) {
-			$sql=sprintf("select * from `Page Dimension` where  `Page URL`=%s",prepare_mysql($tag));
+		if (preg_match('/url|address|www/i', $tipo)) {
+			$sql=sprintf("select * from `Page Dimension` where  `Page URL`=%s", prepare_mysql($tag));
 		}
 		elseif ($tipo=='store_page_code') {
 			$sql=sprintf("select * from `Page Store Dimension` PS left join `Page Dimension` P  on (P.`Page Key`=PS.`Page Key`) where `Page Code`=%s and `Page Store Key`=%d ",
@@ -77,7 +83,7 @@ class Page extends DB_Table {
 
 		}
 		else {
-			$sql=sprintf("select * from `Page Dimension` where  `Page Key`=%d",$tag);
+			$sql=sprintf("select * from `Page Dimension` where  `Page Key`=%d", $tag);
 		}
 
 
@@ -87,7 +93,7 @@ class Page extends DB_Table {
 			$this->type=$this->data['Page Type'];
 
 			if ($this->type=='Store') {
-				$sql=sprintf("select * from `Page Store Dimension` where  `Page Key`=%d",$this->id);
+				$sql=sprintf("select * from `Page Store Dimension` where  `Page Key`=%d", $this->id);
 				$result2 =mysql_query($sql);
 				if ($row=mysql_fetch_array($result2, MYSQL_ASSOC)) {
 					foreach ($row as $key=>$value) {
@@ -107,7 +113,7 @@ class Page extends DB_Table {
 
 			}
 			elseif ($this->type=='Internal') {
-				$sql=sprintf("select * from `Page Internal Dimension` where  `Page Key`=%d",$this->id);
+				$sql=sprintf("select * from `Page Internal Dimension` where  `Page Key`=%d", $this->id);
 				$result2 =mysql_query($sql);
 				if ($row=mysql_fetch_array($result2, MYSQL_ASSOC)) {
 					foreach ($row as $key=>$value) {
@@ -123,8 +129,9 @@ class Page extends DB_Table {
 
 	}
 
+
 	function load_data() {
-		$sql=sprintf("select * from `Page Store Data Dimension` where `Page Key`=%d",$this->id);
+		$sql=sprintf("select * from `Page Store Data Dimension` where `Page Key`=%d", $this->id);
 
 		$res =mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
@@ -135,12 +142,13 @@ class Page extends DB_Table {
 		}
 	}
 
-	function find($raw_data,$options) {
+
+	function find($raw_data, $options) {
 
 		if (isset($raw_data['editor'])) {
 			foreach ($raw_data['editor'] as $key=>$value) {
 
-				if (array_key_exists($key,$this->editor))
+				if (array_key_exists($key, $this->editor))
 					$this->editor[$key]=$value;
 
 			}
@@ -148,10 +156,10 @@ class Page extends DB_Table {
 
 		$create='';
 		$update='';
-		if (preg_match('/create/i',$options)) {
+		if (preg_match('/create/i', $options)) {
 			$create='create';
 		}
-		if (preg_match('/update/i',$options)) {
+		if (preg_match('/update/i', $options)) {
 			$update='update';
 		}
 
@@ -159,15 +167,15 @@ class Page extends DB_Table {
 		if ($raw_data['Page Type']=='Store') {
 
 			$sql=sprintf("select P.`Page Key` from `Page Dimension` P left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)   where `Page URL`=%s and `Page Site Key`=%d "
-				,prepare_mysql($raw_data['Page URL'])
-				,$raw_data['Page Site Key']
+				, prepare_mysql($raw_data['Page URL'])
+				, $raw_data['Page Site Key']
 			);
 
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_array($res)) {
 				$this->found=true;
 				$this->found_key=$row['Page Key'];
-				$this->get_data('id',$this->found_key);
+				$this->get_data('id', $this->found_key);
 			}
 		}
 
@@ -182,7 +190,7 @@ class Page extends DB_Table {
 
 	function get_options() {
 
-		if (array_key_exists('Page Options',$this->data)) {
+		if (array_key_exists('Page Options', $this->data)) {
 
 			return unserialize( $this->data['Page Options'] );
 		} else {
@@ -196,7 +204,7 @@ class Page extends DB_Table {
 
 		$data=$this->internal_base_data();
 		foreach ($raw_data as $key=>$value) {
-			if (array_key_exists($key,$data))
+			if (array_key_exists($key, $data))
 				$data[$key]=_trim($value);
 
 		}
@@ -210,13 +218,13 @@ class Page extends DB_Table {
 
 			$values.=prepare_mysql($value).",";
 		}
-		$keys=preg_replace('/,$/',')',$keys);
-		$values=preg_replace('/,$/',')',$values);
-		$sql=sprintf("insert into `Page Internal Dimension` %s %s",$keys,$values);
+		$keys=preg_replace('/,$/', ')', $keys);
+		$values=preg_replace('/,$/', ')', $values);
+		$sql=sprintf("insert into `Page Internal Dimension` %s %s", $keys, $values);
 		//print $sql;
 		if (mysql_query($sql)) {
 			$this->id=mysql_insert_id();
-			$this->get_data('id',$this->id);
+			$this->get_data('id', $this->id);
 
 
 		} else {
@@ -248,7 +256,7 @@ class Page extends DB_Table {
 
 		$data=$this->base_data();
 		foreach ($raw_data as $key=>$value) {
-			if (array_key_exists($key,$data))
+			if (array_key_exists($key, $data))
 				$data[$key]=_trim($value);
 
 
@@ -260,19 +268,19 @@ class Page extends DB_Table {
 		$values='values(';
 		foreach ($data as $key=>$value) {
 			$keys.="`$key`,";
-			if (preg_match('/Page Title|Page Description|Javascript|CSS|Page Keywords/i',$key))
+			if (preg_match('/Page Title|Page Description|Javascript|CSS|Page Keywords/i', $key))
 				$values.="'".addslashes($value)."',";
 			else
 				$values.=prepare_mysql($value).",";
 		}
-		$keys=preg_replace('/,$/',')',$keys);
-		$values=preg_replace('/,$/',')',$values);
-		$sql=sprintf("insert into `Page Dimension` %s %s",$keys,$values);
+		$keys=preg_replace('/,$/', ')', $keys);
+		$values=preg_replace('/,$/', ')', $values);
+		$sql=sprintf("insert into `Page Dimension` %s %s", $keys, $values);
 
 
 		if (mysql_query($sql)) {
 			$this->id=mysql_insert_id();
-			$this->get_data('id',$this->id);
+			$this->get_data('id', $this->id);
 
 			$this->update_valid_url();
 			$this->update_working_url();
@@ -306,12 +314,13 @@ class Page extends DB_Table {
 
 	}
 
+
 	function create_store_page($raw_data) {
 		//print_r($raw_data);
 
 		$data=$this->store_base_data();
 		foreach ($raw_data as $key=>$value) {
-			if (array_key_exists($key,$data)) {
+			if (array_key_exists($key, $data)) {
 				$data[$key]=$value;
 				if (is_string($value)) {
 					$data[$key]=_trim($value);
@@ -331,24 +340,24 @@ class Page extends DB_Table {
 		foreach ($data as $key=>$value) {
 			$keys.="`$key`,";
 			if ($key=='Page Source Template')
-				$values.=prepare_mysql($value,false).",";
+				$values.=prepare_mysql($value, false).",";
 
-			else if (preg_match('/Title|Description/i',$key))
-					$values.="'".addslashes($value)."',";
-				else
-					$values.=prepare_mysql($value).",";
+			else if (preg_match('/Title|Description/i', $key))
+				$values.="'".addslashes($value)."',";
+			else
+				$values.=prepare_mysql($value).",";
 		}
-		$keys=preg_replace('/,$/',')',$keys);
-		$values=preg_replace('/,$/',')',$values);
-		$sql=sprintf("insert into `Page Store Dimension` %s %s",$keys,$values);
+		$keys=preg_replace('/,$/', ')', $keys);
+		$values=preg_replace('/,$/', ')', $values);
+		$sql=sprintf("insert into `Page Store Dimension` %s %s", $keys, $values);
 		//print "$sql\n";
 		if (mysql_query($sql)) {
 
-			$this->get_data('id',$this->id);
+			$this->get_data('id', $this->id);
 			$this->new=true;
 
 
-			$sql=sprintf("insert into `Page Store Data Dimension` (`Page Key`) values (%d)",$this->id);
+			$sql=sprintf("insert into `Page Store Data Dimension` (`Page Key`) values (%d)", $this->id);
 			mysql_query($sql);
 
 			$sql=sprintf("select `Site Flag Key` from  `Site Flag Dimension` where `Site Flag Color`=%s and `Site Key`=%d",
@@ -370,9 +379,9 @@ class Page extends DB_Table {
 				$this->id,
 				$this->data['Page Site Key'],
 				prepare_mysql($this->data['Page URL']),
-				prepare_mysql($this->data['Page Store Title'],false),
-				prepare_mysql($this->data['Page Store Description'],false),
-				prepare_mysql($content,false)
+				prepare_mysql($this->data['Page Store Title'], false),
+				prepare_mysql($this->data['Page Store Description'], false),
+				prepare_mysql($content, false)
 			);
 			mysql_query($sql);
 
@@ -400,12 +409,12 @@ class Page extends DB_Table {
 				$this->id,
 				$this->data['Page Site Key'],
 				prepare_mysql($this->data['Page URL']),
-				prepare_mysql($this->data['Page Title'],false),
-				prepare_mysql($this->data['Page Store Description'],false),
-				prepare_mysql($this->get_plain_content(),false),
-				prepare_mysql($this->data['Page Title'],false),
-				prepare_mysql($this->data['Page Store Description'],false),
-				prepare_mysql($this->get_plain_content(),false)
+				prepare_mysql($this->data['Page Title'], false),
+				prepare_mysql($this->data['Page Store Description'], false),
+				prepare_mysql($this->get_plain_content(), false),
+				prepare_mysql($this->data['Page Title'], false),
+				prepare_mysql($this->data['Page Store Description'], false),
+				prepare_mysql($this->get_plain_content(), false)
 			);
 			mysql_query($sql);
 
@@ -413,32 +422,35 @@ class Page extends DB_Table {
 		}
 
 	}
+
 
 	function update_working_url() {
 		$old_value=$this->data['Page Working URL'];
 		$this->data['Page Working URL']=$this->get_url_state($this->data['Page URL']);
 		if ($old_value!=$this->data['Page Working URL']) {
 			$sql=sprintf("update `Page Dimension` set `Page Working URL`=%s where `Page Key`=%d"
-				,prepare_mysql($this->data['Page Working URL'])
-				,$this->id
+				, prepare_mysql($this->data['Page Working URL'])
+				, $this->id
 			);
 			mysql_query($sql);
 		}
 
 	}
+
 
 	function update_valid_url() {
 		$old_value=$this->data['Page Valid URL'];
 		$this->data['Page Valid URL']=($this->is_valid_url($this->data['Page URL'])?'Yes':'No');
 		if ($old_value!=$this->data['Page Valid URL']) {
 			$sql=sprintf("update `Page Dimension` set `Page Valid URL`=%s where `Page Key`=%d"
-				,prepare_mysql($this->data['Page Valid URL'])
-				,$this->id
+				, prepare_mysql($this->data['Page Valid URL'])
+				, $this->id
 			);
 			mysql_query($sql);
 		}
 
 	}
+
 
 	function get($key) {
 		switch ($key) {
@@ -450,7 +462,7 @@ class Page extends DB_Table {
 				return $this->data[$key];
 		}
 
-		if (preg_match('/ Acc /',$key)) {
+		if (preg_match('/ Acc /', $key)) {
 
 			$amount='Page Store '.$key;
 
@@ -459,6 +471,7 @@ class Page extends DB_Table {
 
 		return false;
 	}
+
 
 	function display($tipo='link') {
 
@@ -474,12 +487,14 @@ class Page extends DB_Table {
 
 	}
 
+
 	function get_url_state($url) {
 		$state='Unknown';
 
 		return $state;
 
 	}
+
 
 	function is_valid_url($url) {
 		if (preg_match("/^(http(s?):\\/\\/|ftp:\\/\\/{1})((\w+\.)+)\w{2,}(\/?)$/i", $url))
@@ -488,6 +503,7 @@ class Page extends DB_Table {
 			return false;
 
 	}
+
 
 	function internal_base_data() {
 		$data=array();
@@ -498,12 +514,13 @@ class Page extends DB_Table {
 		}
 		if (mysql_num_rows($result) > 0) {
 			while ($row = mysql_fetch_assoc($result)) {
-				if (!in_array($row['Field'],$this->ignore_fields))
+				if (!in_array($row['Field'], $this->ignore_fields))
 					$data[$row['Field']]=$row['Default'];
 			}
 		}
 		return $data;
 	}
+
 
 	function store_base_data() {
 		$data=array();
@@ -514,12 +531,13 @@ class Page extends DB_Table {
 		}
 		if (mysql_num_rows($result) > 0) {
 			while ($row = mysql_fetch_assoc($result)) {
-				if (!in_array($row['Field'],$this->ignore_fields))
+				if (!in_array($row['Field'], $this->ignore_fields))
 					$data[$row['Field']]=$row['Default'];
 			}
 		}
 		return $data;
 	}
+
 
 	function update_thumbnail_key($image_key) {
 
@@ -529,21 +547,21 @@ class Page extends DB_Table {
 			$this->data['Page Snapshot Image Key']=$image_key;
 
 			$sql=sprintf("update `Page Dimension` set `Page Snapshot Image Key`=%d ,`Page Snapshot Last Update`=NOW() where `Page Key`=%d "
-				,$this->data['Page Snapshot Image Key']
-				,$this->id
+				, $this->data['Page Snapshot Image Key']
+				, $this->id
 			);
 			mysql_query($sql);
 
 			$sql=sprintf("delete from  `Image Bridge` where `Subject Type`='Website' and `Subject Key`=%d "
-				,$this->id
+				, $this->id
 
 			);
 			mysql_query($sql);
 
 			if ($this->data['Page Snapshot Image Key']) {
 				$sql=sprintf("insert into `Image Bridge` (`Subject Type`,`Subject Key`,`Image Key`) values('Website',%d,%d)"
-					,$this->id
-					,$image_key
+					, $this->id
+					, $image_key
 				);
 				print $sql;
 				mysql_query($sql);
@@ -553,7 +571,8 @@ class Page extends DB_Table {
 
 	}
 
-	function update_show_layout($layout,$value) {
+
+	function update_show_layout($layout, $value) {
 		switch ($layout) {
 		case 'thumbnails':
 			$field="Product Thumbnails Layout";
@@ -577,9 +596,9 @@ class Page extends DB_Table {
 		$value=($value=='true'?'Yes':'No');
 
 		$sql=sprintf("update `Page Store Dimension` set `%s`=%s where `Page Key`=%d"
-			,$field
-			,prepare_mysql($value)
-			,$this->id
+			, $field
+			, prepare_mysql($value)
+			, $this->id
 		);
 		mysql_query($sql);
 		if (mysql_affected_rows()) {
@@ -595,15 +614,17 @@ class Page extends DB_Table {
 
 	}
 
+
 	function get_header_template() {
 		$template='';
-		$sql=sprintf("select `Template` from `Page Header Dimension` where `Page Header Key`=%d",$this->data['Page Header Key']);
+		$sql=sprintf("select `Template` from `Page Header Dimension` where `Page Header Key`=%d", $this->data['Page Header Key']);
 		$result = mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$template= $row['Template'];
 		}
 		return $template;
 	}
+
 
 	function get_footer_template() {
 
@@ -613,7 +634,7 @@ class Page extends DB_Table {
 		}
 
 		$template='';
-		$sql=sprintf("select `Template` from `Page Footer Dimension` where `Page Footer Key`=%d",$this->data['Page Footer Key']);
+		$sql=sprintf("select `Template` from `Page Footer Dimension` where `Page Footer Key`=%d", $this->data['Page Footer Key']);
 
 		$result = mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -627,7 +648,7 @@ class Page extends DB_Table {
 		$css='';
 
 
-		$sql=sprintf("select `CSS` from `Page Header Dimension` where `Page Header Key`=%d",$this->data['Page Header Key']);
+		$sql=sprintf("select `CSS` from `Page Header Dimension` where `Page Header Key`=%d", $this->data['Page Header Key']);
 		$result = mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$css.=$row['CSS'];
@@ -636,17 +657,19 @@ class Page extends DB_Table {
 		$css.=$this->data['Page Store CSS'];
 		return  $css;
 	}
+
+
 	function get_javascript() {
 		return $this->data['Page Store Javascript'];
 	}
 
 
-	function update_field_switcher($field, $value, $options='',$metadata='') {
+	function update_field_switcher($field, $value, $options='', $metadata='') {
 
 
 		switch ($field) {
 		case('Page Store See Also Type'):
-			$this->update_field('Page Store See Also Type',$value,$options);
+			$this->update_field('Page Store See Also Type', $value, $options);
 			if ($value=='Auto') {
 				$this->update_see_also();
 			}
@@ -672,23 +695,23 @@ class Page extends DB_Table {
 		case('title'):
 		case('Page Title'):
 
-			$this->update_field('Page Title',$value,$options);
-			
+			$this->update_field('Page Title', $value, $options);
+
 
 
 			break;
 
 		case('footer_type'):
-			$this->update_field('Page Footer Type',$value,$options);
+			$this->update_field('Page Footer Type', $value, $options);
 			break;
 
 		case('link_title'):
-			$this->update_field('Page Short Title',$value,$options);
+			$this->update_field('Page Short Title', $value, $options);
 			break;
 		case('Page Stealth Mode'):
-			$this->update_field('Page Stealth Mode',$value,$options);
+			$this->update_field('Page Stealth Mode', $value, $options);
 
-			$sql=sprintf("select `Page Store Key`  from `Page Store See Also Bridge` where `Page Store See Also Key`=%d ",$this->id);
+			$sql=sprintf("select `Page Store Key`  from `Page Store See Also Bridge` where `Page Store See Also Key`=%d ", $this->id);
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_assoc($res)) {
 				$_page=new Page ($row['Page Store Key']);
@@ -699,35 +722,35 @@ class Page extends DB_Table {
 		case('Page Store Description'):
 		case('description'):
 		case('page_html_head_resume'):
-			$this->update_field('Page Store Description',$value,$options);
+			$this->update_field('Page Store Description', $value, $options);
 			$this->update_store_search();
 			break;
 		case('Page Keywords'):
 		case('keywords'):
 		case('page_keywords'):
-			$this->update_field('Page Keywords',$value,$options);
+			$this->update_field('Page Keywords', $value, $options);
 			break;
 
 		case('store_title'):
-			$this->update_field('Page Store Title',$value,$options);
+			$this->update_field('Page Store Title', $value, $options);
 			$this->update_store_search();
 			break;
 		case('description'):
 		case('resume'):
-			$this->update_field('Page Store Description',$value,$options);
+			$this->update_field('Page Store Description', $value, $options);
 			break;
 		case('Page Store Content Display Type'):
-			$this->update_content_display_type($value,$options);
+			$this->update_content_display_type($value, $options);
 			break;
 		case('display_type'):
-			$this->update_field('Page Store Content Display Type',$value,$options);
+			$this->update_field('Page Store Content Display Type', $value, $options);
 			break;
 		case('filename'):
-			$this->update_field('Page Store Content Template Filename',$value,$options);
+			$this->update_field('Page Store Content Template Filename', $value, $options);
 			break;
 
 		case('Page State'):
-			$this->update_state($value,$options);
+			$this->update_state($value, $options);
 			break;
 
 		case('Page Store CSS'):
@@ -740,24 +763,24 @@ class Page extends DB_Table {
 		case('Page Body Include'):
 		case('Page Store Title'):
 
-			$this->update_field($field,$value,$options);
+			$this->update_field($field, $value, $options);
 			break;
 
 		case('Page Store Source'):
-			$this->update_field($field,$value,$options);
+			$this->update_field($field, $value, $options);
 			$this->update_store_search();
 			break;
 
 		default:
 
 			$base_data=$this->base_data();
-			if (array_key_exists($field,$base_data)) {
+			if (array_key_exists($field, $base_data)) {
 
 				if ($value!=$this->data[$field]) {
 
 
 
-					$this->update_field($field,$value,$options);
+					$this->update_field($field, $value, $options);
 				}
 			}else {
 				$this->error=true;
@@ -772,22 +795,22 @@ class Page extends DB_Table {
 	}
 
 
-	function update_content_display_type($value,$options) {
+	function update_content_display_type($value, $options) {
 
 
 		//'Front Page Store','Search','Product Description','Information','Product Category Catalogue','Family Category Catalogue','Family Catalogue','Department Catalogue','Registration','Client Section','Checkout','Login','Welcome','Not Found','Reset','Basket','Login Help','Thanks','Payment Limbo','Family Description','Department Description'
 		//'System','Info','Department','Family','Product','FamilyCategory','ProductCategory'
 		if ($value=='Template') {
 			if ($this->data['Page Store Section']=='Front Page Store') {
-				$this->update_field('Page Store Content Template Filename','home','no_history');
+				$this->update_field('Page Store Content Template Filename', 'home', 'no_history');
 			}
 		}
-		$this->update_field('Page Store Content Display Type',$value,$options);
+		$this->update_field('Page Store Content Display Type', $value, $options);
 		$this->update_store_search();
 	}
 
 
-	function update_header_key($value,$options='') {
+	function update_header_key($value, $options='') {
 		if ($this->type!='Store') {
 			return;
 		}
@@ -806,7 +829,7 @@ class Page extends DB_Table {
 		}
 
 		$sql=sprintf("update `Page Store Dimension`  set  `Page Header Key`=%d , `Page Header Type`=%s    where `Page Key`=%d",
-			$value,prepare_mysql($header_type),$this->id);
+			$value, prepare_mysql($header_type), $this->id);
 		// print $sql;
 
 
@@ -831,14 +854,14 @@ class Page extends DB_Table {
 			$this->data['Page Header Key']=$value;
 			$this->data['Page Header Type']=$header_type;
 			$save_history=true;
-			if (preg_match('/no( |\_)history|nohistory/i',$options))
+			if (preg_match('/no( |\_)history|nohistory/i', $options))
 				$save_history=false;
 
 			if (!$this->new and $save_history) {
 				$history_data=array(
 					'indirect_object'=>'Page Code'
-					,'old_value'=>$old_value
-					,'new_value'=>$value
+					, 'old_value'=>$old_value
+					, 'new_value'=>$value
 
 				);
 
@@ -862,7 +885,8 @@ class Page extends DB_Table {
 
 	}
 
-	function update_footer_key($value,$options='') {
+
+	function update_footer_key($value, $options='') {
 		if ($this->type!='Store') {
 			return;
 		}
@@ -881,7 +905,7 @@ class Page extends DB_Table {
 		}
 
 		$sql=sprintf("update `Page Store Dimension`  set  `Page Footer Key`=%d , `Page Footer Type`=%s    where `Page Key`=%d",
-			$value,prepare_mysql($footer_type),$this->id);
+			$value, prepare_mysql($footer_type), $this->id);
 		// print $sql;
 
 
@@ -906,14 +930,14 @@ class Page extends DB_Table {
 			$this->data['Page Footer Key']=$value;
 			$this->data['Page Footer Type']=$footer_type;
 			$save_history=true;
-			if (preg_match('/no( |\_)history|nohistory/i',$options))
+			if (preg_match('/no( |\_)history|nohistory/i', $options))
 				$save_history=false;
 
 			if (!$this->new and $save_history) {
 				$history_data=array(
 					'indirect_object'=>'Page Code'
-					,'old_value'=>$old_value
-					,'new_value'=>$value
+					, 'old_value'=>$old_value
+					, 'new_value'=>$value
 
 				);
 
@@ -938,7 +962,7 @@ class Page extends DB_Table {
 	}
 
 
-	function update_code($value,$options='') {
+	function update_code($value, $options='') {
 
 
 		if ($this->type!='Store') {
@@ -984,7 +1008,7 @@ class Page extends DB_Table {
 		$site=new Site($this->data['Page Site Key']);
 		$url=$site->data['Site URL'].'/'.strtolower($value);
 
-		$sql=sprintf("update `Page Store Dimension`  set  `Page Code`=%s  where `Page Key`=%d",prepare_mysql($value),$this->id);
+		$sql=sprintf("update `Page Store Dimension`  set  `Page Code`=%s  where `Page Key`=%d", prepare_mysql($value), $this->id);
 		// print $sql;
 
 
@@ -1009,14 +1033,14 @@ class Page extends DB_Table {
 			$this->data['Page Code']=$value;
 
 			$save_history=true;
-			if (preg_match('/no( |\_)history|nohistory/i',$options))
+			if (preg_match('/no( |\_)history|nohistory/i', $options))
 				$save_history=false;
 
 			if (!$this->new and $save_history) {
 				$history_data=array(
 					'indirect_object'=>'Page Code'
-					,'old_value'=>$old_value
-					,'new_value'=>$value
+					, 'old_value'=>$old_value
+					, 'new_value'=>$value
 
 				);
 
@@ -1028,11 +1052,11 @@ class Page extends DB_Table {
 				$site=new Site($this->data['Page Site Key']);
 				$url=$site->data['Site URL'].'/'.strtolower($value);
 
-				$sql=sprintf("update `Page Dimension`  set  `Page URL`=%s  where `Page Key`=%d",prepare_mysql($url),$this->id);
+				$sql=sprintf("update `Page Dimension`  set  `Page URL`=%s  where `Page Key`=%d", prepare_mysql($url), $this->id);
 
 				mysql_query($sql);
 
-				$sql=sprintf("update `Page Redirection Dimension`  set  `Page Target URL`=%s  where `Page Target Key`=%d",prepare_mysql($url),$this->id);
+				$sql=sprintf("update `Page Redirection Dimension`  set  `Page Target URL`=%s  where `Page Target Key`=%d", prepare_mysql($url), $this->id);
 
 				mysql_query($sql);
 			}
@@ -1105,33 +1129,33 @@ class Page extends DB_Table {
 			$see_also_page=new Page($row['Page Store See Also Key']);
 			if ($see_also_page->id) {
 
-                if($this->data['Page Store See Also Type']=='Manual'){
-                $formatted_correlation_type=_('Manual');
-					$formatted_correlation_value='';
-                }else{
-
-				switch ($row['Correlation Type']) {
-				case 'Manual':
+				if ($this->data['Page Store See Also Type']=='Manual') {
 					$formatted_correlation_type=_('Manual');
 					$formatted_correlation_value='';
-					break;
-				case 'Sales':
-					$formatted_correlation_type=_('Sales');
-					$formatted_correlation_value=percentage($row['Correlation Value'],1);
-					break;
-				case 'Semantic':
-					$formatted_correlation_type=_('Semantic');
-					$formatted_correlation_value=number($row['Correlation Value']);
-					break;
-				case 'New':
-					$formatted_correlation_type=_('New');
-					$formatted_correlation_value=number($row['Correlation Value']);
-					break;
-				default:
-					$formatted_correlation_type=$row['Correlation Type'];
-					$formatted_correlation_value=number($row['Correlation Value']);
-					break;
-				}
+				}else {
+
+					switch ($row['Correlation Type']) {
+					case 'Manual':
+						$formatted_correlation_type=_('Manual');
+						$formatted_correlation_value='';
+						break;
+					case 'Sales':
+						$formatted_correlation_type=_('Sales');
+						$formatted_correlation_value=percentage($row['Correlation Value'], 1);
+						break;
+					case 'Semantic':
+						$formatted_correlation_type=_('Semantic');
+						$formatted_correlation_value=number($row['Correlation Value']);
+						break;
+					case 'New':
+						$formatted_correlation_type=_('New');
+						$formatted_correlation_value=number($row['Correlation Value']);
+						break;
+					default:
+						$formatted_correlation_type=$row['Correlation Type'];
+						$formatted_correlation_value=number($row['Correlation Value']);
+						break;
+					}
 				}
 				//if ($site_url)
 				//$link='<a href="http://'.$site_url.'/'.$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>';
@@ -1158,6 +1182,7 @@ class Page extends DB_Table {
 
 	}
 
+
 	function delete_external_file($external_file_key) {
 
 		$sql=sprintf("select count(*) as num from `Page Store External File Bridge` where `Page Store External File Key`=%d and `Page Key`!=%d",
@@ -1168,40 +1193,41 @@ class Page extends DB_Table {
 		if ($row=mysql_fetch_assoc($res)) {
 			if ($row['num']==0) {
 
-				$sql=sprintf("delete from `Page Store External File Dimension` where `Page Store External File Key`=%d",$external_file_key);
+				$sql=sprintf("delete from `Page Store External File Dimension` where `Page Store External File Key`=%d", $external_file_key);
 
 			}
 		}
 
 	}
 
+
 	function delete($create_deleted_page_record=true) {
 
 
 
 		$this->deleted=false;
-		$sql=sprintf("delete from `Page Dimension` where `Page Key`=%d",$this->id);
+		$sql=sprintf("delete from `Page Dimension` where `Page Key`=%d", $this->id);
 		// print "$sql\n";
 		mysql_query($sql);
-		$sql=sprintf("delete from `Page Store Dimension` where `Page Key`=%d",$this->id);
+		$sql=sprintf("delete from `Page Store Dimension` where `Page Key`=%d", $this->id);
 		mysql_query($sql);
-		$sql=sprintf("delete from `Page Redirection Dimension` where `Page Target Key`=%d",$this->id);
+		$sql=sprintf("delete from `Page Redirection Dimension` where `Page Target Key`=%d", $this->id);
 		mysql_query($sql);
 
 
-		$sql=sprintf("select `Page Store External File Key` from `Page Store External File Bridge` where `Page Key`=%d",$this->id);
+		$sql=sprintf("select `Page Store External File Key` from `Page Store External File Bridge` where `Page Key`=%d", $this->id);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 			$this->delete_external_file($row['Page Store External File Key']);
 		}
-		$sql=sprintf("delete from `Page Store External File Bridge` where `Page Key`=%d",$this->id);
+		$sql=sprintf("delete from `Page Store External File Bridge` where `Page Key`=%d", $this->id);
 		mysql_query($sql);
 
-		$sql=sprintf("delete from `Page Store Found In Bridge` where `Page Store Key`=%d",$this->id);
+		$sql=sprintf("delete from `Page Store Found In Bridge` where `Page Store Key`=%d", $this->id);
 		mysql_query($sql);
-		$sql=sprintf("delete from `Page Store Found In Bridge` where `Page Store Found In Key`=%d",$this->id);
+		$sql=sprintf("delete from `Page Store Found In Bridge` where `Page Store Found In Key`=%d", $this->id);
 		mysql_query($sql);
-		$sql=sprintf("delete from  `Page Store See Also Bridge` where `Page Store Key`=%d",$this->id);
+		$sql=sprintf("delete from  `Page Store See Also Bridge` where `Page Store Key`=%d", $this->id);
 		mysql_query($sql);
 
 
@@ -1216,16 +1242,16 @@ class Page extends DB_Table {
 
 
 
-		$sql=sprintf("delete `Page Product Dimension` where `Page Key`=%d",$this->id);
+		$sql=sprintf("delete `Page Product Dimension` where `Page Key`=%d", $this->id);
 		mysql_query($sql);
 
 		$images=array();
-		$sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='Page' and `Subject Key`=%d",$this->id);
+		$sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='Page' and `Subject Key`=%d", $this->id);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 			$images[]=$row['Image Key'];
 		}
-		$sql=sprintf("delete from  `Image Bridge` where `Subject Type`='Page' and `Subject Key`=%d",$this->id);
+		$sql=sprintf("delete from  `Image Bridge` where `Subject Type`='Page' and `Subject Key`=%d", $this->id);
 		mysql_query($sql);
 
 		foreach ($images as $image_key) {
@@ -1237,7 +1263,7 @@ class Page extends DB_Table {
 
 		}
 
-		$sql=sprintf("select `Page Store Key`  from  `Page Store See Also Bridge` where `Page Store See Also Key`=%d ",$this->id);
+		$sql=sprintf("select `Page Store Key`  from  `Page Store See Also Bridge` where `Page Store See Also Key`=%d ", $this->id);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 			$_page=new Page ($row['Page Store Key']);
@@ -1248,7 +1274,7 @@ class Page extends DB_Table {
 		$this->deleted=true;
 
 
-		if (array_key_exists('Page Site Key',$this->data)) {
+		if (array_key_exists('Page Site Key', $this->data)) {
 			$site=new Site($this->data['Page Site Key']);
 			$site->update_page_totals();
 		}
@@ -1304,7 +1330,7 @@ class Page extends DB_Table {
 			if ($department->id and $department->data['Product Department Main Image Key']) {
 				$_page_image=new Image($department->data['Product Department Main Image Key']);
 				if ($_page_image->id) {
-					$page_image_source=sprintf("images/%07d.%s",$_page_image->data['Image Key'],$_page_image->data['Image File Format']);
+					$page_image_source=sprintf("images/%07d.%s", $_page_image->data['Image Key'], $_page_image->data['Image File Format']);
 					$image_key=$_page_image->id;
 				}
 			}
@@ -1313,25 +1339,43 @@ class Page extends DB_Table {
 
 			break;
 		case 'Family':
-			include_once 'class.Family.php';
-			$family=new Family($this->data['Page Parent Key']);
 
-			if ($family->id and $family->data['Product Family Main Image Key']) {
-				$_page_image=new Image($family->data['Product Family Main Image Key']);
-				if ($_page_image->id) {
-					$page_image_source=sprintf("images/%07d.%s",$_page_image->data['Image Key'],$_page_image->data['Image File Format']);
-					$image_key=$_page_image->id;
+			
+
+			$sql=sprintf('select * from `Product Family Dimension` where `Product Family Key`=%d ', $this->data['Page Parent Key']);
+			if ($result=$this->db->query($sql)) {
+				if ($family = $result->fetch()) {
+
+					if ( $family['Product Family Main Image Key']) {
+						$_page_image=new Image($family['Product Family Main Image Key']);
+						if ($_page_image->id) {
+							$page_image_source=sprintf("images/%07d.%s", $_page_image->data['Image Key'], $_page_image->data['Image File Format']);
+							$image_key=$_page_image->id;
+						}
+					}
+
+				}else {
+					$this->error=true;
+					$this->msg='family store and site store dont match';
+					return;
 				}
+
+
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
+
+
 
 			break;
 		case 'Product':
 			include_once 'class.Product.php';
-			$product=new Product('pid',$this->data['Page Parent Key']);
+			$product=new Product('id', $this->data['Page Parent Key']);
 			if ($product->id and $product->data['Product Main Image Key']) {
 				$_page_image=new Image($product->data['Product Main Image Key']);
 				if ($_page_image->id) {
-					$page_image_source=sprintf("images/%07d.%s",$_page_image->data['Image Key'],$_page_image->data['Image File Format']);
+					$page_image_source=sprintf("images/%07d.%s", $_page_image->data['Image Key'], $_page_image->data['Image File Format']);
 					$image_key=$_page_image->id;
 				}
 			}
@@ -1354,6 +1398,7 @@ class Page extends DB_Table {
 
 
 	}
+
 
 	function update_see_also() {
 
@@ -1388,9 +1433,25 @@ class Page extends DB_Table {
 		case 'Family Catalogue':
 
 
-
+			
 
 			$family=new Family($this->data['Page Parent Key']);
+
+
+			$sql=sprintf('select * from `Product Family Dimension` where `Product Family Key`=%d ', $this->data['Page Parent Key']);
+			if ($result=$this->db->query($sql)) {
+				if ($family = $result->fetch()) {
+
+				}else {
+
+				}
+
+
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
 
 			$sql=sprintf("select * from `Product Family Sales Correlation` where `Family A Key`=%d order by `Correlation` desc ",
 				$this->data['Page Parent Key']);
@@ -1402,8 +1463,25 @@ class Page extends DB_Table {
 
 
 
-				$family=new Family($row['Family B Key']);
-				if ($family->data['Product Family Record Type']=='Normal' or $family->data['Product Family Record Type']=='Discontinuing') {
+				//$family=new Family($row['Family B Key']);
+
+
+				$sql=sprintf('select * from `Product Family Dimension` where `Product Family Key`=%d ', $row['Family B Key']);
+				if ($result=$this->db->query($sql)) {
+					if ($family = $result->fetch()) {
+
+					}else {
+
+					}
+
+
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
+				}
+
+
+				if ($family['Product Family Record Type']=='Normal' or $family['Product Family Record Type']=='Discontinuing') {
 
 					$page_keys=$family->get_pages_keys();
 
@@ -1412,7 +1490,7 @@ class Page extends DB_Table {
 
 						$see_also_page=new Page($see_also_page_key);
 						if ($see_also_page->id and $see_also_page->data['Page State']=='Online' and $see_also_page->data['Page Stealth Mode']=='No'  and $see_also_page->data['Page Store Image Key']  ) {
-							$see_also[$see_also_page_key]=array('type'=>'Sales','value'=>$row['Correlation']);
+							$see_also[$see_also_page_key]=array('type'=>'Sales', 'value'=>$row['Correlation']);
 							$number_links=count($see_also);
 							//print "$number_links>=$max_links\n";
 							if ($number_links>=$max_sales_links  )
@@ -1426,7 +1504,7 @@ class Page extends DB_Table {
 			}
 
 
-           
+
 
 			$sql=sprintf("select UNIX_TIMESTAMP(`Page Store Creation Date`) as creation_date,`Page Key` from `Page Store Dimension` where `Page Site Key`=%d and `Page Key`!=%d and `Page State`='Online' order by `Page Store Creation Date` desc limit 3 ",
 				$this->data['Page Site Key'],
@@ -1446,7 +1524,7 @@ class Page extends DB_Table {
 
 				if (  (mt_rand(0, mt_getrandmax() - 1) / mt_getrandmax())<$umbral  ) {
 
-					$see_also[$row['Page Key']]=array('type'=>'New','value'=>1);
+					$see_also[$row['Page Key']]=array('type'=>'New', 'value'=>1);
 				}
 			}
 
@@ -1471,7 +1549,7 @@ class Page extends DB_Table {
 							$see_also_page_key=array_pop($page_keys);
 							$see_also_page=new Page($see_also_page_key);
 							if ($see_also_page->id and $see_also_page->data['Page State']=='Online' and $see_also_page->data['Page Stealth Mode']=='No' and $see_also_page->data['Page Store Image Key']   ) {
-								$see_also[$see_also_page_key]=array('type'=>'Semantic','value'=>$row['Weight']);
+								$see_also[$see_also_page_key]=array('type'=>'Semantic', 'value'=>$row['Weight']);
 								$number_links=count($see_also);
 								if ($number_links>=$max_links)
 									break;
@@ -1493,23 +1571,23 @@ class Page extends DB_Table {
 			break;
 
 		case 'Product Description':
-			
-			$product=new Product('pid',$this->data['Page Parent Key']);
+
+			$product=new Product('id', $this->data['Page Parent Key']);
 			$sql=sprintf("select * from `Product Sales Correlation` where `Product A ID`=%d order by `Correlation` desc",
 				$this->data['Page Parent Key']);
 			$res=mysql_query($sql);
 			//print $sql;
 			while ($row=mysql_fetch_assoc($res)) {
 				if (!array_key_exists($row['Product B ID'], $see_also)) {
-					$_product=new Product('pid',$row['Product B ID']);
+					$_product=new Product('id', $row['Product B ID']);
 
 					if ($_product->data['Product Web State']=='For Sale' and $_product->data['Product Main Image Key'] ) {
 
-						$page_keys=$_product->get_pages_keys();
+						$page_keys=$_product->get_pages();
 						$see_also_page_key=array_pop($page_keys);
 						$see_also_page=new Page($see_also_page_key);
 						if ($see_also_page->id and $see_also_page->data['Page State']=='Online' and $see_also_page->data['Page Stealth Mode']=='No'     ) {
-							$see_also[$see_also_page_key]=array('type'=>'Sales','value'=>$row['Correlation']);
+							$see_also[$see_also_page_key]=array('type'=>'Sales', 'value'=>$row['Correlation']);
 							$number_links=count($see_also);
 							if ($number_links>=$max_links)
 								break;
@@ -1518,11 +1596,11 @@ class Page extends DB_Table {
 				}
 			}
 
-           
 
-           if ($number_links>=$max_links){
-            break;
-           }
+
+			if ($number_links>=$max_links) {
+				break;
+			}
 
 
 			$sql=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where  `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product Family Key`=%d order by `Product Total Acc Customers` desc  ",
@@ -1535,21 +1613,21 @@ class Page extends DB_Table {
 
 			while ($row=mysql_fetch_assoc($res)) {
 
-				if ($row['Product ID']==$product->pid) continue;
+				if ($row['Product ID']==$product->id) continue;
 
 
 
 				if (!array_key_exists($row['Product ID'], $see_also)) {
-					$_product=new Product('pid',$row['Product ID']);
+					$_product=new Product('id', $row['Product ID']);
 
 
 					if ($_product->data['Product Web State']=='For Sale' and $_product->data['Product Main Image Key']) {
 
-						$page_keys=$_product->get_pages_keys();
+						$page_keys=$_product->get_pages();
 						$see_also_page_key=array_pop($page_keys);
 						$see_also_page=new Page($see_also_page_key);
 						if ($see_also_page->id and $see_also_page->data['Page State']=='Online' and $see_also_page->data['Page Stealth Mode']=='No') {
-							$see_also[$see_also_page_key]=array('type'=>'Same Familey','value'=>0.001);
+							$see_also[$see_also_page_key]=array('type'=>'Same Familey', 'value'=>0.001);
 							$number_links=count($see_also);
 							if ($number_links>=$max_links)
 								break;
@@ -1570,8 +1648,8 @@ class Page extends DB_Table {
 			$this->id);
 		mysql_query($sql);
 		$count=0;
-		
-		
+
+
 		foreach ($see_also  as $see_also_page_key=>$see_also_data) {
 
 			if ($count>=$max_links)
@@ -1697,14 +1775,16 @@ class Page extends DB_Table {
 		return $formatted_store_section;
 	}
 
+
 	function display_buttom($tag) {
 		return $this->display_button($tag);
 	}
 
+
 	function display_button($tag) {
 		$html='';
 		include_once 'class.Product.php';
-		$product=new Product('code_store',$tag,$this->data['Page Store Key']);
+		$product=new Product('code_store', $tag, $this->data['Page Store Key']);
 
 		if ($product->id) {
 
@@ -1739,20 +1819,20 @@ class Page extends DB_Table {
 
 
 			$sql=sprintf("select `Email Site Reminder Key` from `Email Site Reminder Dimension` where `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d and `User Key`=%d and `Email Site Reminder In Process`='Yes' ",
-				$product->pid,
+				$product->id,
 				$this->user->id
 
 			);
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_assoc($res)) {
-				$email_reminder='<br/><span id="send_reminder_wait_'.$product->pid.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request').'</span><span id="send_reminder_container_'.$product->pid.'"  style="color:#777"><span id="send_reminder_info_'.$product->pid.'" >'._("We'll notify you via email").' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','.$product->pid.')"  >('._('Cancel').')</span></span></span>';
+				$email_reminder='<br/><span id="send_reminder_wait_'.$product->id.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request').'</span><span id="send_reminder_container_'.$product->id.'"  style="color:#777"><span id="send_reminder_info_'.$product->id.'" >'._("We'll notify you via email").' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','.$product->id.')"  >('._('Cancel').')</span></span></span>';
 			}else {
 				$email_reminder='<br/>
-					<span id="send_reminder_wait_'.$product->pid.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request').'</span>
-					<span id="send_reminder_container_'.$product->pid.'" style="color:#777" >
-						<span id="send_reminder_'.$product->pid.'" style="cursor:pointer;" onClick="send_reminder('.$product->pid.')">'._('Notify me when back in stock').' <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span>
+					<span id="send_reminder_wait_'.$product->id.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request').'</span>
+					<span id="send_reminder_container_'.$product->id.'" style="color:#777" >
+						<span id="send_reminder_'.$product->id.'" style="cursor:pointer;" onClick="send_reminder('.$product->id.')">'._('Notify me when back in stock').' <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span>
 					</span>
-					<span id="send_reminder_msg_'.$product->pid.'"></span>';
+					<span id="send_reminder_msg_'.$product->id.'"></span>';
 
 			}
 
@@ -1775,7 +1855,7 @@ class Page extends DB_Table {
 		else {
 
 
-			$form_id='order_button_'.$product->pid;
+			$form_id='order_button_'.$product->id;
 
 			$button='<img onmouseover="this.src=\'art/ordernow_hover_'.$this->site->data['Site Locale'].'.png\'" onmouseout="this.src=\'art/ordernow_'.$this->site->data['Site Locale'].'.png\'"    onClick="order_product_from_button(\''.$form_id.'\')"  style="height:28px;cursor:pointer;" src="art/ordernow_'.$this->site->data['Site Locale'].'.png" alt="'._('Order Product').'"> <span style="visibility:hidden" id="waiting_'.$form_id.'"><img src="art/loading.gif" style="height:22px;position:relative;bottom:3px"></span>';
 
@@ -1800,10 +1880,10 @@ class Page extends DB_Table {
 
                              </div>",
 				// $this->site->get_checkout_data('url').'/cf/add.cfm',$form_id,$form_id,
-				$form_id,$product->data['Product Code'],
-				$form_id,$product->data['Product Code'],$product->data['Product Units Per Case'],$product->data['Product Name'],
-				$form_id,$this->data['Page URL'],
-				$form_id,number_format($product->data['Product Price'],2,'.',''),
+				$form_id, $product->data['Product Code'],
+				$form_id, $product->data['Product Code'], $product->data['Product Units Per Case'], $product->data['Product Name'],
+				$form_id, $this->data['Page URL'],
+				$form_id, number_format($product->data['Product Price'], 2, '.', ''),
 				$form_id,
 				$button
 
@@ -1868,7 +1948,7 @@ class Page extends DB_Table {
 
 			$sql=sprintf("select `Order Quantity` from `Order Transaction Fact` where `Order Key`=%d and `Product ID`=%d",
 				$this->order->id,
-				$product->pid);
+				$product->id);
 			$result1=mysql_query($sql);
 			if ($product1=mysql_fetch_array($result1))
 				$quantity=$product1['Order Quantity'];
@@ -1883,25 +1963,26 @@ class Page extends DB_Table {
 		return $quantity;
 	}
 
-	function get_button_text($product,$quantity) {
+
+	function get_button_text($product, $quantity) {
 
 		if ($product->data['Product Web State']=='Out of Stock') {
 
 			$message='';
 			$sql=sprintf("select `Email Site Reminder Key` from `Email Site Reminder Dimension` where `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d and `User Key`=%d and `Email Site Reminder In Process`='Yes' ",
-				$product->pid,
+				$product->id,
 				$this->user->id
 
 			);
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_assoc($res)) {
-				$email_reminder='<br/><span id="send_reminder_wait_'.$product->pid.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request').'</span><span id="send_reminder_container_'.$product->pid.'"  style="color:#777"><span id="send_reminder_info_'.$product->pid.'" >'._("We'll notify you via email").' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','.$product->pid.')"  >('._('Cancel').')</span></span></span>';
+				$email_reminder='<br/><span id="send_reminder_wait_'.$product->id.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request').'</span><span id="send_reminder_container_'.$product->id.'"  style="color:#777"><span id="send_reminder_info_'.$product->id.'" >'._("We'll notify you via email").' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','.$product->id.')"  >('._('Cancel').')</span></span></span>';
 			}else {
 				$email_reminder='<br/>
-					<span id="send_reminder_wait_'.$product->pid.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request').'</span>
-					<span id="send_reminder_container_'.$product->pid.'" style="color:#777" >
-					<span id="send_reminder_'.$product->pid.'" style="cursor:pointer;" onClick="send_reminder('.$product->pid.')">'._('Notify me when back in stock').' <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span>
-					</span><span id="send_reminder_msg_'.$product->pid.'"></span>';
+					<span id="send_reminder_wait_'.$product->id.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request').'</span>
+					<span id="send_reminder_container_'.$product->id.'" style="color:#777" >
+					<span id="send_reminder_'.$product->id.'" style="cursor:pointer;" onClick="send_reminder('.$product->id.')">'._('Notify me when back in stock').' <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span>
+					</span><span id="send_reminder_msg_'.$product->id.'"></span>';
 
 			}
 
@@ -1925,7 +2006,7 @@ class Page extends DB_Table {
 
 
 
-			$form_id='order_button_'.$product->pid;
+			$form_id='order_button_'.$product->id;
 
 			if ($quantity) {
 				$button_image_source='art/ordered_'.$this->data['Page Locale'].'.png';
@@ -1937,12 +2018,12 @@ class Page extends DB_Table {
 				$button_alt=_('Order Product');
 				$feedback_class="empty";
 			}
-			$button='<img id="order_button_'.$product->pid.'"    class="order_button"
+			$button='<img id="order_button_'.$product->id.'"    class="order_button"
 			src="'.$button_image_source.'" alt="'.$button_alt.'">
-			<img class="button_feedback waiting" style="display:none" id="waiting_'.$product->pid.'" src="art/loading.gif" >
-			<img class="button_feedback '.$feedback_class.'" id="done_'.$product->pid.'" src="art/icons/accept.png" alt="ok" >';
+			<img class="button_feedback waiting" style="display:none" id="waiting_'.$product->id.'" src="art/loading.gif" >
+			<img class="button_feedback '.$feedback_class.'" id="done_'.$product->id.'" src="art/icons/accept.png" alt="ok" >';
 			$input_field=sprintf("<br/><div class='order_but' style='text-align:left'>
-			<table border=0 onmouseover=\"over_order_button(".$product->pid.")\" onmouseout=\"out_order_button(".$product->pid.")\"  >
+			<table border=0 onmouseover=\"over_order_button(".$product->id.")\" onmouseout=\"out_order_button(".$product->id.")\"  >
                              <tr>
                              <td>
                              <input maxlength=6 onClick=\"this.select();\" class='button_input ordered_qty' onKeyUp=\"button_changed(%d)\"  id='but_qty%s'   type='text' size='2' class='qty'  value='%s' ovalue='%s'>
@@ -1956,8 +2037,8 @@ class Page extends DB_Table {
 
                              </div>",
 				// $this->site->get_checkout_data('url').'/cf/add.cfm',$form_id,$form_id,
-				$product->pid,
-				$product->pid,
+				$product->id,
+				$product->id,
 				$quantity,
 				$quantity,
 				$button
@@ -1975,6 +2056,7 @@ class Page extends DB_Table {
 
 	}
 
+
 	function get_button_price($product) {
 
 		$price_data=array(
@@ -1991,6 +2073,8 @@ class Page extends DB_Table {
 		$price= '<span class="price">'.$this->get_formatted_price($price_data).'</span><br>';
 		return $price;
 	}
+
+
 	function get_button_rrp($product) {
 
 		if (!$product->data['Product RRP']) {
@@ -2011,11 +2095,12 @@ class Page extends DB_Table {
 
 	}
 
+
 	function display_button_inikoo($product) {
 
 		$quantity=$this->get_button_ordered_quantity($product);
 
-		$message=$this->get_button_text($product,$quantity);
+		$message=$this->get_button_text($product, $quantity);
 		$price=$this->get_button_price($product);
 
 		$rrp=$this->get_button_rrp($product);
@@ -2050,7 +2135,7 @@ class Page extends DB_Table {
 
 			$sql=sprintf("select `Order Quantity` from `Order Transaction Fact` where `Order Key`=%d and `Product ID`=%d",
 				$this->order->id,
-				$product->pid);
+				$product->id);
 			$result1=mysql_query($sql);
 			if ($product1=mysql_fetch_array($result1))
 				$quantity=$product1['Order Quantity'];
@@ -2069,20 +2154,20 @@ class Page extends DB_Table {
 
 
 			$sql=sprintf("select `Email Site Reminder Key` from `Email Site Reminder Dimension` where `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d and `User Key`=%d and `Email Site Reminder In Process`='Yes' ",
-				$product->pid,
+				$product->id,
 				$this->user->id
 
 			);
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_assoc($res)) {
-				$email_reminder='<br/><span id="send_reminder_wait_'.$product->pid.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request').'</span><span id="send_reminder_container_'.$product->pid.'"  style="color:#777"><span id="send_reminder_info_'.$product->pid.'" >'._("We'll notify you via email").' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','.$product->pid.')"  >('._('Cancel').')</span></span></span>';
+				$email_reminder='<br/><span id="send_reminder_wait_'.$product->id.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request').'</span><span id="send_reminder_container_'.$product->id.'"  style="color:#777"><span id="send_reminder_info_'.$product->id.'" >'._("We'll notify you via email").' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','.$product->id.')"  >('._('Cancel').')</span></span></span>';
 			}else {
 				$email_reminder='<br/>
-					<span id="send_reminder_wait_'.$product->pid.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request').'</span>
-					<span id="send_reminder_container_'.$product->pid.'" style="color:#777" >
-						<span id="send_reminder_'.$product->pid.'" style="cursor:pointer;" onClick="send_reminder('.$product->pid.')">'._('Notify me when back in stock').' <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span>
+					<span id="send_reminder_wait_'.$product->id.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request').'</span>
+					<span id="send_reminder_container_'.$product->id.'" style="color:#777" >
+						<span id="send_reminder_'.$product->id.'" style="cursor:pointer;" onClick="send_reminder('.$product->id.')">'._('Notify me when back in stock').' <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span>
 					</span>
-					<span id="send_reminder_msg_'.$product->pid.'"></span>';
+					<span id="send_reminder_msg_'.$product->id.'"></span>';
 
 			}
 
@@ -2104,11 +2189,11 @@ class Page extends DB_Table {
 		}
 		else {
 
-			$form_id='order_button_'.$product->pid;
+			$form_id='order_button_'.$product->id;
 
-			$button='<img id="order_button_'.$product->pid.'"    class="order_button" onmouseover="this.src=\'art/ordernow_hover_'.$this->site->data['Site Locale'].'.png\'" onmouseout="this.src=\'art/ordernow_'.$this->site->data['Site Locale'].'.png\'"    onClick="order_product_from_button(\''.$product->pid.'\',\''.$this->order->id.'\',\''.$this->id.'\',\''.$this->data['Page Store Section Type'].'\')"   src="art/ordernow_'.$this->site->data['Site Locale'].'.png" alt="'._('Order Product').'">
-			<img class="button_feedback waiting" style="display:none" id="waiting_'.$product->pid.'" src="art/loading.gif" >
-			<img class="button_feedback" style="display:none" id="done_'.$product->pid.'" src="art/icons/accept.png" alt="ok" >';
+			$button='<img id="order_button_'.$product->id.'"    class="order_button" onmouseover="this.src=\'art/ordernow_hover_'.$this->site->data['Site Locale'].'.png\'" onmouseout="this.src=\'art/ordernow_'.$this->site->data['Site Locale'].'.png\'"    onClick="order_product_from_button(\''.$product->id.'\',\''.$this->order->id.'\',\''.$this->id.'\',\''.$this->data['Page Store Section Type'].'\')"   src="art/ordernow_'.$this->site->data['Site Locale'].'.png" alt="'._('Order Product').'">
+			<img class="button_feedback waiting" style="display:none" id="waiting_'.$product->id.'" src="art/loading.gif" >
+			<img class="button_feedback" style="display:none" id="done_'.$product->id.'" src="art/icons/accept.png" alt="ok" >';
 
 			$message=sprintf("<div class='order_but' style='text-align:left'>
 
@@ -2127,8 +2212,8 @@ class Page extends DB_Table {
 
                              </div>",
 				// $this->site->get_checkout_data('url').'/cf/add.cfm',$form_id,$form_id,
-				$product->pid,
-				$product->pid,
+				$product->id,
+				$product->id,
 				$quantity,
 				$quantity,
 				$button
@@ -2221,6 +2306,7 @@ class Page extends DB_Table {
 		return $form;
 	}
 
+
 	function display_list($list_code='default') {
 		if (!$this->data['Page Type']=='Store' or !$this->data['Page Store Section']=='Family Catalogue' ) {
 			return '';
@@ -2279,18 +2365,18 @@ class Page extends DB_Table {
 					break;
 				}
 
-				$limit=sprintf('limit %d',$row['List Max Items']);
+				$limit=sprintf('limit %d', $row['List Max Items']);
 
 
 				if ($row['Range']!='') {
-					$range=preg_split('/-/',$row['Range']);
+					$range=preg_split('/-/', $row['Range']);
 
 					if ($range[0]=='a' and $range[1]=='z' ) {
 						$range_where='';
 					}else if ($range[1]=='z') {
-							$range_where=sprintf("and  $order_by>=%s  ", prepare_mysql($range[0]));
+						$range_where=sprintf("and  $order_by>=%s  ", prepare_mysql($range[0]));
 
-						}elseif ($range[0]=='a') {
+					}elseif ($range[0]=='a') {
 						$range_where=sprintf("and  $order_by<=%s  ", prepare_mysql(++$range[1]));
 
 					}else {
@@ -2313,7 +2399,7 @@ class Page extends DB_Table {
 					if ($row2['Product Next Supplier Shipment']=='') {
 						$row2['Next Supplier Shipment']='';
 					}else {
-						$row2['Next Supplier Shipment']=strftime("%a, %e %b %y",strtotime($row2['Product Next Supplier Shipment'].' +0:00'));
+						$row2['Next Supplier Shipment']=strftime("%a, %e %b %y", strtotime($row2['Product Next Supplier Shipment'].' +0:00'));
 					}
 
 
@@ -2331,8 +2417,8 @@ class Page extends DB_Table {
 			switch ($row['List Product Description']) {
 			case 'Units Name':
 				foreach ($products as $key=>$product) {
-					$products[$key]['description']=sprintf("%dx %s",$product['Product Units Per Case'],$product['Product Name']);
-					$products[$key]['long_description']=sprintf("%dx %s",$product['Product Units Per Case'],$product['Product Name']);
+					$products[$key]['description']=sprintf("%dx %s", $product['Product Units Per Case'], $product['Product Name']);
+					$products[$key]['long_description']=sprintf("%dx %s", $product['Product Units Per Case'], $product['Product Name']);
 				}
 				break;
 			case 'Units Name RRP':
@@ -2341,7 +2427,7 @@ class Page extends DB_Table {
 
 
 				foreach ($products as $key=>$product) {
-					$rrp=money($product['Product RRP'],$product['Product Currency'],$this->site->data['Site Locale']);
+					$rrp=money($product['Product RRP'], $product['Product Currency'], $this->site->data['Site Locale']);
 					$tmp=sprintf("%dx %s <span class='rrp' >(%s: %s)</span>",
 						$product['Product Units Per Case'],
 						$product['Product Name'],
@@ -2355,8 +2441,8 @@ class Page extends DB_Table {
 				break;
 			case 'Units Special Characteristic':
 				foreach ($products as $key=>$product) {
-					$products[$key]['description']=sprintf("%dx %s",$product['Product Units Per Case'],$product['Product Special Characteristic']);
-					$products[$key]['long_description']=sprintf("%dx %s",$product['Product Units Per Case'],$product['Product Name']);
+					$products[$key]['description']=sprintf("%dx %s", $product['Product Units Per Case'], $product['Product Special Characteristic']);
+					$products[$key]['long_description']=sprintf("%dx %s", $product['Product Units Per Case'], $product['Product Name']);
 
 				}
 				break;
@@ -2366,7 +2452,7 @@ class Page extends DB_Table {
 
 
 				foreach ($products as $key=>$product) {
-					$rrp=money($product['Product RRP'],$product['Product Currency'],$this->site->data['Site Locale']);
+					$rrp=money($product['Product RRP'], $product['Product Currency'], $this->site->data['Site Locale']);
 
 					$products[$key]['description']=sprintf("%dx %s <span class='rrp' >(%s: %s)</span>",
 						$product['Product Units Per Case'],
@@ -2386,8 +2472,8 @@ class Page extends DB_Table {
 
 			default:
 				foreach ($products as $key=>$product) {
-					$products[$key]['description']=sprintf("%dx %s",$product['Product Units Per Case'],$product['Product Name']);
-					$products[$key]['long_description']=sprintf("%dx %s",$product['Product Units Per Case'],$product['Product Name']);
+					$products[$key]['description']=sprintf("%dx %s", $product['Product Units Per Case'], $product['Product Name']);
+					$products[$key]['long_description']=sprintf("%dx %s", $product['Product Units Per Case'], $product['Product Name']);
 
 				}
 				break;
@@ -2402,6 +2488,7 @@ class Page extends DB_Table {
 		return $products;
 	}
 
+
 	function get_list_header($products) {
 
 		$html='';
@@ -2409,7 +2496,7 @@ class Page extends DB_Table {
 		switch ($this->data['Page Store Section']) {
 		case 'Family Catalogue':
 			$family=new Family($this->data['Page Parent Key']);
-			$html=sprintf('<tr class="list_info"><td colspan=5>%s %s</td></tr>',$family->data['Product Family Code'],$family->data['Product Family Name']);
+			$html=sprintf('<tr class="list_info"><td colspan=5>%s %s</td></tr>', $family->data['Product Family Code'], $family->data['Product Family Name']);
 
 			break;
 		default:
@@ -2417,13 +2504,14 @@ class Page extends DB_Table {
 			break;
 		}
 
-		$html.=sprintf('<tr class="list_info price"><td style="padding-top:0;padding-bottom:0;text-align:left" colspan="6">%s </td></tr>',$this->get_list_price_header_auto($products));
-		$html.=sprintf('<tr class="list_info rrp"><td style="padding-top:0;padding-bottom:0;" colspan="6">%s</td></tr>',$this->get_list_rrp_header_auto($products));
+		$html.=sprintf('<tr class="list_info price"><td style="padding-top:0;padding-bottom:0;text-align:left" colspan="6">%s </td></tr>', $this->get_list_price_header_auto($products));
+		$html.=sprintf('<tr class="list_info rrp"><td style="padding-top:0;padding-bottom:0;" colspan="6">%s</td></tr>', $this->get_list_rrp_header_auto($products));
 
 
 		return $html;
 
 	}
+
 
 	function display_list_logged_out($products) {
 
@@ -2467,7 +2555,7 @@ class Page extends DB_Table {
 						$rrp= $this->get_formatted_rrp(array(
 								'Product RRP'=>$rrp,
 								'Product Units Per Case'=>1,
-								'Product Unit Type'=>''),array('prefix'=>false, 'show_unit'=>$show_unit));
+								'Product Unit Type'=>''), array('prefix'=>false, 'show_unit'=>$show_unit));
 
 						if ($row['rrp_avg']<=0) {
 							$rrp_label='';
@@ -2491,7 +2579,7 @@ class Page extends DB_Table {
 
 			$form.='<tr class="list_info" ><td colspan="4"><p>'.$rrp_label.'</p></td><td>';
 			if ($print_register and $number_records>10)
-				$form.=sprintf('<tr class="last register"><td colspan="4">%s</td></tr>',$register);
+				$form.=sprintf('<tr class="last register"><td colspan="4">%s</td></tr>', $register);
 
 
 		}
@@ -2549,10 +2637,11 @@ class Page extends DB_Table {
 		}
 
 		if ($print_register)
-			$form.=sprintf('<tr class="last register"><td colspan="4">%s</td></tr>',$register);
+			$form.=sprintf('<tr class="last register"><td colspan="4">%s</td></tr>', $register);
 		$form.=sprintf('</table>');
 		return $form;
 	}
+
 
 	function display_list_logged_in($products) {
 
@@ -2755,14 +2844,14 @@ class Page extends DB_Table {
                            </td>
                            <td class="description" style="vertical-align:top;">%s</td>
                            </tr>'."\n",
-				$form_id,$product['Product ID'],
-				$tr_class,$tr_style,$product['Product ID'],
+				$form_id, $product['Product ID'],
+				$tr_class, $tr_style, $product['Product ID'],
 
 
 
 				$product['Product Code'],
 				$price,
-				$form_id,$product['Product ID'],$product['Product ID'],
+				$form_id, $product['Product ID'], $product['Product ID'],
 
 				$input,
 
@@ -2871,14 +2960,14 @@ class Page extends DB_Table {
 			if ($product['Product Web State']=='Out of Stock') {
 
 
-				$order_button=sprintf('<td></td><td colspan=2 style="padding:0px"><div style="background:#ffdada;color:red;display:table-cell; vertical-align:middle;font-size:90%%;text-align:center;;border:1px solid #ccc;height:18px;width:58px;">%s</div></td>',_('Sold Out'));
+				$order_button=sprintf('<td></td><td colspan=2 style="padding:0px"><div style="background:#ffdada;color:red;display:table-cell; vertical-align:middle;font-size:90%%;text-align:center;;border:1px solid #ccc;height:18px;width:58px;">%s</div></td>', _('Sold Out'));
 
 
 			}
 			elseif ($product['Product Web State']=='Discontinued') {
 				//    $class_state='discontinued';
 				//  $state=' <span class="discontinued">('._('Sold Out').')</span>';
-				$order_button=sprintf('<td colspan=3>%s</td>',_('Sold Out'));
+				$order_button=sprintf('<td colspan=3>%s</td>', _('Sold Out'));
 			}
 			else {
 				// $class_state='';
@@ -2934,9 +3023,9 @@ class Page extends DB_Table {
 				$tr_class,
 				$product['Product Code'],
 				$order_button,
-				$product['Product ID'],$order_key,
-				$product['Product ID'],$product['Product ID'],
-				$product['Product ID'],$old_qty,
+				$product['Product ID'], $order_key,
+				$product['Product ID'], $product['Product ID'],
+				$product['Product ID'], $old_qty,
 
 				$price,
 
@@ -2961,6 +3050,7 @@ class Page extends DB_Table {
 
 	}
 
+
 	function get_list_emals_commerce_old($products) {
 
 
@@ -2977,9 +3067,9 @@ class Page extends DB_Table {
 
 
 
-			,$this->site->get_checkout_data('url').'/cf/addmulti.cfm'
-			,$this->site->get_checkout_data('id')
-			,$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']
+			, $this->site->get_checkout_data('url').'/cf/addmulti.cfm'
+			, $this->site->get_checkout_data('id')
+			, $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']
 		);
 		$counter=1;
 		foreach ($products as $product) {
@@ -3095,11 +3185,11 @@ class Page extends DB_Table {
                            </td>
                            <td class="description" style="vertical-align:top;">%s</td>
                            </tr>'."\n",
-				$tr_class,$tr_style,
+				$tr_class, $tr_style,
 
 				$counter,
-				number_format($product['Product Price'],2,'.',''),
-				$counter,$product['Product Code'],
+				number_format($product['Product Price'], 2, '.', ''),
+				$counter, $product['Product Code'],
 				clean_accents($product['long_description']),
 
 				$product['Product Code'],
@@ -3142,6 +3232,7 @@ class Page extends DB_Table {
 		return $form;
 	}
 
+
 	function get_list_emals_commerce($products) {
 
 
@@ -3157,9 +3248,9 @@ class Page extends DB_Table {
 
 
 
-			,$this->site->get_checkout_data('url').'/cf/addmulti.cfm'
-			,$this->site->get_checkout_data('id')
-			,$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']
+			, $this->site->get_checkout_data('url').'/cf/addmulti.cfm'
+			, $this->site->get_checkout_data('id')
+			, $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']
 		);
 
 		//$form='<form><table id="list_'.$form_id.'" border=1>';
@@ -3280,8 +3371,8 @@ class Page extends DB_Table {
                            </td>
                            <td class="description" style="vertical-align:top;">%s</td>
                            </tr>'."\n",
-				$form_id,$counter,
-				$tr_class,$tr_style,$counter,
+				$form_id, $counter,
+				$tr_class, $tr_style, $counter,
 
 
 
@@ -3289,8 +3380,8 @@ class Page extends DB_Table {
 				$price,
 
 				$input,
-				$form_id,$counter,number_format($product['Product Price'],2,'.',''),
-				$form_id,$counter,$product['Product Code'],clean_accents($product['long_description']),
+				$form_id, $counter, number_format($product['Product Price'], 2, '.', ''),
+				$form_id, $counter, $product['Product Code'], clean_accents($product['long_description']),
 				$description
 
 
@@ -3327,6 +3418,7 @@ class Page extends DB_Table {
 		);
 		return $form;
 	}
+
 
 	function get_list_aw_checkout($products) {
 
@@ -3464,11 +3556,11 @@ class Page extends DB_Table {
                            </td>
                            <td class="description" style="vertical-align:top;">%s</td>
                            </tr>'."\n",
-				$tr_class,$tr_style,
+				$tr_class, $tr_style,
 
 				$counter,
-				number_format($product['Product Price'],2,'.',''),
-				$counter,$product['Product Code'],
+				number_format($product['Product Price'], 2, '.', ''),
+				$counter, $product['Product Code'],
 				clean_accents($product['long_description']),
 
 				$product['Product Code'],
@@ -3607,7 +3699,7 @@ class Page extends DB_Table {
 				$tr_class,
 
 				$counter,
-				number_format($product['Product Price'],2,'.',''),
+				number_format($product['Product Price'], 2, '.', ''),
 				$counter,
 				$product['Product Code'],
 				clean_accents($product['long_description']),
@@ -3638,9 +3730,10 @@ class Page extends DB_Table {
                        <input class="button" name="Submit" type="submit"  value="'._('Order Product').'">
                        <input class="button" name="Reset" type="reset"  id="Reset" value="'._('Reset').'"></td></tr></form></table>
                        '
-			,$this->data['Page URL']);
+			, $this->data['Page URL']);
 		return $form;
 	}
+
 
 	function get_list_price_header_auto($products) {
 		$price_label='';
@@ -3692,6 +3785,7 @@ class Page extends DB_Table {
 		return $price_label;
 	}
 
+
 	function get_list_rrp_header_auto($products) {
 		$rrp_label='';
 		$min_rrp=999999999999;
@@ -3742,7 +3836,8 @@ class Page extends DB_Table {
 		return $rrp_label;
 	}
 
-	function get_formatted_rrp($data,$options=false) {
+
+	function get_formatted_rrp($data, $options=false) {
 
 		$data=array(
 			'Product RRP'=>$data['Product RRP'],
@@ -3754,10 +3849,11 @@ class Page extends DB_Table {
 		if (isset($data['price per unit text']))
 			$_data['price per unit text']=$data['price per unit text'];
 
-		return formatted_rrp($data,$options);
+		return formatted_rrp($data, $options);
 	}
 
-	function get_formatted_price($data,$options=false) {
+
+	function get_formatted_price($data, $options=false) {
 
 		$_data=array(
 			'Product Price'=>$data['Product Price'],
@@ -3772,8 +3868,9 @@ class Page extends DB_Table {
 		if (isset($data['price per unit text']))
 			$_data['price per unit text']=$data['price per unit text'];
 
-		return formatted_price($_data,$options);
+		return formatted_price($_data, $options);
 	}
+
 
 	function display_title() {
 		if ($this->set_title) {
@@ -3782,6 +3879,7 @@ class Page extends DB_Table {
 			return $this->get('Page Store Title');
 		}
 	}
+
 
 	function display_top_bar() {
 
@@ -3837,7 +3935,7 @@ class Page extends DB_Table {
 				<span class="basket_info">
 				    <img  onClick=\'window.location="basket.php"\' src="art/basket.jpg" />
 				     '._('Items total').':
-				 	<span onClick=\'window.location="basket.php"\'  id="basket_total">'.money(0,$this->set_currency,$this->site->data['Site Locale']).'</span>
+				 	<span onClick=\'window.location="basket.php"\'  id="basket_total">'.money(0, $this->set_currency, $this->site->data['Site Locale']).'</span>
 				 	 (<span id="number_items">0</span> '._('items').') </span>
 				 	  <span onClick=\'window.location="basket.php"\'  class="link basket"  id="see_basket"  >'._('Basket').'</span>
 				 </div>' ;
@@ -3871,6 +3969,7 @@ class Page extends DB_Table {
 
 	}
 
+
 	function display_label() {
 
 		return $this->data['Page Parent Code'];
@@ -3880,6 +3979,10 @@ class Page extends DB_Table {
 
 
 	function update_list_products() {
+
+
+
+
 		if ($this->data['Page Type']!='Store' )
 			return;
 
@@ -3920,10 +4023,10 @@ class Page extends DB_Table {
 			}
 
 			if (count($valid_list_keys)>0) {
-				$sql=sprintf("delete from `Page Product List Dimension` where `Page Key`=%d and `Page Product List Key` not in (%s) ",$this->id,join(',',$valid_list_keys));
+				$sql=sprintf("delete from `Page Product List Dimension` where `Page Key`=%d and `Page Product List Key` not in (%s) ", $this->id, join(',', $valid_list_keys));
 				mysql_query($sql);
 			} else {
-				$sql=sprintf("delete from `Page Product List Dimension` where `Page Key`=%d",$this->id);
+				$sql=sprintf("delete from `Page Product List Dimension` where `Page Key`=%d", $this->id);
 				mysql_query($sql);
 			}
 		}
@@ -3962,13 +4065,13 @@ class Page extends DB_Table {
 					'Page Store Content Display Type'=>'Template',
 					'Page Store Content Template Filename'=>'product',
 				);
-				$product_page_key=$site->add_product_page($product_pid,$page_data);
+				$product_page_key=$site->add_product_page($product_pid, $page_data);
 
 
-				if (array_key_exists($product_pid,$old_products_on_list)) {
+				if (array_key_exists($product_pid, $old_products_on_list)) {
 
 				}else {
-					$product=new Product('pid',$product_pid);
+					$product=new Product('id', $product_pid);
 
 					$sql=sprintf("insert into `Page Product Dimension` (`Parent Key`,`Site Key`,`Page Key`,`Product ID`,`Family Key`,`Parent Type`,`State`) values  (%d,%d,%d,%d,%d,'List',%s) ON DUPLICATE KEY UPDATE `Site Key`=%d",
 						$row['Page Product List Key'],
@@ -3984,7 +4087,7 @@ class Page extends DB_Table {
 					mysql_query($sql);
 
 					// print "$sql\n";
-					$product->update_number_pages();
+					$product->update_pages_numbers();
 
 
 				}
@@ -3995,15 +4098,15 @@ class Page extends DB_Table {
 				//print "$product_pid";
 				//print_r($new_products_on_list);
 
-				if (!array_key_exists($product_pid,$new_products_on_list)) {
+				if (!array_key_exists($product_pid, $new_products_on_list)) {
 					$sql=sprintf("delete from `Page Product Dimension` where `Page Product Key`=%d",
 						$page_product_key
 					);
 					//print "$sql\n";
 					mysql_query($sql);
 
-					$product=new Product('pid',$product_pid);
-					$product->update_number_pages();
+					$product=new Product('id', $product_pid);
+					$product->update_pages_numbers();
 
 				}
 			}
@@ -4050,6 +4153,7 @@ class Page extends DB_Table {
 		return $products;
 	}
 
+
 	function get_body_includes() {
 
 		$include='';
@@ -4061,6 +4165,7 @@ class Page extends DB_Table {
 		$include.=$this->data['Page Body Include'];
 		return $include;
 	}
+
 
 	function get_head_includes() {
 
@@ -4114,19 +4219,19 @@ class Page extends DB_Table {
 
 
 
-			$product=new Product('pid',$product_data['Product ID']);
+			$product=new Product('id', $product_data['Product ID']);
 			//print_r($product);
 			if ($product->id) {
 
 				$number_buttons++;
-				if (!in_array($product->pid,$old_page_buttons_to_delete)) {
+				if (!in_array($product->id, $old_page_buttons_to_delete)) {
 					$sql=sprintf("insert into `Page Product Button Dimension` (`Site Key`,`Page Key`,`Product ID`) values  (%d,%d,%d) on duplicate key update `Site Key`=%d, `Page Key`=%d ,`Product ID`=%d  ",
 						$this->data['Page Site Key'],
 						$this->id,
-						$product->pid,
+						$product->id,
 						$this->data['Page Site Key'],
 						$this->id,
-						$product->pid
+						$product->id
 					);
 					mysql_query($sql);
 					//print "$sql\n";
@@ -4135,7 +4240,7 @@ class Page extends DB_Table {
 					$sql=sprintf("insert into `Page Product Dimension` (`Page Key`,`Site Key`,`Product ID`,`Family Key`,`Parent Key`,`Parent Type`,`State`) values  (%d,%d,%d,%d,%d,'Button',%s) ON DUPLICATE KEY UPDATE `Site Key`=%d",
 						$this->id,
 						$this->data['Page Site Key'],
-						$product->pid,
+						$product->id,
 						$product->data['Product Family Key'],
 						$page_product_key,
 						prepare_mysql($this->data['Page State']),
@@ -4143,11 +4248,11 @@ class Page extends DB_Table {
 					);
 					mysql_query($sql);
 
-					$product->update_number_pages();
+					$product->update_pages_numbers();
 
 
 				}else {
-					$key = array_search($product->pid, $old_page_buttons_to_delete);
+					$key = array_search($product->id, $old_page_buttons_to_delete);
 					if (false !== $key) {
 						unset($old_page_buttons_to_delete[$key]);
 					}
@@ -4163,8 +4268,8 @@ class Page extends DB_Table {
 			//print "$sql\n";
 			$sql=sprintf("delete  from  `Page Product Dimension`  where `Parent Key`=%d and `Parent Type`='Button'", $key);
 			mysql_query($sql);
-			$product=new Product('pid',$product_pid);
-			$product->update_number_pages();
+			$product=new Product('id', $product_pid);
+			$product->update_pages_numbers();
 
 		}
 
@@ -4182,6 +4287,7 @@ class Page extends DB_Table {
 
 
 	}
+
 
 	function get_list_products_from_source() {
 
@@ -4202,11 +4308,12 @@ class Page extends DB_Table {
 		return $lists;
 	}
 
+
 	function get_button_products_from_source() {
 		$html=$this->data['Page Store Source'];
 
 
-		$html=preg_replace('/display_buttom/','display_button',$html);
+		$html=preg_replace('/display_buttom/', 'display_button', $html);
 
 		$buttons=array();
 
@@ -4215,11 +4322,11 @@ class Page extends DB_Table {
 			foreach ($matches as $match) {
 
 				$id=($match[1]==''?'default':$match[1]);
-				$id=preg_replace('/^\"/','',$id);
-				$id=preg_replace('/^\'/','',$id);
-				$id=preg_replace('/\"$/','',$id);
-				$id=preg_replace('/\'$/','',$id);
-				$product=new Product('code_store',$id,$this->data['Page Store Key']);
+				$id=preg_replace('/^\"/', '', $id);
+				$id=preg_replace('/^\'/', '', $id);
+				$id=preg_replace('/\"$/', '', $id);
+				$id=preg_replace('/\'$/', '', $id);
+				$product=new Product('store_code', $this->data['Page Store Key'],$id);
 				if ($product->id) {
 
 					$buttons[]=array(
@@ -4252,9 +4359,11 @@ class Page extends DB_Table {
 		return $buttons;
 	}
 
+
 	function display_search() {
 		return $this->site->display_search();
 	}
+
 
 	function display_menu() {
 		return $this->site->display_menu();
@@ -4271,14 +4380,14 @@ class Page extends DB_Table {
 			$dirname=dirname($_SERVER['PHP_SELF']);
 		}
 
-		$r = join('',unpack('v*', fread(fopen('/dev/urandom', 'r'),25)));
-		$pwd=uniqid('',true).sha1(mt_rand()).'.'.$r;
+		$r = join('', unpack('v*', fread(fopen('/dev/urandom', 'r'), 25)));
+		$pwd=uniqid('', true).sha1(mt_rand()).'.'.$r;
 
 		$sql=sprintf("insert into `MasterKey Internal Dimension` (`User Key`,`Key`,`Valid Until`,`IP`)values (%s,%s,%s,%s) "
-			,1
-			,prepare_mysql($pwd)
-			,prepare_mysql(gmdate("Y-m-d H:i:s",strtotime("now +5 minute")))
-			,prepare_mysql(ip(),false)
+			, 1
+			, prepare_mysql($pwd)
+			, prepare_mysql(gmdate("Y-m-d H:i:s", strtotime("now +5 minute")))
+			, prepare_mysql(ip(), false)
 		);
 
 		// print $sql;
@@ -4303,7 +4412,7 @@ class Page extends DB_Table {
 
 
 		$_system = ob_get_clean();
-		if (preg_match('/darwin/i',$_system)) {
+		if (preg_match('/darwin/i', $_system)) {
 			//$url='http://www.yahoo.com';
 			$command="mantenence/scripts/webkit2png_mac.py  -C -o server_files/tmp/pp_image".$this->id."  --clipheight=".($height*0.5)."  --clipwidth=512  -s 0.5  ".$url;
 
@@ -4311,7 +4420,7 @@ class Page extends DB_Table {
 
 		}
 
-		elseif (preg_match('/linux/i',$_system)) {
+		elseif (preg_match('/linux/i', $_system)) {
 			$command='xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py --style=windows  --log=server_files/tmp/webkit2png_linux.log -o server_files/tmp/pp_image'.$this->id.'-clipped.png    '.$url;
 
 
@@ -4327,7 +4436,7 @@ class Page extends DB_Table {
 
 
 		ob_start();
-		@system($command,$retval);
+		@system($command, $retval);
 		ob_get_clean();
 
 		//print $command;
@@ -4336,10 +4445,10 @@ class Page extends DB_Table {
 		$this->snapshots_taken++;
 
 
-		$image_data=array('file'=>"server_files/tmp/pp_image".$this->id."-clipped.png",'source_path'=>'','name'=>'page_preview'.$this->id);
+		$image_data=array('file'=>"server_files/tmp/pp_image".$this->id."-clipped.png", 'source_path'=>'', 'name'=>'page_preview'.$this->id);
 
 		//   print_r($image_data);
-		$image=new Image('find',$image_data,'create');
+		$image=new Image('find', $image_data, 'create');
 
 
 		if (file_exists("server_files/tmp/pp_image".$this->id."-clipped.png")) {
@@ -4403,7 +4512,7 @@ class Page extends DB_Table {
 
 
 		//  usleep(250000);
-		$this->get_data('id',$this->id);
+		$this->get_data('id', $this->id);
 		$new_height=$this->data['Page Header Height']+$this->data['Page Content Height']+$this->data['Page Footer Height']+10;
 
 		if ($new_height!=$height) {
@@ -4412,23 +4521,29 @@ class Page extends DB_Table {
 
 	}
 
+
 	function get_snapshot_date() {
 		return strftime("%a %e %b %Y %H:%M %Z", strtotime($this->data['Page Snapshot Last Update'].' UTC')) ;
 	}
+
+
 	function get_preview_snapshot_date() {
 
 		if ($this->data['Page Preview Snapshot Last Update']!='')
 			return strftime("%a %e %b %Y %H:%M %Z", strtotime($this->data['Page Preview Snapshot Last Update'].' UTC')) ;
 	}
 
+
 	function get_preview_snapshot_src() {
 
-		return sprintf("image.php?id=%d",$this->data['Page Preview Snapshot Image Key']);
+		return sprintf("image.php?id=%d", $this->data['Page Preview Snapshot Image Key']);
 	}
+
 
 	function get_preview_snapshot_image_key() {
 		return $this->data['Page Preview Snapshot Image Key'];
 	}
+
 
 	function add_found_in_link($parent_key) {
 
@@ -4447,6 +4562,7 @@ class Page extends DB_Table {
 		$this->updated=true;
 	}
 
+
 	function remove_found_in_link($parent_key) {
 
 
@@ -4460,10 +4576,14 @@ class Page extends DB_Table {
 		$this->updated=true;
 	}
 
-	function update_state($value,$options) {
+
+	function update_state($value, $options) {
 
 		$old_state=$this->data['Page State'];
-		$this->update_field('Page State',$value,$options);
+
+
+
+		$this->update_field('Page State', $value, $options);
 
 
 		if ($old_state!=$this->data['Page State']) {
@@ -4475,6 +4595,9 @@ class Page extends DB_Table {
 				prepare_mysql($this->data['Page State'])
 
 			);
+
+
+
 			mysql_query($sql);
 
 			$sql=sprintf("update `Page Product Dimension` set `State`=%s where `Page Key`=%d",
@@ -4482,7 +4605,7 @@ class Page extends DB_Table {
 				$this->id
 			);
 			mysql_query($sql);
-			$sql=sprintf("select `Page Store Key`  from  `Page Store See Also Bridge` where `Page Store See Also Key`=%d ",$this->id);
+			$sql=sprintf("select `Page Store Key`  from  `Page Store See Also Bridge` where `Page Store See Also Key`=%d ", $this->id);
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_assoc($res)) {
 				$_page=new Page ($row['Page Store Key']);
@@ -4494,9 +4617,10 @@ class Page extends DB_Table {
 
 	}
 
+
 	function update_number_found_in() {
 		$number_found_in_links=0;
-		$sql=sprintf("select count(*) as num from  `Page Store Found In Bridge` where `Page Store Key`=%d",$this->id);
+		$sql=sprintf("select count(*) as num from  `Page Store Found In Bridge` where `Page Store Key`=%d", $this->id);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$number_found_in_links=$row['num'];
@@ -4513,9 +4637,11 @@ class Page extends DB_Table {
 
 	}
 
+
 	function get_page_height() {
 		return $this->data['Page Header Height']+$this->data['Page Content Height']+$this->data['Page Footer Height']+22;
 	}
+
 
 	function add_redirect($source_url='') {
 
@@ -4539,7 +4665,7 @@ class Page extends DB_Table {
 
 		$host=array_shift($url_array);
 		$file=array_pop($url_array);
-		$path=join('/',$url_array);
+		$path=join('/', $url_array);
 
 		if ($file=='') {
 			$file='index.html';
@@ -4553,7 +4679,7 @@ class Page extends DB_Table {
 
 		$_source=$host.'/'.$path.'/'.$file;
 
-		$_source_bis=strtolower(preg_replace('/^www\./','',$_source));
+		$_source_bis=strtolower(preg_replace('/^www\./', '', $_source));
 
 		$target=strtolower($this->data['Page URL']);
 
@@ -4583,12 +4709,12 @@ class Page extends DB_Table {
 
 		$sql=sprintf("insert into `Page Redirection Dimension` (`Source Host`,`Source Path`,`Source File`, `Page Target URL`,`Page Target Key`, `Can Upload`) values
 		(%s,%s,%s, %s,%d, %s)"
-			,prepare_mysql($host)
-			,prepare_mysql($path,false)
-			,prepare_mysql($file)
-			,prepare_mysql($this->data['Page URL'])
-			,$this->id
-			,prepare_mysql($ftp_pass));
+			, prepare_mysql($host)
+			, prepare_mysql($path, false)
+			, prepare_mysql($file)
+			, prepare_mysql($this->data['Page URL'])
+			, $this->id
+			, prepare_mysql($ftp_pass));
 
 		mysql_query($sql);
 		//print "$sql\n";
@@ -4597,6 +4723,7 @@ class Page extends DB_Table {
 		return $redirection_key;
 
 	}
+
 
 	function get_all_redirects_data($smarty=false) {
 
@@ -4608,7 +4735,7 @@ class Page extends DB_Table {
 			if ($smarty) {
 				$_row=array();
 				foreach ($row as $key=>$value) {
-					$_row[str_replace(' ','',$key)]=$value;
+					$_row[str_replace(' ', '', $key)]=$value;
 				}
 				$_row['Source']=$_row['SourceHost'].'/'.($_row['SourcePath']?$_row['SourcePath'].'/':'').$_row['SourceFile'];
 				$data[]=$_row;
@@ -4621,17 +4748,18 @@ class Page extends DB_Table {
 		return $data;
 	}
 
-	function get_redirect_data($redirect_key,$smarty=false) {
+
+	function get_redirect_data($redirect_key, $smarty=false) {
 
 		$data=false;
-		$sql=sprintf("select * from `Page Redirection Dimension` where `Page Target Key`=%d and `Page Redirection Key`=%d", $this->id,$redirect_key);
+		$sql=sprintf("select * from `Page Redirection Dimension` where `Page Target Key`=%d and `Page Redirection Key`=%d", $this->id, $redirect_key);
 		$result=mysql_query($sql);
 
 		if ($row=mysql_fetch_assoc($result)) {
 			if ($smarty) {
 				$_row=array();
 				foreach ($row as $key=>$value) {
-					$_row[str_replace(' ','',$key)]=$value;
+					$_row[str_replace(' ', '', $key)]=$value;
 				}
 				$_row['Source']=$_row['SourceHost'].'/'.($_row['SourcePath']?$_row['SourcePath'].'/':'').$_row['SourceFile'];
 				$data=$_row;
@@ -4658,6 +4786,7 @@ class Page extends DB_Table {
 		$this->update_requests('Month To Day');
 		$this->update_requests('Year To Day');
 	}
+
 
 	function update_last_period_requests() {
 
@@ -4689,7 +4818,7 @@ class Page extends DB_Table {
 
 
 
-		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_interval_dates($this->db,$interval);
+		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($this->db, $interval);
 
 		$sql=sprintf("select count(*) as num_requests ,count(distinct `Visitor Session Key`) num_sessions ,count(Distinct `Visitor Key`) as num_visitors   from  `User Request Dimension`   where `Page Key`=%d  %s",
 			$this->id,
@@ -4698,7 +4827,7 @@ class Page extends DB_Table {
 
 		);
 		print "$sql\n";
-		
+
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$this->data['Page Store '.$db_interval.' Acc Requests']=$row['num_requests'];
@@ -4749,6 +4878,7 @@ class Page extends DB_Table {
 		//print "$sql\n";
 	}
 
+
 	function get_all_products() {
 		$sql=sprintf("select pd.`Product ID`, `Product Code` from `Page Product Button Dimension` ppd left join `Product Dimension` pd on (ppd.`Product ID` = pd.`Product ID`) where `Page Key`=%d", $this->id);
 		//print $sql;
@@ -4766,7 +4896,7 @@ class Page extends DB_Table {
 
 		$html='';
 		include_once 'class.Product.php';
-		$product=new Product('code_store',$tag,$this->data['Page Store Key']);
+		$product=new Product('code_store', $tag, $this->data['Page Store Key']);
 		//print_r($product);
 		if ($product->id) {
 			$html=$this->display_button_logged_out($product);
@@ -4782,6 +4912,7 @@ class Page extends DB_Table {
 		return $html;
 	}
 
+
 	function get_site_key() {
 
 		if ($this->type=='Store') {
@@ -4791,25 +4922,27 @@ class Page extends DB_Table {
 		}
 	}
 
+
 	function get_plain_content() {
 		$content=$this->get_xhtml_content();
-		$content=preg_replace('/\<br\/?\>/',' ',$content);
-		$content=preg_replace('/:/',' ',$content);
+		$content=preg_replace('/\<br\/?\>/', ' ', $content);
+		$content=preg_replace('/:/', ' ', $content);
 
 		$content=strip_tags($content);
-		$content=preg_replace('/\s+/',' ',$content);
+		$content=preg_replace('/\s+/', ' ', $content);
 
 		$content = html_entity_decode($content, ENT_QUOTES, "utf-8");
 
-		$content=preg_replace('/\&amp\;/','',$content);
-		$content=preg_replace('/\&nbsp\;/','',$content);
-		$content=preg_replace('/\{.+\}/','',$content);
-		$content=preg_replace('/(\"|\“|\”)/','',$content);
+		$content=preg_replace('/\&amp\;/', '', $content);
+		$content=preg_replace('/\&nbsp\;/', '', $content);
+		$content=preg_replace('/\{.+\}/', '', $content);
+		$content=preg_replace('/(\"|\“|\”)/', '', $content);
 
 
 
 		return $content;
 	}
+
 
 	function get_xhtml_content() {
 
@@ -4820,7 +4953,7 @@ class Page extends DB_Table {
 				$content='';
 				switch ($this->data['Page Store Section']) {
 				case 'Product Description':
-					$product=new Product('pid',$this->data['Page Parent Key']);
+					$product=new Product('id', $this->data['Page Parent Key']);
 
 					$content.=$product->data['Product Name'];
 
@@ -4830,12 +4963,26 @@ class Page extends DB_Table {
 
 					break;
 				case 'Family Catalogue':
-					$family=new Family($this->data['Page Parent Key']);
 
-					$content.=$family->data['Product Family Name'];
+					$sql=sprintf('select * from `Product Family Dimension` where `Product Family Key`=%d ', $this->data['Page Parent Key']);
+					if ($result=$this->db->query($sql)) {
+						if ($family = $result->fetch()) {
+							$content.=$family['Product Family Name'];
 
-					$content.=' '.$family->data['Product Family Description'];
-					$content=trim($content);
+							$content.=' '.$family['Product Family Description'];
+							$content=trim($content);
+						}else {
+							$content='';
+						}
+
+
+					}else {
+						print_r($error_info=$this->db->errorInfo());
+						exit;
+					}
+
+
+
 
 					break;
 
@@ -4878,9 +5025,9 @@ class Page extends DB_Table {
 			$old_key=$this->data['Site Flag Key'];
 
 			$sql=sprintf("update `Page Store Dimension` set `Site Flag Key`=%d ,`Site Flag`=%s where `Page Key`=%d"
-				,$value
-				,prepare_mysql($row['Site Flag Color'])
-				,$this->id
+				, $value
+				, prepare_mysql($row['Site Flag Color'])
+				, $this->id
 			);
 
 			mysql_query($sql);
@@ -4921,6 +5068,7 @@ class Page extends DB_Table {
 
 	}
 
+
 	function get_primary_content() {
 		$content='';
 
@@ -4930,6 +5078,7 @@ class Page extends DB_Table {
 		return $content;
 
 	}
+
 
 	function get_departments_data() {
 		$departments=array();
@@ -4958,7 +5107,7 @@ class Page extends DB_Table {
 				$department_data['first']=false;
 			}
 
-			$department_data['col']=fmod($counter,4)+1;
+			$department_data['col']=fmod($counter, 4)+1;
 			$counter++;
 			$departments[]=$department_data;
 		}
@@ -4967,6 +5116,7 @@ class Page extends DB_Table {
 		return $departments;
 
 	}
+
 
 	function get_families_data() {
 		$families=array();
@@ -4993,7 +5143,7 @@ class Page extends DB_Table {
 				$family_data['first']=false;
 			}
 
-			$family_data['col']=fmod($counter,4)+1;
+			$family_data['col']=fmod($counter, 4)+1;
 			$counter++;
 			$families[]=$family_data;
 		}
@@ -5006,7 +5156,7 @@ class Page extends DB_Table {
 
 		$quantity=$this->get_button_ordered_quantity($product);
 
-		$message=$this->get_button_text($product,$quantity);
+		$message=$this->get_button_text($product, $quantity);
 
 
 
@@ -5024,6 +5174,7 @@ class Page extends DB_Table {
 		return $form;
 	}
 
+
 	function get_product_data() {
 		$product_data=array();
 
@@ -5035,7 +5186,7 @@ class Page extends DB_Table {
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 
-			$product=new Product('pid',$row['Product ID']);
+			$product=new Product('id', $row['Product ID']);
 
 
 			$quantity=$this->get_button_ordered_quantity($product);
@@ -5058,7 +5209,7 @@ class Page extends DB_Table {
 				'name'=>$product->data['Product Name'],
 				'id'=>$product->data['Product ID'],
 				'img'=>$product->data['Product Main Image'],
-				'normal_img'=>sprintf("image.php?id=%d",$product->data['Product Main Image Key']),
+				'normal_img'=>sprintf("image.php?id=%d", $product->data['Product Main Image Key']),
 				'images'=>$images,
 				'quantity'=>$quantity,
 				'price'=>$price,
@@ -5087,6 +5238,7 @@ class Page extends DB_Table {
 
 	}
 
+
 	function get_products_data() {
 		$products=array();
 		$sql=sprintf("select PPD.`Product ID`,PSD.`Page Key` from `Page Product Dimension` PPD left join   `Page Store Dimension` PSD on (PSD.`Page Parent Key`=PPD.`Product ID` and `Page Store Section Type`='Product')      where  PPD.`Page Key`=%d  ",
@@ -5098,7 +5250,7 @@ class Page extends DB_Table {
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 
-			$product=new Product('pid',$row['Product ID']);
+			$product=new Product('id', $row['Product ID']);
 
 			if ($this->logged) {
 				$button=$this->display_button_inikoo($product);
@@ -5126,7 +5278,7 @@ class Page extends DB_Table {
 				$product_data['first']=false;
 			}
 
-			$product_data['col']=fmod($counter,4)+1;
+			$product_data['col']=fmod($counter, 4)+1;
 			$counter++;
 			$products[]=$product_data;
 		}
@@ -5134,6 +5286,7 @@ class Page extends DB_Table {
 		return $products;
 
 	}
+
 
 	function get_offer_badges() {
 
@@ -5145,18 +5298,18 @@ class Page extends DB_Table {
 			$deals=$family->get_deals_data();
 
 			break;
-			
+
 		case 'Product Description':
-		$product=new Product('pid',$this->data['Page Parent Key']);
+			$product=new Product('id', $this->data['Page Parent Key']);
 			$deals=$product->get_deals_data();
-			break;	
-			
+			break;
+
 		default:
 			$deals=array();
 		}
 
 		foreach ($deals as $deal) {
-			if ($deal['Status']=='Active' and !preg_match('/Voucher/',$deal['Terms Type'])) {
+			if ($deal['Status']=='Active' and !preg_match('/Voucher/', $deal['Terms Type'])) {
 				$badges[]=sprintf('<div class="offer"><div class="name">%s</div><div class="allowances">%s</div> <div class="terms">%s</div></div>',
 					$deal['Name'],
 					$deal['Allowance Label'],
@@ -5173,7 +5326,7 @@ class Page extends DB_Table {
 
 
 	function refresh_cache() {
-		global $account_code,$memcache_ip;
+		global $account_code, $memcache_ip;
 
 
 		$site=new Site($this->data['Page Site Key']);
@@ -5193,6 +5346,7 @@ class Page extends DB_Table {
 		return $template_response;
 
 	}
+
 
 }
 

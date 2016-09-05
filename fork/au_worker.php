@@ -87,7 +87,7 @@ function get_fork_data($job) {
 
 
 
-	/*
+	
 
 	$default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
 	if (!$default_DB_link) {
@@ -101,7 +101,7 @@ function get_fork_data($job) {
 	}
 	mysql_set_charset('utf8');
 	mysql_query("SET time_zone='+0:00'");
-	*/
+	
 
 	$account=new Account($db);
 

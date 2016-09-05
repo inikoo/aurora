@@ -25,7 +25,8 @@ $_data=prepare_values($_REQUEST, array(
 		'parent_code'=>array('type'=>'string'),
 		'objects'=>array('type'=>'string'),
 		'type'=>array('type'=>'string'),
-		'fields'=>array('type'=>'json array')
+		'fields'=>array('type'=>'json array'),
+		'metadata'=>array('type'=>'json array')
 	));
 
 $dont_save_table_state=true;
@@ -50,7 +51,7 @@ $export_data=array(
 	'parent_code'=>$_data['parent_code'],
 	'objects'=>$_data['objects'],
 	'fields'=>$_data['fields'],
-
+	'metadata'=>$_data['metadata'],
 );
 
 list($fork_key, $msg)=new_fork('au_export_edit_template', $export_data, $account->get('Account Code'), $db);

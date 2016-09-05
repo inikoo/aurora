@@ -45,25 +45,8 @@ function get_part_showcase($data,$smarty,$user,$db) {
 */
 	
 
-	$sql=sprintf("select `Category Label`,`Category Code`,`Category Key` from `Category Dimension` where `Category Key`=%d ",
-		$part->get('Part Family Category Key'));
-	if ($result=$db->query($sql)) {
-		if ($row = $result->fetch()) {
-			$family_data=array(
-				'id'=>$row['Category Key'],
-				'code'=>$row['Category Code'],
-				'label'=>$row['Category Label'],
-			);
-		}else {
-			$family_data=array('id'=>false);
-		}
-	}else {
-		print_r($error_info=$db->errorInfo());
-		exit;
-	}
 
 	$smarty->assign('part', $part);
-	$smarty->assign('family_data', $family_data);
 
 	return $smarty->fetch('showcase/part.tpl');
 

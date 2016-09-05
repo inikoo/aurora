@@ -167,11 +167,19 @@
 }
 #table_buttons {
     div {
-        &:last-of-type {
-            border-right: 1px solid #ccc;
-            margin-right: 2px;
+        &:first-of-type {
+           // border-right: 1px solid #ccc;
+           // margin-right: 2px;
         }
     }
+    
+     div {
+        &.move_left{
+            border-right: 1px solid #ccc;
+            margin-right: 32px;
+        }
+    }
+    
 }
 .table_info {
    

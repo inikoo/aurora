@@ -1,3 +1,7 @@
+.presention_card{
+padding:10px;
+}
+
 #fields.new_object   {
     margin-bottom: 100px;
     padding: 10px 20px;
@@ -53,7 +57,7 @@
 .result {
     margin-top: 20px;
     padding: 0px 20px;
-    .results {
+    .new_object_results {
         margin-left: 20px;
         opacity: .9;
         &:first-of-type {

@@ -641,7 +641,7 @@ function get_product_navigation($data, $smarty, $user, $db, $account) {
 		break;
 	case 'part':
 
-		
+
 		$up_button=array('icon'=>'arrow-up', 'title'=>_("Part").' ('.$data['_parent']->get('SKU').')', 'reference'=>'part/'.$data['_parent']->id);
 
 		if ($prev_key) {
@@ -1048,6 +1048,54 @@ function get_new_store_navigation($data, $smarty, $user, $db, $account) {
 		'right_buttons'=>$right_buttons,
 		'title'=>_('New store'),
 		'search'=>array('show'=>true, 'placeholder'=>_('Search products all stores'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+
+}
+
+
+function get_new_product_navigation($data, $smarty, $user, $db, $account) {
+
+	$left_buttons=array();
+
+	$block_view=$data['section'];
+
+
+	switch ($data['parent']) {
+	case 'store':
+		$title=sprintf(_('New product for %s'), '<span class="id">'.$data['store']->get('Code').'</span>');
+		$sections=get_sections('products', $data['parent_key']);
+		$left_buttons[]=array('icon'=>'arrow-up', 'title'=>_('Store').': '.$data['store']->get('Code'), 'reference'=>'products/'.$data['store']->id, 'parent'=>'');
+$sections['products']['selected']=true;
+		break;
+	default:
+		exit('error in products.nav.php');
+		break;
+	}
+
+
+
+
+
+
+
+	$right_buttons=array();
+
+
+
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>_('Search products'))
 
 	);
 	$smarty->assign('_content', $_content);

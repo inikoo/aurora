@@ -377,7 +377,7 @@ class Part extends Asset{
 
 
 			$this->get_data('sku', $this->sku);
-			$this->update_availability_for_products_configuration('Automatic', $options);
+
 
 
 
@@ -405,9 +405,13 @@ class Part extends Asset{
 		}
 
 
-
 		$products=$this->get_products('objects');
 		foreach ($products as $product) {
+
+			$product->update_status_from_parts();
+
+
+
 			//$product->update_availability_type();
 
 		}
@@ -512,27 +516,7 @@ class Part extends Asset{
 	}
 
 
-	function update_linked_products($field, $value, $options, $metadata) {
 
-		// thinking of not giveing this option, to complicated
-		return;
-
-		foreach ($this->get_products_data() as $product_data) {
-			if ($field=='Part Package Weight') {
-				$value=$value*$product_data['Parts Per Product'];
-			}
-			if (array_key_exists($field, $product_data['Linked Fields'])) {
-				$product=new Product('id', $product_data['Store Product Key']);
-				$update_data=array();
-
-
-				$update_data[$product_data['Linked Fields'][$field]]=$value;
-
-				$product->update($update_data);
-			}
-		}
-
-	}
 
 
 	function update_field_switcher($field, $value, $options='', $metadata='') {
@@ -736,11 +720,6 @@ class Part extends Asset{
 			}
 
 
-
-
-			break;
-
-
 			break;
 		case 'Part Family Category Key';
 
@@ -748,7 +727,7 @@ class Part extends Asset{
 			include_once 'class.Category.php';
 
 
-			$category=$this->get('Family');
+
 
 
 			if ($value!='') {
@@ -757,10 +736,6 @@ class Part extends Asset{
 				$category=new Category($value);
 				if ($category->id and $category->get('Category Root Key')==$account->get('Account Part Family Category Key') ) {
 					$category->associate_subject($this->id);
-					$this->update_field($field, $value, $options);
-
-
-
 				}else {
 					$this->error=true;
 					$this->msg='wrong category';
@@ -768,67 +743,40 @@ class Part extends Asset{
 
 				}
 
-				$this->other_fields_updated=array(
-					'Part_Family_Code'=>array(
-						'field'=>'Part_Family_Code',
-						'value'=>$category->get('Code'),
-						'formatted_value'=>$category->get('Code'),
+			}else {
+
+				if ($this->data['Part Family Category Key']!='') {
 
 
-					),
-					'Part_Family_Label'=>array(
-						'field'=>'Part_Family_Label',
-						'value'=>$category->get('Label'),
-						'formatted_value'=>$category->get('Label'),
+					$category=new Category($this->data['Part Family Category Key']);
 
+					if ($category->id) {
+						$category->disassociate_subject($this->id);
+					}
 
-					),
-					'Part_Family_Key'=>array(
-						'field'=>'Part_Family_Key',
-						'value'=>$category->id,
-						'formatted_value'=>$category->id,
+				}
 
-
-					)
-				);
-				return;
-
-			}
-
-
-
-			if ($category) {
-
-
-				$category->disassociate_subject($this->id);
-
-				$this->other_fields_updated=array(
-					'Part_Family_Code'=>array(
-						'field'=>'Part_Family_Code',
-						'value'=>'',
-						'formatted_value'=>'',
-
-
-					),
-					'Part_Family_Label'=>array(
-						'field'=>'Part_Family_Label',
-						'value'=>'',
-						'formatted_value'=>'<span class="italic discreet">'._('Not set').'</span>',
-
-
-					),
-					'Part_Family_Key'=>array(
-						'field'=>'Part_Family_Key',
-						'value'=>'',
-						'formatted_value'=>'',
-
-
-					)
-				);
-
+				
 			}
 			$this->update_field('Part Family Category Key', $value, 'no_history');
 
+
+			$categories='';
+			foreach ($this->get_category_data() as $item) {
+				$categories.=sprintf('<li><span class="button" onclick="change_view(\'category/%d\')" title="%s">%s</span></li>',
+					$item['category_key'],
+					$item['label'],
+					$item['code']
+
+				);
+
+			}
+			$this->update_metadata=array(
+				'class_html'=>array(
+					'Categories'=>$categories,
+
+				)
+			);
 
 
 
@@ -912,7 +860,7 @@ class Part extends Asset{
 
 				if ( count($product->get_parts())==1 ) {
 					$product->editor=$this->editor;
-					$product->update(array('Product Materials'=>$value), $options);
+					$product->update(array('Product Materials'=>$value), $options.' from_part');
 				}
 
 			}
@@ -953,7 +901,7 @@ class Part extends Asset{
 
 					if ( count($product->get_parts())==1 ) {
 						$product->editor=$this->editor;
-						$product->update(array('Product Unit Dimensions'=>$value), $options);
+						$product->update(array('Product Unit Dimensions'=>$value), $options.' from_part');
 					}
 
 				}
@@ -964,7 +912,11 @@ class Part extends Asset{
 		case 'Part Package Weight':
 		case 'Part Unit Weight':
 
-
+			if (  $value!=''and (    !is_numeric($value) or $value<0  )) {
+				$this->error=true;
+				$this->msg=sprintf(_('Invalid weight (%s)'), $value);
+				return;
+			}
 
 
 			$tag=preg_replace('/ Weight$/', '', $field);
@@ -1023,7 +975,7 @@ class Part extends Asset{
 
 					if ( count($product->get_parts())==1 ) {
 						$product->editor=$this->editor;
-						$product->update(array('Product Unit Weight'=>$this->get('Part Unit Weight')), $options);
+						$product->update(array('Product Unit Weight'=>$this->get('Part Unit Weight')), $options.' from_part');
 					}
 
 				}
@@ -1053,7 +1005,7 @@ class Part extends Asset{
 
 				if ( count($product->get_parts())==1 ) {
 					$product->editor=$this->editor;
-					$product->update(array('Product Tariff Code'=>$this->get('Part Tariff Code')), $options);
+					$product->update(array('Product Tariff Code'=>$this->get('Part Tariff Code')), $options.' from_part');
 				}
 
 			}
@@ -1071,25 +1023,65 @@ class Part extends Asset{
 			$this->update_field($field, $value, $options);
 			$updated=$this->updated;
 			//$this->update_linked_products($field, $value, $options, $metadata);
-			
-			
-			
+
+
+
 			foreach ($this->get_products('objects') as $product) {
 
 				if ( count($product->get_parts())==1 ) {
 					$product->editor=$this->editor;
-					
-					$product_field=preg_replace('/^Part /','Product ',$field);
-					
-					$product->update(array($product_field=>$this->get($field)), $options);
+
+					$product_field=preg_replace('/^Part /', 'Product ', $field);
+
+					$product->update(array($product_field=>$this->get($field)), $options.' from_part');
 				}
 
 			}
-			
-			
-			
+
+
+
 			$this->updated=$updated;
 			break;
+
+		case 'Part Origin Country Code':
+
+
+			if ($value=='') {
+				$this->error=true;
+				$this->msg=_("Country of origin missing");
+				return;
+			}
+
+			include_once 'class.Country.php';
+			$country=new Country('find', $value);
+			if ($country->get('Country Code')=='UNK') {
+				$this->error=true;
+				$this->msg=sprintf(_("Country not found (%s)"), $value);
+				return;
+
+			}
+
+
+			$this->update_field($field, $country->get('Country Code'), $options);
+			$updated=$this->updated;
+
+			foreach ($this->get_products('objects') as $product) {
+
+				if ( count($product->get_parts())==1 ) {
+					$product->editor=$this->editor;
+
+					$product_field=preg_replace('/^Part /', 'Product ', $field);
+
+					$product->update(array($product_field=>$this->get($field)), $options.' from_part');
+				}
+
+			}
+
+
+
+			$this->updated=$updated;
+			break;
+
 		case('Part Status'):
 
 			if (! in_array($value, array('In Use', 'Not In Use' , 'Discontinuing'))) {
@@ -1319,6 +1311,23 @@ class Part extends Asset{
 
 
 		switch ($key) {
+
+		case 'Part Family Category Code':
+
+			if ($this->data['Part Family Category Key']=='')return '';
+
+			include_once 'class.Category.php';
+
+			$category=new Category($this->data['Part Family Category Key']);
+
+			if ($category->id) {
+				return $category->get('Code');
+			}else {
+				return '';
+			}
+
+
+			break;
 		case 'Status':
 			if ($this->data['Part Status']=='In Use') {
 				return _('Active');
@@ -1706,6 +1715,10 @@ class Part extends Asset{
 
 		$this->update_available_forecast();
 
+
+		foreach ($this->get_products('objects') as $product) {
+			$product->update_availability();
+		}
 
 
 		//print "$sql\n";
@@ -2963,9 +2976,8 @@ where `Part SKU`=%d ",
 				$supplier_part->update(array('Supplier Part Part SKU'=>$this->sku));
 				$supplier_part->get_data('id', $supplier_part->id);
 
-				$supplier_part->update_historic_object();
 				$this->update_cost();
-
+				$supplier_part->update_historic_object();
 
 
 
@@ -3083,31 +3095,31 @@ where `Part SKU`=%d ",
 
 
 	function updated_linked_products() {
-        include_once 'class.Image.php';
+		include_once 'class.Image.php';
 		foreach ($this->get_products('objects') as $product) {
 
 			if ( count($product->get_parts())==1 ) {
 				$product->editor=$this->editor;
 
-				$product->update(array('Product Tariff Code'=>$this->get('Part Tariff Code')), 'no_history');
-				$product->update(array('Product Duty Rate'=>$this->get('Part Duty Rate')), 'no_history');
-				$product->update(array('Product Origin Country Code'=>$this->get('Part Origin Country Code')), 'no_history');
+				$product->update(array('Product Tariff Code'=>$this->get('Part Tariff Code')), 'no_history from_part');
+				$product->update(array('Product Duty Rate'=>$this->get('Part Duty Rate')), 'no_history from_part');
+				$product->update(array('Product Origin Country Code'=>$this->get('Part Origin Country Code')), 'no_history from_part');
 
 
-				$product->update(array('Product UN Number'=>$this->get('Part UN Number')), 'no_history');
-				$product->update(array('Product UN Class'=>$this->get('Part UN Class')), 'no_history');
-				$product->update(array('Product Packing Group'=>$this->get('Part Packing Group')), 'no_history');
-				$product->update(array('Product Proper Shipping Name'=>$this->get('Part Proper Shipping Name')), 'no_history');
-				$product->update(array('Product Hazard Indentification Number'=>$this->get('Part Hazard Indentification Number')), 'no_history');
+				$product->update(array('Product UN Number'=>$this->get('Part UN Number')), 'no_history from_part');
+				$product->update(array('Product UN Class'=>$this->get('Part UN Class')), 'no_history from_part');
+				$product->update(array('Product Packing Group'=>$this->get('Part Packing Group')), 'no_history from_part');
+				$product->update(array('Product Proper Shipping Name'=>$this->get('Part Proper Shipping Name')), 'no_history from_part');
+				$product->update(array('Product Hazard Indentification Number'=>$this->get('Part Hazard Indentification Number')), 'no_history from_part');
 
 
 
 
-				$product->update(array('Product Unit Weight'=>$this->get('Part Unit Weight')), 'no_history');
-				
-				
-				$product->update(array('Product Unit Dimensions'=>$this->get('Part Unit Dimensions')), 'no_history');
-				$product->update(array('Product Materials'=>strip_tags($this->get('Materials'))), 'no_history');
+				$product->update(array('Product Unit Weight'=>$this->get('Part Unit Weight')), 'no_history from_part');
+
+
+				$product->update(array('Product Unit Dimensions'=>$this->get('Part Unit Dimensions')), 'no_history from_part');
+				$product->update(array('Product Materials'=>strip_tags($this->get('Materials'))), 'no_history from_part');
 
 				$sql=sprintf('select `Image Subject Image Key` from `Image Subject Bridge` where `Image Subject Object`="Part" and `Image Subject Object Key`=%d  ',
 					$this->id
@@ -3117,7 +3129,7 @@ where `Part SKU`=%d ",
 
 				if ($result=$this->db->query($sql)) {
 					foreach ($result as $row) {
-                            $product->link_image($row['Image Subject Image Key']);
+						$product->link_image($row['Image Subject Image Key']);
 					}
 				}else {
 					print_r($error_info=$this->db->errorInfo());

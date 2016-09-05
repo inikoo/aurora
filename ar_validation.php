@@ -466,11 +466,13 @@ function check_for_duplicates($data, $db, $user, $account) {
 
 
 			$invalid_msg=_('Product code already used');
-			$sql=sprintf("select P.`Product ID` as `key` ,`Product Code` as field from `Product Dimension` P where  `Product Code`=%s   ",
-				prepare_mysql($data['value'])
+			$sql=sprintf("select P.`Product ID` as `key` ,`Product Code` as field from `Product Dimension` P where  `Product Code`=%s  and `Product Store Key`=%s and `Product Status`!='Discontinued' ",
+				prepare_mysql($data['value']),
+				$data['parent_key']
+				
 			);
 			$validation_sql_queries[]=array('sql'=>$sql, 'invalid_msg'=>$invalid_msg);
-
+           
 		}
 
 		break;

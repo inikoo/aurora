@@ -1044,7 +1044,7 @@ class Store extends DB_Table {
 
 		$to_date='';
 
-		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($this->db,$interval);
+		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($this->db, $interval);
 
 		setlocale(LC_ALL, 'en_GB');
 
@@ -1109,7 +1109,7 @@ class Store extends DB_Table {
 
 		$to_date='';
 
-		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($this->db,$interval);
+		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($this->db, $interval);
 
 		setlocale(LC_ALL, 'en_GB');
 
@@ -1524,6 +1524,39 @@ class Store extends DB_Table {
 		return $site_keys;
 
 	}
+
+
+	function get_sites($scope='keys') {
+
+
+		if ($scope=='objects') {
+			include_once 'class.Site.php';
+		}
+
+		$sql=sprintf("select  `Site Key` from `Site Dimension` where `Site Store Key`=%d ", $this->id);
+
+		$sites=array();
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+				if ($scope=='objects') {
+					$sites[$row['Site Key']]=new Site($row['Site Key']);
+				}else {
+					$sites[$row['Site Key']]=$row['Site Key'];
+				}
+
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+		return $sites;
+	}
+
+
 
 
 	function get_site_key() {
@@ -2100,6 +2133,313 @@ class Store extends DB_Table {
 			$this->error=true;
 			$this->msg=$customer->msg;
 		}
+	}
+
+
+	function create_product($data) {
+
+		$this->new_product=false;
+
+		$data['editor']=$this->editor;
+
+
+
+		//print_r($data);
+
+		if ( !isset($data['Product Code']) or $data['Product Code']=='') {
+			$this->error=true;
+			$this->msg=_("Code missing");
+			$this->error_code='product_code_missing';
+			$this->metadata='';
+			return;
+		}
+
+		$sql=sprintf('select count(*) as num from `Product Dimension` where `Product Code`=%s and `Product Store Key`=%d and `Product Status`!="Discontinued" ',
+			prepare_mysql($data['Product Code']),
+			$this->id
+
+		);
+
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				if ($row['num']>0) {
+					$this->error=true;
+					$this->msg=sprintf(_('Duplicated code (%s)'), $data['Product Code']);
+					$this->error_code='duplicate_product_code_reference';
+					$this->metadata=$data['Product Code'];
+					return;
+				}
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+
+		if ( !isset($data['Product Unit Label']) or $data['Product Unit Label']=='') {
+
+
+			$this->error=true;
+			$this->msg=_('Unit label missing');
+			$this->error_code='product_unit_label_missing';
+			return;
+		}
+
+		if ( !isset($data['Product Name']) or $data['Product Name']=='') {
+
+
+			$this->error=true;
+			$this->msg=_('Product name missing');
+			$this->error_code='product_name_missing';
+			return;
+		}
+
+
+
+		if (  !isset($data['Product Units Per Case']) or $data['Product Units Per Case']==''   ) {
+			$this->error=true;
+			$this->msg=_('Units per outer missing');
+			$this->error_code='sproduct_units_per_case_missing';
+			return;
+		}
+
+		if (!is_numeric($data['Product Units Per Case']) or $data['Product Units Per Case']<0  ) {
+			$this->error=true;
+			$this->msg=sprintf(_('Invalid units per outer (%s)'), $data['Product Units Per Case']);
+			$this->error_code='invalid_product_units_per_case';
+			$this->metadata=$data['Product Units Per Case'];
+			return;
+		}
+
+
+
+
+
+
+
+		if (  !isset($data['Product Price']) or $data['Product Price']==''   ) {
+			$this->error=true;
+			$this->msg=_('Cost missing');
+			$this->error_code='product_price_missing';
+
+			return;
+		}
+
+		if (!is_numeric($data['Product Price']) or $data['Product Price']<0  ) {
+			$this->error=true;
+			$this->msg=sprintf(_('Invalid cost (%s)'), $data['Product Price']);
+			$this->error_code='invalid_product_price';
+			$this->metadata=$data['Product Price'];
+			return;
+		}
+
+
+
+		if (isset($data['Product Unit RRP']) and $data['Product Unit RRP']!='' ) {
+			if (!is_numeric($data['Product Unit RRP']) or $data['Product Unit RRP']<0  ) {
+				$this->error=true;
+				$this->msg=sprintf(_('Invalid unit recommended RRP (%s)'), $data['Product Unit RRP']);
+				$this->error_code='invalid_product_unit_rrp';
+				$this->metadata=$data['Product Unit RRP'];
+				return;
+			}
+		}
+		if ($data['Product Unit RRP']!='') {
+			$data['Product RRP']=$data['Product Unit RRP']*$data['Product Units Per Case'];
+		}else {
+			$data['Product RRP']='';
+		}
+
+		$data['Product Store Key']=$this->id;
+
+
+
+
+		$data['Product Currency']=$this->data['Store Currency Code'];
+		$data['Product Locale']=$this->data['Store Locale'];
+
+
+		if (array_key_exists('Product Family Code', $data)) {
+			include_once 'class.Category.php';
+			$root_category=new Category($this->get('Store Family Category Key'));
+			if ($root_category->id) {
+				$root_category->editor=$this->editor;
+				$family=$root_category->create_category(array('Category Code'=>$data['Product Family Code']));
+				if ($family->id) {
+					$data['Product Family Category Key']=$family->id;
+				}
+			}
+		}
+
+		if (isset($data['Product Family Category Key'])) {
+			$family_key=$data['Product Family Category Key'];
+			unset($data['Product Family Category Key']);
+		}else {
+			$family_key=false;
+		}
+
+
+
+		if (isset($data['Parts']) and $data['Parts']!='') {
+		
+        include_once('class.Part.php');
+			$product_parts=array();
+			foreach (preg_split('/\,/', $data['Parts']) as $part_data) {
+				$part_data=_trim($part_data);
+				if(preg_match('/(\d+)x\s+/',$part_data,$matches)){
+				  
+				    $ratio=$matches[1];
+				    $part_data=preg_replace('/(\d+)x\s+/','',$part_data);
+				}else{
+				    $ratio=1;
+				}
+				
+				$part=new Part('reference',_trim($part_data
+				));
+				
+				$product_parts[]=array('Ratio'=>$ratio,'Part SKU'=>$part->id,'Note'=>'');
+				
+			}
+
+           $data['Product Parts']=json_encode($product_parts);
+		}
+
+		
+
+		if (isset($data['Product Parts'])) {
+
+			include_once 'class.Part.php';
+			$product_parts=json_decode($data['Product Parts'], true);
+			
+			if ($product_parts and is_array($product_parts)) {
+//print_r($product_parts);
+				foreach ($product_parts as $product_part) {
+					if (!is_array($product_part) or !isset($product_part['Part SKU'])  or !isset($product_part['Ratio']) or !isset($product_part['Note']) or !is_numeric($product_part['Part SKU']) or !is_string($product_part['Note'])  ) {
+
+						$this->error=true;
+						$this->msg="Can't parse product parts";
+						$this->error_code='can_not_parse_product_parts';
+						$this->metadata='';
+						return;
+					}
+
+
+					$part=new Part($product_part['Part SKU']);
+
+					if (!$part->id) {
+					
+						$this->error=true;
+						$this->msg='Part not found';
+						$this->error_code='part_not_found';
+						$this->metadata=$product_part['Part SKU'];
+						return;
+
+					}
+
+
+					if ( !is_numeric($product_part['Ratio']) or $product_part['Ratio']<0 ) {
+						$this->error=true;
+						$this->msg=sprintf(_('Invalid parts per product (%s)'), $product_part['Ratio']);
+						$this->error_code='invalid_parts_per_product';
+						$this->metadata=array($product_part['Ratio']);
+						return;
+
+					}
+
+
+
+
+
+
+
+				}
+
+
+			}else {
+				$this->error=true;
+				$this->msg="Can't parse product parts";
+				$this->error_code='can_not_parse_product_parts';
+				$this->metadata='';
+				return;
+
+			}
+
+
+			$product_parts_data=$data['Product Parts'];
+			unset($data['Product Parts']);
+
+		}else {
+			$product_parts_data=false;
+		}
+
+
+		$product= new Product('find', $data, 'create');
+
+
+
+		if ($product->id) {
+			$this->new_object_msg=$product->msg;
+
+			if ($product->new) {
+				$this->new_object=true;
+				$this->new_product=true;
+				$this->update_product_data();
+
+				if ( $product_parts_data) {
+					$product->update_part_list($product_parts_data, 'no_history');
+				}
+
+
+				if ($family_key) {
+					$product->update(array('Product Family Category Key'=>$family_key), 'no_history');
+				}
+
+
+				$page_data=array(
+					'Page Store Content Display Type'=>'Template',
+					'Page Store Content Template Filename'=>'product',
+					'Page State'=>'Online'
+
+				);
+
+				foreach ($this->get_sites('objects') as $site) {
+
+					$product_page_key=$site->add_product_page($product->id, $page_data);
+				}
+
+
+
+			}
+			else {
+
+				$this->error=true;
+				if ($product->found) {
+
+					$this->error_code='duplicated_field';
+					$this->error_metadata=json_encode(array($product->duplicated_field));
+
+					if ($product->duplicated_field=='Product Code') {
+						$this->msg=_("Duplicated product code");
+					}else {
+						$this->msg='Duplicated '.$product->duplicated_field;
+					}
+
+
+				}else {
+					$this->msg=$supplier_part->msg;
+				}
+			}
+			return $product;
+		}
+		else {
+
+
+			$this->msg=$product->msg;
+
+		}
+
 	}
 
 

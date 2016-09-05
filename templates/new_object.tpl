@@ -3,7 +3,7 @@
 	{if isset($form_type)}{assign "form_type" $form_type}{else}{assign "form_type" ""}{/if} 
 
 
-<div id="result" class="result hide">
+<div id="result" class=" hide">
 </div>
 <div  id="fields" class="new_object   {if $form_type}$form_type{/if}" object="{$object_name}" parent='{$state.parent}' parent_key='{$state.parent_key}' key="{$state.key}" {if isset($step)}step="{$step}"{/if} has_been_fully_validated="0" >
     <table id="edit_container" border=0 data-default_telephone_data="{if isset($default_telephone_data)}{$default_telephone_data}{/if}">
@@ -187,7 +187,9 @@
 	
 		<input id="{$field.id}" class="input_field " value="{$field.value}" {if $locked}readonly="readonly="{/if}  has_been_valid="0" {if isset($field.placeholder)}placeholder="{$field.placeholder}"{/if}/>
 		<span id="{$field.id}_msg" class="msg"></span> 
-		
+		{elseif $edit=='parts_list'  } 
+	
+		{include file="parts_list.edit.tpl" field=$field parts_list=$object->get_parts_data(true) mode='new'} 
 		{elseif $edit=='dropdown_select'}
 			<input id="{$field.id}" type="hidden" class=" input_field" value="{$field.value}" has_been_valid="0"/>
 		<input id="{$field.id}_dropdown_select_label"  field="{$field.id}" create_new="{if isset($field.create_new)}{$field.create_new}{else}0{/if}" scope="{$field.scope}" parent="{$field.parent}" parent_key="{$field.parent_key}" class=" dropdown_select" value="{$field.formatted_value}" has_been_valid="0" placeholder="{if isset($field.placeholder)}{$field.placeholder}{/if}"/>
@@ -469,8 +471,8 @@ function input_barcode_to_new_object(field) {
 
 <span class="save_form save  " id="{$object_name}_save"  onclick="save_new_object('{$object_name}','{$form_type}')"  ><span id="save_label">{t}Save{/t}</span><span class="hide" id="saving_label">{t}Saving{/t}</span> <i id="{$object_name}_save_icon" class="fa fa-cloud  " ></i></span> 
 <span id="save_msg" class="msg padding_left_10"></span></span> 
-<span class="hide results" id="{$object_name}_create_other" onClick="change_view(state.request)">{t}Add another{/t} <i class="fa fa-plus"></i>  </span> 
-<span class="hide results" id="{$object_name}_go_new" request=""  onClick="change_to_new_object_view()"  >{if isset($new_object_label)}{$new_object_label}{else}{t}View new object{/t}{/if} <i class="fa fa-arrow-right"></i> </span>
+<span class="hide new_object_results" id="{$object_name}_create_other" onClick="change_view(state.request)">{t}Add another{/t} <i class="fa fa-plus"></i>  </span> 
+<span class="hide new_object_results" id="{$object_name}_go_new" request=""  onClick="change_to_new_object_view()"  >{if isset($new_object_label)}{$new_object_label}{else}{t}View new object{/t}{/if} <i class="fa fa-arrow-right"></i> </span>
 
 </td>
 </tr>
