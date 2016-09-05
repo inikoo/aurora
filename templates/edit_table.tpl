@@ -269,7 +269,7 @@ function export_table(type) {
         if ($(obj).hasClass('fa-check-square-o')) fields.push($(obj).attr('key'))
     });
 
-    var request = "/ar_export_edit_template.php?parent={$parent}&parent_key={$parent_key}&parent_code={$parent_code}&objects={$objects}&fields=" + JSON.stringify(fields)+'&type='+type'&metadata='+JSON.stringify({ })
+    var request = "/ar_export_edit_template.php?parent={$parent}&parent_key={$parent_key}&parent_code={$parent_code}&objects={$objects}&fields=" + JSON.stringify(fields)+'&type='+type+'&metadata='+JSON.stringify({ })
 
     // console.log(request)
     $.getJSON(request, function(data) {
