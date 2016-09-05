@@ -770,6 +770,15 @@ $modules=array(
 				)
 
 			),
+			
+				'upload'=>array('type'=>'object',
+				'tabs'=>array(
+					'upload.records'=>array('label'=>_('Upload Records')),
+
+				)
+
+			),
+			
 
 		)
 	),

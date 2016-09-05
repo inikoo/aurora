@@ -79,7 +79,7 @@ $export_edit_template_fields=array(
 	'product'=>array(
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>true, 'field'=>'Product Code', 'name'=>'Product Code', 'label'=>_('Code'), 'checked'=>1, 'cell_type'=>'string'),
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>true, 'field'=>'Parts', 'name'=>'Parts', 'label'=>_('Parts'), 'checked'=>1, 'cell_type'=>'string'),
-		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'field'=>'Product Family Code', 'name'=>'Product Family Category Code', 'label'=>_('Family code'), 'checked'=>1, 'cell_type'=>'string'),
+		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'field'=>'Product Family Code', 'name'=>'Family Category Code', 'label'=>_('Family code'), 'checked'=>1, 'cell_type'=>'string'),
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'field'=>'Product Label in Family', 'name'=>'Product Label in Family', 'label'=>_('Label in family'), 'checked'=>1),
 
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>true, 'field'=>'Product Units Per Case', 'name'=>'Product Units Per Case', 'label'=>_('Units per outer'), 'checked'=>1),

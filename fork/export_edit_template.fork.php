@@ -19,6 +19,7 @@ function fork_export_edit_template($job) {
 		return;
 
 
+print_r($_data);
 
 
 	$db=$_data['db'];
@@ -115,15 +116,32 @@ function fork_export_edit_template($job) {
 
 
 			break;
-		default:
+			
+		case 'category':
+			include_once 'class.Product.php';
+			include_once 'class.Category.php';
 
+
+			$sql_count=sprintf('select count(*) as num from `Category Bridge` where `Subject`="Product" and  `Category Key`=%d', $parent_key);
+			$sql_data=sprintf('select `Subject Key` as id from `Category Bridge` where `Subject`="Product" and `Category Key`=%d', $parent_key);
+
+
+			
+
+
+			//$exchange=currency_conversion($db, $account->get('Account Currency'), $store->get('Store Currency Code'));
+
+
+			break;	
+			
+		default:
 			break;
 		}
 		break;
 
 
 	default:
-
+print_r($data);
 		break;
 	}
 
@@ -234,6 +252,29 @@ function fork_export_edit_template($job) {
 
 
 				switch ($parent) {
+				
+				
+				case 'category':
+				
+				$object=new Product($row['id']);
+
+				$data_rows=array();
+
+				$data_rows[]=array(
+					'cell_type'=>'auto',
+					'value'=>$object->id
+				);
+
+				foreach ($fields as $field) {
+
+					$data_rows[]=array(
+						'cell_type'=>(isset($field['cell_type'])?$field['cell_type']:'auto'),
+						'value'=>$object->get($field['name']),
+						'field'=>$field['name']
+					);
+				}
+				break;
+				
 				case 'part_category':
 
 
@@ -337,6 +378,9 @@ function fork_export_edit_template($job) {
 				break;
 
 			default:
+
+
+
 
 				break;
 			}

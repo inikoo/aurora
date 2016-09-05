@@ -129,8 +129,11 @@ case 'views':
 	}
 	$state['_parent']=$_parent;
 
-	if ($state['object']!='') {
 
+
+
+
+	if ($state['object']!='') {
 
 		$_object=get_object($state['object'], $state['key']);
 
@@ -151,6 +154,9 @@ case 'views':
 
 
 			if ($state['parent']=='store' and $_object->get('Store Key')!=$state['parent_key'] ) {
+				
+
+				
 				$state=array('old_state'=>$state, 'module'=>'utils', 'section'=>'not_found', 'tab'=>'not_found', 'subtab'=>'', 'parent'=>$state['object'], 'parent_key'=>'', 'object'=>'',
 					'store'=>'',
 					'website'=>'',
@@ -161,7 +167,6 @@ case 'views':
 
 			}
 		}
-
 
 		if ( $state['object']=='customer' and    $state['tab']!='customer.new'  ) {
 
@@ -1726,31 +1731,31 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 	case 'products':
 
+if ( $user->get_number_stores()>1) {
+					$branch[]=array('label'=>_('Stores'), 'icon'=>'', 'reference'=>'stores');
 
+}
 		if ($state['section']=='store') {
+
 			$branch[]=array('label'=>_('Store').' <span class="Store_Code id">'.$state['_object']->get('Store Code').'</span>', 'icon'=>'shopping-bag', 'reference'=>'store/'.$state['_object']->id);
 			$state['current_store']=$state['_object']->id;
 
 		}elseif ($state['section']=='store.new') {
-			$branch[]=array('label'=>_('Stores'), 'icon'=>'', 'reference'=>'stores');
 			$branch[]=array('label'=>_('New store'), 'icon'=>'shopping-bag', 'reference'=>'');
 
 
 		}elseif ($state['section']=='dashboard') {
+							$branch[]=array('label'=>_('Stores'), 'icon'=>'', 'reference'=>'stores');
+
 			$branch[]=array('label'=>_("Store's dashboard").' <span class="id">'.$state['_object']->get('Store Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$state['_object']->id);
 			$state['current_store']=$state['_object']->id;
 
-		}elseif ($state['section']=='product') {
+		}
+		elseif ($state['section']=='product') {
 
 			if ($state['parent']=='store') {
-				if ( $user->get_number_stores()>1) {
+							$branch[]=array('label'=>_('Products').' <span class="id">'.$state['store']->get('Code').'</span>', 'icon'=>'', 'reference'=>'products/'.$state['_parent']->id);
 
-
-					$branch[]=array('label'=>_('(All stores)'), 'icon'=>'', 'reference'=>'products/all');
-					$branch[]=array('label'=>_('Products').' <span class="id">'.$state['store']->get('Code').'</span>', 'icon'=>'cube', 'reference'=>'products/'.$state['store']->id);
-
-
-				}
 			}elseif ($state['parent']=='category') {
 
 				$category=$state['_parent'];
@@ -1808,13 +1813,9 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 			$branch[]=array('label'=>'<span class="id Product_Code">'.$state['_object']->get('Code').'</span>', 'icon'=>'cube', 'reference'=>$_ref);
 
-		}elseif ($state['section']=='products') {
-			if ( $user->get_number_stores()>1) {
-
-
-				$branch[]=array('label'=>_('(All stores)'), 'icon'=>'', 'reference'=>'products/all');
-
-			}
+		}
+		elseif ($state['section']=='products') {
+			
 
 			$branch[]=array('label'=>_('Products').' <span class="id">'.$state['store']->get('Code').'</span>', 'icon'=>'cube', 'reference'=>'');
 

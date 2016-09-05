@@ -10,6 +10,24 @@
 *}
 
 
+
+{if isset($elements) and count(elements)>0}
+<div id="elements" class="elements tabs ">
+<div  id="element_type" onClick="show_elements_types()"><i id="element_type_select_icon"  class="fa fa-bars" "></i></div>
+{foreach from=$elements item=element_group key=_elements_type} 
+<div id="elements_group_{$_elements_type}" elements_type="$_elements_type" class="elements_group {if $_elements_type!=$elements_type}hide{/if}" >
+{foreach from=$element_group['items']|@array_reverse item=element key=id} 
+<div id="element_{$id}" item_key="{$id}"  class="element right  {if isset($element.selected) and $element.selected}selected{/if}"  onclick="change_table_element(event,'{$id}')" title="{$elements[$elements_type]['label']}: {if isset($element.title)}{$element.title}{else}{$element.label}{/if}">
+		<i  id="element_checkbox_{$id}" class="fa {if $element.selected}fa-check-square-o{else}fa-square-o{/if}"></i>	 <span class="label"> {$element.label}</span>  <span  class="qty" id="element_qty_{$id}"></span>
+		</div>
+{/foreach}
+</div>
+{/foreach} 
+</div>
+{/if} 
+
+
+
 <div class="table_info" style="margin-top:2px" >
 	
 	<div   class=" square_button right " title="{t}Exit edit{/t}" >

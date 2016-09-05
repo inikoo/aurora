@@ -318,9 +318,9 @@ class Product extends Asset{
 			foreach ($parts_data as $part_data) {
 
 				$parts.=', '.number($part_data['Ratio']).'x <span class="link" onClick="change_view(\'part/'.$part_data['Part']->id.'\')">'.$part_data['Part']->get('Reference').'</span>';
-				if ($part_data['Note']!='') {
-					$parts.=' <span class="very_discreet">('.$part_data['Note'].')</span>';
-				}
+				//if ($part_data['Note']!='') {
+				//	$parts.=' <span class="very_discreet">('.$part_data['Note'].')</span>';
+				//}
 
 			}
 

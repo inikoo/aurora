@@ -213,6 +213,7 @@ class Asset extends DB_Table{
 			break;
 		case 'Family Category Key':
 		case 'Family Category Code':
+				
 			include_once 'class.Category.php';
 			if ($this->get($this->table_name.' Family Category Key')>0) {
 				$family=new Category($this->get($this->table_name.' Family Category Key'));
