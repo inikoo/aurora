@@ -252,8 +252,9 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 			}
 			
 			
-			
 			$formatted_value=$object->get($formatted_field);
+			
+			
 			$action='updated';
 
 			if ($field=='Product Parts') {
@@ -583,7 +584,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 		$object=$parent->create_category($data['fields_data']);
 
 		// Migration -----
-
+/*
 		include_once 'class.Store.php';
 		$store=new Store($parent->get('Category Store Key'));
 
@@ -676,12 +677,12 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 		}
 
-
+*/
 		// -----------
 
 
 
-		// --------------
+	
 
 
 		if (!$parent->error) {
@@ -745,7 +746,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
 			// Migration -----
-
+/*
 			$category=$parent;
 			if ($category->get('Category Scope')=='Product') {
 				if ($category->get('Category Subject')=='Product') {
@@ -861,7 +862,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 			}
 
-
+*/
 			// -----------
 
 
@@ -965,7 +966,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 		if ($parent->new_part) {
 
 			$smarty->assign('object', $object);
-			$smarty->assign('warehouse', $parent);
 
 			$pcard=$smarty->fetch('presentation_cards/part.pcard.tpl');
 			$updated_data=array();
@@ -981,6 +981,28 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 			exit;
 		}
 		break;
+	case 'Product':
+		include_once 'class.Product.php';
+		$object=$parent->create_product($data['fields_data']);
+
+		if ($parent->new_product) {
+
+			$smarty->assign('object', $object);
+
+			$pcard=$smarty->fetch('presentation_cards/product.pcard.tpl');
+			$updated_data=array();
+		}else {
+
+
+			$response=array(
+				'state'=>400,
+				'msg'=>$parent->msg
+
+			);
+			echo json_encode($response);
+			exit;
+		}
+		break;	
 	case 'Manufacture_Task':
 		include_once 'class.Manufacture_Task.php';
 		$object=$parent->create_manufacture_task($data['fields_data']);
@@ -1357,7 +1379,7 @@ function edit_category_subject($account, $db, $user, $editor, $data, $smarty) {
 		$category->associate_subject($data['subject_key']);
 		// Migration -----
 
-
+/*
 		if ($category->get('Category Scope')=='Product') {
 			if ($category->get('Category Subject')=='Product') {
 
@@ -1472,7 +1494,7 @@ function edit_category_subject($account, $db, $user, $editor, $data, $smarty) {
 
 		}
 
-
+*/
 		// -----------
 
 
@@ -1480,7 +1502,7 @@ function edit_category_subject($account, $db, $user, $editor, $data, $smarty) {
 		$category->disassociate_subject($data['subject_key']);
 
 		// Migration -----
-
+/*
 		if ($category->get('Category Scope')=='Product') {
 			if ($category->get('Category Subject')=='Product') {
 
@@ -1586,6 +1608,8 @@ function edit_category_subject($account, $db, $user, $editor, $data, $smarty) {
 
 
 		}
+		*/
+
 		//----------
 
 	}
@@ -1608,6 +1632,7 @@ function edit_bridge($account, $db, $user, $editor, $data, $smarty) {
 
 
 		// Migration -----
+		/*
 		if ($object->get_object_name()=='Category') {
 
 
@@ -1729,12 +1754,14 @@ function edit_bridge($account, $db, $user, $editor, $data, $smarty) {
 
 
 		}
+		*/
 		// -----------
 	}
 	else {
 		$object->disassociate_subject($data['subject_key']);
 
 		// Migration -----
+/*
 		if ($object->get_object_name()=='Category') {
 
 
@@ -1838,6 +1865,7 @@ function edit_bridge($account, $db, $user, $editor, $data, $smarty) {
 
 			}
 		}
+		*/
 		//----------
 
 	}

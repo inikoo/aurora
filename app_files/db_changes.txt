@@ -424,6 +424,9 @@ ALTER TABLE `Product Dimension` CHANGE `Product Units Per Case` `Product Units P
 
 ALTER TABLE `Product Dimension` ADD `Product Label in Family` VARCHAR(255) NULL DEFAULT NULL AFTER `Product Unit Label`;
 update  `Product Dimension`  set  `Product Label in Family`=`Product Special Characteristic`;
+ALTER TABLE `Product History Dimension` ADD `Product History Code` VARCHAR(30) NOT NULL AFTER `Product ID`, ADD `Product History Units Per Case` SMALLINT UNSIGNED NOT NULL AFTER `Product History Code`;
+ALTER TABLE `Product Dimension` ADD `Product Materials` TEXT NULL DEFAULT NULL AFTER `Product Label in Family`;
+ALTER TABLE `Product Dimension` ADD `Product Tariff Code Valid` ENUM('Yes','No') NOT NULL DEFAULT 'No' AFTER `Product Tariff Code`;
 
 
 migrate_suppliers.oneoff.php
@@ -434,9 +437,17 @@ migrate_parts.oneoff.php
 
 // From HERe  ==================== 15/04/2016, 10:45
 
+
+ALTER TABLE `Product Dimension` CHANGE `Product Status` `Product Status` ENUM('InProcess','Active','Suspended','Discontinuing','Discontinued') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'Active';
+
+
+
 Only for bali dw:
 
+TODO IN COSTA!!!!=====
+ALTER TABLE `Product History Dimension` ADD `Product History Code` VARCHAR(30) NOT NULL AFTER `Product ID`, ADD `Product History Units Per Case` SMALLINT UNSIGNED NOT NULL AFTER `Product History Code`;
 
+===============
 
 
 ALTER TABLE `Inventory Transaction Fact` CHANGE `Inventory Transaction Quantity` `Inventory Transaction Quantity` DECIMAL(24,6) NULL DEFAULT NULL;

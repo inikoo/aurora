@@ -13,21 +13,13 @@ include_once 'conf/export_edit_template_fields.php';
 
 
 $objects='supplier_part';
-
-$smarty->assign('title', _("Supplier's parts edit"));
-
-
+$smarty->assign('title', sprintf(_("Supplier's parts in %s"),$state['_object']->get('Code')));
 $smarty->assign('parent', $state['object']);
 $smarty->assign('parent_key', $state['key']);
 $smarty->assign('parent_code', $state['_object']->get('Code'));
-
-
-
-
 $smarty->assign('objects', $objects);
-
-
 $smarty->assign('edit_fields', $export_edit_template_fields[$objects]);
+$smarty->assign('return_tab',$state['tab']);
 
 $html=$smarty->fetch('edit_table.tpl');
 

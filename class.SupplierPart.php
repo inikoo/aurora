@@ -227,7 +227,7 @@ class SupplierPart extends DB_Table{
 			$this->msg="Supplier part added";
 			$this->get_data('id', $this->id);
 
-			//$this->update_historic_object();
+			
 
 			$this->new=true;
 

@@ -18,6 +18,8 @@ function get_product_showcase($data,$smarty,$user,$db) {
 	if (!$product->id) {
 		return "";
 	}
+	
+	$product->update_availability();
 
 	$images=$product->get_images_slidesshow();
 

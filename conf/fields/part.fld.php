@@ -318,10 +318,6 @@ $part_fields[]=array(
 			'required'=>false,
 			'type'=>'value'
 		),
-
-
-
-
 		array(
 			'id'=>'Part_Tariff_Code',
 			'edit'=>($edit?'numeric':''),
@@ -353,7 +349,8 @@ $part_fields[]=array(
 
 
 );
-$part_fields[]=array(
+$part_fields[]=
+array(
 	'label'=>($supplier_part_scope?_('Part health & safety'):_('Health & Safety')),
 
 	'show_title'=>true,

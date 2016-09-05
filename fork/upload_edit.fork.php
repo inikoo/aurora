@@ -67,8 +67,27 @@ function fork_upload_edit($job) {
 		$valid_fields=$export_edit_template_fields['supplier_part'];
 		$object_name='supplier_part';
 		break;
+	case 'part':
+		include_once 'class.Part.php';
+		$valid_keys=array('Part SKU');
+		$valid_fields=$export_edit_template_fields['part'];
+		$object_name='part';
+		break;
+	case 'product':
+		include_once 'class.Product.php';
+		$valid_keys=array('Product ID');
+		$valid_fields=$export_edit_template_fields['product'];
+		$object_name='product';
+		break;
+	case 'supplier':
+		include_once 'class.Supplier.php';
+		$valid_keys=array('Supplier Key');
+		$valid_fields=$export_edit_template_fields['supplier'];
+		$object_name='suppier';
+		break;
 	default:
-
+		print 'error upload.edit.fork.php';
+		return;
 		break;
 	}
 
@@ -218,7 +237,7 @@ function fork_upload_edit($job) {
 					'fields_data'=>$fields_data
 				);
 
-    
+
 				$object_key=new_object($account, $db, $user, $editor, $_data);
 
 
@@ -422,10 +441,31 @@ function new_object($account, $db, $user, $editor, $data) {
 	$parent->editor=$editor;
 
 
-	//print_r($data);
+	
+
 
 	switch ($data['object']) {
 
+case 'product':
+		include_once 'class.Product.php';
+
+
+		$object=$parent->create_product($data['fields_data']);
+		//print_r($object);
+
+		if ($parent->error) {
+			$error=$parent->error;
+			$error_metadata=(isset($parent->error_metadata)?$parent->error_metadata:'');
+			$error_code=$parent->error_code;
+		
+		}
+
+
+
+
+
+
+break;
 	case 'supplier_part':
 	case 'Supplier Part':
 		include_once 'class.SupplierPart.php';
@@ -440,11 +480,14 @@ function new_object($account, $db, $user, $editor, $data) {
 			$error_code=$parent->error_code;
 		}
 
-       
+
 
 		break;
 	case 'part':
 	case 'Part':
+		
+		
+		/*
 		include_once 'class.Part.php';
 		include_once 'class.Supplier.php';
 
@@ -473,7 +516,7 @@ function new_object($account, $db, $user, $editor, $data) {
 			$error_code=$parent->error_code;
 
 		}
-
+*/
 		break;
 	case 'Manufacture_Task':
 		include_once 'class.Manufacture_Task.php';

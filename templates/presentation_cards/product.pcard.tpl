@@ -1,4 +1,4 @@
-{assign "part" $object}
+{assign "product" $object}
 <div class="presention_card">
 
 <table>
@@ -12,15 +12,15 @@
 </td>
 </tr>
 <tr class="title">
-<td colspan=2>{t}Part{/t} <i  onClick="change_view('part/{$part->id}')" class="fa fa-square button"></i></td>
+<td colspan=2>{t}Product{/t} <i  onClick="change_view('products/{$product->get('Product Store Key')}/{$product->id}')" class="fa fa-cube button"></i></td>
 </tr>
 
 
 <tr>
-<td class="label">{$part->get_field_label('Part Reference')|capitalize}</td><td>{$part->get('Reference')}</td>
+<td class="label">{$product->get_field_label('Product Code')|capitalize}</td><td>{$product->get('Code')}</td>
 </tr>
 <tr>
-<td class="label">{$part->get_field_label('Part Package Description')|capitalize}</td><td>{$part->get('Package Description')}</td>
+<td class="label">{$product->get_field_label('Product Name')|capitalize}</td><td>{$product->get('Name')}</td>
 </tr>
 
 </table>

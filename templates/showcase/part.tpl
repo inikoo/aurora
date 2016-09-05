@@ -6,7 +6,7 @@
 		
 		<div style="width:100%" >
 	
-	<ul class="tags" >
+	<ul class="tags Categories" >
 			{foreach from=$part->get_category_data() item=item key=key} 
 	<li><span class="button" onClick="change_view('category/{$item.category_key}')" title="{$item.label}">{$item.code}</span></li>
 	{/foreach} 

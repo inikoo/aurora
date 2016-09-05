@@ -1341,7 +1341,7 @@ class Supplier extends SubjectSupplier {
 						$this->error_code='duplicated_field';
 						$this->error_metadata=json_encode(array($part->duplicated_field));
 
-						if ($supplpartier_part->duplicated_field=='Part Reference') {
+						if ($part->duplicated_field=='Part Reference') {
 							$this->msg=_("Duplicated part reference");
 						}else {
 							$this->msg='Duplicated '.$part->duplicated_field;

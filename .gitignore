@@ -15,3 +15,13 @@ css/app.css.map
 deployment.secret.json
 
 app_files/app.tmp.sql
+
+ecom/.DS_Store
+
+ecom/art/.DS_Store
+
+art/.DS_Store
+
+build/.DS_Store
+
+.DS_Store

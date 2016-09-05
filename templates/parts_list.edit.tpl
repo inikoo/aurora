@@ -1,4 +1,4 @@
-<table border=0 id="parts_list" class="hide  ">
+<table border=0 id="parts_list" class="{if $mode=='edit'}hide{/if}  ">
 <tr class="bold">
 <td></td>
 <td class="parts_per_product"></td>
@@ -17,8 +17,8 @@
 <input type="hidden" class="part_list_value sku" value="" ovalue=""> 
 <span class="Part_Reference hide"></span>
 <input class="Part_Reference_value" value="" ovalue="" placeholder="{t}Part reference{/t}" parent_key="1" parent="account" scope="parts"  > 
-<div  class="search_results_container">
-	<table class="results" border="1">
+<div  class="search_results_container" >
+	<table class="results" border="1" >
 		<tr class="hide search_result_template" field="" value="" formatted_value="" onclick="select_dropdown_part(this)">
 			<td class="code"></td>
 			<td style="width:85%" class="label"></td>
@@ -34,11 +34,15 @@
 </tr>
 <tr class="add_new_part_tr">
 <td colspan=3 ><span onclick="add_part()" class="button">{t}Add a part{/t} <i  class="fa fa-plus"></i></span></td>
-<td class="aright padding_right_20"><i id="Product_Parts_save_button" onclick="save_this_part_lists()" class="fa fa-cloud save "></i></td>
+<td class="aright padding_right_20"><i id="Product_Parts_save_button" onclick="save_this_part_lists()" class="fa fa-cloud save {if $mode=='new'}hide{/if} "></i></td>
 </tr>
 </table>
 
 <script>
+{if $mode=='new'}
+
+add_part()
+{/if}
 
 function remove_part(element) {
 
@@ -145,7 +149,7 @@ function get_part_dropdown_select(object, new_value) {
 
             clone.children(".label").html(data.results[result_key].description)
 
-            //  console.log(clone)
+            // console.log(clone)
             results_container.find(".results").append(clone)
             //console.log(results_container.find(".results"))
             //   console.log($('#' + field + '_result_' + result_key).data('metadata'))

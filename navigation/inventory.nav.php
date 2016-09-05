@@ -123,7 +123,7 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
 			$tab='category.parts';
 			$_section='inventory';
 			break;
-			
+
 
 
 		}
@@ -298,11 +298,11 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
 
 	$supplier_parts=$object->get_supplier_parts('objects');
 
-    foreach($supplier_parts as $key=>$supplier_part){
-        if($supplier_part->get('Supplier Part Status')=='Discontinued'){
-            unset($supplier_parts[$key]);
-        }
-    }
+	foreach ($supplier_parts as $key=>$supplier_part) {
+		if ($supplier_part->get('Supplier Part Status')=='Discontinued') {
+			unset($supplier_parts[$key]);
+		}
+	}
 
 
 	if (count($supplier_parts)==1) {
@@ -1251,157 +1251,157 @@ function get_product_navigation($data, $smarty, $user, $db, $account) {
 	$left_buttons=array();
 
 
-	
-
-		switch ($data['parent']) {
-		
-		case 'part':
-			$tab='part.products';
-			$_section='inventory';
-			break;
-	
-		}
 
 
-		if (isset($_SESSION['table_state'][$tab])) {
-			$number_results=$_SESSION['table_state'][$tab]['nr'];
-			$start_from=0;
-			$order=$_SESSION['table_state'][$tab]['o'];
-			$order_direction=($_SESSION['table_state'][$tab]['od']==1 ?'desc':'');
-			$f_value=$_SESSION['table_state'][$tab]['f_value'];
-			$parameters=$_SESSION['table_state'][$tab];
-		}else {
+	switch ($data['parent']) {
 
-			$default=$user->get_tab_defaults($tab);
-			$number_results=$default['rpp'];
-			$start_from=0;
-			$order=$default['sort_key'];
-			$order_direction=($default['sort_order']==1 ?'desc':'');
-			$f_value='';
-			$parameters=$default;
-			$parameters['parent']=$data['parent'];
-			$parameters['parent_key']=$data['parent_key'];
-		}
+	case 'part':
+		$tab='part.products';
+		$_section='inventory';
+		break;
 
-		include_once 'prepare_table/'.$tab.'.ptble.php';
-
-		$_order_field=$order;
-		$order=preg_replace('/^.*\.`/', '', $order);
-		$order=preg_replace('/^`/', '', $order);
-		$order=preg_replace('/`$/', '', $order);
-
-		if ($data['parent']=='order') {
-			$_order_field_value=$data['otf'];
-			$extra_field=',OTF.`Order Transaction Fact Key` as extra_field';
-		}else {
-
-			$_order_field_value=$object->get($order);
-			$extra_field='';
-		}
-
-		$prev_title='';
-		$next_title='';
-		$prev_key=0;
-		$next_key=0;
-		$prev_extra_field_value='';
-		$next_extra_field_value='';
-
-		$sql=trim($sql_totals." $wheref");
+	}
 
 
-		if ($result2=$db->query($sql)) {
-			if ($row2 = $result2->fetch() and $row2['num']>1) {
+	if (isset($_SESSION['table_state'][$tab])) {
+		$number_results=$_SESSION['table_state'][$tab]['nr'];
+		$start_from=0;
+		$order=$_SESSION['table_state'][$tab]['o'];
+		$order_direction=($_SESSION['table_state'][$tab]['od']==1 ?'desc':'');
+		$f_value=$_SESSION['table_state'][$tab]['f_value'];
+		$parameters=$_SESSION['table_state'][$tab];
+	}else {
+
+		$default=$user->get_tab_defaults($tab);
+		$number_results=$default['rpp'];
+		$start_from=0;
+		$order=$default['sort_key'];
+		$order_direction=($default['sort_order']==1 ?'desc':'');
+		$f_value='';
+		$parameters=$default;
+		$parameters['parent']=$data['parent'];
+		$parameters['parent_key']=$data['parent_key'];
+	}
+
+	include_once 'prepare_table/'.$tab.'.ptble.php';
+
+	$_order_field=$order;
+	$order=preg_replace('/^.*\.`/', '', $order);
+	$order=preg_replace('/^`/', '', $order);
+	$order=preg_replace('/`$/', '', $order);
+
+	if ($data['parent']=='order') {
+		$_order_field_value=$data['otf'];
+		$extra_field=',OTF.`Order Transaction Fact Key` as extra_field';
+	}else {
+
+		$_order_field_value=$object->get($order);
+		$extra_field='';
+	}
+
+	$prev_title='';
+	$next_title='';
+	$prev_key=0;
+	$next_key=0;
+	$prev_extra_field_value='';
+	$next_extra_field_value='';
+
+	$sql=trim($sql_totals." $wheref");
 
 
-				$sql=sprintf("select P.`Product Code` object_name,P.`Product ID` as object_key %s from $table   $where $wheref
+	if ($result2=$db->query($sql)) {
+		if ($row2 = $result2->fetch() and $row2['num']>1) {
+
+
+			$sql=sprintf("select P.`Product Code` object_name,P.`Product ID` as object_key %s from $table   $where $wheref
 	                and ($_order_field < %s OR ($_order_field = %s AND P.`Product ID` < %d))  order by $_order_field desc , P.`Product ID` desc limit 1",
-					$extra_field,
-					prepare_mysql($_order_field_value),
-					prepare_mysql($_order_field_value),
-					$object->id
-				);
+				$extra_field,
+				prepare_mysql($_order_field_value),
+				prepare_mysql($_order_field_value),
+				$object->id
+			);
 
-				if ($result=$db->query($sql)) {
-					if ($row = $result->fetch()) {
-						$prev_key=$row['object_key'];
-						$prev_title=_("Product").' '.$row['object_name'].' ('.$row['object_key'].')';
-						if ($extra_field) {
-							$prev_extra_field_value=$row['extra_field'];
-						}
-					}
-				}else {
-					print_r($error_info=$db->errorInfo());
-					exit;
-				}
-
-
-				$sql=sprintf("select P.`Product Code` object_name,P.`Product ID` as object_key %s from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND P.`Product ID` > %d))  order by $_order_field   , P.`Product ID`  limit 1",
-					$extra_field,
-					prepare_mysql($_order_field_value),
-					prepare_mysql($_order_field_value),
-					$object->id
-				);
-
-
-				if ($result=$db->query($sql)) {
-					if ($row = $result->fetch()) {
-						$next_key=$row['object_key'];
-						$next_title=_("Product").' '.$row['object_name'].' ('.$row['object_key'].')';
-						if ($extra_field) {
-							$next_extra_field_value=$row['extra_field'];
-						}
-					}
-				}else {
-					print_r($error_info=$db->errorInfo());
-					exit;
-				}
-
-
-
-
-
-				if ($order_direction=='desc') {
-					$_tmp1=$prev_key;
-					$_tmp2=$prev_title;
-					$prev_key=$next_key;
-					$prev_title=$next_title;
-					$next_key=$_tmp1;
-					$next_title=$_tmp2;
+			if ($result=$db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$prev_key=$row['object_key'];
+					$prev_title=_("Product").' '.$row['object_name'].' ('.$row['object_key'].')';
 					if ($extra_field) {
-						$_tmp3=$prev_extra_field_value;
-						$prev_extra_field_value=$next_extra_field_value;
-						$next_extra_field_value=$_tmp3;
+						$prev_extra_field_value=$row['extra_field'];
 					}
-
 				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				exit;
+			}
+
+
+			$sql=sprintf("select P.`Product Code` object_name,P.`Product ID` as object_key %s from $table   $where $wheref
+	                and ($_order_field  > %s OR ($_order_field  = %s AND P.`Product ID` > %d))  order by $_order_field   , P.`Product ID`  limit 1",
+				$extra_field,
+				prepare_mysql($_order_field_value),
+				prepare_mysql($_order_field_value),
+				$object->id
+			);
+
+
+			if ($result=$db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$next_key=$row['object_key'];
+					$next_title=_("Product").' '.$row['object_name'].' ('.$row['object_key'].')';
+					if ($extra_field) {
+						$next_extra_field_value=$row['extra_field'];
+					}
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				exit;
+			}
 
 
 
 
 
-
-
-
+			if ($order_direction=='desc') {
+				$_tmp1=$prev_key;
+				$_tmp2=$prev_title;
+				$prev_key=$next_key;
+				$prev_title=$next_title;
+				$next_key=$_tmp1;
+				$next_title=$_tmp2;
+				if ($extra_field) {
+					$_tmp3=$prev_extra_field_value;
+					$prev_extra_field_value=$next_extra_field_value;
+					$next_extra_field_value=$_tmp3;
+				}
 
 			}
-		}else {
-			print_r($error_info=$db->errorInfo());
-			exit;
+
+
+
+
+
+
+
+
+
 		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
 
 
 
-	
+
 
 
 
 
 	switch ($data['parent']) {
-	
+
 	case 'part':
 
-		
+
 		$up_button=array('icon'=>'arrow-up', 'title'=>_("Part").' ('.$data['_parent']->get('SKU').')', 'reference'=>'part/'.$data['_parent']->id);
 
 		if ($prev_key) {
@@ -1423,7 +1423,7 @@ function get_product_navigation($data, $smarty, $user, $db, $account) {
 		}
 
 		break;
-	
+
 
 	}
 
@@ -1432,7 +1432,7 @@ function get_product_navigation($data, $smarty, $user, $db, $account) {
 	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
 
 
-    $store =new Store($object->get('Product Store Key'));
+	$store =new Store($object->get('Product Store Key'));
 
 	$title='<span style="margin-right:10px" onClick="change_view(\'store/'.$store->id.'\')">'.$store->get('Code').'</span> <i class="fa fa-cube" aria-hidden="true" title="'._('Product').'"></i> <span class="id Product_Code">'.$object->get('Code').'</span>';
 
@@ -1466,6 +1466,7 @@ function get_product_navigation($data, $smarty, $user, $db, $account) {
 	return $html;
 
 }
+
 
 function get_new_part_attachment_navigation($data, $smarty, $user, $db) {
 
@@ -1552,6 +1553,7 @@ function get_part_attachment_navigation($data, $smarty, $user, $db) {
 
 }
 
+
 function get_new_supplier_part_navigation($data, $smarty, $user, $db) {
 
 
@@ -1592,4 +1594,54 @@ function get_new_supplier_part_navigation($data, $smarty, $user, $db) {
 	return $html;
 
 }
+
+
+function get_upload_navigation($data, $smarty, $user, $db) {
+
+
+
+
+	$left_buttons=array();
+	$right_buttons=array();
+
+
+	$sections=get_sections('inventory', '');
+
+	$_section='parts';
+	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
+
+	
+
+
+
+	//$right_buttons[]=array('icon'=>'download', 'title'=>_('Download'), 'id'=>'download_button' );
+
+	if ($data['parent']=='category') {
+	$up_button=array('icon'=>'arrow-up', 'title'=>sprintf(_('Category: %s'), $data['_parent']->get('Code')), 'reference'=>'category/'.$data['parent_key']);
+
+		$title= sprintf(_('Upload into category %s'), $data['_parent']->get('Code'));
+
+	}
+
+	$left_buttons[]=$up_button;
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>_('Search inventory'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+
+	$html=$smarty->fetch('navigation.tpl');
+
+	return $html;
+
+}
+
+
 ?>

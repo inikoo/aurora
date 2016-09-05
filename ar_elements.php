@@ -563,7 +563,7 @@ function get_products_element_numbers($db, $data, $user) {
 	$parent_key=$data['parent_key'];
 
 	$elements_numbers=array(
-		'status'=>array('InProcess'=>0, 'Active'=>0, 'Suspended'=>0, 'Discontinued'=>0),
+		'status'=>array('InProcess'=>0, 'Active'=>0, 'Suspended'=>0, 'Discontinued'=>0,'Discontinuing'=>0),
 
 	);
 

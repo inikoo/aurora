@@ -193,7 +193,10 @@ abstract class DB_Table {
 
 
 			if (array_key_exists($field, $extra_data))
-				$table_name='Page Store';
+				$table_full_name='Page Store Dimension';
+				
+			
+				
 		}
 		else if ($table_name=='Supplier Product') {
 
@@ -285,6 +288,7 @@ abstract class DB_Table {
 
 
 		}
+		
 		
 		
 		$update_op=$this->db->prepare($sql);

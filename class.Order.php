@@ -7634,6 +7634,9 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 	function update_deals_usage() {
 
 		include_once 'class.DealCampaign.php';
+				include_once 'class.DealComponent.php';
+
+
 
 		$deals=array();
 		$campaigns=array();

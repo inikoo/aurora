@@ -42,8 +42,9 @@ if ($category->get('Category Scope')=='Product') {
 		);
 
 
+	$table_buttons[]=array('icon'=>'edit', 'title'=>_("Edit products"), 'id'=>'edit_table');
 
-		$table_buttons[]=array('icon'=>'cube', 'title'=>_('All products'), 'change_tab'=>'category.all_subjects');
+		$table_buttons[]=array('icon'=>'cube', 'title'=>_('All products'), 'change_tab'=>'category.all_subjects', 'class'=>'move_left');
 
 
 		$table_buttons[]=array(
@@ -60,11 +61,11 @@ if ($category->get('Category Scope')=='Product') {
 				'parent_key'=>$state['key'],
 				'placeholder'=>_("Product's code"),
 				'dropdown_select_metadata'=>base64_encode(json_encode(array(
-						'scope'=>'products',
-						'parent'=>'store',
-						'parent_key'=>$state['_object']->get('Product Category Store Key'),
-						'options'=>array()
-					)))
+							'scope'=>'products',
+							'parent'=>'store',
+							'parent_key'=>$state['_object']->get('Product Category Store Key'),
+							'options'=>array()
+						)))
 			)
 
 		);
@@ -139,8 +140,8 @@ elseif ($category->get('Category Scope')=='Part') {
 	);
 
 
-
-	$table_buttons[]=array('icon'=>'square', 'title'=>_('All parts'), 'change_tab'=>'category.all_subjects');
+	$table_buttons[]=array('icon'=>'edit', 'title'=>_("Edit supplier's parts"), 'id'=>'edit_table');
+	$table_buttons[]=array('icon'=>'square', 'title'=>_('All parts'), 'change_tab'=>'category.all_subjects', 'class'=>'move_left');
 
 
 
@@ -167,6 +168,10 @@ elseif ($category->get('Category Scope')=='Part') {
 		)
 
 	);
+
+
+
+
 	$smarty->assign('table_buttons', $table_buttons);
 
 

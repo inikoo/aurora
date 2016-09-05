@@ -10,10 +10,10 @@
 *}
 
 
-<div class="table_info" >
+<div class="table_info" style="margin-top:2px" >
 	
 	<div   class=" square_button right " title="{t}Exit edit{/t}" >
-		 <i onclick="change_tab('supplier.supplier_parts')" class="fa fa-sign-out fa-flip-horizontal fa-fw"></i> 
+		 <i onclick="exit_edit_table()" class="fa fa-sign-out fa-flip-horizontal fa-fw"></i> 
 		
 	</div>
 	<div  id="show_export_dialog"  class=" square_button right " title="{t}Export edit template{/t}" >
@@ -66,7 +66,7 @@
        <tr class="small_row">
        <td>{$export_field.label}</td>
        <td style="width_20" class="field_export" >
-            <i id="field_export_{$_key}"  onclick="toggle_export_field({$_key})" key="{$_key}"  class="button fa-fw fa {if $export_field.checked }fa-check-square-o{else}fa-square-o{/if}"></i>
+            <i id="field_export_{$_key}"  onclick="toggle_export_field({$_key})" key="{$_key}"  class="button fa-fw object_field fa {if $export_field.checked }fa-check-square-o{else}fa-square-o{/if}"></i>
         </td>
         </tr>
        {/foreach}
@@ -115,7 +115,7 @@
 	
 	
 	
-	<div   class="square_button right " style="margin-right:30px">
+	<div   class="square_button right move_left" >
 		<form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate  >
 
 	<input type="file" name="image_upload" id="file_upload" class="inputfile" multiple/>
@@ -202,13 +202,27 @@
 	
 	
 	 </div>
-	<span id="rtext">{$title}</span> 
+	<span id="rtext" class="padding_left_10">{$title}</span> 
 </div>
 
 
 <script>
+
+
+
+
+
+
 show_export_dialog();open_export_config()
 
+
+function exit_edit_table(){
+
+$('#object_showcase').removeClass('hide');
+$('#tabs').removeClass('hide');
+
+    change_view(state.request + '&tab=' + state.tab.replace(/\_edit$/i, ""),{ reload_showcase: 1})
+}
 
 function open_export_dialogs(){
 
@@ -251,11 +265,11 @@ function export_table(type) {
     $('#stop_export_table_' + type).attr('stop', 0);
 
     var fields = []
-    $('#export_dialog_config .field_export i').each(function(index, obj) {
+    $('#export_dialog_config .field_export i.object_field').each(function(index, obj) {
         if ($(obj).hasClass('fa-check-square-o')) fields.push($(obj).attr('key'))
     });
 
-    var request = "/ar_export_edit_template.php?parent={$parent}&parent_key={$parent_key}&parent_code={$parent_code}&objects={$objects}&fields=" + JSON.stringify(fields)+'&type='+type
+    var request = "/ar_export_edit_template.php?parent={$parent}&parent_key={$parent_key}&parent_code={$parent_code}&objects={$objects}&fields=" + JSON.stringify(fields)+'&type='+type'&metadata='+JSON.stringify({ })
 
     // console.log(request)
     $.getJSON(request, function(data) {

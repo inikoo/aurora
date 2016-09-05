@@ -63,51 +63,88 @@ class Country {
 
 	function get_data($key, $id) {
 
+
+
 		if ($key=='find') {
+
+			if ($id=='') {
+				$this->get_data('code', 'UNK');
+			}
+
+			if (is_numeric($key)) {
+
+
+				$sql=sprintf("SELECT * FROM kbase.`Country Dimension` C where `Country Key`=%d", $id);
+				if ($this->data = $this->db->query($sql)->fetch()) {
+					$this->id=$this->data['Country Key'];
+					return;
+
+				}
+			}
+
+			if (strlen($id)==3) {
+				$sql=sprintf("SELECT * FROM kbase.`Country Dimension` C where `Country Code`=%s", prepare_mysql($id));
+				if ($this->data = $this->db->query($sql)->fetch()) {
+					$this->id=$this->data['Country Key'];
+					return;
+				}
+			}
+
+			if (strlen($id)==3) {
+				$sql=sprintf("SELECT * FROM kbase.`Country Dimension` C where `Country Code`=%s", prepare_mysql($id));
+				if ($this->data = $this->db->query($sql)->fetch()) {
+					$this->id=$this->data['Country Key'];
+					return;
+				}
+			}
+
+
+
+
 			$sql=sprintf("select `Country Key`  from kbase.`Country Dimension`where  `Country Name`=%s  "
+				, prepare_mysql($id)
+			);
+			if ($this->data = $this->db->query($sql)->fetch()) {
+				$this->id=$this->data['Country Key'];
+				return;
+			}
+
+			$sql=sprintf("select `Country Alias Code`  from kbase.`Country Alias Dimension` where `Country Alias`=%s  "
 				, prepare_mysql($id)
 
 			);
-			//print $sql;
-			$result=mysql_query($sql);
-
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC))
-				$this->get_data('id', $row['Country Key']);
-			else {
 
 
-				$sql=sprintf("select `Country Alias Code`  from kbase.`Country Alias Dimension` where `Country Alias`=%s  "
-					, prepare_mysql($id)
 
-				);
-				//print $sql;
-				$result_alias=mysql_query($sql);
-
-				if ($row_alias=mysql_fetch_array($result_alias, MYSQL_ASSOC))
-					$this->get_data('code', $row_alias['Country Alias Code']);
-				else
-					$this->get_data('code', 'UNK');
-				mysql_free_result($result_alias);
-
+			if ($result=$this->db->query($sql)) {
+				foreach ($result as $row) {
+					$this->get_data('code', $row['Country Alias Code']);
+					return;
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
-			mysql_free_result($result);
-			return;
+
+			$this->get_data('code', 'UNK');
+
+
 		}
-		if ($key=='id') {
+		elseif ($key=='id') {
 			$sql=sprintf("SELECT * FROM kbase.`Country Dimension` C where `Country Key`=%d", $id);
 			if ($this->data = $this->db->query($sql)->fetch()) {
 				$this->id=$this->data['Country Key'];
 			}
 			return;
 		}
-		if ($key=='2 alpha code' or $key=='2alpha') {
+		elseif ($key=='2 alpha code' or $key=='2alpha') {
 			$sql=sprintf("SELECT * FROM kbase.`Country Dimension` C where `Country 2 Alpha Code`=%s", prepare_mysql($id));
 			if ($this->data = $this->db->query($sql)->fetch()) {
 				$this->id=$this->data['Country Key'];
 			}
 			return;
 		}
-		if ($key=='code') {
+		elseif ($key=='code') {
 			$sql=sprintf("SELECT * FROM kbase.`Country Dimension` C where `Country Code`=%s", prepare_mysql($id));
 			if ($this->data = $this->db->query($sql)->fetch()) {
 				$this->id=$this->data['Country Key'];
@@ -117,7 +154,7 @@ class Country {
 			return;
 		}
 
-		if ($key=='name') {
+		elseif ($key=='name') {
 			$sql=sprintf("SELECT * FROM kbase.`Country Dimension` C where `Country Name`=%s", prepare_mysql($id));
 			if ($this->data = $this->db->query($sql)->fetch()) {
 				$this->id=$this->data['Country Key'];

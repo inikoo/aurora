@@ -184,7 +184,7 @@
 		{include file="salary.edit.tpl" field=$field salary=$salary } 
 		{elseif $edit=='parts_list'  } 
 		
-		{include file="parts_list.edit.tpl" field=$field parts_list=$object->get_parts_data(true) } 
+		{include file="parts_list.edit.tpl" field=$field parts_list=$object->get_parts_data(true) mode='edit'} 
 		
 		{elseif $edit=='textarea'  } 
 		
@@ -363,7 +363,7 @@
 		<div id="{$field.id}_options" class="dropcontainer radio_option hide" style="width:310px;xmargin-left:20px" >
 			<ul  id="{$field.id}_options_ul" sxtyle="float:left;width:292px">
 				{foreach from=$field.options item=option key=value} 
-				<li id="{$field.id}_option_{$value}" label="{$option}" value="{$value}" class="{if $value==$field.value}selected{/if}" onclick="select_option('{$field.id}','{$value}','{$option}' )">{$option} <i class="fa fa-circle fw current_mark {if $value==$field.value}current{/if}"></i></li>
+				<li  class="{if $value==$field.value}selected{/if}" onclick="select_option(this,'{$field.id}','{$value}' )">{$option} <i class="fa fa-circle fw padding_left_5 current_mark {if $value==$field.value}current{/if}"></i></li>
 				{/foreach} 
 			</ul>
 		</div>

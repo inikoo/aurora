@@ -105,23 +105,28 @@
 	
 
 	
-	<div id="filter_container" class="hide">
-	<div id="show_filter" onclick="show_filter()" class="square_button right " title="{t}Filter table{/t}" >
+	<div id="filter_container" class="hide" >
+	<div id="show_filter" onclick="show_filter()" class="square_button right " title="{t}Filter table{/t}" style="border-left:1px solid #aaa" >
 		 <i class="fa fa-filter fa-fw"></i> 
 	</div>
+
 	<div id="filter_submit" onclick="$('#filter form.backgrid-filter').submit()" class="square_button right filter hide" title="{t}Apply filter{/t}" >
 		 <i class="fa fa-filter fa-fw"></i> 
 	</div>
 	<div id="filter" class="filter hide" f_field="{$f_field}" >
 	
 	</div>
-	<div id="filter_field" class="filter hide {if $f_options|@count gt 1}button{/if}" onClick="show_f_options()">
+	<div id="filter_field" class="filter hide {if $f_options|@count gt 1}button{/if}" onClick="show_f_options()"   style="margin-left:10px" >
 	
 	<span class="label">{$f_label}</span>:
 	</div>
 	<div>
 	
 	</div>
+	
+		<div  class="square_button right " style="width:20px" >
+	</div>
+	
 	
 	</div>
 
@@ -410,9 +415,9 @@ var Rows = Backbone.PageableCollection.extend({
 
     var total_pages = Math.ceil(resp.resultset.total_records / state.pageSize)
 
-    if (resp.resultset.total_records > 20) {
-        $('#results_per_page').removeClass('hide')
-    }
+   // if (resp.resultset.total_records > 20) {
+   //     $('#results_per_page').removeClass('hide')
+   // }
  
   if (total_pages > 1 && '{$f_label}'!='') {
     $('#filter_container').removeClass('hide')

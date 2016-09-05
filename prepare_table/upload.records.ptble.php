@@ -38,6 +38,13 @@ case 'upload':
 		$where=sprintf(" where  `Upload Record Upload Key`=%d ", $parameters['parent_key']);
 
 		break;
+		
+	case 'product':
+		$table='  `Upload Record Dimension` as R  left join `Upload File Dimension` F on (F.`Upload File Key`=`Upload Record Upload File Key`)  left join `Product Dimension` O on (O.`Product ID`=R.`Upload Record Object Key`)  ';
+		$object_field=' `Product Code` as object_name,"" as object_auxiliar_name,CONCAT("products/",`Product Store Key`,"/",`Upload Record Object Key`) as link ';
+		$where=sprintf(" where  `Upload Record Upload Key`=%d ", $parameters['parent_key']);
+
+		break;	
 
 	default:
 		exit('object not suported '.$upload->get('Upload Object'));

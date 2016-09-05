@@ -103,6 +103,39 @@ class Product extends Asset{
 	}
 
 
+	function get_pages($scope='keys') {
+
+		if ($scope=='objects') {
+			include_once 'class.Page.php';
+		}
+
+		$sql=sprintf("Select `Page Key` from `Page Store Dimension` where `Page Store Section Type`='Product' and  `Page Parent Key`=%d", $this->id);
+
+		$pages=array();
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+				if ($scope=='objects') {
+					$pages[$row['Page Key']]=new Page($row['Page Key']);
+				}else {
+					$pages[$row['Page Key']]=$row['Page Key'];
+				}
+
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+		return $pages;
+
+
+
+	}
+
+
 	function get_parts($scope='keys') {
 
 
@@ -298,14 +331,6 @@ class Product extends Asset{
 			return $parts;
 
 			break;
-		case 'xOuter Weight':
-			return weight($this->data['Product Outer Weight']);
-
-
-		case 'xProduct Outer Weight':
-			$str = number_format($this->data['Product Outer Weight'], 4);
-
-			return preg_replace('/(?<=\d{3})0+$/', '', $str);
 
 		case 'Product Price':
 			$str = number_format($this->data['Product Price'], 4);
@@ -315,6 +340,103 @@ class Product extends Asset{
 		case 'Price':
 			return money($this->data['Product Price'], $this->data['Store Currency Code']);
 			break;
+
+		case 'Origin Country Code':
+			if ($this->data['Product Origin Country Code']) {
+				include_once 'class.Country.php';
+				$country=new Country('code', $this->data['Product Origin Country Code']);
+				return '<img src="/art/flags/'.strtolower($country->get('Country 2 Alpha Code')).'.gif" title="'.$country->get('Country Code').'"> '._($country->get('Country Name'));
+			}else {
+				return '';
+			}
+
+			break;
+		case 'Origin Country':
+			if ($this->data['Product Origin Country Code']) {
+				include_once 'class.Country.php';
+				$country=new Country('code', $this->data['Product Origin Country Code']);
+				return $country->get('Country Name');
+			}else {
+				return '';
+			}
+
+			break;
+
+
+
+		case 'Status':
+
+
+			switch ($this->data['Product Status']) {
+			case 'Active':
+				$status= _('Active');
+				break;
+			case 'Suspended':
+				$status= _('Suspended');
+				break;
+			case 'Discontinued':
+				$status= _('Discontinued');
+				break;
+			default:
+				$status=$this->data['Product Status'];
+				break;
+			}
+			return $status;
+
+			break;
+
+		case 'Web Configuration':
+
+
+			switch ($this->data['Product Web Configuration']) {
+			case 'Online Auto':
+				$web_configuration= _('Automatic');
+				break;
+			case 'Online Force For Sale':
+				$web_configuration= _('For sale').' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>';
+				break;
+			case 'Online Force Out of Stock':
+				$web_configuration= _('Out of Stock').' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>';
+				break;
+			case 'Offline':
+				$web_configuration= _('Offline');
+				break;
+			default:
+				$web_configuration=$this->data['Product Web Configuration'];
+				break;
+			}
+			return $web_configuration;
+			break;
+
+		case 'Web State':
+
+			switch ($this->data['Product Web State']) {
+			case 'For Sale':
+				$web_state= '<span class="'.(($this->get('Product Availability')<=0 and  $this->data['Product Number of Parts']>0  )?'error':'').'">'._('Online').'</span>'.($this->data['Product Web Configuration']=='Online Force For Sale'?' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>':'');
+				break;
+			case 'Out of Stock':
+				$web_state= '<span  class="'.(($this->get('Product Availability')>0 and $this->data['Product Number of Parts']>0  ) ?'error':'').'">'._('Out of Stock').'</span>'.($this->data['Product Web Configuration']=='Online Force Out of Stock'?' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>':'');
+				break;
+			case 'Discontinued':
+				$web_state= _('Discontinued');
+				break;
+			case 'Offline':
+
+				if ($this->data['Product Status']!='Active') {
+					$web_state= _('Offline');
+				}else {
+
+					$web_state= '<span class="'.(($this->get('Product Availability')>0 and $this->data['Product Number of Parts']>0 ) ?'error':'').'">'._('Offline').'</span>'.($this->data['Product Status']=='Active'?' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>':'');
+				}
+				break;
+			default:
+				$web_state=$this->data['Product Web State'];
+				break;
+			}
+			return $web_state;
+			break;
+
+
 		default:
 			if (array_key_exists($key, $this->data))
 				return $this->data[$key];
@@ -347,7 +469,7 @@ class Product extends Asset{
 			$label=_('unit description');
 			break;
 		case 'Product Price':
-			$label=_('Price');
+			$label=_('Outer price');
 			break;
 		case 'Product Outer Weight':
 			$label=_('weight');
@@ -393,6 +515,44 @@ class Product extends Asset{
 		case 'Product Unit RRP':
 			$label=_('unit RRP');
 			break;
+
+		case 'Product Tariff Code':
+			$label=_('tariff code');
+			break;
+
+		case 'Product Duty Rate':
+			$label=_('duty rate');
+			break;
+
+		case 'Product UN Number':
+			$label=_('UN number');
+			break;
+
+		case 'Product UN Class':
+			$label=_('UN class');
+			break;
+		case 'Product Packing Group':
+			$label=_('packing group');
+			break;
+		case 'Product Proper Shipping Name':
+			$label=_('proper shipping name');
+			break;
+		case 'Product Hazard Indentification Number':
+			$label=_('hazard indentification number');
+			break;
+		case 'Product Materials':
+			$label=_('Materials/Ingredients');
+			break;
+		case 'Product Origin Country Code':
+			$label=_('country of origin');
+			break;
+		case 'Product Units Per Package':
+			$label=_('units per SKO');
+			break;
+		case 'Product Barcode Number':
+			$label=_('barcode');
+			break;
+
 		default:
 			$label=$field;
 
@@ -444,6 +604,7 @@ class Product extends Asset{
 				$this->found=true;
 				$this->found_key=$row['Product ID'];
 				$this->get_data('id', $this->found_key);
+				$this->duplicated_field='Product Code';
 			}
 		}else {
 			print_r($error_info=$this->db->errorInfo());
@@ -485,11 +646,14 @@ class Product extends Asset{
 
 		$this->data['Product Code File As']=get_file_as($this->data['Product Code']);
 
+
+
+
 		$keys='';
 		$values='';
 		foreach ($this->data as $key=>$value) {
 			$keys.=",`".$key."`";
-			if (in_array($key, array('Product Valid To', 'Product Unit Weight', 'Product Outer Weight'))) {
+			if (in_array($key, array('Product Valid To', 'Product Unit Weight', 'Product Outer Weight', 'Product RRP'))) {
 				$values.=','.prepare_mysql($value, true);
 
 			}else {
@@ -500,6 +664,9 @@ class Product extends Asset{
 		$keys=preg_replace('/^,/', '', $keys);
 
 		$sql="insert into `Product Dimension` ($keys) values ($values)";
+
+
+
 		if ($this->db->exec($sql)) {
 			$this->id=$this->db->lastInsertId();
 			$this->get_data('id', $this->id);
@@ -514,7 +681,7 @@ class Product extends Asset{
 
 
 			$history_data=array(
-				'History Abstract'=>sprintf(_('%s product record created'), $this->data['Product Outer Description']),
+				'History Abstract'=>sprintf(_('%s product created'), $this->data['Product Name']),
 				'History Details'=>'',
 				'Action'=>'created'
 			);
@@ -524,7 +691,7 @@ class Product extends Asset{
 			$this->new=true;
 
 
-
+			$this->update_historic_object();
 
 
 
@@ -546,8 +713,150 @@ class Product extends Asset{
 
 
 		switch ($field) {
-		case 'Product Package Dimensions':
+
+
+
+
+		case('Product Status'):
+
+			if (! in_array($value, array('Active', 'Suspended' , 'Discontinued', 'Discontinuing'))) {
+				$this->error=true;
+				$this->msg=_('Invalid status').' ('.$value.')';
+				return;
+			}
+
+
+
+
+
+			$this->update_field('Product Status', $value, $options);
+
+
+			if ($value=='Suspended' or $value=='Discontinued') {
+				$this->update_field('Product Valid To', gmdate('Y-m-d H:i:s'), 'no_history');
+			}
+			if ($value=='Discontinuing') {
+				$this->update_field('Product Web Configuration', 'Online Auto', 'no_history');
+
+			}
+
+
+			$this->update_web_state();
+
+
+			$this->update_metadata=array(
+				'class_html'=>array(
+					'Product_Web_State'=>$this->get('Web State'),
+				)
+
+			);
+
+
+
+			$this->other_fields_updated=array(
+				'Product_Web_Configuration'=>array(
+					'field'=>'Product_Web_Configuration',
+					'render'=>($value=='Active'?true:false),
+					'value'=>$this->get('Product Web Configuration'),
+					'formatted_value'=>$this->get('Web Configuration'),
+				),
+
+
+			);
+
+
+
+			break;
+
+		case('Product Web Configuration'):
+
+			if (! in_array($value, array('Online Force Out of Stock', 'Online Auto', 'Offline', 'Online Force For Sale'))) {
+				$this->error=true;
+				$this->msg=_('Invalid web configuration').' ('.$value.')';
+				return;
+			}
+
+			$this->update_field($field, $value, $options);
+
+			$this->update_web_state();
+
+			$this->update_metadata=array(
+				'class_html'=>array(
+					'Product_Web_State'=>$this->get('Web State'),
+				)
+
+			);
+
+			break;
+		case('Product Tariff Code'):
+
+			if ( !preg_match('/from_part/', $options) and   count($this->get_parts())==1) {
+
+
+				$part=array_values($this->get_parts('objects'))[0];
+				$part->update(array(
+						preg_replace('/^Product/', 'Part', $field)=>$value
+					), $options);
+
+				$this->get_data('id', $this->id);
+				$this->updated=$part->updated;
+				return;
+
+			}
+
+
+			if ($value=='') {
+				$tariff_code_valid='';
+			}else {
+				include_once 'utils/validate_tariff_code.php';
+				$tariff_code_valid=validate_tariff_code($value, $this->db);
+			}
+
+
+
+
+			$this->update_field($field, $value, $options);
+
+			$this->update_field('Product Tariff Code Valid', $tariff_code_valid, 'no_history');
+
+
+
+
+			break;
+
+		case 'Product Unit Weight':
+
+			if (  $value!=''and (    !is_numeric($value) or $value<0  )) {
+				$this->error=true;
+				$this->msg=sprintf(_('Invalid weight (%s)'), $value);
+				return;
+			}
+
+			if ( !preg_match('/from_part/', $options) and   count($this->get_parts())==1) {
+
+
+				$part=array_values($this->get_parts('objects'))[0];
+				$part->update(array(
+						preg_replace('/^Product/', 'Part', $field)=>$value
+					), $options);
+
+				$this->get_data('id', $this->id);
+				$this->updated=$part->updated;
+				return;
+
+			}
+
+
+
+			$this->update_field($field, $value, $options);
+
+			break;
+
+
 		case 'Product Unit Dimensions':
+
+
+
 
 
 			include_once 'utils/parse_natural_language.php';
@@ -568,14 +877,51 @@ class Product extends Asset{
 				$vol=$_tmp['vol'];
 			}
 
+			if ( !preg_match('/from_part/', $options) and   count($this->get_parts())==1) {
+
+
+				$part=array_values($this->get_parts('objects'))[0];
+				$part->update(array(
+						preg_replace('/^Product/', 'Part', $field)=>$value
+					), $options);
+
+				$this->get_data('id', $this->id);
+				$this->updated=$part->updated;
+				return;
+
+			}
+
+
+
 			$this->update_field($tag.' Dimensions', $dim, $options);
-			
+
 
 			break;
-		
+
 		case 'Product Materials':
+
+
+			if ( !preg_match('/from_part/', $options) and   count($this->get_parts())==1) {
+
+
+				$part=array_values($this->get_parts('objects'))[0];
+				$part->update(array(
+						preg_replace('/^Product/', 'Part', $field)=>$value
+					), $options);
+
+				$this->get_data('id', $this->id);
+				$this->updated=$part->updated;
+				return;
+
+			}
+
+
+
+
+
+
 			include_once 'utils/parse_materials.php';
-            include_once 'class.Material.php';
+			include_once 'class.Material.php';
 
 			$materials_to_update=array();
 			$sql=sprintf('select `Material Key` from `Product Material Bridge` where `Product ID`=%d', $this->id);
@@ -645,13 +991,13 @@ class Product extends Asset{
 
 			$this->update_field('Product Materials', $materials, $options);
 			$updated=$this->updated;
-			
+
 
 
 			$this->updated=$updated;
 			break;
-		
-		
+
+
 		case 'Product Code':
 			$value=_trim($value);
 
@@ -873,64 +1219,177 @@ class Product extends Asset{
 			}
 			$this->update_field($field, $value, $options);
 			break;
-		case 'Product Outer Dimensions':
+
+
+		case 'Product Family Code':
 
 			if ($value=='') {
-				$dim='';
-				$vol='';
-			}else {
-				$dim=parse_dimensions($value);
-				if ($dim=='') {
-					$this->error=true;
-					$this->msg=_("Package dimensions can't be parsed");
-					return;
-				}
-				$_tmp=json_decode($dim, true);
-				$vol=$_tmp['vol'];
+				$this->error=true;
+				$this->msg=_("Family's code missing");
+				return;
 			}
 
-			$this->update_field('Product Outer Dimensions', $dim, $options);
-			$this->update_field('Product Outer Volume', $vol, $options);
+			include_once 'class.Category.php';
+
+
+			$root_category=new Category($this->get('Store Family Category Key'));
+			if ($root_category->id) {
+				$root_category->editor=$this->editor;
+				$family=$root_category->create_category(array('Category Code'=>$value));
+				if ($family->id) {
+
+					$this->update_field_switcher('Product Family Category Key', $family->id, $options);
+
+
+				}else {
+					$this->error=true;
+					$this->msg=_("Can't create family");
+					return;
+				}
+			}else {
+				$this->error=true;
+				$this->msg=_("Product families not configured");
+				return;
+			}
 
 
 			break;
 
+		case 'Direct Product Family Category Key':
 
+			$this->update_field('Product Family Category Key', $value, 'no_history');
+
+			break;
+		case 'Direct Product Department Category Key':
+
+			$this->update_field('Product Department Category Key', $value, 'no_history');
+
+			break;	
 		case 'Product Family Category Key':
-			include_once 'class.Category.php';
-			$family=new Category($value);
-			$family->associate_subject($this->id);
+
+
+			if ($value) {
+
+				include_once 'class.Category.php';
+				$family=new Category($value);
+				$family->associate_subject($this->id,false,'','skip_direct_update');
+
+				$sql=sprintf("select C.`Category Key` from `Category Dimension` C left join `Category Bridge` B on (C.`Category Key`=B.`Category Key`) where `Category Root Key`=%d and `Subject Key`=%d and `Subject`='Category' and `Category Branch Type`='Head'",
+
+					$this->data['Store Department Category Key'],
+					$family->id
+				);
+				//print $sql;
+				$department_key='';
+				if ($result=$this->db->query($sql)) {
+					if ($row = $result->fetch()) {
+						$department_key=$row['Category Key'];
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
+				}
+				$this->update_field('Product Department Category Key', $department_key, 'no_history');
+
+
+			}else {
+				if ($this->data['Product Family Category Key']!='') {
+
+
+					$category=new Category($this->data['Product Family Category Key']);
+
+					if ($category->id) {
+						$category->disassociate_subject($this->id);
+					}
+
+				}
+
+			}
+
 			$this->update_field($field, $value, 'no_history');
 
-			$sql=sprintf("select C.`Category Key` from `Category Dimension` C left join `Category Bridge` B on (C.`Category Key`=B.`Category Key`) where `Category Root Key`=%d and `Subject Key`=%d and `Subject`='Category' and `Category Branch Type`='Head'",
+			$categories='';
+			foreach ($this->get_category_data() as $item) {
+				$categories.=sprintf('<li><span class="button" onclick="change_view(\'category/%d\')" title="%s">%s</span></li>',
+					$item['category_key'],
+					$item['label'],
+					$item['code']
 
-				$this->data['Store Department Category Key'],
-				$family->id
-			);
-			//print $sql;
-			$departmet_key='';
-			if ($result=$this->db->query($sql)) {
-				if ($row = $result->fetch()) {
-					$departmet_key=$row['Category Key'];
-				}
-			}else {
-				print_r($error_info=$this->db->errorInfo());
-				exit;
+				);
+
 			}
-			$this->update_field('Product Department Category Key', $departmet_key, 'no_history');
-
-
-			$this->other_fields_updated=array(
-				'Store_Product_Family_Category_Key'=>array(
-					'field'=>'Store_Product_Family_Category_Key',
-					'render'=>true,
-					'value'=>$this->get('Family Category Key'),
-					'formatted_value'=>$family->get('Code').', '.$family->get('Label')
-
+			$this->update_metadata=array(
+				'class_html'=>array(
+					'Categories'=>$categories,
 
 				)
 			);
 
+
+			break;
+		case 'Product UN Number':
+		case 'Product UN Class':
+		case 'Product Packing Group':
+		case 'Product Proper Shipping Name':
+		case 'Product Hazard Indentification Number':
+		case('Product Duty Rate'):
+
+
+			if ( !preg_match('/from_part/', $options) and   count($this->get_parts())==1) {
+
+
+				$part=array_values($this->get_parts('objects'))[0];
+				$part->update(array(
+						preg_replace('/^Product/', 'Part', $field)=>$value
+					), $options);
+
+				$this->get_data('id', $this->id);
+				$this->updated=$part->updated;
+				return;
+
+			}
+
+
+			$this->update_field($field, $value, $options);
+
+			break;
+		case 'Product Origin Country Code':
+
+
+			if ($value=='') {
+				$this->error=true;
+				$this->msg=_("Country of origin missing");
+				return;
+			}
+
+			include_once 'class.Country.php';
+			$country=new Country('find', $value);
+			if ($country->get('Country Code')=='UNK') {
+				$this->error=true;
+				$this->msg=sprintf(_("Country not found (%s)"), $value);
+				return;
+
+			}
+
+			$value=$country->get('Country Code');
+
+			if ( !preg_match('/from_part/', $options) and   count($this->get_parts())==1) {
+
+
+				$part=array_values($this->get_parts('objects'))[0];
+				$part->update(array(
+						preg_replace('/^Product/', 'Part', $field)=>$value
+					), $options);
+
+				$this->get_data('id', $this->id);
+				$this->updated=$part->updated;
+				return;
+
+			}
+
+
+			$this->update_field($field, $value, $options);
+			break;
 		default:
 			$base_data=$this->base_data();
 			if (array_key_exists($field, $base_data)) {
@@ -977,7 +1436,7 @@ class Product extends Asset{
 		foreach ($value as $product_part) {
 
 			//print_r($product_part);
-			if ($product_part['Key']>0) {
+			if (isset($product_part['Key']) and $product_part['Key']>0) {
 
 				$sql=sprintf('update `Product Part Bridge` set `Product Part Note`=%s where `Product Part Key`=%d and `Product Part Product ID`=%d ',
 					prepare_mysql($product_part['Note']),
@@ -1036,7 +1495,7 @@ class Product extends Asset{
 				}
 			}
 		}
-
+		$this->update_part_numbers();
 		$this->update_availability();
 
 
@@ -1046,106 +1505,90 @@ class Product extends Asset{
 	function update_availability() {
 
 
-		$sql=sprintf(" select `Part Stock State`,`Part Current On Hand Stock`-`Part Current Stock In Process` as stock,`Part Current Stock In Process`,`Part Current On Hand Stock`,`Product Part Ratio`
+		if ($this->get('Product Number of Parts')>0) {
+
+			$sql=sprintf(" select `Part Stock State`,`Part Current On Hand Stock`-`Part Current Stock In Process` as stock,`Part Current Stock In Process`,`Part Current On Hand Stock`,`Product Part Ratio`
 		 from     `Product Part Bridge` B left join   `Part Dimension` P   on (P.`Part SKU`=B.`Product Part Part SKU`)   where B.`Product Part Product ID`=%d   ",
-			$this->id
-		);
+				$this->id
+			);
 
 
 
 
-		$result=mysql_query($sql);
-		$stock=99999999999;
-		$tipo='Excess';
-		$change=false;
-		$stock_error=false;
+			$result=mysql_query($sql);
+			$stock=99999999999;
+			$tipo='Excess';
+			$change=false;
+			$stock_error=false;
 
 
 
-		if ($result=$this->db->query($sql)) {
-			foreach ($result as $row) {
+			if ($result=$this->db->query($sql)) {
+				foreach ($result as $row) {
 
 
 
-				if ($row['Part Stock State']=='Error')
-					$tipo='Error';
-				elseif ($row['Part Stock State']=='OutofStock' and $tipo!='Error')
-					$tipo='OutofStock';
-				elseif ($row['Part Stock State']=='VeryLow' and $tipo!='Error' and $tipo!='OutofStock' )
-					$tipo='VeryLow';
-				else if ($row['Part Stock State']=='Low' and $tipo!='Error' and $tipo!='OutofStock' and $tipo!='VeryLow')
-					$tipo='Low';
-				elseif ($row['Part Stock State']=='Normal' and $tipo=='Excess' )
-					$tipo='Normal';
+					if ($row['Part Stock State']=='Error')
+						$tipo='Error';
+					elseif ($row['Part Stock State']=='OutofStock' and $tipo!='Error')
+						$tipo='OutofStock';
+					elseif ($row['Part Stock State']=='VeryLow' and $tipo!='Error' and $tipo!='OutofStock' )
+						$tipo='VeryLow';
+					else if ($row['Part Stock State']=='Low' and $tipo!='Error' and $tipo!='OutofStock' and $tipo!='VeryLow')
+						$tipo='Low';
+					elseif ($row['Part Stock State']=='Normal' and $tipo=='Excess' )
+						$tipo='Normal';
 
-				if (is_numeric($row['stock']) and is_numeric($row['Product Part Ratio'])  and $row['Product Part Ratio']>0 ) {
+					if (is_numeric($row['stock']) and is_numeric($row['Product Part Ratio'])  and $row['Product Part Ratio']>0 ) {
 
-					$_part_stock=$row['stock'];
-					if ($row['Part Current On Hand Stock']==0  and $row['Part Current Stock In Process']>0 ) {
-						$_part_stock=0;
+						$_part_stock=$row['stock'];
+						if ($row['Part Current On Hand Stock']==0  and $row['Part Current Stock In Process']>0 ) {
+							$_part_stock=0;
+						}
+
+						$_stock=$_part_stock/$row['Product Part Ratio'];
+						if ($stock>$_stock) {
+							$stock=$_stock;
+							$change=true;
+						}
+					}
+					else {
+
+						$stock=0;
+						$stock_error=true;
 					}
 
-					$_stock=$_part_stock/$row['Product Part Ratio'];
-					if ($stock>$_stock) {
-						$stock=$_stock;
-						$change=true;
-					}
+
 				}
-				else {
-
-					$stock=0;
-					$stock_error=true;
-				}
-
-
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
+
+
+
+			if ( $stock<0) {
+
+				$stock=0;
+
+			}elseif (!$change or $stock_error) {
+				$stock=0;
+			}else if (is_numeric($stock) and $stock<0) {
+				$stock=0;
+			}
+		}
+		else {
+			$stock=0;
+			$tipo='Normal';
 		}
 
 
-
-		if (!$change or $stock_error)
-			$stock='';
-		if (is_numeric($stock) and $stock<0)
-			$stock='';
 
 		$old_web_state=$this->get('Product Web State');
 
-		if ($this->get('Product Status')=='Active') {
-
-			switch ($this->data['Product Web Configuration']) {
-			case 'Offline':
-				$web_state= 'Offline';
-				break;
-			case 'Online Force Out of Stock':
-				$web_state= 'Out of Stock';
-				break;
-			case 'Online Force For Sale':
-				$web_state= 'For Sale';
-				break;
-			case 'Online Auto':
+		$web_state=$this->get_web_state();
 
 
-
-				if ($this->get('Product Availability')>0) {
-					$web_state= 'For Sale';
-				}else {
-					$web_state= 'Out of Stock';
-				}
-
-
-				break;
-
-			default:
-				$web_state= 'Offline';
-				break;
-			}
-
-		}else {
-			$web_state='Offline';
-		}
 
 
 		$this->update(array(
@@ -1471,9 +1914,9 @@ class Product extends Asset{
 					$this->db->exec($sql);
 
 					$order=new Order($row['Order Key']);
-					
-				
-					
+
+
+
 					$order->update_number_products();
 					$order->update_insurance();
 
@@ -1502,6 +1945,453 @@ class Product extends Asset{
 
 
 
+	}
+
+
+
+	function get_web_state() {
+
+
+
+
+		if ( !( $this->data['Product Status']=='Active' or $this->data['Product Status']=='Discontinuing') ) {
+
+			return 'Offline';
+		}
+		switch ($this->data['Product Web Configuration']) {
+
+
+
+		case 'Offline':
+			return 'Offline';
+			break;
+		case 'Online Force Out of Stock':
+			return 'Out of Stock';
+			break;
+		case 'Online Force For Sale':
+			return 'For Sale';
+			break;
+		case 'Online Auto':
+
+			if ($this->data['Product Number of Parts']==0) {
+				return 'For Sale';
+			}else {
+
+				if ($this->data['Product Availability']>0) {
+					return 'For Sale';
+				}else {
+					return 'Out of Stock';
+				}
+			}
+			break;
+		default:
+			return 'Offline';
+			break;
+		}
+
+	}
+
+
+	function update_web_state($update_pages=true) {
+
+
+
+
+		$old_web_state=$this->data['Product Web State'];
+
+
+		if ($old_web_state=='For Sale')
+			$old_web_availability='Yes';
+		else
+			$old_web_availability='No';
+
+		$web_state=$this->get_web_state();
+
+
+		$this->update_field('Product Web State', $web_state, 'no_history');
+
+
+
+		if ($web_state=='For Sale')
+			$web_availability='Yes';
+		else
+			$web_availability='No';
+
+
+		if ($old_web_availability!=$web_availability) {
+
+
+			if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
+				$user_key=$this->editor['User Key'];
+			else
+				$user_key=0;
+
+
+			$sql=sprintf("select UNIX_TIMESTAMP(`Date`) as date,`Product Availability Key` from `Product Availability Timeline` where `Product ID`=%d  order by `Date`  desc limit 1",
+				$this->id
+			);
+
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$last_record_key=$row['Product Availability Key'];
+					$last_record_date=$row['date'];
+				}else {
+					$last_record_key=false;
+					$last_record_date=false;
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+
+
+
+
+			$new_date_formated=gmdate('Y-m-d H:i:s');
+			$new_date=gmdate('U');
+
+			$sql=sprintf("insert into `Product Availability Timeline`  (`Product ID`,`Store Key`,`Department Key`,`Family Key`,`User Key`,`Date`,`Availability`,`Web State`) values (%d,%d,%d,%d,%d,%s,%s,%s) ",
+				$this->id,
+				$this->data['Product Store Key'],
+				$this->data['Product Main Department Key'],
+				$this->data['Product Family Key'],
+				$user_key,
+				prepare_mysql($new_date_formated),
+				prepare_mysql($web_availability),
+				prepare_mysql($web_state)
+
+			);
+			$this->db->exec($sql);
+
+			if ($last_record_key) {
+				$sql=sprintf("update `Product Availability Timeline` set `Duration`=%d where `Product Availability Key`=%d",
+					$new_date-$last_record_date,
+					$last_record_key
+
+				);
+				$this->db->exec($sql);
+
+			}
+
+
+			if ($web_availability=='Yes') {
+				$sql=sprintf("update `Email Site Reminder Dimension` set `Email Site Reminder State`='Ready' where `Email Site Reminder State`='Waiting' and `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d ",
+					$this->id
+				);
+
+			}else {
+				$sql=sprintf("update `Email Site Reminder Dimension` set `Email Site Reminder State`='Waiting' where `Email Site Reminder State`='Ready' and `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d ",
+					$this->id
+				);
+
+			}
+			$this->db->exec($sql);
+
+
+			if ($update_pages) {
+
+				include_once 'class.Page.php';
+				include_once 'class.Site.php';
+				include_once 'class.Order.php';
+
+				$sql=sprintf("select `Page Key` from `Page Product Dimension` where `Product ID`=%d ",
+					$this->id);
+
+
+				if ($result=$this->db->query($sql)) {
+					foreach ($result as $row) {
+
+						$page=new Page($row['Page Key']);
+
+						$site=new Site($page->get('Page Site Key'));
+						if ($site->data['Site SSL']=='Yes') {
+							$site_protocol='https';
+						}else {
+							$site_protocol='http';
+						}
+
+						$template_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=page_clean_cache&parent_key=".$page->id."&sk=x");
+
+
+
+
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
+				}
+
+
+				if ($web_availability=='No' ) {
+
+					$sql=sprintf("select `Order Key` from `Order Transaction Fact` where `Current Dispatching State`='In Process by Customer' and `Product ID`=%d ",
+						$this->id
+					);
+
+
+					if ($result=$this->db->query($sql)) {
+						foreach ($result as $row) {
+							$order=new Order($row['Order Key']);
+							$order->remove_out_of_stocks_from_basket($this->id);
+						}
+					}else {
+						print_r($error_info=$this->db->errorInfo());
+						exit;
+					}
+
+
+
+				}
+				else {
+
+					$sql=sprintf("select `Order Key` from `Order Transaction Fact` where `Current Dispatching State`='Out of Stock in Basket' and `Product ID`=%d ",
+						$this->id
+					);
+
+					if ($result=$this->db->query($sql)) {
+						foreach ($result as $row) {
+							$order=new Order($row['Order Key']);
+							$order->restore_back_to_stock_to_basket($this->id);
+						}
+					}else {
+						print_r($error_info=$this->db->errorInfo());
+						exit;
+					}
+
+
+
+				}
+
+			}
+
+
+		}
+
+
+
+
+
+		/*
+		if ($old_web_state=='Offline' and $this->data['Product Web State']!='Offline') {
+
+			include_once 'class.Page.php';
+
+			$sql=sprintf("select `Page Key` from `Page Product List Dimension` where `Page Product List Type`='FamilyList' and `Page Product List Parent Key`=%d ",
+				$this->data['Product Family Key']);
+
+
+			if ($result=$this->db->query($sql)) {
+				foreach ($result as $row) {
+					$page=new Page($row['Page Key']);
+					$page->update_list_products();
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+
+
+		}
+
+
+		if ($old_web_state!='Offline' and $this->data['Product Web State']=='Offline') {
+
+
+			include_once 'class.Page.php';
+
+			$sql=sprintf("select `Page Key` from `Page Product Dimension` where `Product ID`=%d and `Parent Type`='List'",
+				$this->id);
+
+
+			if ($result=$this->db->query($sql)) {
+				foreach ($result as $row) {
+					$page=new Page($row['Page Key']);
+					$page->update_list_products();
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+
+		}
+*/
+
+
+		if ($this->get('Product Status')!='Active' or $this->get('Product Web Configuration')=='Offline' ) {
+			$_state='Offline';
+		}else {
+			$_state='Online';
+		}
+
+
+
+		foreach ($this->get_pages('objects') as $page) {
+
+
+
+			$page->update(array('Page State'=>$_state), 'no_history');
+		}
+
+
+
+
+	}
+
+
+	function update_pages_numbers() {
+
+		$number_pages=0;
+
+		$sql=sprintf('select count(Distinct `Page Key`) as num from `Page Product Dimension`  where `Product ID`=%d',
+			$this->id
+		);
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$number_pages=$row['num'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+		$this->update(array(
+				'Product Number Web Pages'=>$number_pages,
+
+
+			), 'no_history');
+
+	}
+
+
+	function update_part_numbers() {
+
+		$number_parts=0;
+
+		$sql=sprintf('select count(`Product Part Part SKU`) as num from `Product Part Bridge`  where `Product Part Product ID`=%d',
+			$this->id
+		);
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$number_parts=$row['num'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+		$this->update(array(
+				'Product Number of Parts'=>$number_parts,
+
+
+			), 'no_history');
+
+	}
+
+
+	function update_status_from_parts() {
+
+		$status='Active';
+
+
+
+		foreach ($this->get_parts('objects') as $part) {
+			if ($part->get('Part Status')=='Discontinuing') {
+				$status='Discontinuing';
+			}elseif ($part->get('Part Status')=='Not In Use') {
+				$status='Discontiued';
+				break;
+			}
+
+
+		}
+
+
+		if ( $status=='Active') {
+			if ($this->get('Product Status')=='Discontinuing' ) {
+				$this->update(array('Product Status'=>'Active'), 'no_history');
+
+			}
+		}elseif ( $status=='Discontinuing') {
+			if ($this->get('Product Status')=='Active' ) {
+				$this->update(array('Product Status'=>'Discontinuing'), 'no_history');
+
+			}
+		}elseif ( $status=='Discontiued') {
+
+			$this->update(array('Product Status'=>'Discontiued'), 'no_history');
+
+
+		}
+
+
+	}
+
+
+	function get_category_data() {
+
+
+		$type='Product';
+
+		$sql=sprintf("select B.`Category Key`,`Category Root Key`,`Other Note`,`Category Label`,`Category Code`,`Is Category Field Other` from `Category Bridge` B left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`) where  `Category Branch Type`='Head'  and B.`Subject Key`=%d and B.`Subject`=%s",
+			$this->id,
+			prepare_mysql($type)
+		);
+
+		$category_data=array();
+
+
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+
+
+
+				$sql=sprintf("select `Category Label`,`Category Code` from `Category Dimension` where `Category Key`=%d", $row['Category Root Key']);
+
+
+				if ($result2=$this->db->query($sql)) {
+					if ($row2 = $result2->fetch()) {
+						$root_label=$row2['Category Label'];
+						$root_code=$row2['Category Code'];
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
+				}
+
+
+
+				if ($row['Is Category Field Other']=='Yes' and $row['Other Note']!='') {
+					$value=$row['Other Note'];
+				}
+				else {
+					$value=$row['Category Label'];
+				}
+				$category_data[]=array(
+					'root_label'=>$root_label,
+					'root_code'=>$root_code,
+					'label'=>$row['Category Label'],
+					'code'=>$row['Category Code'],
+					'value'=>$value,
+					'category_key'=>$row['Category Key']
+				);
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+
+
+		return $category_data;
 	}
 
 

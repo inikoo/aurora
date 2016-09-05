@@ -705,13 +705,16 @@ function show_invalid_messages(field) {
 }
 
 
-function select_option(field, value, label) {
+function select_option(element,field, value) {
     $('#' + field).val(value)
-    $('#' + field + '_formatted').val(label)
+   // $('#' + field + '_formatted').val(label)
+   
+   
     $('#' + field + '_options li').removeClass('selected')
 
+$(element).addClass('selected')
 
-    $('#' + field + '_option_' + value.replace(".", "\.")).addClass('selected')
+
 
     if ($('#' + field + '_container').hasClass('new')) {
         $('#' + field + '_options').addClass('hide')
@@ -1941,7 +1944,7 @@ function delete_attachment(element) {
 
 $(document).on("click", "#edit_table", function() {
 
-    change_view(state.request + '&tab=' + state.tab + '_edit')
+    change_view(state.request + '&tab=' + state.tab + '_edit',{reload_showcase: 1})
 
 });
 
