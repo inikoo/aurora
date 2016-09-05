@@ -1098,7 +1098,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 	function update_field_switcher($field, $value, $options='', $metadata='') {
 
 
-
 		if (array_key_exists($field, $this->base_data())) {
 
 
@@ -1168,6 +1167,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 						$this->get('Category Store Key'),
 						prepare_mysql($this->get('Category Code'))
 					);
+					
+					//print $sql;
 					$this->db->exec($sql);
 
 				}

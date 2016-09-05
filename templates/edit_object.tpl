@@ -61,7 +61,7 @@
 		<td  id="{$field.id}_container" class="container value  " _required="{$required}" field_type='{$field_type}' server_validation='{$server_validation}' object='{$state._object->get_object_name()}' key='{$state.key}' parent='{$state.parent}' parent_key='{$state.parent_key}'> 
 		
 		{if $edit=='editor'}
-				<div id="{$field.id}_formatted_value"   class="{$field.id} {$edit} fr-view  formatted_value " ondblclick="open_edit_this_field(this)">{if isset($field.formatted_value)}{$field.formatted_value}{else}{$field.value}{/if}</div>
+				<div id="{$field.id}_formatted_value"   class="{$field.id} {$edit} fr-view  formatted_value " ondblclick="open_edit_this_field(this)">{$field.formatted_value}</div>
 
 		{else}
 		<span id="{$field.id}_formatted_value"   class="{$field.id} {$edit} formatted_value " ondblclick="open_edit_this_field(this)">{if isset($field.formatted_value)}{$field.formatted_value}{else}{$field.value}{/if}</span>

@@ -32,18 +32,40 @@ $category_product_fields=array(
 				'type'=>'value'
 			),
 
+
 			array(
-
 				'id'=>'Product_Category_Description',
-				'edit'=>($edit?'html_editor':''),
+				'edit'=>($edit?'editor':''),
+				'class'=>'editor',
+				'editor_data'=>array(
+					'id'=>'Product_Category_Description',
+					'content'=>$object->get('Product Category Description'),
 
-				'value'=>htmlentities($object->get('Product Category Description')),
-				'formatted_value'=>$object->get('Description'),
+					'data'=>base64_encode(json_encode(array(
+								'mode'=>'edit_object',
+								'field'=>'Product_Category_Description',
+								'plugins'=>array('align', 'draggable', 'image', 'link', 'save', 'entities', 'emoticons', 'fullscreen', 'lineBreaker', 'table', 'codeView', 'codeBeautifier'),
+								'metadata'=>array(
+									'tipo'=>'edit_field',
+									'object'=>'Category',
+									'key'=>$object->id,
+									'field'=>'Product Category Description',
+
+
+
+								)
+							)
+						))
+
+				),
+				'value'=>$object->get('Product Category Description'),
+				'formatted_value'=>$object->get('Product Category Description'),
 				'label'=>ucfirst($object->get_field_label('Product Category Description')),
-				'invalid_msg'=>get_invalid_message('string'),
 				'required'=>false,
 				'type'=>'value'
 			),
+
+		
 
 		)
 	),
