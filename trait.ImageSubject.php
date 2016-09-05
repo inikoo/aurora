@@ -51,6 +51,33 @@ trait ImageSubject {
 
 				}
 
+
+
+
+
+			}
+
+			if ($this->table_name=='Category') {
+
+
+				$store=new Store($this->get('Category Store Key'));
+				if ($this->get('Category Root Key')==$store->get('Store Family Category Key')) {
+
+
+
+					foreach ($this->get_products('objects') as $product) {
+
+						if ( count($product->get_parts())==1 ) {
+							$product->editor=$this->editor;
+							$product->link_image($image->id);
+						}
+
+					}
+
+				}
+
+
+
 			}
 
 		}else {

@@ -129,14 +129,14 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 					$parent_key=$view_path[0];
 					if (isset($view_path[1]) ) {
 
-if ($view_path[1]=='new') {
+						if ($view_path[1]=='new') {
 							$object='product';
 							$key=0;
 							$section='product.new';
 							$parent='store';
 							$parent_key=$view_path[0];
-							
-							
+
+
 						}
 
 						elseif ($view_path[1]=='categories') {
@@ -182,13 +182,13 @@ if ($view_path[1]=='new') {
 											}
 
 										}
+										
 
 
 									}
 
 								}
 								elseif ( is_numeric($view_path[2])) {
-
 									$key=$view_path[2];
 									include_once 'class.Category.php';
 									$category=new Category($key);
@@ -203,13 +203,16 @@ if ($view_path[1]=='new') {
 
 
 									if (isset($view_path[3]) ) {
+									
+									
 										if (is_numeric($view_path[3])) {
 											$section='product';
 											$parent='category';
 											$parent_key=$category->id;
 											$object='product';
 											$key=$view_path[3];
-										}elseif ($view_path[3]=='product') {
+										}
+										elseif ($view_path[3]=='product') {
 											$section='product';
 											$object='product';
 											if (isset($view_path[4]) and  is_numeric($view_path[4])) {
@@ -219,7 +222,20 @@ if ($view_path[1]=='new') {
 											}
 
 										}
+elseif ($view_path[3]=='upload') {
+									//$module='account';
+									$section='upload';
+									$parent='category';
+									$parent_key=$key;
+									$object='upload';
+									if (isset($view_path[4])) {
+										if (is_numeric($view_path[4])) {
 
+											$key=$view_path[4];
+										}
+									}
+
+								}
 
 									}
 
@@ -1715,7 +1731,7 @@ if ($view_path[1]=='new') {
 						}
 
 						elseif ( is_numeric($view_path[1])) {
-						
+
 							$key=$view_path[1];
 							include_once 'class.Category.php';
 							$category=new Category($key);
@@ -1740,7 +1756,8 @@ if ($view_path[1]=='new') {
 										$object='part';
 										$key=$view_path[3];
 									}
-								}elseif ($view_path[2]=='upload') {
+								}
+								elseif ($view_path[2]=='upload') {
 									//$module='account';
 									$section='upload';
 									$parent='category';
@@ -1754,7 +1771,7 @@ if ($view_path[1]=='new') {
 									}
 
 								}
-								
+
 
 							}
 						}
