@@ -92,7 +92,16 @@ $char_index=1;
 
 $char=number2alpha($char_index);
 $objPHPExcel->getActiveSheet()->setCellValue($char . $row_index, strip_tags($key_field));
-
+$objPHPExcel->getActiveSheet()->getStyle($char . $row_index)->applyFromArray(
+    array(
+        'borders' => array(
+            'bottom' => array(
+                'style' => PHPExcel_Style_Border::BORDER_THIN,
+                'color' => array('rgb' => '777777')
+            )
+        )
+    )
+);
 $char_index++;
 
 foreach ($valid_fields as $field) {
@@ -102,17 +111,30 @@ foreach ($valid_fields as $field) {
 
 
 		$char=number2alpha($char_index);
-		$objPHPExcel->getActiveSheet()->setCellValue($char . $row_index, strip_tags($field['field']));
+		$objPHPExcel->getActiveSheet()->setCellValue($char . $row_index, strip_tags($field['header']));
 
-		if ( $field['required'] )
+		if ( $field['required'] ) {
 			$objPHPExcel->getActiveSheet()->getStyle($char . $row_index)->applyFromArray(
 				array(
-					'fill' => array(
-						'type' => PHPExcel_Style_Fill::FILL_SOLID,
-						'color' => array('rgb' => 'e5edf5')
+					'font' => array(
+						'color' => array('rgb' => 'EA3C53'),
+
 					)
+
 				)
 			);
+		}
+		$objPHPExcel->getActiveSheet()->getStyle($char . $row_index)->applyFromArray(
+    array(
+        'borders' => array(
+            'bottom' => array(
+                'style' => PHPExcel_Style_Border::BORDER_THIN,
+                'color' => array('rgb' => '777777')
+            )
+        )
+    )
+);
+
 
 		$char_index++;
 	}
@@ -135,20 +157,21 @@ foreach ($valid_fields as $field) {
 		$objPHPExcel->getActiveSheet()->setCellValue($char . $row_index, strip_tags($field['default_value']));
 
 		if ( $field['required'] )
-			$objPHPExcel->getActiveSheet()->getStyle($char . $row_index)->applyFromArray(
-				array(
-					'fill' => array(
-						'type' => PHPExcel_Style_Fill::FILL_SOLID,
-						'color' => array('rgb' => 'e5edf5')
-					)
-				)
-			);
-
+			$objPHPExcel->getActiveSheet()->getStyle($char . $row_index);
 		$char_index++;
 	}
 
 }
 
+$sheet = $objPHPExcel->getActiveSheet();
+$cellIterator = $sheet->getRowIterator()->current()->getCellIterator();
+$cellIterator->setIterateOnlyExistingCells( true );
+/** @var PHPExcel_Cell $cell */
+foreach( $cellIterator as $cell ) {
+        $sheet->getColumnDimension( $cell->getColumn() )->setAutoSize( true );
+}
+
+$objPHPExcel->getActiveSheet()->freezePane('A2');
 
 
 $download_path='server_files/tmp/';

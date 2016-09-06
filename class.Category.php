@@ -532,7 +532,7 @@ class Category extends DB_Table{
 							foreach ($store->get_sites('objects') as $site) {
 								$family_page_key=$site->add_family_page($fam_key, $page_data);
 								$family_page=new Page($family_page_key);
-								print_r($family_page);
+								
 								
 								$family_page->update_button_products('Parent');
 								$family_page->update_list_products();

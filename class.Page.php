@@ -1410,8 +1410,8 @@ class Page extends DB_Table {
 
 
 		if (!isset($this->data['Number See Also Links'])) {
-			print_r($this);
-			exit;
+			//print_r($this);
+			exit('error in update see also');
 
 		}
 

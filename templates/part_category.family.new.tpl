@@ -66,7 +66,7 @@
        <tr class="small_row">
        <td>{$export_field.label}</td>
        <td style="width_20" class="field_export" >
-            <i id="field_export_{$_key}"  onclick="toggle_export_field({$_key})" key="{$_key}"  class="button fa-fw object_field fa {if $export_field.checked }fa-check-square-o{else}fa-square-o{/if}"></i>
+            <i id="field_export_{$_key}"  onclick="toggle_export_field({$_key})" key="{$_key}"  class="button fa-fw object_field fa {if $export_field.show_for_new }fa-check-square-o{else}fa-square-o{/if}"></i>
         </td>
         </tr>
        {/foreach}
@@ -229,7 +229,7 @@ function open_export_dialogs(){
 
 
  if ($('#export_dialog').hasClass('hide')) {
-       show_export_dialog();open_export_config()
+       show_export_dialog();
     } else {
         hide_export_dialog()
     }

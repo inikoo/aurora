@@ -1150,7 +1150,7 @@ class SupplierPart extends DB_Table{
 			$label=_('availability');
 			break;
 		case 'Supplier Part Minimum Carton Order':
-			$label=_("minimum order");
+			$label=_("Minimum order (cartons)");
 			break;
 
 		case 'Supplier Part Packages Per Carton':
@@ -1160,7 +1160,7 @@ class SupplierPart extends DB_Table{
 			$label=_("carton CBM");
 			break;
 		case 'Supplier Part Average Delivery Days':
-			$label=_("average delivery time");
+			$label=_("Average delivery time (days)");
 			break;
 		case 'Supplier Part Unit Cost':
 			$label=_("unit cost");

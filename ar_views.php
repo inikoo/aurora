@@ -2598,7 +2598,7 @@ if ( $user->get_number_stores()>1) {
 						continue;
 					}
 					if ($category_key==$state['parent_key']) {
-						$branch[]=array('label'=>'<span class="Category_Label">'.$category->get('Label').'</span>', 'icon'=>'', 'reference'=>'');
+						$branch[]=array('label'=>'<span class="Category_Label">'.$category->get('Label').'</span>', 'icon'=>'', 'reference'=>'inventory/category/'.$category_key);
 						break;
 					}else {
 
