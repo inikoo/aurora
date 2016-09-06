@@ -7,6 +7,15 @@ var columns = [
     cell: "string",
 
 }, {
+    name: "associated",
+    label: "",
+    editable: false,
+    sortType: "toggle",
+    cell: Backgrid.HtmlCell.extend({
+        className: "width_20"
+    })
+
+}, {
     name: "stock_status",
     label: "",
     editable: false,

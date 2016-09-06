@@ -156,10 +156,12 @@ function parts($_data, $db, $user, $type, $account) {
 
 			$dispatched_per_week=number($data['Part 1 Quarter Acc Provided']*4/52, 0);
 
+			$associated=sprintf('<i key="%d" class="fa fa-fw fa-link button" aria-hidden="true" onClick="edit_category_subject(this)" ></i>', $data['Part SKU']);
 
 
 			$adata[]=array(
 				'id'=>(integer)$data['Part SKU'],
+				'associated'=>$associated,
 				'reference'=>$data['Part Reference'],
 				'unit_description'=>$data['Part Unit Description'],
 				'stock_status'=>$stock_status,
