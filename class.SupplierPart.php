@@ -227,7 +227,7 @@ class SupplierPart extends DB_Table{
 			$this->msg="Supplier part added";
 			$this->get_data('id', $this->id);
 
-			
+
 
 			$this->new=true;
 
@@ -454,6 +454,8 @@ class SupplierPart extends DB_Table{
 
 
 	function update_field_switcher($field, $value, $options='', $metadata='') {
+
+		$field=preg_replace('/^Part Part /', 'Part ', $field);
 
 		switch ($field) {
 
@@ -949,7 +951,7 @@ class SupplierPart extends DB_Table{
 
 				//$field=preg_replace('/^Part /', '', $field);
 
-
+				//print "xxx $field  ".$value." \n  ";
 				$this->part->update(array($field=>$value), $options);
 				$this->updated=$this->part->updated;
 				$this->msg=$this->part->msg;

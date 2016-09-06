@@ -225,7 +225,13 @@ function fork_upload_edit($job) {
 
 				$fields_data=array();
 
+
+
+
 				foreach ($valid_indexes as $index=>$field) {
+				
+				
+				
 					$fields_data[$field]=$record_data[ $index];
 
 
@@ -240,6 +246,7 @@ function fork_upload_edit($job) {
 					'upload_record_key'=>$row['Upload Record Key'],
 					'fields_data'=>$fields_data
 				);
+
 
 
 				$object_key=new_object($account, $db, $user, $editor, $_data);
@@ -296,6 +303,10 @@ function fork_upload_edit($job) {
 				//print $object->id;
 
 				foreach ($valid_indexes as $index=>$field) {
+				
+				//    print "$field ->".$record_data[$index]."\n";
+				
+				
 					$object->update(array($field=>$record_data[$index]));
 
 
