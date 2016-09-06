@@ -58,8 +58,11 @@ $export_edit_template_fields=array(
 		array('default_value'=>_('piece'), 'show_for_new'=>true, 'required'=>true, 'header'=>'Unit label', 'name'=>'Part Unit Label', 'label'=>_('Unit label'), 'checked'=>0),
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'Unit weight', 'name'=>'Part Unit Weight', 'label'=>_('Unit weight'), 'checked'=>0),
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'Unit dimensions', 'name'=>'Part Unit Dimensions', 'label'=>_('Unit dimensions'), 'checked'=>0),
+		
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'Unit recommended price', 'name'=>'Part Unit Price', 'label'=>_('Unit recommended price'), 'checked'=>0),
-		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'Unit recommended RRP', 'name'=>'Part Unit RRP', 'label'=>_('Unit recommended RRP'), 'checked'=>0),		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'Part Package Weight', 'name'=>'Part Package Weight', 'label'=>_('Package weight'), 'checked'=>0),
+		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'Unit recommended RRP', 'name'=>'Part Unit RRP', 'label'=>_('Unit recommended RRP'), 'checked'=>0),		
+		
+		
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>true, 'header'=>'Units per SKO', 'name'=>'Part Units Per Package', 'label'=>_('Units per SKO'), 'checked'=>0),
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>true, 'header'=>'SKO description', 'name'=>'Part Package Description', 'label'=>_('SKO description'), 'checked'=>0),
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'SKO weight', 'name'=>'Part Package Weight', 'label'=>_('SKO weight'), 'checked'=>0),
