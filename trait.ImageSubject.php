@@ -57,28 +57,7 @@ trait ImageSubject {
 
 			}
 
-			if ($this->table_name=='Category') {
 
-
-				$store=new Store($this->get('Category Store Key'));
-				if ($this->get('Category Root Key')==$store->get('Store Family Category Key')) {
-
-
-
-					foreach ($this->get_products('objects') as $product) {
-
-						if ( count($product->get_parts())==1 ) {
-							$product->editor=$this->editor;
-							$product->link_image($image->id);
-						}
-
-					}
-
-				}
-
-
-
-			}
 
 		}else {
 			$this->error=true;
@@ -357,8 +336,8 @@ trait ImageSubject {
 			$main_image_key=0;
 		}
 
-		$this->data['Product Main Image']=$main_image_src;
-		$this->data['Product Main Image Key']=$main_image_key;
+		//$this->data['Product Main Image']=$main_image_src;
+		//$this->data['Product Main Image Key']=$main_image_key;
 		$sql=sprintf("update `%s Dimension` set `%s Main Image`=%s ,`%s Main Image Key`=%d where `%s Key`=%d",
 			addslashes($this->table_name),
 			addslashes($this->table_name),
@@ -369,8 +348,44 @@ trait ImageSubject {
 			$this->id
 		);
 
+        
+
 		$this->db->exec($sql);
 
+
+
+		//--- Migration -----
+
+		if ($this->table_name=='Category') {
+
+
+            if($main_image_src=='/art/nopic.png')$main_image_src='art/nopic.png';
+            
+            $main_image_src=preg_replace('/image_root/','image',$main_image_src);
+
+			include_once 'class.Store.php';
+			$store=new Store($this->get('Category Store Key'));
+			if ($this->get('Category Root Key')==$store->get('Store Family Category Key')) {
+
+
+				$sql=sprintf('update `Product Family Dimension` set `Product Family Main Image`=%s,`Product Family Main Image Key`=%d where `Product Family Store Key`=%d and `Product Family Code`=%s',
+
+					prepare_mysql($main_image_src),
+					$main_image_key,
+					$this->get('Category Store Key'),
+					prepare_mysql($this->get('Category Code'))
+				);
+				$this->db->exec($sql);
+
+
+			}
+
+
+
+		}
+
+
+		// -------------
 
 		/*
 		$page_keys=$this->get_pages_keys();
