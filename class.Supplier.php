@@ -1044,8 +1044,7 @@ class Supplier extends SubjectSupplier {
 	function create_supplier_part_record($data) {
 
 
-print_r($data);
-exit;
+
 
 		$data['editor']=$this->editor;
 
@@ -1067,6 +1066,9 @@ exit;
 			$data['Part Unit Label']=$data['Supplier Part Unit Label'];
 			unset($data['Supplier Part Unit Label']);
 		}
+
+
+
 
 
 
@@ -1308,14 +1310,41 @@ exit;
 				$this->update_supplier_parts();
 
 
-				$materials=$data['Part Materials'];
-				$package_dimensions=$data['Part Package Dimensions'];
-				$unit_dimensions=$data['Part Unit Dimensions'];
 
 
-				unset($data['Part Materials']);
-				unset($data['Part Package Dimensions']);
-				unset($data['Part Unit Dimensions']);
+
+				if (isset($data['Part Part Materials'])) {
+					$materials=$data['Part Part Materials'];
+					unset($data['Part Part Materials']);
+
+				}else {
+					$materials='';
+				}
+
+				if (isset($data['Part Part Package Dimensions'])) {
+					$package_dimensions=$data['Part Part Package Dimensions'];
+					unset($data['Part Part Package Dimensions']);
+
+				}else {
+					$package_dimensions='';
+				}
+
+				if (isset($data['Part Part Unit Dimensions'])) {
+					$unit_dimensions=$data['Part Part Unit Dimensions'];
+					unset($data['Part Part Unit Dimensions']);
+
+				}else {
+					$unit_dimensions='';
+				}
+
+
+				foreach ($data as $key=>$value) {
+					$_key=preg_replace('/^Part Part /', 'Part ', $key);
+					$data[$_key]=$value;
+					
+					
+				}
+
 
 				$part=new Part('find', $data, 'create');
 

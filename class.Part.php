@@ -689,6 +689,7 @@ class Part extends Asset{
 			break;
 
 		case 'Part Family Code':
+		case 'Part Family Category Code':
 			$account= new Account($this->db);
 			if ($value=='') {
 				$this->error=true;
@@ -935,7 +936,7 @@ class Part extends Asset{
 
 				)
 			);
-			$this->update_linked_products($field, $value, $options, $metadata);
+			//$this->update_linked_products($field, $value, $options, $metadata);
 
 
 			if ($field=='Part Package Weight') {
