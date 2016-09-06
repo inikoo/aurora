@@ -377,10 +377,10 @@ input {
 .search_results_container {
   z-index: 100;
   position: absolute;
-  width: 650px; }
+  width: 750px; }
   .search_results_container #results_container_shifted {
     position: relative;
-    left: -327px; }
+    left: -427px; }
   .search_results_container table {
     border: 1px solid #ccc;
     background: #FFF;

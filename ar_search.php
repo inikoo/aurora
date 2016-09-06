@@ -26,6 +26,8 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 
+
+
 switch ($tipo) {
 case 'search':
 
@@ -63,6 +65,11 @@ case 'search':
 			}else {
 				$data['scope']='stores';
 			}
+			search_products($db, $account, $memcache_ip, $data);
+		}elseif ($data['state']['module']=='products_server') {
+
+			$data['scope']='stores';
+
 			search_products($db, $account, $memcache_ip, $data);
 		}elseif ($data['state']['module']=='inventory') {
 			if ($data['state']['current_warehouse']) {
@@ -221,9 +228,25 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 
 					if ($row['Supplier Name']==$q) {
 						if ($row['Supplier Type']=='Archived') {
-							$candidates['S'.$row['Supplier Key']]=400;
+
+							if (isset($candidates['S'.$row['Supplier Key']])) {
+								$candidates['S'.$row['Supplier Key']]+=400;
+
+							}else {
+								$candidates['S'.$row['Supplier Key']]=400;
+
+							}
+
 						}else {
-							$candidates['S'.$row['Supplier Key']]=800;
+
+							if (isset($candidates['S'.$row['Supplier Key']])) {
+								$candidates['S'.$row['Supplier Key']]+=800;
+
+							}else {
+								$candidates['S'.$row['Supplier Key']]=800;
+
+							}
+
 
 						}
 					}else {
@@ -232,9 +255,21 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 						$len_q=strlen($q);
 						$factor=$len_q/$len_name;
 						if ($row['Supplier Type']=='Archived') {
-							$candidates['S'.$row['Supplier Key']]=200*$factor;
+							if (isset($candidates['S'.$row['Supplier Key']])) {
+								$candidates['S'.$row['Supplier Key']]+=200*$factor;
+
+							}else {
+								$candidates['S'.$row['Supplier Key']]=200*$factor;
+
+							}
 						}else {
-							$candidates['S'.$row['Supplier Key']]=400*$factor;
+							if (isset($candidates['S'.$row['Supplier Key']])) {
+								$candidates['S'.$row['Supplier Key']]+=400*$factor;
+
+							}else {
+								$candidates['S'.$row['Supplier Key']]=400*$factor;
+
+							}
 
 						}
 					}
@@ -278,14 +313,30 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 			if ($result=$db->query($sql)) {
 				foreach ($result as $row) {
 
-					if ($row['Agent Name']==$q)
-						$candidates['A'.$row['Agent Key']]=800;
-					else {
+					if ($row['Agent Name']==$q) {
+
+						if (isset($candidates['A'.$row['Agent Key']])) {
+							$candidates['A'.$row['Agent Key']]+=800;
+
+						}else {
+							$candidates['A'.$row['Agent Key']]=800;
+
+						}
+
+					}else {
 
 						$len_name=strlen($row['Agent Name']);
 						$len_q=strlen($q);
 						$factor=$len_q/$len_name;
-						$candidates['A'.$row['Agent Key']]=400*$factor;
+
+						if (isset($candidates['A'.$row['Agent Key']])) {
+							$candidates['A'.$row['Agent Key']]+=400*$factor;
+
+						}else {
+							$candidates['A'.$row['Agent Key']]=400*$factor;
+
+						}
+
 					}
 
 				}
@@ -331,14 +382,30 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 			if ($result=$db->query($sql)) {
 				foreach ($result as $row) {
 
-					if ($row['Part Reference']==$q)
-						$candidates['P'.$row['Supplier Part Key']]=750;
-					else {
+					if ($row['Part Reference']==$q) {
+
+						if (isset($candidates['P'.$row['Supplier Part Key']])) {
+							$candidates['P'.$row['Supplier Part Key']]+=750;
+
+						}else {
+							$candidates['P'.$row['Supplier Part Key']]=750;
+
+						}
+
+					}else {
 
 						$len_name=strlen($row['Part Reference']);
 						$len_q=strlen($q);
 						$factor=$len_q/$len_name;
-						$candidates['P'.$row['Supplier Part Key']]=375*$factor;
+
+						if (isset($candidates['P'.$row['Supplier Part Key']])) {
+							$candidates['P'.$row['Supplier Part Key']]+=375*$factor;
+
+						}else {
+							$candidates['P'.$row['Supplier Part Key']]=375*$factor;
+
+						}
+
 					}
 
 				}
@@ -357,14 +424,30 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 
 			if ($result=$db->query($sql)) {
 				foreach ($result as $row) {
-					if ($row['Part Unit Description']==$q)
-						$candidates['P'.$row['Supplier Part Key']]=55;
-					else {
+					if ($row['Part Unit Description']==$q) {
+
+						if (isset($candidates['P'.$row['Supplier Part Key']])) {
+							$candidates['P'.$row['Supplier Part Key']]+=55;
+
+						}else {
+							$candidates['P'.$row['Supplier Part Key']]=55;
+
+						}
+
+					}else {
 
 						$len_name=strlen($row['Part Unit Description']);
 						$len_q=strlen($q);
 						$factor=$len_q/$len_name;
-						$candidates['P'.$row['Supplier Part Key']]=50*$factor;
+
+						if (isset($candidates['P'.$row['Supplier Part Key']])) {
+							$candidates['P'.$row['Supplier Part Key']]+=50*$factor;
+
+						}else {
+							$candidates['P'.$row['Supplier Part Key']]=50*$factor;
+
+						}
+
 					}
 
 				}
@@ -373,6 +456,69 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 				print $sql;
 				exit;
 			}
+			
+			
+			
+			$sql=sprintf("select `Category Key`,`Category Code`,`Category Label` from `Category Dimension` where `Category Scope`='Supplier'  and `Category Code` like '%s%%' limit 20 ",
+				$q);
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+
+					if ($row['Category Code']==$q) {
+
+						$candidates['C'.$row['Category Key']]=1000;
+					}else {
+
+						$len_name=strlen($row['Category Code']);
+						$len_q=strlen($q);
+						$factor=$len_q/$len_name;
+						$candidates['C'.$row['Category Key']]=500*$factor;
+					}
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				exit;
+			}
+
+
+
+
+			$sql=sprintf("select `Category Key`,`Category Code`,`Category Label` from `Category Dimension` where `Category Scope`='Supplier'  and `Category Label`  REGEXP '[[:<:]]%s' limit 100 ",
+				$q);
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+					if ($row['Category Label']==$q) {
+
+						if (isset($candidates['C'.$row['Category Key']])) {
+							$candidates['C'.$row['Category Key']]+=55;
+						}else {
+							$candidates['C'.$row['Category Key']]=55;
+						}
+
+					}else {
+
+						$len_name=strlen($row['Category Label']);
+						$len_q=strlen($q);
+						$factor=$len_q/$len_name;
+
+						if (isset($candidates['C'.$row['Category Key']])) {
+							$candidates['C'.$row['Category Key']]+=50*$factor;
+						}else {
+							$candidates['C'.$row['Category Key']]=50*$factor;
+						}
+
+					}
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				exit;
+			}
+			
+			
 
 
 		}
@@ -394,10 +540,12 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 		$supplier_parts_keys='';
 		$supplier_keys='';
 		$agent_keys='';
+		$category_keys='';
 		$results=array();
 		$number_supplier_parts_keys=0;
 		$number_supplier_keys=0;
 		$number_agent_keys=0;
+		$number_category_keys=0;
 
 		foreach ($candidates as $_key=>$val) {
 			$counter++;
@@ -420,6 +568,12 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 				$results[$_key]='';
 				$number_agent_keys++;
 
+			}elseif ($_key[0]=='C') {
+				$key=preg_replace('/^C/', '', $_key);
+				$category_keys.=','.$key;
+				$results[$_key]='';
+				$number_category_keys++;
+
 			}
 
 			if ($counter>$max_results) {
@@ -429,6 +583,7 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 		$supplier_parts_keys=preg_replace('/^,/', '', $supplier_parts_keys);
 		$supplier_keys=preg_replace('/^,/', '', $supplier_keys);
 		$agent_keys=preg_replace('/^,/', '', $agent_keys);
+		$category_keys=preg_replace('/^,/', '', $category_keys);
 
 
 		if ($number_supplier_parts_keys) {
@@ -527,6 +682,33 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 
 
 		}
+		
+		if ($number_category_keys ) {
+			$sql=sprintf("select `Category Code`,`Category Store Key`,`Category Key`,`Category Code`,`Category Label` from `Category Dimension` where `Category Key` in (%s)",
+				$category_keys);
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+
+
+					$icon='<i class="fa fa-sitemap fa-fw padding_right_5" aria-hidden="true" ></i> ';
+
+					$results['C'.$row['Category Key']]=array(
+						'label'=>$icon.highlightkeyword(sprintf('%s', $row['Category Code']), $queries ),
+						'details'=>highlightkeyword($row['Category Label'], $queries ),
+						'view'=>sprintf('suppliers/category/%d', $row['Category Key'])
+
+
+
+
+					);
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				print $sql;
+				exit;
+			}
+		}
 
 
 		$results_data=array('n'=>count($results), 'd'=>$results);
@@ -606,9 +788,9 @@ function search_inventory($db, $account, $memcache_ip, $data) {
 
 					if ($row['Part Reference']==$q) {
 						if ($row['Part Status']=='In Use') {
-							$candidates[$row['Part SKU']]=1000;
+							$candidates['P'.$row['Part SKU']]=1000;
 						}else {
-							$candidates[$row['Part SKU']]=800;
+							$candidates['P'.$row['Part SKU']]=800;
 						}
 					}else {
 
@@ -616,9 +798,9 @@ function search_inventory($db, $account, $memcache_ip, $data) {
 						$len_q=strlen($q);
 						$factor=$len_q/$len_name;
 						if ($row['Part Status']=='In Use') {
-							$candidates[$row['Part SKU']]=500*$factor;
+							$candidates['P'.$row['Part SKU']]=500*$factor;
 						}else {
-							$candidates[$row['Part SKU']]=400*$factor;
+							$candidates['P'.$row['Part SKU']]=400*$factor;
 						}
 					}
 
@@ -644,9 +826,25 @@ function search_inventory($db, $account, $memcache_ip, $data) {
 				foreach ($result as $row) {
 					if ($row['Part Unit Description']==$q) {
 						if ($row['Part Status']=='In Use') {
-							$candidates[$row['Part SKU']]=55;
+
+							if (isset($candidates['P'.$row['Part SKU']])) {
+								$candidates['P'.$row['Part SKU']]+=55;
+
+							}else {
+								$candidates['P'.$row['Part SKU']]=55;
+
+							}
+
 						}else {
-							$candidates[$row['Part SKU']]=35;
+
+							if (isset($candidates['P'.$row['Part SKU']])) {
+								$candidates['P'.$row['Part SKU']]+=35;
+
+							}else {
+								$candidates['P'.$row['Part SKU']]=35;
+
+							}
+
 						}
 					}else {
 
@@ -654,9 +852,22 @@ function search_inventory($db, $account, $memcache_ip, $data) {
 						$len_q=strlen($q);
 						$factor=$len_q/$len_name;
 						if ($row['Part Status']=='In Use') {
-							$candidates[$row['Part SKU']]=50*$factor;
+							if (isset($candidates['P'.$row['Part SKU']])) {
+								$candidates['P'.$row['Part SKU']]+=50*$factor;
+
+							}else {
+								$candidates['P'.$row['Part SKU']]=50*$factor;
+
+							}
 						}else {
-							$candidates[$row['Part SKU']]=30*$factor;
+
+							if (isset($candidates['P'.$row['Part SKU']])) {
+								$candidates['P'.$row['Part SKU']]+=30*$factor;
+
+							}else {
+								$candidates['P'.$row['Part SKU']]=30*$factor;
+
+							}
 
 						}
 					}
@@ -665,6 +876,68 @@ function search_inventory($db, $account, $memcache_ip, $data) {
 			}else {
 				print_r($error_info=$db->errorInfo());
 				print $sql;
+				exit;
+			}
+
+
+
+
+			$sql=sprintf("select `Category Key`,`Category Code`,`Category Label` from `Category Dimension` where `Category Scope`='Part'  and `Category Code` like '%s%%' limit 20 ",
+				$q);
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+
+					if ($row['Category Code']==$q) {
+
+						$candidates['C'.$row['Category Key']]=1000;
+					}else {
+
+						$len_name=strlen($row['Category Code']);
+						$len_q=strlen($q);
+						$factor=$len_q/$len_name;
+						$candidates['C'.$row['Category Key']]=500*$factor;
+					}
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				exit;
+			}
+
+
+
+
+			$sql=sprintf("select `Category Key`,`Category Code`,`Category Label` from `Category Dimension` where `Category Scope`='Part'  and `Category Label`  REGEXP '[[:<:]]%s' limit 100 ",
+				$q);
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+					if ($row['Category Label']==$q) {
+
+						if (isset($candidates['C'.$row['Category Key']])) {
+							$candidates['C'.$row['Category Key']]+=55;
+						}else {
+							$candidates['C'.$row['Category Key']]=55;
+						}
+
+					}else {
+
+						$len_name=strlen($row['Category Label']);
+						$len_q=strlen($q);
+						$factor=$len_q/$len_name;
+
+						if (isset($candidates['C'.$row['Category Key']])) {
+							$candidates['C'.$row['Category Key']]+=50*$factor;
+						}else {
+							$candidates['C'.$row['Category Key']]=50*$factor;
+						}
+
+					}
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
 				exit;
 			}
 
@@ -685,53 +958,106 @@ function search_inventory($db, $account, $memcache_ip, $data) {
 		}
 
 		$counter=0;
-		$customer_keys='';
+		$part_keys='';
+		$category_keys='';
+
+
 		$results=array();
 
-		foreach ($candidates as $key=>$val) {
+		$number_parts_keys=0;
+		$number_categories_keys=0;
+
+
+		foreach ($candidates as $_key=>$val) {
 			$counter++;
-			$customer_keys.=','.$key;
-			$results[$key]='';
+
+			if ($_key[0]=='P') {
+				$key=preg_replace('/^P/', '', $_key);
+				$part_keys.=','.$key;
+				$results[$_key]='';
+				$number_parts_keys++;
+
+			}elseif ($_key[0]=='C') {
+				$key=preg_replace('/^C/', '', $_key);
+				$category_keys.=','.$key;
+				$results[$_key]='';
+				$number_categories_keys++;
+
+			}
+
 			if ($counter>$max_results) {
 				break;
 			}
 		}
-		$product_keys=preg_replace('/^,/', '', $customer_keys);
+		$part_keys=preg_replace('/^,/', '', $part_keys);
+		$category_keys=preg_replace('/^,/', '', $category_keys);
 
-		$sql=sprintf("select P.`Part SKU`,`Part Reference`,`Part Unit Description`,`Part Status` from `Part Dimension` P  where P.`Part SKU` in (%s)",
-			$product_keys);
 
-		if ($result=$db->query($sql)) {
-			foreach ($result as $row) {
 
-				if ($row['Part Status']=='Not In Use') {
-					$status='<i class="fa fa-square-o fa-fw padding_right_5 very_discreet" aria-hidden="true"></i> ';
 
-				}elseif ($row['Part Status']=='Discontinuing') {
-					$status='<i class="fa fa-square fa-fw padding_right_5 very_discreet" aria-hidden="true"></i> ';
 
-				}else {
-					$status='<i class="fa fa-square fa-fw padding_right_5" aria-hidden="true"></i> ';
+		if ($number_parts_keys) {
+			$sql=sprintf("select P.`Part SKU`,`Part Reference`,`Part Unit Description`,`Part Status` from `Part Dimension` P  where P.`Part SKU` in (%s)",
+				$part_keys);
+
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+
+					if ($row['Part Status']=='Not In Use') {
+						$status='<i class="fa fa-square-o fa-fw padding_right_5 very_discreet" aria-hidden="true"></i> ';
+
+					}elseif ($row['Part Status']=='Discontinuing') {
+						$status='<i class="fa fa-square fa-fw padding_right_5 very_discreet" aria-hidden="true"></i> ';
+
+					}else {
+						$status='<i class="fa fa-square fa-fw padding_right_5" aria-hidden="true"></i> ';
+					}
+
+					$results['P'.$row['Part SKU']]=array(
+						'label'=>$status.highlightkeyword(sprintf('%s', $row['Part Reference']), $queries ),
+						'details'=>highlightkeyword($row['Part Unit Description'], $queries ),
+						'view'=>sprintf('part/%d', $row['Part SKU'])
+
+
+
+
+					);
+
 				}
-
-				$results[$row['Part SKU']]=array(
-					'label'=>$status.highlightkeyword(sprintf('%s', $row['Part Reference']), $queries ),
-					'details'=>highlightkeyword($row['Part Unit Description'], $queries ),
-					'view'=>sprintf('part/%d', $row['Part SKU'])
-
-
-
-
-				);
-
+			}else {
+				print_r($error_info=$db->errorInfo());
+				print $sql;
+				exit;
 			}
-		}else {
-			print_r($error_info=$db->errorInfo());
-			print $sql;
-			exit;
+
 		}
 
+		if ($number_categories_keys ) {
+			$sql=sprintf("select `Category Code`,`Category Store Key`,`Category Key`,`Category Code`,`Category Label` from `Category Dimension` where `Category Key` in (%s)",
+				$category_keys);
 
+			if ($result=$db->query($sql)) {
+				foreach ($result as $row) {
+
+
+					$icon='<i class="fa fa-sitemap fa-fw padding_right_5" aria-hidden="true" ></i> ';
+
+					$results['C'.$row['Category Key']]=array(
+						'label'=>$icon.highlightkeyword(sprintf('%s', $row['Category Code']), $queries ),
+						'details'=>highlightkeyword($row['Category Label'], $queries ),
+						'view'=>sprintf('inventory/category/%d', $row['Category Key'])
+
+
+
+
+					);
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				print $sql;
+				exit;
+			}
+		}
 
 
 
@@ -763,6 +1089,7 @@ function search_products($db, $account, $memcache_ip, $data) {
 		return;
 	}
 
+
 	if ($data['scope']=='store') {
 		if (in_array($data['scope_key'], $user->stores)) {
 			$stores=$data['scope_key'];
@@ -774,7 +1101,7 @@ function search_products($db, $account, $memcache_ip, $data) {
 			$where_cat_store=' and false';
 		}
 	} else {
-		if (count($user->stores)==$account->data['Stores']) {
+		if (count($user->stores)==$account->get('Account Stores')) {
 			$where_store='';
 			$where_cat_store='';
 		}else {
@@ -843,16 +1170,27 @@ function search_products($db, $account, $memcache_ip, $data) {
 
 			$sql=sprintf("select `Product ID`,`Product Code`,`Product Name`,`Product Status` from `Product Dimension` where true $where_store and `Product Code` like '%s%%' limit 20 ",
 				$q);
-
-
 			if ($result=$db->query($sql)) {
 				foreach ($result as $row) {
 
 					if ($row['Product Code']==$q) {
 						if ($row['Product Status']=='Discontinued') {
-							$candidates['P'.$row['Product ID']]=550;
+
+							if (isset($candidates['P'.$row['Product ID']])) {
+								$candidates['P'.$row['Product ID']]+=550;
+							}else {
+								$candidates['P'.$row['Product ID']]=550;
+							}
+
+
 						}else {
-							$candidates['P'.$row['Product ID']]=1000;
+
+							if (isset($candidates['P'.$row['Product ID']])) {
+								$candidates['P'.$row['Product ID']]+=1000;
+							}else {
+								$candidates['P'.$row['Product ID']]=1000;
+							}
+
 						}
 					}else {
 
@@ -860,9 +1198,21 @@ function search_products($db, $account, $memcache_ip, $data) {
 						$len_q=strlen($q);
 						$factor=$len_q/$len_name;
 						if ($row['Product Status']=='Discontinued') {
-							$candidates['P'.$row['Product ID']]=270*$factor;
+
+							if (isset($candidates['P'.$row['Product ID']])) {
+								$candidates['P'.$row['Product ID']]+=270*$factor;
+							}else {
+								$candidates['P'.$row['Product ID']]=270*$factor;
+							}
+
 						}else {
-							$candidates['P'.$row['Product ID']]=500*$factor;
+
+
+							if (isset($candidates['P'.$row['Product ID']])) {
+								$candidates['P'.$row['Product ID']]+=500*$factor;
+							}else {
+								$candidates['P'.$row['Product ID']]=500*$factor;
+							}
 						}
 
 					}
@@ -878,14 +1228,26 @@ function search_products($db, $account, $memcache_ip, $data) {
 
 			if ($result=$db->query($sql)) {
 				foreach ($result as $row) {
-					if ($row['Product Name']==$q)
-						$candidates['P'.$row['Product ID']]=55;
-					else {
+					if ($row['Product Name']==$q) {
+
+						if (isset($candidates['P'.$row['Product ID']])) {
+							$candidates['P'.$row['Product ID']]+=55;
+						}else {
+							$candidates['P'.$row['Product ID']]=55;
+						}
+
+					}else {
 
 						$len_name=strlen($row['Product Name']);
 						$len_q=strlen($q);
 						$factor=$len_q/$len_name;
-						$candidates['P'.$row['Product ID']]=50*$factor;
+
+						if (isset($candidates['P'.$row['Product ID']])) {
+							$candidates['P'.$row['Product ID']]+=50*$factor;
+						}else {
+							$candidates['P'.$row['Product ID']]=50*$factor;
+						}
+
 					}
 
 				}
@@ -900,9 +1262,10 @@ function search_products($db, $account, $memcache_ip, $data) {
 			if ($result=$db->query($sql)) {
 				foreach ($result as $row) {
 
-					if ($row['Category Code']==$q)
+					if ($row['Category Code']==$q) {
+
 						$candidates['C'.$row['Category Key']]=1000;
-					else {
+					}else {
 
 						$len_name=strlen($row['Category Code']);
 						$len_q=strlen($q);
@@ -915,19 +1278,35 @@ function search_products($db, $account, $memcache_ip, $data) {
 				print_r($error_info=$db->errorInfo());
 				exit;
 			}
+
+
+
+
 			$sql=sprintf("select `Category Key`,`Category Code`,`Category Label` from `Category Dimension` where `Category Scope`='Product'   $where_cat_store and  `Category Label`  REGEXP '[[:<:]]%s' limit 100 ",
 				$q);
 
 			if ($result=$db->query($sql)) {
 				foreach ($result as $row) {
-					if ($row['Category Label']==$q)
-						$candidates['C'.$row['Category Key']]=55;
-					else {
+					if ($row['Category Label']==$q) {
+
+						if (isset($candidates['C'.$row['Category Key']])) {
+							$candidates['C'.$row['Category Key']]+=55;
+						}else {
+							$candidates['C'.$row['Category Key']]=55;
+						}
+
+					}else {
 
 						$len_name=strlen($row['Category Label']);
 						$len_q=strlen($q);
 						$factor=$len_q/$len_name;
-						$candidates['C'.$row['Category Key']]=50*$factor;
+
+						if (isset($candidates['C'.$row['Category Key']])) {
+							$candidates['C'.$row['Category Key']]+=50*$factor;
+						}else {
+							$candidates['C'.$row['Category Key']]=50*$factor;
+						}
+
 					}
 
 				}
@@ -940,7 +1319,7 @@ function search_products($db, $account, $memcache_ip, $data) {
 		}
 
 
-		//print_r($candidates);
+		// print_r($candidates);
 
 		arsort($candidates);
 
@@ -1062,7 +1441,9 @@ function search_products($db, $account, $memcache_ip, $data) {
 
 
 	}
-	$response=array('state'=>200, 'number_results'=>$results_data['n'], 'results'=>$results_data['d'], 'q'=>$queries);
+
+
+	$response=array('state'=>200, 'number_results'=>$results_data['n'], 'results'=>$results_data['d'], 'q'=>$queries, 'show_stores'=>($data['scope']=='stores'?true:false));
 
 	echo json_encode($response);
 

@@ -63,6 +63,11 @@ function search(query) {
                 first = false
             }
 
+            if ( data.show_stores != undefined && data.show_stores &&   data.results[result_key].store != '') {
+                clone.children(".store").html(data.results[result_key].store).removeClass('hide')
+
+            }
+
             clone.children(".label").html(data.results[result_key].label)
             clone.children(".details").html(data.results[result_key].details)
 
