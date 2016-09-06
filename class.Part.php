@@ -2817,7 +2817,9 @@ where `Part SKU`=%d ",
 		case 'Part SKU':
 			$label=_('SKU');
 			break;
-
+case 'Part Status':
+			$label=_('Status');
+			break;
 		case 'Part Reference':
 			$label=_('reference');
 			break;

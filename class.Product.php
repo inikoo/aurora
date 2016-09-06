@@ -319,7 +319,7 @@ class Product extends Asset{
 
 				$parts.=', '.number($part_data['Ratio']).'x <span class="link" onClick="change_view(\'part/'.$part_data['Part']->id.'\')">'.$part_data['Part']->get('Reference').'</span>';
 				//if ($part_data['Note']!='') {
-				//	$parts.=' <span class="very_discreet">('.$part_data['Note'].')</span>';
+				// $parts.=' <span class="very_discreet">('.$part_data['Note'].')</span>';
 				//}
 
 			}
@@ -692,7 +692,7 @@ class Product extends Asset{
 
 
 			$this->update_historic_object();
-
+			$this->get_data('id', $this->id);
 
 
 		}else {
@@ -1264,7 +1264,7 @@ class Product extends Asset{
 
 			$this->update_field('Product Department Category Key', $value, 'no_history');
 
-			break;	
+			break;
 		case 'Product Family Category Key':
 
 
@@ -1272,7 +1272,7 @@ class Product extends Asset{
 
 				include_once 'class.Category.php';
 				$family=new Category($value);
-				$family->associate_subject($this->id,false,'','skip_direct_update');
+				$family->associate_subject($this->id, false, '', 'skip_direct_update');
 
 				$sql=sprintf("select C.`Category Key` from `Category Dimension` C left join `Category Bridge` B on (C.`Category Key`=B.`Category Key`) where `Category Root Key`=%d and `Subject Key`=%d and `Subject`='Category' and `Category Branch Type`='Head'",
 
@@ -1495,7 +1495,10 @@ class Product extends Asset{
 				}
 			}
 		}
+
+		$this->get_data('id', $this->id);
 		$this->update_part_numbers();
+
 		$this->update_availability();
 
 
@@ -1503,6 +1506,7 @@ class Product extends Asset{
 
 
 	function update_availability() {
+
 
 
 		if ($this->get('Product Number of Parts')>0) {
@@ -1586,16 +1590,20 @@ class Product extends Asset{
 
 		$old_web_state=$this->get('Product Web State');
 
+		$this->update(array(
+				'Product Availability'=>$stock,
+				'Product Availability State'=>$tipo,
+
+			), 'no_history');
+
 		$web_state=$this->get_web_state();
 
 
 
 
 		$this->update(array(
-				'Product Availability'=>$stock,
-				'Product Availability State'=>$tipo,
+
 				'Product Web State'=>$web_state,
-				//  'Product Available Days Forecast'=>$days_available
 			), 'no_history');
 
 
@@ -1952,8 +1960,6 @@ class Product extends Asset{
 	function get_web_state() {
 
 
-
-
 		if ( !( $this->data['Product Status']=='Active' or $this->data['Product Status']=='Discontinuing') ) {
 
 			return 'Offline';
@@ -2284,11 +2290,14 @@ class Product extends Asset{
 			exit;
 		}
 
+
 		$this->update(array(
 				'Product Number of Parts'=>$number_parts,
 
 
 			), 'no_history');
+
+
 
 	}
 

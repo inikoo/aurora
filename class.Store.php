@@ -2261,16 +2261,18 @@ class Store extends DB_Table {
 		$data['Product Locale']=$this->data['Store Locale'];
 
 
-		if (array_key_exists('Product Family Code', $data)) {
+		if (array_key_exists('Family Category Code', $data)) {
 			include_once 'class.Category.php';
 			$root_category=new Category($this->get('Store Family Category Key'));
 			if ($root_category->id) {
 				$root_category->editor=$this->editor;
-				$family=$root_category->create_category(array('Category Code'=>$data['Product Family Code']));
+				$family=$root_category->create_category(array('Category Code'=>$data['Family Category Code']));
 				if ($family->id) {
 					$data['Product Family Category Key']=$family->id;
+					
 				}
 			}
+			unset($data['Family Category Code']);
 		}
 
 		if (isset($data['Product Family Category Key'])) {
@@ -2389,8 +2391,18 @@ class Store extends DB_Table {
 
 				if ( $product_parts_data) {
 					$product->update_part_list($product_parts_data, 'no_history');
+					
+					
+					
 				}
 
+
+                if($product->get('Product Number of Parts')==1){
+                    foreach ($product->get_parts('objects') as $part) {
+                        $part->updated_linked_products();
+                    }
+                }
+            
 
 				if ($family_key) {
 					$product->update(array('Product Family Category Key'=>$family_key), 'no_history');

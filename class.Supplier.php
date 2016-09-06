@@ -1043,6 +1043,10 @@ class Supplier extends SubjectSupplier {
 
 	function create_supplier_part_record($data) {
 
+
+print_r($data);
+exit;
+
 		$data['editor']=$this->editor;
 
 		unset($data['Supplier Part Supplier Code']);

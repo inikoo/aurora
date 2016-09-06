@@ -49,7 +49,6 @@ function fork_upload_edit($job) {
 	);
 
 
-
 	$upload=new Upload('id', $fork_data['upload_key']);
 
 	$upload->update(array('Upload State'=>'InProcess'));
@@ -99,7 +98,8 @@ function fork_upload_edit($job) {
 
 	$key_index=-1;
 	$valid_indexes=array();
-	//print_r($fields);
+
+
 	foreach ($fields as $key=>$value) {
 		$value=_trim($value);
 		if (preg_match('/^Id\s*:\s*(.+)$/', _trim($value), $matches)) {
@@ -107,15 +107,19 @@ function fork_upload_edit($job) {
 				$key_index=$key;
 			}
 		}else {
-			//print $value;
 
-			if (in_array($value, array_column($valid_fields, 'field'))) {
-				$valid_indexes[$key]=$value;
+			$_key=array_search($value, array_column($valid_fields, 'header'));
+			if (is_numeric($_key)
+
+			) {
+
+
+
+				$valid_indexes[$key]=$valid_fields[$_key]['name'];
 			}
 
 		}
 	}
-
 
 
 	if ($key_index<0) {
@@ -441,13 +445,14 @@ function new_object($account, $db, $user, $editor, $data) {
 	$parent->editor=$editor;
 
 
-	
+
 
 
 	switch ($data['object']) {
 
-case 'product':
+	case 'product':
 		include_once 'class.Product.php';
+
 
 
 		$object=$parent->create_product($data['fields_data']);
@@ -457,15 +462,19 @@ case 'product':
 			$error=$parent->error;
 			$error_metadata=(isset($parent->error_metadata)?$parent->error_metadata:'');
 			$error_code=$parent->error_code;
-		
+
+		}else {
+
 		}
 
 
+		//print_r($parent);
 
 
 
 
-break;
+
+		break;
 	case 'supplier_part':
 	case 'Supplier Part':
 		include_once 'class.SupplierPart.php';
@@ -485,8 +494,8 @@ break;
 		break;
 	case 'part':
 	case 'Part':
-		
-		
+
+
 		/*
 		include_once 'class.Part.php';
 		include_once 'class.Supplier.php';

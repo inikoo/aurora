@@ -19,7 +19,6 @@ function fork_export_edit_template($job) {
 		return;
 
 
-print_r($_data);
 
 
 	$db=$_data['db'];
@@ -219,7 +218,6 @@ print_r($data);
 					$data_rows[]=array(
 						'cell_type'=>(isset($field['cell_type'])?$field['cell_type']:'auto'),
 						'value'=>$object->get($field['name']),
-						'field'=>$field['name']
 					);
 				}
 
@@ -398,7 +396,7 @@ print_r($data);
 					$char=number2alpha($char_index);
 
 
-					$objPHPExcel->getActiveSheet()->setCellValue($char . $row_index, strip_tags($field['field']));
+					$objPHPExcel->getActiveSheet()->setCellValue($char . $row_index, strip_tags($field['header']));
 
 
 
