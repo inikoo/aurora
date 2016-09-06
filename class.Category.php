@@ -494,9 +494,9 @@ class Category extends DB_Table{
 						}
 
 					}else {
-					
-					include_once 'class.Family.php';
-					
+
+						include_once 'class.Family.php';
+
 						$sql=sprintf('insert into `Product Family Dimension` (`Product Family Store Code`,
 				    `Product Family Store Key`,`Product Family Currency Code`,
 				    `Product Family Main Department Key`,`Product Family Main Department Code`,`Product Family Main Department Name`,
@@ -532,8 +532,8 @@ class Category extends DB_Table{
 							foreach ($store->get_sites('objects') as $site) {
 								$family_page_key=$site->add_family_page($fam_key, $page_data);
 								$family_page=new Page($family_page_key);
-								
-								
+
+
 								$family_page->update_button_products('Parent');
 								$family_page->update_list_products();
 							}
@@ -1167,7 +1167,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 						$this->get('Category Store Key'),
 						prepare_mysql($this->get('Category Code'))
 					);
-					
+
 					//print $sql;
 					$this->db->exec($sql);
 
@@ -1932,8 +1932,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 
 
 				//  Migration  ----
-
-
+				include_once 'class.Store.php';
+				$store=new Store($this->get('Category Store Key'));
 				if ($this->get('Category Root Key')==$store->get('Store Family Category Key')) {
 
 
@@ -2049,7 +2049,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 
 					}
 
-                    
+
 
 
 				}
