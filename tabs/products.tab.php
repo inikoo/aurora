@@ -39,7 +39,8 @@ $table_buttons=array();
 
 //$table_buttons[]=array('icon'=>'edit', 'title'=>_('Edit'),'id'=>'edit_table');
 
-//$table_buttons[]=array('icon'=>'plus', 'title'=>_('New product'), 'reference'=>"products/".$state['store']->id."/new");
+
+$table_buttons[]=array('icon'=>'plus', 'title'=>_('New product'), 'reference'=>"products/".$state['store']->id."/new");
 
 $smarty->assign('table_buttons', $table_buttons);
 
