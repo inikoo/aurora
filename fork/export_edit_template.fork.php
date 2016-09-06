@@ -115,7 +115,7 @@ function fork_export_edit_template($job) {
 
 
 			break;
-			
+
 		case 'category':
 			include_once 'class.Product.php';
 			include_once 'class.Category.php';
@@ -125,14 +125,14 @@ function fork_export_edit_template($job) {
 			$sql_data=sprintf('select `Subject Key` as id from `Category Bridge` where `Subject`="Product" and `Category Key`=%d', $parent_key);
 
 
-			
+
 
 
 			//$exchange=currency_conversion($db, $account->get('Account Currency'), $store->get('Store Currency Code'));
 
 
-			break;	
-			
+			break;
+
 		default:
 			break;
 		}
@@ -140,7 +140,7 @@ function fork_export_edit_template($job) {
 
 
 	default:
-print_r($data);
+		print_r($data);
 		break;
 	}
 
@@ -250,29 +250,29 @@ print_r($data);
 
 
 				switch ($parent) {
-				
-				
+
+
 				case 'category':
-				
-				$object=new Product($row['id']);
 
-				$data_rows=array();
+					$object=new Product($row['id']);
 
-				$data_rows[]=array(
-					'cell_type'=>'auto',
-					'value'=>$object->id
-				);
-
-				foreach ($fields as $field) {
+					$data_rows=array();
 
 					$data_rows[]=array(
-						'cell_type'=>(isset($field['cell_type'])?$field['cell_type']:'auto'),
-						'value'=>$object->get($field['name']),
-						'field'=>$field['name']
+						'cell_type'=>'auto',
+						'value'=>$object->id
 					);
-				}
-				break;
-				
+
+					foreach ($fields as $field) {
+
+						$data_rows[]=array(
+							'cell_type'=>(isset($field['cell_type'])?$field['cell_type']:'auto'),
+							'value'=>$object->get($field['name']),
+							'field'=>$field['name']
+						);
+					}
+					break;
+
 				case 'part_category':
 
 
@@ -323,12 +323,12 @@ print_r($data);
 									break;
 								case 'Product Unit Label':
 									$value=$object->get('Part Unit Label');
-									break;	
+									break;
 								case 'Product Price':
 									if ($object->get('Part Unit Price')=='') {
 										$value='';
-										}else {
-										$value=round($exchange*$object->get('Part Unit Price')*$object->get('Part Units Per Package'),2);
+									}else {
+										$value=round($exchange*$object->get('Part Unit Price')*$object->get('Part Units Per Package'), 2);
 									}
 									break;
 								case 'Product Unit RRP':
@@ -336,7 +336,7 @@ print_r($data);
 									if ($object->get('Part Unit RRP')=='') {
 										$value='';
 									}else {
-										$value=round($exchange*$object->get('Part Unit RRP'),2);
+										$value=round($exchange*$object->get('Part Unit RRP'), 2);
 									}
 									break;
 								default:
@@ -383,7 +383,7 @@ print_r($data);
 				break;
 			}
 
-			
+
 			if ($row_index==1) {
 				$char_index=1;
 
@@ -398,6 +398,27 @@ print_r($data);
 
 					$objPHPExcel->getActiveSheet()->setCellValue($char . $row_index, strip_tags($field['header']));
 
+					if ( $field['required'] ) {
+						$objPHPExcel->getActiveSheet()->getStyle($char . $row_index)->applyFromArray(
+							array(
+								'font' => array(
+									'color' => array('rgb' => 'EA3C53'),
+
+								)
+
+							)
+						);
+					}
+					$objPHPExcel->getActiveSheet()->getStyle($char . $row_index)->applyFromArray(
+						array(
+							'borders' => array(
+								'bottom' => array(
+									'style' => PHPExcel_Style_Border::BORDER_THIN,
+									'color' => array('rgb' => '777777')
+								)
+							)
+						)
+					);
 
 
 					$char_index++;
@@ -414,7 +435,7 @@ print_r($data);
 				$char=number2alpha($char_index);
 
 
-				if ($data_row['cell_type']=='string') {
+				if ($data_row['cell_type']=='string' or $char_index==1) {
 
 					$objPHPExcel->getActiveSheet()->setCellValueExplicit($char . $row_index, strip_tags($data_row['value']), PHPExcel_Cell_DataType::TYPE_STRING);
 				}else {
@@ -443,6 +464,17 @@ print_r($data);
 		exit;
 	}
 
+
+
+$sheet = $objPHPExcel->getActiveSheet();
+$cellIterator = $sheet->getRowIterator()->current()->getCellIterator();
+$cellIterator->setIterateOnlyExistingCells( true );
+/** @var PHPExcel_Cell $cell */
+foreach ( $cellIterator as $cell ) {
+	$sheet->getColumnDimension( $cell->getColumn() )->setAutoSize( true );
+}
+
+$objPHPExcel->getActiveSheet()->freezePane('A2');
 
 
 	/*
