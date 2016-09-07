@@ -126,6 +126,14 @@ case 'delete_image':
 
 	delete_image($account, $db, $user, $editor, $data, $smarty);
 	break;
+	
+case 'set_as_principal_image':	
+	$data=prepare_values($_REQUEST, array(
+			'image_bridge_key'=>array('type'=>'key'),
+		));
+
+	set_as_principal_image($account, $db, $user, $editor, $data, $smarty);
+	break;
 case 'delete_attachment':
 	$data=prepare_values($_REQUEST, array(
 			'attachment_bridge_key'=>array('type'=>'key'),
@@ -1266,6 +1274,50 @@ function delete_image($account, $db, $user, $editor, $data, $smarty) {
 			$response= array(
 				'state'=>200,
 				'msg'=>_('Image deleted'),
+				'number_images'=>$object->get_number_images(),
+				'main_image_key'=>$object->get_main_image_key()
+
+			);
+			echo json_encode($response);
+			exit;
+
+		}else {
+			$msg=_('Image not found');
+			$response= array('state'=>400, 'msg'=>$msg);
+			echo json_encode($response);
+			exit;
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+}
+
+
+function set_as_principal_image($account, $db, $user, $editor, $data, $smarty) {
+
+	include_once 'class.Image.php';
+
+
+	$sql=sprintf('select `Image Subject Object`,`Image Subject Object Key`,`Image Subject Image Key` from `Image Subject Bridge` where `Image Subject Key`=%d ', $data['image_bridge_key']);
+	if ($result=$db->query($sql)) {
+		if ($row = $result->fetch()) {
+
+			$object=get_object($row['Image Subject Object'], $row['Image Subject Object Key']);
+			$object->editor=$editor;
+
+			if (!$object->id) {
+				$msg= 'object key not found';
+				$response= array('state'=>400, 'msg'=>$msg);
+				echo json_encode($response);
+				exit;
+			}
+
+			$object->set_as_principal( $data['image_bridge_key']);
+
+			$response= array(
+				'state'=>200,
+				'msg'=>'Image order changed',
 				'number_images'=>$object->get_number_images(),
 				'main_image_key'=>$object->get_main_image_key()
 

@@ -35,7 +35,7 @@ $(function() {
        
        data=JSON.parse(data)
        
-       console.log(editor_data)
+       console.log(data)
         if(editor_data.mode=='edit_object'){
             
             var field=editor_data.field

@@ -206,8 +206,18 @@ $product_fields=array(
 				'required'=>true,
 				'type'=>'value'
 			),
+			
+			array(
+				'id'=>'Product_Cost',
+				'edit'=>($edit?'amount':''),
 
-
+				'value'=>($new?0:$object->get('Product Cost')) ,
+				'formatted_value'=>($new?0:$object->get('Cost')) ,
+				'label'=>ucfirst($object->get_field_label('Product Cost')),
+				'invalid_msg'=>get_invalid_message('amount'),
+				'required'=>true,
+				'type'=>'value'
+			),
 
 		)
 	),
@@ -280,54 +290,6 @@ $product_fields=array(
 
 		)
 	),
-
-	array(
-		'label'=>_('Webpage'),
-		'show_title'=>true,
-		'fields'=>array(
-
-
-		
-
-
-
-			array(
-				'id'=>'Product_Description',
-				'edit'=>($edit?'editor':''),
-				'class'=>'editor',
-				'editor_data'=>array(
-					'id'=>'Product_Description',
-					'content'=>$object->get('Product Description'),
-
-					'data'=>base64_encode(json_encode(array(
-								'mode'=>'edit_object',
-								'field'=>'Product_Description',
-								'plugins'=>array('align', 'draggable', 'image', 'link', 'save', 'entities', 'emoticons', 'fullscreen', 'lineBreaker', 'table', 'codeView', 'codeBeautifier'),
-								'metadata'=>array(
-									'tipo'=>'edit_field',
-									'object'=>'Product',
-									'key'=>$object->id,
-									'field'=>'Product Description',
-
-
-
-								)
-							)
-						))
-
-				),
-				'value'=>$object->get('Product Description'),
-				'formatted_value'=>$object->get('Product Description'),
-				'label'=>ucfirst($object->get_field_label('Product Description')),
-				'required'=>false,
-				'type'=>'value'
-			),
-
-
-
-		)
-	),
-
 	array(
 		'label'=>_('Properties'),
 		'show_title'=>true,
@@ -339,7 +301,7 @@ $product_fields=array(
 				//'linked'=>$fields_linked,
 				'edit'=>($part_edit?'textarea':''),
 
-				'render'=>($new?false:true),
+ 'render'=>($new?false:true),
 
 				'value'=>htmlspecialchars($object->get('Product Materials')),
 				'formatted_value'=>$object->get('Materials'),
@@ -350,7 +312,7 @@ $product_fields=array(
 			array(
 				'id'=>'Product_Origin_Country_Code',
 				'edit'=>($part_edit?'country_select':''),
-				'render'=>($new?false:true),
+ 'render'=>($new?false:true),
 				'options'=>get_countries($db),
 				'scope'=>'countries',
 				'value'=>$object->get('Product Origin Country Code'),
@@ -363,7 +325,7 @@ $product_fields=array(
 			array(
 				'id'=>'Product_Tariff_Code',
 				'edit'=>($part_edit?'numeric':''),
-				'render'=>($new?false:true),
+ 'render'=>($new?false:true),
 				'value'=>$object->get('Product Tariff Code') ,
 				'formatted_value'=>$object->get('Tariff Code') ,
 				'label'=>ucfirst($object->get_field_label('Product Tariff Code')).($fields_linked?' <i  class="discret fa fa-chain"  title="'._('Linked to part value').'"></i>':''),
@@ -375,7 +337,7 @@ $product_fields=array(
 			array(
 				'id'=>'Product_Duty_Rate',
 				'edit'=>($part_edit?'string':''),
-				'render'=>($new?false:true),
+ 'render'=>($new?false:true),
 				'value'=>$object->get('Product Duty Rate') ,
 				'formatted_value'=>$object->get('Duty Rate') ,
 				'label'=>ucfirst($object->get_field_label('Product Duty Rate')).($fields_linked?' <i  class="discret fa fa-chain"  title="'._('Linked to part value').'"></i>':''),
@@ -387,7 +349,52 @@ $product_fields=array(
 		)
 	),
 
+array(
+		'label'=>_('Webpage'),
+		'show_title'=>true,
+		'fields'=>array(
 
+			array(
+				'render'=>true,
+
+				'id'=>'Product_Units_Per_Case',
+				'edit'=>($edit?'numeric':''),
+
+				'value'=>$object->get('Product Units Per Case') ,
+				'formatted_value'=>$object->get('Units Per Case') ,
+				'label'=>ucfirst($object->get_field_label('Product Units Per Case')),
+				'invalid_msg'=>get_invalid_message('string'),
+				'required'=>true,
+				'type'=>'value'
+			),
+
+
+			array(
+				'id'=>'Product_Price',
+				'edit'=>($edit?'amount':''),
+
+				'value'=>$object->get('Product Price') ,
+				'formatted_value'=>$object->get('Price') ,
+				'label'=>ucfirst($object->get_field_label('Product Price')),
+				'invalid_msg'=>get_invalid_message('amount'),
+				'required'=>true,
+				'type'=>'value'
+			),
+			
+			array(
+				'id'=>'Product_Cost',
+				'edit'=>($edit?'amount':''),
+
+				'value'=>($new?0:$object->get('Product Cost')) ,
+				'formatted_value'=>($new?0:$object->get('Cost')) ,
+				'label'=>ucfirst($object->get_field_label('Product Cost')),
+				'invalid_msg'=>get_invalid_message('amount'),
+				'required'=>true,
+				'type'=>'value'
+			),
+
+		)
+	),
 
 
 	array(

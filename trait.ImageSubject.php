@@ -101,27 +101,29 @@ trait ImageSubject {
 				$principal='No';
 			}
 
-			$sql=sprintf("insert into `Image Subject Bridge` (`Image Subject Object`,`Image Subject Object Key`,`Image Subject Image Key`,`Image Subject Is Principal`,`Image Subject Image Caption`,`Image Subject Date`,`Image Subject Order`) values (%s,%d,%d,%s,'',%s,%d)",
+
+			if (in_array($subject, array('Product', 'Part'))) {
+				$is_public='Yes';
+			}else {
+				$is_public='No';
+			}
+
+			$sql=sprintf("insert into `Image Subject Bridge` (`Image Subject Object`,`Image Subject Object Key`,`Image Subject Image Key`,`Image Subject Is Principal`,`Image Subject Image Caption`,`Image Subject Date`,`Image Subject Order`,`Image Subject Is Public`) values (%s,%d,%d,%s,'',%s,%d,%s)",
 				prepare_mysql($subject),
 				$subject_key,
 				$image->id,
 				prepare_mysql($principal),
 				prepare_mysql(gmdate('Y-m-d H:i:s')),
-				($number_images+1)
+				($number_images+1),
+				prepare_mysql($is_public)
 
 			);
-
 			$this->db->exec($sql);
 
 
 			$this->reindex_order();
 
-			if ($principal=='Yes') {
-				$this->update_main_image($image->id);
-				if ($this->error) {
-					return;
-				}
-			}
+
 
 
 			$sql=sprintf("select `Image Subject Is Principal`,`Image Key`,`Image Subject Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Subject Bridge` B left join `Image Dimension` ID on (`Image Key`=`Image Subject Image Key`) where `Image Subject Object`=%s and `Image Subject Object Key`=%d and  `Image Key`=%d",
@@ -262,7 +264,7 @@ trait ImageSubject {
 
 		$subject=$this->table_name;
 
-		$sql=sprintf("select `Image Subject Image Key` from `Image Subject Bridge` where `Image Subject Object`=%s and `Image Subject Object Key`=%d  ORDER BY FIELD(`Image Subject Is Principal`, 'Yes','No') limit 1",
+		$sql=sprintf("select `Image Subject Image Key` from `Image Subject Bridge` where `Image Subject Object`=%s and `Image Subject Object Key`=%d order by `Image Subject Order` limit 1",
 			prepare_mysql($subject),
 			$this->id
 
@@ -284,48 +286,16 @@ trait ImageSubject {
 	}
 
 
-	function update_main_image($image_key) {
+	function update_main_image() {
 
 
-		$subject=$this->table_name;
+		$image_key=$this->get_main_image_key();
+
 
 
 		if ($image_key) {
 
-			$sql=sprintf("select `Image Subject Key` from `Image Subject Bridge` where `Image Subject Object`=%s and `Image Subject Object Key`=%d  and `Image Subject Image Key`=%d",
-				prepare_mysql($subject),
-				$this->id,
-				$image_key
-			);
 
-
-
-			if ($result=$this->db->query($sql)) {
-				if (!$row = $result->fetch()) {
-					$this->error=true;
-					$this->msg='image not associated';
-					return;
-				}
-			}else {
-				print_r($error_info=$this->db->errorInfo()); print "$sql";
-				exit;
-			}
-
-
-
-
-
-			$sql=sprintf("update `Image Subject Bridge` set `Image Subject Is Principal`='No' where `Image Subject Object`=%s and `Image Subject Object Key`=%d  ",
-				prepare_mysql($subject),
-				$this->id
-			);
-			$this->db->exec($sql);
-			$sql=sprintf("update `Image Subject Bridge` set `Image Subject Is Principal`='Yes' where `Image Subject Object`=%s and `Image Subject Object Key`=%d  and `Image Key`=%d",
-				prepare_mysql($subject),
-				$this->id,
-				$image_key
-			);
-			$this->db->exec($sql);
 
 
 			$main_image_src='image_root.php?id='.$image_key.'&size=small';
@@ -338,19 +308,19 @@ trait ImageSubject {
 
 		//$this->data['Product Main Image']=$main_image_src;
 		//$this->data['Product Main Image Key']=$main_image_key;
-		$sql=sprintf("update `%s Dimension` set `%s Main Image`=%s ,`%s Main Image Key`=%d where `%s Key`=%d",
-			addslashes($this->table_name),
-			addslashes($this->table_name),
-			prepare_mysql($main_image_src),
-			addslashes($this->table_name),
-			$main_image_key,
-			addslashes($this->table_name),
-			$this->id
-		);
 
-        
 
-		$this->db->exec($sql);
+
+		$this->update(
+			array(
+				$this->table_name.' Main Image'=>$main_image_src,
+				$this->table_name.' Main Image Key'=>$main_image_key
+
+			)
+			, 'no_history');
+
+
+
 
 
 
@@ -359,9 +329,9 @@ trait ImageSubject {
 		if ($this->table_name=='Category') {
 
 
-            if($main_image_src=='/art/nopic.png')$main_image_src='art/nopic.png';
-            
-            $main_image_src=preg_replace('/image_root/','image',$main_image_src);
+			if ($main_image_src=='/art/nopic.png')$main_image_src='art/nopic.png';
+
+			$main_image_src=preg_replace('/image_root/', 'image', $main_image_src);
 
 			include_once 'class.Store.php';
 			$store=new Store($this->get('Category Store Key'));
@@ -416,7 +386,7 @@ trait ImageSubject {
 				$image->delete();
 				$order_index=$this->reindex_order();
 
-				$this->update_main_image(array_shift($order_index));
+
 
 
 				if ($this->table_name=='Part') {
@@ -463,6 +433,18 @@ trait ImageSubject {
 	}
 
 
+	function set_as_principal($image_bridge_key) {
+
+		$sql=sprintf('update  `Image Subject Bridge` set `Image Subject Order`=0  where `Image Subject Key`=%d ',
+			$image_bridge_key
+		);
+		$this->db->exec($sql);
+
+		$this->reindex_order();
+
+	}
+
+
 	function reindex_order() {
 
 		$order_index=array();
@@ -489,6 +471,9 @@ trait ImageSubject {
 			print_r($error_info=$this->db->errorInfo()); print "$sql";
 			exit;
 		}
+
+		$this->update_main_image();
+
 
 		return $order_index;
 	}
