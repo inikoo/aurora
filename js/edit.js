@@ -952,7 +952,7 @@ function save_field(object, key, field) {
     var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value) + '&metadata=' + JSON.stringify(metadata)
     console.log(request)
     $.getJSON(request, function(data) {
-  console.log(data)
+  
         $('#' + field + '_save_button').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
         if (data.state == 100) {
             pre_save_actions(field, data)

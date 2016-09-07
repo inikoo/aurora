@@ -64,7 +64,9 @@ function remove_part(element) {
             $(element).closest('tr').find('.part_list_value').prop('readonly', true);
         }
     }
+    
     on_change_part_list()
+  
 }
 
 
@@ -194,6 +196,7 @@ function add_part() {
     clone.removeClass('hide')
     console.log(clone)
     $("#parts_list_items").append(clone);
+    on_change_part_list()
 
 }
 
@@ -210,16 +213,37 @@ function on_change_part_list(element) {
 
     var changed = check_changes_part_list()
      var validation = validate_part_list()
+     
+     
+     var count_parts=0;
+       $('#parts_list_items  tr.part_tr').each(function(i, obj) {
+       count_parts++;});
+     
+     
+     console.log(count_parts)
+     
+     if(count_parts==0){
+        $('#Product_Cost').val('')
+        on_changed_value('Product_Cost', '')
+        $('#Product_Cost_field').removeClass('hide')
+     }else{
+             $('#Product_Cost').val(0)
+
+     $('#Product_Cost').val(0)
+        $('#Product_Cost_field').addClass('hide')
+
+     }
+     
      $("#Product_Parts_field").removeClass('valid invalid')
      
     if (changed) {
         $("#Product_Parts_field").addClass('changed')
-        $("#Product_Parts_field").addClass(validation)
+      
     } else {
         $("#Product_Parts_field").removeClass('changed')
     }
    
-    
+      $("#Product_Parts_field").addClass(validation)
 }
 
 
@@ -251,29 +275,29 @@ function check_changes_part_list() {
 
     }
 
-
 function validate_part_list() {
     var validation = 'valid';
-    
-      $('#parts_list_items  tr.part_tr').each(function(i, obj) {
 
-      var ratio = $(obj).find('.parts_per_product').val()
-      
-      if(ratio!=''){
-      ratio_validation=validate_signed_integer(ratio,1000000)
-      
-      if(ratio_validation.class=='invalid'){
-      validation = 'invalid';
-      }
-      console.log(ratio_validation)
-      
-      }
-      
-      
+    $('#parts_list_items  tr.part_tr').each(function(i, obj) {
+
+        var ratio = $(obj).find('.parts_per_product').val()
+
+        if (ratio != '') {
+            ratio_validation = validate_signed_integer(ratio, 1000000)
+
+            if (ratio_validation.class == 'invalid') {
+                validation = 'invalid';
+            }
+
+        }
+
+
     })
-    
+            console.log(validation)
+
     return validation;
 }
+
 
 function post_save_product_parts(data){
     $('parts_list_items').html(data.update_metadata.parts_list_items)
