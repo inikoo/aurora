@@ -760,11 +760,11 @@ $modules=array(
 
 			),
 		
-		//	'services'=>array('type'=>'navigation', 'label'=>_('Services'), 'icon'=>'wrench', 'reference'=>'services/%d',
-		//		'tabs'=>array(
-		//			'services'=>array()
-		//		)
-		//	),
+			'services'=>array('type'=>'navigation', 'label'=>_('Services'), 'icon'=>'wrench', 'reference'=>'services/%d',
+				'tabs'=>array(
+					'services'=>array()
+				)
+			),
 			'products'=>array('type'=>'navigation', 'label'=>_('Products'), 'title'=>_("Products database"), 'icon'=>'cube', 'reference'=>'products/%d',
 				'tabs'=>array(
 					'products'=>array()
