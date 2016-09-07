@@ -42,6 +42,8 @@ $parameters=array(
 
 
 $table_buttons=array();
+
+/*
 $table_buttons[]=array('icon'=>'plus', 'title'=>_('New part'), 'reference'=>"part/new");
 $smarty->assign('table_buttons', $table_buttons);
 $smarty->assign('upload_file', array(
@@ -52,7 +54,7 @@ $smarty->assign('upload_file', array(
 'label'=>_("Upload parts")
 
 ));
-
+*/
 include 'utils/get_table_html.php';
 
 
