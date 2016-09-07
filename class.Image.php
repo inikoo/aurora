@@ -186,6 +186,10 @@ class Image {
 	}
 
 
+	function get_object_name() {
+
+		return 'Image';
+	}
 
 
 	function create($data) {
@@ -302,16 +306,16 @@ class Image {
 		$y_mid=$tn_h/2;
 
 		if ($new_h>$tn_h) {
-		$mlt=$tn_h/$new_h;
-		
-		
-			
+			$mlt=$tn_h/$new_h;
+
+
+
 			$new_w=ceil($new_w * $mlt);
 			$new_h=ceil($new_h * $mlt);
 
 
 
-		
+
 		}else {
 			$y_mid=10+($tn_h-$new_h)/2;
 		}
@@ -748,5 +752,42 @@ class Image {
 
 	}
 
+
+function get_field_label($field) {
+
+		switch ($field) {
+		
+		case 'Image Caption':
+			$label=_('caption');
+			break;
+
+		case 'Image Public':
+			if ($this->get('Subject')=='Staff') {
+				$label=_('Employee can see file');
+			}if ($this->get('Subject')=='Product') {
+				$label=_('Customers can see');
+			}else {
+				$label=_('Public');
+			}
+			break;
+		case 'Image File':
+			$label=_('File');
+			break;
+		case 'Image File Original Name':
+			$label=_('File name');
+			break;
+		case 'Image File Size':
+			$label=_('File size');
+			break;
+		case 'Image Preview':
+			$label=_('Preview');
+			break;
+		default:
+			$label=$field;
+			break;
+		}
+
+		return $label;
+	}
 
 }

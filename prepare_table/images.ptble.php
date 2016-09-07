@@ -11,7 +11,7 @@
 
 $table='`Image Dimension` I left join `Image Subject Bridge` B on (I.`Image Key`=`Image Subject Image Key`)';
 
-$fields="`Image Subject Key`,I.`Image Key`,`Image Width`,	`Image Height`,`Image File Size`,`Image File Format`,`Image Filename`,`Image Subject Image Caption`";
+$fields="`Image Subject Order`,`Image Subject Is Public`,`Image Subject Key`,I.`Image Key`,`Image Width`,	`Image Height`,`Image File Size`,`Image File Format`,`Image Filename`,`Image Subject Image Caption`";
 
 //print_r($parameters);
 
@@ -54,7 +54,8 @@ elseif ($order=='kind')
 elseif ($order=='filename')
 	$order='`Image Filename`';
 else
-	$order='`Image Key`';
+	$order='`Image Subject Order`';
+
 
 
 $sql_totals="select count(Distinct I.`Image Key`) as num from $table $where  ";

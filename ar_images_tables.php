@@ -46,31 +46,47 @@ function images($_data, $db, $user) {
 	include_once 'prepare_table/init.php';
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	
+	
+
 	$adata=array();
 	
-	
+	$ordinal_formatter = new \NumberFormatter("en-GB", \NumberFormatter::ORDINAL); 
 	
 	if ($result=$db->query($sql)) {
 
 		foreach ($result as $data) {
 		
 
-		/*
-		if ($data['Image Public']=='Yes')
+		
+		if ($data['Image Subject Is Public']=='Yes')
 			$visibility=sprintf('<i title="%s" class="fa fa-eye"></i>', _('Public'));
 		else
 			$visibility=sprintf('<i title="%s" class="fa fa-eye-slash"></i>', _('Private'));
-*/
+
 
 
 		
 
 		$operations='';
+		
+		 if($data['Image Subject Order']>1){
+        
+        
+        $operations.=sprintf('<div style="margin-bottom:10px"><span class="button" id="set_as_principal_image_button_%d" onClick="set_as_principal(%d)"><i class="fa fa-trophy"></i> %s</span></div>',
+			$data['Image Subject Key'],
+			$data['Image Subject Key'],
+			_('Set as first'));
+        
+        }
+		
 
 		$operations.=sprintf('<span class="button" id="delete_image_button_%d" onClick="delete_image(%d)"><i class="fa fa-trash"></i> %s</span>',
 			$data['Image Subject Key'],
 			$data['Image Subject Key'],
 			_('Delete'));
+
+       
 
 
 		$adata[]=array(
@@ -80,8 +96,9 @@ function images($_data, $db, $user) {
 			'caption'=>$data['Image Subject Image Caption'],
 			'size'=>file_size($data['Image File Size']),
 			'dimensions'=>$data['Image Width'].'x'.$data['Image Height'],
-			'operations'=>$operations
-			//'visibility'=>$visibility,
+			'operations'=>$operations,
+			'visibility'=>$visibility,
+			'image_order'=>$ordinal_formatter->format($data['Image Subject Order'])
 			//'type'=>$type,
 			//'file_type'=>$file_type,
 			//'file'=>sprintf('<a href="/attachment.php?id=%d" download><i class="fa fa-download"></i></a>  <a href="/attachment.php?id=%d" >%s</a>' , $data['Image Subject Key'], $data['Image Subject Key'], $data['Image File Original Name']),

@@ -261,6 +261,32 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 							$key=$view_path[1];
 							$parent='store';
 							$parent_key=$view_path[0];
+
+
+
+							if (isset($view_path[2])) {
+
+							        if ($view_path[2]=='image') {
+
+                                        	if (isset($view_path[3])) {
+
+									if (is_numeric($view_path[3])) {
+										$section='product.image';
+										$object='image.subject';
+										$parent_key=$key;
+										$key=$view_path[3];
+										$parent='product';
+
+									}
+									
+									}
+
+								}
+
+
+							}
+
+
 						}
 
 
@@ -278,7 +304,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			}
 			break;
 
-case 'services':
+		case 'services':
 			if (!$user->can_view('stores')) {$module='utils';$section='forbidden';break;}
 
 			$module='products';

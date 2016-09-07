@@ -54,7 +54,7 @@ $_product=array(
 			)
 		),
 		'product.history'=>array('label'=>_('History'), 'icon'=>'road', 'class'=>'right icon_only'),
-		'category.images'=>array('label'=>_('Images'), 'icon'=>'camera-retro', 'class'=>'right icon_only'),
+		'product.images'=>array('label'=>_('Images'), 'icon'=>'camera-retro', 'class'=>'right icon_only'),
 		'product.parts'=>array('label'=>_('Parts'), 'icon'=>'square', 'class'=>'right icon_only'),
 
 	)
@@ -840,7 +840,18 @@ $modules=array(
 				)
 
 			),
-			
+				'product.image'=>array('type'=>'object',
+
+
+
+				'tabs'=>array(
+
+
+					'product.image.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+					'product.history'=>array('label'=>_('History/Notes'), 'icon'=>'road','class'=>'right icon_only'),
+
+				)
+			),
 
 		)
 	),

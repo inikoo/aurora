@@ -442,7 +442,14 @@ $tab_defaults=array(
 		'elements'=>$elements_options['orders'],
 		'export_fields'=>$export_fields['orders']
 	),
-	
+	'product.images'=>array(
+		'view'=>'overview',
+		'sort_key'=>'image_order',
+		'sort_order'=>0,
+		'rpp'=>100,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'caption'
+	),
 	'service.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
@@ -1029,7 +1036,7 @@ $tab_defaults=array(
 	),
 	'part.images'=>array(
 		'view'=>'overview',
-		'sort_key'=>'order',
+		'sort_key'=>'image_order',
 		'sort_order'=>1,
 		'rpp'=>100,
 		'rpp_options'=>$default_rrp_options,
@@ -1565,7 +1572,7 @@ $tab_defaults=array(
 	),
 	'employee.images'=>array(
 		'view'=>'overview',
-		'sort_key'=>'order',
+		'sort_key'=>'image_order',
 		'sort_order'=>1,
 		'rpp'=>100,
 		'rpp_options'=>$default_rrp_options,
@@ -1976,7 +1983,7 @@ $tab_defaults=array(
 	),
 	'category.images'=>array(
 		'view'=>'overview',
-		'sort_key'=>'order',
+		'sort_key'=>'image_order',
 		'sort_order'=>1,
 		'rpp'=>100,
 		'rpp_options'=>$default_rrp_options,

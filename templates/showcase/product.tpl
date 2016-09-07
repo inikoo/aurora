@@ -19,11 +19,10 @@
 	<div style="clear:both">
 	</div>
 	<div class="data_container">
-		{assign "image_key" $product->get_main_image_key()} 
-		<div id="main_image" class="wraptocenter main_image {if $image_key==''}hide{/if}">
-			<img src="/{if $image_key}image_root.php?id={$image_key}&amp;size=small{else}art/nopic.png{/if}"> </span> 
+		<div id="main_image" class="wraptocenter main_image {if !$product->get('Product Main Image Key')}hide{/if}">
+			<img src="/{$product->get('Product Main Image')}"> </span> 
 		</div>
-		{include file='upload_main_image.tpl' object='Product' key=$product->id class="{if $image_key!=''}hide{/if}"} 
+		{include file='upload_main_image.tpl' object='Product' key=$product->id class="{if $product->get('Product Main Image Key')!=''}hide{/if}"} 
 	</div>
 	{include file='sticky_note.tpl' object='Category' key=$product->id sticky_note_field='Store_Product_Sticky_Note' _object=$product} 
 	<div style="clear:both">
