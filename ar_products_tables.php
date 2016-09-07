@@ -38,6 +38,9 @@ case 'stores':
 case 'products':
 	products(get_table_parameters(), $db, $user);
 	break;
+case 'services':
+	services(get_table_parameters(), $db, $user);
+	break;	
 case 'categories':
 	categories(get_table_parameters(), $db, $user);
 	break;
@@ -163,6 +166,62 @@ function products($_data, $db, $user) {
 	echo json_encode($response);
 }
 
+function services($_data, $db, $user) {
+
+
+
+		$rtext_label='service';
+
+
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	$adata=array();
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
+
+			$associated=sprintf('<i key="%d" class="fa fa-fw fa-link button" aria-hidden="true" onClick="edit_category_subject(this)" ></i>', $data['Product ID']);
+
+
+			$adata[]=array(
+
+				'id'=>(integer) $data['Product ID'],
+				'store_key'=>(integer) $data['Store Key'],
+				'associated'=>$associated,
+				'store'=>$data['Store Code'],
+				'code'=>$data['Product Code'],
+				'name'=>$data['Product Name'],
+				'price'=>money($data['Product Price'], $data['Store Currency Code']),
+			);
+
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
 
 function categories($_data, $db, $user) {
 

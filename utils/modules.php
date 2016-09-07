@@ -60,6 +60,53 @@ $_product=array(
 	)
 );
 
+$_service=array(
+	'type'=>'object',
+	'subtabs_parent'=>array(
+		'service.sales.plot'=>'service.sales',
+		'service.sales.history'=>'service.sales',
+		'service.sales.calendar'=>'service.sales',
+		'service.customers.customers'=>'service.customers',
+		'service.customers.favourites'=>'service.customers',
+		'service.website.webpage'=>'service.website',
+		'service.website.pages'=>'service.website',
+	),
+
+	'tabs'=>array(
+		'service.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
+		'service.history'=>array('label'=>_('History, notes'), 'icon'=>'sticky-note-o'),
+		'service.sales'=>array('label'=>_('Sales'), 'title'=>_('Sales'),
+			'subtabs'=>array(
+				'service.sales.plot'=>array('label'=>_('Plot'), 'title'=>_('Plot')),
+				'service.sales.history'=>array('label'=>_('Sales history'), 'title'=>_('Sales history')),
+				'service.sales.calendar'=>array('label'=>_('Calendar'), 'title'=>_('Sales calendar')),
+
+			)
+		),
+		'service.orders'=>array('label'=>_('Orders'),
+
+		),
+		'service.customers'=>array('label'=>_('Customers'),
+			'subtabs'=>array(
+				'service.customers.customers'=>array('label'=>_('Customers'), 'title'=>_('Customers')),
+				'service.customers.favourites'=>array('label'=>_('Customers who favorited'), 'title'=>_('Customers who favorited')),
+
+			)
+		),
+		'service.offers'=>array('label'=>_('Offers'), 'title'=>_('Offers')),
+
+		'service.website'=>array('label'=>_('Website'), 'title'=>_('Website'),
+			'subtabs'=>array(
+				'service.website.webpage'=>array('label'=>_('Webpage'), 'title'=>_('service webpage')),
+				'service.sales.pages'=>array('label'=>_('Webpages'), 'title'=>_('Webpages where this service is on sale')),
+
+			)
+		),
+		'service.history'=>array('label'=>_('History'), 'icon'=>'road', 'class'=>'right icon_only'),
+		'category.images'=>array('label'=>_('Images'), 'icon'=>'camera-retro', 'class'=>'right icon_only'),
+
+	)
+);
 
 $modules=array(
 	'dashboard'=>array(
@@ -712,6 +759,12 @@ $modules=array(
 				)
 
 			),
+		
+		//	'services'=>array('type'=>'navigation', 'label'=>_('Services'), 'icon'=>'wrench', 'reference'=>'services/%d',
+		//		'tabs'=>array(
+		//			'services'=>array()
+		//		)
+		//	),
 			'products'=>array('type'=>'navigation', 'label'=>_('Products'), 'title'=>_("Products database"), 'icon'=>'cube', 'reference'=>'products/%d',
 				'tabs'=>array(
 					'products'=>array()
@@ -770,6 +823,15 @@ $modules=array(
 				)
 
 			),
+			'service'=>$_service,
+			'service.new'=>array('type'=>'new_object',
+				'tabs'=>array(
+					'service.new'=>array('label'=>_('New service')),
+
+				)
+
+			),
+			
 			
 				'upload'=>array('type'=>'object',
 				'tabs'=>array(

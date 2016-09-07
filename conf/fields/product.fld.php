@@ -206,6 +206,18 @@ $product_fields=array(
 				'required'=>true,
 				'type'=>'value'
 			),
+			
+			array(
+				'id'=>'Product_Cost',
+				'edit'=>($edit?'amount':''),
+
+				'value'=>($new?0:$object->get('Product Cost')) ,
+				'formatted_value'=>($new?0:$object->get('Cost')) ,
+				'label'=>ucfirst($object->get_field_label('Product Cost')),
+				'invalid_msg'=>get_invalid_message('amount'),
+				'required'=>true,
+				'type'=>'value'
+			),
 
 		)
 	),

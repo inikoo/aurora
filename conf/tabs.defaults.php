@@ -355,6 +355,19 @@ $tab_defaults=array(
 		'elements'=>$elements_options['products'],
 
 	),
+	
+		'store.services'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>100,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code',
+		'f_period'=>'ytd',
+		'elements_type'=>each(  $elements_options['services']  ) ['key'],
+		'elements'=>$elements_options['services'],
+
+	),
 	'category.products'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
@@ -387,14 +400,14 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code'
 	),
-'product.parts'=>array(
+	'product.parts'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
 		'rpp'=>500,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'reference',
-		
+
 	),
 	'product.history'=>array(
 		'view'=>'overview',
@@ -412,7 +425,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'frequency'=>'monthy',
 		'f_field'=>'',
-//		'export_fields'=>$export_fields['timeserie_records']
+		//  'export_fields'=>$export_fields['timeserie_records']
 
 	),
 	'product.orders'=>array(
@@ -429,6 +442,43 @@ $tab_defaults=array(
 		'elements'=>$elements_options['orders'],
 		'export_fields'=>$export_fields['orders']
 	),
+	
+	'service.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>1,
+		'rpp'=>100,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'note'
+	),
+	'service.sales.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>100,
+		'rpp_options'=>$default_rrp_options,
+		'frequency'=>'monthy',
+		'f_field'=>'',
+		//  'export_fields'=>$export_fields['timeserie_records']
+
+	),
+	'service.orders'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>100,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'customer',
+		'from'=>'',
+		'to'=>'',
+		'period'=>'ytd',
+		'elements_type'=>each($elements_options['orders'])['key'],
+		'elements'=>$elements_options['orders'],
+		'export_fields'=>$export_fields['orders']
+	),
+	
+	
+	
 	'category.product.sales.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
@@ -437,7 +487,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'frequency'=>'monthy',
 		'f_field'=>'',
-//		'export_fields'=>$export_fields['timeserie_records']
+		//  'export_fields'=>$export_fields['timeserie_records']
 
 	),
 	'websites'=>array(
@@ -811,7 +861,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'caption'
 	),
-	
+
 	'supplier.attachment.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
@@ -997,7 +1047,7 @@ $tab_defaults=array(
 		'elements'=>$elements_options['products'],
 
 	),
-		'part.attachments'=>array(
+	'part.attachments'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
 		'sort_order'=>1,
@@ -1005,7 +1055,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'caption'
 	),
-	
+
 	'part.attachment.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
@@ -1050,7 +1100,7 @@ $tab_defaults=array(
 		'elements_type'=>each($elements_options['supplier_deliveries'])['key'],
 		'elements'=>$elements_options['supplier_deliveries']
 	),
-		'part.sales.history'=>array(
+	'part.sales.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
@@ -1058,7 +1108,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'frequency'=>'monthy',
 		'f_field'=>'',
-//		'export_fields'=>$export_fields['timeserie_records']
+		//  'export_fields'=>$export_fields['timeserie_records']
 
 	),
 	'category.part.sales.history'=>array(
@@ -1069,7 +1119,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'frequency'=>'monthy',
 		'f_field'=>'',
-//		'export_fields'=>$export_fields['timeserie_records']
+		//  'export_fields'=>$export_fields['timeserie_records']
 
 	),
 	'warehouse.locations'=>array(
@@ -1158,7 +1208,7 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'reference'
 	),
-		'inventory.discontinuing_parts'=>array(
+	'inventory.discontinuing_parts'=>array(
 		'view'=>'overview',
 		'sort_key'=>'to',
 		'sort_order'=>1,
@@ -1175,8 +1225,8 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code',
 		'f_period'=>'ytd',
-//		'elements_type'=>each(  $elements_options['parts']  ) ['key'],
-//		'elements'=>$elements_options['parts'],
+		//  'elements_type'=>each(  $elements_options['parts']  ) ['key'],
+		//  'elements'=>$elements_options['parts'],
 	),
 
 	'parts.categories'=>array(
@@ -1265,7 +1315,7 @@ $tab_defaults=array(
 		'elements'=>$elements_options['category_root_subjects'],
 
 	),
-	
+
 	'inventory.barcodes'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',

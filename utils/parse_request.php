@@ -182,7 +182,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 											}
 
 										}
-										
+
 
 
 									}
@@ -203,8 +203,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 
 									if (isset($view_path[3]) ) {
-									
-									
+
+
 										if (is_numeric($view_path[3])) {
 											$section='product';
 											$parent='category';
@@ -222,20 +222,20 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 											}
 
 										}
-elseif ($view_path[3]=='upload') {
-									//$module='account';
-									$section='upload';
-									$parent='category';
-									$parent_key=$key;
-									$object='upload';
-									if (isset($view_path[4])) {
-										if (is_numeric($view_path[4])) {
+										elseif ($view_path[3]=='upload') {
+											//$module='account';
+											$section='upload';
+											$parent='category';
+											$parent_key=$key;
+											$object='upload';
+											if (isset($view_path[4])) {
+												if (is_numeric($view_path[4])) {
 
-											$key=$view_path[4];
+													$key=$view_path[4];
+												}
+											}
+
 										}
-									}
-
-								}
 
 									}
 
@@ -269,6 +269,167 @@ elseif ($view_path[3]=='upload') {
 				}elseif ($view_path[0]=='all') {
 					$module='products_server';
 					$section='products';
+
+
+
+				}
+
+
+			}
+			break;
+
+case 'services':
+			if (!$user->can_view('stores')) {$module='utils';$section='forbidden';break;}
+
+			$module='products';
+			$section='services';
+
+			if (isset($view_path[0]) ) {
+				if ( is_numeric($view_path[0])) {
+					$parent='store';
+					$parent_key=$view_path[0];
+					if (isset($view_path[1]) ) {
+
+						if ($view_path[1]=='new') {
+							$object='service';
+							$key=0;
+							$section='service.new';
+							$parent='store';
+							$parent_key=$view_path[0];
+
+
+						}
+
+						elseif ($view_path[1]=='categories') {
+							$object='store';
+							$key=$view_path[0];
+							$section='categories';
+							$parent='store';
+							$parent_key=$view_path[0];
+						}
+
+						else if ($view_path[1]=='category') {
+							$section='category';
+							$object='category';
+
+							if (isset($view_path[2]) ) {
+
+								$view_path[2]=preg_replace('/\>$/', '', $view_path[2]);
+								if (preg_match('/^(\d+\>)+(\d+)$/', $view_path[2])) {
+
+									$parent_categories=preg_split('/\>/', $view_path[2]);
+									$metadata=$parent_categories;
+									$key=array_pop($parent_categories);
+
+									$parent='category';
+
+
+
+									$parent_key=array_pop($parent_categories);
+
+
+									if (isset($view_path[3]) ) {
+
+										if ($view_path[3]=='service') {
+
+											$parent_key=$key;
+
+											$section='service';
+											$object='service';
+											if (isset($view_path[4]) and  is_numeric($view_path[4])) {
+
+												$key=$view_path[4];
+
+											}
+
+										}
+
+
+
+									}
+
+								}
+								elseif ( is_numeric($view_path[2])) {
+									$key=$view_path[2];
+									include_once 'class.Category.php';
+									$category=new Category($key);
+									if ($category->get('Category Branch Type')=='Root') {
+										$parent='store';
+										$parent_key=$category->get('Category Store Key');
+									}else {
+										$parent='category';
+										$parent_key=$category->get('Category Parent Key');
+
+									}
+
+
+									if (isset($view_path[3]) ) {
+
+
+										if (is_numeric($view_path[3])) {
+											$section='service';
+											$parent='category';
+											$parent_key=$category->id;
+											$object='service';
+											$key=$view_path[3];
+										}
+										elseif ($view_path[3]=='service') {
+											$section='service';
+											$object='service';
+											if (isset($view_path[4]) and  is_numeric($view_path[4])) {
+
+												$key=$view_path[4];
+
+											}
+
+										}
+										elseif ($view_path[3]=='upload') {
+											//$module='account';
+											$section='upload';
+											$parent='category';
+											$parent_key=$key;
+											$object='upload';
+											if (isset($view_path[4])) {
+												if (is_numeric($view_path[4])) {
+
+													$key=$view_path[4];
+												}
+											}
+
+										}
+
+									}
+
+
+
+
+
+								}
+								elseif ($view_path[2]=='new') {
+
+									$section='main_category.new';
+
+								}
+							}else {
+								//error
+							}
+
+						}
+
+						else if (is_numeric($view_path[1])) {
+							$section='service';
+							$object='service';
+							$key=$view_path[1];
+							$parent='store';
+							$parent_key=$view_path[0];
+						}
+
+
+
+					}
+				}elseif ($view_path[0]=='all') {
+					$module='services_server';
+					$section='services';
 
 
 

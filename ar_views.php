@@ -154,9 +154,9 @@ case 'views':
 
 
 			if ($state['parent']=='store' and $_object->get('Store Key')!=$state['parent_key'] ) {
-				
 
-				
+
+
 				$state=array('old_state'=>$state, 'module'=>'utils', 'section'=>'not_found', 'tab'=>'not_found', 'subtab'=>'', 'parent'=>$state['object'], 'parent_key'=>'', 'object'=>'',
 					'store'=>'',
 					'website'=>'',
@@ -764,15 +764,27 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case 'products':
 			return get_products_navigation($data, $smarty, $user, $db, $account);
 			break;
-		case 'dashboard':
-			return get_store_dashboard_navigation($data, $smarty, $user, $db, $account);
-			break;
 		case 'product':
 			return get_product_navigation($data, $smarty, $user, $db, $account);
 			break;
 		case 'product.new':
 			return get_new_product_navigation($data, $smarty, $user, $db, $account);
-			break;	
+			break;
+
+		case 'services':
+			return get_services_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case 'service':
+			return get_service_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case 'service.new':
+			return get_new_service_navigation($data, $smarty, $user, $db, $account);
+			break;
+
+		case 'dashboard':
+			return get_store_dashboard_navigation($data, $smarty, $user, $db, $account);
+			break;
+
 		case ('categories'):
 			return get_products_categories_navigation($data, $smarty, $user, $db, $account);
 			break;
@@ -1731,10 +1743,10 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 	case 'products':
 
-if ( $user->get_number_stores()>1) {
-					$branch[]=array('label'=>_('Stores'), 'icon'=>'', 'reference'=>'stores');
+		if ( $user->get_number_stores()>1) {
+			$branch[]=array('label'=>_('Stores'), 'icon'=>'', 'reference'=>'stores');
 
-}
+		}
 		if ($state['section']=='store') {
 
 			$branch[]=array('label'=>_('Store').' <span class="Store_Code id">'.$state['_object']->get('Store Code').'</span>', 'icon'=>'shopping-bag', 'reference'=>'store/'.$state['_object']->id);
@@ -1745,7 +1757,7 @@ if ( $user->get_number_stores()>1) {
 
 
 		}elseif ($state['section']=='dashboard') {
-							$branch[]=array('label'=>_('Stores'), 'icon'=>'', 'reference'=>'stores');
+			$branch[]=array('label'=>_('Stores'), 'icon'=>'', 'reference'=>'stores');
 
 			$branch[]=array('label'=>_("Store's dashboard").' <span class="id">'.$state['_object']->get('Store Code').'</span>', 'icon'=>'', 'reference'=>'store/'.$state['_object']->id);
 			$state['current_store']=$state['_object']->id;
@@ -1754,7 +1766,7 @@ if ( $user->get_number_stores()>1) {
 		elseif ($state['section']=='product') {
 
 			if ($state['parent']=='store') {
-							$branch[]=array('label'=>_('Products').' <span class="id">'.$state['store']->get('Code').'</span>', 'icon'=>'', 'reference'=>'products/'.$state['_parent']->id);
+				$branch[]=array('label'=>_('Products').' <span class="id">'.$state['store']->get('Code').'</span>', 'icon'=>'', 'reference'=>'products/'.$state['_parent']->id);
 
 			}elseif ($state['parent']=='category') {
 
@@ -1815,12 +1827,86 @@ if ( $user->get_number_stores()>1) {
 
 		}
 		elseif ($state['section']=='products') {
-			
+
 
 			$branch[]=array('label'=>_('Products').' <span class="id">'.$state['store']->get('Code').'</span>', 'icon'=>'cube', 'reference'=>'');
 
 
-		}elseif ($state['section']=='categories') {
+		}
+
+
+		elseif ($state['section']=='service') {
+
+			if ($state['parent']=='store') {
+				$branch[]=array('label'=>_('Services').' <span class="id">'.$state['store']->get('Code').'</span>', 'icon'=>'', 'reference'=>'services/'.$state['_parent']->id);
+
+			}elseif ($state['parent']=='category') {
+
+				$category=$state['_parent'];
+				$branch[]=array('label'=>_("Services's categories").' <span class="id">'.$state['store']->get('Code').'</span>', 'icon'=>'sitemap', 'reference'=>'services/'.$category->get('Store Key').'/categories');
+
+
+				if (isset($state['metadata'])) {
+					$parent_category_keys=$state['metadata'];
+				}else {
+
+					$parent_category_keys=preg_split('/\>/', $category->get('Category Position'));
+				}
+
+
+				foreach ( $parent_category_keys as $category_key) {
+					if (!is_numeric($category_key)) {
+						continue;
+					}
+					// if ($category_key==$state['parent_key']) {
+					// $branch[]=array('label'=>'<span class="Category_Code">'.$category->get('Code').'</span> <span class="italic hide Category_Label">'.$category->get('Label').'</span>', 'icon'=>'', 'reference'=>'');
+					// break;
+					//}else {
+
+					$parent_category=new Category($category_key);
+					if ($parent_category->id) {
+
+						$branch[]=array('label'=>$parent_category->get('Code'), 'icon'=>'', 'reference'=>'services/'.$category->get('Store Key').'/category/'.$parent_category->id);
+
+					}
+					//}
+				}
+
+
+
+			}elseif ($state['parent']=='order') {
+				$order=new Order($state['parent_key']);
+				$store=new Store($order->get('Order Store Key'));
+				$branch=array(array('label'=>_('Home'), 'icon'=>'home', 'reference'=>''));
+
+				if ( $user->get_number_stores()>1) {
+					$branch[]=array('label'=>_('Orders').' ('._('All stores').')', 'icon'=>'bars', 'reference'=>'orders/all');
+				}
+
+				$branch[]=array('label'=>_('Orders').' '.$store->data['Store Code'], 'icon'=>'', 'reference'=>'orders/'.$store->id);
+
+				$branch[]=array('label'=>_('Order').' '.$order->get('Order Public ID'), 'icon'=>'shopping-cart', 'reference'=>'orders/'.$store->id.'/'.$state['parent_key']);
+
+
+			}
+			$state['current_store']=$state['store']->id;
+			$_ref=$state['parent'].'/'.$state['parent_key'].'/service/'.$state['_object']->id;
+			if (isset($state['otf'])) {
+				$_ref=$state['parent'].'/'.$state['parent_key'].'/item/'.$state['otf'];
+			}
+
+			$branch[]=array('label'=>'<span class="id Service_Code">'.$state['_object']->get('Code').'</span>', 'icon'=>'cube', 'reference'=>$_ref);
+
+		}
+		elseif ($state['section']=='services') {
+
+
+			$branch[]=array('label'=>_('Services').' <span class="id">'.$state['store']->get('Code').'</span>', 'icon'=>'cube', 'reference'=>'');
+
+
+		}
+
+		elseif ($state['section']=='categories') {
 			$branch[]=array('label'=>_("Products's categories").' <span class="id">'.$state['store']->get('Code').'</span>', 'icon'=>'sitemap', 'reference'=>'');
 		}elseif ($state['section']=='category') {
 			$category=$state['_object'];

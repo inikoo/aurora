@@ -459,6 +459,12 @@ class Product extends Asset{
 			$label=_('id');
 			break;
 
+
+		case 'Product Cost':
+			$label=_('Outer cost');
+			break;
+
+
 		case 'Product Code':
 			$label=_('code');
 			break;
