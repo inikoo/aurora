@@ -86,7 +86,7 @@ abstract class DB_Table {
 			}
 		}
 
-
+	
 
 		foreach ($data as $key=>$value) {
 
@@ -194,9 +194,9 @@ abstract class DB_Table {
 
 			if (array_key_exists($field, $extra_data))
 				$table_full_name='Page Store Dimension';
-				
-			
-				
+
+
+
 		}
 		else if ($table_name=='Supplier Product') {
 
@@ -288,9 +288,9 @@ abstract class DB_Table {
 
 
 		}
-		
-		
-		
+
+
+
 		$update_op=$this->db->prepare($sql);
 		$update_op->execute();
 		$affected=$update_op->rowCount();
@@ -640,7 +640,12 @@ abstract class DB_Table {
 
 
 	function reread() {
+
+
+
 		$this->get_data('id', $this->id);
+
+
 	}
 
 

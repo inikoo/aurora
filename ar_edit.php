@@ -263,6 +263,8 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 			$formatted_value=$object->get($formatted_field);
 			
 			
+			
+			
 			$action='updated';
 
 			if ($field=='Product Parts') {

@@ -454,6 +454,45 @@ class Page extends DB_Table {
 
 	function get($key) {
 		switch ($key) {
+
+
+		case  'Page Found In Page Key':
+
+			$found_in_page_key='';
+
+			$sql=sprintf("select `Page Store Found In Key` from  `Page Store Found In Bridge` where `Page Store Key`=%d",
+				$this->id);
+
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$found_in_page_key=$row['Page Store Found In Key'];
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+			return $found_in_page_key;
+			break;
+		case  'Found In Page Key':
+
+			$found_in_page='';
+
+			$sql=sprintf("select `Page Code` from  `Page Store Found In Bridge` B  left join `Page Store Dimension` on (`Page Key`=`Page Store Found In Key`)  where B.`Page Store Key`=%d",
+				$this->id);
+
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$found_in_page=$row['Page Code'];
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+			return $found_in_page;
+			break;
+
 		case('link'):
 			return $this->display();
 			break;
@@ -668,6 +707,12 @@ class Page extends DB_Table {
 
 
 		switch ($field) {
+
+		case 'Found In':
+
+			$this->update_found_in($value);
+
+			break;
 		case('Page Store See Also Type'):
 			$this->update_field('Page Store See Also Type', $value, $options);
 			if ($value=='Auto') {
@@ -730,8 +775,11 @@ class Page extends DB_Table {
 		case('page_keywords'):
 			$this->update_field('Page Keywords', $value, $options);
 			break;
+		case('Page Store Title'):
 
 		case('store_title'):
+		
+		
 			$this->update_field('Page Store Title', $value, $options);
 			$this->update_store_search();
 			break;
@@ -1340,7 +1388,7 @@ class Page extends DB_Table {
 			break;
 		case 'Family':
 
-			
+
 
 			$sql=sprintf('select * from `Product Family Dimension` where `Product Family Key`=%d ', $this->data['Page Parent Key']);
 			if ($result=$this->db->query($sql)) {
@@ -1433,7 +1481,7 @@ class Page extends DB_Table {
 		case 'Family Catalogue':
 
 
-			
+
 
 			$family=new Family($this->data['Page Parent Key']);
 
@@ -4326,7 +4374,7 @@ class Page extends DB_Table {
 				$id=preg_replace('/^\'/', '', $id);
 				$id=preg_replace('/\"$/', '', $id);
 				$id=preg_replace('/\'$/', '', $id);
-				$product=new Product('store_code', $this->data['Page Store Key'],$id);
+				$product=new Product('store_code', $this->data['Page Store Key'], $id);
 				if ($product->id) {
 
 					$buttons[]=array(
@@ -4542,6 +4590,78 @@ class Page extends DB_Table {
 
 	function get_preview_snapshot_image_key() {
 		return $this->data['Page Preview Snapshot Image Key'];
+	}
+
+
+
+	function update_found_in($parent_keys) {
+
+
+		$parent_keys=array_unique($parent_keys);
+
+		$sql=sprintf("select `Page Store Found In Key` from  `Page Store Found In Bridge` where `Page Store Key`=%d",
+			$this->id);
+
+		$keys_to_delete=array();
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+				if (!in_array($row['Page Store Found In Key'], $parent_keys)) {
+					$sql=sprintf("delete from  `Page Store Found In Bridge` where `Page Store Key`=%d and `Page Store Found In Key`=%d   ",
+						$this->id,
+						$row['Page Store Found In Key']);
+
+					$this->db->exec($sql);
+				}
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+
+
+
+
+
+		foreach ($parent_keys as $parent_key) {
+
+			if ($this->id!=$parent_key and is_numeric($parent_key) and $parent_key>0 ) {
+
+				$sql=sprintf("insert into `Page Store Found In Bridge`  (`Page Store Key`,`Page Store Found In Key`)  values (%d,%d)  ",
+					$this->id,
+					$parent_key);
+				$this->db->exec($sql);
+
+
+			}
+
+		}
+
+
+		$number_found_in_links=0;
+		
+		$sql=sprintf("select count(*) as num from  `Page Store Found In Bridge` where `Page Store Key`=%d", $this->id);
+
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$number_found_in_links=$row['num'];
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+		$this->update(array('Number Found In Links'=>$number_found_in_links), 'no_history');
+
+
+
+
 	}
 
 
