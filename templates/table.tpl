@@ -1,6 +1,8 @@
 {if isset($period)  and   !isset($hide_period) }
  {include file="utils/date_chooser.tpl" period=$period from=$from to=$to from_mmddyy=$from_mmddyy  to_mmddyy=$to_mmddyy from_locale=$from_locale  to_locale=$to_locale  } 
 {/if}
+
+
 {if isset($elements) and count(elements)>0}
 <div id="elements" class="elements tabs ">
 <div  id="element_type" onClick="show_elements_types()"><i id="element_type_select_icon"  class="fa fa-bars" "></i></div>
@@ -105,7 +107,7 @@
 	
 
 	
-	<div id="filter_container" class="hide" >
+	<div id="filter_container" class="" >
 	<div id="show_filter" onclick="show_filter()" class="square_button right " title="{t}Filter table{/t}" style="border-left:1px solid #aaa" >
 		 <i class="fa fa-filter fa-fw"></i> 
 	</div>
