@@ -53,7 +53,7 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
 
 
 
-	$valid_currencies=array('AUD', 'BGN', 'BRL', 'CAD', 'CHF', 'CNY', 'CZK', 'DKK', 'GBP', 'HKD', 'HRK', 'HUF', 'IDR', 'ILS', 'INR', 'JPY', 'KRW', 'MXN', 'MYR', 'NOK', 'NZD', 'PHP', 'PLN', 'RON', 'RUB', 'SEK', 'SGD', 'THB', 'TRY', 'USD', 'ZAR');
+	$valid_currencies=array('EUR','AUD', 'BGN', 'BRL', 'CAD', 'CHF', 'CNY', 'CZK', 'DKK', 'GBP', 'HKD', 'HRK', 'HUF', 'IDR', 'ILS', 'INR', 'JPY', 'KRW', 'MXN', 'MYR', 'NOK', 'NZD', 'PHP', 'PLN', 'RON', 'RUB', 'SEK', 'SGD', 'THB', 'TRY', 'USD', 'ZAR');
 
 	if (  in_array($currency_from, $valid_currencies ) and in_array($currency_to, $valid_currencies ) ) {
 
@@ -67,6 +67,8 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
 
 
 	}else {
+			$url = "http://quote.yahoo.com/d/quotes.csv?s=". $currency_from . $currency_to . "=X&f=l1&e=.csv";
+
 		$handle = fopen($url, "r");
 		$exchange = floatval(fread($handle, 2000));
 		fclose($handle);
