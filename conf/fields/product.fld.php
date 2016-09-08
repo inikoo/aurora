@@ -66,7 +66,6 @@ if ($object->get('Product Family Category Key')) {
 
 
 $linked_fields=$object->get_linked_fields_data();
-
 $product_fields=array(
 
 
@@ -282,14 +281,39 @@ $product_fields=array(
 	),
 
 	array(
-		'label'=>_('Webpage'),
+		'label'=>_('Webpage').' <span class="no_title">'.$object->webpage->get('Code').'</span>',
 		'show_title'=>true,
 		'fields'=>array(
 
 
-		
+			array(
+				'id'=>'Product_Website_Node_Parent_Key',
+				'edit'=>'dropdown_select',
+				'scope'=>'web_node',
+				'parent'=>'website',
+				'parent_key'=>($new?:$object->webpage->get('Page Site Key')),
+				'value'=>htmlspecialchars($object->webpage->get('Page Found In Page Key')),
+				'formatted_value'=>$object->webpage->get('Found In Page Key'),
+				'stripped_formatted_value'=>'',
+				'label'=>_('Found in'),
+				'required'=>true,
+				'type'=>''
 
 
+			),
+
+		array(
+				'id'=>'Product_Webpage_Name',
+				'edit'=>($edit?'string':''),
+
+				'value'=>htmlspecialchars($object->get('Product Webpage Name')),
+				'formatted_value'=>$object->get('Webpage Name'),
+				'label'=>ucfirst($object->get_field_label('Product Webpage Name')),
+				'required'=>true,
+				'type'=>'value'
+
+
+			),
 
 			array(
 				'id'=>'Product_Description',
@@ -458,6 +482,8 @@ $product_fields=array(
 
 
 );
+
+
 
 /*
 foreach ($product_fields as $key=>$object_field) {

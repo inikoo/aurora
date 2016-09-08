@@ -22,6 +22,7 @@ class Product extends Asset{
 
 		$this->table_name='Product';
 		$this->ignore_fields=array('Product ID');
+		$this->webpage=false;
 		if (is_numeric($arg1)) {
 			$this->get_data('id', $arg1);
 			return ;
@@ -97,8 +98,47 @@ class Product extends Asset{
 				$this->data[$key]=$value;
 			}
 		}
+	}
 
 
+	function get_webpage() {
+
+		$page_key=0;
+		include_once 'class.Page.php';
+		$sql=sprintf('select `Page Key` from `Page Store Dimension` where `Page Store Section Type`="Product"  and  `Page Parent Key`=%d ', $this->id);
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$page_key=$row['Page Key'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+		$this->webpage=new Page($row['Page Key']);
+		$this->webpage->editor=$this->editor;
+
+		// Temporal should be take off bcuse page should be created when product is createss
+		if (!$this->webpage->id) {
+
+			$page_data=array(
+				'Page Store Content Display Type'=>'Template',
+				'Page Store Content Template Filename'=>'product',
+				'Page State'=>'Online'
+
+			);
+			include_once 'class.Store.php';
+
+			$store=new Store($this->get('Product Store Key'));
+
+			foreach ($store->get_sites('objects') as $site) {
+
+				$product_page_key=$site->add_product_page($this->id, $page_data);
+				$this->webpage=new Page($product_page_key);
+			}
+
+
+		}
 
 	}
 
@@ -222,7 +262,23 @@ class Product extends Asset{
 			return;
 
 		switch ($key) {
+		case 'Product Webpage Name':
+		case 'Webpage Name':
 
+
+			return $this->webpage->get('Page Store Title');
+
+			break;
+		case 'Website Node Parent Key':
+
+			return $this->webpage->get('Found In Page Key');
+
+			break;
+		case 'Product Website Node Parent Key':
+
+			return $this->webpage->get('Page Found In Page Key');
+
+			break;
 		case 'Price':
 
 			$price= money($this->data['Product Price'], $this->data['Store Currency Code']);
@@ -464,7 +520,12 @@ class Product extends Asset{
 			$label=_('Outer cost');
 			break;
 
-
+		case 'Product Description':
+			$label=_('Product description');
+			break;
+		case 'Product Webpage Name':
+			$label=_('Webpage title');
+			break;
 		case 'Product Code':
 			$label=_('code');
 			break;
@@ -720,9 +781,25 @@ class Product extends Asset{
 
 		switch ($field) {
 
+case 'Product Webpage Name':
 
+			$this->webpage->update(array(
+			'Page Store Title'=>$value,
+			'Page Short Title'=>$value,
+			'Page Title'=>$value
+			), $options);
 
+			$this->updated=$this->webpage->updated;
 
+			break;
+		case 'Product Website Node Parent Key':
+
+			$this->get_webpage();
+			$this->webpage->update(array('Found In'=>array($value)), $options);
+
+			$this->updated=true;
+
+			break;
 		case('Product Status'):
 
 			if (! in_array($value, array('Active', 'Suspended' , 'Discontinued', 'Discontinuing'))) {

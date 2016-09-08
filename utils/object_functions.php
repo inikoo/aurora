@@ -38,7 +38,7 @@ function get_object($object_name, $key, $load_other_data=false) {
 	case 'service':
 		include_once 'class.Product.php';
 		$object=new Product($key);
-
+$object->get_webpage();
 		break;
 	case 'order':
 		include_once 'class.Order.php';

@@ -37,7 +37,7 @@ function get_object_fields($object, $db, $user, $smarty, $options=false) {
 	case 'Image':
 		include 'fields/image.fld.php';
 		return $object_fields;
-		break;	
+		break;
 	case 'Attachment':
 
 		$object_fields=array();
@@ -139,6 +139,9 @@ function get_object_fields($object, $db, $user, $smarty, $options=false) {
 		break;
 	case 'Product':
 	case 'StoreProduct':
+
+		$object->get_webpage();
+
 		include 'fields/product.fld.php';
 		return $product_fields;
 		break;
