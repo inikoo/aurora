@@ -2319,7 +2319,7 @@ class Product extends Asset{
 */
 
 
-		if ($this->get('Product Status')!='Active' or $this->get('Product Web Configuration')=='Offline' ) {
+		if ( !($this->get('Product Status')=='Active' or $this->get('Product Status')=='Discontinuing') or $this->get('Product Web Configuration')=='Offline' ) {
 			$_state='Offline';
 		}else {
 			$_state='Online';
