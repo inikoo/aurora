@@ -207,6 +207,16 @@ class Product extends Asset{
 	}
 
 
+	function get_see_also_data() {
+
+
+
+		return $this->webpage->get_see_also_data();
+
+
+	}
+
+
 	function get_parts_data($with_objects=false) {
 
 		include_once 'class.Part.php';
@@ -781,13 +791,13 @@ class Product extends Asset{
 
 		switch ($field) {
 
-case 'Product Webpage Name':
+		case 'Product Webpage Name':
 
 			$this->webpage->update(array(
-			'Page Store Title'=>$value,
-			'Page Short Title'=>$value,
-			'Page Title'=>$value
-			), $options);
+					'Page Store Title'=>$value,
+					'Page Short Title'=>$value,
+					'Page Title'=>$value
+				), $options);
 
 			$this->updated=$this->webpage->updated;
 
@@ -2419,6 +2429,8 @@ case 'Product Webpage Name':
 
 
 		}
+		
+		$this->update_web_state();
 
 
 	}
