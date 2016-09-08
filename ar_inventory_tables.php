@@ -563,7 +563,14 @@ function supplier_parts($_data, $db, $user, $account) {
 
 
 			if ($exchange<0) {
-				$exchange=currency_conversion($db, $data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 24 hours');
+				$exchange=currency_conversion($db, $data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 1 hours');
+			}
+			
+			if($exchange!=1){
+			
+			$exchange_info=money(($data['Supplier Part Unit Cost']+$data['Supplier Part Unit Extra Cost']), $data['Supplier Part Currency Code']).' @'.$data['Supplier Part Currency Code'].'/'. $account->get('Account Currency').' '.sprintf('%.5f',$exchange);
+			}else{
+			    $exchange_info='';
 			}
 
 			switch ($data['Supplier Part Status']) {
@@ -632,7 +639,7 @@ function supplier_parts($_data, $db, $user, $account) {
 				'description'=>$data['Part Unit Description'],
 				'status'=>$status,
 				'cost'=>money($data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']),
-				'delivered_cost'=>money($exchange*($data['Supplier Part Unit Cost']+$data['Supplier Part Unit Extra Cost']), $account->get('Account Currency')),
+				'delivered_cost'=>'<span title="'.$exchange_info.'">'.money($exchange*($data['Supplier Part Unit Cost']+$data['Supplier Part Unit Extra Cost']), $account->get('Account Currency')).'</span>',
 				'packing'=>'
 				 <div style="float:right;min-width:30px;;text-align:right" title="'._('Units per carton').'"><span class="discreet" >'.($data['Part Units Per Package']*$data['Supplier Part Packages Per Carton'].'</span></div>
 				<div style="float:right;min-width:70px;text-align:center;"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div>
