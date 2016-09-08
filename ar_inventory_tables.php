@@ -563,12 +563,12 @@ function supplier_parts($_data, $db, $user, $account) {
 
 
 			if ($exchange<0) {
-				$exchange=currency_conversion($db, $data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 1 hours');
+				$exchange=currency_conversion($db, $data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 1 second');
 			}
 			
 			if($exchange!=1){
 			
-			$exchange_info=money(($data['Supplier Part Unit Cost']+$data['Supplier Part Unit Extra Cost']), $data['Supplier Part Currency Code']).' @'.$data['Supplier Part Currency Code'].'/'. $account->get('Account Currency').' '.sprintf('%.5f',$exchange);
+			$exchange_info=money(($data['Supplier Part Unit Cost']+$data['Supplier Part Unit Extra Cost']), $data['Supplier Part Currency Code']).' @'.$data['Supplier Part Currency Code'].'/'. $account->get('Account Currency').' '.sprintf('%.6f',$exchange);
 			}else{
 			    $exchange_info='';
 			}
