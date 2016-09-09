@@ -877,6 +877,19 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'note'
 	),
+	
+		'supplier.sales.history'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>100,
+		'rpp_options'=>$default_rrp_options,
+		'frequency'=>'monthy',
+		'f_field'=>'',
+		//  'export_fields'=>$export_fields['timeserie_records']
+
+	),
+	
 	'supplier_part.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',

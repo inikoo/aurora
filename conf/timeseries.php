@@ -17,6 +17,36 @@ $timeseries=array(
 			'Timeseries Scope'=>'Sales',
 		)
 	),
+	
+	'Supplier'=>array(
+		array(
+			'Timeseries Type'=>'SupplierSales',
+			'Timeseries Frequency'=>'Yearly',
+			'Timeseries Scope'=>'Sales',
+		),
+		array(
+			'Timeseries Type'=>'SupplierSales',
+			'Timeseries Frequency'=>'Quarterly',
+			'Timeseries Scope'=>'Sales',
+		),
+		array(
+			'Timeseries Type'=>'SupplierSales',
+			'Timeseries Frequency'=>'Monthly',
+			'Timeseries Scope'=>'Sales',
+		),
+		array(
+			'Timeseries Type'=>'SupplierSales',
+			'Timeseries Frequency'=>'Weekly',
+			'Timeseries Scope'=>'Sales',
+		),
+		array(
+			'Timeseries Type'=>'SupplierSales',
+			'Timeseries Frequency'=>'Daily',
+			'Timeseries Scope'=>'Sales',
+		),
+		
+		
+	),
 	'ProductCategory'=>array(
 	
 	

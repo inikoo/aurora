@@ -183,6 +183,7 @@ function asset_sales($db, $data, $account) {
 		$table="`Inventory Spanshot Fact`";
 		$group='group by `Date`';
 		break;
+		
 	case 'product':
 		$fields=' `Date`,`Sales`,`Invoices` as Volume';
 		$where=sprintf("where `Product ID`=%d", $data['parent_key']);
@@ -242,6 +243,25 @@ function asset_sales($db, $data, $account) {
 		$where=sprintf("where `Store Key`=%d", $data['parent_key']);
 		$group='group by `Date`';
 		break;
+	case 'supplier':
+	
+	$sql=sprintf('select `Timeseries Key` from `Timeseries Dimension` where `Timeseries Parent`="Supplier" and `Timeseries Parent Key`=%s and `Timeseries Frequency`="Daily" and  `Timeseries Type`="SupplierSales" ',
+		$data['parent_key']
+		);
+		if ($result=$db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$timeseries_key=$row['Timeseries Key'];
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+	
+		$fields=' `Timeseries Record Date` as Date,sum(`Timeseries Record Float A`) as Sales ,sum(`Timeseries Record Integer A`) as Volume';
+		$where=sprintf("where `Timeseries Record Timeseries Key`=%d", $timeseries_key);
+		$table="`Timeseries Record Dimension`  ";
+		$group='group by `Date`';
+		break;	
 	default:
 		return;
 

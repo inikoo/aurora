@@ -499,9 +499,9 @@ function upload_objects_to_deete($account, $db, $user, $editor, $data, $smarty) 
 			'Upload Parent Key'=>$data['parent_key'],
 			'Upload User Key'=>$user->id,
 			'Upload Metadata'=>json_encode(array(
-			'uploaded_files'=>$number_files_uploaded,
-			 'files_with_errors'=>count($files_with_errors) , 
-			 'files_data'=>$upload_files_data)  )
+					'uploaded_files'=>$number_files_uploaded,
+					'files_with_errors'=>count($files_with_errors) ,
+					'files_data'=>$upload_files_data)  )
 
 		);
 
@@ -864,9 +864,9 @@ function edit_objects($account, $db, $user, $editor, $data, $smarty) {
 			'Upload Parent Key'=>$data['parent_key'],
 			'Upload User Key'=>$user->id,
 			'Upload Metadata'=>json_encode(array(
-			'uploaded_files'=>$number_files_uploaded, 
-			'files_with_errors'=>count($files_with_errors) ,
-			 'files_data'=>$upload_files_data  )  )
+					'uploaded_files'=>$number_files_uploaded,
+					'files_with_errors'=>count($files_with_errors) ,
+					'files_data'=>$upload_files_data  )  )
 
 		);
 
@@ -899,12 +899,14 @@ function edit_objects($account, $db, $user, $editor, $data, $smarty) {
 				$row_data[$col] = $value;
 
 			}
-			
+
 			$upload->update( array(
-			'Upload Metadata'=>json_encode(array('uploaded_files'=>$number_files_uploaded, 'files_with_errors'=>count($files_with_errors) , 'files_data'=>$upload_files_data ,'fields'=>$row_data )  )
-			) ,'no_history');
-			
-			
+					'Upload Metadata'=>json_encode(array('uploaded_files'=>$number_files_uploaded, 'files_with_errors'=>count($files_with_errors) , 'files_data'=>$upload_files_data ,
+							'fields'=>$row_data
+						)  )
+				) , 'no_history');
+
+
 
 
 			for ($row = 2; $row <= $highestRow; ++$row) {

@@ -490,6 +490,7 @@ class Supplier extends SubjectSupplier {
 			'dispatched'=>0,
 			'required'=>0,
 			'no_dispatched'=>0,
+			'deliveries'=>0
 
 		);
 
@@ -499,7 +500,9 @@ class Supplier extends SubjectSupplier {
                      sum(`Required`) as required,
                      sum(`Given`) as given,
                      sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,
-                     sum(-`Given`-`Inventory Transaction Quantity`) as sold
+                     sum(-`Given`-`Inventory Transaction Quantity`) as sold,
+                     count(distinct `Delivery Note Key`) as  deliveries
+
                      from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type` like 'Sale' and `Supplier Key`=%d %s %s" ,
 			$this->id,
 			($from_date?sprintf('and  `Date`>=%s', prepare_mysql($from_date)):''),
@@ -516,6 +519,7 @@ class Supplier extends SubjectSupplier {
 				$sales_data['dispatched']=-1.0*$row['dispatched'];
 				$sales_data['required']=$row['required'];
 				$sales_data['no_dispatched']=$row['no_dispatched'];
+				$sales_data['deliveries']=$row['deliveries'];
 			}
 		}else {
 			print_r($error_info=$this->db->errorInfo());
@@ -1341,8 +1345,8 @@ class Supplier extends SubjectSupplier {
 				foreach ($data as $key=>$value) {
 					$_key=preg_replace('/^Part Part /', 'Part ', $key);
 					$data[$_key]=$value;
-					
-					
+
+
 				}
 
 
@@ -1737,6 +1741,162 @@ class Supplier extends SubjectSupplier {
 
 
 	}
+
+
+
+	function update_timseries_date($date) {
+		include_once 'class.Timeserie.php';
+		$sql=sprintf('select `Timeseries Key` from `Timeseries Dimension` where `Timeseries Parent`="Supplier" and `Timeseries Parent Key`=%d ',
+			$this->id);
+
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$timeseries=new Timeseries($row['Timeseries Key']);
+				$this->update_timeseries_record($timeseries, $date, $date );
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+	}
+
+
+	function create_timeseries($data) {
+
+
+		include_once 'class.Timeserie.php';
+
+		$data['Timeseries Parent']='Supplier';
+		$data['Timeseries Parent Key']=$this->id;
+
+
+
+		$timeseries=new Timeseries('find', $data, 'create');
+
+		if ($timeseries->id ) {
+			require_once 'utils/date_functions.php';
+
+			if ($this->data['Supplier Valid From']!='') {
+				$from=date('Y-m-d', strtotime($this->get('Valid From')));
+
+			}else {
+				$from='';
+			}
+
+			if ($this->get('Supplier Type')=='Archived') {
+				$to=$this->get('Valid To');
+			}else {
+				$to=date('Y-m-d');
+			}
+
+
+
+			$sql=sprintf('delete from `Timeseries Record Dimension` where `Timeseries Record Timeseries Key`=%d and `Timeseries Record Date`<%s ',
+				$timeseries->id,
+				prepare_mysql($from)
+			);
+
+			$update_sql = $this->db->prepare($sql);
+			$update_sql->execute();
+			if ($update_sql->rowCount()) {
+				$timeseries->update(array('Timeseries Updated'=>gmdate('Y-m-d H:i:s')), 'no_history');
+
+			}
+
+			$sql=sprintf('delete from `Timeseries Record Dimension` where `Timeseries Record Timeseries Key`=%d and `Timeseries Record Date`>%s ',
+				$timeseries->id,
+				prepare_mysql($to)
+			);
+
+			$update_sql = $this->db->prepare($sql);
+			$update_sql->execute();
+			if ($update_sql->rowCount()) {
+				$timeseries->update(array('Timeseries Updated'=>gmdate('Y-m-d H:i:s')), 'no_history');
+
+			}
+
+
+			if ($from and $to) {
+
+
+				$this->update_timeseries_record($timeseries, $from, $to);
+
+
+
+
+
+
+			}
+		}
+
+	}
+
+
+	function update_timeseries_record($timeseries, $from, $to) {
+
+
+
+		$dates=date_frequency_range($this->db, $timeseries->get('Timeseries Frequency'), $from, $to);
+
+
+
+		foreach ($dates as $date_frequency_period) {
+			$sales_data=$this->get_sales_data($date_frequency_period['from'], $date_frequency_period['to']);
+
+			$_date=gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00')) ;
+
+
+			if ($sales_data['sold']>0 or $sales_data['dispatched']>0 or $sales_data['sold_amount']!=0 or $sales_data['required']!=0 or $sales_data['no_dispatched']!=0) {
+
+				list($timeseries_record_key, $date)=$timeseries->create_record(array('Timeseries Record Date'=> $_date ));
+
+
+
+				$sql=sprintf('update `Timeseries Record Dimension` set `Timeseries Record Integer A`=%d ,`Timeseries Record Integer B`=%d ,`Timeseries Record Float A`=%.2f ,  `Timeseries Record Float B`=%f ,`Timeseries Record Float C`=%f ,`Timeseries Record Type`=%s where `Timeseries Record Key`=%d',
+					$sales_data['dispatched'],
+					$sales_data['deliveries'],
+					$sales_data['sold_amount'],
+					$sales_data['sold'],
+					$sales_data['no_dispatched'],
+					prepare_mysql('Data'),
+					$timeseries_record_key
+
+				);
+
+				// print "$sql\n";
+
+				$update_sql=$this->db->prepare($sql);
+				$update_sql->execute();
+				if ($update_sql->rowCount() or $date==date('Y-m-d')) {
+					$timeseries->update(array('Timeseries Updated'=>gmdate('Y-m-d H:i:s')), 'no_history');
+				}
+
+
+			}
+			else {
+				$sql=sprintf('delete from `Timeseries Record Dimension` where `Timeseries Record Timeseries Key`=%d and `Timeseries Record Date`=%s ',
+					$timeseries->id,
+					prepare_mysql($_date)
+				);
+
+				$update_sql = $this->db->prepare($sql);
+				$update_sql->execute();
+				if ($update_sql->rowCount()) {
+					$timeseries->update(array('Timeseries Updated'=>gmdate('Y-m-d H:i:s')), 'no_history');
+
+				}
+
+			}
+			$timeseries->update_stats();
+
+		}
+
+
+	}
+
 
 
 }

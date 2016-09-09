@@ -759,7 +759,7 @@ $modules=array(
 				)
 
 			),
-		
+
 			'services'=>array('type'=>'navigation', 'label'=>_('Services'), 'icon'=>'wrench', 'reference'=>'services/%d',
 				'tabs'=>array(
 					'services'=>array()
@@ -831,16 +831,16 @@ $modules=array(
 				)
 
 			),
-			
-			
-				'upload'=>array('type'=>'object',
+
+
+			'upload'=>array('type'=>'object',
 				'tabs'=>array(
 					'upload.records'=>array('label'=>_('Upload Records')),
 
 				)
 
 			),
-				'product.image'=>array('type'=>'object',
+			'product.image'=>array('type'=>'object',
 
 
 
@@ -848,7 +848,7 @@ $modules=array(
 
 
 					'product.image.details'=>array('label'=>_('Data'), 'icon'=>'database'),
-					'product.history'=>array('label'=>_('History/Notes'), 'icon'=>'road','class'=>'right icon_only'),
+					'product.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
 
 				)
 			),
@@ -1173,8 +1173,28 @@ $modules=array(
 				'label'=>_('Supplier'),
 				'icon'=>'ship',
 				'reference'=>'supplier/%d',
+
+				'subtabs_parent'=>array(
+					'supplier.sales.plot'=>'supplier.sales',
+					'supplier.sales.history'=>'supplier.sales',
+					'supplier.sales.calendar'=>'supplier.sales',
+					
+				),
+
 				'tabs'=>array(
 					'supplier.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
+					'supplier.sales'=>array('label'=>_("Part's sales"), 'icon'=>''),
+
+
+					'supplier.sales'=>array('label'=>_('Sales'), 
+						'subtabs'=>array(
+							'supplier.sales.plot'=>array('label'=>_('Plot'), 'title'=>_('Plot')),
+							'supplier.sales.history'=>array('label'=>_('Sales history'), 'title'=>_('Sales history')),
+							'supplier.sales.calendar'=>array('label'=>_('Calendar'), 'title'=>_('Sales calendar')),
+
+						)
+					),
+
 					'supplier.supplier_parts'=>array('label'=>_("Supplier's Parts"), 'icon'=>'stop'),
 					'supplier.orders'=>array('label'=>_('Purchase orders'), 'icon'=>'clipboard'),
 					'supplier.deliveries'=>array('label'=>_('Deliveries'), 'icon'=>'truck'),
@@ -1186,6 +1206,9 @@ $modules=array(
 
 				)
 			),
+
+
+
 			'supplier.new'=>array('type'=>'new_object',
 				'tabs'=>array(
 					'supplier.new'=>array('label'=>_('New supplier')),
