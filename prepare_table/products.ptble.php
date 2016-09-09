@@ -163,10 +163,8 @@ if ($order=='stock')
 elseif ($order=='code' )
 	$order='`Product Code File As`';
 elseif ($order=='name')
-	$order='`Product Outer Description`';
+	$order='`Product Name`';
 elseif ($order=='available_for')
-	$order='`Product Available Days Forecast`';
-elseif ($order=='shortname')
 	$order='`Product Available Days Forecast`';
 
 elseif ($order=='profit') {
