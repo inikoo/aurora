@@ -14,6 +14,10 @@ function get_supplier_part_showcase($data, $smarty, $user, $db) {
 
 
 	$supplier_part=$data['_object'];
+	
+	
+	
+	
 	$part=$data['_object']->part;
 	if (!$part->id) {
 		return "";

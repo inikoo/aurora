@@ -67,6 +67,7 @@ foreach ($default as $key=>$value) {
 
 
 
+
 if (isset($metadata['parameters'])) {
 	foreach ($metadata['parameters'] as $_key=>$_value) {
 		if (isset($parameters[$_key]))$parameters[$_key]=$_value;

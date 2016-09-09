@@ -16,6 +16,7 @@ require_once 'class.Timeserie.php';
 require_once 'class.Store.php';
 require_once 'class.Invoice.php';
 require_once 'class.Category.php';
+require_once 'class.Supplier.php';
 
 require_once 'utils/date_functions.php';
 require_once 'conf/timeseries.php';
@@ -31,8 +32,30 @@ $editor=array(
 
 
 
+$sql=sprintf('select `Supplier Key` from `Supplier Dimension` ');
+
+if ($result=$db->query($sql)) {
+	foreach ($result as $row) {
+
+		$supplier=new Supplier($row['Supplier Key']);
 
 
+
+		$timeseries_data=$timeseries['Supplier'];
+
+		foreach ($timeseries_data as $timeserie_data) {
+
+			$editor['Date']=gmdate('Y-m-d H:i:s');
+			$timeserie_data['editor']=$editor;
+			$supplier->create_timeseries($timeserie_data);
+
+		}
+	}
+
+}else {print_r($error_info=$db->errorInfo());exit($sql);}
+
+
+exit;
 
 $sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Product" and `Category Key`=14797  ');
 $sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Product" ');
