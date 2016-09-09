@@ -790,7 +790,15 @@ class Product extends Asset{
 
 
 		switch ($field) {
+		case 'Webpage See Also':
 
+			$this->webpage->update(array(
+					'See Also'=>$value
+				), $options);
+
+			$this->updated=$this->webpage->updated;
+
+			break;
 		case 'Product Webpage Name':
 
 			$this->webpage->update(array(
@@ -1692,88 +1700,13 @@ class Product extends Asset{
 		$web_state=$this->get_web_state();
 
 
-
-
-		$this->update(array(
-
-				'Product Web State'=>$web_state,
-			), 'no_history');
-
-
-		if ( ($old_web_state=='For Sale' and $web_state!='For Sale') or ($old_web_state!='For Sale' and  $web_state=='For Sale' )  ) {
-
-			if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
-				$user_key=$this->editor['User Key'];
-			else
-				$user_key=0;
-
-			//------
-
-			$sql=sprintf("select UNIX_TIMESTAMP(`Date`) as date,`Product Availability Key` from `Product Availability Timeline` where `Product ID`=%d  order by `Date`  desc limit 1",
-				$this->id
-			);
-
-
-
-			if ($result=$this->db->query($sql)) {
-				if ($row = $result->fetch()) {
-					$last_record_key=$row['Product Availability Key'];
-					$last_record_date=$row['date'];
-				}else {
-					$last_record_key=false;
-					$last_record_date=false;
-				}
-			}else {
-				print_r($error_info=$this->db->errorInfo());
-				exit;
-			}
+		$this->update_web_state();
 
 
 
 
-			$new_date_formated=gmdate('Y-m-d H:i:s');
-			$new_date=gmdate('U');
-
-			$sql=sprintf("insert into `Product Availability Timeline`  (`Product ID`,`Store Key`,`Department Key`,`Family Key`,`User Key`,`Date`,`Availability`,`Web State`) values (%d,%d,%d,%d,%d,%s,%s,%s) ",
-				$this->id,
-				$this->data['Product Store Key'],
-				$this->data['Product Main Department Key'],
-				$this->data['Product Family Key'],
-				$user_key,
-				prepare_mysql($new_date_formated),
-				prepare_mysql(($web_state=='For Sale'?'Yes':'No')),
-				prepare_mysql($web_state)
-
-			);
-			$this->db->exec($sql);
-
-			if ($last_record_key) {
-				$sql=sprintf("update `Product Availability Timeline` set `Duration`=%d where `Product Availability Key`=%d",
-					$new_date-$last_record_date,
-					$last_record_key
-
-				);
-				$this->db->exec($sql);
-
-			}
-
-			//------
-
-			if ($web_state=='For Sale') {
-				$sql=sprintf("update `Email Site Reminder Dimension` set `Email Site Reminder State`='Ready' where `Email Site Reminder State`='Waiting' and `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d ",
-					$this->id
-				);
-
-			}else {
-				$sql=sprintf("update `Email Site Reminder Dimension` set `Email Site Reminder State`='Waiting' where `Email Site Reminder State`='Ready' and `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d ",
-					$this->id
-				);
-
-			}
-			$this->db->exec($sql);
 
 
-		}
 
 
 
@@ -2271,19 +2204,29 @@ class Product extends Asset{
 
 
 
-		/*
-		if ($old_web_state=='Offline' and $this->data['Product Web State']!='Offline') {
 
-			include_once 'class.Page.php';
+		if ( ($old_web_state=='For Sale' and $web_state!='For Sale') or ($old_web_state!='For Sale' and  $web_state=='For Sale' )  ) {
 
-			$sql=sprintf("select `Page Key` from `Page Product List Dimension` where `Page Product List Type`='FamilyList' and `Page Product List Parent Key`=%d ",
-				$this->data['Product Family Key']);
+			if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
+				$user_key=$this->editor['User Key'];
+			else
+				$user_key=0;
+
+			//------
+
+			$sql=sprintf("select UNIX_TIMESTAMP(`Date`) as date,`Product Availability Key` from `Product Availability Timeline` where `Product ID`=%d  order by `Date`  desc limit 1",
+				$this->id
+			);
+
 
 
 			if ($result=$this->db->query($sql)) {
-				foreach ($result as $row) {
-					$page=new Page($row['Page Key']);
-					$page->update_list_products();
+				if ($row = $result->fetch()) {
+					$last_record_key=$row['Product Availability Key'];
+					$last_record_date=$row['date'];
+				}else {
+					$last_record_key=false;
+					$last_record_date=false;
 				}
 			}else {
 				print_r($error_info=$this->db->errorInfo());
@@ -2292,31 +2235,51 @@ class Product extends Asset{
 
 
 
-		}
 
+			$new_date_formated=gmdate('Y-m-d H:i:s');
+			$new_date=gmdate('U');
 
-		if ($old_web_state!='Offline' and $this->data['Product Web State']=='Offline') {
+			$sql=sprintf("insert into `Product Availability Timeline`  (`Product ID`,`Store Key`,`Department Key`,`Family Key`,`User Key`,`Date`,`Availability`,`Web State`) values (%d,%d,%d,%d,%d,%s,%s,%s) ",
+				$this->id,
+				$this->data['Product Store Key'],
+				$this->data['Product Main Department Key'],
+				$this->data['Product Family Key'],
+				$user_key,
+				prepare_mysql($new_date_formated),
+				prepare_mysql(($web_state=='For Sale'?'Yes':'No')),
+				prepare_mysql($web_state)
 
+			);
+			$this->db->exec($sql);
 
-			include_once 'class.Page.php';
+			if ($last_record_key) {
+				$sql=sprintf("update `Product Availability Timeline` set `Duration`=%d where `Product Availability Key`=%d",
+					$new_date-$last_record_date,
+					$last_record_key
 
-			$sql=sprintf("select `Page Key` from `Page Product Dimension` where `Product ID`=%d and `Parent Type`='List'",
-				$this->id);
+				);
+				$this->db->exec($sql);
 
-
-			if ($result=$this->db->query($sql)) {
-				foreach ($result as $row) {
-					$page=new Page($row['Page Key']);
-					$page->update_list_products();
-				}
-			}else {
-				print_r($error_info=$this->db->errorInfo());
-				exit;
 			}
 
+			//------
+
+			if ($web_state=='For Sale') {
+				$sql=sprintf("update `Email Site Reminder Dimension` set `Email Site Reminder State`='Ready' where `Email Site Reminder State`='Waiting' and `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d ",
+					$this->id
+				);
+
+			}else {
+				$sql=sprintf("update `Email Site Reminder Dimension` set `Email Site Reminder State`='Waiting' where `Email Site Reminder State`='Ready' and `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d ",
+					$this->id
+				);
+
+			}
+			$this->db->exec($sql);
+
 
 		}
-*/
+
 
 
 		if ( !($this->get('Product Status')=='Active' or $this->get('Product Status')=='Discontinuing') or $this->get('Product Web Configuration')=='Offline' ) {
@@ -2429,7 +2392,7 @@ class Product extends Asset{
 
 
 		}
-		
+
 		$this->update_web_state();
 
 
