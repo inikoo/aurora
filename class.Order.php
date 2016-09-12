@@ -9799,7 +9799,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 			return;
 		}
 
-$affected_rows=0;;
+		$affected_rows=0;;
 
 		$sql=sprintf("select `Order Transaction Fact Key`,`Quantity` from `Order Transaction Out of Stock in Basket Bridge` where  `Product ID`=%d and `Order Key`=%d ",
 			$product_pid,
@@ -9828,39 +9828,41 @@ $affected_rows=0;;
 				$row['Order Transaction Fact Key']
 			);
 			mysql_query($sql);
-			
+
 			$affected_rows++;
 		}
 
-
-		$dn_key=0;
-
-		$this->update_number_products();
-		$this->update_insurance();
-
-		$this->update_discounts_items();
-		$this->update_totals();
+		if ($affected_rows) {
+			$dn_key=0;
 
 
 
-		$this->update_shipping($dn_key, false);
-		$this->update_charges($dn_key, false);
-		$this->update_discounts_no_items($dn_key);
+			$this->update_number_products();
+			$this->update_insurance();
 
-
-		$this->update_deal_bridge();
-
-		$this->update_deals_usage();
-
-		$this->update_totals();
-
-
-		$this->update_number_products();
-
-		$this->apply_payment_from_customer_account();
+			$this->update_discounts_items();
+			$this->update_totals();
 
 
 
+			$this->update_shipping($dn_key, false);
+			$this->update_charges($dn_key, false);
+			$this->update_discounts_no_items($dn_key);
+
+
+			$this->update_deal_bridge();
+
+			$this->update_deals_usage();
+
+			$this->update_totals();
+
+
+			$this->update_number_products();
+
+			$this->apply_payment_from_customer_account();
+
+
+		}
 
 	}
 

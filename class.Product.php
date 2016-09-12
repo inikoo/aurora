@@ -1958,7 +1958,7 @@ class Product extends Asset{
 
 					if ($site->id and $site->data['Site URL']!='') {
 
-						// $template_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=page_clean_cache&parent_key=".$page->id."&sk=x");
+						 $template_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=page_clean_cache&parent_key=".$page->id."&sk=x");
 
 					}
 
