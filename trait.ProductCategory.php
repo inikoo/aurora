@@ -689,7 +689,67 @@ $store=new Store($this->get('Category Store Key'));
 		return $sales_data;
 	}
 
+function get_category_data() {
 
+
+		$type='Category';
+
+		$sql=sprintf("select B.`Category Key`,`Category Root Key`,`Other Note`,`Category Label`,`Category Code`,`Is Category Field Other` from `Category Bridge` B left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`) where  `Category Branch Type`='Head'  and B.`Subject Key`=%d and B.`Subject`=%s",
+			$this->id,
+			prepare_mysql($type)
+		);
+
+		$category_data=array();
+
+
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+
+
+
+				$sql=sprintf("select `Category Label`,`Category Code` from `Category Dimension` where `Category Key`=%d", $row['Category Root Key']);
+
+
+				if ($result2=$this->db->query($sql)) {
+					if ($row2 = $result2->fetch()) {
+						$root_label=$row2['Category Label'];
+						$root_code=$row2['Category Code'];
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
+				}
+
+
+
+				if ($row['Is Category Field Other']=='Yes' and $row['Other Note']!='') {
+					$value=$row['Other Note'];
+				}
+				else {
+					$value=$row['Category Label'];
+				}
+				$category_data[]=array(
+					'root_label'=>$root_label,
+					'root_code'=>$root_code,
+					'label'=>$row['Category Label'],
+					'code'=>$row['Category Code'],
+					'value'=>$value,
+					'category_key'=>$row['Category Key']
+				);
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+
+
+		return $category_data;
+	}
 
 }
 

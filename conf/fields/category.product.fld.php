@@ -45,6 +45,33 @@ $category_product_fields=array(
 		)
 	),
 	
+	
+	array(
+		'label'=>_('Department'),
+		'show_title'=>true,
+		'fields'=>array(
+			array(
+				'id'=>'Product_Category_Department_Category_Key',
+				'edit'=>'dropdown_select',
+				'scope'=>'departments',
+				'parent'=>'store',
+				'parent_key'=>($new?$options['store_key']:$object->get('Category Store Key')),
+				'value'=>htmlspecialchars($object->get('Product Category Department Category Key')),
+				'formatted_value'=>$object->get('Department Category Key'),
+				'stripped_formatted_value'=>'',
+				'label'=>_('Department'),
+				'required'=>true,
+				'type'=>'value'
+
+
+			),
+
+		
+
+		)
+	),
+	
+	
 		array(
 		'label'=>_('Webpage').' <span class="no_title">'.$object->webpage->get('Code').'</span>',
 		'show_title'=>true,

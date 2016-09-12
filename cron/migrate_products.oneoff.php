@@ -51,11 +51,63 @@ fix_product_categories($db);
 migrate_historic_products($db);
 update_fields_from_parts($db);
 update_number_of_parts($db);
+update_web_configuration($db);
+migrate_page_related_products($db);
 */
 
 
-update_web_configuration($db);
-migrate_page_related_products($db);
+set_family_department_key($db);
+
+
+
+function set_family_department_key($db) {
+	$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Product"  and  `Category Subject`="Product" ');
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+
+			$category=new Category($row['Category Key']);
+
+			$store=new Store($category->data['Category Store Key']);
+
+
+
+
+
+		//	print_r($category);
+
+			$sql=sprintf("select B.`Category Key`,`Category Root Key`,`Other Note`,`Category Label`,`Category Code`,`Is Category Field Other` from `Category Bridge` B left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`) where  `Category Branch Type`='Head'  and B.`Subject Key`=%d and B.`Subject`='Category'",
+				$category->id
+			);
+
+
+
+
+			if ($result2=$db->query($sql)) {
+				foreach ($result2 as $row2) {
+
+                  //  print_r($row2);
+                   $category->update(array('Product Category Department Category Key'=>$row2['Category Key']),'no_history');
+
+				}
+
+			}
+
+
+			
+
+			//   $sql=sprintf("insert into `Product Category Dimension` (`Product Category Key`,`Product Category Store Key`,`Product Category Currency Code`,`Product Category Valid From`) values (%d,%d,%s,%s)",
+			//    $category->id,
+			//    $store->id,
+			//    prepare_mysql($store->get('Store Currency Code')),
+			//    prepare_mysql(gmdate('Y-m-d H:i:s'))
+			//   );
+			//   $db->exec($sql);
+		}
+
+	}else {print_r($error_info=$db->errorInfo());exit;}
+
+}
 
 
 function migrate_page_related_products($db) {
@@ -79,7 +131,7 @@ function update_web_configuration($db) {
 
 				if ($product->get('Product Number of Parts')==1) {
 
-                    $parts=$product->get_parts('objects');
+					$parts=$product->get_parts('objects');
 					$part=array_pop($parts);
 
 
@@ -90,22 +142,22 @@ function update_web_configuration($db) {
 
 
 						$product->update(array('Product Web Configuration'=>'Online Force For Sale'), 'no_fork no_history');
-//print_r($part);
-//					print_r($product);
-					//exit;
+						//print_r($part);
+						//     print_r($product);
+						//exit;
 
 					}elseif ($part->get('Part Available for Products Configuration')=='No'  ) {
 
 
 						$product->update(array('Product Web Configuration'=>'Online Force Out of Stock'), 'no_fork no_history');
-//print_r($part);
-//					print_r($product);
-					//exit;
+						//print_r($part);
+						//     print_r($product);
+						//exit;
 
 					}
 
 
-					
+
 
 
 				}

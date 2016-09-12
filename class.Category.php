@@ -630,6 +630,26 @@ class Category extends DB_Table{
 
 			switch ($key) {
 
+			case 'Department Category Key':
+			case 'Department Category Code':
+
+
+
+				include_once 'class.Category.php';
+				if ($this->get('Product Category Department Category Key')>0) {
+
+
+
+					$department=new Category($this->get('Product Category Department Category Key'));
+					if ($department->id) {
+						return  $department->get('Code');
+					}
+				}
+				return '';
+
+				break;
+
+
 
 			case 'Webpage Related Products':
 
@@ -1211,9 +1231,86 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 		}
 		elseif (array_key_exists($field, $this->subject_base_data())) {
 
+			switch ($field) {
+
+			case 'Product Category Department Category Key':
 
 
-			if ($field=='Product Category Description') {
+				if ($value) {
+
+					include_once 'class.Category.php';
+
+					include_once 'class.Store.php';
+					$store=new Store($this->get('Category Store Key'));
+
+					$family=new Category($value);
+					$family->associate_subject($this->id, false, '', 'skip_direct_update');
+
+
+
+					/*
+					$sql=sprintf("select C.`Category Key` from `Category Dimension` C left join `Category Bridge` B on (C.`Category Key`=B.`Category Key`) where `Category Root Key`=%d and `Subject Key`=%d and `Subject`='Category' and `Category Branch Type`='Head'",
+
+						$this->data['Store Department Category Key'],
+						$family->id
+					);
+					//print $sql;
+					$department_key='';
+					if ($result=$this->db->query($sql)) {
+						if ($row = $result->fetch()) {
+							$department_key=$row['Category Key'];
+						}
+					}else {
+						print_r($error_info=$this->db->errorInfo());
+						exit;
+					}
+					$this->update_field('Product Department Category Key', $department_key, 'no_history');
+*/
+
+				}else {
+					if ($this->data['Product Category Department Category Key']!='') {
+
+
+						$category=new Category($this->data['Product Category Department Category Key']);
+
+						if ($category->id) {
+							$category->disassociate_subject($this->id);
+						}
+
+					}
+
+				}
+
+
+//print "$field, $value";
+
+				$this->update_subject_field($field, $value, 'no_history');
+
+				$categories='';
+				foreach ($this->get_category_data() as $item) {
+					$categories.=sprintf('<li><span class="button" onclick="change_view(\'category/%d\')" title="%s">%s</span></li>',
+						$item['category_key'],
+						$item['label'],
+						$item['code']
+
+					);
+
+				}
+				$this->update_metadata=array(
+					'class_html'=>array(
+						'Categories'=>$categories,
+
+					)
+				);
+
+
+				break;
+
+
+			case 'Product Category Description':
+
+
+
 
 				$value=html_entity_decode($value);
 				$this->update_subject_field($field, $value, $options);
@@ -1237,7 +1334,12 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 
 				//-----------
 
-			}elseif ($field=='Product Category Public') {
+
+				break;
+
+
+			case 'Product Category Public':
+
 
 				foreach ($this->get_children_keys() as $children_key) {
 					$subcategory=new Category($children_key);
@@ -1274,19 +1376,27 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 					exit;
 				}
 
+				break;
 
 
-
-			}else {
+			default:
 
 				$this->update_subject_field($field, $value, $options);
 			}
 		}
 		else {
 
+
+
+
 			switch ($field) {
+
+
+
+
+
 			case 'Webpage See Also':
-$this->get_webpage();
+				$this->get_webpage();
 				$this->webpage->update(array(
 						'See Also'=>$value
 					), $options);
@@ -1295,7 +1405,7 @@ $this->get_webpage();
 
 				break;
 			case 'Webpage Related Products':
-$this->get_webpage();
+				$this->get_webpage();
 				$this->webpage->update(array(
 						'Related Products'=>$value
 					), $options);
@@ -1304,7 +1414,7 @@ $this->get_webpage();
 
 				break;
 			case 'Category Webpage Name':
-$this->get_webpage();
+				$this->get_webpage();
 				$this->webpage->update(array(
 						'Page Store Title'=>$value,
 						'Page Short Title'=>$value,
@@ -1315,7 +1425,7 @@ $this->get_webpage();
 
 				break;
 			case 'Category Website Node Parent Key':
-$this->get_webpage();
+				$this->get_webpage();
 				$this->get_webpage();
 				$this->webpage->update(array('Found In'=>array($value)), $options);
 
@@ -2344,7 +2454,7 @@ $this->get_webpage();
 
 
 
-			if ($inserted) {
+			if ($inserted ) {
 				$this->update_number_of_subjects();
 				$this->update_subjects_data();
 
@@ -2387,6 +2497,8 @@ $this->get_webpage();
 
 					$abstract=sprintf(_('Product %s associated with category %s'), $product->get('Code'), $this->get('Code'));
 					$details='';
+
+
 
 
 					if ($this->get('Category Root Key')==$store->get('Store Family Category Key')) {
@@ -2447,7 +2559,7 @@ $this->get_webpage();
 					}
 
 
-					if ($this->get('Category Root Key')==$store->get('Store Dpartment Category Key')) {
+					if ($this->get('Category Root Key')==$store->get('Store Department Category Key')) {
 
 
 
@@ -2457,7 +2569,7 @@ $this->get_webpage();
 							prepare_mysql($this->get('Category Code'))
 						);
 
-
+//print $sql;
 						if ($result=$this->db->query($sql)) {
 							if ($department = $result->fetch()) {
 								$department_key=$department['Product Department Key'];
@@ -2479,11 +2591,12 @@ $this->get_webpage();
 							$family->get('Category Store Key'),
 							prepare_mysql($family->get('Category Code'))
 						);
+//print $sql;
 
 
 						if ($result=$this->db->query($sql)) {
 							if ($family = $result->fetch()) {
-								$family_key=$department['Product Department Key'];
+								$family_key=$family['Product Family Key'];
 							}else {
 								$family_key=false;
 							}
@@ -2492,7 +2605,7 @@ $this->get_webpage();
 							exit;
 						}
 
-
+//print "** $family_key $department_key **";
 						if ($family_key and $department_key) {
 
 
