@@ -25,6 +25,7 @@ include_once 'class.DeliveryNote.php';
 include_once 'class.TaxCategory.php';
 include_once 'class.CurrencyExchange.php';
 require_once 'utils/order_functions.php';
+require_once 'utils/natural_language.php';
 
 
 class Order extends DB_Table {
@@ -3443,7 +3444,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 		);
 
 
-		
+
 
 		include_once 'class.Account.php';
 
@@ -7634,7 +7635,7 @@ values (%f,%s,%f,%s,%s,%s,%s,%s,
 	function update_deals_usage() {
 
 		include_once 'class.DealCampaign.php';
-				include_once 'class.DealComponent.php';
+		include_once 'class.DealComponent.php';
 
 
 
@@ -9728,6 +9729,9 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 		);
 
 		$res=mysql_query($sql);
+
+		$affected_rows=0;
+
 		while ($row=mysql_fetch_assoc($res)) {
 
 
@@ -9752,36 +9756,37 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 			);
 			mysql_query($sql);
 
+			$affected_rows++;
 
 		}
 
+		if ($affected_rows) {
+			$dn_key=0;
 
-		$dn_key=0;
+			$this->update_number_products();
+			$this->update_insurance();
 
-		$this->update_number_products();
-		$this->update_insurance();
-
-		$this->update_discounts_items();
-		$this->update_totals();
-
-
-
-		$this->update_shipping($dn_key, false);
-		$this->update_charges($dn_key, false);
-		$this->update_discounts_no_items($dn_key);
+			$this->update_discounts_items();
+			$this->update_totals();
 
 
-		$this->update_deal_bridge();
 
-		$this->update_deals_usage();
+			$this->update_shipping($dn_key, false);
+			$this->update_charges($dn_key, false);
+			$this->update_discounts_no_items($dn_key);
 
-		$this->update_totals();
+
+			$this->update_deal_bridge();
+
+			$this->update_deals_usage();
+
+			$this->update_totals();
 
 
-		$this->update_number_products();
+			$this->update_number_products();
 
-		$this->apply_payment_from_customer_account();
-
+			$this->apply_payment_from_customer_account();
+		}
 
 
 
@@ -9794,6 +9799,7 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 			return;
 		}
 
+$affected_rows=0;;
 
 		$sql=sprintf("select `Order Transaction Fact Key`,`Quantity` from `Order Transaction Out of Stock in Basket Bridge` where  `Product ID`=%d and `Order Key`=%d ",
 			$product_pid,
@@ -9822,6 +9828,8 @@ values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,
 				$row['Order Transaction Fact Key']
 			);
 			mysql_query($sql);
+			
+			$affected_rows++;
 		}
 
 

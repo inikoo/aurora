@@ -39,4 +39,23 @@ function new_fork($type,$data,$account_code,$db) {
 
 }
 
+
+function new_housekeeping_fork($type,$data,$account_code,$db) {
+
+	$fork_encrypt_key=md5('huls0fjhslsshskslgjbtqcwijnbxhl2391');
+
+	$token=substr(str_shuffle(md5(time()).rand().str_shuffle('qwertyuiopasdfghjjklmnbvcxzQWERTYUIOPKJHGFDSAZXCVBNM1234567890') ),0,64);
+	$salt=md5(rand());
+
+	$fork_metadata=base64_encode(AESEncryptCtr(json_encode(array('code'=>addslashes($account_code),'data'=>$data,'token'=>$token,'salt'=>$salt)),$fork_encrypt_key,256));
+	$client= new GearmanClient();
+
+	$client->addServer('127.0.0.1');
+	$msg=$client->doBackground($type, $fork_metadata);
+
+	return array($fork_key,$msg);
+
+}
+
+
 ?>

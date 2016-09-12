@@ -439,6 +439,7 @@ migrate_parts.oneoff.php
 
 
 ALTER TABLE `Product Dimension` CHANGE `Product Status` `Product Status` ENUM('InProcess','Active','Suspended','Discontinuing','Discontinued') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'Active';
+ALTER TABLE `Page Store See Also Bridge` ADD `Webpage See Also Order` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Correlation Value`;
 
 
 
