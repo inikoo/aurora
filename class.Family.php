@@ -42,6 +42,10 @@ class Family extends DB_Table {
 
 		//End Transfer
 
+	global $db;
+		$this->db=$db;
+
+
 		$this->table_name='Product Family';
 		$this->page_data=false;
 		$this->ignore_fields=array(
@@ -264,7 +268,7 @@ class Family extends DB_Table {
 			$this->update_similar_families();
 
 			$department->update_families();
-			$store->update_families();
+		//	$store->update_families();
 			$this->update_full_search();
 			$this->new=true;
 

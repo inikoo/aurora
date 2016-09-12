@@ -628,7 +628,7 @@ class Site extends DB_Table {
 		$store=new Store($family['Product Family Store Key']);
 
 
-
+//print_r($family);
 		$page_code=$this->get_unique_family_page_code($family);
 
 		$page_data=array(
@@ -658,6 +658,9 @@ class Site extends DB_Table {
 			'Number See Also Links'=>$this->data['Site Default Number See Also Links'],
 			'editor'=>$this->editor
 		);
+
+
+//print_r($page_data);
 
 		foreach ($raw_data as $key=>$value) {
 			if (in_array($key, array('Page Code', 'Page URL', 'Page Site Key', 'Page Type', 'Page Store Key', 'Page Parent Key', 'Page Parent Code', 'Page Store Section Type', 'Page Store Section', 'Page Store Last Update Date', 'Page Store Last Structural Change Date'

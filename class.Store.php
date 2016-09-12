@@ -2397,8 +2397,12 @@ class Store extends DB_Table {
 				}
 
 
+            
+
                 if($product->get('Product Number of Parts')==1){
                     foreach ($product->get_parts('objects') as $part) {
+                    
+                       // print_r($part);
                         $part->updated_linked_products();
                     }
                 }

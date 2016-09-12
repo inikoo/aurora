@@ -118,27 +118,7 @@ class Product extends Asset{
 		$this->webpage=new Page($row['Page Key']);
 		$this->webpage->editor=$this->editor;
 
-		// Temporal should be take off bcuse page should be created when product is createss
-		if (!$this->webpage->id) {
-
-			$page_data=array(
-				'Page Store Content Display Type'=>'Template',
-				'Page Store Content Template Filename'=>'product',
-				'Page State'=>'Online'
-
-			);
-			include_once 'class.Store.php';
-
-			$store=new Store($this->get('Product Store Key'));
-
-			foreach ($store->get_sites('objects') as $site) {
-
-				$product_page_key=$site->add_product_page($this->id, $page_data);
-				$this->webpage=new Page($product_page_key);
-			}
-
-
-		}
+		
 
 	}
 
