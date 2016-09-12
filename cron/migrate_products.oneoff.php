@@ -55,7 +55,13 @@ update_number_of_parts($db);
 
 
 update_web_configuration($db);
+migrate_page_related_products($db);
 
+
+function migrate_page_related_products($db) {
+
+
+}
 
 
 function update_web_configuration($db) {

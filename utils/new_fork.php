@@ -51,6 +51,8 @@ function new_housekeeping_fork($type,$data,$account_code,$db) {
 	$client= new GearmanClient();
 
 	$client->addServer('127.0.0.1');
+	
+	
 	$msg=$client->doBackground($type, $fork_metadata);
 
 	return array($fork_key,$msg);
