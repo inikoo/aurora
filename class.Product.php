@@ -1912,7 +1912,7 @@ class Product extends Asset{
 
 		if ($use_fork) {
 			include_once 'utils/new_fork.php';
-			global $account;
+			 $account=new Account($this->db);
 
 			list($fork_key, $msg)=new_fork('au_housekeeping', array('type'=>'update_web_state_slow_forks', 'web_availability_updated'=>$web_availability_updated, 'product_id'=>$this->id), $account->get('Account Code'), $this->db);
 

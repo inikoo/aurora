@@ -1,4 +1,4 @@
-<table border="0" id="webpage_related_products" class="{if $mode=='edit'}xhide{/if}  " style="margin-bottom:20px"   >
+<table border="0" id="webpage_related_products" class="{if $mode=='edit'}hide{/if}  " style="margin-bottom:20px"   >
 	
 	<tr class="add_new_webpage_tr">
 <td></td>

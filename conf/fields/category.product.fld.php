@@ -150,7 +150,7 @@ $category_product_fields=array(
 				'type'=>''
 			),
 		
-		/*
+		
 			array(
 				'id'=>'Webpage_Related_Products',
 				'edit'=>'webpage_related_products',
@@ -160,7 +160,7 @@ $category_product_fields=array(
 				'required'=>false,
 				'type'=>''
 			)
-*/
+
 
 
 		)
