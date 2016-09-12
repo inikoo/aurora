@@ -34,6 +34,8 @@ require_once 'class.Store.php';
 require_once 'class.Address.php';
 require_once 'class.Product.php';
 require_once 'class.Part.php';
+require_once 'class.Page.php';
+
 
 $editor=array(
 	'Author Name'=>'',
@@ -52,12 +54,12 @@ migrate_historic_products($db);
 update_fields_from_parts($db);
 update_number_of_parts($db);
 update_web_configuration($db);
-migrate_page_related_products($db);
+
 */
 
 
 set_family_department_key($db);
-
+migrate_page_related_products($db);
 
 
 function set_family_department_key($db) {
@@ -74,7 +76,7 @@ function set_family_department_key($db) {
 
 
 
-		//	print_r($category);
+			// print_r($category);
 
 			$sql=sprintf("select B.`Category Key`,`Category Root Key`,`Other Note`,`Category Label`,`Category Code`,`Is Category Field Other` from `Category Bridge` B left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`) where  `Category Branch Type`='Head'  and B.`Subject Key`=%d and B.`Subject`='Category'",
 				$category->id
@@ -86,23 +88,16 @@ function set_family_department_key($db) {
 			if ($result2=$db->query($sql)) {
 				foreach ($result2 as $row2) {
 
-                  //  print_r($row2);
-                   $category->update(array('Product Category Department Category Key'=>$row2['Category Key']),'no_history');
+					//  print_r($row2);
+					$category->update(array('Product Category Department Category Key'=>$row2['Category Key']), 'no_history');
 
 				}
 
 			}
 
 
-			
 
-			//   $sql=sprintf("insert into `Product Category Dimension` (`Product Category Key`,`Product Category Store Key`,`Product Category Currency Code`,`Product Category Valid From`) values (%d,%d,%s,%s)",
-			//    $category->id,
-			//    $store->id,
-			//    prepare_mysql($store->get('Store Currency Code')),
-			//    prepare_mysql(gmdate('Y-m-d H:i:s'))
-			//   );
-			//   $db->exec($sql);
+
 		}
 
 	}else {print_r($error_info=$db->errorInfo());exit;}
@@ -112,7 +107,37 @@ function set_family_department_key($db) {
 
 function migrate_page_related_products($db) {
 
+	$sql="select `Page Code`,`Page Key`,`Page Store Section`,`Page Store Key`,`Page Related Products List` from `Page Store Dimension` where `Page Related Products List`!='';";
 
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+
+
+			$page=new Page($row['Page Key']);
+
+			$products_ids=array();
+			$product_codes=preg_split('/,/', $row['Page Related Products List']);
+			foreach ($product_codes as $code) {
+				if ($code!='') {
+					$product=new Product('store_code', $row['Page Store Key'], $code);
+					if ($product->id) {
+						$products_ids[]=$product->id;
+					}
+
+				}
+			}
+			//print_r($row);
+		//	print_r($products_ids);
+			
+			
+			$page->update(array('Related Products'=>json_encode($products_ids)) ,'no_history' );
+		
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
 }
 
 
