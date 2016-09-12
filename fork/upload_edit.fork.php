@@ -229,9 +229,9 @@ function fork_upload_edit($job) {
 
 
 				foreach ($valid_indexes as $index=>$field) {
-				
-				
-				
+
+
+
 					$fields_data[$field]=$record_data[ $index];
 
 
@@ -249,7 +249,7 @@ function fork_upload_edit($job) {
 
 
 
-				$object_key=new_object($account, $db, $user, $editor, $_data);
+				$object_key=new_object($account, $db, $user, $editor, $_data, $upload, $fork_key);
 
 
 
@@ -303,10 +303,10 @@ function fork_upload_edit($job) {
 				//print $object->id;
 
 				foreach ($valid_indexes as $index=>$field) {
-				
-				//    print "$field ->".$record_data[$index]."\n";
-				
-				
+
+					//    print "$field ->".$record_data[$index]."\n";
+
+
 					$object->update(array($field=>$record_data[$index]));
 
 
@@ -444,7 +444,7 @@ function update_upload_edit_stats($fork_key, $upload_key, $db) {
 }
 
 
-function new_object($account, $db, $user, $editor, $data) {
+function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
 
 	$error=false;
 
@@ -465,6 +465,41 @@ function new_object($account, $db, $user, $editor, $data) {
 		include_once 'class.Product.php';
 
 
+		if ($parent->get_object_name()!='Store') {
+
+
+			$error_code='wrong_parent';
+			$error_metadata=json_encode(array());
+
+			$sql=sprintf("update `Upload Record Dimension` set `Upload Record Date`=%s ,`Upload Record State`='Error', `Upload Record Status`='Done'  where `Upload Record Upload Key`=%d and `Upload Record State`='InProcess' ",
+				prepare_mysql(gmdate('Y-m-d H:i:s')),
+				$upload->id
+			);
+			$db->exec($sql);
+			update_upload_edit_stats($fork_key, $upload->id, $db);
+
+			$sql=sprintf("update `Fork Dimension` set `Fork Finished Date`=NOW(),`Fork Result`=%s `Fork Operations Errors`=(`Fork Operations Total Operations`-`Fork Operations Done`-`Fork Operations No Changed`-`Fork Operations Errors`) where `Fork Key`=%d ",
+				prepare_mysql('error'),
+				$fork_key
+			);
+			$db->exec($sql);
+
+			$sql=sprintf("update `Upload Dimension` set `Upload State`='Finished' where `Upload Key`=%d ",
+				$upload->id
+			);
+			$db->exec($sql);
+
+
+
+
+			return false;
+
+
+		}
+
+
+
+print_r($data['fields_data']);
 
 		$object=$parent->create_product($data['fields_data']);
 		//print_r($object);

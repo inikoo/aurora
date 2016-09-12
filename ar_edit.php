@@ -287,6 +287,12 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 				$update_metadata['webpage_see_also_editor']=$smarty->fetch('webpage_see_also.edit.tpl');
 
+			}elseif ($field=='Webpage Related Products') {
+				$smarty->assign('data', $object->get_related_products_data());
+				$smarty->assign('mode', 'edit');
+
+				$update_metadata['webpage_related_products_editor']=$smarty->fetch('webpage_related_products.edit.tpl');
+
 			}
 
 
