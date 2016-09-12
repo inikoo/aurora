@@ -10,6 +10,7 @@
 
 */
 
+include_once('utils/natural_language.php');
 
 trait ImageSubject {
 

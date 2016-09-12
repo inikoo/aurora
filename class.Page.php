@@ -251,7 +251,10 @@ class Page extends DB_Table {
 			$raw_data['Page URL']="info.php?page=".$raw_data['Page Code'];
 		}
 
+		if (!isset($raw_data['Page Short Title']) or  $raw_data['Page Short Title']=='') {
 
+			$raw_data['Page Short Title']=$raw_data['Page Title'];
+		}
 
 
 		$data=$this->base_data();
@@ -350,6 +353,7 @@ class Page extends DB_Table {
 		$keys=preg_replace('/,$/', ')', $keys);
 		$values=preg_replace('/,$/', ')', $values);
 		$sql=sprintf("insert into `Page Store Dimension` %s %s", $keys, $values);
+		//asdasdasd();
 		//print "$sql\n";
 		if (mysql_query($sql)) {
 

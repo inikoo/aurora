@@ -3128,10 +3128,11 @@ where `Part SKU`=%d ",
 					$this->id
 				);
 
-
+            //   print "$sql\n";
 
 				if ($result=$this->db->query($sql)) {
 					foreach ($result as $row) {
+					    //print_r($row);
 						$product->link_image($row['Image Subject Image Key']);
 					}
 				}else {

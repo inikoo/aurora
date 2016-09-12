@@ -426,119 +426,30 @@ class Category extends DB_Table{
 
 
 
+
+
+
 		//-----Migration ---
 
-
-
 		if ($this->get('Category Scope')=='Product') {
+			include_once 'class.Family.php';
 			include_once 'class.Store.php';
+			include_once 'class.Department.php';
 			$store=new Store($this->get('Category Store Key'));
 
-			if ($this->get('Category Subject')=='Product') {
 
-				// creating family
+			if ($this->get('Category Root Key')==$store->get('Store Family Category Key')) {
 
-
-
-				$sql=sprintf("select * from `Product Department Dimension` where `Product Department Store Key`=%d and `Product Department Code`=%s",
-					$this->get('Category Store Key'),
-					prepare_mysql($this->get('Category Code'))
-				);
 
 				$code=$subcategory->get('Category Code');
+
+
+				$sql=sprintf('select `Product Department Key` from `Product Department Dimension` where `Product Department Store Key`=%s ', $store->id);
+
+				$dept_key=0;
 				if ($result=$this->db->query($sql)) {
-					if ($department = $result->fetch()) {
-						$department_key=$department['Product Department Key'];
-
-
-
-
-						$sql=sprintf('insert into `Product Family Dimension` (`Product Family Store Code`,
-				    `Product Family Store Key`,`Product Family Currency Code`,
-				    `Product Family Main Department Key`,`Product Family Main Department Code`,`Product Family Main Department Name`,
-				    `Product Family Code`,`Product Family Name`,`Product Family Description`,`Product Family Special Characteristic`)
-				    values (%s,%d,%s,
-				    %d,%s,%s,
-				    %s,%s,"","")',
-							prepare_mysql($store->get('Store Code')),
-							$this->get('Category Store Key'),
-							prepare_mysql($store->get('Store Currency Code')),
-							$department['Product Department Key'],
-							prepare_mysql($department['Product Department Code']),
-							prepare_mysql($department['Product Department Name']),
-							prepare_mysql($code),
-							prepare_mysql($code)
-						);
-
-
-						if ($this->db->exec($sql)) {
-							$fam_key=$this->db->lastInsertId();
-
-							$sql=sprintf("insert into `Product Family Default Currency` (`Product Family Key`) values (%d)", $fam_key);
-							$this->db->exec($sql);
-
-							$sql=sprintf("insert into `Product Family Data Dimension` (`Product Family Key`) values (%d)", $fam_key);
-							$this->db->exec($sql);
-
-							$page_data=array(
-								'Page Store Content Display Type'=>'Template',
-								'Page Store Content Template Filename'=>'family_buttons',
-								'Page State'=>'Online'
-							);
-							foreach ($store->get_sites('objects') as $site) {
-								$family_page_key=$site->add_family_page($fam_key, $page_data);
-								$family_page=new Page($family_page_key);
-								$family_page->update_button_products('Parent');
-								$family_page->update_list_products();
-							}
-						}
-
-					}else {
-
-						include_once 'class.Family.php';
-
-						$sql=sprintf('insert into `Product Family Dimension` (`Product Family Store Code`,
-				    `Product Family Store Key`,`Product Family Currency Code`,
-				    `Product Family Main Department Key`,`Product Family Main Department Code`,`Product Family Main Department Name`,
-				    `Product Family Code`,`Product Family Name`,`Product Family Description`,`Product Family Special Characteristic`)
-				    values (%s,%d,%s,
-				    %d,%s,%s,
-				    %s,%s,"","")',
-							prepare_mysql($store->get('Store Code')),
-							$this->get('Category Store Key'),
-							prepare_mysql($store->get('Store Currency Code')),
-
-							0, prepare_mysql(""), prepare_mysql(""),
-							prepare_mysql($code),
-							prepare_mysql($code)
-						);
-
-						if ($this->db->exec($sql)) {
-							$fam_key=$this->db->lastInsertId();
-
-							$sql=sprintf("insert into `Product Family Default Currency` (`Product Family Key`) values (%d)", $fam_key);
-
-							$this->db->exec($sql);
-
-							$sql=sprintf("insert into `Product Family Data Dimension` (`Product Family Key`) values (%d)", $fam_key);
-							$this->db->exec($sql);
-
-
-							$page_data=array(
-								'Page Store Content Display Type'=>'Template',
-								'Page Store Content Template Filename'=>'family_buttons',
-								'Page State'=>'Online'
-							);
-							foreach ($store->get_sites('objects') as $site) {
-								$family_page_key=$site->add_family_page($fam_key, $page_data);
-								$family_page=new Page($family_page_key);
-
-
-								$family_page->update_button_products('Parent');
-								$family_page->update_list_products();
-							}
-
-						}
+					if ($row = $result->fetch()) {
+						$dept_key=$row['Product Department Key'];
 					}
 				}else {
 					print_r($error_info=$this->db->errorInfo());
@@ -546,41 +457,92 @@ class Category extends DB_Table{
 				}
 
 
-			}
-			else {
-				// insert department
-				$code=$subcategory->get('Category Code');
-				$sql=sprintf('insert into `Product Department Dimension` (
-				    `Product Department Store Key`,`Product Department Store Code`,`Product Department Currency Code`,
-				    `Product Department Code`,`Product Department Name`,`Product Department Description`)
-				    values (%d,%s,%s,
-				    %s,%s,"")',
-					$this->get('Category Store Key'),
-					prepare_mysql($store->get('Store Code')),
-					prepare_mysql($store->get('Store Currency Code')),
 
-					0, prepare_mysql(""), prepare_mysql(""),
-					prepare_mysql($code),
-					prepare_mysql($code)
+				$fam_data=array(
+
+					'Product Family Code'=>$code,
+					'Product Family Name'=>$code,
+					'Product Family Main Department Key'=>$dept_key,
+					'Product Family Store Key'=>$store->id,
+					'Product Family Special Characteristic'=>$code
 				);
-				//print $sql;
-				$this->db->exec($sql);
+
+				//print_r($fam_data);
+
+
+				$family=new Family('find', $fam_data, 'create');
+
+				if ($family->new) {
+					$page_data=array(
+						'Page Store Content Display Type'=>'Template',
+						'Page Store Content Template Filename'=>'family_buttons',
+						'Page State'=>'Online'
+					);
+					foreach ($store->get_sites('objects') as $site) {
+						$family_page_key=$site->add_family_page($family->id, $page_data);
+						$family_page=new Page($family_page_key);
+
+
+						$family_page->update_button_products('Parent');
+						$family_page->update_list_products();
+					}
+
+				}
+				$account=new Account($this->db);
+
+				$sql=sprintf('select `Image Subject Image Key` from `Image Subject Bridge` left join `Category Dimension` on (`Image Subject Object Key`=`Category Key`)  where `Category Subject`="Part" and `Category Code`=%s  and `Category Root Key`=%d ',
+					prepare_mysql($subcategory->get('Category Code')),
+					$account->get('Account Part Family Category Key')
+				);
+
+				//   print "$sql\n";
+
+				if ($result=$this->db->query($sql)) {
+					foreach ($result as $row) {
+						//print_r($row);
+						$subcategory->link_image($row['Image Subject Image Key']);
+
+
+
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
+
+
+				}
+
+
+
 
 
 			}
+
+
+
+
+
+
+
+
+
+
+
+
+
+			// -----
+
+
+
+
+
+
+
 
 
 		}
 
-
-		// -----
-
-
-
-
-
 		return $subcategory;
-
 
 
 
@@ -1282,7 +1244,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 				}
 
 
-//print "$field, $value";
+				//print "$field, $value";
 
 				$this->update_subject_field($field, $value, 'no_history');
 
@@ -2569,7 +2531,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 							prepare_mysql($this->get('Category Code'))
 						);
 
-//print $sql;
+						//print $sql;
 						if ($result=$this->db->query($sql)) {
 							if ($department = $result->fetch()) {
 								$department_key=$department['Product Department Key'];
@@ -2591,7 +2553,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 							$family->get('Category Store Key'),
 							prepare_mysql($family->get('Category Code'))
 						);
-//print $sql;
+						//print $sql;
 
 
 						if ($result=$this->db->query($sql)) {
@@ -2605,7 +2567,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 							exit;
 						}
 
-//print "** $family_key $department_key **";
+						//print "** $family_key $department_key **";
 						if ($family_key and $department_key) {
 
 
