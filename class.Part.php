@@ -409,11 +409,6 @@ class Part extends Asset{
 		foreach ($products as $product) {
 
 			$product->update_status_from_parts();
-
-
-
-			//$product->update_availability_type();
-
 		}
 
 
@@ -757,7 +752,7 @@ class Part extends Asset{
 
 				}
 
-				
+
 			}
 			$this->update_field('Part Family Category Key', $value, 'no_history');
 
@@ -1716,10 +1711,15 @@ class Part extends Asset{
 
 		$this->update_available_forecast();
 
+		include_once 'utils/new_fork.php';
+		global $account;
 
-		foreach ($this->get_products('objects') as $product) {
-			$product->update_availability();
-		}
+		list($fork_key, $msg)=new_fork('au_housekeeping', array('type'=>'update_part_products_availability', 'part_sku'=>$this->id), $account->get('Account Code'), $this->db);
+
+
+
+
+
 
 
 		//print "$sql\n";
@@ -2818,7 +2818,7 @@ where `Part SKU`=%d ",
 		case 'Part SKU':
 			$label=_('SKU');
 			break;
-case 'Part Status':
+		case 'Part Status':
 			$label=_('Status');
 			break;
 		case 'Part Reference':

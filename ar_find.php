@@ -85,6 +85,9 @@ case 'find_object':
 	case 'products':
 		find_products($db, $account, $memcache_ip, $data);
 		break;
+	case 'webpages':
+		find_webpages($db, $account, $memcache_ip, $data);
+		break;
 	case 'families':
 		find_special_category('Family', $db, $account, $memcache_ip, $data);
 		break;
@@ -95,8 +98,11 @@ case 'find_object':
 		find_special_category('PartFamily', $db, $account, $memcache_ip, $data);
 		break;
 	case 'web_node':
-		web_node($db, $account, $memcache_ip, $data);
+		find_web_node($db, $account, $memcache_ip, $data);
 		break;
+	case 'product_webpages':
+		find_product_webpages($db, $account, $memcache_ip, $data);
+		break;	
 	default:
 		$response=array('state'=>405, 'resp'=>'Scope not found '.$data['scope']);
 		echo json_encode($response);
@@ -1609,7 +1615,7 @@ function new_purchase_order_options($db, $data) {
 }
 
 
-function web_node($db, $account, $memcache_ip, $data) {
+function find_web_node($db, $account, $memcache_ip, $data) {
 
 
 	$cache=false;
@@ -1733,5 +1739,277 @@ function web_node($db, $account, $memcache_ip, $data) {
 
 }
 
+
+function find_webpages($db, $account, $memcache_ip, $data) {
+
+
+	$cache=false;
+	$max_results=5;
+	$user=$data['user'];
+	$q=trim($data['query']);
+
+
+	if ($q=='') {
+		$response=array('state'=>200, 'results'=>0, 'data'=>'');
+		echo json_encode($response);
+		return;
+	}
+
+
+
+	$where='';
+	switch ($data['parent']) {
+	case 'website':
+		$where=sprintf(' and `Page Site Key`=%d', $data['parent_key']);
+		break;
+	default:
+
+		break;
+	}
+
+
+	if (isset($data['metadata']['option'])) {
+		switch ($data['metadata']['option']) {
+		case 'only_online':
+			$where.=sprintf(' and `Page State`="Online"');
+			break;
+		default:
+
+			break;
+		}
+
+	}
+
+if (isset($data['metadata']['exclude'])  and  count($data['metadata']['exclude'])>0  ) {
+	$where.=sprintf(' and `Page Key` not in (%s) ',join(',',$data['metadata']['exclude']));
+    
+}
+
+	$memcache_fingerprint=$account->get('Account Code').'FIND_WEBP'.md5($q);
+
+	$cache = new Memcached();
+	$cache->addServer($memcache_ip, 11211);
+
+
+	if (strlen($q)<=2) {
+		$memcache_time=295200;
+	}if (strlen($q)<=3) {
+		$memcache_time=86400;
+	}if (strlen($q)<=4) {
+		$memcache_time=3600;
+	}else {
+		$memcache_time=300;
+
+	}
+
+
+	$results_data=$cache->get($memcache_fingerprint);
+
+
+	if (!$results_data or true) {
+
+		$candidates=array();
+		$candidates_data=array();
+
+
+		$sql=sprintf("select `Page Key`,`Page Code`,`Page Store Title` from `Page Store Dimension` where  `Page Code` like '%s%%' %s order by `Page Code` limit $max_results ",
+			$q,
+			$where
+		);
+
+		
+		if ($result=$db->query($sql)) {
+			foreach ($result as $row) {
+
+				if ($row['Page Code']==$q)
+					$candidates[$row['Page Key']]=1000;
+				else {
+
+					$len_name=strlen($row['Page Key']);
+					$len_q=strlen($q);
+					$factor=$len_q/$len_name;
+					$candidates[$row['Page Key']]=500*$factor;
+				}
+
+				$candidates_data[$row['Page Key']]=array('Page Code'=>$row['Page Code'], 'Page Store Title'=>$row['Page Store Title']);
+
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
+
+		arsort($candidates);
+
+
+		$total_candidates=count($candidates);
+
+		if ($total_candidates==0) {
+			$response=array('state'=>200, 'results'=>0, 'data'=>'');
+			echo json_encode($response);
+			return;
+		}
+
+
+		$results=array();
+		foreach ($candidates as $product_sku=>$candidate) {
+
+			$results[$product_sku]=array(
+				'code'=>$candidates_data[$product_sku]['Page Code'],
+				'description'=>$candidates_data[$product_sku]['Page Store Title'],
+				'value'=>$product_sku,
+				'formatted_value'=>$candidates_data[$product_sku]['Page Code']
+			);
+
+		}
+
+		$results_data=array('n'=>count($results), 'd'=>$results);
+		$cache->set($memcache_fingerprint, $results_data, $memcache_time);
+
+
+
+	}
+	$response=array('state'=>200, 'number_results'=>$results_data['n'], 'results'=>$results_data['d'], 'q'=>$q);
+
+	echo json_encode($response);
+
+}
+
+
+function find_product_webpages($db, $account, $memcache_ip, $data) {
+
+
+	$cache=false;
+	$max_results=5;
+	$user=$data['user'];
+	$q=trim($data['query']);
+
+
+	if ($q=='') {
+		$response=array('state'=>200, 'results'=>0, 'data'=>'');
+		echo json_encode($response);
+		return;
+	}
+
+
+	$where=sprintf("  and `Product Status` in ('Active','Discontinuing') ");
+	switch ($data['parent']) {
+	case 'website':
+		$where=sprintf(' and `Page Site Key`=%d', $data['parent_key']);
+		break;
+	default:
+
+		break;
+	}
+
+
+	if (isset($data['metadata']['option'])) {
+		switch ($data['metadata']['option']) {
+		case 'only_online':
+			$where.=sprintf(' and `Page State`="Online"');
+			break;
+		default:
+
+			break;
+		}
+
+	}
+
+if (isset($data['metadata']['exclude'])  and  count($data['metadata']['exclude'])>0  ) {
+	$where.=sprintf(' and `Product ID` not in (%s) ',join(',',$data['metadata']['exclude']));
+    
+}
+
+	$memcache_fingerprint=$account->get('Account Code').'FIND_PWebP'.md5($q);
+
+	$cache = new Memcached();
+	$cache->addServer($memcache_ip, 11211);
+
+
+	if (strlen($q)<=2) {
+		$memcache_time=295200;
+	}if (strlen($q)<=3) {
+		$memcache_time=86400;
+	}if (strlen($q)<=4) {
+		$memcache_time=3600;
+	}else {
+		$memcache_time=300;
+
+	}
+
+
+	$results_data=$cache->get($memcache_fingerprint);
+
+
+	if (!$results_data or true) {
+
+		$candidates=array();
+		$candidates_data=array();
+
+
+		$sql=sprintf("select `Product ID`,`Product Code`,`Product Name`,`Page Store Title` from `Page Store Dimension`  left join `Product Dimension` on (`Page Parent Key`=`Product ID` and `Page Store Section Type`='Product')  where  `Product Code` like '%s%%' %s order by `Product Code` limit $max_results ",
+			$q,
+			$where
+		);
+
+	//	print $sql;
+		if ($result=$db->query($sql)) {
+			foreach ($result as $row) {
+
+				if ($row['Product Code']==$q)
+					$candidates[$row['Product ID']]=1000;
+				else {
+
+					$len_name=strlen($row['Product Code']);
+					$len_q=strlen($q);
+					$factor=$len_q/$len_name;
+					$candidates[$row['Product ID']]=500*$factor;
+				}
+
+				$candidates_data[$row['Product ID']]=array('Product Code'=>$row['Product Code'], 'Product Name'=>$row['Product Name']);
+
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
+
+		arsort($candidates);
+
+
+		$total_candidates=count($candidates);
+
+		if ($total_candidates==0) {
+			$response=array('state'=>200, 'results'=>0, 'data'=>'');
+			echo json_encode($response);
+			return;
+		}
+
+
+		$results=array();
+		foreach ($candidates as $product_sku=>$candidate) {
+
+			$results[$product_sku]=array(
+				'code'=>$candidates_data[$product_sku]['Product Code'],
+				'description'=>$candidates_data[$product_sku]['Product Name'],
+				'value'=>$product_sku,
+				'formatted_value'=>$candidates_data[$product_sku]['Product Code']
+			);
+
+		}
+
+		$results_data=array('n'=>count($results), 'd'=>$results);
+		$cache->set($memcache_fingerprint, $results_data, $memcache_time);
+
+
+
+	}
+	$response=array('state'=>200, 'number_results'=>$results_data['n'], 'results'=>$results_data['d'], 'q'=>$q);
+
+	echo json_encode($response);
+
+}
 
 ?>

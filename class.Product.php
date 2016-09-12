@@ -208,11 +208,12 @@ class Product extends Asset{
 
 
 	function get_see_also_data() {
-
-
-
 		return $this->webpage->get_see_also_data();
+	}
 
+
+	function get_related_products_data() {
+		return $this->webpage->get_related_products_data();
 
 	}
 
@@ -272,6 +273,47 @@ class Product extends Asset{
 			return;
 
 		switch ($key) {
+
+		case 'Webpage Related Products':
+
+			$related_products_data=$this->webpage->get_related_products_data();
+			$related_products='';
+
+
+			foreach ($related_products_data['links'] as $link) {
+				$related_products.=$link['code'].', ';
+			}
+
+			$related_products=preg_replace('/, $/', '', $related_products);
+
+			return $related_products;
+
+
+
+			break;
+		case 'Webpage See Also':
+
+			$see_also_data=$this->webpage->get_see_also_data();
+			$see_also='';
+			if ($see_also_data['type']=='Auto') {
+				$see_also=_('Automatic').': ';
+			}
+
+			if (count($see_also_data['links'])==0) {
+				$see_also.=', '._('none');
+			}else {
+				foreach ($see_also_data['links'] as $link) {
+					$see_also.=$link['code'].', ';
+				}
+			}
+			$see_also=preg_replace('/, $/', '', $see_also);
+
+			return $see_also;
+
+
+
+			break;
+
 		case 'Product Webpage Name':
 		case 'Webpage Name':
 
@@ -799,6 +841,15 @@ class Product extends Asset{
 			$this->updated=$this->webpage->updated;
 
 			break;
+		case 'Webpage Related Products':
+
+			$this->webpage->update(array(
+					'Related Products'=>$value
+				), $options);
+
+			$this->updated=$this->webpage->updated;
+
+			break;
 		case 'Product Webpage Name':
 
 			$this->webpage->update(array(
@@ -879,7 +930,14 @@ class Product extends Asset{
 
 			$this->update_field($field, $value, $options);
 
-			$this->update_web_state();
+
+			if (preg_match('/no_fork/', $options)) {
+				$this->update_web_state($use_fork=false);
+			}else {
+				$this->update_web_state();
+			}
+
+
 
 			$this->update_metadata=array(
 				'class_html'=>array(
@@ -1606,14 +1664,13 @@ class Product extends Asset{
 	}
 
 
-	function update_availability() {
+	function update_availability($use_fork=true) {
 
 
 
 		if ($this->get('Product Number of Parts')>0) {
 
-			$sql=sprintf(" select `Part Stock State`,`Part Current On Hand Stock`-`Part Current Stock In Process` as stock,`Part Current Stock In Process`,`Part Current On Hand Stock`,`Product Part Ratio`
-		 from     `Product Part Bridge` B left join   `Part Dimension` P   on (P.`Part SKU`=B.`Product Part Part SKU`)   where B.`Product Part Product ID`=%d   ",
+			$sql=sprintf(" select `Part Stock State`,`Part Current On Hand Stock`-`Part Current Stock In Process` as stock,`Part Current Stock In Process`,`Part Current On Hand Stock`,`Product Part Ratio` from     `Product Part Bridge` B left join   `Part Dimension` P   on (P.`Part SKU`=B.`Product Part Part SKU`)   where B.`Product Part Product ID`=%d   ",
 				$this->id
 			);
 
@@ -1689,7 +1746,6 @@ class Product extends Asset{
 
 
 
-		$old_web_state=$this->get('Product Web State');
 
 		$this->update(array(
 				'Product Availability'=>$stock,
@@ -1697,10 +1753,12 @@ class Product extends Asset{
 
 			), 'no_history');
 
-		$web_state=$this->get_web_state();
 
 
-		$this->update_web_state();
+
+
+
+		$this->update_web_state($use_fork);
 
 
 
@@ -1739,6 +1797,293 @@ class Product extends Asset{
 
 
 	}
+
+
+	function update_web_state($use_fork=true) {
+
+
+
+
+		$old_web_state=$this->get('Product Web State');
+
+
+		if ($old_web_state=='For Sale')
+			$old_web_availability='Yes';
+		else
+			$old_web_availability='No';
+
+		$web_state=$this->get_web_state();
+
+
+		$this->update_field('Product Web State', $web_state, 'no_history');
+
+
+
+		if ($web_state=='For Sale')
+			$web_availability='Yes';
+		else
+			$web_availability='No';
+
+
+
+
+
+
+		$web_availability_updated=($old_web_availability!=$web_availability?true:false);
+
+
+		if ($web_availability_updated) {
+
+
+			//print $this->data['Product Store Key'].' '.$this->data['Product Code']." $old_web_availability  $web_availability \n";
+
+			if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
+				$user_key=$this->editor['User Key'];
+			else
+				$user_key=0;
+
+
+			$sql=sprintf("select UNIX_TIMESTAMP(`Date`) as date,`Product Availability Key` from `Product Availability Timeline` where `Product ID`=%d  order by `Date`  desc limit 1",
+				$this->id
+			);
+
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$last_record_key=$row['Product Availability Key'];
+					$last_record_date=$row['date'];
+				}else {
+					$last_record_key=false;
+					$last_record_date=false;
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+
+
+
+
+			$new_date_formated=gmdate('Y-m-d H:i:s');
+			$new_date=gmdate('U');
+
+			$sql=sprintf("insert into `Product Availability Timeline`  (`Product ID`,`Store Key`,`Department Key`,`Family Key`,`User Key`,`Date`,`Availability`,`Web State`) values (%d,%d,%d,%d,%d,%s,%s,%s) ",
+				$this->id,
+				$this->data['Product Store Key'],
+				$this->data['Product Main Department Key'],
+				$this->data['Product Family Key'],
+				$user_key,
+				prepare_mysql($new_date_formated),
+				prepare_mysql($web_availability),
+				prepare_mysql($web_state)
+
+			);
+			$this->db->exec($sql);
+
+			if ($last_record_key) {
+				$sql=sprintf("update `Product Availability Timeline` set `Duration`=%d where `Product Availability Key`=%d",
+					$new_date-$last_record_date,
+					$last_record_key
+
+				);
+				$this->db->exec($sql);
+
+			}
+
+
+			if ($web_availability=='Yes') {
+				$sql=sprintf("update `Email Site Reminder Dimension` set `Email Site Reminder State`='Ready' where `Email Site Reminder State`='Waiting' and `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d ",
+					$this->id
+				);
+
+			}else {
+				$sql=sprintf("update `Email Site Reminder Dimension` set `Email Site Reminder State`='Waiting' where `Email Site Reminder State`='Ready' and `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d ",
+					$this->id
+				);
+
+			}
+			$this->db->exec($sql);
+
+
+
+		}
+
+
+
+		if ($use_fork) {
+			include_once 'utils/new_fork.php';
+			global $account;
+
+			list($fork_key, $msg)=new_fork('au_housekeeping', array('type'=>'update_web_state_slow_forks', 'web_availability_updated'=>$web_availability_updated, 'product_id'=>$this->id), $account->get('Account Code'), $this->db);
+
+		}else {
+			$this->update_web_state_slow_forks($web_availability_updated);
+		}
+
+
+
+
+
+	}
+
+
+	function update_web_state_slow_forks($web_availability_updated) {
+
+
+		if ($web_availability_updated) {
+
+
+
+
+
+			include_once 'class.Page.php';
+			include_once 'class.Site.php';
+			include_once 'class.Order.php';
+
+			$sql=sprintf("select `Page Key` from `Page Product Dimension` where `Product ID`=%d ",
+				$this->id);
+
+
+			if ($result=$this->db->query($sql)) {
+				foreach ($result as $row) {
+
+					$page=new Page($row['Page Key']);
+
+					$site=new Site($page->get('Page Site Key'));
+					if ($site->data['Site SSL']=='Yes') {
+						$site_protocol='https';
+					}else {
+						$site_protocol='http';
+					}
+
+					if ($site->id and $site->data['Site URL']!='') {
+
+						// $template_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=page_clean_cache&parent_key=".$page->id."&sk=x");
+
+					}
+
+
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+
+
+
+
+
+
+			$sql=sprintf("select `Order Key` from `Order Transaction Fact` where `Current Dispatching State`='In Process by Customer' and `Product ID`=%d ",
+				$this->id
+			);
+
+
+			if ($result=$this->db->query($sql)) {
+				foreach ($result as $row) {
+
+					$web_availability=($this->get_web_state()=='For Sale'?'Yes':'No');
+					if ($web_availability=='No' ) {
+						$order=new Order($row['Order Key']);
+						$order->remove_out_of_stocks_from_basket($this->id);
+					}
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+
+			$sql=sprintf("select `Order Key` from `Order Transaction Fact` where `Current Dispatching State`='Out of Stock in Basket' and `Product ID`=%d ",
+				$this->id
+			);
+
+			if ($result=$this->db->query($sql)) {
+				foreach ($result as $row) {
+					$web_availability=($this->get_web_state()=='For Sale'?'Yes':'No');
+					if ($web_availability=='Yes' ) {
+						$order=new Order($row['Order Key']);
+						$order->restore_back_to_stock_to_basket($this->id);
+					}
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+
+
+
+
+
+		}
+
+
+
+
+		$this->get_data('id', $this->id);
+
+
+		if ( !($this->get('Product Status')=='Active' or $this->get('Product Status')=='Discontinuing') or $this->get('Product Web Configuration')=='Offline' ) {
+			$_state='Offline';
+		}else {
+			$_state='Online';
+		}
+
+
+		foreach ($this->get_pages('objects') as $page) {
+			$page->update(array('Page State'=>$_state), 'no_history');
+		}
+
+	}
+
+
+
+
+
+	function get_web_state() {
+
+
+		if ( !( $this->data['Product Status']=='Active' or $this->data['Product Status']=='Discontinuing')  or ($this->data['Product Number of Parts']==0) ) {
+
+			return 'Offline';
+		}
+		switch ($this->data['Product Web Configuration']) {
+
+
+
+		case 'Offline':
+			return 'Offline';
+			break;
+		case 'Online Force Out of Stock':
+			return 'Out of Stock';
+			break;
+		case 'Online Force For Sale':
+			return 'For Sale';
+			break;
+		case 'Online Auto':
+
+			if ($this->data['Product Number of Parts']==0) {
+				return 'For Sale';
+			}else {
+
+				if ($this->data['Product Availability']>0) {
+					return 'For Sale';
+				}else {
+					return 'Out of Stock';
+				}
+			}
+			break;
+		default:
+			return 'Offline';
+			break;
+		}
+
+	}
+
+
+
 
 
 	function get_linked_fields_data() {
@@ -1983,324 +2328,10 @@ class Product extends Asset{
 
 
 
-	function get_web_state() {
 
 
-		if ( !( $this->data['Product Status']=='Active' or $this->data['Product Status']=='Discontinuing') ) {
 
-			return 'Offline';
-		}
-		switch ($this->data['Product Web Configuration']) {
 
-
-
-		case 'Offline':
-			return 'Offline';
-			break;
-		case 'Online Force Out of Stock':
-			return 'Out of Stock';
-			break;
-		case 'Online Force For Sale':
-			return 'For Sale';
-			break;
-		case 'Online Auto':
-
-			if ($this->data['Product Number of Parts']==0) {
-				return 'For Sale';
-			}else {
-
-				if ($this->data['Product Availability']>0) {
-					return 'For Sale';
-				}else {
-					return 'Out of Stock';
-				}
-			}
-			break;
-		default:
-			return 'Offline';
-			break;
-		}
-
-	}
-
-
-	function update_web_state($update_pages=true) {
-
-
-
-
-		$old_web_state=$this->data['Product Web State'];
-
-
-		if ($old_web_state=='For Sale')
-			$old_web_availability='Yes';
-		else
-			$old_web_availability='No';
-
-		$web_state=$this->get_web_state();
-
-
-		$this->update_field('Product Web State', $web_state, 'no_history');
-
-
-
-		if ($web_state=='For Sale')
-			$web_availability='Yes';
-		else
-			$web_availability='No';
-
-
-		if ($old_web_availability!=$web_availability) {
-
-
-			if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
-				$user_key=$this->editor['User Key'];
-			else
-				$user_key=0;
-
-
-			$sql=sprintf("select UNIX_TIMESTAMP(`Date`) as date,`Product Availability Key` from `Product Availability Timeline` where `Product ID`=%d  order by `Date`  desc limit 1",
-				$this->id
-			);
-
-			if ($result=$this->db->query($sql)) {
-				if ($row = $result->fetch()) {
-					$last_record_key=$row['Product Availability Key'];
-					$last_record_date=$row['date'];
-				}else {
-					$last_record_key=false;
-					$last_record_date=false;
-				}
-			}else {
-				print_r($error_info=$this->db->errorInfo());
-				exit;
-			}
-
-
-
-
-
-			$new_date_formated=gmdate('Y-m-d H:i:s');
-			$new_date=gmdate('U');
-
-			$sql=sprintf("insert into `Product Availability Timeline`  (`Product ID`,`Store Key`,`Department Key`,`Family Key`,`User Key`,`Date`,`Availability`,`Web State`) values (%d,%d,%d,%d,%d,%s,%s,%s) ",
-				$this->id,
-				$this->data['Product Store Key'],
-				$this->data['Product Main Department Key'],
-				$this->data['Product Family Key'],
-				$user_key,
-				prepare_mysql($new_date_formated),
-				prepare_mysql($web_availability),
-				prepare_mysql($web_state)
-
-			);
-			$this->db->exec($sql);
-
-			if ($last_record_key) {
-				$sql=sprintf("update `Product Availability Timeline` set `Duration`=%d where `Product Availability Key`=%d",
-					$new_date-$last_record_date,
-					$last_record_key
-
-				);
-				$this->db->exec($sql);
-
-			}
-
-
-			if ($web_availability=='Yes') {
-				$sql=sprintf("update `Email Site Reminder Dimension` set `Email Site Reminder State`='Ready' where `Email Site Reminder State`='Waiting' and `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d ",
-					$this->id
-				);
-
-			}else {
-				$sql=sprintf("update `Email Site Reminder Dimension` set `Email Site Reminder State`='Waiting' where `Email Site Reminder State`='Ready' and `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d ",
-					$this->id
-				);
-
-			}
-			$this->db->exec($sql);
-
-
-			if ($update_pages) {
-
-				include_once 'class.Page.php';
-				include_once 'class.Site.php';
-				include_once 'class.Order.php';
-
-				$sql=sprintf("select `Page Key` from `Page Product Dimension` where `Product ID`=%d ",
-					$this->id);
-
-
-				if ($result=$this->db->query($sql)) {
-					foreach ($result as $row) {
-
-						$page=new Page($row['Page Key']);
-
-						$site=new Site($page->get('Page Site Key'));
-						if ($site->data['Site SSL']=='Yes') {
-							$site_protocol='https';
-						}else {
-							$site_protocol='http';
-						}
-
-						$template_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=page_clean_cache&parent_key=".$page->id."&sk=x");
-
-
-
-
-					}
-				}else {
-					print_r($error_info=$this->db->errorInfo());
-					exit;
-				}
-
-
-				if ($web_availability=='No' ) {
-
-					$sql=sprintf("select `Order Key` from `Order Transaction Fact` where `Current Dispatching State`='In Process by Customer' and `Product ID`=%d ",
-						$this->id
-					);
-
-
-					if ($result=$this->db->query($sql)) {
-						foreach ($result as $row) {
-							$order=new Order($row['Order Key']);
-							$order->remove_out_of_stocks_from_basket($this->id);
-						}
-					}else {
-						print_r($error_info=$this->db->errorInfo());
-						exit;
-					}
-
-
-
-				}
-				else {
-
-					$sql=sprintf("select `Order Key` from `Order Transaction Fact` where `Current Dispatching State`='Out of Stock in Basket' and `Product ID`=%d ",
-						$this->id
-					);
-
-					if ($result=$this->db->query($sql)) {
-						foreach ($result as $row) {
-							$order=new Order($row['Order Key']);
-							$order->restore_back_to_stock_to_basket($this->id);
-						}
-					}else {
-						print_r($error_info=$this->db->errorInfo());
-						exit;
-					}
-
-
-
-				}
-
-			}
-
-
-		}
-
-
-
-
-
-
-		if ( ($old_web_state=='For Sale' and $web_state!='For Sale') or ($old_web_state!='For Sale' and  $web_state=='For Sale' )  ) {
-
-			if (isset($this->editor['User Key'])and is_numeric($this->editor['User Key'])  )
-				$user_key=$this->editor['User Key'];
-			else
-				$user_key=0;
-
-			//------
-
-			$sql=sprintf("select UNIX_TIMESTAMP(`Date`) as date,`Product Availability Key` from `Product Availability Timeline` where `Product ID`=%d  order by `Date`  desc limit 1",
-				$this->id
-			);
-
-
-
-			if ($result=$this->db->query($sql)) {
-				if ($row = $result->fetch()) {
-					$last_record_key=$row['Product Availability Key'];
-					$last_record_date=$row['date'];
-				}else {
-					$last_record_key=false;
-					$last_record_date=false;
-				}
-			}else {
-				print_r($error_info=$this->db->errorInfo());
-				exit;
-			}
-
-
-
-
-			$new_date_formated=gmdate('Y-m-d H:i:s');
-			$new_date=gmdate('U');
-
-			$sql=sprintf("insert into `Product Availability Timeline`  (`Product ID`,`Store Key`,`Department Key`,`Family Key`,`User Key`,`Date`,`Availability`,`Web State`) values (%d,%d,%d,%d,%d,%s,%s,%s) ",
-				$this->id,
-				$this->data['Product Store Key'],
-				$this->data['Product Main Department Key'],
-				$this->data['Product Family Key'],
-				$user_key,
-				prepare_mysql($new_date_formated),
-				prepare_mysql(($web_state=='For Sale'?'Yes':'No')),
-				prepare_mysql($web_state)
-
-			);
-			$this->db->exec($sql);
-
-			if ($last_record_key) {
-				$sql=sprintf("update `Product Availability Timeline` set `Duration`=%d where `Product Availability Key`=%d",
-					$new_date-$last_record_date,
-					$last_record_key
-
-				);
-				$this->db->exec($sql);
-
-			}
-
-			//------
-
-			if ($web_state=='For Sale') {
-				$sql=sprintf("update `Email Site Reminder Dimension` set `Email Site Reminder State`='Ready' where `Email Site Reminder State`='Waiting' and `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d ",
-					$this->id
-				);
-
-			}else {
-				$sql=sprintf("update `Email Site Reminder Dimension` set `Email Site Reminder State`='Waiting' where `Email Site Reminder State`='Ready' and `Trigger Scope`='Back in Stock' and `Trigger Scope Key`=%d ",
-					$this->id
-				);
-
-			}
-			$this->db->exec($sql);
-
-
-		}
-
-
-
-		if ( !($this->get('Product Status')=='Active' or $this->get('Product Status')=='Discontinuing') or $this->get('Product Web Configuration')=='Offline' ) {
-			$_state='Offline';
-		}else {
-			$_state='Online';
-		}
-
-
-
-		foreach ($this->get_pages('objects') as $page) {
-
-
-
-			$page->update(array('Page State'=>$_state), 'no_history');
-		}
-
-
-
-
-	}
 
 
 	function update_pages_numbers() {
@@ -2393,7 +2424,7 @@ class Product extends Asset{
 
 		}
 
-		$this->update_web_state();
+		$this->update_availability();
 
 
 	}

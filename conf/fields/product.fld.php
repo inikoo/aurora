@@ -25,7 +25,12 @@ $options_Packing_Group=array(
 );
 
 $options_status=array('Active'=>_('Active'), 'Suspended'=>_('Suspended'), 'Discontinued'=>_('Discontinued'));
-$options_web_configuration=array( 'Online Auto'=>_('Automatic'), 'Online Force For Sale'=>_('For sale').' <i class="fa fa-thumb-tack" aria-hidden="true"></i>' , 'Online Force Out of Stock'=>_('Out of stock'), 'Offline'=>_('Offline'));
+$options_web_configuration=array(
+	'Online Auto'=>_('Automatic'),
+//	'Online Force For Sale'=>_('For sale').' <i class="fa fa-thumb-tack" aria-hidden="true"></i>' ,
+	'Online Force Out of Stock'=>_('Out of stock').' <i class="fa fa-thumb-tack" aria-hidden="true"></i>',
+	'Offline'=>_('Offline')
+);
 
 
 $parts_data=$object->get_parts_data();
@@ -302,7 +307,7 @@ $product_fields=array(
 
 			),
 
-		array(
+			array(
 				'id'=>'Product_Webpage_Name',
 				'edit'=>($edit?'string':''),
 
@@ -310,7 +315,7 @@ $product_fields=array(
 				'formatted_value'=>$object->get('Webpage Name'),
 				'label'=>ucfirst($object->get_field_label('Product Webpage Name')),
 				'required'=>true,
-				'type'=>'value'
+				'type'=>''
 
 
 			),
@@ -344,9 +349,31 @@ $product_fields=array(
 				'formatted_value'=>$object->get('Product Description'),
 				'label'=>ucfirst($object->get_field_label('Product Description')),
 				'required'=>false,
-				'type'=>'value'
+				'type'=>''
 			),
 
+
+			array(
+				'id'=>'Webpage_See_Also',
+				'edit'=>'webpage_see_also',
+				'value'=>'' ,
+				'formatted_value'=>$object->get('Webpage See Also') ,
+				'label'=>_('See also links'),
+				'required'=>false,
+				'type'=>''
+			),
+		
+		/*
+			array(
+				'id'=>'Webpage_Related_Products',
+				'edit'=>'webpage_related_products',
+				'value'=>'' ,
+				'formatted_value'=>$object->get('Webpage Related Products') ,
+				'label'=>_('Related products links'),
+				'required'=>false,
+				'type'=>''
+			)
+*/
 
 
 		)

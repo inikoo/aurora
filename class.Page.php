@@ -705,8 +705,132 @@ class Page extends DB_Table {
 
 	function update_field_switcher($field, $value, $options='', $metadata='') {
 
-
 		switch ($field) {
+
+		case 'Related Products':
+
+			$value=json_decode($value, true);
+//print_r($value);
+
+$product_page_keys=array();
+			foreach ($value as $product_id) {
+
+				
+				$sql=sprintf('select `Page Key` from `Page Store Dimension` where `Page Store Section Type`="Product"  and  `Page Parent Key`=%d ', $product_id);
+
+				if ($result=$this->db->query($sql)) {
+					if ($row = $result->fetch()) {
+						$product_page_keys[ $product_id]=$row['Page Key'];
+					}else{
+					    $this->error=true;
+					    $this->msg='Product and/or page no found';
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
+				}
+
+
+			}
+
+
+
+
+			$sql=sprintf('delete from `Webpage Related Product Bridge` where `Webpage Related Product Page Key`=%d %s',
+				$this->id,
+				(
+					count($value)>0?
+					sprintf('and `Webpage Related Product Product ID` not in (%s)', join(',', $value))
+					:'')
+			);
+//print $sql;
+			$this->db->exec($sql);
+
+			$order_value=1;
+			foreach ($value as $product_id) {
+
+
+
+
+				$sql=sprintf('insert into  `Webpage Related Product Bridge` (`Webpage Related Product Page Key`,`Webpage Related Product Product ID`,`Webpage Related Product Product Page Key`,`Webpage Related Product Order`) values (%d,%d,%d,%d)  ON DUPLICATE KEY UPDATE `Webpage Related Product Order`=%d ',
+					$this->id,
+					$product_id,
+					$product_page_keys[$product_id],
+					$order_value,
+					$order_value
+
+
+				);
+				
+				//print "$sql\n";
+				$this->db->exec($sql);
+				$order_value++;
+			}
+
+
+
+
+
+
+
+			break;
+
+		case 'See Also':
+
+			$value=json_decode($value, true);
+			// print_r($value);
+
+			$this->update_field('Page Store See Also Type', $value['type'], $options);
+			$updated=$this->updated;
+			if ($value['type']=='Auto') {
+				$this->update_field('Number See Also Links', $value['number_links'], $options);
+				if ($this->updated) {
+					$updated=$this->updated;
+				}
+
+				//if ($updated) {
+				$this->update_see_also();
+				//}
+
+				$this->updated=$updated;
+			}else {
+
+				//print_r($value);
+
+
+				$sql=sprintf('delete from `Page Store See Also Bridge` where `Page Store Key`=%d %s',
+					$this->id,
+					(
+						count($value['manual_links'])>0?
+						sprintf('and `Page Store See Also Key` not in (%s)', join(',', $value['manual_links']))
+						:'')
+				);
+
+				$this->db->exec($sql);
+
+				$order_value=1;
+				foreach ($value['manual_links'] as $link_key) {
+					$sql=sprintf('insert into  `Page Store See Also Bridge` (`Page Store Key`,`Page Store See Also Key`,`Correlation Type`,`Correlation Value`,`Webpage See Also Order`) values (%d,%d,"Manual",NULL,%d)  ON DUPLICATE KEY UPDATE `Correlation Type`="Manual",`Webpage See Also Order`=%d ',
+						$this->id,
+						$link_key,
+						$order_value,
+						$order_value
+
+
+					);
+					$this->db->exec($sql);
+					//print "$sql\n";
+					$order_value++;
+				}
+
+
+
+				$this->update_field('Number See Also Links', count($value['manual_links'] ), $options);
+
+
+			}
+
+			break;
 
 		case 'Found In':
 
@@ -745,6 +869,13 @@ class Page extends DB_Table {
 
 
 			break;
+		case('Page See Also Last Updated'):
+
+			$this->update_field($field, $value, $options);
+
+
+
+			break;
 
 		case('footer_type'):
 			$this->update_field('Page Footer Type', $value, $options);
@@ -778,8 +909,8 @@ class Page extends DB_Table {
 		case('Page Store Title'):
 
 		case('store_title'):
-		
-		
+
+
 			$this->update_field('Page Store Title', $value, $options);
 			$this->update_store_search();
 			break;
@@ -825,7 +956,6 @@ class Page extends DB_Table {
 			if (array_key_exists($field, $base_data)) {
 
 				if ($value!=$this->data[$field]) {
-
 
 
 					$this->update_field($field, $value, $options);
@@ -1165,11 +1295,157 @@ class Page extends DB_Table {
 	}
 
 
+	
+	
+	function get_related_products_data() {
+
+		$related_products=array();
+		$sql=sprintf("select `Webpage Related Product Product ID`,`Webpage Related Product Product Page Key`  from  `Webpage Related Product Bridge` where `Webpage Related Product Page Key`=%d order by `Webpage Related Product Order` ",
+			$this->id);
+
+
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+				$related_products_page=new Page($row['Webpage Related Product Product Page Key']);
+				if ($related_products_page->id) {
+
+					
+					$link='<a href="http://'.$related_products_page->data['Page URL'].'">'.$related_products_page->data['Page Short Title'].'</a>';
+
+					$related_products[]=array(
+						'link'=>$link,
+						'label'=>$related_products_page->data['Page Short Title'],
+						'url'=>$related_products_page->data['Page URL'],
+						'key'=>$related_products_page->id,
+						'product_id'=>$row['Webpage Related Product Product ID'],
+						'code'=>$related_products_page->data['Page Code'],
+						
+						'image_key'=>$related_products_page->data['Page Store Image Key']
+
+					);
+				}
+
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+	
+
+
+
+
+		$data=array(
+			'website_key'=>$this->get('Page Site Key'),
+			'webpage_key'=>$this->id,
+			'links'=>$related_products
+		);
+
+		return $data;
+	}
+	
+	function get_see_also_data() {
+
+		$see_also=array();
+		$sql=sprintf("select `Page Store See Also Key`,`Correlation Type`,`Correlation Value` from  `Page Store See Also Bridge` where `Page Store Key`=%d order by `Webpage See Also Order` ",
+			$this->id);
+
+
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+				$see_also_page=new Page($row['Page Store See Also Key']);
+				if ($see_also_page->id) {
+
+					if ($this->data['Page Store See Also Type']=='Manual') {
+						$formatted_correlation_type=_('Manual');
+						$formatted_correlation_value='';
+					}else {
+
+						switch ($row['Correlation Type']) {
+						case 'Manual':
+							$formatted_correlation_type=_('Manual');
+							$formatted_correlation_value='';
+							break;
+						case 'Sales':
+							$formatted_correlation_type=_('Sales');
+							$formatted_correlation_value=percentage($row['Correlation Value'], 1);
+							break;
+						case 'Semantic':
+							$formatted_correlation_type=_('Semantic');
+							$formatted_correlation_value=number($row['Correlation Value']);
+							break;
+						case 'New':
+							$formatted_correlation_type=_('New');
+							$formatted_correlation_value=number($row['Correlation Value']);
+							break;
+						default:
+							$formatted_correlation_type=$row['Correlation Type'];
+							$formatted_correlation_value=number($row['Correlation Value']);
+							break;
+						}
+					}
+					//if ($site_url)
+					//$link='<a href="http://'.$site_url.'/'.$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>';
+
+					//else
+					$link='<a href="http://'.$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>';
+
+					$see_also[]=array(
+						'link'=>$link,
+						'label'=>$see_also_page->data['Page Short Title'],
+						'url'=>$see_also_page->data['Page URL'],
+						'key'=>$see_also_page->id,
+						'code'=>$see_also_page->data['Page Code'],
+						'correlation_type'=>$row['Correlation Type'],
+						'correlation_formatted'=>$formatted_correlation_type,
+						'correlation_value'=>$row['Correlation Value'],
+						'correlation_formatted_value'=>$formatted_correlation_value,
+						'image_key'=>$see_also_page->data['Page Store Image Key']
+
+					);
+				}
+
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+		if ($this->data['Page See Also Last Updated']=='') {
+			$last_updated='';
+		}else {
+			$last_updated= strftime("%a %e %b %Y %H:%M %Z", strtotime($this->data['Page See Also Last Updated'].' +0:00'));
+		}
+
+
+
+
+		$data=array(
+			'website_key'=>$this->get('Page Site Key'),
+			'webpage_key'=>$this->id,
+			'type'=>$this->get('Page Store See Also Type'),
+			'number_links'=>$this->get('Number See Also Links'),
+			'last_updated'=>$last_updated,
+			'links'=>$see_also
+		);
+
+		return $data;
+	}
+
 
 	function get_see_also() {
 
 		$see_also=array();
-		$sql=sprintf("select `Page Store See Also Key`,`Correlation Type`,`Correlation Value` from  `Page Store See Also Bridge` where `Page Store Key`=%d order by `Correlation Value` desc ",
+		$sql=sprintf("select `Page Store See Also Key`,`Correlation Type`,`Correlation Value` from  `Page Store See Also Bridge` where `Page Store Key`=%d order by `Webpage See Also Order` ",
 			$this->id);
 		$res=mysql_query($sql);
 
@@ -1481,25 +1757,9 @@ class Page extends DB_Table {
 		case 'Family Catalogue':
 
 
-
+			include_once 'class.Family.php';
 
 			$family=new Family($this->data['Page Parent Key']);
-
-
-			$sql=sprintf('select * from `Product Family Dimension` where `Product Family Key`=%d ', $this->data['Page Parent Key']);
-			if ($result=$this->db->query($sql)) {
-				if ($family = $result->fetch()) {
-
-				}else {
-
-				}
-
-
-			}else {
-				print_r($error_info=$this->db->errorInfo());
-				exit;
-			}
-
 
 			$sql=sprintf("select * from `Product Family Sales Correlation` where `Family A Key`=%d order by `Correlation` desc ",
 				$this->data['Page Parent Key']);
@@ -1511,25 +1771,8 @@ class Page extends DB_Table {
 
 
 
-				//$family=new Family($row['Family B Key']);
-
-
-				$sql=sprintf('select * from `Product Family Dimension` where `Product Family Key`=%d ', $row['Family B Key']);
-				if ($result=$this->db->query($sql)) {
-					if ($family = $result->fetch()) {
-
-					}else {
-
-					}
-
-
-				}else {
-					print_r($error_info=$this->db->errorInfo());
-					exit;
-				}
-
-
-				if ($family['Product Family Record Type']=='Normal' or $family['Product Family Record Type']=='Discontinuing') {
+				$family=new Family($row['Family B Key']);
+				if ($family->data['Product Family Record Type']=='Normal' or $family->data['Product Family Record Type']=='Discontinuing') {
 
 					$page_keys=$family->get_pages_keys();
 
@@ -1538,7 +1781,7 @@ class Page extends DB_Table {
 
 						$see_also_page=new Page($see_also_page_key);
 						if ($see_also_page->id and $see_also_page->data['Page State']=='Online' and $see_also_page->data['Page Stealth Mode']=='No'  and $see_also_page->data['Page Store Image Key']  ) {
-							$see_also[$see_also_page_key]=array('type'=>'Sales', 'value'=>$row['Correlation']);
+							$see_also[$see_also_page_key]=array('type'=>'Sales', 'value'=>$row['Correlation'], 'page_key'=>$see_also_page_key);
 							$number_links=count($see_also);
 							//print "$number_links>=$max_links\n";
 							if ($number_links>=$max_sales_links  )
@@ -1572,7 +1815,7 @@ class Page extends DB_Table {
 
 				if (  (mt_rand(0, mt_getrandmax() - 1) / mt_getrandmax())<$umbral  ) {
 
-					$see_also[$row['Page Key']]=array('type'=>'New', 'value'=>1);
+					$see_also[$row['Page Key']]=array('type'=>'New', 'value'=>1, 'page_key'=>$row['Page Key']);
 				}
 			}
 
@@ -1597,7 +1840,7 @@ class Page extends DB_Table {
 							$see_also_page_key=array_pop($page_keys);
 							$see_also_page=new Page($see_also_page_key);
 							if ($see_also_page->id and $see_also_page->data['Page State']=='Online' and $see_also_page->data['Page Stealth Mode']=='No' and $see_also_page->data['Page Store Image Key']   ) {
-								$see_also[$see_also_page_key]=array('type'=>'Semantic', 'value'=>$row['Weight']);
+								$see_also[$see_also_page_key]=array('type'=>'Semantic', 'value'=>$row['Weight'], 'page_key'=>$see_also_page_key);
 								$number_links=count($see_also);
 								if ($number_links>=$max_links)
 									break;
@@ -1615,11 +1858,10 @@ class Page extends DB_Table {
 
 			//print_r($see_also);
 
-
 			break;
-
 		case 'Product Description':
 
+			include_once 'class.Product.php';
 			$product=new Product('id', $this->data['Page Parent Key']);
 			$sql=sprintf("select * from `Product Sales Correlation` where `Product A ID`=%d order by `Correlation` desc",
 				$this->data['Page Parent Key']);
@@ -1635,7 +1877,7 @@ class Page extends DB_Table {
 						$see_also_page_key=array_pop($page_keys);
 						$see_also_page=new Page($see_also_page_key);
 						if ($see_also_page->id and $see_also_page->data['Page State']=='Online' and $see_also_page->data['Page Stealth Mode']=='No'     ) {
-							$see_also[$see_also_page_key]=array('type'=>'Sales', 'value'=>$row['Correlation']);
+							$see_also[$see_also_page_key]=array('type'=>'Sales', 'value'=>$row['Correlation'], 'page_key'=>$see_also_page_key);
 							$number_links=count($see_also);
 							if ($number_links>=$max_links)
 								break;
@@ -1651,16 +1893,16 @@ class Page extends DB_Table {
 			}
 
 
-			$sql=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where  `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product Family Key`=%d order by `Product Total Acc Customers` desc  ",
 
-				$product->data['Product Family Key']
+			$sql=sprintf("select P.`Product ID`,P.`Product Code`,`Product Web State` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where  `Product Status`='Active' and `Product Web State`='For Sale'  and `Product Family Category Key`=%d order by `Product Total Acc Customers` desc  ",
+
+				$product->data['Product Family Category Key']
 			);
 
 
 			$res=mysql_query($sql);
 
 			while ($row=mysql_fetch_assoc($res)) {
-
 				if ($row['Product ID']==$product->id) continue;
 
 
@@ -1669,19 +1911,58 @@ class Page extends DB_Table {
 					$_product=new Product('id', $row['Product ID']);
 
 
-					if ($_product->data['Product Web State']=='For Sale' and $_product->data['Product Main Image Key']) {
 
-						$page_keys=$_product->get_pages();
-						$see_also_page_key=array_pop($page_keys);
-						$see_also_page=new Page($see_also_page_key);
-						if ($see_also_page->id and $see_also_page->data['Page State']=='Online' and $see_also_page->data['Page Stealth Mode']=='No') {
-							$see_also[$see_also_page_key]=array('type'=>'Same Familey', 'value'=>0.001);
-							$number_links=count($see_also);
-							if ($number_links>=$max_links)
-								break;
-						}
+					$page_keys=$_product->get_pages();
+					$see_also_page_key=array_pop($page_keys);
+					$see_also_page=new Page($see_also_page_key);
+					if ($see_also_page->id and $see_also_page->data['Page State']=='Online' and $see_also_page->data['Page Stealth Mode']=='No') {
+						$see_also[$see_also_page_key]=array('type'=>'Same Family', 'value'=>rand(), 'page_key'=>$see_also_page_key);
+						$number_links=count($see_also);
+						if ($number_links>=$max_links)
+							break;
 					}
 				}
+
+			}
+
+
+			if ($number_links>=$max_links) {
+				break;
+			}
+
+			$sql=sprintf("select P.`Product ID`,P.`Product Code`,`Product Web State` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where  `Product Status`='Active' and `Product Web State`='For Sale'   and `Product Store Key`=%d  ORDER BY RAND() LIMIT 0, %d",
+
+				$product->data['Product Store Key'],
+				($max_links-$number_links)
+			);
+			$res=mysql_query($sql);
+
+
+
+			while ($row=mysql_fetch_assoc($res)) {
+				if ($row['Product ID']==$product->id) continue;
+
+
+
+				if (!array_key_exists($row['Product ID'], $see_also)) {
+					$_product=new Product('id', $row['Product ID']);
+
+
+
+					$page_keys=$_product->get_pages();
+					$see_also_page_key=array_pop($page_keys);
+					$see_also_page=new Page($see_also_page_key);
+
+
+
+					if ($see_also_page->id and $see_also_page->data['Page State']=='Online' and $see_also_page->data['Page Stealth Mode']=='No') {
+						$see_also[$see_also_page_key]=array('type'=>'Same Store', 'value'=>0.001, 'page_key'=>$see_also_page_key);
+						$number_links=count($see_also);
+						if ($number_links>=$max_links)
+							break;
+					}
+				}
+
 			}
 
 
@@ -1694,8 +1975,28 @@ class Page extends DB_Table {
 
 		$sql=sprintf("delete from `Page Store See Also Bridge`where `Page Store Key`=%d ",
 			$this->id);
-		mysql_query($sql);
+		$this->db->exec($sql);
+
+
+
+
 		$count=0;
+
+		$order_value=1;
+
+
+		//print_r($see_also);
+
+
+		foreach ($see_also as $key => $row) {
+			$correlation[$key]  = $row['value'];
+		}
+
+		// print_r($correlation);
+
+		// array_multisort($correlation, SORT_DESC, $see_also);
+		// print_r($see_also);
+
 
 
 		foreach ($see_also  as $see_also_page_key=>$see_also_data) {
@@ -1703,16 +2004,21 @@ class Page extends DB_Table {
 			if ($count>=$max_links)
 				break;
 
-			$sql=sprintf("insert  into `Page Store See Also Bridge` values (%d,%d,%s,%f) ",
+			$sql=sprintf("insert  into `Page Store See Also Bridge` (`Page Store Key`,`Page Store See Also Key`,`Correlation Type`,`Correlation Value`,`Webpage See Also Order`)  values (%d,%d,%s,%f,%d) ",
 				$this->id,
-				$see_also_page_key,
+				$see_also_data['page_key'],
 				prepare_mysql($see_also_data['type']),
-				$see_also_data['value']
+				$see_also_data['value'],
+				$order_value
 			);
-			mysql_query($sql);
+			$this->db->exec($sql);
 			$count++;
+			$order_value++;
 			//print "$sql\n";
 		}
+
+
+		$this->update(array('Page See Also Last Updated'=>gmdate('Y-m-d H:i:s')), 'no_history' );
 
 	}
 
@@ -4642,7 +4948,7 @@ class Page extends DB_Table {
 
 
 		$number_found_in_links=0;
-		
+
 		$sql=sprintf("select count(*) as num from  `Page Store Found In Bridge` where `Page Store Key`=%d", $this->id);
 
 

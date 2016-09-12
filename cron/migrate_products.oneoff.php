@@ -50,21 +50,66 @@ create_categories($db,$editor);
 fix_product_categories($db);
 migrate_historic_products($db);
 update_fields_from_parts($db);
-
-*/
 update_number_of_parts($db);
-function update_number_of_parts($db) {
+*/
+
+
+update_web_configuration($db);
+
+
+
+function update_web_configuration($db) {
 
 	$sql=sprintf('select `Product ID` from `Product Dimension` order by `Product ID` desc ');
 
 
 	if ($result=$db->query($sql)) {
 		foreach ($result as $row) {
-			$product=new Product('id',$row['Product ID']);
-         
-			$product->update_part_numbers();
+			$product=new Product('id', $row['Product ID']);
 
-  print $product->id."\r";
+
+
+			if ($product->get('Product Web Configuration')=='Online Auto') {
+
+				if ($product->get('Product Number of Parts')==1) {
+
+                    $parts=$product->get_parts('objects');
+					$part=array_pop($parts);
+
+
+
+					//'Online Force Out of Stock','Online Auto','Offline','Online Force For Sale'
+
+					if ($part->get('Part Available for Products Configuration')=='Yes'  ) {
+
+
+						$product->update(array('Product Web Configuration'=>'Online Force For Sale'), 'no_fork no_history');
+//print_r($part);
+//					print_r($product);
+					//exit;
+
+					}elseif ($part->get('Part Available for Products Configuration')=='No'  ) {
+
+
+						$product->update(array('Product Web Configuration'=>'Online Force Out of Stock'), 'no_fork no_history');
+//print_r($part);
+//					print_r($product);
+					//exit;
+
+					}
+
+
+					
+
+
+				}
+
+
+			}
+
+			//$product->update_part_numbers();
+			//$product->update_web_state();
+			print $product->id."\r";
 		}
 
 	}else {
@@ -76,6 +121,32 @@ function update_number_of_parts($db) {
 
 }
 
+
+
+function update_number_of_parts($db) {
+
+	$sql=sprintf('select `Product ID` from `Product Dimension` order by `Product ID` desc ');
+
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+			$product=new Product('id', $row['Product ID']);
+
+			$product->update_part_numbers();
+			$product->update_web_state();
+			print $product->id."\r";
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+}
+
+
 function update_fields_from_parts($db) {
 
 	$sql=sprintf('select `Part SKU` from `Part Dimension` order by `Part SKU` desc ');
@@ -84,7 +155,7 @@ function update_fields_from_parts($db) {
 	if ($result=$db->query($sql)) {
 		foreach ($result as $row) {
 			$part=new Part($row['Part SKU']);
-            print $part->id."\r";
+			print $part->id."\r";
 			$part->updated_linked_products();
 
 

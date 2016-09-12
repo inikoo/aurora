@@ -50,7 +50,7 @@ update_fields_from_parts($db);
 
 function update_web_state($db) {
 
-	$sql=sprintf('select `Product ID` from `Product Dimension` order by `Product ID` desc ');
+	$sql=sprintf('select `Product ID` from `Product Dimension` where `Product Store Key`!=9 order by `Product ID` desc ');
 
 
 	if ($result=$db->query($sql)) {
@@ -58,7 +58,7 @@ function update_web_state($db) {
 			$product=new Product('id', $row['Product ID']);
 
 			$product->update_part_numbers();
-			$product->update_web_state();
+			$product->update_availability($use_fork=false);
 			print $product->id."\r";
 		}
 

@@ -27,7 +27,16 @@ $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
 
+case 'refresh_webpage_see_also':
+	$data=prepare_values($_REQUEST, array(
+			'object'=>array('type'=>'string'),
+			'key'=>array('type'=>'key'),
 
+
+		));
+	refresh_webpage_see_also($account, $db, $user, $editor, $data, $smarty);
+
+	break;
 case 'edit_item_in_order':
 	$data=prepare_values($_REQUEST, array(
 			'field'=>array('type'=>'string'),
@@ -126,8 +135,8 @@ case 'delete_image':
 
 	delete_image($account, $db, $user, $editor, $data, $smarty);
 	break;
-	
-case 'set_as_principal_image':	
+
+case 'set_as_principal_image':
 	$data=prepare_values($_REQUEST, array(
 			'image_bridge_key'=>array('type'=>'key'),
 		));
@@ -253,23 +262,30 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 
 
-		if ($object->updated) {
+		if ($object->updated or true) {
 			$msg=sprintf('<span class="success"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $data['field'], _('Updated'));
 			if (isset($object->deleted_value)) {
 				$msg=sprintf('<span class="deleted">%s</span> <span class="discret"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $object->deleted_value,  $data['field'], _('Deleted'));
 			}
-			
-			
+
+
 			$formatted_value=$object->get($formatted_field);
-			
-			
-			
-			
+
+
+
+
 			$action='updated';
+
 
 			if ($field=='Product Parts') {
 				$smarty->assign('parts_list', $object->get_parts_data(true));
 				$update_metadata['parts_list_items']=$smarty->fetch('parts_list_items.edit.tpl');
+
+			}elseif ($field=='Webpage See Also') {
+				$smarty->assign('data', $object->get_see_also_data());
+				$smarty->assign('mode', 'edit');
+
+				$update_metadata['webpage_see_also_editor']=$smarty->fetch('webpage_see_also.edit.tpl');
 
 			}
 
@@ -524,7 +540,7 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
 		break;
 	case 'unarchive':
 		$request=$object->unarchive();
-		break;	
+		break;
 	default:
 		exit('unknown operation');
 		break;
@@ -594,7 +610,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 		$object=$parent->create_category($data['fields_data']);
 
 		// Migration -----
-/*
+		/*
 		include_once 'class.Store.php';
 		$store=new Store($parent->get('Category Store Key'));
 
@@ -692,7 +708,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
 
-	
+
 
 
 		if (!$parent->error) {
@@ -756,7 +772,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
 			// Migration -----
-/*
+			/*
 			$category=$parent;
 			if ($category->get('Category Scope')=='Product') {
 				if ($category->get('Category Subject')=='Product') {
@@ -904,8 +920,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 		if ($object->id) {
 
 			$parent->associate_subject($object->id);
-            $object->update('Part Family Category Key',$parent->id);
-        
+			$object->update('Part Family Category Key', $parent->id);
+
 
 		}else {
 
@@ -1012,7 +1028,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 			echo json_encode($response);
 			exit;
 		}
-		break;	
+		break;
 	case 'Manufacture_Task':
 		include_once 'class.Manufacture_Task.php';
 		$object=$parent->create_manufacture_task($data['fields_data']);
@@ -1433,7 +1449,7 @@ function edit_category_subject($account, $db, $user, $editor, $data, $smarty) {
 		$category->associate_subject($data['subject_key']);
 		// Migration -----
 
-/*
+		/*
 		if ($category->get('Category Scope')=='Product') {
 			if ($category->get('Category Subject')=='Product') {
 
@@ -1556,7 +1572,7 @@ function edit_category_subject($account, $db, $user, $editor, $data, $smarty) {
 		$category->disassociate_subject($data['subject_key']);
 
 		// Migration -----
-/*
+		/*
 		if ($category->get('Category Scope')=='Product') {
 			if ($category->get('Category Subject')=='Product') {
 
@@ -1815,7 +1831,7 @@ function edit_bridge($account, $db, $user, $editor, $data, $smarty) {
 		$object->disassociate_subject($data['subject_key']);
 
 		// Migration -----
-/*
+		/*
 		if ($object->get_object_name()=='Category') {
 
 
@@ -1944,6 +1960,33 @@ function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
 
 }
 
+
+function refresh_webpage_see_also($account, $db, $user, $editor, $data, $smarty) {
+
+	// remove this when class Webpage is implemented
+	$data['object']='old_page';
+
+	$object=get_object($data['object'], $data['key']);
+	$object->editor=$editor;
+
+
+	$see_also=$object->update_see_also();
+
+	$see_also_data=$object->get_see_also_data();
+
+	$links='';
+	foreach ($see_also_data['links']  as $link) {
+		$links.=sprintf('<tr class="webpage_tr"><td></td><td>%s</td></tr>', $link['code']);
+
+	}
+
+
+
+
+	$response=array('state'=>200, 'links'=>$links, 'see_also_last_updated'=>$see_also_data['last_updated']);
+	echo json_encode($response);
+
+}
 
 
 ?>

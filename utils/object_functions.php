@@ -17,7 +17,7 @@ function get_object($object_name, $key, $load_other_data=false) {
 	if ($object_name=='')return false;
 
 
-	global $account,$db;
+	global $account, $db;
 
 	switch (strtolower($object_name)) {
 	case 'account':
@@ -38,7 +38,7 @@ function get_object($object_name, $key, $load_other_data=false) {
 	case 'service':
 		include_once 'class.Product.php';
 		$object=new Product($key);
-$object->get_webpage();
+		$object->get_webpage();
 		break;
 	case 'order':
 		include_once 'class.Order.php';
@@ -59,6 +59,13 @@ $object->get_webpage();
 
 		$object=new Website($key);
 		break;
+	case 'old_page':
+		include_once 'class.Page.php';
+
+		$object=new Page($key);
+
+		break;	
+		
 	case 'page':
 	case 'webpage':
 		include_once 'class.Webpage.php';
@@ -217,11 +224,11 @@ $object->get_webpage();
 		require_once "class.SupplierDelivery.php";
 		$object=new SupplierDelivery($key);
 		$object->get_order_data();
-		break;	
+		break;
 	case 'material':
 		require_once "class.Material.php";
 		$object=new Material($key);
-		break;		
+		break;
 	default:
 		exit('need to complete E1: >'.strtolower($object_name)."<\n");
 		break;

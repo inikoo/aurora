@@ -186,6 +186,15 @@
 		
 		{include file="parts_list.edit.tpl" field=$field parts_list=$object->get_parts_data(true) mode='edit'} 
 		
+		{elseif $edit=='webpage_see_also'  } 
+		<div class="webpage_see_also_editor">
+		{include file="webpage_see_also.edit.tpl"  data=$object->get_see_also_data() mode='edit'} 
+		</div>
+		{elseif $edit=='webpage_related_products'  } 
+		<div class="webpage_related_products_editor">
+		{include file="webpage_related_products.edit.tpl"  data=$object->get_related_products_data() mode='edit'} 
+		</div>
+		
 		{elseif $edit=='textarea'  } 
 		
 	
