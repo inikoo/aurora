@@ -45,8 +45,10 @@ $editor=array(
 );
 
 
-update_web_state($db);
+
 update_fields_from_parts($db);
+print "updated fiels from parts\n";
+update_web_state($db);
 
 function update_web_state($db) {
 
