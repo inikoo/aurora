@@ -2,8 +2,12 @@
 
 	<div id="asset_data">
 		<div class="data_container">
-			
-			<div class="data_field" >
+			<ul class="tags Categories">
+			{foreach from=$category->get_category_data() item=item key=key} 
+			<li><span class="button" onclick="change_view('category/{$item.category_key}')" title="{$item.label}">{$item.code}</span></li>
+			{/foreach} 
+		</ul>
+			<div class="data_field" style="clear:both">
 				<h1>{$category->get('Label')}</h1>
 			</div>
 			

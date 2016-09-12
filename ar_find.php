@@ -92,6 +92,7 @@ case 'find_object':
 		find_special_category('Family', $db, $account, $memcache_ip, $data);
 		break;
 	case 'departments':
+	
 		find_special_category('Department', $db, $account, $memcache_ip, $data);
 		break;
 	case 'part_families':

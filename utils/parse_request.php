@@ -476,7 +476,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 				$parent='category';
 				$parent_key=$category->get('Category Parent Key');
 
-				switch ($category->get('Category Subject')) {
+				switch ($category->get('Category Scope')) {
 				case 'Customer':
 					$module='customers';
 					$section='category';
