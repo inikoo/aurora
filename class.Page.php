@@ -710,20 +710,20 @@ class Page extends DB_Table {
 		case 'Related Products':
 
 			$value=json_decode($value, true);
-//print_r($value);
+			//print_r($value);
 
-$product_page_keys=array();
+			$product_page_keys=array();
 			foreach ($value as $product_id) {
 
-				
+
 				$sql=sprintf('select `Page Key` from `Page Store Dimension` where `Page Store Section Type`="Product"  and  `Page Parent Key`=%d ', $product_id);
 
 				if ($result=$this->db->query($sql)) {
 					if ($row = $result->fetch()) {
 						$product_page_keys[ $product_id]=$row['Page Key'];
-					}else{
-					    $this->error=true;
-					    $this->msg='Product and/or page no found';
+					}else {
+						$this->error=true;
+						$this->msg='Product and/or page no found';
 					}
 				}else {
 					print_r($error_info=$this->db->errorInfo());
@@ -743,28 +743,30 @@ $product_page_keys=array();
 					sprintf('and `Webpage Related Product Product ID` not in (%s)', join(',', $value))
 					:'')
 			);
-//print $sql;
+			//print $sql;
 			$this->db->exec($sql);
 
 			$order_value=1;
 			foreach ($value as $product_id) {
 
+				if (isset($product_page_keys[$product_id])) {
 
 
+					$sql=sprintf('insert into  `Webpage Related Product Bridge` (`Webpage Related Product Page Key`,`Webpage Related Product Product ID`,`Webpage Related Product Product Page Key`,`Webpage Related Product Order`) values (%d,%d,%d,%d)  ON DUPLICATE KEY UPDATE `Webpage Related Product Order`=%d ',
+						$this->id,
+						$product_id,
+						$product_page_keys[$product_id],
+						$order_value,
+						$order_value
 
-				$sql=sprintf('insert into  `Webpage Related Product Bridge` (`Webpage Related Product Page Key`,`Webpage Related Product Product ID`,`Webpage Related Product Product Page Key`,`Webpage Related Product Order`) values (%d,%d,%d,%d)  ON DUPLICATE KEY UPDATE `Webpage Related Product Order`=%d ',
-					$this->id,
-					$product_id,
-					$product_page_keys[$product_id],
-					$order_value,
-					$order_value
 
+					);
 
-				);
-				
-				//print "$sql\n";
-				$this->db->exec($sql);
-				$order_value++;
+					//print "$sql\n";
+					$this->db->exec($sql);
+					$order_value++;
+
+				}
 			}
 
 
@@ -1295,8 +1297,8 @@ $product_page_keys=array();
 	}
 
 
-	
-	
+
+
 	function get_related_products_data() {
 
 		$related_products=array();
@@ -1311,7 +1313,7 @@ $product_page_keys=array();
 				$related_products_page=new Page($row['Webpage Related Product Product Page Key']);
 				if ($related_products_page->id) {
 
-					
+
 					$link='<a href="http://'.$related_products_page->data['Page URL'].'">'.$related_products_page->data['Page Short Title'].'</a>';
 
 					$related_products[]=array(
@@ -1321,7 +1323,7 @@ $product_page_keys=array();
 						'key'=>$related_products_page->id,
 						'product_id'=>$row['Webpage Related Product Product ID'],
 						'code'=>$related_products_page->data['Page Code'],
-						
+
 						'image_key'=>$related_products_page->data['Page Store Image Key']
 
 					);
@@ -1335,7 +1337,7 @@ $product_page_keys=array();
 		}
 
 
-	
+
 
 
 
@@ -1348,7 +1350,8 @@ $product_page_keys=array();
 
 		return $data;
 	}
-	
+
+
 	function get_see_also_data() {
 
 		$see_also=array();
