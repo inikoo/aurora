@@ -629,6 +629,67 @@ class Category extends DB_Table{
 		case 'Product':
 
 			switch ($key) {
+
+
+			case 'Webpage Related Products':
+
+				$related_products_data=$this->webpage->get_related_products_data();
+				$related_products='';
+
+
+				foreach ($related_products_data['links'] as $link) {
+					$related_products.=$link['code'].', ';
+				}
+
+				$related_products=preg_replace('/, $/', '', $related_products);
+
+				return $related_products;
+
+
+
+				break;
+			case 'Webpage See Also':
+
+				$see_also_data=$this->webpage->get_see_also_data();
+				$see_also='';
+				if ($see_also_data['type']=='Auto') {
+					$see_also=_('Automatic').': ';
+				}
+
+				if (count($see_also_data['links'])==0) {
+					$see_also.=', '._('none');
+				}else {
+					foreach ($see_also_data['links'] as $link) {
+						$see_also.=$link['code'].', ';
+					}
+				}
+				$see_also=preg_replace('/, $/', '', $see_also);
+
+				return $see_also;
+
+
+
+				break;
+
+			case 'Category Webpage Name':
+			case 'Webpage Name':
+
+
+				return $this->webpage->get('Page Store Title');
+
+				break;
+			case 'Website Node Parent Key':
+
+				return $this->webpage->get('Found In Page Key');
+
+				break;
+			case 'Category Website Node Parent Key':
+
+				return $this->webpage->get('Page Found In Page Key');
+
+				break;
+
+
 			case 'Description':
 				return htmlentities($this->data['Product Category '.$key]);
 				break;
@@ -1221,7 +1282,51 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 				$this->update_subject_field($field, $value, $options);
 			}
 		}
+		else {
 
+			switch ($field) {
+			case 'Webpage See Also':
+$this->get_webpage();
+				$this->webpage->update(array(
+						'See Also'=>$value
+					), $options);
+
+				$this->updated=$this->webpage->updated;
+
+				break;
+			case 'Webpage Related Products':
+$this->get_webpage();
+				$this->webpage->update(array(
+						'Related Products'=>$value
+					), $options);
+
+				$this->updated=$this->webpage->updated;
+
+				break;
+			case 'Category Webpage Name':
+$this->get_webpage();
+				$this->webpage->update(array(
+						'Page Store Title'=>$value,
+						'Page Short Title'=>$value,
+						'Page Title'=>$value
+					), $options);
+
+				$this->updated=$this->webpage->updated;
+
+				break;
+			case 'Category Website Node Parent Key':
+$this->get_webpage();
+				$this->get_webpage();
+				$this->webpage->update(array('Found In'=>array($value)), $options);
+
+				$this->updated=true;
+
+				break;
+
+
+			}
+
+		}
 
 
 	}

@@ -28,6 +28,7 @@ $object_fields=get_object_fields($category, $db, $user, $smarty,
 
 $smarty->assign('state', $state);
 $smarty->assign('object_fields', $object_fields);
+$smarty->assign('object', $category);
 
 
 $html=$smarty->fetch('edit_object.tpl');

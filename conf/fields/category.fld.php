@@ -99,10 +99,13 @@ case 'Product':
 
 
 
-
-
-	include 'category.product.fld.php';
-	$category_fields=array_merge($category_fields, $category_product_fields);
+	$object->get_webpage();
+		include 'category.product.fld.php';
+		
+		
+		
+		
+$category_fields=array_merge($category_fields, $category_product_fields);
 
 
 

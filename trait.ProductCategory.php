@@ -12,6 +12,92 @@
 
 trait ProductCategory {
 
+	function get_see_also_data() {
+		return $this->webpage->get_see_also_data();
+	}
+
+
+	function get_related_products_data() {
+		return $this->webpage->get_related_products_data();
+
+	}
+
+	function get_webpage() {
+
+		$page_key=0;
+		include_once 'class.Page.php';
+
+
+		$category_key=$this->id;
+
+include_once('class.Store.php');
+$store=new Store($this->get('Category Store Key'));
+
+		// Migration
+		if ($this->get('Category Root Key')==$store->get('Store Family Category Key')) {
+
+
+			$sql=sprintf("select * from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Code`=%s",
+				$this->get('Category Store Key'),
+				prepare_mysql($this->get('Category Code'))
+			);
+
+
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+
+					$category_key=$row['Product Family Key'];
+				}
+			}
+
+
+		}
+
+
+
+
+		$sql=sprintf('select `Page Key` from `Page Store Dimension` where `Page Store Section Type`="Family"  and  `Page Parent Key`=%d ', $category_key);
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$page_key=$row['Page Key'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+		$this->webpage=new Page($row['Page Key']);
+		$this->webpage->editor=$this->editor;
+
+
+		// Temporal should be take off bcuse page should be created when product is createss
+		/*
+		if (!$this->webpage->id) {
+
+			$page_data=array(
+				'Page Store Content Display Type'=>'Template',
+				'Page Store Content Template Filename'=>'product',
+				'Page State'=>'Online'
+
+			);
+			include_once 'class.Store.php';
+
+			$store=new Store($this->get('Product Store Key'));
+
+			foreach ($store->get_sites('objects') as $site) {
+
+				$product_page_key=$site->add_product_page($this->id, $page_data);
+				$this->webpage=new Page($product_page_key);
+			}
+
+
+		}
+		
+		*/
+
+	}
+
+
 	function create_product_timeseries($data) {
 
 
@@ -118,7 +204,7 @@ trait ProductCategory {
 
 
 	function get_product_timeseries_record_data($timeseries, $date_frequency_period) {
-		
+
 		$product_ids='';
 		$sql=sprintf('select `Subject Key`,`Subject` from `Category Bridge` where `Category Key`=%d and `Subject Key`>0 ', $this->id);
 		$product_ids='';

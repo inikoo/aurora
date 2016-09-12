@@ -10,10 +10,15 @@
  Version 3.0
 */
 
+
+
+
 $public_options=array(
 	'Yes'=>_('Yes'), 'No'=>_('No')
 );
 asort($public_options);
+
+
 
 
 $category_product_fields=array(
@@ -32,6 +37,48 @@ $category_product_fields=array(
 				'type'=>'value'
 			),
 
+
+			
+
+		
+
+		)
+	),
+	
+		array(
+		'label'=>_('Webpage').' <span class="no_title">'.$object->webpage->get('Code').'</span>',
+		'show_title'=>true,
+		'fields'=>array(
+
+
+			array(
+				'id'=>'Category_Website_Node_Parent_Key',
+				'edit'=>'dropdown_select',
+				'scope'=>'web_node',
+				'parent'=>'website',
+				'parent_key'=>($new?:$object->webpage->get('Page Site Key')),
+				'value'=>htmlspecialchars($object->webpage->get('Page Found In Page Key')),
+				'formatted_value'=>$object->webpage->get('Found In Page Key'),
+				'stripped_formatted_value'=>'',
+				'label'=>_('Found in'),
+				'required'=>true,
+				'type'=>''
+
+
+			),
+
+			array(
+				'id'=>'Category_Webpage_Name',
+				'edit'=>($edit?'string':''),
+
+				'value'=>htmlspecialchars($object->get('Category Webpage Name')),
+				'formatted_value'=>$object->get('Webpage Name'),
+				'label'=>ucfirst($object->get_field_label('Category Webpage Name')),
+				'required'=>true,
+				'type'=>''
+
+
+			),
 
 			array(
 				'id'=>'Product_Category_Description',
@@ -65,7 +112,29 @@ $category_product_fields=array(
 				'type'=>'value'
 			),
 
+
+			array(
+				'id'=>'Webpage_See_Also',
+				'edit'=>'webpage_see_also',
+				'value'=>'' ,
+				'formatted_value'=>$object->get('Webpage See Also') ,
+				'label'=>_('See also links'),
+				'required'=>false,
+				'type'=>''
+			),
 		
+		/*
+			array(
+				'id'=>'Webpage_Related_Products',
+				'edit'=>'webpage_related_products',
+				'value'=>'' ,
+				'formatted_value'=>$object->get('Webpage Related Products') ,
+				'label'=>_('Related products links'),
+				'required'=>false,
+				'type'=>''
+			)
+*/
+
 
 		)
 	),
@@ -73,6 +142,5 @@ $category_product_fields=array(
 
 
 );
-
 
 ?>
