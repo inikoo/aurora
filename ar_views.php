@@ -499,7 +499,7 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state=false, $me
 	}
 
 
-	if (is_array($state)  and     !preg_match('/\_edit$/', $tab)        ) {
+	if (is_array($state)  and     ! ( preg_match('/\_edit$/', $tab) or $tab=='part_family.product_family.new'  )     ) {
 
 
 

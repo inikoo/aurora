@@ -1080,10 +1080,21 @@ class Part extends Asset{
 
 		case('Part Status'):
 
-			if (! in_array($value, array('In Use', 'Not In Use' , 'Discontinuing'))) {
+
+
+
+			if (! in_array($value, array('In Use', 'Not In Use' , 'Discontinuing', 'In Process'))) {
 				$this->error=true;
 				$this->msg=_('Invalid part status').' ('.$value.')';
 				return;
+			}
+
+			if ($this->get('Part Status')=='In Process'  and $value!='In Process'  and !( $this->get('Part Stock In Hand')>0  and $this->get('Part Main Image Key')>0  )   ) {
+
+				$this->error=true;
+				$this->msg=_("Part status can't be modified").' ('.$value.')';
+				return;
+
 			}
 
 

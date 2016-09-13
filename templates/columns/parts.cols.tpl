@@ -42,7 +42,7 @@ var columns = [
    
 },
 {
-    name: "unit_description",
+    name: "sko_description",
     label: "{t}Unit description{/t}",
     editable: false,
      sortType: "toggle",
@@ -281,7 +281,7 @@ function change_table_view(view,save_state){
     close_columns_period_options()
     $('#columns_period').addClass('hide');
     
-    grid.columns.findWhere({ name: 'unit_description'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'sko_description'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'stock'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'dispatched'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'revenue'} ).set("renderable", false)
@@ -304,7 +304,7 @@ function change_table_view(view,save_state){
 
 
   if(view=='overview'){
-    grid.columns.findWhere({ name: 'unit_description'} ).set("renderable", true)
+    grid.columns.findWhere({ name: 'sko_description'} ).set("renderable", true)
     grid.columns.findWhere({ name: 'stock'} ).set("renderable", true)
     grid.columns.findWhere({ name: 'dispatched'} ).set("renderable", true)
     grid.columns.findWhere({ name: 'revenue'} ).set("renderable", true)

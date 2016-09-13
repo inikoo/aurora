@@ -30,8 +30,11 @@ $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
 case 'parts':
-	parts(get_table_parameters(), $db, $user, 'active', $account);
+	parts(get_table_parameters(), $db, $user, '', $account);
 	break;
+case 'active_parts':
+	parts(get_table_parameters(), $db, $user, 'active', $account);
+	break;	
 case 'discontinued_parts':
 	parts(get_table_parameters(), $db, $user, 'discontinued', $account);
 	break;
@@ -109,15 +112,18 @@ function parts($_data, $db, $user, $type, $account) {
 		$rtext_label='part in process';
 
 	}else {
-		$extra_where='';
+		$extra_where=' and `Part Status`!="Not In Use"';
 		$rtext_label='part';
 
 	}
 
 
+
 	include_once 'prepare_table/init.php';
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	
+	
 	$adata=array();
 	if ($result=$db->query($sql)) {
 		foreach ($result as $data) {
