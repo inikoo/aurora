@@ -141,6 +141,15 @@ $category_product_fields=array(
 
 
 			array(
+				'id'=>'Webpage_Related_Products',
+				'edit'=>'webpage_related_products',
+				'value'=>'' ,
+				'formatted_value'=>$object->get('Webpage Related Products') ,
+				'label'=>_('Related products links'),
+				'required'=>false,
+				'type'=>''
+			)
+			array(
 				'id'=>'Webpage_See_Also',
 				'edit'=>'webpage_see_also',
 				'value'=>'' ,
@@ -151,15 +160,6 @@ $category_product_fields=array(
 			),
 		
 		
-			array(
-				'id'=>'Webpage_Related_Products',
-				'edit'=>'webpage_related_products',
-				'value'=>'' ,
-				'formatted_value'=>$object->get('Webpage Related Products') ,
-				'label'=>_('Related products links'),
-				'required'=>false,
-				'type'=>''
-			)
 
 
 
