@@ -106,6 +106,7 @@ function fork_export_edit_template($job) {
 			$sql_data=sprintf('select `Subject Key` as id from `Category Bridge` where `Subject`="Part" and `Category Key`=%d', $parent_key);
 
 
+
 			$store=new Store($metadata['store_key']);
 
 			$family=new Category($parent_key);
@@ -195,10 +196,9 @@ function fork_export_edit_template($job) {
 
 	$row_index=1;
 
-
 	if ($result=$db->query($sql_data)) {
 		foreach ($result as $row) {
-			//print_r($row);
+		//	print_r($row);
 			switch ($objects) {
 			case 'supplier_part':
 				$object=new SupplierPart($row['id']);
@@ -274,26 +274,57 @@ function fork_export_edit_template($job) {
 					break;
 
 				case 'part_category':
-
-
+					$object=new Part($row['id']);
+					if ($object->get('Part Status')=='Not In Use') {
+						continue 3;
+					}
+					
+					
+				//	print $object->get('Part Reference')."\n";
+					
 					$data_rows=array();
 
-					$object=new Part($row['id']);
 
-					$sql=sprintf('select `Product ID` from `Product Dimension` where `Product Status`!="Discontinues" and `Product Store Key`=%d and `Product Code`=%s ',
+
+
+
+
+
+					$sql=sprintf('select `Product ID` from `Product Dimension` where `Product Status`!="Discontinued" and `Product Store Key`=%d and `Product Code`=%s ',
 						$store->id,
-						prepare_mysql($object->get('Code'))
+						prepare_mysql($object->get('Part Reference'))
 					);
 
 
 					if ($result=$db->query($sql)) {
 						if ($row = $result->fetch()) {
-							continue;
+							continue 3;
 						}else {
+
+
+							$op='NEW';
+
+							if ($object->get('Part Status')=='In Process') {
+								$op='NOT READY (';
+
+								if (!$object->get('Part Main Image Key')>0) {
+									$op.='NO PIC, ';
+
+								}
+								if (!$object->get('	Part Current On Hand Stock')>0) {
+									$op.='NO STOCK, ';
+
+								}
+
+								$op=preg_replace('/,\s*$/', '', $op).")";
+
+
+							}
+
 
 							$data_rows[]=array(
 								'cell_type'=>'auto',
-								'value'=>'NEW'
+								'value'=>$op
 							);
 
 
@@ -466,15 +497,15 @@ function fork_export_edit_template($job) {
 
 
 
-$sheet = $objPHPExcel->getActiveSheet();
-$cellIterator = $sheet->getRowIterator()->current()->getCellIterator();
-$cellIterator->setIterateOnlyExistingCells( true );
-/** @var PHPExcel_Cell $cell */
-foreach ( $cellIterator as $cell ) {
-	$sheet->getColumnDimension( $cell->getColumn() )->setAutoSize( true );
-}
+	$sheet = $objPHPExcel->getActiveSheet();
+	$cellIterator = $sheet->getRowIterator()->current()->getCellIterator();
+	$cellIterator->setIterateOnlyExistingCells( true );
+	/** @var PHPExcel_Cell $cell */
+	foreach ( $cellIterator as $cell ) {
+		$sheet->getColumnDimension( $cell->getColumn() )->setAutoSize( true );
+	}
 
-$objPHPExcel->getActiveSheet()->freezePane('A2');
+	$objPHPExcel->getActiveSheet()->freezePane('A2');
 
 
 	/*
