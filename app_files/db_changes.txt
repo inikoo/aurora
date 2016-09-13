@@ -427,6 +427,10 @@ update  `Product Dimension`  set  `Product Label in Family`=`Product Special Cha
 ALTER TABLE `Product History Dimension` ADD `Product History Code` VARCHAR(30) NOT NULL AFTER `Product ID`, ADD `Product History Units Per Case` SMALLINT UNSIGNED NOT NULL AFTER `Product History Code`;
 ALTER TABLE `Product Dimension` ADD `Product Materials` TEXT NULL DEFAULT NULL AFTER `Product Label in Family`;
 ALTER TABLE `Product Dimension` ADD `Product Tariff Code Valid` ENUM('Yes','No') NOT NULL DEFAULT 'No' AFTER `Product Tariff Code`;
+ALTER TABLE `Product Dimension` CHANGE `Product Status` `Product Status` ENUM('InProcess','Active','Suspended','Discontinuing','Discontinued') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'Active';
+ALTER TABLE `Page Store See Also Bridge` ADD `Webpage See Also Order` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Correlation Value`;
+ALTER TABLE `Part Dimension` CHANGE `Part Status` `Part Status` ENUM('In Process','Not In Use','In Use','Discontinuing') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'In Process';
+ALTER TABLE `Part Dimension` ADD `Part Active From` DATETIME NULL DEFAULT NULL AFTER `Part Valid From`;
 
 
 migrate_suppliers.oneoff.php
@@ -438,21 +442,15 @@ migrate_parts.oneoff.php
 // From HERe  ==================== 15/04/2016, 10:45
 
 
-ALTER TABLE `Product Dimension` CHANGE `Product Status` `Product Status` ENUM('InProcess','Active','Suspended','Discontinuing','Discontinued') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'Active';
-ALTER TABLE `Page Store See Also Bridge` ADD `Webpage See Also Order` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Correlation Value`;
 
-ALTER TABLE `Part Dimension` CHANGE `Part Status` `Part Status` ENUM('In Process','Not In Use','In Use','Discontinuing') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'In Process';
-ALTER TABLE `Part Dimension` ADD `Part Active From` DATETIME NULL DEFAULT NULL AFTER `Part Valid From`;
-
-update  `Part Dimension` set `Part Active From`=`Part Valid From` ;
-update  `Part Dimension` set `Part Status`='In Process',`Part Active From`=NULL  where `Part SKU`>=52292 and `Part Current On Hand Stock`=0;
 
 
 Only for bali dw:
 
 TODO IN COSTA!!!!=====
 ALTER TABLE `Product History Dimension` ADD `Product History Code` VARCHAR(30) NOT NULL AFTER `Product ID`, ADD `Product History Units Per Case` SMALLINT UNSIGNED NOT NULL AFTER `Product History Code`;
-
+update  `Part Dimension` set `Part Active From`=`Part Valid From` ;
+u
 ===============
 
 
