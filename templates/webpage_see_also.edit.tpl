@@ -43,7 +43,7 @@
 			<input class="Webpage_Code_value" value="" ovalue="" placeholder="{t}Webpage code{/t}" parent_key="{$data.website_key}" parent="website" scope="webpages">
 			<div class="search_results_container">
 				<table class="results" border="1">
-					<tr class="hide search_result_template" field="" value="" formatted_value="" onclick="select_dropdown_webpage(this)">
+					<tr class="hide search_result_template" field="" value="" formatted_value="" onclick="select_dropdown_see_also_webpage(this)">
 						<td class="code"></td>
 						<td style="width:85%" class="label"></td>
 					</tr>
@@ -184,7 +184,7 @@ function get_see_also_webpage_dropdown_select(object, new_value) {
 
             clone.children(".label").html(data.results[result_key].description)
 
-             console.log(clone)
+             //console.log(clone)
             results_container.find(".results").append(clone)
             //console.log(results_container.find(".results"))
             //   console.log($('#' + field + '_result_' + result_key).data('metadata'))
@@ -195,7 +195,8 @@ function get_see_also_webpage_dropdown_select(object, new_value) {
 
 }
 
-function select_dropdown_webpage(element) {
+function select_dropdown_see_also_webpage(element) {
+
 
     $(element).closest('.webpage_tr').removeClass('in_process')
     $(element).closest('.webpage_tr').find('.fa-trash-o').removeClass('fa-trash-o').addClass('fa-trash')
@@ -207,7 +208,6 @@ function select_dropdown_webpage(element) {
 
 
     $(element).closest('td').find('.search_results_container').remove()
-
 
 on_change_see_also_list()
 
@@ -226,7 +226,7 @@ function add_webpage() {
     var clone = $('#new_webpage_clone').clone()
     clone.prop('id', '')
     clone.removeClass('hide')
-    console.log(clone)
+    //console.log(clone)
     $("#manual_links").append(clone);
     on_change_see_also_list()
 
@@ -245,7 +245,6 @@ function on_change_see_also_list() {
 
       $("#Webpage_See_Also_save_button").closest('tr').removeClass('valid invalid')
      $("#Webpage_See_Also_field").removeClass('changed valid invalid potentially_valid')
-
 
     var changed = check_changes_see_also_list()
      var validation = validate_see_also_list()
@@ -277,7 +276,7 @@ function check_changes_see_also_list() {
 
 
     if ($('#see_also_type').hasClass('fa-toggle-on')) {
-        console.log($('#see_also_type').attr('oclass'))
+       // console.log($('#see_also_type').attr('oclass'))
         if ($('#see_also_number_links').val() != $('#see_also_number_links').attr('ovalue')) {
             changed = true
         }
@@ -296,7 +295,10 @@ function check_changes_see_also_list() {
         }
 
     });
-    current_manual_webpages.sort
+ //   current_manual_webpages.sort
+
+console.log(original_manual_webpages)
+console.log(current_manual_webpages)
 
     if (!_.isEqual(current_manual_webpages, original_manual_webpages)) {
         changed = true
@@ -334,7 +336,7 @@ function validate_see_also_list() {
     }
     
   
-  console.log(validation)
+  //console.log(validation)
     return validation;
 }
 
