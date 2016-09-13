@@ -148,7 +148,7 @@ $category_product_fields=array(
 				'label'=>_('Related products links'),
 				'required'=>false,
 				'type'=>''
-			)
+			),
 			array(
 				'id'=>'Webpage_See_Also',
 				'edit'=>'webpage_see_also',
