@@ -228,7 +228,7 @@ $fields.="P.`Part SKU`,`Part Reference`,`Part Package Description`,`Part Current
 `Part 1 Year Ago Provided`,`Part 2 Year Ago Provided`,`Part 3 Year Ago Provided`,`Part 4 Year Ago Provided`,
 `Part 1 Year Ago Sold Amount`,`Part 2 Year Ago Sold Amount`,`Part 3 Year Ago Sold Amount`,`Part 4 Year Ago Sold Amount`,
 `Part Year To Day Acc Sold Amount`,`Part Year To Day Acc 1YB Sold Amount`,`Part Year To Day Acc Provided`,`Part Year To Day Acc 1YB Provided`,
-`Part 1 Quarter Acc Provided`,`Part Valid From`,`Part Valid From`,`Part Active From`,`Part Main Image Key`
+`Part 1 Quarter Acc Provided`,`Part Valid From`,`Part Valid From`,`Part Active From`,`Part Main Image Key`,`Part Status`
 
 ";
 
