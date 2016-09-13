@@ -13,7 +13,7 @@
 
 $tab='inventory.parts';
 $ar_file='ar_inventory_tables.php';
-$tipo='parts';
+$tipo='active_parts';
 
 $default=$user->get_tab_defaults($tab);
 
