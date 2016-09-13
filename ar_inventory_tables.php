@@ -1029,6 +1029,7 @@ function category_all_parts($_data, $db, $user) {
 function product_families($_data, $db, $user) {
 
 
+
 	$rtext_label='store';
 	include_once 'prepare_table/init.php';
 
@@ -1047,7 +1048,9 @@ function product_families($_data, $db, $user) {
 				$operations=(in_array($data['Store Key'], $user->stores)?'<i class="fa fa-plus button" aria-hidden="true" onClick="open_new_product_family('.$data['Store Key'].')" ></i>':'<i class="fa fa-lock "></i>');
 			}else {
 				$family_data=preg_split('/,/', $data['category_data']);
-				$family=sprintf('<span class="button" onClick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Store Key'], $family_data[1], $family_data[0]);
+				
+				
+				$family=sprintf('<span class="button" onClick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Store Key'], $family_data[0], $family_data[1]);
 				$number_products =number($data['number_products']);
 				$operations=(in_array($data['Store Key'], $user->stores)?'<i class="fa fa-refresh button" aria-hidden="true" onClick="open_new_product_family('.$data['Store Key'].')" )"></i>':'<i class="fa fa-lock "></i>');
 
