@@ -1342,6 +1342,8 @@ class Part extends Asset{
 				return _('Discontinuing');
 			}elseif ($this->data['Part Status']=='Not In Use') {
 				return _('Discontinued');
+			}elseif ($this->data['Part Status']=='In Process') {
+				$status _('In process');
 			}else {
 				return $this->data['Part Status'];
 			}

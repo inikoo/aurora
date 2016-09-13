@@ -167,6 +167,19 @@ function parts($_data, $db, $user, $type, $account) {
 				$weeks_available=number($data['Part Days Available Forecast']/7, 0);
 			}
 
+
+	if ($data['Part Status']=='In Use') {
+				$status= _('Active');
+			}elseif ($data['Part Status']=='Discontinuing') {
+				$status =_('Discontinuing');
+			}elseif ($data['Part Status']=='Not In Use') {
+				$status =_('Discontinued');
+			}elseif ($data['Part Status']=='In Process') {
+				$status =_('In process');
+			}else {
+				$status=$data['Part Status'];
+			}
+
 			$dispatched_per_week=number($data['Part 1 Quarter Acc Provided']*4/52, 0);
 
 			$associated=sprintf('<i key="%d" class="fa fa-fw fa-link button" aria-hidden="true" onClick="edit_category_subject(this)" ></i>', $data['Part SKU']);
@@ -186,7 +199,7 @@ function parts($_data, $db, $user, $type, $account) {
 				//'sold_1y'=>delta($data['sold'], $data['sold_1y']),
 				'revenue'=>money($data['revenue'], $account->get('Account Currency')),
 				'revenue_1y'=>delta($data['revenue'], $data['revenue_1y']),
-
+                'status'=>$status,
 				'lost'=>number($data['lost']),
 				'bought'=>number($data['bought']),
 				'dispatched_year0'=>sprintf('<span title="%s">%s</span>', delta($data["Part Year To Day Acc Provided"], $data["Part Year To Day Acc 1YB Provided"]), number($data['Part Year To Day Acc Provided'], 0)),
