@@ -10,7 +10,7 @@
 
 */
 
-include_once('utils/natural_language.php');
+include_once 'utils/natural_language.php';
 
 trait ImageSubject {
 
@@ -354,7 +354,9 @@ trait ImageSubject {
 
 
 		}
-
+		elseif ($this->table_name=='Part') {
+			$this->activate();
+		}
 
 		// -------------
 

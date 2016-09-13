@@ -1237,6 +1237,14 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'reference'
 	),
+	'inventory.in_process_parts'=>array(
+		'view'=>'overview',
+		'sort_key'=>'valid_from',
+		'sort_order'=>1,
+		'rpp'=>100,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'reference'
+	),
 	'category.part_categories'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',

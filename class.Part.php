@@ -1688,18 +1688,19 @@ class Part extends Asset{
 
 
 
-		$sql=sprintf("update `Part Dimension`  set `Part Current Stock`=%f , `Part Current Value`=%f, `Part Current Stock In Process`=%f, `Part Current Stock Picked`=%f,
-																																																																	`Part Current On Hand Stock`=%f where  `Part SKU`=%d   "
-			, $stock+$picked
-			, $value
-			, $required-$picked
-			, $picked
-			, $stock
-			, $this->id
+		$sql=sprintf("update `Part Dimension`  set `Part Current Stock`=%f , `Part Current Value`=%f, `Part Current Stock In Process`=%f, `Part Current Stock Picked`=%f,`Part Current On Hand Stock`=%f where  `Part SKU`=%d   ",
+			$stock+$picked,
+			$value,
+			$required-$picked,
+			$picked,
+			$stock,
+			$this->id
 		);
 		$this->db->exec($sql);
 		//print "-> $stock , $picked, $required, , , ";
+		$this->get_data('id', $this->id);
 
+		$this->activate();
 
 		$this->discontinue_trigger();
 
@@ -3128,11 +3129,11 @@ where `Part SKU`=%d ",
 					$this->id
 				);
 
-            //   print "$sql\n";
+				//   print "$sql\n";
 
 				if ($result=$this->db->query($sql)) {
 					foreach ($result as $row) {
-					    //print_r($row);
+						//print_r($row);
 						$product->link_image($row['Image Subject Image Key']);
 					}
 				}else {
@@ -3142,6 +3143,25 @@ where `Part SKU`=%d ",
 
 
 			}
+
+		}
+
+
+	}
+
+
+	function activate() {
+
+		if ($this->get('Part Status')=='In Process') {
+
+			if ($this->get('Part Main Image Key')>0 and $this->get('Part Current On Hand Stock')>0) {
+
+				$this->update(array(
+						'Part Status'=>'In Use',
+						'Part Active From'=>gmdate('Y-m-d H:i:s')
+					), 'no_history');
+			}
+
 
 		}
 
