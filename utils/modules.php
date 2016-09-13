@@ -1429,6 +1429,7 @@ $modules=array(
 
 				'type'=>'navigation', 'label'=>_('Inventory').' ('._('Parts').')', 'icon'=>'th-large', 'reference'=>'inventory',
 				'tabs'=>array(
+					'inventory.in_process_parts'=>array('label'=>_('In process'), 'class'=>'discret'),
 					'inventory.parts'=>array('label'=>_('Active')),
 					'inventory.discontinuing_parts'=>array('label'=>_('Discontinuing'), 'class'=>'discret'),
 					'inventory.discontinued_parts'=>array('label'=>_('Discontinued'), 'class'=>'very_discret'),

@@ -66,7 +66,7 @@ elseif ($parameters['parent']=='list') {
 }
 elseif ($parameters['parent']=='category') {
 
-	
+
 
 	$fields=' "" as `Warehouse Code`,';
 
@@ -126,13 +126,19 @@ if (isset($parameters['elements_type'])) {
 
 	}
 }
+if (isset($parameters['f_period'])) {
 
-$db_period=get_interval_db_name($parameters['f_period']);
-if(in_array($db_period,array('Total','3 Year'))){
-$yb_fields=" '' as dispatched_1y,'' as revenue_1y";
+	$db_period=get_interval_db_name($parameters['f_period']);
+	if (in_array($db_period, array('Total', '3 Year'))) {
+		$yb_fields=" '' as dispatched_1y,'' as revenue_1y,";
 
+	}else {
+		$yb_fields="`Part $db_period Acc 1YB Provided` as dispatched_1y,`Part $db_period Acc 1YB Sold Amount` as revenue_1y,";
+	}
+	
 }else{
-$yb_fields="`Part $db_period Acc 1YB Provided` as dispatched_1y,`Part $db_period Acc 1YB Sold Amount` as revenue_1y";
+$db_period='Total';
+		$yb_fields=" '' as dispatched_1y,'' as revenue_1y,";
 }
 
 if ($parameters['f_field']=='used_in' and $f_value!='')
@@ -144,7 +150,7 @@ elseif ($parameters['f_field']=='supplied_by' and $f_value!='')
 elseif ($parameters['f_field']=='sku' and $f_value!='')
 	$wheref.=" and  `Part SKU` ='".addslashes($f_value)."'";
 elseif ($parameters['f_field']=='description' and $f_value!='')
-	$wheref.=" and  `Part Unit Description` like '".addslashes($f_value)."%'";
+	$wheref.=" and  `Part Package Description` like '".addslashes($f_value)."%'";
 
 $_order=$order;
 $_dir=$order_direction;
@@ -159,8 +165,8 @@ if ($order=='id') {
 	$order='`Part Stock Status`';
 }elseif ($order=='reference') {
 	$order='`Part Reference`';
-}elseif ($order=='unit_description') {
-	$order='`Part Unit Description`';
+}elseif ($order=='sko_description') {
+	$order='`Part Package Description`';
 }elseif ($order=='available_for') {
 	$order='`Part Days Available Forecast`';
 
@@ -172,10 +178,12 @@ if ($order=='id') {
 	$order=' lost ';
 }elseif ($order=='bought') {
 	$order=' bought ';
-}elseif ($order=='from') {
+}elseif ($order=='valid_from') {
 	$order='`Part Valid From`';
-}elseif ($order=='to') {
+}elseif ($order=='valid_to') {
 	$order='`Part Valid To`';
+}elseif ($order=='active_from') {
+	$order='`Part Active From`';
 }elseif ($order=='last_update') {
 	$order='`Part Last Updated`';
 }
@@ -197,6 +205,8 @@ elseif ($order=='dispatched_year2') {$order="`Part 2 Year Ago Provided`";}
 elseif ($order=='dispatched_year3') {$order="`Part 3 Year Ago Provided`";}
 elseif ($order=='dispatched_year4') {$order="`Part 4 Year Ago Provided`";}
 elseif ($order=='dispatched_year0') {$order="`Part Year To Day Acc Provided`";}
+elseif ($order=='has_picture') {$order="`Part Main Image Key`";}
+elseif ($order=='has_stock') {$order="`Part Current On Hand Stock`";}
 
 else {
 
@@ -206,7 +216,7 @@ else {
 
 $sql_totals="select count(Distinct P.`Part SKU`) as num from $table  $where  ";
 
-$fields.="P.`Part SKU`,`Part Reference`,`Part Unit Description`,`Part Current Stock`,`Part Stock Status`,`Part Days Available Forecast`,`Part Current On Hand Stock`,
+$fields.="P.`Part SKU`,`Part Reference`,`Part Package Description`,`Part Current Stock`,`Part Stock Status`,`Part Days Available Forecast`,`Part Current On Hand Stock`,
 `Part $db_period Acc Sold` as sold,
 `Part $db_period Acc Given` as given,
 `Part $db_period Acc Provided` as dispatched,
@@ -214,11 +224,11 @@ $fields.="P.`Part SKU`,`Part Reference`,`Part Unit Description`,`Part Current St
 
 `Part $db_period Acc Sold Amount` as revenue,
 `Part $db_period Acc Acquired` as bought,
-`Part Days Available Forecast`,$yb_fields,
+`Part Days Available Forecast`,$yb_fields
 `Part 1 Year Ago Provided`,`Part 2 Year Ago Provided`,`Part 3 Year Ago Provided`,`Part 4 Year Ago Provided`,
 `Part 1 Year Ago Sold Amount`,`Part 2 Year Ago Sold Amount`,`Part 3 Year Ago Sold Amount`,`Part 4 Year Ago Sold Amount`,
 `Part Year To Day Acc Sold Amount`,`Part Year To Day Acc 1YB Sold Amount`,`Part Year To Day Acc Provided`,`Part Year To Day Acc 1YB Provided`,
-`Part 1 Quarter Acc Provided`
+`Part 1 Quarter Acc Provided`,`Part Valid From`,`Part Valid From`,`Part Active From`,`Part Main Image Key`
 
 ";
 

@@ -38,6 +38,9 @@ case 'discontinued_parts':
 case 'discontinuing_parts':
 	parts(get_table_parameters(), $db, $user, 'discontinuing', $account);
 	break;
+case 'in_process_parts':
+	parts(get_table_parameters(), $db, $user, 'in_process', $account);
+	break;	
 case 'stock_transactions':
 	stock_transactions(get_table_parameters(), $db, $user);
 	break;
@@ -101,6 +104,10 @@ function parts($_data, $db, $user, $type, $account) {
 		$extra_where=' and `Part Status`="Not In Use"';
 		$rtext_label='discontinued part';
 
+	}elseif ($type=='in_process') {
+		$extra_where=' and `Part Status`="In Process"';
+		$rtext_label='part in process';
+
 	}else {
 		$extra_where='';
 		$rtext_label='part';
@@ -163,7 +170,7 @@ function parts($_data, $db, $user, $type, $account) {
 				'id'=>(integer)$data['Part SKU'],
 				'associated'=>$associated,
 				'reference'=>$data['Part Reference'],
-				'unit_description'=>$data['Part Unit Description'],
+				'sko_description'=>$data['Part Package Description'],
 				'stock_status'=>$stock_status,
 				'stock_status_label'=>$stock_status_label,
 				'stock'=>'<span class="'.($data['Part Current On Hand Stock']<0?'error':'').'">'.number(floor($data['Part Current On Hand Stock'])).'</span>',
@@ -188,7 +195,12 @@ function parts($_data, $db, $user, $type, $account) {
 				'revenue_year3'=>sprintf('<span title="%s">%s</span>', delta($data["Part 3 Year Ago Sold Amount"], $data["Part 4 Year Ago Sold Amount"]), money($data['Part 3 Year Ago Sold Amount'], $account->get('Account Currency'))),
 				'revenue_year4'=>money($data['Part 4 Year Ago Sold Amount'], $account->get('Account Currency')),
 				'weeks_available'=>$weeks_available,
-				'dispatched_per_week'=>$dispatched_per_week
+				'dispatched_per_week'=>$dispatched_per_week,
+				'valid_from'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Part Valid From'].' +0:00')),
+				'valid_to'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Part Valid From'].' +0:00')),
+				'active_from'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Part Active From'].' +0:00')),
+				'has_stock'=>($data['Part Current On Hand Stock']>0?'<i class="fa fa-check success" aria-hidden="true"></i>':'<i class="fa fa-minus super_discreet" aria-hidden="true"></i>'),
+				'has_picture'=>($data['Part Main Image Key']>0?'<i class="fa fa-check success" aria-hidden="true"></i>':'<i class="fa fa-minus super_discreet" aria-hidden="true"></i>')
 			);
 
 
