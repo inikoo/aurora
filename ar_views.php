@@ -1698,6 +1698,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
 
 		}
 	}
+	
+
 
 	$smarty->assign('_content', $_content);
 
