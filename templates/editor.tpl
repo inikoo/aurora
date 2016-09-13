@@ -16,6 +16,9 @@ $(function() {
             saveParam: 'value',
             saveURL: '/ar_edit.php',
             saveMethod: 'GET',
+            
+            saveInterval: 36000000,
+            
             saveParams: editor_data.metadata,
             pluginsEnabled: editor_data.plugins,
             toolbarInline: false,
