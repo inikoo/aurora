@@ -59,7 +59,6 @@ $table='  `Upload Dimension` U left join `User Dimension` on (`Upload User Key`=
 
 
 $sql_totals="select count(*) as num from $table  $where  ";
-
 //print $sql_totals;
 $fields="
 `Upload Key`,
