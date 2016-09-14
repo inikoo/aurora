@@ -391,7 +391,7 @@ class Page extends DB_Table {
 
 			$this->update_see_also();
 			$this->update_image_key();
-
+			$this->refresh_cache();
 
 		} else {
 			$this->error=true;
@@ -775,7 +775,7 @@ class Page extends DB_Table {
 
 
 
-
+			$this->refresh_cache();
 
 
 
@@ -835,13 +835,13 @@ class Page extends DB_Table {
 
 
 			}
-
+			$this->refresh_cache();
 			break;
 
 		case 'Found In':
 
 			$this->update_found_in($value);
-
+			$this->refresh_cache();
 			break;
 		case('Page Store See Also Type'):
 			$this->update_field('Page Store See Also Type', $value, $options);
@@ -856,6 +856,7 @@ class Page extends DB_Table {
 		case('page_code'):
 		case('Page Code'):
 			$this->update_code($value);
+			$this->refresh_cache();
 			break;
 		case('Page Header Key'):
 			$this->update_header_key($value);
@@ -872,7 +873,7 @@ class Page extends DB_Table {
 
 			$this->update_field('Page Title', $value, $options);
 
-
+			$this->refresh_cache();
 
 			break;
 		case('Page See Also Last Updated'):
@@ -919,6 +920,7 @@ class Page extends DB_Table {
 
 			$this->update_field('Page Store Title', $value, $options);
 			$this->update_store_search();
+			$this->refresh_cache();
 			break;
 		case('description'):
 		case('resume'):
@@ -936,6 +938,7 @@ class Page extends DB_Table {
 
 		case('Page State'):
 			$this->update_state($value, $options);
+			$this->refresh_cache();
 			break;
 
 		case('Page Store CSS'):
@@ -5759,9 +5762,14 @@ class Page extends DB_Table {
 
 
 	function refresh_cache() {
-		global $account_code, $memcache_ip;
+		global $memcache_ip;
 
 
+		$account=new Account($this->db);
+		$account_code=$account->get('Account Code');
+
+
+		include_once 'class.Site.php';
 		$site=new Site($this->data['Page Site Key']);
 		if ($site->data['Site SSL']=='Yes') {
 			$site_protocol='https';
