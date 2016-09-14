@@ -79,6 +79,7 @@ class Product extends Asset{
 			}
 		}
 		else {
+		    
 			sdasdas();
 			exit ("wrong id in class.product get_data :$key  \n");
 			return;

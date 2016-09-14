@@ -931,8 +931,8 @@ class Site extends DB_Table {
 
 	function get_unique_family_page_code($family) {
 
-		if (!$this->is_page_store_code($family['Product Family Code']))
-			return $family['Product Family Code'];
+		if (!$this->is_page_store_code(strtolower($family['Product Family Code'])))
+			return strtolower($family['Product Family Code']);
 
 		for ($i = 2; $i <= 200; $i++) {
 
@@ -942,8 +942,8 @@ class Site extends DB_Table {
 				$suffix=uniqid('', true);
 			}
 
-			if (!$this->is_page_store_code($family['Product Family Code'].$suffix))
-				return $family['Product Family Code'].$suffix;
+			if (!$this->is_page_store_code(strtolower($family['Product Family Code']).$suffix))
+				return strtolower($family['Product Family Code']).$suffix;
 		}
 
 		return $suffix;
@@ -952,10 +952,10 @@ class Site extends DB_Table {
 
 	function get_unique_product_page_code($product) {
 
-		if (!$this->is_page_store_code($product->data['Product Code']))
-			return $product->data['Product Code'];
+		if (!$this->is_page_store_code(strtolower($product->data['Product Code'])))
+			return strtolower($product->data['Product Code']);
 		if (!$this->is_page_store_code('p_'.$product->data['Product Code']))
-			return 'p_'.$product->data['Product Code'];
+			return 'p_'.strtolower($product->data['Product Code']);
 
 
 		for ($i = 2; $i <= 200; $i++) {
@@ -966,8 +966,8 @@ class Site extends DB_Table {
 				$suffix=uniqid('', true);
 			}
 
-			if (!$this->is_page_store_code($product->data['Product Code'].$suffix))
-				return $product->data['Product Code'].$suffix;
+			if (!$this->is_page_store_code(strtolower($product->data['Product Code']).$suffix))
+				return strtolower($product->data['Product Code']).$suffix;
 		}
 
 		return $suffix;
