@@ -555,6 +555,8 @@ class SupplierPart extends DB_Table{
 
 			break;
 
+		case 'Supplier Code':
+
 		case 'Supplier Part Supplier Code':
 
 			if ($value=='') {

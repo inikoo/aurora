@@ -304,7 +304,10 @@ function fork_upload_edit($job) {
 
 				foreach ($valid_indexes as $index=>$field) {
 
-					//    print "$field ->".$record_data[$index]."\n";
+					//   print "$field ->".$record_data[$index]."  ".$object->get_object_name()." \n";
+
+
+
 
 
 					$object->update(array($field=>$record_data[$index]));

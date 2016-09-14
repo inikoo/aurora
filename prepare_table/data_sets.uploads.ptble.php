@@ -20,7 +20,7 @@ $_order=$order;
 $_dir=$order_direction;
 
 if ($order=='date')
-	$order='`Upload Date`';
+	$order='`Upload Created`';
 elseif ($order=='state')
 	$order='`Upload State`';
 elseif ($order=='ok')
@@ -39,6 +39,6 @@ else
 
 $sql_totals="select count(Distinct U.`Upload Key`) as num from $table $where  ";
 
-$fields="`Upload Key`,`Upload State`,`Upload Object`,`Upload Records`,`Upload OK`,`Upload Errors`,`Upload Warnings`,`Upload Date`,`User Alias`";
+$fields="`Upload Key`,`Upload State`,`Upload Object`,`Upload Records`,`Upload OK`,`Upload Errors`,`Upload Warnings`,`Upload Created`,`User Alias`";
 
 ?>

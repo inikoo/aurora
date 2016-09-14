@@ -427,7 +427,6 @@ function uploads($_data, $db, $user, $account) {
 	include_once 'utils/natural_language.php';
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-
 	$adata=array();
 
 	if ($result=$db->query($sql)) {
@@ -467,7 +466,7 @@ function uploads($_data, $db, $user, $account) {
 				'formatted_id'=>sprintf('%04d', $data['Upload Key']),
 				'object'=>$object,
 				'state'=>$state,
-				'date'=>strftime("%a %e %b %Y", strtotime($data['Upload Date'].' +0:00')),
+				'date'=>strftime("%a %e %b %Y", strtotime($data['Upload Created'].' +0:00')),
 				'ok'=>number($data['Upload OK']),
 				'records'=>number($data['Upload Records']),
 				'warnings'=>number($data['Upload Warnings']),

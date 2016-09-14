@@ -38,7 +38,7 @@ $export_edit_template_fields=array(
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'SKO weight', 'name'=>'Part Part Package Weight', 'label'=>_('SKO weight'), 'checked'=>0),
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'SKO dimensions', 'name'=>'Part Part Package Dimensions', 'label'=>_('SKO dimensions'), 'checked'=>0),
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'Materials', 'name'=>'Part Part Materials', 'label'=>_('Materials'), 'checked'=>0),
-		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'Country of origin', 'name'=>'Part Part Origin Country Code', 'label'=>_('Country of origin'), 'checked'=>0),
+		array('default_value'=>'', 'show_for_new'=>true, 'required'=>true, 'header'=>'Country of origin', 'name'=>'Part Part Origin Country Code', 'label'=>_('Country of origin'), 'checked'=>0),
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'Tariff code', 'name'=>'Part Part Tariff Code', 'label'=>_('Tariff code'), 'checked'=>0 , 'cell_type'=>'string'),
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'Duty rate', 'name'=>'Part Part Duty Rate', 'label'=>_('Duty rate'), 'checked'=>0, 'cell_type'=>'string'),
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'UN number', 'name'=>'Part Part UN Number', 'label'=>_('UN number'), 'checked'=>0, 'cell_type'=>'string'),
@@ -70,7 +70,7 @@ $export_edit_template_fields=array(
 
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'Materials/Ingredients', 'name'=>'Part Materials', 'label'=>_('Materials/Ingredients'), 'checked'=>0),
 
-		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'Country of origin', 'name'=>'Part Origin Country Code', 'label'=>_('Country of origin'), 'checked'=>0),
+		array('default_value'=>'', 'show_for_new'=>true, 'required'=>true, 'header'=>'Country of origin', 'name'=>'Part Origin Country Code', 'label'=>_('Country of origin'), 'checked'=>0),
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'Tariff code', 'name'=>'Part Tariff Code', 'label'=>_('Tariff code'), 'checked'=>0 , 'cell_type'=>'string'),
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'Duty rate', 'name'=>'Part Duty Rate', 'label'=>_('Duty rate'), 'checked'=>0, 'cell_type'=>'string'),
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'UN number', 'name'=>'Part UN Number', 'label'=>_('UN number'), 'checked'=>0, 'cell_type'=>'string'),
