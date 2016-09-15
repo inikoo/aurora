@@ -56,9 +56,29 @@ update_number_of_parts($db);
 update_web_configuration($db);
 set_family_department_key($db);
 migrate_page_related_products($db);
+update_products_web_status($db);
 */
 
 update_cost($db);
+
+
+
+function update_products_web_status($db) {
+
+	$sql=sprintf('select * from `Part Dimension`  ');
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+			$part=new Part($row['Part SKU']);
+
+            $part->update_products_web_status();
+
+		}
+
+	}
+}
+
+
 function update_cost($db) {
 
 	$sql=sprintf('select `Product ID` from `Product Dimension` order by `Product ID`  ');

@@ -63,9 +63,27 @@ set_valid_dates_and_status_to_part_families($db);
 fix_orphan_dn($db);
 update_stock($db);
 move_MSDS_attachments($db);
-*/
 
 set_unit_label($db);
+
+*/
+
+ update_products_web_status($db);
+
+function update_products_web_status($db) {
+
+	$sql=sprintf('select * from `Part Dimension`  ');
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+			$part=new Part($row['Part SKU']);
+
+            $part->update_products_web_status();
+
+		}
+
+	}
+}
 
 
 
@@ -78,7 +96,7 @@ function set_unit_label($db) {
 			$part=new Part($row['Part SKU']);
 
 
-			
+
 
 			$num_uk_prod=0;
 			$prod_uk=false;
@@ -120,7 +138,7 @@ function set_unit_label($db) {
 				$part->update(array(
 						// 'Part Units'=>$prod_uk->get('Product Units Per Case'),
 						'Part Unit Label'=>$prod_uk->get('Product Unit Label'),
-						
+
 
 					), 'no_history');
 			}

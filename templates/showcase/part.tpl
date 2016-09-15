@@ -89,7 +89,7 @@
 					
 				</tr>
 				<tr >
-				<td></td>
+				<td class="Products_Web_State">{$part->get('Products Web Status')}</td>
 				<td class="aright Available_Forecast">{$part->get('Available Forecast')}</td>
 				</tr>
 				</tbody>

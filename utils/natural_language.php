@@ -416,5 +416,70 @@ function money($amount, $currency='', $locale=false) {
 	return $money->formatCurrency($amount,$currency);
 }
 
+function seconds_to_until($seconds, $short=false) {
+
+
+    if($seconds==0){
+        return 0;
+    }
+
+	$days=round($seconds/86400);
+	
+	if ($days<1) {
+
+		if ($short) {
+			return sprintf(_('%sd'), 1);
+		}else {
+			return sprintf("%d %s", 1, ngettext("day", "days", 1));
+
+		}
+
+	}elseif ($days<100) {
+
+		if ($short) {
+			return sprintf(_('%sd'), $days);
+		}else {
+			
+			
+			return sprintf("%d %s", $days , ngettext("day", "days", intval($days)));
+
+		}
+
+	}elseif ($days<700) {
+		$weeks=floor($days/7);
+
+		if ($short) {
+			return sprintf(_('%sw'), $weeks);
+		}else {
+			return sprintf("%d %s", $weeks , ngettext("week", "weeks", intval($weeks)));
+
+		}
+
+	}elseif ($days<1095) {
+		$months=floor($days/30.4167);
+		if ($short) {
+			return sprintf(_('%sm'), $months);
+		}else {
+			return sprintf("%d %s", $months , ngettext("month", "months", intval($months)));
+
+		}
+
+	}elseif ($days<1825) {
+		$years=floor($days/365);
+
+		if ($short) {
+			return sprintf(_('%sy'), $years);
+		}else {
+			return sprintf("%d %s", $years , ngettext("year", "years", intval($years)));
+
+		}
+
+	}else {
+
+		return _('more than 5 years');
+	}
+
+
+}
 
 ?>
