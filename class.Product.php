@@ -325,7 +325,7 @@ class Product extends Asset{
 			}
 
 			$unit_margin=$this->data['Product Price']-$this->data['Product Cost'];
-			$price_other_info=sprintf(_('margin %s'), percentage($unit_margin, $this->data['Product RRP']));
+			$price_other_info=sprintf(_('margin %s'), percentage($unit_margin, $this->data['Product Price']));
 
 
 
@@ -1640,9 +1640,22 @@ class Product extends Asset{
 		$this->update_part_numbers();
 
 		$this->update_availability();
+		$this->update_cost();
 
 
 	}
+
+
+    function update_cost(){
+        $cost=0;
+        
+        foreach ($this->get_parts_data($with_objects=true) as $part_data) {
+            $cost+=$part_data['Part']->get('Part Cost')*$part_data['Ratio'];
+            
+        }
+        
+        $this->update(array('Product Cost'=>$cost),'no_history');
+    }
 
 
 	function update_availability($use_fork=true) {
@@ -1930,6 +1943,7 @@ class Product extends Asset{
 
 					$page=new Page($row['Page Key']);
 
+            
 					$site=new Site($page->get('Page Site Key'));
 					if ($site->data['Site SSL']=='Yes') {
 						$site_protocol='https';

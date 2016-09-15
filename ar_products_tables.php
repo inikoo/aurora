@@ -36,7 +36,7 @@ case 'stores':
 	break;
 
 case 'products':
-	products(get_table_parameters(), $db, $user);
+	products(get_table_parameters(), $db, $user,$account);
 	break;
 case 'services':
 	services(get_table_parameters(), $db, $user);
@@ -103,7 +103,7 @@ function stores($_data, $db, $user) {
 }
 
 
-function products($_data, $db, $user) {
+function products($_data, $db, $user,$account) {
 
 
 
@@ -128,7 +128,20 @@ function products($_data, $db, $user) {
 
 			$associated=sprintf('<i key="%d" class="fa fa-fw fa-link button" aria-hidden="true" onClick="edit_category_subject(this)" ></i>', $data['Product ID']);
 
-
+switch ($data['Product Status']) {
+			case 'Active':
+				$status= _('Active');
+				break;
+			case 'Suspended':
+				$status= _('Suspended');
+				break;
+			case 'Discontinued':
+				$status= _('Discontinued');
+				break;
+			default:
+				$status=$data['Product Status'];
+				break;
+			}
 
 			switch ($data['Product Web Configuration']) {
 			case 'Online Auto':
@@ -172,6 +185,11 @@ function products($_data, $db, $user) {
 				break;
 			}
 
+
+
+
+
+
 			$adata[]=array(
 
 				'id'=>(integer) $data['Product ID'],
@@ -181,7 +199,9 @@ function products($_data, $db, $user) {
 				'code'=>$data['Product Code'],
 				'name'=>$data['Product Name'],
 				'price'=>money($data['Product Price'], $data['Store Currency Code']),
-				'web_state'=>$web_state
+				'margin'=>'<span title="'._('Cost price').':'.money($data['Product Cost'], $account->get('Account Currency')).'">'.percentage($data['Product Price']-$data['Product Cost'], $data['Product Price']).'<span>',
+				'web_state'=>$web_state,
+				'status'=>$status
 			);
 
 

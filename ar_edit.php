@@ -547,8 +547,18 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
 	case 'unarchive':
 		$request=$object->unarchive();
 		break;
+	case 'set_all_products_web_configuration':
+
+
+		foreach ($object->get_products('objects') as $product) {
+			$product->update(array('Product Web Configuration'=>$data['metadata']['value']));
+		}
+$request='';
+		break;
+
+		
 	default:
-		exit('unknown operation');
+		exit('unknown operation '.$data['operation']);
 		break;
 	}
 

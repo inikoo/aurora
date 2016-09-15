@@ -19,8 +19,13 @@
 
 	<td class="aright  formatted_stock">{$location_data.formatted_stock}</td>
 	<td class="aright  hide stock_input"  > <span class="stock_change"></span>
+	
 	 <i class="fa fa-dot-circle-o button super_discreet set_as_audit" aria-hidden="true" title="{t}Mark as audited{/t}"  onclick="set_as_audit(this)"></i>
 	<input class="stock" style="width:60px" action="" location_key="{$location_data.location_key}" ovalue="{$location_data.stock}" value="{$location_data.stock}">
+	
+	<input type="hidden" class="note" value="" >
+	  <i class="fa fa-sticky-note-o button super_discreet add_note invisible " aria-hidden="true" title="{t}Note{/t}"  onclick="set_inventory_transaction_note(this)"></i>
+	
 	<i class="fa fa-fw fa-caret-square-o-right move_trigger button super_discreet" aria-hidden="true" title="{t}Move from{/t}" onclick="move(this)"></i> </td>
 </tr>
 {/foreach}				
@@ -60,3 +65,12 @@
 <td colspan="2" class="small" id="location_data_msg"></td>
 <tr>
 
+<div id="inventory_transaction_note" style="position:absolute;z-index:100" class="hide" scope="" >
+<textarea></textarea>
+</div>
+
+<script>
+$('#inventory_transaction_note textarea').bind('input propertychange', function() {
+  inventory_transaction_note_changed()
+});
+</script>

@@ -1170,7 +1170,6 @@ class Part extends Asset{
 
 
 
-
 			if ($supplier_part->get('Supplier Part Status')) {
 
 				if ($cost_available==false or $cost_available>$supplier_part->get('Supplier Part Unit Cost')) {
@@ -1203,8 +1202,12 @@ class Part extends Asset{
 			$cost=$cost*$this->data['Part Units Per Package'];
 		}
 
-
 		$this->update_field('Part Cost', $cost, 'no_history');
+		
+		
+		foreach ($this->get_products('objects') as $product) {
+		    $product->update_cost();
+		}
 
 
 	}
@@ -1318,7 +1321,37 @@ class Part extends Asset{
 
 
 		switch ($key) {
+case 'Stock Status Icon':
 
+if($this->data['Part Status']=='In Process'){
+    return '';
+}
+
+			switch ($this->data[$this->table_name.' Stock Status']) {
+			case 'Surplus':
+				$stock_status='<i class="fa  fa-plus-circle fa-fw" aria-hidden="true" title="'._('Surplus stock').'"></i>';
+				break;
+			case 'Optimal':
+				$stock_status='<i class="fa fa-check-circle fa-fw" aria-hidden="true" title="'._('Optimal stock').'"></i>';
+				break;
+			case 'Low':
+				$stock_status='<i class="fa fa-minus-circle fa-fw" aria-hidden="true" title="'._('Low stock').'"></i>';
+				break;
+			case 'Critical':
+				$stock_status='<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"  title="'._('Critical stock').'"></i>';
+				break;
+			case 'Out_Of_Stock':
+				$stock_status='<i class="fa error fa-ban fa-fw" aria-hidden="true"  title="'._('Out of stock').'"></i>';
+				break;
+			case 'Error':
+				$stock_status='<i class="fa fa-question-circle fa-fw" aria-hidden="true"  title="'._('Error').'"></i>';
+				break;
+			default:
+				$stock_status=$this->data[$this->table_name.' Stock Status'];
+				break;
+			}
+			return  $stock_status;
+			break;
 		case 'Part Family Category Code':
 
 			if ($this->data['Part Family Category Key']=='')return '';
