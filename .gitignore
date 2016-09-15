@@ -27,3 +27,5 @@ build/.DS_Store
 .DS_Store
 
 deploy.tgz
+
+cron/fix.php

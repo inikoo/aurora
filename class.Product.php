@@ -2396,7 +2396,7 @@ class Product extends Asset{
 			if ($part->get('Part Status')=='Discontinuing') {
 				$status='Discontinuing';
 			}elseif ($part->get('Part Status')=='Not In Use') {
-				$status='Discontiued';
+				$status='Discontinued';
 				break;
 			}
 
@@ -2414,9 +2414,9 @@ class Product extends Asset{
 				$this->update(array('Product Status'=>'Discontinuing'), 'no_history');
 
 			}
-		}elseif ( $status=='Discontiued') {
+		}elseif ( $status=='Discontinued') {
 
-			$this->update(array('Product Status'=>'Discontiued'), 'no_history');
+			$this->update(array('Product Status'=>'Discontinued'), 'no_history');
 
 
 		}
