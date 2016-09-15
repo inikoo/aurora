@@ -286,6 +286,9 @@ class Part extends Asset{
 
 
 			$this->get_data('id', $this->id);
+
+			$this->update_products_web_status();
+
 			$history_data=array(
 				'Action'=>'created',
 				'History Abstract'=>_('Part created'),
@@ -1203,10 +1206,10 @@ class Part extends Asset{
 		}
 
 		$this->update_field('Part Cost', $cost, 'no_history');
-		
-		
+
+
 		foreach ($this->get_products('objects') as $product) {
-		    $product->update_cost();
+			$product->update_cost();
 		}
 
 
@@ -1292,8 +1295,49 @@ class Part extends Asset{
 
 
 
+	function update_products_web_status() {
+
+		$products=0;
+		$products_web_status='';
+		//'Offline','No Products','Online','Out of Stock'
+
+		foreach ($this->get_products('objects') as $product) {
+			if (!($product->get('Product Status')=='Discontinued' or $product->get('Product Web State')=='Discontinued')) {
+
+				//'For Sale','Out of Stock','Discontinued','Offline'
+
+				if ($product->get('Product Web State')=='For Sale') {
+					$products_web_status='Online';
+					break;
+				}elseif ($product->get('Product Web State')=='Out of Stock') {
+					$products_web_status='Out of Stock';
+				}elseif ($product->get('Product Web State')=='Offline') {
+
+					if ($products_web_status=='') {
+						$products_web_status='Offline';
+					}
+
+				}
 
 
+
+				$products++;
+			}
+		}
+
+		if ($products_web_status=='') {
+			$products_web_status='No Products';
+		}
+
+		//print $this->get('Reference').' '.$products_web_status."\n";
+
+		$this->update(array(
+				'Part Products Web Status'=>$products_web_status
+			), 'no_history');
+
+
+
+	}
 
 
 
@@ -1321,11 +1365,11 @@ class Part extends Asset{
 
 
 		switch ($key) {
-case 'Stock Status Icon':
+		case 'Stock Status Icon':
 
-if($this->data['Part Status']=='In Process'){
-    return '';
-}
+			if ($this->data['Part Status']=='In Process') {
+				return '';
+			}
 
 			switch ($this->data[$this->table_name.' Stock Status']) {
 			case 'Surplus':
@@ -1366,6 +1410,42 @@ if($this->data['Part Status']=='In Process'){
 				return '';
 			}
 
+
+			break;
+		case 'Products Web Status':
+
+			if ($this->data['Part Status']=='Not In Use') {
+            
+               if ($this->data['Part Products Web Status']=='Online') { 
+                return '<i class="fa fa-exclamation-circle error" aria-hidden="true"></i> '._('Online');
+               }elseif ($this->data['Part Products Web Status']=='Out of Stock') { 
+                return '<i class="fa fa-exclamation-circle warning" aria-hidden="true"></i> '._('Out of stock');
+               }       
+
+
+
+			}else {
+
+
+				if ($this->data['Part Products Web Status']=='Offline') {
+					return '<span class="warning"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> '._('Offline').'</span>';
+				}elseif ($this->data['Part Products Web Status']=='No Products') {
+					return _('No products associated');
+				}elseif ($this->data['Part Products Web Status']=='Online') {
+				
+				if($this->data['Part Stock Status']=='Out_Of_Stock' or $this->data['Part Stock Status']=='Error' ){
+							return '<span class="error"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> '._('Online').'</span>';
+		
+				}else{
+				
+					return _('Online');
+					}
+				}elseif ($this->data['Part Products Web Status']=='Out of Stock') {
+					return _('Out of stock');
+				}else {
+					return $this->data['Part Products Web Status'];
+				}
+			}
 
 			break;
 		case 'Status':
@@ -1437,10 +1517,16 @@ if($this->data['Part Status']=='In Process'){
 
 		case 'Available Forecast':
 
+
+
 			if ($this->data['Part Stock Status']=='Out_Of_Stock' or  $this->data['Part Stock Status']=='Error') return '';
+			
+			if (in_array($this->data['Part Products Web Status'],array('No Products','Offline','Out of Stock'))) return '';
+
+			
 			include_once 'utils/natural_language.php';
-			return '<span style="font-size:80%">'.sprintf(_('%s until out of stock'), '<span style="font-size:120%" title="'.sprintf("%s %s", number($this->data['Part Days Available Forecast'], 1) ,
-					ngettext("day", "days", intval($this->data['Part Days Available Forecast'] ) )).'">'.seconds_to_natural_string($this->data['Part Days Available Forecast']*86400, true).'</span>').'</span>';
+			return '<span >'.sprintf(_('%s availability'), '<span  title="'.sprintf("%s %s", number($this->data['Part Days Available Forecast'], 1) ,
+					ngettext("day", "days", intval($this->data['Part Days Available Forecast'] ) )).'">'.seconds_to_until($this->data['Part Days Available Forecast']*86400).'</span>').'</span>';
 			break;
 
 		case 'Origin Country Code':

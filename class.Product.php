@@ -1915,7 +1915,9 @@ class Product extends Asset{
 		}
 
 
-
+        foreach($this->get_parts('objects') as $part){
+            $part->update_products_web_status();
+        }
 
 
 	}
