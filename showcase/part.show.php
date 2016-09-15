@@ -19,7 +19,7 @@ function get_part_showcase($data,$smarty,$user,$db) {
 //	$part->update_cost();
 //	$part->updated_linked_products();
 
-$part->discontinue_trigger();
+//$part->discontinue_trigger();
 
 	//$part->fix_stock_transactions();
 	
