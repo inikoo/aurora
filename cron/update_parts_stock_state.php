@@ -19,7 +19,7 @@ require_once 'class.Supplier.php';
 
 
 //$sql=sprintf('select `Part SKU` from `Part Dimension` where `Part Key`=24 ');
-$sql=sprintf('select `Part SKU` from `Part Dimension`  ');
+$sql=sprintf('select `Part SKU` from `Part Dimension` order by `Part SKU` desc  ');
 
 if ($result=$db->query($sql)) {
 	foreach ($result as $row) {

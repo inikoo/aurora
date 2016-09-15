@@ -260,7 +260,7 @@ elseif ($order=='store') {
 
 $sql_totals="select count(distinct  P.`Product ID`) as num from $table $where";
 
-$fields="P.`Product ID`,`Product Code`,`Product Name`,`Product Price`,`Store Currency Code`,`Store Code`,`Store Key`,`Product Web Configuration`,`Product Availability`,`Product Web State`";
+$fields="P.`Product ID`,`Product Code`,`Product Name`,`Product Price`,`Store Currency Code`,`Store Code`,`Store Key`,`Product Web Configuration`,`Product Availability`,`Product Web State`,`Product Cost`,`Product Number of Parts`,`Product Status`";
 
 //$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 // print $sql;

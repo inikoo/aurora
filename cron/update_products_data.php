@@ -61,6 +61,7 @@ function update_web_state($db) {
 
 			$product->update_part_numbers();
 			$product->update_availability($use_fork=false);
+			$product->update_cost();
 			print $product->id."\r";
 		}
 

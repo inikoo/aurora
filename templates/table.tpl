@@ -1,3 +1,9 @@
+{if isset($table_top_template)}
+ {include file=$table_top_template  } 
+
+{/if}
+
+
 {if isset($period)  and   !isset($hide_period) }
  {include file="utils/date_chooser.tpl" period=$period from=$from to=$to from_mmddyy=$from_mmddyy  to_mmddyy=$to_mmddyy from_locale=$from_locale  to_locale=$to_locale  } 
 {/if}

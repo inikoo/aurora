@@ -25,7 +25,6 @@ function fork_housekeeping($job) {
 
 
 
-
 	switch ($fork_data['type']) {
 
 	case 'update_part_products_availability':

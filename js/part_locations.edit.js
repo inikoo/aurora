@@ -5,17 +5,13 @@ function open_edit_stock() {
     $('.unlink_operations').removeClass('hide')
 
 
-$('#stock_table').addClass('super_discreet')
-$('#close_edit_stock').removeClass('hide')
-$('#edit_stock_saving_buttons').removeClass('hide')
-$('#open_edit_stock').addClass('hide')
+    $('#stock_table').addClass('super_discreet')
+    $('#close_edit_stock').removeClass('hide')
+    $('#edit_stock_saving_buttons').removeClass('hide')
+    $('#open_edit_stock').addClass('hide')
 
-   // $('#stock_table tbody.info').addClass('hide')
-   
-   
- //   $('#edit_stock_controls').removeClass('hide')
-
-
+    // $('#stock_table tbody.info').addClass('hide')
+    //   $('#edit_stock_controls').removeClass('hide')
 
     $('#locations_table .formatted_stock').addClass('hide')
     $('#locations_table .stock_input').removeClass('hide')
@@ -30,12 +26,11 @@ function close_edit_stock() {
     $('.unlink_operations').addClass('hide')
 
     //$('#stock_table tbody.info').removeClass('hide')
-   // $('#edit_stock_controls').addClass('hide')
-
-$('#stock_table').removeClass('super_discreet')
-$('#close_edit_stock').addClass('hide')
-$('#edit_stock_saving_buttons').addClass('hide')
-$('#open_edit_stock').removeClass('hide')
+    // $('#edit_stock_controls').addClass('hide')
+    $('#stock_table').removeClass('super_discreet')
+    $('#close_edit_stock').addClass('hide')
+    $('#edit_stock_saving_buttons').addClass('hide')
+    $('#open_edit_stock').removeClass('hide')
 
 
     $('#locations_table .formatted_stock').removeClass('hide')
@@ -193,6 +188,9 @@ function apply_move() {
 
 
 function stock_changed(element) {
+
+
+
     var value = element.val()
 
 
@@ -224,15 +222,15 @@ function stock_changed(element) {
             element.closest('tr').find('.set_as_audit').addClass('super_discreet').addClass('hide')
 
         } else {
-        
-        console.log(value)
-        console.log(element.attr('ovalue'))
 
-            var _diff = parseFloat(value) - parseFloat((element.attr('ovalue')==''?0:element.attr('ovalue')))
-            
-            
-            var diff=_diff.toFixed(2).replace(/[.,]00$/, "")
-            
+            console.log(value)
+            console.log(element.attr('ovalue'))
+
+            var _diff = parseFloat(value) - parseFloat((element.attr('ovalue') == '' ? 0 : element.attr('ovalue')))
+
+
+            var diff = _diff.toFixed(2).replace(/[.,]00$/, "")
+
             if (_diff > 0) {
                 diff = '+' + diff
             }
@@ -241,6 +239,11 @@ function stock_changed(element) {
             element.closest('tr').find('.stock_change').html(change)
 
             element.closest('tr').find('.set_as_audit').addClass('super_discreet').addClass('hide')
+
+            element.closest('tr').find('.add_note').removeClass('super_discreet invisible').addClass('visible')
+
+
+
         }
 
     } else {
@@ -367,7 +370,7 @@ function process_edit_stock() {
         diff_msg += ' (' + diff_down.toFixed(2).replace(/[.,]00$/, "") + ') '
     }
     if (diff_up != 0) {
-        diff_msg += ' (+' + diff_up .toFixed(2).replace(/[.,]00$/, "")+ ') '
+        diff_msg += ' (+' + diff_up.toFixed(2).replace(/[.,]00$/, "") + ') '
     }
 
     $('#new_stock').html(total_new_stock)
@@ -471,7 +474,7 @@ function delayed_on_change_add_location_field(object, timeout) {
 
 function get_locations_select() {
 
- $('#location_data_msg').removeClass('error').html('')
+    $('#location_data_msg').removeClass('error').html('')
 
     $('#add_location_tr').removeClass('invalid')
 
@@ -573,42 +576,42 @@ function save_add_location() {
     request.done(function(data) {
         $('#save_add_location').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
 
-        if(data.state==200){
+        if (data.state == 200) {
 
-        if (state.tab == 'part.stock.transactions') {
-            rows.fetch({
-                reset: true
-            });
-        }
-        close_add_location()
-
-
-
-        var clone = $("#add_location_template").clone().removeClass('hide')
-
-        clone.find(".location_info").attr('onclick', "change_view(" + data.location_link + ")")
-
-        clone.find(".location_used_for_icon").html(data.location_used_for_icon)
-        clone.find(".location_code").html(data.location_code)
-        clone.find(".formatted_stock").html(data.formatted_stock)
-        clone.find("._stock").addClass('stock').removeClass('_stock')
-        clone.find("._move_trigger").addClass('move_trigger').removeClass('_move_trigger')
+            if (state.tab == 'part.stock.transactions') {
+                rows.fetch({
+                    reset: true
+                });
+            }
+            close_add_location()
 
 
 
-        clone.find(".stock").val(data.stock).attr('ovalue', data.stock).attr('location_key', data.location_key)
+            var clone = $("#add_location_template").clone().removeClass('hide')
+
+            clone.find(".location_info").attr('onclick', "change_view(" + data.location_link + ")")
+
+            clone.find(".location_used_for_icon").html(data.location_used_for_icon)
+            clone.find(".location_code").html(data.location_code)
+            clone.find(".formatted_stock").html(data.formatted_stock)
+            clone.find("._stock").addClass('stock').removeClass('_stock')
+            clone.find("._move_trigger").addClass('move_trigger').removeClass('_move_trigger')
 
 
 
-        $("#add_location_template").before(clone)
+            clone.find(".stock").val(data.stock).attr('ovalue', data.stock).attr('location_key', data.location_key)
 
 
 
-        for (var key in data.updated_fields) {
+            $("#add_location_template").before(clone)
 
-            $('.' + key).html(data.updated_fields[key])
-        }
-        }else if(data.state==400){
+
+
+            for (var key in data.updated_fields) {
+
+                $('.' + key).html(data.updated_fields[key])
+            }
+        } else if (data.state == 400) {
             $('#location_data_msg').addClass('error').html(data.msg)
         }
 
@@ -623,6 +626,7 @@ function save_add_location() {
 
 function save_stock() {
 
+ $('#inventory_transaction_note').addClass('hide')
     $('#save_stock').removeClass('fa-cloud').addClass('fa-spinner fa-spin')
 
     var parts_locations_data = []
@@ -634,7 +638,8 @@ function save_stock() {
             location_key: $(obj).attr('location_key'),
             part_sku: $('#locations_table').attr('part_sku'),
             audit: ($(obj).closest('tr').find('.set_as_audit').hasClass('super_discreet') ? false : true),
-            disassociate: ($(obj).closest('tr').find('.unlink_operations i').hasClass('fa-unlink') ? false : true)
+            disassociate: ($(obj).closest('tr').find('.unlink_operations i').hasClass('fa-unlink') ? false : true),
+            note: $(obj).closest('tr').find('.note').val()
         })
     })
 
@@ -666,9 +671,9 @@ function save_stock() {
 
     request.done(function(data) {
 
-    console.log(data.updated_fields)
+        console.log(state.tab)
 
-        if (state.tab == 'part.stock.transactions') {
+        if (state.tab == 'part.stock.transactions' || state.tab=='part.stock') {
             rows.fetch({
                 reset: true
             });
@@ -683,8 +688,8 @@ function save_stock() {
         close_edit_stock()
 
         for (var key in data.updated_fields) {
-            console.log(key)
-              console.log(data.updated_fields[key])
+            //console.log(key)
+            //console.log(data.updated_fields[key])
             $('.' + key).html(data.updated_fields[key])
         }
 
@@ -904,5 +909,54 @@ function save_recomendations(type, element) {
 
 
 
+
+}
+
+function inventory_transaction_note_changed() {
+
+var element= $('#inventory_transaction_note').data('element')
+var textarea= $('#inventory_transaction_note').find('textarea')
+
+
+
+
+$(element).closest('tr').find('.note').val($(textarea).val())
+if($(textarea).val()==''){
+    $(element).closest('tr').find('.add_note').addClass('fa-sticky-note-o').removeClass('fa-sticky-note')
+
+}else{
+    $(element).closest('tr').find('.add_note').removeClass('fa-sticky-note-o').addClass('fa-sticky-note')
+}
+
+}
+
+function set_inventory_transaction_note(element) {
+    $('#inventory_transaction_note').find('textarea').val($(element).closest('tr').find('.note').val())
+
+$(element).uniqueId()
+console.log($(element).attr('id'))
+    if ($('#inventory_transaction_note').hasClass('hide') ||  $(element).attr('id')!=$('#inventory_transaction_note').data('id')  ) {
+    
+        $('#inventory_transaction_note').data( 
+       { 'element':$(element),
+        'id':$(element).attr('id')}
+        )
+
+        $('#inventory_transaction_note').removeClass('hide')
+        
+          var position = $(element).closest('tr').find('.stock').position();
+
+
+            $('#inventory_transaction_note').css({
+                'left': position.left - $('#inventory_transaction_note').width(),
+                'top': position.top
+            })
+        
+        
+        $('#inventory_transaction_note').find('textarea').focus()
+    } else {
+        $('#inventory_transaction_note').addClass('hide')
+
+    }
 
 }

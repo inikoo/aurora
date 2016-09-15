@@ -39,6 +39,14 @@ var columns = [{
     })
 
 }, 
+{
+    name: "status",
+    label: "{t}Status{/t}",
+    editable: false,
+      sortType: "toggle",
+     cell: Backgrid.HtmlCell.extend({} ),
+
+},
 
  {
     name: "code",
@@ -65,7 +73,24 @@ var columns = [{
     label: "{t}Price{/t}",
     editable: false,
       sortType: "toggle",
-     cell: Backgrid.StringCell.extend({ className: "aright"} ),
+     cell: Backgrid.StringCell.extend({ } ),
+
+},
+ {
+    name: "margin",
+    label: "{t}Margin{/t}",
+    editable: false,
+      sortType: "toggle",
+     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+    headerCell: integerHeaderCell
+},
+ {
+    name: "web_state",
+    label: "{t}Web state{/t}",
+    editable: false,
+      sortType: "toggle",
+     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
     headerCell: integerHeaderCell
 }

@@ -226,33 +226,7 @@ class Asset extends DB_Table{
 			break;
 
 
-		case 'Stock Status Icon':
-
-			switch ($this->data[$this->table_name.' Stock Status']) {
-			case 'Surplus':
-				$stock_status='<i class="fa  fa-plus-circle fa-fw" aria-hidden="true" title="'._('Surplus stock').'"></i>';
-				break;
-			case 'Optimal':
-				$stock_status='<i class="fa fa-check-circle fa-fw" aria-hidden="true" title="'._('Optimal stock').'"></i>';
-				break;
-			case 'Low':
-				$stock_status='<i class="fa fa-minus-circle fa-fw" aria-hidden="true" title="'._('Low stock').'"></i>';
-				break;
-			case 'Critical':
-				$stock_status='<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"  title="'._('Critical stock').'"></i>';
-				break;
-			case 'Out_Of_Stock':
-				$stock_status='<i class="fa error fa-ban fa-fw" aria-hidden="true"  title="'._('Out of stock').'"></i>';
-				break;
-			case 'Error':
-				$stock_status='<i class="fa fa-question-circle fa-fw" aria-hidden="true"  title="'._('Error').'"></i>';
-				break;
-			default:
-				$stock_status=$this->data[$this->table_name.' Stock Status'];
-				break;
-			}
-			return  array(true, $stock_status);
-			break;
+		
 
 		case  'Tariff Code':
 			$tariff_code=$this->data[$this->table_name.' Tariff Code'];

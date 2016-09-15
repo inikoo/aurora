@@ -17,21 +17,21 @@ $default=$user->get_tab_defaults($tab);
 
 
 $table_views=array(
-	'overview'=>array('label'=>_('Overview'),'title'=>_('Overview')),
-	'sales'=>array('label'=>_('Sales'),'title'=>_('Sales')),
+	'overview'=>array('label'=>_('Overview'), 'title'=>_('Overview')),
+	'sales'=>array('label'=>_('Sales'), 'title'=>_('Sales')),
 
 );
 
 $table_filters=array(
-	'code'=>array('label'=>_('Code'),'title'=>_('Product code')),
-	'name'=>array('label'=>_('Name'),'title'=>_('Product name')),
+	'code'=>array('label'=>_('Code'), 'title'=>_('Product code')),
+	'name'=>array('label'=>_('Name'), 'title'=>_('Product name')),
 
 );
 
 $parameters=array(
-		'parent'=>$state['object'],
-		'parent_key'=>$state['key'],
-		
+	'parent'=>$state['object'],
+	'parent_key'=>$state['key'],
+
 );
 
 $table_buttons=array();
@@ -39,7 +39,24 @@ $table_buttons[]=array('icon'=>'plus', 'title'=>_('New product'), 'reference'=>"
 $smarty->assign('table_buttons', $table_buttons);
 
 
-include('utils/get_table_html.php');
+$products_without_auto_web_configuration=false;
+include_once 'class.Product.php';
+foreach ($state['_object']->get_products() as $product_id) {
+	$product=new Product('id', $product_id);
+	if ($product->get('Product Web Configuration')!='Online Auto') {
+		$products_without_auto_web_configuration=true;
+		break;
+
+	}
+}
+$smarty->assign('part_sku',$state['key']);
+
+$smarty->assign('products_without_auto_web_configuration', $products_without_auto_web_configuration);
+
+$smarty->assign('table_top_template', 'part.products.edit.tpl');
+
+
+include 'utils/get_table_html.php';
 
 
 ?>

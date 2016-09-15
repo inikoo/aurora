@@ -54,12 +54,34 @@ migrate_historic_products($db);
 update_fields_from_parts($db);
 update_number_of_parts($db);
 update_web_configuration($db);
-
-*/
-
-
 set_family_department_key($db);
 migrate_page_related_products($db);
+*/
+
+update_cost($db);
+function update_cost($db) {
+
+	$sql=sprintf('select `Product ID` from `Product Dimension` order by `Product ID`  ');
+
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+			$product=new Product('id', $row['Product ID']);
+
+		
+			$product->update_cost();
+			print $product->id."\r";
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+}
+
 
 
 function set_family_department_key($db) {
@@ -76,7 +98,7 @@ function set_family_department_key($db) {
 
 
 
-			// print_r($category);
+			
 
 			$sql=sprintf("select B.`Category Key`,`Category Root Key`,`Other Note`,`Category Label`,`Category Code`,`Is Category Field Other` from `Category Bridge` B left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`) where  `Category Branch Type`='Head'  and B.`Subject Key`=%d and B.`Subject`='Category'",
 				$category->id
@@ -128,6 +150,8 @@ function migrate_page_related_products($db) {
 			}
 			//print_r($row);
 		//	print_r($products_ids);
+			
+			
 			
 			
 			$page->update(array('Related Products'=>json_encode($products_ids)) ,'no_history' );
