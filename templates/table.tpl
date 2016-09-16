@@ -84,7 +84,7 @@
 	        <tr>
 	        	            <td><div onclick="hide_export_dialog()" class="button disabled"  ><i class="fa fa-times" title="{t}Close dialog{/t}"></i>{t}Close{/t}</div></td>
 
-	            <td colspan="2" class="aright"><i onclick="open_export_config()" class="fa fa-cogs button"></i></td>
+	            <td colspan="2" class="aright"><i onclick="open_export_config_left_button()" class="fa fa-cogs button"></i></td>
 	        </tr>
 	   </table>
 	

@@ -99,7 +99,7 @@ $export_fields=array(
 	),
 	'ec_sales_list'=>array(
 		array('name'=>'`Invoice Billing Country 2 Alpha Code`', 'label'=>_('Country Code'), 'checked'=>1),
-		array('name'=>'`Invoice Tax Number`', 'label'=>_('VAT registration number'), 'checked'=>1),
+		array('name'=>'`Invoice Tax Number`', 'label'=>_('VAT registration number'), 'checked'=>1,'cell_type'=>'string'),
 		array('name'=>'ROUND(`Invoice Total Net Amount`*`Invoice Currency Exchange`,2)', 'label'=>_('Net'), 'checked'=>1),
 		array('name'=>'ROUND(`Invoice Total Tax Amount`*`Invoice Currency Exchange`)', 'label'=>_('Tax'), 'checked'=>1),
 		array('name'=>'`Invoice Tax Number Valid`', 'label'=>_('VAT registration number validation'), 'checked'=>0),

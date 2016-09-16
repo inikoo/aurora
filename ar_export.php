@@ -78,7 +78,13 @@ include_once 'prepare_table/init.php';
 
 
 $fields='';
-foreach ($_data['fields'] as $field_key) {
+foreach ($_data['fields'] as $_key=>$field_key) {
+	
+	if($field_key==''){
+	    unset($_data['fields'][$_key]);
+	    continue;
+	}
+	
 	if (isset($field_set[$field_key]))
 		$fields.=$field_set[$field_key]['name'].',';
 }

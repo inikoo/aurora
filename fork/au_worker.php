@@ -62,11 +62,12 @@ while ($worker->work()) {
 
 function get_fork_data($job) {
 
-    global $db;
+	global $db;
 
 	$fork_encrypt_key=md5('huls0fjhslsshskslgjbtqcwijnbxhl2391');
 	$fork_raw_data=$job->workload();
 	$fork_metadata=json_decode(AESDecryptCtr(base64_decode($fork_raw_data), $fork_encrypt_key, 256), true);
+
 
 	$inikoo_account_code=$fork_metadata['code'];
 	if (!ctype_alnum($inikoo_account_code)) {
@@ -87,9 +88,9 @@ function get_fork_data($job) {
 
 
 
-	
 
-	$default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
+
+	$default_DB_link=mysql_connect($dns_host, $dns_user, $dns_pwd );
 	if (!$default_DB_link) {
 		print "Error can not connect with database server\n";
 		return false;
@@ -101,7 +102,7 @@ function get_fork_data($job) {
 	}
 	mysql_set_charset('utf8');
 	mysql_query("SET time_zone='+0:00'");
-	
+
 
 	$account=new Account($db);
 
@@ -122,7 +123,9 @@ function get_fork_data($job) {
 	if ($result=$db->query($sql)) {
 		if ($row = $result->fetch()) {
 			$fork_data=json_decode($row['Fork Process Data'], true);
-			return array('fork_key'=>$fork_key, 'inikoo_account_code'=>$inikoo_account_code, 'fork_data'=>$fork_data,'db'=>$db);
+
+
+			return array('fork_key'=>$fork_key, 'inikoo_account_code'=>$inikoo_account_code, 'fork_data'=>$fork_data, 'db'=>$db);
 		}else {
 			print "fork data not found";
 			return false;
