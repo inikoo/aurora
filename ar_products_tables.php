@@ -197,7 +197,7 @@ switch ($data['Product Status']) {
 				'associated'=>$associated,
 				'store'=>$data['Store Code'],
 				'code'=>$data['Product Code'],
-				'name'=>$data['Product Name'],
+				'name'=>$data['Product Units Per Case'].'x '.$data['Product Name'],
 				'price'=>money($data['Product Price'], $data['Store Currency Code']),
 				'margin'=>'<span title="'._('Cost price').':'.money($data['Product Cost'], $account->get('Account Currency')).'">'.percentage($data['Product Price']-$data['Product Cost'], $data['Product Price']).'<span>',
 				'web_state'=>$web_state,
