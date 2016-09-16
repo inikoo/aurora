@@ -104,7 +104,7 @@ function fork_export($job) {
 
 			if ($row_index==1) {
 
-
+//print_r($fork_data);
 			//	print_r($row);
 
 
@@ -114,12 +114,23 @@ function fork_export($job) {
 						$fields.=$field_set[$field_key]['name'].',';
 				}
 */
+
+
+
 				$char_index=1;
+				
+				foreach ($fork_data['fields'] as $_key) {
+					$char=number2alpha($char_index);
+					$objPHPExcel->getActiveSheet()->setCellValue($char . $row_index, strip_tags($fork_data['field_set'][$_key]['label']  ));
+					$char_index++;
+				}
+				/*
 				foreach ($row as $_key=>$value) {
 					$char=number2alpha($char_index);
 					$objPHPExcel->getActiveSheet()->setCellValue($char . $row_index, strip_tags($_key));
 					$char_index++;
 				}
+				*/
 				$row_index++;
 			}
 
@@ -154,6 +165,20 @@ function fork_export($job) {
 		$download_path="downloads_$inikoo_account_code/";
 	}
 */
+
+
+
+	$sheet = $objPHPExcel->getActiveSheet();
+	$cellIterator = $sheet->getRowIterator()->current()->getCellIterator();
+	$cellIterator->setIterateOnlyExistingCells( true );
+	/** @var PHPExcel_Cell $cell */
+	foreach ( $cellIterator as $cell ) {
+		$sheet->getColumnDimension( $cell->getColumn() )->setAutoSize( true );
+	}
+
+	$objPHPExcel->getActiveSheet()->freezePane('A2');
+
+
 	$download_path='tmp/';
 
 	switch ($output_type) {
