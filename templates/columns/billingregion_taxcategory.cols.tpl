@@ -32,15 +32,12 @@ var columns = [
      sortType: "toggle",
       defautOrder:1,
     {if $sort_key=='invoices'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-   cell: Backgrid.StringCell.extend({ 
+   cell: Backgrid.HtmlCell.extend({ 
     events: {
-            "click": function() {
-                  change_view('report/billingregion_taxcategory/invoices/'+this.model.get("request"))
-               
-            }
+       
         },
    
-   className: "link aright"
+   className: " aright"
    
    
    } ),
@@ -56,13 +53,11 @@ var columns = [
      sortType: "toggle",
       defautOrder:1,
     {if $sort_key=='refunds'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-   cell: Backgrid.StringCell.extend({
+   cell: Backgrid.HtmlCell.extend({
      events: {
-            "click": function() {
-                  change_view('report/billingregion_taxcategory/refunds/'+this.model.get("request"))
-            }
+         
         },
-    className: "link aright"} ),
+    className: " aright"} ),
     headerCell: integerHeaderCell
 
 },

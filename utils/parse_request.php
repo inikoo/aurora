@@ -266,19 +266,19 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 							if (isset($view_path[2])) {
 
-							        if ($view_path[2]=='image') {
+								if ($view_path[2]=='image') {
 
-                                        	if (isset($view_path[3])) {
+									if (isset($view_path[3])) {
 
-									if (is_numeric($view_path[3])) {
-										$section='product.image';
-										$object='image.subject';
-										$parent_key=$key;
-										$key=$view_path[3];
-										$parent='product';
+										if (is_numeric($view_path[3])) {
+											$section='product.image';
+											$object='image.subject';
+											$parent_key=$key;
+											$key=$view_path[3];
+											$parent='product';
 
-									}
-									
+										}
+
 									}
 
 								}
@@ -693,11 +693,16 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			$module='customers';
 			$section='customer';
 			$object='customer';
-			$parent='account';
-			$parent_key=1;
-			if (isset($view_path[1])) {
+			$parent='store';
+			$parent_key='';
+
+
+
+			if (isset($view_path[0])) {
 
 				$key=$view_path[0];
+
+
 
 				if (isset($view_path[1])) {
 					if ($view_path[1]=='order') {
@@ -708,12 +713,19 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 						$parent='customer';
 						$parent_key=$key;
 						$object='order';
-						$key=$view_path[2];
-
+						if (isset($view_path[2])) {
+							if (is_numeric($view_path[2])) {
+								$key=$view_path[2];
+							}
+						}
 					}
 
 
 				}
+
+
+
+
 			}
 
 
@@ -1199,7 +1211,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 					}
 					elseif ($view_path[0]=='lists') {
 						$section='lists';
-					}elseif ($view_path[0]=='categories') {
+					}
+					elseif ($view_path[0]=='categories') {
 						$section='categories';
 
 					}
@@ -2772,6 +2785,13 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 
 					}
+
+
+				}
+				elseif ( $view_path[0]=='ec_sales_list') {
+					$section='ec_sales_list';
+
+
 
 
 				}

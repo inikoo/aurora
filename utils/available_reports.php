@@ -18,6 +18,12 @@ $available_reports=array(
 		'GroupLabel'=>'Tax',
 		
 	),
+	'ec_sales_list'=>array(
+		'Label'=>'EC Sales List',
+		'Group'=>'tax',
+		'GroupLabel'=>'Tax',
+		
+	),
 );
 
 

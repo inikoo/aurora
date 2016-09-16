@@ -395,7 +395,18 @@ function change_table_element(event, item) {
 }
 
 
+function show_export_dialog_left_button() {
+    if ($('#export_dialog').hasClass('hide')) {
+        $('#export_dialog').removeClass('hide')
+        
+        console.log($('#show_export_dialog').position().left )
+      $("#export_dialog").css('left', 0 );
+        $("#export_dialog").css('top', $("#show_export_dialog").height());
+    } else {
+        hide_export_dialog()
+    }
 
+}
 
 function show_export_dialog() {
     if ($('#export_dialog').hasClass('hide')) {
@@ -423,7 +434,7 @@ function hide_export_dialog() {
 function open_export_config() {
     if ($('#export_dialog_config').hasClass('hide')) {
         $('#export_dialog_config').removeClass('hide')
-        $("#export_dialog_config").css('left', -1 * ($("#export_dialog_config").width() + 40 + $("#export_dialog").width()));
+        $("#export_dialog_config").css('left', 20+ $("#export_dialog").width() );
         $("#export_dialog_config").css('top', $("#show_export_dialog").height());
     } else {
         hide_export_config_dialog()

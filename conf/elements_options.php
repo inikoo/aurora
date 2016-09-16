@@ -522,8 +522,19 @@ $elements_options=array(
 
 
 		),
-	)
+	),
+	'ec_sales_list'=>array(
+		'tax_status'=>array(
+			'label'=>_('Tax number status'),
+			'items'=>array(
+				'Yes'=>array('label'=>_('Tax number valid'), 'selected'=>true),
+				'No'=>array('label'=>_('Tax number invalid'), 'selected'=>true),
+				'Missing'=>array('label'=>_('No tax number'), 'selected'=>true),
 
+			),
+
+		)
+	),
 );
 
 ?>

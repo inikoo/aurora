@@ -88,6 +88,33 @@ function get_performance_navigation($user, $smarty, $data) {
 
 }
 
+function get_ec_sales_list_navigation($user, $smarty, $data) {
+
+	$block_view=$data['section'];
+
+	$left_buttons=array();
+	$right_buttons=array();
+	//array(array('icon'=>'cog', 'title'=>_("Settings"), 'id'=>'report_settings'));
+	$sections=array();
+
+	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
+
+	$title=_('EC Sales List (ESL)');
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>$title,
+		'search'=>array('show'=>true, 'placeholder'=>_('Search reports'))
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+}
 
 function get_georegion_taxcategory_navigation($user, $smarty, $data) {
 

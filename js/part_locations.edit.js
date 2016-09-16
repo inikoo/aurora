@@ -428,6 +428,7 @@ function set_as_audit(element) {
     if ($(element).hasClass('super_discreet')) {
         $(element).removeClass('super_discreet')
         $(element).closest('tr').find('input').prop('readonly', true)
+             $(element).closest('tr').find('.add_note').removeClass('super_discreet invisible').addClass('visible')
 
     } else {
         $(element).addClass('super_discreet')
@@ -597,9 +598,9 @@ function save_add_location() {
             clone.find("._stock").addClass('stock').removeClass('_stock')
             clone.find("._move_trigger").addClass('move_trigger').removeClass('_move_trigger')
 
+            clone.find('.add_note').removeClass('super_discreet invisible').addClass('visible')
 
 
-            clone.find(".stock").val(data.stock).attr('ovalue', data.stock).attr('location_key', data.location_key)
 
 
 
