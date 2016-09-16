@@ -92,7 +92,7 @@ case 'website.favourites.customers':
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
 		));
-	get_customers_element_numbers($db, $data['parameters'],$user);
+	get_customers_element_numbers($db, $data['parameters'], $user);
 	break;
 case 'store.products':
 case 'category.products':
@@ -107,13 +107,13 @@ case 'orders':
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
 		));
-	get_orders_element_numbers($db, $data['parameters'],$user);
+	get_orders_element_numbers($db, $data['parameters'], $user);
 	break;
 case 'invoices':
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
 		));
-	get_invoices_element_numbers($db, $data['parameters'],$user);
+	get_invoices_element_numbers($db, $data['parameters'], $user);
 	break;
 case 'customer.history':
 case 'supplier_part.history':
@@ -126,7 +126,7 @@ case 'supplier.order.history':
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
 		));
-	get_history_elements($db, $data['parameters'],$user);
+	get_history_elements($db, $data['parameters'], $user);
 	break;
 case 'inventory.barcodes':
 	$data=prepare_values($_REQUEST, array(
@@ -166,6 +166,13 @@ case 'category_root.all_parts':
 			'parameters'=>array('type'=>'json array')
 		));
 	get_category_root_all_parts_elements($db, $data['parameters'], $user);
+	break;
+case 'ec_sales_list':
+
+	$data=prepare_values($_REQUEST, array(
+			'parameters'=>array('type'=>'json array')
+		));
+	get_ec_sales_list_elements($db, $data['parameters'], $user);
 	break;
 
 default:
@@ -563,7 +570,7 @@ function get_products_element_numbers($db, $data, $user) {
 	$parent_key=$data['parent_key'];
 
 	$elements_numbers=array(
-		'status'=>array('InProcess'=>0, 'Active'=>0, 'Suspended'=>0, 'Discontinued'=>0,'Discontinuing'=>0),
+		'status'=>array('InProcess'=>0, 'Active'=>0, 'Suspended'=>0, 'Discontinued'=>0, 'Discontinuing'=>0),
 
 	);
 
@@ -596,8 +603,8 @@ function get_products_element_numbers($db, $data, $user) {
 	case 'favourites':
 		$where=sprintf(' where C.`Customer Key` in (select DISTINCT F.`Customer Key` from `Customer Favorite Product Bridge` F where `Site Key`=%d )', $data['parent_key']);
 		break;
-		
-		
+
+
 	default:
 		$response=array('state'=>405, 'resp'=>'product parent not found '.$data['parent']);
 		echo json_encode($response);
@@ -840,7 +847,7 @@ function get_orders_element_numbers($db, $data, $user) {
 	}
 
 
-	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($db,$data['period'], $data['from'], $data['to']);
+	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($db, $data['period'], $data['from'], $data['to']);
 
 
 
@@ -956,7 +963,7 @@ function get_orders_element_numbers($db, $data, $user) {
 
 function get_invoices_element_numbers($db, $parameters) {
 
-	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($db,$parameters['period'], $parameters['from'], $parameters['to']);
+	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($db, $parameters['period'], $parameters['from'], $parameters['to']);
 
 
 
@@ -1133,7 +1140,7 @@ function get_invoices_element_numbers($db, $parameters) {
 
 function get_delivery_note_element_numbers($db, $data) {
 
-	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($db,$data['period'], $data['from'], $data['to']);
+	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($db, $data['period'], $data['from'], $data['to']);
 
 
 
@@ -1258,7 +1265,7 @@ function get_barcodes_elements($db, $data, $user) {
 function get_supplier_orders_elements($db, $data) {
 
 
-	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($db,$data['period'], $data['from'], $data['to']);
+	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($db, $data['period'], $data['from'], $data['to']);
 
 
 	$parent_key=$data['parent_key'];
@@ -1336,7 +1343,7 @@ function get_supplier_orders_elements($db, $data) {
 
 function get_supplier_deliveries_element_numbers($db, $data) {
 
-	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($db,$data['period'], $data['from'], $data['to']);
+	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($db, $data['period'], $data['from'], $data['to']);
 
 	$parent_key=$data['parent_key'];
 	$where_interval=prepare_mysql_dates($from, $to, '`Supplier Delivery Date`');
@@ -1417,6 +1424,89 @@ function get_category_root_all_parts_elements($db, $data) {
 		print_r($error_info=$db->errorInfo());
 		exit;
 	}
+
+	$response= array('state'=>200, 'elements_numbers'=>$elements_numbers);
+	echo json_encode($response);
+
+
+
+}
+
+
+function get_ec_sales_list_elements($db, $parameters) {
+
+	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($db, $parameters['period'], $parameters['from'], $parameters['to']);
+
+
+
+
+
+
+	$where_interval=prepare_mysql_dates($from, $to, '`Invoice Date`');
+	$where_interval=$where_interval['mysql'];
+
+	$elements_numbers=array(
+		'tax_status'=>array('Yes'=>0, 'No'=>0, 'Missing'=>0),
+	);
+
+
+
+	$countries='';
+	$sql=sprintf('select `Country 2 Alpha Code`  from kbase.`Country Dimension`  where `EC Fiscal VAT Area`="Yes" and `Country 2 Alpha Code` not in ("GB","IM")  order by `Country Name`');
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+			$countries.="'".addslashes($row['Country 2 Alpha Code'])."',";
+
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+	$countries=preg_replace('/\,$/', '', $countries);
+
+
+
+	$where=' where `Invoice Billing Country 2 Alpha Code` in ('.$countries.')';
+
+
+	$table='`Invoice Dimension`';
+
+$group_by='group by `Invoice Tax Number`,`Invoice Billing Country 2 Alpha Code`,`Invoice Customer Key`';
+
+
+
+$sql=sprintf("select `Invoice Key` as number from %s %s %s and `Invoice Tax Number`!='' and `Invoice Tax Number Valid`='Yes'  $group_by ",
+	$table, $where, $where_interval);
+	//print $sql;
+	
+	$stmt=$db->prepare($sql);
+	$stmt->execute();
+	$elements_numbers['tax_status']['Yes']=$stmt->rowCount();
+
+
+$sql=sprintf("select `Invoice Key` as number from %s %s %s and `Invoice Tax Number`!='' and `Invoice Tax Number Valid`!='Yes'  $group_by ",
+	$table, $where, $where_interval);
+	//print $sql;
+	
+	$stmt=$db->prepare($sql);
+	$stmt->execute();
+	$elements_numbers['tax_status']['No']=$stmt->rowCount();
+
+
+	$sql=sprintf("select `Invoice Key` as number from %s %s %s and ( `Invoice Tax Number` is NULL or `Invoice Tax Number`='' ) $group_by ",
+	$table, $where, $where_interval);
+	//print $sql;
+	
+	$stmt=$db->prepare($sql);
+	$stmt->execute();
+	$elements_numbers['tax_status']['Missing']=$stmt->rowCount();
+	
+
+
+
+
 
 	$response= array('state'=>200, 'elements_numbers'=>$elements_numbers);
 	echo json_encode($response);

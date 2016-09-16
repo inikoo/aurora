@@ -19,7 +19,7 @@ function fork_export($job) {
 		return;
 
 
-	//print_r($_data);
+	
 
 	$db=$_data['db'];
 	$fork_data=$_data['fork_data'];
@@ -47,16 +47,24 @@ function fork_export($job) {
 	$number_rows=0;
 
 
-	if ($result=$db->query($sql_count)) {
-		if ($row = $result->fetch()) {
-			$number_rows=$row['num'];
+	if ($sql_count!='') {
+
+		if ($result=$db->query($sql_count)) {
+			if ($row = $result->fetch()) {
+				$number_rows=$row['num'];
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
 		}
+
 	}else {
-		print_r($error_info=$db->errorInfo());
-		exit;
+		$stmt=$db->prepare($sql_data);
+		$stmt->execute();
+
+		$number_rows=$stmt->rowCount();
+
 	}
-
-
 
 
 
@@ -95,6 +103,17 @@ function fork_export($job) {
 
 
 			if ($row_index==1) {
+
+
+			//	print_r($row);
+
+
+				/*
+				foreach ($fork_data['fields'] as $field_key) {
+					if (isset($field_set[$field_key]))
+						$fields.=$field_set[$field_key]['name'].',';
+				}
+*/
 				$char_index=1;
 				foreach ($row as $_key=>$value) {
 					$char=number2alpha($char_index);

@@ -246,7 +246,7 @@ class Customer extends Subject {
 				$id2
 
 			);
-		elseif ($tag='all') {
+		elseif ($tag=='all') {
 			$this->find($id);
 			return true;
 		}

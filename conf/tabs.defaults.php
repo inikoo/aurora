@@ -355,8 +355,8 @@ $tab_defaults=array(
 		'elements'=>$elements_options['products'],
 
 	),
-	
-		'store.services'=>array(
+
+	'store.services'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
@@ -483,9 +483,9 @@ $tab_defaults=array(
 		'elements'=>$elements_options['orders'],
 		'export_fields'=>$export_fields['orders']
 	),
-	
-	
-	
+
+
+
 	'category.product.sales.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
@@ -877,8 +877,8 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'note'
 	),
-	
-		'supplier.sales.history'=>array(
+
+	'supplier.sales.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
@@ -889,7 +889,7 @@ $tab_defaults=array(
 		//  'export_fields'=>$export_fields['timeserie_records']
 
 	),
-	
+
 	'supplier_part.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
@@ -1952,6 +1952,23 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'handle'
 	),
+
+	'ec_sales_list'=>array(
+		'view'=>'overview',
+		'sort_key'=>'country_code',
+		'sort_order'=>1,
+		'rpp'=>100,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'tax_number',
+		'from'=>'',
+		'to'=>'',
+		'period'=>'last_m',
+		'elements_type'=>each(  $elements_options['ec_sales_list']  ) ['key'],
+		'elements'=>$elements_options['ec_sales_list'],
+		'export_fields'=>$export_fields['ec_sales_list']
+
+	),
+
 	'billingregion_taxcategory'=>array(
 		'view'=>'overview',
 		'sort_key'=>'billing_region',

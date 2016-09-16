@@ -1772,6 +1772,14 @@ $modules=array(
 				)
 
 			),
+			
+			'ec_sales_list'=>array('type'=>'',
+				'tabs'=>array(
+					'ec_sales_list'=>array(),
+
+				)
+
+			),
 			'billingregion_taxcategory'=>array('type'=>'',
 				'tabs'=>array(
 					'billingregion_taxcategory'=>array(),

@@ -311,7 +311,7 @@ function fork_export_edit_template($job) {
 									$op.='NO PIC, ';
 
 								}
-								if (!$object->get('	Part Current On Hand Stock')>0) {
+								if (!$object->get('Part Current On Hand Stock')>0) {
 									$op.='NO STOCK, ';
 
 								}

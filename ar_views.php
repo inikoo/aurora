@@ -60,7 +60,6 @@ case 'views':
 
 
 
-
 	$store='';
 	$website='';
 	$warehouse='';
@@ -138,6 +137,7 @@ case 'views':
 		$_object=get_object($state['object'], $state['key']);
 
 
+
 		if (is_numeric($_object->get('Store Key'))) {
 			include_once 'class.Store.php';
 			$store=new Store($_object->get('Store Key'));
@@ -170,6 +170,15 @@ case 'views':
 
 		if ( $state['object']=='customer' and    $state['tab']!='customer.new'  ) {
 
+			if ($state['parent']=='store' and $state['parent_key']=='') {
+
+				include_once 'class.Store.php';
+				$_parent=new Store( $_object->get('Store Key'));
+				$state['parent_key']=$_object->get('Store Key');
+				$state['current_store']=$_parent->id;
+				$store=$_parent;
+				$state['_parent']=$_parent;
+			}
 
 			if ($state['parent']=='store' and $_object->get('Store Key')!=$state['parent_key'] ) {
 				$state=array('old_state'=>$state, 'module'=>'utils', 'section'=>'not_found', 'tab'=>'not_found', 'subtab'=>'', 'parent'=>$state['object'], 'parent_key'=>'', 'object'=>'',
@@ -1068,6 +1077,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case ('billingregion_taxcategory.refunds'):
 			return get_invoices_georegion_taxcategory_navigation($user, $smarty, $data, 'refunds');
 			break;
+		case ('ec_sales_list'):
+			return get_ec_sales_list_navigation($user, $smarty, $data);
+			break;
 		}
 
 	case ('production'):
@@ -1698,7 +1710,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
 
 		}
 	}
-	
+
 
 
 	$smarty->assign('_content', $_content);
@@ -3386,6 +3398,9 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 			$label=_('Refunds')." $billing_region & ".$parents[1];
 			$branch[]=array('label'=>$label, 'icon'=>'', 'reference'=>'');
+		}elseif ($state['section']=='ec_sales_list') {
+			$branch[]=array('label'=>_('EC sales list'), 'icon'=>'', 'reference'=>'report/ec_sales_list');
+
 		}
 
 		break;

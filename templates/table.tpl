@@ -5,6 +5,7 @@
 
 
 {if isset($period)  and   !isset($hide_period) }
+
  {include file="utils/date_chooser.tpl" period=$period from=$from to=$to from_mmddyy=$from_mmddyy  to_mmddyy=$to_mmddyy from_locale=$from_locale  to_locale=$to_locale  } 
 {/if}
 
@@ -52,10 +53,10 @@
 		<i class="fa fa-chevron-left fa-fw" style="position:absolute;left:2px;bottom:6px"></i> <i style="position:absolute;left:9px;bottom:6px" class="fa fa-chevron-left fa-fw"></i> 
 	</div>
 	<div  id="show_export_dialog"  class="left square_button  {if !isset($export_fields)}hide{/if}  " title="{t}Export{/t}" >
-		 <i onclick="show_export_dialog()" class="fa fa-download fa-fw"></i> 
+		 <i onclick="show_export_dialog_left_button()" class="fa fa-download fa-fw"></i> 
 		
 	</div>
-	<div id="export_dialog_container" style="position:relative;float:right" class="  ">
+	<div id="export_dialog_container" style="position:absolute" class="  ">
 	<span class="hide" id="export_queued_msg"><i class="fa background fa-spinner fa-spin"></i> {t}Queued{/t}</span>
 	<div id="export_dialog" class="export_dialog hide" style="z-index: 2">
         <table border=0 style="width:100%">
@@ -81,7 +82,9 @@
 	            <td class="width_20" ><i  id="stop_export_table_csv" onclick="stop_export('csv')" class="fa button fa-hand-stop-o error hide" title="{t}Stop{/t}"></i></td>
                 <td id="export_table_csv" class="link" onclick="export_table('csv')"><i class="fa fa-table" title="{t}Comma Separated Value{/t}"></i>CSV</td></tr>
 	        <tr>
-	            <td colspan="2"class=""><i onclick="open_export_config()" class="fa fa-cogs button"></i></td><td><div onclick="hide_export_dialog()" class="button disabled"  ><i class="fa fa-times" title="{t}Close dialog{/t}"></i>{t}Close{/t}</div></td>
+	        	            <td><div onclick="hide_export_dialog()" class="button disabled"  ><i class="fa fa-times" title="{t}Close dialog{/t}"></i>{t}Close{/t}</div></td>
+
+	            <td colspan="2" class="aright"><i onclick="open_export_config()" class="fa fa-cogs button"></i></td>
 	        </tr>
 	   </table>
 	

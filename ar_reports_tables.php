@@ -28,6 +28,9 @@ switch ($tipo) {
 case 'reports':
 	reports(get_table_parameters(), $db, $user);
 	break;
+case 'ec_sales_list':
+	ec_sales_list(get_table_parameters(), $db, $user, $account);
+	break;
 case 'billingregion_taxcategory':
 	billingregion_taxcategory(get_table_parameters(), $db, $user, $account);
 	break;
@@ -57,7 +60,7 @@ function reports($_data, $db, $user) {
 
 	$adata=array();
 
-	// print $sql;
+
 
 
 	foreach ($available_reports as $key=>$data) {
@@ -93,6 +96,106 @@ function reports($_data, $db, $user) {
 	);
 	echo json_encode($response);
 }
+
+
+function ec_sales_list($_data, $db, $user, $account) {
+
+	$rtext_label='record';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+//print $sql;
+
+	if ($result=$db->query($sql)) {
+
+		foreach ($result as $data) {
+
+
+			switch ($data['Invoice Tax Number Valid']) {
+			case 'Yes':
+				$tax_number_valid='<i class="fa fa-check-circle success padding_right_5" aria-hidden="true"></i> ';
+				break;
+			case 'No':
+				$tax_number_valid='<i class="fa fa-exclamation-circle error padding_right_5" aria-hidden="true"></i> ';
+				break;
+			case 'Unknown':
+				$tax_number_valid='<i class="fa fa-question-circle very_discreet padding_right_5" aria-hidden="true"></i> ';
+				break;
+			default:
+				$tax_number_valid='';
+				break;
+			}
+
+			if ($data['Invoice Tax Number']=='') {
+				$tax_number_valid='';
+			}
+
+			$tax_number=$data['Invoice Tax Number'];
+			$country_2alpha_code=$data['Invoice Billing Country 2 Alpha Code'];
+			$tax_number=preg_replace('/^'.$country_2alpha_code.'/i', '', $tax_number);
+			$tax_number=preg_replace('/[^a-z^0-9]/i', '', $tax_number);
+
+			if (preg_match('/^gr$/i', $country_2alpha_code)) {
+				$country_2alpha_code='EL';
+			}
+
+			$tax_number=preg_replace('/^'.$country_2alpha_code.'/i', '', $tax_number);
+			$tax_number=preg_replace('/[^a-z^0-9]/i', '', $tax_number);
+
+			$adata[]=array(
+
+				// 'tax_code'=> sprintf('<span title="%s">%s</span>', ($data['Invoice Tax Code']=='UNK'?_('Unknown tax code'):$data['Tax Category Name']), $data['Invoice Tax Code']),
+				// 'request'=>$data['Invoice Billing Region'].'/'.$data['Invoice Tax Code'],
+				'country_code'=>$data['Invoice Billing Country 2 Alpha Code'],
+				'invoices'=>number($data['invoices'])  ,
+				'refunds'=>number($data['refunds']) ,
+				'customer'=>sprintf('<span class="link" onClick="change_view(\'customer/%d\')"   title="%s">%06d</span>', $data['Invoice Customer Key'], $data['Invoice Customer Name'], $data['Invoice Customer Key']) ,
+				'tax_number'=>$tax_number_valid.$tax_number ,
+				'tax'=>money($data['tax'], $account->get('Account Currency')) ,
+				'net'=>money($data['net'], $account->get('Account Currency')) ,
+				'total'=>money($data['total'], $account->get('Account Currency')) ,
+
+
+			);
+
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+$sql="select $fields from $table $where $wheref $group_by";
+	$stmt=$db->prepare($sql);
+	$stmt->execute();
+	
+	$total_records=$stmt->rowCount();
+	
+	$rtext=  sprintf(ngettext('%s record', '%s records', $total_records), number($total_records)).' <span class="discreet">'.$rtext.'</span>';
+
+
+	//$rtext=preg_replace('/\(|\)/', '', $rtext);
+
+
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
 
 
 function billingregion_taxcategory($_data, $db, $user, $account) {
@@ -140,8 +243,17 @@ function billingregion_taxcategory($_data, $db, $user, $account) {
 				'tax_code'=> sprintf('<span title="%s">%s</span>', ($data['Invoice Tax Code']=='UNK'?_('Unknown tax code'):$data['Tax Category Name']), $data['Invoice Tax Code']),
 				'request'=>$data['Invoice Billing Region'].'/'.$data['Invoice Tax Code'],
 
-				'invoices'=>number($data['invoices'])  ,
-				'refunds'=>number($data['refunds']) ,
+
+				'invoices'=>sprintf('<span class="link" onClick="change_view(\'report/billingregion_taxcategory/invoices/%s/%s\')" >%s</span>',
+				$data['Invoice Billing Region'],
+				$data['Invoice Tax Code'],
+				number($data['invoices']))  ,
+				
+				'refunds'=>sprintf('<span class="link" onClick="change_view(\'report/billingregion_taxcategory/refunds/%s/%s\')" >%s</span>',
+				$data['Invoice Billing Region'],
+				$data['Invoice Tax Code'],
+				number($data['refunds']))  ,
+
 				'customers'=>number($data['customers']) ,
 				'tax'=>money($data['tax'], $account->get('Account Currency')) ,
 				'net'=>money($data['net'], $account->get('Account Currency')) ,

@@ -479,35 +479,52 @@ class PartLocation extends DB_Table {
 		$this->updated=true;
 
 		if ($note) {
-			$details='<b>'.$note.'</b>, ';
+			$note=', <b>'.$note.'</b>';
 
 		}else {
-			$details='<b>'._('Audit').'</b>, ';
-			$details='';
+			//$details='<b>'._('Audit').'</b>, ';
+			$note='';
 		}
+		
 		if ($this->location->id) {
 			$location_link='<a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>';
 			$location_link=sprintf('<span onClick="change_view(\'locations/%d/%d\')">%s</span>', $this->location->get('Warehouse Key'), $this->location->id, $this->location->get('Code'));
 		}else {
 			$location_link='<span style="font-style:italic">'._('deleted').'</span>';
 		}
+		
+		
+		
+			if ($qty_change!=0 or $value_change!=0) {
+			$audit_note='';
+			}else{
+			$audit_note=$note;
+			}
+		
+		
 		if ($parent=='associate') {
 			//$details.='<a href="part.php?sku='.$this->part_sku.'">'.$this->part->id.'</a>'.' &#8692; '.$location_link;
-			$details=sprintf('<span onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> <i class="fa fa-link" aria-hidden="true"></i> %s', $this->part_sku, $this->part->get('Reference'), $location_link);
+			$details=sprintf('<span onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> <i class="fa fa-link" aria-hidden="true"></i> %s%s',
+			 $this->part_sku, $this->part->get('Reference'), $location_link,$audit_note);
 
 		}else if ($parent=='disassociate') {
 			//$details.='<a href="part.php?sku='.$this->part_sku.'">'.$this->part->id.'</a>'.' &#8603; '.$location_link;
-			$details=sprintf('<span onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> <i class="fa fa-unlink" aria-hidden="true"></i> %s', $this->part_sku, $this->part->get('Reference'), $location_link);
+			$details=sprintf('<span onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> <i class="fa fa-unlink" aria-hidden="true"></i> %s%s', 
+			$this->part_sku, $this->part->get('Reference'), $location_link,$audit_note);
 
 		}else {
 			//$details.='<a href="part.php?sku='.$this->part_sku.'">'.$this->part->id.'</a>'.' '._('stock in').' '.$location_link.' '._('set to').': <b>'.number($qty).'</b>';
 			//$details=sprintf('<span onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> &#8692; %s',$this->part_sku,$this->part->get('Reference'),$location_link=);
 
-			$details=sprintf('<i class="fa fa-dot-circle-o" aria-hidden="true"></i>: %s SKO <span onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> @ %s',
+			$details=sprintf('<i class="fa fa-dot-circle-o" aria-hidden="true"></i>: %s SKO <span onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> @ %s%s',
 				number($qty),
-				$this->part_sku, $this->part->get('Reference'), $location_link);
+				$this->part_sku, $this->part->get('Reference'), $location_link,$audit_note);
+
+
 
 		}
+
+
 
 		$sql=sprintf("insert into `Inventory Transaction Fact` (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Part Location Stock`) values (%s,%s,%d,%d,%s,%f,%.2f,%s,%s,%s,%f)",
 			"'Movement'",
@@ -544,7 +561,7 @@ class PartLocation extends DB_Table {
 
 			// $details='Audit: <b>['.number($qty).']</b> <a href="part.php?sku='.$this->part_sku.'">'.$this->part->id.'</a>'.' '._('adjust quantity').' '.$location_link.': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
 			if ($note) {
-				$details.=', '.$note;
+				$details.=$note;
 
 			}
 

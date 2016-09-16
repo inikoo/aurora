@@ -27,7 +27,7 @@ function get_object($object_name, $key, $load_other_data=false) {
 		break;
 	case 'customer':
 		include_once 'class.Customer.php';
-		$object=new Customer($key);
+		$object=new Customer('id',$key);
 		break;
 	case 'store':
 		include_once 'class.Store.php';

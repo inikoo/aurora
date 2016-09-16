@@ -98,7 +98,9 @@ $export_data=array(
 	'user_key'=>$user->id,
 	'sql_count'=>$sql_totals,
 	'sql_data'=>$sql,
-	'fetch_type'=>'simple'
+	'fetch_type'=>'simple',
+	'fields'=>$_data['fields'],
+	'field_set'=>$field_set
 );
 
 

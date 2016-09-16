@@ -91,7 +91,6 @@ if (isset($metadata['element'])) {
 	}
 
 }
-//print_r($parameters['elements']['type']);
 
 
 
