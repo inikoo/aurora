@@ -434,6 +434,18 @@ function hide_export_dialog() {
 function open_export_config() {
     if ($('#export_dialog_config').hasClass('hide')) {
         $('#export_dialog_config').removeClass('hide')
+                $("#export_dialog_config").css('left', -1 * ($("#export_dialog_config").width() + 40 + $("#export_dialog").width()));
+
+        
+        $("#export_dialog_config").css('top', $("#show_export_dialog").height());
+    } else {
+        hide_export_config_dialog()
+    }
+}
+
+function open_export_config_left_button() {
+    if ($('#export_dialog_config').hasClass('hide')) {
+        $('#export_dialog_config').removeClass('hide')
         $("#export_dialog_config").css('left', 20+ $("#export_dialog").width() );
         $("#export_dialog_config").css('top', $("#show_export_dialog").height());
     } else {
