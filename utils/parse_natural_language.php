@@ -23,11 +23,11 @@ function parse_dimensions($dimension) {
 
 
 	$units='cm';
-	if (preg_match('/\((cm|mm|m\yd"in|ft)\)$/', $dimension, $match)) {
+	if (preg_match('/\((cm|mm|m|yd|in|ft)\)$/i', $dimension, $match)) {
 		//print_r($match);
-		$units=$match[1];
+		$units=strtolower($match[1]);
 	}
-	$dimension=preg_replace('/\((cm|mm|m\yd"in|ft)\)$/', '', $dimension);
+	$dimension=preg_replace('/\((cm|mm|m|yd|in|ft)\)$/i', '', $dimension);
 
 
 	//print $dimension."<\n";

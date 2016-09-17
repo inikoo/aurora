@@ -395,7 +395,8 @@ class Asset extends DB_Table{
 					$dimensions=number(convert_units($data['l'], 'm', $data['units'])).'x'.number(convert_units($data['w'], 'm', $data['units'])).'x'.number(convert_units($data['h'], 'm', $data['units'])).' ('.$data['units'].')';
 					$dimensions.='<span class="discreet volume">, '.volume($data['vol']).'</span>';
 					if ($this->data[$this->table_name." $tag Weight"]>0) {
-						$dimensions.='<span class="discreet density">, '.number($this->data[$this->table_name." $tag Weight"]/$data['vol']).'Kg/L</span>';
+						
+						$dimensions.='<span class="discreet density">, '.number($this->data[$this->table_name." $tag Weight"]/$data['vol'],3).'Kg/L</span>';
 					}
 
 					break;
