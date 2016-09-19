@@ -615,6 +615,30 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 	$metadata=array();
 
 	switch ($data['object']) {
+	case 'Location':
+		include_once 'class.Location.php';
+
+		$data['fields_data']['user']=$user;
+
+
+
+		$object=$parent->create_location($data['fields_data']);
+
+		
+
+
+		if (!$parent->error) {
+
+			$smarty->assign('account', $account);
+			$smarty->assign('parent', $parent);
+
+			$smarty->assign('object', $object);
+
+			$pcard=$smarty->fetch('presentation_cards/location.pcard.tpl');
+			$updated_data=array();
+		}
+		break;
+
 
 	case 'Category':
 		include_once 'class.Category.php';

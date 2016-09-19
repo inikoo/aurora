@@ -37,7 +37,15 @@ if ( !$user->can_view('locations') or   !in_array($state['key'], $user->warehous
 
 	);
 
-$smarty->assign('js_code', 'js/injections/warehouse_locations.'.(_DEVEL?'':'min.').'js');
+	$smarty->assign('js_code', 'js/injections/warehouse_locations.'.(_DEVEL?'':'min.').'js');
+
+
+$table_buttons=array();
+
+
+$table_buttons[]=array('icon'=>'plus', 'title'=>_('New location'), 'reference'=>"locations/".$state['warehouse']->id."/new");
+
+$smarty->assign('table_buttons', $table_buttons);
 
 
 	include 'utils/get_table_html.php';

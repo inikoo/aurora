@@ -1743,7 +1743,13 @@ $modules=array(
 
 			),
 
+'location.new'=>array('type'=>'new_object',
+				'tabs'=>array(
+					'location.new'=>array('label'=>_('New location')),
 
+				)
+
+			),
 
 			'main_category.new'=>array('type'=>'new_object',
 				'tabs'=>array(

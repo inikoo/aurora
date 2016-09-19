@@ -39,7 +39,7 @@ function get_form_validation_state(submitting) {
         }
 
 
-        if (component_validation != 'valid') console.log(field + ' ' + component_validation)
+       // if (component_validation != 'valid') console.log(field + ' ' + component_validation)
         //if (component_validation == 'invalid' || component_validation == 'potentially_valid') 
         if (component_validation == 'invalid') {
             form_validation = 'invalid';
@@ -146,7 +146,7 @@ function save_new_object(object, form_type) {
             var field = $(this).attr('field')
             var field_type = $(this).attr('field_type')
 
-            console.log(field)
+            //console.log(field)
 
 
             if (field_type == 'time') {

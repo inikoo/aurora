@@ -2444,13 +2444,13 @@ class Store extends DB_Table {
 
 
 				}else {
-					$this->msg=$supplier_part->msg;
+					$this->msg=$product->msg;
 				}
 			}
 			return $product;
 		}
 		else {
-
+$this->error=true;
 
 			$this->msg=$product->msg;
 

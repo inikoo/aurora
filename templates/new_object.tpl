@@ -333,19 +333,24 @@ function input_barcode_to_new_object(field) {
 
 		{elseif $edit=='option' } 
 		
-		<input id="{$field.id}" type="hidden" value="{$field.value}" has_been_valid="0" />
-		<input id="{$field.id}_formatted"  class="option_input_field " value="{$field.formatted_value}" readonly  onClick="toggle_options('{$field.id}')"/>
-		<span id="{$field.id}_msg" class="msg"></span> 
+			
 		
-				<div id="{$field.id}_options" class="dropcontainer hide" >
-
-			<ul>
+		<input id="{$field.id}" class="hide" value="{$field.value}" has_been_valid="0"  />
+		
+		<span id="{$field.id}_msg" class="msg"></span>
+		{if isset($field.allow_other) and  $field.allow_other} 
+		<i id="{$field.id}_add_other_option" class="fa fa-plus fw button hide"  onClick="show_add_other_option('{$field.id}')" style="cursor:pointer;float:left;margin-right:5px;padding-top:8px"></i>  
+        {/if}
+       &nbsp;
+		<div id="{$field.id}_options" class="dropcontainer radio_option " style="clear:both;width:310px" >
+			<ul  id="{$field.id}_options_ul" >
 				{foreach from=$field.options item=option key=value} 
-				<li id="{$field.id}_option_{$value}" label="{$option}" value="{$value}" class="{if $value==$field.value}selected{/if}" onclick="select_option('{$field.id}','{$value}','{$option}' )">{$option} </li>
+				<li  class="{if $value==$field.value}selected{/if}" onclick="select_option(this,'{$field.id}','{$value}' )">{$option}<i class="fa fa-circle fw padding_left_5 current_mark {if $value==$field.value}current{/if}"></i></li>
 				{/foreach} 
 			</ul>
-			</div>
+		</div>
 			
+	
 			{elseif $edit=='country_select'  } 
 
  

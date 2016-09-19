@@ -224,12 +224,13 @@ class Warehouse extends DB_Table{
 		}
 	}
 
-function create_category($raw_data) {
+
+	function create_category($raw_data) {
 
 		if (!isset($raw_data['Category Label']) or $raw_data['Category Label']=='') {
 			$raw_data['Category Label']=$raw_data['Category Code'];
 		}
-		
+
 		if (!isset($raw_data['Category Locked']) or $raw_data['Category Locked']=='') {
 			$raw_data['Category Locked']='No';
 		}
@@ -266,6 +267,124 @@ function create_category($raw_data) {
 		else {
 			$this->error=true;
 			$this->msg=$category->msg;
+		}
+
+	}
+
+
+	function create_location($data) {
+
+		$this->new_product=false;
+
+		$data['editor']=$this->editor;
+
+
+
+		//print_r($data);
+
+		if ( !isset($data['Location Code']) or $data['Location Code']=='') {
+			$this->error=true;
+			$this->msg=_("Location missing");
+			$this->error_code='location_code_missing';
+			$this->metadata='';
+			return;
+		}
+
+		$sql=sprintf('select count(*) as num from `Location Dimension` where `Location Code`=%s and `Location Warehouse Key`=%d  ',
+			prepare_mysql($data['Location Code']),
+			$this->id
+
+		);
+
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				if ($row['num']>0) {
+					$this->error=true;
+					$this->msg=sprintf(_('Duplicated code (%s)'), $data['Location Code']);
+					$this->error_code='duplicate_location_code_reference';
+					$this->metadata=$data['Location Code'];
+					return;
+				}
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+
+		if ( !isset($data['Location Mainly Used For']) or $data['Location Mainly Used For']=='') {
+
+
+			$this->error=true;
+			$this->msg=_('Location used for missing');
+			$this->error_code='location_mainly_used_for_missing';
+			return;
+		}
+
+		if ( !in_array($data['Location Mainly Used For'], array('Picking', 'Storing', 'Loading', 'Displaying', 'Other') )) {
+
+
+			$this->error=true;
+			$this->msg=_('Location used for not valid');
+			$this->error_code='location_mainly_used_for_missing_not_valid';
+			return;
+		}
+
+
+
+		$data['Location Warehouse Key']=$this->id;
+
+
+
+
+
+		$location= new Location('find', $data, 'create');
+
+
+		if ($location->id) {
+			$this->new_object_msg=$location->msg;
+
+			if ($location->new) {
+				$this->new_object=true;
+				$this->new_locationt=true;
+				$this->update_children();
+
+
+
+
+
+
+
+
+			}
+			else {
+
+				$this->error=true;
+				if ($location->found) {
+
+					$this->error_code='duplicated_field';
+					$this->error_metadata=json_encode(array($location->duplicated_field));
+
+					if ($location->duplicated_field=='Location Code') {
+						$this->msg=_("Duplicated location code");
+					}else {
+						$this->msg='Duplicated '.$location->duplicated_field;
+					}
+
+
+				}else {
+					$this->msg=$location->msg;
+				}
+			}
+			return $location;
+		}
+		else {
+
+			$this->error=true;
+			$this->msg=$location->msg;
+
 		}
 
 	}
@@ -366,8 +485,12 @@ function create_category($raw_data) {
 
 
 	function update_children() {
-		$sql=sprintf('select count(*) as number from `Location Dimension` where `Location Warehouse Key`=%d', $this->id);
+
+
 		$number_locations=0;
+
+		$sql=sprintf('select count(*) as number from `Location Dimension` where `Location Warehouse Key`=%d', $this->id);
+
 
 
 		if ($result=$this->db->query($sql)) {
@@ -381,7 +504,7 @@ function create_category($raw_data) {
 		}
 
 
-
+		/*
 		$sql=sprintf('select count(*) as number from `Shelf Dimension` where `Shelf Warehouse Key`=%d', $this->id);
 		$number_shelfs=0;
 
@@ -396,7 +519,8 @@ function create_category($raw_data) {
 			exit;
 		}
 
-
+*/
+		/*
 
 		$sql=sprintf('select count(*) as number from `Warehouse Area Dimension` where `Warehouse Key`=%d', $this->id);
 		$number_areas=0;
@@ -411,16 +535,12 @@ function create_category($raw_data) {
 			exit;
 		}
 
+*/
 
 
-		$sql=sprintf('update `Warehouse Dimension` set `Warehouse Number Locations`=%d ,`Warehouse Number Shelfs`=%d  ,`Warehouse Number Areas`=%d  where `Warehouse Key`=%d'
-			, $number_locations
-			, $number_shelfs
-			, $number_areas
-			, $this->id
-		);
-		$this->db->exec($sql);
-		$this->get_data('id', $this->id);
+		$this->update(array('Warehouse Number Locations'=>$number_locations), 'no_history');
+
+
 	}
 
 

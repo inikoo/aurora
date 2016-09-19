@@ -37,7 +37,7 @@ $object_fields=array(
 				'edit'=>($edit?'option':''),
 
 				'id'=>'Location_Mainly_Used_For',
-				'value'=>$object->get('LLocation Mainly Used For'),
+				'value'=>$object->get('Location Mainly Used For'),
 				'formatted_value'=>$object->get('Mainly Used For'),
 				'options'=>$used_for_options,
 				'label'=>ucfirst($object->get_field_label('Location Mainly Used For')),
