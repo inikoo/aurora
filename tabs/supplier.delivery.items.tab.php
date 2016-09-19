@@ -15,23 +15,36 @@ $ar_file='ar_suppliers_tables.php';
 if ($state['_object']->get('State Index')>=40) {
 	$tab='supplier.delivery.check_items';
 	$tipo='delivery.checking_items';
+
+	$table_views=array(
+		'overview'=>array('label'=>_("Item's descriptins")),
+	//	'placement_notes'=>array('label'=>_('Placement notes')),
+
+	);
+$smarty->assign('aux_templates', array('supplier.delivery.checking.tpl'));
+
 	$smarty->assign('js_code', 'js/injections/supplier.delivery.checking.'.(_DEVEL?'':'min.').'js');
+
 
 }else {
 
 	$tab='supplier.delivery.items';
 	$tipo='delivery.items';
 
+	$table_views=array(
+		'overview'=>array('label'=>_('Description')),
+
+	);
+
+
 }
+
 
 
 $default=$user->get_tab_defaults($tab);
 
 
-$table_views=array(
-	'overview'=>array('label'=>_('Description')),
 
-);
 
 $table_filters=array(
 	'code'=>array('label'=>_('Code')),
@@ -73,7 +86,6 @@ $table_buttons[]=array(
 $smarty->assign('table_buttons', $table_buttons);
 
 $smarty->assign('table_metadata', base64_encode(json_encode(array('parent'=>$state['object'], 'parent_key'=>$state['key'])))  );
-
 
 
 include 'utils/get_table_html.php';

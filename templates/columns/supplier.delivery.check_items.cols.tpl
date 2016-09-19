@@ -62,12 +62,19 @@ var columns = [
       className: "link"
      }),
 },{
+    name: "placement_notes",
+    label: "{t}Placement notes{/t}",
+    editable: false,
+     cell: "html"
+    
+},{
     name: "description",
     label: "{t}SKO description{/t}",
     editable: false,
      cell: "html"
     
-}, {
+},
+ {
     name: "subtotals",
     label: "{t}Subtotals{/t}",
         renderable: {if $data['_object']->get('State Index')>=40}false{else}true{/if},
@@ -78,7 +85,8 @@ var columns = [
     {if $sort_key=='subtotals'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
     cell: Backgrid.HtmlCell.extend({ className: ""} ),
         
-}, {
+}, 
+{
     name: "quantity",
     label: "{t}Cartons{/t}",
     renderable: {if $data['_object']->get('Supplier Delivery State')=='In Process'}true{else}false{/if},
@@ -136,7 +144,7 @@ var columns = [
     editable: false,
     sortType: "toggle",
     {if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+    cell: Backgrid.HtmlCell.extend({ className: "aright width_100"} ),
         headerCell: integerHeaderCell
 }, {
     name: "placement",
@@ -152,6 +160,23 @@ var columns = [
 
 
 function change_table_view(view, save_state) {
+
+
+
+    grid.columns.findWhere({ name: 'placement_notes'} ).set("renderable", false)
+
+  grid.columns.findWhere({ name: 'description'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'c_sko_u'} ).set("renderable", false)
+
+
+    if(view=='overview'){
+ grid.columns.findWhere({ name: 'description'} ).set("renderable", true)
+    grid.columns.findWhere({ name: 'c_sko_u'} ).set("renderable", true)
+} else if(view=='placement_notes'){
+ grid.columns.findWhere({ name: 'placement_notes'} ).set("renderable", true)
+}
+
+
 
 {if isset($data['metadata']['create_delivery']) and $data['metadata']['create_delivery'] }
 

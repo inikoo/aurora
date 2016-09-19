@@ -1,5 +1,5 @@
 {foreach $locations_data item=location_data}
-<tr>
+<tr class="locations">
 	<td style="width:20px" class="unlink_operations hide" ><i class="fa fa-fw  fa-unlink button super_discreet" aria-hidden="true" title="{t}Disassociate location{/t}" onclick="disassociate_location(this)"></i> </td>
 	<td>
 	    <span onclick="change_view('/locations/{$location_data.warehouse_key}/{$location_data.location_key}')" class="link location_info">
@@ -7,11 +7,14 @@
 	        <span class="location_code">{$location_data.location_code}</span></span> 
 	        
 	        <span class="very_discreet recommendations">
-	        <span onClick="open_edit_min_max(this)" class="min_max  {if $location_data.can_pick=='No'}hide{/if}">{literal}{<span class="formatted_recommended_min">{/literal}{$location_data.formatted_min_qty}</span>,<span class="formatted_recommended_max">{$location_data.formatted_max_qty}</span>}</span> 
-	        <span class="edit_min_max hide" ><i onClick="close_edit_min_max(this)" class="close_min_max button fa fa-times" aria-hidden="true" ></i> <input class="recommended_min min_max" style="width:30px" ovalue="{$location_data.min_qty}" value="{$location_data.min_qty}" placeholder="{t}min{/t}"/><input class="recommended_max min_max" style="width:30px"  ovalue="{$location_data.max_qty}" value="{$location_data.max_qty}" placeholder="{t}max{/t}"/> <i onClick="save_recomendations('min_max',this)" class="fa fa-cloud save" aria-hidden="true" ></i></span> 
+	        <span onClick="open_edit_min_max(this)" class="min_max open_edit_min_max {if $location_data.can_pick=='No'}hide{/if}">{literal}{{/literal}<span class="formatted_recommended_min">{$location_data.formatted_min_qty}</span>,<span class="formatted_recommended_max">{$location_data.formatted_max_qty}</span>}</span> 
+	        <span class="edit_min_max hide" ><i onClick="close_edit_min_max(this)" class="close_min_max button fa fa-times" aria-hidden="true" ></i> 
+	        <input class="recommended_min min_max" style="width:30px" ovalue="{$location_data.min_qty}" value="{$location_data.min_qty}" placeholder="{t}min{/t}"/>
+	        <input class="recommended_max min_max" style="width:30px" ovalue="{$location_data.max_qty}" value="{$location_data.max_qty}" placeholder="{t}max{/t}"/> <i onClick="save_recomendations('min_max',this)" class="fa fa-cloud save" aria-hidden="true" ></i></span> 
 	        
-	        <span onClick="open_edit_recommended_move(this)" class="recommended_move  {if $location_data.can_pick=='Yes'}hide{/if}">[<span class="formatted_recommended_move">{$location_data.formatted_move_qty}</span>]</span>
-	        <span class="edit_move hide" ><i onClick="close_edit_recommended_move(this)" class="close_move button fa fa-times" aria-hidden="true" ></i> <input class="recommended_move" style="width:30px" ovalue="{$location_data.move_qty}" value="{$location_data.move_qty}" /> <i onClick="save_recomendations('move',this)" class="fa fa-cloud save" aria-hidden="true" ></i></span> 
+	        <span onClick="open_edit_recommended_move(this)" class=" open_edit_recommended_move {if $location_data.can_pick=='Yes'}hide{/if}">[<span class="formatted_recommended_move">{$location_data.formatted_move_qty}</span>]</span>
+	        <span class="edit_move hide" ><i onClick="close_edit_recommended_move(this)" class="close_move button fa fa-times" aria-hidden="true" ></i> 
+	        <input class="recommended_move" style="width:30px" ovalue="{$location_data.move_qty}" value="{$location_data.move_qty}" /> <i onClick="save_recomendations('move',this)" class="fa fa-cloud save" aria-hidden="true" ></i></span> 
 
 
 	        </span>
@@ -28,20 +31,40 @@
 	
 	<i class="fa fa-fw fa-caret-square-o-right move_trigger button super_discreet" aria-hidden="true" title="{t}Move from{/t}" onclick="move(this)"></i> </td>
 </tr>
-{/foreach}				
 
+{/foreach}				
  <tr id="add_location_template" class="hide">
-	<td style="width:20px" class="unlink_operations"><i class="fa fa-fw  fa-unlink button super_discreet" aria-hidden="true" title="{t}Disassociate location{/t}" onclick="disassociate_location(this)"></i> </td>
-	<td><span class="link location_info"><span class="location_used_for_icon"></span> <span class="location_code"></span></span> </td>
-	<td class="aright button formatted_stock"></td>
-	<td class="aright  hide stock_input"> <span class="stock_change"></span>
+ 
+ 
+	<td style="width:20px" class="unlink_operations hide" ><i class="fa fa-fw  fa-unlink button super_discreet" aria-hidden="true" title="{t}Disassociate location{/t}" onclick="disassociate_location(this)"></i> </td>
+	<td>
+	    <span  class="link location_info">
+	        <span class="location_used_for_icon"></span> 
+	        <span class="location_code"></span></span> 
+	        
+	        <span class="very_discreet recommendations">
+	        <span onClick="open_edit_min_max(this)" class="min_max open_edit_min_max">{literal}{{/literal}<span class="formatted_recommended_min"></span>,<span class="formatted_recommended_max"></span>}</span> 
+	        <span class="edit_min_max hide" ><i onClick="close_edit_min_max(this)" class="close_min_max button fa fa-times" aria-hidden="true" ></i> <input class="recommended_min min_max" style="width:30px" ovalue="" value="" placeholder="{t}min{/t}"/><input class="recommended_max min_max" style="width:30px"  ovalue="" value="" placeholder="{t}max{/t}"/> <i onClick="save_recomendations('min_max',this)" class="fa fa-cloud save" aria-hidden="true" ></i></span> 
+	        
+	        <span onClick="open_edit_recommended_move(this)" class="recommended_move open_edit_recommended_move">[<span class="formatted_recommended_move"></span>]</span>
+	        <span class="edit_move hide" ><i onClick="close_edit_recommended_move(this)" class="close_move button fa fa-times" aria-hidden="true" ></i> <input class="recommended_move" style="width:30px" ovalue="" value="" /> <i onClick="save_recomendations('move',this)" class="fa fa-cloud save" aria-hidden="true" ></i></span> 
+
+
+	        </span>
+	        </td>
+
+	<td class="aright  formatted_stock">0</td>
+	<td class="aright  hide stock_input"  > <span class="stock_change"></span>
+	
 	 <i class="fa fa-dot-circle-o button super_discreet set_as_audit" aria-hidden="true" title="{t}Mark as audited{/t}"  onclick="set_as_audit(this)"></i>
-	<input class="_stock" style="width:60px" action="" location_key="" ovalue="0" value="">
+	<input class="stock" style="width:60px" action="" location_key="0" ovalue="0" value="0">
+	
 	<input type="hidden" class="note" value="" >
 	<i class="fa fa-sticky-note-o button super_discreet add_note invisible " aria-hidden="true" title="{t}Note{/t}"  onclick="set_inventory_transaction_note(this)"></i>
+	
+	<i class="fa fa-fw fa-caret-square-o-right move_trigger button super_discreet" aria-hidden="true" title="{t}Move from{/t}" onclick="move(this)"></i> </td>
 
-	<i class="fa fa-fw fa-caret-square-o-right _move_trigger button super_discreet" aria-hidden="true" title="{t}Move from{/t}" onclick="move(this)"></i> </td>
-</tr>
+ </tr>
  
  
 <tr id="add_location_tr" class="  hide">

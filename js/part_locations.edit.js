@@ -12,7 +12,6 @@ function open_edit_stock() {
 
     // $('#stock_table tbody.info').addClass('hide')
     //   $('#edit_stock_controls').removeClass('hide')
-
     $('#locations_table .formatted_stock').addClass('hide')
     $('#locations_table .stock_input').removeClass('hide')
 
@@ -428,7 +427,7 @@ function set_as_audit(element) {
     if ($(element).hasClass('super_discreet')) {
         $(element).removeClass('super_discreet')
         $(element).closest('tr').find('input').prop('readonly', true)
-             $(element).closest('tr').find('.add_note').removeClass('super_discreet invisible').addClass('visible')
+        $(element).closest('tr').find('.add_note').removeClass('super_discreet invisible').addClass('visible')
 
     } else {
         $(element).addClass('super_discreet')
@@ -579,6 +578,8 @@ function save_add_location() {
 
         if (data.state == 200) {
 
+            console.log(data)
+
             if (state.tab == 'part.stock.transactions') {
                 rows.fetch({
                     reset: true
@@ -588,17 +589,40 @@ function save_add_location() {
 
 
 
-            var clone = $("#add_location_template").clone().removeClass('hide')
+            var clone = $("#add_location_template").clone().removeClass('hide').addClass('locations')
 
-            clone.find(".location_info").attr('onclick', "change_view(" + data.location_link + ")")
+            clone.find(".location_info").attr('onclick', "change_view('" + data.location_link + "')")
 
             clone.find(".location_used_for_icon").html(data.location_used_for_icon)
             clone.find(".location_code").html(data.location_code)
-            clone.find(".formatted_stock").html(data.formatted_stock)
-            clone.find("._stock").addClass('stock').removeClass('_stock')
-            clone.find("._move_trigger").addClass('move_trigger').removeClass('_move_trigger')
 
+
+            if (data.can_pick == 'No') {
+                clone.find(".open_edit_min_max").addClass('hide')
+            }
+
+            clone.find(".formatted_recommended_min").html(data.formatted_min_qty)
+            clone.find(".formatted_recommended_max").html(data.formatted_max_qty)
+            clone.find(".recommended_min").attr('ovalue', data.min_qty).val(data.min_qty)
+            clone.find(".recommended_max").attr('ovalue', data.max_qty).val(data.max_qty)
+
+            if (data.can_pick == 'Yes') {
+                clone.find(".open_edit_recommended_move").addClass('hide')
+            }
+
+            clone.find(".formatted_recommended_move").html(data.formatted_move_qty)
+
+            clone.find(".recommended_move").attr('ovalue', data.move_qty).val(data.move_qty)
+
+
+
+
+
+            clone.find(".formatted_stock").html(data.formatted_stock)
+            clone.find(".stock").attr('location_key', data.location_key)
             clone.find('.add_note').removeClass('super_discreet invisible').addClass('visible')
+
+
 
 
 
@@ -627,12 +651,12 @@ function save_add_location() {
 
 function save_stock() {
 
- $('#inventory_transaction_note').addClass('hide')
+    $('#inventory_transaction_note').addClass('hide')
     $('#save_stock').removeClass('fa-cloud').addClass('fa-spinner fa-spin')
 
     var parts_locations_data = []
 
-    $('#locations_table  input.stock ').each(function(i, obj) {
+    $('#locations_table tr.locations input.stock ').each(function(i, obj) {
 
         parts_locations_data.push({
             qty: $(obj).val(),
@@ -672,9 +696,9 @@ function save_stock() {
 
     request.done(function(data) {
 
-        console.log(state.tab)
+        console.log(data)
 
-        if (state.tab == 'part.stock.transactions' || state.tab=='part.stock') {
+        if (state.tab == 'part.stock.transactions' || state.tab == 'part.stock') {
             rows.fetch({
                 reset: true
             });
@@ -915,45 +939,45 @@ function save_recomendations(type, element) {
 
 function inventory_transaction_note_changed() {
 
-var element= $('#inventory_transaction_note').data('element')
-var textarea= $('#inventory_transaction_note').find('textarea')
+    var element = $('#inventory_transaction_note').data('element')
+    var textarea = $('#inventory_transaction_note').find('textarea')
 
 
 
 
-$(element).closest('tr').find('.note').val($(textarea).val())
-if($(textarea).val()==''){
-    $(element).closest('tr').find('.add_note').addClass('fa-sticky-note-o').removeClass('fa-sticky-note')
+    $(element).closest('tr').find('.note').val($(textarea).val())
+    if ($(textarea).val() == '') {
+        $(element).closest('tr').find('.add_note').addClass('fa-sticky-note-o').removeClass('fa-sticky-note')
 
-}else{
-    $(element).closest('tr').find('.add_note').removeClass('fa-sticky-note-o').addClass('fa-sticky-note')
-}
+    } else {
+        $(element).closest('tr').find('.add_note').removeClass('fa-sticky-note-o').addClass('fa-sticky-note')
+    }
 
 }
 
 function set_inventory_transaction_note(element) {
     $('#inventory_transaction_note').find('textarea').val($(element).closest('tr').find('.note').val())
 
-$(element).uniqueId()
-console.log($(element).attr('id'))
-    if ($('#inventory_transaction_note').hasClass('hide') ||  $(element).attr('id')!=$('#inventory_transaction_note').data('id')  ) {
-    
-        $('#inventory_transaction_note').data( 
-       { 'element':$(element),
-        'id':$(element).attr('id')}
-        )
+    $(element).uniqueId()
+    console.log($(element).attr('id'))
+    if ($('#inventory_transaction_note').hasClass('hide') || $(element).attr('id') != $('#inventory_transaction_note').data('id')) {
+
+        $('#inventory_transaction_note').data({
+            'element': $(element),
+            'id': $(element).attr('id')
+        })
 
         $('#inventory_transaction_note').removeClass('hide')
-        
-          var position = $(element).closest('tr').find('.stock').position();
+
+        var position = $(element).closest('tr').find('.stock').position();
 
 
-            $('#inventory_transaction_note').css({
-                'left': position.left - $('#inventory_transaction_note').width(),
-                'top': position.top
-            })
-        
-        
+        $('#inventory_transaction_note').css({
+            'left': position.left - $('#inventory_transaction_note').width(),
+            'top': position.top
+        })
+
+
         $('#inventory_transaction_note').find('textarea').focus()
     } else {
         $('#inventory_transaction_note').addClass('hide')

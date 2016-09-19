@@ -36,6 +36,8 @@ case 'place_part':
 			'part_sku'=>array('type'=>'key'),
 			'location_key'=>array('type'=>'key'),
 			'qty'=>array('type'=>'numeric'),
+						'note'=>array('type'=>'string'),
+
 		));
 
 
@@ -126,7 +128,17 @@ function new_part_location($account, $db, $user, $editor, $data, $smarty) {
 			'stock'=>($part_location->get('Quantity On Hand')==0?'':$part_location->get('Quantity On Hand')),
 			'location_used_for_icon'=>$used_for,
 			'location_used_for'=>$part_location->location->get('Location Mainly Used For'),
-			'location_link'=>sprintf('locations/%d/%d', $part_location->location->get('Warehouse Key'), $part_location->location->id)
+			'location_link'=>sprintf('locations/%d/%d', $part_location->location->get('Warehouse Key'), $part_location->location->id),
+
+			'formatted_min_qty'=>($part_location->get('Minimum Quantity')!=''?$part_location->get('Minimum Quantity'):'?'),
+			'formatted_max_qty'=>($part_location->get('Maximum Quantity')!=''?$part_location->get('Maximum Quantity'):'?'),
+			'formatted_move_qty'=>($part_location->get('Moving Quantity')!=''?$part_location->get('Moving Quantity'):'?'),
+			'min_qty'=>$part_location->get('Minimum Quantity'),
+			'max_qty'=>$part_location->get('Maximum Quantity'),
+			'move_qty'=>$part_location->get('Moving Quantity'),
+
+			'can_pick'=>$part_location->get('Can Pick')
+
 
 		);
 	}elseif ($part_location->ok) {
@@ -176,6 +188,7 @@ function edit_stock($account, $db, $user, $editor, $data, $smarty) {
 
 	}
 
+
 	foreach ($parts_locations_data as $key=>$part_locations_data) {
 		$part_location=new PartLocation($part_locations_data['part_sku'], $part_locations_data['location_key']);
 		$part_location->editor=$editor;
@@ -192,8 +205,8 @@ function edit_stock($account, $db, $user, $editor, $data, $smarty) {
 		if ( $parts_locations_data[$key]['disassociate'] ) {
 			$part_location->delete();
 		}else if ($parts_locations_data[$key]['qty']!=$part_location->get('Quantity On Hand')  or $parts_locations_data[$key]['audit']  ) {
-			
-			
+
+
 			$part_location->audit($parts_locations_data[$key]['qty'], (isset($parts_locations_data[$key]['note'])?$parts_locations_data[$key]['note']:'') , $editor['Date']);
 		}
 	}
@@ -251,7 +264,9 @@ function place_part($account, $db, $user, $editor, $data, $smarty) {
 	$object=get_object($data['object'], $data['key']);
 	$origin=sprintf('<span class="link" onClick="change_view(\'delivery/%d\')" ><i class="fa fa-arrow-circle-down" aria-hidden="true"></i> %s</span>', $object->id, $object->get('Public ID'));
 
-
+if($data['note']!=''){
+    $origin.=' <i class="fa fa-sticky-note-o" aria-hidden="true"></i> '.$data['note'];
+}
 
 	$sql=sprintf('select `Purchase Order Transaction Fact Key`,`Supplier Delivery Checked Quantity`,`Supplier Delivery Placed Quantity` ,`Supplier Part Packages Per Carton`
 	from
