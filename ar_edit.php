@@ -729,7 +729,12 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 		if (!$parent->error) {
 
-			$pcard='';
+			$smarty->assign('account', $account);
+			$smarty->assign('parent', $parent);
+
+			$smarty->assign('object', $object);
+
+			$pcard=$smarty->fetch('presentation_cards/main_category.pcard.tpl');
 			$updated_data=array();
 		}
 		break;

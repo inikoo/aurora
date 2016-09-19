@@ -739,11 +739,12 @@ $modules=array(
 */
 			'store'=>array(
 				'type'=>'navigation',
-				'label'=>_('Store'),
+				'label'=>'',
 				'title'=>_('Store'),
 				'icon'=>'shopping-bag',
 				'showcase'=>true,
 				'reference'=>'store/%d',
+				'class'=>'icon_only',
 				'tabs'=>array(
 					'store.details'=>array('label'=>_('Data'), 'icon'=>'database', 'title'=>_('Details')),
 					'store.history'=>array('label'=>_('History'), 'icon'=>'road', 'class'=>'right icon_only'),
@@ -1178,7 +1179,7 @@ $modules=array(
 					'supplier.sales.plot'=>'supplier.sales',
 					'supplier.sales.history'=>'supplier.sales',
 					'supplier.sales.calendar'=>'supplier.sales',
-					
+
 				),
 
 				'tabs'=>array(
@@ -1186,7 +1187,7 @@ $modules=array(
 					'supplier.sales'=>array('label'=>_("Part's sales"), 'icon'=>''),
 
 
-					'supplier.sales'=>array('label'=>_('Sales'), 
+					'supplier.sales'=>array('label'=>_('Sales'),
 						'subtabs'=>array(
 							'supplier.sales.plot'=>array('label'=>_('Plot'), 'title'=>_('Plot')),
 							'supplier.sales.history'=>array('label'=>_('Sales history'), 'title'=>_('Sales history')),
@@ -1461,10 +1462,10 @@ $modules=array(
 
 				)
 			),
-			'categories'=>array('type'=>'navigation', 'label'=>_("Part's Categories"), 'icon'=>'sitemap', 'reference'=>'inventory/categories',
+			'categories'=>array('type'=>'navigation', 'label'=>_("Part's categories"), 'icon'=>'sitemap', 'reference'=>'inventory/categories',
 
 				'tabs'=>array(
-					'parts.categories'=>array('label'=>_("Part's Categories")),
+					'parts.categories'=>array('label'=>_("Part's categories")),
 				)
 			),
 			'main_category.new'=>array('type'=>'new_object',
@@ -1693,7 +1694,7 @@ $modules=array(
 
 			'warehouse'=>array(
 
-				'type'=>'navigation', 'label'=>_('Warehouse'), 'title'=>_('Warehouse'), 'icon'=>'map', 'reference'=>'warehouse/%d',
+				'type'=>'navigation', 'label'=>'', 'title'=>_('Warehouse'), 'icon'=>'map', 'reference'=>'warehouse/%d','class'=>'icon_only',
 				'tabs'=>array(
 					'warehouse.details'=>array('label'=>_('Data'), 'title'=>_('Warehouse detais'), 'icon'=>'database'),
 					'warehouse.replenishments'=>array('label'=>_("Replenishments"), 'title'=>_("Replenishments")),
@@ -1703,7 +1704,14 @@ $modules=array(
 				)
 
 			),
+/* to add
+			'categories'=>array('type'=>'navigation', 'label'=>_("Locations's categories"), 'icon'=>'sitemap', 'reference'=>'warehouse/%d/categories',
 
+				'tabs'=>array(
+					'locations.categories'=>array('label'=>_("Locations's categories")),
+				)
+			),
+			*/
 			'locations'=>array(
 
 				'type'=>'navigation', 'label'=>_('Locations'), 'icon'=>'map-marker', 'reference'=>'warehouse/%d/locations',
@@ -1730,6 +1738,27 @@ $modules=array(
 					'location.parts'=>array('label'=>_('Parts'), 'icon'=>'square'),
 					'location.stock.transactions'=>array('label'=>_('Stock movements'), 'icon'=>'exchange'),
 					'location.history'=>array('label'=>_('History/Notes'), 'title'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
+
+				)
+
+			),
+
+
+
+			'main_category.new'=>array('type'=>'new_object',
+				'tabs'=>array(
+					'main_category.new'=>array('label'=>_('New category')),
+
+				)
+
+			),
+			'category'=>array('type'=>'object',
+
+				'tabs'=>array(
+
+					'category.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+					'category.parts'=>array('label'=>_('Parts'), 'icon'=>'square'),
+					'category.locations'=>array('label'=>_('Locations'), 'icon'=>'map-sings'),
 
 				)
 
@@ -1772,7 +1801,7 @@ $modules=array(
 				)
 
 			),
-			
+
 			'ec_sales_list'=>array('type'=>'',
 				'tabs'=>array(
 					'ec_sales_list'=>array(),

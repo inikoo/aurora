@@ -49,7 +49,7 @@ var columns = [
         orderSeparator: '',
         events: {
             "click": function() {
-                 change_view('location/' + this.model.get("warehouse_area_key"))
+                 change_view('warehouse/{$data['parent_key']}/area/' + this.model.get("warehouse_area_key"))
             }
         },
         className: "link"

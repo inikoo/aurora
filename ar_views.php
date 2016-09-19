@@ -1239,13 +1239,14 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case ('category'):
 			return get_parts_category_navigation($data, $smarty, $user, $db, $account);
 			break;
+		case ('main_category.new'):
+			return get_parts_new_main_category_navigation($data, $smarty, $user, $db, $account);
+			break;
+
 		case ('upload'):
 			return get_upload_navigation($data, $smarty, $user, $db, $account);
 			break;
 
-		case ('main_category.new'):
-			return get_parts_new_main_category_navigation($data, $smarty, $user, $db, $account);
-			break;
 		case ('barcodes'):
 			return get_barcodes_navigation($data, $smarty, $user, $db, $account);
 			break;
@@ -1291,6 +1292,15 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 			return get_new_location_navigation($data, $smarty, $user, $db, $account);
 			break;
 
+		case ('categories'):
+			return get_categories_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('category'):
+			return get_locations_category_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('main_category.new'):
+			return get_locations_new_main_category_navigation($data, $smarty, $user, $db, $account);
+			break;
 
 
 		}
@@ -2934,7 +2944,41 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 			$branch[]=array('label'=>'<span class="id Location_Code">'.$state['_object']->get('Code').'</span>', 'icon'=>'map-marker', 'reference'=>'');
 
 			break;
+		case 'categories':
+			$branch[]=array('label'=>_("Locations's categories"), 'icon'=>'sitemap', 'reference'=>'');
+			break;
+		case 'category':
+			$category=$state['_object'];
+			$branch[]=array('label'=>_("Locations's categories"), 'icon'=>'sitemap', 'reference'=>'inventory/categories');
 
+
+			if (isset($state['metadata'])) {
+				$parent_category_keys=$state['metadata'];
+			}else {
+
+				$parent_category_keys=preg_split('/\>/', $category->get('Category Position'));
+			}
+
+
+			foreach ( $parent_category_keys as $category_key) {
+				if (!is_numeric($category_key)) {
+					continue;
+				}
+				if ($category_key==$state['key']) {
+					$branch[]=array('label'=>'<span class="Category_Label">'.$category->get('Label').'</span>', 'icon'=>'', 'reference'=>'');
+					break;
+				}else {
+
+					$parent_category=new Category($category_key);
+					if ($parent_category->id) {
+
+						$branch[]=array('label'=>$parent_category->get('Label'), 'icon'=>'', 'reference'=>'inventory/category/'.$parent_category->id);
+
+					}
+				}
+			}
+
+			break;
 		case 'warehouse.new':
 
 			$branch[]=array('label'=>'('._('All warehouses').')', 'icon'=>'', 'reference'=>'warehouses');

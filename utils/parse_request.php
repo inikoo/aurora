@@ -1824,6 +1824,125 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 							$parent_key=$key;
 
 						}
+							elseif ($view_path[1]=='categories') {
+							$object='warehouse';
+							$key=$view_path[0];
+							$section='categories';
+							$parent='warehouse';
+							$parent_key=$view_path[0];
+						}
+
+						else if ($view_path[1]=='category') {
+							$section='category';
+							$object='category';
+
+							if (isset($view_path[2]) ) {
+
+								$view_path[2]=preg_replace('/\>$/', '', $view_path[2]);
+								if (preg_match('/^(\d+\>)+(\d+)$/', $view_path[2])) {
+
+									$parent_categories=preg_split('/\>/', $view_path[2]);
+									$metadata=$parent_categories;
+									$key=array_pop($parent_categories);
+
+									$parent='category';
+
+
+
+									$parent_key=array_pop($parent_categories);
+
+
+									if (isset($view_path[3]) ) {
+
+										if ($view_path[3]=='location') {
+
+											$parent_key=$key;
+
+											$section='location';
+											$object='location';
+											if (isset($view_path[4]) and  is_numeric($view_path[4])) {
+
+												$key=$view_path[4];
+
+											}
+
+										}
+
+
+
+									}
+
+								}
+								elseif ( is_numeric($view_path[2])) {
+									$key=$view_path[2];
+									include_once 'class.Category.php';
+									$category=new Category($key);
+									if ($category->get('Category Branch Type')=='Root') {
+										$parent='warehouse';
+										$parent_key=$category->get('Category Store Key');
+									}else {
+										$parent='category';
+										$parent_key=$category->get('Category Parent Key');
+
+									}
+
+
+									if (isset($view_path[3]) ) {
+
+
+										if (is_numeric($view_path[3])) {
+											$section='location';
+											$parent='category';
+											$parent_key=$category->id;
+											$object='location';
+											$key=$view_path[3];
+										}
+										elseif ($view_path[3]=='location') {
+											$section='location';
+											$object='location';
+											if (isset($view_path[4]) and  is_numeric($view_path[4])) {
+
+												$key=$view_path[4];
+
+											}
+
+										}
+										elseif ($view_path[3]=='upload') {
+											//$module='account';
+											$section='upload';
+											$parent='category';
+											$parent_key=$key;
+											$object='upload';
+											if (isset($view_path[4])) {
+												if (is_numeric($view_path[4])) {
+
+													$key=$view_path[4];
+												}
+											}
+
+										}
+
+									}
+
+
+
+
+
+								}
+								elseif ($view_path[2]=='new') {
+
+									$section='main_category.new';
+
+	$parent='warehouse';
+					$parent_key=$view_path[0];
+$key=0;
+								}
+							}else {
+								//error
+							}
+
+						}
+						
 
 					}
 				}

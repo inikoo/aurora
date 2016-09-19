@@ -20,6 +20,7 @@ include_once 'trait.PartCategory.php';
 include_once 'trait.SupplierCategory.php';
 include_once 'trait.InvoiceCategory.php';
 include_once 'trait.ProductCategory.php';
+include_once 'trait.LocationCategory.php';
 
 
 
@@ -27,7 +28,7 @@ include_once 'trait.ProductCategory.php';
 
 class Category extends DB_Table{
 	use ImageSubject, NotesSubject, AttachmentSubject;
-	use PartCategory, SupplierCategory, InvoiceCategory, ProductCategory;
+	use PartCategory, SupplierCategory, InvoiceCategory, ProductCategory,LocationCategory;
 
 
 	function Category($a1, $a2=false, $a3=false) {
@@ -84,6 +85,21 @@ class Category extends DB_Table{
 
 				$this->subject_table_name='Part Category';
 				$sql=sprintf("select * from `Part Category Dimension` where `Part Category Key`=%d", $this->id);
+				if ($result2=$this->db->query($sql)) {
+					if ($row = $result2->fetch()) {
+						$this->data=array_merge($this->data, $row);
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
+				}
+
+			}elseif ($this->data['Category Scope']=='Location') {
+
+
+
+				$this->subject_table_name='Location Category';
+				$sql=sprintf("select * from `Location Category Dimension` where `Part Location Key`=%d", $this->id);
 				if ($result2=$this->db->query($sql)) {
 					if ($row = $result2->fetch()) {
 						$this->data=array_merge($this->data, $row);
@@ -316,9 +332,14 @@ class Category extends DB_Table{
 				$sql=sprintf("insert into `Supplier Category Dimension` (`Category Key`) values (%d)", $this->id);
 				$this->db->exec($sql);
 			}elseif ($this->data['Category Scope']=='Part') {
-				$created_msg=_("Part's cartegory created");
+				$created_msg=_("Part's category created");
 
-				$sql=sprintf("insert into `Part Category Dimension` (`Part Category Key`,`Part Category Warehouse Key`) values (%d,%d)", $this->id, $this->data['Category Warehouse Key']);
+				$sql=sprintf("insert into `Part Category Dimension` (`Part Category Key`) values (%d)", $this->id);
+				$this->db->exec($sql);
+			}elseif ($this->data['Category Scope']=='Location') {
+				$created_msg=_("Location's category created");
+
+				$sql=sprintf("insert into `Location Category Dimension` (`Location Category Key`,`Location Category Warehouse Key`) values (%d,%d)", $this->id, $this->data['Category Warehouse Key']);
 				$this->db->exec($sql);
 			}elseif ($this->data['Category Scope']=='Product') {
 				include_once 'class.Store.php';
@@ -897,6 +918,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 			$this->db->exec($sql);
 		}elseif ($this->data['Category Scope']=='Part') {
 			$sql=sprintf('delete from `Part Category Dimension`  where `Category Key`=%d', $this->id);
+			$this->db->exec($sql);
+		}elseif ($this->data['Category Scope']=='Location') {
+			$sql=sprintf('delete from `Location Category Dimension`  where `Category Key`=%d', $this->id);
 			$this->db->exec($sql);
 		}elseif ($this->data['Category Scope']=='Product') {
 			$sql=sprintf('delete from `Product Category Dimension`  where `Category Key`=%d', $this->id);
@@ -1701,9 +1725,13 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 		switch ($this->data['Category Scope']) {
 		case('Part'):
 
-			$sql=sprintf("select count(*) as num from `Part Warehouse Bridge` where `Warehouse Key`=%d",
-				$this->data['Category Warehouse Key']);
+			$sql=sprintf("select count(*) as num from `Part Dimension`");
 			break;
+		case('Location'):
+
+			$sql=sprintf("select count(*) as num from `Location Dimension` where `Location Warehouse Key`=%d",
+				$this->data['Category Warehouse Key']);
+			break;	
 		case('Customer'):
 
 			$sql=sprintf("select count(*) as num from `Customer Dimension` where `Customer Store Key`=%d",
@@ -2083,6 +2111,13 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 				$abstract=_('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('%05d', $part->sku).'</a> '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']);
 				$details=_('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('%05d', $part->sku).'</a> ('.$part->data['Part XHTML Description'].') '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']).' ('.$this->data['Category Label'].')';
 				break;
+			case('Location'):
+				include_once 'class.Location.php';
+
+				$location=new Location($subject_key);
+				$abstract=_('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('%05d', $part->sku).'</a> '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']);
+				$details=_('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('%05d', $part->sku).'</a> ('.$part->data['Part XHTML Description'].') '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']).' ('.$this->data['Category Label'].')';
+				break;	
 			case('Supplier'):
 				include_once 'class.Supplier.php';
 
@@ -2812,14 +2847,22 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 
 		switch ($this->data['Category Subject']) {
 		case('Part'):
-			$sql=sprintf("insert into  `Part Category History Bridge` values (%d,%d,%d,%s)",
-				$this->data['Category Warehouse Key'],
+			$sql=sprintf("insert into  `Part Category History Bridge` values (%d,%d,%s)",
 				$this->id,
 				$history_key,
 				prepare_mysql($type)
 			);
 			$this->db->exec($sql);
 			break;
+		case('Location'):
+			$sql=sprintf("insert into  `Location Category History Bridge` values (%d,%d,%d,%s)",
+				$this->data['Category Warehouse Key'],
+				$this->id,
+				$history_key,
+				prepare_mysql($type)
+			);
+			$this->db->exec($sql);
+			break;	
 		case('Supplier'):
 			$sql=sprintf("insert into  `Supplier Category History Bridge` values (%d,%d,%s)",
 				$this->id,

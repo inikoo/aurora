@@ -224,7 +224,51 @@ class Warehouse extends DB_Table{
 		}
 	}
 
+function create_category($raw_data) {
 
+		if (!isset($raw_data['Category Label']) or $raw_data['Category Label']=='') {
+			$raw_data['Category Label']=$raw_data['Category Code'];
+		}
+		
+		if (!isset($raw_data['Category Locked']) or $raw_data['Category Locked']=='') {
+			$raw_data['Category Locked']='No';
+		}
+
+		$data=array(
+			'Category Code'=>$raw_data['Category Code'],
+			'Category Label'=>$raw_data['Category Label'],
+			'Category Scope'=>'Location',
+			'Category Subject'=>$raw_data['Category Subject'],
+			'Category Warehouse Key'=>$this->id,
+			'Category Can Have Other'=>$raw_data['Category Locked'],
+			'Category Locked'=>'No',
+			'Category Branch Type'=>'Root',
+			'editor'=>$this->editor
+
+		);
+
+		$category=new Category('find create', $data);
+
+
+		if ($category->id) {
+			$this->new_category_msg=$category->msg;
+
+			if ($category->new) {
+				$this->new_category=true;
+
+			} else {
+				$this->error=true;
+				$this->msg=$category->msg;
+
+			}
+			return $category;
+		}
+		else {
+			$this->error=true;
+			$this->msg=$category->msg;
+		}
+
+	}
 
 
 	function get($key, $data=false) {
@@ -719,6 +763,7 @@ class Warehouse extends DB_Table{
 		return $label;
 
 	}
+
 
 
 }

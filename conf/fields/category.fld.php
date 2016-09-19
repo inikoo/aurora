@@ -29,6 +29,11 @@ case 'Part':
 	$subject_value='Part';
 	$subject_formatted_value=_('Parts');
 	break;
+case 'Location':
+	$subject_options=array('Location'=>_('Locations'));
+	$subject_value='Location';
+	$subject_formatted_value=_('Locations');
+	break;	
 default:
 	$subject_options=array();
 	$subject_value='';
