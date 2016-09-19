@@ -188,9 +188,12 @@ function place_item(element) {
     var location_key = $(element).attr('location_key')
     var qty = $(element).closest('.place_item').find('.place_qty').val()
 
+    var note = $(element).closest('tr').find('.note').val()
 
-    var request = '/ar_edit_stock.php?tipo=place_part&object=' + object + '&key=' + key + '&transaction_key=' + transaction_key + '&part_sku=' + part_sku + '&location_key=' + location_key + '&qty=' + qty
-    //  console.log(request)
+
+
+    var request = '/ar_edit_stock.php?tipo=place_part&object=' + object + '&key=' + key + '&transaction_key=' + transaction_key + '&part_sku=' + part_sku + '&location_key=' + location_key + '&qty=' + qty+ '&note=' + note
+     console.log(request)
     //return;
     //=====
     var form_data = new FormData();
@@ -201,6 +204,7 @@ function place_item(element) {
     form_data.append("part_sku", part_sku)
     form_data.append("location_key", location_key)
     form_data.append("qty", qty)
+    form_data.append("note", note)
 
     var request = $.ajax({
 

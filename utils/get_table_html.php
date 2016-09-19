@@ -198,6 +198,7 @@ if (isset($columns_parameters)) {
 }
 
 
+
 if (isset($table_views[$table_view]))
 	$table_views[$table_view]['selected']=true;
 
