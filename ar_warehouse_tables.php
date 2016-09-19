@@ -34,7 +34,9 @@ switch ($tipo) {
 case 'warehouses':
 	warehouses(get_table_parameters(), $db, $user);
 	break;
-
+case 'areas':
+	areas(get_table_parameters(), $db, $user);
+	break;
 case 'locations':
 	locations(get_table_parameters(), $db, $user);
 	break;
@@ -44,6 +46,7 @@ case 'replenishments':
 case 'parts':
 	parts(get_table_parameters(), $db, $user);
 	break;
+	
 case 'stock_transactions':
 	stock_transactions(get_table_parameters(), $db, $user);
 	break;
@@ -72,6 +75,47 @@ function warehouses($_data, $db, $user) {
 			'id'=>(integer) $data['Warehouse Key'],
 			'code'=>$data['Warehouse Code'],
 			'name'=>$data['Warehouse Name'],
+		);
+
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+function areas($_data, $db, $user) {
+
+	$rtext_label='area';
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	// print $sql;
+
+
+	foreach ($db->query($sql) as $data) {
+
+		$adata[]=array(
+			'access'=>(in_array($data['Warehouse Area Warehouse Key'], $user->warehouses)?'':'<i class="fa fa-lock error"></i>'),
+			'id'=>(integer) $data['Warehouse Area Key'],
+			'code'=>sprintf('<span class="link" onClick="change_view(\'warehouse/%d/area/%d\')">%s</span>',
+			$data['Warehouse Area Warehouse Key'],
+			$data['Warehouse Area Key'],
+			$data['Warehouse Area Code']),
+			'name'=>$data['Warehouse Area Name'],
+			'locations'=>number($data['Warehouse Area Number Locations']),
+			'parts'=>number($data['Warehouse Area Distinct Parts']),
 		);
 
 	}

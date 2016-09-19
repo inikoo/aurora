@@ -135,11 +135,11 @@ function save_new_object(object, form_type) {
 
 
             var field_tr = $(this).closest('tr')
-
-
-            if (!field_tr.hasClass('hidden') && field_tr.hasClass('hide')) {
-                return
-            }
+ console.log($(this).attr('field'))
+ 
+      //      if (!field_tr.hasClass('hidden') && field_tr.hasClass('hide')) {
+       //         return
+        //    }
 
 
 
@@ -215,7 +215,7 @@ function save_new_object(object, form_type) {
 
 
         // used only for debug
-        var request = '/' + ar_file + '?tipo=' + tipo + '&object=' + object + '&parent=' + $('#fields').attr('parent') + '&parent_key=' + $('#fields').attr('parent_key') + '&fields_data=' + JSON.stringify(fields_data)
+        var request = '/' + ar_file + '?tipo=' + (form_type != '' ? form_type : tipo) + '&object=' + object + '&parent=' + $('#fields').attr('parent') + '&parent_key=' + $('#fields').attr('parent_key') + '&fields_data=' + JSON.stringify(fields_data)
         console.log(request)
 
 

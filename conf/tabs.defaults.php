@@ -1039,6 +1039,25 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code',
 	),
+	'category.location_categories'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>100,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code',
+		//  'elements_type'=>each(  $elements_options['parts']  ) ['key'],
+		//  'elements'=>$elements_options['parts'],
+	),
+
+	'locations.categories'=>array(
+		'view'=>'overview',
+		'sort_key'=>'code',
+		'sort_order'=>1,
+		'rpp'=>100,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code'
+	),
 	'part.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
@@ -1152,6 +1171,7 @@ $tab_defaults=array(
 		'elements_type'=>each(  $elements_options['locations']  ) ['key'],
 		'elements'=>$elements_options['locations'],
 	),
+		
 	'warehouse.replenishments'=>array(
 		'view'=>'overview',
 		'sort_key'=>'location',

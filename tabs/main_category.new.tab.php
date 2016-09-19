@@ -18,7 +18,6 @@ include_once 'class.Part.php';
 
 
 
-
 $options=array( 'new'=>true,'Category Scope'=>'');
 
 if($state['module']=='products'){
@@ -29,6 +28,8 @@ if($state['module']=='products'){
     $options['Category Scope']='Supplier';
 }elseif($state['module']=='customers'){
     $options['Category Scope']='Customer';
+}elseif($state['module']=='warehouses'){
+    $options['Category Scope']='Location';
 }else{
     exit('main_category.new.tab.php UNKNOWN module '.$state['module']);
 }

@@ -1,4 +1,4 @@
-{assign "warehouse" $object}
+{assign "object" $object}
 <div class="presention_card">
 
 <table>
@@ -12,14 +12,14 @@
 </td>
 </tr>
 <tr class="title">
-<td colspan=2>{t}Warehouse{/t} <i  onClick="change_view('warehouse/{$warehouse->id}')" class="fa fa-map button"></i></td>
+<td colspan=2>{t}Main category{/t} <i  onClick="change_view('object/{$object->id}')" class="fa fa-sitemap "></i></td>
 </tr>
 
 <tr>
-<td class="label">{$warehouse->get_field_label('Warehouse Code')|capitalize}</td><td>{$warehouse->get('Code')}</td>
+<td class="label">{$object->get_field_label('Category Code')|capitalize}</td><td>{$object->get('Code')}</td>
 </tr>
 <tr>
-<td class="label">{$warehouse->get_field_label('Warehouse Name')|capitalize}</td><td>{$warehouse->get('Name')}</td>
+<td class="label">{$object->get_field_label('Category Label')|capitalize}</td><td>{$object->get('Label')}</td>
 </tr>
 
 

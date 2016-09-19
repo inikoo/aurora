@@ -1,4 +1,6 @@
 
+ALTER TABLE `Part Category Dimension` DROP `Part Category Warehouse Key `;
+
 ALTER TABLE `Part Dimension` DROP ` Part Units `;
 
 

@@ -663,51 +663,6 @@ function get_stock_history_day_navigation($data, $smarty, $user, $db, $account) 
 }
 
 
-function get_categories_navigation($data, $smarty, $user, $db, $account) {
-
-
-
-
-	require_once 'class.Store.php';
-
-	switch ($data['parent']) {
-	case '':
-
-		break;
-	default:
-
-		break;
-	}
-
-	$block_view=$data['section'];
-
-
-
-	$left_buttons=array();
-
-
-
-	$right_buttons=array();
-
-	// $right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit'), 'url'=>"edit_customer_categories.php?store_id=");
-
-	$sections=get_sections('inventory', '');
-	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
-
-	$_content=array(
-		'sections_class'=>'',
-		'sections'=>$sections,
-		'left_buttons'=>$left_buttons,
-		'right_buttons'=>$right_buttons,
-		'title'=>_("Parts's Categories"),
-		'search'=>array('show'=>true, 'placeholder'=>_('Search inventory'))
-
-	);
-	$smarty->assign('_content', $_content);
-	$html=$smarty->fetch('navigation.tpl');
-	return $html;
-
-}
 
 
 
@@ -1006,6 +961,51 @@ function get_parts_new_main_category_navigation($data, $smarty, $user, $db, $acc
 
 }
 
+function get_categories_navigation($data, $smarty, $user, $db, $account) {
+
+
+
+
+	require_once 'class.Store.php';
+
+	switch ($data['parent']) {
+	case '':
+
+		break;
+	default:
+
+		break;
+	}
+
+	$block_view=$data['section'];
+
+
+
+	$left_buttons=array();
+
+
+
+	$right_buttons=array();
+
+	// $right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit'), 'url'=>"edit_customer_categories.php?store_id=");
+
+	$sections=get_sections('inventory', '');
+	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>_("Parts's Categories"),
+		'search'=>array('show'=>true, 'placeholder'=>_('Search inventory'))
+
+	);
+	$smarty->assign('_content', $_content);
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+}
 
 function get_parts_category_navigation($data, $smarty, $user, $db, $account) {
 
