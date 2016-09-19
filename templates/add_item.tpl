@@ -8,7 +8,7 @@
 <div id="add_item_results_container" class="search_results_container hide" style="width:400px;">
 		
 		<table id="add_item_results" border="0" style="background:white;font-size:90%" >
-			<tr class="hide" style="" id="add_item_search_result_template" field="" value="" item_historic_key="" formatted_value="" onClick="select_add_item_option(this)">
+			<tr class="hide" style="" id="add_item_search_result_template" field="" item_key="" item_historic_key="" formatted_value="" onClick="select_add_item_option(this)">
 				<td class="code" style="padding-left:5px;"></td>
 				<td class="label" style="padding-left:5px;"></td>
 				
@@ -99,7 +99,9 @@ function get_items_select() {
             var clone = $("#add_item_search_result_template").clone()
             clone.prop('id', 'add_item_result_' + result_key);
             clone.addClass('result').removeClass('hide')
-            clone.attr('value', data.results[result_key].value)
+            
+            
+            clone.attr('item_key', data.results[result_key].value)
             clone.attr('item_historic_key', data.results[result_key].item_historic_key)
 
             clone.attr('formatted_value', data.results[result_key].formatted_value)
@@ -129,7 +131,7 @@ function select_add_item_option(element) {
 
 
     $('#add_item').val($(element).attr('formatted_value'))
-    $('#add_item_save').attr('item_key', $(element).attr('value'))
+    $('#add_item_save').attr('item_key', $(element).attr('item_key'))
     $('#add_item_save').attr('item_historic_key', $(element).attr('item_historic_key'))
 
     $('#add_item_results_container').addClass('hide').removeClass('show')

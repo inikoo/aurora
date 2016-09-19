@@ -19,7 +19,7 @@ function get_product_showcase($data,$smarty,$user,$db) {
 		return "";
 	}
 	
-//	$product->update_web_state();
+	$product->update_web_state();
 
 	$images=$product->get_images_slidesshow();
 
