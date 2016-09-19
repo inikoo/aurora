@@ -1824,7 +1824,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 							$parent_key=$key;
 
 						}
-							elseif ($view_path[1]=='categories') {
+						elseif ($view_path[1]=='categories') {
 							$object='warehouse';
 							$key=$view_path[0];
 							$section='categories';
@@ -1933,16 +1933,16 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 									$section='main_category.new';
 
-	$parent='warehouse';
-					$parent_key=$view_path[0];
-$key=0;
+									$parent='warehouse';
+									$parent_key=$view_path[0];
+									$key=0;
 								}
 							}else {
 								//error
 							}
 
 						}
-						
+
 
 					}
 				}
@@ -2126,7 +2126,6 @@ $key=0;
 					$object='upload';
 					if (isset($view_path[1])) {
 						if (is_numeric($view_path[1])) {
-
 							$key=$view_path[1];
 						}
 					}
@@ -2252,6 +2251,10 @@ $key=0;
 						$section='location';
 						$object='location';
 						$key=$view_path[1];
+					}elseif ($view_path[1]=='new') {
+						$key=0;
+						$object='location';
+						$section='location.new';
 					}
 				}
 

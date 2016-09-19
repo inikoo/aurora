@@ -133,13 +133,7 @@ class Location extends DB_Table {
 
 		$this->data['Location File As']=$this->get_file_as($this->data['Location Code']);
 
-		$warehouse_area=new WarehouseArea($this->data['Location Warehouse Area Key']);
-		if (!$warehouse_area->id) {
-			$this->error=true;
-			$this->msg='WA not found';
-			return;
-
-		}
+		//exit;
 		$warehouse=new Warehouse($this->data['Location Warehouse Key']);
 		if (!$warehouse->id) {
 			$this->error=true;
@@ -147,11 +141,7 @@ class Location extends DB_Table {
 			return;
 		}
 
-		if ($warehouse->id!=$warehouse_area->data['Warehouse Key']) {
-			$this->error=true;
-			$this->msg='WA not in W';
-			return;
-		}
+		
 
 		if ($this->data['Location Code']=='') {
 			$error=true;
@@ -199,16 +189,22 @@ class Location extends DB_Table {
 		if ($this->db->exec($sql)) {
 			$this->id=$this->db->lastInsertId();
 
-			$note=_('Location Created');
-			$details=_('Location')." ".$this->data['Location Code']." "._('created');
-			$history_data=array(
-				'History Abstract'=>$note
-				, 'History Details'=>$details
-				, 'Action'=>'created'
+			
+			
+			
+			
+				$history_data=array(
+				'History Abstract'=>sprintf(_('%s location created'), $this->data['Location Code']),
+				'History Details'=>'',
+				'Action'=>'created'
 			);
-			$this->add_history($history_data);
-			$this->new=true;
 
+			$this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
+
+			
+			
+			
+			$this->new=true;
 
 			$this->get_data('id', $this->id);
 			$sql=sprintf("select `Warehouse Flag Key` from  `Warehouse Flag Dimension` where `Warehouse Flag Color`=%s and `Warehouse Key`=%d",
@@ -223,18 +219,19 @@ class Location extends DB_Table {
 				}
 			}else {
 				print_r($error_info=$this->db->errorInfo());
+				print $sql;
 				exit;
 			}
 
-
-			$warehouse->update_children();
-			$warehouse_area->update_children();
-
+			//$warehouse->update_children();
+			//$warehouse_area->update_children();
+/*
 			if ($data['Location Shelf Key']) {
 				$shelf=new Shelf($data['Location Shelf Key']);
 				if ($shelf->id)
 					$shelf->update_children();
 			}
+			*/
 
 		} else {
 			exit($sql);

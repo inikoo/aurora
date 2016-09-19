@@ -29,7 +29,7 @@ function open_edit_field(object, key, field) {
     $('#' + field + '_reset_button').removeClass('hide')
     $('#' + field + '_msg').html('').removeClass('success error')
 
-     console.log(type)
+    console.log(type)
 
     switch (type) {
     case 'string':
@@ -157,9 +157,7 @@ function open_edit_field(object, key, field) {
 
 
         $('#' + field + '_add_other_option').removeClass('hide')
-
         $('#' + field + '_options').removeClass('hide')
-        // $('#' + field + '_formatted').removeClass('hide')
         $('#' + field + '_save_button').removeClass('hide')
 
 
@@ -192,15 +190,15 @@ function open_edit_field(object, key, field) {
         $('#parts_list').removeClass('hide')
         $('#' + field + '_save_button').removeClass('hide')
         break;
-        
-     case 'webpage_see_also':
+
+    case 'webpage_see_also':
         $('#webpage_see_also').removeClass('hide')
         $('#' + field + '_save_button').removeClass('hide')
-        break;     
-       case 'webpage_related_products':
+        break;
+    case 'webpage_related_products':
         $('#webpage_related_products').removeClass('hide')
         $('#' + field + '_save_button').removeClass('hide')
-        break;    
+        break;
     default:
 
     }
@@ -456,12 +454,12 @@ function close_edit_field(field) {
     case 'parts_list':
         $('#parts_list').addClass('hide')
         break;
-        
-     case 'webpage_see_also':   
-         $('#webpage_see_also').addClass('hide')
+
+    case 'webpage_see_also':
+        $('#webpage_see_also').addClass('hide')
         break;
-         case 'webpage_related_products':   
-         $('#webpage_related_products').addClass('hide')
+    case 'webpage_related_products':
+        $('#webpage_related_products').addClass('hide')
         break;
     default:
 
@@ -722,19 +720,21 @@ function show_invalid_messages(field) {
 }
 
 
-function select_option(element,field, value) {
+function select_option(element, field, value) {
+
     $('#' + field).val(value)
-   // $('#' + field + '_formatted').val(label)
-   
-   
+
+
     $('#' + field + '_options li').removeClass('selected')
+    $(element).addClass('selected')
 
-$(element).addClass('selected')
+console.log(element)
 
-
-
-    if ($('#' + field + '_container').hasClass('new')) {
-        $('#' + field + '_options').addClass('hide')
+     if ($('#fields').hasClass('new_object')) {
+     
+     
+     
+     //   $('#' + field + '_options').addClass('hide')
     }
 
     on_changed_value(field, value)
@@ -961,56 +961,54 @@ function save_field(object, key, field) {
             part_list_data.push(part_data)
 
         });
-        
-       
+
+
 
         value = JSON.stringify(part_list_data)
 
-    } 
-    else if (type == 'webpage_see_also') {
+    } else if (type == 'webpage_see_also') {
         var webpage_see_also = {};
 
-        if($('#see_also_type').hasClass('fa-toggle-on')){
-            webpage_see_also['type']='Auto'
-        }else{
-            webpage_see_also['type']='Manual'
+        if ($('#see_also_type').hasClass('fa-toggle-on')) {
+            webpage_see_also['type'] = 'Auto'
+        } else {
+            webpage_see_also['type'] = 'Manual'
         }
-        webpage_see_also['number_links']=$('#see_also_number_links').val()
+        webpage_see_also['number_links'] = $('#see_also_number_links').val()
 
-     webpage_see_also['manual_links'] = [];
-    $('#manual_links  input.webpage_key').each(function(i, obj) {
+        webpage_see_also['manual_links'] = [];
+        $('#manual_links  input.webpage_key').each(function(i, obj) {
 
 
-        if (!$(obj).closest('tr').hasClass('very_discreet')) {
+            if (!$(obj).closest('tr').hasClass('very_discreet')) {
 
-            if ($(obj).val() != '') {
-               webpage_see_also['manual_links'].push($(obj).val())
+                if ($(obj).val() != '') {
+                    webpage_see_also['manual_links'].push($(obj).val())
+                }
             }
-        }
 
-    });
+        });
 
 
 
         value = JSON.stringify(webpage_see_also)
         console.log(value)
 
-    }
-     else if (type == 'webpage_related_products') {
+    } else if (type == 'webpage_related_products') {
 
 
-     webpage_related_products = [];
-$('#webpage_related_products  input.product_id').each(function(i, obj) {
+        webpage_related_products = [];
+        $('#webpage_related_products  input.product_id').each(function(i, obj) {
 
 
-        if (!$(obj).closest('tr').hasClass('very_discreet')) {
+            if (!$(obj).closest('tr').hasClass('very_discreet')) {
 
-            if ($(obj).val() != '') {
-               webpage_related_products.push($(obj).val())
+                if ($(obj).val() != '') {
+                    webpage_related_products.push($(obj).val())
+                }
             }
-        }
 
-    });
+        });
 
 
 
@@ -1020,9 +1018,9 @@ $('#webpage_related_products  input.product_id').each(function(i, obj) {
 
     var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value) + '&metadata=' + JSON.stringify(metadata)
     console.log(request)
-   
+
     $.getJSON(request, function(data) {
-  
+
         $('#' + field + '_save_button').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
         if (data.state == 100) {
             pre_save_actions(field, data)
@@ -1031,7 +1029,7 @@ $('#webpage_related_products  input.product_id').each(function(i, obj) {
         if (data.state == 200) {
 
 
- console.log(data)
+            console.log(data)
 
             $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
             $('#' + field + '_value').val(data.value)
@@ -1047,8 +1045,13 @@ $('#webpage_related_products  input.product_id').each(function(i, obj) {
             console.log(data.formatted_value)
             $('.' + field).html(data.formatted_value)
             if (type == 'option') {
-                $('#' + field + '_options li .current_mark').removeClass('current')
-                $('#' + field + '_option_' + value + ' .current_mark').addClass('current')
+
+                //   $('#' + field + '_options li .current_mark')
+                $('#' + field + '_options li i.current_mark').removeClass('current')
+                $('#' + field + '_options li.selected  i.current_mark').addClass('current')
+
+                // console.log('#' + field + '_option_' + value + ' .current_mark')
+                //  $('#' + field + '_option_' + value + ' .current_mark').addClass('current')
             } else if (type == 'radio_option') {
                 $('#' + field + '_options li .current_mark').removeClass('current')
                 $('#' + field + '_option_' + value + ' .current_mark').addClass('current')
@@ -1119,18 +1122,18 @@ function post_save_actions(field, data) {
     console.log(field)
     console.log(data)
 
-console.log(field)
+    console.log(field)
 
     switch (field) {
-    
+
     case 'Webpage_See_Also':
-     $('.webpage_see_also_editor').html(data.update_metadata.webpage_see_also_editor)
-    
-    break;
-   case 'Webpage_Related_Products':
-     $('.webpage_related_products_editor').html(data.update_metadata.webpage_related_products_editor)
-    
-    break; 
+        $('.webpage_see_also_editor').html(data.update_metadata.webpage_see_also_editor)
+
+        break;
+    case 'Webpage_Related_Products':
+        $('.webpage_related_products_editor').html(data.update_metadata.webpage_related_products_editor)
+
+        break;
     case 'User_Preferred_Locale':
         change_view(state.request, {
             'reload': true
@@ -1354,11 +1357,11 @@ function update_field(data) {
         if (data.locked == 1) {
             $("#" + field + '_validation').addClass('hide')
             $("#" + field + '_locked_tag').removeClass('hide')
-             $("#" + field ).attr("readonly", true);
+            $("#" + field).attr("readonly", true);
         } else {
             $("#" + field + '_validation').removeClass('hide')
             $("#" + field + '_locked_tag').addClass('hide')
-                         $("#" + field ).attr("readonly", false);
+            $("#" + field).attr("readonly", false);
 
         }
 
@@ -1878,7 +1881,7 @@ function select_dropdown_option(element) {
 
     $('#' + field + '_results_container').addClass('hide').removeClass('show')
 
-//    console.log(element)
+    //    console.log(element)
     if (metadata != undefined) {
 
         if (metadata.other_fields) {
@@ -2025,7 +2028,9 @@ function delete_attachment(element) {
 
 $(document).on("click", "#edit_table", function() {
 
-    change_view(state.request + '&tab=' + state.tab + '_edit',{reload_showcase: 1})
+    change_view(state.request + '&tab=' + state.tab + '_edit', {
+        reload_showcase: 1
+    })
 
 });
 

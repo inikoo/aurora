@@ -12,14 +12,14 @@
 </td>
 </tr>
 <tr class="title">
-<td colspan=2>{t}Main category{/t} <i  onClick="change_view('category/{$object->id}')" class="fa fa-sitemap button"></i></td>
+<td colspan=2>{t}Location{/t} <i  onClick="change_view('locations/{$object->get('Location Warehouse Key')}/{$object->id}')" class="fa fa-map-marker button"></i></td>
 </tr>
 
 <tr>
-<td class="label">{$object->get_field_label('Category Code')|capitalize}</td><td>{$object->get('Code')}</td>
+<td class="label">{$object->get_field_label('Location Code')|capitalize}</td><td  ><span  onClick="change_view('locations/{$object->get('Location Warehouse Key')}/{$object->id}')" >{$object->get('Code')}</span></td>
 </tr>
 <tr>
-<td class="label">{$object->get_field_label('Category Label')|capitalize}</td><td>{$object->get('Label')}</td>
+<td class="label">{$object->get_field_label('Location Mainly Used For')|capitalize}</td><td>{$object->get('Mainly Used For')}</td>
 </tr>
 
 

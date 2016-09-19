@@ -370,9 +370,9 @@
         {/if}
         
 		<div id="{$field.id}_options" class="dropcontainer radio_option hide" style="width:310px;xmargin-left:20px" >
-			<ul  id="{$field.id}_options_ul" sxtyle="float:left;width:292px">
+			<ul  id="{$field.id}_options_ul" >
 				{foreach from=$field.options item=option key=value} 
-				<li  class="{if $value==$field.value}selected{/if}" onclick="select_option(this,'{$field.id}','{$value}' )">{$option} <i class="fa fa-circle fw padding_left_5 current_mark {if $value==$field.value}current{/if}"></i></li>
+				<li  class="{if $value==$field.value}selected{/if}" onclick="select_option(this,'{$field.id}','{$value}' )">{$option}<i class="fa fa-circle fw padding_left_5 current_mark {if $value==$field.value}current{/if}"></i></li>
 				{/foreach} 
 			</ul>
 		</div>

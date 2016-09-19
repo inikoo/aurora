@@ -396,6 +396,38 @@ function get_locations_new_main_category_navigation($data, $smarty, $user, $db, 
 
 
 }
+function get_new_location_navigation($data, $smarty, $user, $db, $account) {
+
+
+	$sections=get_sections('warehouses', $data['parent_key']);
+	$left_buttons=array();
+	$left_buttons[]=array('icon'=>'arrow-up', 'title'=>_('Locations'), 'reference'=>'locations/'.$data['parent_key'], 'parent'=>'');
+
+	$right_buttons=array();
+
+	$sections['locations']['selected']=true;
+
+
+
+	$_content=array(
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>_("New location"),
+		'search'=>array('show'=>true, 'placeholder'=>_('Search locations'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	
+	
+	
+	return $html;
+
+
+}
 
 function get_categories_navigation($data, $smarty, $user, $db, $account) {
 
