@@ -276,6 +276,13 @@
 </div>
 <script>
 
+
+$('#purchase_order_pdf').click(function() {
+ 
+ window.open('/pdf/supplier.order.pdf.php?id={$order->id}');
+});
+
+
 $('#new_delivery').on('input propertychange', '.new_delivery_field', function(evt) {
 
 
