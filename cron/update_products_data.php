@@ -50,6 +50,9 @@ $editor=array(
 //print "updated fiels from parts\n";
 update_web_state($db);
 
+
+print date('l jS \of F Y h:i:s A')."\n";
+
 function update_web_state($db) {
 
 	$sql=sprintf('select `Product ID` from `Product Dimension` where `Product Store Key`!=9 order by `Product ID` desc ');

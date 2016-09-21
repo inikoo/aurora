@@ -401,8 +401,14 @@ function stock_transactions($_data, $db, $user) {
 
 			$note=$data['Note'];
 			$stock=$data['Inventory Transaction Quantity'];
+			
+			
+			
 			switch ($data['Inventory Transaction Type']) {
 			case 'OIP':
+				
+				$stock='';
+				
 				$type='<i class="fa  fa-clock-o discreet fa-fw" aria-hidden="true"></i>';
 
 				if ($parameters['parent']=='part') {
