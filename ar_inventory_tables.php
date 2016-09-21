@@ -34,7 +34,7 @@ case 'parts':
 	break;
 case 'active_parts':
 	parts(get_table_parameters(), $db, $user, 'active', $account);
-	break;	
+	break;
 case 'discontinued_parts':
 	parts(get_table_parameters(), $db, $user, 'discontinued', $account);
 	break;
@@ -43,7 +43,7 @@ case 'discontinuing_parts':
 	break;
 case 'in_process_parts':
 	parts(get_table_parameters(), $db, $user, 'in_process', $account);
-	break;	
+	break;
 case 'stock_transactions':
 	stock_transactions(get_table_parameters(), $db, $user);
 	break;
@@ -122,8 +122,8 @@ function parts($_data, $db, $user, $type, $account) {
 	include_once 'prepare_table/init.php';
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-	
-	
+
+
 	$adata=array();
 	if ($result=$db->query($sql)) {
 		foreach ($result as $data) {
@@ -168,7 +168,7 @@ function parts($_data, $db, $user, $type, $account) {
 			}
 
 
-	if ($data['Part Status']=='In Use') {
+			if ($data['Part Status']=='In Use') {
 				$status= _('Active');
 			}elseif ($data['Part Status']=='Discontinuing') {
 				$status =_('Discontinuing');
@@ -199,7 +199,7 @@ function parts($_data, $db, $user, $type, $account) {
 				//'sold_1y'=>delta($data['sold'], $data['sold_1y']),
 				'revenue'=>money($data['revenue'], $account->get('Account Currency')),
 				'revenue_1y'=>delta($data['revenue'], $data['revenue_1y']),
-                'status'=>$status,
+				'status'=>$status,
 				'lost'=>number($data['lost']),
 				'bought'=>number($data['bought']),
 				'dispatched_year0'=>sprintf('<span title="%s">%s</span>', delta($data["Part Year To Day Acc Provided"], $data["Part Year To Day Acc 1YB Provided"]), number($data['Part Year To Day Acc Provided'], 0)),
@@ -401,14 +401,14 @@ function stock_transactions($_data, $db, $user) {
 
 			$note=$data['Note'];
 			$stock=$data['Inventory Transaction Quantity'];
-			
-			
-			
+
+
+
 			switch ($data['Inventory Transaction Type']) {
 			case 'Order In Process':
-				
-				
-				
+
+
+
 				$type='<i class="fa  fa-clock-o discreet fa-fw" aria-hidden="true"></i>';
 
 				if ($parameters['parent']=='part') {
@@ -436,7 +436,7 @@ function stock_transactions($_data, $db, $user) {
 					);
 				}
 
-$stock='';
+				$stock='';
 
 				break;
 			case 'Sale':
@@ -499,11 +499,37 @@ $stock='';
 			case 'Error':
 				$type='<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
 				break;
-				
+
 			case 'No Dispatched':
+
+$stock='';
+				if ($parameters['parent']=='part') {
+					$note=sprintf(_("%s requested %s <b>couldn't be dispatched</b> (%s)"),
+
+						number($data['Required']),
+						'<span title="'._('Stock keeping outers').'">SKO</span>',
+
+						sprintf('<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-truck" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'], $data['Delivery Note ID'])
+
+
+					);
+				}else {
+					$note=sprintf(_("%s requested %s %s <b>couldn't be dispatched</b> (%s)"),
+						number($data['Required']),
+
+						sprintf('<span class="button" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span>', $data['Part SKU'], $data['Part Reference']),
+						'<span title="'._('Stock keeping outers').'">SKO</span>',
+
+						sprintf('<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-truck" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'], $data['Delivery Note ID'])
+
+					);
+				}
+
+
+
 				$type='<i class="fa fa-circle error fa-fw" aria-hidden="true"></i>';
-				break;	
-				
+				break;
+
 			default:
 				$type=$data['Inventory Transaction Section'];
 				break;
@@ -608,12 +634,12 @@ function supplier_parts($_data, $db, $user, $account) {
 			if ($exchange<0) {
 				$exchange=currency_conversion($db, $data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 1 day');
 			}
-			
-			if($exchange!=1){
-			
-			$exchange_info=money(($data['Supplier Part Unit Cost']+$data['Supplier Part Unit Extra Cost']), $data['Supplier Part Currency Code']).' @'.$data['Supplier Part Currency Code'].'/'. $account->get('Account Currency').' '.sprintf('%.6f',$exchange);
-			}else{
-			    $exchange_info='';
+
+			if ($exchange!=1) {
+
+				$exchange_info=money(($data['Supplier Part Unit Cost']+$data['Supplier Part Unit Extra Cost']), $data['Supplier Part Currency Code']).' @'.$data['Supplier Part Currency Code'].'/'. $account->get('Account Currency').' '.sprintf('%.6f', $exchange);
+			}else {
+				$exchange_info='';
 			}
 
 			switch ($data['Supplier Part Status']) {
@@ -1079,8 +1105,8 @@ function product_families($_data, $db, $user) {
 				$operations=(in_array($data['Store Key'], $user->stores)?'<i class="fa fa-plus button" aria-hidden="true" onClick="open_new_product_family('.$data['Store Key'].')" ></i>':'<i class="fa fa-lock "></i>');
 			}else {
 				$family_data=preg_split('/,/', $data['category_data']);
-				
-				
+
+
 				$family=sprintf('<span class="button" onClick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Store Key'], $family_data[0], $family_data[1]);
 				$number_products =number($data['number_products']);
 				$operations=(in_array($data['Store Key'], $user->stores)?'<i class="fa fa-refresh button" aria-hidden="true" onClick="open_new_product_family('.$data['Store Key'].')" )"></i>':'<i class="fa fa-lock "></i>');
