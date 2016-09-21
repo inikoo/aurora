@@ -60,9 +60,19 @@ function update_web_state($db) {
 			$product=new Product('id', $row['Product ID']);
 
 			$product->update_part_numbers();
+			
+			$old_webstate=$product->get('Product Web State');
+			
 			$product->update_availability($use_fork=false);
 			$product->update_cost();
-			print $product->id."\r";
+			
+			$new_webstate=$product->get('Product Web State');
+			
+			if($old_webstate!=$new_webstate){
+			    print $product->id." ".$product->get('Product Store Key')." ".$product->get('Code')." $old_webstate  $new_webstate  \n";
+			}
+			
+			//print $product->id."\r";
 		}
 
 	}else {
