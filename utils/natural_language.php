@@ -1,6 +1,5 @@
 <?php
 
-
 function seconds_to_natural_string($seconds, $short=false) {
 
 
@@ -66,7 +65,6 @@ function seconds_to_natural_string($seconds, $short=false) {
 
 
 }
-
 
 function seconds_to_string($seconds, $until='seconds', $short=false) {
 
@@ -150,8 +148,6 @@ function seconds_to_string($seconds, $until='seconds', $short=false) {
 
 }
 
-
-
 function seconds_to_hourminutes($seconds) {
 	$units = array(
 
@@ -195,9 +191,6 @@ function seconds_to_hourminutes($seconds) {
 
 }
 
-
-
-
 function file_size($bytes) {
 	if ($bytes >= 1073741824) {
 		$bytes = number_format($bytes / 1073741824, 1) . ' GB';
@@ -220,7 +213,6 @@ function file_size($bytes) {
 
 	return $bytes;
 }
-
 
 function get_file_as_old($code) {
 	$ncode=$code;
@@ -309,7 +301,6 @@ function get_file_as($StartCode) {
 
 }
 
-
 function weight($w, $unit='Kg', $number_decimals=3, $simplify=false, $zero_fill=false) {
 	//print $w;
 	if ($w=='') return '';
@@ -336,12 +327,10 @@ function weight($w, $unit='Kg', $number_decimals=3, $simplify=false, $zero_fill=
 	}
 }
 
-
 function volume($value, $unit='L') {
 	if ($value=='') return '';
 	return number($value, 3).'L';
 }
-
 
 function currency_symbol($currency) {
 	switch ($currency) {
@@ -382,7 +371,6 @@ function currency_symbol($currency) {
 	}
 
 }
-
 
 function currency_label($currency, $db) {
 

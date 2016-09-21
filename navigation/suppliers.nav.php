@@ -1541,9 +1541,9 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
 
 
 
-	$right_buttons[]=array('icon'=>'share-alt', 'title'=>'{t}Share{/t}');
+	$right_buttons[]=array('icon'=>'share-alt', 'title'=>'{t}Share{/t}','id'=>'share_purchase_order');
 
-	$right_buttons[]=array('icon'=>'print', 'title'=>'{t}Print{/t}');
+	$right_buttons[]=array('icon'=>'print', 'title'=>'{t}Print{/t}','id'=>'purchase_order_pdf');
 
 
 
