@@ -405,9 +405,9 @@ function stock_transactions($_data, $db, $user) {
 			
 			
 			switch ($data['Inventory Transaction Type']) {
-			case 'OIP':
+			case 'Order In Process':
 				
-				$stock='';
+				
 				
 				$type='<i class="fa  fa-clock-o discreet fa-fw" aria-hidden="true"></i>';
 
@@ -436,6 +436,7 @@ function stock_transactions($_data, $db, $user) {
 					);
 				}
 
+$stock='';
 
 				break;
 			case 'Sale':
@@ -498,6 +499,11 @@ function stock_transactions($_data, $db, $user) {
 			case 'Error':
 				$type='<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
 				break;
+				
+			case 'No Dispatched':
+				$type='<i class="fa fa-circle error fa-fw" aria-hidden="true"></i>';
+				break;	
+				
 			default:
 				$type=$data['Inventory Transaction Section'];
 				break;
