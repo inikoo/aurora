@@ -37,6 +37,10 @@ if (isset($options['show_full_label']) and  $options['show_full_label'] ) {
 }
 
 
+$options_yn=array(
+	'Yes'=>_('Yes'), 'No'=>_('No')
+);
+
 
 $options_status=array('Available'=>_('Available'), 'NoAvailable'=>_('No stock'), 'Discontinued'=>_('Discontinued'));
 
@@ -225,7 +229,21 @@ $supplier_part_fields[]=array(
 			'type'=>'skip'
 		),
 
+		array(
 
+			'render'=>($supplier->get('Supplier On Demand')=='Yes'?true:false),
+
+			'id'=>'Supplier_Part_On_Demand',
+			'edit'=>($edit?'option':''),
+
+			'options'=>$options_yn,
+			'value'=>($new?'No':$object->get('Supplier Part On Demand')),
+			'formatted_value'=>($new?_('No'):$object->get('On Demand')),
+			'label'=>ucfirst($object->get_field_label('Supplier Part On Demand')),
+			'required'=>false,
+			'type'=>($supplier->get('Supplier On Demand')=='Yes'?'value':''),
+
+		),
 
 
 		array(
@@ -244,8 +262,8 @@ $supplier_part_fields[]=array(
 			'edit'=>($edit?'numeric':''),
 
 			'value'=>($new?  ($part_scope? '': $options['parent_object']->get('Supplier Average Delivery Days'))  :htmlspecialchars($object->get('Supplier Part Average Delivery Days'))),
-		
-				'formatted_value'=>($new? ($part_scope? '':  $options['parent_object']->get('Supplier Average Delivery Days')):$object->get('Average Delivery Days')),
+
+			'formatted_value'=>($new? ($part_scope? '':  $options['parent_object']->get('Supplier Average Delivery Days')):$object->get('Average Delivery Days')),
 			'label'=>ucfirst($object->get_field_label('Supplier Part Average Delivery Days')),
 			'placeholder'=>_('days'),
 

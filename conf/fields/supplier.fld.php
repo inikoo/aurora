@@ -326,14 +326,24 @@ if ($object->get('Supplier Type')!='Archived') {
 			'show_title'=>false,
 			'fields'=>array(
 
+	array(
+					'id'=>'Supplier_On_Demand',
+					'edit'=>($edit?'option':''),
 
+					'options'=>$options_yn,
+					'value'=>$object->get('Supplier On Demand'),
+					'formatted_value'=>$object->get('On Demand'),
+					'label'=>ucfirst($object->get_field_label('Supplier On Demand')),
+					'required'=>false,
+					'type'=>'value'
+				),
 				array(
 					'id'=>'Supplier_Default_Incoterm',
 					'edit'=>($edit?'option':''),
 
 					'options'=>$options_incoterms,
-					'value'=>$object->get('Supplier Default Incoterm'),
-					'formatted_value'=>$object->get('Default Incoterm'),
+					'value'=>($new?'No':$object->get('Supplier Default Incoterm')),
+					'formatted_value'=>($new?_('No'):$object->get('Default Incoterm')),
 					'label'=>ucfirst($object->get_field_label('Supplier Default Incoterm')),
 					'required'=>false,
 					'type'=>'value'

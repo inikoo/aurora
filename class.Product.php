@@ -1664,25 +1664,36 @@ class Product extends Asset{
 
 		if ($this->get('Product Number of Parts')>0) {
 
-			$sql=sprintf(" select `Part Stock State`,`Part Current On Hand Stock`-`Part Current Stock In Process` as stock,`Part Current Stock In Process`,`Part Current On Hand Stock`,`Product Part Ratio` from     `Product Part Bridge` B left join   `Part Dimension` P   on (P.`Part SKU`=B.`Product Part Part SKU`)   where B.`Product Part Product ID`=%d   ",
+			$sql=sprintf(" select `Part On Demand`,`Part Stock State`,`Part Current On Hand Stock`-`Part Current Stock In Process` as stock,`Part Current Stock In Process`,`Part Current On Hand Stock`,`Product Part Ratio` from     `Product Part Bridge` B left join   `Part Dimension` P   on (P.`Part SKU`=B.`Product Part Part SKU`)   where B.`Product Part Product ID`=%d   ",
 				$this->id
 			);
 
 
 
 
-			$result=mysql_query($sql);
 			$stock=99999999999;
 			$tipo='Excess';
 			$change=false;
 			$stock_error=false;
-
+			
+			$on_demand='';
 
 
 			if ($result=$this->db->query($sql)) {
 				foreach ($result as $row) {
 
-
+                    
+                    if($on_demand==''){
+                        $on_demand=$row['Part On Demand'];
+                    
+                    }else{
+                        
+                        if($row['Part On Demand']=='No'){
+                             $on_demand='No';
+                        }
+                    
+                    }
+                    
 
 					if ($row['Part Stock State']=='Error')
 						$tipo='Error';
@@ -1732,6 +1743,13 @@ class Product extends Asset{
 			}else if (is_numeric($stock) and $stock<0) {
 				$stock=0;
 			}
+			
+			if( $on_demand=='Yes'){
+			
+			$stock=99999999999;
+			$tipo='OnDemand';
+			}
+			
 		}
 		else {
 			$stock=0;
@@ -2062,7 +2080,7 @@ class Product extends Asset{
 		case 'Online Auto':
 
 			if ($this->data['Product Number of Parts']==0) {
-				return 'For Sale';
+				return 'Offline';
 			}else {
 
 				if ($this->data['Product Availability']>0) {

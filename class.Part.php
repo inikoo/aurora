@@ -1148,15 +1148,43 @@ class Part extends Asset{
 	}
 
 
+	function update_on_demand() {
+
+		$on_demand_available='No';
+
+		foreach ($this->get_supplier_parts('objects')as $supplier_part) {
+
+
+			if ($supplier_part->get('Supplier Part On Demand')=='Yes' and $supplier_part->get('Supplier Part Status')=='Available' ) {
+				$on_demand_available='Yes';
+				break;
+			}
+
+
+		}
+
+
+	$this->update_field('Part On Demand', $on_demand_available, 'no_history');
+
+		foreach ($this->get_products('objects') as $product) {
+			$product->update_availability();
+		}
+
+
+
+
+	}
+
+
 	function update_cost() {
 
 		$account=new Account($this->db);
 
 		$supplier_parts=$this->get_supplier_parts('objects');
 
-		$cost_available=false;
-		$cost_no_available=false;
-		$cost_discontinued=false;
+		$cost_available=array();
+		$cost_no_available=array();
+		$cost_discontinued=array();
 
 
 
@@ -1171,42 +1199,57 @@ class Part extends Asset{
 				$exchange=1;
 			}
 
+			$_cost=$exchange*($supplier_part->get('Supplier Part Unit Cost')+$supplier_part->get('Supplier Part Unit Extra Cost'));
+
+       
 
 
-			if ($supplier_part->get('Supplier Part Status')) {
+			if ($supplier_part->get('Supplier Part Status')=='Available') {
+				$cost_available[]=$_cost;
 
-				if ($cost_available==false or $cost_available>$supplier_part->get('Supplier Part Unit Cost')) {
-					$cost_available=$exchange*($supplier_part->get('Supplier Part Unit Cost')+$supplier_part->get('Supplier Part Unit Extra Cost'));
-				}elseif ($cost_no_available==false or $cost_no_available>$supplier_part->get('Supplier Part Unit Cost')) {
-					$cost_no_available=$exchange*($supplier_part->get('Supplier Part Unit Cost')+$supplier_part->get('Supplier Part Unit Extra Cost'));
-				}elseif ($cost_discontinued==false or $cost_discontinued>$supplier_part->get('Supplier Part Unit Cost')) {
-					$cost_discontinued=$exchange*($supplier_part->get('Supplier Part Unit Cost')+$supplier_part->get('Supplier Part Unit Extra Cost'));
-				}
+			}elseif ($supplier_part->get('Supplier Part Status')=='NoAvailable') {
+				$cost_no_available[]=$_cost;
 
+			}elseif ($supplier_part->get('Supplier Part Status')=='Discontinued') {
+				$cost_discontinued[]=$_cost;
 
 			}
 
+
 		}
 
-		$cost='';
-		if ($cost_available!=false) {
-			$cost=$cost_available;
+
+		$cost=0;
+        $cost_set=false;
+
+
+
+
+		if (count($cost_available)>0) {
+
+			$cost=array_sum($cost_available) / count($cost_available);
+			 $cost_set=true;
 		}
 
-		if ($cost==false and $cost_no_available!=false) {
-			$cost=$cost_no_available;
+		if ( !$cost_set and count($cost_no_available)>0) {
+			$cost=array_sum($cost_no_available) / count($cost_no_available);
+			 $cost_set=true;
+		}
+		
+		if ( !$cost_set and count($cost_discontinued)>0) {
+			$cost=array_sum($cost_discontinued) / count($cost_discontinued);
+			 $cost_set=true;
 		}
 
-		if ($cost==false and $cost_no_available!=false) {
-			$cost=$cost_no_available;
-		}
+		
 
-		if ($cost!=false) {
+		if ($cost_set) {
 			$cost=$cost*$this->data['Part Units Per Package'];
 		}
 
 		$this->update_field('Part Cost', $cost, 'no_history');
 
+//print $this->get('Referece')." $cost\n";
 
 		foreach ($this->get_products('objects') as $product) {
 			$product->update_cost();
@@ -1415,12 +1458,12 @@ class Part extends Asset{
 		case 'Products Web Status':
 
 			if ($this->data['Part Status']=='Not In Use') {
-            
-               if ($this->data['Part Products Web Status']=='Online') { 
-                return '<i class="fa fa-exclamation-circle error" aria-hidden="true"></i> '._('Online');
-               }elseif ($this->data['Part Products Web Status']=='Out of Stock') { 
-                return '<i class="fa fa-exclamation-circle warning" aria-hidden="true"></i> '._('Out of stock');
-               }       
+
+				if ($this->data['Part Products Web Status']=='Online') {
+					return '<i class="fa fa-exclamation-circle error" aria-hidden="true"></i> '._('Online');
+				}elseif ($this->data['Part Products Web Status']=='Out of Stock') {
+					return '<i class="fa fa-exclamation-circle warning" aria-hidden="true"></i> '._('Out of stock');
+				}
 
 
 
@@ -1432,13 +1475,13 @@ class Part extends Asset{
 				}elseif ($this->data['Part Products Web Status']=='No Products') {
 					return _('No products associated');
 				}elseif ($this->data['Part Products Web Status']=='Online') {
-				
-				if($this->data['Part Stock Status']=='Out_Of_Stock' or $this->data['Part Stock Status']=='Error' ){
-							return '<span class="error"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> '._('Online').'</span>';
-		
-				}else{
-				
-					return _('Online');
+
+					if ($this->data['Part Stock Status']=='Out_Of_Stock' or $this->data['Part Stock Status']=='Error' ) {
+						return '<span class="error"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> '._('Online').'</span>';
+
+					}else {
+
+						return _('Online');
 					}
 				}elseif ($this->data['Part Products Web Status']=='Out of Stock') {
 					return _('Out of stock');
@@ -1520,10 +1563,10 @@ class Part extends Asset{
 
 
 			if ($this->data['Part Stock Status']=='Out_Of_Stock' or  $this->data['Part Stock Status']=='Error') return '';
-			
-			if (in_array($this->data['Part Products Web Status'],array('No Products','Offline','Out of Stock'))) return '';
 
-			
+			if (in_array($this->data['Part Products Web Status'], array('No Products', 'Offline', 'Out of Stock'))) return '';
+
+
 			include_once 'utils/natural_language.php';
 			return '<span >'.sprintf(_('%s availability'), '<span  title="'.sprintf("%s %s", number($this->data['Part Days Available Forecast'], 1) ,
 					ngettext("day", "days", intval($this->data['Part Days Available Forecast'] ) )).'">'.seconds_to_until($this->data['Part Days Available Forecast']*86400).'</span>').'</span>';
