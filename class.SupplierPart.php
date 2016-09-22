@@ -459,6 +459,25 @@ class SupplierPart extends DB_Table{
 
 		switch ($field) {
 
+		case 'Supplier Part On Demand':
+
+			if (! in_array($value, array('No', 'Yes'))) {
+				$this->error=true;
+				$this->msg=sprintf(_('Invalid value, valid values: %s'), '"Yes", "No"');
+				return;
+			}
+
+			$this->update_field($field, $value, $options);
+			$updated=$this->updated;
+			if ($this->updated ) {
+				$this->part->update_on_demand();
+
+			}
+
+
+
+			break;
+
 
 		case 'Supplier Part Minimum Carton Order':
 
@@ -536,6 +555,12 @@ class SupplierPart extends DB_Table{
 
 				)
 			);
+
+           if ($this->updated ) {
+				$this->part->update_on_demand();
+
+			}
+            
 
 			break;
 		case 'Supplier Part Average Delivery Days':
@@ -1195,6 +1220,9 @@ class SupplierPart extends DB_Table{
 			break;
 		case 'Part Units Per Package':
 			$label=_("units per SKO");
+			break;
+		case 'Part Supplier On Demand':
+			$label=_('On demand');
 			break;
 		default:
 			$label=$field;

@@ -15,7 +15,7 @@ include_once 'conf/object_fields.php';
 include_once 'class.SupplierPart.php';
 include_once 'class.Part.php';
 
-$object_fields=get_object_fields($state['_object'], $db, $user, $smarty, array('parent'=>'supplier','parent_object'=>$state['_parent'], 'new'=>true, 'supplier_part_scope'=>true));
+$object_fields=get_object_fields($state['_object'], $db, $user, $smarty, array('parent'=>'supplier', 'parent_object'=>$state['_parent'], 'new'=>true, 'supplier_part_scope'=>true));
 
 $smarty->assign('state', $state);
 $smarty->assign('object', $state['_object']);

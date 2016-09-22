@@ -157,17 +157,23 @@ function get_object_fields($object, $db, $user, $smarty, $options=false) {
 		break;
 
 	case 'Supplier Part':
+
 		$object->get_supplier_data();
 
 
 		if ($options['parent']=='supplier') {
+
+			$supplier=$options['parent_object'];
+
 			include 'fields/supplier_part.fld.php';
+
+
+
 			if (isset($options['new'])  ) {
 				$object=new Part(0);
 				include 'fields/part.fld.php';
 				$supplier_part_fields = array_merge($supplier_part_fields, $part_fields);
 			}else {
-
 
 				$part=get_object('Part', $object->get('Supplier Part Part SKU'));
 

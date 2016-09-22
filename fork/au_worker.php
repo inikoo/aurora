@@ -71,7 +71,10 @@ function get_fork_data($job) {
 
 	$inikoo_account_code=$fork_metadata['code'];
 	if (!ctype_alnum($inikoo_account_code)) {
-		print "can't find account code\n";
+	
+	  print_r($fork_metadata);
+	
+		print "can't find account code ->".$inikoo_account_code."<-  \n";
 		return false;
 	}
 

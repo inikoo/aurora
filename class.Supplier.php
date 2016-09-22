@@ -920,13 +920,43 @@ class Supplier extends SubjectSupplier {
 
 		switch ($field) {
 
+
+
+
 		case('Supplier ID'):
 		case('Supplier Valid From'):
 		case('Supplier Stock Value'):
 		case('Supplier Company Key'):
 		case('Supplier Accounts Payable Contact Key'):
 			break;
+		case 'Supplier On Demand':
 
+			if (! in_array($value, array('No', 'Yes'))) {
+				$this->error=true;
+				$this->msg=sprintf(_('Invalid value, valid values: %s'), '"Yes", "No"');
+				return;
+			}
+
+			$this->update_field($field, $value, $options);
+			if ($this->updated and $value=='No') {
+
+				$sql=sprintf("select `Supplier Part Key` from `Supplier Part Dimension` where `Supplier Part Supplier Key`=%d  and  `Supplier Part On Demand`='Yes' ",
+					$this->id);
+				if ($result=$this->db->query($sql)) {
+					include_once 'class.SupplierPart.php';
+					foreach ($result as $row) {
+						$supplier_part=new SupplierPart( $row['Supplier Part Key']);
+
+						$supplier_part->update(array('Supplier Part On Demand'=>'No'), $options);
+					}
+				}else {
+					print_r($error_info=$db->errorInfo());
+					exit;
+				}
+
+			}
+
+			break;
 		case('Supplier Sticky Note'):
 			$this->update_field_switcher('Sticky Note', $value);
 			break;
@@ -1547,7 +1577,9 @@ class Supplier extends SubjectSupplier {
 		case 'Supplier User PIN':
 			$label=_('PIN');
 			break;
-
+		case 'Supplier On Demand':
+			$label=_('Allow on demand');
+			break;
 		default:
 			$label=$field;
 
