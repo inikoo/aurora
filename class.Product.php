@@ -79,7 +79,7 @@ class Product extends Asset{
 			}
 		}
 		else {
-		    
+
 			sdasdas();
 			exit ("wrong id in class.product get_data :$key  \n");
 			return;
@@ -119,7 +119,7 @@ class Product extends Asset{
 		$this->webpage=new Page($row['Page Key']);
 		$this->webpage->editor=$this->editor;
 
-		
+
 
 	}
 
@@ -524,8 +524,14 @@ class Product extends Asset{
 			}
 			return $web_state;
 			break;
+		case 'Availability':
 
-
+			if ($this->data['Product Availability State']=='OnDemand') {
+                return _('On demand');
+			}else {
+				return number($this->data['Product Availability']);
+			}
+			break;
 		default:
 			if (array_key_exists($key, $this->data))
 				return $this->data[$key];
@@ -1646,16 +1652,16 @@ class Product extends Asset{
 	}
 
 
-    function update_cost(){
-        $cost=0;
-        
-        foreach ($this->get_parts_data($with_objects=true) as $part_data) {
-            $cost+=$part_data['Part']->get('Part Cost')*$part_data['Ratio'];
-            
-        }
-        
-        $this->update(array('Product Cost'=>$cost),'no_history');
-    }
+	function update_cost() {
+		$cost=0;
+
+		foreach ($this->get_parts_data($with_objects=true) as $part_data) {
+			$cost+=$part_data['Part']->get('Part Cost')*$part_data['Ratio'];
+
+		}
+
+		$this->update(array('Product Cost'=>$cost), 'no_history');
+	}
 
 
 	function update_availability($use_fork=true) {
@@ -1675,25 +1681,25 @@ class Product extends Asset{
 			$tipo='Excess';
 			$change=false;
 			$stock_error=false;
-			
+
 			$on_demand='';
 
 
 			if ($result=$this->db->query($sql)) {
 				foreach ($result as $row) {
 
-                    
-                    if($on_demand==''){
-                        $on_demand=$row['Part On Demand'];
-                    
-                    }else{
-                        
-                        if($row['Part On Demand']=='No'){
-                             $on_demand='No';
-                        }
-                    
-                    }
-                    
+
+					if ($on_demand=='') {
+						$on_demand=$row['Part On Demand'];
+
+					}else {
+
+						if ($row['Part On Demand']=='No') {
+							$on_demand='No';
+						}
+
+					}
+
 
 					if ($row['Part Stock State']=='Error')
 						$tipo='Error';
@@ -1743,13 +1749,13 @@ class Product extends Asset{
 			}else if (is_numeric($stock) and $stock<0) {
 				$stock=0;
 			}
-			
-			if( $on_demand=='Yes'){
-			
-			$stock=99999999999;
-			$tipo='OnDemand';
+
+			if ( $on_demand=='Yes') {
+
+				$stock=99999999999;
+				$tipo='OnDemand';
 			}
-			
+
 		}
 		else {
 			$stock=0;
@@ -1924,7 +1930,7 @@ class Product extends Asset{
 
 		if ($use_fork) {
 			include_once 'utils/new_fork.php';
-			 $account=new Account($this->db);
+			$account=new Account($this->db);
 
 			list($fork_key, $msg)=new_fork('au_housekeeping', array('type'=>'update_web_state_slow_forks', 'web_availability_updated'=>$web_availability_updated, 'product_id'=>$this->id), $account->get('Account Code'), $this->db);
 
@@ -1933,9 +1939,9 @@ class Product extends Asset{
 		}
 
 
-        foreach($this->get_parts('objects') as $part){
-            $part->update_products_web_status();
-        }
+		foreach ($this->get_parts('objects') as $part) {
+			$part->update_products_web_status();
+		}
 
 
 	}
@@ -1963,7 +1969,7 @@ class Product extends Asset{
 
 					$page=new Page($row['Page Key']);
 
-            
+
 					$site=new Site($page->get('Page Site Key'));
 					if ($site->data['Site SSL']=='Yes') {
 						$site_protocol='https';
@@ -1973,7 +1979,7 @@ class Product extends Asset{
 
 					if ($site->id and $site->data['Site URL']!='') {
 
-						 $template_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=page_clean_cache&parent_key=".$page->id."&sk=x");
+						$template_response=file_get_contents($site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=page_clean_cache&parent_key=".$page->id."&sk=x");
 
 					}
 
