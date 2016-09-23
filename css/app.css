@@ -43,6 +43,8 @@ html, body, textarea {
     text-align: center; }
   html .invisible, body .invisible, textarea .invisible {
     visibility: hidden; }
+  html .visible, body .visible, textarea .visible {
+    visibility: visible; }
   html .hide, body .hide, textarea .hide {
     display: none; }
 

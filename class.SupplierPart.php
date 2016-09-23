@@ -461,11 +461,25 @@ class SupplierPart extends DB_Table{
 
 		case 'Supplier Part On Demand':
 
+			$this->get_supplier_data();
+
+
+
+
 			if (! in_array($value, array('No', 'Yes'))) {
 				$this->error=true;
 				$this->msg=sprintf(_('Invalid value, valid values: %s'), '"Yes", "No"');
 				return;
 			}
+
+			if ($this->data['Supplier On Demand']=='No' and $value=='Yes') {
+
+				$this->error=true;
+				$this->msg=_("Supplier part can't set up as on demand because supplier isn't confugured to allow that");
+				return;
+
+			}
+
 
 			$this->update_field($field, $value, $options);
 			$updated=$this->updated;
@@ -556,11 +570,11 @@ class SupplierPart extends DB_Table{
 				)
 			);
 
-           if ($this->updated ) {
+			if ($this->updated ) {
 				$this->part->update_on_demand();
 
 			}
-            
+
 
 			break;
 		case 'Supplier Part Average Delivery Days':
@@ -1221,7 +1235,7 @@ class SupplierPart extends DB_Table{
 		case 'Part Units Per Package':
 			$label=_("units per SKO");
 			break;
-		case 'Part Supplier On Demand':
+		case 'Supplier Part On Demand':
 			$label=_('On demand');
 			break;
 		default:

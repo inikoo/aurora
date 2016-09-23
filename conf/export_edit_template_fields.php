@@ -16,7 +16,7 @@ $export_edit_template_fields=array(
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>true, 'header'=>"Supplier's SKU", 'name'=>'Supplier Part Reference', 'label'=>_("Supplier's SKU"), 'checked'=>0),
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>true, 'header'=>'Part reference', 'name'=>'Part Reference', 'label'=>_('Part reference'), 'checked'=>0),
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'Part barcode', 'name'=>'Part Barcode Number', 'label'=>_('Part barcode'), 'checked'=>0, 'cell_type'=>'string'),
-				array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'Family', 'name'=>'Part Family Category Code', 'label'=>_('Family'), 'checked'=>0),
+		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'Family', 'name'=>'Part Family Category Code', 'label'=>_('Family'), 'checked'=>0),
 
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>true, 'header'=>'Outers (SKO) description', 'name'=>'Part Package Description', 'label'=>_('Outers (SKO) description'), 'checked'=>0),
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>true, 'header'=>'Unit description', 'name'=>'Part Unit Description', 'label'=>_('Unit description'), 'checked'=>0),
@@ -24,15 +24,19 @@ $export_edit_template_fields=array(
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>true, 'header'=>'Outers (SKO) per carton', 'name'=>'Supplier Part Packages Per Carton', 'label'=>_('Outers (SKO) per carton'), 'checked'=>0),
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>true, 'header'=>'Units per SKO', 'name'=>'Part Units Per Package', 'label'=>_('Units per SKO'), 'checked'=>0),
 		array('default_value'=>'', 'show_for_new'=>false, 'required'=>false, 'header'=>'Availability', 'name'=>'Supplier Part Status', 'label'=>_('Availability'), 'checked'=>0),
+
+		array('default_value'=>'', 'show_for_new'=>false, 'required'=>false, 'header'=>'On Demand', 'name'=>'Supplier Part On Demand', 'label'=>_('On Demand'), 'checked'=>0),
+		
+		
 		array('default_value'=>'1', 'show_for_new'=>true, 'required'=>true, 'header'=>'Minimum order (cartons)', 'name'=>'Supplier Part Minimum Carton Order', 'label'=>_('Minimum order (cartons)'), 'checked'=>0),
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'Average delivery time (days)', 'name'=>'Supplier Part Average Delivery Days', 'label'=>_('Average delivery time (days)'), 'checked'=>0),
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'Carton CBM', 'name'=>'Supplier Part Carton CBM', 'label'=>_('Carton CBM'), 'checked'=>0),
-		
+
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>true, 'header'=>'Unit cost', 'name'=>'Supplier Part Unit Cost', 'label'=>_('Unit cost'), 'checked'=>0),
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'Unit extra costs', 'name'=>'Supplier Part Unit Extra Cost', 'label'=>_('Unit extra costs'), 'checked'=>0),
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'Unit recommended price', 'name'=>'Part Part Unit Price', 'label'=>_('Unit recommended price'), 'checked'=>0),
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'Unit recommended RRP', 'name'=>'Part Part Unit RRP', 'label'=>_('Unit recommended RRP'), 'checked'=>0),
-		
+
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'Unit weight', 'name'=>'Part Part Unit Weight', 'label'=>_('Unit weight'), 'checked'=>0),
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'Unit dimensions', 'name'=>'Part Part Unit Dimensions', 'label'=>_('Unit dimensions'), 'checked'=>0),
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'SKO weight', 'name'=>'Part Part Package Weight', 'label'=>_('SKO weight'), 'checked'=>0),
@@ -58,11 +62,11 @@ $export_edit_template_fields=array(
 		array('default_value'=>_('piece'), 'show_for_new'=>true, 'required'=>true, 'header'=>'Unit label', 'name'=>'Part Unit Label', 'label'=>_('Unit label'), 'checked'=>0),
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'Unit weight', 'name'=>'Part Unit Weight', 'label'=>_('Unit weight'), 'checked'=>0),
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'Unit dimensions', 'name'=>'Part Unit Dimensions', 'label'=>_('Unit dimensions'), 'checked'=>0),
-		
+
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'Unit recommended price', 'name'=>'Part Unit Price', 'label'=>_('Unit recommended price'), 'checked'=>0),
-		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'Unit recommended RRP', 'name'=>'Part Unit RRP', 'label'=>_('Unit recommended RRP'), 'checked'=>0),		
-		
-		
+		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'Unit recommended RRP', 'name'=>'Part Unit RRP', 'label'=>_('Unit recommended RRP'), 'checked'=>0),
+
+
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>true, 'header'=>'Units per SKO', 'name'=>'Part Units Per Package', 'label'=>_('Units per SKO'), 'checked'=>0),
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>true, 'header'=>'SKO description', 'name'=>'Part Package Description', 'label'=>_('SKO description'), 'checked'=>0),
 		array('default_value'=>'', 'show_for_new'=>true, 'required'=>false, 'header'=>'SKO weight', 'name'=>'Part Package Weight', 'label'=>_('SKO weight'), 'checked'=>0),
@@ -102,7 +106,7 @@ $export_edit_template_fields=array(
 
 
 	),
-	
+
 
 );
 

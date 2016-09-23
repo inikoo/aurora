@@ -1164,7 +1164,7 @@ class Part extends Asset{
 		}
 
 
-	$this->update_field('Part On Demand', $on_demand_available, 'no_history');
+		$this->update_field('Part On Demand', $on_demand_available, 'no_history');
 
 		foreach ($this->get_products('objects') as $product) {
 			$product->update_availability();
@@ -1201,7 +1201,7 @@ class Part extends Asset{
 
 			$_cost=$exchange*($supplier_part->get('Supplier Part Unit Cost')+$supplier_part->get('Supplier Part Unit Extra Cost'));
 
-       
+
 
 
 			if ($supplier_part->get('Supplier Part Status')=='Available') {
@@ -1220,7 +1220,7 @@ class Part extends Asset{
 
 
 		$cost=0;
-        $cost_set=false;
+		$cost_set=false;
 
 
 
@@ -1228,20 +1228,20 @@ class Part extends Asset{
 		if (count($cost_available)>0) {
 
 			$cost=array_sum($cost_available) / count($cost_available);
-			 $cost_set=true;
+			$cost_set=true;
 		}
 
 		if ( !$cost_set and count($cost_no_available)>0) {
 			$cost=array_sum($cost_no_available) / count($cost_no_available);
-			 $cost_set=true;
-		}
-		
-		if ( !$cost_set and count($cost_discontinued)>0) {
-			$cost=array_sum($cost_discontinued) / count($cost_discontinued);
-			 $cost_set=true;
+			$cost_set=true;
 		}
 
-		
+		if ( !$cost_set and count($cost_discontinued)>0) {
+			$cost=array_sum($cost_discontinued) / count($cost_discontinued);
+			$cost_set=true;
+		}
+
+
 
 		if ($cost_set) {
 			$cost=$cost*$this->data['Part Units Per Package'];
@@ -1249,7 +1249,7 @@ class Part extends Asset{
 
 		$this->update_field('Part Cost', $cost, 'no_history');
 
-//print $this->get('Referece')." $cost\n";
+		//print $this->get('Referece')." $cost\n";
 
 		foreach ($this->get_products('objects') as $product) {
 			$product->update_cost();
@@ -1560,7 +1560,7 @@ class Part extends Asset{
 
 		case 'Available Forecast':
 
-
+			$available_forecast='';
 
 			if ($this->data['Part Stock Status']=='Out_Of_Stock' or  $this->data['Part Stock Status']=='Error') return '';
 
@@ -1568,8 +1568,25 @@ class Part extends Asset{
 
 
 			include_once 'utils/natural_language.php';
-			return '<span >'.sprintf(_('%s availability'), '<span  title="'.sprintf("%s %s", number($this->data['Part Days Available Forecast'], 1) ,
-					ngettext("day", "days", intval($this->data['Part Days Available Forecast'] ) )).'">'.seconds_to_until($this->data['Part Days Available Forecast']*86400).'</span>').'</span>';
+
+			if ($this->data['Part On Demand']=='Yes') {
+				$available_forecast= '<span >'.sprintf(_('%s in stock'), '<span  title="'.sprintf("%s %s", number($this->data['Part Days Available Forecast'], 1) ,
+						ngettext("day", "days", intval($this->data['Part Days Available Forecast'] ) )).'">'.seconds_to_until($this->data['Part Days Available Forecast']*86400).'</span>').'</span>';
+
+
+				$available_forecast.=' <i class="fa fa-fighter-jet padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
+			}else {
+				$available_forecast= '<span >'.sprintf(_('%s availability'), '<span  title="'.sprintf("%s %s", number($this->data['Part Days Available Forecast'], 1) ,
+						ngettext("day", "days", intval($this->data['Part Days Available Forecast'] ) )).'">'.seconds_to_until($this->data['Part Days Available Forecast']*86400).'</span>').'</span>';
+
+
+				$available_forecast.='<i class="fa fa-fighter-jet" aria-hidden="true"></i>';
+			}
+
+
+
+
+			return $available_forecast;
 			break;
 
 		case 'Origin Country Code':
