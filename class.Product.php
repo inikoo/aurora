@@ -527,7 +527,7 @@ class Product extends Asset{
 		case 'Availability':
 
 			if ($this->data['Product Availability State']=='OnDemand') {
-                return _('On demand');
+				return _('On demand');
 			}else {
 				return number($this->data['Product Availability']);
 			}
@@ -1537,9 +1537,13 @@ class Product extends Asset{
 			$this->update_field($field, $value, $options);
 			break;
 		default:
-			$base_data=$this->base_data();
-			if (array_key_exists($field, $base_data)) {
+
+			if (array_key_exists($field, $this->base_data())) {
 				$this->update_field($field, $value, $options);
+			}elseif (array_key_exists($field, $this->base_data('Product Data'))   ) {
+				$this->update_table_field($field, $value, $options, 'Product Data', 'Product Data', $this->id);
+			}elseif (array_key_exists($field, $this->base_data('Product DC Data'))   ) {
+				$this->update_table_field($field, $value, $options, 'Product DC Data', 'Product DC Data', $this->id);
 			}
 		}
 		$this->reread();
@@ -2513,6 +2517,277 @@ class Product extends Asset{
 		return $category_data;
 	}
 
+
+	function update_up_today_sales() {
+		$this->update_sales_from_invoices('Total');
+		//$this->update_sales_from_invoices('Today');
+		//$this->update_sales_from_invoices('Week To Day');
+		$this->update_sales_from_invoices('Month To Day');
+		$this->update_sales_from_invoices('Year To Day');
+
+	}
+
+
+	function update_last_period_sales() {
+
+		//$this->update_sales_from_invoices('Yesterday');
+		//$this->update_sales_from_invoices('Last Week');
+		//$this->update_sales_from_invoices('Last Month');
+	}
+
+
+	function update_interval_sales() {
+
+		//$this->update_sales_from_invoices('3 Year');
+		$this->update_sales_from_invoices('1 Year');
+		//$this->update_sales_from_invoices('6 Month');
+		$this->update_sales_from_invoices('1 Quarter');
+		//$this->update_sales_from_invoices('1 Month');
+		//$this->update_sales_from_invoices('10 Day');
+		//$this->update_sales_from_invoices('1 Week');
+
+	}
+
+
+	function update_sales_from_invoices($interval) {
+
+		include_once 'utils/date_functions.php';
+
+		$to_date='';
+
+		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($this->db, $interval);
+
+
+
+		$sales_data=$this->get_sales_data($from_date, $to_date);
+
+
+		$data_to_update=array(
+			"Product $db_interval Acc Customers"=>$sales_data['customers'],
+			"Product $db_interval Acc Invoices"=>$sales_data['invoices'],
+			"Product $db_interval Acc Profit"=>$sales_data['profit'],
+			"Product $db_interval Acc Invoiced Amount"=>$sales_data['net'],
+			"Product $db_interval Acc Quantity Ordered"=>$sales_data['ordered'],
+			"Product $db_interval Acc Quantity Invoiced"=>$sales_data['invoiced'],
+			"Product $db_interval Acc Quantity Delivered"=>$sales_data['delivered'],
+			"Product DC $db_interval Acc Profit"=>$sales_data['dc_net'],
+			"Product DC $db_interval Acc Invoiced Amount"=>$sales_data['dc_profit']
+		);
+		$this->update( $data_to_update, 'no_history');
+
+
+
+		if ($from_date_1yb ) {
+
+
+
+
+			$sales_data=$this->get_sales_data($from_date_1yb, $to_1yb);
+
+
+			$data_to_update=array(
+				"Product $db_interval Acc 1YB Customers"=>$sales_data['customers'],
+				"Product $db_interval Acc 1YB Invoices"=>$sales_data['invoices'],
+				"Product $db_interval Acc 1YB Profit"=>$sales_data['profit'],
+				"Product $db_interval Acc 1YB Invoiced Amount"=>$sales_data['net'],
+				"Product $db_interval Acc 1YB Quantity Ordered"=>$sales_data['ordered'],
+				"Product $db_interval Acc 1YB Quantity Invoiced"=>$sales_data['invoiced'],
+				"Product $db_interval Acc 1YB Quantity Delivered"=>$sales_data['delivered'],
+				"Product DC $db_interval Acc 1YB Profit"=>$sales_data['dc_net'],
+				"Product DC $db_interval Acc 1YB Invoiced Amount"=>$sales_data['dc_profit']
+			);
+			$this->update( $data_to_update, 'no_history');
+
+		}
+
+
+
+
+	}
+
+
+	function update_previous_years_data() {
+
+		$data_1y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-1 year')), date('Y-01-01 00:00:00'));
+		$data_2y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-2 year')), date('Y-01-01 00:00:00', strtotime('-1 year')));
+		$data_3y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-3 year')), date('Y-01-01 00:00:00', strtotime('-2 year')));
+		$data_4y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-4 year')), date('Y-01-01 00:00:00', strtotime('-3 year')));
+
+
+
+
+
+		$data_to_update=array(
+			"Product 1 Year Ago Customers"=>$data_1y_ago['customers'],
+			"Product 1 Year Ago Invoices"=>$data_1y_ago['invoices'],
+			"Product 1 Year Ago Profit"=>$data_1y_ago['profit'],
+			"Product 1 Year Ago Invoiced Amount"=>$data_1y_ago['net'],
+			"Product 1 Year Ago Quantity Ordered"=>$data_1y_ago['ordered'],
+			"Product 1 Year Ago Quantity Invoiced"=>$data_1y_ago['invoiced'],
+			"Product 1 Year Ago Quantity Delivered"=>$data_1y_ago['delivered'],
+			"Product DC 1 Year Ago 1YB Profit"=>$data_1y_ago['dc_net'],
+			"Product DC 1 Year Ago Invoiced Amount"=>$data_1y_ago['dc_profit'],
+
+			"Product 2 Year Ago Customers"=>$data_2y_ago['customers'],
+			"Product 2 Year Ago Invoices"=>$data_2y_ago['invoices'],
+			"Product 2 Year Ago Profit"=>$data_2y_ago['profit'],
+			"Product 2 Year Ago Invoiced Amount"=>$data_2y_ago['net'],
+			"Product 2 Year Ago Quantity Ordered"=>$data_2y_ago['ordered'],
+			"Product 2 Year Ago Quantity Invoiced"=>$data_2y_ago['invoiced'],
+			"Product 2 Year Ago Quantity Delivered"=>$data_2y_ago['delivered'],
+			"Product DC 2 Year Ago 2YB Profit"=>$data_2y_ago['dc_net'],
+			"Product DC 2 Year Ago Invoiced Amount"=>$data_2y_ago['dc_profit'],
+
+			"Product 3 Year Ago Customers"=>$data_3y_ago['customers'],
+			"Product 3 Year Ago Invoices"=>$data_3y_ago['invoices'],
+			"Product 3 Year Ago Profit"=>$data_3y_ago['profit'],
+			"Product 3 Year Ago Invoiced Amount"=>$data_3y_ago['net'],
+			"Product 3 Year Ago Quantity Ordered"=>$data_3y_ago['ordered'],
+			"Product 3 Year Ago Quantity Invoiced"=>$data_3y_ago['invoiced'],
+			"Product 3 Year Ago Quantity Delivered"=>$data_3y_ago['delivered'],
+			"Product DC 3 Year Ago 3YB Profit"=>$data_3y_ago['dc_net'],
+			"Product DC 3 Year Ago Invoiced Amount"=>$data_3y_ago['dc_profit'],
+
+			"Product 4 Year Ago Customers"=>$data_4y_ago['customers'],
+			"Product 4 Year Ago Invoices"=>$data_4y_ago['invoices'],
+			"Product 4 Year Ago Profit"=>$data_4y_ago['profit'],
+			"Product 4 Year Ago Invoiced Amount"=>$data_4y_ago['net'],
+			"Product 4 Year Ago Quantity Ordered"=>$data_4y_ago['ordered'],
+			"Product 4 Year Ago Quantity Invoiced"=>$data_4y_ago['invoiced'],
+			"Product 4 Year Ago Quantity Delivered"=>$data_4y_ago['delivered'],
+			"Product DC 4 Year Ago 4YB Profit"=>$data_4y_ago['dc_net'],
+			"Product DC 4 Year Ago Invoiced Amount"=>$data_4y_ago['dc_profit']
+		);
+		$this->update( $data_to_update, 'no_history');
+
+
+
+
+
+
+	}
+
+
+	function get_sales_data($from_date, $to_date) {
+
+		$sales_data=array(
+			'customers'=>0,
+			'invoices'=>0,
+			'net'=>0,
+			'profit'=>0,
+			'ordered'=>0,
+			'invoiced'=>0,
+			'delivered'=>0,
+			'dc_net'=>0,
+			'dc_profit'=>0,
+
+		);
+
+
+
+
+		$sql=sprintf("select
+		ifnull(count(Distinct `Customer Key`),0) as customers,
+		ifnull(count(Distinct `Invoice Key`),0) as invoices,
+		round(ifnull(sum( `Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount` +(  `Cost Supplier`/`Invoice Currency Exchange Rate`)  ),0),2) as profit,
+		round(ifnull(sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`),0),2) as net ,
+		round(ifnull(sum(`Shipped Quantity`),0),1) as delivered,
+		round(ifnull(sum(`Order Quantity`),0),1) as ordered,
+		round(ifnull(sum(`Invoice Quantity`),0),1) as invoiced,
+		round(ifnull(sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`),0),2) as dc_net,
+		round(ifnull(sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Cost Supplier`)*`Invoice Currency Exchange Rate`),0),2) as dc_profit
+		from `Order Transaction Fact` USE INDEX (`Product ID`,`Invoice Date`) where    `Current Dispatching State`='Dispatched' and  `Product ID`=%d %s %s ",
+			$this->id,
+			($from_date?sprintf('and `Invoice Date`>=%s', prepare_mysql($from_date)):''),
+			($to_date?sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)):'')
+
+		);
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+
+				
+
+					$sales_data['customers']=$row['customers'];
+					$sales_data['invoices']=$row['invoices'];
+					$sales_data['net']=$row['net'];
+					$sales_data['profit']=$row['profit'];
+					$sales_data['ordered']=$row['ordered'];
+					$sales_data['invoiced']=$row['invoiced'];
+					$sales_data['delivered']=$row['delivered'];
+					$sales_data['dc_net']=$row['dc_net'];
+					$sales_data['dc_profit']=$row['dc_profit'];
+
+				
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+//print "$sql\n";
+
+
+		return $sales_data;
+	}
+
+
+
+function get_sales_datax($from_date, $to_date) {
+
+		$sales_data=array(
+			'customers'=>0,
+			'invoices'=>0,
+			'net'=>0,
+			'profit'=>0,
+			'ordered'=>0,
+			'invoiced'=>0,
+			'delivered'=>0,
+			'dc_net'=>0,
+			'dc_profit'=>0,
+
+		);
+
+
+
+
+		$sql=sprintf("select
+	
+			round(ifnull(sum(`Invoice Transaction Gross Amount`),0),2) as net 
+		from `Order Transaction Fact` USE INDEX (`Product ID`,`Invoice Date`) where    `Current Dispatching State`='Dispatched' and  `Product ID`=%d %s %s ",
+			$this->id,
+			($from_date?sprintf('and `Invoice Date`>=%s', prepare_mysql($from_date)):''),
+			($to_date?sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)):'')
+
+		);
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+
+				
+
+					//$sales_data['customers']=$row['customers'];
+					//$sales_data['invoices']=$row['invoices'];
+					$sales_data['net']=$row['net'];
+					//$sales_data['profit']=$row['profit'];
+					//$sales_data['ordered']=$row['ordered'];
+					//$sales_data['invoiced']=$row['invoiced'];
+					//$sales_data['delivered']=$row['delivered'];
+					//$sales_data['dc_net']=$row['dc_net'];
+					//$sales_data['dc_profit']=$row['dc_profit'];
+
+				
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+//print "$sql\n";
+
+
+		return $sales_data;
+	}
 
 }
 

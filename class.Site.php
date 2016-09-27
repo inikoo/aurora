@@ -811,7 +811,7 @@ class Site extends DB_Table {
 	}
 
 
-	function base_data() {
+	function base_data($table_name='') {
 
 
 		$data=array();

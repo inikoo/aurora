@@ -228,6 +228,23 @@ $elements_options=array(
 		),
 	),
 	
+	
+		'product_categories'=>array(
+		'status'=>array(
+			'label'=>_('Status'),
+			'items'=>array(
+				'InProcess'=>array('label'=>_('Empty'), 'selected'=>true),
+				'Active'=>array('label'=>_('Active'), 'selected'=>true),
+				'Suspended'=>array('label'=>_('Suspended'), 'selected'=>false),
+				'Discontinuing'=>array('label'=>_('Discontinuing'), 'selected'=>true),
+				'Discontinued'=>array('label'=>_('Discontinued'), 'selected'=>false)
+			)
+
+
+
+		),
+	),
+	
 	'parts'=>array(
 		'stock_status'=>array(
 			'label'=>_('Stock status'),

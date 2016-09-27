@@ -126,6 +126,7 @@ if (isset($parameters['elements_type'])) {
 
 	}
 }
+
 if (isset($parameters['f_period'])) {
 
 	$db_period=get_interval_db_name($parameters['f_period']);

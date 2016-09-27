@@ -28,7 +28,7 @@ include_once 'trait.LocationCategory.php';
 
 class Category extends DB_Table{
 	use ImageSubject, NotesSubject, AttachmentSubject;
-	use PartCategory, SupplierCategory, InvoiceCategory, ProductCategory,LocationCategory;
+	use PartCategory, SupplierCategory, InvoiceCategory, ProductCategory, LocationCategory;
 
 
 	function Category($a1, $a2=false, $a3=false) {
@@ -79,6 +79,7 @@ class Category extends DB_Table{
 		if ($this->data = $this->db->query($sql)->fetch()) {
 			$this->id=$this->data['Category Key'];
 
+
 			if ($this->data['Category Scope']=='Part') {
 
 
@@ -94,7 +95,8 @@ class Category extends DB_Table{
 					exit;
 				}
 
-			}elseif ($this->data['Category Scope']=='Location') {
+			}
+			elseif ($this->data['Category Scope']=='Location') {
 
 
 
@@ -109,36 +111,25 @@ class Category extends DB_Table{
 					exit;
 				}
 
-			}elseif ($this->data['Category Scope']=='Family') {
-				$this->subject_table_name='Product Family';
+			}
 
-				$sql=sprintf("select * from `Product Family Category Dimension` where `Product Family Category Key`=%d", $this->id);
-				if ($result2=$this->db->query($sql)) {
-					if ($row = $result2->fetch()) {
-						$this->data=array_merge($this->data, $row);
+			elseif ($this->data['Category Scope']=='Product') {
+
+			
+					$this->subject_table_name='Product';
+					$sql=sprintf("select * from `Product Category Dimension` where `Product Category Key`=%d", $this->id);
+					//  print $sql;
+					// exit;
+					if ($result2=$this->db->query($sql)) {
+						if ($row = $result2->fetch()) {
+							$this->data=array_merge($this->data, $row);
+						}
+					}else {
+						print_r($error_info=$this->db->errorInfo());
+						exit;
 					}
-				}else {
-					print_r($error_info=$this->db->errorInfo());
-					exit;
-				}
 
-
-			}elseif ($this->data['Category Scope']=='Product') {
-				$this->subject_table_name='Product';
-
-				//print_r($this->data);
-
-				$sql=sprintf("select * from `Product Category Dimension` where `Product Category Key`=%d", $this->id);
-				//  print $sql;
-				// exit;
-				if ($result2=$this->db->query($sql)) {
-					if ($row = $result2->fetch()) {
-						$this->data=array_merge($this->data, $row);
-					}
-				}else {
-					print_r($error_info=$this->db->errorInfo());
-					exit;
-				}
+				
 
 
 			}elseif ($this->data['Category Scope']=='Supplier') {
@@ -232,7 +223,6 @@ class Category extends DB_Table{
 			$sql.=sprintf(' and `%s`=%s', $field, prepare_mysql($data[$field], false));
 		}
 
-
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
 
@@ -264,6 +254,9 @@ class Category extends DB_Table{
 
 
 	function create($data) {
+
+
+    
 
 		if ($data['Category Label']=='' ) {
 			$data['Category Label']=$data['Category Code'];
@@ -352,6 +345,18 @@ class Category extends DB_Table{
 					prepare_mysql(gmdate('Y-m-d H:i:s'))
 				);
 				$this->db->exec($sql);
+				
+				$sql=sprintf("insert into `Product Category Data` (`Product Category Key`) values (%d)",
+					$this->id
+					
+				);
+				$this->db->exec($sql);
+				$sql=sprintf("insert into `Product Category DC Data` (`Product Category Key`) values (%d)",
+					$this->id
+					
+				);
+				$this->db->exec($sql);
+				
 			}
 
 
@@ -383,6 +388,8 @@ class Category extends DB_Table{
 
 	function create_category($data) {
 
+
+        unset($data['user']);
 
 		$data['editor']=$this->editor;
 
@@ -434,7 +441,18 @@ class Category extends DB_Table{
 		}
 		// $data['editor']
 
+
 		$subcategory=new Category('find create', $data);
+		
+		if($subcategory->found){
+		    $this->error=true;
+		    
+		    if($subcategory->duplicated_field=='Category Code'){
+		    $this->msg=_('Duplicated code');
+		    }else{
+		      $this->msg="Category cound not be created";
+		    }
+		}
 
 		if ($data['Is Category Field Other']=='Yes') {
 			$this->data['Category Children Other']='Yes';
@@ -923,7 +941,11 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 			$sql=sprintf('delete from `Location Category Dimension`  where `Category Key`=%d', $this->id);
 			$this->db->exec($sql);
 		}elseif ($this->data['Category Scope']=='Product') {
-			$sql=sprintf('delete from `Product Category Dimension`  where `Category Key`=%d', $this->id);
+			$sql=sprintf('delete from `Product Category Dimension`  where `Product Category Key`=%d', $this->id);
+			$this->db->exec($sql);
+			$sql=sprintf('delete from `Product Category Data`  where `Product Category Key`=%d', $this->id);
+			$this->db->exec($sql);
+			$sql=sprintf('delete from `Product Category Dc Data`  where `Product Category Key`=%d', $this->id);
 			$this->db->exec($sql);
 		}
 
@@ -1731,7 +1753,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 
 			$sql=sprintf("select count(*) as num from `Location Dimension` where `Location Warehouse Key`=%d",
 				$this->data['Category Warehouse Key']);
-			break;	
+			break;
 		case('Customer'):
 
 			$sql=sprintf("select count(*) as num from `Customer Dimension` where `Customer Store Key`=%d",
@@ -2117,7 +2139,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 				$location=new Location($subject_key);
 				$abstract=_('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('%05d', $part->sku).'</a> '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']);
 				$details=_('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('%05d', $part->sku).'</a> ('.$part->data['Part XHTML Description'].') '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']).' ('.$this->data['Category Label'].')';
-				break;	
+				break;
 			case('Supplier'):
 				include_once 'class.Supplier.php';
 
@@ -2862,7 +2884,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 				prepare_mysql($type)
 			);
 			$this->db->exec($sql);
-			break;	
+			break;
 		case('Supplier'):
 			$sql=sprintf("insert into  `Supplier Category History Bridge` values (%d,%d,%s)",
 				$this->id,

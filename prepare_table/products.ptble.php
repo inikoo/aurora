@@ -9,11 +9,11 @@
 
  Version 2.0
 */
-include_once('utils/date_functions.php');
+include_once 'utils/date_functions.php';
 $period_tag=get_interval_db_name($parameters['f_period']);
 
 $group_by='';
-$table="`Product Dimension` P left join `Product Data Dimension` PD on (PD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`)";
+$table="`Product Dimension` P left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`) left join `Product DC Data` PDCD on (PDCD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`)";
 $where_interval='';
 $wheref='';
 
@@ -75,16 +75,16 @@ case('account'):
 case('store'):
 	$where=sprintf(' where `Product Store Key`=%d', $parameters['parent_key']);
 	break;
-	
-case('part'):
-		$table='`Product Dimension`  P  left join `Product Data Dimension` PD on (PD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`) left join `Product Part Bridge` B on (B.`Product Part Product ID`=P.`Product ID`)';
 
-		$where=sprintf(' where `Product Part Part SKU`=%d  ', $parameters['parent_key']);
-	break;	
+case('part'):
+	$table='`Product Dimension`  P  left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`)  left join `Product DC Data` PDCD on (PDCD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`) left join `Product Part Bridge` B on (B.`Product Part Product ID`=P.`Product ID`)';
+
+	$where=sprintf(' where `Product Part Part SKU`=%d  ', $parameters['parent_key']);
+	break;
 
 case('customer_favourites'):
 
-	$table="`Product Dimension` P left join `Product Data Dimension` PD on (PD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`) left join `Customer Favorite Product Bridge` F on (F.`Product ID`=P.`Product ID`)";
+	$table="`Product Dimension` P left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`)  left join `Product DC Data` PDCD on (PDCD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`) left join `Customer Favorite Product Bridge` F on (F.`Product ID`=P.`Product ID`)";
 
 
 	$where.=sprintf(' where F.`Customer Key`=%d', $parameters['parent_key']);
@@ -92,7 +92,7 @@ case('customer_favourites'):
 
 case('customer'):
 
-	$table=" `Order Transaction Fact` OTF  left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) left join `Product Data Dimension` PD on (PD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=S.`Store Key`) ";
+	$table=" `Order Transaction Fact` OTF  left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`)  left join `Product DC Data` PDCD on (PDCD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=S.`Store Key`) ";
 	$group_by=' group by OTF.`Product ID`';
 	$where=sprintf(' where `Customer Key`=%d', $parameters['parent_key']);
 	break;
@@ -105,7 +105,7 @@ case('category'):
 	}
 
 	$where=sprintf(" where `Subject`='Product' and  `Category Key`=%d", $parameters['parent_key']);
-	$table=' `Category Bridge` left join  `Product Dimension` P on (`Subject Key`=`Product ID`) left join `Product Data Dimension` PD on (PD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`)';
+	$table=' `Category Bridge` left join  `Product Dimension` P on (`Subject Key`=`Product ID`) left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`)  left join `Product DC Data` PDCD on (PDCD.`Product ID`=P.`Product ID`)  left join `Store Dimension` S on (`Product Store Key`=`Store Key`)';
 	break;
 default:
 
@@ -125,12 +125,14 @@ case 'status':
 
 		}
 	}
-	$_elements=preg_replace('/^\,/','',$_elements);
+	$_elements=preg_replace('/^\,/', '', $_elements);
 	if ($_elements=='') {
 		$where.=' and false' ;
 	} elseif ($count_elements<4) {
-		$where.=' and `Product Status` in ('.$_elements.')' ;
+		$where.=' and P.`Product Status` in ('.$_elements.')' ;
 	}
+	
+	
 	break;
 
 
@@ -141,7 +143,20 @@ case 'status':
 
 
 
+if (isset($parameters['f_period'])) {
 
+	$db_period=get_interval_db_name($parameters['f_period']);
+	if (in_array($db_period, array('Total', '3 Year'))) {
+		$yb_fields="'' as sales_1y";
+
+	}else {
+		$yb_fields="`Product $db_period Acc 1YB Invoiced Amount` as sales_1yb";
+	}
+
+}else {
+	$db_period='Total';
+	$yb_fields="'' as sales_1yb";
+}
 
 
 
@@ -260,10 +275,16 @@ elseif ($order=='store') {
 
 $sql_totals="select count(distinct  P.`Product ID`) as num from $table $where";
 
-$fields="P.`Product ID`,`Product Code`,`Product Name`,`Product Price`,`Store Currency Code`,`Store Code`,`Store Key`,`Product Web Configuration`,`Product Availability`,`Product Web State`,`Product Cost`,`Product Number of Parts`,`Product Status`,`Product Units Per Case`";
+$fields="P.`Product ID`,`Product Code`,`Product Name`,`Product Price`,`Store Currency Code`,`Store Code`,`Store Key`,`Product Web Configuration`,`Product Availability`,`Product Web State`,`Product Cost`,`Product Number of Parts`,P.`Product Status`,`Product Units Per Case`,
+`Product 1 Year Ago Invoiced Amount`,`Product 2 Year Ago Invoiced Amount`,`Product 3 Year Ago Invoiced Amount`,`Product 4 Year Ago Invoiced Amount`,
+`Product Year To Day Acc Invoiced Amount`,`Product Year To Day Acc 1YB Invoiced Amount`,
 
-//$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
-// print $sql;
+`Product $db_period Acc Invoiced Amount` as sales, $yb_fields
+
+
+";
+
+$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
 
 function product_awhere($awhere) {

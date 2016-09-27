@@ -30,12 +30,16 @@ abstract class DB_Table {
 	);
 
 
-	function base_data() {
+	function base_data($table_name='') {
 
+
+		if ($table_name=='') {
+			$table_name=$this->table_name.' Dimension';
+		}
 
 		$data=array();
 
-		$sql=sprintf('show columns from `%s Dimension`', addslashes($this->table_name));
+		$sql=sprintf('show columns from `%s`', addslashes($table_name));
 		foreach ($this->db->query($sql) as $row) {
 			if (!in_array($row['Field'], $this->ignore_fields))
 				$data[$row['Field']]=$row['Default'];
@@ -86,7 +90,7 @@ abstract class DB_Table {
 			}
 		}
 
-	
+
 
 		foreach ($data as $key=>$value) {
 
@@ -204,7 +208,7 @@ abstract class DB_Table {
 		}
 		else if ($table_name=='Part') {
 			$key_field='Part SKU';
-		}else if ($table_name=='Product') {
+		}else if ($table_name=='Product' or $table_full_name=='Product Data' or $table_full_name=='Product DC Data') {
 			$key_field='Product ID';
 		}
 
@@ -285,10 +289,10 @@ abstract class DB_Table {
 				addslashes($key_field),
 				$table_key
 			);
-
+        
+      //  print "$sql\n";
 
 		}
-
 
 
 		$update_op=$this->db->prepare($sql);

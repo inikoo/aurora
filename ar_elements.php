@@ -103,6 +103,15 @@ case 'part.products':
 		));
 	get_products_element_numbers($db, $data['parameters'], $user);
 	break;
+
+case 'category.product_categories':
+
+	$data=prepare_values($_REQUEST, array(
+			'parameters'=>array('type'=>'json array')
+		));
+	get_product_categories_element_numbers($db, $data['parameters'], $user);
+	break;
+
 case 'orders':
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
@@ -620,6 +629,39 @@ function get_products_element_numbers($db, $data, $user) {
 
 	foreach ($db->query($sql) as $row) {
 
+		$elements_numbers['status'][$row['element']]=number($row['number']);
+
+	}
+
+
+
+	$response= array('state'=>200, 'elements_numbers'=>$elements_numbers);
+	echo json_encode($response);
+
+
+
+}
+
+
+function get_product_categories_element_numbers($db, $data, $user) {
+
+
+	$parent_key=$data['parent_key'];
+
+	$elements_numbers=array(
+		'status'=>array('InProcess'=>0, 'Active'=>0, 'Suspended'=>0, 'Discontinued'=>0, 'Discontinuing'=>0),
+
+	);
+
+
+	$table='`Category Dimension` C left join `Product Category Dimension` PC on (C.`Category Key`=`Product Category Key`)';
+	$where=sprintf('where `Category Parent Key`=%d', $data['parent_key']);
+
+
+
+	$sql=sprintf("select count(*) as number,`Product Category Status` as element from $table $where  group by `Product Category Status` ");
+	foreach ($db->query($sql) as $row) {
+        if($row['element']=='In Process')$row['element']='InProcess';
 		$elements_numbers['status'][$row['element']]=number($row['number']);
 
 	}
@@ -1473,36 +1515,36 @@ function get_ec_sales_list_elements($db, $parameters) {
 
 	$table='`Invoice Dimension`';
 
-$group_by='group by `Invoice Tax Number`,`Invoice Billing Country 2 Alpha Code`,`Invoice Customer Key`';
+	$group_by='group by `Invoice Tax Number`,`Invoice Billing Country 2 Alpha Code`,`Invoice Customer Key`';
 
 
 
-$sql=sprintf("select `Invoice Key` as number from %s %s %s and `Invoice Tax Number`!='' and `Invoice Tax Number Valid`='Yes'  $group_by ",
-	$table, $where, $where_interval);
+	$sql=sprintf("select `Invoice Key` as number from %s %s %s and `Invoice Tax Number`!='' and `Invoice Tax Number Valid`='Yes'  $group_by ",
+		$table, $where, $where_interval);
 	//print $sql;
-	
+
 	$stmt=$db->prepare($sql);
 	$stmt->execute();
 	$elements_numbers['tax_status']['Yes']=$stmt->rowCount();
 
 
-$sql=sprintf("select `Invoice Key` as number from %s %s %s and `Invoice Tax Number`!='' and `Invoice Tax Number Valid`!='Yes'  $group_by ",
-	$table, $where, $where_interval);
+	$sql=sprintf("select `Invoice Key` as number from %s %s %s and `Invoice Tax Number`!='' and `Invoice Tax Number Valid`!='Yes'  $group_by ",
+		$table, $where, $where_interval);
 	//print $sql;
-	
+
 	$stmt=$db->prepare($sql);
 	$stmt->execute();
 	$elements_numbers['tax_status']['No']=$stmt->rowCount();
 
 
 	$sql=sprintf("select `Invoice Key` as number from %s %s %s and ( `Invoice Tax Number` is NULL or `Invoice Tax Number`='' ) $group_by ",
-	$table, $where, $where_interval);
+		$table, $where, $where_interval);
 	//print $sql;
-	
+
 	$stmt=$db->prepare($sql);
 	$stmt->execute();
 	$elements_numbers['tax_status']['Missing']=$stmt->rowCount();
-	
+
 
 
 

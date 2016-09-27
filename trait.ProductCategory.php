@@ -22,6 +22,7 @@ trait ProductCategory {
 
 	}
 
+
 	function get_webpage() {
 
 		$page_key=0;
@@ -30,8 +31,8 @@ trait ProductCategory {
 
 		$category_key=$this->id;
 
-include_once('class.Store.php');
-$store=new Store($this->get('Category Store Key'));
+		include_once 'class.Store.php';
+		$store=new Store($this->get('Category Store Key'));
 
 		// Migration
 		if ($this->get('Category Root Key')==$store->get('Store Family Category Key')) {
@@ -92,7 +93,7 @@ $store=new Store($this->get('Category Store Key'));
 
 
 		}
-		
+
 		*/
 
 	}
@@ -350,19 +351,24 @@ $store=new Store($this->get('Category Store Key'));
 	}
 
 
+
+
 	function update_product_category_status() {
 
 		$elements_numbers=array(
-			'In Use'=>0, 'Not In Use'=>0
+			'In Process'=>0, 'Active'=>0, 'Suspended'=>0, 'Discontinuing'=>0, 'Discontinued'=>0
 		);
 
-		$sql=sprintf("select count(*) as num ,`Part Status` from  `Part Dimension` P left join `Category Bridge` B on (P.`Part SKU`=B.`Subject Key`)  where B.`Category Key`=%d and `Subject`='Part' group by  `Part Status`   ",
-			$this->id);
+		$sql=sprintf("select count(*) as num ,`Product Status` as status from  `Product Dimension` P left join `Category Bridge` B on (P.`Product ID`=B.`Subject Key`)  where B.`Category Key`=%d and `Subject`='Product' group by  `Product Status`   ",
+			$this->id
 
+		);
+
+		//print "$sql\n";
 
 		if ($result=$this->db->query($sql)) {
 			foreach ($result as $row) {
-				$elements_numbers[$row['Part Status']]=number($row['num']);
+				$elements_numbers[$row['status']]=number($row['num']);
 			}
 		}else {
 			print_r($error_info=$this->db->errorInfo());
@@ -371,16 +377,33 @@ $store=new Store($this->get('Category Store Key'));
 
 
 
-		if ($elements_numbers['Not In Use']>0 and $elements_numbers['In Use']==0) {
-			$this->data['Product Category Status`']='NotInUse';
+		if ($elements_numbers['Discontinued']>0 and $elements_numbers['Active']==0) {
+			$this->data['Product Category Status']='Discontinued';
+		}elseif ($elements_numbers['Discontinuing']>0 and $elements_numbers['Active']==0) {
+			$this->data['Product Category Status']='Discontinuing';
+		}elseif ($elements_numbers['Suspended']>0 and $elements_numbers['Active']==0) {
+			$this->data['Product Category Status']='Suspended';
+		}elseif ($elements_numbers['In Process']>0 and $elements_numbers['Active']==0) {
+			$this->data['Product Category Status']='In Process';
 		}else {
-			$this->data['Product Category Status`']='InUse';
+			if ($elements_numbers['Active']>0) {
+				$this->data['Product Category Status']='Active';
+			}else {
+				$this->data['Product Category Status']='In Process';
+
+			}
 		}
 
-		$sql=sprintf("update `Product Category Dimension` set `Product Category Status`=%s  where `Product Category Key`=%d",
-			prepare_mysql($this->data['Product Category Status`']),
+		$sql=sprintf("update `Product Category Dimension` set `Product Category Status`=%s,`Product Category In Process Products`=%d,`Product Category Active Products`=%d,`Product Category Suspended Products`=%d,`Product Category Discontinued Products`=%d  where `Product Category Key`=%d",
+			prepare_mysql($this->data['Product Category Status']),
+			$elements_numbers['In Process'],
+			$elements_numbers['Active'],
+			$elements_numbers['Suspended'],
+			$elements_numbers['Discontinued'],
+
 			$this->id
 		);
+		//print "$sql\n";
 
 		$this->db->exec($sql);
 
@@ -396,7 +419,6 @@ $store=new Store($this->get('Category Store Key'));
 
 		$sql=sprintf("select count(*) as num ,`Part Stock Status` from  `Part Dimension` P left join `Category Bridge` B on (P.`Part SKU`=B.`Subject Key`)  where B.`Category Key`=%d and `Subject`='Part' group by  `Part Stock Status`   ",
 			$this->id);
-
 
 		if ($result=$this->db->query($sql)) {
 			foreach ($result as $row) {
@@ -419,6 +441,7 @@ $store=new Store($this->get('Category Store Key'));
 			$elements_numbers['Error'],
 			$this->id
 		);
+
 		$this->db->exec($sql);
 
 
@@ -426,38 +449,39 @@ $store=new Store($this->get('Category Store Key'));
 
 
 	function update_product_category_sales($interval) {
+	
+	    include_once('utils/date_functions.php');
 
 		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($this->db, $interval);
 
 
+print "$db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb\n";
 
-		$sql=sprintf("select 	sum(`Part $db_interval Acc Profit`) as profit,
-								sum(`Part $db_interval Acc Profit After Storing`) as profit_after_storing,
-								sum(`Part $db_interval Acc Acquired`) as bought,
-								sum(`Part $db_interval Acc Sold Amount`) as sold_amount,
-								sum(`Part $db_interval Acc Sold`) as sold,
-								sum(`Part $db_interval Acc Provided`) as dispatched,
-								sum(`Part $db_interval Acc Required`) as required,
-								sum(`Part $db_interval Acc Given`) as given,
-								sum(`Part $db_interval Acc Broken`) as broken,
-								sum(`Part $db_interval Acc Lost`) as lost
+		$sql=sprintf("select 	sum(`Product $db_interval Acc Invoiced Amount`) as invoiced_amount,
+								sum(`Product $db_interval Acc Profit`) as profit,
+								sum(`Product Total Acc Quantity Ordered`) as ordered,
+								sum(`Product Total Acc Quantity Invoiced`) as invoiced,
+								sum(`Product Total Acc Quantity Delivered`) as delivered
 
-								from `Part Data` ITF left join `Category Bridge` on (`Part SKU`=`Subject Key` and `Subject`='Part')   where `Category Key`=%d" ,
+
+								from `Product Data Dimension` P left join `Category Bridge` on (`Product ID`=`Subject Key` and `Subject`='Product')   where `Category Key`=%d" ,
 			$this->id);
 
 
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
+				$this->data["Product Category $db_interval Acc Invoiced Amount"]=$row['invoiced_amount'];
 				$this->data["Product Category $db_interval Acc Profit"]=$row['profit'];
-				$this->data["Product Category $db_interval Acc Profit After Storing"]=$row['profit_after_storing'];
-				$this->data["Product Category $db_interval Acc Acquired"]=$row['bought'];
-				$this->data["Product Category $db_interval Acc Sold Amount"]=$row['sold_amount'];
-				$this->data["Product Category $db_interval Acc Sold"]=$row['sold'];
-				$this->data["Product Category $db_interval Acc Provided"]=-1.0*$row['dispatched'];
-				$this->data["Product Category $db_interval Acc Required"]=$row['required'];
-				$this->data["Product Category $db_interval Acc Given"]=$row['given'];
-				$this->data["Product Category $db_interval Acc Broken"]=$row['broken'];
-				$this->data["Product Category $db_interval Acc Lost"]=$row['lost'];
+				$this->data["Product Category $db_interval Acc Quantity Ordered"]=$row['ordered'];
+				$this->data["Product Category $db_interval Acc Quantity Invoiced"]=$row['invoiced'];
+				$this->data["Product Category $db_interval Acc Quantity Delivered"]=$row['delivered'];
+
+			}else {
+				$this->data["Product Category $db_interval Acc Invoiced Amount"]=0;
+				$this->data["Product Category $db_interval Acc Profit"]=0;
+				$this->data["Product Category $db_interval Acc Quantity Ordered"]=0;
+				$this->data["Product Category $db_interval Acc Quantity Invoiced"]=0;
+				$this->data["Product Category $db_interval Acc Quantity Delivered"]=0;
 			}
 		}else {
 			print_r($error_info=$this->db->errorInfo());
@@ -468,73 +492,58 @@ $store=new Store($this->get('Category Store Key'));
 
 
 
-		if ($this->data["Product Category $db_interval Acc Sold Amount"]!=0)
-			$margin=$this->data["Product Category $db_interval Acc Profit After Storing"]/$this->data["Product Category $db_interval Acc Sold Amount"];
-		else
-			$margin=0;
-		$this->data["Product Category $db_interval Acc Margin"]=$margin;
 
 
-		$sql=sprintf("update `Product Category Dimension` set
-                     `Product Category $db_interval Acc Required`=%f ,
-                     `Product Category $db_interval Acc Provided`=%f,
-                     `Product Category $db_interval Acc Given`=%f ,
-                     `Product Category $db_interval Acc Sold Amount`=%f ,
-                     `Product Category $db_interval Acc Profit`=%f ,
-                     `Product Category $db_interval Acc Profit After Storing`=%f ,
-                     `Product Category $db_interval Acc Sold`=%f ,
-                     `Product Category $db_interval Acc Margin`=%s,
-                     `Product Category $db_interval Acc Acquired`=%s,
-                     `Product Category $db_interval Acc Broken`=%s,
-                     `Product Category $db_interval Acc Lost`=%s
+		$sql=sprintf("update `Product Category Data` set
+                     `Product Category $db_interval Acc Invoiced Amount`=%f ,
+                     `Product Category $db_interval Acc Profit`=%f,
+                     `Product Category $db_interval Acc Quantity Ordered`=%f ,
+                     `Product Category $db_interval Acc Quantity Invoiced`=%f ,
+                     `Product Category $db_interval Acc Quantity Delivered`=%f ,
+
                       where
-                     `Product Category Key`=%d "
-			, $this->data["Product Category $db_interval Acc Required"]
-			, $this->data["Product Category $db_interval Acc Provided"]
-			, $this->data["Product Category $db_interval Acc Given"]
-			, $this->data["Product Category $db_interval Acc Sold Amount"]
-			, $this->data["Product Category $db_interval Acc Profit"]
-			, $this->data["Product Category $db_interval Acc Profit After Storing"]
-			, $this->data["Product Category $db_interval Acc Sold"]
-			, $this->data["Product Category $db_interval Acc Margin"]
-			, $this->data["Product Category $db_interval Acc Acquired"]
-			, $this->data["Product Category $db_interval Acc Broken"]
-			, $this->data["Product Category $db_interval Acc Lost"]
+                     `Product Category Key`=%d ",
+			$this->data["Product Category $db_interval Acc Invoiced Amount"],
+			$this->data["Product Category $db_interval Acc Profit"],
+			$this->data["Product Category $db_interval Acc Quantity Ordered"],
+			$this->data["Product Category $db_interval Acc Quantity Invoiced"],
+			$this->data["Product Category $db_interval Acc Quantity Delivered"],
 
-			, $this->id);
+
+			 $this->id);
 
 		$this->db->exec($sql);
 		//print "$sql\n";
 
 		if ($from_date_1yb) {
 
-			$sql=sprintf("select 	sum(`Part $db_interval Acc 1YB Profit`) as profit,
-								sum(`Part $db_interval Acc 1YB Profit After Storing`) as profit_after_storing,
-								sum(`Part $db_interval Acc 1YB Acquired`) as bought,
-								sum(`Part $db_interval Acc 1YB Sold Amount`) as sold_amount,
-								sum(`Part $db_interval Acc 1YB Sold`) as sold,
-								sum(`Part $db_interval Acc 1YB Provided`) as dispatched,
-								sum(`Part $db_interval Acc 1YB Required`) as required,
-								sum(`Part $db_interval Acc 1YB Given`) as given,
-								sum(`Part $db_interval Acc 1YB Broken`) as broken,
-								sum(`Part $db_interval Acc 1YB Lost`) as lost
 
-								from `Part Data` ITF left join `Category Bridge` on (`Part SKU`=`Subject Key` and `Subject`='Part')   where `Category Key`=%d" ,
+
+			$sql=sprintf("select 	sum(`Product $db_interval Acc 1YB Invoiced Amount`) as invoiced_amount,
+								sum(`Product $db_interval Acc 1YB Profit`) as profit,
+								sum(`Product $db_interval Acc 1YB Quantity Ordered`) as ordered,
+								sum(`Product $db_interval Acc 1YB Quantity Invoiced`) as invoiced,
+								sum(`Product $db_interval Acc 1YB Quantity Delivered`) as delivered
+
+
+								from `Product Data Dimension` P left join `Category Bridge` on (`Product ID`=`Subject Key` and `Subject`='Product')   where `Category Key`=%d" ,
 				$this->id);
 
-
+print $sql;
 			if ($result=$this->db->query($sql)) {
 				if ($row = $result->fetch()) {
+					$this->data["Product Category $db_interval Acc 1YB Invoiced Amount"]=$row['invoiced_amount'];
 					$this->data["Product Category $db_interval Acc 1YB Profit"]=$row['profit'];
-					$this->data["Product Category $db_interval Acc 1YB Profit After Storing"]=$row['profit_after_storing'];
-					$this->data["Product Category $db_interval Acc 1YB Acquired"]=$row['bought'];
-					$this->data["Product Category $db_interval Acc 1YB Sold Amount"]=$row['sold_amount'];
-					$this->data["Product Category $db_interval Acc 1YB Sold"]=$row['sold'];
-					$this->data["Product Category $db_interval Acc 1YB Provided"]=-1.0*$row['dispatched'];
-					$this->data["Product Category $db_interval Acc 1YB Required"]=$row['required'];
-					$this->data["Product Category $db_interval Acc 1YB Given"]=$row['given'];
-					$this->data["Product Category $db_interval Acc 1YB Broken"]=$row['broken'];
-					$this->data["Product Category $db_interval Acc 1YB Lost"]=$row['lost'];
+					$this->data["Product Category $db_interval Acc 1YB Quantity Ordered"]=$row['ordered'];
+					$this->data["Product Category $db_interval Acc 1YB Quantity Invoiced"]=$row['invoiced'];
+					$this->data["Product Category $db_interval Acc 1YB Quantity Delivered"]=$row['delivered'];
+
+				}else {
+					$this->data["Product Category $db_interval Acc 1YB Invoiced Amount"]=0;
+					$this->data["Product Category $db_interval Acc 1YB Profit"]=0;
+					$this->data["Product Category $db_interval Acc 1YB Quantity Ordered"]=0;
+					$this->data["Product Category $db_interval Acc 1YB Quantity Invoiced"]=0;
+					$this->data["Product Category $db_interval Acc 1YB Quantity Delivered"]=0;
 				}
 			}else {
 				print_r($error_info=$this->db->errorInfo());
@@ -543,79 +552,31 @@ $store=new Store($this->get('Category Store Key'));
 
 
 
-			if ($this->data["Product Category $db_interval Acc 1YB Sold Amount"]!=0)
-				$margin=$this->data["Product Category $db_interval Acc 1YB Profit After Storing"]/$this->data["Product Category $db_interval Acc 1YB Sold Amount"];
-			else
-				$margin=0;
-			$this->data["Product Category $db_interval Acc 1YB Margin"]=$margin;
 
+			$sql=sprintf("update `Product Category Data` set
+                     `Product Category $db_interval Acc 1YB Invoiced Amount`=%f ,
+                     `Product Category $db_interval Acc 1YB Profit`=%f,
+                     `Product Category $db_interval Acc 1YB Quantity Ordered`=%f ,
+                     `Product Category $db_interval Acc 1YB Quantity Invoiced`=%f ,
+                     `Product Category $db_interval Acc 1YB Quantity Delivered`=%f ,
 
-			$sql=sprintf("update `Product Category Dimension` set
-                     `Product Category $db_interval Acc 1YB Required`=%f ,
-                     `Product Category $db_interval Acc 1YB Provided`=%f,
-                     `Product Category $db_interval Acc 1YB Given`=%f ,
-                     `Product Category $db_interval Acc 1YB Sold Amount`=%f ,
-                     `Product Category $db_interval Acc 1YB Profit`=%f ,
-                     `Product Category $db_interval Acc 1YB Profit After Storing`=%f ,
-                     `Product Category $db_interval Acc 1YB Sold`=%f ,
-                     `Product Category $db_interval Acc 1YB Margin`=%s,
-                     `Product Category $db_interval Acc 1YB Acquired`=%s,
-                     `Product Category $db_interval Acc 1YB Broken`=%s,
-                     `Product Category $db_interval Acc 1YB Lost`=%s
                       where
-                     `Product Category Key`=%d "
-				, $this->data["Product Category $db_interval Acc 1YB Required"]
-				, $this->data["Product Category $db_interval Acc 1YB Provided"]
-				, $this->data["Product Category $db_interval Acc 1YB Given"]
-				, $this->data["Product Category $db_interval Acc 1YB Sold Amount"]
-				, $this->data["Product Category $db_interval Acc 1YB Profit"]
-				, $this->data["Product Category $db_interval Acc 1YB Profit After Storing"]
-				, $this->data["Product Category $db_interval Acc 1YB Sold"]
-				, $this->data["Product Category $db_interval Acc 1YB Margin"]
-				, $this->data["Product Category $db_interval Acc 1YB Acquired"]
-				, $this->data["Product Category $db_interval Acc 1YB Broken"]
-				, $this->data["Product Category $db_interval Acc 1YB Lost"]
+                     `Product Category Key`=%d ",
+				$this->data["Product Category $db_interval Acc 1YB Invoiced Amount"],
+				$this->data["Product Category $db_interval Acc 1YB Profit"],
+				$this->data["Product Category $db_interval Acc 1YB Quantity Ordered"],
+				$this->data["Product Category $db_interval Acc 1YB Quantity Invoiced"],
+				$this->data["Product Category $db_interval Acc 1YB Quantity Delivered"],
 
-				, $this->id);
+
+				$this->id);
 
 			$this->db->exec($sql);
-			//print "$sql\n";
 
 
 
-			$this->data["Product Category $db_interval Acc 1YD Required"]=($this->data["Product Category $db_interval Acc 1YB Required"]==0?0:($this->data["Product Category $db_interval Acc Required"]-$this->data["Product Category $db_interval Acc 1YB Required"])/$this->data["Product Category $db_interval Acc 1YB Required"]);
-			$this->data["Product Category $db_interval Acc 1YD Provided"]=($this->data["Product Category $db_interval Acc 1YB Provided"]==0?0:($this->data["Product Category $db_interval Acc Provided"]-$this->data["Product Category $db_interval Acc 1YB Provided"])/$this->data["Product Category $db_interval Acc 1YB Provided"]);
-			$this->data["Product Category $db_interval Acc 1YD Given"]=($this->data["Product Category $db_interval Acc 1YB Given"]==0?0:($this->data["Product Category $db_interval Acc Given"]-$this->data["Product Category $db_interval Acc 1YB Given"])/$this->data["Product Category $db_interval Acc 1YB Given"]);
-			$this->data["Product Category $db_interval Acc 1YD Sold Amount"]=($this->data["Product Category $db_interval Acc 1YB Sold Amount"]==0?0:($this->data["Product Category $db_interval Acc Sold Amount"]-$this->data["Product Category $db_interval Acc 1YB Sold Amount"])/$this->data["Product Category $db_interval Acc 1YB Sold Amount"]);
-			$this->data["Product Category $db_interval Acc 1YD Profit"]=($this->data["Product Category $db_interval Acc 1YB Profit"]==0?0:($this->data["Product Category $db_interval Acc Profit"]-$this->data["Product Category $db_interval Acc 1YB Profit"])/$this->data["Product Category $db_interval Acc 1YB Profit"]);
-			$this->data["Product Category $db_interval Acc 1YD Profit After Storing"]=($this->data["Product Category $db_interval Acc 1YB Profit After Storing"]==0?0:($this->data["Product Category $db_interval Acc Profit After Storing"]-$this->data["Product Category $db_interval Acc 1YB Profit After Storing"])/$this->data["Product Category $db_interval Acc 1YB Profit After Storing"]);
-			$this->data["Product Category $db_interval Acc 1YD Sold"]=($this->data["Product Category $db_interval Acc 1YB Sold"]==0?0:($this->data["Product Category $db_interval Acc Sold"]-$this->data["Product Category $db_interval Acc 1YB Sold"])/$this->data["Product Category $db_interval Acc 1YB Sold"]);
-			$this->data["Product Category $db_interval Acc 1YD Margin"]=($this->data["Product Category $db_interval Acc 1YB Margin"]==0?0:($this->data["Product Category $db_interval Acc Margin"]-$this->data["Product Category $db_interval Acc 1YB Margin"])/$this->data["Product Category $db_interval Acc 1YB Margin"]);
 
 
-			$sql=sprintf("update `Product Category Dimension` set
-                     `Product Category $db_interval Acc 1YD Required`=%f ,
-                     `Product Category $db_interval Acc 1YD Provided`=%f,
-                     `Product Category $db_interval Acc 1YD Given`=%f ,
-                     `Product Category $db_interval Acc 1YD Sold Amount`=%f ,
-                     `Product Category $db_interval Acc 1YD Profit`=%f ,
-                     `Product Category $db_interval Acc 1YD Profit After Storing`=%f ,
-                     `Product Category $db_interval Acc 1YD Sold`=%f ,
-                     `Product Category $db_interval Acc 1YD Margin`=%s where
-                      `Product Category Key`=%d "
-				, $this->data["Product Category $db_interval Acc 1YD Required"]
-				, $this->data["Product Category $db_interval Acc 1YD Provided"]
-				, $this->data["Product Category $db_interval Acc 1YD Given"]
-				, $this->data["Product Category $db_interval Acc 1YD Sold Amount"]
-				, $this->data["Product Category $db_interval Acc 1YD Profit"]
-				, $this->data["Product Category $db_interval Acc 1YD Profit After Storing"]
-				, $this->data["Product Category $db_interval Acc 1YD Sold"]
-				, $this->data["Product Category $db_interval Acc 1YD Margin"]
-
-				, $this->id);
-
-			$this->db->exec($sql);
-			//print "$sql\n";
 
 
 
@@ -689,7 +650,8 @@ $store=new Store($this->get('Category Store Key'));
 		return $sales_data;
 	}
 
-function get_category_data() {
+
+	function get_category_data() {
 
 
 		$type='Category';
@@ -750,6 +712,7 @@ function get_category_data() {
 
 		return $category_data;
 	}
+
 
 }
 

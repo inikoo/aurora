@@ -1,99 +1,110 @@
-var columns = [{
+var columns = [
+ {
     name: "id",
-    label: "",
-    editable: false,
-    cell: "integer",
-    renderable: false
-
-
-}, {
-    name: "store_key",
     label: "",
     editable: false,
     renderable: false,
     cell: "string"
-}, {
-    name: "store",
-    label: "{t}Store{/t}",
-     renderable: {if ($data['parent']=='account' or $data['parent']=='warehouse' ) }true{else}false{/if},
+},
+ {
+    name: "code",
+    label: "{t}Code{/t}",
     editable: false,
-      sortType: "toggle",
-    cell: Backgrid.StringCell.extend({
+     cell: Backgrid.StringCell.extend({
+        orderSeparator: '',
         events: {
             "click": function() {
-                change_view('products/'+this.model.get("store_key"))
+                change_view('{if $data.module=='products'}products/{$data._object->get('Category Store Key')}/{else if $data.module=='customers'}customers/{$data._object->get('Category Store Key')}/{elseif $data.module=='invoices_server'}invoices/all/{/if}category/' + this.model.get("id") )
             }
         },
-        className: "link width_150",
+        className: "link",
+        
+         render: function () {
+      this.constructor.__super__.render.apply(this, arguments);
+        if(this.model.get('id')==''){
+            this.$el.removeClass('link');
+        }
+      return this;
+    }
+        
+        
     })
-},
-
- {
-    name: "associated",
-    label: "",
-    renderable: {if ($data['parent']=='category') }true{else}false{/if},
+}, 
+{
+    name: "label",
+    label:"{t}Label{/t}",
     editable: false,
-    sortType: "toggle",
-    cell: Backgrid.HtmlCell.extend({
-        className: "width_20"
-    })
-
+    cell: "string"
 }, 
 {
     name: "status",
-    label: "{t}Status{/t}",
+    label:"{t}Status{/t}",
     editable: false,
-      sortType: "toggle",
-     cell: Backgrid.HtmlCell.extend({} ),
+    cell: "html"
+}, 
+{
+    name: "products",
+    label:"{t}Products{/t}",
+    editable: false,
+        defautOrder:1,
+    sortType: "toggle",
+            {if $sort_key=='products'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+ 
+    cell: Backgrid.StringCell.extend({ className: "aright"} ),
+        headerCell: integerHeaderCell
 
-},
+}, 
 
- {
-    name: "code",
-    label: "{t}Code{/t}   ",
-    editable: false,
-      sortType: "toggle",
-    cell: Backgrid.StringCell.extend({
-        events: {
-            "click": function() {
-                change_view( {if $data['section']=='part'}'part/{$data['key']}/product/' + this.model.get("id"){else if $data['section']=='category'}'products/{$data['store']->id}/category/{$data['_object']->get('Category Position')}/product/' + this.model.get("id"){else}'products/{$data['parent_key']}/'+this.model.get("id"){/if})
-            }
-        },
-        className: "link width_150",
-    })
-}, {
-    name: "name",
-    label: "{t}Name{/t}",
-    editable: false,
-      sortType: "toggle",
-    cell: "string"
-},
- {
-    name: "price",
-    label: "{t}Price{/t}",
-    editable: false,
-      sortType: "toggle",
-     cell: Backgrid.StringCell.extend({ } ),
 
-},
- {
-    name: "margin",
-    label: "{t}Margin{/t}",
+{
+    name: "active",
+    label:"{t}Active{/t}",
     editable: false,
-      sortType: "toggle",
-     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+        defautOrder:1,
+    sortType: "toggle",
+            {if $sort_key=='active'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+ 
+    cell: Backgrid.StringCell.extend({ className: "aright"} ),
+        headerCell: integerHeaderCell
 
-    headerCell: integerHeaderCell
-},
- {
-    name: "web_state",
-    label: "{t}Web state{/t}",
+}, 
+{
+    name: "suspended",
+    label:"{t}Suspended{/t}",
     editable: false,
-      sortType: "toggle",
-     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+        defautOrder:1,
+    sortType: "toggle",
+            {if $sort_key=='suspended'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+ 
+    cell: Backgrid.StringCell.extend({ className: "aright"} ),
+        headerCell: integerHeaderCell
 
-    headerCell: integerHeaderCell
-},
+}, 
+{
+    name: "discontinuing",
+    label:"{t}Discontinuing{/t}",
+    editable: false,
+        defautOrder:1,
+    sortType: "toggle",
+            {if $sort_key=='discontinuing'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+ 
+    cell: Backgrid.StringCell.extend({ className: "aright"} ),
+        headerCell: integerHeaderCell
+
+}, 
+{
+    name: "discontinued",
+    label:"{t}Discontinued{/t}",
+    editable: false,
+        defautOrder:1,
+    sortType: "toggle",
+            {if $sort_key=='discontinued'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+ 
+    cell: Backgrid.StringCell.extend({ className: "aright"} ),
+        headerCell: integerHeaderCell
+
+}, 
+
 {
     name: "sales",
     label: "{t}Sales{/t}",
@@ -166,13 +177,8 @@ var columns = [{
 
     headerCell: integerHeaderCell
 },
-
 ]
-
-
-function change_table_view(view, save_state) {
-
-
+function change_table_view(view,save_state){
 
     $('.view').removeClass('selected');
     $('#view_'+view).addClass('selected');
@@ -182,13 +188,14 @@ function change_table_view(view, save_state) {
 
 
 
-    grid.columns.findWhere({ name: 'name'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'label'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'status'} ).set("renderable", false)
-    grid.columns.findWhere({ name: 'price'} ).set("renderable", false)
-    grid.columns.findWhere({ name: 'margin'} ).set("renderable", false)
-    grid.columns.findWhere({ name: 'web_state'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'products'} ).set("renderable", false)
 
-
+    grid.columns.findWhere({ name: 'active'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'suspended'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'discontinuing'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'discontinued'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'sales'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'sales_1yb'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'sales_year0'} ).set("renderable", false)
@@ -197,11 +204,9 @@ function change_table_view(view, save_state) {
     grid.columns.findWhere({ name: 'sales_year3'} ).set("renderable", false)   
     
     if(view=='overview'){
-        grid.columns.findWhere({ name: 'name'} ).set("renderable", true)
-        grid.columns.findWhere({ name: 'price'} ).set("renderable", true)
+        grid.columns.findWhere({ name: 'label'} ).set("renderable", true)
+        grid.columns.findWhere({ name: 'products'} ).set("renderable", true)
         grid.columns.findWhere({ name: 'status'} ).set("renderable", true)
-        grid.columns.findWhere({ name: 'margin'} ).set("renderable", true)
-        grid.columns.findWhere({ name: 'web_state'} ).set("renderable", true)
     }else if(view=='status'){
         grid.columns.findWhere({ name: 'status'} ).set("renderable", true)
         grid.columns.findWhere({ name: 'active'} ).set("renderable", true)
@@ -227,7 +232,5 @@ function change_table_view(view, save_state) {
    
     $.getJSON(request, function(data) {});
     }
-
-
 
 }

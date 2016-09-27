@@ -326,7 +326,7 @@ if ($object->get('Supplier Type')!='Archived') {
 			'show_title'=>false,
 			'fields'=>array(
 
-	array(
+				array(
 					'id'=>'Supplier_On_Demand',
 					'edit'=>($edit?'option':''),
 
@@ -506,15 +506,15 @@ if ($object->get('Supplier Type')!='Archived') {
 
 
 
-			$fields[]=array(
+					$fields[]=array(
 
-				'id'=>'unlink_agent_'.$row['Agent Key'],
-				'class'=>'operation',
-				'value'=>'',
-				'label'=>'<i class="fa fa-fw fa-lock button invisible" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'", "agent_key":"'.$row['Agent Key'].'"}\' onClick="unlink_agent(this)" class="delete_object ">'.sprintf(_("Unlink agent %s"), $row['Agent Code']).' <i class="fa fa-chain-broken new_button button"></i></span>',
-				'reference'=>'',
-				'type'=>'operation'
-			);
+						'id'=>'unlink_agent_'.$row['Agent Key'],
+						'class'=>'operation',
+						'value'=>'',
+						'label'=>'<i class="fa fa-fw fa-lock button invisible" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'", "agent_key":"'.$row['Agent Key'].'"}\' onClick="unlink_agent(this)" class="delete_object ">'.sprintf(_("Unlink agent %s"), $row['Agent Code']).' <i class="fa fa-chain-broken new_button button"></i></span>',
+						'reference'=>'',
+						'type'=>'operation'
+					);
 
 				}
 			}else {

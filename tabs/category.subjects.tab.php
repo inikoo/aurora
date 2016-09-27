@@ -42,7 +42,7 @@ if ($category->get('Category Scope')=='Product') {
 		);
 
 
-	$table_buttons[]=array('icon'=>'edit', 'title'=>_("Edit products"), 'id'=>'edit_table');
+		$table_buttons[]=array('icon'=>'edit', 'title'=>_("Edit products"), 'id'=>'edit_table');
 
 		$table_buttons[]=array('icon'=>'cube', 'title'=>_('All products'), 'change_tab'=>'category.all_subjects', 'class'=>'move_left');
 
@@ -74,13 +74,11 @@ if ($category->get('Category Scope')=='Product') {
 
 	}
 	else {
+    
 
-
-		$tab='subject_categories';
-
-
-		$ar_file='ar_categories_tables.php';
-		$tipo='subject_categories';
+		$tab='category.product_families';
+		$ar_file='ar_products_tables.php';
+		$tipo='product_families';
 
 		$default=$user->get_tab_defaults($tab);
 
@@ -91,8 +89,8 @@ if ($category->get('Category Scope')=='Product') {
 		);
 
 		$table_filters=array(
-			'label'=>array('label'=>_('Label'), 'title'=>_('Category label')),
-			'code'=>array('label'=>_('Code'), 'title'=>_('Category code')),
+			'code'=>array('label'=>_('Code')),
+			'label'=>array('label'=>_('Label')),
 
 		);
 
