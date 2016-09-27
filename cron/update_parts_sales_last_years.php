@@ -3,7 +3,7 @@
 /*
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created:19 April 2016 at 11:32:28 GMT+8, Kuala Lumpur, Malaysia
+ Created: 28 September 2016 at 02:22:57 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2016, Inikoo
 
  Version 3
@@ -53,12 +53,8 @@ function update_parts_sales($db, $print_est) {
 
 			$part->load_acc_data();
 
-			$part->update_sales_from_invoices('Total');
-			$part->update_sales_from_invoices('Week To Day');
-			$part->update_sales_from_invoices('Month To Day');
-			$part->update_sales_from_invoices('Year To Day');
-			$part->update_sales_from_invoices('1 Year');
-			$part->update_sales_from_invoices('1 Quarter');
+			$part->update_previous_years_data();
+			
 
 			$contador++;
 			$lap_time1=date('U');

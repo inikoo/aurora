@@ -2579,11 +2579,7 @@ class Product extends Asset{
 
 		if ($from_date_1yb ) {
 
-
-
-
 			$sales_data=$this->get_sales_data($from_date_1yb, $to_1yb);
-
 
 			$data_to_update=array(
 				"Product $db_interval Acc 1YB Customers"=>$sales_data['customers'],
@@ -2612,11 +2608,7 @@ class Product extends Asset{
 		$data_2y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-2 year')), date('Y-01-01 00:00:00', strtotime('-1 year')));
 		$data_3y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-3 year')), date('Y-01-01 00:00:00', strtotime('-2 year')));
 		$data_4y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-4 year')), date('Y-01-01 00:00:00', strtotime('-3 year')));
-
-
-
-
-
+		
 		$data_to_update=array(
 			"Product 1 Year Ago Customers"=>$data_1y_ago['customers'],
 			"Product 1 Year Ago Invoices"=>$data_1y_ago['invoices'],
@@ -2625,7 +2617,7 @@ class Product extends Asset{
 			"Product 1 Year Ago Quantity Ordered"=>$data_1y_ago['ordered'],
 			"Product 1 Year Ago Quantity Invoiced"=>$data_1y_ago['invoiced'],
 			"Product 1 Year Ago Quantity Delivered"=>$data_1y_ago['delivered'],
-			"Product DC 1 Year Ago 1YB Profit"=>$data_1y_ago['dc_net'],
+			"Product DC 1 Year Ago Profit"=>$data_1y_ago['dc_net'],
 			"Product DC 1 Year Ago Invoiced Amount"=>$data_1y_ago['dc_profit'],
 
 			"Product 2 Year Ago Customers"=>$data_2y_ago['customers'],
@@ -2635,7 +2627,7 @@ class Product extends Asset{
 			"Product 2 Year Ago Quantity Ordered"=>$data_2y_ago['ordered'],
 			"Product 2 Year Ago Quantity Invoiced"=>$data_2y_ago['invoiced'],
 			"Product 2 Year Ago Quantity Delivered"=>$data_2y_ago['delivered'],
-			"Product DC 2 Year Ago 2YB Profit"=>$data_2y_ago['dc_net'],
+			"Product DC 2 Year Ago Profit"=>$data_2y_ago['dc_net'],
 			"Product DC 2 Year Ago Invoiced Amount"=>$data_2y_ago['dc_profit'],
 
 			"Product 3 Year Ago Customers"=>$data_3y_ago['customers'],
@@ -2645,7 +2637,7 @@ class Product extends Asset{
 			"Product 3 Year Ago Quantity Ordered"=>$data_3y_ago['ordered'],
 			"Product 3 Year Ago Quantity Invoiced"=>$data_3y_ago['invoiced'],
 			"Product 3 Year Ago Quantity Delivered"=>$data_3y_ago['delivered'],
-			"Product DC 3 Year Ago 3YB Profit"=>$data_3y_ago['dc_net'],
+			"Product DC 3 Year Ago Profit"=>$data_3y_ago['dc_net'],
 			"Product DC 3 Year Ago Invoiced Amount"=>$data_3y_ago['dc_profit'],
 
 			"Product 4 Year Ago Customers"=>$data_4y_ago['customers'],
@@ -2655,15 +2647,10 @@ class Product extends Asset{
 			"Product 4 Year Ago Quantity Ordered"=>$data_4y_ago['ordered'],
 			"Product 4 Year Ago Quantity Invoiced"=>$data_4y_ago['invoiced'],
 			"Product 4 Year Ago Quantity Delivered"=>$data_4y_ago['delivered'],
-			"Product DC 4 Year Ago 4YB Profit"=>$data_4y_ago['dc_net'],
+			"Product DC 4 Year Ago Profit"=>$data_4y_ago['dc_net'],
 			"Product DC 4 Year Ago Invoiced Amount"=>$data_4y_ago['dc_profit']
 		);
 		$this->update( $data_to_update, 'no_history');
-
-
-
-
-
 
 	}
 
@@ -2706,26 +2693,26 @@ class Product extends Asset{
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
 
-				
 
-					$sales_data['customers']=$row['customers'];
-					$sales_data['invoices']=$row['invoices'];
-					$sales_data['net']=$row['net'];
-					$sales_data['profit']=$row['profit'];
-					$sales_data['ordered']=$row['ordered'];
-					$sales_data['invoiced']=$row['invoiced'];
-					$sales_data['delivered']=$row['delivered'];
-					$sales_data['dc_net']=$row['dc_net'];
-					$sales_data['dc_profit']=$row['dc_profit'];
 
-				
+				$sales_data['customers']=$row['customers'];
+				$sales_data['invoices']=$row['invoices'];
+				$sales_data['net']=$row['net'];
+				$sales_data['profit']=$row['profit'];
+				$sales_data['ordered']=$row['ordered'];
+				$sales_data['invoiced']=$row['invoiced'];
+				$sales_data['delivered']=$row['delivered'];
+				$sales_data['dc_net']=$row['dc_net'];
+				$sales_data['dc_profit']=$row['dc_profit'];
+
+
 			}
 		}else {
 			print_r($error_info=$this->db->errorInfo());
 			exit;
 		}
 
-//print "$sql\n";
+		//print "$sql\n";
 
 
 		return $sales_data;
@@ -2733,61 +2720,6 @@ class Product extends Asset{
 
 
 
-function get_sales_datax($from_date, $to_date) {
-
-		$sales_data=array(
-			'customers'=>0,
-			'invoices'=>0,
-			'net'=>0,
-			'profit'=>0,
-			'ordered'=>0,
-			'invoiced'=>0,
-			'delivered'=>0,
-			'dc_net'=>0,
-			'dc_profit'=>0,
-
-		);
-
-
-
-
-		$sql=sprintf("select
-	
-			round(ifnull(sum(`Invoice Transaction Gross Amount`),0),2) as net 
-		from `Order Transaction Fact` USE INDEX (`Product ID`,`Invoice Date`) where    `Current Dispatching State`='Dispatched' and  `Product ID`=%d %s %s ",
-			$this->id,
-			($from_date?sprintf('and `Invoice Date`>=%s', prepare_mysql($from_date)):''),
-			($to_date?sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)):'')
-
-		);
-
-		if ($result=$this->db->query($sql)) {
-			if ($row = $result->fetch()) {
-
-				
-
-					//$sales_data['customers']=$row['customers'];
-					//$sales_data['invoices']=$row['invoices'];
-					$sales_data['net']=$row['net'];
-					//$sales_data['profit']=$row['profit'];
-					//$sales_data['ordered']=$row['ordered'];
-					//$sales_data['invoiced']=$row['invoiced'];
-					//$sales_data['delivered']=$row['delivered'];
-					//$sales_data['dc_net']=$row['dc_net'];
-					//$sales_data['dc_profit']=$row['dc_profit'];
-
-				
-			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
-		}
-
-//print "$sql\n";
-
-
-		return $sales_data;
-	}
 
 }
 

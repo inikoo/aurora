@@ -267,7 +267,19 @@ elseif ($order=='store') {
 	$order='`Product 1 Year Acc Days On Sale`';
 }elseif ($order=='percentage_available_1y') {
 	$order='`Product 1 Year Acc Days Available`/`Product 1 Year Acc Days On Sale`';
-}else {
+}
+elseif ($order=='delta_sales_year0') {$order="(-1*(`Product Year To Day Acc Invoiced Amount`-`Product Year To Day Acc 1YB Invoiced Amount`)/`Product Year To Day Acc 1YB Invoiced Amount`)";}
+elseif ($order=='delta_sales_year1') {$order="(-1*(`Product 2 Year Ago Invoiced Amount`-`Product 1 Year Ago Invoiced Amount`)/`Product 2 Year Ago Invoiced Amount`)";}
+elseif ($order=='delta_sales_year2') {$order="(-1*(`Product 3 Year Ago Invoiced Amount`-`Product 2 Year Ago Invoiced Amount`)/`Product 3 Year Ago Invoiced Amount`)";}
+elseif ($order=='delta_sales_year3') {$order="(-1*(`Product 4 Year Ago Invoiced Amount`-`Product 3 Year Ago Invoiced Amount`)/`Product 4 Year Ago Invoiced Amount`)";}
+elseif ($order=='sales_year1') {$order="`Product 1 Year Ago Invoiced Amount`";}
+elseif ($order=='sales_year2') {$order="`Product 2 Year Ago Invoiced Amount`";}
+elseif ($order=='sales_year3') {$order="`Product 3 Year Ago Invoiced Amount`";}
+elseif ($order=='sales_year4') {$order="`Product 4 Year Ago Invoiced Amount`";}
+elseif ($order=='sales_year0') {$order="`Product Year To Day Acc Invoiced Amount`";}
+
+
+else {
 	$order='P.`Product ID`';
 }
 

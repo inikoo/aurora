@@ -90,7 +90,7 @@ var columns = [
     headerCell: integerHeaderCell
 },
 {
-    name: "dispatched_1y",
+    name: "dispatched_1yb",
     label: "{t}1YB{/t}",
    editable: false,
    
@@ -150,73 +150,73 @@ var columns = [
     headerCell: integerHeaderCell
 },
 {
-    name: "revenue",
+    name: "sales",
     label: "{t}Revenue{/t}",
    editable: false,
    
     defautOrder:1,
     sortType: "toggle",
-    {if $sort_key=='revenue'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    {if $sort_key=='sales'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
     headerCell: integerHeaderCell
 },
 {
-    name: "revenue_1y",
+    name: "sales_1yb",
     label: "{t}1YB{/t}",
    editable: false,
    
     defautOrder:1,
     sortType: "toggle",
-    {if $sort_key=='revenue_1y'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    {if $sort_key=='sales_1yb'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
     headerCell: integerHeaderCell
 },
 {
-    name: "revenue_year0",
+    name: "sales_year0",
     label: new Date().getFullYear(),
    editable: false,
    
     defautOrder:1,
     sortType: "toggle",
-    {if $sort_key=='revenue_year0'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    {if $sort_key=='sales_year0'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
     headerCell: integerHeaderCell
 },
 {
-    name: "revenue_year1",
+    name: "sales_year1",
     label: new Date().getFullYear()-1,
    editable: false,
    
     defautOrder:1,
     sortType: "toggle",
-    {if $sort_key=='revenue_year1'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    {if $sort_key=='sales_year1'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
     headerCell: integerHeaderCell
 },
 {
-    name: "revenue_year2",
+    name: "sales_year2",
     label: new Date().getFullYear()-2,
    editable: false,
    
     defautOrder:1,
     sortType: "toggle",
-    {if $sort_key=='revenue_year2'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    {if $sort_key=='sales_year2'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
     headerCell: integerHeaderCell
 },
 {
-    name: "revenue_year3",
+    name: "sales_year3",
     label: new Date().getFullYear()-3,
    editable: false,
    
     defautOrder:1,
     sortType: "toggle",
-    {if $sort_key=='revenue_year3'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    {if $sort_key=='sales_year3'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
     headerCell: integerHeaderCell
@@ -284,19 +284,19 @@ function change_table_view(view,save_state){
     grid.columns.findWhere({ name: 'sko_description'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'stock'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'dispatched'} ).set("renderable", false)
-    grid.columns.findWhere({ name: 'revenue'} ).set("renderable", false)
-    grid.columns.findWhere({ name: 'dispatched_1y'} ).set("renderable", false)
-    grid.columns.findWhere({ name: 'revenue_1y'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'sales'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'dispatched_1yb'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'sales_1yb'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'lost'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'bought'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'dispatched_year0'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'dispatched_year1'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'dispatched_year2'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'dispatched_year3'} ).set("renderable", false)
-    grid.columns.findWhere({ name: 'revenue_year0'} ).set("renderable", false)
-    grid.columns.findWhere({ name: 'revenue_year1'} ).set("renderable", false)
-    grid.columns.findWhere({ name: 'revenue_year2'} ).set("renderable", false)
-    grid.columns.findWhere({ name: 'revenue_year3'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'sales_year0'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'sales_year1'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'sales_year2'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'sales_year3'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'stock_status_label'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'dispatched_per_week'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'weeks_available'} ).set("renderable", false)
@@ -307,13 +307,13 @@ function change_table_view(view,save_state){
     grid.columns.findWhere({ name: 'sko_description'} ).set("renderable", true)
     grid.columns.findWhere({ name: 'stock'} ).set("renderable", true)
     grid.columns.findWhere({ name: 'dispatched'} ).set("renderable", true)
-    grid.columns.findWhere({ name: 'revenue'} ).set("renderable", true)
+    grid.columns.findWhere({ name: 'sales'} ).set("renderable", true)
     $('#columns_period').removeClass('hide');
 
   
   }else if(view=='dispatched'){
     grid.columns.findWhere({ name: 'dispatched'} ).set("renderable", true)
-      grid.columns.findWhere({ name: 'dispatched_1y'} ).set("renderable", true)
+      grid.columns.findWhere({ name: 'dispatched_1yb'} ).set("renderable", true)
     grid.columns.findWhere({ name: 'dispatched_year0'} ).set("renderable", true)
      grid.columns.findWhere({ name: 'dispatched_year1'} ).set("renderable", true)
     grid.columns.findWhere({ name: 'dispatched_year2'} ).set("renderable", true)
@@ -323,12 +323,12 @@ function change_table_view(view,save_state){
 
   
   }else if(view=='revenue'){
-    grid.columns.findWhere({ name: 'revenue'} ).set("renderable", true)
-    grid.columns.findWhere({ name: 'revenue_1y'} ).set("renderable", true)
-     grid.columns.findWhere({ name: 'revenue_year0'} ).set("renderable", true)
-     grid.columns.findWhere({ name: 'revenue_year1'} ).set("renderable", true)
-    grid.columns.findWhere({ name: 'revenue_year2'} ).set("renderable", true)
-    grid.columns.findWhere({ name: 'revenue_year3'} ).set("renderable", true)
+    grid.columns.findWhere({ name: 'sales'} ).set("renderable", true)
+    grid.columns.findWhere({ name: 'sales_1yb'} ).set("renderable", true)
+     grid.columns.findWhere({ name: 'sales_year0'} ).set("renderable", true)
+     grid.columns.findWhere({ name: 'sales_year1'} ).set("renderable", true)
+    grid.columns.findWhere({ name: 'sales_year2'} ).set("renderable", true)
+    grid.columns.findWhere({ name: 'sales_year3'} ).set("renderable", true)
     $('#columns_period').removeClass('hide');
     
 

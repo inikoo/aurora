@@ -37,7 +37,7 @@
 			<table border="0" class="overview" style="">
 				<tr  class="main">
 					<td >{t}Sales{/t}</td>
-					<td class="aright">{$category->get('1 Year Acc Sold Amount')} </td>
+					<td class="aright">{$category->get('1 Year Acc Invoiced Amount')} </td>
 				</tr>
 				
 				

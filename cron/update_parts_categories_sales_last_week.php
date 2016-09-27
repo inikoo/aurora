@@ -3,7 +3,7 @@
 /*
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created:19 April 2016 at 11:32:28 GMT+8, Kuala Lumpur, Malaysia
+ Created: 28 September 2016 at 02:20:13 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2016, Inikoo
 
  Version 3
@@ -24,10 +24,11 @@ update_parts_sales($db, $print_est);
 
 function update_parts_sales($db, $print_est) {
 
-	$where=" where `Part SKU`=259 ";
-	$where="";
+	$where=" where `Category SKU`=259 ";
+	$where="where true";
 
-	$sql=sprintf("select count(*) as num from `Part Dimension` $where");
+	$sql=sprintf("select count(distinct `Category Key`) as num from `Category Bridge` $where and  `Subject`='Part' ");
+
 	if ($result=$db->query($sql)) {
 		if ($row = $result->fetch()) {
 			$total=$row['num'];
@@ -43,22 +44,14 @@ function update_parts_sales($db, $print_est) {
 	$contador=0;
 
 	$sql=sprintf("select `Part SKU` from `Part Dimension`  $where  order by `Part SKU`");
+	$sql=sprintf("select `Category Key`  from `Category Bridge` $where and  `Subject`='Part' group by `Category Key` ");
 
 	if ($result=$db->query($sql)) {
 		foreach ($result as $row) {
-			$part=new Part($row['Part SKU']);
+			$category=new Category($row['Category Key']);
 
-
-
-
-			$part->load_acc_data();
-
-			$part->update_sales_from_invoices('Total');
-			$part->update_sales_from_invoices('Week To Day');
-			$part->update_sales_from_invoices('Month To Day');
-			$part->update_sales_from_invoices('Year To Day');
-			$part->update_sales_from_invoices('1 Year');
-			$part->update_sales_from_invoices('1 Quarter');
+			$category->update_part_category_sales('Last Week');
+			
 
 			$contador++;
 			$lap_time1=date('U');
@@ -79,18 +72,6 @@ function update_parts_sales($db, $print_est) {
 
 
 
-function update_categories_sales($db, $print_est) {
-	$sql=sprintf("select `Category Key`  from `Category Bridge` where  `Subject`='Part' group by `Category Key` ");
-	if ($result=$db->query($sql)) {
-		foreach ($result as $row) {
-			$category=new Category($row['Category Key']);
-			$category->update_number_of_subjects();
-			$category->update_subjects_data();
-			$category->update_part_category_previous_years_data();
-			$category->update_part_stock_status();
-		}
-	}
-}
 
 
 ?>

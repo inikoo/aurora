@@ -52,8 +52,9 @@ $editor=array(
 $account=new Account();
 
 /*
-create_part_data_dimension();
 setup_part_families();
+create_part_data_dimension();
+
 update_materials_stats();
 migrate_part_fields();
 create_families($db, $account);
@@ -65,10 +66,14 @@ update_stock($db);
 move_MSDS_attachments($db);
 
 set_unit_label($db);
+update_products_web_status($db);
 
 */
+create_part_data_dimension($db);
 
- update_products_web_status($db);
+
+
+
 
 function update_products_web_status($db) {
 
@@ -78,7 +83,7 @@ function update_products_web_status($db) {
 		foreach ($result as $row) {
 			$part=new Part($row['Part SKU']);
 
-            $part->update_products_web_status();
+			$part->update_products_web_status();
 
 		}
 
@@ -583,6 +588,36 @@ function create_part_data_dimension() {
 			$sql="insert into `Part Data` (`Part SKU`) values(".$row['Part SKU'].");";
 			$db->exec($sql);
 
+
+		}
+
+	}
+
+
+	$sql=sprintf("select `Category Key`,`Subject Key` from `Category Bridge` where `Category Head Key`=`Category Key` and `Subject`='Part' ");
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+
+
+			$sql="insert into `Part Category Data` (`Part Category Key`) values(".$row['Category Key'].");";
+			$db->exec($sql);
+
+		}
+	}
+
+
+}
+
+
+function setup_part_families() {
+	global $db, $account;
+
+
+	$sql=sprintf('select `Part SKU` from `Part Dimension`  ');
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+
 			$part=new Part($row['Part SKU']);
 
 			$part->update(
@@ -591,11 +626,7 @@ function create_part_data_dimension() {
 		}
 
 	}
-}
 
-
-function setup_part_families() {
-	global $db, $account;
 
 	$sql=sprintf("select `Category Key`,`Subject Key` from `Category Bridge` where `Category Head Key`=`Category Key` and `Subject`='Part' ");
 	if ($result=$db->query($sql)) {

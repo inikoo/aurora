@@ -70,7 +70,7 @@ function update_sales($db,$print_est) {
 	$contador=0;
 
 
-	$sql=sprintf("select `Product ID` from `Product Dimension` $where order by `Product ID` desc ");
+	$sql=sprintf("select `Product ID` from `Product Dimension` $where  ");
 
 
 	if ($result=$db->query($sql)) {

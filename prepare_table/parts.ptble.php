@@ -131,15 +131,15 @@ if (isset($parameters['f_period'])) {
 
 	$db_period=get_interval_db_name($parameters['f_period']);
 	if (in_array($db_period, array('Total', '3 Year'))) {
-		$yb_fields=" '' as dispatched_1y,'' as revenue_1y,";
+		$yb_fields=" '' as dispatched_1yb,'' as sales_1yb,";
 
 	}else {
-		$yb_fields="`Part $db_period Acc 1YB Provided` as dispatched_1y,`Part $db_period Acc 1YB Sold Amount` as revenue_1y,";
+		$yb_fields="`Part $db_period Acc 1YB Dispatched` as dispatched_1yb,`Part $db_period Acc 1YB Invoiced Amount` as sales_1yb,";
 	}
 	
 }else{
 $db_period='Total';
-		$yb_fields=" '' as dispatched_1y,'' as revenue_1y,";
+		$yb_fields=" '' as dispatched_1yb,'' as sales_1yb,";
 }
 
 if ($parameters['f_field']=='used_in' and $f_value!='')
@@ -173,8 +173,8 @@ if ($order=='id') {
 
 } elseif ($order=='sold') {
 	$order=' sold ';
-}elseif ($order=='revenue') {
-	$order=' revenue ';
+}elseif ($order=='sales') {
+	$order=' sales ';
 }elseif ($order=='lost') {
 	$order=' lost ';
 }elseif ($order=='bought') {
@@ -188,24 +188,24 @@ if ($order=='id') {
 }elseif ($order=='last_update') {
 	$order='`Part Last Updated`';
 }
-elseif ($order=='delta_revenue_year0') {$order="(-1*(`Part Year To Day Acc Sold Amount`-`Part Year To Day Acc 1YB Sold Amount`)/`Part Year To Day Acc 1YB Sold Amount`)";}
-elseif ($order=='delta_revenue_year1') {$order="(-1*(`Part 2 Year Ago Sold Amount`-`Part 1 Year Ago Sold Amount`)/`Part 2 Year Ago Sold Amount`)";}
-elseif ($order=='delta_revenue_year2') {$order="(-1*(`Part 3 Year Ago Sold Amount`-`Part 2 Year Ago Sold Amount`)/`Part 3 Year Ago Sold Amount`)";}
-elseif ($order=='delta_revenue_year3') {$order="(-1*(`Part 4 Year Ago Sold Amount`-`Part 3 Year Ago Sold Amount`)/`Part 4 Year Ago Sold Amount`)";}
-elseif ($order=='revenue_year1') {$order="`Part 1 Year Ago Sold Amount`";}
-elseif ($order=='revenue_year2') {$order="`Part 2 Year Ago Sold Amount`";}
-elseif ($order=='revenue_year3') {$order="`Part 3 Year Ago Sold Amount`";}
-elseif ($order=='revenue_year4') {$order="`Part 4 Year Ago Sold Amount`";}
-elseif ($order=='revenue_year0') {$order="`Part Year To Day Acc Sold Amount`";}
-elseif ($order=='delta_dispatched_year0') {$order="(-1*(`Part Year To Day Acc Provided`-`Part Year To Day Acc 1YB Provided`)/`Part Year To Day Acc 1YB Provided`)";}
-elseif ($order=='delta_dispatched_year1') {$order="(-1*(`Part 2 Year Ago Provided`-`Part 1 Year Ago Provided`)/`Part 2 Year Ago Provided`)";}
-elseif ($order=='delta_dispatched_year2') {$order="(-1*(`Part 3 Year Ago Provided`-`Part 2 Year Ago Provided`)/`Part 3 Year Ago Provided`)";}
-elseif ($order=='delta_dispatched_year3') {$order="(-1*(`Part 4 Year Ago Provided`-`Part 3 Year Ago Provided`)/`Part 4 Year Ago Provided`)";}
-elseif ($order=='dispatched_year1') {$order="`Part 1 Year Ago Provided`";}
-elseif ($order=='dispatched_year2') {$order="`Part 2 Year Ago Provided`";}
-elseif ($order=='dispatched_year3') {$order="`Part 3 Year Ago Provided`";}
-elseif ($order=='dispatched_year4') {$order="`Part 4 Year Ago Provided`";}
-elseif ($order=='dispatched_year0') {$order="`Part Year To Day Acc Provided`";}
+elseif ($order=='delta_sales_year0') {$order="(-1*(`Part Year To Day Acc Invoiced Amount`-`Part Year To Day Acc 1YB Invoiced Amount`)/`Part Year To Day Acc 1YB Invoiced Amount`)";}
+elseif ($order=='delta_sales_year1') {$order="(-1*(`Part 2 Year Ago Invoiced Amount`-`Part 1 Year Ago Invoiced Amount`)/`Part 2 Year Ago Invoiced Amount`)";}
+elseif ($order=='delta_sales_year2') {$order="(-1*(`Part 3 Year Ago Invoiced Amount`-`Part 2 Year Ago Invoiced Amount`)/`Part 3 Year Ago Invoiced Amount`)";}
+elseif ($order=='delta_sales_year3') {$order="(-1*(`Part 4 Year Ago Invoiced Amount`-`Part 3 Year Ago Invoiced Amount`)/`Part 4 Year Ago Invoiced Amount`)";}
+elseif ($order=='sales_year1') {$order="`Part 1 Year Ago Invoiced Amount`";}
+elseif ($order=='sales_year2') {$order="`Part 2 Year Ago Invoiced Amount`";}
+elseif ($order=='sales_year3') {$order="`Part 3 Year Ago Invoiced Amount`";}
+elseif ($order=='sales_year4') {$order="`Part 4 Year Ago Invoiced Amount`";}
+elseif ($order=='sales_year0') {$order="`Part Year To Day Acc Invoiced Amount`";}
+elseif ($order=='delta_dispatched_year0') {$order="(-1*(`Part Year To Day Acc Dispatched`-`Part Year To Day Acc 1YB Dispatched`)/`Part Year To Day Acc 1YB Dispatched`)";}
+elseif ($order=='delta_dispatched_year1') {$order="(-1*(`Part 2 Year Ago Dispatched`-`Part 1 Year Ago Dispatched`)/`Part 2 Year Ago Dispatched`)";}
+elseif ($order=='delta_dispatched_year2') {$order="(-1*(`Part 3 Year Ago Dispatched`-`Part 2 Year Ago Dispatched`)/`Part 3 Year Ago Dispatched`)";}
+elseif ($order=='delta_dispatched_year3') {$order="(-1*(`Part 4 Year Ago Dispatched`-`Part 3 Year Ago Dispatched`)/`Part 4 Year Ago Dispatched`)";}
+elseif ($order=='dispatched_year1') {$order="`Part 1 Year Ago Dispatched`";}
+elseif ($order=='dispatched_year2') {$order="`Part 2 Year Ago Dispatched`";}
+elseif ($order=='dispatched_year3') {$order="`Part 3 Year Ago Dispatched`";}
+elseif ($order=='dispatched_year4') {$order="`Part 4 Year Ago Dispatched`";}
+elseif ($order=='dispatched_year0') {$order="`Part Year To Day Acc Dispatched`";}
 elseif ($order=='has_picture') {$order="`Part Main Image Key`";}
 elseif ($order=='has_stock') {$order="`Part Current On Hand Stock`";}
 
@@ -218,18 +218,19 @@ else {
 $sql_totals="select count(Distinct P.`Part SKU`) as num from $table  $where  ";
 
 $fields.="P.`Part SKU`,`Part Reference`,`Part Package Description`,`Part Current Stock`,`Part Stock Status`,`Part Days Available Forecast`,`Part Current On Hand Stock`,
-`Part $db_period Acc Sold` as sold,
-`Part $db_period Acc Given` as given,
-`Part $db_period Acc Provided` as dispatched,
-(`Part $db_period Acc Broken`+`Part $db_period Acc Lost`) as lost,
-
-`Part $db_period Acc Sold Amount` as revenue,
-`Part $db_period Acc Acquired` as bought,
+`Part $db_period Acc Required` as required,
+`Part $db_period Acc Dispatched` as dispatched,
+`Part $db_period Acc Invoiced Amount` as sales,
 `Part Days Available Forecast`,$yb_fields
-`Part 1 Year Ago Provided`,`Part 2 Year Ago Provided`,`Part 3 Year Ago Provided`,`Part 4 Year Ago Provided`,
-`Part 1 Year Ago Sold Amount`,`Part 2 Year Ago Sold Amount`,`Part 3 Year Ago Sold Amount`,`Part 4 Year Ago Sold Amount`,
-`Part Year To Day Acc Sold Amount`,`Part Year To Day Acc 1YB Sold Amount`,`Part Year To Day Acc Provided`,`Part Year To Day Acc 1YB Provided`,
-`Part 1 Quarter Acc Provided`,`Part Valid From`,`Part Valid From`,`Part Active From`,`Part Main Image Key`,`Part Status`
+
+`Part 1 Year Ago Required`,`Part 2 Year Ago Required`,`Part 3 Year Ago Required`,`Part 4 Year Ago Required`,
+`Part 1 Year Ago Dispatched`,`Part 2 Year Ago Dispatched`,`Part 3 Year Ago Dispatched`,`Part 4 Year Ago Dispatched`,
+`Part 1 Year Ago Invoiced Amount`,`Part 2 Year Ago Invoiced Amount`,`Part 3 Year Ago Invoiced Amount`,`Part 4 Year Ago Invoiced Amount`,
+`Part 1 Year Ago Profit`,`Part 2 Year Ago Profit`,`Part 3 Year Ago Profit`,`Part 4 Year Ago Profit`,
+
+`Part Year To Day Acc Invoiced Amount`,`Part Year To Day Acc 1YB Profit`,`Part Year To Day Acc Required`,`Part Year To Day Acc Dispatched`,`Part Year To Day Acc 1YB Dispatched`,`Part Year To Day Acc 1YB Invoiced Amount`,
+`Part 1 Quarter Acc Dispatched`,
+`Part Valid From`,`Part Valid From`,`Part Active From`,`Part Main Image Key`,`Part Status`
 
 ";
 
