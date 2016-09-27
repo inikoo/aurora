@@ -26,14 +26,9 @@ mysql_set_charset('utf8');
 mysql_query("SET time_zone='+0:00'");
 
 
-
-require_once 'utils/get_addressing.php';
-
-require_once 'class.Customer.php';
-require_once 'class.Store.php';
-require_once 'class.Address.php';
 require_once 'class.Product.php';
-require_once 'class.Part.php';
+require_once 'class.Category.php';
+
 
 $editor=array(
 	'Author Name'=>'',
@@ -45,13 +40,35 @@ $editor=array(
 );
 
 
+print date('l jS \of F Y h:i:s A')."\n";
 
 //update_fields_from_parts($db);
 //print "updated fiels from parts\n";
-update_web_state($db);
+//update_web_state($db);
+
+update_categories_data($db);
 
 
-print date('l jS \of F Y h:i:s A')."\n";
+function update_categories_data($db) {
+
+	$sql=sprintf("select `Category Key` from `Category Dimension` where `Category Subject`='Product' ");
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+
+
+			$category=new Category($row['Category Key']);
+			$category->update_product_category_status();
+			$category->update_last_period_sales();
+			$category->update_interval_sales();
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+}
+
 
 function update_web_state($db) {
 
@@ -63,18 +80,18 @@ function update_web_state($db) {
 			$product=new Product('id', $row['Product ID']);
 
 			$product->update_part_numbers();
-			
+
 			$old_webstate=$product->get('Product Web State');
-			
+
 			$product->update_availability($use_fork=false);
 			$product->update_cost();
-			
+
 			$new_webstate=$product->get('Product Web State');
-			
-			if($old_webstate!=$new_webstate){
-			    print $product->id." ".$product->get('Product Store Key')." ".$product->get('Code')." $old_webstate  $new_webstate  \n";
+
+			if ($old_webstate!=$new_webstate) {
+				print $product->id." ".$product->get('Product Store Key')." ".$product->get('Code')." $old_webstate  $new_webstate  \n";
 			}
-			
+
 			//print $product->id."\r";
 		}
 

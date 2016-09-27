@@ -136,7 +136,11 @@ if (array_key_exists('f_period', $parameters)) {
 		'ytd'=>get_interval_db_name('ytd'),
 		'mtd'=>get_interval_db_name('mtd'),
 		'wtd'=>get_interval_db_name('wtd'),
-		'today'=>get_interval_db_name('today'),
+		'1y'=>get_interval_db_name('1y'),
+		'1q'=>get_interval_db_name('1q'),
+		'last_w'=>get_interval_db_name('last_w'),
+		'last_m'=>get_interval_db_name('last_m'),
+		//'today'=>get_interval_db_name('today'),
 
 	);
 	$smarty->assign('f_periods', $f_periods);

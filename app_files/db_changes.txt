@@ -443,6 +443,10 @@ migrate_parts.oneoff.php
 
 
 
+ALTER TABLE `Product Category Dimension` CHANGE `Product Category For Public Sale Products` `Product Category Products` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0', CHANGE `Product Category For Private Sale Products` `Product Category In Process Products` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0', CHANGE `Product Category In Process Products` `Product Category Active Products` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0', CHANGE `Product Category Not For Sale Products` `Product Category Suspended Products` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Product Category Dimension` ADD `Product Category Status` ENUM('In Process','Active','Suspended','Discontinued') NOT NULL DEFAULT 'In Process' AFTER `Product Category Store Key`, ADD INDEX (`Product Category Status`);
+ALTER TABLE `Product Category Dimension` ADD `Product Category Status` ENUM('In Process','Active','Suspended','Discontinuing','Discontinued') NOT NULL DEFAULT 'In Process' AFTER `Product Category Store Key`, ADD INDEX (`Product Category Status`);
+ALTER TABLE `Product Category Dimension` ADD `Product Category Discontinuing Products` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product Category Suspended Products`;
 
 
 Only for bali dw:

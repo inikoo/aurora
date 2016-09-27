@@ -10,7 +10,6 @@
 */
 
 $group_by='';
-
 switch ($parameters['parent']) {
 
 case 'account':

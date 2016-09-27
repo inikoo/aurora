@@ -36,11 +36,11 @@ case 'stores':
 	break;
 
 case 'products':
-	products(get_table_parameters(), $db, $user,$account);
+	products(get_table_parameters(), $db, $user, $account);
 	break;
 case 'services':
 	services(get_table_parameters(), $db, $user);
-	break;	
+	break;
 case 'categories':
 	categories(get_table_parameters(), $db, $user);
 	break;
@@ -54,7 +54,12 @@ case 'sales_history':
 case 'parts':
 	parts(get_table_parameters(), $db, $user, $account);
 	break;
-
+case 'product_categories':
+	product_categories(get_table_parameters(), $db, $user, $account);
+	break;
+case 'product_families':
+	product_families(get_table_parameters(), $db, $user, $account);
+	break;
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
@@ -103,7 +108,7 @@ function stores($_data, $db, $user) {
 }
 
 
-function products($_data, $db, $user,$account) {
+function products($_data, $db, $user, $account) {
 
 
 
@@ -128,7 +133,7 @@ function products($_data, $db, $user,$account) {
 
 			$associated=sprintf('<i key="%d" class="fa fa-fw fa-link button" aria-hidden="true" onClick="edit_category_subject(this)" ></i>', $data['Product ID']);
 
-switch ($data['Product Status']) {
+			switch ($data['Product Status']) {
 			case 'Active':
 				$status= _('Active');
 				break;
@@ -161,7 +166,7 @@ switch ($data['Product Status']) {
 				break;
 			}
 
-	switch ($data['Product Web State']) {
+			switch ($data['Product Web State']) {
 			case 'For Sale':
 				$web_state= '<span class="'.(($data['Product Availability']<=0 and  $data['Product Number of Parts']>0  )?'error':'').'">'._('Online').'</span>'.($data['Product Web Configuration']=='Online Force For Sale'?' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>':'');
 				break;
@@ -201,7 +206,15 @@ switch ($data['Product Status']) {
 				'price'=>money($data['Product Price'], $data['Store Currency Code']),
 				'margin'=>'<span title="'._('Cost price').':'.money($data['Product Cost'], $account->get('Account Currency')).'">'.percentage($data['Product Price']-$data['Product Cost'], $data['Product Price']).'<span>',
 				'web_state'=>$web_state,
-				'status'=>$status
+				'status'=>$status,
+				'sales'=>money($data['sales'], $data['Store Currency Code']),
+				'sales_1yb'=>delta($data['sales'], $data['sales_1yb']),
+				'sales_year0'=>sprintf('<span title="%s">%s</span>', delta($data["Product Year To Day Acc Invoiced Amount"], $data["Product Year To Day Acc 1YB Invoiced Amount"]), money($data['Product Year To Day Acc Invoiced Amount'], $data['Store Currency Code'])),
+				'sales_year1'=>sprintf('<span title="%s">%s</span>', delta($data["Product 1 Year Ago Invoiced Amount"], $data["Product 2 Year Ago Invoiced Amount"]), money($data['Product 1 Year Ago Invoiced Amount'], $data['Store Currency Code'])),
+				'sales_year2'=>sprintf('<span title="%s">%s</span>', delta($data["Product 2 Year Ago Invoiced Amount"], $data["Product 3 Year Ago Invoiced Amount"]), money($data['Product 2 Year Ago Invoiced Amount'], $data['Store Currency Code'])),
+				'sales_year3'=>sprintf('<span title="%s">%s</span>', delta($data["Product 3 Year Ago Invoiced Amount"], $data["Product 4 Year Ago Invoiced Amount"]), money($data['Product 3 Year Ago Invoiced Amount'], $data['Store Currency Code'])),
+				'sales_year4'=>money($data['Product 4 Year Ago Invoiced Amount'], $data['Store Currency Code']),
+
 			);
 
 
@@ -230,11 +243,12 @@ switch ($data['Product Status']) {
 	echo json_encode($response);
 }
 
+
 function services($_data, $db, $user) {
 
 
 
-		$rtext_label='service';
+	$rtext_label='service';
 
 
 	include_once 'prepare_table/init.php';
@@ -286,6 +300,7 @@ function services($_data, $db, $user) {
 	);
 	echo json_encode($response);
 }
+
 
 function categories($_data, $db, $user) {
 
@@ -697,7 +712,7 @@ function parts($_data, $db, $user, $account) {
 				'id'=>(integer)$data['Part SKU'],
 				'reference'=>$data['Part Reference'],
 				'package_description'=>$data['Part Package Description'],
-				'picking_ratio'=>number($data['Product Part Ratio'],5),
+				'picking_ratio'=>number($data['Product Part Ratio'], 5),
 				'picking_note'=>$data['Product Part Note'],
 				'stock_status'=>$stock_status,
 				'stock_status_label'=>$stock_status_label,
@@ -716,6 +731,154 @@ function parts($_data, $db, $user, $account) {
 
 
 
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function product_categories($_data, $db, $user) {
+
+	include_once 'class.Category.php';
+	include_once 'class.Store.php';
+
+	$parent=new Category($_data['parameters']['parent_key']);
+	$store=new Store($parent->get('Category Store Key'));
+	if ($store->get('Store Family Category Key')==$parent->get('Category Root Key')) {
+		$rtext_label='family';
+	}elseif ($store->get('Store Department Category Key')==$parent->get('Category Root Key')) {
+		$rtext_label='department';
+	}else {
+		$rtext_label='category';
+	}
+
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+	//print $sql;
+
+	$adata=array();
+
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $data) {
+
+
+
+			switch ($data['Product Category Status']) {
+			case 'In Process':
+				$status=_('Empty');
+				break;
+			case 'Active':
+				$status=_('Active');
+				break;
+			case 'Suspended':
+				$status=_('Suspended');
+				break;
+			case 'Discontinued':
+				$status=_('Discontinued');
+				break;
+			case 'Discontinuing':
+				$status=_('Discontinuing');
+				break;
+			default:
+				$status=$data['Product Category Status'];
+				break;
+			}
+
+
+			$adata[]=array(
+				'id'=>(integer) $data['Product Category Key'],
+				'store_key'=>(integer) $data['Category Store Key'],
+				'code'=>$data['Category Code'],
+				'label'=>$data['Category Label'],
+				'status'=>$status,
+				'products'=>number($data['products']),
+				'in_process'=>number($data['Product Category In Process Products']),
+				'active'=>number($data['Product Category Active Products']),
+				'suspended'=>number($data['Product Category Suspended Products']),
+				'discontinuing'=>number($data['Product Category Discontinuing Products']),
+				'discontinued'=>number($data['Product Category Discontinued Products']),
+				'sales'=>money($data['sales'], $data['Product Category Currency Code']),
+				'sales_1yb'=>money($data['sales_1yb'], $data['Product Category Currency Code'])
+
+			);
+
+
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		print " <br>\n $sql \n";
+
+		exit;
+	}
+
+
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function product_families($_data, $db, $user) {
+
+	include_once 'class.Category.php';
+	include_once 'class.Store.php';
+
+	$parent=new Category($_data['parameters']['parent_key']);
+	$store=new Store($parent->get('Category Store Key'));
+
+	if ($store->get('Store Department Category Key')==$parent->get('Category Root Key')) {
+		$rtext_label='family';
+	}else {
+		$rtext_label='category';
+	}
+
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+	//print $sql;
+
+	$adata=array();
+
+
+	foreach ($db->query($sql) as $data) {
+
+
+
+
+		$adata[]=array(
+			'id'=>(integer) $data['Category Key'],
+			'store_key'=>(integer) $data['Category Store Key'],
+			'code'=>$data['Category Code'],
+			'label'=>$data['Category Label'],
+		);
+
+	}
 
 	$response=array('resultset'=>
 		array(

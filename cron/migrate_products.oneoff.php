@@ -57,9 +57,85 @@ update_web_configuration($db);
 set_family_department_key($db);
 migrate_page_related_products($db);
 update_products_web_status($db);
-*/
-
 update_cost($db);
+*/
+create_data_tables($db);
+
+
+
+
+function create_data_tables($db) {
+
+
+	$sql=sprintf('select `Product ID` from `Product Dimension` order by `Product ID`  ');
+
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+			$sql=sprintf("insert into `Product Data` (`Product ID`) values (%d)",
+				$row['Product ID']
+
+			);
+			
+			
+			
+			$db->exec($sql);
+			$sql=sprintf("insert into `Product DC Data` (`Product ID`) values (%d)",
+				$row['Product ID']
+
+			);
+			$db->exec($sql);
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+	$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Product"  ');
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+
+			$category=new Category($row['Category Key']);
+
+			$store=new Store($category->data['Category Store Key']);
+
+
+			$sql=sprintf("insert into `Product Category Dimension` (`Product Category Key`,`Product Category Store Key`,`Product Category Currency Code`,`Product Category Valid From`) values (%d,%d,%s,%s)",
+				$category->id,
+				$store->id,
+				prepare_mysql($store->get('Store Currency Code')),
+				prepare_mysql(gmdate('Y-m-d H:i:s'))
+			);
+			$db->exec($sql);
+
+			$sql=sprintf("insert into `Product Category Data` (`Product Category Key`) values (%d)",
+				$category->id
+
+			);
+			$db->exec($sql);
+			$sql=sprintf("insert into `Product Category DC Data` (`Product Category Key`) values (%d)",
+				$category->id
+
+			);
+			$db->exec($sql);
+
+
+
+		//	$category->update_product_category_up_today_sales();
+
+
+
+
+
+		}
+
+	}else {print_r($error_info=$db->errorInfo());exit;}
+
+}
+
 
 
 
@@ -71,7 +147,7 @@ function update_products_web_status($db) {
 		foreach ($result as $row) {
 			$part=new Part($row['Part SKU']);
 
-            $part->update_products_web_status();
+			$part->update_products_web_status();
 
 		}
 
@@ -88,7 +164,7 @@ function update_cost($db) {
 		foreach ($result as $row) {
 			$product=new Product('id', $row['Product ID']);
 
-		
+
 			$product->update_cost();
 			print $product->id."\r";
 		}
@@ -118,7 +194,7 @@ function set_family_department_key($db) {
 
 
 
-			
+
 
 			$sql=sprintf("select B.`Category Key`,`Category Root Key`,`Other Note`,`Category Label`,`Category Code`,`Is Category Field Other` from `Category Bridge` B left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`) where  `Category Branch Type`='Head'  and B.`Subject Key`=%d and B.`Subject`='Category'",
 				$category->id
@@ -169,13 +245,13 @@ function migrate_page_related_products($db) {
 				}
 			}
 			//print_r($row);
-		//	print_r($products_ids);
-			
-			
-			
-			
-			$page->update(array('Related Products'=>json_encode($products_ids)) ,'no_history' );
-		
+			// print_r($products_ids);
+
+
+
+
+			$page->update(array('Related Products'=>json_encode($products_ids)) , 'no_history' );
+
 		}
 
 	}else {

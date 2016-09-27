@@ -1,0 +1,1 @@
+category.product_categories.cols.tpl
