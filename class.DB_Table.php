@@ -201,12 +201,7 @@ abstract class DB_Table {
 
 
 
-		}
-		else if ($table_name=='Supplier Product') {
-
-			$key_field='Supplier Product Current Key';
-		}
-		else if ($table_name=='Part') {
+		}else if ($table_name=='Part'  or $table_full_name=='Part Data') {
 			$key_field='Part SKU';
 		}else if ($table_name=='Product' or $table_full_name=='Product Data' or $table_full_name=='Product DC Data') {
 			$key_field='Product ID';

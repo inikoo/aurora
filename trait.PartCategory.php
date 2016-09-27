@@ -117,8 +117,7 @@ trait PartCategory {
 	}
 
 
-	function get_part_timeseries_record_data($timeseries, $date_frequency_period) {
-
+	function get_part_skus() {
 
 		$part_skus='';
 		$sql=sprintf('select `Subject Key`,`Subject` from `Category Bridge` where `Category Key`=%d and `Subject Key`>0 ', $this->id);
@@ -134,6 +133,18 @@ trait PartCategory {
 			exit;
 		}
 		$part_skus=preg_replace('/\,$/', '', $part_skus);
+
+		return $part_skus;
+
+	}
+
+
+	function get_part_timeseries_record_data($timeseries, $date_frequency_period) {
+
+
+		$part_skus=$this->get_part_skus();
+
+		$subject_type=$this->get('Category Subject');
 
 		if ($subject_type=='Category') {
 			$category_ids=$part_skus;
@@ -343,199 +354,92 @@ trait PartCategory {
 	}
 
 
-	function update_part_category_sales($interval) {
+	function get_sales_data($from_date, $to_date) {
 
-		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($this->db, $interval);
+		$sales_data=array(
+			'invoiced_amount'=>0,
+			'profit'=>0,
+			'required'=>0,
+			'dispatched'=>0,
+			'deliveries'=>0,
+			'customers'=>0,
+			'repeat_customers'=>0,
+			'keep_days'=>0,
+			'with_stock_days'=>0,
 
+		);
 
+		$part_skus=$this->get_part_skus();
 
-		$sql=sprintf("select 	sum(`Part $db_interval Acc Profit`) as profit,
-								sum(`Part $db_interval Acc Profit After Storing`) as profit_after_storing,
-								sum(`Part $db_interval Acc Acquired`) as bought,
-								sum(`Part $db_interval Acc Sold Amount`) as sold_amount,
-								sum(`Part $db_interval Acc Sold`) as sold,
-								sum(`Part $db_interval Acc Provided`) as dispatched,
-								sum(`Part $db_interval Acc Required`) as required,
-								sum(`Part $db_interval Acc Given`) as given,
-								sum(`Part $db_interval Acc Broken`) as broken,
-								sum(`Part $db_interval Acc Lost`) as lost
-
-								from `Part Data` ITF left join `Category Bridge` on (`Part SKU`=`Subject Key` and `Subject`='Part')   where `Category Key`=%d" ,
-			$this->id);
-
-
-		if ($result=$this->db->query($sql)) {
-			if ($row = $result->fetch()) {
-				$this->data["Part Category $db_interval Acc Profit"]=$row['profit'];
-				$this->data["Part Category $db_interval Acc Profit After Storing"]=$row['profit_after_storing'];
-				$this->data["Part Category $db_interval Acc Acquired"]=$row['bought'];
-				$this->data["Part Category $db_interval Acc Sold Amount"]=$row['sold_amount'];
-				$this->data["Part Category $db_interval Acc Sold"]=$row['sold'];
-				$this->data["Part Category $db_interval Acc Provided"]=-1.0*$row['dispatched'];
-				$this->data["Part Category $db_interval Acc Required"]=$row['required'];
-				$this->data["Part Category $db_interval Acc Given"]=$row['given'];
-				$this->data["Part Category $db_interval Acc Broken"]=$row['broken'];
-				$this->data["Part Category $db_interval Acc Lost"]=$row['lost'];
-			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
-		}
-
-
-
-
-
-		if ($this->data["Part Category $db_interval Acc Sold Amount"]!=0)
-			$margin=$this->data["Part Category $db_interval Acc Profit After Storing"]/$this->data["Part Category $db_interval Acc Sold Amount"];
-		else
-			$margin=0;
-		$this->data["Part Category $db_interval Acc Margin"]=$margin;
-
-
-		$sql=sprintf("update `Part Category Dimension` set
-                     `Part Category $db_interval Acc Required`=%f ,
-                     `Part Category $db_interval Acc Provided`=%f,
-                     `Part Category $db_interval Acc Given`=%f ,
-                     `Part Category $db_interval Acc Sold Amount`=%f ,
-                     `Part Category $db_interval Acc Profit`=%f ,
-                     `Part Category $db_interval Acc Profit After Storing`=%f ,
-                     `Part Category $db_interval Acc Sold`=%f ,
-                     `Part Category $db_interval Acc Margin`=%s,
-                     `Part Category $db_interval Acc Acquired`=%s,
-                     `Part Category $db_interval Acc Broken`=%s,
-                     `Part Category $db_interval Acc Lost`=%s
-                      where
-                     `Part Category Key`=%d "
-			, $this->data["Part Category $db_interval Acc Required"]
-			, $this->data["Part Category $db_interval Acc Provided"]
-			, $this->data["Part Category $db_interval Acc Given"]
-			, $this->data["Part Category $db_interval Acc Sold Amount"]
-			, $this->data["Part Category $db_interval Acc Profit"]
-			, $this->data["Part Category $db_interval Acc Profit After Storing"]
-			, $this->data["Part Category $db_interval Acc Sold"]
-			, $this->data["Part Category $db_interval Acc Margin"]
-			, $this->data["Part Category $db_interval Acc Acquired"]
-			, $this->data["Part Category $db_interval Acc Broken"]
-			, $this->data["Part Category $db_interval Acc Lost"]
-
-			, $this->id);
-
-		$this->db->exec($sql);
-		//print "$sql\n";
-
-		if ($from_date_1yb) {
-
-			$sql=sprintf("select 	sum(`Part $db_interval Acc 1YB Profit`) as profit,
-								sum(`Part $db_interval Acc 1YB Profit After Storing`) as profit_after_storing,
-								sum(`Part $db_interval Acc 1YB Acquired`) as bought,
-								sum(`Part $db_interval Acc 1YB Sold Amount`) as sold_amount,
-								sum(`Part $db_interval Acc 1YB Sold`) as sold,
-								sum(`Part $db_interval Acc 1YB Provided`) as dispatched,
-								sum(`Part $db_interval Acc 1YB Required`) as required,
-								sum(`Part $db_interval Acc 1YB Given`) as given,
-								sum(`Part $db_interval Acc 1YB Broken`) as broken,
-								sum(`Part $db_interval Acc 1YB Lost`) as lost
-
-								from `Part Data` ITF left join `Category Bridge` on (`Part SKU`=`Subject Key` and `Subject`='Part')   where `Category Key`=%d" ,
-				$this->id);
-
+		if ($part_skus!='' and $this->get('Category Branch Type')!='Root') {
+			$sql=sprintf("select count( distinct `Delivery Note Key`) as deliveries, round(ifnull(sum(`Amount In`),0),2) as invoiced_amount,round(ifnull(sum(`Amount In`+`Inventory Transaction Amount`),0),2) as profit,round(ifnull(sum(`Inventory Transaction Quantity`),0),1) as dispatched,round(ifnull(sum(`Required`),0),1) as required from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type` like 'Sale' and `Part SKU` in (%s) %s %s" ,
+				$part_skus,
+				($from_date?sprintf('and  `Date`>=%s', prepare_mysql($from_date)):''),
+				($to_date?sprintf('and `Date`<%s', prepare_mysql($to_date)):'')
+			);
 
 			if ($result=$this->db->query($sql)) {
 				if ($row = $result->fetch()) {
-					$this->data["Part Category $db_interval Acc 1YB Profit"]=$row['profit'];
-					$this->data["Part Category $db_interval Acc 1YB Profit After Storing"]=$row['profit_after_storing'];
-					$this->data["Part Category $db_interval Acc 1YB Acquired"]=$row['bought'];
-					$this->data["Part Category $db_interval Acc 1YB Sold Amount"]=$row['sold_amount'];
-					$this->data["Part Category $db_interval Acc 1YB Sold"]=$row['sold'];
-					$this->data["Part Category $db_interval Acc 1YB Provided"]=-1.0*$row['dispatched'];
-					$this->data["Part Category $db_interval Acc 1YB Required"]=$row['required'];
-					$this->data["Part Category $db_interval Acc 1YB Given"]=$row['given'];
-					$this->data["Part Category $db_interval Acc 1YB Broken"]=$row['broken'];
-					$this->data["Part Category $db_interval Acc 1YB Lost"]=$row['lost'];
+					$sales_data['invoiced_amount']=$row['invoiced_amount'];
+					$sales_data['profit']=$row['profit'];
+					$sales_data['dispatched']=-1.0*$row['dispatched'];
+					$sales_data['required']=$row['required'];
+					$sales_data['deliveries']=$row['deliveries'];
 				}
 			}else {
 				print_r($error_info=$this->db->errorInfo());
 				exit;
 			}
+		}
+
+		return $sales_data;
 
 
-
-			if ($this->data["Part Category $db_interval Acc 1YB Sold Amount"]!=0)
-				$margin=$this->data["Part Category $db_interval Acc 1YB Profit After Storing"]/$this->data["Part Category $db_interval Acc 1YB Sold Amount"];
-			else
-				$margin=0;
-			$this->data["Part Category $db_interval Acc 1YB Margin"]=$margin;
+	}
 
 
-			$sql=sprintf("update `Part Category Dimension` set
-                     `Part Category $db_interval Acc 1YB Required`=%f ,
-                     `Part Category $db_interval Acc 1YB Provided`=%f,
-                     `Part Category $db_interval Acc 1YB Given`=%f ,
-                     `Part Category $db_interval Acc 1YB Sold Amount`=%f ,
-                     `Part Category $db_interval Acc 1YB Profit`=%f ,
-                     `Part Category $db_interval Acc 1YB Profit After Storing`=%f ,
-                     `Part Category $db_interval Acc 1YB Sold`=%f ,
-                     `Part Category $db_interval Acc 1YB Margin`=%s,
-                     `Part Category $db_interval Acc 1YB Acquired`=%s,
-                     `Part Category $db_interval Acc 1YB Broken`=%s,
-                     `Part Category $db_interval Acc 1YB Lost`=%s
-                      where
-                     `Part Category Key`=%d "
-				, $this->data["Part Category $db_interval Acc 1YB Required"]
-				, $this->data["Part Category $db_interval Acc 1YB Provided"]
-				, $this->data["Part Category $db_interval Acc 1YB Given"]
-				, $this->data["Part Category $db_interval Acc 1YB Sold Amount"]
-				, $this->data["Part Category $db_interval Acc 1YB Profit"]
-				, $this->data["Part Category $db_interval Acc 1YB Profit After Storing"]
-				, $this->data["Part Category $db_interval Acc 1YB Sold"]
-				, $this->data["Part Category $db_interval Acc 1YB Margin"]
-				, $this->data["Part Category $db_interval Acc 1YB Acquired"]
-				, $this->data["Part Category $db_interval Acc 1YB Broken"]
-				, $this->data["Part Category $db_interval Acc 1YB Lost"]
-
-				, $this->id);
-
-			$this->db->exec($sql);
-			//print "$sql\n";
+	function update_part_category_sales($interval) {
 
 
+		include_once 'utils/date_functions.php';
 
-			$this->data["Part Category $db_interval Acc 1YD Required"]=($this->data["Part Category $db_interval Acc 1YB Required"]==0?0:($this->data["Part Category $db_interval Acc Required"]-$this->data["Part Category $db_interval Acc 1YB Required"])/$this->data["Part Category $db_interval Acc 1YB Required"]);
-			$this->data["Part Category $db_interval Acc 1YD Provided"]=($this->data["Part Category $db_interval Acc 1YB Provided"]==0?0:($this->data["Part Category $db_interval Acc Provided"]-$this->data["Part Category $db_interval Acc 1YB Provided"])/$this->data["Part Category $db_interval Acc 1YB Provided"]);
-			$this->data["Part Category $db_interval Acc 1YD Given"]=($this->data["Part Category $db_interval Acc 1YB Given"]==0?0:($this->data["Part Category $db_interval Acc Given"]-$this->data["Part Category $db_interval Acc 1YB Given"])/$this->data["Part Category $db_interval Acc 1YB Given"]);
-			$this->data["Part Category $db_interval Acc 1YD Sold Amount"]=($this->data["Part Category $db_interval Acc 1YB Sold Amount"]==0?0:($this->data["Part Category $db_interval Acc Sold Amount"]-$this->data["Part Category $db_interval Acc 1YB Sold Amount"])/$this->data["Part Category $db_interval Acc 1YB Sold Amount"]);
-			$this->data["Part Category $db_interval Acc 1YD Profit"]=($this->data["Part Category $db_interval Acc 1YB Profit"]==0?0:($this->data["Part Category $db_interval Acc Profit"]-$this->data["Part Category $db_interval Acc 1YB Profit"])/$this->data["Part Category $db_interval Acc 1YB Profit"]);
-			$this->data["Part Category $db_interval Acc 1YD Profit After Storing"]=($this->data["Part Category $db_interval Acc 1YB Profit After Storing"]==0?0:($this->data["Part Category $db_interval Acc Profit After Storing"]-$this->data["Part Category $db_interval Acc 1YB Profit After Storing"])/$this->data["Part Category $db_interval Acc 1YB Profit After Storing"]);
-			$this->data["Part Category $db_interval Acc 1YD Sold"]=($this->data["Part Category $db_interval Acc 1YB Sold"]==0?0:($this->data["Part Category $db_interval Acc Sold"]-$this->data["Part Category $db_interval Acc 1YB Sold"])/$this->data["Part Category $db_interval Acc 1YB Sold"]);
-			$this->data["Part Category $db_interval Acc 1YD Margin"]=($this->data["Part Category $db_interval Acc 1YB Margin"]==0?0:($this->data["Part Category $db_interval Acc Margin"]-$this->data["Part Category $db_interval Acc 1YB Margin"])/$this->data["Part Category $db_interval Acc 1YB Margin"]);
+		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($this->db, $interval);
 
+		$sales_data=$this->get_sales_data( $from_date, $to_date);
 
-			$sql=sprintf("update `Part Category Dimension` set
-                     `Part Category $db_interval Acc 1YD Required`=%f ,
-                     `Part Category $db_interval Acc 1YD Provided`=%f,
-                     `Part Category $db_interval Acc 1YD Given`=%f ,
-                     `Part Category $db_interval Acc 1YD Sold Amount`=%f ,
-                     `Part Category $db_interval Acc 1YD Profit`=%f ,
-                     `Part Category $db_interval Acc 1YD Profit After Storing`=%f ,
-                     `Part Category $db_interval Acc 1YD Sold`=%f ,
-                     `Part Category $db_interval Acc 1YD Margin`=%s where
-                      `Part Category Key`=%d "
-				, $this->data["Part Category $db_interval Acc 1YD Required"]
-				, $this->data["Part Category $db_interval Acc 1YD Provided"]
-				, $this->data["Part Category $db_interval Acc 1YD Given"]
-				, $this->data["Part Category $db_interval Acc 1YD Sold Amount"]
-				, $this->data["Part Category $db_interval Acc 1YD Profit"]
-				, $this->data["Part Category $db_interval Acc 1YD Profit After Storing"]
-				, $this->data["Part Category $db_interval Acc 1YD Sold"]
-				, $this->data["Part Category $db_interval Acc 1YD Margin"]
+		$data_to_update=array(
+			"Part Category $db_interval Acc Customers"=>$sales_data['customers'],
+			"Part Category $db_interval Acc Repeat Customers"=>$sales_data['repeat_customers'],
+			"Part Category $db_interval Acc Deliveries"=>$sales_data['deliveries'],
+			"Part Category $db_interval Acc Profit"=>$sales_data['profit'],
+			"Part Category $db_interval Acc Invoiced Amount"=>$sales_data['invoiced_amount'],
+			"Part Category $db_interval Acc Required"=>$sales_data['required'],
+			"Part Category $db_interval Acc Dispatched"=>$sales_data['dispatched'],
+			"Part Category $db_interval Acc Keeping Day"=>$sales_data['keep_days'],
+			"Part Category $db_interval Acc With Stock Days"=>$sales_data['with_stock_days'],
+		);
+		$this->update( $data_to_update, 'no_history');
 
-				, $this->id);
-
-			$this->db->exec($sql);
-			//print "$sql\n";
+		if ($from_date_1yb) {
 
 
+			$sales_data=$this->get_sales_data($from_date_1yb, $to_1yb);
+
+
+			$data_to_update=array(
+
+				"Part Category $db_interval Acc 1YB Customers"=>$sales_data['customers'],
+				"Part Category $db_interval Acc 1YB Repeat Customers"=>$sales_data['repeat_customers'],
+				"Part Category $db_interval Acc 1YB Deliveries"=>$sales_data['deliveries'],
+				"Part Category $db_interval Acc 1YB Profit"=>$sales_data['profit'],
+				"Part Category $db_interval Acc 1YB Invoiced Amount"=>$sales_data['invoiced_amount'],
+				"Part Category $db_interval Acc 1YB Required"=>$sales_data['required'],
+				"Part Category $db_interval Acc 1YB Dispatched"=>$sales_data['dispatched'],
+				"Part Category $db_interval Acc 1YB Keeping Day"=>$sales_data['keep_days'],
+				"Part Category $db_interval Acc 1YB With Stock Days"=>$sales_data['with_stock_days'],
+
+			);
+			$this->update( $data_to_update, 'no_history');
 
 
 		}
@@ -546,30 +450,59 @@ trait PartCategory {
 
 	function update_part_category_previous_years_data() {
 
-		$sales_data=$this->get_part_category_sales_data('1');
-		$this->data['Part Category 1 Year Ago Sold Amount']=$sales_data['sold_amount'];
+		$data_1y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-1 year')), date('Y-01-01 00:00:00'));
+		$data_2y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-2 year')), date('Y-01-01 00:00:00', strtotime('-1 year')));
+		$data_3y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-3 year')), date('Y-01-01 00:00:00', strtotime('-2 year')));
+		$data_4y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-4 year')), date('Y-01-01 00:00:00', strtotime('-3 year')));
 
-		$sales_data=$this->get_part_category_sales_data('2');
-		$this->data['Part Category 2 Year Ago Sold Amount']=$sales_data['sold_amount'];
+		$data_to_update=array(
 
-		$sales_data=$this->get_part_category_sales_data('3');
-		$this->data['Part Category 3 Year Ago Sold Amount']=$sales_data['sold_amount'];
+			"Part Category 1 Year Ago Customers"=>$data_1y_ago['customers'],
+			"Part Category 1 Year Ago Repeat Customers"=>$data_1y_ago['repeat_customers'],
+			"Part Category 1 Year Ago Deliveries"=>$data_1y_ago['deliveries'],
+			"Part Category 1 Year Ago Profit"=>$data_1y_ago['profit'],
+			"Part Category 1 Year Ago Invoiced Amount"=>$data_1y_ago['invoiced_amount'],
+			"Part Category 1 Year Ago Required"=>$data_1y_ago['required'],
+			"Part Category 1 Year Ago Dispatched"=>$data_1y_ago['dispatched'],
+			"Part Category 1 Year Ago Keeping Day"=>$data_1y_ago['keep_days'],
+			"Part Category 1 Year Ago With Stock Days"=>$data_1y_ago['with_stock_days'],
 
-		$sales_data=$this->get_part_category_sales_data('4');
-		$this->data['Part Category 4 Year Ago Sold Amount']=$sales_data['sold_amount'];
+			"Part Category 2 Year Ago Customers"=>$data_2y_ago['customers'],
+			"Part Category 2 Year Ago Repeat Customers"=>$data_2y_ago['repeat_customers'],
+			"Part Category 2 Year Ago Deliveries"=>$data_2y_ago['deliveries'],
+			"Part Category 2 Year Ago Profit"=>$data_2y_ago['profit'],
+			"Part Category 2 Year Ago Invoiced Amount"=>$data_2y_ago['invoiced_amount'],
+			"Part Category 2 Year Ago Required"=>$data_2y_ago['required'],
+			"Part Category 2 Year Ago Dispatched"=>$data_2y_ago['dispatched'],
+			"Part Category 2 Year Ago Keeping Day"=>$data_2y_ago['keep_days'],
+			"Part Category 2 Year Ago With Stock Days"=>$data_2y_ago['with_stock_days'],
 
+			"Part Category 3 Year Ago Customers"=>$data_3y_ago['customers'],
+			"Part Category 3 Year Ago Repeat Customers"=>$data_3y_ago['repeat_customers'],
+			"Part Category 3 Year Ago Deliveries"=>$data_3y_ago['deliveries'],
+			"Part Category 3 Year Ago Profit"=>$data_3y_ago['profit'],
+			"Part Category 3 Year Ago Invoiced Amount"=>$data_3y_ago['invoiced_amount'],
+			"Part Category 3 Year Ago Required"=>$data_3y_ago['required'],
+			"Part Category 3 Year Ago Dispatched"=>$data_3y_ago['dispatched'],
+			"Part Category 3 Year Ago Keeping Day"=>$data_3y_ago['keep_days'],
+			"Part Category 3 Year Ago With Stock Days"=>$data_3y_ago['with_stock_days'],
 
-		$sql=sprintf("update `Part Category Dimension` set `Part Category 1 Year Ago Sold Amount`=%.2f, `Part Category 2 Year Ago Sold Amount`=%.2f,`Part Category 3 Year Ago Sold Amount`=%.2f, `Part Category 4 Year Ago Sold Amount`=%.2f where `Part Category Key`=%d ",
+			"Part Category 4 Year Ago Customers"=>$data_4y_ago['customers'],
+			"Part Category 4 Year Ago Repeat Customers"=>$data_4y_ago['repeat_customers'],
+			"Part Category 4 Year Ago Deliveries"=>$data_4y_ago['deliveries'],
+			"Part Category 4 Year Ago Profit"=>$data_4y_ago['profit'],
+			"Part Category 4 Year Ago Invoiced Amount"=>$data_4y_ago['invoiced_amount'],
+			"Part Category 4 Year Ago Required"=>$data_4y_ago['required'],
+			"Part Category 4 Year Ago Dispatched"=>$data_4y_ago['dispatched'],
+			"Part Category 4 Year Ago Keeping Day"=>$data_4y_ago['keep_days'],
+			"Part Category 4 Year Ago With Stock Days"=>$data_4y_ago['with_stock_days'],
 
-			$this->data["Part Category 1 Year Ago Sold Amount"],
-			$this->data["Part Category 2 Year Ago Sold Amount"],
-			$this->data["Part Category 3 Year Ago Sold Amount"],
-			$this->data["Part Category 4 Year Ago Sold Amount"],
+		
 
-			$this->id
 
 		);
-		$this->db->exec($sql);
+		$this->update( $data_to_update, 'no_history');
+
 
 
 	}

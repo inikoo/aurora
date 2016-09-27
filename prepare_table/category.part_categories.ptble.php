@@ -24,10 +24,10 @@ default:
 
 $db_period=get_interval_db_name($parameters['f_period']);
 if(in_array($db_period,array('Total','3 Year'))){
-$yb_fields=" '' as revenue_1y";
+$yb_fields=" '' as sales_1y";
 
 }else{
-$yb_fields="`Part Category $db_period Acc 1YB Sold Amount` as revenue_1y";
+$yb_fields="`Part Category $db_period Acc 1YB Invoiced Amount` as sales_1y";
 }
 
 
@@ -71,18 +71,20 @@ elseif ($order=='low') {
 	$order="`Part Category Number Critical Parts`";
 }elseif ($order=='out_of_stock') {
 	$order="`Supplier Number Out Of Stock Parts`";
-}	elseif ($order=='stock_error') {
+}elseif ($order=='stock_error') {
 	$order="`Supplier Number Error Parts`";
+}elseif ($order=='sales') {
+	$order="`Part Category $db_period Acc Invoiced Amount`";
 }	
-elseif ($order=='delta_revenue_year0') {$order="(-1*(`Part Category Year To Day Acc Sold Amount`-`Part Category Year To Day Acc 1YB Sold Amount`)/`Part Category Year To Day Acc 1YB Sold Amount`)";}
-elseif ($order=='delta_revenue_year1') {$order="(-1*(`Part Category 2 Year Ago Sold Amount`-`Part Category 1 Year Ago Sold Amount`)/`Part Category 2 Year Ago Sold Amount`)";}
-elseif ($order=='delta_revenue_year2') {$order="(-1*(`Part Category 3 Year Ago Sold Amount`-`Part Category 2 Year Ago Sold Amount`)/`Part Category 3 Year Ago Sold Amount`)";}
-elseif ($order=='delta_revenue_year3') {$order="(-1*(`Part Category 4 Year Ago Sold Amount`-`Part Category 3 Year Ago Sold Amount`)/`Part Category 4 Year Ago Sold Amount`)";}
-elseif ($order=='revenue_year1') {$order="`Part Category 1 Year Ago Sold Amount`";}
-elseif ($order=='revenue_year2') {$order="`Part Category 2 Year Ago Sold Amount`";}
-elseif ($order=='revenue_year3') {$order="`Part Category 3 Year Ago Sold Amount`";}
-elseif ($order=='revenue_year4') {$order="`Part Category 4 Year Ago Sold Amount`";}
-elseif ($order=='revenue_year0') {$order="`Part Category Year To Day Acc Sold Amount`";}
+elseif ($order=='delta_sales_year0') {$order="(-1*(`Part Category Year To Day Acc Invoiced Amount`-`Part Category Year To Day Acc 1YB Invoiced Amount`)/`Part Category Year To Day Acc 1YB Invoiced Amount`)";}
+elseif ($order=='delta_sales_year1') {$order="(-1*(`Part Category 2 Year Ago Invoiced Amount`-`Part Category 1 Year Ago Invoiced Amount`)/`Part Category 2 Year Ago Invoiced Amount`)";}
+elseif ($order=='delta_sales_year2') {$order="(-1*(`Part Category 3 Year Ago Invoiced Amount`-`Part Category 2 Year Ago Invoiced Amount`)/`Part Category 3 Year Ago Invoiced Amount`)";}
+elseif ($order=='delta_sales_year3') {$order="(-1*(`Part Category 4 Year Ago Invoiced Amount`-`Part Category 3 Year Ago Invoiced Amount`)/`Part Category 4 Year Ago Invoiced Amount`)";}
+elseif ($order=='sales_year1') {$order="`Part Category 1 Year Ago Invoiced Amount`";}
+elseif ($order=='sales_year2') {$order="`Part Category 2 Year Ago Invoiced Amount`";}
+elseif ($order=='sales_year3') {$order="`Part Category 3 Year Ago Invoiced Amount`";}
+elseif ($order=='sales_year4') {$order="`Part Category 4 Year Ago Invoiced Amount`";}
+elseif ($order=='sales_year0') {$order="`Part Category Year To Day Acc Invoiced Amount`";}
 
 else
 	$order='`Category Key`';
@@ -91,11 +93,11 @@ else
 $fields="
 $yb_fields,`Category Number No Active Subjects`,`Category Number Active Subjects`,`Category Key`,`Category Branch Type`,
 `Category Children`,`Category Subject`,`Category Store Key`,`Category Warehouse Key`,`Category Code`,`Category Label`,`Category Number Subjects`,`Category Subjects Not Assigned`,
-`Part Category $db_period Acc Sold Amount` as revenue,`Part Category Year To Day Acc Sold Amount`,`Part Category Year To Day Acc 1YB Sold Amount`,`Part Category 1 Year Ago Sold Amount`,`Part Category 2 Year Ago Sold Amount`,`Part Category 3 Year Ago Sold Amount`,`Part Category 4 Year Ago Sold Amount`,
+`Part Category $db_period Acc Invoiced Amount` as sales,`Part Category Year To Day Acc Invoiced Amount`,`Part Category Year To Day Acc 1YB Invoiced Amount`,`Part Category 1 Year Ago Invoiced Amount`,`Part Category 2 Year Ago Invoiced Amount`,`Part Category 3 Year Ago Invoiced Amount`,`Part Category 4 Year Ago Invoiced Amount`,
 `Part Category Number Surplus Parts`,`Part Category Number Optimal Parts`,`Part Category Number Low Parts`,`Part Category Number Critical Parts`,`Part Category Number Out Of Stock Parts`,`Part Category Number Error Parts`
 
  ";
-$table='`Category Dimension` C left join `Part Category Dimension` D on (D.`Part Category Key`=C.`Category Key`) ';
+$table='`Category Dimension` C left join `Part Category Dimension` D on (D.`Part Category Key`=C.`Category Key`)  left join `Part Category Data` PDC on (PDC.`Part Category Key`=C.`Category Key`) ';
 
 $sql_totals="select count(distinct `Category Key`) as num from $table $where";
 

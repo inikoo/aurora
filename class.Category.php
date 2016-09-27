@@ -41,7 +41,7 @@ class Category extends DB_Table{
 		$this->update_subjects_data=true;
 		$this->table_name='Category';
 		$this->subject_table_name='Category';
-		$this->ignore_fields=array('Category Key');
+		$this->ignore_fields=array('Category Key','Part Category Key');
 		$this->all_descendants_keys=array();
 		$this->skip_update_sales=false;
 
@@ -94,6 +94,18 @@ class Category extends DB_Table{
 					print_r($error_info=$this->db->errorInfo());
 					exit;
 				}
+				
+				$sql=sprintf("select * from `Part Category Data` where `Part Category Key`=%d", $this->id);
+				if ($result2=$this->db->query($sql)) {
+					if ($row = $result2->fetch()) {
+						$this->data=array_merge($this->data, $row);
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
+				}
+				
+			//	print_r($sql);
 
 			}
 			elseif ($this->data['Category Scope']=='Location') {
@@ -329,6 +341,11 @@ class Category extends DB_Table{
 
 				$sql=sprintf("insert into `Part Category Dimension` (`Part Category Key`) values (%d)", $this->id);
 				$this->db->exec($sql);
+				
+				
+			$sql=$sql=sprintf("insert into `Part Category Data` (`Part Category Key`) values (%d)", $this->id);
+				$this->db->exec($sql);
+				
 			}elseif ($this->data['Category Scope']=='Location') {
 				$created_msg=_("Location's category created");
 
@@ -1162,29 +1179,12 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 	}
 
 
-	function subject_base_data() {
-
-
-
-
-		$data=array();
-
-		$sql=sprintf('show columns from `%s Category Dimension`', addslashes($this->subject_table_name));
-		foreach ($this->db->query($sql) as $row) {
-			if (!in_array($row['Field'], $this->ignore_fields))
-				$data[$row['Field']]=$row['Default'];
-		}
-
-		return $data;
-
-
-
-	}
-
+	
 
 
 
 	function update_field_switcher($field, $value, $options='', $metadata='') {
+
 
 
 		if (array_key_exists($field, $this->base_data())) {
@@ -1237,7 +1237,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 
 			}
 		}
-		elseif (array_key_exists($field, $this->subject_base_data())) {
+		elseif (array_key_exists($field, $this->base_data('Product Category Dimension'))) {
 
 			switch ($field) {
 
@@ -1292,7 +1292,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 
 				//print "$field, $value";
 
-				$this->update_subject_field($field, $value, 'no_history');
+				//$this->update_subject_field($field, $value, 'no_history');
+				$this->update_table_field($field, $value, 'no_history', 'Product Category Dimension', 'Product Category Dimension', $this->id);
 
 				$categories='';
 				foreach ($this->get_category_data() as $item) {
@@ -1321,8 +1322,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 
 
 				$value=html_entity_decode($value);
-				$this->update_subject_field($field, $value, $options);
+				//$this->update_subject_field($field, $value, $options);
 
+				$this->update_table_field($field, $value,$options, 'Product Category Dimension', 'Product Category Dimension', $this->id);
 
 
 				// Migration -----
@@ -1356,7 +1358,10 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 
 
 				}
-				$this->update_subject_field($field, $value, $options);
+				//$this->update_subject_field($field, $value, $options);
+				$this->update_table_field($field, $value,$options, 'Product Category Dimension', 'Product Category Dimension', $this->id);
+
+
 
 				$sql=sprintf('select `Subject Key`,`Subject` from `Category Bridge` where `Category Key`=%d ', $this->id);
 
@@ -1388,9 +1393,14 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 
 
 			default:
+				$this->update_table_field($field, $value, $options, 'Product Category Dimension', 'Product Category Dimension', $this->id);
 
-				$this->update_subject_field($field, $value, $options);
+			//	$this->update_subject_field($field, $value, $options);
 			}
+		}
+		elseif (array_key_exists($field, $this->base_data('Part Category Data'))) {
+						$this->update_table_field($field, $value, $options, 'Part Category', 'Part Category Data', $this->id);
+
 		}
 		else {
 
@@ -1450,90 +1460,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 	}
 
 
-	function update_subject_field($field, $value, $options='') {
 
-		//if ($value!=$this->data[$field]) return;
-
-
-
-		$this->updated=false;
-		$null_if_empty=true;
-
-		if ($options=='no_null') {
-			$null_if_empty=false;
-
-		}
-
-		if (is_array($value))
-			return;
-		$value=_trim($value);
-
-
-		$old_value=_('Unknown');
-		$key_field=$this->subject_table_name." Category Key";
-
-
-
-		$sql="select `".$field."` as value from  `".$this->subject_table_name." Category Dimension`  where `$key_field`=".$this->id;
-
-		if ($result=$this->db->query($sql)) {
-			if ($row = $result->fetch()) {
-				$old_value=$row['value'];
-			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
-		}
-
-
-
-
-		$sql="update `".$this->subject_table_name." Category Dimension` set `".$field."`=".prepare_mysql($value, $null_if_empty)." where `$key_field`=".$this->id;
-
-		$update = $this->db->prepare($sql);
-		$update->execute();
-
-
-
-		$affected=$update->rowCount();
-		if ($affected==0) {
-			$this->data[$field]=$value;
-		}
-		else {
-
-
-
-			$this->data[$field]=$value;
-			$this->msg.=" $field "._('Record updated').", \n";
-			$this->msg_updated.=" $field "._('Record updated').", \n";
-			$this->updated=true;
-			$this->new_value=$value;
-
-			$save_history=true;
-			if (preg_match('/no( |\_)history|nohistory/i', $options))
-				$save_history=false;
-
-			if (!$this->new and $save_history) {
-
-				$history_data=array(
-					'Indirect Object'=>$field,
-					'old_value'=>$old_value,
-					'new_value'=>$value
-
-				);
-
-
-				$history_key=$this->add_history($history_data);
-				$sql=sprintf("insert into `%s Category History Bridge` values (%d,%d,'No','No','Changes')", $this->subject_table_name, $this->id, $history_key);
-				$this->db->exec($sql);
-
-
-
-			}
-
-		}
-
-	}
 
 
 	function update_children_data() {
