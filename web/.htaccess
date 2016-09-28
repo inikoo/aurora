@@ -1,0 +1,14 @@
+SetEnv devel 1
+SetEnv preview 1
+
+RewriteEngine On
+
+
+
+RewriteRule ^$ /aurora.php [L]
+
+RewriteBase /
+RewriteRule ^(js|css|templates)($|/) - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*) aurora.php [QSA,L]
