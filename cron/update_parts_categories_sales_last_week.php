@@ -11,10 +11,6 @@
 */
 
 require_once 'common.php';
-require_once 'class.Part.php';
-require_once 'class.Product.php';
-require_once 'class.Page.php';
-require_once 'class.Supplier.php';
 require_once 'class.Category.php';
 
 $print_est=true;
@@ -24,10 +20,10 @@ update_parts_sales($db, $print_est);
 
 function update_parts_sales($db, $print_est) {
 
-	$where=" where `Category SKU`=259 ";
+	$where=" where `Category Key`=259 ";
 	$where="where true";
 
-	$sql=sprintf("select count(distinct `Category Key`) as num from `Category Bridge` $where and  `Subject`='Part' ");
+	$sql=sprintf("select count(distinct `Category Key`) as num from `Category Dimension` $where and  `Category Scope`='Part' ");
 
 	if ($result=$db->query($sql)) {
 		if ($row = $result->fetch()) {
@@ -43,8 +39,7 @@ function update_parts_sales($db, $print_est) {
 	$lap_time0=date('U');
 	$contador=0;
 
-	$sql=sprintf("select `Part SKU` from `Part Dimension`  $where  order by `Part SKU`");
-	$sql=sprintf("select `Category Key`  from `Category Bridge` $where and  `Subject`='Part' group by `Category Key` ");
+	$sql=sprintf("select `Category Key` from `Category Dimension` $where and  `Category Scope`='Part' ");
 
 	if ($result=$db->query($sql)) {
 		foreach ($result as $row) {
@@ -52,7 +47,6 @@ function update_parts_sales($db, $print_est) {
 
 			$category->update_part_category_sales('Last Week');
 			
-
 			$contador++;
 			$lap_time1=date('U');
 

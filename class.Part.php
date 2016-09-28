@@ -2381,6 +2381,47 @@ class Part extends Asset{
 	}
 
 
+	function update_previous_quarters_data() {
+
+
+		include_once 'utils/date_functions.php';
+
+
+		foreach (range(1, 4) as $i) {
+			$dates=get_previous_quarters_dates($i);
+			$dates_1yb=get_previous_quarters_dates($i+4);
+			
+			
+			$sales_data=$this->get_sales_data($dates['start'], $dates['end']);
+			$sales_data_1yb=$this->get_sales_data($dates_1yb['start'], $dates_1yb['end']);
+
+			$data_to_update=array(
+				"Part $i Quarter Ago Customers"=>$sales_data['customers'],
+				"Part $i Quarter Ago Repeat Customers"=>$sales_data['repeat_customers'],
+				"Part $i Quarter Ago Deliveries"=>$sales_data['deliveries'],
+				"Part $i Quarter Ago Profit"=>$sales_data['profit'],
+				"Part $i Quarter Ago Invoiced Amount"=>$sales_data['invoiced_amount'],
+				"Part $i Quarter Ago Required"=>$sales_data['required'],
+				"Part $i Quarter Ago Dispatched"=>$sales_data['dispatched'],
+				"Part $i Quarter Ago Keeping Day"=>$sales_data['keep_days'],
+				"Part $i Quarter Ago With Stock Days"=>$sales_data['with_stock_days'],
+				
+				"Part $i Quarter Ago 1YB Customers"=>$sales_data_1yb['customers'],
+				"Part $i Quarter Ago 1YB Repeat Customers"=>$sales_data_1yb['repeat_customers'],
+				"Part $i Quarter Ago 1YB Deliveries"=>$sales_data_1yb['deliveries'],
+				"Part $i Quarter Ago 1YB Profit"=>$sales_data_1yb['profit'],
+				"Part $i Quarter Ago 1YB Invoiced Amount"=>$sales_data_1yb['invoiced_amount'],
+				"Part $i Quarter Ago 1YB Required"=>$sales_data_1yb['required'],
+				"Part $i Quarter Ago 1YB Dispatched"=>$sales_data_1yb['dispatched'],
+				"Part $i Quarter Ago 1YB Keeping Day"=>$sales_data_1yb['keep_days'],
+				"Part $i Quarter Ago 1YB With Stock Days"=>$sales_data_1yb['with_stock_days'],
+			);
+			$this->update( $data_to_update, 'no_history');
+		}
+
+	}
+
+
 	function get_sales_data($from_date, $to_date) {
 
 		$sales_data=array(

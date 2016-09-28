@@ -1186,7 +1186,11 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 	function update_field_switcher($field, $value, $options='', $metadata='') {
 
 
-
+	
+//	print_r($this->base_data('Product Category Data'));
+//	print "** $field $value\n";
+//	exit;
+	
 		if (array_key_exists($field, $this->base_data())) {
 
 
@@ -1399,8 +1403,13 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 			}
 		}
 		elseif (array_key_exists($field, $this->base_data('Part Category Data'))) {
-						$this->update_table_field($field, $value, $options, 'Part Category', 'Part Category Data', $this->id);
-
+			$this->update_table_field($field, $value, $options, 'Part Category', 'Part Category Data', $this->id);
+		}elseif (array_key_exists($field, $this->base_data('Product Category Data'))) {
+		//print "++ $field $value\n";
+		
+			$this->update_table_field($field, $value, $options, 'Product Category', 'Product Category Data', $this->id);
+		}elseif (array_key_exists($field, $this->base_data('Product Category DC Data'))) {
+			$this->update_table_field($field, $value, $options, 'Product Category DC', 'Product Category DC Data', $this->id);
 		}
 		else {
 

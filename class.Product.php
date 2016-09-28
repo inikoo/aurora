@@ -2553,7 +2553,7 @@ class Product extends Asset{
 
 		include_once 'utils/date_functions.php';
 
-		$to_date='';
+		
 
 		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($this->db, $interval);
 
@@ -2608,7 +2608,7 @@ class Product extends Asset{
 		$data_2y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-2 year')), date('Y-01-01 00:00:00', strtotime('-1 year')));
 		$data_3y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-3 year')), date('Y-01-01 00:00:00', strtotime('-2 year')));
 		$data_4y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-4 year')), date('Y-01-01 00:00:00', strtotime('-3 year')));
-		
+
 		$data_to_update=array(
 			"Product 1 Year Ago Customers"=>$data_1y_ago['customers'],
 			"Product 1 Year Ago Invoices"=>$data_1y_ago['invoices'],
@@ -2655,6 +2655,50 @@ class Product extends Asset{
 	}
 
 
+	function update_previous_quarters_data() {
+
+
+		include_once 'utils/date_functions.php';
+
+
+		foreach (range(1, 4) as $i) {
+			$dates=get_previous_quarters_dates($i);
+			$dates_1yb=get_previous_quarters_dates($i+4);
+
+
+			$sales_data=$this->get_sales_data($dates['start'], $dates['end']);
+			$sales_data_1yb=$this->get_sales_data($dates_1yb['start'], $dates_1yb['end']);
+
+			$data_to_update=array(
+
+				"Product 4 Quarter Ago Customers"=>$sales_data['customers'],
+				"Product 4 Quarter Ago Invoices"=>$sales_data['invoices'],
+				"Product 4 Quarter Ago Profit"=>$sales_data['profit'],
+				"Product 4 Quarter Ago Invoiced Amount"=>$sales_data['net'],
+				"Product 4 Quarter Ago Quantity Ordered"=>$sales_data['ordered'],
+				"Product 4 Quarter Ago Quantity Invoiced"=>$sales_data['invoiced'],
+				"Product 4 Quarter Ago Quantity Delivered"=>$sales_data['delivered'],
+				"Product DC 4 Quarter Ago Profit"=>$sales_data['dc_net'],
+				"Product DC 4 Quarter Ago Invoiced Amount"=>$sales_data['dc_profit'],
+				
+				"Product 4 Quarter Ago 1YB Customers"=>$sales_data_1yb['customers'],
+				"Product 4 Quarter Ago 1YB Invoices"=>$sales_data_1yb['invoices'],
+				"Product 4 Quarter Ago 1YB Profit"=>$sales_data_1yb['profit'],
+				"Product 4 Quarter Ago 1YB Invoiced Amount"=>$sales_data_1yb['net'],
+				"Product 4 Quarter Ago 1YB Quantity Ordered"=>$sales_data_1yb['ordered'],
+				"Product 4 Quarter Ago 1YB Quantity Invoiced"=>$sales_data_1yb['invoiced'],
+				"Product 4 Quarter Ago 1YB Quantity Delivered"=>$sales_data_1yb['delivered'],
+				"Product DC 4 Quarter Ago 1YB Profit"=>$sales_data_1yb['dc_net'],
+				"Product DC 4 Quarter Ago 1YB Invoiced Amount"=>$sales_data_1yb['dc_profit']
+
+
+			);
+			$this->update( $data_to_update, 'no_history');
+		}
+
+	}
+
+
 	function get_sales_data($from_date, $to_date) {
 
 		$sales_data=array(
@@ -2669,9 +2713,6 @@ class Product extends Asset{
 			'dc_profit'=>0,
 
 		);
-
-
-
 
 		$sql=sprintf("select
 		ifnull(count(Distinct `Customer Key`),0) as customers,
@@ -2717,8 +2758,6 @@ class Product extends Asset{
 
 		return $sales_data;
 	}
-
-
 
 
 }

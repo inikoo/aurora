@@ -3,7 +3,7 @@
 /*
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created: 28 September 2016 at 02:19:50 GMT+8, Kuala Lumpur, Malaysia
+ Created: 28 September 2016 at 23:05:44 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2016, Inikoo
 
  Version 3
@@ -21,10 +21,9 @@ update_parts_sales($db, $print_est);
 
 function update_parts_sales($db, $print_est) {
 
-	$where=" where `Category Key`=259 ";
 	$where="where true";
 
-	$sql=sprintf("select count(distinct `Category Key`) as num from `Category Dimension` $where and  `Category Scope`='Part' ");
+	$sql=sprintf("select count(distinct `Category Key`) as num from `Category Dimension` $where and  `Category Scope`='Product' ");
 
 	if ($result=$db->query($sql)) {
 		if ($row = $result->fetch()) {
@@ -40,13 +39,13 @@ function update_parts_sales($db, $print_est) {
 	$lap_time0=date('U');
 	$contador=0;
 
-	$sql=sprintf("select `Category Key` from `Category Dimension` $where and  `Category Scope`='Part' ");
+	$sql=sprintf("select `Category Key` from `Category Dimension` $where and  `Category Scope`='Product' ");
 
 	if ($result=$db->query($sql)) {
 		foreach ($result as $row) {
 			$category=new Category($row['Category Key']);
 
-			$category->update_part_category_sales('Last Month');
+			$category->update_product_category_sales('Last Month');
 			
 
 			$contador++;
