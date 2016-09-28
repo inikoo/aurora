@@ -1402,7 +1402,8 @@ $modules=array(
 			'settings'=>array(
 				'type'=>'navigation', 'label'=>'', 'icon'=>'sliders', 'reference'=>'suppliers/settings', 'class'=>'icon_only',
 				'tabs'=>array(
-					'suppliers.settings'=>array('label'=>_('Setting'), 'icon'=>'sliders', 'class'=>''),
+					'suppliers.settings'=>array('label'=>_('General settings'), 'icon'=>'sliders', 'class'=>''),
+					'suppliers.email_template'=>array('label'=>_('Email template'), 'icon'=>'envelope-o', 'class'=>''),
 
 
 				)
@@ -2580,7 +2581,7 @@ $modules=array(
 
 			),
 
-
+/*
 			'settings'=>array(
 				'type'=>'navigation', 'label'=>'', 'icon'=>'sliders', 'reference'=>'suppliers/settings', 'class'=>'icon_only',
 				'tabs'=>array(
@@ -2591,6 +2592,7 @@ $modules=array(
 
 
 			),
+			*/
 		)
 	),
 

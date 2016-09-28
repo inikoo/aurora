@@ -119,10 +119,9 @@
 
 	{/if} 
 
- 
- 
- 
-	
+ {if false}
+    <script src="https://app-rsrc.getbee.io/plugin/BeePlugin.js" type="text/javascript"></script>
+	{/if}
 </head>
 <body>
 <input type="hidden" id="_request" value="{$_request}">
