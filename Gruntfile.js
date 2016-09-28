@@ -67,6 +67,14 @@ module.exports = function(grunt) {
                     'css/app.css': 'sass/app.scss'
                 }
             },
+             web: {
+                options: {
+                    // style: 'compressed'
+                },
+                files: {
+                    'web/css/aurora.css': 'web/sass/aurora.scss'
+                }
+            },
             ecom: {
                 options: {
                     // style: 'compressed'
