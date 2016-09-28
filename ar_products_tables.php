@@ -811,7 +811,15 @@ function product_categories($_data, $db, $user) {
 				'discontinuing'=>number($data['Product Category Discontinuing Products']),
 				'discontinued'=>number($data['Product Category Discontinued Products']),
 				'sales'=>money($data['sales'], $data['Product Category Currency Code']),
-				'sales_1yb'=>money($data['sales_1yb'], $data['Product Category Currency Code'])
+				'sales_1yb'=>delta($data['sales'], $data['sales_1yb']),
+
+				
+				
+			'sales_year0'=>sprintf('<span title="%s">%s</span>', delta($data["Product Category Year To Day Acc Invoiced Amount"], $data["Product Category Year To Day Acc 1YB Invoiced Amount"]), money($data['Product Category Year To Day Acc Invoiced Amount'], $data['Product Category Currency Code'])),
+				'sales_year1'=>sprintf('<span title="%s">%s</span>', delta($data["Product Category 1 Year Ago Invoiced Amount"], $data["Product Category 2 Year Ago Invoiced Amount"]), money($data['Product Category 1 Year Ago Invoiced Amount'], $data['Product Category Currency Code'])),
+				'sales_year2'=>sprintf('<span title="%s">%s</span>', delta($data["Product Category 2 Year Ago Invoiced Amount"], $data["Product Category 3 Year Ago Invoiced Amount"]), money($data['Product Category 2 Year Ago Invoiced Amount'], $data['Product Category Currency Code'])),
+				'sales_year3'=>sprintf('<span title="%s">%s</span>', delta($data["Product Category 3 Year Ago Invoiced Amount"], $data["Product Category 4 Year Ago Invoiced Amount"]), money($data['Product Category 3 Year Ago Invoiced Amount'], $data['Product Category Currency Code'])),
+				'sales_year4'=>money($data['Product Category 4 Year Ago Invoiced Amount'], $data['Product Category Currency Code']),
 
 			);
 

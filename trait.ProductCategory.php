@@ -206,37 +206,9 @@ trait ProductCategory {
 
 	function get_product_timeseries_record_data($timeseries, $date_frequency_period) {
 
-		$product_ids='';
-		$sql=sprintf('select `Subject Key`,`Subject` from `Category Bridge` where `Category Key`=%d and `Subject Key`>0 ', $this->id);
-		$product_ids='';
-		$subject_type='';
-		if ($result=$this->db->query($sql)) {
-			foreach ($result as $row) {
-				$product_ids.=$row['Subject Key'].',';
-				$subject_type=$row['Subject'];
-			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
-		}
-		$product_ids=preg_replace('/\,$/', '', $product_ids);
 
-		if ($subject_type=='Category') {
-			$category_ids=$product_ids;
-			$product_ids='';
-			$sql=sprintf('select `Subject Key` ,`Subject` from `Category Bridge` where `Category Key` in (%s) and `Subject Key`>0 ',
-				$category_ids);
-			if ($result=$this->db->query($sql)) {
-				foreach ($result as $row) {
-					$product_ids.=$row['Subject Key'].',';
-				}
-			}else {
-				print_r($error_info=$this->db->errorInfo());
-				exit;
-			}
-			$product_ids=preg_replace('/\,$/', '', $product_ids);
 
-		}
+		$product_ids=$this->get_product_ids();
 
 
 		if ($product_ids=='') {
@@ -448,207 +420,161 @@ trait ProductCategory {
 	}
 
 
+
+
 	function update_product_category_sales($interval) {
-	
-	    include_once('utils/date_functions.php');
+
+		include_once 'utils/date_functions.php';
+
+
 
 		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($this->db, $interval);
 
 
-print "$db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb\n";
 
-		$sql=sprintf("select 	sum(`Product $db_interval Acc Invoiced Amount`) as invoiced_amount,
-								sum(`Product $db_interval Acc Profit`) as profit,
-								sum(`Product Total Acc Quantity Ordered`) as ordered,
-								sum(`Product Total Acc Quantity Invoiced`) as invoiced,
-								sum(`Product Total Acc Quantity Delivered`) as delivered
+		$sales_product_category_data=$this->get_product_category_sales_data($from_date, $to_date);
 
 
-								from `Product Data Dimension` P left join `Category Bridge` on (`Product ID`=`Subject Key` and `Subject`='Product')   where `Category Key`=%d" ,
-			$this->id);
-
-
-		if ($result=$this->db->query($sql)) {
-			if ($row = $result->fetch()) {
-				$this->data["Product Category $db_interval Acc Invoiced Amount"]=$row['invoiced_amount'];
-				$this->data["Product Category $db_interval Acc Profit"]=$row['profit'];
-				$this->data["Product Category $db_interval Acc Quantity Ordered"]=$row['ordered'];
-				$this->data["Product Category $db_interval Acc Quantity Invoiced"]=$row['invoiced'];
-				$this->data["Product Category $db_interval Acc Quantity Delivered"]=$row['delivered'];
-
-			}else {
-				$this->data["Product Category $db_interval Acc Invoiced Amount"]=0;
-				$this->data["Product Category $db_interval Acc Profit"]=0;
-				$this->data["Product Category $db_interval Acc Quantity Ordered"]=0;
-				$this->data["Product Category $db_interval Acc Quantity Invoiced"]=0;
-				$this->data["Product Category $db_interval Acc Quantity Delivered"]=0;
-			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
-		}
+		$data_to_update=array(
+			"Product Category $db_interval Acc Customers"=>$sales_product_category_data['customers'],
+			"Product Category $db_interval Acc Invoices"=>$sales_product_category_data['invoices'],
+			"Product Category $db_interval Acc Profit"=>$sales_product_category_data['profit'],
+			"Product Category $db_interval Acc Invoiced Amount"=>$sales_product_category_data['net'],
+			"Product Category $db_interval Acc Quantity Ordered"=>$sales_product_category_data['ordered'],
+			"Product Category $db_interval Acc Quantity Invoiced"=>$sales_product_category_data['invoiced'],
+			"Product Category $db_interval Acc Quantity Delivered"=>$sales_product_category_data['delivered'],
+			"Product Category DC $db_interval Acc Profit"=>$sales_product_category_data['dc_net'],
+			"Product Category DC $db_interval Acc Invoiced Amount"=>$sales_product_category_data['dc_profit']
+		);
+		$this->update( $data_to_update, 'no_history');
 
 
 
+		if ($from_date_1yb ) {
 
+			$sales_product_category_data=$this->get_product_category_sales_data($from_date_1yb, $to_1yb);
 
-
-
-		$sql=sprintf("update `Product Category Data` set
-                     `Product Category $db_interval Acc Invoiced Amount`=%f ,
-                     `Product Category $db_interval Acc Profit`=%f,
-                     `Product Category $db_interval Acc Quantity Ordered`=%f ,
-                     `Product Category $db_interval Acc Quantity Invoiced`=%f ,
-                     `Product Category $db_interval Acc Quantity Delivered`=%f ,
-
-                      where
-                     `Product Category Key`=%d ",
-			$this->data["Product Category $db_interval Acc Invoiced Amount"],
-			$this->data["Product Category $db_interval Acc Profit"],
-			$this->data["Product Category $db_interval Acc Quantity Ordered"],
-			$this->data["Product Category $db_interval Acc Quantity Invoiced"],
-			$this->data["Product Category $db_interval Acc Quantity Delivered"],
-
-
-			 $this->id);
-
-		$this->db->exec($sql);
-		//print "$sql\n";
-
-		if ($from_date_1yb) {
-
-
-
-			$sql=sprintf("select 	sum(`Product $db_interval Acc 1YB Invoiced Amount`) as invoiced_amount,
-								sum(`Product $db_interval Acc 1YB Profit`) as profit,
-								sum(`Product $db_interval Acc 1YB Quantity Ordered`) as ordered,
-								sum(`Product $db_interval Acc 1YB Quantity Invoiced`) as invoiced,
-								sum(`Product $db_interval Acc 1YB Quantity Delivered`) as delivered
-
-
-								from `Product Data Dimension` P left join `Category Bridge` on (`Product ID`=`Subject Key` and `Subject`='Product')   where `Category Key`=%d" ,
-				$this->id);
-
-print $sql;
-			if ($result=$this->db->query($sql)) {
-				if ($row = $result->fetch()) {
-					$this->data["Product Category $db_interval Acc 1YB Invoiced Amount"]=$row['invoiced_amount'];
-					$this->data["Product Category $db_interval Acc 1YB Profit"]=$row['profit'];
-					$this->data["Product Category $db_interval Acc 1YB Quantity Ordered"]=$row['ordered'];
-					$this->data["Product Category $db_interval Acc 1YB Quantity Invoiced"]=$row['invoiced'];
-					$this->data["Product Category $db_interval Acc 1YB Quantity Delivered"]=$row['delivered'];
-
-				}else {
-					$this->data["Product Category $db_interval Acc 1YB Invoiced Amount"]=0;
-					$this->data["Product Category $db_interval Acc 1YB Profit"]=0;
-					$this->data["Product Category $db_interval Acc 1YB Quantity Ordered"]=0;
-					$this->data["Product Category $db_interval Acc 1YB Quantity Invoiced"]=0;
-					$this->data["Product Category $db_interval Acc 1YB Quantity Delivered"]=0;
-				}
-			}else {
-				print_r($error_info=$this->db->errorInfo());
-				exit;
-			}
-
-
-
-
-			$sql=sprintf("update `Product Category Data` set
-                     `Product Category $db_interval Acc 1YB Invoiced Amount`=%f ,
-                     `Product Category $db_interval Acc 1YB Profit`=%f,
-                     `Product Category $db_interval Acc 1YB Quantity Ordered`=%f ,
-                     `Product Category $db_interval Acc 1YB Quantity Invoiced`=%f ,
-                     `Product Category $db_interval Acc 1YB Quantity Delivered`=%f ,
-
-                      where
-                     `Product Category Key`=%d ",
-				$this->data["Product Category $db_interval Acc 1YB Invoiced Amount"],
-				$this->data["Product Category $db_interval Acc 1YB Profit"],
-				$this->data["Product Category $db_interval Acc 1YB Quantity Ordered"],
-				$this->data["Product Category $db_interval Acc 1YB Quantity Invoiced"],
-				$this->data["Product Category $db_interval Acc 1YB Quantity Delivered"],
-
-
-				$this->id);
-
-			$this->db->exec($sql);
-
-
-
-
-
-
-
-
+			$data_to_update=array(
+				"Product Category $db_interval Acc 1YB Customers"=>$sales_product_category_data['customers'],
+				"Product Category $db_interval Acc 1YB Invoices"=>$sales_product_category_data['invoices'],
+				"Product Category $db_interval Acc 1YB Profit"=>$sales_product_category_data['profit'],
+				"Product Category $db_interval Acc 1YB Invoiced Amount"=>$sales_product_category_data['net'],
+				"Product Category $db_interval Acc 1YB Quantity Ordered"=>$sales_product_category_data['ordered'],
+				"Product Category $db_interval Acc 1YB Quantity Invoiced"=>$sales_product_category_data['invoiced'],
+				"Product Category $db_interval Acc 1YB Quantity Delivered"=>$sales_product_category_data['delivered'],
+				"Product Category DC $db_interval Acc 1YB Profit"=>$sales_product_category_data['dc_net'],
+				"Product Category DC $db_interval Acc 1YB Invoiced Amount"=>$sales_product_category_data['dc_profit']
+			);
+			$this->update( $data_to_update, 'no_history');
 
 		}
+
+
 
 
 	}
+
 
 
 	function update_product_category_previous_years_data() {
 
-		$sales_data=$this->get_product_category_sales_data('1');
-		$this->data['Product Category 1 Year Ago Sold Amount']=$sales_data['sold_amount'];
+		$data_1y_ago=$this->get_product_category_sales_data(date('Y-01-01 00:00:00', strtotime('-1 year')), date('Y-01-01 00:00:00'));
+		$data_2y_ago=$this->get_product_category_sales_data(date('Y-01-01 00:00:00', strtotime('-2 year')), date('Y-01-01 00:00:00', strtotime('-1 year')));
+		$data_3y_ago=$this->get_product_category_sales_data(date('Y-01-01 00:00:00', strtotime('-3 year')), date('Y-01-01 00:00:00', strtotime('-2 year')));
+		$data_4y_ago=$this->get_product_category_sales_data(date('Y-01-01 00:00:00', strtotime('-4 year')), date('Y-01-01 00:00:00', strtotime('-3 year')));
 
-		$sales_data=$this->get_product_category_sales_data('2');
-		$this->data['Product Category 2 Year Ago Sold Amount']=$sales_data['sold_amount'];
+		$data_to_update=array(
+			"Product Category 1 Year Ago Customers"=>$data_1y_ago['customers'],
+			"Product Category 1 Year Ago Invoices"=>$data_1y_ago['invoices'],
+			"Product Category 1 Year Ago Profit"=>$data_1y_ago['profit'],
+			"Product Category 1 Year Ago Invoiced Amount"=>$data_1y_ago['net'],
+			"Product Category 1 Year Ago Quantity Ordered"=>$data_1y_ago['ordered'],
+			"Product Category 1 Year Ago Quantity Invoiced"=>$data_1y_ago['invoiced'],
+			"Product Category 1 Year Ago Quantity Delivered"=>$data_1y_ago['delivered'],
+			"Product Category DC 1 Year Ago Profit"=>$data_1y_ago['dc_net'],
+			"Product Category DC 1 Year Ago Invoiced Amount"=>$data_1y_ago['dc_profit'],
 
-		$sales_data=$this->get_product_category_sales_data('3');
-		$this->data['Product Category 3 Year Ago Sold Amount']=$sales_data['sold_amount'];
+			"Product Category 2 Year Ago Customers"=>$data_2y_ago['customers'],
+			"Product Category 2 Year Ago Invoices"=>$data_2y_ago['invoices'],
+			"Product Category 2 Year Ago Profit"=>$data_2y_ago['profit'],
+			"Product Category 2 Year Ago Invoiced Amount"=>$data_2y_ago['net'],
+			"Product Category 2 Year Ago Quantity Ordered"=>$data_2y_ago['ordered'],
+			"Product Category 2 Year Ago Quantity Invoiced"=>$data_2y_ago['invoiced'],
+			"Product Category 2 Year Ago Quantity Delivered"=>$data_2y_ago['delivered'],
+			"Product Category DC 2 Year Ago Profit"=>$data_2y_ago['dc_net'],
+			"Product Category DC 2 Year Ago Invoiced Amount"=>$data_2y_ago['dc_profit'],
 
-		$sales_data=$this->get_product_category_sales_data('4');
-		$this->data['Product Category 4 Year Ago Sold Amount']=$sales_data['sold_amount'];
+			"Product Category 3 Year Ago Customers"=>$data_3y_ago['customers'],
+			"Product Category 3 Year Ago Invoices"=>$data_3y_ago['invoices'],
+			"Product Category 3 Year Ago Profit"=>$data_3y_ago['profit'],
+			"Product Category 3 Year Ago Invoiced Amount"=>$data_3y_ago['net'],
+			"Product Category 3 Year Ago Quantity Ordered"=>$data_3y_ago['ordered'],
+			"Product Category 3 Year Ago Quantity Invoiced"=>$data_3y_ago['invoiced'],
+			"Product Category 3 Year Ago Quantity Delivered"=>$data_3y_ago['delivered'],
+			"Product Category DC 3 Year Ago Profit"=>$data_3y_ago['dc_net'],
+			"Product Category DC 3 Year Ago Invoiced Amount"=>$data_3y_ago['dc_profit'],
 
-
-		$sql=sprintf("update `Product Category Dimension` set `Product Category 1 Year Ago Sold Amount`=%.2f, `Product Category 2 Year Ago Sold Amount`=%.2f,`Product Category 3 Year Ago Sold Amount`=%.2f, `Product Category 4 Year Ago Sold Amount`=%.2f where `Product Category Key`=%d ",
-
-			$this->data["Product Category 1 Year Ago Sold Amount"],
-			$this->data["Product Category 2 Year Ago Sold Amount"],
-			$this->data["Product Category 3 Year Ago Sold Amount"],
-			$this->data["Product Category 4 Year Ago Sold Amount"],
-
-			$this->id
-
+			"Product Category 4 Year Ago Customers"=>$data_4y_ago['customers'],
+			"Product Category 4 Year Ago Invoices"=>$data_4y_ago['invoices'],
+			"Product Category 4 Year Ago Profit"=>$data_4y_ago['profit'],
+			"Product Category 4 Year Ago Invoiced Amount"=>$data_4y_ago['net'],
+			"Product Category 4 Year Ago Quantity Ordered"=>$data_4y_ago['ordered'],
+			"Product Category 4 Year Ago Quantity Invoiced"=>$data_4y_ago['invoiced'],
+			"Product Category 4 Year Ago Quantity Delivered"=>$data_4y_ago['delivered'],
+			"Product Category DC 4 Year Ago Profit"=>$data_4y_ago['dc_net'],
+			"Product Category DC 4 Year Ago Invoiced Amount"=>$data_4y_ago['dc_profit']
 		);
-		$this->db->exec($sql);
-
+		$this->update( $data_to_update, 'no_history');
 
 	}
 
 
-	function get_product_category_sales_data($year_tag) {
-
-		$sales_data=array(
-			'sold_amount'=>0,
+	function update_product_category_previous_quarters_data() {
 
 
-		);
+		include_once 'utils/date_functions.php';
 
 
-		$sql=sprintf("select sum(`Part %s Year Ago Sold Amount`) as sold_amount   from `Category Bridge` B left join  `Part Data` P  on ( `Subject Key`=`Part SKU`)  where `Subject`='Part' and `Category Key`=%d " ,
-			$year_tag,
-			$this->id
+		foreach (range(1, 4) as $i) {
+			$dates=get_previous_quarters_dates($i);
+			$dates_1yb=get_previous_quarters_dates($i+4);
 
 
-		);
+			$sales_product_category_data=$this->get_product_category_sales_data($dates['start'], $dates['end']);
+			$sales_product_category_data_1yb=$this->get_product_category_sales_data($dates_1yb['start'], $dates_1yb['end']);
+
+			$data_to_update=array(
+
+				"Product Category 4 Quarter Ago Customers"=>$sales_product_category_data['customers'],
+				"Product Category 4 Quarter Ago Invoices"=>$sales_product_category_data['invoices'],
+				"Product Category 4 Quarter Ago Profit"=>$sales_product_category_data['profit'],
+				"Product Category 4 Quarter Ago Invoiced Amount"=>$sales_product_category_data['net'],
+				"Product Category 4 Quarter Ago Quantity Ordered"=>$sales_product_category_data['ordered'],
+				"Product Category 4 Quarter Ago Quantity Invoiced"=>$sales_product_category_data['invoiced'],
+				"Product Category 4 Quarter Ago Quantity Delivered"=>$sales_product_category_data['delivered'],
+				"Product Category DC 4 Quarter Ago Profit"=>$sales_product_category_data['dc_net'],
+				"Product Category DC 4 Quarter Ago Invoiced Amount"=>$sales_product_category_data['dc_profit'],
+
+				"Product Category 4 Quarter Ago 1YB Customers"=>$sales_product_category_data_1yb['customers'],
+				"Product Category 4 Quarter Ago 1YB Invoices"=>$sales_product_category_data_1yb['invoices'],
+				"Product Category 4 Quarter Ago 1YB Profit"=>$sales_product_category_data_1yb['profit'],
+				"Product Category 4 Quarter Ago 1YB Invoiced Amount"=>$sales_product_category_data_1yb['net'],
+				"Product Category 4 Quarter Ago 1YB Quantity Ordered"=>$sales_product_category_data_1yb['ordered'],
+				"Product Category 4 Quarter Ago 1YB Quantity Invoiced"=>$sales_product_category_data_1yb['invoiced'],
+				"Product Category 4 Quarter Ago 1YB Quantity Delivered"=>$sales_product_category_data_1yb['delivered'],
+				"Product Category DC 4 Quarter Ago 1YB Profit"=>$sales_product_category_data_1yb['dc_net'],
+				"Product Category DC 4 Quarter Ago 1YB Invoiced Amount"=>$sales_product_category_data_1yb['dc_profit']
 
 
-		if ($result=$this->db->query($sql)) {
-			if ($row = $result->fetch()) {
-				$sales_data['sold_amount']=$row['sold_amount'];
-			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
+			);
+			$this->update( $data_to_update, 'no_history');
 		}
 
-
-
-
-		return $sales_data;
 	}
+
+
+
+
 
 
 	function get_category_data() {
@@ -711,6 +637,117 @@ print $sql;
 
 
 		return $category_data;
+	}
+
+
+	function get_product_ids() {
+
+		$product_ids='';
+		$sql=sprintf('select `Subject Key` from `Category Bridge` where `Category Key`=%d and `Subject Key`>0 ', $this->id);
+		$product_ids='';
+		$subject_type='';
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$product_ids.=$row['Subject Key'].',';
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+
+		$product_ids=preg_replace('/\,$/', '', $product_ids);
+
+		if ($product_ids!='' and $this->get('Category Subject')=='Category') {
+			$category_ids=$product_ids;
+			$product_ids='';
+			$sql=sprintf('select `Subject Key`  from `Category Bridge` where `Category Key` in (%s) and `Subject Key`>0 ',
+				$category_ids);
+			if ($result=$this->db->query($sql)) {
+				foreach ($result as $row) {
+					$product_ids.=$row['Subject Key'].',';
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				print "$sql\n";
+				exit;
+			}
+			$product_ids=preg_replace('/\,$/', '', $product_ids);
+
+		}
+		//print $product_ids;
+
+		return $product_ids;
+
+	}
+
+
+	function get_product_category_sales_data($from_date, $to_date) {
+
+		$sales_product_category_data=array(
+			'customers'=>0,
+			'invoices'=>0,
+			'net'=>0,
+			'profit'=>0,
+			'ordered'=>0,
+			'invoiced'=>0,
+			'delivered'=>0,
+			'dc_net'=>0,
+			'dc_profit'=>0,
+
+		);
+
+		$product_ids=$this->get_product_ids();
+
+
+
+
+		if ($product_ids!='' and $this->get('Category Branch Type')!='Root') {
+
+			$sql=sprintf("select
+		ifnull(count(Distinct `Customer Key`),0) as customers,
+		ifnull(count(Distinct `Invoice Key`),0) as invoices,
+		round(ifnull(sum( `Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount` +(  `Cost Supplier`/`Invoice Currency Exchange Rate`)  ),0),2) as profit,
+		round(ifnull(sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`),0),2) as net ,
+		round(ifnull(sum(`Shipped Quantity`),0),1) as delivered,
+		round(ifnull(sum(`Order Quantity`),0),1) as ordered,
+		round(ifnull(sum(`Invoice Quantity`),0),1) as invoiced,
+		round(ifnull(sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`),0),2) as dc_net,
+		round(ifnull(sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Cost Supplier`)*`Invoice Currency Exchange Rate`),0),2) as dc_profit
+		from `Order Transaction Fact` USE INDEX (`Product ID`,`Invoice Date`) where    `Current Dispatching State`='Dispatched' and  `Product ID` in (%s) %s %s ",
+				$product_ids,
+				($from_date?sprintf('and `Invoice Date`>=%s', prepare_mysql($from_date)):''),
+				($to_date?sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)):'')
+
+			);
+			//print "$sql\n";
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+
+
+
+					$sales_product_category_data['customers']=$row['customers'];
+					$sales_product_category_data['invoices']=$row['invoices'];
+					$sales_product_category_data['net']=$row['net'];
+					$sales_product_category_data['profit']=$row['profit'];
+					$sales_product_category_data['ordered']=$row['ordered'];
+					$sales_product_category_data['invoiced']=$row['invoiced'];
+					$sales_product_category_data['delivered']=$row['delivered'];
+					$sales_product_category_data['dc_net']=$row['dc_net'];
+					$sales_product_category_data['dc_profit']=$row['dc_profit'];
+
+
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+			//print "$sql\n";
+		}
+
+		return $sales_product_category_data;
 	}
 
 

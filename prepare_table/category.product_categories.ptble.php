@@ -74,7 +74,6 @@ if (in_array($db_period, array('Total', '3 Year'))) {
 $_dir=$order_direction;
 $_order=$order;
 
-
 if ($order=='code')
 	$order='`Category Code`';
 elseif ($order=='label')
@@ -93,6 +92,16 @@ elseif ($order=='discontinued')
 	$order='`Product Category Discontinued Products`';
 elseif ($order=='discontinuing')
 	$order='`Product Category Discontinuing Products`';
+elseif ($order=='sales')
+	$order="`Product Category $db_period Acc Invoiced Amount`";
+elseif ($order=='sales_1yb')
+	$order="(`Product Category $db_period Acc Invoiced Amount`-`Product Category $db_period Acc 1YB Invoiced Amount` )/`Product Category $db_period Acc 1YB Invoiced Amount` ";
+
+
+
+elseif ($order=='delta_sales_year3') {$order="(-1*(`Part 4 Year Ago Invoiced Amount`-`Part 3 Year Ago Invoiced Amount`)/`Part 4 Year Ago Invoiced Amount`)";}
+
+	
 elseif ($order=='delta_sales_year0') {$order="(-1*(`Product Category Year To Day Acc Invoiced Amount`-`Product Category Year To Day Acc 1YB Invoiced Amount`)/`Product Category Year To Day Acc 1YB Invoiced Amount`)";}
 elseif ($order=='delta_sales_year1') {$order="(-1*(`Product Category 2 Year Ago Invoiced Amount`-`Product Category 1 Year Ago Invoiced Amount`)/`Product Category 2 Year Ago Invoiced Amount`)";}
 elseif ($order=='delta_sales_year2') {$order="(-1*(`Product Category 3 Year Ago Invoiced Amount`-`Product Category 2 Year Ago Invoiced Amount`)/`Product Category 3 Year Ago Invoiced Amount`)";}

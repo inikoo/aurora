@@ -3,7 +3,7 @@
 /*
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created: 28 September 2016 at 02:19:50 GMT+8, Kuala Lumpur, Malaysia
+ Created: 28 September 2016 at 22:53:51 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2016, Inikoo
 
  Version 3
@@ -21,7 +21,6 @@ update_parts_sales($db, $print_est);
 
 function update_parts_sales($db, $print_est) {
 
-	$where=" where `Category Key`=259 ";
 	$where="where true";
 
 	$sql=sprintf("select count(distinct `Category Key`) as num from `Category Dimension` $where and  `Category Scope`='Part' ");
@@ -46,9 +45,8 @@ function update_parts_sales($db, $print_est) {
 		foreach ($result as $row) {
 			$category=new Category($row['Category Key']);
 
-			$category->update_part_category_sales('Last Month');
+			$category->update_part_category_previous_quarters_data();
 			
-
 			$contador++;
 			$lap_time1=date('U');
 
@@ -64,6 +62,8 @@ function update_parts_sales($db, $print_est) {
 		exit;
 	}
 }
+
+
 
 
 

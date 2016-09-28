@@ -354,7 +354,7 @@ trait PartCategory {
 	}
 
 
-	function get_sales_data($from_date, $to_date) {
+	function get_part_category_sales_data($from_date, $to_date) {
 
 		$sales_data=array(
 			'invoiced_amount'=>0,
@@ -405,7 +405,7 @@ trait PartCategory {
 
 		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($this->db, $interval);
 
-		$sales_data=$this->get_sales_data( $from_date, $to_date);
+		$sales_data=$this->get_part_category_sales_data( $from_date, $to_date);
 
 		$data_to_update=array(
 			"Part Category $db_interval Acc Customers"=>$sales_data['customers'],
@@ -423,7 +423,7 @@ trait PartCategory {
 		if ($from_date_1yb) {
 
 
-			$sales_data=$this->get_sales_data($from_date_1yb, $to_1yb);
+			$sales_data=$this->get_part_category_sales_data($from_date_1yb, $to_1yb);
 
 
 			$data_to_update=array(
@@ -450,10 +450,10 @@ trait PartCategory {
 
 	function update_part_category_previous_years_data() {
 
-		$data_1y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-1 year')), date('Y-01-01 00:00:00'));
-		$data_2y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-2 year')), date('Y-01-01 00:00:00', strtotime('-1 year')));
-		$data_3y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-3 year')), date('Y-01-01 00:00:00', strtotime('-2 year')));
-		$data_4y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-4 year')), date('Y-01-01 00:00:00', strtotime('-3 year')));
+		$data_1y_ago=$this->get_part_category_sales_data(date('Y-01-01 00:00:00', strtotime('-1 year')), date('Y-01-01 00:00:00'));
+		$data_2y_ago=$this->get_part_category_sales_data(date('Y-01-01 00:00:00', strtotime('-2 year')), date('Y-01-01 00:00:00', strtotime('-1 year')));
+		$data_3y_ago=$this->get_part_category_sales_data(date('Y-01-01 00:00:00', strtotime('-3 year')), date('Y-01-01 00:00:00', strtotime('-2 year')));
+		$data_4y_ago=$this->get_part_category_sales_data(date('Y-01-01 00:00:00', strtotime('-4 year')), date('Y-01-01 00:00:00', strtotime('-3 year')));
 
 		$data_to_update=array(
 
@@ -508,36 +508,45 @@ trait PartCategory {
 	}
 
 
-	function get_part_category_sales_data($year_tag) {
 
-		$sales_data=array(
-			'sold_amount'=>0,
+function update_part_category_previous_quarters_data() {
 
 
-		);
+		include_once 'utils/date_functions.php';
 
 
-		$sql=sprintf("select sum(`Part %s Year Ago Sold Amount`) as sold_amount   from `Category Bridge` B left join  `Part Data` P  on ( `Subject Key`=`Part SKU`)  where `Subject`='Part' and `Category Key`=%d " ,
-			$year_tag,
-			$this->id
+		foreach (range(1, 4) as $i) {
+			$dates=get_previous_quarters_dates($i);
+			$dates_1yb=get_previous_quarters_dates($i+4);
+			
+			
+			$sales_data=$this->get_part_category_sales_data($dates['start'], $dates['end']);
+			$sales_data_1yb=$this->get_part_category_sales_data($dates_1yb['start'], $dates_1yb['end']);
 
-
-		);
-
-
-		if ($result=$this->db->query($sql)) {
-			if ($row = $result->fetch()) {
-				$sales_data['sold_amount']=$row['sold_amount'];
-			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
+			$data_to_update=array(
+				"Part Category $i Quarter Ago Customers"=>$sales_data['customers'],
+				"Part Category $i Quarter Ago Repeat Customers"=>$sales_data['repeat_customers'],
+				"Part Category $i Quarter Ago Deliveries"=>$sales_data['deliveries'],
+				"Part Category $i Quarter Ago Profit"=>$sales_data['profit'],
+				"Part Category $i Quarter Ago Invoiced Amount"=>$sales_data['invoiced_amount'],
+				"Part Category $i Quarter Ago Required"=>$sales_data['required'],
+				"Part Category $i Quarter Ago Dispatched"=>$sales_data['dispatched'],
+				"Part Category $i Quarter Ago Keeping Day"=>$sales_data['keep_days'],
+				"Part Category $i Quarter Ago With Stock Days"=>$sales_data['with_stock_days'],
+				
+				"Part Category $i Quarter Ago 1YB Customers"=>$sales_data_1yb['customers'],
+				"Part Category $i Quarter Ago 1YB Repeat Customers"=>$sales_data_1yb['repeat_customers'],
+				"Part Category $i Quarter Ago 1YB Deliveries"=>$sales_data_1yb['deliveries'],
+				"Part Category $i Quarter Ago 1YB Profit"=>$sales_data_1yb['profit'],
+				"Part Category $i Quarter Ago 1YB Invoiced Amount"=>$sales_data_1yb['invoiced_amount'],
+				"Part Category $i Quarter Ago 1YB Required"=>$sales_data_1yb['required'],
+				"Part Category $i Quarter Ago 1YB Dispatched"=>$sales_data_1yb['dispatched'],
+				"Part Category $i Quarter Ago 1YB Keeping Day"=>$sales_data_1yb['keep_days'],
+				"Part Category $i Quarter Ago 1YB With Stock Days"=>$sales_data_1yb['with_stock_days'],
+			);
+			$this->update( $data_to_update, 'no_history');
 		}
 
-
-
-
-		return $sales_data;
 	}
 
 

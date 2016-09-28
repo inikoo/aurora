@@ -3,7 +3,7 @@
 /*
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created: 28 September 2016 at 02:19:50 GMT+8, Kuala Lumpur, Malaysia
+ Created: 28 September 2016 at 18:06:32 GMT+8, Cyberjaya, Malaysia
  Copyright (c) 2016, Inikoo
 
  Version 3
@@ -11,8 +11,7 @@
 */
 
 require_once 'common.php';
-
-require_once 'class.Category.php';
+require_once 'class.Part.php';
 
 $print_est=true;
 
@@ -21,11 +20,10 @@ update_parts_sales($db, $print_est);
 
 function update_parts_sales($db, $print_est) {
 
-	$where=" where `Category Key`=259 ";
-	$where="where true";
+	$where=" where `Part SKU`=259 ";
+	$where="";
 
-	$sql=sprintf("select count(distinct `Category Key`) as num from `Category Dimension` $where and  `Category Scope`='Part' ");
-
+	$sql=sprintf("select count(*) as num from `Part Dimension` $where");
 	if ($result=$db->query($sql)) {
 		if ($row = $result->fetch()) {
 			$total=$row['num'];
@@ -40,13 +38,18 @@ function update_parts_sales($db, $print_est) {
 	$lap_time0=date('U');
 	$contador=0;
 
-	$sql=sprintf("select `Category Key` from `Category Dimension` $where and  `Category Scope`='Part' ");
+	$sql=sprintf("select `Part SKU` from `Part Dimension`  $where  order by `Part SKU`");
 
 	if ($result=$db->query($sql)) {
 		foreach ($result as $row) {
-			$category=new Category($row['Category Key']);
+			$part=new Part($row['Part SKU']);
 
-			$category->update_part_category_sales('Last Month');
+
+
+
+			$part->load_acc_data();
+
+			$part->update_previous_quarters_data();
 			
 
 			$contador++;
@@ -66,6 +69,20 @@ function update_parts_sales($db, $print_est) {
 }
 
 
+
+
+function update_categories_sales($db, $print_est) {
+	$sql=sprintf("select `Category Key`  from `Category Bridge` where  `Subject`='Part' group by `Category Key` ");
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+			$category=new Category($row['Category Key']);
+			$category->update_number_of_subjects();
+			$category->update_subjects_data();
+			$category->update_part_category_previous_years_data();
+			$category->update_part_stock_status();
+		}
+	}
+}
 
 
 ?>
