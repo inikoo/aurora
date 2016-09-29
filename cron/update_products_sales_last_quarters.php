@@ -49,7 +49,7 @@ update_sales($db, $print_est);
 function update_sales($db, $print_est) {
 
 	$where='where `Product ID`=971';
-	//$where='';
+	$where='';
 
 	$sql=sprintf("select count(*) as num from `Product Dimension` $where");
 	if ($result=$db->query($sql)) {
