@@ -43,16 +43,16 @@ $print_est=true;
 
 print date('l jS \of F Y h:i:s A')."\n";
 
-update_sales($db,$print_est);
+update_sales($db, $print_est);
 
 
 
 
 
-function update_sales($db,$print_est) {
+function update_sales($db, $print_est) {
 
-	$where='where `Product ID`=259';
-	$where='';
+	$where='where `Product ID`=971';
+	//$where='';
 
 	$sql=sprintf("select count(*) as num from `Product Dimension` $where");
 	if ($result=$db->query($sql)) {
@@ -76,7 +76,8 @@ function update_sales($db,$print_est) {
 	if ($result=$db->query($sql)) {
 		foreach ($result as $row) {
 			$product=new Product('id', $row['Product ID']);
-
+			$product->load_acc_data();
+			
 			$product->update_previous_years_data();
 
 			$contador++;

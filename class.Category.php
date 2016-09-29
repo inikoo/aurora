@@ -41,7 +41,7 @@ class Category extends DB_Table{
 		$this->update_subjects_data=true;
 		$this->table_name='Category';
 		$this->subject_table_name='Category';
-		$this->ignore_fields=array('Category Key','Part Category Key');
+		$this->ignore_fields=array('Category Key', 'Part Category Key');
 		$this->all_descendants_keys=array();
 		$this->skip_update_sales=false;
 
@@ -94,7 +94,7 @@ class Category extends DB_Table{
 					print_r($error_info=$this->db->errorInfo());
 					exit;
 				}
-				
+
 				$sql=sprintf("select * from `Part Category Data` where `Part Category Key`=%d", $this->id);
 				if ($result2=$this->db->query($sql)) {
 					if ($row = $result2->fetch()) {
@@ -104,8 +104,8 @@ class Category extends DB_Table{
 					print_r($error_info=$this->db->errorInfo());
 					exit;
 				}
-				
-			//	print_r($sql);
+
+				// print_r($sql);
 
 			}
 			elseif ($this->data['Category Scope']=='Location') {
@@ -127,21 +127,21 @@ class Category extends DB_Table{
 
 			elseif ($this->data['Category Scope']=='Product') {
 
-			
-					$this->subject_table_name='Product';
-					$sql=sprintf("select * from `Product Category Dimension` where `Product Category Key`=%d", $this->id);
-					//  print $sql;
-					// exit;
-					if ($result2=$this->db->query($sql)) {
-						if ($row = $result2->fetch()) {
-							$this->data=array_merge($this->data, $row);
-						}
-					}else {
-						print_r($error_info=$this->db->errorInfo());
-						exit;
-					}
 
-				
+				$this->subject_table_name='Product';
+				$sql=sprintf("select * from `Product Category Dimension` where `Product Category Key`=%d", $this->id);
+				//  print $sql;
+				// exit;
+				if ($result2=$this->db->query($sql)) {
+					if ($row = $result2->fetch()) {
+						$this->data=array_merge($this->data, $row);
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
+				}
+
+
 
 
 			}elseif ($this->data['Category Scope']=='Supplier') {
@@ -184,6 +184,59 @@ class Category extends DB_Table{
 	}
 
 
+	function load_acc_data() {
+		if ($this->data['Category Scope']=='Part') {
+		
+		$sql=sprintf("select * from `Part Category Data` where `Part Category Key`=%d", $this->id);
+
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				foreach ($row as $key=>$value) {
+					$this->data[$key]=$value;
+				}
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+		}elseif ($this->data['Category Scope']=='Product') {
+
+
+			$sql=sprintf("select * from `Product Category Data` where `Product Category Key`=%d", $this->id);
+
+
+
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					foreach ($row as $key=>$value) {
+						$this->data[$key]=$value;
+					}
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+
+
+			$sql=sprintf("select * from `Product Category DC Data` where `Product Category Key`=%d", $this->id);
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					foreach ($row as $key=>$value) {
+						$this->data[$key]=$value;
+					}
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+
+		}
+
+	}
 
 
 	function find($raw_data, $options) {
@@ -268,7 +321,7 @@ class Category extends DB_Table{
 	function create($data) {
 
 
-    
+
 
 		if ($data['Category Label']=='' ) {
 			$data['Category Label']=$data['Category Code'];
@@ -341,11 +394,11 @@ class Category extends DB_Table{
 
 				$sql=sprintf("insert into `Part Category Dimension` (`Part Category Key`) values (%d)", $this->id);
 				$this->db->exec($sql);
-				
-				
-			$sql=$sql=sprintf("insert into `Part Category Data` (`Part Category Key`) values (%d)", $this->id);
+
+
+				$sql=$sql=sprintf("insert into `Part Category Data` (`Part Category Key`) values (%d)", $this->id);
 				$this->db->exec($sql);
-				
+
 			}elseif ($this->data['Category Scope']=='Location') {
 				$created_msg=_("Location's category created");
 
@@ -362,18 +415,18 @@ class Category extends DB_Table{
 					prepare_mysql(gmdate('Y-m-d H:i:s'))
 				);
 				$this->db->exec($sql);
-				
+
 				$sql=sprintf("insert into `Product Category Data` (`Product Category Key`) values (%d)",
 					$this->id
-					
+
 				);
 				$this->db->exec($sql);
 				$sql=sprintf("insert into `Product Category DC Data` (`Product Category Key`) values (%d)",
 					$this->id
-					
+
 				);
 				$this->db->exec($sql);
-				
+
 			}
 
 
@@ -406,7 +459,7 @@ class Category extends DB_Table{
 	function create_category($data) {
 
 
-        unset($data['user']);
+		unset($data['user']);
 
 		$data['editor']=$this->editor;
 
@@ -460,15 +513,15 @@ class Category extends DB_Table{
 
 
 		$subcategory=new Category('find create', $data);
-		
-		if($subcategory->found){
-		    $this->error=true;
-		    
-		    if($subcategory->duplicated_field=='Category Code'){
-		    $this->msg=_('Duplicated code');
-		    }else{
-		      $this->msg="Category cound not be created";
-		    }
+
+		if ($subcategory->found) {
+			$this->error=true;
+
+			if ($subcategory->duplicated_field=='Category Code') {
+				$this->msg=_('Duplicated code');
+			}else {
+				$this->msg="Category cound not be created";
+			}
 		}
 
 		if ($data['Is Category Field Other']=='Yes') {
@@ -741,6 +794,68 @@ class Category extends DB_Table{
 				break;
 			default:
 
+				if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit)$/', $key)) {
+
+					$amount='Product Category '.$key;
+
+
+
+
+
+					return money($this->data[$amount], $this->get('Product Category Currency'));
+				}
+				if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Minify$/', $key)) {
+
+					$field='Product Category '.preg_replace('/ Minify$/', '', $key);
+
+					$suffix='';
+					$fraction_digits='NO_FRACTION_DIGITS';
+					if ($this->data[$field]>=10000) {
+						$suffix='K';
+						$_amount=$this->data[$field]/1000;
+					}elseif ($this->data[$field]>100 ) {
+						$fraction_digits='SINGLE_FRACTION_DIGITS';
+						$suffix='K';
+						$_amount=$this->data[$field]/1000;
+					}else {
+						$_amount=$this->data[$field];
+					}
+
+					$amount= money($_amount, $this->get('Product Category Currency'), $locale=false, $fraction_digits).$suffix;
+
+					return $amount;
+				}
+				if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Margin|GMROI)$/', $key)) {
+
+					$amount='Product Category '.$key;
+
+					return percentage($this->data[$amount], 1);
+				}
+				if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced|Customers)$/', $key) or $key=='Current Stock'  ) {
+
+					$field='Product Category '.$key;
+
+					return number($this->data[$field]);
+				}
+				if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced) Minify$/', $key) or $key=='Current Stock'  ) {
+
+					$field='Product Category '.preg_replace('/ Minify$/', '', $key);
+
+					$suffix='';
+					$fraction_digits=0;
+					if ($this->data[$field]>=10000) {
+						$suffix='K';
+						$_number=$this->data[$field]/1000;
+					}elseif ($this->data[$field]>100 ) {
+						$fraction_digits=1;
+						$suffix='K';
+						$_number=$this->data[$field]/1000;
+					}else {
+						$_number=$this->data[$field];
+					}
+
+					return number($_number, $fraction_digits).$suffix;
+				}
 
 
 				if (array_key_exists('Product Category '.$key, $this->data))
@@ -1179,18 +1294,18 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 	}
 
 
-	
+
 
 
 
 	function update_field_switcher($field, $value, $options='', $metadata='') {
 
 
-	
-//	print_r($this->base_data('Product Category Data'));
-//	print "** $field $value\n";
-//	exit;
-	
+
+		// print_r($this->base_data('Product Category Data'));
+		// print "** $field $value\n";
+		// exit;
+
 		if (array_key_exists($field, $this->base_data())) {
 
 
@@ -1328,7 +1443,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 				$value=html_entity_decode($value);
 				//$this->update_subject_field($field, $value, $options);
 
-				$this->update_table_field($field, $value,$options, 'Product Category Dimension', 'Product Category Dimension', $this->id);
+				$this->update_table_field($field, $value, $options, 'Product Category Dimension', 'Product Category Dimension', $this->id);
 
 
 				// Migration -----
@@ -1363,7 +1478,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 
 				}
 				//$this->update_subject_field($field, $value, $options);
-				$this->update_table_field($field, $value,$options, 'Product Category Dimension', 'Product Category Dimension', $this->id);
+				$this->update_table_field($field, $value, $options, 'Product Category Dimension', 'Product Category Dimension', $this->id);
 
 
 
@@ -1399,14 +1514,14 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 			default:
 				$this->update_table_field($field, $value, $options, 'Product Category Dimension', 'Product Category Dimension', $this->id);
 
-			//	$this->update_subject_field($field, $value, $options);
+				// $this->update_subject_field($field, $value, $options);
 			}
 		}
 		elseif (array_key_exists($field, $this->base_data('Part Category Data'))) {
 			$this->update_table_field($field, $value, $options, 'Part Category', 'Part Category Data', $this->id);
 		}elseif (array_key_exists($field, $this->base_data('Product Category Data'))) {
-		//print "++ $field $value\n";
-		
+			//print "++ $field $value\n";
+
 			$this->update_table_field($field, $value, $options, 'Product Category', 'Product Category Data', $this->id);
 		}elseif (array_key_exists($field, $this->base_data('Product Category DC Data'))) {
 			$this->update_table_field($field, $value, $options, 'Product Category DC', 'Product Category DC Data', $this->id);

@@ -1,35 +1,101 @@
+<div class="asset_container" >
 
-<div class="asset_profile container" >
-
-
-	<div id="asset_data">
+    <div class="block name_and_picture">
 	<div class="data_container">
-		<ul class="tags Categories">
-			{foreach from=$product->get_category_data() item=item key=key} 
-			<li><span class="button" onclick="change_view('category/{$item.category_key}')" title="{$item.label}">{$item.code}</span></li>
-			{/foreach} 
-		</ul>
-		<div class="data_field" style="clear:both">
-			<h1 style=" max-width: 600px;">
+		<div style="width:100%">
+			<ul class="tags Categories">
+				{foreach from=$product->get_category_data() item=item key=key} 
+				<li><span class="button" onclick="change_view('category/{$item.category_key}')" title="{$item.label}">{$item.code}</span></li>
+				{/foreach} 
+			</ul>
+		</div>
+		<div class="data_field strong " style="clear:both">
 				<span class="Product_Units_Per_Case">{$product->get('Units Per Case')}</span>x <span class="Product_Name">{$product->get('Name')}</span> 
-			</h1>
 		</div>
 	</div>
-	
+	<div class="data_container">
+	</div>
 	<div style="clear:both">
 	</div>
 	<div class="data_container">
-		<div id="main_image" class="wraptocenter main_image {if !$product->get('Product Main Image Key')}hide{/if}">
-			<img src="/{$product->get('Product Main Image')}"> </span> 
+		{assign "image_key" $product->get_main_image_key()} 
+		<div id="main_image" class="wraptocenter main_image {if $image_key==''}hide{/if}">
+			<img src="/{if $image_key}image_root.php?id={$image_key}&amp;size=small{else}art/nopic.png{/if}"> </span> 
 		</div>
-		{include file='upload_main_image.tpl' object='Product' key=$product->id class="{if $product->get('Product Main Image Key')!=''}hide{/if}"} 
+		{include file='upload_main_image.tpl' object='Product' key=$product->id class="{if $image_key!=''}hide{/if}"} 
 	</div>
-	{include file='sticky_note.tpl' object='Category' key=$product->id sticky_note_field='Store_Product_Sticky_Note' _object=$product} 
 	<div style="clear:both">
 	</div>
 </div>
 
-	<div id="info" >
+    <div class="block sales_data">
+    
+    <table>
+	
+	<tr class="header">
+	<td  colspan=3>{$header_total_sales}</td>
+	</tr> 
+	<tr class="total_sales">
+	<td>{$product->get('Total Acc Invoiced Amount')}</td>
+	<td>{$product->get('Total Acc Quantity Invoiced')}</td>
+	<td>{$customers}</td>
+	</tr> 
+	</table>
+    
+	<table>
+		<tr class="header">
+			<td>{$year_data.0.header}</td>
+			<td>{$year_data.1.header}</td>
+			<td>{$year_data.2.header}</td>
+			<td>{$year_data.3.header}</td>
+			<td>{$year_data.4.header}</td>
+		</tr>
+		<tr>
+			<td><span title="{$product->get('Year To Day Acc Invoiced Amount')}">{$product->get('Year To Day Acc Invoiced Amount Minify')}</span> <span title="{$year_data.0.invoiced_amount_delta_title}">{$year_data.0.invoiced_amount_delta}</span></td>
+			<td><span title="{$product->get('1 Year Ago Invoiced Amount')}">{$product->get('1 Year Ago Invoiced Amount Minify')}</span> <span title="{$year_data.1.invoiced_amount_delta_title}">{$year_data.1.invoiced_amount_delta}</span></td>
+			<td><span title="{$product->get('2 Year Ago Invoiced Amount')}">{$product->get('2 Year Ago Invoiced Amount Minify')}</span> <span title="{$year_data.2.invoiced_amount_delta_title}">{$year_data.2.invoiced_amount_delta}</span></td>
+			<td><span title="{$product->get('3 Year Ago Invoiced Amount')}">{$product->get('3 Year Ago Invoiced Amount Minify')}</span> <span title="{$year_data.3.invoiced_amount_delta_title}">{$year_data.3.invoiced_amount_delta}</span></td>
+			<td><span title="{$product->get('4 Year Ago Invoiced Amount')}">{$product->get('4 Year Ago Invoiced Amount Minify')}</span> <span title="{$year_data.4.invoiced_amount_delta_title}">{$year_data.4.invoiced_amount_delta}</span></td>
+		</tr>
+		<tr>
+			<td><span title="{$product->get('Year To Day Acc Quantity Invoiced')}">{$product->get('Year To Day Acc Quantity Invoiced Minify')}</span> <span title="{$year_data.0.quantity_invoiced_delta_title}">{$year_data.0.quantity_invoiced_delta}</span></td>
+			<td><span title="{$product->get('1 Year Ago Quantity Invoiced')}">{$product->get('1 Year Ago Quantity Invoiced Minify')}</span> <span title="{$year_data.1.quantity_invoiced_delta_title}">{$year_data.1.quantity_invoiced_delta}</span></td>
+			<td><span title="{$product->get('2 Year Ago Quantity Invoiced')}">{$product->get('2 Year Ago Quantity Invoiced Minify')}</span> <span title="{$year_data.2.quantity_invoiced_delta_title}">{$year_data.2.quantity_invoiced_delta}</span></td>
+			<td><span title="{$product->get('3 Year Ago Quantity Invoiced')}">{$product->get('3 Year Ago Quantity Invoiced Minify')}</span> <span title="{$year_data.3.quantity_invoiced_delta_title}">{$year_data.3.quantity_invoiced_delta}</span></td>
+			<td><span title="{$product->get('4 Year Ago Quantity Invoiced')}">{$product->get('4 Year Ago Quantity Invoiced Minify')}</span> <span title="{$year_data.4.quantity_invoiced_delta_title}">{$year_data.4.quantity_invoiced_delta}</span></td>
+		</tr>
+		<tr class="space">
+			<td colspan="5"></td>
+		</tr>
+		<tr class="header">
+			<td>{$quarter_data.0.header}</td>
+			<td>{$quarter_data.1.header}</td>
+			<td>{$quarter_data.2.header}</td>
+			<td>{$quarter_data.3.header}</td>
+			<td>{$quarter_data.4.header}</td>
+		</tr>
+		<tr>
+			<td><span title="{$product->get('Quarter To Day Acc Invoiced Amount')}">{$product->get('Quarter To Day Acc Invoiced Amount Minify')}</span> <span title="{$quarter_data.0.invoiced_amount_delta_title}">{$quarter_data.0.invoiced_amount_delta}</span></td>
+			<td><span title="{$product->get('1 Quarter Ago Invoiced Amount')}">{$product->get('1 Quarter Ago Invoiced Amount Minify')}</span> <span title="{$quarter_data.1.invoiced_amount_delta_title}">{$quarter_data.1.invoiced_amount_delta}</span></td>
+			<td><span title="{$product->get('2 Quarter Ago Invoiced Amount')}">{$product->get('2 Quarter Ago Invoiced Amount Minify')}</span> <span title="{$quarter_data.2.invoiced_amount_delta_title}">{$quarter_data.2.invoiced_amount_delta}</span></td>
+			<td><span title="{$product->get('3 Quarter Ago Invoiced Amount')}">{$product->get('3 Quarter Ago Invoiced Amount Minify')}</span> <span title="{$quarter_data.3.invoiced_amount_delta_title}">{$quarter_data.3.invoiced_amount_delta}</span></td>
+			<td><span title="{$product->get('4 Quarter Ago Invoiced Amount')}">{$product->get('4 Quarter Ago Invoiced Amount Minify')}</span> <span title="{$quarter_data.4.invoiced_amount_delta_title}">{$quarter_data.4.invoiced_amount_delta}</span></td>
+		</tr>
+		<tr>
+			<td><span title="{$product->get('Quarter To Day Acc Quantity Invoiced')}">{$product->get('Quarter To Day Acc Quantity Invoiced Minify')}</span> <span title="{$quarter_data.0.quantity_invoiced_delta_title}">{$quarter_data.0.quantity_invoiced_delta}</span></td>
+			<td><span title="{$product->get('1 Quarter Ago Quantity Invoiced')}">{$product->get('1 Quarter Ago Quantity Invoiced Minify')}</span> <span title="{$quarter_data.1.quantity_invoiced_delta_title}">{$quarter_data.1.quantity_invoiced_delta}</span></td>
+			<td><span title="{$product->get('2 Quarter Ago Quantity Invoiced')}">{$product->get('2 Quarter Ago Quantity Invoiced Minify')}</span> <span title="{$quarter_data.2.quantity_invoiced_delta_title}">{$quarter_data.2.quantity_invoiced_delta}</span></td>
+			<td><span title="{$product->get('3 Quarter Ago Quantity Invoiced')}">{$product->get('3 Quarter Ago Quantity Invoiced Minify')}</span> <span title="{$quarter_data.3.quantity_invoiced_delta_title}">{$quarter_data.3.quantity_invoiced_delta}</span></td>
+			<td><span title="{$product->get('4 Quarter Ago Quantity Invoiced')}">{$product->get('4 Quarter Ago Quantity Invoiced Minify')}</span> <span title="{$quarter_data.4.quantity_invoiced_delta_title}">{$quarter_data.4.quantity_invoiced_delta}</span></td>
+		</tr>
+	</table>
+	
+	
+	
+</div>
+	
+
+	<div class="block info">
 		<div id="overviews">
 		
 		<table border="0" class="overview">
@@ -66,10 +132,7 @@
 		
 		<table border="0" class="overview">
  
-				<tr>
-					<td>{t}From{/t}:</td>
-					<td class="aright Product_Valid_From">{$product->get('Valid From')}</td>
-				</tr>
+				
 				<tr id="valid_to" class="{if $product->get('Product Status')!='Discontinued'}hide{/if}">
 					<td>{t}To{/t}:</td>
 					<td class="aright Product_Valid_To">{$product->get('Valid To')}</td>

@@ -51,8 +51,8 @@ update_sales($db, $print_est);
 
 function update_sales($db, $print_est) {
 
-	$where='where `Product ID`=259';
-	$where='';
+	$where='where `Product ID`=971';
+	//$where='';
 
 	$sql=sprintf("select count(*) as num from `Product Dimension` $where");
 	if ($result=$db->query($sql)) {
@@ -77,7 +77,7 @@ function update_sales($db, $print_est) {
 		foreach ($result as $row) {
 			$product=new Product('id', $row['Product ID']);
 
-
+			$product->load_acc_data();
 
 			$product->update_sales_from_invoices('Total');
 			$product->update_sales_from_invoices('Month To Day');
@@ -85,11 +85,6 @@ function update_sales($db, $print_est) {
 			$product->update_sales_from_invoices('Year To Day');
 			$product->update_sales_from_invoices('1 Year');
 			$product->update_sales_from_invoices('1 Quarter');
-
-
-
-
-
 
 
 			$contador++;

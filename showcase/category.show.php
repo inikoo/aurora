@@ -15,6 +15,7 @@ function get_category_showcase($data,$smarty) {
    
     
     $category=$data['_object'];
+    
     if(!$category->id){
         return "";
     }

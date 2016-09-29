@@ -101,6 +101,41 @@ class Product extends Asset{
 		}
 	}
 
+	function load_acc_data() {
+
+		$sql=sprintf("select * from `Product Data` where `Product ID`=%d", $this->id);
+		
+		
+		
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				foreach ($row as $key=>$value) {
+					$this->data[$key]=$value;
+				}
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+
+		$sql=sprintf("select * from `Product DC Data` where `Product ID`=%d", $this->id);
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				foreach ($row as $key=>$value) {
+					$this->data[$key]=$value;
+				}
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+	}
+	
+	
 
 	function get_webpage() {
 
@@ -533,6 +568,72 @@ class Product extends Asset{
 			}
 			break;
 		default:
+		
+		
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit)$/', $key)) {
+
+				$amount='Product '.$key;
+
+
+
+
+
+				return money($this->data[$amount], $this->get('Product Currency'));
+			}
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Minify$/', $key)) {
+
+				$field='Product '.preg_replace('/ Minify$/', '', $key);
+
+				$suffix='';
+				$fraction_digits='NO_FRACTION_DIGITS';
+				if ($this->data[$field]>=10000) {
+					$suffix='K';
+					$_amount=$this->data[$field]/1000;
+				}elseif ($this->data[$field]>100 ) {
+					$fraction_digits='SINGLE_FRACTION_DIGITS';
+					$suffix='K';
+					$_amount=$this->data[$field]/1000;
+				}else {
+					$_amount=$this->data[$field];
+				}
+
+				$amount= money($_amount,$this->get('Product Currency'), $locale=false, $fraction_digits).$suffix;
+
+				return $amount;
+			}
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Margin|GMROI)$/', $key)) {
+
+				$amount='Product '.$key;
+
+				return percentage($this->data[$amount], 1);
+			}
+		    if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced|Customers)$/', $key) or $key=='Current Stock'  ) {
+
+				$field='Product '.$key;
+
+				return number($this->data[$field]);
+			}
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced) Minify$/', $key) or $key=='Current Stock'  ) {
+
+				$field='Product '.preg_replace('/ Minify$/', '', $key);
+
+				$suffix='';
+				$fraction_digits=0;
+				if ($this->data[$field]>=10000) {
+					$suffix='K';
+					$_number=$this->data[$field]/1000;
+				}elseif ($this->data[$field]>100 ) {
+					$fraction_digits=1;
+					$suffix='K';
+					$_number=$this->data[$field]/1000;
+				}else {
+					$_number=$this->data[$field];
+				}
+
+				return number($_number,$fraction_digits).$suffix;
+			}
+
+		
 			if (array_key_exists($key, $this->data))
 				return $this->data[$key];
 
@@ -1546,7 +1647,7 @@ class Product extends Asset{
 				$this->update_table_field($field, $value, $options, 'Product DC Data', 'Product DC Data', $this->id);
 			}
 		}
-		$this->reread();
+		//$this->reread();
 
 	}
 
@@ -2671,25 +2772,25 @@ class Product extends Asset{
 
 			$data_to_update=array(
 
-				"Product 4 Quarter Ago Customers"=>$sales_data['customers'],
-				"Product 4 Quarter Ago Invoices"=>$sales_data['invoices'],
-				"Product 4 Quarter Ago Profit"=>$sales_data['profit'],
-				"Product 4 Quarter Ago Invoiced Amount"=>$sales_data['net'],
-				"Product 4 Quarter Ago Quantity Ordered"=>$sales_data['ordered'],
-				"Product 4 Quarter Ago Quantity Invoiced"=>$sales_data['invoiced'],
-				"Product 4 Quarter Ago Quantity Delivered"=>$sales_data['delivered'],
-				"Product DC 4 Quarter Ago Profit"=>$sales_data['dc_net'],
-				"Product DC 4 Quarter Ago Invoiced Amount"=>$sales_data['dc_profit'],
+				"Product $i Quarter Ago Customers"=>$sales_data['customers'],
+				"Product $i Quarter Ago Invoices"=>$sales_data['invoices'],
+				"Product $i Quarter Ago Profit"=>$sales_data['profit'],
+				"Product $i Quarter Ago Invoiced Amount"=>$sales_data['net'],
+				"Product $i Quarter Ago Quantity Ordered"=>$sales_data['ordered'],
+				"Product $i Quarter Ago Quantity Invoiced"=>$sales_data['invoiced'],
+				"Product $i Quarter Ago Quantity Delivered"=>$sales_data['delivered'],
+				"Product DC $i Quarter Ago Profit"=>$sales_data['dc_net'],
+				"Product DC $i Quarter Ago Invoiced Amount"=>$sales_data['dc_profit'],
 				
-				"Product 4 Quarter Ago 1YB Customers"=>$sales_data_1yb['customers'],
-				"Product 4 Quarter Ago 1YB Invoices"=>$sales_data_1yb['invoices'],
-				"Product 4 Quarter Ago 1YB Profit"=>$sales_data_1yb['profit'],
-				"Product 4 Quarter Ago 1YB Invoiced Amount"=>$sales_data_1yb['net'],
-				"Product 4 Quarter Ago 1YB Quantity Ordered"=>$sales_data_1yb['ordered'],
-				"Product 4 Quarter Ago 1YB Quantity Invoiced"=>$sales_data_1yb['invoiced'],
-				"Product 4 Quarter Ago 1YB Quantity Delivered"=>$sales_data_1yb['delivered'],
-				"Product DC 4 Quarter Ago 1YB Profit"=>$sales_data_1yb['dc_net'],
-				"Product DC 4 Quarter Ago 1YB Invoiced Amount"=>$sales_data_1yb['dc_profit']
+				"Product $i Quarter Ago 1YB Customers"=>$sales_data_1yb['customers'],
+				"Product $i Quarter Ago 1YB Invoices"=>$sales_data_1yb['invoices'],
+				"Product $i Quarter Ago 1YB Profit"=>$sales_data_1yb['profit'],
+				"Product $i Quarter Ago 1YB Invoiced Amount"=>$sales_data_1yb['net'],
+				"Product $i Quarter Ago 1YB Quantity Ordered"=>$sales_data_1yb['ordered'],
+				"Product $i Quarter Ago 1YB Quantity Invoiced"=>$sales_data_1yb['invoiced'],
+				"Product $i Quarter Ago 1YB Quantity Delivered"=>$sales_data_1yb['delivered'],
+				"Product DC $i Quarter Ago 1YB Profit"=>$sales_data_1yb['dc_net'],
+				"Product DC $i Quarter Ago 1YB Invoiced Amount"=>$sales_data_1yb['dc_profit']
 
 
 			);

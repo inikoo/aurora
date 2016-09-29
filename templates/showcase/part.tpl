@@ -1,77 +1,83 @@
-<div class="asset_profile container" >
+<div class="asset_container" >
 
-
-	<div id="asset_data">
-		<div class="data_container">
-		
-		<div style="width:100%" >
-	
-	<ul class="tags Categories" >
-			{foreach from=$part->get_category_data() item=item key=key} 
-	<li><span class="button" onClick="change_view('category/{$item.category_key}')" title="{$item.label}">{$item.code}</span></li>
-	{/foreach} 
-</ul>
-
-
-	</div>
-		
-				<div class="data_field " style="clear:both">
-				<h1 ><span class="Part_Unit_Description">{$part->get('Part Package Description')}</span></h1>
-			</div>
-			
+    <div class="block name_and_picture">
+	<div class="data_container">
+		<div style="width:100%">
+			<ul class="tags Categories">
+				{foreach from=$part->get_category_data() item=item key=key} 
+				<li><span class="button" onclick="change_view('category/{$item.category_key}')" title="{$item.label}">{$item.code}</span></li>
+				{/foreach} 
+			</ul>
 		</div>
-		<div class="data_container">
-			
-			
-		</div>
-		<div style="clear:both">
-		</div>
-		<div class="data_container">
-			
-			
-			{assign "image_key" $part->get_main_image_key()}
-			<div id="main_image" class="wraptocenter main_image {if $image_key==''}hide{/if}" >
-				
-				<img src="/{if $image_key}image_root.php?id={$image_key}&size=small{else}art/nopic.png{/if}"  >
-				
-				</span>
-				
-			</div>	
-			{include file='upload_main_image.tpl' object='Part'  key=$part->id class="{if $image_key!=''}hide{/if}"}
-
-			
-			
-				
-				
-				
-			
-		</div>
-		{include file='sticky_note.tpl' object='Category'  key=$part->id sticky_note_field='Store_Product_Sticky_Note' _object=$part}
-
-	
-		
-		
-		
-		
-		<div style="clear:both">
+		<div class="data_field " style="clear:both">
+			<span class="strong Part_Unit_Description">{$part->get('Part Package Description')}</span> 
 		</div>
 	</div>
-	
-	<div id="sales_data" style="float:left;">
-	
-	
-	<table style="font-size:80%">
-	<tr>
-	<td>{$part->get('Quarter To Day Acc Invoiced Amount Minify')}</td>
-	<td>{$part->get('1 Quarter Ago Invoiced Amount Minify')}</td>
-	<td>{$part->get('2 Quarter Ago Invoiced Amount Minify')}</td>
-	<td>{$part->get('3 Quarter Ago Invoiced Amount Minify')}</td>
-	<td>{$part->get('4 Quarter Ago Invoiced Amount Minify')}</td>
-	</tr>
+	<div class="data_container">
+	</div>
+	<div style="clear:both">
+	</div>
+	<div class="data_container">
+		{assign "image_key" $part->get_main_image_key()} 
+		<div id="main_image" class="wraptocenter main_image {if $image_key==''}hide{/if}">
+			<img src="/{if $image_key}image_root.php?id={$image_key}&amp;size=small{else}art/nopic.png{/if}"> </span> 
+		</div>
+		{include file='upload_main_image.tpl' object='Part' key=$part->id class="{if $image_key!=''}hide{/if}"} 
+	</div>
+	<div style="clear:both">
+	</div>
+</div>
+    <div class="block sales_data">
+	<table>
+		<tr class="header">
+			<td>{$year_data.0.header}</td>
+			<td>{$year_data.1.header}</td>
+			<td>{$year_data.2.header}</td>
+			<td>{$year_data.3.header}</td>
+			<td>{$year_data.4.header}</td>
+		</tr>
+		<tr>
+			<td><span title="{$part->get('Year To Day Acc Invoiced Amount')}">{$part->get('Year To Day Acc Invoiced Amount Minify')}</span> <span title="{$year_data.0.invoiced_amount_delta_title}">{$year_data.0.invoiced_amount_delta}</span></td>
+			<td><span title="{$part->get('1 Year Ago Invoiced Amount')}">{$part->get('1 Year Ago Invoiced Amount Minify')}</span> <span title="{$year_data.1.invoiced_amount_delta_title}">{$year_data.1.invoiced_amount_delta}</span></td>
+			<td><span title="{$part->get('2 Year Ago Invoiced Amount')}">{$part->get('2 Year Ago Invoiced Amount Minify')}</span> <span title="{$year_data.2.invoiced_amount_delta_title}">{$year_data.2.invoiced_amount_delta}</span></td>
+			<td><span title="{$part->get('3 Year Ago Invoiced Amount')}">{$part->get('3 Year Ago Invoiced Amount Minify')}</span> <span title="{$year_data.3.invoiced_amount_delta_title}">{$year_data.3.invoiced_amount_delta}</span></td>
+			<td><span title="{$part->get('4 Year Ago Invoiced Amount')}">{$part->get('4 Year Ago Invoiced Amount Minify')}</span> <span title="{$year_data.4.invoiced_amount_delta_title}">{$year_data.4.invoiced_amount_delta}</span></td>
+		</tr>
+		<tr>
+			<td><span title="{$part->get('Year To Day Acc Dispatched')}">{$part->get('Year To Day Acc Dispatched Minify')}</span> <span title="{$year_data.0.dispatched_delta_title}">{$year_data.0.dispatched_delta}</span></td>
+			<td><span title="{$part->get('1 Year Ago Dispatched')}">{$part->get('1 Year Ago Dispatched Minify')}</span> <span title="{$year_data.1.dispatched_delta_title}">{$year_data.1.dispatched_delta}</span></td>
+			<td><span title="{$part->get('2 Year Ago Dispatched')}">{$part->get('2 Year Ago Dispatched Minify')}</span> <span title="{$year_data.2.dispatched_delta_title}">{$year_data.2.dispatched_delta}</span></td>
+			<td><span title="{$part->get('3 Year Ago Dispatched')}">{$part->get('3 Year Ago Dispatched Minify')}</span> <span title="{$year_data.3.dispatched_delta_title}">{$year_data.3.dispatched_delta}</span></td>
+			<td><span title="{$part->get('4 Year Ago Dispatched')}">{$part->get('4 Year Ago Dispatched Minify')}</span> <span title="{$year_data.4.dispatched_delta_title}">{$year_data.4.dispatched_delta}</span></td>
+		</tr>
+		<tr class="space">
+			<td colspan="5"></td>
+		</tr>
+		<tr class="header">
+			<td>{$quarter_data.0.header}</td>
+			<td>{$quarter_data.1.header}</td>
+			<td>{$quarter_data.2.header}</td>
+			<td>{$quarter_data.3.header}</td>
+			<td>{$quarter_data.4.header}</td>
+		</tr>
+		<tr>
+			<td><span title="{$part->get('Quarter To Day Acc Invoiced Amount')}">{$part->get('Quarter To Day Acc Invoiced Amount Minify')}</span> <span title="{$quarter_data.0.invoiced_amount_delta_title}">{$quarter_data.0.invoiced_amount_delta}</span></td>
+			<td><span title="{$part->get('1 Quarter Ago Invoiced Amount')}">{$part->get('1 Quarter Ago Invoiced Amount Minify')}</span> <span title="{$quarter_data.1.invoiced_amount_delta_title}">{$quarter_data.1.invoiced_amount_delta}</span></td>
+			<td><span title="{$part->get('2 Quarter Ago Invoiced Amount')}">{$part->get('2 Quarter Ago Invoiced Amount Minify')}</span> <span title="{$quarter_data.2.invoiced_amount_delta_title}">{$quarter_data.2.invoiced_amount_delta}</span></td>
+			<td><span title="{$part->get('3 Quarter Ago Invoiced Amount')}">{$part->get('3 Quarter Ago Invoiced Amount Minify')}</span> <span title="{$quarter_data.3.invoiced_amount_delta_title}">{$quarter_data.3.invoiced_amount_delta}</span></td>
+			<td><span title="{$part->get('4 Quarter Ago Invoiced Amount')}">{$part->get('4 Quarter Ago Invoiced Amount Minify')}</span> <span title="{$quarter_data.4.invoiced_amount_delta_title}">{$quarter_data.4.invoiced_amount_delta}</span></td>
+		</tr>
+		<tr>
+			<td><span title="{$part->get('Quarter To Day Acc Dispatched')}">{$part->get('Quarter To Day Acc Dispatched Minify')}</span> <span title="{$quarter_data.0.dispatched_delta_title}">{$quarter_data.0.dispatched_delta}</span></td>
+			<td><span title="{$part->get('1 Quarter Ago Dispatched')}">{$part->get('1 Quarter Ago Dispatched Minify')}</span> <span title="{$quarter_data.1.dispatched_delta_title}">{$quarter_data.1.dispatched_delta}</span></td>
+			<td><span title="{$part->get('2 Quarter Ago Dispatched')}">{$part->get('2 Quarter Ago Dispatched Minify')}</span> <span title="{$quarter_data.2.dispatched_delta_title}">{$quarter_data.2.dispatched_delta}</span></td>
+			<td><span title="{$part->get('3 Quarter Ago Dispatched')}">{$part->get('3 Quarter Ago Dispatched Minify')}</span> <span title="{$quarter_data.3.dispatched_delta_title}">{$quarter_data.3.dispatched_delta}</span></td>
+			<td><span title="{$part->get('4 Quarter Ago Dispatched')}">{$part->get('4 Quarter Ago Dispatched Minify')}</span> <span title="{$quarter_data.4.dispatched_delta_title}">{$quarter_data.4.dispatched_delta}</span></td>
+		</tr>
 	</table>
-	
-	</div>
-	<div id="info" style="">
+	{$customers} 
+</div>
+	<div class="block info">
 	
 	
 	
@@ -182,7 +188,7 @@
 		</div>
 	</div>
 	<div style="clear:both">
-	</div>
+</div>
 	
 	
 	
