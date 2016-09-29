@@ -1689,31 +1689,49 @@ class Part extends Asset{
 				$fraction_digits='NO_FRACTION_DIGITS';
 				if ($this->data[$field]>=10000) {
 					$suffix='K';
-					$this->data[$field]=$this->data[$field]/1000;
+					$_amount=$this->data[$field]/1000;
 				}elseif ($this->data[$field]>100 ) {
-				$fraction_digits='SINGLE_FRACTION_DIGITS';
+					$fraction_digits='SINGLE_FRACTION_DIGITS';
 					$suffix='K';
-					$this->data[$field]=$this->data[$field]/1000;
+					$_amount=$this->data[$field]/1000;
+				}else {
+					$_amount=$this->data[$field];
 				}
 
-				$amount= money($this->data[$field], $account->get('Account Currency'), $locale=false, $fraction_digits).$suffix;
+				$amount= money($_amount, $account->get('Account Currency'), $locale=false, $fraction_digits).$suffix;
 
 				return $amount;
 			}
-
-			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Month To|Today|Week To).*(Margin|GMROI)$/', $key)) {
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Quarter To|Month To|Today|Week To).*(Margin|GMROI)$/', $key)) {
 
 				$amount='Part '.$key;
 
 				return percentage($this->data[$amount], 1);
 			}
-
-
-			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Provided|Broken|Acquired)$/', $key) or $key=='Current Stock'  ) {
+		    if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Quarter To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Dispatched|Broken|Acquired)$/', $key) or $key=='Current Stock'  ) {
 
 				$amount='Part '.$key;
 
 				return number($this->data[$amount]);
+			}
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|Year To|Quarter To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Dispatched|Broken|Acquired) Minify$/', $key) or $key=='Current Stock'  ) {
+
+				$field='Part '.preg_replace('/ Minify$/', '', $key);
+
+				$suffix='';
+				$fraction_digits=0;
+				if ($this->data[$field]>=10000) {
+					$suffix='K';
+					$_number=$this->data[$field]/1000;
+				}elseif ($this->data[$field]>100 ) {
+					$fraction_digits=1;
+					$suffix='K';
+					$_number=$this->data[$field]/1000;
+				}else {
+					$_number=$this->data[$field];
+				}
+
+				return number($_number,$fraction_digits).$suffix;
 			}
 
 

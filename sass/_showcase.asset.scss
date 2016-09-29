@@ -1,23 +1,40 @@
-.asset_profile {
-    padding: 10px 20px 20px 20px;
+.asset_container{
+
+    padding: 10px 0px 20px 20px;border-bottom:1px solid #ccc;
+
+    .block{float:left;margin-top: 3px;margin-right:20px;}
+
+    .block.name_and_picture{
+width:290px;
+}
+
+    .block.sales_data{
+margin-right:30px;font-size:85%;
+ table{
+   margin-bottom:10px;
     
-  
+ tr.space{border:none; height: 10px; td{border:none;}}    ;
+       td {border:1px solid #efefef;border-bottom:1px solid #ddd;padding:1px 5px 1px 0px;min-width:70px;text-align: right;}
+ 
+    .header td{border-top:1px solid #ccc;text-align: center;border-spacing: 5px 0px}
+    .total_sales td {min-width:120px;text-align: center;}
+
+}
+}
     
-    
-    #asset_data {
-        float: left;
-        padding: 0px 20px 0px 0px;
-    }
-    #info {
-        margin-top: 3px;
-        max-width: 370px;
-        float: right;
+    .block.info {
+        width:335px;
+    margin-right:0;   
+       
         #overviews {
-            min-width: 350px;
+            min-width: 335px;
            
         }
     }
-}
+   
+    
+   
+   
     
     
     
@@ -41,4 +58,4 @@ div:first-of-type{margin-top:0px;margin-bottom:2px}
 
 }    
     
-    
+}

@@ -1493,36 +1493,62 @@ tr.deleting_tr {
         border-bottom: 1px solid #aaa; }
     #object_showcase .xorder #account .block, #object_showcase .invoice #account .block, #object_showcase .delivery_note #account .block {
       min-width: 150px; }
-  #object_showcase .asset_profile {
-    padding: 10px 20px 20px 20px; }
-    #object_showcase .asset_profile #asset_data {
+  #object_showcase .asset_container {
+    padding: 10px 0px 20px 20px;
+    border-bottom: 1px solid #ccc; }
+    #object_showcase .asset_container .block {
       float: left;
-      padding: 0px 20px 0px 0px; }
-    #object_showcase .asset_profile #info {
       margin-top: 3px;
-      max-width: 370px;
-      float: right; }
-      #object_showcase .asset_profile #info #overviews {
-        min-width: 350px; }
-  #object_showcase .carton_sko_units {
-    padding-left: 5px;
-    padding-top: 0px;
-    font-size: 90%;
-    color: #5f5f5f; }
-    #object_showcase .carton_sko_units td.canvas {
-      padding: 0 5px 10px 0; }
-      #object_showcase .carton_sko_units td.canvas canvas {
-        border: 1px solid #ccc; }
-    #object_showcase .carton_sko_units td.info {
-      padding: 0px 10px;
-      vertical-align: top; }
-      #object_showcase .carton_sko_units td.info div {
-        margin-top: 4px; }
-      #object_showcase .carton_sko_units td.info div:first-of-type {
-        margin-top: 0px;
-        margin-bottom: 2px; }
-    #object_showcase .carton_sko_units .volume, #object_showcase .carton_sko_units .density {
-      display: none; }
+      margin-right: 20px; }
+    #object_showcase .asset_container .block.name_and_picture {
+      width: 290px; }
+    #object_showcase .asset_container .block.sales_data {
+      margin-right: 30px;
+      font-size: 85%; }
+      #object_showcase .asset_container .block.sales_data table {
+        margin-bottom: 10px; }
+        #object_showcase .asset_container .block.sales_data table tr.space {
+          border: none;
+          height: 10px; }
+          #object_showcase .asset_container .block.sales_data table tr.space td {
+            border: none; }
+        #object_showcase .asset_container .block.sales_data table td {
+          border: 1px solid #efefef;
+          border-bottom: 1px solid #ddd;
+          padding: 1px 5px 1px 0px;
+          min-width: 70px;
+          text-align: right; }
+        #object_showcase .asset_container .block.sales_data table .header td {
+          border-top: 1px solid #ccc;
+          text-align: center;
+          border-spacing: 5px 0px; }
+        #object_showcase .asset_container .block.sales_data table .total_sales td {
+          min-width: 120px;
+          text-align: center; }
+    #object_showcase .asset_container .block.info {
+      width: 335px;
+      margin-right: 0; }
+      #object_showcase .asset_container .block.info #overviews {
+        min-width: 335px; }
+    #object_showcase .asset_container .carton_sko_units {
+      padding-left: 5px;
+      padding-top: 0px;
+      font-size: 90%;
+      color: #5f5f5f; }
+      #object_showcase .asset_container .carton_sko_units td.canvas {
+        padding: 0 5px 10px 0; }
+        #object_showcase .asset_container .carton_sko_units td.canvas canvas {
+          border: 1px solid #ccc; }
+      #object_showcase .asset_container .carton_sko_units td.info {
+        padding: 0px 10px;
+        vertical-align: top; }
+        #object_showcase .asset_container .carton_sko_units td.info div {
+          margin-top: 4px; }
+        #object_showcase .asset_container .carton_sko_units td.info div:first-of-type {
+          margin-top: 0px;
+          margin-bottom: 2px; }
+      #object_showcase .asset_container .carton_sko_units .volume, #object_showcase .asset_container .carton_sko_units .density {
+        display: none; }
   #object_showcase h1 {
     font-size: 140%;
     padding: 0px;
@@ -1567,8 +1593,8 @@ tr.deleting_tr {
   display: table-cell;
   text-align: center;
   vertical-align: middle;
-  width: 300px;
-  height: 300px;
+  width: 280px;
+  height: 280px;
   margin-bottom: 10px;
   padding-top: 0px; }
 
