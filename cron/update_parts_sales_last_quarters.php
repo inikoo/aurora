@@ -20,7 +20,7 @@ update_parts_sales($db, $print_est);
 
 function update_parts_sales($db, $print_est) {
 
-	$where=" where `Part SKU`=259 ";
+	$where=" where `Part SKU`=971 ";
 	$where="";
 
 	$sql=sprintf("select count(*) as num from `Part Dimension` $where");

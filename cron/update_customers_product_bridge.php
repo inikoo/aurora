@@ -11,7 +11,7 @@
 */
 
 require_once 'common.php';
-
+require_once 'class.Customer.php';
 
 $default_DB_link=@mysql_connect($dns_host, $dns_user, $dns_pwd );
 if (!$default_DB_link) {
@@ -26,8 +26,7 @@ mysql_set_charset('utf8');
 mysql_query("SET time_zone='+0:00'");
 
 
-require_once 'class.Product.php';
-require_once 'class.Category.php';
+
 
 
 $editor=array(
@@ -51,10 +50,10 @@ update_sales($db, $print_est);
 
 function update_sales($db, $print_est) {
 
-	$where='where `Product ID`=259';
+	$where='where `Customer Key`=218014';
 	$where='';
 
-	$sql=sprintf("select count(*) as num from `Product Dimension` $where");
+	$sql=sprintf("select count(*) as num from `Customer Dimension` $where");
 	if ($result=$db->query($sql)) {
 		if ($row = $result->fetch()) {
 			$total=$row['num'];
@@ -70,33 +69,24 @@ function update_sales($db, $print_est) {
 	$contador=0;
 
 
-	$sql=sprintf("select `Product ID` from `Product Dimension` $where order by `Product ID` desc ");
+	$sql=sprintf("select `Customer Key` from `Customer Dimension` $where order by `Customer Key` desc ");
 
 
 	if ($result=$db->query($sql)) {
 		foreach ($result as $row) {
-			$product=new Product('id', $row['Product ID']);
+			$customer=new Customer('id', $row['Customer Key']);
 
 
 
-			$product->update_sales_from_invoices('Total');
-			$product->update_sales_from_invoices('Month To Day');
-			$product->update_sales_from_invoices('Quarter To Day');
-			$product->update_sales_from_invoices('Year To Day');
-			$product->update_sales_from_invoices('1 Year');
-			$product->update_sales_from_invoices('1 Quarter');
-
-
-
-
-
+			$customer->update_product_bridge();
+			
 
 
 			$contador++;
 			$lap_time1=date('U');
 
 			if ($print_est) {
-				print 'P   '.percentage($contador, $total, 3)."  lap time ".sprintf("%.2f", ($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h  ($contador/$total) \r";
+				print 'P   '.percentage($contador, $total, 3)."  lap time ".sprintf("%.4f", ($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.4f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h  ($contador/$total) \r";
 			}
 
 		}

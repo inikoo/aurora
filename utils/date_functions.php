@@ -608,7 +608,17 @@ function calculate_interval_dates($db, $interval, $from='', $to='') {
 		$to_1yb=date('Y-m-d H:i:s', strtotime("now -1 year"));
 		break;
 
-
+	case 'Quarter To Day':
+	case 'qtd':
+		$db_interval='Quarter To Day';
+		
+		$dates=get_previous_quarters_dates(0);
+		$from_date=$dates['start'];
+		$to_date=$dates['end'];
+		$dates=get_previous_quarters_dates(4);
+		$from_date_1yb=$dates['start'];
+		$to_1yb=$dates['end'];
+		break;
 	case 'Month To Day':
 	case 'mtd':
 		$db_interval='Month To Day';
@@ -725,40 +735,41 @@ function calculate_interval_dates($db, $interval, $from='', $to='') {
 
 }
 
+
 function get_previous_quarters_dates($i=0) {
 	$y = date('Y');
 	$m = date('m');
-	if($i > 0) {
-		for($x = 0; $x < $i; $x++) {
-			if($m <= 3) { $y--; }
+	if ($i > 0) {
+		for ($x = 0; $x < $i; $x++) {
+			if ($m <= 3) { $y--; }
 			$diff = $m % 3;
 			$m = ($diff > 0) ? $m - $diff:$m-3;
-			if($m == 0) { $m = 12; }
+			if ($m == 0) { $m = 12; }
 		}
 	}
-	switch($m) {
-		case $m >= 1 && $m <= 3:
-			$start = $y.'-01-01 00:00:00';
-			$end = $y.'-03-31 23:59:59';
-			break;
-		case $m >= 4 && $m <= 6:
-			$start = $y.'-04-01 00:00:00';
-			$end = $y.'-06-30 23:59:59';
-			break;
-		case $m >= 7 && $m <= 9:
-			$start = $y.'-07-01 00:00:00';
-			$end = $y.'-09-30 23:59:59';
-			break;
-		case $m >= 10 && $m <= 12:
-			$start = $y.'-10-01 00:00:00';
-			$end = $y.'-12-31 23:59:59';
-	    		break;
+	switch ($m) {
+	case $m >= 1 && $m <= 3:
+		$start = $y.'-01-01 00:00:00';
+		$end = $y.'-03-31 23:59:59';
+		break;
+	case $m >= 4 && $m <= 6:
+		$start = $y.'-04-01 00:00:00';
+		$end = $y.'-06-30 23:59:59';
+		break;
+	case $m >= 7 && $m <= 9:
+		$start = $y.'-07-01 00:00:00';
+		$end = $y.'-09-30 23:59:59';
+		break;
+	case $m >= 10 && $m <= 12:
+		$start = $y.'-10-01 00:00:00';
+		$end = $y.'-12-31 23:59:59';
+		break;
 	}
 	return array(
 		'start' => $start,
 		'end' => $end,
 		'start_nix' => strtotime($start),
-		'end_nix' => strtotime($end)							
+		'end_nix' => strtotime($end)
 	);
 }
 
