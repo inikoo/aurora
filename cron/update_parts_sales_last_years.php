@@ -24,8 +24,8 @@ update_parts_sales($db, $print_est);
 
 function update_parts_sales($db, $print_est) {
 
-	$where=" where `Part SKU`=259 ";
-	$where="";
+	$where=" where `Part SKU`=971 ";
+	//$where="where true";
 
 	$sql=sprintf("select count(*) as num from `Part Dimension` $where");
 	if ($result=$db->query($sql)) {
@@ -54,7 +54,7 @@ function update_parts_sales($db, $print_est) {
 			$part->load_acc_data();
 
 			$part->update_previous_years_data();
-			
+
 
 			$contador++;
 			$lap_time1=date('U');

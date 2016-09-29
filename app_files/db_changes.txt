@@ -453,7 +453,7 @@ TODO IN COSTA!!!!=====
 
 mysql -u root -p costadw  < Part_Data.sql
 mysql -u root -p costadw  < product_data_dim.sql
-
+mysql -u root -p costadw < Customer_Product_Bridge.sql 
 
 ALTER TABLE `Product History Dimension` ADD `Product History Code` VARCHAR(30) NOT NULL AFTER `Product ID`, ADD `Product History Units Per Case` SMALLINT UNSIGNED NOT NULL AFTER `Product History Code`;
 update  `Part Dimension` set `Part Active From`=`Part Valid From` ;
