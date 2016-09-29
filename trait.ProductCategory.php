@@ -545,25 +545,25 @@ trait ProductCategory {
 
 			$data_to_update=array(
 
-				"Product Category 4 Quarter Ago Customers"=>$sales_product_category_data['customers'],
-				"Product Category 4 Quarter Ago Invoices"=>$sales_product_category_data['invoices'],
-				"Product Category 4 Quarter Ago Profit"=>$sales_product_category_data['profit'],
-				"Product Category 4 Quarter Ago Invoiced Amount"=>$sales_product_category_data['net'],
-				"Product Category 4 Quarter Ago Quantity Ordered"=>$sales_product_category_data['ordered'],
-				"Product Category 4 Quarter Ago Quantity Invoiced"=>$sales_product_category_data['invoiced'],
-				"Product Category 4 Quarter Ago Quantity Delivered"=>$sales_product_category_data['delivered'],
-				"Product Category DC 4 Quarter Ago Profit"=>$sales_product_category_data['dc_net'],
-				"Product Category DC 4 Quarter Ago Invoiced Amount"=>$sales_product_category_data['dc_profit'],
+				"Product Category $i Quarter Ago Customers"=>$sales_product_category_data['customers'],
+				"Product Category $i Quarter Ago Invoices"=>$sales_product_category_data['invoices'],
+				"Product Category $i Quarter Ago Profit"=>$sales_product_category_data['profit'],
+				"Product Category $i Quarter Ago Invoiced Amount"=>$sales_product_category_data['net'],
+				"Product Category $i Quarter Ago Quantity Ordered"=>$sales_product_category_data['ordered'],
+				"Product Category $i Quarter Ago Quantity Invoiced"=>$sales_product_category_data['invoiced'],
+				"Product Category $i Quarter Ago Quantity Delivered"=>$sales_product_category_data['delivered'],
+				"Product Category DC $i Quarter Ago Profit"=>$sales_product_category_data['dc_net'],
+				"Product Category DC $i Quarter Ago Invoiced Amount"=>$sales_product_category_data['dc_profit'],
 
-				"Product Category 4 Quarter Ago 1YB Customers"=>$sales_product_category_data_1yb['customers'],
-				"Product Category 4 Quarter Ago 1YB Invoices"=>$sales_product_category_data_1yb['invoices'],
-				"Product Category 4 Quarter Ago 1YB Profit"=>$sales_product_category_data_1yb['profit'],
-				"Product Category 4 Quarter Ago 1YB Invoiced Amount"=>$sales_product_category_data_1yb['net'],
-				"Product Category 4 Quarter Ago 1YB Quantity Ordered"=>$sales_product_category_data_1yb['ordered'],
-				"Product Category 4 Quarter Ago 1YB Quantity Invoiced"=>$sales_product_category_data_1yb['invoiced'],
-				"Product Category 4 Quarter Ago 1YB Quantity Delivered"=>$sales_product_category_data_1yb['delivered'],
-				"Product Category DC 4 Quarter Ago 1YB Profit"=>$sales_product_category_data_1yb['dc_net'],
-				"Product Category DC 4 Quarter Ago 1YB Invoiced Amount"=>$sales_product_category_data_1yb['dc_profit']
+				"Product Category $i Quarter Ago 1YB Customers"=>$sales_product_category_data_1yb['customers'],
+				"Product Category $i Quarter Ago 1YB Invoices"=>$sales_product_category_data_1yb['invoices'],
+				"Product Category $i Quarter Ago 1YB Profit"=>$sales_product_category_data_1yb['profit'],
+				"Product Category $i Quarter Ago 1YB Invoiced Amount"=>$sales_product_category_data_1yb['net'],
+				"Product Category $i Quarter Ago 1YB Quantity Ordered"=>$sales_product_category_data_1yb['ordered'],
+				"Product Category $i Quarter Ago 1YB Quantity Invoiced"=>$sales_product_category_data_1yb['invoiced'],
+				"Product Category $i Quarter Ago 1YB Quantity Delivered"=>$sales_product_category_data_1yb['delivered'],
+				"Product Category DC $i Quarter Ago 1YB Profit"=>$sales_product_category_data_1yb['dc_net'],
+				"Product Category DC $i Quarter Ago 1YB Invoiced Amount"=>$sales_product_category_data_1yb['dc_profit']
 
 
 			);
