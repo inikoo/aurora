@@ -1591,7 +1591,7 @@ class Part extends Asset{
 						ngettext("day", "days", intval($this->data['Part Days Available Forecast'] ) )).'">'.seconds_to_until($this->data['Part Days Available Forecast']*86400).'</span>').'</span>';
 
 
-				$available_forecast.='<i class="fa fa-fighter-jet" aria-hidden="true"></i>';
+				$available_forecast.=' <i class="fa fa-fighter-jet padding_left_5" aria-hidden="true"></i>';
 			}
 
 
@@ -1675,11 +1675,11 @@ class Part extends Asset{
 			}
 
 
-			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Month To|Today|Week To).*(Amount|Profit)$/', $key)) {
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit)$/', $key)) {
 
 				$amount='Part '.$key;
 
-				return money($this->data[$amount]);
+				return money($this->data[$amount],$account->get('Account Currency'));
 			}
 
 			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Month To|Today|Week To).*(Margin|GMROI)$/', $key)) {

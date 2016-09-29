@@ -15,6 +15,8 @@ function get_part_showcase($data,$smarty,$user,$db) {
 
 
 	$part=$data['_object'];
+	$part->load_acc_data();
+	
 	
 //	$part->update_cost();
 //	$part->updated_linked_products();

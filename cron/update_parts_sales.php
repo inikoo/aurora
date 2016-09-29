@@ -24,7 +24,7 @@ update_parts_sales($db, $print_est);
 
 function update_parts_sales($db, $print_est) {
 
-	$where=" where `Part SKU`=259 ";
+	$where=" where `Part SKU`=971 ";
 	$where="";
 
 	$sql=sprintf("select count(*) as num from `Part Dimension` $where");
@@ -56,6 +56,7 @@ function update_parts_sales($db, $print_est) {
 			$part->update_sales_from_invoices('Total');
 			$part->update_sales_from_invoices('Week To Day');
 			$part->update_sales_from_invoices('Month To Day');
+			$part->update_sales_from_invoices('Quarter To Day');
 			$part->update_sales_from_invoices('Year To Day');
 			$part->update_sales_from_invoices('1 Year');
 			$part->update_sales_from_invoices('1 Quarter');

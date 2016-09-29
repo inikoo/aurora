@@ -15,10 +15,7 @@
 
 	</div>
 		
-		   
-			
-			
-			<div class="data_field " style="clear:both">
+				<div class="data_field " style="clear:both">
 				<h1 ><span class="Part_Unit_Description">{$part->get('Part Package Description')}</span></h1>
 			</div>
 			
@@ -59,7 +56,22 @@
 		<div style="clear:both">
 		</div>
 	</div>
-	<div id="info" >
+	
+	<div id="sales_data" style="float:left;">
+	
+	
+	<table style="font-size:80%">
+	<tr>
+	<td>{$part->get('Quarter To Day Acc Invoiced Amount Minify')}</td>
+	<td>{$part->get('1 Quarter Ago Invoiced Amount Minify')}</td>
+	<td>{$part->get('2 Quarter Ago Invoiced Amount Minify')}</td>
+	<td>{$part->get('3 Quarter Ago Invoiced Amount Minify')}</td>
+	<td>{$part->get('4 Quarter Ago Invoiced Amount Minify')}</td>
+	</tr>
+	</table>
+	
+	</div>
+	<div id="info" style="">
 	
 	
 	

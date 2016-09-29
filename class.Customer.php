@@ -229,7 +229,7 @@ class Customer extends Subject {
 		require_once 'utils/new_fork.php';
 		list($fork_key, $msg)=new_fork('housekeeping', array('type'=>'order_created', 'subject_key'=>$order->id, 'editor'=>$order->editor), $account->get('Account Code'), $this->db);
 
-        return $order;
+		return $order;
 
 	}
 
@@ -3104,6 +3104,69 @@ class Customer extends Subject {
 		}
 
 		return $label;
+
+	}
+
+
+	function update_product_bridge() {
+
+
+		$sql=sprintf("delete from `Customer Product Bridge` where `Customer Product Customer Key`=%d ",
+			$this->id
+		);
+		$this->db->exec($sql);
+
+
+		$sql=sprintf("select `Product ID`, count(distinct `Invoice Key`) invoices ,max(`Invoice Date`) as date from `Order Transaction Fact`  where   `Current Dispatching State`='Dispatched' and `Invoice Key`>0 and (`Invoice Quantity`-`Refund Quantity`)>0  and  `Customer Key`=%d  group by `Product ID` ",
+			$this->id
+		);
+
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+				$penultime_date='';
+				if ($row['invoices']>1) {
+
+					$sql=sprintf("select `Invoice Date` from `Order Transaction Fact`  where   `Current Dispatching State`='Dispatched'  and `Invoice Key`>0 and (`Invoice Quantity`-`Refund Quantity`)>0  and   `Customer Key`=%d and `Product ID`=%d  group by `Invoice Key` order by `Invoice Date` limit  1,1   ",
+						$this->id,
+						$row['Product ID']
+					);
+
+                    
+
+
+					if ($result2=$this->db->query($sql)) {
+						if ($row2= $result2->fetch()) {
+							$penultime_date=$row2['Invoice Date'];
+						}
+					}else {
+						print_r($error_info=$this->db->errorInfo());
+						exit;
+					}
+
+
+				}
+
+
+				$sql=sprintf("insert into `Customer Product Bridge` (`Customer Product Customer Key`,`Customer Product Product ID`,`Customer Product Invoices`,`Customer Product Last Invoice Date`,`Customer Product Penultimate Invoice Date`) values (%d,%d,%s,%s,%s) ",
+					$this->id,
+					$row['Product ID'],
+					$row['invoices'],
+					prepare_mysql($row['date']),
+					prepare_mysql($penultime_date)
+
+				);
+				$this->db->exec($sql);
+
+
+
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
 
 	}
 
