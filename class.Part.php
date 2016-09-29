@@ -1679,7 +1679,26 @@ class Part extends Asset{
 
 				$amount='Part '.$key;
 
-				return money($this->data[$amount],$account->get('Account Currency'));
+				return money($this->data[$amount], $account->get('Account Currency'));
+			}
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Minify$/', $key)) {
+
+				$field='Part '.preg_replace('/ Minify$/', '', $key);
+
+				$suffix='';
+				$fraction_digits='NO_FRACTION_DIGITS';
+				if ($this->data[$field]>=10000) {
+					$suffix='K';
+					$this->data[$field]=$this->data[$field]/1000;
+				}elseif ($this->data[$field]>100 ) {
+				$fraction_digits='SINGLE_FRACTION_DIGITS';
+					$suffix='K';
+					$this->data[$field]=$this->data[$field]/1000;
+				}
+
+				$amount= money($this->data[$field], $account->get('Account Currency'), $locale=false, $fraction_digits).$suffix;
+
+				return $amount;
 			}
 
 			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Month To|Today|Week To).*(Margin|GMROI)$/', $key)) {
@@ -2390,8 +2409,8 @@ class Part extends Asset{
 		foreach (range(1, 4) as $i) {
 			$dates=get_previous_quarters_dates($i);
 			$dates_1yb=get_previous_quarters_dates($i+4);
-			
-			
+
+
 			$sales_data=$this->get_sales_data($dates['start'], $dates['end']);
 			$sales_data_1yb=$this->get_sales_data($dates_1yb['start'], $dates_1yb['end']);
 
@@ -2405,7 +2424,7 @@ class Part extends Asset{
 				"Part $i Quarter Ago Dispatched"=>$sales_data['dispatched'],
 				"Part $i Quarter Ago Keeping Day"=>$sales_data['keep_days'],
 				"Part $i Quarter Ago With Stock Days"=>$sales_data['with_stock_days'],
-				
+
 				"Part $i Quarter Ago 1YB Customers"=>$sales_data_1yb['customers'],
 				"Part $i Quarter Ago 1YB Repeat Customers"=>$sales_data_1yb['repeat_customers'],
 				"Part $i Quarter Ago 1YB Deliveries"=>$sales_data_1yb['deliveries'],

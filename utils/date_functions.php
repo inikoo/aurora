@@ -773,6 +773,30 @@ function get_previous_quarters_dates($i=0) {
 	);
 }
 
+function get_quarter_number($date){
+     $n = date('n',$date);
+     if($n < 4){
+          return "1";
+     } elseif($n > 3 && $n <7){
+          return "2";
+     } elseif($n >6 && $n < 10){
+          return "3";
+     } elseif($n >9){
+          return "4";
+     }
+}
 
+function get_quarter_label($date){
+     $n = date('n',$date);
+     if($n < 4){
+          return sprintf(_('%dQ %s'),1,date('y',$date));
+     } elseif($n > 3 && $n <7){
+          return sprintf(_('%dQ %s'),2,date('y',$date));
+     } elseif($n >6 && $n < 10){
+          return sprintf(_('%dQ %s'),3,date('y',$date));
+     } elseif($n >9){
+          return sprintf(_('%dQ %s'),4,date('y',$date));
+     }
+}
 
 ?>

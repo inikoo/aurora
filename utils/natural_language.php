@@ -397,10 +397,20 @@ function currency_label($currency, $db) {
 }
 
 
-function money($amount, $currency='', $locale=false) {
+function money($amount, $currency='', $locale=false,$option='') {
 	if (!$locale) {global $locale;}
 
 	$money = new NumberFormatter($locale, NumberFormatter::CURRENCY);
+	
+	if($option=='NO_FRACTION_DIGITS'){
+	    $money->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 0);
+	}elseif($option=='SINGLE_FRACTION_DIGITS'){
+	    $money->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 1);
+	}
+	
+	
+	
+	
 	return $money->formatCurrency($amount,$currency);
 }
 
