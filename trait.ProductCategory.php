@@ -482,6 +482,7 @@ trait ProductCategory {
 		$data_2y_ago=$this->get_product_category_sales_data(date('Y-01-01 00:00:00', strtotime('-2 year')), date('Y-01-01 00:00:00', strtotime('-1 year')));
 		$data_3y_ago=$this->get_product_category_sales_data(date('Y-01-01 00:00:00', strtotime('-3 year')), date('Y-01-01 00:00:00', strtotime('-2 year')));
 		$data_4y_ago=$this->get_product_category_sales_data(date('Y-01-01 00:00:00', strtotime('-4 year')), date('Y-01-01 00:00:00', strtotime('-3 year')));
+		$data_5y_ago=$this->get_product_category_sales_data(date('Y-01-01 00:00:00', strtotime('-5 year')), date('Y-01-01 00:00:00', strtotime('-4 year')));
 
 		$data_to_update=array(
 			"Product Category 1 Year Ago Customers"=>$data_1y_ago['customers'],
@@ -522,7 +523,17 @@ trait ProductCategory {
 			"Product Category 4 Year Ago Quantity Invoiced"=>$data_4y_ago['invoiced'],
 			"Product Category 4 Year Ago Quantity Delivered"=>$data_4y_ago['delivered'],
 			"Product Category DC 4 Year Ago Profit"=>$data_4y_ago['dc_net'],
-			"Product Category DC 4 Year Ago Invoiced Amount"=>$data_4y_ago['dc_profit']
+			"Product Category DC 4 Year Ago Invoiced Amount"=>$data_4y_ago['dc_profit'],
+			
+			"Product Category 5 Year Ago Customers"=>$data_5y_ago['customers'],
+			"Product Category 5 Year Ago Invoices"=>$data_5y_ago['invoices'],
+			"Product Category 5 Year Ago Profit"=>$data_5y_ago['profit'],
+			"Product Category 5 Year Ago Invoiced Amount"=>$data_5y_ago['net'],
+			"Product Category 5 Year Ago Quantity Ordered"=>$data_5y_ago['ordered'],
+			"Product Category 5 Year Ago Quantity Invoiced"=>$data_5y_ago['invoiced'],
+			"Product Category 5 Year Ago Quantity Delivered"=>$data_5y_ago['delivered'],
+			"Product Category DC 5 Year Ago Profit"=>$data_5y_ago['dc_net'],
+			"Product Category DC 5 Year Ago Invoiced Amount"=>$data_5y_ago['dc_profit']
 		);
 		$this->update( $data_to_update, 'no_history');
 

@@ -101,12 +101,13 @@ class Product extends Asset{
 		}
 	}
 
+
 	function load_acc_data() {
 
 		$sql=sprintf("select * from `Product Data` where `Product ID`=%d", $this->id);
-		
-		
-		
+
+
+
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
 				foreach ($row as $key=>$value) {
@@ -134,8 +135,8 @@ class Product extends Asset{
 
 
 	}
-	
-	
+
+
 
 	function get_webpage() {
 
@@ -568,8 +569,8 @@ class Product extends Asset{
 			}
 			break;
 		default:
-		
-		
+
+
 			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit)$/', $key)) {
 
 				$amount='Product '.$key;
@@ -597,7 +598,7 @@ class Product extends Asset{
 					$_amount=$this->data[$field];
 				}
 
-				$amount= money($_amount,$this->get('Product Currency'), $locale=false, $fraction_digits).$suffix;
+				$amount= money($_amount, $this->get('Product Currency'), $locale=false, $fraction_digits).$suffix;
 
 				return $amount;
 			}
@@ -607,7 +608,7 @@ class Product extends Asset{
 
 				return percentage($this->data[$amount], 1);
 			}
-		    if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced|Customers)$/', $key) or $key=='Current Stock'  ) {
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced|Customers)$/', $key) or $key=='Current Stock'  ) {
 
 				$field='Product '.$key;
 
@@ -630,10 +631,10 @@ class Product extends Asset{
 					$_number=$this->data[$field];
 				}
 
-				return number($_number,$fraction_digits).$suffix;
+				return number($_number, $fraction_digits).$suffix;
 			}
 
-		
+
 			if (array_key_exists($key, $this->data))
 				return $this->data[$key];
 
@@ -2654,7 +2655,7 @@ class Product extends Asset{
 
 		include_once 'utils/date_functions.php';
 
-		
+
 
 		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($this->db, $interval);
 
@@ -2709,6 +2710,7 @@ class Product extends Asset{
 		$data_2y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-2 year')), date('Y-01-01 00:00:00', strtotime('-1 year')));
 		$data_3y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-3 year')), date('Y-01-01 00:00:00', strtotime('-2 year')));
 		$data_4y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-4 year')), date('Y-01-01 00:00:00', strtotime('-3 year')));
+		$data_5y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-5 year')), date('Y-01-01 00:00:00', strtotime('-4 year')));
 
 		$data_to_update=array(
 			"Product 1 Year Ago Customers"=>$data_1y_ago['customers'],
@@ -2749,7 +2751,17 @@ class Product extends Asset{
 			"Product 4 Year Ago Quantity Invoiced"=>$data_4y_ago['invoiced'],
 			"Product 4 Year Ago Quantity Delivered"=>$data_4y_ago['delivered'],
 			"Product DC 4 Year Ago Profit"=>$data_4y_ago['dc_net'],
-			"Product DC 4 Year Ago Invoiced Amount"=>$data_4y_ago['dc_profit']
+			"Product DC 4 Year Ago Invoiced Amount"=>$data_4y_ago['dc_profit'],
+
+			"Product 5 Year Ago Customers"=>$data_5y_ago['customers'],
+			"Product 5 Year Ago Invoices"=>$data_5y_ago['invoices'],
+			"Product 5 Year Ago Profit"=>$data_5y_ago['profit'],
+			"Product 5 Year Ago Invoiced Amount"=>$data_5y_ago['net'],
+			"Product 5 Year Ago Quantity Ordered"=>$data_5y_ago['ordered'],
+			"Product 5 Year Ago Quantity Invoiced"=>$data_5y_ago['invoiced'],
+			"Product 5 Year Ago Quantity Delivered"=>$data_5y_ago['delivered'],
+			"Product DC 5 Year Ago Profit"=>$data_5y_ago['dc_net'],
+			"Product DC 5 Year Ago Invoiced Amount"=>$data_5y_ago['dc_profit']
 		);
 		$this->update( $data_to_update, 'no_history');
 
@@ -2781,7 +2793,7 @@ class Product extends Asset{
 				"Product $i Quarter Ago Quantity Delivered"=>$sales_data['delivered'],
 				"Product DC $i Quarter Ago Profit"=>$sales_data['dc_net'],
 				"Product DC $i Quarter Ago Invoiced Amount"=>$sales_data['dc_profit'],
-				
+
 				"Product $i Quarter Ago 1YB Customers"=>$sales_data_1yb['customers'],
 				"Product $i Quarter Ago 1YB Invoices"=>$sales_data_1yb['invoices'],
 				"Product $i Quarter Ago 1YB Profit"=>$sales_data_1yb['profit'],

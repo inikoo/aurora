@@ -454,6 +454,7 @@ trait PartCategory {
 		$data_2y_ago=$this->get_part_category_sales_data(date('Y-01-01 00:00:00', strtotime('-2 year')), date('Y-01-01 00:00:00', strtotime('-1 year')));
 		$data_3y_ago=$this->get_part_category_sales_data(date('Y-01-01 00:00:00', strtotime('-3 year')), date('Y-01-01 00:00:00', strtotime('-2 year')));
 		$data_4y_ago=$this->get_part_category_sales_data(date('Y-01-01 00:00:00', strtotime('-4 year')), date('Y-01-01 00:00:00', strtotime('-3 year')));
+		$data_5y_ago=$this->get_part_category_sales_data(date('Y-01-01 00:00:00', strtotime('-5 year')), date('Y-01-01 00:00:00', strtotime('-4 year')));
 
 		$data_to_update=array(
 
@@ -497,6 +498,15 @@ trait PartCategory {
 			"Part Category 4 Year Ago Keeping Day"=>$data_4y_ago['keep_days'],
 			"Part Category 4 Year Ago With Stock Days"=>$data_4y_ago['with_stock_days'],
 
+			"Part Category 5 Year Ago Customers"=>$data_5y_ago['customers'],
+			"Part Category 5 Year Ago Repeat Customers"=>$data_5y_ago['repeat_customers'],
+			"Part Category 5 Year Ago Deliveries"=>$data_5y_ago['deliveries'],
+			"Part Category 5 Year Ago Profit"=>$data_5y_ago['profit'],
+			"Part Category 5 Year Ago Invoiced Amount"=>$data_5y_ago['invoiced_amount'],
+			"Part Category 5 Year Ago Required"=>$data_5y_ago['required'],
+			"Part Category 5 Year Ago Dispatched"=>$data_5y_ago['dispatched'],
+			"Part Category 5 Year Ago Keeping Day"=>$data_5y_ago['keep_days'],
+			"Part Category 5 Year Ago With Stock Days"=>$data_5y_ago['with_stock_days'],
 		
 
 

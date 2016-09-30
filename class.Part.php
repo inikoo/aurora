@@ -2361,6 +2361,7 @@ class Part extends Asset{
 		$data_2y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-2 year')), date('Y-01-01 00:00:00', strtotime('-1 year')));
 		$data_3y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-3 year')), date('Y-01-01 00:00:00', strtotime('-2 year')));
 		$data_4y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-4 year')), date('Y-01-01 00:00:00', strtotime('-3 year')));
+		$data_5y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-5 year')), date('Y-01-01 00:00:00', strtotime('-4 year')));
 
 
 
@@ -2405,6 +2406,16 @@ class Part extends Asset{
 			"Part 4 Year Ago Dispatched"=>$data_4y_ago['dispatched'],
 			"Part 4 Year Ago Keeping Day"=>$data_4y_ago['keep_days'],
 			"Part 4 Year Ago With Stock Days"=>$data_4y_ago['with_stock_days'],
+
+			"Part 5 Year Ago Customers"=>$data_5y_ago['customers'],
+			"Part 5 Year Ago Repeat Customers"=>$data_5y_ago['repeat_customers'],
+			"Part 5 Year Ago Deliveries"=>$data_5y_ago['deliveries'],
+			"Part 5 Year Ago Profit"=>$data_5y_ago['profit'],
+			"Part 5 Year Ago Invoiced Amount"=>$data_5y_ago['invoiced_amount'],
+			"Part 5 Year Ago Required"=>$data_5y_ago['required'],
+			"Part 5 Year Ago Dispatched"=>$data_5y_ago['dispatched'],
+			"Part 5 Year Ago Keeping Day"=>$data_5y_ago['keep_days'],
+			"Part 5 Year Ago With Stock Days"=>$data_5y_ago['with_stock_days'],
 
 
 		);
