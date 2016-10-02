@@ -132,6 +132,31 @@ function delta($current_value, $old_value) {
 }
 
 
+function delta_icon($_value, $_value_1yb) {
+	$up_arrow='<i title="%s" class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>';
+	$down_arrow='<i title="%s" class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>';
+	$no_change='<i class="fa fa-fw fa-pause fa-rotate-90 super_discreet" aria-hidden="true"></i>';
+
+	$delta_icon=sprintf($no_change);
+
+
+	if ($_value!=0 and $_value_1yb!=0) {
+
+		$diff=$_value-$_value_1yb;
+		$delta=delta($_value, $_value_1yb);
+
+		if ($_value>$_value_1yb) {
+			$delta_icon=sprintf($up_arrow, $delta);
+		}elseif ($_value<$_value_1yb) {
+			$delta_icon=sprintf($down_arrow, $delta);
+
+		}
+	}
+	
+	return $delta_icon;
+}
+
+
 function percentage($a, $b, $fixed=1, $error_txt='NA', $psign='%', $plus_sing=false) {
 
 	$locale_info = localeconv();
@@ -149,12 +174,14 @@ function percentage($a, $b, $fixed=1, $error_txt='NA', $psign='%', $plus_sing=fa
 	return $per;
 }
 
-function ratio($a,$b){
 
-    if($b==0)return 1;
-    return $a/$b;
+function ratio($a, $b) {
+
+	if ($b==0)return 1;
+	return $a/$b;
 
 }
+
 
 /* Function: parse_money
 
@@ -293,6 +320,7 @@ function _trim($string) {
 	return $string;
 }
 
+
 function mb_ucwords($str) {
 	$str=_trim($str);
 	if (preg_match('/^PO BOX\s+/i', $str))
@@ -326,6 +354,7 @@ function mb_ucwords($str) {
 
 	return _trim($result);
 }
+
 
 function mb_ucwordsols($str) {
 	$str=_trim($str);
@@ -464,11 +493,13 @@ function mb_ucwordsols($str) {
 	return $return;
 }
 
+
 function capitalize($str, $encoding = 'UTF-8') {
 	$str=trim($str);
 	return mb_strtoupper(mb_substr($str, 0, 1, $encoding), $encoding) . mb_strtolower(mb_substr($str, 1, mb_strlen($str), $encoding), $encoding);
 
 }
+
 
 function prepare_mysql($string, $null_if_empty=true) {
 
@@ -485,11 +516,13 @@ function prepare_mysql($string, $null_if_empty=true) {
 	}
 }
 
+
 function array_change_key_name( $orig, $new, &$array ) {
 	foreach ( $array as $k => $v )
 		$return[ ( $k === $orig ) ? $new : $k ] = $v;
 	return ( array ) $return;
 }
+
 
 function average($array) {
 	$sum   = array_sum($array);
@@ -538,6 +571,8 @@ function deviation($array) {
  *
  *  @return String - longest common substring of the two source strings
  */
+
+
 function strlcs($str1, $str2) {
 	$arySubstrings = array(); //stores all common substrings
 	//iterate one-by-one through every character in both strings
@@ -913,30 +948,32 @@ function floattostr( $val ) {
 	return $o[1].sprintf('%d', $o[2]).($o[3]!='.'?$o[3]:'');
 }
 
-function number($number, $fixed=1, $force_fix=false,$locale=false) {
-	
+
+function number($number, $fixed=1, $force_fix=false, $locale=false) {
+
 	if (!$locale) { global $locale;}
-	
+
 	if ($number=='')
 		$number=0;
 
 
 	//$floored=floor($number);
 	//if ($floored==$number and !$force_fix)
-//		$fixed=0;
+	//  $fixed=0;
 	//$number=number_format($number, $fixed, $locale_info['decimal_point'], $locale_info['thousands_sep']);
 
-$_number = new NumberFormatter($locale, NumberFormatter::DECIMAL);
+	$_number = new NumberFormatter($locale, NumberFormatter::DECIMAL);
 
-$_number->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $fixed);
+	$_number->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $fixed);
 
-if($force_fix)
-$_number->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, $fixed);
+	if ($force_fix)
+		$_number->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, $fixed);
 
 	return $_number->format($number);
 
-	
+
 }
+
 
 function get_ordinal_suffix( $n, $locale=false ) {
 

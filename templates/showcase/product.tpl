@@ -1,20 +1,19 @@
+<div class="name_and_categories">
+	<span class="strong"> <span class="Product_Units_Per_Case">{$product->get('Units Per Case')}</span>x <span class="Product_Name">{$product->get('Name')}</span></span> 
+	<ul class="tags Categories" style="float:right">
+		{foreach from=$product->get_category_data() item=item key=key} 
+		<li><span class="button" onclick="change_view('category/{$item.category_key}')" title="{$item.label}">{$item.code}</span></li>
+		{/foreach} 
+	</ul>
+	<div style="clear:both">
+	</div>
+</div>
+
+
 <div class="asset_container" >
 
-    <div class="block name_and_picture">
-	<div class="data_container">
-		<div style="width:100%">
-			<ul class="tags Categories">
-				{foreach from=$product->get_category_data() item=item key=key} 
-				<li><span class="button" onclick="change_view('category/{$item.category_key}')" title="{$item.label}">{$item.code}</span></li>
-				{/foreach} 
-			</ul>
-		</div>
-		<div class="data_field strong " style="clear:both">
-				<span class="Product_Units_Per_Case">{$product->get('Units Per Case')}</span>x <span class="Product_Name">{$product->get('Name')}</span> 
-		</div>
-	</div>
-	<div class="data_container">
-	</div>
+    <div class="block picture">
+	
 	<div style="clear:both">
 	</div>
 	<div class="data_container">

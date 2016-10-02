@@ -22,12 +22,21 @@ default:
 	exit('error: unknown parent category: '.$parameters['parent']);
 }
 
-$db_period=get_interval_db_name($parameters['f_period']);
-if(in_array($db_period,array('Total','3 Year'))){
-$yb_fields=" '' as sales_1y";
 
-}else{
-$yb_fields="`Part Category $db_period Acc 1YB Invoiced Amount` as sales_1y";
+
+if (isset($parameters['f_period'])) {
+
+	$db_period=get_interval_db_name($parameters['f_period']);
+	if (in_array($db_period, array('Total', '3 Year'))) {
+		$yb_fields=" '' as dispatched_1yb,'' as sales_1yb,";
+
+	}else {
+		$yb_fields="`Part Category $db_period Acc 1YB Dispatched` as dispatched_1yb,`Part Category $db_period Acc 1YB Invoiced Amount` as sales_1yb,";
+	}
+
+}else {
+	$db_period='Total';
+	$yb_fields=" '' as dispatched_1yb,'' as sales_1yb,";
 }
 
 
@@ -36,9 +45,9 @@ $filter_msg='';
 if ($parameters['f_field']=='code' and $f_value!='')
 	$wheref=" and  `Category Code` like '".addslashes($f_value)."%'";
 elseif ($parameters['f_field']=='label' and $f_value!='')
-	$wheref=sprintf(' and `Category Label` REGEXP "[[:<:]]%s" ',addslashes($f_value));
+	$wheref=sprintf(' and `Category Label` REGEXP "[[:<:]]%s" ', addslashes($f_value));
 else
-    $wheref='';
+	$wheref='';
 
 
 $_dir=$order_direction;
@@ -54,7 +63,7 @@ elseif ($order=='subjects')
 elseif ($order=='subjects_active')
 	$order='`Category Number Active Subjects`';
 elseif ($order=='subjects_no_active')
-	$order='`Category Number No Active Subjects`';		
+	$order='`Category Number No Active Subjects`';
 elseif ($order=='subcategories')
 	$order='`Category Children`';
 elseif ($order=='percentage_assigned')
@@ -75,7 +84,7 @@ elseif ($order=='low') {
 	$order="`Supplier Number Error Parts`";
 }elseif ($order=='sales') {
 	$order="`Part Category $db_period Acc Invoiced Amount`";
-}	
+}
 elseif ($order=='delta_sales_year0') {$order="(-1*(`Part Category Year To Day Acc Invoiced Amount`-`Part Category Year To Day Acc 1YB Invoiced Amount`)/`Part Category Year To Day Acc 1YB Invoiced Amount`)";}
 elseif ($order=='delta_sales_year1') {$order="(-1*(`Part Category 2 Year Ago Invoiced Amount`-`Part Category 1 Year Ago Invoiced Amount`)/`Part Category 2 Year Ago Invoiced Amount`)";}
 elseif ($order=='delta_sales_year2') {$order="(-1*(`Part Category 3 Year Ago Invoiced Amount`-`Part Category 2 Year Ago Invoiced Amount`)/`Part Category 3 Year Ago Invoiced Amount`)";}
@@ -91,10 +100,26 @@ else
 
 
 $fields="
-$yb_fields,`Category Number No Active Subjects`,`Category Number Active Subjects`,`Category Key`,`Category Branch Type`,
+`Part Category $db_period Acc Dispatched` as dispatched,
+`Part Category $db_period Acc Invoiced Amount` as sales,
+$yb_fields `Category Number No Active Subjects`,`Category Number Active Subjects`,`Category Key`,`Category Branch Type`,
 `Category Children`,`Category Subject`,`Category Store Key`,`Category Warehouse Key`,`Category Code`,`Category Label`,`Category Number Subjects`,`Category Subjects Not Assigned`,
-`Part Category $db_period Acc Invoiced Amount` as sales,`Part Category Year To Day Acc Invoiced Amount`,`Part Category Year To Day Acc 1YB Invoiced Amount`,`Part Category 1 Year Ago Invoiced Amount`,`Part Category 2 Year Ago Invoiced Amount`,`Part Category 3 Year Ago Invoiced Amount`,`Part Category 4 Year Ago Invoiced Amount`,
+
+`Part Category Year To Day Acc Invoiced Amount`,`Part Category Year To Day Acc 1YB Invoiced Amount`,
+`Part Category 1 Year Ago Invoiced Amount`,`Part Category 2 Year Ago Invoiced Amount`,`Part Category 3 Year Ago Invoiced Amount`,`Part Category 4 Year Ago Invoiced Amount`,`Part Category 5 Year Ago Invoiced Amount`,
+`Part Category Quarter To Day Acc Invoiced Amount`,`Part Category Quarter To Day Acc 1YB Invoiced Amount`,
+`Part Category 1 Quarter Ago Invoiced Amount`,`Part Category 2 Quarter Ago Invoiced Amount`,`Part Category 3 Quarter Ago Invoiced Amount`,`Part Category 4 Quarter Ago Invoiced Amount`,
+`Part Category 1 Quarter Ago 1YB Invoiced Amount`,`Part Category 2 Quarter Ago 1YB Invoiced Amount`,`Part Category 3 Quarter Ago 1YB Invoiced Amount`,`Part Category 4 Quarter Ago 1YB Invoiced Amount`,
+
+`Part Category Year To Day Acc Dispatched`,`Part Category Year To Day Acc 1YB Dispatched`,
+`Part Category 1 Year Ago Dispatched`,`Part Category 2 Year Ago Dispatched`,`Part Category 3 Year Ago Dispatched`,`Part Category 4 Year Ago Dispatched`,`Part Category 5 Year Ago Dispatched`,
+`Part Category Quarter To Day Acc Dispatched`,`Part Category Quarter To Day Acc 1YB Dispatched`,
+`Part Category 1 Quarter Ago Dispatched`,`Part Category 2 Quarter Ago Dispatched`,`Part Category 3 Quarter Ago Dispatched`,`Part Category 4 Quarter Ago Dispatched`,
+`Part Category 1 Quarter Ago 1YB Dispatched`,`Part Category 2 Quarter Ago 1YB Dispatched`,`Part Category 3 Quarter Ago 1YB Dispatched`,`Part Category 4 Quarter Ago 1YB Dispatched`,
+
+
 `Part Category Number Surplus Parts`,`Part Category Number Optimal Parts`,`Part Category Number Low Parts`,`Part Category Number Critical Parts`,`Part Category Number Out Of Stock Parts`,`Part Category Number Error Parts`
+
 
  ";
 $table='`Category Dimension` C left join `Part Category Dimension` D on (D.`Part Category Key`=C.`Category Key`)  left join `Part Category Data` PDC on (PDC.`Part Category Key`=C.`Category Key`) ';

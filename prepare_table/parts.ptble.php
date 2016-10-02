@@ -192,11 +192,11 @@ elseif ($order=='delta_sales_year0') {$order="(-1*(`Part Year To Day Acc Invoice
 elseif ($order=='delta_sales_year1') {$order="(-1*(`Part 2 Year Ago Invoiced Amount`-`Part 1 Year Ago Invoiced Amount`)/`Part 2 Year Ago Invoiced Amount`)";}
 elseif ($order=='delta_sales_year2') {$order="(-1*(`Part 3 Year Ago Invoiced Amount`-`Part 2 Year Ago Invoiced Amount`)/`Part 3 Year Ago Invoiced Amount`)";}
 elseif ($order=='delta_sales_year3') {$order="(-1*(`Part 4 Year Ago Invoiced Amount`-`Part 3 Year Ago Invoiced Amount`)/`Part 4 Year Ago Invoiced Amount`)";}
+elseif ($order=='sales_year0') {$order="`Part Year To Day Acc Invoiced Amount`";}
 elseif ($order=='sales_year1') {$order="`Part 1 Year Ago Invoiced Amount`";}
 elseif ($order=='sales_year2') {$order="`Part 2 Year Ago Invoiced Amount`";}
 elseif ($order=='sales_year3') {$order="`Part 3 Year Ago Invoiced Amount`";}
 elseif ($order=='sales_year4') {$order="`Part 4 Year Ago Invoiced Amount`";}
-elseif ($order=='sales_year0') {$order="`Part Year To Day Acc Invoiced Amount`";}
 elseif ($order=='delta_dispatched_year0') {$order="(-1*(`Part Year To Day Acc Dispatched`-`Part Year To Day Acc 1YB Dispatched`)/`Part Year To Day Acc 1YB Dispatched`)";}
 elseif ($order=='delta_dispatched_year1') {$order="(-1*(`Part 2 Year Ago Dispatched`-`Part 1 Year Ago Dispatched`)/`Part 2 Year Ago Dispatched`)";}
 elseif ($order=='delta_dispatched_year2') {$order="(-1*(`Part 3 Year Ago Dispatched`-`Part 2 Year Ago Dispatched`)/`Part 3 Year Ago Dispatched`)";}
@@ -223,12 +223,17 @@ $fields.="P.`Part SKU`,`Part Reference`,`Part Package Description`,`Part Current
 `Part $db_period Acc Invoiced Amount` as sales,
 `Part Days Available Forecast`,$yb_fields
 
-`Part 1 Year Ago Required`,`Part 2 Year Ago Required`,`Part 3 Year Ago Required`,`Part 4 Year Ago Required`,
-`Part 1 Year Ago Dispatched`,`Part 2 Year Ago Dispatched`,`Part 3 Year Ago Dispatched`,`Part 4 Year Ago Dispatched`,
-`Part 1 Year Ago Invoiced Amount`,`Part 2 Year Ago Invoiced Amount`,`Part 3 Year Ago Invoiced Amount`,`Part 4 Year Ago Invoiced Amount`,
-`Part 1 Year Ago Profit`,`Part 2 Year Ago Profit`,`Part 3 Year Ago Profit`,`Part 4 Year Ago Profit`,
+`Part 1 Year Ago Dispatched`,`Part 2 Year Ago Dispatched`,`Part 3 Year Ago Dispatched`,`Part 4 Year Ago Dispatched`,`Part 5 Year Ago Dispatched`,
+`Part 1 Year Ago Invoiced Amount`,`Part 2 Year Ago Invoiced Amount`,`Part 3 Year Ago Invoiced Amount`,`Part 4 Year Ago Invoiced Amount`,`Part 5 Year Ago Invoiced Amount`,
+`Part 1 Quarter Ago Dispatched`,`Part 2 Quarter Ago Dispatched`,`Part 3 Quarter Ago Dispatched`,`Part 4 Quarter Ago Dispatched`,
+`Part 1 Quarter Ago Invoiced Amount`,`Part 2 Quarter Ago Invoiced Amount`,`Part 3 Quarter Ago Invoiced Amount`,`Part 4 Quarter Ago Invoiced Amount`,
+`Part 1 Quarter Ago 1YB Dispatched`,`Part 2 Quarter Ago 1YB Dispatched`,`Part 3 Quarter Ago 1YB Dispatched`,`Part 4 Quarter Ago 1YB Dispatched`,
+`Part 1 Quarter Ago 1YB Invoiced Amount`,`Part 2 Quarter Ago 1YB Invoiced Amount`,`Part 3 Quarter Ago 1YB Invoiced Amount`,`Part 4 Quarter Ago 1YB Invoiced Amount`,
+
 
 `Part Year To Day Acc Invoiced Amount`,`Part Year To Day Acc 1YB Profit`,`Part Year To Day Acc Required`,`Part Year To Day Acc Dispatched`,`Part Year To Day Acc 1YB Dispatched`,`Part Year To Day Acc 1YB Invoiced Amount`,
+`Part Quarter To Day Acc Invoiced Amount`,`Part Quarter To Day Acc 1YB Profit`,`Part Quarter To Day Acc Required`,`Part Quarter To Day Acc Dispatched`,`Part Quarter To Day Acc 1YB Dispatched`,`Part Quarter To Day Acc 1YB Invoiced Amount`,
+
 `Part 1 Quarter Acc Dispatched`,
 `Part Valid From`,`Part Valid From`,`Part Active From`,`Part Main Image Key`,`Part Status`
 

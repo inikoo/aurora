@@ -344,8 +344,6 @@ function get_products_all_stores_navigation($data, $smarty, $user, $db, $account
 function get_products_category_navigation($data, $smarty, $user, $db) {
 
 
-
-
 	require_once 'class.Category.php';
 	require_once 'class.Store.php';
 
@@ -363,25 +361,12 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
 
 		$up_button=array('icon'=>'arrow-up', 'title'=>_("Product's Categories").' '.$data['store']->data['Store Code'], 'reference'=>'products/'.$data['store']->id.'/category/'.$parent_category->id);
 
-
-
-
-
-
-
 		if ($data['_parent']->id==$data['_parent']->get('Category Root Key')) {
 			$tab='category.categories';
 		}else {
 
 			$tab='subject_categories';
 		}
-
-
-
-
-
-
-
 
 		$parent_categories=$parent_category->get('Category Position');
 		break;
@@ -421,6 +406,7 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
 	}
 	$parameters['parent']=$data['parent'];
 	$parameters['parent_key']=$data['parent_key'];
+	$parameters['subject']='product';
 	include_once 'prepare_table/'.$tab.'.ptble.php';
 
 

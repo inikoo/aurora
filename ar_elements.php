@@ -103,6 +103,16 @@ case 'part.products':
 		));
 	get_products_element_numbers($db, $data['parameters'], $user);
 	break;
+	
+case 'store.services':
+
+
+	$data=prepare_values($_REQUEST, array(
+			'parameters'=>array('type'=>'json array')
+		));
+	get_services_element_numbers($db, $data['parameters'], $user);
+	break;	
+	
 
 case 'category.product_categories':
 
@@ -587,21 +597,21 @@ function get_products_element_numbers($db, $data, $user) {
 	$table='`Product Dimension`  P';
 	switch ($data['parent']) {
 	case 'store':
-		$where=sprintf(' where `Product Store Key`=%d  ', $data['parent_key']);
+		$where=sprintf(" where `Product Type`='Product' and `Product Store Key`=%d  ", $data['parent_key']);
 		break;
 	case 'part':
 		$table='`Product Dimension`  P left join `Product Part Bridge` B on (B.`Product Part Product ID`=P.`Product ID`)';
 
-		$where=sprintf(' where `Product Part Part SKU`=%d  ', $data['parent_key']);
+		$where=sprintf(" where `Product Type`='Product' and `Product Part Part SKU`=%d  ", $data['parent_key']);
 		break;
 	case 'account':
-		$where=sprintf(" where `Product Store Key` in (%s) ", join(',', $user->stores));
+		$where=sprintf(" where `Product Type`='Product' and `Product Store Key` in (%s) ", join(',', $user->stores));
 
 		break;
 	case 'category':
 
 
-		$where=sprintf(" where `Subject`='Product' and  `Category Key`=%d", $data['parent_key']);
+		$where=sprintf(" where `Product Type`='Product' and `Subject`='Product' and  `Category Key`=%d", $data['parent_key']);
 		$table=' `Category Bridge` left join  `Product Dimension` P on (`Subject Key`=`Product ID`) ';
 
 
@@ -610,7 +620,7 @@ function get_products_element_numbers($db, $data, $user) {
 		$tab='customers.list';
 		break;
 	case 'favourites':
-		$where=sprintf(' where C.`Customer Key` in (select DISTINCT F.`Customer Key` from `Customer Favorite Product Bridge` F where `Site Key`=%d )', $data['parent_key']);
+		$where=sprintf(" where `Product Type`='Product'  C.`Customer Key` in (select DISTINCT F.`Customer Key` from `Customer Favorite Product Bridge` F where `Site Key`=%d )", $data['parent_key']);
 		break;
 
 
@@ -642,6 +652,54 @@ function get_products_element_numbers($db, $data, $user) {
 
 }
 
+function get_services_element_numbers($db, $data, $user) {
+
+
+	$parent_key=$data['parent_key'];
+
+	$elements_numbers=array(
+		'status'=>array('Active'=>0, 'Suspended'=>0, 'Discontinued'=>0),
+
+	);
+
+
+	$table='`Product Dimension`  P';
+	switch ($data['parent']) {
+	case 'store':
+		$where=sprintf(" where `Product Type`='Service' and `Product Store Key`=%d  ", $data['parent_key']);
+		break;
+	case 'account':
+		$where=sprintf(" where `Product Type`='Service' and `Product Store Key` in (%s) ", join(',', $user->stores));
+
+		break;
+
+	default:
+		$response=array('state'=>405, 'resp'=>'product parent not found '.$data['parent']);
+		echo json_encode($response);
+
+		return;
+	}
+
+
+
+
+
+	$sql=sprintf("select count(*) as number,`Product Status` as element from $table $where  group by `Product Status` ");
+
+	foreach ($db->query($sql) as $row) {
+
+		$elements_numbers['status'][$row['element']]=number($row['number']);
+
+	}
+
+
+
+	$response= array('state'=>200, 'elements_numbers'=>$elements_numbers);
+	echo json_encode($response);
+
+
+
+}
 
 function get_product_categories_element_numbers($db, $data, $user) {
 

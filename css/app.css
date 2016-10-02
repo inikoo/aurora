@@ -1493,14 +1493,19 @@ tr.deleting_tr {
         border-bottom: 1px solid #aaa; }
     #object_showcase .xorder #account .block, #object_showcase .invoice #account .block, #object_showcase .delivery_note #account .block {
       min-width: 150px; }
+  #object_showcase .name_and_categories {
+    width: 100;
+    padding: 5px 20px 5px 20px; }
+    #object_showcase .name_and_categories .strong {
+      font-size: 110%; }
   #object_showcase .asset_container {
-    padding: 10px 0px 20px 20px;
+    padding: 0px 0px 20px 20px;
     border-bottom: 1px solid #ccc; }
     #object_showcase .asset_container .block {
       float: left;
       margin-top: 3px;
       margin-right: 20px; }
-    #object_showcase .asset_container .block.name_and_picture {
+    #object_showcase .asset_container .block.picture {
       width: 290px; }
     #object_showcase .asset_container .block.sales_data {
       margin-right: 30px;
@@ -1534,7 +1539,8 @@ tr.deleting_tr {
       padding-left: 5px;
       padding-top: 0px;
       font-size: 90%;
-      color: #5f5f5f; }
+      color: #5f5f5f;
+      width: 390px; }
       #object_showcase .asset_container .carton_sko_units td.canvas {
         padding: 0 5px 10px 0; }
         #object_showcase .asset_container .carton_sko_units td.canvas canvas {
@@ -2273,7 +2279,7 @@ input.inputfile {
   padding: 0px;
   margin: 0px;
   position: relative;
-  left: -10px; }
+  xleft: -10px; }
 
 .tags li {
   margin-bottom: 5px; }

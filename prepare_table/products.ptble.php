@@ -70,16 +70,16 @@ case('list'):
 	break;
 case('stores'):
 case('account'):
-	$where=sprintf(" where `Product Store Key` in (%s) ", join(',', $user->stores));
+	$where=sprintf(" where `Product Type`='Product' and `Product Store Key` in (%s) ", join(',', $user->stores));
 	break;
 case('store'):
-	$where=sprintf(' where `Product Store Key`=%d', $parameters['parent_key']);
+	$where=sprintf(" where  `Product Type`='Product' and `Product Store Key`=%d", $parameters['parent_key']);
 	break;
 
 case('part'):
 	$table='`Product Dimension`  P  left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`)  left join `Product DC Data` PDCD on (PDCD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`) left join `Product Part Bridge` B on (B.`Product Part Product ID`=P.`Product ID`)';
 
-	$where=sprintf(' where `Product Part Part SKU`=%d  ', $parameters['parent_key']);
+	$where=sprintf(' where  P.`Product Type`="Product" and `Product Part Part SKU`=%d  ', $parameters['parent_key']);
 	break;
 
 case('customer_favourites'):
@@ -87,14 +87,14 @@ case('customer_favourites'):
 	$table="`Product Dimension` P left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`)  left join `Product DC Data` PDCD on (PDCD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`) left join `Customer Favorite Product Bridge` F on (F.`Product ID`=P.`Product ID`)";
 
 
-	$where.=sprintf(' where F.`Customer Key`=%d', $parameters['parent_key']);
+	$where.=sprintf(' where P.`Product Type`="Product" and F.`Customer Key`=%d', $parameters['parent_key']);
 	break;
 
 case('customer'):
 
 	$table=" `Order Transaction Fact` OTF  left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`)  left join `Product DC Data` PDCD on (PDCD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=S.`Store Key`) ";
 	$group_by=' group by OTF.`Product ID`';
-	$where=sprintf(' where `Customer Key`=%d', $parameters['parent_key']);
+	$where=sprintf(' where P.`Product Type`="Product" and `Customer Key`=%d', $parameters['parent_key']);
 	break;
 case('category'):
 	include_once 'class.Category.php';
@@ -104,7 +104,7 @@ case('category'):
 		return;
 	}
 
-	$where=sprintf(" where `Subject`='Product' and  `Category Key`=%d", $parameters['parent_key']);
+	$where=sprintf(" where P.`Product Type`='Product' and`Subject`='Product' and  `Category Key`=%d", $parameters['parent_key']);
 	$table=' `Category Bridge` left join  `Product Dimension` P on (`Subject Key`=`Product ID`) left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`)  left join `Product DC Data` PDCD on (PDCD.`Product ID`=P.`Product ID`)  left join `Store Dimension` S on (`Product Store Key`=`Store Key`)';
 	break;
 default:
@@ -147,15 +147,15 @@ if (isset($parameters['f_period'])) {
 
 	$db_period=get_interval_db_name($parameters['f_period']);
 	if (in_array($db_period, array('Total', '3 Year'))) {
-		$yb_fields="'' as sales_1y";
+		$yb_fields="'' as sales_1y,'' as qty_invoiced_1yb";
 
 	}else {
-		$yb_fields="`Product $db_period Acc 1YB Invoiced Amount` as sales_1yb";
+		$yb_fields="`Product $db_period Acc 1YB Invoiced Amount` as sales_1yb, `Product $db_period Acc 1YB Quantity Invoiced` as qty_invoiced_1yb";
 	}
 
 }else {
 	$db_period='Total';
-	$yb_fields="'' as sales_1yb";
+		$yb_fields="'' as sales_1y,'' as qty_invoiced_1yb";
 }
 
 
@@ -268,15 +268,32 @@ elseif ($order=='store') {
 }elseif ($order=='percentage_available_1y') {
 	$order='`Product 1 Year Acc Days Available`/`Product 1 Year Acc Days On Sale`';
 }
+elseif ($order=='qty_invoiced')
+	$order="`Product $db_period Acc Quantity Invoiced`";
+elseif ($order=='qty_invoiced_1yb')
+	$order="(`Product $db_period Acc Quantity Invoiced`-`Product $db_period Acc 1YB Quantity Invoiced` )/`Product $db_period Acc 1YB Quantity Invoiced` ";
+
+
+
 elseif ($order=='delta_sales_year0') {$order="(-1*(`Product Year To Day Acc Invoiced Amount`-`Product Year To Day Acc 1YB Invoiced Amount`)/`Product Year To Day Acc 1YB Invoiced Amount`)";}
 elseif ($order=='delta_sales_year1') {$order="(-1*(`Product 2 Year Ago Invoiced Amount`-`Product 1 Year Ago Invoiced Amount`)/`Product 2 Year Ago Invoiced Amount`)";}
 elseif ($order=='delta_sales_year2') {$order="(-1*(`Product 3 Year Ago Invoiced Amount`-`Product 2 Year Ago Invoiced Amount`)/`Product 3 Year Ago Invoiced Amount`)";}
 elseif ($order=='delta_sales_year3') {$order="(-1*(`Product 4 Year Ago Invoiced Amount`-`Product 3 Year Ago Invoiced Amount`)/`Product 4 Year Ago Invoiced Amount`)";}
+elseif ($order=='sales_year0') {$order="`Product Year To Day Acc Invoiced Amount`";}
 elseif ($order=='sales_year1') {$order="`Product 1 Year Ago Invoiced Amount`";}
 elseif ($order=='sales_year2') {$order="`Product 2 Year Ago Invoiced Amount`";}
 elseif ($order=='sales_year3') {$order="`Product 3 Year Ago Invoiced Amount`";}
 elseif ($order=='sales_year4') {$order="`Product 4 Year Ago Invoiced Amount`";}
-elseif ($order=='sales_year0') {$order="`Product Year To Day Acc Invoiced Amount`";}
+
+elseif ($order=='delta_sales_quarter0') {$order="(-1*(`Product Quarter To Day Acc Invoiced Amount`-`Product Quarter To Day Acc 1YB Invoiced Amount`)/`Product Quarter To Day Acc 1YB Invoiced Amount`)";}
+elseif ($order=='delta_sales_quarter1') {$order="(-1*(`Product 1 Quarter Ago YB Invoiced Amount`-`Product 1 Quarter Ago Invoiced Amount`)/`Product 1 Quarter Ago 1YB Invoiced Amount`)";}
+elseif ($order=='delta_sales_quarter2') {$order="(-1*(`Product 2 Quarter Ago YB Invoiced Amount`-`Product 2 Quarter Ago Invoiced Amount`)/`Product 2 Quarter Ago 1YB Invoiced Amount`)";}
+elseif ($order=='delta_sales_quarter3') {$order="(-1*(`Product 3 Quarter Ago YB Invoiced Amount`-`Product 3 Quarter Ago Invoiced Amount`)/`Product 3 Quarter Ago 1YB Invoiced Amount`)";}
+elseif ($order=='sales_quarter0') {$order="`Product Quarter To Day Acc Invoiced Amount`";}
+elseif ($order=='sales_quarter1') {$order="`Product 1 Quarter Ago Invoiced Amount`";}
+elseif ($order=='sales_quarter2') {$order="`Product 2 Quarter Ago Invoiced Amount`";}
+elseif ($order=='sales_quarter3') {$order="`Product 3 Quarter Ago Invoiced Amount`";}
+elseif ($order=='sales_quarter4') {$order="`Product 4 Quarter Ago Invoiced Amount`";}
 
 
 else {
@@ -288,10 +305,19 @@ else {
 $sql_totals="select count(distinct  P.`Product ID`) as num from $table $where";
 
 $fields="P.`Product ID`,`Product Code`,`Product Name`,`Product Price`,`Store Currency Code`,`Store Code`,`Store Key`,`Product Web Configuration`,`Product Availability`,`Product Web State`,`Product Cost`,`Product Number of Parts`,P.`Product Status`,`Product Units Per Case`,
-`Product 1 Year Ago Invoiced Amount`,`Product 2 Year Ago Invoiced Amount`,`Product 3 Year Ago Invoiced Amount`,`Product 4 Year Ago Invoiced Amount`,
-`Product Year To Day Acc Invoiced Amount`,`Product Year To Day Acc 1YB Invoiced Amount`,
+`Product 1 Year Ago Invoiced Amount`,`Product 2 Year Ago Invoiced Amount`,`Product 3 Year Ago Invoiced Amount`,`Product 4 Year Ago Invoiced Amount`,`Product 5 Year Ago Invoiced Amount`,
+`Product 1 Quarter Ago Invoiced Amount`,`Product 2 Quarter Ago Invoiced Amount`,`Product 3 Quarter Ago Invoiced Amount`,`Product 4 Quarter Ago Invoiced Amount`,
+`Product 1 Quarter Ago 1YB Invoiced Amount`,`Product 2 Quarter Ago 1YB Invoiced Amount`,`Product 3 Quarter Ago 1YB Invoiced Amount`,`Product 4 Quarter Ago 1YB Invoiced Amount`,
+`Product 1 Year Ago Quantity Invoiced`,`Product 2 Year Ago Quantity Invoiced`,`Product 3 Year Ago Quantity Invoiced`,`Product 4 Year Ago Quantity Invoiced`,`Product 5 Year Ago Quantity Invoiced`,
+`Product 1 Quarter Ago Quantity Invoiced`,`Product 2 Quarter Ago Quantity Invoiced`,`Product 3 Quarter Ago Quantity Invoiced`,`Product 4 Quarter Ago Quantity Invoiced`,
+`Product 1 Quarter Ago 1YB Quantity Invoiced`,`Product 2 Quarter Ago 1YB Quantity Invoiced`,`Product 3 Quarter Ago 1YB Quantity Invoiced`,`Product 4 Quarter Ago 1YB Quantity Invoiced`,
 
-`Product $db_period Acc Invoiced Amount` as sales, $yb_fields
+
+`Product Year To Day Acc Invoiced Amount`,`Product Year To Day Acc 1YB Invoiced Amount`,
+`Product Quarter To Day Acc Invoiced Amount`,`Product Quarter To Day Acc 1YB Invoiced Amount`,
+
+`Product $db_period Acc Invoiced Amount` as sales,`Product $db_period Acc Quantity Invoiced` as qty_invoiced,
+ $yb_fields
 
 
 ";

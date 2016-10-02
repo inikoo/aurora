@@ -185,33 +185,54 @@ function parts($_data, $db, $user, $type, $account) {
 			$associated=sprintf('<i key="%d" class="fa fa-fw fa-link button" aria-hidden="true" onClick="edit_category_subject(this)" ></i>', $data['Part SKU']);
 
 
+
+
+
+
 			$adata[]=array(
 				'id'=>(integer)$data['Part SKU'],
 				'associated'=>$associated,
 				'reference'=>$data['Part Reference'],
 				'sko_description'=>$data['Part Package Description'],
+				'status'=>$status,
 				'stock_status'=>$stock_status,
 				'stock_status_label'=>$stock_status_label,
 				'stock'=>'<span class="'.($data['Part Current On Hand Stock']<0?'error':'').'">'.number(floor($data['Part Current On Hand Stock'])).'</span>',
+
 				'dispatched'=>number($data['dispatched'], 0),
 				'dispatched_1yb'=>delta($data['dispatched'], $data['dispatched_1yb']),
-				//'sold'=>number($data['sold']),
-				//'sold_1y'=>delta($data['sold'], $data['sold_1y']),
 				'sales'=>money($data['sales'], $account->get('Account Currency')),
 				'sales_1yb'=>delta($data['sales'], $data['sales_1yb']),
-				'sales_year0'=>sprintf('<span title="%s">%s</span>', delta($data["Part Year To Day Acc Invoiced Amount"], $data["Part Year To Day Acc 1YB Invoiced Amount"]), money($data['Part Year To Day Acc Invoiced Amount'], $account->get('Account Currency'))),
-				'sales_year1'=>sprintf('<span title="%s">%s</span>', delta($data["Part 1 Year Ago Invoiced Amount"], $data["Part 2 Year Ago Invoiced Amount"]), money($data['Part 1 Year Ago Invoiced Amount'], $account->get('Account Currency'))),
-				'sales_year2'=>sprintf('<span title="%s">%s</span>', delta($data["Part 2 Year Ago Invoiced Amount"], $data["Part 3 Year Ago Invoiced Amount"]), money($data['Part 2 Year Ago Invoiced Amount'], $account->get('Account Currency'))),
-				'sales_year3'=>sprintf('<span title="%s">%s</span>', delta($data["Part 3 Year Ago Invoiced Amount"], $data["Part 4 Year Ago Invoiced Amount"]), money($data['Part 3 Year Ago Invoiced Amount'], $account->get('Account Currency'))),
-				'sales_year4'=>money($data['Part 4 Year Ago Invoiced Amount'], $account->get('Account Currency')),
-
-				'status'=>$status,
 				
-				'dispatched_year0'=>sprintf('<span title="%s">%s</span>', delta($data["Part Year To Day Acc Dispatched"], $data["Part Year To Day Acc 1YB Dispatched"]), number($data['Part Year To Day Acc Dispatched'], 0)),
-				'dispatched_year1'=>sprintf('<span title="%s">%s</span>', delta($data["Part 1 Year Ago Dispatched"], $data["Part 2 Year Ago Dispatched"]), number($data['Part 1 Year Ago Dispatched'], 0)),
-				'dispatched_year2'=>sprintf('<span title="%s">%s</span>', delta($data["Part 2 Year Ago Dispatched"], $data["Part 3 Year Ago Dispatched"]), number($data['Part 2 Year Ago Dispatched'], 0)),
-				'dispatched_year3'=>sprintf('<span title="%s">%s</span>', delta($data["Part 3 Year Ago Dispatched"], $data["Part 4 Year Ago Dispatched"]), number($data['Part 3 Year Ago Dispatched'], 0)),
-				'dispatched_year4'=>number($data['Part 4 Year Ago Dispatched']),
+				'sales_year0'=>sprintf('<span>%s</span> %s', money($data['Part Year To Day Acc Invoiced Amount'], $account->get('Account Currency')), delta_icon($data["Part Year To Day Acc Invoiced Amount"],$data["Part Year To Day Acc 1YB Invoiced Amount"])),
+				'sales_year1'=>sprintf('<span>%s</span> %s', money($data['Part 1 Year Ago Invoiced Amount'], $account->get('Account Currency')), delta_icon($data["Part 1 Year Ago Invoiced Amount"],$data["Part 2 Year Ago Invoiced Amount"])),
+				'sales_year2'=>sprintf('<span>%s</span> %s', money($data['Part 2 Year Ago Invoiced Amount'], $account->get('Account Currency')), delta_icon($data["Part 2 Year Ago Invoiced Amount"],$data["Part 3 Year Ago Invoiced Amount"])),
+				'sales_year3'=>sprintf('<span>%s</span> %s', money($data['Part 3 Year Ago Invoiced Amount'], $account->get('Account Currency')), delta_icon($data["Part 3 Year Ago Invoiced Amount"],$data["Part 4 Year Ago Invoiced Amount"])),
+				'sales_year4'=>sprintf('<span>%s</span> %s', money($data['Part 4 Year Ago Invoiced Amount'], $account->get('Account Currency')), delta_icon($data["Part 4 Year Ago Invoiced Amount"],$data["Part 5 Year Ago Invoiced Amount"])),
+
+				'sales_quarter0'=>sprintf('<span>%s</span> %s', money($data['Part Quarter To Day Acc Invoiced Amount'], $account->get('Account Currency')), delta_icon($data["Part Quarter To Day Acc Invoiced Amount"],$data["Part Quarter To Day Acc 1YB Invoiced Amount"])),
+				'sales_quarter1'=>sprintf('<span>%s</span> %s', money($data['Part 1 Quarter Ago Invoiced Amount'], $account->get('Account Currency')), delta_icon($data["Part 1 Quarter Ago Invoiced Amount"],$data["Part 1 Quarter Ago 1YB Invoiced Amount"])),
+				'sales_quarter2'=>sprintf('<span>%s</span> %s', money($data['Part 2 Quarter Ago Invoiced Amount'], $account->get('Account Currency')), delta_icon($data["Part 2 Quarter Ago Invoiced Amount"],$data["Part 2 Quarter Ago 1YB Invoiced Amount"])),
+				'sales_quarter3'=>sprintf('<span>%s</span> %s', money($data['Part 3 Quarter Ago Invoiced Amount'], $account->get('Account Currency')), delta_icon($data["Part 3 Quarter Ago Invoiced Amount"],$data["Part 3 Quarter Ago 1YB Invoiced Amount"])),
+				'sales_quarter4'=>sprintf('<span>%s</span> %s', money($data['Part 4 Quarter Ago Invoiced Amount'], $account->get('Account Currency')), delta_icon($data["Part 4 Quarter Ago Invoiced Amount"],$data["Part 4 Quarter Ago 1YB Invoiced Amount"])),
+
+
+		
+				'dispatched_year0'=>sprintf('<span>%s</span> %s', number($data['Part Year To Day Acc Dispatched']), delta_icon($data["Part Year To Day Acc Dispatched"],$data["Part Year To Day Acc 1YB Dispatched"])),
+				'dispatched_year1'=>sprintf('<span>%s</span> %s', number($data['Part 1 Year Ago Dispatched']), delta_icon($data["Part 1 Year Ago Dispatched"],$data["Part 2 Year Ago Dispatched"])),
+				'dispatched_year2'=>sprintf('<span>%s</span> %s', number($data['Part 2 Year Ago Dispatched']), delta_icon($data["Part 2 Year Ago Dispatched"],$data["Part 3 Year Ago Dispatched"])),
+				'dispatched_year3'=>sprintf('<span>%s</span> %s', number($data['Part 3 Year Ago Dispatched']), delta_icon($data["Part 3 Year Ago Dispatched"],$data["Part 4 Year Ago Dispatched"])),
+				'dispatched_year4'=>sprintf('<span>%s</span> %s', number($data['Part 4 Year Ago Dispatched']), delta_icon($data["Part 4 Year Ago Dispatched"],$data["Part 5 Year Ago Dispatched"])),
+
+				'dispatched_quarter0'=>sprintf('<span>%s</span> %s', number($data['Part Quarter To Day Acc Dispatched']), delta_icon($data["Part Quarter To Day Acc Dispatched"],$data["Part Quarter To Day Acc 1YB Dispatched"])),
+				'dispatched_quarter1'=>sprintf('<span>%s</span> %s', number($data['Part 1 Quarter Ago Dispatched']), delta_icon($data["Part 1 Quarter Ago Dispatched"],$data["Part 1 Quarter Ago 1YB Dispatched"])),
+				'dispatched_quarter2'=>sprintf('<span>%s</span> %s', number($data['Part 2 Quarter Ago Dispatched']), delta_icon($data["Part 2 Quarter Ago Dispatched"],$data["Part 2 Quarter Ago 1YB Dispatched"])),
+				'dispatched_quarter3'=>sprintf('<span>%s</span> %s', number($data['Part 3 Quarter Ago Dispatched']), delta_icon($data["Part 3 Quarter Ago Dispatched"],$data["Part 3 Quarter Ago 1YB Dispatched"])),
+				'dispatched_quarter4'=>sprintf('<span>%s</span> %s', number($data['Part 4 Quarter Ago Dispatched']), delta_icon($data["Part 4 Quarter Ago Dispatched"],$data["Part 4 Quarter Ago 1YB Dispatched"])),
+
+
+		
+
 
 				'weeks_available'=>$weeks_available,
 				'dispatched_per_week'=>$dispatched_per_week,
@@ -502,7 +523,7 @@ function stock_transactions($_data, $db, $user) {
 
 			case 'No Dispatched':
 
-$stock='';
+				$stock='';
 				if ($parameters['parent']=='part') {
 					$note=sprintf(_("%s requested %s <b>couldn't be dispatched</b> (%s)"),
 
@@ -867,21 +888,44 @@ function part_categories($_data, $db, $user, $account) {
 				'level'=>$level,
 				'subcategories'=>number($data['Category Children']),
 				'percentage_assigned'=>percentage($data['Category Number Subjects'], ($data['Category Number Subjects']+$data['Category Subjects Not Assigned'])),
-				'sales'=>money($data['sales'], $account->get('Account Currency')),
-				'sales_1y'=>delta($data['sales'], $data['sales_1y']),
-
-				'sales_year0'=>sprintf('<span title="%s">%s</span>', delta($data["Part Category Year To Day Acc Invoiced Amount"], $data["Part Category Year To Day Acc 1YB Invoiced Amount"]), money($data['Part Category Year To Day Acc Invoiced Amount'], $account->get('Account Currency'))),
-				'sales_year1'=>sprintf('<span title="%s">%s</span>', delta($data["Part Category 1 Year Ago Invoiced Amount"], $data["Part Category 2 Year Ago Invoiced Amount"]), money($data['Part Category 1 Year Ago Invoiced Amount'], $account->get('Account Currency'))),
-				'sales_year2'=>sprintf('<span title="%s">%s</span>', delta($data["Part Category 2 Year Ago Invoiced Amount"], $data["Part Category 3 Year Ago Invoiced Amount"]), money($data['Part Category 2 Year Ago Invoiced Amount'], $account->get('Account Currency'))),
-				'sales_year3'=>sprintf('<span title="%s">%s</span>', delta($data["Part Category 3 Year Ago Invoiced Amount"], $data["Part Category 4 Year Ago Invoiced Amount"]), money($data['Part Category 3 Year Ago Invoiced Amount'], $account->get('Account Currency'))),
-				'sales_year4'=>money($data['Part Category 4 Year Ago Invoiced Amount'], $account->get('Account Currency')),
-
+	
 				'surplus'=>sprintf('<span class="%s" title="%s">%s</span>', (ratio($data['Part Category Number Surplus Parts'], $data['Category Number Active Subjects'])>.75?'error':(ratio($data['Part Category Number Surplus Parts'], $data['Category Number Active Subjects'])>.5?'warning':'')), percentage($data['Part Category Number Surplus Parts'], $data['Category Number Active Subjects']), number($data['Part Category Number Surplus Parts'])),
 				'optimal'=>sprintf('<span  title="%s">%s</span>', percentage($data['Part Category Number Optimal Parts'], $data['Category Number Active Subjects']), number($data['Part Category Number Optimal Parts'])),
 				'low'=>sprintf('<span class="%s" title="%s">%s</span>', (ratio($data['Part Category Number Low Parts'], $data['Category Number Active Subjects'])>.5?'error':(ratio($data['Part Category Number Low Parts'], $data['Category Number Active Subjects'])>.25?'warning':'')), percentage($data['Part Category Number Low Parts'], $data['Category Number Active Subjects']), number($data['Part Category Number Low Parts'])),
 				'critical'=>sprintf('<span class="%s" title="%s">%s</span>', ($data['Part Category Number Critical Parts']==0?'': (ratio($data['Part Category Number Critical Parts'], $data['Category Number Active Subjects'])>.25?'error':'warning')), percentage($data['Part Category Number Critical Parts'], $data['Category Number Active Subjects']), number($data['Part Category Number Critical Parts'])),
 				'out_of_stock'=>sprintf('<span class="%s" title="%s">%s</span>', ($data['Part Category Number Out Of Stock Parts']==0?'':(ratio($data['Part Category Number Out Of Stock Parts'], $data['Category Number Active Subjects'])>.10?'error':'warning')), percentage($data['Part Category Number Out Of Stock Parts'], $data['Category Number Active Subjects']), number($data['Part Category Number Out Of Stock Parts'])),
 				'stock_error'=>sprintf('<span class="%s" title="%s">%s</span>', ($data['Part Category Number Error Parts']==0?'':(ratio($data['Part Category Number Error Parts'], $data['Category Number Active Subjects'])>.10?'error':'warning')), percentage($data['Part Category Number Error Parts'], $data['Category Number Active Subjects']), number($data['Part Category Number Error Parts'])),
+
+			        'dispatched'=>number($data['dispatched'], 0),
+				'dispatched_1yb'=>delta($data['dispatched'], $data['dispatched_1yb']),
+				'sales'=>money($data['sales'], $account->get('Account Currency')),
+				'sales_1yb'=>delta($data['sales'], $data['sales_1yb']),
+				
+				'sales_year0'=>sprintf('<span>%s</span> %s', money($data['Part Category Year To Day Acc Invoiced Amount'], $account->get('Account Currency')), delta_icon($data["Part Category Year To Day Acc Invoiced Amount"],$data["Part Category Year To Day Acc 1YB Invoiced Amount"])),
+				'sales_year1'=>sprintf('<span>%s</span> %s', money($data['Part Category 1 Year Ago Invoiced Amount'], $account->get('Account Currency')), delta_icon($data["Part Category 1 Year Ago Invoiced Amount"],$data["Part Category 2 Year Ago Invoiced Amount"])),
+				'sales_year2'=>sprintf('<span>%s</span> %s', money($data['Part Category 2 Year Ago Invoiced Amount'], $account->get('Account Currency')), delta_icon($data["Part Category 2 Year Ago Invoiced Amount"],$data["Part Category 3 Year Ago Invoiced Amount"])),
+				'sales_year3'=>sprintf('<span>%s</span> %s', money($data['Part Category 3 Year Ago Invoiced Amount'], $account->get('Account Currency')), delta_icon($data["Part Category 3 Year Ago Invoiced Amount"],$data["Part Category 4 Year Ago Invoiced Amount"])),
+				'sales_year4'=>sprintf('<span>%s</span> %s', money($data['Part Category 4 Year Ago Invoiced Amount'], $account->get('Account Currency')), delta_icon($data["Part Category 4 Year Ago Invoiced Amount"],$data["Part Category 5 Year Ago Invoiced Amount"])),
+
+				'sales_quarter0'=>sprintf('<span>%s</span> %s', money($data['Part Category Quarter To Day Acc Invoiced Amount'], $account->get('Account Currency')), delta_icon($data["Part Category Quarter To Day Acc Invoiced Amount"],$data["Part Category Quarter To Day Acc 1YB Invoiced Amount"])),
+				'sales_quarter1'=>sprintf('<span>%s</span> %s', money($data['Part Category 1 Quarter Ago Invoiced Amount'], $account->get('Account Currency')), delta_icon($data["Part Category 1 Quarter Ago Invoiced Amount"],$data["Part Category 1 Quarter Ago 1YB Invoiced Amount"])),
+				'sales_quarter2'=>sprintf('<span>%s</span> %s', money($data['Part Category 2 Quarter Ago Invoiced Amount'], $account->get('Account Currency')), delta_icon($data["Part Category 2 Quarter Ago Invoiced Amount"],$data["Part Category 2 Quarter Ago 1YB Invoiced Amount"])),
+				'sales_quarter3'=>sprintf('<span>%s</span> %s', money($data['Part Category 3 Quarter Ago Invoiced Amount'], $account->get('Account Currency')), delta_icon($data["Part Category 3 Quarter Ago Invoiced Amount"],$data["Part Category 3 Quarter Ago 1YB Invoiced Amount"])),
+				'sales_quarter4'=>sprintf('<span>%s</span> %s', money($data['Part Category 4 Quarter Ago Invoiced Amount'], $account->get('Account Currency')), delta_icon($data["Part Category 4 Quarter Ago Invoiced Amount"],$data["Part Category 4 Quarter Ago 1YB Invoiced Amount"])),
+
+
+		
+				'dispatched_year0'=>sprintf('<span>%s</span> %s', number($data['Part Category Year To Day Acc Dispatched']), delta_icon($data["Part Category Year To Day Acc Dispatched"],$data["Part Category Year To Day Acc 1YB Dispatched"])),
+				'dispatched_year1'=>sprintf('<span>%s</span> %s', number($data['Part Category 1 Year Ago Dispatched']), delta_icon($data["Part Category 1 Year Ago Dispatched"],$data["Part Category 2 Year Ago Dispatched"])),
+				'dispatched_year2'=>sprintf('<span>%s</span> %s', number($data['Part Category 2 Year Ago Dispatched']), delta_icon($data["Part Category 2 Year Ago Dispatched"],$data["Part Category 3 Year Ago Dispatched"])),
+				'dispatched_year3'=>sprintf('<span>%s</span> %s', number($data['Part Category 3 Year Ago Dispatched']), delta_icon($data["Part Category 3 Year Ago Dispatched"],$data["Part Category 4 Year Ago Dispatched"])),
+				'dispatched_year4'=>sprintf('<span>%s</span> %s', number($data['Part Category 4 Year Ago Dispatched']), delta_icon($data["Part Category 4 Year Ago Dispatched"],$data["Part Category 5 Year Ago Dispatched"])),
+
+				'dispatched_quarter0'=>sprintf('<span>%s</span> %s', number($data['Part Category Quarter To Day Acc Dispatched']), delta_icon($data["Part Category Quarter To Day Acc Dispatched"],$data["Part Category Quarter To Day Acc 1YB Dispatched"])),
+				'dispatched_quarter1'=>sprintf('<span>%s</span> %s', number($data['Part Category 1 Quarter Ago Dispatched']), delta_icon($data["Part Category 1 Quarter Ago Dispatched"],$data["Part Category 1 Quarter Ago 1YB Dispatched"])),
+				'dispatched_quarter2'=>sprintf('<span>%s</span> %s', number($data['Part Category 2 Quarter Ago Dispatched']), delta_icon($data["Part Category 2 Quarter Ago Dispatched"],$data["Part Category 2 Quarter Ago 1YB Dispatched"])),
+				'dispatched_quarter3'=>sprintf('<span>%s</span> %s', number($data['Part Category 3 Quarter Ago Dispatched']), delta_icon($data["Part Category 3 Quarter Ago Dispatched"],$data["Part Category 3 Quarter Ago 1YB Dispatched"])),
+				'dispatched_quarter4'=>sprintf('<span>%s</span> %s', number($data['Part Category 4 Quarter Ago Dispatched']), delta_icon($data["Part Category 4 Quarter Ago Dispatched"],$data["Part Category 4 Quarter Ago 1YB Dispatched"])),
 
 
 			);

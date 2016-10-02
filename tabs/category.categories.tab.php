@@ -21,11 +21,16 @@ if ($state['module']=='inventory') {
 
 
 	$table_views=array(
-		'overview'=>array('label'=>_('Overview')),
-		'revenue'=>array('label'=>_('Revenue')),
-		'stock'=>array('label'=>_('Stock')),
+	'overview'=>array('label'=>_('Overview')),
+	'stock'=>array('label'=>_('Stock')),
+	'sales'=>array('label'=>_('Sales')),
+	'dispatched_q'=>array('label'=>_('Dispatched (Qs)')),
+	'dispatched_y'=>array('label'=>_('Dispatched (Yrs)')),
+	'revenue_q'=>array('label'=>_('Revenue (Qs)')),
+	'revenue_y'=>array('label'=>_('Revenue (Yrs)')),
 
-	);
+);
+
 
 
 	if ($state['key']==$account->get('Account Part Family Category Key')) {
@@ -98,8 +103,10 @@ elseif ($state['module']=='products') {
 	$table_views=array(
 		'overview'=>array('label'=>_('Overview')),
 		'status'=>array('label'=>_('Status')),
-		'sales'=>array('label'=>_('Sales')),
 		'stock'=>array('label'=>_('Stock')),
+		'sales'=>array('label'=>_('Sales')),
+		'sales_y'=>array('label'=>_('Invoiced amount (Yrs)')),
+		'sales_q'=>array('label'=>_('Invoiced amount (Qs)')),
 
 	);
 

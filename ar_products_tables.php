@@ -209,11 +209,21 @@ function products($_data, $db, $user, $account) {
 				'status'=>$status,
 				'sales'=>money($data['sales'], $data['Store Currency Code']),
 				'sales_1yb'=>delta($data['sales'], $data['sales_1yb']),
-				'sales_year0'=>sprintf('<span title="%s">%s</span>', delta($data["Product Year To Day Acc Invoiced Amount"], $data["Product Year To Day Acc 1YB Invoiced Amount"]), money($data['Product Year To Day Acc Invoiced Amount'], $data['Store Currency Code'])),
-				'sales_year1'=>sprintf('<span title="%s">%s</span>', delta($data["Product 1 Year Ago Invoiced Amount"], $data["Product 2 Year Ago Invoiced Amount"]), money($data['Product 1 Year Ago Invoiced Amount'], $data['Store Currency Code'])),
-				'sales_year2'=>sprintf('<span title="%s">%s</span>', delta($data["Product 2 Year Ago Invoiced Amount"], $data["Product 3 Year Ago Invoiced Amount"]), money($data['Product 2 Year Ago Invoiced Amount'], $data['Store Currency Code'])),
-				'sales_year3'=>sprintf('<span title="%s">%s</span>', delta($data["Product 3 Year Ago Invoiced Amount"], $data["Product 4 Year Ago Invoiced Amount"]), money($data['Product 3 Year Ago Invoiced Amount'], $data['Store Currency Code'])),
-				'sales_year4'=>money($data['Product 4 Year Ago Invoiced Amount'], $data['Store Currency Code']),
+				'qty_invoiced'=>number($data['qty_invoiced']),
+				'qty_invoiced_1yb'=>delta($data['qty_invoiced'], $data['qty_invoiced_1yb']),
+
+
+				'sales_year0'=>sprintf('<span>%s</span> %s', money($data['Product Year To Day Acc Invoiced Amount'], $data['Store Currency Code']), delta_icon($data["Product Year To Day Acc Invoiced Amount"],$data["Product Year To Day Acc 1YB Invoiced Amount"])),
+				'sales_year1'=>sprintf('<span>%s</span> %s', money($data['Product 1 Year Ago Invoiced Amount'], $data['Store Currency Code']), delta_icon($data["Product 1 Year Ago Invoiced Amount"],$data["Product 2 Year Ago Invoiced Amount"])),
+				'sales_year2'=>sprintf('<span>%s</span> %s', money($data['Product 2 Year Ago Invoiced Amount'], $data['Store Currency Code']), delta_icon($data["Product 2 Year Ago Invoiced Amount"],$data["Product 3 Year Ago Invoiced Amount"])),
+				'sales_year3'=>sprintf('<span>%s</span> %s', money($data['Product 3 Year Ago Invoiced Amount'], $data['Store Currency Code']), delta_icon($data["Product 3 Year Ago Invoiced Amount"],$data["Product 4 Year Ago Invoiced Amount"])),
+				'sales_year4'=>sprintf('<span>%s</span> %s', money($data['Product 4 Year Ago Invoiced Amount'], $data['Store Currency Code']), delta_icon($data["Product 4 Year Ago Invoiced Amount"],$data["Product 5 Year Ago Invoiced Amount"])),
+
+				'sales_quarter0'=>sprintf('<span>%s</span> %s', money($data['Product Quarter To Day Acc Invoiced Amount'], $data['Store Currency Code']), delta_icon($data["Product Quarter To Day Acc Invoiced Amount"],$data["Product Quarter To Day Acc 1YB Invoiced Amount"])),
+				'sales_quarter1'=>sprintf('<span>%s</span> %s', money($data['Product 1 Quarter Ago Invoiced Amount'], $data['Store Currency Code']), delta_icon($data["Product 1 Quarter Ago Invoiced Amount"],$data["Product 1 Quarter Ago 1YB Invoiced Amount"])),
+				'sales_quarter2'=>sprintf('<span>%s</span> %s', money($data['Product 2 Quarter Ago Invoiced Amount'], $data['Store Currency Code']), delta_icon($data["Product 2 Quarter Ago Invoiced Amount"],$data["Product 2 Quarter Ago 1YB Invoiced Amount"])),
+				'sales_quarter3'=>sprintf('<span>%s</span> %s', money($data['Product 3 Quarter Ago Invoiced Amount'], $data['Store Currency Code']), delta_icon($data["Product 3 Quarter Ago Invoiced Amount"],$data["Product 3 Quarter Ago 1YB Invoiced Amount"])),
+				'sales_quarter4'=>sprintf('<span>%s</span> %s', money($data['Product 4 Quarter Ago Invoiced Amount'], $data['Store Currency Code']), delta_icon($data["Product 4 Quarter Ago Invoiced Amount"],$data["Product 4 Quarter Ago 1YB Invoiced Amount"])),
 
 			);
 
@@ -798,6 +808,9 @@ function product_categories($_data, $db, $user) {
 			}
 
 
+
+
+
 			$adata[]=array(
 				'id'=>(integer) $data['Product Category Key'],
 				'store_key'=>(integer) $data['Category Store Key'],
@@ -812,14 +825,22 @@ function product_categories($_data, $db, $user) {
 				'discontinued'=>number($data['Product Category Discontinued Products']),
 				'sales'=>money($data['sales'], $data['Product Category Currency Code']),
 				'sales_1yb'=>delta($data['sales'], $data['sales_1yb']),
+				'qty_invoiced'=>number($data['qty_invoiced']),
+				'qty_invoiced_1yb'=>delta($data['qty_invoiced'], $data['qty_invoiced_1yb']),
 
-				
-				
-			'sales_year0'=>sprintf('<span title="%s">%s</span>', delta($data["Product Category Year To Day Acc Invoiced Amount"], $data["Product Category Year To Day Acc 1YB Invoiced Amount"]), money($data['Product Category Year To Day Acc Invoiced Amount'], $data['Product Category Currency Code'])),
-				'sales_year1'=>sprintf('<span title="%s">%s</span>', delta($data["Product Category 1 Year Ago Invoiced Amount"], $data["Product Category 2 Year Ago Invoiced Amount"]), money($data['Product Category 1 Year Ago Invoiced Amount'], $data['Product Category Currency Code'])),
-				'sales_year2'=>sprintf('<span title="%s">%s</span>', delta($data["Product Category 2 Year Ago Invoiced Amount"], $data["Product Category 3 Year Ago Invoiced Amount"]), money($data['Product Category 2 Year Ago Invoiced Amount'], $data['Product Category Currency Code'])),
-				'sales_year3'=>sprintf('<span title="%s">%s</span>', delta($data["Product Category 3 Year Ago Invoiced Amount"], $data["Product Category 4 Year Ago Invoiced Amount"]), money($data['Product Category 3 Year Ago Invoiced Amount'], $data['Product Category Currency Code'])),
-				'sales_year4'=>money($data['Product Category 4 Year Ago Invoiced Amount'], $data['Product Category Currency Code']),
+
+				'sales_year0'=>sprintf('<span>%s</span> %s', money($data['Product Category Year To Day Acc Invoiced Amount'], $data['Product Category Currency Code']), delta_icon($data["Product Category Year To Day Acc Invoiced Amount"],$data["Product Category Year To Day Acc 1YB Invoiced Amount"])),
+				'sales_year1'=>sprintf('<span>%s</span> %s', money($data['Product Category 1 Year Ago Invoiced Amount'], $data['Product Category Currency Code']), delta_icon($data["Product Category 1 Year Ago Invoiced Amount"],$data["Product Category 2 Year Ago Invoiced Amount"])),
+				'sales_year2'=>sprintf('<span>%s</span> %s', money($data['Product Category 2 Year Ago Invoiced Amount'], $data['Product Category Currency Code']), delta_icon($data["Product Category 2 Year Ago Invoiced Amount"],$data["Product Category 3 Year Ago Invoiced Amount"])),
+				'sales_year3'=>sprintf('<span>%s</span> %s', money($data['Product Category 3 Year Ago Invoiced Amount'], $data['Product Category Currency Code']), delta_icon($data["Product Category 3 Year Ago Invoiced Amount"],$data["Product Category 4 Year Ago Invoiced Amount"])),
+				'sales_year4'=>sprintf('<span>%s</span> %s', money($data['Product Category 4 Year Ago Invoiced Amount'], $data['Product Category Currency Code']), delta_icon($data["Product Category 4 Year Ago Invoiced Amount"],$data["Product Category 5 Year Ago Invoiced Amount"])),
+
+				'sales_quarter0'=>sprintf('<span>%s</span> %s', money($data['Product Category Quarter To Day Acc Invoiced Amount'], $data['Product Category Currency Code']), delta_icon($data["Product Category Quarter To Day Acc Invoiced Amount"],$data["Product Category Quarter To Day Acc 1YB Invoiced Amount"])),
+				'sales_quarter1'=>sprintf('<span>%s</span> %s', money($data['Product Category 1 Quarter Ago Invoiced Amount'], $data['Product Category Currency Code']), delta_icon($data["Product Category 1 Quarter Ago Invoiced Amount"],$data["Product Category 1 Quarter Ago 1YB Invoiced Amount"])),
+				'sales_quarter2'=>sprintf('<span>%s</span> %s', money($data['Product Category 2 Quarter Ago Invoiced Amount'], $data['Product Category Currency Code']), delta_icon($data["Product Category 2 Quarter Ago Invoiced Amount"],$data["Product Category 2 Quarter Ago 1YB Invoiced Amount"])),
+				'sales_quarter3'=>sprintf('<span>%s</span> %s', money($data['Product Category 3 Quarter Ago Invoiced Amount'], $data['Product Category Currency Code']), delta_icon($data["Product Category 3 Quarter Ago Invoiced Amount"],$data["Product Category 3 Quarter Ago 1YB Invoiced Amount"])),
+				'sales_quarter4'=>sprintf('<span>%s</span> %s', money($data['Product Category 4 Quarter Ago Invoiced Amount'], $data['Product Category Currency Code']), delta_icon($data["Product Category 4 Quarter Ago Invoiced Amount"],$data["Product Category 4 Quarter Ago 1YB Invoiced Amount"])),
+
 
 			);
 

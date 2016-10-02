@@ -1,10 +1,18 @@
+
+.name_and_categories{
+width:100;padding:5px 20px 5px 20px;
+.strong{font-size:110%;}
+
+
+}
+
 .asset_container{
 
-    padding: 10px 0px 20px 20px;border-bottom:1px solid #ccc;
+    padding: 0px 0px 20px 20px;border-bottom:1px solid #ccc;
 
     .block{float:left;margin-top: 3px;margin-right:20px;}
 
-    .block.name_and_picture{
+    .block.picture{
 width:290px;
 }
 
@@ -39,7 +47,7 @@ margin-right:30px;font-size:85%;
     
     
 .carton_sko_units{
-padding-left:5px;padding-top:0px;font-size:90%;color:$color_font_soft;
+padding-left:5px;padding-top:0px;font-size:90%;color:$color_font_soft;width:390px;
 
 td.canvas{
 padding:0 5px 10px 0;

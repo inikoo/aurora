@@ -1066,6 +1066,8 @@ function get_parts_category_navigation($data, $smarty, $user, $db, $account) {
 	}
 	$parameters['parent']=$data['parent'];
 	$parameters['parent_key']=$data['parent_key'];
+	$parameters['subject']='Part';
+
 	include_once 'prepare_table/'.$tab.'.ptble.php';
 
 
