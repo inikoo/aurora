@@ -1,22 +1,18 @@
-<div class="asset_container" >
-
-    <div class="block name_and_picture">
-	<div class="data_container">
-		<div style="width:100%">
-			<ul class="tags Categories">
-				{foreach from=$part->get_category_data() item=item key=key} 
-				<li><span class="button" onclick="change_view('category/{$item.category_key}')" title="{$item.label}">{$item.code}</span></li>
-				{/foreach} 
-			</ul>
-		</div>
-		<div class="data_field " style="clear:both">
-			<span class="strong Part_Unit_Description">{$part->get('Part Package Description')}</span> 
-		</div>
-	</div>
-	<div class="data_container">
-	</div>
+<div class="name_and_categories">
+	<span class="strong"><span class="strong Part_Unit_Description">{$part->get('Part Package Description')}</span> </span> 
+	<ul class="tags Categories" style="float:right">
+		{foreach from=$part->get_category_data() item=item key=key} 
+		<li><span class="button" onclick="change_view('category/{$item.category_key}')" title="{$item.label}">{$item.code}</span></li>
+		{/foreach} 
+	</ul>
 	<div style="clear:both">
 	</div>
+</div>
+
+<div class="asset_container" >
+
+    <div class="block picture">
+	
 	<div class="data_container">
 		{assign "image_key" $part->get_main_image_key()} 
 		<div id="main_image" class="wraptocenter main_image {if $image_key==''}hide{/if}">

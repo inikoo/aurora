@@ -10,7 +10,7 @@
  Version 3.0
 */
 
-include_once('utils/date_functions.php');
+include_once 'utils/date_functions.php';
 
 
 function get_family_showcase($data, $smarty) {
@@ -18,13 +18,13 @@ function get_family_showcase($data, $smarty) {
 
 
 	$category=$data['_object'];
-	
-	
+
+
 	if (!$category->id) {
 		return "";
 	}
 
-$category->load_acc_data();
+	$category->load_acc_data();
 
 	$smarty->assign('category', $category);
 
@@ -39,7 +39,7 @@ $category->load_acc_data();
 
 	$smarty->assign('main_image', $main_image);
 	$smarty->assign('images', $images);
-	
+
 	$smarty->assign('quarter_data',
 		array(
 			array('header'=>get_quarter_label(strtotime('now')),
@@ -124,7 +124,7 @@ $category->load_acc_data();
 						'<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>':''
 					)
 				)
-				),
+			),
 			array('header'=>get_quarter_label(strtotime('now -12 months')),
 				'invoiced_amount_delta_title'=>delta($category->get('Product Category 4 Quarter Ago Invoiced Amount'), $category->get('Product Category 4 Quarter Ago 1YB Invoiced Amount')),
 				'invoiced_amount_delta'=>
@@ -251,11 +251,11 @@ $category->load_acc_data();
 				)
 			)
 		));
-    $customers_title=sprintf (ngettext ("%s customer", "%s customers", $category->get('Product Category Total Acc Customers')),  $category->get('Total Acc Customers'));
-	$customers=sprintf('<i class="fa fa-users padding_right_5" aria-hidden="true"></i> %s (%s)',$category->get('Total Acc Customers'),percentage($category->get('Product Category Total Acc Repeat Customers'),$category->get('Product Category Total Acc Customers')));
+	$customers_title=sprintf(ngettext ("%s customer", "%s customers", $category->get('Product Category Total Acc Customers')),  $category->get('Total Acc Customers'));
+	$customers=sprintf('<i class="fa fa-users padding_right_5" aria-hidden="true"></i> %s (%s)', $category->get('Total Acc Customers'), percentage($category->get('Product Category Total Acc Repeat Customers'), $category->get('Product Category Total Acc Customers')));
 	$smarty->assign('customers', $customers);
 
-    $smarty->assign('header_total_sales',sprintf(_('All sales since: %s'),$category->get('Valid From')));
+	$smarty->assign('header_total_sales', sprintf(_('All sales since: %s'), $category->get('Valid From')));
 
 
 	return $smarty->fetch('showcase/family.tpl');

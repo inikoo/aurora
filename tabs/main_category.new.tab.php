@@ -13,25 +13,28 @@ include_once 'utils/invalid_messages.php';
 
 
 include_once 'conf/object_fields.php';
-include_once 'class.SupplierPart.php';
-include_once 'class.Part.php';
 
 
 
-$options=array( 'new'=>true,'Category Scope'=>'');
+$options=array( 'new'=>true, 'Category Scope'=>'');
 
-if($state['module']=='products'){
-    $options['Category Scope']='Product';
-}elseif($state['module']=='inventory'){
-    $options['Category Scope']='Part';
-}elseif($state['module']=='suppliers'){
-    $options['Category Scope']='Supplier';
-}elseif($state['module']=='customers'){
-    $options['Category Scope']='Customer';
-}elseif($state['module']=='warehouses'){
-    $options['Category Scope']='Location';
-}else{
-    exit('main_category.new.tab.php UNKNOWN module '.$state['module']);
+if ($state['module']=='products') {
+	$options['Category Scope']='Product';
+	$options['store_key']=$state['store']->id;
+	
+	
+}elseif ($state['module']=='inventory') {
+	include_once 'class.SupplierPart.php';
+	include_once 'class.Part.php';
+	$options['Category Scope']='Part';
+}elseif ($state['module']=='suppliers') {
+	$options['Category Scope']='Supplier';
+}elseif ($state['module']=='customers') {
+	$options['Category Scope']='Customer';
+}elseif ($state['module']=='warehouses') {
+	$options['Category Scope']='Location';
+}else {
+	exit('main_category.new.tab.php UNKNOWN module '.$state['module']);
 }
 
 

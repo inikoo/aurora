@@ -64,10 +64,10 @@ case 'status':
 
 $db_period=get_interval_db_name($parameters['f_period']);
 if (in_array($db_period, array('Total', '3 Year'))) {
-	$yb_fields=" '' as sales_1yb";
+	$yb_fields=" '' as sales_1yb, '' as qty_invoiced_1yb ";
 
 }else {
-	$yb_fields="`Product Category $db_period Acc 1YB Invoiced Amount` as sales_1yb";
+	$yb_fields="`Product Category $db_period Acc 1YB Invoiced Amount` as sales_1yb,  `Product Category $db_period Acc 1YB Quantity Invoiced` as qty_invoiced_1yb";
 }
 
 
@@ -96,21 +96,35 @@ elseif ($order=='sales')
 	$order="`Product Category $db_period Acc Invoiced Amount`";
 elseif ($order=='sales_1yb')
 	$order="(`Product Category $db_period Acc Invoiced Amount`-`Product Category $db_period Acc 1YB Invoiced Amount` )/`Product Category $db_period Acc 1YB Invoiced Amount` ";
+elseif ($order=='qty_invoiced')
+	$order="`Product Category $db_period Acc Quantity Invoiced`";
+elseif ($order=='qty_invoiced_1yb')
+	$order="(`Product Category $db_period Acc Quantity Invoiced`-`Product Category $db_period Acc 1YB Quantity Invoiced` )/`Product Category $db_period Acc 1YB Quantity Invoiced` ";
 
 
 
-elseif ($order=='delta_sales_year3') {$order="(-1*(`Part 4 Year Ago Invoiced Amount`-`Part 3 Year Ago Invoiced Amount`)/`Part 4 Year Ago Invoiced Amount`)";}
-
-	
 elseif ($order=='delta_sales_year0') {$order="(-1*(`Product Category Year To Day Acc Invoiced Amount`-`Product Category Year To Day Acc 1YB Invoiced Amount`)/`Product Category Year To Day Acc 1YB Invoiced Amount`)";}
 elseif ($order=='delta_sales_year1') {$order="(-1*(`Product Category 2 Year Ago Invoiced Amount`-`Product Category 1 Year Ago Invoiced Amount`)/`Product Category 2 Year Ago Invoiced Amount`)";}
 elseif ($order=='delta_sales_year2') {$order="(-1*(`Product Category 3 Year Ago Invoiced Amount`-`Product Category 2 Year Ago Invoiced Amount`)/`Product Category 3 Year Ago Invoiced Amount`)";}
 elseif ($order=='delta_sales_year3') {$order="(-1*(`Product Category 4 Year Ago Invoiced Amount`-`Product Category 3 Year Ago Invoiced Amount`)/`Product Category 4 Year Ago Invoiced Amount`)";}
+elseif ($order=='sales_year0') {$order="`Product Category Year To Day Acc Invoiced Amount`";}
 elseif ($order=='sales_year1') {$order="`Product Category 1 Year Ago Invoiced Amount`";}
 elseif ($order=='sales_year2') {$order="`Product Category 2 Year Ago Invoiced Amount`";}
 elseif ($order=='sales_year3') {$order="`Product Category 3 Year Ago Invoiced Amount`";}
 elseif ($order=='sales_year4') {$order="`Product Category 4 Year Ago Invoiced Amount`";}
-elseif ($order=='sales_year0') {$order="`Product Category Year To Day Acc Invoiced Amount`";}
+
+elseif ($order=='delta_sales_quarter0') {$order="(-1*(`Product Category Quarter To Day Acc Invoiced Amount`-`Product Category Quarter To Day Acc 1YB Invoiced Amount`)/`Product Category Quarter To Day Acc 1YB Invoiced Amount`)";}
+elseif ($order=='delta_sales_quarter1') {$order="(-1*(`Product Category 1 Quarter Ago YB Invoiced Amount`-`Product Category 1 Quarter Ago Invoiced Amount`)/`Product Category 1 Quarter Ago 1YB Invoiced Amount`)";}
+elseif ($order=='delta_sales_quarter2') {$order="(-1*(`Product Category 2 Quarter Ago YB Invoiced Amount`-`Product Category 2 Quarter Ago Invoiced Amount`)/`Product Category 2 Quarter Ago 1YB Invoiced Amount`)";}
+elseif ($order=='delta_sales_quarter3') {$order="(-1*(`Product Category 3 Quarter Ago YB Invoiced Amount`-`Product Category 3 Quarter Ago Invoiced Amount`)/`Product Category 3 Quarter Ago 1YB Invoiced Amount`)";}
+elseif ($order=='sales_quarter0') {$order="`Product Category Quarter To Day Acc Invoiced Amount`";}
+elseif ($order=='sales_quarter1') {$order="`Product Category 1 Quarter Ago Invoiced Amount`";}
+elseif ($order=='sales_quarter2') {$order="`Product Category 2 Quarter Ago Invoiced Amount`";}
+elseif ($order=='sales_quarter3') {$order="`Product Category 3 Quarter Ago Invoiced Amount`";}
+elseif ($order=='sales_quarter4') {$order="`Product Category 4 Quarter Ago Invoiced Amount`";}
+
+
+
 
 
 else
@@ -119,7 +133,10 @@ else
 
 $fields="P.`Product Category Key`,C.`Category Code`,`Category Label`,C.`Category Key`,`Category Store Key`,(`Product Category Active Products`+`Product Category Discontinuing Products`) as products,`Product Category Active Products`,`Product Category Status`,
 `Product Category Active Products`,`Product Category In Process Products`,`Product Category Suspended Products`,`Product Category Discontinued Products`,`Product Category Discontinuing Products`,
-`Product Category $db_period Acc Invoiced Amount` as sales,`Product Category Year To Day Acc Invoiced Amount`,`Product Category Year To Day Acc 1YB Invoiced Amount`,`Product Category 1 Year Ago Invoiced Amount`,`Product Category 2 Year Ago Invoiced Amount`,`Product Category 3 Year Ago Invoiced Amount`,`Product Category 4 Year Ago Invoiced Amount`,
+`Product Category $db_period Acc Invoiced Amount` as sales,`Product Category $db_period Acc Quantity Invoiced` as qty_invoiced,
+`Product Category Year To Day Acc Invoiced Amount`,`Product Category Year To Day Acc 1YB Invoiced Amount`,`Product Category 1 Year Ago Invoiced Amount`,`Product Category 2 Year Ago Invoiced Amount`,`Product Category 3 Year Ago Invoiced Amount`,`Product Category 4 Year Ago Invoiced Amount`,`Product Category 5 Year Ago Invoiced Amount`,
+`Product Category Quarter To Day Acc Invoiced Amount`,`Product Category Quarter To Day Acc 1YB Invoiced Amount`,`Product Category 1 Quarter Ago Invoiced Amount`,`Product Category 2 Quarter Ago Invoiced Amount`,`Product Category 3 Quarter Ago Invoiced Amount`,`Product Category 4 Quarter Ago Invoiced Amount`,
+`Product Category 1 Quarter Ago 1YB Invoiced Amount`,`Product Category 2 Quarter Ago 1YB Invoiced Amount`,`Product Category 3 Quarter Ago 1YB Invoiced Amount`,`Product Category 4 Quarter Ago 1YB Invoiced Amount`,
 `Product Category Currency Code`,$yb_fields
 
 

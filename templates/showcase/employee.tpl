@@ -1,33 +1,26 @@
+<div class="name_and_categories" >
 
-<div class="asset_profile container">
-	<div id="asset_data">
+<span class="strong"><span class="Staff_Name">{$employee->get('Name')}</span> </span>
+
+
+</div>
+
+
+<div class="asset_container" >
+
+
+	<div class="block picture">
+		
 		<div class="data_container">
-			{assign "family" $employee->get('Family')} 
-			<div class="data_field">
-				<h1>
-					<span class="Product_Name">{$employee->get('Name')}</span> 
-				</h1>
-			</div>
-		</div>
-		<div class="data_container">
-		</div>
-		<div style="clear:both">
-		</div>
-		<div class="data_container">
-			<div style="min-height:80px;float:left;width:28px">
-				<i onclick="show_images_tab()" class="fa fa-camera-retro button"></i> 
-			</div>
 			{assign "image_key" $employee->get_main_image_key()} 
 			<div id="main_image" class="wraptocenter main_image {if $image_key==''}hide{/if}">
 				<img src="/{if $image_key}image_root.php?id={$image_key}&amp;size=small{else}art/nopic.png{/if}"> </span> 
 			</div>
 			{include file='upload_main_image.tpl' object='Employee' key=$employee->id class="{if $image_key!=''}hide{/if}"} 
 		</div>
-		{include file='sticky_note.tpl' object='Employee' key=$employee->id sticky_note_field='Staff_Sticky_Note' _object=$employee} 
-		<div style="clear:both">
-		</div>
+		
 	</div>
-	<div id="info">
+	<div class="block info">
 		<div id="overviews">
 			<table border="0" class="overview" style="">
 			<tr class="main {if $employee->get('Staff Currently Working')=='Yes'}hide{/if} ">
@@ -45,8 +38,7 @@
 			</table>
 		</div>
 	</div>
-	<div style="clear:both">
-	</div>
+	<div style="clear:both"></div>
 </div>
 
 

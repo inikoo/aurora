@@ -186,20 +186,20 @@ class Category extends DB_Table{
 
 	function load_acc_data() {
 		if ($this->data['Category Scope']=='Part') {
-		
-		$sql=sprintf("select * from `Part Category Data` where `Part Category Key`=%d", $this->id);
+
+			$sql=sprintf("select * from `Part Category Data` where `Part Category Key`=%d", $this->id);
 
 
-		if ($result=$this->db->query($sql)) {
-			if ($row = $result->fetch()) {
-				foreach ($row as $key=>$value) {
-					$this->data[$key]=$value;
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					foreach ($row as $key=>$value) {
+						$this->data[$key]=$value;
+					}
 				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
-		}
 
 		}elseif ($this->data['Category Scope']=='Product') {
 
@@ -667,6 +667,8 @@ class Category extends DB_Table{
 
 	function get($key='') {
 
+		global $account;
+
 		if (!$this->id)return false;
 
 
@@ -792,6 +794,26 @@ class Category extends DB_Table{
 				}
 
 				break;
+
+			case 'Valid From':
+
+				return strftime("%a %e %b %Y", strtotime($this->data['Product Category '.$key].' +0:00'));
+
+
+
+				break;
+			case 'Valid To':
+
+				if ($this->data['Product Category '.$key]=='') {
+					return '';
+				}else {
+
+					return strftime("%a %e %b %Y", strtotime($this->data['Product Category '.$key].' +0:00' )) ;
+
+				}
+
+				break;
+
 			default:
 
 				if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit)$/', $key)) {
@@ -802,7 +824,7 @@ class Category extends DB_Table{
 
 
 
-					return money($this->data[$amount], $this->get('Product Category Currency'));
+					return money($this->data[$amount], $this->get('Product Category Currency Code'));
 				}
 				if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Minify$/', $key)) {
 
@@ -821,7 +843,7 @@ class Category extends DB_Table{
 						$_amount=$this->data[$field];
 					}
 
-					$amount= money($_amount, $this->get('Product Category Currency'), $locale=false, $fraction_digits).$suffix;
+					$amount= money($_amount, $this->get('Product Category Currency Code'), $locale=false, $fraction_digits).$suffix;
 
 					return $amount;
 				}
@@ -868,30 +890,108 @@ class Category extends DB_Table{
 
 			break;
 		case 'Part':
+
+			switch ($key) {
+			case 'Valid From':
+
+				return strftime("%a %e %b %Y", strtotime($this->data['Part Category '.$key].' +0:00'));
+
+
+
+				break;
+			case 'Valid To':
+
+				if ($this->data['Product Category '.$key]=='') {
+					return '';
+				}else {
+
+					return strftime("%a %e %b %Y", strtotime($this->data['Part Category '.$key].' +0:00' )) ;
+
+				}
+				break;
+			}
+
 			include_once 'utils/natural_language.php';
 
-			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Month To|Today|Week To).*(Margin|GMROI)$/', $key)) {
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit)$/', $key)) {
+
+				$field='Part Category '.$key;
+
+				return money($this->data[$field], $account->get('Account Currency'));
+			}
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Minify$/', $key)) {
+
+				$field='Part Category '.preg_replace('/ Minify$/', '', $key);
+
+				$suffix='';
+				$fraction_digits='NO_FRACTION_DIGITS';
+				if ($this->data[$field]>=10000) {
+					$suffix='K';
+					$_amount=$this->data[$field]/1000;
+				}elseif ($this->data[$field]>100 ) {
+					$fraction_digits='SINGLE_FRACTION_DIGITS';
+					$suffix='K';
+					$_amount=$this->data[$field]/1000;
+				}else {
+					$_amount=$this->data[$field];
+				}
+
+				$amount= money($_amount, $account->get('Account Currency'), $locale=false, $fraction_digits).$suffix;
+
+				return $amount;
+			}
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Soft Minify$/', $key)) {
+
+				$field='Part Category '.preg_replace('/ Soft Minify$/', '', $key);
+
+				$suffix='';
+				$fraction_digits='NO_FRACTION_DIGITS';
+				$_amount=$this->data[$field];
+
+
+				$amount= money($_amount, $account->get('Account Currency'), $locale=false, $fraction_digits).$suffix;
+
+				return $amount;
+			}
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Quarter To|Month To|Today|Week To).*(Margin|GMROI)$/', $key)) {
 
 				$amount='Part Category '.$key;
 
 				return percentage($this->data[$amount], 1);
 			}
-
-
-			if (preg_match('/^(Yesterday|Today|Last|Week|Year|Month|Total|1|6|3).*(Quantity (Ordered|Invoiced|Delivered|)|Invoices|Pending Orders|Customers|Sold|Given|Required)$/', $key)) {
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Quarter To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Dispatched|Broken|Acquired)$/', $key) or $key=='Current Stock'  ) {
 
 				$amount='Part Category '.$key;
 
 				return number($this->data[$amount]);
 			}
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|Year To|Quarter To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Dispatched|Broken|Acquired) Minify$/', $key)   ) {
 
-			if (preg_match('/^(Yesterday|Today|Last|Week|Year|Month|Total|1|6|3).*(Amount|Profit)$/', $key)) {
+				$field='Part Category '.preg_replace('/ Minify$/', '', $key);
 
-				$amount='Part Category '.$key;
+				$suffix='';
+				$fraction_digits=0;
+				if ($this->data[$field]>=10000) {
+					$suffix='K';
+					$_number=$this->data[$field]/1000;
+				}elseif ($this->data[$field]>100 ) {
+					$fraction_digits=1;
+					$suffix='K';
+					$_number=$this->data[$field]/1000;
+				}else {
+					$_number=$this->data[$field];
+				}
 
-				return money($this->data[$amount]);
+				return number($_number, $fraction_digits).$suffix;
 			}
-			return $key;
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|Year To|Quarter To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Dispatched|Broken|Acquired) Soft Minify$/', $key)  ) {
+				$field='Part Category '.preg_replace('/ Soft Minify$/', '', $key);
+
+
+				$_number=$this->data[$field];
+				return number($_number, 0);
+			}
+			return '';
 			break;
 		case 'Invoice':
 

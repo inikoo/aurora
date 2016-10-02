@@ -254,6 +254,9 @@ class SupplierPart extends DB_Table{
 
 	function get($key, $data=false) {
 
+		global $account;
+
+
 		if (!$this->id) {
 			return '';
 		}
@@ -345,12 +348,49 @@ class SupplierPart extends DB_Table{
 
 			return money($this->data['Supplier Part Unit Cost']*$this->part->data['Part Units Per Package']*$this->data['Supplier Part Packages Per Carton'], $this->data['Supplier Part Currency Code']);
 			break;
+
+		case 'Carton Delivered Cost':
+
+			include_once 'utils/currency_functions.php';
+
+			if ($this->data['Supplier Part Unit Cost']=='')return '';
+
+			if ($this->data['Supplier Part Unit Extra Cost']=='') {
+				$extra_cost=0;
+			}else {
+				$extra_cost=$this->data['Supplier Part Unit Extra Cost'];
+			}
+			$exchange=currency_conversion($this->db, $this->data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 1 day');
+			$delivered_cost=$exchange*$this->part->data['Part Units Per Package']*$this->data['Supplier Part Packages Per Carton']*($this->data['Supplier Part Unit Cost']+$extra_cost);
+
+			$cost= money($delivered_cost, $account->get('Account Currency'));
+			return $cost;
+			break;
+
+
 		case 'SKO Cost':
 			if ($this->data['Supplier Part Unit Cost']=='')return '';
 
 			return money($this->data['Supplier Part Unit Cost']*$this->part->data['Part Units Per Package'], $this->data['Supplier Part Currency Code']);
 			break;
+			
+		case 'Carton Delivered Cost':
 
+			include_once 'utils/currency_functions.php';
+
+			if ($this->data['Supplier Part Unit Cost']=='')return '';
+
+			if ($this->data['Supplier Part Unit Extra Cost']=='') {
+				$extra_cost=0;
+			}else {
+				$extra_cost=$this->data['Supplier Part Unit Extra Cost'];
+			}
+			$exchange=currency_conversion($this->db, $this->data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 1 day');
+			$delivered_cost=$exchange*$this->part->data['Part Units Per Package']*($this->data['Supplier Part Unit Cost']+$extra_cost);
+
+			$cost= money($delivered_cost, $account->get('Account Currency'));
+			return $cost;
+			break;
 		case 'Units Per Carton':
 			if ($this->data['Supplier Part Packages Per Carton']=='' or  $this->part->data['Part Units Per Package']=='')return '';
 			return number($this->data['Supplier Part Packages Per Carton']*$this->part->data['Part Units Per Package']);
@@ -369,14 +409,10 @@ class SupplierPart extends DB_Table{
 		case 'Unit Cost Amount':
 
 			if ($this->data['Supplier Part Unit Cost']=='')return '';
-
 			$cost= money($this->data['Supplier Part Unit Cost'], $this->data['Supplier Part Currency Code']);
-
-
-
-
 			return $cost;
 			break;
+
 
 		case 'Unit Cost':
 
@@ -402,6 +438,24 @@ class SupplierPart extends DB_Table{
 
 
 
+			return $cost;
+			break;
+
+		case 'Unit Delivered Cost':
+
+			include_once 'utils/currency_functions.php';
+
+			if ($this->data['Supplier Part Unit Cost']=='')return '';
+
+			if ($this->data['Supplier Part Unit Extra Cost']=='') {
+				$extra_cost=0;
+			}else {
+				$extra_cost=$this->data['Supplier Part Unit Extra Cost'];
+			}
+			$exchange=currency_conversion($this->db, $this->data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 1 day');
+			$delivered_cost=$exchange*($this->data['Supplier Part Unit Cost']+$extra_cost);
+
+			$cost= money($delivered_cost, $account->get('Account Currency'));
 			return $cost;
 			break;
 

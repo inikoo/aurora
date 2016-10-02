@@ -14,7 +14,7 @@ $period_tag=get_interval_db_name($parameters['f_period']);
 
 $group_by='';
 $table="`Product Dimension` P left join `Product Data Dimension` PD on (PD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`)";
-$where=' where `Product Number of Parts`=0 ';
+$where=" where `Product Type`='Service' ";
 $where_interval='';
 $wheref='';
 

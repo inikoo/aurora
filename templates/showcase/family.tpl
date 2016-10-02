@@ -1,20 +1,19 @@
-<div class="asset_container" >
+<div class="name_and_categories" >
 
-	<div class="block name_and_picture">
-		<div class="data_container">
-			<ul class="tags Categories">
+<span class="strong">{$category->get('Label')}</span>
+<ul class="tags Categories" style="float:right">
 			{foreach from=$category->get_category_data() item=item key=key} 
 			<li><span class="button" onclick="change_view('category/{$item.category_key}')" title="{$item.label}">{$item.code}</span></li>
 			{/foreach} 
-		</ul>
-			<div class="data_field" style="clear:both">
-				<span class="strong">{$category->get('Label')}</span>
-			</div>
-			
-		</div>
+</ul>
+<div style="clear:both">
+	</div>
+</div>
+
+<div class="asset_container" >
+
+	<div class="block picture">
 		
-		<div style="clear:both">
-		</div>
 		<div class="data_container">
 			
 			
@@ -33,7 +32,7 @@
 		<div style="clear:both">
 		</div>
 	</div>
-	 <div class="block sales_data">
+	<div class="block sales_data">
     
     <table>
 	
