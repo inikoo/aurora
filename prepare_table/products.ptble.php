@@ -295,6 +295,11 @@ elseif ($order=='sales_quarter2') {$order="`Product 2 Quarter Ago Invoiced Amoun
 elseif ($order=='sales_quarter3') {$order="`Product 3 Quarter Ago Invoiced Amount`";}
 elseif ($order=='sales_quarter4') {$order="`Product 4 Quarter Ago Invoiced Amount`";}
 
+elseif ($order=='sales_total') {$order="`Product Total Acc Invoiced Amount`";}
+elseif ($order=='dispatched_total') {$order="`Product Total Acc Quantiy Invoiced`";}
+elseif ($order=='customer_total') {$order="`Product Total Acc Customers`";}
+elseif ($order=='percentage_repeat_customer_total') {$order="percentage_repeat_customer_total";}
+
 
 else {
 	$order='P.`Product ID`';
@@ -312,9 +317,10 @@ $fields="P.`Product ID`,`Product Code`,`Product Name`,`Product Price`,`Store Cur
 `Product 1 Quarter Ago Quantity Invoiced`,`Product 2 Quarter Ago Quantity Invoiced`,`Product 3 Quarter Ago Quantity Invoiced`,`Product 4 Quarter Ago Quantity Invoiced`,
 `Product 1 Quarter Ago 1YB Quantity Invoiced`,`Product 2 Quarter Ago 1YB Quantity Invoiced`,`Product 3 Quarter Ago 1YB Quantity Invoiced`,`Product 4 Quarter Ago 1YB Quantity Invoiced`,
 
-
+`Product Total Acc Invoiced Amount`,`Product Total Acc Quantity Invoiced`,`Product Total Acc Customers`,`Product Total Acc Repeat Customers`,
 `Product Year To Day Acc Invoiced Amount`,`Product Year To Day Acc 1YB Invoiced Amount`,
 `Product Quarter To Day Acc Invoiced Amount`,`Product Quarter To Day Acc 1YB Invoiced Amount`,
+if(`Product Total Acc Customers`=0,0,  (`Product Total Acc Repeat Customers`/`Product Total Acc Customers`)) percentage_repeat_customer_total,
 
 `Product $db_period Acc Invoiced Amount` as sales,`Product $db_period Acc Quantity Invoiced` as qty_invoiced,
  $yb_fields

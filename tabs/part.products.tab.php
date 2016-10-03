@@ -17,10 +17,13 @@ $default=$user->get_tab_defaults($tab);
 
 
 $table_views=array(
-	'overview'=>array('label'=>_('Overview'), 'title'=>_('Overview')),
-	'sales'=>array('label'=>_('Sales'), 'title'=>_('Sales')),
+			'overview'=>array('label'=>_('Overview')),
+			'performance'=>array('label'=>_('Performance')),
+			'sales'=>array('label'=>_('Sales')),
+			'sales_y'=>array('label'=>_('Invoiced amount (Yrs)')),
+			'sales_q'=>array('label'=>_('Invoiced amount (Qs)')),
 
-);
+		);
 
 $table_filters=array(
 	'code'=>array('label'=>_('Code'), 'title'=>_('Product code')),

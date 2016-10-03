@@ -94,6 +94,10 @@ elseif ($order=='sales_year2') {$order="`Part Category 2 Year Ago Invoiced Amoun
 elseif ($order=='sales_year3') {$order="`Part Category 3 Year Ago Invoiced Amount`";}
 elseif ($order=='sales_year4') {$order="`Part Category 4 Year Ago Invoiced Amount`";}
 elseif ($order=='sales_year0') {$order="`Part Category Year To Day Acc Invoiced Amount`";}
+elseif ($order=='sales_total') {$order="`Part Category Total Acc Invoiced Amount`";}
+elseif ($order=='dispatched_total') {$order="`Part Category Total Acc Dispatched`";}
+elseif ($order=='customer_total') {$order="`Part Category Total Acc Customers`";}
+elseif ($order=='percentage_no_stock') {$order="percentage_no_stock";}
 
 else
 	$order='`Category Key`';
@@ -116,7 +120,8 @@ $yb_fields `Category Number No Active Subjects`,`Category Number Active Subjects
 `Part Category Quarter To Day Acc Dispatched`,`Part Category Quarter To Day Acc 1YB Dispatched`,
 `Part Category 1 Quarter Ago Dispatched`,`Part Category 2 Quarter Ago Dispatched`,`Part Category 3 Quarter Ago Dispatched`,`Part Category 4 Quarter Ago Dispatched`,
 `Part Category 1 Quarter Ago 1YB Dispatched`,`Part Category 2 Quarter Ago 1YB Dispatched`,`Part Category 3 Quarter Ago 1YB Dispatched`,`Part Category 4 Quarter Ago 1YB Dispatched`,
-
+`Part Category Total Acc Invoiced Amount`,`Part Category Total Acc Dispatched`,`Part Category Total Acc Customers`,
+(`Part Category Number Out Of Stock Parts`+`Part Category Number Error Parts`)/(`Part Category Number Surplus Parts`+`Part Category Number Optimal Parts`+`Part Category Number Low Parts`+`Part Category Number Critical Parts`+`Part Category Number Out Of Stock Parts`+`Part Category Number Error Parts`) as percentage_no_stock,
 
 `Part Category Number Surplus Parts`,`Part Category Number Optimal Parts`,`Part Category Number Low Parts`,`Part Category Number Critical Parts`,`Part Category Number Out Of Stock Parts`,`Part Category Number Error Parts`
 

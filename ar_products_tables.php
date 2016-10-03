@@ -225,6 +225,15 @@ function products($_data, $db, $user, $account) {
 				'sales_quarter3'=>sprintf('<span>%s</span> %s', money($data['Product 3 Quarter Ago Invoiced Amount'], $data['Store Currency Code']), delta_icon($data["Product 3 Quarter Ago Invoiced Amount"],$data["Product 3 Quarter Ago 1YB Invoiced Amount"])),
 				'sales_quarter4'=>sprintf('<span>%s</span> %s', money($data['Product 4 Quarter Ago Invoiced Amount'], $data['Store Currency Code']), delta_icon($data["Product 4 Quarter Ago Invoiced Amount"],$data["Product 4 Quarter Ago 1YB Invoiced Amount"])),
 
+
+				'sales_total'=>money($data['Product Total Acc Invoiced Amount'], $data['Store Currency Code']),
+				'dispatched_total'=>number($data['Product Total Acc Quantity Invoiced'],0),
+				'customer_total'=>number($data['Product Total Acc Customers'],0),
+				'percentage_repeat_customer_total'=>percentage($data['Product Total Acc Repeat Customers'], $data['Product Total Acc Customers']),
+
+
+
+
 			);
 
 

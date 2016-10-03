@@ -211,9 +211,7 @@ elseif ($order=='has_stock') {$order="`Part Current On Hand Stock`";}
 elseif ($order=='sales_total') {$order="`Part Total Acc Invoiced Amount`";}
 elseif ($order=='dispatched_total') {$order="`Part Total Acc Dispatched`";}
 elseif ($order=='customer_total') {$order="`Part Total Acc Customers`";}
-elseif ($order=='percentage_repeat_customer_total') {
-$order="percentage_repeat_customer_total";
-}
+elseif ($order=='percentage_repeat_customer_total') {$order="percentage_repeat_customer_total";}
 elseif ($order=='dispatched_per_week') {$order="`Part 1 Quarter Acc Dispatched`";}
 elseif ($order=='weeks_available') {$order="`Part Days Available Forecast`";}
 

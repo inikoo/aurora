@@ -22,6 +22,8 @@ if ($state['module']=='inventory') {
 
 	$table_views=array(
 	'overview'=>array('label'=>_('Overview')),
+	'performance'=>array('label'=>_('Performance')),
+
 	'stock'=>array('label'=>_('Stock')),
 	'sales'=>array('label'=>_('Sales')),
 	'dispatched_q'=>array('label'=>_('Dispatched (Qs)')),

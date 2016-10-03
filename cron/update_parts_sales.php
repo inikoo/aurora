@@ -25,7 +25,8 @@ update_parts_sales($db, $print_est);
 function update_parts_sales($db, $print_est) {
 
 	$where=" where `Part SKU`=971 ";
-	$where=" where `Part Reference` like 'mol-%' ";
+	$where=" where `Part Reference` like 'jbb-%' ";
+
 	$where="";
 
 	$sql=sprintf("select count(*) as num from `Part Dimension` %s",$where);
