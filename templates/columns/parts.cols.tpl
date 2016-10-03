@@ -119,18 +119,7 @@ var columns = [
 })
    
 },
-{
-    name: "stock",
-    label: "{t}Stock{/t}",
-   editable: false,
-   
-    defautOrder:1,
-    sortType: "toggle",
-    {if $sort_key=='stock'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
-    headerCell: integerHeaderCell
-},
 {
     name: "sales",
     label: "{t}Revenue{/t}",
@@ -209,7 +198,18 @@ var columns = [
 
     headerCell: integerHeaderCell
 },
+{
+    name: "stock",
+    label: "{t}Stock{/t}",
+   editable: false,
+   
+    defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='stock'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
+    headerCell: integerHeaderCell
+},
 {
     name: "dispatched_year0",
     label: new Date().getFullYear(),
@@ -523,7 +523,6 @@ function change_table_view(view,save_state){
     grid.columns.findWhere({ name: 'dispatched'} ).set("renderable", true)
     grid.columns.findWhere({ name: 'sales'} ).set("renderable", true)
   }else if(view=='performance'){
-    $('#columns_period').removeClass('hide');
     grid.columns.findWhere({ name: 'sales_total'} ).set("renderable", true)
     grid.columns.findWhere({ name: 'dispatched_total'} ).set("renderable", true)  
     grid.columns.findWhere({ name: 'customer_total'} ).set("renderable", true)  
