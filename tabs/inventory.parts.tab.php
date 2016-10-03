@@ -20,15 +20,17 @@ $default=$user->get_tab_defaults($tab);
 
 
 $table_views=array(
-	'overview'=>array('label'=>_('Overview')),
-	'stock'=>array('label'=>_('Stock')),
-	'sales'=>array('label'=>_('Sales')),
-	'dispatched_q'=>array('label'=>_('Dispatched (Qs)')),
-	'dispatched_y'=>array('label'=>_('Dispatched (Yrs)')),
-	'revenue_q'=>array('label'=>_('Revenue (Qs)')),
-	'revenue_y'=>array('label'=>_('Revenue (Yrs)')),
+		'overview'=>array('label'=>_('Overview')),
+		'performance'=>array('label'=>_('Performance')),
+		'stock'=>array('label'=>_('Stock')),
+		'sales'=>array('label'=>_('Revenue')),
+		'dispatched_q'=>array('label'=>_('Dispatched (Qs)')),
+		'dispatched_y'=>array('label'=>_('Dispatched (Yrs)')),
+		'revenue_q'=>array('label'=>_('Revenue (Qs)')),
+		'revenue_y'=>array('label'=>_('Revenue (Yrs)')),
 
-);
+	);
+
 
 $table_filters=array(
 	'reference'=>array('label'=>_('Reference'), 'title'=>_('Part reference')),

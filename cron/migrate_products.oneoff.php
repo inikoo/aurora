@@ -69,16 +69,16 @@ function fix_family_web_descriptions($db) {
 
 
 
-	$sql=sprintf("select `Category Key` from `Category Dimension` where  `Category Scope`='Product' ");
+	$sql=sprintf("select `Category Key` from `Category Dimension` where  `Category Scope`='Product' and `Category Subject`='Product' ");
 
 	if ($result=$db->query($sql)) {
 		foreach ($result as $row) {
 			$category=new Category($row['Category Key']);
 
 
-			$sql=sprintf('select `Product Family Store Key`,`Product Family Code`,`Product Family Description` from `Product Family Dimension` where `Product Family Code`=%d and  `Product Family Store Key`=%d ',
-				$category->get('Code'),
-				$category->id
+			$sql=sprintf('select `Product Family Store Key`,`Product Family Code`,`Product Family Description` from `Product Family Dimension` where `Product Family Code`=%s and  `Product Family Store Key`=%d ',
+				prepare_mysql($category->get('Code')),
+				$category->get('Category Store Key')
 
 			);
 
@@ -87,7 +87,13 @@ function fix_family_web_descriptions($db) {
 				if ($row2 = $result2->fetch()) {
 
                         if($row2['Product Family Description']!=$category->get('Product Category Description')){
-                        print $category->id.' '.$category->get('Code')."\n";
+                        print $category->id.' '.$category->get('Category Store Key').'  '.$category->get('Code')."\n";
+                        
+                        $category->update(array('Product Category Description'=>$row2['Product Family Description']),'no_history');
+                        
+                        exit;
+                        }else{
+                       // print 'OK '.$category->id.' '.$category->get('Code')."\n";
                         }
 
 				}

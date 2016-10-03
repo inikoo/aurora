@@ -208,6 +208,16 @@ elseif ($order=='dispatched_year4') {$order="`Part 4 Year Ago Dispatched`";}
 elseif ($order=='dispatched_year0') {$order="`Part Year To Day Acc Dispatched`";}
 elseif ($order=='has_picture') {$order="`Part Main Image Key`";}
 elseif ($order=='has_stock') {$order="`Part Current On Hand Stock`";}
+elseif ($order=='sales_total') {$order="`Part Total Acc Invoiced Amount`";}
+elseif ($order=='dispatched_total') {$order="`Part Total Acc Dispatched`";}
+elseif ($order=='customer_total') {$order="`Part Total Acc Customers`";}
+elseif ($order=='percentage_repeat_customer_total') {
+$order="percentage_repeat_customer_total";
+}
+elseif ($order=='dispatched_per_week') {$order="`Part 1 Quarter Acc Dispatched`";}
+elseif ($order=='weeks_available') {$order="`Part Days Available Forecast`";}
+
+
 
 else {
 
@@ -228,13 +238,14 @@ $fields.="P.`Part SKU`,`Part Reference`,`Part Package Description`,`Part Current
 `Part 1 Quarter Ago Invoiced Amount`,`Part 2 Quarter Ago Invoiced Amount`,`Part 3 Quarter Ago Invoiced Amount`,`Part 4 Quarter Ago Invoiced Amount`,
 `Part 1 Quarter Ago 1YB Dispatched`,`Part 2 Quarter Ago 1YB Dispatched`,`Part 3 Quarter Ago 1YB Dispatched`,`Part 4 Quarter Ago 1YB Dispatched`,
 `Part 1 Quarter Ago 1YB Invoiced Amount`,`Part 2 Quarter Ago 1YB Invoiced Amount`,`Part 3 Quarter Ago 1YB Invoiced Amount`,`Part 4 Quarter Ago 1YB Invoiced Amount`,
-
+`Part Total Acc Invoiced Amount`,`Part Total Acc Dispatched`,`Part Total Acc Customers`,`Part Total Acc Repeat Customers`,
 
 `Part Year To Day Acc Invoiced Amount`,`Part Year To Day Acc 1YB Profit`,`Part Year To Day Acc Required`,`Part Year To Day Acc Dispatched`,`Part Year To Day Acc 1YB Dispatched`,`Part Year To Day Acc 1YB Invoiced Amount`,
 `Part Quarter To Day Acc Invoiced Amount`,`Part Quarter To Day Acc 1YB Profit`,`Part Quarter To Day Acc Required`,`Part Quarter To Day Acc Dispatched`,`Part Quarter To Day Acc 1YB Dispatched`,`Part Quarter To Day Acc 1YB Invoiced Amount`,
 
 `Part 1 Quarter Acc Dispatched`,
-`Part Valid From`,`Part Valid From`,`Part Active From`,`Part Main Image Key`,`Part Status`
+`Part Valid From`,`Part Valid From`,`Part Active From`,`Part Main Image Key`,`Part Status`,
+if(`Part Total Acc Customers`=0,0,  (`Part Total Acc Repeat Customers`/`Part Total Acc Customers`)) percentage_repeat_customer_total
 
 ";
 

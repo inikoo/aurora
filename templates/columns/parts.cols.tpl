@@ -53,6 +53,60 @@ var columns = [
 })
    
 },
+
+
+{
+    name: "sales_total",
+    label: "{t}Total revenue{/t}",
+   editable: false,
+   
+    defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='sales_total'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+    headerCell: integerHeaderCell
+},
+
+{
+    name: "dispatched_total",
+    label: "{t}Total dispatched{/t}",
+   editable: false,
+   
+    defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='sales_total'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+    headerCell: integerHeaderCell
+},
+
+{
+    name: "customer_total",
+    label: "{t}Total customers{/t}",
+   editable: false,
+   
+    defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='customer_total'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+    headerCell: integerHeaderCell
+},
+
+{
+    name: "percentage_repeat_customer_total",
+    label: "{t}% Repeat customers{/t}",
+   editable: false,
+   
+    defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='percentage_repeat_customer_total'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+    headerCell: integerHeaderCell
+},
+
 {
     name: "stock_status_label",
     label: "{t}Stock status{/t}",
@@ -455,6 +509,11 @@ function change_table_view(view,save_state){
     grid.columns.findWhere({ name: 'dispatched_per_week'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'weeks_available'} ).set("renderable", false)
 
+    grid.columns.findWhere({ name: 'sales_total'} ).set("renderable", false)  
+    grid.columns.findWhere({ name: 'dispatched_total'} ).set("renderable", false)  
+    grid.columns.findWhere({ name: 'customer_total'} ).set("renderable", false)  
+    grid.columns.findWhere({ name: 'percentage_repeat_customer_total'} ).set("renderable", false)  
+
 
 
   if(view=='overview'){
@@ -463,6 +522,14 @@ function change_table_view(view,save_state){
     grid.columns.findWhere({ name: 'stock'} ).set("renderable", true)
     grid.columns.findWhere({ name: 'dispatched'} ).set("renderable", true)
     grid.columns.findWhere({ name: 'sales'} ).set("renderable", true)
+  }else if(view=='performance'){
+    $('#columns_period').removeClass('hide');
+    grid.columns.findWhere({ name: 'sales_total'} ).set("renderable", true)
+    grid.columns.findWhere({ name: 'dispatched_total'} ).set("renderable", true)  
+    grid.columns.findWhere({ name: 'customer_total'} ).set("renderable", true)  
+    grid.columns.findWhere({ name: 'percentage_repeat_customer_total'} ).set("renderable", true)  
+    grid.columns.findWhere({ name: 'stock'} ).set("renderable", true)
+    grid.columns.findWhere({ name: 'dispatched_per_week'} ).set("renderable", true)
   }else if(view=='sales'){
     $('#columns_period').removeClass('hide');
     grid.columns.findWhere({ name: 'dispatched'} ).set("renderable", true)
