@@ -680,6 +680,7 @@ function parts($_data, $db, $user, $account) {
 	include_once 'prepare_table/init.php';
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	
 	$adata=array();
 	if ($result=$db->query($sql)) {
 		foreach ($result as $data) {
@@ -723,7 +724,7 @@ function parts($_data, $db, $user, $account) {
 				$weeks_available=number($data['Part Days Available Forecast']/7, 0);
 			}
 
-			$dispatched_per_week=number($data['Part 1 Quarter Acc Provided']*4/52, 0);
+			$dispatched_per_week=number($data['Part 1 Quarter Acc Dispatched']*4/52, 0);
 
 
 

@@ -53,7 +53,6 @@ case 'views':
 	$state=parse_request($data, $db, $modules, $account, $user);
 
 
-
 	$state['current_store']=$_SESSION['current_store'];
 	$state['current_website']=$_SESSION['current_website'];
 	$state['current_warehouse']=$_SESSION['current_warehouse'];
@@ -70,7 +69,18 @@ case 'views':
 
 	case 'store':
 		include_once 'class.Store.php';
-		$_parent=new Store($state['parent_key']);
+
+		if ($state['parent_key']!='') {
+			$_parent=new Store($state['parent_key']);
+		}else {
+			if ($state['object']=='product') {
+				$_object=get_object($state['object'], $state['key']);
+				$_parent=new Store($_object->get('Product Store Key'));
+				$state['parent_key']=$_parent->id;
+			}
+
+		}
+
 		$state['current_store']=$_parent->id;
 		$store=$_parent;
 		break;
@@ -131,11 +141,11 @@ case 'views':
 
 
 
-
 	if ($state['object']!='') {
 
-		$_object=get_object($state['object'], $state['key']);
-
+		if (!isset($_object)) {
+			$_object=get_object($state['object'], $state['key']);
+		}
 
 
 		if (is_numeric($_object->get('Store Key'))) {
@@ -802,6 +812,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 			break;
 		case ('main_category.new'):
 			return get_products_new_main_category_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('order'):
+			return get_order_navigation($data, $smarty, $user, $db, $account);
 			break;
 		}
 	case ('customers'):
@@ -1932,7 +1945,8 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 		elseif ($state['section']=='categories') {
 			$branch[]=array('label'=>_("Products's categories").' <span class="id">'.$state['store']->get('Code').'</span>', 'icon'=>'sitemap', 'reference'=>'');
-		}elseif ($state['section']=='category') {
+		}
+		elseif ($state['section']=='category') {
 			$category=$state['_object'];
 			$branch[]=array('label'=>_("Products's categories").' <span class="id">'.$state['store']->get('Code').'</span>', 'icon'=>'sitemap', 'reference'=>'products/'.$category->get('Store Key').'/categories');
 
@@ -1969,7 +1983,16 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
 		}
+		elseif ($state['section']=='order') {
 
+
+			$branch[]=array('label'=>_('Products').' <span class="id">'.$state['_parent']->get('Store Code').'</span>', 'icon'=>'', 'reference'=>'products/'.$state['_parent']->get('Store Key'));
+
+
+			$branch[]=array('label'=>'<span class=" Product_Code">'.$state['_parent']->get('Code').'</span>', 'icon'=>'cube', 'reference'=>'product/'.$state['_parent']->id);
+			$branch[]=array('label'=>'<span class="id ">'.$state['_object']->get('Order Public ID').'</span>', 'icon'=>'shopping-cart', 'reference'=>'');
+
+		}
 		break;
 	case 'customers_server':
 		if ($state['section']=='customers')

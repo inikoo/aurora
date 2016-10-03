@@ -24,8 +24,8 @@ update_parts_sales($db, $print_est);
 
 function update_parts_sales($db, $print_est) {
 
-	$where=" where `Part SKU`=971 ";
-	$where=" where `Part Reference` like 'jbb-%' ";
+	$where=" where `Part SKU`=5291 ";
+//	$where=" where `Part Reference` like 'jbb-%' ";
 
 	$where="";
 
@@ -51,23 +51,23 @@ function update_parts_sales($db, $print_est) {
 			$part=new Part($row['Part SKU']);
 
 
-
+//print "caca";
 
 			$part->load_acc_data();
 
-			$part->update_sales_from_invoices('Total');
-			$part->update_sales_from_invoices('Week To Day');
-			$part->update_sales_from_invoices('Month To Day');
+			//$part->update_sales_from_invoices('Total');
+			//$part->update_sales_from_invoices('Week To Day');
+			//$part->update_sales_from_invoices('Month To Day');
 			$part->update_sales_from_invoices('Quarter To Day');
-			$part->update_sales_from_invoices('Year To Day');
-			$part->update_sales_from_invoices('1 Year');
-			$part->update_sales_from_invoices('1 Quarter');
+			//$part->update_sales_from_invoices('Year To Day');
+			//$part->update_sales_from_invoices('1 Year');
+			//$part->update_sales_from_invoices('1 Quarter');
 
 			$contador++;
 			$lap_time1=date('U');
 
 			if ($print_est) {
-				print 'Pa '.percentage($contador, $total, 3)."  lap time ".sprintf("%.2f", ($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h  ($contador/$total) \r";
+			//	print 'Pa '.percentage($contador, $total, 3)."  lap time ".sprintf("%.2f", ($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h  ($contador/$total) \r";
 			}
 
 

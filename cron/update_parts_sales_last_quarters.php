@@ -21,10 +21,10 @@ update_parts_sales($db, $print_est);
 function update_parts_sales($db, $print_est) {
 
 	$where=" where `Part SKU`=971 ";
+	$where=" where `Part Reference` like 'jbb-%' ";
 	$where="where true";
-	//$where=" where `Part Reference` like 'jbb-%' ";
 
-	$sql=sprintf("select count(*) as num from `Part Dimension` %s",$where);
+	$sql=sprintf("select count(*) as num from `Part Dimension` %s", $where);
 	if ($result=$db->query($sql)) {
 		if ($row = $result->fetch()) {
 			$total=$row['num'];
@@ -39,7 +39,7 @@ function update_parts_sales($db, $print_est) {
 	$lap_time0=date('U');
 	$contador=0;
 
-	$sql=sprintf("select `Part SKU` from `Part Dimension`  %s  order by `Part SKU`",$where);
+	$sql=sprintf("select `Part SKU` from `Part Dimension`  %s  order by `Part SKU`", $where);
 
 	if ($result=$db->query($sql)) {
 		foreach ($result as $row) {
@@ -51,7 +51,7 @@ function update_parts_sales($db, $print_est) {
 			$part->load_acc_data();
 
 			$part->update_previous_quarters_data();
-			
+
 
 			$contador++;
 			$lap_time1=date('U');
