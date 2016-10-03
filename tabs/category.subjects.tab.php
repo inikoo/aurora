@@ -74,7 +74,7 @@ if ($category->get('Category Scope')=='Product') {
 
 	}
 	else {
-    
+
 
 		$tab='category.product_families';
 		$ar_file='ar_products_tables.php';
@@ -119,11 +119,16 @@ elseif ($category->get('Category Scope')=='Part') {
 
 	$table_views=array(
 		'overview'=>array('label'=>_('Overview')),
-		'dispatched'=>array('label'=>_('Dispatched')),
-		'revenue'=>array('label'=>_('Revenue')),
+		'performance'=>array('label'=>_('Performance')),
 		'stock'=>array('label'=>_('Stock')),
+		'sales'=>array('label'=>_('Revenue')),
+		'dispatched_q'=>array('label'=>_('Dispatched (Qs)')),
+		'dispatched_y'=>array('label'=>_('Dispatched (Yrs)')),
+		'revenue_q'=>array('label'=>_('Revenue (Qs)')),
+		'revenue_y'=>array('label'=>_('Revenue (Yrs)')),
 
 	);
+
 
 	$table_filters=array(
 		'reference'=>array('label'=>_('Reference'), 'title'=>_('Part reference')),
