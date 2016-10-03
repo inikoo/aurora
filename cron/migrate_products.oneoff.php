@@ -58,10 +58,62 @@ set_family_department_key($db);
 migrate_page_related_products($db);
 update_products_web_status($db);
 update_cost($db);
-*/
 create_data_tables($db);
 
+*/
 
+fix_family_web_descriptions($db);
+
+function fix_family_web_descriptions($db) {
+
+
+
+
+	$sql=sprintf("select `Category Key` from `Category Dimension` where  `Category Scope`='Product' ");
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+			$category=new Category($row['Category Key']);
+
+
+			$sql=sprintf('select `Product Family Store Key`,`Product Family Code`,`Product Family Description` from `Product Family Dimension` where `Product Family Code`=%d and  `Product Family Store Key`=%d ',
+				$category->get('Code'),
+				$category->id
+
+			);
+
+
+			if ($result2=$db->query($sql)) {
+				if ($row2 = $result2->fetch()) {
+
+                        if($row2['Product Family Description']!=$category->get('Product Category Description')){
+                        print $category->id.' '.$category->get('Code')."\n";
+                        }
+
+				}
+			}else {
+				print_r($error_info=$db->errorInfo());
+				exit;
+			}
+
+
+
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
+
+
+
+
+
+
+}
 
 
 function create_data_tables($db) {
@@ -76,9 +128,9 @@ function create_data_tables($db) {
 				$row['Product ID']
 
 			);
-			
-			
-			
+
+
+
 			$db->exec($sql);
 			$sql=sprintf("insert into `Product DC Data` (`Product ID`) values (%d)",
 				$row['Product ID']
@@ -124,7 +176,7 @@ function create_data_tables($db) {
 
 
 
-		//	$category->update_product_category_up_today_sales();
+			// $category->update_product_category_up_today_sales();
 
 
 
