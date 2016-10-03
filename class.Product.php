@@ -87,7 +87,7 @@ class Product extends Asset{
 
 
 		$this->get_store_data();
-		$this->load_acc_data();
+		
 	}
 
 
