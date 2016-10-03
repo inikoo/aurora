@@ -22,6 +22,7 @@ update_parts_sales($db, $print_est);
 function update_parts_sales($db, $print_est) {
 
 	$where="where true";
+//	$where=" where `Category Code` like 'jbb' ";
 
 	$sql=sprintf("select count(distinct `Category Key`) as num from `Category Dimension` $where and  `Category Scope`='Part' ");
 

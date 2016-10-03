@@ -49,9 +49,9 @@ update_sales($db, $print_est);
 function update_sales($db, $print_est) {
 
 	$where='where `Product ID`=971';
-	$where='';
-
-	$sql=sprintf("select count(*) as num from `Product Dimension` $where");
+    $where='';
+	//$where='where `Product Code` like "JBB-%"';
+	$sql=sprintf("select count(*) as num from `Product Dimension` %s",$where);
 	if ($result=$db->query($sql)) {
 		if ($row = $result->fetch()) {
 			$total=$row['num'];
@@ -67,7 +67,7 @@ function update_sales($db, $print_est) {
 	$contador=0;
 
 
-	$sql=sprintf("select `Product ID` from `Product Dimension` $where  ");
+	$sql=sprintf("select `Product ID` from `Product Dimension` %s order by `Product ID` desc ",$where);
 
 
 	if ($result=$db->query($sql)) {

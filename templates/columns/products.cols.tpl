@@ -94,6 +94,60 @@ var columns = [{
 
     headerCell: integerHeaderCell
 },
+
+{
+    name: "sales_total",
+    label: "{t}Sales{/t}",
+   editable: false,
+   
+    defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='sales_total'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+    headerCell: integerHeaderCell
+},
+
+{
+    name: "dispatched_total",
+    label: "{t}Qty Invoiced{/t}",
+   editable: false,
+   
+    defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='sales_total'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+    headerCell: integerHeaderCell
+},
+
+{
+    name: "customer_total",
+    label: "{t}Customers{/t}",
+   editable: false,
+   
+    defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='customer_total'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+    headerCell: integerHeaderCell
+},
+
+{
+    name: "percentage_repeat_customer_total",
+    label: "{t}% Repeat customers{/t}",
+   editable: false,
+   
+    defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='percentage_repeat_customer_total'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+    headerCell: integerHeaderCell
+},
+
+
 {
     name: "sales",
     label: "{t}Sales{/t}",
@@ -317,6 +371,12 @@ function change_table_view(view, save_state) {
     grid.columns.findWhere({ name: 'sales_quarter2'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'sales_quarter3'} ).set("renderable", false)   
     grid.columns.findWhere({ name: 'sales_quarter4'} ).set("renderable", false)   
+
+    grid.columns.findWhere({ name: 'sales_total'} ).set("renderable", false)  
+    grid.columns.findWhere({ name: 'dispatched_total'} ).set("renderable", false)  
+    grid.columns.findWhere({ name: 'customer_total'} ).set("renderable", false)  
+    grid.columns.findWhere({ name: 'percentage_repeat_customer_total'} ).set("renderable", false)  
+
     
     if(view=='overview'){
         grid.columns.findWhere({ name: 'name'} ).set("renderable", true)
@@ -336,6 +396,12 @@ function change_table_view(view, save_state) {
         grid.columns.findWhere({ name: 'sales_1yb'} ).set("renderable", true)
         grid.columns.findWhere({ name: 'qty_invoiced'} ).set("renderable", true)
         grid.columns.findWhere({ name: 'qty_invoiced_1yb'} ).set("renderable", true)  
+      
+    }else if(view=='performance'){
+       grid.columns.findWhere({ name: 'sales_total'} ).set("renderable", true)  
+    grid.columns.findWhere({ name: 'dispatched_total'} ).set("renderable", true)  
+    grid.columns.findWhere({ name: 'customer_total'} ).set("renderable", true)  
+    grid.columns.findWhere({ name: 'percentage_repeat_customer_total'} ).set("renderable", true)  
       
     }else if(view=='sales_y'){
         grid.columns.findWhere({ name: 'sales_year0'} ).set("renderable", true)

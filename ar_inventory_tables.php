@@ -932,6 +932,12 @@ function part_categories($_data, $db, $user, $account) {
 				'dispatched_quarter4'=>sprintf('<span>%s</span> %s', number($data['Part Category 4 Quarter Ago Dispatched']), delta_icon($data["Part Category 4 Quarter Ago Dispatched"], $data["Part Category 4 Quarter Ago 1YB Dispatched"])),
 
 
+				'sales_total'=>money($data['Part Category Total Acc Invoiced Amount'], $account->get('Account Currency')),
+				'dispatched_total'=>number($data['Part Category Total Acc Dispatched'],0),
+				'customer_total'=>number($data['Part Category Total Acc Customers'],0),
+				'percentage_no_stock'=>percentage($data['percentage_no_stock'],1),
+
+
 			);
 
 		}

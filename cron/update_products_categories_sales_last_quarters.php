@@ -22,8 +22,9 @@ update_parts_sales($db, $print_est);
 function update_parts_sales($db, $print_est) {
 
 	$where="where true";
+	//$where=" where `Part Reference` like 'jbb-%' ";
 
-	$sql=sprintf("select count(distinct `Category Key`) as num from `Category Dimension` $where and  `Category Scope`='Product' ");
+	$sql=sprintf("select count(distinct `Category Key`) as num from `Category Dimension` %s and  `Category Scope`='Product' ",$where);
 
 	if ($result=$db->query($sql)) {
 		if ($row = $result->fetch()) {
@@ -39,7 +40,7 @@ function update_parts_sales($db, $print_est) {
 	$lap_time0=date('U');
 	$contador=0;
 
-	$sql=sprintf("select `Category Key` from `Category Dimension` $where and  `Category Scope`='Product' ");
+	$sql=sprintf("select `Category Key` from `Category Dimension` %s and  `Category Scope`='Product' ",$where );
 
 	if ($result=$db->query($sql)) {
 		foreach ($result as $row) {
