@@ -2348,9 +2348,9 @@ class Part extends Asset{
 			"Part $db_interval Acc Keeping Day"=>$sales_data['keep_days'],
 			"Part $db_interval Acc With Stock Days"=>$sales_data['with_stock_days'],
 		);
-		
-		
-		
+
+
+
 		$this->update( $data_to_update, 'no_history');
 
 		if ($from_date_1yb) {
@@ -2549,6 +2549,8 @@ class Part extends Asset{
 			($from_date?sprintf('and  `Date`>=%s', prepare_mysql($from_date)):''),
 			($to_date?sprintf('and `Date`<%s', prepare_mysql($to_date)):'')
 		);
+
+		//print "$sql\n";
 
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {

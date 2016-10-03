@@ -353,7 +353,8 @@ trait PartCategory {
 
 	}
 
-function get_part_category_customers_total_data($part_skus) {
+
+	function get_part_category_customers_total_data($part_skus) {
 
 		$repeat_customers=0;
 
@@ -377,7 +378,8 @@ function get_part_category_customers_total_data($part_skus) {
 		return $repeat_customers;
 
 	}
-	
+
+
 	function get_part_category_sales_data($from_date, $to_date) {
 
 		$sales_data=array(
@@ -402,13 +404,13 @@ function get_part_category_customers_total_data($part_skus) {
 				//$sales_data['repeat_customers']=$this->get_part_category_customers_total_data($part_skus);
 			}
 
-			$sql=sprintf("select count( distinct DN.`Delivery Note Customer Key`) as customers, count( distinct ITF.`Delivery Note Key`) as deliveries, round(ifnull(sum(`Amount In`),0),2) as invoiced_amount,round(ifnull(sum(`Amount In`+`Inventory Transaction Amount`),0),2) as profit,round(ifnull(sum(`Inventory Transaction Quantity`),0),1) as dispatched,round(ifnull(sum(`Required`),0),1) as required from 
-			
-			`Inventory Transaction Fact` ITF left join `Delivery Note Dimension` DN on (ITF.`Delivery Note Key`=DN.`Delivery Note Key`) where `Inventory Transaction Type` like 'Sale' and `Part SKU` in (%s) %s %s" ,
+			$sql=sprintf("select count( distinct DN.`Delivery Note Customer Key`) as customers, count( distinct ITF.`Delivery Note Key`) as deliveries, round(ifnull(sum(`Amount In`),0),2) as invoiced_amount,round(ifnull(sum(`Amount In`+`Inventory Transaction Amount`),0),2) as profit,round(ifnull(sum(`Inventory Transaction Quantity`),0),1) as dispatched,round(ifnull(sum(`Required`),0),1) as required from `Inventory Transaction Fact` ITF left join `Delivery Note Dimension` DN on (ITF.`Delivery Note Key`=DN.`Delivery Note Key`) where `Inventory Transaction Type` like 'Sale' and `Part SKU` in (%s) %s %s" ,
 				$part_skus,
 				($from_date?sprintf('and  `Date`>=%s', prepare_mysql($from_date)):''),
 				($to_date?sprintf('and `Date`<%s', prepare_mysql($to_date)):'')
 			);
+
+			//print "$sql\n";
 
 			if ($result=$this->db->query($sql)) {
 				if ($row = $result->fetch()) {
@@ -452,8 +454,8 @@ function get_part_category_customers_total_data($part_skus) {
 			"Part Category $db_interval Acc Keeping Day"=>$sales_data['keep_days'],
 			"Part Category $db_interval Acc With Stock Days"=>$sales_data['with_stock_days'],
 		);
-		
-		
+
+
 		$this->update( $data_to_update, 'no_history');
 
 		if ($from_date_1yb) {

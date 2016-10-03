@@ -21,8 +21,9 @@ update_parts_sales($db, $print_est);
 
 function update_parts_sales($db, $print_est) {
 
+
+	$where=" where `Category Code` like 'jbb' ";
 	$where="where true";
-//	$where=" where `Category Code` like 'jbb' ";
 
 	$sql=sprintf("select count(distinct `Category Key`) as num from `Category Dimension` $where and  `Category Scope`='Part' ");
 
@@ -47,7 +48,7 @@ function update_parts_sales($db, $print_est) {
 			$category=new Category($row['Category Key']);
 
 			$category->update_part_category_previous_quarters_data();
-			
+
 			$contador++;
 			$lap_time1=date('U');
 

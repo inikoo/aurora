@@ -27,7 +27,7 @@ $table_filters=array(
 
 $parameters=array(
 		'parent'=>$state['object'],
-		'parent_key'=>$state['parent_key'],
+		'parent_key'=>$state['key'],
 	);
 
 

@@ -853,6 +853,21 @@ $modules=array(
 
 				)
 			),
+			
+					'order'=>array('type'=>'object',
+				'tabs'=>array(
+
+
+					'order.items'=>array('label'=>_('Items'), 'icon'=>'bars'),
+					'order.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+					'order.history'=>array('label'=>_('History'), 'icon'=>'road'),
+					'order.delivery_notes'=>array('label'=>_('Delivery notes'),  'icon'=>'truck'),
+					'order.invoices'=>array('label'=>_('Invoices'),  'icon'=>'file-text-o'),
+					'order.payments'=>array('label'=>_('Payments'),  'icon'=>'usd'),
+
+				)
+
+			),
 
 		)
 	),
