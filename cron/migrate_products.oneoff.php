@@ -61,8 +61,8 @@ update_cost($db);
 create_data_tables($db);
 
 */
-
-fix_family_web_descriptions($db);
+create_data_tables($db);
+//fix_family_web_descriptions($db);
 
 function fix_family_web_descriptions($db) {
 
