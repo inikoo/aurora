@@ -51,19 +51,19 @@ function update_parts_sales($db, $print_est) {
 
 
 
-			//$category->update_part_category_sales('Total');
-			//$category->update_part_category_sales('Week To Day');
-			//$category->update_part_category_sales('Month To Day');
+			$category->update_part_category_sales('Total');
+			$category->update_part_category_sales('Week To Day');
+			$category->update_part_category_sales('Month To Day');
 			$category->update_part_category_sales('Quarter To Day');
-			//$category->update_part_category_sales('Year To Day');
-			//$category->update_part_category_sales('1 Year');
-			//$category->update_part_category_sales('1 Quarter');
+			$category->update_part_category_sales('Year To Day');
+			$category->update_part_category_sales('1 Year');
+			$category->update_part_category_sales('1 Quarter');
 
 			$contador++;
 			$lap_time1=date('U');
 
 			if ($print_est) {
-		//		print 'Pa '.percentage($contador, $total, 3)."  lap time ".sprintf("%.2f", ($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h  ($contador/$total) \r";
+			print 'Pa '.percentage($contador, $total, 3)."  lap time ".sprintf("%.2f", ($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h  ($contador/$total) \r";
 			}
 
 
