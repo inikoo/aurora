@@ -959,7 +959,7 @@ class Category extends DB_Table{
 
 				return percentage($this->data[$amount], 1);
 			}
-			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Quarter To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Dispatched|Broken|Acquired)$/', $key) or $key=='Current Stock'  ) {
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Quarter To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Dispatched|Broken|Customers)$/', $key) or $key=='Current Stock'  ) {
 
 				$amount='Part Category '.$key;
 
@@ -1512,7 +1512,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 				//print "$field, $value";
 
 				//$this->update_subject_field($field, $value, 'no_history');
-				$this->update_table_field($field, $value, 'no_history', 'Product Category Dimension', 'Product Category Dimension', $this->id);
+				$this->update_table_field($field, $value, 'no_history', 'Product Category', 'Product Category Dimension', $this->id);
 
 				$categories='';
 				foreach ($this->get_category_data() as $item) {
@@ -1543,7 +1543,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 				$value=html_entity_decode($value);
 				//$this->update_subject_field($field, $value, $options);
 
-				$this->update_table_field($field, $value, $options, 'Product Category Dimension', 'Product Category Dimension', $this->id);
+
+
+				$this->update_table_field($field, $value, $options, 'Product Category', 'Product Category Dimension', $this->id);
 
 
 				// Migration -----
@@ -1578,7 +1580,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 
 				}
 				//$this->update_subject_field($field, $value, $options);
-				$this->update_table_field($field, $value, $options, 'Product Category Dimension', 'Product Category Dimension', $this->id);
+				$this->update_table_field($field, $value, $options, 'Product Category', 'Product Category Dimension', $this->id);
 
 
 
@@ -1612,7 +1614,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 
 
 			default:
-				$this->update_table_field($field, $value, $options, 'Product Category Dimension', 'Product Category Dimension', $this->id);
+				$this->update_table_field($field, $value, $options, 'Product Category', 'Product Category Dimension', $this->id);
 
 				// $this->update_subject_field($field, $value, $options);
 			}

@@ -245,10 +245,15 @@ function get_part_showcase($data, $smarty, $user, $db) {
 				)
 			)
 		));
-    $customers=sprintf (ngettext ("%d customer", "%d customers", $part->get('Part Total Acc Customers')),  $part->get('Part Total Acc Customers'));
+  	$customers=sprintf('<i class="fa fa-users padding_right_5" aria-hidden="true"></i> %s (%s)',$part->get('Total Acc Customers'),percentage($part->get('Part Total Acc Repeat Customers'),$part->get('Part Total Acc Customers')));
 	$smarty->assign('customers', $customers);
 
+    $smarty->assign('header_total_sales',sprintf(_('All sales since: %s'),$part->get('Valid From')));
+
+
 	$smarty->assign('part', $part);
+
+
 
 	return $smarty->fetch('showcase/part.tpl');
 

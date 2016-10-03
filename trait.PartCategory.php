@@ -353,7 +353,31 @@ trait PartCategory {
 
 	}
 
+function get_part_category_customers_total_data($part_skus) {
 
+		$repeat_customers=0;
+
+
+		$sql=sprintf('select count(`Customer Part Customer Key`) as num  from `Customer Part Bridge` where `Customer Part Delivery Notes`>1 and `Customer Part Part SKU` in (%s)    ',
+			$part_skus
+		);
+
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$repeat_customers=$row['num'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+
+		return $repeat_customers;
+
+	}
+	
 	function get_part_category_sales_data($from_date, $to_date) {
 
 		$sales_data=array(
@@ -372,7 +396,15 @@ trait PartCategory {
 		$part_skus=$this->get_part_skus();
 
 		if ($part_skus!='' and $this->get('Category Branch Type')!='Root') {
-			$sql=sprintf("select count( distinct `Delivery Note Key`) as deliveries, round(ifnull(sum(`Amount In`),0),2) as invoiced_amount,round(ifnull(sum(`Amount In`+`Inventory Transaction Amount`),0),2) as profit,round(ifnull(sum(`Inventory Transaction Quantity`),0),1) as dispatched,round(ifnull(sum(`Required`),0),1) as required from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type` like 'Sale' and `Part SKU` in (%s) %s %s" ,
+
+
+			if ($from_date=='' and  $to_date=='') {
+				//$sales_data['repeat_customers']=$this->get_part_category_customers_total_data($part_skus);
+			}
+
+			$sql=sprintf("select count( distinct DN.`Delivery Note Customer Key`) as customers, count( distinct ITF.`Delivery Note Key`) as deliveries, round(ifnull(sum(`Amount In`),0),2) as invoiced_amount,round(ifnull(sum(`Amount In`+`Inventory Transaction Amount`),0),2) as profit,round(ifnull(sum(`Inventory Transaction Quantity`),0),1) as dispatched,round(ifnull(sum(`Required`),0),1) as required from 
+			
+			`Inventory Transaction Fact` ITF left join `Delivery Note Dimension` DN on (ITF.`Delivery Note Key`=DN.`Delivery Note Key`) where `Inventory Transaction Type` like 'Sale' and `Part SKU` in (%s) %s %s" ,
 				$part_skus,
 				($from_date?sprintf('and  `Date`>=%s', prepare_mysql($from_date)):''),
 				($to_date?sprintf('and `Date`<%s', prepare_mysql($to_date)):'')
@@ -385,12 +417,14 @@ trait PartCategory {
 					$sales_data['dispatched']=-1.0*$row['dispatched'];
 					$sales_data['required']=$row['required'];
 					$sales_data['deliveries']=$row['deliveries'];
+					$sales_data['customers']=$row['customers'];
 				}
 			}else {
 				print_r($error_info=$this->db->errorInfo());
 				exit;
 			}
 		}
+
 
 		return $sales_data;
 
@@ -418,6 +452,8 @@ trait PartCategory {
 			"Part Category $db_interval Acc Keeping Day"=>$sales_data['keep_days'],
 			"Part Category $db_interval Acc With Stock Days"=>$sales_data['with_stock_days'],
 		);
+		
+		
 		$this->update( $data_to_update, 'no_history');
 
 		if ($from_date_1yb) {
@@ -507,7 +543,7 @@ trait PartCategory {
 			"Part Category 5 Year Ago Dispatched"=>$data_5y_ago['dispatched'],
 			"Part Category 5 Year Ago Keeping Day"=>$data_5y_ago['keep_days'],
 			"Part Category 5 Year Ago With Stock Days"=>$data_5y_ago['with_stock_days'],
-		
+
 
 
 		);
@@ -519,7 +555,7 @@ trait PartCategory {
 
 
 
-function update_part_category_previous_quarters_data() {
+	function update_part_category_previous_quarters_data() {
 
 
 		include_once 'utils/date_functions.php';
@@ -528,8 +564,8 @@ function update_part_category_previous_quarters_data() {
 		foreach (range(1, 4) as $i) {
 			$dates=get_previous_quarters_dates($i);
 			$dates_1yb=get_previous_quarters_dates($i+4);
-			
-			
+
+
 			$sales_data=$this->get_part_category_sales_data($dates['start'], $dates['end']);
 			$sales_data_1yb=$this->get_part_category_sales_data($dates_1yb['start'], $dates_1yb['end']);
 
@@ -543,7 +579,7 @@ function update_part_category_previous_quarters_data() {
 				"Part Category $i Quarter Ago Dispatched"=>$sales_data['dispatched'],
 				"Part Category $i Quarter Ago Keeping Day"=>$sales_data['keep_days'],
 				"Part Category $i Quarter Ago With Stock Days"=>$sales_data['with_stock_days'],
-				
+
 				"Part Category $i Quarter Ago 1YB Customers"=>$sales_data_1yb['customers'],
 				"Part Category $i Quarter Ago 1YB Repeat Customers"=>$sales_data_1yb['repeat_customers'],
 				"Part Category $i Quarter Ago 1YB Deliveries"=>$sales_data_1yb['deliveries'],

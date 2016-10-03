@@ -1702,13 +1702,27 @@ class Part extends Asset{
 
 				return $amount;
 			}
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Soft Minify$/', $key)) {
+
+				$field='Part '.preg_replace('/ Soft Minify$/', '', $key);
+
+
+				$suffix='';
+				$fraction_digits='NO_FRACTION_DIGITS';
+				$_amount=$this->data[$field];
+
+				$amount= money($_amount, $account->get('Account Currency'), $locale=false, $fraction_digits).$suffix;
+
+				return $amount;
+			}
+
 			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Quarter To|Month To|Today|Week To).*(Margin|GMROI)$/', $key)) {
 
 				$amount='Part '.$key;
 
 				return percentage($this->data[$amount], 1);
 			}
-		    if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Quarter To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Dispatched|Broken|Acquired)$/', $key) or $key=='Current Stock'  ) {
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Quarter To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Dispatched|Broken|Acquired)$/', $key) or $key=='Current Stock'  ) {
 
 				$amount='Part '.$key;
 
@@ -1731,7 +1745,17 @@ class Part extends Asset{
 					$_number=$this->data[$field];
 				}
 
-				return number($_number,$fraction_digits).$suffix;
+				return number($_number, $fraction_digits).$suffix;
+			}
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|Year To|Quarter To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Dispatched|Broken|Acquired) Soft Minify$/', $key) or $key=='Current Stock'  ) {
+
+				$field='Part '.preg_replace('/ Soft Minify$/', '', $key);
+
+				$suffix='';
+				$fraction_digits=0;
+				$_number=$this->data[$field];
+
+				return number($_number, $fraction_digits).$suffix;
 			}
 
 
@@ -2324,6 +2348,9 @@ class Part extends Asset{
 			"Part $db_interval Acc Keeping Day"=>$sales_data['keep_days'],
 			"Part $db_interval Acc With Stock Days"=>$sales_data['with_stock_days'],
 		);
+		
+		
+		
 		$this->update( $data_to_update, 'no_history');
 
 		if ($from_date_1yb) {
@@ -2470,6 +2497,32 @@ class Part extends Asset{
 	}
 
 
+	function get_customers_total_data() {
+
+		$repeat_customers=0;
+
+
+		$sql=sprintf('select count(`Customer Part Customer Key`) as num  from `Customer Part Bridge` where `Customer Part Delivery Notes`>1 and `Customer Part Part SKU`=%d    ',
+			$this->id
+		);
+
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$repeat_customers=$row['num'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+
+		return $repeat_customers;
+
+	}
+
+
 	function get_sales_data($from_date, $to_date) {
 
 		$sales_data=array(
@@ -2486,7 +2539,12 @@ class Part extends Asset{
 		);
 
 
-		$sql=sprintf("select count( distinct `Delivery Note Key`) as deliveries, round(ifnull(sum(`Amount In`),0),2) as invoiced_amount,round(ifnull(sum(`Amount In`+`Inventory Transaction Amount`),0),2) as profit,round(ifnull(sum(`Inventory Transaction Quantity`),0),1) as dispatched,round(ifnull(sum(`Required`),0),1) as required from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type` like 'Sale' and `Part SKU`=%d %s %s" ,
+		if ($from_date=='' and  $to_date=='') {
+			$sales_data['repeat_customers']=$this->get_customers_total_data();
+		}
+
+
+		$sql=sprintf("select count(distinct `Delivery Note Customer Key`) as customers, count( distinct ITF.`Delivery Note Key`) as deliveries, round(ifnull(sum(`Amount In`),0),2) as invoiced_amount,round(ifnull(sum(`Amount In`+`Inventory Transaction Amount`),0),2) as profit,round(ifnull(sum(`Inventory Transaction Quantity`),0),1) as dispatched,round(ifnull(sum(`Required`),0),1) as required from `Inventory Transaction Fact` ITF  left join `Delivery Note Dimension` DN on (DN.`Delivery Note Key`=ITF.`Delivery Note Key`) where `Inventory Transaction Type` like 'Sale' and `Part SKU`=%d %s %s" ,
 			$this->id,
 			($from_date?sprintf('and  `Date`>=%s', prepare_mysql($from_date)):''),
 			($to_date?sprintf('and `Date`<%s', prepare_mysql($to_date)):'')
@@ -2494,6 +2552,7 @@ class Part extends Asset{
 
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
+				$sales_data['customers']=$row['customers'];
 				$sales_data['invoiced_amount']=$row['invoiced_amount'];
 				$sales_data['profit']=$row['profit'];
 				$sales_data['dispatched']=-1.0*$row['dispatched'];
@@ -2504,6 +2563,9 @@ class Part extends Asset{
 			print_r($error_info=$this->db->errorInfo());
 			exit;
 		}
+
+
+
 
 		return $sales_data;
 
