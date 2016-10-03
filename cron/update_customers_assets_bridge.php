@@ -42,15 +42,15 @@ $print_est=true;
 
 print date('l jS \of F Y h:i:s A')."\n";
 
-update_sales($db, $print_est);
+update_customer_asset_brige($db, $print_est);
 
 
 
 
 
-function update_sales($db, $print_est) {
+function update_customer_asset_brige($db, $print_est) {
 
-	$where='where `Customer Key`=218014';
+	$where='where `Customer Key`=9032';
 	$where='';
 
 	$sql=sprintf("select count(*) as num from `Customer Dimension` $where");
@@ -79,14 +79,15 @@ function update_sales($db, $print_est) {
 
 
 			$customer->update_product_bridge();
-			
+			$customer->update_part_bridge();
+			//$customer->update_category_part_bridge();
 
 
 			$contador++;
 			$lap_time1=date('U');
 
 			if ($print_est) {
-				print 'P   '.percentage($contador, $total, 3)."  lap time ".sprintf("%.4f", ($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.4f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h  ($contador/$total) \r";
+				print 'P   '.percentage($contador, $total, 3)."  lap time ".sprintf("%.4f", ($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.4f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/60)  ."m  ($contador/$total) \r";
 			}
 
 		}
@@ -99,8 +100,6 @@ function update_sales($db, $print_est) {
 
 
 }
-
-
 
 
 

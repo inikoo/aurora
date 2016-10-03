@@ -3133,7 +3133,7 @@ class Customer extends Subject {
 						$row['Product ID']
 					);
 
-                    
+
 
 
 					if ($result2=$this->db->query($sql)) {
@@ -3157,6 +3157,8 @@ class Customer extends Subject {
 					prepare_mysql($penultime_date)
 
 				);
+
+
 				$this->db->exec($sql);
 
 
@@ -3167,6 +3169,145 @@ class Customer extends Subject {
 			print_r($error_info=$this->db->errorInfo());
 			exit;
 		}
+
+	}
+
+
+	function update_part_bridge() {
+
+
+
+		$sql=sprintf("delete from `Customer Part Bridge` where `Customer Part Customer Key`=%d ",
+			$this->id
+		);
+		$this->db->exec($sql);
+
+
+		$sql=sprintf("select `Part SKU`, count(distinct ITF.`Delivery Note Key`) delivery_notes ,max(`Delivery Note Date`) as date from `Inventory Transaction Fact` ITF left join `Delivery Note Dimension` DN on (DN.`Delivery Note Key`=ITF.`Delivery Note Key`) where   `Inventory Transaction Type`='Sale'  and  `Delivery Note Customer Key`=%d  group by `Part SKU` ",
+			$this->id
+		);
+
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+				$penultime_date='';
+				if ($row['delivery_notes']>1) {
+
+					$sql=sprintf("select `Delivery Note Date` from `Inventory Transaction Fact`  ITF left join `Delivery Note Dimension` DN on (DN.`Delivery Note Key`=ITF.`Delivery Note Key`)  where   `Inventory Transaction Type`='Sale'  and  `Delivery Note Customer Key`=%d and `Part SKU`=%d  group by ITF.`Delivery Note Key` order by `Delivery Note Date` limit  1,1   ",
+						$this->id,
+						$row['Part SKU']
+					);
+
+
+
+
+					if ($result2=$this->db->query($sql)) {
+						if ($row2= $result2->fetch()) {
+							$penultime_date=$row2['Delivery Note Date'];
+						}
+					}else {
+						print_r($error_info=$this->db->errorInfo());
+						exit;
+					}
+
+
+				}
+
+
+				$sql=sprintf("insert into `Customer Part Bridge` (`Customer Part Customer Key`,`Customer Part Part SKU`,`Customer Part Delivery Notes`,`Customer Part Last Delivery Note Date`,`Customer Part Penultimate Delivery Note Date`) values (%d,%d,%s,%s,%s) ",
+					$this->id,
+					$row['Part SKU'],
+					$row['delivery_notes'],
+					prepare_mysql($row['date']),
+					prepare_mysql($penultime_date)
+
+				);
+
+				//print "$sql\n";
+				$this->db->exec($sql);
+
+
+
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+	}
+
+
+	function update_category_part_bridge() {
+
+
+
+		$sql=sprintf("delete from `Customer Part Category Bridge` where `Customer Part Category Customer Key`=%d ",
+			$this->id
+		);
+		$this->db->exec($sql);
+
+
+
+		$sql=sprintf("select `Category Key` from `Category Dimension` where `Category Scope`='Part' and `Category Branch Type`!='Root' ");
+
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$category=new Category($row['Category Key']);
+				$part_skus=$category->get_part_skus();
+
+
+				if ($part_skus!=''  ) {
+					$sql=sprintf("select count(distinct ITF.`Delivery Note Key`) delivery_notes ,max(`Delivery Note Date`) as date from `Inventory Transaction Fact` ITF left join `Delivery Note Dimension` DN on (DN.`Delivery Note Key`=ITF.`Delivery Note Key`) where   `Inventory Transaction Type`='Sale'  and  `Delivery Note Customer Key`=%d  and  `Part SKU` in (%s) ",
+						$this->id,
+						$part_skus
+					);
+
+
+					if ($result2=$this->db->query($sql)) {
+						foreach ($result2 as $row2) {
+
+							$penultime_date='';
+
+							if ($row2['delivery_notes']>0) {
+
+								$sql=sprintf("insert into `Customer Part Category Bridge` (`Customer Part Category Customer Key`,`Customer Part Category Category Key`,`Customer Part Category Delivery Notes`,`Customer Part Category Last Delivery Note Date`,`Customer Part Category Penultimate Delivery Note Date`) values (%d,%d,%s,%s,%s) ",
+									$this->id,
+									$category->id,
+									$row2['delivery_notes'],
+									prepare_mysql($row2['date']),
+									prepare_mysql($penultime_date)
+
+								);
+
+								print "$sql\n";
+								$this->db->exec($sql);
+
+							}
+
+
+						}
+					}else {
+						print_r($error_info=$this->db->errorInfo());
+						exit;
+					}
+
+
+				}
+
+
+			}
+
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+
+
 
 	}
 

@@ -71,18 +71,4 @@ function update_parts_sales($db, $print_est) {
 
 
 
-function update_categories_sales($db, $print_est) {
-	$sql=sprintf("select `Category Key`  from `Category Bridge` where  `Subject`='Part' group by `Category Key` ");
-	if ($result=$db->query($sql)) {
-		foreach ($result as $row) {
-			$category=new Category($row['Category Key']);
-			$category->update_number_of_subjects();
-			$category->update_subjects_data();
-			$category->update_part_category_previous_years_data();
-			$category->update_part_stock_status();
-		}
-	}
-}
-
-
 ?>

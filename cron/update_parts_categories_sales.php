@@ -20,7 +20,7 @@ update_parts_sales($db, $print_est);
 
 function update_parts_sales($db, $print_est) {
 
-	$where=" where `Category SKU`=259 ";
+	$where=" where `Category Key`=11621 ";
 	$where="where true";
 
 	$sql=sprintf("select count(distinct `Category Key`) as num from `Category Dimension` $where and  `Category Scope`='Part' ");

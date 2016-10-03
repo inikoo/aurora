@@ -250,7 +250,10 @@ function get_part_family_showcase($data, $smarty) {
 				)
 			)
 		));
-	$customers=sprintf('<i class="fa fa-users padding_right_5" aria-hidden="true"></i> %s (%s)',$category->get('Total Acc Customers'),percentage($category->get('Product Total Acc Repeat Customers'),$category->get('Product Total Acc Customers')));
+	//$customers=sprintf('<i class="fa fa-users padding_right_5" aria-hidden="true"></i> %s (%s)',$category->get('Total Acc Customers'),percentage($category->get('Product Total Acc Repeat Customers'),$category->get('Product Total Acc Customers')));
+
+	$customers=sprintf('<i class="fa fa-users padding_right_5" aria-hidden="true"></i> %s',$category->get('Total Acc Customers'));
+
 	$smarty->assign('customers', $customers);
 
 	$smarty->assign('header_total_sales', sprintf(_('All sales since: %s'), $category->get('Valid From')));

@@ -2666,6 +2666,7 @@ class Product extends Asset{
 
 		$data_to_update=array(
 			"Product $db_interval Acc Customers"=>$sales_data['customers'],
+			"Product $db_interval Acc Repeat Customers"=>$sales_data['repeat_customers'],
 			"Product $db_interval Acc Invoices"=>$sales_data['invoices'],
 			"Product $db_interval Acc Profit"=>$sales_data['profit'],
 			"Product $db_interval Acc Invoiced Amount"=>$sales_data['net'],
@@ -2685,6 +2686,7 @@ class Product extends Asset{
 
 			$data_to_update=array(
 				"Product $db_interval Acc 1YB Customers"=>$sales_data['customers'],
+				"Product $db_interval Acc Repeat Customers"=>$sales_data['repeat_customers'],
 				"Product $db_interval Acc 1YB Invoices"=>$sales_data['invoices'],
 				"Product $db_interval Acc 1YB Profit"=>$sales_data['profit'],
 				"Product $db_interval Acc 1YB Invoiced Amount"=>$sales_data['net'],
@@ -2714,6 +2716,7 @@ class Product extends Asset{
 
 		$data_to_update=array(
 			"Product 1 Year Ago Customers"=>$data_1y_ago['customers'],
+			"Product 1 Year Ago Repeat Customers"=>$data_1y_ago['repeat_customers'],
 			"Product 1 Year Ago Invoices"=>$data_1y_ago['invoices'],
 			"Product 1 Year Ago Profit"=>$data_1y_ago['profit'],
 			"Product 1 Year Ago Invoiced Amount"=>$data_1y_ago['net'],
@@ -2724,6 +2727,7 @@ class Product extends Asset{
 			"Product DC 1 Year Ago Invoiced Amount"=>$data_1y_ago['dc_profit'],
 
 			"Product 2 Year Ago Customers"=>$data_2y_ago['customers'],
+			"Product 2 Year Ago Repeat Customers"=>$data_2y_ago['repeat_customers'],
 			"Product 2 Year Ago Invoices"=>$data_2y_ago['invoices'],
 			"Product 2 Year Ago Profit"=>$data_2y_ago['profit'],
 			"Product 2 Year Ago Invoiced Amount"=>$data_2y_ago['net'],
@@ -2734,6 +2738,7 @@ class Product extends Asset{
 			"Product DC 2 Year Ago Invoiced Amount"=>$data_2y_ago['dc_profit'],
 
 			"Product 3 Year Ago Customers"=>$data_3y_ago['customers'],
+			"Product 3 Year Ago Repeat Customers"=>$data_3y_ago['repeat_customers'],
 			"Product 3 Year Ago Invoices"=>$data_3y_ago['invoices'],
 			"Product 3 Year Ago Profit"=>$data_3y_ago['profit'],
 			"Product 3 Year Ago Invoiced Amount"=>$data_3y_ago['net'],
@@ -2744,6 +2749,7 @@ class Product extends Asset{
 			"Product DC 3 Year Ago Invoiced Amount"=>$data_3y_ago['dc_profit'],
 
 			"Product 4 Year Ago Customers"=>$data_4y_ago['customers'],
+			"Product 4 Year Ago Repeat Customers"=>$data_4y_ago['repeat_customers'],
 			"Product 4 Year Ago Invoices"=>$data_4y_ago['invoices'],
 			"Product 4 Year Ago Profit"=>$data_4y_ago['profit'],
 			"Product 4 Year Ago Invoiced Amount"=>$data_4y_ago['net'],
@@ -2754,6 +2760,7 @@ class Product extends Asset{
 			"Product DC 4 Year Ago Invoiced Amount"=>$data_4y_ago['dc_profit'],
 
 			"Product 5 Year Ago Customers"=>$data_5y_ago['customers'],
+			"Product 5 Year Ago Repeat Customers"=>$data_5y_ago['repeat_customers'],
 			"Product 5 Year Ago Invoices"=>$data_5y_ago['invoices'],
 			"Product 5 Year Ago Profit"=>$data_5y_ago['profit'],
 			"Product 5 Year Ago Invoiced Amount"=>$data_5y_ago['net'],
@@ -2785,6 +2792,7 @@ class Product extends Asset{
 			$data_to_update=array(
 
 				"Product $i Quarter Ago Customers"=>$sales_data['customers'],
+				"Product $i Quarter Ago Repeat Customers"=>$sales_data['repeat_customers'],
 				"Product $i Quarter Ago Invoices"=>$sales_data['invoices'],
 				"Product $i Quarter Ago Profit"=>$sales_data['profit'],
 				"Product $i Quarter Ago Invoiced Amount"=>$sales_data['net'],
@@ -2795,6 +2803,7 @@ class Product extends Asset{
 				"Product DC $i Quarter Ago Invoiced Amount"=>$sales_data['dc_profit'],
 
 				"Product $i Quarter Ago 1YB Customers"=>$sales_data_1yb['customers'],
+				"Product $i Quarter Ago 1YB Repeat Customers"=>$sales_data['repeat_customers'],
 				"Product $i Quarter Ago 1YB Invoices"=>$sales_data_1yb['invoices'],
 				"Product $i Quarter Ago 1YB Profit"=>$sales_data_1yb['profit'],
 				"Product $i Quarter Ago 1YB Invoiced Amount"=>$sales_data_1yb['net'],
@@ -2812,10 +2821,39 @@ class Product extends Asset{
 	}
 
 
+	function get_customers_total_data() {
+
+		$repeat_customers=0;
+
+
+		$sql=sprintf('select count(`Customer Product Customer Key`) as num  from `Customer Product Bridge` where `Customer Product Invoices`>1 and `Customer Product Product ID`=%d    ',
+			$this->id
+		);
+
+
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$repeat_customers=$row['num'];
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+
+		return $repeat_customers;
+
+	}
+
+
 	function get_sales_data($from_date, $to_date) {
+
 
 		$sales_data=array(
 			'customers'=>0,
+			'repeat_customers'=>0,
 			'invoices'=>0,
 			'net'=>0,
 			'profit'=>0,
@@ -2826,6 +2864,11 @@ class Product extends Asset{
 			'dc_profit'=>0,
 
 		);
+
+		if ($from_date=='' and  $to_date=='') {
+			$sales_data['repeat_customers']=$this->get_customers_total_data();
+		}
+
 
 		$sql=sprintf("select
 		ifnull(count(Distinct `Customer Key`),0) as customers,
@@ -2867,7 +2910,6 @@ class Product extends Asset{
 		}
 
 		//print "$sql\n";
-
 
 		return $sales_data;
 	}

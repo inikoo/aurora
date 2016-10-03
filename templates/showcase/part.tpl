@@ -24,6 +24,18 @@
 	</div>
 </div>
     <div class="block sales_data">
+     <table>
+	
+	<tr class="header">
+	<td  colspan=3>{$header_total_sales}</td>
+	</tr> 
+	<tr class="total_sales">
+	<td>{$part->get('Total Acc Invoiced Amount Soft Minify')}</td>
+	<td>{$part->get('Total Acc Dispatched Soft Minify')}</td>
+	<td>{$customers}</td>
+	</tr> 
+	</table>
+    
 	<table>
 		<tr class="header">
 			<td>{$year_data.0.header}</td>
@@ -71,7 +83,7 @@
 			<td><span title="{$part->get('4 Quarter Ago Dispatched')}">{$part->get('4 Quarter Ago Dispatched Minify')}</span> <span title="{$quarter_data.4.dispatched_delta_title}">{$quarter_data.4.dispatched_delta}</span></td>
 		</tr>
 	</table>
-	{$customers} 
+	
 </div>
 	<div class="block info">
 	
