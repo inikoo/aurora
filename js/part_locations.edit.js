@@ -80,7 +80,7 @@ function move(element) {
         var possible_to_locations = 0;
         var to;
         $('.locations  .move_trigger ').each(function(i, obj) {
-            if (!$(obj).hasClass('from') && !$(obj).hasClass('invisible')) {
+            if (!$(obj).hasClass('from')) {
 
                 //console.log($(obj))
                 $(obj).removeClass('fa-caret-square-o-right super_discreet ').addClass('fa-caret-square-o-left')
@@ -184,8 +184,8 @@ function move_qty_changed(element) {
 
         if (validation.class == 'valid') {
             //console.log($('#locations_table  .from ').closest('tr').find('input.stock').val())
-console.log(value)
-console.log($('.locations  .from ').closest('tr').find('input.stock').val())
+//console.log(value)
+//console.log($('.locations  .from ').closest('tr').find('input.stock').val())
 
             if (parseInt(value) > parseInt(
             $('.locations  .from ').closest('tr').find('input.stock').attr('ovalue'))) {
@@ -204,19 +204,19 @@ console.log($('.locations  .from ').closest('tr').find('input.stock').val())
             if (isNaN(move_qty)) return
 
             // $('#move_stock_qty').val('');
-            var from_input = $('#locations_table  .from ').closest('tr').find('input.stock')
+            var from_input = $('.locations   .from ').closest('tr').find('input.stock')
 
-            old_from_input = from_input.val()
+            old_from_input = from_input.attr('ovalue')
             from_input.val(parseFloat(from_input.attr('ovalue')) - move_qty)
 
             stock_changed($(from_input))
 
             var to_input = $('.locations  .to ').closest('tr').find('input.stock')
-            old_to_input = to_input.val()
+            old_to_input = to_input.attr('ovalue')
 
 
-           // console.log($('#locations_table  .to '))
-            //to_input.val('cc')
+          // console.log(to_input)
+          // console.log(parseFloat(to_input.attr('ovalue'))  )
             to_input.val(parseFloat(to_input.attr('ovalue')) + move_qty)
             stock_changed(to_input)
 
@@ -298,8 +298,8 @@ function stock_changed(element) {
 
         } else {
 
-            console.log(value)
-            console.log(element.attr('ovalue'))
+           // console.log(value)
+           // console.log(element.attr('ovalue'))
 
             var _diff = parseFloat(value) - parseFloat((element.attr('ovalue') == '' ? 0 : element.attr('ovalue')))
 
@@ -409,8 +409,12 @@ function process_edit_stock() {
         if (editable_location) {
             editable_locations++;
 
-            if (!$('#move_stock_tr').hasClass('hide')) {
-                $(obj).closest('tr').find('.move_trigger').removeClass('invisible')
+            if ( $('#move_stock_tr').hasClass('hide')) {
+              $(obj).closest('tr').find('.move_trigger').removeClass('invisible')
+            }else{
+                // console.log($('#move_stock_tr').hasClass('hide'))
+                //console.log('x')
+              
             }
 
         } else {
@@ -754,7 +758,7 @@ function save_stock() {
     // used only for debug
     var request = '/ar_edit_stock.php?tipo=edit_stock&object=part&key=' + $('#locations_table').attr('part_sku') + '&parts_locations_data=' + JSON.stringify(parts_locations_data) + '&movements=' + JSON.stringify(_movements)
     console.log(request)
-    //return;
+   // return;
     //=====
     var form_data = new FormData();
     form_data.append("tipo", 'edit_stock')
