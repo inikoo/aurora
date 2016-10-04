@@ -1531,6 +1531,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 							if (isset($view_path[1]) and is_numeric($view_path[1])) {
 								$key=$view_path[1];
+								
+								include_once('class.Category.php');
 								$category=new Category($key);
 
 								$parent='category';

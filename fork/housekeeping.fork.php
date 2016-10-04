@@ -23,7 +23,7 @@ function fork_housekeeping($job) {
 	switch ($data['type']) {
 
 	case 'update_part_products_availability':
-		return;
+		
 		include_once 'class.Part.php';
 		$part=new Part($data['part_sku']);
 		foreach ($part->get_products('objects') as $product) {

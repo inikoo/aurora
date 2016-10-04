@@ -34,6 +34,7 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
 
 }
 elseif ($parameters['parent']=='category') {
+	include_once('class.Category.php');
 	$category=new Category($parameters['parent_key']);
 
 
