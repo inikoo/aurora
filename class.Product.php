@@ -2558,6 +2558,40 @@ class Product extends Asset{
 	}
 
 
+	function get_categories($scope='keys') {
+
+		if (   $scope=='objects') {
+			include_once 'class.Category.php';
+		}
+
+
+		$categories=array();
+
+
+		$sql=sprintf("select B.`Category Key` from `Category Dimension` C left join `Category Bridge` B on (B.`Category Key`=C.`Category Key`) where `Subject`='Product' and `Subject Key`=%d and `Category Branch Type`!='Root'", 
+		$this->id);
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+				if ($scope=='objects') {
+					$categories[$row['Category Key']]=new Category($row['Category Key']);
+				}else {
+					$categories[$row['Category Key']]=$row['Category Key'];
+				}
+
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+		return $categories;
+
+
+	}
+
 	function get_category_data() {
 
 

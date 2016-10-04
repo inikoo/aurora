@@ -20,6 +20,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 	$request=$_data['request'];
 
 	$request=preg_replace('/\/+/', '/', $request);
+    if($request=='/')$request='dashboard';
 
 	$original_request=preg_replace('/^\//', '', $request);
 	$view_path=preg_split('/\//', $original_request);
@@ -40,6 +41,9 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 	$is_main_section=false;
 
 	reset($modules);
+
+    
+
 
 	if ($count_view_path>0) {
 		$root=array_shift($view_path);

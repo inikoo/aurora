@@ -1108,6 +1108,8 @@ class Store extends DB_Table {
 	function update_sales_from_invoices($interval) {
 
 		$to_date='';
+		
+		include_once('utils/date_functions.php');
 
 		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($this->db, $interval);
 
@@ -1193,7 +1195,7 @@ class Store extends DB_Table {
 			, $this->id
 		);
 
-		mysql_query($sql);
+			$this->db->exec($sql);
 
 		//print "$sql\n";
 
@@ -1208,7 +1210,7 @@ class Store extends DB_Table {
 			, $this->id
 		);
 		//print "$sql\n";
-		mysql_query($sql);
+			$this->db->exec($sql);
 
 
 		if ($from_date_1yb) {
@@ -1288,7 +1290,7 @@ class Store extends DB_Table {
 				, $this->id
 			);
 
-			mysql_query($sql);
+			$this->db->exec($sql);
 			//print "$sql\n";
 			$sql=sprintf("update `Store Default Currency` set
                          `Store DC $db_interval Acc 1YB Invoiced Discount Amount`=%.2f,
@@ -1301,7 +1303,7 @@ class Store extends DB_Table {
 				, $this->id
 			);
 			// print "$sql\n";
-			mysql_query($sql);
+			$this->db->exec($sql);
 		}
 
 		return array(substr($from_date, -19, -9), date("Y-m-d"));

@@ -55,6 +55,8 @@ class Invoice extends DB_Table {
 		$this->table_name='Invoice';
 		$this->ignore_fields=array('Invoice Key');
 		$this->update_customer=true;
+		global $db;
+		$this->db=$db;
 
 		if (!$arg1 and !$arg2) {
 			$this->error=true;
@@ -223,14 +225,74 @@ class Invoice extends DB_Table {
 		//===
 
 
-        if (!isset($this->data['Invoice Public ID']) or $this->data['Invoice Public ID']=='') {
+		if (!isset($this->data['Invoice Public ID']) or $this->data['Invoice Public ID']=='') {
 
-		if ($store->data['Store Refund Public ID Method']=='Same Invoice ID') {
+			if ($store->data['Store Refund Public ID Method']=='Same Invoice ID') {
 
 
-			if (!isset($this->data['Invoice Public ID']) or $this->data['Invoice Public ID']=='') {
+				if (!isset($this->data['Invoice Public ID']) or $this->data['Invoice Public ID']=='') {
 
-				//Next Invoice ID
+					//Next Invoice ID
+
+
+
+
+
+					if ($store->data['Store Next Invoice Public ID Method']=='Invoice Public ID') {
+
+						$sql=sprintf("UPDATE `Store Dimension` SET `Store Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Store Invoice Last Invoice Public ID` + 1) where `Store Key`=%d"
+							, $this->data['Invoice Store Key']);
+						mysql_query($sql);
+						$invoice_public_id=sprintf($store->data['Store Invoice Public ID Format'], mysql_insert_id());
+
+					}elseif ($store->data['Store Next Invoice Public ID Method']=='Order ID') {
+
+						$sql=sprintf("UPDATE `Store Dimension` SET `Store Order Last Order ID` = LAST_INSERT_ID(`Store Order Last Order ID` + 1) where `Store Key`=%d"
+							, $this->data['Order Store Key']);
+						mysql_query($sql);
+						$invoice_public_id=mysql_insert_id();
+						$invoice_public_id=sprintf($store->data['Store Order Public ID Format'], mysql_insert_id());
+
+
+					}else {
+
+						$sqla=sprintf("UPDATE `Account Dimension` SET `Account Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Account Invoice Last Invoice Public ID` + 1) where `Account Key`=1");
+						mysql_query($sqla);
+						$public_id=mysql_insert_id();
+						include_once 'class.Account.php';
+						$account=new Account();
+						$invoice_public_id=sprintf($account->data['Account Invoice Public ID Format'], $public_id);
+
+					}
+
+
+
+				}else {
+
+					$invoice_public_id=$this->data['Invoice Public ID'];
+				}
+
+			}
+			elseif ($store->data['Store Refund Public ID Method']=='Account Wide Own Index') {
+
+				$account=new Account();
+				$sql=sprintf("UPDATE `Account Dimension` SET `Account Invoice Last Refund Public ID` = LAST_INSERT_ID(`Account Invoice Last Refund Public ID` + 1) where `Account Key`=1");
+				mysql_query($sql);
+
+				$invoice_public_id=sprintf($account->data['Account Refund Public ID Format'], mysql_insert_id());
+
+
+			}
+			elseif ($store->data['Store Refund Public ID Method']=='Store Own Index') {
+
+				$sql=sprintf("UPDATE `Store Dimension` SET `Store Invoice Last Refund Public ID` = LAST_INSERT_ID(`Store Invoice Last Refund Public ID` + 1) where `Store Key`=%d"
+					, $this->data['Invoice Store Key']);
+				mysql_query($sql);
+				$invoice_public_id=sprintf($store->data['Store Refund Public ID Format'], mysql_insert_id());
+
+
+			}
+			else { //Next Invoice ID
 
 
 
@@ -263,82 +325,22 @@ class Invoice extends DB_Table {
 
 				}
 
-
-
-			}else {
-
-				$invoice_public_id=$this->data['Invoice Public ID'];
 			}
 
-		}
-		elseif ($store->data['Store Refund Public ID Method']=='Account Wide Own Index') {
-
-			$account=new Account();
-			$sql=sprintf("UPDATE `Account Dimension` SET `Account Invoice Last Refund Public ID` = LAST_INSERT_ID(`Account Invoice Last Refund Public ID` + 1) where `Account Key`=1");
-			mysql_query($sql);
-
-			$invoice_public_id=sprintf($account->data['Account Refund Public ID Format'], mysql_insert_id());
-
-
-		}
-		elseif ($store->data['Store Refund Public ID Method']=='Store Own Index') {
-
-			$sql=sprintf("UPDATE `Store Dimension` SET `Store Invoice Last Refund Public ID` = LAST_INSERT_ID(`Store Invoice Last Refund Public ID` + 1) where `Store Key`=%d"
-				, $this->data['Invoice Store Key']);
-			mysql_query($sql);
-			$invoice_public_id=sprintf($store->data['Store Refund Public ID Format'], mysql_insert_id());
-
-
-		}
-		else { //Next Invoice ID
-
-
-
-
-
-			if ($store->data['Store Next Invoice Public ID Method']=='Invoice Public ID') {
-
-				$sql=sprintf("UPDATE `Store Dimension` SET `Store Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Store Invoice Last Invoice Public ID` + 1) where `Store Key`=%d"
-					, $this->data['Invoice Store Key']);
-				mysql_query($sql);
-				$invoice_public_id=sprintf($store->data['Store Invoice Public ID Format'], mysql_insert_id());
-
-			}elseif ($store->data['Store Next Invoice Public ID Method']=='Order ID') {
-
-				$sql=sprintf("UPDATE `Store Dimension` SET `Store Order Last Order ID` = LAST_INSERT_ID(`Store Order Last Order ID` + 1) where `Store Key`=%d"
-					, $this->data['Order Store Key']);
-				mysql_query($sql);
-				$invoice_public_id=mysql_insert_id();
-				$invoice_public_id=sprintf($store->data['Store Order Public ID Format'], mysql_insert_id());
-
-
-			}else {
-
-				$sqla=sprintf("UPDATE `Account Dimension` SET `Account Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Account Invoice Last Invoice Public ID` + 1) where `Account Key`=1");
-				mysql_query($sqla);
-				$public_id=mysql_insert_id();
-				include_once 'class.Account.php';
-				$account=new Account();
-				$invoice_public_id=sprintf($account->data['Account Invoice Public ID Format'], $public_id);
-
+			if ($invoice_public_id!='') {
+				$invoice_public_id= $this->get_refund_public_id($invoice_public_id.$store->data['Store Refund Suffix']);
 			}
+			//====
 
+
+
+
+
+
+			$this->data['Invoice Public ID']=$invoice_public_id;
 		}
 
-		if ($invoice_public_id!='') {
-			$invoice_public_id= $this->get_refund_public_id($invoice_public_id.$store->data['Store Refund Suffix']);
-		}
-		//====
 
-
-
-
-
-
-		$this->data['Invoice Public ID']=$invoice_public_id;
-		}
-		
-		
 		$this->data['Invoice File As']=$this->prepare_file_as($this->data['Invoice Public ID']);
 
 		$this->data ['Invoice Currency Exchange']=1;
@@ -2414,7 +2416,7 @@ class Invoice extends DB_Table {
 
 
 
-	function update_field_switcher($field, $value, $options='',$metadata='') {
+	function update_field_switcher($field, $value, $options='', $metadata='') {
 
 		switch ($field) {
 
@@ -2597,25 +2599,25 @@ class Invoice extends DB_Table {
 			break;
 		case('Payment State'):
 			return $this->get_formatted_payment_state();
-			
+
 		case 'State':
-		
-		switch ($this->data['Invoice Paid']) {
-		    case 'Yes':
-		        return _('Paid');
-		        break;
-		       case 'No':
-		        return _('Not paid');
-		        break;
-		        case 'Partially':
-		        return _('Partially paid');
-		        break;   
-		    default:
-		        return $this->data['Invoice Paid'];
-		        break;
-		}
-			
-			
+
+			switch ($this->data['Invoice Paid']) {
+			case 'Yes':
+				return _('Paid');
+				break;
+			case 'No':
+				return _('Not paid');
+				break;
+			case 'Partially':
+				return _('Partially paid');
+				break;
+			default:
+				return $this->data['Invoice Paid'];
+				break;
+			}
+
+
 		}
 
 
@@ -2623,7 +2625,7 @@ class Invoice extends DB_Table {
 			return $this->data[$key];
 
 
-	if (array_key_exists('Invoice '.$key, $this->data))
+		if (array_key_exists('Invoice '.$key, $this->data))
 			return $this->data[$this->table_name.' '.$key];
 
 
@@ -3368,7 +3370,7 @@ class Invoice extends DB_Table {
 		$customer=new Customer($customer_key);
 		if (!$customer->id) {
 			exit("error customer not found");
-			
+
 			//$customer= new Customer('create anonymous');
 		} else
 			$store_key=$customer->data['Customer Store Key'];

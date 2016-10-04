@@ -48,7 +48,7 @@ $worker->addFunction("au_housekeeping", "fork_housekeeping");
 //$worker->addFunction("sendemail", "fork_sendemail");
 
 $db=false;
-
+$account=false;
 
 while ($worker->work()) {
 	if ($worker->returnCode() == GEARMAN_SUCCESS) {
@@ -58,11 +58,9 @@ while ($worker->work()) {
 	}
 }
 
+function get_fork_metadata($job) {
 
-
-function get_fork_data($job) {
-
-	global $db;
+	global $db, $account;
 
 	$fork_encrypt_key=md5('huls0fjhslsshskslgjbtqcwijnbxhl2391');
 	$fork_raw_data=$job->workload();
@@ -71,9 +69,62 @@ function get_fork_data($job) {
 
 	$inikoo_account_code=$fork_metadata['code'];
 	if (!ctype_alnum($inikoo_account_code)) {
-	
-	  print_r($fork_metadata);
-	
+
+		print_r($fork_metadata);
+
+		print "can't find account code ->".$inikoo_account_code."<-  \n";
+		return false;
+	}
+
+	require_once "keyring/dns.$inikoo_account_code.php";
+	require_once "class.Account.php";
+
+	$db = new PDO("mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd , array(\PDO::MYSQL_ATTR_INIT_COMMAND =>"SET time_zone = '+0:00';"));
+	$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+
+	$default_DB_link=mysql_connect($dns_host, $dns_user, $dns_pwd );
+	if (!$default_DB_link) {
+		print "Error can not connect with database server\n";
+		return false;
+	}
+	$db_selected=mysql_select_db($dns_db, $default_DB_link);
+	if (!$db_selected) {
+		print "Error can not access the database\n";
+		return false;
+	}
+	mysql_set_charset('utf8');
+	mysql_query("SET time_zone='+0:00'");
+
+
+	$account=new Account($db);
+
+	if ($account->get('Timezone')) {
+		date_default_timezone_set($account->get('Timezone'));
+	}else {
+		setTimezone('UTC');
+	}
+
+	return array($account,$db,$fork_metadata['data']);
+
+
+}
+
+
+function get_fork_data($job) {
+
+	global $db, $account;
+
+	$fork_encrypt_key=md5('huls0fjhslsshskslgjbtqcwijnbxhl2391');
+	$fork_raw_data=$job->workload();
+	$fork_metadata=json_decode(AESDecryptCtr(base64_decode($fork_raw_data), $fork_encrypt_key, 256), true);
+
+
+	$inikoo_account_code=$fork_metadata['code'];
+	if (!ctype_alnum($inikoo_account_code)) {
+
+		print_r($fork_metadata);
+
 		print "can't find account code ->".$inikoo_account_code."<-  \n";
 		return false;
 	}
@@ -88,9 +139,6 @@ function get_fork_data($job) {
 
 	$db = new PDO("mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd , array(\PDO::MYSQL_ATTR_INIT_COMMAND =>"SET time_zone = '+0:00';"));
 	$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-
-
-
 
 
 	$default_DB_link=mysql_connect($dns_host, $dns_user, $dns_pwd );

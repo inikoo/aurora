@@ -524,7 +524,7 @@ trait ProductCategory {
 			"Product Category 4 Year Ago Quantity Delivered"=>$data_4y_ago['delivered'],
 			"Product Category DC 4 Year Ago Profit"=>$data_4y_ago['dc_net'],
 			"Product Category DC 4 Year Ago Invoiced Amount"=>$data_4y_ago['dc_profit'],
-			
+
 			"Product Category 5 Year Ago Customers"=>$data_5y_ago['customers'],
 			"Product Category 5 Year Ago Invoices"=>$data_5y_ago['invoices'],
 			"Product Category 5 Year Ago Profit"=>$data_5y_ago['profit'],
@@ -584,6 +584,44 @@ trait ProductCategory {
 	}
 
 
+
+
+
+	function get_categories($scope='keys') {
+
+		if (   $scope=='objects') {
+			include_once 'class.Category.php';
+		}
+
+		$type='Category';
+
+		$categories=array();
+
+
+		$sql=sprintf("select B.`Category Key` from `Category Dimension` C left join `Category Bridge` B on (B.`Category Key`=C.`Category Key`) where `Subject`=%s and `Subject Key`=%d and `Category Branch Type`!='Root'",
+			prepare_mysql($type),
+			$this->id);
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+				if ($scope=='objects') {
+					$categories[$row['Category Key']]=new Category($row['Category Key']);
+				}else {
+					$categories[$row['Category Key']]=$row['Category Key'];
+				}
+
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+		return $categories;
+
+
+	}
 
 
 

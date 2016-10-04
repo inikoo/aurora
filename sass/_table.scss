@@ -30,7 +30,7 @@
         line-height: 70%;
     }
 }
-.new_object, .presention_card, .showcase, .dashboard, .export_dialog {
+.new_object, .presention_card, .showcase, .export_dialog {
     table {
         width: 100%;
         .adr {
@@ -230,16 +230,7 @@ table {
 .backgrid th.align-right {
     text-align: right;
 }
-.dashboard {
-    .record td, .totals td, .title td, .header td {
-        &:first-of-type {
-            padding-left: 20px;
-        }
-        &:last-of-type, &.last {
-            padding-right: 20px;
-        }
-    }
-}
+
 .export_dialog {
     position: absolute;
  

@@ -19,8 +19,6 @@ $default=$user->get_tab_defaults($tab);
 
 $table_views=array(
 	'overview'=>array('label'=>_('Overview')),
-	// 'status'=>array('label'=>_('Status')),
-	// 'stock'=>array('label'=>_('Stock')),
 	'performance'=>array('label'=>_('Performance')),
 	'sales'=>array('label'=>_('Sales')),
 	'sales_y'=>array('label'=>_('Invoiced amount (Yrs)')),
