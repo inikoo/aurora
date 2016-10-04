@@ -83,7 +83,7 @@ function move(element) {
             if (!$(obj).hasClass('from')) {
 
                 //console.log($(obj))
-                $(obj).removeClass('fa-caret-square-o-right super_discreet ').addClass('fa-caret-square-o-left')
+                $(obj).removeClass('fa-caret-square-o-right super_discreet  invisible').addClass('fa-caret-square-o-left')
                 possible_to_locations++;
                 to = obj
             }
@@ -410,10 +410,14 @@ function process_edit_stock() {
             editable_locations++;
 
             if ( $('#move_stock_tr').hasClass('hide')) {
+               
+               if ($(obj).closest('tr').find('input.stock').val() <=0) {
+               $(obj).closest('tr').find('.move_trigger').addClass('invisible')
+              }else{
               $(obj).closest('tr').find('.move_trigger').removeClass('invisible')
+             }
             }else{
-                // console.log($('#move_stock_tr').hasClass('hide'))
-                //console.log('x')
+                
               
             }
 
