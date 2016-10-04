@@ -183,11 +183,12 @@ function move_qty_changed(element) {
         validation = client_validation('smallint_unsigned', false, value, '')
 
         if (validation.class == 'valid') {
-            console.log($('#locations_table  .from ').closest('tr').find('input.stock').val())
-
+            //console.log($('#locations_table  .from ').closest('tr').find('input.stock').val())
+console.log(value)
+console.log($('.locations  .from ').closest('tr').find('input.stock').val())
 
             if (parseInt(value) > parseInt(
-            $('#locations_table  .from ').closest('tr').find('input.stock').val())) {
+            $('.locations  .from ').closest('tr').find('input.stock').attr('ovalue'))) {
                 validation.class = 'invalid'
             }
         }
@@ -206,7 +207,7 @@ function move_qty_changed(element) {
             var from_input = $('#locations_table  .from ').closest('tr').find('input.stock')
 
             old_from_input = from_input.val()
-            from_input.val(from_input.val() - move_qty)
+            from_input.val(parseFloat(from_input.attr('ovalue')) - move_qty)
 
             stock_changed($(from_input))
 
@@ -214,9 +215,9 @@ function move_qty_changed(element) {
             old_to_input = to_input.val()
 
 
-            console.log($('#locations_table  .to '))
+           // console.log($('#locations_table  .to '))
             //to_input.val('cc')
-            to_input.val(parseFloat(to_input.val()) + move_qty)
+            to_input.val(parseFloat(to_input.attr('ovalue')) + move_qty)
             stock_changed(to_input)
 
 
