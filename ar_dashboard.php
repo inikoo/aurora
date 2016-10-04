@@ -154,10 +154,10 @@ function sales_overview($_data, $db, $user, $account) {
 
 			if ($_data['currency']=='store') {
 				$data['orders_overview_sales_'.$row['record_key']]=array('value'=>money($row['sales'], $row['currency']));
-				$data['orders_overview_sales_delta_'.$row['record_key']]=array('value'=>delta($row['sales'], $row['sales_1yb']) , 'title'=>money($row['sales_1yb'], $row['currency'])  );
+				$data['orders_overview_sales_delta_'.$row['record_key']]=array('value'=>delta($row['sales'], $row['sales_1yb']).' '.delta_icon($row['sales'], $row['sales_1yb']) , 'title'=>money($row['sales_1yb'], $row['currency'])  );
 			}else {
 				$data['orders_overview_sales_'.$row['record_key']]=array('value'=>money($row['dc_sales'], $account->get('Account Currency')));
-				$data['orders_overview_sales_delta_'.$row['record_key']]=array('value'=>delta($row['dc_sales'], $row['dc_sales_1yb']) , 'title'=>money($row['dc_sales_1yb'], $account->get('Account Currency'))  );
+				$data['orders_overview_sales_delta_'.$row['record_key']]=array('value'=>delta($row['dc_sales'], $row['dc_sales_1yb']).' '.delta_icon($row['dc_sales'], $row['dc_sales_1yb']) , 'title'=>money($row['dc_sales_1yb'], $account->get('Account Currency'))  );
 			}
 
 			if ($_data['type']=='invoice_categories' ) {
@@ -175,19 +175,19 @@ function sales_overview($_data, $db, $user, $account) {
 
 
 
-			$data['orders_overview_invoices_delta_'.$row['record_key']]=array('value'=>delta($row['invoices'], $row['invoices_1yb']), 'title'=>number($row['invoices_1yb'])  );
+			$data['orders_overview_invoices_delta_'.$row['record_key']]=array('value'=>delta($row['invoices'], $row['invoices_1yb']).' '.delta_icon($row['invoices'], $row['invoices_1yb']), 'title'=>number($row['invoices_1yb'])  );
 
 
 			$data['orders_overview_delivery_notes_'.$row['record_key']]=array('value'=>number($row['delivery_notes']),'request'=>'delivery_notes/'.$row['record_key']  );
-			$data['orders_overview_delivery_notes_delta_'.$row['record_key']]=array('value'=>delta($row['delivery_notes'], $row['delivery_notes_1yb']), 'title'=>number($row['delivery_notes_1yb']));
+			$data['orders_overview_delivery_notes_delta_'.$row['record_key']]=array('value'=>delta($row['delivery_notes'], $row['delivery_notes_1yb']).' '.delta_icon($row['delivery_notes'], $row['delivery_notes_1yb']), 'title'=>number($row['delivery_notes_1yb']));
 
 
-			$data['orders_overview_refunds_delta_'.$row['record_key']]=array('value'=>delta($row['refunds'], $row['refunds_1yb']), 'title'=>number($row['refunds_1yb']) );
+			$data['orders_overview_refunds_delta_'.$row['record_key']]=array('value'=>delta($row['refunds'], $row['refunds_1yb']).' '.delta_icon($row['refunds'], $row['refunds_1yb']), 'title'=>number($row['refunds_1yb']) );
 
 
 
 			$data['orders_overview_replacements_'.$row['record_key']]=array('value'=>number($row['replacements']),'request'=>'delivery_notes/'.$row['record_key'] );
-			$data['orders_overview_replacements_delta_'.$row['record_key']]=array('value'=>delta($row['replacements'], $row['replacements_1yb']), 'title'=>number($row['replacements_1yb']) );
+			$data['orders_overview_replacements_delta_'.$row['record_key']]=array('value'=>delta($row['replacements'], $row['replacements_1yb']).' '.delta_icon($row['replacements'], $row['replacements_1yb']), 'title'=>number($row['replacements_1yb']) );
 			$data['orders_overview_replacements_percentage_'.$row['record_key']]=array('value'=>percentage($row['replacements'], $row['delivery_notes']));
 			$data['orders_overview_replacements_percentage_1yb_'.$row['record_key']]=array('value'=>percentage($row['replacements_1yb'], $row['delivery_notes_1yb']), 'title'=>number($row['replacements_1yb']).'/'.number( $row['delivery_notes_1yb']));
 
@@ -202,22 +202,22 @@ function sales_overview($_data, $db, $user, $account) {
 
 
 	$data['orders_overview_sales_totals']=($currency=='store'?array('value'=>''):array('value'=>money($sum_dc_sales, $account->get('Account Currency'))));
-	$data['orders_overview_sales_delta_totals']=($currency=='store'?array('value'=>''):array('value'=>delta($sum_dc_sales, $sum_dc_sales_1yb) , 'title'=>money($sum_dc_sales_1yb, $account->get('Account Currency'))  )  );
+	$data['orders_overview_sales_delta_totals']=($currency=='store'?array('value'=>''):array('value'=>delta($sum_dc_sales, $sum_dc_sales_1yb).' '.delta_icon($sum_dc_sales, $sum_dc_sales_1yb) , 'title'=>money($sum_dc_sales_1yb, $account->get('Account Currency'))  )  );
 
 
 	$data['orders_overview_invoices_totals']=array('value'=>number($sum_invoices));
-	$data['orders_overview_invoices_delta_totals']=array('value'=>delta($sum_invoices, $sum_invoices_1yb), 'title'=>number($sum_invoices_1yb));
+	$data['orders_overview_invoices_delta_totals']=array('value'=>delta($sum_invoices, $sum_invoices_1yb).' '.delta_icon($sum_invoices, $sum_invoices_1yb), 'title'=>number($sum_invoices_1yb));
 
 
 	$data['orders_overview_refunds_totals']=array('value'=>number($sum_refunds));
-	$data['orders_overview_refunds_delta_totals']=array('value'=>delta($sum_refunds, $sum_refunds_1yb), 'title'=>number($sum_refunds_1yb));
+	$data['orders_overview_refunds_delta_totals']=array('value'=>delta($sum_refunds, $sum_refunds_1yb).' '.delta_icon($sum_refunds, $sum_refunds_1yb), 'title'=>number($sum_refunds_1yb));
 
 
 	$data['orders_overview_delivery_notes_totals']=array('value'=>number($sum_delivery_notes));
-	$data['orders_overview_delivery_notes_delta_totals']=array('value'=>delta($sum_delivery_notes, $sum_delivery_notes_1yb), 'title'=>number($sum_delivery_notes_1yb));
+	$data['orders_overview_delivery_notes_delta_totals']=array('value'=>delta($sum_delivery_notes, $sum_delivery_notes_1yb).' '.delta_icon($sum_delivery_notes, $sum_delivery_notes_1yb), 'title'=>number($sum_delivery_notes_1yb));
 
 	$data['orders_overview_replacements_totals']=array('value'=>number($sum_replacements));
-	$data['orders_overview_replacements_delta_totals']=array('value'=>delta($sum_replacements, $sum_replacements_1yb), 'title'=>number($sum_replacements_1yb));
+	$data['orders_overview_replacements_delta_totals']=array('value'=>delta($sum_replacements, $sum_replacements_1yb).' '.delta_icon($sum_replacements, $sum_replacements_1yb), 'title'=>number($sum_replacements_1yb));
 	$data['orders_overview_replacements_percentage_totals']=array('value'=>percentage($sum_replacements, $sum_delivery_notes));
 	$data['orders_overview_replacements_percentage_1yb_totals']=array('value'=>percentage($sum_replacements_1yb, $sum_delivery_notes_1yb), 'title'=>number($sum_replacements_1yb).'/'.number($sum_delivery_notes_1yb));
 

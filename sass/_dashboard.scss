@@ -1,0 +1,163 @@
+.dashboard {
+
+font-size:90%;
+
+    .record td, .totals td, .title td, .header td {
+        &:first-of-type {
+            padding-left: 20px;
+        }
+        &:last-of-type, &.last {
+            padding-right: 20px;
+        }
+    }
+
+
+    table {
+        width: 100%;
+       
+         height: $height_short_row;
+            line-height: $height_short_row;
+            
+         
+         tbody.data{ 
+         
+         &:nth-child(even) {
+        
+    background-color: rgba(211,211,211,.2);
+}
+         
+          }
+            
+            
+        .main_title {
+        
+           // font-family: $font_title;
+            //font-weight: 300 !important;
+            height: $height_short_row;
+            padding:0px;
+            td {padding:0px;}
+           
+         //    background-color: rgba(211,211,211,.2);
+            background-color: $color_dark;
+             color: #ddd;
+           //border-top:1px solid #aaa;
+           // border-bottom:1px solid #aaa;
+            .button .fa {
+                position: relative;
+                top: 1px;
+            }
+            .widget_types {
+                @include unselectable;
+                //height: $height_short_row;
+                // line-height: $height_short_row;
+                
+             //    font-family: $font_title;
+           // font-weight: 300 !important;
+            border: none;
+          
+                        
+
+                
+                clear: both;
+                border-bottom: none;
+               color: $color_dark_font;
+               // font-size: $height_short_row*.7;
+               background-color: $color_dark;
+                .widget {
+               //   background-color: rgba(211,211,211,.4);
+                    //height: $height_short_row;
+                    float: left;
+                    padding: 0px 20px;
+                   // border-right: 1px solid $color_dark_highlight;
+                    cursor: pointer;
+                    &.right {
+                        float: right;
+                        border-right: none;
+                        border-left: 1px solid #ccc;
+                    }
+                    .fa {
+                        font-size: 75%;
+                        // color: $color_dark_font;
+                        
+                        position: relative;
+                        top: -1px;
+                    }
+                    
+                    border-right: 1px solid #ccc;
+                }
+                .widget {
+                    &.selected, &.selected:hover {
+                       color: $color_dark_font_selected;
+                  //  color: #000;
+                //     background-color: rgba(211,211,211,.8);
+                 background-color: $color_dark;
+                  //  border-right: 1px solid #ccc;
+                   // border-left: 1px solid #ccc;
+ 
+          }
+                    &:hover {
+                        color: $color_dark_font_hover;
+                    //background-color: rgba(70,130,180, 0.05);;
+                    }
+                }
+            }
+            .tabs {
+                border-bottom: none !important;
+                color: $color_dark_font !important;
+                background-color: $color_dark !important;
+                .tab, .element {
+                    border-right: 1px solid $color_dark_highlight;
+                    &.right {
+                        border-left: 1px solid $color_dark_highlight;
+                    }
+                    .fa {
+                        //color: $color_dark_font;
+                    }
+                }
+                .tab.widget:hover {
+                    background-color: #color_dark_highlight !important;
+                }
+                .tab {
+                    &.widget_selected:hover, &.widget_selected {
+                        color: $color_dark_font_selected !important;
+                    }
+                    &:hover, &.selected > .fa {
+                        // color: #666;
+                    }
+                }
+            }
+        }
+        .formated_value {
+            margin-right: 10px;
+        }
+        td {
+            vertical-align: text-top;
+        }
+        tr {
+            border-bottom: 1px solid #ddd;
+            height: $height_row;
+            line-height: $height_row;
+        }
+        tr.small_row {
+            height: $height_short_row;
+            line-height: $height_short_row;
+            //border-bottom: none;
+        }
+        tr.no_border {
+            border: none;
+        }
+        
+       
+       
+        .header {
+            border-top: none;
+            td {
+              //  font-family: $font_title;
+                font-weight: 600;border-bottom:1px solid #ccc
+                
+              
+            }
+        }
+       
+    }
+}

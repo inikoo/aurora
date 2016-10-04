@@ -107,6 +107,39 @@ class Part extends Asset{
 	}
 
 
+	function get_categories($scope='keys') {
+
+		if (   $scope=='objects') {
+			include_once 'class.Category.php';
+		}
+
+
+		$categories=array();
+
+
+		$sql=sprintf("select B.`Category Key` from `Category Dimension` C left join `Category Bridge` B on (B.`Category Key`=C.`Category Key`) where `Subject`='Part' and `Subject Key`=%d and `Category Branch Type`!='Root'", $this->sku);
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+				if ($scope=='objects') {
+					$categories[$row['Category Key']]=new Category($row['Category Key']);
+				}else {
+					$categories[$row['Category Key']]=$row['Category Key'];
+				}
+
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+		return $categories;
+
+
+	}
+
 
 	function get_supplier_parts($scope='keys') {
 
@@ -2836,25 +2869,7 @@ class Part extends Asset{
 	}
 
 
-	function get_categories() {
-
-
-		$part_categories=array();
-
-
-		$sql=sprintf("select C.`Category Key`,`Category Label` from `Category Dimension` C left join `Category Bridge` B on (B.`Category Key`=C.`Category Key`) where `Subject`='Part' and `Subject Key`=%d and `Category Branch Type`='Head'", $this->sku);
-		// print $sql;
-		$result=mysql_query($sql);
-		while ($row=mysql_fetch_assoc($result)) {
-			$part_categories[]=array('category_key'=>$row['Category Key'], 'category_label'=>$row['Category Label']);
-		}
-
-		return $part_categories;
-	}
-
-
-
-
+	
 
 
 	function get_field_label($field) {

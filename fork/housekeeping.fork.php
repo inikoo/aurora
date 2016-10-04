@@ -12,130 +12,202 @@
 function fork_housekeeping($job) {
 
 
-	if (!$_data=get_fork_data($job))
+	if (!$_data=get_fork_metadata($job))
 		return;
 
 
-	
+	list($account, $db, $data)=$_data;
 
-	$fork_data=$_data['fork_data'];
-	$fork_key=$_data['fork_key'];
+	//print_r($data);
 
-
-//print_r($_data);
-
-
-	switch ($fork_data['type']) {
+	switch ($data['type']) {
 
 	case 'update_part_products_availability':
-
+		return;
 		include_once 'class.Part.php';
-
-		$part=new Part($fork_data['part_sku']);
-
+		$part=new Part($data['part_sku']);
 		foreach ($part->get_products('objects') as $product) {
 			$product->update_availability($use_fork=false);
 		}
 
 		break;
-		
-	case 'update_web_state_slow_forks':
+
+	case 'update_delivery_note_part_sales_data':
+
+		include_once 'class.Part.php';
+		include_once 'class.Customer.php';
+		include_once 'class.Category.php';
+
+		$categories=array();
+		//print_r($data);
+
+		$customer=new Customer($data['customer_key']);
+		$customer->update_part_bridge();
+
+		$sql=sprintf("select `Part SKU` from `Inventory Transaction Fact` where `Delivery Note Key`=%d", $data['delivery_note_key']);
+
+		//print "$sql\n";
+
+		if ($result=$db->query($sql)) {
+			foreach ($result as $row) {
+				$part=new Part($row['Part SKU']);
+
+
+				//print $part->get('Reference')."\n";
+
+				$part->load_acc_data();
+
+				$part->update_sales_from_invoices('Total');
+				$part->update_sales_from_invoices('Week To Day');
+				$part->update_sales_from_invoices('Month To Day');
+				$part->update_sales_from_invoices('Quarter To Day');
+				$part->update_sales_from_invoices('Year To Day');
+				$part->update_sales_from_invoices('1 Year');
+				$part->update_sales_from_invoices('1 Quarter');
+				$part->update_sales_from_invoices('1 Month');
+				$part->update_sales_from_invoices('Today');
+
+				$categories=$categories+$part->get_categories();
+
+
+			}
+		}
+
+		foreach ($categories as $category_key) {
+
+			$category=new Category($category_key);
+
+
+			// print $category->get('Code')."\n";
+
+			$category->update_part_category_sales('Total');
+			$category->update_part_category_sales('Week To Day');
+			$category->update_part_category_sales('Month To Day');
+			$category->update_part_category_sales('Quarter To Day');
+			$category->update_part_category_sales('Year To Day');
+			$category->update_part_category_sales('1 Year');
+			$category->update_part_category_sales('1 Quarter');
+			$category->update_part_category_sales('1 Month');
+			$category->update_part_category_sales('Today');
+
+		}
+
+
+		break;
+
+	case 'update_invoice_products_sales_data':
+
 
 		include_once 'class.Product.php';
-
-		$product=new Product('id',$fork_data['product_id']);
-
-		$product->update_web_state_slow_forks($fork_data['web_availability_updated']);
-		
-
-		break;	
-		
-	case 'update_otf':
-		include_once 'class.Order.php';
-
-		$order = new Order($fork_data['order_key']);
-		$order->update_deals_usage();
-		break;
-	case 'invoice_created':
-		include_once 'class.Invoice.php';
-		$invoice = new invoice($fork_data['subject_key']);
-
-		$invoice->update_xhtml_sale_representatives();
-		$invoice->categorize();
-
-		break;
-	case 'order_created':
-		include_once 'class.Order.php';
 		include_once 'class.Customer.php';
+		include_once 'class.Category.php';
 		include_once 'class.Store.php';
-		$order = new Order($fork_data['subject_key']);
+		include_once 'class.Invoice.php';
 
-		$customer=new Customer($order->data['Order Customer Key']);
-		$customer->editor=$fork_data['editor'];
-		$customer->add_history_new_order($order);
-		$customer->update_orders();
-		$customer->update_no_normal_data();
-		$store=new Store($order->data['Order Store Key']);
-		$store->update_orders();
-		$order->update_full_search();
+		$categories=array();
+		$categories_bis=array();
+		//print_r($data);
+
+		$customer=new Customer($data['customer_key']);
+		$customer->update_product_bridge();
 
 
-		break;
+		$store=new Store($data['store_key']);
 
-	case 'delivery_note_picked':
-	case 'item_picked':
-		include_once 'class.DeliveryNote.php';
-		include_once 'class.PartLocation.php';
+		$store->update_sales_from_invoices('Total');
+		$store->update_sales_from_invoices('Week To Day');
+		$store->update_sales_from_invoices('Month To Day');
 
-		$dn= new DeliveryNote($fork_data['delivery_note_key']);
+		$store->update_sales_from_invoices('Quarter To Day');
+		$store->update_sales_from_invoices('Year To Day');
 
-		if ($fork_data['type']=='delivery_note_picked') {
-			$where=sprintf(" where `Delivery Note Key`=%d", $fork_data['subject_key']);
-		}else {
-			$where=sprintf(" where `Inventory Transaction Key`=%d", $fork_data['subject_key']);
+		$store->update_sales_from_invoices('1 Year');
+		$store->update_sales_from_invoices('1 Quarter');
+		$store->update_sales_from_invoices('1 Month');
+		$store->update_sales_from_invoices('1 Week');
+		$store->update_sales_from_invoices('Today');
+
+
+        $invoice=new Invoice( $data['invoice_key']);
+        $invoice->categorize();
+        
+		$sql=sprintf("select `Product ID` from `Order Transaction Fact` where `Invoice Key`=%d", $data['invoice_key']);
+
+		//print "$sql\n";
+
+		if ($result=$db->query($sql)) {
+			foreach ($result as $row) {
+				$product=new Product('id', $row['Product ID']);
+
+
+				//print $product->get('Code')."\n";
+
+				$product->load_acc_data();
+
+				$product->update_sales_from_invoices('Total');
+				$product->update_sales_from_invoices('Week To Day');
+				$product->update_sales_from_invoices('Month To Day');
+				$product->update_sales_from_invoices('Quarter To Day');
+				$product->update_sales_from_invoices('Year To Day');
+				$product->update_sales_from_invoices('1 Year');
+				$product->update_sales_from_invoices('1 Quarter');
+				$product->update_sales_from_invoices('1 Month');
+				$product->update_sales_from_invoices('1 Week');
+				$product->update_sales_from_invoices('Today');
+
+				$categories=$categories+$product->get_categories();
+
+
+			}
 		}
 
-		$sql="select  `Map To Order Transaction Fact Key`,`Inventory Transaction Key`,`Part SKU`,`Inventory Transaction Quantity`,`Date`,`Location Key` from  `Inventory Transaction Fact` ITF $where";
-		$res=mysql_query($sql);
-		while ($row=mysql_fetch_assoc($res)) {
+		foreach ($categories as $category_key) {
 
-			$transaction_value=$dn->get_transaction_value($row['Part SKU'], -1*$row['Inventory Transaction Quantity'], $row['Date']);
-			$cost_storing=0;//to do
+			$category=new Category($category_key);
 
-			$sql = sprintf("update `Inventory Transaction Fact` set `Inventory Transaction Amount`=%f where `Inventory Transaction Key`=%d  ",
-				$transaction_value,
-				$row['Inventory Transaction Key']
-			);
-			mysql_query($sql);
 
-			$sql = sprintf("update `Order Transaction Fact` set `Cost Supplier`=%f,`Cost Storing`=%f where `Order Transaction Fact Key`=%d  ",
+			//print $category->get('Code')."\n";
 
-				$transaction_value,
-				$cost_storing,
-				$row['Map To Order Transaction Fact Key']
-			);
-			mysql_query($sql);
+			$category->update_product_category_sales('Total');
+			$category->update_product_category_sales('Week To Day');
+			$category->update_product_category_sales('Month To Day');
+			$category->update_product_category_sales('Quarter To Day');
+			$category->update_product_category_sales('Year To Day');
+			$category->update_product_category_sales('1 Year');
+			$category->update_product_category_sales('1 Quarter');
+			$category->update_product_category_sales('1 Month');
+			$category->update_product_category_sales('1 Week');
+			$category->update_product_category_sales('Today');
 
-			$part_location=new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
-			$part_location->update_stock();
-
-		}
-		break;
-
-	case 'send_to_warehouse':
-
-		include_once 'class.PartLocation.php';
-
-		$sql=sprintf("select `Part SKU`,`Location Key` from  `Inventory Transaction Fact` ITF where `Delivery Note Key`=%d",
-			$fork_data['delivery_note_key']);
-		$res=mysql_query($sql);
-		while ($row=mysql_fetch_assoc($res)) {
-
-			$part_location=new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
-			$part_location->update_stock();
+			$categories_bis=$categories_bis+$category->get_categories();
 
 
 		}
+
+		foreach ($categories_bis as $category_key) {
+
+			$category=new Category($category_key);
+
+
+			//print $category->get('Code')."\n";
+
+			$category->update_product_category_sales('Total');
+			$category->update_product_category_sales('Week To Day');
+			$category->update_product_category_sales('Month To Day');
+			$category->update_product_category_sales('Quarter To Day');
+			$category->update_product_category_sales('Year To Day');
+			$category->update_product_category_sales('1 Year');
+			$category->update_product_category_sales('1 Quarter');
+			$category->update_product_category_sales('1 Month');
+			$category->update_product_category_sales('1 Week');
+			$category->update_product_category_sales('Today');
+
+
+
+		}
+
+
+
 		break;
 
 	}
