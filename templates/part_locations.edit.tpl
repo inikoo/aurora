@@ -29,7 +29,7 @@
 	<input type="hidden" class="note" value="" >
 	<i class="fa fa-sticky-note-o button super_discreet add_note invisible " aria-hidden="true" title="{t}Note{/t}"  onclick="set_inventory_transaction_note(this)"></i>
 	
-	<i class="fa fa-fw fa-caret-square-o-right move_trigger button super_discreet" aria-hidden="true" title="{t}Move from{/t}" onclick="move(this)"></i> </td>
+	<i class="fa fa-fw fa-caret-square-o-right move_trigger button super_discreet {if $location_data.stock<=0}invisible{/if} " aria-hidden="true" title="{t}Move from{/t}" onclick="move(this)"></i> </td>
 </tr>
 
 {/foreach}				
@@ -62,7 +62,7 @@
 	<input type="hidden" class="note" value="" >
 	<i class="fa fa-sticky-note-o button super_discreet add_note invisible " aria-hidden="true" title="{t}Note{/t}"  onclick="set_inventory_transaction_note(this)"></i>
 	
-	<i class="fa fa-fw fa-caret-square-o-right move_trigger button super_discreet" aria-hidden="true" title="{t}Move from{/t}" onclick="move(this)"></i> </td>
+	<i class="fa fa-fw fa-caret-square-o-right move_trigger button super_discreet invisible " aria-hidden="true" title="{t}Move from{/t}" onclick="move(this)"></i> </td>
 
  </tr>
  
