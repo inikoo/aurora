@@ -163,9 +163,9 @@
 				<td colspan=2 ><span id="move_from"></span> <i class="fa fa-fw fa-caret-square-o-right " aria-hidden="true"  ></i>  <span id="move_to"></span></td> 
 					
 			<td class="aright" >
-			<i class="fa fa-fw fa-times button discreet" aria-hidden="true" title="{t}Close{/t}" onClick="close_move()"></i>
 			<input  id="move_stock_qty" style="width:80px" value="" placeholder="{t}Move stock{/t}"> 
-			<i  id="move_stock" class="fa fa-fw fa-level-down button save  " aria-hidden="true" title="{t}Move from{/t}" onClick="apply_move()" ></i> 
+				<i class="fa fa-fw fa-times button discreet" aria-hidden="true" title="{t}Close{/t}" onClick="close_move()"></i>
+
 			</td>
 			
 				</tr>
@@ -210,7 +210,7 @@ function category_view(){
 }
 
 
-var movements = []
+var movements = false
 
 //open_edit_stock()
  $('#locations_table  input.stock ').each(function(i, obj) {
@@ -238,7 +238,7 @@ $(document).on('input propertychange', '.recommended_move', function(evt) {
 $(document).on('input propertychange', '.stock', function(evt) {
 
     if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
-    stock_changed($(this))
+    stock_field_changed($(this))
 });
 
 $(document).on('input propertychange', '#move_stock_qty', function(evt) {
