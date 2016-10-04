@@ -47,10 +47,6 @@ function update_parts_sales($db, $print_est) {
 		foreach ($result as $row) {
 			$category=new Category($row['Category Key']);
 
-
-
-
-
 			$category->update_part_category_sales('Total');
 			$category->update_part_category_sales('Week To Day');
 			$category->update_part_category_sales('Month To Day');

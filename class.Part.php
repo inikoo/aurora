@@ -2012,7 +2012,7 @@ class Part extends Asset{
 		include_once 'utils/new_fork.php';
 		global $account;
 
-		list($fork_key, $msg)=new_fork('au_housekeeping', array('type'=>'update_part_products_availability', 'part_sku'=>$this->id), $account->get('Account Code'), $this->db);
+		 $msg=new_housekeeping_fork('au_housekeeping', array('type'=>'update_part_products_availability', 'part_sku'=>$this->id), $account->get('Account Code'));
 
 
 
