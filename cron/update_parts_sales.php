@@ -51,7 +51,7 @@ function update_parts_sales($db, $print_est) {
 			$part=new Part($row['Part SKU']);
 
 
-//print "caca";
+
 
 			$part->load_acc_data();
 
