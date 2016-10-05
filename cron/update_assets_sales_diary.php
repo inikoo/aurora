@@ -88,9 +88,7 @@ $sql=sprintf('update `Part Category Data` set `Part Category Yesterday Acc Custo
 $sql=sprintf('update `Part Category Data` set `Part Category Yesterday Acc Repeat Customers`=`Part Category Today Acc Repeat Customers`,`Part Category Today Acc Repeat Customers`=0');$db->exec($sql);
 
 
-$intervals=array('Month To Day', 'Quarter To Day', 'Year To Day', 'Week To Day', '1 Year', '1 Quarter');
-
-
+$intervals=array('Month To Day', 'Quarter To Day', 'Year To Day', 'Week To Day', '1 Year', '1 Quarter','1 Month','1 Week');
 
 
 

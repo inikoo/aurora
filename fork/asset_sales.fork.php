@@ -105,9 +105,9 @@ function fork_asset_sales($job) {
 				$part->update_sales_from_invoices('Month To Day');
 				$part->update_sales_from_invoices('Quarter To Day');
 				$part->update_sales_from_invoices('Year To Day');
-				$part->update_sales_from_invoices('1 Year');
-				$part->update_sales_from_invoices('1 Quarter');
-				$part->update_sales_from_invoices('1 Month');
+				//$part->update_sales_from_invoices('1 Year');
+				//$part->update_sales_from_invoices('1 Quarter');
+				//$part->update_sales_from_invoices('1 Month');
 				$part->update_sales_from_invoices('Today');
 
 				$categories=$categories+$part->get_categories();
@@ -128,9 +128,9 @@ function fork_asset_sales($job) {
 			$category->update_part_category_sales('Month To Day');
 			$category->update_part_category_sales('Quarter To Day');
 			$category->update_part_category_sales('Year To Day');
-			$category->update_part_category_sales('1 Year');
-			$category->update_part_category_sales('1 Quarter');
-			$category->update_part_category_sales('1 Month');
+			//$category->update_part_category_sales('1 Year');
+			//$category->update_part_category_sales('1 Quarter');
+			//$category->update_part_category_sales('1 Month');
 			$category->update_part_category_sales('Today');
 
 		}
@@ -222,10 +222,10 @@ function update_invoice_products_sales_data($db, $data) {
 			$product->update_sales_from_invoices('Month To Day');
 			$product->update_sales_from_invoices('Quarter To Day');
 			$product->update_sales_from_invoices('Year To Day');
-			$product->update_sales_from_invoices('1 Year');
-			$product->update_sales_from_invoices('1 Quarter');
-			$product->update_sales_from_invoices('1 Month');
-			$product->update_sales_from_invoices('1 Week');
+			//$product->update_sales_from_invoices('1 Year');
+			//$product->update_sales_from_invoices('1 Quarter');
+			//$product->update_sales_from_invoices('1 Month');
+			//$product->update_sales_from_invoices('1 Week');
 
 			$product->update_sales_from_invoices('Today');
 
@@ -250,10 +250,10 @@ function update_invoice_products_sales_data($db, $data) {
 		$category->update_product_category_sales('Month To Day');
 		$category->update_product_category_sales('Quarter To Day');
 		$category->update_product_category_sales('Year To Day');
-		$category->update_product_category_sales('1 Year');
-		$category->update_product_category_sales('1 Quarter');
-		$category->update_product_category_sales('1 Month');
-		$category->update_product_category_sales('1 Week');
+		//$category->update_product_category_sales('1 Year');
+		//$category->update_product_category_sales('1 Quarter');
+		//$category->update_product_category_sales('1 Month');
+		//$category->update_product_category_sales('1 Week');
 		$category->update_product_category_sales('Today');
 
 		$categories_bis=$categories_bis+$category->get_categories();
@@ -274,10 +274,10 @@ function update_invoice_products_sales_data($db, $data) {
 		$category->update_product_category_sales('Quarter To Day');
 		$category->update_product_category_sales('Year To Day');
 
-		$category->update_product_category_sales('1 Year');
-		$category->update_product_category_sales('1 Quarter');
-		$category->update_product_category_sales('1 Month');
-		$category->update_product_category_sales('1 Week');
+		//$category->update_product_category_sales('1 Year');
+		//$category->update_product_category_sales('1 Quarter');
+		//$category->update_product_category_sales('1 Month');
+		//$category->update_product_category_sales('1 Week');
 		$category->update_product_category_sales('Today');
 
 
