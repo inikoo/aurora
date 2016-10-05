@@ -338,6 +338,16 @@ if ($object->get('Supplier Type')!='Archived') {
 					'type'=>'value'
 				),
 				array(
+					'id'=>'Supplier_Account_Number',
+					'edit'=>($edit?'string':''),
+
+					'value'=>$object->get('Supplier Account Number'),
+					'formatted_value'=>$object->get('Account Number'),
+					'label'=>ucfirst($object->get_field_label('Supplier Account Number')),
+					'required'=>false,
+					'type'=>'value'
+				),
+				array(
 					'id'=>'Supplier_Default_Incoterm',
 					'edit'=>($edit?'option':''),
 

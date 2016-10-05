@@ -48,6 +48,7 @@ class SubjectSupplier extends Subject {
 			'Purchase Order Warehouse VAT Number'=>$warehouse->data['Warehouse VAT Number'],
 			'Purchase Order Warehouse Telephone'=>$warehouse->data['Warehouse Telephone'],
 			'Purchase Order Warehouse Email'=>$warehouse->data['Warehouse Email'],
+			'Purchase Order Account Number'=>$this->data['Supplier Account Number'],
 
 			'Purchase Order Terms and Conditions'=>$this->get('Default PO Terms and Conditions'),
 			'Purchase Order Main Buyer Key'=>$staff->id,
