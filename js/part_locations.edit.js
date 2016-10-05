@@ -25,6 +25,10 @@ function open_edit_stock() {
 
 function close_edit_stock() {
 
+if ( !$('#move_stock_tr').hasClass('hide')) {
+close_move();
+}
+
     $('.unlink_operations').addClass('hide')
 
     //$('#stock_table tbody.info').removeClass('hide')
@@ -45,6 +49,7 @@ function close_edit_stock() {
         $(obj).val($(obj).attr('ovalue'))
         stock_changed($(obj))
     })
+
 
 
 }
@@ -276,7 +281,7 @@ function stock_changed(element) {
 
 
 
-    var validation = validate_number(value, 0, 999999999)
+    var validation = validate_signed_integer(value,  999999999)
 
     if (!validation) {
         validation = {
@@ -735,6 +740,12 @@ function save_add_location() {
 }
 
 function save_stock() {
+
+
+if(!$('#edit_stock_saving_buttons').hasClass('valid')){
+
+return;
+}
 
     $('#inventory_transaction_note').addClass('hide')
     $('#save_stock').removeClass('fa-cloud').addClass('fa-spinner fa-spin')
