@@ -20,13 +20,8 @@ include 'export.fork.php';
 include 'export_edit_template.fork.php';
 include 'upload_edit.fork.php';
 include 'housekeeping.fork.php';
+include 'asset_sales.fork.php';
 
-
-//include 'ping_sitemap.fork.php';
-//include 'edit_parts.fork.php';
-//include 'housekeeping.fork..php';
-//include 'sendemail.fork.php';
-//include 'edit_pages.fork.php';
 
 
 
@@ -39,13 +34,9 @@ $worker->addFunction("au_export", "fork_export");
 $worker->addFunction("au_export_edit_template", "fork_export_edit_template");
 $worker->addFunction("au_upload_edit", "fork_upload_edit");
 $worker->addFunction("au_housekeeping", "fork_housekeeping");
+$worker->addFunction("au_asset_sales", "fork_asset_sales");
 
 
-//$worker->addFunction("ping_sitemap", "fork_ping_sitemap");
-//$worker->addFunction("edit_parts", "fork_edit_parts");
-//$worker->addFunction("housekeeping", "fork_housekeeping");
-//$worker->addFunction("edit_pages", "fork_edit_pages");
-//$worker->addFunction("sendemail", "fork_sendemail");
 
 $db=false;
 $account=false;
