@@ -123,6 +123,18 @@ $product_fields=array(
 				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates', 'parent'=>'store', 'parent_key'=>$object->get('Product Store Key'), 'object'=>'Product', 'key'=>$object->id)),
 				'type'=>'value'
 			),
+			
+			array(
+				'id'=>'Product_CPNP_Number',
+				'edit'=>($part_edit?'string':''),
+				'render'=>($new?false:true),
+				'value'=>$object->get('Product CPNP Number') ,
+				'formatted_value'=>$object->get('CPNP Number') ,
+				'label'=>ucfirst($object->get_field_label('Product CPNP Number')).($fields_linked?' <i  class="discret fa fa-chain"  title="'._('Linked to part value').'"></i>':''),
+				'invalid_msg'=>get_invalid_message('string'),
+				'required'=>false,
+				'type'=>'value'
+			),
 
 
 		)
