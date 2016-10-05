@@ -58,7 +58,6 @@ class SubjectSupplier extends Subject {
 
 
 
-
 		if ($this->get('Show Warehouse TC in PO')=='Yes') {
 
 			if ($order_data['Purchase Order Terms and Conditions']!='') {

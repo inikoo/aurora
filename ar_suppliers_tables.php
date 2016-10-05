@@ -77,7 +77,7 @@ case 'deleted.order.items':
 	break;
 case 'sales_history':
 	sales_history(get_table_parameters(), $db, $user, $account);
-	break;	
+	break;
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
@@ -692,7 +692,7 @@ function order_items($_data, $db, $user, $account) {
 		foreach ($result as $data) {
 
 
-		
+
 
 			$quantity=number($data['Purchase Order Quantity']);
 
@@ -703,13 +703,13 @@ function order_items($_data, $db, $user, $account) {
 
 			$subtotals=sprintf('<span  class="subtotals" >');
 			if ($data['Purchase Order Quantity']>0) {
-			
-			    $amount=$data['Purchase Order Quantity']*$units_per_carton*$data['Supplier Part Unit Cost'];
-			
+
+				$amount=$data['Purchase Order Quantity']*$units_per_carton*$data['Supplier Part Unit Cost'];
+
 				$subtotals.=money($amount, $purchase_order->get('Purchase Order Currency Code'));
 
 				if ( $data['Supplier Part Currency Code']!=$account->get('Account Currency')) {
-				$subtotals.=' <span class="">('.money($amount*$purchase_order->get('Purchase Order Currency Exchange'), $account->get('Account Currency')).')</span>';
+					$subtotals.=' <span class="">('.money($amount*$purchase_order->get('Purchase Order Currency Exchange'), $account->get('Account Currency')).')</span>';
 
 				}
 
@@ -740,6 +740,14 @@ function order_items($_data, $db, $user, $account) {
 
 			}
 
+
+			$description=$data['Part Unit Description'].' <span class="discreet">('.number($units_per_carton).'/C '.money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')).')</span>';
+
+
+if($data['Supplier Part Minimum Carton Order']>0){
+$description.=sprintf(' <span class="discreet"><span title="%s">MOQ</span>:%s<span>',_('Minimum order (cartons)'),number($data['Supplier Part Minimum Carton Order']));
+}
+
 			$adata[]=array(
 
 				'id'=>(integer)$data['Purchase Order Transaction Fact Key'],
@@ -751,7 +759,7 @@ function order_items($_data, $db, $user, $account) {
 				'checkbox'=>sprintf('<i key="%d" class="invisible fa fa-fw fa-square-o button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']),
 				'operations'=>sprintf('<i key="%d" class="fa fa-fw fa-truck fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']),
 				'reference'=>$data['Supplier Part Reference'],
-				'description'=>$data['Part Unit Description'].' ('.number($units_per_carton).'/C)',
+				'description'=>$description,
 				'quantity'=>sprintf('<span    data-settings=\'{"field": "Purchase Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button" aria-hidden="true"></i></span>',
 					$data['Purchase Order Transaction Fact Key'],
 					$data['Supplier Part Key'],
@@ -935,7 +943,7 @@ function delivery_checking_items($_data, $db, $user) {
 				$locations_data=preg_split('/,/', $data['location_data']);
 
 
-            
+
 
 				$locations='<div  class="part_locations mini_table left hide" transaction_key="'.$data['Purchase Order Transaction Fact Key'].'" >';
 
@@ -990,17 +998,17 @@ function delivery_checking_items($_data, $db, $user) {
 			}
 
 
-   
+
 
 			$placement='<div class="placement" ><div  class="placement_data mini_table right no_padding" style="padding-right:2px">';
 
 			if (  isset($metadata['placement_data'])) {
 
 				foreach ($metadata['placement_data'] as $placement_data) {
-				
-				    
-				
-					$placement.='<div style="clear:both;"> 
+
+
+
+					$placement.='<div style="clear:both;">
 				<div class="data w150 aright link" onClick="change_view(\'locations/'.$placement_data['wk'].'/'.$placement_data['lk'].'\')" >'.$placement_data['l'].'</div>
 				<div  class=" data w75 aleft"  >'.$placement_data['qty'].' '._('SKO').' <i class="fa fa-sign-out" aria-hidden="true"></i></div>
 				</div>';
@@ -1010,12 +1018,12 @@ function delivery_checking_items($_data, $db, $user) {
 			}
 			$placement.='<div style="clear:both"></div></div>';
 
- $placement_note='<input type="hidden" class="note" /><i class="fa add_note fa-sticky-note-o padding_right_5 button" aria-hidden="true"  onClick="show_placement_note(this)" ></i>';
+			$placement_note='<input type="hidden" class="note" /><i class="fa add_note fa-sticky-note-o padding_right_5 button" aria-hidden="true"  onClick="show_placement_note(this)" ></i>';
 			$placement.='
 			    <div style="clear:both"  id="place_item_'.$data['Purchase Order Transaction Fact Key'].'" class="place_item '.($data['Supplier Delivery Transaction Placed']=='No'?'':'hide').' " part_sku="'.$data['Part SKU'].'" transaction_key="'.$data['Purchase Order Transaction Fact Key'].'"  >
-			    
+
 			    '.$placement_note.'
-			    
+
 			    <input class="place_qty width_50 changed" value="'.($quantity+0).'" ovalue="'.($quantity+0).'"  min="1" max="'.($quantity+0).'"  >
 				<input class="location_code"  placeholder="'._('Location code').'"  >
 				<i  class="fa  fa-cloud  fa-fw save " aria-hidden="true" title="'._('Place to location').'"  location_key="" onClick="place_item(this)"  ></i>
@@ -1043,7 +1051,7 @@ function delivery_checking_items($_data, $db, $user) {
 
 				'sko_edit_checked_quantity'=>$edit_sko_checked_quantity,
 				'sko_checked_quantity'=>number($sko_checked_quantity),
-//'placement_notes'=>$placement_notes_field,
+				//'placement_notes'=>$placement_notes_field,
 				'subtotals'=>$subtotals,
 				'ordered'=>number($data['Purchase Order Quantity']),
 				'qty'=>number($quantity),
@@ -1325,6 +1333,12 @@ function order_supplier_all_parts($_data, $db, $user) {
 
 			$transaction_key='';
 
+			$description=$data['Part Unit Description'].' <span class="discreet">('.number($units_per_carton).'/C '.money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')).')</span>';
+
+			if ($data['Supplier Part Minimum Carton Order']>0) {
+				$description.=sprintf(' <span class="discreet"><span title="%s">MOQ</span>:%s<span>', _('Minimum order (cartons)'), number($data['Supplier Part Minimum Carton Order']));
+			}
+
 			$adata[]=array(
 				'id'=>(integer)$data['Supplier Part Key'],
 				'supplier_key'=>(integer)$data['Supplier Part Supplier Key'],
@@ -1337,7 +1351,7 @@ function order_supplier_all_parts($_data, $db, $user) {
 				'formatted_sku'=>sprintf("SKU%05d", $data['Supplier Part Part SKU']),
 				'part_description'=>'<span style="min-width:80px;display: inline-block;" class="link padding_right_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$data['Part Reference'].'</span> '.$data['Part Unit Description'],
 
-				'description'=>$data['Part Unit Description'].' <span class="discreet">('.number($units_per_carton).'/C '.money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')).')</span>',
+				'description'=>$description,
 				'status'=>$status,
 				'cost'=>money($data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']),
 				'packing'=>'<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package'].'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discret padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discret">'.($data['Part Units Per Package']*$data['Supplier Part Packages Per Carton'].'</span>'),
