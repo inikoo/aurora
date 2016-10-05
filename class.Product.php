@@ -87,7 +87,7 @@ class Product extends Asset{
 
 
 		$this->get_store_data();
-		
+
 	}
 
 
@@ -689,12 +689,7 @@ class Product extends Asset{
 		case 'Product Units Per Outer':
 			$label=_('retail units per outer');
 			break;
-		case 'Product Outer Tariff Code':
-			$label=_('tariff code');
-			break;
-		case 'Product Outer Duty Rate':
-			$label=_('duty rate');
-			break;
+
 		case 'Product Unit Type':
 			$label=_('unit type');
 			break;
@@ -761,6 +756,10 @@ class Product extends Asset{
 		case 'Product Barcode Number':
 			$label=_('barcode');
 			break;
+		case 'Product CPNP Number':
+			$label=_('CPNP number');
+			break;
+
 
 		default:
 			$label=$field;
@@ -1582,6 +1581,7 @@ class Product extends Asset{
 		case 'Product Proper Shipping Name':
 		case 'Product Hazard Indentification Number':
 		case('Product Duty Rate'):
+		case('Product CPNP Number'):
 
 
 			if ( !preg_match('/from_part/', $options) and   count($this->get_parts())==1) {
@@ -2568,8 +2568,8 @@ class Product extends Asset{
 		$categories=array();
 
 
-		$sql=sprintf("select B.`Category Key` from `Category Dimension` C left join `Category Bridge` B on (B.`Category Key`=C.`Category Key`) where `Subject`='Product' and `Subject Key`=%d and `Category Branch Type`!='Root'", 
-		$this->id);
+		$sql=sprintf("select B.`Category Key` from `Category Dimension` C left join `Category Bridge` B on (B.`Category Key`=C.`Category Key`) where `Subject`='Product' and `Subject Key`=%d and `Category Branch Type`!='Root'",
+			$this->id);
 
 		if ($result=$this->db->query($sql)) {
 			foreach ($result as $row) {
@@ -2591,6 +2591,7 @@ class Product extends Asset{
 
 
 	}
+
 
 	function get_category_data() {
 

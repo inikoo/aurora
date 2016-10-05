@@ -75,6 +75,16 @@ if ( !($supplier_part_scope or $new)) {
 				'server_validation'=>json_encode(array('tipo'=>'check_for_duplicates', 'parent'=>'account', 'parent_key'=>1, 'object'=>'Part', 'key'=>$object->id)),
 				'type'=>'value'
 			),
+			
+			array(
+				'id'=>'Part_CPNP_Number',
+				'edit'=>($edit?'string':''),
+				'value'=>htmlspecialchars($object->get('Part CPNP Number')),
+				'formatted_value'=>$object->get('CPNP Number'),
+				'label'=>ucfirst($object->get_field_label('Part CPNP Number')),
+				'required'=>false,
+				'type'=>'value'
+			),
 
 			array(
 				'id'=>'Part_Barcode_Number',

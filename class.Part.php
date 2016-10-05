@@ -1052,6 +1052,8 @@ class Part extends Asset{
 		case 'Part Proper Shipping Name':
 		case 'Part Hazard Indentification Number':
 		case('Part Duty Rate'):
+		case('Part CPNP Number'):
+
 			$this->update_field($field, $value, $options);
 			$updated=$this->updated;
 			//$this->update_linked_products($field, $value, $options, $metadata);
@@ -2012,7 +2014,7 @@ class Part extends Asset{
 		include_once 'utils/new_fork.php';
 		global $account;
 
-		 $msg=new_housekeeping_fork('au_housekeeping', array('type'=>'update_part_products_availability', 'part_sku'=>$this->id), $account->get('Account Code'));
+		$msg=new_housekeeping_fork('au_housekeeping', array('type'=>'update_part_products_availability', 'part_sku'=>$this->id), $account->get('Account Code'));
 
 
 
@@ -2869,7 +2871,7 @@ class Part extends Asset{
 	}
 
 
-	
+
 
 
 	function get_field_label($field) {
@@ -2950,8 +2952,9 @@ class Part extends Asset{
 		case 'Part Barcode Number':
 			$label=_('barcode');
 			break;
-
-
+		case 'Part CPNP Number':
+			$label=_('CPNP number');
+			break;
 		default:
 			$label=$field;
 
