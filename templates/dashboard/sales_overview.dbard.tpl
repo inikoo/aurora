@@ -124,6 +124,8 @@ function change_sales_overview_type(type) {
         $('.refunds,.invoices,.sales').removeClass('hide')
         $('#sales_overview_currency_container').removeClass('hide')
         $('.replacements ,.delivery_notes').addClass('hide')
+        
+        
     } else if (type == 'invoice_categories') {
 
         $('.category').removeClass('hide')
@@ -143,7 +145,7 @@ function change_sales_overview_type(type) {
 
     }
 
-
+console.log('caca')
     get_order_overview_data(type, $('#order_overview_period').val(), $('#order_overview_currency').val())
 
 
@@ -172,7 +174,12 @@ function change_sales_overview_period(period) {
 
     $('#order_overview_period').val(period)
 
+
     get_order_overview_data($('#order_overview_type').val(), period, $('#order_overview_currency').val())
+    
+    console.log($('#order_overview_type').val()+' '+period)
+
+    
 }
 
 
@@ -181,6 +188,9 @@ function get_order_overview_data(type, period, currency) {
     var request = "/ar_dashboard.php?tipo=sales_overview&type=" + type + "&period=" + period + '&currency=' + currency
 
     $.getJSON(request, function(r) {
+
+
+$('#order_overview_type').val(type)
 
         for (var record in r.data) {
 
