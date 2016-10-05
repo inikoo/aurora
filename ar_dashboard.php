@@ -59,6 +59,7 @@ function sales_overview($_data, $db, $user, $account) {
 	$currency=$_data['currency'];
 	$period_tag=get_interval_db_name($_data['period']);
 
+
 	$data=array();
 
 	if ($_data['type']=='invoice_categories' ) {
