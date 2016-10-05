@@ -74,7 +74,20 @@ $object_fields=array(
 		'label'=>_('Delivery rules'),
 		'show_title'=>true,
 		'fields'=>array(
+	array(
 
+
+				'id'=>'Purchase_Order_Account_Number',
+				'edit'=>($edit?'string':''),
+				'options'=>$options_Incoterm,
+				'value'=>htmlspecialchars($object->get('Purchase Order Account Number')),
+				'formatted_value'=>$object->get('Account Number'),
+				'label'=>ucfirst($object->get_field_label('Purchase Account Number')),
+				'required'=>false,
+				'type'=>'value'
+
+
+			),
 			array(
 
 

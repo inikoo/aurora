@@ -129,42 +129,43 @@ div.inline { float:left; }
 			</td>
 		</tr>
 	</table>
-	<table width="100%" style="font-family: sans-serif;" cellpadding="0">
+	<table width="100%"  style="margin-top:10px;font-family: sans-serif;" cellpadding="0">
 		<tr>
 			<td width="50%" style="vertical-align:bottom;border: 0mm solid #888888;"> 
 			 
 			<div style="text-align: right">
-				{t}Supplier{/t}: <b>{$purchase_order->get('Parent Name')}</b> ({$purchase_order->get('Parent Code')}) 
+				<b>{$purchase_order->get('Parent Name')}</b>{if $purchase_order->get('Parent Name')!=$purchase_order->get('Parent Code') } ({$purchase_order->get('Parent Code')}){/if}
 			</div>
-			<div style="{if $purchase_order->get('Invoice Tax Number')==''}display:none{/if}">
-				{t}Tax Number{/t}: <b>{$purchase_order->get('Invoice Tax Number')}</b> 
-			</div>
+			
 			</td>
-			<td width="50%" style="vertical-align:bottom;border: 0mm solid #888888;text-align: right"> {if $number_dns==1} 
-			<div style="text-align:right;{if !$delivery_note->get('Delivery Note Number Parcels')}display:none{/if}">
-				{t}Parcels{/t}:<b> {$delivery_note->get_formated_parcels()}</b> 
+			<td width="50%" style="vertical-align:bottom;border: 0mm solid #888888;text-align: right"> 
+			
+			<div style="text-align: right; {if $purchase_order->get('Account Number')==''}display:none{/if}">
+				{t}Account no.{/t} <b>{$purchase_order->get('Account Number')}</b>
+
 			</div>
 			<div style="text-align: right">
-				{t}Weight{/t}: <b>{$delivery_note->get('Weight')}</b> 
+				({$purchase_order->get('Warehouse Code')})  <b>{$purchase_order->get('Warehouse Company Name')}</b>
+
 			</div>
-			{if $delivery_note->data['Delivery Note Shipper Consignment']!=''}
-			<div style="text-align: right">
-				{t}Courier{/t}: <b> <span id="formated_consignment">{$purchase_order->get('Consignment')|strip_tags}</span></span> </b> 
-			</div>
-			{/if}
-			{/if} </td>
+			
+			 </td>
 		</tr>
 	</table>
-	<table width="100%" style="font-family: sans-serif;" cellpadding="10">
+	
+	
+	
+	
+	<table width="100%" style="font-family: sans-serif;" cellpadding="0">
 		<tr>
-			<td width="45%" style="border: 0.1mm solid #888888;"> <span style="font-size: 7pt; color: #555555; font-family: sans-serif;">{t}Supplier address{/t}:</span> 
-			<div>
+			<td width="45%" style="border: 0.1mm solid #888888;padding:5pt 5pt 10pt 10pt">  <span style="font-size: 7pt; color: #777777; font-family: sans-serif;">{t}Supplier's address{/t}:</span> 
+			<div style="margin-top:100pt">
 				{$purchase_order->get('Parent Address')} 
 			</div>
 			</td>
 			<td width="10%">&nbsp;</td>
-			<td width="45%" style="border: 0.1mm solid #888888;">  <span style="font-size: 7pt; color: #555555; font-family: sans-serif;">{t}Ship to address{/t}:</span> 
-			<div>
+			<td width="45%" style="border: 0.1mm solid #888888;padding:5pt 5pt 10pt 10pt">  <span style="font-size: 7pt; color: #777777; font-family: sans-serif;">{t}Ship to address{/t}:</span> 
+			<div >
 				{$purchase_order->get('Warehouse Address')|nl2br} 
 			</div>
 			 </td>

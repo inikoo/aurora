@@ -1539,6 +1539,11 @@ class PurchaseOrder extends DB_Table{
 		case 'Purchase Order Agreed Receiving Date':
 			$label=_('agreed receiving date');
 			break;
+		case 'Purchase Order Account Number':
+			$label=_('Account number');
+			break;
+
+
 
 		default:
 			$label=$field;

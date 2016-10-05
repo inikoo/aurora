@@ -1580,6 +1580,11 @@ class Supplier extends SubjectSupplier {
 		case 'Supplier On Demand':
 			$label=_('Allow on demand');
 			break;
+		case 'Supplier Account Number':
+			$label=_("Account number");
+			break;
+
+
 		default:
 			$label=$field;
 
