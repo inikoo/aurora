@@ -639,8 +639,8 @@ function calculate_interval_dates($db, $interval, $from='', $to='') {
 	case '3 Year':
 	case '3y':
 		$db_interval='3 Year';
-		$from_date=date('Y-m-d H:i:s', strtotime("now -3 year"));
-		$to_date=gmdate('Y-m-d 23:59:59');
+		$to_date=gmdate('Y-m-d 00:00:00');
+		$from_date=date('Y-m-d H:i:s', strtotime("$to_date -3 year"));
 		$from_date_1yb=false;
 		$to_1yb=false;
 		break;
@@ -648,57 +648,57 @@ function calculate_interval_dates($db, $interval, $from='', $to='') {
 	case '1y':
 	case 'year':
 		$db_interval='1 Year';
-		$from_date=date('Y-m-d H:i:s', strtotime("now -1 year"));
-		$to_date=gmdate('Y-m-d 23:59:59');
+		$to_date=gmdate('Y-m-d 00:00:00');
+		$from_date=date('Y-m-d H:i:s', strtotime("$to_date -1 year"));
 		$from_date_1yb=date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
-		$to_1yb=date('Y-m-d H:i:s', strtotime("now -1 year"));
+		$to_1yb=date('Y-m-d H:i:s', strtotime("$to_date -1 year"));
 		break;
 	case '6 Month':
 		$db_interval='6 Month';
-		$from_date=date('Y-m-d H:i:s', strtotime("now -6 months"));
-		$to_date=gmdate('Y-m-d 23:59:59');
+		$to_date=gmdate('Y-m-d 00:00:00');
+		$from_date=date('Y-m-d H:i:s', strtotime("$to_date -6 months"));
 		$from_date_1yb=date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
-		$to_1yb=date('Y-m-d H:i:s', strtotime("now -1 year"));
+		$to_1yb=date('Y-m-d H:i:s', strtotime("$to_date -1 year"));
 		break;
 	case '1 Quarter':
 	case '1q':
 		$db_interval='1 Quarter';
-		$from_date=date('Y-m-d H:i:s', strtotime("now -3 months"));
-		$to_date=gmdate('Y-m-d 23:59:59');
+		$to_date=gmdate('Y-m-d 00:00:00');
+		$from_date=date('Y-m-d H:i:s', strtotime("$to_date -3 months"));
 		$from_date_1yb=date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
-		$to_1yb=date('Y-m-d H:i:s', strtotime("now -1 year"));
+		$to_1yb=date('Y-m-d H:i:s', strtotime("$to_date -1 year"));
 		break;
 	case '1 Month':
 	case '1m':
 		$db_interval='1 Month';
-		$from_date=date('Y-m-d H:i:s', strtotime("now -1 month"));
-		$to_date=gmdate('Y-m-d 23:59:59');
+		$to_date=gmdate('Y-m-d 00:00:00');
+		$from_date=date('Y-m-d H:i:s', strtotime("$to_date -1 month"));
 		$from_date_1yb=date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
-		$to_1yb=date('Y-m-d H:i:s', strtotime("now -1 year"));
+		$to_1yb=date('Y-m-d H:i:s', strtotime("$to_date -1 year"));
 		break;
 	case '10 Day':
 	case '10d':
 		$db_interval='10 Day';
-		$from_date=date('Y-m-d H:i:s', strtotime("now -10 days"));
-		$to_date=gmdate('Y-m-d 23:59:59');
+		$to_date=gmdate('Y-m-d 00:00:00');
+		$from_date=date('Y-m-d H:i:s', strtotime("$to_date -10 day"));
 		$from_date_1yb=date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
-		$to_1yb=date('Y-m-d H:i:s', strtotime("now -1 year"));
+		$to_1yb=date('Y-m-d H:i:s', strtotime("$to_date -1 year"));
 		break;
 	case '1 Week':
 	case '1w':
 		$db_interval='1 Week';
-		$from_date=date('Y-m-d H:i:s', strtotime("now -1 week"));
-		$to_date=gmdate('Y-m-d 23:59:59');
+		$to_date=gmdate('Y-m-d 00:00:00');
+		$from_date=date('Y-m-d H:i:s', strtotime("$to_date -1 week"));
 		$from_date_1yb=date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
-		$to_1yb=date('Y-m-d H:i:s', strtotime("now -1 year"));
+		$to_1yb=date('Y-m-d H:i:s', strtotime("$to_date -1 year"));
 		break;
 	case '1 Day':
 	case '1d':
 		$db_interval='1 Day';
-		$from_date=date('Y-m-d H:i:s', strtotime("now -1 day"));
-		$to_date=gmdate('Y-m-d 23:59:59');
+		$to_date=gmdate('Y-m-d 00:00:00');
+		$from_date=date('Y-m-d H:i:s', strtotime("$to_date -1 day"));
 		$from_date_1yb=date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
-		$to_1yb=date('Y-m-d H:i:s', strtotime("now -1 year"));
+		$to_1yb=date('Y-m-d H:i:s', strtotime("$to_date -1 year"));
 		break;
 	case '1 Hour':
 	case '1h':

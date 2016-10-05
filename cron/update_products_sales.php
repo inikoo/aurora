@@ -71,8 +71,6 @@ function update_sales($db, $print_est) {
 
 
 	$sql=sprintf("select `Product ID` from `Product Dimension` %s order by `Product ID` desc ",$where);
-
-
 	if ($result=$db->query($sql)) {
 		foreach ($result as $row) {
 			$product=new Product('id', $row['Product ID']);

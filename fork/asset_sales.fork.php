@@ -22,6 +22,58 @@ function fork_asset_sales($job) {
 
 	switch ($data['type']) {
 
+	case 'update_products_sales_data':
+		include_once 'class.Product.php';
+
+		$sql=sprintf("select `Product ID` from `Product Dimension`  ");
+		if ($result=$db->query($sql)) {
+			foreach ($result as $row) {
+
+				$product=new Product('id', $row['Product ID']);
+				$product->load_acc_data();
+				$product->update_sales_from_invoices($data['interval']);
+			}
+		}
+		break;
+
+	case 'update_parts_sales_data':
+		include_once 'class.Part.php';
+
+		$sql=sprintf("select `Part SKU` from `Part Dimension`  ");
+		if ($result=$db->query($sql)) {
+			foreach ($result as $row) {
+
+				$part=new Part($row['Part SKU']);
+				$part->load_acc_data();
+				$part->update_sales_from_invoices($data['interval']);
+			}
+		}
+		break;
+	case 'update_product_categories_sales_data':
+		include_once 'class.Category.php';
+
+		$sql=sprintf("select `Category Key` from `Category Dimension` where   `Category Scope`='Product' ");
+
+		if ($result=$db->query($sql)) {
+			foreach ($result as $row) {
+				$category=new Category($row['Category Key']);
+				$category->update_part_category_sales($data['interval']);
+			}
+		}
+		break;
+	case 'update_part_categories_sales_data':
+		include_once 'class.Category.php';
+
+		$sql=sprintf("select `Category Key` from `Category Dimension` where   `Category Scope`='Part' ");
+
+		if ($result=$db->query($sql)) {
+			foreach ($result as $row) {
+				$category=new Category($row['Category Key']);
+				$category->update_part_category_sales($data['interval']);
+			}
+		}
+		break;	
+		
 
 	case 'update_delivery_note_part_sales_data':
 
@@ -183,7 +235,7 @@ function update_invoice_products_sales_data($db, $data) {
 		}
 	}
 
-	
+
 
 
 	foreach ($categories as $category_key) {
