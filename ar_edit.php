@@ -770,7 +770,10 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 		$data['fields_data']['user']=$user;
 
 		$object=$parent->create_order($data['fields_data']);
-		if (!$parent->error) {
+		
+		
+		
+		if (!$parent->error and $object->id) {
 
 			$pcard='';
 			$updated_data=array();
@@ -1283,13 +1286,23 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
 
-	if ($parent->error) {
+	if ($parent->error ) {
 
 
 
 		$response=array(
 			'state'=>400,
 			'msg'=>'<i class="fa fa-exclamation-circle"></i> '.$parent->msg,
+
+		);
+
+	}elseif (!$object->id ) {
+
+
+
+		$response=array(
+			'state'=>400,
+			'msg'=>'<i class="fa fa-exclamation-circle"></i> '.$object->msg,
 
 		);
 
