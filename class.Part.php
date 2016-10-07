@@ -1626,7 +1626,6 @@ class Part extends Asset{
 						ngettext("day", "days", intval($this->data['Part Days Available Forecast'] ) )).'">'.seconds_to_until($this->data['Part Days Available Forecast']*86400).'</span>').'</span>';
 
 
-				$available_forecast.=' <i class="fa fa-fighter-jet padding_left_5" aria-hidden="true"></i>';
 			}
 
 
