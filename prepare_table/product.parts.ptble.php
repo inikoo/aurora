@@ -58,7 +58,7 @@ if ($order=='id') {
 
 $sql_totals="select count(Distinct P.`Part SKU`) as num from $table  $where  ";
 
-$fields="P.`Part SKU`,`Part Reference`,`Part Package Description`,`Part Current Stock`,`Part Stock Status`,`Part Days Available Forecast`,`Part 1 Quarter Acc Dispatched`,`Product Part Ratio`,`Product Part Note`
+$fields="P.`Part SKU`,`Part Reference`,`Part Package Description`,`Part Current Stock`,`Part Stock Status`,`Part Days Available Forecast`,`Part 1 Quarter Acc Dispatched`,`Product Part Ratio`,`Product Part Note`,`Part On Demand`
 
 
 ";

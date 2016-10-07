@@ -736,7 +736,7 @@ function parts($_data, $db, $user, $account) {
 				'picking_note'=>$data['Product Part Note'],
 				'stock_status'=>$stock_status,
 				'stock_status_label'=>$stock_status_label,
-				'stock'=>'<span class="'.($data['Part Current Stock']<0?'error':'').'">'.number(floor($data['Part Current Stock'])).'</span>',
+				'stock'=>'<span  class="  '.($data['Part Current Stock']<0?'error':'').'">'.number(floor($data['Part Current Stock'])).'</span>  <i class="fa fa-fighter-jet padding_left_5 super_discreet  '.($data['Part On Demand']=='Yes'?'':'invisible').' " title='._('On demand').' aria-hidden="true"></i>     ',
 				'weeks_available'=>$weeks_available,
 				'dispatched_per_week'=>$dispatched_per_week
 			);
