@@ -1777,7 +1777,7 @@ class Product extends Asset{
 
 		if ($this->get('Product Number of Parts')>0) {
 
-			$sql=sprintf(" select `Part On Demand`,`Part Stock State`,`Part Current On Hand Stock`-`Part Current Stock In Process` as stock,`Part Current Stock In Process`,`Part Current On Hand Stock`,`Product Part Ratio` from     `Product Part Bridge` B left join   `Part Dimension` P   on (P.`Part SKU`=B.`Product Part Part SKU`)   where B.`Product Part Product ID`=%d   ",
+			$sql=sprintf(" select `Part Reference`,`Part On Demand`,`Part Stock State`,`Part Current On Hand Stock`-`Part Current Stock In Process` as stock,`Part Current Stock In Process`,`Part Current On Hand Stock`,`Product Part Ratio` from     `Product Part Bridge` B left join   `Part Dimension` P   on (P.`Part SKU`=B.`Product Part Part SKU`)   where B.`Product Part Product ID`=%d   ",
 				$this->id
 			);
 
@@ -1795,7 +1795,7 @@ class Product extends Asset{
 			if ($result=$this->db->query($sql)) {
 				foreach ($result as $row) {
 
-
+//print_r($row);
 					if ($on_demand=='') {
 						$on_demand=$row['Part On Demand'];
 
@@ -1822,6 +1822,11 @@ class Product extends Asset{
 					if (is_numeric($row['stock']) and is_numeric($row['Product Part Ratio'])  and $row['Product Part Ratio']>0 ) {
 
 						$_part_stock=$row['stock'];
+						
+						if($row['Part On Demand']=='Yes'){
+						$_part_stock=99999999999;
+						}
+						
 						if ($row['Part Current On Hand Stock']==0  and $row['Part Current Stock In Process']>0 ) {
 							$_part_stock=0;
 						}
@@ -1837,6 +1842,8 @@ class Product extends Asset{
 						$stock=0;
 						$stock_error=true;
 					}
+
+           // print $row['Part Reference']." $tipo $on_demand  $stock\n";
 
 
 				}
@@ -1870,7 +1877,7 @@ class Product extends Asset{
 		}
 
 
-
+//print $stock;exit;
 
 		$this->update(array(
 				'Product Availability'=>$stock,
