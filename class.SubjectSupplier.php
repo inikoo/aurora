@@ -357,6 +357,17 @@ class SubjectSupplier extends Subject {
 			else
 				return array(true, money($this->data[$this->table_name.' Stock Value']));
 			break;
+
+		case('Parent Skip Inputting'):
+		case('Parent Skip Mark as Dispatched'):
+		case('Parent Skip Mark as Received'):
+		case('Parent Skip Checking'):
+		case('Parent Automatic Placement Location'):
+
+			$field=preg_replace('/^Parent/',$this->table_name, $key);
+
+			return array(true, $this->data[$field]);
+
 		default;
 
 

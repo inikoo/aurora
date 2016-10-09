@@ -214,6 +214,14 @@ class PurchaseOrder extends DB_Table{
 			}
 			$delivery->update_totals();
 			$this->update_totals();
+
+			$parent=get_object($this->data['Purchase Order Parent'], $this->data['Purchase Order Parent Key']);
+
+			if ($parent->get('Parent Skip Mark as Received')=='Yes') {
+				$delivery->update_state('Received');
+			}
+			
+
 		}
 
 

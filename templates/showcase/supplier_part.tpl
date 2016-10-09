@@ -100,9 +100,9 @@
 				<table border="0" class="overview with_title">
 					<tr class="top">
 						<td>{t}Part{/t} <span class="Part_Reference button padding_left_10" onclick="change_view('part/{$part->id}')">{$part->get('Reference')}</span></td>
-						<td class="aright"> {$part->get('State')} </td>
+						<td class="aright"> {$part->get('Status')} </td>
 					</tr>
-					<tr class="main">
+					<tr class="main {if $part->get('Part Status')=='Not In Use'}hide{/if} ">
 						<td>{$part->get('Available Forecast')}</td>
 						<td class="aright highlight"> {$part->get('Current On Hand Stock')} {$part->get('Stock Status Icon')} </td>
 					</tr>

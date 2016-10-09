@@ -52,7 +52,7 @@ $table_buttons[]=array(
 					'scope'=>'supplier_part',
 					'parent'=>$state['_object']->get('Purchase Order Parent'),
 					'parent_key'=>$state['_object']->get('Purchase Order Parent Key'),
-					'options'=>array()
+					'options'=>array('for_purchase_order')
 				)))
 
 	)

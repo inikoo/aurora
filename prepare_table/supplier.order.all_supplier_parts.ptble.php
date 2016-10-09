@@ -9,7 +9,9 @@
 
 */
 
-$where="where `Supplier Part Status`='Available'  ";
+
+
+$where="where `Supplier Part Status`='Available' and `Part Status` not in ('Not In Use','Discontinuing') ";
 $table="`Supplier Part Dimension` SP  left join `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`) left join `Supplier Dimension` S on (SP.`Supplier Part Supplier Key`=S.`Supplier Key`)  ";
 
 
@@ -25,11 +27,11 @@ $wheref='';
 if ($parameters['parent']=='purchase_order') {
 	if ($purchase_order->get('Purchase Order Parent')=='Supplier') {
 
-		$where=sprintf(" where  `Supplier Part Supplier Key`=%d", $purchase_order->get('Purchase Order Parent Key'));
+		$where.=sprintf(" and  `Supplier Part Supplier Key`=%d", $purchase_order->get('Purchase Order Parent Key'));
 
 
 	}else {
-		$where=sprintf("  where  `Agent Supplier Agent Key`=%d", $purchase_order->get('Purchase Order Parent Key'));
+		$where.=sprintf("  and  `Agent Supplier Agent Key`=%d", $purchase_order->get('Purchase Order Parent Key'));
 		$table.=' left join `Agent Supplier Bridge` on (SP.`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`)';
 
 
@@ -42,6 +44,8 @@ if ($parameters['parent']=='purchase_order') {
 }else {
 	exit("parent not found: ".$parameters['parent']);
 }
+
+
 
 if (isset($parameters['elements_type'])) {
 

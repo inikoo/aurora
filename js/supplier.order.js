@@ -87,6 +87,14 @@ function change_on_delivery(element) {
 
 }
 
+function quick_create_delivery(){
+
+var object_data = JSON.parse(atob($('#object_showcase div.order').data("object")))
+ $('#delivery_number').val(object_data.purchase_order_number)
+   $('#quick_create_delivery_operation').addClass('valid')
+save_create_delivery('#quick_create_delivery_operation')
+}
+
 
 function save_create_delivery(element) {
 
@@ -97,18 +105,12 @@ function save_create_delivery(element) {
     }
 
     $(element).addClass('wait')
-
-
     $(element).find('i').addClass('fa-spinner fa-spin fa-cloud').removeClass('fa-plus');
-
     var object_data = JSON.parse(atob($('#object_showcase div.order').data("object")))
-
-
     var fields_data = {};
 
     fields_data['Supplier Delivery Public ID'] = $('#delivery_number').val()
     fields_data['items'] = {}
-
     $('.delivery_quantity').each(function() {
         if ($(this).attr('on') == 1) {
             fields_data['items'][$(this).attr('key')] = $(this).find('input').val()
@@ -116,7 +118,8 @@ function save_create_delivery(element) {
     });
 
     var request = '/ar_edit.php?tipo=new_object&object=SupplierDelivery&parent=' + object_data.object + '&parent_key=' + object_data.key + '&fields_data=' + JSON.stringify(fields_data)
-
+//console.log(request)
+//return;
 
     //=====
     var form_data = new FormData();
@@ -141,23 +144,16 @@ function save_create_delivery(element) {
 
     request.done(function(data) {
 
-        $(element).removeClass('wait')
-
-
-        $(element).find('i').removeClass('fa-spinner fa-spin fa-cloud').addClass('fa-plus');
-
+       
         if (data.state == 200) {
-
-
             change_view(object_data.order_parent.toLowerCase() + '/' + object_data.order_parent_key + '/delivery/' + data.new_id, {
                 tab: 'supplier.delivery.items'
             })
-
-
-
-
-
         } else if (data.state == 400) {
+          $(element).removeClass('wait')
+        $(element).find('i').removeClass('fa-spinner fa-spin fa-cloud').addClass('fa-plus');
+
+         
             console.log(data)
         }
 
@@ -166,9 +162,7 @@ function save_create_delivery(element) {
 
     request.fail(function(jqXHR, textStatus) {
         console.log(textStatus)
-
         console.log(jqXHR.responseText)
-
 
     });
 

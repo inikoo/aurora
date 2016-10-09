@@ -176,6 +176,11 @@ class SupplierDelivery extends DB_Table {
 
 			$parent->update_orders();
 
+
+
+
+
+
 		} else {
 			print "Error can not create supplier delivery\n $sql\n";
 		}
@@ -405,7 +410,10 @@ class SupplierDelivery extends DB_Table {
 
 		if (preg_match('/^(Total|Items|(Shipping |Charges )?Net).*(Amount)$/', $key)) {
 			$amount='Supplier Delivery '.$key;
-			return money($this->data[$amount]);
+
+			// print $amount;
+
+			return money($this->data[$amount], $this->data['Supplier Delivery Currency Code']);
 		}
 
 		if (preg_match('/^(Total|Items|(Shipping |Charges )?Net).*(Amount Account Currency)$/', $key)) {
@@ -1216,10 +1224,47 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
 			);
 			$this->db->exec($sql);
 
-			$operations=array('cancel_operations', 'undo_received_operations', );
 
 
 
+			$parent=get_object($this->data['Supplier Delivery Parent'], $this->data['Supplier Delivery Parent Key']);
+
+
+
+			if ($parent->get('Parent Skip Checking')=='Yes') {
+
+				$sql=sprintf('select `Purchase Order Transaction Fact Key`,`Supplier Part Key`,`Supplier Part Historic Key`,`Supplier Delivery Quantity` from `Purchase Order Transaction Fact` where `Supplier Delivery Key`=%d  ',
+					$this->id
+				);
+
+
+				if ($result=$this->db->query($sql)) {
+					foreach ($result as $row) {
+					
+					
+					
+						$item_data=array(
+							'field'=>'Supplier Delivery Checked Quantity',
+							'item_key'=>$row['Supplier Part Key'],
+							'item_historic_key'=>$row['Supplier Part Historic Key'],
+							'transaction_key'=>$row['Purchase Order Transaction Fact Key'],
+							'qty'=>$row['Supplier Delivery Quantity']
+
+						);
+						$this->update_item($item_data);
+						
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
+				}
+
+			//	field=Supplier Delivery Checked Quantity&parent_key=14&item_key=40152&item_historic_key=38352&qty=1&transaction_key=453
+
+				
+				$operations=array('cancel_operations', 'undo_send_operations', 'received_operations');
+
+			}
 
 
 			break;

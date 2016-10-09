@@ -137,6 +137,7 @@ function save_order_operation(element) {
 
 
 
+
             if (object == 'supplierdelivery') {
 
                 $('#inputted_node').addClass('complete')
@@ -156,8 +157,6 @@ function save_order_operation(element) {
                     $('#placed_node').addClass('complete')
 
                     if (state.tab == 'supplier.delivery.items') {
-
-
                         change_tab('supplier.delivery.items')
 
                     }
@@ -175,21 +174,43 @@ function save_order_operation(element) {
 
 
 
-            } else if (object == 'purchase_order') {
+            } 
+            else if (object == 'purchase_order') {
                 if (data.update_metadata.state_index >= 30) {
                     $('#submitted_node').addClass('complete')
                 }
 
                 if (field == 'Purchase Order State') {
+                
+                console.log(state.tab)
+
+                
                     if (data.value == 'InProcess') {
-                        $('#crete_delivery').addClass('hide')
+                        $('#create_delivery').addClass('hide')
                     } else if (data.value == 'Submitted') {
 
+
+                     if (state.tab == 'supplier.order.all_supplier_parts') {
+                        change_tab('supplier.order.items')
+
+                    }
+
                         if (data.update_metadata.pending_items_in_delivery > 0) {
-                            $('#crete_delivery').removeClass('hide')
+
+                            if (object_data.skip_inputting == 'No') {
+                                $('#create_delivery').removeClass('hide')
+
+                            } else {
+
+                                $('#quick_create_delivery_operations').removeClass('hide')
+
+
+
+                            }
 
                         } else {
-                            $('#crete_delivery').addClass('hide')
+                            $('#create_delivery').addClass('hide')
+                            $('#quick_create_delivery_operations').addClass('hide')
 
                         }
 
@@ -341,7 +362,7 @@ function save_item_qty_change(element) {
             $(element).closest('tr').find('.placement').html(data.metadata.placement)
             $(element).closest('.checked_quantity').find('.checked_qty').attr('ovalue', data.transaction_data.qty)
 
-          
+
 
             $('#inputted_node').addClass('complete')
             $('#purchase_order_node').addClass('complete')
