@@ -17,9 +17,14 @@ function get_showcase($data, $smarty, $user, $db) {
 		return "";
 	}
 
-$data['_object']->get_order_data();
-$data['_object']->update_totals();
+	$data['_object']->get_order_data();
+	$data['_object']->update_totals();
 
+
+
+	$_parent=get_object($data['_object']->get('Supplier Delivery Parent'), $data['_object']->get('Supplier Delivery Parent Key')  );
+
+	$smarty->assign('parent', $_parent);
 
 	$smarty->assign('delivery', $data['_object']);
 
@@ -28,7 +33,14 @@ $data['_object']->update_totals();
 					'object'=>$data['object'],
 					'key'=>$data['key'],
 					'order_parent'=>$data['_object']->get('Supplier Delivery Parent'),
-					'order_parent_key'=>$data['_object']->get('Supplier Delivery Parent Key')
+					'order_parent_key'=>$data['_object']->get('Supplier Delivery Parent Key'),
+
+					'skip_inputting'=>$_parent->get('Parent Skip Inputting'),
+					'skip_mark_as_dispatched'=>$_parent->get('Parent Skip Mark as Dispatched'),
+					'skip_mark_as_received'=>$_parent->get('Parent Skip Mark as Received'),
+					'skip_checking'=>$_parent->get('Parent Skip Checking'),
+					'automatic_placement_locations'=>$_parent->get('Parent Automatic Placement Location')
+
 				)))  );
 
 

@@ -7,7 +7,6 @@
 
 
 function set_placement_location(element) {
-
     $(element).closest('tr').find('.location_code').val($(element).find('.code').html())
     $(element).closest('tr').find('i.save').attr('location_key', $(element).attr('location_key'))
     validate_place_item($(element).closest('tr').find('.place_item'))
@@ -133,17 +132,9 @@ function get_placement_locations_select(object) {
 }
 
 function select_location_option(element) {
-
-
-
     var container = $('#place_item_' + $(element).attr('transaction_key'))
-
     container.find('.location_code').val($(element).attr('formatted_value'))
-
     container.find('i.save').attr('location_key', $(element).attr('value'))
-
-
-
     $('#location_results_container').addClass('hide').removeClass('show')
     validate_place_item(container)
 }
@@ -158,7 +149,7 @@ function validate_place_item(element) {
         $(element).addClass('invalid changed')
     } else {
 
-        console.log($(element).find('i.save'))
+
         $(element).removeClass('invalid changed')
 
         if ($(element).find('i.save').attr('location_key') > 0) {
@@ -192,8 +183,8 @@ function place_item(element) {
 
 
 
-    var request = '/ar_edit_stock.php?tipo=place_part&object=' + object + '&key=' + key + '&transaction_key=' + transaction_key + '&part_sku=' + part_sku + '&location_key=' + location_key + '&qty=' + qty+ '&note=' + note
-     console.log(request)
+    var request = '/ar_edit_stock.php?tipo=place_part&object=' + object + '&key=' + key + '&transaction_key=' + transaction_key + '&part_sku=' + part_sku + '&location_key=' + location_key + '&qty=' + qty + '&note=' + note
+    console.log(request)
     //return;
     //=====
     var form_data = new FormData();
@@ -325,4 +316,28 @@ function show_part_locations(element) {
     }
 
 
+}
+
+function post_table_rendered(otable) {
+
+
+    var object_data = JSON.parse(atob($('#object_showcase div.order').data("object")))
+    if (object_data.automatic_placement_locations == 'Yes') {
+
+        $('#table  tbody   tr .part_locations').each(
+
+        function(i, obj) {
+            var part_location = $(obj).find('div.part_location')
+            if (part_location.length == 1) {
+
+                set_placement_location(part_location)
+            }
+        }
+
+
+
+
+        )
+
+    }
 }

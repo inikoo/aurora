@@ -945,12 +945,12 @@ function delivery_checking_items($_data, $db, $user) {
 
 
 
-				$locations='<div  class="part_locations mini_table left hide" transaction_key="'.$data['Purchase Order Transaction Fact Key'].'" >';
+				$locations='<div  class="part_locations mini_table left " transaction_key="'.$data['Purchase Order Transaction Fact Key'].'" >';
 
 				foreach ($locations_data as $location_data) {
 					$number_locations++;
 					$location_data=preg_split('/\:/', $location_data);
-					$locations.=' <div class="button" style="clear:both;" onClick="set_placement_location(this)"  location_key="'.$location_data[0].'" >
+					$locations.=' <div class="part_location button" style="clear:both;" onClick="set_placement_location(this)"  location_key="'.$location_data[0].'" >
 				<div  class="code data w150"  >'.$location_data[1].'</div>
 				<div class="data w30 aright" >'.number($location_data[3]).'</div>
 				</div>';
@@ -960,7 +960,7 @@ function delivery_checking_items($_data, $db, $user) {
 			}
 
 
-			$description.=' <i style="margin-left:4px" class="fa fa-map-marker button discreet '.($number_locations==0?'hide':'').'" aria-hidden="true" title="'._('Show locations').'"  show_title="'._('Show locations').'" hide_title="'._('Hide locations').'"    onClick="show_part_locations(this)" ></i>';
+			$description.=' <i style="margin-left:4px" class="fa fa-map-marker button discreet  hide'.($number_locations==0?'hide':'').'" aria-hidden="true" title="'._('Show locations').'"  show_title="'._('Show locations').'" hide_title="'._('Hide locations').'"    onClick="show_part_locations(this)" ></i>';
 
 
 

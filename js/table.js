@@ -630,3 +630,7 @@ function edit_category_subject(element) {
 
 
 }
+
+function  post_table_rendered(otable){
+ 
+ }

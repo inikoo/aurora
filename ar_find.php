@@ -922,9 +922,10 @@ function find_supplier_parts($db, $account, $memcache_ip, $data) {
 	}
 
 	if (!isset($data['metadata']['options']['all_parts']))
-		$where.=" `Part Status`='In Use' and ";
+		$where.=" `Part Status` not in ('Not In Use','Discontinuing') and ";
 	if (!isset($data['metadata']['options']['all_supplier_parts']))
 		$where.=" `Supplier Part Status`='Available' and ";
+
 
 
 	$memcache_fingerprint=$account->get('Account Code').'FIND_PART'.md5($q);

@@ -1583,6 +1583,32 @@ class Supplier extends SubjectSupplier {
 		case 'Supplier Account Number':
 			$label=_("Account number");
 			break;
+		case 'Supplier Skip Inputting':
+			$label=_("Skip inputting");
+			break;
+		case 'Supplier Skip Mark as Dispatched':
+			$label=_("Skip mark as dispatched");
+			break;
+		case 'Supplier Skip Mark as Received':
+			$label=_("Skip mark as received");
+			break;
+		case 'Supplier Skip Checking':
+			$label=_("Skip checking");
+			break;
+		case 'Supplier Automatic Placement Location':
+			$label=_("Try automatic placement location");
+			break;
+
+
+
+
+
+
+			
+			
+			
+			
+			
 
 
 		default:

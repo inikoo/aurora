@@ -279,7 +279,17 @@ if ($object->get('Supplier Type')!='Archived') {
 		'label'=>_("Supplier's parts defaults"),
 		'show_title'=>false,
 		'fields'=>array(
+array(
+					'id'=>'Supplier_On_Demand',
+					'edit'=>($edit?'option':''),
 
+					'options'=>$options_yn,
+					'value'=>$object->get('Supplier On Demand'),
+					'formatted_value'=>$object->get('On Demand'),
+					'label'=>ucfirst($object->get_field_label('Supplier On Demand')),
+					'required'=>false,
+					'type'=>'value'
+				),
 			array(
 				'id'=>'Supplier_Average_Delivery_Days',
 				'edit'=>'mediumint_unsigned',
@@ -326,17 +336,7 @@ if ($object->get('Supplier Type')!='Archived') {
 			'show_title'=>false,
 			'fields'=>array(
 
-				array(
-					'id'=>'Supplier_On_Demand',
-					'edit'=>($edit?'option':''),
-
-					'options'=>$options_yn,
-					'value'=>$object->get('Supplier On Demand'),
-					'formatted_value'=>$object->get('On Demand'),
-					'label'=>ucfirst($object->get_field_label('Supplier On Demand')),
-					'required'=>false,
-					'type'=>'value'
-				),
+				
 				array(
 					'id'=>'Supplier_Account_Number',
 					'edit'=>($edit?'string':''),
@@ -419,6 +419,48 @@ if ($object->get('Supplier Type')!='Archived') {
 					'label'=>ucfirst($object->get_field_label('Supplier Show Warehouse TC in PO')),
 					'required'=>false,
 					'type'=>'value'
+				),
+
+				array(
+					'id'=>'Supplier_Skip_Inputting',
+					'edit'=>($edit?'option':''),
+					'options'=>$options_yn,
+					'value'=>($new?'Yes':$object->get('Supplier Skip Inputting')),
+					'formatted_value'=>($new?_('Yes'):$object->get('Skip Inputting')),
+					'label'=>ucfirst($object->get_field_label('Supplier Skip Inputting')),
+					'required'=>false,
+					'type'=>''
+				),
+			
+				array(
+					'id'=>'Supplier_Skip_Mark_as_Received',
+					'edit'=>($edit?'option':''),
+					'options'=>$options_yn,
+					'value'=>($new?'Yes':$object->get('Supplier Skip Mark as Received')),
+					'formatted_value'=>($new?_('Yes'):$object->get('Skip Mark as Received')),
+					'label'=>ucfirst($object->get_field_label('Supplier Skip Mark as Received')),
+					'required'=>false,
+					'type'=>''
+				),
+				array(
+					'id'=>'Supplier_Skip_Checking',
+					'edit'=>($edit?'option':''),
+					'options'=>$options_yn,
+					'value'=>($new?'Yes':$object->get('Supplier Skip Checking')),
+					'formatted_value'=>($new?_('Yes'):$object->get('Skip Checking')),
+					'label'=>ucfirst($object->get_field_label('Supplier Skip Checking')),
+					'required'=>false,
+					'type'=>''
+				),
+				array(
+					'id'=>'Supplier_Automatic_Placement_Location',
+					'edit'=>($edit?'option':''),
+					'options'=>$options_yn,
+					'value'=>($new?'Yes':$object->get('Supplier Automatic Placement Location')),
+					'formatted_value'=>($new?_('Yes'):$object->get('Automatic Placement Location')),
+					'label'=>ucfirst($object->get_field_label('Supplier Automatic Placement Location')),
+					'required'=>false,
+					'type'=>''
 				),
 
 			)
