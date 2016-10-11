@@ -9,6 +9,7 @@
 
 */
 
+
 if ($parameters['frequency']=='annually') {
 
 	$frequency='Yearly';
@@ -41,6 +42,8 @@ $sql=sprintf('select `Timeseries Key` from `Timeseries Dimension` where `Timeser
 	$parameters['parent_key'],
 	prepare_mysql($frequency)
 );
+
+//print $sql;
 
 if ($result=$db->query($sql)) {
 	if ($row = $result->fetch()) {
