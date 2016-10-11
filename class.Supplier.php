@@ -55,8 +55,7 @@ class Supplier extends SubjectSupplier {
 		if ($tipo=='id' or $tipo=='key') {
 			$sql=sprintf("select * from `Supplier Dimension` where `Supplier Key`=%d", $id);
 		}elseif ($tipo=='code') {
-			if ($id=='')
-				$id=_('Unknown');
+			
 
 			$sql=sprintf("select * from `Supplier Dimension` where `Supplier Code`=%s ", prepare_mysql($id));
 
@@ -246,19 +245,12 @@ class Supplier extends SubjectSupplier {
 
 		if ($got)return $result;
 
-
-
-
 		switch ($key) {
-
 		default;
-
 			if (array_key_exists($key, $this->data))
 				return $this->data[$key];
-
 			if (array_key_exists('Supplier '.$key, $this->data))
 				return $this->data['Supplier '.$key];
-
 		}
 
 		return '';
@@ -482,6 +474,25 @@ class Supplier extends SubjectSupplier {
 	}
 
 
+	function get_part_skus() {
+
+		$part_skus='';
+		$sql=sprintf('select `Supplier Part Part SKU` from `Supplier Part Dimension` where `Supplier Part Supplier Key`=%d ', $this->id);
+		$part_skus='';
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$part_skus.=$row['Supplier Part Part SKU'].',';
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+		$part_skus=preg_replace('/\,$/', '', $part_skus);
+
+		return $part_skus;
+
+	}
+
 	function get_sales_data($from_date, $to_date) {
 
 		$sales_data=array(
@@ -495,6 +506,10 @@ class Supplier extends SubjectSupplier {
 		);
 
 
+        $parts_skus=$this->get_part_skus();
+
+         if($parts_skus!=''){   
+    
 		$sql=sprintf("select sum(`Amount In`) as sold_amount,
                      sum(`Inventory Transaction Quantity`) as dispatched,
                      sum(`Required`) as required,
@@ -503,14 +518,15 @@ class Supplier extends SubjectSupplier {
                      sum(-`Given`-`Inventory Transaction Quantity`) as sold,
                      count(distinct `Delivery Note Key`) as  deliveries
 
-                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type` like 'Sale' and `Supplier Key`=%d %s %s" ,
-			$this->id,
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type` like 'Sale' and `Part SKU` in (%s) %s %s" ,
+			$parts_skus,
 			($from_date?sprintf('and  `Date`>=%s', prepare_mysql($from_date)):''),
 
 			($to_date?sprintf('and `Date`<%s', prepare_mysql($to_date)):'')
 
 		);
 
+//print $sql;
 
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
@@ -526,7 +542,7 @@ class Supplier extends SubjectSupplier {
 			exit;
 		}
 
-
+}
 
 		return $sales_data;
 	}
@@ -1929,7 +1945,7 @@ class Supplier extends SubjectSupplier {
 
 				);
 
-				// print "$sql\n";
+			//	 print "$sql\n";
 
 				$update_sql=$this->db->prepare($sql);
 				$update_sql->execute();

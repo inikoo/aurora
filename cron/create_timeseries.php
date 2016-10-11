@@ -40,7 +40,6 @@ if ($result=$db->query($sql)) {
 		$supplier=new Supplier($row['Supplier Key']);
 
 
-
 		$timeseries_data=$timeseries['Supplier'];
 
 		foreach ($timeseries_data as $timeserie_data) {

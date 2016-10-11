@@ -123,7 +123,6 @@ class Timeseries extends DB_Table {
 	function find($raw_data, $options) {
 
 
-
 		if (isset($raw_data['editor'])) {
 			foreach ($raw_data['editor'] as $key=>$value) {
 
@@ -163,6 +162,9 @@ class Timeseries extends DB_Table {
 
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
+			
+			
+			
 				$this->found=true;
 				$this->found_key=$row['Timeseries Key'];
 				$this->get_data('id', $this->found_key);
@@ -218,7 +220,7 @@ class Timeseries extends DB_Table {
 
 		$sql="insert into `Timeseries Dimension` ($keys) values ($values)";
 
-		//print  $sql;
+		
 		if ($this->db->exec($sql)) {
 
 			$this->id=$this->db->lastInsertId();
@@ -268,6 +270,9 @@ class Timeseries extends DB_Table {
 					$this->id,
 					prepare_mysql($data['Timeseries Record Date'])
 				);
+				
+				
+				
 				if ($this->db->exec($sql)) {
 					return array($this->db->lastInsertId(), $data['Timeseries Record Date']);
 				}else {
