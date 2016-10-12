@@ -25,7 +25,6 @@ function get_part_showcase($data, $smarty, $user, $db) {
 
 	//$part->fix_stock_transactions();
 
-$part->activate();
 
 
 	if (!$part->id) {
