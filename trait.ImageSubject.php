@@ -43,6 +43,10 @@ trait ImageSubject {
 
 			if ($this->table_name=='Part') {
 
+
+			$this->activate();
+		
+
 				foreach ($this->get_products('objects') as $product) {
 
 					if ( count($product->get_parts())==1 ) {
