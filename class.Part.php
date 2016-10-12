@@ -170,6 +170,36 @@ class Part extends Asset{
 
 		return $supplier_parts;
 	}
+	
+	function get_suppliers($scope='keys') {
+
+
+		if (   $scope=='objects') {
+			include_once 'class.Supplier.php';
+		}
+
+		$sql=sprintf('select `Supplier Part Supplier Key` from `Supplier Part Dimension` where `Supplier Part Part SKU`=%d ', $this->id);
+
+		$suppliers=array();
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+				if ($scope=='objects') {
+					$suppliers[$row['Supplier Part Supplier Key']]=new Supplier($row['Supplier Part Supplier Key']);
+				}else {
+					$suppliers[$row['Supplier Part Supplier Key']]=$row['Supplier Part Supplier Key'];
+				}
+
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+		return $suppliers;
+	}
 
 
 	function load_acc_data() {
@@ -3217,7 +3247,7 @@ class Part extends Asset{
 
 		if ($this->get('Part Status')=='In Process') {
 
-			if ($this->get('Part Main Image Key')>0 and $this->get('Part Current On Hand Stock')>0) {
+			if ($this->get_number_images()>0 and $this->get('Part Current On Hand Stock')>0) {
 
 				$this->update(array(
 						'Part Status'=>'In Use',
