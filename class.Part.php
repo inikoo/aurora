@@ -1157,19 +1157,19 @@ class Part extends Asset{
 				return;
 			}
 
-			if ($this->get('Part Status')=='In Process'  and $value!='In Process'  and !( $this->get('Part Stock In Hand')>0  and $this->get_number_images()>0  )   ) {
+			if ($this->get('Part Status')=='In Process'  and $value!='In Process'  and !( $this->get('Part Current On Hand Stock')>0  and $this->get_number_images()>0  )   ) {
 
 				$this->error=true;
-				$this->msg=_("Part status can't be modified").' ('.$value.' '.$this->get('Part Stock In Hand').' '.$this->get_number_images().' )';
+				$this->msg=_("Part status can't be modified").' ('.$value.' >'.$this->get('Part Current On Hand Stock').'<  '.$this->get_number_images().' )';
 				return;
 
 			}
 
 
 			if ($value=='Not In Use') {
-				if ($this->get('Part Stock In Hand')>0) {
+				if ($this->get('Part Current On Hand Stock')>0) {
 					$value='Discontinuing';
-				}elseif ($this->get('Part Stock In Hand')<0) {
+				}elseif ($this->get('Part Current On Hand Stock')<0) {
 
 				}
 			}
