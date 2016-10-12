@@ -1157,10 +1157,10 @@ class Part extends Asset{
 				return;
 			}
 
-			if ($this->get('Part Status')=='In Process'  and $value!='In Process'  and !( $this->get('Part Stock In Hand')>0  and $this->get('Part Main Image Key')>0  )   ) {
+			if ($this->get('Part Status')=='In Process'  and $value!='In Process'  and !( $this->get('Part Stock In Hand')>0  and $this->get_number_images()>0  )   ) {
 
 				$this->error=true;
-				$this->msg=_("Part status can't be modified").' ('.$value.')';
+				$this->msg=_("Part status can't be modified").' ('.$value.' '.$this->get('Part Stock In Hand').' '.$this->get_number_images().' )';
 				return;
 
 			}
@@ -3247,10 +3247,8 @@ class Part extends Asset{
 
 		if ($this->get('Part Status')=='In Process') {
 
-print $this->get_number_images();
 
 			if ($this->get_number_images()>0 and $this->get('Part Current On Hand Stock')>0) {
-
 				$this->update(array(
 						'Part Status'=>'In Use',
 						'Part Active From'=>gmdate('Y-m-d H:i:s')
