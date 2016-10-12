@@ -3247,6 +3247,8 @@ class Part extends Asset{
 
 		if ($this->get('Part Status')=='In Process') {
 
+print $this->get_number_images();
+
 			if ($this->get_number_images()>0 and $this->get('Part Current On Hand Stock')>0) {
 
 				$this->update(array(
