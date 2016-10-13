@@ -3,8 +3,7 @@
 
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Created: 6 June 2016 at 11:49:19 CEST, Mijas Costa, Spain
-
+ Created: 6 October 2016 at 14:48:23 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2016, Inikoo
 
  Version 3.0
@@ -19,8 +18,6 @@ $public_options=array(
 asort($public_options);
 
 
-
-
 $category_product_fields=array(
 	array(
 		'label'=>_('Visibility'),
@@ -33,7 +30,7 @@ $category_product_fields=array(
 				'options'=>$public_options,
 				'value'=> $object->get('Product Category Public'),
 				'formatted_value'=> $object->get('Public'),
-				'label'=>_('Public'),
+				'label'=>_('Show in website'),
 				'type'=>'value'
 			),
 
@@ -46,40 +43,19 @@ $category_product_fields=array(
 	),
 	
 	
-	array(
-		'label'=>_('Department'),
-		'show_title'=>true,
-		'fields'=>array(
-			array(
-				'id'=>'Product_Category_Department_Category_Key',
-				'edit'=>'dropdown_select',
-				'scope'=>'departments',
-				'parent'=>'store',
-				'parent_key'=>($new?$options['store_key']:$object->get('Category Store Key')),
-				'value'=>htmlspecialchars($object->get('Product Category Department Category Key')),
-				'formatted_value'=>$object->get('Department Category Key'),
-				'stripped_formatted_value'=>'',
-				'label'=>_('Department'),
-				'required'=>true,
-				'type'=>'value'
 
-
-			),
-
-		
-
-		)
-	),
 	
 	
 		array(
 		'label'=>_('Webpage').' <span class="no_title">'.$object->webpage->get('Code').'</span>',
 		'show_title'=>true,
+		'class'=>($object->get('Product Category Public')=='Yes'?'':'hide'),
 		'fields'=>array(
 
 
 			array(
 				'id'=>'Category_Website_Node_Parent_Key',
+				'render'=>($object->get('Product Category Public')=='Yes'?true:false),
 				'edit'=>'dropdown_select',
 				'scope'=>'web_node',
 				'parent'=>'website',
@@ -96,6 +72,8 @@ $category_product_fields=array(
 
 			array(
 				'id'=>'Category_Webpage_Name',
+								'render'=>($object->get('Product Category Public')=='Yes'?true:false),
+
 				'edit'=>($edit?'string':''),
 
 				'value'=>htmlspecialchars($object->get('Category Webpage Name')),
@@ -109,6 +87,8 @@ $category_product_fields=array(
 
 			array(
 				'id'=>'Product_Category_Description',
+								'render'=>($object->get('Product Category Public')=='Yes'?true:false),
+
 				'edit'=>($edit?'editor':''),
 				'class'=>'editor',
 				'editor_data'=>array(

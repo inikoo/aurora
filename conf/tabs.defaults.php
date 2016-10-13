@@ -1210,6 +1210,9 @@ $tab_defaults=array(
 		'f_field'=>'reference',
 
 	),
+	
+
+	
 	'warehouse.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
@@ -1412,7 +1415,17 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'note'
 	),
+'production.suppliers'=>array(
+		'view'=>'overview',
+		'sort_key'=>'code',
+		'sort_order'=>1,
+		'rpp'=>100,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'code',
+				'f_period'=>'ytd',
 
+
+	),
 	'operatives'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
@@ -2150,6 +2163,48 @@ $tab_defaults=array(
 		'f_period'=>'ytd',
 		'elements_type'=>each(  $elements_options['parts']  ) ['key'],
 		'elements'=>$elements_options['parts'],
+	),
+		'supplier.part_locations_with_errors.wget'=>array(
+		'view'=>'overview',
+		'sort_key'=>'reference',
+		'sort_order'=>1,
+		'rpp'=>100,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'reference',
+
+	),
+		'supplier.surplus_parts.wget'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>100,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'reference',
+	//	'f_period'=>'ytd',
+	//	'elements_type'=>each(  $elements_options['parts']  ) ['key'],
+//		'elements'=>$elements_options['parts'],
+	),
+		'supplier.todo_parts.wget'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>100,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'reference',
+	//	'f_period'=>'ytd',
+	//	'elements_type'=>each(  $elements_options['parts']  ) ['key'],
+//		'elements'=>$elements_options['parts'],
+	),
+		'supplier.todo_paid_parts.wget'=>array(
+		'view'=>'overview',
+		'sort_key'=>'date',
+		'sort_order'=>0,
+		'rpp'=>1000,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'reference',
+	//	'f_period'=>'ytd',
+	//	'elements_type'=>each(  $elements_options['parts']  ) ['key'],
+//		'elements'=>$elements_options['parts'],
 	),
 
 );

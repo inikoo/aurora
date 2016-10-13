@@ -271,6 +271,18 @@ class SubjectSupplier extends Subject {
 
 		switch ($key) {
 
+
+		case 'Supplier Number Todo Parts':
+		case 'Agent Number Todo Parts':
+
+			if ($this->table_name=='Supplier Production') {
+				$table_name='Supplier';
+			}else {
+				$table_name=$this->table_name;
+			}
+
+			return array(true, $this->data[$table_name.' Number Critical Parts']+$this->data[$table_name.' Number Out Of Stock Parts']);
+			breaak;
 		case('Valid From'):
 		case('Valid To'):
 			if ($this->get($this->table_name.' '.$key)=='') {
@@ -364,7 +376,7 @@ class SubjectSupplier extends Subject {
 		case('Parent Skip Checking'):
 		case('Parent Automatic Placement Location'):
 
-			$field=preg_replace('/^Parent/',$this->table_name, $key);
+			$field=preg_replace('/^Parent/', $this->table_name, $key);
 
 			return array(true, $this->data[$field]);
 

@@ -9,24 +9,26 @@
 				<div id="orders" onclick="change_sales_overview_type('orders')" class="hide widget  left {if $type=='orders'}selected{/if}">
 					<i class="fa fa-shopping-cart"></i><span class="label"> {t}Orders{/t} </span> 
 				</div>
+				
+				<div id="delivery_notes" onclick="change_sales_overview_type('delivery_notes')" class="widget  left {if $type=='delivery_notes'}selected{/if}">
+					<i class="fa fa-truck"></i> <span class="label">{t}Delivery Notes{/t} </span> 
+				</div>
 				<div id="invoices" onclick="change_sales_overview_type('invoices')" class="widget  left {if $type=='invoices'}selected{/if}">
-					<i class="fa fa-usd"></i><span class="label"> {t}Invoices{/t} </span> 
+					<i class="fa fa-file-text-o"></i><span class="label"> {t}Invoices{/t} </span> 
 				</div>
 				<div id="invoice_categories" onclick="change_sales_overview_type('invoice_categories')" class=" widget  left {if $type=='invoice_categories'}selected{/if}">
 					<i class="fa fa-usd"></i><span class="label"> {t}Invoices' categories{/t} </span> 
 				</div>
-				<div id="delivery_notes" onclick="change_sales_overview_type('delivery_notes')" class="widget  left {if $type=='delivery_notes'}selected{/if}">
-					<i class="fa fa-truck"></i> <span class="label">{t}Delivery Notes{/t} </span> 
-				</div>
+				
 			</div>
 			<div id="sales_overview_currency_container" class="button  {if $type=='delivery_notes'}hide{/if} " onclick="toggle_sales_overview_currency()" style="float:right;margin-right:10px">
 				<i id="sales_overview_currency" class="fa {if $currency=='store'}fa-toggle-on{else}fa-toggle-off{/if}"></i> {t}Store currency{/t} 
 			</div>
 			</td>
 		</tr>
-		<tr class="small_row">
+		<tr class=" small_row   ">
 			<td colspan="7"> 
-			<div class="date_chooser">
+			<div class="date_chooser {if $type=='orders'}invisible{/if}">
 				<div style="visibility:hidden" id="interval" class="interval {if  $period=='interval'}selected{/if}">
 					<img src="/art/icons/mini-calendar_interval.png" /> {t}Interval{/t}
 				</div>
@@ -74,8 +76,12 @@
 		</tr>
 		<tr class="header ">
 			<td class="label">{t}Store{/t}</td>
-			<td class="refunds aright {if !($type=='invoices' or  $type=='invoice_categories')  }hide{/if}" title="{t}Refunds{/t}">{t}Refunds{/t}</td>
-			<td class="refunds aright {if !($type=='invoices' or  $type=='invoice_categories')}hide{/if}" title="{t}Change compared with last year{/t}">&Delta; {t}1Y{/t}</td>
+			
+
+			
+			
+			<td class="refunds aright {if !($type=='invoices' or  $type=='invoice_categories'  )  }hide{/if}" title="{t}Refunds{/t}">{t}Refunds{/t}</td>
+			<td class="refunds aright {if !($type=='invoices' or  $type=='invoice_categories'  )}hide{/if}" title="{t}Change compared with last year{/t}">&Delta; {t}1Y{/t}</td>
 			<td class="delivery_notes aright {if $type!='delivery_notes'}hide{/if}" title="{t}Delivery notes{/t}">{t}Delivery notes{/t}</td>
 			<td class="delivery_notes aright {if $type!='delivery_notes'}hide{/if}" title="{t}Change compared with last year{/t}">&Delta; {t}1Y{/t}</td>
 			<td class="replacements aright {if $type!='delivery_notes'}hide{/if}" title="{t}Replacements{/t}">{t}Rpl{/t}</td>
@@ -90,6 +96,9 @@
 		<tbody class="data">
 		<tr class="{$record.class} small_row">
 			<td class="label {if isset($record.label.view) and $record.label.view!='' }link{/if}" {if isset($record.label.view) and $record.label.view!='' }onclick="change_view('{$record.label.view}')" {/if} title="{if isset($record.label.title)}{$record.label.title}{else}{$record.label.label}{/if}  ">{$record.label.label}</td>
+			
+
+			
 			<td id="orders_overview_refunds_{$record.id}" {if isset($record.refunds.view) and $record.label.view!='' }onclick="change_view('{$record.refunds.view}' , { parameters:{ period:'{$period}',elements_type:'type' } ,element:{ type:{ Refund:1,Invoice:''}} } )" {/if} class="link refunds width_1500 aright {if !($type=='invoices' or  $type=='invoice_categories')}hide{/if}">{$record.refunds.value}</td>
 			<td id="orders_overview_refunds_delta_{$record.id}" class="refunds width_100 aright {if !($type=='invoices' or  $type=='invoice_categories')}hide{/if}" title="{$record.refunds_1yb}">{$record.refunds_delta}</td>
 			<td id="orders_overview_delivery_notes_{$record.id}" onclick="change_view('delivery_notes/{$record.id}',{ parameters: { period:'{$period}',elements_type:'type'},element:{ type:{ Order:1,Sample:1,Donation:1,Replacements:'',Shortages:''}} } )" class="link delivery_notes width_150 aright {if $type!='delivery_notes'}hide{/if}">{$record.delivery_notes}</td>
@@ -110,13 +119,18 @@
 
 function change_sales_overview_type(type) {
 
+
+
     $('.widget_types .widget').removeClass('selected')
     $('#' + type).addClass('selected')
 
     if (type == 'orders') {
 
+$('.date_chooser').addClass('invisible')
+
     } else if (type == 'invoices') {
 
+$('.date_chooser').removeClass('invisible')
 
         $('.category').addClass('hide')
         $('.store').removeClass('hide')
@@ -127,6 +141,7 @@ function change_sales_overview_type(type) {
         
         
     } else if (type == 'invoice_categories') {
+$('.date_chooser').removeClass('invisible')
 
         $('.category').removeClass('hide')
         $('.store').addClass('hide')
@@ -137,6 +152,8 @@ function change_sales_overview_type(type) {
 
 
     } else if (type == 'delivery_notes') {
+ $('.date_chooser').removeClass('invisible')
+
         $('.category').addClass('hide')
         $('.store').removeClass('hide')
         $('.refunds,.invoices,.sales').addClass('hide')

@@ -234,16 +234,16 @@ class Website extends DB_Table{
 		);
 
 		$mya_webnode->create_subnode(
-			array('Webpage Code'=>'p.Login', 'Webpage Name'=>_('Login'), 'Website Node Locked'=>'Yes','Webpage Class'=>'Login', 'Webpage Locked'=>'Yes','Website Node Type'=>'Head')
+			array('Webpage Code'=>'p.Login', 'Webpage Name'=>_('Login'), 'Website Node Locked'=>'Yes', 'Webpage Class'=>'Login', 'Webpage Locked'=>'Yes', 'Website Node Type'=>'Head')
 		);
 		$mya_webnode->create_subnode(
-			array('Webpage Code'=>'p.Register', 'Webpage Name'=>_('Register'), 'Website Node Locked'=>'Yes', 'Webpage Class'=>'Register','Webpage Locked'=>'Yes','Website Node Type'=>'Head')
+			array('Webpage Code'=>'p.Register', 'Webpage Name'=>_('Register'), 'Website Node Locked'=>'Yes', 'Webpage Class'=>'Register', 'Webpage Locked'=>'Yes', 'Website Node Type'=>'Head')
 		);
 		$mya_webnode->create_subnode(
-			array('Webpage Code'=>'p.Pwd', 'Webpage Name'=>_('Forgotten password'), 'Website Node Locked'=>'Yes','Webpage Class'=>'ResetPwd','Webpage Locked'=>'Yes', 'Website Node Type'=>'Head')
+			array('Webpage Code'=>'p.Pwd', 'Webpage Name'=>_('Forgotten password'), 'Website Node Locked'=>'Yes', 'Webpage Class'=>'ResetPwd', 'Webpage Locked'=>'Yes', 'Website Node Type'=>'Head')
 		);
 		$mya_webnode->create_subnode(
-			array('Webpage Code'=>'p.Profile', 'Webpage Name'=>_('My account'), 'Website Node Locked'=>'Yes','Webpage Class'=>'Profile', 'Webpage Locked'=>'Yes','Website Node Type'=>'Head')
+			array('Webpage Code'=>'p.Profile', 'Webpage Name'=>_('My account'), 'Website Node Locked'=>'Yes', 'Webpage Class'=>'Profile', 'Webpage Locked'=>'Yes', 'Website Node Type'=>'Head')
 		);
 
 
@@ -257,22 +257,22 @@ class Website extends DB_Table{
 				'Webpage Class'=>'Hub'
 			)
 		);
-		
+
 
 		$node=$cs_webnode->create_subnode(
-			array('Webpage Code'=>'p.Contact', 'Webpage Name'=>_('Contact us'), 'Website Node Locked'=>'Yes','Webpage Class'=>'Contact', 'Website Node Type'=>'Head')
+			array('Webpage Code'=>'p.Contact', 'Webpage Name'=>_('Contact us'), 'Website Node Locked'=>'Yes', 'Webpage Class'=>'Contact', 'Website Node Type'=>'Head')
 		);
-		
+
 
 		$node=$cs_webnode->create_subnode(
-			array('Webpage Code'=>'p.Delivery', 'Webpage Name'=>_('Delivery'), 'Website Node Locked'=>'No', 'Website Node Type'=>'Head','Webpage Class'=>'Info', 'Website Node Icon'=>'truck fa-flip-horizontal')
+			array('Webpage Code'=>'p.Delivery', 'Webpage Name'=>_('Delivery'), 'Website Node Locked'=>'No', 'Website Node Type'=>'Head', 'Webpage Class'=>'Info', 'Website Node Icon'=>'truck fa-flip-horizontal')
 		);
-		
+
 
 		$node=$cs_webnode->create_subnode(
-			array('Webpage Code'=>'p.GTC', 'Webpage Name'=>_('Terms & Conditions'), 'Website Node Locked'=>'Yes','Webpage Locked'=>'Yes','Webpage Class'=>'Info', 'Website Node Type'=>'Head')
+			array('Webpage Code'=>'p.GTC', 'Webpage Name'=>_('Terms & Conditions'), 'Website Node Locked'=>'Yes', 'Webpage Locked'=>'Yes', 'Webpage Class'=>'Info', 'Website Node Type'=>'Head')
 		);
-		
+
 
 
 		//$home_webnode->create_subnode(array('Webpage Code'=>'p.Insp', 'Webpage Name'=>_('Inspiration'), 'Website Node Locked'=>'No', 'Website Node Type'=>'Root'));
@@ -304,6 +304,10 @@ class Website extends DB_Table{
 				'Webpage Object Key'=>$store->get('Store Department Category Key')
 			)
 		);
+
+
+	
+
 
 	}
 

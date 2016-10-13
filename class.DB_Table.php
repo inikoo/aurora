@@ -205,8 +205,9 @@ abstract class DB_Table {
 			$key_field='Part SKU';
 		}else if ($table_name=='Product' or $table_full_name=='Product Data' or $table_full_name=='Product DC Data') {
 			$key_field='Product ID';
+		}else if($table_name=='Supplier Production'){
+			$key_field='Supplier Production Supplier Key';
 		}
-
 
 		if (preg_match('/^custom_field_part/i', $field)) {
 			$field1=preg_replace('/^custom_field_part_/', '', $field);
@@ -285,7 +286,7 @@ abstract class DB_Table {
 				$table_key
 			);
         
-      //  print "$sql\n";
+     //   print "$sql\n";
 
 		}
 

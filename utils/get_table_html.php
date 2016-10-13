@@ -153,6 +153,7 @@ if (array_key_exists('frequency', $parameters)) {
 
 	$frequencies=array(
 		'annually'=>_('Annually'),
+		'quarterly'=>_('Quarterly'),
 		'monthy'=>_('Monthy'),
 		'weekly'=>_('Weekly'),
 		'daily'=>_('Daily'),

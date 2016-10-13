@@ -55,7 +55,7 @@ class Supplier extends SubjectSupplier {
 		if ($tipo=='id' or $tipo=='key') {
 			$sql=sprintf("select * from `Supplier Dimension` where `Supplier Key`=%d", $id);
 		}elseif ($tipo=='code') {
-			
+
 
 			$sql=sprintf("select * from `Supplier Dimension` where `Supplier Code`=%s ", prepare_mysql($id));
 
@@ -389,7 +389,7 @@ class Supplier extends SubjectSupplier {
 			$this->id
 		);
 
-
+		//print $sql;
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
 				//print_r($row);
@@ -493,6 +493,7 @@ class Supplier extends SubjectSupplier {
 
 	}
 
+
 	function get_sales_data($from_date, $to_date) {
 
 		$sales_data=array(
@@ -506,11 +507,11 @@ class Supplier extends SubjectSupplier {
 		);
 
 
-        $parts_skus=$this->get_part_skus();
+		$parts_skus=$this->get_part_skus();
 
-         if($parts_skus!=''){   
-    
-		$sql=sprintf("select sum(`Amount In`) as sold_amount,
+		if ($parts_skus!='') {
+
+			$sql=sprintf("select sum(`Amount In`) as sold_amount,
                      sum(`Inventory Transaction Quantity`) as dispatched,
                      sum(`Required`) as required,
                      sum(`Given`) as given,
@@ -519,30 +520,30 @@ class Supplier extends SubjectSupplier {
                      count(distinct `Delivery Note Key`) as  deliveries
 
                      from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type` like 'Sale' and `Part SKU` in (%s) %s %s" ,
-			$parts_skus,
-			($from_date?sprintf('and  `Date`>=%s', prepare_mysql($from_date)):''),
+				$parts_skus,
+				($from_date?sprintf('and  `Date`>=%s', prepare_mysql($from_date)):''),
 
-			($to_date?sprintf('and `Date`<%s', prepare_mysql($to_date)):'')
+				($to_date?sprintf('and `Date`<%s', prepare_mysql($to_date)):'')
 
-		);
+			);
 
-//print $sql;
+			//print $sql;
 
-		if ($result=$this->db->query($sql)) {
-			if ($row = $result->fetch()) {
-				$sales_data['sold_amount']=$row['sold_amount'];
-				$sales_data['sold']=$row['sold'];
-				$sales_data['dispatched']=-1.0*$row['dispatched'];
-				$sales_data['required']=$row['required'];
-				$sales_data['no_dispatched']=$row['no_dispatched'];
-				$sales_data['deliveries']=$row['deliveries'];
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					$sales_data['sold_amount']=$row['sold_amount'];
+					$sales_data['sold']=$row['sold'];
+					$sales_data['dispatched']=-1.0*$row['dispatched'];
+					$sales_data['required']=$row['required'];
+					$sales_data['no_dispatched']=$row['no_dispatched'];
+					$sales_data['deliveries']=$row['deliveries'];
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
-		}
 
-}
+		}
 
 		return $sales_data;
 	}
@@ -1620,11 +1621,11 @@ class Supplier extends SubjectSupplier {
 
 
 
-			
-			
-			
-			
-			
+
+
+
+
+
 
 
 		default:
@@ -1945,7 +1946,7 @@ class Supplier extends SubjectSupplier {
 
 				);
 
-			//	 print "$sql\n";
+				//  print "$sql\n";
 
 				$update_sql=$this->db->prepare($sql);
 				$update_sql->execute();
@@ -1975,6 +1976,7 @@ class Supplier extends SubjectSupplier {
 
 
 	}
+
 
 
 

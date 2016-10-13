@@ -49,6 +49,11 @@
 	<script type="text/javascript" src="/js/libs/backbone.paginator.js"></script>
 	<script type="text/javascript" src="/js/libs/backgrid.js"></script>
 	<script type="text/javascript" src="/js/libs/backgrid-filter.js"></script>
+	<script type="text/javascript" src="/js/libs/snap.svg.js"></script>
+	<script type="text/javascript" src="/js/libs/svg-dial.js"></script>
+
+	
+	
 	<script type="text/javascript" src="/js/libs/countrySelect.js"></script>
 
 	<script type="text/javascript" src="/js/libs/intlTelInput.js"></script>
@@ -66,6 +71,11 @@
 	<script type="text/javascript" src="/js/supplier.order.js"></script>
 	<script type="text/javascript" src="/js/supplier.delivery.js"></script>
 	<script type="text/javascript" src="/js/part_locations.edit.js"></script>
+	
+	
+		<script type="text/javascript" src="/js/alert_dial.js"></script>
+
+	
 
 	<script type="text/javascript" src="/js/help.js"></script>
 	<script type="text/javascript" src="/utils/country_data.js.php?locale={$locale}"></script> 

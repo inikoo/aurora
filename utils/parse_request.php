@@ -20,7 +20,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 	$request=$_data['request'];
 
 	$request=preg_replace('/\/+/', '/', $request);
-    if($request=='/')$request='dashboard';
+	if ($request=='/')$request='dashboard';
 
 	$original_request=preg_replace('/^\//', '', $request);
 	$view_path=preg_split('/\//', $original_request);
@@ -42,7 +42,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 	reset($modules);
 
-    
+
 
 
 	if ($count_view_path>0) {
@@ -304,7 +304,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 					}
 				}
-			
+
 
 
 			}
@@ -1531,8 +1531,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 							if (isset($view_path[1]) and is_numeric($view_path[1])) {
 								$key=$view_path[1];
-								
-								include_once('class.Category.php');
+
+								include_once 'class.Category.php';
 								$category=new Category($key);
 
 								$parent='category';
@@ -2462,49 +2462,77 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			if (!$user->can_view('suppliers')) {$module='utils';$section='forbidden';break;}
 
 			$module='production';
-			$section='dashboard';
 			$parent='account';
 			$parent_key=1;
 
 			if ( isset($view_path[0]) ) {
-				if (  $view_path[0]=='manufacture_tasks') {
-					$section='manufacture_tasks';
 
-				}elseif (  $view_path[0]=='operatives') {
-					$section='operatives';
 
-				}
-				elseif (  $view_path[0]=='batches') {
-					$section='batches';
 
-				}
-				elseif (  $view_path[0]=='operative') {
-					$section='operative';
-					$object='operative';
+				if ( is_numeric( $view_path[0] ) ) {
+
+					
+					
+					$section='dashboard';
+					$object='supplier_production';
+					$key=$view_path[0];
+					
 					if ( isset($view_path[1]) ) {
-						if (is_numeric($view_path[1])) {
-							$key=$view_path[1];
-						}elseif ($view_path[1]=='add') {
-							$section='operative.add';
-						}
-					}
+						if (  $view_path[1]=='manufacture_tasks') {
+							$section='manufacture_tasks';
 
-				}
-				elseif (  $view_path[0]=='manufacture_task') {
-					$section='manufacture_task';
-					$object='manufacture_task';
-					if ( isset($view_path[1]) ) {
-						if (is_numeric($view_path[1])) {
-							$key=$view_path[1];
-						}elseif ($view_path[1]=='new') {
-							$section='manufacture_task.new';
+						}elseif (  $view_path[1]=='operatives') {
+							$section='operatives';
 
 						}
-					}
+						elseif (  $view_path[1]=='batches') {
+							$section='batches';
 
+						}
+						elseif (  $view_path[1]=='operative') {
+							$section='operative';
+							$object='operative';
+							if ( isset($view_path[1]) ) {
+								if (is_numeric($view_path[1])) {
+									$key=$view_path[1];
+								}elseif ($view_path[1]=='add') {
+									$section='operative.add';
+								}
+							}
+
+						}
+						elseif (  $view_path[1]=='manufacture_task') {
+							$section='manufacture_task';
+							$object='manufacture_task';
+							if ( isset($view_path[1]) ) {
+								if (is_numeric($view_path[1])) {
+									$key=$view_path[1];
+								}elseif ($view_path[1]=='new') {
+									$section='manufacture_task.new';
+
+								}
+							}
+
+						}
+						elseif ($view_path[1]=='settings') {
+							$section='settings';
+
+
+
+						}
+					}
+				}
+				elseif ($view_path[0]=='all') {
+					$module='production_server';
+					$section='production.suppliers';
+					break;
 				}
 			}
-
+			else{
+			$module='production_server';
+			$section='production.suppliers';
+					break;
+			}
 			break;
 
 		case 'manufacture_task':

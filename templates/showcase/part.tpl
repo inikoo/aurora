@@ -111,7 +111,7 @@
 				</tr>
 				<tr >
 					
-						<td class="aright" colspan="2" style="padding-top:0;color:#777;font-size:90%"> <b class="Current_Stock" title="{t}Current stock{/t}">{$part->get('Current Stock')}</b> <b>-[<span class="Current_Stock_Picked" title="{t}Stock picked{/t}">{$part->get('Current Stock Picked')}</span>]</b> -(<span id="Current_Stock_In_Process" title="{t}Waiting to be picked{/t}">{$part->get('Current Stock In Process')}</span>) &rarr; <span title="{t}Available to sell{/t}" class="Current_Stock_Available">{$part->get('Current Stock Available')}</span></td>
+						<td class="aright" colspan="2" style="padding-top:0;color:#777;font-size:90%"> <b class="Current_Stock" title="{t}Current stock{/t}">{$part->get('Current Stock')}</b> <b>-[<span class="Current_Stock_Picked" title="{t}Stock picked{/t}">{$part->get('Current Stock Picked')}</span>]</b> -(<span id="Current_Stock_In_Process" title="{t}Waiting to be picked{/t}">{$part->get('Current Stock In Process')}</span>)  -(<span id="Current_Stock_Ordered_Paid" title="{t}Paid orders in process{/t}">{$part->get('Current Stock Ordered Paid')}</span>) &rarr; <span title="{t}Available to sell{/t}" class="Current_Stock_Available">{$part->get('Current Stock Available')}</span></td>
 					
 				</tr>
 				<tr >

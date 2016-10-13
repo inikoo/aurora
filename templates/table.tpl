@@ -490,7 +490,7 @@ var Rows = Backbone.PageableCollection.extend({
 
    parseRecords: function (resp, options) {
    
-   console.log(resp.resultset.data)
+//   console.log(resp.resultset.data)
    
     return resp.resultset.data;
   }

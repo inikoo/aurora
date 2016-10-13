@@ -432,6 +432,10 @@ ALTER TABLE `Page Store See Also Bridge` ADD `Webpage See Also Order` MEDIUMINT 
 ALTER TABLE `Part Dimension` CHANGE `Part Status` `Part Status` ENUM('In Process','Not In Use','In Use','Discontinuing') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'In Process';
 ALTER TABLE `Part Dimension` ADD `Part Active From` DATETIME NULL DEFAULT NULL AFTER `Part Valid From`;
 
+ALTER TABLE `Product Category Dimension` DROP PRIMARY KEY, ADD PRIMARY KEY (`Product Category Key`) USING BTREE;
+ALTER TABLE `Agent Dimension` ADD `Agent Skip Inputting` ENUM('Yes','No') NOT NULL DEFAULT 'No' AFTER `Agent Number Out Of Stock Parts`, ADD `Agent Skip Mark as Dispatched` ENUM('Yes','No') NOT NULL DEFAULT 'No' AFTER `Agent Skip Inputting`, ADD `Agent Skip Mark as Received` ENUM('Yes','No') NOT NULL DEFAULT 'No' AFTER `Agent Skip Mark as Dispatched`, ADD `Agent Skip Checking` ENUM('Yes','No') NOT NULL DEFAULT 'No' AFTER `Agent Skip Mark as Received`, ADD `Agent Automatic Placement Location` ENUM('Yes','No') NOT NULL DEFAULT 'No' AFTER `Agent Skip Checking`;
+ALTER TABLE `Supplier Dimension` ADD `Supplier Max Percentage Todo Parts` FLOAT UNSIGNED NOT NULL DEFAULT '1' AFTER `Supplier Automatic Placement Location`, ADD `Supplier Max Percentage Surplus Parts` FLOAT UNSIGNED NOT NULL DEFAULT '.1' AFTER `Supplier Max Percentage Todo Parts`;
+
 
 migrate_suppliers.oneoff.php
 migrate_images.oneoff.php 
@@ -442,7 +446,6 @@ migrate_parts.oneoff.php
 // From HERe  ==================== 15/04/2016, 10:45
 
 
-ALTER TABLE `Product Category Dimension` DROP PRIMARY KEY, ADD PRIMARY KEY (`Product Category Key`) USING BTREE;
 
 
 Only for bali dw:

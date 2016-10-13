@@ -32,7 +32,7 @@ $editor=array(
 
 
 
-$sql=sprintf('select `Supplier Key` from `Supplier Dimension` ');
+$sql=sprintf('select `Supplier Key` from `Supplier Dimension`  ');
 
 if ($result=$db->query($sql)) {
 	foreach ($result as $row) {

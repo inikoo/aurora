@@ -184,6 +184,8 @@
 			</div>
 			<span style="float:left;padding-left:10px;padding-top:5px" class="Purchase_Order_State"> {$order->get('State')} </span> 
 			<div id="forward_operations">
+				
+				
 				<div id="submit_operations" class="order_operation {if $order->get('Purchase Order State')!='InProcess'}hide{/if}">
 					<div id="submit_operation" class="square_button right {if $order->get('Purchase Order Number Items')==0}hide{/if} " title="{t}Submit{/t}">
 						<i class="fa fa-paper-plane-o   " aria-hidden="true" onclick="toggle_order_operation_dialog('submit')"></i> 
@@ -198,12 +200,20 @@
 						</table>
 					</div>
 				</div>
+				
+				<div id="quick_create_delivery_operations" class="order_operation {if ({$order->get('State Index')|intval} < 30 or ($order->get('Purchase Order Ordered Number Items')-$order->get('Purchase Order Number Supplier Delivery Items'))==0) or $parent->get('Parent Skip Inputting')=='No' }hide{/if}">
+				<div id="quick_create_delivery_operation" class="square_button right  " title="{t}Create delivery{/t}">
+					<i class="fa fa-truck   " aria-hidden="true" onclick="quick_create_delivery()"></i> 
+				</div>
+				</div>
+				
+				
 			</div>
 		</div>
-		<div id="crete_delivery" class="delivery_node {if ({$order->get('State Index')|intval} < 30 or ($order->get('Purchase Order Ordered Number Items')-$order->get('Purchase Order Number Supplier Delivery Items'))==0)  }hide{/if}" style="height:30px;clear:both;border-top:1px solid #ccc;border-bottom:1px solid #ccc">
+		<div id="create_delivery" class="delivery_node {if ({$order->get('State Index')|intval} < 30 or ($order->get('Purchase Order Ordered Number Items')-$order->get('Purchase Order Number Supplier Delivery Items'))==0) or $parent->get('Parent Skip Inputting')=='Yes' }hide{/if}" style="height:30px;clear:both;border-top:1px solid #ccc;border-bottom:1px solid #ccc">
 			<div id="back_operations">
 			</div>
-			<span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic"><i class="fa fa-truck" aria-hidden="true"></i> {t}Delivery{/t} </span> 
+			<span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic"><i class="fa fa-truck" aria-hidden="true"></i> {t}Delivery{/t}</span> 
 			<div id="forward_operations">
 				<div id="received_operations" class="order_operation {if !($order->get('Purchase Order State')=='Submitted' or  $order->get('Purchase Order State')=='Send') }hide{/if}">
 					<div class="square_button right" style="padding:0;margin:0;position:relative;top:0px" title="{t}Input delivery note{/t}">

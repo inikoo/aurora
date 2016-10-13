@@ -1777,7 +1777,7 @@ class Product extends Asset{
 
 		if ($this->get('Product Number of Parts')>0) {
 
-			$sql=sprintf(" select `Part Reference`,`Part On Demand`,`Part Stock State`,`Part Current On Hand Stock`-`Part Current Stock In Process` as stock,`Part Current Stock In Process`,`Part Current On Hand Stock`,`Product Part Ratio` from     `Product Part Bridge` B left join   `Part Dimension` P   on (P.`Part SKU`=B.`Product Part Part SKU`)   where B.`Product Part Product ID`=%d   ",
+			$sql=sprintf(" select `Part Reference`,`Part On Demand`,`Part Stock State`,`Part Current On Hand Stock`-`Part Current Stock In Process`-`Part Current Stock Ordered Paid` as stock,`Part Current Stock In Process`,`Part Current On Hand Stock`,`Product Part Ratio` from     `Product Part Bridge` B left join   `Part Dimension` P   on (P.`Part SKU`=B.`Product Part Part SKU`)   where B.`Product Part Product ID`=%d   ",
 				$this->id
 			);
 

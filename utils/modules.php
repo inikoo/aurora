@@ -982,19 +982,63 @@ $modules=array(
 		)
 
 	),
+	
+	'production_server'=>array(
+		'sections'=>array(
+
+			'production.suppliers'=>array(
+
+				'type'=>'navigation', 'label'=>_('Suppliers'), 'icon'=>'ship', 'reference'=>'production/all', 'tabs'=>array(
+					'production.suppliers'=>array()
+				)
+			)
+
+		)
+	),
+	
 	'production'=>array(
 		'section'=>'production',
 		'parent'=>'account',
 		'parent_type'=>'key',
 		'sections'=>array(
-			'dashboard'=>array('type'=>'navigation', 'label'=>_('Dashboard'), 'title'=>_("Manufacture dashboard"), 'icon'=>'dashboard', 'reference'=>'production',
+			'dashboard'=>array('type'=>'navigation', 'label'=>_('Dashboard'), 'title'=>_("Manufacture dashboard"), 'icon'=>'dashboard', 'reference'=>'production/%d',
 				'tabs'=>array(
 					'production.dashboard'=>array()
 				)
 			),
 
+
+'products'=>array(
+				'type'=>'navigation', 'label'=>_('Products'), 'icon'=>'stop', 'reference'=>'production/%d/products',
+				'tabs'=>array(
+					'products'=>array('label'=>_('products'))
+				)
+
+
+
+			),
+				'batches'=>array(
+				'type'=>'navigation', 'label'=>_('Batches'), 'icon'=>'clone', 'reference'=>'production/%d/batches',
+				'tabs'=>array(
+					'batches'=>array('label'=>_('Batches'))
+				)
+
+
+
+			),
+			
+			'materials'=>array(
+				'type'=>'navigation', 'label'=>_('Materials'), 'icon'=>'puzzle-piece', 'reference'=>'production/%d/materials',
+				'tabs'=>array(
+					'products'=>array('label'=>_('materials'))
+				)
+
+
+
+			),
+
 			'manufacture_tasks'=>array(
-				'type'=>'navigation', 'label'=>_('Tasks/Products'), 'icon'=>'tasks', 'reference'=>'production/manufacture_tasks',
+				'type'=>'navigation', 'label'=>_('Tasks'), 'icon'=>'tasks', 'reference'=>'production/%d/manufacture_tasks',
 				'tabs'=>array(
 					'manufacture_tasks'=>array('label'=>_('Tasks'))
 				)
@@ -1024,8 +1068,11 @@ $modules=array(
 
 			),
 
+		
+
+
 			'operatives'=>array(
-				'type'=>'navigation', 'label'=>_('Operatives'), 'icon'=>'hand-rock-o', 'reference'=>'production/operatives',
+				'type'=>'navigation', 'label'=>_('Operatives'), 'icon'=>'hand-rock-o', 'reference'=>'production/%d/operatives',
 				'tabs'=>array(
 					'operatives'=>array('label'=>_('Operatives'))
 				)
@@ -1033,16 +1080,16 @@ $modules=array(
 
 
 			),
-			'batches'=>array(
-				'type'=>'navigation', 'label'=>_('Batches'), 'icon'=>'clone', 'reference'=>'production/batches',
+	'settings'=>array(
+				'type'=>'navigation', 'label'=>'', 'icon'=>'sliders', 'reference'=>'production/%d/settings', 'class'=>'icon_only',
 				'tabs'=>array(
-					'batches'=>array('label'=>_('Batches'))
+					'production.settings'=>array('label'=>_('General settings'), 'icon'=>'sliders', 'class'=>''),
+
+
 				)
 
 
-
 			),
-
 
 		)
 	),

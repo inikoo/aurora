@@ -13,11 +13,9 @@
 function get_dashboard_navigation($data, $smarty, $user, $db) {
 
 
-
-
 	$left_buttons=array();
 	$right_buttons=array();
-	$sections=get_sections('production', '');
+	$sections=get_sections('production', $data['parent_key']);
 
 	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
 
@@ -28,7 +26,7 @@ function get_dashboard_navigation($data, $smarty, $user, $db) {
 		'sections'=>$sections,
 		'left_buttons'=>$left_buttons,
 		'right_buttons'=>$right_buttons,
-		'title'=>_('Manufacture dashbard'),
+		'title'=>sprintf(_('Production %s dashboard'),'<span class="id Supplier_Code">'.$data['_object']->get('Code').'</span>'),
 		'search'=>array('show'=>true, 'placeholder'=>_('Search production'))
 
 	);
@@ -40,11 +38,69 @@ function get_dashboard_navigation($data, $smarty, $user, $db) {
 }
 
 
+
+
+function get_settings_navigation($data, $smarty, $user, $db) {
+
+
+	$left_buttons=array();
+	$right_buttons=array();
+	$sections=get_sections('production', $data['parent_key']);
+
+	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
+
+
+	$_content=array(
+
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>_('Settings'),
+		'search'=>array('show'=>true, 'placeholder'=>_('Search production'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+}
+
+function get_suppliers_navigation($data, $smarty, $user, $db) {
+
+
+	$left_buttons=array();
+	$right_buttons=array();
+	$sections=get_sections('production_server', '');
+
+	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
+
+
+	$_content=array(
+
+		'sections_class'=>'',
+		'sections'=>$sections,
+		'left_buttons'=>$left_buttons,
+		'right_buttons'=>$right_buttons,
+		'title'=>_('Suppliers'),
+		'search'=>array('show'=>true, 'placeholder'=>_('Search production'))
+
+	);
+	$smarty->assign('_content', $_content);
+
+	$html=$smarty->fetch('navigation.tpl');
+	return $html;
+
+}
+
+
+
 function get_manufacture_tasks_navigation($data, $smarty, $user, $db) {
 
 	$left_buttons=array();
 	$right_buttons=array();
-	$sections=get_sections('production', '');
+	$sections=get_sections('production', $data['parent_key']);
 
 	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
 
@@ -71,7 +127,7 @@ function get_operatives_navigation($data, $smarty, $user, $db) {
 
 	$left_buttons=array();
 	$right_buttons=array();
-	$sections=get_sections('production', '');
+	$sections=get_sections('production', $data['parent_key']);
 
 	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
 
@@ -100,7 +156,7 @@ function get_batches_navigation($data, $smarty, $user, $db) {
 
 	$left_buttons=array();
 	$right_buttons=array();
-	$sections=get_sections('production', '');
+	$sections=get_sections('production', $data['parent_key']);
 
 	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
 
@@ -129,7 +185,7 @@ function get_new_manufacture_task_navigation($data, $smarty, $user, $db) {
 	$right_buttons=array();
 
 
-	$sections=get_sections('production', '');
+	$sections=get_sections('production', $data['supplier']->id);
 
 	$_section='manufacture_tasks';
 	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
@@ -316,14 +372,14 @@ function get_manufacture_task_navigation($data, $smarty, $user, $db) {
 
 	}
 
-	$sections=get_sections('production', '');
+	$sections=get_sections('production', $data['supplier']->id);
 
 
 	if (isset($sections[$_section]) )$sections[$_section]['selected']=true;
 
 
 
-	$title= _('Manufacture task').': <span class="id Manufacture_Task_Code">'.$object->get('Code').'</span>';
+	$title= _('Production task').': <span class="id Manufacture_Task_Code">'.$object->get('Code').'</span>';
 
 
 	$_content=array(
