@@ -142,7 +142,7 @@ class Supplier_Production extends Supplier{
 
 
 		$sql=sprintf(
-			'select count(Distinct P.`Part SKU`) as num from `Part Dimension` P left join `Supplier Part Dimension` SP on (SP.`Supplier Part Part SKU`=P.`Part SKU`) left join `Part Data` PD on (PD.`Part SKU`=P.`Part SKU`) where (`Part Current On Hand Stock`- `Part Current Stock In Process`- `Part Current Stock Ordered Paid` )<0 and (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0 and `Supplier Part Supplier Key`=3',
+			'select count(Distinct P.`Part SKU`) as num from `Part Dimension` P left join `Supplier Part Dimension` SP on (SP.`Supplier Part Part SKU`=P.`Part SKU`) left join `Part Data` PD on (PD.`Part SKU`=P.`Part SKU`) where (`Part Current On Hand Stock`- `Part Current Stock In Process`- `Part Current Stock Ordered Paid` )<0 and (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0 and `Supplier Part Supplier Key`=%d',
 			$this->id
 		);
 		//print $sql;
