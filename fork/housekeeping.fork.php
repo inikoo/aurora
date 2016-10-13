@@ -18,12 +18,21 @@ function fork_housekeeping($job) {
 
 	list($account, $db, $data)=$_data;
 
-	//print_r($data);
+	print_r($data);
 
 	switch ($data['type']) {
 
-	case 'update_part_products_availability':
+
+	case 'update_web_state_slow_forks':
+
+		include_once 'class.Product.php';
+		$product=new Product('id',$data['product_id']);
+		$product->update_web_state_slow_forks($data['web_availability_updated']);
+
+		break;
 		
+	case 'update_part_products_availability':
+
 		include_once 'class.Part.php';
 		$part=new Part($data['part_sku']);
 		foreach ($part->get_products('objects') as $product) {
@@ -32,8 +41,42 @@ function fork_housekeeping($job) {
 
 		break;
 
-	
+	case 'part_location_changed':
+		include_once 'class.PartLocation.php';
+		include_once 'class.Supplier_Production.php';
+
+		$part_location=new PartLocation($data['part_sku'].'_'.$data['location_key']);
+
+		if ($part_location->get('Quantity On Hand')<0) {
+
+			$suppliers=$part_location->part->get_suppliers();
+			foreach ($suppliers as $supplier_key) {
+				$supplier_production=new Supplier_Production($supplier_key);
+				if ($supplier_production->id) {
+					$supplier_production->update_locations_with_errors();
+				}
+			}
+		}
+		break;
+	case 'order_payment_changed':
+		include_once 'class.Part.php';
+
+		$sql=sprintf('select `Product Part Part SKU` from `Order Transaction Fact` OTF left join `Product Part Bridge` PPB on (OTF.`Product ID`=PPB.`Product Part Product ID`)  where OTF.`Current Dispatching State` in ("Submitted by Customer","In Process") and  `Current Payment State`="Paid" and `Order Key`=%d  ',
+			$data['part_sku']
+		);
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$part=new Part($data['Product Part Part SKU']);
+				$part->update_stock_in_paid_orders();
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
 		
+
+		break;
 
 	}
 

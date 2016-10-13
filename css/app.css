@@ -2333,6 +2333,15 @@ input.inputfile {
 .tags span:hover:before {
   border-color: transparent #009dff transparent transparent; }
 
+.widget {
+  border: 1px solid #eee;
+  float: left;
+  margin-right: 0px;
+  width: 150px;
+  margin: 20px;
+  text-align: center;
+  padding: 0px 10px 10px 10px; }
+
 .dashboard {
   font-size: 90%; }
   .dashboard .record td:first-of-type, .dashboard .totals td:first-of-type, .dashboard .title td:first-of-type, .dashboard .header td:first-of-type {

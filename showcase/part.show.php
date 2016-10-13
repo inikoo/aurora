@@ -25,7 +25,7 @@ function get_part_showcase($data, $smarty, $user, $db) {
 
 	//$part->fix_stock_transactions();
 
-
+$part->update_stock_in_paid_orders();
 
 	if (!$part->id) {
 		return "";

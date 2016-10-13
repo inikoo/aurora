@@ -57,6 +57,8 @@ function change_tab(tab, metadata) {
     change_view(state.request + '&tab=' + tab, metadata)
 }
 
+
+
 function change_subtab(subtab) {
     $('#maintabs .subtab').removeClass('selected')
     $('#subtab_' + subtab.replace(/(:|\.|\[|\])/g, "\$1")).addClass('selected')
@@ -64,7 +66,23 @@ function change_subtab(subtab) {
 }
 
 
+function get_widget_details(widget,metadata){
 
+ if (metadata == undefined) {
+        metadata = {};
+    }
+    var request = "/ar_views.php?tipo=widget_details&widget=" + widget + '&metadata=' + JSON.stringify(metadata) 
+
+console.log(request)
+
+   $.getJSON(request, function(data) {
+
+      
+       $('#widget_details').html(data.widget_details).removeClass('hide');
+
+    });
+
+}
 
 function change_view(_request, metadata) {
 

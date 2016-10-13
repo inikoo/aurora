@@ -229,6 +229,11 @@ function get_object($object_name, $key, $load_other_data=false) {
 		require_once "class.Material.php";
 		$object=new Material($key);
 		break;
+		
+	case 'supplier_production':
+		require_once "class.Supplier_Production.php";
+		$object=new Supplier_Production($key);
+		break;	
 	default:
 		exit('need to complete E1: >'.strtolower($object_name)."<\n");
 		break;

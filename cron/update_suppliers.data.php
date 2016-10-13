@@ -36,16 +36,17 @@ if ($result=$db->query($sql)) {
 }
 
 
-$sql=sprintf('select `Supplier Key` from `Supplier Dimension`  ');
+$sql=sprintf('select `Supplier Key` from `Supplier Dimension` where `Supplier Key`=3 ');
 
 if ($result=$db->query($sql)) {
 	foreach ($result as $row) {
 		$supplier=new Supplier($row['Supplier Key']);
 		$supplier->update_supplier_parts();
-		$supplier->update_up_today_sales();
-		$supplier->update_last_period_sales();
-		$supplier->update_interval_sales();
-		$supplier->update_previous_years_data();
+		
+		//$supplier->update_up_today_sales();
+		//$supplier->update_last_period_sales();
+		//$supplier->update_interval_sales();
+		//$supplier->update_previous_years_data();
 
 
 	}

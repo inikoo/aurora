@@ -474,7 +474,7 @@ function seconds_to_until($seconds, $short=false) {
 
 	}else {
 
-		return _('more than 5 years');
+		return _('+5 years');
 	}
 
 

@@ -21,9 +21,54 @@ $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
 case 'views':
+	get_view($db, $smarty, $user, $account, $modules);
+	break;
+case 'widget_details':
+	get_widget_details($db, $smarty, $user, $account);
+	break;
+case 'tab':
+	$data=prepare_values($_REQUEST, array(
+			'tab'=>array('type'=>'string'),
+			'subtab'=>array('type'=>'string'),
+			'state'=>array('type'=>'json array'),
+		));
+	$response=array(
+		'tab'=>get_tab($db, $smarty, $user, $account, $data['tab'], $data['subtab'], $data['state'])
+	);
+
+	echo json_encode($response);
+	break;
+
+
+default:
+	$response=array('state'=>404, 'resp'=>'Operation not found 2');
+	echo json_encode($response);
+
+}
+
+function get_widget_details($db, $smarty, $user, $account) {
+
+	$data=prepare_values($_REQUEST, array(
+			'widget'=>array('type'=>'string'),
+			'metadata'=>array('type'=>'json array', 'optional'=>true),
+
+		));
+		
+		
+	$state=$data['metadata'];
+	
+	
+		
+	$html = get_tab($db, $smarty, $user, $account, $data['widget'], '', $state, $metadata=false);
+	$response=array('state'=>200, 'widget_details'=>$html);
+	echo json_encode($response);
+
+}
+
+
+function get_view($db, $smarty, $user, $account, $modules) {
 
 	require_once 'utils/parse_request.php';
-
 
 
 
@@ -469,34 +514,10 @@ case 'views':
 
 	echo json_encode($response);
 
-	break;
-case 'tab':
-	$data=prepare_values($_REQUEST, array(
-			'tab'=>array('type'=>'string'),
-			'subtab'=>array('type'=>'string'),
-			'state'=>array('type'=>'json array'),
-		));
-
-
-	$response=array(
-		'tab'=>get_tab($db, $smarty, $user, $account, $data['tab'], $data['subtab'], $data['state'])
-	);
-
-
-
-
-	echo json_encode($response);
-	break;
-
-
-default:
-	$response=array('state'=>404, 'resp'=>'Operation not found 2');
-	echo json_encode($response);
-
 }
 
-function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state=false, $metadata=false) {
 
+function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state=false, $metadata=false) {
 
 
 
@@ -506,7 +527,6 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state=false, $me
 	$actual_tab=($subtab!=''?$subtab:$tab);
 	$state['tab']=$actual_tab;
 
-	//print_r($state);
 	$smarty->assign('data', $state);
 
 
@@ -516,9 +536,8 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state=false, $me
 		$html='Tab Not found: >'.$actual_tab.'<';
 
 	}
-
-
-	if (is_array($state)  and     ! ( preg_match('/\_edit$/', $tab) or $tab=='part_family.product_family.new'  )     ) {
+//print $tab;
+	if (is_array($state)  and     ! ( preg_match('/\_edit$/', $tab) or  preg_match('/\.wget$/', $tab)  or $tab=='part_family.product_family.new'  )     ) {
 
 
 
@@ -531,7 +550,6 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state=false, $me
 	return $html;
 
 }
-
 
 
 function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
@@ -1094,7 +1112,20 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 			return get_ec_sales_list_navigation($user, $smarty, $data);
 			break;
 		}
+	case ('production_server'):
+		require_once 'navigation/production.nav.php';
+		switch ($data['section']) {
+		case ('production.suppliers'):
+			return get_suppliers_navigation($data, $smarty, $user, $db, $account);
+			break;
 
+		case ('settings'):
+			return get_server_settings_navigation($data, $smarty, $user, $db, $account);
+			break;
+
+
+		}
+		break;
 	case ('production'):
 		require_once 'navigation/production.nav.php';
 		switch ($data['section']) {
@@ -1122,6 +1153,10 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case ('batch'):
 			return get_batch_navigation($data, $smarty, $user, $db, $account);
 			break;
+		case ('settings'):
+			return get_settings_navigation($data, $smarty, $user, $db, $account);
+			break;
+
 
 		}
 		break;
@@ -1591,8 +1626,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 	}
 
 }
-
-
 
 
 function get_tabs($data, $db, $account, $modules, $user, $smarty) {
@@ -3398,12 +3431,41 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
 		break;
+
+	case 'production_server':
+		$branch[]=array('label'=>_("Production (All manufactures)"), 'icon'=>'industry', 'reference'=>'production/all');
+
+
+		if ($state['section']=='production.suppliers') {
+
+			$branch[]=array('label'=>_('Suppliers'), 'icon'=>'ship', 'reference'=>'');
+
+		}
+
+		break;
+
 	case 'production':
+
+		$branch[]=array('label'=>_("(All manufactures)"), 'icon'=>'', 'reference'=>'production/all');
+
+		$branch[]=array('label'=>_("Production").' <span class="id Supplier_Code">'.$state['_object']->get('Code').'</span>', 'icon'=>'industry', 'reference'=>'production');
+
+
 		if ($state['section']=='manufacture_tasks') {
+
 			$branch[]=array('label'=>_("Manufacture Tasks"), 'icon'=>'tasks', 'reference'=>'production/manufacture_tasks');
 		}elseif ($state['section']=='manufacture_task') {
+
 			$branch[]=array('label'=>_("Manufacture Tasks"), 'icon'=>'tasks', 'reference'=>'production/manufacture_tasks');
 			$branch[]=array('label'=>'<span class="Manufacture_Task_Code">'.$state['_object']->get('Code').'</span>', 'icon'=>'', 'reference'=>'');
+
+		}elseif ($state['section']=='settings') {
+
+			$branch[]=array('label'=>_('Settings'), 'icon'=>'sliders', 'reference'=>'');
+
+		}elseif ($state['section']=='dashboard') {
+
+			$branch[]=array('label'=>_('Dashboard'), 'icon'=>'tachometer', 'reference'=>'');
 
 		}
 
@@ -3636,9 +3698,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
 }
-
-
-
 
 
 function create_node_breadcrumbs($db, $node_key, $branch) {

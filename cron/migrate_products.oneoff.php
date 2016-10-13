@@ -125,6 +125,30 @@ function fix_family_web_descriptions($db) {
 function create_data_tables($db) {
 
 
+$sql=sprintf('select `Store Key` from `Store Dimension`  ');
+
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+			$sql=sprintf("insert into `Store Data` (`Store Key`) values (%d)",
+				$row['Store Key']
+
+			);
+
+			$db->exec($sql);
+			$sql=sprintf("insert into `Store DC Data` (`Store Key`) values (%d)",
+				$row['Store Key']
+
+			);
+			$db->exec($sql);
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+
+
 	$sql=sprintf('select `Product ID` from `Product Dimension` order by `Product ID`  ');
 
 
@@ -134,8 +158,6 @@ function create_data_tables($db) {
 				$row['Product ID']
 
 			);
-
-
 
 			$db->exec($sql);
 			$sql=sprintf("insert into `Product DC Data` (`Product ID`) values (%d)",

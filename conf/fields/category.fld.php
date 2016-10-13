@@ -33,7 +33,7 @@ case 'Location':
 	$subject_options=array('Location'=>_('Locations'));
 	$subject_value='Location';
 	$subject_formatted_value=_('Locations');
-	break;	
+	break;
 default:
 	$subject_options=array();
 	$subject_value='';
@@ -103,16 +103,29 @@ switch ($options['Category Scope']) {
 case 'Product':
 
 
+	$store=new Store($object->get('Store Key'));
+
+
+
 
 	$object->get_webpage();
+
+
+	if ($store->get('Store Family Category Key')==$object->get('Category Root Key')) {
+
+		include 'family.fld.php';
+		$category_fields=array_merge($category_fields, $category_product_fields);
+
+	}elseif ($store->get('Store Department Category Key')==$object->get('Category Root Key')) {
+
+		include 'department.fld.php';
+		$category_fields=array_merge($category_fields, $category_product_fields);
+
+	}else {
 		include 'category.product.fld.php';
-		
-		
-		
-		
-$category_fields=array_merge($category_fields, $category_product_fields);
+		$category_fields=array_merge($category_fields, $category_product_fields);
 
-
+	}
 
 
 	break;

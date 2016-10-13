@@ -78,6 +78,18 @@ case 'deleted.order.items':
 case 'sales_history':
 	sales_history(get_table_parameters(), $db, $user, $account);
 	break;
+case 'part_locations_with_errors':
+	part_locations_with_errors(get_table_parameters(), $db, $user, $account);
+	break;
+case 'surplus_parts':
+	parts_by_stock_status('Surplus',get_table_parameters(), $db, $user, $account);
+	break;
+case 'todo_parts':
+	parts_by_stock_status('Todo',get_table_parameters(), $db, $user, $account);
+	break;
+case 'todo_paid_parts':
+	todo_paid_parts(get_table_parameters(), $db, $user, $account);
+	break;			
 default:
 	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
 	echo json_encode($response);
@@ -744,9 +756,9 @@ function order_items($_data, $db, $user, $account) {
 			$description=$data['Part Unit Description'].' <span class="discreet">('.number($units_per_carton).'/C '.money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')).')</span>';
 
 
-if($data['Supplier Part Minimum Carton Order']>0){
-$description.=sprintf(' <span class="discreet"><span title="%s">MOQ</span>:%s<span>',_('Minimum order (cartons)'),number($data['Supplier Part Minimum Carton Order']));
-}
+			if ($data['Supplier Part Minimum Carton Order']>0) {
+				$description.=sprintf(' <span class="discreet"><span title="%s">MOQ</span>:%s<span>', _('Minimum order (cartons)'), number($data['Supplier Part Minimum Carton Order']));
+			}
 
 			$adata[]=array(
 
@@ -1467,6 +1479,10 @@ function sales_history($_data, $db, $user, $account) {
 		$rtext_label='week';
 		$_group_by=' group by Yearweek(`Date`) ';
 		$sql_totals_fields='Yearweek(`Date`)';
+	}elseif ($_data['parameters']['frequency']=='quarterly') {
+		$rtext_label='quarter';
+		$_group_by=' group by Year(`Date`),Quarter(`Date`) ';
+		$sql_totals_fields='CONCAT(Year(`Date`),Quarter(`Date`))';
 	}elseif ($_data['parameters']['frequency']=='daily') {
 		$rtext_label='day';
 
@@ -1505,7 +1521,6 @@ function sales_history($_data, $db, $user, $account) {
 
 	);
 
-	//print $sql_totals;
 
 	list($rtext, $total, $filtered)=get_table_totals($db, $sql_totals, '', $rtext_label, false);
 
@@ -1534,8 +1549,18 @@ function sales_history($_data, $db, $user, $account) {
 			}
 			$from_date=$data['Date'];
 
+
+
 			if ($_data['parameters']['frequency']=='annually') {
 				$date=strftime("%Y", strtotime($data['Date'].' +0:00'));
+				$_date=$date;
+			}elseif ($_data['parameters']['frequency']=='quarterly') {
+
+				$curMonth = date("m", strtotime($data['Date'].' +0:00'));
+				$year = date("y", strtotime($data['Date'].' +0:00'));
+				$curQuarter = ceil($curMonth/3);
+
+				$date=sprintf("Q%s %s", $curQuarter , $year );
 				$_date=$date;
 			}elseif ($_data['parameters']['frequency']=='monthy') {
 				$date=strftime("%b %Y", strtotime($data['Date'].' +0:00'));
@@ -1672,6 +1697,282 @@ function sales_history($_data, $db, $user, $account) {
 }
 
 
+function part_locations_with_errors($_data, $db, $user) {
+
+
+
+
+	$rtext_label='part location with errors';
+
+
+
+	include_once 'prepare_table/init.php';
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+
+	//print $sql;
+
+
+	foreach ($db->query($sql) as $data) {
+
+		$adata[]=array(
+			// 'id'=>(integer) $data['Part SKU'],
+			'reference'=>$data['Part Reference'],
+			'unit_description'=>$data['Part Unit Description'],
+			'location'=>$data['Location Code'],
+			'location_key'=>$data['Location Key'],
+			'warehouse_key'=>$data['Part Location Warehouse Key'],
+			'part_sku'=>$data['Part SKU'],
+			'can_pick'=>($data['Can Pick']=='Yes'?_('Yes'):_('No')),
+			'quantity'=>'<span class="error">'.number($data['Quantity On Hand']), '</span>'
+
+		);
+
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function parts_by_stock_status($stock_status,$_data, $db, $user) {
+
+
+	$rtext_label='supplier part';
+
+
+
+	include_once 'prepare_table/init.php';
+
+
+	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+
+
+	$adata=array();
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $data) {
+
+			switch ($data['Supplier Part Status']) {
+			case 'Available':
+				$status=sprintf('<i class="fa fa-stop success" title="%s"></i>', _('Available'));
+				break;
+			case 'NoAvailable':
+				$status=sprintf('<i class="fa fa-stop warning" title="%s"></i>', _('No available'));
+
+				break;
+			case 'Discontinued':
+				$status=sprintf('<i class="fa fa-ban error" title="%s"></i>', _('Discontinued'));
+
+				break;
+			default:
+				$status=$data['Supplier Part Status'];
+				break;
+			}
+
+			switch ($data['Part Stock Status']) {
+			case 'Surplus':
+				$stock_status='<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Optimal':
+				$stock_status='<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Low':
+				$stock_status='<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Critical':
+				$stock_status='<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Out_Of_Stock':
+				$stock_status='<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Error':
+				$stock_status='<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+				break;
+			default:
+				$stock_status=$data['Part Stock Status'];
+				break;
+			}
+
+
+			$units_per_carton=$data['Part Units Per Package']*$data['Supplier Part Packages Per Carton'];
+
+
+			$transaction_key='';
+
+			$description=$data['Part Unit Description'].' <span class="discreet">('.number($units_per_carton).'/C '.money($data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']).')</span>';
+
+			if ($data['Supplier Part Minimum Carton Order']>0) {
+				$description.=sprintf(' <span class="discreet"><span title="%s">MOQ</span>:%s<span>', _('Minimum order (cartons)'), number($data['Supplier Part Minimum Carton Order']));
+			}
+
+
+			$available_forecast=seconds_to_until($data['Part Days Available Forecast']*86400);
+
+
+			$dispatched_per_week=number($data['Part 1 Quarter Acc Dispatched']*4/52, 0);
+
+
+
+			$adata[]=array(
+				'id'=>(integer)$data['Supplier Part Key'],
+				'supplier_key'=>(integer)$data['Supplier Part Supplier Key'],
+				'part_key'=>(integer)$data['Supplier Part Part SKU'],
+				'part_reference'=>$data['Part Reference'],
+				'reference'=>$data['Supplier Part Reference'],
+				'formatted_sku'=>sprintf("SKU%05d", $data['Supplier Part Part SKU']),
+
+				'description'=>$description,
+				'status'=>$status,
+				'cost'=>money($data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']),
+				'packing'=>'<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package'].'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discret padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discret">'.($data['Part Units Per Package']*$data['Supplier Part Packages Per Carton'].'</span>'),
+				'stock'=>number(floor($data['Part Current Stock']))." $stock_status",
+				'available_forecast'=>$available_forecast,
+				'dispatched_per_week'=>$dispatched_per_week
+
+
+			);
+
+
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		print $sql;
+		exit;
+	}
+
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
+
+
+
+function todo_paid_parts($_data, $db, $user) {
+
+
+	$rtext_label='supplier part';
+
+
+
+	include_once 'prepare_table/init.php';
+
+
+	$sql="select $fields from $table $where $wheref  $group_by order by $order $order_direction limit $start_from,$number_results";
+
+//print $sql;
+
+	$adata=array();
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $data) {
+
+			
+
+			switch ($data['Part Stock Status']) {
+			case 'Surplus':
+				$stock_status='<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Optimal':
+				$stock_status='<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Low':
+				$stock_status='<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Critical':
+				$stock_status='<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Out_Of_Stock':
+				$stock_status='<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
+				break;
+			case 'Error':
+				$stock_status='<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+				break;
+			default:
+				$stock_status=$data['Part Stock Status'];
+				break;
+			}
+
+
+			$units_per_carton=$data['Part Units Per Package']*$data['Supplier Part Packages Per Carton'];
+
+
+			$transaction_key='';
+
+			$description=$data['Part Unit Description'].' <span class="discreet">('.number($units_per_carton).'/C '.money($data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']).')</span>';
+
+			if ($data['Supplier Part Minimum Carton Order']>0) {
+				$description.=sprintf(' <span class="discreet"><span title="%s">MOQ</span>:%s<span>', _('Minimum order (cartons)'), number($data['Supplier Part Minimum Carton Order']));
+			}
+
+
+	
+
+
+			$adata[]=array(
+				'id'=>(integer)$data['Supplier Part Key'],
+				'supplier_key'=>(integer)$data['Supplier Part Supplier Key'],
+	
+
+				'reference'=>$data['Supplier Part Reference'],
+
+				'description'=>$description,
+				'cost'=>money($data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']),
+				'packing'=>'<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package'].'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discret padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discret">'.($data['Part Units Per Package']*$data['Supplier Part Packages Per Carton'].'</span>'),
+				'stock'=>number(floor($data['Part Current Stock']))." $stock_status",
+				//'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['date'].' +0:00')),
+                'required'=>number($data['required'])
+
+			);
+
+
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		print $sql;
+		exit;
+	}
+
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'total_records'=> $total
+
+		)
+	);
+	echo json_encode($response);
+}
 
 
 ?>

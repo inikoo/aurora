@@ -846,6 +846,18 @@ class Category extends DB_Table{
 					$amount= money($_amount, $this->get('Product Category Currency Code'), $locale=false, $fraction_digits).$suffix;
 
 					return $amount;
+				}if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Soft Minify$/', $key)) {
+
+					$field='Product Category '.preg_replace('/ Soft Minify$/', '', $key);
+
+					$suffix='';
+					$fraction_digits='NO_FRACTION_DIGITS';
+					$_amount=$this->data[$field];
+
+
+					$amount= money($_amount, $this->get('Product Category Currency Code'), $locale=false, $fraction_digits).$suffix;
+
+					return $amount;
 				}
 				if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Margin|GMROI)$/', $key)) {
 
@@ -853,13 +865,15 @@ class Category extends DB_Table{
 
 					return percentage($this->data[$amount], 1);
 				}
-				if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced|Customers)$/', $key) or $key=='Current Stock'  ) {
+				if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced|Customers)$/', $key)  ) {
 
 					$field='Product Category '.$key;
 
 					return number($this->data[$field]);
 				}
-				if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced) Minify$/', $key) or $key=='Current Stock'  ) {
+
+
+				if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced) Minify$/', $key)   ) {
 
 					$field='Product Category '.preg_replace('/ Minify$/', '', $key);
 
@@ -878,7 +892,13 @@ class Category extends DB_Table{
 
 					return number($_number, $fraction_digits).$suffix;
 				}
+				if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced) Soft Minify$/', $key)   ) {
+					$field='Product Category '.preg_replace('/ Soft Minify$/', '', $key);
 
+
+					$_number=$this->data[$field];
+					return number($_number, 0);
+				}
 
 				if (array_key_exists('Product Category '.$key, $this->data))
 					return $this->data['Product Category '.$key];
@@ -3092,8 +3112,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 		case 'Product Category Description':
 			$label=_('description');
 			break;
-
-
+		case 'Category Webpage Name':
+			$label=_('Webpage name');
+			break;
 
 
 		default:

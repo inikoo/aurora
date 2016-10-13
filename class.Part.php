@@ -170,7 +170,8 @@ class Part extends Asset{
 
 		return $supplier_parts;
 	}
-	
+
+
 	function get_suppliers($scope='keys') {
 
 
@@ -1188,10 +1189,9 @@ class Part extends Asset{
 		default:
 			$base_data=$this->base_data();
 
-			//print_r( $this->base_data('Part Data'));
-			//print "$field\n";
-			if (array_key_exists($field, $base_data)) {
 
+			if (array_key_exists($field, $base_data)) {
+				//print "$field $value  ".$this->data[$field]." \n";
 				if ($value!=$this->data[$field]) {
 
 					if ($field=='Part General Description' or $field=='Part Health And Safety')
@@ -1697,7 +1697,7 @@ class Part extends Asset{
 
 		case('Current Stock Available'):
 
-			return number($this->data['Part Current On Hand Stock']-$this->data['Part Current Stock In Process'], 6);
+			return number($this->data['Part Current On Hand Stock']-$this->data['Part Current Stock In Process']-$this->data['Part Current Stock Ordered Paid'], 6);
 
 		case('Cost'):
 			global $corporate_currency;
@@ -1710,6 +1710,7 @@ class Part extends Asset{
 		case('Current Stock'):
 		case ('Current Stock Picked'):
 		case ('Current Stock In Process'):
+		case ('Current Stock Ordered Paid'):
 			return number($this->data['Part '.$key], 6);
 
 
@@ -1957,27 +1958,45 @@ class Part extends Asset{
 		}else {
 			$stock_state='Optimal';
 		}
-		$this->data['Part Stock State']=$stock_state;
 
-		$sql=sprintf("update `Part Dimension`  set `Part Stock Status`=%s where  `Part SKU`=%d   ",
-			prepare_mysql($this->data['Part Stock State']),
+
+		$this->update(array(
+				'Part Stock Status'=>$stock_state
+			), 'no_history');
+
+
+
+	}
+
+
+	function update_stock_in_paid_orders() {
+
+		$stock_in_paid_orders=0;
+		
+		
+		$sql=sprintf('select (`Order Quantity`+`Order Bonus Quantity`)*`Product Part Ratio` as required from `Order Transaction Fact` OTF left join `Product Part Bridge` PPB on (OTF.`Product ID`=PPB.`Product Part Product ID`)    where OTF.`Current Dispatching State` in ("Submitted by Customer","In Process") and  `Current Payment State` in ("Paid","No Applicable") and `Product Part Part SKU`=%d    ',
+
 			$this->id
 		);
-
-		$this->db->exec($sql);
-
-
-		/*
-		$products=$this->get_current_product_ids();
-
-		foreach ($products as  $product_id=>$values) {
-			$product=new Product('id', $product_id);
-			if ($product->id) {
-				$product->update_availability();
+		//print $sql;
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$stock_in_paid_orders=$row['required'];
 			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			print "$sql\n";
+			exit;
 		}
-*/
+		$this->update(
+			array(
+				'Part Current Stock Ordered Paid'=>$stock_in_paid_orders
 
+			), 'no_history');
+
+		if ($this->updated) {
+			$this->update_stock();
+		}
 	}
 
 
@@ -2004,40 +2023,25 @@ class Part extends Asset{
 		}
 
 
-
+		//$required+=$this->data['Part Current Stock Ordered Paid'];
 
 		list($stock, $value, $in_process)=$this->get_current_stock();
 		//print $stock;
-		$this->data['Part Current Stock']=$stock+$picked;
-		$this->data['Part Current Value']=$value;
-		$this->data['Part Current Stock In Process']=$required-$picked;
-		$this->data['Part Current Stock Picked']=$picked;
-		$this->data['Part Current On Hand Stock']=$stock;
+
+		$this->update(array(
+				'Part Current Stock'=>$stock+$picked,
+				'Part Current Value'=>$value,
+				'Part Current Stock In Process'=>$required-$picked,
+				'Part Current Stock Picked'=>$picked,
+				'Part Current On Hand Stock'=>$stock,
+
+			), 'no_history');
 
 
-
-		$sql=sprintf("update `Part Dimension`  set `Part Current Stock`=%f , `Part Current Value`=%f, `Part Current Stock In Process`=%f, `Part Current Stock Picked`=%f,`Part Current On Hand Stock`=%f where  `Part SKU`=%d   ",
-			$stock+$picked,
-			$value,
-			$required-$picked,
-			$picked,
-			$stock,
-			$this->id
-		);
-		$this->db->exec($sql);
-		//print "-> $stock , $picked, $required, , , ";
-		$this->get_data('id', $this->id);
 
 		$this->activate();
-
 		$this->discontinue_trigger();
-
-
 		$this->update_stock_status();
-
-
-
-
 		$this->update_available_forecast();
 
 		include_once 'utils/new_fork.php';
@@ -2046,12 +2050,6 @@ class Part extends Asset{
 		$msg=new_housekeeping_fork('au_housekeeping', array('type'=>'update_part_products_availability', 'part_sku'=>$this->id), $account->get('Account Code'));
 
 
-
-
-
-
-
-		//print "$sql\n";
 	}
 
 

@@ -6,7 +6,10 @@
 {/if}
 <table id="edit_container" border=0 data-default_telephone_data="{if isset($default_telephone_data)}{$default_telephone_data}{/if}" >
 {foreach from=$object_fields item=field_group } 
-    <tr class="title" >
+
+	    {if isset($field_group.class)}{assign "field_group_class" $field_group.class}{else}{assign "field_group_class" ""}{/if} 
+
+    <tr class="title {$field_group_class}" >
         <td  colspan=3>{$field_group.label}</td>
     </tr>
  

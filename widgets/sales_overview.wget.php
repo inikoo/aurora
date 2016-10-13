@@ -16,7 +16,6 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
 	include_once 'utils/date_functions.php';
 
 
-
 	$smarty->assign('type', $type);
 	$smarty->assign('currency', $currency);
 	$smarty->assign('period', $period);
@@ -26,6 +25,15 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
 	$period_tag=get_interval_db_name($period);
 
 	$adata=array();
+
+
+    // Pending Orders ---------------
+    
+    
+    
+    
+    //-----------------
+
 
 
 	$sum_invoices=0;
@@ -78,7 +86,7 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
 				'id'=>$row['Store Key'],
 				'label'=>array('label'=>$row['Store Name'], 'title'=>$row['Store Code'], 'view'=>'store/'.$row['Store Key']),
 
-
+                'basket'=>'x',
 				'invoices'=>array('value'=>number($row['invoices']), 'view'=>'invoices/'.$row['Store Key']),
 				'invoices_1yb'=>number($row['invoices_1yb']),
 				'invoices_delta'=>delta($row['invoices'], $row['invoices_1yb']).' '.delta_icon($row['invoices'], $row['invoices_1yb']),
@@ -121,12 +129,7 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
 
 
 
-	$fields="
-		`Invoice Category $period_tag Acc Refunds` as refunds,
-		`Invoice Category $period_tag Acc Invoices` as invoices,
-		`Invoice Category $period_tag Acc Invoiced Amount` as sales,
-		 `Invoice Category DC $period_tag Acc Invoiced Amount` as dc_sales,
- 0 delivery_notes,
+	$fields="`Invoice Category $period_tag Acc Refunds` as refunds,`Invoice Category $period_tag Acc Invoices` as invoices,`Invoice Category $period_tag Acc Invoiced Amount` as sales,`Invoice Category DC $period_tag Acc Invoiced Amount` as dc_sales, 0 delivery_notes,
         0 delivery_notes_1yb,
 
         0 replacements,
@@ -234,7 +237,7 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
 		'id'=>'totals',
 		'class'=>'totals',
 		'label'=>array('label'=>_('Total')),
-
+ 'basket'=>'x',
 		'invoices'=>array('value'=>number($sum_invoices)),
 		'invoices_1yb'=>number($sum_invoices_1yb),
 		'invoices_delta'=>delta($sum_invoices, $sum_invoices_1yb).' '.delta_icon($sum_invoices, $sum_invoices_1yb),
@@ -259,7 +262,6 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
 		'sales_delta'=>($currency=='store'?'':delta($sum_dc_sales, $sum_dc_sales_1yb)).' '.delta_icon($sum_dc_sales, $sum_dc_sales_1yb)
 
 	);
-
 
 
 	$smarty->assign('sales_overview', $sales_overview);
