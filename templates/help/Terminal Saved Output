@@ -1,0 +1,183 @@
+Last login: Sat Oct 15 12:06:33 on ttys006
+bali:columns raul$ cd
+bali:~ raul$ cd au
+bali:au raul$ cd prepare_table/
+bali:prepare_table raul$ cp category.
+category.all_parts.ptble.php              category.categories.ptble.php             category.part.sales.history.ptble.php     category.product.sales.history.ptble.php  category.products.ptble.php               
+category.all_products.ptble.php           category.history.ptble.php                category.part_categories.ptble.php        category.product_categories.ptble.php     category.ptble.php                        
+category.all_suppliers.ptble.php          category.images.ptble.php                 category.parts.ptble.php                  category.product_families.ptble.php       category.suppliers.ptble.php              
+bali:prepare_table raul$ cp category.categories.ptble.php category.supplier_categories.ptble.php
+bali:prepare_table raul$ bbedit category.supplier_categories.ptble.php
+bali:prepare_table raul$ bbedit category.supplier_categories.ptble.php
+bali:prepare_table raul$ mysql -u root -p dw < ../../Downloads/Supplier_D
+Supplier_Data.sql                          Supplier_Delivery_Note_Dimension (1).sql   Supplier_Delivery_Note_History_Bridge.sql  Supplier_Dimension (1).sql                 Supplier_Dimension.sql
+Supplier_Deleted_Dimension.sql             Supplier_Delivery_Note_Dimension.sql       Supplier_Delivery_Note_SI_Bridge.sql       Supplier_Dimension (2).sql                 
+bali:prepare_table raul$ mysql -u root -p dw < ../../Downloads/Supplier_D
+Supplier_Data.sql                          Supplier_Delivery_Note_Dimension (1).sql   Supplier_Delivery_Note_History_Bridge.sql  Supplier_Dimension (1).sql                 Supplier_Dimension.sql
+Supplier_Deleted_Dimension.sql             Supplier_Delivery_Note_Dimension.sql       Supplier_Delivery_Note_SI_Bridge.sql       Supplier_Dimension (2).sql                 
+bali:prepare_table raul$ mysql -u root -p dw < ../../Downloads/Supplier_Data.sql 
+Enter password: 
+ERROR 1050 (42S01) at line 990: Table 'agent data' already exists
+bali:prepare_table raul$ mysql -u root -p dw < ../../Downloads/Supplier_Data.sql 
+Enter password: 
+bali:prepare_table raul$ cd
+bali:~ raul$ cd cron
+-bash: cd: cron: No such file or directory
+bali:~ raul$ cd
+bali:~ raul$ cd au
+bali:au raul$ cd cron
+bali:cron raul$ php migrate_suppliers.oneoff.php 
+bali:cron raul$ php migrate_suppliers.oneoff.php 
+bali:cron raul$ php update_suppliers_sales.php 
+PHP Fatal error:  Class 'Category' not found in /Users/raul/au/cron/update_suppliers_sales.php on line 22
+PHP Stack trace:
+PHP   1. {main}() /Users/raul/au/cron/update_suppliers_sales.php:0
+
+Fatal error: Class 'Category' not found in /Users/raul/au/cron/update_suppliers_sales.php on line 22
+
+Call Stack:
+    0.0007     243456   1. {main}() /Users/raul/au/cron/update_suppliers_sales.php:0
+
+bali:cron raul$ php update_suppliers_sales.php 
+PHP Fatal error:  Trait method get_part_skus has not been applied, because there are collisions with other trait methods on Category in /Users/raul/au/class.Category.php on line 3136
+PHP Stack trace:
+PHP   1. {main}() /Users/raul/au/cron/update_suppliers_sales.php:0
+PHP   2. require_once() /Users/raul/au/cron/update_suppliers_sales.php:16
+
+Fatal error: Trait method get_part_skus has not been applied, because there are collisions with other trait methods on Category in /Users/raul/au/class.Category.php on line 3136
+
+Call Stack:
+    0.0003     243688   1. {main}() /Users/raul/au/cron/update_suppliers_sales.php:0
+    0.0132    2687760   2. require_once('/Users/raul/au/class.Category.php') /Users/raul/au/cron/update_suppliers_sales.php:16
+
+bali:cron raul$ php update_suppliers_sales.php 
+Array
+(
+    [0] => 42S22
+    [1] => 1054
+    [2] => Unknown column 'Category Key' in 'where clause'
+)
+bali:cron raul$ 
+bali:cron raul$ 
+bali:cron raul$ 
+bali:cron raul$ 
+bali:cron raul$ 
+bali:cron raul$ 
+bali:cron raul$ 
+bali:cron raul$ 
+bali:cron raul$ 
+bali:cron raul$ 
+bali:cron raul$ 
+bali:cron raul$ php update_suppliers_sales.php 
+Array
+(
+    [0] => 42S22
+    [1] => 1054
+    [2] => Unknown column 'Category Key' in 'where clause'
+)
+bali:cron raul$ mysql -u root -p dw < ../../Downloads/Supplier_Data.sql 
+Enter password: 
+bali:cron raul$ php migrate_suppliers.oneoff.php 
+bali:cron raul$ php update_suppliers_sales.php 
+PHP Fatal error:  Call to undefined method Category::update_supplier_category_sales() in /Users/raul/au/cron/update_suppliers_sales.php on line 25
+PHP Stack trace:
+PHP   1. {main}() /Users/raul/au/cron/update_suppliers_sales.php:0
+
+Fatal error: Call to undefined method Category::update_supplier_category_sales() in /Users/raul/au/cron/update_suppliers_sales.php on line 25
+
+Call Stack:
+    0.0003     243688   1. {main}() /Users/raul/au/cron/update_suppliers_sales.php:0
+
+bali:cron raul$ php update_suppliers_sales.php 
+PHP Fatal error:  Call to undefined method Category::get_supplier_catefory_part_skus() in /Users/raul/au/trait.SupplierCategory.php on line 251
+PHP Stack trace:
+PHP   1. {main}() /Users/raul/au/cron/update_suppliers_sales.php:0
+PHP   2. Category->update_supplier_category_sales() /Users/raul/au/cron/update_suppliers_sales.php:25
+PHP   3. Category->get_supplier_category_sales_data() /Users/raul/au/trait.SupplierCategory.php:48
+
+Fatal error: Call to undefined method Category::get_supplier_catefory_part_skus() in /Users/raul/au/trait.SupplierCategory.php on line 251
+
+Call Stack:
+    0.0007     243688   1. {main}() /Users/raul/au/cron/update_suppliers_sales.php:0
+    0.0234    3337104   2. Category->update_supplier_category_sales() /Users/raul/au/cron/update_suppliers_sales.php:25
+    0.0244    3517672   3. Category->get_supplier_category_sales_data() /Users/raul/au/trait.SupplierCategory.php:48
+
+bali:cron raul$ php update_suppliers_sales.php 
+PHP Fatal error:  Call to undefined method Category::get_supplier_catefory_part_skus() in /Users/raul/au/trait.SupplierCategory.php on line 251
+PHP Stack trace:
+PHP   1. {main}() /Users/raul/au/cron/update_suppliers_sales.php:0
+PHP   2. Category->update_supplier_category_sales() /Users/raul/au/cron/update_suppliers_sales.php:25
+PHP   3. Category->get_supplier_category_sales_data() /Users/raul/au/trait.SupplierCategory.php:48
+
+Fatal error: Call to undefined method Category::get_supplier_catefory_part_skus() in /Users/raul/au/trait.SupplierCategory.php on line 251
+
+Call Stack:
+    0.0003     243688   1. {main}() /Users/raul/au/cron/update_suppliers_sales.php:0
+    0.0209    3337104   2. Category->update_supplier_category_sales() /Users/raul/au/cron/update_suppliers_sales.php:25
+    0.0219    3517672   3. Category->get_supplier_category_sales_data() /Users/raul/au/trait.SupplierCategory.php:48
+
+bali:cron raul$ 
+bali:cron raul$ 
+bali:cron raul$ 
+bali:cron raul$ 
+bali:cron raul$ 
+bali:cron raul$ 
+bali:cron raul$ 
+bali:cron raul$ 
+bali:cron raul$ 
+bali:cron raul$ 
+bali:cron raul$ 
+bali:cron raul$ 
+bali:cron raul$ php update_suppliers_sales.php 
+Array
+(
+    [0] => 42000
+    [1] => 1064
+    [2] => You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ',,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,' at line 1
+)
+bali:cron raul$ php update_suppliers_sales.php 
+select `Supplier Part Part SKU`  from `Category Bridge`  CB left join `Supplier Part Dimension` SPD on  (`Subject Key`=`Supplier Part Supplier Key`) where `Category Key`=57 and `Subject Key`>0 Array
+(
+    [0] => 42000
+    [1] => 1064
+    [2] => You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ',,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,' at line 1
+)
+bali:cron raul$ 
+bali:cron raul$ 
+bali:cron raul$ php update_suppliers_sales.php 
+57bali:cron raul$ php update_suppliers_sales.php 
+^C
+bali:cron raul$ php update_suppliers_sales.php 
+PHP Notice:  Undefined index: Subject Key in /Users/raul/au/cron/update_suppliers_sales.php on line 23
+PHP Stack trace:
+PHP   1. {main}() /Users/raul/au/cron/update_suppliers_sales.php:0
+
+Notice: Undefined index: Subject Key in /Users/raul/au/cron/update_suppliers_sales.php on line 23
+
+Call Stack:
+    0.0003     244040   1. {main}() /Users/raul/au/cron/update_suppliers_sales.php:0
+
+bali:cron raul$ php update_suppliers_sales.php 
+201bali:cron raul$ php update_suppliers_sales.php 
+Array
+(
+    [0] => 42S22
+    [1] => 1054
+    [2] => Unknown column 'Category Key' in 'where clause'
+)
+bali:cron raul$ php update_suppliers_sales.php 
+bali:cron raul$ php update_suppliers_sales.php 
+Array
+(
+    [0] => 42S22
+    [1] => 1054
+    [2] => Unknown column 'Category Key' in 'where clause'
+)
+bali:cron raul$ php update_suppliers_sales.php 
+Array
+(
+    [0] => 42000
+    [1] => 1064
+    [2] => You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '25653,36836,25957,34137,36483,34139,36369,25967,25981,36255,36254,36253,26001,25' at line 1
+)
+bali:cron raul$ 

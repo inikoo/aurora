@@ -1317,6 +1317,224 @@ tr.deleting_tr {
   .backgrid .mini_table .part_stock {
     text-align: right; }
 
+.subject_profile {
+  padding: 20px; }
+  .subject_profile #contact_data {
+    float: left;
+    padding: 0px 20px 0px 0px; }
+  .subject_profile #info {
+    margin-top: 3px;
+    max-width: 370px;
+    float: right; }
+    .subject_profile #info #overviews {
+      min-width: 350px; }
+      .subject_profile #info #overviews .overview {
+        font-size: 95%;
+        float: left;
+        margin-bottom: 10px;
+        padding: 0 5px;
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ddd;
+        width: 100%; }
+        .subject_profile #info #overviews .overview .text {
+          padding: 10px 0px; }
+          .subject_profile #info #overviews .overview .text p {
+            margin-bottom: 0px; }
+        .subject_profile #info #overviews .overview.compact tr {
+          height: 22px; }
+        .subject_profile #info #overviews .overview tr {
+          height: 28px; }
+
+table.totals .subtotal td {
+  border-top: 1px solid #ddd; }
+table.totals .total td {
+  border-bottom: 1px solid #aaa;
+  border-top: 1px solid #aaa; }
+
+.order_operation_dialog {
+  border: 1px solid #ccc;
+  min-width: 300px;
+  position: absolute;
+  background: #fff;
+  z-index: 100;
+  text-align: left; }
+  .order_operation_dialog tr.buttons td {
+    padding: 0px 20px; }
+  .order_operation_dialog td.label {
+    padding: 0px 20px; }
+  .order_operation_dialog tr:first-child td {
+    padding-top: 10px; }
+  .order_operation_dialog tr:last-child td {
+    padding-bottom: 10px; }
+
+.order {
+  border-bottom: 1px solid #ccc; }
+  .order .state {
+    height: 30px;
+    border-bottom: 1px solid #ccc; }
+  .order .block {
+    float: right;
+    border-left: 1px solid #ccc;
+    padding-top: 5px; }
+    .order .block > table {
+      width: 100%; }
+      .order .block > table td {
+        padding: 4px 8px; }
+      .order .block > table .top-border {
+        border-top: 1px solid #ccc; }
+      .order .block > table .bottom-border {
+        border-bottom: 1px solid #ccc; }
+      .order .block > table .top-strong-border {
+        border-top: 1px solid #aaa; }
+      .order .block > table .bottom-strong-border {
+        border-bottom: 1px solid #aaa; }
+
+.xorder, .invoice, .delivery_note {
+  border-bottom: 1px solid #ccc; }
+  .xorder .state, .invoice .state, .delivery_note .state {
+    height: 30px;
+    border-bottom: 1px solid #ccc; }
+  .xorder .full_date, .invoice .full_date, .delivery_note .full_date {
+    width: 250px;
+    text-align: right; }
+  .xorder .contact_name, .invoice .contact_name, .delivery_note .contact_name {
+    width: 150px;
+    white-space: normal;
+    white-space: nowrap; }
+  .xorder .presention_card, .invoice .presention_card, .delivery_note .presention_card {
+    padding: 10px 20px; }
+  .xorder .showcase, .invoice .showcase, .delivery_note .showcase {
+    padding-top: 0px; }
+  .xorder h1, .invoice h1, .delivery_note h1 {
+    padding: 0px;
+    margin: 0px;
+    color: #555;
+    float: left;
+    font-size: 21px;
+    font-family: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
+    font-weight: 700; }
+  .xorder .pdf_link img, .invoice .pdf_link img, .delivery_note .pdf_link img {
+    height: 10px;
+    vertical-align: 0px; }
+  .xorder #containers, .invoice #containers, .delivery_note #containers {
+    padding: 20px 30px; }
+  .xorder .order #contact_data, .invoice .order #contact_data, .delivery_note .order #contact_data {
+    width: 500px; }
+  .xorder .order #dates, .invoice .order #dates, .delivery_note .order #dates {
+    width: 310px; }
+  .xorder .invoice #dates, .invoice .invoice #dates, .delivery_note .invoice #dates {
+    width: 310px; }
+  .xorder .invoice #totals, .invoice .invoice #totals, .delivery_note .invoice #totals {
+    width: 310px; }
+  .xorder .block, .invoice .block, .delivery_note .block {
+    float: right;
+    border-left: 1px solid #ccc; }
+  .xorder #dates .date_and_state, .invoice #dates .date_and_state, .delivery_note #dates .date_and_state {
+    width: 100%;
+    text-align: center; }
+    .xorder #dates .date_and_state .date, .invoice #dates .date_and_state .date, .delivery_note #dates .date_and_state .date {
+      padding: 3px;
+      border-bottom: 1px solid #ccc; }
+    .xorder #dates .date_and_state .state, .invoice #dates .date_and_state .state, .delivery_note #dates .date_and_state .state {
+      font-size: 80%;
+      border-bottom: 1px solid #ccc; }
+      .xorder #dates .date_and_state .state td, .invoice #dates .date_and_state .state td, .delivery_note #dates .date_and_state .state td {
+        padding: 3px 0px; }
+    .xorder #dates .date_and_state .two-columns td:first-of-type, .invoice #dates .date_and_state .two-columns td:first-of-type, .delivery_note #dates .date_and_state .two-columns td:first-of-type {
+      width: 50%;
+      border-right: 1px solid #ccc; }
+  .xorder #dates .ul_table, .invoice #dates .ul_table, .delivery_note #dates .ul_table {
+    width: 100%;
+    padding: 5px;
+    margin-top: 10px; }
+    .xorder #dates .ul_table .icon, .invoice #dates .ul_table .icon, .delivery_note #dates .ul_table .icon {
+      width: 24px;
+      text-align: right; }
+    .xorder #dates .ul_table .state, .invoice #dates .ul_table .state, .delivery_note #dates .ul_table .state {
+      text-align: right;
+      padding-right: 10px;
+      font-size: 80%; }
+  .xorder #totals, .xorder .block, .invoice #totals, .invoice .block, .delivery_note #totals, .delivery_note .block {
+    padding-top: 5px; }
+    .xorder #totals table, .xorder .block table, .invoice #totals table, .invoice .block table, .delivery_note #totals table, .delivery_note .block table {
+      width: 100%; }
+    .xorder #totals td, .xorder .block td, .invoice #totals td, .invoice .block td, .delivery_note #totals td, .delivery_note .block td {
+      padding: 4px 8px; }
+    .xorder #totals .top-border, .xorder .block .top-border, .invoice #totals .top-border, .invoice .block .top-border, .delivery_note #totals .top-border, .delivery_note .block .top-border {
+      border-top: 1px solid #ccc; }
+    .xorder #totals .bottom-border, .xorder .block .bottom-border, .invoice #totals .bottom-border, .invoice .block .bottom-border, .delivery_note #totals .bottom-border, .delivery_note .block .bottom-border {
+      border-bottom: 1px solid #ccc; }
+    .xorder #totals .top-strong-border, .xorder .block .top-strong-border, .invoice #totals .top-strong-border, .invoice .block .top-strong-border, .delivery_note #totals .top-strong-border, .delivery_note .block .top-strong-border {
+      border-top: 1px solid #aaa; }
+    .xorder #totals .bottom-strong-border, .xorder .block .bottom-strong-border, .invoice #totals .bottom-strong-border, .invoice .block .bottom-strong-border, .delivery_note #totals .bottom-strong-border, .delivery_note .block .bottom-strong-border {
+      border-bottom: 1px solid #aaa; }
+  .xorder #account .block, .invoice #account .block, .delivery_note #account .block {
+    min-width: 150px; }
+
+.name_and_categories {
+  width: 100;
+  padding: 5px 20px 5px 20px; }
+  .name_and_categories .strong {
+    font-size: 110%; }
+
+.asset_container {
+  padding: 0px 0px 20px 20px;
+  border-bottom: 1px solid #ccc; }
+  .asset_container .block {
+    float: left;
+    margin-top: 3px;
+    margin-right: 20px; }
+  .asset_container .block.picture {
+    width: 290px; }
+  .asset_container .block.sales_data {
+    margin-right: 30px;
+    font-size: 85%; }
+    .asset_container .block.sales_data table {
+      margin-bottom: 10px; }
+      .asset_container .block.sales_data table tr.space {
+        border: none;
+        height: 10px; }
+        .asset_container .block.sales_data table tr.space td {
+          border: none; }
+      .asset_container .block.sales_data table td {
+        border: 1px solid #efefef;
+        border-bottom: 1px solid #ddd;
+        padding: 1px 5px 1px 0px;
+        min-width: 70px;
+        text-align: right; }
+      .asset_container .block.sales_data table .header td {
+        border-top: 1px solid #ccc;
+        text-align: center;
+        border-spacing: 5px 0px; }
+      .asset_container .block.sales_data table .total_sales td {
+        min-width: 120px;
+        text-align: center; }
+  .asset_container .block.info {
+    width: 335px;
+    margin-right: 0; }
+    .asset_container .block.info #overviews {
+      min-width: 335px; }
+  .asset_container .carton_sko_units {
+    padding-left: 5px;
+    padding-top: 0px;
+    font-size: 90%;
+    color: #5f5f5f;
+    width: 390px; }
+    .asset_container .carton_sko_units td.canvas {
+      padding: 0 5px 10px 0; }
+      .asset_container .carton_sko_units td.canvas canvas {
+        border: 1px solid #ccc; }
+    .asset_container .carton_sko_units td.info {
+      padding: 0px 10px;
+      vertical-align: top; }
+      .asset_container .carton_sko_units td.info div {
+        margin-top: 4px; }
+      .asset_container .carton_sko_units td.info div:first-of-type {
+        margin-top: 0px;
+        margin-bottom: 2px; }
+    .asset_container .carton_sko_units .volume, .asset_container .carton_sko_units .density {
+      display: none; }
+
 #main_image {
   border: 0; }
 
@@ -1339,217 +1557,6 @@ tr.deleting_tr {
       text-align: left;
       min-width: 300px;
       margin-bottom: 4px; }
-  #object_showcase .subject_profile {
-    padding: 20px; }
-    #object_showcase .subject_profile #contact_data {
-      float: left;
-      padding: 0px 20px 0px 0px; }
-    #object_showcase .subject_profile #info {
-      margin-top: 3px;
-      max-width: 370px;
-      float: right; }
-      #object_showcase .subject_profile #info #overviews {
-        min-width: 350px; }
-        #object_showcase .subject_profile #info #overviews .overview {
-          font-size: 95%;
-          float: left;
-          margin-bottom: 10px;
-          padding: 0 5px;
-          border-top: 1px solid #ccc;
-          border-bottom: 1px solid #ddd;
-          width: 100%; }
-          #object_showcase .subject_profile #info #overviews .overview .text {
-            padding: 10px 0px; }
-            #object_showcase .subject_profile #info #overviews .overview .text p {
-              margin-bottom: 0px; }
-          #object_showcase .subject_profile #info #overviews .overview.compact tr {
-            height: 22px; }
-          #object_showcase .subject_profile #info #overviews .overview tr {
-            height: 28px; }
-  #object_showcase table.totals .subtotal td {
-    border-top: 1px solid #ddd; }
-  #object_showcase table.totals .total td {
-    border-bottom: 1px solid #aaa;
-    border-top: 1px solid #aaa; }
-  #object_showcase .order_operation_dialog {
-    border: 1px solid #ccc;
-    min-width: 300px;
-    position: absolute;
-    background: #fff;
-    z-index: 100;
-    text-align: left; }
-    #object_showcase .order_operation_dialog tr.buttons td {
-      padding: 0px 20px; }
-    #object_showcase .order_operation_dialog td.label {
-      padding: 0px 20px; }
-    #object_showcase .order_operation_dialog tr:first-child td {
-      padding-top: 10px; }
-    #object_showcase .order_operation_dialog tr:last-child td {
-      padding-bottom: 10px; }
-  #object_showcase .order {
-    border-bottom: 1px solid #ccc; }
-    #object_showcase .order .state {
-      height: 30px;
-      border-bottom: 1px solid #ccc; }
-    #object_showcase .order .block {
-      float: right;
-      border-left: 1px solid #ccc;
-      padding-top: 5px; }
-      #object_showcase .order .block > table {
-        width: 100%; }
-        #object_showcase .order .block > table td {
-          padding: 4px 8px; }
-        #object_showcase .order .block > table .top-border {
-          border-top: 1px solid #ccc; }
-        #object_showcase .order .block > table .bottom-border {
-          border-bottom: 1px solid #ccc; }
-        #object_showcase .order .block > table .top-strong-border {
-          border-top: 1px solid #aaa; }
-        #object_showcase .order .block > table .bottom-strong-border {
-          border-bottom: 1px solid #aaa; }
-  #object_showcase .xorder, #object_showcase .invoice, #object_showcase .delivery_note {
-    border-bottom: 1px solid #ccc; }
-    #object_showcase .xorder .state, #object_showcase .invoice .state, #object_showcase .delivery_note .state {
-      height: 30px;
-      border-bottom: 1px solid #ccc; }
-    #object_showcase .xorder .full_date, #object_showcase .invoice .full_date, #object_showcase .delivery_note .full_date {
-      width: 250px;
-      text-align: right; }
-    #object_showcase .xorder .contact_name, #object_showcase .invoice .contact_name, #object_showcase .delivery_note .contact_name {
-      width: 150px;
-      white-space: normal;
-      white-space: nowrap; }
-    #object_showcase .xorder .presention_card, #object_showcase .invoice .presention_card, #object_showcase .delivery_note .presention_card {
-      padding: 10px 20px; }
-    #object_showcase .xorder .showcase, #object_showcase .invoice .showcase, #object_showcase .delivery_note .showcase {
-      padding-top: 0px; }
-    #object_showcase .xorder h1, #object_showcase .invoice h1, #object_showcase .delivery_note h1 {
-      padding: 0px;
-      margin: 0px;
-      color: #555;
-      float: left;
-      font-size: 21px;
-      font-family: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
-      font-weight: 700; }
-    #object_showcase .xorder .pdf_link img, #object_showcase .invoice .pdf_link img, #object_showcase .delivery_note .pdf_link img {
-      height: 10px;
-      vertical-align: 0px; }
-    #object_showcase .xorder #containers, #object_showcase .invoice #containers, #object_showcase .delivery_note #containers {
-      padding: 20px 30px; }
-    #object_showcase .xorder .order #contact_data, #object_showcase .invoice .order #contact_data, #object_showcase .delivery_note .order #contact_data {
-      width: 500px; }
-    #object_showcase .xorder .order #dates, #object_showcase .invoice .order #dates, #object_showcase .delivery_note .order #dates {
-      width: 310px; }
-    #object_showcase .xorder .invoice #dates, #object_showcase .invoice .invoice #dates, #object_showcase .delivery_note .invoice #dates {
-      width: 310px; }
-    #object_showcase .xorder .invoice #totals, #object_showcase .invoice .invoice #totals, #object_showcase .delivery_note .invoice #totals {
-      width: 310px; }
-    #object_showcase .xorder .block, #object_showcase .invoice .block, #object_showcase .delivery_note .block {
-      float: right;
-      border-left: 1px solid #ccc; }
-    #object_showcase .xorder #dates .date_and_state, #object_showcase .invoice #dates .date_and_state, #object_showcase .delivery_note #dates .date_and_state {
-      width: 100%;
-      text-align: center; }
-      #object_showcase .xorder #dates .date_and_state .date, #object_showcase .invoice #dates .date_and_state .date, #object_showcase .delivery_note #dates .date_and_state .date {
-        padding: 3px;
-        border-bottom: 1px solid #ccc; }
-      #object_showcase .xorder #dates .date_and_state .state, #object_showcase .invoice #dates .date_and_state .state, #object_showcase .delivery_note #dates .date_and_state .state {
-        font-size: 80%;
-        border-bottom: 1px solid #ccc; }
-        #object_showcase .xorder #dates .date_and_state .state td, #object_showcase .invoice #dates .date_and_state .state td, #object_showcase .delivery_note #dates .date_and_state .state td {
-          padding: 3px 0px; }
-      #object_showcase .xorder #dates .date_and_state .two-columns td:first-of-type, #object_showcase .invoice #dates .date_and_state .two-columns td:first-of-type, #object_showcase .delivery_note #dates .date_and_state .two-columns td:first-of-type {
-        width: 50%;
-        border-right: 1px solid #ccc; }
-    #object_showcase .xorder #dates .ul_table, #object_showcase .invoice #dates .ul_table, #object_showcase .delivery_note #dates .ul_table {
-      width: 100%;
-      padding: 5px;
-      margin-top: 10px; }
-      #object_showcase .xorder #dates .ul_table .icon, #object_showcase .invoice #dates .ul_table .icon, #object_showcase .delivery_note #dates .ul_table .icon {
-        width: 24px;
-        text-align: right; }
-      #object_showcase .xorder #dates .ul_table .state, #object_showcase .invoice #dates .ul_table .state, #object_showcase .delivery_note #dates .ul_table .state {
-        text-align: right;
-        padding-right: 10px;
-        font-size: 80%; }
-    #object_showcase .xorder #totals, #object_showcase .xorder .block, #object_showcase .invoice #totals, #object_showcase .invoice .block, #object_showcase .delivery_note #totals, #object_showcase .delivery_note .block {
-      padding-top: 5px; }
-      #object_showcase .xorder #totals table, #object_showcase .xorder .block table, #object_showcase .invoice #totals table, #object_showcase .invoice .block table, #object_showcase .delivery_note #totals table, #object_showcase .delivery_note .block table {
-        width: 100%; }
-      #object_showcase .xorder #totals td, #object_showcase .xorder .block td, #object_showcase .invoice #totals td, #object_showcase .invoice .block td, #object_showcase .delivery_note #totals td, #object_showcase .delivery_note .block td {
-        padding: 4px 8px; }
-      #object_showcase .xorder #totals .top-border, #object_showcase .xorder .block .top-border, #object_showcase .invoice #totals .top-border, #object_showcase .invoice .block .top-border, #object_showcase .delivery_note #totals .top-border, #object_showcase .delivery_note .block .top-border {
-        border-top: 1px solid #ccc; }
-      #object_showcase .xorder #totals .bottom-border, #object_showcase .xorder .block .bottom-border, #object_showcase .invoice #totals .bottom-border, #object_showcase .invoice .block .bottom-border, #object_showcase .delivery_note #totals .bottom-border, #object_showcase .delivery_note .block .bottom-border {
-        border-bottom: 1px solid #ccc; }
-      #object_showcase .xorder #totals .top-strong-border, #object_showcase .xorder .block .top-strong-border, #object_showcase .invoice #totals .top-strong-border, #object_showcase .invoice .block .top-strong-border, #object_showcase .delivery_note #totals .top-strong-border, #object_showcase .delivery_note .block .top-strong-border {
-        border-top: 1px solid #aaa; }
-      #object_showcase .xorder #totals .bottom-strong-border, #object_showcase .xorder .block .bottom-strong-border, #object_showcase .invoice #totals .bottom-strong-border, #object_showcase .invoice .block .bottom-strong-border, #object_showcase .delivery_note #totals .bottom-strong-border, #object_showcase .delivery_note .block .bottom-strong-border {
-        border-bottom: 1px solid #aaa; }
-    #object_showcase .xorder #account .block, #object_showcase .invoice #account .block, #object_showcase .delivery_note #account .block {
-      min-width: 150px; }
-  #object_showcase .name_and_categories {
-    width: 100;
-    padding: 5px 20px 5px 20px; }
-    #object_showcase .name_and_categories .strong {
-      font-size: 110%; }
-  #object_showcase .asset_container {
-    padding: 0px 0px 20px 20px;
-    border-bottom: 1px solid #ccc; }
-    #object_showcase .asset_container .block {
-      float: left;
-      margin-top: 3px;
-      margin-right: 20px; }
-    #object_showcase .asset_container .block.picture {
-      width: 290px; }
-    #object_showcase .asset_container .block.sales_data {
-      margin-right: 30px;
-      font-size: 85%; }
-      #object_showcase .asset_container .block.sales_data table {
-        margin-bottom: 10px; }
-        #object_showcase .asset_container .block.sales_data table tr.space {
-          border: none;
-          height: 10px; }
-          #object_showcase .asset_container .block.sales_data table tr.space td {
-            border: none; }
-        #object_showcase .asset_container .block.sales_data table td {
-          border: 1px solid #efefef;
-          border-bottom: 1px solid #ddd;
-          padding: 1px 5px 1px 0px;
-          min-width: 70px;
-          text-align: right; }
-        #object_showcase .asset_container .block.sales_data table .header td {
-          border-top: 1px solid #ccc;
-          text-align: center;
-          border-spacing: 5px 0px; }
-        #object_showcase .asset_container .block.sales_data table .total_sales td {
-          min-width: 120px;
-          text-align: center; }
-    #object_showcase .asset_container .block.info {
-      width: 335px;
-      margin-right: 0; }
-      #object_showcase .asset_container .block.info #overviews {
-        min-width: 335px; }
-    #object_showcase .asset_container .carton_sko_units {
-      padding-left: 5px;
-      padding-top: 0px;
-      font-size: 90%;
-      color: #5f5f5f;
-      width: 390px; }
-      #object_showcase .asset_container .carton_sko_units td.canvas {
-        padding: 0 5px 10px 0; }
-        #object_showcase .asset_container .carton_sko_units td.canvas canvas {
-          border: 1px solid #ccc; }
-      #object_showcase .asset_container .carton_sko_units td.info {
-        padding: 0px 10px;
-        vertical-align: top; }
-        #object_showcase .asset_container .carton_sko_units td.info div {
-          margin-top: 4px; }
-        #object_showcase .asset_container .carton_sko_units td.info div:first-of-type {
-          margin-top: 0px;
-          margin-bottom: 2px; }
-      #object_showcase .asset_container .carton_sko_units .volume, #object_showcase .asset_container .carton_sko_units .density {
-        display: none; }
   #object_showcase h1 {
     font-size: 140%;
     padding: 0px;

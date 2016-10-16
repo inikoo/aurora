@@ -50,9 +50,6 @@ function update_parts_sales($db, $print_est) {
 		foreach ($result as $row) {
 			$part=new Part($row['Part SKU']);
 
-
-
-
 			$part->load_acc_data();
 
 			$part->update_sales_from_invoices('Total');

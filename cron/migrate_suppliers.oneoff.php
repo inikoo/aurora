@@ -32,9 +32,56 @@ require_once 'utils/get_addressing.php';
 require_once 'class.Supplier.php';
 require_once 'class.Store.php';
 require_once 'class.Address.php';
-require_once 'class.SupplierProduct.php';
+require_once 'class.Agent.php';
 require_once 'class.Part.php';
 require_once 'class.SupplierPart.php';
+
+
+$sql=sprintf('select `Supplier Key` from `Supplier Dimension`   order by `Supplier Key` desc');
+
+if ($result=$db->query($sql)) {
+	foreach ($result as $row) {
+		$supplier=new Supplier($row['Supplier Key']);
+
+		$sql="insert into `Supplier Data` (`Supplier Key`) values(".$supplier->id.");";
+		$db->exec($sql);
+
+
+
+	}
+}
+
+$sql=sprintf('select `Agent Key` from `Agent Dimension`   order by `Agent Key` desc');
+
+if ($result=$db->query($sql)) {
+	foreach ($result as $row) {
+		$agent=new Agent($row['Agent Key']);
+
+		$sql="insert into `Agent Data` (`Agent Key`) values(".$agent->id.");";
+		$db->exec($sql);
+
+
+
+	}
+}
+
+$sql=sprintf("select `Category Key` from `Category Dimension` where   `Category Scope`='Supplier'  ");
+if ($result=$db->query($sql)) {
+	foreach ($result as $row) {
+
+		$sql="insert into `Supplier Category Dimension` (`Supplier Category Key`,`Supplier Category Valid From`) values(".$row['Category Key'].",Now());";
+		$db->exec($sql);
+
+		$sql="insert into `Supplier Category Data` (`Supplier Category Key`) values(".$row['Category Key'].");";
+		$db->exec($sql);
+
+	}
+}
+
+
+
+exit();// uncoment for full migration
+
 
 
 $sql=sprintf('select `Supplier Key` from `Supplier Dimension` where `Supplier Key`=6348  order by `Supplier Key` desc');
@@ -79,7 +126,7 @@ if ($result=$db->query($sql)) {
 		}
 
 
-	
+
 
 
 

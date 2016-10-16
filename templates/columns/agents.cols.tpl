@@ -192,25 +192,25 @@ var columns = [
     })
 },
 {
-    name: "revenue",
-    label: "{t}Revenue{/t}",
+    name: "sales",
+    label: "{t}Sales{/t}",
    editable: false,
    
     defautOrder:1,
     sortType: "toggle",
-    {if $sort_key=='money_in'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    {if $sort_key=='sales'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
     cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
     headerCell: integerHeaderCell
 },
 {
-    name: "revenue_1y",
+    name: "sales_1y",
     label: "1YB",
    editable: false,
    
     defautOrder:1,
     sortType: "toggle",
-    {if $sort_key=='revenue_1y'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    {if $sort_key=='sales_1y'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
     cell: Backgrid.HtmlCell.extend({ className: "aright "} ),
     headerCell: integerHeaderCell
 
@@ -263,8 +263,91 @@ var columns = [
 
     headerCell: integerHeaderCell
 },
+{
+    name: "sales_year4",
+    label: new Date().getFullYear()-4,
+   editable: false,
+   
+    defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='sales_year4'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
+    headerCell: integerHeaderCell
+},
+{
+    name: "sales_quarter0",
+   label: get_quarter_label(0),
+   editable: false,
+   
+    defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='sales_quarter0'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+    headerCell: integerHeaderCell
+},
+{
+    name: "sales_quarter1",
+   label: get_quarter_label(1),
+   editable: false,
+   
+    defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='sales_quarter1'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+    headerCell: integerHeaderCell
+},
+{
+    name: "sales_quarter2",
+  label: get_quarter_label(2),
+   editable: false,
+   
+    defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='sales_quarter2'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+    headerCell: integerHeaderCell
+},
+{
+    name: "sales_quarter3",
+   label: get_quarter_label(3),
+   editable: false,
+   
+    defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='sales_quarter3'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+    headerCell: integerHeaderCell
+},
+{
+    name: "sales_quarter4",
+    label: get_quarter_label(4),
+   editable: false,
+   
+    defautOrder:1,
+    sortType: "toggle",
+    {if $sort_key=='sales_quarter4'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+    cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+    headerCell: integerHeaderCell
+}
 ]
+
+function get_quarter_label(index) {
+    var d = new Date();
+    d.setMonth(d.getMonth() - 3 * index);
+    return getQuarter(d) + 'Q ' + d.getFullYear().toString().substr(2, 2)
+}
+
+function getQuarter(d) {
+    d = d || new Date(); 
+    var q = [1, 2, 3, 4];
+    return q[Math.floor(d.getMonth() / 3)];
+}
 
 function change_table_view(view,save_state){
 
@@ -293,13 +376,19 @@ function change_table_view(view,save_state){
     grid.columns.findWhere({ name: 'email'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'telephone'} ).set("renderable", false)
  
-     grid.columns.findWhere({ name: 'revenue'} ).set("renderable", false)
-    grid.columns.findWhere({ name: 'revenue_1y'} ).set("renderable", false)
+     grid.columns.findWhere({ name: 'sales'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'sales_1y'} ).set("renderable", false)
     
         grid.columns.findWhere({ name: 'sales_year0'} ).set("renderable", false)
         grid.columns.findWhere({ name: 'sales_year1'} ).set("renderable", false)
         grid.columns.findWhere({ name: 'sales_year2'} ).set("renderable", false)
         grid.columns.findWhere({ name: 'sales_year3'} ).set("renderable", false)
+        grid.columns.findWhere({ name: 'sales_year4'} ).set("renderable", false)
+      grid.columns.findWhere({ name: 'sales_quarter0'} ).set("renderable", false)
+        grid.columns.findWhere({ name: 'sales_quarter1'} ).set("renderable", false)
+        grid.columns.findWhere({ name: 'sales_quarter2'} ).set("renderable", false)
+        grid.columns.findWhere({ name: 'sales_quarter3'} ).set("renderable", false)
+        grid.columns.findWhere({ name: 'sales_quarter4'} ).set("renderable", false)
 
     
     
@@ -330,15 +419,22 @@ function change_table_view(view,save_state){
 
     }else if(view=='sales'){
       $('#columns_period').removeClass('hide');
-        grid.columns.findWhere({ name: 'revenue'} ).set("renderable", true)
-    grid.columns.findWhere({ name: 'revenue_1y'} ).set("renderable", true)
-       grid.columns.findWhere({ name: 'sales_year0'} ).set("renderable", true)
-        grid.columns.findWhere({ name: 'sales_year1'} ).set("renderable", true)
-        grid.columns.findWhere({ name: 'sales_year2'} ).set("renderable", true)
-        grid.columns.findWhere({ name: 'sales_year3'} ).set("renderable", true)
-
-  
-    }else if(view=='orders'){
+        grid.columns.findWhere({ name: 'sales'} ).set("renderable", true)
+    grid.columns.findWhere({ name: 'sales_1y'} ).set("renderable", true)
+      
+    }else if(view=='sales_y'){
+    grid.columns.findWhere({ name: 'sales_year0'} ).set("renderable", true)
+    grid.columns.findWhere({ name: 'sales_year1'} ).set("renderable", true)
+    grid.columns.findWhere({ name: 'sales_year2'} ).set("renderable", true)
+    grid.columns.findWhere({ name: 'sales_year3'} ).set("renderable", true)
+    grid.columns.findWhere({ name: 'sales_year4'} ).set("renderable", true)
+  }else if(view=='sales_q'){
+    grid.columns.findWhere({ name: 'sales_quarter0'} ).set("renderable", true)
+    grid.columns.findWhere({ name: 'sales_quarter1'} ).set("renderable", true)
+    grid.columns.findWhere({ name: 'sales_quarter2'} ).set("renderable", true)
+    grid.columns.findWhere({ name: 'sales_quarter3'} ).set("renderable", true)
+    grid.columns.findWhere({ name: 'sales_quarter4'} ).set("renderable", true)
+  }else if(view=='orders'){
         grid.columns.findWhere({ name: 'last_purchase_order'} ).set("renderable", true)
         grid.columns.findWhere({ name: 'pending_po'} ).set("renderable", true)
  

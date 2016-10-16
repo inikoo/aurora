@@ -28,9 +28,9 @@ $_product=array(
 		'product.history'=>array('label'=>_('History, notes'), 'icon'=>'sticky-note-o'),
 		'product.sales'=>array('label'=>_('Sales'), 'title'=>_('Sales'),
 			'subtabs'=>array(
-				'product.sales.plot'=>array('label'=>_('Plot'), 'title'=>_('Plot')),
-				'product.sales.history'=>array('label'=>_('Sales history'), 'title'=>_('Sales history')),
-				'product.sales.calendar'=>array('label'=>_('Calendar'), 'title'=>_('Sales calendar')),
+				'product.sales.plot'=>array('label'=>_('Plot')),
+				'product.sales.history'=>array('label'=>_('Sales history')),
+				'product.sales.calendar'=>array('label'=>_('Calendar')),
 
 			)
 		),
@@ -77,9 +77,9 @@ $_service=array(
 		'service.history'=>array('label'=>_('History, notes'), 'icon'=>'sticky-note-o'),
 		'service.sales'=>array('label'=>_('Sales'), 'title'=>_('Sales'),
 			'subtabs'=>array(
-				'service.sales.plot'=>array('label'=>_('Plot'), 'title'=>_('Plot')),
-				'service.sales.history'=>array('label'=>_('Sales history'), 'title'=>_('Sales history')),
-				'service.sales.calendar'=>array('label'=>_('Calendar'), 'title'=>_('Sales calendar')),
+				'service.sales.plot'=>array('label'=>_('Plot')),
+				'service.sales.history'=>array('label'=>_('Sales history')),
+				'service.sales.calendar'=>array('label'=>_('Calendar')),
 
 			)
 		),
@@ -795,9 +795,9 @@ $modules=array(
 					'category.subjects'=>array('label'=>''),
 					'category.sales'=>array('label'=>_('Sales'),
 						'subtabs'=>array(
-							'category.product.sales.plot'=>array('label'=>_('Plot'), 'title'=>_('Plot')),
-							'category.product.sales.history'=>array('label'=>_('Sales history'), 'title'=>_('Sales history')),
-							'category.product.sales.calendar'=>array('label'=>_('Calendar'), 'title'=>_('Sales calendar')),
+							'category.product.sales.plot'=>array('label'=>_('Plot')),
+							'category.product.sales.history'=>array('label'=>_('Sales history')),
+							'category.product.sales.calendar'=>array('label'=>_('Calendar')),
 
 						)
 
@@ -1241,6 +1241,7 @@ $modules=array(
 					'supplier.sales.plot'=>'supplier.sales',
 					'supplier.sales.history'=>'supplier.sales',
 					'supplier.sales.calendar'=>'supplier.sales',
+					'supplier.sales.dashboard'=>'supplier.sales',
 
 				),
 
@@ -1251,9 +1252,10 @@ $modules=array(
 
 					'supplier.sales'=>array('label'=>_('Sales'),
 						'subtabs'=>array(
-							'supplier.sales.plot'=>array('label'=>_('Plot'), 'title'=>_('Plot')),
-							'supplier.sales.history'=>array('label'=>_('Sales history'), 'title'=>_('Sales history')),
-							'supplier.sales.calendar'=>array('label'=>_('Calendar'), 'title'=>_('Sales calendar')),
+							'supplier.sales.dashboard'=>array('label'=>_('Dashboard')),
+							'supplier.sales.plot'=>array('label'=>_('Plot')),
+							'supplier.sales.history'=>array('label'=>_('Sales history')),
+							'supplier.sales.calendar'=>array('label'=>_('Calendar')),
 
 						)
 					),
@@ -1552,9 +1554,9 @@ $modules=array(
 
 					'category.part.sales'=>array('label'=>_('Sales'), 'icon'=>'',
 						'subtabs'=>array(
-							'category.part.sales.plot'=>array('label'=>_('Plot'), 'title'=>_('Plot')),
-							'category.part.sales.history'=>array('label'=>_('Sales history'), 'title'=>_('Sales history')),
-							'category.part.sales.calendar'=>array('label'=>_('Calendar'), 'title'=>_('Sales calendar')),
+							'category.part.sales.plot'=>array('label'=>_('Plot')),
+							'category.part.sales.history'=>array('label'=>_('Sales history')),
+							'category.part.sales.calendar'=>array('label'=>_('Calendar')),
 
 						)
 
@@ -1608,9 +1610,9 @@ $modules=array(
 
 					'part.sales'=>array('label'=>_('Sales'), 'icon'=>'',
 						'subtabs'=>array(
-							'part.sales.plot'=>array('label'=>_('Plot'), 'title'=>_('Plot')),
-							'part.sales.history'=>array('label'=>_('Sales history'), 'title'=>_('Sales history')),
-							'part.sales.calendar'=>array('label'=>_('Calendar'), 'title'=>_('Sales calendar')),
+							'part.sales.plot'=>array('label'=>_('Plot')),
+							'part.sales.history'=>array('label'=>_('Sales history')),
+							'part.sales.calendar'=>array('label'=>_('Calendar')),
 
 						)
 

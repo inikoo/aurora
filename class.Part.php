@@ -2354,37 +2354,7 @@ class Part extends Asset{
 	}
 
 
-	function update_up_today_sales() {
-		$this->update_sales_from_invoices('Total');
-
-		$this->update_sales_from_invoices('Today');
-		$this->update_sales_from_invoices('Week To Day');
-		$this->update_sales_from_invoices('Month To Day');
-		$this->update_sales_from_invoices('Year To Day');
-
-
-	}
-
-
-	function update_last_period_sales() {
-
-		$this->update_sales_from_invoices('Yesterday');
-		$this->update_sales_from_invoices('Last Week');
-		$this->update_sales_from_invoices('Last Month');
-	}
-
-
-	function update_interval_sales() {
-
-		$this->update_sales_from_invoices('3 Year');
-		$this->update_sales_from_invoices('1 Year');
-		$this->update_sales_from_invoices('6 Month');
-		$this->update_sales_from_invoices('1 Quarter');
-		$this->update_sales_from_invoices('1 Month');
-		$this->update_sales_from_invoices('10 Day');
-		$this->update_sales_from_invoices('1 Week');
-
-	}
+	
 
 
 
@@ -2407,7 +2377,7 @@ class Part extends Asset{
 			"Part $db_interval Acc Invoiced Amount"=>$sales_data['invoiced_amount'],
 			"Part $db_interval Acc Required"=>$sales_data['required'],
 			"Part $db_interval Acc Dispatched"=>$sales_data['dispatched'],
-			"Part $db_interval Acc Keeping Day"=>$sales_data['keep_days'],
+			"Part $db_interval Acc Keeping Days"=>$sales_data['keep_days'],
 			"Part $db_interval Acc With Stock Days"=>$sales_data['with_stock_days'],
 		);
 
@@ -2441,8 +2411,6 @@ class Part extends Asset{
 
 
 	}
-
-
 
 	function update_previous_years_data() {
 
@@ -2517,7 +2485,6 @@ class Part extends Asset{
 
 	}
 
-
 	function update_previous_quarters_data() {
 
 
@@ -2558,7 +2525,6 @@ class Part extends Asset{
 
 	}
 
-
 	function get_customers_total_data() {
 
 		$repeat_customers=0;
@@ -2583,7 +2549,6 @@ class Part extends Asset{
 		return $repeat_customers;
 
 	}
-
 
 	function get_sales_data($from_date, $to_date) {
 

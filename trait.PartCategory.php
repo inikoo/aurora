@@ -451,7 +451,7 @@ trait PartCategory {
 			"Part Category $db_interval Acc Invoiced Amount"=>$sales_data['invoiced_amount'],
 			"Part Category $db_interval Acc Required"=>$sales_data['required'],
 			"Part Category $db_interval Acc Dispatched"=>$sales_data['dispatched'],
-			"Part Category $db_interval Acc Keeping Day"=>$sales_data['keep_days'],
+			"Part Category $db_interval Acc Keeping Days"=>$sales_data['keep_days'],
 			"Part Category $db_interval Acc With Stock Days"=>$sales_data['with_stock_days'],
 		);
 
@@ -473,7 +473,7 @@ trait PartCategory {
 				"Part Category $db_interval Acc 1YB Invoiced Amount"=>$sales_data['invoiced_amount'],
 				"Part Category $db_interval Acc 1YB Required"=>$sales_data['required'],
 				"Part Category $db_interval Acc 1YB Dispatched"=>$sales_data['dispatched'],
-				"Part Category $db_interval Acc 1YB Keeping Day"=>$sales_data['keep_days'],
+				"Part Category $db_interval Acc 1YB Keeping Days"=>$sales_data['keep_days'],
 				"Part Category $db_interval Acc 1YB With Stock Days"=>$sales_data['with_stock_days'],
 
 			);

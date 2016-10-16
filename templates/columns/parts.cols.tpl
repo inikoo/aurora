@@ -270,6 +270,9 @@ var columns = [
 
     headerCell: integerHeaderCell
 },
+
+
+
 {
     name: "sales_year0",
     label: new Date().getFullYear(),
