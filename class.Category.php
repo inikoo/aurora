@@ -150,7 +150,17 @@ class Category extends DB_Table{
 
 				$this->subject_table_name='Supplier';
 
-				$sql=sprintf("select * from `Supplier Category Dimension` where `Category Key`=%d", $this->id);
+				$sql=sprintf("select * from `Supplier Category Dimension` where `Supplier Category Key`=%d", $this->id);
+				if ($result2=$this->db->query($sql)) {
+					if ($row = $result2->fetch()) {
+						$this->data=array_merge($this->data, $row);
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
+				}
+
+				$sql=sprintf("select * from `Supplier Category Data` where `Supplier Category Key`=%d", $this->id);
 				if ($result2=$this->db->query($sql)) {
 					if ($row = $result2->fetch()) {
 						$this->data=array_merge($this->data, $row);
@@ -387,8 +397,14 @@ class Category extends DB_Table{
 				$this->db->exec($sql);
 			}
 			elseif ($this->data['Category Scope']=='Supplier') {
-				$sql=sprintf("insert into `Supplier Category Dimension` (`Category Key`) values (%d)", $this->id);
+				$sql=sprintf("insert into `Supplier Category Dimension` (`Supplier Category Key`,`Supplier Category Valid From`) values (%d,Now())", $this->id);
 				$this->db->exec($sql);
+
+				$sql=sprintf("insert into `Supplier Category Data` (`Supplier Category Key`) values (%d)", $this->id);
+				$this->db->exec($sql);
+
+
+
 			}elseif ($this->data['Category Scope']=='Part') {
 				$created_msg=_("Part's category created");
 
@@ -1006,6 +1022,111 @@ class Category extends DB_Table{
 			}
 			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|Year To|Quarter To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Dispatched|Broken|Acquired) Soft Minify$/', $key)  ) {
 				$field='Part Category '.preg_replace('/ Soft Minify$/', '', $key);
+
+
+				$_number=$this->data[$field];
+				return number($_number, 0);
+			}
+			return '';
+			break;
+			
+			case 'Supplier':
+
+			switch ($key) {
+			case 'Valid From':
+
+				return strftime("%a %e %b %Y", strtotime($this->data['Supplier Category '.$key].' +0:00'));
+
+
+
+				break;
+			case 'Valid To':
+
+				if ($this->data['Product Category '.$key]=='') {
+					return '';
+				}else {
+
+					return strftime("%a %e %b %Y", strtotime($this->data['Supplier Category '.$key].' +0:00' )) ;
+
+				}
+				break;
+			}
+
+			include_once 'utils/natural_language.php';
+
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit)$/', $key)) {
+
+				$field='Supplier Category '.$key;
+
+				return money($this->data[$field], $account->get('Account Currency'));
+			}
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Minify$/', $key)) {
+
+				$field='Supplier Category '.preg_replace('/ Minify$/', '', $key);
+
+				$suffix='';
+				$fraction_digits='NO_FRACTION_DIGITS';
+				if ($this->data[$field]>=10000) {
+					$suffix='K';
+					$_amount=$this->data[$field]/1000;
+				}elseif ($this->data[$field]>100 ) {
+					$fraction_digits='SINGLE_FRACTION_DIGITS';
+					$suffix='K';
+					$_amount=$this->data[$field]/1000;
+				}else {
+					$_amount=$this->data[$field];
+				}
+
+				$amount= money($_amount, $account->get('Account Currency'), $locale=false, $fraction_digits).$suffix;
+
+				return $amount;
+			}
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Soft Minify$/', $key)) {
+
+				$field='Supplier Category '.preg_replace('/ Soft Minify$/', '', $key);
+
+				$suffix='';
+				$fraction_digits='NO_FRACTION_DIGITS';
+				$_amount=$this->data[$field];
+
+
+				$amount= money($_amount, $account->get('Account Currency'), $locale=false, $fraction_digits).$suffix;
+
+				return $amount;
+			}
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Quarter To|Month To|Today|Week To).*(Margin|GMROI)$/', $key)) {
+
+				$amount='Supplier Category '.$key;
+
+				return percentage($this->data[$amount], 1);
+			}
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Quarter To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Dispatched|Broken|Customers)$/', $key) or $key=='Current Stock'  ) {
+
+				$amount='Supplier Category '.$key;
+
+				return number($this->data[$amount]);
+			}
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|Year To|Quarter To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Dispatched|Broken|Acquired) Minify$/', $key)   ) {
+
+				$field='Supplier Category '.preg_replace('/ Minify$/', '', $key);
+
+				$suffix='';
+				$fraction_digits=0;
+				if ($this->data[$field]>=10000) {
+					$suffix='K';
+					$_number=$this->data[$field]/1000;
+				}elseif ($this->data[$field]>100 ) {
+					$fraction_digits=1;
+					$suffix='K';
+					$_number=$this->data[$field]/1000;
+				}else {
+					$_number=$this->data[$field];
+				}
+
+				return number($_number, $fraction_digits).$suffix;
+			}
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|Year To|Quarter To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Dispatched|Broken|Acquired) Soft Minify$/', $key)  ) {
+				$field='Supplier Category '.preg_replace('/ Soft Minify$/', '', $key);
 
 
 				$_number=$this->data[$field];
@@ -1641,24 +1762,23 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 		}
 		elseif (array_key_exists($field, $this->base_data('Part Category Data'))) {
 			$this->update_table_field($field, $value, $options, 'Part Category', 'Part Category Data', $this->id);
-		}elseif (array_key_exists($field, $this->base_data('Product Category Data'))) {
+		}
+		elseif (array_key_exists($field, $this->base_data('Product Category Data'))) {
 			//print "++ $field $value\n";
 
 			$this->update_table_field($field, $value, $options, 'Product Category', 'Product Category Data', $this->id);
-		}elseif (array_key_exists($field, $this->base_data('Product Category DC Data'))) {
+		}
+		elseif (array_key_exists($field, $this->base_data('Product Category DC Data'))) {
 			$this->update_table_field($field, $value, $options, 'Product Category DC', 'Product Category DC Data', $this->id);
 		}
+		elseif (array_key_exists($field, $this->base_data('Supplier Category Data'))) {
+			$this->update_table_field($field, $value, $options, 'Supplier Category', 'Supplier Category Data', $this->id);
+		}
+		elseif (array_key_exists($field, $this->base_data('Supplier Category Dimension'))) {
+			$this->update_table_field($field, $value, $options, 'Supplier Category', 'Supplier Category Dimension', $this->id);
+		}
 		else {
-
-
-
-
 			switch ($field) {
-
-
-
-
-
 			case 'Webpage See Also':
 				$this->get_webpage();
 				$this->webpage->update(array(

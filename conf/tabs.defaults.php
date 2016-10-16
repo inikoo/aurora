@@ -841,6 +841,18 @@ $tab_defaults=array(
 		'elements'=>$elements_options['supplier_parts']
 
 	),
+	'category.supplier_categories'=>array(
+		'view'=>'overview',
+		'sort_key'=>'code',
+		'sort_order'=>1,
+		'rpp'=>100,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'label',
+		'f_period'=>'ytd',
+//		'elements_type'=>each($elements_options['suppliers'])['key'],
+//		'elements'=>$elements_options['suppliers']
+
+	),
 	'client_order.items'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',

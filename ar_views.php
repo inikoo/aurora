@@ -53,12 +53,12 @@ function get_widget_details($db, $smarty, $user, $account) {
 			'metadata'=>array('type'=>'json array', 'optional'=>true),
 
 		));
-		
-		
+
+
 	$state=$data['metadata'];
-	
-	
-		
+
+
+
 	$html = get_tab($db, $smarty, $user, $account, $data['widget'], '', $state, $metadata=false);
 	$response=array('state'=>200, 'widget_details'=>$html);
 	echo json_encode($response);
@@ -536,7 +536,7 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state=false, $me
 		$html='Tab Not found: >'.$actual_tab.'<';
 
 	}
-//print $tab;
+	//print $tab;
 	if (is_array($state)  and     ! ( preg_match('/\_edit$/', $tab) or  preg_match('/\.wget$/', $tab)  or $tab=='part_family.product_family.new'  )     ) {
 
 
@@ -728,6 +728,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
 			}else {
 				return '_';
 			}
+
+		}elseif ($data['_object']->get('Category Scope')=='Supplier') {
+			include_once 'showcase/supplier_category_showcase.show.php';
+			$html=get_supplier_category_showcase($data, $smarty, $user, $db);
 
 		}else {
 			return '_';

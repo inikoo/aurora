@@ -13,134 +13,219 @@
 trait SupplierCategory {
 
 
-	function update_supplier_category_up_today_sales() {
-		if (!$this->skip_update_sales) {
-			$this->update_supplier_category_sales('Today');
-			$this->update_supplier_category_sales('Week To Day');
-			$this->update_supplier_category_sales('Month To Day');
-			$this->update_supplier_category_sales('Year To Day');
-		}
-	}
+	function get_supplier_category_part_skus() {
 
-
-	function update_supplier_category_last_period_sales() {
-		if (!$this->skip_update_sales) {
-			$this->update_supplier_category_sales('Yesterday');
-			$this->update_supplier_category_sales('Last Week');
-			$this->update_supplier_category_sales('Last Month');
-		}
-	}
-
-
-	function update_supplier_category_interval_sales() {
-		if (!$this->skip_update_sales) {
-			$this->update_supplier_category_sales('Total');
-			$this->update_supplier_category_sales('3 Year');
-			$this->update_supplier_category_sales('1 Year');
-			$this->update_supplier_category_sales('6 Month');
-			$this->update_supplier_category_sales('1 Quarter');
-			$this->update_supplier_category_sales('1 Month');
-			$this->update_supplier_category_sales('10 Day');
-			$this->update_supplier_category_sales('1 Week');
-		}
-	}
+		$part_skus='';
 
 
 
-	function update_supplier_category_previous_years_data() {
 
-		$sales_data=$this->get_supplier_category_sales_data('1');
-		$this->data['1 Year Ago Sales Amount']=$sales_data['sold_amount'];
-
-		$sales_data=$this->get_supplier_category_sales_data('2');
-		$this->data['2 Year Ago Sales Amount']=$sales_data['sold_amount'];
-
-		$sales_data=$this->get_supplier_category_sales_data('3');
-		$this->data['3 Year Ago Sales Amount']=$sales_data['sold_amount'];
-
-		$sales_data=$this->get_supplier_category_sales_data('4');
-		$this->data['4 Year Ago Sales Amount']=$sales_data['sold_amount'];
-
-
-		$sql=sprintf("update `Supplier Category Dimension` set `1 Year Ago Sales Amount`=%.2f, `2 Year Ago Sales Amount`=%.2f,`3 Year Ago Sales Amount`=%.2f, `4 Year Ago Sales Amount`=%.2f where `Category Key`=%d ",
-
-			$this->data["1 Year Ago Sales Amount"],
-			$this->data["2 Year Ago Sales Amount"],
-			$this->data["3 Year Ago Sales Amount"],
-			$this->data["4 Year Ago Sales Amount"],
-
-			$this->id
-
-		);
-
-		$this->db->exec($sql);
-
-
-	}
-
-
-	function get_supplier_category_sales_data($year_tag) {
-
-		$sales_data=array(
-			'sold_amount'=>0,
-
-
-		);
-
-
-		$sql=sprintf("select sum(`Supplier %s Year Ago Sales Amount`) as sold_amount   from `Category Bridge` B left join  `Supplier Dimension` I  on ( `Subject Key`=`Supplier Key`)  where `Subject`='Supplier' and `Category Key`=%d " ,
-			$year_tag,
-			$this->id
-
-
-		);
-
-
+		$sql=sprintf('select `Supplier Part Part SKU`  from `Category Bridge`  CB left join `Supplier Part Dimension` SPD on  (`Subject Key`=`Supplier Part Supplier Key`) where `Category Key`=%d and `Subject Key`>0 ',
+			$this->id);
+		$part_skus='';
+		
+		
 		if ($result=$this->db->query($sql)) {
-			if ($row = $result->fetch()) {
-				$sales_data['sold_amount']=$row['sold_amount'];
+			foreach ($result as $row) {
+			    if($row['Supplier Part Part SKU']!=''){
+				$part_skus.=$row['Supplier Part Part SKU'].',';
+				}
 			}
 		}else {
 			print_r($error_info=$this->db->errorInfo());
 			exit;
 		}
+		$part_skus=preg_replace('/\,$/', '', $part_skus);
 
 
 
+		return $part_skus;
 
-		return $sales_data;
 	}
 
 
 	function update_supplier_category_sales($interval) {
 
-		//  print $interval;
+		include_once 'utils/date_functions.php';
+		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb)=calculate_interval_dates($this->db, $interval);
+
+
+
+		$sales_data=$this->get_supplier_category_sales_data($from_date, $to_date);
+
+
+		$data_to_update=array(
+			"Supplier Category $db_interval Acc Customers"=>$sales_data['customers'],
+			"Supplier Category $db_interval Acc Repeat Customers"=>$sales_data['repeat_customers'],
+			"Supplier Category $db_interval Acc Deliveries"=>$sales_data['deliveries'],
+			"Supplier Category $db_interval Acc Profit"=>$sales_data['profit'],
+			"Supplier Category $db_interval Acc Invoiced Amount"=>$sales_data['invoiced_amount'],
+			"Supplier Category $db_interval Acc Required"=>$sales_data['required'],
+			"Supplier Category $db_interval Acc Dispatched"=>$sales_data['dispatched'],
+			"Supplier Category $db_interval Acc Keeping Days"=>$sales_data['keep_days'],
+			"Supplier Category $db_interval Acc With Stock Days"=>$sales_data['with_stock_days'],
+		);
+
+//print_r($data_to_update);
+
+		$this->update( $data_to_update, 'no_history');
+
+		if ($from_date_1yb) {
+
+
+			$sales_data=$this->get_supplier_category_sales_data($from_date_1yb, $to_date_1yb);
+
+
+			$data_to_update=array(
+
+				"Supplier Category $db_interval Acc 1YB Customers"=>$sales_data['customers'],
+				"Supplier Category $db_interval Acc 1YB Repeat Customers"=>$sales_data['repeat_customers'],
+				"Supplier Category $db_interval Acc 1YB Deliveries"=>$sales_data['deliveries'],
+				"Supplier Category $db_interval Acc 1YB Profit"=>$sales_data['profit'],
+				"Supplier Category $db_interval Acc 1YB Invoiced Amount"=>$sales_data['invoiced_amount'],
+				"Supplier Category $db_interval Acc 1YB Required"=>$sales_data['required'],
+				"Supplier Category $db_interval Acc 1YB Dispatched"=>$sales_data['dispatched'],
+				"Supplier Category $db_interval Acc 1YB Keeping Days"=>$sales_data['keep_days'],
+				"Supplier Category $db_interval Acc 1YB With Stock Days"=>$sales_data['with_stock_days'],
+
+			);
+			$this->update( $data_to_update, 'no_history');
+
+
+		}
+
+
+	}
+
+
+	function update_supplier_category_previous_years_data() {
+
+		$data_1y_ago=$this->get_supplier_category_sales_data(date('Y-01-01 00:00:00', strtotime('-1 year')), date('Y-01-01 00:00:00'));
+		$data_2y_ago=$this->get_supplier_category_sales_data(date('Y-01-01 00:00:00', strtotime('-2 year')), date('Y-01-01 00:00:00', strtotime('-1 year')));
+		$data_3y_ago=$this->get_supplier_category_sales_data(date('Y-01-01 00:00:00', strtotime('-3 year')), date('Y-01-01 00:00:00', strtotime('-2 year')));
+		$data_4y_ago=$this->get_supplier_category_sales_data(date('Y-01-01 00:00:00', strtotime('-4 year')), date('Y-01-01 00:00:00', strtotime('-3 year')));
+		$data_5y_ago=$this->get_supplier_category_sales_data(date('Y-01-01 00:00:00', strtotime('-5 year')), date('Y-01-01 00:00:00', strtotime('-4 year')));
 
 
 
 
-		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($this->db,$interval);
+		$data_to_update=array(
+			"Supplier Category 1 Year Ago Customers"=>$data_1y_ago['customers'],
+			"Supplier Category 1 Year Ago Repeat Customers"=>$data_1y_ago['repeat_customers'],
+			"Supplier Category 1 Year Ago Deliveries"=>$data_1y_ago['deliveries'],
+			"Supplier Category 1 Year Ago Profit"=>$data_1y_ago['profit'],
+			"Supplier Category 1 Year Ago Invoiced Amount"=>$data_1y_ago['invoiced_amount'],
+			"Supplier Category 1 Year Ago Required"=>$data_1y_ago['required'],
+			"Supplier Category 1 Year Ago Dispatched"=>$data_1y_ago['dispatched'],
+			"Supplier Category 1 Year Ago Keeping Day"=>$data_1y_ago['keep_days'],
+			"Supplier Category 1 Year Ago With Stock Days"=>$data_1y_ago['with_stock_days'],
+
+			"Supplier Category 2 Year Ago Customers"=>$data_2y_ago['customers'],
+			"Supplier Category 2 Year Ago Repeat Customers"=>$data_2y_ago['repeat_customers'],
+			"Supplier Category 2 Year Ago Deliveries"=>$data_2y_ago['deliveries'],
+			"Supplier Category 2 Year Ago Profit"=>$data_2y_ago['profit'],
+			"Supplier Category 2 Year Ago Invoiced Amount"=>$data_2y_ago['invoiced_amount'],
+			"Supplier Category 2 Year Ago Required"=>$data_2y_ago['required'],
+			"Supplier Category 2 Year Ago Dispatched"=>$data_2y_ago['dispatched'],
+			"Supplier Category 2 Year Ago Keeping Day"=>$data_2y_ago['keep_days'],
+			"Supplier Category 2 Year Ago With Stock Days"=>$data_2y_ago['with_stock_days'],
+
+			"Supplier Category 3 Year Ago Customers"=>$data_3y_ago['customers'],
+			"Supplier Category 3 Year Ago Repeat Customers"=>$data_3y_ago['repeat_customers'],
+			"Supplier Category 3 Year Ago Deliveries"=>$data_3y_ago['deliveries'],
+			"Supplier Category 3 Year Ago Profit"=>$data_3y_ago['profit'],
+			"Supplier Category 3 Year Ago Invoiced Amount"=>$data_3y_ago['invoiced_amount'],
+			"Supplier Category 3 Year Ago Required"=>$data_3y_ago['required'],
+			"Supplier Category 3 Year Ago Dispatched"=>$data_3y_ago['dispatched'],
+			"Supplier Category 3 Year Ago Keeping Day"=>$data_3y_ago['keep_days'],
+			"Supplier Category 3 Year Ago With Stock Days"=>$data_3y_ago['with_stock_days'],
+
+			"Supplier Category 4 Year Ago Customers"=>$data_4y_ago['customers'],
+			"Supplier Category 4 Year Ago Repeat Customers"=>$data_4y_ago['repeat_customers'],
+			"Supplier Category 4 Year Ago Deliveries"=>$data_4y_ago['deliveries'],
+			"Supplier Category 4 Year Ago Profit"=>$data_4y_ago['profit'],
+			"Supplier Category 4 Year Ago Invoiced Amount"=>$data_4y_ago['invoiced_amount'],
+			"Supplier Category 4 Year Ago Required"=>$data_4y_ago['required'],
+			"Supplier Category 4 Year Ago Dispatched"=>$data_4y_ago['dispatched'],
+			"Supplier Category 4 Year Ago Keeping Day"=>$data_4y_ago['keep_days'],
+			"Supplier Category 4 Year Ago With Stock Days"=>$data_4y_ago['with_stock_days'],
+
+			"Supplier Category 5 Year Ago Customers"=>$data_5y_ago['customers'],
+			"Supplier Category 5 Year Ago Repeat Customers"=>$data_5y_ago['repeat_customers'],
+			"Supplier Category 5 Year Ago Deliveries"=>$data_5y_ago['deliveries'],
+			"Supplier Category 5 Year Ago Profit"=>$data_5y_ago['profit'],
+			"Supplier Category 5 Year Ago Invoiced Amount"=>$data_5y_ago['invoiced_amount'],
+			"Supplier Category 5 Year Ago Required"=>$data_5y_ago['required'],
+			"Supplier Category 5 Year Ago Dispatched"=>$data_5y_ago['dispatched'],
+			"Supplier Category 5 Year Ago Keeping Day"=>$data_5y_ago['keep_days'],
+			"Supplier Category 5 Year Ago With Stock Days"=>$data_5y_ago['with_stock_days'],
+
+
+		);
+		$this->update( $data_to_update, 'no_history');
 
 
 
 
-		$supplier_category_data["$db_interval Acc Cost"]=0;
-		$supplier_category_data["$db_interval Acc Part Sales"]=0;
-		$supplier_category_data["$db_interval Acc Profit"]=0;
 
 
-		$sql=sprintf("select sum(`Supplier $db_interval Acc Parts Cost`) as cost, sum(`Supplier $db_interval Acc Parts Sold Amount`) as sold, sum(`Supplier $db_interval Acc Parts Profit`) as profit   from `Category Bridge` B left join  `Supplier Dimension` I  on ( `Subject Key`=`Supplier Key`)  where `Subject`='Supplier' and `Category Key`=%d " ,
-			$this->id
+	}
 
 
+	function update_supplier_category_previous_quarters_data() {
+
+
+		include_once 'utils/date_functions.php';
+
+
+		foreach (range(1, 4) as $i) {
+			$dates=get_previous_quarters_dates($i);
+			$dates_1yb=get_previous_quarters_dates($i+4);
+
+
+			$sales_data=$this->get_supplier_category_sales_data($dates['start'], $dates['end']);
+			$sales_data_1yb=$this->get_supplier_category_sales_data($dates_1yb['start'], $dates_1yb['end']);
+
+			$data_to_update=array(
+				"Supplier Category $i Quarter Ago Customers"=>$sales_data['customers'],
+				"Supplier Category $i Quarter Ago Repeat Customers"=>$sales_data['repeat_customers'],
+				"Supplier Category $i Quarter Ago Deliveries"=>$sales_data['deliveries'],
+				"Supplier Category $i Quarter Ago Profit"=>$sales_data['profit'],
+				"Supplier Category $i Quarter Ago Invoiced Amount"=>$sales_data['invoiced_amount'],
+				"Supplier Category $i Quarter Ago Required"=>$sales_data['required'],
+				"Supplier Category $i Quarter Ago Dispatched"=>$sales_data['dispatched'],
+				"Supplier Category $i Quarter Ago Keeping Day"=>$sales_data['keep_days'],
+				"Supplier Category $i Quarter Ago With Stock Days"=>$sales_data['with_stock_days'],
+
+				"Supplier Category $i Quarter Ago 1YB Customers"=>$sales_data_1yb['customers'],
+				"Supplier Category $i Quarter Ago 1YB Repeat Customers"=>$sales_data_1yb['repeat_customers'],
+				"Supplier Category $i Quarter Ago 1YB Deliveries"=>$sales_data_1yb['deliveries'],
+				"Supplier Category $i Quarter Ago 1YB Profit"=>$sales_data_1yb['profit'],
+				"Supplier Category $i Quarter Ago 1YB Invoiced Amount"=>$sales_data_1yb['invoiced_amount'],
+				"Supplier Category $i Quarter Ago 1YB Required"=>$sales_data_1yb['required'],
+				"Supplier Category $i Quarter Ago 1YB Dispatched"=>$sales_data_1yb['dispatched'],
+				"Supplier Category $i Quarter Ago 1YB Keeping Day"=>$sales_data_1yb['keep_days'],
+				"Supplier Category $i Quarter Ago 1YB With Stock Days"=>$sales_data_1yb['with_stock_days'],
+			);
+			$this->update( $data_to_update, 'no_history');
+		}
+
+	}
+
+
+	function get_supplier_category_customers_total_data($part_skus) {
+
+		$repeat_customers=0;
+
+
+		$sql=sprintf('select count(`Customer Part Customer Key`) as num  from `Customer Part Bridge` where `Customer Part Delivery Notes`>1 and `Customer Part Part SKU` in (%s)    ',
+			$part_skus
 		);
 
 
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
-				$supplier_category_data["$db_interval Acc Cost"]=$row["cost"];
-				$supplier_category_data["$db_interval Acc Part Sales"]=$row["sold"];
-				$supplier_category_data["$db_interval Acc Profit"]=$row["profit"];
+				$repeat_customers=$row['num'];
 			}
 		}else {
 			print_r($error_info=$this->db->errorInfo());
@@ -149,38 +234,52 @@ trait SupplierCategory {
 
 
 
-		$sql=sprintf("update `Supplier Category Dimension` set
-                     `$db_interval Acc Cost`=%.2f,
-                     `$db_interval Acc Part Sales`=%.2f,
-                     `$db_interval Acc Profit`=%.2f
-                     where `Category Key`=%d "
-			, $supplier_category_data["$db_interval Acc Cost"]
-			, $supplier_category_data["$db_interval Acc Part Sales"]
-			, $supplier_category_data["$db_interval Acc Profit"]
-			, $this->id
+		return $repeat_customers;
+
+	}
+
+
+	function get_supplier_category_sales_data($from_date, $to_date) {
+
+		$sales_data=array(
+			'invoiced_amount'=>0,
+			'profit'=>0,
+			'required'=>0,
+			'dispatched'=>0,
+			'deliveries'=>0,
+			'customers'=>0,
+			'repeat_customers'=>0,
+			'keep_days'=>0,
+			'with_stock_days'=>0,
+
 		);
 
-		$this->db->exec($sql);
+		$part_skus=$this->get_supplier_category_part_skus();
 
-		//     print "$sql\n";
+		if ($part_skus!='') {
 
-		if ($from_date_1yb) {
-			$supplier_category_data["$db_interval Acc 1YB Cost"]=0;
-			$supplier_category_data["$db_interval Acc 1YB Part Sales"]=0;
-			$supplier_category_data["$db_interval Acc 1YB Profit"]=0;
-
-			$sql=sprintf("select sum(`Supplier $db_interval Acc 1YB Parts Cost`) as cost, sum(`Supplier $db_interval Acc 1YB Parts Sold Amount`) as sold, sum(`Supplier $db_interval Acc 1YB Parts Profit`) as profit   from `Category Bridge` B left join  `Supplier Dimension` I  on ( `Subject Key`=`Supplier Key`)  where `Subject`='Supplier' and `Category Key`=%d " ,
-				$this->id
+			if ($from_date=='' and  $to_date=='') {
+				$sales_data['repeat_customers']=$this->get_supplier_category_customers_total_data($part_skus);
+			}
 
 
+
+			$sql=sprintf("select count(distinct `Delivery Note Customer Key`) as customers, count( distinct ITF.`Delivery Note Key`) as deliveries, round(ifnull(sum(`Amount In`),0),2) as invoiced_amount,round(ifnull(sum(`Amount In`+`Inventory Transaction Amount`),0),2) as profit,round(ifnull(sum(`Inventory Transaction Quantity`),0),1) as dispatched,round(ifnull(sum(`Required`),0),1) as required from `Inventory Transaction Fact` ITF  left join `Delivery Note Dimension` DN on (DN.`Delivery Note Key`=ITF.`Delivery Note Key`) where `Inventory Transaction Type` like 'Sale' and `Part SKU` in (%s) %s %s" ,
+				$part_skus,
+				($from_date?sprintf('and  `Date`>=%s', prepare_mysql($from_date)):''),
+				($to_date?sprintf('and `Date`<%s', prepare_mysql($to_date)):'')
 			);
 
+			//print "$sql\n";
 
 			if ($result=$this->db->query($sql)) {
 				if ($row = $result->fetch()) {
-					$supplier_category_data["$db_interval Acc 1YB Cost"]=$row["cost"];
-					$supplier_category_data["$db_interval Acc 1YB Part Sales"]=$row["sold"];
-					$supplier_category_data["$db_interval Acc 1YB Profit"]=$row["profit"];
+					$sales_data['customers']=$row['customers'];
+					$sales_data['invoiced_amount']=$row['invoiced_amount'];
+					$sales_data['profit']=$row['profit'];
+					$sales_data['dispatched']=-1.0*$row['dispatched'];
+					$sales_data['required']=$row['required'];
+					$sales_data['deliveries']=$row['deliveries'];
 				}
 			}else {
 				print_r($error_info=$this->db->errorInfo());
@@ -188,23 +287,12 @@ trait SupplierCategory {
 			}
 
 
-
-			$sql=sprintf("update `Supplier Category Dimension` set
-                         `$db_interval Acc 1YB Cost`=%.2f,
-                         `$db_interval Acc 1YB Part Sales`=%.2f,
-                         `$db_interval Acc 1YB Profit`=%.2f
-                         where `Category Key`=%d "
-				, $supplier_category_data["$db_interval Acc 1YB Cost"]
-				, $supplier_category_data["$db_interval Acc 1YB Part Sales"]
-				, $supplier_category_data["$db_interval Acc 1YB Profit"]
-				, $this->id
-			);
-			$this->db->exec($sql);
-
 		}
 
+		return $sales_data;
 
 	}
+
 
 
 }

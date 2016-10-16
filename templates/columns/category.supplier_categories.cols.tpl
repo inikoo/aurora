@@ -1,82 +1,50 @@
 var columns = [
-  {
+ {
     name: "id",
     label: "",
     editable: false,
-     renderable: false,
-    cell: "string",
-
+    renderable: false,
+    cell: "string"
 },
  {
-    name: "operations",
-    renderable: {if ($data['parent']=='agent') }true{else}false{/if},
-    
-    label: "",
-    editable: false,
-    sortType: "toggle",
-    cell: Backgrid.HtmlCell.extend({
-        className: "width_20"
-    })
-
-},
-
-{
-    name: "associated",
-    label: "",
-    renderable: {if ($data['parent']=='category') }true{else}false{/if},
-    editable: false,
-    sortType: "toggle",
-    cell: Backgrid.HtmlCell.extend({
-        className: "width_20"
-    })
-
-}, 
-
-{
     name: "code",
     label: "{t}Code{/t}",
     editable: false,
-     sortType: "toggle",
-    {if $sort_key=='id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-    
-    cell: Backgrid.StringCell.extend({
-        orderSeparator: '',
-        events: {
-            "click": function() {
-                change_view('supplier{if $data.object=='list'}/list/{$data.key}{/if}/' + this.model.get("id"))
-            }
-        },
-        className: "link"
+     cell: Backgrid.HtmlCell.extend({
        
-})
-   
-}, {
-    name: "name",
-    label: "Name",
-     sortType: "toggle",
-    cell: Backgrid.StringCell.extend({
-        events: {
-            "dblclick": "enterEditMode"
-        }
+     
+        
+       
+        
+        
     })
-}, {
-    name: "location",
-    label: "{t}Location{/t}",
-    sortType: "toggle",
-            {if $sort_key=='location'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-    
+}, 
+{
+    name: "label",
+    label:"{t}Label{/t}",
     editable: false,
-    
-    cell: "html"
-}, {
-    name: "last_purchase_order",
-    label: "{t}Last PO{/t}",
-     defautOrder:1,
+    cell: "string"
+}, 
+{
+    name: "subjects",
+    label:"{t}Suppliers{/t}",
     editable: false,
+        defautOrder:1,
     sortType: "toggle",
-    {if $sort_key=='last_invoice'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+            {if $sort_key=='assigned'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+ 
+    cell: Backgrid.StringCell.extend({ className: "aright"} ),
+        headerCell: integerHeaderCell
 
-
+},
+{
+    name: "percentage_assigned",
+    label:"{t}Assigned{/t}",
+    editable: false,
+        defautOrder:1,
+    sortType: "toggle",
+            {if $sort_key=='assigned'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+ 
     cell: Backgrid.StringCell.extend({ className: "aright"} ),
         headerCell: integerHeaderCell
 
@@ -174,47 +142,6 @@ var columns = [
     cell: Backgrid.StringCell.extend({ className: "aright"} ),
 
     headerCell: integerHeaderCell
-},
- {
-    name: "company",
-    label: "{t}Company{/t}",
-    editable: false,
-    sortType: "toggle",
-    cell: Backgrid.StringCell.extend({
-        events: {
-            "dblclick": "enterEditMode"
-        }
-    })
-}, {
-    name: "contact",
-    label: "{t}Main contact{/t}",
-    editable: false,
-    sortType: "toggle",
-    cell: Backgrid.StringCell.extend({
-        events: {
-            "dblclick": "enterEditMode"
-        }
-    })
-}, {
-    name: "email",
-    label: "{t}Email{/t}",
-    editable: false,
-    sortType: "toggle",
-    cell: Backgrid.EmailCell.extend({
-        events: {
-            "dblclick": "enterEditMode"
-        }
-    })
-},{
-    name: "telephone",
-    label: "{t}Telephone{/t}",
-    editable: false,
-    sortType: "toggle",
-    cell: Backgrid.StringCell.extend({
-        events: {
-            "dblclick": "enterEditMode"
-        }
-    })
 },
 {
     name: "sales",
@@ -360,6 +287,7 @@ var columns = [
 
     headerCell: integerHeaderCell
 }
+
 ]
 
 function get_quarter_label(index) {
@@ -383,9 +311,12 @@ function change_table_view(view,save_state){
         $('#columns_period').addClass('hide');
 
     
-    grid.columns.findWhere({ name: 'name'} ).set("renderable", false)
-    grid.columns.findWhere({ name: 'location'} ).set("renderable", false)
-    grid.columns.findWhere({ name: 'last_purchase_order'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'label'} ).set("renderable", false)
+    grid.columns.findWhere({ name: 'percentage_assigned'} ).set("renderable", false)
+        grid.columns.findWhere({ name: 'subjects'} ).set("renderable", false)
+
+    
+    
     grid.columns.findWhere({ name: 'active_supplier_parts'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'supplier_parts'} ).set("renderable", false)
 
@@ -396,11 +327,9 @@ function change_table_view(view,save_state){
     grid.columns.findWhere({ name: 'out_of_stock'} ).set("renderable", false)
 
     grid.columns.findWhere({ name: 'pending_po'} ).set("renderable", false)
-    grid.columns.findWhere({ name: 'company'} ).set("renderable", false)
-    grid.columns.findWhere({ name: 'contact'} ).set("renderable", false)
-    grid.columns.findWhere({ name: 'email'} ).set("renderable", false)
-    grid.columns.findWhere({ name: 'telephone'} ).set("renderable", false)
- 
+   
+   
+  
      grid.columns.findWhere({ name: 'sales'} ).set("renderable", false)
     grid.columns.findWhere({ name: 'sales_1y'} ).set("renderable", false)
     
@@ -418,21 +347,12 @@ function change_table_view(view,save_state){
  
     
     if(view=='overview'){
-        grid.columns.findWhere({ name: 'name'} ).set("renderable", true)
-        grid.columns.findWhere({ name: 'location'} ).set("renderable", true)
-        grid.columns.findWhere({ name: 'last_purchase_order'} ).set("renderable", true)
+        grid.columns.findWhere({ name: 'code'} ).set("renderable", true)
+        grid.columns.findWhere({ name: 'label'} ).set("renderable", true)
         grid.columns.findWhere({ name: 'active_supplier_parts'} ).set("renderable", true)
-               grid.columns.findWhere({ name: 'supplier_parts'} ).set("renderable", true)
+               grid.columns.findWhere({ name: 'subjects'} ).set("renderable", true)
+               grid.columns.findWhere({ name: 'percentage_assigned'} ).set("renderable", true)
 
-    }else if(view=='weblog'){
-        grid.columns.findWhere({ name: 'logins'} ).set("renderable", true)
-        grid.columns.findWhere({ name: 'failed_logins'} ).set("renderable", true)
-        grid.columns.findWhere({ name: 'requests'} ).set("renderable", true)
-    }else if(view=='contact'){
-        grid.columns.findWhere({ name: 'company'} ).set("renderable", true)
-        grid.columns.findWhere({ name: 'contact'} ).set("renderable", true)
-        grid.columns.findWhere({ name: 'email'} ).set("renderable", true)
-        grid.columns.findWhere({ name: 'telephone'} ).set("renderable", true)
     }else if(view=='parts'){
         grid.columns.findWhere({ name: 'active_supplier_parts'} ).set("renderable", true)
          grid.columns.findWhere({ name: 'surplus'} ).set("renderable", true)
@@ -458,11 +378,7 @@ function change_table_view(view,save_state){
     grid.columns.findWhere({ name: 'sales_quarter2'} ).set("renderable", true)
     grid.columns.findWhere({ name: 'sales_quarter3'} ).set("renderable", true)
     grid.columns.findWhere({ name: 'sales_quarter4'} ).set("renderable", true)
-  }else if(view=='orders'){
-        grid.columns.findWhere({ name: 'last_purchase_order'} ).set("renderable", true)
-        grid.columns.findWhere({ name: 'pending_po'} ).set("renderable", true)
- 
-    }
+  }
     
     if(save_state){
      var request = "/ar_state.php?tipo=set_table_view&tab={$tab}&table_view=" + view

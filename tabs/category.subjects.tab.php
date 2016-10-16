@@ -197,10 +197,14 @@ elseif ($category->get('Category Scope')=='Supplier') {
 	$default=$user->get_tab_defaults($tab);
 
 	$table_views=array(
-		'overview'=>array('label'=>_('Overview'), 'title'=>_('Overview')),
-		'sales'=>array('label'=>_('Sales'), 'title'=>_('Sales')),
-
-	);
+	'overview'=>array('label'=>_('Overview'), 'title'=>_('Overview')),
+	'contact'=>array('label'=>_('Contact'), 'title'=>_('Contact details')),
+	'parts'=>array('label'=>_("Parts's stock")),
+	'sales'=>array('label'=>_("Parts's sales")),
+	'sales_q'=>array('label'=>_("Parts's sales (Qs)")),
+	'sales_y'=>array('label'=>_("Parts's sales (Yrs)")),
+	'orders'=>array('label'=>_('Orders'), 'title'=>_('Purchase orders, deliveries & invoices')),
+);
 
 	$table_filters=array(
 		'code'=>array('label'=>_('Code')),

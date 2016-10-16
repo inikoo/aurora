@@ -67,7 +67,22 @@ class Agent extends SubjectSupplier {
 
 	}
 
+	function load_acc_data() {
+		$sql=sprintf("select * from `Agent Data` where `Agent Key`=%d", $this->id);
 
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				foreach ($row as $key=>$value) {
+					$this->data[$key]=$value;
+				}
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+	}
 
 	function find($raw_data, $address_raw_data, $options) {
 		// print "$options\n";
@@ -341,7 +356,13 @@ class Agent extends SubjectSupplier {
 
 		default:
 
-			$this->update_field($field, $value, $options);
+			if (array_key_exists($field, $this->base_data('Agent Data'))   ) {
+				//print "$field $value \n";
+				$this->update_table_field($field, $value, $options, 'Agent', 'Agent Data', $this->id);
+			}else {
+
+				$this->update_field($field, $value, $options);
+			}
 		}
 
 
@@ -513,7 +534,7 @@ class Agent extends SubjectSupplier {
 			if ($row = $result->fetch()) {
 
 				$supplier_number_suppliers=$row['num'];
-			
+
 
 			}
 		}else {
@@ -655,6 +676,25 @@ class Agent extends SubjectSupplier {
 
 	}
 
+	function get_part_skus() {
+
+		$part_skus='';
+		$sql=sprintf('select `Supplier Part Part SKU` from `Supplier Part Dimension` left join `Agent Supplier Bridge` on (`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`)  where `Agent Supplier Agent Key`=%d ',
+		 $this->id);
+		$part_skus='';
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+				$part_skus.=$row['Supplier Part Part SKU'].',';
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+		$part_skus=preg_replace('/\,$/', '', $part_skus);
+
+		return $part_skus;
+
+	}
 
 
 }

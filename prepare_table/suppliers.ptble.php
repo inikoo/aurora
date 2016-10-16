@@ -135,7 +135,7 @@ $db_period=get_interval_db_name($parameters['f_period']);
 
 if (in_array($db_period, array('Total', '3 Year'))) {
 }else {
-	$fields_1yb="`Supplier $db_period Acc 1Yb Parts Sold Amount` as revenue_1y";
+	$fields_1yb="`Supplier $db_period Acc 1Yb Invoiced Amount` as sales_1y";
 
 }
 
@@ -164,18 +164,18 @@ if ($order=='code') {
 	$order='`Supplier Number Parts`';
 }elseif ($order=='active_supplier_parts') {
 	$order='`Supplier Number Active Parts`';
-}elseif ($order=='revenue') {
-	$order="`Supplier $db_period Acc Parts Sold Amount`";
-}elseif ($order=='revenue_1y') {
+}elseif ($order=='sales') {
+	$order="`Supplier $db_period Acc Invoiced Amount`";
+}elseif ($order=='sales_1y') {
 
 	if (in_array($db_period, array('Total', '3 Year'))) {
 
-		$order="`Supplier $db_period Acc Parts Sold Amount`";
+		$order="`Supplier $db_period Acc Invoiced Amount`";
 
 	}else {
 
 
-		$order="per $order_direction,`Supplier $db_period Acc Parts Sold Amount` $order_direction";
+		$order="per $order_direction,`Supplier $db_period Acc Invoiced Amount` $order_direction";
 
 
 		$order_direction='';
@@ -188,9 +188,9 @@ if ($order=='code') {
 elseif ($order=='pending_pos') {
 	$order='`Supplier Open Purchase Orders`';
 }elseif ($order=='margin') {
-	$order="`Supplier $db_period Acc Parts Margin`";
+	$order="`Supplier $db_period Acc Margin`";
 }elseif ($order=='cost') {
-	$order="`Supplier $db_period Acc Parts Cost`";
+	$order="`Supplier $db_period Acc Cost`";
 }elseif ($order=='origin') {
 	$order="`Supplier Products Origin Country Code`";
 }elseif ($order=='delivery_time') {
@@ -208,19 +208,29 @@ elseif ($order=='pending_pos') {
 }elseif ($order=='out_of_stock') {
 	$order="`Supplier Number Out Of Stock Parts`";
 }elseif ($order=='profit_after_storing') {
-	$order="`Supplier $db_period Acc Parts Profit After Storing`";
+	$order="`Supplier $db_period Acc Profit After Storing`";
 }elseif ($order=='profit') {
-	$order="`Supplier $db_period Acc Parts Profit`";
+	$order="`Supplier $db_period Acc Profit`";
 }
-elseif ($order=='delta_sales_year0') {$order="(-1*(`Supplier Year To Day Acc Parts Sold Amount`-`Supplier Year To Day Acc 1YB Parts Sold Amount`)/`Supplier Year To Day Acc 1YB Parts Sold Amount`)";}
-elseif ($order=='delta_sales_year1') {$order="(-1*(`Supplier 2 Year Ago Sales Amount`-`Supplier 1 Year Ago Sales Amount`)/`Supplier 2 Year Ago Sales Amount`)";}
-elseif ($order=='delta_sales_year2') {$order="(-1*(`Supplier 3 Year Ago Sales Amount`-`Supplier 2 Year Ago Sales Amount`)/`Supplier 3 Year Ago Sales Amount`)";}
-elseif ($order=='delta_sales_year3') {$order="(-1*(`Supplier 4 Year Ago Sales Amount`-`Supplier 3 Year Ago Sales Amount`)/`Supplier 4 Year Ago Sales Amount`)";}
-elseif ($order=='sales_year1') {$order="`Supplier 1 Year Ago Sales Amount`";}
-elseif ($order=='sales_year2') {$order="`Supplier 2 Year Ago Sales Amount`";}
-elseif ($order=='sales_year3') {$order="`Supplier 3 Year Ago Sales Amount`";}
-elseif ($order=='sales_year4') {$order="`Supplier 4 Year Ago Sales Amount`";}
-elseif ($order=='sales_year0') {$order="`Supplier Year To Day Acc Parts Sold Amount`";}
+elseif ($order=='delta_sales_year0') {$order="(-1*(`Supplier Year To Day Acc Invoiced Amount`-`Supplier Year To Day Acc 1Yb Invoiced Amount`)/`Supplier Year To Day Acc 1Yb Invoiced Amount`)";}
+elseif ($order=='delta_sales_year1') {$order="(-1*(`Supplier 2 Year Ago Invoiced Amount`-`Supplier 1 Year Ago Invoiced Amount`)/`Supplier 2 Year Ago Invoiced Amount`)";}
+elseif ($order=='delta_sales_year2') {$order="(-1*(`Supplier 3 Year Ago Invoiced Amount`-`Supplier 2 Year Ago Invoiced Amount`)/`Supplier 3 Year Ago Invoiced Amount`)";}
+elseif ($order=='delta_sales_year3') {$order="(-1*(`Supplier 4 Year Ago Invoiced Amount`-`Supplier 3 Year Ago Invoiced Amount`)/`Supplier 4 Year Ago Invoiced Amount`)";}
+elseif ($order=='sales_year1') {$order="`Supplier 1 Year Ago Invoiced Amount`";}
+elseif ($order=='sales_year2') {$order="`Supplier 2 Year Ago Invoiced Amount`";}
+elseif ($order=='sales_year3') {$order="`Supplier 3 Year Ago Invoiced Amount`";}
+elseif ($order=='sales_year4') {$order="`Supplier 4 Year Ago Invoiced Amount`";}
+elseif ($order=='sales_year0') {$order="`Supplier Year To Day Acc Invoiced Amount`";}
+elseif ($order=='delta_sales_quarter0') {$order="(-1*(`Supplier Quarter To Day Acc Invoiced Amount`-`Supplier Quarter To Day Acc 1Yb Invoiced Amount`)/`Supplier Quarter To Day Acc 1Yb Invoiced Amount`)";}
+elseif ($order=='delta_sales_quarter1') {$order="(-1*(`Supplier 2 Quarter Ago Invoiced Amount`-`Supplier 1 Quarter Ago Invoiced Amount`)/`Supplier 2 Quarter Ago Invoiced Amount`)";}
+elseif ($order=='delta_sales_quarter2') {$order="(-1*(`Supplier 3 Quarter Ago Invoiced Amount`-`Supplier 2 Quarter Ago Invoiced Amount`)/`Supplier 3 Quarter Ago Invoiced Amount`)";}
+elseif ($order=='delta_sales_quarter3') {$order="(-1*(`Supplier 4 Quarter Ago Invoiced Amount`-`Supplier 3 Quarter Ago Invoiced Amount`)/`Supplier 4 Quarter Ago Invoiced Amount`)";}
+elseif ($order=='sales_quarter1') {$order="`Supplier 1 Quarter Ago Invoiced Amount`";}
+elseif ($order=='sales_quarter2') {$order="`Supplier 2 Quarter Ago Invoiced Amount`";}
+elseif ($order=='sales_quarter3') {$order="`Supplier 3 Quarter Ago Invoiced Amount`";}
+elseif ($order=='sales_quarter4') {$order="`Supplier 4 Quarter Ago Invoiced Amount`";}
+elseif ($order=='sales_quarter0') {$order="`Supplier Quarter To Day Acc Invoiced Amount`";}
+
 else {
 	$order="S.`Supplier Key`";
 }
@@ -230,17 +240,19 @@ $fields="
 S.`Supplier Key`,`Supplier Code`,`Supplier Name`,`Supplier Number Active Parts`,
 `Supplier Location`,`Supplier Main Plain Email`,`Supplier Preferred Contact Number`,`Supplier Preferred Contact Number Formatted Number`,`Supplier Main Contact Name`,`Supplier Company Name`,
 `Supplier Number Parts`,`Supplier Number Surplus Parts`,`Supplier Number Optimal Parts`,`Supplier Number Low Parts`,`Supplier Number Critical Parts`,`Supplier Number Critical Parts`,`Supplier Number Out Of Stock Parts`,
-`Supplier $db_period Acc Parts Sold Amount` as revenue,$fields_1yb,
-`Supplier Year To Day Acc Parts Sold Amount`,`Supplier Year To Day Acc 1YB Parts Sold Amount`,`Supplier 1 Year Ago Sales Amount`,`Supplier 2 Year Ago Sales Amount`,`Supplier 3 Year Ago Sales Amount`,`Supplier 4 Year Ago Sales Amount`,
 
-if ( `Supplier $db_period Acc Parts Sold Amount`=0 and `Supplier $db_period Acc 1Yb Parts Sold Amount`=0 ,0, if( `Supplier $db_period Acc 1Yb Parts Sold Amount`=0,0, ((`Supplier $db_period Acc Parts Sold Amount`-`Supplier $db_period Acc 1Yb Parts Sold Amount`)/`Supplier $db_period Acc 1Yb Parts Sold Amount`))) as per
+`Supplier $db_period Acc Invoiced Amount` as sales,$fields_1yb,
+`Supplier Year To Day Acc Invoiced Amount`,`Supplier Year To Day Acc 1Yb Invoiced Amount`,`Supplier 1 Year Ago Invoiced Amount`,`Supplier 2 Year Ago Invoiced Amount`,`Supplier 3 Year Ago Invoiced Amount`,`Supplier 4 Year Ago Invoiced Amount`,`Supplier 5 Year Ago Invoiced Amount`,
+`Supplier Quarter To Day Acc Invoiced Amount`,`Supplier Quarter To Day Acc 1Yb Invoiced Amount`,`Supplier 1 Quarter Ago Invoiced Amount`,`Supplier 2 Quarter Ago Invoiced Amount`,`Supplier 3 Quarter Ago Invoiced Amount`,`Supplier 4 Quarter Ago Invoiced Amount`,
+`Supplier 1 Quarter Ago 1YB Invoiced Amount`,`Supplier 2 Quarter Ago 1YB Invoiced Amount`,`Supplier 3 Quarter Ago 1YB Invoiced Amount`,`Supplier 4 Quarter Ago 1YB Invoiced Amount`,
+`Supplier Year To Day Acc 1YB Invoiced Amount`,`Supplier Quarter To Day Acc 1YB Invoiced Amount`
 ";
 /*
-`Supplier Products Origin Country Code`,`Supplier $db_period Acc Parts Sold Amount`,`Supplier $db_period Acc 1YB Parts Sold Amount`,
-`Supplier $db_period Acc Parts Profit`,`Supplier $db_period Acc Parts Profit After Storing`,`Supplier $db_period Acc Parts Cost`,`Supplier $db_period Acc Parts Sold`,`Supplier $db_period Acc Parts Required`,`Supplier $db_period Acc Parts Margin`,
+`Supplier Products Origin Country Code`,`Supplier $db_period Acc Invoiced Amount`,`Supplier $db_period Acc 1Yb Invoiced Amount`,
+`Supplier $db_period Acc Profit`,`Supplier $db_period Acc Profit After Storing`,`Supplier $db_period Acc Cost`,`Supplier $db_period Acc Sold`,`Supplier $db_period Acc Required`,`Supplier $db_period Acc Margin`,
 
 `Supplier Average Delivery Days`,`Supplier Open Purchase Orders`,
-`Supplier 1 Year Ago Sales Amount`,`Supplier 2 Year Ago Sales Amount`,`Supplier 3 Year Ago Sales Amount`,`Supplier 4 Year Ago Sales Amount`,
+`Supplier 1 Year Ago Invoiced Amount`,`Supplier 2 Year Ago Invoiced Amount`,`Supplier 3 Year Ago Invoiced Amount`,`Supplier 4 Year Ago Invoiced Amount`,
 */
 
 ?>

@@ -173,7 +173,7 @@ function get_suppliers_category_navigation($data, $smarty, $user, $db, $account)
 
 
 
-		$up_button=array('icon'=>'arrow-up', 'title'=>_("Supplier's categories").' '.$data['store']->data['Store Code'], 'reference'=>'suppliers/category/'.$parent_category->id);
+		$up_button=array('icon'=>'arrow-up', 'title'=>_("Supplier's categories"), 'reference'=>'suppliers/category/'.$parent_category->id);
 
 		if ($data['tab']=='category.subjects') {
 			$tab='subject_categories';
@@ -357,11 +357,9 @@ function get_suppliers_category_navigation($data, $smarty, $user, $db, $account)
 
 
 
-	if ($account->get('Account Part Family Category Key')==$data['_object']->get('Category Root Key')) {
-		$title='<span class="Category_Code id">'.$data['_object']->get('Code').'</span>';
-	}else {
-		$title=_('Category').' <span class="Category_Label">'.$data['_object']->get('Label').'</span> (<span class="Category_Code id">'.$data['_object']->get('Code').'</span>)';
-	}
+	
+		$title=_('Category').' <span class="Category_Code id">'.$data['_object']->get('Code').'</span>';
+	
 
 
 

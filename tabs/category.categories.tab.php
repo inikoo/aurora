@@ -21,17 +21,17 @@ if ($state['module']=='inventory') {
 
 
 	$table_views=array(
-	'overview'=>array('label'=>_('Overview')),
-	'performance'=>array('label'=>_('Performance')),
+		'overview'=>array('label'=>_('Overview')),
+		'performance'=>array('label'=>_('Performance')),
 
-	'stock'=>array('label'=>_('Stock')),
-	'sales'=>array('label'=>_('Sales')),
-	'dispatched_q'=>array('label'=>_('Dispatched (Qs)')),
-	'dispatched_y'=>array('label'=>_('Dispatched (Yrs)')),
-	'revenue_q'=>array('label'=>_('Revenue (Qs)')),
-	'revenue_y'=>array('label'=>_('Revenue (Yrs)')),
+		'stock'=>array('label'=>_('Stock')),
+		'sales'=>array('label'=>_('Sales')),
+		'dispatched_q'=>array('label'=>_('Dispatched (Qs)')),
+		'dispatched_y'=>array('label'=>_('Dispatched (Yrs)')),
+		'revenue_q'=>array('label'=>_('Revenue (Qs)')),
+		'revenue_y'=>array('label'=>_('Revenue (Yrs)')),
 
-);
+	);
 
 
 
@@ -157,6 +157,66 @@ elseif ($state['module']=='products') {
 			'parent'=>$state['object'],
 			'parent_key'=>$state['key'],
 			'placeholder'=>_("Family's code")
+		)
+
+	);
+
+	$smarty->assign('table_buttons', $table_buttons);
+
+}
+if ($state['module']=='suppliers') {
+	$tab='category.supplier_categories';
+	$ar_file='ar_suppliers_tables.php';
+	$tipo='supplier_categories';
+
+
+	$default=$user->get_tab_defaults($tab);
+
+
+	$table_views=array(
+		'overview'=>array('label'=>_('Overview'), 'title'=>_('Overview')),
+		'parts'=>array('label'=>_("Parts's stock")),
+		'sales'=>array('label'=>_("Parts's sales")),
+		'sales_q'=>array('label'=>_("Parts's sales (Qs)")),
+		'sales_y'=>array('label'=>_("Parts's sales (Yrs)")),
+	);
+
+
+
+	$title=_('New category');
+	$field_label=_('Add category').':';
+	$placeholder=_("Categoy code");
+	$table_filters=array(
+		'label'=>array('label'=>_('Label')),
+		'code'=>array('label'=>_('Code')),
+
+	);
+
+
+
+
+	$parameters=array(
+		'parent'=>$state['object'],
+		'parent_key'=>$state['key'],
+
+	);
+
+
+
+
+	$table_buttons[]=array(
+		'icon'=>'plus',
+		'title'=>_('New category'),
+		'id'=>'new_record',
+		'inline_new_object'=>
+		array(
+			'field_id'=>'Category_Code',
+			'field_label'=>_('Add category').':',
+			'field_edit'=>'string',
+			'object'=>'Category',
+			'parent'=>$state['object'],
+			'parent_key'=>$state['key'],
+			'placeholder'=>_("Category's code")
 		)
 
 	);
