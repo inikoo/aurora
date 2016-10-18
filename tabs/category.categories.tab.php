@@ -164,7 +164,7 @@ elseif ($state['module']=='products') {
 	$smarty->assign('table_buttons', $table_buttons);
 
 }
-if ($state['module']=='suppliers') {
+elseif ($state['module']=='suppliers') {
 	$tab='category.supplier_categories';
 	$ar_file='ar_suppliers_tables.php';
 	$tipo='supplier_categories';
