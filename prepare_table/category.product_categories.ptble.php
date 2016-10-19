@@ -13,7 +13,6 @@ $group_by='';
 
 
 
-
 $where=sprintf("where C.`Category Parent Key`=%d  ", $parameters['parent_key']);
 
 

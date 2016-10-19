@@ -1761,6 +1761,8 @@ class Page extends DB_Table {
 		$number_links=0;
 
 
+print $this->data['Page Store Section'];
+
 		switch ($this->data['Page Store Section']) {
 		case 'Department Catalogue':
 			break;
