@@ -6,13 +6,13 @@
 
 $(document).on('input propertychange', '.checked_qty', function(evt) {
 
-delivery_qty_changed(this)
-  
+    delivery_qty_changed(this)
+
 });
 
 
-function delivery_qty_changed(element){
-  if ($(element).val() == $(element).attr('ovalue')) {
+function delivery_qty_changed(element) {
+    if ($(element).val() == $(element).attr('ovalue')) {
         $(element).closest('span').find('i').removeClass('fa-cloud exclamation-circle error').addClass('fa-plus')
 
     } else {
@@ -27,20 +27,14 @@ function delivery_qty_changed(element){
     }
 }
 
-function copy_qty(element){
+function copy_qty(element) {
 
-var qty=$(element).data('metadata').qty
-console.log(qty)
+    var qty = $(element).data('metadata').qty
+    console.log(qty)
 
-var input=$(element).closest('tr').find('input.checked_qty')
+    var input = $(element).closest('tr').find('input.checked_qty')
 
-input.val(qty)
+    input.val(qty)
 
-delivery_qty_changed(input)
+    delivery_qty_changed(input)
 }
-
-
-
-
-
-

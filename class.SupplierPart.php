@@ -1332,7 +1332,7 @@ class SupplierPart extends DB_Table{
 			$label=_('On demand');
 			break;
 		case 'Supplier Part Fresh':
-			$label=_('Fresh stock only');
+			$label=_('Make to order');
 			break;
 		default:
 			$label=$field;

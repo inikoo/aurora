@@ -23,8 +23,8 @@ if ($state['_object']->get('State Index')>=40) {
 	);
 	$smarty->assign('aux_templates', array('supplier.delivery.checking.tpl'));
 
-	$smarty->assign('js_code', 'js/injections/supplier.delivery.checking.'.(_DEVEL?'':'min.').'js');
-	$smarty->assign('js_code', 'js/injections/supplier.delivery.placing.'.(_DEVEL?'':'min.').'js');
+	$smarty->assign('js_code',array( 'js/injections/supplier.delivery.checking.'.(_DEVEL?'':'min.').'js' ,'js/injections/supplier.delivery.placing.'.(_DEVEL?'':'min.').'js') );
+
 
 
 }else {
