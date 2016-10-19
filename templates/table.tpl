@@ -551,7 +551,14 @@ var with_elements=false;
 {/if}
 
 {if isset($js_code) }
+
+{if $js_code|is_array}
+{foreach from=$js_code item="file"}
+{include file="$file" } 
+{/foreach}
+{else}
 {include file="$js_code" } 
+{/if}
 {/if}
 
 </script> 
