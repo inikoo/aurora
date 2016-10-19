@@ -13,22 +13,29 @@
 trait SupplierCategory {
 
 
-	function get_supplier_category_part_skus() {
+	function get_supplier_category_part_skus($type='all') {
 
 		$part_skus='';
 
 
+		if ($type=='in_use') {
+
+			$sql=sprintf('select `Supplier Part Part SKU`  from `Category Bridge`  CB left join `Supplier Part Dimension` SPD on  (`Subject Key`=`Supplier Part Supplier Key`) left join `Part Dimension` P on (P.`Part SKU`=SPD.`Supplier Part Part SKU`) where `Category Key`=%d and `Subject Key`>0 and `Part Status` in ("In Use","Discontinuing") and `Supplier Part Status`!="Discontinued" ',
+				$this->id);
+
+		}else {
+			$sql=sprintf('select `Supplier Part Part SKU`  from `Category Bridge`  CB left join `Supplier Part Dimension` SPD on  (`Subject Key`=`Supplier Part Supplier Key`) where `Category Key`=%d and `Subject Key`>0 ',
+				$this->id);
+		}
 
 
-		$sql=sprintf('select `Supplier Part Part SKU`  from `Category Bridge`  CB left join `Supplier Part Dimension` SPD on  (`Subject Key`=`Supplier Part Supplier Key`) where `Category Key`=%d and `Subject Key`>0 ',
-			$this->id);
 		$part_skus='';
-		
-		
+
+
 		if ($result=$this->db->query($sql)) {
 			foreach ($result as $row) {
-			    if($row['Supplier Part Part SKU']!=''){
-				$part_skus.=$row['Supplier Part Part SKU'].',';
+				if ($row['Supplier Part Part SKU']!='') {
+					$part_skus.=$row['Supplier Part Part SKU'].',';
 				}
 			}
 		}else {
@@ -66,7 +73,7 @@ trait SupplierCategory {
 			"Supplier Category $db_interval Acc With Stock Days"=>$sales_data['with_stock_days'],
 		);
 
-//print_r($data_to_update);
+		//print_r($data_to_update);
 
 		$this->update( $data_to_update, 'no_history');
 
@@ -293,6 +300,83 @@ trait SupplierCategory {
 
 	}
 
+
+
+
+	function update_supplier_category_parts() {
+
+
+		$parts_skus=$this->get_supplier_category_part_skus();
+
+
+		$supplier_number_parts=0;
+		$supplier_number_active_parts=0;
+		$supplier_number_surplus_parts=0;
+		$supplier_number_optimal_parts=0;
+		$supplier_number_low_parts=0;
+		$supplier_number_critical_parts=0;
+		$supplier_number_out_of_stock_parts=0;
+
+
+		if ($parts_skus!='') {
+
+
+			$supplier_number_parts=count(preg_split('/,/', $parts_skus));
+
+
+			
+
+			$parts_skus=$this->get_supplier_category_part_skus('in_use');
+
+			if ($parts_skus!='') {
+
+				$sql=sprintf('select count(*) as num , sum(if(`Part Stock Status`="Surplus",1,0)) as surplus, sum(if(`Part Stock Status`="Optimal",1,0)) as optimal, sum(if(`Part Stock Status`="Low",1,0)) as low, sum(if(`Part Stock Status`="Critical",1,0)) as critical, sum(if(`Part Stock Status`="Out_Of_Stock",1,0)) as out_of_stock from `Supplier Part Dimension` SP  left join `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`)  where `Supplier Part Part SKU` in (%s) ',
+					addslashes($parts_skus)
+				);
+
+				//print $sql;
+				if ($result=$this->db->query($sql)) {
+					if ($row = $result->fetch()) {
+						//print_r($row);
+						$supplier_number_active_parts=$row['num'];
+						if ($row['num']>0) {
+							$supplier_number_surplus_parts=$row['surplus'];
+							$supplier_number_optimal_parts=$row['optimal'];
+							$supplier_number_low_parts=$row['low'];
+							$supplier_number_critical_parts=$row['critical'];
+							$supplier_number_out_of_stock_parts=$row['out_of_stock'];
+						}
+
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
+				}
+
+			}
+
+
+
+		}
+
+		
+
+		$this->update(array(
+				'Supplier Category Number Parts'=>$supplier_number_parts,
+				'Supplier Category Number Active Parts'=>$supplier_number_active_parts,
+				'Supplier Category Number Surplus Parts'=>$supplier_number_surplus_parts,
+				'Supplier Category Number Optimal Parts'=>$supplier_number_optimal_parts,
+				'Supplier Category Number Low Parts'=>$supplier_number_low_parts,
+				'Supplier Category Number Critical Parts'=>$supplier_number_critical_parts,
+				'Supplier Category Number Out Of Stock Parts'=>$supplier_number_out_of_stock_parts,
+
+			), 'no_history');
+
+
+		
+
+
+	}
 
 
 }

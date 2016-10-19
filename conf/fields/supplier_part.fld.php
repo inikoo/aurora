@@ -239,9 +239,24 @@ $supplier_part_fields[]=array(
 			'options'=>$options_yn,
 			'value'=>($new?'No':$object->get('Supplier Part On Demand')),
 			'formatted_value'=>($new?_('No'):$object->get('On Demand')),
-			'label'=>ucfirst($object->get_field_label('Supplier Part On Demand')),
+			'label'=>ucfirst($object->get_field_label('Supplier Part On Demand')).' <i class="fa fa-fighter-jet" aria-hidden="true"></i>',
 			'required'=>false,
 			'type'=>($supplier->get('Supplier On Demand')=='Yes'?'value':''),
+
+		),
+		array(
+
+			'render'=>($object->get('Supplier Part On Demand')=='Yes'?true:false),
+
+			'id'=>'Supplier_Part_Fresh',
+			'edit'=>($edit?'option':''),
+
+			'options'=>$options_yn,
+			'value'=>($new?'No':$object->get('Supplier Part Fresh')),
+			'formatted_value'=>($new?_('No'):$object->get('Fresh')),
+			'label'=>ucfirst($object->get_field_label('Supplier Part Fresh')).' <i class="fa fa-lemon-o" aria-hidden="true"></i>',
+			'required'=>false,
+			'type'=>($supplier->get('Supplier Fresh')=='Yes'?'value':''),
 
 		),
 

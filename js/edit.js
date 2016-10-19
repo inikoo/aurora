@@ -670,7 +670,7 @@ function process_validation(validation, field, final_value) {
 
         $('#' + field).attr('has_been_valid', 1)
         $('#' + field + '_field').removeClass('invalid potentially_valid').addClass('valid')
-        console.log('#' + field + '_field')
+//        console.log('#' + field + '_field')
     } else if (validation.class == 'invalid') {
 
         $('#' + field + '_field').removeClass('valid').addClass('invalid')
@@ -728,7 +728,7 @@ function select_option(element, field, value) {
     $('#' + field + '_options li').removeClass('selected')
     $(element).addClass('selected')
 
-console.log(element)
+//console.log(element)
 
      if ($('#fields').hasClass('new_object')) {
      
@@ -1017,7 +1017,7 @@ function save_field(object, key, field) {
     }
 
     var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value) + '&metadata=' + JSON.stringify(metadata)
-    console.log(request)
+  //  console.log(request)
 
     $.getJSON(request, function(data) {
 
@@ -1029,7 +1029,7 @@ function save_field(object, key, field) {
         if (data.state == 200) {
 
 
-            console.log(data)
+          //  console.log(data)
 
             $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
             $('#' + field + '_value').val(data.value)
@@ -1042,7 +1042,7 @@ function save_field(object, key, field) {
 
 
 
-            console.log(data.formatted_value)
+//            console.log(data.formatted_value)
             $('.' + field).html(data.formatted_value)
             if (type == 'option') {
 
@@ -1119,10 +1119,10 @@ function pre_save_actions(field, data) {
 
 function post_save_actions(field, data) {
 
-    console.log(field)
-    console.log(data)
+//    console.log(field)
+ //   console.log(data)
 
-    console.log(field)
+ //   console.log(field)
 
     switch (field) {
 
@@ -1329,6 +1329,8 @@ function delete_field(data) {
 }
 
 function update_field(data) {
+
+console.log(data)
 
     var field = data.field
     var type = $('#' + field + '_container').attr('field_type')

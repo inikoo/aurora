@@ -66,11 +66,15 @@ function change_subtab(subtab) {
 }
 
 
-function get_widget_details(widget,metadata){
+function get_widget_details(element,widget,metadata){
 
  if (metadata == undefined) {
         metadata = {};
     }
+    
+    $('.widget').css('opacity',.4)
+        $(element).css('opacity',1)
+
     var request = "/ar_views.php?tipo=widget_details&widget=" + widget + '&metadata=' + JSON.stringify(metadata) 
 
 console.log(request)

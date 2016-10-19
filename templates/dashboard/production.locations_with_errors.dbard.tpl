@@ -1,4 +1,4 @@
-<div style="" class="button widget" onClick="get_widget_details('supplier.part_locations_with_errors.wget',{ parent: 'supplier','parent_key':{$supplier->id}})">
+<div style="" class="button widget" onClick="get_widget_details(this,'supplier.part_locations_with_errors.wget',{ parent: 'supplier','parent_key':{$supplier->id}})">
     <div id="locations_with_errors" style="padding:10px;"></div>
     <div style="color:#aaa">{t}Locations with errors{/t}</div>
 </div>

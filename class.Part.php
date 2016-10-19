@@ -201,6 +201,36 @@ class Part extends Asset{
 
 		return $suppliers;
 	}
+	
+	function get_production_suppliers($scope='keys') {
+
+
+		if (   $scope=='objects') {
+			include_once 'class.Supplier_Production.php';
+		}
+
+		$sql=sprintf('select `Supplier Part Supplier Key` from `Supplier Part Dimension`left join `Supplier Production Dimension` on (`Supplier Part Supplier Key`=`Supplier Production Supplier Key`) where `Supplier Production Supplier Key` is not null and `Supplier Part Part SKU`=%d ', $this->id);
+
+		$suppliers=array();
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+				if ($scope=='objects') {
+					$suppliers[$row['Supplier Part Supplier Key']]=new Supplier_Production($row['Supplier Part Supplier Key']);
+				}else {
+					$suppliers[$row['Supplier Part Supplier Key']]=$row['Supplier Part Supplier Key'];
+				}
+
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+		return $suppliers;
+	}
 
 
 	function load_acc_data() {
@@ -1227,29 +1257,42 @@ class Part extends Asset{
 	function update_on_demand() {
 
 		$on_demand_available='No';
-
 		foreach ($this->get_supplier_parts('objects')as $supplier_part) {
-
-
 			if ($supplier_part->get('Supplier Part On Demand')=='Yes' and $supplier_part->get('Supplier Part Status')=='Available' ) {
 				$on_demand_available='Yes';
 				break;
 			}
-
-
 		}
-
-
 		$this->update_field('Part On Demand', $on_demand_available, 'no_history');
+
+
 
 		foreach ($this->get_products('objects') as $product) {
 			$product->update_availability();
 		}
+	}
 
 
+	function update_fresh() {
 
+		$fresh_available='No';
+		foreach ($this->get_supplier_parts('objects')as $supplier_part) {
+			if ($supplier_part->get('Supplier Part Fresh')=='Yes' and $supplier_part->get('Supplier Part On Demand')=='Yes' and $supplier_part->get('Supplier Part Status')=='Available' ) {
+				$fresh_available='Yes';
+				break;
+			}
+		}
+		$this->update_field('Part Fresh', $fresh_available, 'no_history');
+
+		$this->update_stock_status();
+
+
+		foreach ($this->get_suppliers('objects') as $supplier) {
+			$supplier->update_supplier_parts();
+		}
 
 	}
+
 
 
 	function update_cost() {
@@ -1646,11 +1689,15 @@ class Part extends Asset{
 			include_once 'utils/natural_language.php';
 
 			if ($this->data['Part On Demand']=='Yes') {
+                
 				$available_forecast= '<span >'.sprintf(_('%s in stock'), '<span  title="'.sprintf("%s %s", number($this->data['Part Days Available Forecast'], 1) ,
 						ngettext("day", "days", intval($this->data['Part Days Available Forecast'] ) )).'">'.seconds_to_until($this->data['Part Days Available Forecast']*86400).'</span>').'</span>';
 
-
-				$available_forecast.=' <i class="fa fa-fighter-jet padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
+				if ($this->data['Part Fresh']=='No') {
+					$available_forecast.=' <i class="fa fa-fighter-jet padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
+				}else {
+					$available_forecast=' <i class="fa fa-lemon-o padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
+				}
 			}else {
 				$available_forecast= '<span >'.sprintf(_('%s availability'), '<span  title="'.sprintf("%s %s", number($this->data['Part Days Available Forecast'], 1) ,
 						ngettext("day", "days", intval($this->data['Part Days Available Forecast'] ) )).'">'.seconds_to_until($this->data['Part Days Available Forecast']*86400).'</span>').'</span>';
@@ -1948,15 +1995,47 @@ class Part extends Asset{
 		if ($this->data['Part Current Stock']<0) {
 			$stock_state='Error';
 		}elseif ($this->data['Part Current Stock']==0) {
-			$stock_state='Out_of_Stock';
+			if ($this->data['Part Fresh']=='Yes') {
+				$stock_state='Optimal';
+			}else {
+				$stock_state='Out_of_Stock';
+			}
 		}elseif ($this->data['Part Days Available Forecast']<=$this->data['Part Delivery Days']) {
-			$stock_state='Critical';
+
+			if ($this->data['Part Fresh']=='Yes') {
+				$stock_state='Surplus';
+			}else {
+				$stock_state='Critical';
+			}
+
 		}elseif ($this->data['Part Days Available Forecast']<=$this->data['Part Delivery Days']+7) {
-			$stock_state='Low';
+
+			if ($this->data['Part Fresh']=='Yes') {
+				$stock_state='Surplus';
+			}else {
+				$stock_state='Low';
+			}
+
+
+
 		}elseif ($this->data['Part Days Available Forecast']>=$this->data['Part Excess Availability Days Limit']) {
-			$stock_state='Surplus';
+
+			if ($this->data['Part Fresh']=='Yes') {
+				$stock_state='Surplus';
+			}else {
+				$stock_state='Surplus';
+			}
+
+
 		}else {
-			$stock_state='Optimal';
+
+
+			if ($this->data['Part Fresh']=='Yes') {
+				$stock_state='Surplus';
+			}else {
+				$stock_state='Optimal';
+			}
+
 		}
 
 
@@ -1966,14 +2045,17 @@ class Part extends Asset{
 
 
 
+
+
+
 	}
 
 
 	function update_stock_in_paid_orders() {
 
 		$stock_in_paid_orders=0;
-		
-		
+
+
 		$sql=sprintf('select (`Order Quantity`+`Order Bonus Quantity`)*`Product Part Ratio` as required from `Order Transaction Fact` OTF left join `Product Part Bridge` PPB on (OTF.`Product ID`=PPB.`Product Part Product ID`)    where OTF.`Current Dispatching State` in ("Submitted by Customer","In Process") and  `Current Payment State` in ("Paid","No Applicable") and `Product Part Part SKU`=%d    ',
 
 			$this->id
@@ -2354,7 +2436,7 @@ class Part extends Asset{
 	}
 
 
-	
+
 
 
 
@@ -2411,6 +2493,7 @@ class Part extends Asset{
 
 
 	}
+
 
 	function update_previous_years_data() {
 
@@ -2485,6 +2568,7 @@ class Part extends Asset{
 
 	}
 
+
 	function update_previous_quarters_data() {
 
 
@@ -2525,6 +2609,7 @@ class Part extends Asset{
 
 	}
 
+
 	function get_customers_total_data() {
 
 		$repeat_customers=0;
@@ -2549,6 +2634,7 @@ class Part extends Asset{
 		return $repeat_customers;
 
 	}
+
 
 	function get_sales_data($from_date, $to_date) {
 

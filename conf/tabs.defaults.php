@@ -497,7 +497,7 @@ $tab_defaults=array(
 		//  'export_fields'=>$export_fields['timeserie_records']
 
 	),
-		'category.product_families'=>array(
+	'category.product_families'=>array(
 		'view'=>'overview',
 		'sort_key'=>'code',
 		'sort_order'=>1,
@@ -507,7 +507,7 @@ $tab_defaults=array(
 		'elements'=>$elements_options['product_categories'],
 		'f_field'=>'code'
 	),
-		'category.product_categories'=>array(
+	'category.product_categories'=>array(
 		'view'=>'overview',
 		'sort_key'=>'code',
 		'sort_order'=>0,
@@ -849,8 +849,8 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'label',
 		'f_period'=>'ytd',
-//		'elements_type'=>each($elements_options['suppliers'])['key'],
-//		'elements'=>$elements_options['suppliers']
+		//  'elements_type'=>each($elements_options['suppliers'])['key'],
+		//  'elements'=>$elements_options['suppliers']
 
 	),
 	'client_order.items'=>array(
@@ -1204,7 +1204,7 @@ $tab_defaults=array(
 		'elements_type'=>each(  $elements_options['locations']  ) ['key'],
 		'elements'=>$elements_options['locations'],
 	),
-		
+
 	'warehouse.replenishments'=>array(
 		'view'=>'overview',
 		'sort_key'=>'location',
@@ -1222,9 +1222,9 @@ $tab_defaults=array(
 		'f_field'=>'reference',
 
 	),
-	
 
-	
+
+
 	'warehouse.history'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
@@ -1427,15 +1427,39 @@ $tab_defaults=array(
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'note'
 	),
-'production.suppliers'=>array(
+	'production.suppliers'=>array(
 		'view'=>'overview',
 		'sort_key'=>'code',
 		'sort_order'=>1,
 		'rpp'=>100,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code',
-				'f_period'=>'ytd',
+		'f_period'=>'ytd',
 
+
+	),
+	'production.supplier_parts'=>array(
+		'view'=>'overview',
+		'sort_key'=>'reference',
+		'sort_order'=>1,
+		'rpp'=>100,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'reference',
+		'elements_type'=>each($elements_options['supplier_parts'])['key'],
+		'elements'=>$elements_options['supplier_parts'],
+		'export_fields'=>$export_fields['supplier_parts']
+
+	),
+	'production.materials'=>array(
+		'view'=>'overview',
+		'sort_key'=>'reference',
+		'sort_order'=>1,
+		'rpp'=>100,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'reference',
+		'elements_type'=>each($elements_options['supplier_parts'])['key'],
+		'elements'=>$elements_options['supplier_parts'],
+		'export_fields'=>$export_fields['supplier_parts']
 
 	),
 	'operatives'=>array(
@@ -2176,7 +2200,7 @@ $tab_defaults=array(
 		'elements_type'=>each(  $elements_options['parts']  ) ['key'],
 		'elements'=>$elements_options['parts'],
 	),
-		'supplier.part_locations_with_errors.wget'=>array(
+	'supplier.part_locations_with_errors.wget'=>array(
 		'view'=>'overview',
 		'sort_key'=>'reference',
 		'sort_order'=>1,
@@ -2185,38 +2209,38 @@ $tab_defaults=array(
 		'f_field'=>'reference',
 
 	),
-		'supplier.surplus_parts.wget'=>array(
+	'supplier.surplus_parts.wget'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
 		'rpp'=>100,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'reference',
-	//	'f_period'=>'ytd',
-	//	'elements_type'=>each(  $elements_options['parts']  ) ['key'],
-//		'elements'=>$elements_options['parts'],
+		// 'f_period'=>'ytd',
+		// 'elements_type'=>each(  $elements_options['parts']  ) ['key'],
+		//  'elements'=>$elements_options['parts'],
 	),
-		'supplier.todo_parts.wget'=>array(
+	'supplier.todo_parts.wget'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',
 		'sort_order'=>1,
 		'rpp'=>100,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'reference',
-	//	'f_period'=>'ytd',
-	//	'elements_type'=>each(  $elements_options['parts']  ) ['key'],
-//		'elements'=>$elements_options['parts'],
+		// 'f_period'=>'ytd',
+		// 'elements_type'=>each(  $elements_options['parts']  ) ['key'],
+		//  'elements'=>$elements_options['parts'],
 	),
-		'supplier.todo_paid_parts.wget'=>array(
+	'supplier.todo_paid_parts.wget'=>array(
 		'view'=>'overview',
 		'sort_key'=>'date',
 		'sort_order'=>0,
 		'rpp'=>1000,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'reference',
-	//	'f_period'=>'ytd',
-	//	'elements_type'=>each(  $elements_options['parts']  ) ['key'],
-//		'elements'=>$elements_options['parts'],
+		// 'f_period'=>'ytd',
+		// 'elements_type'=>each(  $elements_options['parts']  ) ['key'],
+		//  'elements'=>$elements_options['parts'],
 	),
 
 );

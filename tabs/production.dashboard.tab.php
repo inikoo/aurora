@@ -16,9 +16,9 @@ $supplier=$state['_object'];
 
 //print_r($supplier);
 
-$supplier->update_locations_with_errors();
+//$supplier->update_locations_with_errors();
 $supplier->update_paid_ordered_parts();
-$supplier->update_supplier_parts();
+//$supplier->update_supplier_parts();
 
 $smarty->assign('supplier',$supplier);
 

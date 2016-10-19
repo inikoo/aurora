@@ -156,7 +156,7 @@ case 'inventory.barcodes':
 case 'supplier.supplier_parts':
 case 'agent.supplier_parts':
 case 'supplier.order.supplier_parts':
-
+case 'production.supplier_parts':
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
 		));
@@ -472,6 +472,8 @@ function get_supplier_parts_elements($db, $data, $user) {
 	$table='`Supplier Part Dimension`  SP left join `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`) ';
 	switch ($data['parent']) {
 	case 'supplier':
+		case 'supplier_production':
+
 		$where=sprintf(' where `Supplier Part Supplier Key`=%d  ', $data['parent_key']);
 		break;
 	case 'agent':

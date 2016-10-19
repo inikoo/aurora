@@ -853,8 +853,8 @@ $modules=array(
 
 				)
 			),
-			
-					'order'=>array('type'=>'object',
+
+			'order'=>array('type'=>'object',
 				'tabs'=>array(
 
 
@@ -982,7 +982,7 @@ $modules=array(
 		)
 
 	),
-	
+
 	'production_server'=>array(
 		'sections'=>array(
 
@@ -995,7 +995,7 @@ $modules=array(
 
 		)
 	),
-	
+
 	'production'=>array(
 		'section'=>'production',
 		'parent'=>'account',
@@ -1008,16 +1008,36 @@ $modules=array(
 			),
 
 
-'products'=>array(
-				'type'=>'navigation', 'label'=>_('Products'), 'icon'=>'stop', 'reference'=>'production/%d/products',
+			'supplier_parts'=>array(
+				'type'=>'navigation', 'label'=>_('Parts'), 'icon'=>'stop', 'reference'=>'production/%d/parts',
 				'tabs'=>array(
-					'products'=>array('label'=>_('products'))
+					'production.supplier_parts'=>array('label'=>_('Parts'))
 				)
 
 
 
 			),
-				'batches'=>array(
+			'supplier_part'=>array('type'=>'object',
+
+
+
+
+				'tabs'=>array(
+
+
+					'supplier_part.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+
+
+
+
+					'supplier_part.images'=>array('label'=>_('Images'), 'icon'=>'camera-retro', 'class'=>'right icon_only'),
+					'supplier_part.history'=>array('label'=>_('History/Notes'), 'icon'=>'road', 'class'=>'right icon_only'),
+
+
+
+				)
+			),
+			'batches'=>array(
 				'type'=>'navigation', 'label'=>_('Batches'), 'icon'=>'clone', 'reference'=>'production/%d/batches',
 				'tabs'=>array(
 					'batches'=>array('label'=>_('Batches'))
@@ -1026,11 +1046,11 @@ $modules=array(
 
 
 			),
-			
+
 			'materials'=>array(
 				'type'=>'navigation', 'label'=>_('Materials'), 'icon'=>'puzzle-piece', 'reference'=>'production/%d/materials',
 				'tabs'=>array(
-					'products'=>array('label'=>_('materials'))
+					'production.materials'=>array('label'=>_('materials'))
 				)
 
 
@@ -1068,7 +1088,7 @@ $modules=array(
 
 			),
 
-		
+
 
 
 			'operatives'=>array(
@@ -1080,7 +1100,7 @@ $modules=array(
 
 
 			),
-	'settings'=>array(
+			'settings'=>array(
 				'type'=>'navigation', 'label'=>'', 'icon'=>'sliders', 'reference'=>'production/%d/settings', 'class'=>'icon_only',
 				'tabs'=>array(
 					'production.settings'=>array('label'=>_('General settings'), 'icon'=>'sliders', 'class'=>''),
@@ -1759,7 +1779,7 @@ $modules=array(
 
 			'warehouse'=>array(
 
-				'type'=>'navigation', 'label'=>'', 'title'=>_('Warehouse'), 'icon'=>'map', 'reference'=>'warehouse/%d','class'=>'icon_only',
+				'type'=>'navigation', 'label'=>'', 'title'=>_('Warehouse'), 'icon'=>'map', 'reference'=>'warehouse/%d', 'class'=>'icon_only',
 				'tabs'=>array(
 					'warehouse.details'=>array('label'=>_('Data'), 'title'=>_('Warehouse detais'), 'icon'=>'database'),
 					'warehouse.replenishments'=>array('label'=>_("Replenishments"), 'title'=>_("Replenishments")),
@@ -1769,7 +1789,7 @@ $modules=array(
 				)
 
 			),
-/* to add
+			/* to add
 			'categories'=>array('type'=>'navigation', 'label'=>_("Locations's categories"), 'icon'=>'sitemap', 'reference'=>'warehouse/%d/categories',
 
 				'tabs'=>array(
@@ -1808,7 +1828,7 @@ $modules=array(
 
 			),
 
-'location.new'=>array('type'=>'new_object',
+			'location.new'=>array('type'=>'new_object',
 				'tabs'=>array(
 					'location.new'=>array('label'=>_('New location')),
 
@@ -2645,7 +2665,7 @@ $modules=array(
 
 			),
 
-/*
+			/*
 			'settings'=>array(
 				'type'=>'navigation', 'label'=>'', 'icon'=>'sliders', 'reference'=>'suppliers/settings', 'class'=>'icon_only',
 				'tabs'=>array(
