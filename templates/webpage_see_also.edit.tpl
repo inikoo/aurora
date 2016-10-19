@@ -12,7 +12,7 @@
 		</tr>
 		<tr id="see_also_last_updated" class="{if $data.type!='Auto'}hide{/if}"  >
 			<td>{t}Last updated{/t}</td>
-			<td><span id="see_also_last_updated" class="padding_right_10">{$data.last_updated}</span> <i onclick="refresh_see_also(this,{$data.webpage_key})" class="fa fa-refresh button" aria-hidden="true"></i></td>
+			<td><span id="see_also_last_updated_date" class="padding_right_10">{$data.last_updated}</span> <i onclick="refresh_see_also(this,{$data.webpage_key})" class="fa fa-refresh button" aria-hidden="true"></i></td>
 		</tr>
 	</tbody>
 	<tbody id="auto_links" class=" {if $data.type!='Auto'}hide{/if}">
@@ -354,7 +354,7 @@ function refresh_see_also(element, webpage_key) {
     $.getJSON(request, function(data) {
         $(element).removeClass('fa-spin')
         $('#auto_links').html(data.links)
-        $('#see_also_last_updated').html(data.see_also_last_updated)
+        $('#see_also_last_updated_date').html(data.see_also_last_updated)
 
     })
 
