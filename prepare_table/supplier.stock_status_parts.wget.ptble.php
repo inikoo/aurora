@@ -14,7 +14,7 @@ include_once 'utils/date_functions.php';
 
 $table=" `Part Dimension` P left join `Supplier Part Dimension` SP on (SP.`Supplier Part Part SKU`=P.`Part SKU`) left join `Part Data` PD on (PD.`Part SKU`=P.`Part SKU`) ";
 
-$where=sprintf("where `Supplier Part Supplier Key`=%d and `Part Status`='In Use' and `Supplier Part Status`!='Discontinued' ", $parameters['parent_key']);
+$where=sprintf("where `Supplier Part Supplier Key`=%d and `Part Status` in ('In Use','Discontinuing') and `Supplier Part Status`!='Discontinued' ", $parameters['parent_key']);
 
 
 //'Surplus', 'Optimal', 'Low', 'Critical', 'Out_Of_Stock', 'Error'

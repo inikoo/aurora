@@ -1,5 +1,5 @@
 
-<div  class="button widget" onClick="get_widget_details('supplier.surplus_parts.wget',{ parent: 'supplier','parent_key':{$supplier->id}})">
+<div  class="button widget" onClick="get_widget_details(this,'supplier.surplus_parts.wget',{ parent: 'supplier','parent_key':{$supplier->id}})">
     <div id="surplus" style="padding:10px;"></div>
     <div style="color:#aaa">{t}Excess stock{/t}</div>
 </div>

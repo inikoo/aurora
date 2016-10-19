@@ -357,12 +357,6 @@ class SubjectSupplier extends Subject {
 		case('Formatted ID'):
 		case("ID"):
 			return array(true, $this->get_formatted_id());
-		case('Total Acc Parts Sold Amount'):
-			return array(true, money($this->data[$this->table_name.' Total Acc Parts Sold Amount']));
-			break;
-		case('Total Acc Parts Profit'):
-			return array(true, money($this->data[$this->table_name.' Total Acc Parts Profit After Storing']));
-			break;
 		case('Stock Value'):
 
 			if (!is_numeric($this->data[$this->table_name.' Stock Value']))

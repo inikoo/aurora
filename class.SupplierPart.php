@@ -373,7 +373,7 @@ class SupplierPart extends DB_Table{
 
 			return money($this->data['Supplier Part Unit Cost']*$this->part->data['Part Units Per Package'], $this->data['Supplier Part Currency Code']);
 			break;
-			
+
 		case 'Carton Delivered Cost':
 
 			include_once 'utils/currency_functions.php';
@@ -490,6 +490,21 @@ class SupplierPart extends DB_Table{
 
 			return $status;
 			break;
+		case 'On Demand':
+		case 'Fresh':
+
+			switch ($this->data['Supplier Part '.$key]) {
+			case 'Yes':
+				return _('Yes');
+				break;
+			case 'No':
+				return _('No');
+				break;
+			default:
+				return $this->data['Supplier Part '.$key];
+				break;
+			}
+			break;
 		default:
 			if (preg_match('/^Part /', $key)) {
 
@@ -516,37 +531,61 @@ class SupplierPart extends DB_Table{
 		case 'Supplier Part On Demand':
 
 			$this->get_supplier_data();
+			if (! in_array($value, array('No', 'Yes'))) {
+				$this->error=true;
+				$this->msg=sprintf(_('Invalid value, valid values: %s'), '"Yes", "No"');
+				return;
+			}
+			if ($this->data['Supplier On Demand']=='No' and $value=='Yes') {
+				$this->error=true;
+				$this->msg=_("Supplier part can't set up as on demand because supplier isn't confugured to allow that");
+				return;
+			}
+			$this->update_field($field, $value, $options);
+			$updated=$this->updated;
+			if ($value=='No') {
+				$this->update_field('Supplier Part Fresh', $value, $options);
+				if($this->updated){
+				$updated=$this->updated;
+				}
+			}
+
+			$this->other_fields_updated=array(
+
+				'Supplier_Part_Fresh'=>array(
+					'field'=>'Supplier_Part_Fresh',
+					'render'=>($value=='Yes'?true:false),
+					'value'=>$this->get('Supplier Part Fresh'),
+					'formatted_value'=>$this->get('Fresh'),
+				),
+
+			);
 
 
+			
+			if ($updated) {
+				$this->part->update_on_demand();
+			}
+			break;
 
+		case 'Supplier Part Fresh':
 
 			if (! in_array($value, array('No', 'Yes'))) {
 				$this->error=true;
 				$this->msg=sprintf(_('Invalid value, valid values: %s'), '"Yes", "No"');
 				return;
 			}
-
-			if ($this->data['Supplier On Demand']=='No' and $value=='Yes') {
-
+			if ($this->data['Supplier Part On Demand']=='No' and $value=='Yes') {
 				$this->error=true;
-				$this->msg=_("Supplier part can't set up as on demand because supplier isn't confugured to allow that");
+				$this->msg=_("Supplier part must be on demand");
 				return;
-
 			}
-
-
 			$this->update_field($field, $value, $options);
 			$updated=$this->updated;
 			if ($this->updated ) {
-				$this->part->update_on_demand();
-
+				$this->part->update_fresh();
 			}
-
-
-
 			break;
-
-
 		case 'Supplier Part Minimum Carton Order':
 
 			if ($value==''   ) {
@@ -1291,6 +1330,9 @@ class SupplierPart extends DB_Table{
 			break;
 		case 'Supplier Part On Demand':
 			$label=_('On demand');
+			break;
+		case 'Supplier Part Fresh':
+			$label=_('Fresh stock only');
 			break;
 		default:
 			$label=$field;

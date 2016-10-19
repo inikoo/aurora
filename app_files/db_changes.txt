@@ -456,6 +456,7 @@ TODO IN COSTA!!!!=====
 mysql -u root -p costadw  < Part_Data.sql
 mysql -u root -p costadw  < product_data_dim.sql
 mysql -u root -p costadw < Customer_Product_Bridge.sql 
+mysql -u root -p costadw < Supplier_Data.sql 
 
 ALTER TABLE `Product Dimension` CHANGE `Product Type` `Product Type` ENUM('Product','Service') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Product';
 update `Product Dimension` set `Product Type`='Product';

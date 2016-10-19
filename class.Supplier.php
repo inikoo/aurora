@@ -187,6 +187,41 @@ class Supplier extends SubjectSupplier {
 	}
 
 
+	function get_categories($scope='keys') {
+
+		if (   $scope=='objects') {
+			include_once 'class.Category.php';
+		}
+
+
+		$categories=array();
+
+
+		$sql=sprintf("select B.`Category Key` from `Category Dimension` C left join `Category Bridge` B on (B.`Category Key`=C.`Category Key`) where `Subject`='Supplier' and `Subject Key`=%d and `Category Branch Type`!='Root'",
+			$this->id);
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+				if ($scope=='objects') {
+					$categories[$row['Category Key']]=new Category($row['Category Key']);
+				}else {
+					$categories[$row['Category Key']]=$row['Category Key'];
+				}
+
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+		return $categories;
+
+
+	}
+
+
 	function get_category_data() {
 		$sql=sprintf("select B.`Category Key`,`Category Root Key`,`Other Note`,`Category Label`,`Category Code`,`Is Category Field Other` from `Category Bridge` B left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`) where  `Category Branch Type`='Head'  and B.`Subject Key`=%d and B.`Subject`='Supplier'",
 			$this->id);
@@ -248,7 +283,7 @@ class Supplier extends SubjectSupplier {
 		switch ($key) {
 		default;
 
-	
+
 
 			if (array_key_exists($key, $this->data))
 				return $this->data[$key];
@@ -353,6 +388,10 @@ class Supplier extends SubjectSupplier {
 
 	function update_supplier_parts() {
 
+
+		$parts_skus=$this->get_part_skus();
+
+
 		$supplier_number_parts=0;
 		$supplier_number_active_parts=0;
 		$supplier_number_surplus_parts=0;
@@ -361,55 +400,77 @@ class Supplier extends SubjectSupplier {
 		$supplier_number_critical_parts=0;
 		$supplier_number_out_of_stock_parts=0;
 
-		$sql=sprintf('select count(*) as num
+
+		if ($parts_skus!='') {
+
+
+			$supplier_number_parts=count(preg_split('/,/', $parts_skus));
+
+
+			/*
+			$sql=sprintf('select count(*) as num
 		from `Supplier Part Dimension` SP  where `Supplier Part Supplier Key`=%d  ',
-			$this->id
-		);
+				$this->id
+			);
 
 
-		if ($result=$this->db->query($sql)) {
-			if ($row = $result->fetch()) {
-				//print_r($row);
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					//print_r($row);
 
-				$supplier_number_parts=$row['num'];
+					$supplier_number_parts=$row['num'];
 
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
 			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
-		}
+*/
 
+			$parts_skus=$this->get_part_skus('in_use');
 
+			if ($parts_skus!='') {
 
-		$sql=sprintf('select count(*) as num ,
+				$sql=sprintf('select count(*) as num ,
 		sum(if(`Part Stock Status`="Surplus",1,0)) as surplus,
 		sum(if(`Part Stock Status`="Optimal",1,0)) as optimal,
 		sum(if(`Part Stock Status`="Low",1,0)) as low,
 		sum(if(`Part Stock Status`="Critical",1,0)) as critical,
 		sum(if(`Part Stock Status`="Out_Of_Stock",1,0)) as out_of_stock
 
-		from `Supplier Part Dimension` SP  left join `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`)  where `Supplier Part Supplier Key`=%d  and `Part Status`="In Use" and `Supplier Part Status`!="Discontinued" ',
-			$this->id
-		);
+		from `Supplier Part Dimension` SP  left join `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`)  where `Supplier Part Supplier Key`=%d and `Supplier Part Part SKU` in (%s) ',
+					$this->id,
+					addslashes($parts_skus)
+				);
 
-		//print $sql;
-		if ($result=$this->db->query($sql)) {
-			if ($row = $result->fetch()) {
-				//print_r($row);
-				$supplier_number_active_parts=$row['num'];
-				if ($row['num']>0) {
-					$supplier_number_surplus_parts=$row['surplus'];
-					$supplier_number_optimal_parts=$row['optimal'];
-					$supplier_number_low_parts=$row['low'];
-					$supplier_number_critical_parts=$row['critical'];
-					$supplier_number_out_of_stock_parts=$row['out_of_stock'];
+
+
+
+			//	print $sql;
+				if ($result=$this->db->query($sql)) {
+					if ($row = $result->fetch()) {
+						//print_r($row);
+						$supplier_number_active_parts=$row['num'];
+						if ($row['num']>0) {
+							$supplier_number_surplus_parts=$row['surplus'];
+							$supplier_number_optimal_parts=$row['optimal'];
+							$supplier_number_low_parts=$row['low'];
+							$supplier_number_critical_parts=$row['critical'];
+							$supplier_number_out_of_stock_parts=$row['out_of_stock'];
+						}
+
+					}
+				}else {
+					print_r($error_info=$this->db->errorInfo());
+					exit;
 				}
 
 			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
+
+
+
 		}
+
 
 
 		$this->update(array(
@@ -423,37 +484,26 @@ class Supplier extends SubjectSupplier {
 
 			), 'no_history');
 
+
+		foreach ($this->get_categories('objects') as $category) {
+			$category->update_supplier_category_parts();
+		}
+
+
 	}
 
 
+	function get_part_skus($type='all') {
 
-
-
-
-	function xupdate_previous_years_data() {
-
-		$data_1y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-1 year')), date('Y-01-01 00:00:00'));
-		$data_2y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-2 year')), date('Y-01-01 00:00:00', strtotime('-1 year')));
-		$data_3y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-3 year')), date('Y-01-01 00:00:00', strtotime('-2 year')));
-		$data_4y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-4 year')), date('Y-01-01 00:00:00', strtotime('-3 year')));
-
-		$sql=sprintf("update `Supplier Data` set `Supplier 1 Year Ago Invoiced Amount`=%.2f, `Supplier 2 Year Ago Invoiced Amount`=%.2f,`Supplier 3 Year Ago Invoiced Amount`=%.2f, `Supplier 4 Year Ago Invoiced Amount`=%.2f where `Supplier Key`=%d ",
-			$data_1y_ago['sold_amount'],
-			$data_2y_ago['sold_amount'],
-			$data_3y_ago['sold_amount'],
-			$data_4y_ago['sold_amount'],
-			$this->id
-		);
-
-		$this->db->exec($sql);
-		$this->load_acc_data();
-	}
-
-
-	function get_part_skus() {
 
 		$part_skus='';
-		$sql=sprintf('select `Supplier Part Part SKU` from `Supplier Part Dimension` where `Supplier Part Supplier Key`=%d ', $this->id);
+
+		if ($type=='in_use') {
+			$sql=sprintf('select `Supplier Part Part SKU` from `Supplier Part Dimension` SP left join `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`) where `Supplier Part Supplier Key`=%d and `Part Status` in ("In Use","Discontinuing") and `Supplier Part Status`!="Discontinued" group by `Supplier Part Part SKU`', $this->id);
+		}else {
+			$sql=sprintf('select `Supplier Part Part SKU` from `Supplier Part Dimension` where `Supplier Part Supplier Key`=%d  group by `Supplier Part Part SKU`', $this->id);
+		}
+
 		$part_skus='';
 		if ($result=$this->db->query($sql)) {
 			foreach ($result as $row) {

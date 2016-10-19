@@ -1,4 +1,4 @@
-<div  class="button widget" onClick="get_widget_details('supplier.todo_parts.wget',{ parent: 'supplier','parent_key':{$supplier->id}})">
+<div  class="button widget" onClick="get_widget_details(this,'supplier.todo_parts.wget',{ parent: 'supplier','parent_key':{$supplier->id}})">
     <div id="todo" style="padding:10px;"></div>
     <div style="color:#aaa">{t}To produce{/t}</div>
 </div>

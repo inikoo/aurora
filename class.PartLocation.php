@@ -485,32 +485,32 @@ class PartLocation extends DB_Table {
 			//$details='<b>'._('Audit').'</b>, ';
 			$note='';
 		}
-		
+
 		if ($this->location->id) {
 			$location_link='<a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>';
 			$location_link=sprintf('<span onClick="change_view(\'locations/%d/%d\')">%s</span>', $this->location->get('Warehouse Key'), $this->location->id, $this->location->get('Code'));
 		}else {
 			$location_link='<span style="font-style:italic">'._('deleted').'</span>';
 		}
-		
-		
-		
-			if ($qty_change!=0 or $value_change!=0) {
+
+
+
+		if ($qty_change!=0 or $value_change!=0) {
 			$audit_note='';
-			}else{
+		}else {
 			$audit_note=$note;
-			}
-		
-		
+		}
+
+
 		if ($parent=='associate') {
 			//$details.='<a href="part.php?sku='.$this->part_sku.'">'.$this->part->id.'</a>'.' &#8692; '.$location_link;
 			$details=sprintf('<span onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> <i class="fa fa-link" aria-hidden="true"></i> %s%s',
-			 $this->part_sku, $this->part->get('Reference'), $location_link,$audit_note);
+				$this->part_sku, $this->part->get('Reference'), $location_link, $audit_note);
 
 		}else if ($parent=='disassociate') {
 			//$details.='<a href="part.php?sku='.$this->part_sku.'">'.$this->part->id.'</a>'.' &#8603; '.$location_link;
-			$details=sprintf('<span onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> <i class="fa fa-unlink" aria-hidden="true"></i> %s%s', 
-			$this->part_sku, $this->part->get('Reference'), $location_link,$audit_note);
+			$details=sprintf('<span onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> <i class="fa fa-unlink" aria-hidden="true"></i> %s%s',
+				$this->part_sku, $this->part->get('Reference'), $location_link, $audit_note);
 
 		}else {
 			//$details.='<a href="part.php?sku='.$this->part_sku.'">'.$this->part->id.'</a>'.' '._('stock in').' '.$location_link.' '._('set to').': <b>'.number($qty).'</b>';
@@ -518,7 +518,7 @@ class PartLocation extends DB_Table {
 
 			$details=sprintf('<i class="fa fa-dot-circle-o" aria-hidden="true"></i>: %s SKO <span onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> @ %s%s',
 				number($qty),
-				$this->part_sku, $this->part->get('Reference'), $location_link,$audit_note);
+				$this->part_sku, $this->part->get('Reference'), $location_link, $audit_note);
 
 
 
@@ -694,9 +694,9 @@ class PartLocation extends DB_Table {
 
 			$this->new=true;
 			$part=new Part($this->part_sku);
-			
+
 			$location=new Location($this->location_key);
-			
+
 
 		} else {
 			exit($sql);
@@ -1476,6 +1476,18 @@ class PartLocation extends DB_Table {
 		mysql_query($sql);
 
 		$this->part->update_stock();
+
+//print_r($this->part->get_production_suppliers('objects'));
+
+		foreach ($this->part->get_production_suppliers('objects') as $production) {
+			$production->update_locations_with_errors();
+		}
+
+
+
+
+
+
 	}
 
 
@@ -1631,10 +1643,10 @@ print "++++++++++\n";
 	function update_stock_history_date($date) {
 
 		if ($this->exist_on_date($date)) {
-			
+
 			$this->update_stock_history_interval($date, $date);
 		}else {
-	
+
 			$sql=sprintf("delete from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d and `Date`=%s",
 				$this->part_sku,
 				$this->location_key,
@@ -1754,7 +1766,7 @@ print "++++++++++\n";
 
 				//print $row['Date']." $stock v: $value $value_day_cost_value  $commercial_value \n";
 				//print $row['Date']." $stock v: $value $value_open  $value_low $value_clos \n";
-				
+
 				$sql=sprintf("insert into `Inventory Spanshot Fact` (
 			`Sold Amount`,`Date`,`Part SKU`,`Warehouse Key`,`Location Key`,`Quantity On Hand`,
 			`Value At Cost`,`Value At Day Cost`,`Value Commercial`,`Storing Cost`,

@@ -195,6 +195,10 @@ function get_rtext($record_label, $total_records) {
 		return sprintf(ngettext('%s part location', '%s part locations', $total_records), number($total_records));
 	}elseif ($record_label=='part location with errors') {
 		return sprintf(ngettext('%s part location with errors', '%s part locations with errors', $total_records), number($total_records));
+	}elseif ($record_label=='production part') {
+		return sprintf(ngettext('%s production part', '%s production parts', $total_records), number($total_records));
+	}elseif ($record_label=='material') {
+		return sprintf(ngettext('%s material', '%s materials', $total_records), number($total_records));
 	}else {
 		return sprintf(ngettext('%s record', '%s records', $total_records), number($total_records));
 	}
@@ -310,6 +314,10 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
 		return sprintf(ngettext('%s part location of %s', '%s part locations of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
 	}elseif ($record_label=='part location with errors') {
 		return sprintf(ngettext('%s part location with errors of %s', '%s part locations with errors of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
+	}elseif ($record_label=='production part') {
+		return sprintf(ngettext('%s production part of %s', '%s production parts of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
+	}elseif ($record_label=='material') {
+		return sprintf(ngettext('%s material of %s', '%s materials of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
 	}else {
 		return sprintf(ngettext('%s record of %s', '%s records of %s', $total_with_filter), number($total_with_filter) , number($total_no_filter)  );
 	}

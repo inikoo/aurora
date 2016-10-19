@@ -1160,7 +1160,18 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 		case ('settings'):
 			return get_settings_navigation($data, $smarty, $user, $db, $account);
 			break;
-
+		case ('supplier_parts'):
+			return get_supplier_parts_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('supplier_part'):
+			return get_supplier_part_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('materials'):
+			return get_materials_navigation($data, $smarty, $user, $db, $account);
+			break;
+		case ('material'):
+			return get_material_navigation($data, $smarty, $user, $db, $account);
+			break;	
 
 		}
 		break;
@@ -3470,6 +3481,10 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 		}elseif ($state['section']=='dashboard') {
 
 			$branch[]=array('label'=>_('Dashboard'), 'icon'=>'tachometer', 'reference'=>'');
+
+		}elseif ($state['section']=='materials') {
+
+			$branch[]=array('label'=>_('Materials'), 'icon'=>'puzzle-piece', 'reference'=>'');
 
 		}
 

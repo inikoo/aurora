@@ -2,7 +2,7 @@
 /*
  About:
  Autor: Raul Perusquia <raul@inikoo.com>
- Refurbished: 3 April 2016 at 18:28:53 GMT+8, Kuala Lumpur, Malaysia
+ Created: 17 October 2016 at 13:52:48 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2016, Inikoo
 
  Version 3
@@ -22,35 +22,7 @@ $filter_msg='';
 $wheref='';
 
 
-if ($parameters['parent']=='supplier' or $parameters['parent']=='supplier_production') {
-	$where=sprintf(" where  `Supplier Part Supplier Key`=%d", $parameters['parent_key']);
-
-}elseif ($parameters['parent']=='account') {
-
-}elseif ($parameters['parent']=='part') {
-	$where=sprintf(" where  SP.`Supplier Part Part SKU`=%d", $parameters['parent_key']);
-}elseif ($parameters['parent']=='agent') {
-	$where=sprintf(" where  `Agent Supplier Agent Key`=%d", $parameters['parent_key']);
-	$table.=' left join `Agent Supplier Bridge` on (SP.`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`)';
-
-}elseif ($parameters['parent']=='purchase_order') {
-    if($purchase_order->get('Purchase Order Parent')=='Supplier'){
-    
-    	$where=sprintf(" where  `Supplier Part Supplier Key`=%d", $purchase_order->get('Purchase Order Parent Key'));
-
-    
-    }else{
-        	$where=sprintf("  where  `Agent Supplier Agent Key`=%d", $purchase_order->get('Purchase Order Parent Key'));
-	$table.=' left join `Agent Supplier Bridge` on (SP.`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`)';
-
-    
-    }
-  
-    $fields.='';
-
-}else {
-	exit("parent not found x : ".$parameters['parent']);
-}
+$where=sprintf(" where  `Supplier Part Supplier Key`=%d", $parameters['parent_key']);
 
 if (isset($parameters['elements_type'])) {
 

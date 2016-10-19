@@ -1789,7 +1789,7 @@ function parts_by_stock_status($stock_status, $_data, $db, $user) {
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
-
+//print $sql_totals;
 
 	$adata=array();
 
