@@ -97,7 +97,6 @@ elseif ($state['module']=='products') {
 	$ar_file='ar_products_tables.php';
 	$tipo='product_categories';
 
-
 	$default=$user->get_tab_defaults($tab);
 
 
