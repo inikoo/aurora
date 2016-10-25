@@ -209,6 +209,7 @@ $modules=array(
 					'customer.details'=>array('label'=>_('Data'), 'icon'=>'database'),
 					'customer.history'=>array('label'=>_('History, notes'), 'icon'=>'sticky-note-o'),
 					'customer.orders'=>array('label'=>_('Orders')),
+					'customer.invoices'=>array('label'=>_('Invoices')),
 					'customer.marketing'=>array('label'=>_('Interests'), 'title'=>_("Customer's interests"),
 						'subtabs'=>array(
 							'customer.marketing.overview'=>array('label'=>_('Overview')),

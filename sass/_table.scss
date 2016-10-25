@@ -376,3 +376,18 @@ tr.deleting_tr {
         }
     }
 }
+
+
+.as_table {
+    display: table;
+   
+   .as_row  {
+    display: table-row;
+    
+    &.header{border-top:1px solid #ccc;border-bottom:1px solid #ccc;}
+    
+     .as_cell {
+    display: table-cell;
+    }
+}
+}

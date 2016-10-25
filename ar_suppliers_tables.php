@@ -735,7 +735,29 @@ function order_items($_data, $db, $user, $account) {
 		foreach ($result as $data) {
 
 
-
+switch ($data['Part Stock Status']) {
+			case 'Surplus':
+				$stock_status='<i class="fa  fa-plus-circle fa-fw" aria-hidden="true" title="'._('Surplus').'" ></i>';
+				break;
+			case 'Optimal':
+				$stock_status='<i class="fa fa-check-circle fa-fw" aria-hidden="true" title="'._('Optimal').'"></i>';
+				break;
+			case 'Low':
+				$stock_status='<i class="fa fa-minus-circle fa-fw" aria-hidden="true" title="'._('Low').'"></i>';
+				break;
+			case 'Critical':
+				$stock_status='<i class="fa error fa-minus-circle fa-fw" aria-hidden="true" title="'._('Critical').'"></i>';
+				break;
+			case 'Out_Of_Stock':
+				$stock_status='<i class="fa error fa-ban fa-fw" aria-hidden="true" title="'._('Out of stock').'"></i>';
+				break;
+			case 'Error':
+				$stock_status='<i class="fa fa-question-circle error fa-fw" aria-hidden="true" title="'._('Error').'"></i>';
+				break;
+			default:
+				$stock_status=$data['Part Stock Status'];
+				break;
+			}
 
 			$quantity=number($data['Purchase Order Quantity']);
 
@@ -790,6 +812,36 @@ function order_items($_data, $db, $user, $account) {
 			if ($data['Supplier Part Minimum Carton Order']>0) {
 				$description.=sprintf(' <span class="discreet"><span title="%s">MOQ</span>:%s<span>', _('Minimum order (cartons)'), number($data['Supplier Part Minimum Carton Order']));
 			}
+
+
+  $description.=
+  '
+    <div style="margin-top:10px" >
+<span title="'. _('Stock (cartons)').'">'.number($data['Part Current On Hand Stock']/$data['Supplier Part Packages Per Carton']).'</span> '.$stock_status.'
+  </div>   
+  
+  <div class="as_table asset_sales">
+ 
+          <div class="as_row header">
+			<div class="as_cell width_75">'.get_quarter_label(strtotime('now -12 months')).'</div>
+			<div class="as_cell width_75">'.get_quarter_label(strtotime('now -9 months')).'</div>
+			<div class="as_cell width_75">'.get_quarter_label(strtotime('now -6 months')).'</div>
+			<div class="as_cell width_75">'.get_quarter_label(strtotime('now -3 months')).'</div>
+			<div class="as_cell width_75">'.get_quarter_label(strtotime('now')).'</div>
+			</div>
+		 <div class="as_row header">
+			<div class="as_cell width_75">'.number($data['Part 4 Quarter Ago Dispatched']/$data['Supplier Part Packages Per Carton']).'</div>
+			<div class="as_cell width_75">'.number($data['Part 3 Quarter Ago Dispatched']/$data['Supplier Part Packages Per Carton']).'</div>
+			<div class="as_cell width_75">'.number($data['Part 2 Quarter Ago Dispatched']/$data['Supplier Part Packages Per Carton']).'</div>
+			<div class="as_cell width_75">'.number($data['Part 1 Quarter Ago Dispatched']/$data['Supplier Part Packages Per Carton']).'</div>
+			<div class="as_cell width_75">'.number($data['Part Quarter To Day Acc Dispatched']/$data['Supplier Part Packages Per Carton']).'</div>
+			</div>	
+			</div>
+			
+			
+			
+			';
+
 
 			$adata[]=array(
 
@@ -1185,7 +1237,9 @@ function order_supplier_parts($_data, $db, $user) {
 				break;
 			}
 
+ $description='<span style="min-width:80px;display: inline-block;" class="link padding_right_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$data['Part Reference'].'</span> '.$data['Part Unit Description'];
 
+   
 
 			$adata[]=array(
 				'id'=>(integer)$data['Supplier Part Key'],
@@ -1195,7 +1249,7 @@ function order_supplier_parts($_data, $db, $user) {
 				'part_reference'=>$data['Part Reference'],
 				'reference'=>$data['Supplier Part Reference'],
 				'formatted_sku'=>sprintf("SKU%05d", $data['Supplier Part Part SKU']),
-				'part_description'=>'<span style="min-width:80px;display: inline-block;" class="link padding_right_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$data['Part Reference'].'</span> '.$data['Part Unit Description'],
+				'part_description'=>$description,
 
 				'description'=>$data['Part Unit Description'],
 				'status'=>$status,
@@ -1849,6 +1903,7 @@ function parts_by_stock_status($stock_status, $_data, $db, $user) {
 				$description.=sprintf(' <span class="discreet"><span title="%s">MOQ</span>:%s<span>', _('Minimum order (cartons)'), number($data['Supplier Part Minimum Carton Order']));
 			}
 
+       
 
 			$available_forecast=seconds_to_until($data['Part Days Available Forecast']*86400);
 
