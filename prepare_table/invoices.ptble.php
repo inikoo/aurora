@@ -147,6 +147,10 @@ elseif ($parameters['parent']=='delivery_note') {
 	$table='`Invoice Delivery Note Bridge` B left join   `Invoice Dimension` I  on (I.`Invoice Key`=B.`Invoice Key`)     left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)';
 	$where=sprintf('where  B.`Delivery Note Key`=%d  ', $parameters['parent_key']);
 
+}elseif ($parameters['parent']=='customer') {
+
+	$where=sprintf('where `Invoice Customer Key`=%d  ', $parameters['parent_key']);
+
 }
 else {
 

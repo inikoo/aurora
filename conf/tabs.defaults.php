@@ -69,6 +69,21 @@ $tab_defaults=array(
 		'elements_type'=>each($elements_options['orders'])['key'],
 		'elements'=>$elements_options['orders']
 	),
+	'customer.invoices'=>array(
+		'view'=>'overview',
+		'sort_key'=>'id',
+		'sort_order'=>1,
+		'rpp'=>100,
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'number',
+		'from'=>'',
+		'to'=>'',
+		'period'=>'all',
+		'elements_type'=>each($elements_options['invoices'])['key'],
+		'elements'=>$elements_options['invoices'],
+		'export_fields'=>$export_fields['invoices']
+
+	),
 	'customer.marketing.favourites'=>array(
 		'view'=>'overview',
 		'sort_key'=>'id',

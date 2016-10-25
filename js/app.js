@@ -40,9 +40,14 @@ function change_browser_history_state(request) {
         request = '/' + request
     }
 
+console.log(state.request+' '+request)
+
+    if(state.request!=request){
+
     window.top.history.pushState({
         request: request
     }, '', request)
+}
 
 }
 
