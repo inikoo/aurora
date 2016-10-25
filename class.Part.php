@@ -201,7 +201,8 @@ class Part extends Asset{
 
 		return $suppliers;
 	}
-	
+
+
 	function get_production_suppliers($scope='keys') {
 
 
@@ -1689,7 +1690,7 @@ class Part extends Asset{
 			include_once 'utils/natural_language.php';
 
 			if ($this->data['Part On Demand']=='Yes') {
-                
+
 				$available_forecast= '<span >'.sprintf(_('%s in stock'), '<span  title="'.sprintf("%s %s", number($this->data['Part Days Available Forecast'], 1) ,
 						ngettext("day", "days", intval($this->data['Part Days Available Forecast'] ) )).'">'.seconds_to_until($this->data['Part Days Available Forecast']*86400).'</span>').'</span>';
 
@@ -2716,32 +2717,52 @@ class Part extends Asset{
 		else {
 
 
-//print $this->data['Part 1 Quarter Acc Dispatched'];
+			//print $this->data['Part 1 Quarter Acc Dispatched'];
 
-   //   print $this->data['Part 1 Quarter Acc Dispatched']/(52/4)/7;
-   
-   
-   $days_on_sale=91.25;
-   
-   $from_since=(date('U')-strtotime($this->data['Part Valid From']))/3600/24;
-   if($from_since<1){
-   $from_since=1;
-   }
-   
-   
-   if($days_on_sale>$from_since){
-     $days_on_sale=$from_since;
-   }
-   
-   
-  // print strtotime($this->data['Part Valid From']);
-   
+			//   print $this->data['Part 1 Quarter Acc Dispatched']/(52/4)/7;
+
+
+			if ($this->data['Part 1 Quarter Acc Dispatched']>0) {
+
+				$days_on_sale=91.25;
+
+				$from_since=(date('U')-strtotime($this->data['Part Valid From']))/3600/24;
+				if ($from_since<1) {
+					$from_since=1;
+				}
+
+
+				if ($days_on_sale>$from_since) {
+					$days_on_sale=$from_since;
+				}
+
+
+
+
+
+
 				$this->data['Part Days Available Forecast']=$this->data['Part Current Stock']/($this->data['Part 1 Quarter Acc Dispatched']/$days_on_sale);
 				$this->data['Part XHTML Available For Forecast']=number($this->data['Part Days Available Forecast'], 0).' '._('d');
 
+			}else {
+
+				$from_since=(date('U')-strtotime($this->data['Part Valid From'])/86400);
+				if ($from_since<($this->data['Part Excess Availability Days Limit']/2)) {
+					$forecast=$this->data['Part Excess Availability Days Limit']-1;
+				}else {
+					$forecast=$this->data['Part Excess Availability Days Limit']+$from_since;
+				}
 
 
-        /*
+
+				$this->data['Part Days Available Forecast']=$forecast;
+				$this->data['Part XHTML Available For Forecast']=number($this->data['Part Days Available Forecast'], 0).' '._('d');
+
+
+			}
+
+
+			/*
 
 
 			if ($this->data['Part 1 Year Acc Required']>0) {
@@ -2754,8 +2775,8 @@ class Part extends Asset{
 
 				$this->data['Part Days Available Forecast']=$interval*$this->data['Part Current Stock']/$this->data['Part 1 Year Acc Required'];
 				$this->data['Part XHTML Available For Forecast']=number($this->data['Part Days Available Forecast'], 0).' '._('d');
-			
-				
+
+
 			}
 			elseif ($this->data['Part 1 Quarter Acc Required']>0) {
 
