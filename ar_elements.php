@@ -129,6 +129,7 @@ case 'orders':
 	get_orders_element_numbers($db, $data['parameters'], $user);
 	break;
 case 'invoices':
+case 'customer.invoices':
 	$data=prepare_values($_REQUEST, array(
 			'parameters'=>array('type'=>'json array')
 		));
@@ -1179,6 +1180,11 @@ function get_invoices_element_numbers($db, $parameters) {
 
 		$table='`Invoice Delivery Note Bridge` B left join   `Invoice Dimension` I  on (I.`Invoice Key`=B.`Invoice Key`)     left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)';
 		$where=sprintf('where  B.`Delivery Note Key`=%d  ', $parameters['parent_key']);
+
+	}elseif ($parameters['parent']=='customer') {
+		$table='`Invoice Dimension` I  '   ;
+
+		$where=sprintf('where `Invoice Customer Key`=%d  ', $parameters['parent_key']);
 
 	}
 	elseif ($parameters['parent']=='billingregion_taxcategory.invoices') {

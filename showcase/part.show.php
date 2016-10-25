@@ -16,7 +16,7 @@ function get_part_showcase($data, $smarty, $user, $db) {
 
 	$part=$data['_object'];
 	$part->load_acc_data();
-
+$part->update_available_forecast();
 
 	// $part->update_cost();
 	// $part->updated_linked_products();
@@ -25,7 +25,7 @@ function get_part_showcase($data, $smarty, $user, $db) {
 
 	//$part->fix_stock_transactions();
 
-$part->update_stock_in_paid_orders();
+//	$part->update_stock_in_paid_orders();
 
 	if (!$part->id) {
 		return "";
@@ -117,7 +117,7 @@ $part->update_stock_in_paid_orders();
 						'<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>':''
 					)
 				)
-				),
+			),
 			array('header'=>get_quarter_label(strtotime('now -12 months')),
 				'invoiced_amount_delta_title'=>delta($part->get('Part 4 Quarter Ago Invoiced Amount'), $part->get('Part 4 Quarter Ago 1YB Invoiced Amount')),
 				'invoiced_amount_delta'=>
@@ -244,10 +244,10 @@ $part->update_stock_in_paid_orders();
 				)
 			)
 		));
-  	$customers=sprintf('<i class="fa fa-users padding_right_5" aria-hidden="true"></i> %s (%s)',$part->get('Total Acc Customers'),percentage($part->get('Part Total Acc Repeat Customers'),$part->get('Part Total Acc Customers')));
+	$customers=sprintf('<i class="fa fa-users padding_right_5" aria-hidden="true"></i> %s (%s)', $part->get('Total Acc Customers'), percentage($part->get('Part Total Acc Repeat Customers'), $part->get('Part Total Acc Customers')));
 	$smarty->assign('customers', $customers);
 
-    $smarty->assign('header_total_sales',sprintf(_('All sales since: %s'),$part->get('Valid From')));
+	$smarty->assign('header_total_sales', sprintf(_('All sales since: %s'), $part->get('Valid From')));
 
 
 	$smarty->assign('part', $part);
