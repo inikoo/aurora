@@ -696,6 +696,9 @@ input {
 .width_50 {
   width: 50px; }
 
+.width_75 {
+  width: 75px; }
+
 .width_100 {
   width: 100px; }
 
@@ -1316,6 +1319,16 @@ tr.deleting_tr {
     min-width: 75px; }
   .backgrid .mini_table .part_stock {
     text-align: right; }
+
+.as_table {
+  display: table; }
+  .as_table .as_row {
+    display: table-row; }
+    .as_table .as_row.header {
+      border-top: 1px solid #ccc;
+      border-bottom: 1px solid #ccc; }
+    .as_table .as_row .as_cell {
+      display: table-cell; }
 
 .subject_profile {
   padding: 20px; }

@@ -122,6 +122,14 @@ function get_view($db, $smarty, $user, $account, $modules) {
 				$_object=get_object($state['object'], $state['key']);
 				$_parent=new Store($_object->get('Product Store Key'));
 				$state['parent_key']=$_parent->id;
+			}elseif ($state['object']=='customer') {
+			    $_object=get_object($state['object'], $state['key']);
+				$_parent=new Store($_object->get('Customer Store Key'));
+				$state['parent_key']=$_parent->id;
+			
+			}else{
+			    print $state['object'];
+			
 			}
 
 		}
