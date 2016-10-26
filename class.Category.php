@@ -2837,7 +2837,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 								);
 
 								$this->db->exec($sql);
-print $sql;
+//print $sql;
 								include_once 'class.Page.php';
 								$sql=sprintf("Select `Page Key` from `Page Store Dimension` where `Page Store Section Type`='Family' and  `Page Parent Key`=%d", $row['Product Family Key']);
 								$res2=mysql_query($sql);
