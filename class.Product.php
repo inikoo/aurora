@@ -1879,9 +1879,7 @@ class Product extends Asset{
 			$tipo='Normal';
 		}
 
-	if($this->id==157476){
-						print $stock;
-						}
+	
 		//print $stock;exit;
 
 		$this->update(array(
