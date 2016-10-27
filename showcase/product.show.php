@@ -24,7 +24,7 @@ function get_product_showcase($data,$smarty,$user,$db) {
 	
 	$product->load_acc_data();
 	
-	//$product->update_availability();
+	$product->update_availability();
 
 	$images=$product->get_images_slidesshow();
 
