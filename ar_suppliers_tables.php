@@ -735,7 +735,7 @@ function order_items($_data, $db, $user, $account) {
 		foreach ($result as $data) {
 
 
-switch ($data['Part Stock Status']) {
+			switch ($data['Part Stock Status']) {
 			case 'Surplus':
 				$stock_status='<i class="fa  fa-plus-circle fa-fw" aria-hidden="true" title="'._('Surplus').'" ></i>';
 				break;
@@ -805,44 +805,73 @@ switch ($data['Part Stock Status']) {
 
 			}
 
+			$description=($data['Supplier Part Reference']!=$data['Part Reference']?$data['Part Reference'].', ':'');
 
-			$description=$data['Part Unit Description'].' <span class="discreet">('.number($units_per_carton).'/C '.money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')).')</span>';
+
+			$description.=$data['Part Unit Description'].' <span class="discreet">('.number($units_per_carton).'/C '.money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')).')</span>';
 
 
 			if ($data['Supplier Part Minimum Carton Order']>0) {
 				$description.=sprintf(' <span class="discreet"><span title="%s">MOQ</span>:%s<span>', _('Minimum order (cartons)'), number($data['Supplier Part Minimum Carton Order']));
 			}
 
+			if ($purchase_order->get('State Index')<30 ) {
 
-  $description.=
-  '
-    <div style="margin-top:10px" >
-<span title="'. _('Stock (cartons)').'">'.number($data['Part Current On Hand Stock']/$data['Supplier Part Packages Per Carton']).'</span> '.$stock_status.'
-  </div>   
-  
-  <div class="as_table asset_sales">
- 
-          <div class="as_row header">
-			<div class="as_cell width_75">'.get_quarter_label(strtotime('now -12 months')).'</div>
-			<div class="as_cell width_75">'.get_quarter_label(strtotime('now -9 months')).'</div>
-			<div class="as_cell width_75">'.get_quarter_label(strtotime('now -6 months')).'</div>
-			<div class="as_cell width_75">'.get_quarter_label(strtotime('now -3 months')).'</div>
-			<div class="as_cell width_75">'.get_quarter_label(strtotime('now')).'</div>
+
+				$available_forecast='';
+
+				if ($data['Part Stock Status']=='Out_Of_Stock' or  $data['Part Stock Status']=='Error') return '';
+
+				if (in_array($data['Part Products Web Status'], array('No Products', 'Offline', 'Out of Stock'))) return '';
+
+
+				include_once 'utils/natural_language.php';
+
+				if ($data['Part On Demand']=='Yes') {
+
+					$available_forecast= '<span >'.sprintf(_('%s in stock'), '<span  title="'.sprintf("%s %s", number($data['Part Days Available Forecast'], 1) ,
+							ngettext("day", "days", intval($data['Part Days Available Forecast'] ) )).'">'.seconds_to_until($data['Part Days Available Forecast']*86400).'</span>').'</span>';
+
+					if ($data['Part Fresh']=='No') {
+						$available_forecast.=' <i class="fa fa-fighter-jet padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
+					}else {
+						$available_forecast=' <i class="fa fa-lemon-o padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
+					}
+				}else {
+					$available_forecast= '<span >'.sprintf(_('%s availability'), '<span  title="'.sprintf("%s %s", number($data['Part Days Available Forecast'], 1) ,
+							ngettext("day", "days", intval($data['Part Days Available Forecast'] ) )).'">'.seconds_to_until($data['Part Days Available Forecast']*86400).'</span>').'</span>';
+
+
+				}
+
+				$description.=
+					'<div style="margin-top:10px" >
+                        <span class="no_discreet"><i class="fa fa-square" aria-hidden="true"></i> '.$data['Part Reference'].'</span>
+                        <span title="'. _('Stock (cartons)').'">'.number($data['Part Current On Hand Stock']/$data['Supplier Part Packages Per Carton']).'</span> '.$stock_status.'
+                        <span>'.$available_forecast.'</span>
+                    </div>
+                    <div class="as_table asset_sales">
+                        <div class="as_row header">
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -12 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -9 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -6 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -3 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now')).'</div>
+			        </div>
+		            <div class="as_row header">
+			            <div class="as_cell width_75">'.number($data['Part 4 Quarter Ago Dispatched']/$data['Supplier Part Packages Per Carton']).'</div>
+			            <div class="as_cell width_75">'.number($data['Part 3 Quarter Ago Dispatched']/$data['Supplier Part Packages Per Carton']).'</div>
+			            <div class="as_cell width_75">'.number($data['Part 2 Quarter Ago Dispatched']/$data['Supplier Part Packages Per Carton']).'</div>
+			            <div class="as_cell width_75">'.number($data['Part 1 Quarter Ago Dispatched']/$data['Supplier Part Packages Per Carton']).'</div>
+			        <div class="as_cell width_75">'.number($data['Part Quarter To Day Acc Dispatched']/$data['Supplier Part Packages Per Carton']).'</div>
+			    </div>
 			</div>
-		 <div class="as_row header">
-			<div class="as_cell width_75">'.number($data['Part 4 Quarter Ago Dispatched']/$data['Supplier Part Packages Per Carton']).'</div>
-			<div class="as_cell width_75">'.number($data['Part 3 Quarter Ago Dispatched']/$data['Supplier Part Packages Per Carton']).'</div>
-			<div class="as_cell width_75">'.number($data['Part 2 Quarter Ago Dispatched']/$data['Supplier Part Packages Per Carton']).'</div>
-			<div class="as_cell width_75">'.number($data['Part 1 Quarter Ago Dispatched']/$data['Supplier Part Packages Per Carton']).'</div>
-			<div class="as_cell width_75">'.number($data['Part Quarter To Day Acc Dispatched']/$data['Supplier Part Packages Per Carton']).'</div>
-			</div>	
-			</div>
-			
-			
-			
+
+
+
 			';
 
-
+			}
 			$adata[]=array(
 
 				'id'=>(integer)$data['Purchase Order Transaction Fact Key'],
@@ -1237,9 +1266,9 @@ function order_supplier_parts($_data, $db, $user) {
 				break;
 			}
 
- $description='<span style="min-width:80px;display: inline-block;" class="link padding_right_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$data['Part Reference'].'</span> '.$data['Part Unit Description'];
+			$description='<span style="min-width:80px;display: inline-block;" class="link padding_right_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$data['Part Reference'].'</span> '.$data['Part Unit Description'];
 
-   
+
 
 			$adata[]=array(
 				'id'=>(integer)$data['Supplier Part Key'],
@@ -1353,9 +1382,9 @@ function category_all_suppliers($_data, $db, $user, $account) {
 function order_supplier_all_parts($_data, $db, $user) {
 
 	include_once 'class.PurchaseOrder.php';
+	include_once 'utils/natural_language.php';
 
 	$rtext_label='supplier part';
-
 
 	$purchase_order=new PurchaseOrder($_data['parameters']['parent_key']);
 
@@ -1436,7 +1465,63 @@ function order_supplier_all_parts($_data, $db, $user) {
 				$description.=sprintf(' <span class="discreet"><span title="%s">MOQ</span>:%s<span>', _('Minimum order (cartons)'), number($data['Supplier Part Minimum Carton Order']));
 			}
 
-			$adata[]=array(
+
+
+
+			$available_forecast='';
+
+			if ($data['Part Stock Status']=='Out_Of_Stock' or  $data['Part Stock Status']=='Error') {
+				$available_forecast='';
+			}else if (in_array($data['Part Products Web Status'], array('No Products', 'Offline', 'Out of Stock'))) {
+				$available_forecast='';
+
+			}elseif ($data['Part On Demand']=='Yes') {
+
+				$available_forecast= '<span >'.sprintf(_('%s in stock'), '<span  title="'.sprintf("%s %s", number($data['Part Days Available Forecast'], 1) ,
+						ngettext("day", "days", intval($data['Part Days Available Forecast'] ) )).'">'.seconds_to_until($data['Part Days Available Forecast']*86400).'</span>').'</span>';
+
+				if ($data['Part Fresh']=='No') {
+					$available_forecast.=' <i class="fa fa-fighter-jet padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
+				}else {
+					$available_forecast=' <i class="fa fa-lemon-o padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
+				}
+			}else {
+				$available_forecast= '<span >'.sprintf(_('%s availability'), '<span  title="'.sprintf("%s %s", number($data['Part Days Available Forecast'], 1) ,
+						ngettext("day", "days", intval($data['Part Days Available Forecast'] ) )).'">'.seconds_to_until($data['Part Days Available Forecast']*86400).'</span>').'</span>';
+
+
+			}
+
+			$description.=
+				'<div style="margin-top:10px" >
+                        <span class="no_discreet" style="margin-right:5px"><i class="fa fa-square" aria-hidden="true"></i> '.$data['Part Reference'].'</span>
+                        <span title="'. _('Stock (cartons)').'">'.number($data['Part Current On Hand Stock']/$data['Supplier Part Packages Per Carton']).'</span> '.$stock_status.'
+                        <span>'.$available_forecast.'</span>
+                    </div>
+                    <div class="as_table asset_sales">
+                        <div class="as_row header">
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -12 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -9 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -6 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -3 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now')).'</div>
+			        </div>
+		            <div class="as_row header">
+			            <div class="as_cell width_75">'.number($data['Part 4 Quarter Ago Dispatched']/$data['Supplier Part Packages Per Carton']).'</div>
+			            <div class="as_cell width_75">'.number($data['Part 3 Quarter Ago Dispatched']/$data['Supplier Part Packages Per Carton']).'</div>
+			            <div class="as_cell width_75">'.number($data['Part 2 Quarter Ago Dispatched']/$data['Supplier Part Packages Per Carton']).'</div>
+			            <div class="as_cell width_75">'.number($data['Part 1 Quarter Ago Dispatched']/$data['Supplier Part Packages Per Carton']).'</div>
+			        <div class="as_cell width_75">'.number($data['Part Quarter To Day Acc Dispatched']/$data['Supplier Part Packages Per Carton']).'</div>
+			    </div>
+			</div>
+
+
+
+			';
+
+				
+
+				$adata[]=array(
 				'id'=>(integer)$data['Supplier Part Key'],
 				'supplier_key'=>(integer)$data['Supplier Part Supplier Key'],
 				'supplier_code'=>$data['Supplier Code'],
@@ -1837,13 +1922,12 @@ function parts_by_stock_status($stock_status, $_data, $db, $user) {
 	$rtext_label='supplier part';
 
 
-
 	include_once 'prepare_table/init.php';
 
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
-//print $sql_totals;
+	//print $sql_totals;
 
 	$adata=array();
 
@@ -1897,13 +1981,44 @@ function parts_by_stock_status($stock_status, $_data, $db, $user) {
 
 			$transaction_key='';
 
+
+			$description=$data['Part Unit Description'];
+
+
+			$description.=
+				'
+
+  <div class="as_table asset_sales discreet">
+
+          <div class="as_row header">
+			<div class="as_cell width_75">'.get_quarter_label(strtotime('now -12 months')).'</div>
+			<div class="as_cell width_75">'.get_quarter_label(strtotime('now -9 months')).'</div>
+			<div class="as_cell width_75">'.get_quarter_label(strtotime('now -6 months')).'</div>
+			<div class="as_cell width_75">'.get_quarter_label(strtotime('now -3 months')).'</div>
+			<div class="as_cell width_75">'.get_quarter_label(strtotime('now')).'</div>
+			</div>
+		 <div class="as_row header">
+			<div class="as_cell width_75">'.number($data['Part 4 Quarter Ago Dispatched']).'</div>
+			<div class="as_cell width_75">'.number($data['Part 3 Quarter Ago Dispatched']).'</div>
+			<div class="as_cell width_75">'.number($data['Part 2 Quarter Ago Dispatched']).'</div>
+			<div class="as_cell width_75">'.number($data['Part 1 Quarter Ago Dispatched']).'</div>
+			<div class="as_cell width_75">'.number($data['Part Quarter To Day Acc Dispatched']).'</div>
+			</div>
+			</div>
+
+
+
+			';
+
+
+			/*
 			$description=$data['Part Unit Description'].' <span class="discreet">('.number($units_per_carton).'/C '.money($data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']).')</span>';
 
 			if ($data['Supplier Part Minimum Carton Order']>0) {
 				$description.=sprintf(' <span class="discreet"><span title="%s">MOQ</span>:%s<span>', _('Minimum order (cartons)'), number($data['Supplier Part Minimum Carton Order']));
 			}
 
-       
+*/
 
 			$available_forecast=seconds_to_until($data['Part Days Available Forecast']*86400);
 
@@ -2063,14 +2178,14 @@ function todo_paid_parts($_data, $db, $user) {
 
 function supplier_categories($_data, $db, $user) {
 
-global $account;
+	global $account;
 
 	$rtext_label='category';
 	include_once 'prepare_table/init.php';
 
 	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
-	
+
 
 	$adata=array();
 
@@ -2098,7 +2213,7 @@ global $account;
 			'id'=>(integer) $data['Category Key'],
 			// 'position'=>$data['Category Position'],
 			'store_key'=>(integer) $data['Category Store Key'],
-			'code'=>sprintf('<span class="link" onClick="change_view(\'category/%d\')">%s</span>',$data['Category Key'],$data['Category Code']),
+			'code'=>sprintf('<span class="link" onClick="change_view(\'category/%d\')">%s</span>', $data['Category Key'], $data['Category Code']),
 			'label'=>$data['Category Label'],
 			'subjects'=>number($data['Category Number Subjects']),
 			'level'=>$level,

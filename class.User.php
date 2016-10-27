@@ -437,9 +437,9 @@ class User extends DB_Table {
 			if (!is_numeric($value) )
 				unset($websites[$key]);
 		}
-		$old_websites=preg_split('/,/', $this->get_websites());
+		$old_websites=preg_split('/,/', $this->get('User Websites'));
 
-		$old_formatted_websites=$this->get_websites_formatted();
+		$old_formatted_websites=$this->get('Websites');
 		$to_delete = array_diff($old_websites, $websites);
 		$to_add = array_diff($websites, $old_websites);
 		$changed=0;
@@ -565,6 +565,9 @@ class User extends DB_Table {
 		case('User Warehouses'):
 			$this->update_warehouses($value);
 			break;
+		case('User Productions'):
+			$this->update_productions($value);
+			break;
 		case('User Active'):
 			$this->update_active($value);
 			break;
@@ -586,9 +589,7 @@ class User extends DB_Table {
 		case('warehouses'):
 			$this->update_warehouses($value);
 			break;
-		case('User Theme Key'):
-		case('User Theme Background Key'):
-			$this->update_staff_setting_field($tipo, $value);
+
 			break;
 		case('User Handle'):
 			$old_value=$this->get('Handle');
@@ -612,118 +613,20 @@ class User extends DB_Table {
 			break;
 		default:
 			$base_data=$this->base_data();
-
-
 			if (array_key_exists($field, $base_data)) {
 
 				$this->update_field($field, $value, $options);
+			}elseif (array_key_exists($field, $this->base_data('User Staff Settings Dimension'))   ) {
+				$this->update_table_field($field, $value, $options, 'User', 'User Staff Settings Dimension', $this->id);
 			}
-		}
-		$this->reread();
-	}
 
 
-
-
-	function update_staff_setting_field($field, $value, $options='') {
-
-		$this->updated=false;
-
-
-		$null_if_empty=true;
-
-		if ($options=='no_null') {
-			$null_if_empty=false;
-
-		}
-
-		if (is_array($value))
-			return;
-		$value=_trim($value);
-
-
-		$old_value=_('Unknown');
-		$key_field=$this->table_name." Key";
-
-
-		$sql="select `".$field."` as value from  `User Staff Settings Dimension`  where `$key_field`=".$this->id;
-
-
-		if ($result=$this->db->query($sql)) {
-			if ($row = $result->fetch()) {
-				$old_value=$row['value'];
-			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
-		}
-
-
-
-
-		$sql="update  `User Staff Settings Dimension` set `".$field."`=".prepare_mysql($value, $null_if_empty)." where `$key_field`=".$this->id;
-
-		$update_op=$this->db->prepare($sql);
-		$update_op->execute();
-		$affected=$update_op->rowCount();
-
-
-
-
-		if ($affected==-1) {
-			$this->msg.=' '._('Record can not be updated')."\n";
-			$this->error_updated=true;
-			$this->error=true;
-
-			return;
-		}
-		elseif ($affected==0) {
-			$this->data[$field]=$value;
-		}
-		else {
-
-
-
-			$this->data[$field]=$value;
-			$this->msg.=" $field "._('Record updated').", \n";
-			$this->msg_updated.=" $field "._('Record updated').", \n";
-			$this->updated=true;
-			$this->new_value=$value;
-
-			$save_history=true;
-			if (preg_match('/no( |\_)history|nohistory/i', $options))
-				$save_history=false;
-
-			if (
-				preg_match('/site|page|part|customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position|category/i', $this->table_name)
-				and !$this->new
-				and $save_history
-			) {
-
-				$history_data=array(
-					'Indirect Object'=>$field,
-					'old_value'=>$old_value,
-					'new_value'=>$value
-
-				);
-				if ($this->table_name=='Product Family')
-					$history_data['direct_object']='Family';
-				if ($this->table_name=='Product Department')
-					$history_data['direct_object']='Department';
-
-				$history_key=$this->add_history($history_data);
-				if (
-					in_array($this->table_name, array('Customer', 'Store', 'Product Department', 'Product Family', 'Product', 'Part', 'Supplier', 'Supplier Product'))) {
-					$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')", $this->table_name, $this->id, $history_key);
-					$this->db->exec($sql);
-
-				}
-
-			}
 
 		}
 
 	}
+
+
 
 
 	function update_password($value, $options='') {
@@ -986,6 +889,7 @@ class User extends DB_Table {
 
 	function update_warehouses($value) {
 
+		global $account;
 		$this->updated=false;
 
 		if ($this->data['User Type']!='Staff') {
@@ -997,9 +901,9 @@ class User extends DB_Table {
 			if (!is_numeric($value) )
 				unset($warehouses[$key]);
 		}
-		$old_warehouses=preg_split('/,/', $this->get_warehouses());
+		$old_warehouses=preg_split('/,/', $this->get('User Warehouses'));
 
-		$old_formatted_warehouses=$this->get_warehouses_formatted();
+		$old_formatted_warehouses=$this->get('Warehouses');
 		$to_delete = array_diff($old_warehouses, $warehouses);
 		$to_add = array_diff($warehouses, $old_warehouses);
 		$changed=0;
@@ -1015,6 +919,137 @@ class User extends DB_Table {
 
 		if ($changed>0) {
 			$this->updated=true;
+
+
+			if ($account->get('Warehouses')==0 or  $this->get_number_warehouses()==0) {
+				$this->update(array('User Hooked Warehouse Key'=>''), 'no_history');
+			}
+			else {
+
+				if ($account->get('Warehouses')==1 and $this->get_number_warehouses()==1) {
+
+					$this->update(array('User Hooked Warehouse Key'=>$this->get('User Warehouses')), 'no_history');
+				}
+			}
+
+		}
+
+	}
+
+
+	function add_production_supplier($to_add, $history=true) {
+		$changed=0;
+		foreach ($to_add as $scope_id) {
+
+			$production=new Supplier_Production($scope_id);
+			if (!$production->id)
+				continue;
+			$sql=sprintf("insert into `User Right Scope Bridge`values (%d,'Production',%d) ", $this->id, $scope_id);
+			$update_op=$this->db->prepare($sql);
+			$update_op->execute();
+			$affected=$update_op->rowCount();
+
+			if ($affected>0) {
+				$changed++;
+
+
+				$history_data=array(
+					'History Abstract'=>sprintf(_("User's rights for production supplier %s were granted"), $production->get('Code')),
+					'History Details'=>'',
+					'Action'=>'disassociate',
+					'Indirect Object'=>'Supplier',
+					'Indirect Object Key'=>$production->id
+				);
+
+				$history_key=$this->add_history($history_data);
+				$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')", $this->table_name, $this->id, $history_key);
+				$this->db->exec($sql);
+			}
+		}
+		return $changed;
+
+	}
+
+
+	function delete_production_supplier($to_delete, $history=true) {
+
+		$changed=0;
+		foreach ($to_delete as $production_key) {
+
+			$sql=sprintf("delete from `User Right Scope Bridge` where `User Key`=%d and `Scope Key`=%d and `Scope`='Production' ", $this->id, $production_key);
+			$_changed = $this->db->exec($sql);
+			$changed+=$_changed;
+
+			$production=new Supplier_Production($production_key);
+			if ($production->id and $_changed) {
+				$history_data=array(
+					'History Abstract'=>sprintf(_("User's rights for production supplier %s were removed"),  $production->get('Code')),
+					'History Details'=>'',
+					'Action'=>'disassociate',
+					'Indirect Object'=>'Supplier',
+					'Indirect Object Key'=>$production->id
+				);
+				$history_key=$this->add_history($history_data);
+				$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')", $this->table_name, $this->id, $history_key);
+				$this->db->exec($sql);
+			}
+
+
+
+		}
+
+
+		return $changed;
+	}
+
+
+	function update_productions($value) {
+
+		global $account;
+		include_once 'class.Supplier_Production.php';
+
+		$this->updated=false;
+
+		if ($this->data['User Type']!='Staff') {
+			$this->error=true;
+			return;
+		}
+		$productions=preg_split('/,/', $value);
+		foreach ($productions as $key=>$value) {
+			if (!is_numeric($value) )
+				unset($productions[$key]);
+		}
+		$old_productions=preg_split('/,/', $this->get('User Productions'));
+
+		$old_formatted_productions=$this->get('Productions');
+		$to_delete = array_diff($old_productions, $productions);
+		$to_add = array_diff($productions, $old_productions);
+		$changed=0;
+
+
+
+		if (count($to_delete)>0) {
+			$changed+=$this->delete_production_supplier($to_delete);
+		}
+		if (count($to_add)>0) {
+			$changed+=$this->add_production_supplier($to_add);
+		}
+
+		if ($changed>0) {
+			$this->updated=true;
+
+
+			if ($account->get('Productions')==0 or  $this->get_number_productions()==0) {
+				$this->update(array('User Hooked Production Key'=>''), 'no_history');
+			}
+			else {
+
+				if ($account->get('Productions')==1 and $this->get_number_productions()==1) {
+
+					$this->update(array('User Hooked Production Key'=>$this->get('User Productions')), 'no_history');
+				}
+			}
+
 		}
 
 	}
@@ -1102,9 +1137,9 @@ class User extends DB_Table {
 			if (!is_numeric($value) )
 				unset($stores[$key]);
 		}
-		$old_stores=preg_split('/,/', $this->get_stores());
+		$old_stores=preg_split('/,/', $this->get('User Stores'));
 
-		$old_formatted_stores=$this->get_stores_formatted();
+		$old_formatted_stores=$this->get('Stores');
 		$to_delete = array_diff($old_stores, $stores);
 		$to_add = array_diff($stores, $old_stores);
 		$changed=0;
@@ -1127,6 +1162,8 @@ class User extends DB_Table {
 
 	function get($key) {
 
+		global $account;
+
 		if (!$this->id)
 			return;
 
@@ -1140,22 +1177,124 @@ class User extends DB_Table {
 			return $this->get_groups_formatted();
 			break;
 		case 'User Stores':
-			return $this->get_stores();
+
+			$stores=array();
+			$sql=sprintf("select GROUP_CONCAT(`Scope Key`) as stores  from `User Right Scope Bridge` where `User Key`=%d and `Scope`='Store'", $this->id);
+			if ($row = $this->db->query($sql)->fetch()) {
+				$stores=$row['stores'];
+			}
+			return $stores;
+
 			break;
 		case 'Stores':
-			return $this->get_stores_formatted();
+			$number_stores=$this->get_number_stores();
+
+			if ($number_stores==0) {
+				return '<span class="none very_discreet" ><i class="fa fa-toggle-off"></i> '._('none').'</span>';
+			}elseif ($number_stores==$account->get('Stores') and $number_stores>20) {
+				return '<span class="all" ><i class="fa fa-toggle-on"></i> '._('all').'</span>';
+			}else {
+
+				$stores=array();
+				$sql=sprintf("select `Scope Key`,`Store Code`,`Store Name` as `key` from `User Right Scope Bridge`  left join `Store Dimension` on (`Store Key`=`Scope Key`) where `User Key`=%d and `Scope`='Store'", $this->id);
+				foreach ($this->db->query($sql) as $row) {
+
+					$stores[]=$row['Store Code'];
+				}
+				return join($stores, ', ').' <span class="very_disceet italic">('.$number_stores.'/'.$account->get('Stores').')</span>';
+			}
+
 			break;
+
+
+		case 'User Productions':
+
+			$productions=array();
+			$sql=sprintf("select GROUP_CONCAT(`Scope Key`) as productions  from `User Right Scope Bridge` where `User Key`=%d and `Scope`='Production'", $this->id);
+			if ($row = $this->db->query($sql)->fetch()) {
+				$productions=$row['productions'];
+			}
+			return $productions;
+
+			break;
+		case 'Productions':
+			$number_productions=$this->get_number_productions();
+
+			if ($number_productions==0) {
+				$productions= '<span class="none very_discreet italic" > '._('none').'</span>';
+			}elseif ($number_productions==$account->get('Productions') and $number_productions>20) {
+				$productions= '<span class="all" > '._('all').'</span>';
+			}else {
+
+				$productions=array();
+				$sql=sprintf("select `Scope Key`,`Supplier Code`,`Supplier Name` as `key` from `User Right Scope Bridge`  left join `Supplier Dimension` on (`Supplier Key`=`Scope Key`) where `User Key`=%d and `Scope`='Production'", $this->id);
+				foreach ($this->db->query($sql) as $row) {
+
+					$productions[]=$row['Supplier Code'];
+				}
+				$productions= join($productions, ', ');
+			}
+			return $productions.' <span class="very_disceet italic">('.$number_productions.'/'.$account->get('Productions').')</span>';
+
+			break;
+
 		case 'User Websites':
-			return $this->get_websites();
+			$websites=array();
+			$sql=sprintf("select GROUP_CONCAT(`Scope Key`) as websites  from `User Right Scope Bridge` where `User Key`=%d and `Scope`='Website'", $this->id);
+			if ($row = $this->db->query($sql)->fetch()) {
+				$websites=$row['websites'];
+			}
+			return $websites;
 			break;
 		case 'Websites':
-			return $this->get_websites_formatted();
+			$number_websites=$this->get_number_websites();
+
+			if ($number_websites==0) {
+				$websites= '<span class="none" ><i class="fa fa-toggle-off"></i> '._('none').'</span>';
+			}elseif ($number_websites==$account->get('Websites')) {
+				$websites= '<span class="all" ><i class="fa fa-toggle-on"></i> '._('all').'</span>';
+			}else {
+
+				$websites=array();
+				$sql=sprintf("select `Scope Key`,`Site Code`,`Site Name` as `key` from `User Right Scope Bridge`  left join `Site Dimension` on (`Site Key`=`Scope Key`) where `User Key`=%d and `Scope`='Website'", $this->id);
+
+				foreach ($this->db->query($sql) as $row) {
+					if ($row['Site Code']!='')
+						$websites[]=$row['Site Code'];
+				}
+				$websites= join($websites, ', ');
+			}
+
+			return $websites.' <span class="very_disceet italic">('.$number_websites.'/'.$account->get('Websites').')</span>';
 			break;
 		case 'User Warehouses':
-			return $this->get_warehouses();
+			$warehouses=array();
+			$sql=sprintf("select GROUP_CONCAT(`Scope Key`) as warehouses  from `User Right Scope Bridge` where `User Key`=%d and `Scope`='Warehouse'", $this->id);
+			if ($row = $this->db->query($sql)->fetch()) {
+				$warehouses=$row['warehouses'];
+			}
+			return $warehouses;
 			break;
 		case 'Warehouses':
-			return $this->get_warehouses_formatted();
+			$number_warehouses=$this->get_number_warehouses();
+			if ($number_warehouses==0) {
+				$warehouses ='<span class="none very_discreet" ><i class="fa fa-toggle-off"></i> '._('none').'</span>';
+			}elseif ($number_warehouses==$account->get('Warehouses') and $number_warehouses>20 ) {
+				$warehouses= '<span class="all" ><i class="fa fa-toggle-on"></i> '._('all').'</span>';
+			}else {
+
+				$warehouses=array();
+				$sql=sprintf("select `Scope Key`,`Warehouse Code`,`Warehouse Name` as `key` from `User Right Scope Bridge`  left join `Warehouse Dimension` on (`Warehouse Key`=`Scope Key`) where `User Key`=%d and `Scope`='Warehouse'", $this->id);
+
+				foreach ($this->db->query($sql) as $row) {
+					if ($row['Warehouse Code']!='')
+						$warehouses[]=$row['Warehouse Code'];
+				}
+				$warehouses= join($warehouses, ', ');
+			}
+
+			return $warehouses.' <span class="very_disceet italic">('.$number_warehouses.'/'.$account->get('Warehouses').')</span>';
+
 			break;
 
 
@@ -1288,6 +1427,9 @@ class User extends DB_Table {
 		case 'User Warehouses':
 			$label=_('warehouses');
 			break;
+		case 'User Productions':
+			$label=_('production suppliers');
+			break;
 		default:
 			$label=$field;
 
@@ -1412,7 +1554,7 @@ class User extends DB_Table {
 		$tag=strtolower(_trim($tag));
 
 
-        //print_r($this->rights_allow);
+		//print_r($this->rights_allow);
 		if ($tag_key==false) {
 			if (isset($this->rights_allow[$right_type][$tag])) {
 
@@ -1484,56 +1626,30 @@ class User extends DB_Table {
 	}
 
 
-	function get_stores() {
-		$stores=array();
-		$sql=sprintf("select GROUP_CONCAT(`Scope Key`) as stores  from `User Right Scope Bridge` where `User Key`=%d and `Scope`='Store'", $this->id);
-		if ($row = $this->db->query($sql)->fetch()) {
-			$stores=$row['stores'];
-		}
-		return $stores;
-	}
 
 
 	function get_number_stores() {
 		$number_stores=0;
-		$sql=sprintf("select count(*) as stores from `User Right Scope Bridge` where `User Key`=%d and `Scope`='Store'", $this->id);
+		$sql=sprintf("select count(*) as num from `User Right Scope Bridge` where `User Key`=%d and `Scope`='Store'", $this->id);
 		if ($row = $this->db->query($sql)->fetch()) {
-			$number_stores=$row['stores'];
+			$number_stores=$row['num'];
 		}
 		return $number_stores;
 	}
 
 
-	function get_stores_formatted() {
-		global $account;
-
-		$number_stores=$this->get_number_stores();
-
-		if ($number_stores==0) {
-			return '<span class="none" ><i class="fa fa-toggle-off"></i> '._('none').'</span>';
-		}if ($number_stores==$account->get('Stores')) {
-			return '<span class="all" ><i class="fa fa-toggle-on"></i> '._('all').'</span>';
-		}else {
-
-			$stores=array();
-			$sql=sprintf("select `Scope Key`,`Store Code`,`Store Name` as `key` from `User Right Scope Bridge`  left join `Store Dimension` on (`Store Key`=`Scope Key`) where `User Key`=%d and `Scope`='Store'", $this->id);
-			foreach ($this->db->query($sql) as $row) {
-
-				$stores[]=$row['Store Code'];
-			}
-			return join($stores, ', ');
-		}
-	}
-
-
-	function get_websites() {
-		$websites=array();
-		$sql=sprintf("select GROUP_CONCAT(`Scope Key`) as websites  from `User Right Scope Bridge` where `User Key`=%d and `Scope`='Website'", $this->id);
+	function get_number_productions() {
+		$number_productions=0;
+		$sql=sprintf("select count(*) as num from `User Right Scope Bridge` where `User Key`=%d and `Scope`='Production'", $this->id);
 		if ($row = $this->db->query($sql)->fetch()) {
-			$websites=$row['websites'];
+			$number_productions=$row['num'];
 		}
-		return $websites;
+		return $number_productions;
 	}
+
+
+
+
 
 
 	function get_number_websites() {
@@ -1546,37 +1662,7 @@ class User extends DB_Table {
 	}
 
 
-	function get_websites_formatted() {
-		global $account;
 
-		$number_websites=$this->get_number_websites();
-
-		if ($number_websites==0) {
-			return '<span class="none" ><i class="fa fa-toggle-off"></i> '._('none').'</span>';
-		}if ($number_websites==$account->get('Websites')) {
-			return '<span class="all" ><i class="fa fa-toggle-on"></i> '._('all').'</span>';
-		}else {
-
-			$websites=array();
-			$sql=sprintf("select `Scope Key`,`Site Code`,`Site Name` as `key` from `User Right Scope Bridge`  left join `Site Dimension` on (`Site Key`=`Scope Key`) where `User Key`=%d and `Scope`='Website'", $this->id);
-
-			foreach ($this->db->query($sql) as $row) {
-				if ($row['Site Code']!='')
-					$websites[]=$row['Site Code'];
-			}
-			return join($websites, ', ');
-		}
-	}
-
-
-	function get_warehouses() {
-		$warehouses=array();
-		$sql=sprintf("select GROUP_CONCAT(`Scope Key`) as warehouses  from `User Right Scope Bridge` where `User Key`=%d and `Scope`='Warehouse'", $this->id);
-		if ($row = $this->db->query($sql)->fetch()) {
-			$warehouses=$row['warehouses'];
-		}
-		return $warehouses;
-	}
 
 
 	function get_number_warehouses() {
@@ -1588,27 +1674,6 @@ class User extends DB_Table {
 		return $number_warehouses;
 	}
 
-
-	function get_warehouses_formatted() {
-		global $account;
-
-		$number_warehouses=$this->get_number_warehouses();
-		if ($number_warehouses==0) {
-			return '<span class="none" ><i class="fa fa-toggle-off"></i> '._('none').'</span>';
-		}if ($number_warehouses==$account->get('Warehouses')) {
-			return '<span class="all" ><i class="fa fa-toggle-on"></i> '._('all').'</span>';
-		}else {
-
-			$warehouses=array();
-			$sql=sprintf("select `Scope Key`,`Warehouse Code`,`Warehouse Name` as `key` from `User Right Scope Bridge`  left join `Warehouse Dimension` on (`Warehouse Key`=`Scope Key`) where `User Key`=%d and `Scope`='Warehouse'", $this->id);
-
-			foreach ($this->db->query($sql) as $row) {
-				if ($row['Warehouse Code']!='')
-					$warehouses[]=$row['Warehouse Code'];
-			}
-			return join($warehouses, ', ');
-		}
-	}
 
 
 
@@ -2476,14 +2541,14 @@ class User extends DB_Table {
 	function get_dashboard_items() {
 
 		$dashboard_items=array();
-		
+
 		if ($this->data['User Type']=='Staff' or $this->data['User Type']=='Administrator') {
-		
-		    $dashboard_items[]='sales_overview';
-		
+
+			$dashboard_items[]='sales_overview';
+
 		}
-		
-		
+
+
 		return $dashboard_items;
 
 

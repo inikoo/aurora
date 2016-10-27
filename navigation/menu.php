@@ -162,9 +162,9 @@ if ($user->can_view('locations')) {
 
 
 
-	if ($user->data['User Hooked Warehouse Key']) {
+	if ($user->get('User Hooked Warehouse Key')) {
 
-		$nav_menu[] = array('<i class="fa fa-map fa-fw"></i>', _('Warehouse'), 'warehouse/'.$user->data['User Hooked Warehouse Key'], 'warehouses', 'module', '');
+		$nav_menu[] = array('<i class="fa fa-map fa-fw"></i>', _('Warehouse'), 'warehouse/'.$user->get('User Hooked Warehouse Key'), 'warehouses', 'module', '');
 	}else {
 
 		$nav_menu[] = array('<i class="fa fa-map fa-fw"></i>', _('Warehouse'), 'warehouses', 'warehouses', 'module', '');
@@ -191,16 +191,16 @@ if ($user->can_view('suppliers')) {
 
 
 
-if ($user->can_view('suppliers')) {
+if ($user->can_view('production')) {
 
 
 
-	if ($user->data['User Hooked Production Key']) {
-		$nav_menu[] = array('<i class="fa fa-industry fa-fw"></i>', _('Production'), 'production/'.$user->data['User Hooked Production Key'], 'production', 'module', '');
-	}else{
-			$nav_menu[] = array('<i class="fa fa-industry fa-fw"></i>', _('Production'), 'production/all', 'production', 'module', '');
+	if ($user->get('User Hooked Production Key')) {
+		$nav_menu[] = array('<i class="fa fa-industry fa-fw"></i>', _('Production'), 'production/'.$user->get('User Hooked Production Key'), 'production', 'module', '');
+	}else {
+		$nav_menu[] = array('<i class="fa fa-industry fa-fw"></i>', _('Production'), 'production/all', 'production', 'module', '');
 
-	
+
 	}
 
 }

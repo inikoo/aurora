@@ -2312,7 +2312,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 		break;
 	case 'orders_server':
-		$branch[]=array('label'=>'', 'icon'=>'bars', 'reference'=>'account/orders');
+		$branch[]=array('label'=>'', 'icon'=>'bars', 'reference'=>'receipts');
 
 		if ( $user->get_number_stores()>1) {
 			$branch[]=array('label'=>_('Orders').' ('._('All stores').')', 'icon'=>'', 'reference'=>'orders/all');
@@ -2330,7 +2330,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 		}else {
 
 
-			$branch[]=array('label'=>'', 'icon'=>'bars', 'reference'=>'account/orders');
+			$branch[]=array('label'=>'', 'icon'=>'bars', 'reference'=>'receipts');
 
 			if ( $user->get_number_stores()>1) {
 				$branch[]=array('label'=>_('Invoices').' ('._('All stores').')', 'icon'=>'', 'reference'=>'');
@@ -2338,14 +2338,14 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 		}
 		break;
 	case 'delivery_notes_server':
-		$branch[]=array('label'=>'', 'icon'=>'bars', 'reference'=>'account/orders');
+		$branch[]=array('label'=>'', 'icon'=>'bars', 'reference'=>'receipts');
 
 		if ( $user->get_number_stores()>1) {
 			$branch[]=array('label'=>_('Delivery Notes').' ('._('All stores').')', 'icon'=>'', 'reference'=>'delivery_notes/all');
 		}
 		break;
 	case 'orders':
-		$branch[]=array('label'=>'', 'icon'=>'bars', 'reference'=>'account/orders');
+		$branch[]=array('label'=>'', 'icon'=>'bars', 'reference'=>'receipts');
 
 		switch ($state['section']) {
 		case 'orders':
@@ -2443,7 +2443,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 		break;
 	case 'delivery_notes':
-		$branch[]=array('label'=>'', 'icon'=>'bars', 'reference'=>'account/orders');
+		$branch[]=array('label'=>'', 'icon'=>'bars', 'reference'=>'receipts');
 
 		switch ($state['section']) {
 		case 'delivery_notes':
@@ -2539,7 +2539,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 		break;
 	case 'invoices':
-		$branch[]=array('label'=>'', 'icon'=>'bars', 'reference'=>'account/orders');
+		$branch[]=array('label'=>'', 'icon'=>'bars', 'reference'=>'receipts');
 
 		switch ($state['section']) {
 

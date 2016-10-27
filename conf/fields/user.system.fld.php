@@ -212,7 +212,21 @@ if (!$new) {
 				$options_Warehouses[$key]['selected']=true;
 		}
 
+		$options_Productions=array();
+		$sql=sprintf('select `Supplier Production Supplier Key` as `key`,`Supplier Name`,`Supplier Code` from `Supplier Production Dimension` SPD left join `Supplier Dimension` S on (`Supplier Key`=`Supplier Production Supplier Key`)  ');
+		
+		
+		foreach ($db->query($sql) as $row) {
+			$options_Productions[$row['key']]=array(
+				'label'=>$row['Supplier Code'],
+				'selected'=>false
+			);
+		}
+		foreach (preg_split('/,/', $object->get('User Productions')) as $key) {
+			if (array_key_exists($key, $options_Productions))
 
+				$options_Productions[$key]['selected']=true;
+		}
 
 		asort($options_yn);
 		asort($options_locales);
@@ -253,13 +267,25 @@ if (!$new) {
 					'options'=>$options_Websites,
 					'required'=>false
 
-				), array(
+				),
+				 array(
 					'id'=>'User_Warehouses',
 					'edit'=>'radio_option',
 					'value'=>$object->get('User Warehouses') ,
 					'formatted_value'=>$object->get('Warehouses') ,
 					'label'=>ucfirst($object->get_field_label('User Warehouses')),
 					'options'=>$options_Warehouses,
+					'required'=>false
+
+
+				),
+				 array(
+					'id'=>'User_Productions',
+					'edit'=>'radio_option',
+					'value'=>$object->get('User Productions') ,
+					'formatted_value'=>$object->get('Productions') ,
+					'label'=>ucfirst($object->get_field_label('User Productions')),
+					'options'=>$options_Productions,
 					'required'=>false
 
 

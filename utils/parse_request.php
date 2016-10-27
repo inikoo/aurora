@@ -1440,9 +1440,14 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 			}
 
 			break;
+			
+		case 'receipts':	
+			$module='account';
+			$section='orders_index';
+			break;
 		case 'orders':
 
-			if ($user->get('User Type')=='Staff') {
+			if ($user->get('User Type')=='Staff' or $user->get('User Type')=='Contractor') {
 
 
 				if (!$user->can_view('orders')) {$module='utils';$section='forbidden';break;}
@@ -1486,7 +1491,8 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 					}
 
 				}
-			}elseif ($user->get('User Type')=='Agent') {
+			}
+			elseif ($user->get('User Type')=='Agent') {
 				$module='agent_client_orders';
 				$section='orders';
 				$parent='agent';
@@ -2658,7 +2664,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 		case 'suppliers':
 
-			if ($user->get('User Type')=='Staff') {
+			if ($user->get('User Type')=='Staff' or $user->get('User Type')=='Contractor') {
 				if (!$user->can_view('suppliers')) {$module='utils';$section='forbidden';break;}
 
 				$module='suppliers';
@@ -3235,7 +3241,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 
 		case 'profile':
-			if ($user->get('User Type')=='Staff') {
+			if ($user->get('User Type')=='Staff' or $user->get('User Type')=='Contractor') {
 				$module='profile';
 				$section='profile';
 
@@ -3353,12 +3359,7 @@ function parse_request($_data, $db, $modules, $account='', $user='') {
 
 
 				}
-				elseif ($view_path[0]=='orders') {
-					$section='orders_index';
-
-
-
-				}
+			
 				elseif ($view_path[0]=='user') {
 
 					if (isset($view_path[1])) {

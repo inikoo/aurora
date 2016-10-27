@@ -368,8 +368,7 @@ function get_orders_server_navigation($data, $smarty, $user, $db, $account) {
 		break;
 	}
 
-	$up_button=array('icon'=>'arrow-up', 'title'=>_("Order's index"), 'reference'=>'account/orders');
-	$left_buttons=array($up_button);
+	$left_buttons=array();
 
 
 
@@ -423,8 +422,7 @@ function get_invoices_server_navigation($data, $smarty, $user, $db, $account) {
 		break;
 	}
 
-	$up_button=array('icon'=>'arrow-up', 'title'=>_("Order's index"), 'reference'=>'account/orders');
-	$left_buttons=array($up_button);
+	$left_buttons=array();
 
 
 
@@ -561,8 +559,7 @@ function get_delivery_notes_server_navigation($data, $smarty, $user, $db, $accou
 
 	}
 
-	$up_button=array('icon'=>'arrow-up', 'title'=>_("Order's index"), 'reference'=>'account/orders');
-	$left_buttons=array($up_button);
+	$left_buttons=array();
 
 
 
