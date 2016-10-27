@@ -28,6 +28,8 @@ $export_fields=array(
 		array('name'=>'REPLACE(`Customer XHTML Main Delivery Address`,"<br/>","\n") as`Customer Delivery Address`', 'label'=>_('Delivery address'), 'checked'=>0),
 		array('name'=>'`Customer Main Delivery Address Lines`,`Customer Main Delivery Address Town`,`Customer Main Delivery Address Postal Code`,`Customer Main Delivery Address Region`,`Customer Main Delivery Address Country Code`', 'label'=>_('Delivery address (Separated fields)'), 'checked'=>0),
 		array('name'=>'`Customer Last Order Date`', 'label'=>_('Last order date'), 'checked'=>0),
+		array('name'=>'`Customer Account Balance`', 'label'=>_('Account balance'), 'checked'=>0),
+
 	),
 	'orders'=>array(
 		array('name'=>'`Order Public ID`', 'label'=>_('ID'), 'checked'=>1),
