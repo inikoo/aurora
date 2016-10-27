@@ -1795,7 +1795,6 @@ class Product extends Asset{
 			if ($result=$this->db->query($sql)) {
 				foreach ($result as $row) {
 
-//print_r($row);
 					if ($on_demand=='') {
 						$on_demand=$row['Part On Demand'];
 
@@ -1822,13 +1821,15 @@ class Product extends Asset{
 					if (is_numeric($row['stock']) and is_numeric($row['Product Part Ratio'])  and $row['Product Part Ratio']>0 ) {
 
 						$_part_stock=$row['stock'];
+
 						
-						if($row['Part On Demand']=='Yes'){
-						$_part_stock=99999999999;
-						}
-						
+
 						if ($row['Part Current On Hand Stock']==0  and $row['Part Current Stock In Process']>0 ) {
 							$_part_stock=0;
+						}
+						
+						if ($row['Part On Demand']=='Yes') {
+							$_part_stock=99999999999;
 						}
 
 						$_stock=$_part_stock/$row['Product Part Ratio'];
@@ -1843,7 +1844,7 @@ class Product extends Asset{
 						$stock_error=true;
 					}
 
-           // print $row['Part Reference']." $tipo $on_demand  $stock\n";
+					// print $row['Part Reference']." $tipo $on_demand  $stock\n";
 
 
 				}
@@ -1877,7 +1878,7 @@ class Product extends Asset{
 		}
 
 
-//print $stock;exit;
+		//print $stock;exit;
 
 		$this->update(array(
 				'Product Availability'=>$stock,
