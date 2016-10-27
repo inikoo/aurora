@@ -54,10 +54,10 @@ $user_groups=array(
 	),
 	4=>array(
 		'Key'=>4,
-		'Name'=>_('Production'),
-		'View'=>'<i  title="'._('Inventory').'" class="fa fa-square fa-fw"></i> <i  title="'._('Warehouse (Locations)').'" class="fa fa-th-large fa-fw"></i>',
+		'Name'=>_('Production operative'),
+		'View'=>'<i  title="'._('Production').'" class="fa fa-square fa-fw"></i>',
 		'Edit'=>'',
-		'Rights'=>array('LV', 'PV', 'FV')
+		'Rights'=>array('FV')
 
 	),
 	5=>array(
@@ -74,6 +74,14 @@ $user_groups=array(
 		'View'=>'<i title="'._('Manpower').'" class="fa fa-hand-rock-o fa-fw"></i> ',
 		'Edit'=>'<i title="'._('Manpower').'"class="fa fa-hand-rock-o fa-fw"></i> ',
 		'Rights'=>array('EV', 'EE', 'ED', 'EC')
+
+	),
+	7=>array(
+		'Key'=>4,
+		'Name'=>_('Production manager'),
+		'View'=>'<i  title="'._('Inventory').'" class="fa fa-square fa-fw"></i> <i  title="'._('Warehouse (Locations)').'" class="fa fa-th-large fa-fw"></i>',
+		'Edit'=>'',
+		'Rights'=>array('LV', 'PV', 'FV','FE','FC')
 
 	),
 	8=>array(

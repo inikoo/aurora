@@ -60,6 +60,17 @@ class Account extends DB_Table{
 
 
 		switch ($key) {
+		
+		case 'Productions':
+		
+		$number=0;
+		$sql=sprintf("select count(*) as num from `Supplier Production Dimension`", $this->id);
+		if ($row = $this->db->query($sql)->fetch()) {
+			$number=$row['num'];
+		}
+		return $number;
+		break;
+		
 		case('Locale'):
 
 
