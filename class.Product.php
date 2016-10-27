@@ -1837,6 +1837,10 @@ class Product extends Asset{
 							$stock=$_stock;
 							$change=true;
 						}
+						if($this->id==157476){
+						print "$_stock $stock\n";
+						}
+						
 					}
 					else {
 
