@@ -82,7 +82,7 @@ else
 
 
 
-$table='`Store Dimension` S left join `Store Data Dimension` D on (D.`Store Key`=S.`Store Key`) left join `Store Default Currency` DC on DC.`Store Key`=S.`Store Key`';
+$table='`Store Dimension` S left join `Store Data` D on (D.`Store Key`=S.`Store Key`) left join `Store DC Data` DC on DC.`Store Key`=S.`Store Key`';
 
 $sql_totals="select count(Distinct S.`Store Key`) as num from $table  $where  ";
 

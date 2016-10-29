@@ -1822,12 +1822,12 @@ class Product extends Asset{
 
 						$_part_stock=$row['stock'];
 
-						
+
 
 						if ($row['Part Current On Hand Stock']==0  and $row['Part Current Stock In Process']>0 ) {
 							$_part_stock=0;
 						}
-						
+
 						if ($row['Part On Demand']=='Yes') {
 							$_part_stock=99999999999;
 						}
@@ -1837,8 +1837,8 @@ class Product extends Asset{
 							$stock=$_stock;
 							$change=true;
 						}
-					
-						
+
+
 					}
 					else {
 
@@ -1879,7 +1879,7 @@ class Product extends Asset{
 			$tipo='Normal';
 		}
 
-	
+
 		//print $stock;exit;
 
 		$this->update(array(
@@ -1960,8 +1960,9 @@ class Product extends Asset{
 			$web_availability='No';
 
 
-
-
+		if ($old_web_state!=$web_state) {
+			$this->update_availability($use_fork);
+		}
 
 
 		$web_availability_updated=($old_web_availability!=$web_availability?true:false);
@@ -2697,7 +2698,7 @@ class Product extends Asset{
 	}
 
 
-	function update_sales_from_invoices($interval) {
+	function update_sales_from_invoices($interval, $this_year=true, $last_year=true) {
 
 		include_once 'utils/date_functions.php';
 
@@ -2706,27 +2707,27 @@ class Product extends Asset{
 		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($this->db, $interval);
 
 
-
-		$sales_data=$this->get_sales_data($from_date, $to_date);
-
-
-		$data_to_update=array(
-			"Product $db_interval Acc Customers"=>$sales_data['customers'],
-			"Product $db_interval Acc Repeat Customers"=>$sales_data['repeat_customers'],
-			"Product $db_interval Acc Invoices"=>$sales_data['invoices'],
-			"Product $db_interval Acc Profit"=>$sales_data['profit'],
-			"Product $db_interval Acc Invoiced Amount"=>$sales_data['net'],
-			"Product $db_interval Acc Quantity Ordered"=>$sales_data['ordered'],
-			"Product $db_interval Acc Quantity Invoiced"=>$sales_data['invoiced'],
-			"Product $db_interval Acc Quantity Delivered"=>$sales_data['delivered'],
-			"Product DC $db_interval Acc Profit"=>$sales_data['dc_net'],
-			"Product DC $db_interval Acc Invoiced Amount"=>$sales_data['dc_profit']
-		);
-		$this->update( $data_to_update, 'no_history');
+		if ($this_year) {
+			$sales_data=$this->get_sales_data($from_date, $to_date);
 
 
+			$data_to_update=array(
+				"Product $db_interval Acc Customers"=>$sales_data['customers'],
+				"Product $db_interval Acc Repeat Customers"=>$sales_data['repeat_customers'],
+				"Product $db_interval Acc Invoices"=>$sales_data['invoices'],
+				"Product $db_interval Acc Profit"=>$sales_data['profit'],
+				"Product $db_interval Acc Invoiced Amount"=>$sales_data['net'],
+				"Product $db_interval Acc Quantity Ordered"=>$sales_data['ordered'],
+				"Product $db_interval Acc Quantity Invoiced"=>$sales_data['invoiced'],
+				"Product $db_interval Acc Quantity Delivered"=>$sales_data['delivered'],
+				"Product DC $db_interval Acc Profit"=>$sales_data['dc_net'],
+				"Product DC $db_interval Acc Invoiced Amount"=>$sales_data['dc_profit']
+			);
+			$this->update( $data_to_update, 'no_history');
 
-		if ($from_date_1yb ) {
+
+		}
+		if ($from_date_1yb and $last_year) {
 
 			$sales_data=$this->get_sales_data($from_date_1yb, $to_1yb);
 

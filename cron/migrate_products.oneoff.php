@@ -86,15 +86,15 @@ function fix_family_web_descriptions($db) {
 			if ($result2=$db->query($sql)) {
 				if ($row2 = $result2->fetch()) {
 
-                        if($row2['Product Family Description']!=$category->get('Product Category Description')){
-                        print $category->id.' '.$category->get('Category Store Key').'  '.$category->get('Code')."\n";
-                        
-                        $category->update(array('Product Category Description'=>$row2['Product Family Description']),'no_history');
-                        
-                        exit;
-                        }else{
-                       // print 'OK '.$category->id.' '.$category->get('Code')."\n";
-                        }
+					if ($row2['Product Family Description']!=$category->get('Product Category Description')) {
+						print $category->id.' '.$category->get('Category Store Key').'  '.$category->get('Code')."\n";
+
+						$category->update(array('Product Category Description'=>$row2['Product Family Description']), 'no_history');
+
+						exit;
+					}else {
+						// print 'OK '.$category->id.' '.$category->get('Code')."\n";
+					}
 
 				}
 			}else {
@@ -125,7 +125,7 @@ function fix_family_web_descriptions($db) {
 function create_data_tables($db) {
 
 
-$sql=sprintf('select `Store Key` from `Store Dimension`  ');
+	$sql=sprintf('select `Store Key` from `Store Dimension`  ');
 
 
 	if ($result=$db->query($sql)) {
@@ -197,6 +197,49 @@ $sql=sprintf('select `Store Key` from `Store Dimension`  ');
 			);
 			$db->exec($sql);
 			$sql=sprintf("insert into `Product Category DC Data` (`Product Category Key`) values (%d)",
+				$category->id
+
+			);
+			$db->exec($sql);
+
+
+
+			// $category->update_product_category_up_today_sales();
+
+
+
+
+
+		}
+
+	}else {print_r($error_info=$db->errorInfo());exit;}
+
+
+	$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Invoice"  ');
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+
+			$category=new Category($row['Category Key']);
+
+			$store=new Store($category->data['Category Store Key']);
+
+			$sql=sprintf("insert into `Invoice Category Dimension` (`Invoice Category Key`,`Invoice Category Store Key`,`Invoice Category Currency Code`,`Invoice Category Valid From`) values (%d,%d,%s,%s)",
+				$category->id,
+				$store->id,
+				prepare_mysql($store->get('Store Currency Code')),
+				prepare_mysql(gmdate('Y-m-d H:i:s'))
+			);
+			$db->exec($sql);
+
+
+
+			$sql=sprintf("insert into `Invoice Category Data` (`Invoice Category Key`) values (%d)",
+				$category->id
+
+			);
+			$db->exec($sql);
+			$sql=sprintf("insert into `Invoice Category DC Data` (`Invoice Category Key`) values (%d)",
 				$category->id
 
 			);

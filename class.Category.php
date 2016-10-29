@@ -172,9 +172,10 @@ class Category extends DB_Table{
 
 
 			}elseif ($this->data['Category Subject']=='Invoice') {
-				$this->subject_table_name='Supplier';
+				$this->subject_table_name='Invoice';
 
 				$sql=sprintf("select * from `Invoice Category Dimension` where `Invoice Category Key`=%d", $this->id);
+				
 				if ($result2=$this->db->query($sql)) {
 					if ($row = $result2->fetch()) {
 						$this->data=array_merge($this->data, $row);
@@ -232,6 +233,40 @@ class Category extends DB_Table{
 
 
 			$sql=sprintf("select * from `Product Category DC Data` where `Product Category Key`=%d", $this->id);
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					foreach ($row as $key=>$value) {
+						$this->data[$key]=$value;
+					}
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+
+		}
+		elseif ($this->data['Category Scope']=='Invoice') {
+
+
+			$sql=sprintf("select * from `Invoice Category Data` where `Invoice Category Key`=%d", $this->id);
+
+
+
+			if ($result=$this->db->query($sql)) {
+				if ($row = $result->fetch()) {
+					foreach ($row as $key=>$value) {
+						$this->data[$key]=$value;
+					}
+				}
+			}else {
+				print_r($error_info=$this->db->errorInfo());
+				exit;
+			}
+
+
+
+			$sql=sprintf("select * from `Invoice Category DC Data` where `Invoice Category Key`=%d", $this->id);
 			if ($result=$this->db->query($sql)) {
 				if ($row = $result->fetch()) {
 					foreach ($row as $key=>$value) {
@@ -438,6 +473,29 @@ class Category extends DB_Table{
 				);
 				$this->db->exec($sql);
 				$sql=sprintf("insert into `Product Category DC Data` (`Product Category Key`) values (%d)",
+					$this->id
+
+				);
+				$this->db->exec($sql);
+
+			}elseif ($this->data['Category Scope']=='Invoice') {
+				include_once 'class.Store.php';
+				$store=new Store($this->data['Category Store Key']);
+
+				$sql=sprintf("insert into `Invoice Category Dimension` (`Invoice Category Key`,`Invoice Category Store Key`,`Invoice Category Currency Code`,`Invoice Category Valid From`) values (%d,%d,%s,%s)",
+					$this->id,
+					$store->id,
+					prepare_mysql($store->get('Store Currency Code')),
+					prepare_mysql(gmdate('Y-m-d H:i:s'))
+				);
+				$this->db->exec($sql);
+
+				$sql=sprintf("insert into `Invoice Category Data` (`Invoice Category Key`) values (%d)",
+					$this->id
+
+				);
+				$this->db->exec($sql);
+				$sql=sprintf("insert into `Invoice Category DC Data` (`Invoice Category Key`) values (%d)",
 					$this->id
 
 				);
@@ -1764,12 +1822,16 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 			$this->update_table_field($field, $value, $options, 'Part Category', 'Part Category Data', $this->id);
 		}
 		elseif (array_key_exists($field, $this->base_data('Product Category Data'))) {
-			//print "++ $field $value\n";
-
 			$this->update_table_field($field, $value, $options, 'Product Category', 'Product Category Data', $this->id);
 		}
 		elseif (array_key_exists($field, $this->base_data('Product Category DC Data'))) {
 			$this->update_table_field($field, $value, $options, 'Product Category DC', 'Product Category DC Data', $this->id);
+		}
+		elseif (array_key_exists($field, $this->base_data('Invoice Category Data'))) {
+			$this->update_table_field($field, $value, $options, 'Invoice Category', 'Invoice Category Data', $this->id);
+		}
+		elseif (array_key_exists($field, $this->base_data('Invoice Category DC Data'))) {
+			$this->update_table_field($field, $value, $options, 'Invoice Category', 'Invoice Category DC Data', $this->id);
 		}
 		elseif (array_key_exists($field, $this->base_data('Supplier Category Data'))) {
 			$this->update_table_field($field, $value, $options, 'Supplier Category', 'Supplier Category Data', $this->id);
@@ -2142,9 +2204,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 
 
 		//print "updatiog cat ".$this->id."   \n";
-		$this->update_up_today();
-		$this->update_last_period();
-		$this->update_last_interval();
+		//$this->update_up_today();
+		//$this->update_last_period();
+		//$this->update_last_interval();
 	}
 
 

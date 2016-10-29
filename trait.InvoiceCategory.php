@@ -13,85 +13,58 @@
 
 trait InvoiceCategory {
 
-	function update_invoice_category_up_today_sales() {
-		if (!$this->skip_update_sales) {
-			$this->update_invoice_category_sales('Today');
-			$this->update_invoice_category_sales('Week To Day');
-			$this->update_invoice_category_sales('Month To Day');
-			$this->update_invoice_category_sales('Year To Day');
-		}
-	}
+	function get_invoice_sales_data($from_date, $to_date) {
 
-
-	function update_invoice_category_last_period_sales() {
-		if (!$this->skip_update_sales) {
-			$this->update_invoice_category_sales('Yesterday');
-			$this->update_invoice_category_sales('Last Week');
-			$this->update_invoice_category_sales('Last Month');
-		}
-	}
-
-
-	function update_invoice_category_interval_sales() {
-		if (!$this->skip_update_sales) {
-			$this->update_invoice_category_sales('Total');
-			$this->update_invoice_category_sales('3 Year');
-			$this->update_invoice_category_sales('1 Year');
-			$this->update_invoice_category_sales('6 Month');
-			$this->update_invoice_category_sales('1 Quarter');
-			$this->update_invoice_category_sales('1 Month');
-			$this->update_invoice_category_sales('10 Day');
-			$this->update_invoice_category_sales('1 Week');
-		}
-	}
-
-
-	function update_invoice_category_sales($interval) {
-
-		$to_date='';
-
-		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($this->db,$interval);
-
-
-		//   print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
-
-		$invoice_category_data["Invoice Category $db_interval Acc Discount Amount"]=0;
-		$invoice_category_data["Invoice Category $db_interval Acc Invoiced Amount"]=0;
-		$invoice_category_data["Invoice Category $db_interval Acc Invoices"]=0;
-		$invoice_category_data["Invoice Category $db_interval Acc Refunds"]=0;
-		$invoice_category_data["Invoice Category $db_interval Acc Paid"]=0;
-		$invoice_category_data["Invoice Category $db_interval Acc To Pay"]=0;
-
-		$invoice_category_data["Invoice Category $db_interval Acc Profit"]=0;
-		$invoice_category_data["Invoice Category DC $db_interval Acc Invoiced Amount"]=0;
-		$invoice_category_data["Invoice Category DC $db_interval Acc Discount Amount"]=0;
-		$invoice_category_data["Invoice Category DC $db_interval Acc Profit"]=0;
-
-		$sql=sprintf("select sum(if(`Invoice Paid`='Yes',1,0)) as paid  ,sum(if(`Invoice Paid`='No',1,0)) as to_pay  , sum(if(`Invoice Type`='Invoice',1,0)) as invoices  ,sum(if(`Invoice Type`!='Invoice'  ,1,0)) as refunds  ,IFNULL(sum(`Invoice Items Discount Amount`),0) as discounts,IFNULL(sum(`Invoice Total Net Amount`),0) net  ,IFNULL(sum(`Invoice Total Profit`),0) as profit ,IFNULL(sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`),0) as dc_discounts,IFNULL(sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`),0) dc_net  ,IFNULL(sum(`Invoice Total Profit`*`Invoice Currency Exchange`),0) as dc_profit from `Category Bridge` B left join  `Invoice Dimension` I  on ( `Subject Key`=`Invoice Key`)  where `Subject`='Invoice' and `Category Key`=%d and  `Invoice Store Key`=%d %s %s" ,
-			$this->id,
-			$this->data['Category Store Key'],
-
-			($from_date?sprintf('and `Invoice Date`>%s', prepare_mysql($from_date)):''),
-
-			($to_date?sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)):'')
+		$sales_data=array(
+			'discount_amount'=>0,
+			'amount'=>0,
+			'amount_refunded'=>0,
+			'invoices'=>0,
+			'refunds'=>0,
+			'paid'=>0,
+			'to_pay'=>0,
+			'profit'=>0,
+			'dc_amount'=>0,
+			'dc_amount_refunded'=>0,
+			'dc_discount_amount'=>0,
+			'dc_profit'=>0,
 
 		);
 
 
 
+
+
+		$sql=sprintf("select sum(if(`Invoice Paid`='Yes',1,0)) as paid  ,sum(if(`Invoice Paid`='No',1,0)) as to_pay  , sum(if(`Invoice Type`='Invoice',1,0)) as invoices  ,sum(if(`Invoice Type`!='Invoice'  ,1,0)) as refunds  ,IFNULL(sum(`Invoice Items Discount Amount`),0) as discounts,IFNULL(sum(`Invoice Total Net Amount`),0) net  ,IFNULL(sum(`Invoice Total Profit`),0) as profit ,IFNULL(sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`),0) as dc_discounts,IFNULL(sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`),0) dc_net  ,IFNULL(sum(`Invoice Total Profit`*`Invoice Currency Exchange`),0) as dc_profit,
+
+		IFNULL(sum( if(`Invoice Type`!='Invoice',  `Invoice Total Net Amount`,0)  ),0) refund_net ,
+		IFNULL(sum(  if(`Invoice Type`!='Invoice', `Invoice Total Net Amount`,0)  *`Invoice Currency Exchange`),0) dc_refund_net
+		 from `Category Bridge` B left join  `Invoice Dimension` I  on ( `Subject Key`=`Invoice Key`)  where `Subject`='Invoice' and `Category Key`=%d and  `Invoice Store Key`=%d %s %s" ,
+			$this->id,
+			$this->data['Category Store Key'],
+			($from_date?sprintf('and `Invoice Date`>%s', prepare_mysql($from_date)):''),
+			($to_date?sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)):'')
+		);
+
+		
+
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
-				$invoice_category_data["Invoice Category $db_interval Acc Discount Amount"]=$row["discounts"];
-				$invoice_category_data["Invoice Category $db_interval Acc Invoiced Amount"]=$row["net"];
-				$invoice_category_data["Invoice Category $db_interval Acc Invoices"]=$row["invoices"];
-				$invoice_category_data["Invoice Category $db_interval Acc Refunds"]=$row["refunds"];
-				$invoice_category_data["Invoice Category $db_interval Acc Paid"]=$row["paid"];
-				$invoice_category_data["Invoice Category $db_interval Acc To Pay"]=$row["to_pay"];
+				$sales_data['discount_amount']=$row['discounts'];
+				$sales_data['amount']=$row['net'];
+				$sales_data['amount_refunded']=$row['refund_net'];
 
-				$invoice_category_data["Invoice Category $db_interval Acc Profit"]=$row["profit"];
-				$invoice_category_data["Invoice Category DC $db_interval Acc Invoiced Amount"]=$row["dc_net"];
-				$invoice_category_data["Invoice Category DC $db_interval Acc Discount Amount"]=$row["dc_discounts"];
-				$invoice_category_data["Invoice Category DC $db_interval Acc Profit"]=$row["dc_profit"];
+				$sales_data['profit']=$row['profit'];
+				$sales_data['invoices']=$row['invoices'];
+				$sales_data['refunds']=$row['refunds'];
+
+				$sales_data['paid']=$row['paid'];
+				$sales_data['to_pay']=$row['to_pay'];
+
+				$sales_data['dc_discount_amount']=$row['dc_discounts'];
+				$sales_data['dc_amount']=$row['dc_net'];
+				$sales_data['dc_amount_refunded']=$row['dc_refund_net'];
+				$sales_data['dc_profit']=$row['dc_profit'];
 
 			}
 		}else {
@@ -103,108 +76,77 @@ trait InvoiceCategory {
 
 
 
-		$sql=sprintf("update `Invoice Category Dimension` set
-                     `Invoice Category $db_interval Acc Discount Amount`=%.2f,
-                     `Invoice Category $db_interval Acc Invoiced Amount`=%.2f,
-                     `Invoice Category $db_interval Acc Invoices`=%d,
-                     `Invoice Category $db_interval Acc Refunds`=%d,
-                     `Invoice Category $db_interval Acc Paid`=%d,
-                     `Invoice Category $db_interval Acc To Pay`=%d,
-
-                     `Invoice Category $db_interval Acc Profit`=%.2f
-                     where `Invoice Category Key`=%d "
-			, $invoice_category_data["Invoice Category $db_interval Acc Discount Amount"]
-			, $invoice_category_data["Invoice Category $db_interval Acc Invoiced Amount"]
-			, $invoice_category_data["Invoice Category $db_interval Acc Invoices"]
-			, $invoice_category_data["Invoice Category $db_interval Acc Refunds"]
-			, $invoice_category_data["Invoice Category $db_interval Acc Paid"]
-			, $invoice_category_data["Invoice Category $db_interval Acc To Pay"]
-
-			, $invoice_category_data["Invoice Category $db_interval Acc Profit"]
-			, $this->id
-		);
-
-		$this->db->exec($sql);
-		//print "$sql\n\n";
-		$sql=sprintf("update `Invoice Category Dimension` set
-                     `Invoice Category DC $db_interval Acc Discount Amount`=%.2f,
-                     `Invoice Category DC $db_interval Acc Invoiced Amount`=%.2f,
-                     `Invoice Category DC $db_interval Acc Profit`=%.2f
-                     where `Invoice Category Key`=%d "
-			, $invoice_category_data["Invoice Category DC $db_interval Acc Discount Amount"]
-			, $invoice_category_data["Invoice Category DC $db_interval Acc Invoiced Amount"]
-			, $invoice_category_data["Invoice Category DC $db_interval Acc Profit"]
-			, $this->id
-		);
-
-		$this->db->exec($sql);
 
 
 
-		if ($from_date_1yb) {
-			$invoice_category_data["Invoice Category $db_interval Acc 1YB Invoices"]=0;
-			$invoice_category_data["Invoice Category $db_interval Acc 1YB Discount Amount"]=0;
-			$invoice_category_data["Invoice Category $db_interval Acc 1YB Invoiced Amount"]=0;
-			$invoice_category_data["Invoice Category $db_interval Acc 1YB Profit"]=0;
-			$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Discount Amount"]=0;
-			$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Invoiced Amount"]=0;
-			$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Profit"]=0;
-
-			$sql=sprintf("select count(*) as invoices,sum(`Invoice Items Discount Amount`) as discounts,sum(`Invoice Total Net Amount`) net  ,sum(`Invoice Total Profit`) as profit,sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`) as dc_discounts,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) dc_net  ,sum(`Invoice Total Profit`*`Invoice Currency Exchange`) as dc_profit  from `Category Bridge` B left join  `Invoice Dimension` I  on ( `Subject Key`=`Invoice Key`)  where `Subject`='Invoice' and `Category Key`=%d and  `Invoice Store Key`=%d and  `Invoice Date`>%s and `Invoice Date`<%s" ,
-				$this->id,
-				$this->data['Category Store Key'],
-				prepare_mysql($from_date_1yb),
-				prepare_mysql($to_1yb)
-			);
-			// print "$sql\n\n";
-
-
-			if ($result=$this->db->query($sql)) {
-				if ($row = $result->fetch()) {
-					$invoice_category_data["Invoice Category $db_interval Acc 1YB Discount Amount"]=$row["discounts"];
-					$invoice_category_data["Invoice Category $db_interval Acc 1YB Invoiced Amount"]=$row["net"];
-					$invoice_category_data["Invoice Category $db_interval Acc 1YB Invoices"]=$row["invoices"];
-					$invoice_category_data["Invoice Category $db_interval Acc 1YB Profit"]=$row["profit"];
-					$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Invoiced Amount"]=$row["dc_net"];
-					$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Discount Amount"]=$row["dc_discounts"];
-					$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Profit"]=$row["dc_profit"];
-
-				}
-			}else {
-				print_r($error_info=$this->db->errorInfo());
-				exit;
-			}
+		return $sales_data;
 
 
 
-			$sql=sprintf("update `Invoice Category Dimension` set
-                         `Invoice Category $db_interval Acc 1YB Discount Amount`=%.2f,
-                         `Invoice Category $db_interval Acc 1YB Invoiced Amount`=%.2f,
-                         `Invoice Category $db_interval Acc 1YB Invoices`=%.2f,
-                         `Invoice Category $db_interval Acc 1YB Profit`=%.2f
-                         where `Invoice Category Key`=%d "
-				, $invoice_category_data["Invoice Category $db_interval Acc 1YB Discount Amount"]
-				, $invoice_category_data["Invoice Category $db_interval Acc 1YB Invoiced Amount"]
-				, $invoice_category_data["Invoice Category $db_interval Acc 1YB Invoices"]
-				, $invoice_category_data["Invoice Category $db_interval Acc 1YB Profit"]
-				, $this->id
+	}
+
+
+	function update_invoice_category_sales($interval, $this_year=true,$last_year=true) {
+
+		$to_date='';
+
+		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb)=calculate_interval_dates($this->db, $interval);
+
+
+		if ($this_year) {
+
+			$sales_data=$this->get_invoice_sales_data($from_date, $to_date);
+//print "$from_date, $to_date\n";
+//print_r($sales_data);
+			$data_to_update=array(
+				"Invoice Category $db_interval Acc Discount Amount"=>$sales_data['discount_amount'],
+				"Invoice Category $db_interval Acc Amount"=>$sales_data['amount'],
+				"Invoice Category $db_interval Acc Refunded Amount"=>$sales_data['amount_refunded'],
+				"Invoice Category $db_interval Acc Invoices"=>$sales_data['invoices'],
+				"Invoice Category $db_interval Acc Refunds"=>$sales_data['refunds'],
+
+				"Invoice Category $db_interval Acc Profit"=>$sales_data['profit'],
+				"Invoice Category DC $db_interval Acc Amount"=>$sales_data['dc_amount'],
+				"Invoice Category DC $db_interval Acc Refunded Amount"=>$sales_data['dc_amount_refunded'],
+				"Invoice Category DC $db_interval Acc Discount Amount"=>$sales_data['dc_discount_amount'],
+				"Invoice Category DC $db_interval Acc Profit"=>$sales_data['dc_profit']
 			);
 
-			$this->db->exec($sql);
-			// print "$sql\n";
-			$sql=sprintf("update `Invoice Category Dimension` set
-                         `Invoice Category DC $db_interval Acc 1YB Discount Amount`=%.2f,
-                         `Invoice Category DC $db_interval Acc 1YB Invoiced Amount`=%.2f,
-                         `Invoice Category DC $db_interval Acc 1YB Profit`=%.2f
-                         where `Invoice Category Key`=%d "
-				, $invoice_category_data["Invoice Category DC $db_interval Acc 1YB Discount Amount"]
-				, $invoice_category_data["Invoice Category DC $db_interval Acc 1YB Invoiced Amount"]
-				, $invoice_category_data["Invoice Category DC $db_interval Acc 1YB Profit"]
-				, $this->id
-			);
-			// print "$sql\n";
-			$this->db->exec($sql);
+			$this->update( $data_to_update, 'no_history');
+
 		}
+
+		if ($from_date_1yb  and $last_year) {
+
+
+			$sales_data=$this->get_invoice_sales_data($from_date_1yb, $to_date_1yb);
+
+			$data_to_update=array(
+				"Invoice Category $db_interval Acc 1YB Discount Amount"=>$sales_data['discount_amount'],
+				"Invoice Category $db_interval Acc 1YB Amount"=>$sales_data['amount'],
+				"Invoice Category $db_interval Acc 1YB Refunded Amount"=>$sales_data['amount_refunded'],
+				"Invoice Category $db_interval Acc 1YB Invoices"=>$sales_data['invoices'],
+				"Invoice Category $db_interval Acc 1YB Refunds"=>$sales_data['refunds'],
+
+				"Invoice Category $db_interval Acc 1YB Profit"=>$sales_data['profit'],
+				"Invoice Category DC $db_interval Acc 1YB Amount"=>$sales_data['dc_amount'],
+				"Invoice Category DC $db_interval Acc 1YB Refunded Amount"=>$sales_data['dc_amount_refunded'],
+				"Invoice Category DC $db_interval Acc 1YB Discount Amount"=>$sales_data['dc_discount_amount'],
+				"Invoice Category DC $db_interval Acc 1YB Profit"=>$sales_data['dc_profit']
+			);
+
+			$this->update( $data_to_update, 'no_history');
+
+
+		}
+
+
+
+
+
+
+
+
 
 
 	}
@@ -243,6 +185,78 @@ trait InvoiceCategory {
 		return $number_invoices;
 
 	}
+
+
+
+	function update_invoice_previous_years_data() {
+
+		foreach (range(1, 5) as $i) {
+			$data_iy_ago=$this->get_invoice_sales_data(date('Y-01-01 00:00:00', strtotime('-'.$i.' year')), date('Y-01-01 00:00:00', strtotime('-'.($i-1).' year')));
+
+
+			$data_to_update=array(
+				"Category Invoice $i Year Ago Discount Amount"=>$data_iy_ago['discount_amount'],
+				"Category Invoice $i Year Ago Amount"=>$data_iy_ago['amount'],
+				"Category Invoice $i Year Ago Refunded Amount"=>$data_iy_ago['amount_refunded'],
+				"Category Invoice $i Year Ago Invoices"=>$data_iy_ago['invoices'],
+				"Category Invoice $i Year Ago Refunds"=>$data_iy_ago['refunds'],
+				"Category Invoice $i Year Ago Profit"=>$data_iy_ago['profit'],
+				"Category Invoice DC $i Year Ago Amount"=>$data_iy_ago['dc_amount'],
+				"Category Invoice DC $i Year Ago Refunded Amount"=>$data_iy_ago['dc_amount_refunded'],
+				"Category Invoice DC $i Year Ago Discount Amount"=>$data_iy_ago['dc_discount_amount'],
+				"Category Invoice DC $i Year Ago Profit"=>$data_iy_ago['dc_profit']
+			);
+
+
+
+			$this->update( $data_to_update, 'no_history');
+		}
+
+	}
+
+
+	function update_invoice_previous_quarters_data() {
+
+
+		include_once 'utils/date_functions.php';
+
+		foreach (range(1, 4) as $i) {
+			$dates=get_previous_quarters_dates($i);
+			$dates_1yb=get_previous_quarters_dates($i+4);
+
+
+			$sales_data=$this->get_invoice_sales_data($dates['start'], $dates['end']);
+			$sales_data_1yb=$this->get_invoice_sales_data($dates_1yb['start'], $dates_1yb['end']);
+
+			$data_to_update=array(
+				"Category Invoice $i Quarter Ago Discount Amount"=>$sales_data['discount_amount'],
+				"Category Invoice $i Quarter Ago Amount"=>$sales_data['amount'],
+				"Category Invoice $i Quarter Ago Refunded Amount"=>$sales_data['amount_refunded'],
+				"Category Invoice $i Quarter Ago Invoices"=>$sales_data['invoices'],
+				"Category Invoice $i Quarter Ago Refunds"=>$sales_data['refunds'],
+				"Category Invoice $i Quarter Ago Profit"=>$sales_data['profit'],
+				"Category Invoice DC $i Quarter Ago Amount"=>$sales_data['dc_amount'],
+				"Category Invoice DC $i Quarter Ago Refunded Amount"=>$sales_data['dc_amount_refunded'],
+				"Category Invoice DC $i Quarter Ago Discount Amount"=>$sales_data['dc_discount_amount'],
+				"Category Invoice DC $i Quarter Ago Profit"=>$sales_data['dc_profit'],
+
+				"Category Invoice $i Quarter Ago 1YB Discount Amount"=>$sales_data_1yb['discount_amount'],
+				"Category Invoice $i Quarter Ago 1YB Amount"=>$sales_data_1yb['amount'],
+				"Category Invoice $i Quarter Ago 1YB Refunded Amount"=>$sales_data_1yb['amount_refunded'],
+				"Category Invoice $i Quarter Ago 1YB Invoices"=>$sales_data_1yb['invoices'],
+				"Category Invoice $i Quarter Ago 1YB Refunds"=>$sales_data_1yb['refunds'],
+				"Category Invoice $i Quarter Ago 1YB Profit"=>$sales_data_1yb['profit'],
+				"Category Invoice DC $i Quarter Ago 1YB Amount"=>$sales_data_1yb['dc_amount'],
+				"Category Invoice DC $i Quarter Ago 1YB Refunded Amount"=>$sales_data_1yb['dc_amount_refunded'],
+				"Category Invoice DC $i Quarter Ago 1YB Discount Amount"=>$sales_data_1yb['dc_discount_amount'],
+				"Category Invoice DC $i Quarter Ago 1YB Profit"=>$sales_data_1yb['dc_profit']
+			);
+			$this->update( $data_to_update, 'no_history');
+		}
+
+	}
+
+
 
 
 }

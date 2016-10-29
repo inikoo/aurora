@@ -3189,7 +3189,7 @@ class Invoice extends DB_Table {
 			if ($category->id) {
 				//print "HOLA";
 				$category->associate_subject($this->id);
-				$this->update_field_switcher('Invoice Category Key', $this->id, 'no_history');
+				$this->update_field_switcher('Invoice Category Key', $category->id, 'no_history');
 			}
 		}
 
@@ -3588,7 +3588,29 @@ class Invoice extends DB_Table {
 	}
 
 
-	function delete() {
+		function delete() {
+
+
+		$products=array();
+		$dates=array();
+		$customer_key=$this->get('Invoice Customer Key');
+		$store_key=$this->get('Invoice Store Key');
+		$invoice_category_key==$this->get('Invoice Category Key');
+
+		$sql=sprintf("select `Product ID`,`Invoice Date` from `Order Transaction Fact` where `Invoice Key`=%d", $this->id);
+
+
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+				$products[$row['Product ID']]=1;
+				$dates[$row['Invoice Date']]=1;
+
+
+
+			}
+		}
 
 
 		$orders=$this->get_orders_objects();
@@ -3687,7 +3709,12 @@ class Invoice extends DB_Table {
 		foreach ($dns as $dn) {
 
 			$dn->update_xhtml_invoices();
-			$dn->update(array('Delivery Note Invoiced'=>'No'));
+			$dn->update(array(
+					'Delivery Note Invoiced'=>'No',
+					'Delivery Note Invoiced Net DC Amountd'=>0,
+					'Delivery Note Invoiced Shipping DC Amount'=>0
+
+				));
 
 		}
 
@@ -3734,6 +3761,21 @@ class Invoice extends DB_Table {
 
 
 		}
+
+		include_once 'new_fork.php';
+		global $account_code;
+		$msg=new_housekeeping_fork('au_asset_sales',
+			array(
+				'type'=>'update_deleted_invoice_products_sales_data',
+				'products'=>$products,
+				'dates'=>$dates,
+				'customer_key'=>$customer_key,
+				'store_key'=>$store_key,
+				'invoice_category_key'=>$invoice_category_key
+			),
+			$account_code);
+
+
 
 		$this->deleted=true;
 	}

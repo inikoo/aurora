@@ -205,7 +205,7 @@ abstract class DB_Table {
 			$key_field='Part SKU';
 		}else if ($table_name=='Product' or $table_full_name=='Product Data' or $table_full_name=='Product DC Data') {
 			$key_field='Product ID';
-		}else if($table_name=='Supplier Production'){
+		}else if ($table_name=='Supplier Production') {
 			$key_field='Supplier Production Supplier Key';
 		}
 
@@ -285,8 +285,8 @@ abstract class DB_Table {
 				addslashes($key_field),
 				$table_key
 			);
-        
-    //   print "$sql\n";
+
+			//print "$sql\n";
 
 		}
 

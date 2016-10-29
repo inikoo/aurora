@@ -422,7 +422,7 @@ trait ProductCategory {
 
 
 
-	function update_product_category_sales($interval) {
+	function update_product_category_sales($interval, $this_year=true, $last_year=true) {
 
 		include_once 'utils/date_functions.php';
 
@@ -430,27 +430,27 @@ trait ProductCategory {
 
 		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($this->db, $interval);
 
+		if ($this_year) {
+
+			$sales_product_category_data=$this->get_product_category_sales_data($from_date, $to_date);
 
 
-		$sales_product_category_data=$this->get_product_category_sales_data($from_date, $to_date);
+			$data_to_update=array(
+				"Product Category $db_interval Acc Customers"=>$sales_product_category_data['customers'],
+				"Product Category $db_interval Acc Invoices"=>$sales_product_category_data['invoices'],
+				"Product Category $db_interval Acc Profit"=>$sales_product_category_data['profit'],
+				"Product Category $db_interval Acc Invoiced Amount"=>$sales_product_category_data['net'],
+				"Product Category $db_interval Acc Quantity Ordered"=>$sales_product_category_data['ordered'],
+				"Product Category $db_interval Acc Quantity Invoiced"=>$sales_product_category_data['invoiced'],
+				"Product Category $db_interval Acc Quantity Delivered"=>$sales_product_category_data['delivered'],
+				"Product Category DC $db_interval Acc Profit"=>$sales_product_category_data['dc_net'],
+				"Product Category DC $db_interval Acc Invoiced Amount"=>$sales_product_category_data['dc_profit']
+			);
+			$this->update( $data_to_update, 'no_history');
 
+		}
 
-		$data_to_update=array(
-			"Product Category $db_interval Acc Customers"=>$sales_product_category_data['customers'],
-			"Product Category $db_interval Acc Invoices"=>$sales_product_category_data['invoices'],
-			"Product Category $db_interval Acc Profit"=>$sales_product_category_data['profit'],
-			"Product Category $db_interval Acc Invoiced Amount"=>$sales_product_category_data['net'],
-			"Product Category $db_interval Acc Quantity Ordered"=>$sales_product_category_data['ordered'],
-			"Product Category $db_interval Acc Quantity Invoiced"=>$sales_product_category_data['invoiced'],
-			"Product Category $db_interval Acc Quantity Delivered"=>$sales_product_category_data['delivered'],
-			"Product Category DC $db_interval Acc Profit"=>$sales_product_category_data['dc_net'],
-			"Product Category DC $db_interval Acc Invoiced Amount"=>$sales_product_category_data['dc_profit']
-		);
-		$this->update( $data_to_update, 'no_history');
-
-
-
-		if ($from_date_1yb ) {
+		if ($from_date_1yb and $last_year) {
 
 			$sales_product_category_data=$this->get_product_category_sales_data($from_date_1yb, $to_1yb);
 
