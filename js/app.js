@@ -4,7 +4,7 @@
  Version 3.0*/
 
 var key_scope = false;
-
+var old_state_request = '';
 $(document).ready(function() {
 
 
@@ -40,15 +40,16 @@ function change_browser_history_state(request) {
         request = '/' + request
     }
 
-console.log(state.request+' '+request)
+console.log(old_state_request+' _> '+request)
 
-    if(state.request!=request){
+    if (old_state_request != request) {
 
-    window.top.history.pushState({
-        request: request
-    }, '', request)
-}
+        window.top.history.pushState({
+            request: request
+        }, '', request)
 
+        old_state_request = request
+    }
 }
 
 window.addEventListener('popstate', function(event) {
@@ -71,23 +72,23 @@ function change_subtab(subtab) {
 }
 
 
-function get_widget_details(element,widget,metadata){
+function get_widget_details(element, widget, metadata) {
 
- if (metadata == undefined) {
+    if (metadata == undefined) {
         metadata = {};
     }
-    
-    $('.widget').css('opacity',.4)
-        $(element).css('opacity',1)
 
-    var request = "/ar_views.php?tipo=widget_details&widget=" + widget + '&metadata=' + JSON.stringify(metadata) 
+    $('.widget').css('opacity', .4)
+    $(element).css('opacity', 1)
 
-console.log(request)
+    var request = "/ar_views.php?tipo=widget_details&widget=" + widget + '&metadata=' + JSON.stringify(metadata)
 
-   $.getJSON(request, function(data) {
+    console.log(request)
 
-      
-       $('#widget_details').html(data.widget_details).removeClass('hide');
+    $.getJSON(request, function(data) {
+
+
+        $('#widget_details').html(data.widget_details).removeClass('hide');
 
     });
 
@@ -179,6 +180,9 @@ function change_view(_request, metadata) {
         }
 
 
+        if(old_state_request == ''){
+        old_state_request=data.state.request
+        }
 
         change_browser_history_state(data.state.request)
         help()

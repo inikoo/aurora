@@ -434,31 +434,33 @@ trait PartCategory {
 	}
 
 
-	function update_part_category_sales($interval) {
+	function update_part_category_sales($interval, $this_year=true, $last_year=true) {
 
 
 		include_once 'utils/date_functions.php';
 
 		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($this->db, $interval);
 
-		$sales_data=$this->get_part_category_sales_data( $from_date, $to_date);
+		if ($this_year) {
 
-		$data_to_update=array(
-			"Part Category $db_interval Acc Customers"=>$sales_data['customers'],
-			"Part Category $db_interval Acc Repeat Customers"=>$sales_data['repeat_customers'],
-			"Part Category $db_interval Acc Deliveries"=>$sales_data['deliveries'],
-			"Part Category $db_interval Acc Profit"=>$sales_data['profit'],
-			"Part Category $db_interval Acc Invoiced Amount"=>$sales_data['invoiced_amount'],
-			"Part Category $db_interval Acc Required"=>$sales_data['required'],
-			"Part Category $db_interval Acc Dispatched"=>$sales_data['dispatched'],
-			"Part Category $db_interval Acc Keeping Days"=>$sales_data['keep_days'],
-			"Part Category $db_interval Acc With Stock Days"=>$sales_data['with_stock_days'],
-		);
+			$sales_data=$this->get_part_category_sales_data( $from_date, $to_date);
+
+			$data_to_update=array(
+				"Part Category $db_interval Acc Customers"=>$sales_data['customers'],
+				"Part Category $db_interval Acc Repeat Customers"=>$sales_data['repeat_customers'],
+				"Part Category $db_interval Acc Deliveries"=>$sales_data['deliveries'],
+				"Part Category $db_interval Acc Profit"=>$sales_data['profit'],
+				"Part Category $db_interval Acc Invoiced Amount"=>$sales_data['invoiced_amount'],
+				"Part Category $db_interval Acc Required"=>$sales_data['required'],
+				"Part Category $db_interval Acc Dispatched"=>$sales_data['dispatched'],
+				"Part Category $db_interval Acc Keeping Days"=>$sales_data['keep_days'],
+				"Part Category $db_interval Acc With Stock Days"=>$sales_data['with_stock_days'],
+			);
 
 
-		$this->update( $data_to_update, 'no_history');
-
-		if ($from_date_1yb) {
+			$this->update( $data_to_update, 'no_history');
+		}
+		if ($from_date_1yb and $last_year) {
 
 
 			$sales_data=$this->get_part_category_sales_data($from_date_1yb, $to_1yb);

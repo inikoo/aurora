@@ -132,7 +132,20 @@ class Store extends DB_Table {
 
 
 	function load_acc_data() {
-		$sql=sprintf("select * from `Store Data Dimension` where `Store Key`=%d", $this->id);
+		$sql=sprintf("select * from `Store Data`  where `Store Key`=%d", $this->id);
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				foreach ($row as $key=>$value) {
+					$this->data[$key]=$value;
+				}
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+		$sql=sprintf("select * from `Store DC Data`  where `Store Key`=%d", $this->id);
 
 		if ($result=$this->db->query($sql)) {
 			if ($row = $result->fetch()) {
@@ -391,9 +404,10 @@ class Store extends DB_Table {
 			$this->deleted=true;
 			$sql=sprintf("delete from `User Right Scope Bridge` where `Scope`='Store' and `Scope Key`=%d ", $this->id);
 			$this->db->exec($sql);
-			$sql=sprintf("delete from `Store Default Currency` where `Store Key`=%d ", $this->id);
+
+			$sql=sprintf("delete from `Store Data` where `Store Key`=%d ", $this->id);
 			$this->db->exec($sql);
-			$sql=sprintf("delete from `Store Data Dimension` where `Store Key`=%d ", $this->id);
+			$sql=sprintf("delete from `Store DC Data` where `Store Key`=%d ", $this->id);
 			$this->db->exec($sql);
 			$sql=sprintf("delete from `Invoice Category Dimension` where `Invoice Category Store Key`=%d ", $this->id);
 			$this->db->exec($sql);
@@ -469,6 +483,10 @@ class Store extends DB_Table {
 				if ($value!=$this->data[$field]) {
 					$this->update_field($field, $value, $options);
 				}
+			}elseif (array_key_exists($field, $this->base_data('Store Data'))   ) {
+				$this->update_table_field($field, $value, $options, 'Store', 'Store Data', $this->id);
+			}elseif (array_key_exists($field, $this->base_data('Store DC Data'))   ) {
+				$this->update_table_field($field, $value, $options, 'Store', 'Store DC Data', $this->id);
 			}
 
 		}
@@ -528,6 +546,19 @@ class Store extends DB_Table {
 
 			$sql="insert into `Store Data Currency` (`Store Key`) values(".$this->id.");";
 			$this->db->exec($sql);
+
+
+			$sql=sprintf("insert into `Store Data` (`Store Key`) values (%d)",
+				$this->id
+			);
+
+			$db->exec($sql);
+			$sql=sprintf("insert into `Store DC Data` (`Store Key`) values (%d)",
+				$this->id
+
+			);
+			$db->exec($sql);
+
 
 			/*
 
@@ -820,6 +851,9 @@ class Store extends DB_Table {
 
 	function update_orders() {
 
+
+		return;
+
 		$this->data['Store Total Acc Orders']=0;
 		$this->data['Store Dispatched Orders']=0;
 		$this->data['Store Cancelled Orders']=0;
@@ -1042,6 +1076,9 @@ class Store extends DB_Table {
 
 	function update_dispatch_times($interval) {
 
+
+		retrun;
+
 		$to_date='';
 
 		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($this->db, $interval);
@@ -1104,31 +1141,22 @@ class Store extends DB_Table {
 	}
 
 
+	function get_sales_data($from_date, $to_date) {
 
-	function update_sales_from_invoices($interval) {
+		$sales_data=array(
+			'discount_amount'=>0,
+			'amount'=>0,
+			'invoices'=>0,
+			'refunds'=>0,
+			'replacements'=>0,
+			'deliveries'=>0,
+			'profit'=>0,
+			'dc_amount'=>0,
+			'dc_discount_amount'=>0,
+			'dc_profit'=>0,
 
-		$to_date='';
-		
-		include_once('utils/date_functions.php');
+		);
 
-		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)=calculate_interval_dates($this->db, $interval);
-
-		setlocale(LC_ALL, 'en_GB');
-
-		//  print "$interval\t\t | $from_date | t\t todate:  $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
-
-
-
-		$this->data["Store $db_interval Acc Invoiced Discount Amount"]=0;
-		$this->data["Store $db_interval Acc Invoiced Amount"]=0;
-		$this->data["Store $db_interval Acc Invoices"]=0;
-		$this->data["Store $db_interval Acc Refunds"]=0;
-		$this->data["Store $db_interval Acc Replacements"]=0;
-		$this->data["Store $db_interval Acc Delivery Notes"]=0;
-		$this->data["Store $db_interval Acc Profit"]=0;
-		$this->data["Store DC $db_interval Acc Invoiced Amount"]=0;
-		$this->data["Store DC $db_interval Acc Invoiced Discount Amount"]=0;
-		$this->data["Store DC $db_interval Acc Profit"]=0;
 
 		$sql=sprintf("select sum(if(`Invoice Type`='Invoice',1,0))  as invoices, sum(if(`Invoice Type`='Refund',1,0))  as refunds,sum(`Invoice Items Discount Amount`) as discounts,sum(`Invoice Total Net Amount`) net  ,sum(`Invoice Total Profit`) as profit ,sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`) as dc_discounts,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) dc_net  ,sum(`Invoice Total Profit`*`Invoice Currency Exchange`) as dc_profit from `Invoice Dimension` where `Invoice Store Key`=%d %s %s" ,
 			$this->id,
@@ -1137,18 +1165,27 @@ class Store extends DB_Table {
 			($to_date?sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)):'')
 
 		);
-		$result=mysql_query($sql);
-		//print "$sql\n";
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$this->data["Store $db_interval Acc Invoiced Discount Amount"]=$row["discounts"];
-			$this->data["Store $db_interval Acc Invoiced Amount"]=$row["net"];
-			$this->data["Store $db_interval Acc Invoices"]=$row["invoices"];
-			$this->data["Store $db_interval Acc Refunds"]=$row["refunds"];
-			$this->data["Store $db_interval Acc Profit"]=$row["profit"];
-			$this->data["Store DC $db_interval Acc Invoiced Amount"]=$row["dc_net"];
-			$this->data["Store DC $db_interval Acc Invoiced Discount Amount"]=$row["dc_discounts"];
-			$this->data["Store DC $db_interval Acc Profit"]=$row["dc_profit"];
+
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$sales_data['discount_amount']=$row['discounts'];
+				$sales_data['amount']=$row['net'];
+				$sales_data['profit']=$row['profit'];
+				$sales_data['invoices']=$row['invoices'];
+				$sales_data['refunds']=$row['refunds'];
+				$sales_data['dc_discount_amount']=$row['dc_discounts'];
+				$sales_data['dc_amount']=$row['dc_net'];
+				$sales_data['dc_profit']=$row['dc_profit'];
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
+
+
 
 
 		$sql=sprintf("select count(*)  as replacements from `Delivery Note Dimension` where `Delivery Note Type` in ('Replacement & Shortages','Replacement','Shortages') and `Delivery Note Store Key`=%d %s %s" ,
@@ -1157,11 +1194,19 @@ class Store extends DB_Table {
 			($to_date?sprintf('and `Delivery Note Date`<%s', prepare_mysql($to_date)):'')
 
 		);
-		$result=mysql_query($sql);
 
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$this->data["Store $db_interval Acc Replacements"]=$row["replacements"];
+
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$sales_data['replacements']=$row['replacements'];
+
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
+
 
 		$sql=sprintf("select count(*)  as delivery_notes from `Delivery Note Dimension` where `Delivery Note Type` in ('Order') and `Delivery Note Store Key`=%d %s %s" ,
 			$this->id,
@@ -1169,146 +1214,157 @@ class Store extends DB_Table {
 			($to_date?sprintf('and `Delivery Note Date`<%s', prepare_mysql($to_date)):'')
 
 		);
-		$result=mysql_query($sql);
 
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$this->data["Store $db_interval Acc Delivery Notes"]=$row["delivery_notes"];
+		if ($result=$this->db->query($sql)) {
+			if ($row = $result->fetch()) {
+				$sales_data['deliveries']=$row['delivery_notes'];
+
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
 		}
 
 
-		$sql=sprintf("update `Store Data Dimension` set
-                     `Store $db_interval Acc Invoiced Discount Amount`=%.2f,
-                     `Store $db_interval Acc Invoiced Amount`=%.2f,
-                     `Store $db_interval Acc Invoices`=%d,
-                      `Store $db_interval Acc Refunds`=%d,
-                       `Store $db_interval Acc Replacements`=%d,
-                       `Store $db_interval Acc Delivery Notes`=%d,
-                    `Store $db_interval Acc Profit`=%.2f
-                     where `Store Key`=%d "
-			, $this->data["Store $db_interval Acc Invoiced Discount Amount"]
-			, $this->data["Store $db_interval Acc Invoiced Amount"]
-			, $this->data["Store $db_interval Acc Invoices"]
-			, $this->data["Store $db_interval Acc Refunds"]
-			, $this->data["Store $db_interval Acc Replacements"]
-			, $this->data["Store $db_interval Acc Delivery Notes"]
-			, $this->data["Store $db_interval Acc Profit"]
-			, $this->id
-		);
-
-			$this->db->exec($sql);
-
-		//print "$sql\n";
-
-		$sql=sprintf("update `Store Default Currency` set
-                     `Store DC $db_interval Acc Invoiced Discount Amount`=%.2f,
-                     `Store DC $db_interval Acc Invoiced Amount`=%.2f,
-                     `Store DC $db_interval Acc Profit`=%.2f
-                     where `Store Key`=%d "
-			, $this->data["Store DC $db_interval Acc Invoiced Discount Amount"]
-			, $this->data["Store DC $db_interval Acc Invoiced Amount"]
-			, $this->data["Store DC $db_interval Acc Profit"]
-			, $this->id
-		);
-		//print "$sql\n";
-			$this->db->exec($sql);
-
-
-		if ($from_date_1yb) {
-			$this->data["Store $db_interval Acc 1YB Invoices"]=0;
-			$this->data["Store $db_interval Acc 1YB Refunds"]=0;
-
-			$this->data["Store $db_interval Acc 1YB Replacements"]=0;
-			$this->data["Store $db_interval Acc 1YB Delivery Notes"]=0;
-
-			$this->data["Store $db_interval Acc 1YB Invoiced Discount Amount"]=0;
-			$this->data["Store $db_interval Acc 1YB Invoiced Amount"]=0;
-			$this->data["Store $db_interval Acc 1YB Profit"]=0;
-			$this->data["Store DC $db_interval Acc 1YB Invoiced Discount Amount"]=0;
-			$this->data["Store DC $db_interval Acc 1YB Invoiced Amount"]=0;
-			$this->data["Store DC $db_interval Acc 1YB Profit"]=0;
-
-			$sql=sprintf("select  sum(if(`Invoice Type`='Invoice',1,0)) as invoices,sum(if(`Invoice Type`='Refund',1,0)) as refunds,sum(`Invoice Items Discount Amount`) as discounts,sum(`Invoice Total Net Amount`) net  ,sum(`Invoice Total Profit`) as profit,sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`) as dc_discounts,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) dc_net  ,sum(`Invoice Total Profit`*`Invoice Currency Exchange`) as dc_profit from `Invoice Dimension` where `Invoice Store Key`=%d and `Invoice Date`>%s and `Invoice Date`<%s" ,
-				$this->id,
-				prepare_mysql($from_date_1yb),
-				prepare_mysql($to_1yb)
-			);
-
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$this->data["Store $db_interval Acc 1YB Invoiced Discount Amount"]=$row["discounts"];
-				$this->data["Store $db_interval Acc 1YB Invoiced Amount"]=$row["net"];
-				$this->data["Store $db_interval Acc 1YB Invoices"]=$row["invoices"];
-				$this->data["Store $db_interval Acc 1YB Refunds"]=$row["refunds"];
-				$this->data["Store $db_interval Acc 1YB Profit"]=$row["profit"];
-				$this->data["Store DC $db_interval Acc 1YB Invoiced Amount"]=$row["dc_net"];
-				$this->data["Store DC $db_interval Acc 1YB Invoiced Discount Amount"]=$row["dc_discounts"];
-				$this->data["Store DC $db_interval Acc 1YB Profit"]=$row["dc_profit"];
-			}
-
-
-			$sql=sprintf("select count(*)  as replacements from `Delivery Note Dimension` where `Delivery Note Type` in ('Replacement & Shortages','Replacement','Shortages') and `Delivery Note Store Key`=%d  and `Delivery Note Date`>%s and `Delivery Note Date`<%s" ,
-				$this->id,
-				prepare_mysql($from_date_1yb),
-				prepare_mysql($to_1yb)
-			);
-			$result=mysql_query($sql);
-
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$this->data["Store $db_interval Acc 1YB Replacements"]=$row["replacements"];
-			}
-
-			$sql=sprintf("select count(*)  as delivery_notes from `Delivery Note Dimension` where `Delivery Note Type` in ('Order') and `Delivery Note Store Key`=%d  and `Delivery Note Date`>%s and `Delivery Note Date`<%s" ,
-				$this->id,
-				prepare_mysql($from_date_1yb),
-				prepare_mysql($to_1yb)
-
-			);
-			$result=mysql_query($sql);
-
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$this->data["Store $db_interval Acc 1YB Delivery Notes"]=$row["delivery_notes"];
-			}
 
 
 
-			$sql=sprintf("update `Store Data Dimension` set
-                         `Store $db_interval Acc 1YB Invoiced Discount Amount`=%.2f,
-                         `Store $db_interval Acc 1YB Invoiced Amount`=%.2f,
-                         `Store $db_interval Acc 1YB Invoices`=%d,
-                           `Store $db_interval Acc 1YB Replacements`=%d,
-                             `Store $db_interval Acc 1YB Delivery Notes`=%d,
-                         `Store $db_interval Acc 1YB Refunds`=%d,
-                        `Store $db_interval Acc 1YB Profit`=%.2f
-                         where `Store Key`=%d "
-				, $this->data["Store $db_interval Acc 1YB Invoiced Discount Amount"]
-				, $this->data["Store $db_interval Acc 1YB Invoiced Amount"]
-				, $this->data["Store $db_interval Acc 1YB Invoices"]
-				, $this->data["Store $db_interval Acc 1YB Replacements"]
-				, $this->data["Store $db_interval Acc 1YB Delivery Notes"]
-				, $this->data["Store $db_interval Acc 1YB Refunds"]
-				, $this->data["Store $db_interval Acc 1YB Profit"]
-				, $this->id
-			);
+		return $sales_data;
 
-			$this->db->exec($sql);
-			//print "$sql\n";
-			$sql=sprintf("update `Store Default Currency` set
-                         `Store DC $db_interval Acc 1YB Invoiced Discount Amount`=%.2f,
-                         `Store DC $db_interval Acc 1YB Invoiced Amount`=%.2f,
-                         `Store DC $db_interval Acc 1YB Profit`=%.2f
-                         where `Store Key`=%d "
-				, $this->data["Store DC $db_interval Acc 1YB Invoiced Discount Amount"]
-				, $this->data["Store DC $db_interval Acc 1YB Invoiced Amount"]
-				, $this->data["Store DC $db_interval Acc 1YB Profit"]
-				, $this->id
-			);
-			// print "$sql\n";
-			$this->db->exec($sql);
-		}
 
-		return array(substr($from_date, -19, -9), date("Y-m-d"));
 
 	}
+
+
+	function update_sales_from_invoices($interval, $this_year=true, $last_year=true) {
+
+
+
+		include_once 'utils/date_functions.php';
+		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb)=calculate_interval_dates($this->db, $interval);
+
+		if ($this_year) {
+
+			$sales_data=$this->get_sales_data($from_date, $to_date);
+
+
+			$data_to_update=array(
+				"Store $db_interval Acc Invoiced Discount Amount"=>$sales_data['discount_amount'],
+				"Store $db_interval Acc Invoiced Amount"=>$sales_data['amount'],
+				"Store $db_interval Acc Invoices"=>$sales_data['invoices'],
+				"Store $db_interval Acc Refunds"=>$sales_data['refunds'],
+				"Store $db_interval Acc Replacements"=>$sales_data['replacements'],
+				"Store $db_interval Acc Delivery Notes"=>$sales_data['deliveries'],
+				"Store $db_interval Acc Profit"=>$sales_data['profit'],
+				"Store DC $db_interval Acc Invoiced Amount"=>$sales_data['dc_amount'],
+				"Store DC $db_interval Acc Invoiced Discount Amount"=>$sales_data['dc_discount_amount'],
+				"Store DC $db_interval Acc Profit"=>$sales_data['dc_profit']
+			);
+
+
+
+			$this->update( $data_to_update, 'no_history');
+		}
+
+		if ($from_date_1yb and $last_year) {
+
+
+			$sales_data=$this->get_sales_data($from_date_1yb, $to_date_1yb);
+
+			$data_to_update=array(
+				"Store $db_interval Acc 1YB Invoiced Discount Amount"=>$sales_data['discount_amount'],
+				"Store $db_interval Acc 1YB Invoiced Amount"=>$sales_data['amount'],
+				"Store $db_interval Acc 1YB Invoices"=>$sales_data['invoices'],
+				"Store $db_interval Acc 1YB Refunds"=>$sales_data['refunds'],
+				"Store $db_interval Acc 1YB Replacements"=>$sales_data['replacements'],
+				"Store $db_interval Acc 1YB Delivery Notes"=>$sales_data['deliveries'],
+				"Store $db_interval Acc 1YB Profit"=>$sales_data['profit'],
+				"Store DC $db_interval Acc 1YB Invoiced Amount"=>$sales_data['dc_amount'],
+				"Store DC $db_interval Acc 1YB Invoiced Discount Amount"=>$sales_data['dc_discount_amount'],
+				"Store DC $db_interval Acc 1YB Profit"=>$sales_data['dc_profit']
+			);
+
+			$this->update( $data_to_update, 'no_history');
+
+
+		}
+
+
+
+
+
+	}
+
+
+	function update_previous_years_data() {
+
+		foreach (range(1, 5) as $i) {
+			$data_iy_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-'.$i.' year')), date('Y-01-01 00:00:00', strtotime('-'.($i-1).' year')));
+
+
+			$data_to_update=array(
+				"Store $i Year Ago Invoiced Discount Amount"=>$data_iy_ago['discount_amount'],
+				"Store $i Year Ago Invoiced Amount"=>$data_iy_ago['amount'],
+				"Store $i Year Ago Invoices"=>$data_iy_ago['invoices'],
+				"Store $i Year Ago Refunds"=>$data_iy_ago['refunds'],
+				"Store $i Year Ago Replacements"=>$data_iy_ago['replacements'],
+				"Store $i Year Ago Delivery Notes"=>$data_iy_ago['deliveries'],
+				"Store $i Year Ago Profit"=>$data_iy_ago['profit'],
+				"Store DC $i Year Ago Invoiced Amount"=>$data_iy_ago['dc_amount'],
+				"Store DC $i Year Ago Invoiced Discount Amount"=>$data_iy_ago['dc_discount_amount'],
+				"Store DC $i Year Ago Profit"=>$data_iy_ago['dc_profit']
+			);
+
+
+
+			$this->update( $data_to_update, 'no_history');
+		}
+
+	}
+
+
+	function update_previous_quarters_data() {
+
+
+		include_once 'utils/date_functions.php';
+
+		foreach (range(1, 4) as $i) {
+			$dates=get_previous_quarters_dates($i);
+			$dates_1yb=get_previous_quarters_dates($i+4);
+
+
+			$sales_data=$this->get_sales_data($dates['start'], $dates['end']);
+			$sales_data_1yb=$this->get_sales_data($dates_1yb['start'], $dates_1yb['end']);
+
+			$data_to_update=array(
+				"Store $i Quarter Ago Invoiced Discount Amount"=>$sales_data['discount_amount'],
+				"Store $i Quarter Ago Invoiced Amount"=>$sales_data['amount'],
+				"Store $i Quarter Ago Invoices"=>$sales_data['invoices'],
+				"Store $i Quarter Ago Refunds"=>$sales_data['refunds'],
+				"Store $i Quarter Ago Replacements"=>$sales_data['replacements'],
+				"Store $i Quarter Ago Delivery Notes"=>$sales_data['deliveries'],
+				"Store $i Quarter Ago Profit"=>$sales_data['profit'],
+				"Store DC $i Quarter Ago Invoiced Amount"=>$sales_data['dc_amount'],
+				"Store DC $i Quarter Ago Invoiced Discount Amount"=>$sales_data['dc_discount_amount'],
+				"Store DC $i Quarter Ago Profit"=>$sales_data['dc_profit'],
+
+				"Store $i Quarter Ago 1YB Invoiced Discount Amount"=>$sales_data_1yb['discount_amount'],
+				"Store $i Quarter Ago 1YB Invoiced Amount"=>$sales_data_1yb['amount'],
+				"Store $i Quarter Ago 1YB Invoices"=>$sales_data_1yb['invoices'],
+				"Store $i Quarter Ago 1YB Refunds"=>$sales_data_1yb['refunds'],
+				"Store $i Quarter Ago 1YB Replacements"=>$sales_data_1yb['replacements'],
+				"Store $i Quarter Ago 1YB Delivery Notes"=>$sales_data_1yb['deliveries'],
+				"Store $i Quarter Ago 1YB Profit"=>$sales_data_1yb['profit'],
+				"Store DC $i Quarter Ago 1YB Invoiced Amount"=>$sales_data_1yb['dc_amount'],
+				"Store DC $i Quarter Ago 1YB Invoiced Discount Amount"=>$sales_data_1yb['dc_discount_amount'],
+				"Store DC $i Quarter Ago 1YB Profit"=>$sales_data_1yb['dc_profit']
+			);
+			$this->update( $data_to_update, 'no_history');
+		}
+
+	}
+
 
 
 	function get_from_date($period) {
@@ -2271,7 +2327,7 @@ class Store extends DB_Table {
 				$family=$root_category->create_category(array('Category Code'=>$data['Family Category Code']));
 				if ($family->id) {
 					$data['Product Family Category Key']=$family->id;
-					
+
 				}
 			}
 			unset($data['Family Category Code']);
@@ -2287,38 +2343,38 @@ class Store extends DB_Table {
 
 
 		if (isset($data['Parts']) and $data['Parts']!='') {
-		
-        include_once('class.Part.php');
+
+			include_once 'class.Part.php';
 			$product_parts=array();
 			foreach (preg_split('/\,/', $data['Parts']) as $part_data) {
 				$part_data=_trim($part_data);
-				if(preg_match('/(\d+)x\s+/',$part_data,$matches)){
-				  
-				    $ratio=$matches[1];
-				    $part_data=preg_replace('/(\d+)x\s+/','',$part_data);
-				}else{
-				    $ratio=1;
+				if (preg_match('/(\d+)x\s+/', $part_data, $matches)) {
+
+					$ratio=$matches[1];
+					$part_data=preg_replace('/(\d+)x\s+/', '', $part_data);
+				}else {
+					$ratio=1;
 				}
-				
-				$part=new Part('reference',_trim($part_data
-				));
-				
-				$product_parts[]=array('Ratio'=>$ratio,'Part SKU'=>$part->id,'Note'=>'');
-				
+
+				$part=new Part('reference', _trim($part_data
+					));
+
+				$product_parts[]=array('Ratio'=>$ratio, 'Part SKU'=>$part->id, 'Note'=>'');
+
 			}
 
-           $data['Product Parts']=json_encode($product_parts);
+			$data['Product Parts']=json_encode($product_parts);
 		}
 
-		
+
 
 		if (isset($data['Product Parts'])) {
 
 			include_once 'class.Part.php';
 			$product_parts=json_decode($data['Product Parts'], true);
-			
+
 			if ($product_parts and is_array($product_parts)) {
-//print_r($product_parts);
+				//print_r($product_parts);
 				foreach ($product_parts as $product_part) {
 					if (!is_array($product_part) or !isset($product_part['Part SKU'])  or !isset($product_part['Ratio']) or !isset($product_part['Note']) or !is_numeric($product_part['Part SKU']) or !is_string($product_part['Note'])  ) {
 
@@ -2333,7 +2389,7 @@ class Store extends DB_Table {
 					$part=new Part($product_part['Part SKU']);
 
 					if (!$part->id) {
-					
+
 						$this->error=true;
 						$this->msg='Part not found';
 						$this->error_code='part_not_found';
@@ -2393,22 +2449,22 @@ class Store extends DB_Table {
 
 				if ( $product_parts_data) {
 					$product->update_part_list($product_parts_data, 'no_history');
-					
-					
-					
+
+
+
 				}
 
 
-            
 
-                if($product->get('Product Number of Parts')==1){
-                    foreach ($product->get_parts('objects') as $part) {
-                    
-                       // print_r($part);
-                        $part->updated_linked_products();
-                    }
-                }
-            
+
+				if ($product->get('Product Number of Parts')==1) {
+					foreach ($product->get_parts('objects') as $part) {
+
+						// print_r($part);
+						$part->updated_linked_products();
+					}
+				}
+
 
 				if ($family_key) {
 					$product->update(array('Product Family Category Key'=>$family_key), 'no_history');
@@ -2452,7 +2508,7 @@ class Store extends DB_Table {
 			return $product;
 		}
 		else {
-$this->error=true;
+			$this->error=true;
 
 			$this->msg=$product->msg;
 

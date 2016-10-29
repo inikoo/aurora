@@ -51,33 +51,34 @@ trait SupplierCategory {
 	}
 
 
-	function update_supplier_category_sales($interval) {
+	function update_supplier_category_sales($interval, $this_year=true, $last_year=true) {
 
 		include_once 'utils/date_functions.php';
 		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb)=calculate_interval_dates($this->db, $interval);
 
 
+		if ($this_year) {
+			$sales_data=$this->get_supplier_category_sales_data($from_date, $to_date);
 
-		$sales_data=$this->get_supplier_category_sales_data($from_date, $to_date);
 
+			$data_to_update=array(
+				"Supplier Category $db_interval Acc Customers"=>$sales_data['customers'],
+				"Supplier Category $db_interval Acc Repeat Customers"=>$sales_data['repeat_customers'],
+				"Supplier Category $db_interval Acc Deliveries"=>$sales_data['deliveries'],
+				"Supplier Category $db_interval Acc Profit"=>$sales_data['profit'],
+				"Supplier Category $db_interval Acc Invoiced Amount"=>$sales_data['invoiced_amount'],
+				"Supplier Category $db_interval Acc Required"=>$sales_data['required'],
+				"Supplier Category $db_interval Acc Dispatched"=>$sales_data['dispatched'],
+				"Supplier Category $db_interval Acc Keeping Days"=>$sales_data['keep_days'],
+				"Supplier Category $db_interval Acc With Stock Days"=>$sales_data['with_stock_days'],
+			);
 
-		$data_to_update=array(
-			"Supplier Category $db_interval Acc Customers"=>$sales_data['customers'],
-			"Supplier Category $db_interval Acc Repeat Customers"=>$sales_data['repeat_customers'],
-			"Supplier Category $db_interval Acc Deliveries"=>$sales_data['deliveries'],
-			"Supplier Category $db_interval Acc Profit"=>$sales_data['profit'],
-			"Supplier Category $db_interval Acc Invoiced Amount"=>$sales_data['invoiced_amount'],
-			"Supplier Category $db_interval Acc Required"=>$sales_data['required'],
-			"Supplier Category $db_interval Acc Dispatched"=>$sales_data['dispatched'],
-			"Supplier Category $db_interval Acc Keeping Days"=>$sales_data['keep_days'],
-			"Supplier Category $db_interval Acc With Stock Days"=>$sales_data['with_stock_days'],
-		);
+			//print_r($data_to_update);
 
-		//print_r($data_to_update);
+			$this->update( $data_to_update, 'no_history');
 
-		$this->update( $data_to_update, 'no_history');
-
-		if ($from_date_1yb) {
+		}
+		if ($from_date_1yb and $last_year) {
 
 
 			$sales_data=$this->get_supplier_category_sales_data($from_date_1yb, $to_date_1yb);
@@ -324,7 +325,7 @@ trait SupplierCategory {
 			$supplier_number_parts=count(preg_split('/,/', $parts_skus));
 
 
-			
+
 
 			$parts_skus=$this->get_supplier_category_part_skus('in_use');
 
@@ -359,7 +360,7 @@ trait SupplierCategory {
 
 		}
 
-		
+
 
 		$this->update(array(
 				'Supplier Category Number Parts'=>$supplier_number_parts,
@@ -373,7 +374,7 @@ trait SupplierCategory {
 			), 'no_history');
 
 
-		
+
 
 
 	}

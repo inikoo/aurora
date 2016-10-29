@@ -2442,33 +2442,34 @@ class Part extends Asset{
 
 
 
-	function update_sales_from_invoices($interval) {
+	function update_sales_from_invoices($interval, $this_year=true, $last_year=true) {
 
 		include_once 'utils/date_functions.php';
 		list($db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb)=calculate_interval_dates($this->db, $interval);
 
 
+		if ($this_year) {
 
-		$sales_data=$this->get_sales_data($from_date, $to_date);
-
-
-		$data_to_update=array(
-			"Part $db_interval Acc Customers"=>$sales_data['customers'],
-			"Part $db_interval Acc Repeat Customers"=>$sales_data['repeat_customers'],
-			"Part $db_interval Acc Deliveries"=>$sales_data['deliveries'],
-			"Part $db_interval Acc Profit"=>$sales_data['profit'],
-			"Part $db_interval Acc Invoiced Amount"=>$sales_data['invoiced_amount'],
-			"Part $db_interval Acc Required"=>$sales_data['required'],
-			"Part $db_interval Acc Dispatched"=>$sales_data['dispatched'],
-			"Part $db_interval Acc Keeping Days"=>$sales_data['keep_days'],
-			"Part $db_interval Acc With Stock Days"=>$sales_data['with_stock_days'],
-		);
+			$sales_data=$this->get_sales_data($from_date, $to_date);
 
 
+			$data_to_update=array(
+				"Part $db_interval Acc Customers"=>$sales_data['customers'],
+				"Part $db_interval Acc Repeat Customers"=>$sales_data['repeat_customers'],
+				"Part $db_interval Acc Deliveries"=>$sales_data['deliveries'],
+				"Part $db_interval Acc Profit"=>$sales_data['profit'],
+				"Part $db_interval Acc Invoiced Amount"=>$sales_data['invoiced_amount'],
+				"Part $db_interval Acc Required"=>$sales_data['required'],
+				"Part $db_interval Acc Dispatched"=>$sales_data['dispatched'],
+				"Part $db_interval Acc Keeping Days"=>$sales_data['keep_days'],
+				"Part $db_interval Acc With Stock Days"=>$sales_data['with_stock_days'],
+			);
 
-		$this->update( $data_to_update, 'no_history');
 
-		if ($from_date_1yb) {
+
+			$this->update( $data_to_update, 'no_history');
+		}
+		if ($from_date_1yb and $last_year) {
 
 
 			$sales_data=$this->get_sales_data($from_date_1yb, $to_date_1yb);
@@ -2498,74 +2499,22 @@ class Part extends Asset{
 
 	function update_previous_years_data() {
 
-		$data_1y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-1 year')), date('Y-01-01 00:00:00'));
-		$data_2y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-2 year')), date('Y-01-01 00:00:00', strtotime('-1 year')));
-		$data_3y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-3 year')), date('Y-01-01 00:00:00', strtotime('-2 year')));
-		$data_4y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-4 year')), date('Y-01-01 00:00:00', strtotime('-3 year')));
-		$data_5y_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-5 year')), date('Y-01-01 00:00:00', strtotime('-4 year')));
+		foreach (range(1, 5) as $i) {
+			$data_iy_ago=$this->get_sales_data(date('Y-01-01 00:00:00', strtotime('-'.$i.' year')), date('Y-01-01 00:00:00', strtotime('-'.($i-1).' year')));
+			$data_to_update=array(
+				"Part $i Year Ago Customers"=>$data_iy_ago['customers'],
+				"Part $i Year Ago Repeat Customers"=>$data_iy_ago['repeat_customers'],
+				"Part $i Year Ago Deliveries"=>$data_iy_ago['deliveries'],
+				"Part $i Year Ago Profit"=>$data_iy_ago['profit'],
+				"Part $i Year Ago Invoiced Amount"=>$data_iy_ago['invoiced_amount'],
+				"Part $i Year Ago Required"=>$data_iy_ago['required'],
+				"Part $i Year Ago Dispatched"=>$data_iy_ago['dispatched'],
+				"Part $i Year Ago Keeping Day"=>$data_iy_ago['keep_days'],
+				"Part $i Year Ago With Stock Days"=>$data_iy_ago['with_stock_days'],
+			);
 
-
-
-
-		$data_to_update=array(
-			"Part 1 Year Ago Customers"=>$data_1y_ago['customers'],
-			"Part 1 Year Ago Repeat Customers"=>$data_1y_ago['repeat_customers'],
-			"Part 1 Year Ago Deliveries"=>$data_1y_ago['deliveries'],
-			"Part 1 Year Ago Profit"=>$data_1y_ago['profit'],
-			"Part 1 Year Ago Invoiced Amount"=>$data_1y_ago['invoiced_amount'],
-			"Part 1 Year Ago Required"=>$data_1y_ago['required'],
-			"Part 1 Year Ago Dispatched"=>$data_1y_ago['dispatched'],
-			"Part 1 Year Ago Keeping Day"=>$data_1y_ago['keep_days'],
-			"Part 1 Year Ago With Stock Days"=>$data_1y_ago['with_stock_days'],
-
-			"Part 2 Year Ago Customers"=>$data_2y_ago['customers'],
-			"Part 2 Year Ago Repeat Customers"=>$data_2y_ago['repeat_customers'],
-			"Part 2 Year Ago Deliveries"=>$data_2y_ago['deliveries'],
-			"Part 2 Year Ago Profit"=>$data_2y_ago['profit'],
-			"Part 2 Year Ago Invoiced Amount"=>$data_2y_ago['invoiced_amount'],
-			"Part 2 Year Ago Required"=>$data_2y_ago['required'],
-			"Part 2 Year Ago Dispatched"=>$data_2y_ago['dispatched'],
-			"Part 2 Year Ago Keeping Day"=>$data_2y_ago['keep_days'],
-			"Part 2 Year Ago With Stock Days"=>$data_2y_ago['with_stock_days'],
-
-			"Part 3 Year Ago Customers"=>$data_3y_ago['customers'],
-			"Part 3 Year Ago Repeat Customers"=>$data_3y_ago['repeat_customers'],
-			"Part 3 Year Ago Deliveries"=>$data_3y_ago['deliveries'],
-			"Part 3 Year Ago Profit"=>$data_3y_ago['profit'],
-			"Part 3 Year Ago Invoiced Amount"=>$data_3y_ago['invoiced_amount'],
-			"Part 3 Year Ago Required"=>$data_3y_ago['required'],
-			"Part 3 Year Ago Dispatched"=>$data_3y_ago['dispatched'],
-			"Part 3 Year Ago Keeping Day"=>$data_3y_ago['keep_days'],
-			"Part 3 Year Ago With Stock Days"=>$data_3y_ago['with_stock_days'],
-
-			"Part 4 Year Ago Customers"=>$data_4y_ago['customers'],
-			"Part 4 Year Ago Repeat Customers"=>$data_4y_ago['repeat_customers'],
-			"Part 4 Year Ago Deliveries"=>$data_4y_ago['deliveries'],
-			"Part 4 Year Ago Profit"=>$data_4y_ago['profit'],
-			"Part 4 Year Ago Invoiced Amount"=>$data_4y_ago['invoiced_amount'],
-			"Part 4 Year Ago Required"=>$data_4y_ago['required'],
-			"Part 4 Year Ago Dispatched"=>$data_4y_ago['dispatched'],
-			"Part 4 Year Ago Keeping Day"=>$data_4y_ago['keep_days'],
-			"Part 4 Year Ago With Stock Days"=>$data_4y_ago['with_stock_days'],
-
-			"Part 5 Year Ago Customers"=>$data_5y_ago['customers'],
-			"Part 5 Year Ago Repeat Customers"=>$data_5y_ago['repeat_customers'],
-			"Part 5 Year Ago Deliveries"=>$data_5y_ago['deliveries'],
-			"Part 5 Year Ago Profit"=>$data_5y_ago['profit'],
-			"Part 5 Year Ago Invoiced Amount"=>$data_5y_ago['invoiced_amount'],
-			"Part 5 Year Ago Required"=>$data_5y_ago['required'],
-			"Part 5 Year Ago Dispatched"=>$data_5y_ago['dispatched'],
-			"Part 5 Year Ago Keeping Day"=>$data_5y_ago['keep_days'],
-			"Part 5 Year Ago With Stock Days"=>$data_5y_ago['with_stock_days'],
-
-
-		);
-		$this->update( $data_to_update, 'no_history');
-
-
-
-
-
+			$this->update( $data_to_update, 'no_history');
+		}
 
 	}
 
@@ -2574,7 +2523,6 @@ class Part extends Asset{
 
 
 		include_once 'utils/date_functions.php';
-
 
 		foreach (range(1, 4) as $i) {
 			$dates=get_previous_quarters_dates($i);

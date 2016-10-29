@@ -68,8 +68,8 @@ function sales_overview($_data, $db, $user, $account) {
 		$fields="
 		`Invoice Category $period_tag Acc Refunds` as refunds,
 		`Invoice Category $period_tag Acc Invoices` as invoices,
-		`Invoice Category $period_tag Acc Invoiced Amount` as sales,
-		 `Invoice Category DC $period_tag Acc Invoiced Amount` as dc_sales,
+		`Invoice Category $period_tag Acc Amount` as sales,
+		 `Invoice Category DC $period_tag Acc Amount` as dc_sales,
      0 delivery_notes,
         0 delivery_notes_1yb,
 
@@ -94,12 +94,12 @@ function sales_overview($_data, $db, $user, $account) {
 		`Invoice Category $period_tag Acc 1YB Refunds` as refunds_1yb,
 
 	    `Invoice Category $period_tag Acc 1YB Invoices` as invoices_1yb,
-	    `Invoice Category $period_tag Acc 1YB Invoiced Amount` as sales_1yb,
-        `Invoice Category DC $period_tag Acc 1YB Invoiced Amount` as dc_sales_1yb
+	    `Invoice Category $period_tag Acc 1YB Amount` as sales_1yb,
+        `Invoice Category DC $period_tag Acc 1YB Amount` as dc_sales_1yb
                         ";
 
 		}
-		$sql="select  concat('cat',C.`Category Key`) record_key, C.`Category Key`,`Category Store Key`,`Store Currency Code` currency, $fields from `Invoice Category Dimension` IC left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) order by C.`Category Store Key` ,`Category Function Order`";
+		$sql="select  concat('cat',C.`Category Key`) record_key, C.`Category Key`,`Category Store Key`,`Store Currency Code` currency, $fields from `Invoice Category Dimension` IC left join `Invoice Category Data` ICD on (IC.`Invoice Category Key`=ICD.`Invoice Category Key`)  left join `Invoice Category DC Data` ICSCD on (IC.`Invoice Category Key`=ICSCD.`Invoice Category Key`)  left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) order by C.`Category Store Key` ,`Category Function Order`";
 
 
 
@@ -116,7 +116,7 @@ function sales_overview($_data, $db, $user, $account) {
 			$fields.='0 as refunds_1yb, 0 as replacements_1yb,0 as delivery_notes_1yb, 0 as invoices_1yb, 0 as sales_1yb, 0 as dc_sales_1yb';
 		}
 
-		$sql=sprintf("select  %s from `Store Dimension` S left join `Store Data Dimension` SD on (S.`Store Key`=SD.`Store Key`)left join `Store Default Currency` DC on (S.`Store Key`=DC.`Store Key`)", $fields);
+		$sql=sprintf("select  %s from `Store Dimension` S left join `Store Data` SD on (S.`Store Key`=SD.`Store Key`)left join `Store DC Data` DC on (S.`Store Key`=DC.`Store Key`)", $fields);
 
 	}
 
