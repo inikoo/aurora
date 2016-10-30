@@ -44,6 +44,9 @@ case 'discontinuing_parts':
 case 'in_process_parts':
 	parts(get_table_parameters(), $db, $user, 'in_process', $account);
 	break;
+case 'category_discontinued_parts':	
+	parts(get_table_parameters(), $db, $user, 'discontinued', $account);
+	break;
 case 'stock_transactions':
 	stock_transactions(get_table_parameters(), $db, $user);
 	break;

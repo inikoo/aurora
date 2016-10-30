@@ -30,7 +30,7 @@ $editor=array(
 	'Date'=>gmdate('Y-m-d H:i:s')
 );
 
-parts();
+part_families();
 
 
 function suppliers() {
@@ -120,7 +120,7 @@ function stores() {
 }
 
 
-function parts() {
+function part_families() {
 
 	global $db, $editor, $timeseries;
 
@@ -132,31 +132,7 @@ function parts() {
 
 			$category=new Category($row['Category Key']);
 
-			$skus=$category->get_part_skus();
-			if ($skus!='') {
-				$sql=sprintf("select min(`Date`) as date from `Inventory Transaction Fact` where `Part SKU` in (%s) ",
-					$skus
-				);
-
-
-				if ($result=$db->query($sql)) {
-					if ($row = $result->fetch()) {
-						if ($row['date']!='' and strtotime($row['date'])< strtotime($category->get('Part Category Valid From')) ) {
-
-							print "updating ".$category->get('Code')." from ".$row['date']."\n";
-
-							$category->update(array('Part Category Valid From'=>$row['date']), 'no_history');
-
-						}
-					}
-				}else {
-					print_r($error_info=$db->errorInfo());
-					exit;
-				}
-
-
-			}
-
+		
 
 
 			if (!array_key_exists($category->get('Category Scope').'Category', $timeseries))

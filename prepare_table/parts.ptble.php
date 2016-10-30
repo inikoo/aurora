@@ -21,7 +21,7 @@ $wheref='';
 
 $fields='';
 
-
+//print_r($parameters);
 
 if (isset($parameters['awhere']) and $parameters['awhere']) {
 
@@ -91,6 +91,7 @@ elseif ($parameters['parent']=='category') {
 }else {
 	exit("parent not found ".$parameters['parent']);
 }
+
 
 
 if (isset($extra_where))
@@ -246,6 +247,7 @@ $fields.="P.`Part SKU`,`Part Reference`,`Part Package Description`,`Part Current
 if(`Part Total Acc Customers`=0,0,  (`Part Total Acc Repeat Customers`/`Part Total Acc Customers`)) percentage_repeat_customer_total
 
 ";
+
 
 function parts_awhere($awhere) {
 
