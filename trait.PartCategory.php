@@ -10,6 +10,9 @@
  Version 3.0
 */
 
+require_once 'utils/date_functions.php';
+
+
 trait PartCategory {
 
 
@@ -20,7 +23,6 @@ trait PartCategory {
 			return;
 		}
 
-		require_once 'utils/date_functions.php';
 
 		$data['Timeseries Parent']='Category';
 		$data['Timeseries Parent Key']=$this->id;
@@ -97,7 +99,7 @@ trait PartCategory {
 
 			list($sold_amount, $deliveries, $skos)=$this->get_part_timeseries_record_data($timeseries, $date_frequency_period);
 
-
+			//print_r($date_frequency_period);
 			$_date=gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00')) ;
 
 			if ($skos!=0 or $deliveries!=0 or $sold_amount!=0) {
