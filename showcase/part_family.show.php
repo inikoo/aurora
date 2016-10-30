@@ -15,6 +15,7 @@ include_once 'utils/date_functions.php';
 
 function get_part_family_showcase($data, $smarty) {
 
+global $db;
 
 
 	$category=$data['_object'];
@@ -256,6 +257,31 @@ function get_part_family_showcase($data, $smarty) {
 	$smarty->assign('customers', $customers);
 
 	$smarty->assign('header_total_sales', sprintf(_('All sales since: %s'), $category->get('Valid From')));
+
+
+
+
+
+	$elements_numbers=array(
+		'status'=>array('InProcess'=>0, 'NotInUse'=>0, 'InUse'=>0, 'Discontinuing'=>0),
+	);
+
+
+
+
+	$sql=sprintf("select count(*) as number,`Part Status` as element from `Category Bridge` left join  `Part Dimension` P on (`Subject Key`=`Part SKU`) where `Subject`='Part' and  `Category Key`=%d   group by `Part Status` "
+		, $category->id);
+
+//print $sql;
+	foreach ($db->query($sql) as $row) {
+
+		$elements_numbers['status'][preg_replace('/\s/', '', $row['element'])]=number($row['number']);
+
+	}
+
+//print_r($elements_numbers);
+	$smarty->assign('elements_numbers', $elements_numbers);
+
 
 
 	return $smarty->fetch('showcase/part_family.tpl');

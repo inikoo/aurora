@@ -1290,6 +1290,8 @@ $tab_defaults=array(
 		'elements'=>$elements_options['parts'],
 	),
 
+
+
 	'inventory.discontinued_parts'=>array(
 		'view'=>'overview',
 		'sort_key'=>'to',
@@ -1335,6 +1337,15 @@ $tab_defaults=array(
 		'rpp'=>100,
 		'rpp_options'=>$default_rrp_options,
 		'f_field'=>'code'
+	),
+	'category.part.discontinued_subjects'=>array(
+		'view'=>'overview',
+		'sort_key'=>'to',
+		'sort_order'=>1,
+		'rpp'=>100,
+		'f_period'=>'all',
+		'rpp_options'=>$default_rrp_options,
+		'f_field'=>'reference'
 	),
 	'part.stock.transactions'=>array(
 		'view'=>'overview',

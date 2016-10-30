@@ -68,10 +68,92 @@ move_MSDS_attachments($db);
 set_unit_label($db);
 update_products_web_status($db);
 
-*/
 create_part_data_dimension($db);
 
+*/
+update_part_category_status($db);
 
+
+function update_part_category_status($db) {
+
+	$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" and `Category Key`=11899  ');
+	$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" order by  `Category Key` desc');
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+
+			$category=new Category($row['Category Key']);
+			$category->update_part_category_status();
+
+
+			$skus=$category->get_part_skus();
+			if ($skus!='') {
+				$sql=sprintf("select min(`Date`) as date from `Inventory Transaction Fact` where `Part SKU` in (%s) ",
+					$skus
+				);
+
+
+				if ($result=$db->query($sql)) {
+					if ($row = $result->fetch()) {
+						if ($row['date']!='' and strtotime($row['date'])< strtotime($category->get('Part Category Valid From')) ) {
+
+							print "updating ".$category->get('Code')." from ".$row['date']."\n";
+
+							$category->update(array('Part Category Valid From'=>$row['date']), 'no_history');
+
+						}
+					}
+				}else {
+					print_r($error_info=$db->errorInfo());
+					exit;
+				}
+
+
+			}
+
+
+
+			if ($category->get('Part Category Status')=='NotInUse') {
+
+
+				if ($skus!='') {
+					$sql=sprintf("select max(`Date`) as date from `Inventory Transaction Fact` where `Part SKU` in (%s) ",
+						$skus
+					);
+
+
+					if ($result=$db->query($sql)) {
+						if ($row = $result->fetch()) {
+							if ($row['date']!='' and strtotime($row['date'])> strtotime($category->get('Part Category Valid From')) ) {
+
+								print "updating ".$category->get('Code')." to ".$row['date']."\n";
+
+								$category->update(array('Part Category Valid To'=>$row['date']), 'no_history');
+
+							}
+						}
+					}else {
+						print_r($error_info=$db->errorInfo());
+						exit;
+					}
+
+
+				}
+
+
+
+
+			}
+
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		print $sql;
+		exit;
+	}
+}
 
 
 

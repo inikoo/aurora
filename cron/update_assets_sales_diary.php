@@ -13,6 +13,7 @@
 require_once 'common.php';
 require_once 'utils/aes.php';
 require_once 'utils/new_fork.php';
+require_once 'conf/timeseries.php';
 
 
 $default_DB_link=@mysql_connect($dns_host, $dns_user, $dns_pwd );
@@ -32,6 +33,61 @@ require_once 'class.Product.php';
 require_once 'class.Category.php';
 
 
+$editor=array(
+	'Author Name'=>'',
+	'Author Alias'=>'',
+	'Author Type'=>'',
+	'Author Key'=>'',
+	'User Key'=>0,
+	'Date'=>gmdate('Y-m-d H:i:s')
+);
+
+
+
+
+
+$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" and `Category Key`=11899  ');
+$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" order by  `Category Key` desc');
+
+if ($result=$db->query($sql)) {
+	foreach ($result as $row) {
+
+		$category=new Category($row['Category Key']);
+		print_r($category);
+
+		if ($category->get('Part Category Status')=='In Use') {
+
+
+
+			if (!array_key_exists($category->get('Category Scope').'Category', $timeseries))
+				continue;
+
+			$timeseries_data=$timeseries[$category->get('Category Scope').'Category'];
+			print_r($timeseries_data);
+			foreach ($timeseries_data as $timeserie_data) {
+
+				$editor['Date']=gmdate('Y-m-d H:i:s');
+				$timeserie_data['editor']=$editor;
+
+				$timeserie_data['Timeseries Parent']='Category';
+				$timeserie_data['Timeseries Parent Key']=$category->id;
+
+				$timeseries=new Timeseries('find', $data, 'create');
+				$category->update_part_timeseries_record($timeseries, gmdate('Y-m-d', strtotime('yesterday')), gmdate('Y-m-d', strtotime('yesterday')));
+				exit;
+			}
+		}
+	}
+
+}else {
+	print_r($error_info=$db->errorInfo());
+	print $sql;
+	exit;
+}
+
+
+
+exit;
 
 $sql=sprintf('update `Store Data` set `Store Yesterday Acc Invoiced Discount Amount`=`Store Today Acc Invoiced Discount Amount` ,`Store Today Acc Invoiced Discount Amount`=0  ');$db->exec($sql);
 $sql=sprintf('update `Store Data` set `Store Yesterday Acc Invoiced Amount`=`Store Today Acc Invoiced Amount` ,`Store Today Acc Invoiced Amount`=0  ');$db->exec($sql);
@@ -129,6 +185,7 @@ if ($result=$db->query($sql)) {
 }else {print_r($error_info=$db->errorInfo());exit;}
 
 
+/*
 
 $sql=sprintf('update `Product Data` set `Product Yesterday Acc Invoiced Amount`=`Product Today Acc Invoiced Amount` ,`Product Today Acc Invoiced Amount`=0  ');$db->exec($sql);
 $sql=sprintf('update `Product Data` set `Product Yesterday Acc Profit`=`Product Today Acc Profit`, `Product Today Acc Profit`=0 ');$db->exec($sql);
@@ -178,6 +235,8 @@ $sql=sprintf('update `Part Category Data` set `Part Category Yesterday Acc Deliv
 $sql=sprintf('update `Part Category Data` set `Part Category Yesterday Acc Customers`=`Part Category Today Acc Customers`,`Part Category Today Acc Customers`=0');$db->exec($sql);
 $sql=sprintf('update `Part Category Data` set `Part Category Yesterday Acc Repeat Customers`=`Part Category Today Acc Repeat Customers`,`Part Category Today Acc Repeat Customers`=0');$db->exec($sql);
 
+*/
+
 
 $intervals=array(  'Year To Day', 'Quarter To Day', 'Month To Day', 'Week To Day', '1 Year', '1 Quarter', '1 Month', '1 Week');
 foreach ($intervals as $interval) {
@@ -186,28 +245,32 @@ foreach ($intervals as $interval) {
 	$msg=new_housekeeping_fork('au_asset_sales',
 		array(
 			'type'=>'update_products_sales_data',
-			'interval'=>$interval
+			'interval'=>$interval,
+			'mode'=>array(false, true)
 		),
 		$account->get('Account Code'));
 
 	$msg=new_housekeeping_fork('au_asset_sales',
 		array(
 			'type'=>'update_parts_sales_data',
-			'interval'=>$interval
+			'interval'=>$interval,
+			'mode'=>array(false, true)
 		),
 		$account->get('Account Code'));
 
 	$msg=new_housekeeping_fork('au_asset_sales',
 		array(
 			'type'=>'update_part_categories_sales_data',
-			'interval'=>$interval
+			'interval'=>$interval,
+			'mode'=>array(false, true)
 		),
 		$account->get('Account Code'));
 
 	$msg=new_housekeeping_fork('au_asset_sales',
 		array(
 			'type'=>'update_product_categories_sales_data',
-			'interval'=>$interval
+			'interval'=>$interval,
+			'mode'=>array(false, true)
 		),
 		$account->get('Account Code'));
 

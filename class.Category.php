@@ -175,7 +175,7 @@ class Category extends DB_Table{
 				$this->subject_table_name='Invoice';
 
 				$sql=sprintf("select * from `Invoice Category Dimension` where `Invoice Category Key`=%d", $this->id);
-				
+
 				if ($result2=$this->db->query($sql)) {
 					if ($row = $result2->fetch()) {
 						$this->data=array_merge($this->data, $row);
@@ -986,6 +986,23 @@ class Category extends DB_Table{
 		case 'Part':
 
 			switch ($key) {
+
+			case 'Status':
+
+				switch ($this->data['Part Category Status']) {
+				case 'InUse':
+					return _('Active');
+					break;
+				case 'NotInUse':
+					return _('Discontinued');
+					break;
+				default:
+					return $this->data['Part Category Status'];
+					break;
+				}
+
+				break;
+
 			case 'Valid From':
 
 				return strftime("%a %e %b %Y", strtotime($this->data['Part Category '.$key].' +0:00'));
@@ -995,7 +1012,7 @@ class Category extends DB_Table{
 				break;
 			case 'Valid To':
 
-				if ($this->data['Product Category '.$key]=='') {
+				if ($this->data['Part Category '.$key]=='') {
 					return '';
 				}else {
 
@@ -1087,8 +1104,8 @@ class Category extends DB_Table{
 			}
 			return '';
 			break;
-			
-			case 'Supplier':
+
+		case 'Supplier':
 
 			switch ($key) {
 			case 'Valid From':
@@ -2899,7 +2916,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())",
 								);
 
 								$this->db->exec($sql);
-//print $sql;
+								//print $sql;
 								include_once 'class.Page.php';
 								$sql=sprintf("Select `Page Key` from `Page Store Dimension` where `Page Store Section Type`='Family' and  `Page Parent Key`=%d", $row['Product Family Key']);
 								$res2=mysql_query($sql);

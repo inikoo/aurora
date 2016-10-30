@@ -1566,7 +1566,8 @@ $modules=array(
 
 					'category.part.sales.plot'=>'category.part.sales',
 					'category.part.sales.history'=>'category.part.sales',
-					'category.part.sales.calendar'=>'category.part.sales'
+					'category.part.sales.calendar'=>'category.part.sales',
+					'category.part.sales.info'=>'category.part.sales'
 
 				),
 				'tabs'=>array(
@@ -1578,12 +1579,14 @@ $modules=array(
 							'category.part.sales.plot'=>array('label'=>_('Plot')),
 							'category.part.sales.history'=>array('label'=>_('Sales history')),
 							'category.part.sales.calendar'=>array('label'=>_('Calendar')),
+							'category.part.sales.info'=>array('label'=>_('Info') ,'icon'=>'info', 'class'=>'right icon_only'),
 
 						)
 
 					),
 
 					'category.subjects'=>array('label'=>_('Parts')),
+					'category.part.discontinued_subjects'=>array('label'=>_('Discontinued parts')),
 					'category.categories'=>array('label'=>_('Subcategories')),
 					'part_family.product_families'=>array('label'=>_('Product families')),
 

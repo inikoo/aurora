@@ -16,6 +16,7 @@ trait PartCategory {
 	function create_part_timeseries($data) {
 
 
+		require_once 'utils/date_functions.php';
 
 		$data['Timeseries Parent']='Category';
 		$data['Timeseries Parent Key']=$this->id;
@@ -24,9 +25,6 @@ trait PartCategory {
 		if ($timeseries->new or true) {
 
 
-
-
-			require_once 'utils/date_functions.php';
 
 			if ($this->data['Part Category Valid From']!='') {
 				$from=date('Y-m-d', strtotime($this->get('Part Category Valid From')));
@@ -70,70 +68,63 @@ trait PartCategory {
 			if ($from and $to) {
 
 
-				$dates=date_frequency_range($this->db, $timeseries->get('Timeseries Frequency'), $from, $to);
-
-				foreach ($dates as $date_frequency_period) {
-
-					list($sold_amount, $deliveries, $skos)=$this->get_part_timeseries_record_data($timeseries, $date_frequency_period);
-
-
-					$_date=gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00')) ;
-
-					if ($skos!=0 or $deliveries!=0 or $sold_amount!=0) {
-						list($timeseries_record_key, $date)=$timeseries->create_record(array('Timeseries Record Date'=> $_date ));
-						$sql=sprintf('update `Timeseries Record Dimension` set
-                    `Timeseries Record Integer A`=%d ,
-                    `Timeseries Record Integer B`=%d ,
-                    `Timeseries Record Float A`=%.2f ,
-
-                    `Timeseries Record Type`=%s
-                    where `Timeseries Record Key`=%d
-                      ',
-							$deliveries,
-							$skos,
-							$sold_amount,
-							prepare_mysql('Data'),
-							$timeseries_record_key
-
-						);
-
-						$update_sql = $this->db->prepare($sql);
-						$update_sql->execute();
-
-						if ($update_sql->rowCount() or $date==date('Y-m-d')) {
-							$timeseries->update(array('Timeseries Updated'=>gmdate('Y-m-d H:i:s')), 'no_history');
-						}
-
-					}else {
-						$sql=sprintf('delete from `Timeseries Record Dimension` where `Timeseries Record Timeseries Key`=%d and `Timeseries Record Date`=%s ',
-							$timeseries->id,
-							prepare_mysql($_date)
-						);
-
-						$update_sql = $this->db->prepare($sql);
-						$update_sql->execute();
-						if ($update_sql->rowCount()) {
-							$timeseries->update(array('Timeseries Updated'=>gmdate('Y-m-d H:i:s')), 'no_history');
-
-						}
-
-					}
-					$timeseries->update_stats();
-					//$updated=$this->update_product_timeseries_record($timeseries, $timeseries_record_key, $date);
-
-					//$timeseries->update_stats();
-					//if ($updated) {
-					// $timeseries->update(array('Timeseries Updated'=>gmdate('Y-m-d H:i:s')), 'no_history');
-					//}
-
-				}
+				$this->update_part_timeseries_record($timeseries, $to, $from);
 
 
 			}
 
-			if ($timeseries->get('Timeseries Number Records')==0)
+			if ($timeseries->get('Timeseries Number Records')==0) {
 				$timeseries->update(array('Timeseries Updated'=>gmdate('Y-m-d H:i:s')), 'no_history');
+			}
 
+		}
+
+	}
+
+
+	function update_part_timeseries_record($timeseries, $to, $from) {
+
+		$dates=date_frequency_range($this->db, $timeseries->get('Timeseries Frequency'), $from, $to);
+		foreach ($dates as $date_frequency_period) {
+
+			list($sold_amount, $deliveries, $skos)=$this->get_part_timeseries_record_data($timeseries, $date_frequency_period);
+
+
+			$_date=gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00')) ;
+
+			if ($skos!=0 or $deliveries!=0 or $sold_amount!=0) {
+				list($timeseries_record_key, $date)=$timeseries->create_record(array('Timeseries Record Date'=> $_date ));
+				$sql=sprintf('update `Timeseries Record Dimension` set `Timeseries Record Integer A`=%d , `Timeseries Record Integer B`=%d , `Timeseries Record Float A`=%.2f , `Timeseries Record Type`=%s  where `Timeseries Record Key`=%d',
+					$deliveries,
+					$skos,
+					$sold_amount,
+					prepare_mysql('Data'),
+					$timeseries_record_key
+
+				);
+
+				$update_sql = $this->db->prepare($sql);
+				$update_sql->execute();
+
+				if ($update_sql->rowCount() or $date==date('Y-m-d')) {
+					$timeseries->update(array('Timeseries Updated'=>gmdate('Y-m-d H:i:s')), 'no_history');
+				}
+
+			}else {
+				$sql=sprintf('delete from `Timeseries Record Dimension` where `Timeseries Record Timeseries Key`=%d and `Timeseries Record Date`=%s ',
+					$timeseries->id,
+					prepare_mysql($_date)
+				);
+
+				$update_sql = $this->db->prepare($sql);
+				$update_sql->execute();
+				if ($update_sql->rowCount()) {
+					$timeseries->update(array('Timeseries Updated'=>gmdate('Y-m-d H:i:s')), 'no_history');
+
+				}
+
+			}
+			$timeseries->update_stats();
 
 		}
 
@@ -189,8 +180,6 @@ trait PartCategory {
 
 
 
-
-
 		if ($part_skus=='') {
 			return array(0, 0, 0);
 		}
@@ -199,9 +188,7 @@ trait PartCategory {
 
 
 
-			$sql=sprintf("select count(distinct `Delivery Note Key`)  as deliveries,sum(`Amount In`) net,sum(`Inventory Transaction Quantity`) skos
-
-			from `Inventory Transaction Fact` where `Part SKU` in (%s) and `Inventory Transaction Type`='Sale' and  `Date`>=%s  and   `Date`<=%s  " ,
+			$sql=sprintf("select count(distinct `Delivery Note Key`)  as deliveries,sum(`Amount In`) net,sum(`Inventory Transaction Quantity`) skos from `Inventory Transaction Fact` where `Part SKU` in (%s) and `Inventory Transaction Type`='Sale' and  `Date`>=%s  and   `Date`<=%s  " ,
 				$part_skus,
 				prepare_mysql($date_frequency_period['from']),
 				prepare_mysql($date_frequency_period['to'])
@@ -305,7 +292,7 @@ trait PartCategory {
 	function update_part_category_status() {
 
 		$elements_numbers=array(
-			'In Use'=>0, 'Not In Use'=>0
+			'In Process'=>0, 'Not In Use'=>0, 'In Use'=>0, 'Discontinuing'=>0
 		);
 
 		$sql=sprintf("select count(*) as num ,`Part Status` from  `Part Dimension` P left join `Category Bridge` B on (P.`Part SKU`=B.`Subject Key`)  where B.`Category Key`=%d and `Subject`='Part' group by  `Part Status`   ",
@@ -323,18 +310,14 @@ trait PartCategory {
 
 
 
-		if ($elements_numbers['Not In Use']>0 and $elements_numbers['In Use']==0) {
-			$this->data['Part Category Status`']='NotInUse';
+		if ($elements_numbers['Not In Use']>0 and $elements_numbers['In Use']==0 and $elements_numbers['In Process']==0 and $elements_numbers['Discontinuing']==0 ) {
+			$status='NotInUse';
 		}else {
-			$this->data['Part Category Status`']='InUse';
+			$status='InUse';
 		}
 
-		$sql=sprintf("update `Part Category Dimension` set `Part Category Status`=%s  where `Part Category Key`=%d",
-			prepare_mysql($this->data['Part Category Status`']),
-			$this->id
-		);
+		$this->update(array('Part Category Status'=>$status), 'no_hsitory');
 
-		$this->db->exec($sql);
 
 
 	}
