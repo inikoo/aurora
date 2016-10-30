@@ -31,6 +31,9 @@ mysql_query("SET time_zone='+0:00'");
 
 require_once 'class.Product.php';
 require_once 'class.Category.php';
+require_once 'class.Timeserie.php';
+require_once 'class.Store.php';
+require_once 'class.Part.php';
 
 
 $editor=array(
@@ -46,35 +49,55 @@ $editor=array(
 
 
 
-$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" and `Category Key`=11899  ');
 $sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" order by  `Category Key` desc');
 
 if ($result=$db->query($sql)) {
 	foreach ($result as $row) {
-
 		$category=new Category($row['Category Key']);
-		print_r($category);
-
-		if ($category->get('Part Category Status')=='In Use') {
-
-
-
+		if ($category->get('Part Category Status')!='NotInUse' or date('Y-m-d')==date('Y-m-d',strtotime($category->get('Part Category Valid To').' +0:00')) ) {
 			if (!array_key_exists($category->get('Category Scope').'Category', $timeseries))
 				continue;
 
 			$timeseries_data=$timeseries[$category->get('Category Scope').'Category'];
-			print_r($timeseries_data);
+			//print_r($timeseries_data);
 			foreach ($timeseries_data as $timeserie_data) {
 
 				$editor['Date']=gmdate('Y-m-d H:i:s');
 				$timeserie_data['editor']=$editor;
-
 				$timeserie_data['Timeseries Parent']='Category';
 				$timeserie_data['Timeseries Parent Key']=$category->id;
+				$timeseries=new Timeseries('find', $timeserie_data, 'create');
+				$category->update_part_timeseries_record($timeseries, gmdate('Y-m-d', strtotime('now -1 day')), gmdate('Y-m-d', strtotime('now -1 day')));				
+			}
+		}
+	}
 
-				$timeseries=new Timeseries('find', $data, 'create');
-				$category->update_part_timeseries_record($timeseries, gmdate('Y-m-d', strtotime('yesterday')), gmdate('Y-m-d', strtotime('yesterday')));
-				exit;
+}else {
+	print_r($error_info=$db->errorInfo());
+	print $sql;
+	exit;
+}
+
+
+$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Product" order by  `Category Key` desc');
+
+if ($result=$db->query($sql)) {
+	foreach ($result as $row) {
+		$category=new Category($row['Category Key']);
+		if ($category->get('Product Category Status')!='Discontinued' or date('Y-m-d')==date('Y-m-d',strtotime($category->get('Product Category Valid To').' +0:00')) ) {
+			if (!array_key_exists($category->get('Category Scope').'Category', $timeseries))
+				continue;
+
+			$timeseries_data=$timeseries[$category->get('Category Scope').'Category'];
+			//print_r($timeseries_data);
+			foreach ($timeseries_data as $timeserie_data) {
+
+				$editor['Date']=gmdate('Y-m-d H:i:s');
+				$timeserie_data['editor']=$editor;
+				$timeserie_data['Timeseries Parent']='Category';
+				$timeserie_data['Timeseries Parent Key']=$category->id;
+				$timeseries=new Timeseries('find', $timeserie_data, 'create');
+				$category->update_product_timeseries_record($timeseries, gmdate('Y-m-d', strtotime('now -1 day')), gmdate('Y-m-d', strtotime('now -1 day')));				
 			}
 		}
 	}
@@ -87,7 +110,7 @@ if ($result=$db->query($sql)) {
 
 
 
-exit;
+
 
 $sql=sprintf('update `Store Data` set `Store Yesterday Acc Invoiced Discount Amount`=`Store Today Acc Invoiced Discount Amount` ,`Store Today Acc Invoiced Discount Amount`=0  ');$db->exec($sql);
 $sql=sprintf('update `Store Data` set `Store Yesterday Acc Invoiced Amount`=`Store Today Acc Invoiced Amount` ,`Store Today Acc Invoiced Amount`=0  ');$db->exec($sql);
