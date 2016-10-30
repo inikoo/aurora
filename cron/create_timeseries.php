@@ -30,12 +30,13 @@ $editor=array(
 	'Date'=>gmdate('Y-m-d H:i:s')
 );
 
-part_families();
+families();
+//part_families();
 
 
 function suppliers() {
 
-	global $db, $editor;
+	global $db, $editor, $timeseries;
 
 	$sql=sprintf('select `Supplier Key` from `Supplier Dimension`  ');
 
@@ -64,7 +65,7 @@ function suppliers() {
 
 function families() {
 
-	global $db, $editor;
+	global $db, $editor, $timeseries;
 
 	$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Product" and `Category Key`=14797  ');
 	$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Product" ');
@@ -78,6 +79,7 @@ function families() {
 				continue;
 
 			$timeseries_data=$timeseries[$category->get('Category Scope').'Category'];
+			print "creating ".$category->get('Code')." category \n";
 
 			foreach ($timeseries_data as $timeserie_data) {
 
@@ -96,7 +98,7 @@ function families() {
 
 function stores() {
 
-	global $db, $editor;
+	global $db, $editor, $timeseries;
 	$sql=sprintf('select `Store Key` from `Store Dimension` ');
 
 	if ($result=$db->query($sql)) {

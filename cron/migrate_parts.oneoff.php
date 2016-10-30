@@ -88,7 +88,7 @@ function update_part_category_status($db) {
 
 			$skus=$category->get_part_skus();
 			if ($skus!='') {
-				$sql=sprintf("select min(`Date`) as date from `Inventory Transaction Fact` where `Part SKU` in (%s) ",
+				$sql=sprintf("select min(`Date`) as date from `Inventory Transaction Fact` where `Part SKU` in (%s) and `Date` is not null and `Date`!='0000-00-00 00:00:00'",
 					$skus
 				);
 
@@ -117,7 +117,7 @@ function update_part_category_status($db) {
 
 
 				if ($skus!='') {
-					$sql=sprintf("select max(`Date`) as date from `Inventory Transaction Fact` where `Part SKU` in (%s) ",
+					$sql=sprintf("select max(`Date`) as date from `Inventory Transaction Fact` where `Part SKU` in (%s) and `Date` is not null and `Date`!='0000-00-00 00:00:00'",
 						$skus
 					);
 

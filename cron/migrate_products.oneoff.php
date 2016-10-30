@@ -61,8 +61,97 @@ update_cost($db);
 create_data_tables($db);
 
 */
-create_data_tables($db);
+//create_data_tables($db);
 //fix_family_web_descriptions($db);
+
+
+update_product_category_status($db);
+
+
+function update_product_category_status($db) {
+
+	$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Product" and `Category Code`="CCS"  ');
+	$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Product" order by  `Category Key` desc');
+
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+
+			$category=new Category($row['Category Key']);
+			$category->update_product_category_status();
+			$category->update_product_stock_status();
+
+
+			$product_ids=$category->get_product_ids();
+			if ($product_ids!='') {
+				$sql=sprintf("select min(`Order Date`) as date from `Order Transaction Fact` where `Product ID` in (%s) and `Order Date` is not null and `Order Date`!='0000-00-00 00:00:00'",
+					$product_ids
+				);
+
+
+//print "$sql\n";
+				if ($result=$db->query($sql)) {
+					if ($row = $result->fetch()) {
+						if ($row['date']!='' and strtotime($row['date'])< strtotime($category->get('Product Category Valid From')) ) {
+
+							print "updating ".$category->get('Code')." from ".$row['date']."\n";
+
+							$category->update(array('Product Category Valid From'=>$row['date']), 'no_history');
+
+						}
+					}
+				}else {
+					print_r($error_info=$db->errorInfo());
+					exit;
+				}
+
+
+			}
+
+
+
+			if ($category->get('Product Category Status')=='Discontinued') {
+
+
+				if ($product_ids!='') {
+					$sql=sprintf("select max(`Order Date`) as date from `Order Transaction Fact` where `Product ID` in (%s) and `Order Date` is not null and `Order Date`!='0000-00-00 00:00:00'",
+						$product_ids
+					);
+
+
+					if ($result=$db->query($sql)) {
+						if ($row = $result->fetch()) {
+							if ($row['date']!='' and strtotime($row['date'])> strtotime($category->get('Product Category Valid From')) ) {
+
+								print "updating ".$category->get('Code')." to ".$row['date']."\n";
+
+								$category->update(array('Product Category Valid To'=>$row['date']), 'no_history');
+
+							}
+						}
+					}else {
+						print_r($error_info=$db->errorInfo());
+						exit;
+					}
+
+
+				}
+
+
+
+
+			}
+
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		print $sql;
+		exit;
+	}
+}
+
+
 
 function fix_family_web_descriptions($db) {
 
