@@ -32,6 +32,8 @@ $editor=array(
 
 families();
 part_families();
+suppliers();
+stores();
 
 
 function suppliers() {
