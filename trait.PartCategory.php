@@ -16,6 +16,10 @@ trait PartCategory {
 	function create_part_timeseries($data) {
 
 
+		if ( $this->get('Category Branch Type')=='Root') {
+			return;
+		}
+
 		require_once 'utils/date_functions.php';
 
 		$data['Timeseries Parent']='Category';
@@ -83,6 +87,10 @@ trait PartCategory {
 
 
 	function update_part_timeseries_record($timeseries, $to, $from) {
+
+		if ( $this->get('Category Branch Type')=='Root') {
+			return;
+		}
 
 		$dates=date_frequency_range($this->db, $timeseries->get('Timeseries Frequency'), $from, $to);
 		foreach ($dates as $date_frequency_period) {

@@ -101,6 +101,9 @@ trait ProductCategory {
 
 	function create_product_timeseries($data) {
 
+		if ( $this->get('Category Branch Type')=='Root') {
+			return;
+		}
 
 
 		$data['Timeseries Parent']='Category';
@@ -108,9 +111,6 @@ trait ProductCategory {
 
 		$timeseries=new Timeseries('find', $data, 'create');
 		if ($timeseries->new or true) {
-
-
-
 
 			require_once 'utils/date_functions.php';
 
@@ -132,65 +132,10 @@ trait ProductCategory {
 
 			if ($from and $to) {
 
-
-				$dates=date_frequency_range($this->db, $timeseries->get('Timeseries Frequency'), $from, $to);
-
-				foreach ($dates as $date_frequency_period) {
-
-					list($invoices, $customers, $net, $dc_net)=$this->get_product_timeseries_record_data($timeseries, $date_frequency_period);
+				$this->update_product_timeseries_record($timeseries, $to, $from);
 
 
-					$_date=gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00')) ;
 
-					if ($invoices!=0 or $customers!=0 or $net!=0) {
-						list($timeseries_record_key, $date)=$timeseries->create_record(array('Timeseries Record Date'=> $_date ));
-						$sql=sprintf('update `Timeseries Record Dimension` set
-                    `Timeseries Record Integer A`=%d ,
-                    `Timeseries Record Integer B`=%d ,
-                    `Timeseries Record Float A`=%.2f ,
-                    `Timeseries Record Float B`=%.2f ,
-                    `Timeseries Record Type`=%s
-                    where `Timeseries Record Key`=%d
-                      ',
-							$invoices,
-							$customers,
-							$net,
-							$dc_net,
-							prepare_mysql('Data'),
-							$timeseries_record_key
-
-						);
-
-						$update_sql = $this->db->prepare($sql);
-						$update_sql->execute();
-
-						if ($update_sql->rowCount() or $date==date('Y-m-d')) {
-							$timeseries->update(array('Timeseries Updated'=>gmdate('Y-m-d H:i:s')), 'no_history');
-						}
-
-					}else {
-						$sql=sprintf('delete from `Timeseries Record Dimension` where `Timeseries Record Timeseries Key`=%d and `Timeseries Record Date`=%s ',
-							$timeseries->id,
-							prepare_mysql($_date)
-						);
-
-						$update_sql = $this->db->prepare($sql);
-						$update_sql->execute();
-						if ($update_sql->rowCount()) {
-							$timeseries->update(array('Timeseries Updated'=>gmdate('Y-m-d H:i:s')), 'no_history');
-
-						}
-
-					}
-					$timeseries->update_stats();
-					//$updated=$this->update_product_timeseries_record($timeseries, $timeseries_record_key, $date);
-
-					//$timeseries->update_stats();
-					//if ($updated) {
-					// $timeseries->update(array('Timeseries Updated'=>gmdate('Y-m-d H:i:s')), 'no_history');
-					//}
-
-				}
 
 
 			}
@@ -198,6 +143,67 @@ trait ProductCategory {
 			if ($timeseries->get('Timeseries Number Records')==0)
 				$timeseries->update(array('Timeseries Updated'=>gmdate('Y-m-d H:i:s')), 'no_history');
 
+
+		}
+
+	}
+
+
+	function update_product_timeseries_record($timeseries, $to, $from) {
+
+		if ( $this->get('Category Branch Type')=='Root') {
+			return;
+		}
+
+		$dates=date_frequency_range($this->db, $timeseries->get('Timeseries Frequency'), $from, $to);
+
+		foreach ($dates as $date_frequency_period) {
+
+			list($invoices, $customers, $net, $dc_net)=$this->get_product_timeseries_record_data($timeseries, $date_frequency_period);
+
+
+			$_date=gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00')) ;
+
+			if ($invoices!=0 or $customers!=0 or $net!=0) {
+				list($timeseries_record_key, $date)=$timeseries->create_record(array('Timeseries Record Date'=> $_date ));
+				$sql=sprintf('update `Timeseries Record Dimension` set `Timeseries Record Integer A`=%d ,`Timeseries Record Integer B`=%d ,`Timeseries Record Float A`=%.2f ,`Timeseries Record Float B`=%.2f ,`Timeseries Record Type`=%s where `Timeseries Record Key`=%d',
+					$invoices,
+					$customers,
+					$net,
+					$dc_net,
+					prepare_mysql('Data'),
+					$timeseries_record_key
+
+				);
+
+				$update_sql = $this->db->prepare($sql);
+				$update_sql->execute();
+
+				if ($update_sql->rowCount() or $date==date('Y-m-d')) {
+					$timeseries->update(array('Timeseries Updated'=>gmdate('Y-m-d H:i:s')), 'no_history');
+				}
+
+			}else {
+				$sql=sprintf('delete from `Timeseries Record Dimension` where `Timeseries Record Timeseries Key`=%d and `Timeseries Record Date`=%s ',
+					$timeseries->id,
+					prepare_mysql($_date)
+				);
+
+				$update_sql = $this->db->prepare($sql);
+				$update_sql->execute();
+				if ($update_sql->rowCount()) {
+					$timeseries->update(array('Timeseries Updated'=>gmdate('Y-m-d H:i:s')), 'no_history');
+
+				}
+
+			}
+			$timeseries->update_stats();
+			//$updated=$this->update_product_timeseries_record($timeseries, $timeseries_record_key, $date);
+
+			//$timeseries->update_stats();
+			//if ($updated) {
+			// $timeseries->update(array('Timeseries Updated'=>gmdate('Y-m-d H:i:s')), 'no_history');
+			//}
 
 		}
 
