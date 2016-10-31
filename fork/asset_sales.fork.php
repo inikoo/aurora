@@ -22,6 +22,112 @@ function fork_asset_sales($job) {
 
 	switch ($data['type']) {
 
+
+
+
+	case 'update_stores_sales_data':
+		include_once 'class.Store.php';
+
+		if (!isset($data['mode'])) {
+			$this_year=true;
+			$last_year=true;
+		}else {
+			$this_year=$data['mode'][0];
+			$last_year=$data['mode'][1];
+		}
+
+
+
+		$sql=sprintf("select `Store Key` from `Store Dimension`");
+		if ($result=$db->query($sql)) {
+			foreach ($result as $row) {
+				$store=new Store('id', $row['Store Key']);
+				$store->load_acc_data();
+				$store->update_sales_from_invoices($data['interval'], $this_year, $last_year);
+			}
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
+		break;
+
+
+	case 'update_invoices_categories_sales_data':
+		include_once 'class.Category.php';
+
+		if (!isset($data['mode'])) {
+			$this_year=true;
+			$last_year=true;
+		}else {
+			$this_year=$data['mode'][0];
+			$last_year=$data['mode'][1];
+		}
+
+
+		$sql=sprintf("select `Category Key` from `Category Dimension` where   `Category Scope`='Invoice' ");
+
+
+		if ($result=$db->query($sql)) {
+			foreach ($result as $row) {
+				$category=new Category($row['Category Key']);
+				$category->load_acc_data();
+
+				$category->update_invoice_category_sales($data['interval'], $this_year, $last_year);
+			}
+		}
+		break;
+
+
+
+	case 'update_suppliers_sales_data':
+		include_once 'class.Supplier.php';
+
+		if (!isset($data['mode'])) {
+			$this_year=true;
+			$last_year=true;
+		}else {
+			$this_year=$data['mode'][0];
+			$last_year=$data['mode'][1];
+		}
+
+
+
+
+		$sql=sprintf('select `Agent Key` from `Agent Dimension`  ');
+
+		if ($result=$db->query($sql)) {
+			foreach ($result as $row) {
+				$agent=new Agent($row['Agent Key']);
+				$agent->load_acc_data();
+				$agent->update_sales($data['interval'], $this_year, $last_year);
+
+			}
+
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
+		$sql=sprintf('select `Supplier Key` from `Supplier Dimension`  ');
+
+		if ($result=$db->query($sql)) {
+			foreach ($result as $row) {
+				$supplier=new Supplier($row['Supplier Key']);
+
+				$supplier->load_acc_data();
+
+				$supplier->update_sales($data['interval'], $this_year, $last_year);
+
+			}
+
+		}else {
+			print_r($error_info=$db->errorInfo());
+			exit;
+		}
+
+		break;
+
 	case 'update_products_sales_data':
 		include_once 'class.Product.php';
 
@@ -81,6 +187,7 @@ function fork_asset_sales($job) {
 
 		$sql=sprintf("select `Category Key` from `Category Dimension` where   `Category Scope`='Product' ");
 
+
 		if ($result=$db->query($sql)) {
 			foreach ($result as $row) {
 				$category=new Category($row['Category Key']);
@@ -107,10 +214,37 @@ function fork_asset_sales($job) {
 		if ($result=$db->query($sql)) {
 			foreach ($result as $row) {
 				$category=new Category($row['Category Key']);
+				$category->load_acc_data();
+
 				$category->update_part_category_sales($data['interval'], $this_year, $last_year);
 			}
 		}
 		break;
+
+	case 'update_supplier_categories_sales_data':
+		include_once 'class.Category.php';
+
+		if (!isset($data['mode'])) {
+			$this_year=true;
+			$last_year=true;
+		}else {
+			$this_year=$data['mode'][0];
+			$last_year=$data['mode'][1];
+		}
+
+
+		$sql=sprintf("select `Category Key` from `Category Dimension` where   `Category Scope`='Supplier' ");
+
+		if ($result=$db->query($sql)) {
+			foreach ($result as $row) {
+				$category=new Category($row['Category Key']);
+				$category->load_acc_data();
+
+				$category->update_supplier_category_sales($data['interval'], $this_year, $last_year);
+			}
+		}
+		break;
+
 
 
 	case 'update_delivery_note_part_sales_data':
@@ -232,8 +366,8 @@ function update_invoice_products_sales_data($db, $data) {
 
 
 	$invoice_category=new Category($invoice->get('Invoice Category Key'));
-	
-	
+
+
 	$invoice_category->load_acc_data();
 
 

@@ -7,10 +7,10 @@ define("_DEVEL",   isset($_SERVER['devel']));
 require_once 'keyring/dns.php';
 require_once 'keyring/key.php';
 
-
 include_once 'utils/i18n.php';
 require_once 'utils/general_functions.php';
 require_once 'utils/natural_language.php';
+require_once 'utils/date_functions.php';
 
 require_once 'utils/system_functions.php';
 require_once 'utils/detect_agent.php';
