@@ -2004,7 +2004,7 @@ class Store extends DB_Table {
 		$data['Timeseries Parent Key']=$this->id;
 
 		$timeseries=new Timeseries('find', $data, 'create');
-		if ($timeseries->new ) {
+		if ($timeseries->id ) {
 			require_once 'utils/date_functions.php';
 
 			if ($this->data['Store Valid From']!='') {
@@ -2014,11 +2014,18 @@ class Store extends DB_Table {
 				$from='';
 			}
 
-			if ($this->get('State')=='No') {
+			if ($this->get('Store State')=='Closed') {
 				$to=$this->get('Valid To');
 			}else {
 				$to=date('Y-m-d');
 			}
+
+
+            
+            
+
+
+
 
 			if ($from and $to) {
 

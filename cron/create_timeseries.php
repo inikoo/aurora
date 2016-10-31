@@ -30,8 +30,8 @@ $editor=array(
 	'Date'=>gmdate('Y-m-d H:i:s')
 );
 
-families();
-part_families();
+//families();
+//part_families();
 suppliers();
 stores();
 
