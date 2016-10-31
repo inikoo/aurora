@@ -2542,7 +2542,7 @@ class User extends DB_Table {
 
 		$dashboard_items=array();
 
-		if ($this->data['User Type']=='Staff' or $this->data['User Type']=='Administrator') {
+		if ($this->data['User Type']=='Staff' or $this->data['User Type']=='Administrator' or $this->data['User Type']=='Contractor') {
 
 			$dashboard_items[]='sales_overview';
 
