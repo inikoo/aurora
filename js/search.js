@@ -3,7 +3,7 @@
  Copyright (c) 2015, Inikoo
  Version 3.0*/
 
-$(document).on('input propertychange', '#search', function() {
+$(document).on('input propertychange', '#search', function () {
     var delay = 200;
     if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
     delayed_search($(this), delay)
@@ -25,7 +25,7 @@ function delayed_search(search_field, timeout) {
     }
 
     window.clearTimeout(search_field.data("timeout"));
-    search_field.data("timeout", setTimeout(function() {
+    search_field.data("timeout", setTimeout(function () {
         search(query)
     }, timeout));
 }
@@ -34,10 +34,9 @@ function delayed_search(search_field, timeout) {
 function search(query) {
 
 
-
     var request = '/ar_search.php?tipo=search&query=' + fixedEncodeURIComponent(query) + '&state=' + JSON.stringify(state)
     //   console.log(request)
-    $.getJSON(request, function(data) {
+    $.getJSON(request, function (data) {
         console.log(data)
 
         if (data.number_results > 0) {
@@ -63,7 +62,7 @@ function search(query) {
                 first = false
             }
 
-            if ( data.show_stores != undefined && data.show_stores &&   data.results[result_key].store != '') {
+            if (data.show_stores != undefined && data.show_stores && data.results[result_key].store != '') {
                 clone.children(".store").html(data.results[result_key].store).removeClass('hide')
 
             }

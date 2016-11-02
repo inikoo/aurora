@@ -9,31 +9,34 @@
 
 */
 
-$tab='product.parts';
-$ar_file='ar_products_tables.php';
-$tipo='parts';
+$tab     = 'product.parts';
+$ar_file = 'ar_products_tables.php';
+$tipo    = 'parts';
 
-$default=$user->get_tab_defaults($tab);
-
-
-$table_views=array(
-		'overview'=>array('label'=>_('Overview')),
-	
-	'stock'=>array('label'=>_('Stock')),
+$default = $user->get_tab_defaults($tab);
 
 
-);
+$table_views = array(
+    'overview' => array('label' => _('Overview')),
 
-$table_filters=array(
-		'reference'=>array('label'=>_('Reference'), 'title'=>_('Part reference')),
+    'stock' => array('label' => _('Stock')),
 
 
 );
 
-$parameters=array(
-		'parent'=>$state['object'],
-		'parent_key'=>$state['key'],
-		
+$table_filters = array(
+    'reference' => array(
+        'label' => _('Reference'),
+        'title' => _('Part reference')
+    ),
+
+
+);
+
+$parameters = array(
+    'parent'     => $state['object'],
+    'parent_key' => $state['key'],
+
 );
 
 

@@ -10,18 +10,17 @@
  Version 3.0
 */
 
-function get_campaign_showcase($data,$smarty) {
+function get_campaign_showcase($data, $smarty) {
 
-    
-    $campaign=$data['_object'];
-    if(!$campaign->id){
+
+    $campaign = $data['_object'];
+    if (!$campaign->id) {
         return "";
     }
-    
-    $smarty->assign('campaign',$campaign);
+
+    $smarty->assign('campaign', $campaign);
 
     return $smarty->fetch('showcase/campaign.tpl');
-    
 
 
 }

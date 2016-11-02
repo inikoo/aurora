@@ -19,7 +19,7 @@ function delete_image(image_bridge_key) {
     var request = '/ar_edit.php?tipo=delete_image&image_bridge_key=' + image_bridge_key
 
 
-    $.getJSON(request, function(data) {
+    $.getJSON(request, function (data) {
 
 
         if (data.state == 200) {
@@ -60,25 +60,25 @@ function set_as_principal(image_bridge_key) {
         return;
     }
 
-  //  tr.addClass('deleting_tr')
+    //  tr.addClass('deleting_tr')
 
     // tr.addClass('set_as_principald_tr')
     //return;
     var request = '/ar_edit.php?tipo=set_as_principal_image&image_bridge_key=' + image_bridge_key
 
 
-    $.getJSON(request, function(data) {
+    $.getJSON(request, function (data) {
 
 
         if (data.state == 200) {
 
-           // tr.removeClass('deleting_tr').addClass('set_as_principald_tr')
-          //  $('#set_as_principal_image_button_' + image_bridge_key).html(data.msg).closest('td').addClass('inmmune')
+            // tr.removeClass('deleting_tr').addClass('set_as_principald_tr')
+            //  $('#set_as_principal_image_button_' + image_bridge_key).html(data.msg).closest('td').addClass('inmmune')
 
 
-    rows.fetch({
-        reset: true
-    });
+            rows.fetch({
+                reset: true
+            });
 
 
             if (data.number_images == 0) {
@@ -98,7 +98,7 @@ function set_as_principal(image_bridge_key) {
 
 
         } else if (data.state == 400) {
-          //  tr.removeClass('deleting_tr')
+            //  tr.removeClass('deleting_tr')
 
         }
     })

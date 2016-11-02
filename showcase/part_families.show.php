@@ -13,17 +13,15 @@
 function get_part_familes_showcase($data, $smarty) {
 
 
+    $category = $data['_object'];
+    if (!$category->id) {
+        return "_";
+    }
 
-	$category=$data['_object'];
-	if (!$category->id) {
-		return "_";
-	}
-
-	$smarty->assign('category', $category);
+    $smarty->assign('category', $category);
 
 
-	return $smarty->fetch('showcase/part_families.tpl');
-
+    return $smarty->fetch('showcase/part_families.tpl');
 
 
 }

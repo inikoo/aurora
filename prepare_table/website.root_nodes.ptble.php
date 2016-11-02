@@ -12,20 +12,22 @@
 //$period_tag=get_interval_db_name($parameters['f_period']);
 
 
-
-$table='`Website Node Dimension` N  left join `Webpage Dimension` W on (W.`Webpage Key`=N.`Website Node Webpage Key`) ';
+$table
+    = '`Website Node Dimension` N  left join `Webpage Dimension` W on (W.`Webpage Key`=N.`Website Node Webpage Key`) ';
 
 switch ($parameters['parent']) {
 
-case('website'):
-	$where=sprintf(' where  `Website Node Website Key`=%d and `Website Node Type`="Root" ' , $parameters['parent_key']);
-	break;
-default:
-    exit('parent not configured '.$parameters['parent']);
+    case('website'):
+        $where = sprintf(
+            ' where  `Website Node Website Key`=%d and `Website Node Type`="Root" ', $parameters['parent_key']
+        );
+        break;
+    default:
+        exit('parent not configured '.$parameters['parent']);
 
 }
 
-$group='';
+$group = '';
 
 /*
 switch ($elements_type) {
@@ -114,30 +116,33 @@ case 'flags':
 
 */
 
-$wheref='';
-if ($parameters['f_field']=='code'  and $f_value!='')
-	$wheref.=" and `Website Node Code` like '".addslashes($f_value)."%'";
-elseif ($parameters['f_field']=='name' and $f_value!='')
-	$wheref.=" and  `Website Node Name` like '".addslashes($f_value)."%'";
-
-
-
-$_order=$order;
-$_dir=$order_direction;
-
-
-if ($order=='code'){
-	$order='`Webpage Code`';
-}if ($order=='name'){
-	$order='`Webpage Name`';
-}else {
-	$order='N.`Website Node Key`';
+$wheref = '';
+if ($parameters['f_field'] == 'code' and $f_value != '') {
+    $wheref .= " and `Website Node Code` like '".addslashes($f_value)."%'";
+} elseif ($parameters['f_field'] == 'name' and $f_value != '') {
+    $wheref .= " and  `Website Node Name` like '".addslashes($f_value)."%'";
 }
 
 
-$sql_totals="select count(Distinct N.`Website Node Key`) as num from $table  $where  ";
+$_order = $order;
+$_dir   = $order_direction;
 
-$fields="
+
+if ($order == 'code') {
+    $order = '`Webpage Code`';
+}
+if ($order == 'name') {
+    $order = '`Webpage Name`';
+} else {
+    $order = 'N.`Website Node Key`';
+}
+
+
+$sql_totals
+    = "select count(Distinct N.`Website Node Key`) as num from $table  $where  ";
+
+$fields
+    = "
 `Website Node Key`,`Webpage Code`,`Webpage Name`
 ";
 ?>

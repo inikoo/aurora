@@ -10,28 +10,24 @@
 */
 
 
+$tab     = 'hr.uploads';
+$ar_file = 'ar_upload_tables.php';
+$tipo    = 'uploads';
 
-$tab='hr.uploads';
-$ar_file='ar_upload_tables.php';
-$tipo='uploads';
+$default = $user->get_tab_defaults($tab);
 
-$default=$user->get_tab_defaults($tab);
+$table_views = array();
 
-$table_views=array(
+$table_filters = array();
+
+
+$parameters = array(
+    'parent'     => 'employees',
+    'parent_key' => $state['parent_key'],
+
 );
 
-$table_filters=array(
-
-);
-
-
-$parameters=array(
-		'parent'=>'employees',
-		'parent_key'=>$state['parent_key'],
-		
-);
-
-$smarty->assign('upload_objects','employees');
+$smarty->assign('upload_objects', 'employees');
 
 //$smarty->assign('title',_('Uploads'));
 //$smarty->assign('view_position', _('Employee uploads'));

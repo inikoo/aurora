@@ -10,30 +10,29 @@
 */
 
 
-if(!isset($_REQUEST['number'])){
+if (!isset($_REQUEST['number'])) {
     exit;
 
 }
-$number=$_REQUEST['number'];
+$number = $_REQUEST['number'];
 
-if(!is_numeric($number)){
+if (!is_numeric($number)) {
     exit;
 
 }
 
 
-if(isset($_REQUEST['scale']) and is_numeric($_REQUEST['scale'])){
-    $scale=ceil($_REQUEST['scale']);
-}else{
-    $scale=null;
+if (isset($_REQUEST['scale']) and is_numeric($_REQUEST['scale'])) {
+    $scale = ceil($_REQUEST['scale']);
+} else {
+    $scale = null;
 }
 
 include_once('external_libs/barcodes/ean.php');
 
 
+$ean = new EAN(substr($number, 0, 12), $scale);
 
-$ean = new EAN(substr($number,0,12),$scale);
-	
 $ean->display();
 
 

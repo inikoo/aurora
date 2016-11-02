@@ -10,29 +10,24 @@
 */
 
 
+$tab     = 'supplier.surplus_parts.wget';
+$ar_file = 'ar_suppliers_tables.php';
+$tipo    = 'surplus_parts';
 
-$tab='supplier.surplus_parts.wget';
-$ar_file='ar_suppliers_tables.php';
-$tipo='surplus_parts';
-
-$default=$user->get_tab_defaults($tab);
-
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array(
+$table_views = array();
 
-);
-
-$table_filters=array(
-	'reference'=>array('label'=>_('Reference')),
+$table_filters = array(
+    'reference' => array('label' => _('Reference')),
 
 );
 
 
-
-$parameters=array(
-	'parent'=>$state['parent'],
-	'parent_key'=>$state['parent_key'],
+$parameters = array(
+    'parent'     => $state['parent'],
+    'parent_key' => $state['parent_key'],
 
 );
 

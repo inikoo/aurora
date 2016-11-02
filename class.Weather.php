@@ -62,140 +62,148 @@
 //============================================================================
 
 
-
-class weather
-{
+class weather {
 
 
-// ------------------- 
-// ATTRIBUTES DECLARATION
-// -------------------
+    // -------------------
+    // ATTRIBUTES DECLARATION
+    // -------------------
 
-// HANDLING ATTRIBUTES
-var $locationcode; // Yahoo Code for Location
-var $allurl;       // generated url with location
-var $parser;       // Instance of Class XML Parser
-var $unit;         // F or C / Fahrenheit or Celsius
+    // HANDLING ATTRIBUTES
+    var $locationcode; // Yahoo Code for Location
+    var $allurl;       // generated url with location
+    var $parser;       // Instance of Class XML Parser
+    var $unit;         // F or C / Fahrenheit or Celsius
 
-// CACHING ATTRIBUTES
-var $cache_expires;
-var $cache_lifetime;
-var $source;       // cache or live
+    // CACHING ATTRIBUTES
+    var $cache_expires;
+    var $cache_lifetime;
+    var $source;       // cache or live
 
-var $forecast=array();
+    var $forecast = array();
 
 
-// ------------------- 
-// CONSTRUCTOR METHOD
-// -------------------
-function weather($location, $lifetime, $unit, $cachedir)
-{
+    // -------------------
+    // CONSTRUCTOR METHOD
+    // -------------------
+    function weather($location, $lifetime, $unit, $cachedir) {
 
-// Set Lifetime / Locationcode
-$this->cache_lifetime = $lifetime;
-$this->locationcode   = $location;
-$this->unit           = $unit;
-$this->cachedir       = $cachedir;
-$this->filename       = $cachedir . $location;
+        // Set Lifetime / Locationcode
+        $this->cache_lifetime = $lifetime;
+        $this->locationcode   = $location;
+        $this->unit           = $unit;
+        $this->cachedir       = $cachedir;
+        $this->filename       = $cachedir.$location;
 
-}
+    }
 
-// ------------------- 
-// FUNCTION PARSE
-// -------------------
-function parse()
-{
-$this->allurl = "http://xml.weather.yahoo.com/forecastrss";
-$this->allurl .= "?u=" . $this->unit;
-$this->allurl .= "&p=" . $this->locationcode;
+    // -------------------
+    // FUNCTION PARSE
+    // -------------------
 
-// Create Instance of XML Parser Class
-// and parse the XML File
-$this->parser = new xmlParser();
-$this->parser->parse($this->allurl);
-$content=&$this->parser->output[0]['child'][0]['child'];
-foreach ($content as $item) {
-  //print "<hr><pre>";
-  //print_r($item);
-  //print "</pre></p>";
-  switch ($item['name']) {
-    case 'TITLE':
-    case 'LINK':
-    case 'DESCRIPTION':
-    case 'LANGUAGE':
-    case 'LASTBUILDDATE':
-      $this->forecast[$item['name']]=$item['content'];
-      break;
-    case 'YWEATHER:LOCATION':
-    case 'YWEATHER:UNITS':
-    case 'YWEATHER:ASTRONOMY':
-      foreach ($item['attrs'] as $attr=>$value)
-        $this->forecast[$attr]=$value;
-      break;
-    case 'IMAGE':
-      break;
-    case 'ITEM':
-      foreach ($item['child'] as $detail) {
-        switch ($detail['name']) {
-          case 'GEO:LAT':
-          case 'GEO:LONG':
-          case 'PUBDATE':
-            $this->forecast[$detail['name']]=$detail['content'];
-            break;
-          case 'YWEATHER:CONDITION':
-            $this->forecast['CURRENT']=$detail['attrs'];
-            break;
-          case 'YWEATHER:FORECAST':
-            array_push($this->forecast,$detail['attrs']);
-            break;
+    function parsecached() {
+        if ($this->readcache()) {
+            return;
         }
-      }
-      break;
-  }
-}
-$this->source = 'live';
+        $this->parse();
+        $this->writecache();
+    }
 
-// FOR DEBUGGING PURPOSES
-//print "<hr><pre>";
-//print_r($this->forecast);
-//print "</pre></p>";
-}
+    // -------------------
+    // WRITE OBJECT TO CACHE
+    // -------------------
 
-// ------------------- 
-// WRITE OBJECT TO CACHE
-// -------------------
-function writecache() {
-  unset($this->parser);
-  $this->cache_expires = time() + $this->cache_lifetime;
-  $fp = fopen($this->filename, "w");
-  fwrite($fp, serialize($this));
-  fclose($fp);
-}
+    function readcache() {
+        $content = @file_get_contents($this->filename);
+        if ($content == false) {
+            return false;
+        }
+        $intweather = unserialize($content);
+        if ($intweather->cache_expires < time()) {
+            return false;
+        }
 
-// ------------------- 
-// READ OBJECT FROM CACHE
-// -------------------
-function readcache()
-{
-$content=@file_get_contents($this->filename);
-if ($content==false) return false;
-$intweather = unserialize($content);
-if ($intweather->cache_expires < time()) return false;
+        $this->source   = 'cache';
+        $this->forecast = $intweather->forecast;
 
-$this->source = 'cache';
-$this->forecast = $intweather->forecast;
-return true;
-}
+        return true;
+    }
+
+    // -------------------
+    // READ OBJECT FROM CACHE
+    // -------------------
+
+    function parse() {
+        $this->allurl = "http://xml.weather.yahoo.com/forecastrss";
+        $this->allurl .= "?u=".$this->unit;
+        $this->allurl .= "&p=".$this->locationcode;
+
+        // Create Instance of XML Parser Class
+        // and parse the XML File
+        $this->parser = new xmlParser();
+        $this->parser->parse($this->allurl);
+        $content =& $this->parser->output[0]['child'][0]['child'];
+        foreach ($content as $item) {
+            //print "<hr><pre>";
+            //print_r($item);
+            //print "</pre></p>";
+            switch ($item['name']) {
+                case 'TITLE':
+                case 'LINK':
+                case 'DESCRIPTION':
+                case 'LANGUAGE':
+                case 'LASTBUILDDATE':
+                    $this->forecast[$item['name']] = $item['content'];
+                    break;
+                case 'YWEATHER:LOCATION':
+                case 'YWEATHER:UNITS':
+                case 'YWEATHER:ASTRONOMY':
+                    foreach ($item['attrs'] as $attr => $value) {
+                        $this->forecast[$attr] = $value;
+                    }
+                    break;
+                case 'IMAGE':
+                    break;
+                case 'ITEM':
+                    foreach ($item['child'] as $detail) {
+                        switch ($detail['name']) {
+                            case 'GEO:LAT':
+                            case 'GEO:LONG':
+                            case 'PUBDATE':
+                                $this->forecast[$detail['name']]
+                                    = $detail['content'];
+                                break;
+                            case 'YWEATHER:CONDITION':
+                                $this->forecast['CURRENT'] = $detail['attrs'];
+                                break;
+                            case 'YWEATHER:FORECAST':
+                                array_push($this->forecast, $detail['attrs']);
+                                break;
+                        }
+                    }
+                    break;
+            }
+        }
+        $this->source = 'live';
+
+        // FOR DEBUGGING PURPOSES
+        //print "<hr><pre>";
+        //print_r($this->forecast);
+        //print "</pre></p>";
+    }
 
 
-// ------------------- 
-// FUNCTION PARSECACHED
-// -------------------
-function parsecached() {
-  if ($this->readcache()) return;
-  $this->parse();
-  $this->writecache();
-}
+    // -------------------
+    // FUNCTION PARSECACHED
+    // -------------------
+
+    function writecache() {
+        unset($this->parser);
+        $this->cache_expires = time() + $this->cache_lifetime;
+        $fp                  = fopen($this->filename, "w");
+        fwrite($fp, serialize($this));
+        fclose($fp);
+    }
 
 } // class : end
 

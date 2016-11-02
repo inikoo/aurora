@@ -9,31 +9,34 @@
 
 */
 
-$tab='timesheets.timesheets';
-$ar_file='ar_hr_tables.php';
-$tipo='timesheets';
+$tab     = 'timesheets.timesheets';
+$ar_file = 'ar_hr_tables.php';
+$tipo    = 'timesheets';
 
 
+$default = $user->get_tab_defaults($tab);
 
-$default=$user->get_tab_defaults($tab);
 
+$table_views = array();
 
-$table_views=array(
-);
-
-$table_filters=array(
-	'alias'=>array('label'=>_('Alias'),'title'=>_('Employee alias')),
-	'name'=>array('label'=>_('Name'),'title'=>_('Employee name')),
-
-);
-
-$parameters=array(
-	'parent'=>$state['parent'],
-	'parent_key'=>$state['parent_key'],
-	
+$table_filters = array(
+    'alias' => array(
+        'label' => _('Alias'),
+        'title' => _('Employee alias')
+    ),
+    'name'  => array(
+        'label' => _('Name'),
+        'title' => _('Employee name')
+    ),
 
 );
 
+$parameters = array(
+    'parent'     => $state['parent'],
+    'parent_key' => $state['parent_key'],
+
+
+);
 
 
 include 'utils/get_table_html.php';

@@ -21,13 +21,13 @@ require_once 'class.Supplier.php';
 require_once 'utils/date_functions.php';
 require_once 'conf/timeseries.php';
 
-$editor=array(
-	'Author Name'=>'',
-	'Author Alias'=>'',
-	'Author Type'=>'',
-	'Author Key'=>'',
-	'User Key'=>0,
-	'Date'=>gmdate('Y-m-d H:i:s')
+$editor = array(
+    'Author Name'  => '',
+    'Author Alias' => '',
+    'Author Type'  => '',
+    'Author Key'   => '',
+    'User Key'     => 0,
+    'Date'         => gmdate('Y-m-d H:i:s')
 );
 
 //families();
@@ -38,28 +38,31 @@ part_families();
 
 function suppliers() {
 
-	global $db, $editor, $timeseries;
+    global $db, $editor, $timeseries;
 
-	$sql=sprintf('select `Supplier Key` from `Supplier Dimension`  ');
+    $sql = sprintf('SELECT `Supplier Key` FROM `Supplier Dimension`  ');
 
-	if ($result=$db->query($sql)) {
-		foreach ($result as $row) {
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
 
-			$supplier=new Supplier($row['Supplier Key']);
+            $supplier = new Supplier($row['Supplier Key']);
 
 
-			$timeseries_data=$timeseries['Supplier'];
+            $timeseries_data = $timeseries['Supplier'];
 
-			foreach ($timeseries_data as $timeserie_data) {
+            foreach ($timeseries_data as $timeserie_data) {
 
-				$editor['Date']=gmdate('Y-m-d H:i:s');
-				$timeserie_data['editor']=$editor;
-				$supplier->create_timeseries($timeserie_data);
+                $editor['Date']           = gmdate('Y-m-d H:i:s');
+                $timeserie_data['editor'] = $editor;
+                $supplier->create_timeseries($timeserie_data);
 
-			}
-		}
+            }
+        }
 
-	}else {print_r($error_info=$db->errorInfo());exit($sql);}
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit($sql);
+    }
 
 
 }
@@ -67,100 +70,117 @@ function suppliers() {
 
 function families() {
 
-	global $db, $editor, $timeseries;
+    global $db, $editor, $timeseries;
 
-	$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Product" and `Category Key`=14797  ');
-	$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Product" ');
+    $sql = sprintf(
+        'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Product" AND `Category Key`=14797  '
+    );
+    $sql = sprintf(
+        'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Product" '
+    );
 
-	if ($result=$db->query($sql)) {
-		foreach ($result as $row) {
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
 
-			$category=new Category($row['Category Key']);
+            $category = new Category($row['Category Key']);
 
-			if (!array_key_exists($category->get('Category Scope').'Category', $timeseries))
-				continue;
+            if (!array_key_exists(
+                $category->get('Category Scope').'Category', $timeseries
+            )
+            ) {
+                continue;
+            }
 
-			$timeseries_data=$timeseries[$category->get('Category Scope').'Category'];
-			print "creating ".$category->get('Code')." category \n";
+            $timeseries_data = $timeseries[$category->get('Category Scope').'Category'];
+            print "creating ".$category->get('Code')." category \n";
 
-			foreach ($timeseries_data as $timeserie_data) {
+            foreach ($timeseries_data as $timeserie_data) {
 
-				$editor['Date']=gmdate('Y-m-d H:i:s');
-				$timeserie_data['editor']=$editor;
-				$category->create_timeseries($timeserie_data);
+                $editor['Date']           = gmdate('Y-m-d H:i:s');
+                $timeserie_data['editor'] = $editor;
+                $category->create_timeseries($timeserie_data);
 
-			}
-		}
+            }
+        }
 
-	}else {print_r($error_info=$db->errorInfo());
-		print $sql;
-		exit;}
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print $sql;
+        exit;
+    }
 }
 
 
 function stores() {
 
-	global $db, $editor, $timeseries;
-	$sql=sprintf('select `Store Key` from `Store Dimension` ');
+    global $db, $editor, $timeseries;
+    $sql = sprintf('SELECT `Store Key` FROM `Store Dimension` ');
 
-	if ($result=$db->query($sql)) {
-		foreach ($result as $row) {
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
 
-			$store=new Store($row['Store Key']);
+            $store = new Store($row['Store Key']);
 
-			$timeseries_data=$timeseries['Store'];
+            $timeseries_data = $timeseries['Store'];
 
-			foreach ($timeseries_data as $timeserie_data) {
+            foreach ($timeseries_data as $timeserie_data) {
 
-				$editor['Date']=gmdate('Y-m-d H:i:s');
-				$timeserie_data['editor']=$editor;
-				$store->create_timeseries($timeserie_data);
+                $editor['Date']           = gmdate('Y-m-d H:i:s');
+                $timeserie_data['editor'] = $editor;
+                $store->create_timeseries($timeserie_data);
 
-			}
-		}
+            }
+        }
 
-	}else {print_r($error_info=$db->errorInfo());exit;}
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
 
 }
 
 
 function part_families() {
 
-	global $db, $editor, $timeseries;
+    global $db, $editor, $timeseries;
 
-	$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" and `Category Key`=12391  ');
-	// $sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" order by  `Category Key` desc');
+    $sql = sprintf(
+        'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Part" AND `Category Key`=12391  '
+    );
+    // $sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" order by  `Category Key` desc');
 
-	if ($result=$db->query($sql)) {
-		foreach ($result as $row) {
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
 
-			$category=new Category($row['Category Key']);
-
-
+            $category = new Category($row['Category Key']);
 
 
-			if (!array_key_exists($category->get('Category Scope').'Category', $timeseries))
-				continue;
+            if (!array_key_exists(
+                $category->get('Category Scope').'Category', $timeseries
+            )
+            ) {
+                continue;
+            }
 
-			$timeseries_data=$timeseries[$category->get('Category Scope').'Category'];
-			print "creating ".$category->get('Code')." category \n";
-			foreach ($timeseries_data as $timeserie_data) {
+            $timeseries_data = $timeseries[$category->get('Category Scope').'Category'];
+            print "creating ".$category->get('Code')." category \n";
+            foreach ($timeseries_data as $timeserie_data) {
 
-				$editor['Date']=gmdate('Y-m-d H:i:s');
-				$timeserie_data['editor']=$editor;
+                $editor['Date']           = gmdate('Y-m-d H:i:s');
+                $timeserie_data['editor'] = $editor;
 
-				
-					$category->create_timeseries($timeserie_data);
-				
 
-			}
-		}
+                $category->create_timeseries($timeserie_data);
 
-	}else {
-		print_r($error_info=$db->errorInfo());
-		print $sql;
-		exit;
-	}
+
+            }
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print $sql;
+        exit;
+    }
 
 }
 

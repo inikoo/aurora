@@ -11,29 +11,31 @@
 */
 
 function get_help_navigation($data) {
-	global $smarty;
+    global $smarty;
 
 
-	$sections=get_sections('help', '');
-	$sections['users']['selected']=true;
-	$title=_('Help');
+    $sections                      = get_sections('help', '');
+    $sections['users']['selected'] = true;
+    $title                         = _('Help');
 
-	$_content=array(
-		'sections_class'=>'',
-		'sections'=>$sections,
-		'left_buttons'=>array(),
-		'right_buttons'=>array(),
-		'title'=>$title,
-		'search'=>array('show'=>false, 'placeholder'=>_('Search help'))
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => array(),
+        'right_buttons'  => array(),
+        'title'          => $title,
+        'search'         => array(
+            'show'        => false,
+            'placeholder' => _('Search help')
+        )
 
-	);
-	$smarty->assign('_content', $_content);
+    );
+    $smarty->assign('_content', $_content);
 
-	$html=$smarty->fetch('navigation.tpl');
-	return $html;
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
 }
-
-
 
 
 ?>

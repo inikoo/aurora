@@ -13,16 +13,15 @@
 function get_contractor_showcase($data) {
 
     global $smarty;
-    
- 
-    if(!$data['_object']->id){
+
+
+    if (!$data['_object']->id) {
         return "";
     }
-    
-    $smarty->assign('contractor',$data['_object']);
+
+    $smarty->assign('contractor', $data['_object']);
 
     return $smarty->fetch('showcase/contractor.tpl');
-    
 
 
 }

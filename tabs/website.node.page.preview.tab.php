@@ -9,12 +9,11 @@
 
 */
 
-$node=$state['_object'];
-$page=get_object('webpage',$node->get_webpage_key());
+$node = $state['_object'];
+$page = get_object('webpage', $node->get_webpage_key());
 
 
-
-$request=preg_replace('/\./','/',strtolower($node->get('Code')));
+$request = preg_replace('/\./', '/', strtolower($node->get('Code')));
 $smarty->assign('request', $request);
 
 
@@ -26,12 +25,7 @@ $smarty->assign('key', $state['key']);
 $smarty->assign('state', $state);
 
 
-$html=$smarty->fetch('node_preview.tpl');
-
-
-
-
-
+$html = $smarty->fetch('node_preview.tpl');
 
 
 ?>

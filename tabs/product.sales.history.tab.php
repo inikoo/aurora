@@ -10,12 +10,11 @@
 */
 
 
-$tab='product.sales.history';
-$ar_file='ar_products_tables.php';
-$tipo='sales_history';
+$tab     = 'product.sales.history';
+$ar_file = 'ar_products_tables.php';
+$tipo    = 'sales_history';
 
-$default=$user->get_tab_defaults($tab);
-
+$default = $user->get_tab_defaults($tab);
 
 
 /*
@@ -29,15 +28,13 @@ if ($state['_object']->get('Type')=='StoreSales') {
 	}
 }
 */
-$table_views=array();
+$table_views = array();
 
-$table_filters=array(
+$table_filters = array();
 
-);
-
-$parameters=array(
-	'parent'=>$state['object'],
-	'parent_key'=>$state['key'],
+$parameters = array(
+    'parent'     => $state['object'],
+    'parent_key' => $state['key'],
 );
 
 

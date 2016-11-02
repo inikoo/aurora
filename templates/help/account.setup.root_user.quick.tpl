@@ -10,4 +10,5 @@ About:
 
 <p>{t}The <b>root</b> user is a special account with authorisation to create the system users (employees){/t}.</p>
 
-<p>{t}Is important to provide a strong password, and that only trusted persons have access to the mobile and recovery email{/t}.</p>
+<p>{t}Is important to provide a strong password, and that only trusted persons have access to the mobile and recovery email{/t}
+    .</p>

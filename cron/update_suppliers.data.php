@@ -18,41 +18,36 @@ require_once 'class.Supplier.php';
 require_once 'class.Agent.php';
 
 
+$sql = sprintf('SELECT `Agent Key` FROM `Agent Dimension`  ');
 
-$sql=sprintf('select `Agent Key` from `Agent Dimension`  ');
-
-if ($result=$db->query($sql)) {
-	foreach ($result as $row) {
-		$agent=new Agent($row['Agent Key']);
-		$agent->update_supplier_parts();
-
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+        $agent = new Agent($row['Agent Key']);
+        $agent->update_supplier_parts();
 
 
-	}
+    }
 
-}else {
-	print_r($error_info=$db->errorInfo());
-	exit;
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
 }
 
 
-$sql=sprintf('select `Supplier Key` from `Supplier Dimension`  ');
+$sql = sprintf('SELECT `Supplier Key` FROM `Supplier Dimension`  ');
 
-if ($result=$db->query($sql)) {
-	foreach ($result as $row) {
-		$supplier=new Supplier($row['Supplier Key']);
-		$supplier->update_supplier_parts();
-		
-		
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+        $supplier = new Supplier($row['Supplier Key']);
+        $supplier->update_supplier_parts();
 
 
-	}
+    }
 
-}else {
-	print_r($error_info=$db->errorInfo());
-	exit;
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
 }
-
 
 
 ?>

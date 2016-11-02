@@ -10,28 +10,27 @@
 */
 
 
+$tab     = 'part.stock.transactions';
+$ar_file = 'ar_inventory_tables.php';
+$tipo    = 'stock_transactions';
 
-$tab='part.stock.transactions';
-$ar_file='ar_inventory_tables.php';
-$tipo='stock_transactions';
-
-$default=$user->get_tab_defaults($tab);
-
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array(
+$table_views = array();
+
+$table_filters = array(
+    'note' => array(
+        'label' => _('Note'),
+        'title' => _('Note')
+    ),
 
 );
 
-$table_filters=array(
-	'note'=>array('label'=>_('Note'), 'title'=>_('Note')),
 
-);
-
-
-$parameters=array(
-	'parent'=>$state['object'],
-	'parent_key'=>$state['key'],
+$parameters = array(
+    'parent'     => $state['object'],
+    'parent_key' => $state['key'],
 
 );
 

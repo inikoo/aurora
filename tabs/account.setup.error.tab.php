@@ -11,8 +11,10 @@
 */
 
 
-if ($state['key']==1 or $state['key']==2 or $state['key']==3) {
-	$msg='<i class="fa fa-exclamation-circle"></i> '._("Critical error").'<br/><br/>'._('Please contact service support').'<br/><br/>'.sprintf('E%02d',$state['key']);
+if ($state['key'] == 1 or $state['key'] == 2 or $state['key'] == 3) {
+    $msg = '<i class="fa fa-exclamation-circle"></i> '._("Critical error").'<br/><br/>'._('Please contact service support').'<br/><br/>'.sprintf(
+            'E%02d', $state['key']
+        );
 
 }
 
@@ -20,7 +22,7 @@ if ($state['key']==1 or $state['key']==2 or $state['key']==3) {
 $smarty->assign('msg', $msg);
 
 
-$html= $smarty->fetch('setup/error.tpl');
+$html = $smarty->fetch('setup/error.tpl');
 
 
 ?>

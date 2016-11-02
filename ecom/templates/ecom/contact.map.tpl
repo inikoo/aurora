@@ -10,184 +10,191 @@
 *}
 
 
-  
+<section id="sidebar-main" class="col-md-12">
+    <div id="content"><h1>Contact Us</h1>
 
-   <section id="sidebar-main" class="col-md-12"><div id="content">      <h1>Contact Us</h1>
+        <div class="contact-location hidden-xs">
 
-      <div class="contact-location hidden-xs">
+            <div id="contact-map"></div>
 
-        <div id="contact-map"></div>
+        </div>
 
-      </div>
+        <div class="wrap-contact">
 
-      <div class="wrap-contact">
+            <div class="row">
 
-          <div class="row">
+                <div class="col-ld-4 col-md-4 col-sm-12 hidden-xs">
 
-            <div class="col-ld-4 col-md-4 col-sm-12 hidden-xs">
+                    <div class="contact-info">
 
-              <div class="contact-info">                
+                        <h2>Our Location</h2>
 
-                <h2>Our Location</h2>
-
-                <div class="content body-page">
-
+                        <div class="content body-page">
 
 
-                  <div class="media">
+                            <div class="media">
 
-                    <i class="fa fa-home pull-left"></i>
+                                <i class="fa fa-home pull-left"></i>
 
-                    <div class="media-body">
+                                <div class="media-body">
 
-                      Floral Store<br> Address 1                    </div>
+                                    Floral Store<br> Address 1
+                                </div>
 
-                  </div>
+                            </div>
 
-                                    <div class="media">
+                            <div class="media">
 
-                    <i class="fa fa-phone pull-left"></i>
+                                <i class="fa fa-phone pull-left"></i>
 
-                    <div class="media-body">
+                                <div class="media-body">
 
-                      <!-- <strong></strong> -->                  
+                                    <!-- <strong></strong> -->
 
-                      123456789                           
+                                    123456789
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="media">
+
+                                <i class="fa fa-envelope-o pull-left"></i>
+
+                                <div class="media-body">
+
+                                    <!-- <strong></strong> -->
+
+                                    1234567890
+                                </div>
+
+                            </div>
+
+                        </div>
 
                     </div>
 
-                  </div>
+                    <div class="contact-customhtml">
 
-                  
+                        <div class="content body-page">
 
-                  
+                            <p><b>
+                                    <small>This is a CMS block edited from admin panel.</small>
+                                    <br>
 
-                                      <div class="media">
-
-                      <i class="fa fa-envelope-o pull-left"></i>                   
-
-                      <div class="media-body">
-
-                        <!-- <strong></strong> -->
-
-                        1234567890                      </div>
-
-                    </div>                  
-
-                              </div>
-
-          </div>
-
-                      <div class="contact-customhtml">
-
-              <div class="content body-page">
-
-                <p><b><small>This is a CMS block edited from admin panel.</small><br>
-
-<small>You can insert any content here.</small></b></p>
+                                    <small>You can insert any content here.</small>
+                                </b></p>
 
 
-
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque non dui at sapien tempor gravida ut vel arcu. Nullam ac eros eros, et ullamcorper leo.</p>
-
-
-
-<p><b><small>Customer Service:</small></b><br>
-
-<a href="mailto:info@yourstore.com">info@yourstore.com</a></p>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque non dui at sapien
+                                tempor gravida ut vel arcu. Nullam ac eros eros, et ullamcorper leo.</p>
 
 
+                            <p><b>
+                                    <small>Customer Service:</small>
+                                </b><br>
 
-<p><b><small>Returns and Refunds:</small></b><br>
-
-<a href="mailto:returns@yourstore.com">returns@yourstore.com</a></p>
-
-              </div>
-
-            </div>
+                                <a href="mailto:info@yourstore.com">info@yourstore.com</a></p>
 
 
+                            <p><b>
+                                    <small>Returns and Refunds:</small>
+                                </b><br>
 
-           </div><!-- end1 -->
+                                <a href="mailto:returns@yourstore.com">returns@yourstore.com</a></p>
 
-           <div class="col-ld-8 col-md-8 col-sm-12">
+                        </div>
 
-            <div class="wrapform">
+                    </div>
 
-            <form action="http://demopavothemes.com/pav_floral/index.php?route=information/contact" method="post" enctype="multipart/form-data" class="form-horizontal ">              
 
-              <fieldset class="">
+                </div><!-- end1 -->
 
-                <h2>Contact Form</h2>
+                <div class="col-ld-8 col-md-8 col-sm-12">
 
-                <div class="content body-page">
+                    <div class="wrapform">
 
-                <div class="form-group">
+                        <form action="http://demopavothemes.com/pav_floral/index.php?route=information/contact"
+                              method="post" enctype="multipart/form-data" class="form-horizontal ">
 
-                  <label class="col-sm-2" for="input-name">Your Name</label>
+                            <fieldset class="">
 
-                  <div class="col-sm-10">
+                                <h2>Contact Form</h2>
 
-                    <input type="text" name="name" value="" id="input-name" class="form-control" />
+                                <div class="content body-page">
 
-                                      </div>
+                                    <div class="form-group">
+
+                                        <label class="col-sm-2" for="input-name">Your Name</label>
+
+                                        <div class="col-sm-10">
+
+                                            <input type="text" name="name" value="" id="input-name"
+                                                   class="form-control"/>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group">
+
+                                        <label class="col-sm-2" for="input-email">E-Mail Address</label>
+
+                                        <div class="col-sm-10">
+
+                                            <input type="text" name="email" value="" id="input-email"
+                                                   class="form-control"/>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group">
+
+                                        <label class="col-sm-2" for="input-enquiry">Enquiry</label>
+
+                                        <div class="col-sm-10">
+
+                                            <textarea name="enquiry" rows="10" id="input-enquiry"
+                                                      class="form-control"></textarea>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group required">
+                                        <div class="col-sm-offset-2 col-sm-10">
+                                            <div class="g-recaptcha"
+                                                 data-sitekey="6LcTyAYTAAAAAD3hKJNuJVIZbRjJRo33MbF4qF7n"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="buttons">
+
+                                    <div class="right"><input type="submit" value="Submit"
+                                                              class="button btn btn-theme-default"/></div>
+
+                                </div>
+
+                            </fieldset>
+
+                        </form>
+
+                    </div>
 
                 </div>
 
-                <div class="form-group">
+                <!-- end -->
 
-                  <label class="col-sm-2" for="input-email">E-Mail Address</label>
+            </div><!-- end -->
 
-                  <div class="col-sm-10">
-
-                    <input type="text" name="email" value="" id="input-email" class="form-control" />
-
-                                      </div>
-
-                </div>
-
-                <div class="form-group">
-
-                  <label class="col-sm-2" for="input-enquiry">Enquiry</label>
-
-                  <div class="col-sm-10">
-
-                    <textarea name="enquiry" rows="10" id="input-enquiry" class="form-control"></textarea>
-
-                                      </div>
-
-                </div>
-
-              <div class="form-group required">
-    <div class="col-sm-offset-2 col-sm-10">
-    <div class="g-recaptcha" data-sitekey="6LcTyAYTAAAAAD3hKJNuJVIZbRjJRo33MbF4qF7n"></div>
-      </div>
-  </div>
-              </div>
-
-              <div class="buttons">
-
-                  <div class="right"><input type="submit" value="Submit" class="button btn btn-theme-default" /></div>
-
-              </div>  
-
-              </fieldset>          
-
-      </form>
+        </div>
 
     </div>
 
-    </div>
-
-      <!-- end --> 
-
-          </div><!-- end -->
-
-      </div>
-
-            </div>
-
-   </section> 
+</section>
 
 
 {*
@@ -291,10 +298,10 @@
 
     </script>
 *}
-     <!-- 
+<!--
 
-  $ospans: allow overrides width of columns base on thiers indexs. format array( column-index=>span number ), example array( 1=> 3 )[value from 1->12]
+$ospans: allow overrides width of columns base on thiers indexs. format array( column-index=>span number ), example array( 1=> 3 )[value from 1->12]
 
- -->
+-->
 
 

@@ -4,10 +4,10 @@ namespace libphonenumber;
 
 /**
  * Generic exception class for errors encountered when parsing phone numbers.
+ *
  * @author Lara Rennie
  */
-class NumberParseException extends \Exception
-{
+class NumberParseException extends \Exception {
 
     const INVALID_COUNTRY_CODE = 0;
     // This generally indicates the string passed in had less than 3 digits in it. More
@@ -26,24 +26,21 @@ class NumberParseException extends \Exception
 
     private $errorType;
 
-    public function __construct($errorType, $message, $previous = null)
-    {
+    public function __construct($errorType, $message, $previous = null) {
         parent::__construct($message, $errorType, $previous);
-        $this->message = $message;
+        $this->message   = $message;
         $this->errorType = $errorType;
     }
 
     /**
      * Returns the error type of the exception that has been thrown.
      */
-    public function getErrorType()
-    {
+    public function getErrorType() {
         return $this->errorType;
     }
 
-    public function __toString()
-    {
-        return "Error type: " . $this->errorType . ". " . $this->message;
+    public function __toString() {
+        return "Error type: ".$this->errorType.". ".$this->message;
     }
 
 }

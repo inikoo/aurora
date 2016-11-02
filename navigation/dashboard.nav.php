@@ -12,33 +12,39 @@
 function get_dashboard_navigation($data, $smarty, $user, $db, $account) {
 
 
-	$left_buttons=array();
+    $left_buttons = array();
 
-	$right_buttons=array();
-	//$right_buttons[]=array('icon'=>'cog','title'=>_('Settings'),'url'=>'customer_store_configuration.php?store='.$store->id);
-	//$right_buttons[]=array('icon'=>'edit','title'=>_('Edit customers'),'reference'=>'customers/'.$store->id.'/edit');
-	//$right_buttons[]=array('icon'=>'plus','title'=>_('New customer'),'id'=>"new_customer");
-	$sections=get_sections('dashboard');
+    $right_buttons = array();
+    //$right_buttons[]=array('icon'=>'cog','title'=>_('Settings'),'url'=>'customer_store_configuration.php?store='.$store->id);
+    //$right_buttons[]=array('icon'=>'edit','title'=>_('Edit customers'),'reference'=>'customers/'.$store->id.'/edit');
+    //$right_buttons[]=array('icon'=>'plus','title'=>_('New customer'),'id'=>"new_customer");
+    $sections = get_sections('dashboard');
 
-	if (isset($sections[$data['section']]) )$sections[$data['section']]['selected']=true;
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
 
 
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
 
+        'left_buttons'  => $left_buttons,
+        'right_buttons' => $right_buttons,
+        'title'         => _('Dashboard').' <span class="id">'.$account->get(
+                'Name'
+            ).'</span>',
+        'search'        => array(
+            'show'        => true,
+            'placeholder' => _('Search')
+        )
 
-	$_content=array(
-		'sections_class'=>'',
-		'sections'=>$sections,
+    );
+    $smarty->assign('_content', $_content);
 
-		'left_buttons'=>$left_buttons,
-		'right_buttons'=>$right_buttons,
-		'title'=>_('Dashboard').' <span class="id">'.$account->get('Name').'</span>',
-		'search'=>array('show'=>true, 'placeholder'=>_('Search'))
+    $html = $smarty->fetch('navigation.tpl');
 
-	);
-	$smarty->assign('_content', $_content);
-
-	$html=$smarty->fetch('navigation.tpl');
-	return $html;
+    return $html;
 
 }
 

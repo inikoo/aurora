@@ -12,187 +12,185 @@
 
 switch ($parameters['parent']) {
 
-case 'year':
-	$where=sprintf(" where  Year(`Timesheet Date`)=%d ", $parameters['parent_key']);
-	break;
-case 'month':
-	$year=substr($parameters['parent_key'], 0, 4);
-	$month=substr($parameters['parent_key'], 4, 2);
-	$where=sprintf(" where  month(`Timesheet Date`)=%d and Year(`Timesheet Date`)=%d ", $month, $year);
-	break;	
-case 'week':
-	$where=sprintf(" where  yearweek(`Timesheet Date`,3)=%d ", $parameters['parent_key']);
-	break;
-case 'day':
-	$where=sprintf(" where  `Timesheet Date`=%s ", prepare_mysql($parameters['parent_key']));
-	break;
-default:
-	exit('parent not suported '.$parameters['parent']);
-	break;
+    case 'year':
+        $where = sprintf(
+            " where  Year(`Timesheet Date`)=%d ", $parameters['parent_key']
+        );
+        break;
+    case 'month':
+        $year  = substr($parameters['parent_key'], 0, 4);
+        $month = substr($parameters['parent_key'], 4, 2);
+        $where = sprintf(
+            " where  month(`Timesheet Date`)=%d and Year(`Timesheet Date`)=%d ", $month, $year
+        );
+        break;
+    case 'week':
+        $where = sprintf(
+            " where  yearweek(`Timesheet Date`,3)=%d ", $parameters['parent_key']
+        );
+        break;
+    case 'day':
+        $where = sprintf(
+            " where  `Timesheet Date`=%s ", prepare_mysql($parameters['parent_key'])
+        );
+        break;
+    default:
+        exit('parent not suported '.$parameters['parent']);
+        break;
 }
 
-$group_by=' group by `Timesheet Staff Key` ';
+$group_by = ' group by `Timesheet Staff Key` ';
 
 
-
-
-
-$wheref='';
-if ($parameters['f_field']=='alias' and $f_value!=''  ) {
-	$wheref.=" and  `Staff Alias` like '".addslashes($f_value)."%'    ";
-}elseif ($parameters['f_field']=='name' and $f_value!=''  ) {
-	$wheref=sprintf('  and  `Staff Name`  REGEXP "[[:<:]]%s" ', addslashes($f_value));
+$wheref = '';
+if ($parameters['f_field'] == 'alias' and $f_value != '') {
+    $wheref .= " and  `Staff Alias` like '".addslashes($f_value)."%'    ";
+} elseif ($parameters['f_field'] == 'name' and $f_value != '') {
+    $wheref = sprintf(
+        '  and  `Staff Name`  REGEXP "[[:<:]]%s" ', addslashes($f_value)
+    );
 }
 
 
-
-$_order=$order;
-$_dir=$order_direction;
-
-
-if ($order=='alias') {
-	$order="`Staff Alias` $order_direction , `Timesheet Date`";
-
-	$order_direction='';
-}elseif ($order=='name') {
-	$order="`Staff Name` $order_direction , `Timesheet Date`";
-
-	$order_direction='';
-
-}elseif ($order=='payroll_id')
-	$order='`Staff ID`';
+$_order = $order;
+$_dir   = $order_direction;
 
 
-elseif ($order=='staff_formatted_id')
-	$order='`Timesheet Staff Key`';
-elseif ($order=='date' or $order=='time')
-	$order='`Timesheet Date`';
-elseif ($order=='days' )
-	$order='days';
-elseif ($order=='clocked_time' )
-	$order='clocked_time';
-elseif ($order=='breaks' )
-	$order='breaks';
-elseif ($order=='work_time' )
-	$order='work_time';
-elseif ($order=='unpaid_overtime' )
-	$order='unpaid_overtime';
-elseif ($order=='paid_overtime' )
-	$order='paid_overtime';
-elseif ($order=='worked_time' )
-	$order='worked_time';
-elseif ($order=='clocking_records' )
-	$order='clocking_records';
-	
-elseif ($order=='worked_time_monday' )
-	$order='worked_time_monday';
-elseif ($order=='worked_time_tuesday' )
-	$order='worked_time_tuesday';
-elseif ($order=='worked_time_wednesday' )
-	$order='worked_time_wednesday';
-elseif ($order=='worked_time_thursday' )
-	$order='worked_time_thursday';
-elseif ($order=='worked_time_friday' )
-	$order='worked_time_friday';
-elseif ($order=='worked_time_saturday' )
-	$order='worked_time_saturday';
-elseif ($order=='worked_time_sunday' )
-	$order='worked_time_sunday';
-elseif ($order=='worked_time_workweek' )
-	$order='worked_time_workweek';
-elseif ($order=='worked_time_weekend' )
-	$order='worked_time_weekend';
-	
-elseif ($order=='clocked_time_monday' )
-	$order='clocked_time_monday';
-elseif ($order=='clocked_time_tuesday' )
-	$order='clocked_time_tuesday';
-elseif ($order=='clocked_time_wednesday' )
-	$order='clocked_time_wednesday';
-elseif ($order=='clocked_time_thursday' )
-	$order='clocked_time_thursday';
-elseif ($order=='clocked_time_friday' )
-	$order='clocked_time_friday';
-elseif ($order=='clocked_time_saturday' )
-	$order='clocked_time_saturday';
-elseif ($order=='clocked_time_sunday' )
-	$order='clocked_time_sunday';
-elseif ($order=='clocked_time_workweek' )
-	$order='clocked_time_workweek';
-elseif ($order=='clocked_time_weekend' )
-	$order='clocked_time_weekend';	
+if ($order == 'alias') {
+    $order = "`Staff Alias` $order_direction , `Timesheet Date`";
+
+    $order_direction = '';
+} elseif ($order == 'name') {
+    $order = "`Staff Name` $order_direction , `Timesheet Date`";
+
+    $order_direction = '';
+
+} elseif ($order == 'payroll_id') {
+    $order = '`Staff ID`';
+} elseif ($order == 'staff_formatted_id') {
+    $order = '`Timesheet Staff Key`';
+} elseif ($order == 'date' or $order == 'time') {
+    $order = '`Timesheet Date`';
+} elseif ($order == 'days') {
+    $order = 'days';
+} elseif ($order == 'clocked_time') {
+    $order = 'clocked_time';
+} elseif ($order == 'breaks') {
+    $order = 'breaks';
+} elseif ($order == 'work_time') {
+    $order = 'work_time';
+} elseif ($order == 'unpaid_overtime') {
+    $order = 'unpaid_overtime';
+} elseif ($order == 'paid_overtime') {
+    $order = 'paid_overtime';
+} elseif ($order == 'worked_time') {
+    $order = 'worked_time';
+} elseif ($order == 'clocking_records') {
+    $order = 'clocking_records';
+} elseif ($order == 'worked_time_monday') {
+    $order = 'worked_time_monday';
+} elseif ($order == 'worked_time_tuesday') {
+    $order = 'worked_time_tuesday';
+} elseif ($order == 'worked_time_wednesday') {
+    $order = 'worked_time_wednesday';
+} elseif ($order == 'worked_time_thursday') {
+    $order = 'worked_time_thursday';
+} elseif ($order == 'worked_time_friday') {
+    $order = 'worked_time_friday';
+} elseif ($order == 'worked_time_saturday') {
+    $order = 'worked_time_saturday';
+} elseif ($order == 'worked_time_sunday') {
+    $order = 'worked_time_sunday';
+} elseif ($order == 'worked_time_workweek') {
+    $order = 'worked_time_workweek';
+} elseif ($order == 'worked_time_weekend') {
+    $order = 'worked_time_weekend';
+} elseif ($order == 'clocked_time_monday') {
+    $order = 'clocked_time_monday';
+} elseif ($order == 'clocked_time_tuesday') {
+    $order = 'clocked_time_tuesday';
+} elseif ($order == 'clocked_time_wednesday') {
+    $order = 'clocked_time_wednesday';
+} elseif ($order == 'clocked_time_thursday') {
+    $order = 'clocked_time_thursday';
+} elseif ($order == 'clocked_time_friday') {
+    $order = 'clocked_time_friday';
+} elseif ($order == 'clocked_time_saturday') {
+    $order = 'clocked_time_saturday';
+} elseif ($order == 'clocked_time_sunday') {
+    $order = 'clocked_time_sunday';
+} elseif ($order == 'clocked_time_workweek') {
+    $order = 'clocked_time_workweek';
+} elseif ($order == 'clocked_time_weekend') {
+    $order = 'clocked_time_weekend';
+} elseif ($order == 'unpaid_overtime_monday') {
+    $order = 'unpaid_overtime_monday';
+} elseif ($order == 'unpaid_overtime_tuesday') {
+    $order = 'unpaid_overtime_tuesday';
+} elseif ($order == 'unpaid_overtime_wednesday') {
+    $order = 'unpaid_overtime_wednesday';
+} elseif ($order == 'unpaid_overtime_thursday') {
+    $order = 'unpaid_overtime_thursday';
+} elseif ($order == 'unpaid_overtime_friday') {
+    $order = 'unpaid_overtime_friday';
+} elseif ($order == 'unpaid_overtime_saturday') {
+    $order = 'unpaid_overtime_saturday';
+} elseif ($order == 'unpaid_overtime_sunday') {
+    $order = 'unpaid_overtime_sunday';
+} elseif ($order == 'unpaid_overtime_workweek') {
+    $order = 'unpaid_overtime_workweek';
+} elseif ($order == 'unpaid_overtime_weekend') {
+    $order = 'unpaid_overtime_weekend';
+} elseif ($order == 'paid_overtime_monday') {
+    $order = 'paid_overtime_monday';
+} elseif ($order == 'paid_overtime_tuesday') {
+    $order = 'paid_overtime_tuesday';
+} elseif ($order == 'paid_overtime_wednesday') {
+    $order = 'paid_overtime_wednesday';
+} elseif ($order == 'paid_overtime_thursday') {
+    $order = 'paid_overtime_thursday';
+} elseif ($order == 'paid_overtime_friday') {
+    $order = 'paid_overtime_friday';
+} elseif ($order == 'paid_overtime_saturday') {
+    $order = 'paid_overtime_saturday';
+} elseif ($order == 'paid_overtime_sunday') {
+    $order = 'paid_overtime_sunday';
+} elseif ($order == 'paid_overtime_workweek') {
+    $order = 'paid_overtime_workweek';
+} elseif ($order == 'paid_overtime_weekend') {
+    $order = 'paid_overtime_weekend';
+} elseif ($order == 'work_time_monday') {
+    $order = 'work_time_monday';
+} elseif ($order == 'work_time_tuesday') {
+    $order = 'work_time_tuesday';
+} elseif ($order == 'work_time_wednesday') {
+    $order = 'work_time_wednesday';
+} elseif ($order == 'work_time_thursday') {
+    $order = 'work_time_thursday';
+} elseif ($order == 'work_time_friday') {
+    $order = 'work_time_friday';
+} elseif ($order == 'work_time_saturday') {
+    $order = 'work_time_saturday';
+} elseif ($order == 'work_time_sunday') {
+    $order = 'work_time_sunday';
+} elseif ($order == 'work_time_workweek') {
+    $order = 'work_time_workweek';
+} elseif ($order == 'work_time_weekend') {
+    $order = 'work_time_weekend';
+} else {
+    $order = '`Timesheet Key`';
+}
 
 
-elseif ($order=='unpaid_overtime_monday' )
-	$order='unpaid_overtime_monday';
-elseif ($order=='unpaid_overtime_tuesday' )
-	$order='unpaid_overtime_tuesday';
-elseif ($order=='unpaid_overtime_wednesday' )
-	$order='unpaid_overtime_wednesday';
-elseif ($order=='unpaid_overtime_thursday' )
-	$order='unpaid_overtime_thursday';
-elseif ($order=='unpaid_overtime_friday' )
-	$order='unpaid_overtime_friday';
-elseif ($order=='unpaid_overtime_saturday' )
-	$order='unpaid_overtime_saturday';
-elseif ($order=='unpaid_overtime_sunday' )
-	$order='unpaid_overtime_sunday';
-elseif ($order=='unpaid_overtime_workweek' )
-	$order='unpaid_overtime_workweek';
-elseif ($order=='unpaid_overtime_weekend' )
-	$order='unpaid_overtime_weekend';	
+$table
+    = '  `Timesheet Dimension` as TD left join `Staff Dimension` SD on (SD.`Staff Key`=TD.`Timesheet Staff Key`) ';
 
-elseif ($order=='paid_overtime_monday' )
-	$order='paid_overtime_monday';
-elseif ($order=='paid_overtime_tuesday' )
-	$order='paid_overtime_tuesday';
-elseif ($order=='paid_overtime_wednesday' )
-	$order='paid_overtime_wednesday';
-elseif ($order=='paid_overtime_thursday' )
-	$order='paid_overtime_thursday';
-elseif ($order=='paid_overtime_friday' )
-	$order='paid_overtime_friday';
-elseif ($order=='paid_overtime_saturday' )
-	$order='paid_overtime_saturday';
-elseif ($order=='paid_overtime_sunday' )
-	$order='paid_overtime_sunday';
-elseif ($order=='paid_overtime_workweek' )
-	$order='paid_overtime_workweek';
-elseif ($order=='paid_overtime_weekend' )
-	$order='paid_overtime_weekend';	
-
-elseif ($order=='work_time_monday' )
-	$order='work_time_monday';
-elseif ($order=='work_time_tuesday' )
-	$order='work_time_tuesday';
-elseif ($order=='work_time_wednesday' )
-	$order='work_time_wednesday';
-elseif ($order=='work_time_thursday' )
-	$order='work_time_thursday';
-elseif ($order=='work_time_friday' )
-	$order='work_time_friday';
-elseif ($order=='work_time_saturday' )
-	$order='work_time_saturday';
-elseif ($order=='work_time_sunday' )
-	$order='work_time_sunday';
-elseif ($order=='work_time_workweek' )
-	$order='work_time_workweek';
-elseif ($order=='work_time_weekend' )
-	$order='work_time_weekend';	
-
-
-
-else
-	$order='`Timesheet Key`';
-
-
-
-$table='  `Timesheet Dimension` as TD left join `Staff Dimension` SD on (SD.`Staff Key`=TD.`Timesheet Staff Key`) ';
-
-$sql_totals="select count(distinct `Timesheet Staff Key`) as num from $table  $where  ";
+$sql_totals
+    = "select count(distinct `Timesheet Staff Key`) as num from $table  $where  ";
 
 //print $sql_totals;
-$fields="
+$fields
+    = "
 sum(`Timesheet Paid Overtime`+`Timesheet Unpaid Overtime`+`Timesheet Working Time`)  worked_time,
 sum(`Timesheet Paid Overtime`) paid_overtime,
 sum(`Timesheet Unpaid Overtime`) unpaid_overtime,

@@ -10,24 +10,30 @@
 */
 
 
-$tab='payment_service_providers';
-$ar_file='ar_payments_tables.php';
-$tipo='payment_service_providers';
+$tab     = 'payment_service_providers';
+$ar_file = 'ar_payments_tables.php';
+$tipo    = 'payment_service_providers';
 
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array();
+$table_views = array();
 
-$table_filters=array(
-	'code'=>array('label'=>_('Code'),'title'=>_('Service provider code')),
-	'name'=>array('label'=>_('Name'),'title'=>_('Service provider name')),
+$table_filters = array(
+    'code' => array(
+        'label' => _('Code'),
+        'title' => _('Service provider code')
+    ),
+    'name' => array(
+        'label' => _('Name'),
+        'title' => _('Service provider name')
+    ),
 
 );
 
-$parameters=array(
-		'parent'=>'',
-		'parent_key'=>'',
+$parameters = array(
+    'parent'     => '',
+    'parent_key' => '',
 );
 
 

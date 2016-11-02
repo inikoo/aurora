@@ -10,29 +10,27 @@
  Version 3.0
 */
 
-function get_webpage_showcase($data,$smarty) {
+function get_webpage_showcase($data, $smarty) {
 
-   
-    
-    $node=$data['_object'];
-    if(!$node->id){
+
+    $node = $data['_object'];
+    if (!$node->id) {
         return "";
     }
-    
-  /*
-    $images=$node->get_images_slidesshow();
 
-	if (count($images)>0) {
-		$main_image=$images[0];
-	}else {
-		$main_image='';
-	}
-*/
-    
-    $smarty->assign('node',$node);
+    /*
+      $images=$node->get_images_slidesshow();
+
+      if (count($images)>0) {
+          $main_image=$images[0];
+      }else {
+          $main_image='';
+      }
+  */
+
+    $smarty->assign('node', $node);
 
     return $smarty->fetch('showcase/webpage.tpl');
-    
 
 
 }

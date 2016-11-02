@@ -11,39 +11,36 @@
 */
 
 
-function parse_request($_data, $db, $user='') {
+function parse_request($_data, $db, $user = '') {
 
-	$request=$_data['request'];
-	$request=preg_replace('/\/+/', '/', $request);
-	$original_request=preg_replace('/^\//', '', $request);
-	$view_path=preg_split('/\//', $original_request);
-
-
-print_r($view_path);
+    $request          = $_data['request'];
+    $request          = preg_replace('/\/+/', '/', $request);
+    $original_request = preg_replace('/^\//', '', $request);
+    $view_path        = preg_split('/\//', $original_request);
 
 
-exit;
-
-	$path=array();
-	$object='webpage';
-	$key=1;
-	$code='home';
+    print_r($view_path);
 
 
-	$state=array(
-		'path'=>$path,
-		'object'=>$object,
-		'key'=>$key,
-		
-	);
+    exit;
+
+    $path   = array();
+    $object = 'webpage';
+    $key    = 1;
+    $code   = 'home';
 
 
+    $state = array(
+        'path'   => $path,
+        'object' => $object,
+        'key'    => $key,
 
-	return $state;
+    );
+
+
+    return $state;
 
 }
-
-
 
 
 ?>

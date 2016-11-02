@@ -10,51 +10,50 @@
 */
 
 
-
 switch ($parameters['parent']) {
-case 'account':
+    case 'account':
 
-	$where=sprintf(" where true ");
-	$link='/employee/';
+        $where = sprintf(" where true ");
+        $link  = '/employee/';
 
-	break;
+        break;
 
 
-default:
-	exit('parent not suported x '.$parameters['parent']);
-	break;
+    default:
+        exit('parent not suported x '.$parameters['parent']);
+        break;
 }
 
 
-
-$wheref='';
-if ($parameters['f_field']=='name' and $f_value!=''  ) {
-	$wheref.=" and  `Material Name` like '".addslashes($f_value)."%'    ";
+$wheref = '';
+if ($parameters['f_field'] == 'name' and $f_value != '') {
+    $wheref .= " and  `Material Name` like '".addslashes($f_value)."%'    ";
 }
 
 
-$_order=$order;
-$_dir=$order_direction;
+$_order = $order;
+$_dir   = $order_direction;
 
 
-if ($order=='name')
-	$order='`Material Name`';
-elseif ($order=='parts')
-	$order='`Material Parts Number`';
-elseif ($order=='type')
-	$order='`Material Type`';
-else
-	$order='`Material Key`';
+if ($order == 'name') {
+    $order = '`Material Name`';
+} elseif ($order == 'parts') {
+    $order = '`Material Parts Number`';
+} elseif ($order == 'type') {
+    $order = '`Material Type`';
+} else {
+    $order = '`Material Key`';
+}
 
 
+$table = '  `Material Dimension` M ';
 
-$table='  `Material Dimension` M ';
 
-
-$sql_totals="select count(*) as num from $table  $where  ";
+$sql_totals = "select count(*) as num from $table  $where  ";
 
 //print $sql_totals;
-$fields="
+$fields
+    = "
 `Material Key`,
 `Material Name`,`Material Parts Number`,`Material Type`
 

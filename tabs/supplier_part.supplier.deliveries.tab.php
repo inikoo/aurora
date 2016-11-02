@@ -9,22 +9,21 @@
 
 */
 
-$tab='supplier_part.supplier.deliveries';
-$ar_file='ar_suppliers_tables.php';
-$tipo='deliveries';
+$tab     = 'supplier_part.supplier.deliveries';
+$ar_file = 'ar_suppliers_tables.php';
+$tipo    = 'deliveries';
 
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
-$table_views=array(
+$table_views = array();
+
+$table_filters = array(
+    'number' => array('label' => _('Number')),
 );
 
-$table_filters=array(
-	'number'=>array('label'=>_('Number')),
-);
-
-$parameters=array(
-	'parent'=>$state['object'],
-	'parent_key'=>$state['key'],
+$parameters = array(
+    'parent'     => $state['object'],
+    'parent_key' => $state['key'],
 
 );
 

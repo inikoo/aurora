@@ -1,19 +1,18 @@
 // Fonts
 
-
 @font-face {
   font-family: 'Ubuntu';
   font-style: normal;
   font-weight: 300;
   src: local('Ubuntu Light'), local('Ubuntu-Light'), url("/fonts/ubuntu300.woff2") format('woff2');
 }
+
 @font-face {
   font-family: 'Ubuntu';
   font-style: normal;
   font-weight: 700;
   src: local('Ubuntu Bold'), local('Ubuntu-Bold'), url("/fonts/ubuntu700.woff2") format('woff2');
 }
-
 
 // Vendor
 
@@ -42,7 +41,7 @@ $form--login__submit__bgcolor: #171717;
 $form--login__submit__bgcolor--hover: #000;
 $form--login__submit__color: #eee;
 
-$form--login__error__color:tomato;
+$form--login__error__color: tomato;
 
 $grid__container__max-width: 20rem;
 $grid__container__width: 90%;
@@ -124,9 +123,9 @@ input {
       border-radius: $form--login__border-radus;
       padding: 1rem;
     }
-    
+
     input[type="submit"] {
-        cursor:pointer;
+      cursor: pointer;
     }
 
     label {
@@ -136,7 +135,11 @@ input {
       padding-left: 1.25rem;
       padding-right: 1.25rem;
     }
-    i {position:relative;top:4px;color:$form--login__fw_color}
+    i {
+      position: relative;
+      top: 4px;
+      color: $form--login__fw_color
+    }
     input {
 
       &[type="text"],
@@ -181,7 +184,9 @@ input {
 }
 
 // Utilities
-.error{color:$form--login__error__color;}
+.error {
+  color: $form--login__error__color;
+}
 
 .align {
   align-items: center;
@@ -200,27 +205,24 @@ input {
   width: 1px;
 }
 
+.branding {
+  margin-bottom: 30px;
 
-.branding{
-margin-bottom:30px;
+  .brand {
+    font-size: 30px;
+    background: -webkit-linear-gradient(#FDD017, #D4A017);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 
-.brand{font-size:30px;
-			background: -webkit-linear-gradient(#FDD017, #D4A017);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;}
-
-
-
-    .logo{width:100px;
-    &.setup{width:50px;}
+  .logo {
+    width: 100px;
+    &.setup {
+      width: 50px;
     }
+  }
 
 }
-
-
-
-
-
 
 .text {
 

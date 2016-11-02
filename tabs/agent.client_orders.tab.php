@@ -9,32 +9,36 @@
 
 */
 
-$tab='agent.client_orders';
-$ar_file='ar_suppliers_tables.php';
-$tipo='agent_client_orders';
+$tab     = 'agent.client_orders';
+$ar_file = 'ar_suppliers_tables.php';
+$tipo    = 'agent_client_orders';
 
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
-$table_views=array(
+$table_views = array();
+
+$table_filters = array(
+    'number' => array(
+        'label' => _('Number'),
+        'title' => _('Order number')
+    ),
 );
 
-$table_filters=array(
-	'number'=>array('label'=>_('Number'), 'title'=>_('Order number')),
-);
-
-$parameters=array(
-	'parent'=>'agent',
-	'parent_key'=>$user->get('User Parent Key'),
+$parameters = array(
+    'parent'     => 'agent',
+    'parent_key' => $user->get('User Parent Key'),
 
 );
 
 
-$table_buttons=array();
+$table_buttons = array();
 
 
 $smarty->assign('table_buttons', $table_buttons);
 
-$smarty->assign('js_code', 'js/injections/supplier.orders.'.(_DEVEL?'':'min.').'js');
+$smarty->assign(
+    'js_code', 'js/injections/supplier.orders.'.(_DEVEL ? '' : 'min.').'js'
+);
 
 include 'utils/get_table_html.php';
 

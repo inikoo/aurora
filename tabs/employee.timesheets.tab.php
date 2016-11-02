@@ -9,22 +9,20 @@
 
 */
 
-$tab='employee.timesheets';
-$ar_file='ar_hr_tables.php';
-$tipo='timesheets';
+$tab     = 'employee.timesheets';
+$ar_file = 'ar_hr_tables.php';
+$tipo    = 'timesheets';
 
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
-$table_views=array(
-);
+$table_views = array();
 
-$table_filters=array(
-);
+$table_filters = array();
 
-$parameters=array(
-		'parent'=>$state['object'],
-		'parent_key'=>$state['key'],
-		
+$parameters = array(
+    'parent'     => $state['object'],
+    'parent_key' => $state['key'],
+
 );
 
 include('utils/get_table_html.php');

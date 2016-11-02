@@ -10,18 +10,17 @@
  Version 3.0
 */
 
-function get_deal_showcase($data,$smarty) {
+function get_deal_showcase($data, $smarty) {
 
-    
-    $deal=$data['_object'];
-    if(!$deal->id){
+
+    $deal = $data['_object'];
+    if (!$deal->id) {
         return "";
     }
-    
-    $smarty->assign('deal',$deal);
+
+    $smarty->assign('deal', $deal);
 
     return $smarty->fetch('showcase/deal.tpl');
-    
 
 
 }

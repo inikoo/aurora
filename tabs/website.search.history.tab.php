@@ -9,26 +9,27 @@
 
 */
 
-$tab='website.search.history';
-$ar_file='ar_websites_tables.php';
-$tipo='search_history';
+$tab     = 'website.search.history';
+$ar_file = 'ar_websites_tables.php';
+$tipo    = 'search_history';
 
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array(
-	
+$table_views = array();
+
+$table_filters = array(
+    'query' => array(
+        'label' => _('Query'),
+        'title' => _('Search query')
+    )
+
 );
 
-$table_filters=array(
-	'query'=>array('label'=>_('Query'),'title'=>_('Search query'))
+$parameters = array(
+    'parent'     => $state['key'],
+    'parent_key' => $state['key'],
 
-);
-
-$parameters=array(
-		'parent'=>$state['key'],
-		'parent_key'=>$state['key'],
-		
 );
 
 

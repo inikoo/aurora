@@ -16,8 +16,7 @@ function post_set_as_main(data) {
 
         $("#Customer_Main_Plain_Telephone_display").insertAfter("#display_telephones");
 
-    }else if (data.action == 'set_main_delivery_address') {
-
+    } else if (data.action == 'set_main_delivery_address') {
 
 
         var address_fields = jQuery.parseJSON(data.value)

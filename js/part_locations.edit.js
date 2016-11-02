@@ -1,8 +1,6 @@
 function open_edit_stock() {
 
 
-
-
     process_edit_stock()
 
     $('.unlink_operations').removeClass('hide')
@@ -25,9 +23,9 @@ function open_edit_stock() {
 
 function close_edit_stock() {
 
-if ( !$('#move_stock_tr').hasClass('hide')) {
-close_move();
-}
+    if (!$('#move_stock_tr').hasClass('hide')) {
+        close_move();
+    }
 
     $('.unlink_operations').addClass('hide')
 
@@ -44,12 +42,11 @@ close_move();
 
     $('#add_location_tr').addClass('hide')
 
-    $('#locations_table  input.stock ').each(function(i, obj) {
+    $('#locations_table  input.stock ').each(function (i, obj) {
 
         $(obj).val($(obj).attr('ovalue'))
         stock_changed($(obj))
     })
-
 
 
 }
@@ -57,9 +54,7 @@ close_move();
 function move(element) {
 
 
-
-
-    $('.locations  .fa-dot-circle-o ').each(function(i, obj) {
+    $('.locations  .fa-dot-circle-o ').each(function (i, obj) {
         $(obj).addClass('invisible')
     })
 
@@ -79,12 +74,11 @@ function move(element) {
         $(element).addClass('invisible').addClass('from')
 
 
-
         $('#move_stock_tr').removeClass('hide').attr('max', $(element).closest('tr').find('input').val())
 
         var possible_to_locations = 0;
         var to;
-        $('.locations  .move_trigger ').each(function(i, obj) {
+        $('.locations  .move_trigger ').each(function (i, obj) {
             if (!$(obj).hasClass('from')) {
 
                 //console.log($(obj))
@@ -108,7 +102,7 @@ function move(element) {
 
         $('#move_to').html($(element).closest('tr').find('.location_code').html())
 
-        $('.locations  .move_trigger ').each(function(i, obj) {
+        $('.locations  .move_trigger ').each(function (i, obj) {
             $(obj).addClass('invisible')
         })
 
@@ -157,9 +151,8 @@ function close_move() {
     $('#move_stock_tr').addClass('hide')
 
 
-    $('.locations  .move_trigger ').each(function(i, obj) {
+    $('.locations  .move_trigger ').each(function (i, obj) {
         $(obj).addClass('super_discreet')
-
 
 
         if ($(obj).closest('tr').find('input.stock').val() > 0) {
@@ -167,16 +160,14 @@ function close_move() {
         }
 
     })
-    $('.locations  .fa-dot-circle-o ').each(function(i, obj) {
+    $('.locations  .fa-dot-circle-o ').each(function (i, obj) {
         $(obj).addClass('visible')
     })
 
 }
 
 
-
 function move_qty_changed(element) {
-
 
 
     var value = element.val()
@@ -193,12 +184,11 @@ function move_qty_changed(element) {
 //console.log($('.locations  .from ').closest('tr').find('input.stock').val())
 
             if (parseInt(value) > parseInt(
-            $('.locations  .from ').closest('tr').find('input.stock').attr('ovalue'))) {
+                    $('.locations  .from ').closest('tr').find('input.stock').attr('ovalue'))) {
                 validation.class = 'invalid'
             }
         }
         $('#move_stock_tr').removeClass('valid invalid').addClass(validation.class)
-
 
 
         if (validation.class == 'valid') {
@@ -220,11 +210,10 @@ function move_qty_changed(element) {
             old_to_input = to_input.attr('ovalue')
 
 
-          // console.log(to_input)
-          // console.log(parseFloat(to_input.attr('ovalue'))  )
+            // console.log(to_input)
+            // console.log(parseFloat(to_input.attr('ovalue'))  )
             to_input.val(parseFloat(to_input.attr('ovalue')) + move_qty)
             stock_changed(to_input)
-
 
 
             movements = {
@@ -245,14 +234,10 @@ function move_qty_changed(element) {
 }
 
 
-
-
 function stock_field_changed(element) {
 
     stock_changed(element)
-    $('.locations  .move_trigger ').each(function(i, obj) {
-
-
+    $('.locations  .move_trigger ').each(function (i, obj) {
 
 
         if (!$(obj).hasClass('from')) {
@@ -265,11 +250,9 @@ function stock_field_changed(element) {
     })
 
 
-
 }
 
 function stock_changed(element) {
-
 
 
     var value = element.val()
@@ -280,8 +263,7 @@ function stock_changed(element) {
     }
 
 
-
-    var validation = validate_signed_integer(value,  999999999)
+    var validation = validate_signed_integer(value, 999999999)
 
     if (!validation) {
         validation = {
@@ -293,8 +275,6 @@ function stock_changed(element) {
     element.closest('tr').removeClass('valid invalid').addClass(validation.class)
 
 
-
-
     if (element.attr('ovalue') != value) {
 
         if (validation.class == 'invalid') {
@@ -303,8 +283,8 @@ function stock_changed(element) {
 
         } else {
 
-           // console.log(value)
-           // console.log(element.attr('ovalue'))
+            // console.log(value)
+            // console.log(element.attr('ovalue'))
 
             var _diff = parseFloat(value) - parseFloat((element.attr('ovalue') == '' ? 0 : element.attr('ovalue')))
 
@@ -321,7 +301,6 @@ function stock_changed(element) {
             element.closest('tr').find('.set_as_audit').addClass('super_discreet').addClass('hide')
 
             element.closest('tr').find('.add_note').removeClass('super_discreet invisible').addClass('visible')
-
 
 
         }
@@ -350,7 +329,7 @@ function process_edit_stock() {
     var potential_more_outs = 0;
     var editable_locations = 0;
 
-    $('#locations_table  input.stock ').each(function(i, obj) {
+    $('#locations_table  input.stock ').each(function (i, obj) {
 
         var can_move_out = true;
         var editable_location = true;
@@ -359,7 +338,6 @@ function process_edit_stock() {
             set_as_audit++;
             can_move_out = false;
             editable_location = false;
-
 
 
         }
@@ -376,7 +354,6 @@ function process_edit_stock() {
             can_move_out = false;
             editable_location = false;
         }
-
 
 
         if ($(obj).val() == 0 || $(obj).val() == '') {
@@ -406,24 +383,24 @@ function process_edit_stock() {
         total_new_stock += new_stock
 
 
-
         if (can_move_out) {
             potential_more_outs++;
-        } else {}
+        } else {
+        }
 
         if (editable_location) {
             editable_locations++;
 
-            if ( $('#move_stock_tr').hasClass('hide')) {
-               
-               if ($(obj).closest('tr').find('input.stock').val() <=0) {
-               $(obj).closest('tr').find('.move_trigger').addClass('invisible')
-              }else{
-              $(obj).closest('tr').find('.move_trigger').removeClass('invisible')
-             }
-            }else{
-                
-              
+            if ($('#move_stock_tr').hasClass('hide')) {
+
+                if ($(obj).closest('tr').find('input.stock').val() <= 0) {
+                    $(obj).closest('tr').find('.move_trigger').addClass('invisible')
+                } else {
+                    $(obj).closest('tr').find('.move_trigger').removeClass('invisible')
+                }
+            } else {
+
+
             }
 
         } else {
@@ -463,9 +440,6 @@ function process_edit_stock() {
     }
 
     $('#new_stock').html(total_new_stock)
-
-
-
 
 
     $('#stock_diff').html(diff_msg)
@@ -551,12 +525,11 @@ function close_add_location() {
 }
 
 
-
 function delayed_on_change_add_location_field(object, timeout) {
 
     window.clearTimeout(object.data("timeout"));
 
-    object.data("timeout", setTimeout(function() {
+    object.data("timeout", setTimeout(function () {
 
         get_locations_select()
     }, timeout));
@@ -570,13 +543,12 @@ function get_locations_select() {
 
     var request = '/ar_find.php?tipo=find_object&query=' + fixedEncodeURIComponent($('#add_location').val()) + '&scope=locations&state=' + JSON.stringify(state)
 
-    $.getJSON(request, function(data) {
+    $.getJSON(request, function (data) {
 
 
         if (data.number_results > 0) {
             $('#add_location_results_container').removeClass('hide').addClass('show')
         } else {
-
 
 
             $('#add_location_results_container').addClass('hide').removeClass('show')
@@ -624,7 +596,6 @@ function get_locations_select() {
 function select_add_location_option(element) {
 
 
-
     $('#add_location').val($(element).attr('formatted_value'))
     $('#save_add_location').attr('location_key', $(element).attr('value'))
 
@@ -639,7 +610,6 @@ function save_add_location() {
 
 
     $('#save_add_location').removeClass('fa-cloud').addClass('fa-spinner fa-spin')
-
 
 
     var request = '/ar_edit_stock.php?tipo=new_part_location&object=part&part_sku=' + $('#locations_table').attr('part_sku') + '&location_key=' + $('#save_add_location').attr('location_key')
@@ -663,7 +633,7 @@ function save_add_location() {
 
     })
 
-    request.done(function(data) {
+    request.done(function (data) {
         $('#save_add_location').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
 
         if (data.state == 200) {
@@ -676,7 +646,6 @@ function save_add_location() {
                 });
             }
             close_add_location()
-
 
 
             var clone = $("#add_location_template").clone().removeClass('hide').addClass('locations')
@@ -705,21 +674,12 @@ function save_add_location() {
             clone.find(".recommended_move").attr('ovalue', data.move_qty).val(data.move_qty)
 
 
-
-
-
             clone.find(".formatted_stock").html(data.formatted_stock)
             clone.find(".stock").attr('location_key', data.location_key)
             clone.find('.add_note').removeClass('super_discreet invisible').addClass('visible')
 
 
-
-
-
-
-
             $("#add_location_template").before(clone)
-
 
 
             for (var key in data.updated_fields) {
@@ -733,8 +693,8 @@ function save_add_location() {
 
     })
 
-    request.fail(function(jqXHR, textStatus) {});
-
+    request.fail(function (jqXHR, textStatus) {
+    });
 
 
 }
@@ -742,17 +702,17 @@ function save_add_location() {
 function save_stock() {
 
 
-if(!$('#edit_stock_saving_buttons').hasClass('valid')){
+    if (!$('#edit_stock_saving_buttons').hasClass('valid')) {
 
-return;
-}
+        return;
+    }
 
     $('#inventory_transaction_note').addClass('hide')
     $('#save_stock').removeClass('fa-cloud').addClass('fa-spinner fa-spin')
 
     var parts_locations_data = []
 
-    $('#locations_table tr.locations input.stock ').each(function(i, obj) {
+    $('#locations_table tr.locations input.stock ').each(function (i, obj) {
 
         parts_locations_data.push({
             qty: $(obj).val(),
@@ -773,7 +733,7 @@ return;
     // used only for debug
     var request = '/ar_edit_stock.php?tipo=edit_stock&object=part&key=' + $('#locations_table').attr('part_sku') + '&parts_locations_data=' + JSON.stringify(parts_locations_data) + '&movements=' + JSON.stringify(_movements)
     console.log(request)
-   // return;
+    // return;
     //=====
     var form_data = new FormData();
     form_data.append("tipo", 'edit_stock')
@@ -794,7 +754,7 @@ return;
 
     })
 
-    request.done(function(data) {
+    request.done(function (data) {
 
         console.log(data)
 
@@ -809,7 +769,6 @@ return;
         $('#edit_stock_saving_buttons').removeClass('valid')
 
 
-
         close_edit_stock()
 
         for (var key in data.updated_fields) {
@@ -821,7 +780,8 @@ return;
 
     })
 
-    request.fail(function(jqXHR, textStatus) {});
+    request.fail(function (jqXHR, textStatus) {
+    });
 
 }
 
@@ -836,7 +796,6 @@ function open_edit_min_max(element) {
     $(element).closest('tr').find('.unlink_operations').addClass('invisible')
 
 
-
 }
 
 function open_edit_recommended_move(element) {
@@ -844,7 +803,6 @@ function open_edit_recommended_move(element) {
     $(element).closest('tr').find('.stock_input').addClass('hide')
     $(element).closest('td').attr('colspan', 2)
     $(element).closest('tr').find('.unlink_operations').addClass('invisible')
-
 
 
 }
@@ -859,7 +817,6 @@ function close_edit_recommended_move(element) {
     $(element).closest('span.edit_move').removeClass('valid invalid')
 
 
-
     element = $(element).closest('span').prev()
 
     $(element).removeClass('invisible').next().addClass('hide')
@@ -867,7 +824,6 @@ function close_edit_recommended_move(element) {
     $(element).closest('td').attr('colspan', 1)
 
     $(element).closest('tr').find('.unlink_operations').removeClass('invisible')
-
 
 
 }
@@ -888,12 +844,6 @@ function close_edit_min_max(element) {
     $(element).closest('td').attr('colspan', 1)
 
     $(element).closest('tr').find('.unlink_operations').removeClass('invisible')
-
-
-
-
-
-
 
 
 }
@@ -918,7 +868,6 @@ function min_max_changed(element) {
     }
 
 
-
     if (min_validation.class == 'invalid' || max_validation.class == 'invalid') {
         validation = 'invalid'
     } else {
@@ -927,9 +876,6 @@ function min_max_changed(element) {
 
     min_input.removeClass('valid invalid').addClass(min_validation.class)
     max_input.removeClass('valid invalid').addClass(max_validation.class)
-
-
-
 
 
     //console.log($(element).closest('span.edit_min_max'))
@@ -981,7 +927,6 @@ function save_recomendations(type, element) {
     }
 
 
-
     var request = '/ar_edit.php?tipo=edit_field&object=part_location&key=' + $('#locations_table').attr('part_sku') + '_' + location_key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value)
 
     console.log(request)
@@ -1003,7 +948,7 @@ function save_recomendations(type, element) {
 
     })
 
-    request.done(function(data) {
+    request.done(function (data) {
         // console.log(data)
         if (data.state == 200) {
 
@@ -1029,9 +974,8 @@ function save_recomendations(type, element) {
 
     })
 
-    request.fail(function(jqXHR, textStatus) {});
-
-
+    request.fail(function (jqXHR, textStatus) {
+    });
 
 
 }
@@ -1040,8 +984,6 @@ function inventory_transaction_note_changed() {
 
     var element = $('#inventory_transaction_note').data('element')
     var textarea = $('#inventory_transaction_note').find('textarea')
-
-
 
 
     $(element).closest('tr').find('.note').val($(textarea).val())

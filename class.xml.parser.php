@@ -18,106 +18,107 @@
 //============================================================================
 
 
-class xmlParser{
+class xmlParser {
 
-// *** ----------------------------------------------------------------
-// DECLARATION
-var $xml_obj = null;
-var $output = array();
-
-
-// *** ----------------------------------------------------------------
-// CONSTRUCTOR
-function xmlParser(){
-
-$this->xml_obj = xml_parser_create();
-xml_set_object($this->xml_obj,$this);
-xml_set_character_data_handler($this->xml_obj, 'dataHandler'); 
-xml_set_element_handler($this->xml_obj, "startHandler", "endHandler");
-
-} 
+    // *** ----------------------------------------------------------------
+    // DECLARATION
+    var $xml_obj = null;
+    var $output = array();
 
 
-// *** ----------------------------------------------------------------
-function parse($path){
+    // *** ----------------------------------------------------------------
+    // CONSTRUCTOR
+    function xmlParser() {
 
-if (!($fp = fopen($path, "r"))) {
-die("Cannot open XML data file: $path");
-return false;
-}
+        $this->xml_obj = xml_parser_create();
+        xml_set_object($this->xml_obj, $this);
+        xml_set_character_data_handler($this->xml_obj, 'dataHandler');
+        xml_set_element_handler($this->xml_obj, "startHandler", "endHandler");
 
-while ($data = fread($fp, 4096)) {
-if (!xml_parse($this->xml_obj, $data, feof($fp))) {
-die(sprintf("XML error: %s at line %d",
-xml_error_string(xml_get_error_code($this->xml_obj)),
-xml_get_current_line_number($this->xml_obj)));
-xml_parser_free($this->xml_obj);
-}
-}
-
-//return true;
-return $this->output;
-}
+    }
 
 
-// *** ----------------------------------------------------------------
-function startHandler($parser, $name, $attribs){
-$_content = array('name' => $name);
-if(!empty($attribs))
-$_content['attrs'] = $attribs;
-array_push($this->output, $_content);
-}
+    // *** ----------------------------------------------------------------
+    function parse($path) {
 
-// *** ----------------------------------------------------------------
-function dataHandler($parser, $data){
-if(!empty($data)) {
-$_output_idx = count($this->output) - 1;
-$this->output[$_output_idx]['content'] = $data;
-}
-}
+        if (!($fp = fopen($path, "r"))) {
+            die("Cannot open XML data file: $path");
 
-// *** ----------------------------------------------------------------
-function endHandler($parser, $name){
-if(count($this->output) > 1) {
-$_data = array_pop($this->output);
-$_output_idx = count($this->output) - 1;
-$this->output[$_output_idx]['child'][] = $_data;
-} 
-}
+            return false;
+        }
 
-// *** ----------------------------------------------------------------
-function GetNodeByPath($path,$tree = false) {
-if ($tree) {
-$tree_to_search = $tree;
-}
-else {
-$tree_to_search = $this->output;
-}
+        while ($data = fread($fp, 4096)) {
+            if (!xml_parse($this->xml_obj, $data, feof($fp))) {
+                die(sprintf(
+                    "XML error: %s at line %d", xml_error_string(xml_get_error_code($this->xml_obj)), xml_get_current_line_number($this->xml_obj)
+                ));
+                xml_parser_free($this->xml_obj);
+            }
+        }
 
-if ($path == "") {
-return null; 
-}
+        //return true;
+        return $this->output;
+    }
 
-$arrPath = explode('/',$path);
 
-foreach($tree_to_search as $key => $val) {
-if (gettype($val) == "array") {
-$nodename = $val[name];
+    // *** ----------------------------------------------------------------
+    function startHandler($parser, $name, $attribs) {
+        $_content = array('name' => $name);
+        if (!empty($attribs)) {
+            $_content['attrs'] = $attribs;
+        }
+        array_push($this->output, $_content);
+    }
 
-if ($nodename == $arrPath[0]) { 
+    // *** ----------------------------------------------------------------
+    function dataHandler($parser, $data) {
+        if (!empty($data)) {
+            $_output_idx                           = count($this->output) - 1;
+            $this->output[$_output_idx]['content'] = $data;
+        }
+    }
 
-if (count($arrPath) == 1) { 
-return $val;
-} 
+    // *** ----------------------------------------------------------------
+    function endHandler($parser, $name) {
+        if (count($this->output) > 1) {
+            $_data                                 = array_pop($this->output);
+            $_output_idx                           = count($this->output) - 1;
+            $this->output[$_output_idx]['child'][] = $_data;
+        }
+    }
 
-array_shift($arrPath);
+    // *** ----------------------------------------------------------------
+    function GetNodeByPath($path, $tree = false) {
+        if ($tree) {
+            $tree_to_search = $tree;
+        } else {
+            $tree_to_search = $this->output;
+        }
 
-$new_path = implode($arrPath,"/");
+        if ($path == "") {
+            return null;
+        }
 
-return $this->GetNodeByPath($new_path,$val[child]);
-}
-}
-}
-}
+        $arrPath = explode('/', $path);
+
+        foreach ($tree_to_search as $key => $val) {
+            if (gettype($val) == "array") {
+                $nodename = $val[name];
+
+                if ($nodename == $arrPath[0]) {
+
+                    if (count($arrPath) == 1) {
+                        return $val;
+                    }
+
+                    array_shift($arrPath);
+
+                    $new_path = implode($arrPath, "/");
+
+                    return $this->GetNodeByPath($new_path, $val[child]);
+                }
+            }
+        }
+    }
 } // class : end
 ?>

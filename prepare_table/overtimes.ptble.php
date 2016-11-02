@@ -9,39 +9,38 @@
 
 */
 
-$where='where true';
+$where = 'where true';
 
 
+$wheref = '';
 
-$wheref='';
-
-if ($parameters['f_field']=='reference' and $f_value!=''  ) {
-	$wheref=sprintf('  and  `Overtime Reference`  REGEXP "[[:<:]]%s" ', addslashes($f_value));
+if ($parameters['f_field'] == 'reference' and $f_value != '') {
+    $wheref = sprintf(
+        '  and  `Overtime Reference`  REGEXP "[[:<:]]%s" ', addslashes($f_value)
+    );
 }
 
 
-
-$_order=$order;
-$_dir=$order_direction;
-
-
-if ($order=='reference')
-	$order='`Overtime Reference`';
-elseif ($order=='start')
-	$order='`Overtime Start Date`';
-elseif ($order=='end')
-	$order='`Overtime End Date`';
-
-else
-	$order='`Overtime Key`';
+$_order = $order;
+$_dir   = $order_direction;
 
 
+if ($order == 'reference') {
+    $order = '`Overtime Reference`';
+} elseif ($order == 'start') {
+    $order = '`Overtime Start Date`';
+} elseif ($order == 'end') {
+    $order = '`Overtime End Date`';
+} else {
+    $order = '`Overtime Key`';
+}
 
 
-$table='  `Overtime Dimension` as O  ';
+$table = '  `Overtime Dimension` as O  ';
 
-$sql_totals="select count(*) as num from $table  $where  ";
+$sql_totals = "select count(*) as num from $table  $where  ";
 
-$fields="`Overtime Key`,`Overtime Reference`,`Overtime Start Date`,`Overtime End Date`,`Overtime Status`";
+$fields
+    = "`Overtime Key`,`Overtime Reference`,`Overtime Start Date`,`Overtime End Date`,`Overtime Status`";
 
 ?>

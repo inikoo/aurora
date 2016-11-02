@@ -10,22 +10,20 @@
 */
 
 
-$tab='data_sets.images';
-$ar_file='ar_account_tables.php';
-$tipo='images';
+$tab     = 'data_sets.images';
+$ar_file = 'ar_account_tables.php';
+$tipo    = 'images';
 
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array();
+$table_views = array();
 
-$table_filters=array(
+$table_filters = array();
 
-);
-
-$parameters=array(
-		'parent'=>$state['parent'],
-		'parent_key'=>$state['parent_key'],
+$parameters = array(
+    'parent'     => $state['parent'],
+    'parent_key' => $state['parent_key'],
 );
 
 

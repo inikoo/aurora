@@ -10,10 +10,9 @@
 */
 
 
+$category = $state['_object'];
 
-$category=$state['_object'];
-
-$sales_max_sample_domain=1;
+$sales_max_sample_domain = 1;
 
 /*
 if ($category->get('Product Max Day Sales')>0) {
@@ -26,54 +25,57 @@ if ($category->get('Product Max Day Sales')>0) {
 
 }
 */
-$timeseries_key='';
-$number_records=0;
-$sql=sprintf('select `Timeseries Key`,`Timeseries Number Records` from `Timeseries Dimension` where `Timeseries Parent`="Category" and `Timeseries Parent Key`=%s and `Timeseries Frequency`="Daily" and  `Timeseries Type`="ProductCategorySales" ',
-	$state['key']
+$timeseries_key = '';
+$number_records = 0;
+$sql            = sprintf(
+    'SELECT `Timeseries Key`,`Timeseries Number Records` FROM `Timeseries Dimension` WHERE `Timeseries Parent`="Category" AND `Timeseries Parent Key`=%s AND `Timeseries Frequency`="Daily" AND  `Timeseries Type`="ProductCategorySales" ',
+    $state['key']
 );
-if ($result=$db->query($sql)) {
-	if ($row = $result->fetch()) {
-		$timeseries_key=$row['Timeseries Key'];
-		$number_records=$row['Timeseries Number Records'];
-	}
-}else {
-	print_r($error_info=$db->errorInfo());
-	exit;
+if ($result = $db->query($sql)) {
+    if ($row = $result->fetch()) {
+        $timeseries_key = $row['Timeseries Key'];
+        $number_records = $row['Timeseries Number Records'];
+    }
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
 }
 
 
-
-$sql=sprintf("select  `Timeseries Record Float A` as value from  `Timeseries Record Dimension`  where `Timeseries Record Timeseries Key`=%d   order by `Timeseries Record Float A` desc limit %d ,1",
-	$timeseries_key,
-	$number_records/20
+$sql = sprintf(
+    "SELECT  `Timeseries Record Float A` AS value FROM  `Timeseries Record Dimension`  WHERE `Timeseries Record Timeseries Key`=%d   ORDER BY `Timeseries Record Float A` DESC LIMIT %d ,1",
+    $timeseries_key, $number_records / 20
 );
 
-if ($result=$db->query($sql)) {
-	if ($row = $result->fetch()) {
-		$sales_max_sample_domain=$row['value'];
-	}
-}else {
-	print_r($error_info=$db->errorInfo());
-	exit;
+if ($result = $db->query($sql)) {
+    if ($row = $result->fetch()) {
+        $sales_max_sample_domain = $row['value'];
+    }
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
 }
 
 
-
-
-
-
-$data=base64_encode(json_encode(array(
-			'valid_from'=>$category->get('Product Category Valid From'),
-			'valid_to'=>($category->get('Product Category Status')=='Discontinued'?$category->get('Product Category Valid To'):gmdate("Y-m-d H:i:s")  ) ,
-			'sales_max_sample_domain'=>$sales_max_sample_domain,
-			'parent'=>'product_category',
-			'parent_key'=>$state['key']
-		)));
-
+$data = base64_encode(
+    json_encode(
+        array(
+            'valid_from'              => $category->get(
+                'Product Category Valid From'
+            ),
+            'valid_to'                => ($category->get(
+                'Product Category Status'
+            ) == 'Discontinued' ? $category->get('Product Category Valid To') : gmdate("Y-m-d H:i:s")),
+            'sales_max_sample_domain' => $sales_max_sample_domain,
+            'parent'                  => 'product_category',
+            'parent_key'              => $state['key']
+        )
+    )
+);
 
 
 $smarty->assign('data', $data);
-$html=$smarty->fetch('calendar.tpl');
+$html = $smarty->fetch('calendar.tpl');
 
 
 ?>

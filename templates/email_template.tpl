@@ -13,9 +13,9 @@
 
 <script>
 
-var beeConfig={
-uid: 'CmsUserName', // [mandatory] identifies the set of resources to load
-container: 'bee_plugin_container', // [mandatory] the id of div element that contains BEE Plugin
+    var beeConfig = {
+        uid: 'CmsUserName', // [mandatory] identifies the set of resources to load
+        container: 'bee_plugin_container', // [mandatory] the id of div element that contains BEE Plugin
 //autosave: 30, // [optional, default:false] in seconds, allowed min-value: 15
 //language: 'en-US', // [optional, default:'en-US'] if language is not supported the default language is loaded (value must follow ISO 639-1  format)
 //specialLinks: specialLinks, // [optional, default:[]] Array of Object to specify special links
@@ -27,21 +27,21 @@ container: 'bee_plugin_container', // [mandatory] the id of div element that con
 //onAutoSave: function(jsonFile) { /* Implements function for auto save */ }, // [optional]
 //onSend: function(htmlFile) { /* Implements function to send message */ }, // [optional]
 //onError: function(errorMessage) { /* Implements function to handle error messages */ } // [optional]
-};
+    };
 
-BeePlugin.create({$bee_token}, beeConfig, 
-function(beePluginInstance) {
+    BeePlugin.create({$bee_token}, beeConfig,
+            function (beePluginInstance) {
 
-$.ajax({
-            url:'https://rsrc.getbee.io/api/templates/m-bee',
-            success: function (data){
-                var templateString = data;
-                var template = JSON.parse(templateString);
-                beePluginInstance.start(template);
+                $.ajax({
+                    url: 'https://rsrc.getbee.io/api/templates/m-bee',
+                    success: function (data) {
+                        var templateString = data;
+                        var template = JSON.parse(templateString);
+                        beePluginInstance.start(template);
+                    }
+                });
+
             }
-        });
-
-}
-);
+    );
 
 </script>

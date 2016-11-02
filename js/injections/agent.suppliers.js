@@ -4,32 +4,31 @@
  Version 3.0*/
 
 
-function bridge_supplier(element){
+function bridge_supplier(element) {
 
 
+    if ($(element).hasClass('fa-chain-broken')) {
+        var operation = 'unlink'
+    } else {
+        var operation = 'link'
 
-if($(element).hasClass('fa-chain-broken')){
-var operation='unlink'
-}else{
-var operation='link'
-
-}
-
-
- var request = '/ar_edit.php?tipo=bridge&object=agent&key=' + $(element).attr('agent_key') + '&subject=supplier&subject_key=' + $(element).attr('supplier_key') +'&operation='+operation
+    }
 
 
-    $.getJSON(request, function(data) {
+    var request = '/ar_edit.php?tipo=bridge&object=agent&key=' + $(element).attr('agent_key') + '&subject=supplier&subject_key=' + $(element).attr('supplier_key') + '&operation=' + operation
+
+
+    $.getJSON(request, function (data) {
 
         if (data.state == 200) {
-        
-        $(element).addClass('hide')
-         $(element).closest('tr').addClass('super_discreet deleted')
-         for (var key in data.metadata.updated_showcase_fields) {
-            $('.'+key).html(data.metadata.updated_showcase_fields[key])
-         }
-        
-        
+
+            $(element).addClass('hide')
+            $(element).closest('tr').addClass('super_discreet deleted')
+            for (var key in data.metadata.updated_showcase_fields) {
+                $('.' + key).html(data.metadata.updated_showcase_fields[key])
+            }
+
+
         } else if (data.state == 400) {
 
 

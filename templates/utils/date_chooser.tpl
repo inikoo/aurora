@@ -1,56 +1,70 @@
 <div id="date_chooser" class="date_chooser" ">
-	<div onClick="toogle_interval_dialog()" id="interval" class="interval {if  $period=='interval'}selected{/if}" ><img src="/art/icons/mini-calendar_interval.png"  /> {t}Interval{/t}</div> 
-	<div onClick="toogle_date_dialog()"  id="date" class="day {if  $period=='date'}selected{/if}" ><img src="/art/icons/mini-calendar.png"  /> {t}Day{/t}</div> 
-	<div onclick="change_period('ytd')"period="ytd" id="ytd" class="fixed_interval {if  $period=='ytd'}selected{/if}" >{t}YTD{/t}</div> 
-	<div onclick="change_period('mtd')"period="mtd" id="mtd" class="fixed_interval {if  $period=='mtd'}selected{/if}" >{t}MTD{/t}</div> 
-	<div onclick="change_period('wtd')"period="wtd" id="wtd" class="fixed_interval {if  $period=='wtd'}selected{/if}" >{t}WTD{/t}</div> 
-	<div onclick="change_period('today')" period="today" id="today" class="fixed_interval {if  $period=='today'}selected{/if}" >{t}Today{/t}</div> 
-	<div onclick="change_period('yesterday')" period="yesterday" id="yesterday" class="fixed_interval {if  $period=='yesterday'}selected{/if}" >{t}Y'day{/t}</div> 
-	<div onclick="change_period('last_w')" period="last_w" id="last_w" class="fixed_interval {if  $period=='last_w'}selected{/if}" >{t}Last W{/t}</div> 
-	<div onclick="change_period('last_m')" period="last_m" id="last_m" class="fixed_interval {if  $period=='last_m'}selected{/if}" >{t}Last M{/t}</div> 
-	<div onclick="change_period('1w')" period="1w" id="1w" class="fixed_interval {if  $period=='1w'}selected{/if}" >{t}1W{/t}</div> 
-	<div onclick="change_period('1m')" period="1m" id="1m" class="fixed_interval {if  $period=='1m'}selected{/if}" >{t}1m{/t}</div> 
-	<div onclick="change_period('1q')" period="1q" id="1q" class="fixed_interval {if  $period=='1q'}selected{/if}" >{t}1q{/t}</div> 
-	<div onclick="change_period('1y')" period="1y" id="1y" class="fixed_interval {if  $period=='1y'}selected{/if}" >{t}1Y{/t}</div> 
-	<div onclick="change_period('all')" period="all"  id="all" class="fixed_interval {if  $period=='all'}selected{/if}" >{t}All{/t}</div>
+<div onClick="toogle_interval_dialog()" id="interval" class="interval {if  $period=='interval'}selected{/if}"><img
+            src="/art/icons/mini-calendar_interval.png"/> {t}Interval{/t}</div>
+<div onClick="toogle_date_dialog()" id="date" class="day {if  $period=='date'}selected{/if}"><img
+            src="/art/icons/mini-calendar.png"/> {t}Day{/t}</div>
+<div onclick="change_period('ytd')" period="ytd" id="ytd"
+     class="fixed_interval {if  $period=='ytd'}selected{/if}">{t}YTD{/t}</div>
+<div onclick="change_period('mtd')" period="mtd" id="mtd"
+     class="fixed_interval {if  $period=='mtd'}selected{/if}">{t}MTD{/t}</div>
+<div onclick="change_period('wtd')" period="wtd" id="wtd"
+     class="fixed_interval {if  $period=='wtd'}selected{/if}">{t}WTD{/t}</div>
+<div onclick="change_period('today')" period="today" id="today"
+     class="fixed_interval {if  $period=='today'}selected{/if}">{t}Today{/t}</div>
+<div onclick="change_period('yesterday')" period="yesterday" id="yesterday"
+     class="fixed_interval {if  $period=='yesterday'}selected{/if}">{t}Y'day{/t}</div>
+<div onclick="change_period('last_w')" period="last_w" id="last_w"
+     class="fixed_interval {if  $period=='last_w'}selected{/if}">{t}Last W{/t}</div>
+<div onclick="change_period('last_m')" period="last_m" id="last_m"
+     class="fixed_interval {if  $period=='last_m'}selected{/if}">{t}Last M{/t}</div>
+<div onclick="change_period('1w')" period="1w" id="1w"
+     class="fixed_interval {if  $period=='1w'}selected{/if}">{t}1W{/t}</div>
+<div onclick="change_period('1m')" period="1m" id="1m"
+     class="fixed_interval {if  $period=='1m'}selected{/if}">{t}1m{/t}</div>
+<div onclick="change_period('1q')" period="1q" id="1q"
+     class="fixed_interval {if  $period=='1q'}selected{/if}">{t}1q{/t}</div>
+<div onclick="change_period('1y')" period="1y" id="1y"
+     class="fixed_interval {if  $period=='1y'}selected{/if}">{t}1Y{/t}</div>
+<div onclick="change_period('all')" period="all" id="all"
+     class="fixed_interval {if  $period=='all'}selected{/if}">{t}All{/t}</div>
 </div>
 
-<div  >
-	<input id="select_date" type="hidden" value="{$from}" has_been_valid="0" />
+<div>
+    <input id="select_date" type="hidden" value="{$from}" has_been_valid="0"/>
 
-	<input id="select_interval_from" type="hidden" value="{$from_mmddyy}" has_been_valid="0" />
+    <input id="select_interval_from" type="hidden" value="{$from_mmddyy}" has_been_valid="0"/>
 
-	<input id="select_interval_to" type="hidden" value="{$to_mmddyy}" has_been_valid="0" />
+    <input id="select_interval_to" type="hidden" value="{$to_mmddyy}" has_been_valid="0"/>
 
 
-	<input id="select_date_time" type="hidden" value="" />
+    <input id="select_date_time" type="hidden" value=""/>
 
     <div id="select_date_control_panel" class="hide">
-	<div id="select_date_datepicker" class="datepicker" style="float:left">
-	</div>
-	<div class="date_chooser_form">
-		<div class="label">{t}Date{/t}</div>
-		<input id="select_date_formatted" class="" value="{$from_locale}" />
-		<i onclick="submit_date()" id="select_date_save" class="fa button fa-play save"></i> 
-	</div>
-	<div style="clear:both"></div>
+        <div id="select_date_datepicker" class="datepicker" style="float:left">
+        </div>
+        <div class="date_chooser_form">
+            <div class="label">{t}Date{/t}</div>
+            <input id="select_date_formatted" class="" value="{$from_locale}"/>
+            <i onclick="submit_date()" id="select_date_save" class="fa button fa-play save"></i>
+        </div>
+        <div style="clear:both"></div>
     </div>
 
 
- <div id="select_interval_control_panel" class="hide">
-	<div id="select_interval_datepicker" class="datepicker" style="float:left">
-	</div>
-	<div class="date_chooser_form">
-		<div class="label from">{t}From{/t}</div>
-		<input id="select_interval_from_formatted" class="" value="{$from_locale}" readonly/>
-		<div class="label until">{t}Until{/t}</div>
-		<input id="select_interval_to_formatted" class="" value="{$to_locale}" readonly/>
-		<i onclick="submit_interval()" id="select_interval_save" class="fa button fa-play save"></i> 
-	</div>
-	<div style="clear:both"></div>
+    <div id="select_interval_control_panel" class="hide">
+        <div id="select_interval_datepicker" class="datepicker" style="float:left">
+        </div>
+        <div class="date_chooser_form">
+            <div class="label from">{t}From{/t}</div>
+            <input id="select_interval_from_formatted" class="" value="{$from_locale}" readonly/>
+            <div class="label until">{t}Until{/t}</div>
+            <input id="select_interval_to_formatted" class="" value="{$to_locale}" readonly/>
+            <i onclick="submit_interval()" id="select_interval_save" class="fa button fa-play save"></i>
+        </div>
+        <div style="clear:both"></div>
     </div>
 
-	<div style="clear:both"></div>
+    <div style="clear:both"></div>
 
 
 </div>
@@ -72,20 +86,19 @@
     }
 
 
-    $(function() {
+    $(function () {
         $("#select_date_datepicker").datepicker({
             showOtherMonths: true,
             selectOtherMonths: true,
             defaultDate: new Date("{$from}"),
             altField: "#select_date",
             altFormat: "yy-mm-dd",
-            onSelect: function() {
+            onSelect: function () {
                 $('#select_date').change();
                 $('#select_date_formatted').val($.datepicker.formatDate("dd-mm-yy", $(this).datepicker("getDate")))
                 validate_date()
             }
         });
-
 
 
         $("#select_interval_datepicker").datepicker({
@@ -94,12 +107,12 @@
             defaultDate: new Date("{$from}"),
 
             numberOfMonths: 2,
-            beforeShowDay: function(date) {
+            beforeShowDay: function (date) {
                 var date1 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $("#select_interval_from").val());
                 var date2 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $("#select_interval_to").val());
                 return [true, date1 && ((date.getTime() == date1.getTime()) || (date2 && date >= date1 && date <= date2)) ? "dp-highlight" : ""];
             },
-            onSelect: function(dateText, inst) {
+            onSelect: function (dateText, inst) {
                 var date1 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $("#select_interval_from").val());
                 var date2 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $("#select_interval_to").val());
                 var selectedDate = $.datepicker.parseDate($.datepicker._defaults.dateFormat, dateText);
@@ -130,14 +143,8 @@
                 }
 
 
-
                 validate_interval()
             }
-
-
-
-
-
 
 
         });
@@ -145,9 +152,7 @@
     })
 
 
-
-
-    $('#select_date_formatted').on('input', function() {
+    $('#select_date_formatted').on('input', function () {
 
         var _moment = moment($('#select_date_formatted').val(), ["DD-MM-YYYY", "MM-DD-YYYY"], 'en');
 
@@ -172,12 +177,10 @@
     });
 
 
-
-    $('#select_date').on('change', function() {
+    $('#select_date').on('change', function () {
         //console.log($('#select_date').val())
 
     });
-
 
 
     function validate_date() {
@@ -212,7 +215,7 @@
             $('#select_interval_control_panel').removeClass('hide')
             $('#select_date_control_panel').addClass('hide')
             $('#date_chooser div').removeClass('selected')
-            $('#interval' ).addClass('selected')
+            $('#interval').addClass('selected')
 
         } else {
             $('#select_interval_control_panel').addClass('hide')
@@ -226,7 +229,7 @@
             $('#select_date_control_panel').removeClass('hide')
             $('#select_interval_control_panel').addClass('hide')
             $('#date_chooser div').removeClass('selected')
-            $('#date' ).addClass('selected')
+            $('#date').addClass('selected')
         } else {
             $('#select_date_control_panel').addClass('hide')
 

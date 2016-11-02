@@ -10,31 +10,35 @@
 */
 
 
-$table='`Timeseries Dimension` TS left join `Store Dimension` on (`Timeseries Parent Key`=`Store Key`) ';
-$where=' where true';
+$table
+       = '`Timeseries Dimension` TS left join `Store Dimension` on (`Timeseries Parent Key`=`Store Key`) ';
+$where = ' where true';
 
-$wheref='';
-
-
-$_order=$order;
-$_dir=$order_direction;
-
-if ($order=='from')
-	$order='`Timeseries From`';
-elseif ($order=='to')
-	$order='`Timeseries To`';
-elseif ($order=='records')
-	$order='`Timeseries Number Records`';
-elseif ($order=='updated')
-	$order='`Timeseries Updated`';
-elseif ($order=='type')
-	$order='`Timeseries Type`';
-else
-	$order='`Timeseries Key`';
+$wheref = '';
 
 
-$sql_totals="select count(Distinct TS.`Timeseries Key`) as num from $table $where  ";
+$_order = $order;
+$_dir   = $order_direction;
 
-$fields="`Timeseries Key`,`Timeseries Type`,`Store Code`,`Timeseries Parent Key`,`Timeseries Parent`,`Timeseries Number Records`,`Timeseries From`,`Timeseries To`,`Timeseries Updated`";
+if ($order == 'from') {
+    $order = '`Timeseries From`';
+} elseif ($order == 'to') {
+    $order = '`Timeseries To`';
+} elseif ($order == 'records') {
+    $order = '`Timeseries Number Records`';
+} elseif ($order == 'updated') {
+    $order = '`Timeseries Updated`';
+} elseif ($order == 'type') {
+    $order = '`Timeseries Type`';
+} else {
+    $order = '`Timeseries Key`';
+}
+
+
+$sql_totals
+    = "select count(Distinct TS.`Timeseries Key`) as num from $table $where  ";
+
+$fields
+    = "`Timeseries Key`,`Timeseries Type`,`Store Code`,`Timeseries Parent Key`,`Timeseries Parent`,`Timeseries Number Records`,`Timeseries From`,`Timeseries To`,`Timeseries Updated`";
 
 ?>

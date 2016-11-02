@@ -10,34 +10,37 @@
 */
 
 
+$tab     = 'agent.users';
+$ar_file = 'ar_users_tables.php';
+$tipo    = 'users';
 
-$tab='agent.users';
-$ar_file='ar_users_tables.php';
-$tipo='users';
-
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array(
-	'privilegies'=>array('label'=>_('Overview')),
-	'weblog'=>array('label'=>_('Syslog')),
-
-);
-
-$table_filters=array(
-	'handle'=>array('label'=>_('Handle')),
-	'name'=>array('label'=>_('Name')),
+$table_views = array(
+    'privilegies' => array('label' => _('Overview')),
+    'weblog'      => array('label' => _('Syslog')),
 
 );
 
-$parameters=array(
-		'parent'=>$state['parent'],
-		'parent_key'=>$state['parent_key'],
-	
+$table_filters = array(
+    'handle' => array('label' => _('Handle')),
+    'name'   => array('label' => _('Name')),
+
 );
 
-$table_buttons=array();
-$table_buttons[]=array('icon'=>'plus', 'title'=>_('New user'), 'reference'=>"agent/".$state['key']."/user/new");
+$parameters = array(
+    'parent'     => $state['parent'],
+    'parent_key' => $state['parent_key'],
+
+);
+
+$table_buttons   = array();
+$table_buttons[] = array(
+    'icon'      => 'plus',
+    'title'     => _('New user'),
+    'reference' => "agent/".$state['key']."/user/new"
+);
 $smarty->assign('table_buttons', $table_buttons);
 
 

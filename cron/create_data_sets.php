@@ -18,20 +18,20 @@ require_once 'class.Invoice.php';
 require_once 'utils/date_functions.php';
 require_once 'conf/data_sets.php';
 
-$editor=array(
-	'Author Name'=>'',
-	'Author Alias'=>'',
-	'Author Type'=>'',
-	'Author Key'=>'',
-	'User Key'=>0,
-	'Date'=>gmdate('Y-m-d H:i:s')
+$editor = array(
+    'Author Name'  => '',
+    'Author Alias' => '',
+    'Author Type'  => '',
+    'Author Key'   => '',
+    'User Key'     => 0,
+    'Date'         => gmdate('Y-m-d H:i:s')
 );
 
 foreach ($data_sets as $data_set_data) {
-	$data_set_data['editor']=$editor;
+    $data_set_data['editor'] = $editor;
 
-	$data_set=$account->create_data_sets($data_set_data);
-	$data_set->update_stats();
+    $data_set = $account->create_data_sets($data_set_data);
+    $data_set->update_stats();
 }
 
 

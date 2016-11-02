@@ -3,7 +3,7 @@
  Copyright (c) 2015, Inikoo
  Version 3.0*/
 
-$(document).on('input propertychange', '.order_qty', function(evt) {
+$(document).on('input propertychange', '.order_qty', function (evt) {
 
     if ($(this).val() == $(this).attr('ovalue')) {
         $(this).closest('span').find('i').removeClass('fa-cloud exclamation-circle error').addClass('fa-plus')

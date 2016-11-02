@@ -22,12 +22,9 @@ function get_form_validation_state(submitting) {
 
     form_validation = 'valid';
 
-    $(".value").each(function(index) {
+    $(".value").each(function (index) {
 
         var field = $(this).attr('field')
-
-
-
 
 
         if ($('#' + field + '_field').hasClass('invalid')) {
@@ -39,7 +36,7 @@ function get_form_validation_state(submitting) {
         }
 
 
-       // if (component_validation != 'valid') console.log(field + ' ' + component_validation)
+        // if (component_validation != 'valid') console.log(field + ' ' + component_validation)
         //if (component_validation == 'invalid' || component_validation == 'potentially_valid') 
         if (component_validation == 'invalid') {
             form_validation = 'invalid';
@@ -54,14 +51,11 @@ function get_form_validation_state(submitting) {
         }
 
 
-
     });
 
     return form_validation
 
 }
-
-
 
 
 function process_form_validation(validation, submitting) {
@@ -79,10 +73,9 @@ function process_form_validation(validation, submitting) {
 function check_if_form_is_valid() {
 
 
-
     var object = $('#fields').attr('object');
     var valid = true;
-    $(".value").each(function(index) {
+    $(".value").each(function (index) {
         var field = $(this).attr('field')
         var value = $('#' + field).val()
 
@@ -113,7 +106,6 @@ function save_new_object(object, form_type) {
     process_form_validation(form_validation, true)
 
 
-
     if ($('tr.controls').hasClass('valid')) {
 
 
@@ -129,79 +121,73 @@ function save_new_object(object, form_type) {
         var form_data = new FormData();
 
         $(".value").each(
-
-        function(index) {
-
+            function (index) {
 
 
-            var field_tr = $(this).closest('tr')
- console.log($(this).attr('field'))
- 
-      //      if (!field_tr.hasClass('hidden') && field_tr.hasClass('hide')) {
-       //         return
-        //    }
+                var field_tr = $(this).closest('tr')
+                console.log($(this).attr('field'))
+
+                //      if (!field_tr.hasClass('hidden') && field_tr.hasClass('hide')) {
+                //         return
+                //    }
 
 
+                var field = $(this).attr('field')
+                var field_type = $(this).attr('field_type')
 
-            var field = $(this).attr('field')
-            var field_type = $(this).attr('field_type')
-
-            //console.log(field)
+                //console.log(field)
 
 
-            if (field_type == 'time') {
-                value = clean_time($('#' + field).val())
-            } else if (field_type == 'password' || field_type == 'password_with_confirmation' || field_type == 'password_with_confirmation_paranoid' || field_type == 'pin' || field_type == 'pin_with_confirmation' || field_type == 'pin_with_confirmation_paranoid') {
-                value = sha256_digest($('#' + field).val())
-            } else if (field_type == 'attachment') {
-                form_data.append("file", $('#' + field).prop("files")[0])
-                value = ''
-            } else if (field_type == 'country_select') {
-                value = $('#' + field).countrySelect("getSelectedCountryData").code
+                if (field_type == 'time') {
+                    value = clean_time($('#' + field).val())
+                } else if (field_type == 'password' || field_type == 'password_with_confirmation' || field_type == 'password_with_confirmation_paranoid' || field_type == 'pin' || field_type == 'pin_with_confirmation' || field_type == 'pin_with_confirmation_paranoid') {
+                    value = sha256_digest($('#' + field).val())
+                } else if (field_type == 'attachment') {
+                    form_data.append("file", $('#' + field).prop("files")[0])
+                    value = ''
+                } else if (field_type == 'country_select') {
+                    value = $('#' + field).countrySelect("getSelectedCountryData").code
 
-            } else if (field_type == 'telephone') {
-                value = $('#' + field).intlTelInput("getNumber");
+                } else if (field_type == 'telephone') {
+                    value = $('#' + field).intlTelInput("getNumber");
 
-            } else if (field_type == 'parts_list') {
-                var part_list_data = [];
+                } else if (field_type == 'parts_list') {
+                    var part_list_data = [];
 
-                $('#parts_list_items  tr.part_tr').each(function(i, obj) {
+                    $('#parts_list_items  tr.part_tr').each(function (i, obj) {
 
-                 //   if (!$(obj).find('.sku').val()) return true;
+                        //   if (!$(obj).find('.sku').val()) return true;
 
-                    if ($(obj).hasClass('very_discreet')) {
-                        var ratio = 0;
-                    } else {
-                        var ratio = $(obj).find('.parts_per_product').val()
-                    }
-                    var part_data = {
-                        'Key': $(obj).find('.product_part_key').val(),
-                        'Part SKU': $(obj).find('.sku').val(),
-                        'Ratio': ratio,
-                        'Note': $(obj).find('.note').val(),
+                        if ($(obj).hasClass('very_discreet')) {
+                            var ratio = 0;
+                        } else {
+                            var ratio = $(obj).find('.parts_per_product').val()
+                        }
+                        var part_data = {
+                            'Key': $(obj).find('.product_part_key').val(),
+                            'Part SKU': $(obj).find('.sku').val(),
+                            'Ratio': ratio,
+                            'Note': $(obj).find('.note').val(),
 
-                    }
-                    part_list_data.push(part_data)
+                        }
+                        part_list_data.push(part_data)
 
-                });
+                    });
 
-                value = JSON.stringify(part_list_data)
+                    value = JSON.stringify(part_list_data)
 
-            } else {
-                var value = $('#' + field).val()
-            }
-            console.log($(this).attr('id') + ' ' + field + ' ' + $(this).closest('tr').hasClass('hide'))
-            fields_data[field.replace(re, ' ')] = value
-        });
-
+                } else {
+                    var value = $('#' + field).val()
+                }
+                console.log($(this).attr('id') + ' ' + field + ' ' + $(this).closest('tr').hasClass('hide'))
+                fields_data[field.replace(re, ' ')] = value
+            });
 
 
         if (form_type == 'setup') {
             save_setup(object, fields_data)
             return;
         }
-
-
 
 
         if (object == 'Attachment') {
@@ -219,7 +205,7 @@ function save_new_object(object, form_type) {
         console.log(request)
 
 
-       // return;
+        // return;
         //=====
         form_data.append("tipo", (form_type != '' ? form_type : tipo))
         form_data.append("object", object)
@@ -238,7 +224,7 @@ function save_new_object(object, form_type) {
 
         })
 
-        request.done(function(data) {
+        request.done(function (data) {
 
 
             console.log(data)
@@ -253,8 +239,6 @@ function save_new_object(object, form_type) {
                 $('#fields').addClass('hide')
 
 
-
-
                 for (var field in data.updated_data) {
                     $('.' + field).html(data.updated_data[field])
                 }
@@ -265,17 +249,15 @@ function save_new_object(object, form_type) {
                 $('tr.controls').addClass('error');
 
 
-
                 $('#' + object + '_msg').html(data.msg).removeClass('hide')
                 $('#save_msg').html(data.msg).removeClass('hide')
-
 
 
             }
 
         })
 
-        request.fail(function(jqXHR, textStatus) {
+        request.fail(function (jqXHR, textStatus) {
             console.log(textStatus)
 
             console.log(jqXHR.responseText)
@@ -290,13 +272,7 @@ function save_new_object(object, form_type) {
         });
 
 
-
-
-
-
     }
-
-
 
 
 }
@@ -304,15 +280,15 @@ function save_new_object(object, form_type) {
 function post_new_actions(object, data) {
 
     switch (object) {
-    case 'Timesheet_Record':
+        case 'Timesheet_Record':
 
-        rows.fetch({
-            reset: true
-        });
-        break;
+            rows.fetch({
+                reset: true
+            });
+            break;
 
 
-    default:
+        default:
 
     }
 
@@ -327,8 +303,6 @@ function save_inline_new_object(trigger) {
     var parent_key = $('#inline_new_object').attr('parent_key')
     var field = $('#inline_new_object').attr('field')
     var field_edit = $('#' + field + '_container').attr('field_type')
-
-
 
 
     if (!$('#inline_new_object').hasClass('valid')) {
@@ -374,8 +348,7 @@ function save_inline_new_object(trigger) {
         dataType: 'json'
     })
 
-    request.done(function(data) {
-
+    request.done(function (data) {
 
 
         $('#' + object + '_save').addClass('fa-cloud').removeClass('fa-spinner fa-spin');
@@ -406,7 +379,7 @@ function save_inline_new_object(trigger) {
             if (with_elements) get_elements_numbers(rows.tab, rows.parameters)
 
             if (
-            data.metadata != undefined && data.metadata.updated_showcase_fields != '') {
+                data.metadata != undefined && data.metadata.updated_showcase_fields != '') {
                 for (var key in data.metadata.updated_showcase_fields) {
                     $('.' + key).html(data.metadata.updated_showcase_fields[key])
                 }
@@ -421,7 +394,7 @@ function save_inline_new_object(trigger) {
         }
     })
 
-    request.fail(function(jqXHR, textStatus) {
+    request.fail(function (jqXHR, textStatus) {
         console.log(textStatus)
 
         console.log(jqXHR.responseText)
@@ -435,8 +408,6 @@ function save_inline_new_object(trigger) {
 }
 
 function toggle_inline_new_object_form(trigger) {
-
-
 
 
     var field = $('#inline_new_object').attr('field')
@@ -456,11 +427,8 @@ function toggle_inline_new_object_form(trigger) {
         $('#inline_form').removeClass('hide')
 
 
-
         $('#inline_new_object').removeClass('hide')
         $('#icon_' + trigger).removeClass('fa-plus').removeClass('fa-link').addClass('fa-times')
-
-
 
 
         $('#icon_' + trigger).attr('icon', icon)
@@ -510,7 +478,7 @@ function update_new_address_fields(field, country_code, hide_recipient_fields, a
 
     var request = '/ar_address.php?tipo=fields_data&country_code=' + country_code
 
-    $.getJSON(request, function(data) {
+    $.getJSON(request, function (data) {
 
 
         if (data.state == 200) {
@@ -543,8 +511,7 @@ function update_new_address_fields(field, country_code, hide_recipient_fields, a
 
             }
 
-            $(".address_value").each(function(index) {
-
+            $(".address_value").each(function (index) {
 
 
                 var field = $(this).attr('field')
@@ -561,14 +528,14 @@ function update_new_address_fields(field, country_code, hide_recipient_fields, a
                 var _object = field_data.attr('object')
                 var key = field_data.attr('key')
 
-/*
-                if (field_data.attr('_required') == 1) {
-                    var required = true
-                } else {
-                    var required = false
-                }
-                
-                */
+                /*
+                 if (field_data.attr('_required') == 1) {
+                 var required = true
+                 } else {
+                 var required = false
+                 }
+
+                 */
                 if (field_data.hasClass('address_value')) {
                     var required = field_data.closest('tbody.address_fields').attr('_required')
 
@@ -580,15 +547,15 @@ function update_new_address_fields(field, country_code, hide_recipient_fields, a
                 var validation = validate_field(field, value, type, required, server_validation, parent, parent_key, _object, key)
                 console.log(validation)
 
-/*
-                if (arg == 'init') {
+                /*
+                 if (arg == 'init') {
 
-                    if (validation.class == 'invalid' && value == '') {
-                    
-                        validation.class = 'potentially_valid'
-                    }
-                }
-                */
+                 if (validation.class == 'invalid' && value == '') {
+
+                 validation.class = 'potentially_valid'
+                 }
+                 }
+                 */
                 console.log(field + ' ' + field_data.attr('_required') + ' ' + validation.class)
                 if (field_data.attr('_required') == 1 && value == '' && validation.class == 'valid') {
                     validation.class = 'valid attention'
@@ -598,9 +565,7 @@ function update_new_address_fields(field, country_code, hide_recipient_fields, a
                 $('#' + field + '_field').removeClass('invalid potentially_valid valid').addClass(validation.class)
 
 
-
             });
-
 
 
         } else if (data.state == 400) {
@@ -615,14 +580,14 @@ function update_new_address_fields(field, country_code, hide_recipient_fields, a
 function update_related_fields(country_data) {
 
     // console.log(country_data.iso2)
-    $('#fields  .telephone_input_field').each(function(index) {
+    $('#fields  .telephone_input_field').each(function (index) {
 
         if ($(this).attr('has_been_changed') == 0) {
             $(this).intlTelInput("setCountry", country_data.iso2);
         }
     })
 
-    $('#fields  .address_fields').each(function(index) {
+    $('#fields  .address_fields').each(function (index) {
         if ($(this).attr('has_been_changed') == 0) {
 
             var field = $(this).attr('field')

@@ -45,7 +45,6 @@ function save_order_operation(element) {
     var key = object_data.key
 
 
-
     if (!$('#' + dialog_name + '_save_buttons').hasClass('button')) {
         console.log('#' + dialog_name + '_save_buttons')
         return;
@@ -60,7 +59,7 @@ function save_order_operation(element) {
 
     console.log('#' + dialog_name + '_dialog')
 
-    $('#' + dialog_name + '_dialog  .option_input_field').each(function() {
+    $('#' + dialog_name + '_dialog  .option_input_field').each(function () {
         var settings = $(this).data("settings")
         if (settings.type == 'datetime') {
             metadata[settings.field] = $('#' + settings.id).val() + ' ' + $('#' + settings.id + '_time').val()
@@ -96,12 +95,11 @@ function save_order_operation(element) {
     })
 
 
-    request.done(function(data) {
+    request.done(function (data) {
 
         $('#' + dialog_name + '_save_buttons').addClass('button');
         $('#' + dialog_name + '_save_buttons i').removeClass('fa-spinner fa-spin')
         $('#' + dialog_name + '_save_buttons .label').removeClass('hide')
-
 
 
         if (data.state == 200) {
@@ -131,11 +129,7 @@ function save_order_operation(element) {
             }
 
 
-
-
             $('.timeline .li').removeClass('complete')
-
-
 
 
             if (object == 'supplierdelivery') {
@@ -173,27 +167,26 @@ function save_order_operation(element) {
                 }
 
 
-
-            } 
+            }
             else if (object == 'purchase_order') {
                 if (data.update_metadata.state_index >= 30) {
                     $('#submitted_node').addClass('complete')
                 }
 
                 if (field == 'Purchase Order State') {
-                
-                console.log(state.tab)
 
-                
+                    console.log(state.tab)
+
+
                     if (data.value == 'InProcess') {
                         $('#create_delivery').addClass('hide')
                     } else if (data.value == 'Submitted') {
 
 
-                     if (state.tab == 'supplier.order.all_supplier_parts') {
-                        change_tab('supplier.order.items')
+                        if (state.tab == 'supplier.order.all_supplier_parts') {
+                            change_tab('supplier.order.items')
 
-                    }
+                        }
 
                         if (data.update_metadata.pending_items_in_delivery > 0) {
 
@@ -203,7 +196,6 @@ function save_order_operation(element) {
                             } else {
 
                                 $('#quick_create_delivery_operations').removeClass('hide')
-
 
 
                             }
@@ -252,13 +244,6 @@ function save_order_operation(element) {
             }
 
 
-
-
-
-
-
-
-
         } else if (data.state == 400) {
             console.log(data)
 
@@ -267,7 +252,7 @@ function save_order_operation(element) {
     })
 
 
-    request.fail(function(jqXHR, textStatus) {
+    request.fail(function (jqXHR, textStatus) {
         console.log(textStatus)
 
         console.log(jqXHR.responseText)
@@ -348,7 +333,7 @@ function save_item_qty_change(element) {
     })
 
 
-    request.done(function(data) {
+    request.done(function (data) {
 
         $(element).removeClass('fa-spinner fa-spin fa-cloud').addClass('fa-plus');
 
@@ -361,7 +346,6 @@ function save_item_qty_change(element) {
 
             $(element).closest('tr').find('.placement').html(data.metadata.placement)
             $(element).closest('.checked_quantity').find('.checked_qty').attr('ovalue', data.transaction_data.qty)
-
 
 
             $('#inputted_node').addClass('complete')
@@ -391,13 +375,10 @@ function save_item_qty_change(element) {
             }
 
 
-
-
             for (var key in data.metadata.class_html) {
 
                 $('.' + key).html(data.metadata.class_html[key])
             }
-
 
 
             for (var key in data.metadata.hide) {
@@ -408,7 +389,6 @@ function save_item_qty_change(element) {
             }
 
 
-
         } else if (data.state == 400) {
             console.log(data)
         }
@@ -416,15 +396,13 @@ function save_item_qty_change(element) {
     })
 
 
-    request.fail(function(jqXHR, textStatus) {
+    request.fail(function (jqXHR, textStatus) {
         console.log(textStatus)
 
         console.log(jqXHR.responseText)
 
 
     });
-
-
 
 
 }

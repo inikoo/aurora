@@ -3,333 +3,333 @@
 //     https://github.com/createbang/svg-dial
 
 
-(function(factory) {
-  var root = (typeof self == 'object' && self.self == self && self) ||
-            (typeof global == 'object' && global.global == global && global);
+(function (factory) {
+    var root = (typeof self == 'object' && self.self == self && self) ||
+        (typeof global == 'object' && global.global == global && global);
 
-  if (typeof define === 'function' && define.amd) {
-    define(['snap', 'exports'], function(Snap, exports) {
-      root.SVGDial = factory(root, exports, Snap);
-    });
-  } else if (typeof exports !== 'undefined') {
-    var Snap = require('snapsvg');
-    factory(root, exports, Snap);
-  } else {
-    root.SVGDial = factory(root, {}, root.Snap);
-  }
-
-}(function(root, exports, Snap) {
-
-  var lerp = function(angle, a, b) {
-    var t = (angle % 90) / 90;
-    return a * (1 - t) + b * t;
-  };
-
-  var calculateDropShadowAngle = function(angle) {
-    var topLeftQuadrant = angle >= 0 && angle < 90;
-    var topRightQuadrant = angle >= 90 && angle < 180;
-    var bottomRightQuadrant = angle >= 180 && angle < 270;
-    var bottomLeftQuadrant = angle >= 270 && angle <= 360;
-
-    if (topLeftQuadrant) {
-      return [lerp(angle, 0, 8), lerp(angle, 8, 0)];
-    } else if (topRightQuadrant) {
-      return [lerp(angle, 8, 0), lerp(angle, 0, -8)];
-    } else if (bottomRightQuadrant) {
-      return [lerp(angle, 0, -8), lerp(angle, -8, 0)];
-    } else if (bottomLeftQuadrant) {
-      return [lerp(angle, -8, 0), lerp(angle, 0, 8)];
+    if (typeof define === 'function' && define.amd) {
+        define(['snap', 'exports'], function (Snap, exports) {
+            root.SVGDial = factory(root, exports, Snap);
+        });
+    } else if (typeof exports !== 'undefined') {
+        var Snap = require('snapsvg');
+        factory(root, exports, Snap);
+    } else {
+        root.SVGDial = factory(root, {}, root.Snap);
     }
-  };
 
-  var defaults = function(base, defaults) {
-    var result = {};
-    var transferProps = function(obj) {
-      for (key in obj) {
-        if (obj.hasOwnProperty(key)) {
-          result[key] = obj[key];
+}(function (root, exports, Snap) {
+
+    var lerp = function (angle, a, b) {
+        var t = (angle % 90) / 90;
+        return a * (1 - t) + b * t;
+    };
+
+    var calculateDropShadowAngle = function (angle) {
+        var topLeftQuadrant = angle >= 0 && angle < 90;
+        var topRightQuadrant = angle >= 90 && angle < 180;
+        var bottomRightQuadrant = angle >= 180 && angle < 270;
+        var bottomLeftQuadrant = angle >= 270 && angle <= 360;
+
+        if (topLeftQuadrant) {
+            return [lerp(angle, 0, 8), lerp(angle, 8, 0)];
+        } else if (topRightQuadrant) {
+            return [lerp(angle, 8, 0), lerp(angle, 0, -8)];
+        } else if (bottomRightQuadrant) {
+            return [lerp(angle, 0, -8), lerp(angle, -8, 0)];
+        } else if (bottomLeftQuadrant) {
+            return [lerp(angle, -8, 0), lerp(angle, 0, 8)];
         }
-      }
+    };
+
+    var defaults = function (base, defaults) {
+        var result = {};
+        var transferProps = function (obj) {
+            for (key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    result[key] = obj[key];
+                }
+            }
+        }
+
+        transferProps(defaults);
+        transferProps(base);
+
+        return result;
+    };
+
+    exports.SVGDial = function (el, options) {
+        this.el = el;
+        this.options = defaults(options || {}, {
+            disabled: false,
+            frameSize: 200,
+            ringWidth: 50,
+            frameBackgroundColor: 'white',
+            ringBackgroundColor: '#888',
+            innerBackgroundColor: 'white',
+            fontFamily: 'impact',
+            fontSize: 24,
+            fontStyle: 'none',
+            fontWeight: 'none',
+            textType: 'percentage'
+        });
+
+        this.initialize();
+    };
+
+    exports.SVGDial.create = function (el, options) {
+        return new exports.SVGDial(el, options);
     }
 
-    transferProps(defaults);
-    transferProps(base);
+    exports.SVGDial.prototype = {
 
-    return result;
-  };
+        config: function (options) {
+            this.options = defaults(options, this.options);
+        },
 
-  exports.SVGDial = function(el, options) {
-    this.el = el;
-    this.options = defaults(options || {}, {
-      disabled: false,
-      frameSize: 200,
-      ringWidth: 50,
-      frameBackgroundColor: 'white',
-      ringBackgroundColor: '#888',
-      innerBackgroundColor: 'white',
-      fontFamily: 'impact',
-      fontSize: 24,
-      fontStyle: 'none',
-      fontWeight: 'none',
-      textType: 'percentage'
-    });
+        // expecting 0...1
+        setValue: function (percentage) {
 
-    this.initialize();
-  };
 
-  exports.SVGDial.create = function(el, options) {
-    return new exports.SVGDial(el, options);
-  }
+            var angle = this.convertPercentageToAngle(percentage);
+            this.updateDial(angle);
+        },
 
-  exports.SVGDial.prototype = {
+        initialize: function () {
+            this.c = this.buildCanvas();
+            this.dial = this.buildDial();
 
-    config: function(options) {
-      this.options = defaults(options, this.options);
-    },
+            var onChange = function (sx, sy, ax, ay, e) {
+                this.updateDial(this.getAngle(ax, ay));
+                this.executeCallback('onChange', [this.percentage]);
+            };
+            var onStart = function (x, y, e) {
+                this.centerCoordinates = this.calculateDialCenterCoordinates();
+                this.updateDial(this.getAngle(x, y));
+                this.executeCallback('onStart', [this.percentage]);
+            };
+            var onEnd = function (x, y, e) {
+                this.executeCallback('onEnd', [this.percentage]);
+            };
 
-    // expecting 0...1
-    setValue: function(percentage) {
-    
-    
-      var angle = this.convertPercentageToAngle(percentage);
-      this.updateDial(angle);
-    },
+            this.moveKnob(this.convertPercentageToAngle(0));
+            this.innerCircle.drag(onChange, onStart, onEnd, this, this, this);
+            this.outerCircle.drag(onChange, onStart, onEnd, this, this, this);
 
-    initialize: function() {
-      this.c = this.buildCanvas();
-      this.dial = this.buildDial();
+            this.executeCallback('onReady');
+        },
 
-      var onChange = function(sx, sy, ax, ay, e) {
-        this.updateDial(this.getAngle(ax, ay));
-        this.executeCallback('onChange', [this.percentage]);
-      };
-      var onStart = function(x, y, e) {
-        this.centerCoordinates = this.calculateDialCenterCoordinates();
-        this.updateDial(this.getAngle(x, y));
-        this.executeCallback('onStart', [this.percentage]);
-      };
-      var onEnd = function(x, y, e) {
-        this.executeCallback('onEnd', [this.percentage]);
-      };
+        getAngle: function (x, y) {
+            return Snap.angle(this.centerCoordinates.x, this.centerCoordinates.y, x, y);
+        },
 
-      this.moveKnob(this.convertPercentageToAngle(0));
-      this.innerCircle.drag(onChange, onStart, onEnd, this, this, this);
-      this.outerCircle.drag(onChange, onStart, onEnd, this, this, this);
+        buildCanvas: function () {
+            var el;
+            var svgHtml = '<svg style="width: ' + this.options.frameSize + 'px; height: ' + this.options.frameSize + 'px;"></svg>';
 
-      this.executeCallback('onReady');
-    },
+            if (this.el.jquery) {
+                el = this.el[0];
+            } else if (this.el instanceof HTMLElement) {
+                el = this.el;
+            } else {
+                el = document.querySelector(this.el);
+            }
 
-    getAngle: function(x, y) {
-      return Snap.angle(this.centerCoordinates.x, this.centerCoordinates.y, x, y);
-    },
+            el.innerHTML = svgHtml;
+            return Snap(el.getElementsByTagName('svg')[0]);
+        },
 
-    buildCanvas: function() {
-      var el;
-      var svgHtml = '<svg style="width: ' + this.options.frameSize + 'px; height: ' + this.options.frameSize + 'px;"></svg>';
+        buildDial: function () {
+            this.outerCircle = this.buildOuterCircle();
+            this.innerCircle = this.buildInnerCircle();
+            this.text = this.buildText();
+        },
 
-      if (this.el.jquery) {
-        el = this.el[0];
-      } else if (this.el instanceof HTMLElement) {
-        el = this.el;
-      } else {
-        el = document.querySelector(this.el);
-      }
+        buildOuterCircle: function () {
+            var attributes = this.outerCircleAttributes = {
+                x: this.options.frameSize / 2,
+                y: this.options.frameSize / 2,
+                radius: this.options.frameSize / 2
+            }
 
-      el.innerHTML = svgHtml;
-      return Snap(el.getElementsByTagName('svg')[0]);
-    },
+            // describe triangle that extends from bottom left to center to bottom right
+            var trianglePoints = function (frameSize) {
+                return [0, 0, 0, frameSize, frameSize / 2, frameSize / 2, frameSize, frameSize, frameSize, 0];
+            };
 
-    buildDial: function() {
-      this.outerCircle = this.buildOuterCircle();
-      this.innerCircle = this.buildInnerCircle();
-      this.text = this.buildText();
-    },
+            var outerCircle = this.c.circle(
+                attributes.x,
+                attributes.y,
+                attributes.radius
+            );
 
-    buildOuterCircle: function() {
-      var attributes = this.outerCircleAttributes = {
-        x:      this.options.frameSize / 2,
-        y:      this.options.frameSize / 2,
-        radius: this.options.frameSize / 2
-      }
+            outerCircle.attr({
+                fill: this.c.gradient(this.calculateFillColor(this.options.ringBackgroundColor)),
+                mask: this.c.polyline(trianglePoints(this.options.frameSize)).attr({fill: this.options.frameBackgroundColor})
+            });
 
-      // describe triangle that extends from bottom left to center to bottom right
-      var trianglePoints = function(frameSize) {
-        return [0,0,0,frameSize,frameSize/2,frameSize/2,frameSize,frameSize,frameSize,0];
-      };
+            return outerCircle;
+        },
 
-      var outerCircle = this.c.circle(
-        attributes.x,
-        attributes.y,
-        attributes.radius
-      );
+        buildInnerCircle: function () {
+            var attributes = this.innerCircleAttributes = {
+                x: this.outerCircleAttributes.x,
+                y: this.outerCircleAttributes.y,
+                radius: this.outerCircleAttributes.radius - this.options.ringWidth
+            };
 
-      outerCircle.attr({
-        fill: this.c.gradient(this.calculateFillColor(this.options.ringBackgroundColor)),
-        mask: this.c.polyline(trianglePoints(this.options.frameSize)).attr({ fill: this.options.frameBackgroundColor })
-      });
+            var buildDialKnob = function () {
+                var left,
+                    right,
+                    top = this.options.ringWidth + 5,
+                    distance = (attributes.x - attributes.radius) + 5;
 
-      return outerCircle;
-    },
+                left = this.outerCircleAttributes.radius + (top * 0.5);
+                right = this.outerCircleAttributes.radius - (top * 0.5);
 
-    buildInnerCircle: function() {
-      var attributes = this.innerCircleAttributes = {
-        x:      this.outerCircleAttributes.x,
-        y:      this.outerCircleAttributes.y,
-        radius: this.outerCircleAttributes.radius - this.options.ringWidth
-      };
+                return this.c.polyline(
+                    distance, right,
+                    distance, left,
+                    distance - top, this.outerCircleAttributes.radius
+                );
+            };
 
-      var buildDialKnob = function() {
-        var left,
-            right,
-            top = this.options.ringWidth + 5,
-            distance = (attributes.x - attributes.radius) + 5;
+            var buildKnobCircle = function () {
+                return this.c.circle(
+                    attributes.x,
+                    attributes.y,
+                    attributes.radius
+                )
+            };
 
-        left =  this.outerCircleAttributes.radius + (top * 0.5);
-        right = this.outerCircleAttributes.radius - (top * 0.5);
+            var dropShadow = this.generateDropShadow();
+            var dialKnob = buildDialKnob.call(this);
 
-        return this.c.polyline(
-          distance,right,
-          distance,left,
-          distance - top,this.outerCircleAttributes.radius
-        );
-      };
+            var baseCircle = buildKnobCircle.call(this).attr({
+                fill: this.calculateFillColor(this.options.innerBackgroundColor),
+                filter: dropShadow
+            });
 
-      var buildKnobCircle = function() {
-        return this.c.circle(
-          attributes.x,
-          attributes.y,
-          attributes.radius
-        )
-      };
+            var innerGrouping = this.c.group(dialKnob).attr({
+                fill: this.calculateFillColor(this.options.innerBackgroundColor),
+                filter: dropShadow,
+                transform: ['rotate(0', this.options.frameSize / 2, this.options.frameSize / 2].join(' ')
+            });
 
-      var dropShadow = this.generateDropShadow();
-      var dialKnob = buildDialKnob.call(this);
+            var capCircle = buildKnobCircle.call(this).attr({
+                fill: this.calculateFillColor(this.options.innerBackgroundColor)
+            });
 
-      var baseCircle = buildKnobCircle.call(this).attr({
-        fill: this.calculateFillColor(this.options.innerBackgroundColor),
-        filter: dropShadow
-      });
+            return innerGrouping;
+        },
 
-      var innerGrouping = this.c.group(dialKnob).attr({
-        fill: this.calculateFillColor(this.options.innerBackgroundColor),
-        filter: dropShadow,
-        transform: ['rotate(0', this.options.frameSize / 2, this.options.frameSize / 2].join(' ')
-      });
+        buildText: function () {
+            return this.c.text(
+                this.options.frameSize / 2,
+                this.options.frameSize / 2 + (this.options.fontSize / 3),
+                '0%'
+            ).attr({
+                fontFamily: this.options.fontFamily,
+                fontSize: this.options.fontSize,
+                fontWeight: this.options.fontWeight,
+                fontStyle: this.options.fontStyle,
+                textAnchor: 'middle'
+            });
+        },
 
-      var capCircle = buildKnobCircle.call(this).attr({
-        fill: this.calculateFillColor(this.options.innerBackgroundColor)
-      });
+        generateDropShadow: function (options) {
+            var opts = defaults(options || {}, {
+                x: 0,
+                y: this.options.ringWidth / 20,
+                blur: 3,
+                color: '#000',
+                opacity: 0.2
+            });
 
-      return innerGrouping;
-    },
+            return this.c.filter(Snap.filter.shadow(opts.x, opts.y, opts.blur, opts.color, opts.opacity));
+        },
 
-    buildText: function() {
-      return this.c.text(
-        this.options.frameSize / 2,
-        this.options.frameSize / 2 + (this.options.fontSize / 3),
-        '0%'
-      ).attr({
-        fontFamily: this.options.fontFamily,
-        fontSize: this.options.fontSize,
-        fontWeight: this.options.fontWeight,
-        fontStyle: this.options.fontStyle,
-        textAnchor: 'middle'
-      });
-    },
+        updateText: function (percentage) {
 
-    generateDropShadow: function(options) {
-      var opts = defaults(options || {}, {
-        x: 0,
-        y: this.options.ringWidth / 20,
-        blur: 3,
-        color: '#000',
-        opacity: 0.2
-      });
 
-      return this.c.filter(Snap.filter.shadow( opts.x, opts.y, opts.blur, opts.color, opts.opacity ));
-    },
+            var text = [Math.round(percentage * 100), '%'].join('')
 
-    updateText: function(percentage) {
-    
-    
-var text=[Math.round(percentage * 100),'%'].join('')
-    
-      this.text.attr({
-        text: text
-      });
-    },
+            this.text.attr({
+                text: text
+            });
+        },
 
-    calculateFillColor: function(background) {
-      background = (background instanceof Array) ? background : [background];
-      return 'l(0, 0.5, 1, 0.5)' + background.join('-');
-    },
+        calculateFillColor: function (background) {
+            background = (background instanceof Array) ? background : [background];
+            return 'l(0, 0.5, 1, 0.5)' + background.join('-');
+        },
 
-    convertAngleToPercentage: function(angle) {
-      var startAngle = 315,
-          endAngle = 225,
-          value;
+        convertAngleToPercentage: function (angle) {
+            var startAngle = 315,
+                endAngle = 225,
+                value;
 
-      if (startAngle <= angle && 360 >= angle) {
-        value = 45 - (360 - angle);
-      } else {
-        value = angle + 45
-      }
+            if (startAngle <= angle && 360 >= angle) {
+                value = 45 - (360 - angle);
+            } else {
+                value = angle + 45
+            }
 
-      return value / (endAngle+45);
-    },
+            return value / (endAngle + 45);
+        },
 
-    convertPercentageToAngle: function(percentage) {
-      var startAngle = 315,
-          endAngle = 225;
+        convertPercentageToAngle: function (percentage) {
+            var startAngle = 315,
+                endAngle = 225;
 
-      var unadjustedAngle = (percentage * (endAngle+45)) + startAngle;
-      return (unadjustedAngle > 360) ? unadjustedAngle - 360 : unadjustedAngle;
-    },
+            var unadjustedAngle = (percentage * (endAngle + 45)) + startAngle;
+            return (unadjustedAngle > 360) ? unadjustedAngle - 360 : unadjustedAngle;
+        },
 
-    moveKnob: function(angle) {
-      var dropShadowAlignment = calculateDropShadowAngle(angle);
-      var dropShadow = this.generateDropShadow({ x: dropShadowAlignment[0], y: dropShadowAlignment[1]});
+        moveKnob: function (angle) {
+            var dropShadowAlignment = calculateDropShadowAngle(angle);
+            var dropShadow = this.generateDropShadow({x: dropShadowAlignment[0], y: dropShadowAlignment[1]});
 
-      this.innerCircle.attr({
-        transform: ['rotate(', angle, this.options.frameSize / 2, this.options.frameSize / 2, ')'].join(' '),
-        filter: dropShadow
-      });
-    },
+            this.innerCircle.attr({
+                transform: ['rotate(', angle, this.options.frameSize / 2, this.options.frameSize / 2, ')'].join(' '),
+                filter: dropShadow
+            });
+        },
 
-    updateDial: function(angle) {
-      if (this.options.disabled) {
-        return;
-      }
+        updateDial: function (angle) {
+            if (this.options.disabled) {
+                return;
+            }
 
-      // if the angle is in the white triangle area, don't do anything
-      if (angle <= 315 && angle > 270) {
-        angle = 315;
-      } else if (angle <= 270 && angle > 225) {
-        angle = 225;
-      }
+            // if the angle is in the white triangle area, don't do anything
+            if (angle <= 315 && angle > 270) {
+                angle = 315;
+            } else if (angle <= 270 && angle > 225) {
+                angle = 225;
+            }
 
-      this.moveKnob(angle);
-      this.percentage = this.convertAngleToPercentage(angle);
-      this.updateText(this.percentage);
-    },
+            this.moveKnob(angle);
+            this.percentage = this.convertAngleToPercentage(angle);
+            this.updateText(this.percentage);
+        },
 
-    calculateDialCenterCoordinates: function() {
-      var boundingBox = this.outerCircle.node.getBoundingClientRect();
+        calculateDialCenterCoordinates: function () {
+            var boundingBox = this.outerCircle.node.getBoundingClientRect();
 
-      return {
-        x: boundingBox.left + (boundingBox.height / 2),
-        y: boundingBox.top + (boundingBox.height / 2)
-      }
-    },
+            return {
+                x: boundingBox.left + (boundingBox.height / 2),
+                y: boundingBox.top + (boundingBox.height / 2)
+            }
+        },
 
-    executeCallback: function(type, args) {
-      if (this.options[type]) {
-        this.options[type].apply(null, args);
-      }
-    }
+        executeCallback: function (type, args) {
+            if (this.options[type]) {
+                this.options[type].apply(null, args);
+            }
+        }
 
-  };
+    };
 
-  return exports.SVGDial;
+    return exports.SVGDial;
 
 }));

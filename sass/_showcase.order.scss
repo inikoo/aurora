@@ -1,212 +1,208 @@
 
+table.totals {
 
-table.totals{
-
-.subtotal td{border-top: 1px solid #ddd;}
-.total td{border-bottom: 1px solid #aaa;border-top: 1px solid #aaa;}
-
-}
-
-.order_operation_dialog{
-border:1px solid #ccc;;min-width:300px;position:absolute;background:#fff;z-index:100;text-align: left;
-
-
-
-tr.buttons td {padding:0px 20px}
-
-td.label{padding:0px 20px}
-
-
-
-
-tr:first-child td{padding-top:10px}
-tr:last-child td{padding-bottom:10px}
+  .subtotal td {
+    border-top: 1px solid #ddd;
+  }
+  .total td {
+    border-bottom: 1px solid #aaa;
+    border-top: 1px solid #aaa;
+  }
 
 }
 
+.order_operation_dialog {
+  border: 1px solid #ccc;;
+  min-width: 300px;
+  position: absolute;
+  background: #fff;
+  z-index: 100;
+  text-align: left;
 
+  tr.buttons td {
+    padding: 0px 20px
+  }
 
-.order{
+  td.label {
+    padding: 0px 20px
+  }
 
+  tr:first-child td {
+    padding-top: 10px
+  }
+  tr:last-child td {
+    padding-bottom: 10px
+  }
 
+}
 
+.order {
 
+  border-bottom: 1px solid #ccc;
 
-border-bottom: 1px solid #ccc;
+  .state {
+    height: $height_header;
+    border-bottom: 1px solid #ccc
+  }
 
-
-.state{height:$height_header;border-bottom:1px solid #ccc}
-
-
-  
-
-  
-  
-  
-   .block {
+  .block {
     float: right;
-        border-left: 1px solid #ccc;
-        padding-top: 5px;
-        > table {
-            width: 100%;
-            
-              td {
-            padding: 4px 8px;
-        }
-        .top-border {
-            border-top: 1px solid #ccc;
-        }
-        .bottom-border {
-            border-bottom: 1px solid #ccc;
-        }
-        .top-strong-border {
-            border-top: 1px solid #aaa;
-        }
-        .bottom-strong-border {
-            border-bottom: 1px solid #aaa;
-        }
-            
-        }
-      
+    border-left: 1px solid #ccc;
+    padding-top: 5px;
+    > table {
+      width: 100%;
+
+      td {
+        padding: 4px 8px;
+      }
+      .top-border {
+        border-top: 1px solid #ccc;
+      }
+      .bottom-border {
+        border-bottom: 1px solid #ccc;
+      }
+      .top-strong-border {
+        border-top: 1px solid #aaa;
+      }
+      .bottom-strong-border {
+        border-bottom: 1px solid #aaa;
+      }
+
     }
-  
-    
-   
+
+  }
+
 }
 
+.xorder, .invoice, .delivery_note {
 
-.xorder,.invoice,.delivery_note{
+  border-bottom: 1px solid #ccc;
 
+  .state {
+    height: $height_header;
+    border-bottom: 1px solid #ccc
+  }
 
+  .full_date {
+    width: 250px;
+    text-align: right;
+  }
+  .contact_name {
+    width: 150px;
+    white-space: normal;
+    white-space: nowrap;
+  }
+  .presention_card {
+    padding: 10px 20px;
+  }
+  .showcase {
+    padding-top: 0px;
+  }
+  h1 {
+    padding: 0px;
+    margin: 0px;
+    color: #555;
+    float: left;
+    font-size: $height_header*.7;
+    font-family: $font_title;
+    font-weight: 700;
+  }
 
-
-
-border-bottom: 1px solid #ccc;
-
-
-.state{height:$height_header;border-bottom:1px solid #ccc}
-
-
-   .full_date {
-        width: 250px;
-        text-align: right;
+  .pdf_link {
+    img {
+      height: 10px;
+      vertical-align: 0px;
     }
-    .contact_name {
-        width: 150px;
-        white-space: normal;
-        white-space: nowrap;
-    }
-    .presention_card {
-        padding: 10px 20px;
-    }
-    .showcase {
-        padding-top: 0px;
-    }
-    h1 {
-        padding: 0px;
-        margin: 0px;
-        color: #555;
-        float: left;
-        font-size: $height_header*.7;
-        font-family: $font_title;
-        font-weight: 700;
-    }
-  
-    .pdf_link {
-        img {
-            height: 10px;
-            vertical-align: 0px;
-        }
-    }
-    #containers {
-        padding: 20px 30px;
-    }
-   
-    .order {
-        #contact_data {
-            width: 500px;
-        }
-        #dates {
-            width: 310px;
-        }
-    }
-    .invoice {
-        #dates {
-            width: 310px;
-        }
-        #totals {
-            width: 310px;
-        }
-    }
-  
-    .block {
-        float: right;
-        border-left: 1px solid #ccc;
-   //     padding:10px;
-//        xxheight: 200px;
+  }
+  #containers {
+    padding: 20px 30px;
+  }
+
+  .order {
+    #contact_data {
+      width: 500px;
     }
     #dates {
-        .date_and_state {
-            width: 100%;
-            text-align: center;
-            .date {
-                padding: 3px;
-                border-bottom: 1px solid #ccc;
-            }
-            .state {
-                font-size: 80%;
-                border-bottom: 1px solid #ccc;
-                td {
-                    padding: 3px 0px;
-                }
-            }
-            .two-columns {
-                td {
-                    &:first-of-type {
-                        width: 50%;
-                        border-right: 1px solid #ccc;
-                    }
-                }
-            }
-        }
-        .ul_table {
-            width: 100%;
-            padding: 5px;
-            margin-top: 10px;
-            .icon {
-                width: 24px;
-                text-align: right;
-            }
-            .state {
-                text-align: right;
-                padding-right: 10px;
-                font-size: 80%;
-            }
-        }
+      width: 310px;
     }
-    #totals, .block {
-        padding-top: 5px;
-        table {
-            width: 100%;
-        }
+  }
+  .invoice {
+    #dates {
+      width: 310px;
+    }
+    #totals {
+      width: 310px;
+    }
+  }
+
+  .block {
+    float: right;
+    border-left: 1px solid #ccc;
+    //     padding:10px;
+    //        xxheight: 200px;
+  }
+  #dates {
+    .date_and_state {
+      width: 100%;
+      text-align: center;
+      .date {
+        padding: 3px;
+        border-bottom: 1px solid #ccc;
+      }
+      .state {
+        font-size: 80%;
+        border-bottom: 1px solid #ccc;
         td {
-            padding: 4px 8px;
+          padding: 3px 0px;
         }
-        .top-border {
-            border-top: 1px solid #ccc;
+      }
+      .two-columns {
+        td {
+          &:first-of-type {
+            width: 50%;
+            border-right: 1px solid #ccc;
+          }
         }
-        .bottom-border {
-            border-bottom: 1px solid #ccc;
-        }
-        .top-strong-border {
-            border-top: 1px solid #aaa;
-        }
-        .bottom-strong-border {
-            border-bottom: 1px solid #aaa;
-        }
+      }
     }
-    #account .block {
-        min-width: 150px;
+    .ul_table {
+      width: 100%;
+      padding: 5px;
+      margin-top: 10px;
+      .icon {
+        width: 24px;
+        text-align: right;
+      }
+      .state {
+        text-align: right;
+        padding-right: 10px;
+        font-size: 80%;
+      }
     }
-    
-   } 
+  }
+  #totals, .block {
+    padding-top: 5px;
+    table {
+      width: 100%;
+    }
+    td {
+      padding: 4px 8px;
+    }
+    .top-border {
+      border-top: 1px solid #ccc;
+    }
+    .bottom-border {
+      border-bottom: 1px solid #ccc;
+    }
+    .top-strong-border {
+      border-top: 1px solid #aaa;
+    }
+    .bottom-strong-border {
+      border-bottom: 1px solid #aaa;
+    }
+  }
+  #account .block {
+    min-width: 150px;
+  }
+
+}

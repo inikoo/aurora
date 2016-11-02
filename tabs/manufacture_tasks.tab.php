@@ -10,37 +10,41 @@
 */
 
 
+$tab     = 'manufacture_tasks';
+$ar_file = 'ar_production_tables.php';
+$tipo    = 'manufacture_tasks';
 
-$tab='manufacture_tasks';
-$ar_file='ar_production_tables.php';
-$tipo='manufacture_tasks';
+$default = $user->get_tab_defaults($tab);
 
-$default=$user->get_tab_defaults($tab);
+$table_views = array();
 
-$table_views=array(
+$table_filters = array(
+    'name' => array(
+        'label' => _('Name'),
+        'title' => _('Task name')
+    ),
 
 );
 
-$table_filters=array(
-	'name'=>array('label'=>_('Name'),'title'=>_('Task name')),
+$parameters = array(
+    'parent'     => 'account',
+    'parent_key' => 1,
 
 );
 
-$parameters=array(
-		'parent'=>'account',
-		'parent_key'=>1,
-	
+
+$table_buttons   = array();
+$table_buttons[] = array(
+    'icon'      => 'plus',
+    'title'     => _('Add task'),
+    'reference' => "manufacture_task/new"
 );
-
-
-$table_buttons=array();
-$table_buttons[]=array('icon'=>'plus', 'title'=>_('Add task'), 'reference'=>"manufacture_task/new");
 $smarty->assign('table_buttons', $table_buttons);
 
 $smarty->assign('tipo', $tipo);
 
 
-$smarty->assign('title',_('Tasks'));
+$smarty->assign('title', _('Tasks'));
 
 include('utils/get_table_html.php');
 

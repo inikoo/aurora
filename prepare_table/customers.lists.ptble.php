@@ -9,48 +9,49 @@
 
 */
 
-$table='`List Dimension`';
+$table = '`List Dimension`';
 
-$where=' where `List Scope`="Customer" and `List Use Type`="UserCreated" ';
+$where = ' where `List Scope`="Customer" and `List Use Type`="UserCreated" ';
 
 
-
-if (in_array($parameters['parent_key'],$user->stores)) {
-	$where.=sprintf(' and `List Parent Key`=%d  ',$parameters['parent_key']);
+if (in_array($parameters['parent_key'], $user->stores)) {
+    $where .= sprintf(' and `List Parent Key`=%d  ', $parameters['parent_key']);
 
 }
 
 
+if (($parameters['f_field'] == 'name') and $f_value != '') {
+    $wheref = sprintf(
+        '  and  `List Name`  REGEXP "[[:<:]]%s" ', addslashes($f_value)
+    );
 
-if (($parameters['f_field']=='name'     )  and $f_value!='') {
-		$wheref=sprintf('  and  `List Name`  REGEXP "[[:<:]]%s" ',addslashes($f_value));
-
-}else {
-	$wheref='';
+} else {
+    $wheref = '';
 }
 
 
-
-$_order=$order;
-$_dir=$order_direction;
-
-
-if ($order=='name')
-	$order='`List Name`';
-elseif ($order=='creation_date')
-	$order='`List Creation Date`';
-elseif ($order=='type')
-	$order='`List Type`';
-elseif ($order=='items')
-	$order='`List Number Items`';
-else
-	$order='`List Key`';
+$_order = $order;
+$_dir   = $order_direction;
 
 
-$fields='`List Number Items`, CLD.`List key`,CLD.`List Name`,CLD.`List Parent Key`,CLD.`List Creation Date`,CLD.`List Type`';
+if ($order == 'name') {
+    $order = '`List Name`';
+} elseif ($order == 'creation_date') {
+    $order = '`List Creation Date`';
+} elseif ($order == 'type') {
+    $order = '`List Type`';
+} elseif ($order == 'items') {
+    $order = '`List Number Items`';
+} else {
+    $order = '`List Key`';
+}
 
 
-	$sql_totals="select count(*) as num from $table $where";
+$fields
+    = '`List Number Items`, CLD.`List key`,CLD.`List Name`,CLD.`List Parent Key`,CLD.`List Creation Date`,CLD.`List Type`';
+
+
+$sql_totals = "select count(*) as num from $table $where";
 
 
 ?>

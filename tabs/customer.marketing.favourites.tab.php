@@ -9,29 +9,41 @@
 
 */
 
-$tab='customer.marketing.favourites';
-$ar_file='ar_products_tables.php';
-$tipo='products';
+$tab     = 'customer.marketing.favourites';
+$ar_file = 'ar_products_tables.php';
+$tipo    = 'products';
 
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array(
-	'overview'=>array('label'=>_('Overview'),'title'=>_('Overview')),
-	'sales'=>array('label'=>_('Sales'),'title'=>_('Sales')),
+$table_views = array(
+    'overview' => array(
+        'label' => _('Overview'),
+        'title' => _('Overview')
+    ),
+    'sales'    => array(
+        'label' => _('Sales'),
+        'title' => _('Sales')
+    ),
 
 );
 
-$table_filters=array(
-	'code'=>array('label'=>_('Code'),'title'=>_('Product code')),
-	'name'=>array('label'=>_('Name'),'title'=>_('Product name')),
+$table_filters = array(
+    'code' => array(
+        'label' => _('Code'),
+        'title' => _('Product code')
+    ),
+    'name' => array(
+        'label' => _('Name'),
+        'title' => _('Product name')
+    ),
 
 );
 
-$parameters=array(
-		'parent'=>'customer_favourites',
-		'parent_key'=>$state['key'],
-		
+$parameters = array(
+    'parent'     => 'customer_favourites',
+    'parent_key' => $state['key'],
+
 );
 
 

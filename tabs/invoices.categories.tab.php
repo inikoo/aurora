@@ -10,29 +10,31 @@
 */
 
 
+$tab     = 'invoices.categories';
+$ar_file = 'ar_orders_tables.php';
+$tipo    = 'invoice_categories';
 
-$tab='invoices.categories';
-$ar_file='ar_orders_tables.php';
-$tipo='invoice_categories';
-
-$default=$user->get_tab_defaults($tab);
-
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array(
+$table_views = array();
+
+$table_filters = array(
+    'label' => array(
+        'label' => _('Label'),
+        'title' => _('Category label')
+    ),
+    'code'  => array(
+        'label' => _('Code'),
+        'title' => _('Category code')
+    ),
 
 );
 
-$table_filters=array(
-	'label'=>array('label'=>_('Label'),'title'=>_('Category label')),
-	'code'=>array('label'=>_('Code'),'title'=>_('Category code')),
-
-);
-
-$parameters=array(
-		'parent'=>'store',
-		'parent_key'=>$state['parent_key'],
-		'subject'=>'invoice',
+$parameters = array(
+    'parent'     => 'store',
+    'parent_key' => $state['parent_key'],
+    'subject'    => 'invoice',
 );
 
 

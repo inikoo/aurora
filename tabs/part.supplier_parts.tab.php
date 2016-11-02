@@ -9,33 +9,43 @@
 
 */
 
-$tab='part.supplier_parts';
-$ar_file='ar_inventory_tables.php';
-$tipo='supplier_parts';
+$tab     = 'part.supplier_parts';
+$ar_file = 'ar_inventory_tables.php';
+$tipo    = 'supplier_parts';
 
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array(
-	'overview'=>array('label'=>_('Overview'),'title'=>_('Overview')),
-//	'sales'=>array('label'=>_('Sales'),'title'=>_('Sales')),
-
-);
-
-$table_filters=array(
-//	'code'=>array('label'=>_('Code'),'title'=>_('Product code')),
-	'reference'=>array('label'=>_('Reference'),'title'=>_("Supplier's part reference")),
+$table_views = array(
+    'overview' => array(
+        'label' => _('Overview'),
+        'title' => _('Overview')
+    ),
+    //	'sales'=>array('label'=>_('Sales'),'title'=>_('Sales')),
 
 );
 
-$parameters=array(
-		'parent'=>$state['object'],
-		'parent_key'=>$state['key'],
-		
+$table_filters = array(
+    //	'code'=>array('label'=>_('Code'),'title'=>_('Product code')),
+    'reference' => array(
+        'label' => _('Reference'),
+        'title' => _("Supplier's part reference")
+    ),
+
 );
 
-$table_buttons=array();
-$table_buttons[]=array('icon'=>'plus', 'title'=>_('New product'), 'reference'=>"part/".$state['key'].'/supplier_part/new');
+$parameters = array(
+    'parent'     => $state['object'],
+    'parent_key' => $state['key'],
+
+);
+
+$table_buttons   = array();
+$table_buttons[] = array(
+    'icon'      => 'plus',
+    'title'     => _('New product'),
+    'reference' => "part/".$state['key'].'/supplier_part/new'
+);
 $smarty->assign('table_buttons', $table_buttons);
 
 

@@ -14,16 +14,15 @@ include_once 'utils/natural_language.php';
 
 function get_timesheet_showcase($data) {
 
-	global $smarty;
+    global $smarty;
 
 
-$data['_object']->update_working_time();
+    $data['_object']->update_working_time();
 
 
-	$smarty->assign('timesheet', $data['_object']);
+    $smarty->assign('timesheet', $data['_object']);
 
-	return $smarty->fetch('showcase/timesheet.tpl');
-
+    return $smarty->fetch('showcase/timesheet.tpl');
 
 
 }

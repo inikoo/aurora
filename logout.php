@@ -10,7 +10,9 @@
 */
 
 include_once 'common.php';
-$sql=sprintf("update `User Log Dimension` set `Logout Date`=NOW()  where `Session ID`=%s", prepare_mysql(session_id()));
+$sql = sprintf(
+    "UPDATE `User Log Dimension` SET `Logout Date`=NOW()  WHERE `Session ID`=%s", prepare_mysql(session_id())
+);
 $db->exec($sql);
 
 session_regenerate_id();

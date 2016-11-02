@@ -10,39 +10,38 @@
 */
 
 
-$where=" where  true ";
+$where = " where  true ";
 
 
-
-
-$wheref='';
-if ($parameters['f_field']=='alias' and $f_value!=''  ) {
-	$wheref.=" and  `User Deleted Alias` like '".addslashes($f_value)."%'    ";
-}elseif ($parameters['f_field']=='handle' and $f_value!=''  ) {
-	$wheref.=" and  `User Deleted Handle` like '".addslashes($f_value)."%'    ";
+$wheref = '';
+if ($parameters['f_field'] == 'alias' and $f_value != '') {
+    $wheref .= " and  `User Deleted Alias` like '".addslashes($f_value)."%'    ";
+} elseif ($parameters['f_field'] == 'handle' and $f_value != '') {
+    $wheref .= " and  `User Deleted Handle` like '".addslashes($f_value)."%'    ";
 }
 
 
+$_order = $order;
+$_dir   = $order_direction;
+
+if ($order == 'alias') {
+    $order = '`User Deleted Alias`';
+} elseif ($order == 'handle') {
+    $order = '`User Deleted Handle`';
+} elseif ($order == 'date') {
+    $order = '`User Deleted Date`';
+} elseif ($order == 'type') {
+    $order = '`User Deleted Type`';
+} else {
+    $order = '`User Deleted Key`';
+}
 
 
-$_order=$order;
-$_dir=$order_direction;
+$table = '`User Deleted Dimension` U ';
 
-if ($order=='alias')
-	$order='`User Deleted Alias`';
-elseif ($order=='handle')
-	$order='`User Deleted Handle`';
-elseif ($order=='date')
-	$order='`User Deleted Date`';
-elseif ($order=='type')
-	$order='`User Deleted Type`';
-else
-	$order='`User Deleted Key`';
+$sql_totals
+    = "select count(Distinct U.`User Deleted Key`) as num from $table  $where  ";
 
-
-$table='`User Deleted Dimension` U ';
-
-$sql_totals="select count(Distinct U.`User Deleted Key`) as num from $table  $where  ";
-
-$fields="`User Deleted Key`,`User Deleted Alias`,`User Deleted Handle`,`User Deleted Type`,`User Deleted Date`";
+$fields
+    = "`User Deleted Key`,`User Deleted Alias`,`User Deleted Handle`,`User Deleted Type`,`User Deleted Date`";
 ?>

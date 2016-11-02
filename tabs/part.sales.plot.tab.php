@@ -10,22 +10,25 @@
 */
 
 
-$part=$state['_object'];
+$part = $state['_object'];
 
 
+$data = base64_encode(
+    json_encode(
+        array(
+            'valid_from'   => $part->get('Part Valid From'),
+            'valid_to'     => ($part->get('Part Status') == 'Not In Use' ? $part->get('Part Valid To') : gmdate("Y-m-d H:i:s")),
+            'parent'       => $state['object'],
+            'parent_key'   => $state['key'],
+            'title_value'  => _('Sale amount'),
+            'title_volume' => _('SKOs')
 
-$data=base64_encode(json_encode(array(
-'valid_from'=>$part->get('Part Valid From'),
-'valid_to'=>($part->get('Part Status')=='Not In Use'?$part->get('Part Valid To'):gmdate("Y-m-d H:i:s")  ) ,
-'parent'=>$state['object'],
-'parent_key'=>$state['key'],
-'title_value'=>_('Sale amount'),
-'title_volume'=>_('SKOs')
+        )
+    )
+);
 
-)));
-
-$smarty->assign('data',$data);
-$html=$smarty->fetch('asset_sales.chart.tpl');
+$smarty->assign('data', $data);
+$html = $smarty->fetch('asset_sales.chart.tpl');
 
 
 ?>

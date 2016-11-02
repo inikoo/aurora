@@ -17,20 +17,18 @@ function post_validate_field(validation, field) {
         var value = $('#' + field).val()
 
 
-
         var regex = /\%$/
         if (regex.test(value)) {
             var percentage = parseFloat(value)
             var amount = cost * (percentage / 100)
 
-            info = amount.toFixed(2) 
+            info = amount.toFixed(2)
         } else {
             var amount = parseFloat(value)
             var percentage = parseFloat(100 * ((value / cost)))
 
-            info =  percentage.toFixed(2) + "%"
+            info = percentage.toFixed(2) + "%"
         }
-
 
 
     }

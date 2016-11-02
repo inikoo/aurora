@@ -13,14 +13,14 @@
 require_once 'common.php';
 
 
-$default_DB_link=@mysql_connect($dns_host, $dns_user, $dns_pwd );
+$default_DB_link = @mysql_connect($dns_host, $dns_user, $dns_pwd);
 if (!$default_DB_link) {
-	print "Error can not connect with database server\n";
+    print "Error can not connect with database server\n";
 }
-$db_selected=mysql_select_db($dns_db, $default_DB_link);
+$db_selected = mysql_select_db($dns_db, $default_DB_link);
 if (!$db_selected) {
-	print "Error can not access the database\n";
-	exit;
+    print "Error can not access the database\n";
+    exit;
 }
 mysql_set_charset('utf8');
 mysql_query("SET time_zone='+0:00'");
@@ -30,13 +30,13 @@ require_once 'class.Product.php';
 require_once 'class.Category.php';
 
 
-$editor=array(
-	'Author Name'=>'',
-	'Author Alias'=>'',
-	'Author Type'=>'',
-	'Author Key'=>'',
-	'User Key'=>0,
-	'Date'=>gmdate('Y-m-d H:i:s')
+$editor = array(
+    'Author Name'  => '',
+    'Author Alias' => '',
+    'Author Type'  => '',
+    'Author Key'   => '',
+    'User Key'     => 0,
+    'Date'         => gmdate('Y-m-d H:i:s')
 );
 
 
@@ -51,55 +51,58 @@ update_web_state($db);
 
 function update_categories_data($db) {
 
-	$sql=sprintf("select `Category Key` from `Category Dimension` where `Category Subject`='Product' ");
-	if ($result=$db->query($sql)) {
-		foreach ($result as $row) {
+    $sql = sprintf(
+        "SELECT `Category Key` FROM `Category Dimension` WHERE `Category Subject`='Product' "
+    );
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
 
 
-			$category=new Category($row['Category Key']);
-			$category->update_product_category_status();
-			$category->update_last_period_sales();
-			$category->update_interval_sales();
-		}
+            $category = new Category($row['Category Key']);
+            $category->update_product_category_status();
+            $category->update_last_period_sales();
+            $category->update_interval_sales();
+        }
 
-	}else {
-		print_r($error_info=$db->errorInfo());
-		exit;
-	}
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
 
 }
 
 
 function update_web_state($db) {
 
-	$sql=sprintf('select `Product ID` from `Product Dimension` where `Product Store Key`!=9 order by `Product ID` desc ');
+    $sql = sprintf(
+        'SELECT `Product ID` FROM `Product Dimension` WHERE `Product Store Key`!=9 ORDER BY `Product ID` DESC '
+    );
 
 
-	if ($result=$db->query($sql)) {
-		foreach ($result as $row) {
-			$product=new Product('id', $row['Product ID']);
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $product = new Product('id', $row['Product ID']);
 
-			$product->update_part_numbers();
+            $product->update_part_numbers();
 
-			$old_webstate=$product->get('Product Web State');
+            $old_webstate = $product->get('Product Web State');
 
-			$product->update_availability($use_fork=false);
-			$product->update_cost();
+            $product->update_availability($use_fork = false);
+            $product->update_cost();
 
-			$new_webstate=$product->get('Product Web State');
+            $new_webstate = $product->get('Product Web State');
 
-			if ($old_webstate!=$new_webstate) {
-				print $product->id." ".$product->get('Product Store Key')." ".$product->get('Code')." $old_webstate  $new_webstate  \n";
-			}
+            if ($old_webstate != $new_webstate) {
+                print $product->id." ".$product->get('Product Store Key')." ".$product->get('Code')." $old_webstate  $new_webstate  \n";
+            }
 
-			//print $product->id."\r";
-		}
+            //print $product->id."\r";
+        }
 
-	}else {
-		print_r($error_info=$db->errorInfo());
-		exit;
-	}
-
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
 
 
 }
@@ -107,28 +110,27 @@ function update_web_state($db) {
 
 function update_fields_from_parts($db) {
 
-	$sql=sprintf('select `Part SKU` from `Part Dimension` order by `Part SKU` desc ');
+    $sql = sprintf(
+        'SELECT `Part SKU` FROM `Part Dimension` ORDER BY `Part SKU` DESC '
+    );
 
 
-	if ($result=$db->query($sql)) {
-		foreach ($result as $row) {
-			$part=new Part($row['Part SKU']);
-			print $part->id."\r";
-			$part->updated_linked_products();
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $part = new Part($row['Part SKU']);
+            print $part->id."\r";
+            $part->updated_linked_products();
 
 
-		}
+        }
 
-	}else {
-		print_r($error_info=$db->errorInfo());
-		exit;
-	}
-
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
 
 
 }
-
-
 
 
 ?>

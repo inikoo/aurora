@@ -10,33 +10,33 @@
 */
 
 
+$tab     = 'upload.employees';
+$ar_file = 'ar_upload_tables.php';
+$tipo    = 'records';
 
-$tab='upload.employees';
-$ar_file='ar_upload_tables.php';
-$tipo='records';
+$default = $user->get_tab_defaults($tab);
 
-$default=$user->get_tab_defaults($tab);
+$table_views = array();
 
-$table_views=array(
+$table_filters = array(
+    'object_name' => array(
+        'label' => _('Name'),
+        'title' => _('Employee code')
+    ),
 
 );
 
-$table_filters=array(
-	'object_name'=>array('label'=>_('Name'),'title'=>_('Employee code')),
+$parameters = array(
+    'parent'     => $state['object'],
+    'parent_key' => $state['key'],
 
-);
-
-$parameters=array(
-		'parent'=>$state['object'],
-		'parent_key'=>$state['key'],
-	
 );
 
 
 $smarty->assign('tipo', $tipo);
 
 
-$smarty->assign('title',_('Upload records'));
+$smarty->assign('title', _('Upload records'));
 
 include('utils/get_table_html.php');
 

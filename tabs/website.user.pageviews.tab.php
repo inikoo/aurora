@@ -10,23 +10,26 @@
 */
 
 
-$tab='website.user.pageviews';
-$ar_file='ar_websites_tables.php';
-$tipo='pageviews';
+$tab     = 'website.user.pageviews';
+$ar_file = 'ar_websites_tables.php';
+$tipo    = 'pageviews';
 
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array();
+$table_views = array();
 
-$table_filters=array(
-	'page'=>array('label'=>_('Page'),'title'=>_('Page code')),
+$table_filters = array(
+    'page' => array(
+        'label' => _('Page'),
+        'title' => _('Page code')
+    ),
 
 );
 
-$parameters=array(
-		'parent'=>$state['object'],
-		'parent_key'=>$state['key']
+$parameters = array(
+    'parent'     => $state['object'],
+    'parent_key' => $state['key']
 );
 
 

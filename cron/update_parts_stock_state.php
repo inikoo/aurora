@@ -17,44 +17,40 @@ require_once 'class.Page.php';
 require_once 'class.Supplier.php';
 
 
-
 //$sql=sprintf('select `Part SKU` from `Part Dimension` where `Part Key`=24 ');
-$sql=sprintf('select `Part SKU` from `Part Dimension` order by `Part SKU` desc  ');
+$sql = sprintf(
+    'SELECT `Part SKU` FROM `Part Dimension` ORDER BY `Part SKU` DESC  '
+);
 
-if ($result=$db->query($sql)) {
-	foreach ($result as $row) {
-		$part=new Part($row['Part SKU']);
-		$part->update_available_forecast();
-		$part->update_stock_status();
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+        $part = new Part($row['Part SKU']);
+        $part->update_available_forecast();
+        $part->update_stock_status();
 
 
+    }
 
-
-	}
-
-}else {
-	print_r($error_info=$db->errorInfo());
-	exit;
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
 }
 
 
+$sql = sprintf('SELECT `Supplier Key` FROM `Supplier Dimension`  ');
 
-$sql=sprintf('select `Supplier Key` from `Supplier Dimension`  ');
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+        $supplier = new Supplier($row['Supplier Key']);
 
-if ($result=$db->query($sql)) {
-	foreach ($result as $row) {
-		$supplier=new Supplier($row['Supplier Key']);
-
-		$supplier->update_supplier_parts();
-
+        $supplier->update_supplier_parts();
 
 
+    }
 
-	}
-
-}else {
-	print_r($error_info=$db->errorInfo());
-	exit;
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
 }
 
 ?>

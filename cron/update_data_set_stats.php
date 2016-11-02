@@ -13,15 +13,15 @@
 require_once 'common.php';
 require_once 'class.Data_Sets.php';
 
-$sql=sprintf("select `Data Sets Key`  from `Data Sets Dimension` ");
-if ($result=$db->query($sql)) {
-	foreach ($result as $row) {
+$sql = sprintf("SELECT `Data Sets Key`  FROM `Data Sets Dimension` ");
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
 
 
-        $data_set=new Data_Sets($row['Data Sets Key']);
+        $data_set = new Data_Sets($row['Data Sets Key']);
         $data_set->update_stats();
 
-	}
+    }
 }
 
 

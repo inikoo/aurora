@@ -11,15 +11,15 @@ namespace libphonenumber;
  *
  * @package libphonenumber
  */
-interface MatcherAPIInterface
-{
+interface MatcherAPIInterface {
     /**
      * Returns whether the given national number (a string containing only decimal digits) matches
      * the national number pattern defined in the given {@code PhoneNumberDesc} message.
      *
-     * @param string $nationalNumber
+     * @param string          $nationalNumber
      * @param PhoneNumberDesc $numberDesc
-     * @param boolean $allowPrefixMatch
+     * @param boolean         $allowPrefixMatch
+     *
      * @return boolean
      */
     public function matchesNationalNumber($nationalNumber, PhoneNumberDesc $numberDesc, $allowPrefixMatch);
@@ -28,8 +28,9 @@ interface MatcherAPIInterface
      * Returns whether the given national number (a string containing only decimal digits) matches
      * the possible number pattern defined in the given {@code PhoneNumberDesc} message.
      *
-     * @param string $nationalNumber
+     * @param string          $nationalNumber
      * @param PhoneNumberDesc $numberDesc
+     *
      * @return boolean
      */
     public function matchesPossibleNumber($nationalNumber, PhoneNumberDesc $numberDesc);

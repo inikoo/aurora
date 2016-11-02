@@ -10,18 +10,13 @@ function post_table_rendered(otable) {
     if (object_data.automatic_placement_locations == 'Yes') {
 
         $('#table  tbody   tr .part_locations').each(
+            function (i, obj) {
+                var part_location = $(obj).find('div.part_location')
+                if (part_location.length == 1) {
 
-        function(i, obj) {
-            var part_location = $(obj).find('div.part_location')
-            if (part_location.length == 1) {
-
-                set_placement_location(part_location)
+                    set_placement_location(part_location)
+                }
             }
-        }
-
-
-
-
         )
 
     }

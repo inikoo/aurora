@@ -11,29 +11,29 @@
 */
 
 
-
-
-
 function get_profile_navigation($data) {
-	global $smarty;
+    global $smarty;
 
 
+    $title = _('My profile');
 
-	$title=_('My profile');
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => array(),
+        'left_buttons'   => array(),
+        'right_buttons'  => array(),
+        'title'          => $title,
+        'search'         => array(
+            'show' => false,
+            'placeholder' => ''
+        )
 
-	$_content=array(
-		'sections_class'=>'',
-		'sections'=>array(),
-		'left_buttons'=>array(),
-		'right_buttons'=>array(),
-		'title'=>$title,
-		'search'=>array('show'=>false, 'placeholder'=>'')
+    );
+    $smarty->assign('_content', $_content);
 
-	);
-	$smarty->assign('_content', $_content);
+    $html = $smarty->fetch('navigation.tpl');
 
-	$html=$smarty->fetch('navigation.tpl');
-	return $html;
+    return $html;
 }
 
 

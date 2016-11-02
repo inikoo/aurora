@@ -4,7 +4,7 @@
  Version 3.0*/
 
 
-$(document).on('input propertychange', '.checked_qty', function(evt) {
+$(document).on('input propertychange', '.checked_qty', function (evt) {
 
     delivery_qty_changed(this)
 

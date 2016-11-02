@@ -9,32 +9,34 @@
 
 */
 
-$tab='invoices';
-$ar_file='ar_orders_tables.php';
-$tipo='invoices';
+$tab     = 'invoices';
+$ar_file = 'ar_orders_tables.php';
+$tipo    = 'invoices';
 
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
-$table_views=array(
+$table_views = array();
+
+
+$table_filters = array(
+    'customer' => array(
+        'label' => _('Customer'),
+        'title' => _('Customer name')
+    ),
+    'number'   => array(
+        'label' => _('Number'),
+        'title' => _('Invoice number')
+    ),
 
 );
 
-
-$table_filters=array(
-	'customer'=>array('label'=>_('Customer'), 'title'=>_('Customer name')),
-	'number'=>array('label'=>_('Number'), 'title'=>_('Invoice number')),
-
+$parameters = array(
+    'parent'     => $state['object'],
+    'parent_key' => $state['key'],
 );
-
-$parameters=array(
-	'parent'=>$state['object'],
-	'parent_key'=>$state['key'],
-);
-
 
 
 include 'utils/get_table_html.php';
-
 
 
 ?>

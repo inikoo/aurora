@@ -10,24 +10,24 @@
 */
 
 
-$tab='page.blocks';
-$ar_file='ar_websites_tables.php';
-$tipo='blocks';
+$tab     = 'page.blocks';
+$ar_file = 'ar_websites_tables.php';
+$tipo    = 'blocks';
 
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array();
+$table_views = array();
 
-$table_filters=array(
-	'code'=>array('label'=>_('Code')),
-	'title'=>array('label'=>_('Name')),
+$table_filters = array(
+    'code'  => array('label' => _('Code')),
+    'title' => array('label' => _('Name')),
 
 );
 
-$parameters=array(
-		'parent'=>$state['object'],
-		'parent_key'=>$state['key'],
+$parameters = array(
+    'parent'     => $state['object'],
+    'parent_key' => $state['key'],
 );
 
 

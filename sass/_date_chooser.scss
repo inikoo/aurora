@@ -1,44 +1,48 @@
 .date_chooser {
-    @include unselectable;
-    border-bottom: 1px solid #ccc;
-    height: $height_short_row;
-    line-height: $height_short_row;
-    font-size: 90%;
-    div {
-        float: left;
-        padding: 0px 5px;
-        border-left: 1px solid #ccc;
-        cursor: pointer;
-    }
-    div:hover, div.selected {
-        background-color: #edf3f8;
-        color: #000;
-    }
-    .interval {
-        width: 12.55%;
-    }
-    .day {
-        width: 10.425%;
-    }
-    .fixed_interval {
-        width: 5.25%;
-        text-align: center;
-    }
+  @include unselectable;
+  border-bottom: 1px solid #ccc;
+  height: $height_short_row;
+  line-height: $height_short_row;
+  font-size: 90%;
+  div {
+    float: left;
+    padding: 0px 5px;
+    border-left: 1px solid #ccc;
+    cursor: pointer;
+  }
+  div:hover, div.selected {
+    background-color: #edf3f8;
+    color: #000;
+  }
+  .interval {
+    width: 12.55%;
+  }
+  .day {
+    width: 10.425%;
+  }
+  .fixed_interval {
+    width: 5.25%;
+    text-align: center;
+  }
 }
 
-#select_date_control_panel,#select_interval_control_panel{
+#select_date_control_panel, #select_interval_control_panel {
 
-padding:10px;
-border-bottom:1px solid #ccc;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
 
-.date_chooser_form{
-float:left;
+  .date_chooser_form {
+    float: left;
 
-padding:10px 20px;
-.label{padding-bottom:10px}
+    padding: 10px 20px;
+    .label {
+      padding-bottom: 10px
+    }
 
-}
+  }
 
-.until{margin-top:15px}
+  .until {
+    margin-top: 15px
+  }
 
 }

@@ -13,16 +13,15 @@
 function get_agent_showcase($data) {
 
     global $smarty;
-    
-    $agent=$data['_object'];
-    if(!$agent->id){
+
+    $agent = $data['_object'];
+    if (!$agent->id) {
         return "";
     }
-    
-    $smarty->assign('agent',$agent);
+
+    $smarty->assign('agent', $agent);
 
     return $smarty->fetch('showcase/agent.tpl');
-    
 
 
 }

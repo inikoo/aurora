@@ -9,40 +9,48 @@
 
 */
 
-$tab='supplier.order.supplier_parts';
-$ar_file='ar_suppliers_tables.php';
-$tipo='supplier.order.supplier_parts';
+$tab     = 'supplier.order.supplier_parts';
+$ar_file = 'ar_suppliers_tables.php';
+$tipo    = 'supplier.order.supplier_parts';
 
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array(
-	'overview'=>array('label'=>_('Description'),'title'=>_('Description')),
-
-);
-
-$table_filters=array(
-	'reference'=>array('label'=>_('Reference'),'title'=>_('Part reference')),
-	'name'=>array('label'=>_('Name'),'title'=>_('Part name')),
+$table_views = array(
+    'overview' => array(
+        'label' => _('Description'),
+        'title' => _('Description')
+    ),
 
 );
 
-$parameters=array(
-		'parent'=>$state['object'],
-		'parent_key'=>$state['key'],
-		
+$table_filters = array(
+    'reference' => array(
+        'label' => _('Reference'),
+        'title' => _('Part reference')
+    ),
+    'name'      => array(
+        'label' => _('Name'),
+        'title' => _('Part name')
+    ),
+
 );
 
-$table_buttons=array();
-$table_buttons[]=array(
-	'icon'=>'bars',
-	'title'=>_('items'),
-	'id'=>'shortcut_to_items',
-	
+$parameters = array(
+    'parent'     => $state['object'],
+    'parent_key' => $state['key'],
+
+);
+
+$table_buttons   = array();
+$table_buttons[] = array(
+    'icon'  => 'bars',
+    'title' => _('items'),
+    'id'    => 'shortcut_to_items',
+
 
 );
 $smarty->assign('table_buttons', $table_buttons);
-
 
 
 include('utils/get_table_html.php');

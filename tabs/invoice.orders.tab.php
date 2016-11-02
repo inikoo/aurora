@@ -9,23 +9,22 @@
 
 */
 
-$tab='invoice.orders';
-$ar_file='ar_orders_tables.php';
-$tipo='orders';
-$default=$user->get_tab_defaults($tab);
+$tab     = 'invoice.orders';
+$ar_file = 'ar_orders_tables.php';
+$tipo    = 'orders';
+$default = $user->get_tab_defaults($tab);
 
-$table_views=array();
+$table_views = array();
 
-$table_filters=array();
+$table_filters = array();
 
-$parameters=array(
-		'parent'=>$state['object'],
-		'parent_key'=>$state['key'],
-	);
+$parameters = array(
+    'parent'     => $state['object'],
+    'parent_key' => $state['key'],
+);
 
 
 include('utils/get_table_html.php');
-
 
 
 ?>

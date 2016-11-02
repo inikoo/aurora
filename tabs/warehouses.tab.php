@@ -10,28 +10,38 @@
 */
 
 
-$tab='warehouses';
-$ar_file='ar_warehouse_tables.php';
-$tipo='warehouses';
+$tab     = 'warehouses';
+$ar_file = 'ar_warehouse_tables.php';
+$tipo    = 'warehouses';
 
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array();
+$table_views = array();
 
-$table_filters=array(
-	'code'=>array('label'=>_('Code'),'title'=>_('Warehouse code')),
-	'name'=>array('label'=>_('Name'),'title'=>_('Warehouse name')),
+$table_filters = array(
+    'code' => array(
+        'label' => _('Code'),
+        'title' => _('Warehouse code')
+    ),
+    'name' => array(
+        'label' => _('Name'),
+        'title' => _('Warehouse name')
+    ),
 
 );
 
-$parameters=array(
-		'parent'=>'account',
-		'parent_key'=>1,
+$parameters = array(
+    'parent'     => 'account',
+    'parent_key' => 1,
 );
 
-$table_buttons=array();
-$table_buttons[]=array('icon'=>'plus', 'title'=>_('New warehouse'), 'reference'=>"warehouse/new");
+$table_buttons   = array();
+$table_buttons[] = array(
+    'icon'      => 'plus',
+    'title'     => _('New warehouse'),
+    'reference' => "warehouse/new"
+);
 $smarty->assign('table_buttons', $table_buttons);
 
 

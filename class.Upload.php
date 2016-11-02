@@ -14,406 +14,440 @@ include_once 'class.DB_Table.php';
 class Upload extends DB_Table {
 
 
+    function __construct($a1, $a2 = false, $a3 = false) {
+        global $db;
+        $this->db = $db;
 
-	function __construct($a1, $a2=false, $a3=false) {
-		global $db;
-		$this->db=$db;
+        $this->table_name    = 'Upload';
+        $this->ignore_fields = array('Upload Key');
 
-		$this->table_name='Upload';
-		$this->ignore_fields=array('Upload Key');
+        if (is_numeric($a1) and !$a2) {
+            $this->get_data('id', $a1);
+        } elseif ($a1 == 'create') {
+            $this->create($a2);
 
-		if (is_numeric($a1) and !$a2) {
-			$this->get_data('id', $a1);
-		}
-		elseif ($a1=='create') {
-			$this->create($a2);
+        } else {
+            $this->get_data($a1, $a2);
+        }
+    }
 
-		}
-		else {
-			$this->get_data($a1, $a2);
-		}
-	}
 
+    function get_data($key, $tag) {
 
-	function get_data($key, $tag) {
+        if ($key == 'id') {
+            $sql = sprintf(
+                "SELECT * FROM `Upload Dimension` WHERE `Upload Key`=%d", $tag
+            );
 
-		if ($key=='id') {
-			$sql=sprintf("select * from `Upload Dimension` where `Upload Key`=%d", $tag);
+        }
+        if ($this->data = $this->db->query($sql)->fetch()) {
+            $this->id = $this->data['Upload Key'];
+        }
 
-		}
-		if ($this->data = $this->db->query($sql)->fetch()) {
-			$this->id=$this->data['Upload Key'];
-		}
 
+    }
 
+    function create($data) {
 
-	}
+        $this->new = false;
 
+        $data['Upload State'] = 'Uploaded';
 
-	function load_file_data() {
-		$sql=sprintf("select * from `Upload File Dimension` where `Upload File Upload Key`=%d", $this->id);
+        $data['Upload Created'] = gmdate('Y-m-d H:i:s');
 
-		if ($result=$this->db->query($sql)) {
-			if ($row = $result->fetch()) {
-				foreach ($row as $key=>$value) {
-					$this->data[$key]=$value;
-				}
-			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
-		}
+        $base_data = $this->base_data();
 
+        foreach ($data as $key => $value) {
+            if (array_key_exists($key, $base_data)) {
+                $base_data[$key] = _trim($value);
+            }
+        }
 
-	}
+        $keys   = '(';
+        $values = 'values(';
+        foreach ($base_data as $key => $value) {
+            $keys .= "`$key`,";
+            $values .= prepare_mysql($value).",";
+        }
+        $keys   = preg_replace('/,$/', ')', $keys);
+        $values = preg_replace('/,$/', ')', $values);
+        $sql    = sprintf(
+            "INSERT INTO `Upload Dimension` %s %s", $keys, $values
+        );
 
+        if ($this->db->exec($sql)) {
+            $this->id = $this->db->lastInsertId();
+            $this->get_data('id', $this->id);
 
-	function create($data) {
 
-		$this->new=false;
+            $this->new = true;
 
-		$data['Upload State']='Uploaded';
 
-		$data['Upload Created']=gmdate('Y-m-d H:i:s');
+        } else {
+            $this->error = true;
+            $this->msg   = 'Error inserting upload record';
+        }
 
-		$base_data=$this->base_data();
 
-		foreach ($data as $key=>$value) {
-			if (array_key_exists($key, $base_data))
-				$base_data[$key]=_trim($value);
-		}
+    }
 
-		$keys='(';
-		$values='values(';
-		foreach ($base_data as $key=>$value) {
-			$keys.="`$key`,";
-			$values.=prepare_mysql($value).",";
-		}
-		$keys=preg_replace('/,$/', ')', $keys);
-		$values=preg_replace('/,$/', ')', $values);
-		$sql=sprintf("insert into `Upload Dimension` %s %s", $keys, $values);
+    function load_file_data() {
+        $sql = sprintf(
+            "SELECT * FROM `Upload File Dimension` WHERE `Upload File Upload Key`=%d", $this->id
+        );
 
-		if ($this->db->exec($sql)) {
-			$this->id=$this->db->lastInsertId();
-			$this->get_data('id', $this->id);
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                foreach ($row as $key => $value) {
+                    $this->data[$key] = $value;
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
 
 
-			$this->new=true;
+    }
 
+    function append_log($value) {
 
 
+        $value = $this->data['Upload Log']."\n".$value;
+        $this->update_field_switcher('Upload Log', $value);
+    }
+
+
+    function is_in_process() {
+        if (in_array(
+            $this->data['Upload State'], array(
+                'Finished',
+                'Cancelled'
+            )
+        )) {
+            return false;
+
+        } else {
+            return true;
+        }
+    }
+
+
+    function get($key, $data = false) {
+
+        if (!$this->id) {
+            return;
+        }
+
+        switch ($key) {
+            case  'State':
+                switch ($this->data['Upload State']) {
+                    case 'InProcess':
+                    case 'Uploaded':
+                        return _('In process');
+                        break;
+                    case 'Finished':
+                        return _('Finished');
+
+
+                        break;
+                    case 'Cancelled':
+                        return _('Cancelled');
+
+                        break;
+
+                    default:
+                        return $this->data['Upload State'];
+                        break;
+                }
+
+            case 'User Alias':
+
+                $user = get_object('User', $this->data['Upload User Key']);
+
+                return $user->get('Alias');
+                break;
+
+            case 'File Size':
+                include_once 'utils/natural_language.php';
+
+                return file_size($this->data['Upload File Size']);
+                break;
+            case 'Object':
+                switch ($this->data['Upload Object']) {
+                    case 'supplier_part':
+                        $object = sprintf(
+                            '<i  class="fa fa-fw fa-stop"></i> %s', _("Supplier's parts")
+                        );
+                        break;
+                    case 'supplier':
+                        $object = sprintf(
+                            '<i  class="fa fa-fw fa-ship"></i> %s', _("Suppliers")
+                        );
+                        break;
+                    case 'part':
+                        $object = sprintf(
+                            '<i  class="fa fa-fw fa-square"></i> %s', _("Parts")
+                        );
+                        break;
+                    default:
+                        $object = $this->data['Upload Object'];
+                }
 
+                return $object;
 
+                break;
+            case ('Created'):
+            case ('Date'):
+                $key = 'Created';
 
-		}else {
-			$this->error=true;
-			$this->msg='Error inserting upload record';
-		}
+                return strftime(
+                    "%a %e %b %Y %H:%M %Z", strtotime($this->data['Upload '.$key].' +0:00')
+                );
+                break;
 
+            case ('Filesize'):
+                include_once 'utils/units_functions.php';
 
+                return file_size($this->data['Upload File Size']);
+                break;
 
+            case('Records'):
+            case('OK'):
+            case('Warnings'):
+            case('Errors'):
+                return number($this->data['Upload '.$key]);
+                break;
+            case 'Metadata':
+                if ($this->data['Upload Metadata'] == '') {
+                    return false;
+                }
 
-	}
+                return json_decode($this->data['Upload Metadata'], true);
 
 
+            default:
 
+                if (array_key_exists($key, $this->data)) {
+                    return $this->data[$key];
+                }
+
+                if (array_key_exists('Upload '.$key, $this->data)) {
+                    return $this->data['Upload '.$key];
+                }
+        }
 
+        return '';
+    }
 
 
-	function append_log($value) {
+    function get_subject_list_link() {
+        if ($this->data['Upload Object List Key']) {
 
+            switch ($this->data['Upload Object']) {
+                case 'customers':
+                    return sprintf(
+                        "<a href='customers_list.php?id=%d'>%s</a>", $this->data['Scope List Key'], _('Imported customers list')
+                    );
+                    break;
+                default:
+                    return "";
+            }
+        } else {
+            return '';
+        }
+    }
 
 
-		$value=$this->data['Upload Log']."\n".$value;
-		$this->update_field_switcher('Upload Log', $value);
-	}
+    function get_not_imported_log_link() {
 
+        if ($this->data['Upload Log'] != '') {
 
-	function is_in_process() {
-		if (in_array($this->data['Upload State'], array('Finished', 'Cancelled'))) {
-			return false;
 
-		}else {
-			return true;
-		}
-	}
+            return sprintf(
+                '<a href="records_not_imported_log.php?id=%d" target="_blank">%s</a>', $this->id, _('Error Log')
+            );
 
+        } else {
+            return '';
+        }
 
-	function get($key, $data=false) {
 
-		if (!$this->id)
-			return;
+    }
 
-		switch ($key) {
-		case  'State':
-			switch ($this->data['Upload State']) {
-			case 'InProcess':
-			case 'Uploaded':
-				return _('In process');
-				break;
-			case 'Finished':
-				return _('Finished');
 
+    function get_log_link() {
 
-				break;
-			case 'Cancelled':
-				return _('Cancelled');
+        if ($this->data['Error Records'] or $this->data['Ignored Records'] == 0) {
+            return '';
+        }
 
-				break;
+        return sprintf(
+            '<a href="records_not_imported_log.php?id=%d" target="_blank">%s</a>', $this->id, _('Ignored Log')
+        );
 
-			default:
-				return $this->data['Upload State'];
-				break;
-			}
 
-		case 'User Alias':
+    }
 
-			$user=get_object('User', $this->data['Upload User Key']);
-			return $user->get('Alias');
-			break;
+    function cancel() {
+        $this->cancelled = false;
+        if (in_array(
+            $this->data['Upload State'], array(
+                'InProcess',
+                'Queued'
+            )
+        )) {
 
-		case 'File Size':
-			include_once 'utils/natural_language.php';
-			return file_size($this->data['Upload File Size']);
-			break;
-		case 'Object':
-			switch ($this->data['Upload Object']) {
-			case 'supplier_part':
-				$object=sprintf('<i  class="fa fa-fw fa-stop"></i> %s', _("Supplier's parts"));
-				break;
-			case 'supplier':
-				$object=sprintf('<i  class="fa fa-fw fa-ship"></i> %s', _("Suppliers"));
-				break;
-			case 'part':
-				$object=sprintf('<i  class="fa fa-fw fa-square"></i> %s', _("Parts"));
-				break;
-			default:
-				$object=$this->data['Upload Object'];
-			}
+            $sql = sprintf(
+                "UPDATE `Upload Dimension` SET `Upload State`='Cancelled',`Upload Finish Date`=NOW(),`Upload Cancelled Date`=NOW()  WHERE `Upload Key`=%d ", $this->id
+            );
+            mysql_query($sql);
 
-			return $object;
+            $sql = sprintf(
+                "UPDATE `Imported Record` SET `Imported Record Import State`='Cancelled'  WHERE `Imported Record Import State`='Waiting' AND  `Imported Record Parent Key`=%d ", $this->id
+            );
+            mysql_query($sql);
 
-			break;
-		case ('Created'):
-		case ('Date'):
-			$key='Created';
-			return strftime("%a %e %b %Y %H:%M %Z", strtotime($this->data['Upload '.$key].' +0:00'));
-			break;
+            $this->update_records_numbers();
 
-		case ('Filesize'):
-			include_once 'utils/units_functions.php';
-			return file_size($this->data['Upload File Size']);
-			break;
+            $sql = sprintf(
+                "UPDATE `Fork Dimension` SET `Fork State`='Cancelled' WHERE `Fork Key`=%d ", $this->data['Upload Fork Key']
+            );
+            mysql_query($sql);
 
-		case('Records'):
-		case('OK'):
-		case('Warnings'):
-		case('Errors'):
-			return number($this->data['Upload '.$key]);
-			break;
-		case 'Metadata':
-			if ($this->data['Upload Metadata']=='')return false;
-			return json_decode($this->data['Upload Metadata'], true);
+            $this->cancelled = true;
 
 
+        } elseif (in_array(
+            $this->data['Upload State'], array(
+                'Uploading',
+                'Review'
+            )
+        )) {
 
-		default:
+            $sql = sprintf(
+                "DELETE FROM `Upload Dimension` WHERE `Upload Key`=%d ", $this->id
+            );
+            mysql_query($sql);
+            $this->clear_records();
+            $this->cancelled = true;
 
-			if (array_key_exists($key, $this->data))
-				return $this->data[$key];
 
-			if (array_key_exists('Upload '.$key, $this->data))
-				return $this->data['Upload '.$key];
-		}
-		return '';
-	}
+        } else {
 
+            $this->msg = 'can not cancel or delete '.$this->data['Upload State'];
 
-	function get_subject_list_link() {
-		if ($this->data['Upload Object List Key']) {
+        }
+    }
 
-			switch ($this->data['Upload Object']) {
-			case 'customers':
-				return sprintf("<a href='customers_list.php?id=%d'>%s</a>",
-					$this->data['Scope List Key'],
-					_('Imported customers list')
-				);
-				break;
-			default:
-				return "";
-			}
-		} else {
-			return '';
-		}
-	}
+    function update_records_numbers() {
+        $records_numbers = array(
+            'Imported Ignored Records'   => 0,
+            'Imported Imported Records'  => 0,
+            'Imported Error Records'     => 0,
+            'Imported Waiting Records'   => 0,
+            'Imported Importing Records' => 0,
+            'Imported Cancelled Records' => 0
+        );
+        $sql             = sprintf(
+            "SELECT count(*) AS num,`Imported Record Import State` FROM `Imported Record` WHERE `Imported Record Parent Key`=%d GROUP BY  `Imported Record Import State`; ", $this->id
+        );
 
 
-	function get_not_imported_log_link() {
+        $result = mysql_query($sql);
+        while ($row = mysql_fetch_assoc($result)) {
 
-		if ($this->data['Upload Log']!='') {
+            $records_numbers['Imported '.$row['Imported Record Import State'].' Records']
+                = $row['num'];
+        }
 
 
-
-			return sprintf('<a href="records_not_imported_log.php?id=%d" target="_blank">%s</a>',
-				$this->id,
-				_('Error Log'));
-
-		} else {
-			return '';
-		}
-
-
-	}
-
-
-	function get_log_link() {
-
-		if ($this->data['Error Records'] or $this->data['Ignored Records']==0) {
-			return '';
-		}
-
-		return sprintf('<a href="records_not_imported_log.php?id=%d" target="_blank">%s</a>',
-			$this->id,
-			_('Ignored Log'));
-
-
-	}
-
-
-	function update_records_numbers() {
-		$records_numbers=array('Imported Ignored Records'=>0, 'Imported Imported Records'=>0, 'Imported Error Records'=>0, 'Imported Waiting Records'=>0, 'Imported Importing Records'=>0, 'Imported Cancelled Records'=>0);
-		$sql=sprintf("select count(*) as num,`Imported Record Import State` from `Imported Record` where `Imported Record Parent Key`=%d group by  `Imported Record Import State`; ",
-			$this->id
-		);
-
-
-		$result=mysql_query($sql);
-		while ($row=mysql_fetch_assoc($result)) {
-
-			$records_numbers['Imported '.$row['Imported Record Import State'].' Records']=$row['num'];
-		}
-
-
-		$sql=sprintf("update `Upload Dimension` set
+        $sql = sprintf(
+            "UPDATE `Upload Dimension` SET
 		`Imported Ignored Records`=%d ,
 		`Imported Imported Records`=%d ,
 		`Imported Error Records`=%d ,
 		`Imported Waiting Records`=%d ,
 		`Imported Importing Records`=%d,
 		`Imported Cancelled Records`=%d
-		where `Upload Key`=%d ",
-			$records_numbers['Imported Ignored Records'],
-			$records_numbers['Imported Imported Records'],
-			$records_numbers['Imported Error Records'],
-			$records_numbers['Imported Waiting Records'],
-			$records_numbers['Imported Importing Records'],
-			$records_numbers['Imported Cancelled Records'],
-			$this->id
-		);
-		mysql_query($sql);
-		//print "$sql\n";
-		$this->data['Imported Ignored Records']=$records_numbers['Imported Ignored Records'];
-		$this->data['Imported Imported Records']=$records_numbers['Imported Imported Records'];
-		$this->data['Imported Error Records']=$records_numbers['Imported Error Records'];
-		$this->data['Imported Waiting Records']=$records_numbers['Imported Waiting Records'];
-		$this->data['Imported Importing Records']=$records_numbers['Imported Importing Records'];
-		$this->data['Imported Cancelled Records']=$records_numbers['Imported Cancelled Records'];
+		WHERE `Upload Key`=%d ", $records_numbers['Imported Ignored Records'], $records_numbers['Imported Imported Records'], $records_numbers['Imported Error Records'],
+            $records_numbers['Imported Waiting Records'], $records_numbers['Imported Importing Records'], $records_numbers['Imported Cancelled Records'], $this->id
+        );
+        mysql_query($sql);
+        //print "$sql\n";
+        $this->data['Imported Ignored Records']
+            = $records_numbers['Imported Ignored Records'];
+        $this->data['Imported Imported Records']
+            = $records_numbers['Imported Imported Records'];
+        $this->data['Imported Error Records']
+            = $records_numbers['Imported Error Records'];
+        $this->data['Imported Waiting Records']
+            = $records_numbers['Imported Waiting Records'];
+        $this->data['Imported Importing Records']
+            = $records_numbers['Imported Importing Records'];
+        $this->data['Imported Cancelled Records']
+            = $records_numbers['Imported Cancelled Records'];
 
-	}
+    }
 
+    function clear_records() {
+        $sql = sprintf(
+            "DELETE FROM `Imported Record` WHERE `Imported Record Parent Key`=%d ", $this->id
+        );
+        mysql_query($sql);
 
+    }
 
-	function cancel() {
-		$this->cancelled=false;
-		if (in_array($this->data['Upload State'], array('InProcess', 'Queued'))) {
+    function delete() {
+        $this->deleted = false;
+        if (in_array(
+            $this->data['Upload State'], array(
+                'Uploading',
+                'Review',
+                'Queued'
+            )
+        )) {
 
-			$sql=sprintf("update `Upload Dimension` set `Upload State`='Cancelled',`Upload Finish Date`=NOW(),`Upload Cancelled Date`=NOW()  where `Upload Key`=%d ",
-				$this->id);
-			mysql_query($sql);
-
-			$sql=sprintf("update `Imported Record` set `Imported Record Import State`='Cancelled'  where `Imported Record Import State`='Waiting' and  `Imported Record Parent Key`=%d ",
-				$this->id);
-			mysql_query($sql);
-
-			$this->update_records_numbers();
-
-			$sql=sprintf("update `Fork Dimension` set `Fork State`='Cancelled' where `Fork Key`=%d ", $this->data['Upload Fork Key']);
-			mysql_query($sql);
-
-			$this->cancelled=true;
-
-
-		}elseif (in_array($this->data['Upload State'], array('Uploading', 'Review'))) {
-
-			$sql=sprintf("delete from `Upload Dimension` where `Upload Key`=%d ",
-				$this->id);
-			mysql_query($sql);
-			$this->clear_records();
-			$this->cancelled=true;
+            $sql = sprintf(
+                "DELETE FROM `Upload Dimension` WHERE `Upload Key`=%d ", $this->id
+            );
+            mysql_query($sql);
+            $this->clear_records();
+            $this->cancelled = true;
 
 
-		}else {
+        }
+    }
 
-			$this->msg='can not cancel or delete '.$this->data['Upload State'];
+    function get_field_label($field) {
 
-		}
-	}
+        switch ($field) {
+            case 'Upload Object':
+                $label = _('Objects');
+                break;
+            case 'Account Websites':
+                $label = _('Websites');
+                break;
+            case 'Account Products':
+                $label = _('Products');
+                break;
+            case 'Account Customers':
+                $label = _('Customers');
+                break;
+            case 'Account Invoices':
+                $label = _('Invoices');
+                break;
+            case 'Account Order Transactions':
+                $label = _("Order's Items");
+                break;
 
+            default:
+                $label = $field;
+        }
 
+        return $label;
 
-
-	function delete() {
-		$this->deleted=false;
-		if (in_array($this->data['Upload State'], array('Uploading', 'Review', 'Queued'))) {
-
-			$sql=sprintf("delete from `Upload Dimension` where `Upload Key`=%d ",
-				$this->id);
-			mysql_query($sql);
-			$this->clear_records();
-			$this->cancelled=true;
-
-
-		}
-	}
-
-
-	function clear_records() {
-		$sql=sprintf("delete from `Imported Record` where `Imported Record Parent Key`=%d ",
-			$this->id);
-		mysql_query($sql);
-
-	}
-
-
-	function get_field_label($field) {
-
-		switch ($field) {
-		case 'Upload Object':
-			$label=_('Objects');
-			break;
-		case 'Account Websites':
-			$label=_('Websites');
-			break;
-		case 'Account Products':
-			$label=_('Products');
-			break;
-		case 'Account Customers':
-			$label=_('Customers');
-			break;
-		case 'Account Invoices':
-			$label=_('Invoices');
-			break;
-		case 'Account Order Transactions':
-			$label=_("Order's Items");
-			break;
-
-		default:
-			$label=$field;
-		}
-		return $label;
-
-	}
-
+    }
 
 
 }

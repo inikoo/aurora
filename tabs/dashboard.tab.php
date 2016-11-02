@@ -11,46 +11,46 @@
 */
 
 
-$html='';
+$html = '';
 foreach ($user->get_dashboard_items() as $item) {
 
-	if ($item=='sales_overview') {
+    if ($item == 'sales_overview') {
 
-		$period='1y';
+        $period = '1y';
 
-		include_once 'widgets/sales_overview.wget.php';
+        include_once 'widgets/sales_overview.wget.php';
 
-		if (isset($_SESSION['dashboard_state']['sales_overview']['type'])) {
-			$type=$_SESSION['dashboard_state']['sales_overview']['type'];
-		}else {
-			$type='invoices';
-		}
-		if (isset($_SESSION['dashboard_state']['sales_overview']['period'])) {
-			$period=$_SESSION['dashboard_state']['sales_overview']['period'];
-		}else {
-			$period='ytd';
-		}
-		if (isset($_SESSION['dashboard_state']['sales_overview']['currency'])) {
-			$currency=$_SESSION['dashboard_state']['sales_overview']['currency'];
-		}else {
-			$currency='account';
-		}
-		if (isset($_SESSION['dashboard_state']['sales_overview']['orders_view_type'])) {
-			$orders_view_type=$_SESSION['dashboard_state']['sales_overview']['orders_view_type'];
-		}else {
-			$orders_view_type='numbers';
-		}
-		
-		
-		$html.=get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $period, $currency, $orders_view_type);
+        if (isset($_SESSION['dashboard_state']['sales_overview']['type'])) {
+            $type = $_SESSION['dashboard_state']['sales_overview']['type'];
+        } else {
+            $type = 'invoices';
+        }
+        if (isset($_SESSION['dashboard_state']['sales_overview']['period'])) {
+            $period = $_SESSION['dashboard_state']['sales_overview']['period'];
+        } else {
+            $period = 'ytd';
+        }
+        if (isset($_SESSION['dashboard_state']['sales_overview']['currency'])) {
+            $currency
+                = $_SESSION['dashboard_state']['sales_overview']['currency'];
+        } else {
+            $currency = 'account';
+        }
+        if (isset($_SESSION['dashboard_state']['sales_overview']['orders_view_type'])) {
+            $orders_view_type
+                = $_SESSION['dashboard_state']['sales_overview']['orders_view_type'];
+        } else {
+            $orders_view_type = 'numbers';
+        }
 
-	}
+
+        $html .= get_dashbord_sales_overview(
+            $db, $account, $user, $smarty, $type, $period, $currency, $orders_view_type
+        );
+
+    }
 
 }
-
-
-
-
 
 
 ?>

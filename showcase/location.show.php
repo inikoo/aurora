@@ -13,22 +13,21 @@
 function get_location_showcase($data, $smarty, $user, $db) {
 
 
-	$location=new Location($data['key']);
+    $location = new Location($data['key']);
 
-	$smarty->assign('location', $location);
+    $smarty->assign('location', $location);
 
-	return $smarty->fetch('showcase/location.tpl');
-
+    return $smarty->fetch('showcase/location.tpl');
 
 
 }
 
-function get_locked_location_showcase($data, $smarty, $user, $db){
+function get_locked_location_showcase($data, $smarty, $user, $db) {
 
 
-	$smarty->assign('location', $data['_object']);
+    $smarty->assign('location', $data['_object']);
 
-	return $smarty->fetch('showcase/location.locked.tpl');
+    return $smarty->fetch('showcase/location.locked.tpl');
 
 }
 

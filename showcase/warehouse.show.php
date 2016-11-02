@@ -13,22 +13,21 @@
 function get_warehouse_showcase($data, $smarty, $user, $db) {
 
 
-	$warehouse=new Warehouse($data['key']);
+    $warehouse = new Warehouse($data['key']);
 
-	$smarty->assign('warehouse', $warehouse);
+    $smarty->assign('warehouse', $warehouse);
 
-	return $smarty->fetch('showcase/warehouse.tpl');
-
+    return $smarty->fetch('showcase/warehouse.tpl');
 
 
 }
 
-function get_locked_warehouse_showcase($data, $smarty, $user, $db){
+function get_locked_warehouse_showcase($data, $smarty, $user, $db) {
 
 
-	$smarty->assign('warehouse', $data['_object']);
+    $smarty->assign('warehouse', $data['_object']);
 
-	return $smarty->fetch('showcase/warehouse.locked.tpl');
+    return $smarty->fetch('showcase/warehouse.locked.tpl');
 
 }
 

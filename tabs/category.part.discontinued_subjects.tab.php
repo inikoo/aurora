@@ -10,28 +10,27 @@
 */
 
 
+$tab     = 'category.part.discontinued_subjects';
+$ar_file = 'ar_inventory_tables.php';
+$tipo    = 'category_discontinued_parts';
 
-$tab='category.part.discontinued_subjects';
-$ar_file='ar_inventory_tables.php';
-$tipo='category_discontinued_parts';
-
-$default=$user->get_tab_defaults($tab);
-
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array(
+$table_views = array();
+
+$table_filters = array(
+    'reference' => array(
+        'label' => _('Reference'),
+        'title' => _('Part reference')
+    ),
 
 );
 
-$table_filters=array(
-	'reference'=>array('label'=>_('Reference'), 'title'=>_('Part reference')),
 
-);
-
-
-$parameters=array(
-	'parent'=>$state['object'],
-	'parent_key'=>$state['key'],
+$parameters = array(
+    'parent'     => $state['object'],
+    'parent_key' => $state['key'],
 
 );
 

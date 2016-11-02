@@ -10,25 +10,25 @@
 */
 
 
+$tab     = 'deleted.employees';
+$ar_file = 'ar_hr_tables.php';
+$tipo    = 'deleted.employees';
 
-$tab='deleted.employees';
-$ar_file='ar_hr_tables.php';
-$tipo='deleted.employees';
+$default = $user->get_tab_defaults($tab);
 
-$default=$user->get_tab_defaults($tab);
+$table_views = array();
 
-$table_views=array(
+$table_filters = array(
+    'name' => array(
+        'label' => _('Name'),
+        'title' => _('Employee name')
+    ),
 
 );
 
-$table_filters=array(
-	'name'=>array('label'=>_('Name'), 'title'=>_('Employee name')),
-
-);
-
-$parameters=array(
-	'parent'=>'account',
-	'parent_key'=>1,
+$parameters = array(
+    'parent'     => 'account',
+    'parent_key' => 1,
 
 );
 

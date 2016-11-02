@@ -16,294 +16,296 @@ include_once 'class.Page.php';
 
 class PageStoreSection extends DB_Table {
 
-	var $new=false;
+    var $new = false;
 
 
-	function PageStoreSection($arg1=false,$arg2=false,$arg3=false) {
-		$this->table_name='Page Store Section';
-		$this->ignore_fields=array('Page Store Section Key');
+    function PageStoreSection($arg1 = false, $arg2 = false, $arg3 = false) {
+        $this->table_name    = 'Page Store Section';
+        $this->ignore_fields = array('Page Store Section Key');
+
+
+        if (!$arg1 and !$arg2) {
+            $this->error = true;
+            $this->msg   = 'No arguments';
+        }
+        if (is_numeric($arg1)) {
+            $this->get_data('id', $arg1);
 
+            return;
+        }
 
-		if (!$arg1 and !$arg2) {
-			$this->error=true;
-			$this->msg='No arguments';
-		}
-		if (is_numeric($arg1)) {
-			$this->get_data('id',$arg1);
-			return;
-		}
 
+        if (is_array($arg2) and preg_match('/create|new/i', $arg1)) {
+            $this->find($arg2, 'create');
 
+            return;
+        }
 
-		if (is_array($arg2) and preg_match('/create|new/i',$arg1)) {
-			$this->find($arg2,'create');
-			return;
-		}
 
+        $this->get_data($arg1, $arg2, $arg3);
 
-		$this->get_data($arg1,$arg2,$arg3);
+    }
 
-	}
 
+    function get_data($tipo, $tag, $tag2) {
 
+        if ($tipo == 'id') {
+            $sql = sprintf(
+                "SELECT * FROM `Page Store Section Dimension` WHERE  `Page Store Section Key`=%d", $tag
+            );
+        } elseif ($tipo == 'code') {
+            $sql = sprintf(
+                "SELECT * FROM `Page Store Section Dimension` WHERE  `Page Store Section Code`=%s AND `Site Key`=%d", prepare_mysql($tag), $tag2
+            );
+        } else {
+            $this->error = true;
+            $this->msg   = "invalid tag ($tipo)";
 
-	function get_data($tipo,$tag,$tag2) {
+            return;
+        }
 
-		if ($tipo=='id')
-			$sql=sprintf("select * from `Page Store Section Dimension` where  `Page Store Section Key`=%d",$tag);
-		elseif ($tipo=='code')
-			$sql=sprintf("select * from `Page Store Section Dimension` where  `Page Store Section Code`=%s and `Site Key`=%d",
-				prepare_mysql($tag),
-				$tag2
-			);
-		else {
-			$this->error=true;
-			$this->msg="invalid tag ($tipo)";
-			return;
-		}
 
+        $result = mysql_query($sql);
+        if ($this->data = mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->id = $this->data['Page Store Section Key'];
 
-		$result =mysql_query($sql);
-		if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$this->id=$this->data['Page Store Section Key'];
 
+            if ($this->data['Page Store Section Logo Data'] != '') {
+                $this->data['Page Store Section Logo Data'] = unserialize(
+                    $this->data['Page Store Section Logo Data']
+                );
+            }
+            if ($this->data['Page Store Section Header Data'] != '') {
+                $this->data['Page Store Section Header Data'] = unserialize(
+                    $this->data['Page Store Section Header Data']
+                );
+            }
+            if ($this->data['Page Store Section Content Data'] != '') {
+                $this->data['Page Store Section Content Data'] = unserialize(
+                    $this->data['Page Store Section Content Data']
+                );
+            }
+            if ($this->data['Page Store Section Footer Data'] != '') {
+                $this->data['Page Store Section Footer Data'] = unserialize(
+                    $this->data['Page Store Section Footer Data']
+                );
+            }
+            if ($this->data['Page Store Section Layout Data'] != '') {
+                $this->data['Page Store Section Layout Data'] = unserialize(
+                    $this->data['Page Store Section Layout Data']
+                );
+            }
 
-			if ($this->data['Page Store Section Logo Data']!='')
-				$this->data['Page Store Section Logo Data']=unserialize($this->data['Page Store Section Logo Data']);
-			if ($this->data['Page Store Section Header Data']!='')
-				$this->data['Page Store Section Header Data']=unserialize($this->data['Page Store Section Header Data']);
-			if ($this->data['Page Store Section Content Data']!='')
-				$this->data['Page Store Section Content Data']=unserialize($this->data['Page Store Section Content Data']);
-			if ($this->data['Page Store Section Footer Data']!='')
-				$this->data['Page Store Section Footer Data']=unserialize($this->data['Page Store Section Footer Data']);
-			if ($this->data['Page Store Section Layout Data']!='')
-				$this->data['Page Store Section Layout Data']=unserialize($this->data['Page Store Section Layout Data']);
+        } else {
+            $this->error = true;
+            $this->msg   = 'page section not found';
+        }
 
-		} else {
-			$this->error=true;
-			$this->msg='page section not found';
-		}
 
+    }
 
+    function find($raw_data, $options) {
 
-	}
+        if (isset($raw_data['editor'])) {
+            foreach ($raw_data['editor'] as $key => $value) {
+                if (array_key_exists($key, $this->editor)) {
+                    $this->editor[$key] = $value;
+                }
+            }
+        }
 
-	function find($raw_data,$options) {
+        $this->found     = false;
+        $this->found_key = false;
 
-		if (isset($raw_data['editor'])) {
-			foreach ($raw_data['editor'] as $key=>$value) {
-				if (array_key_exists($key,$this->editor))
-					$this->editor[$key]=$value;
-			}
-		}
+        $create = '';
+        $update = '';
+        if (preg_match('/create/i', $options)) {
+            $create = 'create';
+        }
+        if (preg_match('/update/i', $options)) {
+            $update = 'update';
+        }
 
-		$this->found=false;
-		$this->found_key=false;
 
-		$create='';
-		$update='';
-		if (preg_match('/create/i',$options)) {
-			$create='create';
-		}
-		if (preg_match('/update/i',$options)) {
-			$update='update';
-		}
+        $sql = sprintf(
+            "SELECT `Page Store Section Key` FROM `Page Store Section Dimension` WHERE `Page Store Section Code`=%s AND `Site Key`=%d ",
 
+            prepare_mysql($raw_data['Page Store Section Code']), $raw_data['Site Key']
 
+        );
 
+        $res = mysql_query($sql);
+        if ($row = mysql_fetch_assoc($res)) {
+            $this->found     = true;
+            $this->found_key = $row['Page Store Section Key'];
+            $this->get_data('id', $this->found_key);
+        }
 
 
-		$sql=sprintf("select `Page Store Section Key` from `Page Store Section Dimension` where `Page Store Section Code`=%s and `Site Key`=%d ",
+        if ($create and !$this->found) {
+            $this->create($raw_data);
+        }
 
-			prepare_mysql($raw_data['Page Store Section Code']),
-			$raw_data['Site Key']
+    }
 
-		);
 
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$this->found=true;
-			$this->found_key=$row['Page Store Section Key'];
-			$this->get_data('id',$this->found_key);
-		}
+    function create($raw_data) {
 
 
-		if ($create and !$this->found) {
-			$this->create($raw_data);
-		}
+        $data = $this->base_data();
 
-	}
 
+        foreach ($raw_data as $key => $value) {
+            if (array_key_exists($key, $data)) {
+                if (is_array($value)) {
+                    $data[$key] = serialize($value);
+                } else {
+                    $data[$key] = _trim($value);
+                }
+            }
 
-	function create($raw_data) {
 
+        }
 
 
+        $keys   = '(';
+        $values = 'values(';
+        foreach ($data as $key => $value) {
+            $keys .= "`$key`,";
 
+            $values .= prepare_mysql($value).",";
+        }
+        $keys   = preg_replace('/,$/', ')', $keys);
+        $values = preg_replace('/,$/', ')', $values);
+        $sql    = sprintf(
+            "INSERT INTO `Page Store Section Dimension` %s %s", $keys, $values
+        );
 
-		$data=$this->base_data();
 
+        if (mysql_query($sql)) {
+            $this->id = mysql_insert_id();
+            $this->get_data('id', $this->id);
 
-		foreach ($raw_data as $key=>$value) {
-			if (array_key_exists($key,$data))
 
+        } else {
+            $this->error = true;
+            $this->msg   = 'Can not insert Page Store Section Dimension';
+            exit("$sql\n");
+        }
 
 
-				if (is_array($value))
-					$data[$key]=serialize($value);
-				else
-					$data[$key]=_trim($value);
+    }
 
+    function base_data($table_name = '') {
 
-		}
 
+        $data   = array();
+        $result = mysql_query(
+            "SHOW COLUMNS FROM `".$this->table_name." Dimension`"
+        );
+        if (!$result) {
+            echo 'Could not run query: '.mysql_error();
+            exit;
+        }
+        if (mysql_num_rows($result) > 0) {
+            while ($row = mysql_fetch_assoc($result)) {
+                if (!in_array($row['Field'], $this->ignore_fields)) {
+                    $data[$row['Field']] = $row['Default'];
+                    if (preg_match('/ Data$/', $row['Field'])) {
+                        $data[$row['Field']] = 'a:0:{}';
+                    }
 
+                }
+            }
+        }
 
-		$keys='(';
-		$values='values(';
-		foreach ($data as $key=>$value) {
-			$keys.="`$key`,";
+        return $data;
+    }
 
-			$values.=prepare_mysql($value).",";
-		}
-		$keys=preg_replace('/,$/',')',$keys);
-		$values=preg_replace('/,$/',')',$values);
-		$sql=sprintf("insert into `Page Store Section Dimension` %s %s",$keys,$values);
+    function get($key) {
 
 
-		if (mysql_query($sql)) {
-			$this->id=mysql_insert_id();
-			$this->get_data('id',$this->id);
+        switch ($key) {
 
+            default:
+                if (isset($this->data[$key])) {
+                    return $this->data[$key];
+                }
+        }
 
+        return false;
+    }
 
+    function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
 
+        switch ($field) {
+            case('Page Store Section Logo Data'):
+            case('Page Store Section Header Data'):
+            case('Page Store Section Footer Data'):
+            case('Page Store Section Content Data'):
+            case('Page Store Section Layout Data'):
 
-		} else {
-			$this->error=true;
-			$this->msg='Can not insert Page Store Section Dimension';
-			exit("$sql\n");
-		}
+                $this->update_data_field($field, $value);
+                break;
+            default:
+                $base_data = $this->base_data();
+                if (array_key_exists($field, $base_data)) {
 
+                    if ($value != $this->data[$field]) {
 
-	}
+                        $this->update_field($field, $value, $options);
+                    }
+                }
 
+        }
 
-	function get($key) {
 
+    }
 
+    function update_data_field($field, $data) {
 
-		switch ($key) {
+        foreach ($data as $key => $items) {
+            if ($key == 'style') {
 
-		default:
-			if (isset($this->data[$key]))
-				return $this->data[$key];
-		}
-		return false;
-	}
+                foreach ($items as $style_key => $style_value) {
+                    if ($style_key == 'background-image') {
+                        $file       = $data['style']['background-image'];
+                        $image_data = array(
+                            'file'        => $file,
+                            'source_path' => 'mantenence/scripts/',
+                            'name'        => 'background_image',
+                            'caption'     => ''
+                        );
+                        $image      = new Image('find', $image_data, 'create');
+                        if ($image->id) {
+                            $image_src = preg_replace(
+                                '/^sites./', '', $image->get_url()
+                            );
 
 
+                            $this->data[$field]['style']['background-image']
+                                = "url('$image_src')";
+                        }
+                    } else {
+                        $this->data[$field]['style'][$style_key] = $style_value;
+                    }
+                }
 
 
+            } else {
+                $this->data[$field][$key] = $data;
+            }
+        }
 
+        $sql = sprintf(
+            "update `Page Store Section Dimension` set `$field`=%s where `Page Store Section Key`=%d ", prepare_mysql(serialize($this->data[$field])), $this->id
 
-	function update_data_field($field,$data) {
+        );
+        mysql_query($sql);
 
-		foreach ($data as $key=>$items) {
-			if ($key=='style') {
-
-				foreach ($items as $style_key=>$style_value) {
-					if ($style_key=='background-image') {
-						$file=$data['style']['background-image'];
-						$image_data=array(
-							'file'=>$file,
-							'source_path'=>'mantenence/scripts/',
-							'name'=>'background_image',
-							'caption'=>''
-						);
-						$image=new Image('find',$image_data,'create');
-						if ($image->id) {
-							$image_src=preg_replace('/^sites./','',$image->get_url());
-
-
-
-							$this->data[$field]['style']['background-image']="url('$image_src')";
-						}
-					}else {
-						$this->data[$field]['style'][$style_key]=$style_value;
-					}
-				}
-
-
-			}else {
-				$this->data[$field][$key]=$data;
-			}
-		}
-
-		$sql=sprintf("update `Page Store Section Dimension` set `$field`=%s where `Page Store Section Key`=%d ",
-			prepare_mysql(serialize($this->data[$field])),
-			$this->id
-
-		);
-		mysql_query($sql);
-
-	}
-
-
-
-	function update_field_switcher($field, $value, $options='',$metadata='') {
-
-
-		switch ($field) {
-		case('Page Store Section Logo Data'):
-		case('Page Store Section Header Data'):
-		case('Page Store Section Footer Data'):
-		case('Page Store Section Content Data'):
-		case('Page Store Section Layout Data'):
-
-			$this->update_data_field($field,$value);
-			break;
-		default:
-			$base_data=$this->base_data();
-			if (array_key_exists($field,$base_data)) {
-
-				if ($value!=$this->data[$field]) {
-
-					$this->update_field($field,$value,$options);
-				}
-			}
-
-		}
-
-
-
-	}
-
-
-	function base_data($table_name='') {
-
-
-		$data=array();
-		$result = mysql_query("SHOW COLUMNS FROM `".$this->table_name." Dimension`");
-		if (!$result) {
-			echo 'Could not run query: ' . mysql_error();
-			exit;
-		}
-		if (mysql_num_rows($result) > 0) {
-			while ($row = mysql_fetch_assoc($result)) {
-				if (!in_array($row['Field'],$this->ignore_fields)) {
-					$data[$row['Field']]=$row['Default'];
-					if (preg_match('/ Data$/',$row['Field'])) {
-						$data[$row['Field']]='a:0:{}';
-					}
-
-				}
-			}
-		}
-
-		return $data;
-	}
+    }
 
 }
+
 ?>

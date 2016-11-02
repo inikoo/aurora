@@ -12,84 +12,90 @@
 
 //print_r($parameters);
 
-$group_by='';
+$group_by = '';
 
 switch ($parameters['tab']) {
-case 'account.users.staff':
-$table='`User Dimension` U left join `Staff Dimension` SD  on (`User Parent Key`=`Staff Key`)';
+    case 'account.users.staff':
+        $table
+            = '`User Dimension` U left join `Staff Dimension` SD  on (`User Parent Key`=`Staff Key`)';
 
-	$where=" where  `User Type`='Staff' ";
-	break;
-case 'account.users.contractors':
-$table='`User Dimension` U left join `Staff Dimension` SD  on (`User Parent Key`=`Staff Key`)';
+        $where = " where  `User Type`='Staff' ";
+        break;
+    case 'account.users.contractors':
+        $table
+            = '`User Dimension` U left join `Staff Dimension` SD  on (`User Parent Key`=`Staff Key`)';
 
-	$where=" where  `User Type`='Contractor' ";
-	break;	
-case 'account.users.agents':
-$table='`User Dimension` U left join `Agent Dimension`   on (`User Parent Key`=`Agent Key`)';
+        $where = " where  `User Type`='Contractor' ";
+        break;
+    case 'account.users.agents':
+        $table
+            = '`User Dimension` U left join `Agent Dimension`   on (`User Parent Key`=`Agent Key`)';
 
-	$where=" where  `User Type`='Agent' ";
-	break;
-case 'account.users.suppliers':
-$table='`User Dimension` U left join `Supplier Dimension`   on (`User Parent Key`=`Supplier Key`)';
+        $where = " where  `User Type`='Agent' ";
+        break;
+    case 'account.users.suppliers':
+        $table
+            = '`User Dimension` U left join `Supplier Dimension`   on (`User Parent Key`=`Supplier Key`)';
 
-	$where=" where  `User Type`='Supplier' ";
-	break;
-case 'agent.users':
-$table='`User Dimension` U ';
+        $where = " where  `User Type`='Supplier' ";
+        break;
+    case 'agent.users':
+        $table = '`User Dimension` U ';
 
-	$where=sprintf(" where  `User Type`='Agent' and `User Parent Key`=%d ",$parameters['parent_key']);
-	break;	
-default:
-	exit('tab not configured (users.ptable.php) ->'.$parameters['tab']);
-	break;
+        $where = sprintf(
+            " where  `User Type`='Agent' and `User Parent Key`=%d ", $parameters['parent_key']
+        );
+        break;
+    default:
+        exit('tab not configured (users.ptable.php) ->'.$parameters['tab']);
+        break;
 }
 
 
-
-
-$wheref='';
-if ($parameters['f_field']=='name' and $f_value!=''  ) {
-	$wheref.=" and  `User Alias` like '".addslashes($f_value)."%'    ";
-}elseif ($parameters['f_field']=='handle' and $f_value!=''  ) {
-	$wheref.=" and  `User Handle` like '".addslashes($f_value)."%'    ";
-}else if ($parameters['f_field']=='position_id' or $parameters['f_field']=='area_id'   and is_numeric($f_value) ) {
-	$wheref.=sprintf(" and  %s=%d ", $parameters['f_field'], $f_value);
+$wheref = '';
+if ($parameters['f_field'] == 'name' and $f_value != '') {
+    $wheref .= " and  `User Alias` like '".addslashes($f_value)."%'    ";
+} elseif ($parameters['f_field'] == 'handle' and $f_value != '') {
+    $wheref .= " and  `User Handle` like '".addslashes($f_value)."%'    ";
+} else {
+    if ($parameters['f_field'] == 'position_id' or $parameters['f_field'] == 'area_id' and is_numeric($f_value)) {
+        $wheref .= sprintf(" and  %s=%d ", $parameters['f_field'], $f_value);
+    }
 }
 
 
+$_order = $order;
+$_dir   = $order_direction;
+
+if ($order == 'name') {
+    $order = '`User Alias`';
+} elseif ($order == 'handle') {
+    $order = '`User Handle`';
+} elseif ($order == 'active') {
+    $order = '`User Active`';
+} elseif ($order == 'logins') {
+    $order = '`User Login Count`';
+} elseif ($order == 'last_login') {
+    $order = '`User Last Login`';
+} elseif ($order == 'fail_logins') {
+    $order = '`User Failed Login Count`';
+} elseif ($order == 'fail_last_login') {
+    $order = '`User Last Failed Login`';
+} elseif ($order == 'position') {
+    $order = 'position';
+} else {
+    $order = '`User Key`';
+}
 
 
-$_order=$order;
-$_dir=$order_direction;
-
-if ($order=='name')
-	$order='`User Alias`';
-elseif ($order=='handle')
-	$order='`User Handle`';
-elseif ($order=='active')
-	$order='`User Active`';
-elseif ($order=='logins')
-	$order='`User Login Count`';
-elseif ($order=='last_login')
-	$order='`User Last Login`';
-elseif ($order=='fail_logins')
-	$order='`User Failed Login Count`';
-elseif ($order=='fail_last_login')
-	$order='`User Last Failed Login`';
-elseif ($order=='position')
-	$order='position';
-else
-	$order='`User Key`';
-
-
-
-$sql_totals="select count(Distinct U.`User Key`) as num from $table  $where  ";
+$sql_totals
+    = "select count(Distinct U.`User Key`) as num from $table  $where  ";
 
 //print $sql_totals;
 
 
-$fields="`User Failed Login Count`,`User Last Failed Login`,`User Last Login`,`User Login Count`,`User Alias`,`User Handle`,
+$fields
+    = "`User Failed Login Count`,`User Last Failed Login`,`User Last Login`,`User Login Count`,`User Alias`,`User Handle`,
 	(select GROUP_CONCAT(S.`Store Code` SEPARATOR ', ') from `User Right Scope Bridge` URSB  left join `Store Dimension` S on (URSB.`Scope Key`=S.`Store Key`) where URSB.`User Key`=U.`User Key` and `Scope`='Store' ) as Stores,
 	(select GROUP_CONCAT(S.`Warehouse Code` SEPARATOR ', ') from `User Right Scope Bridge` URSB left join `Warehouse Dimension` S on (URSB.`Scope Key`=S.`Warehouse Key`) where URSB.`User Key`=U.`User Key`and `Scope`='Warehouse'  ) as Warehouses ,
 	(select GROUP_CONCAT(S.`Site Code` SEPARATOR ', ') from `User Right Scope Bridge` URSB left join `Site Dimension` S on (URSB.`Scope Key`=S.`Site Key`)  where URSB.`User Key`=U.`User Key`and `Scope`='Website'  ) as Sites ,

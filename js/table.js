@@ -4,11 +4,6 @@
  Version 3.0*/
 
 
-
-
-
-
-
 function show_filter() {
     $('#show_filter').addClass('hide')
     $('.filter').removeClass('hide')
@@ -50,7 +45,6 @@ function change_period(period) {
         parameters.to = $('#select_date').val()
 
 
-
     } else if (period == 'interval') {
 
         var components = $('#select_interval_from').val().split(/\//)
@@ -83,12 +77,9 @@ function change_period(period) {
 }
 
 
-
-
-
 function get_elements_numbers(tab, parameters) {
     var request = "/ar_elements.php?tab=" + tab + "&parameters=" + parameters
-    $.getJSON(request, function(data) {
+    $.getJSON(request, function (data) {
         if (data.state == 200) {
             for (element in data.elements_numbers) {
 
@@ -103,7 +94,6 @@ function get_elements_numbers(tab, parameters) {
     })
 
 }
-
 
 
 function close_columns_period_options() {
@@ -147,8 +137,6 @@ function show_columns_period_options() {
         })
 
 
-
-
     }
 
 }
@@ -174,8 +162,6 @@ function show_columns_frequency_options() {
             top: $('#columns_frequency').position().top + height,
             left: offset.left - $('#columns_frequency_chooser').width() + icon.width() + 20
         })
-
-
 
 
     }
@@ -250,13 +236,11 @@ function show_elements_types() {
     }
 
 
-
 }
 
 function change_columns_frequency(frequency, frequency_label) {
 
     $('#columns_frequency span.label').html(frequency_label)
-
 
 
     var parameters = jQuery.parseJSON(rows.parameters);
@@ -280,7 +264,6 @@ function change_columns_frequency(frequency, frequency_label) {
 function change_columns_period(period, period_label) {
 
     $('#columns_period span.label').html(period_label)
-
 
 
     var parameters = jQuery.parseJSON(rows.parameters);
@@ -320,7 +303,6 @@ function change_elements_type(elements_type) {
     $('#element_group_option_' + elements_type + ' i').removeClass('fa-circle-o')
 
 
-
     var icon = $('#element_type .fa')
 
     icon.addClass('fa-bars')
@@ -339,15 +321,12 @@ function change_elements_type(elements_type) {
     });
 
 
-
-
 }
 
 function change_table_element(event, item) {
 
 
     if (event.altKey) {
-
 
 
         $('#elements i').removeClass('fa-check-square-o')
@@ -373,15 +352,13 @@ function change_table_element(event, item) {
     }
 
 
-
     var parameters = jQuery.parseJSON(rows.parameters);
-    $("#elements_group_" + parameters.elements_type + " .element").each(function(index) {
+    $("#elements_group_" + parameters.elements_type + " .element").each(function (index) {
         //console.log($(this).attr('item_key') + ": " + $(this).hasClass('selected'));
         parameters['elements'][parameters.elements_type]['items'][$(this).attr('item_key')]['selected'] = $(this).hasClass('selected')
 
         // alert(parameters['elements'][rows.parameters.elements_type])
     });
-
 
 
     rows.parameters = JSON.stringify(parameters)
@@ -398,9 +375,9 @@ function change_table_element(event, item) {
 function show_export_dialog_left_button() {
     if ($('#export_dialog').hasClass('hide')) {
         $('#export_dialog').removeClass('hide')
-        
-        console.log($('#show_export_dialog').position().left )
-      $("#export_dialog").css('left', 0 );
+
+        console.log($('#show_export_dialog').position().left)
+        $("#export_dialog").css('left', 0);
         $("#export_dialog").css('top', $("#show_export_dialog").height());
     } else {
         hide_export_dialog()
@@ -424,7 +401,8 @@ function hide_export_dialog() {
     hide_export_config_dialog()
 
 
-    $('.export_download').addClass('hide').attr('title', '').click(function() {})
+    $('.export_download').addClass('hide').attr('title', '').click(function () {
+    })
     $('.export_progress_bar_bg').addClass('hide').html('')
     $('.export_progress_bar').css('width', '0px').removeClass('hide').attr('title', '').html('')
 
@@ -434,9 +412,9 @@ function hide_export_dialog() {
 function open_export_config() {
     if ($('#export_dialog_config').hasClass('hide')) {
         $('#export_dialog_config').removeClass('hide')
-                $("#export_dialog_config").css('left', -1 * ($("#export_dialog_config").width() + 40 + $("#export_dialog").width()));
+        $("#export_dialog_config").css('left', -1 * ($("#export_dialog_config").width() + 40 + $("#export_dialog").width()));
 
-        
+
         $("#export_dialog_config").css('top', $("#show_export_dialog").height());
     } else {
         hide_export_config_dialog()
@@ -446,7 +424,7 @@ function open_export_config() {
 function open_export_config_left_button() {
     if ($('#export_dialog_config').hasClass('hide')) {
         $('#export_dialog_config').removeClass('hide')
-        $("#export_dialog_config").css('left', 20+ $("#export_dialog").width() );
+        $("#export_dialog_config").css('left', 20 + $("#export_dialog").width());
         $("#export_dialog_config").css('top', $("#show_export_dialog").height());
     } else {
         hide_export_config_dialog()
@@ -501,14 +479,14 @@ function export_table(type) {
     $('#stop_export_table_' + type).attr('stop', 0);
 
     var fields = []
-    $('#export_dialog_config .field_export i').each(function(index, obj) {
+    $('#export_dialog_config .field_export i').each(function (index, obj) {
         if ($(obj).hasClass('fa-check-square-o')) fields.push($(obj).attr('key'))
     });
 
     var request = "/ar_export.php?ar_file=" + rows.ar_file + "&tipo=" + rows.tipo + "&parameters=" + rows.parameters + '&type=' + type + '&state=' + JSON.stringify(state) + '&fields=' + JSON.stringify(fields)
 
     // console.log(request)
-    $.getJSON(request, function(data) {
+    $.getJSON(request, function (data) {
         if (data.state == 200) {
             get_export_process_bar(data.fork_key, data.tipo, type);
         }
@@ -523,13 +501,14 @@ function stop_export(type) {
 
 function get_export_process_bar(fork_key, tag, type) {
     request = '/ar_fork.php?tipo=get_process_bar&fork_key=' + fork_key + '&tag=' + tag
-    $.getJSON(request, function(data) {
+    $.getJSON(request, function (data) {
         if (data.state == 200) {
 
 
             if ($('#stop_export_table_' + type).attr('stop') == 1) {
 
-                $('.export_download').addClass('hide').attr('title', '').click(function() {})
+                $('.export_download').addClass('hide').attr('title', '').click(function () {
+                })
                 $('.export_progress_bar_bg').addClass('hide').html('')
                 $('.export_progress_bar').css('width', '0px').removeClass('hide').attr('title', '').html('')
                 $('#export_table_excel').addClass('link').removeClass('disabled')
@@ -541,7 +520,7 @@ function get_export_process_bar(fork_key, tag, type) {
             }
 
             if (data.fork_state == 'Queued') {
-                setTimeout(function() {
+                setTimeout(function () {
                     get_export_process_bar(data.fork_key, data.tag, type)
                 }, 100);
 
@@ -552,14 +531,14 @@ function get_export_process_bar(fork_key, tag, type) {
 
                 $('#export_progress_bar_bg_' + type).removeClass('hide').html('&nbsp;' + data.download_info)
                 $('#export_progress_bar_' + type).css('width', data.percentage).removeClass('hide').attr('title', data.progress).html('&nbsp;' + data.download_info);
-                setTimeout(function() {
+                setTimeout(function () {
                     get_export_process_bar(data.fork_key, data.tag, type)
                 }, 250);
 
             } else if (data.fork_state == 'Finished') {
 
                 $('#download_' + type).attr('href', '/download.php?file=' + data.result)
-                $('#export_download_' + type).removeClass('hide').attr('title', data.result_info).click(function() {
+                $('#export_download_' + type).removeClass('hide').attr('title', data.result_info).click(function () {
 
                     download_exported_file(type)
 
@@ -568,18 +547,13 @@ function get_export_process_bar(fork_key, tag, type) {
                 $('#export_progress_bar_' + type).css('width', '0px').removeClass('hide').attr('title', '').html('')
 
 
-
-
-
                 $('#export_table_excel').addClass('link').removeClass('disabled')
                 $('#export_table_csv').addClass('link').removeClass('disabled')
                 $('.field_export').addClass('button').removeClass('disabled')
                 $('#stop_export_table_' + type).addClass('hide')
 
 
-
             }
-
 
 
         }
@@ -607,7 +581,7 @@ function edit_category_subject(element) {
 
     var request = '/ar_edit.php?tipo=edit_category_subject&category_key=' + state.key + '&subject_key=' + $(element).attr('key') + '&operation=' + operation
 
-    $.getJSON(request, function(data) {
+    $.getJSON(request, function (data) {
 
         $(element).removeClass('wait')
 
@@ -628,9 +602,8 @@ function edit_category_subject(element) {
     })
 
 
-
 }
 
-function  post_table_rendered(otable){
- 
- }
+function post_table_rendered(otable) {
+
+}

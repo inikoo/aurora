@@ -9,30 +9,35 @@
 
 */
 
-$tab='deal.history';
-$ar_file='ar_history_tables.php';
-$tipo='object_history';
+$tab     = 'deal.history';
+$ar_file = 'ar_history_tables.php';
+$tipo    = 'object_history';
 
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
-$table_views=array(
+$table_views = array();
+
+$table_filters = array(
+    'note' => array(
+        'label' => _('Notes'),
+        'title' => _('Notes')
+    ),
 );
 
-$table_filters=array(
-	'note'=>array('label'=>_('Notes'),'title'=>_('Notes')),
-);
+$parameters = array(
+    'parent'     => $state['object'],
+    'parent_key' => $state['key'],
 
-$parameters=array(
-		'parent'=>$state['object'],
-		'parent_key'=>$state['key'],
-		
 );
 
 
-$table_buttons=array();
-$table_buttons[]=array('icon'=>'sticky-note-o', 'title'=>_('New note'), 'id'=>"show_history_note_dialog");
+$table_buttons   = array();
+$table_buttons[] = array(
+    'icon'  => 'sticky-note-o',
+    'title' => _('New note'),
+    'id'    => "show_history_note_dialog"
+);
 $smarty->assign('table_buttons', $table_buttons);
-
 
 
 $smarty->assign('aux_templates', array('history_notes.tpl'));

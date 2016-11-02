@@ -20,32 +20,34 @@ require_once 'utils/date_functions.php';
 
 //$sql=sprintf('select `Timesheet Key` from `Timesheet Dimension` where `Timesheet Staff Key`=21 order by `Timesheet Date` desc');
 //$sql=sprintf('select `Timesheet Key` from `Timesheet Dimension` where `Timesheet Key`=158458 ');
-$sql=sprintf('select `Timesheet Key` from `Timesheet Dimension` where `Timesheet Clocking Records`>0  ');
+$sql = sprintf(
+    'SELECT `Timesheet Key` FROM `Timesheet Dimension` WHERE `Timesheet Clocking Records`>0  '
+);
 
-if ($result=$db->query($sql)) {
-	foreach ($result as $row) {
-		$timesheet=new Timesheet($row['Timesheet Key']);
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+        $timesheet = new Timesheet($row['Timesheet Key']);
 
-		$timesheet->update_number_clocking_records();
-		$timesheet->process_clocking_records_action_type();
-		$timesheet->update_clocked_time();
-		$timesheet->update_working_time();
-		$timesheet->update_unpaid_overtime();
+        $timesheet->update_number_clocking_records();
+        $timesheet->process_clocking_records_action_type();
+        $timesheet->update_clocked_time();
+        $timesheet->update_working_time();
+        $timesheet->update_unpaid_overtime();
 
-        $test=$timesheet->data['Timesheet Clocked Time']-$timesheet->data['Timesheet Working Time']-$timesheet->data['Timesheet Breaks Time']-$timesheet->data['Timesheet Unpaid Overtime']-$timesheet->data['Timesheet Paid Overtime'];
+        $test = $timesheet->data['Timesheet Clocked Time'] - $timesheet->data['Timesheet Working Time'] - $timesheet->data['Timesheet Breaks Time'] - $timesheet->data['Timesheet Unpaid Overtime']
+            - $timesheet->data['Timesheet Paid Overtime'];
 
-    
-        if($test!=0){
-        print "Test fail:".$timesheet->id."\n";
+
+        if ($test != 0) {
+            print "Test fail:".$timesheet->id."\n";
         }
 
-	}
+    }
 
-}else {
-	print_r($error_info=$db->errorInfo());
-	exit;
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
 }
-
 
 
 ?>

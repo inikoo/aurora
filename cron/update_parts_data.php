@@ -18,31 +18,34 @@ update_parts_cost($db);
 
 function update_parts_cost($db) {
 
-	$sql=sprintf('select `Part SKU` from `Part Dimension` where `Part Reference`="FO-P7" order by `Part SKU`   ');
-	$sql=sprintf('select `Part SKU` from `Part Dimension`  order by `Part SKU`   ');
+    $sql = sprintf(
+        'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Reference`="FO-P7" ORDER BY `Part SKU`   '
+    );
+    $sql = sprintf(
+        'SELECT `Part SKU` FROM `Part Dimension`  ORDER BY `Part SKU`   '
+    );
 
-	if ($result=$db->query($sql)) {
-		foreach ($result as $row) {
-			$part=new Part($row['Part SKU']);
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $part = new Part($row['Part SKU']);
 
-			$part->update_cost();
-
-
-			if ($part->get('Part Cost')<=0) {
-				print $part->get('Reference')." ".$part->get('Part Cost')."\n";
-
-
-			}
+            $part->update_cost();
 
 
-		}
+            if ($part->get('Part Cost') <= 0) {
+                print $part->get('Reference')." ".$part->get('Part Cost')."\n";
 
-	}else {
-		print_r($error_info=$db->errorInfo());
-		exit;
-	}
+
+            }
+
+
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
 }
-
 
 
 ?>

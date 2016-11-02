@@ -11,8 +11,7 @@ function change_view(_request, metadata) {
     }
 
     var request = "/ar_setup.php?tipo=views&request=" + _request + '&metadata=' + JSON.stringify(metadata) + "&old_state=" + JSON.stringify(state)
-    $.getJSON(request, function(data) {
-
+    $.getJSON(request, function (data) {
 
 
         state = data.state;
@@ -41,7 +40,6 @@ function change_view(_request, metadata) {
         }
 
 
-
         if (typeof(data.view_position) != "undefined" && data.view_position !== null) {
 
             $('#view_position').html(data.view_position);
@@ -60,12 +58,9 @@ function change_view(_request, metadata) {
         }
 
 
-
-
         if (typeof(data.structure) != "undefined" && data.structure !== null) {
             structure = data.structure
         }
-
 
 
         change_browser_history_state(data.state.request)
@@ -108,7 +103,7 @@ function save_setup(object, fields_data) {
 
     })
 
-    request.done(function(data) {
+    request.done(function (data) {
 
 
         console.log(data)
@@ -128,8 +123,6 @@ function save_setup(object, fields_data) {
                 $('#fields').addClass('hide')
 
 
-
-
                 for (var field in data.updated_data) {
                     $('.' + field).html(data.updated_data[field])
                 }
@@ -145,7 +138,7 @@ function save_setup(object, fields_data) {
 
     })
 
-    request.fail(function(jqXHR, textStatus) {
+    request.fail(function (jqXHR, textStatus) {
         console.log(textStatus)
 
         console.log(jqXHR.responseText)
@@ -188,7 +181,7 @@ function skip() {
 
     })
 
-    request.done(function(data) {
+    request.done(function (data) {
 
 
         console.log(data)
@@ -205,7 +198,7 @@ function skip() {
 
     })
 
-    request.fail(function(jqXHR, textStatus) {
+    request.fail(function (jqXHR, textStatus) {
         console.log(textStatus)
 
         console.log(jqXHR.responseText)
@@ -217,8 +210,6 @@ function skip() {
     });
 
 
-
-
 }
 
 
@@ -226,7 +217,7 @@ function help() {
 
     var request = "/ar_setup.php?tipo=help&state=" + JSON.stringify(state)
 
-    $.getJSON(request, function(data) {
+    $.getJSON(request, function (data) {
 
         if (typeof(data.title) != "undefined" && data.title !== null && data.title != '') {
 
@@ -247,21 +238,15 @@ function help() {
             $('#help  .content').html('').addClass('hide');
 
 
-
         }
-
-
-
 
 
     })
 
 
-
 }
 
-$(document).ready(function() {
-
+$(document).ready(function () {
 
 
     state = {
@@ -277,12 +262,9 @@ $(document).ready(function() {
     change_view($('#_request').val())
 
 
-
-    $(document).keydown(function(e) {
+    $(document).keydown(function (e) {
         key_press(e)
     });
-
-
 
 
 })
@@ -305,7 +287,7 @@ function change_browser_history_state(request) {
 
 }
 
-window.addEventListener('popstate', function(event) {
+window.addEventListener('popstate', function (event) {
     change_view(event.state.request)
 
 });

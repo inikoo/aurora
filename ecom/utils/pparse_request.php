@@ -13,79 +13,83 @@
 
 function parse_request($_data, $db, $website, $account, $user) {
 
-	include_once 'class.WebsiteNode.php';
-	include_once 'class.Webpage.php';
+    include_once 'class.WebsiteNode.php';
+    include_once 'class.Webpage.php';
 
 
+    $request = $_data['request'];
+    $request = preg_replace('/\/+/', '/', $request);
 
-	$request=$_data['request'];
-	$request=preg_replace('/\/+/', '/', $request);
-
-	$request=preg_replace('/\?.*/', '', $request);
-
-
-	$_request=$request;
-	if (_PREVIEW) {
-
-		$request=preg_replace('/\/ecom\//', '/', $request);
-	}
+    $request = preg_replace('/\?.*/', '', $request);
 
 
+    $_request = $request;
+    if (_PREVIEW) {
 
-	$original_request=preg_replace('/^\//', '', $request);
-	$view_path=preg_split('/\//', $original_request);
-
-	$view_path = array_map('strtolower', $view_path);
-
-	$count_view_path=count($view_path);
-	$shorcut=false;
-	$is_main_section=false;
+        $request = preg_replace('/\/ecom\//', '/', $request);
+    }
 
 
-	if ($count_view_path==1) {
+    $original_request = preg_replace('/^\//', '', $request);
+    $view_path        = preg_split('/\//', $original_request);
 
-		$code=array_shift($view_path);
+    $view_path = array_map('strtolower', $view_path);
 
-		$webpage=$website->get_webpage($code);
-
-
-		return array($webpage, $_request);
-
-
+    $count_view_path = count($view_path);
+    $shorcut         = false;
+    $is_main_section = false;
 
 
-	}elseif ($count_view_path==2) {
+    if ($count_view_path == 1) {
 
-		$webpage=$website->get_webpage(join($view_path, '.'));
-		
-		
-		
-		return array($webpage, $_request);
+        $code = array_shift($view_path);
+
+        $webpage = $website->get_webpage($code);
 
 
+        return array(
+            $webpage,
+            $_request
+        );
 
-	}
+
+    } elseif ($count_view_path == 2) {
+
+        $webpage = $website->get_webpage(join($view_path, '.'));
+
+
+        return array(
+            $webpage,
+            $_request
+        );
+
+
+    }
 
 
 }
 
 
 function get_webpage_to_delete($node, $request) {
-	if ($node->id) {
-		if ($webpage_key=$node->get_webpage_key()) {
-			$webpage = new Webpage($webpage_key);
-			if ($webpage->id) {
-				return array($node, $webpage, $request);
-			}
-		}else {
-			print $node->get_webpage_key();
+    if ($node->id) {
+        if ($webpage_key = $node->get_webpage_key()) {
+            $webpage = new Webpage($webpage_key);
+            if ($webpage->id) {
+                return array(
+                    $node,
+                    $webpage,
+                    $request
+                );
+            }
+        } else {
+            print $node->get_webpage_key();
 
-			exit('shit B');
-		}
+            exit('shit B');
+        }
 
-	}else {
-		exit('shit A');
-	}
+    } else {
+        exit('shit A');
+    }
 }
 
 

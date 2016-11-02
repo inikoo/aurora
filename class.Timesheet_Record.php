@@ -1,4 +1,5 @@
 <?php
+
 /*
 
  About:
@@ -14,262 +15,278 @@
 class Timesheet_Record extends DB_Table {
 
 
-	function Timesheet_Record($arg1=false, $arg2=false) {
-		global $db;
+    function Timesheet_Record($arg1 = false, $arg2 = false) {
+        global $db;
 
-		$this->db=$db;
-		$this->table_name='Timesheet Record';
-		$this->ignore_fields=array('Timesheet Record Key');
+        $this->db            = $db;
+        $this->table_name    = 'Timesheet Record';
+        $this->ignore_fields = array('Timesheet Record Key');
 
-		if (is_numeric($arg1)) {
-			$this->get_data('id', $arg1);
-			return ;
-		}
-		if (preg_match('/^(create|new)/i', $arg1)) {
-			$this->create($arg2);
-			return;
-		}
+        if (is_numeric($arg1)) {
+            $this->get_data('id', $arg1);
 
-		$this->get_data($arg1, $arg2);
-		return ;
+            return;
+        }
+        if (preg_match('/^(create|new)/i', $arg1)) {
+            $this->create($arg2);
 
-	}
+            return;
+        }
 
+        $this->get_data($arg1, $arg2);
 
+        return;
 
-	function get_data($tipo, $tag) {
+    }
 
-		if ($tipo=='id')
-			$sql=sprintf("select * from `Timesheet Record Dimension` where `Timesheet Record Key`=%d", $tag);
-		else
-			return;
-		if ($this->data = $this->db->query($sql)->fetch()) {
 
-			$this->id=$this->data['Timesheet Record Key'];
-		}
+    function get_data($tipo, $tag) {
 
-	}
+        if ($tipo == 'id') {
+            $sql = sprintf(
+                "SELECT * FROM `Timesheet Record Dimension` WHERE `Timesheet Record Key`=%d", $tag
+            );
+        } else {
+            return;
+        }
+        if ($this->data = $this->db->query($sql)->fetch()) {
 
+            $this->id = $this->data['Timesheet Record Key'];
+        }
 
+    }
 
+    function create($data) {
 
+        $this->duplicated = false;
+        $this->new        = false;
 
-	function get($key='') {
+        $this->editor = $data['editor'];
+        unset($data['editor']);
+        $this->data = $data;
 
+        $keys   = '';
+        $values = '';
 
+        foreach ($this->data as $key => $value) {
+            $keys .= ",`".$key."`";
+            $values .= ','.prepare_mysql($value, false);
+        }
+        $values = preg_replace('/^,/', '', $values);
+        $keys   = preg_replace('/^,/', '', $keys);
 
-		switch ($key) {
-		case 'Source':
+        $sql
+            = "insert into `Timesheet Record Dimension` ($keys) values ($values)";
 
+        //print  $sql;
+        if ($this->db->exec($sql)) {
 
-			switch ($this->data['Timesheet Record Source']) {
-			case 'ClockingMachine':
-				$scope=_('Clocking machine');
-				break;
-			case 'Manual':
-				$scope=_('Manual');
-				break;
-			default:
-				$scope=$this->data['Timesheet Record Source'];
-				break;
-			}
-			return $scope;
-			break;
-		default:
-			if (isset($this->data[$key]))
-				return $this->data[$key];
-			$_key=ucfirst($key);
-			if (isset($this->data[$_key]))
-				return $this->data[$_key];
+            $this->id  = $this->db->lastInsertId();
+            $this->new = true;
+            $this->get_data('id', $this->id);
 
-			return false;
+            if ($this->data['Timesheet Record Source'] == 'Manual') {
+                $this->update_field(
+                    'Timesheet Authoriser Key', $this->editor['Author Key'], 'no_history'
+                );
 
-		}
+            }
 
+        } else {
+            $this->error = true;
+            $error_info  = $this->db->errorInfo();
+            if ($error_info[0] == 23000) {
+                $this->duplicated = true;
+                $this->msg        = _('Record already exists');
+            } else {
+                $this->msg = 'Can not create Timesheet Record. '.$error_info[2];
+            }
 
 
-	}
+        }
 
 
+    }
 
-	function create($data) {
+    function get($key = '') {
 
-		$this->duplicated=false;
-		$this->new=false;
 
-		$this->editor=$data['editor'];
-		unset($data['editor']);
-		$this->data=$data;
+        switch ($key) {
+            case 'Source':
 
-		$keys='';
-		$values='';
 
-		foreach ($this->data as $key=>$value) {
-			$keys.=",`".$key."`";
-			$values.=','.prepare_mysql($value, false);
-		}
-		$values=preg_replace('/^,/', '', $values);
-		$keys=preg_replace('/^,/', '', $keys);
+                switch ($this->data['Timesheet Record Source']) {
+                    case 'ClockingMachine':
+                        $scope = _('Clocking machine');
+                        break;
+                    case 'Manual':
+                        $scope = _('Manual');
+                        break;
+                    default:
+                        $scope = $this->data['Timesheet Record Source'];
+                        break;
+                }
 
-		$sql="insert into `Timesheet Record Dimension` ($keys) values ($values)";
+                return $scope;
+                break;
+            default:
+                if (isset($this->data[$key])) {
+                    return $this->data[$key];
+                }
+                $_key = ucfirst($key);
+                if (isset($this->data[$_key])) {
+                    return $this->data[$_key];
+                }
 
-		//print  $sql;
-		if ($this->db->exec($sql)) {
+                return false;
 
-			$this->id=$this->db->lastInsertId();
-			$this->new=true;
-			$this->get_data('id', $this->id);
+        }
 
-			if ($this->data['Timesheet Record Source']=='Manual') {
-				$this->update_field('Timesheet Authoriser Key', $this->editor['Author Key'], 'no_history');
 
-			}
+    }
 
-		} else {
-			$this->error=true;
-			$error_info=$this->db->errorInfo();
-			if ($error_info[0]==23000) {
-				$this->duplicated=true;
-				$this->msg=_('Record already exists');
-			}else {
-				$this->msg='Can not create Timesheet Record. '.$error_info[2];
-			}
+    function get_field_label($field) {
 
+        switch ($field) {
 
+            case 'Timesheet Record Source':
+                $label = _('source');
+                break;
+            case 'Timesheet Record Date':
+                $label = _('date');
+                break;
+            default:
+                $label = $field;
 
+        }
 
-
-
-		}
-
-
-
-	}
-
-
-
-
-
-
-	function get_field_label($field) {
-
-		switch ($field) {
-
-		case 'Timesheet Record Source':
-			$label=_('source');
-			break;
-		case 'Timesheet Record Date':
-			$label=_('date');
-			break;
-		default:
-			$label=$field;
-
-		}
-
-		return $label;
-
-	}
-
-
-	function update_field_switcher($field, $value, $options='',$metadata='') {
-		if (is_string($value))
-			$value=_trim($value);
-
-
-
-		switch ($field) {
-
-		case('Timesheet Record Ignored'):
-			$this->update_field($field, $value, $options);
-
-			if ($value=='Yes') {
-				$this->update_field('Timesheet Record Action Type', 'ignored', 'no_history');
-				$this->update_field('Timesheet Remover Key', $this->editor['Author Key'], 'no_history');
-
-			}
-
-			include_once 'class.Timesheet.php';
-			$timesheet=new TimeSheet($this->data['Timesheet Record Timesheet Key']);
-
-
-			$timesheet->update_number_clocking_records();
-
-			$timesheet->process_clocking_records_action_type();
-			$timesheet->update_clocked_time();
-			$timesheet->update_working_time();
-			$timesheet->update_unpaid_overtime();
-
-
-			$sql=sprintf('select `Timesheet Record Ignored Due Missing End`,`Staff Alias`,`Timesheet Remover Key`,`Timesheet Record Action Type`,`Timesheet Record Key`   from `Timesheet Record Dimension` left join  `Staff Dimension` S on (`Timesheet Remover Key`=S.`Staff Key`) where `Timesheet Record Timesheet Key`=%d   and `Timesheet Record Type`="ClockingRecord" ',
-				$this->data['Timesheet Record Timesheet Key']
-			);
-			$records_data=array();
-			if ($result=$this->db->query($sql)) {
-
-				foreach ($result as $row) {
-
-					switch ($row['Timesheet Record Action Type']) {
-					case 'Start':
-
-						if ($row['Timesheet Record Ignored Due Missing End']=='Yes') {
-							$warning=' <i title="'._('No associated clock out').'" class="fa fa-exclamation-circle warning"></i>';
-						}else {
-							$warning='';
-						}
-
-
-
-						$action_type='<span id="action_type_'.$row['Timesheet Record Key'].'"><span  class="success"><i class="fa fa-fw fa-sign-in"></i> '._('In').'</span> '.$warning.'</span>';
-						break;
-					case 'End':
-						$action_type='<span id="action_type_'.$row['Timesheet Record Key'].'" ><span class="error"><i class="fa fa-fw fa-sign-out"></i> '._('Out').'</span></span>';
-						break;
-					case 'Unknown':
-						$action_type='<span id="action_type_'.$row['Timesheet Record Key'].'"  ><span class="disabled"><i class="fa fa-fw fa-question"></i> '._('Unknown').'</span></span>';
-						break;
-					case 'Ignored':
-
-
-
-						$action_type='<span id="action_type_'.$row['Timesheet Record Key'].'"  ><span class="disabled"><i class="fa fa-fw fa-eye-slash"></i> '._('Ignoredx').' '.($row['Staff Alias']!=''?'('.$row['Staff Alias'].')':'').'</span></span>';
-						break;
-
-
-					default:
-						$action_type=$row['Timesheet Record Action Type'];
-						break;
-					}
-					$records_data[$row['Timesheet Record Key']]['action_type']=$action_type;
-
-				}
-			}
-
-
-			$this->other_fields_updated=array(
-				'records_data'=>$records_data,
-				'updated_data'=>array(
-					'Timesheet_Clocked_Time'=>$timesheet->get('Clocked Time'),
-					'Timesheet_Working_Time'=>$timesheet->get('Working Time'),
-					'Timesheet_Breaks_Time'=>$timesheet->get('Breaks Time'),
-					'Timesheet_Unpaid_Overtime'=>$timesheet->get('Unpaid Overtime')
-
-				),
-				'updated_titles'=>array('Timesheet_Clocked_Time'=>$timesheet->get('Clocked Hours'))
-
-			);
-
-
-			break;
-
-		default:
-			$base_data=$this->base_data();
-			if (array_key_exists($field, $base_data)) {
-				$this->update_field($field, $value, $options);
-			}
-		}
-		$this->reread();
-
-	}
+        return $label;
+
+    }
+
+
+    function update_field_switcher($field, $value, $options = '', $metadata = '') {
+        if (is_string($value)) {
+            $value = _trim($value);
+        }
+
+
+        switch ($field) {
+
+            case('Timesheet Record Ignored'):
+                $this->update_field($field, $value, $options);
+
+                if ($value == 'Yes') {
+                    $this->update_field(
+                        'Timesheet Record Action Type', 'ignored', 'no_history'
+                    );
+                    $this->update_field(
+                        'Timesheet Remover Key', $this->editor['Author Key'], 'no_history'
+                    );
+
+                }
+
+                include_once 'class.Timesheet.php';
+                $timesheet = new TimeSheet(
+                    $this->data['Timesheet Record Timesheet Key']
+                );
+
+
+                $timesheet->update_number_clocking_records();
+
+                $timesheet->process_clocking_records_action_type();
+                $timesheet->update_clocked_time();
+                $timesheet->update_working_time();
+                $timesheet->update_unpaid_overtime();
+
+
+                $sql          = sprintf(
+                    'SELECT `Timesheet Record Ignored Due Missing End`,`Staff Alias`,`Timesheet Remover Key`,`Timesheet Record Action Type`,`Timesheet Record Key`   FROM `Timesheet Record Dimension` LEFT JOIN  `Staff Dimension` S ON (`Timesheet Remover Key`=S.`Staff Key`) WHERE `Timesheet Record Timesheet Key`=%d   AND `Timesheet Record Type`="ClockingRecord" ',
+                    $this->data['Timesheet Record Timesheet Key']
+                );
+                $records_data = array();
+                if ($result = $this->db->query($sql)) {
+
+                    foreach ($result as $row) {
+
+                        switch ($row['Timesheet Record Action Type']) {
+                            case 'Start':
+
+                                if ($row['Timesheet Record Ignored Due Missing End'] == 'Yes') {
+                                    $warning = ' <i title="'._(
+                                            'No associated clock out'
+                                        ).'" class="fa fa-exclamation-circle warning"></i>';
+                                } else {
+                                    $warning = '';
+                                }
+
+
+                                $action_type = '<span id="action_type_'.$row['Timesheet Record Key'].'"><span  class="success"><i class="fa fa-fw fa-sign-in"></i> '._('In').'</span> '.$warning
+                                    .'</span>';
+                                break;
+                            case 'End':
+                                $action_type = '<span id="action_type_'.$row['Timesheet Record Key'].'" ><span class="error"><i class="fa fa-fw fa-sign-out"></i> '._('Out').'</span></span>';
+                                break;
+                            case 'Unknown':
+                                $action_type = '<span id="action_type_'.$row['Timesheet Record Key'].'"  ><span class="disabled"><i class="fa fa-fw fa-question"></i> '._('Unknown').'</span></span>';
+                                break;
+                            case 'Ignored':
+
+
+                                $action_type = '<span id="action_type_'.$row['Timesheet Record Key'].'"  ><span class="disabled"><i class="fa fa-fw fa-eye-slash"></i> '._('Ignoredx').' '
+                                    .($row['Staff Alias'] != '' ? '('.$row['Staff Alias'].')' : '').'</span></span>';
+                                break;
+
+
+                            default:
+                                $action_type
+                                    = $row['Timesheet Record Action Type'];
+                                break;
+                        }
+                        $records_data[$row['Timesheet Record Key']]['action_type']
+                            = $action_type;
+
+                    }
+                }
+
+
+                $this->other_fields_updated = array(
+                    'records_data'   => $records_data,
+                    'updated_data'   => array(
+                        'Timesheet_Clocked_Time'    => $timesheet->get(
+                            'Clocked Time'
+                        ),
+                        'Timesheet_Working_Time'    => $timesheet->get(
+                            'Working Time'
+                        ),
+                        'Timesheet_Breaks_Time'     => $timesheet->get(
+                            'Breaks Time'
+                        ),
+                        'Timesheet_Unpaid_Overtime' => $timesheet->get(
+                            'Unpaid Overtime'
+                        )
+
+                    ),
+                    'updated_titles' => array(
+                        'Timesheet_Clocked_Time' => $timesheet->get(
+                            'Clocked Hours'
+                        )
+                    )
+
+                );
+
+
+                break;
+
+            default:
+                $base_data = $this->base_data();
+                if (array_key_exists($field, $base_data)) {
+                    $this->update_field($field, $value, $options);
+                }
+        }
+        $this->reread();
+
+    }
 
 
 }

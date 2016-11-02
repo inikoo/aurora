@@ -10,25 +10,25 @@
 */
 
 
+$where  = " where `User Type`!='Customer' and `User Active`='Yes'  ";
+$wheref = '';
 
-$where=" where `User Type`!='Customer' and `User Active`='Yes'  ";
-$wheref='';
-
-$_order=$order;
-$_dir=$order_direction;
+$_order = $order;
+$_dir   = $order_direction;
 
 
-if ($order=='active_users')
-	$order='active_users';
-else
-	$order='U.`User Type`';
+if ($order == 'active_users') {
+    $order = 'active_users';
+} else {
+    $order = 'U.`User Type`';
+}
 
-$group_by=' group by `User Type`';
+$group_by = ' group by `User Type`';
 
-$table='`User Dimension` U';
+$table = '`User Dimension` U';
 
-$sql_totals=false;
+$sql_totals = false;
 
-$fields="`User Type`,count(*) as active_users";
+$fields = "`User Type`,count(*) as active_users";
 
 ?>

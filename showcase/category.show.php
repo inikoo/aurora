@@ -10,29 +10,27 @@
  Version 3.0
 */
 
-function get_category_showcase($data,$smarty) {
+function get_category_showcase($data, $smarty) {
 
-   
-    
-    $category=$data['_object'];
-    
-    if(!$category->id){
+
+    $category = $data['_object'];
+
+    if (!$category->id) {
         return "";
     }
-    
-    $images=$category->get_images_slidesshow();
 
-	if (count($images)>0) {
-		$main_image=$images[0];
-	}else {
-		$main_image='';
-	}
+    $images = $category->get_images_slidesshow();
 
-    
-    $smarty->assign('category',$category);
+    if (count($images) > 0) {
+        $main_image = $images[0];
+    } else {
+        $main_image = '';
+    }
+
+
+    $smarty->assign('category', $category);
 
     return $smarty->fetch('showcase/category.tpl');
-    
 
 
 }

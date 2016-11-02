@@ -10,7 +10,7 @@
  Version 3.0
 */
 
-$html='<div style="padding:20px">'.("Sorry you dont have permision to access this area").'</div>';
+$html = '<div style="padding:20px">'.("Sorry you dont have permision to access this area").'</div>';
 
 
 ?>

@@ -10,10 +10,10 @@
  Version 3.0
 */
 
-$store=$state['_object'];
+$store = $state['_object'];
 $smarty->assign('store', $store);
 
-$html=$smarty->fetch('dashboard/store_sales_plot.tpl');
+$html = $smarty->fetch('dashboard/store_sales_plot.tpl');
 
 
 ?>
