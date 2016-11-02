@@ -44,10 +44,29 @@ $print_est=true;
 
 print date('l jS \of F Y h:i:s A')."\n";
 
-update_sales($db, $print_est);
+//update_sales($db, $print_est);
+update_orders($db, $print_est);
+
+function update_orders($db, $print_est) {
+
+$sql=sprintf("select `Store Key` from `Store Dimension`");
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+			$store=new Store('id', $row['Store Key']);
+
+			$store->load_acc_data();
+			$store->update_orders();
 
 
 
+
+		}
+
+	}else {
+		print_r($error_info=$db->errorInfo());
+		exit;
+	}
+}
 
 
 function update_sales($db, $print_est) {

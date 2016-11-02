@@ -1,7 +1,7 @@
 <?php
 /*
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Created: 10 December 2015 at 12:25:56 GMT, Sheffield UK
  Copyright (c) 2015, Inikoo
 
@@ -20,8 +20,7 @@ if (!isset($_REQUEST['id'])) {
 }
 
 
-$sql=sprintf("select `Attachment Public`,`Subject`,`Subject Key`,`Attachment MIME Type`,`Attachment File Original Name`,`Attachment Data` from `Attachment Bridge` B left join  `Attachment Dimension` A on (A.`Attachment Key`= B.`Attachment Key`) where `Attachment Bridge Key`=%d",
-	$attachment_key);
+$sql=sprintf("select `Attachment Public`,`Subject`,`Subject Key`,`Attachment MIME Type`,`Attachment File Original Name`,`Attachment Data` from `Attachment Bridge` B left join  `Attachment Dimension` A on (A.`Attachment Key`= B.`Attachment Key`) where `Attachment Bridge Key`=%d", $attachment_key);
 
 
 
@@ -33,6 +32,7 @@ if ($result=$db->query($sql)) {
 		if (authorize_file_view($db,$user, $row['Attachment Public'], $row['Subject'], $row['Subject Key'])) {
 
 			header('Content-Type: '.$row['Attachment MIME Type']);
+
 			header('Content-Disposition: inline; filename='.$row['Attachment File Original Name']);
 			echo $row['Attachment Data'];
 		}else {
@@ -55,11 +55,6 @@ if ($result=$db->query($sql)) {
 	exit;
 
 }
-
-
-
-
-
 
 
 

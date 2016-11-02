@@ -2358,16 +2358,18 @@ input.inputfile {
   border-color: transparent #009dff transparent transparent; }
 
 .widget {
-  border: 1px solid #eee;
+  xborder: 1px solid #eee;
   float: left;
-  margin-right: 0px;
-  width: 150px;
-  margin: 20px;
+  min-width: 120px;
+  margin: 5px 0px 5px 10px;
   text-align: center;
-  padding: 0px 10px 10px 10px; }
+  padding: 0px; }
 
 .dashboard {
   font-size: 90%; }
+  .dashboard .button .selected {
+    color: #FFFF00;
+    opacity: 1; }
   .dashboard .record td:first-of-type, .dashboard .totals td:first-of-type, .dashboard .title td:first-of-type, .dashboard .header td:first-of-type {
     padding-left: 20px; }
   .dashboard .record td:last-of-type, .dashboard .record td.last, .dashboard .totals td:last-of-type, .dashboard .totals td.last, .dashboard .title td:last-of-type, .dashboard .title td.last, .dashboard .header td:last-of-type, .dashboard .header td.last {

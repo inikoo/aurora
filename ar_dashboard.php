@@ -31,6 +31,7 @@ case 'sales_overview':
 			'type'=>array('type'=>'string'),
 			'period'=>array('type'=>'period'),
 			'currency'=>array('type'=>'currency'),
+			'orders_view_type'=>array('type'=>'string'),
 
 
 		));
@@ -53,6 +54,7 @@ function sales_overview($_data, $db, $user, $account) {
 		'type'=>$_data['type'],
 		'period'=>$_data['period'],
 		'currency'=>$_data['currency'],
+		'orders_view_type'=>$_data['orders_view_type'],
 
 	);
 
@@ -70,7 +72,7 @@ function sales_overview($_data, $db, $user, $account) {
 		`Invoice Category $period_tag Acc Invoices` as invoices,
 		`Invoice Category $period_tag Acc Amount` as sales,
 		 `Invoice Category DC $period_tag Acc Amount` as dc_sales,
-     0 delivery_notes,
+        0 delivery_notes,
         0 delivery_notes_1yb,
 
         0 replacements,
@@ -106,7 +108,16 @@ function sales_overview($_data, $db, $user, $account) {
 	}
 	else {
 		$request='invoices';
-		$fields="`Store Code`,S.`Store Key` record_key ,`Store Name`, `Store Currency Code` currency, `Store $period_tag Acc Invoices` as invoices,`Store $period_tag Acc Refunds` as refunds,`Store $period_tag Acc Delivery Notes` delivery_notes,`Store $period_tag Acc Replacements` replacements,`Store $period_tag Acc Invoiced Amount` as sales,`Store DC $period_tag Acc Invoiced Amount` as dc_sales,";
+		$fields="
+			`Store Orders In Basket Number`,`Store Orders In Basket Amount`,`Store DC Orders In Basket Amount`,
+	`Store Orders In Process Paid Number`,`Store Orders In Process Paid Amount`,`Store DC Orders In Process Paid Amount`,
+	`Store Orders In Process Not Paid Number`,`Store Orders In Process Not Paid Amount`,`Store DC Orders In Process Not Paid Amount`,
+
+	`Store Orders In Warehouse Number`,`Store Orders In Warehouse Amount`,`Store DC Orders In Warehouse Amount`,
+	`Store Orders Packed Number`,`Store Orders Packed Amount`,`Store DC Orders Packed Amount`,
+	`Store Orders In Dispatch Area Number`,`Store Orders In Dispatch Area Amount`,`Store DC Orders In Dispatch Area Amount`,
+
+		`Store Code`,S.`Store Key` record_key ,`Store Name`, `Store Currency Code` currency, `Store $period_tag Acc Invoices` as invoices,`Store $period_tag Acc Refunds` as refunds,`Store $period_tag Acc Delivery Notes` delivery_notes,`Store $period_tag Acc Replacements` replacements,`Store $period_tag Acc Invoiced Amount` as sales,`Store DC $period_tag Acc Invoiced Amount` as dc_sales,";
 
 
 		if (!($period_tag=='3 Year' or $period_tag=='Total')) {
@@ -134,6 +145,18 @@ function sales_overview($_data, $db, $user, $account) {
 	$sum_replacements=0;
 	$sum_replacements_1yb=0;
 
+	$sum_in_basket=0;
+	$sum_in_basket_amount=0;
+	$sum_in_process_paid=0;
+	$sum_in_process_amount_paid=0;
+	$sum_in_process_not_paid=0;
+	$sum_in_process_amount_not_paid=0;
+	$sum_in_warehouse=0;
+	$sum_in_warehouse_amount=0;
+	$sum_packed=0;
+	$sum_packed_amount=0;
+	$sum_in_dispatch_area=0;
+	$sum_in_dispatch_area_amount=0;
 
 	if ($result=$db->query($sql)) {
 
@@ -153,22 +176,57 @@ function sales_overview($_data, $db, $user, $account) {
 			$sum_invoices_1yb+=$row['invoices_1yb'];
 			$sum_dc_sales_1yb+=$row['dc_sales_1yb'];
 
+
+			$sum_in_basket+=$row['Store Orders In Basket Number'];
+			$sum_in_basket_amount+=$row['Store Orders In Basket Amount'];
+			$sum_in_process_paid+=$row['Store Orders In Process Paid Number'];
+			$sum_in_process_amount_paid+=$row['Store Orders In Process Paid Amount'];
+			$sum_in_process_not_paid+=$row['Store Orders In Process Not Paid Number'];
+			$sum_in_process_amount_not_paid+=$row['Store Orders In Process Not Paid Amount'];
+			$sum_in_warehouse+=$row['Store Orders In Warehouse Number'];
+			$sum_in_warehouse_amount+=$row['Store Orders In Warehouse Amount'];
+			$sum_in_warehouse+=$row['Store Orders Packed Number'];
+			$sum_in_warehouse_amount+=$row['Store Orders Packed Amount'];
+			$sum_in_dispatch_area+=$row['Store Orders In Dispatch Area Number'];
+			$sum_in_dispatch_area_amount+=$row['Store Orders In Dispatch Area Amount'];
+
+
 			if ($_data['currency']=='store') {
 				$data['orders_overview_sales_'.$row['record_key']]=array('value'=>money($row['sales'], $row['currency']));
 				$data['orders_overview_sales_delta_'.$row['record_key']]=array('value'=>delta($row['sales'], $row['sales_1yb']).' '.delta_icon($row['sales'], $row['sales_1yb']) , 'title'=>money($row['sales_1yb'], $row['currency'])  );
+
+
+				$data['orders_overview_in_basket_amount_'.$row['record_key']]=array('value'=>money($row['Store Orders In Basket Amount'], $row['currency']));
+				$data['orders_overview_in_process_paid_amount_'.$row['record_key']]=array('value'=>money($row['Store Orders In Process Paid Amount'], $row['currency']));
+				$data['orders_overview_in_process_not_paid_amount_'.$row['record_key']]=array('value'=>money($row['Store Orders In Process Not Paid Amount'], $row['currency']));
+				$data['orders_overview_in_warehouse_amount_'.$row['record_key']]=array('value'=>money($row['Store Orders In Warehouse Amount'], $row['currency']));
+				$data['orders_overview_packed_amount_'.$row['record_key']]=array('value'=>money($row['Store Orders Packed Amount'], $row['currency']));
+				$data['orders_overview_in_dispatch_area_amount_'.$row['record_key']]=array('value'=>money($row['Store Orders In Dispatch Area Amount'], $row['currency']));
+
+
+
 			}else {
 				$data['orders_overview_sales_'.$row['record_key']]=array('value'=>money($row['dc_sales'], $account->get('Account Currency')));
 				$data['orders_overview_sales_delta_'.$row['record_key']]=array('value'=>delta($row['dc_sales'], $row['dc_sales_1yb']).' '.delta_icon($row['dc_sales'], $row['dc_sales_1yb']) , 'title'=>money($row['dc_sales_1yb'], $account->get('Account Currency'))  );
+
+
+				$data['orders_overview_in_basket_amount_'.$row['record_key']]=array('value'=>money($row['Store DC Orders In Basket Amount'], $account->get('Account Currency')));
+				$data['orders_overview_in_process_paid_amount_'.$row['record_key']]=array('value'=>money($row['Store DC Orders In Process Paid Amount'], $account->get('Account Currency')));
+				$data['orders_overview_in_process_not_paid_amount_'.$row['record_key']]=array('value'=>money($row['Store DC Orders In Process Not Paid Amount'], $account->get('Account Currency')));
+				$data['orders_overview_in_warehouse_amount_'.$row['record_key']]=array('value'=>money($row['Store DC Orders In Warehouse Amount'], $account->get('Account Currency')));
+				$data['orders_overview_packed_amount_'.$row['record_key']]=array('value'=>money($row['Store DC Orders Packed Amount'], $account->get('Account Currency')));
+				$data['orders_overview_in_dispatch_area_amount_'.$row['record_key']]=array('value'=>money($row['Store DC Orders In Dispatch Area Amount'], $account->get('Account Currency')));
+
 			}
 
 			if ($_data['type']=='invoice_categories' ) {
-				$data['orders_overview_invoices_'.$row['record_key']]=array('special_type'=>'invoice','value'=>number($row['invoices']), 'request'=>"invoices/all/category/".$row['Category Key']  );
-				$data['orders_overview_refunds_'.$row['record_key']]=array('special_type'=>'refund','value'=>number($row['refunds']), 'request'=>"invoices/all/category/".$row['Category Key']  );
+				$data['orders_overview_invoices_'.$row['record_key']]=array('special_type'=>'invoice', 'value'=>number($row['invoices']), 'request'=>"invoices/all/category/".$row['Category Key']  );
+				$data['orders_overview_refunds_'.$row['record_key']]=array('special_type'=>'refund', 'value'=>number($row['refunds']), 'request'=>"invoices/all/category/".$row['Category Key']  );
 
 
 			}else {
-				$data['orders_overview_invoices_'.$row['record_key']]=array('special_type'=>'invoice','value'=>number($row['invoices']), 'request'=>"invoices/".$row['record_key']  );
-				$data['orders_overview_refunds_'.$row['record_key']]=array('special_type'=>'refund','value'=>number($row['refunds']), 'request'=>"invoices/".$row['record_key']  );
+				$data['orders_overview_invoices_'.$row['record_key']]=array('special_type'=>'invoice', 'value'=>number($row['invoices']), 'request'=>"invoices/".$row['record_key']  );
+				$data['orders_overview_refunds_'.$row['record_key']]=array('special_type'=>'refund', 'value'=>number($row['refunds']), 'request'=>"invoices/".$row['record_key']  );
 
 
 			}
@@ -179,7 +237,7 @@ function sales_overview($_data, $db, $user, $account) {
 			$data['orders_overview_invoices_delta_'.$row['record_key']]=array('value'=>delta($row['invoices'], $row['invoices_1yb']).' '.delta_icon($row['invoices'], $row['invoices_1yb']), 'title'=>number($row['invoices_1yb'])  );
 
 
-			$data['orders_overview_delivery_notes_'.$row['record_key']]=array('value'=>number($row['delivery_notes']),'request'=>'delivery_notes/'.$row['record_key']  );
+			$data['orders_overview_delivery_notes_'.$row['record_key']]=array('value'=>number($row['delivery_notes']), 'request'=>'delivery_notes/'.$row['record_key']  );
 			$data['orders_overview_delivery_notes_delta_'.$row['record_key']]=array('value'=>delta($row['delivery_notes'], $row['delivery_notes_1yb']).' '.delta_icon($row['delivery_notes'], $row['delivery_notes_1yb']), 'title'=>number($row['delivery_notes_1yb']));
 
 
@@ -187,11 +245,25 @@ function sales_overview($_data, $db, $user, $account) {
 
 
 
-			$data['orders_overview_replacements_'.$row['record_key']]=array('value'=>number($row['replacements']),'request'=>'delivery_notes/'.$row['record_key'] );
+			$data['orders_overview_replacements_'.$row['record_key']]=array('value'=>number($row['replacements']), 'request'=>'delivery_notes/'.$row['record_key'] );
 			$data['orders_overview_replacements_delta_'.$row['record_key']]=array('value'=>delta($row['replacements'], $row['replacements_1yb']).' '.delta_icon($row['replacements'], $row['replacements_1yb']), 'title'=>number($row['replacements_1yb']) );
 			$data['orders_overview_replacements_percentage_'.$row['record_key']]=array('value'=>percentage($row['replacements'], $row['delivery_notes']));
 			$data['orders_overview_replacements_percentage_1yb_'.$row['record_key']]=array('value'=>percentage($row['replacements_1yb'], $row['delivery_notes_1yb']), 'title'=>number($row['replacements_1yb']).'/'.number( $row['delivery_notes_1yb']));
 
+			/*
+			'in_basket'=>array('value'=>number($row['Store Orders In Basket Number']), 'title'=>'', 'view'=>'store/'.$row['Store Key']),
+				'in_basket_amount'=>array('value'=>($currency=='store'?money($row['Store Orders In Basket Amount'], $row['currency']):money($row['Store DC Orders In Basket Amount'], $account->get('Account Currency'))))  ,
+				'in_process_paid'=>array('value'=>number($row['Store Orders In Process Paid Number']), 'title'=>'', 'view'=>'store/'.$row['Store Key']),
+				'in_process_amount_paid'=>array('value'=>($currency=='store'?money($row['Store Orders In Process Paid Amount'], $row['currency']):money($row['Store DC Orders In Process Paid Amount'], $account->get('Account Currency'))))  ,
+				'in_process_not_paid'=>array('value'=>number($row['Store Orders In Process Not Paid Number']), 'title'=>'', 'view'=>'store/'.$row['Store Key']),
+				'in_process_amount_not_paid'=>array('value'=>($currency=='store'?money($row['Store Orders In Process Not Paid Amount'], $row['currency']):money($row['Store DC Orders In Process Not Paid Amount'], $account->get('Account Currency'))))  ,
+				'in_warehouse'=>array('value'=>number($row['Store Orders In Warehouse Number']), 'title'=>'', 'view'=>'store/'.$row['Store Key']),
+				'in_warehouse_amount'=>array('value'=>($currency=='store'?money($row['Store Orders In Warehouse Amount'], $row['currency']):money($row['Store DC Orders In Warehouse Amount'], $account->get('Account Currency'))))  ,
+				'packed'=>array('value'=>number($row['Store Orders Packed Number']), 'title'=>'', 'view'=>'store/'.$row['Store Key']),
+				'packed_amount'=>array('value'=>($currency=='store'?money($row['Store Orders Packed Amount'], $row['currency']):money($row['Store DC Orders Packed Amount'], $account->get('Account Currency'))))  ,
+				'in_dispatch_area'=>array('value'=>number($row['Store Orders In Dispatch Area Number']), 'title'=>'', 'view'=>'store/'.$row['Store Key']),
+				'in_dispatch_area_amount'=>array('value'=>($currency=='store'?money($row['Store Orders In Dispatch Area Amount'], $row['currency']):money($row['Store DC Orders In Dispatch Area Amount'], $account->get('Account Currency'))))  ,
+*/
 
 
 		}
@@ -221,6 +293,18 @@ function sales_overview($_data, $db, $user, $account) {
 	$data['orders_overview_replacements_delta_totals']=array('value'=>delta($sum_replacements, $sum_replacements_1yb).' '.delta_icon($sum_replacements, $sum_replacements_1yb), 'title'=>number($sum_replacements_1yb));
 	$data['orders_overview_replacements_percentage_totals']=array('value'=>percentage($sum_replacements, $sum_delivery_notes));
 	$data['orders_overview_replacements_percentage_1yb_totals']=array('value'=>percentage($sum_replacements_1yb, $sum_delivery_notes_1yb), 'title'=>number($sum_replacements_1yb).'/'.number($sum_delivery_notes_1yb));
+
+
+
+	
+
+
+	$data['orders_overview_in_basket_amount_totals']=($currency=='store'?array('value'=>''):array('value'=>money($sum_in_basket_amount, $account->get('Account Currency'))));
+	$data['orders_overview_in_process_paid_amount_totals']=($currency=='store'?array('value'=>''):array('value'=>money($sum_in_process_amount_paid, $account->get('Account Currency'))));
+	$data['orders_overview_in_process_not_paid_amount_totals']=($currency=='store'?array('value'=>''):array('value'=>money($sum_in_process_amount_not_paid, $account->get('Account Currency'))));
+	$data['orders_overview_in_warehouse_amount_totals']=($currency=='store'?array('value'=>''):array('value'=>money($sum_in_warehouse_amount, $account->get('Account Currency'))));
+	$data['orders_overview_packed_amount_totals']=($currency=='store'?array('value'=>''):array('value'=>money($sum_packed_amount, $account->get('Account Currency'))));
+	$data['orders_overview_in_dispatch_area_amount_totals']=($currency=='store'?array('value'=>''):array('value'=>money($sum_in_dispatch_area_amount, $account->get('Account Currency'))));
 
 
 	$response=

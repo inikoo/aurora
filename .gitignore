@@ -1,4 +1,5 @@
 server_files/
+.idea/
 .sass-cache/
 *.csv
 

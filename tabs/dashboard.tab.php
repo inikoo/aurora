@@ -35,7 +35,14 @@ foreach ($user->get_dashboard_items() as $item) {
 		}else {
 			$currency='account';
 		}
-		$html.=get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $period, $currency);
+		if (isset($_SESSION['dashboard_state']['sales_overview']['orders_view_type'])) {
+			$orders_view_type=$_SESSION['dashboard_state']['sales_overview']['orders_view_type'];
+		}else {
+			$orders_view_type='numbers';
+		}
+		
+		
+		$html.=get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $period, $currency, $orders_view_type);
 
 	}
 

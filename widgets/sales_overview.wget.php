@@ -11,14 +11,16 @@
 */
 
 
-function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $period, $currency) {
+function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $period, $currency, $orders_view_type) {
 
 	include_once 'utils/date_functions.php';
 
 
 	$smarty->assign('type', $type);
 	$smarty->assign('currency', $currency);
+	$smarty->assign('orders_view_type', $orders_view_type);
 	$smarty->assign('period', $period);
+
 
 
 	$sales_overview=array();
@@ -27,12 +29,12 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
 	$adata=array();
 
 
-    // Pending Orders ---------------
-    
-    
-    
-    
-    //-----------------
+	// Pending Orders ---------------
+
+
+
+
+	//-----------------
 
 
 
@@ -47,9 +49,29 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
 	$sum_replacements_1yb=0;
 	$sum_delivery_notes_1yb=0;
 
+	$sum_in_basket=0;
+	$sum_in_basket_amount=0;
+	$sum_in_process_paid=0;
+	$sum_in_process_amount_paid=0;
+	$sum_in_process_not_paid=0;
+	$sum_in_process_amount_not_paid=0;
+	$sum_in_warehouse=0;
+	$sum_in_warehouse_amount=0;
+	$sum_packed=0;
+	$sum_packed_amount=0;
+	$sum_in_dispatch_area=0;
+	$sum_in_dispatch_area_amount=0;
 
+	$fields="
+	`Store Orders In Basket Number`,`Store Orders In Basket Amount`,`Store DC Orders In Basket Amount`,
+	`Store Orders In Process Paid Number`,`Store Orders In Process Paid Amount`,`Store DC Orders In Process Paid Amount`,
+	`Store Orders In Process Not Paid Number`,`Store Orders In Process Not Paid Amount`,`Store DC Orders In Process Not Paid Amount`,
 
-	$fields="`Store Code`,S.`Store Key`,`Store Name`, `Store Currency Code` currency, `Store $period_tag Acc Invoices` as invoices,`Store $period_tag Acc Refunds` as refunds,`Store $period_tag Acc Delivery Notes` delivery_notes,`Store $period_tag Acc Replacements` replacements,`Store $period_tag Acc Invoiced Amount` as sales,`Store DC $period_tag Acc Invoiced Amount` as dc_sales,";
+	`Store Orders In Warehouse Number`,`Store Orders In Warehouse Amount`,`Store DC Orders In Warehouse Amount`,
+	`Store Orders Packed Number`,`Store Orders Packed Amount`,`Store DC Orders Packed Amount`,
+	`Store Orders In Dispatch Area Number`,`Store Orders In Dispatch Area Amount`,`Store DC Orders In Dispatch Area Amount`,
+
+	`Store Code`,S.`Store Key`,`Store Name`, `Store Currency Code` currency, `Store $period_tag Acc Invoices` as invoices,`Store $period_tag Acc Refunds` as refunds,`Store $period_tag Acc Delivery Notes` delivery_notes,`Store $period_tag Acc Replacements` replacements,`Store $period_tag Acc Invoiced Amount` as sales,`Store DC $period_tag Acc Invoiced Amount` as dc_sales,";
 	if (!($period_tag=='3 Year' or $period_tag=='Total')) {
 		$fields.="`Store $period_tag Acc 1YB Refunds` as refunds_1yb,`Store $period_tag Acc 1YB Delivery Notes` delivery_notes_1yb,`Store $period_tag Acc 1YB Replacements` replacements_1yb, `Store $period_tag Acc 1YB Invoices` as invoices_1yb,`Store $period_tag Acc 1YB Invoiced Amount` as sales_1yb,`Store DC $period_tag Acc 1YB Invoiced Amount` as dc_sales_1yb";
 
@@ -79,14 +101,42 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
 				$sum_dc_sales+=$row['dc_sales'];
 				$sum_dc_sales_1yb+=$row['dc_sales_1yb'];
 
+				$sum_in_basket+=$row['Store Orders In Basket Number'];
+				$sum_in_basket_amount+=$row['Store Orders In Basket Amount'];
+				$sum_in_process_paid+=$row['Store Orders In Process Paid Number'];
+				$sum_in_process_amount_paid+=$row['Store Orders In Process Paid Amount'];
+				$sum_in_process_not_paid+=$row['Store Orders In Process Not Paid Number'];
+				$sum_in_process_amount_not_paid+=$row['Store Orders In Process Not Paid Amount'];
+				$sum_in_warehouse+=$row['Store Orders In Warehouse Number'];
+				$sum_in_warehouse_amount+=$row['Store Orders In Warehouse Amount'];
+				$sum_in_warehouse+=$row['Store Orders Packed Number'];
+				$sum_in_warehouse_amount+=$row['Store Orders Packed Amount'];
+				$sum_in_dispatch_area+=$row['Store Orders In Dispatch Area Number'];
+				$sum_in_dispatch_area_amount+=$row['Store Orders In Dispatch Area Amount'];
+
+
 			}
+
+
 
 			$sales_overview[]=array(
 				'class'=>'record store '.($type=='invoice_categories'?'hide':''),
 				'id'=>$row['Store Key'],
 				'label'=>array('label'=>$row['Store Name'], 'title'=>$row['Store Code'], 'view'=>'store/'.$row['Store Key']),
 
-                'basket'=>'x',
+				'in_basket'=>array('value'=>number($row['Store Orders In Basket Number']), 'title'=>'', 'view'=>'store/'.$row['Store Key']),
+				'in_basket_amount'=>array('value'=>($currency=='store'?money($row['Store Orders In Basket Amount'], $row['currency']):money($row['Store DC Orders In Basket Amount'], $account->get('Account Currency'))))  ,
+				'in_process_paid'=>array('value'=>number($row['Store Orders In Process Paid Number']), 'title'=>'', 'view'=>'store/'.$row['Store Key']),
+				'in_process_amount_paid'=>array('value'=>($currency=='store'?money($row['Store Orders In Process Paid Amount'], $row['currency']):money($row['Store DC Orders In Process Paid Amount'], $account->get('Account Currency'))))  ,
+				'in_process_not_paid'=>array('value'=>number($row['Store Orders In Process Not Paid Number']), 'title'=>'', 'view'=>'store/'.$row['Store Key']),
+				'in_process_amount_not_paid'=>array('value'=>($currency=='store'?money($row['Store Orders In Process Not Paid Amount'], $row['currency']):money($row['Store DC Orders In Process Not Paid Amount'], $account->get('Account Currency'))))  ,
+				'in_warehouse'=>array('value'=>number($row['Store Orders In Warehouse Number']), 'title'=>'', 'view'=>'store/'.$row['Store Key']),
+				'in_warehouse_amount'=>array('value'=>($currency=='store'?money($row['Store Orders In Warehouse Amount'], $row['currency']):money($row['Store DC Orders In Warehouse Amount'], $account->get('Account Currency'))))  ,
+				'packed'=>array('value'=>number($row['Store Orders Packed Number']), 'title'=>'', 'view'=>'store/'.$row['Store Key']),
+				'packed_amount'=>array('value'=>($currency=='store'?money($row['Store Orders Packed Amount'], $row['currency']):money($row['Store DC Orders Packed Amount'], $account->get('Account Currency'))))  ,
+				'in_dispatch_area'=>array('value'=>number($row['Store Orders In Dispatch Area Number']), 'title'=>'', 'view'=>'store/'.$row['Store Key']),
+				'in_dispatch_area_amount'=>array('value'=>($currency=='store'?money($row['Store Orders In Dispatch Area Amount'], $row['currency']):money($row['Store DC Orders In Dispatch Area Amount'], $account->get('Account Currency'))))  ,
+
 				'invoices'=>array('value'=>number($row['invoices']), 'view'=>'invoices/'.$row['Store Key']),
 				'invoices_1yb'=>number($row['invoices_1yb']),
 				'invoices_delta'=>delta($row['invoices'], $row['invoices_1yb']).' '.delta_icon($row['invoices'], $row['invoices_1yb']),
@@ -114,6 +164,7 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
 
 
 			);
+			//print_r($row);
 
 		}
 
@@ -234,7 +285,23 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
 		'id'=>'totals',
 		'class'=>'totals',
 		'label'=>array('label'=>_('Total')),
- 'basket'=>'x',
+		'in_basket'=>array('value'=>number($sum_in_basket)),
+		'in_basket_amount'=>array('value'=>($currency=='store'?'':money($sum_in_basket_amount, $account->get('Account Currency'))) ),
+
+		'in_process_paid'=>array('value'=>number($sum_in_process_paid)),
+		'in_process_amount_paid'=>array('value'=>($currency=='store'?'':money($sum_in_process_amount_paid, $account->get('Account Currency'))) ),
+		'in_process_not_paid'=>array('value'=>number($sum_in_process_not_paid)),
+		'in_process_amount_not_paid'=>array('value'=>($currency=='store'?'':money($sum_in_process_amount_not_paid, $account->get('Account Currency'))) ),
+
+		'in_warehouse'=>array('value'=>number($sum_in_warehouse)),
+		'in_warehouse_amount'=>array('value'=>($currency=='store'?'':money($sum_in_warehouse_amount, $account->get('Account Currency'))) ),
+		'packed'=>array('value'=>number($sum_packed)),
+		'packed_amount'=>array('value'=>($currency=='store'?'':money($sum_packed_amount, $account->get('Account Currency'))) ),
+
+
+		'in_dispatch_area'=>array('value'=>number($sum_in_dispatch_area)),
+		'in_dispatch_area_amount'=>array('value'=>($currency=='store'?'':money($sum_in_dispatch_area_amount, $account->get('Account Currency'))) ),
+
 		'invoices'=>array('value'=>number($sum_invoices)),
 		'invoices_1yb'=>number($sum_invoices_1yb),
 		'invoices_delta'=>delta($sum_invoices, $sum_invoices_1yb).' '.delta_icon($sum_invoices, $sum_invoices_1yb),
@@ -259,6 +326,8 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
 		'sales_delta'=>($currency=='store'?'':delta($sum_dc_sales, $sum_dc_sales_1yb)).' '.delta_icon($sum_dc_sales, $sum_dc_sales_1yb)
 
 	);
+
+	// print_r($sales_overview);
 
 
 	$smarty->assign('sales_overview', $sales_overview);
