@@ -1461,8 +1461,6 @@ class Supplier extends SubjectSupplier {
 		$data['Timeseries Parent']='Supplier';
 		$data['Timeseries Parent Key']=$this->id;
 
-
-
 		$timeseries=new Timeseries('find', $data, 'create');
 
 		if ($timeseries->id ) {
@@ -1482,42 +1480,28 @@ class Supplier extends SubjectSupplier {
 			}
 
 
-
 			$sql=sprintf('delete from `Timeseries Record Dimension` where `Timeseries Record Timeseries Key`=%d and `Timeseries Record Date`<%s ',
 				$timeseries->id,
 				prepare_mysql($from)
 			);
-
 			$update_sql = $this->db->prepare($sql);
 			$update_sql->execute();
 			if ($update_sql->rowCount()) {
 				$timeseries->update(array('Timeseries Updated'=>gmdate('Y-m-d H:i:s')), 'no_history');
-
 			}
 
 			$sql=sprintf('delete from `Timeseries Record Dimension` where `Timeseries Record Timeseries Key`=%d and `Timeseries Record Date`>%s ',
 				$timeseries->id,
 				prepare_mysql($to)
 			);
-
 			$update_sql = $this->db->prepare($sql);
 			$update_sql->execute();
 			if ($update_sql->rowCount()) {
 				$timeseries->update(array('Timeseries Updated'=>gmdate('Y-m-d H:i:s')), 'no_history');
-
 			}
 
-
 			if ($from and $to) {
-
-
 				$this->update_timeseries_record($timeseries, $from, $to);
-
-
-
-
-
-
 			}
 		}
 

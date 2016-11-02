@@ -2,17 +2,15 @@
 /*
   File: Customer.php
 
-  This file cSontains the Customer Class
+  This file contains the Customer Class
 
   About:
-  Autor: Raul Perusquia <rulovico@gmail.com>
+  Author: Raul Perusquia <rulovico@gmail.com>
 
   Copyright (c) 2009, Inikoo
 
   Version 2.0
 
-
-  The customer dimension is the  critical element for a CRM, a customer can be a Company or a Contact.
 
 */
 include_once 'class.Subject.php';

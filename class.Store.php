@@ -852,7 +852,146 @@ class Store extends DB_Table {
 	function update_orders() {
 
 
-		return;
+
+		//'In Process by Customer','Waiting for Payment Confirmation','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship',,'Packing','Packed','Packed Done','Cancelled','Suspended','Cancelled by Customer','Dispatched';
+
+
+		$states=array(
+			'in_basket'=>array('number'=>0, 'amount'=>0, 'dc_amount'=>0),
+			'in_process_paid'=>array('number'=>0, 'amount'=>0, 'dc_amount'=>0),
+			'in_process_not_paid'=>array('number'=>0, 'amount'=>0, 'dc_amount'=>0),
+			'in_warehouse'=>array('number'=>0, 'amount'=>0, 'dc_amount'=>0),
+			'packed'=>array('number'=>0, 'amount'=>0, 'dc_amount'=>0),
+			'ready_to_ship'=>array('number'=>0, 'amount'=>0, 'dc_amount'=>0)
+		);
+
+
+
+
+		$sql=sprintf('select `Order Current Dispatch State`,count(*) as num,sum(`Order Total Net Amount`) as amount,sum(`Order Total Net Amount`*`Order Currency Exchange`) as dc_amount from `Order Dimension` where `Order Store Key`=%d  and `Order Current Dispatch State` in ("In Process","Submitted by Customer")  and `Order Current Payment State`="Paid" ',
+			$this->id
+		);
+
+
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+
+
+				$states['in_process_paid']['number']+=$row['num'];
+				$states['in_process_paid']['amount']+=$row['amount'];
+				$states['in_process_paid']['dc_amount']+=$row['dc_amount'];
+
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+		$sql=sprintf('select `Order Current Dispatch State`,count(*) as num,sum(`Order Total Net Amount`) as amount,sum(`Order Total Net Amount`*`Order Currency Exchange`) as dc_amount from `Order Dimension` where `Order Store Key`=%d  and `Order Current Dispatch State` in ("In Process","Submitted by Customer")  and `Order Current Payment State`!="Paid" ',
+			$this->id
+		);
+
+
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+
+
+				$states['in_process_not_paid']['number']+=$row['num'];
+				$states['in_process_not_paid']['amount']+=$row['amount'];
+				$states['in_process_not_paid']['dc_amount']+=$row['dc_amount'];
+
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+
+		$sql=sprintf("select `Order Current Dispatch State`,count(*) as num,sum(`Order Total Net Amount`) as amount,sum(`Order Total Net Amount`*`Order Currency Exchange`) as dc_amount from `Order Dimension` where `Order Store Key`=%d  and `Order Current Dispatch State` not in ('Cancelled','Suspended','Cancelled by Customer','Dispatched') group by `Order Current Dispatch State` ",
+			$this->id
+		);
+
+
+
+		if ($result=$this->db->query($sql)) {
+			foreach ($result as $row) {
+
+
+				if ($row['Order Current Dispatch State']=='In Process by Customer') {
+					$states['in_basket']['number']=$row['num'];
+					$states['in_basket']['amount']=$row['amount'];
+					$states['in_basket']['dc_amount']=$row['dc_amount'];
+				}
+
+
+
+				if (in_array($row['Order Current Dispatch State'], array('Ready to Pick', 'Picking & Packing', 'Ready to Ship', 'Packing'))) {
+					$states['in_warehouse']['number']+=$row['num'];
+					$states['in_warehouse']['amount']+=$row['amount'];
+					$states['in_warehouse']['dc_amount']+=$row['dc_amount'];
+				}
+
+				if (in_array($row['Order Current Dispatch State'], array('Ready to Pick', 'Picking & Packing', 'Ready to Ship', 'Packing'))) {
+					$states['in_warehouse']['number']+=$row['num'];
+					$states['in_warehouse']['amount']+=$row['amount'];
+					$states['in_warehouse']['dc_amount']+=$row['dc_amount'];
+				}
+
+				if ($row['Order Current Dispatch State']=='Packed') {
+					$states['packed']['number']+=$row['num'];
+					$states['packed']['amount']+=$row['amount'];
+					$states['packed']['dc_amount']+=$row['dc_amount'];
+				}
+
+				if ($row['Order Current Dispatch State']=='Packed Done') {
+					$states['ready_to_ship']['number']+=$row['num'];
+					$states['ready_to_ship']['amount']+=$row['amount'];
+					$states['ready_to_ship']['dc_amount']+=$row['dc_amount'];
+				}
+
+			}
+		}else {
+			print_r($error_info=$this->db->errorInfo());
+			exit;
+		}
+
+		$data_to_update=array(
+			'Store Orders In Basket Number'=>$states['in_basket']['number'],
+			'Store Orders In Basket Amount'=>$states['in_basket']['amount'],
+			'Store DC Orders In Basket Amount'=>$states['in_basket']['dc_amount'],
+			'Store Orders In Process Paid Number'=>$states['in_process_paid']['number'],
+			'Store Orders In Process Paid Amount'=>$states['in_process_paid']['amount'],
+			'Store DC Orders In Process Paid Amount'=>$states['in_process_paid']['dc_amount'],
+			'Store Orders In Process Not Paid Number'=>$states['in_process_not_paid']['number'],
+			'Store Orders In Process Not Paid Amount'=>$states['in_process_not_paid']['amount'],
+			'Store DC Orders In Process Not Paid Amount'=>$states['in_process_not_paid']['dc_amount'],
+			'Store Orders In Warehouse Number'=>$states['in_warehouse']['number'],
+			'Store Orders In Warehouse Amount'=>$states['in_warehouse']['amount'],
+			'Store DC Orders In Warehouse Amount'=>$states['in_warehouse']['dc_amount'],
+
+			'Store Orders Packed Number'=>$states['packed']['number'],
+			'Store Orders Packed Amount'=>$states['packed']['amount'],
+			'Store DC Orders Packed Amount'=>$states['packed']['dc_amount'],
+
+			'Store Orders In Dispatch Area Number'=>$states['ready_to_ship']['number'],
+			'Store Orders In Dispatch Area Amount'=>$states['ready_to_ship']['amount'],
+			'Store DC Orders In Dispatch Area Amount'=>$states['ready_to_ship']['dc_amount']
+
+
+		);
+
+		
+
+		$this->update($data_to_update, 'no_history');
+
+		
 
 		$this->data['Store Total Acc Orders']=0;
 		$this->data['Store Dispatched Orders']=0;
@@ -993,7 +1132,7 @@ class Store extends DB_Table {
 		);
 		$this->db->exec($sql);
 
-		$sql=sprintf("update `Store Data Dimension` set `Store Total Acc Orders`=%d,`Store Total Acc Invoices`=%d ,`Store Total Acc Delivery Notes`=%d where `Store Key`=%d",
+		$sql=sprintf("update `Store Data` set `Store Total Acc Orders`=%d,`Store Total Acc Invoices`=%d ,`Store Total Acc Delivery Notes`=%d where `Store Key`=%d",
 			$this->data['Store Total Acc Orders'],
 			$this->data['Store Total Acc Invoices'],
 			$this->data['Store Total Acc Delivery Notes'],
@@ -1077,7 +1216,7 @@ class Store extends DB_Table {
 	function update_dispatch_times($interval) {
 
 
-		retrun;
+		return;
 
 		$to_date='';
 
@@ -1124,7 +1263,7 @@ class Store extends DB_Table {
 			$this->data["Store $db_interval Average Dispatch Time"]=$sum_interval/$number_samples;
 
 		}
-		$sql=sprintf("update `Store Data Dimension` set `Store $db_interval Acc Average Dispatch Time`=%f where `Store Key`=%d "
+		$sql=sprintf("update `Store Data` set `Store $db_interval Acc Average Dispatch Time`=%f where `Store Key`=%d "
 			, $this->data["Store $db_interval Average Dispatch Time"]
 
 			, $this->id
@@ -2021,11 +2160,33 @@ class Store extends DB_Table {
 			}
 
 
-            
-            
+
+			$sql=sprintf('delete from `Timeseries Record Dimension` where `Timeseries Record Timeseries Key`=%d and `Timeseries Record Date`<%s ',
+				$timeseries->id,
+				prepare_mysql($from)
+			);
+			$update_sql = $this->db->prepare($sql);
+			$update_sql->execute();
+			if ($update_sql->rowCount()) {
+				$timeseries->update(array('Timeseries Updated'=>gmdate('Y-m-d H:i:s')), 'no_history');
+			}
+
+			$sql=sprintf('delete from `Timeseries Record Dimension` where `Timeseries Record Timeseries Key`=%d and `Timeseries Record Date`>%s ',
+				$timeseries->id,
+				prepare_mysql($to)
+			);
+			$update_sql = $this->db->prepare($sql);
+			$update_sql->execute();
+			if ($update_sql->rowCount()) {
+				$timeseries->update(array('Timeseries Updated'=>gmdate('Y-m-d H:i:s')), 'no_history');
+			}
+
+			if ($from and $to) {
+				$this->update_timeseries_record($timeseries, $from, $to);
+			}
 
 
-
+			/*
 
 			if ($from and $to) {
 
@@ -2044,12 +2205,75 @@ class Store extends DB_Table {
 
 
 			}
+
+			*/
 		}
 
 	}
 
 
-	function update_timeseries_record($timeseries, $timeseries_record_key, $date) {
+	function update_timeseries_record($timeseries, $from, $to) {
+
+		if ($timeseries->get('Type')=='StoreSales') {
+
+			$dates=date_frequency_range($this->db, $timeseries->get('Timeseries Frequency'), $from, $to);
+
+
+
+			foreach ($dates as $date_frequency_period) {
+				$sales_data=$this->get_sales_data($date_frequency_period['from'], $date_frequency_period['to']);
+				$_date=gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00')) ;
+
+
+				if ($sales_data['deliveries']>0 or $sales_data['dispatched']>0 or $sales_data['invoiced_amount']!=0 or $sales_data['required']!=0 or $sales_data['profit']!=0) {
+
+					list($timeseries_record_key, $date)=$timeseries->create_record(array('Timeseries Record Date'=> $_date ));
+
+
+
+					$sql=sprintf('update `Timeseries Record Dimension` set `Timeseries Record Integer A`=%d ,`Timeseries Record Integer B`=%d ,`Timeseries Record Float A`=%.2f ,  `Timeseries Record Float B`=%f ,`Timeseries Record Float C`=%f ,`Timeseries Record Type`=%s where `Timeseries Record Key`=%d',
+						$sales_data['dispatched'],
+						$sales_data['deliveries'],
+						$sales_data['invoiced_amount'],
+						$sales_data['required'],
+						$sales_data['profit'],
+						prepare_mysql('Data'),
+						$timeseries_record_key
+
+					);
+
+
+
+					//  print "$sql\n";
+
+					$update_sql=$this->db->prepare($sql);
+					$update_sql->execute();
+					if ($update_sql->rowCount() or $date==date('Y-m-d')) {
+						$timeseries->update(array('Timeseries Updated'=>gmdate('Y-m-d H:i:s')), 'no_history');
+					}
+
+
+				}
+				else {
+					$sql=sprintf('delete from `Timeseries Record Dimension` where `Timeseries Record Timeseries Key`=%d and `Timeseries Record Date`=%s ',
+						$timeseries->id,
+						prepare_mysql($_date)
+					);
+
+					$update_sql = $this->db->prepare($sql);
+					$update_sql->execute();
+					if ($update_sql->rowCount()) {
+						$timeseries->update(array('Timeseries Updated'=>gmdate('Y-m-d H:i:s')), 'no_history');
+
+					}
+
+				}
+				$timeseries->update_stats();
+
+			}
+
+		}
+
 
 		if ($timeseries->get('Type')=='StoreSales') {
 

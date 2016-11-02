@@ -103,7 +103,7 @@ case 'part.products':
 		));
 	get_products_element_numbers($db, $data['parameters'], $user);
 	break;
-	
+
 case 'store.services':
 
 
@@ -111,8 +111,8 @@ case 'store.services':
 			'parameters'=>array('type'=>'json array')
 		));
 	get_services_element_numbers($db, $data['parameters'], $user);
-	break;	
-	
+	break;
+
 
 case 'category.product_categories':
 
@@ -473,7 +473,7 @@ function get_supplier_parts_elements($db, $data, $user) {
 	$table='`Supplier Part Dimension`  SP left join `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`) ';
 	switch ($data['parent']) {
 	case 'supplier':
-		case 'supplier_production':
+	case 'supplier_production':
 
 		$where=sprintf(' where `Supplier Part Supplier Key`=%d  ', $data['parent_key']);
 		break;
@@ -655,6 +655,7 @@ function get_products_element_numbers($db, $data, $user) {
 
 }
 
+
 function get_services_element_numbers($db, $data, $user) {
 
 
@@ -704,6 +705,7 @@ function get_services_element_numbers($db, $data, $user) {
 
 }
 
+
 function get_product_categories_element_numbers($db, $data, $user) {
 
 
@@ -722,7 +724,7 @@ function get_product_categories_element_numbers($db, $data, $user) {
 
 	$sql=sprintf("select count(*) as number,`Product Category Status` as element from $table $where  group by `Product Category Status` ");
 	foreach ($db->query($sql) as $row) {
-        if($row['element']=='In Process')$row['element']='InProcess';
+		if ($row['element']=='In Process')$row['element']='InProcess';
 		$elements_numbers['status'][$row['element']]=number($row['number']);
 
 	}
@@ -1066,6 +1068,10 @@ function get_orders_element_numbers($db, $data, $user) {
 
 function get_invoices_element_numbers($db, $parameters) {
 
+	global $user;
+
+
+
 	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($db, $parameters['period'], $parameters['from'], $parameters['to']);
 
 
@@ -1074,14 +1080,14 @@ function get_invoices_element_numbers($db, $parameters) {
 
 
 
-	$where_interval=prepare_mysql_dates($from, $to, '`Order Date`');
+	$where_interval=prepare_mysql_dates($from, $to, '`Invoice Date`');
 	$where_interval=$where_interval['mysql'];
 
 	$elements_numbers=array(
 		'type'=>array('Invoice'=>0, 'Refund'=>0),
 		'payment_state'=>array('Yes'=>0, 'No'=>0, 'Partially'=>0),
 	);
-
+	$table='`Invoice Dimension` I left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)  ';
 
 
 	if (isset($parameters['awhere']) and $parameters['awhere']) {
@@ -1220,12 +1226,17 @@ function get_invoices_element_numbers($db, $parameters) {
 
 	$sql=sprintf("select count(*) as number,`Invoice Paid` as element from %s %s %s group by `Invoice Paid` ",
 		$table, $where, $where_interval);
-	$res=mysql_query($sql);
-
-	while ($row=mysql_fetch_assoc($res)) {
-
-		$elements_numbers['source'][$row['element']]=number($row['number']);
+	if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+			$elements_numbers['source'][$row['element']]=number($row['number']);
+		}
+	}else {
+		print_r($error_info=$db->errorInfo());
+		print $sql;
+		exit;
 	}
+
+
 
 	$sql=sprintf("select count(*) as number,`Invoice Type` as element   from %s %s %s group by `Invoice Type` ",
 		$table, $where, $where_interval);

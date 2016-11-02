@@ -31,9 +31,9 @@ $editor=array(
 );
 
 //families();
-//part_families();
-suppliers();
-stores();
+part_families();
+//suppliers();
+//stores();
 
 
 function suppliers() {
@@ -128,15 +128,15 @@ function part_families() {
 
 	global $db, $editor, $timeseries;
 
-	$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" and `Category Key`=11899  ');
-	$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" order by  `Category Key` desc');
+	$sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" and `Category Key`=12391  ');
+	// $sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" order by  `Category Key` desc');
 
 	if ($result=$db->query($sql)) {
 		foreach ($result as $row) {
 
 			$category=new Category($row['Category Key']);
 
-		
+
 
 
 			if (!array_key_exists($category->get('Category Scope').'Category', $timeseries))
@@ -149,7 +149,9 @@ function part_families() {
 				$editor['Date']=gmdate('Y-m-d H:i:s');
 				$timeserie_data['editor']=$editor;
 
-				$category->create_timeseries($timeserie_data);
+				
+					$category->create_timeseries($timeserie_data);
+				
 
 			}
 		}

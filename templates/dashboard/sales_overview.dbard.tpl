@@ -1,33 +1,43 @@
 <div id="dashboard_sales_overview" style="margin-top:20px;padding:0px" class="dashboard">
-	<input type="hidden" id="order_overview_type" value="{$type}"> 
-	<input type="hidden" id="order_overview_period" value="{$period}"> 
-	<input type="hidden" id="order_overview_currency" value="{$currency}"> 
+	<input type="hidden" id="order_overview_type" value="{$type}">
+	<input type="hidden" id="order_overview_period" value="{$period}">
+	<input type="hidden" id="order_overview_currency" value="{$currency}">
+	<input type="hidden" id="order_overview_orders_view_type" value="{$orders_view_type}">
 	<table border="0" style="width:100%">
 		<tr class="main_title small_row">
-			<td colspan="9"> 
+			<td colspan="9">
 			<div class="widget_types">
-				<div id="orders" onclick="change_sales_overview_type('orders')" class="hide widget  left {if $type=='orders'}selected{/if}">
-					<i class="fa fa-shopping-cart"></i><span class="label"> {t}Orders{/t} </span> 
+				<div id="orders" onclick="change_sales_overview_type('orders')" class="widget  left {if $type=='orders'}selected{/if}">
+					<i class="fa fa-shopping-cart"></i><span class="label"> {t}Orders{/t} </span>
 				</div>
-				
+
 				<div id="delivery_notes" onclick="change_sales_overview_type('delivery_notes')" class="widget  left {if $type=='delivery_notes'}selected{/if}">
-					<i class="fa fa-truck"></i> <span class="label">{t}Delivery Notes{/t} </span> 
+					<i class="fa fa-truck"></i> <span class="label">{t}Delivery Notes{/t} </span>
 				</div>
 				<div id="invoices" onclick="change_sales_overview_type('invoices')" class="widget  left {if $type=='invoices'}selected{/if}">
-					<i class="fa fa-file-text-o"></i><span class="label"> {t}Invoices{/t} </span> 
+					<i class="fa fa-file-text-o"></i><span class="label"> {t}Invoices per store{/t} </span>
 				</div>
 				<div id="invoice_categories" onclick="change_sales_overview_type('invoice_categories')" class=" widget  left {if $type=='invoice_categories'}selected{/if}">
-					<i class="fa fa-usd"></i><span class="label"> {t}Invoices' categories{/t} </span> 
+					<i class="fa fa-sitemap"></i><span class="label"> {t}Invoices' categories{/t} </span>
 				</div>
-				
+
 			</div>
-			<div id="sales_overview_currency_container" class="button  {if $type=='delivery_notes'}hide{/if} " onclick="toggle_sales_overview_currency()" style="float:right;margin-right:10px">
-				<i id="sales_overview_currency" class="fa {if $currency=='store'}fa-toggle-on{else}fa-toggle-off{/if}"></i> {t}Store currency{/t} 
+			
+			<div id="sales_overview_orders_view_type_container" class="button  {if $type!='orders'}hide{/if} " onclick="toggle_sales_overview_orders_view_type()" style="font-size:90%;float:right;margin-left:20px;margin-right:10px">
+				<i class="fa fa-hashtag {if $orders_view_type=='numbers'}selected{/if}" aria-hidden="true"></i> | <i class="fa fa-usd {if $orders_view_type=='amounts'}selected{/if}" aria-hidden="true"></i>
+
+
 			</div>
+			
+			<div id="sales_overview_currency_container" class="button  {if $type=='delivery_notes' or ($type=='orders' and $orders_view_type=='numbers')  }hide{/if} " onclick="toggle_sales_overview_currency()" style="float:right;margin-right:10px">
+				<i id="sales_overview_currency" class="fa {if $currency=='store'}fa-toggle-on{else}fa-toggle-off{/if}"></i> {t}Store currency{/t}
+			</div>
+
+			
 			</td>
 		</tr>
 		<tr class=" small_row   ">
-			<td colspan="7"> 
+			<td colspan="7">
 			<div class="date_chooser {if $type=='orders'}invisible{/if}">
 				<div style="visibility:hidden" id="interval" class="interval {if  $period=='interval'}selected{/if}">
 					<img src="/art/icons/mini-calendar_interval.png" /> {t}Interval{/t}
@@ -76,10 +86,10 @@
 		</tr>
 		<tr class="header ">
 			<td class="label">{t}Store{/t}</td>
-			
 
-			
-			
+
+
+
 			<td class="refunds aright {if !($type=='invoices' or  $type=='invoice_categories'  )  }hide{/if}" title="{t}Refunds{/t}">{t}Refunds{/t}</td>
 			<td class="refunds aright {if !($type=='invoices' or  $type=='invoice_categories'  )}hide{/if}" title="{t}Change compared with last year{/t}">&Delta; {t}1Y{/t}</td>
 			<td class="delivery_notes aright {if $type!='delivery_notes'}hide{/if}" title="{t}Delivery notes{/t}">{t}Delivery notes{/t}</td>
@@ -91,14 +101,33 @@
 			<td class="invoices aright {if !($type=='invoices' or  $type=='invoice_categories')}hide{/if}">&Delta; {t}1Y{/t}</td>
 			<td class="sales aright {if !($type=='invoices' or  $type=='invoice_categories')}hide{/if}">{t}Sales{/t}</td>
 			<td class="last sales aright {if !($type=='invoices' or  $type=='invoice_categories')}hide{/if}">&Delta; {t}1Y{/t}</td>
+
+			<td class="orders aright {if $type!='orders' or $orders_view_type=='amounts'}hide{/if}">{t}In basket{/t}</td>
+			<td class="orders_amount aright {if $type!='orders' or $orders_view_type=='numbers'}hide{/if}">{t}In basket{/t}</td>
+
+			<td class="orders aright {if $type!='orders'  or $orders_view_type=='amounts'}hide{/if}">{t}In process{/t}</td>
+			<td class="orders_amount aright {if $type!='orders' or $orders_view_type=='numbers'}hide{/if}">{t}In process{/t}</td>
+			<td class="orders aright {if $type!='orders'  or $orders_view_type=='amounts'}hide{/if}">{t}In process (Paid){/t}</td>
+			<td class="orders_amount aright {if $type!='orders' or $orders_view_type=='numbers'}hide{/if}">{t}In process (Paid){/t}</td>
+
+			<td class="orders aright {if $type!='orders'  or $orders_view_type=='amounts'}hide{/if}">{t}In warehouse{/t}</td>
+			<td class="orders_amount aright {if $type!='orders' or $orders_view_type=='numbers'}hide{/if}">{t}In warehouse{/t}</td>
+
+			<td class="orders aright {if $type!='orders'  or $orders_view_type=='amounts'}hide{/if}">{t}Packed{/t}</td>
+			<td class="orders_amount aright {if $type!='orders' or $orders_view_type=='numbers'}hide{/if}">{t}Packed{/t}</td>
+
+
+            <td class="orders aright padding_right_10 {if $type!='orders'  or $orders_view_type=='amounts'}hide{/if}">{t}In dispatch area{/t}</td>
+			<td class="orders_amount aright {if $type!='orders' or $orders_view_type=='numbers'}hide{/if}">{t}In dispatch area{/t}</td>
+
 		</tr>
-		{foreach from=$sales_overview item=record} 
+		{foreach from=$sales_overview item=record}
 		<tbody class="data">
 		<tr class="{$record.class} small_row">
 			<td class="label {if isset($record.label.view) and $record.label.view!='' }link{/if}" {if isset($record.label.view) and $record.label.view!='' }onclick="change_view('{$record.label.view}')" {/if} title="{if isset($record.label.title)}{$record.label.title}{else}{$record.label.label}{/if}  ">{$record.label.label}</td>
-			
 
-			
+
+
 			<td id="orders_overview_refunds_{$record.id}" {if isset($record.refunds.view) and $record.label.view!='' }onclick="change_view('{$record.refunds.view}' , { parameters:{ period:'{$period}',elements_type:'type' } ,element:{ type:{ Refund:1,Invoice:''}} } )" {/if} class="link refunds width_1500 aright {if !($type=='invoices' or  $type=='invoice_categories')}hide{/if}">{$record.refunds.value}</td>
 			<td id="orders_overview_refunds_delta_{$record.id}" class="refunds width_100 aright {if !($type=='invoices' or  $type=='invoice_categories')}hide{/if}" title="{$record.refunds_1yb}">{$record.refunds_delta}</td>
 			<td id="orders_overview_delivery_notes_{$record.id}" onclick="change_view('delivery_notes/{$record.id}',{ parameters: { period:'{$period}',elements_type:'type'},element:{ type:{ Order:1,Sample:1,Donation:1,Replacements:'',Shortages:''}} } )" class="link delivery_notes width_150 aright {if $type!='delivery_notes'}hide{/if}">{$record.delivery_notes}</td>
@@ -110,9 +139,30 @@
 			<td id="orders_overview_invoices_delta_{$record.id}" class="invoices width_100 aright {if !($type=='invoices' or  $type=='invoice_categories')}hide{/if}" title="{$record.invoices_1yb}">{$record.invoices_delta}</td>
 			<td id="orders_overview_sales_{$record.id}" class="sales width_200 aright {if !($type=='invoices' or  $type=='invoice_categories')}hide{/if}"> {$record.sales}</td>
 			<td id="orders_overview_sales_delta_{$record.id}" class="last sales width_100 aright {if !($type=='invoices' or  $type=='invoice_categories')}hide{/if}" title="{$record.sales_1yb}">{$record.sales_delta}</td>
+
+
+			<td id="orders_overview_in_basket_{$record.id}" onclick="change_view('orders/{$record.id}',{ parameters: { period:'{$period}',elements_type:'type'},element:{ type:{ Order:1,Sample:1,Donation:1,Replacements:'',Shortages:''}} } )" class="link orders width_150 aright {if $type!='orders' or $orders_view_type=='amounts'}hide{/if}">{$record.in_basket.value}</td>
+			<td id="orders_overview_in_basket_amount_{$record.id}"  class="orders_amount width_150 aright {if $type!='orders'  or $orders_view_type=='numbers'}hide{/if}">{$record.in_basket_amount.value}</td>
+
+		    <td id="orders_overview_in_process_not_paid{$record.id}" onclick="change_view('orders/{$record.id}',{ parameters: { period:'{$period}',elements_type:'type'},element:{ type:{ Order:1,Sample:1,Donation:1,Replacements:'',Shortages:''}} } )" class="link orders width_150 aright {if $type!='orders' or $orders_view_type=='amounts'}hide{/if}">{$record.in_process_not_paid.value}</td>
+			<td id="orders_overview_in_process_not_paid_amount_{$record.id}"  class="orders_amount width_150 aright {if $type!='orders'  or $orders_view_type=='numbers'}hide{/if}">{$record.in_process_amount_not_paid.value}</td>
+
+			<td id="orders_overview_in_process_paid_{$record.id}" onclick="change_view('orders/{$record.id}',{ parameters: { period:'{$period}',elements_type:'type'},element:{ type:{ Order:1,Sample:1,Donation:1,Replacements:'',Shortages:''}} } )" class="link orders width_150 aright {if $type!='orders' or $orders_view_type=='amounts'}hide{/if}">{$record.in_process_paid.value}</td>
+			<td id="orders_overview_in_process_paid_amount_{$record.id}"  class="orders_amount width_150 aright {if $type!='orders' or $orders_view_type=='numbers'}hide{/if}">{$record.in_process_amount_paid.value}</td>
+
+			<td id="orders_overview_in_warehouse_{$record.id}" onclick="change_view('orders/{$record.id}',{ parameters: { period:'{$period}',elements_type:'type'},element:{ type:{ Order:1,Sample:1,Donation:1,Replacements:'',Shortages:''}} } )" class="link orders width_150 aright {if $type!='orders' or $orders_view_type=='amounts'}hide{/if}">{$record.in_warehouse.value}</td>
+			<td id="orders_overview_in_warehouse_amount_{$record.id}"  class="orders_amount width_150 aright {if $type!='orders' or $orders_view_type=='numbers'}hide{/if}">{$record.in_warehouse_amount.value}</td>
+			<td id="orders_overview_packed_{$record.id}" onclick="change_view('orders/{$record.id}',{ parameters: { period:'{$period}',elements_type:'type'},element:{ type:{ Order:1,Sample:1,Donation:1,Replacements:'',Shortages:''}} } )" class="link orders width_150 aright {if $type!='orders' or $orders_view_type=='amounts'}hide{/if}">{$record.packed.value}</td>
+			<td id="orders_overview_packed_amount_{$record.id}"  class="orders_amount width_150 aright {if $type!='orders' or $orders_view_type=='numbers'}hide{/if}">{$record.packed_amount.value}</td>
+
+
+			<td id="orders_overview_in_dispatch_area_{$record.id}" onclick="change_view('orders/{$record.id}',{ parameters: { period:'{$period}',elements_type:'type'},element:{ type:{ Order:1,Sample:1,Donation:1,Replacements:'',Shortages:''}} } )" class="link orders width_150 aright padding_right_10 {if $type!='orders' or $orders_view_type=='amounts'}hide{/if}">{$record.in_dispatch_area.value}</td>
+			<td id="orders_overview_in_dispatch_area_amount_{$record.id}"  class="orders_amount width_150 aright {if $type!='orders' or $orders_view_type=='numbers'}hide{/if}">{$record.in_dispatch_area_amount.value}</td>
+
+
 		</tr>
 		</tbody >
-		{/foreach} 
+		{/foreach}
 	</table>
 </div>
 <script>
@@ -124,50 +174,99 @@ function change_sales_overview_type(type) {
     $('.widget_types .widget').removeClass('selected')
     $('#' + type).addClass('selected')
 
-    if (type == 'orders') {
+    $('#sales_overview_orders_view_type_container').addClass('hide')
 
-$('.date_chooser').addClass('invisible')
+    if (type == 'invoices') {
 
-    } else if (type == 'invoices') {
-
-$('.date_chooser').removeClass('invisible')
+        $('.date_chooser').removeClass('invisible')
 
         $('.category').addClass('hide')
         $('.store').removeClass('hide')
 
         $('.refunds,.invoices,.sales').removeClass('hide')
         $('#sales_overview_currency_container').removeClass('hide')
-        $('.replacements ,.delivery_notes').addClass('hide')
+        $('.replacements ,.delivery_notes,.orders ,.orders_amount').addClass('hide')
         
-        
+
+
     } else if (type == 'invoice_categories') {
-$('.date_chooser').removeClass('invisible')
+        $('.date_chooser').removeClass('invisible')
 
         $('.category').removeClass('hide')
         $('.store').addClass('hide')
 
         $('.refunds,.invoices,.sales').removeClass('hide')
         $('#sales_overview_currency_container').removeClass('hide')
-        $('.replacements ,.delivery_notes').addClass('hide')
+        $('.replacements ,.delivery_notes,.orders ,.orders_amount').addClass('hide')
+        $('#sales_overview_currency_container').removeClass('hide')
 
 
     } else if (type == 'delivery_notes') {
- $('.date_chooser').removeClass('invisible')
+        $('.date_chooser').removeClass('invisible')
 
         $('.category').addClass('hide')
         $('.store').removeClass('hide')
-        $('.refunds,.invoices,.sales').addClass('hide')
+        $('.refunds,.invoices,.sales,.orders ,.orders_amount').addClass('hide')
         $('.replacements ,.delivery_notes').removeClass('hide')
         $('#sales_overview_currency_container').addClass('hide')
 
+    } else if (type == 'orders') {
+        $('.date_chooser').removeClass('invisible')
+
+        $('.category').addClass('hide')
+        $('.store').removeClass('hide')
+
+        $('.refunds,.invoices,.sales').addClass('hide')
+        $('.replacements ,.delivery_notes,.replacements ,.delivery_notes,.orders ,.orders_amount,#sales_overview_currency_container').addClass('hide')
+
+        if ($('#order_overview_orders_view_type').val() == 'numbers') {
+            $('.orders ').removeClass('hide')
+        } else {
+            $('.orders_amount,#sales_overview_currency_container').removeClass('hide')
+
+        }
+
+
+
+
+        $('#sales_overview_orders_view_type_container').removeClass('hide')
+       // $('#sales_overview_currency_container').removeClass('hide')
+
     }
 
-console.log('caca')
-    get_order_overview_data(type, $('#order_overview_period').val(), $('#order_overview_currency').val())
+    console.log('caca')
+    get_order_overview_data(type, $('#order_overview_period').val(), $('#order_overview_currency').val(), $('#order_overview_orders_view_type').val())
 
 
 }
 
+function toggle_sales_overview_orders_view_type() {
+
+
+
+    if ($('#sales_overview_orders_view_type_container .fa-hashtag').hasClass('selected')) {
+        var orders_view_type = 'amounts'
+        $('#sales_overview_orders_view_type_container .fa-hashtag').removeClass('selected')
+         $('#sales_overview_orders_view_type_container .fa-usd').addClass('selected')
+    } else {
+        var orders_view_type = 'numbers'
+        $('#sales_overview_orders_view_type_container .fa-hashtag').addClass('selected')
+         $('#sales_overview_orders_view_type_container .fa-usd').removeClass('selected')
+    }
+    $('#order_overview_orders_view_type').val(orders_view_type)
+    
+     $('.orders ,.orders_amount,#sales_overview_currency_container').addClass('hide')
+        if ($('#order_overview_orders_view_type').val() == 'numbers') {
+            $('.orders ').removeClass('hide')
+        } else {
+            $('.orders_amount').removeClass('hide')
+            $('#sales_overview_currency_container ').removeClass('hide')
+
+        }
+
+    get_order_overview_data($('#order_overview_type').val(), $('#order_overview_period').val(), $('#order_overview_currency').val(),$('#order_overview_orders_view_type').val())
+
+}
 
 function toggle_sales_overview_currency() {
     if ($('#sales_overview_currency').hasClass('fa-toggle-off')) {
@@ -177,10 +276,10 @@ function toggle_sales_overview_currency() {
         var currency = 'account'
         $('#sales_overview_currency').addClass('fa-toggle-off').removeClass('fa-toggle-on')
     }
-
-    get_order_overview_data($('#order_overview_type').val(), $('#order_overview_period').val(), currency)
-
     $('#order_overview_currency').val(currency)
+
+    get_order_overview_data($('#order_overview_type').val(), $('#order_overview_period').val(), $('#order_overview_currency').val(),$('#order_overview_orders_view_type').val())
+
 }
 
 
@@ -193,17 +292,17 @@ function change_sales_overview_period(period) {
 
 
     get_order_overview_data($('#order_overview_type').val(), period, $('#order_overview_currency').val())
-    
+
     console.log($('#order_overview_type').val()+' '+period)
 
-    
+
 }
 
 
-function get_order_overview_data(type, period, currency) {
+function get_order_overview_data(type, period, currency,orders_view_type) {
 
-    var request = "/ar_dashboard.php?tipo=sales_overview&type=" + type + "&period=" + period + '&currency=' + currency
-
+    var request = "/ar_dashboard.php?tipo=sales_overview&type=" + type + "&period=" + period + '&currency=' + currency+ '&orders_view_type=' + orders_view_type
+console.log(request)
     $.getJSON(request, function(r) {
 
 
@@ -240,4 +339,4 @@ $('#order_overview_type').val(type)
 }
 
 
-</script> 
+</script>
