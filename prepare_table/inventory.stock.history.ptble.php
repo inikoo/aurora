@@ -9,53 +9,55 @@
 
 */
 
-$table="`Inventory Warehouse Spanshot Fact` ";
+$table = "`Inventory Warehouse Spanshot Fact` ";
 
 
-if ($parameters['frequency']=='annually') {
-	$group_by=' group by Year(`Date`) ';
-	$sql_totals_fields='Year(`Date`)';
-}elseif ($parameters['frequency']=='monthy') {
-	$group_by='  group by DATE_FORMAT(`Date`,"%Y-%m") ';
-	$sql_totals_fields='DATE_FORMAT(`Date`,"%Y-%m")';
-}elseif ($parameters['frequency']=='weekly') {
-	$group_by=' group by Yearweek(`Date`) ';
-	$sql_totals_fields='Yearweek(`Date`)';
-}elseif ($parameters['frequency']=='daily') {
-	$group_by=' group by `Date` ';
-	$sql_totals_fields='`Date`';
+if ($parameters['frequency'] == 'annually') {
+    $group_by          = ' group by Year(`Date`) ';
+    $sql_totals_fields = 'Year(`Date`)';
+} elseif ($parameters['frequency'] == 'monthy') {
+    $group_by          = '  group by DATE_FORMAT(`Date`,"%Y-%m") ';
+    $sql_totals_fields = 'DATE_FORMAT(`Date`,"%Y-%m")';
+} elseif ($parameters['frequency'] == 'weekly') {
+    $group_by          = ' group by Yearweek(`Date`) ';
+    $sql_totals_fields = 'Yearweek(`Date`)';
+} elseif ($parameters['frequency'] == 'daily') {
+    $group_by          = ' group by `Date` ';
+    $sql_totals_fields = '`Date`';
 }
 
-$filter_msg='';
-$sql_type='part';
-$filter_msg='';
-$wheref='';
+$filter_msg = '';
+$sql_type   = 'part';
+$filter_msg = '';
+$wheref     = '';
 
-$fields='';
+$fields = '';
 
-if ($parameters['parent']=='warehouse') {
-	$where=sprintf(" where `Warehouse Key`=%d", $parameters['parent_key']);
-}elseif ($parameters['parent']=='account') {
-	$where=sprintf(" where  true");
-}else {
-	exit("parent not found: ".$parameters['parent']);
+if ($parameters['parent'] == 'warehouse') {
+    $where = sprintf(" where `Warehouse Key`=%d", $parameters['parent_key']);
+} elseif ($parameters['parent'] == 'account') {
+    $where = sprintf(" where  true");
+} else {
+    exit("parent not found: ".$parameters['parent']);
 }
 
-if (isset($extra_where))
-	$where.=$extra_where;
+if (isset($extra_where)) {
+    $where .= $extra_where;
+}
 
 
-
-$_order=$order;
-$_dir=$order_direction;
-
-
-$order='`Date`';
+$_order = $order;
+$_dir   = $order_direction;
 
 
-$sql_totals="select count(Distinct $sql_totals_fields) as num from $table  $where  ";
+$order = '`Date`';
 
-$fields="`Date`,`Parts`,`Locations`,`Value At Cost`,`Value At Day Cost`,`Value Commercial`";
+
+$sql_totals
+    = "select count(Distinct $sql_totals_fields) as num from $table  $where  ";
+
+$fields
+    = "`Date`,`Parts`,`Locations`,`Value At Cost`,`Value At Day Cost`,`Value Commercial`";
 
 
 ?>

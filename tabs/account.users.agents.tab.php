@@ -10,31 +10,30 @@
 */
 
 
+$tab     = 'account.users.agents';
+$ar_file = 'ar_users_tables.php';
+$tipo    = 'agents';
 
-$tab='account.users.agents';
-$ar_file='ar_users_tables.php';
-$tipo='agents';
-
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array(
-	'privilegies'=>array('label'=>_('Overview')),
-	'groups'=>array('label'=>_('Permissions')),
-	'weblog'=>array('label'=>_('Syslog')),
-
-);
-
-$table_filters=array(
-	'handle'=>array('label'=>_('Email')),
-	'name'=>array('label'=>_('Name')),
+$table_views = array(
+    'privilegies' => array('label' => _('Overview')),
+    'groups'      => array('label' => _('Permissions')),
+    'weblog'      => array('label' => _('Syslog')),
 
 );
 
-$parameters=array(
-		'parent'=>$state['parent'],
-		'parent_key'=>$state['parent_key'],
-	
+$table_filters = array(
+    'handle' => array('label' => _('Email')),
+    'name'   => array('label' => _('Name')),
+
+);
+
+$parameters = array(
+    'parent'     => $state['parent'],
+    'parent_key' => $state['parent_key'],
+
 );
 
 

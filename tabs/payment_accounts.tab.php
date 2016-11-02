@@ -9,28 +9,37 @@
 
 */
 
-$tab='payment_accounts';
-$ar_file='ar_payments_tables.php';
-$tipo='accounts';
+$tab     = 'payment_accounts';
+$ar_file = 'ar_payments_tables.php';
+$tipo    = 'accounts';
 
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array(
-	'overview'=>array('label'=>_('Overview'),'title'=>_('Overview')),
-
-);
-
-$table_filters=array(
-	'code'=>array('label'=>_('Code'),'title'=>_('Account code')),
-	'name'=>array('label'=>_('Name'),'title'=>_('Account name')),
+$table_views = array(
+    'overview' => array(
+        'label' => _('Overview'),
+        'title' => _('Overview')
+    ),
 
 );
 
-$parameters=array(
-		'parent'=>$state['parent'],
-		'parent_key'=>$state['parent_key'],
-		
+$table_filters = array(
+    'code' => array(
+        'label' => _('Code'),
+        'title' => _('Account code')
+    ),
+    'name' => array(
+        'label' => _('Name'),
+        'title' => _('Account name')
+    ),
+
+);
+
+$parameters = array(
+    'parent'     => $state['parent'],
+    'parent_key' => $state['parent_key'],
+
 );
 
 

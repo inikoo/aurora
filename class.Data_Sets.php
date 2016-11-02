@@ -1,4 +1,5 @@
 <?php
+
 /*
 
  About:
@@ -14,424 +15,456 @@
 class Data_Sets extends DB_Table {
 
 
-	function Data_Sets($arg1=false, $arg2=false, $arg3=false) {
-		global $db;
+    function Data_Sets($arg1 = false, $arg2 = false, $arg3 = false) {
+        global $db;
 
-		$this->db=$db;
-		$this->table_name='Data Sets';
-		$this->ignore_fields=array('Data Sets Key');
+        $this->db            = $db;
+        $this->table_name    = 'Data Sets';
+        $this->ignore_fields = array('Data Sets Key');
 
-		if (is_numeric($arg1)) {
-			$this->get_data('id', $arg1);
-			return ;
-		}
-		if (preg_match('/^find/i', $arg1)) {
+        if (is_numeric($arg1)) {
+            $this->get_data('id', $arg1);
 
-			$this->find($arg2, $arg3);
-			return;
-		}
+            return;
+        }
+        if (preg_match('/^find/i', $arg1)) {
 
-		if (preg_match('/^(create|new)/i', $arg1)) {
-			$this->create($arg2);
-			return;
-		}
+            $this->find($arg2, $arg3);
 
-		$this->get_data($arg1, $arg2);
-		return ;
+            return;
+        }
 
-	}
+        if (preg_match('/^(create|new)/i', $arg1)) {
+            $this->create($arg2);
 
+            return;
+        }
 
+        $this->get_data($arg1, $arg2);
 
-	function get_data($tipo, $tag) {
+        return;
 
+    }
 
-		if ($tipo=='id') {
-			$sql=sprintf("select * from `Data Sets Dimension` where `Data Sets Key`=%d", $tag);
-		}elseif ($tipo=='code') {
-			$sql=sprintf("select * from `Data Sets Dimension` where `Data Sets Code`=%s", prepare_mysql($tag));
-		}else {
-			return;
-		}
 
-		if ($this->data = $this->db->query($sql)->fetch()) {
+    function get_data($tipo, $tag) {
 
-			$this->id=$this->data['Data Sets Key'];
 
-		}
+        if ($tipo == 'id') {
+            $sql = sprintf(
+                "SELECT * FROM `Data Sets Dimension` WHERE `Data Sets Key`=%d", $tag
+            );
+        } elseif ($tipo == 'code') {
+            $sql = sprintf(
+                "SELECT * FROM `Data Sets Dimension` WHERE `Data Sets Code`=%s", prepare_mysql($tag)
+            );
+        } else {
+            return;
+        }
 
-	}
+        if ($this->data = $this->db->query($sql)->fetch()) {
 
-	function update_field_switcher($field, $value, $options='', $metadata='') {
-		if (is_string($value))
-			$value=_trim($value);
+            $this->id = $this->data['Data Sets Key'];
 
+        }
 
+    }
 
-		switch ($field) {
+    function find($raw_data, $options) {
 
 
-		default:
-			$base_data=$this->base_data();
-			if (array_key_exists($field, $base_data)) {
-				$this->update_field($field, $value, $options);
-			}
-		}
-		$this->reread();
+        if (isset($raw_data['editor'])) {
+            foreach ($raw_data['editor'] as $key => $value) {
 
-	}
+                if (array_key_exists($key, $this->editor)) {
+                    $this->editor[$key] = $value;
+                }
 
+            }
+        }
 
-	function get($key='') {
 
-		global $account;
+        $create = '';
+        $update = '';
+        if (preg_match('/create/i', $options)) {
+            $create = 'create';
+        }
+        if (preg_match('/update/i', $options)) {
+            $update = 'update';
+        }
 
 
-		switch ($key) {
+        $data = $this->base_data();
 
-		default:
-			if (isset($this->data[$key]))
-				return $this->data[$key];
+        foreach ($raw_data as $key => $value) {
+            if (array_key_exists($key, $data)) {
+                $data[$key] = _trim($value);
+            }
+        }
 
-			if (array_key_exists('Data Sets '.$key, $this->data))
-				return $this->data['Data Sets '.$key];
 
-			return false;
+        $sql = sprintf(
+            "SELECT `Data Sets Key` FROM `Data Sets Dimension` WHERE `Data Sets Code`=%s ", prepare_mysql($data['Data Sets Code'])
 
-		}
 
+        );
 
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->found     = true;
+                $this->found_key = $row['Data Sets Key'];
+                $this->get_data('id', $this->found_key);
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
 
-	}
+        if ($create and !$this->found) {
+            $this->create($raw_data);
+        }
 
+    }
 
-	function find($raw_data, $options) {
+    function create($data) {
 
 
+        $this->duplicated = false;
+        $this->new        = false;
 
-		if (isset($raw_data['editor'])) {
-			foreach ($raw_data['editor'] as $key=>$value) {
+        $this->editor = $data['editor'];
+        unset($data['editor']);
+        $this->data = $data;
 
-				if (array_key_exists($key, $this->editor))
-					$this->editor[$key]=$value;
+        $keys   = '';
+        $values = '';
 
-			}
-		}
 
+        foreach ($this->data as $key => $value) {
+            $keys .= ",`".$key."`";
 
-		$create='';
-		$update='';
-		if (preg_match('/create/i', $options)) {
-			$create='create';
-		}
-		if (preg_match('/update/i', $options)) {
-			$update='update';
-		}
+            $values .= ','.prepare_mysql($value, false);
+        }
+        $values = preg_replace('/^,/', '', $values);
+        $keys   = preg_replace('/^,/', '', $keys);
 
+        $sql = "insert into `Data Sets Dimension` ($keys) values ($values)";
 
-		$data=$this->base_data();
+        if ($this->db->exec($sql)) {
 
-		foreach ($raw_data as $key=>$value) {
-			if (array_key_exists($key, $data)) {
-				$data[$key]=_trim($value);
-			}
-		}
+            $this->id  = $this->db->lastInsertId();
+            $this->new = true;
+            $this->get_data('id', $this->id);
+            $this->update_stats();
+
+        } else {
+            $this->error = true;
+            $error_info  = $this->db->errorInfo();
+            if ($error_info[0] == 23000) {
+                $this->duplicated = true;
+                $this->msg        = _('Data Sets already exists');
+            } else {
+                $this->msg = 'Can not create timeseries. '.$error_info[2];
+            }
+        }
+    }
+
+    function update_stats() {
+
+
+        global $dns_db;
+
+        if ($this->data['Data Sets Code'] == 'Images') {
+            $tables = '"Image Dimension","Image Bridge"';
+            $sql    = sprintf(
+                'SELECT count(*) AS num  FROM `Image Dimension`', $this->id
+            );
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $num = $row['num'];
+
+                } else {
+                    $num = 0;
+
+                }
+
+                $this->update(
+                    array(
+                        'Data Sets Number Sets'  => 1,
+                        'Data Sets Number Items' => $num
+                    ), 'no_history'
+                );
+
+
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit;
+            }
+
+
+        }
+        if ($this->data['Data Sets Code'] == 'Materials') {
+            $tables = '"Material Dimension"';
+            $sql    = sprintf(
+                'SELECT count(*) AS num  FROM `Material Dimension`', $this->id
+            );
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $num = $row['num'];
+
+                } else {
+                    $num = 0;
+
+                }
+
+                $this->update(
+                    array(
+                        'Data Sets Number Sets'  => 1,
+                        'Data Sets Number Items' => $num
+                    ), 'no_history'
+                );
+
+
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit;
+            }
+
+
+        } elseif ($this->data['Data Sets Code'] == 'Attachments') {
+            $tables
+                 = '"Attachment Bridge","Attachment Bridge History Bridge","Attachment Dimension"';
+            $sql = sprintf(
+                'SELECT count(*) AS num  FROM `Attachment Dimension`', $this->id
+            );
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $num = $row['num'];
+
+                } else {
+                    $num = 0;
+
+                }
+                $this->update(
+                    array(
+                        'Data Sets Number Sets'  => 1,
+                        'Data Sets Number Items' => $num
+                    ), 'no_history'
+                );
+
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit;
+            }
+        } elseif ($this->data['Data Sets Code'] == 'Timeseries') {
+            $tables = '"Timeseries Dimension","Timeseries Record Dimension"';
+
+            $sql = sprintf(
+                'SELECT count(*) AS num  FROM `Timeseries Record Dimension`', $this->id
+            );
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $num = $row['num'];
+
+                } else {
+                    $num = 0;
+
+                }
+                $this->update(
+                    array('Data Sets Number Items' => $num), 'no_history'
+                );
+
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit;
+            }
+
+            $sql = sprintf(
+                'SELECT count(*) AS num  FROM `Timeseries Dimension`', $this->id
+            );
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $num = $row['num'];
+
+                } else {
+                    $num = 0;
+
+                }
+                $this->update(
+                    array('Data Sets Number Sets' => $num), 'no_history'
+                );
+
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit;
+            }
+
+
+        } elseif ($this->data['Data Sets Code'] == 'OSF') {
+            $tables = '"Order Spanshot Fact"';
+            $sql    = sprintf(
+                'SELECT count(*) AS num  FROM `Order Spanshot Fact`', $this->id
+            );
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $num = $row['num'];
+
+                } else {
+                    $num = 0;
+
+                }
+                $this->update(
+                    array(
+                        'Data Sets Number Sets'  => 1,
+                        'Data Sets Number Items' => $num
+                    ), 'no_history'
+                );
+
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit;
+            }
+
+
+        } elseif ($this->data['Data Sets Code'] == 'ISF') {
+            $tables = '"Inventory Spanshot Fact"';
+            $sql    = sprintf(
+                'SELECT count(*) AS num  FROM `Inventory Spanshot Fact`', $this->id
+            );
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $num = $row['num'];
 
+                } else {
+                    $num = 0;
 
-		$sql=sprintf("select `Data Sets Key` from `Data Sets Dimension` where `Data Sets Code`=%s ",
-			prepare_mysql($data['Data Sets Code'])
+                }
+                $this->update(
+                    array(
+                        'Data Sets Number Sets'  => 1,
+                        'Data Sets Number Items' => $num
+                    ), 'no_history'
+                );
 
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit;
+            }
 
-		);
+        } elseif ($this->data['Data Sets Code'] == 'Uploads') {
+            $tables
+                 = '"Upload Dimension","Upload File Dimension","Upload Record Dimension"';
+            $sql = sprintf(
+                'SELECT count(*) AS num  FROM `Upload Dimension`', $this->id
+            );
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $num = $row['num'];
 
-		if ($result=$this->db->query($sql)) {
-			if ($row = $result->fetch()) {
-				$this->found=true;
-				$this->found_key=$row['Data Sets Key'];
-				$this->get_data('id', $this->found_key);
-			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
-		}
+                } else {
+                    $num = 0;
 
-		if ($create and !$this->found) {
-			$this->create($raw_data);
-		}
+                }
+                $this->update(
+                    array(
+                        'Data Sets Number Sets'  => 1,
+                        'Data Sets Number Items' => $num
+                    ), 'no_history'
+                );
 
-	}
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit;
+            }
+        }
 
 
-	function create($data) {
+        if ($tables != '') {
+            $sql = sprintf(
+                'SELECT sum(((data_length + index_length))) data_size FROM information_schema.TABLES WHERE table_schema = %s AND table_name IN (%s)', prepare_mysql($dns_db), $tables
 
 
-		$this->duplicated=false;
-		$this->new=false;
+            );
 
-		$this->editor=$data['editor'];
-		unset($data['editor']);
-		$this->data=$data;
+            //print "$sql\n";
 
-		$keys='';
-		$values='';
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $size = $row['data_size'];
 
+                } else {
+                    $size = 0;
 
+                }
 
-		foreach ($this->data as $key=>$value) {
-			$keys.=",`".$key."`";
+                $this->update(array('Data Sets Size' => $size), 'no_history');
 
-			$values.=','.prepare_mysql($value, false);
-		}
-		$values=preg_replace('/^,/', '', $values);
-		$keys=preg_replace('/^,/', '', $keys);
 
-		$sql="insert into `Data Sets Dimension` ($keys) values ($values)";
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
 
-		if ($this->db->exec($sql)) {
 
-			$this->id=$this->db->lastInsertId();
-			$this->new=true;
-			$this->get_data('id', $this->id);
-			$this->update_stats();
+        }
+    }
 
-		} else {
-			$this->error=true;
-			$error_info=$this->db->errorInfo();
-			if ($error_info[0]==23000) {
-				$this->duplicated=true;
-				$this->msg=_('Data Sets already exists');
-			}else {
-				$this->msg='Can not create timeseries. '.$error_info[2];
-			}
-		}
-	}
+    function update_field_switcher($field, $value, $options = '', $metadata = '') {
+        if (is_string($value)) {
+            $value = _trim($value);
+        }
 
 
-	function get_field_label($field) {
+        switch ($field) {
 
-		switch ($field) {
-		case 'Data Sets Type':
-			$label=_('Type');
-			break;
-		default:
-			$label=$field;
-		}
-		return $label;
 
-	}
+            default:
+                $base_data = $this->base_data();
+                if (array_key_exists($field, $base_data)) {
+                    $this->update_field($field, $value, $options);
+                }
+        }
+        $this->reread();
 
+    }
 
+    function get($key = '') {
 
-	function update_stats() {
+        global $account;
 
 
+        switch ($key) {
 
+            default:
+                if (isset($this->data[$key])) {
+                    return $this->data[$key];
+                }
 
-		global $dns_db;
+                if (array_key_exists('Data Sets '.$key, $this->data)) {
+                    return $this->data['Data Sets '.$key];
+                }
 
-		if ($this->data['Data Sets Code']=='Images') {
-			$tables='"Image Dimension","Image Bridge"';
-			$sql=sprintf('select count(*) as num  from `Image Dimension`',
-				$this->id
-			);
-			if ($result=$this->db->query($sql)) {
-				if ($row = $result->fetch()) {
-					$num=$row['num'];
+                return false;
 
-				}else {
-					$num=0;
+        }
 
-				}
 
-				$this->update(array('Data Sets Number Sets'=>1, 'Data Sets Number Items'=>$num), 'no_history');
+    }
 
+    function get_field_label($field) {
 
-			}else {
-				print_r($error_info=$this->db->errorInfo());
-				exit;
-			}
+        switch ($field) {
+            case 'Data Sets Type':
+                $label = _('Type');
+                break;
+            default:
+                $label = $field;
+        }
 
+        return $label;
 
-		}if ($this->data['Data Sets Code']=='Materials') {
-			$tables='"Material Dimension"';
-			$sql=sprintf('select count(*) as num  from `Material Dimension`',
-				$this->id
-			);
-			if ($result=$this->db->query($sql)) {
-				if ($row = $result->fetch()) {
-					$num=$row['num'];
-
-				}else {
-					$num=0;
-
-				}
-
-				$this->update(array('Data Sets Number Sets'=>1, 'Data Sets Number Items'=>$num), 'no_history');
-
-
-			}else {
-				print_r($error_info=$this->db->errorInfo());
-				exit;
-			}
-
-
-		}
-		elseif ($this->data['Data Sets Code']=='Attachments') {
-			$tables='"Attachment Bridge","Attachment Bridge History Bridge","Attachment Dimension"';
-			$sql=sprintf('select count(*) as num  from `Attachment Dimension`',
-				$this->id
-			);
-			if ($result=$this->db->query($sql)) {
-				if ($row = $result->fetch()) {
-					$num=$row['num'];
-
-				}else {
-					$num=0;
-
-				}
-				$this->update(array('Data Sets Number Sets'=>1, 'Data Sets Number Items'=>$num), 'no_history');
-
-			}else {
-				print_r($error_info=$this->db->errorInfo());
-				exit;
-			}
-		}
-		elseif ($this->data['Data Sets Code']=='Timeseries') {
-			$tables='"Timeseries Dimension","Timeseries Record Dimension"';
-
-			$sql=sprintf('select count(*) as num  from `Timeseries Record Dimension`',
-				$this->id
-			);
-			if ($result=$this->db->query($sql)) {
-				if ($row = $result->fetch()) {
-					$num=$row['num'];
-
-				}else {
-					$num=0;
-
-				}
-				$this->update(array( 'Data Sets Number Items'=>$num), 'no_history');
-
-			}else {
-				print_r($error_info=$this->db->errorInfo());
-				exit;
-			}
-
-			$sql=sprintf('select count(*) as num  from `Timeseries Dimension`',
-				$this->id
-			);
-			if ($result=$this->db->query($sql)) {
-				if ($row = $result->fetch()) {
-					$num=$row['num'];
-
-				}else {
-					$num=0;
-
-				}
-				$this->update(array( 'Data Sets Number Sets'=>$num), 'no_history');
-
-			}else {
-				print_r($error_info=$this->db->errorInfo());
-				exit;
-			}
-
-
-
-		} elseif ($this->data['Data Sets Code']=='OSF') {
-			$tables='"Order Spanshot Fact"';
-			$sql=sprintf('select count(*) as num  from `Order Spanshot Fact`',
-				$this->id
-			);
-			if ($result=$this->db->query($sql)) {
-				if ($row = $result->fetch()) {
-					$num=$row['num'];
-
-				}else {
-					$num=0;
-
-				}
-				$this->update(array('Data Sets Number Sets'=>1, 'Data Sets Number Items'=>$num), 'no_history');
-
-			}else {
-				print_r($error_info=$this->db->errorInfo());
-				exit;
-			}
-
-
-		} elseif ($this->data['Data Sets Code']=='ISF') {
-			$tables='"Inventory Spanshot Fact"';
-			$sql=sprintf('select count(*) as num  from `Inventory Spanshot Fact`',
-				$this->id
-			);
-			if ($result=$this->db->query($sql)) {
-				if ($row = $result->fetch()) {
-					$num=$row['num'];
-
-				}else {
-					$num=0;
-
-				}
-				$this->update(array('Data Sets Number Sets'=>1, 'Data Sets Number Items'=>$num), 'no_history');
-
-			}else {
-				print_r($error_info=$this->db->errorInfo());
-				exit;
-			}
-
-		}elseif ($this->data['Data Sets Code']=='Uploads') {
-			$tables='"Upload Dimension","Upload File Dimension","Upload Record Dimension"';
-			$sql=sprintf('select count(*) as num  from `Upload Dimension`',
-				$this->id
-			);
-			if ($result=$this->db->query($sql)) {
-				if ($row = $result->fetch()) {
-					$num=$row['num'];
-
-				}else {
-					$num=0;
-
-				}
-				$this->update(array('Data Sets Number Sets'=>1, 'Data Sets Number Items'=>$num), 'no_history');
-
-			}else {
-				print_r($error_info=$this->db->errorInfo());
-				exit;
-			}
-		}
-
-
-
-		if ($tables!='') {
-			$sql=sprintf('select sum(((data_length + index_length))) data_size from information_schema.TABLES where table_schema = %s and table_name in (%s)',
-				prepare_mysql($dns_db),
-				$tables
-
-
-			);
-
-			//print "$sql\n";
-
-			if ($result=$this->db->query($sql)) {
-				if ($row = $result->fetch()) {
-					$size=$row['data_size'];
-
-				}else {
-					$size=0;
-
-				}
-
-				$this->update(array('Data Sets Size'=>$size), 'no_history');
-
-
-			}else {
-				print_r($error_info=$this->db->errorInfo());
-				print "$sql\n";
-				exit;
-			}
-
-
-		}
-	}
+    }
 
 
 }

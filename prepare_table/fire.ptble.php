@@ -9,59 +9,59 @@
 
 */
 
-$where=sprintf(" where  date(`Timesheet Date`)=%s ", prepare_mysql(date('Y-m-d')));
+$where = sprintf(
+    " where  date(`Timesheet Date`)=%s ", prepare_mysql(date('Y-m-d'))
+);
 
 
-$group_by=' ';
+$group_by = ' ';
 
 
-
-
-
-$wheref='';
-if ($parameters['f_field']=='alias' and $f_value!=''  ) {
-	$wheref.=" and  `Staff Alias` like '".addslashes($f_value)."%'    ";
-}elseif ($parameters['f_field']=='name' and $f_value!=''  ) {
-	$wheref=sprintf('  and  `Staff Name`  REGEXP "[[:<:]]%s" ', addslashes($f_value));
+$wheref = '';
+if ($parameters['f_field'] == 'alias' and $f_value != '') {
+    $wheref .= " and  `Staff Alias` like '".addslashes($f_value)."%'    ";
+} elseif ($parameters['f_field'] == 'name' and $f_value != '') {
+    $wheref = sprintf(
+        '  and  `Staff Name`  REGEXP "[[:<:]]%s" ', addslashes($f_value)
+    );
 }
 
 
-
-$_order=$order;
-$_dir=$order_direction;
-
-
-if ($order=='alias') {
-	$order="`Staff Alias`";
-
-	
-}elseif ($order=='name') {
-	$order="`Staff Name`  ";
+$_order = $order;
+$_dir   = $order_direction;
 
 
-
-}elseif ($order=='payroll_id')
-	$order='`Staff ID`';
-
-
-elseif ($order=='staff_formatted_id')
-	$order='`Timesheet Staff Key`';
-elseif ($order=='clocking_records')
-	$order='`clocking_records`';
-elseif ($order=='status' ) {
-	$order="status_key $order_direction, `Staff Name`";
-	$order_direction='';
-}else
-	$order='`Timesheet Key`';
+if ($order == 'alias') {
+    $order = "`Staff Alias`";
 
 
+} elseif ($order == 'name') {
+    $order = "`Staff Name`  ";
 
-$table='  `Timesheet Dimension` as TD left join `Staff Dimension` SD on (SD.`Staff Key`=TD.`Timesheet Staff Key`) ';
 
-$sql_totals="select count(distinct `Timesheet Staff Key`) as num from $table  $where  ";
+} elseif ($order == 'payroll_id') {
+    $order = '`Staff ID`';
+} elseif ($order == 'staff_formatted_id') {
+    $order = '`Timesheet Staff Key`';
+} elseif ($order == 'clocking_records') {
+    $order = '`clocking_records`';
+} elseif ($order == 'status') {
+    $order           = "status_key $order_direction, `Staff Name`";
+    $order_direction = '';
+} else {
+    $order = '`Timesheet Key`';
+}
+
+
+$table
+    = '  `Timesheet Dimension` as TD left join `Staff Dimension` SD on (SD.`Staff Key`=TD.`Timesheet Staff Key`) ';
+
+$sql_totals
+    = "select count(distinct `Timesheet Staff Key`) as num from $table  $where  ";
 
 //print $sql_totals;
-$fields="
+$fields
+    = "
 
 (
     CASE

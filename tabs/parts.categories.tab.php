@@ -10,33 +10,39 @@
 */
 
 
+$tab     = 'parts.categories';
+$ar_file = 'ar_inventory_tables.php';
+$tipo    = 'categories';
 
-$tab='parts.categories';
-$ar_file='ar_inventory_tables.php';
-$tipo='categories';
-
-$default=$user->get_tab_defaults($tab);
-
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array(
+$table_views = array();
+
+$table_filters = array(
+    'label' => array(
+        'label' => _('Label'),
+        'title' => _('Category label')
+    ),
+    'code'  => array(
+        'label' => _('Code'),
+        'title' => _('Category code')
+    ),
 
 );
 
-$table_filters=array(
-	'label'=>array('label'=>_('Label'),'title'=>_('Category label')),
-	'code'=>array('label'=>_('Code'),'title'=>_('Category code')),
-
+$parameters = array(
+    'parent'     => $state['parent'],
+    'parent_key' => $state['parent_key'],
+    'subject'    => 'part',
 );
 
-$parameters=array(
-		'parent'=>$state['parent'],
-		'parent_key'=>$state['parent_key'],
-		'subject'=>'part',
+$table_buttons   = array();
+$table_buttons[] = array(
+    'icon'      => 'plus',
+    'title'     => _('New category'),
+    'reference' => "inventory/category/new"
 );
-
-$table_buttons=array();
-$table_buttons[]=array('icon'=>'plus', 'title'=>_('New category'), 'reference'=>"inventory/category/new");
 
 $smarty->assign('table_buttons', $table_buttons);
 

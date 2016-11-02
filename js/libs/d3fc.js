@@ -1,4 +1,4 @@
-(function() {
+(function () {
     'use strict';
 
     // Needs to be defined like this so that the grunt task can update it
@@ -35,10 +35,10 @@
     };
 }());
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.annotation.band = function() {
+    fc.annotation.band = function () {
 
         // ordinal axes have a rangeExtent function, this adds any padding that
         // was applied to the range. This functions returns the rangeExtent
@@ -50,16 +50,16 @@
         var xScale = d3.time.scale(),
             yScale = d3.scale.linear(),
             x0, x1, y0, y1,
-            x0Scaled = function() {
+            x0Scaled = function () {
                 return range(xScale)[0];
             },
-            x1Scaled = function() {
+            x1Scaled = function () {
                 return range(xScale)[1];
             },
-            y0Scaled = function() {
+            y0Scaled = function () {
                 return range(yScale)[0];
             },
-            y1Scaled = function() {
+            y1Scaled = function () {
                 return range(yScale)[1];
             },
             decorate = fc.util.fn.noop;
@@ -69,8 +69,8 @@
             .element('g')
             .attrs({'class': 'annotation'});
 
-        var band = function(selection) {
-            selection.each(function(data) {
+        var band = function (selection) {
+            selection.each(function (data) {
 
                 var container = d3.select(this);
 
@@ -84,15 +84,15 @@
                     .align('right')
                     .x(x0Scaled)
                     .y(y0Scaled)
-                    .height(function() {
+                    .height(function () {
                         return y1Scaled.apply(this, arguments) - y0Scaled.apply(this, arguments);
                     })
-                    .width(function() {
+                    .width(function () {
                         return x1Scaled.apply(this, arguments) - x0Scaled.apply(this, arguments);
                     });
 
                 g.select('path')
-                    .attr('d', function(d, i) {
+                    .attr('d', function (d, i) {
                         // the path generator is being used to render a single path, hence
                         // an explicit index is provided
                         return pathGenerator.call(this, [d], i);
@@ -102,63 +102,63 @@
             });
         };
 
-        band.xScale = function(x) {
+        band.xScale = function (x) {
             if (!arguments.length) {
                 return xScale;
             }
             xScale = x;
             return band;
         };
-        band.yScale = function(x) {
+        band.yScale = function (x) {
             if (!arguments.length) {
                 return yScale;
             }
             yScale = x;
             return band;
         };
-        band.decorate = function(x) {
+        band.decorate = function (x) {
             if (!arguments.length) {
                 return decorate;
             }
             decorate = x;
             return band;
         };
-        band.x0 = function(x) {
+        band.x0 = function (x) {
             if (!arguments.length) {
                 return x0;
             }
             x0 = d3.functor(x);
-            x0Scaled = function() {
+            x0Scaled = function () {
                 return xScale(x0.apply(this, arguments));
             };
             return band;
         };
-        band.x1 = function(x) {
+        band.x1 = function (x) {
             if (!arguments.length) {
                 return x1;
             }
             x1 = d3.functor(x);
-            x1Scaled = function() {
+            x1Scaled = function () {
                 return xScale(x1.apply(this, arguments));
             };
             return band;
         };
-        band.y0 = function(x) {
+        band.y0 = function (x) {
             if (!arguments.length) {
                 return y0;
             }
             y0 = d3.functor(x);
-            y0Scaled = function() {
+            y0Scaled = function () {
                 return yScale(y0.apply(this, arguments));
             };
             return band;
         };
-        band.y1 = function(x) {
+        band.y1 = function (x) {
             if (!arguments.length) {
                 return y1;
             }
             y1 = d3.functor(x);
-            y1Scaled = function() {
+            y1Scaled = function () {
                 return yScale(y1.apply(this, arguments));
             };
             return band;
@@ -168,19 +168,19 @@
 
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.annotation.gridline = function() {
+    fc.annotation.gridline = function () {
 
         var xScale = d3.time.scale(),
             yScale = d3.scale.linear(),
             xTicks = 10,
             yTicks = 10;
 
-        var gridlines = function(selection) {
+        var gridlines = function (selection) {
 
-            selection.each(function() {
+            selection.each(function () {
 
                 var container = d3.select(this);
 
@@ -218,28 +218,28 @@
             });
         };
 
-        gridlines.xScale = function(x) {
+        gridlines.xScale = function (x) {
             if (!arguments.length) {
                 return xScale;
             }
             xScale = x;
             return gridlines;
         };
-        gridlines.yScale = function(x) {
+        gridlines.yScale = function (x) {
             if (!arguments.length) {
                 return yScale;
             }
             yScale = x;
             return gridlines;
         };
-        gridlines.xTicks = function(x) {
+        gridlines.xTicks = function (x) {
             if (!arguments.length) {
                 return xTicks;
             }
             xTicks = x;
             return gridlines;
         };
-        gridlines.yTicks = function(x) {
+        gridlines.yTicks = function (x) {
             if (!arguments.length) {
                 return yTicks;
             }
@@ -252,10 +252,10 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.annotation.line = function() {
+    fc.annotation.line = function () {
 
         var xScale = d3.time.scale(),
             yScale = d3.scale.linear(),
@@ -270,8 +270,8 @@
             .element('g')
             .attrs({'class': 'annotation'});
 
-        var line = function(selection) {
-            selection.each(function(data) {
+        var line = function (selection) {
+            selection.each(function (data) {
 
                 // the value scale which the annotation 'value' relates to, the crossScale
                 // is the other. Which is which depends on the orienation!
@@ -280,7 +280,9 @@
                     textAttributes = {x: -5, y: -5};
                 switch (orient) {
                     case 'horizontal':
-                        translation = function(a, b) { return 'translate(' + a + ', ' + b + ')'; };
+                        translation = function (a, b) {
+                            return 'translate(' + a + ', ' + b + ')';
+                        };
                         lineProperty = 'x2';
                         crossScale = xScale;
                         valueScale = yScale;
@@ -289,7 +291,9 @@
                         break;
 
                     case 'vertical':
-                        translation = function(a, b) { return 'translate(' + b + ', ' + a + ')'; };
+                        translation = function (a, b) {
+                            return 'translate(' + b + ', ' + a + ')';
+                        };
                         lineProperty = 'y2';
                         crossScale = yScale;
                         valueScale = xScale;
@@ -311,7 +315,7 @@
 
                 var scaleRange = range(crossScale),
                     // the transform that sets the 'origin' of the annotation
-                    containerTransform = function(d) {
+                    containerTransform = function (d) {
                         var transform = valueScale(value(d));
                         return translation(scaleRange[0], transform);
                     },
@@ -357,49 +361,49 @@
             });
         };
 
-        line.xScale = function(x) {
+        line.xScale = function (x) {
             if (!arguments.length) {
                 return xScale;
             }
             xScale = x;
             return line;
         };
-        line.yScale = function(x) {
+        line.yScale = function (x) {
             if (!arguments.length) {
                 return yScale;
             }
             yScale = x;
             return line;
         };
-        line.value = function(x) {
+        line.value = function (x) {
             if (!arguments.length) {
                 return value;
             }
             value = d3.functor(x);
             return line;
         };
-        line.keyValue = function(x) {
+        line.keyValue = function (x) {
             if (!arguments.length) {
                 return keyValue;
             }
             keyValue = d3.functor(x);
             return line;
         };
-        line.label = function(x) {
+        line.label = function (x) {
             if (!arguments.length) {
                 return label;
             }
             label = d3.functor(x);
             return line;
         };
-        line.decorate = function(x) {
+        line.decorate = function (x) {
             if (!arguments.length) {
                 return decorate;
             }
             decorate = x;
             return line;
         };
-        line.orient = function(x) {
+        line.orient = function (x) {
             if (!arguments.length) {
                 return orient;
             }
@@ -411,16 +415,18 @@
 
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.chart.legend = function() {
+    fc.chart.legend = function () {
         var tableDecorate = fc.util.fn.noop,
             rowDecorate = fc.util.fn.noop;
 
         var items = [
-                ['datum', function(d) { return d.datum; }]
-            ];
+            ['datum', function (d) {
+                return d.datum;
+            }]
+        ];
 
         var tableDataJoin = fc.util.dataJoin()
             .selector('table.legend')
@@ -432,11 +438,11 @@
             .element('tr')
             .attrs({'class': 'row'});
 
-        var legend = function(selection) {
-            selection.each(function(data) {
+        var legend = function (selection) {
+            selection.each(function (data) {
                 var container = d3.select(this);
 
-                var legendData = items.map(function(item, i) {
+                var legendData = items.map(function (item, i) {
                     return {
                         datum: data,
                         header: d3.functor(item[0]),
@@ -453,12 +459,12 @@
                 trEnter.append('td');
 
                 trUpdate.select('th')
-                    .html(function(d, i) {
+                    .html(function (d, i) {
                         return d.header.call(this, d.datum, i);
                     });
 
                 trUpdate.select('td')
-                    .html(function(d, i) {
+                    .html(function (d, i) {
                         return d.value.call(this, d.datum, i);
                     });
 
@@ -467,7 +473,7 @@
             });
         };
 
-        legend.items = function(x) {
+        legend.items = function (x) {
             if (!arguments.length) {
                 return items;
             }
@@ -475,7 +481,7 @@
             return legend;
         };
 
-        legend.rowDecorate = function(x) {
+        legend.rowDecorate = function (x) {
             if (!arguments.length) {
                 return rowDecorate;
             }
@@ -483,7 +489,7 @@
             return legend;
         };
 
-        legend.tableDecorate = function(x) {
+        legend.tableDecorate = function (x) {
             if (!arguments.length) {
                 return tableDecorate;
             }
@@ -495,10 +501,10 @@
     };
 
 })(d3, fc);
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.chart.linearTimeSeries = function() {
+    fc.chart.linearTimeSeries = function () {
 
         var xAxisHeight = 20;
         var plotArea = fc.series.line();
@@ -511,9 +517,9 @@
             .scale(yScale)
             .orient('left');
 
-        var linearTimeSeries = function(selection) {
+        var linearTimeSeries = function (selection) {
 
-            selection.each(function(data) {
+            selection.each(function (data) {
 
                 var container = d3.select(this);
 
@@ -616,16 +622,20 @@
             yOrient: 'orient'
         });
 
-        linearTimeSeries.xScale = function() { return xScale; };
-        linearTimeSeries.yScale = function() { return yScale; };
-        linearTimeSeries.plotArea = function(x) {
+        linearTimeSeries.xScale = function () {
+            return xScale;
+        };
+        linearTimeSeries.yScale = function () {
+            return yScale;
+        };
+        linearTimeSeries.plotArea = function (x) {
             if (!arguments.length) {
                 return plotArea;
             }
             plotArea = x;
             return linearTimeSeries;
         };
-        linearTimeSeries.xAxisHeight = function(x) {
+        linearTimeSeries.xAxisHeight = function (x) {
             if (!arguments.length) {
                 return xAxisHeight;
             }
@@ -638,10 +648,10 @@
 
 })(d3, fc);
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.chart.sparkline = function() {
+    fc.chart.sparkline = function () {
 
         // creates an array with four elements, representing the high, low, open and close
         // values of the given array
@@ -653,24 +663,24 @@
             var low = d3.min(data, yValueAccessor);
 
             function elementWithYValue(value) {
-                return data.filter(function(d) {
+                return data.filter(function (d) {
                     return yValueAccessor(d) === value;
                 })[0];
             }
 
             return [{
-                    x: xValueAccessor(data[0]),
-                    y: yValueAccessor(data[0])
-                }, {
-                    x: xValueAccessor(elementWithYValue(high)),
-                    y: high
-                }, {
-                    x: xValueAccessor(elementWithYValue(low)),
-                    y: low
-                }, {
-                    x: xValueAccessor(data[data.length - 1]),
-                    y: yValueAccessor(data[data.length - 1])
-                }];
+                x: xValueAccessor(data[0]),
+                y: yValueAccessor(data[0])
+            }, {
+                x: xValueAccessor(elementWithYValue(high)),
+                y: high
+            }, {
+                x: xValueAccessor(elementWithYValue(low)),
+                y: low
+            }, {
+                x: xValueAccessor(data[data.length - 1]),
+                y: yValueAccessor(data[data.length - 1])
+            }];
         }
 
         var xScale = fc.scale.dateTime();
@@ -681,22 +691,30 @@
         // configure the point series to render the data from the
         // highLowOpenClose function
         var point = fc.series.point()
-            .xValue(function(d) { return d.x; })
-            .yValue(function(d) { return d.y; })
-            .decorate(function(sel) {
-                sel.attr('class', function(d, i) {
+            .xValue(function (d) {
+                return d.x;
+            })
+            .yValue(function (d) {
+                return d.y;
+            })
+            .decorate(function (sel) {
+                sel.attr('class', function (d, i) {
                     switch (i) {
-                        case 0: return 'open';
-                        case 1: return 'high';
-                        case 2: return 'low';
-                        case 3: return 'close';
+                        case 0:
+                            return 'open';
+                        case 1:
+                            return 'high';
+                        case 2:
+                            return 'low';
+                        case 3:
+                            return 'close';
                     }
                 });
             });
 
         var multi = fc.series.multi()
             .series([line, point])
-            .mapping(function(series) {
+            .mapping(function (series) {
                 switch (series) {
                     case point:
                         return highLowOpenClose(this);
@@ -705,11 +723,11 @@
                 }
             });
 
-        var sparkline = function(selection) {
+        var sparkline = function (selection) {
 
             point.radius(radius);
 
-            selection.each(function(data) {
+            selection.each(function (data) {
 
                 var container = d3.select(this);
                 var dimensions = fc.util.innerDimensions(this);
@@ -737,9 +755,13 @@
 
         fc.util.rebind(sparkline, line, 'xValue', 'yValue');
 
-        sparkline.xScale = function() { return xScale; };
-        sparkline.yScale = function() { return yScale; };
-        sparkline.radius = function(x) {
+        sparkline.xScale = function () {
+            return xScale;
+        };
+        sparkline.yScale = function () {
+            return yScale;
+        };
+        sparkline.radius = function (x) {
             if (!arguments.length) {
                 return radius;
             }
@@ -752,10 +774,10 @@
 
 })(d3, fc);
 
-(function(fc) {
+(function (fc) {
     'use strict';
 
-    fc.data.random.financial = function() {
+    fc.data.random.financial = function () {
 
         var mu = 0.1,
             sigma = 0.1,
@@ -764,11 +786,11 @@
             startDate = new Date(),
             stepsPerDay = 50,
             volumeNoiseFactor = 0.3,
-            filter = function(date) {
+            filter = function (date) {
                 return !(date.getDay() === 0 || date.getDay() === 6);
             };
 
-        var calculateOHLC = function(days, prices, volumes) {
+        var calculateOHLC = function (days, prices, volumes) {
 
             var ohlcv = [],
                 daySteps,
@@ -792,7 +814,7 @@
             return ohlcv;
         };
 
-        var gen = function(days) {
+        var gen = function (days) {
             var toDate = new Date(startDate.getTime());
             toDate.setUTCDate(startDate.getUTCDate() + days);
 
@@ -815,7 +837,7 @@
             );
 
             // Add random noise
-            volumes = volumes.map(function(vol) {
+            volumes = volumes.map(function (vol) {
                 var boundedNoiseFactor = Math.min(0, Math.max(volumeNoiseFactor, 1));
                 var multiplier = 1 + (boundedNoiseFactor * (1 - 2 * Math.random()));
                 return Math.floor(vol * multiplier);
@@ -825,61 +847,61 @@
             startPrice = prices[prices.length - 1];
             startVolume = volumes[volumes.length - 1];
 
-            return calculateOHLC(days, prices, volumes).filter(function(d) {
+            return calculateOHLC(days, prices, volumes).filter(function (d) {
                 return !filter || filter(d.date);
             });
         };
 
-        gen.mu = function(x) {
+        gen.mu = function (x) {
             if (!arguments.length) {
                 return mu;
             }
             mu = x;
             return gen;
         };
-        gen.sigma = function(x) {
+        gen.sigma = function (x) {
             if (!arguments.length) {
                 return sigma;
             }
             sigma = x;
             return gen;
         };
-        gen.startPrice = function(x) {
+        gen.startPrice = function (x) {
             if (!arguments.length) {
                 return startPrice;
             }
             startPrice = x;
             return gen;
         };
-        gen.startVolume = function(x) {
+        gen.startVolume = function (x) {
             if (!arguments.length) {
                 return startVolume;
             }
             startVolume = x;
             return gen;
         };
-        gen.startDate = function(x) {
+        gen.startDate = function (x) {
             if (!arguments.length) {
                 return startDate;
             }
             startDate = x;
             return gen;
         };
-        gen.stepsPerDay = function(x) {
+        gen.stepsPerDay = function (x) {
             if (!arguments.length) {
                 return stepsPerDay;
             }
             stepsPerDay = x;
             return gen;
         };
-        gen.volumeNoiseFactor = function(x) {
+        gen.volumeNoiseFactor = function (x) {
             if (!arguments.length) {
                 return volumeNoiseFactor;
             }
             volumeNoiseFactor = x;
             return gen;
         };
-        gen.filter = function(x) {
+        gen.filter = function (x) {
             if (!arguments.length) {
                 return filter;
             }
@@ -892,10 +914,10 @@
 
 }(fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.data.random.walk = function(period, steps, mu, sigma, initial) {
+    fc.data.random.walk = function (period, steps, mu, sigma, initial) {
         var randomNormal = d3.random.normal(),
             timeStep = period / steps,
             increments = new Array(steps + 1),
@@ -919,23 +941,27 @@
     };
 
 }(d3, fc));
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.indicator.algorithm.bollingerBands = function() {
+    fc.indicator.algorithm.bollingerBands = function () {
 
         var bollingerAlgorithm = fc.indicator.algorithm.calculator.bollingerBands()
-            .value(function(d) { return d.close; });
+            .value(function (d) {
+                return d.close;
+            });
 
         var mergedAlgorithm = fc.indicator.algorithm.merge()
-                .algorithm(bollingerAlgorithm)
-                .merge(function(datum, boll) { datum.bollingerBands = boll; });
+            .algorithm(bollingerAlgorithm)
+            .merge(function (datum, boll) {
+                datum.bollingerBands = boll;
+            });
 
-        var bollingerBands = function(data) {
+        var bollingerBands = function (data) {
             return mergedAlgorithm(data);
         };
 
-        bollingerBands.root = function(d) {
+        bollingerBands.root = function (d) {
             return d.bollingerBands;
         };
 
@@ -946,10 +972,10 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.indicator.algorithm.calculator.bollingerBands = function() {
+    fc.indicator.algorithm.calculator.bollingerBands = function () {
 
         var multiplier = 2;
 
@@ -959,7 +985,7 @@
                 average: undefined,
                 lower: undefined
             })
-            .accumulator(function(values) {
+            .accumulator(function (values) {
                 var avg = d3.mean(values);
                 var stdDev = d3.deviation(values);
                 return {
@@ -969,11 +995,11 @@
                 };
             });
 
-        var bollingerBands = function(data) {
+        var bollingerBands = function (data) {
             return slidingWindow(data);
         };
 
-        bollingerBands.multiplier = function(x) {
+        bollingerBands.multiplier = function (x) {
             if (!arguments.length) {
                 return multiplier;
             }
@@ -987,38 +1013,38 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.indicator.algorithm.calculator.exponentialMovingAverage = function() {
+    fc.indicator.algorithm.calculator.exponentialMovingAverage = function () {
 
         var windowSize = 9,
             value = fc.util.fn.identity;
 
-        var exponentialMovingAverage = function(data) {
+        var exponentialMovingAverage = function (data) {
 
             var alpha = 2 / (windowSize + 1);
             var previous;
             var initialAccumulator = 0;
 
-            return data.map(function(d, i) {
-                    if (i < windowSize - 1) {
-                        initialAccumulator += value(d, i);
-                        return undefined;
-                    } else if (i === windowSize - 1) {
-                        initialAccumulator += value(d, i);
-                        var initialValue = initialAccumulator / windowSize;
-                        previous = initialValue;
-                        return initialValue;
-                    } else {
-                        var nextValue = value(d, i) * alpha + (1 - alpha) * previous;
-                        previous = nextValue;
-                        return nextValue;
-                    }
-                });
+            return data.map(function (d, i) {
+                if (i < windowSize - 1) {
+                    initialAccumulator += value(d, i);
+                    return undefined;
+                } else if (i === windowSize - 1) {
+                    initialAccumulator += value(d, i);
+                    var initialValue = initialAccumulator / windowSize;
+                    previous = initialValue;
+                    return initialValue;
+                } else {
+                    var nextValue = value(d, i) * alpha + (1 - alpha) * previous;
+                    previous = nextValue;
+                    return nextValue;
+                }
+            });
         };
 
-        exponentialMovingAverage.windowSize = function(x) {
+        exponentialMovingAverage.windowSize = function (x) {
             if (!arguments.length) {
                 return windowSize;
             }
@@ -1026,7 +1052,7 @@
             return exponentialMovingAverage;
         };
 
-        exponentialMovingAverage.value = function(x) {
+        exponentialMovingAverage.value = function (x) {
             if (!arguments.length) {
                 return value;
             }
@@ -1038,10 +1064,10 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.indicator.algorithm.calculator.macd = function() {
+    fc.indicator.algorithm.calculator.macd = function () {
 
         var value = fc.util.fn.identity;
 
@@ -1054,13 +1080,13 @@
         var adaptedSignalEMA = fc.indicator.algorithm.calculator.undefinedInputAdapter()
             .algorithm(signalEMA);
 
-        var macd = function(data) {
+        var macd = function (data) {
 
             fastEMA.value(value);
             slowEMA.value(value);
 
             var diff = d3.zip(fastEMA(data), slowEMA(data))
-                .map(function(d) {
+                .map(function (d) {
                     if (d[0] !== undefined && d[1] !== undefined) {
                         return d[0] - d[1];
                     } else {
@@ -1071,7 +1097,7 @@
             var averageDiff = adaptedSignalEMA(diff);
 
             var macd = d3.zip(diff, averageDiff)
-                .map(function(d) {
+                .map(function (d) {
                     return {
                         macd: d[0],
                         signal: d[1],
@@ -1082,7 +1108,7 @@
             return macd;
         };
 
-        macd.value = function(x) {
+        macd.value = function (x) {
             if (!arguments.length) {
                 return value;
             }
@@ -1106,15 +1132,15 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.indicator.algorithm.calculator.percentageChange = function() {
+    fc.indicator.algorithm.calculator.percentageChange = function () {
 
         var baseIndex = d3.functor(0),
             value = fc.util.fn.identity;
 
-        var percentageChange = function(data) {
+        var percentageChange = function (data) {
 
             if (data.length === 0) {
                 return [];
@@ -1122,19 +1148,19 @@
 
             var baseValue = value(data[baseIndex(data)]);
 
-            return data.map(function(d, i) {
-                    return (value(d, i) - baseValue) / baseValue;
-                });
+            return data.map(function (d, i) {
+                return (value(d, i) - baseValue) / baseValue;
+            });
         };
 
-        percentageChange.baseIndex = function(x) {
+        percentageChange.baseIndex = function (x) {
             if (!arguments.length) {
                 return baseIndex;
             }
             baseIndex = d3.functor(x);
             return percentageChange;
         };
-        percentageChange.value = function(x) {
+        percentageChange.value = function (x) {
             if (!arguments.length) {
                 return value;
             }
@@ -1146,14 +1172,18 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.indicator.algorithm.calculator.relativeStrengthIndex = function() {
+    fc.indicator.algorithm.calculator.relativeStrengthIndex = function () {
 
-        var openValue = function(d, i) { return d.open; },
-            closeValue = function(d, i) { return d.close; },
-            averageAccumulator = function(values) {
+        var openValue = function (d, i) {
+                return d.open;
+            },
+            closeValue = function (d, i) {
+                return d.close;
+            },
+            averageAccumulator = function (values) {
                 var alpha = 1 / values.length;
                 var result = values[0];
                 for (var i = 1, l = values.length; i < l; i++) {
@@ -1164,7 +1194,7 @@
 
         var slidingWindow = fc.indicator.algorithm.calculator.slidingWindow()
             .windowSize(14)
-            .accumulator(function(values) {
+            .accumulator(function (values) {
                 var downCloses = [];
                 var upCloses = [];
 
@@ -1187,18 +1217,18 @@
                 return 100 - (100 / (1 + rs));
             });
 
-        var rsi = function(data) {
+        var rsi = function (data) {
             return slidingWindow(data);
         };
 
-        rsi.openValue = function(x) {
+        rsi.openValue = function (x) {
             if (!arguments.length) {
                 return openValue;
             }
             openValue = x;
             return rsi;
         };
-        rsi.closeValue = function(x) {
+        rsi.closeValue = function (x) {
             if (!arguments.length) {
                 return closeValue;
             }
@@ -1212,54 +1242,54 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.indicator.algorithm.calculator.slidingWindow = function() {
+    fc.indicator.algorithm.calculator.slidingWindow = function () {
 
         var undefinedValue = d3.functor(undefined),
             windowSize = d3.functor(10),
             accumulator = fc.util.fn.noop,
             value = fc.util.fn.identity;
 
-        var slidingWindow = function(data) {
+        var slidingWindow = function (data) {
             var size = windowSize.apply(this, arguments);
             var windowData = data.slice(0, size).map(value);
-            return data.map(function(d, i) {
-                    if (i < size - 1) {
-                        return undefinedValue(d, i);
-                    }
-                    if (i >= size) {
-                        // Treat windowData as FIFO rolling buffer
-                        windowData.shift();
-                        windowData.push(value(d, i));
-                    }
-                    return accumulator(windowData);
-                });
+            return data.map(function (d, i) {
+                if (i < size - 1) {
+                    return undefinedValue(d, i);
+                }
+                if (i >= size) {
+                    // Treat windowData as FIFO rolling buffer
+                    windowData.shift();
+                    windowData.push(value(d, i));
+                }
+                return accumulator(windowData);
+            });
         };
 
-        slidingWindow.undefinedValue = function(x) {
+        slidingWindow.undefinedValue = function (x) {
             if (!arguments.length) {
                 return undefinedValue;
             }
             undefinedValue = d3.functor(x);
             return slidingWindow;
         };
-        slidingWindow.windowSize = function(x) {
+        slidingWindow.windowSize = function (x) {
             if (!arguments.length) {
                 return windowSize;
             }
             windowSize = d3.functor(x);
             return slidingWindow;
         };
-        slidingWindow.accumulator = function(x) {
+        slidingWindow.accumulator = function (x) {
             if (!arguments.length) {
                 return accumulator;
             }
             accumulator = x;
             return slidingWindow;
         };
-        slidingWindow.value = function(x) {
+        slidingWindow.value = function (x) {
             if (!arguments.length) {
                 return value;
             }
@@ -1271,27 +1301,29 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
     // Indicator algorithms are not designed to accomodate leading 'undefined' value.
     // This adapter adds that functionality by adding a corresponding number
     // of 'undefined' values to the output.
-    fc.indicator.algorithm.calculator.undefinedInputAdapter = function() {
+    fc.indicator.algorithm.calculator.undefinedInputAdapter = function () {
 
         var algorithm = fc.indicator.algorithm.calculator.slidingWindow()
             .accumulator(d3.mean);
         var undefinedValue = d3.functor(undefined),
-            defined = function(value) { return value === undefined; };
+            defined = function (value) {
+                return value === undefined;
+            };
 
         function undefinedArrayOfLength(length) {
             return Array.apply(null, new Array(length)).map(undefinedValue);
         }
 
-        var undefinedInputAdapter = function(data) {
+        var undefinedInputAdapter = function (data) {
             var undefinedCount = 0;
             while (defined(data[undefinedCount]) && undefinedCount < data.length) {
-                undefinedCount ++;
+                undefinedCount++;
             }
 
             var nonUndefinedData = data.slice(undefinedCount);
@@ -1299,21 +1331,21 @@
             return undefinedArrayOfLength(undefinedCount).concat(algorithm(nonUndefinedData));
         };
 
-        undefinedInputAdapter.algorithm = function(x) {
+        undefinedInputAdapter.algorithm = function (x) {
             if (!arguments.length) {
                 return algorithm;
             }
             algorithm = x;
             return undefinedInputAdapter;
         };
-        undefinedInputAdapter.undefinedValue = function(x) {
+        undefinedInputAdapter.undefinedValue = function (x) {
             if (!arguments.length) {
                 return undefinedValue;
             }
             undefinedValue = d3.functor(x);
             return undefinedInputAdapter;
         };
-        undefinedInputAdapter.defined = function(x) {
+        undefinedInputAdapter.defined = function (x) {
             if (!arguments.length) {
                 return defined;
             }
@@ -1325,20 +1357,24 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.indicator.algorithm.exponentialMovingAverage = function() {
+    fc.indicator.algorithm.exponentialMovingAverage = function () {
 
         var ema = fc.indicator.algorithm.calculator.slidingWindow()
-                .accumulator(d3.mean)
-                .value(function(d) { return d.close; });
+            .accumulator(d3.mean)
+            .value(function (d) {
+                return d.close;
+            });
 
         var mergedAlgorithm = fc.indicator.algorithm.merge()
-                .algorithm(ema)
-                .merge(function(datum, ma) { datum.exponentialMovingAverage = ma; });
+            .algorithm(ema)
+            .merge(function (datum, ma) {
+                datum.exponentialMovingAverage = ma;
+            });
 
-        var exponentialMovingAverage = function(data) {
+        var exponentialMovingAverage = function (data) {
             return mergedAlgorithm(data);
         };
 
@@ -1349,19 +1385,23 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.indicator.algorithm.macd = function() {
+    fc.indicator.algorithm.macd = function () {
 
         var macdAlgorithm = fc.indicator.algorithm.calculator.macd()
-            .value(function(d) { return d.close; });
+            .value(function (d) {
+                return d.close;
+            });
 
         var mergedAlgorithm = fc.indicator.algorithm.merge()
-                .algorithm(macdAlgorithm)
-                .merge(function(datum, macd) { datum.macd = macd; });
+            .algorithm(macdAlgorithm)
+            .merge(function (datum, macd) {
+                datum.macd = macd;
+            });
 
-        var macd = function(data) {
+        var macd = function (data) {
             return mergedAlgorithm(data);
         };
 
@@ -1372,24 +1412,24 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
     // applies an algorithm to an array, merging the result back into
     // the source array using the given merge function.
-    fc.indicator.algorithm.merge = function() {
+    fc.indicator.algorithm.merge = function () {
 
         var merge = fc.util.fn.noop,
             algorithm = fc.indicator.algorithm.calculator.slidingWindow();
 
-        var mergeCompute = function(data) {
+        var mergeCompute = function (data) {
             return d3.zip(data, algorithm(data))
-                .forEach(function(tuple) {
+                .forEach(function (tuple) {
                     merge(tuple[0], tuple[1]);
                 });
         };
 
-        mergeCompute.algorithm = function(x) {
+        mergeCompute.algorithm = function (x) {
             if (!arguments.length) {
                 return algorithm;
             }
@@ -1397,7 +1437,7 @@
             return mergeCompute;
         };
 
-        mergeCompute.merge = function(x) {
+        mergeCompute.merge = function (x) {
             if (!arguments.length) {
                 return merge;
             }
@@ -1409,20 +1449,24 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.indicator.algorithm.movingAverage = function() {
+    fc.indicator.algorithm.movingAverage = function () {
 
         var ma = fc.indicator.algorithm.calculator.slidingWindow()
-                .accumulator(d3.mean)
-                .value(function(d) { return d.close; });
+            .accumulator(d3.mean)
+            .value(function (d) {
+                return d.close;
+            });
 
         var mergedAlgorithm = fc.indicator.algorithm.merge()
-                .algorithm(ma)
-                .merge(function(datum, ma) { datum.movingAverage = ma; });
+            .algorithm(ma)
+            .merge(function (datum, ma) {
+                datum.movingAverage = ma;
+            });
 
-        var movingAverage = function(data) {
+        var movingAverage = function (data) {
             return mergedAlgorithm(data);
         };
 
@@ -1433,18 +1477,20 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.indicator.algorithm.relativeStrengthIndex = function() {
+    fc.indicator.algorithm.relativeStrengthIndex = function () {
 
         var rsi = fc.indicator.algorithm.calculator.relativeStrengthIndex();
 
         var mergedAlgorithm = fc.indicator.algorithm.merge()
-                .algorithm(rsi)
-                .merge(function(datum, rsi) { datum.rsi = rsi; });
+            .algorithm(rsi)
+            .merge(function (datum, rsi) {
+                datum.rsi = rsi;
+            });
 
-        var relativeStrengthIndex = function(data) {
+        var relativeStrengthIndex = function (data) {
             return mergedAlgorithm(data);
         };
 
@@ -1455,49 +1501,55 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.indicator.renderer.bollingerBands = function() {
+    fc.indicator.renderer.bollingerBands = function () {
 
         var xScale = d3.time.scale(),
             yScale = d3.scale.linear(),
-            yValue = function(d, i) { return d.close; },
-            xValue = function(d, i) { return d.date; },
-            root = function(d) { return d.bollingerBands; };
+            yValue = function (d, i) {
+                return d.close;
+            },
+            xValue = function (d, i) {
+                return d.date;
+            },
+            root = function (d) {
+                return d.bollingerBands;
+            };
 
         var area = fc.series.area()
-            .y0Value(function(d, i) {
+            .y0Value(function (d, i) {
                 return root(d).upper;
             })
-            .y1Value(function(d, i) {
+            .y1Value(function (d, i) {
                 return root(d).lower;
             });
 
         var upperLine = fc.series.line()
-            .yValue(function(d, i) {
+            .yValue(function (d, i) {
                 return root(d).upper;
             });
 
         var averageLine = fc.series.line()
-            .yValue(function(d, i) {
+            .yValue(function (d, i) {
                 return root(d).average;
             });
 
         var lowerLine = fc.series.line()
-            .yValue(function(d, i) {
+            .yValue(function (d, i) {
                 return root(d).lower;
             });
 
-        var bollingerBands = function(selection) {
+        var bollingerBands = function (selection) {
 
             var multi = fc.series.multi()
                 .xScale(xScale)
                 .yScale(yScale)
                 .series([area, upperLine, lowerLine, averageLine])
-                .decorate(function(g) {
+                .decorate(function (g) {
                     g.enter()
-                        .attr('class', function(d, i) {
+                        .attr('class', function (d, i) {
                             return ['area', 'upper', 'lower', 'average'][i];
                         });
                 });
@@ -1510,35 +1562,35 @@
             selection.call(multi);
         };
 
-        bollingerBands.xScale = function(x) {
+        bollingerBands.xScale = function (x) {
             if (!arguments.length) {
                 return xScale;
             }
             xScale = x;
             return bollingerBands;
         };
-        bollingerBands.yScale = function(x) {
+        bollingerBands.yScale = function (x) {
             if (!arguments.length) {
                 return yScale;
             }
             yScale = x;
             return bollingerBands;
         };
-        bollingerBands.xValue = function(x) {
+        bollingerBands.xValue = function (x) {
             if (!arguments.length) {
                 return xValue;
             }
             xValue = x;
             return bollingerBands;
         };
-        bollingerBands.yValue = function(x) {
+        bollingerBands.yValue = function (x) {
             if (!arguments.length) {
                 return yValue;
             }
             yValue = x;
             return bollingerBands;
         };
-        bollingerBands.root = function(x) {
+        bollingerBands.root = function (x) {
             if (!arguments.length) {
                 return root;
             }
@@ -1550,37 +1602,47 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.indicator.renderer.macd = function() {
+    fc.indicator.renderer.macd = function () {
 
         var xScale = d3.time.scale(),
             yScale = d3.scale.linear(),
-            xValue = function(d) { return d.date; },
-            root = function(d) { return d.macd; },
+            xValue = function (d) {
+                return d.date;
+            },
+            root = function (d) {
+                return d.macd;
+            },
             macdLine = fc.series.line(),
             signalLine = fc.series.line(),
             divergenceBar = fc.series.bar(),
             multiSeries = fc.series.multi();
 
-        var macd = function(selection) {
+        var macd = function (selection) {
 
             macdLine.xValue(xValue)
-                .yValue(function(d, i) { return root(d).macd; });
+                .yValue(function (d, i) {
+                    return root(d).macd;
+                });
 
             signalLine.xValue(xValue)
-                .yValue(function(d, i) { return root(d).signal; });
+                .yValue(function (d, i) {
+                    return root(d).signal;
+                });
 
             divergenceBar.xValue(xValue)
-                .yValue(function(d, i) { return root(d).divergence; });
+                .yValue(function (d, i) {
+                    return root(d).divergence;
+                });
 
             multiSeries.xScale(xScale)
                 .yScale(yScale)
                 .series([divergenceBar, macdLine, signalLine])
-                .decorate(function(g) {
+                .decorate(function (g) {
                     g.enter()
-                        .attr('class', function(d, i) {
+                        .attr('class', function (d, i) {
                             return ['divergence', 'macd', 'signal'][i];
                         });
                 });
@@ -1588,7 +1650,7 @@
             selection.call(multiSeries);
         };
 
-        macd.xScale = function(x) {
+        macd.xScale = function (x) {
             if (!arguments.length) {
                 return xScale;
             }
@@ -1596,7 +1658,7 @@
             return macd;
         };
 
-        macd.xValue = function(x) {
+        macd.xValue = function (x) {
             if (!arguments.length) {
                 return xValue;
             }
@@ -1604,7 +1666,7 @@
             return macd;
         };
 
-        macd.yScale = function(x) {
+        macd.yScale = function (x) {
             if (!arguments.length) {
                 return yScale;
             }
@@ -1612,7 +1674,7 @@
             return macd;
         };
 
-        macd.root = function(x) {
+        macd.root = function (x) {
             if (!arguments.length) {
                 return root;
             }
@@ -1624,10 +1686,10 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.indicator.renderer.relativeStrengthIndex = function() {
+    fc.indicator.renderer.relativeStrengthIndex = function () {
 
         var xScale = d3.time.scale(),
             yScale = d3.scale.linear(),
@@ -1636,9 +1698,11 @@
 
         var annotations = fc.annotation.line();
         var rsiLine = fc.series.line()
-            .yValue(function(d, i) { return d.rsi; });
+            .yValue(function (d, i) {
+                return d.rsi;
+            });
 
-        var rsi = function(selection) {
+        var rsi = function (selection) {
 
             annotations.xScale(xScale)
                 .yScale(yScale);
@@ -1646,7 +1710,7 @@
             rsiLine.xScale(xScale)
                 .yScale(yScale);
 
-            selection.each(function(data) {
+            selection.each(function (data) {
 
                 var container = d3.select(this);
 
@@ -1674,28 +1738,28 @@
             });
         };
 
-        rsi.xScale = function(x) {
+        rsi.xScale = function (x) {
             if (!arguments.length) {
                 return xScale;
             }
             xScale = x;
             return rsi;
         };
-        rsi.yScale = function(x) {
+        rsi.yScale = function (x) {
             if (!arguments.length) {
                 return yScale;
             }
             yScale = x;
             return rsi;
         };
-        rsi.upperValue = function(x) {
+        rsi.upperValue = function (x) {
             if (!arguments.length) {
                 return upperValue;
             }
             upperValue = x;
             return rsi;
         };
-        rsi.lowerValue = function(x) {
+        rsi.lowerValue = function (x) {
             if (!arguments.length) {
                 return lowerValue;
             }
@@ -1710,11 +1774,11 @@
 }(d3, fc));
 
 /* globals computeLayout */
-(function(d3, fc, cssLayout) {
+(function (d3, fc, cssLayout) {
     'use strict';
 
 
-    d3.selection.prototype.layout = function(name, value) {
+    d3.selection.prototype.layout = function (name, value) {
         var layout = fc.layout();
         var n = arguments.length;
         if (n === 2) {
@@ -1731,7 +1795,7 @@
                 // layout(object) - sets the layout-css property to the given object
                 var styleObject = name;
                 var layoutCss = Object.keys(styleObject)
-                    .map(function(property) {
+                    .map(function (property) {
                         return property + ':' + styleObject[property];
                     })
                     .join(';');
@@ -1747,7 +1811,7 @@
         return this;
     };
 
-    fc.layout = function() {
+    fc.layout = function () {
 
         var width = -1,
             height = -1;
@@ -1759,7 +1823,7 @@
             }
             var properties = style.split(';');
             var json = {};
-            properties.forEach(function(property) {
+            properties.forEach(function (property) {
                 var components = property.split(':');
                 if (components.length === 2) {
                     var name = components[0].trim();
@@ -1784,6 +1848,7 @@
                 }
                 return children;
             }
+
             return {
                 style: parseStyle(el.getAttribute('layout-css')),
                 children: getChildNodes(el),
@@ -1813,8 +1878,8 @@
             node.children.forEach(applyLayout);
         }
 
-        var layout = function(selection) {
-            selection.each(function(data) {
+        var layout = function (selection) {
+            selection.each(function (data) {
                 var dimensions = fc.util.innerDimensions(this);
 
                 // create the layout nodes
@@ -1832,14 +1897,14 @@
             });
         };
 
-        layout.width = function(x) {
+        layout.width = function (x) {
             if (!arguments.length) {
                 return width;
             }
             width = x;
             return layout;
         };
-        layout.height = function(x) {
+        layout.height = function (x) {
             if (!arguments.length) {
                 return height;
             }
@@ -1852,17 +1917,17 @@
 
 }(d3, fc, computeLayout));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.scale.dateTime = function() {
+    fc.scale.dateTime = function () {
         return dateTimeScale();
     };
 
     // obtains the ticks from the given scale, transforming the result to ensure
     // it does not include any discontinuities
-    fc.scale.dateTime.tickTransformer = function(ticks, discontinuityProvider, domain) {
-        var clampedTicks = ticks.map(function(tick, index) {
+    fc.scale.dateTime.tickTransformer = function (ticks, discontinuityProvider, domain) {
+        var clampedTicks = ticks.map(function (tick, index) {
             if (index < ticks.length - 1) {
                 return discontinuityProvider.clampUp(tick);
             } else {
@@ -1871,8 +1936,10 @@
                     clampedTick : discontinuityProvider.clampDown(tick);
             }
         });
-        var uniqueTicks = clampedTicks.reduce(function(arr, tick) {
-            if (arr.filter(function(f) { return f.getTime() === tick.getTime(); }).length === 0) {
+        var uniqueTicks = clampedTicks.reduce(function (arr, tick) {
+            if (arr.filter(function (f) {
+                    return f.getTime() === tick.getTime();
+                }).length === 0) {
                 arr.push(tick);
             }
             return arr;
@@ -1881,13 +1948,13 @@
     };
 
     /**
-    * The `fc.scale.dateTime` scale renders a discontinuous date time scale, i.e. a time scale that incorporates gaps.
-    * As an example, you can use this scale to render a chart where the weekends are skipped.
-    *
-    * @type {object}
-    * @memberof fc.scale
-    * @class fc.scale.dateTime
-    */
+     * The `fc.scale.dateTime` scale renders a discontinuous date time scale, i.e. a time scale that incorporates gaps.
+     * As an example, you can use this scale to render a chart where the weekends are skipped.
+     *
+     * @type {object}
+     * @memberof fc.scale
+     * @class fc.scale.dateTime
+     */
     function dateTimeScale(adaptedScale, discontinuityProvider) {
 
         if (!arguments.length) {
@@ -1910,7 +1977,7 @@
             return scaledByRange;
         }
 
-        scale.invert = function(x) {
+        scale.invert = function (x) {
             var domain = adaptedScale.domain();
             var range = adaptedScale.range();
 
@@ -1920,7 +1987,7 @@
             return discontinuityProvider.offset(domain[0], distanceToX);
         };
 
-        scale.domain = function(x) {
+        scale.domain = function (x) {
             if (!arguments.length) {
                 return adaptedScale.domain();
             }
@@ -1932,7 +1999,7 @@
             return scale;
         };
 
-        scale.nice = function() {
+        scale.nice = function () {
             adaptedScale.nice();
             var domain = adaptedScale.domain();
             var domainLower = discontinuityProvider.clampUp(domain[0]);
@@ -1941,16 +2008,16 @@
             return scale;
         };
 
-        scale.ticks = function() {
+        scale.ticks = function () {
             var ticks = adaptedScale.ticks.apply(this, arguments);
             return fc.scale.dateTime.tickTransformer(ticks, discontinuityProvider, scale.domain());
         };
 
-        scale.copy = function() {
+        scale.copy = function () {
             return dateTimeScale(adaptedScale.copy(), discontinuityProvider.copy());
         };
 
-        scale.discontinuityProvider = function(x) {
+        scale.discontinuityProvider = function (x) {
             if (!arguments.length) {
                 return discontinuityProvider;
             }
@@ -1964,18 +2031,18 @@
 
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.scale.discontinuity.identity = function() {
+    fc.scale.discontinuity.identity = function () {
 
         var identity = {};
 
-        identity.distance = function(startDate, endDate) {
+        identity.distance = function (startDate, endDate) {
             return endDate.getTime() - startDate.getTime();
         };
 
-        identity.offset = function(startDate, ms) {
+        identity.offset = function (startDate, ms) {
             return new Date(startDate.getTime() + ms);
         };
 
@@ -1983,16 +2050,18 @@
 
         identity.clampDown = fc.util.fn.identity;
 
-        identity.copy = function() { return identity; };
+        identity.copy = function () {
+            return identity;
+        };
 
         return identity;
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.scale.discontinuity.skipWeekends = function() {
+    fc.scale.discontinuity.skipWeekends = function () {
         var millisPerDay = 24 * 3600 * 1000;
         var millisPerWorkWeek = millisPerDay * 5;
         var millisPerWeek = millisPerDay * 7;
@@ -2003,7 +2072,7 @@
             return date.getDay() === 0 || date.getDay() === 6;
         }
 
-        skipWeekends.clampDown = function(date) {
+        skipWeekends.clampDown = function (date) {
             if (isWeekend(date)) {
                 var daysToSubtract = date.getDay() === 0 ? 2 : 1;
                 // round the date up to midnight
@@ -2015,7 +2084,7 @@
             }
         };
 
-        skipWeekends.clampUp = function(date) {
+        skipWeekends.clampUp = function (date) {
             if (isWeekend(date)) {
                 var daysToAdd = date.getDay() === 0 ? 1 : 2;
                 // round the date down to midnight
@@ -2029,7 +2098,7 @@
 
         // returns the number of included milliseconds (i.e. those which do not fall)
         // within discontinuities, along this scale
-        skipWeekends.distance = function(startDate, endDate) {
+        skipWeekends.distance = function (startDate, endDate) {
             startDate = skipWeekends.clampUp(startDate);
             endDate = skipWeekends.clampDown(endDate);
 
@@ -2051,7 +2120,7 @@
             return weeks * millisPerWorkWeek + msAdded - msRemoved;
         };
 
-        skipWeekends.offset = function(startDate, ms) {
+        skipWeekends.offset = function (startDate, ms) {
             var date = isWeekend(startDate) ? skipWeekends.clampUp(startDate) : startDate;
             var remainingms = ms;
 
@@ -2078,39 +2147,51 @@
             return date;
         };
 
-        skipWeekends.copy = function() { return skipWeekends; };
+        skipWeekends.copy = function () {
+            return skipWeekends;
+        };
 
         return skipWeekends;
     };
 }(d3, fc));
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.series.area = function() {
+    fc.series.area = function () {
 
         var decorate = fc.util.fn.noop,
             xScale = d3.time.scale(),
             yScale = d3.scale.linear(),
             y0Value = d3.functor(0),
-            y1Value = function(d, i) { return d.close; },
-            xValue = function(d, i) { return d.date; };
+            y1Value = function (d, i) {
+                return d.close;
+            },
+            xValue = function (d, i) {
+                return d.date;
+            };
 
         // convenience functions that return the x & y screen coords for a given point
-        var x = function(d, i) { return xScale(xValue(d, i)); };
-        var y0 = function(d, i) { return yScale(y0Value(d, i)); };
-        var y1 = function(d, i) { return yScale(y1Value(d, i)); };
+        var x = function (d, i) {
+            return xScale(xValue(d, i));
+        };
+        var y0 = function (d, i) {
+            return yScale(y0Value(d, i));
+        };
+        var y1 = function (d, i) {
+            return yScale(y1Value(d, i));
+        };
 
         var areaData = d3.svg.area()
-            .defined(function(d, i) {
+            .defined(function (d, i) {
                 return !isNaN(y0(d, i)) && !isNaN(y1(d, i));
             })
             .x(x)
             .y0(y0)
             .y1(y1);
 
-        var area = function(selection) {
+        var area = function (selection) {
 
-            selection.each(function(data) {
+            selection.each(function (data) {
 
                 var path = d3.select(this)
                     .selectAll('path.area')
@@ -2126,42 +2207,42 @@
             });
         };
 
-        area.decorate = function(x) {
+        area.decorate = function (x) {
             if (!arguments.length) {
                 return decorate;
             }
             decorate = x;
             return area;
         };
-        area.xScale = function(x) {
+        area.xScale = function (x) {
             if (!arguments.length) {
                 return xScale;
             }
             xScale = x;
             return area;
         };
-        area.yScale = function(x) {
+        area.yScale = function (x) {
             if (!arguments.length) {
                 return yScale;
             }
             yScale = x;
             return area;
         };
-        area.xValue = function(x) {
+        area.xValue = function (x) {
             if (!arguments.length) {
                 return xValue;
             }
             xValue = x;
             return area;
         };
-        area.y0Value = function(x) {
+        area.y0Value = function (x) {
             if (!arguments.length) {
                 return y0Value;
             }
             y0Value = d3.functor(x);
             return area;
         };
-        area.yValue = area.y1Value = function(x) {
+        area.yValue = area.y1Value = function (x) {
             if (!arguments.length) {
                 return y1Value;
             }
@@ -2173,13 +2254,13 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
     // Adapts a d3.svg.axis for use as a series (i.e. accepts xScale/yScale). Only required when
     // you want an axis to appear in the middle of a chart e.g. as part of a cycle plot. Otherwise
     // prefer using the d3.svg.axis directly.
-    fc.series.axis = function() {
+    fc.series.axis = function () {
 
         var axis = d3.svg.axis(),
             baseline = d3.functor(0),
@@ -2187,9 +2268,9 @@
             xScale = d3.time.scale(),
             yScale = d3.scale.linear();
 
-        var axisAdapter = function(selection) {
+        var axisAdapter = function (selection) {
 
-            selection.each(function(data) {
+            selection.each(function (data) {
 
                 var container = d3.select(this);
 
@@ -2221,28 +2302,28 @@
             });
         };
 
-        axisAdapter.baseline = function(x) {
+        axisAdapter.baseline = function (x) {
             if (!arguments.length) {
                 return baseline;
             }
             baseline = d3.functor(x);
             return axisAdapter;
         };
-        axisAdapter.decorate = function(x) {
+        axisAdapter.decorate = function (x) {
             if (!arguments.length) {
                 return decorate;
             }
             decorate = x;
             return axisAdapter;
         };
-        axisAdapter.xScale = function(x) {
+        axisAdapter.xScale = function (x) {
             if (!arguments.length) {
                 return xScale;
             }
             xScale = x;
             return axisAdapter;
         };
-        axisAdapter.yScale = function(x) {
+        axisAdapter.yScale = function (x) {
             if (!arguments.length) {
                 return yScale;
             }
@@ -2255,26 +2336,32 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.series.bar = function() {
+    fc.series.bar = function () {
 
         var decorate = fc.util.fn.noop,
             xScale = d3.time.scale(),
             yScale = d3.scale.linear(),
-            y1Value = function(d, i) { return d.close; },
-            xValue = function(d, i) { return d.date; },
+            y1Value = function (d, i) {
+                return d.close;
+            },
+            xValue = function (d, i) {
+                return d.date;
+            },
             y0Value = d3.functor(0),
             barWidth = fc.util.fractionalBarWidth(0.75);
 
-        var xValueScaled = function(d, i) { return xScale(xValue(d, i)); };
+        var xValueScaled = function (d, i) {
+            return xScale(xValue(d, i));
+        };
 
-        var bar = function(selection) {
-            selection.each(function(data) {
+        var bar = function (selection) {
+            selection.each(function (data) {
                 var container = d3.select(this);
 
-                var filteredData = data.filter(function(d, i) {
+                var filteredData = data.filter(function (d, i) {
                     return y0Value(d, i) !== undefined &&
                         y1Value(d, i) !== undefined &&
                         xValue(d, i) !== undefined;
@@ -2290,18 +2377,26 @@
                     .width(width)
                     .height(0);
 
-                var x = function(d, i) { return xValueScaled(d, i); },
-                    y1 = function(d, i) { return yScale(y1Value(d, i)); },
-                    y0 = function(d, i) { return yScale(y0Value(d, i)); };
+                var x = function (d, i) {
+                        return xValueScaled(d, i);
+                    },
+                    y1 = function (d, i) {
+                        return yScale(y1Value(d, i));
+                    },
+                    y0 = function (d, i) {
+                        return yScale(y0Value(d, i));
+                    };
 
                 g.enter()
-                    .attr('transform', function(d, i) {
+                    .attr('transform', function (d, i) {
                         return 'translate(' + x(d, i) + ', ' + y0(d, i) + ')';
                     })
                     .append('path')
-                    .attr('d', function(d) { return pathGenerator([d]); });
+                    .attr('d', function (d) {
+                        return pathGenerator([d]);
+                    });
 
-                g.each(function(d, i) {
+                g.each(function (d, i) {
                     pathGenerator.height(y0(d, i) - y1(d, i));
 
                     var barGroup = d3.select(this);
@@ -2315,49 +2410,49 @@
             });
         };
 
-        bar.decorate = function(x) {
+        bar.decorate = function (x) {
             if (!arguments.length) {
                 return decorate;
             }
             decorate = x;
             return bar;
         };
-        bar.xScale = function(x) {
+        bar.xScale = function (x) {
             if (!arguments.length) {
                 return xScale;
             }
             xScale = x;
             return bar;
         };
-        bar.yScale = function(x) {
+        bar.yScale = function (x) {
             if (!arguments.length) {
                 return yScale;
             }
             yScale = x;
             return bar;
         };
-        bar.xValue = function(x) {
+        bar.xValue = function (x) {
             if (!arguments.length) {
                 return xValue;
             }
             xValue = x;
             return bar;
         };
-        bar.y0Value = function(x) {
+        bar.y0Value = function (x) {
             if (!arguments.length) {
                 return y0Value;
             }
             y0Value = d3.functor(x);
             return bar;
         };
-        bar.yValue = bar.y1Value = function(x) {
+        bar.yValue = bar.y1Value = function (x) {
             if (!arguments.length) {
                 return y1Value;
             }
             y1Value = x;
             return bar;
         };
-        bar.barWidth = function(x) {
+        bar.barWidth = function (x) {
             if (!arguments.length) {
                 return barWidth;
             }
@@ -2369,26 +2464,38 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.series.candlestick = function() {
+    fc.series.candlestick = function () {
 
         var decorate = fc.util.fn.noop,
             xScale = d3.time.scale(),
             yScale = d3.scale.linear(),
-            xValue = function(d, i) { return d.date; },
-            yOpenValue = function(d, i) { return d.open; },
-            yHighValue = function(d, i) { return d.high; },
-            yLowValue = function(d, i) { return d.low; },
-            yCloseValue = function(d, i) { return d.close; },
+            xValue = function (d, i) {
+                return d.date;
+            },
+            yOpenValue = function (d, i) {
+                return d.open;
+            },
+            yHighValue = function (d, i) {
+                return d.high;
+            },
+            yLowValue = function (d, i) {
+                return d.low;
+            },
+            yCloseValue = function (d, i) {
+                return d.close;
+            },
             barWidth = fc.util.fractionalBarWidth(0.75);
 
-        var xValueScaled = function(d, i) { return xScale(xValue(d, i)); };
+        var xValueScaled = function (d, i) {
+            return xScale(xValue(d, i));
+        };
 
-        var candlestick = function(selection) {
+        var candlestick = function (selection) {
 
-            selection.each(function(data) {
+            selection.each(function (data) {
 
                 var container = d3.select(this);
 
@@ -2398,9 +2505,9 @@
                     .append('path');
 
                 var pathGenerator = fc.svg.candlestick()
-                        .width(barWidth(data.map(xValueScaled)));
+                    .width(barWidth(data.map(xValueScaled)));
 
-                g.each(function(d, i) {
+                g.each(function (d, i) {
 
                     var yCloseRaw = yCloseValue(d, i),
                         yOpenRaw = yOpenValue(d, i),
@@ -2418,10 +2525,18 @@
                         .attr('transform', 'translate(' + x + ', ' + yHigh + ')');
 
                     pathGenerator.x(d3.functor(0))
-                        .open(function() { return yOpen - yHigh; })
-                        .high(function() { return yHigh - yHigh; })
-                        .low(function() { return yLow - yHigh; })
-                        .close(function() { return yClose - yHigh; });
+                        .open(function () {
+                            return yOpen - yHigh;
+                        })
+                        .high(function () {
+                            return yHigh - yHigh;
+                        })
+                        .low(function () {
+                            return yLow - yHigh;
+                        })
+                        .close(function () {
+                            return yClose - yHigh;
+                        });
 
                     g.select('path')
                         .attr('d', pathGenerator([d]));
@@ -2431,63 +2546,63 @@
             });
         };
 
-        candlestick.decorate = function(x) {
+        candlestick.decorate = function (x) {
             if (!arguments.length) {
                 return decorate;
             }
             decorate = x;
             return candlestick;
         };
-        candlestick.xScale = function(x) {
+        candlestick.xScale = function (x) {
             if (!arguments.length) {
                 return xScale;
             }
             xScale = x;
             return candlestick;
         };
-        candlestick.yScale = function(x) {
+        candlestick.yScale = function (x) {
             if (!arguments.length) {
                 return yScale;
             }
             yScale = x;
             return candlestick;
         };
-        candlestick.xValue = function(x) {
+        candlestick.xValue = function (x) {
             if (!arguments.length) {
                 return xValue;
             }
             xValue = x;
             return candlestick;
         };
-        candlestick.yOpenValue = function(x) {
+        candlestick.yOpenValue = function (x) {
             if (!arguments.length) {
                 return yOpenValue;
             }
             yOpenValue = x;
             return candlestick;
         };
-        candlestick.yHighValue = function(x) {
+        candlestick.yHighValue = function (x) {
             if (!arguments.length) {
                 return yHighValue;
             }
             yHighValue = x;
             return candlestick;
         };
-        candlestick.yLowValue = function(x) {
+        candlestick.yLowValue = function (x) {
             if (!arguments.length) {
                 return yLowValue;
             }
             yLowValue = x;
             return candlestick;
         };
-        candlestick.yValue = candlestick.yCloseValue = function(x) {
+        candlestick.yValue = candlestick.yCloseValue = function (x) {
             if (!arguments.length) {
                 return yCloseValue;
             }
             yCloseValue = x;
             return candlestick;
         };
-        candlestick.barWidth = function(x) {
+        candlestick.barWidth = function (x) {
             if (!arguments.length) {
                 return barWidth;
             }
@@ -2500,22 +2615,24 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.series.cycle = function() {
+    fc.series.cycle = function () {
 
         var decorate = fc.util.fn.noop,
             xScale = d3.scale.linear(),
             yScale = d3.scale.linear(),
-            xValue = function(d, i) { return d.date.getDay(); },
+            xValue = function (d, i) {
+                return d.date.getDay();
+            },
             subScale = d3.scale.linear(),
             subSeries = fc.series.line(),
             barWidth = fc.util.fractionalBarWidth(0.75);
 
-        var cycle = function(selection) {
+        var cycle = function (selection) {
 
-            selection.each(function(data) {
+            selection.each(function (data) {
 
                 var container = d3.select(this);
 
@@ -2530,7 +2647,7 @@
 
                 var g = fc.util.simpleDataJoin(container, 'cycle', xValues);
 
-                g.each(function(d, i) {
+                g.each(function (d, i) {
 
                     var g = d3.select(this);
 
@@ -2551,49 +2668,49 @@
             });
         };
 
-        cycle.decorate = function(x) {
+        cycle.decorate = function (x) {
             if (!arguments.length) {
                 return decorate;
             }
             decorate = x;
             return cycle;
         };
-        cycle.xScale = function(x) {
+        cycle.xScale = function (x) {
             if (!arguments.length) {
                 return xScale;
             }
             xScale = x;
             return cycle;
         };
-        cycle.yScale = function(x) {
+        cycle.yScale = function (x) {
             if (!arguments.length) {
                 return yScale;
             }
             yScale = x;
             return cycle;
         };
-        cycle.xValue = function(x) {
+        cycle.xValue = function (x) {
             if (!arguments.length) {
                 return xValue;
             }
             xValue = x;
             return cycle;
         };
-        cycle.subScale = function(x) {
+        cycle.subScale = function (x) {
             if (!arguments.length) {
                 return subScale;
             }
             subScale = x;
             return cycle;
         };
-        cycle.subSeries = function(x) {
+        cycle.subSeries = function (x) {
             if (!arguments.length) {
                 return subSeries;
             }
             subSeries = x;
             return cycle;
         };
-        cycle.barWidth = function(x) {
+        cycle.barWidth = function (x) {
             if (!arguments.length) {
                 return barWidth;
             }
@@ -2606,31 +2723,39 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.series.line = function() {
+    fc.series.line = function () {
 
         var decorate = fc.util.fn.noop,
             xScale = d3.time.scale(),
             yScale = d3.scale.linear(),
-            yValue = function(d, i) { return d.close; },
-            xValue = function(d, i) { return d.date; };
+            yValue = function (d, i) {
+                return d.close;
+            },
+            xValue = function (d, i) {
+                return d.date;
+            };
 
         // convenience functions that return the x & y screen coords for a given point
-        var x = function(d, i) { return xScale(xValue(d, i)); };
-        var y = function(d, i) { return yScale(yValue(d, i)); };
+        var x = function (d, i) {
+            return xScale(xValue(d, i));
+        };
+        var y = function (d, i) {
+            return yScale(yValue(d, i));
+        };
 
         var lineData = d3.svg.line()
-            .defined(function(d, i) {
+            .defined(function (d, i) {
                 return !isNaN(y(d, i));
             })
             .x(x)
             .y(y);
 
-        var line = function(selection) {
+        var line = function (selection) {
 
-            selection.each(function(data) {
+            selection.each(function (data) {
 
                 var path = d3.select(this)
                     .selectAll('path.line')
@@ -2646,35 +2771,35 @@
             });
         };
 
-        line.decorate = function(x) {
+        line.decorate = function (x) {
             if (!arguments.length) {
                 return decorate;
             }
             decorate = x;
             return line;
         };
-        line.xScale = function(x) {
+        line.xScale = function (x) {
             if (!arguments.length) {
                 return xScale;
             }
             xScale = x;
             return line;
         };
-        line.yScale = function(x) {
+        line.yScale = function (x) {
             if (!arguments.length) {
                 return yScale;
             }
             yScale = x;
             return line;
         };
-        line.xValue = function(x) {
+        line.xValue = function (x) {
             if (!arguments.length) {
                 return xValue;
             }
             xValue = x;
             return line;
         };
-        line.yValue = function(x) {
+        line.yValue = function (x) {
             if (!arguments.length) {
                 return yValue;
             }
@@ -2686,7 +2811,7 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
     // The multi series does some data-join gymnastics to ensure we don't -
@@ -2696,7 +2821,7 @@
     // overriding where the series value is stored on the node (__series__) and
     // forcing the node datum (__data__) to be the user supplied data (via mapping).
 
-    fc.series.multi = function() {
+    fc.series.multi = function () {
 
         var xScale = d3.time.scale(),
             yScale = d3.scale.linear(),
@@ -2709,7 +2834,7 @@
             .selector('g')
             .children(true)
             .element('g')
-            .key(function(d, i) {
+            .key(function (d, i) {
                 // This function is invoked twice, the first pass is to pull the key
                 // value from the DOM nodes and the second pass is to pull the key
                 // value from the data values.
@@ -2721,13 +2846,13 @@
                 return key.call(this, series, i);
             });
 
-        var multi = function(selection) {
+        var multi = function (selection) {
 
-            selection.each(function(data) {
+            selection.each(function (data) {
 
                 var g = dataJoin(this, series);
 
-                g.each(function(series, i) {
+                g.each(function (series, i) {
                     // We must always assign the series to the node, as the order
                     // may have changed. N.B. in such a case the output is most
                     // likely garbage (containers should not be re-used) but by
@@ -2746,42 +2871,42 @@
             });
         };
 
-        multi.xScale = function(x) {
+        multi.xScale = function (x) {
             if (!arguments.length) {
                 return xScale;
             }
             xScale = x;
             return multi;
         };
-        multi.yScale = function(x) {
+        multi.yScale = function (x) {
             if (!arguments.length) {
                 return yScale;
             }
             yScale = x;
             return multi;
         };
-        multi.series = function(x) {
+        multi.series = function (x) {
             if (!arguments.length) {
                 return series;
             }
             series = x;
             return multi;
         };
-        multi.mapping = function(x) {
+        multi.mapping = function (x) {
             if (!arguments.length) {
                 return mapping;
             }
             mapping = x;
             return multi;
         };
-        multi.key = function(x) {
+        multi.key = function (x) {
             if (!arguments.length) {
                 return key;
             }
             key = x;
             return multi;
         };
-        multi.decorate = function(x) {
+        multi.decorate = function (x) {
             if (!arguments.length) {
                 return decorate;
             }
@@ -2793,25 +2918,37 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.series.ohlc = function(drawMethod) {
+    fc.series.ohlc = function (drawMethod) {
 
         var decorate = fc.util.fn.noop,
             xScale = d3.time.scale(),
             yScale = d3.scale.linear(),
-            xValue = function(d, i) { return d.date; },
-            yOpenValue = function(d, i) { return d.open; },
-            yHighValue = function(d, i) { return d.high; },
-            yLowValue = function(d, i) { return d.low; },
-            yCloseValue = function(d, i) { return d.close; },
+            xValue = function (d, i) {
+                return d.date;
+            },
+            yOpenValue = function (d, i) {
+                return d.open;
+            },
+            yHighValue = function (d, i) {
+                return d.high;
+            },
+            yLowValue = function (d, i) {
+                return d.low;
+            },
+            yCloseValue = function (d, i) {
+                return d.close;
+            },
             barWidth = fc.util.fractionalBarWidth(0.75);
 
-        var xValueScaled = function(d, i) { return xScale(xValue(d, i)); };
+        var xValueScaled = function (d, i) {
+            return xScale(xValue(d, i));
+        };
 
-        var ohlc = function(selection) {
-            selection.each(function(data) {
+        var ohlc = function (selection) {
+            selection.each(function (data) {
 
                 var container = d3.select(this);
 
@@ -2821,9 +2958,9 @@
                     .append('path');
 
                 var pathGenerator = fc.svg.ohlc()
-                        .width(barWidth(data.map(xValueScaled)));
+                    .width(barWidth(data.map(xValueScaled)));
 
-                g.each(function(d, i) {
+                g.each(function (d, i) {
                     var yCloseRaw = yCloseValue(d, i),
                         yOpenRaw = yOpenValue(d, i),
                         x = xValueScaled(d, i),
@@ -2840,10 +2977,18 @@
                         .attr('transform', 'translate(' + x + ', ' + yHigh + ')');
 
                     pathGenerator.x(d3.functor(0))
-                        .open(function() { return yOpen - yHigh; })
-                        .high(function() { return yHigh - yHigh; })
-                        .low(function() { return yLow - yHigh; })
-                        .close(function() { return yClose - yHigh; });
+                        .open(function () {
+                            return yOpen - yHigh;
+                        })
+                        .high(function () {
+                            return yHigh - yHigh;
+                        })
+                        .low(function () {
+                            return yLow - yHigh;
+                        })
+                        .close(function () {
+                            return yClose - yHigh;
+                        });
 
                     g.select('path')
                         .attr('d', pathGenerator([d]));
@@ -2853,63 +2998,63 @@
             });
         };
 
-        ohlc.decorate = function(x) {
+        ohlc.decorate = function (x) {
             if (!arguments.length) {
                 return decorate;
             }
             decorate = x;
             return ohlc;
         };
-        ohlc.xScale = function(x) {
+        ohlc.xScale = function (x) {
             if (!arguments.length) {
                 return xScale;
             }
             xScale = x;
             return ohlc;
         };
-        ohlc.yScale = function(x) {
+        ohlc.yScale = function (x) {
             if (!arguments.length) {
                 return yScale;
             }
             yScale = x;
             return ohlc;
         };
-        ohlc.xValue = function(x) {
+        ohlc.xValue = function (x) {
             if (!arguments.length) {
                 return xValue;
             }
             xValue = x;
             return ohlc;
         };
-        ohlc.yOpenValue = function(x) {
+        ohlc.yOpenValue = function (x) {
             if (!arguments.length) {
                 return yOpenValue;
             }
             yOpenValue = x;
             return ohlc;
         };
-        ohlc.yHighValue = function(x) {
+        ohlc.yHighValue = function (x) {
             if (!arguments.length) {
                 return yHighValue;
             }
             yHighValue = x;
             return ohlc;
         };
-        ohlc.yLowValue = function(x) {
+        ohlc.yLowValue = function (x) {
             if (!arguments.length) {
                 return yLowValue;
             }
             yLowValue = x;
             return ohlc;
         };
-        ohlc.yValue = ohlc.yCloseValue = function(x) {
+        ohlc.yValue = ohlc.yCloseValue = function (x) {
             if (!arguments.length) {
                 return yCloseValue;
             }
             yCloseValue = x;
             return ohlc;
         };
-        ohlc.barWidth = function(x) {
+        ohlc.barWidth = function (x) {
             if (!arguments.length) {
                 return barWidth;
             }
@@ -2921,21 +3066,25 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.series.point = function() {
+    fc.series.point = function () {
 
         var decorate = fc.util.fn.noop,
             xScale = d3.time.scale(),
             yScale = d3.scale.linear(),
-            yValue = function(d, i) { return d.close; },
-            xValue = function(d, i) { return d.date; },
+            yValue = function (d, i) {
+                return d.close;
+            },
+            xValue = function (d, i) {
+                return d.date;
+            },
             radius = d3.functor(5);
 
-        var point = function(selection) {
+        var point = function (selection) {
 
-            selection.each(function(data) {
+            selection.each(function (data) {
 
                 var container = d3.select(this);
 
@@ -2944,7 +3093,7 @@
                 g.enter()
                     .append('circle');
 
-                g.attr('transform', function(d, i) {
+                g.attr('transform', function (d, i) {
                     var x = xScale(xValue(d, i)),
                         y = yScale(yValue(d, i));
                     return 'translate(' + x + ', ' + y + ')';
@@ -2957,35 +3106,35 @@
             });
         };
 
-        point.decorate = function(x) {
+        point.decorate = function (x) {
             if (!arguments.length) {
                 return decorate;
             }
             decorate = x;
             return point;
         };
-        point.xScale = function(x) {
+        point.xScale = function (x) {
             if (!arguments.length) {
                 return xScale;
             }
             xScale = x;
             return point;
         };
-        point.yScale = function(x) {
+        point.yScale = function (x) {
             if (!arguments.length) {
                 return yScale;
             }
             yScale = x;
             return point;
         };
-        point.xValue = function(x) {
+        point.xValue = function (x) {
             if (!arguments.length) {
                 return xValue;
             }
             xValue = x;
             return point;
         };
-        point.yValue = function(x) {
+        point.yValue = function (x) {
             if (!arguments.length) {
                 return yValue;
             }
@@ -2993,7 +3142,7 @@
             return point;
         };
 
-        point.radius = function(x) {
+        point.radius = function (x) {
             if (!arguments.length) {
                 return radius;
             }
@@ -3005,19 +3154,23 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.series.stacked.area = function() {
+    fc.series.stacked.area = function () {
 
         var area = fc.series.area()
-            .yValue(function(d) { return d.y0 + d.y; })
-            .y0Value(function(d) { return d.y0; });
+            .yValue(function (d) {
+                return d.y0 + d.y;
+            })
+            .y0Value(function (d) {
+                return d.y0;
+            });
 
         var stack = fc.series.stacked.stack()
             .series(area);
 
-        var stackedArea = function(selection) {
+        var stackedArea = function (selection) {
             selection.call(stack);
         };
 
@@ -3034,19 +3187,23 @@
 
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.series.stacked.bar = function() {
+    fc.series.stacked.bar = function () {
 
         var bar = fc.series.bar()
-            .yValue(function(d) { return d.y0 + d.y; })
-            .y0Value(function(d) { return d.y0; });
+            .yValue(function (d) {
+                return d.y0 + d.y;
+            })
+            .y0Value(function (d) {
+                return d.y0;
+            });
 
         var stack = fc.series.stacked.stack()
             .series(bar);
 
-        var stackedBar = function(selection) {
+        var stackedBar = function (selection) {
             selection.call(stack);
         };
 
@@ -3063,18 +3220,20 @@
     };
 
 }(d3, fc));
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.series.stacked.line = function() {
+    fc.series.stacked.line = function () {
 
         var line = fc.series.line()
-            .yValue(function(d) { return d.y0 + d.y; });
+            .yValue(function (d) {
+                return d.y0 + d.y;
+            });
 
         var stack = fc.series.stacked.stack()
             .series(line);
 
-        var stackedLine = function(selection) {
+        var stackedLine = function (selection) {
             selection.call(stack);
         };
 
@@ -3089,16 +3248,16 @@
 
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.series.stacked.stack = function() {
+    fc.series.stacked.stack = function () {
 
         var series = fc.util.fn.noop;
 
-        var stack = function(selection) {
+        var stack = function (selection) {
 
-            selection.each(function(data) {
+            selection.each(function (data) {
 
                 var container = d3.select(this);
 
@@ -3112,7 +3271,7 @@
             });
         };
 
-        stack.series = function(x) {
+        stack.series = function (x) {
             if (!arguments.length) {
                 return series;
             }
@@ -3123,23 +3282,29 @@
         return stack;
     };
 }(d3, fc));
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
     // Renders a bar series as an SVG path based on the given array of datapoints. Each
     // bar has a fixed width, whilst the x, y and height are obtained from each data
     // point via the supplied accessor functions.
-    fc.svg.bar = function() {
+    fc.svg.bar = function () {
 
-        var x = function(d, i) { return d.x; },
-            y = function(d, i) { return d.y; },
+        var x = function (d, i) {
+                return d.x;
+            },
+            y = function (d, i) {
+                return d.y;
+            },
             align = 'center',
-            height = function(d, i) { return d.height; },
+            height = function (d, i) {
+                return d.height;
+            },
             width = d3.functor(3);
 
-        var bar = function(data, index) {
+        var bar = function (data, index) {
 
-            return data.map(function(d, i) {
+            return data.map(function (d, i) {
                 var xValue = x.call(this, d, index || i),
                     yValue = y.call(this, d, index || i),
                     barHeight = height.call(this, d, index || i),
@@ -3173,38 +3338,38 @@
                     'z';
                 return body;
             }, this)
-            .join('');
+                .join('');
         };
 
-        bar.x = function(_x) {
+        bar.x = function (_x) {
             if (!arguments.length) {
                 return x;
             }
             x = d3.functor(_x);
             return bar;
         };
-        bar.y = function(x) {
+        bar.y = function (x) {
             if (!arguments.length) {
                 return y;
             }
             y = d3.functor(x);
             return bar;
         };
-        bar.width = function(x) {
+        bar.width = function (x) {
             if (!arguments.length) {
                 return width;
             }
             width = d3.functor(x);
             return bar;
         };
-        bar.align = function(x) {
+        bar.align = function (x) {
             if (!arguments.length) {
                 return align;
             }
             align = x;
             return bar;
         };
-        bar.height = function(x) {
+        bar.height = function (x) {
             if (!arguments.length) {
                 return height;
             }
@@ -3216,24 +3381,34 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
     // Renders a candlestick as an SVG path based on the given array of datapoints. Each
     // candlestick has a fixed width, whilst the x, open, high, low and close positions are
     // obtained from each point via the supplied accessor functions.
-    fc.svg.candlestick = function() {
+    fc.svg.candlestick = function () {
 
-        var x = function(d, i) { return d.date; },
-            open = function(d, i) { return d.open; },
-            high = function(d, i) { return d.high; },
-            low = function(d, i) { return d.low; },
-            close = function(d, i) { return d.close; },
+        var x = function (d, i) {
+                return d.date;
+            },
+            open = function (d, i) {
+                return d.open;
+            },
+            high = function (d, i) {
+                return d.high;
+            },
+            low = function (d, i) {
+                return d.low;
+            },
+            close = function (d, i) {
+                return d.close;
+            },
             width = d3.functor(3);
 
-        var candlestick = function(data) {
+        var candlestick = function (data) {
 
-            return data.map(function(d, i) {
+            return data.map(function (d, i) {
                 var xValue = x(d, i),
                     yOpen = open(d, i),
                     yHigh = high(d, i),
@@ -3268,45 +3443,45 @@
 
                 return body + highWick + lowWick;
             })
-            .join('');
+                .join('');
         };
 
-        candlestick.x = function(_x) {
+        candlestick.x = function (_x) {
             if (!arguments.length) {
                 return x;
             }
             x = _x;
             return candlestick;
         };
-        candlestick.open = function(x) {
+        candlestick.open = function (x) {
             if (!arguments.length) {
                 return open;
             }
             open = x;
             return candlestick;
         };
-        candlestick.high = function(x) {
+        candlestick.high = function (x) {
             if (!arguments.length) {
                 return high;
             }
             high = x;
             return candlestick;
         };
-        candlestick.low = function(x) {
+        candlestick.low = function (x) {
             if (!arguments.length) {
                 return low;
             }
             low = x;
             return candlestick;
         };
-        candlestick.close = function(x) {
+        candlestick.close = function (x) {
             if (!arguments.length) {
                 return close;
             }
             close = x;
             return candlestick;
         };
-        candlestick.width = function(x) {
+        candlestick.width = function (x) {
             if (!arguments.length) {
                 return width;
             }
@@ -3319,24 +3494,34 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
     // Renders an OHLC as an SVG path based on the given array of datapoints. Each
     // OHLC has a fixed width, whilst the x, open, high, low and close positions are
     // obtained from each point via the supplied accessor functions.
-    fc.svg.ohlc = function() {
+    fc.svg.ohlc = function () {
 
-        var x = function(d, i) { return d.date; },
-            open = function(d, i) { return d.open; },
-            high = function(d, i) { return d.high; },
-            low = function(d, i) { return d.low; },
-            close = function(d, i) { return d.close; },
+        var x = function (d, i) {
+                return d.date;
+            },
+            open = function (d, i) {
+                return d.open;
+            },
+            high = function (d, i) {
+                return d.high;
+            },
+            low = function (d, i) {
+                return d.low;
+            },
+            close = function (d, i) {
+                return d.close;
+            },
             width = d3.functor(3);
 
-        var ohlc = function(data) {
+        var ohlc = function (data) {
 
-            return data.map(function(d, i) {
+            return data.map(function (d, i) {
                 var xValue = x(d, i),
                     yOpen = open(d, i),
                     yHigh = high(d, i),
@@ -3350,45 +3535,45 @@
                     closeTick = 'M' + xValue + ',' + yClose + 'h' + halfWidth;
                 return moveToLow + verticalToHigh + openTick + closeTick;
             })
-            .join('');
+                .join('');
         };
 
-        ohlc.x = function(_x) {
+        ohlc.x = function (_x) {
             if (!arguments.length) {
                 return x;
             }
             x = _x;
             return ohlc;
         };
-        ohlc.open = function(x) {
+        ohlc.open = function (x) {
             if (!arguments.length) {
                 return open;
             }
             open = x;
             return ohlc;
         };
-        ohlc.high = function(x) {
+        ohlc.high = function (x) {
             if (!arguments.length) {
                 return high;
             }
             high = x;
             return ohlc;
         };
-        ohlc.low = function(x) {
+        ohlc.low = function (x) {
             if (!arguments.length) {
                 return low;
             }
             low = x;
             return ohlc;
         };
-        ohlc.close = function(x) {
+        ohlc.close = function (x) {
             if (!arguments.length) {
                 return close;
             }
             close = x;
             return ohlc;
         };
-        ohlc.width = function(x) {
+        ohlc.width = function (x) {
             if (!arguments.length) {
                 return width;
             }
@@ -3401,21 +3586,25 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.tool.crosshair = function() {
+    fc.tool.crosshair = function () {
 
         var event = d3.dispatch('trackingstart', 'trackingmove', 'trackingend'),
             xScale = d3.time.scale(),
             yScale = d3.scale.linear(),
-            snap = function(x, y) {
+            snap = function (x, y) {
                 return fc.util.noSnap(xScale, yScale)(x, y);
             },
             decorate = fc.util.fn.noop;
 
-        var x = function(d) { return d.xInDomainUnits ? xScale(d.x) : d.x; },
-            y = function(d) { return d.yInDomainUnits ? yScale(d.y) : d.y; };
+        var x = function (d) {
+                return d.xInDomainUnits ? xScale(d.x) : d.x;
+            },
+            y = function (d) {
+                return d.yInDomainUnits ? yScale(d.y) : d.y;
+            };
 
         var dataJoin = fc.util.dataJoin()
             .children(true)
@@ -3425,12 +3614,16 @@
 
         var horizontalLine = fc.annotation.line()
             .value(y)
-            .label(function(d) { return d.y; });
+            .label(function (d) {
+                return d.y;
+            });
 
         var verticalLine = fc.annotation.line()
             .orient('vertical')
             .value(x)
-            .label(function(d) { return d.x; });
+            .label(function (d) {
+                return d.x;
+            });
 
         // ordinal axes have a rangeExtent function, this adds any padding that
         // was applied to the range. This functions returns the rangeExtent
@@ -3448,9 +3641,9 @@
         }
 
 
-        var crosshair = function(selection) {
+        var crosshair = function (selection) {
 
-            selection.each(function(data) {
+            selection.each(function (data) {
 
                 var container = d3.select(this)
                     .style('pointer-events', 'all')
@@ -3473,7 +3666,7 @@
 
                 var crosshair = dataJoin(container, data);
 
-                var trackballTranslate = function(d) {
+                var trackballTranslate = function (d) {
                     return 'translate(' + x(d) + ', ' + y(d) + ')';
                 };
                 crosshair.enter()
@@ -3491,7 +3684,7 @@
                     .series([horizontalLine, verticalLine])
                     .xScale(identityScale(xScale))
                     .yScale(identityScale(yScale))
-                    .mapping(function() {
+                    .mapping(function () {
                         return [this];
                     });
 
@@ -3529,28 +3722,28 @@
             event.trackingend.apply(this, arguments);
         }
 
-        crosshair.xScale = function(x) {
+        crosshair.xScale = function (x) {
             if (!arguments.length) {
                 return xScale;
             }
             xScale = x;
             return crosshair;
         };
-        crosshair.yScale = function(x) {
+        crosshair.yScale = function (x) {
             if (!arguments.length) {
                 return yScale;
             }
             yScale = x;
             return crosshair;
         };
-        crosshair.snap = function(x) {
+        crosshair.snap = function (x) {
             if (!arguments.length) {
                 return snap;
             }
             snap = x;
             return crosshair;
         };
-        crosshair.decorate = function(x) {
+        crosshair.decorate = function (x) {
             if (!arguments.length) {
                 return decorate;
             }
@@ -3573,25 +3766,29 @@
 
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.tool.fibonacciFan = function() {
+    fc.tool.fibonacciFan = function () {
 
         var event = d3.dispatch('fansource', 'fantarget', 'fanclear'),
             xScale = d3.time.scale(),
             yScale = d3.scale.linear(),
-            snap = function(x, y) {
+            snap = function (x, y) {
                 return fc.util.noSnap(xScale, yScale)(x, y);
             },
             decorate = fc.util.fn.noop;
 
-        var x = function(d) { return d.xInDomainUnits ? xScale(d.x) : d.x; },
-            y = function(d) { return d.yInDomainUnits ? yScale(d.y) : d.y; };
+        var x = function (d) {
+                return d.xInDomainUnits ? xScale(d.x) : d.x;
+            },
+            y = function (d) {
+                return d.yInDomainUnits ? yScale(d.y) : d.y;
+            };
 
-        var fan = function(selection) {
+        var fan = function (selection) {
 
-            selection.each(function(data) {
+            selection.each(function (data) {
 
                 var container = d3.select(this)
                     .style('pointer-events', 'all')
@@ -3612,7 +3809,7 @@
 
                 var g = fc.util.simpleDataJoin(container, 'fan', data);
 
-                g.each(function(d) {
+                g.each(function (d) {
                     d.x = xScale.range()[1];
                     d.ay = d.by = d.cy = y(d.target);
 
@@ -3647,39 +3844,79 @@
                     .attr('class', 'area');
 
                 g.select('line.trend')
-                    .attr('x1', function(d) { return x(d.source); })
-                    .attr('y1', function(d) { return y(d.source); })
-                    .attr('x2', function(d) { return x(d.target); })
-                    .attr('y2', function(d) { return y(d.target); });
+                    .attr('x1', function (d) {
+                        return x(d.source);
+                    })
+                    .attr('y1', function (d) {
+                        return y(d.source);
+                    })
+                    .attr('x2', function (d) {
+                        return x(d.target);
+                    })
+                    .attr('y2', function (d) {
+                        return y(d.target);
+                    });
 
                 g.select('line.a')
-                    .attr('x1', function(d) { return x(d.source); })
-                    .attr('y1', function(d) { return y(d.source); })
-                    .attr('x2', function(d) { return d.x; })
-                    .attr('y2', function(d) { return d.ay; })
-                    .style('visibility', function(d) { return d.state !== 'DONE' ? 'hidden' : 'visible'; });
+                    .attr('x1', function (d) {
+                        return x(d.source);
+                    })
+                    .attr('y1', function (d) {
+                        return y(d.source);
+                    })
+                    .attr('x2', function (d) {
+                        return d.x;
+                    })
+                    .attr('y2', function (d) {
+                        return d.ay;
+                    })
+                    .style('visibility', function (d) {
+                        return d.state !== 'DONE' ? 'hidden' : 'visible';
+                    });
 
                 g.select('line.b')
-                    .attr('x1', function(d) { return x(d.source); })
-                    .attr('y1', function(d) { return y(d.source); })
-                    .attr('x2', function(d) { return d.x; })
-                    .attr('y2', function(d) { return d.by; })
-                    .style('visibility', function(d) { return d.state !== 'DONE' ? 'hidden' : 'visible'; });
+                    .attr('x1', function (d) {
+                        return x(d.source);
+                    })
+                    .attr('y1', function (d) {
+                        return y(d.source);
+                    })
+                    .attr('x2', function (d) {
+                        return d.x;
+                    })
+                    .attr('y2', function (d) {
+                        return d.by;
+                    })
+                    .style('visibility', function (d) {
+                        return d.state !== 'DONE' ? 'hidden' : 'visible';
+                    });
 
                 g.select('line.c')
-                    .attr('x1', function(d) { return x(d.source); })
-                    .attr('y1', function(d) { return y(d.source); })
-                    .attr('x2', function(d) { return d.x; })
-                    .attr('y2', function(d) { return d.cy; })
-                    .style('visibility', function(d) { return d.state !== 'DONE' ? 'hidden' : 'visible'; });
+                    .attr('x1', function (d) {
+                        return x(d.source);
+                    })
+                    .attr('y1', function (d) {
+                        return y(d.source);
+                    })
+                    .attr('x2', function (d) {
+                        return d.x;
+                    })
+                    .attr('y2', function (d) {
+                        return d.cy;
+                    })
+                    .style('visibility', function (d) {
+                        return d.state !== 'DONE' ? 'hidden' : 'visible';
+                    });
 
                 g.select('polygon.area')
-                    .attr('points', function(d) {
+                    .attr('points', function (d) {
                         return x(d.source) + ',' + y(d.source) + ' ' +
                             d.x + ',' + d.ay + ' ' +
                             d.x + ',' + d.cy;
                     })
-                    .style('visibility', function(d) { return d.state !== 'DONE' ? 'hidden' : 'visible'; });
+                    .style('visibility', function (d) {
+                        return d.state !== 'DONE' ? 'hidden' : 'visible';
+                    });
 
                 decorate(g);
             });
@@ -3758,28 +3995,28 @@
             container.call(fan);
         }
 
-        fan.xScale = function(x) {
+        fan.xScale = function (x) {
             if (!arguments.length) {
                 return xScale;
             }
             xScale = x;
             return fan;
         };
-        fan.yScale = function(x) {
+        fan.yScale = function (x) {
             if (!arguments.length) {
                 return yScale;
             }
             yScale = x;
             return fan;
         };
-        fan.snap = function(x) {
+        fan.snap = function (x) {
             if (!arguments.length) {
                 return snap;
             }
             snap = x;
             return fan;
         };
-        fan.decorate = function(x) {
+        fan.decorate = function (x) {
             if (!arguments.length) {
                 return decorate;
             }
@@ -3794,15 +4031,15 @@
 
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.tool.measure = function() {
+    fc.tool.measure = function () {
 
         var event = d3.dispatch('measuresource', 'measuretarget', 'measureclear'),
             xScale = d3.time.scale(),
             yScale = d3.scale.linear(),
-            snap = function(x, y) {
+            snap = function (x, y) {
                 return fc.util.noSnap(xScale, yScale)(x, y);
             },
             decorate = fc.util.fn.noop,
@@ -3810,12 +4047,16 @@
             yLabel = d3.functor(''),
             padding = d3.functor(2);
 
-        var x = function(d) { return d.xInDomainUnits ? xScale(d.x) : d.x; },
-            y = function(d) { return d.yInDomainUnits ? yScale(d.y) : d.y; };
+        var x = function (d) {
+                return d.xInDomainUnits ? xScale(d.x) : d.x;
+            },
+            y = function (d) {
+                return d.yInDomainUnits ? yScale(d.y) : d.y;
+            };
 
-        var measure = function(selection) {
+        var measure = function (selection) {
 
-            selection.each(function(data) {
+            selection.each(function (data) {
 
                 var container = d3.select(this)
                     .style('pointer-events', 'all')
@@ -3849,37 +4090,77 @@
                     .attr('class', 'vertical');
 
                 g.select('line.tangent')
-                    .attr('x1', function(d) { return x(d.source); })
-                    .attr('y1', function(d) { return y(d.source); })
-                    .attr('x2', function(d) { return x(d.target); })
-                    .attr('y2', function(d) { return y(d.target); });
+                    .attr('x1', function (d) {
+                        return x(d.source);
+                    })
+                    .attr('y1', function (d) {
+                        return y(d.source);
+                    })
+                    .attr('x2', function (d) {
+                        return x(d.target);
+                    })
+                    .attr('y2', function (d) {
+                        return y(d.target);
+                    });
 
                 g.select('line.horizontal')
-                    .attr('x1', function(d) { return x(d.source); })
-                    .attr('y1', function(d) { return y(d.source); })
-                    .attr('x2', function(d) { return x(d.target); })
-                    .attr('y2', function(d) { return y(d.source); })
-                    .style('visibility', function(d) { return d.state !== 'DONE' ? 'hidden' : 'visible'; });
+                    .attr('x1', function (d) {
+                        return x(d.source);
+                    })
+                    .attr('y1', function (d) {
+                        return y(d.source);
+                    })
+                    .attr('x2', function (d) {
+                        return x(d.target);
+                    })
+                    .attr('y2', function (d) {
+                        return y(d.source);
+                    })
+                    .style('visibility', function (d) {
+                        return d.state !== 'DONE' ? 'hidden' : 'visible';
+                    });
 
                 g.select('line.vertical')
-                    .attr('x1', function(d) { return x(d.target); })
-                    .attr('y1', function(d) { return y(d.target); })
-                    .attr('x2', function(d) { return x(d.target); })
-                    .attr('y2', function(d) { return y(d.source); })
-                    .style('visibility', function(d) { return d.state !== 'DONE' ? 'hidden' : 'visible'; });
+                    .attr('x1', function (d) {
+                        return x(d.target);
+                    })
+                    .attr('y1', function (d) {
+                        return y(d.target);
+                    })
+                    .attr('x2', function (d) {
+                        return x(d.target);
+                    })
+                    .attr('y2', function (d) {
+                        return y(d.source);
+                    })
+                    .style('visibility', function (d) {
+                        return d.state !== 'DONE' ? 'hidden' : 'visible';
+                    });
 
                 var paddingValue = padding.apply(this, arguments);
 
                 g.select('text.horizontal')
-                    .attr('x', function(d) { return x(d.source) + (x(d.target) - x(d.source)) / 2; })
-                    .attr('y', function(d) { return y(d.source) - paddingValue; })
-                    .style('visibility', function(d) { return d.state !== 'DONE' ? 'hidden' : 'visible'; })
+                    .attr('x', function (d) {
+                        return x(d.source) + (x(d.target) - x(d.source)) / 2;
+                    })
+                    .attr('y', function (d) {
+                        return y(d.source) - paddingValue;
+                    })
+                    .style('visibility', function (d) {
+                        return d.state !== 'DONE' ? 'hidden' : 'visible';
+                    })
                     .text(xLabel);
 
                 g.select('text.vertical')
-                    .attr('x', function(d) { return x(d.target) + paddingValue; })
-                    .attr('y', function(d) { return y(d.source) + (y(d.target) - y(d.source)) / 2; })
-                    .style('visibility', function(d) { return d.state !== 'DONE' ? 'hidden' : 'visible'; })
+                    .attr('x', function (d) {
+                        return x(d.target) + paddingValue;
+                    })
+                    .attr('y', function (d) {
+                        return y(d.source) + (y(d.target) - y(d.source)) / 2;
+                    })
+                    .style('visibility', function (d) {
+                        return d.state !== 'DONE' ? 'hidden' : 'visible';
+                    })
                     .text(yLabel);
 
                 decorate(g);
@@ -3959,49 +4240,49 @@
             container.call(measure);
         }
 
-        measure.xScale = function(x) {
+        measure.xScale = function (x) {
             if (!arguments.length) {
                 return xScale;
             }
             xScale = x;
             return measure;
         };
-        measure.yScale = function(x) {
+        measure.yScale = function (x) {
             if (!arguments.length) {
                 return yScale;
             }
             yScale = x;
             return measure;
         };
-        measure.snap = function(x) {
+        measure.snap = function (x) {
             if (!arguments.length) {
                 return snap;
             }
             snap = x;
             return measure;
         };
-        measure.decorate = function(x) {
+        measure.decorate = function (x) {
             if (!arguments.length) {
                 return decorate;
             }
             decorate = x;
             return measure;
         };
-        measure.xLabel = function(x) {
+        measure.xLabel = function (x) {
             if (!arguments.length) {
                 return xLabel;
             }
             xLabel = d3.functor(x);
             return measure;
         };
-        measure.yLabel = function(x) {
+        measure.yLabel = function (x) {
             if (!arguments.length) {
                 return yLabel;
             }
             yLabel = d3.functor(x);
             return measure;
         };
-        measure.padding = function(x) {
+        measure.padding = function (x) {
             if (!arguments.length) {
                 return padding;
             }
@@ -4016,7 +4297,7 @@
 
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
     // "Caution: avoid interpolating to or from the number zero when the interpolator is used to generate
@@ -4034,14 +4315,14 @@
     // This is achieved by appending the element to the enter selection before exposing it.
     // A default transition of fade in/out is also implicitly added but can be modified.
 
-    fc.util.dataJoin = function() {
+    fc.util.dataJoin = function () {
         var selector = 'g',
             children = false,
             element = 'g',
             attrs = {},
             key = fc.util.fn.index;
 
-        var dataJoin = function(container, data) {
+        var dataJoin = function (container, data) {
 
             var joinedData = data || fc.util.fn.identity;
 
@@ -4055,7 +4336,7 @@
             if (children) {
                 // in order to support nested selections, they can be filtered
                 // to only return immediate children of the container
-                selection = selection.filter(function() {
+                selection = selection.filter(function () {
                     return this.parentNode === container.node();
                 });
             }
@@ -4084,28 +4365,28 @@
             return updateSelection;
         };
 
-        dataJoin.selector = function(x) {
+        dataJoin.selector = function (x) {
             if (!arguments.length) {
                 return selector;
             }
             selector = x;
             return dataJoin;
         };
-        dataJoin.children = function(x) {
+        dataJoin.children = function (x) {
             if (!arguments.length) {
                 return children;
             }
             children = x;
             return dataJoin;
         };
-        dataJoin.element = function(x) {
+        dataJoin.element = function (x) {
             if (!arguments.length) {
                 return element;
             }
             element = x;
             return dataJoin;
         };
-        dataJoin.attrs = function(x) {
+        dataJoin.attrs = function (x) {
             if (!arguments.length) {
                 return attrs;
             }
@@ -4121,7 +4402,7 @@
 
             return dataJoin;
         };
-        dataJoin.key = function(x) {
+        dataJoin.key = function (x) {
             if (!arguments.length) {
                 return key;
             }
@@ -4133,7 +4414,7 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
     /**
@@ -4146,7 +4427,7 @@
      * @param {array} data an array of data points, or an array of arrays of data points
      * @param {array} fields the names of object properties that represent field values, or accessor functions.
      */
-    fc.util.extent = function(data, fields) {
+    fc.util.extent = function (data, fields) {
 
         // we need an array of arrays if we don't have one already
         if (!Array.isArray(data[0])) {
@@ -4158,21 +4439,25 @@
         }
         // the fields can be an array of property names or accessor functions
         if (typeof(fields[0]) !== 'function') {
-            fields = fields.map(function(f) { return function(d) { return d[f]; }; });
+            fields = fields.map(function (f) {
+                return function (d) {
+                    return d[f];
+                };
+            });
         }
 
         // Return the smallest and largest
         return [
-            d3.min(data, function(d0) {
-                return d3.min(d0, function(d1) {
-                    return d3.min(fields.map(function(f) {
+            d3.min(data, function (d0) {
+                return d3.min(d0, function (d1) {
+                    return d3.min(fields.map(function (f) {
                         return f(d1);
                     }));
                 });
             }),
-            d3.max(data, function(d0) {
-                return d3.max(d0, function(d1) {
-                    return d3.max(fields.map(function(f) {
+            d3.max(data, function (d0) {
+                return d3.max(d0, function (d1) {
+                    return d3.max(fields.map(function (f) {
                         return f(d1);
                     }));
                 });
@@ -4181,27 +4466,34 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
     fc.util.fn = {
-        context: function() { return this; },
-        identity: function(d) { return d; },
-        index: function(d, i) { return i; },
-        noop: function(d) {  }
+        context: function () {
+            return this;
+        },
+        identity: function (d) {
+            return d;
+        },
+        index: function (d, i) {
+            return i;
+        },
+        noop: function (d) {
+        }
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
     // the barWidth property of the various series takes a function which, when given an
     // array of x values, returns a suitable width. This function creates a width which is
     // equal to the smallest distance between neighbouring datapoints multiplied
     // by the given factor
-    fc.util.fractionalBarWidth = function(fraction) {
+    fc.util.fractionalBarWidth = function (fraction) {
 
-        return function(pixelValues) {
+        return function (pixelValues) {
             // return some default value if there are not enough datapoints to compute the width
             if (pixelValues.length <= 1) {
                 return 10;
@@ -4211,7 +4503,7 @@
 
             // compute the distance between neighbouring items
             var neighbourDistances = d3.pairs(pixelValues)
-                .map(function(tuple) {
+                .map(function (tuple) {
                     return Math.abs(tuple[0] - tuple[1]);
                 });
 
@@ -4221,11 +4513,11 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
     // returns the width and height of the given element minus the padding.
-    fc.util.innerDimensions = function(element) {
+    fc.util.innerDimensions = function (element) {
         var style = getComputedStyle(element);
         return {
             width: parseFloat(style.width) - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight),
@@ -4234,7 +4526,7 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
     /**
      * An overload of the d3.rebind method which allows the source methods
@@ -4242,17 +4534,17 @@
      * keys represent the target method names and values represent the source
      * object names.
      */
-    fc.util.rebind = function(target, source, mappings) {
+    fc.util.rebind = function (target, source, mappings) {
         if (typeof(mappings) !== 'object') {
             return d3.rebind.apply(d3, arguments);
         }
         Object.keys(mappings)
-            .forEach(function(targetName) {
+            .forEach(function (targetName) {
                 var method = source[mappings[targetName]];
                 if (typeof method !== 'function') {
                     throw new Error('The method ' + mappings[targetName] + ' does not exist on the source object');
                 }
-                target[targetName] = function() {
+                target[targetName] = function () {
                     var value = method.apply(source, arguments);
                     return value === source ? target : value;
                 };
@@ -4262,10 +4554,10 @@
 
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.util.simpleDataJoin = function(parent, className, data, dataKey) {
+    fc.util.simpleDataJoin = function (parent, className, data, dataKey) {
         // "Caution: avoid interpolating to or from the number zero when the interpolator is used to generate
         // a string (such as with attr).
         // Very small values, when stringified, may be converted to scientific notation and
@@ -4304,11 +4596,11 @@
     };
 }(d3, fc));
 
-(function(d3, fc) {
+(function (d3, fc) {
     'use strict';
 
-    fc.util.noSnap = function(xScale, yScale) {
-        return function(xPixel, yPixel) {
+    fc.util.noSnap = function (xScale, yScale) {
+        return function (xPixel, yPixel) {
             // ordinal axes don't invert pixel values (interpolation doesn't
             // always make sense) so we support two modes. One we're we record
             // the pixel value and another where we record the data value and
@@ -4331,20 +4623,20 @@
         };
     };
 
-    fc.util.pointSnap = function(xScale, yScale, xValue, yValue, data, pointDistance) {
+    fc.util.pointSnap = function (xScale, yScale, xValue, yValue, data, pointDistance) {
         // a default function that computes the distance between two points
-        pointDistance = pointDistance || function(x, y, cx, cy) {
-            var dx = x - cx,
-                dy = y - cy;
-            return Math.sqrt(dx * dx + dy * dy);
-        };
+        pointDistance = pointDistance || function (x, y, cx, cy) {
+                var dx = x - cx,
+                    dy = y - cy;
+                return Math.sqrt(dx * dx + dy * dy);
+            };
 
-        return function(xPixel, yPixel) {
-            var nearest = data.map(function(d) {
-                    var diff = pointDistance(xPixel, yPixel, xScale(xValue(d)), yScale(yValue(d)));
-                    return [diff, d];
-                })
-                .reduce(function(accumulator, value) {
+        return function (xPixel, yPixel) {
+            var nearest = data.map(function (d) {
+                var diff = pointDistance(xPixel, yPixel, xScale(xValue(d)), yScale(yValue(d)));
+                return [diff, d];
+            })
+                .reduce(function (accumulator, value) {
                     return accumulator[0] > value[0] ? value : accumulator;
                 }, [Number.MAX_VALUE, null])[1];
 
@@ -4358,24 +4650,26 @@
         };
     };
 
-    fc.util.seriesPointSnapXOnly = function(series, data) {
+    fc.util.seriesPointSnapXOnly = function (series, data) {
         function pointDistance(x, y, cx, cy) {
             var dx = x - cx;
             return Math.abs(dx);
         }
+
         return fc.util.seriesPointSnap(series, data, pointDistance);
     };
 
-    fc.util.seriesPointSnapYOnly = function(series, data) {
+    fc.util.seriesPointSnapYOnly = function (series, data) {
         function pointDistance(x, y, cx, cy) {
             var dy = y - cy;
             return Math.abs(dy);
         }
+
         return fc.util.seriesPointSnap(series, data, pointDistance);
     };
 
-    fc.util.seriesPointSnap = function(series, data, pointDistance) {
-        return function(xPixel, yPixel) {
+    fc.util.seriesPointSnap = function (series, data, pointDistance) {
+        return function (xPixel, yPixel) {
             var xScale = series.xScale(),
                 yScale = series.yScale(),
                 xValue = series.xValue(),

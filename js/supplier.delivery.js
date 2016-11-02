@@ -4,8 +4,6 @@
  Version 3.0*/
 
 
-
-
 function set_placement_location(element) {
     $(element).closest('tr').find('.location_code').val($(element).find('.code').html())
     $(element).closest('tr').find('i.save').attr('location_key', $(element).attr('location_key'))
@@ -13,13 +11,11 @@ function set_placement_location(element) {
 }
 
 
-
-
 function delayed_on_change_place_qty_field(object, timeout) {
 
     window.clearTimeout(object.data("timeout"));
 
-    object.data("timeout", setTimeout(function() {
+    object.data("timeout", setTimeout(function () {
 
         on_change_place_qty_field(object)
     }, timeout));
@@ -60,7 +56,7 @@ function delayed_on_change_location_code_field(object, timeout) {
 
     window.clearTimeout(object.data("timeout"));
 
-    object.data("timeout", setTimeout(function() {
+    object.data("timeout", setTimeout(function () {
 
         get_placement_locations_select(object)
     }, timeout));
@@ -72,11 +68,10 @@ function get_placement_locations_select(object) {
 
     var request = '/ar_find.php?tipo=find_object&query=' + fixedEncodeURIComponent(object.val()) + '&scope=locations&state=' + JSON.stringify(state)
     console.log(request)
-    $.getJSON(request, function(data) {
+    $.getJSON(request, function (data) {
 
 
         var offset = object.offset();
-
 
 
         if (data.number_results > 0) {
@@ -87,7 +82,6 @@ function get_placement_locations_select(object) {
             })
 
         } else {
-
 
 
             $('#location_results_container').addClass('hide').removeClass('show')
@@ -142,7 +136,6 @@ function select_location_option(element) {
 function validate_place_item(element) {
 
 
-
     if ($(element).find('.place_qty').hasClass('invalid') || $(element).find('.location_code').hasClass('invalid')) {
 
 
@@ -157,7 +150,6 @@ function validate_place_item(element) {
         }
 
     }
-
 
 
 }
@@ -180,7 +172,6 @@ function place_item(element) {
     var qty = $(element).closest('.place_item').find('.place_qty').val()
 
     var note = $(element).closest('tr').find('.note').val()
-
 
 
     var request = '/ar_edit_stock.php?tipo=place_part&object=' + object + '&key=' + key + '&transaction_key=' + transaction_key + '&part_sku=' + part_sku + '&location_key=' + location_key + '&qty=' + qty + '&note=' + note
@@ -208,12 +199,10 @@ function place_item(element) {
 
     })
 
-    request.done(function(data) {
+    request.done(function (data) {
 
 
         console.log(data)
-
-
 
 
         $(element).addClass('fa-cloud').removeClass('fa-spinner fa-spin')
@@ -229,15 +218,12 @@ function place_item(element) {
         tr.find('.place_qty').attr('max', data.place_qty)
 
 
-
         $('.order_operation').addClass('hide')
         $('.items_operation').addClass('hide')
 
         for (var key in data.update_metadata.operations) {
             $('#' + data.update_metadata.operations[key]).removeClass('hide')
         }
-
-
 
 
         $('.timeline .li').removeClass('complete')
@@ -270,11 +256,6 @@ function place_item(element) {
         }
 
 
-
-
-
-
-
         if (data.placed == 'Yes') {
             place_item.addClass('hide')
         } else {
@@ -288,7 +269,6 @@ function place_item(element) {
         }
 
 
-
         for (var key in data.updated_fields) {
 
             $('.' + key).html(data.updated_fields[key])
@@ -297,8 +277,8 @@ function place_item(element) {
 
     })
 
-    request.fail(function(jqXHR, textStatus) {});
-
+    request.fail(function (jqXHR, textStatus) {
+    });
 
 
 }

@@ -13,63 +13,63 @@
 require_once 'common.php';
 require_once 'class.Part.php';
 
-$print_est=true;
+$print_est = true;
 
 update_parts_sales($db, $print_est);
 //update_categories_sales($db, $print_est);
 
 function update_parts_sales($db, $print_est) {
 
-	$where=" where `Part SKU`=971 ";
-	$where=" where `Part Reference` like 'jbb-%' ";
-	$where="where true";
+    $where = " where `Part SKU`=971 ";
+    $where = " where `Part Reference` like 'jbb-%' ";
+    $where = "where true";
 
-	$sql=sprintf("select count(*) as num from `Part Dimension` %s", $where);
-	if ($result=$db->query($sql)) {
-		if ($row = $result->fetch()) {
-			$total=$row['num'];
-		}else {
-			$total=0;
-		}
-	}else {
-		print_r($error_info=$db->errorInfo());
-		exit;
-	}
+    $sql = sprintf("SELECT count(*) AS num FROM `Part Dimension` %s", $where);
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $total = $row['num'];
+        } else {
+            $total = 0;
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
 
-	$lap_time0=date('U');
-	$contador=0;
+    $lap_time0 = date('U');
+    $contador  = 0;
 
-	$sql=sprintf("select `Part SKU` from `Part Dimension`  %s  order by `Part SKU`", $where);
+    $sql = sprintf(
+        "SELECT `Part SKU` FROM `Part Dimension`  %s  ORDER BY `Part SKU`", $where
+    );
 
-	if ($result=$db->query($sql)) {
-		foreach ($result as $row) {
-			$part=new Part($row['Part SKU']);
-
-
-
-
-			$part->load_acc_data();
-
-			$part->update_previous_quarters_data();
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $part = new Part($row['Part SKU']);
 
 
-			$contador++;
-			$lap_time1=date('U');
+            $part->load_acc_data();
 
-			if ($print_est) {
-				print 'Pa '.percentage($contador, $total, 3)."  lap time ".sprintf("%.2f", ($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h  ($contador/$total) \r";
-			}
+            $part->update_previous_quarters_data();
 
 
-		}
+            $contador++;
+            $lap_time1 = date('U');
 
-	}else {
-		print_r($error_info=$db->errorInfo());
-		exit;
-	}
+            if ($print_est) {
+                print 'Pa '.percentage($contador, $total, 3)."  lap time ".sprintf("%.2f", ($lap_time1 - $lap_time0) / $contador)." EST  ".sprintf(
+                        "%.1f", (($lap_time1 - $lap_time0) / $contador) * ($total - $contador) / 3600
+                    )."h  ($contador/$total) \r";
+            }
+
+
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
 }
-
-
 
 
 ?>

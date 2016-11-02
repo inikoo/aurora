@@ -7,16 +7,15 @@
  *
  */
 
-	require_once("email_message.php");
-	require_once("qmail_message.php");
+require_once("email_message.php");
+require_once("qmail_message.php");
 
-	$message_object=new qmail_message_class;
+$message_object = new qmail_message_class;
 
-Function qmail_mail($to,$subject,$message,$additional_headers="",$additional_parameters="")
-{
-	global $message_object;
+Function qmail_mail($to, $subject, $message, $additional_headers = "", $additional_parameters = "") {
+    global $message_object;
 
-	return($message_object->Mail($to,$subject,$message,$additional_headers,$additional_parameters));
+    return ($message_object->Mail($to, $subject, $message, $additional_headers, $additional_parameters));
 }
 
 ?>

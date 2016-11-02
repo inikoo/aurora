@@ -12,36 +12,45 @@
 
 function set_locale($locale) {
 
-	if (!function_exists('_')) {
-		function _($str) {
-			return $str;
-		}
+    if (!function_exists('_')) {
+        function _($str) {
+            return $str;
+        }
 
-		function gettext($str) {
-			return $str;
-		}
+        function gettext($str) {
+            return $str;
+        }
 
-		function ngettext($str) {
-			return $str;
-		}
+        function ngettext($str) {
+            return $str;
+        }
 
-		function bindtextdomain() {};
-		function bind_textdomain_codeset() {};
-		function textdomain() {};
+        function bindtextdomain() {
+        }
 
-	}
-	putenv('LC_MESSAGES='.$locale);
+        ;
+        function bind_textdomain_codeset() {
+        }
 
-	if (defined('LC_MESSAGES')) {
-		setlocale(LC_MESSAGES, $locale);
-	}else {
-		setlocale(LC_ALL, $locale);
-	}
-	bindtextdomain("inikoo", "./locale");
-	textdomain("inikoo");
-	bind_textdomain_codeset("inikoo", 'UTF-8');
+        ;
+        function textdomain() {
+        }
 
-	setlocale(LC_TIME, $locale);
+        ;
+
+    }
+    putenv('LC_MESSAGES='.$locale);
+
+    if (defined('LC_MESSAGES')) {
+        setlocale(LC_MESSAGES, $locale);
+    } else {
+        setlocale(LC_ALL, $locale);
+    }
+    bindtextdomain("inikoo", "./locale");
+    textdomain("inikoo");
+    bind_textdomain_codeset("inikoo", 'UTF-8');
+
+    setlocale(LC_TIME, $locale);
 
 }
 

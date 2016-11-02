@@ -5,8 +5,7 @@
 
 var key_scope = false;
 
-$(document).ready(function() {
-
+$(document).ready(function () {
 
 
     state = {
@@ -19,16 +18,15 @@ $(document).ready(function() {
     }
     structure = {}
 
-console.log()
+    console.log()
 
     change_view($('#_request').val())
 
-    $(document).keydown(function(e) {
+    $(document).keydown(function (e) {
         key_press(e)
     });
 
 })
-
 
 
 function change_browser_history_state(request) {
@@ -48,7 +46,7 @@ function change_browser_history_state(request) {
 
 }
 
-window.addEventListener('popstate', function(event) {
+window.addEventListener('popstate', function (event) {
     change_view(event.state.request)
 
 });
@@ -66,16 +64,12 @@ function change_subtab(subtab) {
 }
 
 
-
-
 function change_view(_request, metadata) {
-
 
 
     if (metadata == undefined) {
         metadata = {};
     }
-
 
 
     var request = "/ar_views.php?tipo=views&request=" + _request + '&metadata=' + JSON.stringify(metadata) + "&old_state=" + JSON.stringify(state)
@@ -87,7 +81,7 @@ function change_view(_request, metadata) {
     }
 
 
-    $.getJSON(request, function(data) {
+    $.getJSON(request, function (data) {
 
         //console.log(data);
         state = data.state;
@@ -127,7 +121,6 @@ function change_view(_request, metadata) {
         if (typeof(data.object_showcase) != "undefined" && data.object_showcase !== null) {
 
 
-
             if (data.object_showcase == '_') {
                 $('#object_showcase').addClass('hide').html('')
             } else {
@@ -145,14 +138,11 @@ function change_view(_request, metadata) {
         }
 
 
-
-
         if (typeof(data.structure) != "undefined" && data.structure !== null) {
             console.log(data.structure)
 
             structure = data.structure
         }
-
 
 
         change_browser_history_state(data.state.request)
@@ -163,8 +153,6 @@ function change_view(_request, metadata) {
 }
 
 
-
-
 function logout() {
     window.location.href = "/logout.php";
 }
@@ -173,37 +161,37 @@ function decodeEntities(a) {
     return a
 }
 /*
-var decodeEntities = (function() {
+ var decodeEntities = (function() {
 
 
-  var element = document.createElement('div');
+ var element = document.createElement('div');
 
-  function decodeHTMLEntities (str) {
-    if(str && typeof str === 'string') {
-      str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '');
-      str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '');
-      element.innerHTML = str;
-      str = element.textContent;
-      element.textContent = '';
-    }
+ function decodeHTMLEntities (str) {
+ if(str && typeof str === 'string') {
+ str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '');
+ str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '');
+ element.innerHTML = str;
+ str = element.textContent;
+ element.textContent = '';
+ }
 
-    return str;
-  }
+ return str;
+ }
 
-  return decodeHTMLEntities;
-})();
-*/
+ return decodeHTMLEntities;
+ })();
+ */
 
 function htmlEncode(value) {
     return $('<div/>').text(value).html();
 }
 
-var isAdvancedUpload = function() {
-        var div = document.createElement('div');
-        return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window;
-    }();
+var isAdvancedUpload = function () {
+    var div = document.createElement('div');
+    return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window;
+}();
 
-ArraySort = function(array, sortFunc) {
+ArraySort = function (array, sortFunc) {
     var tmp = [];
     var aSorted = [];
     var oSorted = {};
@@ -215,21 +203,21 @@ ArraySort = function(array, sortFunc) {
         });
     }
 
-    tmp.sort(function(o1, o2) {
+    tmp.sort(function (o1, o2) {
 
 
         return sortFunc(o1.value, o2.value);
     });
 
     if (Object.prototype.toString.call(array) === '[object Array]') {
-        $.each(tmp, function(index, value) {
+        $.each(tmp, function (index, value) {
             aSorted.push(value.value);
         });
         return aSorted;
     }
 
     if (Object.prototype.toString.call(array) === '[object Object]') {
-        $.each(tmp, function(index, value) {
+        $.each(tmp, function (index, value) {
             oSorted[value.key] = value.value;
         });
         return oSorted;

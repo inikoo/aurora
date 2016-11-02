@@ -22,8 +22,6 @@ function open_edit_field(object, key, field) {
     var type = $('#' + field + '_container').attr('field_type')
 
 
-
-
     $('#' + field + '_formatted_value').addClass('hide')
     $('#' + field + '_edit_button').addClass('hide')
     $('#' + field + '_reset_button').removeClass('hide')
@@ -32,174 +30,170 @@ function open_edit_field(object, key, field) {
     console.log(type)
 
     switch (type) {
-    case 'string':
-    case 'handle':
-    case 'textarea':
-    case 'email':
-    case 'new_email':
-    case 'numeric':
-    case 'amount':
-    case 'amount_margin':
-    case 'amount_percentage':
-    case 'int_unsigned':
-    case 'smallint_unsigned':
-    case 'mediumint_unsigned':
-    case 'int':
-    case 'smallint':
-    case 'mediumint':
-    case 'pin':
-    case 'password':
-    case 'dimensions':
+        case 'string':
+        case 'handle':
+        case 'textarea':
+        case 'email':
+        case 'new_email':
+        case 'numeric':
+        case 'amount':
+        case 'amount_margin':
+        case 'amount_percentage':
+        case 'int_unsigned':
+        case 'smallint_unsigned':
+        case 'mediumint_unsigned':
+        case 'int':
+        case 'smallint':
+        case 'mediumint':
+        case 'pin':
+        case 'password':
+        case 'dimensions':
 
 
-        $('#' + field).removeClass('hide')
-        $('#' + field).focus()
-        $('#' + field + '_save_button').removeClass('hide')
-        break;
-    case 'editor':
+            $('#' + field).removeClass('hide')
+            $('#' + field).focus()
+            $('#' + field + '_save_button').removeClass('hide')
+            break;
+        case 'editor':
 
-        $('#editor_container_' + field).removeClass('hide')
+            $('#editor_container_' + field).removeClass('hide')
 
-        break;
-    case 'html_editor':
-        $('#' + field).removeClass('hide')
-        $('#' + field).focus()
-        $('#' + field + '_save_button').removeClass('hide')
+            break;
+        case 'html_editor':
+            $('#' + field).removeClass('hide')
+            $('#' + field).focus()
+            $('#' + field + '_save_button').removeClass('hide')
 
-        break;
-    case 'barcode':
-
-
-        if ($('#' + field + '_value').val() == '') {
-
-            $('#' + field + '_assign_available_barcode').removeClass('hide')
-        }
-
-        $('#' + field).removeClass('hide')
-        $('#' + field).focus()
-        $('#' + field + '_save_button').removeClass('hide')
-        break;
-    case 'dropdown_select':
-        $('#' + field + '_dropdown_select_label').removeClass('hide').focus()
-
-        $('#' + field + '_save_button').removeClass('hide')
-        break;
-    case 'country_select':
-        $('#' + field).removeClass('hide')
-        $('#' + field).focus()
-        $('#' + field + '_save_button').removeClass('hide')
-
-        $('#' + field + '_field div.country-select.inside .flag-dropdown').css({
-            'display': 'block'
-        })
-
-        break;
+            break;
+        case 'barcode':
 
 
+            if ($('#' + field + '_value').val() == '') {
+
+                $('#' + field + '_assign_available_barcode').removeClass('hide')
+            }
+
+            $('#' + field).removeClass('hide')
+            $('#' + field).focus()
+            $('#' + field + '_save_button').removeClass('hide')
+            break;
+        case 'dropdown_select':
+            $('#' + field + '_dropdown_select_label').removeClass('hide').focus()
+
+            $('#' + field + '_save_button').removeClass('hide')
+            break;
+        case 'country_select':
+            $('#' + field).removeClass('hide')
+            $('#' + field).focus()
+            $('#' + field + '_save_button').removeClass('hide')
+
+            $('#' + field + '_field div.country-select.inside .flag-dropdown').css({
+                'display': 'block'
+            })
+
+            break;
 
 
-    case 'telephone':
-    case 'new_telephone':
+        case 'telephone':
+        case 'new_telephone':
 
-        $('#' + field).removeClass('hide')
-        $('#' + field).focus()
+            $('#' + field).removeClass('hide')
+            $('#' + field).focus()
 
-        // console.log('#' + field + '_save_button')
-        $('#' + field + '_save_button').removeClass('hide')
-        $('#' + field + '_field .intl-tel-input .flag-container').css({
-            'display': 'block'
-        })
+            // console.log('#' + field + '_save_button')
+            $('#' + field + '_save_button').removeClass('hide')
+            $('#' + field + '_field .intl-tel-input .flag-container').css({
+                'display': 'block'
+            })
 
-    case 'address':
-    case 'country':
-    case 'new_delivery_address':
-
-
-
-        $('#' + field).removeClass('hide')
-
-        $('#' + field + '_save_button').removeClass('hide')
+        case 'address':
+        case 'country':
+        case 'new_delivery_address':
 
 
-        $('#' + field + '_field div.country-select.inside .flag-dropdown').css({
-            'display': 'block'
-        })
+            $('#' + field).removeClass('hide')
 
-        break;
-
-    case 'other_delivery_address':
-        $('#' + field + '_field').removeClass('hide')
-
-        $('#show_new_delivery_address_field').addClass('hide')
-        $('#other_delivery_addresses_field').addClass('hide')
+            $('#' + field + '_save_button').removeClass('hide')
 
 
-        $('#' + field).removeClass('hide')
+            $('#' + field + '_field div.country-select.inside .flag-dropdown').css({
+                'display': 'block'
+            })
 
-        $('#' + field + '_save_button').removeClass('hide')
-        $('#' + field + '_field .intl-tel-input .flag-container').css({
-            'display': 'block'
-        })
+            break;
 
-        break;
+        case 'other_delivery_address':
+            $('#' + field + '_field').removeClass('hide')
 
-
-    case 'pin_with_confirmation':
-    case 'password_with_confirmation':
-        $('#' + field).removeClass('hide')
-        $('#' + field + '_confirm_button').removeClass('hide')
-        $('#' + field).focus()
-
-        break;
-
-    case 'option':
+            $('#show_new_delivery_address_field').addClass('hide')
+            $('#other_delivery_addresses_field').addClass('hide')
 
 
+            $('#' + field).removeClass('hide')
 
-        $('#' + field + '_add_other_option').removeClass('hide')
-        $('#' + field + '_options').removeClass('hide')
-        $('#' + field + '_save_button').removeClass('hide')
+            $('#' + field + '_save_button').removeClass('hide')
+            $('#' + field + '_field .intl-tel-input .flag-container').css({
+                'display': 'block'
+            })
+
+            break;
 
 
-        break;
-    case 'radio_option':
-        $('#' + field + '_formatted').removeClass('hide')
-        $('#' + field + '_options').removeClass('hide')
-        $('#' + field + '_save_button').removeClass('hide')
+        case 'pin_with_confirmation':
+        case 'password_with_confirmation':
+            $('#' + field).removeClass('hide')
+            $('#' + field + '_confirm_button').removeClass('hide')
+            $('#' + field).focus()
 
-        break;
-    case 'date':
+            break;
 
-        $('#' + field + '_formatted').removeClass('hide')
-        $('#' + field + '_datepicker').removeClass('hide')
-        $('#' + field + '_save_button').removeClass('hide')
+        case 'option':
 
-        break;
 
-    case 'working_hours':
-        $('#working_hours').removeClass('hide')
-        $('#' + field + '_save_button').removeClass('hide')
+            $('#' + field + '_add_other_option').removeClass('hide')
+            $('#' + field + '_options').removeClass('hide')
+            $('#' + field + '_save_button').removeClass('hide')
 
-        break;
-    case 'salary':
-        $('#salary').removeClass('hide')
-        $('#' + field + '_save_button').removeClass('hide')
 
-        break;
-    case 'parts_list':
-        $('#parts_list').removeClass('hide')
-        $('#' + field + '_save_button').removeClass('hide')
-        break;
+            break;
+        case 'radio_option':
+            $('#' + field + '_formatted').removeClass('hide')
+            $('#' + field + '_options').removeClass('hide')
+            $('#' + field + '_save_button').removeClass('hide')
 
-    case 'webpage_see_also':
-        $('#webpage_see_also').removeClass('hide')
-        $('#' + field + '_save_button').removeClass('hide')
-        break;
-    case 'webpage_related_products':
-        $('#webpage_related_products').removeClass('hide')
-        $('#' + field + '_save_button').removeClass('hide')
-        break;
-    default:
+            break;
+        case 'date':
+
+            $('#' + field + '_formatted').removeClass('hide')
+            $('#' + field + '_datepicker').removeClass('hide')
+            $('#' + field + '_save_button').removeClass('hide')
+
+            break;
+
+        case 'working_hours':
+            $('#working_hours').removeClass('hide')
+            $('#' + field + '_save_button').removeClass('hide')
+
+            break;
+        case 'salary':
+            $('#salary').removeClass('hide')
+            $('#' + field + '_save_button').removeClass('hide')
+
+            break;
+        case 'parts_list':
+            $('#parts_list').removeClass('hide')
+            $('#' + field + '_save_button').removeClass('hide')
+            break;
+
+        case 'webpage_see_also':
+            $('#webpage_see_also').removeClass('hide')
+            $('#' + field + '_save_button').removeClass('hide')
+            break;
+        case 'webpage_related_products':
+            $('#webpage_related_products').removeClass('hide')
+            $('#' + field + '_save_button').removeClass('hide')
+            break;
+        default:
 
     }
     key_scope = {
@@ -244,224 +238,213 @@ function close_edit_field(field) {
     $('#' + field + '_save_button').addClass('hide')
 
 
-
     switch (type) {
-    case 'string':
-    case 'handle':
-    case 'email':
-    case 'int_unsigned':
-    case 'smallint_unsigned':
-    case 'mediumint_unsigned':
-    case 'int':
-    case 'smallint':
-    case 'mediumint':
-    case 'pin':
-    case 'password':
-    case 'textarea':
-    case 'numeric':
-    case 'amount':
-    case 'amount_margin':
-    case 'amount_percentage':
-    case 'dimensions':
+        case 'string':
+        case 'handle':
+        case 'email':
+        case 'int_unsigned':
+        case 'smallint_unsigned':
+        case 'mediumint_unsigned':
+        case 'int':
+        case 'smallint':
+        case 'mediumint':
+        case 'pin':
+        case 'password':
+        case 'textarea':
+        case 'numeric':
+        case 'amount':
+        case 'amount_margin':
+        case 'amount_percentage':
+        case 'dimensions':
 
-        $('#' + field).addClass('hide')
+            $('#' + field).addClass('hide')
 
 
-        //$('#' + field + '_editor').removeClass('changed')
-        break;
-    case 'editor':
+            //$('#' + field + '_editor').removeClass('changed')
+            break;
+        case 'editor':
 
-        $('#editor_container_' + field).addClass('hide')
+            $('#editor_container_' + field).addClass('hide')
 
-        break;
-    case 'html_editor':
-        $('#' + field).addClass('hide')
+            break;
+        case 'html_editor':
+            $('#' + field).addClass('hide')
 
-        break;
+            break;
 
-    case 'barcode':
-        $('#' + field + '_assign_available_barcode').addClass('hide')
-        $('#' + field).addClass('hide')
-        break;
+        case 'barcode':
+            $('#' + field + '_assign_available_barcode').addClass('hide')
+            $('#' + field).addClass('hide')
+            break;
 
-    case 'country_select':
+        case 'country_select':
 
-        $('#' + field + '_field div.country-select.inside .flag-dropdown').css({
-            'display': 'none'
-        })
-        $('#' + field).addClass('hide')
+            $('#' + field + '_field div.country-select.inside .flag-dropdown').css({
+                'display': 'none'
+            })
+            $('#' + field).addClass('hide')
 
 
-        //$('#' + field + '_editor').removeClass('changed')
-        break;
-    case 'dropdown_select':
+            //$('#' + field + '_editor').removeClass('changed')
+            break;
+        case 'dropdown_select':
 
 
+            $('#' + field + '_dropdown_select_label').addClass('hide')
 
+            $('#' + field + '_results_container').addClass('hide').removeClass('show')
 
-        $('#' + field + '_dropdown_select_label').addClass('hide')
+            // $('#' + field + '_save_button').removeClass('hide')
+            break;
 
-        $('#' + field + '_results_container').addClass('hide').removeClass('show')
 
-        // $('#' + field + '_save_button').removeClass('hide')
-        break;
+        case 'new_email':
+            $('#new_email_formatted_value').html('')
+            $('#new_email_value').val('')
+            $('#new_email').val('')
+            on_changed_value('new_email', '')
+            $('#new_email_field').addClass('hide')
+            $('#show_new_email_field').removeClass('hide')
+            break;
+        case 'telephone':
+            $('#' + field).addClass('hide')
+            $('#' + field + '_editor').removeClass('changed')
+            $('#' + field + '_field .intl-tel-input .flag-container').css({
+                'display': 'none'
+            })
 
+            break;
+        case 'new_telephone':
 
-    case 'new_email':
-        $('#new_email_formatted_value').html('')
-        $('#new_email_value').val('')
-        $('#new_email').val('')
-        on_changed_value('new_email', '')
-        $('#new_email_field').addClass('hide')
-        $('#show_new_email_field').removeClass('hide')
-        break;
-    case 'telephone':
-        $('#' + field).addClass('hide')
-        $('#' + field + '_editor').removeClass('changed')
-        $('#' + field + '_field .intl-tel-input .flag-container').css({
-            'display': 'none'
-        })
 
-        break;
-    case 'new_telephone':
+            $('#' + field).addClass('hide')
+            $('#' + field + '_editor').removeClass('changed')
+            $('#' + field + '_field .intl-tel-input .flag-container').css({
+                'display': 'none'
+            })
 
+            $('#new_telephone_field').addClass('hide')
+            $('#show_new_telephone_field').removeClass('hide')
 
-        $('#' + field).addClass('hide')
-        $('#' + field + '_editor').removeClass('changed')
-        $('#' + field + '_field .intl-tel-input .flag-container').css({
-            'display': 'none'
-        })
+            break;
 
-        $('#new_telephone_field').addClass('hide')
-        $('#show_new_telephone_field').removeClass('hide')
+        case 'address':
+        case 'country':
 
-        break;
 
-    case 'address':
-    case 'country':
+            $('#' + field).addClass('hide')
 
+            $('#' + field + '_save_button').addClass('hide')
+            $('#' + field + '_field div.country-select.inside .flag-dropdown').css({
+                'display': 'block'
+            })
+            break;
 
+        case 'other_delivery_address':
 
-        $('#' + field).addClass('hide')
+            $('#' + field + '_field').addClass('hide')
 
-        $('#' + field + '_save_button').addClass('hide')
-        $('#' + field + '_field div.country-select.inside .flag-dropdown').css({
-            'display': 'block'
-        })
-        break;
+            $('#show_new_delivery_address_field').removeClass('hide')
+            $('#other_delivery_addresses_field').removeClass('hide')
 
-    case 'other_delivery_address':
+            $('#' + field).addClass('hide')
 
-        $('#' + field + '_field').addClass('hide')
+            $('#' + field + '_save_button').addClass('hide')
+            $('#' + field + '_field .intl-tel-input .flag-container').css({
+                'display': 'none'
+            })
 
-        $('#show_new_delivery_address_field').removeClass('hide')
-        $('#other_delivery_addresses_field').removeClass('hide')
 
-        $('#' + field).addClass('hide')
+            break;
 
-        $('#' + field + '_save_button').addClass('hide')
-        $('#' + field + '_field .intl-tel-input .flag-container').css({
-            'display': 'none'
-        })
+        case 'new_delivery_address':
 
+            $('#new_delivery_address_field').addClass('hide')
 
+            $('#show_new_delivery_address_field').removeClass('hide')
 
-        break;
 
-    case 'new_delivery_address':
+            break;
 
-        $('#new_delivery_address_field').addClass('hide')
+        case 'pin_with_confirmation':
+        case 'password_with_confirmation':
 
-        $('#show_new_delivery_address_field').removeClass('hide')
 
+            $('#' + field).addClass('hide')
+            $('#' + field + '_editor').removeClass('changed')
+            $('#' + field + '_confirm_button').addClass('hide')
 
-        break;
 
-    case 'pin_with_confirmation':
-    case 'password_with_confirmation':
+            $('#' + field + '_confirm').addClass('hide')
 
+            break;
+        case 'option':
 
-        $('#' + field).addClass('hide')
-        $('#' + field + '_editor').removeClass('changed')
-        $('#' + field + '_confirm_button').addClass('hide')
 
+            $('#' + field + '_options').addClass('hide')
+            $('#' + field + '_formatted').addClass('hide')
 
+            $('#' + field + '_options li.selected').removeClass('selected')
+            $('#' + field + '_option_' + $('#' + field + '_value').val()).addClass('selected')
 
-        $('#' + field + '_confirm').addClass('hide')
+            $('#' + field + '_formatted').val($('#' + field + '_formatted_value').html())
+            $("#" + field + '_editor').removeClass('changed')
 
-        break;
-    case 'option':
+            break;
+        case 'radio_option':
 
 
-        $('#' + field + '_options').addClass('hide')
-        $('#' + field + '_formatted').addClass('hide')
+            $('#' + field + '_options').addClass('hide')
+            $('#' + field + '_formatted').addClass('hide')
 
-        $('#' + field + '_options li.selected').removeClass('selected')
-        $('#' + field + '_option_' + $('#' + field + '_value').val()).addClass('selected')
 
-        $('#' + field + '_formatted').val($('#' + field + '_formatted_value').html())
-        $("#" + field + '_editor').removeClass('changed')
+            $('#' + field + '_options li').attr('is_selected', 0)
+            $('#' + field + '_options li  .checkbox').removeClass('fa-check-square-o').addClass('fa-square-o')
 
-        break;
-    case 'radio_option':
+            var values = $('#' + field + '_value').val().split(",");
 
+            for (var i = 0; i < values.length; i++) {
 
-        $('#' + field + '_options').addClass('hide')
-        $('#' + field + '_formatted').addClass('hide')
+                $('#' + field + '_option_' + values[i]).attr('is_selected', 1)
+                $('#' + field + '_option_' + values[i] + ' .checkbox').addClass('fa-check-square-o').removeClass('fa-square-o')
 
 
+            }
+            $("#" + field + '_editor').removeClass('changed')
 
+            break;
+        case 'date':
+            $('#' + field + '_formatted').addClass('hide')
+            $('#' + field + '_datepicker').addClass('hide')
 
-        $('#' + field + '_options li').attr('is_selected', 0)
-        $('#' + field + '_options li  .checkbox').removeClass('fa-check-square-o').addClass('fa-square-o')
 
-        var values = $('#' + field + '_value').val().split(",");
+            $('#' + field + '_formatted').val($('#' + field + '_formatted_value').html())
+            $("#" + field + '_editor').removeClass('changed')
+            var date = chrono.parseDate($('#' + field + '_formatted').val())
 
-        for (var i = 0; i < values.length; i++) {
+            var value = date.toISOString().slice(0, 10)
+            $('#' + field + '_datepicker').datepicker("setDate", date);
 
-            $('#' + field + '_option_' + values[i]).attr('is_selected', 1)
-            $('#' + field + '_option_' + values[i] + ' .checkbox').addClass('fa-check-square-o').removeClass('fa-square-o')
 
+            break;
+        case 'working_hours':
+            $('#working_hours').addClass('hide')
 
+            break;
+        case 'salary':
+            $('#salary').addClass('hide')
+            break;
+        case 'parts_list':
+            $('#parts_list').addClass('hide')
+            break;
 
-
-        }
-        $("#" + field + '_editor').removeClass('changed')
-
-        break;
-    case 'date':
-        $('#' + field + '_formatted').addClass('hide')
-        $('#' + field + '_datepicker').addClass('hide')
-
-
-        $('#' + field + '_formatted').val($('#' + field + '_formatted_value').html())
-        $("#" + field + '_editor').removeClass('changed')
-        var date = chrono.parseDate($('#' + field + '_formatted').val())
-
-        var value = date.toISOString().slice(0, 10)
-        $('#' + field + '_datepicker').datepicker("setDate", date);
-
-
-
-        break;
-    case 'working_hours':
-        $('#working_hours').addClass('hide')
-
-        break;
-    case 'salary':
-        $('#salary').addClass('hide')
-        break;
-    case 'parts_list':
-        $('#parts_list').addClass('hide')
-        break;
-
-    case 'webpage_see_also':
-        $('#webpage_see_also').addClass('hide')
-        break;
-    case 'webpage_related_products':
-        $('#webpage_related_products').addClass('hide')
-        break;
-    default:
+        case 'webpage_see_also':
+            $('#webpage_see_also').addClass('hide')
+            break;
+        case 'webpage_related_products':
+            $('#webpage_related_products').addClass('hide')
+            break;
+        default:
 
     }
 
@@ -484,15 +467,12 @@ function delayed_on_change_field(object, timeout) {
 
     window.clearTimeout(object.data("timeout"));
 
-    object.data("timeout", setTimeout(function() {
+    object.data("timeout", setTimeout(function () {
         on_changed_value(field, new_value)
     }, timeout));
 
 
-
 }
-
-
 
 
 function on_changed_confirm_value(field, confirm_value) {
@@ -514,10 +494,6 @@ function on_changed_confirm_value(field, confirm_value) {
     } else {
         validation = 'invalid'
     }
-
-
-
-
 
 
     $('#' + field + '_editor').addClass(validation)
@@ -576,21 +552,10 @@ function on_changed_value(field, new_value) {
     $('#' + field + '_field').removeClass('invalid valid potentially_valid')
 
 
-
-
-
     var validation = validate(field, new_value)
 
 
-
     process_validation(validation, field, false)
-
-
-
-
-
-
-
 
 
 }
@@ -599,7 +564,6 @@ function on_changed_value(field, new_value) {
 function validate(field, value) {
 
     var field_data = $('#' + field + '_container')
-
 
 
     $('#' + field + '_field').addClass('waiting_validation changed')
@@ -638,13 +602,12 @@ function process_validation(validation, field, final_value) {
     var type = field_data.attr('field_type')
 
 
-
     if (validation.class == 'potentially_valid' && final_value) {
         validation.class = 'invalid';
 
         if (type == 'salary') {
 
-            $('#salary  input.salary_input_field').each(function(i, obj) {
+            $('#salary  input.salary_input_field').each(function (i, obj) {
                 // console.log($(obj))
                 if ($(obj).hasClass('potentially_valid')) {
                     $(obj).removeClass('potentially_valid').addClass('invalid')
@@ -707,8 +670,6 @@ function process_validation(validation, field, final_value) {
     }
 
 
-
-
 }
 
 
@@ -730,11 +691,11 @@ function select_option(element, field, value) {
 
 //console.log(element)
 
-     if ($('#fields').hasClass('new_object')) {
-     
-     
-     
-     //   $('#' + field + '_options').addClass('hide')
+    if ($('#fields').hasClass('new_object')) {
+
+
+
+        //   $('#' + field + '_options').addClass('hide')
     }
 
     on_changed_value(field, value)
@@ -761,7 +722,7 @@ function select_radio_option(field, value, label) {
     var selected_formatted = [];
 
 
-    $('#' + field + '_options li').each(function() {
+    $('#' + field + '_options li').each(function () {
         if ($(this).attr('is_selected') == 1) {
             count_selected++;
             selected.push($(this).attr('value'))
@@ -790,7 +751,7 @@ function set_as_main(object, key, field) {
     var request = '/ar_edit.php?tipo=set_as_main&object=' + object + '&key=' + key + '&field=' + field
 
 
-    $.getJSON(request, function(data) {
+    $.getJSON(request, function (data) {
 
 
         //$('#' + field + '_save_button').addClass('fa-star').removeClass('fa-spinner fa-spin')
@@ -807,7 +768,6 @@ function set_as_main(object, key, field) {
                     }
                 }
             }
-
 
 
             if (data.directory_field != '') {
@@ -859,9 +819,6 @@ function save_field(object, key, field) {
     var value = field_element.val()
 
 
-
-
-
     if (!$("#" + field + '_field').hasClass('changed')) {
 
         console.log('no_change :(' + field)
@@ -892,7 +849,6 @@ function save_field(object, key, field) {
 
 
         var validation = validate_field(field, value, type, required, server_validation, parent, parent_key, _object, key)
-
 
 
         $('#' + field).attr('has_been_valid', 1)
@@ -942,7 +898,7 @@ function save_field(object, key, field) {
     } else if (type == 'parts_list') {
         var part_list_data = [];
 
-        $('#parts_list_items  tr.part_tr').each(function(i, obj) {
+        $('#parts_list_items  tr.part_tr').each(function (i, obj) {
 
             if (!$(obj).find('.sku').val()) return true;
 
@@ -963,7 +919,6 @@ function save_field(object, key, field) {
         });
 
 
-
         value = JSON.stringify(part_list_data)
 
     } else if (type == 'webpage_see_also') {
@@ -977,7 +932,7 @@ function save_field(object, key, field) {
         webpage_see_also['number_links'] = $('#see_also_number_links').val()
 
         webpage_see_also['manual_links'] = [];
-        $('#manual_links  input.webpage_key').each(function(i, obj) {
+        $('#manual_links  input.webpage_key').each(function (i, obj) {
 
 
             if (!$(obj).closest('tr').hasClass('very_discreet')) {
@@ -990,7 +945,6 @@ function save_field(object, key, field) {
         });
 
 
-
         value = JSON.stringify(webpage_see_also)
         console.log(value)
 
@@ -998,7 +952,7 @@ function save_field(object, key, field) {
 
 
         webpage_related_products = [];
-        $('#webpage_related_products  input.product_id').each(function(i, obj) {
+        $('#webpage_related_products  input.product_id').each(function (i, obj) {
 
 
             if (!$(obj).closest('tr').hasClass('very_discreet')) {
@@ -1011,15 +965,14 @@ function save_field(object, key, field) {
         });
 
 
-
         value = JSON.stringify(webpage_related_products)
 
     }
 
     var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value) + '&metadata=' + JSON.stringify(metadata)
-  //  console.log(request)
+    //  console.log(request)
 
-    $.getJSON(request, function(data) {
+    $.getJSON(request, function (data) {
 
         $('#' + field + '_save_button').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
         if (data.state == 100) {
@@ -1029,7 +982,7 @@ function save_field(object, key, field) {
         if (data.state == 200) {
 
 
-          //  console.log(data)
+            //  console.log(data)
 
             $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
             $('#' + field + '_value').val(data.value)
@@ -1037,9 +990,6 @@ function save_field(object, key, field) {
 
             $("#" + field + '_field').removeClass('changed')
             $("#" + field + '_field').removeClass('valid')
-
-
-
 
 
 //            console.log(data.formatted_value)
@@ -1120,54 +1070,54 @@ function pre_save_actions(field, data) {
 function post_save_actions(field, data) {
 
 //    console.log(field)
- //   console.log(data)
+    //   console.log(data)
 
- //   console.log(field)
+    //   console.log(field)
 
     switch (field) {
 
-    case 'Webpage_See_Also':
-        $('.webpage_see_also_editor').html(data.update_metadata.webpage_see_also_editor)
+        case 'Webpage_See_Also':
+            $('.webpage_see_also_editor').html(data.update_metadata.webpage_see_also_editor)
 
-        break;
-    case 'Webpage_Related_Products':
-        $('.webpage_related_products_editor').html(data.update_metadata.webpage_related_products_editor)
+            break;
+        case 'Webpage_Related_Products':
+            $('.webpage_related_products_editor').html(data.update_metadata.webpage_related_products_editor)
 
-        break;
-    case 'User_Preferred_Locale':
-        change_view(state.request, {
-            'reload': true
-        })
-        break;
-    case 'Product_Parts':
-        post_save_product_parts(data)
-        break;
-    case 'Staff_Type':
-        if (state.section == 'contractor' && data.value != 'Contractor') {
-            change_view('/employee/' + state.key)
-        }
-        if (state.section == 'employee' && data.value == 'Contractor') {
-            change_view('/contractor/' + state.key)
-        }
-        break;
-    case 'Staff_Currently_Working':
-        if (state.section == 'employee') {
-            change_view('/employee/' + state.key, {
+            break;
+        case 'User_Preferred_Locale':
+            change_view(state.request, {
+                'reload': true
+            })
+            break;
+        case 'Product_Parts':
+            post_save_product_parts(data)
+            break;
+        case 'Staff_Type':
+            if (state.section == 'contractor' && data.value != 'Contractor') {
+                change_view('/employee/' + state.key)
+            }
+            if (state.section == 'employee' && data.value == 'Contractor') {
+                change_view('/contractor/' + state.key)
+            }
+            break;
+        case 'Staff_Currently_Working':
+            if (state.section == 'employee') {
+                change_view('/employee/' + state.key, {
+                    reload_showcase: 1
+                })
+            }
+            if (state.section == 'contractor') {
+                change_view('/contractor/' + state.key, {
+                    reload_showcase: 1
+                })
+            }
+            break;
+        case 'Supplier_Part_Supplier_Key':
+            change_view(data.update_metadata.request, {
                 reload_showcase: 1
             })
-        }
-        if (state.section == 'contractor') {
-            change_view('/contractor/' + state.key, {
-                reload_showcase: 1
-            })
-        }
-        break;
-    case 'Supplier_Part_Supplier_Key':
-        change_view(data.update_metadata.request, {
-            reload_showcase: 1
-        })
 
-    default:
+        default:
 
     }
 
@@ -1175,10 +1125,6 @@ function post_save_actions(field, data) {
 }
 
 function create_new_field(_data) {
-
-
-
-
 
 
     console.log(_data)
@@ -1189,7 +1135,6 @@ function create_new_field(_data) {
     clone.attr('field', clone_field);
 
     $('#' + _data.clone_from + '_field').after(clone)
-
 
 
     clone.find('.label').prop('id', clone_field + '_label')
@@ -1233,9 +1178,7 @@ function create_new_field(_data) {
     } else if (_data.edit == 'address') {
 
 
-
         clone.find('table').prop('id', clone_field).attr('field', clone_field)
-
 
 
         //console.log(clone_field)
@@ -1266,13 +1209,12 @@ function create_new_field(_data) {
         var initial_country = address_fields['Address Country 2 Alpha Code'].toLowerCase();
 
 
-
         $('#' + clone_field + '_country_select').intlTelInput({
             initialCountry: initial_country,
             preferredCountries: $('#preferred_countries').val().split(',')
         });
 
-        $('#' + clone_field + '_country_select').on("country-change", function(event, arg) {
+        $('#' + clone_field + '_country_select').on("country-change", function (event, arg) {
 
 
             var country_name = $('#' + clone_field + '_country_select').intlTelInput("getSelectedCountryData").name
@@ -1287,10 +1229,7 @@ function create_new_field(_data) {
             }
 
 
-
-
             $('#' + clone_field + '_country  input.address_input_field ').val(country_code)
-
 
 
             update_address_fields(clone_field, country_code, hide_recipient_fields = false)
@@ -1305,7 +1244,6 @@ function create_new_field(_data) {
         $('#' + clone_field + '_country_select').trigger("country-change", 'init');
 
 
-
     }
 
     if (_data.label != undefined) {
@@ -1313,7 +1251,6 @@ function create_new_field(_data) {
     }
 
     post_create_action(_data)
-
 
 
 }
@@ -1330,7 +1267,7 @@ function delete_field(data) {
 
 function update_field(data) {
 
-console.log(data)
+    console.log(data)
 
     var field = data.field
     var type = $('#' + field + '_container').attr('field_type')
@@ -1468,7 +1405,6 @@ function clean_time(value) {
 }
 
 
-
 function add_minutes_to_time(time, minutes) {
 
     var time_components = time.split(':');
@@ -1483,11 +1419,10 @@ function update_address_fields(field, country_code, hide_recipient_fields) {
 
     var request = '/ar_address.php?tipo=fields_data&country_code=' + country_code
     // console.log(request)
-    $.getJSON(request, function(data) {
+    $.getJSON(request, function (data) {
 
         //console.log(field)
         if (data.state == 200) {
-
 
 
             for (var key in data.fields) {
@@ -1499,17 +1434,12 @@ function update_address_fields(field, country_code, hide_recipient_fields) {
                 if (field_data.required) {
 
 
-
-
                     field_tr.find('.fa-asterisk').removeClass('hide')
 
                 } else {
                     field_tr.find('.fa-asterisk').addClass('hide')
 
                 }
-
-
-
 
 
                 if (!field_data.render || (hide_recipient_fields && (key == 'recipient' || key == 'organization'))) {
@@ -1538,7 +1468,7 @@ function delayed_on_change_address_field(object, timeout) {
     var new_value = object.val()
 
     window.clearTimeout(object.data("timeout"));
-    object.data("timeout", setTimeout(function() {
+    object.data("timeout", setTimeout(function () {
         on_changed_address_value(field, address_field, new_value)
     }, timeout));
 }
@@ -1558,7 +1488,7 @@ function get_address_value(field) {
         "Address Country 2 Alpha Code": null
     }
 
-    $('#' + field + ' input.address_input_field').each(function(i, obj) {
+    $('#' + field + ' input.address_input_field').each(function (i, obj) {
         var tmp = $(obj)
         if (tmp.val() != '') {
             //value[tmp.attr('field_name')] = htmlEncode(tmp.val())
@@ -1571,7 +1501,6 @@ function get_address_value(field) {
     //console.log(value)
     return JSON.stringify(value);
 }
-
 
 
 function on_changed_address_value(field, address_field, new_address_field_value) {
@@ -1589,16 +1518,12 @@ function on_changed_address_value(field, address_field, new_address_field_value)
         $('#' + field + '_address_fields').attr('has_been_changed', 1)
 
 
-
     } else {
         $("#" + field + '_editor').removeClass('changed')
         var changed = false;
         $('#' + field + '_address_fields').attr('has_been_changed', 0)
 
     }
-
-
-
 
 
     $('#' + field + '_save_button').removeClass('invalid valid potentially_valid')
@@ -1616,20 +1541,12 @@ function on_changed_address_value(field, address_field, new_address_field_value)
         process_validation(validation, field, true)
 
 
-
-
-
-
     } else {
         $('#' + field + '_msg').html('')
     }
 
 
-
-
 }
-
-
 
 
 function set_directory_item_as_main(field) {
@@ -1647,7 +1564,7 @@ function delete_directory_item(directory_field, field) {
 
     var request = '/ar_edit.php?tipo=delete_object_component&object=' + $('#fields').attr('object') + '&key=' + $('#fields').attr('key') + '&field=' + field
 
-    $.getJSON(request, function(data) {
+    $.getJSON(request, function (data) {
 
 
         //$('#' + field + '_save_button').addClass('fa-star').removeClass('fa-spinner fa-spin')
@@ -1665,18 +1582,15 @@ function delete_directory_item(directory_field, field) {
             }
 
 
+            /*
+             if (data.other_fields) {
+             for (var key in data.other_fields) {
+             update_field(data.other_fields[key])
+             }
+             }
 
-
-
-/*
-            if (data.other_fields) {
-                for (var key in data.other_fields) {
-                    update_field(data.other_fields[key])
-                }
-            }
-
-            post_set_as_main(data)
-*/
+             post_set_as_main(data)
+             */
         } else if (data.state == 400) {
 
 
@@ -1730,7 +1644,7 @@ function save_sticky_note() {
 
     var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value)
     console.log(request)
-    $.getJSON(request, function(data) {
+    $.getJSON(request, function (data) {
 
 
         if (data.state == 200) {
@@ -1770,7 +1684,7 @@ function delayed_on_change_dropdown_select_field(object, timeout) {
 
     window.clearTimeout(object.data("timeout"));
 
-    object.data("timeout", setTimeout(function() {
+    object.data("timeout", setTimeout(function () {
 
         get_dropdown_select(field, new_value)
     }, timeout));
@@ -1784,7 +1698,7 @@ function get_dropdown_select(dropdown_input, new_value) {
     var field = $('#' + dropdown_input).attr('field')
     var request = '/ar_find.php?tipo=find_object&query=' + fixedEncodeURIComponent(new_value) + '&scope=' + scope + '&parent=' + parent + '&parent_key=' + parent_key + '&state=' + JSON.stringify(state)
 
-    $.getJSON(request, function(data) {
+    $.getJSON(request, function (data) {
 
 
         if (data.number_results > 0) {
@@ -1792,8 +1706,6 @@ function get_dropdown_select(dropdown_input, new_value) {
             $('#' + field + '_msg').html('').addClass('hide')
             $('#' + field).val('')
             on_changed_value(field, new_value)
-
-
 
 
         } else {
@@ -1807,7 +1719,6 @@ function get_dropdown_select(dropdown_input, new_value) {
                         msg = $('#' + field + '_new_object_invalid_msg').html()
                         $('#' + field + '_msg').html(msg).removeClass('hide')
                     }
-
 
 
                 } else {
@@ -1842,7 +1753,6 @@ function get_dropdown_select(dropdown_input, new_value) {
             clone.data('metadata', data.results[result_key].metadata)
 
 
-
             clone.attr('field', field)
             if (first) {
                 clone.addClass('selected')
@@ -1873,7 +1783,6 @@ function select_dropdown_option(element) {
     metadata = $(element).data('metadata')
 
 
-
     $('#' + field + '_dropdown_select_label').val(formatted_value)
 
     console.log(value)
@@ -1895,12 +1804,10 @@ function select_dropdown_option(element) {
 }
 
 
-
-
 function assign_available_barcode(field) {
     var request = '/ar_edit.php?tipo=get_available_barcode'
 
-    $.getJSON(request, function(data) {
+    $.getJSON(request, function (data) {
         if (data.state == 200) {
             if (data.barcode_number == '') {
 
@@ -1921,7 +1828,6 @@ function assign_available_barcode(field) {
 }
 
 
-
 function toggle_unlock_delete_object(element) {
 
     if ($(element).hasClass('fa-lock')) {
@@ -1932,8 +1838,6 @@ function toggle_unlock_delete_object(element) {
         $(element).nextAll('span:first').addClass('disabled').removeClass('button')
     }
 }
-
-
 
 
 function delete_object(element) {
@@ -1952,7 +1856,6 @@ function unarchive_object(element) {
 function save_object_operation(type, element) {
 
 
-
     if ($(element).hasClass('disabled')) {
         return
     }
@@ -1967,7 +1870,7 @@ function save_object_operation(type, element) {
     $(element).find('i.fa').removeClass(icon).addClass('fa-spinner fa-spin')
 
     var request = '/ar_edit.php?tipo=object_operation&operation=' + type + '&object=' + $(element).data('data').object + '&key=' + $(element).data('data').key
-    $.getJSON(request, function(data) {
+    $.getJSON(request, function (data) {
         if (data.state == 200) {
 
             console.log(data)
@@ -1993,11 +1896,9 @@ function save_object_operation(type, element) {
 function delete_attachment(element) {
 
 
-
     if ($(element).hasClass('disabled')) {
         return
     }
-
 
 
     if (!$(element).find('i.fa').removeClass('fa-trash')) return;
@@ -2006,7 +1907,7 @@ function delete_attachment(element) {
 
     var request = '/ar_edit.php?tipo=delete_attachment&attachment_bridge_key=' + $(element).data('data').attachment_bridge_key
 
-    $.getJSON(request, function(data) {
+    $.getJSON(request, function (data) {
         if (data.state == 200) {
 
             console.log(data)
@@ -2028,7 +1929,7 @@ function delete_attachment(element) {
 }
 
 
-$(document).on("click", "#edit_table", function() {
+$(document).on("click", "#edit_table", function () {
 
     change_view(state.request + '&tab=' + state.tab + '_edit', {
         reload_showcase: 1
@@ -2036,7 +1937,7 @@ $(document).on("click", "#edit_table", function() {
 
 });
 
-$(document).on("click", "#exit_edit_table", function() {
+$(document).on("click", "#exit_edit_table", function () {
 
     change_view(state.request + '&tab=' + state.tab.replace(/\_edit$/i, ""))
 

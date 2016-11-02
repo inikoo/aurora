@@ -10,76 +10,82 @@
 */
 
 
-
 switch ($parameters['parent']) {
-case 'year':
-	$where=sprintf(" where  Year(`Timesheet Date`)=%d ", $parameters['parent_key']);
-	break;
-case 'week':
-	$where=sprintf(" where  yearweek(`Timesheet Date`,3)=%d ", $parameters['parent_key']);
-	break;
-case 'month':
-	$year=substr($parameters['parent_key'], 0, 4);
-	$month=substr($parameters['parent_key'], 4, 2);
-	$where=sprintf(" where  month(`Timesheet Date`)=%d and Year(`Timesheet Date`)=%d ", $month, $year);
-	break;
-case 'day':
-$year=substr($parameters['parent_key'], 0, 4);
-	$month=substr($parameters['parent_key'], 4, 2);
-		$day=substr($parameters['parent_key'], 6, 2);
+    case 'year':
+        $where = sprintf(
+            " where  Year(`Timesheet Date`)=%d ", $parameters['parent_key']
+        );
+        break;
+    case 'week':
+        $where = sprintf(
+            " where  yearweek(`Timesheet Date`,3)=%d ", $parameters['parent_key']
+        );
+        break;
+    case 'month':
+        $year  = substr($parameters['parent_key'], 0, 4);
+        $month = substr($parameters['parent_key'], 4, 2);
+        $where = sprintf(
+            " where  month(`Timesheet Date`)=%d and Year(`Timesheet Date`)=%d ", $month, $year
+        );
+        break;
+    case 'day':
+        $year  = substr($parameters['parent_key'], 0, 4);
+        $month = substr($parameters['parent_key'], 4, 2);
+        $day   = substr($parameters['parent_key'], 6, 2);
 
-	$where=sprintf(" where  `Timesheet Date`=%s ", prepare_mysql("$year-$month-$day"));
-	break;
-default:
-	exit('parent not suported '.$parameters['parent']);
-	break;
+        $where = sprintf(
+            " where  `Timesheet Date`=%s ", prepare_mysql("$year-$month-$day")
+        );
+        break;
+    default:
+        exit('parent not suported '.$parameters['parent']);
+        break;
 }
 
-$table='  `Timesheet Dimension`  ';
+$table = '  `Timesheet Dimension`  ';
 
 
 switch ($parameters['group_by']) {
-case 'month':
-	$group_by=' group by  Month(`Timesheet Date`) ';
-	$sql_totals="select count(distinct Month(`Timesheet Date`)) as num from $table  $where  ";
+    case 'month':
+        $group_by = ' group by  Month(`Timesheet Date`) ';
+        $sql_totals
+                  = "select count(distinct Month(`Timesheet Date`)) as num from $table  $where  ";
 
-	break;
-case 'week':
-	$group_by=' group by  WEEK(`Timesheet Date`,3) ';
-	$sql_totals="select count(distinct WEEK(`Timesheet Date`,1)) as num from $table  $where  ";
+        break;
+    case 'week':
+        $group_by = ' group by  WEEK(`Timesheet Date`,3) ';
+        $sql_totals
+                  = "select count(distinct WEEK(`Timesheet Date`,1)) as num from $table  $where  ";
 
-	break;
-case 'day':
-	$group_by=' group by  `Timesheet Date` ';
-	$sql_totals="select count(distinct `Timesheet Date`) as num from $table  $where  ";
+        break;
+    case 'day':
+        $group_by = ' group by  `Timesheet Date` ';
+        $sql_totals
+                  = "select count(distinct `Timesheet Date`) as num from $table  $where  ";
 
-	break;
-default:
-	exit('group not suported '.$parameters['group_by']);
-	break;
+        break;
+    default:
+        exit('group not suported '.$parameters['group_by']);
+        break;
 }
 
 
-
-$wheref='';
-
-
-$_order=$order;
-$_dir=$order_direction;
+$wheref = '';
 
 
-if ($order=='alias')
-	$order='`Staff Alias`';
-
-else
-	$order='`Timesheet Date`';
+$_order = $order;
+$_dir   = $order_direction;
 
 
+if ($order == 'alias') {
+    $order = '`Staff Alias`';
+} else {
+    $order = '`Timesheet Date`';
+}
 
 
-
-
-$fields="
+$fields
+    = "
 sum(`Timesheet Paid Overtime`+`Timesheet Unpaid Overtime`+`Timesheet Working Time`)  worked_time,
 sum(`Timesheet Paid Overtime`) paid_overtime,
 sum(`Timesheet Unpaid Overtime`) unpaid_overtime,

@@ -1,4 +1,5 @@
 <?php
+
 /*
 
  About:
@@ -14,285 +15,297 @@
 class Payment_Account extends DB_Table {
 
 
-	function Payment_Account($arg1=false, $arg2=false) {
+    function Payment_Account($arg1 = false, $arg2 = false) {
 
-		global $db;
-		$this->db=$db;
-		$this->table_name='Payment Account';
-		$this->ignore_fields=array('Payment Account Key');
+        global $db;
+        $this->db            = $db;
+        $this->table_name    = 'Payment Account';
+        $this->ignore_fields = array('Payment Account Key');
 
-		if (is_numeric($arg1)) {
-			$this->get_data('id', $arg1);
-			return ;
-		}
-		if (preg_match('/^(create|new)/i', $arg1)) {
-			$this->find($arg2, 'create');
-			return;
-		}
-		if (preg_match('/find/i', $arg1)) {
-			$this->find($arg2, $arg1);
-			return;
-		}
-		$this->get_data($arg1, $arg2);
-		return ;
+        if (is_numeric($arg1)) {
+            $this->get_data('id', $arg1);
 
-	}
+            return;
+        }
+        if (preg_match('/^(create|new)/i', $arg1)) {
+            $this->find($arg2, 'create');
 
+            return;
+        }
+        if (preg_match('/find/i', $arg1)) {
+            $this->find($arg2, $arg1);
 
+            return;
+        }
+        $this->get_data($arg1, $arg2);
 
-	function get_data($tipo, $tag) {
+        return;
 
-		if ($tipo=='id')
-			$sql=sprintf("select * from `Payment Account Dimension` where `Payment Account Key`=%d", $tag);
-		else
-			return;
+    }
 
-		if ($this->data = $this->db->query($sql)->fetch()) {
-			$this->id=$this->data['Payment Account Key'];
-		}
-	}
 
+    function get_data($tipo, $tag) {
 
-	function find($raw_data, $options) {
+        if ($tipo == 'id') {
+            $sql = sprintf(
+                "SELECT * FROM `Payment Account Dimension` WHERE `Payment Account Key`=%d", $tag
+            );
+        } else {
+            return;
+        }
 
-		$create='';
-		$update='';
-		if (preg_match('/create/i', $options)) {
-			$create='create';
-		}
-		if (preg_match('/update/i', $options)) {
-			$update='update';
-		}
+        if ($this->data = $this->db->query($sql)->fetch()) {
+            $this->id = $this->data['Payment Account Key'];
+        }
+    }
 
-		$data=$this->base_data();
 
+    function find($raw_data, $options) {
 
+        $create = '';
+        $update = '';
+        if (preg_match('/create/i', $options)) {
+            $create = 'create';
+        }
+        if (preg_match('/update/i', $options)) {
+            $update = 'update';
+        }
 
-		foreach ( $raw_data as $key=> $value) {
-			if (array_key_exists($key, $data))
-				$data[$key]=$value;
+        $data = $this->base_data();
 
-		}
 
-		// print_r($raw_data);
-		//  print_r($data);
-		//  exit("s");
+        foreach ($raw_data as $key => $value) {
+            if (array_key_exists($key, $data)) {
+                $data[$key] = $value;
+            }
 
+        }
 
-		$fields=array('Payment Account Code', );
+        // print_r($raw_data);
+        //  print_r($data);
+        //  exit("s");
 
-		$sql=sprintf("select * from `Payment Account Dimension` where true  ");
-		foreach ($fields as $field) {
-			$sql.=sprintf(' and `%s`=%s', $field, prepare_mysql($data[$field], false));
-		}
-		//print $sql;
 
-		$result=mysql_query($sql);
-		$num_results=mysql_num_rows($result);
-		if ($num_results==0) {
-			// address not found
-			$this->found=false;
+        $fields = array('Payment Account Code',);
 
+        $sql = sprintf(
+            "SELECT * FROM `Payment Account Dimension` WHERE TRUE  "
+        );
+        foreach ($fields as $field) {
+            $sql .= sprintf(
+                ' and `%s`=%s', $field, prepare_mysql($data[$field], false)
+            );
+        }
+        //print $sql;
 
-		} else if ($num_results==1) {
-			$row=mysql_fetch_array($result, MYSQL_ASSOC);
+        $result      = mysql_query($sql);
+        $num_results = mysql_num_rows($result);
+        if ($num_results == 0) {
+            // address not found
+            $this->found = false;
 
-			$this->get_data('id', $row['Payment Account Key']);
-			$this->found=true;
-			$this->found_key=$row['Payment Account Key'];
 
-		} else {// Found in mora than one
-			print("Warning several payments accounts $sql\n");
-			$row=mysql_fetch_array($result, MYSQL_ASSOC);
+        } else {
+            if ($num_results == 1) {
+                $row = mysql_fetch_array($result, MYSQL_ASSOC);
 
-			$this->get_data('id', $row['Payment Account Key']);
-			$this->found=true;
-			$this->found_key=$row['Payment Account Key'];
+                $this->get_data('id', $row['Payment Account Key']);
+                $this->found     = true;
+                $this->found_key = $row['Payment Account Key'];
 
+            } else {// Found in mora than one
+                print("Warning several payments accounts $sql\n");
+                $row = mysql_fetch_array($result, MYSQL_ASSOC);
 
-		}
+                $this->get_data('id', $row['Payment Account Key']);
+                $this->found     = true;
+                $this->found_key = $row['Payment Account Key'];
 
-		if (!$this->found and $create) {
-			$this->create($data);
 
-		}
+            }
+        }
 
+        if (!$this->found and $create) {
+            $this->create($data);
 
-	}
+        }
 
 
+    }
 
-	function get($key='') {
+    function create($data) {
 
+        $this->data = $data;
 
+        $keys   = '';
+        $values = '';
 
-		if (isset($this->data[$key]))
-			return $this->data[$key];
+        foreach ($this->data as $key => $value) {
 
-		switch ($key) {
-		}
-		$_key=ucfirst($key);
-		if (isset($this->data[$_key]))
-			return $this->data[$_key];
-		print "Error $key not found in get from Payment Account\n";
-		return false;
 
-	}
+            $keys .= ",`".$key."`";
+            $values .= ','.prepare_mysql($value, false);
 
 
+        }
 
-	function create($data) {
 
-		$this->data=$data;
+        $values = preg_replace('/^,/', '', $values);
+        $keys   = preg_replace('/^,/', '', $keys);
 
-		$keys='';
-		$values='';
+        $sql
+            = "insert into `Payment Account Dimension` ($keys) values ($values)";
+        //print $sql;
+        if (mysql_query($sql)) {
+            $this->id                  = mysql_insert_id();
+            $this->data['Address Key'] = $this->id;
+            $this->new                 = true;
+            $this->get_data('id', $this->id);
+        } else {
+            print "Error can not create payment account\n";
+            exit;
 
-		foreach ($this->data as $key=>$value) {
+        }
+    }
 
+    function get($key = '') {
 
-			$keys.=",`".$key."`";
-			$values.=','.prepare_mysql($value, false);
 
+        if (isset($this->data[$key])) {
+            return $this->data[$key];
+        }
 
-		}
+        switch ($key) {
+        }
+        $_key = ucfirst($key);
+        if (isset($this->data[$_key])) {
+            return $this->data[$_key];
+        }
+        print "Error $key not found in get from Payment Account\n";
 
+        return false;
 
+    }
 
-		$values=preg_replace('/^,/', '', $values);
-		$keys=preg_replace('/^,/', '', $keys);
+    function in_store($site_key) {
+        $is_in_store = false;
+        $sql         = sprintf(
+            "SELECT count(*) AS num FROM `Payment Account Site Bridge` WHERE `Store Key`=%d AND `Payment Account Key`=%d ", $site_key, $this->id
+        );
 
-		$sql="insert into `Payment Account Dimension` ($keys) values ($values)";
-		//print $sql;
-		if (mysql_query($sql)) {
-			$this->id = mysql_insert_id();
-			$this->data['Address Key']= $this->id;
-			$this->new=true;
-			$this->get_data('id', $this->id);
-		} else {
-			print "Error can not create payment account\n";
-			exit;
+        $res = mysql_query($sql);
+        if ($row = mysql_fetch_assoc($res)) {
+            if ($row['num']) {
+                $is_in_store = true;
+            }
+        }
 
-		}
-	}
+        return $is_in_store;
+    }
 
 
-	function in_store($site_key) {
-		$is_in_store=false;
-		$sql=sprintf("select count(*) as num from `Payment Account Site Bridge` where `Store Key`=%d and `Payment Account Key`=%d ",
-			$site_key,
-			$this->id
-		);
+    function in_site($site_key) {
+        $is_in_site = false;
+        $sql        = sprintf(
+            "SELECT count(*) AS num FROM `Payment Account Site Bridge` WHERE `Site Key`=%d AND `Payment Account Key`=%d ", $site_key, $this->id
+        );
 
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			if ($row['num']) {
-				$is_in_store=true;
-			}
-		}
+        $res = mysql_query($sql);
+        if ($row = mysql_fetch_assoc($res)) {
+            if ($row['num']) {
+                $is_in_site = true;
+            }
+        }
 
-		return $is_in_store;
-	}
+        return $is_in_site;
+    }
 
 
-	function in_site($site_key) {
-		$is_in_site=false;
-		$sql=sprintf("select count(*) as num from `Payment Account Site Bridge` where `Site Key`=%d and `Payment Account Key`=%d ",
-			$site_key,
-			$this->id
-		);
+    function is_active_in_site($site_key) {
+        $is_active_in_site = false;
+        $sql               = sprintf(
+            "SELECT count(*) AS num FROM `Payment Account Site Bridge` WHERE `Site Key`=%d AND `Payment Account Key`=%d AND `Status`='Active'  ", $site_key, $this->id
+        );
+        $res               = mysql_query($sql);
+        if ($row = mysql_fetch_assoc($res)) {
+            if ($row['num']) {
+                $is_active_in_site = true;
+            }
+        }
 
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			if ($row['num']) {
-				$is_in_site=true;
-			}
-		}
+        return $is_active_in_site;
+    }
 
-		return $is_in_site;
-	}
 
+    function get_formatted_bank_data() {
 
-	function is_active_in_site($site_key) {
-		$is_active_in_site=false;
-		$sql=sprintf("select count(*) as num from `Payment Account Site Bridge` where `Site Key`=%d and `Payment Account Key`=%d and `Status`='Active'  ",
-			$site_key,
-			$this->id
-		);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			if ($row['num']) {
-				$is_active_in_site=true;
-			}
-		}
+        //print_r($this->data);
 
-		return $is_active_in_site;
-	}
+        $data = '';
+        $data .= _('Beneficiary').': <b>'.$this->data['Payment Account Recipient Holder'].'</b><br>';
+        $data .= _('Bank').': <b>'.$this->data['Payment Account Recipient Bank Name'].'</b><br>';
+        if ($this->data['Payment Account Recipient Address'] != '') {
 
+            $data .= _('Address').': <b>'.$this->data['Payment Account Recipient Address'].'</b><br>';
 
+        }
+        if ($this->data['Payment Account Recipient Bank Account Number'] != '') {
+            $data .= _('Account Number').': <b>'.$this->data['Payment Account Recipient Bank Account Number'].'</b><br>';
+        }
+        if ($this->data['Payment Account Recipient Bank Code'] != '') {
+            $data .= _('Bank Code').': <b>'.$this->data['Payment Account Recipient Bank Code'].'</b><br>';
+        }
+        if ($this->data['Payment Account Recipient Bank Swift'] != '') {
+            $data .= _('Swift').': <b>'.$this->data['Payment Account Recipient Bank Swift'].'</b><br>';
+        }
+        if ($this->data['Payment Account Recipient Bank IBAN'] != '') {
+            $data .= _('IBAN').': <b>'.$this->data['Payment Account Recipient Bank IBAN'].'</b><br>';
+        }
 
-	function get_formatted_bank_data() {
+        return $data;
+    }
 
-		//print_r($this->data);
 
-		$data='';
-		$data.=_('Beneficiary').': <b>'.$this->data['Payment Account Recipient Holder'].'</b><br>';
-		$data.=_('Bank').': <b>'.$this->data['Payment Account Recipient Bank Name'].'</b><br>';
-		if ($this->data['Payment Account Recipient Address']!='') {
+    function get_settings() {
+        return json_decode($this->data['Payment Account Settings'], true);
 
-			$data.=_('Address').': <b>'.$this->data['Payment Account Recipient Address'].'</b><br>';
+    }
 
-		}
-		if ($this->data['Payment Account Recipient Bank Account Number']!='')
-			$data.=_('Account Number').': <b>'.$this->data['Payment Account Recipient Bank Account Number'].'</b><br>';
-		if ($this->data['Payment Account Recipient Bank Code']!='')
-			$data.=_('Bank Code').': <b>'.$this->data['Payment Account Recipient Bank Code'].'</b><br>';
-		if ($this->data['Payment Account Recipient Bank Swift']!='')
-			$data.=_('Swift').': <b>'.$this->data['Payment Account Recipient Bank Swift'].'</b><br>';
-		if ($this->data['Payment Account Recipient Bank IBAN']!='')
-			$data.=_('IBAN').': <b>'.$this->data['Payment Account Recipient Bank IBAN'].'</b><br>';
 
-		return $data;
-	}
+    function update_payments_data() {
+        $transactions = 0;
+        $payments     = 0;
+        $refunds      = 0;
+        $balance      = 0;
+        $currencies   = '';
 
+        $sql = sprintf(
+            "SELECT count(*) AS num,group_concat(DISTINCT `Payment Currency Code`) AS currencies,sum(`Payment Amount`) AS payments,sum(`Payment Refund`) AS refunds,sum(`Payment Balance`) AS balance FROM `Payment Dimension` WHERE `Payment Account Key`=%d AND `Payment Type`='Payment'",
+            $this->id
+        );
+        print $sql;
+        if ($row = $this->db->query($sql)->fetch()) {
+            print_r($row);
+            $transactions = $row['num'];
+            $currencies   = $row['currencies'];
+            $payments     = $row['payments'];
+            $refunds      = $row['refunds'];
+            $balance      = $row['balance'];
+        }
 
-	function get_settings() {
-		return json_decode($this->data['Payment Account Settings'], true);
+        $this->update(
+            array(
+                'Payment Account Transactions'    => $transactions,
+                'Payment Account Currency'        => $currencies,
+                'Payment Account Payments Amount' => $payments,
+                'Payment Account Refunds Amount'  => $refunds,
+                'Payment Account Balance Amount'  => $balance,
 
-	}
 
+            ), 'no_history'
+        );
 
-	function update_payments_data() {
-		$transactions=0;
-		$payments=0;
-		$refunds=0;
-		$balance=0;
-		$currencies='';
-		
-		$sql=sprintf("select count(*) as num,group_concat(distinct `Payment Currency Code`) as currencies,sum(`Payment Amount`) as payments,sum(`Payment Refund`) as refunds,sum(`Payment Balance`) as balance from `Payment Dimension` where `Payment Account Key`=%d and `Payment Type`='Payment'", $this->id);
-		 print $sql;
-		if ($row = $this->db->query($sql)->fetch()) {
-			print_r($row);
-			$transactions=$row['num'];
-			$currencies=$row['currencies'];
-			$payments=$row['payments'];
-			$refunds=$row['refunds'];
-			$balance=$row['balance'];
-		}
-       
-		$this->update(
-			array(
-				'Payment Account Transactions'=>$transactions,
-				'Payment Account Currency'=>$currencies,
-				'Payment Account Payments Amount'=>$payments,
-				'Payment Account Refunds Amount'=>$refunds,
-				'Payment Account Balance Amount'=>$balance,
-
-
-			)
-			, 'no_history');
-
-	}
+    }
 
 
 }

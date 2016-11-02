@@ -4,7 +4,6 @@
  Version 3.0*/
 
 
-
 function post_update_field(data) {
 
     if (data.value != undefined) {
@@ -15,12 +14,12 @@ function post_update_field(data) {
             } else {
                 $('#barcode_data').removeClass('hide')
 
-                if(data.barcode_key){
+                if (data.barcode_key) {
                     $('#barcode_data').find('.barcode_labels').removeClass('hide')
-                    $('#barcode_data').find('td.label i').addClass('button').attr("onclick","change_view('inventory/barcode/"+data.barcode_key+"')")
-                }else{
+                    $('#barcode_data').find('td.label i').addClass('button').attr("onclick", "change_view('inventory/barcode/" + data.barcode_key + "')")
+                } else {
                     $('#barcode_data').find('.barcode_labels').addClass('hide')
-                    $('#barcode_data').find('td.label i').removeClass('button').attr("onclick","return false")
+                    $('#barcode_data').find('td.label i').removeClass('button').attr("onclick", "return false")
 
                 }
 

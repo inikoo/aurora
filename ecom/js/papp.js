@@ -4,7 +4,7 @@
  Version 3.0*/
 
 
-$(document).ready(function() {
+$(document).ready(function () {
 
 
     var request = $('#_request').val()
@@ -15,17 +15,16 @@ $(document).ready(function() {
     }
 
 
-
     load_marginals()
     load_content($('#_request').val(), {})
 
-    $(document).keydown(function(e) {
+    $(document).keydown(function (e) {
         key_press(e)
     });
 
 })
 
-$(document).on('click', 'a', function(e) {
+$(document).on('click', 'a', function (e) {
     e.preventDefault();
 
 
@@ -52,7 +51,7 @@ function change_browser_history_state(request) {
 
 }
 
-window.addEventListener('popstate', function(event) {
+window.addEventListener('popstate', function (event) {
     load_content(event.view.request)
 
 });
@@ -69,12 +68,10 @@ function change_node(_request) {
 function load_content(_request, metadata) {
 
 
-
-
     var request = "/ar_pviews.php?tipo=content&request=" + _request
     // + '&metadata=' + fixedEncodeURIComponent(JSON.stringify(metadata)) 
     //+ "&old_view=" + fixedEncodeURIComponent(JSON.stringify(view))
-    $.getJSON(request, function(data) {
+    $.getJSON(request, function (data) {
 
         console.log(data);
         view = data.view;
@@ -90,8 +87,6 @@ function load_content(_request, metadata) {
         if (typeof(data.breadcrumbs) != "undefined" && data.breadcrumbs !== null) {
             $('#breadcrumb').html(data.breadcrumbs);
         }
-
-
 
 
         change_browser_history_state(view.request)
@@ -110,7 +105,7 @@ function load_marginals(_request, metadata) {
 
     var request = "/ar_pviews.php?tipo=marginals&request=" + _request + '&metadata=' + JSON.stringify(metadata)
 
-    $.getJSON(request, function(data) {
+    $.getJSON(request, function (data) {
 
 
         if (typeof(data.header) != "undefined" && data.header !== null) {
@@ -120,10 +115,6 @@ function load_marginals(_request, metadata) {
         if (typeof(data.footer) != "undefined" && data.footer !== null) {
             $('#footer').html(data.footer);
         }
-
-
-
-
 
 
     });

@@ -11,63 +11,78 @@
 */
 
 
-if (isset($options['new']) and  $options['new'] ) {
-	$new=true;
-}else {
-	$new=false;
+if (isset($options['new']) and $options['new']) {
+    $new = true;
+} else {
+    $new = false;
 }
 
 
+$object_fields = array(
+    array(
+        'label'      => _('Purchase orders'),
+        'show_title' => true,
+        'fields'     => array(
 
 
-$object_fields=array(
-	array(
-		'label'=>_('Purchase orders'),
-		'show_title'=>true,
-		'fields'=>array(
-			
-			
-			
-			array(
-				'id'=>'Account_Suppliers_Terms_and_Conditions',
-				'edit'=>($edit?'editor':''),
-				'class'=>'editor',
-				'editor_data'=>array(
-					'id'=>'Account_Suppliers_Terms_and_Conditions',
-					'content'=>$object->get('Account Suppliers Terms and Conditions'),
+            array(
+                'id'              => 'Account_Suppliers_Terms_and_Conditions',
+                'edit'            => ($edit ? 'editor' : ''),
+                'class'           => 'editor',
+                'editor_data'     => array(
+                    'id'      => 'Account_Suppliers_Terms_and_Conditions',
+                    'content' => $object->get(
+                        'Account Suppliers Terms and Conditions'
+                    ),
 
-					'data'=>base64_encode(json_encode(array(
-								'mode'=>'edit_object',
-								'field'=>'Account_Suppliers_Terms_and_Conditions',
-								'plugins'=>array('align', 'draggable', 'image', 'link', 'save', 'entities', 'emoticons', 'fullscreen', 'lineBreaker', 'table', 'codeView', 'codeBeautifier'),
-								'metadata'=>array(
-									'tipo'=>'edit_field',
-									'object'=>'Account',
-									'key'=>$object->id,
-									'field'=>'Account Suppliers Terms and Conditions',
+                    'data' => base64_encode(
+                        json_encode(
+                            array(
+                                'mode'     => 'edit_object',
+                                'field'    => 'Account_Suppliers_Terms_and_Conditions',
+                                'plugins'  => array(
+                                    'align',
+                                    'draggable',
+                                    'image',
+                                    'link',
+                                    'save',
+                                    'entities',
+                                    'emoticons',
+                                    'fullscreen',
+                                    'lineBreaker',
+                                    'table',
+                                    'codeView',
+                                    'codeBeautifier'
+                                ),
+                                'metadata' => array(
+                                    'tipo'   => 'edit_field',
+                                    'object' => 'Account',
+                                    'key'    => $object->id,
+                                    'field'  => 'Account Suppliers Terms and Conditions',
 
 
+                                )
+                            )
+                        )
+                    )
 
-								)
-							)
-						))
+                ),
+                'value'           => $object->get(
+                    'Account Suppliers Terms and Conditions'
+                ),
+                'formatted_value' => $object->get(
+                    'Account Suppliers Terms and Conditions'
+                ),
+                'label'           => _('Terms and Conditions'),
+                'required'        => false,
+                'type'            => 'value'
+            ),
 
-				),
-				'value'=>$object->get('Account Suppliers Terms and Conditions'),
-				'formatted_value'=>$object->get('Account Suppliers Terms and Conditions'),
-				'label'=>_('Terms and Conditions'),
-				'required'=>false,
-				'type'=>'value'
-			),
+        )
+    ),
 
-		)
-	),
-	
-	
-	
-	
+
 );
-
 
 
 ?>

@@ -10,22 +10,29 @@
 */
 
 
-$category=$state['_object'];
+$category = $state['_object'];
 
 
+$data = base64_encode(
+    json_encode(
+        array(
+            'valid_from'   => $category->get('Part Category Valid From'),
+            'valid_to'     => ($category->get('Part Category Status') == 'NotInUse'
+                ? $category->get('Part Category Valid To')
+                : gmdate(
+                    "Y-m-d H:i:s"
+                )),
+            'parent'       => 'part_category',
+            'parent_key'   => $state['key'],
+            'title_value'  => _('Sales'),
+            'title_volume' => _('Deliveries')
 
-$data=base64_encode(json_encode(array(
-'valid_from'=>$category->get('Part Category Valid From'),
-'valid_to'=>($category->get('Part Category Status')=='NotInUse'?$category->get('Part Category Valid To'):gmdate("Y-m-d H:i:s")  ) ,
-'parent'=>'part_category',
-'parent_key'=>$state['key'],
-'title_value'=>_('Sales'),
-'title_volume'=>_('Deliveries')
+        )
+    )
+);
 
-)));
-
-$smarty->assign('data',$data);
-$html=$smarty->fetch('asset_sales.chart.tpl');
+$smarty->assign('data', $data);
+$html = $smarty->fetch('asset_sales.chart.tpl');
 
 
 ?>

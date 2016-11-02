@@ -1,8 +1,8 @@
 .d3_calendar {
   shape-rendering: crispEdges;
-  font-size:10px;
-text-align:center
-  
+  font-size: 10px;
+  text-align: center
+
 }
 
 .d3_calendar .day {
@@ -11,7 +11,7 @@ text-align:center
 }
 
 .d3_calendar .day_outside {
- 
+
   stroke: #ccc;
 }
 
@@ -21,18 +21,40 @@ text-align:center
   stroke-width: 1.5px;
 }
 
-.PuBuGn{
-.q0-11{fill:rgba(146,141,171,.75)}
-.q1-11{fill:rgba(134,129,158,.75)}
-.q2-11{fill:rgba(123,118,145,.75)}
-.q3-11{fill:rgba(111,107,132,.75)}
-.q4-11{fill:rgba(100,95,120,.75)}
-.q5-11{fill:rgba(88,84,107,.75)}
-.q6-11{fill:rgba(77,73,94,.75)}
-.q7-11{fill:rgba(65,61,82,.75)}
-.q8-11{fill:rgba(54,50,69,.75)}
-.q9-11{fill:rgba(42,39,56,.75)}
-.q10-11{fill:rgba(31,28,44,.75)}
+.PuBuGn {
+  .q0-11 {
+    fill: rgba(146, 141, 171, .75)
+  }
+  .q1-11 {
+    fill: rgba(134, 129, 158, .75)
+  }
+  .q2-11 {
+    fill: rgba(123, 118, 145, .75)
+  }
+  .q3-11 {
+    fill: rgba(111, 107, 132, .75)
+  }
+  .q4-11 {
+    fill: rgba(100, 95, 120, .75)
+  }
+  .q5-11 {
+    fill: rgba(88, 84, 107, .75)
+  }
+  .q6-11 {
+    fill: rgba(77, 73, 94, .75)
+  }
+  .q7-11 {
+    fill: rgba(65, 61, 82, .75)
+  }
+  .q8-11 {
+    fill: rgba(54, 50, 69, .75)
+  }
+  .q9-11 {
+    fill: rgba(42, 39, 56, .75)
+  }
+  .q10-11 {
+    fill: rgba(31, 28, 44, .75)
+  }
 }
 
 

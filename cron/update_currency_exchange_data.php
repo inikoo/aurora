@@ -17,40 +17,43 @@ include_once 'utils/currency_functions.php';
 
 
 //'InProcess','Submitted','Inputted','Dispatched','Received','Checked','Placed','Cancelled'
-$sql=sprintf('select `Purchase Order Key` from `Purchase Order Dimension` where `Purchase Order State`="InProcess"    ');
+$sql = sprintf(
+    'SELECT `Purchase Order Key` FROM `Purchase Order Dimension` WHERE `Purchase Order State`="InProcess"    '
+);
 
-if ($result=$db->query($sql)) {
-	foreach ($result as $row) {
-		$purchase_order=new PurchaseOrder($row['Purchase Order Key']);
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+        $purchase_order = new PurchaseOrder($row['Purchase Order Key']);
 
-		$purchase_order->update(
-			array(
-				'Purchase Order Currency Exchange'=>currency_conversion($db, $purchase_order->get('Purchase Order Currency Code'), $account->get('Account Currency'), '- 15 minutes')
-			)
+        $purchase_order->update(
+            array(
+                'Purchase Order Currency Exchange' => currency_conversion(
+                    $db, $purchase_order->get('Purchase Order Currency Code'), $account->get('Account Currency'), '- 15 minutes'
+                )
+            )
 
 
-		);
-	}
-}else {
-	print_r($error_info=$db->errorInfo());
-	exit;
+        );
+    }
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
 }
 
 
-$sql=sprintf('select `Part SKU` from `Part Dimension` order by `Part SKU`  ');
+$sql = sprintf('SELECT `Part SKU` FROM `Part Dimension` ORDER BY `Part SKU`  ');
 
-if ($result=$db->query($sql)) {
-	foreach ($result as $row) {
-		$part=new Part($row['Part SKU']);
-		print $part->sku."\r";
-		$part->update_cost();
-	}
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+        $part = new Part($row['Part SKU']);
+        print $part->sku."\r";
+        $part->update_cost();
+    }
 
-}else {
-	print_r($error_info=$db->errorInfo());
-	exit;
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
 }
-
 
 
 ?>

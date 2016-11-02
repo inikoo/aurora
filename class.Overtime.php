@@ -1,4 +1,5 @@
 <?php
+
 /*
 
  About:
@@ -14,174 +15,179 @@
 class Overtime extends DB_Table {
 
 
-	function Overtime($arg1=false, $arg2=false, $arg3=false) {
-		global $db;
+    function Overtime($arg1 = false, $arg2 = false, $arg3 = false) {
+        global $db;
 
-		$this->db=$db;
-		$this->table_name='Overtime';
-		$this->ignore_fields=array('Overtime Key');
+        $this->db            = $db;
+        $this->table_name    = 'Overtime';
+        $this->ignore_fields = array('Overtime Key');
 
-		if (is_numeric($arg1)) {
-			$this->get_data('id', $arg1);
-			return ;
-		}
+        if (is_numeric($arg1)) {
+            $this->get_data('id', $arg1);
 
-		if (preg_match('/^find/i', $arg1)) {
+            return;
+        }
 
-			$this->find($arg2, $arg3);
-			return;
-		}
+        if (preg_match('/^find/i', $arg1)) {
 
-		if (preg_match('/^(create|new)/i', $arg1)) {
-			$this->create($arg2);
-			return;
-		}
+            $this->find($arg2, $arg3);
 
-		$this->get_data($arg1, $arg2);
-		return ;
+            return;
+        }
 
-	}
+        if (preg_match('/^(create|new)/i', $arg1)) {
+            $this->create($arg2);
 
+            return;
+        }
 
+        $this->get_data($arg1, $arg2);
 
-	function get_data($tipo, $tag) {
+        return;
 
-		if ($tipo=='id')
-			$sql=sprintf("select * from `Overtime Dimension` where `Overtime Key`=%d", $tag);
-		else {
-			return;
-		}
+    }
 
-		if ($this->data = $this->db->query($sql)->fetch()) {
-			$this->id=$this->data['Overtime Key'];
-		}
 
+    function get_data($tipo, $tag) {
 
-	}
+        if ($tipo == 'id') {
+            $sql = sprintf(
+                "SELECT * FROM `Overtime Dimension` WHERE `Overtime Key`=%d", $tag
+            );
+        } else {
+            return;
+        }
 
+        if ($this->data = $this->db->query($sql)->fetch()) {
+            $this->id = $this->data['Overtime Key'];
+        }
 
-	function get($key='') {
 
+    }
 
+    function create($data) {
 
-		switch ($key) {
+        $this->duplicated = false;
+        $this->new        = false;
 
-		case 'Time Hours':
-		case 'Accrued Time Hours':
-			$hours=$this->data['Overtime '.preg_replace('/Hours/', 'Time', $key)]/3600;
-			return sprintf("%s %s", number($hours, 3), ngettext("h", "hrs", $hours));
+        $this->editor = $data['editor'];
+        unset($data['editor']);
+        $this->data = $data;
 
-			break;
-		case 'Time':
-		case 'Accrued Time':
-			include_once 'utils/natural_language.php';
-			return seconds_to_string($this->data['Overtime '.$key] , 'minutes', true);
+        $keys   = '';
+        $values = '';
 
+        foreach ($this->data as $key => $value) {
+            $keys .= ",`".$key."`";
+            $values .= ','.prepare_mysql($value, false);
+        }
+        $values = preg_replace('/^,/', '', $values);
+        $keys   = preg_replace('/^,/', '', $keys);
 
-			break;
-		case 'IsoDate':
-			return $this->data['Overtime Date']!=''?date("Y-m-d", strtotime($this->data['Overtime Date'])):'';
+        $sql = "insert into `Overtime Dimension` ($keys) values ($values)";
 
+        //print  $sql;
+        if ($this->db->exec($sql)) {
 
-			break;
+            $this->id  = $this->db->lastInsertId();
+            $this->new = true;
 
-		case 'Start Date':
-		case 'End Date':
+            $this->get_data('id', $this->id);
+        } else {
+            $this->error = true;
 
-			return $this->data['Overtime '.$key]!=''?strftime("%a %e %b %Y", strtotime($this->data['Overtime '.$key])):'';
 
-			break;
+            $error_info = $this->db->errorInfo();
+            if ($error_info[0] == 23000) {
+                $this->duplicated = true;
+                $this->msg        = _('Record already exists');
+            } else {
+                $this->msg = 'Can not create Overtime. '.$error_info[2];
+            }
 
+        }
 
-		default:
-			if (isset($this->data[$key]))
-				return $this->data[$key];
-			$_key=ucfirst($key);
-			if (isset($this->data[$_key]))
-				return $this->data[$_key];
+    }
 
-			return false;
+    function get($key = '') {
 
-		}
 
+        switch ($key) {
 
+            case 'Time Hours':
+            case 'Accrued Time Hours':
+                $hours = $this->data['Overtime '.preg_replace(
+                        '/Hours/', 'Time', $key
+                    )] / 3600;
 
-	}
+                return sprintf(
+                    "%s %s", number($hours, 3), ngettext("h", "hrs", $hours)
+                );
 
+                break;
+            case 'Time':
+            case 'Accrued Time':
+                include_once 'utils/natural_language.php';
 
+                return seconds_to_string(
+                    $this->data['Overtime '.$key], 'minutes', true
+                );
 
 
+                break;
+            case 'IsoDate':
+                return $this->data['Overtime Date'] != '' ? date(
+                    "Y-m-d", strtotime($this->data['Overtime Date'])
+                ) : '';
 
-	function create($data) {
 
-		$this->duplicated=false;
-		$this->new=false;
+                break;
 
-		$this->editor=$data['editor'];
-		unset($data['editor']);
-		$this->data=$data;
+            case 'Start Date':
+            case 'End Date':
 
-		$keys='';
-		$values='';
+                return $this->data['Overtime '.$key] != '' ? strftime(
+                    "%a %e %b %Y", strtotime($this->data['Overtime '.$key])
+                ) : '';
 
-		foreach ($this->data as $key=>$value) {
-			$keys.=",`".$key."`";
-			$values.=','.prepare_mysql($value, false);
-		}
-		$values=preg_replace('/^,/', '', $values);
-		$keys=preg_replace('/^,/', '', $keys);
+                break;
 
-		$sql="insert into `Overtime Dimension` ($keys) values ($values)";
 
-		//print  $sql;
-		if ($this->db->exec($sql)) {
+            default:
+                if (isset($this->data[$key])) {
+                    return $this->data[$key];
+                }
+                $_key = ucfirst($key);
+                if (isset($this->data[$_key])) {
+                    return $this->data[$_key];
+                }
 
-			$this->id=$this->db->lastInsertId();
-			$this->new=true;
+                return false;
 
-			$this->get_data('id', $this->id);
-		} else {
-			$this->error=true;
+        }
 
 
+    }
 
-			$error_info=$this->db->errorInfo();
-			if ($error_info[0]==23000) {
-				$this->duplicated=true;
-				$this->msg=_('Record already exists');
-			}else {
-				$this->msg='Can not create Overtime. '.$error_info[2];
-			}
+    function get_field_label($field) {
 
-		}
+        switch ($field) {
 
-	}
 
+            case 'Overtime Start Date':
+                $label = _('Start');
+                break;
+            case 'Overtime End Date':
+                $label = _('End');
+                break;
+            default:
+                $label = $field;
 
-	
+        }
 
+        return $label;
 
-	function get_field_label($field) {
-
-		switch ($field) {
-
-
-		case 'Overtime Start Date':
-			$label=_('Start');
-			break;
-		case 'Overtime End Date':
-			$label=_('End');
-			break;	
-		default:
-			$label=$field;
-
-		}
-
-		return $label;
-
-	}
-
-
+    }
 
 
 }

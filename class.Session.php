@@ -35,172 +35,204 @@
  *  Copyright:  (c) 2006 - 2007 Stefan Gabos
  *  Package:    dbSession
  */
-
 class Session {
-	var $id=0;
-	/**
-	 *  Constructor of class
-	 *
-	 *  Initializes the class and starts a new session
-	 *
-	 *  There is no need to call start_session() after instantiating this class
-	 *
-	 *  @param  integer     $gc_maxlifetime     (optional) the number of seconds after which data will be seen as 'garbage' and
-	 *                                          cleaned up on the next run of the gc (garbage collection) routine
-	 *
-	 *                                          Default is specified in php.ini file
-	 *  @param  integer     $gc_probability     (optional) used in conjunction with gc_divisor, is used to manage probability that
-	 *                                          the gc routine is started. the probability is expressed by the formula
-	 *
-	 *                                          probability = $gc_probability / $gc_divisor
-	 *
-	 *                                          So if $gc_probability is 1 and $gc_divisor is 100 means that there is
-	 *                                          a 1% chance the the gc routine will be called on each request
-	 *
-	 *                                          Default is specified in php.ini file
-	 *
-	 *  @param  integer     $gc_divisor         (optional) used in conjunction with gc_probability, is used to manage probability
-	 *                                          that the gc routine is started. the probability is expressed by the formula
-	 *
-	 *                                          probability = $gc_probability / $gc_divisor
-	 *
-	 *                                          So if $gc_probability is 1 and $gc_divisor is 100 means that there is
-	 *                                          a 1% chance the the gc routine will be called on each request
-	 *
-	 *                                          Default is specified in php.ini file
-	 *
-	 *  @param  string      $securityCode       the value of this argument is appended to the HTTP_USER_AGENT before creating the
-	 *                                          md5 hash out of it. this way we'll try to prevent HTTP_USER_AGENT spoofing
-	 *
-	 *                                          Default is 'sEcUr1tY_c0dE'
-	 *
-	 *  @return void
-	 */
-	function Session($gc_maxlifetime = "", $gc_probability = "", $gc_divisor = "", $securityCode = "sfjw8rq3pe28rnqwep8qwn*&P*(P31fne;fa84713847P883pe8qfmwq8efneprm52gxn&^&^&^") {
+    var $id = 0;
+
+    /**
+     *  Constructor of class
+     *
+     *  Initializes the class and starts a new session
+     *
+     *  There is no need to call start_session() after instantiating this class
+     *
+     * @param  integer $gc_maxlifetime (optional) the number of seconds after which data will be seen as 'garbage' and
+     *                                          cleaned up on the next run of the gc (garbage collection) routine
+     *
+     *                                          Default is specified in php.ini file
+     * @param  integer $gc_probability (optional) used in conjunction with gc_divisor, is used to manage probability that
+     *                                          the gc routine is started. the probability is expressed by the formula
+     *
+     *                                          probability = $gc_probability / $gc_divisor
+     *
+     *                                          So if $gc_probability is 1 and $gc_divisor is 100 means that there is
+     *                                          a 1% chance the the gc routine will be called on each request
+     *
+     *                                          Default is specified in php.ini file
+     *
+     * @param  integer $gc_divisor (optional) used in conjunction with gc_probability, is used to manage probability
+     *                                          that the gc routine is started. the probability is expressed by the formula
+     *
+     *                                          probability = $gc_probability / $gc_divisor
+     *
+     *                                          So if $gc_probability is 1 and $gc_divisor is 100 means that there is
+     *                                          a 1% chance the the gc routine will be called on each request
+     *
+     *                                          Default is specified in php.ini file
+     *
+     * @param  string  $securityCode the value of this argument is appended to the HTTP_USER_AGENT before creating the
+     *                                          md5 hash out of it. this way we'll try to prevent HTTP_USER_AGENT spoofing
+     *
+     *                                          Default is 'sEcUr1tY_c0dE'
+     *
+     * @return void
+     */
+    function Session($gc_maxlifetime = "", $gc_probability = "", $gc_divisor = "", $securityCode = "sfjw8rq3pe28rnqwep8qwn*&P*(P31fne;fa84713847P883pe8qfmwq8efneprm52gxn&^&^&^") {
 
 
-		// if $gc_maxlifetime is specified and is an integer number
-		if ($gc_maxlifetime != "" && is_integer($gc_maxlifetime)) {
+        // if $gc_maxlifetime is specified and is an integer number
+        if ($gc_maxlifetime != "" && is_integer($gc_maxlifetime)) {
 
-			// set the new value
-			@ini_set('session.gc_maxlifetime', $gc_maxlifetime);
+            // set the new value
+            @ini_set('session.gc_maxlifetime', $gc_maxlifetime);
 
-		}
+        }
 
-		// if $gc_probability is specified and is an integer number
-		if ($gc_probability != "" && is_integer($gc_probability)) {
+        // if $gc_probability is specified and is an integer number
+        if ($gc_probability != "" && is_integer($gc_probability)) {
 
-			// set the new value
-			@ini_set('session.gc_probability', $gc_probability);
+            // set the new value
+            @ini_set('session.gc_probability', $gc_probability);
 
-		}
+        }
 
-		// if $gc_divisor is specified and is an integer number
-		if ($gc_divisor != "" && is_integer($gc_divisor)) {
+        // if $gc_divisor is specified and is an integer number
+        if ($gc_divisor != "" && is_integer($gc_divisor)) {
 
-			// set the new value
-			@ini_set('session.gc_divisor', $gc_divisor);
+            // set the new value
+            @ini_set('session.gc_divisor', $gc_divisor);
 
-		}
+        }
 
-		// get session lifetime
-		$this->sessionLifetime = ini_get("session.gc_maxlifetime");
+        // get session lifetime
+        $this->sessionLifetime = ini_get("session.gc_maxlifetime");
 
-		// we'll use this later on in order to try to prevent HTTP_USER_AGENT spoofing
-		$this->securityCode = $securityCode;
+        // we'll use this later on in order to try to prevent HTTP_USER_AGENT spoofing
+        $this->securityCode = $securityCode;
 
-		// register the new handler
-		session_set_save_handler(
-			array(&$this, 'open'),
-			array(&$this, 'close'),
-			array(&$this, 'read'),
-			array(&$this, 'write'),
-			array(&$this, 'destroy'),
-			array(&$this, 'gc')
-		);
-		register_shutdown_function('session_write_close');
+        // register the new handler
+        session_set_save_handler(
+            array(
+                &$this,
+                'open'
+            ), array(
+                &$this,
+                'close'
+            ), array(
+                &$this,
+                'read'
+            ), array(
+                &$this,
+                'write'
+            ), array(
+                &$this,
+                'destroy'
+            ), array(
+                &$this,
+                'gc'
+            )
+        );
+        register_shutdown_function('session_write_close');
 
-		// start the session
-		session_start();
+        // start the session
+        session_start();
 
-	}
+    }
 
-	/**
-	 *  Deletes all data related to the session
-	 *
-	 *  @since 1.0.1
-	 *
-	 *  @return void
-	 */
-	function stop() {
+    /**
+     *  Deletes all data related to the session
+     *
+     * @since 1.0.1
+     *
+     * @return void
+     */
+    function stop() {
 
-		$this->regenerate_id();
+        $this->regenerate_id();
 
-		session_unset();
+        session_unset();
 
-		session_destroy();
+        session_destroy();
 
-	}
+    }
 
-	/**
-	 *  Regenerates the session id.
-	 *
-	 *  <b>Call this method whenever you do a privilege change!</b>
-	 *
-	 *  @return void
-	 */
-	function regenerate_id() {
+    /**
+     *  Regenerates the session id.
+     *
+     *  <b>Call this method whenever you do a privilege change!</b>
+     *
+     * @return void
+     */
+    function regenerate_id() {
 
-		// saves the old session's id
-		$oldSessionID = session_id();
+        // saves the old session's id
+        $oldSessionID = session_id();
 
-		// regenerates the id
-		// this function will create a new session, with a new id and containing the data from the old session
-		// but will not delete the old session
-		session_regenerate_id();
+        // regenerates the id
+        // this function will create a new session, with a new id and containing the data from the old session
+        // but will not delete the old session
+        session_regenerate_id();
 
-		// because the session_regenerate_id() function does not delete the old session,
-		// we have to delete it manually
-		$this->destroy($oldSessionID);
+        // because the session_regenerate_id() function does not delete the old session,
+        // we have to delete it manually
+        $this->destroy($oldSessionID);
 
-	}
+    }
 
+    /**
+     *  Custom destroy() function
+     *
+     * @access private
+     */
+    function destroy($session_id) {
 
-	/**
-	 *  Custom open() function
-	 *
-	 *  @access private
-	 */
-	function open($save_path, $session_name) {
+        // deletes the current session id from the database
 
-		return true;
+        $sql = "DELETE FROM `Session Dimension` WHERE `Session ID` = '".mysql_real_escape_string($session_id)."'";
 
-	}
+        if (mysql_query($sql)) {
+            return true;
+        } else {
+            return false;
+        }
 
-	/**
-	 *  Custom close() function
-	 *
-	 *  @access private
-	 */
-	function close() {
+    }
 
-		return true;
+    /**
+     *  Custom open() function
+     *
+     * @access private
+     */
+    function open($save_path, $session_name) {
 
-	}
+        return true;
 
-	/**
-	 *  Custom read() function
-	 *
-	 *  @access private
-	 */
-	function read($session_id) {
+    }
 
-		// reads session data associated with the session id
-		// but only
-		// - if the HTTP_USER_AGENT is the same as the one who had previously written to this session AND
-		// - if session has not expired
+    /**
+     *  Custom close() function
+     *
+     * @access private
+     */
+    function close() {
 
-		$sql = "
+        return true;
+
+    }
+
+    /**
+     *  Custom read() function
+     *
+     * @access private
+     */
+    function read($session_id) {
+
+        // reads session data associated with the session id
+        // but only
+        // - if the HTTP_USER_AGENT is the same as the one who had previously written to this session AND
+        // - if session has not expired
+
+        $sql
+            = "
 
             SELECT
                 `Session Data`,`Session ID`
@@ -209,39 +241,43 @@ class Session {
             WHERE
 
                 `Session ID` = '".addslashes($session_id)."' AND
-                `HTTP User Agent` = '".addslashes(md5($_SERVER["HTTP_USER_AGENT"] . $this->securityCode))."' AND
+                `HTTP User Agent` = '".addslashes(
+                md5($_SERVER["HTTP_USER_AGENT"].$this->securityCode)
+            )."' AND
                 `Session Expire` > '".time()."'
             LIMIT 1
 
         ";
 
 
-		$result=mysql_query($sql);
+        $result = mysql_query($sql);
 
-		if ( ($data=mysql_fetch_array($result, MYSQL_ASSOC))) {
-			$this->id=$data['Session ID'];
-			return $data['Session Data'];
+        if (($data = mysql_fetch_array($result, MYSQL_ASSOC))) {
+            $this->id = $data['Session ID'];
 
-		}
-		else
-			return "";
+            return $data['Session Data'];
 
-	}
+        } else {
+            return "";
+        }
 
-	/**
-	 *  Custom write() function
-	 *
-	 *  @access private
-	 */
-	function write($session_id, $session_data) {
+    }
 
-		// insert OR update session's data - this is how it works:
-		// first it tries to insert a new row in the database BUT if session_id is already in the database then just
-		// update session_data and session_expire for that specific session_id
-		// read more here http://dev.mysql.com/doc/refman/4.1/en/insert-on-duplicate.html
+    /**
+     *  Custom write() function
+     *
+     * @access private
+     */
+    function write($session_id, $session_data) {
+
+        // insert OR update session's data - this is how it works:
+        // first it tries to insert a new row in the database BUT if session_id is already in the database then just
+        // update session_data and session_expire for that specific session_id
+        // read more here http://dev.mysql.com/doc/refman/4.1/en/insert-on-duplicate.html
 
 
-		$sql="
+        $sql
+            = "
             INSERT INTO
                 `Session Dimension` (
                     `Session ID`,
@@ -251,75 +287,63 @@ class Session {
                 )
             VALUES (
                 '".addslashes($session_id)."',
-                '".addslashes(md5($_SERVER["HTTP_USER_AGENT"] . $this->securityCode))."',
+                '".addslashes(
+                md5($_SERVER["HTTP_USER_AGENT"].$this->securityCode)
+            )."',
                 '".addslashes($session_data)."',
                 '".addslashes(time() + $this->sessionLifetime)."'
 
             )
             ON DUPLICATE KEY UPDATE
                 `Session Data` = '".addslashes($session_data)."',
-                `Session Expire` = '".addslashes(time() + $this->sessionLifetime)."',
-                `HTTP User Agent` = '".addslashes(md5($_SERVER["HTTP_USER_AGENT"] . $this->securityCode))."'
+                `Session Expire` = '".addslashes(
+                time() + $this->sessionLifetime
+            )."',
+                `HTTP User Agent` = '".addslashes(
+                md5($_SERVER["HTTP_USER_AGENT"].$this->securityCode)
+            )."'
         ";
 
-		//  print_r($session_data);
-		if (mysql_query($sql)) {
-			$result=mysql_affected_rows();
-			if ($result > 1) {
-				// print "updated";
-				// return TRUE
-				return true;
+        //  print_r($session_data);
+        if (mysql_query($sql)) {
+            $result = mysql_affected_rows();
+            if ($result > 1) {
+                // print "updated";
+                // return TRUE
+                return true;
 
-				// if the row was inserted
-			} else {
+                // if the row was inserted
+            } else {
 
-				// return an empty string
-				return "";
+                // return an empty string
+                return "";
 
-			}
+            }
 
-		}else {
-			print "error";
-			exit("error inserting sessions");
-			return false;
-		}
+        } else {
+            print "error";
+            exit("error inserting sessions");
 
-	}
+            return false;
+        }
 
+    }
 
+    /**
+     *  Custom gc() function (garbage collector)
+     *
+     * @access private
+     */
+    function gc($maxlifetime) {
 
-
-	/**
-	 *  Custom destroy() function
-	 *
-	 *  @access private
-	 */
-	function destroy($session_id) {
-
-		// deletes the current session id from the database
-
-		$sql="DELETE FROM `Session Dimension` WHERE `Session ID` = '".mysql_real_escape_string($session_id)."'";
-
-		if (mysql_query($sql))
-			return true;
-		else
-			return false;
-
-	}
-
-	/**
-	 *  Custom gc() function (garbage collector)
-	 *
-	 *  @access private
-	 */
-	function gc($maxlifetime) {
-
-		$sql ="
+        $sql
+            = "
             DELETE FROM `Session Dimension` WHERE `Session Expire` < '".mysql_real_escape_string(time() - $maxlifetime)."'";
 
-		mysql_query($sql);
+        mysql_query($sql);
 
-	}
+    }
 
 }
+
 ?>

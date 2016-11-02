@@ -12,7 +12,6 @@ function validate_field(field, new_value, field_type, required, server_validatio
     if (validation.class == 'valid' && (server_validation_settings != undefined && server_validation_settings != '')) {
 
 
-
         var settings = JSON.parse(server_validation_settings)
 
 
@@ -51,7 +50,7 @@ function validate_address(field) {
 
     var invalid_fields = 0;
 
-    $('#' + field + ' input.address_input_field').each(function(i, obj) {
+    $('#' + field + ' input.address_input_field').each(function (i, obj) {
 
 
         var tr = $(obj).closest('tr')
@@ -112,7 +111,6 @@ function client_validation(type, required, value, field) {
     }
 
 
-
     if (value == '') {
         if (required) {
 
@@ -131,7 +129,6 @@ function client_validation(type, required, value, field) {
                         type: 'not_found'
                     }
                 }
-
 
 
             } else {
@@ -156,488 +153,465 @@ function client_validation(type, required, value, field) {
     switch (type) {
 
 
-    case 'dropdown_select':
+        case 'dropdown_select':
 
-        if (value == '__error__' && $('#' + field).val() == '') {
-            return {
-                class: 'invalid',
-                type: 'not_found'
-            }
-        } else if ($('#' + field).val() == '') {
-
-
-            return {
-                class: 'potentially_valid',
-                type: 'not_selected'
-            }
-        }
-
-
-
-
-
-        break;
-
-    case 'string':
-        break;
-
-    case 'handle':
-
-        if (value.length < 4) {
-            return {
-                class: 'potentially_valid',
-
-                type: 'short'
-            }
-        }
-
-        break;
-
-    case 'pin':
-
-        if (value.length < 4) {
-            return {
-                class: 'potentially_valid',
-
-                type: 'short'
-            }
-        }
-
-        break;
-    case 'password':
-
-        if (value.length < 6) {
-            return {
-                class: 'potentially_valid',
-
-                type: 'short'
-            }
-        }
-
-        break;
-
-    case 'password_with_confirmation':
-
-        if (value.length < 6) {
-            return {
-                class: 'potentially_valid',
-                type: 'short'
-            }
-        }
-
-        break;
-
-    case 'date':
-        break;
-
-    case 'barcode':
-
-        var res = validate_barcode(value, 12)
-
-        if (res) return res
-
-
-        break;
-
-
-
-    case 'barcode_range':
-
-        if (value.match(/\-/g)) {
-            barcodes = value.split('-')
-            if (barcodes.length > 2) {
+            if (value == '__error__' && $('#' + field).val() == '') {
                 return {
                     class: 'invalid',
-                    type: 'invalid'
+                    type: 'not_found'
+                }
+            } else if ($('#' + field).val() == '') {
+
+
+                return {
+                    class: 'potentially_valid',
+                    type: 'not_selected'
                 }
             }
 
 
-            var res = validate_barcode(barcodes[0], 12, 12)
+            break;
 
+        case 'string':
+            break;
 
+        case 'handle':
 
-            if (res) {
+            if (value.length < 4) {
                 return {
-                    class: 'invalid',
-                    type: res.type
+                    class: 'potentially_valid',
+
+                    type: 'short'
                 }
             }
 
-            if (barcodes[1] == '') {
+            break;
+
+        case 'pin':
+
+            if (value.length < 4) {
+                return {
+                    class: 'potentially_valid',
+
+                    type: 'short'
+                }
+            }
+
+            break;
+        case 'password':
+
+            if (value.length < 6) {
+                return {
+                    class: 'potentially_valid',
+
+                    type: 'short'
+                }
+            }
+
+            break;
+
+        case 'password_with_confirmation':
+
+            if (value.length < 6) {
                 return {
                     class: 'potentially_valid',
                     type: 'short'
                 }
             }
 
-            res = validate_barcode(barcodes[1], 12, 12)
-            console.log(barcodes)
-            if (res) return res
+            break;
 
+        case 'date':
+            break;
 
-            if (barcodes[1] < barcodes[0]) {
-                return {
-                    class: 'invalid',
-                    type: 'range_minmax'
-                }
-            }
+        case 'barcode':
 
-
-        } else {
-            var res = validate_barcode(value, 12, 13)
-
+            var res = validate_barcode(value, 12)
 
             if (res) return res
 
 
+            break;
 
 
-        }
+        case 'barcode_range':
 
-        break;
-
-    case 'telephone':
-
-
-        value = value.replace(/(\s|\-|\(|\))/g, '')
-
-
-        if (value.length < 4) {
-            value = value.replace(/^\+/g, '')
-            if (value == '' || $.isNumeric(value)) {
-                return {
-                    class: 'potentially_valid',
-                    type: 'short'
-                }
-            } else {
-                return {
-                    class: 'invalid',
-                    type: 'invalid'
-                }
-            }
-
-        } else {
-
-
-            if (!$('#' + field).intlTelInput("isValidNumber")) {
-                var error = $('#' + field).intlTelInput("getValidationError");
-                console.log(error)
-                if (error == intlTelInputUtils.validationError.TOO_SHORT) {
-                    return {
-                        class: 'potentially_valid',
-                        type: 'short'
-                    }
-                } else if (error == intlTelInputUtils.validationError.TOO_LONG) {
-                    return {
-                        class: 'invalid',
-                        type: 'long'
-                    }
-                } else if (error == intlTelInputUtils.validationError.NOT_A_NUMBER) {
+            if (value.match(/\-/g)) {
+                barcodes = value.split('-')
+                if (barcodes.length > 2) {
                     return {
                         class: 'invalid',
                         type: 'invalid'
                     }
-                } else if (error == intlTelInputUtils.validationError.INVALID_COUNTRY_CODE) {
+                }
+
+
+                var res = validate_barcode(barcodes[0], 12, 12)
+
+
+                if (res) {
                     return {
                         class: 'invalid',
-                        type: 'invalid_code'
+                        type: res.type
                     }
                 }
 
+                if (barcodes[1] == '') {
+                    return {
+                        class: 'potentially_valid',
+                        type: 'short'
+                    }
+                }
+
+                res = validate_barcode(barcodes[1], 12, 12)
+                console.log(barcodes)
+                if (res) return res
+
+
+                if (barcodes[1] < barcodes[0]) {
+                    return {
+                        class: 'invalid',
+                        type: 'range_minmax'
+                    }
+                }
+
+
+            } else {
+                var res = validate_barcode(value, 12, 13)
+
+
+                if (res) return res
+
+
             }
-        }
 
-        break;
+            break;
 
-
-    case 'email':
-    case 'new_email':
+        case 'telephone':
 
 
-        var tmp = value.replace(/"[^"]*"/g, '')
-        if (tmp.match(/"/g)) {
-            // console.log('has quote')
-        } else {
-            //  console.log('dont has quote')
-            if (tmp.match(/\s/g)) {
+            value = value.replace(/(\s|\-|\(|\))/g, '')
 
 
-                return {
-                    class: 'invalid',
-                    type: 'spaces'
+            if (value.length < 4) {
+                value = value.replace(/^\+/g, '')
+                if (value == '' || $.isNumeric(value)) {
+                    return {
+                        class: 'potentially_valid',
+                        type: 'short'
+                    }
+                } else {
+                    return {
+                        class: 'invalid',
+                        type: 'invalid'
+                    }
+                }
+
+            } else {
+
+
+                if (!$('#' + field).intlTelInput("isValidNumber")) {
+                    var error = $('#' + field).intlTelInput("getValidationError");
+                    console.log(error)
+                    if (error == intlTelInputUtils.validationError.TOO_SHORT) {
+                        return {
+                            class: 'potentially_valid',
+                            type: 'short'
+                        }
+                    } else if (error == intlTelInputUtils.validationError.TOO_LONG) {
+                        return {
+                            class: 'invalid',
+                            type: 'long'
+                        }
+                    } else if (error == intlTelInputUtils.validationError.NOT_A_NUMBER) {
+                        return {
+                            class: 'invalid',
+                            type: 'invalid'
+                        }
+                    } else if (error == intlTelInputUtils.validationError.INVALID_COUNTRY_CODE) {
+                        return {
+                            class: 'invalid',
+                            type: 'invalid_code'
+                        }
+                    }
+
                 }
             }
 
+            break;
 
 
+        case 'email':
+        case 'new_email':
 
 
-            if (tmp.match(/\(|\)|\,|:|;|<|>|\[|\]/g)) {
-
-
-
-
-                if (tmp.match(/,/g)) {
+            var tmp = value.replace(/"[^"]*"/g, '')
+            if (tmp.match(/"/g)) {
+                // console.log('has quote')
+            } else {
+                //  console.log('dont has quote')
+                if (tmp.match(/\s/g)) {
 
 
                     return {
                         class: 'invalid',
-                        type: 'comma'
+                        type: 'spaces'
+                    }
+                }
+
+
+                if (tmp.match(/\(|\)|\,|:|;|<|>|\[|\]/g)) {
+
+
+                    if (tmp.match(/,/g)) {
+
+
+                        return {
+                            class: 'invalid',
+                            type: 'comma'
+                        }
+                    } else {
+
+
+                        return {
+                            class: 'invalid',
+                            type: 'invalid_character'
+                        }
+                    }
+
+                }
+                if (tmp.match(/^([^@]*@){2,}[^@]*$/g)) {
+                    console.log('error')
+
+                    return {
+                        class: 'invalid',
+                        type: 'double_at'
+                    }
+
+                }
+
+
+            }
+
+
+            var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,63})?$/
+
+
+            if (!emailReg.test(value)) {
+
+                return {
+                    class: 'potentially_valid',
+                    type: 'invalid'
+                }
+            }
+
+            break;
+
+        case 'time':
+
+
+            var timelReg = /^[0-9\:]+$/
+            if (!timelReg.test(value)) {
+
+                return {
+                    class: 'invalid',
+                    type: 'invalid'
+                }
+            }
+
+            if (value.length > 5) {
+
+                return {
+                    class: 'invalid',
+                    type: 'invalid'
+                }
+            } else if (value.length == 1) {
+
+                var partial_timeReg = /^[0-9]$/
+                if (!partial_timeReg.test(value)) {
+                    return {
+                        class: 'invalid',
+                        type: 'invalid'
+                    }
+                }
+
+            } else if (value.length == 2) {
+
+
+                var partial_timeReg = /^(1?[0-9]|2[0-3])|[0-9]:$/
+                if (!partial_timeReg.test(value)) {
+                    return {
+                        class: 'invalid',
+
+                        type: 'invalid'
+                    }
+                }
+
+
+            } else if (value.length == 4) {
+
+
+                var timelReg = /^(1?[0-9]|2[0-3]|0[0-9])[0-5][0-9]$/
+                if (timelReg.test(value)) {
+
+                    return {
+                        class: 'valid',
+                        type: 'valid'
+                    }
+                }
+
+                var timelReg = /^(1?[0-9]|2[0-3]|0[0-9]):[0-5]$/
+                if (timelReg.test(value)) {
+
+                    return {
+                        class: 'potentially_valid',
+                        type: 'invalid'
+                    }
+                }
+
+
+            }
+
+
+            var timelReg = /^(1?[0-9]|2[0-3]|0[0-9]):[0-5][0-9]$/
+            if (!timelReg.test(value)) {
+
+                if (value.length == 5 || value.length == 4) {
+
+                    return {
+                        class: 'invalid',
+                        type: 'invalid'
                     }
                 } else {
 
-
                     return {
-                        class: 'invalid',
-                        type: 'invalid_character'
+                        class: 'potentially_valid',
+                        type: 'invalid'
                     }
                 }
-
-            }
-            if (tmp.match(/^([^@]*@){2,}[^@]*$/g)) {
-                console.log('error')
-
-                return {
-                    class: 'invalid',
-                    type: 'double_at'
-                }
-
-            }
-
-
-
-
-
-        }
-
-
-
-        var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,63})?$/
-
-
-
-        if (!emailReg.test(value)) {
-
-            return {
-                class: 'potentially_valid',
-                type: 'invalid'
-            }
-        }
-
-        break;
-
-    case 'time':
-
-
-        var timelReg = /^[0-9\:]+$/
-        if (!timelReg.test(value)) {
-
-            return {
-                class: 'invalid',
-                type: 'invalid'
-            }
-        }
-
-        if (value.length > 5) {
-
-            return {
-                class: 'invalid',
-                type: 'invalid'
-            }
-        } else if (value.length == 1) {
-
-            var partial_timeReg = /^[0-9]$/
-            if (!partial_timeReg.test(value)) {
-                return {
-                    class: 'invalid',
-                    type: 'invalid'
-                }
-            }
-
-        } else if (value.length == 2) {
-
-
-            var partial_timeReg = /^(1?[0-9]|2[0-3])|[0-9]:$/
-            if (!partial_timeReg.test(value)) {
-                return {
-                    class: 'invalid',
-
-                    type: 'invalid'
-                }
-            }
-
-
-        } else if (value.length == 4) {
-
-
-            var timelReg = /^(1?[0-9]|2[0-3]|0[0-9])[0-5][0-9]$/
-            if (timelReg.test(value)) {
-
+            } else {
                 return {
                     class: 'valid',
-                    type: 'valid'
+                    type: ''
                 }
+
             }
 
-            var timelReg = /^(1?[0-9]|2[0-3]|0[0-9]):[0-5]$/
-            if (timelReg.test(value)) {
+        case 'smallint_unsigned':
+            var res = validate_signed_integer(value, 65535)
+            if (res) return res
+            break;
+        case 'int_unsigned':
+            var res = validate_signed_integer(value, 4294967295)
+            if (res) return res
+            break;
+        case 'minutes_in_day':
+            var res = validate_signed_integer(value, 1440)
+            if (res) return res
+            break;
 
-                return {
-                    class: 'potentially_valid',
-                    type: 'invalid'
-                }
-            }
+        case 'minutes_in_break':
 
-
-        }
-
-
-        var timelReg = /^(1?[0-9]|2[0-3]|0[0-9]):[0-5][0-9]$/
-        if (!timelReg.test(value)) {
-
-            if (value.length == 5 || value.length == 4) {
+            if (value == 0) {
 
                 return {
                     class: 'invalid',
-                    type: 'invalid'
+                    type: 'invalid_break_duration'
                 }
-            } else {
+            }
 
+            var res = validate_signed_integer(value, 1440)
+            if (res) return res
+            break;
+
+        case 'seconds_in_day':
+            var res = validate_signed_integer(value, 86400)
+            if (res) return res
+            break;
+        case 'seconds_in_hour':
+            var res = validate_signed_integer(value, 3600)
+            if (res) return res
+            break;
+
+        case 'day_of_month':
+
+            if (value == 0) {
+
+                return {
+                    class: 'invalid',
+                    type: 'invalid_day_of_month'
+                }
+            }
+
+            var res = validate_signed_integer(value, 31)
+            if (res) return res
+            break;
+
+        case 'amount':
+
+            var comma = ','
+            var dot = '.'
+
+            var re = new RegExp(comma, "g");
+            value = value.replace(re, "")
+
+
+            if (value == dot) {
                 return {
                     class: 'potentially_valid',
                     type: 'invalid'
                 }
             }
-        } else {
-            return {
-                class: 'valid',
-                type: ''
+
+
+            var regex = /^\d*\.?\d{0,6}$/
+            if (!regex.test(value)) {
+                return {
+                    class: 'invalid',
+                    type: 'invalid_amount'
+                }
+            }
+            break
+
+
+        case 'amount_margin':
+
+
+            value = value.replace(/\%$/g, "")
+
+
+            var comma = ','
+            var dot = '.'
+
+
+            var re = new RegExp(comma, "g");
+            value = value.replace(re, "")
+
+            if (value == dot) {
+                return {
+                    class: 'potentially_valid',
+                    type: 'invalid'
+                }
             }
 
-        }
 
-    case 'smallint_unsigned':
-        var res = validate_signed_integer(value, 65535)
-        if (res) return res
-        break;
-    case 'int_unsigned':
-        var res = validate_signed_integer(value, 4294967295)
-        if (res) return res
-        break;
-    case 'minutes_in_day':
-        var res = validate_signed_integer(value, 1440)
-        if (res) return res
-        break;
-
-    case 'minutes_in_break':
-
-        if (value == 0) {
-
-            return {
-                class: 'invalid',
-                type: 'invalid_break_duration'
+            var regex = /^\d*\.?\d{0,6}$/
+            if (!regex.test(value)) {
+                /// console.log('ccc')
+                return {
+                    class: 'invalid',
+                    type: 'invalid_amount'
+                }
             }
-        }
-
-        var res = validate_signed_integer(value, 1440)
-        if (res) return res
-        break;
-
-    case 'seconds_in_day':
-        var res = validate_signed_integer(value, 86400)
-        if (res) return res
-        break;
-    case 'seconds_in_hour':
-        var res = validate_signed_integer(value, 3600)
-        if (res) return res
-        break;
-
-    case 'day_of_month':
-
-        if (value == 0) {
-
-            return {
-                class: 'invalid',
-                type: 'invalid_day_of_month'
-            }
-        }
-
-        var res = validate_signed_integer(value, 31)
-        if (res) return res
-        break;
-
-    case 'amount':
-
-        var comma = ','
-        var dot = '.'
-
-        var re = new RegExp(comma, "g");
-        value = value.replace(re, "")
 
 
-
-        if (value == dot) {
-            return {
-                class: 'potentially_valid',
-                type: 'invalid'
-            }
-        }
-
-
-        var regex = /^\d*\.?\d{0,6}$/
-        if (!regex.test(value)) {
-            return {
-                class: 'invalid',
-                type: 'invalid_amount'
-            }
-        }
-        break
-
-
-
-    case 'amount_margin':
-
-
-        value = value.replace(/\%$/g, "")
-
-
-        var comma = ','
-        var dot = '.'
-
-
-
-
-        var re = new RegExp(comma, "g");
-        value = value.replace(re, "")
-
-        if (value == dot) {
-            return {
-                class: 'potentially_valid',
-                type: 'invalid'
-            }
-        }
-
-
-        var regex = /^\d*\.?\d{0,6}$/
-        if (!regex.test(value)) {
-            /// console.log('ccc')
-            return {
-                class: 'invalid',
-                type: 'invalid_amount'
-            }
-        }
-
-
-
-    default:
+        default:
 
     }
 
 
     return valid_state;
 }
-
 
 
 function validate_barcode(value, min_length, max_length) {
@@ -680,10 +654,8 @@ function validate_barcode(value, min_length, max_length) {
     }
 
 
-
     return false
 }
-
 
 
 function validate_number(value, min, max) {
@@ -721,12 +693,9 @@ function validate_number(value, min, max) {
 
     }
 
- return false
+    return false
 
 }
-
-
-
 
 
 function validate_signed_integer(value, max_value) {
@@ -754,7 +723,6 @@ function validate_signed_integer(value, max_value) {
         }
     }
     if (Math.floor(value) != value) {
-
 
 
         return {
@@ -788,8 +756,6 @@ function server_validation(settings, parent, parent_key, object, key, field, val
     }
 
 
-
-
     if (settings.parent_key_field != null) {
         parent_key = $('#' + settings.parent_key_field).val()
     }
@@ -812,8 +778,7 @@ function server_validation(settings, parent, parent_key, object, key, field, val
     }
 
     console.log(request)
-    $.getJSON(request, function(data) {
-
+    $.getJSON(request, function (data) {
 
 
         $("#" + field + '_field').removeClass('waiting invalid valid')
@@ -844,7 +809,6 @@ function server_validation(settings, parent, parent_key, object, key, field, val
         $('#' + field + '_field').addClass(validation)
 
 
-
         if ($('#fields').hasClass('new_object')) {
             var form_validation = get_form_validation_state()
             process_form_validation(form_validation)
@@ -853,7 +817,6 @@ function server_validation(settings, parent, parent_key, object, key, field, val
 
 
     })
-
 
 
 }

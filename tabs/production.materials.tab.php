@@ -10,35 +10,38 @@
 */
 
 
+$tab     = 'production.materials';
+$ar_file = 'ar_production_tables.php';
+$tipo    = 'materials';
 
-$tab='production.materials';
-$ar_file='ar_production_tables.php';
-$tipo='materials';
-
-$default=$user->get_tab_defaults($tab);
-
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array(
-	'overview'=>array('label'=>_('Overview'), 'title'=>_('Overview')),
-	'reorder'=>array('label'=>_('Reorder')),
-
-);
-
-$table_filters=array(
-	'reference'=>array('label'=>_('Reference'), 'title'=>_('Reference')),
+$table_views = array(
+    'overview' => array(
+        'label' => _('Overview'),
+        'title' => _('Overview')
+    ),
+    'reorder'  => array('label' => _('Reorder')),
 
 );
 
-$parameters=array(
-	'parent'=>$state['object'],
-	'parent_key'=>$state['key'],
+$table_filters = array(
+    'reference' => array(
+        'label' => _('Reference'),
+        'title' => _('Reference')
+    ),
+
+);
+
+$parameters = array(
+    'parent'     => $state['object'],
+    'parent_key' => $state['key'],
 
 );
 
 
-
-$table_buttons=array();
+$table_buttons = array();
 /*
 if ($state['_object']->get('Supplier Number Parts')>0) {
 	$table_buttons[]=array('icon'=>'edit', 'title'=>_("Edit supplier's parts"), 'id'=>'edit_table');

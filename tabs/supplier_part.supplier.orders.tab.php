@@ -9,22 +9,24 @@
 
 */
 
-$tab='supplier_part.supplier.orders';
-$ar_file='ar_suppliers_tables.php';
-$tipo='orders';
+$tab     = 'supplier_part.supplier.orders';
+$ar_file = 'ar_suppliers_tables.php';
+$tipo    = 'orders';
 
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
-$table_views=array(
+$table_views = array();
+
+$table_filters = array(
+    'number' => array(
+        'label' => _('Number'),
+        'title' => _('Order number')
+    ),
 );
 
-$table_filters=array(
-	'number'=>array('label'=>_('Number'), 'title'=>_('Order number')),
-);
-
-$parameters=array(
-	'parent'=>$state['object'],
-	'parent_key'=>$state['key'],
+$parameters = array(
+    'parent'     => $state['object'],
+    'parent_key' => $state['key'],
 
 );
 

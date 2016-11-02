@@ -9,32 +9,37 @@
 
 */
 
-$tab='overtimes';
-$ar_file='ar_hr_tables.php';
-$tipo='overtimes';
+$tab     = 'overtimes';
+$ar_file = 'ar_hr_tables.php';
+$tipo    = 'overtimes';
 
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
-$table_views=array(
+$table_views = array();
+
+$table_filters = array(
+    'reference' => array(
+        'label' => _('Reference'),
+        'title' => _('Overtime reference')
+    ),
+
 );
 
-$table_filters=array(
-	'reference'=>array('label'=>_('Reference'),'title'=>_('Overtime reference')),
+$parameters = array(
+    'parent'     => $state['parent'],
+    'parent_key' => $state['parent_key'],
 
 );
 
-$parameters=array(
-		'parent'=>$state['parent'],
-		'parent_key'=>$state['parent_key'],
-		
+$table_buttons   = array();
+$table_buttons[] = array(
+    'icon'      => 'plus',
+    'title'     => _('New overtime'),
+    'reference' => 'overtime/new'
 );
-
-$table_buttons=array();
-$table_buttons[]=array('icon'=>'plus', 'title'=>_('New overtime'), 'reference'=>'overtime/new');
 $smarty->assign('table_buttons', $table_buttons);
 
 $smarty->assign('title', _('Overtimes'));
-
 
 
 include('utils/get_table_html.php');

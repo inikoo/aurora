@@ -10,19 +10,17 @@
  Version 3.0
 */
 
-function get_manufacture_task_showcase($data,$smarty) {
+function get_manufacture_task_showcase($data, $smarty) {
 
- 
-    
-    $manufacture_task=$data['_object'];
-    if(!$manufacture_task->id){
+
+    $manufacture_task = $data['_object'];
+    if (!$manufacture_task->id) {
         return "";
     }
-    
-    $smarty->assign('manufacture_task',$manufacture_task);
+
+    $smarty->assign('manufacture_task', $manufacture_task);
 
     return $smarty->fetch('showcase/manufacture_task.tpl');
-    
 
 
 }

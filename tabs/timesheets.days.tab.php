@@ -9,31 +9,29 @@
 
 */
 
-$tab='timesheets.days';
-$ar_file='ar_hr_tables.php';
-$tipo='days';
+$tab     = 'timesheets.days';
+$ar_file = 'ar_hr_tables.php';
+$tipo    = 'days';
 
 
+$default = $user->get_tab_defaults($tab);
 
-$default=$user->get_tab_defaults($tab);
 
+$table_views = array();
 
-$table_views=array(
-);
+$table_filters = array();
 
-$table_filters=array(
-
-);
-
-$parameters=array(
-	'parent'=>$state['parent'],
-	'parent_key'=>$state['parent_key'],
-	'group_by'=>'day',
+$parameters = array(
+    'parent'     => $state['parent'],
+    'parent_key' => $state['parent_key'],
+    'group_by'   => 'day',
 
 );
 
 
-$smarty->assign('js_code', 'js/injections/timesheets_days.'.(_DEVEL?'':'min.').'js');
+$smarty->assign(
+    'js_code', 'js/injections/timesheets_days.'.(_DEVEL ? '' : 'min.').'js'
+);
 
 include 'utils/get_table_html.php';
 

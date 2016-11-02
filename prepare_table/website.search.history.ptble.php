@@ -10,47 +10,47 @@
 */
 
 
+$where = sprintf(" where  `Site Key`=%d ", $parameters['parent_key']);
+
+$group_by = ' ';
 
 
-$where=sprintf(" where  `Site Key`=%d ",$parameters['parent_key']);
-
-$group_by=' ';
-
-
-$wheref='';
-if ($parameters['f_field']=='query' and $f_value!=''  ){
-	$wheref.=" and  `Query` like '".addslashes($f_value)."%'    ";
+$wheref = '';
+if ($parameters['f_field'] == 'query' and $f_value != '') {
+    $wheref .= " and  `Query` like '".addslashes($f_value)."%'    ";
 }
 
 
+$_order = $order;
+$_dir   = $order_direction;
 
-$_order=$order;
-$_dir=$order_direction;
-
-if ($order=='query')
-	$order='`query`';
-elseif ($order=='date')
-	$order='date';
-elseif ($order=='number')
-	$order='number';	
-elseif ($order=='results')
-	$order='results';		
-elseif ($order=='users')
-	$order='users';			
-else
-	$order='`User Request Key`';
+if ($order == 'query') {
+    $order = '`query`';
+} elseif ($order == 'date') {
+    $order = 'date';
+} elseif ($order == 'number') {
+    $order = 'number';
+} elseif ($order == 'results') {
+    $order = 'results';
+} elseif ($order == 'users') {
+    $order = 'users';
+} else {
+    $order = '`User Request Key`';
+}
 
 
-$table='`Page Store Search Query Dimension` Q  left join `User Dimension` U on (Q.`User Key`=U.`User Key`) ' ;
+$table
+    = '`Page Store Search Query Dimension` Q  left join `User Dimension` U on (Q.`User Key`=U.`User Key`) ';
 
-$sql_totals="select count(*) as num from $table  $where  ";
+$sql_totals = "select count(*) as num from $table  $where  ";
 
-$fields="`User Alias`,`User Handle`,`Site Key`,Q.`User Key`,`Query`,`Date`,`Number Results`";
+$fields
+    = "`User Alias`,`User Handle`,`Site Key`,Q.`User Key`,`Query`,`Date`,`Number Results`";
 
-$sql="select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+$sql
+    = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
 //	 print $sql;
-
 
 
 ?>

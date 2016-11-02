@@ -13,29 +13,32 @@
 function get_order_showcase($data, $smarty, $user, $db) {
 
 
-	if (!$data['_object']->id) {
-		return "";
-	}
+    if (!$data['_object']->id) {
+        return "";
+    }
 
-	$smarty->assign('order', $data['_object']);
+    $smarty->assign('order', $data['_object']);
 
-	$order=$data['_object'];
+    $order = $data['_object'];
 
-	$order->update_totals();
-
-
-
-	$smarty->assign('object_data', base64_encode(json_encode(
-				array(
-					'object'=>$data['object'],
-					'key'=>$data['key'],
-
-					'tab'=>$data['tab']
-				)))  );
+    $order->update_totals();
 
 
-	return $smarty->fetch('showcase/order.tpl');
+    $smarty->assign(
+        'object_data', base64_encode(
+            json_encode(
+                array(
+                    'object' => $data['object'],
+                    'key'    => $data['key'],
 
+                    'tab' => $data['tab']
+                )
+            )
+        )
+    );
+
+
+    return $smarty->fetch('showcase/order.tpl');
 
 
 }

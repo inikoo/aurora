@@ -5,22 +5,21 @@
 
 
 $('#report_settings').click(
+    function () {
 
-function() {
+        if ($('#report_config').hasClass('hide')) {
 
-    if ($('#report_config').hasClass('hide')) {
+            $('#report_config').removeClass('hide')
+            var position = $("#report_settings").position()
+            console.log(position)
+            $("#report_config").css('left', position.left - $('#report_config').width());
+            $("#report_config").css('top', position.top + $("#report_settings").height());
 
-        $('#report_config').removeClass('hide')
-        var position = $("#report_settings").position()
-        console.log(position)
-        $("#report_config").css('left', position.left - $('#report_config').width());
-        $("#report_config").css('top', position.top + $("#report_settings").height());
+        } else {
+            $('#report_config').addClass('hide')
 
-    } else {
-        $('#report_config').addClass('hide')
-
-    }
-})
+        }
+    })
 
 
 function toggle_store_field(key) {
@@ -37,11 +36,11 @@ function toggle_store_field(key) {
         field_element.removeClass('fa-square-o')
     }
     if (setting_changed()) {
-        
+
         $('#report_config_save').removeClass('disabled').addClass('valid save')
         $('#report_config_save_label').removeClass('hide')
     } else {
-        
+
         $('#report_config_save').addClass('disabled').removeClass('valid save')
         $('#report_config_save_label').addClass('hide')
 
@@ -51,12 +50,11 @@ function toggle_store_field(key) {
 }
 
 
-
 function setting_changed() {
 
     var fields = []
     var changed = false;
-    $('#report_config .field_store i').each(function(index, obj) {
+    $('#report_config .field_store i').each(function (index, obj) {
 
         if ($(obj).hasClass('fa-check-square-o') && $(obj).attr('original_val') != 'fa-check-square-o') {
             changed = true
@@ -79,18 +77,18 @@ function apply_changes() {
     var excluded_stores = [];
 
 
-    $('#report_config .field_store i').each(function(index, obj) {
+    $('#report_config .field_store i').each(function (index, obj) {
         if ($(obj).hasClass('fa-square-o')) {
-        excluded_stores.push($(obj).attr('key'))
-         $(obj).attr('original_val','fa-square-o')
-        }else{
-        $(obj).attr('original_val','fa-check-square-o')
+            excluded_stores.push($(obj).attr('key'))
+            $(obj).attr('original_val', 'fa-square-o')
+        } else {
+            $(obj).attr('original_val', 'fa-check-square-o')
         }
     });
- $('#report_config_save').addClass('disabled').removeClass('valid save')
-        $('#report_config_save_label').addClass('hide')
-        
- $('#report_config').addClass('hide')
+    $('#report_config_save').addClass('disabled').removeClass('valid save')
+    $('#report_config_save_label').addClass('hide')
+
+    $('#report_config').addClass('hide')
 
     var parameters = jQuery.parseJSON(rows.parameters);
     parameters['excluded_stores'] = excluded_stores

@@ -10,31 +10,36 @@
 */
 
 
+$tab     = 'account.users.staff';
+$ar_file = 'ar_users_tables.php';
+$tipo    = 'users';
 
-$tab='account.users.staff';
-$ar_file='ar_users_tables.php';
-$tipo='users';
-
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array(
-	'privilegies'=>array('label'=>_('Overview')),
-	'groups'=>array('label'=>_('Permissions')),
-	'weblog'=>array('label'=>_('Syslog')),
-
-);
-
-$table_filters=array(
-	'handle'=>array('label'=>_('Handle'),'title'=>_('User handle')),
-	'name'=>array('label'=>_('Name'),'title'=>_('User name')),
+$table_views = array(
+    'privilegies' => array('label' => _('Overview')),
+    'groups'      => array('label' => _('Permissions')),
+    'weblog'      => array('label' => _('Syslog')),
 
 );
 
-$parameters=array(
-		'parent'=>'store',
-		'parent_key'=>$state['parent_key'],
-	
+$table_filters = array(
+    'handle' => array(
+        'label' => _('Handle'),
+        'title' => _('User handle')
+    ),
+    'name'   => array(
+        'label' => _('Name'),
+        'title' => _('User name')
+    ),
+
+);
+
+$parameters = array(
+    'parent'     => 'store',
+    'parent_key' => $state['parent_key'],
+
 );
 
 

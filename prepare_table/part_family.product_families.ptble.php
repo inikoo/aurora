@@ -10,52 +10,53 @@
 */
 
 include_once('class.Category.php');
-$category=new Category($parameters['parent_key']);
+$category = new Category($parameters['parent_key']);
 
-$period_tag=get_interval_db_name($parameters['f_period']);
-
-
-$where='where true ';
-
-$filter_msg='';
+$period_tag = get_interval_db_name($parameters['f_period']);
 
 
-$group='';
+$where = 'where true ';
+
+$filter_msg = '';
 
 
-
-$wheref='';
-if ( $parameters['f_field']=='name' and $f_value!='' )
-	$wheref=sprintf('  and `Store Name` REGEXP "[[:<:]]%s" ',addslashes($f_value));
-	
-elseif ( $parameters['f_field']=='code'  and $f_value!='' )
-	$wheref.=" and  `Store Code` like '".addslashes( $f_value )."%'";
+$group = '';
 
 
+$wheref = '';
+if ($parameters['f_field'] == 'name' and $f_value != '') {
+    $wheref = sprintf(
+        '  and `Store Name` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+    );
+} elseif ($parameters['f_field'] == 'code' and $f_value != '') {
+    $wheref .= " and  `Store Code` like '".addslashes($f_value)."%'";
+}
 
-$_order=$order;
-$_dir=$order_direction;
 
-if ($order=='code')
-	$order='`Store Code`';
-else
-	$order='S.`Store Key`';
+$_order = $order;
+$_dir   = $order_direction;
+
+if ($order == 'code') {
+    $order = '`Store Code`';
+} else {
+    $order = 'S.`Store Key`';
+}
 
 
+$table = '`Store Dimension` S ';
 
-$table='`Store Dimension` S ';
+$sql_totals
+    = "select count(Distinct S.`Store Key`) as num from $table  $where  ";
 
-$sql_totals="select count(Distinct S.`Store Key`) as num from $table  $where  ";
-
-$fields=sprintf("
+$fields = sprintf(
+    "
 `Store Key`,`Store Code`,`Store Name`,
 (select Concat_ws(',',`Category Key`,`Category Label`,`Category Code`) from `Category Dimension` where `Category Scope`='Product' and `Category Code`=%s and `Category Root Key`=`Store Family Category Key` ) as category_data ,
 (select `Category Number Subjects` from `Category Dimension` where `Category Scope`='Product' and `Category Code`=%s and `Category Root Key`=`Store Family Category Key` ) as number_products 
 
 ",
 
-prepare_mysql($category->get('Category Code')),
-prepare_mysql($category->get('Category Code'))
+    prepare_mysql($category->get('Category Code')), prepare_mysql($category->get('Category Code'))
 );
 
 ?>

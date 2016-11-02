@@ -1,4 +1,5 @@
 <?php
+
 /*
 
  About:
@@ -13,40 +14,35 @@
 trait LocationCategory {
 
 
+    function update_number_of_parts() {
+
+        $number_of_parts = 0;
+
+        $sql = sprintf(
+            "SELECT count(`Part SKU`) AS num  FROM  `Part Location Dimension` L LEFT JOIN `Category Bridge` B ON (L.`Location Key`=B.`Subject Key`)  WHERE B.`Category Key`=%d AND `Subject`='Location' GROUP BY `Part SKU`  ",
+            $this->id
+        );
 
 
-	function update_number_of_parts() {
-
-		$number_of_parts=0;
-
-		$sql=sprintf("select count(`Part SKU`) as num  from  `Part Location Dimension` L left join `Category Bridge` B on (L.`Location Key`=B.`Subject Key`)  where B.`Category Key`=%d and `Subject`='Location' group by `Part SKU`  ",
-			$this->id);
-
-
-		if ($result=$this->db->query($sql)) {
-			foreach ($result as $row) {
-				$number_of_parts=number($row['num']);
-			}
-		}else {
-			print_r($error_info=$this->db->errorInfo());
-			exit;
-		}
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $number_of_parts = number($row['num']);
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
 
 
+        $sql = sprintf(
+            "UPDATE `Location Category Dimension` SET `Location Category Number Parts`=%d  WHERE `Part Category Key`=%d", $number_of_parts,
+
+            $this->id
+        );
+        $this->db->exec($sql);
 
 
-		$sql=sprintf("update `Location Category Dimension` set `Location Category Number Parts`=%d  where `Part Category Key`=%d",
-			$number_of_parts,
-			
-			$this->id
-		);
-		$this->db->exec($sql);
-
-
-	}
-
-
-
+    }
 
 
 }

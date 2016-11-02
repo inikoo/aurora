@@ -16,40 +16,39 @@ else
 	$where=sprintf("where W.`Warehouse Key` in (%s)", join(',', $user->warehouses));
 */
 
-$where='where true';
-$filter_msg='';
+$where      = 'where true';
+$filter_msg = '';
 
 
-$group='';
+$group = '';
 
 
-
-$wheref='';
-if ( $parameters['f_field']=='name' and $f_value!='' )
-	$wheref.=" and  `Warehouse Name` like '%".addslashes( $f_value )."%'";
-elseif ( $parameters['f_field']=='code'  and $f_value!='' )
-	$wheref.=" and  `Warehouse Code` like '".addslashes( $f_value )."%'";
-
-
-
-$_order=$order;
-$_dir=$order_direction;
+$wheref = '';
+if ($parameters['f_field'] == 'name' and $f_value != '') {
+    $wheref .= " and  `Warehouse Name` like '%".addslashes($f_value)."%'";
+} elseif ($parameters['f_field'] == 'code' and $f_value != '') {
+    $wheref .= " and  `Warehouse Code` like '".addslashes($f_value)."%'";
+}
 
 
-
-if ($order=='code')
-	$order='`Warehouse Code`';
-elseif ($order=='name')
-	$order='`Warehouse Name`';
-else
-    $order='W.`Warehouse Key`';
+$_order = $order;
+$_dir   = $order_direction;
 
 
+if ($order == 'code') {
+    $order = '`Warehouse Code`';
+} elseif ($order == 'name') {
+    $order = '`Warehouse Name`';
+} else {
+    $order = 'W.`Warehouse Key`';
+}
 
-$table='`Warehouse Dimension` W';
 
-$sql_totals="select count(Distinct W.`Warehouse Key`) as num from $table  $where  ";
+$table = '`Warehouse Dimension` W';
 
-$fields="*";
+$sql_totals
+    = "select count(Distinct W.`Warehouse Key`) as num from $table  $where  ";
+
+$fields = "*";
 
 ?>

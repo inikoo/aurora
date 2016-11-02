@@ -10,30 +10,39 @@
 */
 
 
-$tab='stores';
-$ar_file='ar_products_tables.php';
-$tipo='stores';
+$tab     = 'stores';
+$ar_file = 'ar_products_tables.php';
+$tipo    = 'stores';
 
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array();
+$table_views = array();
 
-$table_filters=array(
-	'code'=>array('label'=>_('Code'),'title'=>_('Store code')),
-	'name'=>array('label'=>_('Name'),'title'=>_('Store name')),
+$table_filters = array(
+    'code' => array(
+        'label' => _('Code'),
+        'title' => _('Store code')
+    ),
+    'name' => array(
+        'label' => _('Name'),
+        'title' => _('Store name')
+    ),
 
 );
 
-$parameters=array(
-		'parent'=>'account',
-		'parent_key'=>1,
+$parameters = array(
+    'parent'     => 'account',
+    'parent_key' => 1,
 );
 
-$table_buttons=array();
-$table_buttons[]=array('icon'=>'plus', 'title'=>_('New store'), 'reference'=>"store/new");
+$table_buttons   = array();
+$table_buttons[] = array(
+    'icon'      => 'plus',
+    'title'     => _('New store'),
+    'reference' => "store/new"
+);
 $smarty->assign('table_buttons', $table_buttons);
-
 
 
 include('utils/get_table_html.php');

@@ -16,11 +16,9 @@ include_once 'conf/object_fields.php';
 include_once 'class.Location.php';
 
 
-
-
-
-$object_fields=get_object_fields($state['_object'], $db, $user, $smarty, array( 'new'=>true));
-
+$object_fields = get_object_fields(
+    $state['_object'], $db, $user, $smarty, array('new' => true)
+);
 
 
 $smarty->assign('state', $state);
@@ -33,7 +31,6 @@ $smarty->assign('object_name', $state['_object']->get_object_name());
 $smarty->assign('object_fields', $object_fields);
 
 
-
-$html=$smarty->fetch('new_object.tpl');
+$html = $smarty->fetch('new_object.tpl');
 
 ?>

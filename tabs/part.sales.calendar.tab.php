@@ -10,56 +10,60 @@
 */
 
 
+$part = $state['_object'];
 
-$part=$state['_object'];
+$sales_max_sample_domain = 1;
 
-$sales_max_sample_domain=1;
-
-$number_records=0;
-$sql=sprintf('select count(distinct `Date`) as num from `Inventory Spanshot Fact` where `Sold Amount`!=0 and `Part SKU`=%d ',
-	$state['key']
+$number_records = 0;
+$sql            = sprintf(
+    'SELECT count(DISTINCT `Date`) AS num FROM `Inventory Spanshot Fact` WHERE `Sold Amount`!=0 AND `Part SKU`=%d ', $state['key']
 );
-if ($result=$db->query($sql)) {
-	if ($row = $result->fetch()) {
-		$number_records=$row['num'];
-	}
-}else {
-	print_r($error_info=$db->errorInfo());
-	exit;
+if ($result = $db->query($sql)) {
+    if ($row = $result->fetch()) {
+        $number_records = $row['num'];
+    }
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
 }
 //print $sql;
 
 //print $number_records;
 
-$sql=sprintf("select  sum(`Sold Amount`) as value from  `Inventory Spanshot Fact`  where `Part SKU`=%d   group by `Date`  order by sum(`Sold Amount`) desc limit %d ,1 ",
-	$state['key'],
-	$number_records/20
+$sql = sprintf(
+    "SELECT  sum(`Sold Amount`) AS value FROM  `Inventory Spanshot Fact`  WHERE `Part SKU`=%d   GROUP BY `Date`  ORDER BY sum(`Sold Amount`) DESC LIMIT %d ,1 ", $state['key'], $number_records / 20
 );
 
 //print $sql;
-if ($result=$db->query($sql)) {
-	if ($row = $result->fetch()) {
-		$sales_max_sample_domain=$row['value'];
-	}
-}else {
-	print_r($error_info=$db->errorInfo());
-	exit;
+if ($result = $db->query($sql)) {
+    if ($row = $result->fetch()) {
+        $sales_max_sample_domain = $row['value'];
+    }
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
 }
 //print $sales_max_sample_domain;
 
-$data=base64_encode(json_encode(array(
-'valid_from'=>$part->get('Part Valid From'),
-'valid_to'=>($part->get('Part Status')=='Not In Use'?$part->get('Part Valid To'):gmdate("Y-m-d H:i:s")  ) ,
-'sales_max_sample_domain'=>$sales_max_sample_domain,
-'parent'=>$state['object'],
-'parent_key'=>$state['key']
-)));
+$data = base64_encode(
+    json_encode(
+        array(
+            'valid_from'              => $part->get('Part Valid From'),
+            'valid_to'                => ($part->get('Part Status') == 'Not In Use'
+                ? $part->get('Part Valid To')
+                : gmdate(
+                    "Y-m-d H:i:s"
+                )),
+            'sales_max_sample_domain' => $sales_max_sample_domain,
+            'parent'                  => $state['object'],
+            'parent_key'              => $state['key']
+        )
+    )
+);
 
 
-
-
-$smarty->assign('data',$data);
-$html=$smarty->fetch('calendar.tpl');
+$smarty->assign('data', $data);
+$html = $smarty->fetch('calendar.tpl');
 
 
 ?>

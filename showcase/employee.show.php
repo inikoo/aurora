@@ -12,21 +12,20 @@
 
 function get_employee_showcase($data, $smarty, $user, $db) {
 
-    
- 
-    if(!$data['_object']->id){
+
+    if (!$data['_object']->id) {
         return "";
     }
-    
-    
-    $smarty->assign('employee',$data['_object']);
 
-    if($data['_object']->deleted){
+
+    $smarty->assign('employee', $data['_object']);
+
+    if ($data['_object']->deleted) {
         return $smarty->fetch('showcase/deleted_employee.tpl');
 
-    }else{
+    } else {
 
-    return $smarty->fetch('showcase/employee.tpl');
+        return $smarty->fetch('showcase/employee.tpl');
     }
 
 

@@ -10,23 +10,20 @@
  Version 3.0
 */
 
-function get_showcase($data,$smarty,$user,$db) {
+function get_showcase($data, $smarty, $user, $db) {
 
 
-
-	$material=$data['_object'];
-	
-	
-	if (!$material->id) {
-		return "";
-	}
+    $material = $data['_object'];
 
 
-	
-	$smarty->assign('material', $material);
+    if (!$material->id) {
+        return "";
+    }
 
-	return $smarty->fetch('showcase/material.tpl');
 
+    $smarty->assign('material', $material);
+
+    return $smarty->fetch('showcase/material.tpl');
 
 
 }

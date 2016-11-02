@@ -10,33 +10,35 @@
 */
 
 
-
-$where='';
-$wheref='';
-if ( $parameters['f_field']=='name' and $f_value!='' )
-	$wheref.=" and  `Report Name` like '%".addslashes( $f_value )."%'";
-elseif ( $parameters['f_field']=='section'  and $f_value!='' )
-	$wheref.=" and  `Report Section Name` like '".addslashes( $f_value )."%'";
-
-
-
-$_order=$order;
-$_dir=$order_direction;
+$where  = '';
+$wheref = '';
+if ($parameters['f_field'] == 'name' and $f_value != '') {
+    $wheref .= " and  `Report Name` like '%".addslashes($f_value)."%'";
+} elseif ($parameters['f_field'] == 'section' and $f_value != '') {
+    $wheref .= " and  `Report Section Name` like '".addslashes($f_value)."%'";
+}
 
 
-if ($order=='name')
-	$order='`Report Name`';
-elseif ($order=='section')
-	$order='`Report Section Name``';
-
-	$order='R.`Report Key`';
+$_order = $order;
+$_dir   = $order_direction;
 
 
+if ($order == 'name') {
+    $order = '`Report Name`';
+} elseif ($order == 'section') {
+    $order = '`Report Section Name``';
+}
 
-$table='kbase.`Report Dimension` R left join kbase.`Report Section Dimension` S on (R.`Report Section Key`=S.`Report Section Key`) ';
+$order = 'R.`Report Key`';
 
-$sql_totals="select count(Distinct R.`Report Key`) as num from $table  $where  ";
 
-$fields="`Report Key`,R.`Report Section Key`,`Report Request`,`Report Section Request`,`Report Name`,`Report Section Name`";
+$table
+    = 'kbase.`Report Dimension` R left join kbase.`Report Section Dimension` S on (R.`Report Section Key`=S.`Report Section Key`) ';
+
+$sql_totals
+    = "select count(Distinct R.`Report Key`) as num from $table  $where  ";
+
+$fields
+    = "`Report Key`,R.`Report Section Key`,`Report Request`,`Report Section Request`,`Report Name`,`Report Section Name`";
 
 ?>

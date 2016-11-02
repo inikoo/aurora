@@ -10,47 +10,57 @@
 */
 
 
-
 switch ($parameters['parent']) {
-case 'employee':
-	$where=sprintf(" where  TD.`Timesheet Staff Key`=%d ", $parameters['parent_key']);
-	break;
+    case 'employee':
+        $where = sprintf(
+            " where  TD.`Timesheet Staff Key`=%d ", $parameters['parent_key']
+        );
+        break;
 
-case 'account':
-	$where=sprintf(" where true ");
-	break;
-case 'year':
-	$where=sprintf(" where  Year(`Timesheet Date`)=%d ", $parameters['parent_key']);
-	break;
-case 'week':
-	$where=sprintf(" where  yearweek(`Timesheet Date`,3)=%d ", $parameters['parent_key']);
-	break;
-case 'day':
-	$where=sprintf(" where  `Timesheet Date`=%s ", prepare_mysql($parameters['parent_key']));
-	break;	
-default:
-	exit('parent not suported '.$parameters['parent']);
-	break;
+    case 'account':
+        $where = sprintf(" where true ");
+        break;
+    case 'year':
+        $where = sprintf(
+            " where  Year(`Timesheet Date`)=%d ", $parameters['parent_key']
+        );
+        break;
+    case 'week':
+        $where = sprintf(
+            " where  yearweek(`Timesheet Date`,3)=%d ", $parameters['parent_key']
+        );
+        break;
+    case 'day':
+        $where = sprintf(
+            " where  `Timesheet Date`=%s ", prepare_mysql($parameters['parent_key'])
+        );
+        break;
+    default:
+        exit('parent not suported '.$parameters['parent']);
+        break;
 }
 
 
 if (isset($parameters['period'])) {
-	
-	
-	list($db_interval, $from, $to, $from_date_1yb, $to_1yb)=calculate_interval_dates($db,$parameters['period'], $parameters['from'], $parameters['to']);
 
-	$where_interval=prepare_mysql_dates($from, $to, '`Timesheet Date`');
-	$where.=$where_interval['mysql'];
+
+    list($db_interval, $from, $to, $from_date_1yb, $to_1yb)
+        = calculate_interval_dates(
+        $db, $parameters['period'], $parameters['from'], $parameters['to']
+    );
+
+    $where_interval = prepare_mysql_dates($from, $to, '`Timesheet Date`');
+    $where .= $where_interval['mysql'];
 }
 
 
-
-
-$wheref='';
-if ($parameters['f_field']=='alias' and $f_value!=''  ) {
-	$wheref.=" and  `Staff Alias` like '".addslashes($f_value)."%'    ";
-}elseif ($parameters['f_field']=='name' and $f_value!=''  ) {
-	$wheref=sprintf('  and  `Staff Name`  REGEXP "[[:<:]]%s" ', addslashes($f_value));
+$wheref = '';
+if ($parameters['f_field'] == 'alias' and $f_value != '') {
+    $wheref .= " and  `Staff Alias` like '".addslashes($f_value)."%'    ";
+} elseif ($parameters['f_field'] == 'name' and $f_value != '') {
+    $wheref = sprintf(
+        '  and  `Staff Name`  REGEXP "[[:<:]]%s" ', addslashes($f_value)
+    );
 }
 /*
 	'id'=>(integer) $data['Timesheet Key'],
@@ -67,43 +77,42 @@ if ($parameters['f_field']=='alias' and $f_value!=''  ) {
 */
 
 
-$_order=$order;
-$_dir=$order_direction;
+$_order = $order;
+$_dir   = $order_direction;
 
 
-if ($order=='alias'){
-		$order="`Staff Alias` $order_direction , `Timesheet Date`";
-	
-	$order_direction='';
-}elseif ($order=='name'){
-	$order="`Staff Name` $order_direction , `Timesheet Date`";
-	
-	$order_direction='';
-	
-}elseif ($order=='payroll_id')
-	$order='`Staff ID`';	
-	
-elseif ($order=='clocked_hours')
-	$order='`Timesheet Clocked Time`';
-elseif ($order=='clocking_records')
-	$order='`Timesheet Clocking Records`';		
-elseif ($order=='staff_formatted_id')
-	$order='`Timesheet Staff Key`';	
-elseif ($order=='date' or $order=='time')
-	$order='`Timesheet Date`';
+if ($order == 'alias') {
+    $order = "`Staff Alias` $order_direction , `Timesheet Date`";
 
-else
-	$order='`Timesheet Key`';
+    $order_direction = '';
+} elseif ($order == 'name') {
+    $order = "`Staff Name` $order_direction , `Timesheet Date`";
 
+    $order_direction = '';
+
+} elseif ($order == 'payroll_id') {
+    $order = '`Staff ID`';
+} elseif ($order == 'clocked_hours') {
+    $order = '`Timesheet Clocked Time`';
+} elseif ($order == 'clocking_records') {
+    $order = '`Timesheet Clocking Records`';
+} elseif ($order == 'staff_formatted_id') {
+    $order = '`Timesheet Staff Key`';
+} elseif ($order == 'date' or $order == 'time') {
+    $order = '`Timesheet Date`';
+} else {
+    $order = '`Timesheet Key`';
+}
 
 
+$table
+    = '  `Timesheet Dimension` as TD left join `Staff Dimension` SD on (SD.`Staff Key`=TD.`Timesheet Staff Key`) ';
 
-$table='  `Timesheet Dimension` as TD left join `Staff Dimension` SD on (SD.`Staff Key`=TD.`Timesheet Staff Key`) ';
-
-$sql_totals="select count(*) as num from $table  $where  ";
+$sql_totals = "select count(*) as num from $table  $where  ";
 
 //print $sql_totals;
-$fields="
+$fields
+    = "
 (`Timesheet Paid Overtime`+`Timesheet Unpaid Overtime`+`Timesheet Working Time`)  worked_time,
 `Timesheet Paid Overtime` paid_overtime,
 `Timesheet Unpaid Overtime`unpaid_overtime,

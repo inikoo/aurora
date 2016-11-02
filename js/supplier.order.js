@@ -4,7 +4,6 @@
  Version 3.0*/
 
 
-
 function show_create_delivery() {
 
 
@@ -32,7 +31,6 @@ function show_create_delivery() {
 
         $('#tabs').addClass('hide')
         $('#new_delivery').removeClass('hide')
-
 
 
         $('#delivery_number').val('').focus()
@@ -64,7 +62,6 @@ function save_delivery_qty_change(element) {
     console.log('x')
 
 
-
 }
 
 
@@ -87,17 +84,16 @@ function change_on_delivery(element) {
 
 }
 
-function quick_create_delivery(){
+function quick_create_delivery() {
 
-var object_data = JSON.parse(atob($('#object_showcase div.order').data("object")))
- $('#delivery_number').val(object_data.purchase_order_number)
-   $('#quick_create_delivery_operation').addClass('valid')
-save_create_delivery('#quick_create_delivery_operation')
+    var object_data = JSON.parse(atob($('#object_showcase div.order').data("object")))
+    $('#delivery_number').val(object_data.purchase_order_number)
+    $('#quick_create_delivery_operation').addClass('valid')
+    save_create_delivery('#quick_create_delivery_operation')
 }
 
 
 function save_create_delivery(element) {
-
 
 
     if (!$(element).hasClass('valid') || $(element).hasClass('wait')) {
@@ -111,7 +107,7 @@ function save_create_delivery(element) {
 
     fields_data['Supplier Delivery Public ID'] = $('#delivery_number').val()
     fields_data['items'] = {}
-    $('.delivery_quantity').each(function() {
+    $('.delivery_quantity').each(function () {
         if ($(this).attr('on') == 1) {
             fields_data['items'][$(this).attr('key')] = $(this).find('input').val()
         }
@@ -142,30 +138,29 @@ function save_create_delivery(element) {
     })
 
 
-    request.done(function(data) {
+    request.done(function (data) {
 
-       
+
         if (data.state == 200) {
             change_view(object_data.order_parent.toLowerCase() + '/' + object_data.order_parent_key + '/delivery/' + data.new_id, {
                 tab: 'supplier.delivery.items'
             })
         } else if (data.state == 400) {
-          $(element).removeClass('wait')
-        $(element).find('i').removeClass('fa-spinner fa-spin fa-cloud').addClass('fa-plus');
+            $(element).removeClass('wait')
+            $(element).find('i').removeClass('fa-spinner fa-spin fa-cloud').addClass('fa-plus');
 
-         
+
             console.log(data)
         }
 
     })
 
 
-    request.fail(function(jqXHR, textStatus) {
+    request.fail(function (jqXHR, textStatus) {
         console.log(textStatus)
         console.log(jqXHR.responseText)
 
     });
-
 
 
 }

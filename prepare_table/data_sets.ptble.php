@@ -10,32 +10,35 @@
 */
 
 
-$table='`Data Sets Dimension` DS ';
-$where=' where true';
+$table = '`Data Sets Dimension` DS ';
+$where = ' where true';
 
 if (isset($extra_where)) {
-	$where.=" $extra_where";
+    $where .= " $extra_where";
 }
 
 
-$wheref='';
+$wheref = '';
 
 
-$_order=$order;
-$_dir=$order_direction;
+$_order = $order;
+$_dir   = $order_direction;
 
-if ($order=='sets')
-	$order='`Data Sets Number Sets`';
-elseif ($order=='items')
-	$order='`Data Sets Number Items`';
-elseif ($order=='size')
-	$order='`Data Sets Size`';
-else
-	$order='`Data Sets Key`';
+if ($order == 'sets') {
+    $order = '`Data Sets Number Sets`';
+} elseif ($order == 'items') {
+    $order = '`Data Sets Number Items`';
+} elseif ($order == 'size') {
+    $order = '`Data Sets Size`';
+} else {
+    $order = '`Data Sets Key`';
+}
 
 
-$sql_totals="select count(Distinct DS.`Data Sets Key`) as num from $table  $where  ";
+$sql_totals
+    = "select count(Distinct DS.`Data Sets Key`) as num from $table  $where  ";
 
-$fields="`Data Sets Key`,`Data Sets Code`,`Data Sets Number Sets`,`Data Sets Number Items`,`Data Sets Size`";
+$fields
+    = "`Data Sets Key`,`Data Sets Code`,`Data Sets Number Sets`,`Data Sets Number Items`,`Data Sets Size`";
 
 ?>

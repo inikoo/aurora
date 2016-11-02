@@ -12,7 +12,7 @@ function toggle_ignore_record(key) {
 
     var request = '/ar_edit.php?tipo=edit_field&object=timesheet_record&key=' + key + '&field=Timesheet_Record_Ignored&value=' + fixedEncodeURIComponent(value)
     //console.log(request)
-    $.getJSON(request, function(data) {
+    $.getJSON(request, function (data) {
 
         $('#used_' + key).removeClass('fa-spinner fa-spin')
 
@@ -29,15 +29,15 @@ function toggle_ignore_record(key) {
             for (var record_key in data.other_fields.records_data) {
                 $('#action_type_' + record_key).html(data.other_fields.records_data[record_key].action_type)
             }
-            
+
             for (var field in data.other_fields.updated_data) {
                 $('.' + field).html(data.other_fields.updated_data[field])
             }
-             for (var field in data.other_fields.updated_titles) {
-                $('.' + field).prop('title',data.other_fields.updated_titles[field])
+            for (var field in data.other_fields.updated_titles) {
+                $('.' + field).prop('title', data.other_fields.updated_titles[field])
             }
 
-           $("#inline_new_object_msg").html('').removeClass('success error')
+            $("#inline_new_object_msg").html('').removeClass('success error')
 
         } else if (data.state == 400) {
             if (value == 'Yes') $('#used_' + key).addClass('fa-check-square-o')

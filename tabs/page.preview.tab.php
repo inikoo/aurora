@@ -10,8 +10,9 @@
 */
 
 
-
-$request=preg_replace('/\./','/',strtolower($state['_object']->get('Code')));
+$request = preg_replace(
+    '/\./', '/', strtolower($state['_object']->get('Code'))
+);
 $smarty->assign('request', $request);
 
 
@@ -23,12 +24,7 @@ $smarty->assign('key', $state['key']);
 $smarty->assign('state', $state);
 
 
-$html=$smarty->fetch('page_preview.tpl');
-
-
-
-
-
+$html = $smarty->fetch('page_preview.tpl');
 
 
 ?>

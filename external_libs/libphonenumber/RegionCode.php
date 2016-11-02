@@ -20,8 +20,7 @@ namespace libphonenumber;
 /**
  * Class containing string constants of region codes for easier testing.
  */
-class RegionCode
-{
+class RegionCode {
     // Region code for global networks (e.g. +800 numbers).
     const UN001 = "001";
     const AD = "AD";

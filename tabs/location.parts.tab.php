@@ -10,33 +10,29 @@
 */
 
 
+$tab     = 'location.parts';
+$ar_file = 'ar_warehouse_tables.php';
+$tipo    = 'parts';
 
-$tab='location.parts';
-$ar_file='ar_warehouse_tables.php';
-$tipo='parts';
-
-$default=$user->get_tab_defaults($tab);
-
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array(
+$table_views = array();
 
-);
-
-$table_filters=array(
-	'reference'=>array('label'=>_('Reference'), 'title'=>_('Part reference')),
-
-);
-
-
-$parameters=array(
-	'parent'=>$state['object'],
-	'parent_key'=>$state['key'],
+$table_filters = array(
+    'reference' => array(
+        'label' => _('Reference'),
+        'title' => _('Part reference')
+    ),
 
 );
 
 
+$parameters = array(
+    'parent'     => $state['object'],
+    'parent_key' => $state['key'],
 
+);
 
 
 include 'utils/get_table_html.php';

@@ -10,25 +10,30 @@
 */
 
 
-$tab='customers_server';
-$ar_file='ar_customers_tables.php';
-$tipo='customers_server';
+$tab     = 'customers_server';
+$ar_file = 'ar_customers_tables.php';
+$tipo    = 'customers_server';
 
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
 
+$table_views = array();
 
-$table_views=array();
-
-$table_filters=array(
-	'code'=>array('label'=>_('Code'),'title'=>_('Store code')),
-	'name'=>array('label'=>_('Name'),'title'=>_('Store name')),
+$table_filters = array(
+    'code' => array(
+        'label' => _('Code'),
+        'title' => _('Store code')
+    ),
+    'name' => array(
+        'label' => _('Name'),
+        'title' => _('Store name')
+    ),
 
 );
 
-$parameters=array(
-		'parent'=>'',
-		'parent_key'=>'',
+$parameters = array(
+    'parent'     => '',
+    'parent_key' => '',
 );
 
 

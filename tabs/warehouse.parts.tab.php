@@ -10,28 +10,24 @@
 */
 
 
+$tab     = 'warehouse.parts';
+$ar_file = 'ar_warehouse_tables.php';
+$tipo    = 'parts';
 
-$tab='warehouse.parts';
-$ar_file='ar_warehouse_tables.php';
-$tipo='parts';
-
-$default=$user->get_tab_defaults($tab);
-
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array(
+$table_views = array();
 
-);
-
-$table_filters=array(
-	'reference'=>array('label'=>_('Reference')),
+$table_filters = array(
+    'reference' => array('label' => _('Reference')),
 
 );
 
 
-$parameters=array(
-	'parent'=>$state['object'],
-	'parent_key'=>$state['key'],
+$parameters = array(
+    'parent'     => $state['object'],
+    'parent_key' => $state['key'],
 
 );
 

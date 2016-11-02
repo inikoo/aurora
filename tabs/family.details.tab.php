@@ -10,39 +10,39 @@
 */
 
 
-$store=new Store($state['key']);
+$store = new Store($state['key']);
 
-$object_fields=array(
-	array(
-		'label'=>_('Id'),
-		'show_title'=>true,
-		'fields'=>array(
-			array(
-				'class'=>'locked',
-				'id'=>'Product_Family_Key',
-				'value'=>$store->id  ,
-				'label'=>_('Id')
-			),
+$object_fields = array(
+    array(
+        'label'      => _('Id'),
+        'show_title' => true,
+        'fields'     => array(
             array(
-				'class'=>'string',
-				'id'=>'Product_Family_Code',
-				'value'=>$store->get('Store Code')  ,
-				'label'=>_('Code')
-			),
-			array(
-				'class'=>'string',
-				'id'=>'Store_Name',
-				'value'=>$store->get('Store Name'),
-				'label'=>_('Name')
-			),
-			
+                'class' => 'locked',
+                'id'    => 'Product_Family_Key',
+                'value' => $store->id,
+                'label' => _('Id')
+            ),
+            array(
+                'class' => 'string',
+                'id'    => 'Product_Family_Code',
+                'value' => $store->get('Store Code'),
+                'label' => _('Code')
+            ),
+            array(
+                'class' => 'string',
+                'id'    => 'Store_Name',
+                'value' => $store->get('Store Name'),
+                'label' => _('Name')
+            ),
 
-		)
-	)
-	
+
+        )
+    )
+
 );
-$smarty->assign('object_fields',$object_fields);
+$smarty->assign('object_fields', $object_fields);
 
-$html=$smarty->fetch('edit_object.tpl');
+$html = $smarty->fetch('edit_object.tpl');
 
 ?>

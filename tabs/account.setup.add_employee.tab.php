@@ -15,18 +15,16 @@ include_once 'conf/object_fields.php';
 
 include_once 'class.Staff.php';
 
-$account=new Account();
+$account = new Account();
 $smarty->assign('account', $account);
 
 
-$user=new User('Administrator');
+$user = new User('Administrator');
 
-$employee=new Staff(0);
+$employee = new Staff(0);
 
 
-
-$object_fields=get_object_fields($employee, $db, $user, $smarty);
-
+$object_fields = get_object_fields($employee, $db, $user, $smarty);
 
 
 $smarty->assign('state', $state);
@@ -41,9 +39,11 @@ $smarty->assign('object_fields', $object_fields);
 $smarty->assign('form_type', 'setup');
 $smarty->assign('step', 'add_employee');
 
-$smarty->assign('js_code', 'js/injections/employee.'.(_DEVEL?'':'min.').'js');
+$smarty->assign(
+    'js_code', 'js/injections/employee.'.(_DEVEL ? '' : 'min.').'js'
+);
 
 
-$html=$smarty->fetch('new_object.tpl');
+$html = $smarty->fetch('new_object.tpl');
 
 ?>

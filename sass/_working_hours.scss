@@ -1,23 +1,33 @@
-#working_hours{
-padding:0px;position:relative;top:-10px;margin-top:5px;
+#working_hours {
+  padding: 0px;
+  position: relative;
+  top: -10px;
+  margin-top: 5px;
 
-input{width:3em}
-.minutes_input_field{width:2em}
+  input {
+    width: 3em
+  }
+  .minutes_input_field {
+    width: 2em
+  }
 
-td.expand_days{
-    width:30px; 
-    .fa{
-        cursor:pointer;
-        opacity: .3;
-        &:hover{opacity: 1}
-        }
+  td.expand_days {
+    width: 30px;
+    .fa {
+      cursor: pointer;
+      opacity: .3;
+      &:hover {
+        opacity: 1
+      }
     }
+  }
 
-td.day_labels{
-    min-width:80px; 
-    }
+  td.day_labels {
+    min-width: 80px;
+  }
 
-
-.breaks {border:none}
+  .breaks {
+    border: none
+  }
 
 }

@@ -10,22 +10,25 @@
 */
 
 
-$category=$state['_object'];
+$category = $state['_object'];
 
 
+$data = base64_encode(
+    json_encode(
+        array(
+            'valid_from'   => $category->get('Product Category Valid From'),
+            'valid_to'     => ($category->get('Product Category Status') == 'Discontinued' ? $category->get('Product Category Valid To') : gmdate("Y-m-d H:i:s")),
+            'parent'       => 'product_category',
+            'parent_key'   => $state['key'],
+            'title_value'  => _('Sales'),
+            'title_volume' => _('Invoices')
 
-$data=base64_encode(json_encode(array(
-'valid_from'=>$category->get('Product Category Valid From'),
-'valid_to'=>($category->get('Product Category Status')=='Discontinued'?$category->get('Product Category Valid To'):gmdate("Y-m-d H:i:s")  ) ,
-'parent'=>'product_category',
-'parent_key'=>$state['key'],
-'title_value'=>_('Sales'),
-'title_volume'=>_('Invoices')
+        )
+    )
+);
 
-)));
-
-$smarty->assign('data',$data);
-$html=$smarty->fetch('asset_sales.chart.tpl');
+$smarty->assign('data', $data);
+$html = $smarty->fetch('asset_sales.chart.tpl');
 
 
 ?>

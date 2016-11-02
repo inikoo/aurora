@@ -1,27 +1,55 @@
-.salary{
-td.label{width:160px}
-td.header_field{width:300px}
-input{
-    &.day_of_the_month{width:30px;text-align: center;}
-     &.amount{width:80px;}
-}
+.salary {
+  td.label {
+    width: 160px
+  }
+  td.header_field {
+    width: 300px
+  }
+  input {
+    &.day_of_the_month {
+      width: 30px;
+      text-align: center;
+    }
+    &.amount {
+      width: 80px;
+    }
+  }
 
-.inline_options span{border:1px solid #ccc;padding:5px 10px;cursor:pointer;opacity:.4}
-.inline_options span.selected{opacity:1;background-color: #fff;}
-.inline_options.medium span {min-width:120px}
-.inline_options.small span {min-width:60px}
+  .inline_options span {
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    cursor: pointer;
+    opacity: .4
+  }
+  .inline_options span.selected {
+    opacity: 1;
+    background-color: #fff;
+  }
+  .inline_options.medium span {
+    min-width: 120px
+  }
+  .inline_options.small span {
+    min-width: 60px
+  }
 
-table tr {border:none;
-.fa-expand,.fa-compress{
-        cursor:pointer;padding-right:5px;padding-left:2px;
-        opacity: .3;
-        &:hover{opacity: 1}
-        }
-  
-.compress{width:28px}
-td.small_label{width:80px}
-}
+  table tr {
+    border: none;
+    .fa-expand, .fa-compress {
+      cursor: pointer;
+      padding-right: 5px;
+      padding-left: 2px;
+      opacity: .3;
+      &:hover {
+        opacity: 1
+      }
+    }
 
+    .compress {
+      width: 28px
+    }
+    td.small_label {
+      width: 80px
+    }
+  }
 
-    
 }

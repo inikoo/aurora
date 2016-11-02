@@ -10,32 +10,40 @@
 */
 
 
+$tab     = 'production.suppliers';
+$ar_file = 'ar_production_tables.php';
+$tipo    = 'suppliers';
 
-$tab='production.suppliers';
-$ar_file='ar_production_tables.php';
-$tipo='suppliers';
-
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array(
-	'overview'=>array('label'=>_('Overview'), 'title'=>_('Overview')),
-
-);
-
-$table_filters=array(
-	'code'=>array('label'=>_('Code'), 'title'=>_('Supplier code')),
-	'name'=>array('label'=>_('Name'), 'title'=>_('Supplier name')),
+$table_views = array(
+    'overview' => array(
+        'label' => _('Overview'),
+        'title' => _('Overview')
+    ),
 
 );
 
-$parameters=array(
-	'parent'=>'account',
-	'parent_key'=>'1',
+$table_filters = array(
+    'code' => array(
+        'label' => _('Code'),
+        'title' => _('Supplier code')
+    ),
+    'name' => array(
+        'label' => _('Name'),
+        'title' => _('Supplier name')
+    ),
 
 );
 
-$table_buttons=array();
+$parameters = array(
+    'parent'     => 'account',
+    'parent_key' => '1',
+
+);
+
+$table_buttons = array();
 
 //$table_buttons[]=array('icon'=>'plus', 'title'=>_('New supplier'), 'reference'=>"suppliers/new");
 $smarty->assign('table_buttons', $table_buttons);

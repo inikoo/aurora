@@ -9,34 +9,34 @@
 
 */
 
-$data_sets=array(
+$data_sets = array(
 
-	array(
-		'Data Sets Code'=>'Timeseries'
-	),
+    array(
+        'Data Sets Code' => 'Timeseries'
+    ),
 
-	array(
-		'Data Sets Code'=>'Images'
-	),
-	array(
-		'Data Sets Code'=>'Uploads'
-	),
+    array(
+        'Data Sets Code' => 'Images'
+    ),
+    array(
+        'Data Sets Code' => 'Uploads'
+    ),
 
 
-	array(
-		'Data Sets Code'=>'Attachments'
-	),
+    array(
+        'Data Sets Code' => 'Attachments'
+    ),
 
-	array(
-		'Data Sets Code'=>'OSF'
-	),
+    array(
+        'Data Sets Code' => 'OSF'
+    ),
 
-	array(
-		'Data Sets Code'=>'ISF'
-	),
-	array(
-		'Data Sets Code'=>'Materials'
-	)
+    array(
+        'Data Sets Code' => 'ISF'
+    ),
+    array(
+        'Data Sets Code' => 'Materials'
+    )
 
 
 );

@@ -1,4 +1,4 @@
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -20,8 +20,6 @@ module.exports = function(grunt) {
             }
 
 
-
-
         },
         uglify: {
             libs: {
@@ -40,7 +38,6 @@ module.exports = function(grunt) {
                     ext: '.min.js'
                 }]
             },
-
 
 
             login: {
@@ -67,7 +64,7 @@ module.exports = function(grunt) {
                     'css/app.css': 'sass/app.scss'
                 }
             },
-             web: {
+            web: {
                 options: {
                     // style: 'compressed'
                 },
@@ -129,43 +126,43 @@ module.exports = function(grunt) {
                     dest: 'build/app/'
                 },
 
-                {
-                    expand: true,
-                    src: ['*.php'],
-                    dest: 'build/app/'
-                }, {
-                    expand: true,
-                    src: ['external_libs/**'],
-                    dest: 'build/app/'
-                }, {
-                    expand: true,
-                    src: ['locale/**'],
-                    dest: 'build/app/'
-                }, {
-                    expand: true,
-                    src: ['conf/*.php'],
-                    dest: 'build/app/'
-                }, {
-                    expand: true,
-                    src: ['utils/*.php'],
-                    dest: 'build/app/'
-                }, {
-                    expand: true,
-                    src: ['cron/*.php'],
-                    dest: 'build/app/'
-                }, {
-                    expand: true,
-                    src: ['navigation/*.php'],
-                    dest: 'build/app/'
-                }, {
-                    expand: true,
-                    src: ['pdf/*.php'],
-                    dest: 'build/app/'
-                }, {
-                    expand: true,
-                    src: ['prepare_table/*.php'],
-                    dest: 'build/app/'
-                },
+                    {
+                        expand: true,
+                        src: ['*.php'],
+                        dest: 'build/app/'
+                    }, {
+                        expand: true,
+                        src: ['external_libs/**'],
+                        dest: 'build/app/'
+                    }, {
+                        expand: true,
+                        src: ['locale/**'],
+                        dest: 'build/app/'
+                    }, {
+                        expand: true,
+                        src: ['conf/*.php'],
+                        dest: 'build/app/'
+                    }, {
+                        expand: true,
+                        src: ['utils/*.php'],
+                        dest: 'build/app/'
+                    }, {
+                        expand: true,
+                        src: ['cron/*.php'],
+                        dest: 'build/app/'
+                    }, {
+                        expand: true,
+                        src: ['navigation/*.php'],
+                        dest: 'build/app/'
+                    }, {
+                        expand: true,
+                        src: ['pdf/*.php'],
+                        dest: 'build/app/'
+                    }, {
+                        expand: true,
+                        src: ['prepare_table/*.php'],
+                        dest: 'build/app/'
+                    },
 
                 ],
             },
@@ -224,7 +221,6 @@ module.exports = function(grunt) {
 
                 ],
             },
-
 
 
         },

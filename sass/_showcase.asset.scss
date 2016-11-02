@@ -1,83 +1,84 @@
 .name_and_categories {
-    width: 100;
-    padding: 5px 20px 5px 20px;
-    .strong {
-        font-size: 110%;
-    }
+  width: 100;
+  padding: 5px 20px 5px 20px;
+  .strong {
+    font-size: 110%;
+  }
 }
+
 .asset_container {
-    padding: 0px 0px 20px 20px;
-    border-bottom: 1px solid #ccc;
-    .block {
-        float: left;
-        margin-top: 3px;
-        margin-right: 20px;
-    }
-    .block.picture {
-        width: 290px;
-    }
-    .block.sales_data {
-        margin-right: 30px;
-        font-size: 85%;
-        table {
-            margin-bottom: 10px;
-            tr.space {
-                border: none;
-                height: 10px;
-                td {
-                    border: none;
-                }
-            }
-            td {
-                border: 1px solid #efefef;
-                border-bottom: 1px solid #ddd;
-                padding: 1px 5px 1px 0px;
-                min-width: 70px;
-                text-align: right;
-            }
-            .header td {
-                border-top: 1px solid #ccc;
-                text-align: center;
-                border-spacing: 5px 0px;
-            }
-            .total_sales td {
-                min-width: 120px;
-                text-align: center;
-            }
+  padding: 0px 0px 20px 20px;
+  border-bottom: 1px solid #ccc;
+  .block {
+    float: left;
+    margin-top: 3px;
+    margin-right: 20px;
+  }
+  .block.picture {
+    width: 290px;
+  }
+  .block.sales_data {
+    margin-right: 30px;
+    font-size: 85%;
+    table {
+      margin-bottom: 10px;
+      tr.space {
+        border: none;
+        height: 10px;
+        td {
+          border: none;
         }
+      }
+      td {
+        border: 1px solid #efefef;
+        border-bottom: 1px solid #ddd;
+        padding: 1px 5px 1px 0px;
+        min-width: 70px;
+        text-align: right;
+      }
+      .header td {
+        border-top: 1px solid #ccc;
+        text-align: center;
+        border-spacing: 5px 0px;
+      }
+      .total_sales td {
+        min-width: 120px;
+        text-align: center;
+      }
     }
-    .block.info {
-        width: 335px;
-        margin-right: 0;
-        #overviews {
-            min-width: 335px;
-        }
+  }
+  .block.info {
+    width: 335px;
+    margin-right: 0;
+    #overviews {
+      min-width: 335px;
     }
-    .carton_sko_units {
-        padding-left: 5px;
-        padding-top: 0px;
-        font-size: 90%;
-        color: $color_font_soft;
-        width: 390px;
-        td.canvas {
-            padding: 0 5px 10px 0;
-            canvas {
-                border: 1px solid #ccc;
-            }
-        }
-        td.info {
-            padding: 0px 10px;
-            vertical-align: top;
-            div {
-                margin-top: 4px;
-            }
-            div:first-of-type {
-                margin-top: 0px;
-                margin-bottom: 2px;
-            }
-        }
-        .volume, .density {
-            display: none;
-        }
+  }
+  .carton_sko_units {
+    padding-left: 5px;
+    padding-top: 0px;
+    font-size: 90%;
+    color: $color_font_soft;
+    width: 390px;
+    td.canvas {
+      padding: 0 5px 10px 0;
+      canvas {
+        border: 1px solid #ccc;
+      }
     }
+    td.info {
+      padding: 0px 10px;
+      vertical-align: top;
+      div {
+        margin-top: 4px;
+      }
+      div:first-of-type {
+        margin-top: 0px;
+        margin-bottom: 2px;
+      }
+    }
+    .volume, .density {
+      display: none;
+    }
+  }
 }

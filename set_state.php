@@ -1,9 +1,8 @@
 <?php
 
 
+if (!isset($_SESSION['state'])) {
 
-if(!isset($_SESSION['state'])){
-
-  $_SESSION['state']=$default_state;
+    $_SESSION['state'] = $default_state;
 }
 ?>

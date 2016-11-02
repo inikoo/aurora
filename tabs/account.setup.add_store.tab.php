@@ -14,10 +14,10 @@ include_once 'utils/invalid_messages.php';
 include_once 'conf/object_fields.php';
 
 
-$object_fields=get_object_fields($state['_object'], $db, $user, $smarty);
+$object_fields = get_object_fields($state['_object'], $db, $user, $smarty);
 
 
-$account=new Account($db);
+$account = new Account($db);
 $smarty->assign('account', $account);
 
 $smarty->assign('state', $state);
@@ -33,8 +33,6 @@ $smarty->assign('object_name', $state['_object']->get_object_name());
 $smarty->assign('object_fields', $object_fields);
 
 
-
-
-$html=$smarty->fetch('new_object.tpl');
+$html = $smarty->fetch('new_object.tpl');
 
 ?>

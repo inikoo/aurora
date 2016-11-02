@@ -9,46 +9,55 @@
 
 */
 
-if ( !$user->can_view('locations') or   !in_array($state['key'], $user->warehouses)   ) {
-	$html='';
-}else {
+if (!$user->can_view('locations') or !in_array(
+        $state['key'], $user->warehouses
+    )
+) {
+    $html = '';
+} else {
 
 
-	$tab='warehouse.locations';
-	$ar_file='ar_warehouse_tables.php';
-	$tipo='locations';
+    $tab     = 'warehouse.locations';
+    $ar_file = 'ar_warehouse_tables.php';
+    $tipo    = 'locations';
 
-	$default=$user->get_tab_defaults($tab);
-
-
-
-	$table_views=array(
-
-	);
-
-	$table_filters=array(
-		'code'=>array('label'=>_('Code'), 'title'=>_('Location code')),
-
-	);
-
-	$parameters=array(
-		'parent'=>$state['parent'],
-		'parent_key'=>$state['parent_key'],
-
-	);
-
-	$smarty->assign('js_code', 'js/injections/warehouse_locations.'.(_DEVEL?'':'min.').'js');
+    $default = $user->get_tab_defaults($tab);
 
 
-$table_buttons=array();
+    $table_views = array();
+
+    $table_filters = array(
+        'code' => array(
+            'label' => _('Code'),
+            'title' => _('Location code')
+        ),
+
+    );
+
+    $parameters = array(
+        'parent'     => $state['parent'],
+        'parent_key' => $state['parent_key'],
+
+    );
+
+    $smarty->assign(
+        'js_code', 'js/injections/warehouse_locations.'.(_DEVEL ? '' : 'min.').'js'
+    );
 
 
-$table_buttons[]=array('icon'=>'plus', 'title'=>_('New location'), 'reference'=>"locations/".$state['warehouse']->id."/new");
-
-$smarty->assign('table_buttons', $table_buttons);
+    $table_buttons = array();
 
 
-	include 'utils/get_table_html.php';
+    $table_buttons[] = array(
+        'icon'      => 'plus',
+        'title'     => _('New location'),
+        'reference' => "locations/".$state['warehouse']->id."/new"
+    );
+
+    $smarty->assign('table_buttons', $table_buttons);
+
+
+    include 'utils/get_table_html.php';
 }
 
 ?>

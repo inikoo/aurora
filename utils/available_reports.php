@@ -10,23 +10,21 @@
  Version 3.0
 */
 
-$available_reports=array(
+$available_reports = array(
 
-	'billingregion_taxcategory'=>array(
-		'Label'=>'Billing Country/Tax Categories',
-		'Group'=>'tax',
-		'GroupLabel'=>'Tax',
-		
-	),
-	'ec_sales_list'=>array(
-		'Label'=>'EC Sales List',
-		'Group'=>'tax',
-		'GroupLabel'=>'Tax',
-		
-	),
+    'billingregion_taxcategory' => array(
+        'Label'      => 'Billing Country/Tax Categories',
+        'Group'      => 'tax',
+        'GroupLabel' => 'Tax',
+
+    ),
+    'ec_sales_list'             => array(
+        'Label'      => 'EC Sales List',
+        'Group'      => 'tax',
+        'GroupLabel' => 'Tax',
+
+    ),
 );
-
-
 
 
 ?>

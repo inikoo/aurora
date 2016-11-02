@@ -1,132 +1,136 @@
 
 #app_leftmenu {
-    margin-top: $height_short_row;
-    position: fixed;
-    float: left;
-    height: 100%;
-    width: $left_menu_width;
-    background: $color_dark;
+  margin-top: $height_short_row;
+  position: fixed;
+  float: left;
+  height: 100%;
+  width: $left_menu_width;
+  background: $color_dark;
+  color: $color_dark_font;
+  font-size: 16px;
+  a {
     color: $color_dark_font;
-    font-size: 16px;
-    a {
-        color: $color_dark_font;
+  }
+  ul {
+    font-family: $font_title;
+    font-weight: 300;
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px 0px 0px 0px;
+    @include unselectable;
+  }
+  li {
+    padding: 3px 5px 3px 20px;
+    background-color: $color_dark_strong;
+    cursor: pointer;
+    border-top: 1px solid $color_dark_darker_font;
+    color: $color_dark_font;
+
+    &.jump {
+      margin-top: $height_short_row;
     }
-    ul {
-        font-family: $font_title;
-        font-weight: 300;
-        list-style-type: none;
-        padding: 0px;
-        margin: 0px 0px 0px 0px;
-        @include unselectable;
+
+    &:last-of-type, &.last {
+      border-bottom: 1px solid $color_dark_darker_font;
     }
-    li {
-        padding: 3px 5px 3px 20px;
-        background-color: $color_dark_strong;
-        cursor: pointer;
-        border-top: 1px solid $color_dark_darker_font;
-        color: $color_dark_font;
-        
-        &.jump{margin-top: $height_short_row;}
-        
-        &:last-of-type ,&.last{
-            border-bottom: 1px solid $color_dark_darker_font;
-        }
-        .fa {
-            margin-right: 6px;
-            font-size: 95%;
-            opacity: .20;
-            &.highlight{opacity: 1}
-        }
-        &:hover {
-            background-color: $color_dark_highlight;
-            color: $color_dark_font_highlight;
-            &:last-of-type {
-                border-bottom: 1px solid $color_dark_darker_font;
-            }
-            .fa {
-                opacity: 1;
-            }
-        }
+    .fa {
+      margin-right: 6px;
+      font-size: 95%;
+      opacity: .20;
+      &.highlight {
+        opacity: 1
+      }
     }
-    li.section {
-        display: none;
-        padding-left: 50px;
-        font-size: 80%;
-        
-        
-    }
-    li.selected, li.selected:hover {
-        color: $color_dark_font_selected;
-        .fa {
-            opacity: .75;
-        }
-    }
-    li.section.selected, li.section.selected:hover {
-        color: $color_dark_font_selected;
-    }
-    
-    
-    li.current_step, li.current_step:hover {
-        color: $color_dark_font_current;
-        .fa {
-          //  opacity: .75;
-        }
-    }
-   
-    
-    
-    #top_info {
-        height: $height_row;
-        line-height: $height_row;
+    &:hover {
+      background-color: $color_dark_highlight;
+      color: $color_dark_font_highlight;
+      &:last-of-type {
         border-bottom: 1px solid $color_dark_darker_font;
-        padding: 0px;
-        background-color: $color_dark;
-        font-size: 11px;
-        text-align: center;
+      }
+      .fa {
+        opacity: 1;
+      }
     }
-    #top_info div {
-        height: 100%;
-        float: left;
-        text-align: center;
+  }
+  li.section {
+    display: none;
+    padding-left: 50px;
+    font-size: 80%;
+
+  }
+  li.selected, li.selected:hover {
+    color: $color_dark_font_selected;
+    .fa {
+      opacity: .75;
     }
-    #hello_user {
-        width: 166px;
-        text-align: center;
-        &.link:hover {
-            color: $color_highlight_over_dark;
-        }
+  }
+  li.section.selected, li.section.selected:hover {
+    color: $color_dark_font_selected;
+  }
+
+  li.current_step, li.current_step:hover {
+    color: $color_dark_font_current;
+    .fa {
+      //  opacity: .75;
     }
-    #aurora_logo {
-        width: $height_row;
-        border-right: 1px solid $color_dark_darker_font;
-        padding: 0px;
-        vertical-align: middle;
-        img {
-            width: $height_row*.7;
-            vertical-align: middle;
-        }
+  }
+
+  #top_info {
+    height: $height_row;
+    line-height: $height_row;
+    border-bottom: 1px solid $color_dark_darker_font;
+    padding: 0px;
+    background-color: $color_dark;
+    font-size: 11px;
+    text-align: center;
+  }
+  #top_info div {
+    height: 100%;
+    float: left;
+    text-align: center;
+  }
+  #hello_user {
+    width: 166px;
+    text-align: center;
+    &.link:hover {
+      color: $color_highlight_over_dark;
     }
-    #hello_user{ color: $color_dark_brighter_font;}
-    #account_name {
-        line-height: $height_row;
-        height: $height_row;
-        font-size: $height_row*.35;
-        color: $color_dark_brighter_font;
-        text-align: center;
-        font-family: $font_title;
-        font-weight: 300;
-        &.link:hover {
-            color: $color_highlight_over_dark;
-        }
+  }
+  #aurora_logo {
+    width: $height_row;
+    border-right: 1px solid $color_dark_darker_font;
+    padding: 0px;
+    vertical-align: middle;
+    img {
+      width: $height_row*.7;
+      vertical-align: middle;
     }
-    
-    #aurora_logo_small_screen{
-    padding:10px;text-align:center;display:none;
-    img{width:60%}
+  }
+  #hello_user {
+    color: $color_dark_brighter_font;
+  }
+  #account_name {
+    line-height: $height_row;
+    height: $height_row;
+    font-size: $height_row*.35;
+    color: $color_dark_brighter_font;
+    text-align: center;
+    font-family: $font_title;
+    font-weight: 300;
+    &.link:hover {
+      color: $color_highlight_over_dark;
     }
-    
-  
-    
+  }
+
+  #aurora_logo_small_screen {
+    padding: 10px;
+    text-align: center;
+    display: none;
+    img {
+      width: 60%
+    }
+  }
+
 }
 
 

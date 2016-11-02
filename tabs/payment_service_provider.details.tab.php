@@ -9,57 +9,57 @@
 
 */
 
-$psp=$state['_object'];
+$psp = $state['_object'];
 
-$object_fields=array(
-	array(
-		'label'=>_('Id'),
-		'show_title'=>true,
-		'fields'=>array(
-			
-			
-			array(
-				'class'=>'string',
-				'id'=>'Payment_Service_Provider_Key',
-				'value'=>$psp->get('Payment Service Provider Key'),
-				'label'=>_('Id')
-			),
-			array(
-				'class'=>'string',
-				'id'=>'Payment_Service_Provider_Code',
-				'value'=>$psp->get('Payment Service Provider Code'),
-				'label'=>_('Code')
-			),
-			array(
-				'class'=>'string',
-				'id'=>'Payment_Service_Provider_Name',
-				'value'=>$psp->get('Payment Service Provider Name'),
-				'label'=>_('Name')
-			),
+$object_fields = array(
+    array(
+        'label'      => _('Id'),
+        'show_title' => true,
+        'fields'     => array(
 
-		)
-	),
 
-	array(
-		'label'=>_('Type'),
-		'show_title'=>true,
-		'fields'=>array(
-			
-			
-			array(
-				'class'=>'option',
-				'id'=>'Payment_Service_Provider_Type',
-				'value'=>$psp->get_type(),
-				'label'=>_('Type')
-			)
+            array(
+                'class' => 'string',
+                'id'    => 'Payment_Service_Provider_Key',
+                'value' => $psp->get('Payment Service Provider Key'),
+                'label' => _('Id')
+            ),
+            array(
+                'class' => 'string',
+                'id'    => 'Payment_Service_Provider_Code',
+                'value' => $psp->get('Payment Service Provider Code'),
+                'label' => _('Code')
+            ),
+            array(
+                'class' => 'string',
+                'id'    => 'Payment_Service_Provider_Name',
+                'value' => $psp->get('Payment Service Provider Name'),
+                'label' => _('Name')
+            ),
 
-		)
-	),	
-	
+        )
+    ),
+
+    array(
+        'label'      => _('Type'),
+        'show_title' => true,
+        'fields'     => array(
+
+
+            array(
+                'class' => 'option',
+                'id'    => 'Payment_Service_Provider_Type',
+                'value' => $psp->get_type(),
+                'label' => _('Type')
+            )
+
+        )
+    ),
+
 );
-$smarty->assign('object_fields',$object_fields);
+$smarty->assign('object_fields', $object_fields);
 $smarty->assign('state', $state);
 
-$html=$smarty->fetch('edit_object.tpl');
+$html = $smarty->fetch('edit_object.tpl');
 
 ?>

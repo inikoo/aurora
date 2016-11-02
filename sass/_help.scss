@@ -1,38 +1,47 @@
-#help_button{
-color:#9ABBD9
+#help_button {
+  color: #9ABBD9
 }
 
 #help {
-    .top {
-        padding: 2px 5px;
-        background: #9ABBD9;
-        color: #FFF;
-    }
-    .navigation {
-        padding: 2px 5px;
-        border-bottom: 1px solid#9ABBD9;
-        color: #6296c4;
-    }
-    .content {
-    
-        padding: 12px 5px 10px 5px;
-        font-size:95%;
-        border-bottom: 1px solid #9ABBD9;
-        color: #777;
-        .item {
-            margin-bottom: 5px;
-            .question {
-                cursor: pointer;padding-left:10px;
-                
-            }
-             .answer {
-                padding:0px 0px 5px 15px ;font-size:90%;
-                ul{margin:0px;padding:10px 20px}
-                li {padding:2px 0px}
-            }
+  .top {
+    padding: 2px 5px;
+    background: #9ABBD9;
+    color: #FFF;
+  }
+  .navigation {
+    padding: 2px 5px;
+    border-bottom: 1px solid #9ABBD9;
+    color: #6296c4;
+  }
+  .content {
+
+    padding: 12px 5px 10px 5px;
+    font-size: 95%;
+    border-bottom: 1px solid #9ABBD9;
+    color: #777;
+    .item {
+      margin-bottom: 5px;
+      .question {
+        cursor: pointer;
+        padding-left: 10px;
+
+      }
+      .answer {
+        padding: 0px 0px 5px 15px;
+        font-size: 90%;
+        ul {
+          margin: 0px;
+          padding: 10px 20px
         }
+        li {
+          padding: 2px 0px
+        }
+      }
     }
-    .link{text-decoration: underline;}
+  }
+  .link {
+    text-decoration: underline;
+  }
 }
 
 

@@ -5,8 +5,7 @@ namespace libphonenumber;
 /**
  * Type of phone numbers.
  */
-class PhoneNumberType
-{
+class PhoneNumberType {
     const FIXED_LINE = 0;
     const MOBILE = 1;
     // In some regions (e.g. the USA), it is impossible to distinguish between fixed-line and

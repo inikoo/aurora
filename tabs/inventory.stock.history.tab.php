@@ -10,39 +10,38 @@
 */
 
 
+$tab     = 'inventory.stock.history';
+$ar_file = 'ar_inventory_tables.php';
+$tipo    = 'inventory_stock_history';
 
-$tab='inventory.stock.history';
-$ar_file='ar_inventory_tables.php';
-$tipo='inventory_stock_history';
-
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
 
-if ($state['tab']=='inventory.stock.history.weekly') {
-	$default['frequency']='weekly';
-}elseif ($state['tab']=='inventory.stock.history.daily') {
-	$default['frequency']='daily';
-}elseif ($state['tab']=='inventory.stock.history.monthy') {
-	$default['frequency']='monthy';
-}elseif ($state['tab']=='inventory.stock.history.annually') {
-	$default['frequency']='annually';
+if ($state['tab'] == 'inventory.stock.history.weekly') {
+    $default['frequency'] = 'weekly';
+} elseif ($state['tab'] == 'inventory.stock.history.daily') {
+    $default['frequency'] = 'daily';
+} elseif ($state['tab'] == 'inventory.stock.history.monthy') {
+    $default['frequency'] = 'monthy';
+} elseif ($state['tab'] == 'inventory.stock.history.annually') {
+    $default['frequency'] = 'annually';
 }
 
 
+$table_views = array();
 
-$table_views=array(
+$table_filters = array(
+    'note' => array(
+        'label' => _('Note'),
+        'title' => _('Note')
+    ),
 
 );
 
-$table_filters=array(
-	'note'=>array('label'=>_('Note'), 'title'=>_('Note')),
 
-);
-
-
-$parameters=array(
-	'parent'=>'account',
-	'parent_key'=>1,
+$parameters = array(
+    'parent'     => 'account',
+    'parent_key' => 1,
 
 );
 

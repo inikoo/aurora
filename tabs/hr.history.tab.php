@@ -9,23 +9,25 @@
 
 */
 
-$tab='hr.history';
-$ar_file='ar_history_tables.php';
-$tipo='object_history';
+$tab     = 'hr.history';
+$ar_file = 'ar_history_tables.php';
+$tipo    = 'object_history';
 
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
-$table_views=array(
+$table_views = array();
+
+$table_filters = array(
+    'note' => array(
+        'label' => _('Notes'),
+        'title' => _('Notes')
+    ),
 );
 
-$table_filters=array(
-	'note'=>array('label'=>_('Notes'),'title'=>_('Notes')),
-);
+$parameters = array(
+    'parent'     => 'hr',
+    'parent_key' => 1,
 
-$parameters=array(
-		'parent'=>'hr',
-		'parent_key'=>1,
-		
 );
 
 //$smarty->assign('title', _("Employees's history"));

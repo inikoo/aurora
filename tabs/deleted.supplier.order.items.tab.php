@@ -9,31 +9,30 @@
 
 */
 
-$tab='deleted.supplier.order.items';
-$ar_file='ar_suppliers_tables.php';
-$tipo='deleted.order.items';
+$tab     = 'deleted.supplier.order.items';
+$ar_file = 'ar_suppliers_tables.php';
+$tipo    = 'deleted.order.items';
 
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array(
-	'overview'=>array('label'=>_('Description')),
-
-);
-
-$table_filters=array(
-	'code'=>array('label'=>_('Code')),
+$table_views = array(
+    'overview' => array('label' => _('Description')),
 
 );
 
-$parameters=array(
-	'parent'=>$state['object'],
-	'parent_key'=>$state['key'],
+$table_filters = array(
+    'code' => array('label' => _('Code')),
+
+);
+
+$parameters = array(
+    'parent'     => $state['object'],
+    'parent_key' => $state['key'],
 
 );
 
 include 'utils/get_table_html.php';
-
 
 
 ?>

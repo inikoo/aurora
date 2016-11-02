@@ -9,25 +9,27 @@
 
 */
 
-$tab='employees.timesheets.records';
-$ar_file='ar_hr_tables.php';
-$tipo='timesheet_records';
+$tab     = 'employees.timesheets.records';
+$ar_file = 'ar_hr_tables.php';
+$tipo    = 'timesheet_records';
 
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
-$table_views=array(
+$table_views = array();
+
+$table_filters = array();
+$parameters    = array(
+    'parent'     => $state['parent'],
+    'parent_key' => $state['parent_key'],
+
 );
 
-$table_filters=array(
+$table_buttons   = array();
+$table_buttons[] = array(
+    'icon'      => 'plus',
+    'title'     => _('New timesheet record'),
+    'reference' => "employee/".$state['object']."/".$state['key']."/new/timesheet_record"
 );
-$parameters=array(
-		'parent'=>$state['parent'],
-		'parent_key'=>$state['parent_key'],
-		
-);
-
-$table_buttons=array();
-$table_buttons[]=array('icon'=>'plus', 'title'=>_('New timesheet record'), 'reference'=>"employee/".$state['object']."/".$state['key']."/new/timesheet_record");
 $smarty->assign('table_buttons', $table_buttons);
 
 

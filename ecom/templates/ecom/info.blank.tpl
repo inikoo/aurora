@@ -10,8 +10,8 @@
 *}
 
 <section id="sidebar-main" class="col-md-12">
-	<div id="content">
-		<h1 class="Title">{$data.title.value}</h1>
-		<div class="Text">{$data.content.value}</div>
-	</div>
+    <div id="content">
+        <h1 class="Title">{$data.title.value}</h1>
+        <div class="Text">{$data.content.value}</div>
+    </div>
 </section>

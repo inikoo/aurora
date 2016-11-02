@@ -3,9 +3,9 @@
  Copyright (c) 2015, Inikoo
  Version 3.0*/
 
-$(document).ready(function() {
+$(document).ready(function () {
 
-    $('body').on('click', '.question', function() {
+    $('body').on('click', '.question', function () {
 
 
         show_answer($(this))
@@ -19,7 +19,7 @@ function help() {
 
     var request = "/ar_help.php?tipo=help&state=" + JSON.stringify(state)
 
-    $.getJSON(request, function(data) {
+    $.getJSON(request, function (data) {
 
         if (typeof(data.title) != "undefined" && data.title !== null && data.title != '') {
 
@@ -40,15 +40,10 @@ function help() {
             $('#help  .content').html('').addClass('hide');
 
 
-
         }
 
 
-
-
-
     })
-
 
 
 }
@@ -91,8 +86,8 @@ function show_help() {
 
     var request = "/ar_help.php?tipo=show_help&value=" + value
 
-    $.getJSON(request, function(data) {})
-
+    $.getJSON(request, function (data) {
+    })
 
 
 }

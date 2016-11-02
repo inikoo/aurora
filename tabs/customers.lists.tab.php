@@ -10,28 +10,29 @@
 */
 
 
+$tab     = 'customers.lists';
+$ar_file = 'ar_customers_tables.php';
+$tipo    = 'lists';
 
-$tab='customers.lists';
-$ar_file='ar_customers_tables.php';
-$tipo='lists';
+$default = $user->get_tab_defaults($tab);
 
-$default=$user->get_tab_defaults($tab);
+$table_views   = array();
+$table_filters = array(
+    'name' => array(
+        'label' => _('Name'),
+        'title' => _('List name')
+    ),
 
-$table_views=array();
-$table_filters=array(
-	'name'=>array('label'=>_('Name'),'title'=>_('List name')),
-	
 );
 
-$parameters=array(
-		'parent'=>'store',
-		'parent_key'=>$state['parent_key'],
-		
-	);
+$parameters = array(
+    'parent'     => 'store',
+    'parent_key' => $state['parent_key'],
+
+);
 
 
 include('utils/get_table_html.php');
-
 
 
 ?>

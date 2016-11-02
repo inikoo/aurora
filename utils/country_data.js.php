@@ -19,47 +19,50 @@ require_once 'utils/general_functions.php';
 $mem = new Memcached();
 $mem->addServer($memcache_ip, 11211);
 
-$db = new PDO("mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd , array(\PDO::MYSQL_ATTR_INIT_COMMAND =>"SET time_zone = '+0:00';"));
+$db = new PDO(
+    "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
+);
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
 if (isset($_REQUEST['locale'])) {
-	$locale=$_REQUEST['locale'];
-}else {
-	$locale='en_GB.UTF-8';
+    $locale = $_REQUEST['locale'];
+} else {
+    $locale = 'en_GB.UTF-8';
 }
 
 set_locale($locale);
 
-$country_translator="var country_translator = { \n";
-$sql=sprintf('select `Country Name`,`Country Local Name`,`Country 2 Alpha Code`,`Country Telephone Code`,`Country Telephone Code Metadata`,`Country Currency Code` from kbase.`Country Dimension` where `Country Display Address Field`="Yes" order by `Country Code` desc');
-if ($result=$db->query($sql)) {
+$country_translator = "var country_translator = { \n";
+$sql = sprintf(
+    'SELECT `Country Name`,`Country Local Name`,`Country 2 Alpha Code`,`Country Telephone Code`,`Country Telephone Code Metadata`,`Country Currency Code` FROM kbase.`Country Dimension` WHERE `Country Display Address Field`="Yes" ORDER BY `Country Code` DESC'
+);
+if ($result = $db->query($sql)) {
 
-	foreach ($result as $data) {
-	
-	$length = 5;
+    foreach ($result as $data) {
 
-$randomString = substr(str_shuffle("abcdefghijklmnopqrstuvwxyz"), 0, $length);
+        $length = 5;
 
-	
-	$country_translator.=sprintf('%s:{name:"%s%s",currency:"%s"},',
-	strtolower($data['Country 2 Alpha Code']),
-		$data['Country Name'], 
-		(($data['Country Local Name']!='' and  $data['Country Local Name']!=$data['Country Name'])?' ('.$data['Country Local Name'].')':''),
-		$data['Country Currency Code']
-	);
-	
-	
+        $randomString = substr(
+            str_shuffle("abcdefghijklmnopqrstuvwxyz"), 0, $length
+        );
 
-	}
 
-}else {
-	print_r($error_info=$db->errorInfo());
-	exit;
+        $country_translator .= sprintf(
+            '%s:{name:"%s%s",currency:"%s"},', strtolower($data['Country 2 Alpha Code']), $data['Country Name'],
+            (($data['Country Local Name'] != '' and $data['Country Local Name'] != $data['Country Name']) ? ' ('.$data['Country Local Name'].')' : ''), $data['Country Currency Code']
+        );
+
+
+    }
+
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
 }
-$country_translator=preg_replace('/\, $/', '', $country_translator);
-$country_translator.='};';
- // country.name = country_translator.country.name.name
+$country_translator = preg_replace('/\, $/', '', $country_translator);
+$country_translator .= '};';
+// country.name = country_translator.country.name.name
 
 print "
 $country_translator

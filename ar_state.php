@@ -17,46 +17,52 @@ require_once 'utils/parse_natural_language.php';
 
 
 if (!isset($_REQUEST['tipo'])) {
-	$response=array('state'=>405, 'resp'=>'Non acceptable request (t)');
-	echo json_encode($response);
-	exit;
+    $response = array(
+        'state' => 405,
+        'resp'  => 'Non acceptable request (t)'
+    );
+    echo json_encode($response);
+    exit;
 }
 
 
-$tipo=$_REQUEST['tipo'];
+$tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
-case 'set_table_view':
+    case 'set_table_view':
 
-	$data=prepare_values($_REQUEST, array(
-			'tab'=>array('type'=>'string'),
-			'table_view'=>array('type'=>'string'),
+        $data = prepare_values(
+            $_REQUEST, array(
+                'tab' => array('type' => 'string'),
+                'table_view' => array('type' => 'string'),
 
 
-		));
+            )
+        );
 
-	set_table_view($data);
-	break;
+        set_table_view($data);
+        break;
 
-default:
-	$response=array('state'=>405, 'resp'=>'Tipo not found '.$tipo);
-	echo json_encode($response);
-	exit;
-	break;
+    default:
+        $response = array(
+            'state' => 405,
+            'resp'  => 'Tipo not found '.$tipo
+        );
+        echo json_encode($response);
+        exit;
+        break;
 }
 
 
 function set_table_view($data) {
 
-	if (isset($_SESSION['table_state'][$data['tab']])) {
-		$_SESSION['table_state'][$data['tab']]['view']=$data['table_view'];
-		print 'ok';
-	}
+    if (isset($_SESSION['table_state'][$data['tab']])) {
+        $_SESSION['table_state'][$data['tab']]['view'] = $data['table_view'];
+        print 'ok';
+    }
 
 
 }
-
-
 
 
 ?>

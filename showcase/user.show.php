@@ -13,16 +13,15 @@
 function get_user_showcase($data) {
 
     global $smarty;
-    
- 
-    if(!$data['_object']->id){
+
+
+    if (!$data['_object']->id) {
         return "";
     }
-    
-    $smarty->assign('_user',$data['_object']);
+
+    $smarty->assign('_user', $data['_object']);
 
     return $smarty->fetch('showcase/user.tpl');
-    
 
 
 }

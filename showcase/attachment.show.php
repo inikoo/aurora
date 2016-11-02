@@ -13,16 +13,15 @@
 function get_attachment_showcase($data) {
 
     global $smarty;
-    
-    $attachment=$data['_object'];
-    if(!$attachment->id){
+
+    $attachment = $data['_object'];
+    if (!$attachment->id) {
         return "";
     }
-    
-    $smarty->assign('attachment',$attachment);
+
+    $smarty->assign('attachment', $attachment);
 
     return $smarty->fetch('showcase/attachment.tpl');
-    
 
 
 }

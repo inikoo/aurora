@@ -10,7 +10,7 @@
 */
 
 error_reporting(E_ALL);
-define("_DEVEL",   isset($_SERVER['devel']));
+define("_DEVEL", isset($_SERVER['devel']));
 
 
 include_once 'keyring/dns.php';
@@ -26,25 +26,25 @@ include_once 'class.User.php';
 date_default_timezone_set('UTC');
 
 
-if (!isset($_REQUEST['key']) or $_REQUEST['key']=='') {
-	header('Location: login.php?e=1');
-	exit;
+if (!isset($_REQUEST['key']) or $_REQUEST['key'] == '') {
+    header('Location: login.php?e=1');
+    exit;
 }
-
-
 
 
 include_once 'class.Account.php';
 
 include_once 'external_libs/Smarty/Smarty.class.php';
-$smarty = new Smarty();
+$smarty               = new Smarty();
 $smarty->template_dir = 'templates';
-$smarty->compile_dir = 'server_files/smarty/templates_c';
-$smarty->cache_dir = 'server_files/smarty/cache';
-$smarty->config_dir = 'server_files/smarty/configs';
+$smarty->compile_dir  = 'server_files/smarty/templates_c';
+$smarty->cache_dir    = 'server_files/smarty/cache';
+$smarty->config_dir   = 'server_files/smarty/configs';
 $smarty->assign('_DEVEL', _DEVEL);
 
-$db = new PDO("mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd , array(\PDO::MYSQL_ATTR_INIT_COMMAND =>"SET time_zone = '+0:00';"));
+$db = new PDO(
+    "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
+);
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
@@ -55,179 +55,177 @@ ini_set('session.gc_divisor', 100);
 session_start();
 
 
+$account = new Account($db);
 
 
-$account=new Account($db);
+if (!$account->id) {
 
 
-if (!$account->id ) {
+    // TODO get account create data from setup.inikoo.com
+    $accout_data = array(
+        'Account Code'              => 'AU',
+        'Account Name'              => 'Test',
+        'Account System Public URL' => 'au.bali',
+        'Account Setup Metadata'    => json_encode(
+            array(
+                'steps'     => array(
+                    'root_user'     => array('setup' => false),
+                    'add_employees' => array('setup' => false),
+                    'add_warehouse' => array('setup' => false),
+                    'add_store'     => array('setup' => false)
+                ),
+                'size'      => 'Big',
+                'instances' => array(
+                    'Com',
+                    'Prod'
+                )
+            )
+        ),
+        'editor'                    => array(
+            'Author Name'  => '',
+            'Author Alias' => '',
+            'Author Type'  => '',
+            'Author Key'   => '',
+            'User Key'     => 0,
+            'Date'         => gmdate('Y-m-d H:i:s')
+        )
+    );
 
 
-	// TODO get account create data from setup.inikoo.com
-	$accout_data=array(
-		'Account Code'=>'AU',
-		'Account Name'=>'Test',
-		'Account System Public URL'=>'au.bali',
-		'Account Setup Metadata'=>json_encode(
-			array(
-				'steps'=>array(
-					'root_user'=>array('setup'=>false),
-					'add_employees'=>array('setup'=>false),
-					'add_warehouse'=>array('setup'=>false),
-					'add_store'=>array('setup'=>false)
-				),
-				'size'=>'Big',
-				'instances'=>array('Com', 'Prod')
-			)
-		),
-		'editor'=>array(
-			'Author Name'=>'',
-			'Author Alias'=>'',
-			'Author Type'=>'',
-			'Author Key'=>'',
-			'User Key'=>0,
-			'Date'=>gmdate('Y-m-d H:i:s')
-		)
-	);
+    // Create account
+
+    $accout_data['Account Creation Date'] = gmdate('Y-m-d H:i:s');
+    $accout_data['Account Key']           = 1;
+
+    $base_data     = array();
+    $ignore_fields = array();
+    $sql           = sprintf('show columns from `Account Dimension`');
+    foreach ($db->query($sql) as $row) {
+        if (!in_array($row['Field'], $ignore_fields)) {
+            $base_data[$row['Field']] = $row['Default'];
+        }
+    }
 
 
-	// Create account
+    foreach ($accout_data as $key => $value) {
+        if (array_key_exists($key, $base_data)) {
+            $base_data[$key] = _trim($value);
+        }
+    }
 
-	$accout_data['Account Creation Date']=gmdate('Y-m-d H:i:s');
-	$accout_data['Account Key']=1;
+    $keys   = '(';
+    $values = 'values(';
+    foreach ($base_data as $key => $value) {
+        $keys .= "`$key`,";
 
-	$base_data=array();
-	$ignore_fields=array();
-	$sql=sprintf('show columns from `Account Dimension`');
-	foreach ($db->query($sql) as $row) {
-		if (!in_array($row['Field'], $ignore_fields))
-			$base_data[$row['Field']]=$row['Default'];
-	}
+        if ($key == 'Account Short Message') {
+            $values .= prepare_mysql($value, false).",";
+        } else {
+            $values .= prepare_mysql($value).",";
+        }
+    }
+    $keys   = preg_replace('/,$/', ')', $keys);
+    $values = preg_replace('/,$/', ')', $values);
 
-
-
-	foreach ($accout_data as $key=>$value) {
-		if (array_key_exists($key, $base_data))
-			$base_data[$key]=_trim($value);
-	}
-
-	$keys='(';$values='values(';
-	foreach ($base_data as $key=>$value) {
-		$keys.="`$key`,";
-
-		if ($key=='Account Short Message')
-			$values.=prepare_mysql($value, false).",";
-
-		else
-			$values.=prepare_mysql($value).",";
-	}
-	$keys=preg_replace('/,$/', ')', $keys);
-	$values=preg_replace('/,$/', ')', $values);
-
-	$sql=sprintf("insert into `Account Dimension` %s %s", $keys, $values);
+    $sql = sprintf("INSERT INTO `Account Dimension` %s %s", $keys, $values);
 
 
-	if ($result=$db->query($sql)) {
-		if ($row = $result->fetch()) {
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
 
 
+            $sql = sprintf(
+                "INSERT INTO `Payment Service Provider Dimension` ( `Payment Service Provider Code`, `Payment Service Provider Name`, `Payment Service Provider Type`) VALUES ('Accounts', %s, 'Account');",
+                _('Internal customers accounts')
 
-			$sql=sprintf("INSERT INTO `Payment Service Provider Dimension` ( `Payment Service Provider Code`, `Payment Service Provider Name`, `Payment Service Provider Type`) VALUES ('Accounts', %s, 'Account');",
-				_('Internal customers accounts')
+            );
 
-			);
+            $db->exec($sql);
+        }
+    } else {
+        $smarty->assign('request', 'account/setup/error/1');
 
-			$db->exec($sql);
-		}
-	}else {
-		$smarty->assign('request', 'account/setup/error/1' );
-
-		$smarty->display("setup.tpl");
-		exit;
-	}
-
-
-	$account=new Account();
+        $smarty->display("setup.tpl");
+        exit;
+    }
 
 
+    $account = new Account();
 
-	if ($account->id!=1 ) {
 
-		$smarty->assign('request', 'account/setup/error/2' );
+    if ($account->id != 1) {
 
-		$smarty->display("setup.tpl");
-		exit;
-	}
+        $smarty->assign('request', 'account/setup/error/2');
+
+        $smarty->display("setup.tpl");
+        exit;
+    }
 
 
 }
-
 
 
 // Create root user
 
-$setup_data=$account->get('Setup Metadata');
+$setup_data = $account->get('Setup Metadata');
 $smarty->assign('setup_data', $setup_data);
-
-
 
 
 if (!$setup_data['steps']['root_user']['setup']) {
 
-	$root_user_data=array(
-		'User Handle'=>'root',
-		'User Password'=>hash('sha256', generatePassword(10, 3)),
-		'User PIN'=>hash('sha256', generatePassword(10, 3)),
-		'User Active'=>'Yes',
-		'User Alias'=>'Root',
-		'User Type'=>'Administrator',
-		'User Preferred Locale'=>'en_GB.UTF-8',
-		'User Created'=>gmdate('Y-m-d H:i:s'),
-		'editor'=>array(
-			'Author Name'=>'',
-			'Author Alias'=>'',
-			'Author Type'=>'',
-			'Author Key'=>'',
-			'User Key'=>0,
-			'Date'=>gmdate('Y-m-d H:i:s')
-		)
-	);
+    $root_user_data = array(
+        'User Handle'           => 'root',
+        'User Password'         => hash('sha256', generatePassword(10, 3)),
+        'User PIN'              => hash('sha256', generatePassword(10, 3)),
+        'User Active'           => 'Yes',
+        'User Alias'            => 'Root',
+        'User Type'             => 'Administrator',
+        'User Preferred Locale' => 'en_GB.UTF-8',
+        'User Created'          => gmdate('Y-m-d H:i:s'),
+        'editor'                => array(
+            'Author Name'  => '',
+            'Author Alias' => '',
+            'Author Type'  => '',
+            'Author Key'   => '',
+            'User Key'     => 0,
+            'Date'         => gmdate('Y-m-d H:i:s')
+        )
+    );
 
 
-	$user= new User('find', $root_user_data, 'create');
+    $user = new User('find', $root_user_data, 'create');
 
-	if (!$user->id) {
+    if (!$user->id) {
 
-		$smarty->assign('request', 'account/setup/error/3' );
+        $smarty->assign('request', 'account/setup/error/3');
 
-		$smarty->display("setup.tpl");
-		exit;
-	}
-	
-	$user->add_group(array(1),false);
+        $smarty->display("setup.tpl");
+        exit;
+    }
 
-	$account->update(array('Account State'=>'RootUser'), 'no_history');
-}else {
-	$user=new User('Administrator');
+    $user->add_group(array(1), false);
+
+    $account->update(array('Account State' => 'RootUser'), 'no_history');
+} else {
+    $user = new User('Administrator');
 }
 
-$_SESSION['logged_in']=true;
-$_SESSION['logged_in_page']=0;
-$_SESSION['user_key']=$user->id;
-$_SESSION['text_locale']=$user->get('User Preferred Locale');
+$_SESSION['logged_in']      = true;
+$_SESSION['logged_in_page'] = 0;
+$_SESSION['user_key']       = $user->id;
+$_SESSION['text_locale']    = $user->get('User Preferred Locale');
 
 
+$_SESSION['current_store']     = '';
+$_SESSION['current_website']   = '';
+$_SESSION['current_warehouse'] = '';
 
-$_SESSION['current_store']='';
-$_SESSION['current_website']='';
-$_SESSION['current_warehouse']='';
-
-$request='account/setup/state';
-foreach ($setup_data['steps'] as $step_code=>$step_data) {
-	if (!$step_data['setup']) {
-		$request= 'account/setup/'.$step_code;
-		break;
-	}
+$request = 'account/setup/state';
+foreach ($setup_data['steps'] as $step_code => $step_data) {
+    if (!$step_data['setup']) {
+        $request = 'account/setup/'.$step_code;
+        break;
+    }
 }
 
 $smarty->assign('request', $request);

@@ -11,8 +11,7 @@
 */
 
 
-
-$supplier=$state['_object'];
+$supplier = $state['_object'];
 
 //print_r($supplier);
 
@@ -20,19 +19,16 @@ $supplier=$state['_object'];
 $supplier->update_paid_ordered_parts();
 //$supplier->update_supplier_parts();
 
-$smarty->assign('supplier',$supplier);
+$smarty->assign('supplier', $supplier);
 
 include_once 'widgets/production_alerts.wget.php';
 
-$html='';
+$html = '';
 
 
-$html.=get_production_alerts($supplier,$db, $account, $user, $smarty);
+$html .= get_production_alerts($supplier, $db, $account, $user, $smarty);
 
-$html.='<div id="widget_details" class="hide" style="clear:both;font-size:90%;border-top:1px solid #ccc"><div>';
-
-
-
+$html .= '<div id="widget_details" class="hide" style="clear:both;font-size:90%;border-top:1px solid #ccc"><div>';
 
 
 ?>

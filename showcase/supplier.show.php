@@ -12,20 +12,20 @@
 
 function get_supplier_showcase($data) {
 
-	global $smarty;
+    global $smarty;
 
-	$supplier=$data['_object'];
-	if (!$supplier->id) {
-		return "";
-	}
+    $supplier = $data['_object'];
+    if (!$supplier->id) {
+        return "";
+    }
 
-	$smarty->assign('supplier', $supplier);
+    $smarty->assign('supplier', $supplier);
 
-	if ($supplier->deleted) {
-		return $smarty->fetch('showcase/deleted_supplier.tpl');
-	}else {
-		return $smarty->fetch('showcase/supplier.tpl');
-	}
+    if ($supplier->deleted) {
+        return $smarty->fetch('showcase/deleted_supplier.tpl');
+    } else {
+        return $smarty->fetch('showcase/supplier.tpl');
+    }
 
 }
 

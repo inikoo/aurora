@@ -10,30 +10,35 @@
 */
 
 
+$tab     = 'account.deleted.users';
+$ar_file = 'ar_users_tables.php';
+$tipo    = 'deleted_users';
 
-$tab='account.deleted.users';
-$ar_file='ar_users_tables.php';
-$tipo='deleted_users';
-
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array(
-	'privilegies'=>array('label'=>_('Overview')),
-	
+$table_views = array(
+    'privilegies' => array('label' => _('Overview')),
 
-);
-
-$table_filters=array(
-	'handle'=>array('label'=>_('Handle'),'title'=>_('User handle')),
-	'name'=>array('label'=>_('Name'),'title'=>_('User name')),
 
 );
 
-$parameters=array(
-		'parent'=>'account',
-		'parent_key'=>1,
-	
+$table_filters = array(
+    'handle' => array(
+        'label' => _('Handle'),
+        'title' => _('User handle')
+    ),
+    'name'   => array(
+        'label' => _('Name'),
+        'title' => _('User name')
+    ),
+
+);
+
+$parameters = array(
+    'parent'     => 'account',
+    'parent_key' => 1,
+
 );
 
 

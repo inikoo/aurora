@@ -13,28 +13,28 @@
 
 function validate_tariff_code($tariff_code, $db) {
 
-	if (strlen($tariff_code)==10  ) {
-		$tariff_code=substr($tariff_code, 0, -2);
-	}
+    if (strlen($tariff_code) == 10) {
+        $tariff_code = substr($tariff_code, 0, -2);
+    }
 
-	$valid='No';
-	$sql=sprintf("select count(*) as num  from kbase.`Commodity Code Dimension` where `Commodity Code`=%s ",
-		prepare_mysql($tariff_code)
-	);
+    $valid = 'No';
+    $sql   = sprintf(
+        "SELECT count(*) AS num  FROM kbase.`Commodity Code Dimension` WHERE `Commodity Code`=%s ", prepare_mysql($tariff_code)
+    );
 
-	if ($result=$db->query($sql)) {
-		if ($row = $result->fetch()) {
-			if ($row['num']>0) {
-				$valid='Yes';
-			}
-		}
-	}else {
-		print_r($error_info=$db->errorInfo());
-		exit;
-	}
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            if ($row['num'] > 0) {
+                $valid = 'Yes';
+            }
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
 
 
-	return $valid;
+    return $valid;
 
 
 }

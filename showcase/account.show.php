@@ -10,14 +10,13 @@
  Version 3.0
 */
 
-function get_account_showcase($data,$smarty) {
-    $account=$data['_object'];
-    
-    
-    $smarty->assign('account',$account);
+function get_account_showcase($data, $smarty) {
+    $account = $data['_object'];
+
+
+    $smarty->assign('account', $account);
 
     return $smarty->fetch('showcase/account.tpl');
-    
 
 
 }

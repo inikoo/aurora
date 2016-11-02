@@ -13,12 +13,13 @@
 include_once 'utils/invalid_messages.php';
 
 
-$tree=array(
-	array('position'=>'xxx',
-		'children'=>array(array('position'=>'yyy'))
+$tree = array(
+    array(
+        'position' => 'xxx',
+        'children' => array(array('position' => 'yyy'))
 
 
-	),
+    ),
 
 
 );
@@ -26,6 +27,6 @@ $tree=array(
 $smarty->assign('tree', $tree);
 
 
-$html=$smarty->fetch('organigram.tpl');
+$html = $smarty->fetch('organigram.tpl');
 
 ?>

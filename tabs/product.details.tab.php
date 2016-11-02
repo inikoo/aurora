@@ -14,15 +14,17 @@ include_once 'utils/country_functions.php';
 include_once 'conf/object_fields.php';
 
 
-$product=$state['_object'];
+$product = $state['_object'];
 $product->get_store_data();
 
-$object_fields=get_object_fields($product, $db, $user, $smarty, array('show_full_label'=>false));
+$object_fields = get_object_fields(
+    $product, $db, $user, $smarty, array('show_full_label' => false)
+);
 
 $smarty->assign('object_fields', $object_fields);
 $smarty->assign('state', $state);
 $smarty->assign('object', $product);
 
-$html=$smarty->fetch('edit_object.tpl');
+$html = $smarty->fetch('edit_object.tpl');
 
 ?>

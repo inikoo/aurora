@@ -11,32 +11,31 @@
 */
 
 
-
-
-$where=sprintf(' where POTF.`Purchase Order Key`=%d', $parameters['parent_key']);
-$wheref='';
-if ($parameters['f_field']=='code'  and $f_value!='')
-	$wheref.=" and OTF.`Product Code` like '".addslashes($f_value)."%'";
-
-$_order=$order;
-$_dir=$order_direction;
-
-if ($order=='code')
-	$order='OTF.`Product Code`';
-elseif ($order=='created')
-	$order='`Order Date`';
-
-elseif ($order=='last_updated')
-	$order='`Order Last Updated Date`';
-
-elseif ($order=='item_index')
-	$order='`Purchase Order Item Index`';
-
-else {
-	$order='`Purchase Order Transaction Fact Key`';
+$where  = sprintf(
+    ' where POTF.`Purchase Order Key`=%d', $parameters['parent_key']
+);
+$wheref = '';
+if ($parameters['f_field'] == 'code' and $f_value != '') {
+    $wheref .= " and OTF.`Product Code` like '".addslashes($f_value)."%'";
 }
 
-$table="
+$_order = $order;
+$_dir   = $order_direction;
+
+if ($order == 'code') {
+    $order = 'OTF.`Product Code`';
+} elseif ($order == 'created') {
+    $order = '`Order Date`';
+} elseif ($order == 'last_updated') {
+    $order = '`Order Last Updated Date`';
+} elseif ($order == 'item_index') {
+    $order = '`Purchase Order Item Index`';
+} else {
+    $order = '`Purchase Order Transaction Fact Key`';
+}
+
+$table
+    = "
   `Purchase Order Transaction Fact` POTF
 left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Historic Key`=SPH.`Supplier Part Historic Key`)
  left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
@@ -46,11 +45,12 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
 
 ";
 
-$sql_totals="select count(distinct  `Purchase Order Transaction Fact Key`) as num from $table $where";
+$sql_totals
+    = "select count(distinct  `Purchase Order Transaction Fact Key`) as num from $table $where";
 
 
-
-$fields="`Supplier Delivery Quantity`,`Supplier Delivery Key`,`Purchase Order Item Index`,`Supplier Part Currency Code`,`Supplier Part Historic Unit Cost`,
+$fields
+    = "`Supplier Delivery Quantity`,`Supplier Delivery Key`,`Purchase Order Item Index`,`Supplier Part Currency Code`,`Supplier Part Historic Unit Cost`,
 `Purchase Order Transaction Fact Key`,`Purchase Order Quantity`,POTF.`Supplier Part Key`,`Supplier Part Reference`,POTF.`Supplier Part Historic Key`,
 `Part Unit Description`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,
 `Supplier Part Unit Cost`,`Part Package Weight`,`Purchase Order CBM`,`Purchase Order Weight`,S.`Supplier Key`,`Supplier Code`,`Supplier Part Minimum Carton Order`,

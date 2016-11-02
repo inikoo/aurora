@@ -10,31 +10,32 @@
 */
 
 
+$tab     = 'products.categories';
+$ar_file = 'ar_products_tables.php';
+$tipo    = 'categories';
 
-$tab='products.categories';
-$ar_file='ar_products_tables.php';
-$tipo='categories';
-
-$default=$user->get_tab_defaults($tab);
-
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array(
+$table_views = array();
+
+$table_filters = array(
+    'label' => array(
+        'label' => _('Label'),
+        'title' => _('Category label')
+    ),
+    'code'  => array(
+        'label' => _('Code'),
+        'title' => _('Category code')
+    ),
 
 );
 
-$table_filters=array(
-	'label'=>array('label'=>_('Label'),'title'=>_('Category label')),
-	'code'=>array('label'=>_('Code'),'title'=>_('Category code')),
-
+$parameters = array(
+    'parent'     => 'store',
+    'parent_key' => $state['parent_key'],
+    'subject'    => 'product',
 );
-
-$parameters=array(
-		'parent'=>'store',
-		'parent_key'=>$state['parent_key'],
-		'subject'=>'product',
-);
-
 
 
 /*
@@ -76,8 +77,12 @@ $table_buttons[]=array(
 );
 */
 
-$table_buttons=array();
-$table_buttons[]=array('icon'=>'plus', 'title'=>_('New category'), 'reference'=>"products/".$state['parent_key']."/category/new");
+$table_buttons   = array();
+$table_buttons[] = array(
+    'icon'      => 'plus',
+    'title'     => _('New category'),
+    'reference' => "products/".$state['parent_key']."/category/new"
+);
 
 $smarty->assign('table_buttons', $table_buttons);
 

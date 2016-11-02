@@ -10,11 +10,11 @@
 */
 
 
-$table='`Order Transaction Fact` TR ';
+$table = '`Order Transaction Fact` TR ';
 
 switch ($parameters['parent']) {
     case 'product':
-       $where=sprintf(' where `Product ID`=%d', $parameters['parent_key']);
+        $where = sprintf(' where `Product ID`=%d', $parameters['parent_key']);
 
         break;
     default:
@@ -23,43 +23,43 @@ switch ($parameters['parent']) {
 }
 
 
-
-if ($parameters['frequency']=='annually') {
-	$group_by=' group by Year(`Invoice Date`) ';
-	$sql_totals_fields='Year(`Invoice Date`)';
-}elseif ($parameters['frequency']=='monthy') {
-	$group_by='  group by DATE_FORMAT(`Invoice Date`,"%Y-%m") ';
-	$sql_totals_fields='DATE_FORMAT(`Invoice Date`,"%Y-%m")';
-}elseif ($parameters['frequency']=='weekly') {
-	$group_by=' group by Yearweek(`Invoice Date`) ';
-	$sql_totals_fields='Yearweek(`Invoice Date`)';
-}elseif ($parameters['frequency']=='daily') {
-	$group_by=' group by Date(`Invoice Date`) ';
-	$sql_totals_fields='`Invoice Date`';
+if ($parameters['frequency'] == 'annually') {
+    $group_by          = ' group by Year(`Invoice Date`) ';
+    $sql_totals_fields = 'Year(`Invoice Date`)';
+} elseif ($parameters['frequency'] == 'monthy') {
+    $group_by          = '  group by DATE_FORMAT(`Invoice Date`,"%Y-%m") ';
+    $sql_totals_fields = 'DATE_FORMAT(`Invoice Date`,"%Y-%m")';
+} elseif ($parameters['frequency'] == 'weekly') {
+    $group_by          = ' group by Yearweek(`Invoice Date`) ';
+    $sql_totals_fields = 'Yearweek(`Invoice Date`)';
+} elseif ($parameters['frequency'] == 'daily') {
+    $group_by          = ' group by Date(`Invoice Date`) ';
+    $sql_totals_fields = '`Invoice Date`';
 }
 
 
-$wheref='';
+$wheref = '';
 
 
-$_order=$order;
-$_dir=$order_direction;
+$_order = $order;
+$_dir   = $order_direction;
 
-if ($order=='date')
-	$order='`Invoice Date`';
+if ($order == 'date') {
+    $order = '`Invoice Date`';
+} else {
+    $order = '`Invoice Date`';
+}
 
-else
-	$order='`Invoice Date`';
 
+$sql_totals
+    = "select count(Distinct $sql_totals_fields) as num from $table  $where  ";
 
-$sql_totals="select count(Distinct $sql_totals_fields) as num from $table  $where  ";
-
-$fields="`Invoice Date`,
+$fields
+    = "`Invoice Date`,
 sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as sales,
 count(distinct `Invoice Key`) as invoices,
 count(distinct `Customer Key`) as customers
 ";
-
 
 
 ?>

@@ -10,18 +10,17 @@
  Version 3.0
 */
 
-function get_products_special_categories_showcase($data,$smarty) {
+function get_products_special_categories_showcase($data, $smarty) {
 
-    
-    $store=$data['_object'];
-    if(!$store->id){
+
+    $store = $data['_object'];
+    if (!$store->id) {
         return "";
     }
-    
-    $smarty->assign('store',$store);
+
+    $smarty->assign('store', $store);
 
     return $smarty->fetch('showcase/products_special_categories.tpl');
-    
 
 
 }

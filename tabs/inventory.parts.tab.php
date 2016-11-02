@@ -10,43 +10,43 @@
 */
 
 
+$tab     = 'inventory.parts';
+$ar_file = 'ar_inventory_tables.php';
+$tipo    = 'active_parts';
 
-$tab='inventory.parts';
-$ar_file='ar_inventory_tables.php';
-$tipo='active_parts';
-
-$default=$user->get_tab_defaults($tab);
-
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array(
-		'overview'=>array('label'=>_('Overview')),
-		'performance'=>array('label'=>_('Performance')),
-		'stock'=>array('label'=>_('Stock')),
-		'sales'=>array('label'=>_('Revenue')),
-		'dispatched_q'=>array('label'=>_('Dispatched (Qs)')),
-		'dispatched_y'=>array('label'=>_('Dispatched (Yrs)')),
-		'revenue_q'=>array('label'=>_('Revenue (Qs)')),
-		'revenue_y'=>array('label'=>_('Revenue (Yrs)')),
-
-	);
-
-
-$table_filters=array(
-	'reference'=>array('label'=>_('Reference'), 'title'=>_('Part reference')),
+$table_views = array(
+    'overview'     => array('label' => _('Overview')),
+    'performance'  => array('label' => _('Performance')),
+    'stock'        => array('label' => _('Stock')),
+    'sales'        => array('label' => _('Revenue')),
+    'dispatched_q' => array('label' => _('Dispatched (Qs)')),
+    'dispatched_y' => array('label' => _('Dispatched (Yrs)')),
+    'revenue_q'    => array('label' => _('Revenue (Qs)')),
+    'revenue_y'    => array('label' => _('Revenue (Yrs)')),
 
 );
 
 
-$parameters=array(
-	'parent'=>$state['parent'],
-	'parent_key'=>$state['parent_key'],
+$table_filters = array(
+    'reference' => array(
+        'label' => _('Reference'),
+        'title' => _('Part reference')
+    ),
 
 );
 
 
+$parameters = array(
+    'parent'     => $state['parent'],
+    'parent_key' => $state['parent_key'],
 
-$table_buttons=array();
+);
+
+
+$table_buttons = array();
 
 /*
 $table_buttons[]=array('icon'=>'plus', 'title'=>_('New part'), 'reference'=>"part/new");

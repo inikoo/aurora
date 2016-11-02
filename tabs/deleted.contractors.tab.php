@@ -10,25 +10,25 @@
 */
 
 
+$tab     = 'deleted.contractors';
+$ar_file = 'ar_hr_tables.php';
+$tipo    = 'deleted.contractors';
 
-$tab='deleted.contractors';
-$ar_file='ar_hr_tables.php';
-$tipo='deleted.contractors';
+$default = $user->get_tab_defaults($tab);
 
-$default=$user->get_tab_defaults($tab);
+$table_views = array();
 
-$table_views=array(
+$table_filters = array(
+    'name' => array(
+        'label' => _('Name'),
+        'title' => _('Contractors name')
+    ),
 
 );
 
-$table_filters=array(
-	'name'=>array('label'=>_('Name'), 'title'=>_('Contractors name')),
-
-);
-
-$parameters=array(
-	'parent'=>'account',
-	'parent_key'=>1,
+$parameters = array(
+    'parent'     => 'account',
+    'parent_key' => 1,
 
 );
 

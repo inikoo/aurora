@@ -12,150 +12,156 @@
 
 include_once 'utils/date_functions.php';
 
-$currency='';
-$where='where true';
-$table='`Supplier Dimension` S left join `Supplier Data`  D on (S.`Supplier Key`=D.`Supplier Key`)';
-$group_by='';
-$where_type='';
+$currency   = '';
+$where      = 'where true';
+$table
+            = '`Supplier Dimension` S left join `Supplier Data`  D on (S.`Supplier Key`=D.`Supplier Key`)';
+$group_by   = '';
+$where_type = '';
 
 
 if (isset($parameters['awhere']) and $parameters['awhere']) {
 
-	$tmp=preg_replace('/\\\"/', '"', $parameters['awhere']);
-	$tmp=preg_replace('/\\\\\"/', '"', $tmp);
-	$tmp=preg_replace('/\'/', "\'", $tmp);
+    $tmp = preg_replace('/\\\"/', '"', $parameters['awhere']);
+    $tmp = preg_replace('/\\\\\"/', '"', $tmp);
+    $tmp = preg_replace('/\'/', "\'", $tmp);
 
-	$raw_data=json_decode($tmp, true);
-	$raw_data['store_key']=$parameters['parent_key'];
-	include_once 'list_functions_supplier.php';
-	list($where, $table, $group_by)=suppliers_awhere($raw_data);
+    $raw_data              = json_decode($tmp, true);
+    $raw_data['store_key'] = $parameters['parent_key'];
+    include_once 'list_functions_supplier.php';
+    list($where, $table, $group_by) = suppliers_awhere($raw_data);
 
 
+} elseif ($parameters['parent'] == 'list') {
 
+
+    $sql = sprintf(
+        "SELECT * FROM `List Dimension` WHERE `List Key`=%d", $parameters['parent_key']
+    );
+
+    $res = mysql_query($sql);
+    if ($supplier_list_data = mysql_fetch_assoc($res)) {
+        $parameters['awhere'] = false;
+        if ($supplier_list_data['List Type'] == 'Static') {
+            $table
+                   = '`List Supplier Bridge` CB left join `Supplier Dimension` C  on (CB.`Supplier Key`=S.`Supplier Key`)';
+            $where = sprintf(
+                ' where `List Key`=%d ', $parameters['parent_key']
+            );
+
+        } else {
+
+            $tmp = preg_replace(
+                '/\\\"/', '"', $supplier_list_data['List Metadata']
+            );
+            $tmp = preg_replace('/\\\\\"/', '"', $tmp);
+            $tmp = preg_replace('/\'/', "\'", $tmp);
+
+            $raw_data = json_decode($tmp, true);
+
+            $raw_data['store_key'] = $supplier_list_data['List Parent Key'];
+            include_once 'utils/list_functions_supplier.php';
+
+            list($where, $table, $group_by) = suppliers_awhere($raw_data);
+
+
+        }
+
+    } else {
+        return;
+    }
+
+
+} elseif ($parameters['parent'] == 'category') {
+
+
+    $where = sprintf(
+        " where `Subject`='Supplier' and  `Category Key`=%d", $parameters['parent_key']
+    );
+    $table
+           = ' `Category Bridge` C left join  `Supplier Dimension` S on (`Subject Key`=`Supplier Key`)  left join `Supplier Data`  D on (S.`Supplier Key`=D.`Supplier Key`)';
+
+} elseif ($parameters['parent'] == 'agent') {
+
+    $where = sprintf(
+        " where `Agent Supplier Agent Key`=%d", $parameters['parent_key']
+    );
+    $table
+           = ' `Agent Supplier Bridge` B left join  `Supplier Dimension` S on (`Agent Supplier Supplier Key`=`Supplier Key`)  left join `Supplier Data`  D on (S.`Supplier Key`=D.`Supplier Key`)';
+} else {
+
+    $where = sprintf(" where `Supplier Has Agent`='No'");
 
 }
-elseif ($parameters['parent']=='list') {
 
 
-	$sql=sprintf("select * from `List Dimension` where `List Key`=%d", $parameters['parent_key']);
-
-	$res=mysql_query($sql);
-	if ($supplier_list_data=mysql_fetch_assoc($res)) {
-		$parameters['awhere']=false;
-		if ($supplier_list_data['List Type']=='Static') {
-			$table='`List Supplier Bridge` CB left join `Supplier Dimension` C  on (CB.`Supplier Key`=S.`Supplier Key`)';
-			$where=sprintf(' where `List Key`=%d ', $parameters['parent_key']);
-
-		} else {
-
-			$tmp=preg_replace('/\\\"/', '"', $supplier_list_data['List Metadata']);
-			$tmp=preg_replace('/\\\\\"/', '"', $tmp);
-			$tmp=preg_replace('/\'/', "\'", $tmp);
-
-			$raw_data=json_decode($tmp, true);
-
-			$raw_data['store_key']=$supplier_list_data['List Parent Key'];
-			include_once 'utils/list_functions_supplier.php';
-
-			list($where, $table, $group_by)=suppliers_awhere($raw_data);
-
-
-		}
-
-	} else {
-		return;
-	}
-
-
-
+$filter_msg = '';
+$wheref     = '';
+if ($parameters['f_field'] == 'code' and $f_value != '') {
+    $wheref .= " and `Supplier Code` like '".addslashes($f_value)."%'";
 }
-elseif ($parameters['parent']=='category') {
-
-
-	$where=sprintf(" where `Subject`='Supplier' and  `Category Key`=%d", $parameters['parent_key']);
-	$table=' `Category Bridge` C left join  `Supplier Dimension` S on (`Subject Key`=`Supplier Key`)  left join `Supplier Data`  D on (S.`Supplier Key`=D.`Supplier Key`)';
-
-}
-elseif ($parameters['parent']=='agent') {
-
-$where=sprintf(" where `Agent Supplier Agent Key`=%d", $parameters['parent_key']);
-	$table=' `Agent Supplier Bridge` B left join  `Supplier Dimension` S on (`Agent Supplier Supplier Key`=`Supplier Key`)  left join `Supplier Data`  D on (S.`Supplier Key`=D.`Supplier Key`)';
-}
-else {
-
-$where=sprintf(" where `Supplier Has Agent`='No'");
-
+if ($parameters['f_field'] == 'name' and $f_value != '') {
+    $wheref .= " and  `Supplier Name` like '".addslashes($f_value)."%'";
+} elseif ($parameters['f_field'] == 'low' and is_numeric($f_value)) {
+    $wheref .= " and lowstock>=$f_value  ";
+} elseif ($parameters['f_field'] == 'outofstock' and is_numeric($f_value)) {
+    $wheref .= " and outofstock>=$f_value  ";
 }
 
 
-
-$filter_msg='';
-$wheref='';
-if ($parameters['f_field']=='code'  and $f_value!='')
-	$wheref.=" and `Supplier Code` like '".addslashes($f_value)."%'";
-if ($parameters['f_field']=='name' and $f_value!='')
-	$wheref.=" and  `Supplier Name` like '".addslashes($f_value)."%'";
-elseif ($parameters['f_field']=='low' and is_numeric($f_value))
-	$wheref.=" and lowstock>=$f_value  ";
-elseif ($parameters['f_field']=='outofstock' and is_numeric($f_value))
-	$wheref.=" and outofstock>=$f_value  ";
+$_order = $order;
+$_dir   = $order_direction;
 
 
-
-
-
-
-$_order=$order;
-$_dir=$order_direction;
-
-
-if ($order=='code') {
-	$order='`Supplier Code`';
-}elseif ($order=='name') {
-	$order='`Supplier Name`';
-}elseif ($order=='location') {
-	$order='`Supplier Location`';
-}elseif ($order=='email') {
-	$order='`Supplier Main XHTML Email`';
-}elseif ($order=='telephone') {
-	$order='`Supplier Preferred Contact Number Formatted Number`';
-}elseif ($order=='contact') {
-	$order="`Supplier Main Contact Name`";
-}elseif ($order=='company') {
-	$order="`Supplier Company Name`";
-}elseif ($order=='supplier_parts') {
-	$order='`Supplier Number Parts`';
-}elseif ($order=='revenue') {
-	$order="`Supplier $db_period Acc Parts Sold Amount`";
-}elseif ($order=='pending_pos') {
-	$order='`Supplier Open Purchase Orders`';
-}elseif ($order=='margin') {
-	$order="`Supplier $db_period Acc Parts Margin`";
-}elseif ($order=='cost') {
-	$order="`Supplier $db_period Acc Parts Cost`";
-}elseif ($order=='origin') {
-	$order="`Supplier Products Origin Country Code`";
-}elseif ($order=='delivery_time') {
-	$order="`Supplier Average Delivery Days`";
-}elseif ($order=='low') {
-	$order="`Supplier Number Low Parts`";
-}elseif ($order=='surplus') {
-	$order="`Supplier Number Surplus Parts`";
-}elseif ($order=='optimal') {
-	$order="`Supplier Number Optimal Parts`";
-}elseif ($order=='low') {
-	$order="`Supplier Number Low Parts`";
-}elseif ($order=='critical') {
-	$order="`Supplier Number Critical Parts`";
-}elseif ($order=='out_of_stock') {
-	$order="`Supplier Number Out Of Stock Parts`";
-}else {
-	$order="S.`Supplier Key`";
+if ($order == 'code') {
+    $order = '`Supplier Code`';
+} elseif ($order == 'name') {
+    $order = '`Supplier Name`';
+} elseif ($order == 'location') {
+    $order = '`Supplier Location`';
+} elseif ($order == 'email') {
+    $order = '`Supplier Main XHTML Email`';
+} elseif ($order == 'telephone') {
+    $order = '`Supplier Preferred Contact Number Formatted Number`';
+} elseif ($order == 'contact') {
+    $order = "`Supplier Main Contact Name`";
+} elseif ($order == 'company') {
+    $order = "`Supplier Company Name`";
+} elseif ($order == 'supplier_parts') {
+    $order = '`Supplier Number Parts`';
+} elseif ($order == 'revenue') {
+    $order = "`Supplier $db_period Acc Parts Sold Amount`";
+} elseif ($order == 'pending_pos') {
+    $order = '`Supplier Open Purchase Orders`';
+} elseif ($order == 'margin') {
+    $order = "`Supplier $db_period Acc Parts Margin`";
+} elseif ($order == 'cost') {
+    $order = "`Supplier $db_period Acc Parts Cost`";
+} elseif ($order == 'origin') {
+    $order = "`Supplier Products Origin Country Code`";
+} elseif ($order == 'delivery_time') {
+    $order = "`Supplier Average Delivery Days`";
+} elseif ($order == 'low') {
+    $order = "`Supplier Number Low Parts`";
+} elseif ($order == 'surplus') {
+    $order = "`Supplier Number Surplus Parts`";
+} elseif ($order == 'optimal') {
+    $order = "`Supplier Number Optimal Parts`";
+} elseif ($order == 'low') {
+    $order = "`Supplier Number Low Parts`";
+} elseif ($order == 'critical') {
+    $order = "`Supplier Number Critical Parts`";
+} elseif ($order == 'out_of_stock') {
+    $order = "`Supplier Number Out Of Stock Parts`";
+} else {
+    $order = "S.`Supplier Key`";
 }
 
-$sql_totals="select count(Distinct S.`Supplier Key`) as num from $table  $where  $where_type";
+$sql_totals
+    = "select count(Distinct S.`Supplier Key`) as num from $table  $where  $where_type";
 
-$fields="
+$fields
+    = "
 S.`Supplier Key`,`Supplier Code`,`Supplier Name`,`Supplier Main XHTML Mobile`,`Supplier Main XHTML Telephone`,
 `Supplier Location`,`Supplier Main Plain Email`,`Supplier Preferred Contact Number`,`Supplier Preferred Contact Number Formatted Number`,`Supplier Main Contact Name`,`Supplier Company Name`,
 `Supplier Number Parts`,`Supplier Number Surplus Parts`,`Supplier Number Optimal Parts`,`Supplier Number Low Parts`,`Supplier Number Critical Parts`,`Supplier Number Critical Parts`,`Supplier Number Out Of Stock Parts`

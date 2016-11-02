@@ -10,10 +10,9 @@
 *}
 
 <div style="padding:20px;border-bottom:1px solid #ccc">
-<i class="fa fa-toggle-on" aria-hidden="true" alt="{t}On{/t}"></i> {t}Logged in{/t}
+    <i class="fa fa-toggle-on" aria-hidden="true" alt="{t}On{/t}"></i> {t}Logged in{/t}
 </div>
 
 
-
-
-<iframe style="width:100%;height:900px" frameBorder="0" src="/ecom/papp.php?website_key={$page->get('Webpage Website Key')}&request={$request}"></iframe>
+<iframe style="width:100%;height:900px" frameBorder="0"
+        src="/ecom/papp.php?website_key={$page->get('Webpage Website Key')}&request={$request}"></iframe>

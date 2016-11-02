@@ -17,67 +17,68 @@ require_once 'class.Page.php';
 require_once 'class.Supplier.php';
 require_once 'class.Category.php';
 
-$print_est=true;
+$print_est = true;
 
 update_parts_sales($db, $print_est);
 //update_categories_sales($db, $print_est);
 
 function update_parts_sales($db, $print_est) {
 
-	$where=" where `Part SKU`=5291 ";
-//	$where=" where `Part Reference` like 'jbb-%' ";
+    $where = " where `Part SKU`=5291 ";
+    //	$where=" where `Part Reference` like 'jbb-%' ";
 
-	$where="";
+    $where = "";
 
-	$sql=sprintf("select count(*) as num from `Part Dimension` %s",$where);
-	if ($result=$db->query($sql)) {
-		if ($row = $result->fetch()) {
-			$total=$row['num'];
-		}else {
-			$total=0;
-		}
-	}else {
-		print_r($error_info=$db->errorInfo());
-		exit;
-	}
+    $sql = sprintf("SELECT count(*) AS num FROM `Part Dimension` %s", $where);
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $total = $row['num'];
+        } else {
+            $total = 0;
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
 
-	$lap_time0=date('U');
-	$contador=0;
+    $lap_time0 = date('U');
+    $contador  = 0;
 
-	$sql=sprintf("select `Part SKU` from `Part Dimension`  %s  order by `Part SKU`",$where);
+    $sql = sprintf(
+        "SELECT `Part SKU` FROM `Part Dimension`  %s  ORDER BY `Part SKU`", $where
+    );
 
-	if ($result=$db->query($sql)) {
-		foreach ($result as $row) {
-			$part=new Part($row['Part SKU']);
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $part = new Part($row['Part SKU']);
 
-			$part->load_acc_data();
+            $part->load_acc_data();
 
-			$part->update_sales_from_invoices('Total');
-			$part->update_sales_from_invoices('Week To Day');
-			$part->update_sales_from_invoices('Month To Day');
-			$part->update_sales_from_invoices('Quarter To Day');
-			$part->update_sales_from_invoices('Year To Day');
-			$part->update_sales_from_invoices('1 Year');
-			$part->update_sales_from_invoices('1 Quarter');
+            $part->update_sales_from_invoices('Total');
+            $part->update_sales_from_invoices('Week To Day');
+            $part->update_sales_from_invoices('Month To Day');
+            $part->update_sales_from_invoices('Quarter To Day');
+            $part->update_sales_from_invoices('Year To Day');
+            $part->update_sales_from_invoices('1 Year');
+            $part->update_sales_from_invoices('1 Quarter');
 
-			$contador++;
-			$lap_time1=date('U');
+            $contador++;
+            $lap_time1 = date('U');
 
-			if ($print_est) {
-				print 'Pa '.percentage($contador, $total, 3)."  lap time ".sprintf("%.2f", ($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h  ($contador/$total) \r";
-			}
+            if ($print_est) {
+                print 'Pa '.percentage($contador, $total, 3)."  lap time ".sprintf("%.2f", ($lap_time1 - $lap_time0) / $contador)." EST  ".sprintf(
+                        "%.1f", (($lap_time1 - $lap_time0) / $contador) * ($total - $contador) / 3600
+                    )."h  ($contador/$total) \r";
+            }
 
 
-		}
+        }
 
-	}else {
-		print_r($error_info=$db->errorInfo());
-		exit;
-	}
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
 }
-
-
-
 
 
 ?>

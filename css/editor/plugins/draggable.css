@@ -5,28 +5,31 @@
  */
 
 .clearfix::after {
-  clear: both;
-  display: block;
-  content: "";
+    clear: both;
+    display: block;
+    content: "";
 }
+
 .fr-drag-helper {
-  background: #1e88e5;
-  height: 2px;
-  margin-top: -1px;
-  -webkit-opacity: 0.2;
-  -moz-opacity: 0.2;
-  opacity: 0.2;
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
-  position: absolute;
-  z-index: 9999;
-  display: none;
+    background: #1e88e5;
+    height: 2px;
+    margin-top: -1px;
+    -webkit-opacity: 0.2;
+    -moz-opacity: 0.2;
+    opacity: 0.2;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    position: absolute;
+    z-index: 9999;
+    display: none;
 }
+
 .fr-drag-helper.fr-visible {
-  display: block;
+    display: block;
 }
+
 .fr-dragging {
-  -webkit-opacity: 0.4;
-  -moz-opacity: 0.4;
-  opacity: 0.4;
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    -webkit-opacity: 0.4;
+    -moz-opacity: 0.4;
+    opacity: 0.4;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
 }

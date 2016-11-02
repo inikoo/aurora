@@ -9,40 +9,39 @@
  Version 3.0
 */
 
-function get_showcase($data,$smarty,$user,$db) {
+function get_showcase($data, $smarty, $user, $db) {
 
 
-    $supplier_part=$data['_object'];
-	$part=$data['_object']->part;
-	if (!$part->id) {
-		return "";
-	}
+    $supplier_part = $data['_object'];
+    $part          = $data['_object']->part;
+    if (!$part->id) {
+        return "";
+    }
 
-	
 
-	$sql=sprintf("select `Category Label`,`Category Code`,`Category Key` from `Category Dimension` where `Category Key`=%d ",
-		$part->get('Part Family Category Key'));
-	if ($result=$db->query($sql)) {
-		if ($row = $result->fetch()) {
-			$family_data=array(
-				'id'=>$row['Category Key'],
-				'code'=>$row['Category Code'],
-				'label'=>$row['Category Label'],
-			);
-		}else {
-			$family_data=array('id'=>false);
-		}
-	}else {
-		print_r($error_info=$db->errorInfo());
-		exit;
-	}
+    $sql = sprintf(
+        "SELECT `Category Label`,`Category Code`,`Category Key` FROM `Category Dimension` WHERE `Category Key`=%d ", $part->get('Part Family Category Key')
+    );
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $family_data = array(
+                'id'    => $row['Category Key'],
+                'code'  => $row['Category Code'],
+                'label' => $row['Category Label'],
+            );
+        } else {
+            $family_data = array('id' => false);
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
 
-	$smarty->assign('supplier_part', $supplier_part);
-	$smarty->assign('part', $part);
-	$smarty->assign('family_data', $family_data);
+    $smarty->assign('supplier_part', $supplier_part);
+    $smarty->assign('part', $part);
+    $smarty->assign('family_data', $family_data);
 
-	return $smarty->fetch('showcase/supplier_part.tpl');
-
+    return $smarty->fetch('showcase/supplier_part.tpl');
 
 
 }

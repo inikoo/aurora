@@ -1,21 +1,24 @@
- .sticky_note_button {
-    min-height: 80px;
-    float: left;
-    width: 28px;
+.sticky_note_button {
+  min-height: 80px;
+  float: left;
+  width: 28px;
 }
+
 .sticky_note {
-    font-size: 90%;
-    float: left;
-    max-width: 242px;
-    padding: 7px 10px 15px 10px;
-    border: 1px solid #BAB84E;
-    background: #EDEB82;
+  font-size: 90%;
+  float: left;
+  max-width: 242px;
+  padding: 7px 10px 15px 10px;
+  border: 1px solid #BAB84E;
+  background: #EDEB82;
 }
+
 .sticky_note.pink {
-    background: #ff7dbd;
-    border: 1px solid #e52789;
+  background: #ff7dbd;
+  border: 1px solid #e52789;
 }
+
 .sticky_note.green {
-    background: #94db84;
-    border: 1px solid #78bf41;
+  background: #94db84;
+  border: 1px solid #78bf41;
 }

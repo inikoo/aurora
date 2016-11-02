@@ -10,19 +10,17 @@
  Version 3.0
 */
 
-function get_customer_showcase($data,$smarty) {
+function get_customer_showcase($data, $smarty) {
 
-   
-    
-    $customer=$data['_object'];
-    if(!$customer->id){
+
+    $customer = $data['_object'];
+    if (!$customer->id) {
         return "";
     }
-    
-    $smarty->assign('customer',$customer);
+
+    $smarty->assign('customer', $customer);
 
     return $smarty->fetch('showcase/customer.tpl');
-    
 
 
 }

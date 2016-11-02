@@ -14,8 +14,7 @@ function show_user_fields() {
     $('#Staff_User_Handle_container').attr('_required', 1)
 
 
-
-    $(".value").each(function(index) {
+    $(".value").each(function (index) {
 
         if ($(this).hasClass('address_value')) {
             return;
@@ -38,7 +37,6 @@ function show_user_fields() {
         var validation = validate_field(field, value, type, required, server_validation, parent, parent_key, _object, key)
 
 
-
         if (validation.class == 'invalid' && value == '') {
             validation.class = 'potentially_valid'
         }
@@ -46,13 +44,10 @@ function show_user_fields() {
         $('#' + field + '_field').removeClass('invalid potentially_valid valid').addClass(validation.class)
 
 
-
     });
 
     var form_validation = get_form_validation_state()
     process_form_validation(form_validation)
-
-
 
 
     $('#Staff_User_Handle').val($('#Staff_Alias').val())

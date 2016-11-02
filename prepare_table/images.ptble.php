@@ -9,56 +9,67 @@
 
 */
 
-$table='`Image Dimension` I left join `Image Subject Bridge` B on (I.`Image Key`=`Image Subject Image Key`)';
+$table
+    = '`Image Dimension` I left join `Image Subject Bridge` B on (I.`Image Key`=`Image Subject Image Key`)';
 
-$fields="`Image Subject Order`,`Image Subject Is Public`,`Image Subject Key`,I.`Image Key`,`Image Width`,	`Image Height`,`Image File Size`,`Image File Format`,`Image Filename`,`Image Subject Image Caption`";
+$fields
+    = "`Image Subject Order`,`Image Subject Is Public`,`Image Subject Key`,I.`Image Key`,`Image Width`,	`Image Height`,`Image File Size`,`Image File Format`,`Image Filename`,`Image Subject Image Caption`";
 
 //print_r($parameters);
 
 switch ($parameters['parent']) {
-case 'part':
-	$where=sprintf(" where `Image Subject Object`='Part' and `Image Subject Object Key`=%d", $parameters['parent_key']);
-	break;
-case 'product':
-	$where=sprintf(" where `Image Subject Object`='Product' and `Image Subject Object Key`=%d", $parameters['parent_key']);
-	break;	
-case 'employee':
-	$where=sprintf(" where `Image Subject Object`='Staff' and `Image Subject Object Key`=%d", $parameters['parent_key']);
-	break;
-case 'category':
-	$where=sprintf(" where `Image Subject Object`='Category' and `Image Subject Object Key`=%d", $parameters['parent_key']);
-	break;
-case 'account':
-	// $table='`Image Dimension` I ';
-	$where=' where true';
-	break;
-default:
+    case 'part':
+        $where = sprintf(
+            " where `Image Subject Object`='Part' and `Image Subject Object Key`=%d", $parameters['parent_key']
+        );
+        break;
+    case 'product':
+        $where = sprintf(
+            " where `Image Subject Object`='Product' and `Image Subject Object Key`=%d", $parameters['parent_key']
+        );
+        break;
+    case 'employee':
+        $where = sprintf(
+            " where `Image Subject Object`='Staff' and `Image Subject Object Key`=%d", $parameters['parent_key']
+        );
+        break;
+    case 'category':
+        $where = sprintf(
+            " where `Image Subject Object`='Category' and `Image Subject Object Key`=%d", $parameters['parent_key']
+        );
+        break;
+    case 'account':
+        // $table='`Image Dimension` I ';
+        $where = ' where true';
+        break;
+    default:
 
-	exit('image parent not done yet '.$parameters['parent']);
+        exit('image parent not done yet '.$parameters['parent']);
 
 }
 
 
-$wheref='';
+$wheref = '';
 
 
-$_order=$order;
-$_dir=$order_direction;
+$_order = $order;
+$_dir   = $order_direction;
 
-if ($order=='size')
-	$order='`Image Width`*`Image Height`';
-elseif ($order=='filesize')
-	$order='`Image File Size`';
-elseif ($order=='kind')
-	$order='`Image File Format`';
-elseif ($order=='filename')
-	$order='`Image Filename`';
-else
-	$order='`Image Subject Order`';
+if ($order == 'size') {
+    $order = '`Image Width`*`Image Height`';
+} elseif ($order == 'filesize') {
+    $order = '`Image File Size`';
+} elseif ($order == 'kind') {
+    $order = '`Image File Format`';
+} elseif ($order == 'filename') {
+    $order = '`Image Filename`';
+} else {
+    $order = '`Image Subject Order`';
+}
 
 
-
-$sql_totals="select count(Distinct I.`Image Key`) as num from $table $where  ";
+$sql_totals
+    = "select count(Distinct I.`Image Key`) as num from $table $where  ";
 
 
 ?>

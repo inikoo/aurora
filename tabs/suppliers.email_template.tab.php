@@ -17,17 +17,14 @@ include_once('external_libs/bee.io/BeeFree.php');
 include_once('external_libs/bee.io/BeeFree.php');
 
 
-
-$beefree = new BeeFree($bee_io_id,$bee_io_key); 
-$result = $beefree -> getCredentials();
-
+$beefree = new BeeFree($bee_io_id, $bee_io_key);
+$result  = $beefree->getCredentials();
 
 
-$smarty->assign('bee_token',json_encode($result));
+$smarty->assign('bee_token', json_encode($result));
 
 
-
-$html=$smarty->fetch('email_template.tpl');
+$html = $smarty->fetch('email_template.tpl');
 
 
 ?>

@@ -13,18 +13,17 @@
 require_once 'common.php';
 
 
-$default_DB_link=@mysql_connect($dns_host, $dns_user, $dns_pwd );
+$default_DB_link = @mysql_connect($dns_host, $dns_user, $dns_pwd);
 if (!$default_DB_link) {
-	print "Error can not connect with database server\n";
+    print "Error can not connect with database server\n";
 }
-$db_selected=mysql_select_db($dns_db, $default_DB_link);
+$db_selected = mysql_select_db($dns_db, $default_DB_link);
 if (!$db_selected) {
-	print "Error can not access the database\n";
-	exit;
+    print "Error can not access the database\n";
+    exit;
 }
 mysql_set_charset('utf8');
 mysql_query("SET time_zone='+0:00'");
-
 
 
 require_once 'utils/get_addressing.php';
@@ -37,15 +36,14 @@ require_once 'class.Part.php';
 
 require_once 'class.Product.php';
 include_once 'utils/parse_materials.php';
-$editor=array(
-	'Author Name'=>'',
-	'Author Alias'=>'',
-	'Author Type'=>'',
-	'Author Key'=>'',
-	'User Key'=>0,
-	'Date'=>gmdate('Y-m-d H:i:s')
+$editor = array(
+    'Author Name'  => '',
+    'Author Alias' => '',
+    'Author Type'  => '',
+    'Author Key'   => '',
+    'User Key'     => 0,
+    'Date'         => gmdate('Y-m-d H:i:s')
 );
-
 
 
 /*
@@ -68,118 +66,112 @@ ALTER TABLE `Image Subject Bridge` CHANGE `Image Subject Subject` `Image Subject
 //migrate_images($db) ;
 reindex_order($db);
 
-function reindex_order($db){
-    
-    
-    $sql=sprintf('select `Product ID` from `Product Dimension` order by `Product ID` desc  ');
+function reindex_order($db) {
 
-	if ($result=$db->query($sql)) {
-		foreach ($result as $row) {
-			$product=new Product('id',$row['Product ID']);
 
-			$product->reindex_order();
-			print $row['Product ID']."\r";
+    $sql = sprintf(
+        'SELECT `Product ID` FROM `Product Dimension` ORDER BY `Product ID` DESC  '
+    );
 
-		}
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $product = new Product('id', $row['Product ID']);
 
-	}else {
-		print_r($error_info=$db->errorInfo());
-		exit;
-	}
+            $product->reindex_order();
+            print $row['Product ID']."\r";
+
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
 
 }
-
-
 
 
 function migrate_images($db) {
 
 
+    $sql = sprintf('SELECT * FROM `Image Bridge`  ');
 
-	$sql=sprintf('select * from `Image Bridge`  ');
-
-	if ($result=$db->query($sql)) {
-		foreach ($result as $row) {
-
-
-			$sql=sprintf("insert into `Image Subject Bridge` (`Image Subject Object`,`Image Subject Object Key`,`Image Subject Image Key`,`Image Subject Is Principal`,`Image Subject Image Caption`) values (%s,%d,%d,%s,%s)",
-				prepare_mysql($row['Subject Type']),
-
-				$row['Subject Key'],
-				$row['Image Key'],
-
-				prepare_mysql($row['Is Principal']),
-				prepare_mysql($row['Image Caption'], false)
-
-			);
-
-			//print "$sql\n";
-			$db->exec($sql);
-
-		}
-	}else {
-		print_r($error_info=$db->errorInfo());
-		exit;
-	}
-
-//'Store Product','Site Favicon','Product','Family','Department','Store','Part','Supplier Product','Store Logo','Store Email Template Header','Store Email Postcard','Email Image','Page','Page Header','Page Footer','Page Header Preview','Page Footer Preview','Page Preview','Site Menu','Site Search','User Profile','Attachment Thumbnail','Category'
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
 
 
-$sql=sprintf('select * from `Part Dimension`  ');
+            $sql = sprintf(
+                "INSERT INTO `Image Subject Bridge` (`Image Subject Object`,`Image Subject Object Key`,`Image Subject Image Key`,`Image Subject Is Principal`,`Image Subject Image Caption`) VALUES (%s,%d,%d,%s,%s)",
+                prepare_mysql($row['Subject Type']),
 
-if ($result=$db->query($sql)) {
-	foreach ($result as $row) {
-		set_order($db, 'Part', $row['Part SKU']);
-	}
+                $row['Subject Key'], $row['Image Key'],
 
-}else {
-	print_r($error_info=$db->errorInfo());
-	exit;
-}
+                prepare_mysql($row['Is Principal']), prepare_mysql($row['Image Caption'], false)
 
-$sql=sprintf('select * from `Product Dimension`  ');
+            );
 
-if ($result=$db->query($sql)) {
-	foreach ($result as $row) {
-		set_order($db, 'Product', $row['Product ID']);
-	}
+            //print "$sql\n";
+            $db->exec($sql);
 
-}else {
-	print_r($error_info=$db->errorInfo());
-	exit;
-}
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
 
+    //'Store Product','Site Favicon','Product','Family','Department','Store','Part','Supplier Product','Store Logo','Store Email Template Header','Store Email Postcard','Email Image','Page','Page Header','Page Footer','Page Header Preview','Page Footer Preview','Page Preview','Site Menu','Site Search','User Profile','Attachment Thumbnail','Category'
+
+
+    $sql = sprintf('SELECT * FROM `Part Dimension`  ');
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            set_order($db, 'Part', $row['Part SKU']);
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+    $sql = sprintf('SELECT * FROM `Product Dimension`  ');
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            set_order($db, 'Product', $row['Product ID']);
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
 
 
 }
-
 
 
 function set_order($db, $object, $object_key) {
 
-	$sql=sprintf("select `Image Subject Key` from `Image Subject Bridge` where `Image Subject Object`=%s and   `Image Subject Object Key`=%d order by `Image Subject Is Principal`,`Image Subject Date`,`Image Subject Key`",
-		prepare_mysql($object),
-		$object_key
-	);
-	//print $sql;
-	$order=1;
-	if ($result=$db->query($sql)) {
-		foreach ($result as $row) {
+    $sql = sprintf(
+        "SELECT `Image Subject Key` FROM `Image Subject Bridge` WHERE `Image Subject Object`=%s AND   `Image Subject Object Key`=%d ORDER BY `Image Subject Is Principal`,`Image Subject Date`,`Image Subject Key`",
+        prepare_mysql($object), $object_key
+    );
+    //print $sql;
+    $order = 1;
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
 
-			$sql=sprintf("update `Image Subject Bridge` set `Image Subject Order`=%d where `Image Subject Key`=%d ",
-				$order,
-				$row['Image Subject Key']
-			);
+            $sql = sprintf(
+                "UPDATE `Image Subject Bridge` SET `Image Subject Order`=%d WHERE `Image Subject Key`=%d ", $order, $row['Image Subject Key']
+            );
 
-			$db->exec($sql);
-			$order++;
-		}
-	}else {
-		print_r($error_info=$db->errorInfo()); print "$sql";
-		exit;
-	}
-
-
+            $db->exec($sql);
+            $order++;
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql";
+        exit;
+    }
 
 
 }

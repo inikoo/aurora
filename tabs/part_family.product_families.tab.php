@@ -9,31 +9,36 @@
 
 */
 
-$tab='part_family.product_families';
-$ar_file='ar_inventory_tables.php';
-$tipo='product_families';
+$tab     = 'part_family.product_families';
+$ar_file = 'ar_inventory_tables.php';
+$tipo    = 'product_families';
 
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array(
-	'overview'=>array('label'=>_('Overview'),'title'=>_('Overview')),
-
-);
-
-$table_filters=array(
-	'code'=>array('label'=>_('Code')),
-	'name'=>array('label'=>_('Label')),
+$table_views = array(
+    'overview' => array(
+        'label' => _('Overview'),
+        'title' => _('Overview')
+    ),
 
 );
 
-$parameters=array(
-		'parent'=>$state['object'],
-		'parent_key'=>$state['key'],
-		
+$table_filters = array(
+    'code' => array('label' => _('Code')),
+    'name' => array('label' => _('Label')),
+
 );
 
-$smarty->assign('js_code', 'js/injections/part_family.product_families.'.(_DEVEL?'':'min.').'js');
+$parameters = array(
+    'parent'     => $state['object'],
+    'parent_key' => $state['key'],
+
+);
+
+$smarty->assign(
+    'js_code', 'js/injections/part_family.product_families.'.(_DEVEL ? '' : 'min.').'js'
+);
 
 include('utils/get_table_html.php');
 

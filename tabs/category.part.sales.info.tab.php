@@ -11,13 +11,9 @@
 */
 
 
+$smarty->assign('object', $state['_object']);
 
-$smarty->assign('object',$state['_object']);
-
-$html=$smarty->fetch('asset_sales_info.tpl')
-
-
-
+$html = $smarty->fetch('asset_sales_info.tpl')
 
 
 ?>

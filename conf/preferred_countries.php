@@ -9,8 +9,8 @@
 
 */
 
-$preferred_countries_data=array(
-	'GB'=>array('IE')
+$preferred_countries_data = array(
+    'GB' => array('IE')
 );
 
 ?>

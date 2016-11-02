@@ -10,35 +10,40 @@
 */
 
 
+$tab     = 'deals';
+$ar_file = 'ar_marketing_tables.php';
+$tipo    = 'deals';
 
-$tab='deals';
-$ar_file='ar_marketing_tables.php';
-$tipo='deals';
-
-$default=$user->get_tab_defaults($tab);
-
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array(
-	'overview'=>array('label'=>_('Overview'), 'title'=>_('Overview')),
-
-);
-
-$table_filters=array(
-
-	'name'=>array('label'=>_('Name')),
+$table_views = array(
+    'overview' => array(
+        'label' => _('Overview'),
+        'title' => _('Overview')
+    ),
 
 );
 
-$parameters=array(
-	'parent'=>$state['object'],
-	'parent_key'=>$state['key'],
+$table_filters = array(
+
+    'name' => array('label' => _('Name')),
+
+);
+
+$parameters = array(
+    'parent'     => $state['object'],
+    'parent_key' => $state['key'],
 
 );
 
 
-$table_buttons=array();
-$table_buttons[]=array('icon'=>'plus', 'title'=>_('New offer'), 'reference'=>"campaigns/".$state['parent_key']."/".$state['key']."/new");
+$table_buttons   = array();
+$table_buttons[] = array(
+    'icon'      => 'plus',
+    'title'     => _('New offer'),
+    'reference' => "campaigns/".$state['parent_key']."/".$state['key']."/new"
+);
 $smarty->assign('table_buttons', $table_buttons);
 
 

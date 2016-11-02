@@ -1,70 +1,70 @@
 #search_form {
-    float: right;
-    border-left: 1px solid #aaa;
-    margin-left: 4px;
-    #search {
-        height: 20px;
-        border: none;
-        border-botom: 1px solid #ddd;
-        padding-left: 5px;
-        width: 280px;
-        @include placeholder {
-            color: #aaa;
-            font-style: italic;
-        }
+  float: right;
+  border-left: 1px solid #aaa;
+  margin-left: 4px;
+  #search {
+    height: 20px;
+    border: none;
+    border-botom: 1px solid #ddd;
+    padding-left: 5px;
+    width: 280px;
+    @include placeholder {
+      color: #aaa;
+      font-style: italic;
     }
-    mark {
-        color: #000;
-        background: none;
-    }
-   
-    #clear_search {
-        position: absolute;
-        top: 5px;
-        right: 40px;
-        z-index: 101;
-        font-size: 15px;
-        cursor: pointer;
-        line-height: 20px;
-        color: grey;
-        text-decoration: none;
-    }
+  }
+  mark {
+    color: #000;
+    background: none;
+  }
+
+  #clear_search {
+    position: absolute;
+    top: 5px;
+    right: 40px;
+    z-index: 101;
+    font-size: 15px;
+    cursor: pointer;
+    line-height: 20px;
+    color: grey;
+    text-decoration: none;
+  }
 }
 
+.search_results_container {
+  z-index: 100;
+  position: absolute;
+  width: 750px;
 
- .search_results_container {
-    z-index: 100;
-        position: absolute;
-        width: 750px;
-        
-          #results_container_shifted {
-   position: relative;
-            left: -427px;  
-            
-  }  
-        
-       // .results_container {
-          
-           
-           
-            table { border: 1px solid #ccc;
-             background: #FFF;
-                width: 100%;
-                tr {
-                    cursor: pointer;
-                    border-bottom: 1px solid #eee;
-                    &:last-of-type {
-                        border-bottom: none;
-                    }
-                }
-                td.label {
-                    padding-left: 20px;
-                }
-                
-                tr:hover,tr.selected{background: $color_background_selected;}
-            }
-      //  }
+  #results_container_shifted {
+    position: relative;
+    left: -427px;
+
+  }
+
+  // .results_container {
+
+  table {
+    border: 1px solid #ccc;
+    background: #FFF;
+    width: 100%;
+    tr {
+      cursor: pointer;
+      border-bottom: 1px solid #eee;
+      &:last-of-type {
+        border-bottom: none;
+      }
     }
+    td.label {
+      padding-left: 20px;
+    }
+
+    tr:hover, tr.selected {
+      background: $color_background_selected;
+    }
+  }
+  //  }
+}
     
  
   

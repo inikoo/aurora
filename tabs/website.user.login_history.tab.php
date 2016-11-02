@@ -10,23 +10,26 @@
 */
 
 
-$tab='website.user.login_history';
-$ar_file='ar_users_tables.php';
-$tipo='login_history';
+$tab     = 'website.user.login_history';
+$ar_file = 'ar_users_tables.php';
+$tipo    = 'login_history';
 
-$default=$user->get_tab_defaults($tab);
+$default = $user->get_tab_defaults($tab);
 
 
-$table_views=array();
+$table_views = array();
 
-$table_filters=array(
-	'ip'=>array('label'=>_('Ip'),'title'=>_('IP address')),
+$table_filters = array(
+    'ip' => array(
+        'label' => _('Ip'),
+        'title' => _('IP address')
+    ),
 
 );
 
-$parameters=array(
-		'parent'=>$state['object'],
-		'parent_key'=>$state['key']
+$parameters = array(
+    'parent'     => $state['object'],
+    'parent_key' => $state['key']
 );
 
 

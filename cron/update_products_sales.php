@@ -13,14 +13,14 @@
 require_once 'common.php';
 
 
-$default_DB_link=@mysql_connect($dns_host, $dns_user, $dns_pwd );
+$default_DB_link = @mysql_connect($dns_host, $dns_user, $dns_pwd);
 if (!$default_DB_link) {
-	print "Error can not connect with database server\n";
+    print "Error can not connect with database server\n";
 }
-$db_selected=mysql_select_db($dns_db, $default_DB_link);
+$db_selected = mysql_select_db($dns_db, $default_DB_link);
 if (!$db_selected) {
-	print "Error can not access the database\n";
-	exit;
+    print "Error can not access the database\n";
+    exit;
 }
 mysql_set_charset('utf8');
 mysql_query("SET time_zone='+0:00'");
@@ -30,81 +30,80 @@ require_once 'class.Product.php';
 require_once 'class.Category.php';
 
 
-$editor=array(
-	'Author Name'=>'',
-	'Author Alias'=>'',
-	'Author Type'=>'',
-	'Author Key'=>'',
-	'User Key'=>0,
-	'Date'=>gmdate('Y-m-d H:i:s')
+$editor = array(
+    'Author Name'  => '',
+    'Author Alias' => '',
+    'Author Type'  => '',
+    'Author Key'   => '',
+    'User Key'     => 0,
+    'Date'         => gmdate('Y-m-d H:i:s')
 );
 
-$print_est=true;
+$print_est = true;
 
 print date('l jS \of F Y h:i:s A')."\n";
 
 update_sales($db, $print_est);
 
 
-
-
-
 function update_sales($db, $print_est) {
 
-	$where='where `Product ID`=971';
-    $where='';
-//	$where='where `Product Code` like "JBB-%"';
-	$sql=sprintf("select count(*) as num from `Product Dimension` %s",$where);
-	if ($result=$db->query($sql)) {
-		if ($row = $result->fetch()) {
-			$total=$row['num'];
-		}else {
-			$total=0;
-		}
-	}else {
-		print_r($error_info=$db->errorInfo());
-		exit;
-	}
+    $where = 'where `Product ID`=971';
+    $where = '';
+    //	$where='where `Product Code` like "JBB-%"';
+    $sql = sprintf(
+        "SELECT count(*) AS num FROM `Product Dimension` %s", $where
+    );
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $total = $row['num'];
+        } else {
+            $total = 0;
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
 
-	$lap_time0=date('U');
-	$contador=0;
-
-
-	$sql=sprintf("select `Product ID` from `Product Dimension` %s order by `Product ID` desc ",$where);
-	if ($result=$db->query($sql)) {
-		foreach ($result as $row) {
-			$product=new Product('id', $row['Product ID']);
-
-			$product->load_acc_data();
-
-			$product->update_sales_from_invoices('Total');
-			$product->update_sales_from_invoices('Month To Day');
-			$product->update_sales_from_invoices('Quarter To Day');
-			$product->update_sales_from_invoices('Year To Day');
-			$product->update_sales_from_invoices('1 Year');
-			$product->update_sales_from_invoices('1 Quarter');
+    $lap_time0 = date('U');
+    $contador  = 0;
 
 
-			$contador++;
-			$lap_time1=date('U');
+    $sql = sprintf(
+        "SELECT `Product ID` FROM `Product Dimension` %s ORDER BY `Product ID` DESC ", $where
+    );
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $product = new Product('id', $row['Product ID']);
 
-			if ($print_est) {
-				print 'P   '.percentage($contador, $total, 3)."  lap time ".sprintf("%.2f", ($lap_time1-$lap_time0)/$contador)." EST  ".sprintf("%.1f", (($lap_time1-$lap_time0)/$contador)*($total-$contador)/3600)  ."h  ($contador/$total) \r";
-			}
+            $product->load_acc_data();
 
-		}
+            $product->update_sales_from_invoices('Total');
+            $product->update_sales_from_invoices('Month To Day');
+            $product->update_sales_from_invoices('Quarter To Day');
+            $product->update_sales_from_invoices('Year To Day');
+            $product->update_sales_from_invoices('1 Year');
+            $product->update_sales_from_invoices('1 Quarter');
 
-	}else {
-		print_r($error_info=$db->errorInfo());
-		exit;
-	}
 
+            $contador++;
+            $lap_time1 = date('U');
+
+            if ($print_est) {
+                print 'P   '.percentage($contador, $total, 3)."  lap time ".sprintf("%.2f", ($lap_time1 - $lap_time0) / $contador)." EST  ".sprintf(
+                        "%.1f", (($lap_time1 - $lap_time0) / $contador) * ($total - $contador) / 3600
+                    )."h  ($contador/$total) \r";
+            }
+
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
 
 
 }
-
-
-
 
 
 ?>

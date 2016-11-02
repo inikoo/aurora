@@ -9,7 +9,8 @@
 -->
 *}
 <ul class="breadcrumb container">
-{foreach from=$breadcrumbs name=breadcrumb item=breadcrumb }
-	<li><a href="{$breadcrumb.reference}"><span>{if $breadcrumb.icon!=''}<i class="fa fa-{$breadcrumb.icon}"></i> {/if}{$breadcrumb.label}</a></li>
-{/foreach}
+    {foreach from=$breadcrumbs name=breadcrumb item=breadcrumb }
+        <li><a href="{$breadcrumb.reference}"><span>{if $breadcrumb.icon!=''}<i
+                            class="fa fa-{$breadcrumb.icon}"></i> {/if}{$breadcrumb.label}</a></li>
+    {/foreach}
 </ul>

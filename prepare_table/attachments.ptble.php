@@ -10,24 +10,27 @@
 */
 
 
-$table='`Attachment Dimension` A ';
-$where=' where true';
+$table = '`Attachment Dimension` A ';
+$where = ' where true';
 
-$wheref='';
-
-
-$_order=$order;
-$_dir=$order_direction;
-
-if ($order=='file_type')
-	$order='`Attachment MIME Type`';
-elseif ($order=='filesize')
-	$order='`Attachment File Size`';
-else
-	$order='`Attachment Key`';
+$wheref = '';
 
 
-$sql_totals="select count(Distinct A.`Attachment Key`) as num from $table $where  ";
-$fields="`Attachment Key`,`Attachment MIME Type`,	`Attachment Type`,`Attachment File Size`,`Attachment Thumbnail Image Key`";
+$_order = $order;
+$_dir   = $order_direction;
+
+if ($order == 'file_type') {
+    $order = '`Attachment MIME Type`';
+} elseif ($order == 'filesize') {
+    $order = '`Attachment File Size`';
+} else {
+    $order = '`Attachment Key`';
+}
+
+
+$sql_totals
+    = "select count(Distinct A.`Attachment Key`) as num from $table $where  ";
+$fields
+    = "`Attachment Key`,`Attachment MIME Type`,	`Attachment Type`,`Attachment File Size`,`Attachment Thumbnail Image Key`";
 
 ?>

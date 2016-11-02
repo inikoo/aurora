@@ -12,26 +12,26 @@
 include_once('class.Store.php');
 
 
-if(!isset($state['metadata']['store_key'])){
+if (!isset($state['metadata']['store_key'])) {
 
-$html='';return;
+    $html = '';
+
+    return;
 
 }
 
 
-
 include_once 'conf/export_edit_template_fields.php';
 
-$store=new Store($state['metadata']['store_key']);
+$store = new Store($state['metadata']['store_key']);
 
-$title=sprintf(_('New family %s for %s'),$state['_object']->get('Code'),$store->get('Code'));
-
-
-
-$objects='product';
-$smarty->assign('title',$title);
+$title = sprintf(
+    _('New family %s for %s'), $state['_object']->get('Code'), $store->get('Code')
+);
 
 
+$objects = 'product';
+$smarty->assign('title', $title);
 
 
 $smarty->assign('export_parent', 'part_category');
@@ -47,13 +47,12 @@ $smarty->assign('parent_key', $store->id);
 $smarty->assign('parent_code', $store->get('Code'));
 $smarty->assign('objects', $objects);
 $smarty->assign('edit_fields', $export_edit_template_fields[$objects]);
-$smarty->assign('return_tab',$state['tab']);
+$smarty->assign('return_tab', $state['tab']);
 
 
+$smarty->assign('category', $state['_object']);
 
-$smarty->assign('category',$state['_object']);
-
-$html=$smarty->fetch('part_category.family.new.tpl');
+$html = $smarty->fetch('part_category.family.new.tpl');
 
 
 ?>
