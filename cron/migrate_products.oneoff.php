@@ -91,7 +91,7 @@ function update_product_category_status($db) {
 //print "$sql\n";
 				if ($result=$db->query($sql)) {
 					if ($row = $result->fetch()) {
-						if ($row['date']!='' and strtotime($row['date'])< strtotime($category->get('Product Category Valid From')) ) {
+						if ($row['date']!='' and (strtotime($row['date'])< strtotime($category->get('Product Category Valid From'))  or $category->get('Product Category Valid From')==''   )) {
 
 							print "updating ".$category->get('Code')." from ".$row['date']."\n";
 
