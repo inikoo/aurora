@@ -95,7 +95,7 @@ function update_part_category_status($db) {
 
 				if ($result=$db->query($sql)) {
 					if ($row = $result->fetch()) {
-						if ($row['date']!='' and strtotime($row['date'])< strtotime($category->get('Part Category Valid From')) ) {
+						if ($row['date']!='' and (strtotime($row['date'])< strtotime($category->get('Part Category Valid From')) or $category->get('Part Category Valid From')=='' ) ) {
 
 							print "updating ".$category->get('Code')." from ".$row['date']."\n";
 
