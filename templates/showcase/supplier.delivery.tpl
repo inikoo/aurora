@@ -491,7 +491,9 @@
             } else {
 
                 $(this).closest('table').find('td.buttons').addClass('changed')
-                var request = '/ar_validation.php?tipo=check_for_duplicates&parent=' + parent + '&parent_key=' + parent_key + '&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value + '&metadata=' + JSON.stringify({option: 'creating_dn_from_po'})
+                var request = '/ar_validation.php?tipo=check_for_duplicates&parent=' + parent + '&parent_key=' + parent_key + '&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value + '&metadata=' + JSON.stringify({
+                            option: 'creating_dn_from_po'
+                        })
 
                 console.log(request)
 

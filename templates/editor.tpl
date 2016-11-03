@@ -6,10 +6,12 @@
 
 <script>
 
-    $.FroalaEditor.DefineIcon('save', {NAME: 'cloud'});
+    $.FroalaEditor.DefineIcon('save', {
+        NAME: 'cloud'
+    });
 
     $(function () {
-        var editor_data = JSON.parse(atob($('#editor_{$editor_data.id}').data('data')))
+        var editor_data = JSON.parse(atob($('#editor_{$editor_data.id}').data('data')));
 
         $('#editor_{$editor_data.id}').froalaEditor(
                 {
@@ -38,21 +40,19 @@
                     $('#editor_container_{$editor_data.id} div.fr-toolbar i.fa-cloud').removeClass('valid save changed')
                     $('#editor_container_{$editor_data.id} div.fr-toolbar i.fa-cloud').closest('div').removeClass('changed')
 
-                    data = JSON.parse(data)
+                    data = JSON.parse(data);
 
-                    console.log(data)
+                    console.log(data);
                     if (editor_data.mode == 'edit_object') {
 
-                        var field = editor_data.field
-                        $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
+                        var field = editor_data.field;
+                        $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide');
 
-
-                        console.log(field)
-                        $('.' + field).html(data.formatted_value)
+                        $('.' + field).html(data.formatted_value);
 
 
                         if (data.directory_field != '') {
-                            $('#' + data.directory_field + '_directory').html(data.directory)
+                            $('#' + data.directory_field + '_directory').html(data.directory);
                             if (data.items_in_directory == 0) {
                                 $('#' + data.directory_field + '_field').addClass('hide')
                             } else {
