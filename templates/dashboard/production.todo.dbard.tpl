@@ -11,9 +11,11 @@
         frameBackgroundColor: 'white',
         frameSize: 100,
         ringWidth: 8.75,
-        fontSize: 17.5,
+        fontSize: 17.5
 
+    });
+    dial.setValue({$data['value']},{$data['total']},{$data['min']},{$data['max']});
+    dial.config({
+        disabled: true
     })
-    dial.setValue({$data['value']},{$data['total']},{$data['min']},{$data['max']})
-    dial.config({disabled: true})
 </script>

@@ -30,3 +30,7 @@ build/.DS_Store
 deploy.tgz
 
 cron/fix.php
+
+*.php~
+
+deleteme.php
