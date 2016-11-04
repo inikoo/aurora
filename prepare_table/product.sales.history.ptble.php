@@ -26,7 +26,7 @@ switch ($parameters['parent']) {
 if ($parameters['frequency'] == 'annually') {
     $group_by          = ' group by Year(`Invoice Date`) ';
     $sql_totals_fields = 'Year(`Invoice Date`)';
-} elseif ($parameters['frequency'] == 'monthy') {
+} elseif ($parameters['frequency'] == 'monthly') {
     $group_by          = '  group by DATE_FORMAT(`Invoice Date`,"%Y-%m") ';
     $sql_totals_fields = 'DATE_FORMAT(`Invoice Date`,"%Y-%m")';
 } elseif ($parameters['frequency'] == 'weekly') {

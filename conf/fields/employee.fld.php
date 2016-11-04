@@ -20,7 +20,7 @@ $employee = $object;
 $account  = new Account();
 
 $options_Staff_Payment_Terms = array(
-    'Monthy'  => _('Monthy (fixed)'),
+    'Monthly'  => _('Monthly (fixed)'),
     'PerHour' => _('Per hour (prorata)')
 );
 

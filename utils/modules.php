@@ -3388,9 +3388,9 @@ $modules = array(
                             'Annually'
                         )
                     ),
-                    'inventory.stock.history.monthy'   => array(
+                    'inventory.stock.history.monthly'   => array(
                         'label' => _(
-                            'Monthy'
+                            'Monthly'
                         )
                     ),
                     'inventory.stock.history.weekly'   => array(

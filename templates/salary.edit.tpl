@@ -13,15 +13,15 @@
         <tr>
             <td class="label"> {t}Frequency{/t} </td>
             <td class="header_field salary_frequency inline_options medium">
-                <span id="salary_frequency_monthy" value="monthy"
-                      class="{if  $frequency=='monthy' or $frequency==''  }selected{/if}">{t}Monthly{/t}</span>
+                <span id="salary_frequency_monthly" value="monthly"
+                      class="{if  $frequency=='monthly' or $frequency==''  }selected{/if}">{t}Monthly{/t}</span>
                 <span id="salary_frequency_weekly" value="weekly"
                       class="{if $frequency=='weekly'}selected{/if}">{t}Weekly{/t}</span></td>
             <td colspan="2"><i id="{$field.id}_save_button" class="fa fa-cloud  save "
                                onclick="save_field('{$state._object->get_object_name()}','{$state.key}','{$field.id}')"></i>
                 <span id="{$field.id}_msg" class="msg"></span></td>
         </tr>
-        <tr id="monthy_pay_day" class=" pay_day monthy {if !($frequency=='monthy' or $frequency=='')}hide{else}{/if}">
+        <tr id="monthly_pay_day" class=" pay_day monthly {if !($frequency=='monthly' or $frequency=='')}hide{else}{/if}">
 
             <td> {t}Pay day{/t} </td>
             <td colspan="3">
@@ -51,10 +51,10 @@
             <td> {t}Type{/t} </td>
             <td colspan="3" id="salary_type" class="inline_options salary_type ">
                 <span value="fixed_month" id="type_fixed_month"
-                      class="{if !($frequency=='monthy' or $frequency=='')  }hide{else}{/if} {if  $type=='fixed_month' or  $type==''}selected{/if} ">{t}Fixed{/t}
+                      class="{if !($frequency=='monthly' or $frequency=='')  }hide{else}{/if} {if  $type=='fixed_month' or  $type==''}selected{/if} ">{t}Fixed{/t}
                     ({t}per month{/t})</span>
                 <span value="fixed_week" id="type_fixed_week"
-                      class="pay_day monthy {if $type=='' or  $frequency=='monthy'}hide{/if} {if  $type=='fixed_week' }selected{/if}  ">{t}Fixed{/t}
+                      class="pay_day monthly {if $type=='' or  $frequency=='monthly'}hide{/if} {if  $type=='fixed_week' }selected{/if}  ">{t}Fixed{/t}
                     ({t}per week{/t})</span>
                 <span value="prorata_hour" class="{if  $type=='prorata_hour' }selected{/if} "
                       id="type_prorata_hour">{t}Pro rata{/t} ({t}per hour{/t})</span>
@@ -111,13 +111,13 @@
 
         $('.salary_frequency span').removeClass('selected')
         $(this).addClass('selected')
-        $('#monthy_pay_day').addClass('hide')
+        $('#monthly_pay_day').addClass('hide')
         $('#weekly_pay_day').addClass('hide')
 
         var value = $(this).attr('value')
 
-        if (value == 'monthy') {
-            $('#monthy_pay_day').removeClass('hide')
+        if (value == 'monthly') {
+            $('#monthly_pay_day').removeClass('hide')
             $('#type_fixed_month').removeClass('hide')
             $('#type_fixed_week').addClass('hide')
 
@@ -268,7 +268,7 @@
         }
 
 
-        if ($('#salary_frequency_monthy').hasClass('selected')) {
+        if ($('#salary_frequency_monthly').hasClass('selected')) {
             var pay_day_day_of_the_month = $('#pay_day_day_of_the_month');
             if (pay_day_day_of_the_month.hasClass('invalid')) {
                 return {
@@ -367,9 +367,9 @@
         var amount_saturday = '';
         var amount_sunday = '';
 
-        if ($('#salary_frequency_monthy').hasClass('selected')) {
+        if ($('#salary_frequency_monthly').hasClass('selected')) {
 
-            var frequency = 'monthy'
+            var frequency = 'monthly'
             var payday = $('#pay_day_day_of_the_month').val()
 
         } else {

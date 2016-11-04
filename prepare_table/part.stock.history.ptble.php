@@ -16,7 +16,7 @@ $table = "`Inventory Spanshot Fact` ISF";
 if ($parameters['frequency'] == 'annually') {
     $group_by          = ' group by Year(`Date`) ';
     $sql_totals_fields = 'Year(`Date`)';
-} elseif ($parameters['frequency'] == 'monthy') {
+} elseif ($parameters['frequency'] == 'monthly') {
     $group_by          = '  group by DATE_FORMAT(`Date`,"%Y-%m") ';
     $sql_totals_fields = 'DATE_FORMAT(`Date`,"%Y-%m")';
 } elseif ($parameters['frequency'] == 'weekly') {

@@ -231,7 +231,7 @@ function timeserie_records($_data, $db, $user, $account) {
 
     if ($_data['parameters']['frequency'] == 'annually') {
         $rtext_label = 'year';
-    } elseif ($_data['parameters']['frequency'] == 'monthy') {
+    } elseif ($_data['parameters']['frequency'] == 'monthly') {
         $rtext_label = 'month';
     } elseif ($_data['parameters']['frequency'] == 'weekly') {
         $rtext_label = 'week';
@@ -260,7 +260,7 @@ function timeserie_records($_data, $db, $user, $account) {
                     $date = strftime(
                         "%Y", strtotime($data['Timeseries Record Date'].' +0:00')
                     );
-                } elseif ($_data['parameters']['frequency'] == 'monthy') {
+                } elseif ($_data['parameters']['frequency'] == 'monthly') {
                     $date = strftime(
                         "%b %Y", strtotime($data['Timeseries Record Date'].' +0:00')
                     );

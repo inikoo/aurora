@@ -452,7 +452,7 @@ class Staff extends DB_Table {
                 if ($salary_data['data']['type'] == 'prorata_hour') {
 
 
-                    if ($salary_data['data']['frequency'] == 'monthy') {
+                    if ($salary_data['data']['frequency'] == 'monthly') {
 
                         if (isset($salary_data['data']['amount'])) {
                             $average_year_amount
@@ -511,7 +511,7 @@ class Staff extends DB_Table {
                 } elseif ($salary_data['data']['type'] == 'fixed_month') {
 
 
-                    if ($salary_data['data']['frequency'] == 'monthy') {
+                    if ($salary_data['data']['frequency'] == 'monthly') {
 
                         if ($this->data['Staff Working Hours Per Week'] == 0) {
                             return sprintf(
@@ -574,7 +574,7 @@ class Staff extends DB_Table {
                 //print $salary;exit;
                 return $salary;
 
-                //{"metadata":{},"data":{"frequency":"monthy","payday":"23","type":"prorata_hour","amount":"2323"}}
+                //{"metadata":{},"data":{"frequency":"monthly","payday":"23","type":"prorata_hour","amount":"2323"}}
                 break;
             case('Working Hours'):
                 include_once 'utils/natural_language.php';

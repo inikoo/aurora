@@ -1,7 +1,7 @@
 <?php
 /*
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Created: 27 September 2015 20:13:55 GMT+7, Bangkok Thailand
  Copyright (c) 2015, Inikoo
 
@@ -85,8 +85,7 @@ switch ($tipo) {
         break;
     case 'surplus_parts':
         parts_by_stock_status(
-            'Surplus', get_table_parameters(), $db, $user, $account
-        );
+            'Surplus', get_table_parameters(), $db, $user, $account);
         break;
     case 'todo_parts':
         parts_by_stock_status(
@@ -102,7 +101,7 @@ switch ($tipo) {
     default:
         $response = array(
             'state' => 405,
-            'resp'  => 'Tipo not found '.$tipo
+            'resp'  => 'tipo not found '.$tipo
         );
         echo json_encode($response);
         exit;
@@ -150,7 +149,7 @@ function suppliers($_data, $db, $user, $account) {
 
     $sql
            = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
+    $table_data = array();
 
 
     if ($result = $db->query($sql)) {
@@ -188,7 +187,7 @@ function suppliers($_data, $db, $user, $account) {
                 '<i key="%d" class="fa fa-fw fa-link button" aria-hidden="true" onClick="edit_category_subject(this)" ></i>', $data['Supplier Key']
             );
 
-            $adata[] = array(
+            $table_data[] = array(
                 'id'         => (integer)$data['Supplier Key'],
                 'operations' => $operations,
                 'associated' => $associated,
@@ -259,12 +258,8 @@ function suppliers($_data, $db, $user, $account) {
                 'active_supplier_parts' => number(
                     $data['Supplier Number Active Parts']
                 ),
-                'surplus'               => sprintf(
-                    '<span class="%s" title="%s">%s</span>', (ratio(
-                    $data['Supplier Number Surplus Parts'], $data['Supplier Number Parts']
-                ) > .75
-                    ? 'error'
-                    : (ratio(
+                'surplus'               => sprintf('<span class="%s" title="%s">%s</span>',
+                    (ratio($data['Supplier Number Surplus Parts'], $data['Supplier Number Parts']) > .75 ? 'error' : (ratio(
                         $data['Supplier Number Surplus Parts'], $data['Supplier Number Parts']
                     ) > .5 ? 'warning' : '')), percentage(
                         $data['Supplier Number Surplus Parts'], $data['Supplier Number Parts']
@@ -306,10 +301,10 @@ function suppliers($_data, $db, $user, $account) {
                 ),
 
 
-                'sales'    => '<span class="realce">'.money(
+                'sales'    => '<span class="highlight">'.money(
                         $data['sales'], $account->get('Currency')
                     ).'</span>',
-                'sales_1y' => '<span class="realce" title="'.money(
+                'sales_1y' => '<span class="highlight" title="'.money(
                         $data['sales_1y'], $account->get('Currency')
                     ).'">'.delta($data['sales'], $data['sales_1y']).'</span>',
 
@@ -414,7 +409,7 @@ function suppliers($_data, $db, $user, $account) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -434,14 +429,14 @@ function suppliers_edit($_data, $db, $user, $account) {
 
     $sql
            = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
+    $table_data = array();
 
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
 
 
-            $adata[] = array(
+            $table_data[] = array(
                 'id'   => (integer)$data['Supplier Key'],
                 'link' => $data['Supplier Code'],
 
@@ -475,7 +470,7 @@ function suppliers_edit($_data, $db, $user, $account) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -504,14 +499,14 @@ function agents($_data, $db, $user, $account) {
 
     $sql
            = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
+    $table_data = array();
 
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
 
 
-            $adata[] = array(
+            $table_data[] = array(
                 'id'             => (integer)$data['Agent Key'],
                 'code'           => $data['Agent Code'],
                 'name'           => $data['Agent Name'],
@@ -572,10 +567,10 @@ function agents($_data, $db, $user, $account) {
                 'contact'   => $data['Agent Main Contact Name'],
                 'company'   => $data['Agent Company Name'],
 
-                'sales'    => '<span class="realce">'.money(
+                'sales'    => '<span class="highlight">'.money(
                         $data['sales'], $account->get('Currency')
                     ).'</span>',
-                'sales_1y' => '<span class="realce" title="'.money(
+                'sales_1y' => '<span class="highlight" title="'.money(
                         $data['sales_1y'], $account->get('Currency')
                     ).'">'.delta($data['sales'], $data['sales_1y']).'</span>',
 
@@ -666,7 +661,7 @@ function agents($_data, $db, $user, $account) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -685,7 +680,7 @@ function categories($_data, $db, $user) {
 
     $sql
            = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
+    $table_data = array();
 
     if ($result = $db->query($sql)) {
 
@@ -708,7 +703,7 @@ function categories($_data, $db, $user) {
             $level = $data['Category Branch Type'];
 
 
-            $adata[] = array(
+            $table_data[] = array(
                 'id'                  => (integer)$data['Category Key'],
                 'store_key'           => (integer)$data['Category Store Key'],
                 'code'                => $data['Category Code'],
@@ -734,7 +729,7 @@ function categories($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -766,7 +761,7 @@ function orders($_data, $db, $user) {
 
     $sql
            = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
+    $table_data = array();
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
@@ -796,7 +791,7 @@ function orders($_data, $db, $user) {
                     break;
             }
 
-            $adata[] = array(
+            $table_data[] = array(
                 'id'          => (integer)$data['Purchase Order Key'],
                 'parent_key'  => (integer)$data['Purchase Order Parent Key'],
                 'parent_type' => strtolower($data['Purchase Order Parent']),
@@ -833,7 +828,7 @@ function orders($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -867,7 +862,7 @@ function agent_client_orders($_data, $db, $user) {
 
     $sql
            = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
+    $table_data = array();
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
@@ -897,7 +892,7 @@ function agent_client_orders($_data, $db, $user) {
                     break;
             }
 
-            $adata[] = array(
+            $table_data[] = array(
                 'id'          => (integer)$data['Purchase Order Key'],
                 'parent_key'  => (integer)$data['Purchase Order Parent Key'],
                 'parent_type' => strtolower($data['Purchase Order Parent']),
@@ -934,7 +929,7 @@ function agent_client_orders($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -954,7 +949,7 @@ function deliveries($_data, $db, $user) {
 
     $sql
            = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
+    $table_data = array();
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
@@ -984,7 +979,7 @@ function deliveries($_data, $db, $user) {
                     break;
             }
 
-            $adata[] = array(
+            $table_data[] = array(
                 'id'          => (integer)$data['Supplier Delivery Key'],
                 'parent_key'  => (integer)$data['Supplier Delivery Parent Key'],
                 'public_id'   => $data['Supplier Delivery Public ID'],
@@ -1017,7 +1012,7 @@ function deliveries($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -1039,8 +1034,8 @@ function order_items($_data, $db, $user, $account) {
 
     include_once 'prepare_table/init.php';
 
-    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
+    $sql      = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $table_data    = array();
     $exchange = -1;
 
     if ($result = $db->query($sql)) {
@@ -1149,14 +1144,10 @@ function order_items($_data, $db, $user, $account) {
             }
 
 
-
             if ($purchase_order->get('State Index') < 30) {
 
 
                 $available_forecast = '';
-
-
-
 
 
                 if ($data['Part On Demand'] == 'Yes') {
@@ -1249,7 +1240,7 @@ function order_items($_data, $db, $user, $account) {
 			';
 
             }
-            $adata[] = array(
+            $table_data[] = array(
 
                 'id'                => (integer)$data['Purchase Order Transaction Fact Key'],
                 'item_index'        => $data['Purchase Order Item Index'],
@@ -1291,11 +1282,10 @@ function order_items($_data, $db, $user, $account) {
     }
 
 
-
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -1319,7 +1309,7 @@ function delivery_items($_data, $db, $user) {
 
     $sql
            = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
+    $table_data = array();
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
@@ -1354,7 +1344,7 @@ function delivery_items($_data, $db, $user) {
             );
 
 
-            $adata[] = array(
+            $table_data[] = array(
 
                 'id'                => (integer)$data['Purchase Order Transaction Fact Key'],
                 'supplier_part_key' => (integer)$data['Supplier Part Key'],
@@ -1389,7 +1379,7 @@ function delivery_items($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -1413,11 +1403,10 @@ function delivery_checking_items($_data, $db, $user) {
 
     $sql
            = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
+    $table_data = array();
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
-
 
             $quantity = number($data['Supplier Delivery Quantity']);
 
@@ -1481,13 +1470,20 @@ function delivery_checking_items($_data, $db, $user) {
                 $quantity + 0
             );
 
+            if ($data['Supplier Delivery Checked Quantity'] == '') {
+                $sko_checked_quantity = '';
+            } else {
+                $sko_checked_quantity = ($data['Supplier Delivery Checked Quantity'] * $data['Supplier Part Packages Per Carton']) + 0;
+            }
 
-            $sko_checked_quantity      = $data['Supplier Delivery Checked Quantity'] * $data['Supplier Part Packages Per Carton'];
+
             $edit_sko_checked_quantity = sprintf(
-                '<span data-settings=\'{"field": "Supplier Delivery Checked Quantity", "transaction_key":%d,"item_key":%d, "item_historic_key":%d ,"on":1 }\' class="checked_quantity"  ><input class="checked_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button %s" aria-hidden="true"></span>',
+                '<span data-settings=\'{"field": "Supplier Delivery Checked Quantity", "transaction_key":%d,"item_key":%d, "item_historic_key":%d ,"on":1 }\' class="checked_quantity"  >
+                    <input class="checked_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button %s" aria-hidden="true">
+                </span>',
                 $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'],
 
-                $sko_checked_quantity + 0, $sko_checked_quantity + 0, ''
+                $sko_checked_quantity, $sko_checked_quantity, ''
             );
 
 
@@ -1538,7 +1534,7 @@ function delivery_checking_items($_data, $db, $user) {
 			';
 
 
-            $adata[] = array(
+            $table_data[] = array(
 
                 'id'                => (integer)$data['Purchase Order Transaction Fact Key'],
                 'supplier_part_key' => (integer)$data['Supplier Part Key'],
@@ -1585,7 +1581,7 @@ function delivery_checking_items($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -1608,7 +1604,7 @@ function order_supplier_parts($_data, $db, $user) {
 
     $sql
            = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
+    $table_data = array();
 
     print $sql;
 
@@ -1674,7 +1670,7 @@ function order_supplier_parts($_data, $db, $user) {
                 .'</span> '.$data['Part Unit Description'];
 
 
-            $adata[] = array(
+            $table_data[] = array(
                 'id'               => (integer)$data['Supplier Part Key'],
                 'supplier_key'     => (integer)$data['Supplier Part Supplier Key'],
                 'supplier_code'    => $data['Supplier Code'],
@@ -1692,8 +1688,8 @@ function order_supplier_parts($_data, $db, $user) {
                     $data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']
                 ),
                 'packing'     => '<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package']
-                    .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discret padding_right_10 padding_left_10"></i><span>['
-                    .$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discret">'.($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
+                    .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['
+                    .$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discreet">'.($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
                 'stock'       => number(floor($data['Part Current Stock']))." $stock_status"
             );
 
@@ -1709,7 +1705,7 @@ function order_supplier_parts($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -1730,9 +1726,9 @@ function category_all_suppliers($_data, $db, $user, $account) {
 
     $sql
            = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
+    $table_data = array();
 
-    $adata = array();
+    $table_data = array();
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
@@ -1748,7 +1744,7 @@ function category_all_suppliers($_data, $db, $user, $account) {
             }
 
 
-            $adata[] = array(
+            $table_data[] = array(
                 'id'             => (integer)$data['Supplier Key'],
                 'operations'     => $associated,
                 'code'           => $data['Supplier Code'],
@@ -1807,10 +1803,10 @@ function category_all_suppliers($_data, $db, $user, $account) {
                 'telephone'  => $data['Supplier Preferred Contact Number Formatted Number'],
                 'contact'    => $data['Supplier Main Contact Name'],
                 'company'    => $data['Supplier Company Name'],
-                'revenue'    => '<span class="realce">'.money(
+                'revenue'    => '<span class="highlight">'.money(
                         $data['revenue'], $account->get('Currency')
                     ).'</span>',
-                'revenue_1y' => '<span class="realce" title="'.money(
+                'revenue_1y' => '<span class="highlight" title="'.money(
                         $data['revenue_1y'], $account->get('Currency')
                     ).'">'.delta($data['revenue'], $data['revenue_1y']).'</span>',
 
@@ -1825,7 +1821,7 @@ function category_all_suppliers($_data, $db, $user, $account) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -1853,7 +1849,7 @@ function order_supplier_all_parts($_data, $db, $user) {
         = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
-    $adata = array();
+    $table_data = array();
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
@@ -2051,7 +2047,7 @@ function order_supplier_all_parts($_data, $db, $user) {
 			';
 
 
-            $adata[] = array(
+            $table_data[] = array(
                 'id'               => (integer)$data['Supplier Part Key'],
                 'supplier_key'     => (integer)$data['Supplier Part Supplier Key'],
                 'supplier_code'    => $data['Supplier Code'],
@@ -2076,8 +2072,8 @@ function order_supplier_all_parts($_data, $db, $user) {
                     $data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']
                 ),
                 'packing'     => '<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package']
-                    .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discret padding_right_10 padding_left_10"></i><span>['
-                    .$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discret">'.($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
+                    .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['
+                    .$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discreet">'.($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
                 'stock'       => number(floor($data['Part Current Stock']))." $stock_status",
                 'quantity'    => sprintf(
                     '<span    data-settings=\'{"field": "Purchase Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button" aria-hidden="true"></i></span>',
@@ -2101,7 +2097,7 @@ function order_supplier_all_parts($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -2122,14 +2118,14 @@ function deleted_order_items($_data, $db, $user) {
         'deleted', $_data['parameters']['parent_key']
     );
 
-    $adata = array();
+    $table_data = array();
     $total = 0;
 
     foreach ($purchase_order->items as $data) {
 
         $total++;
 
-        $adata[] = array(
+        $table_data[] = array(
             'id'                         => $total,
             'supplier_part_historic_key' => $data[0],
             'parent_type'                => strtolower(
@@ -2157,7 +2153,7 @@ function deleted_order_items($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -2183,7 +2179,7 @@ function sales_history($_data, $db, $user, $account) {
         $rtext_label       = 'year';
         $_group_by         = ' group by Year(`Date`) ';
         $sql_totals_fields = 'Year(`Date`)';
-    } elseif ($_data['parameters']['frequency'] == 'monthy') {
+    } elseif ($_data['parameters']['frequency'] == 'monthly') {
         $rtext_label       = 'month';
         $_group_by         = '  group by DATE_FORMAT(`Date`,"%Y-%m") ';
         $sql_totals_fields = 'DATE_FORMAT(`Date`,"%Y-%m")';
@@ -2244,7 +2240,7 @@ function sales_history($_data, $db, $user, $account) {
     //print $sql;
 
 
-    $adata = array();
+    $table_data = array();
 
     $from_date = '';
     $to_date   = '';
@@ -2270,7 +2266,7 @@ function sales_history($_data, $db, $user, $account) {
 
                 $date  = sprintf("Q%s %s", $curQuarter, $year);
                 $_date = $date;
-            } elseif ($_data['parameters']['frequency'] == 'monthy') {
+            } elseif ($_data['parameters']['frequency'] == 'monthly') {
                 $date  = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
                 $_date = $date;
             } elseif ($_data['parameters']['frequency'] == 'weekly') {
@@ -2285,7 +2281,7 @@ function sales_history($_data, $db, $user, $account) {
                 $_date = $date;
             }
 
-            $adata[$_date] = array(
+            $table_data[$_date] = array(
                 'sales'     => '<span class="very_discreet">'.money(
                         0, $currency
                     ).'</span>',
@@ -2314,7 +2310,7 @@ function sales_history($_data, $db, $user, $account) {
                 $to_date   = gmdate(
                     "Y-12-31 23:59:59", strtotime($to_date.' +0:00')
                 );
-            } elseif ($_data['parameters']['frequency'] == 'monthy') {
+            } elseif ($_data['parameters']['frequency'] == 'monthly') {
                 $from_date = gmdate(
                     "Y-m-01 00:00:00", strtotime($from_date.' +0:00')
                 );
@@ -2337,7 +2333,7 @@ function sales_history($_data, $db, $user, $account) {
             if ($_data['parameters']['frequency'] == 'annually') {
                 $from_date = gmdate("Y-01-01", strtotime($from_date.' +0:00'));
                 $to_date   = gmdate("Y-12-31", strtotime($to_date.' +0:00'));
-            } elseif ($_data['parameters']['frequency'] == 'monthy') {
+            } elseif ($_data['parameters']['frequency'] == 'monthly') {
                 $from_date = gmdate("Y-m-01", strtotime($from_date.' +0:00'));
                 $to_date   = gmdate(
                     "Y-m-01", strtotime($to_date.' + 1 month +0:00')
@@ -2374,7 +2370,7 @@ function sales_history($_data, $db, $user, $account) {
             if ($_data['parameters']['frequency'] == 'annually') {
                 $date  = strftime("%Y", strtotime($data['Date'].' +0:00'));
                 $_date = $date;
-            } elseif ($_data['parameters']['frequency'] == 'monthy') {
+            } elseif ($_data['parameters']['frequency'] == 'monthly') {
                 $date  = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
                 $_date = $date;
             } elseif ($_data['parameters']['frequency'] == 'weekly') {
@@ -2389,10 +2385,10 @@ function sales_history($_data, $db, $user, $account) {
                 $_date = $date;
             }
 
-            if (array_key_exists($_date, $adata)) {
+            if (array_key_exists($_date, $table_data)) {
 
 
-                $adata[$_date] = array(
+                $table_data[$_date] = array(
                     'sales'      => money($data['sales'], $currency),
                     'dispatched' => number($data['dispatched']),
                     'deliveries' => number($data['deliveries']),
@@ -2413,7 +2409,7 @@ function sales_history($_data, $db, $user, $account) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => array_values($adata),
+            'data'          => array_values($table_data),
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -2435,14 +2431,14 @@ function part_locations_with_errors($_data, $db, $user) {
 
     $sql
            = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
+    $table_data = array();
 
     //print $sql;
 
 
     foreach ($db->query($sql) as $data) {
 
-        $adata[] = array(
+        $table_data[] = array(
             // 'id'=>(integer) $data['Part SKU'],
             'reference'        => $data['Part Reference'],
             'unit_description' => $data['Part Unit Description'],
@@ -2467,7 +2463,7 @@ function part_locations_with_errors($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -2493,7 +2489,7 @@ function parts_by_stock_status($stock_status, $_data, $db, $user) {
 
     //print $sql_totals;
 
-    $adata = array();
+    $table_data = array();
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
@@ -2624,7 +2620,7 @@ function parts_by_stock_status($stock_status, $_data, $db, $user) {
             );
 
 
-            $adata[] = array(
+            $table_data[] = array(
                 'id'             => (integer)$data['Supplier Part Key'],
                 'supplier_key'   => (integer)$data['Supplier Part Supplier Key'],
                 'part_key'       => (integer)$data['Supplier Part Part SKU'],
@@ -2640,8 +2636,8 @@ function parts_by_stock_status($stock_status, $_data, $db, $user) {
                     $data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']
                 ),
                 'packing'             => '<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package']
-                    .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discret padding_right_10 padding_left_10"></i><span>['
-                    .$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discret">'.($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
+                    .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['
+                    .$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discreet">'.($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
                 'stock'               => number(
                         floor($data['Part Current Stock'])
                     )." $stock_status",
@@ -2663,7 +2659,7 @@ function parts_by_stock_status($stock_status, $_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -2689,7 +2685,7 @@ function todo_paid_parts($_data, $db, $user) {
 
     //print $sql;
 
-    $adata = array();
+    $table_data = array();
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
@@ -2742,7 +2738,7 @@ function todo_paid_parts($_data, $db, $user) {
             }
 
 
-            $adata[] = array(
+            $table_data[] = array(
                 'id'           => (integer)$data['Supplier Part Key'],
                 'supplier_key' => (integer)$data['Supplier Part Supplier Key'],
 
@@ -2754,8 +2750,8 @@ function todo_paid_parts($_data, $db, $user) {
                     $data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']
                 ),
                 'packing'     => '<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package']
-                    .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discret padding_right_10 padding_left_10"></i><span>['
-                    .$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discret">'.($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
+                    .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['
+                    .$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discreet">'.($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
                 'stock'       => number(floor($data['Part Current Stock']))." $stock_status",
                 //'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['date'].' +0:00')),
                 'required'    => number($data['required'])
@@ -2774,7 +2770,7 @@ function todo_paid_parts($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -2797,7 +2793,7 @@ function supplier_categories($_data, $db, $user) {
         = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
-    $adata = array();
+    $table_data = array();
 
 
     foreach ($db->query($sql) as $data) {
@@ -2819,7 +2815,7 @@ function supplier_categories($_data, $db, $user) {
         $level = $data['Category Branch Type'];
 
 
-        $adata[] = array(
+        $table_data[] = array(
             'id'                  => (integer)$data['Category Key'],
             // 'position'=>$data['Category Position'],
             'store_key'           => (integer)$data['Category Store Key'],
@@ -2884,10 +2880,10 @@ function supplier_categories($_data, $db, $user) {
             ),
 
 
-            'sales'    => '<span class="realce">'.money(
+            'sales'    => '<span class="highlight">'.money(
                     $data['sales'], $account->get('Currency')
                 ).'</span>',
-            'sales_1y' => '<span class="realce" title="'.money(
+            'sales_1y' => '<span class="highlight" title="'.money(
                     $data['sales_1y'], $account->get('Currency')
                 ).'">'.delta($data['sales'], $data['sales_1y']).'</span>',
 
@@ -2971,7 +2967,7 @@ function supplier_categories($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
