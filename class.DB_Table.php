@@ -1,6 +1,6 @@
 <?php
 
-abstract class DB_Table {
+abstract class DB_Table extends stdClass {
     public $errors_while_updating = array();
     public $updated_fields = array();
     public $data = array();

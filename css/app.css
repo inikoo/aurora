@@ -252,7 +252,7 @@ input:-ms-input-placeholder {
 }
 
 #notifications .top_buttons .square_button.button {
-    opacity: .9;
+    opacity: 0.9;
 }
 
 #notifications .top_buttons .square_button.selected {
@@ -261,7 +261,7 @@ input:-ms-input-placeholder {
 }
 
 #notifications .top_buttons .square_button:hover {
-    opacity: .95;
+    opacity: 0.95;
 }
 
 #notifications #help_button {
@@ -683,10 +683,10 @@ input:-ms-input-placeholder {
     margin-right: auto;
     /*We will use ::before and ::after to draw the connectors*/
     /*We need to remove left-right connectors from elements without
-any siblings*/
+  any siblings*/
     /*Remove space from the top of single children*/
     /*Remove left connector from first child and
-right connector from last child*/
+  right connector from last child*/
     /*Adding back the vertical connector to the last nodes*/
     /*Time to add downward connectors from parents*/
     /*Time for some hover effects*/
@@ -908,7 +908,7 @@ right connector from last child*/
 
 .strikethrough {
     text-decoration: line-through;
-    opacity: .7;
+    opacity: 0.7;
 }
 
 .invalid_value {
@@ -1420,7 +1420,7 @@ right connector from last child*/
     border: 1px solid #ccc;
     padding: 5px 10px;
     cursor: pointer;
-    opacity: .4;
+    opacity: 0.4;
 }
 
 .salary .inline_options span.selected {
@@ -3010,7 +3010,7 @@ input.inputfile {
 }
 
 .box .box__input:hover label {
-    opacity: .5;
+    opacity: 0.5;
 }
 
 .box.has-advanced-upload {

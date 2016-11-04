@@ -210,8 +210,8 @@ function suppliers($_data, $db, $user, $account) {
                     : (ratio(
                         $data['Supplier Number Surplus Parts'], $data['Supplier Number Parts']
                     ) > .5 ? 'warning' : '')), percentage(
-                    $data['Supplier Number Surplus Parts'], $data['Supplier Number Parts']
-                ), number($data['Supplier Number Surplus Parts'])
+                        $data['Supplier Number Surplus Parts'], $data['Supplier Number Parts']
+                    ), number($data['Supplier Number Surplus Parts'])
                 ),
                 'optimal'               => sprintf(
                     '<span  title="%s">%s</span>', percentage(
@@ -226,8 +226,8 @@ function suppliers($_data, $db, $user, $account) {
                     : (ratio(
                         $data['Supplier Number Low Parts'], $data['Supplier Number Parts']
                     ) > .25 ? 'warning' : '')), percentage(
-                    $data['Supplier Number Low Parts'], $data['Supplier Number Parts']
-                ), number($data['Supplier Number Low Parts'])
+                        $data['Supplier Number Low Parts'], $data['Supplier Number Parts']
+                    ), number($data['Supplier Number Low Parts'])
                 ),
                 'critical'              => sprintf(
                     '<span class="%s" title="%s">%s</span>', ($data['Supplier Number Critical Parts'] == 0
@@ -235,8 +235,8 @@ function suppliers($_data, $db, $user, $account) {
                     : (ratio(
                         $data['Supplier Number Critical Parts'], $data['Supplier Number Parts']
                     ) > .25 ? 'error' : 'warning')), percentage(
-                    $data['Supplier Number Critical Parts'], $data['Supplier Number Parts']
-                ), number($data['Supplier Number Critical Parts'])
+                        $data['Supplier Number Critical Parts'], $data['Supplier Number Parts']
+                    ), number($data['Supplier Number Critical Parts'])
                 ),
                 'out_of_stock'          => sprintf(
                     '<span class="%s" title="%s">%s</span>', ($data['Supplier Number Out Of Stock Parts'] == 0
@@ -244,8 +244,8 @@ function suppliers($_data, $db, $user, $account) {
                     : (ratio(
                         $data['Supplier Number Out Of Stock Parts'], $data['Supplier Number Parts']
                     ) > .10 ? 'error' : 'warning')), percentage(
-                    $data['Supplier Number Out Of Stock Parts'], $data['Supplier Number Parts']
-                ), number($data['Supplier Number Out Of Stock Parts'])
+                        $data['Supplier Number Out Of Stock Parts'], $data['Supplier Number Parts']
+                    ), number($data['Supplier Number Out Of Stock Parts'])
                 ),
 
 
@@ -267,8 +267,8 @@ function suppliers($_data, $db, $user, $account) {
                     : (ratio(
                         $data['Supplier Number Surplus Parts'], $data['Supplier Number Parts']
                     ) > .5 ? 'warning' : '')), percentage(
-                    $data['Supplier Number Surplus Parts'], $data['Supplier Number Parts']
-                ), number($data['Supplier Number Surplus Parts'])
+                        $data['Supplier Number Surplus Parts'], $data['Supplier Number Parts']
+                    ), number($data['Supplier Number Surplus Parts'])
                 ),
                 'optimal'               => sprintf(
                     '<span  title="%s">%s</span>', percentage(
@@ -283,8 +283,8 @@ function suppliers($_data, $db, $user, $account) {
                     : (ratio(
                         $data['Supplier Number Low Parts'], $data['Supplier Number Parts']
                     ) > .25 ? 'warning' : '')), percentage(
-                    $data['Supplier Number Low Parts'], $data['Supplier Number Parts']
-                ), number($data['Supplier Number Low Parts'])
+                        $data['Supplier Number Low Parts'], $data['Supplier Number Parts']
+                    ), number($data['Supplier Number Low Parts'])
                 ),
                 'critical'              => sprintf(
                     '<span class="%s" title="%s">%s</span>', ($data['Supplier Number Critical Parts'] == 0
@@ -292,8 +292,8 @@ function suppliers($_data, $db, $user, $account) {
                     : (ratio(
                         $data['Supplier Number Critical Parts'], $data['Supplier Number Parts']
                     ) > .25 ? 'error' : 'warning')), percentage(
-                    $data['Supplier Number Critical Parts'], $data['Supplier Number Parts']
-                ), number($data['Supplier Number Critical Parts'])
+                        $data['Supplier Number Critical Parts'], $data['Supplier Number Parts']
+                    ), number($data['Supplier Number Critical Parts'])
                 ),
                 'out_of_stock'          => sprintf(
                     '<span class="%s" title="%s">%s</span>', ($data['Supplier Number Out Of Stock Parts'] == 0
@@ -301,8 +301,8 @@ function suppliers($_data, $db, $user, $account) {
                     : (ratio(
                         $data['Supplier Number Out Of Stock Parts'], $data['Supplier Number Parts']
                     ) > .10 ? 'error' : 'warning')), percentage(
-                    $data['Supplier Number Out Of Stock Parts'], $data['Supplier Number Parts']
-                ), number($data['Supplier Number Out Of Stock Parts'])
+                        $data['Supplier Number Out Of Stock Parts'], $data['Supplier Number Parts']
+                    ), number($data['Supplier Number Out Of Stock Parts'])
                 ),
 
 
@@ -527,8 +527,8 @@ function agents($_data, $db, $user, $account) {
                     : (ratio(
                         $data['Agent Number Surplus Parts'], $data['Agent Number Parts']
                     ) > .5 ? 'warning' : '')), percentage(
-                    $data['Agent Number Surplus Parts'], $data['Agent Number Parts']
-                ), number($data['Agent Number Surplus Parts'])
+                        $data['Agent Number Surplus Parts'], $data['Agent Number Parts']
+                    ), number($data['Agent Number Surplus Parts'])
                 ),
                 'optimal'      => sprintf(
                     '<span  title="%s">%s</span>', percentage(
@@ -543,8 +543,8 @@ function agents($_data, $db, $user, $account) {
                     : (ratio(
                         $data['Agent Number Low Parts'], $data['Agent Number Parts']
                     ) > .25 ? 'warning' : '')), percentage(
-                    $data['Agent Number Low Parts'], $data['Agent Number Parts']
-                ), number($data['Agent Number Low Parts'])
+                        $data['Agent Number Low Parts'], $data['Agent Number Parts']
+                    ), number($data['Agent Number Low Parts'])
                 ),
                 'critical'     => sprintf(
                     '<span class="%s" title="%s">%s</span>', ($data['Agent Number Critical Parts'] == 0
@@ -552,8 +552,8 @@ function agents($_data, $db, $user, $account) {
                     : (ratio(
                         $data['Agent Number Critical Parts'], $data['Agent Number Parts']
                     ) > .25 ? 'error' : 'warning')), percentage(
-                    $data['Agent Number Critical Parts'], $data['Agent Number Parts']
-                ), number($data['Agent Number Critical Parts'])
+                        $data['Agent Number Critical Parts'], $data['Agent Number Parts']
+                    ), number($data['Agent Number Critical Parts'])
                 ),
                 'out_of_stock' => sprintf(
                     '<span class="%s" title="%s">%s</span>', ($data['Agent Number Out Of Stock Parts'] == 0
@@ -561,8 +561,8 @@ function agents($_data, $db, $user, $account) {
                     : (ratio(
                         $data['Agent Number Out Of Stock Parts'], $data['Agent Number Parts']
                     ) > .10 ? 'error' : 'warning')), percentage(
-                    $data['Agent Number Out Of Stock Parts'], $data['Agent Number Parts']
-                ), number($data['Agent Number Out Of Stock Parts'])
+                        $data['Agent Number Out Of Stock Parts'], $data['Agent Number Parts']
+                    ), number($data['Agent Number Out Of Stock Parts'])
                 ),
 
 
@@ -810,8 +810,8 @@ function orders($_data, $db, $user) {
                 ),
                 'last_date' => strftime(
                     "%a %e %b %Y %H:%M %Z", strtotime(
-                        $data['Purchase Order Last Updated Date'].' +0:00'
-                    )
+                                              $data['Purchase Order Last Updated Date'].' +0:00'
+                                          )
                 ),
                 'state'     => $state,
 
@@ -911,8 +911,8 @@ function agent_client_orders($_data, $db, $user) {
                 ),
                 'last_date' => strftime(
                     "%a %e %b %Y %H:%M %Z", strtotime(
-                        $data['Purchase Order Last Updated Date'].' +0:00'
-                    )
+                                              $data['Purchase Order Last Updated Date'].' +0:00'
+                                          )
                 ),
                 'state'     => $state,
 
@@ -993,8 +993,8 @@ function deliveries($_data, $db, $user) {
                 ),
                 'last_date'   => strftime(
                     "%a %e %b %Y %H:%M %Z", strtotime(
-                        $data['Supplier Delivery Last Updated Date'].' +0:00'
-                    )
+                                              $data['Supplier Delivery Last Updated Date'].' +0:00'
+                                          )
                 ),
                 'parent_name' => $data['Supplier Delivery Parent Name'],
                 'state'       => $state,
@@ -1039,10 +1039,8 @@ function order_items($_data, $db, $user, $account) {
 
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
-
     $exchange = -1;
 
     if ($result = $db->query($sql)) {
@@ -1150,42 +1148,31 @@ function order_items($_data, $db, $user, $account) {
                 );
             }
 
+
+
             if ($purchase_order->get('State Index') < 30) {
 
 
                 $available_forecast = '';
 
-                if ($data['Part Stock Status'] == 'Out_Of_Stock' or $data['Part Stock Status'] == 'Error') {
-                    return '';
-                }
-
-                if (in_array(
-                    $data['Part Products Web Status'], array(
-                        'No Products',
-                        'Offline',
-                        'Out of Stock'
-                    )
-                )) {
-                    return '';
-                }
 
 
-                include_once 'utils/natural_language.php';
+
 
                 if ($data['Part On Demand'] == 'Yes') {
 
                     $available_forecast = '<span >'.sprintf(
                             _('%s in stock'), '<span  title="'.sprintf(
-                                "%s %s", number(
-                                $data['Part Days Available Forecast'], 1
-                            ), ngettext(
-                                    "day", "days", intval(
-                                        $data['Part Days Available Forecast']
-                                    )
-                                )
-                            ).'">'.seconds_to_until(
-                                $data['Part Days Available Forecast'] * 86400
-                            ).'</span>'
+                                                "%s %s", number(
+                                                $data['Part Days Available Forecast'], 1
+                                            ), ngettext(
+                                                    "day", "days", intval(
+                                                             $data['Part Days Available Forecast']
+                                                         )
+                                                )
+                                            ).'">'.seconds_to_until(
+                                                $data['Part Days Available Forecast'] * 86400
+                                            ).'</span>'
                         ).'</span>';
 
                     if ($data['Part Fresh'] == 'No') {
@@ -1197,16 +1184,16 @@ function order_items($_data, $db, $user, $account) {
                 } else {
                     $available_forecast = '<span >'.sprintf(
                             _('%s availability'), '<span  title="'.sprintf(
-                                "%s %s", number(
-                                $data['Part Days Available Forecast'], 1
-                            ), ngettext(
-                                    "day", "days", intval(
-                                        $data['Part Days Available Forecast']
-                                    )
-                                )
-                            ).'">'.seconds_to_until(
-                                $data['Part Days Available Forecast'] * 86400
-                            ).'</span>'
+                                                    "%s %s", number(
+                                                    $data['Part Days Available Forecast'], 1
+                                                ), ngettext(
+                                                        "day", "days", intval(
+                                                                 $data['Part Days Available Forecast']
+                                                             )
+                                                    )
+                                                ).'">'.seconds_to_until(
+                                                    $data['Part Days Available Forecast'] * 86400
+                                                ).'</span>'
                         ).'</span>';
 
 
@@ -1302,6 +1289,7 @@ function order_items($_data, $db, $user, $account) {
         print_r($error_info = $db->errorInfo());
         exit;
     }
+
 
 
     $response = array(
@@ -1578,8 +1566,8 @@ function delivery_checking_items($_data, $db, $user) {
                 'c_sko_u'                   => sprintf(
                     '<span data-metadata=\'{"qty":%d}\' onClick="copy_qty(this)" class="button"><span class="very_discreet">%s/</span> <span>%s</span> <span class="super_discreet">/%s</span></span>',
                     $data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Quantity'], number($data['Supplier Delivery Quantity']), number(
-                    $data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Quantity']
-                ), number(
+                        $data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Quantity']
+                    ), number(
                         $data['Supplier Part Packages Per Carton'] * $data['Part Units Per Package'] * $data['Supplier Delivery Quantity']
                     )
                 ),
@@ -1775,8 +1763,8 @@ function category_all_suppliers($_data, $db, $user, $account) {
                     : (ratio(
                         $data['Supplier Number Surplus Parts'], $data['Supplier Number Parts']
                     ) > .5 ? 'warning' : '')), percentage(
-                    $data['Supplier Number Surplus Parts'], $data['Supplier Number Parts']
-                ), number($data['Supplier Number Surplus Parts'])
+                        $data['Supplier Number Surplus Parts'], $data['Supplier Number Parts']
+                    ), number($data['Supplier Number Surplus Parts'])
                 ),
                 'optimal'      => sprintf(
                     '<span  title="%s">%s</span>', percentage(
@@ -1791,8 +1779,8 @@ function category_all_suppliers($_data, $db, $user, $account) {
                     : (ratio(
                         $data['Supplier Number Low Parts'], $data['Supplier Number Parts']
                     ) > .25 ? 'warning' : '')), percentage(
-                    $data['Supplier Number Low Parts'], $data['Supplier Number Parts']
-                ), number($data['Supplier Number Low Parts'])
+                        $data['Supplier Number Low Parts'], $data['Supplier Number Parts']
+                    ), number($data['Supplier Number Low Parts'])
                 ),
                 'critical'     => sprintf(
                     '<span class="%s" title="%s">%s</span>', ($data['Supplier Number Critical Parts'] == 0
@@ -1800,8 +1788,8 @@ function category_all_suppliers($_data, $db, $user, $account) {
                     : (ratio(
                         $data['Supplier Number Critical Parts'], $data['Supplier Number Parts']
                     ) > .25 ? 'error' : 'warning')), percentage(
-                    $data['Supplier Number Critical Parts'], $data['Supplier Number Parts']
-                ), number($data['Supplier Number Critical Parts'])
+                        $data['Supplier Number Critical Parts'], $data['Supplier Number Parts']
+                    ), number($data['Supplier Number Critical Parts'])
                 ),
                 'out_of_stock' => sprintf(
                     '<span class="%s" title="%s">%s</span>', ($data['Supplier Number Out Of Stock Parts'] == 0
@@ -1809,8 +1797,8 @@ function category_all_suppliers($_data, $db, $user, $account) {
                     : (ratio(
                         $data['Supplier Number Out Of Stock Parts'], $data['Supplier Number Parts']
                     ) > .10 ? 'error' : 'warning')), percentage(
-                    $data['Supplier Number Out Of Stock Parts'], $data['Supplier Number Parts']
-                ), number($data['Supplier Number Out Of Stock Parts'])
+                        $data['Supplier Number Out Of Stock Parts'], $data['Supplier Number Parts']
+                    ), number($data['Supplier Number Out Of Stock Parts'])
                 ),
 
 
@@ -1965,10 +1953,10 @@ function order_supplier_all_parts($_data, $db, $user) {
             } else {
                 if (in_array(
                     $data['Part Products Web Status'], array(
-                        'No Products',
-                        'Offline',
-                        'Out of Stock'
-                    )
+                                                         'No Products',
+                                                         'Offline',
+                                                         'Out of Stock'
+                                                     )
                 )) {
                     $available_forecast = '';
 
@@ -1976,16 +1964,16 @@ function order_supplier_all_parts($_data, $db, $user) {
 
                     $available_forecast = '<span >'.sprintf(
                             _('%s in stock'), '<span  title="'.sprintf(
-                                "%s %s", number(
-                                $data['Part Days Available Forecast'], 1
-                            ), ngettext(
-                                    "day", "days", intval(
-                                        $data['Part Days Available Forecast']
-                                    )
-                                )
-                            ).'">'.seconds_to_until(
-                                $data['Part Days Available Forecast'] * 86400
-                            ).'</span>'
+                                                "%s %s", number(
+                                                $data['Part Days Available Forecast'], 1
+                                            ), ngettext(
+                                                    "day", "days", intval(
+                                                             $data['Part Days Available Forecast']
+                                                         )
+                                                )
+                                            ).'">'.seconds_to_until(
+                                                $data['Part Days Available Forecast'] * 86400
+                                            ).'</span>'
                         ).'</span>';
 
                     if ($data['Part Fresh'] == 'No') {
@@ -1997,16 +1985,16 @@ function order_supplier_all_parts($_data, $db, $user) {
                 } else {
                     $available_forecast = '<span >'.sprintf(
                             _('%s availability'), '<span  title="'.sprintf(
-                                "%s %s", number(
-                                $data['Part Days Available Forecast'], 1
-                            ), ngettext(
-                                    "day", "days", intval(
-                                        $data['Part Days Available Forecast']
-                                    )
-                                )
-                            ).'">'.seconds_to_until(
-                                $data['Part Days Available Forecast'] * 86400
-                            ).'</span>'
+                                                    "%s %s", number(
+                                                    $data['Part Days Available Forecast'], 1
+                                                ), ngettext(
+                                                        "day", "days", intval(
+                                                                 $data['Part Days Available Forecast']
+                                                             )
+                                                    )
+                                                ).'">'.seconds_to_until(
+                                                    $data['Part Days Available Forecast'] * 86400
+                                                ).'</span>'
                         ).'</span>';
 
 
@@ -2857,8 +2845,8 @@ function supplier_categories($_data, $db, $user) {
                 : (ratio(
                     $data['Supplier Category Number Surplus Parts'], $data['Supplier Category Number Parts']
                 ) > .5 ? 'warning' : '')), percentage(
-                $data['Supplier Category Number Surplus Parts'], $data['Supplier Category Number Parts']
-            ), number($data['Supplier Category Number Surplus Parts'])
+                    $data['Supplier Category Number Surplus Parts'], $data['Supplier Category Number Parts']
+                ), number($data['Supplier Category Number Surplus Parts'])
             ),
             'optimal'               => sprintf(
                 '<span  title="%s">%s</span>', percentage(
@@ -2873,8 +2861,8 @@ function supplier_categories($_data, $db, $user) {
                 : (ratio(
                     $data['Supplier Category Number Low Parts'], $data['Supplier Category Number Parts']
                 ) > .25 ? 'warning' : '')), percentage(
-                $data['Supplier Category Number Low Parts'], $data['Supplier Category Number Parts']
-            ), number($data['Supplier Category Number Low Parts'])
+                    $data['Supplier Category Number Low Parts'], $data['Supplier Category Number Parts']
+                ), number($data['Supplier Category Number Low Parts'])
             ),
             'critical'              => sprintf(
                 '<span class="%s" title="%s">%s</span>', ($data['Supplier Category Number Critical Parts'] == 0
@@ -2882,8 +2870,8 @@ function supplier_categories($_data, $db, $user) {
                 : (ratio(
                     $data['Supplier Category Number Critical Parts'], $data['Supplier Category Number Parts']
                 ) > .25 ? 'error' : 'warning')), percentage(
-                $data['Supplier Category Number Critical Parts'], $data['Supplier Category Number Parts']
-            ), number($data['Supplier Category Number Critical Parts'])
+                    $data['Supplier Category Number Critical Parts'], $data['Supplier Category Number Parts']
+                ), number($data['Supplier Category Number Critical Parts'])
             ),
             'out_of_stock'          => sprintf(
                 '<span class="%s" title="%s">%s</span>', ($data['Supplier Category Number Out Of Stock Parts'] == 0
@@ -2891,8 +2879,8 @@ function supplier_categories($_data, $db, $user) {
                 : (ratio(
                     $data['Supplier Category Number Out Of Stock Parts'], $data['Supplier Category Number Parts']
                 ) > .10 ? 'error' : 'warning')), percentage(
-                $data['Supplier Category Number Out Of Stock Parts'], $data['Supplier Category Number Parts']
-            ), number($data['Supplier Category Number Out Of Stock Parts'])
+                    $data['Supplier Category Number Out Of Stock Parts'], $data['Supplier Category Number Parts']
+                ), number($data['Supplier Category Number Out Of Stock Parts'])
             ),
 
 
