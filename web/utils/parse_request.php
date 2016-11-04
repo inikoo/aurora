@@ -19,23 +19,15 @@ function parse_request($_data, $db, $user = '') {
     $view_path        = preg_split('/\//', $original_request);
 
 
-    print_r($view_path);
 
-
-    exit;
-
-    $path   = array();
-    $object = 'webpage';
-    $key    = 1;
     $code   = 'home';
 
 
-    $state = array(
-        'path'   => $path,
-        'object' => $object,
-        'key'    => $key,
+    $state = [
+        'code'    => $code,
+        'request' => $request
 
-    );
+    ];
 
 
     return $state;
