@@ -31,18 +31,6 @@ $db = new PDO("mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dn
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
-$default_DB_link = mysql_connect($dns_host, $dns_user, $dns_pwd);
-if (!$default_DB_link) {
-    print "Error can not connect with database server\n";
-}
-$db_selected = mysql_select_db($dns_db, $default_DB_link);
-if (!$db_selected) {
-    print "Error can not access the database\n";
-    exit;
-}
-mysql_set_charset('utf8');
-mysql_query("SET time_zone='+0:00'");
-
 
 setTimezone('UTC');
 

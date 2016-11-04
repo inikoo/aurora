@@ -69,53 +69,41 @@
     </style>
 </head>
 <body>
-<div class="demo-layout mdl-layout mdl-layout--fixed-header mdl-js-layout mdl-color--grey-100">
-    <header class="demo-header mdl-layout__header mdl-layout__header--scroll mdl-color--grey-100 mdl-color-text--grey-800">
+
+
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer
+            mdl-layout--fixed-header">
+    <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
-            <span class="mdl-layout-title">Aurora Systems</span>
             <div class="mdl-layout-spacer"></div>
-            <div class="hide mdl-textfield mdl-js-textfield mdl-textfield--expandable">
-                <label class="mdl-button mdl-js-button mdl-button--icon" for="search">
-                    <i class="material-icons">{t}search{/t}</i>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable
+                  mdl-textfield--floating-label mdl-textfield--align-right">
+                <label class="mdl-button mdl-js-button mdl-button--icon"
+                       for="fixed-header-drawer-exp">
+                    <i class="material-icons">search</i>
                 </label>
                 <div class="mdl-textfield__expandable-holder">
-                    <input class="mdl-textfield__input" type="text" id="search">
-                    <label class="mdl-textfield__label" for="search">{t}Enter your query{/t}&hellip;</label>
+                    <input class="mdl-textfield__input" type="text" name="sample"
+                           id="fixed-header-drawer-exp">
                 </div>
             </div>
         </div>
     </header>
-
-
-    <div id="article" class="demo-ribbon"></div>
-    <main id="article_main" class="demo-main mdl-layout__content">
-        <div class="demo-container mdl-grid">
-            <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
-            <div class="demo-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">
-                <div id="crumbs" class="demo-crumbs mdl-color-text--grey-500">
-
-                </div>
-
-                <div id="content">
-
-                </div>
-            </div>
-        </div>
-        <footer class="demo-footer mdl-mini-footer">
-            <div class="mdl-mini-footer--left-section">
-                <ul class="mdl-mini-footer--link-list">
-
-                </ul>
-            </div>
-        </footer>
-    </main>
-
-    <div id="custom_page">
-
+    <div class="mdl-layout__drawer">
+        <span class="mdl-layout-title">Title</span>
+        <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="">Link</a>
+            <a class="mdl-navigation__link" href="">Link</a>
+            <a class="mdl-navigation__link" href="">Link</a>
+            <a class="mdl-navigation__link" href="">Link</a>
+        </nav>
     </div>
+    <main class="mdl-layout__content">
+        <!-- Panel 1 -->
 
-
+    </main>
 </div>
+
 <input id="_request" type="hidden" val="{$_request}">
 <script src="js/libs/material.min.js"></script>
 <script src="js/libs/jquery-2.2.1.js"></script>

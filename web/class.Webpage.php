@@ -64,25 +64,27 @@ class Webpage extends DB_Table {
 
     function get_version() {
 
-        if ($this->get('Webpage Number Displayable Versions') == 0) {
-            return false;
-        }
-        if ($this->get('Webpage Number Displayable Versions') == 1) {
-            return new WebpageVersion($this->get('Webpage Version Key'));
+
+        $versions = $this->get_version_keys();
+
+
+        $number_of_versions=count($versions);
+        if ($number_of_versions== 1) {
+            reset($versions);
+            return  new WebpageVersion(key($versions));
+        }if ($number_of_versions > 0) {
+            // TODO !! return the version using with probabilities
+
+            reset($versions);
+
+            return  new WebpageVersion(key($versions));
         } else {
+            $not_found = new Webpage('code', 'not_found');
 
-            $versions = $this->get_version_keys();
-            if (count($versions) > 0) {
-                // TODO !! with probabilities
-
-                reset($versions);
-
-                $this->version = key($versions);
-            } else {
-                $this->version = false;
-            }
-
+            return $not_found->version;
         }
+
+
     }
 
     function get($key, $data = false) {
@@ -389,41 +391,11 @@ class Webpage extends DB_Table {
 
     }
 
-    function get_content($smarty, $version_key = false) {
 
-        include_once 'utils/object_functions.php';
-
-        if (!$version_key) {
-            $version_key = $this->version->id;
-        }
-
-        $content = '';
-
-        $object = get_object($this->get('Webpage Object'), $this->get('Webpage Object Key'));
+    function get_content($smarty) {
 
 
-        $sql = sprintf(
-            'SELECT `Webpage Version Block Template`,`Webpage Version Block Settings` FROM  `Webpage Version Block Bridge` WHERE `Webpage Version Block Webpage Version Key`=%d  ORDER BY `Webpage Version Block Position` DESC',
-            $version_key
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $smarty->assign('data', json_decode($row['Webpage Version Block Settings'], true));
-
-                if ($row['Webpage Version Block Template'] == 'product') {
-                    $smarty->assign('product', $object);
-
-                }
-
-                $content .= $smarty->fetch('ecom/'.$row['Webpage Version Block Template'].'.tpl');
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
+        $content = $smarty->fetch($this->get('Code').'.'.$this->version->get('Code').'.tpl');
 
         return $content;
 

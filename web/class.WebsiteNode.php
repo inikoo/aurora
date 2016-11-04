@@ -13,12 +13,15 @@
 include_once 'class.DB_Table.php';
 include_once 'class.Webpage.php';
 
+
+
 class WebsiteNode extends DB_Table {
 
-    var $areas = false;
-    var $locations = false;
+
+
 
     function WebsiteNode($a1, $a2 = false, $a3 = false) {
+
 
         global $db;
         $this->db = $db;
@@ -40,10 +43,15 @@ class WebsiteNode extends DB_Table {
     function get_data($key, $tag, $tag2 = false) {
 
 
+
         if ($key == 'id') {
             $sql = sprintf("SELECT * FROM `Website Node Dimension` WHERE `Website Node Key`=%d", $tag);
         } else {
-            return;
+            if ($key == 'code') {
+                $sql = sprintf("SELECT * FROM `Website Node Dimension` WHERE `Website Node Code`=%s", prepare_mysql($tag));
+            } else {
+                return;
+            }
         }
 
 
@@ -51,9 +59,14 @@ class WebsiteNode extends DB_Table {
             $this->id = $this->data['Website Node Key'];
 
             $this->webpage = new Webpage($this->get('Website Node Webpage Key'));
-
         }
 
+
+    }
+
+
+    function get_content($smarty) {
+        return $this->webpage->get_content($smarty);
 
     }
 
