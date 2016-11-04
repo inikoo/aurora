@@ -244,7 +244,9 @@
         $('#object_showcase').removeClass('hide');
         $('#tabs').removeClass('hide');
 
-        change_view(state.request + '&tab=' + state.tab.replace(/\_edit$/i, ""), {reload_showcase: 1})
+        change_view(state.request + '&tab=' + state.tab.replace(/\_edit$/i, ""), {
+            reload_showcase: 1
+        })
     }
 
     function open_export_dialogs() {
