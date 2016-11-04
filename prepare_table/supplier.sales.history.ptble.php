@@ -20,7 +20,7 @@ if ($parameters['frequency'] == 'annually') {
 
     $group_by          = '  group by DATE_FORMAT(`Timeseries Record Date`,"%Y-%m") ';
     $sql_totals_fields = 'DATE_FORMAT(`Timeseries Record Date`,"%Y-%m")';
-} elseif ($parameters['frequency'] == 'monthy') {
+} elseif ($parameters['frequency'] == 'monthly') {
     $frequency = 'Monthly';
 
     $group_by          = '  group by DATE_FORMAT(`Timeseries Record Date`,"%Y-%m") ';

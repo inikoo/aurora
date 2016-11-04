@@ -49,7 +49,7 @@ sortType: "toggle",
 name: "month_year",
 label: "{t}Month{/t}",
 editable: false,
-renderable:{if $data['tab']=='inventory.stock.history.monthy'}true{else}false{/if},
+renderable:{if $data['tab']=='inventory.stock.history.monthly'}true{else}false{/if},
 cell: Backgrid.Cell.extend({
 className: "aright width_150"
 }),

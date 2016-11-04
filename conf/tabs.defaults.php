@@ -442,7 +442,7 @@ $tab_defaults = array(
         'sort_order'  => 1,
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
-        'frequency'   => 'monthy',
+        'frequency'   => 'monthly',
         'f_field'     => '',
         //  'export_fields'=>$export_fields['timeserie_records']
 
@@ -483,7 +483,7 @@ $tab_defaults = array(
         'sort_order'  => 1,
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
-        'frequency'   => 'monthy',
+        'frequency'   => 'monthly',
         'f_field'     => '',
         //  'export_fields'=>$export_fields['timeserie_records']
 
@@ -510,7 +510,7 @@ $tab_defaults = array(
         'sort_order'  => 1,
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
-        'frequency'   => 'monthy',
+        'frequency'   => 'monthly',
         'f_field'     => '',
         //  'export_fields'=>$export_fields['timeserie_records']
 
@@ -941,7 +941,7 @@ $tab_defaults = array(
         'sort_order'  => 1,
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
-        'frequency'   => 'monthy',
+        'frequency'   => 'monthly',
         'f_field'     => '',
         //  'export_fields'=>$export_fields['timeserie_records']
 
@@ -1214,7 +1214,7 @@ $tab_defaults = array(
         'sort_order'  => 1,
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
-        'frequency'   => 'monthy',
+        'frequency'   => 'monthly',
         'f_field'     => '',
         //  'export_fields'=>$export_fields['timeserie_records']
 
@@ -1225,7 +1225,7 @@ $tab_defaults = array(
         'sort_order'  => 1,
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
-        'frequency'   => 'monthy',
+        'frequency'   => 'monthly',
         'f_field'     => '',
         //  'export_fields'=>$export_fields['timeserie_records']
 
@@ -1388,7 +1388,7 @@ $tab_defaults = array(
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'note',
-        'frequency'   => 'monthy',
+        'frequency'   => 'monthly',
 
     ),
 
@@ -1840,7 +1840,7 @@ $tab_defaults = array(
         'sort_order'    => 1,
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
-        'frequency'     => 'monthy',
+        'frequency'     => 'monthly',
         'f_field'       => '',
         'export_fields' => $export_fields['timeserie_records']
 

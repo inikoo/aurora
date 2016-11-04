@@ -21,8 +21,8 @@ if ($state['tab'] == 'inventory.stock.history.weekly') {
     $default['frequency'] = 'weekly';
 } elseif ($state['tab'] == 'inventory.stock.history.daily') {
     $default['frequency'] = 'daily';
-} elseif ($state['tab'] == 'inventory.stock.history.monthy') {
-    $default['frequency'] = 'monthy';
+} elseif ($state['tab'] == 'inventory.stock.history.monthly') {
+    $default['frequency'] = 'monthly';
 } elseif ($state['tab'] == 'inventory.stock.history.annually') {
     $default['frequency'] = 'annually';
 }

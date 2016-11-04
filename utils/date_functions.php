@@ -31,7 +31,7 @@ function date_frequency_range($db, $frequency, $first, $last) {
 if ($_data['parameters']['frequency']=='annually') {
         $from_date=gmdate("Y-01-01 00:00:00", strtotime($from_date.' +0:00'));
         $to_date=gmdate("Y-12-31 23:59:59", strtotime($to_date.' +0:00'));
-    }elseif ($_data['parameters']['frequency']=='monthy') {
+    }elseif ($_data['parameters']['frequency']=='monthly') {
         $from_date=gmdate("Y-m-01 00:00:00", strtotime($from_date.' +0:00'));
         $to_date=gmdate("Y-m-01 00:00:00", strtotime($to_date.' + 1 month +0:00'));
     }elseif ($_data['parameters']['frequency']=='weekly') {

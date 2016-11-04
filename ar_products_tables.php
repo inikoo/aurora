@@ -547,7 +547,7 @@ function sales_history($_data, $db, $user, $account) {
         $rtext_label       = 'year';
         $_group_by         = ' group by Year(`Date`) ';
         $sql_totals_fields = 'Year(`Date`)';
-    } elseif ($_data['parameters']['frequency'] == 'monthy') {
+    } elseif ($_data['parameters']['frequency'] == 'monthly') {
         $rtext_label       = 'month';
         $_group_by         = '  group by DATE_FORMAT(`Date`,"%Y-%m") ';
         $sql_totals_fields = 'DATE_FORMAT(`Date`,"%Y-%m")';
@@ -619,7 +619,7 @@ function sales_history($_data, $db, $user, $account) {
             if ($_data['parameters']['frequency'] == 'annually') {
                 $date  = strftime("%Y", strtotime($data['Date'].' +0:00'));
                 $_date = $date;
-            } elseif ($_data['parameters']['frequency'] == 'monthy') {
+            } elseif ($_data['parameters']['frequency'] == 'monthly') {
                 $date  = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
                 $_date = $date;
             } elseif ($_data['parameters']['frequency'] == 'weekly') {
@@ -663,7 +663,7 @@ function sales_history($_data, $db, $user, $account) {
                 $to_date   = gmdate(
                     "Y-12-31 23:59:59", strtotime($to_date.' +0:00')
                 );
-            } elseif ($_data['parameters']['frequency'] == 'monthy') {
+            } elseif ($_data['parameters']['frequency'] == 'monthly') {
                 $from_date = gmdate(
                     "Y-m-01 00:00:00", strtotime($from_date.' +0:00')
                 );
@@ -686,7 +686,7 @@ function sales_history($_data, $db, $user, $account) {
             if ($_data['parameters']['frequency'] == 'annually') {
                 $from_date = gmdate("Y-01-01", strtotime($from_date.' +0:00'));
                 $to_date   = gmdate("Y-12-31", strtotime($to_date.' +0:00'));
-            } elseif ($_data['parameters']['frequency'] == 'monthy') {
+            } elseif ($_data['parameters']['frequency'] == 'monthly') {
                 $from_date = gmdate("Y-m-01", strtotime($from_date.' +0:00'));
                 $to_date   = gmdate(
                     "Y-m-01", strtotime($to_date.' + 1 month +0:00')
@@ -723,7 +723,7 @@ function sales_history($_data, $db, $user, $account) {
             if ($_data['parameters']['frequency'] == 'annually') {
                 $date  = strftime("%Y", strtotime($data['Date'].' +0:00'));
                 $_date = $date;
-            } elseif ($_data['parameters']['frequency'] == 'monthy') {
+            } elseif ($_data['parameters']['frequency'] == 'monthly') {
                 $date  = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
                 $_date = $date;
             } elseif ($_data['parameters']['frequency'] == 'weekly') {

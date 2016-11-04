@@ -18,7 +18,7 @@ $where = sprintf(
 if ($parameters['frequency'] == 'annually') {
     $group_by          = ' group by Year(`Timeseries Record Date`) ';
     $sql_totals_fields = 'Year(`Timeseries Record Date`)';
-} elseif ($parameters['frequency'] == 'monthy') {
+} elseif ($parameters['frequency'] == 'monthly') {
     $group_by          = '  group by DATE_FORMAT(`Timeseries Record Date`,"%Y-%m") ';
     $sql_totals_fields = 'DATE_FORMAT(`Timeseries Record Date`,"%Y-%m")';
 } elseif ($parameters['frequency'] == 'weekly') {
