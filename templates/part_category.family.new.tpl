@@ -219,7 +219,9 @@
         $('#object_showcase').removeClass('hide');
         $('#tabs').removeClass('hide');
 
-        change_view(state.request + '&tab=' + state.tab.replace(/\_edit$/i, ""), {reload_showcase: 1})
+        change_view(state.request + '&tab=' + state.tab.replace(/\_edit$/i, ""), {
+            reload_showcase: 1
+        })
     }
 
     function open_export_dialogs() {
@@ -264,7 +266,8 @@
             if ($(obj).hasClass('fa-check-square-o')) fields.push($(obj).attr('key'))
         });
 
-        var request = "/ar_export_edit_template.php?parent={$export_parent}&parent_key={$export_parent_key}&parent_code={$export_parent_code}&objects={$objects}&fields=" + JSON.stringify(fields) + '&type=' + type + '&metadata=' + JSON.stringify({store_key:{$store_key}})
+        var request = "/ar_export_edit_template.php?parent={$export_parent}&parent_key={$export_parent_key}&parent_code={$export_parent_code}&objects={$objects}&fields=" + JSON.stringify(fields) + '&type=' + type + '&metadata=' + JSON.stringify({
+                    store_key:{$store_key}})
 
         console.log(request)
         $.getJSON(request, function (data) {
