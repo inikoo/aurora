@@ -33,7 +33,8 @@
 
         $(element).find('i.fa').removeClass(icon).addClass('fa-spinner fa-spin')
 
-        var request = '/ar_edit.php?tipo=object_operation&operation=set_all_products_web_configuration&object=' + $(element).data('data').object + '&key=' + $(element).data('data').key + '&metadata=' + JSON.stringify({"value": value})
+        var request = '/ar_edit.php?tipo=object_operation&operation=set_all_products_web_configuration&object=' + $(element).data('data').object + '&key=' + $(element).data('data').key + '&metadata=' + JSON.stringify({
+                    "value": value})
 
 
         $.getJSON(request, function (data) {
