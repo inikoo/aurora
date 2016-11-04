@@ -128,12 +128,17 @@
         $('#add_item_save').attr('item_key', $(element).attr('item_key'))
         $('#add_item_save').attr('item_historic_key', $(element).attr('item_historic_key'))
 
+
+
         $('#add_item_results_container').addClass('hide').removeClass('show')
 
         $('#add_item_qty').focus()
 
 
         validate_add_item()
+
+        console.log($('#add_item_save').attr('item_key'))
+
 
     }
 
@@ -162,7 +167,8 @@
 
         }
 
-        console.log(invalid)
+      //  console.log(invalid)
+
 
 
         if (invalid) {
@@ -177,6 +183,7 @@
             }
 
         }
+
 
     }
 
@@ -212,6 +219,8 @@
 
         $('#add_item_save').addClass('fa-spinner fa-spin');
         var table_metadata = JSON.parse(atob($('#table').data("metadata")))
+
+
 
         var request = '/ar_edit.php?tipo=edit_item_in_order&field=' + table_metadata.field + '&parent=' + table_metadata.parent + '&parent_key=' + table_metadata.parent_key + '&item_key=' + $('#add_item_save').attr('item_key') + '&item_historic_key=' + $('#add_item_save').attr('item_historic_key') + '&qty=' + $('#add_item_qty').val()
         console.log(request)

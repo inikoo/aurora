@@ -284,8 +284,8 @@ class SupplierDelivery extends DB_Table {
 
                     return strftime(
                         "%e %b %Y", strtotime(
-                            $this->data['Supplier Delivery Checked Date'].' +0:00'
-                        )
+                                      $this->data['Supplier Delivery Checked Date'].' +0:00'
+                                  )
                     );
                 }
 
@@ -318,8 +318,8 @@ class SupplierDelivery extends DB_Table {
 
                     return strftime(
                         "%e %b %Y", strtotime(
-                            $this->data['Supplier Delivery Placed Date'].' +0:00'
-                        )
+                                      $this->data['Supplier Delivery Placed Date'].' +0:00'
+                                  )
                     );
                 }
 
@@ -392,10 +392,10 @@ class SupplierDelivery extends DB_Table {
                             ) {
                                 return '<span class="discreet italic">'.strftime(
                                     "%d-%m-%Y", strtotime(
-                                        'now +'.$parent->get(
-                                            $parent->table_name.' Delivery Days'
-                                        ).' days'
-                                    )
+                                                  'now +'.$parent->get(
+                                                      $parent->table_name.' Delivery Days'
+                                                  ).' days'
+                                              )
                                 ).'</span>';
 
                             } else {
@@ -416,12 +416,12 @@ class SupplierDelivery extends DB_Table {
                             ) {
                                 return '<span class="discreet italic">'.strftime(
                                     "%d-%m-%Y", strtotime(
-                                        $this->get(
-                                            'Supplier Delivery Submitted Date'
-                                        ).' +'.$parent->get(
-                                            $parent->table_name.' Delivery Days'
-                                        ).' days'
-                                    )
+                                                  $this->get(
+                                                      'Supplier Delivery Submitted Date'
+                                                  ).' +'.$parent->get(
+                                                      $parent->table_name.' Delivery Days'
+                                                  ).' days'
+                                              )
                                 ).'</span>';
 
                             } else {
@@ -982,8 +982,8 @@ class SupplierDelivery extends DB_Table {
 					 %d,%s,%d,%.6f,%.2f,%.2f,%s,%s,%s,
 					 %d,%s
 					 )", $item_key, $item_historic_key, prepare_mysql(
-                            $this->get('Supplier Delivery Currency Code')
-                        ), prepare_mysql($date), prepare_mysql($this->get('Supplier Delivery State')),
+                        $this->get('Supplier Delivery Currency Code')
+                    ), prepare_mysql($date), prepare_mysql($this->get('Supplier Delivery State')),
 
                         $supplier_part->get('Supplier Part Supplier Key'), ($supplier_part->get('Supplier Part Agent Key') == ''
                         ? 'Null'
@@ -1137,32 +1137,41 @@ class SupplierDelivery extends DB_Table {
             $qty = 0;
         }
 
+        $placement = '';
 
         $sql = sprintf(
             'SELECT `Supplier Delivery Transaction Placed`,`Part SKU`,POTF.`Purchase Order Transaction Fact Key`,`Supplier Delivery Placed Quantity`,`Supplier Part Packages Per Carton`,POTF.`Metadata`
-		 FROM `Purchase Order Transaction Fact`  POTF
-LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Historic Key`=SPH.`Supplier Part Historic Key`)
- LEFT JOIN  `Supplier Part Dimension` SP ON (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
- LEFT JOIN  `Part Dimension` P ON (P.`Part SKU`=SP.`Supplier Part Part SKU`)
-
-
-
-		WHERE  `Purchase Order Transaction Fact Key`=%d ', $transaction_key
+		      FROM `Purchase Order Transaction Fact`  POTF
+              LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Historic Key`=SPH.`Supplier Part Historic Key`)
+              LEFT JOIN  `Supplier Part Dimension` SP ON (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
+              LEFT JOIN  `Part Dimension` P ON (P.`Part SKU`=SP.`Supplier Part Part SKU`)
+              WHERE  `Purchase Order Transaction Fact Key`=%d ',
+            $transaction_key
         );
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
+
+                $placement_qty = $this->get_placement_quantity($transaction_key);
+
+                // This update was putting here to fix a bug updating `Supplier Delivery Placed Quantity , it maby be safe to remove when that bug is found
+                $sql=sprintf('update `Purchase Order Transaction Fact` set `Supplier Delivery Placed Quantity`=%f where  `Purchase Order Transaction Fact Key`=%d ',
+                             $placement_qty,
+                             $transaction_key
+                             );
+                $this->db->exec($sql);
+
                 if ($qty == 0) {
 
-                    if ($row['Supplier Delivery Placed Quantity'] > $qty) {
+                    if ($placement_qty > $qty) {
                         $placed = 'Yes';
                     } else {
                         $placed = 'NA';
                     }
                 } else {
 
-                    if ($row['Supplier Delivery Placed Quantity'] >= $qty) {
+                    if ($placement_qty >= $qty) {
                         $placed = 'Yes';
                     } else {
                         $placed = 'No';
@@ -1171,9 +1180,10 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
                 }
 
                 $sql = sprintf(
-                    "update`Purchase Order Transaction Fact` set  `Supplier Delivery Checked Quantity`=%f,`Supplier Delivery Last Updated Date`=%s ,`Supplier Delivery Transaction Placed`=%s where  `Purchase Order Transaction Fact Key`=%d ",
+                    "UPDATE `Purchase Order Transaction Fact` SET  `Supplier Delivery Checked Quantity`=%f,`Supplier Delivery Last Updated Date`=%s ,`Supplier Delivery Transaction Placed`=%s WHERE  `Purchase Order Transaction Fact Key`=%d ",
                     $qty, prepare_mysql($date), prepare_mysql($placed), $transaction_key
                 );
+
 
                 $this->db->exec($sql);
 
@@ -1193,7 +1203,7 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
                 }
 
 
-                $quantity = ($qty - $row['Supplier Delivery Placed Quantity']) * $row['Supplier Part Packages Per Carton'];
+                $quantity = ($qty -$placement_qty) * $row['Supplier Part Packages Per Carton'];
 
 
                 if ($row['Metadata'] == '') {
@@ -1201,6 +1211,7 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
                 } else {
                     $metadata = json_decode($row['Metadata'], true);
                 }
+
 
                 $placement
                     = '<div  class="placement_data mini_table right no_padding" style="padding-right:2px">';
@@ -1257,12 +1268,8 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
 
         $this->update_metadata = array(
             'class_html'  => array(
-                'Supplier_Delivery_State'                             => $this->get(
-                    'State'
-                ),
-                'Supplier_Delivery_Number_Received_and_Checked_Items' => $this->get(
-                    'Number Received and Checked Items'
-                ),
+                'Supplier_Delivery_State'                             => $this->get('State'),
+                'Supplier_Delivery_Number_Received_and_Checked_Items' => $this->get('Number Received and Checked Items'),
                 'Supplier_Delivery_Checked_Percentage_or_Date'        => '&nbsp;'.$this->get('Checked Percentage or Date'),
                 'Supplier_Delivery_Placed_Percentage_or_Date'         => '&nbsp;'.$this->get('Placed Percentage or Date')
             ),
@@ -1271,6 +1278,7 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
 
         );
 
+        $qty = $qty * $supplier_part->get('Supplier Part Packages Per Carton');
 
         return array(
             'transaction_key' => $transaction_key,
@@ -1278,6 +1286,38 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
         );
 
 
+    }
+
+    function get_placement_quantity($transaction_key) {
+
+        $placement_quantity = 0;
+
+        $sql = sprintf(
+            'SELECT POTF.`Metadata` FROM `Purchase Order Transaction Fact` POTF  WHERE  `Purchase Order Transaction Fact Key`=%d ',
+            $transaction_key
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+                if ($row['Metadata'] == '') {
+                    $metadata = array();
+                } else {
+                    $metadata = json_decode($row['Metadata'], true);
+                }
+
+                if (isset($metadata['placement_data'])) {
+                    foreach ($metadata['placement_data'] as $item) {
+                        $placement_quantity += $item['qty'];
+                    }
+
+                }
+
+            }
+
+        }
+
+        return $placement_quantity;
     }
 
     function update_item_delivery_placed_quantity($data) {
@@ -1303,9 +1343,10 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
+                $placement_qty = $this->get_placement_quantity($transaction_key);
 
                 $supplier_part = new SupplierPart($row['Supplier Part Key']);
-                $qty           = ($data['qty'] + $row['Supplier Delivery Placed Quantity']) / $supplier_part->get('Supplier Part Packages Per Carton');
+                $qty           = ($data['qty'] + $placement_qty) / $supplier_part->get('Supplier Part Packages Per Carton');
                 if ($qty < 0) {
                     $qty = 0;
                 }
@@ -1323,15 +1364,13 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
                 }
 
                 if ($row['Metadata'] == '') {
-                    $metadata
-                        = array('placement_data' => array($data['placement_data']));
+                    $metadata = array('placement_data' => array($data['placement_data']));
                 } else {
                     $metadata = json_decode($row['Metadata'], true);
                     if (isset($metadata['placement_data'])) {
                         $metadata['placement_data'][] = $data['placement_data'];
                     } else {
-                        $metadata['placement_data']
-                            = array($data['placement_data']);
+                        $metadata['placement_data'] = array($data['placement_data']);
                     }
                 }
 
@@ -1503,7 +1542,7 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
                         "DELETE FROM `Attachment Bridge` WHERE `Attachment Bridge Key`=%d", $row['Attachment Bridge Key']
                     );
                     $this->db->exec($sql);
-                    $attachment = new Attachment($row2['Attachment Key']);
+                    $attachment = new Attachment($row['Attachment Key']);
                     $attachment->delete();
 
                 }
@@ -1522,10 +1561,10 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
             if ($purchase_order->get('Purchase Order Submitted Date') != '') {
                 $purchase_order->update_state(
                     'Submitted', array(
-                        'Purchase Order Submitted Date' => $purchase_order->get(
-                            'Purchase Order Submitted Date'
-                        )
-                    )
+                                   'Purchase Order Submitted Date' => $purchase_order->get(
+                                       'Purchase Order Submitted Date'
+                                   )
+                               )
                 );
             }
 

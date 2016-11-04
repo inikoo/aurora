@@ -1,9 +1,7 @@
 {
-  "version": 3,
-  "mappings": "AACA,OAAQ;EACA,UAAU,EAAE,gBAAgB;;AAEhC,QAAS;EACL,UAAU,EAAE,MAAM;;AAEtB,UAAW;EACP,UAAU,EAAE,MAAM;;AAEtB,QAAS;EACL,UAAU,EAAE,OAAO;;AAEvB,KAAM;EACF,OAAO,EAAE,IAAI",
-  "sources": [
-    "../sass/aurora.scss"
-  ],
-  "names": [],
-  "file": "aurora.css"
+"version": 3,
+"mappings": "AACA,OAAQ;EACN,UAAU,EAAE,gBAAgB;;AAG9B,QAAS;EACP,UAAU,EAAE,MAAM;;AAGpB,UAAW;EACT,UAAU,EAAE,MAAM;;AAGpB,QAAS;EACP,UAAU,EAAE,OAAO;;AAGrB,KAAM;EACJ,OAAO,EAAE,IAAI",
+"sources": ["../sass/aurora.scss"],
+"names": [],
+"file": "aurora.css"
 }

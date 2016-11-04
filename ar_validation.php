@@ -31,21 +31,21 @@ switch ($tipo) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                'object'       => array('type' => 'string'),
-                'parent'       => array('type' => 'string'),
-                'parent_key'   => array('type' => 'string'),
-                'key'          => array('type' => 'string'),
-                'field'        => array('type' => 'string'),
-                'actual_field' => array(
-                    'type'     => 'string',
-                    'optional' => true
-                ),
-                'value'        => array('type' => 'string'),
-                'metadata'     => array(
-                    'type'     => 'json array',
-                    'optional' => true
-                ),
-            )
+                         'object'       => array('type' => 'string'),
+                         'parent'       => array('type' => 'string'),
+                         'parent_key'   => array('type' => 'string'),
+                         'key'          => array('type' => 'string'),
+                         'field'        => array('type' => 'string'),
+                         'actual_field' => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         ),
+                         'value'        => array('type' => 'string'),
+                         'metadata'     => array(
+                             'type'     => 'json array',
+                             'optional' => true
+                         ),
+                     )
         );
 
         check_for_duplicates($data, $db, $user, $account);
@@ -695,7 +695,7 @@ function check_for_duplicates($data, $db, $user, $account) {
             break;
     }
 
-    //print_r($data);
+
 
 
     if (count($validation_sql_queries) == 0) {
@@ -711,9 +711,16 @@ function check_for_duplicates($data, $db, $user, $account) {
                 );
                 break;
             case 'supplier':
-                $parent_where = sprintf(
-                    ' and `%s Supplier Key`=%d ', $data['object'], $data['parent_key']
-                );
+                if($data['object']=='Purchase Order'){
+                    $parent_where = sprintf(
+                        ' and `Purchase Order Parent Key`=%d ', $data['parent_key']
+                    );
+
+                }else {
+                    $parent_where = sprintf(
+                        ' and `%s Supplier Key`=%d ', $data['object'], $data['parent_key']
+                    );
+                }
                 break;
             default:
                 $parent_where = '';
@@ -727,9 +734,13 @@ function check_for_duplicates($data, $db, $user, $account) {
 
 
         $sql = sprintf(
-            'SELECT `%s Key` AS `key` ,`%s` AS field FROM `%s Dimension` WHERE `%s`=%s %s %s', addslashes(preg_replace('/_/', ' ', $data['object'])), addslashes($_field),
-
-            addslashes(preg_replace('/_/', ' ', $data['object'])), addslashes($_field), prepare_mysql($data['value']), $parent_where, $options_where
+            'SELECT `%s Key` AS `key` ,`%s` AS field FROM `%s Dimension` WHERE `%s`=%s %s %s',
+            addslashes(preg_replace('/_/', ' ', $data['object'])),
+            addslashes($_field),
+            addslashes(preg_replace('/_/', ' ', $data['object'])),
+            addslashes($_field), prepare_mysql($data['value']),
+            $parent_where,
+            $options_where
 
         );
 
