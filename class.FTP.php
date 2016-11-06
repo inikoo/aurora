@@ -2,7 +2,7 @@
 
 /*
 
-  About:get  Autor: Raul Perusquia <rulovico@gmail.com>
+  About:get  Author: Raul Perusquia <rulovico@gmail.com>
 
   Copyright (c) 2012, Inikoo
 

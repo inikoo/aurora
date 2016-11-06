@@ -1,7 +1,7 @@
 <?php
 /*
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Created: 31 August 2016 at 12:52:16 GMT+8, Kuta, Bali, Indonesia
  Copyright (c) 2015, Inikoo
 

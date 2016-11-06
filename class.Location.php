@@ -6,7 +6,7 @@
  This file contains the Location Class
 
  About:
- Autor: Raul Perusquia <rulovico@gmail.com>
+ Author: Raul Perusquia <rulovico@gmail.com>
  Refurbished: 28 April 2016 at 15:40:46 GMT+8, Lovina, Bali, Indonesia
 
  Copyright (c) 2009, Inikoo

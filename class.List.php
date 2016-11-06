@@ -3,7 +3,7 @@
   This file contains the List Class
 
  About:
- Autor: Raul Perusquia <rulovico@gmail.com>
+ Author: Raul Perusquia <rulovico@gmail.com>
  Creates: 6 April 2015 14:31:11 BST, Sheffield UK
 
  Copyright (c) 2015, Inikoo

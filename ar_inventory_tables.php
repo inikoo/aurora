@@ -1,7 +1,7 @@
 <?php
 /*
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Created: 29 September 2015 15:38:12 BST, Sheffield, UK
  Copyright (c) 2015, Inikoo
 
@@ -130,8 +130,7 @@ function parts($_data, $db, $user, $type, $account) {
 
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     //print $sql;
 
     $adata = array();
@@ -141,33 +140,27 @@ function parts($_data, $db, $user, $type, $account) {
 
             switch ($data['Part Stock Status']) {
                 case 'Surplus':
-                    $stock_status
-                                        = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status       = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
                     $stock_status_label = _('Surplus');
                     break;
                 case 'Optimal':
-                    $stock_status
-                                        = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status       = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
                     $stock_status_label = _('Ok');
                     break;
                 case 'Low':
-                    $stock_status
-                                        = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status       = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
                     $stock_status_label = _('Low');
                     break;
                 case 'Critical':
-                    $stock_status
-                                        = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status       = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
                     $stock_status_label = _('Critical');
                     break;
                 case 'Out_Of_Stock':
-                    $stock_status
-                                        = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
+                    $stock_status       = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
                     $stock_status_label = _('Out of stock');
                     break;
                 case 'Error':
-                    $stock_status
-                                        = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+                    $stock_status       = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
                     $stock_status_label = _('Error');
                     break;
                 default:
@@ -301,54 +294,54 @@ function parts($_data, $db, $user, $type, $account) {
 
                 'dispatched_year0' => sprintf(
                     '<span>%s</span> %s', number($data['Part Year To Day Acc Dispatched']), delta_icon(
-                        $data["Part Year To Day Acc Dispatched"], $data["Part Year To Day Acc 1YB Dispatched"]
-                    )
+                                            $data["Part Year To Day Acc Dispatched"], $data["Part Year To Day Acc 1YB Dispatched"]
+                                        )
                 ),
                 'dispatched_year1' => sprintf(
                     '<span>%s</span> %s', number($data['Part 1 Year Ago Dispatched']), delta_icon(
-                        $data["Part 1 Year Ago Dispatched"], $data["Part 2 Year Ago Dispatched"]
-                    )
+                                            $data["Part 1 Year Ago Dispatched"], $data["Part 2 Year Ago Dispatched"]
+                                        )
                 ),
                 'dispatched_year2' => sprintf(
                     '<span>%s</span> %s', number($data['Part 2 Year Ago Dispatched']), delta_icon(
-                        $data["Part 2 Year Ago Dispatched"], $data["Part 3 Year Ago Dispatched"]
-                    )
+                                            $data["Part 2 Year Ago Dispatched"], $data["Part 3 Year Ago Dispatched"]
+                                        )
                 ),
                 'dispatched_year3' => sprintf(
                     '<span>%s</span> %s', number($data['Part 3 Year Ago Dispatched']), delta_icon(
-                        $data["Part 3 Year Ago Dispatched"], $data["Part 4 Year Ago Dispatched"]
-                    )
+                                            $data["Part 3 Year Ago Dispatched"], $data["Part 4 Year Ago Dispatched"]
+                                        )
                 ),
                 'dispatched_year4' => sprintf(
                     '<span>%s</span> %s', number($data['Part 4 Year Ago Dispatched']), delta_icon(
-                        $data["Part 4 Year Ago Dispatched"], $data["Part 5 Year Ago Dispatched"]
-                    )
+                                            $data["Part 4 Year Ago Dispatched"], $data["Part 5 Year Ago Dispatched"]
+                                        )
                 ),
 
                 'dispatched_quarter0' => sprintf(
                     '<span>%s</span> %s', number($data['Part Quarter To Day Acc Dispatched']), delta_icon(
-                        $data["Part Quarter To Day Acc Dispatched"], $data["Part Quarter To Day Acc 1YB Dispatched"]
-                    )
+                                            $data["Part Quarter To Day Acc Dispatched"], $data["Part Quarter To Day Acc 1YB Dispatched"]
+                                        )
                 ),
                 'dispatched_quarter1' => sprintf(
                     '<span>%s</span> %s', number($data['Part 1 Quarter Ago Dispatched']), delta_icon(
-                        $data["Part 1 Quarter Ago Dispatched"], $data["Part 1 Quarter Ago 1YB Dispatched"]
-                    )
+                                            $data["Part 1 Quarter Ago Dispatched"], $data["Part 1 Quarter Ago 1YB Dispatched"]
+                                        )
                 ),
                 'dispatched_quarter2' => sprintf(
                     '<span>%s</span> %s', number($data['Part 2 Quarter Ago Dispatched']), delta_icon(
-                        $data["Part 2 Quarter Ago Dispatched"], $data["Part 2 Quarter Ago 1YB Dispatched"]
-                    )
+                                            $data["Part 2 Quarter Ago Dispatched"], $data["Part 2 Quarter Ago 1YB Dispatched"]
+                                        )
                 ),
                 'dispatched_quarter3' => sprintf(
                     '<span>%s</span> %s', number($data['Part 3 Quarter Ago Dispatched']), delta_icon(
-                        $data["Part 3 Quarter Ago Dispatched"], $data["Part 3 Quarter Ago 1YB Dispatched"]
-                    )
+                                            $data["Part 3 Quarter Ago Dispatched"], $data["Part 3 Quarter Ago 1YB Dispatched"]
+                                        )
                 ),
                 'dispatched_quarter4' => sprintf(
                     '<span>%s</span> %s', number($data['Part 4 Quarter Ago Dispatched']), delta_icon(
-                        $data["Part 4 Quarter Ago Dispatched"], $data["Part 4 Quarter Ago 1YB Dispatched"]
-                    )
+                                            $data["Part 4 Quarter Ago Dispatched"], $data["Part 4 Quarter Ago 1YB Dispatched"]
+                                        )
                 ),
 
 
@@ -422,8 +415,7 @@ function stock_history($_data, $db, $user, $account) {
 
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
     $adata = array();
 
@@ -495,8 +487,7 @@ function inventory_stock_history($_data, $db, $user, $account) {
 
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
     $adata = array();
 
@@ -564,8 +555,7 @@ function stock_transactions($_data, $db, $user) {
 
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     //print $sql;
     $adata = array();
@@ -582,8 +572,7 @@ function stock_transactions($_data, $db, $user) {
                 case 'Order In Process':
 
 
-                    $type
-                        = '<i class="fa  fa-clock-o discreet fa-fw" aria-hidden="true"></i>';
+                    $type = '<i class="fa  fa-clock-o discreet fa-fw" aria-hidden="true"></i>';
 
                     if ($parameters['parent'] == 'part') {
                         $note = sprintf(
@@ -624,8 +613,7 @@ function stock_transactions($_data, $db, $user) {
 
                     break;
                 case 'Sale':
-                    $type
-                        = '<i class="fa fa-sign-out fa-fw" aria-hidden="true"></i>';
+                    $type = '<i class="fa fa-sign-out fa-fw" aria-hidden="true"></i>';
                     if ($parameters['parent'] == 'part') {
                         $note = sprintf(
                             _('%s %s (%s) taken from %s'),
@@ -646,8 +634,8 @@ function stock_transactions($_data, $db, $user) {
                     } else {
                         $note = sprintf(
                             _('%sx %s (%s) taken from %s'), number(
-                                -1 * $data['Inventory Transaction Quantity']
-                            ),
+                            -1 * $data['Inventory Transaction Quantity']
+                        ),
 
                             ($parameters['parent'] == 'part'
                                 ? sprintf(
@@ -668,14 +656,12 @@ function stock_transactions($_data, $db, $user) {
 
                     break;
                 case 'In':
-                    $type
-                        = '<i class="fa fa-sign-in fa-fw" aria-hidden="true"></i>';
+                    $type = '<i class="fa fa-sign-in fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Audit':
 
 
-                    $type
-                        = '<i class="fa fa-fw fa-dot-circle-o" aria-hidden="true"></i>';
+                    $type = '<i class="fa fa-fw fa-dot-circle-o" aria-hidden="true"></i>';
 
                     $stock = sprintf('<b>'.$data['Part Location Stock'].'</b>');
                     break;
@@ -685,20 +671,17 @@ function stock_transactions($_data, $db, $user) {
                         $stock = '+'.number($stock);
                     }
 
-                    $type
-                        = '<i class="fa fa-fw fa-sliders" aria-hidden="true"></i>';
+                    $type = '<i class="fa fa-fw fa-sliders" aria-hidden="true"></i>';
 
 
                     break;
 
                 case 'Move':
                     $stock = '±'.number($data['Metadata']);
-                    $type
-                           = '<i class="fa fa-refresh fa-fw" aria-hidden="true"></i>';
+                    $type  = '<i class="fa fa-refresh fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Error':
-                    $type
-                        = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+                    $type = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
                     break;
 
                 case 'No Dispatched':
@@ -738,8 +721,7 @@ function stock_transactions($_data, $db, $user) {
                     }
 
 
-                    $type
-                        = '<i class="fa fa-circle error fa-fw" aria-hidden="true"></i>';
+                    $type = '<i class="fa fa-circle error fa-fw" aria-hidden="true"></i>';
                     break;
 
                 default:
@@ -844,8 +826,7 @@ function supplier_parts($_data, $db, $user, $account) {
     $rtext_label = 'supplier part';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
 
@@ -900,28 +881,22 @@ function supplier_parts($_data, $db, $user, $account) {
 
             switch ($data['Part Stock Status']) {
                 case 'Surplus':
-                    $stock_status
-                        = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Optimal':
-                    $stock_status
-                        = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Low':
-                    $stock_status
-                        = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Critical':
-                    $stock_status
-                        = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Out_Of_Stock':
-                    $stock_status
-                        = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Error':
-                    $stock_status
-                        = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
                     break;
                 default:
                     $stock_status = $data['Part Stock Status'];
@@ -929,16 +904,13 @@ function supplier_parts($_data, $db, $user, $account) {
             }
 
             if ($data['Part Status'] == 'Not In Use') {
-                $part_status
-                    = '<i class="fa fa-square-o fa-fw  very_discreet" aria-hidden="true"></i> ';
+                $part_status = '<i class="fa fa-square-o fa-fw  very_discreet" aria-hidden="true"></i> ';
 
             } elseif ($data['Part Status'] == 'Discontinuing') {
-                $part_status
-                    = '<i class="fa fa-square fa-fw  very_discreet" aria-hidden="true"></i> ';
+                $part_status = '<i class="fa fa-square fa-fw  very_discreet" aria-hidden="true"></i> ';
 
             } else {
-                $part_status
-                    = '<i class="fa fa-square fa-fw " aria-hidden="true"></i> ';
+                $part_status = '<i class="fa fa-square fa-fw " aria-hidden="true"></i> ';
             }
 
             $part_description = $part_status.'<span style="min-width:80px;display: inline-block;" class="link padding_right_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'
@@ -1004,8 +976,7 @@ function barcodes($_data, $db, $user) {
     $rtext_label = 'barcodes';
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     //print $sql;
     $adata = array();
@@ -1094,8 +1065,7 @@ function part_categories($_data, $db, $user, $account) {
 
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
     if ($result = $db->query($sql)) {
 
@@ -1146,8 +1116,8 @@ function part_categories($_data, $db, $user, $account) {
                     : (ratio(
                         $data['Part Category Number Surplus Parts'], $data['Category Number Active Subjects']
                     ) > .5 ? 'warning' : '')), percentage(
-                    $data['Part Category Number Surplus Parts'], $data['Category Number Active Subjects']
-                ), number($data['Part Category Number Surplus Parts'])
+                        $data['Part Category Number Surplus Parts'], $data['Category Number Active Subjects']
+                    ), number($data['Part Category Number Surplus Parts'])
                 ),
                 'optimal'      => sprintf(
                     '<span  title="%s">%s</span>', percentage(
@@ -1162,8 +1132,8 @@ function part_categories($_data, $db, $user, $account) {
                     : (ratio(
                         $data['Part Category Number Low Parts'], $data['Category Number Active Subjects']
                     ) > .25 ? 'warning' : '')), percentage(
-                    $data['Part Category Number Low Parts'], $data['Category Number Active Subjects']
-                ), number($data['Part Category Number Low Parts'])
+                        $data['Part Category Number Low Parts'], $data['Category Number Active Subjects']
+                    ), number($data['Part Category Number Low Parts'])
                 ),
                 'critical'     => sprintf(
                     '<span class="%s" title="%s">%s</span>', ($data['Part Category Number Critical Parts'] == 0
@@ -1171,8 +1141,8 @@ function part_categories($_data, $db, $user, $account) {
                     : (ratio(
                         $data['Part Category Number Critical Parts'], $data['Category Number Active Subjects']
                     ) > .25 ? 'error' : 'warning')), percentage(
-                    $data['Part Category Number Critical Parts'], $data['Category Number Active Subjects']
-                ), number($data['Part Category Number Critical Parts'])
+                        $data['Part Category Number Critical Parts'], $data['Category Number Active Subjects']
+                    ), number($data['Part Category Number Critical Parts'])
                 ),
                 'out_of_stock' => sprintf(
                     '<span class="%s" title="%s">%s</span>', ($data['Part Category Number Out Of Stock Parts'] == 0
@@ -1180,8 +1150,8 @@ function part_categories($_data, $db, $user, $account) {
                     : (ratio(
                         $data['Part Category Number Out Of Stock Parts'], $data['Category Number Active Subjects']
                     ) > .10 ? 'error' : 'warning')), percentage(
-                    $data['Part Category Number Out Of Stock Parts'], $data['Category Number Active Subjects']
-                ), number($data['Part Category Number Out Of Stock Parts'])
+                        $data['Part Category Number Out Of Stock Parts'], $data['Category Number Active Subjects']
+                    ), number($data['Part Category Number Out Of Stock Parts'])
                 ),
                 'stock_error'  => sprintf(
                     '<span class="%s" title="%s">%s</span>', ($data['Part Category Number Error Parts'] == 0
@@ -1189,8 +1159,8 @@ function part_categories($_data, $db, $user, $account) {
                     : (ratio(
                         $data['Part Category Number Error Parts'], $data['Category Number Active Subjects']
                     ) > .10 ? 'error' : 'warning')), percentage(
-                    $data['Part Category Number Error Parts'], $data['Category Number Active Subjects']
-                ), number($data['Part Category Number Error Parts'])
+                        $data['Part Category Number Error Parts'], $data['Category Number Active Subjects']
+                    ), number($data['Part Category Number Error Parts'])
                 ),
 
                 'dispatched'     => number($data['dispatched'], 0),
@@ -1277,28 +1247,28 @@ function part_categories($_data, $db, $user, $account) {
 
                 'dispatched_year0' => sprintf(
                     '<span>%s</span> %s', number($data['Part Category Year To Day Acc Dispatched']), delta_icon(
-                        $data["Part Category Year To Day Acc Dispatched"], $data["Part Category Year To Day Acc 1YB Dispatched"]
-                    )
+                                            $data["Part Category Year To Day Acc Dispatched"], $data["Part Category Year To Day Acc 1YB Dispatched"]
+                                        )
                 ),
                 'dispatched_year1' => sprintf(
                     '<span>%s</span> %s', number($data['Part Category 1 Year Ago Dispatched']), delta_icon(
-                        $data["Part Category 1 Year Ago Dispatched"], $data["Part Category 2 Year Ago Dispatched"]
-                    )
+                                            $data["Part Category 1 Year Ago Dispatched"], $data["Part Category 2 Year Ago Dispatched"]
+                                        )
                 ),
                 'dispatched_year2' => sprintf(
                     '<span>%s</span> %s', number($data['Part Category 2 Year Ago Dispatched']), delta_icon(
-                        $data["Part Category 2 Year Ago Dispatched"], $data["Part Category 3 Year Ago Dispatched"]
-                    )
+                                            $data["Part Category 2 Year Ago Dispatched"], $data["Part Category 3 Year Ago Dispatched"]
+                                        )
                 ),
                 'dispatched_year3' => sprintf(
                     '<span>%s</span> %s', number($data['Part Category 3 Year Ago Dispatched']), delta_icon(
-                        $data["Part Category 3 Year Ago Dispatched"], $data["Part Category 4 Year Ago Dispatched"]
-                    )
+                                            $data["Part Category 3 Year Ago Dispatched"], $data["Part Category 4 Year Ago Dispatched"]
+                                        )
                 ),
                 'dispatched_year4' => sprintf(
                     '<span>%s</span> %s', number($data['Part Category 4 Year Ago Dispatched']), delta_icon(
-                        $data["Part Category 4 Year Ago Dispatched"], $data["Part Category 5 Year Ago Dispatched"]
-                    )
+                                            $data["Part Category 4 Year Ago Dispatched"], $data["Part Category 5 Year Ago Dispatched"]
+                                        )
                 ),
 
                 'dispatched_quarter0' => sprintf(
@@ -1310,23 +1280,23 @@ function part_categories($_data, $db, $user, $account) {
                 ),
                 'dispatched_quarter1' => sprintf(
                     '<span>%s</span> %s', number($data['Part Category 1 Quarter Ago Dispatched']), delta_icon(
-                        $data["Part Category 1 Quarter Ago Dispatched"], $data["Part Category 1 Quarter Ago 1YB Dispatched"]
-                    )
+                                            $data["Part Category 1 Quarter Ago Dispatched"], $data["Part Category 1 Quarter Ago 1YB Dispatched"]
+                                        )
                 ),
                 'dispatched_quarter2' => sprintf(
                     '<span>%s</span> %s', number($data['Part Category 2 Quarter Ago Dispatched']), delta_icon(
-                        $data["Part Category 2 Quarter Ago Dispatched"], $data["Part Category 2 Quarter Ago 1YB Dispatched"]
-                    )
+                                            $data["Part Category 2 Quarter Ago Dispatched"], $data["Part Category 2 Quarter Ago 1YB Dispatched"]
+                                        )
                 ),
                 'dispatched_quarter3' => sprintf(
                     '<span>%s</span> %s', number($data['Part Category 3 Quarter Ago Dispatched']), delta_icon(
-                        $data["Part Category 3 Quarter Ago Dispatched"], $data["Part Category 3 Quarter Ago 1YB Dispatched"]
-                    )
+                                            $data["Part Category 3 Quarter Ago Dispatched"], $data["Part Category 3 Quarter Ago 1YB Dispatched"]
+                                        )
                 ),
                 'dispatched_quarter4' => sprintf(
                     '<span>%s</span> %s', number($data['Part Category 4 Quarter Ago Dispatched']), delta_icon(
-                        $data["Part Category 4 Quarter Ago Dispatched"], $data["Part Category 4 Quarter Ago 1YB Dispatched"]
-                    )
+                                            $data["Part Category 4 Quarter Ago Dispatched"], $data["Part Category 4 Quarter Ago 1YB Dispatched"]
+                                        )
                 ),
 
 
@@ -1374,8 +1344,7 @@ function categories($_data, $db, $user) {
     $rtext_label = 'category';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
     if ($result = $db->query($sql)) {
 
@@ -1449,8 +1418,7 @@ function category_all_availeable_parts($_data, $db, $user) {
 
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
     $adata = array();
@@ -1505,8 +1473,7 @@ function category_all_parts($_data, $db, $user) {
 
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
     $adata = array();
@@ -1534,7 +1501,9 @@ function category_all_parts($_data, $db, $user) {
                 'id'               => (integer)$data['Part SKU'],
                 'reference'        => $data['Part Reference'],
                 'unit_description' => $data['Part Unit Description'],
-                'family'           => ($data['Category Code'] == '' ? '<span class="very_discreet italic">'._('Not associated').'</span>' : '<span class="link" onClick="change_view(\'category/'
+                'family'           => ($data['Category Code'] == ''
+                    ? '<span class="very_discreet italic">'._('Not associated').'</span>'
+                    : '<span class="link" onClick="change_view(\'category/'
                     .$data['Category Key'].'\')">'.$data['Category Code'].'</span>'),
                 'status'           => $status
             );
@@ -1566,8 +1535,7 @@ function product_families($_data, $db, $user) {
     $rtext_label = 'store';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
     //print $sql;
@@ -1645,7 +1613,11 @@ function sales_history($_data, $db, $user, $account) {
         $rtext_label       = 'year';
         $_group_by         = ' group by Year(`Date`) ';
         $sql_totals_fields = 'Year(`Date`)';
-    } elseif ($_data['parameters']['frequency'] == 'monthly') {
+    } elseif ($_data['parameters']['frequency'] == 'quarterly') {
+        $rtext_label       = 'quarter';
+        $_group_by         = '  group by YEAR(`Date`), QUARTER(`Date`) ';
+        $sql_totals_fields = 'DATE_FORMAT(`Date`,"%Y %q")';
+    }  elseif ($_data['parameters']['frequency'] == 'monthly') {
         $rtext_label       = 'month';
         $_group_by         = '  group by DATE_FORMAT(`Date`,"%Y-%m") ';
         $sql_totals_fields = 'DATE_FORMAT(`Date`,"%Y-%m")';
@@ -1697,8 +1669,12 @@ function sales_history($_data, $db, $user, $account) {
 
 
     $sql = sprintf(
-        'SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=date(%s) AND `Date`<=DATE(%s) %s ORDER BY %s  LIMIT %s', prepare_mysql($from), prepare_mysql($to), $_group_by,
-        "`Date` $order_direction ", "$start_from,$number_results"
+        'SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=date(%s) AND `Date`<=DATE(%s) %s ORDER BY %s  LIMIT %s',
+        prepare_mysql($from),
+        prepare_mysql($to),
+        $_group_by,
+        "`Date` $order_direction ",
+        "$start_from,$number_results"
     );
     //print $sql;
 
@@ -1720,7 +1696,11 @@ function sales_history($_data, $db, $user, $account) {
             if ($_data['parameters']['frequency'] == 'annually') {
                 $date  = strftime("%Y", strtotime($data['Date'].' +0:00'));
                 $_date = $date;
-            } elseif ($_data['parameters']['frequency'] == 'monthly') {
+            } elseif ($_data['parameters']['frequency'] == 'quarterly') {
+
+                $date  = 'Q'.ceil(date('n', strtotime($data['Date'].' +0:00'))/3).' '.strftime("%Y", strtotime($data['Date'].' +0:00'));
+                $_date = $date;
+            }elseif ($_data['parameters']['frequency'] == 'monthly') {
                 $date  = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
                 $_date = $date;
             } elseif ($_data['parameters']['frequency'] == 'weekly') {

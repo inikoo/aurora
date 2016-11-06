@@ -82,3 +82,12 @@
     }
   }
 }
+
+.time_series_set_info{
+  tr.strong td{padding-top: 15px}
+  tr.top td{border-bottom: 1px solid #ccc}
+  tr.ceiling td{border-top: 1px solid #ccc}
+
+  td{padding:5px 20px}
+
+}

@@ -1,8 +1,8 @@
 <?php
 /*
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
- Created: 24 August 2016 at 12:20:28 GMT+8, Kuala Lumpur, Malysia
+ Author: Raul Perusquia <raul@inikoo.com>
+ Created: 24 August 2016 at 12:20:28 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2016, Inikoo
 
  Version 3

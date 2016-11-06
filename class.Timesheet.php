@@ -3,7 +3,7 @@
 /*
 
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
 
  Copyright (c) 2014, Inikoo
  Created: 22 November 2015 at 17:46:16 GMT Sheffield UK

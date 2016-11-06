@@ -2,7 +2,7 @@
 /*
 
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Created: 12 August 2016 at 22:03:03 GMT+8, Kuala Lumpur, Malaysia
 
  Copyright (c) 2016, Inikoo
@@ -16,10 +16,27 @@ require_once 'utils/date_functions.php';
 trait PartCategory {
 
 
-    function create_part_timeseries($data) {
-
+    function create_part_timeseries($data, $fork_key = 3) {
+        print "x2 $fork_key x";
 
         if ($this->get('Category Branch Type') == 'Root') {
+
+
+
+            if ($fork_key) {
+
+
+                $sql = sprintf(
+                    "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%s WHERE `Fork Key`=%d ",
+                    0,
+                    prepare_mysql('0'),
+                    $fork_key
+                );
+
+                $this->db->exec($sql);
+
+            }
+
             return;
         }
 
@@ -28,7 +45,7 @@ trait PartCategory {
         $data['Timeseries Parent Key'] = $this->id;
 
         $timeseries = new Timeseries('find', $data, 'create');
-        if ($timeseries->new or true) {
+        if ($timeseries->id) {
 
 
             if ($this->data['Part Category Valid From'] != '') {
@@ -79,7 +96,7 @@ trait PartCategory {
             if ($from and $to) {
 
 
-                $this->update_part_timeseries_record($timeseries, $to, $from);
+                $this->update_part_timeseries_record($timeseries, $to, $from, $fork_key);
 
 
             }
@@ -95,21 +112,55 @@ trait PartCategory {
     }
 
 
-    function update_part_timeseries_record($timeseries, $to, $from) {
+    function update_part_timeseries_record($timeseries, $to, $from, $fork_key) {
+
+
 
         if ($this->get('Category Branch Type') == 'Root') {
+
+
+            if ($fork_key) {
+
+
+                $sql = sprintf(
+                    "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%d WHERE `Fork Key`=%d ",
+                    0,
+                    $timeseries->id,
+                    $fork_key
+                );
+
+                $this->db->exec($sql);
+
+            }
+
             return;
         }
 
         $dates = date_frequency_range(
             $this->db, $timeseries->get('Timeseries Frequency'), $from, $to
         );
-        foreach ($dates as $date_frequency_period) {
 
-            list($sold_amount, $deliveries, $skos)
-                = $this->get_part_timeseries_record_data(
-                $timeseries, $date_frequency_period
+        if ($fork_key) {
+
+            $sql = sprintf(
+                "UPDATE `Fork Dimension` SET `Fork State`='In Process' ,`Fork Operations Total Operations`=%d,`Fork Start Date`=NOW(),`Fork Result`=%d  WHERE `Fork Key`=%d ",
+                count($dates),
+                $timeseries->id,
+                $fork_key
             );
+            print "$sql\n";
+            $this->db->exec($sql);
+        }
+
+        $timeseries->update(
+            array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
+        );
+
+
+        $index = 0;
+        foreach ($dates as $date_frequency_period) {
+            $index++;
+            list($sold_amount, $deliveries, $skos) = $this->get_part_timeseries_record_data($timeseries, $date_frequency_period);
 
             //print_r($date_frequency_period);
             $_date = gmdate(
@@ -151,7 +202,32 @@ trait PartCategory {
                 }
 
             }
+
+            if ($fork_key) {
+                $skip_every = 1;
+                if ($index % $skip_every == 0) {
+                    $sql = sprintf(
+                        "UPDATE `Fork Dimension` SET `Fork Operations Done`=%d  WHERE `Fork Key`=%d ", $index, $fork_key
+                    );
+                    $this->db->exec($sql);
+                    print "$sql\n";
+                }
+
+            }
+
+
             $timeseries->update_stats();
+
+        }
+
+        if($fork_key){
+
+            $sql = sprintf(
+                "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%d WHERE `Fork Key`=%d ", $index,
+                $timeseries->id, $fork_key
+            );
+
+            $this->db->exec($sql);
 
         }
 
@@ -319,6 +395,20 @@ trait PartCategory {
 
         }
 
+      //  print "$db_interval";
+
+        if(in_array($db_interval,['Total','Year To Date','Quarter To Date','Week To Date','Month To Date','Today'])){
+
+            $this->update(['Part Category Acc To Day Updated'=>gmdate('Y-m-d H:i:s')],'no_history');
+
+        }elseif(in_array($db_interval,['1 Year','1 Month','1 Week','1 Quarter'])){
+
+            $this->update(['Part Category Acc Ongoing Intervals Updated'=>gmdate('Y-m-d H:i:s')],'no_history');
+        }elseif(in_array($db_interval,['Last Month','Last Week','Yesterday','Last Year'])){
+
+            $this->update(['Part Category Acc Previous Intervals Updated'=>gmdate('Y-m-d H:i:s')],'no_history');
+        }
+
 
     }
 
@@ -376,26 +466,7 @@ trait PartCategory {
 
     }
 
-    function update_part_category_last_period_sales() {
-        if (!$this->skip_update_sales) {
-            $this->update_part_category_sales('Yesterday');
-            $this->update_part_category_sales('Last Week');
-            $this->update_part_category_sales('Last Month');
-        }
-    }
 
-    function update_part_category_interval_sales() {
-        if (!$this->skip_update_sales) {
-            $this->update_part_category_sales('Total');
-            $this->update_part_category_sales('3 Year');
-            $this->update_part_category_sales('1 Year');
-            $this->update_part_category_sales('6 Month');
-            $this->update_part_category_sales('1 Quarter');
-            $this->update_part_category_sales('1 Month');
-            $this->update_part_category_sales('10 Day');
-            $this->update_part_category_sales('1 Week');
-        }
-    }
 
     function get_subcategories_status_numbers($options = '') {
 
@@ -604,6 +675,8 @@ trait PartCategory {
         );
         $this->update($data_to_update, 'no_history');
 
+        $this->update(['Part Category Acc Previous Intervals Updated'=>gmdate('Y-m-d H:i:s')],'no_history');
+
 
     }
 
@@ -649,6 +722,9 @@ trait PartCategory {
             );
             $this->update($data_to_update, 'no_history');
         }
+
+        $this->update(['Part Category Acc Previous Intervals Updated'=>gmdate('Y-m-d H:i:s')],'no_history');
+
 
     }
 

@@ -6,7 +6,7 @@
  This file contains the Country Class
 
  About:
- Autor: Raul Perusquia <rulovico@gmail.com>
+ Author: Raul Perusquia <rulovico@gmail.com>
 
  Copyright (c) 2009, Inikoo
 

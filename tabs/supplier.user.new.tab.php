@@ -1,7 +1,7 @@
 <?php
 /*
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Created: 24 June 2016 at 15:10:27 BST, Plane (Jakarta-Bali)
  Copyright (c) 2016, Inikoo
 

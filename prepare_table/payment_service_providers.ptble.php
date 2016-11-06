@@ -1,7 +1,7 @@
 <?php
 /*
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Created: 30 October 2015 at 18:15:06 CET, Pisa-Milan (train), Italy
  Copyright (c) 2015, Inikoo
 

@@ -1,7 +1,7 @@
 <?php
 /*
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Created: 3 November 2015 at 15:07:32 CET, Tessera, Italy
  Copyright (c) 2015, Inikoo
 

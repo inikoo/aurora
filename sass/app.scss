@@ -704,7 +704,7 @@ right connector from last child*/
 }
 
 .realce {
-  color: $color_realce
+  color: $color_highlight
 }
 
 .success {
@@ -1016,6 +1016,39 @@ right connector from last child*/
     }
   }
 }
+
+.progress_bar_container {
+  width: 120px;
+  align: center;
+  padding: 0px;
+  position: relative;
+  .progress_bar_bg {
+    position: absolute;
+    top: 1px;
+    color: #ddd;
+    z-index: 10;
+    height: 22px;
+    line-height: 22px;
+    background: rgba(0,128,0,0.05);
+    width: 100%;
+
+  }
+  .progress_bar {
+    position: absolute;
+    top: 1px;
+    background: green;
+    width: 0%;
+    overflow: hidden;
+    color: #fff;
+    z-index: 20;
+    height: 22px;
+    line-height: 22px;
+    -webkit-transition: width 1s;
+    transition: width 1s;
+  }
+
+}
+
 
 @import 'media_screen_small';
 

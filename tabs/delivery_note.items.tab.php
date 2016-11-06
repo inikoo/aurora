@@ -1,7 +1,7 @@
 <?php
 /*
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Created: 30 October 2015 at 15:10:19 CETT, Pisa-Milan (train), Italy
  Copyright (c) 2015, Inikoo
 

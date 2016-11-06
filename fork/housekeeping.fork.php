@@ -1,6 +1,6 @@
 <?php
 /*
- Autor: Raul Perusquia <rulovico@gmail.com>
+ Author: Raul Perusquia <rulovico@gmail.com>
  Created: 15 November 2014 11:35:49 GMT, Langley Mill Uk
  Copyright (c) 2014, Inikoo
 
