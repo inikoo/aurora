@@ -1,6 +1,6 @@
 <?php
 /*
- Autor: Raul Perusquia <rulovico@gmail.com>
+ Author: Raul Perusquia <rulovico@gmail.com>
  Created: 5 October 2016 at 12:12:33 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2014, Inikoo
 

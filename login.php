@@ -5,7 +5,7 @@
  UI login page
 
  About:
- Autor: Raul Perusquia <rulovico@gmail.com>
+ Author: Raul Perusquia <rulovico@gmail.com>
  Refurbished: 15 November 2015 at 02:57:40 GMT Sheffield UK
 
  Copyright (c) 2009, Inikoo

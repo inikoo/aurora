@@ -1,7 +1,7 @@
 <?php
 /*
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Refurbished: 17 December 2015 at 08:39:25 CET, Barcelona Airpoty , Spain
  Copyright (c) 2015, Inikoo
 

@@ -5,7 +5,7 @@
  This file contains the Category Class
 
  About:
- Autor: Raul Perusquia <rulovico@gmail.com>
+ Author: Raul Perusquia <rulovico@gmail.com>
 
  Copyright (c) 2009, Inikoo
 
@@ -928,14 +928,25 @@ class Category extends DB_Table {
                             return '';
                         } else {
 
-                            return strftime(
-                                "%a %e %b %Y", strtotime(
-                                    $this->data['Part Category '.$key].' +0:00'
-                                )
-                            );
+                            return strftime("%a %e %b %Y", strtotime($this->data['Part Category '.$key].' +0:00'));
+
+                        }
+
+                        break;
+
+                    case 'Acc To Day Updated':
+                    case 'Acc Ongoing Intervals Updated':
+                    case 'Acc Previous Intervals Updated':
+
+                        if ($this->data['Part Category '.$key] == '') {
+                            return '';
+                        } else {
+
+                            return strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($this->data['Part Category '.$key].' +0:00'));
 
                         }
                         break;
+
                 }
 
                 include_once 'utils/natural_language.php';
@@ -2418,9 +2429,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                 $this->update_field($field, $value, $options);
 
             }
-        } elseif (array_key_exists(
-            $field, $this->base_data('Product Category Dimension')
-        )) {
+        } elseif (array_key_exists($field, $this->base_data('Product Category Dimension'))) {
 
             switch ($field) {
 
@@ -2597,15 +2606,15 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
                 // $this->update_subject_field($field, $value, $options);
             }
-        } elseif (array_key_exists(
-            $field, $this->base_data('Part Category Data')
-        )) {
+        }elseif (array_key_exists($field, $this->base_data('Part Category Dimension'))) {
+            $this->update_table_field(
+                $field, $value, $options, 'Part Category', 'Part Category Dimension', $this->id
+            );
+        } elseif (array_key_exists($field, $this->base_data('Part Category Data'))) {
             $this->update_table_field(
                 $field, $value, $options, 'Part Category', 'Part Category Data', $this->id
             );
-        } elseif (array_key_exists(
-            $field, $this->base_data('Product Category Data')
-        )) {
+        } elseif (array_key_exists($field, $this->base_data('Product Category Data'))) {
             $this->update_table_field(
                 $field, $value, $options, 'Product Category', 'Product Category Data', $this->id
             );
@@ -3104,82 +3113,87 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
     }
 
-    function create_timeseries($data) {
+    function create_timeseries($data,$fork_key=false) {
         switch ($this->data['Category Scope']) {
             case('Part'):
-
-                $this->create_part_timeseries($data);
+                $this->create_part_timeseries($data,$fork_key);
                 break;
             case('Product'):
-
-                $this->create_product_timeseries($data);
-
+                $this->create_product_timeseries($data,$fork_key);
                 break;
-
+            case('Invoice'):
+                $this->create_invoice_timeseries($data,$fork_key);
+                break;
+            case('Supplier'):
+                $this->create_supplier_timeseries($data,$fork_key);
+                break;
 
         }
 
     }
 
-    function update_up_today() {
 
-        switch ($this->data['Category Subject']) {
-            case 'Invoice':
-                $this->update_invoice_category_up_today_sales();
-                break;
-            case('Supplier'):
-                $this->update_supplier_category_up_today_sales();
-                break;
+    function update_sales_from_invoices($interval, $this_year =true, $last_year = true){
+        switch ($this->data['Category Scope']) {
             case('Part'):
-                $this->update_part_category_up_today_sales();
+                $this->update_part_category_sales($interval, $this_year , $last_year);
+                break;
+            case('Product'):
+                $this->update_product_category_sales($interval, $this_year , $last_year);
+                break;
+            case('Invoice'):
+                $this->update_invoice_category_sales($interval, $this_year , $last_year);
+                break;
+            case('Supplier'):
+                $this->update_supplier_category_sales($interval, $this_year , $last_year);
                 break;
 
-            default:
-
-                break;
         }
 
     }
-
-    function update_last_period() {
-
-        switch ($this->data['Category Subject']) {
-            case 'Invoice':
-                $this->update_invoice_category_last_period_sales();
+    
+    function update_previous_years_data(){
+        switch ($this->data['Category Scope']) {
+            case('Part'):
+                $this->update_part_category_previous_years_data();
+                break;
+            case('Product'):
+                $this->update_product_category_previous_years_data();
+                break;
+            case('Invoice'):
+                $this->update_invoice_category_previous_years_data();
                 break;
             case('Supplier'):
-                $this->update_supplier_category_last_period_sales();
                 $this->update_supplier_category_previous_years_data();
                 break;
-            case('Part'):
-                $this->update_part_category_last_period_sales();
-                break;
-            default:
 
-                break;
         }
-
+        
     }
 
-    function update_last_interval() {
 
-        switch ($this->data['Category Subject']) {
-            case 'Invoice':
-                $this->update_invoice_category_interval_sales();
+    function update_previous_quarters_data(){
+        switch ($this->data['Category Scope']) {
+            case('Part'):
+                $this->update_part_category_previous_quarters_data();
+                break;
+            case('Product'):
+                $this->update_product_category_previous_quarters_data();
+                break;
+            case('Invoice'):
+                $this->update_invoice_category_previous_quarters_data();
                 break;
             case('Supplier'):
-                $this->update_supplier_category_interval_sales();
-                break;
-            case('Part'):
-                $this->update_part_category_interval_sales();
+                $this->update_supplier_category_previous_quarters_data();
                 break;
 
-            default:
-
-                break;
         }
 
     }
+
+
+
+
 
     function get_other_categories() {
 

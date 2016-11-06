@@ -1,7 +1,7 @@
 <?php
 /*
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Created: 6 October 2015 at 22:11:57 BST, Birmingham->Malaga (Plane)
  Copyright (c) 2015, Inikoo
 

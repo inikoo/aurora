@@ -3,7 +3,7 @@
 /*
 
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Refurbished: 30 December 2015 at 16:01:40 GMT+8, Kuala Lumpur, Malaysia
 
  Copyright (c) 2013 Inikoo
@@ -32,13 +32,13 @@ switch ($tipo) {
     case('get_process_bar'):
         $data = prepare_values(
             $_REQUEST, array(
-                'fork_key'  => array('type' => 'key'),
-                'tag'       => array('type' => 'string'),
-                'extra_key' => array(
-                    'type'     => 'key',
-                    'optional' => true
-                )
-            )
+                         'fork_key'  => array('type' => 'key'),
+                         'tag'       => array('type' => 'string'),
+                         'extra_key' => array(
+                             'type'     => 'key',
+                             'optional' => true
+                         )
+                     )
         );
 
 
@@ -58,7 +58,7 @@ function get_process_bar($data, $db) {
 
     $fork_key = $data['fork_key'];
     $sql      = sprintf(
-        "SELECT `Fork Result`,`Fork Scheduled Date`,`Fork Start Date`,`Fork State`,`Fork Type`,`Fork Operations Done`,`Fork Operations No Changed`,`Fork Operations Errors`,`Fork Operations Total Operations` FROM `Fork Dimension` WHERE `Fork Key`=%d ",
+        "SELECT `Fork Result Metadata`,`Fork Result`,`Fork Scheduled Date`,`Fork Start Date`,`Fork State`,`Fork Type`,`Fork Operations Done`,`Fork Operations No Changed`,`Fork Operations Errors`,`Fork Operations Total Operations` FROM `Fork Dimension` WHERE `Fork Key`=%d ",
         $fork_key
     );
 
@@ -68,6 +68,7 @@ function get_process_bar($data, $db) {
 
 
             $result_extra_data = array();
+            $object_extra_data = array();
 
             if ($row['Fork State'] == 'In Process') {
                 $msg = number(
@@ -85,33 +86,17 @@ function get_process_bar($data, $db) {
                     );
 
                     $result_extra_data = array(
-                        'finished_date'  => $imported_records->get(
-                            'Finish Date'
-                        ),
-                        'cancelled_date' => $imported_records->get(
-                            'Cancelled Date'
-                        ),
-                        'start_date'     => $imported_records->get(
-                            'Start Date'
-                        ),
+                        'finished_date'  => $imported_records->get('Finish Date'),
+                        'cancelled_date' => $imported_records->get('Cancelled Date'),
+                        'start_date'     => $imported_records->get('Start Date'),
 
-                        'finished_list_link'         => '<a href="list.php?id='.$imported_records->get(
-                                'Imported Records Subject List Key'
-                            ).'">'.$imported_records->get(
+                        'finished_list_link'         => '<a href="list.php?id='.$imported_records->get('Imported Records Subject List Key').'">'.$imported_records->get(
                                 'Imported Records Subject List Name'
                             ).'</a>',
-                        'finished_records_done'      => $imported_records->get(
-                            'Imported'
-                        ),
-                        'finished_records_ignored'   => $imported_records->get(
-                            'Ignored'
-                        ),
-                        'finished_records_error'     => $imported_records->get(
-                            'Errors'
-                        ),
-                        'finished_records_cancelled' => $imported_records->get(
-                            'Cancelled'
-                        ),
+                        'finished_records_done'      => $imported_records->get('Imported'),
+                        'finished_records_ignored'   => $imported_records->get('Ignored'),
+                        'finished_records_error'     => $imported_records->get('Errors'),
+                        'finished_records_cancelled' => $imported_records->get('Cancelled'),
                         'finished_state'             => $imported_records->data['Imported Records State']
 
                     );
@@ -170,24 +155,37 @@ function get_process_bar($data, $db) {
                             'page', 'pages', $row['Fork Operations Done']
                         );
                     break;
-                default:
-                    $result_info .= ' '.ngettext(
-                            'record', 'records', $row['Fork Operations Done']
+                case 'timeseries':
+                    $result_info .= ' '.ngettext('record', 'records', $row['Fork Operations Done']);
+                    include_once('class.Timeserie.php');
+                    $timeseries = new Timeseries($row['Fork Result']);
+                    if ($timeseries->id) {
+                        $object_extra_data = array(
+                            'records'     => $timeseries->get('Number Records'),
+                            'last_update' => $timeseries->get('Updated')
                         );
+                    }
+
+                    break;
+                case 'calculate_sales':
+                    $object_extra_data = array('last_update' => $row['Fork Result Metadata']);
+
+                    $result_info .= ' '.ngettext('record', 'records', $row['Fork Operations Done']);
+
+                    break;
+                default:
+                    $result_info .= ' '.ngettext('record', 'records', $row['Fork Operations Done']);
 
             }
 
-            if (percentage(
-                    $row['Fork Operations Done'], $row['Fork Operations Total Operations']
-                ) == '100.0%'
-            ) {
-                $download_info = '<i class="fa fa-spinner fa-spin"></i>'._(
-                        'Saving'
-                    );
+            if (percentage($row['Fork Operations Done'], $row['Fork Operations Total Operations']) == '100.0%') {
+                if ($data['tag'] == 'timeseries') {
+                    $forks_info = _('Done');
+                } else {
+                    $forks_info = '<i class="fa fa-spinner fa-spin"></i>'._('Saving');
+                }
             } else {
-                $download_info = percentage(
-                    $row['Fork Operations Done'], $row['Fork Operations Total Operations']
-                );
+                $forks_info = percentage($row['Fork Operations Done'], $row['Fork Operations Total Operations']);
             }
 
             $response = array(
@@ -209,16 +207,17 @@ function get_process_bar($data, $db) {
                 'msg'               => $msg,
                 'progress'          => sprintf(
                     '%s/%s (%s)', number($row['Fork Operations Done']), number($row['Fork Operations Total Operations']), percentage(
-                        $row['Fork Operations Done'], $row['Fork Operations Total Operations']
-                    )
+                                    $row['Fork Operations Done'], $row['Fork Operations Total Operations']
+                                )
                 ),
                 'percentage'        => percentage(
                     $row['Fork Operations Done'], $row['Fork Operations Total Operations']
                 ),
-                'download_info'     => $download_info,
+                'forks_info'        => $forks_info,
                 'tag'               => $data['tag'],
                 'result_info'       => $result_info,
-                'result_extra_data' => $result_extra_data
+                'result_extra_data' => $result_extra_data,
+                'object_extra_data' => $object_extra_data
 
             );
 

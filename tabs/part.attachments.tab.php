@@ -1,7 +1,7 @@
 <?php
 /*
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Created: 30 August 2016 at 00:07:32 GMT+8, Plane Kuala Lumpur, Malaysia - Denpasar, Bali, Indonesia
  Copyright (c) 2015, Inikoo
 

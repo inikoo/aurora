@@ -2,7 +2,7 @@
 
 /*
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Created: 7 January 2016 at 16:18:05 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2016, Inikoo
 
@@ -30,6 +30,8 @@ $editor = array(
     'Date'         => gmdate('Y-m-d H:i:s')
 );
 
+$timeseries=get_time_series_config();
+
 //families();
 part_families();
 //suppliers();
@@ -50,11 +52,11 @@ function suppliers() {
 
             $timeseries_data = $timeseries['Supplier'];
 
-            foreach ($timeseries_data as $timeserie_data) {
+            foreach ($timeseries_data as $time_series_data) {
 
                 $editor['Date']           = gmdate('Y-m-d H:i:s');
-                $timeserie_data['editor'] = $editor;
-                $supplier->create_timeseries($timeserie_data);
+                $time_series_data['editor'] = $editor;
+                $supplier->create_timeseries($time_series_data);
 
             }
         }
@@ -94,11 +96,11 @@ function families() {
             $timeseries_data = $timeseries[$category->get('Category Scope').'Category'];
             print "creating ".$category->get('Code')." category \n";
 
-            foreach ($timeseries_data as $timeserie_data) {
+            foreach ($timeseries_data as $time_series_data) {
 
                 $editor['Date']           = gmdate('Y-m-d H:i:s');
-                $timeserie_data['editor'] = $editor;
-                $category->create_timeseries($timeserie_data);
+                $time_series_data['editor'] = $editor;
+                $category->create_timeseries($time_series_data);
 
             }
         }
@@ -123,11 +125,11 @@ function stores() {
 
             $timeseries_data = $timeseries['Store'];
 
-            foreach ($timeseries_data as $timeserie_data) {
+            foreach ($timeseries_data as $time_series_data) {
 
                 $editor['Date']           = gmdate('Y-m-d H:i:s');
-                $timeserie_data['editor'] = $editor;
-                $store->create_timeseries($timeserie_data);
+                $time_series_data['editor'] = $editor;
+                $store->create_timeseries($time_series_data);
 
             }
         }
@@ -164,13 +166,13 @@ function part_families() {
 
             $timeseries_data = $timeseries[$category->get('Category Scope').'Category'];
             print "creating ".$category->get('Code')." category \n";
-            foreach ($timeseries_data as $timeserie_data) {
+            foreach ($timeseries_data as $time_series_data) {
 
                 $editor['Date']           = gmdate('Y-m-d H:i:s');
-                $timeserie_data['editor'] = $editor;
+                $time_series_data['editor'] = $editor;
 
 
-                $category->create_timeseries($timeserie_data);
+                $category->create_timeseries($time_series_data);
 
 
             }

@@ -1,7 +1,7 @@
 <?php
 /*
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Created: 117 December 2015 at 07:57:13 CET Barcelona Airport, Spain
  Copyright (c) 2015, Inikoo
 

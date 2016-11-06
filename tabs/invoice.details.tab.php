@@ -1,7 +1,7 @@
 <?php
 /*
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Created:27 October 2015 at 17:25:16 CET, Train Napoles-Florence, Italy
  Copyright (c) 2015, Inikoo
 

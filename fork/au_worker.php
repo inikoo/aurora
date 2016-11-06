@@ -1,8 +1,8 @@
 <?php
 /*
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
- Refurbished: 24 March 2016 at 13:57:44 GMT+8, Kuala Lumpur, Malysia
+ Author: Raul Perusquia <raul@inikoo.com>
+ Refurbished: 24 March 2016 at 13:57:44 GMT+8, Kuala Lumpur, Malaysia
  Created: 2013
  Copyright (c) 2016, Inikoo
 
@@ -21,6 +21,8 @@ include 'export_edit_template.fork.php';
 include 'upload_edit.fork.php';
 include 'housekeeping.fork.php';
 include 'asset_sales.fork.php';
+include 'time_series.fork.php';
+include 'calculate_sales.fork.php';
 
 
 $count_number_used = 0;
@@ -33,6 +35,8 @@ $worker->addFunction("au_export_edit_template", "fork_export_edit_template");
 $worker->addFunction("au_upload_edit", "fork_upload_edit");
 $worker->addFunction("au_housekeeping", "fork_housekeeping");
 $worker->addFunction("au_asset_sales", "fork_asset_sales");
+$worker->addFunction("au_time_series", "fork_time_series");
+$worker->addFunction("au_calculate_sales", "fork_calculate_sales");
 
 
 $db      = false;
@@ -55,6 +59,7 @@ function get_fork_metadata($job) {
     $fork_metadata    = json_decode(
         AESDecryptCtr(base64_decode($fork_raw_data), $fork_encrypt_key, 256), true
     );
+
 
 
     $inikoo_account_code = $fork_metadata['code'];
@@ -170,7 +175,9 @@ function get_fork_data($job) {
 
 
     $sql = sprintf(
-        "SELECT `Fork Process Data` FROM `Fork Dimension` WHERE `Fork Key`=%d AND `Fork Token`=%s", $fork_key, prepare_mysql($token)
+        "SELECT `Fork Process Data` FROM `Fork Dimension` WHERE `Fork Key`=%d AND `Fork Token`=%s",
+        $fork_key,
+        prepare_mysql($token)
     );
 
 

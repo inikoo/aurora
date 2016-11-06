@@ -1,7 +1,7 @@
 <?php
 /*
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Created: 4 November 2015 at 22:57:18 CET Tessera Italy
  Copyright (c) 2015, Inikoo
 

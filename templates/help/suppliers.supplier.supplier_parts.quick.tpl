@@ -1,6 +1,6 @@
 <!-- 
 About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Created: 23 May 2016 at 08:52:51 CEST, Plane (Paris-Malaga)
 
  Copyright (c) 2016, Inikoo

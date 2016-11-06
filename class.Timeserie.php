@@ -3,7 +3,7 @@
 /*
 
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
 
  Copyright (c) 2014, Inikoo
  Created: 7 January 2016 at 15:40:47 GMT+8, Kuala Lumpur, Malaysia
@@ -11,6 +11,7 @@
  Version 2.0
 */
 
+include_once 'class.DB_Table.php';
 
 class Timeseries extends DB_Table {
 
@@ -86,12 +87,8 @@ class Timeseries extends DB_Table {
 
 
         $create = '';
-        $update = '';
         if (preg_match('/create/i', $options)) {
             $create = 'create';
-        }
-        if (preg_match('/update/i', $options)) {
-            $update = 'update';
         }
 
 
@@ -105,7 +102,10 @@ class Timeseries extends DB_Table {
 
         $sql = sprintf(
             "SELECT `Timeseries Key` FROM `Timeseries Dimension` WHERE `Timeseries Type`=%s AND `Timeseries Frequency`=%s AND `Timeseries Scope`=%s  AND `Timeseries Parent`=%s  AND `Timeseries Parent Key`=%s",
-            prepare_mysql($data['Timeseries Type']), prepare_mysql($data['Timeseries Frequency']), prepare_mysql($data['Timeseries Scope']), prepare_mysql($data['Timeseries Parent']),
+            prepare_mysql($data['Timeseries Type']),
+            prepare_mysql($data['Timeseries Frequency']),
+            prepare_mysql($data['Timeseries Scope']),
+            prepare_mysql($data['Timeseries Parent']),
             prepare_mysql($data['Timeseries Parent Key'])
 
         );
@@ -154,10 +154,10 @@ class Timeseries extends DB_Table {
 
             if (in_array(
                 $key, array(
-                    'Timeseries Parent',
-                    'Timeseries Parent Key',
-                    'Timeseries Scope'
-                )
+                        'Timeseries Parent',
+                        'Timeseries Parent Key',
+                        'Timeseries Scope'
+                    )
             )) {
                 $values .= ','.prepare_mysql($value, true);
             } else {
@@ -210,10 +210,20 @@ class Timeseries extends DB_Table {
 
     function get($key = '') {
 
-        global $account;
+        if(!$this->id){return '';}
 
 
         switch ($key) {
+            case 'Updated':
+            case 'Created':
+
+                if ($this->data['Timeseries '.$key] == '') {
+                    return '';
+
+                }
+
+                return strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($this->data['Timeseries '.$key].' +0:00'));
+                break;
             case 'Name':
                 switch ($this->data['Timeseries Type']) {
                     case 'StoreSales':

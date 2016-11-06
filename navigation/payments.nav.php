@@ -2,7 +2,7 @@
 /*
 
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Created: 2 November 2015 at 11:32:44 CET, Lido (Venice) , Italy
 
  Copyright (c) 2015, Inikoo

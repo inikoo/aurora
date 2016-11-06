@@ -2,7 +2,7 @@
 /*
 
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Created: 28 April 2016 at 11:01:05 GMT+8, Lovina, Ubud , Indonesia
 
  Copyright (c) 2016, Inikoo

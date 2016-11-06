@@ -2,7 +2,7 @@
 
 /*
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Created: 10 December 2015 at 14:41:35 GMT Sheffield UK
  Copyright (c) 2015, Inikoo
 

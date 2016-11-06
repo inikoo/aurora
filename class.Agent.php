@@ -1,7 +1,7 @@
 <?php
 /*
   About:
-  Autor: Raul Perusquia <rulovico@gmail.com>
+  Author: Raul Perusquia <rulovico@gmail.com>
   Created: 27 April 2016 at 18:00:39 GMT+8, Lovina, Bali , Indonesioa
 
   Copyright (c) 2009, Inikoo

@@ -1,7 +1,7 @@
 <?php
 /*
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Created: 29 September 2015 15:16:52 GMT+7, MIA-MAnchester (Train), UK
  Copyright (c) 2015, Inikoo
 

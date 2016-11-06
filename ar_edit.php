@@ -1,7 +1,7 @@
 <?php
 /*
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Created: 6 November 2015 at 13:57:45 GMT, Sheffield UK
  Copyright (c) 2015, Inikoo
 
@@ -30,14 +30,37 @@ $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
 
+    case 'calculate_sales':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'parent'           => array('type' => 'string'),
+                         'parent_key'       => array('type' => 'key'),
+                         'scope'           => array('type' => 'string'),
+
+                     )
+        );
+        calculate_sales($account, $db, $data, $editor);
+        break;
+    case 'create_time_series':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'parent'           => array('type' => 'string'),
+                         'parent_key'       => array('type' => 'key'),
+                         'time_series_data' => array(
+                             'type'     => 'json array',
+                             'optional' => true
+                         )
+                     )
+        );
+        create_time_series($account, $db, $data, $editor);
+
+        break;
     case 'refresh_webpage_see_also':
         $data = prepare_values(
             $_REQUEST, array(
-                'object' => array('type' => 'string'),
-                'key'    => array('type' => 'key'),
-
-
-            )
+                         'object' => array('type' => 'string'),
+                         'key'    => array('type' => 'key')
+                     )
         );
         refresh_webpage_see_also($account, $db, $user, $editor, $data, $smarty);
 
@@ -45,18 +68,18 @@ switch ($tipo) {
     case 'edit_item_in_order':
         $data = prepare_values(
             $_REQUEST, array(
-                'field'             => array('type' => 'string'),
-                'parent'            => array('type' => 'string'),
-                'parent_key'        => array('type' => 'key'),
-                'item_key'          => array('type' => 'key'),
-                'item_historic_key' => array('type' => 'key'),
-                'transaction_key'   => array(
-                    'type'     => 'numeric',
-                    'optional' => true
-                ),
-                'qty'               => array('type' => 'numeric'),
+                         'field'             => array('type' => 'string'),
+                         'parent'            => array('type' => 'string'),
+                         'parent_key'        => array('type' => 'key'),
+                         'item_key'          => array('type' => 'key'),
+                         'item_historic_key' => array('type' => 'key'),
+                         'transaction_key'   => array(
+                             'type'     => 'numeric',
+                             'optional' => true
+                         ),
+                         'qty'               => array('type' => 'numeric'),
 
-            )
+                     )
         );
         edit_item_in_order($account, $db, $user, $editor, $data, $smarty);
         break;
@@ -64,13 +87,13 @@ switch ($tipo) {
     case 'bridge':
         $data = prepare_values(
             $_REQUEST, array(
-                'object'      => array('type' => 'string'),
-                'key'         => array('type' => 'key'),
-                'subject'     => array('type' => 'string'),
-                'subject_key' => array('type' => 'key'),
-                'operation'   => array('type' => 'string'),
+                         'object'      => array('type' => 'string'),
+                         'key'         => array('type' => 'key'),
+                         'subject'     => array('type' => 'string'),
+                         'subject_key' => array('type' => 'key'),
+                         'operation'   => array('type' => 'string'),
 
-            )
+                     )
         );
         edit_bridge($account, $db, $user, $editor, $data, $smarty);
         break;
@@ -78,11 +101,11 @@ switch ($tipo) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                'category_key' => array('type' => 'key'),
-                'subject_key'  => array('type' => 'key'),
-                'operation'    => array('type' => 'string'),
+                         'category_key' => array('type' => 'key'),
+                         'subject_key'  => array('type' => 'key'),
+                         'operation'    => array('type' => 'string'),
 
-            )
+                     )
         );
         edit_category_subject($account, $db, $user, $editor, $data, $smarty);
         break;
@@ -92,16 +115,16 @@ switch ($tipo) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                'object'   => array('type' => 'string'),
-                'key'      => array('type' => 'string'),
-                'field'    => array('type' => 'string'),
-                'value'    => array('type' => 'string'),
-                'metadata' => array(
-                    'type'     => 'json array',
-                    'optional' => true
-                ),
+                         'object'   => array('type' => 'string'),
+                         'key'      => array('type' => 'string'),
+                         'field'    => array('type' => 'string'),
+                         'value'    => array('type' => 'string'),
+                         'metadata' => array(
+                             'type'     => 'json array',
+                             'optional' => true
+                         ),
 
-            )
+                     )
         );
 
         edit_field($account, $db, $user, $editor, $data, $smarty);
@@ -110,15 +133,15 @@ switch ($tipo) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                'operation' => array('type' => 'string'),
-                'object'    => array('type' => 'string'),
-                'key'       => array('type' => 'key'),
-                'metadata'  => array(
-                    'type'     => 'json array',
-                    'optional' => true
-                ),
+                         'operation' => array('type' => 'string'),
+                         'object'    => array('type' => 'string'),
+                         'key'       => array('type' => 'key'),
+                         'metadata'  => array(
+                             'type'     => 'json array',
+                             'optional' => true
+                         )
 
-            )
+                     )
         );
 
         object_operation($account, $db, $user, $editor, $data, $smarty);
@@ -128,15 +151,15 @@ switch ($tipo) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                'object'   => array('type' => 'string'),
-                'key'      => array('type' => 'key'),
-                'field'    => array('type' => 'string'),
-                'metadata' => array(
-                    'type'     => 'json array',
-                    'optional' => true
-                ),
+                         'object'   => array('type' => 'string'),
+                         'key'      => array('type' => 'key'),
+                         'field'    => array('type' => 'string'),
+                         'metadata' => array(
+                             'type'     => 'json array',
+                             'optional' => true
+                         ),
 
-            )
+                     )
         );
 
         delete_object_component($account, $db, $user, $editor, $data, $smarty);
@@ -147,15 +170,15 @@ switch ($tipo) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                'object'   => array('type' => 'string'),
-                'key'      => array('type' => 'key'),
-                'field'    => array('type' => 'string'),
-                'metadata' => array(
-                    'type'     => 'json array',
-                    'optional' => true
-                ),
+                         'object'   => array('type' => 'string'),
+                         'key'      => array('type' => 'key'),
+                         'field'    => array('type' => 'string'),
+                         'metadata' => array(
+                             'type'     => 'json array',
+                             'optional' => true
+                         ),
 
-            )
+                     )
         );
 
         set_as_main($account, $db, $user, $editor, $data, $smarty);
@@ -164,8 +187,8 @@ switch ($tipo) {
     case 'delete_image':
         $data = prepare_values(
             $_REQUEST, array(
-                'image_bridge_key' => array('type' => 'key'),
-            )
+                         'image_bridge_key' => array('type' => 'key'),
+                     )
         );
 
         delete_image($account, $db, $user, $editor, $data, $smarty);
@@ -174,8 +197,8 @@ switch ($tipo) {
     case 'set_as_principal_image':
         $data = prepare_values(
             $_REQUEST, array(
-                'image_bridge_key' => array('type' => 'key'),
-            )
+                         'image_bridge_key' => array('type' => 'key'),
+                     )
         );
 
         set_as_principal_image($account, $db, $user, $editor, $data, $smarty);
@@ -183,8 +206,8 @@ switch ($tipo) {
     case 'delete_attachment':
         $data = prepare_values(
             $_REQUEST, array(
-                'attachment_bridge_key' => array('type' => 'key'),
-            )
+                         'attachment_bridge_key' => array('type' => 'key'),
+                     )
         );
 
         delete_attachment($account, $db, $user, $editor, $data, $smarty);
@@ -195,12 +218,12 @@ switch ($tipo) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                'object'      => array('type' => 'string'),
-                'parent'      => array('type' => 'string'),
-                'parent_key'  => array('type' => 'key'),
-                'fields_data' => array('type' => 'json array'),
+                         'object'      => array('type' => 'string'),
+                         'parent'      => array('type' => 'string'),
+                         'parent_key'  => array('type' => 'key'),
+                         'fields_data' => array('type' => 'json array'),
 
-            )
+                     )
         );
 
         new_object($account, $db, $user, $editor, $data, $smarty);
@@ -2173,7 +2196,7 @@ function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
 
 function refresh_webpage_see_also($account, $db, $user, $editor, $data, $smarty) {
 
-    // remove this when class Webpage is implemented
+    // TODO remove this when class Webpage is implemented
     $data['object'] = 'old_page';
 
     $object         = get_object($data['object'], $data['key']);
@@ -2202,5 +2225,50 @@ function refresh_webpage_see_also($account, $db, $user, $editor, $data, $smarty)
 
 }
 
+function create_time_series($account, $db, $data, $editor) {
+
+
+    require_once 'utils/new_fork.php';
+
+    $data['editor'] = $editor;
+
+    list($fork_key, $msg) = new_fork(
+        'au_time_series', $data, $account->get('Account Code'), $db
+    );
+
+
+    $response = array(
+        'state'    => 200,
+        'fork_key' => $fork_key,
+        'msg'      => $msg
+
+    );
+    echo json_encode($response);
+
+
+}
+
+function calculate_sales($account, $db, $data, $editor) {
+
+
+    require_once 'utils/new_fork.php';
+
+    $data['editor'] = $editor;
+
+    list($fork_key, $msg) = new_fork(
+        'au_calculate_sales', $data, $account->get('Account Code'), $db
+    );
+
+
+    $response = array(
+        'state'    => 200,
+        'fork_key' => $fork_key,
+        'msg'      => $msg
+
+    );
+    echo json_encode($response);
+
+
+}
 
 ?>

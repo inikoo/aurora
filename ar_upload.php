@@ -1,8 +1,8 @@
 <?php
 /*
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
- Created: 27 March 2016 at 12:20:56 GMT+8 Kuala Lumput Malaysia
+ Author: Raul Perusquia <raul@inikoo.com>
+ Created: 27 March 2016 at 12:20:56 GMT+8 Kuala Lumpur Malaysia
  Copyright (c) 2015, Inikoo
 
  Version 3

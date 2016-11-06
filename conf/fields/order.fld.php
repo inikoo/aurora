@@ -2,8 +2,8 @@
 /*
 
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
- Created: 12 May 2016 at 10:43:19 GMT+8, Kuala Lumpur, Malysia
+ Author: Raul Perusquia <raul@inikoo.com>
+ Created: 12 May 2016 at 10:43:19 GMT+8, Kuala Lumpur, Malaysia
 
  Copyright (c) 2016, Inikoo
 
@@ -39,7 +39,7 @@ $object_fields = array(
 
             array(
                 'class' => 'locked',
-                'id'    => 'Cutomer',
+                'id'    => 'Customer',
                 'value' => $object->get('Order Customer Name').' (<span class="id">'.sprintf(
                         "%05d", $object->get('Order Customer Key')
                     ).'</span>)',

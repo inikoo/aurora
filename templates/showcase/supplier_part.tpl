@@ -15,7 +15,7 @@
         <div class="data_container">
             {assign "image_key" $part->get_main_image_key()}
             <div id="main_image" class="wraptocenter main_image {if $image_key==''}hide{/if}">
-                <img src="/{if $image_key}image_root.php?id={$image_key}&amp;size=small{else}art/nopic.png{/if}"> </span>
+                <img src="/{if $image_key}image_root.php?id={$image_key}&amp;size=small{else}art/nopic.png{/if}">
             </div>
             {include file='upload_main_image.tpl' object='Part' key=$part->id class="{if $image_key!=''}hide{/if}"}
         </div>
@@ -99,21 +99,24 @@
     </div>
     <div class="block info">
         <div id="overviews">
+            <div style="margin-bottom: 5px">
+
+                        <span class="Supplier_Part_Units_Per_Package  "
+                              title="{t}Units per package{/t}">{$supplier_part->get('Supplier Part Units Per Package')}</span>
+                    <i class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i> [<span
+                            class="Packages_Per_Carton"
+                            title="{t}Packages per carton{/t}">{$supplier_part->get('Supplier Part Packages Per Carton')}</span>]
+                    <span class="discreet Supplier_Part_Units_Per_Carton padding_left_10"
+                          title="{t}Units per carton{/t}">{$supplier_part->get('Units Per Carton')}</span>
+            </div>
             <table border="0" class="overview" style="">
+
                 <tr class="main">
                     <td><span class="Average_Delivery">{$supplier_part->get('Average Delivery')}</span></td>
                     <td class="aright highlight Status">{$supplier_part->get('Status')} </td>
                 </tr>
-                <tr>
-                    </td>
-                    <td>
-                    <td class="aright"><span class="Supplier_Part_Units_Per_Package  "
-                                             title="{t}Units per package{/t}">{$supplier_part->get('Supplier Part Units Per Package')}</span>
-                        <i class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i> [<span
-                                class="Packages_Per_Carton"
-                                title="{t}Packages per carton{/t}">{$supplier_part->get('Supplier Part Packages Per Carton')}</span>]
-                        <span class="discreet Supplier_Part_Units_Per_Carton padding_left_10"
-                              title="{t}Units per carton{/t}">{$supplier_part->get('Units Per Carton')}</span></td>
+                <tr class="purchase_order_data">
+                    <td></td>
                 </tr>
             </table>
             <div id="part_data" style="padding-top:10px;clear:both">

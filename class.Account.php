@@ -3,7 +3,7 @@
 
 
  About:
- Autor: Raul Perusquia <rulovico@gmail.com>
+ Author: Raul Perusquia <rulovico@gmail.com>
 
  Copyright (c) 2010, Inikoo
 
@@ -256,16 +256,10 @@ class Account extends DB_Table {
 
 
         $data['Store Valid From']                = gmdate('Y-m-d H:i:s');
-        $data['Store Timezone']                  = preg_replace(
-            '/_/', '/', $data['Store Timezone']
-        );
-        $data['Store Home Country Code 2 Alpha'] = substr(
-            $data['Store Locale'], -2
-        );
+        $data['Store Timezone']                  = preg_replace('/_/', '/', $data['Store Timezone']);
+        $data['Store Home Country Code 2 Alpha'] = substr($data['Store Locale'], -2);
 
-        $country                         = new Country(
-            '2alpha', $data['Store Home Country Code 2 Alpha']
-        );
+        $country                         = new Country('2alpha', $data['Store Home Country Code 2 Alpha']);
         $data['Store Home Country Name'] = $country->get('Country Name');
 
         $store = new Store('find', $data, 'create');
@@ -371,7 +365,7 @@ class Account extends DB_Table {
             }
         } else {
             $this->error = true;
-            $this->msg   = _('None of the barcodes cound be added');
+            $this->msg   = _('None of the bar codes could be added');
 
             return;
         }
@@ -379,7 +373,7 @@ class Account extends DB_Table {
 
         if ($this->new == 0) {
             $this->error = true;
-            $this->msg   = _('None of the barcodes cound be added');
+            $this->msg   = _('None of the bar codes could be added');
 
             return;
         }

@@ -1,6 +1,6 @@
 <!-- 
 About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Created: 21 March 2016 at 18:59:01 GMT+8, Kuala Lumpur, Malaysia
 
  Copyright (c) 2016, Inikoo

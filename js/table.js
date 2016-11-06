@@ -132,8 +132,7 @@ function show_columns_period_options() {
 
         //  console.log(icon.width())
         $('#columns_period_chooser').removeClass('hide').offset({
-            top: $('#columns_period').position().top + height,
-            left: offset.left - $('#columns_period_chooser').width() + icon.width() + 20
+            top: $('#columns_period').position().top + height, left: offset.left - $('#columns_period_chooser').width() + icon.width() + 20
         })
 
 
@@ -159,8 +158,7 @@ function show_columns_frequency_options() {
         console.log(offset.left - $('#columns_frequency_chooser').width() + icon.width() + 20)
 
         $('#columns_frequency_chooser').removeClass('hide').offset({
-            top: $('#columns_frequency').position().top + height,
-            left: offset.left - $('#columns_frequency_chooser').width() + icon.width() + 20
+            top: $('#columns_frequency').position().top + height, left: offset.left - $('#columns_frequency_chooser').width() + icon.width() + 20
         })
 
 
@@ -178,8 +176,7 @@ function show_f_options(element) {
         var height = $('#filter_field').height();
 
         $('#f_options_chooser').removeClass('hide').offset({
-            top: offset.top + height,
-            left: offset.left - 27.2
+            top: offset.top + height, left: offset.left - 27.2
         })
 
     } else {
@@ -223,8 +220,7 @@ function show_elements_types() {
         var height = button.height();
 
         $('#elements_chooser').removeClass('hide').offset({
-            top: offset.top + height,
-            left: offset.left
+            top: offset.top + height, left: offset.left
         })
 
 
@@ -529,8 +525,8 @@ function get_export_process_bar(fork_key, tag, type) {
 
                 $('#export_download_' + type).addClass('hide')
 
-                $('#export_progress_bar_bg_' + type).removeClass('hide').html('&nbsp;' + data.download_info)
-                $('#export_progress_bar_' + type).css('width', data.percentage).removeClass('hide').attr('title', data.progress).html('&nbsp;' + data.download_info);
+                $('#export_progress_bar_bg_' + type).removeClass('hide').html('&nbsp;' + data.forks_info)
+                $('#export_progress_bar_' + type).css('width', data.percentage).removeClass('hide').attr('title', data.progress).html('&nbsp;' + data.forks_info);
                 setTimeout(function () {
                     get_export_process_bar(data.fork_key, data.tag, type)
                 }, 250);

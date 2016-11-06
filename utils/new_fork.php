@@ -3,7 +3,7 @@
 /*
 
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Refurbished: 30 December 2015 at 15:19:00 GMT+8, Kuala Lumpur, Malaysia
 
  Copyright (c) 2013, Inikoo
@@ -30,6 +30,8 @@ function new_fork($type, $data, $account_code, $db) {
 
     $salt = md5(rand());
     $db->exec($sql);
+
+
     $fork_key = $db->lastInsertId();
 
     $fork_metadata = base64_encode(
@@ -40,6 +42,7 @@ function new_fork($type, $data, $account_code, $db) {
                     'token'    => $token,
                     'fork_key' => $fork_key,
                     'salt'     => $salt
+
                 )
             ), $fork_encrypt_key, 256
         )

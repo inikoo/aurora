@@ -2,7 +2,7 @@
 /*
 
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Created: 22 November 2015 at 23:17:17 GMT Sheffiled UK
 
  Copyright (c) 2015, Inikoo

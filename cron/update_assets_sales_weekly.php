@@ -2,7 +2,7 @@
 
 /*
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Created: 31 October 2016 at 09:54:48 GMT+8, Cyberjaya, Malaysia
  Copyright (c) 2016, Inikoo
 
@@ -44,6 +44,9 @@ $editor = array(
     'User Key'     => 0,
     'Date'         => gmdate('Y-m-d H:i:s')
 );
+
+$timeseries=get_time_series_config();
+
 
 //shortcuts($db);
 

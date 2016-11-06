@@ -1,7 +1,7 @@
 <?php
 /*
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Created: 23 September 2015 15:34:56 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2015, Inikoo
 
@@ -100,7 +100,7 @@ function orders($_data, $db, $user) {
             'date'           => strftime(
                 "%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')
             ),
-            'last_date'      => strftime(
+            'last_date'      =>strftime(
                 "%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')
             ),
             'customer'       => $data['Order Customer Name'],

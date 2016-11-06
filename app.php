@@ -2,7 +2,7 @@
 
 /*
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Created:27 August 2015 12:49:03 GMT+8, Singapure
  Copyright (c) 2015, Inikoo
 
