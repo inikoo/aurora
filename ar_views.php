@@ -28,10 +28,10 @@ switch ($tipo) {
     case 'tab':
         $data     = prepare_values(
             $_REQUEST, array(
-                'tab'    => array('type' => 'string'),
-                'subtab' => array('type' => 'string'),
-                'state'  => array('type' => 'json array'),
-            )
+                         'tab'    => array('type' => 'string'),
+                         'subtab' => array('type' => 'string'),
+                         'state'  => array('type' => 'json array'),
+                     )
         );
         $response = array(
             'tab' => get_tab(
@@ -56,13 +56,13 @@ function get_widget_details($db, $smarty, $user, $account) {
 
     $data = prepare_values(
         $_REQUEST, array(
-            'widget'   => array('type' => 'string'),
-            'metadata' => array(
-                'type'     => 'json array',
-                'optional' => true
-            ),
+                     'widget'   => array('type' => 'string'),
+                     'metadata' => array(
+                         'type'     => 'json array',
+                         'optional' => true
+                     ),
 
-        )
+                 )
     );
 
 
@@ -88,26 +88,26 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
     $data = prepare_values(
         $_REQUEST, array(
-            'request'   => array('type' => 'string'),
-            'old_state' => array('type' => 'json array'),
-            'tab'       => array(
-                'type'     => 'string',
-                'optional' => true
-            ),
-            'subtab'    => array(
-                'type'     => 'string',
-                'optional' => true
-            ),
-            'otf'       => array(
-                'type'     => 'string',
-                'optional' => true
-            ),
-            'metadata'  => array(
-                'type'     => 'json array',
-                'optional' => true
-            ),
+                     'request'   => array('type' => 'string'),
+                     'old_state' => array('type' => 'json array'),
+                     'tab'       => array(
+                         'type'     => 'string',
+                         'optional' => true
+                     ),
+                     'subtab'    => array(
+                         'type'     => 'string',
+                         'optional' => true
+                     ),
+                     'otf'       => array(
+                         'type'     => 'string',
+                         'optional' => true
+                     ),
+                     'metadata'  => array(
+                         'type'     => 'json array',
+                         'optional' => true
+                     ),
 
-        )
+                 )
     );
 
     if (isset($data['metadata']['help']) and $data['metadata']['help']) {
@@ -585,7 +585,9 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
             $response['object_showcase'] = get_object_showcase(
                 (isset($modules[$state['module']]['sections'][$state['section']]['showcase']) ? $modules[$state['module']]['sections'][$state['section']]['showcase'] : $state['object']), $state,
-                $smarty, $user, $db, $account
+                                                                                                                                                                                           $smarty,
+                                                                                                                                                                                           $user, $db,
+                                                                                                                                                                                           $account
             );
 
         }
@@ -2176,8 +2178,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
 
     if (isset($modules[$data['module']]['sections'][$data['section']]['tabs'][$data['tab']] ['subtabs'])) {
 
-        $subtabs
-            = $modules[$data['module']]['sections'][$data['section']]['tabs'][$data['tab']]['subtabs'];
+        $subtabs = $modules[$data['module']]['sections'][$data['section']]['tabs'][$data['tab']]['subtabs'];
     } else {
         $subtabs = array();
     }
@@ -2203,47 +2204,40 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
     if ($data['section'] == 'category') {
 
         if ($data['_object']->get('Category Scope') == 'Product') {
+
+          // print_r($data['_object']);
+
+            if($data['_object']->get('Category Branch Type')=='Root'){
+
+                unset($_content['tabs']['category.sales']);
+            }
+
             if ($data['_object']->get('Category Subject') == 'Product') {
                 $_content['tabs']['category.subjects']['label'] = _('Products');
 
 
-                if ($data['_object']->get('Root Key') == $data['store']->get(
-                        'Store Family Category Key'
-                    )
-                ) {
-                    $_content['tabs']['category.categories']['label'] = _(
-                        'Families'
-                    );
+                if ($data['_object']->get('Root Key') == $data['store']->get('Store Family Category Key')) {
+                    $_content['tabs']['category.categories']['label'] = _('Families');
                 }
 
             } else {
 
 
-                if ($data['_object']->get('Root Key') == $data['store']->get(
-                        'Store Department Category Key'
-                    )
+                if ($data['_object']->get('Root Key') == $data['store']->get('Store Department Category Key')
                 ) {
-                    $_content['tabs']['category.subjects']['label']   = _(
-                        'Families'
-                    );
-                    $_content['tabs']['category.categories']['label'] = _(
-                        'Departments'
-                    );
+                    $_content['tabs']['category.subjects']['label']   = _('Families');
+                    $_content['tabs']['category.categories']['label'] = _('Departments');
                 } elseif ($data['_object']->get('Root Key') == $data['store']->get('Store Family Category Key')) {
-                    $_content['tabs']['category.categories']['label'] = _(
-                        'Families'
-                    );
+                    $_content['tabs']['category.categories']['label'] = _('Families');
                 } else {
 
-                    $_content['tabs']['category.subjects']['label'] = _(
-                        'Categories'
-                    );
+                    $_content['tabs']['category.subjects']['label'] = _('Categories');
                 }
 
             }
         }
 
-        if ($data['_object']->get('Category Scope') == 'Part') {
+        elseif ($data['_object']->get('Category Scope') == 'Part') {
 
 
             if ($data['_object']->get('Root Key') == $account->get(
@@ -6292,12 +6286,12 @@ function create_node_breadcrumbs($db, $node_key, $branch) {
 
             array_unshift(
                 $branch, array(
-                    'label'     => trimStringToFullWord(
-                        16, $row['Webpage Name']
-                    ),
-                    'icon'      => ($row['Website Node Icon'] == '' ? 'file-o' : $row['Website Node Icon']),
-                    'reference' => 'website/'.$row['Website Node Website Key'].'/node/'.$row['Website Node Key']
-                )
+                           'label'     => trimStringToFullWord(
+                               16, $row['Webpage Name']
+                           ),
+                           'icon'      => ($row['Website Node Icon'] == '' ? 'file-o' : $row['Website Node Icon']),
+                           'reference' => 'website/'.$row['Website Node Website Key'].'/node/'.$row['Website Node Key']
+                       )
             );
             if ($row['Website Node Parent Key'] == $node_key) {
                 return $branch;

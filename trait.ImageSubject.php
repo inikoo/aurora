@@ -17,6 +17,7 @@ trait ImageSubject {
 
     function add_image($raw_data) {
 
+
         include_once 'utils/units_functions.php';
 
 
@@ -53,6 +54,32 @@ trait ImageSubject {
 
                 }
 
+
+            }elseif($this->table_name == 'Category'){
+                $account=new Account();
+                if($this->get('Category Scope')=='Part' and $this->get('Category Root Key')==$account->get('Account Part Family Category Key')){
+
+                    $sql = sprintf(
+                        'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Product" AND `Category Code`=%s  ',prepare_mysql($this->get('Code'))
+                    );
+
+
+                    if ($result = $this->db->query($sql)) {
+                        foreach ($result as $row) {
+
+                            $category = new Category($row['Category Key']);
+                            $category->editor = $this->editor;
+                            $category->link_image($image->id);
+
+                        }
+
+                    } else {
+                        print_r($error_info = $db->errorInfo());
+                        print $sql;
+                        exit;
+                    }
+
+                }
 
             }
 
