@@ -71,7 +71,7 @@ function fork_calculate_sales($job) {
         prepare_mysql($object->get($result_metadata_field)),
         $fork_key
     );
-    print "$sql\n";
+    //print "$sql\n";
     $db->exec($sql);
 
     $index = 0;
@@ -122,7 +122,7 @@ function fork_calculate_sales($job) {
         $index,
         $fork_key
     );
-    print "$sql\n";
+    //print "$sql\n";
     $db->exec($sql);
 
 

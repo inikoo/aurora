@@ -297,7 +297,7 @@ trait ProductCategory {
                         "UPDATE `Fork Dimension` SET `Fork Operations Done`=%d  WHERE `Fork Key`=%d ", $index, $fork_key
                     );
                     $this->db->exec($sql);
-                    print "$sql\n";
+
 
                 }
 
