@@ -36,6 +36,7 @@ require_once 'class.Store.php';
 require_once 'class.Warehouse.php';
 require_once 'class.Part.php';
 require_once 'class.Material.php';
+require_once 'class.Image.php';
 
 require_once 'class.Product.php';
 include_once 'utils/parse_materials.php';
@@ -68,9 +69,69 @@ set_unit_label($db);
 update_products_web_status($db);
 
 create_part_data_dimension($db);
-
-*/
 update_part_category_status($db);
+*/
+set_images_from_product_families($db);
+
+
+function set_images_from_product_families($db){
+
+$account=new Account();
+
+    $sql = sprintf(
+        'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Part" ORDER BY  `Category Key` DESC'
+    );
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+            $category = new Category($row['Category Key']);
+
+            if($category->get_number_images()==0){
+
+
+
+
+
+                if($category->get('Category Scope')=='Part' and $category->get('Category Root Key')==$account->get('Account Part Family Category Key')) {
+
+                    $sql = sprintf(
+                        'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Product" AND `Category Code`=%s  ', prepare_mysql($category->get('Code'))
+                    );
+
+                    if ($result2 = $db->query($sql)) {
+                        foreach ($result2 as $row2) {
+                            $category_product = new Category($row2['Category Key']);
+                            if($category_product->get_number_images()>0) {
+
+                                print $category_product->id.' '.$category->get('Code')."  ".$category_product->get_main_image_key()." \n";
+                                $category ->link_image($category_product->get_main_image_key());
+                                break;
+                            }
+                        }
+                    }
+
+
+
+
+                }
+
+
+            }
+
+
+
+
+
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print $sql;
+        exit;
+    }
+
+}
 
 
 function update_part_category_status($db) {

@@ -86,7 +86,7 @@ if ($result = $db->query($sql)) {
 function display_database_image($db, $image_key, $size = 'small') {
 
     $sql = sprintf(
-        'SELECT `Image Original Filename`,`Image Data`,`Image Small Data`,`Image Large Data`,`Image Thumbnail Data` FROM `Image Dimension` WHERE `Image Key`=%d', $image_key
+        'SELECT `Image Filename`,`Image Data`,`Image Small Data`,`Image Large Data`,`Image Thumbnail Data` FROM `Image Dimension` WHERE `Image Key`=%d', $image_key
     );
     if ($result = $db->query($sql)) {
 
@@ -94,7 +94,7 @@ function display_database_image($db, $image_key, $size = 'small') {
 
             header('Content-type: image/jpeg');
             header(
-                'Content-Disposition: inline; filename='.$row['Image Original Filename']
+                'Content-Disposition: inline; filename='.$row['Image Filename']
             );
             //readfile($row['Attachment Filename']);
             // echo  $row['Image Data'];

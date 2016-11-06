@@ -193,6 +193,8 @@ class Image {
 
     function create($data) {
 
+       // print_r($data);
+
         $tmp_file = $data['upload_data']['tmp_name'];
         unset($data['upload_data']);
         $data['Image File Size'] = filesize($tmp_file);
@@ -205,6 +207,10 @@ class Image {
             return;
         }
 
+        // Remove and delete Image Original Filename after migration
+        if(!isset($data['Image Original Filename'])) {
+            $data['Image Original Filename'] = $data['Image Filename'];
+        }
 
         $data['Image Width']  = imagesx($im);
         $data['Image Height'] = imagesy($im);
@@ -245,6 +251,7 @@ class Image {
             $this->error = true;
             $this->msg   = 'Can not insert the image ';
 
+            //print_r($this->db->errorInfo());
             return;
         }
 
