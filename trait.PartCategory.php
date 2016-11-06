@@ -16,11 +16,10 @@ require_once 'utils/date_functions.php';
 trait PartCategory {
 
 
-    function create_part_timeseries($data, $fork_key = 3) {
-        print "x2 $fork_key x";
+    function create_part_timeseries($data, $fork_key = 0) {
+
 
         if ($this->get('Category Branch Type') == 'Root') {
-
 
 
             if ($fork_key) {
@@ -115,7 +114,6 @@ trait PartCategory {
     function update_part_timeseries_record($timeseries, $to, $from, $fork_key) {
 
 
-
         if ($this->get('Category Branch Type') == 'Root') {
 
 
@@ -148,7 +146,7 @@ trait PartCategory {
                 $timeseries->id,
                 $fork_key
             );
-            print "$sql\n";
+
             $this->db->exec($sql);
         }
 
@@ -210,7 +208,7 @@ trait PartCategory {
                         "UPDATE `Fork Dimension` SET `Fork Operations Done`=%d  WHERE `Fork Key`=%d ", $index, $fork_key
                     );
                     $this->db->exec($sql);
-                    print "$sql\n";
+
                 }
 
             }
@@ -220,7 +218,7 @@ trait PartCategory {
 
         }
 
-        if($fork_key){
+        if ($fork_key) {
 
             $sql = sprintf(
                 "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%d WHERE `Fork Key`=%d ", $index,
@@ -330,15 +328,6 @@ trait PartCategory {
 
     }
 
-    function update_part_category_up_today_sales() {
-
-        if (!$this->skip_update_sales) {
-            $this->update_part_category_sales('Today');
-            $this->update_part_category_sales('Week To Day');
-            $this->update_part_category_sales('Month To Day');
-            $this->update_part_category_sales('Year To Day');
-        }
-    }
 
     function update_part_category_sales($interval, $this_year = true, $last_year = true) {
 
@@ -395,18 +384,41 @@ trait PartCategory {
 
         }
 
-      //  print "$db_interval";
+        //  print "$db_interval";
 
-        if(in_array($db_interval,['Total','Year To Date','Quarter To Date','Week To Date','Month To Date','Today'])){
+        if (in_array(
+            $db_interval, [
+            'Total',
+            'Year To Date',
+            'Quarter To Date',
+            'Week To Date',
+            'Month To Date',
+            'Today'
+        ]
+        )) {
 
-            $this->update(['Part Category Acc To Day Updated'=>gmdate('Y-m-d H:i:s')],'no_history');
+            $this->update(['Part Category Acc To Day Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
 
-        }elseif(in_array($db_interval,['1 Year','1 Month','1 Week','1 Quarter'])){
+        } elseif (in_array(
+            $db_interval, [
+            '1 Year',
+            '1 Month',
+            '1 Week',
+            '1 Quarter'
+        ]
+        )) {
 
-            $this->update(['Part Category Acc Ongoing Intervals Updated'=>gmdate('Y-m-d H:i:s')],'no_history');
-        }elseif(in_array($db_interval,['Last Month','Last Week','Yesterday','Last Year'])){
+            $this->update(['Part Category Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+        } elseif (in_array(
+            $db_interval, [
+            'Last Month',
+            'Last Week',
+            'Yesterday',
+            'Last Year'
+        ]
+        )) {
 
-            $this->update(['Part Category Acc Previous Intervals Updated'=>gmdate('Y-m-d H:i:s')],'no_history');
+            $this->update(['Part Category Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
         }
 
 
@@ -465,7 +477,6 @@ trait PartCategory {
 
 
     }
-
 
 
     function get_subcategories_status_numbers($options = '') {
@@ -675,7 +686,7 @@ trait PartCategory {
         );
         $this->update($data_to_update, 'no_history');
 
-        $this->update(['Part Category Acc Previous Intervals Updated'=>gmdate('Y-m-d H:i:s')],'no_history');
+        $this->update(['Part Category Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
 
 
     }
@@ -723,7 +734,7 @@ trait PartCategory {
             $this->update($data_to_update, 'no_history');
         }
 
-        $this->update(['Part Category Acc Previous Intervals Updated'=>gmdate('Y-m-d H:i:s')],'no_history');
+        $this->update(['Part Category Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
 
 
     }

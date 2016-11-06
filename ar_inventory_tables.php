@@ -1545,23 +1545,19 @@ function product_families($_data, $db, $user) {
 
 
             if ($data['category_data'] == '') {
-                $family          = '<span class="super_discreet">'._(
-                        'Family not set'
-                    ).'</span>';
+                $family          = '<span class="super_discreet">'._('Family not set').'</span>';
                 $number_products = '<span class="super_discreet">-</span>';
-                $operations      = (in_array($data['Store Key'], $user->stores) ? '<i class="fa fa-plus button" aria-hidden="true" onClick="open_new_product_family('.$data['Store Key'].')" ></i>'
-                    : '<i class="fa fa-lock "></i>');
+                $operations      = (in_array($data['Store Key'], $user->stores) ? '<i class="fa fa-plus button" aria-hidden="true" onClick="open_new_product_family('.$data['Store Key'].')" ></i>' : '<i class="fa fa-lock "></i>');
+                $code= sprintf('<span >%s</span>', $data['Store Code']);
+
             } else {
                 $family_data = preg_split('/,/', $data['category_data']);
 
 
-                $family          = sprintf(
-                    '<span class="button" onClick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Store Key'], $family_data[0], $family_data[1]
-                );
+                $family          = sprintf('<span class="button" onClick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Store Key'], $family_data[0], $family_data[1]);
                 $number_products = number($data['number_products']);
-                $operations      = (in_array($data['Store Key'], $user->stores) ? '<i class="fa fa-refresh button" aria-hidden="true" onClick="open_new_product_family('.$data['Store Key'].')" )"></i>'
-                    : '<i class="fa fa-lock "></i>');
-
+                $operations      = (in_array($data['Store Key'], $user->stores) ? '<i class="fa fa-refresh button" aria-hidden="true" onClick="open_new_product_family('.$data['Store Key'].')" )"></i>' : '<i class="fa fa-lock "></i>');
+                $code= sprintf('<span class="button" onClick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Store Key'], $family_data[0], $data['Store Code']);
             }
 
 
@@ -1569,7 +1565,7 @@ function product_families($_data, $db, $user) {
                 'operations' => $operations,
 
                 'id'              => (integer)$data['Store Key'],
-                'code'            => $data['Store Code'],
+                'code'            => $code,
                 'name'            => $data['Store Name'],
                 'family'          => $family,
                 'number_products' => $number_products
