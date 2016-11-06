@@ -764,6 +764,18 @@ class Category extends DB_Table {
                         }
 
                         break;
+                    case 'Acc To Day Updated':
+                    case 'Acc Ongoing Intervals Updated':
+                    case 'Acc Previous Intervals Updated':
+
+                        if ($this->data['Product Category '.$key] == '') {
+                            return '';
+                        } else {
+
+                            return strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($this->data['Product Category '.$key].' +0:00'));
+
+                        }
+                        break;
 
                     default:
 

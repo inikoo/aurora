@@ -214,6 +214,10 @@ class Timeseries extends DB_Table {
 
 
         switch ($key) {
+            case 'Number Records':
+
+                return number($this->data['Timeseries Number Records']);
+                break;
             case 'Updated':
             case 'Created':
 

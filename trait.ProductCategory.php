@@ -11,6 +11,9 @@
  Version 3.0
 */
 
+require_once 'utils/date_functions.php';
+
+
 trait ProductCategory {
 
     function get_see_also_data() {
@@ -103,9 +106,23 @@ trait ProductCategory {
     }
 
 
-    function create_product_timeseries($data) {
+    function create_product_timeseries($data, $fork_key = 0) {
 
         if ($this->get('Category Branch Type') == 'Root') {
+            if ($fork_key) {
+
+
+                $sql = sprintf(
+                    "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%s WHERE `Fork Key`=%d ",
+                    0,
+                    prepare_mysql('0'),
+                    $fork_key
+                );
+
+                $this->db->exec($sql);
+
+            }
+
             return;
         }
 
@@ -114,9 +131,8 @@ trait ProductCategory {
         $data['Timeseries Parent Key'] = $this->id;
 
         $timeseries = new Timeseries('find', $data, 'create');
-        if ($timeseries->new or true) {
+        if ($timeseries->id) {
 
-            require_once 'utils/date_functions.php';
 
             if ($this->data['Product Category Valid From'] != '') {
                 $from = date(
@@ -135,12 +151,36 @@ trait ProductCategory {
                 $to = date('Y-m-d');
             }
 
+            $sql = sprintf(
+                'DELETE FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`<%s ',
+                $timeseries->id, prepare_mysql($from)
+            );
+
+            $update_sql = $this->db->prepare($sql);
+            $update_sql->execute();
+            if ($update_sql->rowCount()) {
+                $timeseries->update(
+                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
+                );
+
+            }
+
+            $sql = sprintf(
+                'DELETE FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`>%s ', $timeseries->id, prepare_mysql($to)
+            );
+
+            $update_sql = $this->db->prepare($sql);
+            $update_sql->execute();
+            if ($update_sql->rowCount()) {
+                $timeseries->update(
+                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
+                );
+
+            }
 
             if ($from and $to) {
 
-                $this->update_product_timeseries_record(
-                    $timeseries, $to, $from
-                );
+                $this->update_product_timeseries_record($timeseries, $to, $from, $fork_key);
 
 
             }
@@ -157,9 +197,25 @@ trait ProductCategory {
     }
 
 
-    function update_product_timeseries_record($timeseries, $to, $from) {
+    function update_product_timeseries_record($timeseries, $to, $from, $fork_key) {
 
         if ($this->get('Category Branch Type') == 'Root') {
+
+
+            if ($fork_key) {
+
+
+                $sql = sprintf(
+                    "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%d WHERE `Fork Key`=%d ",
+                    0,
+                    $timeseries->id,
+                    $fork_key
+                );
+
+                $this->db->exec($sql);
+
+            }
+
             return;
         }
 
@@ -167,8 +223,27 @@ trait ProductCategory {
             $this->db, $timeseries->get('Timeseries Frequency'), $from, $to
         );
 
-        foreach ($dates as $date_frequency_period) {
+        if ($fork_key) {
 
+            $sql = sprintf(
+                "UPDATE `Fork Dimension` SET `Fork State`='In Process' ,`Fork Operations Total Operations`=%d,`Fork Start Date`=NOW(),`Fork Result`=%d  WHERE `Fork Key`=%d ",
+                count($dates),
+                $timeseries->id,
+                $fork_key
+            );
+
+            $this->db->exec($sql);
+        }
+
+        $timeseries->update(
+            array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
+        );
+
+
+        $index = 0;
+
+        foreach ($dates as $date_frequency_period) {
+            $index ++;
             list($invoices, $customers, $net, $dc_net)
                 = $this->get_product_timeseries_record_data(
                 $timeseries, $date_frequency_period
@@ -214,13 +289,33 @@ trait ProductCategory {
                 }
 
             }
-            $timeseries->update_stats();
-            //$updated=$this->update_product_timeseries_record($timeseries, $timeseries_record_key, $date);
 
-            //$timeseries->update_stats();
-            //if ($updated) {
-            // $timeseries->update(array('Timeseries Updated'=>gmdate('Y-m-d H:i:s')), 'no_history');
-            //}
+            if ($fork_key) {
+                $skip_every = 1;
+                if ($index % $skip_every == 0) {
+                    $sql = sprintf(
+                        "UPDATE `Fork Dimension` SET `Fork Operations Done`=%d  WHERE `Fork Key`=%d ", $index, $fork_key
+                    );
+                    $this->db->exec($sql);
+                    print "$sql\n";
+
+                }
+
+            }
+
+            $timeseries->update_stats();
+
+
+        }
+
+        if ($fork_key) {
+
+            $sql = sprintf(
+                "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%d WHERE `Fork Key`=%d ", $index,
+                $timeseries->id, $fork_key
+            );
+
+            $this->db->exec($sql);
 
         }
 
@@ -332,15 +427,6 @@ trait ProductCategory {
 
     }
 
-    function update_product_category_up_today_sales() {
-
-        if (!$this->skip_update_sales) {
-            $this->update_product_category_sales('Today');
-            $this->update_product_category_sales('Week To Day');
-            $this->update_product_category_sales('Month To Day');
-            $this->update_product_category_sales('Year To Day');
-        }
-    }
 
     function update_product_category_sales($interval, $this_year = true, $last_year = true) {
 
@@ -391,6 +477,42 @@ trait ProductCategory {
             );
             $this->update($data_to_update, 'no_history');
 
+        }
+
+
+        if (in_array(
+            $db_interval, [
+            'Total',
+            'Year To Date',
+            'Quarter To Date',
+            'Week To Date',
+            'Month To Date',
+            'Today'
+        ]
+        )) {
+
+            $this->update(['Product Category Acc To Day Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+
+        } elseif (in_array(
+            $db_interval, [
+            '1 Year',
+            '1 Month',
+            '1 Week',
+            '1 Quarter'
+        ]
+        )) {
+
+            $this->update(['Product Category Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+        } elseif (in_array(
+            $db_interval, [
+            'Last Month',
+            'Last Week',
+            'Yesterday',
+            'Last Year'
+        ]
+        )) {
+
+            $this->update(['Product Category Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
         }
 
 
@@ -467,26 +589,6 @@ trait ProductCategory {
         return $sales_product_category_data;
     }
 
-    function update_product_category_last_period_sales() {
-        if (!$this->skip_update_sales) {
-            $this->update_product_category_sales('Yesterday');
-            $this->update_product_category_sales('Last Week');
-            $this->update_product_category_sales('Last Month');
-        }
-    }
-
-    function update_product_category_interval_sales() {
-        if (!$this->skip_update_sales) {
-            $this->update_product_category_sales('Total');
-            $this->update_product_category_sales('3 Year');
-            $this->update_product_category_sales('1 Year');
-            $this->update_product_category_sales('6 Month');
-            $this->update_product_category_sales('1 Quarter');
-            $this->update_product_category_sales('1 Month');
-            $this->update_product_category_sales('10 Day');
-            $this->update_product_category_sales('1 Week');
-        }
-    }
 
     function get_products_subcategories_status_numbers($options = '') {
 
@@ -689,6 +791,7 @@ trait ProductCategory {
             "Product Category DC 5 Year Ago Invoiced Amount" => $data_5y_ago['dc_profit']
         );
         $this->update($data_to_update, 'no_history');
+        $this->update(['Part Category Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
 
     }
 
@@ -738,6 +841,7 @@ trait ProductCategory {
             );
             $this->update($data_to_update, 'no_history');
         }
+        $this->update(['Part Category Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
 
     }
 

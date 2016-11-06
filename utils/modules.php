@@ -1646,6 +1646,7 @@ $modules = array(
                     'category.product.sales.plot'     => 'category.sales',
                     'category.product.sales.history'  => 'category.sales',
                     'category.product.sales.calendar' => 'category.sales',
+                    'category.product.sales.info'     => 'category.sales'
 
                 ),
                 'tabs'           => array(
@@ -1677,10 +1678,20 @@ $modules = array(
                                     'Calendar'
                                 )
                             ),
+                            'category.product.sales.info' => array(
+                                'label' => _(
+                                    'Info'
+                                ),
+                                'icon'  => 'info',
+                                'class' => 'right icon_only'
+                            ),
 
                         )
 
                     ),
+
+
+
 
                     'category.history' => array(
                         'label' => _('History'),
@@ -1692,6 +1703,7 @@ $modules = array(
                         'icon'  => 'camera-retro',
                         'class' => 'right icon_only'
                     ),
+
 
                 )
 
@@ -3388,7 +3400,7 @@ $modules = array(
                             'Annually'
                         )
                     ),
-                    'inventory.stock.history.monthly'   => array(
+                    'inventory.stock.history.monthly'  => array(
                         'label' => _(
                             'Monthly'
                         )

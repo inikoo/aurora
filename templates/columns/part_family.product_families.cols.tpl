@@ -11,16 +11,8 @@ cell: "string"
 name: "code",
 label: "{t}Store{/t}",
 editable: false,
-cell: Backgrid.Cell.extend({
-events: {
-"click": function() {
-change_view('store/' + this.model.get("id") )
-}
-},
-className: "link",
-
-
-})
+cell: Backgrid.HtmlCell.extend({
+className: ""})
 },
 {
 name: "operations",
