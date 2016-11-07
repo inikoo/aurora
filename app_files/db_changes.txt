@@ -464,9 +464,6 @@ mysql -u root -p costadw < Customer_Product_Bridge.sql
 mysql -u root -p costadw < Supplier_Data.sql 
 mysql -u root -p costadw < Store_Data.sql 
 
-ALTER TABLE `Store Data` ADD `Store Orders Packed` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store Orders In Warehouse Amount`, ADD `Store Orders Packed Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Store Orders Packed`;
-ALTER TABLE `Store DC Data` ADD `Store DC Orders Packed Amount` DECIMAL(12,2) NOT NULL DEFAULT '00.0' AFTER `Store DC Orders In Warehouse Amount`;
-ALTER TABLE `Store Data` CHANGE `Store Orders Packed` `Store Orders Packed Number` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0';
 
 
 ALTER TABLE `Invoice Category Dimension` ADD `Invoice Category Store Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Invoice Category Key`;
