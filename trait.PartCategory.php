@@ -26,10 +26,7 @@ trait PartCategory {
 
 
                 $sql = sprintf(
-                    "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%s WHERE `Fork Key`=%d ",
-                    0,
-                    prepare_mysql('0'),
-                    $fork_key
+                    "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%s WHERE `Fork Key`=%d ", 0, prepare_mysql('0'), $fork_key
                 );
 
                 $this->db->exec($sql);
@@ -121,10 +118,7 @@ trait PartCategory {
 
 
                 $sql = sprintf(
-                    "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%d WHERE `Fork Key`=%d ",
-                    0,
-                    $timeseries->id,
-                    $fork_key
+                    "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%d WHERE `Fork Key`=%d ", 0, $timeseries->id, $fork_key
                 );
 
                 $this->db->exec($sql);
@@ -141,10 +135,8 @@ trait PartCategory {
         if ($fork_key) {
 
             $sql = sprintf(
-                "UPDATE `Fork Dimension` SET `Fork State`='In Process' ,`Fork Operations Total Operations`=%d,`Fork Start Date`=NOW(),`Fork Result`=%d  WHERE `Fork Key`=%d ",
-                count($dates),
-                $timeseries->id,
-                $fork_key
+                "UPDATE `Fork Dimension` SET `Fork State`='In Process' ,`Fork Operations Total Operations`=%d,`Fork Start Date`=NOW(),`Fork Result`=%d  WHERE `Fork Key`=%d ", count($dates),
+                $timeseries->id, $fork_key
             );
 
             $this->db->exec($sql);
@@ -166,8 +158,7 @@ trait PartCategory {
             );
 
             if ($skos != 0 or $deliveries != 0 or $sold_amount != 0) {
-                list($timeseries_record_key, $date)
-                    = $timeseries->create_record(
+                list($timeseries_record_key, $date) = $timeseries->create_record(
                     array('Timeseries Record Date' => $_date)
                 );
                 $sql = sprintf(
@@ -221,8 +212,7 @@ trait PartCategory {
         if ($fork_key) {
 
             $sql = sprintf(
-                "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%d WHERE `Fork Key`=%d ", $index,
-                $timeseries->id, $fork_key
+                "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%d WHERE `Fork Key`=%d ", $index, $timeseries->id, $fork_key
             );
 
             $this->db->exec($sql);
@@ -334,8 +324,7 @@ trait PartCategory {
 
         include_once 'utils/date_functions.php';
 
-        list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)
-            = calculate_interval_dates($this->db, $interval);
+        list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb) = calculate_interval_dates($this->db, $interval);
 
         if ($this_year) {
 
@@ -388,34 +377,34 @@ trait PartCategory {
 
         if (in_array(
             $db_interval, [
-            'Total',
-            'Year To Date',
-            'Quarter To Date',
-            'Week To Date',
-            'Month To Date',
-            'Today'
-        ]
+                            'Total',
+                            'Year To Date',
+                            'Quarter To Date',
+                            'Week To Date',
+                            'Month To Date',
+                            'Today'
+                        ]
         )) {
 
             $this->update(['Part Category Acc To Day Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
 
         } elseif (in_array(
             $db_interval, [
-            '1 Year',
-            '1 Month',
-            '1 Week',
-            '1 Quarter'
-        ]
+                            '1 Year',
+                            '1 Month',
+                            '1 Week',
+                            '1 Quarter'
+                        ]
         )) {
 
             $this->update(['Part Category Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
         } elseif (in_array(
             $db_interval, [
-            'Last Month',
-            'Last Week',
-            'Yesterday',
-            'Last Year'
-        ]
+                            'Last Month',
+                            'Last Week',
+                            'Yesterday',
+                            'Last Year'
+                        ]
         )) {
 
             $this->update(['Part Category Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
@@ -500,8 +489,7 @@ trait PartCategory {
                     );
 
                 } else {
-                    $elements_numbers[$row['Part Category Status']]
-                        = $row['num'];
+                    $elements_numbers[$row['Part Category Status']] = $row['num'];
                 }
             }
         } else {
@@ -614,76 +602,30 @@ trait PartCategory {
 
     function update_part_category_previous_years_data() {
 
-        $data_1y_ago = $this->get_part_category_sales_data(
-            date('Y-01-01 00:00:00', strtotime('-1 year')), date('Y-01-01 00:00:00')
-        );
-        $data_2y_ago = $this->get_part_category_sales_data(
-            date('Y-01-01 00:00:00', strtotime('-2 year')), date('Y-01-01 00:00:00', strtotime('-1 year'))
-        );
-        $data_3y_ago = $this->get_part_category_sales_data(
-            date('Y-01-01 00:00:00', strtotime('-3 year')), date('Y-01-01 00:00:00', strtotime('-2 year'))
-        );
-        $data_4y_ago = $this->get_part_category_sales_data(
-            date('Y-01-01 00:00:00', strtotime('-4 year')), date('Y-01-01 00:00:00', strtotime('-3 year'))
-        );
-        $data_5y_ago = $this->get_part_category_sales_data(
-            date('Y-01-01 00:00:00', strtotime('-5 year')), date('Y-01-01 00:00:00', strtotime('-4 year'))
-        );
 
-        $data_to_update = array(
-
-            "Part Category 1 Year Ago Customers"        => $data_1y_ago['customers'],
-            "Part Category 1 Year Ago Repeat Customers" => $data_1y_ago['repeat_customers'],
-            "Part Category 1 Year Ago Deliveries"       => $data_1y_ago['deliveries'],
-            "Part Category 1 Year Ago Profit"           => $data_1y_ago['profit'],
-            "Part Category 1 Year Ago Invoiced Amount"  => $data_1y_ago['invoiced_amount'],
-            "Part Category 1 Year Ago Required"         => $data_1y_ago['required'],
-            "Part Category 1 Year Ago Dispatched"       => $data_1y_ago['dispatched'],
-            "Part Category 1 Year Ago Keeping Day"      => $data_1y_ago['keep_days'],
-            "Part Category 1 Year Ago With Stock Days"  => $data_1y_ago['with_stock_days'],
-
-            "Part Category 2 Year Ago Customers"        => $data_2y_ago['customers'],
-            "Part Category 2 Year Ago Repeat Customers" => $data_2y_ago['repeat_customers'],
-            "Part Category 2 Year Ago Deliveries"       => $data_2y_ago['deliveries'],
-            "Part Category 2 Year Ago Profit"           => $data_2y_ago['profit'],
-            "Part Category 2 Year Ago Invoiced Amount"  => $data_2y_ago['invoiced_amount'],
-            "Part Category 2 Year Ago Required"         => $data_2y_ago['required'],
-            "Part Category 2 Year Ago Dispatched"       => $data_2y_ago['dispatched'],
-            "Part Category 2 Year Ago Keeping Day"      => $data_2y_ago['keep_days'],
-            "Part Category 2 Year Ago With Stock Days"  => $data_2y_ago['with_stock_days'],
-
-            "Part Category 3 Year Ago Customers"        => $data_3y_ago['customers'],
-            "Part Category 3 Year Ago Repeat Customers" => $data_3y_ago['repeat_customers'],
-            "Part Category 3 Year Ago Deliveries"       => $data_3y_ago['deliveries'],
-            "Part Category 3 Year Ago Profit"           => $data_3y_ago['profit'],
-            "Part Category 3 Year Ago Invoiced Amount"  => $data_3y_ago['invoiced_amount'],
-            "Part Category 3 Year Ago Required"         => $data_3y_ago['required'],
-            "Part Category 3 Year Ago Dispatched"       => $data_3y_ago['dispatched'],
-            "Part Category 3 Year Ago Keeping Day"      => $data_3y_ago['keep_days'],
-            "Part Category 3 Year Ago With Stock Days"  => $data_3y_ago['with_stock_days'],
-
-            "Part Category 4 Year Ago Customers"        => $data_4y_ago['customers'],
-            "Part Category 4 Year Ago Repeat Customers" => $data_4y_ago['repeat_customers'],
-            "Part Category 4 Year Ago Deliveries"       => $data_4y_ago['deliveries'],
-            "Part Category 4 Year Ago Profit"           => $data_4y_ago['profit'],
-            "Part Category 4 Year Ago Invoiced Amount"  => $data_4y_ago['invoiced_amount'],
-            "Part Category 4 Year Ago Required"         => $data_4y_ago['required'],
-            "Part Category 4 Year Ago Dispatched"       => $data_4y_ago['dispatched'],
-            "Part Category 4 Year Ago Keeping Day"      => $data_4y_ago['keep_days'],
-            "Part Category 4 Year Ago With Stock Days"  => $data_4y_ago['with_stock_days'],
-
-            "Part Category 5 Year Ago Customers"        => $data_5y_ago['customers'],
-            "Part Category 5 Year Ago Repeat Customers" => $data_5y_ago['repeat_customers'],
-            "Part Category 5 Year Ago Deliveries"       => $data_5y_ago['deliveries'],
-            "Part Category 5 Year Ago Profit"           => $data_5y_ago['profit'],
-            "Part Category 5 Year Ago Invoiced Amount"  => $data_5y_ago['invoiced_amount'],
-            "Part Category 5 Year Ago Required"         => $data_5y_ago['required'],
-            "Part Category 5 Year Ago Dispatched"       => $data_5y_ago['dispatched'],
-            "Part Category 5 Year Ago Keeping Day"      => $data_5y_ago['keep_days'],
-            "Part Category 5 Year Ago With Stock Days"  => $data_5y_ago['with_stock_days'],
+        foreach (range(1, 5) as $i) {
+            $data_iy_ago = $this->get_part_category_sales_data(
+                date('Y-01-01 00:00:00', strtotime('-'.$i.' year')), date('Y-01-01 00:00:00', strtotime('-'.($i - 1).' year'))
+            );
 
 
-        );
+            $data_to_update = array(
+                "Part Category $i Year Ago Customers"        => $data_iy_ago['customers'],
+                "Part Category $i Year Ago Repeat Customers" => $data_iy_ago['repeat_customers'],
+                "Part Category $i Year Ago Deliveries"       => $data_iy_ago['deliveries'],
+                "Part Category $i Year Ago Profit"           => $data_iy_ago['profit'],
+                "Part Category $i Year Ago Invoiced Amount"  => $data_iy_ago['invoiced_amount'],
+                "Part Category $i Year Ago Required"         => $data_iy_ago['required'],
+                "Part Category $i Year Ago Dispatched"       => $data_iy_ago['dispatched'],
+                "Part Category $i Year Ago Keeping Day"      => $data_iy_ago['keep_days'],
+                "Part Category $i Year Ago With Stock Days"  => $data_iy_ago['with_stock_days'],
+            );
+
+
+            $this->update($data_to_update, 'no_history');
+        }
+
+
         $this->update($data_to_update, 'no_history');
 
         $this->update(['Part Category Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');

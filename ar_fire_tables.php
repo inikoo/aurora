@@ -82,7 +82,7 @@ function fire($_data, $db, $user) {
 
 
             $check = '<div id="check_'.$data['Timesheet Key'].'" onClick="toggle_check_record('.$data['Timesheet Key']
-                .')" class="disabled acenter width_100 unchecked" style="margin:0px 20px"><i class="fa fa-star-o"></i></div>';
+                .')" class="disabled align_center width_100 unchecked" style="margin:0px 20px"><i class="fa fa-star-o"></i></div>';
 
             $adata[] = array(
                 'staff_key'        => $data['Timesheet Staff Key'],

@@ -790,9 +790,7 @@ class Category extends DB_Table {
                                 $this->data[$amount], $this->get('Product Category Currency Code')
                             );
                         }
-                        if (preg_match(
-                            '/^(Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Minify$/', $key
-                        )) {
+                        if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Minify$/', $key)) {
 
                             $field = 'Product Category '.preg_replace(
                                     '/ Minify$/', '', $key
@@ -819,9 +817,7 @@ class Category extends DB_Table {
 
                             return $amount;
                         }
-                        if (preg_match(
-                            '/^(Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Soft Minify$/', $key
-                        )) {
+                        if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Soft Minify$/', $key)) {
 
                             $field = 'Product Category '.preg_replace(
                                     '/ Soft Minify$/', '', $key
@@ -858,13 +854,9 @@ class Category extends DB_Table {
                         }
 
 
-                        if (preg_match(
-                            '/^(Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced) Minify$/', $key
-                        )) {
+                        if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced) Minify$/', $key)) {
 
-                            $field = 'Product Category '.preg_replace(
-                                    '/ Minify$/', '', $key
-                                );
+                            $field = 'Product Category '.preg_replace('/ Minify$/', '', $key);
 
                             $suffix          = '';
                             $fraction_digits = 0;
@@ -878,19 +870,11 @@ class Category extends DB_Table {
                             } else {
                                 $_number = $this->data[$field];
                             }
-
                             return number($_number, $fraction_digits).$suffix;
                         }
-                        if (preg_match(
-                            '/^(Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced) Soft Minify$/', $key
-                        )) {
-                            $field = 'Product Category '.preg_replace(
-                                    '/ Soft Minify$/', '', $key
-                                );
-
-
+                        if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced) Soft Minify$/', $key)) {
+                            $field = 'Product Category '.preg_replace('/ Soft Minify$/', '', $key);
                             $_number = $this->data[$field];
-
                             return number($_number, 0);
                         }
 
@@ -2619,47 +2603,23 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                 // $this->update_subject_field($field, $value, $options);
             }
         }elseif (array_key_exists($field, $this->base_data('Part Category Dimension'))) {
-            $this->update_table_field(
-                $field, $value, $options, 'Part Category', 'Part Category Dimension', $this->id
-            );
+            $this->update_table_field($field, $value, $options, 'Part Category', 'Part Category Dimension', $this->id);
         } elseif (array_key_exists($field, $this->base_data('Part Category Data'))) {
-            $this->update_table_field(
-                $field, $value, $options, 'Part Category', 'Part Category Data', $this->id
-            );
+            $this->update_table_field($field, $value, $options, 'Part Category', 'Part Category Data', $this->id);
         } elseif (array_key_exists($field, $this->base_data('Product Category Data'))) {
-            $this->update_table_field(
-                $field, $value, $options, 'Product Category', 'Product Category Data', $this->id
-            );
-        } elseif (array_key_exists(
-            $field, $this->base_data('Product Category DC Data')
-        )) {
-            $this->update_table_field(
-                $field, $value, $options, 'Product Category DC', 'Product Category DC Data', $this->id
-            );
-        } elseif (array_key_exists(
-            $field, $this->base_data('Invoice Category Data')
-        )) {
-            $this->update_table_field(
-                $field, $value, $options, 'Invoice Category', 'Invoice Category Data', $this->id
-            );
-        } elseif (array_key_exists(
-            $field, $this->base_data('Invoice Category DC Data')
-        )) {
-            $this->update_table_field(
-                $field, $value, $options, 'Invoice Category', 'Invoice Category DC Data', $this->id
-            );
-        } elseif (array_key_exists(
-            $field, $this->base_data('Supplier Category Data')
-        )) {
-            $this->update_table_field(
-                $field, $value, $options, 'Supplier Category', 'Supplier Category Data', $this->id
-            );
-        } elseif (array_key_exists(
-            $field, $this->base_data('Supplier Category Dimension')
-        )) {
-            $this->update_table_field(
-                $field, $value, $options, 'Supplier Category', 'Supplier Category Dimension', $this->id
-            );
+            $this->update_table_field($field, $value, $options, 'Product Category', 'Product Category Data', $this->id);
+        } elseif (array_key_exists($field, $this->base_data('Product Category DC Data'))) {
+            $this->update_table_field($field, $value, $options, 'Product Category DC', 'Product Category DC Data', $this->id);
+        } elseif (array_key_exists($field, $this->base_data('Invoice Category Dimension'))) {
+            $this->update_table_field($field, $value, $options, 'Invoice Category', 'Invoice Category Dimension', $this->id);
+        }elseif (array_key_exists($field, $this->base_data('Invoice Category Data'))) {
+            $this->update_table_field($field, $value, $options, 'Invoice Category', 'Invoice Category Data', $this->id);
+        } elseif (array_key_exists($field, $this->base_data('Invoice Category DC Data'))) {
+            $this->update_table_field($field, $value, $options, 'Invoice Category', 'Invoice Category DC Data', $this->id);
+        } elseif (array_key_exists($field, $this->base_data('Supplier Category Data'))) {
+            $this->update_table_field($field, $value, $options, 'Supplier Category', 'Supplier Category Data', $this->id);
+        } elseif (array_key_exists($field, $this->base_data('Supplier Category Dimension'))) {
+            $this->update_table_field($field, $value, $options, 'Supplier Category', 'Supplier Category Dimension', $this->id);
         } else {
             switch ($field) {
                 case 'Webpage See Also':

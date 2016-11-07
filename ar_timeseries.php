@@ -201,6 +201,7 @@ function asset_sales($db, $data, $account) {
 
     global $memcache_ip;
 
+    $table = "`Timeseries Record Dimension`  ";
     switch ($data['parent']) {
 
 
@@ -273,8 +274,22 @@ function asset_sales($db, $data, $account) {
 
 
         case 'store':
-            $fields = ' `Date`,sum(`Sales`) as Sales';
-            $where  = sprintf("where `Store Key`=%d", $data['parent_key']);
+
+            $sql = sprintf(
+                'SELECT `Timeseries Key` FROM `Timeseries Dimension` WHERE `Timeseries Parent`="Store" AND `Timeseries Parent Key`=%s AND `Timeseries Frequency`="Daily" AND  `Timeseries Type`="StoreSales" ',
+                $data['parent_key']
+            );
+            if ($result = $db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $timeseries_key = $row['Timeseries Key'];
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+
+            $fields = ' `Timeseries Record Date` as Date,sum(`Timeseries Record Float A`) as Sales ,sum(`Timeseries Record Integer A`) as Volume';
+            $where = sprintf("where `Timeseries Record Timeseries Key`=%d", $timeseries_key);
             $group  = 'group by `Date`';
             break;
         case 'supplier':
@@ -292,12 +307,9 @@ function asset_sales($db, $data, $account) {
                 exit;
             }
 
-            $fields
-                   = ' `Timeseries Record Date` as Date,sum(`Timeseries Record Float A`) as Sales ,sum(`Timeseries Record Integer A`) as Volume';
-            $where = sprintf(
-                "where `Timeseries Record Timeseries Key`=%d", $timeseries_key
-            );
-            $table = "`Timeseries Record Dimension`  ";
+            $fields = ' `Timeseries Record Date` as Date,sum(`Timeseries Record Float A`) as Sales ,sum(`Timeseries Record Integer A`) as Volume';
+            $where = sprintf("where `Timeseries Record Timeseries Key`=%d", $timeseries_key);
+
             $group = 'group by `Date`';
             break;
         default:
@@ -311,11 +323,9 @@ function asset_sales($db, $data, $account) {
     $cache = new Memcached();
     $cache->addServer($memcache_ip, 11211);
 
-    $sql = sprintf(
-        "SELECT %s FROM %s %s %s ORDER BY `Date` DESC", $fields, $table, $where, $group
-    );
+    $sql = sprintf("SELECT %s FROM %s %s %s ORDER BY `Date` DESC", $fields, $table, $where, $group);
 
-    //	print $sql;
+
 
     $result = $cache->get($account->get('Code').'SQL'.md5($sql));
     if ($result and false) {

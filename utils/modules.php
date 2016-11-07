@@ -1571,14 +1571,50 @@ $modules = array(
                 'label'     => '',
                 'title'     => _('Store'),
                 'icon'      => 'shopping-bag',
-                'showcase'  => true,
+                'showcase'  => 'store',
                 'reference' => 'store/%d',
                 'class'     => 'icon_only',
+
+                'subtabs_parent' => array(
+                    'store.sales.plot'     => 'store.sales',
+                    'store.sales.history'  => 'store.sales',
+                    'store.sales.calendar' => 'store.sales',
+                    'store.sales.info'     => 'store.sales'
+
+                ),
+
                 'tabs'      => array(
                     'store.details' => array(
                         'label' => _('Data'),
                         'icon'  => 'database',
                         'title' => _('Details')
+                    ),
+                    'store.sales'      => array(
+                        'label'   => _('Sales'),
+                        'subtabs' => array(
+                            'store.sales.plot'     => array(
+                                'label' => _(
+                                    'Plot'
+                                )
+                            ),
+                            'store.sales.history'  => array(
+                                'label' => _(
+                                    'Sales history'
+                                )
+                            ),
+                            'store.sales.calendar' => array(
+                                'label' => _(
+                                    'Calendar'
+                                )
+                            ),
+                            'store.sales.info'     => array(
+                                'label' => _('Info'),
+                                'icon'  => 'info',
+                                'class' => 'right icon_only'
+                            ),
+
+                        )
+
                     ),
                     'store.history' => array(
                         'label' => _('History'),
@@ -1678,10 +1714,8 @@ $modules = array(
                                     'Calendar'
                                 )
                             ),
-                            'category.product.sales.info' => array(
-                                'label' => _(
-                                    'Info'
-                                ),
+                            'category.product.sales.info'     => array(
+                                'label' => _('Info'),
                                 'icon'  => 'info',
                                 'class' => 'right icon_only'
                             ),
@@ -1689,8 +1723,6 @@ $modules = array(
                         )
 
                     ),
-
-
 
 
                     'category.history' => array(
@@ -4313,8 +4345,8 @@ $modules = array(
                 'label'     => _('Account'),
                 'icon'      => 'star',
                 'reference' => 'account',
-                'showcase'  => true,
-                'tabs'      => array(
+
+                'tabs' => array(
                     'account.details' => array(
                         'label' => _(
                             'Data'

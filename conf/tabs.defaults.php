@@ -387,6 +387,16 @@ $tab_defaults = array(
         'elements'      => $elements_options['services'],
 
     ),
+    'store.sales.history' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'frequency'   => 'monthly',
+        'f_field'     => '',
+
+    ),
     'category.products'     => array(
         'view'          => 'overview',
         'sort_key'      => 'id',

@@ -583,11 +583,14 @@ function get_view($db, $smarty, $user, $account, $modules) {
                 == $state['object'] and $data['old_state']['key'] == $state['key'])
         ) {
 
+
             $response['object_showcase'] = get_object_showcase(
-                (isset($modules[$state['module']]['sections'][$state['section']]['showcase']) ? $modules[$state['module']]['sections'][$state['section']]['showcase'] : $state['object']), $state,
-                                                                                                                                                                                           $smarty,
-                                                                                                                                                                                           $user, $db,
-                                                                                                                                                                                           $account
+                (isset($modules[$state['module']]['sections'][$state['section']]['showcase']) ? $modules[$state['module']]['sections'][$state['section']]['showcase'] : $state['object']),
+                $state,
+                $smarty,
+                $user,
+                $db,
+                $account
             );
 
         }
@@ -666,11 +669,9 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
 
 function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
 
-
     if (preg_match('/\_edit$/', $data['tab'])) {
         return '';
     }
-
     switch ($showcase) {
         case 'material':
             include_once 'showcase/material.show.php';
@@ -705,6 +706,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             $html = get_deal_showcase($data, $smarty, $user, $db);
             break;
         case 'store':
+
             include_once 'showcase/store.show.php';
             $html = get_store_showcase($data, $smarty, $user, $db);
             break;
@@ -2205,9 +2207,9 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
 
         if ($data['_object']->get('Category Scope') == 'Product') {
 
-          // print_r($data['_object']);
+            // print_r($data['_object']);
 
-            if($data['_object']->get('Category Branch Type')=='Root'){
+            if ($data['_object']->get('Category Branch Type') == 'Root') {
 
                 unset($_content['tabs']['category.sales']);
             }
@@ -2235,9 +2237,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
                 }
 
             }
-        }
-
-        elseif ($data['_object']->get('Category Scope') == 'Part') {
+        } elseif ($data['_object']->get('Category Scope') == 'Part') {
 
 
             if ($data['_object']->get('Root Key') == $account->get(
