@@ -39,7 +39,7 @@ html, body, textarea {
     border-collapse: collapse; }
   html .aright, body .aright, textarea .aright {
     text-align: right !important; }
-  html .acenter, body .acenter, textarea .acenter {
+  html .align_center, body .align_center, textarea .align_center {
     text-align: center; }
   html .invisible, body .invisible, textarea .invisible {
     visibility: hidden; }

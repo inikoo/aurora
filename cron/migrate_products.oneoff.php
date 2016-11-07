@@ -60,11 +60,11 @@ update_cost($db);
 create_data_tables($db);
 
 */
-//create_data_tables($db);
+
 //fix_family_web_descriptions($db);
+//update_product_category_status($db);
 
-
-update_product_category_status($db);
+create_data_tables($db);
 
 
 function update_product_category_status($db) {
@@ -359,6 +359,55 @@ function create_data_tables($db) {
         exit;
     }
 
+
+    $sql = sprintf(
+        'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Invoice" ORDER BY  `Category Key` DESC'
+    );
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+            $category = new Category($row['Category Key']);
+
+
+
+                $sql = sprintf(
+                    "SELECT min(`Invoice Date`) AS date FROM   `Category Bridge` left join   `Invoice Dimension` on (`Subject Key`=`Invoice Key`)  WHERE `Category Key` =%d AND `Invoice Date` IS NOT NULL AND `Invoice Date`!='0000-00-00 00:00:00'",
+                    $category->id
+
+                );
+
+
+                print "$sql\n";
+                if ($result2 = $db->query($sql)) {
+                    if ($row2 = $result2->fetch()) {
+                        print_r($row2);
+
+                        if ($row2['date'] != '') {
+
+                            $category->update(
+                                array('Invoice Category Valid From' => $row2['date']), 'no_history'
+                            );
+                        }
+                    }
+                } else {
+                    print_r($error_info = $db->errorInfo());
+                    exit;
+                }
+
+
+
+
+
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print $sql;
+        exit;
+    }
+
+
 }
 
 
@@ -447,8 +496,7 @@ function set_family_department_key($db) {
 
 function migrate_page_related_products($db) {
 
-    $sql
-        = "SELECT `Page Code`,`Page Key`,`Page Store Section`,`Page Store Key`,`Page Related Products List` FROM `Page Store Dimension` WHERE `Page Related Products List`!='';";
+    $sql = "SELECT `Page Code`,`Page Key`,`Page Store Section`,`Page Store Key`,`Page Related Products List` FROM `Page Store Dimension` WHERE `Page Related Products List`!='';";
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
@@ -759,11 +807,11 @@ function create_categories($db, $editor) {
                     if (!$department) {
                         $department = new Category(
                             'find', array(
-                                'Category Store Key'  => $store->id,
-                                'Category Parent Key' => $departments->id,
-                                'Category Code'       => $row2['Product Department Code']
+                                      'Category Store Key'  => $store->id,
+                                      'Category Parent Key' => $departments->id,
+                                      'Category Code'       => $row2['Product Department Code']
 
-                            )
+                                  )
                         );
                     }
 
@@ -820,11 +868,11 @@ function create_categories($db, $editor) {
                     if (!$family) {
                         $family = new Category(
                             'find', array(
-                                'Category Store Key'  => $store->id,
-                                'Category Parent Key' => $departments->id,
-                                'Category Code'       => $row2['Product Family Code']
+                                      'Category Store Key'  => $store->id,
+                                      'Category Parent Key' => $departments->id,
+                                      'Category Code'       => $row2['Product Family Code']
 
-                            )
+                                  )
                         );
                     }
 
@@ -858,11 +906,11 @@ function create_categories($db, $editor) {
 
                     $department = new Category(
                         'find', array(
-                            'Category Store Key'  => $store->id,
-                            'Category Parent Key' => $category_dept_key,
-                            'Category Code'       => $row2['Product Family Main Department Code']
+                                  'Category Store Key'  => $store->id,
+                                  'Category Parent Key' => $category_dept_key,
+                                  'Category Code'       => $row2['Product Family Main Department Code']
 
-                        )
+                              )
                     );
 
                     if ($department->id) {

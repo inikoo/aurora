@@ -151,15 +151,15 @@
                         <table style="width:100%;;margin-bottom:10px">
                             <tr style="border-top:1px solid #ccc;border-bottom:1px solid #ccc">
                                 <td style="border-left:1px solid #ccc;width:25%"
-                                    class="In_Process_Parts acenter discreet"
+                                    class="In_Process_Parts align_center discreet"
                                     title="{t}Parts in process{/t}">{$elements_numbers.status.InProcess}</td>
                                 <td style="border-left:1px solid #ccc;width:25%" class="In_Use_Parts acenter"
                                     title="{t}Parts active{/t}">{$elements_numbers.status.InUse}</td>
                                 <td style="border-left:1px solid #ccc;width:25%"
-                                    class="Discontinuing_Parts acenter discreet "
+                                    class="Discontinuing_Parts align_center discreet "
                                     title="{t}Parts discontinuing{/t}">{$elements_numbers.status.Discontinuing}</td>
                                 <td style="border-left:1px solid #ccc;width:25%;border-right:1px solid #ccc;"
-                                    class="Not_In_Use_Parts acenter very_discreet"
+                                    class="Not_In_Use_Parts align_center very_discreet"
                                     title="{t}Parts discontinued{/t}">{$elements_numbers.status.NotInUse}</td>
                             </tr>
                         </table>

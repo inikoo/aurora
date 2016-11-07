@@ -292,6 +292,7 @@ if ($result = $db->query($sql)) {
 
         $store->load_acc_data();
         $store->update_sales_from_invoices('Today', false, true);
+        $store->update_new_products();
     }
 } else {
     print_r($error_info = $db->errorInfo());

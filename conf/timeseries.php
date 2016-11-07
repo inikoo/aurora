@@ -17,26 +17,42 @@ function get_time_series_config() {
                 'Timeseries Type'      => 'StoreSales',
                 'Timeseries Frequency' => 'Daily',
                 'Timeseries Scope'     => 'Sales',
-                'Timeseries Parent'    => 'Store'
+                'Timeseries Parent'    => 'Store',
+            ),
+            array(
+                'Timeseries Type'      => 'StoreSales',
+                'Timeseries Frequency' => 'Weekly',
+                'Timeseries Scope'     => 'Sales',
+                'Timeseries Parent'    => 'Store',
+            ),
+            array(
+                'Timeseries Type'      => 'StoreSales',
+                'Timeseries Frequency' => 'Monthly',
+                'Timeseries Scope'     => 'Sales',
+                'Timeseries Parent'    => 'Store',
+            ),
+            array(
+                'Timeseries Type'      => 'StoreSales',
+                'Timeseries Frequency' => 'Quarterly',
+                'Timeseries Scope'     => 'Sales',
+                'Timeseries Parent'    => 'Store',
+            ),
+            array(
+                'Timeseries Type'      => 'StoreSales',
+                'Timeseries Frequency' => 'Yearly',
+                'Timeseries Scope'     => 'Sales',
+                'Timeseries Parent'    => 'Store',
             )
+
+
+
+
         ),
 
         'Supplier'        => array(
             array(
                 'Timeseries Type'      => 'SupplierSales',
-                'Timeseries Frequency' => 'Yearly',
-                'Timeseries Scope'     => 'Sales',
-                'Timeseries Parent'    => 'Supplier'
-            ),
-            array(
-                'Timeseries Type'      => 'SupplierSales',
-                'Timeseries Frequency' => 'Quarterly',
-                'Timeseries Scope'     => 'Sales',
-                'Timeseries Parent'    => 'Supplier'
-            ),
-            array(
-                'Timeseries Type'      => 'SupplierSales',
-                'Timeseries Frequency' => 'Monthly',
+                'Timeseries Frequency' => 'Daily',
                 'Timeseries Scope'     => 'Sales',
                 'Timeseries Parent'    => 'Supplier'
             ),
@@ -48,10 +64,26 @@ function get_time_series_config() {
             ),
             array(
                 'Timeseries Type'      => 'SupplierSales',
-                'Timeseries Frequency' => 'Daily',
+                'Timeseries Frequency' => 'Monthly',
                 'Timeseries Scope'     => 'Sales',
                 'Timeseries Parent'    => 'Supplier'
             ),
+            array(
+                'Timeseries Type'      => 'SupplierSales',
+                'Timeseries Frequency' => 'Quarterly',
+                'Timeseries Scope'     => 'Sales',
+                'Timeseries Parent'    => 'Supplier'
+            ),
+            array(
+                'Timeseries Type'      => 'SupplierSales',
+                'Timeseries Frequency' => 'Yearly',
+                'Timeseries Scope'     => 'Sales',
+                'Timeseries Parent'    => 'Supplier'
+            ),
+
+
+
+
 
 
         ),

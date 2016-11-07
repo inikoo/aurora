@@ -21,7 +21,7 @@ var computeLayout = (function () {
     var CSS_JUSTIFY_SPACE_AROUND = 'space-around';
 
     var CSS_ALIGN_FLEX_START = 'flex-start';
-    var CSS_ALIGN_CENTER = 'center';
+    var CSS_align_center  = 'center';
     // var CSS_ALIGN_FLEX_END = 'flex-end';
     var CSS_ALIGN_STRETCH = 'stretch';
 
@@ -601,7 +601,7 @@ var computeLayout = (function () {
                                 getPaddingAndBorderAxis(node, crossAxis) -
                                 getDimWithMargin(child, crossAxis);
 
-                            if (alignItem === CSS_ALIGN_CENTER) {
+                            if (alignItem === CSS_align_center ) {
                                 leadingCrossDim += remainingCrossDim / 2;
                             } else { // CSS_ALIGN_FLEX_END
                                 leadingCrossDim += remainingCrossDim;
