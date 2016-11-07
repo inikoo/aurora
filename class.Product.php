@@ -250,7 +250,7 @@ class Product extends Asset {
             $this->update_historic_object();
             $this->get_data('id', $this->id);
 
-            $store=new Store($this->get())
+          //  $store=new Store($this->get())
 
 
         } else {
