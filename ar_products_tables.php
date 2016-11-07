@@ -632,24 +632,23 @@ function sales_history($_data, $db, $user, $account) {
             if ($_data['parameters']['frequency'] == 'annually') {
                 $date  = strftime("%Y", strtotime($data['Date'].' +0:00'));
                 $_date = $date;
-            }elseif ($_data['parameters']['frequency'] == 'quarterly') {
-
-
-                $date  = strftime("%Y ", strtotime($data['Date'].' +0:00')).'Q'.ceil(date("m",strtotime($data['Date'].' +0:00'))/3);
-                $_date = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
-            }  elseif ($_data['parameters']['frequency'] == 'monthly') {
+            } elseif ($_data['parameters']['frequency'] == 'quarterly') {
                 $date  = 'Q'.ceil(date('n', strtotime($data['Date'].' +0:00'))/3).' '.strftime("%Y", strtotime($data['Date'].' +0:00'));
                 $_date = $date;
+            } elseif ($_data['parameters']['frequency'] == 'monthly') {
+
+
+                $date = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
+                $_date = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
+
             } elseif ($_data['parameters']['frequency'] == 'weekly') {
                 $date  = strftime(
                     "(%e %b) %Y %W ", strtotime($data['Date'].' +0:00')
                 );
                 $_date = strftime("%Y%W ", strtotime($data['Date'].' +0:00'));
             } elseif ($_data['parameters']['frequency'] == 'daily') {
-                $date  = strftime(
-                    "%a %e %b %Y", strtotime($data['Date'].' +0:00')
-                );
-                $_date = $date;
+                $date  = strftime("%a %e %b %Y", strtotime($data['Date'].' +0:00'));
+                $_date = date('Y-m-d',strtotime($data['Date'].' +0:00'));
             }
 
 
@@ -728,24 +727,17 @@ function sales_history($_data, $db, $user, $account) {
 
         foreach ($result as $data) {
             if ($_data['parameters']['frequency'] == 'annually') {
-                $date  = strftime("%Y", strtotime($data['Date'].' +0:00'));
-                $_date = $date;
+                $_date  = strftime("%Y", strtotime($data['Date'].' +0:00'));
             } elseif ($_data['parameters']['frequency'] == 'quarterly') {
-                $date  = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
-                $_date = $date;
+                $_date  = 'Q'.ceil(date('n', strtotime($data['Date'].' +0:00'))/3).' '.strftime("%Y", strtotime($data['Date'].' +0:00'));
             } elseif ($_data['parameters']['frequency'] == 'monthly') {
-                $date  = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
-                $_date = $date;
+                $_date  = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
             } elseif ($_data['parameters']['frequency'] == 'weekly') {
-                $date  = strftime(
-                    "(%e %b) %Y %W ", strtotime($data['Invoice Date'].' +0:00')
-                );
+
                 $_date = strftime("%Y%W ", strtotime($data['Date'].' +0:00'));
             } elseif ($_data['parameters']['frequency'] == 'daily') {
-                $date  = strftime(
-                    "%a %e %b %Y", strtotime($data['Date'].' +0:00')
-                );
-                $_date = $date;
+
+                $_date = date('Y-m-d',strtotime($data['Date'].' +0:00'));
             }
 
 
