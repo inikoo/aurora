@@ -2237,6 +2237,7 @@ class Product extends Asset {
                 "SELECT `Page Key` FROM `Page Product Dimension` WHERE `Product ID`=%d ", $this->id
             );
 
+            /*
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
@@ -2265,7 +2266,7 @@ class Product extends Asset {
                 print_r($error_info = $this->db->errorInfo());
                 exit;
             }
-
+*/
 
             $sql = sprintf(
                 "SELECT `Order Key` FROM `Order Transaction Fact` WHERE `Current Dispatching State`='In Process by Customer' AND `Product ID`=%d ", $this->id

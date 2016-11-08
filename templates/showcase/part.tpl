@@ -155,27 +155,23 @@
 
                     <td class=" highlight Part_Status">{$part->get('Status')} </td>
 
-                    <td class="aright ">
-
-                        <span class="big highlight  Current_On_Hand_Stock">{$part->get('Current On Hand Stock')}</span>
-                        <span class="big highlight Stock_Status_Icon">{$part->get('Stock Status Icon')}</span>
+                    <td class="aright "><span class="highlight big Stock_Status_Icon">{$part->get('Stock Status Icon')}</span>
 
                     </td>
 
                 </tr>
+
                 <tr>
-
-                    <td class="aright" colspan="2" style="padding-top:0;color:#777;font-size:90%"><b
-                                class="Current_Stock" title="{t}Current stock{/t}">{$part->get('Current Stock')}</b> <b>-[<span
-                                    class="Current_Stock_Picked"
-                                    title="{t}Stock picked{/t}">{$part->get('Current Stock Picked')}</span>]</b> -(<span
-                                id="Current_Stock_In_Process"
-                                title="{t}Waiting to be picked{/t}">{$part->get('Current Stock In Process')}</span>)
-                        -(<span id="Current_Stock_Ordered_Paid"
-                                title="{t}Paid orders in process{/t}">{$part->get('Current Stock Ordered Paid')}</span>) &rarr;
-                        <span title="{t}Available to sell{/t}"
-                              class="Current_Stock_Available">{$part->get('Current Stock Available')}</span></td>
-
+                    <td colspan=2>
+                        <table style="width:100%;;margin-bottom:10px">
+                            <tr style="border-top:1px solid #ccc;border-bottom:1px solid #ccc">
+                                <td style="border-left:1px solid #ccc;width:30%" class="align_center " title="{t}Stock in locations{/t}"><i class="fa fa-map-marker fa-fw" aria-hidden="true"></i> <span class="Current_On_Hand_Stock">{$part->get('Current On Hand Stock')}</span></td>
+                                <td style="border-left:1px solid #ccc;width:20%" class="align_center discreet " title="{t}Reserved paid parts in process by customer services{/t}"><i class="fa fa-shopping-cart fa-fw" aria-hidden="true" ></i> <span class="Part_Current_Stock_Ordered_Paid">{$part->get('Current Stock Ordered Paid')}</span></td>
+                                <td style="border-left:1px solid #ccc;width:20%" class="align_center discreet" title="{t}Parts been picked{/t}""><i style="font-size:80%;position: relative;top:-1px" class="fa fa-shopping-basket fa-fw" aria-hidden="true"></i> <span class="Current_Stock_In_Process" >{$part->get('Current Stock In Process')}</span></td>
+                                <td style="border-left:1px solid #ccc;width:30%;border-right:1px solid #ccc;font-size:110%" class=" align_center strong" title="{t}Stock available for sale{/t}"><span class="Current_Stock_Available">{$part->get('Current Stock Available')}</span></td>
+                            </tr>
+                        </table>
+                    </td>
                 </tr>
                 <tr>
                     <td class="Products_Web_State">{$part->get('Products Web Status')}</td>
@@ -206,6 +202,10 @@
                                 </td>
 
                             </tr>
+
+
+
+
 
                         </table>
 

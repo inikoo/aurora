@@ -15,7 +15,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 include 'utils/aes.php';
 include 'utils/general_functions.php';
 include 'utils/system_functions.php';
-
+include 'utils/natural_language.php';
 include 'export.fork.php';
 include 'export_edit_template.fork.php';
 include 'upload_edit.fork.php';

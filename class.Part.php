@@ -2567,13 +2567,14 @@ class Part extends Asset {
 
 
         $sql = sprintf(
-            'SELECT (`Order Quantity`+`Order Bonus Quantity`)*`Product Part Ratio` AS required FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)    WHERE OTF.`Current Dispatching State` IN ("Submitted by Customer","In Process") AND  `Current Payment State` IN ("Paid","No Applicable") AND `Product Part Part SKU`=%d    ',
+            'SELECT sum((`Order Quantity`+`Order Bonus Quantity`)*`Product Part Ratio`) AS required FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)    WHERE OTF.`Current Dispatching State` IN ("Submitted by Customer","In Process") AND  `Current Payment State` IN ("Paid","No Applicable") AND `Product Part Part SKU`=%d    ',
 
             $this->id
         );
         //print $sql;
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
+              //  print_r($row);
                 $stock_in_paid_orders = $row['required'];
             }
         } else {
@@ -2581,6 +2582,8 @@ class Part extends Asset {
             print "$sql\n";
             exit;
         }
+
+       // print "$sql\n";
         $this->update(
             array(
                 'Part Current Stock Ordered Paid' => $stock_in_paid_orders
