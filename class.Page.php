@@ -1080,20 +1080,28 @@ class Page extends DB_Table {
         global $memcache_ip;
 
 
+
         $account      = new Account($this->db);
         $account_code = $account->get('Account Code');
 
-
         include_once 'class.Site.php';
         $site = new Site($this->data['Page Site Key']);
-        if ($site->data['Site SSL'] == 'Yes') {
-            $site_protocol = 'https';
-        } else {
-            $site_protocol = 'http';
-        }
-        $template_response = file_get_contents(
-            $site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=page_clean_cache&parent_key=".$this->id."&sk=x"
-        );
+
+        $template_response='';
+
+        // Tdo manage smarty cache
+        /*
+
+                if ($site->data['Site SSL'] == 'Yes') {
+                    $site_protocol = 'https';
+                } else {
+                    $site_protocol = 'http';
+                }
+                $template_response = file_get_contents(
+                    $site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=page_clean_cache&parent_key=".$this->id."&sk=x"
+                );
+
+                */
 
         $mem = new Memcached();
         $mem->addServer($memcache_ip, 11211);

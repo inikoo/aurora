@@ -65,19 +65,45 @@ function fork_housekeeping($job) {
             }
             break;
         case 'order_payment_changed':
+
             include_once 'class.Part.php';
 
             $sql = sprintf(
-                'SELECT `Product Part Part SKU` FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)  WHERE OTF.`Current Dispatching State` IN ("Submitted by Customer","In Process") AND  `Current Payment State`="Paid" AND `Order Key`=%d  ',
-                $data['part_sku']
+                'SELECT `Product Part Part SKU` FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)  WHERE `Order Key`=%d  ',
+                $data['order_key']
             );
-            if ($result = $this->db->query($sql)) {
+           // print "$sql\n";
+            if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
-                    $part = new Part($data['Product Part Part SKU']);
+                    $part = new Part($row['Product Part Part SKU']);
                     $part->update_stock_in_paid_orders();
+                 //   print $part->get('Reference')."\n";
                 }
             } else {
-                print_r($error_info = $this->db->errorInfo());
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+
+
+            break;
+        case 'order_send_to_warehouse':
+
+            include_once 'class.Part.php';
+
+            $sql = sprintf(
+                'SELECT `Product Part Part SKU` FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)  WHERE  `Order Key`=%d  ',
+                $data['order_key']
+            );
+           // print "$sql\n";
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    $part = new Part($row['Product Part Part SKU']);
+                    $part->update_stock_in_paid_orders();
+                   // print $part->get('Reference')."\n";
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
                 exit;
             }
 
