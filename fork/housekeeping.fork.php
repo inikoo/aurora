@@ -11,7 +11,7 @@
 function fork_housekeeping($job) {
 
 
-    print "fork_housekeeping  original \n";
+   // print "fork_housekeeping  original skypping\n";
 
     if (!$_data = get_fork_metadata($job)) {
         return true;
@@ -20,7 +20,7 @@ function fork_housekeeping($job) {
 
     list($account, $db, $data) = $_data;
 
-    //	print_r($data);
+    	print_r($data);
 
     switch ($data['type']) {
 

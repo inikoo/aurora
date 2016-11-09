@@ -90,6 +90,7 @@ function update_products($db, $print_est) {
 
 function update_sales($db, $print_est) {
 
+
     $sql = sprintf(
         'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Invoice"  '
     );
@@ -136,6 +137,7 @@ function update_sales($db, $print_est) {
             $store = new Store('id', $row['Store Key']);
 
             $store->load_acc_data();
+
 
 
 

@@ -39,7 +39,7 @@ $worker->addFunction("au_time_series", "fork_time_series");
 $worker->addFunction("au_calculate_sales", "fork_calculate_sales");
 $worker->addFunction("au_housekeeping2", "fork_housekeeping2");
 $worker->addFunction("au_housekeeping3", "fork_housekeeping3");
-$worker->addFunction("au_housekeeping4", "fork_housekeeping3");
+$worker->addFunction("au_housekeeping4", "fork_housekeeping4");
 
 
 $db      = false;
