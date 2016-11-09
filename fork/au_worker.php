@@ -37,6 +37,9 @@ $worker->addFunction("au_housekeeping", "fork_housekeeping");
 $worker->addFunction("au_asset_sales", "fork_asset_sales");
 $worker->addFunction("au_time_series", "fork_time_series");
 $worker->addFunction("au_calculate_sales", "fork_calculate_sales");
+$worker->addFunction("au_housekeeping2", "fork_housekeeping2");
+$worker->addFunction("au_housekeeping3", "fork_housekeeping3");
+$worker->addFunction("au_housekeeping4", "fork_housekeeping3");
 
 
 $db      = false;
@@ -65,9 +68,10 @@ function get_fork_metadata($job) {
     $inikoo_account_code = $fork_metadata['code'];
     if (!ctype_alnum($inikoo_account_code)) {
 
+       // print_r(AESDecryptCtr(base64_decode($fork_raw_data), $fork_encrypt_key, 256));
         print_r($fork_metadata);
 
-        print "can't find account code ->".$inikoo_account_code."<-  \n";
+        print "can't find account code y ->".$inikoo_account_code."<-  \n";
 
         return false;
     }
@@ -131,7 +135,7 @@ function get_fork_data($job) {
 
         print_r($fork_metadata);
 
-        print "can't find account code ->".$inikoo_account_code."<-  \n";
+        print "can't find account code x->".$inikoo_account_code."<-  \n";
 
         return false;
     }

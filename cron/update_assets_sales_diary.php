@@ -55,16 +55,8 @@ $sql = sprintf(
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $category = new Category($row['Category Key']);
-        if ($category->get('Part Category Status') != 'NotInUse' or date(
-                'Y-m-d'
-            ) == date(
-                'Y-m-d', strtotime($category->get('Part Category Valid To').' +0:00')
-            )
-        ) {
-            if (!array_key_exists(
-                $category->get('Category Scope').'Category', $timeseries
-            )
-            ) {
+        if ($category->get('Part Category Status') != 'NotInUse' or date('Y-m-d') == date('Y-m-d', strtotime($category->get('Part Category Valid To').' +0:00'))) {
+            if (!array_key_exists($category->get('Category Scope').'Category', $timeseries)) {
                 continue;
             }
 
@@ -72,18 +64,14 @@ if ($result = $db->query($sql)) {
             //print_r($timeseries_data);
             foreach ($timeseries_data as $timeserie_data) {
 
-                $editor['Date']                          = gmdate(
-                    'Y-m-d H:i:s'
-                );
+                $editor['Date']                          = gmdate('Y-m-d H:i:s');
                 $timeserie_data['editor']                = $editor;
                 $timeserie_data['Timeseries Parent']     = 'Category';
                 $timeserie_data['Timeseries Parent Key'] = $category->id;
                 $timeseries                              = new Timeseries(
                     'find', $timeserie_data, 'create'
                 );
-                $category->update_part_timeseries_record(
-                    $timeseries, gmdate('Y-m-d', strtotime('now -1 day')), gmdate('Y-m-d', strtotime('now -1 day'))
-                );
+                $category->update_part_timeseries_record($timeseries, gmdate('Y-m-d', strtotime('now -1 day')), gmdate('Y-m-d', strtotime('now -1 day')));
             }
         }
     }
@@ -95,23 +83,13 @@ if ($result = $db->query($sql)) {
 }
 
 
-$sql = sprintf(
-    'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Product" ORDER BY  `Category Key` DESC'
-);
+$sql = sprintf('SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Product" ORDER BY  `Category Key` DESC');
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $category = new Category($row['Category Key']);
-        if ($category->get('Product Category Status') != 'Discontinued' or date(
-                'Y-m-d'
-            ) == date(
-                'Y-m-d', strtotime($category->get('Product Category Valid To').' +0:00')
-            )
-        ) {
-            if (!array_key_exists(
-                $category->get('Category Scope').'Category', $timeseries
-            )
-            ) {
+        if ($category->get('Product Category Status') != 'Discontinued' or date('Y-m-d') == date('Y-m-d', strtotime($category->get('Product Category Valid To').' +0:00'))) {
+            if (!array_key_exists($category->get('Category Scope').'Category', $timeseries)) {
                 continue;
             }
 
@@ -119,18 +97,12 @@ if ($result = $db->query($sql)) {
             //print_r($timeseries_data);
             foreach ($timeseries_data as $timeserie_data) {
 
-                $editor['Date']                          = gmdate(
-                    'Y-m-d H:i:s'
-                );
+                $editor['Date']                          = gmdate('Y-m-d H:i:s');
                 $timeserie_data['editor']                = $editor;
                 $timeserie_data['Timeseries Parent']     = 'Category';
                 $timeserie_data['Timeseries Parent Key'] = $category->id;
-                $timeseries                              = new Timeseries(
-                    'find', $timeserie_data, 'create'
-                );
-                $category->update_product_timeseries_record(
-                    $timeseries, gmdate('Y-m-d', strtotime('now -1 day')), gmdate('Y-m-d', strtotime('now -1 day'))
-                );
+                $timeseries                              = new Timeseries('find', $timeserie_data, 'create');
+                $category->update_product_timeseries_record($timeseries, gmdate('Y-m-d', strtotime('now -1 day')), gmdate('Y-m-d', strtotime('now -1 day')));
             }
         }
     }
@@ -142,45 +114,25 @@ if ($result = $db->query($sql)) {
 }
 
 
-$sql = sprintf(
-    'UPDATE `Store Data` SET `Store Yesterday Acc Invoiced Discount Amount`=`Store Today Acc Invoiced Discount Amount` ,`Store Today Acc Invoiced Discount Amount`=0  '
-);
+$sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc Invoiced Discount Amount`=`Store Today Acc Invoiced Discount Amount` ,`Store Today Acc Invoiced Discount Amount`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Store Data` SET `Store Yesterday Acc Invoiced Amount`=`Store Today Acc Invoiced Amount` ,`Store Today Acc Invoiced Amount`=0  '
-);
+$sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc Invoiced Amount`=`Store Today Acc Invoiced Amount` ,`Store Today Acc Invoiced Amount`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Store Data` SET `Store Yesterday Acc Profit`=`Store Today Acc Profit` ,`Store Today Acc Profit`=0  '
-);
+$sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc Profit`=`Store Today Acc Profit` ,`Store Today Acc Profit`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Store Data` SET `Store Yesterday Acc Orders`=`Store Today Acc Orders` ,`Store Today Acc Orders`=0  '
-);
+$sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc Orders`=`Store Today Acc Orders` ,`Store Today Acc Orders`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Store Data` SET `Store Yesterday Acc Invoices`=`Store Today Acc Invoices` ,`Store Today Acc Invoices`=0  '
-);
+$sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc Invoices`=`Store Today Acc Invoices` ,`Store Today Acc Invoices`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Store Data` SET `Store Yesterday Acc Replacements`=`Store Today Acc Replacements` ,`Store Today Acc Replacements`=0  '
-);
+$sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc Replacements`=`Store Today Acc Replacements` ,`Store Today Acc Replacements`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Store Data` SET `Store Yesterday Acc Delivery Notes`=`Store Today Acc Delivery Notes` ,`Store Today Acc Delivery Notes`=0  '
-);
+$sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc Delivery Notes`=`Store Today Acc Delivery Notes` ,`Store Today Acc Delivery Notes`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Store Data` SET `Store Yesterday Acc Refunds`=`Store Today Acc Refunds` ,`Store Today Acc Refunds`=0  '
-);
+$sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc Refunds`=`Store Today Acc Refunds` ,`Store Today Acc Refunds`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Store Data` SET `Store Yesterday Acc Contacts`=`Store Today Acc Contacts` ,`Store Today Acc Contacts`=0  '
-);
+$sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc Contacts`=`Store Today Acc Contacts` ,`Store Today Acc Contacts`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Store Data` SET `Store Yesterday Acc Customers`=`Store Today Acc Customers` ,`Store Today Acc Customers`=0  '
-);
+$sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc Customers`=`Store Today Acc Customers` ,`Store Today Acc Customers`=0  ');
 $db->exec($sql);
 $sql = sprintf(
     'UPDATE `Store Data` SET `Store Yesterday Acc Repeat Customers`=`Store Today Acc Repeat Customers` ,`Store Today Acc Repeat Customers`=0  '
