@@ -91,6 +91,31 @@ function update_products($db, $print_est) {
 function update_sales($db, $print_est) {
 
 
+
+    $account=new Account($db);
+    $account->load_acc_data();
+
+    $account->update_sales_from_invoices('Total');
+
+    $account->update_sales_from_invoices('1 Year');
+    $account->update_sales_from_invoices('1 Quarter');
+    $account->update_sales_from_invoices('1 Month');
+    $account->update_sales_from_invoices('1 Week');
+
+    $account->update_sales_from_invoices('Year To Day');
+    $account->update_sales_from_invoices('Quarter To Day');
+    $account->update_sales_from_invoices('Month To Day');
+    $account->update_sales_from_invoices('Week To Day');
+
+    $account->update_sales_from_invoices('Last Month');
+    $account->update_sales_from_invoices('Last Week');
+
+    $account->update_sales_from_invoices('Yesterday');
+    $account->update_sales_from_invoices('Today');
+
+    $account->update_previous_years_data();
+    $account->update_previous_quarters_data();
+
     $sql = sprintf(
         'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Invoice"  '
     );

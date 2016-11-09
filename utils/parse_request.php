@@ -61,6 +61,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '') {
 
                 $module  = 'products_server';
                 $section = 'stores';
+                $object  = 'account';
+                $key  = 1;
 
 
                 break;

@@ -591,6 +591,13 @@ function sales_history($_data, $db, $user, $account) {
             $to         = ($store->get('Product State') == 'Closed' ? $store->get('Store Valid To') : gmdate('Y-m-d'));
             $date_field = '`Timeseries Record Date`';
             break;
+        case 'account':
+            include_once 'class.Account.php';
+            $currency   = $account->get('Account Currency');
+            $from       = $account->get('Account Valid From');
+            $to         = gmdate('Y-m-d');
+            $date_field = '`Timeseries Record Date`';
+            break;
         default:
             print_r($_data);
             exit('parent not configured');
@@ -690,6 +697,7 @@ function sales_history($_data, $db, $user, $account) {
             break;
         case 'category':
         case 'store':
+        case 'account':
             if ($_data['parameters']['frequency'] == 'annually') {
                 $from_date = gmdate("Y-01-01", strtotime($from_date.' +0:00'));
                 $to_date   = gmdate("Y-12-31", strtotime($to_date.' +0:00'));

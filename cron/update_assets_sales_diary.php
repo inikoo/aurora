@@ -48,9 +48,7 @@ $editor = array(
 $timeseries=get_time_series_config();
 
 
-$sql = sprintf(
-    'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Part" ORDER BY  `Category Key` DESC'
-);
+$sql = sprintf('SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Part" ORDER BY  `Category Key` DESC');
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
@@ -134,79 +132,42 @@ $sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc Contacts`=`Store To
 $db->exec($sql);
 $sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc Customers`=`Store Today Acc Customers` ,`Store Today Acc Customers`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Store Data` SET `Store Yesterday Acc Repeat Customers`=`Store Today Acc Repeat Customers` ,`Store Today Acc Repeat Customers`=0  '
-);
+$sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc Repeat Customers`=`Store Today Acc Repeat Customers` ,`Store Today Acc Repeat Customers`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Store Data` SET `Store Yesterday Acc Lost Contacts`=`Store Today Acc Lost Contacts` ,`Store Today Acc Lost Contacts`=0  '
-);
+$sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc Lost Contacts`=`Store Today Acc Lost Contacts` ,`Store Today Acc Lost Contacts`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Store Data` SET `Store Yesterday Acc Lost Customers`=`Store Today Acc Lost Customers` ,`Store Today Acc Lost Customers`=0  '
-);
+$sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc Lost Customers`=`Store Today Acc Lost Customers` ,`Store Today Acc Lost Customers`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Store Data` SET `Store Yesterday Acc Average Dispatch Time`=`Store Today Acc Average Dispatch Time` ,`Store Today Acc Average Dispatch Time`=0  '
-);
+$sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc Average Dispatch Time`=`Store Today Acc Average Dispatch Time` ,`Store Today Acc Average Dispatch Time`=0  ');
 $db->exec($sql);
 
-
-$sql = sprintf(
-    'UPDATE `Store Data` SET `Store Yesterday Acc 1YB Invoiced Discount Amount`=`Store Today Acc 1YB Invoiced Discount Amount` ,`Store Today Acc 1YB Invoiced Discount Amount`=0  '
-);
+$sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc 1YB Invoiced Discount Amount`=`Store Today Acc 1YB Invoiced Discount Amount` ,`Store Today Acc 1YB Invoiced Discount Amount`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Store Data` SET `Store Yesterday Acc 1YB Invoiced Amount`=`Store Today Acc 1YB Invoiced Amount` ,`Store Today Acc 1YB Invoiced Amount`=0  '
-);
+$sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc 1YB Invoiced Amount`=`Store Today Acc 1YB Invoiced Amount` ,`Store Today Acc 1YB Invoiced Amount`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Store Data` SET `Store Yesterday Acc 1YB Profit`=`Store Today Acc 1YB Profit` ,`Store Today Acc 1YB Profit`=0  '
-);
+$sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc 1YB Profit`=`Store Today Acc 1YB Profit` ,`Store Today Acc 1YB Profit`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Store Data` SET `Store Yesterday Acc 1YB Orders`=`Store Today Acc 1YB Orders` ,`Store Today Acc 1YB Orders`=0  '
-);
+$sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc 1YB Orders`=`Store Today Acc 1YB Orders` ,`Store Today Acc 1YB Orders`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Store Data` SET `Store Yesterday Acc 1YB Invoices`=`Store Today Acc 1YB Invoices` ,`Store Today Acc 1YB Invoices`=0  '
-);
+$sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc 1YB Invoices`=`Store Today Acc 1YB Invoices` ,`Store Today Acc 1YB Invoices`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Store Data` SET `Store Yesterday Acc 1YB Replacements`=`Store Today Acc 1YB Replacements` ,`Store Today Acc 1YB Replacements`=0  '
-);
+$sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc 1YB Replacements`=`Store Today Acc 1YB Replacements` ,`Store Today Acc 1YB Replacements`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Store Data` SET `Store Yesterday Acc 1YB Delivery Notes`=`Store Today Acc 1YB Delivery Notes` ,`Store Today Acc 1YB Delivery Notes`=0  '
-);
+$sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc 1YB Delivery Notes`=`Store Today Acc 1YB Delivery Notes` ,`Store Today Acc 1YB Delivery Notes`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Store Data` SET `Store Yesterday Acc 1YB Refunds`=`Store Today Acc 1YB Refunds` ,`Store Today Acc 1YB Refunds`=0  '
-);
+$sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc 1YB Refunds`=`Store Today Acc 1YB Refunds` ,`Store Today Acc 1YB Refunds`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Store Data` SET `Store Yesterday Acc 1YB Contacts`=`Store Today Acc 1YB Contacts` ,`Store Today Acc 1YB Contacts`=0  '
-);
+$sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc 1YB Contacts`=`Store Today Acc 1YB Contacts` ,`Store Today Acc 1YB Contacts`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Store Data` SET `Store Yesterday Acc 1YB Customers`=`Store Today Acc 1YB Customers` ,`Store Today Acc 1YB Customers`=0  '
-);
+$sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc 1YB Customers`=`Store Today Acc 1YB Customers` ,`Store Today Acc 1YB Customers`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Store Data` SET `Store Yesterday Acc 1YB Repeat Customers`=`Store Today Acc 1YB Repeat Customers` ,`Store Today Acc 1YB Repeat Customers`=0  '
-);
+$sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc 1YB Repeat Customers`=`Store Today Acc 1YB Repeat Customers` ,`Store Today Acc 1YB Repeat Customers`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Store Data` SET `Store Yesterday Acc 1YB Lost Contacts`=`Store Today Acc 1YB Lost Contacts` ,`Store Today Acc 1YB Lost Contacts`=0  '
-);
+$sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc 1YB Lost Contacts`=`Store Today Acc 1YB Lost Contacts` ,`Store Today Acc 1YB Lost Contacts`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Store Data` SET `Store Yesterday Acc 1YB Lost Customers`=`Store Today Acc 1YB Lost Customers` ,`Store Today Acc 1YB Lost Customers`=0  '
-);
+$sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc 1YB Lost Customers`=`Store Today Acc 1YB Lost Customers` ,`Store Today Acc 1YB Lost Customers`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Store Data` SET `Store Yesterday Acc 1YB Average Dispatch Time`=`Store Today Acc 1YB Average Dispatch Time` ,`Store Today Acc 1YB Average Dispatch Time`=0  '
-);
+$sql = sprintf('UPDATE `Store Data` SET `Store Yesterday Acc 1YB Average Dispatch Time`=`Store Today Acc 1YB Average Dispatch Time` ,`Store Today Acc 1YB Average Dispatch Time`=0  ');
 $db->exec($sql);
 
 
@@ -252,86 +213,48 @@ if ($result = $db->query($sql)) {
 }
 
 
-$sql = sprintf(
-    'UPDATE `Invoice Category Data` SET `Invoice Category Yesterday Acc Discount Amount`=`Invoice Category Today Acc Discount Amount` ,`Invoice Category Today Acc Discount Amount`=0  '
-);
+$sql = sprintf('UPDATE `Invoice Category Data` SET `Invoice Category Yesterday Acc Discount Amount`=`Invoice Category Today Acc Discount Amount` ,`Invoice Category Today Acc Discount Amount`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Invoice Category Data` SET `Invoice Category Yesterday Acc Amount`=`Invoice Category Today Acc Amount` ,`Invoice Category Today Acc Amount`=0  '
-);
+$sql = sprintf('UPDATE `Invoice Category Data` SET `Invoice Category Yesterday Acc Amount`=`Invoice Category Today Acc Amount` ,`Invoice Category Today Acc Amount`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Invoice Category Data` SET `Invoice Category Yesterday Acc Refunded Amount`=`Invoice Category Today Acc Refunded Amount` ,`Invoice Category Today Acc Refunded Amount`=0  '
-);
+$sql = sprintf('UPDATE `Invoice Category Data` SET `Invoice Category Yesterday Acc Refunded Amount`=`Invoice Category Today Acc Refunded Amount` ,`Invoice Category Today Acc Refunded Amount`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Invoice Category Data` SET `Invoice Category Yesterday Acc Invoices`=`Invoice Category Today Acc Invoices` ,`Invoice Category Today Acc Invoices`=0  '
-);
+$sql = sprintf('UPDATE `Invoice Category Data` SET `Invoice Category Yesterday Acc Invoices`=`Invoice Category Today Acc Invoices` ,`Invoice Category Today Acc Invoices`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Invoice Category Data` SET `Invoice Category Yesterday Acc Refunds`=`Invoice Category Today Acc Refunds` ,`Invoice Category Today Acc Refunds`=0  '
-);
+$sql = sprintf('UPDATE `Invoice Category Data` SET `Invoice Category Yesterday Acc Refunds`=`Invoice Category Today Acc Refunds` ,`Invoice Category Today Acc Refunds`=0  ');
 $db->exec($sql);
 
-$sql = sprintf(
-    'UPDATE `Invoice Category DC Data` SET `Invoice Category DC Yesterday Acc Discount Amount`=`Invoice Category DC Today Acc Discount Amount` ,`Invoice Category DC Today Acc Discount Amount`=0  '
-);
+$sql = sprintf('UPDATE `Invoice Category DC Data` SET `Invoice Category DC Yesterday Acc Discount Amount`=`Invoice Category DC Today Acc Discount Amount` ,`Invoice Category DC Today Acc Discount Amount`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Invoice Category DC Data` SET `Invoice Category DC Yesterday Acc Amount`=`Invoice Category DC Today Acc Amount` ,`Invoice Category DC Today Acc Amount`=0  '
-);
+$sql = sprintf('UPDATE `Invoice Category DC Data` SET `Invoice Category DC Yesterday Acc Amount`=`Invoice Category DC Today Acc Amount` ,`Invoice Category DC Today Acc Amount`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Invoice Category DC Data` SET `Invoice Category DC Yesterday Acc Refunded Amoun`=`Invoice Category DC Today Acc Refunded Amoun` ,`Invoice Category DC Today Acc Refunded Amoun`=0  '
-);
+$sql = sprintf('UPDATE `Invoice Category DC Data` SET `Invoice Category DC Yesterday Acc Refunded Amoun`=`Invoice Category DC Today Acc Refunded Amoun` ,`Invoice Category DC Today Acc Refunded Amoun`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Invoice Category DC Data` SET `Invoice Category DC Yesterday Acc Profit`=`Invoice Category DC Today Acc Profit` ,`Invoice Category DC Today Acc Profit`=0  '
-);
+$sql = sprintf('UPDATE `Invoice Category DC Data` SET `Invoice Category DC Yesterday Acc Profit`=`Invoice Category DC Today Acc Profit` ,`Invoice Category DC Today Acc Profit`=0  ');
 $db->exec($sql);
 
-$sql = sprintf(
-    'UPDATE `Invoice Category Data` SET `Invoice Category Yesterday Acc 1YB Discount Amount`=`Invoice Category Today Acc 1YB Discount Amount` ,`Invoice Category Today Acc 1YB Discount Amount`=0  '
-);
+$sql = sprintf('UPDATE `Invoice Category Data` SET `Invoice Category Yesterday Acc 1YB Discount Amount`=`Invoice Category Today Acc 1YB Discount Amount` ,`Invoice Category Today Acc 1YB Discount Amount`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Invoice Category Data` SET `Invoice Category Yesterday Acc 1YB Amount`=`Invoice Category Today Acc 1YB Amount` ,`Invoice Category Today Acc 1YB Amount`=0  '
-);
+$sql = sprintf('UPDATE `Invoice Category Data` SET `Invoice Category Yesterday Acc 1YB Amount`=`Invoice Category Today Acc 1YB Amount` ,`Invoice Category Today Acc 1YB Amount`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Invoice Category Data` SET `Invoice Category Yesterday Acc 1YB Refunded Amount`=`Invoice Category Today Acc 1YB Refunded Amount` ,`Invoice Category Today Acc 1YB Refunded Amount`=0  '
-);
+$sql = sprintf('UPDATE `Invoice Category Data` SET `Invoice Category Yesterday Acc 1YB Refunded Amount`=`Invoice Category Today Acc 1YB Refunded Amount` ,`Invoice Category Today Acc 1YB Refunded Amount`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Invoice Category Data` SET `Invoice Category Yesterday Acc 1YB Invoices`=`Invoice Category Today Acc 1YB Invoices` ,`Invoice Category Today Acc 1YB Invoices`=0  '
-);
+$sql = sprintf('UPDATE `Invoice Category Data` SET `Invoice Category Yesterday Acc 1YB Invoices`=`Invoice Category Today Acc 1YB Invoices` ,`Invoice Category Today Acc 1YB Invoices`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Invoice Category Data` SET `Invoice Category Yesterday Acc 1YB Refunds`=`Invoice Category Today Acc 1YB Refunds` ,`Invoice Category Today Acc 1YB Refunds`=0  '
-);
+$sql = sprintf('UPDATE `Invoice Category Data` SET `Invoice Category Yesterday Acc 1YB Refunds`=`Invoice Category Today Acc 1YB Refunds` ,`Invoice Category Today Acc 1YB Refunds`=0  ');
 $db->exec($sql);
 
-$sql = sprintf(
-    'UPDATE `Invoice Category DC Data` SET `Invoice Category DC Yesterday Acc 1YB Discount Amount`=`Invoice Category DC Today Acc 1YB Discount Amount` ,`Invoice Category DC Today Acc 1YB Discount Amount`=0  '
-);
+$sql = sprintf('UPDATE `Invoice Category DC Data` SET `Invoice Category DC Yesterday Acc 1YB Discount Amount`=`Invoice Category DC Today Acc 1YB Discount Amount` ,`Invoice Category DC Today Acc 1YB Discount Amount`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Invoice Category DC Data` SET `Invoice Category DC Yesterday Acc 1YB Amount`=`Invoice Category DC Today Acc 1YB Amount` ,`Invoice Category DC Today Acc 1YB Amount`=0  '
-);
+$sql = sprintf('UPDATE `Invoice Category DC Data` SET `Invoice Category DC Yesterday Acc 1YB Amount`=`Invoice Category DC Today Acc 1YB Amount` ,`Invoice Category DC Today Acc 1YB Amount`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Invoice Category DC Data` SET `Invoice Category DC Yesterday Acc 1YB Refunded Amoun`=`Invoice Category DC Today Acc 1YB Refunded Amoun` ,`Invoice Category DC Today Acc 1YB Refunded Amoun`=0  '
-);
+$sql = sprintf('UPDATE `Invoice Category DC Data` SET `Invoice Category DC Yesterday Acc 1YB Refunded Amoun`=`Invoice Category DC Today Acc 1YB Refunded Amoun` ,`Invoice Category DC Today Acc 1YB Refunded Amoun`=0  ');
 $db->exec($sql);
-$sql = sprintf(
-    'UPDATE `Invoice Category DC Data` SET `Invoice Category DC Yesterday Acc 1YB Profit`=`Invoice Category DC Today Acc 1YB Profit` ,`Invoice Category DC Today Acc 1YB Profit`=0  '
-);
+$sql = sprintf('UPDATE `Invoice Category DC Data` SET `Invoice Category DC Yesterday Acc 1YB Profit`=`Invoice Category DC Today Acc 1YB Profit` ,`Invoice Category DC Today Acc 1YB Profit`=0  ');
 $db->exec($sql);
 
 
-$sql = sprintf(
-    'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Invoice"  '
-);
+$sql = sprintf('SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Invoice"  ');
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
@@ -460,18 +383,12 @@ foreach ($intervals as $interval) {
     );
 
 
-    $sql = sprintf(
-        'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Invoice"  '
-    );
+    $sql = sprintf('SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Invoice"  ');
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
-
             $category = new Category($row['Category Key']);
-
             $category->update_invoice_category_sales($interval);
-
-
         }
 
     } else {
@@ -495,6 +412,10 @@ foreach ($intervals as $interval) {
         print_r($error_info = $db->errorInfo());
         exit;
     }
+
+
+    $account->load_acc_data();
+    $account->update_sales_from_invoices($interval);
 
 
 }
