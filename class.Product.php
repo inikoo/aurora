@@ -2020,7 +2020,7 @@ class Product extends Asset {
             $account = new Account($this->db);
 
             $msg = new_housekeeping_fork(
-                'au_housekeeping4', array(
+                'au_housekeeping', array(
                     'type'                     => 'update_web_state_slow_forks',
                     'web_availability_updated' => $web_availability_updated,
                     'product_id'               => $this->id

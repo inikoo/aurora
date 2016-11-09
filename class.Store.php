@@ -1062,7 +1062,6 @@ class Store extends DB_Table {
 
         );
 
-        //print "$sql\n";
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $sales_data['discount_amount']    = $row['discounts'];
