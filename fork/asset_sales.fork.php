@@ -12,7 +12,10 @@ function fork_asset_sales($job) {
 
 
     if (!$_data = get_fork_metadata($job)) {
-        return;
+
+        print "fork_asset_sales shit";
+
+        return true;
     }
 
 
@@ -368,6 +371,8 @@ function update_invoice_products_sales_data($db, $data) {
     include_once 'class.Store.php';
     include_once 'class.Invoice.php';
 
+
+    print "helllo\n";
 
     $categories     = array();
     $categories_bis = array();

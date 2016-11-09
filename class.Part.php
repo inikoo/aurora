@@ -1118,7 +1118,7 @@ class Part extends Asset {
         global $account;
 
         $msg = new_housekeeping_fork(
-            'au_housekeeping', array(
+            'au_housekeeping4', array(
                 'type'     => 'update_part_products_availability',
                 'part_sku' => $this->id
             ), $account->get('Account Code')
