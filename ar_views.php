@@ -525,9 +525,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
     ) {
 
 
-        $response['navigation'] = get_navigation(
-            $user, $smarty, $state, $db, $account
-        );
+        $response['navigation'] = get_navigation($user, $smarty, $state, $db, $account);
     }
     if ($reload) {
         $response['logout_label'] = _('Logout');
@@ -573,11 +571,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
     );// todo only calculate when is subtabs in the section
 
 
-    if ($state['object'] != '' and ($modules[$state['module']]['sections'][$state['section']]['type'] == 'object' or isset($modules[$state['module']]['sections'][$state['section']]['showcase']))
-
-
-    ) {
-
+    if ($state['object'] != '' and ($modules[$state['module']]['sections'][$state['section']]['type'] == 'object' or isset($modules[$state['module']]['sections'][$state['section']]['showcase']))) {
 
         if (isset($data['metadata']['reload_showcase']) or !($data['old_state']['module'] == $state['module'] and $data['old_state']['section'] == $state['section'] and $data['old_state']['object']
                 == $state['object'] and $data['old_state']['key'] == $state['key'])
@@ -585,12 +579,10 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
 
             $response['object_showcase'] = get_object_showcase(
-                (isset($modules[$state['module']]['sections'][$state['section']]['showcase']) ? $modules[$state['module']]['sections'][$state['section']]['showcase'] : $state['object']),
-                $state,
-                $smarty,
-                $user,
-                $db,
-                $account
+                (isset($modules[$state['module']]['sections'][$state['section']]['showcase']) ? $modules[$state['module']]['sections'][$state['section']]['showcase'] : $state['object']), $state,
+                                                                                                                                                                                           $smarty,
+                                                                                                                                                                                           $user, $db,
+                                                                                                                                                                                           $account
             );
 
         }
@@ -717,8 +709,17 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             );
             break;
         case 'account':
-            include_once 'showcase/account.show.php';
-            $html = get_account_showcase($data, $smarty, $user, $db);
+
+
+            if ($data['module'] == 'products_server') {
+                include_once 'showcase/stores.show.php';
+                $html = get_stores_showcase($data, $smarty, $user, $db);
+
+            } else {
+
+                include_once 'showcase/account.show.php';
+                $html = get_account_showcase($data, $smarty, $user, $db);
+            }
             break;
         case 'product':
             include_once 'showcase/product.show.php';
@@ -2225,8 +2226,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
             } else {
 
 
-                if ($data['_object']->get('Root Key') == $data['store']->get('Store Department Category Key')
-                ) {
+                if ($data['_object']->get('Root Key') == $data['store']->get('Store Department Category Key')) {
                     $_content['tabs']['category.subjects']['label']   = _('Families');
                     $_content['tabs']['category.categories']['label'] = _('Departments');
                 } elseif ($data['_object']->get('Root Key') == $data['store']->get('Store Family Category Key')) {
@@ -2250,21 +2250,18 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
                 );
 
                 if ($data['_object']->get('Category Branch Type') != 'Head') {
-                    $_content['tabs']['part_family.product_families']['class']
-                                                                  = 'hide';
-                    $_content['tabs']['category.images']['class'] = 'hide';
+                    $_content['tabs']['part_family.product_families']['class'] = 'hide';
+                    $_content['tabs']['category.images']['class']              = 'hide';
 
                 }
 
             } else {
 
-                $_content['tabs']['category.subjects']['label'] = _(
+                $_content['tabs']['category.subjects']['label']            = _(
                     'Parts'
                 );
-                $_content['tabs']['part_family.product_families']['class']
-                                                                = 'hide';
-                $_content['tabs']['category.images']['class']
-                                                                = 'hide';
+                $_content['tabs']['part_family.product_families']['class'] = 'hide';
+                $_content['tabs']['category.images']['class']              = 'hide';
 
             }
 
@@ -2276,16 +2273,14 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
             unset($_content['tabs']['category.categories']);
             if ($data['tab'] == 'category.categories') {
                 $_content['tabs']['category.subjects']['selected'] = true;
-                $data['tab']
-                                                                   = 'category.subjects';
+                $data['tab']                                       = 'category.subjects';
             }
 
         } else {
             unset($_content['tabs']['category.subjects']);
             if ($data['tab'] == 'category.subjects') {
                 $_content['tabs']['category.categories']['selected'] = true;
-                $data['tab']
-                                                                     = 'category.categories';
+                $data['tab']                                         = 'category.categories';
             }
         }
 
@@ -2691,8 +2686,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         continue;
                     }
                     if ($category_key == $state['key']) {
-                        $branch[]
-                            = array(
+                        $branch[] = array(
                             'label'     => '<span class="Category_Code">'.$category->get('Code').'</span> <span class="italic hide Category_Label">'.$category->get('Label').'</span>',
                             'icon'      => '',
                             'reference' => ''
@@ -2828,8 +2822,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                                 'icon'      => 'users',
                                 'reference' => 'customers/'.$store->id
                             );
-                            $branch[]
-                                      = array(
+                            $branch[] = array(
                                 'label'     => $customer->get_formatted_id(),
                                 'icon'      => 'user',
                                 'reference' => 'customer/'.$customer->id
@@ -3035,8 +3028,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'icon'      => 'ship',
                     'reference' => 'supplier/'.$state['parent_key']
                 );
-                $branch[]
-                          = array(
+                $branch[] = array(
                     'label'     => '<span class="id Attachment_Caption">'.$state['_object']->get('Caption').'</span>',
                     'icon'      => 'paperclip',
                     'reference' => ''
@@ -3056,8 +3048,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'icon'      => '',
                         'reference' => 'suppliers'
                     );
-                    $branch[]
-                              = array(
+                    $branch[] = array(
                         'label'     => '<span class="id Supplier_Code">'.$state['_parent']->get('Code'),
                         'icon'      => 'ship',
                         'reference' => 'supplier/'.$state['parent_key']
@@ -3089,16 +3080,14 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'icon'      => 'ship',
                         'reference' => 'supplier/'.$supplier->id
                     );
-                    $branch[]
-                              = array(
+                    $branch[] = array(
                         'label'     => '<span class="Supplier_Part_Reference">'.$state['_parent']->get('Reference').'</span>',
                         'icon'      => 'stop',
                         'reference' => 'supplier/'.$supplier->id.'/part/'.$state['_parent']->id
                     );
 
                 }
-                $branch[]
-                    = array(
+                $branch[] = array(
                     'label'     => '<span class="Purchase_Order_Public_ID">'.$state['_object']->get('Public ID').'</span>',
                     'icon'      => 'clipboard',
                     'reference' => ''
@@ -3117,8 +3106,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'icon'      => '',
                         'reference' => 'suppliers'
                     );
-                    $branch[]
-                              = array(
+                    $branch[] = array(
                         'label'     => '<span class="id Supplier_Code">'.$state['_parent']->get('Code'),
                         'icon'      => 'ship',
                         'reference' => 'supplier/'.$state['parent_key']
@@ -3135,8 +3123,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'reference' => 'agent/'.$state['parent_key']
                     );
                 }
-                $branch[]
-                    = array(
+                $branch[] = array(
                     'label'     => '<span class="Supplier_Delivery_Public_ID">'.$state['_object']->get('Public ID').'</span>',
                     'icon'      => 'truck',
                     'reference' => ''
@@ -3155,8 +3142,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                             'Purchase Order Parent Key'
                         )
                 );
-                $branch[]
-                          = array(
+                $branch[] = array(
                     'label'     => '<span class="Purchase_Order_Public_ID">'.$state['_parent']->get('Public ID').'</span>',
                     'icon'      => 'clipboard',
                     'reference' => 'supplier/'.$state['_parent']->get(
@@ -3165,8 +3151,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
 
-                $branch[]
-                    = array(
+                $branch[] = array(
                     'label'     => '<span class="Supplier_Part_Reference">'.$state['_object']->get('Reference').'</span>',
                     'icon'      => 'bars',
                     'reference' => ''
@@ -3187,8 +3172,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                             'Purchase Order Parent Key'
                         )
                 );
-                $branch[]
-                          = array(
+                $branch[] = array(
                     'label'     => '<span class="Purchase_Order_Public_ID">'.$state['_parent']->get('Public ID').'</span>',
                     'icon'      => 'clipboard',
                     'reference' => 'supplier/'.$state['_parent']->get(
@@ -3197,8 +3181,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
 
-                $branch[]
-                    = array(
+                $branch[] = array(
                     'label'     => '<span class="Supplier_Part_Reference">'.$state['_object']->get('Reference').'</span>',
                     'icon'      => 'bars',
                     'reference' => ''
@@ -3239,8 +3222,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'icon'      => 'ship',
                     'reference' => 'supplier/'.$state['_parent']->id
                 );
-                $branch[]
-                          = array(
+                $branch[] = array(
                     'label'     => '<span class="Supplier_Part_Reference">'.$state['_object']->get('Reference').'</span>',
                     'icon'      => 'stop',
                     'reference' => ''
@@ -3296,8 +3278,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         continue;
                     }
                     if ($category_key == $state['key']) {
-                        $branch[]
-                            = array(
+                        $branch[] = array(
                             'label'     => '<span class="Category_Label">'.$category->get('Label').'</span>',
                             'icon'      => '',
                             'reference' => ''
@@ -4216,8 +4197,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'icon'      => 'hand-rock-o',
                         'reference' => 'employee/'.$employee->id
                     );
-                    $branch[]
-                              = array(
+                    $branch[] = array(
                         'label'     => '<span class="id Attachment_Caption">'.$state['_object']->get('Caption').'</span>',
                         'icon'      => 'paperclip',
                         'reference' => 'employee/'.$employee->id.'/attachment/'.$state['_object']->id
@@ -4343,8 +4323,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                                 continue;
                             }
                             if ($category_key == $state['parent_key']) {
-                                $branch[]
-                                    = array(
+                                $branch[] = array(
                                     'label'     => '<span class="Category_Label">'.$category->get('Label').'</span>',
                                     'icon'      => '',
                                     'reference' => 'inventory/category/'.$category_key
@@ -4355,8 +4334,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                                 $parent_category = new Category($category_key);
                                 if ($parent_category->id) {
 
-                                    $branch[]
-                                        = array(
+                                    $branch[] = array(
                                         'label'     => $parent_category->get(
                                             'Label'
                                         ),
@@ -4377,8 +4355,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                     }
 
-                    $branch[]
-                        = array(
+                    $branch[] = array(
                         'label'     => '<span class="id Part_Reference">'.$state['_object']->get('Reference').'</span>',
                         'icon'      => 'square',
                         'reference' => ''
@@ -4393,8 +4370,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'icon'      => 'th-large',
                         'reference' => 'inventory'
                     );
-                    $branch[]
-                              = array(
+                    $branch[] = array(
                         'label'     => '<span class="id Part_Reference">'.$state['_parent']->get('Reference').'</span>',
                         'icon'      => 'square',
                         'reference' => 'part/'.$state['_parent']->sku
@@ -4452,8 +4428,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                                 continue;
                             }
                             if ($category_key == $state['parent_key']) {
-                                $branch[]
-                                    = array(
+                                $branch[] = array(
                                     'label'     => '<span class="Category_Label">'.$category->get('Label').'</span>',
                                     'icon'      => '',
                                     'reference' => ''
@@ -4464,8 +4439,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                                 $parent_category = new Category($category_key);
                                 if ($parent_category->id) {
 
-                                    $branch[]
-                                        = array(
+                                    $branch[] = array(
                                         'label'     => $parent_category->get(
                                             'Label'
                                         ),
@@ -4486,8 +4460,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                     }
 
-                    $branch[]
-                              = array(
+                    $branch[] = array(
                         'label'     => '<span class="id Part_Reference">'.$state['_object']->get('Reference').'</span>',
                         'icon'      => 'square',
                         'reference' => 'part/'.$state['_object']->id
@@ -4506,16 +4479,14 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'icon'      => 'th-large',
                         'reference' => 'inventory'
                     );
-                    $branch[]
-                              = array(
+                    $branch[] = array(
                         'label'     => '<span class="id Part_Reference">'.$state['_parent']->get('Reference').'</span>',
                         'icon'      => 'square',
                         'reference' => 'part/'.$state['parent_key']
                     );
 
 
-                    $branch[]
-                        = array(
+                    $branch[] = array(
                         'label'     => '<span class="id Product_Code">'.$state['_object']->get('Code').'</span>',
                         'icon'      => 'cube',
                         'reference' => 'products/'.$state['_object']->get('Product Store Key').'/'.$state['_object']->id
@@ -4591,8 +4562,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                             continue;
                         }
                         if ($category_key == $state['key']) {
-                            $branch[]
-                                = array(
+                            $branch[] = array(
                                 'label'     => '<span class="Category_Label">'.$category->get('Label').'</span>',
                                 'icon'      => '',
                                 'reference' => ''
@@ -4603,8 +4573,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                             $parent_category = new Category($category_key);
                             if ($parent_category->id) {
 
-                                $branch[]
-                                    = array(
+                                $branch[] = array(
                                     'label'     => $parent_category->get(
                                         'Label'
                                     ),
@@ -4660,8 +4629,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                                 continue;
                             }
                             if ($category_key == $state['key']) {
-                                $branch[]
-                                    = array(
+                                $branch[] = array(
                                     'label'     => '<span class="Category_Label">'.$category->get('Label').'</span>',
                                     'icon'      => '',
                                     'reference' => ''
@@ -4672,8 +4640,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                                 $parent_category = new Category($category_key);
                                 if ($parent_category->id) {
 
-                                    $branch[]
-                                        = array(
+                                    $branch[] = array(
                                         'label'     => $parent_category->get(
                                             'Label'
                                         ),
@@ -4723,8 +4690,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'icon'      => 'th-large',
                         'reference' => 'inventory'
                     );
-                    $branch[]
-                              = array(
+                    $branch[] = array(
                         'label'     => '<span class="id Part_Reference">'.$state['_parent']->get('Reference').'</span>',
                         'icon'      => 'square',
                         'reference' => 'part/'.$state['_parent']->sku
@@ -4741,14 +4707,12 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'icon'      => 'th-large',
                         'reference' => 'inventory'
                     );
-                    $branch[]
-                              = array(
+                    $branch[] = array(
                         'label'     => '<span class="id Part_Reference">'.$state['_parent']->get('Reference').'</span>',
                         'icon'      => 'square',
                         'reference' => 'part/'.$state['_parent']->sku
                     );
-                    $branch[]
-                              = array(
+                    $branch[] = array(
                         'label'     => '<span class="id Attachment_Caption">'.$state['_object']->get('Caption').'</span>',
                         'icon'      => 'paperclip',
                         'reference' => ''
@@ -4779,8 +4743,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'icon'      => '',
                         'reference' => 'warehouses'
                     );
-                    $branch[]
-                              = array(
+                    $branch[] = array(
                         'label'     => '<span class="id Warehouse_Code">'.$state['warehouse']->get('Code').'</span>',
                         'icon'      => 'map',
                         'reference' => ''
@@ -4792,8 +4755,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'icon'      => '',
                         'reference' => 'warehouses'
                     );
-                    $branch[]
-                              = array(
+                    $branch[] = array(
                         'label'     => '<span class="id Warehouse_Code">'.$state['warehouse']->get('Code').'</span>',
                         'icon'      => 'map',
                         'reference' => 'warehouse/'.$state['parent_key']
@@ -4812,8 +4774,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'icon'      => '',
                         'reference' => 'warehouses'
                     );
-                    $branch[]
-                              = array(
+                    $branch[] = array(
                         'label'     => '<span class=" Warehouse_Code">'.$state['warehouse']->get('Code').'</span>',
                         'icon'      => 'map',
                         'reference' => 'warehouse/'.$state['parent_key']
@@ -4823,8 +4784,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'icon'      => '',
                         'reference' => 'warehouse/'.$state['parent_key'].'/locations'
                     );
-                    $branch[]
-                              = array(
+                    $branch[] = array(
                         'label'     => '<span class="id Location_Code">'.$state['_object']->get('Code').'</span>',
                         'icon'      => 'map-marker',
                         'reference' => ''
@@ -4864,8 +4824,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                             continue;
                         }
                         if ($category_key == $state['key']) {
-                            $branch[]
-                                = array(
+                            $branch[] = array(
                                 'label'     => '<span class="Category_Label">'.$category->get('Label').'</span>',
                                 'icon'      => '',
                                 'reference' => ''
@@ -4876,8 +4835,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                             $parent_category = new Category($category_key);
                             if ($parent_category->id) {
 
-                                $branch[]
-                                    = array(
+                                $branch[] = array(
                                     'label'     => $parent_category->get(
                                         'Label'
                                     ),
@@ -4923,8 +4881,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'icon'      => 'th-large',
                         'reference' => 'inventory/'.$state['warehouse']->id
                     );
-                    $branch[]
-                              = array(
+                    $branch[] = array(
                         'label'     => '<span class="id Part_Reference">'.$state['_object']->get('Reference').'</span> (<span class="id">'.$state['_object']->get(
                                 'SKU'
                             ).'</span>)',
@@ -4956,8 +4913,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                     $website = $state['_object'];
 
-                    $branch[]
-                        = array(
+                    $branch[] = array(
                         'label'     => '<span class="id Website_Code">'.$website->get('Code').'</span>',
                         'icon'      => 'globe',
                         'reference' => 'website/'.$website->id
@@ -4998,8 +4954,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                     }
 
-                    $branch[]
-                        = array(
+                    $branch[] = array(
                         'label'     => '<span class="id Webpage_Name">'.$state['_object']->webpage->get('Name').'</span>',
                         'icon'      => ($state['_object']->get(
                             'Website Node Icon'
@@ -5737,8 +5692,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'icon'      => 'tasks',
                     'reference' => 'production/manufacture_tasks'
                 );
-                $branch[]
-                          = array(
+                $branch[] = array(
                     'label'     => '<span class="Manufacture_Task_Code">'.$state['_object']->get('Code').'</span>',
                     'icon'      => '',
                     'reference' => ''
@@ -5927,8 +5881,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'reference' => 'campaigns/'.$state['store']->id
                     );
 
-                    $branch[]
-                        = array(
+                    $branch[] = array(
                         'label'     => '<span class="Deal_Campaign_Name">'.$state['_parent']->get('Name').'</span>',
                         'icon'      => 'tags',
                         'reference' => ''
@@ -6016,8 +5969,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'icon'      => 'ship',
                     'reference' => 'supplier/'.$state['parent_key']
                 );
-                $branch[]
-                          = array(
+                $branch[] = array(
                     'label'     => '<span class="id Attachment_Caption">'.$state['_object']->get('Caption').'</span>',
                     'icon'      => 'paperclip',
                     'reference' => ''
@@ -6066,8 +6018,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'icon'      => '',
                         'reference' => 'suppliers'
                     );
-                    $branch[]
-                              = array(
+                    $branch[] = array(
                         'label'     => '<span class="id Supplier_Code">'.$state['_parent']->get('Code'),
                         'icon'      => 'ship',
                         'reference' => 'supplier/'.$state['parent_key']
@@ -6084,8 +6035,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'reference' => 'agent/'.$state['parent_key']
                     );
                 }
-                $branch[]
-                    = array(
+                $branch[] = array(
                     'label'     => '<span class="Purchase_Order_Public_ID">'.$state['_object']->get('Public ID').'</span>',
                     'icon'      => 'clipboard',
                     'reference' => ''
@@ -6104,8 +6054,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'icon'      => '',
                         'reference' => 'suppliers'
                     );
-                    $branch[]
-                              = array(
+                    $branch[] = array(
                         'label'     => '<span class="id Supplier_Code">'.$state['_parent']->get('Code'),
                         'icon'      => 'ship',
                         'reference' => 'supplier/'.$state['parent_key']
@@ -6122,8 +6071,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'reference' => 'agent/'.$state['parent_key']
                     );
                 }
-                $branch[]
-                    = array(
+                $branch[] = array(
                     'label'     => '<span class="Supplier_Delivery_Public_ID">'.$state['_object']->get('Public ID').'</span>',
                     'icon'      => 'truck',
                     'reference' => ''
@@ -6142,8 +6090,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                             'Purchase Order Parent Key'
                         )
                 );
-                $branch[]
-                          = array(
+                $branch[] = array(
                     'label'     => '<span class="Purchase_Order_Public_ID">'.$state['_parent']->get('Public ID').'</span>',
                     'icon'      => 'clipboard',
                     'reference' => 'supplier/'.$state['_parent']->get(
@@ -6152,8 +6099,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
 
-                $branch[]
-                    = array(
+                $branch[] = array(
                     'label'     => '<span class="Supplier_Part_Reference">'.$state['_object']->get('Reference').'</span>',
                     'icon'      => 'bars',
                     'reference' => ''
@@ -6174,8 +6120,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                             'Purchase Order Parent Key'
                         )
                 );
-                $branch[]
-                          = array(
+                $branch[] = array(
                     'label'     => '<span class="Purchase_Order_Public_ID">'.$state['_parent']->get('Public ID').'</span>',
                     'icon'      => 'clipboard',
                     'reference' => 'supplier/'.$state['_parent']->get(
@@ -6184,8 +6129,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
 
-                $branch[]
-                    = array(
+                $branch[] = array(
                     'label'     => '<span class="Supplier_Part_Reference">'.$state['_object']->get('Reference').'</span>',
                     'icon'      => 'bars',
                     'reference' => ''
@@ -6202,8 +6146,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'icon'      => 'ship',
                     'reference' => 'supplier/'.$state['_parent']->id
                 );
-                $branch[]
-                          = array(
+                $branch[] = array(
                     'label'     => '<span class="Supplier_Part_Reference">'.$state['_object']->get('Reference').'</span>',
                     'icon'      => 'stop',
                     'reference' => ''

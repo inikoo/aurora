@@ -202,6 +202,7 @@ function asset_sales($db, $data, $account) {
     global $memcache_ip;
 
     $table = "`Timeseries Record Dimension`  ";
+    $timeseries_key =0;
     switch ($data['parent']) {
 
 
@@ -277,6 +278,25 @@ function asset_sales($db, $data, $account) {
 
             $sql = sprintf(
                 'SELECT `Timeseries Key` FROM `Timeseries Dimension` WHERE `Timeseries Parent`="Store" AND `Timeseries Parent Key`=%s AND `Timeseries Frequency`="Daily" AND  `Timeseries Type`="StoreSales" ',
+                $data['parent_key']
+            );
+            if ($result = $db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $timeseries_key = $row['Timeseries Key'];
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+
+            $fields = ' `Timeseries Record Date` as Date,sum(`Timeseries Record Float A`) as Sales ,sum(`Timeseries Record Integer A`) as Volume';
+            $where = sprintf("where `Timeseries Record Timeseries Key`=%d", $timeseries_key);
+            $group  = 'group by `Date`';
+            break;
+        case 'account':
+
+            $sql = sprintf(
+                'SELECT `Timeseries Key` FROM `Timeseries Dimension` WHERE `Timeseries Parent`="Account" AND `Timeseries Parent Key`=%s AND `Timeseries Frequency`="Daily" AND  `Timeseries Type`="AccountSales" ',
                 $data['parent_key']
             );
             if ($result = $db->query($sql)) {

@@ -12,6 +12,42 @@
 function get_time_series_config() {
 
     $time_series = array(
+        'Account' => array(
+            array(
+                'Timeseries Type'      => 'AccountSales',
+                'Timeseries Frequency' => 'Daily',
+                'Timeseries Scope'     => 'Sales',
+                'Timeseries Parent'    => 'Account',
+            ),
+            array(
+                'Timeseries Type'      => 'AccountSales',
+                'Timeseries Frequency' => 'Weekly',
+                'Timeseries Scope'     => 'Sales',
+                'Timeseries Parent'    => 'Account',
+            ),
+            array(
+                'Timeseries Type'      => 'AccountSales',
+                'Timeseries Frequency' => 'Monthly',
+                'Timeseries Scope'     => 'Sales',
+                'Timeseries Parent'    => 'Account',
+            ),
+            array(
+                'Timeseries Type'      => 'AccountSales',
+                'Timeseries Frequency' => 'Quarterly',
+                'Timeseries Scope'     => 'Sales',
+                'Timeseries Parent'    => 'Account',
+            ),
+            array(
+                'Timeseries Type'      => 'AccountSales',
+                'Timeseries Frequency' => 'Yearly',
+                'Timeseries Scope'     => 'Sales',
+                'Timeseries Parent'    => 'Account',
+            )
+
+
+
+
+        ),
         'Store' => array(
             array(
                 'Timeseries Type'      => 'StoreSales',

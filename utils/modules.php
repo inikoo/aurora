@@ -1868,14 +1868,50 @@ $modules = array(
 
         'parent'      => 'none',
         'parent_type' => 'none',
+
         'sections'    => array(
             'stores'   => array(
                 'type'      => 'navigation',
                 'label'     => _('Stores'),
                 'icon'      => 'shopping-bag',
                 'reference' => 'stores',
+                'showcase'=>'account',
+                'subtabs_parent' => array(
+                    'stores.sales.plot'     => 'stores.sales',
+                    'stores.sales.history'  => 'stores.sales',
+                    'stores.sales.calendar' => 'stores.sales',
+                    'stores.sales.info'     => 'stores.sales'
+
+                ),
                 'tabs'      => array(
-                    'stores' => array()
+                    'stores' => array('label'   => _('Stores')),
+                    'stores.sales'      => array(
+                        'label'   => _('Sales'),
+                        'subtabs' => array(
+                            'stores.sales.plot'     => array(
+                                'label' => _(
+                                    'Plot'
+                                )
+                            ),
+                            'stores.sales.history'  => array(
+                                'label' => _(
+                                    'Sales history'
+                                )
+                            ),
+                            'stores.sales.calendar' => array(
+                                'label' => _(
+                                    'Calendar'
+                                )
+                            ),
+                            'stores.sales.info'     => array(
+                                'label' => _('Info'),
+                                'icon'  => 'info',
+                                'class' => 'right icon_only'
+                            ),
+
+                        )
+
+                    ),
                 )
             ),
             'products' => array(
@@ -1893,7 +1929,8 @@ $modules = array(
                     ),
 
                 )
-            )
+            ),
+
         )
     ),
     'marketing'             => array(

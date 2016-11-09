@@ -43,15 +43,16 @@ function fork_asset_sales($job) {
                 foreach ($result as $row) {
                     $store = new Store('id', $row['Store Key']);
                     $store->load_acc_data();
-                    $store->update_sales_from_invoices(
-                        $data['interval'], $this_year, $last_year
-                    );
+                    $store->update_sales_from_invoices($data['interval'], $this_year, $last_year);
                 }
             } else {
                 print_r($error_info = $db->errorInfo());
                 exit;
             }
 
+            $account->load_acc_data();
+            $account->update_sales_from_invoices($data['interval'], $this_year, $last_year);
+            
             break;
 
 
@@ -153,9 +154,7 @@ function fork_asset_sales($job) {
 
                     $product = new Product('id', $row['Product ID']);
                     $product->load_acc_data();
-                    $product->update_sales_from_invoices(
-                        $data['interval'], $this_year, $last_year
-                    );
+                    $product->update_sales_from_invoices($data['interval'], $this_year, $last_year);
                 }
             }
             break;
@@ -351,7 +350,7 @@ function fork_asset_sales($job) {
 
             break;
         case 'update_deleted_invoice_products_sales_data':
-            update_deleted_invoice_products_sales_data($db, $data);
+            update_deleted_invoice_products_sales_data($db, $data,$account);
 
 
             break;
@@ -372,7 +371,13 @@ function update_invoice_products_sales_data($db, $data) {
     include_once 'class.Invoice.php';
 
 
-    print "helllo\n";
+    $account->load_acc_data();
+    $account->update_sales_from_invoices('Total', true, false);
+    $account->update_sales_from_invoices('Week To Day', true, false);
+    $account->update_sales_from_invoices('Month To Day', true, false);
+    $account->update_sales_from_invoices('Quarter To Day', true, false);
+    $account->update_sales_from_invoices('Year To Day', true, false);
+    $account->update_sales_from_invoices('Today', true, false);
 
     $categories     = array();
     $categories_bis = array();
@@ -405,18 +410,10 @@ function update_invoice_products_sales_data($db, $data) {
 
     $invoice_category->update_invoice_category_sales('Total', true, false);
 
-    $invoice_category->update_invoice_category_sales(
-        'Year To Day', true, false
-    );
-    $invoice_category->update_invoice_category_sales(
-        'Quarter To Day', true, false
-    );
-    $invoice_category->update_invoice_category_sales(
-        'Month To Day', true, false
-    );
-    $invoice_category->update_invoice_category_sales(
-        'Week To Day', true, false
-    );
+    $invoice_category->update_invoice_category_sales('Year To Day', true, false);
+    $invoice_category->update_invoice_category_sales('Quarter To Day', true, false);
+    $invoice_category->update_invoice_category_sales('Month To Day', true, false);
+    $invoice_category->update_invoice_category_sales('Week To Day', true, false);
     $invoice_category->update_invoice_category_sales('Today', true, false);
 
     $sql = sprintf(
