@@ -715,7 +715,6 @@ function find_locations($db, $account, $memcache_ip, $data) {
 
 function find_parts($db, $account, $memcache_ip, $data) {
 
-
     $cache       = false;
     $max_results = 5;
     $user        = $data['user'];
@@ -732,7 +731,6 @@ function find_parts($db, $account, $memcache_ip, $data) {
 
         return;
     }
-
 
     $memcache_fingerprint = $account->get('Account Code').'FIND_PART'.md5($q);
 
@@ -766,7 +764,7 @@ function find_parts($db, $account, $memcache_ip, $data) {
 
 
         $sql = sprintf(
-            "select `Part SKU`,`Part Reference`,`Part Unit Description` from `Part Dimension` where  `Part Reference` like '%s%%' and `Part Status`='In Use' order by `Part Reference` limit $max_results ",
+            "select `Part SKU`,`Part Reference`,`Part Unit Description` from `Part Dimension` where  `Part Reference` like '%s%%' and `Part Status` in ('In Use','Discontinuing')   order by `Part Reference` limit $max_results ",
             $q
         );
 
