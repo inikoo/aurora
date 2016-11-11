@@ -36,11 +36,11 @@
     <!--
     <link rel="canonical" href="http://www.example.com/">
     -->
-
+    <link href="/css/font-awesome.css" rel="stylesheet">
     <link rel="stylesheet" href="css/font.Roboto.css">
     <link rel="stylesheet" href="css/font.MaterialIcons.css">
-    <link rel="stylesheet" href="css/material.teal-red.min.css">
-    <link rel="stylesheet" href="css/app.mobile.css">
+    <link rel="stylesheet" href="css/material.blue_grey-deep_orange.css">
+    <link rel="stylesheet" href="css/app.css">
     <style>
         #view-source {
             position: fixed;
@@ -60,6 +60,7 @@
             mdl-layout--fixed-header">
     <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
+            <span id="title" class="mdl-layout-title"></span>
             <div class="mdl-layout-spacer"></div>
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable
                   mdl-textfield--floating-label mdl-textfield--align-right">
@@ -74,26 +75,21 @@
             </div>
         </div>
     </header>
-    <div class="mdl-layout__drawer">
-        <span class="mdl-layout-title">Title</span>
-        <nav class="mdl-navigation">
-            <a class="mdl-navigation__link" href="">Link</a>
-            <a class="mdl-navigation__link" href="">Link</a>
-            <a class="mdl-navigation__link" href="">Link</a>
-            <a class="mdl-navigation__link" href="">Link</a>
-        </nav>
+    <div id="menu" class="mdl-layout__drawer">
+
     </div>
-    <main class="mdl-layout__content">
-        <!-- Panel 1 -->
+    <main id="content" class="mdl-layout__content">
+
 
     </main>
 </div>
+<input id="_request" type="hidden" value="{$_request}">
 
-<input id="_request" type="hidden" val="{$_request}">
 <script src="js/libs/material.min.js"></script>
 <script src="js/libs/jquery-2.2.1.js"></script>
 <script src="js/app.mobile.js"></script>
 <script src="js/keyboard_shorcuts.js"></script>
+
 
 </body>
 </html>

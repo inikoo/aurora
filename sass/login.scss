@@ -118,8 +118,7 @@ input {
 
     label,
     input[type="text"],
-    input[type="password"],
-    input[type="submit"] {
+    input[type="password"] {
       border-radius: $form--login__border-radus;
       padding: 1rem;
     }
@@ -155,18 +154,7 @@ input {
 
       }
 
-      &[type="submit"] {
-        background-color: $form--login__submit__bgcolor;
-        color: $form--login__submit__color;
-        font-weight: bold;
-        text-transform: uppercase;
 
-        &:focus,
-        &:hover {
-          background-color: $form--login__submit__bgcolor--hover;
-        }
-
-      }
 
     }
 
@@ -180,6 +168,29 @@ input {
   &__input {
     flex: 1;
   }
+
+}
+
+
+
+button{
+  width: 100%;
+  border:none;
+
+  border-radius: $form--login__border-radus;
+  padding: 1rem;
+  cursor: pointer;
+    background-color: $form--login__submit__bgcolor;
+    color: $form--login__submit__color;
+    font-weight: bold;
+    text-transform: uppercase;
+
+    &:focus,
+    &:hover {
+      background-color: $form--login__submit__bgcolor--hover;
+    }
+
+
 
 }
 

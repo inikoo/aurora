@@ -21,7 +21,7 @@ function fork_asset_sales($job) {
 
     list($account, $db, $data) = $_data;
 
-    //print_r($data);
+   // print_r($data);
 
     switch ($data['type']) {
 
@@ -346,7 +346,7 @@ function fork_asset_sales($job) {
             break;
 
         case 'update_invoice_products_sales_data':
-            update_invoice_products_sales_data($db, $data);
+            update_invoice_products_sales_data($db,$account, $data);
 
             break;
         case 'update_deleted_invoice_products_sales_data':
@@ -362,13 +362,14 @@ function fork_asset_sales($job) {
 }
 
 
-function update_invoice_products_sales_data($db, $data) {
+function update_invoice_products_sales_data($db,$account, $data) {
 
     include_once 'class.Product.php';
     include_once 'class.Customer.php';
     include_once 'class.Category.php';
     include_once 'class.Store.php';
     include_once 'class.Invoice.php';
+
 
 
     $account->load_acc_data();
@@ -381,7 +382,7 @@ function update_invoice_products_sales_data($db, $data) {
 
     $categories     = array();
     $categories_bis = array();
-    //print_r($data);
+  //  print_r($data);
 
     $customer = new Customer($data['customer_key']);
     $customer->update_product_bridge();

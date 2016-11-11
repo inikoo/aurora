@@ -18,9 +18,10 @@ function parse_request($_data, $db, $modules, $account = '', $user = '') {
     $request = $_data['request'];
 
     $request = preg_replace('/\/+/', '/', $request);
-    if ($request == '/') {
+    if ($request == '/' or $request == '') {
         $request = 'dashboard';
     }
+
 
     $original_request = preg_replace('/^\//', '', $request);
     $view_path        = preg_split('/\//', $original_request);

@@ -19,6 +19,12 @@ $smarty->assign(
 
 $mobile=false;
 
+if(isset($_SESSION['device']) and $_SESSION['device']=='desktop'){
+    $mobile=false;
+
+}
+
+
 if($mobile){
     $smarty->display('app.mobile.tpl');
 }else{

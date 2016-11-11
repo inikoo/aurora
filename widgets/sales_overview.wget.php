@@ -11,7 +11,7 @@
 */
 
 
-function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $period, $currency, $orders_view_type) {
+function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $period, $currency, $orders_view_type, $is_mobile = false) {
 
     include_once 'utils/date_functions.php';
 
@@ -58,8 +58,7 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
     $sum_in_dispatch_area           = 0;
     $sum_in_dispatch_area_amount    = 0;
 
-    $fields
-        = "
+    $fields = "
 	`Store Orders In Basket Number`,`Store Orders In Basket Amount`,`Store DC Orders In Basket Amount`,
 	`Store Orders In Process Paid Number`,`Store Orders In Process Paid Amount`,`Store DC Orders In Process Paid Amount`,
 	`Store Orders In Process Not Paid Number`,`Store Orders In Process Not Paid Amount`,`Store DC Orders In Process Not Paid Amount`,
@@ -122,7 +121,8 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
                 'id'    => $row['Store Key'],
                 'label' => array(
                     'label' => $row['Store Name'],
-                    'title' => $row['Store Code'],
+                    'title' => $row['Store Name'],
+                    'short_label' => $row['Store Code'],
                     'view'  => 'store/'.$row['Store Key']
                 ),
 
@@ -293,8 +293,7 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
     /*-------- Invoice Categories*/
 
 
-    $fields
-        = "`Invoice Category $period_tag Acc Refunds` as refunds,`Invoice Category $period_tag Acc Invoices` as invoices,`Invoice Category $period_tag Acc Amount` as sales,`Invoice Category DC $period_tag Acc Amount` as dc_sales, 0 delivery_notes,
+    $fields = "`Invoice Category $period_tag Acc Refunds` as refunds,`Invoice Category $period_tag Acc Invoices` as invoices,`Invoice Category $period_tag Acc Amount` as sales,`Invoice Category DC $period_tag Acc Amount` as dc_sales, 0 delivery_notes,
         0 delivery_notes_1yb,
         0 replacements,
         0 replacements_1yb,
@@ -303,8 +302,7 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
 
     if ($period_tag == '3 Year' or $period_tag == 'Total') {
 
-        $fields
-            .= "
+        $fields .= "
 	    0 as refunds_1yb,
 
 	    0 as invoices_1yb,
@@ -312,8 +310,7 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
         0 as dc_sales_1yb
                         ";
     } else {
-        $fields
-            .= "
+        $fields .= "
 		`Invoice Category $period_tag Acc 1YB Refunds` as refunds_1yb,
 	    `Invoice Category $period_tag Acc 1YB Invoices` as invoices_1yb,
 	    `Invoice Category $period_tag Acc 1YB Amount` as sales_1yb,
@@ -322,8 +319,8 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
     }
 
 
-    $sql
-        = "select  C.`Category Key`,`Category Label`, `Category Store Key`,`Store Currency Code` currency, $fields from `Invoice Category Dimension` IC  left join `Invoice Category Data` ICD on (IC.`Invoice Category Key`=ICD.`Invoice Category Key`)  left join `Invoice Category DC Data` ICSCD on (IC.`Invoice Category Key`=ICSCD.`Invoice Category Key`)   left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) order by C.`Category Store Key` ,`Category Function Order`";
+    $sql =
+        "select  C.`Category Key`,`Category Label`, `Category Store Key`,`Store Currency Code` currency, $fields from `Invoice Category Dimension` IC  left join `Invoice Category Data` ICD on (IC.`Invoice Category Key`=ICD.`Invoice Category Key`)  left join `Invoice Category DC Data` ICSCD on (IC.`Invoice Category Key`=ICSCD.`Invoice Category Key`)   left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) order by C.`Category Store Key` ,`Category Function Order`";
 
     if ($result = $db->query($sql)) {
 
@@ -354,6 +351,7 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
                 'label' => array(
                     'label' => $row['Category Label'],
                     'title' => $row['Category Label'],
+                    'short_label' => $row['Category Label'],
                     'view'  => 'invoices/all/category/'.$row['Category Key']
                 ),
 
@@ -431,7 +429,7 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
     $sales_overview[] = array(
         'id'               => 'totals',
         'class'            => 'totals',
-        'label'            => array('label' => _('Total')),
+        'label'            => array('label' => _('Total'),'short_label'=>_('Total')),
         'in_basket'        => array('value' => number($sum_in_basket)),
         'in_basket_amount' => array(
             'value' => ($currency == 'store' ? '' : money($sum_in_basket_amount, $account->get('Account Currency')))
@@ -540,8 +538,11 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
 
 
     $smarty->assign('sales_overview', $sales_overview);
-
-    return $smarty->fetch('dashboard/sales_overview.dbard.tpl');
+    if ($is_mobile) {
+        return $smarty->fetch('dashboard/sales_overview.mobile.dbard.tpl');
+    } else {
+        return $smarty->fetch('dashboard/sales_overview.dbard.tpl');
+    }
 }
 
 
