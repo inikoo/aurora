@@ -13,6 +13,8 @@
 */
 
 class Auth {
+
+
     var $user_parent_key = false;
 
     var $user_key = false;
@@ -25,6 +27,12 @@ class Auth {
     private $use_cookies = false;
 
     function Auth($ikey = false, $skey = false, $options = '') {
+
+        global $db;
+
+        $this->db = $db;
+
+
         if (preg_match('/use( |\_)cookies?/i', $options)) {
             $this->use_cookies = true;
         }
@@ -49,10 +57,8 @@ class Auth {
 
         switch ($this->log_page) {
             case 'system':
-                $this->user_type
-                    = "'Administrator','Staff','Warehouse','Contractor','Supplier','Agent'";
-                $this->where_user_type
-                    = " and `User Type` in ('Administrator','Staff','Warehouse','Contractor','Supplier','Agent')";
+                $this->user_type       = "'Administrator','Staff','Warehouse','Contractor','Supplier','Agent'";
+                $this->where_user_type = " and `User Type` in ('Administrator','Staff','Warehouse','Contractor','Supplier','Agent')";
                 break;
             case 'website':
                 $this->user_type       = "'Customer'";
@@ -97,58 +103,68 @@ class Auth {
         $sql = sprintf(
             "SELECT `User Key`,`User Password`,`User Parent Key` FROM `User Dimension` WHERE `User Handle`=%s AND `User Active`='Yes' %s  ", prepare_mysql($this->handle), $this->where_user_type
         );
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_array($res)) {
-            $this->pass['handle']          = 'Yes';
-            $this->pass['handle_in_use']   = 'Yes';
-            $this->pass['user_parent_key'] = $row['User Parent Key'];
-            $st                            = AESDecryptCtr(
-                AESDecryptCtr($this->sk, $row['User Password'], 256), $this->skey, 256
-            );
-            //echo $st;
-            $this->pass['handle_key'] = $row['User Key'];
-            //print $st;
-            if (preg_match(
-                '/^skstart\|\d+\|([abcdef0-9\.\:]+|localhost|unknown)\|.+\|/', $st
-            )) {
-                $this->pass['password'] = 'Yes';
-                $data                   = preg_split('/\|/', $st);
 
-                //print_r($data);
-                $time = $data[1];
-                $ip   = $data[2];
-                $ikey = $data[3];
 
-                $pass_tests = true;
-                if ($time < time(gmdate('U'))) {
-                    $pass_tests                = false;
-                    $this->pass['main_reason'] = 'logging_timeout';
-                    $this->pass['time']        = 'No';
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+                $this->pass['handle']          = 'Yes';
+                $this->pass['handle_in_use']   = 'Yes';
+                $this->pass['user_parent_key'] = $row['User Parent Key'];
+                $st                            = AESDecryptCtr(AESDecryptCtr($this->sk, $row['User Password'], 256), $this->skey, 256);
+
+
+                $this->pass['handle_key'] = $row['User Key'];
+
+
+                if (preg_match(
+                    '/^skstart\|\d+\|([abcdef0-9\.\:]+|localhost|unknown)\|.+\|/', $st
+                )) {
+                    $this->pass['password'] = 'Yes';
+                    $data                   = preg_split('/\|/', $st);
+
+                    //print_r($data);
+                    $time = $data[1];
+                    $ip   = $data[2];
+                    $ikey = $data[3];
+
+                    $pass_tests = true;
+                    if ($time < time(gmdate('U'))) {
+                        $pass_tests                = false;
+                        $this->pass['main_reason'] = 'logging_timeout';
+                        $this->pass['time']        = 'No';
+                    } else {
+                        $this->pass['time'] = 'Yes';
+                    }
+                    //if (ip()!=$ip) {
+                    //	$pass_tests=false;
+                    //	$this->pass['main_reason']='ip';
+                    //	$this->pass['ip']='No';
+                    //} else {
+                    $this->pass['ip'] = 'Yes';
+                    //}
+                    if ($this->ikey != $ikey) {
+                        $pass_tests                = false;
+                        $this->pass['main_reason'] = 'ikey';
+                        $this->pass['ikey']        = 'No';
+
+                    } else {
+                        $this->pass['ikey'] = 'Yes';
+                    }
+
                 } else {
-                    $this->pass['time'] = 'Yes';
-                }
-                //if (ip()!=$ip) {
-                //	$pass_tests=false;
-                //	$this->pass['main_reason']='ip';
-                //	$this->pass['ip']='No';
-                //} else {
-                $this->pass['ip'] = 'Yes';
-                //}
-                if ($this->ikey != $ikey) {
                     $pass_tests                = false;
-                    $this->pass['main_reason'] = 'ikey';
-                    $this->pass['ikey']        = 'No';
-
-                } else {
-                    $this->pass['ikey'] = 'Yes';
+                    $this->pass['password']    = 'No';
+                    $this->pass['main_reason'] = 'password';
                 }
 
-            } else {
-                $pass_tests                = false;
-                $this->pass['password']    = 'No';
-                $this->pass['main_reason'] = 'password';
             }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
+
 
         if ($pass_tests) {
             $this->status          = true;
@@ -200,8 +216,7 @@ class Auth {
         if ($this->log_page == 'customer') {
 
             $customer = new Customer($this->user_parent_key);
-            $details
-                      = '
+            $details  = '
 			   <div class="table">
 				<div class="field tr"><div>'._('Time').':</div><div>'.strftime(
                     "%c %Z", strtotime($date.' +00:00')
@@ -270,11 +285,10 @@ class Auth {
 
                 if (!array_key_exists('user_parent_key', $this->pass)) {
 
-                    $_user = new User(
+                    $_user                         = new User(
                         $this->pass['handle_key']
                     );
-                    $this->pass['user_parent_key']
-                           = $_user->data['User Parent Key'];
+                    $this->pass['user_parent_key'] = $_user->data['User Parent Key'];
                 }
 
                 $customer = new Customer($this->pass['user_parent_key']);
@@ -294,8 +308,7 @@ class Auth {
                         $formatted_reason = $this->pass['main_reason'];
                 }
 
-                $details
-                    = '
+                $details = '
 				<div class="table">
 				<tr><td style="width:120px">'._('Time').':</div><div>'.strftime(
                         "%c", strtotime($date.' +00:00')

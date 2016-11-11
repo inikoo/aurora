@@ -3,8 +3,22 @@
  Copyright (c) 2015, Inikoo
  Version 3.0*/
 
+function isMobile() {
+    try{ document.createEvent("TouchEvent"); return true; }
+    catch(e){ return false; }
+}
+
+
+
 var key_scope = false;
 var old_state_request = '';
+
+
+
+
+
+
+
 $(document).ready(function () {
 
 

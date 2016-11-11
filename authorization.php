@@ -70,9 +70,12 @@ ini_set('session.gc_divisor', 100);
 session_start();
 
 
+
 $auth   = new Auth(IKEY, SKEY);
 $handle = (array_key_exists('login__username', $_REQUEST)) ? $_REQUEST['login__username'] : false;
-$sk     = (array_key_exists('ep', $_REQUEST)) ? base64_decode($_REQUEST['ep']) : false;
+$sk     = (array_key_exists('token', $_REQUEST)) ? base64_decode($_REQUEST['token']) : false;
+
+
 
 
 if (!$sk and array_key_exists('mk', $_REQUEST)) {

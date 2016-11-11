@@ -44,9 +44,7 @@ foreach ($user->get_dashboard_items() as $item) {
         }
 
 
-        $html .= get_dashbord_sales_overview(
-            $db, $account, $user, $smarty, $type, $period, $currency, $orders_view_type
-        );
+        $html .= get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $period, $currency, $orders_view_type,$is_mobile);
 
     }
 

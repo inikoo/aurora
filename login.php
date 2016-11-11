@@ -40,9 +40,7 @@ $smarty->config_dir   = 'server_files/smarty/configs';
 $smarty->assign('_DEVEL', _DEVEL);
 
 
-$db = new PDO(
-    "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
-);
+$db = new PDO("mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';"));
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 $account = new Account();
@@ -65,7 +63,17 @@ if ($account->id and $account->get('Account State') == 'Active') {
 
     $smarty->assign('url', (isset($_REQUEST['ref']) ? $_REQUEST['ref'] : ''));
 
-    $smarty->display("login.tpl");
+    $smarty->assign('account_code', strtolower($account->get('Code')));
+
+    $mobile = false;
+
+    if ($mobile) {
+        $smarty->display("login.mobile.tpl");
+    } else {
+        $smarty->display("login.tpl");
+    }
+
+
 } else {
     $smarty->assign('error', (isset($_REQUEST['e']) ? true : false));
     $smarty->display("login.setup.tpl");

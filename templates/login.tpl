@@ -36,24 +36,19 @@
                     aurora
                 </div>
             </div>
-            <form class="form form--login" name="login_form" id="login_form" method="post" autocomplete="off"
-                  action="authorization.php">
-                <input type="hidden" id="ep" name="ep" value="{$st}"/>
-                <input type="hidden" name="url" value="{$url}"/>
+            <form class="form form--login" name="login_form" id="login_form" method="post" autocomplete="off" action="authorization.php">
+                <input type="hidden" id="blow_fish"  value="{$st}"/>
+                <input type="hidden" id="token" name="token" value=""/>
                 <div class="form__field">
-                    <label for="login__username" title="{t}Username{/t}"><i class="fa fa-user fa-fw"></i> <span
-                                class="hidden"></span></label>
-                    <input name="login__username" id="login__username" type="text" class="form__input"
-                           placeholder="{t}Username{/t}" required>
+                    <label for="login__username" title="{t}Username{/t}"><i class="fa fa-user fa-fw"></i> <span class="hidden"></span></label>
+                    <input name="login__username" id="login__username" type="text" class="form__input" placeholder="{t}Username{/t}" required>
                 </div>
                 <div class="form__field">
-                    <label for="login__password" title="{t}Password{/t}"><i class="fa fa-lock fa-fw"></i> <span
-                                class="hidden"></span></label>
-                    <input id="login__password" type="password" class="form__input" placeholder="{t}Password{/t}"
-                           required>
+                    <label for="login__password" title="{t}Password{/t}"><i class="fa fa-lock fa-fw"></i> <span class="hidden"></span></label>
+                    <input id="login__password" type="password" class="form__input" placeholder="{t}Password{/t}" required>
                 </div>
                 <div class="form__field">
-                    <input type="submit" value="{t}Log In{/t}">
+                    <button onclick="on_my_Submit()" >{t}Log In{/t}</button>
                 </div>
             </form>
             <div id="error_message" class="text--center error"
