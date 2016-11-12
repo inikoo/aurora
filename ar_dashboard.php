@@ -31,6 +31,7 @@ switch ($tipo) {
         $data = prepare_values(
             $_REQUEST, array(
                 'type'             => array('type' => 'string'),
+                'subtype'             => array('type' => 'substring'),
                 'period'           => array('type' => 'period'),
                 'currency'         => array('type' => 'currency'),
                 'orders_view_type' => array('type' => 'string'),
@@ -57,6 +58,7 @@ function sales_overview($_data, $db, $user, $account) {
 
     $_SESSION['dashboard_state']['sales_overview'] = array(
         'type'             => $_data['type'],
+        'subtype'             => $_data['subtype'],
         'period'           => $_data['period'],
         'currency'         => $_data['currency'],
         'orders_view_type' => $_data['orders_view_type'],
@@ -592,6 +594,7 @@ function sales_overview($_data, $db, $user, $account) {
 
     $response = array(
         'state' => 200,
+        'period_label'=>get_interval_label($_data['period']),
         'data'  => $data,
     );
 

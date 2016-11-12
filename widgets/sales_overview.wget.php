@@ -11,7 +11,7 @@
 */
 
 
-function get_dashboard_sales_overview($db, $account, $user, $smarty, $type, $period, $currency, $orders_view_type, $display_device_version = 'desktop') {
+function get_dashboard_sales_overview($db, $account, $user, $smarty, $type,$sub_type, $period, $currency, $orders_view_type, $display_device_version = 'desktop') {
 
     include_once 'utils/date_functions.php';
 
@@ -20,10 +20,15 @@ function get_dashboard_sales_overview($db, $account, $user, $smarty, $type, $per
     $smarty->assign('currency', $currency);
     $smarty->assign('orders_view_type', $orders_view_type);
     $smarty->assign('period', $period);
+    $smarty->assign('subtype', $sub_type);
+
+
 
 
     $sales_overview = array();
     $period_tag     = get_interval_db_name($period);
+
+
 
     $adata = array();
 
@@ -320,7 +325,7 @@ function get_dashboard_sales_overview($db, $account, $user, $smarty, $type, $per
 
 
     $sql =
-        "select  C.`Category Key`,`Category Label`, `Category Store Key`,`Store Currency Code` currency, $fields from `Invoice Category Dimension` IC  left join `Invoice Category Data` ICD on (IC.`Invoice Category Key`=ICD.`Invoice Category Key`)  left join `Invoice Category DC Data` ICSCD on (IC.`Invoice Category Key`=ICSCD.`Invoice Category Key`)   left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) order by C.`Category Store Key` ,`Category Function Order`";
+        "select  C.`Category Key`,`Category Label`, `Category Store Key`,`Store Currency Code` currency, $fields from `Invoice Category Dimension` IC  left join `Invoice Category Data` ICD on (IC.`Invoice Category Key`=ICD.`Invoice Category Key`)  left join `Invoice Category DC Data` ICSCD on (IC.`Invoice Category Key`=ICSCD.`Invoice Category Key`)   left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) where `Category Branch Type`='Head' order by C.`Category Store Key` ,`Category Function Order`";
 
     if ($result = $db->query($sql)) {
 
@@ -539,6 +544,24 @@ function get_dashboard_sales_overview($db, $account, $user, $smarty, $type, $per
 
     $smarty->assign('sales_overview', $sales_overview);
     $smarty->assign('interval_label', get_interval_label($period));
+
+//    print_r($sales_overview);
+
+
+
+
+    switch($type) {
+    case 'invoices' :
+        $report_title=_('Sales (Stores)');
+        break;
+        case 'invoice_categories' :
+            $report_title=_('Sales (Categories)');
+            break;
+    default:
+        $report_title=$type;
+    }
+
+    $smarty->assign('report_title', $report_title);
 
 
     if ($display_device_version =='mobile') {
