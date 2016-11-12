@@ -34,7 +34,9 @@ if (isset($_SESSION['display_device_version']) and $_SESSION['display_device_ver
     $display_device_version = $_SESSION['display_device_version'];
 
 }
-$display_device_version='mobile';
+$display_device_version='desktop';
+
+
 $_SESSION['display_device_version']=$display_device_version;
 $_SESSION['detected_device']=$detected_device;
 
