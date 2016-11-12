@@ -87,6 +87,8 @@
 
 <script src="js/libs/material.min.js"></script>
 <script src="js/libs/jquery-2.2.1.js"></script>
+<script src="js/libs/jquery.mobile-1.4.5.js"></script>
+
 <script src="js/app.mobile.js"></script>
 <script src="js/keyboard_shorcuts.js"></script>
 
