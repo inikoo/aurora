@@ -17,20 +17,34 @@ $smarty->assign(
     'show_help', (isset($_SESSION['show_help']) ? $_SESSION['show_help'] : false)
 );
 
-$mobile=false;
+$mobile = false;
 
-if(isset($_SESSION['device']) and $_SESSION['device']=='desktop'){
-    $mobile=false;
+require_once 'external_libs/mobile_detect/Mobile_Detect.php';
+$detect = new Mobile_Detect;
+
+if ($detect->isMobile()) {
+    $display_device_version = 'mobile';
+    $detected_device = 'mobile';
+} else {
+    $display_device_version = 'desktop';
+    $detected_device = 'desktop';
 
 }
 
 
-if($mobile){
+if (isset($_SESSION['device']) and $_SESSION['device'] == 'desktop') {
+    $display_device_version = _SESSION['device']
+
+} else {
+
+}
+
+
+if ($display_device_version == 'mobile') {
     $smarty->display('app.mobile.tpl');
-}else{
+} else {
     $smarty->display('app.tpl');
 }
-
 
 
 ?>

@@ -65,9 +65,20 @@ if ($account->id and $account->get('Account State') == 'Active') {
 
     $smarty->assign('account_code', strtolower($account->get('Code')));
 
-    $mobile = false;
+    require_once 'external_libs/mobile_detect/Mobile_Detect.php';
+    $detect = new Mobile_Detect;
 
-    if ($mobile) {
+    if ($detect->isMobile()) {
+        $display_device_version = 'mobile';
+        $detected_device = 'mobile';
+    } else {
+        $display_device_version = 'desktop';
+        $detected_device = 'desktop';
+
+    }
+
+
+    if ($display_device_version=='mobile') {
         $smarty->display("login.mobile.tpl");
     } else {
         $smarty->display("login.tpl");
