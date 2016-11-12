@@ -519,7 +519,7 @@ function get_interval_label($interval) {
 
         case 'Total':
         case 'all':
-            $db_interval = _('Total');
+            $db_interval = _('All time');
 
             break;
 

@@ -125,7 +125,7 @@ function change_view(_request, metadata) {
      //       $('#crumbs').html(data.crumbs);
      //   }
 
-
+        componentHandler.upgradeAllRegistered();
 
 
         change_browser_history_state(data.state.request)

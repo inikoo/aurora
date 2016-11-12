@@ -500,6 +500,9 @@ function get_title($state) {
 
 
     switch ($state['module']) {
+        case 'dashboard':
+            $title = '<i class="fa fa-dashboard padding_right_5" aria-hidden="true"></i> '._('Dashboard');
+            break;
         case 'inventory':
             $title = '<i class="fa fa-th-large padding_right_5" aria-hidden="true"></i> '._('Inventory');
             break;

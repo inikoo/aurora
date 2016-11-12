@@ -363,7 +363,7 @@
 
     function get_order_overview_data(type, period, currency, orders_view_type) {
 
-        var request = "/ar_dashboard.php?tipo=sales_overview&type=" + type + "&period=" + period + '&currency=' + currency + '&orders_view_type=' + orders_view_type
+        var request = "/ar_dashboard.php?tipo=sales_overview&type=" + type + "&subtype=sales&period=" + period + '&currency=' + currency + '&orders_view_type=' + orders_view_type
         console.log(request)
         $.getJSON(request, function (r) {
 

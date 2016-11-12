@@ -25,26 +25,38 @@ foreach ($user->get_dashboard_items() as $item) {
         } else {
             $type = 'invoices';
         }
+
+        if (isset($_SESSION['dashboard_state']['sales_overview']['$sub_type'])) {
+            $sub_type = $_SESSION['dashboard_state']['sales_overview']['$sub_type'];
+        } else {
+
+            if ($type == 'invoices' or $type == 'invoice_categories') {
+                $sub_type = 'sales';
+
+            } else {
+                $sub_type = '';
+            }
+        }
+
+
         if (isset($_SESSION['dashboard_state']['sales_overview']['period'])) {
             $period = $_SESSION['dashboard_state']['sales_overview']['period'];
         } else {
             $period = 'ytd';
         }
         if (isset($_SESSION['dashboard_state']['sales_overview']['currency'])) {
-            $currency
-                = $_SESSION['dashboard_state']['sales_overview']['currency'];
+            $currency = $_SESSION['dashboard_state']['sales_overview']['currency'];
         } else {
             $currency = 'account';
         }
         if (isset($_SESSION['dashboard_state']['sales_overview']['orders_view_type'])) {
-            $orders_view_type
-                = $_SESSION['dashboard_state']['sales_overview']['orders_view_type'];
+            $orders_view_type = $_SESSION['dashboard_state']['sales_overview']['orders_view_type'];
         } else {
             $orders_view_type = 'numbers';
         }
 
 
-        $html .= get_dashboard_sales_overview($db, $account, $user, $smarty, $type, $period, $currency, $orders_view_type,$_SESSION['display_device_version']);
+        $html .= get_dashboard_sales_overview($db, $account, $user, $smarty, $type, $sub_type,$period, $currency, $orders_view_type, $_SESSION['display_device_version']);
 
     }
 
