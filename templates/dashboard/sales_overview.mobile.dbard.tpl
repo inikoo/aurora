@@ -1,6 +1,15 @@
 
 <div style="padding:10px">
 
+    <button id="menu-speed" class="mdl-button mdl-js-button mdl-button--icon">
+        <i class="material-icons">more_vert</i>
+    </button>
+    <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect" for="menu-speed">
+        <li class="mdl-menu__item">Fast</li>
+        <li class="mdl-menu__item">Medium</li>
+        <li class="mdl-menu__item">Slow</li>
+    </ul>
+
     {$interval_label}
 </div>
 
