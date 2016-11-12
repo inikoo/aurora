@@ -17,7 +17,6 @@ $smarty->assign(
     'show_help', (isset($_SESSION['show_help']) ? $_SESSION['show_help'] : false)
 );
 
-$mobile = false;
 
 require_once 'external_libs/mobile_detect/Mobile_Detect.php';
 $detect = new Mobile_Detect;
@@ -31,11 +30,13 @@ if ($detect->isMobile()) {
 
 }
 
-
-if (isset($_SESSION['device']) and $_SESSION['device'] == 'desktop') {
-    $display_device_version = $_SESSION['device'];
+if (isset($_SESSION['display_device_version']) and $_SESSION['display_device_version'] == 'desktop') {
+    $display_device_version = $_SESSION['display_device_version'];
 
 }
+$display_device_version='mobile';
+$_SESSION['display_device_version']=$display_device_version;
+$_SESSION['detected_device']=$detected_device;
 
 
 if ($display_device_version == 'mobile') {

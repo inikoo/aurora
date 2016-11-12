@@ -41,7 +41,8 @@ switch ($tipo) {
         break;
     case 'desktop_view':
 
-        $_SESSION['device']='desktop';
+
+        $_SESSION['display_device_version']='desktop';
         $response = array(
             'state' => 200
         );

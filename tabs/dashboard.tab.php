@@ -44,7 +44,7 @@ foreach ($user->get_dashboard_items() as $item) {
         }
 
 
-        $html .= get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $period, $currency, $orders_view_type,$is_mobile);
+        $html .= get_dashboard_sales_overview($db, $account, $user, $smarty, $type, $period, $currency, $orders_view_type,$_SESSION['display_device_version']);
 
     }
 
