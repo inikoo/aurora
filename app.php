@@ -33,9 +33,7 @@ if ($detect->isMobile()) {
 
 
 if (isset($_SESSION['device']) and $_SESSION['device'] == 'desktop') {
-    $display_device_version = _SESSION['device'];
-
-} else {
+    $display_device_version = $_SESSION['device'];
 
 }
 
