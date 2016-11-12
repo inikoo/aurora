@@ -511,4 +511,126 @@ function seconds_to_until($seconds, $short = false) {
 
 }
 
+
+function get_interval_label($interval) {
+
+    switch ($interval) {
+
+
+        case 'Total':
+        case 'all':
+            $db_interval = _('Total');
+
+            break;
+
+        case 'Last Month':
+        case 'last_m':
+            $db_interval = _('Last month');
+
+            break;
+
+        case 'Last Week':
+        case 'last_w':
+            $db_interval = _('Last week');
+
+
+            break;
+
+        case 'Yesterday':
+        case 'yesterday':
+            $db_interval = _('Yesterday');
+
+            break;
+
+        case 'Week To Day':
+        case 'wtd':
+        case 'weektoday':
+            $db_interval = _('Week-to-date');
+
+            break;
+        case 'Today':
+        case 'today':
+            $db_interval = _('Today');
+
+            break;
+
+
+        case 'Month To Day':
+        case 'mtd':
+        case 'monthtoday':
+
+            $db_interval = _('Month-to-date');
+
+            break;
+        case 'Year To Day':
+        case 'ytd':
+        case 'yeartoday';
+            $db_interval = _('Year-to-day');
+
+            break;
+        case '3 Year':
+        case '3y':
+        case 'three_year':
+            $db_interval = _('3 Year');
+
+            break;
+        case '1 Year':
+        case '1y':
+        case 'year':
+            $db_interval = _('1 Year');
+
+            break;
+        case '6 Month':
+        case '6m':
+        case 'six_month':
+            $db_interval = _('6 Months');
+
+            break;
+        case '1 Quarter':
+        case '1q':
+        case 'quarter':
+            $db_interval = _('1 Quarter');
+
+            break;
+        case '1 Month':
+        case '1m':
+        case 'month':
+            $db_interval = _('1 Month');
+
+            break;
+        case '10 Day':
+        case '10d':
+        case 'ten_day':
+            $db_interval = _('10 Days');
+
+            break;
+        case '1 Week':
+        case '1w':
+        case 'week':
+            $db_interval = _('1 Week');
+
+            break;
+
+        case '1 Day':
+        case '1d':
+        case 'day':
+            $db_interval = _('1 Day');
+
+            break;
+        case 'hour':
+        case '1 Hour':
+        case '1h':
+            $db_interval = _('1 Hour');
+
+            break;
+
+        default:
+            return;
+            break;
+    }
+
+    return $db_interval;
+}
+
+
 ?>

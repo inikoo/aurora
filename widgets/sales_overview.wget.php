@@ -11,7 +11,7 @@
 */
 
 
-function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $period, $currency, $orders_view_type, $is_mobile = false) {
+function get_dashboard_sales_overview($db, $account, $user, $smarty, $type, $period, $currency, $orders_view_type, $display_device_version = 'desktop') {
 
     include_once 'utils/date_functions.php';
 
@@ -538,7 +538,10 @@ function get_dashbord_sales_overview($db, $account, $user, $smarty, $type, $peri
 
 
     $smarty->assign('sales_overview', $sales_overview);
-    if ($is_mobile) {
+    $smarty->assign('interval_label', get_interval_label($period));
+
+
+    if ($display_device_version =='mobile') {
         return $smarty->fetch('dashboard/sales_overview.mobile.dbard.tpl');
     } else {
         return $smarty->fetch('dashboard/sales_overview.dbard.tpl');
