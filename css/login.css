@@ -82,6 +82,7 @@ button {
   border: none;
   border-radius: 0.25rem;
   padding: 1rem;
+  cursor: pointer;
   background-color: #171717;
   color: #eee;
   font-weight: bold;

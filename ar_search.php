@@ -1052,12 +1052,8 @@ function search_inventory($db, $account, $memcache_ip, $data) {
                     }
 
                     $results['P'.$row['Part SKU']] = array(
-                        'label'   => $status.highlightkeyword(
-                                sprintf('%s', $row['Part Reference']), $queries
-                            ),
-                        'details' => highlightkeyword(
-                            $row['Part Unit Description'], $queries
-                        ),
+                        'label'   => $status.highlightkeyword(sprintf('%s', $row['Part Reference']), $queries),
+                        'details' => highlightkeyword($row['Part Unit Description'], $queries),
                         'view'    => sprintf('part/%d', $row['Part SKU'])
 
 

@@ -1,16 +1,13 @@
-.aright {
-  text-align: right !important; }
+#search_results span.label {
+  display: inline-block;
+  *display: inline;
+  /* for IE7*/
+  *zoom: 1;
+  /* for IE7*/
+  min-width: 100px; }
+#search_results span.details {
+  color: #777; }
+#search_results mark {
+  background: none; }
 
-.acenter {
-  text-align: center; }
-
-.invisible {
-  visibility: hidden; }
-
-.visible {
-  visibility: visible; }
-
-.hide {
-  display: none; }
-
-/*# sourceMappingURL=aurora.css.map */
+/*# sourceMappingURL=app.mobile.css.map */

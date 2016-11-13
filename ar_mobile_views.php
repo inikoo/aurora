@@ -505,6 +505,16 @@ function get_title($state) {
             break;
         case 'inventory':
             $title = '<i class="fa fa-th-large padding_right_5" aria-hidden="true"></i> '._('Inventory');
+
+          if($state['section']=='part'){
+              $title = '<i class="fa fa-square padding_right_5" aria-hidden="true"></i> '.$state['_object']->get('Reference');
+
+
+          }
+
+            break;
+        case 'customers':
+            $title = '<i class="fa fa-users padding_right_5" aria-hidden="true"></i> '._('Customers');
             break;
         default:
             break;
@@ -531,6 +541,16 @@ function get_mobile_content($db, $smarty, $user, $account, $state = false, $meta
     if ($state['section'] == 'inventory') {
 
         $actual_tab = 'inventory.mobile';
+
+
+    }if ($state['section'] == 'part') {
+
+        $actual_tab = 'part.mobile';
+
+
+    }elseif ($state['section'] == 'customers') {
+
+        $actual_tab = 'customers.mobile';
     }
 
 

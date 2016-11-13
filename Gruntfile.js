@@ -61,9 +61,12 @@ module.exports = function (grunt) {
                     // style: 'compressed'
                 },
                 files: {
-                    'css/app.css': 'sass/app.scss'
+                    'css/app.css': 'sass/app.scss',
+                      'css/app.mobile.css': 'sass/app.mobile.scss',
+                  
                 }
             },
+            
             web: {
                 options: {
                     // style: 'compressed'
