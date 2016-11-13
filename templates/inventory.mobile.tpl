@@ -7,7 +7,7 @@
 
     </div>
     <div class="mdl-cell mdl-cell--4-col">
-        <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp" style="width:100%">
+        <table class="mdl-data-table mdl-js-data-table  mdl-shadow--2dp" style="width:100%">
             <thead>
             <tr>
                 <th colspan=2 class="mdl-data-table__cell--non-numeric">{t}Parts by status{/t}</th>

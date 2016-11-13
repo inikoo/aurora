@@ -97,6 +97,7 @@ function change_view(_request, metadata) {
 
     var request = "/ar_mobile_views.php?tipo=views&request=" + _request + '&metadata=' + JSON.stringify(metadata) + "&old_state=" + JSON.stringify(state)
 
+    console.log(request)
 
     if (metadata.tab != undefined) {
         request = request + '&tab=' + metadata.tab;
@@ -203,4 +204,8 @@ function desktop_view(){
     });
 
 
+}
+
+function fixedEncodeURIComponent(str) {
+    return encodeURIComponent(str).replace(/[!'()]/g, escape).replace(/\*/g, "%2A");
 }

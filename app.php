@@ -17,7 +17,7 @@ $smarty->assign(
     'show_help', (isset($_SESSION['show_help']) ? $_SESSION['show_help'] : false)
 );
 
-
+;
 require_once 'external_libs/mobile_detect/Mobile_Detect.php';
 $detect = new Mobile_Detect;
 
@@ -39,7 +39,6 @@ $display_device_version='desktop';
 
 $_SESSION['display_device_version']=$display_device_version;
 $_SESSION['detected_device']=$detected_device;
-
 
 if ($display_device_version == 'mobile') {
     $smarty->display('app.mobile.tpl');

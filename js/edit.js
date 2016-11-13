@@ -1374,9 +1374,7 @@ function cancel_confirm_field(field) {
 
 }
 
-function fixedEncodeURIComponent(str) {
-    return encodeURIComponent(str).replace(/[!'()]/g, escape).replace(/\*/g, "%2A");
-}
+
 
 function addZero2dateComponent(i) {
     if (i < 10) {
