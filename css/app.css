@@ -1319,6 +1319,8 @@ tr.deleting_tr {
     min-width: 30px; }
   .backgrid .mini_table .w100 {
     min-width: 100px; }
+  .backgrid .mini_table .w200 {
+    min-width: 200px; }
   .backgrid .mini_table .w75 {
     min-width: 75px; }
   .backgrid .mini_table .part_stock {
