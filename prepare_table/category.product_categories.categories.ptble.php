@@ -159,7 +159,10 @@ if ($order == 'code') {
 
 
 $fields
-    = "P.`Product Category Key`,C.`Category Code`,`Category Label`,C.`Category Key`,`Category Store Key`,(`Product Category Active Products`+`Product Category Discontinuing Products`) as products,`Product Category Active Products`,`Product Category Status`,
+    = "P.`Product Category Key`,C.`Category Code`,`Category Label`,C.`Category Key`,`Category Store Key`,
+    (`Product Category Active Products`+`Product Category Discontinuing Products`) as products,
+    `Category Number Subjects` as subjects,
+    `Product Category Active Products`,`Product Category Status`,
 `Product Category Active Products`,`Product Category In Process Products`,`Product Category Suspended Products`,`Product Category Discontinued Products`,`Product Category Discontinuing Products`,
 `Product Category $db_period Acc Invoiced Amount` as sales,`Product Category $db_period Acc Quantity Invoiced` as qty_invoiced,
 `Product Category Year To Day Acc Invoiced Amount`,`Product Category Year To Day Acc 1YB Invoiced Amount`,`Product Category 1 Year Ago Invoiced Amount`,`Product Category 2 Year Ago Invoiced Amount`,`Product Category 3 Year Ago Invoiced Amount`,`Product Category 4 Year Ago Invoiced Amount`,`Product Category 5 Year Ago Invoiced Amount`,

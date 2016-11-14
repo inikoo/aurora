@@ -526,7 +526,7 @@ class Category extends DB_Table {
         $num_active    = 0;
         $num_no_active = 0;
 
-
+/*
         if ($this->data['Category Subject'] == 'Category') {
 
             $sql = sprintf(
@@ -545,7 +545,7 @@ class Category extends DB_Table {
             $num_no_active = 0;
 
         } else {
-
+*/
             $sql = sprintf(
                 "SELECT COUNT(DISTINCT `Subject Key`)  AS num FROM `Category Bridge`  WHERE `Category Key`=%d  ", $this->id
             );
@@ -586,13 +586,16 @@ class Category extends DB_Table {
             }
 
 
-        }
+     //   }
 
 
         $sql = sprintf(
             "UPDATE `Category Dimension` SET `Category Number Subjects`=%d ,`Category Number Active Subjects`=%d ,`Category Number No Active Subjects`=%d WHERE `Category Key`=%d ", $num, $num_active,
             $num_no_active, $this->id
         );
+
+     //   print $sql;
+
         $this->db->exec($sql);
         $this->update_no_assigned_subjects();
 
@@ -638,6 +641,27 @@ class Category extends DB_Table {
             case 'Product':
 
                 switch ($key) {
+
+                    case 'Status':
+                        switch ($this->data['Product Category Status']) {
+                            case 'In Process':
+                                return _('In process');
+                                break;
+                            case 'Active':
+                                return _('Active');
+                                break;
+                            case 'Suspended':
+                                return _('Suspended');
+                                break;
+                            case 'Discontinued':
+                                return _('Discontinued');
+                                break;
+                            default:
+                                return $this->data['Product Category Status'];
+                                break;
+                        }
+
+                        break;
 
                     case 'Department Category Key':
                     case 'Department Category Code':
@@ -776,6 +800,10 @@ class Category extends DB_Table {
 
                         }
                         break;
+                    case 'Percentage Active Web Out of Stock':
+                        return percentage($this->data['Product Category Active Web Out of Stock'],$this->data['Product Category Active Products'],0);
+                    case 'Percentage Active Web Offline':
+                        return percentage($this->data['Product Category Active Web Offline'],$this->data['Product Category Active Products'],0);
 
                     default:
 
@@ -1265,15 +1293,9 @@ class Category extends DB_Table {
                 break;
             case('Product'):
 
-                $sql = sprintf(
-                    "SELECT count(*) AS num FROM `Product Dimension` WHERE `Product Store Key`=%d AND `Product Record Type`='Normal'", $this->data['Category Store Key']
-                );
+                $sql = sprintf("SELECT count(*) AS num FROM `Product Dimension` WHERE `Product Store Key`=%d AND `Product Record Type`='Normal'", $this->data['Category Store Key']);
                 break;
-            case('Family'):
-                $sql = sprintf(
-                    "SELECT count(*) AS num FROM `Product Family Dimension` WHERE `Product Family Store Key`=%d ", $this->data['Category Store Key']
-                );
-                break;
+
             default:
                 $table = $this->data['Category Subject'];
                 $store = sprintf(

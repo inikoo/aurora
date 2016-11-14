@@ -578,8 +578,9 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
         );
 
     } else {
-        $left_buttons[] = array('icon'  => 'arrow-left disabled',
-                                'title' => ''
+        $left_buttons[] = array(
+            'icon'  => 'arrow-left disabled',
+            'title' => ''
         );
 
     }
@@ -612,8 +613,7 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
         $title = $category_title_label.'<span class="Category_Code id">'.$data['_object']->get('Code').'</span>';
 
     } elseif ($data['store']->get('Store Family Category Key') == $data['_object']->get('Category Root Key')) {
-        $title
-            = '<i class="fa fa-pagelines" aria-hidden="true"></i> <span class="Category_Code id">'.$data['_object']->get('Code').'</span>';
+        $title = '<i class="fa fa-pagelines" aria-hidden="true"></i> <span class="Category_Code id">'.$data['_object']->get('Code').'</span>';
 
     } else {
         $category_title_label = _('Category');
@@ -621,6 +621,11 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
 
     }
 
+
+    if ($data['_object']->get('Product Category Status') != 'Active') {
+
+    $title .= ' ('.$data['_object']->get('Status').')';
+}
 
     $right_buttons[] = array(
         'icon'  => 'sticky-note',

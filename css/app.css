@@ -1334,6 +1334,14 @@ tr.deleting_tr {
     .as_table .as_row .as_cell {
       display: table-cell; }
 
+.mesh tr {
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc; }
+.mesh td {
+  border-left: 1px solid #ccc; }
+  .mesh td:last-child {
+    border-right: 1px solid #ccc; }
+
 .subject_profile {
   padding: 20px; }
   .subject_profile #contact_data {

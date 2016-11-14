@@ -117,7 +117,6 @@ switch ($tab) {
     case 'store.products':
     case 'category.products':
     case 'part.products':
-
         $data = prepare_values(
             $_REQUEST, array(
                 'parameters' => array('type' => 'json array')
@@ -139,7 +138,8 @@ switch ($tab) {
 
 
     case 'category.product_categories':
-
+    case 'category.product_families':
+        case 'category.product_categories.products':
         $data = prepare_values(
             $_REQUEST, array(
                 'parameters' => array('type' => 'json array')
@@ -147,6 +147,15 @@ switch ($tab) {
         );
         get_product_categories_element_numbers($db, $data['parameters'], $user);
         break;
+    case 'category.product_categories.categories':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'parameters' => array('type' => 'json array')
+                     )
+        );
+        get_product_categories_element_numbers_bis($db, $data['parameters'], $user);
+        break;
+
 
     case 'orders':
         $data = prepare_values(
@@ -745,6 +754,7 @@ function get_warehouse_locations_elements($db, $data, $user) {
 }
 
 
+
 function get_products_element_numbers($db, $data, $user) {
 
 
@@ -786,11 +796,8 @@ function get_products_element_numbers($db, $data, $user) {
         case 'category':
 
 
-            $where = sprintf(
-                " where `Product Type`='Product' and `Subject`='Product' and  `Category Key`=%d", $data['parent_key']
-            );
-            $table
-                   = ' `Category Bridge` left join  `Product Dimension` P on (`Subject Key`=`Product ID`) ';
+            $where = sprintf(" where `Product Type`='Product' and `Subject`='Product' and  `Category Key`=%d", $data['parent_key']);
+            $table = ' `Category Bridge` left join  `Product Dimension` P on (`Subject Key`=`Product ID`) ';
 
 
             break;
@@ -815,9 +822,8 @@ function get_products_element_numbers($db, $data, $user) {
     }
 
 
-    $sql = sprintf(
-        "select count(*) as number,`Product Status` as element from $table $where  group by `Product Status` "
-    );
+    $sql = sprintf("select count(*) as number,`Product Status` as element from $table $where  group by `Product Status` ");
+
 
     foreach ($db->query($sql) as $row) {
 
@@ -834,6 +840,7 @@ function get_products_element_numbers($db, $data, $user) {
 
 
 }
+
 
 
 function get_services_element_numbers($db, $data, $user) {
@@ -900,7 +907,6 @@ function get_services_element_numbers($db, $data, $user) {
 function get_product_categories_element_numbers($db, $data, $user) {
 
 
-    $parent_key = $data['parent_key'];
 
     $elements_numbers = array(
         'status' => array(
@@ -914,14 +920,57 @@ function get_product_categories_element_numbers($db, $data, $user) {
     );
 
 
-    $table
-           = '`Category Dimension` C left join `Product Category Dimension` PC on (C.`Category Key`=`Product Category Key`)';
+    $table = '`Category Bridge` B left join `Product Category Dimension` PC on (B.`Subject Key`=`Product Category Key`)';
+    $where = sprintf('where `Category Key`=%d', $data['parent_key']);
+
+
+
+    $sql = sprintf("select count(*) as number,`Product Category Status` as element from $table $where  group by `Product Category Status` ");
+
+
+    foreach ($db->query($sql) as $row) {
+        if ($row['element'] == 'In Process') {
+            $row['element'] = 'InProcess';
+        }
+        $elements_numbers['status'][$row['element']] = number($row['number']);
+
+    }
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+
+
+}
+
+
+function get_product_categories_element_numbers_bis($db, $data, $user) {
+
+
+
+    $elements_numbers = array(
+        'status' => array(
+            'InProcess'     => 0,
+            'Active'        => 0,
+            'Suspended'     => 0,
+            'Discontinued'  => 0,
+            'Discontinuing' => 0
+        ),
+
+    );
+
+
+    $table = '`Category Dimension` C left join `Product Category Dimension` PC on (C.`Category Key`=`Product Category Key`)';
     $where = sprintf('where `Category Parent Key`=%d', $data['parent_key']);
 
 
-    $sql = sprintf(
-        "select count(*) as number,`Product Category Status` as element from $table $where  group by `Product Category Status` "
-    );
+
+    $sql = sprintf("select count(*) as number,`Product Category Status` as element from $table $where  group by `Product Category Status` ");
+
+
     foreach ($db->query($sql) as $row) {
         if ($row['element'] == 'In Process') {
             $row['element'] = 'InProcess';
