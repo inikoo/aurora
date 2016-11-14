@@ -457,6 +457,24 @@ class SubjectSupplier extends Subject {
                     true,
                     $this->data[$field]
                 );
+            break;
+            case 'Acc To Day Updated':
+            case 'Acc Ongoing Intervals Updated':
+            case 'Acc Previous Intervals Updated':
+
+                if ($this->data[ $this->table_name.' '.$key] == '') {
+                    $value= '';
+                } else {
+
+                    $value= strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($this->data[ $this->table_name.' '.$key].' +0:00'));
+
+                }
+            return array(
+                true,
+                $value
+            );
+                break;
+
 
             default;
 
@@ -597,7 +615,7 @@ class SubjectSupplier extends Subject {
     }
 
 
-    function update_sales($interval, $this_year = true, $last_year = true) {
+    function update_sales_from_invoices($interval, $this_year = true, $last_year = true) {
 
         include_once 'utils/date_functions.php';
         list($db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb)
@@ -619,7 +637,6 @@ class SubjectSupplier extends Subject {
                 $this->table_name." $db_interval Acc Keeping Days"     => $sales_data['keep_days'],
                 $this->table_name." $db_interval Acc With Stock Days"  => $sales_data['with_stock_days'],
             );
-
 
             $this->update($data_to_update, 'no_history');
         }
@@ -646,6 +663,42 @@ class SubjectSupplier extends Subject {
             $this->update($data_to_update, 'no_history');
 
 
+        }
+
+
+        if (in_array(
+            $db_interval, [
+                            'Total',
+                            'Year To Date',
+                            'Quarter To Date',
+                            'Week To Date',
+                            'Month To Date',
+                            'Today'
+                        ]
+        )) {
+
+            $this->update([ $this->table_name.' Acc To Day Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+
+        } elseif (in_array(
+            $db_interval, [
+                            '1 Year',
+                            '1 Month',
+                            '1 Week',
+                            '1 Quarter'
+                        ]
+        )) {
+
+            $this->update([ $this->table_name.' Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+        } elseif (in_array(
+            $db_interval, [
+                            'Last Month',
+                            'Last Week',
+                            'Yesterday',
+                            'Last Year'
+                        ]
+        )) {
+
+            $this->update([ $this->table_name.' Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
         }
 
 
@@ -732,77 +785,35 @@ class SubjectSupplier extends Subject {
 
     function update_previous_years_data() {
 
-        $data_1y_ago = $this->get_sales_data(
-            date('Y-01-01 00:00:00', strtotime('-1 year')), date('Y-01-01 00:00:00')
-        );
-        $data_2y_ago = $this->get_sales_data(
-            date('Y-01-01 00:00:00', strtotime('-2 year')), date('Y-01-01 00:00:00', strtotime('-1 year'))
-        );
-        $data_3y_ago = $this->get_sales_data(
-            date('Y-01-01 00:00:00', strtotime('-3 year')), date('Y-01-01 00:00:00', strtotime('-2 year'))
-        );
-        $data_4y_ago = $this->get_sales_data(
-            date('Y-01-01 00:00:00', strtotime('-4 year')), date('Y-01-01 00:00:00', strtotime('-3 year'))
-        );
-        $data_5y_ago = $this->get_sales_data(
-            date('Y-01-01 00:00:00', strtotime('-5 year')), date('Y-01-01 00:00:00', strtotime('-4 year'))
-        );
 
 
-        $data_to_update = array(
-            $this->table_name." 1 Year Ago Customers"        => $data_1y_ago['customers'],
-            $this->table_name." 1 Year Ago Repeat Customers" => $data_1y_ago['repeat_customers'],
-            $this->table_name." 1 Year Ago Deliveries"       => $data_1y_ago['deliveries'],
-            $this->table_name." 1 Year Ago Profit"           => $data_1y_ago['profit'],
-            $this->table_name." 1 Year Ago Invoiced Amount"  => $data_1y_ago['invoiced_amount'],
-            $this->table_name." 1 Year Ago Required"         => $data_1y_ago['required'],
-            $this->table_name." 1 Year Ago Dispatched"       => $data_1y_ago['dispatched'],
-            $this->table_name." 1 Year Ago Keeping Day"      => $data_1y_ago['keep_days'],
-            $this->table_name." 1 Year Ago With Stock Days"  => $data_1y_ago['with_stock_days'],
-
-            $this->table_name." 2 Year Ago Customers"        => $data_2y_ago['customers'],
-            $this->table_name." 2 Year Ago Repeat Customers" => $data_2y_ago['repeat_customers'],
-            $this->table_name." 2 Year Ago Deliveries"       => $data_2y_ago['deliveries'],
-            $this->table_name." 2 Year Ago Profit"           => $data_2y_ago['profit'],
-            $this->table_name." 2 Year Ago Invoiced Amount"  => $data_2y_ago['invoiced_amount'],
-            $this->table_name." 2 Year Ago Required"         => $data_2y_ago['required'],
-            $this->table_name." 2 Year Ago Dispatched"       => $data_2y_ago['dispatched'],
-            $this->table_name." 2 Year Ago Keeping Day"      => $data_2y_ago['keep_days'],
-            $this->table_name." 2 Year Ago With Stock Days"  => $data_2y_ago['with_stock_days'],
-
-            $this->table_name." 3 Year Ago Customers"        => $data_3y_ago['customers'],
-            $this->table_name." 3 Year Ago Repeat Customers" => $data_3y_ago['repeat_customers'],
-            $this->table_name." 3 Year Ago Deliveries"       => $data_3y_ago['deliveries'],
-            $this->table_name." 3 Year Ago Profit"           => $data_3y_ago['profit'],
-            $this->table_name." 3 Year Ago Invoiced Amount"  => $data_3y_ago['invoiced_amount'],
-            $this->table_name." 3 Year Ago Required"         => $data_3y_ago['required'],
-            $this->table_name." 3 Year Ago Dispatched"       => $data_3y_ago['dispatched'],
-            $this->table_name." 3 Year Ago Keeping Day"      => $data_3y_ago['keep_days'],
-            $this->table_name." 3 Year Ago With Stock Days"  => $data_3y_ago['with_stock_days'],
-
-            $this->table_name." 4 Year Ago Customers"        => $data_4y_ago['customers'],
-            $this->table_name." 4 Year Ago Repeat Customers" => $data_4y_ago['repeat_customers'],
-            $this->table_name." 4 Year Ago Deliveries"       => $data_4y_ago['deliveries'],
-            $this->table_name." 4 Year Ago Profit"           => $data_4y_ago['profit'],
-            $this->table_name." 4 Year Ago Invoiced Amount"  => $data_4y_ago['invoiced_amount'],
-            $this->table_name." 4 Year Ago Required"         => $data_4y_ago['required'],
-            $this->table_name." 4 Year Ago Dispatched"       => $data_4y_ago['dispatched'],
-            $this->table_name." 4 Year Ago Keeping Day"      => $data_4y_ago['keep_days'],
-            $this->table_name." 4 Year Ago With Stock Days"  => $data_4y_ago['with_stock_days'],
-
-            $this->table_name." 5 Year Ago Customers"        => $data_5y_ago['customers'],
-            $this->table_name." 5 Year Ago Repeat Customers" => $data_5y_ago['repeat_customers'],
-            $this->table_name." 5 Year Ago Deliveries"       => $data_5y_ago['deliveries'],
-            $this->table_name." 5 Year Ago Profit"           => $data_5y_ago['profit'],
-            $this->table_name." 5 Year Ago Invoiced Amount"  => $data_5y_ago['invoiced_amount'],
-            $this->table_name." 5 Year Ago Required"         => $data_5y_ago['required'],
-            $this->table_name." 5 Year Ago Dispatched"       => $data_5y_ago['dispatched'],
-            $this->table_name." 5 Year Ago Keeping Day"      => $data_5y_ago['keep_days'],
-            $this->table_name." 5 Year Ago With Stock Days"  => $data_5y_ago['with_stock_days'],
+        foreach (range(1, 5) as $i) {
+            $data_iy_ago = $this->get_sales_data(
+                date('Y-01-01 00:00:00', strtotime('-'.$i.' year')), date('Y-01-01 00:00:00', strtotime('-'.($i - 1).' year'))
+            );
 
 
-        );
-        $this->update($data_to_update, 'no_history');
+            $data_to_update = array(
+                $this->table_name." $i Year Ago Customers"        => $data_iy_ago['customers'],
+                $this->table_name." $i Year Ago Repeat Customers" => $data_iy_ago['repeat_customers'],
+                $this->table_name." $i Year Ago Deliveries"       => $data_iy_ago['deliveries'],
+                $this->table_name." $i Year Ago Profit"           => $data_iy_ago['profit'],
+                $this->table_name." $i Year Ago Invoiced Amount"  => $data_iy_ago['invoiced_amount'],
+                $this->table_name." $i Year Ago Required"         => $data_iy_ago['required'],
+                $this->table_name." $i Year Ago Dispatched"       => $data_iy_ago['dispatched'],
+                $this->table_name." $i Year Ago Keeping Day"      => $data_iy_ago['keep_days'],
+                $this->table_name." $i Year Ago With Stock Days"  => $data_iy_ago['with_stock_days'],
+            );
+
+
+            $this->update($data_to_update, 'no_history');
+        }
+
+        $this->update([$this->table_name.' Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+
+
+
+
 
 
     }
@@ -848,6 +859,9 @@ class SubjectSupplier extends Subject {
             );
             $this->update($data_to_update, 'no_history');
         }
+
+        $this->update([ $this->table_name.' Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+
 
     }
 

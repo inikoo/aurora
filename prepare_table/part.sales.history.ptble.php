@@ -18,7 +18,7 @@ switch ($parameters['parent']) {
 
         break;
     default:
-        exit('parent not configurated '.$parameters['parent']);
+        exit('parent not configured '.$parameters['parent']);
         break;
 }
 

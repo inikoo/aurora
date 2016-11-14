@@ -1971,6 +1971,112 @@ class Store extends DB_Table {
 
     }
 
+    function update_timeseries_record($timeseries, $from, $to, $fork_key) {
+
+        if ($timeseries->get('Type') == 'StoreSales') {
+
+            $dates = date_frequency_range(
+                $this->db, $timeseries->get('Timeseries Frequency'), $from, $to
+            );
+
+            if ($fork_key) {
+
+                $sql = sprintf(
+                    "UPDATE `Fork Dimension` SET `Fork State`='In Process' ,`Fork Operations Total Operations`=%d,`Fork Start Date`=NOW(),`Fork Result`=%d  WHERE `Fork Key`=%d ", count($dates),
+                    $timeseries->id, $fork_key
+                );
+
+                $this->db->exec($sql);
+            }
+            $index = 0;
+            foreach ($dates as $date_frequency_period) {
+                $index++;
+                $sales_data = $this->get_sales_data($date_frequency_period['from'], $date_frequency_period['to']);
+                $_date      = gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00'));
+
+
+                if ($sales_data['invoices'] > 0 or $sales_data['refunds'] > 0 or $sales_data['customers'] > 0 or $sales_data['amount'] != 0 or $sales_data['dc_amount'] != 0 or $sales_data['profit']
+                    != 0 or $sales_data['dc_profit'] != 0
+                ) {
+
+                    list($timeseries_record_key, $date) = $timeseries->create_record(array('Timeseries Record Date' => $_date));
+
+                    $sql = sprintf(
+                        'UPDATE `Timeseries Record Dimension` SET `Timeseries Record Integer A`=%d ,`Timeseries Record Integer B`=%d ,`Timeseries Record Integer C`=%d ,`Timeseries Record Float A`=%.2f ,  `Timeseries Record Float B`=%f ,`Timeseries Record Float C`=%f ,`Timeseries Record Float D`=%f ,`Timeseries Record Type`=%s WHERE `Timeseries Record Key`=%d',
+                        $sales_data['invoices'], $sales_data['refunds'], $sales_data['customers'], $sales_data['amount'], $sales_data['dc_amount'], $sales_data['profit'], $sales_data['dc_profit'],
+                        prepare_mysql('Data'), $timeseries_record_key
+
+                    );
+
+
+                    //  print "$sql\n";
+
+                    $update_sql = $this->db->prepare($sql);
+                    $update_sql->execute();
+                    if ($update_sql->rowCount() or $date == date('Y-m-d')) {
+                        $timeseries->update(
+                            array(
+                                'Timeseries Updated' => gmdate(
+                                    'Y-m-d H:i:s'
+                                )
+                            ), 'no_history'
+                        );
+                    }
+
+
+                } else {
+                    $sql = sprintf(
+                        'DELETE FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`=%s ', $timeseries->id, prepare_mysql($_date)
+                    );
+
+                    $update_sql = $this->db->prepare($sql);
+                    $update_sql->execute();
+                    if ($update_sql->rowCount()) {
+                        $timeseries->update(
+                            array(
+                                'Timeseries Updated' => gmdate(
+                                    'Y-m-d H:i:s'
+                                )
+                            ), 'no_history'
+                        );
+
+                    }
+
+                }
+                if ($fork_key) {
+                    $skip_every = 1;
+                    if ($index % $skip_every == 0) {
+                        $sql = sprintf(
+                            "UPDATE `Fork Dimension` SET `Fork Operations Done`=%d  WHERE `Fork Key`=%d ", $index, $fork_key
+                        );
+                        $this->db->exec($sql);
+
+                    }
+
+                }
+                $timeseries->update_stats();
+
+            }
+
+        }
+
+
+        if ($fork_key) {
+
+            $sql = sprintf(
+                "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%d WHERE `Fork Key`=%d ", $index, $timeseries->id, $fork_key
+            );
+
+            $this->db->exec($sql);
+
+        }
+
+    }
+
+
+
+
+
     function get($key = '') {
 
 

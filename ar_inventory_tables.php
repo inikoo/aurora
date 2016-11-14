@@ -79,6 +79,7 @@ switch ($tipo) {
         category_all_parts(get_table_parameters(), $db, $user);
         break;
     case 'sales_history':
+
         sales_history(get_table_parameters(), $db, $user, $account);
         break;
     default:
@@ -1597,7 +1598,6 @@ function product_families($_data, $db, $user) {
 
 function sales_history($_data, $db, $user, $account) {
 
-
     $skip_get_table_totals = true;
 
     include_once 'prepare_table/init.php';
@@ -1628,6 +1628,9 @@ function sales_history($_data, $db, $user, $account) {
         $sql_totals_fields = '`Date`';
     }
 
+
+
+
     switch ($_data['parameters']['parent']) {
         case 'part':
             include_once 'class.Part.php';
@@ -1647,7 +1650,7 @@ function sales_history($_data, $db, $user, $account) {
             break;
         default:
             print_r($_data);
-            exit('parent not configurated '.$_data['parameters']['parent']);
+            exit('parent not configured '.$_data['parameters']['parent']);
             break;
     }
 
@@ -1672,7 +1675,7 @@ function sales_history($_data, $db, $user, $account) {
         "`Date` $order_direction ",
         "$start_from,$number_results"
     );
-    //print $sql;
+
 
 
     $adata = array();
@@ -1783,7 +1786,7 @@ function sales_history($_data, $db, $user, $account) {
             break;
         default:
             print_r($_data);
-            exit('parent not configurated '.$_data['parameters']['parent']);
+            exit('parent not configured '.$_data['parameters']['parent']);
             break;
     }
 
