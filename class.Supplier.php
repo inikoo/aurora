@@ -190,20 +190,17 @@ class Supplier extends SubjectSupplier {
 
 
         if ($this->data['Supplier Main Plain Mobile'] != '') {
-            list($this->data['Supplier Main Plain Mobile'], $this->data['Supplier Main XHTML Mobile'])
-                = $this->get_formatted_number(
+            list($this->data['Supplier Main Plain Mobile'], $this->data['Supplier Main XHTML Mobile']) = $this->get_formatted_number(
                 $this->data['Supplier Main Plain Mobile']
             );
         }
         if ($this->data['Supplier Main Plain Telephone'] != '') {
-            list($this->data['Supplier Main Plain Telephone'], $this->data['Supplier Main XHTML Telephone'])
-                = $this->get_formatted_number(
+            list($this->data['Supplier Main Plain Telephone'], $this->data['Supplier Main XHTML Telephone']) = $this->get_formatted_number(
                 $this->data['Supplier Main Plain Telephone']
             );
         }
         if ($this->data['Supplier Main Plain FAX'] != '') {
-            list($this->data['Supplier Main Plain FAX'], $this->data['Supplier Main XHTML FAX'])
-                = $this->get_formatted_number(
+            list($this->data['Supplier Main Plain FAX'], $this->data['Supplier Main XHTML FAX']) = $this->get_formatted_number(
                 $this->data['Supplier Main Plain FAX']
             );
         }
@@ -219,12 +216,12 @@ class Supplier extends SubjectSupplier {
 
             if (in_array(
                 $key, array(
-                    'Supplier Average Delivery Days',
-                    'Supplier Default Incoterm',
-                    'Supplier Default Port of Export',
-                    'Supplier Default Port of Import',
-                    'Supplier Valid To'
-                )
+                        'Supplier Average Delivery Days',
+                        'Supplier Default Incoterm',
+                        'Supplier Default Port of Export',
+                        'Supplier Default Port of Import',
+                        'Supplier Valid To'
+                    )
             )) {
                 $values .= ','.prepare_mysql($value, true);
 
@@ -357,9 +354,9 @@ class Supplier extends SubjectSupplier {
 
                 if (!in_array(
                     $value, array(
-                    'No',
-                    'Yes'
-                )
+                              'No',
+                              'Yes'
+                          )
                 )
                 ) {
                     $this->error = true;
@@ -657,15 +654,13 @@ class Supplier extends SubjectSupplier {
 
 
         if (isset($data['Supplier Part Package Description']) and !isset($data['Part Package Description'])) {
-            $data['Part Package Description']
-                = $data['Supplier Part Package Description'];
+            $data['Part Package Description'] = $data['Supplier Part Package Description'];
             unset($data['Supplier Part Package Description']);
         }
 
 
         if (isset($data['Supplier Part Unit Description']) and !isset($data['Part Unit Description'])) {
-            $data['Part Unit Description']
-                = $data['Supplier Part Unit Description'];
+            $data['Part Unit Description'] = $data['Supplier Part Unit Description'];
             unset($data['Supplier Part Unit Description']);
         }
 
@@ -915,8 +910,7 @@ class Supplier extends SubjectSupplier {
                     _('Invalid delivery time (%s)'), $data['Supplier Part Average Delivery Days']
                 );
                 $this->error_code = 'invalid_supplier_delivery_days';
-                $this->metadata
-                                  = $data['Supplier Part Average Delivery Days'];
+                $this->metadata   = $data['Supplier Part Average Delivery Days'];
 
                 return;
             }
@@ -931,8 +925,7 @@ class Supplier extends SubjectSupplier {
         );
 
 
-        $data['Supplier Part Currency Code']
-            = $this->data['Supplier Default Currency Code'];
+        $data['Supplier Part Currency Code'] = $this->data['Supplier Default Currency Code'];
 
 
         $data['Supplier Part Status'] = 'Available';
@@ -1162,14 +1155,11 @@ class Supplier extends SubjectSupplier {
                         //print_r($row);
                         $supplier_number_active_parts = $row['num'];
                         if ($row['num'] > 0) {
-                            $supplier_number_surplus_parts = $row['surplus'];
-                            $supplier_number_optimal_parts
-                                                           = $row['optimal'];
-                            $supplier_number_low_parts     = $row['low'];
-                            $supplier_number_critical_parts
-                                                           = $row['critical'];
-                            $supplier_number_out_of_stock_parts
-                                                           = $row['out_of_stock'];
+                            $supplier_number_surplus_parts      = $row['surplus'];
+                            $supplier_number_optimal_parts      = $row['optimal'];
+                            $supplier_number_low_parts          = $row['low'];
+                            $supplier_number_critical_parts     = $row['critical'];
+                            $supplier_number_out_of_stock_parts = $row['out_of_stock'];
                         }
 
                     }
@@ -1559,7 +1549,7 @@ class Supplier extends SubjectSupplier {
 
     }
 
-    function update_timeseries_record($timeseries, $from, $to) {
+    function update_timeseries_record($timeseries, $from, $to, $fork_key) {
 
 
         $dates = date_frequency_range(
@@ -1567,7 +1557,19 @@ class Supplier extends SubjectSupplier {
         );
 
 
+        if ($fork_key) {
+
+            $sql = sprintf(
+                "UPDATE `Fork Dimension` SET `Fork State`='In Process' ,`Fork Operations Total Operations`=%d,`Fork Start Date`=NOW(),`Fork Result`=%d  WHERE `Fork Key`=%d ", count($dates),
+                $timeseries->id, $fork_key
+            );
+
+            $this->db->exec($sql);
+        }
+        $index = 0;
+
         foreach ($dates as $date_frequency_period) {
+            $index++;
             $sales_data = $this->get_sales_data(
                 $date_frequency_period['from'], $date_frequency_period['to']
             );
@@ -1578,8 +1580,7 @@ class Supplier extends SubjectSupplier {
 
             if ($sales_data['deliveries'] > 0 or $sales_data['dispatched'] > 0 or $sales_data['invoiced_amount'] != 0 or $sales_data['required'] != 0 or $sales_data['profit'] != 0) {
 
-                list($timeseries_record_key, $date)
-                    = $timeseries->create_record(
+                list($timeseries_record_key, $date) = $timeseries->create_record(
                     array('Timeseries Record Date' => $_date)
                 );
 
@@ -1617,20 +1618,43 @@ class Supplier extends SubjectSupplier {
                 }
 
             }
+            if ($fork_key) {
+                $skip_every = 1;
+                if ($index % $skip_every == 0) {
+                    $sql = sprintf(
+                        "UPDATE `Fork Dimension` SET `Fork Operations Done`=%d  WHERE `Fork Key`=%d ", $index, $fork_key
+                    );
+                    $this->db->exec($sql);
+
+                }
+
+            }
             $timeseries->update_stats();
 
         }
 
+        if ($fork_key) {
+
+            $sql = sprintf(
+                "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%d WHERE `Fork Key`=%d ", $index, $timeseries->id, $fork_key
+            );
+
+            $this->db->exec($sql);
+
+        }
 
     }
 
-    function create_timeseries($data) {
+    function create_timeseries($data, $fork_key = 0) {
 
 
         include_once 'class.Timeserie.php';
 
         $data['Timeseries Parent']     = 'Supplier';
         $data['Timeseries Parent Key'] = $this->id;
+
+
+        $data['editor']=$this->editor;
 
         $timeseries = new Timeseries('find', $data, 'create');
 
@@ -1674,8 +1698,17 @@ class Supplier extends SubjectSupplier {
             }
 
             if ($from and $to) {
-                $this->update_timeseries_record($timeseries, $from, $to);
+                $this->update_timeseries_record($timeseries, $from, $to, $fork_key);
             }
+
+
+            if ($timeseries->get('Timeseries Number Records') == 0) {
+                $timeseries->update(
+                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
+                );
+            }
+
+
         }
 
     }

@@ -1607,11 +1607,7 @@ $modules = array(
                                     'Calendar'
                                 )
                             ),
-                            'store.sales.info'     => array(
-                                'label' => _('Info'),
-                                'icon'  => 'info',
-                                'class' => 'right icon_only'
-                            ),
+
 
                         )
 
@@ -2522,6 +2518,7 @@ $modules = array(
                     'supplier.sales.history'   => 'supplier.sales',
                     'supplier.sales.calendar'  => 'supplier.sales',
                     'supplier.sales.dashboard' => 'supplier.sales',
+                    'supplier.sales.info' => 'supplier.sales',
 
                 ),
 
@@ -2561,6 +2558,14 @@ $modules = array(
                                 )
                             ),
 
+
+                            'supplier.sales.info'     => array(
+                                'label' => _('Info'),
+                                'icon'  => 'info',
+                                'class' => 'right icon_only'
+                            ),
+
+
                         )
                     ),
 
@@ -2582,6 +2587,9 @@ $modules = array(
                         ),
                         'icon'  => 'truck'
                     ),
+
+
+
 
                     'supplier.history' => array(
                         'label' => _('History/Notes'),

@@ -33,9 +33,11 @@ if ($parameters['frequency'] == 'annually') {
 } elseif ($parameters['frequency'] == 'daily') {
     $frequency = 'Daily';
 
-    $group_by          = ' ';
+
     $sql_totals_fields = '`Invoice Date`';
 }
+
+$group_by          = ' ';
 
 $timeseries_key = '';
 $sql            = sprintf(
@@ -49,17 +51,17 @@ if ($result = $db->query($sql)) {
     if ($row = $result->fetch()) {
         $timeseries_key = $row['Timeseries Key'];
     } else {
-        exit;
+        exit('error a');
     }
 } else {
     print_r($error_info = $db->errorInfo());
-    exit;
+    exit('error b');
 }
 
 //print $sql;
 
 $fields
-       = ' `Timeseries Record Date` as `Date`,sum(`Timeseries Record Float A`) as sales ,sum(`Timeseries Record Integer A`) as dispatched,sum(`Timeseries Record Integer B`) as deliveries';
+       = ' `Timeseries Record Date` as `Date`,`Timeseries Record Float A` as sales ,`Timeseries Record Integer A` as dispatched,`Timeseries Record Integer B` as deliveries';
 $where = sprintf(
     "where `Timeseries Record Timeseries Key`=%d", $timeseries_key
 );
@@ -67,7 +69,6 @@ $table = "`Timeseries Record Dimension`  ";
 
 
 $wheref = '';
-
 
 $_order = $order;
 $_dir   = $order_direction;

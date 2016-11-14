@@ -141,6 +141,8 @@ class Timeseries extends DB_Table {
         $this->duplicated = false;
         $this->new        = false;
 
+
+
         $this->editor = $data['editor'];
         unset($data['editor']);
         $this->data = $data;

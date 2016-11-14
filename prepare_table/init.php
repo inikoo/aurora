@@ -50,7 +50,6 @@ if (!isset($dont_save_table_state)) {
                                                                      = $number_results;
     $_SESSION['table_state'][$_data['parameters']['tab']]['f_value'] = $f_value;
 }
-
 include_once 'prepare_table/'.$_data['parameters']['tab'].'.ptble.php';
 if (!isset($skip_get_table_totals)) {
     list($rtext, $total, $filtered) = get_table_totals(

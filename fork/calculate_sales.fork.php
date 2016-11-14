@@ -30,6 +30,8 @@ function fork_calculate_sales($job) {
     $object->editor = $fork_data['editor'];
 
 
+    print_r($fork_data);
+
     switch ($fork_data['scope']) {
         case 'X_To_Day':
             $intervals = array(
@@ -101,9 +103,8 @@ function fork_calculate_sales($job) {
 
     foreach ($intervals as $interval) {
 
-        $object->update_sales_from_invoices(
-            $interval, true, true
-        );
+
+        $object->update_sales_from_invoices($interval, true, true);
         $index++;
         $sql = sprintf(
             "UPDATE `Fork Dimension` SET `Fork Operations Done`=%d ,`Fork Result Metadata`=%s WHERE `Fork Key`=%d ",
