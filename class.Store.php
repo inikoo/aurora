@@ -490,7 +490,7 @@ class Store extends DB_Table {
 
         );
 
-          print "$sql\n";
+         // print "$sql\n";
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
@@ -525,15 +525,7 @@ class Store extends DB_Table {
         }
 
         */
-print_r( array(
-             'Store Active Products'       => $active_products,
-             'Store Suspended Products'    => $suspended_products,
-             'Store Discontinued Products' => $discontinued_products,
-             'Store Active Web For Sale'     => $elements_active_web_status_numbers['For Sale'],
-             'Store Active Web Out of Stock' => $elements_active_web_status_numbers['Out of Stock'],
-             'Store Active Web Offline'      => $elements_active_web_status_numbers['Offline']
 
-         ));
         $this->update(
             array(
                 'Store Active Products'       => $active_products,
