@@ -121,7 +121,7 @@ function fork_housekeeping($job) {
 function fork_housekeeping2($job) {
 
 
-    print "fork_housekeeping xxxx \n";
+   // print "fork_housekeeping xxxx \n";
 
     if (!$_data = get_fork_metadata($job)) {
         return true;

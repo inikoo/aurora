@@ -86,6 +86,7 @@ $sql = sprintf('SELECT `Category Key` FROM `Category Dimension` WHERE `Category 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $category = new Category($row['Category Key']);
+        $category->update_product_category_new_products();
         if ($category->get('Product Category Status') != 'Discontinued' or date('Y-m-d') == date('Y-m-d', strtotime($category->get('Product Category Valid To').' +0:00'))) {
             if (!array_key_exists($category->get('Category Scope').'Category', $timeseries)) {
                 continue;
