@@ -59,6 +59,7 @@ function update_categories_data($db) {
 
 
             $category = new Category($row['Category Key']);
+            $category->update_product_category_new_products();
             $category->update_product_category_products_data();
             $category->update_last_period_sales();
             $category->update_interval_sales();
