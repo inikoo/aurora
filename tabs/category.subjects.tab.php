@@ -98,14 +98,22 @@ if ($category->get('Category Scope') == 'Product') {
     } else {
 
 
-        $tab     = 'category.product_families';
+        $tab     = 'category.product_categories.products';
         $ar_file = 'ar_products_tables.php';
-        $tipo    = 'product_families';
+        $tipo    = 'product_categories_products';
 
         $default = $user->get_tab_defaults($tab);
 
 
-        $table_views = array();
+        $table_views = array(
+            'overview' => array('label' => _('Overview')),
+            'status'   => array('label' => _("Product's Status")),
+            'stock'    => array('label' => _('Stock')),
+            'sales'    => array('label' => _('Sales')),
+            'sales_y'  => array('label' => _('Invoiced amount (Yrs)')),
+            'sales_q'  => array('label' => _('Invoiced amount (Qs)')),
+
+        );
 
         $table_filters = array(
             'code'  => array('label' => _('Code')),

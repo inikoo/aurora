@@ -82,70 +82,140 @@ if ($state['module'] == 'inventory') {
 } elseif ($state['module'] == 'products') {
 
 
-    $tab     = 'category.product_categories';
-    $ar_file = 'ar_products_tables.php';
-    $tipo    = 'product_categories';
-
-    $default = $user->get_tab_defaults($tab);
+    if($state['_object']->get('Category Subject')=='Product'){
 
 
-    $table_views = array(
-        'overview' => array('label' => _('Overview')),
-        'status'   => array('label' => _('Status')),
-        'stock'    => array('label' => _('Stock')),
-        'sales'    => array('label' => _('Sales')),
-        'sales_y'  => array('label' => _('Invoiced amount (Yrs)')),
-        'sales_q'  => array('label' => _('Invoiced amount (Qs)')),
-
-    );
 
 
-    if ($state['key'] == $state['store']->get(
-            'Store Department Category Key'
-        )
-    ) {
-        $title         = _('New department');
-        $field_label   = _('Add family').':';
-        $placeholder   = _("Family code");
-        $table_filters = array(
-            'label' => array('label' => _('Label')),
-            'code'  => array('label' => _('Name')),
+        $tab     = 'category.product_categories.categories';
+        $ar_file = 'ar_products_tables.php';
+        $tipo    = 'product_categories_categories';
+
+        $default = $user->get_tab_defaults($tab);
+
+
+        $table_views = array(
+            'overview' => array('label' => _('Overview')),
+            'status'   => array('label' => _("Product's Status")),
+            'stock'    => array('label' => _('Stock')),
+            'sales'    => array('label' => _('Sales')),
+            'sales_y'  => array('label' => _('Invoiced amount (Yrs)')),
+            'sales_q'  => array('label' => _('Invoiced amount (Qs)')),
 
         );
-    } else {
-        $title         = _('New category');
-        $field_label   = _('Add category').':';
-        $placeholder   = _("Categoy code");
-        $table_filters = array(
-            'label' => array('label' => _('Label')),
-            'code'  => array('label' => _('Code')),
+
+
+        if ($state['key'] == $state['store']->get('Store Family Category Key')) {
+            $title         = _('New family');
+            $field_label   = _('Add family').':';
+            $placeholder   = _("Family code");
+            $table_filters = array(
+                'label' => array('label' => _('Label')),
+                'code'  => array('label' => _('Name')),
+
+            );
+        } else {
+            $title         = _('New category');
+            $field_label   = _('Add category').':';
+            $placeholder   = _("Category code");
+            $table_filters = array(
+                'label' => array('label' => _('Label')),
+                'code'  => array('label' => _('Code')),
+
+            );
+        }
+
+
+        $parameters = array(
+            'parent'     => $state['object'],
+            'parent_key' => $state['key'],
 
         );
+
+
+        $table_buttons[] = array(
+            'icon'              => 'plus',
+            'title'             => $title,
+            'id'                => 'new_record',
+            'inline_new_object' => array(
+                'field_id'    => 'Category_Code',
+                'field_label' => $field_label,
+                'field_edit'  => 'string',
+                'object'      => 'Category',
+                'parent'      => $state['object'],
+                'parent_key'  => $state['key'],
+                'placeholder' => _("Family's code")
+            )
+
+        );
+
+    }elseif($state['_object']->get('Category Subject')=='Category'){
+
+        $tab     = 'category.product_categories.categories';
+        $ar_file = 'ar_products_tables.php';
+        $tipo    = 'product_categories_categories';
+
+        $default = $user->get_tab_defaults($tab);
+
+
+        $table_views = array(
+            'overview' => array('label' => _('Overview')),
+            'status'   => array('label' => _("Product's Status")),
+            'stock'    => array('label' => _('Stock')),
+            'sales'    => array('label' => _('Sales')),
+            'sales_y'  => array('label' => _('Invoiced amount (Yrs)')),
+            'sales_q'  => array('label' => _('Invoiced amount (Qs)')),
+
+        );
+
+
+        if ($state['key'] == $state['store']->get('Store Department Category Key')) {
+            $title         = _('New department');
+            $field_label   = _('Add department').':';
+            $placeholder   = _("Department code");
+            $table_filters = array(
+                'label' => array('label' => _('Label')),
+                'code'  => array('label' => _('Name')),
+
+            );
+        } else {
+            $title         = _('New category');
+            $field_label   = _('Add category').':';
+            $placeholder   = _("Category code");
+            $table_filters = array(
+                'label' => array('label' => _('Label')),
+                'code'  => array('label' => _('Code')),
+
+            );
+        }
+
+
+        $parameters = array(
+            'parent'     => $state['object'],
+            'parent_key' => $state['key'],
+
+        );
+
+
+        $table_buttons[] = array(
+            'icon'              => 'plus',
+            'title'             => $title,
+            'id'                => 'new_record',
+            'inline_new_object' => array(
+                'field_id'    => 'Category_Code',
+                'field_label' => $field_label,
+                'field_edit'  => 'string',
+                'object'      => 'Category',
+                'parent'      => $state['object'],
+                'parent_key'  => $state['key'],
+                'placeholder' => _("Family's code")
+            )
+
+        );
+
     }
 
 
-    $parameters = array(
-        'parent'     => $state['object'],
-        'parent_key' => $state['key'],
-
-    );
-
-
-    $table_buttons[] = array(
-        'icon'              => 'plus',
-        'title'             => $title,
-        'id'                => 'new_record',
-        'inline_new_object' => array(
-            'field_id'    => 'Category_Code',
-            'field_label' => $field_label,
-            'field_edit'  => 'string',
-            'object'      => 'Category',
-            'parent'      => $state['object'],
-            'parent_key'  => $state['key'],
-            'placeholder' => _("Family's code")
-        )
-
-    );
 
     $smarty->assign('table_buttons', $table_buttons);
 

@@ -449,6 +449,14 @@ class Store extends DB_Table {
         $suspended_products    = 0;
         $discontinued_products = 0;
 
+        $elements_active_web_status_numbers = array(
+            'For Sale'     => 0,
+            'Out of Stock' => 0,
+            'Offline'      => 0
+
+        );
+
+
         //'InProcess','Active','Suspended','Discontinuing','Discontinued'
 
         $sql = sprintf(
@@ -476,6 +484,26 @@ class Store extends DB_Table {
         }
 
 
+        $sql = sprintf(
+            "SELECT count(*) AS num ,`Product Web State` AS web_state FROM  `Product Dimension` P WHERE `Product Store Key`=%d AND `Product Status` IN ('Active','Discontinuing') GROUP BY  `Product Web State`   ",
+            $this->id
+
+        );
+
+          print "$sql\n";
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                if ($row['web_state'] == 'Discontinued') {
+                    $row['web_state'] = 'Offline';
+                }
+                $elements_active_web_status_numbers[$row['web_state']] += $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
         /*
         //print $sql;
         $result = mysql_query($sql);
@@ -497,13 +525,23 @@ class Store extends DB_Table {
         }
 
         */
+print_r( array(
+             'Store Active Products'       => $active_products,
+             'Store Suspended Products'    => $suspended_products,
+             'Store Discontinued Products' => $discontinued_products,
+             'Store Active Web For Sale'     => $elements_active_web_status_numbers['For Sale'],
+             'Store Active Web Out of Stock' => $elements_active_web_status_numbers['Out of Stock'],
+             'Store Active Web Offline'      => $elements_active_web_status_numbers['Offline']
 
+         ));
         $this->update(
             array(
                 'Store Active Products'       => $active_products,
                 'Store Suspended Products'    => $suspended_products,
                 'Store Discontinued Products' => $discontinued_products,
-
+                'Store Active Web For Sale'     => $elements_active_web_status_numbers['For Sale'],
+                'Store Active Web Out of Stock' => $elements_active_web_status_numbers['Out of Stock'],
+                'Store Active Web Offline'      => $elements_active_web_status_numbers['Offline']
 
             ), 'no_history'
         );
@@ -1981,7 +2019,17 @@ class Store extends DB_Table {
 
                 return currency_symbol($this->data['Store Currency Code']);
                 break;
+            case('Valid From'):
 
+                return strftime(
+                    "%a %e %b %Y", strtotime($this->data['Store Valid From'] .' +0:00')
+                );
+                break;
+            case('Valid To'):
+                return strftime(
+                    "%a %e %b %Y", strtotime($this->data['Store Valid To'] .' +0:00')
+                );
+                break;
             case("Sticky Note"):
                 return nl2br($this->data['Store Sticky Note']);
                 break;
@@ -1995,7 +2043,15 @@ class Store extends DB_Table {
             case('New Contacts With Orders'):
             case('Lost Contacts With Orders'):
             case('Losing Contacts With Orders'):
+            case('Active Web For Sale'):
+            case('Active Web Out of Stock'):
+            case('Active Web Offline'):
                 return number($this->data['Store '.$key]);
+            case 'Percentage Active Web Out of Stock':
+                return percentage($this->data['Store Active Web Out of Stock'],$this->data['Store Active Products']);
+            case 'Percentage Active Web Offline':
+                return percentage($this->data['Store Active Web Offline'],$this->data['Store Active Products']);
+
             case('Potential Customers'):
                 return number(
                     $this->data['Store Active Contacts'] - $this->data['Store Active Contacts With Orders']

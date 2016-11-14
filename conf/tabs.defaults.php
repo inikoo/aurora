@@ -534,6 +534,7 @@ $tab_defaults = array(
         //  'export_fields'=>$export_fields['timeserie_records']
 
     ),
+    /*
     'category.product_families'      => array(
         'view'          => 'overview',
         'sort_key'      => 'code',
@@ -544,7 +545,8 @@ $tab_defaults = array(
         'elements'      => $elements_options['product_categories'],
         'f_field'       => 'code'
     ),
-    'category.product_categories'    => array(
+    */
+    'category.product_categories.products'    => array(
         'view'          => 'overview',
         'sort_key'      => 'code',
         'sort_order'    => 0,
@@ -555,6 +557,26 @@ $tab_defaults = array(
         'f_period'      => 'ytd',
         'f_field'       => 'code'
     ),
+
+
+    'category.product_categories.categories'    => array(
+        'view'          => 'overview',
+        'sort_key'      => 'code',
+        'sort_order'    => 0,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'elements_type' => each($elements_options['product_categories'])['key'],
+        'elements'      => $elements_options['product_categories'],
+        'f_period'      => 'ytd',
+        'f_field'       => 'code'
+    ),
+
+
+
+
+
+
+
     'websites'                       => array(
         'view'        => 'overview',
         'sort_key'    => 'id',

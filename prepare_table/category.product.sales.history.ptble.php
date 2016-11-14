@@ -36,6 +36,7 @@ if ($parameters['frequency'] == 'annually') {
     $sql_totals_fields = '`Invoice Date`';
 }
 
+$group_by          = ' ';
 $timeseries_key = '';
 $sql            = sprintf(
     'SELECT `Timeseries Key` FROM `Timeseries Dimension` WHERE `Timeseries Parent`="Category" AND `Timeseries Parent Key`=%s AND `Timeseries Frequency`=%s AND  `Timeseries Type`="ProductCategorySales" ',
@@ -52,7 +53,7 @@ if ($result = $db->query($sql)) {
 
 
 $fields
-       = ' `Timeseries Record Date` as Date,sum(`Timeseries Record Float A`) as sales ,sum(`Timeseries Record Integer A`) as invoices,sum(`Timeseries Record Integer B`) as customers';
+       = ' `Timeseries Record Date` as Date,`Timeseries Record Float A` as sales ,`Timeseries Record Integer A` as invoices,`Timeseries Record Integer B` as customers';
 $where = sprintf(
     "where `Timeseries Record Timeseries Key`=%d", $timeseries_key
 );

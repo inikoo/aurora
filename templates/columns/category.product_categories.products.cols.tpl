@@ -42,6 +42,7 @@ label:"{t}Status{/t}",
 editable: false,
 cell: "html"
 },
+
 {
 name: "products",
 label:"{t}Products{/t}",

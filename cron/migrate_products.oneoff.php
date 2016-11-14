@@ -62,42 +62,37 @@ create_data_tables($db);
 */
 
 //fix_family_web_descriptions($db);
-//update_product_category_status($db);
+update_product_category_products_data($db);
 
-create_data_tables($db);
+//create_data_tables($db);
 
 
-function update_product_category_status($db) {
+function update_product_category_products_data($db) {
 
     $sql = sprintf(
         'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Product" AND `Category Code`="CCS"  '
     );
-    $sql = sprintf(
-        'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Product" ORDER BY  `Category Key` DESC'
-    );
+    $sql = sprintf('SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Product"  ORDER BY  `Category Key` DESC');
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
 
             $category = new Category($row['Category Key']);
-            $category->update_product_category_status();
-            $category->update_product_stock_status();
+            $category->update_number_of_subjects();
+            $category->update_product_category_products_data();
+            $category->update_product_category_new_products();
 
 
             $product_ids = $category->get_product_ids();
             if ($product_ids != '') {
-                $sql = sprintf(
-                    "SELECT min(`Order Date`) AS date FROM `Order Transaction Fact` WHERE `Product ID` IN (%s) AND `Order Date` IS NOT NULL AND `Order Date`!='0000-00-00 00:00:00'", $product_ids
-                );
+                $sql = sprintf("SELECT min(`Order Date`) AS date FROM `Order Transaction Fact` WHERE `Product ID` IN (%s) AND `Order Date` IS NOT NULL AND `Order Date`!='0000-00-00 00:00:00'", $product_ids);
 
 
                 //print "$sql\n";
                 if ($result = $db->query($sql)) {
                     if ($row = $result->fetch()) {
                         if ($row['date'] != '' and (strtotime($row['date']) < strtotime(
-                                    $category->get(
-                                        'Product Category Valid From'
-                                    )
+                                    $category->get('Product Category Valid From')
                                 ) or $category->get(
                                     'Product Category Valid From'
                                 ) == '')

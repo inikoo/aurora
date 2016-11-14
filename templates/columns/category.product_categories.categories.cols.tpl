@@ -42,7 +42,19 @@ label:"{t}Status{/t}",
 editable: false,
 cell: "html"
 },
+{
+name: "families",
+label:"{t}Families{/t}",
+editable: false,
+renderable: {if $data._object->get('Category Subject')=='Category'}true{else}false{/if},
+defautOrder:1,
+sortType: "toggle",
+{if $sort_key=='families'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
+cell: Backgrid.StringCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+
+},
 {
 name: "products",
 label:"{t}Products{/t}",

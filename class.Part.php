@@ -667,12 +667,12 @@ class Part extends Asset {
             case('Valid From Datetime'):
 
                 return strftime(
-                    "%a %e %b %Y %H:%M %Z", strtotime($this->data['Part Valid From'] + ' 0:00')
+                    "%a %e %b %Y %H:%M %Z", strtotime($this->data['Part Valid From'] . ' +0:00')
                 );
                 break;
             case('Valid To'):
                 return strftime(
-                    "%a %e %b %Y %H:%M %Z", strtotime($this->data['Part Valid To'] + ' 0:00')
+                    "%a %e %b %Y %H:%M %Z", strtotime($this->data['Part Valid To'] . ' +0:00')
                 );
                 break;
             default:

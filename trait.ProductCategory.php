@@ -113,10 +113,7 @@ trait ProductCategory {
 
 
                 $sql = sprintf(
-                    "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%s WHERE `Fork Key`=%d ",
-                    0,
-                    prepare_mysql('0'),
-                    $fork_key
+                    "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%s WHERE `Fork Key`=%d ", 0, prepare_mysql('0'), $fork_key
                 );
 
                 $this->db->exec($sql);
@@ -152,8 +149,7 @@ trait ProductCategory {
             }
 
             $sql = sprintf(
-                'DELETE FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`<%s ',
-                $timeseries->id, prepare_mysql($from)
+                'DELETE FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`<%s ', $timeseries->id, prepare_mysql($from)
             );
 
             $update_sql = $this->db->prepare($sql);
@@ -206,10 +202,7 @@ trait ProductCategory {
 
 
                 $sql = sprintf(
-                    "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%d WHERE `Fork Key`=%d ",
-                    0,
-                    $timeseries->id,
-                    $fork_key
+                    "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%d WHERE `Fork Key`=%d ", 0, $timeseries->id, $fork_key
                 );
 
                 $this->db->exec($sql);
@@ -226,10 +219,8 @@ trait ProductCategory {
         if ($fork_key) {
 
             $sql = sprintf(
-                "UPDATE `Fork Dimension` SET `Fork State`='In Process' ,`Fork Operations Total Operations`=%d,`Fork Start Date`=NOW(),`Fork Result`=%d  WHERE `Fork Key`=%d ",
-                count($dates),
-                $timeseries->id,
-                $fork_key
+                "UPDATE `Fork Dimension` SET `Fork State`='In Process' ,`Fork Operations Total Operations`=%d,`Fork Start Date`=NOW(),`Fork Result`=%d  WHERE `Fork Key`=%d ", count($dates),
+                $timeseries->id, $fork_key
             );
 
             $this->db->exec($sql);
@@ -243,9 +234,8 @@ trait ProductCategory {
         $index = 0;
 
         foreach ($dates as $date_frequency_period) {
-            $index ++;
-            list($invoices, $customers, $net, $dc_net)
-                = $this->get_product_timeseries_record_data(
+            $index++;
+            list($invoices, $customers, $net, $dc_net) = $this->get_product_timeseries_record_data(
                 $timeseries, $date_frequency_period
             );
 
@@ -255,8 +245,7 @@ trait ProductCategory {
             );
 
             if ($invoices != 0 or $customers != 0 or $net != 0) {
-                list($timeseries_record_key, $date)
-                    = $timeseries->create_record(
+                list($timeseries_record_key, $date) = $timeseries->create_record(
                     array('Timeseries Record Date' => $_date)
                 );
                 $sql = sprintf(
@@ -311,8 +300,7 @@ trait ProductCategory {
         if ($fork_key) {
 
             $sql = sprintf(
-                "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%d WHERE `Fork Key`=%d ", $index,
-                $timeseries->id, $fork_key
+                "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%d WHERE `Fork Key`=%d ", $index, $timeseries->id, $fork_key
             );
 
             $this->db->exec($sql);
@@ -433,13 +421,11 @@ trait ProductCategory {
         include_once 'utils/date_functions.php';
 
 
-        list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)
-            = calculate_interval_dates($this->db, $interval);
+        list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb) = calculate_interval_dates($this->db, $interval);
 
         if ($this_year) {
 
-            $sales_product_category_data
-                = $this->get_product_category_sales_data($from_date, $to_date);
+            $sales_product_category_data = $this->get_product_category_sales_data($from_date, $to_date);
 
 
             $data_to_update = array(
@@ -459,8 +445,7 @@ trait ProductCategory {
 
         if ($from_date_1yb and $last_year) {
 
-            $sales_product_category_data
-                = $this->get_product_category_sales_data(
+            $sales_product_category_data = $this->get_product_category_sales_data(
                 $from_date_1yb, $to_1yb
             );
 
@@ -482,34 +467,34 @@ trait ProductCategory {
 
         if (in_array(
             $db_interval, [
-            'Total',
-            'Year To Date',
-            'Quarter To Date',
-            'Week To Date',
-            'Month To Date',
-            'Today'
-        ]
+                            'Total',
+                            'Year To Date',
+                            'Quarter To Date',
+                            'Week To Date',
+                            'Month To Date',
+                            'Today'
+                        ]
         )) {
 
             $this->update(['Product Category Acc To Day Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
 
         } elseif (in_array(
             $db_interval, [
-            '1 Year',
-            '1 Month',
-            '1 Week',
-            '1 Quarter'
-        ]
+                            '1 Year',
+                            '1 Month',
+                            '1 Week',
+                            '1 Quarter'
+                        ]
         )) {
 
             $this->update(['Product Category Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
         } elseif (in_array(
             $db_interval, [
-            'Last Month',
-            'Last Week',
-            'Yesterday',
-            'Last Year'
-        ]
+                            'Last Month',
+                            'Last Week',
+                            'Yesterday',
+                            'Last Year'
+                        ]
         )) {
 
             $this->update(['Product Category Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
@@ -561,20 +546,15 @@ trait ProductCategory {
                 if ($row = $result->fetch()) {
 
 
-                    $sales_product_category_data['customers']
-                                                            = $row['customers'];
-                    $sales_product_category_data['invoices']
-                                                            = $row['invoices'];
-                    $sales_product_category_data['net']     = $row['net'];
-                    $sales_product_category_data['profit']  = $row['profit'];
-                    $sales_product_category_data['ordered'] = $row['ordered'];
-                    $sales_product_category_data['invoiced']
-                                                            = $row['invoiced'];
-                    $sales_product_category_data['delivered']
-                                                            = $row['delivered'];
-                    $sales_product_category_data['dc_net']  = $row['dc_net'];
-                    $sales_product_category_data['dc_profit']
-                                                            = $row['dc_profit'];
+                    $sales_product_category_data['customers'] = $row['customers'];
+                    $sales_product_category_data['invoices']  = $row['invoices'];
+                    $sales_product_category_data['net']       = $row['net'];
+                    $sales_product_category_data['profit']    = $row['profit'];
+                    $sales_product_category_data['ordered']   = $row['ordered'];
+                    $sales_product_category_data['invoiced']  = $row['invoiced'];
+                    $sales_product_category_data['delivered'] = $row['delivered'];
+                    $sales_product_category_data['dc_net']    = $row['dc_net'];
+                    $sales_product_category_data['dc_profit'] = $row['dc_profit'];
 
 
                 }
@@ -611,8 +591,7 @@ trait ProductCategory {
                     );
 
                 } else {
-                    $elements_numbers[$row['Product Category Status']]
-                        = $row['num'];
+                    $elements_numbers[$row['Product Category Status']] = $row['num'];
                 }
             }
         } else {
@@ -624,9 +603,37 @@ trait ProductCategory {
 
     }
 
-    function update_product_category_status() {
 
-        $elements_numbers = array(
+    function update_product_category_new_products() {
+
+        $new = 0;
+
+        $product_ids = $this->get_product_ids();
+
+        if ($product_ids != '') {
+
+            $sql = sprintf(
+                'SELECT count(*) AS num FROM `Product Dimension` WHERE `Product Id` IN (%s) AND `Product Valid From` >= CURDATE() - INTERVAL 14 DAY', $product_ids
+
+            );
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $new = $row['num'];
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+        }
+
+        $this->update(array('Store New Products' => $new), 'no_history');
+
+    }
+
+    function update_product_category_products_data() {
+
+        $elements_status_numbers = array(
             'In Process'    => 0,
             'Active'        => 0,
             'Suspended'     => 0,
@@ -634,50 +641,94 @@ trait ProductCategory {
             'Discontinued'  => 0
         );
 
-        $sql = sprintf(
-            "SELECT count(*) AS num ,`Product Status` AS status FROM  `Product Dimension` P LEFT JOIN `Category Bridge` B ON (P.`Product ID`=B.`Subject Key`)  WHERE B.`Category Key`=%d AND `Subject`='Product' GROUP BY  `Product Status`   ",
-            $this->id
+        $elements_active_web_status_numbers = array(
+            'For Sale'     => 0,
+            'Out of Stock' => 0,
+            'Offline'      => 0
 
         );
 
-        //print "$sql\n";
 
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $elements_numbers[$row['status']] = number($row['num']);
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
+        $category_status = 'Empty';
 
+        $product_ids = $this->get_product_ids();
 
-        if ($elements_numbers['Discontinued'] > 0 and $elements_numbers['Active'] == 0) {
-            $this->data['Product Category Status'] = 'Discontinued';
-        } elseif ($elements_numbers['Discontinuing'] > 0 and $elements_numbers['Active'] == 0) {
-            $this->data['Product Category Status'] = 'Discontinuing';
-        } elseif ($elements_numbers['Suspended'] > 0 and $elements_numbers['Active'] == 0) {
-            $this->data['Product Category Status'] = 'Suspended';
-        } elseif ($elements_numbers['In Process'] > 0 and $elements_numbers['Active'] == 0) {
-            $this->data['Product Category Status'] = 'In Process';
-        } else {
-            if ($elements_numbers['Active'] > 0) {
-                $this->data['Product Category Status'] = 'Active';
+        if ($product_ids != '') {
+
+            $sql = sprintf(
+                "SELECT count(*) AS num ,`Product Status` AS status FROM  `Product Dimension` P WHERE `Product ID` IN (%s)  GROUP BY  `Product Status`   ", $product_ids
+
+            );
+
+            //   print "$sql\n";
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $elements_status_numbers[$row['status']] = $row['num'];
+                }
             } else {
-                $this->data['Product Category Status'] = 'In Process';
-
+                print_r($error_info = $this->db->errorInfo());
+                exit;
             }
+
+            if ($elements_status_numbers['Discontinued'] > 0 and $elements_status_numbers['Active'] == 0) {
+                $category_status = 'Discontinued';
+            } elseif ($elements_status_numbers['Discontinuing'] > 0 and $elements_status_numbers['Active'] == 0) {
+                $category_status = 'Discontinuing';
+            } elseif ($elements_status_numbers['Suspended'] > 0 and $elements_status_numbers['Active'] == 0) {
+                $category_status = 'Suspended';
+            } elseif ($elements_status_numbers['In Process'] > 0 and $elements_status_numbers['Active'] == 0) {
+                $category_status = 'In Process';
+            } else {
+                if ($elements_status_numbers['Active'] > 0) {
+                    $category_status = 'Active';
+                } else {
+                    $category_status = 'In Process';
+
+                }
+            }
+
+            //'For Sale','Out of Stock','Discontinued','Offline'
+
+            $sql = sprintf(
+                "SELECT count(*) AS num ,`Product Web State` AS web_state FROM  `Product Dimension` P WHERE `Product ID` IN (%s) AND `Product Status` IN ('Active','Discontinuing') GROUP BY  `Product Web State`   ",
+                $product_ids
+
+            );
+
+            //   print "$sql\n";
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    if ($row['web_state'] == 'Discontinued') {
+                        $row['web_state'] = 'Offline';
+                    }
+                    $elements_active_web_status_numbers[$row['web_state']] += $row['num'];
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit;
+            }
+
         }
 
-        $sql = sprintf(
-            "UPDATE `Product Category Dimension` SET `Product Category Status`=%s,`Product Category In Process Products`=%d,`Product Category Active Products`=%d,`Product Category Suspended Products`=%d,`Product Category Discontinued Products`=%d  WHERE `Product Category Key`=%d",
-            prepare_mysql($this->data['Product Category Status']), $elements_numbers['In Process'], $elements_numbers['Active'], $elements_numbers['Suspended'], $elements_numbers['Discontinued'],
 
-            $this->id
+        $update_data = array(
+            'Product Category Status'                 => $category_status,
+            'Product Category In Process Products'    => $elements_status_numbers['In Process'],
+            'Product Category Active Products'        => $elements_status_numbers['Active'],
+            'Product Category Suspended Products'     => $elements_status_numbers['Suspended'],
+            'Product Category Discontinuing Products' => $elements_status_numbers['Discontinuing'],
+            'Product Category Discontinued Products'  => $elements_status_numbers['Discontinued'],
+
+            'Product Category Active Web For Sale'     => $elements_active_web_status_numbers['For Sale'],
+            'Product Category Active Web Out of Stock' => $elements_active_web_status_numbers['Out of Stock'],
+            'Product Category Active Web Offline'      => $elements_active_web_status_numbers['Offline']
+
+
         );
-        //print "$sql\n";
 
-        $this->db->exec($sql);
+        $this->update($update_data, 'no_history');
 
 
     }
@@ -709,6 +760,17 @@ trait ProductCategory {
             exit;
         }
 
+        $update_data = array(
+            'Product Category Number Surplus Parts' => $elements_numbers['Surplus'],
+            'Product Category Number Surplus Parts' => $elements_numbers['Surplus'],
+            'Product Category Number Surplus Parts' => $elements_numbers['Surplus'],
+            'Product Category Number Surplus Parts' => $elements_numbers['Surplus'],
+            'Product Category Number Surplus Parts' => $elements_numbers['Surplus'],
+            'Product Category Number Surplus Parts' => $elements_numbers['Surplus'],
+
+        );
+
+        $this->update($update_data, 'no_history');
 
         $sql = sprintf(
             "UPDATE `Product Category Dimension` SET `Product Category Number Surplus Parts`=%d ,`Product Category Number Optimal Parts`=%d ,`Product Category Number Low Parts`=%d ,`Product Category Number Critical Parts`=%d ,`Product Category Number Out Of Stock Parts`=%d ,`Product Category Number Error Parts`=%d  WHERE `Product Category Key`=%d",
@@ -806,12 +868,10 @@ trait ProductCategory {
             $dates_1yb = get_previous_quarters_dates($i + 4);
 
 
-            $sales_product_category_data
-                = $this->get_product_category_sales_data(
+            $sales_product_category_data     = $this->get_product_category_sales_data(
                 $dates['start'], $dates['end']
             );
-            $sales_product_category_data_1yb
-                = $this->get_product_category_sales_data(
+            $sales_product_category_data_1yb = $this->get_product_category_sales_data(
                 $dates_1yb['start'], $dates_1yb['end']
             );
 

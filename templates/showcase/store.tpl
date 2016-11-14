@@ -5,8 +5,8 @@
 </div>
 <div class="asset_container">
 
-    <div class="block sales_data">
-        <table>
+    <div class="block sales_data " >
+        <table style="width:500px">
             <tr class="header">
                 <td colspan="3">{$header_total_sales}</td>
             </tr>
@@ -16,7 +16,7 @@
                 <td>{$customers}</td>
             </tr>
         </table>
-        <table>
+        <table style="width:500px">
             <tr class="header">
                 <td>{$year_data.0.header}</td>
                 <td>{$year_data.1.header}</td>
@@ -119,24 +119,27 @@
             </tr>
         </table>
     </div>
-    <div class="block info">
+    <div class="block info" style="width:500px">
         <div id="overviews">
-            <table id="stock_table" border="0" class="overview">
+            <table id="stock_table" border="0" class="overview" >
                 <tbody class="info">
-                <tr class="main ">
-                    <td><i class="fa fa-cube" aria-hidden="true" title="{t}Products{/t}"></i> <span class=" highlight Store_State">{$store->get('State')} </span></td>
-                    <td class="aright "><span class=" {if $store->get('Part Category Status')!='NotInUse'}hide{/if}">{$store->get('Valid To')}</span>
-                    </td>
-                </tr>
 
-                <tr>
+
+                <tr class="main ">
                     <td colspan=2>
-                        <table style="width:100%;;margin-bottom:10px">
+                        <table style="width:100%;;margin-bottom:10px;margin-top:10px">
                             <tr style="border-top:1px solid #ccc;border-bottom:1px solid #ccc">
                                 <td style="border-left:1px solid #ccc;width:25%" class="New_Products align_center discreet" title="{t}New products{/t}"><i class="fa fa-child" aria-hidden="true" title="{t}New products (less than 2 weeks){/t}"></i> {$store->get('New Products')}</td>
-                                <td style="border-left:1px solid #ccc;width:25%" class="Active_Products align_center" title="{t}Active products{/t}">{$store->get('Active Products')}</td>
-                                <td style="border-left:1px solid #ccc;width:25%" class="Discontinuing_Products align_center discreet " title="{t}Suspended products{/t}">{$store->get('Suspended Products')}</td>
-                                <td style="border-left:1px solid #ccc;width:25%;border-right:1px solid #ccc;" class="Discontinuing_Products align_center very_discreet" title="{t}Discontinued products{/t}">{$store->get('Discontinued Products')}</td>
+                                <td style="border-left:1px solid #ccc;width:25%" class="Active_Products align_center" title="{t}Active products{/t}"><i class="fa fa-cube" aria-hidden="true"></i> {$store->get('Active Products')}</td>
+                                <td style="border-left:1px solid #ccc;width:25%" class="Discontinuing_Products align_center discreet " title="{t}Suspended products{/t}"><i class="fa fa-cube discreet warning" aria-hidden="true" ></i> {$store->get('Suspended Products')}</td>
+                                <td style="border-left:1px solid #ccc;width:25%;border-right:1px solid #ccc;" class="Discontinuing_Products align_center very_discreet" title="{t}Discontinued products{/t}"><i class="fa fa-cube very_discreet" aria-hidden="true""></i> {$store->get('Discontinued Products')}</td>
+                            </tr>
+                        </table>
+                        <table style="width:100%;;margin-bottom:10px" class="mesh">
+                            <tr >
+                                <td style="width:25%" class="Active_Web_For_Sale align_center discreet " title="{t}Active products online{/t}"><i class="fa fa-microphone padding_right_10" aria-hidden="true" "></i> {$store->get('Active Web For Sale')}</td>
+                                <td style="width:25%" class="Active_Web_Out_of_Stock align_center " title="{t}Active products out of stock{/t}"><i class="fa fa-ban error padding_right_10" aria-hidden="true" "></i> {$store->get('Active Web Out of Stock')} {if $store->get('Store Active Web For Sale')>0 and $store->get('Store Active Web Out of Stock')>0 }({$store->get('Percentage Active Web Out of Stock')}){/if}</td>
+                                <td style="width:25%" class="Active_Web_Offline align_center discreet" title="{t}Active products offline{/t}"><i class="fa fa-microphone-slash discreet padding_right_10" aria-hidden="true" "></i> {$store->get('Active Web Offline')} {if $store->get('Store Active Web For Sale')>0 and $store->get('Store Active Web Offline')>0 }({$store->get('Percentage Active Web Offline')}){/if}</td>
                             </tr>
                         </table>
                     </td>
