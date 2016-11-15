@@ -1210,6 +1210,13 @@ $modules = array(
                     'website.header.preview'  => 'website.header',
                     'website.header.versions' => 'website.header',
 
+
+                    'website.templates.categories' => 'website.templates',
+                    'website.templates' => 'website.templates',
+
+
+
+
                 ),
 
                 'tabs' => array(
@@ -1334,6 +1341,31 @@ $modules = array(
                         'icon'  => 'database'
                     ),
 
+
+
+                    'website.templates' => array(
+                        'label'   => _('Templates')
+                        ,
+                        'icon'    => 'code',
+                        'subtabs' => array(
+                            'website.templates.categories'  => array(
+                                'label' => _(
+                                    "Template categories"
+                                ),
+                                'icon'  => 'sitemap'
+                            ),
+                            'website.templates'  => array(
+                                'label' => _(
+                                    'Templates'
+                                ),
+                                'icon'  => 'code',
+
+                            )
+
+                        ),
+
+                    ),
+
                     'website.header' => array(
                         'label'   => _(
                             'Header'
@@ -1415,13 +1447,19 @@ $modules = array(
 
                     'page.analytics' => array(
                         'label' => _(
-                            'Anaytics'
+                            'Analytics'
                         ),
                         'icon'  => 'line-chart'
                     ),
                     'page.details'   => array(
                         'label' => _('Data'),
                         'icon'  => 'database'
+                    ),
+                    'page.versions'   => array(
+                        'label' => _(
+                            'Versions'
+                        ),
+                        'icon'  => 'code-fork'
                     ),
                     'page.preview'   => array(
                         'label' => _(
@@ -1435,6 +1473,32 @@ $modules = array(
                         ),
                         'icon'  => 'align-justify'
                     ),
+                )
+            ),
+
+            'page_version' => array(
+                'type' => 'object',
+                'tabs' => array(
+
+
+                    'page_version.analytics' => array(
+                        'label' => _(
+                            'Analytics'
+                        ),
+                        'icon'  => 'line-chart'
+                    ),
+                    'page_version.details'   => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database'
+                    ),
+
+                    'page_version.preview'   => array(
+                        'label' => _(
+                            'Preview'
+                        ),
+                        'icon'  => 'eye'
+                    ),
+
                 )
             ),
 

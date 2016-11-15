@@ -222,9 +222,7 @@ class Website extends DB_Table {
 
             )
         );
-        $page         = new Webpage(
-            $home_webnode->get('Website Node Webpage Key')
-        );
+        $page         = new Webpage($home_webnode->get('Website Node Webpage Key'));
         $page->update(
             array(
                 'Webpage Properties' => json_encode(
@@ -449,13 +447,12 @@ class Website extends DB_Table {
 
         $homepage = new Webpage('website_code', $this->id, 'p.Home');
 
-        $home_webnode = new WebsiteNode(
-            $homepage->get('Webpage Website Node Key')
-        );
+
+        $home_webnode = new WebsiteNode($homepage->get('Webpage Website Node Key'));
 
         $store = new Store($this->get('Website Store Key'));
 
-        $node = $home_webnode->create_subnode(
+        $catalogue = $home_webnode->create_subnode(
             array(
                 'Webpage Code'        => 'p.Cat',
                 'Webpage Name'        => _('Catalogue'),
@@ -465,11 +462,37 @@ class Website extends DB_Table {
                 'Website Node Icon'   => 'th',
                 'Webpage Class'       => 'Categories',
                 'Webpage Object'      => 'Category',
-                'Webpage Object Key'  => $store->get(
-                    'Store Department Category Key'
-                )
+                'Webpage Object Key'  => $store->get('Store Department Category Key')
             )
         );
+
+        $sql=sprintf('select `Category Label`,`Category Code`,`Category Key` from `Category Dimension` where `Category Root Key`=%d ',
+                     $store->get('Store Department Category Key')
+                     );
+       // print $sql;
+
+        if ($result=$this->db->query($sql)) {
+        		foreach ($result as $row) {
+                    print_r($row);
+                    $department=$catalogue->create_subnode(
+                        array(
+                            'Webpage Code'        => 'd.'.$row['Category Code'],
+                            'Webpage Name'        => $row['Category Label'],
+                            'Webpage Locked'      => 'Yes',
+                            'Website Node Locked' => 'Yes',
+                            'Website Node Type'   => 'Node',
+                            'Website Node Icon'   => 'th',
+                            'Webpage Class'       => 'Categories',
+                            'Webpage Object'      => 'Category',
+                            'Webpage Object Key'  => $row['Category Key']
+                        )
+                    );
+        		}
+        }else {
+        		print_r($error_info=$this->db->errorInfo());
+        		print "$sql\n";
+        		exit;
+        }
 
 
     }
@@ -558,6 +581,16 @@ class Website extends DB_Table {
 
     }
 
+    function setup_templates(){
+
+        // todo setup templates for each kind of website
+
+
+        include_once('conf/website_templates.php')
+
+
+
+    }
 
 }
 

@@ -10,13 +10,6 @@
 *}
 
 <div style="padding:20px;border-bottom:1px solid #ccc">
-
-    <span style="margin-right:20px">
-    <i class="fa fa-desktop padding_right_5 " aria-hidden="true"></i>
-    <i class="fa fa-tablet padding_right_5" aria-hidden="true"></i>
-    <i class="fa fa-mobile" aria-hidden="true"></i>
-</span>
-
     <i class="fa fa-toggle-on" aria-hidden="true" alt="{t}On{/t}"></i> {t}Logged in{/t}
 </div>
 

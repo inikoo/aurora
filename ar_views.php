@@ -136,6 +136,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
     $website   = '';
     $warehouse = '';
 
+   // print_r($state);
 
     switch ($state['parent']) {
 
@@ -182,21 +183,24 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
             break;
         case 'website':
-            $_parent                  = get_object(
-                'Website', $state['parent_key']
-            );
+            $_parent                  = get_object('Website', $state['parent_key']);
             $website                  = $_parent;
             $state['current_website'] = $_parent->id;
             $website                  = $_parent;
+
+            break;
+        case 'page':
+            $_parent                  = get_object('Webpage', $state['parent_key']);
+            $website                  = get_object('Website', $_parent->get('Webpage Website Key'));
+            $state['current_website'] = $website->id;
+            $website                  = $website;
 
             break;
         case 'node':
             $_parent                  = get_object(
                 'WebsiteNode', $state['parent_key']
             );
-            $website                  = get_object(
-                'Website', $_parent->get('Website Node Website Key')
-            );
+            $website                  = get_object('Website', $_parent->get('Website Node Website Key'));
             $state['current_website'] = $website->id;
 
 
@@ -672,6 +676,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
         case 'page':
             include_once 'showcase/webpage.show.php';
             $html = get_webpage_showcase($data, $smarty, $user, $db);
+            break;
+        case 'page_version':
+            include_once 'showcase/webpage_version.show.php';
+            $html = get_webpage_version_showcase($data, $smarty, $user, $db);
             break;
         case 'website':
         case 'dashboard':
@@ -1257,6 +1265,11 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     break;
                 case ('page'):
                     return get_page_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('page_version'):
+                    return get_page_version_navigation(
                         $data, $smarty, $user, $db, $account
                     );
                     break;
@@ -4977,17 +4990,46 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'reference' => 'website/'.$state['website']->id
                     );
                     $branch[] = array(
-                        'label'     => $state['_parent']->get(
+                        'label'     => $state['_object']->get('Code'),
+                        'icon'      => 'file',
+                        'reference' => ''
+                    );
+
+
+                    break;
+                case 'page_version':
+
+                    $branch[] = array(
+                        'label'     => $state['website']->get(
                             'Code'
                         ),
-                        'icon'      => 'file',
-                        'reference' => 'website/'.$state['website']->id.'/node/'.$state['_parent']->id
+                        'icon'      => 'globe',
+                        'reference' => 'website/'.$state['website']->id
                     );
                     $branch[] = array(
-                        'label'     => $state['_object']->get(
-                            'Code'
-                        ),
-                        'icon'      => 'code-fork',
+                        'label'     => $state['_parent']->get('Code'),
+                        'icon'      => 'file',
+                        'reference' => 'website/'.$state['website']->id.'/page/'.$state['_parent']->id
+                    );
+
+
+                    switch($state['_object']->get('Webpage Version Device')) {
+                    case 'Desktop':
+                        $device_icon='desktop';
+                        break;
+                        case 'Mobile':
+                            $device_icon='mobile';
+                            break;
+                        case 'Tablet':
+                            $device_icon='tablet';
+                            break;
+                    default:
+                        $device_icon='';
+                    }
+
+                    $branch[] = array(
+                        'label'     => ' <i class="fa fa-code-fork" aria-hidden="true"></i>'.$state['_object']->get('Code'),
+                        'icon'      => $device_icon,
                         'reference' => ''
                     );
 

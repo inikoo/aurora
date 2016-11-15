@@ -863,6 +863,49 @@ function parse_request($_data, $db, $modules, $account = '', $user = '') {
                 $section = 'websites';
 
                 break;
+            case 'page':
+                if (!$user->can_view('sites')) {
+                    $module  = 'utils';
+                    $section = 'forbidden';
+                    break;
+                }
+
+                $module  = 'websites';
+                $section = 'page';
+                $object  = 'page';
+                $parent  = 'website';
+                $key     = $view_path[0];
+
+
+                if (isset($view_path[0])) {
+                    if (is_numeric($view_path[1])) {
+                        $key = $view_path[0];
+                    }
+
+                    if (isset($view_path[1])) {
+                        if($view_path[1]=='version'){
+
+                            $section = 'page_version';
+                            $object  = 'page_version';
+                            $parent  = 'page';
+                            $parent_key     = $key;
+                            if (isset($view_path[2])) {
+                                if(is_numeric($view_path[2])){
+                                    $key=$view_path[2];
+
+                                }
+
+                            }
+
+
+                        }
+
+                    }
+
+                }
+
+
+                break;
             case 'website':
                 if (!$user->can_view('sites')) {
                     $module  = 'utils';

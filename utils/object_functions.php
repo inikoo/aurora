@@ -74,6 +74,14 @@ function get_object($object_name, $key, $load_other_data = false) {
             $object = new Webpage($key);
 
             break;
+        case 'page_version':
+        case 'webpage_version':
+            case 'webpage version':
+            include_once 'class.WebpageVersion.php';
+
+            $object = new WebpageVersion($key);
+
+            break;
         case 'warehouse':
             include_once 'class.Warehouse.php';
             $object = new Warehouse($key);
