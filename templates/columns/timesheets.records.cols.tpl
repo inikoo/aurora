@@ -86,7 +86,7 @@ label: "{t}Date{/t}",
 renderable: {if $data['object']=='timesheet'}false{else}true{/if},
 
 editable: false,
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='date'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright"} ),
@@ -101,7 +101,7 @@ label: "{t}Time{/t}",
 renderable: {if $data['object']!='timesheet'}false{else}true{/if},
 
 editable: false,
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='time'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright width_100 padding_right_20"} ),

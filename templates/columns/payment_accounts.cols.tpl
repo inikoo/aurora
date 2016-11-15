@@ -51,7 +51,7 @@ cell: Backgrid.StringCell.extend({  }),
 }, {
 name: "transactions",
 label: "{t}Transactions{/t}",
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='transactions'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
@@ -60,7 +60,7 @@ headerCell: integerHeaderCell
 }, {
 name: "payments",
 label: "{t}Payments{/t}",
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='payments'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
@@ -69,7 +69,7 @@ headerCell: integerHeaderCell
 }, {
 name: "refunds",
 label: "{t}Refunds{/t}",
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='refunds'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
@@ -78,7 +78,7 @@ headerCell: integerHeaderCell
 }, {
 name: "balance",
 label: "{t}Balance{/t}",
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='balance'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}

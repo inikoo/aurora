@@ -24,7 +24,7 @@ className: "link",
 name: "name",
 label:"{t}Name{/t}",
 editable: false,
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='title'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: "string"
@@ -32,7 +32,7 @@ cell: "string"
 name: "nodes",
 label:"{t}Subnodes{/t}",
 editable: false,
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='users'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright"} ),

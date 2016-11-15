@@ -38,7 +38,7 @@ cell: "string"
 name: "subcategories",
 label:"{t}Subcategories{/t}",
 editable: false,
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='subcategories'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
@@ -49,7 +49,7 @@ headerCell: integerHeaderCell
 name: "subjects",
 label:"{t}Subjects{/t}",
 editable: false,
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='subjects'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
@@ -60,7 +60,7 @@ headerCell: integerHeaderCell
 name: "percentage_assigned",
 label:"{t}Assigned{/t}",
 editable: false,
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='assigned'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 

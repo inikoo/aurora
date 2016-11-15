@@ -50,7 +50,7 @@ return this;
 name: "name",
 label:"{t}Name{/t}",
 editable: false,
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='title'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: "string"
@@ -58,7 +58,7 @@ cell: "string"
 name: "display",
 label:"{t}Display{/t}",
 editable: false,
-defautOrder:1,
+defaultOrder:1,
 sortType: "state",
 {if $sort_key=='title'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: "html"
@@ -66,7 +66,7 @@ cell: "html"
 name: "url",
 label:"URL",
 editable: false,
-defautOrder:1,
+defaultOrder:1,
 renderable: false,
 sortType: "toggle",
 {if $sort_key=='url'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
@@ -75,7 +75,7 @@ cell: "uri"
 name: "users",
 label:"{t}Users{/t}",
 editable: false,
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='users'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright"} ),
@@ -85,7 +85,7 @@ headerCell: integerHeaderCell
 name: "requests",
 label:"{t}Views{/t}",
 editable: false,
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='requests'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright"} ),

@@ -44,7 +44,7 @@ className:"link"
 {
 name: "from",
 label: "{t}From{/t}",
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='from'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
@@ -57,7 +57,7 @@ headerCell: integerHeaderCell
 {
 name: "to",
 label: "{t}To{/t}",
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='to'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
@@ -70,7 +70,7 @@ headerCell: integerHeaderCell
 {
 name: "deals",
 label: "{t}Offers{/t}",
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='orders'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
@@ -83,7 +83,7 @@ headerCell: integerHeaderCell
 {
 name: "orders",
 label: "{t}Orders{/t}",
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='orders'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
@@ -96,7 +96,7 @@ headerCell: integerHeaderCell
 {
 name: "customers",
 label: "{t}Customers{/t}",
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='customers'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}

@@ -25,7 +25,7 @@ className: "link width_250"
 }, {
 name: "quantity",
 label: "{t}Cartons{/t}",
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}

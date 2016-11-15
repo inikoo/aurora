@@ -30,7 +30,7 @@ className: "link"
 }, {
 name: "quantity",
 label: "{t}Ordered{/t}",
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
@@ -47,7 +47,7 @@ cell: "html"
 }, {
 name: "picked",
 label: "{t}Picked{/t}",
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='picked'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
@@ -56,7 +56,7 @@ headerCell: integerHeaderCell
 }, {
 name: "packed",
 label: "{t}Packed{/t}",
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='packed'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}

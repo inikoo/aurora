@@ -68,7 +68,7 @@ cell: "string"
 }, {
 name: "max_weight",
 label: "{t}Max weight{/t}",
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='max_weight'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
@@ -82,7 +82,7 @@ name: "max_volume",
 label: "{t}Max volume{/t}",
 editable: false,
 
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='max_volume'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright"} ),
@@ -92,7 +92,7 @@ headerCell: integerHeaderCell
 name: "parts",
 label: "{t}Parts{/t}",
 editable: false,
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='parts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright"} ),

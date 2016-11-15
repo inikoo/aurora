@@ -79,7 +79,7 @@ name: "subtotals",
 label: "{t}Subtotals{/t}",
 renderable: {if $data['_object']->get('State Index')>=40}false{else}true{/if},
 
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='subtotals'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
@@ -90,7 +90,7 @@ cell: Backgrid.HtmlCell.extend({ className: ""} ),
 name: "quantity",
 label: "{t}Cartons{/t}",
 renderable: {if $data['_object']->get('Supplier Delivery State')=='In Process'}true{else}false{/if},
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
@@ -100,7 +100,7 @@ headerCell: integerHeaderCell
 name: "qty",
 label: "{t}Cartons{/t}",
 renderable: {if $data['_object']->get('Supplier Delivery State')!='In Process' and  $data['_object']->get('State Index')<40 }true{else}false{/if},
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='ordered'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
@@ -110,7 +110,7 @@ headerCell: integerHeaderCell
 name: "delivery_quantity",
 label: "{t}Delivery{/t}",
 renderable: false,
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
@@ -120,7 +120,7 @@ headerCell: integerHeaderCell
 name: "c_sko_u",
 label: "{t}C/SKO/U{/t}",
 renderable: {if $data['_object']->get('State Index')>=40}true{else}false{/if},
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
@@ -130,7 +130,7 @@ cell: Backgrid.HtmlCell.extend( ),
 name: "sko_edit_checked_quantity",
 label: "{t}Checked SKO{/t}",
 renderable: {if $data['_object']->get('State Index')>=40 and $data['_object']->get('State Index')<100 }true{else}false{/if},
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
@@ -140,7 +140,7 @@ headerCell: integerHeaderCell
 name: "sko_checked_quantity",
 label: "{t}Checked SKO{/t}",
 renderable: {if $data['_object']->get('State Index')==100}true{else}false{/if},
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}

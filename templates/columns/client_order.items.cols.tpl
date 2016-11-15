@@ -92,7 +92,7 @@ cell: "html"
 }, {
 name: "subtotals",
 label: "{t}Subtotals{/t}",
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='subtotals'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
@@ -102,7 +102,7 @@ cell: Backgrid.HtmlCell.extend({ className: ""} ),
 name: "quantity",
 label: "{t}E Cartons{/t}",
 renderable: {if $data['_object']->get('Purchase Order State')!='InProcess'}true{else}false{/if},
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
@@ -112,7 +112,7 @@ headerCell: integerHeaderCell
 name: "ordered",
 label: "{t}Cartons{/t}",
 renderable: {if $data['_object']->get('Purchase Order State')=='InProcess'}true{else}false{/if},
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='ordered'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
@@ -122,7 +122,7 @@ headerCell: integerHeaderCell
 name: "delivery_quantity",
 label: "{t}Delivery{/t}",
 renderable: false,
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}

@@ -41,7 +41,7 @@ return this;
 name: "name",
 label:"{t}Store Name{/t}",
 editable: false,
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='name'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({  }),
@@ -49,7 +49,7 @@ cell: Backgrid.StringCell.extend({  }),
 {
 name: "campaigns",
 label: "{t}Campaigns{/t}",
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='campaigns'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
@@ -72,7 +72,7 @@ headerCell: integerHeaderCell
 {
 name: "deals",
 label: "{t}Offers{/t}",
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='deals'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
