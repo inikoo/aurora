@@ -40,7 +40,7 @@ events: {
 , {
 name: "locations",
 label: "{t}Locations{/t}",
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='locations'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
@@ -53,7 +53,7 @@ headerCell: integerHeaderCell
 , {
 name: "parts",
 label: "{t}Parts{/t}",
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='parts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}

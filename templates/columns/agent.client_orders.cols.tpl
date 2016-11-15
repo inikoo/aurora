@@ -27,7 +27,7 @@ className: "link",
 name: "date",
 label: "{t}Date{/t}",
 editable: false,
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='date'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright"} ),
@@ -42,7 +42,7 @@ cell: "html"
 name: "total_amount",
 label: "{t}Total{/t}",
 editable: false,
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='total_amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright"} ),

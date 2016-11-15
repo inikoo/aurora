@@ -28,7 +28,7 @@ className: "width_20"
 name: "family",
 label:"{t}Family{/t}",
 editable: false,
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='family'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({  }),
@@ -37,7 +37,7 @@ cell: Backgrid.HtmlCell.extend({  }),
 name: "number_products",
 label:"{t}Products{/t}",
 editable: false,
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='number_products'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),

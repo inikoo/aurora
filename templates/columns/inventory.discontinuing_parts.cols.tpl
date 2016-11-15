@@ -61,7 +61,7 @@ name: "stock",
 label: "{t}Stock{/t}",
 editable: false,
 
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='stock'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
@@ -73,7 +73,7 @@ name: "dispatched",
 label: "{t}Dispatched{/t}",
 editable: false,
 
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='sold'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
@@ -85,7 +85,7 @@ name: "dispatched_1y",
 label: "{t}1YB{/t}",
 editable: false,
 
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='sold'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
@@ -97,7 +97,7 @@ name: "dispatched_year0",
 label: new Date().getFullYear(),
 editable: false,
 
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='dispatched_year0'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
@@ -109,7 +109,7 @@ name: "dispatched_year1",
 label: new Date().getFullYear()-1,
 editable: false,
 
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='dispatched_year1'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
@@ -121,7 +121,7 @@ name: "dispatched_year2",
 label: new Date().getFullYear()-2,
 editable: false,
 
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='dispatched_year2'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
@@ -133,7 +133,7 @@ name: "dispatched_year3",
 label: new Date().getFullYear()-3,
 editable: false,
 
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='dispatched_year3'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
@@ -145,7 +145,7 @@ name: "revenue",
 label: "{t}Revenue{/t}",
 editable: false,
 
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='revenue'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
@@ -157,7 +157,7 @@ name: "revenue_1y",
 label: "{t}1YB{/t}",
 editable: false,
 
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='revenue_1y'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
@@ -169,7 +169,7 @@ name: "revenue_year0",
 label: new Date().getFullYear(),
 editable: false,
 
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='revenue_year0'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
@@ -181,7 +181,7 @@ name: "revenue_year1",
 label: new Date().getFullYear()-1,
 editable: false,
 
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='revenue_year1'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
@@ -193,7 +193,7 @@ name: "revenue_year2",
 label: new Date().getFullYear()-2,
 editable: false,
 
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='revenue_year2'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
@@ -205,7 +205,7 @@ name: "revenue_year3",
 label: new Date().getFullYear()-3,
 editable: false,
 
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='revenue_year3'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
@@ -217,7 +217,7 @@ name: "lost",
 label: "{t}Lost{/t}",
 editable: false,
 
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='lost'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
@@ -229,7 +229,7 @@ name: "bought",
 label: "{t}Bought{/t}",
 editable: false,
 
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='bought'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
@@ -242,7 +242,7 @@ name: "dispatched_per_week",
 label: "{t}Dispatched/w{/t}",
 editable: false,
 
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='stock'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
@@ -254,7 +254,7 @@ name: "weeks_available",
 label: "{t}Weeks available{/t}",
 editable: false,
 
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='stock'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),

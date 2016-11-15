@@ -161,7 +161,7 @@ name: "user_number_logins",
 label: "{t}Number logins{/t}",
 editable: false,
 sortType: "toggle",
-defautOrder:1,
+defaultOrder:1,
 
 {if $sort_key=='user_last_login'}direction: '{if $sort_order==1}ascending{else}descending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright"} ),
@@ -171,7 +171,7 @@ name: "user_last_login",
 label: "{t}Last login{/t}",
 editable: false,
 sortType: "toggle",
-defautOrder:1,
+defaultOrder:1,
 
 cell: Backgrid.StringCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell

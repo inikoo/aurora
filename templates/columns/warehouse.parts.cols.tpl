@@ -66,7 +66,7 @@ name: "quantity",
 label: "{t}Quantity{/t}",
 editable: false,
 
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='stock'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),

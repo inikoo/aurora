@@ -74,7 +74,7 @@ name: "stock",
 label: "{t}Stock{/t}",
 editable: false,
 
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='stock'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
@@ -86,7 +86,7 @@ name: "sold",
 label: "{t}Sold{/t}",
 editable: false,
 
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='sold'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
@@ -98,7 +98,7 @@ name: "sold_1y",
 label: "",
 editable: false,
 
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='sold'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
@@ -110,7 +110,7 @@ name: "revenue",
 label: "{t}Revenue{/t}",
 editable: false,
 
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='money_in'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
@@ -122,7 +122,7 @@ name: "revenue_1y",
 label: "",
 editable: false,
 
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='revenue_1y'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
@@ -134,7 +134,7 @@ name: "lost",
 label: "{t}Lost{/t}",
 editable: false,
 
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='lost'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
@@ -146,7 +146,7 @@ name: "bought",
 label: "{t}Bought{/t}",
 editable: false,
 
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='bought'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),

@@ -40,7 +40,7 @@ cell: Backgrid.StringCell.extend({  }),
 },  {
 name: "amount",
 label: "{t}Amount{/t}",
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='transactions'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
@@ -49,7 +49,7 @@ headerCell: integerHeaderCell
 },  {
 name: "date",
 label: "{t}Date{/t}",
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='date'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}

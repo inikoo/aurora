@@ -31,7 +31,7 @@ cell: "string",
 name: "creation_date",
 label: "{t}Created{/t}",
 editable: false,
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='creation_date'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
@@ -42,7 +42,7 @@ headerCell: integerHeaderCell
 name: "items",
 label: "{t}Customers{/t}",
 editable: false,
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='items'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright"} ),

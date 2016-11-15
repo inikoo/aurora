@@ -66,7 +66,7 @@ cell: "string"
 name: "contact_since",
 label: "{t}Since{/t}",
 editable: false,
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='contact_since'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
@@ -76,7 +76,7 @@ headerCell: integerHeaderCell
 }, {
 name: "last_invoice",
 label: "{t}Last invoice{/t}",
-defautOrder:1,
+defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='last_invoice'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
@@ -90,7 +90,7 @@ name: "invoices",
 label: "{t}Invoices{/t}",
 editable: false,
 
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='invoices'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright"} ),
@@ -100,7 +100,7 @@ headerCell: integerHeaderCell
 name: "logins",
 label: "{t}Logins{/t}",
 editable: false,
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='logins'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright"} ),
@@ -109,7 +109,7 @@ headerCell: integerHeaderCell
 name: "failed_logins",
 label: "{t}Fail Logins{/t}",
 editable: false,
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='logins'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright"} ),
@@ -118,7 +118,7 @@ headerCell: integerHeaderCell
 name: "requests",
 label: "{t}Pageviews{/t}",
 editable: false,
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='logins'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright"} ),
@@ -177,7 +177,7 @@ events: {
 name: "total_payments",
 label: "{t}Payments{/t}",
 editable: false,
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='account_balance'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright"} ),
@@ -188,7 +188,7 @@ headerCell: integerHeaderCell
 name: "account_balance",
 label: "{t}Account Balance{/t}",
 editable: false,
-defautOrder:1,
+defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='account_balance'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright"} ),

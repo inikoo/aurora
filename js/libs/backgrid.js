@@ -10,7 +10,7 @@
  Line commented (~2090):
  //this.listenTo(collection.fullCollection || collection, "sort", this.removeCellDirection);
  Add (~2538):
- if(collection.state.sortKey!=column.get("name")){order=(column.get("defautOrder")!= undefined ? column.get("defautOrder"):-1)}
+ if(collection.state.sortKey!=column.get("name")){order=(column.get("defaultOrder")!= undefined ? column.get("defaultOrder"):-1)}
 
  */
 
@@ -2552,7 +2552,7 @@
                 collection instanceof Backbone.PageableCollection) {
 
                 if (collection.state.sortKey != column.get("name")) {
-                    order = (column.get("defautOrder") != undefined ? column.get("defautOrder") : -1)
+                    order = (column.get("defaultOrder") != undefined ? column.get("defaultOrder") : -1)
                 }
 
                 collection.setSorting(order && column.get("name"), order,
