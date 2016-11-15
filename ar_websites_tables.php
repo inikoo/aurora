@@ -47,6 +47,9 @@ switch ($tipo) {
     case 'nodes':
         nodes(get_table_parameters(), $db, $user);
         break;
+    case 'versions':
+        versions(get_table_parameters(), $db, $user);
+        break;
     case 'webpages':
         webpages(get_table_parameters(), $db, $user);
         break;
@@ -83,8 +86,7 @@ function users($_data, $db, $user) {
     $rtext_label = 'user';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
     //print $sql;
@@ -124,8 +126,7 @@ function queries($_data, $db, $user) {
     $rtext_label = 'query';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
 
@@ -165,8 +166,7 @@ function search_history($_data, $db, $user) {
     $rtext_label = 'search';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
     foreach ($db->query($sql) as $data) {
@@ -207,8 +207,7 @@ function websites($_data, $db, $user) {
     $rtext_label = 'website';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
 
@@ -284,8 +283,7 @@ function pages($_data, $db, $user) {
     $rtext_label = 'page';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
     // print $sql;
@@ -372,8 +370,7 @@ function pageviews($_data, $db, $user) {
     $rtext_label = 'pageview';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
     // print $sql;
@@ -481,8 +478,7 @@ function root_nodes($_data, $db, $user) {
     $rtext_label = 'section';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
     foreach ($db->query($sql) as $data) {
@@ -516,8 +512,7 @@ function nodes($_data, $db, $user) {
     $rtext_label = 'section';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
     foreach ($db->query($sql) as $data) {
@@ -551,8 +546,7 @@ function webpages($_data, $db, $user) {
     $rtext_label = 'webpage';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
     foreach ($db->query($sql) as $data) {
@@ -587,8 +581,7 @@ function blocks($_data, $db, $user) {
     $rtext_label = 'webpage block';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
     foreach ($db->query($sql) as $data) {
@@ -616,5 +609,59 @@ function blocks($_data, $db, $user) {
     echo json_encode($response);
 }
 
+function versions($_data, $db, $user) {
+
+    $rtext_label = 'version';
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+    foreach ($db->query($sql) as $data) {
+
+        switch ($data['Webpage Version Device']) {
+            case 'Desktop':
+                $device = _('Desktop');
+                $device_code = 'desk';
+                break;
+            case 'Tablet':
+                $device = _('Tablet');
+                $device_code = 'tab';
+                break;
+            case 'Mobile':
+                $device = _('Mobile');
+                $device_code = 'mob';
+
+                break;
+            default:
+                $device = $data['device'];
+                $device_code =  $data['device'];
+               break;
+        }
+
+        $adata[] = array(
+            'id'     => (integer)$data['Webpage Version Key'],
+            'code'   => sprintf('<span class="link" onclick="change_view(\'page/%d/version/%d\')">%s</span>',$data['Webpage Key'],$data['Webpage Version Key'],$data['Webpage Code'].'.'.$device_code.'.'.$data['Webpage Version Code']),
+            'device' => $device,
+            'probability' => $data['Webpage Version Display Probability'],
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
 
 ?>

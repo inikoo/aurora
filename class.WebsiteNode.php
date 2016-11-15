@@ -187,6 +187,8 @@ class WebsiteNode extends DB_Table {
             "INSERT INTO `Website Node Dimension` %s %s", $keys, $values
         );
 
+
+        
         if ($this->db->exec($sql)) {
             $this->id  = $this->db->lastInsertId();
             $this->msg = _("Website node added");
@@ -194,7 +196,12 @@ class WebsiteNode extends DB_Table {
             $this->new = true;
 
 
+           // print_r($raw_data);
+
             $webpage = $this->create_webpage($raw_data);
+
+           // print "=============";
+
             if (!$this->error) {
 
 
@@ -300,18 +307,18 @@ class WebsiteNode extends DB_Table {
 
             if ($category->get('Category Branch Type') == 'Head') {
                 $sql = sprintf(
-                    "SELECT C.`Category Key`,`Category Branch Type`,`Category Code`,`Category Label`,`Category Subject` FROM `Category Bridge` B LEFT JOIN  `Category Dimension` C ON (`Subject Key`=C.`Category Key`) LEFT JOIN `Product Category Dimension` PC ON (PC.`Product Category Key`=C.`Category Key`)   WHERE  B.`Category Key`=%d AND `Product Category Public`='Yes'",
+                    "SELECT `Category Scope`,C.`Category Key`,`Category Branch Type`,`Category Code`,`Category Label`,`Category Subject` FROM `Category Bridge` B LEFT JOIN  `Category Dimension` C ON (`Subject Key`=C.`Category Key`) LEFT JOIN `Product Category Dimension` PC ON (PC.`Product Category Key`=C.`Category Key`)   WHERE  B.`Category Key`=%d AND `Product Category Public`='Yes'",
                     $this->webpage->get('Webpage Object Key')
                 );
 
             } else {
                 $sql = sprintf(
-                    "SELECT `Category Key`,`Category Branch Type`,`Category Code`,`Category Label`,`Category Subject` FROM   `Category Dimension` C LEFT JOIN `Product Category Dimension` PC ON (PC.`Product Category Key`=C.`Category Key`)  WHERE  `Category Parent Key`=%d AND `Product Category Public`='Yes'  ",
+                    "SELECT `Category Scope`,`Category Key`,`Category Branch Type`,`Category Code`,`Category Label`,`Category Subject` FROM   `Category Dimension` C LEFT JOIN `Product Category Dimension` PC ON (PC.`Product Category Key`=C.`Category Key`)  WHERE  `Category Parent Key`=%d AND `Product Category Public`='Yes'  ",
                     $this->webpage->get('Webpage Object Key')
                 );
 
             }
-            //print "$sql\n";
+            //print "++++ $sql\n";
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
@@ -324,31 +331,24 @@ class WebsiteNode extends DB_Table {
                     }
 
 
-                    $subnode = $this->create_subnode(
-                        array(
-                            'Webpage Code'  => ($branch_type == 'Head' ? 'f' : 'd').'.'.$row['Category Code'],
-                            'Webpage Name'  => $row['Category Label'],
-                            'Webpage Class' => ($branch_type == 'Head' ? 'Products' : 'Categories'),
+                    $_data= array(
+                        'Webpage Code'  => ($branch_type == 'Head' ? 'f' : 'd').'.'.$row['Category Code'],
+                        'Webpage Name'  => $row['Category Label'],
+                        'Webpage Class' => ($branch_type == 'Head' ? 'Products' : 'Categories'),
 
-                            'Website Node Type'  => 'Branch',
-                            'Website Node Icon'  => ($branch_type == 'Head' ? 'pagelines' : 'tree'),
-                            'Webpage Object'     => 'Category',
-                            'Webpage Object Key' => $row['Category Key'],
-                        )
+                        'Website Node Type'  => 'Branch',
+                        'Website Node Icon'  => ($branch_type == 'Head' ? 'pagelines' : 'tree'),
+                        'Webpage Object'     => 'Category',
+                        'Webpage Object Key' => $row['Category Key'],
                     );
+                        print_r($_data);
 
-                    print_r(
-                        array(
-                            'Webpage Code'        => ($branch_type == 'Head' ? 'f' : 'd').'.'.$row['Category Code'],
-                            'Webpage Name'        => $row['Category Label'],
-                            'Website Node Locked' => 'No',
-                            'Website Node Type'   => 'Branch',
-                            'Website Node Icon'   => ($branch_type == 'Head' ? 'pagelines' : 'tree'),
-                            'Webpage Class'       => ($branch_type == 'Head' ? 'Products' : 'Categories'),
-                            'Webpage Object'      => 'Category',
-                            'Webpage Object Key'  => $row['Category Key'],
-                        )
-                    );
+                    $subnode = $this->create_subnode($_data);
+
+
+
+                 //   exit;
+
 
                 }
 
@@ -367,7 +367,7 @@ class WebsiteNode extends DB_Table {
                 $this->webpage->get('Webpage Object Key')
             );
 
-            print "$sql\n";
+           // print "$sql\n";
 
 
             if ($result = $this->db->query($sql)) {
@@ -375,19 +375,21 @@ class WebsiteNode extends DB_Table {
 
                     $product = new Product($row['Subject Key']);
 
-                    $subnode = $this->create_subnode(
-                        array(
-                            'Webpage Code'        => 'a.'.$row['Product Code'],
-                            'Webpage Name'        => $row['Product Name'],
-                            'Webpage Status'      => ($row['Product Status'] == 'Active' ? 'Online' : 'Offline'),
-                            'Website Node Locked' => 'No',
-                            'Website Node Type'   => 'Head',
-                            'Website Node Icon'   => 'leaf',
-                            'Webpage Class'       => 'Product',
-                            'Webpage Object'      => 'Product',
-                            'Webpage Object Key'  => $row['Subject Key'],
-                        )
+
+                    $_data=array(
+                        'Webpage Code'        => 'a.'.$row['Product Code'],
+                        'Webpage Name'        => $row['Product Name'],
+                        'Webpage Status'      => ($row['Product Status'] == 'Active' ? 'Online' : 'Offline'),
+                        'Website Node Locked' => 'No',
+                        'Website Node Type'   => 'Head',
+                        'Website Node Icon'   => 'leaf',
+                        'Webpage Class'       => 'Product',
+                        'Webpage Object'      => 'Product',
+                        'Webpage Object Key'  => $row['Subject Key'],
                     );
+
+                    print_r($_data);
+                    $subnode = $this->create_subnode($_data);
 
 
                 }
@@ -418,7 +420,9 @@ class WebsiteNode extends DB_Table {
         $data['Website Node Valid From'] = gmdate('Y-m-d H:i:s');
 
 
+
         $website_node = new WebsiteNode('find', $data, 'create');
+        print_r($website_node);
 
         if ($website_node->id) {
             $this->new_object_msg = $website_node->msg;

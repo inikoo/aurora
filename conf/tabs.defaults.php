@@ -693,6 +693,15 @@ $tab_defaults = array(
         'f_field'     => 'handle',
 
     ),
+    'page.versions'                        => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+
+    ),
     'website.user.login_history'        => array(
         'view'        => 'overview',
         'sort_key'    => 'id',

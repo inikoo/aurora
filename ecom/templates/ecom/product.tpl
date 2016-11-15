@@ -59,7 +59,8 @@
                     </div>
                     <script type="text/javascript">
                         $('#image-additional .item:first').addClass('active');
-                        $('#image-additional').carousel({interval: false})
+                        $('#image-additional').carousel({
+                            interval: false})
                     </script>
                 </div>
                 <div class="col-md-5 col-lg-5 col-sm-6 col-xs-12">

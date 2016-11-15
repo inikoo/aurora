@@ -206,7 +206,7 @@ class Webpage extends DB_Table {
             "SELECT `Webpage Key` FROM `Webpage Dimension` WHERE `Webpage Website Key`=%d AND  `Webpage Code`=%s", $data['Webpage Website Key'], prepare_mysql($data['Webpage Code'])
         );
 
-        print "$sql\n";
+       // print "$sql\n";
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
@@ -257,7 +257,7 @@ class Webpage extends DB_Table {
         $sql    = sprintf(
             "INSERT INTO `Webpage Dimension` %s %s", $keys, $values
         );
-
+//print "=======  $sql\"";
         if ($this->db->exec($sql)) {
             $this->id  = $this->db->lastInsertId();
             $this->msg = _("Webpage created");
@@ -272,7 +272,7 @@ class Webpage extends DB_Table {
                 case 'Product':
 
 
-                    exit;
+
                     break;
                 default:
 
