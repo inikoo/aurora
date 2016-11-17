@@ -10,20 +10,19 @@
  Version 2.0
 */
 
-
-$where  = sprintf(
-    ' where POTF.`Supplier Delivery Key`=%d', $parameters['parent_key']
+//exit;
+$where  = sprintf(' where POTF.`Supplier Delivery Key`=%d', $parameters['parent_key']
 );
 $wheref = '';
 if ($parameters['f_field'] == 'code' and $f_value != '') {
-    $wheref .= " and OTF.`Product Code` like '".addslashes($f_value)."%'";
+    $wheref .= " and `Part Reference` like '".addslashes($f_value)."%'";
 }
 
 $_order = $order;
 $_dir   = $order_direction;
 
-if ($order == 'code') {
-    $order = 'OTF.`Product Code`';
+if ($order == 'reference') {
+    $order = '`Part Reference`';
 } elseif ($order == 'created') {
     $order = '`Order Date`';
 } elseif ($order == 'last_updated') {
