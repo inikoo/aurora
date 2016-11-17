@@ -38,3 +38,9 @@ function copy_qty(element) {
 
     delivery_qty_changed(input)
 }
+
+function  show_check_dialog(element){
+$(element).addClass('hide').next().removeClass('hide')
+
+
+}

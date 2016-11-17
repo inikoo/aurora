@@ -85,7 +85,8 @@ switch ($tipo) {
         break;
     case 'surplus_parts':
         parts_by_stock_status(
-            'Surplus', get_table_parameters(), $db, $user, $account);
+            'Surplus', get_table_parameters(), $db, $user, $account
+        );
         break;
     case 'todo_parts':
         parts_by_stock_status(
@@ -147,8 +148,7 @@ function suppliers($_data, $db, $user, $account) {
     $rtext_label = 'supplier';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $table_data = array();
 
 
@@ -258,8 +258,10 @@ function suppliers($_data, $db, $user, $account) {
                 'active_supplier_parts' => number(
                     $data['Supplier Number Active Parts']
                 ),
-                'surplus'               => sprintf('<span class="%s" title="%s">%s</span>',
-                    (ratio($data['Supplier Number Surplus Parts'], $data['Supplier Number Parts']) > .75 ? 'error' : (ratio(
+                'surplus'               => sprintf(
+                    '<span class="%s" title="%s">%s</span>', (ratio($data['Supplier Number Surplus Parts'], $data['Supplier Number Parts']) > .75
+                    ? 'error'
+                    : (ratio(
                         $data['Supplier Number Surplus Parts'], $data['Supplier Number Parts']
                     ) > .5 ? 'warning' : '')), percentage(
                         $data['Supplier Number Surplus Parts'], $data['Supplier Number Parts']
@@ -427,8 +429,7 @@ function suppliers_edit($_data, $db, $user, $account) {
     $rtext_label = 'supplier';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $table_data = array();
 
     if ($result = $db->query($sql)) {
@@ -497,8 +498,7 @@ function agents($_data, $db, $user, $account) {
     $rtext_label = 'agent';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $table_data = array();
 
     if ($result = $db->query($sql)) {
@@ -678,8 +678,7 @@ function categories($_data, $db, $user) {
     $rtext_label = 'category';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $table_data = array();
 
     if ($result = $db->query($sql)) {
@@ -759,8 +758,7 @@ function orders($_data, $db, $user) {
 
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $table_data = array();
 
     if ($result = $db->query($sql)) {
@@ -860,8 +858,7 @@ function agent_client_orders($_data, $db, $user) {
 
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $table_data = array();
 
     if ($result = $db->query($sql)) {
@@ -947,8 +944,7 @@ function deliveries($_data, $db, $user) {
 
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $table_data = array();
 
     if ($result = $db->query($sql)) {
@@ -1034,9 +1030,9 @@ function order_items($_data, $db, $user, $account) {
 
     include_once 'prepare_table/init.php';
 
-    $sql      = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $table_data    = array();
-    $exchange = -1;
+    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $table_data = array();
+    $exchange   = -1;
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
@@ -1044,28 +1040,22 @@ function order_items($_data, $db, $user, $account) {
 
             switch ($data['Part Stock Status']) {
                 case 'Surplus':
-                    $stock_status
-                        = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true" title="'._('Surplus').'" ></i>';
+                    $stock_status = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true" title="'._('Surplus').'" ></i>';
                     break;
                 case 'Optimal':
-                    $stock_status
-                        = '<i class="fa fa-check-circle fa-fw" aria-hidden="true" title="'._('Optimal').'"></i>';
+                    $stock_status = '<i class="fa fa-check-circle fa-fw" aria-hidden="true" title="'._('Optimal').'"></i>';
                     break;
                 case 'Low':
-                    $stock_status
-                        = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true" title="'._('Low').'"></i>';
+                    $stock_status = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true" title="'._('Low').'"></i>';
                     break;
                 case 'Critical':
-                    $stock_status
-                        = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true" title="'._('Critical').'"></i>';
+                    $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true" title="'._('Critical').'"></i>';
                     break;
                 case 'Out_Of_Stock':
-                    $stock_status
-                        = '<i class="fa error fa-ban fa-fw" aria-hidden="true" title="'._('Out of stock').'"></i>';
+                    $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true" title="'._('Out of stock').'"></i>';
                     break;
                 case 'Error':
-                    $stock_status
-                        = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true" title="'._('Error').'"></i>';
+                    $stock_status = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true" title="'._('Error').'"></i>';
                     break;
                 default:
                     $stock_status = $data['Part Stock Status'];
@@ -1169,8 +1159,7 @@ function order_items($_data, $db, $user, $account) {
                     if ($data['Part Fresh'] == 'No') {
                         $available_forecast .= ' <i class="fa fa-fighter-jet padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
                     } else {
-                        $available_forecast
-                            = ' <i class="fa fa-lemon-o padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
+                        $available_forecast = ' <i class="fa fa-lemon-o padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
                     }
                 } else {
                     $available_forecast = '<span >'.sprintf(
@@ -1190,8 +1179,7 @@ function order_items($_data, $db, $user, $account) {
 
                 }
 
-                $description
-                    .= '<div style="margin-top:10px" >
+                $description .= '<div style="margin-top:10px" >
                         <span class="no_discreet"><i class="fa fa-square" aria-hidden="true"></i> '.$data['Part Reference'].'</span>
                         <span title="'._('Stock (cartons)').'">'.number(
                         $data['Part Current On Hand Stock'] / $data['Supplier Part Packages Per Carton']
@@ -1307,8 +1295,7 @@ function delivery_items($_data, $db, $user) {
 
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $table_data = array();
 
     if ($result = $db->query($sql)) {
@@ -1396,13 +1383,12 @@ function delivery_checking_items($_data, $db, $user) {
 
     $rtext_label = 'item';
 
-    include_once 'class.PurchaseOrder.php';
-    $purchase_order = new PurchaseOrder($_data['parameters']['parent_key']);
+    include_once 'class.SupplierDelivery.php';
+    $supplier_delivery = new SupplierDelivery($_data['parameters']['parent_key']);
 
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $table_data = array();
 
     if ($result = $db->query($sql)) {
@@ -1440,8 +1426,7 @@ function delivery_checking_items($_data, $db, $user) {
                 $locations_data = preg_split('/,/', $data['location_data']);
 
 
-                $locations
-                    = '<div  class="part_locations mini_table left " transaction_key="'.$data['Purchase Order Transaction Fact Key'].'" >';
+                $locations = '<div  class="part_locations mini_table left " transaction_key="'.$data['Purchase Order Transaction Fact Key'].'" >';
 
                 foreach ($locations_data as $location_data) {
                     $number_locations++;
@@ -1464,11 +1449,13 @@ function delivery_checking_items($_data, $db, $user) {
 
             $description .= $locations;
 
+            /*
             $delivery_quantity = sprintf(
                 '<span class="delivery_quantity" id="delivery_quantity_%d" key="%d" item_key="%d" item_historic_key=%d on="1" ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-minus fa-fw button" aria-hidden="true"></i></span>',
                 $data['Purchase Order Transaction Fact Key'], $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $quantity + 0,
                 $quantity + 0
             );
+            */
 
             if ($data['Supplier Delivery Checked Quantity'] == '') {
                 $sko_checked_quantity = '';
@@ -1478,11 +1465,15 @@ function delivery_checking_items($_data, $db, $user) {
 
 
             $edit_sko_checked_quantity = sprintf(
-                '<span data-settings=\'{"field": "Supplier Delivery Checked Quantity", "transaction_key":%d,"item_key":%d, "item_historic_key":%d ,"on":1 }\' class="checked_quantity"  >
+                '<span class="%s" ondblclick="show_check_dialog(this)">%s</span>
+                <span data-settings=\'{"field": "Supplier Delivery Checked Quantity", "transaction_key":%d,"item_key":%d, "item_historic_key":%d ,"on":1 }\' class="checked_quantity %s"  >
                     <input class="checked_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button %s" aria-hidden="true">
                 </span>',
-                $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'],
-
+                ($supplier_delivery->get('Supplier Delivery Status')=='Placed'?'hide':''),
+                number($sko_checked_quantity),
+                $data['Purchase Order Transaction Fact Key'],
+                $data['Supplier Part Key'], $data['Supplier Part Historic Key'],
+                ($supplier_delivery->get('Supplier Delivery Status')!='Placed'?'hide':''),
                 $sko_checked_quantity, $sko_checked_quantity, ''
             );
 
@@ -1496,16 +1487,14 @@ function delivery_checking_items($_data, $db, $user) {
             }
 
 
-            $placement
-                = '<div class="placement" ><div  class="placement_data mini_table right no_padding" style="padding-right:2px">';
+            $placement = '<div class="placement" ><div  class="placement_data mini_table right no_padding" style="padding-right:2px">';
 
             if (isset($metadata['placement_data'])) {
 
                 foreach ($metadata['placement_data'] as $placement_data) {
 
 
-                    $placement
-                        .= '<div style="clear:both;">
+                    $placement .= '<div style="clear:both;">
 				<div class="data w150 aright link" onClick="change_view(\'locations/'.$placement_data['wk'].'/'.$placement_data['lk'].'\')" >'.$placement_data['l'].'</div>
 				<div  class=" data w75 aleft"  >'.$placement_data['qty'].' '._(
                             'SKO'
@@ -1517,10 +1506,8 @@ function delivery_checking_items($_data, $db, $user) {
             }
             $placement .= '<div style="clear:both"></div></div>';
 
-            $placement_note
-                = '<input type="hidden" class="note" /><i class="fa add_note fa-sticky-note-o padding_right_5 button" aria-hidden="true"  onClick="show_placement_note(this)" ></i>';
-            $placement
-                .= '
+            $placement_note = '<input type="hidden" class="note" /><i class="fa add_note fa-sticky-note-o padding_right_5 button" aria-hidden="true"  onClick="show_placement_note(this)" ></i>';
+            $placement .= '
 			    <div style="clear:both"  id="place_item_'.$data['Purchase Order Transaction Fact Key'].'" class="place_item '.($data['Supplier Delivery Transaction Placed'] == 'No' ? '' : 'hide')
                 .' " part_sku="'.$data['Part SKU'].'" transaction_key="'.$data['Purchase Order Transaction Fact Key'].'"  >
 
@@ -1602,8 +1589,7 @@ function order_supplier_parts($_data, $db, $user) {
     $rtext_label = 'supplier part';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $table_data = array();
 
     print $sql;
@@ -1637,36 +1623,30 @@ function order_supplier_parts($_data, $db, $user) {
 
             switch ($data['Part Stock Status']) {
                 case 'Surplus':
-                    $stock_status
-                        = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Optimal':
-                    $stock_status
-                        = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Low':
-                    $stock_status
-                        = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Critical':
-                    $stock_status
-                        = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Out_Of_Stock':
-                    $stock_status
-                        = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Error':
-                    $stock_status
-                        = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
                     break;
                 default:
                     $stock_status = $data['Part Stock Status'];
                     break;
             }
 
-            $description
-                = '<span style="min-width:80px;display: inline-block;" class="link padding_right_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$data['Part Reference']
+            $description =
+                '<span style="min-width:80px;display: inline-block;" class="link padding_right_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$data['Part Reference']
                 .'</span> '.$data['Part Unit Description'];
 
 
@@ -1724,8 +1704,7 @@ function category_all_suppliers($_data, $db, $user, $account) {
 
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $sql        = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $table_data = array();
 
     $table_data = array();
@@ -1845,8 +1824,7 @@ function order_supplier_all_parts($_data, $db, $user) {
     include_once 'prepare_table/init.php';
 
 
-    $sql
-        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
     $table_data = array();
@@ -1879,28 +1857,22 @@ function order_supplier_all_parts($_data, $db, $user) {
 
             switch ($data['Part Stock Status']) {
                 case 'Surplus':
-                    $stock_status
-                        = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Optimal':
-                    $stock_status
-                        = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Low':
-                    $stock_status
-                        = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Critical':
-                    $stock_status
-                        = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Out_Of_Stock':
-                    $stock_status
-                        = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Error':
-                    $stock_status
-                        = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
                     break;
                 default:
                     $stock_status = $data['Part Stock Status'];
@@ -1975,8 +1947,7 @@ function order_supplier_all_parts($_data, $db, $user) {
                     if ($data['Part Fresh'] == 'No') {
                         $available_forecast .= ' <i class="fa fa-fighter-jet padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
                     } else {
-                        $available_forecast
-                            = ' <i class="fa fa-lemon-o padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
+                        $available_forecast = ' <i class="fa fa-lemon-o padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
                     }
                 } else {
                     $available_forecast = '<span >'.sprintf(
@@ -1997,8 +1968,7 @@ function order_supplier_all_parts($_data, $db, $user) {
                 }
             }
 
-            $description
-                .= '<div style="margin-top:10px" >
+            $description .= '<div style="margin-top:10px" >
                         <span class="no_discreet" style="margin-right:5px"><i class="fa fa-square" aria-hidden="true"></i> '.$data['Part Reference'].'</span>
                         <span title="'._('Stock (cartons)').'">'.number(
                     $data['Part Current On Hand Stock'] / $data['Supplier Part Packages Per Carton']
@@ -2119,7 +2089,7 @@ function deleted_order_items($_data, $db, $user) {
     );
 
     $table_data = array();
-    $total = 0;
+    $total      = 0;
 
     foreach ($purchase_order->items as $data) {
 
@@ -2222,9 +2192,6 @@ function sales_history($_data, $db, $user, $account) {
     }
 
 
-
-
-
     $sql_totals = sprintf(
         'SELECT count(DISTINCT %s) AS num FROM kbase.`Date Dimension` WHERE `Date`>=DATE(%s) AND `Date`<=DATE(%s) ', $sql_totals_fields, prepare_mysql($from), prepare_mysql($to)
 
@@ -2279,12 +2246,12 @@ function sales_history($_data, $db, $user, $account) {
             }
 
             $adata[$_date] = array(
-                'sales'     => '<span class="very_discreet">'.money(
+                'sales'      => '<span class="very_discreet">'.money(
                         0, $currency
                     ).'</span>',
                 'dispatched' => '<span class="very_discreet">'.number(0).'</span>',
-                'deliveries'  => '<span class="very_discreet">'.number(0).'</span>',
-                'date'      => $date
+                'deliveries' => '<span class="very_discreet">'.number(0).'</span>',
+                'date'       => $date
 
 
             );
@@ -2302,23 +2269,23 @@ function sales_history($_data, $db, $user, $account) {
 
         case 'supplier':
         case 'category':
-        if ($_data['parameters']['frequency'] == 'annually') {
-            $from_date = gmdate("Y-01-01", strtotime($from_date.' +0:00'));
-            $to_date   = gmdate("Y-12-31", strtotime($to_date.' +0:00'));
-        } elseif ($_data['parameters']['frequency'] == 'quarterly') {
-            $from_date = gmdate("Y-m-01", strtotime($from_date.' +0:00'));
-            $to_date   = gmdate("Y-m-01", strtotime($to_date.' + 3 month +0:00'));
-        } elseif ($_data['parameters']['frequency'] == 'monthly') {
-            $from_date = gmdate("Y-m-01", strtotime($from_date.' +0:00'));
-            $to_date   = gmdate("Y-m-01", strtotime($to_date.' + 1 month +0:00'));
-        } elseif ($_data['parameters']['frequency'] == 'weekly') {
-            $from_date = gmdate("Y-m-d", strtotime($from_date.'  -1 week  +0:00'));
-            $to_date   = gmdate("Y-m-d", strtotime($to_date.' + 1 week +0:00'));
-        } elseif ($_data['parameters']['frequency'] == 'daily') {
-            $from_date = $from_date.'';
-            $to_date   = $to_date.'';
-        }
-        $group_by = '';
+            if ($_data['parameters']['frequency'] == 'annually') {
+                $from_date = gmdate("Y-01-01", strtotime($from_date.' +0:00'));
+                $to_date   = gmdate("Y-12-31", strtotime($to_date.' +0:00'));
+            } elseif ($_data['parameters']['frequency'] == 'quarterly') {
+                $from_date = gmdate("Y-m-01", strtotime($from_date.' +0:00'));
+                $to_date   = gmdate("Y-m-01", strtotime($to_date.' + 3 month +0:00'));
+            } elseif ($_data['parameters']['frequency'] == 'monthly') {
+                $from_date = gmdate("Y-m-01", strtotime($from_date.' +0:00'));
+                $to_date   = gmdate("Y-m-01", strtotime($to_date.' + 1 month +0:00'));
+            } elseif ($_data['parameters']['frequency'] == 'weekly') {
+                $from_date = gmdate("Y-m-d", strtotime($from_date.'  -1 week  +0:00'));
+                $to_date   = gmdate("Y-m-d", strtotime($to_date.' + 1 week +0:00'));
+            } elseif ($_data['parameters']['frequency'] == 'daily') {
+                $from_date = $from_date.'';
+                $to_date   = $to_date.'';
+            }
+            $group_by = '';
 
             break;
         default:
@@ -2355,10 +2322,10 @@ function sales_history($_data, $db, $user, $account) {
             if (array_key_exists($_date, $adata)) {
 
                 $adata[$_date] = array(
-                    'sales'     => money($data['sales'], $currency),
+                    'sales'      => money($data['sales'], $currency),
                     'deliveries' => number($data['deliveries']),
-                    'dispatched'  => number($data['dispatched']),
-                    'date'      => $adata[$_date]['date']
+                    'dispatched' => number($data['dispatched']),
+                    'date'       => $adata[$_date]['date']
 
 
                 );
@@ -2395,8 +2362,7 @@ function part_locations_with_errors($_data, $db, $user) {
 
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $table_data = array();
 
     //print $sql;
@@ -2450,8 +2416,7 @@ function parts_by_stock_status($stock_status, $_data, $db, $user) {
     include_once 'prepare_table/init.php';
 
 
-    $sql
-        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     //print $sql_totals;
 
@@ -2485,28 +2450,22 @@ function parts_by_stock_status($stock_status, $_data, $db, $user) {
 
             switch ($data['Part Stock Status']) {
                 case 'Surplus':
-                    $stock_status
-                        = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Optimal':
-                    $stock_status
-                        = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Low':
-                    $stock_status
-                        = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Critical':
-                    $stock_status
-                        = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Out_Of_Stock':
-                    $stock_status
-                        = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Error':
-                    $stock_status
-                        = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
                     break;
                 default:
                     $stock_status = $data['Part Stock Status'];
@@ -2523,8 +2482,7 @@ function parts_by_stock_status($stock_status, $_data, $db, $user) {
             $description = $data['Part Unit Description'];
 
 
-            $description
-                .= '
+            $description .= '
 
   <div class="as_table asset_sales discreet">
 
@@ -2646,8 +2604,7 @@ function todo_paid_parts($_data, $db, $user) {
     include_once 'prepare_table/init.php';
 
 
-    $sql
-        = "select $fields from $table $where $wheref  $group_by order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref  $group_by order by $order $order_direction limit $start_from,$number_results";
 
     //print $sql;
 
@@ -2659,28 +2616,22 @@ function todo_paid_parts($_data, $db, $user) {
 
             switch ($data['Part Stock Status']) {
                 case 'Surplus':
-                    $stock_status
-                        = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Optimal':
-                    $stock_status
-                        = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Low':
-                    $stock_status
-                        = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Critical':
-                    $stock_status
-                        = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Out_Of_Stock':
-                    $stock_status
-                        = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Error':
-                    $stock_status
-                        = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
                     break;
                 default:
                     $stock_status = $data['Part Stock Status'];
@@ -2755,8 +2706,7 @@ function supplier_categories($_data, $db, $user) {
     $rtext_label = 'category';
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
     $table_data = array();

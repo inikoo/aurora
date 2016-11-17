@@ -2183,12 +2183,19 @@ function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
 
     $transaction_data = $parent->update_item($data);
 
+    if($parent->error){
+        $response = array(
+            'state'            => 400,
+            'msg' => $parent->msg
+        );
+    }else {
 
-    $response = array(
-        'state'            => 200,
-        'transaction_data' => $transaction_data,
-        'metadata'         => $parent->get_update_metadata()
-    );
+        $response = array(
+            'state'            => 200,
+            'transaction_data' => $transaction_data,
+            'metadata'         => $parent->get_update_metadata()
+        );
+    }
     echo json_encode($response);
 
 }

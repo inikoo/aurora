@@ -1,4 +1,7 @@
 {assign deliveries $order->get_deliveries('objects')}
+
+
+
 <div class="timeline_horizontal {if $order->get('Purchase Order State')=='Cancelled'}hide{/if}">
     <ul class="timeline" id="timeline">
         <li id="submitted_node" class="li {if $order->get('State Index')>=30}complete{/if}">
@@ -124,6 +127,7 @@
 
     </ul>
 </div>
+
 <div class="order" style="display: flex;" data-object="{$object_data}">
     <div class="block" style=" align-items: stretch;flex: 1">
         <div class="data_container" style="padding:5px 10px">

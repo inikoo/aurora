@@ -129,14 +129,18 @@ cell: Backgrid.HtmlCell.extend( ),
 }, {
 name: "sko_edit_checked_quantity",
 label: "{t}Checked SKO{/t}",
-renderable: {if $data['_object']->get('State Index')>=40 and $data['_object']->get('State Index')<100 }true{else}false{/if},
+renderable: {if $data['_object']->get('State Index')>=40  }true{else}false{/if},
 defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
-}, {
+},
+
+
+/*
+{
 name: "sko_checked_quantity",
 label: "{t}Checked SKO{/t}",
 renderable: {if $data['_object']->get('State Index')==100}true{else}false{/if},
@@ -146,7 +150,10 @@ sortType: "toggle",
 {if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright width_100"} ),
 headerCell: integerHeaderCell
-}, {
+},
+*/
+
+{
 name: "placement",
 label: "{t}Placements{/t}",
 renderable: {if $data['_object']->get('State Index')>=40}true{else}false{/if},

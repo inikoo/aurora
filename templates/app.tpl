@@ -32,6 +32,9 @@
         <link href="/css/editor/plugins/table.css" rel="stylesheet">
         <link href="/css/editor/plugins/video.css" rel="stylesheet">
         <link href="/css/amcharts/style.css" rel="stylesheet">
+        <link href="/css/sweetalert.css" rel="stylesheet">
+
+
         <link href="/css/app.css" rel="stylesheet">
         <script type="text/javascript" src="/js/libs/jquery-2.2.1.js"></script>
         <script type="text/javascript" src="/js/libs/jquery-ui.js"></script>
@@ -50,6 +53,10 @@
         <script type="text/javascript" src="/js/libs/d3.js"></script>
         <script type="text/javascript" src="/js/libs/d3fc.layout.js"></script>
         <script type="text/javascript" src="/js/libs/d3fc.js"></script>
+        <script type="text/javascript" src="/js/libs/sweetalert.min.js"></script>
+
+
+
         <script type="text/javascript" src="/js/app.js"></script>
         <script type="text/javascript" src="/js/keyboard_shorcuts.js"></script>
         <script type="text/javascript" src="/js/search.js"></script>

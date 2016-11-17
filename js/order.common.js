@@ -342,7 +342,7 @@ function save_item_qty_change(element) {
 
             $(element).closest('tr').find('.subtotals').html(data.transaction_data.subtotals)
             console.log(data)
-
+            console.log(data.metadata.state_index)
 
             $(element).closest('tr').find('.placement').html(data.metadata.placement)
             $(element).closest('.checked_quantity').find('.checked_qty').attr('ovalue', data.transaction_data.qty)
@@ -372,6 +372,8 @@ function save_item_qty_change(element) {
                 }
 
 
+            }else{
+                $('#placed_node').removeClass('complete')
             }
 
 
@@ -390,7 +392,7 @@ function save_item_qty_change(element) {
 
 
         } else if (data.state == 400) {
-            console.log(data)
+            sweetAlert(data.msg);
         }
 
     })
