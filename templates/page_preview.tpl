@@ -21,5 +21,4 @@
 </div>
 
 
-<iframe style="width:100%;height:900px" frameBorder="0"
-        src="/ecom/papp.php?website_key={$page->get('Webpage Website Key')}&request={$request}"></iframe>
+<iframe style="width:100%;height:900px" frameBorder="0" src="/ecom/papp.php?website_key={$page->get('Webpage Website Key')}&request={$request}"></iframe>

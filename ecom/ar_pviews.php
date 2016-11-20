@@ -176,9 +176,7 @@ function get_content($db, $smarty, $website, $user, $account, $data) {
         $reload = false;
     }
 
-    list($webpage, $request) = parse_request(
-        $data, $db, $website, $account, $user
-    );
+    list($webpage, $request) = parse_request($data, $db, $website, $account, $user);
 
 
     /*

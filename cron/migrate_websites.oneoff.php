@@ -46,9 +46,10 @@ $editor = array(
     'Date'         => gmdate('Y-m-d H:i:s')
 );
 
-$sql
-    = 'truncate `Website Dimension`;truncate `Website Node Dimension`;truncate `Webpage Dimension`; truncate `Webpage Version Block Bridge`;truncate `Webpage Version Dimension`';
+$sql = 'truncate `Template Scope Dimension`;truncate `Template Dimension`;truncate `Website Dimension`;truncate `Website Node Dimension`;truncate `Webpage Dimension`; truncate `Webpage Version Block Bridge`;truncate `Webpage Version Dimension`';
 $db->exec($sql);
+
+
 $sql = sprintf('SELECT * FROM `Site Dimension` WHERE `Site Key`=1 ');
 
 $sql = sprintf('SELECT * FROM `Site Dimension` ');
@@ -62,6 +63,7 @@ if ($result = $db->query($sql)) {
         $website_data = array(
             'Website Code'   => $site->get('Site Code'),
             'Website Name'   => $site->get('Site Name'),
+            'Website Type'   => ($site->get('Site Code')=='DS'?'EcomDS':'EcomB2B'),
             'Website URL'    => $site->get('Site URL'),
             'Website Locale' => $site->get('Site Locale'),
             'Website Name'   => $site->get('Site Name'),

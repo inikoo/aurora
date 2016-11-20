@@ -185,14 +185,16 @@ class Website extends DB_Table {
             $sql = "INSERT INTO `Website Data` (`Website Key`) VALUES(".$this->id.");";
             $this->db->exec($sql);
 
+            $this->setup_templates();
+
+
             if (is_numeric($this->editor['User Key']) and $this->editor['User Key'] > 1) {
 
-                $sql = sprintf(
-                    "INSERT INTO `User Right Scope Bridge` VALUES(%d,'Website',%d)", $this->editor['User Key'], $this->id
-                );
+                $sql = sprintf("INSERT INTO `User Right Scope Bridge` VALUES(%d,'Website',%d)", $this->editor['User Key'], $this->id);
                 $this->db->exec($sql);
 
             }
+
 
 
             return;
@@ -213,7 +215,7 @@ class Website extends DB_Table {
             array(
                 'Webpage Code'        => 'p.Home',
                 'Webpage Name'        => _('Home'),
-                'Webpage Class'       => 'Home',
+                'Webpage Scope'       => 'Home',
                 'Webpage Locked'      => 'Yes',
                 'Website Node Locked' => 'Yes',
                 'Website Node Type'   => 'Root',
@@ -236,7 +238,7 @@ class Website extends DB_Table {
             array(
                 'Webpage Code'        => 'p.MyA',
                 'Webpage Name'        => _('My account'),
-                'Webpage Class'       => 'Hub',
+                'Webpage Scope'       => 'Hub',
                 'Webpage Locked'      => 'Yes',
                 'Website Node Locked' => 'Yes',
                 'Website Node Type'   => 'Root',
@@ -245,32 +247,32 @@ class Website extends DB_Table {
             )
         );
 
-        $mya_webnode->create_subnode(
+        $home_webnode->create_subnode(
             array(
                 'Webpage Code'        => 'p.Login',
                 'Webpage Name'        => _('Login'),
                 'Website Node Locked' => 'Yes',
-                'Webpage Class'       => 'Login',
+                'Webpage Scope'       => 'Login',
                 'Webpage Locked'      => 'Yes',
                 'Website Node Type'   => 'Head'
             )
         );
-        $mya_webnode->create_subnode(
+        $home_webnode->create_subnode(
             array(
                 'Webpage Code'        => 'p.Register',
                 'Webpage Name'        => _('Register'),
                 'Website Node Locked' => 'Yes',
-                'Webpage Class'       => 'Register',
+                'Webpage Scope'       => 'Register',
                 'Webpage Locked'      => 'Yes',
                 'Website Node Type'   => 'Head'
             )
         );
-        $mya_webnode->create_subnode(
+        $home_webnode->create_subnode(
             array(
                 'Webpage Code'        => 'p.Pwd',
                 'Webpage Name'        => _('Forgotten password'),
                 'Website Node Locked' => 'Yes',
-                'Webpage Class'       => 'ResetPwd',
+                'Webpage Scope'       => 'ResetPwd',
                 'Webpage Locked'      => 'Yes',
                 'Website Node Type'   => 'Head'
             )
@@ -280,7 +282,17 @@ class Website extends DB_Table {
                 'Webpage Code'        => 'p.Profile',
                 'Webpage Name'        => _('My account'),
                 'Website Node Locked' => 'Yes',
-                'Webpage Class'       => 'Profile',
+                'Webpage Scope'       => 'Profile',
+                'Webpage Locked'      => 'Yes',
+                'Website Node Type'   => 'Head'
+            )
+        );
+        $mya_webnode->create_subnode(
+            array(
+                'Webpage Code'        => 'p.Orders',
+                'Webpage Name'        => _('My orders'),
+                'Website Node Locked' => 'Yes',
+                'Webpage Scope'       => 'Orders',
                 'Webpage Locked'      => 'Yes',
                 'Website Node Type'   => 'Head'
             )
@@ -294,7 +306,7 @@ class Website extends DB_Table {
                 'Website Node Locked' => 'Yes',
                 'Website Node Type'   => 'Root',
                 'Website Node Icon'   => 'thumbs-o-up',
-                'Webpage Class'       => 'Hub'
+                'Webpage Scope'       => 'Hub'
             )
         );
 
@@ -304,7 +316,7 @@ class Website extends DB_Table {
                 'Webpage Code'        => 'p.Contact',
                 'Webpage Name'        => _('Contact us'),
                 'Website Node Locked' => 'Yes',
-                'Webpage Class'       => 'Contact',
+                'Webpage Scope'       => 'Contact',
                 'Website Node Type'   => 'Head'
             )
         );
@@ -316,7 +328,7 @@ class Website extends DB_Table {
                 'Webpage Name'        => _('Delivery'),
                 'Website Node Locked' => 'No',
                 'Website Node Type'   => 'Head',
-                'Webpage Class'       => 'Info',
+                'Webpage Scope'       => 'Blank',
                 'Website Node Icon'   => 'truck fa-flip-horizontal'
             )
         );
@@ -328,7 +340,7 @@ class Website extends DB_Table {
                 'Webpage Name'        => _('Terms & Conditions'),
                 'Website Node Locked' => 'Yes',
                 'Webpage Locked'      => 'Yes',
-                'Webpage Class'       => 'Info',
+                'Webpage Scope'       => 'Blank',
                 'Website Node Type'   => 'Head'
             )
         );
@@ -444,7 +456,6 @@ class Website extends DB_Table {
 
     function create_product_webnodes() {
 
-
         $homepage = new Webpage('website_code', $this->id, 'p.Home');
 
 
@@ -460,39 +471,47 @@ class Website extends DB_Table {
                 'Website Node Locked' => 'Yes',
                 'Website Node Type'   => 'Root',
                 'Website Node Icon'   => 'th',
-                'Webpage Class'       => 'Categories',
+                'Webpage Scope'       => 'Categories',
                 'Webpage Object'      => 'Category',
                 'Webpage Object Key'  => $store->get('Store Department Category Key')
             )
         );
 
+        /*
         $sql=sprintf('select `Category Label`,`Category Code`,`Category Key` from `Category Dimension` where `Category Root Key`=%d ',
                      $store->get('Store Department Category Key')
                      );
-       // print $sql;
+        print $sql;
 
         if ($result=$this->db->query($sql)) {
         		foreach ($result as $row) {
-                    print_r($row);
+
+
+
                     $department=$catalogue->create_subnode(
                         array(
                             'Webpage Code'        => 'd.'.$row['Category Code'],
                             'Webpage Name'        => $row['Category Label'],
                             'Webpage Locked'      => 'Yes',
                             'Website Node Locked' => 'Yes',
-                            'Website Node Type'   => 'Node',
+                            'Website Node Type'   => 'Branch',
                             'Website Node Icon'   => 'th',
-                            'Webpage Class'       => 'Categories',
+                            'Webpage Scope'       => 'Categories',
                             'Webpage Object'      => 'Category',
                             'Webpage Object Key'  => $row['Category Key']
                         )
                     );
+
+                    print "end create department ".$row['Category Label']."\n";
         		}
         }else {
         		print_r($error_info=$this->db->errorInfo());
         		print "$sql\n";
         		exit;
         }
+
+        print "xxxend\n";
+        */
 
 
     }
@@ -581,12 +600,114 @@ class Website extends DB_Table {
 
     }
 
+
+    function get_default_template_key($scope,$device='Desktop'){
+
+        $template_key=false;
+
+        $sql=sprintf('select `Template Key` from `Template Dimension` where `Template Website Key`=%d and `Template Scope`=%s and `Template Device`=%s ',
+                     $this->id,
+                     prepare_mysql($scope),
+                     prepare_mysql($device)
+
+                     );
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $template_key=$row['Template Key'];
+        	}
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
+        }
+
+        if(!$template_key){
+
+
+            $sql=sprintf('select `Template Key` from `Template Dimension` where `Template Website Key`=%d and `Template Scope`=%s and `Template Device`="Desktop" ',
+                         $this->id,
+                         prepare_mysql($scope)
+
+            );
+            if ($result=$this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $template_key=$row['Template Key'];
+                }
+            }else {
+                print_r($error_info=$this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+        }
+
+        if(!$template_key){
+
+
+            $sql=sprintf('select `Template Key` from `Template Dimension` where `Template Website Key`=%d and `Template Scope`="Blank" and `Template Device`=%s ',
+                         $this->id,
+                         prepare_mysql($scope)
+
+            );
+            if ($result=$this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $template_key=$row['Template Key'];
+                }
+            }else {
+                print_r($error_info=$this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+        }
+
+       // print $template_key;
+
+
+
+        return $template_key;
+
+    }
+
     function setup_templates(){
 
-        // todo setup templates for each kind of website
+        include_once('class.TemplateScope.php');
+        include_once('class.Template.php');
+        include_once('conf/website_templates.php');
+
+        $templates=website_templates_config($this->get('Website Type'));
+
+        //print_r($templates);
+
+        foreach($templates['templates'] as $template_code=>$_template_data){
+           // print_r($_template_data);
+
+            $template_scope_data=array(
+                'Template Scope Website Key'=>$this->id,
+                'Template Scope Code'=>$_template_data['scope'],
+
+                'editor'=>$this->editor
+
+            );
+
+            $template_scope=new TemplateScope('find',$template_scope_data,'create');
 
 
-        include_once('conf/website_templates.php')
+            $template_data=array(
+                'Template Code'=>$template_code,
+                'Template Base'=>'Yes',
+                'Template Device'=>(isset($_template_data['device'])?$_template_data['device']:'desktop'),
+                'editor'=>$this->editor
+
+            );
+
+            $template_scope->create_template($template_data);
+
+           // $template=new Template('find',$template_data,'create');
+
+        }
+
+
 
 
 

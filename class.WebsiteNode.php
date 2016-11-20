@@ -218,13 +218,13 @@ class WebsiteNode extends DB_Table {
             }
 
 
-            switch ($this->webpage->get('Webpage Class')) {
+            switch ($this->webpage->get('Webpage Scope')) {
                 case 'Categories':
-                case 'Products':
+                case 'Category':
                     $this->create_categories_nodes();
                     break;
                 default:
-                    // print "class not found ".$this->webpage->get('Webpage Class')."\n";
+                    // print "class not found ".$this->webpage->get('Webpage Scope')."\n";
                     break;
             }
 
@@ -332,16 +332,17 @@ class WebsiteNode extends DB_Table {
 
 
                     $_data= array(
-                        'Webpage Code'  => ($branch_type == 'Head' ? 'f' : 'd').'.'.$row['Category Code'],
-                        'Webpage Name'  => $row['Category Label'],
-                        'Webpage Class' => ($branch_type == 'Head' ? 'Products' : 'Categories'),
+                      //  'Webpage Code'  => ($branch_type == 'Head' ? 'f' : 'd').'.'.$row['Category Code'],
+                       'Webpage Code'  => $row['Category Code'],
+                      'Webpage Name'  => $row['Category Label'],
+                        'Webpage Scope' => ($branch_type == 'Head' ? 'Category' : 'Categories'),
 
                         'Website Node Type'  => 'Branch',
                         'Website Node Icon'  => ($branch_type == 'Head' ? 'pagelines' : 'tree'),
                         'Webpage Object'     => 'Category',
                         'Webpage Object Key' => $row['Category Key'],
                     );
-                        print_r($_data);
+                       // print_r($_data);
 
                     $subnode = $this->create_subnode($_data);
 
@@ -377,18 +378,18 @@ class WebsiteNode extends DB_Table {
 
 
                     $_data=array(
-                        'Webpage Code'        => 'a.'.$row['Product Code'],
+                        'Webpage Code'        => $row['Product Code'],
                         'Webpage Name'        => $row['Product Name'],
                         'Webpage Status'      => ($row['Product Status'] == 'Active' ? 'Online' : 'Offline'),
                         'Website Node Locked' => 'No',
                         'Website Node Type'   => 'Head',
                         'Website Node Icon'   => 'leaf',
-                        'Webpage Class'       => 'Product',
+                        'Webpage Scope'       => 'Product',
                         'Webpage Object'      => 'Product',
                         'Webpage Object Key'  => $row['Subject Key'],
                     );
 
-                    print_r($_data);
+                   // print_r($_data);
                     $subnode = $this->create_subnode($_data);
 
 
@@ -422,7 +423,7 @@ class WebsiteNode extends DB_Table {
 
 
         $website_node = new WebsiteNode('find', $data, 'create');
-        print_r($website_node);
+       // print_r($website_node);
 
         if ($website_node->id) {
             $this->new_object_msg = $website_node->msg;
