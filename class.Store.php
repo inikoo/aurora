@@ -2220,7 +2220,7 @@ class Store extends DB_Table {
 
             return $amount;
         }
-        if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Soft Minify$/', $key)) {
+        if (preg_match('/^(Orders|Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Soft Minify$/', $key)) {
 
             $field = 'Store '.preg_replace('/ Soft Minify$/', '', $key);
 
@@ -2259,15 +2259,15 @@ class Store extends DB_Table {
             return number($_number, 0);
         }
 
-        if (preg_match('/^(Total|1).*(Amount|Profit)$/', $key)) {
+        if (preg_match('/^(Orders|Total|1).*(Amount|Profit)$/', $key)) {
 
             $amount = 'Store '.$key;
 
-            return money($this->data[$amount]);
+            return money($this->data[$amount],$this->get('Store Currency Code'));
         }
         if (preg_match(
                 '/^(Total|1).*(Quantity (Ordered|Invoiced|Delivered|)|Customers|Customers Contacts)$/', $key
-            ) or preg_match('/^(Active Customers)$/', $key)
+            ) or preg_match('/^(Active Customers|Orders .* Number)$/', $key)
         ) {
 
             $amount = 'Store '.$key;

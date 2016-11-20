@@ -2376,10 +2376,16 @@ input.inputfile {
 .tags span:hover:before {
   border-color: transparent #009dff transparent transparent; }
 
-.widget {
-  xborder: 1px solid #eee;
+.view_option {
   float: left;
   min-width: 120px;
+  margin: 5px 0px 5px 10px;
+  text-align: center;
+  padding: 0px; }
+
+#dashboard_pending_orders .widgetx {
+  float: left;
+  min-width: 70px;
   margin: 5px 0px 5px 10px;
   text-align: center;
   padding: 0px; }
@@ -2512,6 +2518,25 @@ input.inputfile {
     line-height: 22px;
     -webkit-transition: width 1s;
     transition: width 1s; }
+
+.flex-container {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-flow: row wrap;
+  justify-content: space-around; }
+
+.flex-item {
+  border: 1px solid #ccc;
+  padding: 5px;
+  width: 200px;
+  margin-top: 10px;
+  text-align: center; }
 
 @media screen and (max-width: 1550px) {
   .grid {

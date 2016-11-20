@@ -59,6 +59,26 @@ foreach ($user->get_dashboard_items() as $item) {
         $html .= get_dashboard_sales_overview($db, $account, $user, $smarty, $type, $sub_type,$period, $currency, $orders_view_type, $_SESSION['display_device_version']);
 
     }
+    elseif ($item == 'pending_orders') {
+
+        $period = '1y';
+
+        include_once 'widgets/pending_orders.wget.php';
+
+        if (isset($_SESSION['dashboard_state']['pending_orders']['store'])) {
+            $store = $_SESSION['dashboard_state']['pending_orders']['store'];
+        } else {
+            $store = '';
+        }
+
+
+
+
+        $store=1;
+
+        $html .= get_dashboard_pending_orders($db, $account, $user, $smarty, $store, $_SESSION['display_device_version']);
+
+    }
 
 }
 

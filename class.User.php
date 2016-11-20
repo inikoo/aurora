@@ -2658,6 +2658,7 @@ class User extends DB_Table {
 
         if ($this->data['User Type'] == 'Staff' or $this->data['User Type'] == 'Administrator' or $this->data['User Type'] == 'Contractor') {
 
+            $dashboard_items[] = 'pending_orders';
             $dashboard_items[] = 'sales_overview';
 
         }
