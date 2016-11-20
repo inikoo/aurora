@@ -1,11 +1,25 @@
 
-.widget {
-  xborder: 1px solid #eee;
+
+
+.view_option {
   float: left;
   min-width: 120px;
   margin: 5px 0px 5px 10px;
   text-align: center;
   padding: 0px
+}
+
+
+
+#dashboard_pending_orders{
+
+  .widgetx {
+    float: left;
+    min-width: 70px;
+    margin: 5px 0px 5px 10px;
+    text-align: center;
+    padding: 0px
+  }
 }
 
 .dashboard {
