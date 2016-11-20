@@ -722,6 +722,26 @@ $tab_defaults = array(
         'f_period'    => 'all',
 
     ),
+    'website.templates.categories'            => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+        'f_period'    => 'all',
+
+    ),
+    'website.templates'            => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+        'f_period'    => 'all',
+
+    ),
     'marketing_server'                  => array(
         'view'        => 'overview',
         'sort_key'    => 'id',

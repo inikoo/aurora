@@ -136,11 +136,14 @@ class WebpageVersion extends DB_Table {
         $this->new = false;
         $base_data = $this->base_data();
 
+
         foreach ($data as $key => $value) {
             if (array_key_exists($key, $base_data)) {
                 $base_data[$key] = _trim($value);
             }
         }
+
+
 
         $keys   = '(';
         $values = 'values(';

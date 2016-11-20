@@ -38,6 +38,12 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
+    case 'templates':
+        templates(get_table_parameters(), $db, $user);
+        break;
+    case 'blocks':
+        blocks(get_table_parameters(), $db, $user);
+        break;
     case 'blocks':
         blocks(get_table_parameters(), $db, $user);
         break;
@@ -621,28 +627,31 @@ function versions($_data, $db, $user) {
 
         switch ($data['Webpage Version Device']) {
             case 'Desktop':
-                $device = _('Desktop');
+                $device      = _('Desktop');
                 $device_code = 'desk';
                 break;
             case 'Tablet':
-                $device = _('Tablet');
+                $device      = _('Tablet');
                 $device_code = 'tab';
                 break;
             case 'Mobile':
-                $device = _('Mobile');
+                $device      = _('Mobile');
                 $device_code = 'mob';
 
                 break;
             default:
-                $device = $data['device'];
-                $device_code =  $data['device'];
-               break;
+                $device      = $data['device'];
+                $device_code = $data['device'];
+                break;
         }
 
         $adata[] = array(
-            'id'     => (integer)$data['Webpage Version Key'],
-            'code'   => sprintf('<span class="link" onclick="change_view(\'page/%d/version/%d\')">%s</span>',$data['Webpage Key'],$data['Webpage Version Key'],$data['Webpage Code'].'.'.$device_code.'.'.$data['Webpage Version Code']),
-            'device' => $device,
+            'id'          => (integer)$data['Webpage Version Key'],
+            'code'        => sprintf(
+                '<span class="link" onclick="change_view(\'page/%d/version/%d\')">%s</span>', $data['Webpage Key'], $data['Webpage Version Key'],
+                $data['Webpage Code'].'.'.$device_code.'.'.$data['Webpage Version Code']
+            ),
+            'device'      => $device,
             'probability' => $data['Webpage Version Display Probability'],
 
 
@@ -663,5 +672,152 @@ function versions($_data, $db, $user) {
     );
     echo json_encode($response);
 }
+
+
+function templates($_data, $db, $user) {
+
+    $rtext_label = 'template';
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+    foreach ($db->query($sql) as $data) {
+
+
+        switch ($data['Template Scope']) {
+            case 'Product':
+                $scope_icon = sprintf('<i class="fa fa-cube" aria-hidden="true" label="%s"></i>', _('Product'));
+                $scope = _('Product');
+                break;
+            case 'Blank':
+                $scope_icon = sprintf('<i class="fa fa-file-o" aria-hidden="true" label="%s"></i>', _('Blank'));
+                $scope = _('Blank');
+                break;
+            case 'Category':
+                $scope_icon = sprintf('<i class="fa fa-cubes" aria-hidden="true" label="%s"></i>', _('Category'));
+                $scope = _('Category');
+                break;
+            case 'Categories':
+                $scope_icon = sprintf('<i class="fa fa-table" aria-hidden="true" label="%s"></i>', _('Categories'));
+                $scope = _('Categories');
+                break;
+            case 'Basket':
+                $scope_icon = sprintf('<i class="fa fa-shopping-basket" aria-hidden="true" label="%s"></i>', _('Basket'));
+                $scope = _('Basket');
+                break;
+            case 'Checkout':
+                $scope_icon = sprintf('<i class="fa fa-credit-card" aria-hidden="true" label="%s"></i>', _('Checkout'));
+                $scope = _('Checkout');
+                break;
+            case 'Hub':
+                $scope_icon = sprintf('<i class="fa fa-sitemap" aria-hidden="true" label="%s"></i>', _('Hub'));
+                $scope = _('Hub');
+                break;
+            case 'Header':
+                $scope_icon = sprintf('<i class="fa fa-header" aria-hidden="true" label="%s"></i>', _('Header'));
+                $scope = _('Header');
+                break;
+            case 'Footer':
+                $scope_icon = sprintf('<i class="fa fa-minus" aria-hidden="true" label="%s"></i>', _('Footer'));
+                $scope = _('Footer');
+                break;
+            case 'Home':
+                $scope_icon = sprintf('<i class="fa fa-home" aria-hidden="true" label="%s"></i>', _('Home'));
+                $scope = _('Home');
+                break;
+            case 'Login':
+                $scope_icon = sprintf('<i class="fa fa-sign-in" aria-hidden="true" label="%s"></i>', _('Login'));
+                $scope = _('Login');
+                break;
+            case 'Contact':
+                $scope_icon = sprintf('<i class="fa fa-phone" aria-hidden="true" label="%s"></i>', _('Contact'));
+                $scope = _('Contact');
+                break;
+            case 'Register':
+                $scope_icon = sprintf('<i class="fa fa-user-plus" aria-hidden="true" label="%s"></i>', _('Register'));
+                $scope = _('Register');
+                break;
+            case 'ResetPwd':
+                $scope_icon = sprintf('<i class="fa fa-key" aria-hidden="true" label="%s"></i>', _('Reset password'));
+                $scope = _('Reset password');
+
+                break;
+            case 'Profile':
+                $scope_icon =sprintf('<i class="fa fa-user" aria-hidden="true" label="%s"></i>', _('Profile'));
+                $scope = _('Product');
+                break;
+            case 'Orders':
+                $scope_icon = sprintf('<i class="fa fa-shopping-cart" aria-hidden="true" label="%s"></i>', _('Orders'));
+                $scope = _('Orders');
+                break;
+            default:
+                $scope_icon = $data['Template Scope'];
+                $scope =  $data['Template Scope'];
+                break;
+        }
+
+
+        switch ($data['Template Device']) {
+            case 'Desktop':
+                $device = sprintf('<i class="fa fa-desktop" aria-hidden="true" label="%s"></i>', _('Desktop'));
+                break;
+            case 'Tablet':
+                $device = sprintf('<i class="fa fa-tablet" aria-hidden="true" label="%s"></i>', _('Tablet'));
+                break;
+            case 'Mobile':
+                $device = sprintf('<i class="fa fa-mobile" aria-hidden="true" label="%s"></i>', _('Mobile'));
+
+                break;
+            default:
+                $device = $data['Template Device'];
+                break;
+        }
+
+        switch ($data['Template Base']) {
+            case 'Yes':
+                $type = _('System');
+                break;
+            case 'No':
+                $type = _('Custome');
+
+                break;
+            default:
+                $type = $data['Template Base'];
+                break;
+        }
+
+
+
+        $adata[] = array(
+            'id'     => (integer)$data['Template Key'],
+            'code'   => sprintf('<span class="link" onclick="change_view(\'website/%d/template/%d\')">%s</span>', $data['Template Website Key'], $data['Template Key'], $data['Template Code']),
+            'device' => $device,
+            'type'  => $type,
+            'scope_icon'  => $scope_icon,
+            'scope'  => $scope,
+            'web_pages'  => number($data['Template Number Webpages']),
+            'versions'  => number($data['Template Number Webpage Versions']),
+
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
 
 ?>

@@ -38,27 +38,16 @@ class Webpage extends DB_Table {
 
 
     function get_data($key, $tag, $tag2 = false) {
-
         if ($key == 'id') {
-            $sql = sprintf(
-                "SELECT * FROM `Webpage Dimension` WHERE `Webpage Key`=%d", $tag
-            );
+            $sql = sprintf("SELECT * FROM `Webpage Dimension` WHERE `Webpage Key`=%d", $tag);
+        } elseif ($key == 'website_code') {
+            $sql = sprintf("SELECT  * FROM `Webpage Dimension` WHERE `Webpage Website Key`=%d AND `Webpage Code`=%s ", $tag, prepare_mysql($tag2));
+        } elseif ($key == 'code') {
+            $sql = sprintf("SELECT  * FROM `Webpage Dimension` WHERE `Webpage Code`=%s ", prepare_mysql($tag));
         } else {
-            if ($key == 'website_code') {
-                $sql = sprintf(
-                    "SELECT  * FROM `Webpage Dimension` WHERE `Webpage Website Key`=%d AND `Webpage Code`=%s ", $tag, prepare_mysql($tag2)
-                );
-            } else {
-                if ($key == 'code') {
-                    $sql = sprintf(
-                        "SELECT  * FROM `Webpage Dimension` WHERE `Webpage Code`=%s ", prepare_mysql($tag)
-                    );
-                } else {
-                    return;
-                }
-            }
+            return;
         }
-
+//print $sql;
 
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Webpage Key'];
@@ -73,6 +62,7 @@ class Webpage extends DB_Table {
 
 
     function get_version() {
+
 
         if ($this->get('Webpage Number Displayable Versions') == 0) {
             return false;
@@ -134,19 +124,16 @@ class Webpage extends DB_Table {
             foreach ($result as $row) {
                 if ($filter == 'displayable') {
                     if ($row['Webpage Version Display Probability'] > 0) {
-                        $versions[$row['Webpage Version Key']]
-                            = $row['Webpage Version Display Probability'];
+                        $versions[$row['Webpage Version Key']] = $row['Webpage Version Display Probability'];
                     }
 
                 } elseif ($filter == 'displayable') {
                     if ($row['Webpage Version Display Probability'] == 0) {
-                        $versions[$row['Webpage Version Key']]
-                            = $row['Webpage Version Display Probability'];
+                        $versions[$row['Webpage Version Key']] = $row['Webpage Version Display Probability'];
                     }
 
                 } else {
-                    $versions[$row['Webpage Version Key']]
-                        = $row['Webpage Version Display Probability'];
+                    $versions[$row['Webpage Version Key']] = $row['Webpage Version Display Probability'];
 
                 }
 
@@ -173,7 +160,6 @@ class Webpage extends DB_Table {
         $this->found_key = false;
 
         $create = '';
-        $update = '';
         if (preg_match('/create/i', $options)) {
             $create = 'create';
         }
@@ -206,7 +192,7 @@ class Webpage extends DB_Table {
             "SELECT `Webpage Key` FROM `Webpage Dimension` WHERE `Webpage Website Key`=%d AND  `Webpage Code`=%s", $data['Webpage Website Key'], prepare_mysql($data['Webpage Code'])
         );
 
-       // print "$sql\n";
+        // print "$sql\n";
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
@@ -215,7 +201,7 @@ class Webpage extends DB_Table {
                 $this->found_key = $row['Webpage Key'];
                 $this->get_data('id', $this->found_key);
                 $this->duplicated_field = 'Webpage Code';
-
+                $this->msg = sprintf(_('Another web page has same code %s'),$data['Webpage Code']);
                 return;
             }
         } else {
@@ -257,7 +243,7 @@ class Webpage extends DB_Table {
         $sql    = sprintf(
             "INSERT INTO `Webpage Dimension` %s %s", $keys, $values
         );
-//print "=======  $sql\"";
+        //print "=======  $sql\"";
         if ($this->db->exec($sql)) {
             $this->id  = $this->db->lastInsertId();
             $this->msg = _("Webpage created");
@@ -268,9 +254,8 @@ class Webpage extends DB_Table {
             $this->version = $this->create_version();
 
 
-            switch ($this->get('Webpage Class')) {
+            switch ($this->get('Webpage Scope')) {
                 case 'Product':
-
 
 
                     break;
@@ -290,22 +275,28 @@ class Webpage extends DB_Table {
 
     function create_version() {
 
+        include_once('class.Website.php');
+        $website = new Website($this->get('Webpage Website Key'));
 
         $this->new_object = false;
 
         $data['editor'] = $this->editor;
 
-        $data['Webpage Version Webpage Key'] = $this->id;
-        $data['Webpage Version Valid From']  = gmdate('Y-m-d H:i:s');
+
+        // print $this->get('Webpage Scope')."\n";
+
+        $data['Webpage Version Webpage Key']  = $this->id;
+        $data['Webpage Version Valid From']   = gmdate('Y-m-d H:i:s');
+        $data['Webpage Version Template Key'] = $website->get_default_template_key($this->get('Webpage Scope'));
 
 
         if (!array_key_exists('Webpage Version Code', $data) or $data['Webpage Version Code'] == '') {
 
-            $number_webpages = count($this->get_version_keys());
+            $number_web_pages = count($this->get_version_keys());
 
-            if ($number_webpages < 26) {
+            if ($number_web_pages < 26) {
                 $alphabet                     = range('A', 'Z');
-                $data['Webpage Version Code'] = $alphabet[$number_webpages];
+                $data['Webpage Version Code'] = $alphabet[$number_web_pages];
             }
 
 
@@ -321,7 +312,7 @@ class Webpage extends DB_Table {
                 $this->update_versions_data();
 
 
-                switch ($this->get('Webpage Class')) {
+                switch ($this->get('Webpage Scope')) {
                     case 'Hub':
                         $version->update(
                             array(

@@ -199,11 +199,11 @@ class Product extends Asset {
             $keys .= ",`".$key."`";
             if (in_array(
                 $key, array(
-                    'Product Valid To',
-                    'Product Unit Weight',
-                    'Product Outer Weight',
-                    'Product RRP'
-                )
+                        'Product Valid To',
+                        'Product Unit Weight',
+                        'Product Outer Weight',
+                        'Product RRP'
+                    )
             )) {
                 $values .= ','.prepare_mysql($value, true);
 
@@ -250,7 +250,7 @@ class Product extends Asset {
             $this->update_historic_object();
             $this->get_data('id', $this->id);
 
-          //  $store=new Store($this->get())
+            //  $store=new Store($this->get())
 
 
         } else {
@@ -328,8 +328,7 @@ class Product extends Asset {
 
         $states_to_change = '';
         if ($change_orders_in_basket) {
-            $states_to_change
-                = "'In Process by Customer','In Process','Out of Stock in Basket',";
+            $states_to_change = "'In Process by Customer','In Process','Out of Stock in Basket',";
         }
         if ($change_orders_in_process) {
             $states_to_change .= "'Submitted by Customer','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Packing','Packed','Packed Done','No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other'";
@@ -411,9 +410,8 @@ class Product extends Asset {
 
             case 'Webpage Related Products':
 
-                $related_products_data
-                                  = $this->webpage->get_related_products_data();
-                $related_products = '';
+                $related_products_data = $this->webpage->get_related_products_data();
+                $related_products      = '';
 
 
                 foreach ($related_products_data['links'] as $link) {
@@ -683,8 +681,7 @@ class Product extends Asset {
                         $web_configuration = _('Offline');
                         break;
                     default:
-                        $web_configuration
-                            = $this->data['Product Web Configuration'];
+                        $web_configuration = $this->data['Product Web Configuration'];
                         break;
                 }
 
@@ -1101,11 +1098,11 @@ class Product extends Asset {
 
                 if (!in_array(
                     $value, array(
-                        'Active',
-                        'Suspended',
-                        'Discontinued',
-                        'Discontinuing'
-                    )
+                              'Active',
+                              'Suspended',
+                              'Discontinued',
+                              'Discontinuing'
+                          )
                 )
                 ) {
                     $this->error = true;
@@ -1162,11 +1159,11 @@ class Product extends Asset {
 
                 if (!in_array(
                     $value, array(
-                        'Online Force Out of Stock',
-                        'Online Auto',
-                        'Offline',
-                        'Online Force For Sale'
-                    )
+                              'Online Force Out of Stock',
+                              'Online Auto',
+                              'Offline',
+                              'Online Force For Sale'
+                          )
                 )
                 ) {
                     $this->error = true;
@@ -1391,11 +1388,9 @@ class Product extends Asset {
                             $this->db->exec($sql);
 
                             if (isset($materials_to_update[$material_data['id']])) {
-                                $materials_to_update[$material_data['id']]
-                                    = false;
+                                $materials_to_update[$material_data['id']] = false;
                             } else {
-                                $materials_to_update[$material_data['id']]
-                                    = true;
+                                $materials_to_update[$material_data['id']] = true;
                             }
 
                         }
@@ -1653,9 +1648,9 @@ class Product extends Asset {
             case 'Product Public':
                 if ($value == 'Yes' and in_array(
                         $this->get('Product Status'), array(
-                            'Suspended',
-                            'Discontinued'
-                        )
+                                                        'Suspended',
+                                                        'Discontinued'
+                                                    )
                     )
                 ) {
                     return;
@@ -1889,11 +1884,11 @@ class Product extends Asset {
 
     function get_webpage() {
 
-        $page_key = 0;
         include_once 'class.Page.php';
-        $sql = sprintf(
-            'SELECT `Page Key` FROM `Page Store Dimension` WHERE `Page Store Section Type`="Product"  AND  `Page Parent Key`=%d ', $this->id
-        );
+        // Todo: migrate to new webpage class
+
+        $page_key = 0;
+        $sql      = sprintf('SELECT `Page Key` FROM `Page Store Dimension` WHERE `Page Store Section Type`="Product"  AND  `Page Parent Key`=%d ', $this->id);
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
@@ -1903,8 +1898,11 @@ class Product extends Asset {
             print_r($error_info = $this->db->errorInfo());
             exit;
         }
-        $this->webpage         = new Page($row['Page Key']);
-        $this->webpage->editor = $this->editor;
+
+
+        $page = new Page($page_key);
+
+        return $page;
 
 
     }
@@ -2021,10 +2019,10 @@ class Product extends Asset {
 
             $msg = new_housekeeping_fork(
                 'au_housekeeping', array(
-                    'type'                     => 'update_web_state_slow_forks',
-                    'web_availability_updated' => $web_availability_updated,
-                    'product_id'               => $this->id
-                ), $account->get('Account Code')
+                'type'                     => 'update_web_state_slow_forks',
+                'web_availability_updated' => $web_availability_updated,
+                'product_id'               => $this->id
+            ), $account->get('Account Code')
             );
 
         } else {
@@ -2410,8 +2408,7 @@ class Product extends Asset {
         $new_part_list_keys = array();
         foreach ($value as $product_part) {
             if (isset($product_part['Key'])) {
-                $new_part_list_keys[$product_part['Key']]
-                    = $product_part['Key'];
+                $new_part_list_keys[$product_part['Key']] = $product_part['Key'];
             }
         }
 
@@ -2605,11 +2602,10 @@ class Product extends Asset {
                     );
 
                     foreach ($linked_fields as $key => $value) {
-                        $value = preg_replace(
+                        $value                      = preg_replace(
                             '/\s/', '_', $value
                         );
-                        $linked_fields_data[$value]
-                               = $row['Product Part Part SKU'];
+                        $linked_fields_data[$value] = $row['Product Part Part SKU'];
                     }
 
                 }
@@ -2800,8 +2796,7 @@ class Product extends Asset {
         include_once 'utils/date_functions.php';
 
 
-        list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)
-            = calculate_interval_dates($this->db, $interval);
+        list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb) = calculate_interval_dates($this->db, $interval);
 
 
         if ($this_year) {

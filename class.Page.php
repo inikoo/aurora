@@ -2026,6 +2026,12 @@ class Page extends DB_Table {
     function get($key) {
         switch ($key) {
 
+            case 'Webpage Website Key':
+                return $this->get('Page Site Key');
+                break;
+            case 'Code':
+                return $this->data['Page Code'];
+                break;
 
             case  'Page Found In Page Key':
 
