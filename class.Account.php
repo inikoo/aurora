@@ -212,11 +212,13 @@ class Account extends DB_Table {
                     return number($_number, 0);
                 }
 
-                if (preg_match('/^(Total|1).*(Amount|Profit)$/', $key)) {
+                if (preg_match('/^(DC Orders|Orders|Total|1).*(Amount|Profit)$/', $key)) {
 
-                    $amount = 'Account '.$key;
+                    $field = 'Account '.$key;
+                    $field =preg_replace('/DC Orders/', 'Orders', $field);
 
-                    return money($this->data[$amount],$this->get('Account Currency'));
+
+                    return money($this->data[$field],$this->get('Account Currency'));
                 }
                 
                 if (array_key_exists($key, $this->data)) {
