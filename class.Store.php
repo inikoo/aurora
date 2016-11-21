@@ -928,7 +928,7 @@ class Store extends DB_Table {
         $this->update_orders_packed_data();
         $this->update_orders_ready_to_ship_data();
 
- 
+
 
 
         $this->data['Store Total Acc Orders']  = 0;
@@ -2309,43 +2309,10 @@ class Store extends DB_Table {
 
             return $amount;
         }
+        if (preg_match('/^(DC Orders).*(Amount|Profit)$/', $key)) {
 
-        if (preg_match('/^(Orders|Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Minify$/', $key)) {
-
-            $field = 'Store '.preg_replace('/ Minify$/', '', $key);
-
-            $suffix          = '';
-            $fraction_digits = 'NO_FRACTION_DIGITS';
-            if ($this->data[$field] >= 1000000) {
-                $suffix          = 'M';
-                $fraction_digits = 'DOUBLE_FRACTION_DIGITS';
-                $_amount         = $this->data[$field] / 1000000;
-            } elseif ($this->data[$field] >= 10000) {
-                $suffix  = 'K';
-                $_amount = $this->data[$field] / 1000;
-            } elseif ($this->data[$field] > 100) {
-                $fraction_digits = 'SINGLE_FRACTION_DIGITS';
-                $suffix          = 'K';
-                $_amount         = $this->data[$field] / 1000;
-            } else {
-                $_amount = $this->data[$field];
-            }
-
-            $amount = money($_amount, $this->get('Store Currency Code'), $locale = false, $fraction_digits).$suffix;
-
-            return $amount;
-        }
-
-        if (preg_match('/^(DC Orders).*(Amount|Profit) Soft Minify$/', $key)) {
-
-            $field = 'Store '.preg_replace('/ Soft Minify$/', '', $key);
-
-            $suffix          = '';
-            $fraction_digits = 'NO_FRACTION_DIGITS';
-            $_amount         = $this->data[$field];
-
-
-            $amount = money($_amount, $account->get('Account Currency'), $locale = false, $fraction_digits).$suffix;
+            $field = 'Store '.$key;
+            return money($this->data[$field],  $account->get('Account Currency'));
 
             return $amount;
         }
@@ -2376,6 +2343,34 @@ class Store extends DB_Table {
 
 
         }
+
+        if (preg_match('/^(Orders|Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Minify$/', $key)) {
+
+            $field = 'Store '.preg_replace('/ Minify$/', '', $key);
+
+            $suffix          = '';
+            $fraction_digits = 'NO_FRACTION_DIGITS';
+            if ($this->data[$field] >= 1000000) {
+                $suffix          = 'M';
+                $fraction_digits = 'DOUBLE_FRACTION_DIGITS';
+                $_amount         = $this->data[$field] / 1000000;
+            } elseif ($this->data[$field] >= 10000) {
+                $suffix  = 'K';
+                $_amount = $this->data[$field] / 1000;
+            } elseif ($this->data[$field] > 100) {
+                $fraction_digits = 'SINGLE_FRACTION_DIGITS';
+                $suffix          = 'K';
+                $_amount         = $this->data[$field] / 1000;
+            } else {
+                $_amount = $this->data[$field];
+            }
+
+            $amount = money($_amount, $this->get('Store Currency Code'), $locale = false, $fraction_digits).$suffix;
+
+            return $amount;
+        }
+
+
 
         if (preg_match('/^(Orders|Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Soft Minify$/', $key)) {
 

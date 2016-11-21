@@ -66,14 +66,11 @@ switch ($tipo) {
 function pending_orders($data, $db, $user, $account) {
 
 
-
-
     $_SESSION['dashboard_state']['pending_orders'] = array(
-        'parent'             => $data['parent'],
-        'currency'         => $data['currency'],
+        'parent'   => $data['parent'],
+        'currency' => $data['currency'],
 
     );
-
 
 
     if ($data['parent'] != '') {
@@ -87,22 +84,47 @@ function pending_orders($data, $db, $user, $account) {
     } else {
         $object = new Account();
         $object->load_acc_data();
-        $title  = $object->get('Code');
+        $title = $object->get('Code');
     }
 
 
     $pending_orders_data = array(
-        'Orders_In_Basket_Number' => array('value'=>$object->get('Orders In Basket Number')),
-        'Orders_In_Basket_Amount' => array('value'=>($data['currency']=='account'?$object->get('DC Orders In Basket Amount Minify'):$object->get('Orders In Basket Amount Minify'))),
+        'Orders_In_Basket_Number' => array('value' => $object->get('Orders In Basket Number')),
+        'Orders_In_Basket_Amount' => array(
+            'value' => ($data['currency'] == 'account' ? $object->get('DC Orders In Basket Amount Minify') : $object->get('Orders In Basket Amount Minify')),
+            'title' => ($data['currency'] == 'account' ? $object->get('DC Orders In Basket Amount') : $object->get('Orders In Basket Amount'))
+        ),
 
-        'Orders_In_Process_Not_Paid_Number' => array('value'=>$object->get('Orders In Process Not Paid Number')),
-        'Orders_In_Process_Paid_Number' => array('value'=>$object->get('Orders In Process Paid Number')),
-        'Orders_In_Process_Not_Paid_Amount' => array('value'=>($data['currency']=='account'?$object->get('DC Orders In Process Not Paid Amount Minify'):$object->get('Orders In Process Not Paid Amount Minify'))),
-        'Orders_In_Process_Paid_Amount' => array('value'=>($data['currency']=='account'?$object->get('DC Orders In Process Paid Amount Minify'):$object->get('Orders In Process Paid Amount Minify'))),
+        'Orders_In_Process_Not_Paid_Number' => array('value' => $object->get('Orders In Process Not Paid Number')),
+        'Orders_In_Process_Paid_Number'     => array('value' => $object->get('Orders In Process Paid Number')),
+        'Orders_In_Process_Not_Paid_Amount' => array(
+            'value' => ($data['currency'] == 'account' ? $object->get('DC Orders In Process Not Paid Amount Minify') : $object->get('Orders In Process Not Paid Amount Minify')),
+            'title' => ($data['currency'] == 'account' ? $object->get('DC Orders In Process Not Paid Amount') : $object->get('Orders In Process Not Paid Amount'))
 
-        'Orders_In_Warehouse_Number' => array('value'=>$object->get('Orders In Warehouse Number')),
-        'Orders_In_Warehouse_Amount' => array('value'=>($data['currency']=='account'?$object->get('DC Orders In Warehouse Amount Minify'):$object->get('Orders In Warehouse Amount Minify'))),
+        ),
+        'Orders_In_Process_Paid_Amount'     => array(
+            'value' => ($data['currency'] == 'account' ? $object->get('DC Orders In Process Paid Amount Minify') : $object->get('Orders In Process Paid Amount Minify')),
+            'title' => ($data['currency'] == 'account' ? $object->get('DC Orders In Process Paid Amount') : $object->get('Orders In Process Paid Amount'))
+        ),
 
+        'Orders_In_Warehouse_Number' => array('value' => $object->get('Orders In Warehouse Number')),
+        'Orders_In_Warehouse_Amount' => array(
+            'value' => ($data['currency'] == 'account' ? $object->get('DC Orders In Warehouse Amount Minify') : $object->get('Orders In Warehouse Amount Minify')),
+            'title' => ($data['currency'] == 'account' ? $object->get('DC Orders In Warehouse Amount') : $object->get('Orders In Warehouse Amount'))
+
+        ),
+
+        'Orders_Packed_Number' => array('value' => $object->get('Orders Packed Number')),
+        'Orders_Packed_Amount' => array(
+            'value' => ($data['currency'] == 'account' ? $object->get('DC Orders Packed Amount Minify') : $object->get('Orders Packed Amount Minify')),
+            'title' => ($data['currency'] == 'account' ? $object->get('DC Orders Packed Amount') : $object->get('Orders Packed Amount'))
+        ),
+
+        'Orders_In_Dispatch_Area_Number' => array('value' => $object->get('Orders In Dispatch Area Number')),
+        'Orders_In_Dispatch_Area_Amount' => array(
+            'value' => ($data['currency'] == 'account' ? $object->get('DC Orders In Dispatch Area Amount Minify') : $object->get('Orders In Dispatch Area Amount Minify')),
+            'title' => ($data['currency'] == 'account' ? $object->get('DC Orders In Dispatch Area Amount') : $object->get('Orders In Dispatch Area Amount'))
+        ),
 
     );
 

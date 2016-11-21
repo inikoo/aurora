@@ -58,13 +58,15 @@
 
         <span>{t}In basket{/t}</span>
         <div class="title"><span class="Orders_In_Basket_Number">{$object->get('Orders In Basket Number')}</span></div>
-        <div ><span class="Orders_In_Basket_Amount">{if $currency=='account'}{$object->get('DC Orders In Basket Amount Minify')}{else}{$object->get('Orders In Basket Amount Minify')}{/if}</span></div>
+        <div ><span class="Orders_In_Basket_Amount" title="{if $currency=='account'}{$object->get('DC Orders In Basket Amount')}{else}{$object->get('Orders In Basket Amount')}{/if}">{if $currency=='account'}{$object->get('DC Orders In Basket Amount Minify')}{else}{$object->get('Orders In Basket Amount Minify')}{/if}</span></div>
 
     </li>
     <li class="flex-item">
         <span>{t}Submitted{/t}</span>
         <div class="title"><span class="discreet" ><span class="Orders_In_Process_Not_Paid_Number" title="{t}Not paid submitted orders{/t}">{$object->get('Orders In Process Not Paid Number')}</span> | </span> <span class="Orders_In_Process_Paid_Number" title="{t}Paid submitted orders{/t}">{$object->get('Orders In Process Paid Number')}</span> </div>
-        <div ><span class="discreet"><span class="Orders_In_Process_Not_Paid_Amount">{if $currency=='account'}{$object->get('DC Orders In Process Not Paid Amount Minify')}{else}{$object->get('Orders In Process Not Paid Amount Minify')}{/if}</span> | </span> <span class="Orders_In_Process_Paid_Amount">{if $currency=='account'}{$object->get('DC Orders In Process Paid Amount Minify')}{else}{$object->get('Orders In Process Paid Amount Minify')}{/if}</span></div>
+        <div >
+            <span class="discreet"><span class="Orders_In_Process_Not_Paid_Amount" title="{if $currency=='account'}{$object->get('DC Orders In Process Not Paid Amount')}{else}{$object->get('Orders In Process Not Paid Amount')}{/if}">{if $currency=='account'}{$object->get('DC Orders In Process Not Paid Amount Minify')}{else}{$object->get('Orders In Process Not Paid Amount Minify')}{/if}</span> | </span>
+            <span class="Orders_In_Process_Paid_Amount" title="{if $currency=='account'}{$object->get('DC Orders In Process Paid Amount')}{else}{$object->get('Orders In Process Paid Amount')}{/if}">{if $currency=='account'}{$object->get('DC Orders In Process Paid Amount Minify')}{else}{$object->get('Orders In Process Paid Amount Minify')}{/if}</span></div>
 
     </li>
     <li class="flex-item">
@@ -75,9 +77,9 @@
             <span class="Orders_In_Dispatch_Area_Number">{$object->get('Orders In Dispatch Area Number')}</span>
         </div>
         <div >
-            <span class="Orders_In_Warehouse_Amount">{if $currency=='account'}{$object->get('DC Orders In Warehouse Amount Minify')}{else}{$object->get('Orders In Warehouse Amount Minify')}{/if}</span> |
-            <span class="Orders_Packed_Amount">{if $currency=='account'}{$object->get('DC Orders Packed Amount Minify')}{else}{$object->get('Orders Packed Amount Minify')}{/if}</span> |
-            <span class="Orders_In_Dispatch_Area_Amount">{if $currency=='account'}{$object->get('DC Orders In Dispatch Area Amount Minify')}{else}{$object->get('Orders In Dispatch Area Amount Minify')}{/if}</span>
+            <span class="Orders_In_Warehouse_Amount" title="{if $currency=='account'}{$object->get('DC Orders In Warehouse Amount')}{else}{$object->get('Orders In Warehouse Amount')}{/if}">{if $currency=='account'}{$object->get('DC Orders In Warehouse Amount Minify')}{else}{$object->get('Orders In Warehouse Amount Minify')}{/if}</span> |
+            <span class="Orders_Packed_Amount" title="{if $currency=='account'}{$object->get('DC Orders Packed Amount')}{else}{$object->get('Orders Packed Amount')}{/if}">{if $currency=='account'}{$object->get('DC Orders Packed Amount Minify')}{else}{$object->get('Orders Packed Amount Minify')}{/if}</span> |
+            <span class="Orders_In_Dispatch_Area_Amount" title="{if $currency=='account'}{$object->get('DC Orders In Dispatch Area Amount')}{else}{$object->get('Orders In Dispatch Area Amount')}{/if}">{if $currency=='account'}{$object->get('DC Orders In Dispatch Area Amount Minify')}{else}{$object->get('Orders In Dispatch Area Amount Minify')}{/if}</span>
 
         </div>
 
@@ -142,6 +144,12 @@ if(parent==''){
                 console.log(r.data[record].value)
 
                 $('.' + record).html(r.data[record].value)
+
+                if(r.data[record].title!= undefined ) {
+                    $('.' + record).prop('title', r.data[record].title);
+                }
+
+
 
 
             }
