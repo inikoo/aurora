@@ -1902,6 +1902,8 @@ class Product extends Asset {
 
         $page = new Page($page_key);
 
+        $this->webpage= $page;
+
         return $page;
 
 
