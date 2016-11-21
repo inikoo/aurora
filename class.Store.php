@@ -490,7 +490,7 @@ class Store extends DB_Table {
 
         );
 
-         // print "$sql\n";
+        // print "$sql\n";
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
@@ -528,9 +528,9 @@ class Store extends DB_Table {
 
         $this->update(
             array(
-                'Store Active Products'       => $active_products,
-                'Store Suspended Products'    => $suspended_products,
-                'Store Discontinued Products' => $discontinued_products,
+                'Store Active Products'         => $active_products,
+                'Store Suspended Products'      => $suspended_products,
+                'Store Discontinued Products'   => $discontinued_products,
                 'Store Active Web For Sale'     => $elements_active_web_status_numbers['For Sale'],
                 'Store Active Web Out of Stock' => $elements_active_web_status_numbers['Out of Stock'],
                 'Store Active Web Offline'      => $elements_active_web_status_numbers['Offline']
@@ -653,18 +653,56 @@ class Store extends DB_Table {
 
     }
 
-    function update_orders() {
 
+    function update_orders_in_basket_data() {
 
-        //'In Process by Customer','Waiting for Payment Confirmation','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship',,'Packing','Packed','Packed Done','Cancelled','Suspended','Cancelled by Customer','Dispatched';
-
-
-        $states = array(
-            'in_basket'           => array(
+        $data = array(
+            'in_basket' => array(
                 'number'    => 0,
                 'amount'    => 0,
                 'dc_amount' => 0
             ),
+        );
+
+        $sql = sprintf(
+            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`),0) AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d and `Order Number Items`>0 AND `Order Current Dispatch State`  IN ('In Process by Customer','In Process')  ",
+            $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $data['in_basket']['number']    = $row['num'];
+                $data['in_basket']['amount']    = $row['amount'];
+                $data['in_basket']['dc_amount'] = $row['dc_amount'];
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+
+        $data_to_update = array(
+            'Store Orders In Basket Number'              => $data['in_basket']['number'],
+            'Store Orders In Basket Amount'              => $data['in_basket']['amount'],
+            'Store DC Orders In Basket Amount'           => $data['in_basket']['dc_amount'],
+
+
+
+        );
+        $this->update($data_to_update, 'no_history');
+    }
+
+
+    function update_orders_in_process_data() {
+
+        $data = array(
+
             'in_process_paid'     => array(
                 'number'    => 0,
                 'amount'    => 0,
@@ -674,7 +712,228 @@ class Store extends DB_Table {
                 'number'    => 0,
                 'amount'    => 0,
                 'dc_amount' => 0
+            )
+        );
+        $sql = sprintf(
+            'SELECT `Order Current Dispatch State`,count(*) AS num,ifnull(sum(`Order Total Net Amount`),0) AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d  AND `Order Current Dispatch State` ="Submitted by Customer"  AND `Order Current Payment State`="Paid" ',
+            $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $data['in_process_paid']['number'] += $row['num'];
+                $data['in_process_paid']['amount'] += $row['amount'];
+                $data['in_process_paid']['dc_amount'] += $row['dc_amount'];
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $sql = sprintf(
+            'SELECT `Order Current Dispatch State`,count(*) AS num,ifnull(sum(`Order Total Net Amount`) ,0)AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d  AND `Order Current Dispatch State`="Submitted by Customer"  AND `Order Current Payment State`!="Paid" ',
+            $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $data['in_process_not_paid']['number'] += $row['num'];
+                $data['in_process_not_paid']['amount'] += $row['amount'];
+                $data['in_process_not_paid']['dc_amount'] += $row['dc_amount'];
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $data_to_update = array(
+            'Store Orders In Process Paid Number'        => $data['in_process_paid']['number'],
+            'Store Orders In Process Paid Amount'        => $data['in_process_paid']['amount'],
+            'Store DC Orders In Process Paid Amount'     => $data['in_process_paid']['dc_amount'],
+            'Store Orders In Process Not Paid Number'    => $data['in_process_not_paid']['number'],
+            'Store Orders In Process Not Paid Amount'    => $data['in_process_not_paid']['amount'],
+            'Store DC Orders In Process Not Paid Amount' => $data['in_process_not_paid']['dc_amount'],
+
+
+        );
+        $this->update($data_to_update, 'no_history');
+    }
+
+
+
+
+    function update_orders_in_warehouse_data() {
+
+        $data = array(
+            'warehouse' => array(
+                'number'    => 0,
+                'amount'    => 0,
+                'dc_amount' => 0
             ),
+        );
+
+
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`),0) AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d  AND `Order Current Dispatch State`  IN ( 'Ready to Pick', 'Picking & Packing', 'Ready to Ship', 'Packing')  ",
+            $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $data['warehouse']['number']    = $row['num'];
+                $data['warehouse']['amount']    = $row['amount'];
+                $data['warehouse']['dc_amount'] = $row['dc_amount'];
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+
+        $data_to_update = array(
+            'Store Orders In Warehouse Number'              => $data['warehouse']['number'],
+            'Store Orders In Warehouse Amount'              => $data['warehouse']['amount'],
+            'Store DC Orders In Warehouse Amount'           => $data['warehouse']['dc_amount'],
+
+
+
+        );
+        $this->update($data_to_update, 'no_history');
+    }
+
+
+    function update_orders_packed_data() {
+
+        $data = array(
+            'packed' => array(
+                'number'    => 0,
+                'amount'    => 0,
+                'dc_amount' => 0
+            ),
+        );
+
+
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`),0) AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d  AND `Order Current Dispatch State` ='Packed'  ",
+            $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $data['packed']['number']    = $row['num'];
+                $data['packed']['amount']    = $row['amount'];
+                $data['packed']['dc_amount'] = $row['dc_amount'];
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+
+        $data_to_update = array(
+            'Store Orders Packed Number'              => $data['packed']['number'],
+            'Store Orders Packed Amount'              => $data['packed']['amount'],
+            'Store DC Orders Packed Amount'           => $data['packed']['dc_amount'],
+
+
+
+        );
+
+
+        $this->update($data_to_update, 'no_history');
+    }
+
+
+    function update_orders_ready_to_ship_data() {
+
+        $data = array(
+            'ready_to_ship' => array(
+                'number'    => 0,
+                'amount'    => 0,
+                'dc_amount' => 0
+            ),
+        );
+
+
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`),0) AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d  AND `Order Current Dispatch State` ='Packed Done'  ",
+            $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $data['ready_to_ship']['number']    = $row['num'];
+                $data['ready_to_ship']['amount']    = $row['amount'];
+                $data['ready_to_ship']['dc_amount'] = $row['dc_amount'];
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+
+        $data_to_update = array(
+            'Store Orders In Dispatch Area Number'              => $data['ready_to_ship']['number'],
+            'Store Orders In Dispatch Area Amount'              => $data['ready_to_ship']['amount'],
+            'Store DC Orders In Dispatch Area Amount'           => $data['ready_to_ship']['dc_amount'],
+
+
+
+        );
+        $this->update($data_to_update, 'no_history');
+    }
+
+
+    function update_orders() {
+
+        $this->update_orders_in_basket_data();
+        $this->update_orders_in_process_data();
+        $this->update_orders_in_warehouse_data();
+        $this->update_orders_packed_data();
+        $this->update_orders_ready_to_ship_data();
+
+        //'In Process by Customer','Waiting for Payment Confirmation','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship',,'Packing','Packed','Packed Done','Cancelled','Suspended','Cancelled by Customer','Dispatched';
+
+
+        $states = array(
+
+
             'in_warehouse'        => array(
                 'number'    => 0,
                 'amount'    => 0,
@@ -693,48 +952,7 @@ class Store extends DB_Table {
         );
 
 
-        $sql = sprintf(
-            'SELECT `Order Current Dispatch State`,count(*) AS num,sum(`Order Total Net Amount`) AS amount,sum(`Order Total Net Amount`*`Order Currency Exchange`) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d  AND `Order Current Dispatch State` IN ("In Process","Submitted by Customer")  AND `Order Current Payment State`="Paid" ',
-            $this->id
-        );
 
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-
-                $states['in_process_paid']['number'] += $row['num'];
-                $states['in_process_paid']['amount'] += $row['amount'];
-                $states['in_process_paid']['dc_amount'] += $row['dc_amount'];
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        $sql = sprintf(
-            'SELECT `Order Current Dispatch State`,count(*) AS num,sum(`Order Total Net Amount`) AS amount,sum(`Order Total Net Amount`*`Order Currency Exchange`) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d  AND `Order Current Dispatch State` IN ("In Process","Submitted by Customer")  AND `Order Current Payment State`!="Paid" ',
-            $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-
-                $states['in_process_not_paid']['number'] += $row['num'];
-                $states['in_process_not_paid']['amount'] += $row['amount'];
-                $states['in_process_not_paid']['dc_amount'] += $row['dc_amount'];
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
 
 
         $sql = sprintf(
@@ -799,10 +1017,7 @@ class Store extends DB_Table {
         }
 
         $data_to_update = array(
-            'Store Orders In Basket Number'              => $states['in_basket']['number'],
-            'Store Orders In Basket Amount'              => $states['in_basket']['amount'],
-            'Store DC Orders In Basket Amount'           => $states['in_basket']['dc_amount'],
-            'Store Orders In Process Paid Number'        => $states['in_process_paid']['number'],
+                'Store Orders In Process Paid Number'        => $states['in_process_paid']['number'],
             'Store Orders In Process Paid Amount'        => $states['in_process_paid']['amount'],
             'Store DC Orders In Process Paid Amount'     => $states['in_process_paid']['dc_amount'],
             'Store Orders In Process Not Paid Number'    => $states['in_process_not_paid']['number'],
@@ -1166,7 +1381,6 @@ class Store extends DB_Table {
 
 
     }
-
 
 
     function update_dispatch_times($interval) {
@@ -2074,11 +2288,9 @@ class Store extends DB_Table {
     }
 
 
-
-
-
     function get($key = '') {
 
+        global $account;
 
         if (!$this->id) {
             return '';
@@ -2120,12 +2332,12 @@ class Store extends DB_Table {
             case('Valid From'):
 
                 return strftime(
-                    "%a %e %b %Y", strtotime($this->data['Store Valid From'] .' +0:00')
+                    "%a %e %b %Y", strtotime($this->data['Store Valid From'].' +0:00')
                 );
                 break;
             case('Valid To'):
                 return strftime(
-                    "%a %e %b %Y", strtotime($this->data['Store Valid To'] .' +0:00')
+                    "%a %e %b %Y", strtotime($this->data['Store Valid To'].' +0:00')
                 );
                 break;
             case("Sticky Note"):
@@ -2146,9 +2358,9 @@ class Store extends DB_Table {
             case('Active Web Offline'):
                 return number($this->data['Store '.$key]);
             case 'Percentage Active Web Out of Stock':
-                return percentage($this->data['Store Active Web Out of Stock'],$this->data['Store Active Products']);
+                return percentage($this->data['Store Active Web Out of Stock'], $this->data['Store Active Products']);
             case 'Percentage Active Web Offline':
-                return percentage($this->data['Store Active Web Offline'],$this->data['Store Active Products']);
+                return percentage($this->data['Store Active Web Offline'], $this->data['Store Active Products']);
 
             case('Potential Customers'):
                 return number(
@@ -2195,7 +2407,21 @@ class Store extends DB_Table {
         }
 
 
-        if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Minify$/', $key)) {
+        if (preg_match('/^(DC Orders).*(Amount) Soft Minify$/', $key)) {
+
+            $field = 'Store '.preg_replace('/ Soft Minify$/', '', $key);
+
+            $suffix          = '';
+            $fraction_digits = 'NO_FRACTION_DIGITS';
+            $_amount         = $this->data[$field];
+
+
+            $amount = money($_amount, $account->get('Account Currency'), $locale = false, $fraction_digits).$suffix;
+
+            return $amount;
+        }
+
+        if (preg_match('/^(Orders|Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Minify$/', $key)) {
 
             $field = 'Store '.preg_replace('/ Minify$/', '', $key);
 
@@ -2220,6 +2446,48 @@ class Store extends DB_Table {
 
             return $amount;
         }
+
+        if (preg_match('/^(DC Orders).*(Amount|Profit) Soft Minify$/', $key)) {
+
+            $field = 'Store '.preg_replace('/ Soft Minify$/', '', $key);
+
+            $suffix          = '';
+            $fraction_digits = 'NO_FRACTION_DIGITS';
+            $_amount         = $this->data[$field];
+
+
+            $amount = money($_amount, $account->get('Account Currency'), $locale = false, $fraction_digits).$suffix;
+
+            return $amount;
+        }
+        if (preg_match('/^(DC Orders).*(Amount|Profit) Minify$/', $key)) {
+
+            $field = 'Store '.preg_replace('/ Minify$/', '', $key);
+
+            $suffix          = '';
+            $fraction_digits = 'NO_FRACTION_DIGITS';
+            if ($this->data[$field] >= 1000000) {
+                $suffix          = 'M';
+                $fraction_digits = 'DOUBLE_FRACTION_DIGITS';
+                $_amount         = $this->data[$field] / 1000000;
+            } elseif ($this->data[$field] >= 10000) {
+                $suffix  = 'K';
+                $_amount = $this->data[$field] / 1000;
+            } elseif ($this->data[$field] > 100) {
+                $fraction_digits = 'SINGLE_FRACTION_DIGITS';
+                $suffix          = 'K';
+                $_amount         = $this->data[$field] / 1000;
+            } else {
+                $_amount = $this->data[$field];
+            }
+
+            $amount = money($_amount, $account->get('Account Currency'), $locale = false, $fraction_digits).$suffix;
+
+            return $amount;
+
+
+        }
+
         if (preg_match('/^(Orders|Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Soft Minify$/', $key)) {
 
             $field = 'Store '.preg_replace('/ Soft Minify$/', '', $key);
@@ -2263,7 +2531,7 @@ class Store extends DB_Table {
 
             $amount = 'Store '.$key;
 
-            return money($this->data[$amount],$this->get('Store Currency Code'));
+            return money($this->data[$amount], $this->get('Store Currency Code'));
         }
         if (preg_match(
                 '/^(Total|1).*(Quantity (Ordered|Invoiced|Delivered|)|Customers|Customers Contacts)$/', $key

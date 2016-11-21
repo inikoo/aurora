@@ -11,7 +11,7 @@
 */
 
 
-function get_dashboard_pending_orders($db, $account, $user, $smarty, $object = '', $display_device_version = 'desktop') {
+function get_dashboard_pending_orders($db, $account, $user, $smarty, $parent = '', $currency, $display_device_version = 'desktop') {
 
 
     include_once 'utils/date_functions.php';
@@ -19,30 +19,39 @@ function get_dashboard_pending_orders($db, $account, $user, $smarty, $object = '
     $smarty->assign('user', $user);
 
 
-    if ($object != '') {
+    if ($parent != '') {
         include_once 'class.Store.php';
 
-        $_object = new Store($object);
-        $_object->load_acc_data();
+        $object = new Store($parent);
+        $object->load_acc_data();
 
         //  print_r($_object);
-        $title = $_object->get('Code');
+        $title = $object->get('Code');
 
     } else {
-        $_object = new Account();
-        $title   = $_object->get('Code');
+        $object = new Account();
+        $object->load_acc_data();
+        $title = $object->get('Code');
     }
+
+
+    $object->update_orders_in_basket_data();
+    $object->update_orders_in_process_data();
+    $object->update_orders_in_warehouse_data();
+    $object->update_orders_packed_data();
+    $object->update_orders_ready_to_ship_data();
+
 
     $stores = array();
     $sql    = sprintf('SELECT `Store Key`,`Store Code` FROM `Store Dimension` WHERE `Store State`="Normal" ');
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
             $stores[] = array(
-                'key' => $row['Store Key'],
-                'code'=>$row['Store Code']
-                );
+                'key'  => $row['Store Key'],
+                'code' => $row['Store Code']
+            );
 
-            }
+        }
     } else {
         print_r($error_info = $db->errorInfo());
         print "$sql\n";
@@ -51,8 +60,9 @@ function get_dashboard_pending_orders($db, $account, $user, $smarty, $object = '
 
 
     $smarty->assign('store_title', $title);
-    $smarty->assign('object', $_object);
-    $smarty->assign('object_arg', $object);
+    $smarty->assign('object', $object);
+    $smarty->assign('parent', $parent);
+    $smarty->assign('currency', $currency);
     $smarty->assign('stores', $stores);
 
 

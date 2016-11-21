@@ -11,7 +11,7 @@
 function fork_housekeeping($job) {
 
 
-   // print "fork_housekeeping  original skypping\n";
+    // print "fork_housekeeping  original skypping\n";
 
     if (!$_data = get_fork_metadata($job)) {
         return true;
@@ -24,6 +24,14 @@ function fork_housekeeping($job) {
 
     switch ($data['type']) {
 
+
+        case 'update_basket_data':
+
+            include_once 'class.Store.php';
+            $store = new Store($data['store_key']);
+            $store->update_orders_in_basket_data();
+            $account->update_orders_in_basket_data();
+            break;
 
         case 'update_web_state_slow_forks':
 
@@ -74,12 +82,12 @@ function fork_housekeeping($job) {
                 'SELECT `Product Part Part SKU` FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)  WHERE `Order Key`=%d  ',
                 $data['order_key']
             );
-           // print "$sql\n";
+            // print "$sql\n";
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
                     $part = new Part($row['Product Part Part SKU']);
                     $part->update_stock_in_paid_orders();
-                 //   print $part->get('Reference')."\n";
+                    //   print $part->get('Reference')."\n";
                 }
             } else {
                 print_r($error_info = $db->errorInfo());
@@ -96,13 +104,13 @@ function fork_housekeeping($job) {
                 'SELECT `Product Part Part SKU` FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)  WHERE  `Order Key`=%d  ',
                 $data['order_key']
             );
-           // print "$sql\n";
+            // print "$sql\n";
 
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
                     $part = new Part($row['Product Part Part SKU']);
                     $part->update_stock_in_paid_orders();
-                   // print $part->get('Reference')."\n";
+                    // print $part->get('Reference')."\n";
                 }
             } else {
                 print_r($error_info = $db->errorInfo());
@@ -121,7 +129,7 @@ function fork_housekeeping($job) {
 function fork_housekeeping2($job) {
 
 
-   // print "fork_housekeeping xxxx \n";
+    // print "fork_housekeeping xxxx \n";
 
     if (!$_data = get_fork_metadata($job)) {
         return true;

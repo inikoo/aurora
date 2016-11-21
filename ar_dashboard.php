@@ -30,18 +30,28 @@ switch ($tipo) {
     case 'sales_overview':
         $data = prepare_values(
             $_REQUEST, array(
-                'type'             => array('type' => 'string'),
-                'subtype'             => array('type' => 'substring'),
-                'period'           => array('type' => 'period'),
-                'currency'         => array('type' => 'currency'),
-                'orders_view_type' => array('type' => 'string'),
+                         'type'             => array('type' => 'string'),
+                         'subtype'          => array('type' => 'string'),
+                         'period'           => array('type' => 'period'),
+                         'currency'         => array('type' => 'currency'),
+                         'orders_view_type' => array('type' => 'string'),
 
 
-            )
+                     )
         );
         sales_overview($data, $db, $user, $account);
         break;
+    case 'pending_orders':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'parent'   => array('type' => 'string'),
+                         'currency' => array('type' => 'currency'),
 
+
+                     )
+        );
+        pending_orders($data, $db, $user, $account);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -53,12 +63,66 @@ switch ($tipo) {
 }
 
 
+function pending_orders($data, $db, $user, $account) {
+
+
+
+
+    $_SESSION['dashboard_state']['pending_orders'] = array(
+        'parent'             => $data['parent'],
+        'currency'         => $data['currency'],
+
+    );
+
+
+
+    if ($data['parent'] != '') {
+        include_once 'class.Store.php';
+
+        $object = new Store($data['parent']);
+        $object->load_acc_data();
+
+        $title = $object->get('Code');
+
+    } else {
+        $object = new Account();
+        $object->load_acc_data();
+        $title  = $object->get('Code');
+    }
+
+
+    $pending_orders_data = array(
+        'Orders_In_Basket_Number' => array('value'=>$object->get('Orders In Basket Number')),
+        'Orders_In_Basket_Amount' => array('value'=>($data['currency']=='account'?$object->get('DC Orders In Basket Amount Minify'):$object->get('Orders In Basket Amount Minify'))),
+
+        'Orders_In_Process_Not_Paid_Number' => array('value'=>$object->get('Orders In Process Not Paid Number')),
+        'Orders_In_Process_Paid_Number' => array('value'=>$object->get('Orders In Process Paid Number')),
+        'Orders_In_Process_Not_Paid_Amount' => array('value'=>($data['currency']=='account'?$object->get('DC Orders In Process Not Paid Amount Minify'):$object->get('Orders In Process Not Paid Amount Minify'))),
+        'Orders_In_Process_Paid_Amount' => array('value'=>($data['currency']=='account'?$object->get('DC Orders In Process Paid Amount Minify'):$object->get('Orders In Process Paid Amount Minify'))),
+
+        'Orders_In_Warehouse_Number' => array('value'=>$object->get('Orders In Warehouse Number')),
+        'Orders_In_Warehouse_Amount' => array('value'=>($data['currency']=='account'?$object->get('DC Orders In Warehouse Amount Minify'):$object->get('Orders In Warehouse Amount Minify'))),
+
+
+    );
+
+
+    $response = array(
+        'state' => 200,
+        'title' => $title,
+        'data'  => $pending_orders_data,
+    );
+
+    echo json_encode($response);
+
+}
+
 function sales_overview($_data, $db, $user, $account) {
 
 
     $_SESSION['dashboard_state']['sales_overview'] = array(
         'type'             => $_data['type'],
-        'subtype'             => $_data['subtype'],
+        'subtype'          => $_data['subtype'],
         'period'           => $_data['period'],
         'currency'         => $_data['currency'],
         'orders_view_type' => $_data['orders_view_type'],
@@ -74,8 +138,7 @@ function sales_overview($_data, $db, $user, $account) {
     if ($_data['type'] == 'invoice_categories') {
         $request = 'invoices/all';
 
-        $fields
-            = "
+        $fields = "
 		`Invoice Category $period_tag Acc Refunds` as refunds,
 		`Invoice Category $period_tag Acc Invoices` as invoices,
 		`Invoice Category $period_tag Acc Amount` as sales,
@@ -90,8 +153,7 @@ function sales_overview($_data, $db, $user, $account) {
 
         if ($period_tag == '3 Year' or $period_tag == 'All') {
 
-            $fields
-                .= "
+            $fields .= "
 	    0 as refunds_1yb,
 
 	    0 as invoices_1yb,
@@ -99,8 +161,7 @@ function sales_overview($_data, $db, $user, $account) {
         0 as dc_sales_1yb
                         ";
         } else {
-            $fields
-                .= "
+            $fields .= "
 		`Invoice Category $period_tag Acc 1YB Refunds` as refunds_1yb,
 
 	    `Invoice Category $period_tag Acc 1YB Invoices` as invoices_1yb,
@@ -109,14 +170,13 @@ function sales_overview($_data, $db, $user, $account) {
                         ";
 
         }
-        $sql
-            = "select  concat('cat',C.`Category Key`) record_key, C.`Category Key`,`Category Store Key`,`Store Currency Code` currency, $fields from `Invoice Category Dimension` IC left join `Invoice Category Data` ICD on (IC.`Invoice Category Key`=ICD.`Invoice Category Key`)  left join `Invoice Category DC Data` ICSCD on (IC.`Invoice Category Key`=ICSCD.`Invoice Category Key`)  left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) order by C.`Category Store Key` ,`Category Function Order`";
+        $sql =
+            "select  concat('cat',C.`Category Key`) record_key, C.`Category Key`,`Category Store Key`,`Store Currency Code` currency, $fields from `Invoice Category Dimension` IC left join `Invoice Category Data` ICD on (IC.`Invoice Category Key`=ICD.`Invoice Category Key`)  left join `Invoice Category DC Data` ICSCD on (IC.`Invoice Category Key`=ICSCD.`Invoice Category Key`)  left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) order by C.`Category Store Key` ,`Category Function Order`";
 
 
     } else {
         $request = 'invoices';
-        $fields
-                 = "
+        $fields  = "
 			`Store Orders In Basket Number`,`Store Orders In Basket Amount`,`Store DC Orders In Basket Amount`,
 	`Store Orders In Process Paid Number`,`Store Orders In Process Paid Amount`,`Store DC Orders In Process Paid Amount`,
 	`Store Orders In Process Not Paid Number`,`Store Orders In Process Not Paid Amount`,`Store DC Orders In Process Not Paid Amount`,
@@ -202,14 +262,12 @@ function sales_overview($_data, $db, $user, $account) {
 
 
             if ($_data['currency'] == 'store') {
-                $data['orders_overview_sales_'.$row['record_key']]
-                    = array(
+                $data['orders_overview_sales_'.$row['record_key']]       = array(
                     'value' => money(
                         $row['sales'], $row['currency']
                     )
                 );
-                $data['orders_overview_sales_delta_'.$row['record_key']]
-                    = array(
+                $data['orders_overview_sales_delta_'.$row['record_key']] = array(
                     'value' => delta(
                             $row['sales'], $row['sales_1yb']
                         ).' '.delta_icon($row['sales'], $row['sales_1yb']),
@@ -219,38 +277,32 @@ function sales_overview($_data, $db, $user, $account) {
                 );
 
 
-                $data['orders_overview_in_basket_amount_'.$row['record_key']]
-                    = array(
+                $data['orders_overview_in_basket_amount_'.$row['record_key']]           = array(
                     'value' => money(
                         $row['Store Orders In Basket Amount'], $row['currency']
                     )
                 );
-                $data['orders_overview_in_process_paid_amount_'.$row['record_key']]
-                    = array(
+                $data['orders_overview_in_process_paid_amount_'.$row['record_key']]     = array(
                     'value' => money(
                         $row['Store Orders In Process Paid Amount'], $row['currency']
                     )
                 );
-                $data['orders_overview_in_process_not_paid_amount_'.$row['record_key']]
-                    = array(
+                $data['orders_overview_in_process_not_paid_amount_'.$row['record_key']] = array(
                     'value' => money(
                         $row['Store Orders In Process Not Paid Amount'], $row['currency']
                     )
                 );
-                $data['orders_overview_in_warehouse_amount_'.$row['record_key']]
-                    = array(
+                $data['orders_overview_in_warehouse_amount_'.$row['record_key']]        = array(
                     'value' => money(
                         $row['Store Orders In Warehouse Amount'], $row['currency']
                     )
                 );
-                $data['orders_overview_packed_amount_'.$row['record_key']]
-                    = array(
+                $data['orders_overview_packed_amount_'.$row['record_key']]              = array(
                     'value' => money(
                         $row['Store Orders Packed Amount'], $row['currency']
                     )
                 );
-                $data['orders_overview_in_dispatch_area_amount_'.$row['record_key']]
-                    = array(
+                $data['orders_overview_in_dispatch_area_amount_'.$row['record_key']]    = array(
                     'value' => money(
                         $row['Store Orders In Dispatch Area Amount'], $row['currency']
                     )
@@ -258,14 +310,12 @@ function sales_overview($_data, $db, $user, $account) {
 
 
             } else {
-                $data['orders_overview_sales_'.$row['record_key']]
-                    = array(
+                $data['orders_overview_sales_'.$row['record_key']]       = array(
                     'value' => money(
                         $row['dc_sales'], $account->get('Account Currency')
                     )
                 );
-                $data['orders_overview_sales_delta_'.$row['record_key']]
-                    = array(
+                $data['orders_overview_sales_delta_'.$row['record_key']] = array(
                     'value' => delta(
                             $row['dc_sales'], $row['dc_sales_1yb']
                         ).' '.delta_icon($row['dc_sales'], $row['dc_sales_1yb']),
@@ -277,38 +327,32 @@ function sales_overview($_data, $db, $user, $account) {
                 );
 
 
-                $data['orders_overview_in_basket_amount_'.$row['record_key']]
-                    = array(
+                $data['orders_overview_in_basket_amount_'.$row['record_key']]           = array(
                     'value' => money(
                         $row['Store DC Orders In Basket Amount'], $account->get('Account Currency')
                     )
                 );
-                $data['orders_overview_in_process_paid_amount_'.$row['record_key']]
-                    = array(
+                $data['orders_overview_in_process_paid_amount_'.$row['record_key']]     = array(
                     'value' => money(
                         $row['Store DC Orders In Process Paid Amount'], $account->get('Account Currency')
                     )
                 );
-                $data['orders_overview_in_process_not_paid_amount_'.$row['record_key']]
-                    = array(
+                $data['orders_overview_in_process_not_paid_amount_'.$row['record_key']] = array(
                     'value' => money(
                         $row['Store DC Orders In Process Not Paid Amount'], $account->get('Account Currency')
                     )
                 );
-                $data['orders_overview_in_warehouse_amount_'.$row['record_key']]
-                    = array(
+                $data['orders_overview_in_warehouse_amount_'.$row['record_key']]        = array(
                     'value' => money(
                         $row['Store DC Orders In Warehouse Amount'], $account->get('Account Currency')
                     )
                 );
-                $data['orders_overview_packed_amount_'.$row['record_key']]
-                    = array(
+                $data['orders_overview_packed_amount_'.$row['record_key']]              = array(
                     'value' => money(
                         $row['Store DC Orders Packed Amount'], $account->get('Account Currency')
                     )
                 );
-                $data['orders_overview_in_dispatch_area_amount_'.$row['record_key']]
-                    = array(
+                $data['orders_overview_in_dispatch_area_amount_'.$row['record_key']]    = array(
                     'value' => money(
                         $row['Store DC Orders In Dispatch Area Amount'], $account->get('Account Currency')
                     )
@@ -317,16 +361,14 @@ function sales_overview($_data, $db, $user, $account) {
             }
 
             if ($_data['type'] == 'invoice_categories') {
-                $data['orders_overview_invoices_'.$row['record_key']]
-                    = array(
+                $data['orders_overview_invoices_'.$row['record_key']] = array(
                     'special_type' => 'invoice',
                     'value'        => number(
                         $row['invoices']
                     ),
                     'request'      => "invoices/all/category/".$row['Category Key']
                 );
-                $data['orders_overview_refunds_'.$row['record_key']]
-                    = array(
+                $data['orders_overview_refunds_'.$row['record_key']]  = array(
                     'special_type' => 'refund',
                     'value'        => number(
                         $row['refunds']
@@ -336,16 +378,14 @@ function sales_overview($_data, $db, $user, $account) {
 
 
             } else {
-                $data['orders_overview_invoices_'.$row['record_key']]
-                    = array(
+                $data['orders_overview_invoices_'.$row['record_key']] = array(
                     'special_type' => 'invoice',
                     'value'        => number(
                         $row['invoices']
                     ),
                     'request'      => "invoices/".$row['record_key']
                 );
-                $data['orders_overview_refunds_'.$row['record_key']]
-                    = array(
+                $data['orders_overview_refunds_'.$row['record_key']]  = array(
                     'special_type' => 'refund',
                     'value'        => number(
                         $row['refunds']
@@ -357,22 +397,19 @@ function sales_overview($_data, $db, $user, $account) {
             }
 
 
-            $data['orders_overview_invoices_delta_'.$row['record_key']]
-                = array(
+            $data['orders_overview_invoices_delta_'.$row['record_key']] = array(
                 'value' => delta($row['invoices'], $row['invoices_1yb']).' '.delta_icon($row['invoices'], $row['invoices_1yb']),
                 'title' => number($row['invoices_1yb'])
             );
 
 
-            $data['orders_overview_delivery_notes_'.$row['record_key']]
-                = array(
+            $data['orders_overview_delivery_notes_'.$row['record_key']]       = array(
                 'value'   => number(
                     $row['delivery_notes']
                 ),
                 'request' => 'delivery_notes/'.$row['record_key']
             );
-            $data['orders_overview_delivery_notes_delta_'.$row['record_key']]
-                = array(
+            $data['orders_overview_delivery_notes_delta_'.$row['record_key']] = array(
                 'value' => delta(
                         $row['delivery_notes'], $row['delivery_notes_1yb']
                     ).' '.delta_icon(
@@ -384,22 +421,19 @@ function sales_overview($_data, $db, $user, $account) {
             );
 
 
-            $data['orders_overview_refunds_delta_'.$row['record_key']]
-                = array(
+            $data['orders_overview_refunds_delta_'.$row['record_key']] = array(
                 'value' => delta($row['refunds'], $row['refunds_1yb']).' '.delta_icon($row['refunds'], $row['refunds_1yb']),
                 'title' => number($row['refunds_1yb'])
             );
 
 
-            $data['orders_overview_replacements_'.$row['record_key']]
-                = array(
+            $data['orders_overview_replacements_'.$row['record_key']]                = array(
                 'value'   => number(
                     $row['replacements']
                 ),
                 'request' => 'delivery_notes/'.$row['record_key']
             );
-            $data['orders_overview_replacements_delta_'.$row['record_key']]
-                = array(
+            $data['orders_overview_replacements_delta_'.$row['record_key']]          = array(
                 'value' => delta(
                         $row['replacements'], $row['replacements_1yb']
                     ).' '.delta_icon(
@@ -409,14 +443,12 @@ function sales_overview($_data, $db, $user, $account) {
                     $row['replacements_1yb']
                 )
             );
-            $data['orders_overview_replacements_percentage_'.$row['record_key']]
-                = array(
+            $data['orders_overview_replacements_percentage_'.$row['record_key']]     = array(
                 'value' => percentage(
                     $row['replacements'], $row['delivery_notes']
                 )
             );
-            $data['orders_overview_replacements_percentage_1yb_'.$row['record_key']]
-                = array(
+            $data['orders_overview_replacements_percentage_1yb_'.$row['record_key']] = array(
                 'value' => percentage(
                     $row['replacements_1yb'], $row['delivery_notes_1yb']
                 ),
@@ -500,13 +532,12 @@ function sales_overview($_data, $db, $user, $account) {
     );
 
 
-    $data['orders_overview_delivery_notes_totals'] = array(
+    $data['orders_overview_delivery_notes_totals']       = array(
         'value' => number(
             $sum_delivery_notes
         )
     );
-    $data['orders_overview_delivery_notes_delta_totals']
-                                                   = array(
+    $data['orders_overview_delivery_notes_delta_totals'] = array(
         'value' => delta(
                 $sum_delivery_notes, $sum_delivery_notes_1yb
             ).' '.delta_icon($sum_delivery_notes, $sum_delivery_notes_1yb),
@@ -515,13 +546,12 @@ function sales_overview($_data, $db, $user, $account) {
         )
     );
 
-    $data['orders_overview_replacements_totals'] = array(
+    $data['orders_overview_replacements_totals']                = array(
         'value' => number(
             $sum_replacements
         )
     );
-    $data['orders_overview_replacements_delta_totals']
-                                                 = array(
+    $data['orders_overview_replacements_delta_totals']          = array(
         'value' => delta(
                 $sum_replacements, $sum_replacements_1yb
             ).' '.delta_icon($sum_replacements, $sum_replacements_1yb),
@@ -529,14 +559,12 @@ function sales_overview($_data, $db, $user, $account) {
             $sum_replacements_1yb
         )
     );
-    $data['orders_overview_replacements_percentage_totals']
-                                                 = array(
+    $data['orders_overview_replacements_percentage_totals']     = array(
         'value' => percentage(
             $sum_replacements, $sum_delivery_notes
         )
     );
-    $data['orders_overview_replacements_percentage_1yb_totals']
-                                                 = array(
+    $data['orders_overview_replacements_percentage_1yb_totals'] = array(
         'value' => percentage(
             $sum_replacements_1yb, $sum_delivery_notes_1yb
         ),
@@ -593,9 +621,9 @@ function sales_overview($_data, $db, $user, $account) {
 
 
     $response = array(
-        'state' => 200,
-        'period_label'=>get_interval_label($_data['period']),
-        'data'  => $data,
+        'state'        => 200,
+        'period_label' => get_interval_label($_data['period']),
+        'data'         => $data,
     );
 
     echo json_encode($response);
