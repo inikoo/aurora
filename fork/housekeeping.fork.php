@@ -25,12 +25,15 @@ function fork_housekeeping($job) {
     switch ($data['type']) {
 
 
-        case 'update_basket_data':
+        case 'update_orders_in_basket_data':
 
             include_once 'class.Store.php';
             $store = new Store($data['store_key']);
             $store->update_orders_in_basket_data();
             $account->update_orders_in_basket_data();
+
+            print 'update_orders_in_basket_data';
+
             break;
 
         case 'update_web_state_slow_forks':
