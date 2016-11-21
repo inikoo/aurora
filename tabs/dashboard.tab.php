@@ -65,18 +65,22 @@ foreach ($user->get_dashboard_items() as $item) {
 
         include_once 'widgets/pending_orders.wget.php';
 
-        if (isset($_SESSION['dashboard_state']['pending_orders']['store'])) {
-            $store = $_SESSION['dashboard_state']['pending_orders']['store'];
+        if (isset($_SESSION['dashboard_state']['pending_orders']['parent'])) {
+            $parent = $_SESSION['dashboard_state']['pending_orders']['parent'];
         } else {
-            $store = '';
+            $parent = '';
+        }
+
+        if (isset($_SESSION['dashboard_state']['pending_orders']['currency'])) {
+            $currency = $_SESSION['dashboard_state']['pending_orders']['currency'];
+        } else {
+            $currency = 'account';
         }
 
 
 
 
-        $store=1;
-
-        $html .= get_dashboard_pending_orders($db, $account, $user, $smarty, $store, $_SESSION['display_device_version']);
+        $html .= get_dashboard_pending_orders($db, $account, $user, $smarty, $parent,$currency, $_SESSION['display_device_version']);
 
     }
 

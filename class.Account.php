@@ -79,6 +79,9 @@ class Account extends DB_Table {
 
         switch ($key) {
 
+            case 'Account Currency':
+                return $this->data['Account Currency'];
+            break;
             case 'Productions':
 
                 $number = 0;
@@ -132,9 +135,10 @@ class Account extends DB_Table {
             default:
 
 
-                if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Minify$/', $key)) {
+                if (preg_match('/^(DC Orders|Orders|Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Minify$/', $key)) {
 
                     $field = 'Account '.preg_replace('/ Minify$/', '', $key);
+                    $field =preg_replace('/DC Orders/', 'Orders', $field);
 
                     $suffix          = '';
                     $fraction_digits = 'NO_FRACTION_DIGITS';
@@ -157,20 +161,32 @@ class Account extends DB_Table {
 
                     return $amount;
                 }
-                if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Soft Minify$/', $key)) {
+
+
+
+                if (preg_match('/^(DC Orders|Orders|Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Soft Minify$/', $key)) {
 
                     $field = 'Account '.preg_replace('/ Soft Minify$/', '', $key);
+
+
+
+                    $field =preg_replace('/DC Orders/', 'Orders', $field);
 
                     $suffix          = '';
                     $fraction_digits = 'NO_FRACTION_DIGITS';
                     $_amount         = $this->data[$field];
 
-
                     $amount = money($_amount, $this->get('Account Currency'), $locale = false, $fraction_digits).$suffix;
-
                     return $amount;
                 }
-                if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced|Invoices) Minify$/', $key)) {
+                if (preg_match('/^(Orders|Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced|Invoices|Number)$/', $key)) {
+
+                    $field = 'Account '.$key;
+
+
+                    return number($this->data[$field]);
+                }
+                if (preg_match('/^(Orders|Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced|Invoices) Minify$/', $key)) {
 
                     $field = 'Account '.preg_replace('/ Minify$/', '', $key);
 
@@ -189,7 +205,7 @@ class Account extends DB_Table {
 
                     return number($_number, $fraction_digits).$suffix;
                 }
-                if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced|Invoices) Soft Minify$/', $key)) {
+                if (preg_match('/^(Orders|Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced|Invoices|Number) Soft Minify$/', $key)) {
                     $field   = 'Account '.preg_replace('/ Soft Minify$/', '', $key);
                     $_number = $this->data[$field];
 
@@ -200,7 +216,7 @@ class Account extends DB_Table {
 
                     $amount = 'Account '.$key;
 
-                    return money($this->data[$amount]);
+                    return money($this->data[$amount],$this->get('Account Currency'));
                 }
                 
                 if (array_key_exists($key, $this->data)) {
@@ -1382,8 +1398,247 @@ class Account extends DB_Table {
     }
 
 
-    
-    
+
+    function update_orders_in_basket_data() {
+
+        $data = array(
+            'in_basket' => array(
+                'number'    => 0,
+                'dc_amount' => 0
+            ),
+        );
+
+        $sql = sprintf(
+            "SELECT count(*) AS num ,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order Number Items`>0  and `Order Current Dispatch State`  IN ('In Process by Customer','In Process')  ",
+            $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $data['in_basket']['number']    = $row['num'];
+                $data['in_basket']['dc_amount'] = $row['dc_amount'];
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+
+        $data_to_update = array(
+            'Account Orders In Basket Number'              => $data['in_basket']['number'],
+            'Account Orders In Basket Amount'           => $data['in_basket']['dc_amount'],
+
+
+
+        );
+        $this->update($data_to_update, 'no_history');
+    }
+
+
+    function update_orders_in_process_data() {
+
+        $data = array(
+
+            'in_process_paid'     => array(
+                'number'    => 0,
+                'amount'    => 0,
+                'dc_amount' => 0
+            ),
+            'in_process_not_paid' => array(
+                'number'    => 0,
+                'amount'    => 0,
+                'dc_amount' => 0
+            )
+        );
+        $sql = sprintf(
+            'SELECT `Order Current Dispatch State`,count(*) AS num, ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order Current Dispatch State` ="Submitted by Customer"  AND `Order Current Payment State`="Paid" '
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $data['in_process_paid']['number'] += $row['num'];
+                $data['in_process_paid']['dc_amount'] += $row['dc_amount'];
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $sql = sprintf(
+            'SELECT `Order Current Dispatch State`,count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order Current Dispatch State`="Submitted by Customer"  AND `Order Current Payment State`!="Paid" '
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $data['in_process_not_paid']['number'] += $row['num'];
+                $data['in_process_not_paid']['dc_amount'] += $row['dc_amount'];
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $data_to_update = array(
+            'Account Orders In Process Paid Number'        => $data['in_process_paid']['number'],
+            'Account Orders In Process Paid Amount'        => $data['in_process_paid']['dc_amount'],
+            'Account Orders In Process Not Paid Number'    => $data['in_process_not_paid']['number'],
+            'Account Orders In Process Not Paid Amount'    => $data['in_process_not_paid']['dc_amount'],
+
+
+        );
+        $this->update($data_to_update, 'no_history');
+    }
+
+    function update_orders_in_warehouse_data() {
+
+        $data = array(
+            'warehouse' => array(
+                'number'    => 0,
+                'amount'    => 0,
+                'dc_amount' => 0
+            ),
+        );
+
+
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE   `Order Current Dispatch State`  IN ( 'Ready to Pick', 'Picking & Packing', 'Ready to Ship', 'Packing')  "
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $data['warehouse']['number']    = $row['num'];
+                $data['warehouse']['dc_amount'] = $row['dc_amount'];
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+
+        $data_to_update = array(
+            'Account Orders In Warehouse Number'              => $data['warehouse']['number'],
+            'Account Orders In Warehouse Amount'              => $data['warehouse']['dc_amount'],
+
+
+
+        );
+        $this->update($data_to_update, 'no_history');
+    }
+
+    function update_orders_packed_data() {
+
+        $data = array(
+            'warehouse' => array(
+                'number'    => 0,
+                'amount'    => 0,
+                'dc_amount' => 0
+            ),
+        );
+
+
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE   `Order Current Dispatch State` ='Packed' "
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $data['packed']['number']    = $row['num'];
+                $data['packed']['dc_amount'] = $row['dc_amount'];
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+
+        $data_to_update = array(
+            'Account Orders Packed Number'              => $data['packed']['number'],
+            'Account Orders Packed Amount'              => $data['packed']['dc_amount'],
+
+
+
+        );
+        $this->update($data_to_update, 'no_history');
+    }
+
+    function update_orders_ready_to_ship_data() {
+
+        $data = array(
+            'ready_to_ship' => array(
+                'number'    => 0,
+                'amount'    => 0,
+                'dc_amount' => 0
+            ),
+        );
+
+
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE   `Order Current Dispatch State` ='Packed Done' "
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $data['ready_to_ship']['number']    = $row['num'];
+                $data['ready_to_ship']['dc_amount'] = $row['dc_amount'];
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+
+        $data_to_update = array(
+            'Account Orders In Dispatch Area Number'              => $data['ready_to_ship']['number'],
+            'Account Orders In Dispatch Area Amount'              => $data['ready_to_ship']['dc_amount'],
+
+
+
+        );
+        $this->update($data_to_update, 'no_history');
+    }
+
 
 }
 

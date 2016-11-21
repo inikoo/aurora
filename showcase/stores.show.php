@@ -16,6 +16,8 @@ function get_stores_showcase($data, $smarty) {
     $account = $data['_object'];
     $account->load_acc_data();
 
+
+
     if (!$account->id) {
         return "";
     }
