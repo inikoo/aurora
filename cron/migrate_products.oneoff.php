@@ -62,9 +62,48 @@ create_data_tables($db);
 */
 
 //fix_family_web_descriptions($db);
-update_product_category_products_data($db);
+//update_product_category_products_data($db);
 
 //create_data_tables($db);
+
+migrate_family_pictures($db);
+
+
+function migrate_family_pictures($db){
+
+
+    $sql = sprintf('SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Product"  ORDER BY  `Category Key` DESC');
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+            $category = new Category($row['Category Key']);
+
+
+            $sql = sprintf("SELECT `Image Key` FROM `Product Family Dimension` left join `Image Bridge` on (`Subject Key`=`Product Family Key` and `Subject Type`='Family')  WHERE `Product Family Code`=%s  ", prepare_mysql($category->get('Code')));
+
+            if ($result2=$db->query($sql)) {
+            		foreach ($result2 as $row2) {
+                        $category->link_image($row2['Image Key']);
+
+                    }
+            }else {
+            		print_r($error_info=$db->errorInfo());
+            		print "$sql\n";
+            		exit;
+            }
+
+
+
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print $sql;
+        exit;
+    }
+
+}
 
 
 function update_product_category_products_data($db) {
