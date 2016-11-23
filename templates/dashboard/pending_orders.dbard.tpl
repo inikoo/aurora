@@ -63,7 +63,7 @@
     </li>
     <li class="flex-item">
         <span>{t}Submitted{/t}</span>
-        <div class="title"><span class="discreet" ><span class="Orders_In_Process_Not_Paid_Number" title="{t}Not paid submitted orders{/t}">{$object->get('Orders In Process Not Paid Number')}</span> | </span> <span class="Orders_In_Process_Paid_Number" title="{t}Paid submitted orders{/t}">{$object->get('Orders In Process Paid Number')}</span> </div>
+        <div class="title"><span class="discreet" ><span class="Orders_In_Process_Not_Paid_Number" title="{t}Unpaid submitted orders{/t}">{$object->get('Orders In Process Not Paid Number')}</span> | </span> <span class="Orders_In_Process_Paid_Number" title="{t}Paid submitted orders{/t}">{$object->get('Orders In Process Paid Number')}</span> </div>
         <div >
             <span class="discreet"><span class="Orders_In_Process_Not_Paid_Amount" title="{if $currency=='account'}{$object->get('DC Orders In Process Not Paid Amount')}{else}{$object->get('Orders In Process Not Paid Amount')}{/if}">{if $currency=='account'}{$object->get('DC Orders In Process Not Paid Amount Minify')}{else}{$object->get('Orders In Process Not Paid Amount Minify')}{/if}</span> | </span>
             <span class="Orders_In_Process_Paid_Amount" title="{if $currency=='account'}{$object->get('DC Orders In Process Paid Amount')}{else}{$object->get('Orders In Process Paid Amount')}{/if}">{if $currency=='account'}{$object->get('DC Orders In Process Paid Amount Minify')}{else}{$object->get('Orders In Process Paid Amount Minify')}{/if}</span></div>
@@ -72,9 +72,9 @@
     <li class="flex-item">
         <span>{t}In warehouse{/t}</span>
         <div class="title">
-            <span class="Orders_In_Warehouse_Number">{$object->get('Orders In Warehouse Number')}</span> |
-            <span class="Orders_Packed_Number">{$object->get('Orders Packed Number')}</span> |
-            <span class="Orders_In_Dispatch_Area_Number">{$object->get('Orders In Dispatch Area Number')}</span>
+            <span class="Orders_In_Warehouse_Number" title="{t}Orders in warehouse{/t}">{$object->get('Orders In Warehouse Number')}</span> |
+            <span class="Orders_Packed_Number" title="{t}Packed orders{/t}">{$object->get('Orders Packed Number')}</span> |
+            <span class="Orders_In_Dispatch_Area_Number" title="{t}Orders ready to dispatch{/t}" >{$object->get('Orders In Dispatch Area Number')}</span>
         </div>
         <div >
             <span class="Orders_In_Warehouse_Amount" title="{if $currency=='account'}{$object->get('DC Orders In Warehouse Amount')}{else}{$object->get('Orders In Warehouse Amount')}{/if}">{if $currency=='account'}{$object->get('DC Orders In Warehouse Amount Minify')}{else}{$object->get('Orders In Warehouse Amount Minify')}{/if}</span> |
@@ -86,6 +86,11 @@
     </li>
     <li class="flex-item">
         <span>{t}Today{/t}</span>
+        <div class="title">
+            <span class="Delta_Today_Start_Orders_In_Warehouse_Number" title="Today's difference of orders in warehouse">{$object->get('Delta Today Start Orders In Warehouse Number')}</span>
+            <span class="padding_left_10 Today_Orders_Dispatched" title="Today's dispatched orders">{$object->get('Today Orders Dispatched')}</span>
+
+        </div>
 
     </li>
 </ul>

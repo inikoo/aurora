@@ -132,6 +132,40 @@ class Account extends DB_Table {
 
                 break;
 
+            case 'Delta Today Start Orders In Warehouse Number':
+
+                $start=$this->data['Account Today Start Orders In Warehouse Number'];
+                $end=$this->data['Account Orders In Warehouse Number']+$this->data['Account Orders Packed Number']+$this->data['Account Orders In Dispatch Area Number'];
+
+                $diff=$end-$start;
+
+                $delta=($diff>0?'+':'').number($diff).delta_icon($end,$start,$inverse=true);
+
+
+                return $delta;
+
+            case 'Today Orders Dispatched':
+
+                $number=0;
+
+                $sql=sprintf('select count(*) as num from `Order Dimension` where `Order Current Dispatch State`="Dispatched" and `Order Dispatched Date`>%s   and  `Order Dispatched Date`<%s   ',
+                             prepare_mysql(date('Y-m-d 00:00:00')),
+                             prepare_mysql(date('Y-m-d 23:59:59'))
+                );
+
+                if ($result=$this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $number=$row['num'];
+                    }
+                }else {
+                    print_r($error_info=$this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+                return number($number);
+
             default:
 
 

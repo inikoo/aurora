@@ -48,6 +48,11 @@ $editor = array(
 $timeseries=get_time_series_config();
 
 
+
+
+
+
+
 $sql = sprintf('SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Part" ORDER BY  `Category Key` DESC');
 
 if ($result = $db->query($sql)) {
@@ -207,11 +212,38 @@ if ($result = $db->query($sql)) {
         $store->load_acc_data();
         $store->update_sales_from_invoices('Today', false, true);
         $store->update_new_products();
+
+        $store->update_orders_in_basket_data();
+        $store->update_orders_in_process_data();
+        $store->update_orders_in_warehouse_data();
+        $store->update_orders_packed_data();
+        $store->update_orders_ready_to_ship_data();
+
+        $store->update(
+            'Store Today Start Orders In Warehouse Number'=>$store->get('Store Orders In Warehouse Number')+$store->get('Store Orders Packed Number')+$store->get('Store Orders In Dispatch Area Number');
+
+        );
+
+
+
     }
 } else {
     print_r($error_info = $db->errorInfo());
     exit;
 }
+
+
+$account->update_orders_in_basket_data();
+$account->update_orders_in_process_data();
+$account->update_orders_in_warehouse_data();
+$account->update_orders_packed_data();
+$account->update_orders_ready_to_ship_data();
+
+$account->update(
+    'Account Today Start Orders In Warehouse Number'=>$account->get('Account Orders In Warehouse Number')+$account->get('Account Orders Packed Number')+$account->get('Account Orders In Dispatch Area Number');
+
+        );
+
 
 
 $sql = sprintf('UPDATE `Invoice Category Data` SET `Invoice Category Yesterday Acc Discount Amount`=`Invoice Category Today Acc Discount Amount` ,`Invoice Category Today Acc Discount Amount`=0  ');

@@ -28,11 +28,16 @@ function new_fork($type, $data, $account_code, $db) {
 
     );
 
+    // print $sql;
+
     $salt = md5(rand());
     $db->exec($sql);
 
 
     $fork_key = $db->lastInsertId();
+
+
+
 
     $fork_metadata = base64_encode(
         AESEncryptCtr(

@@ -2291,6 +2291,40 @@ class Store extends DB_Table {
                 return percentage(
                     $this->data['Store Contacts With Orders'], $this->data['Store Contacts']
                 );
+            case 'Delta Today Start Orders In Warehouse Number':
+
+                $start=$this->data['Store Today Start Orders In Warehouse Number'];
+                $end=$this->data['Store Orders In Warehouse Number']+$this->data['Store Orders Packed Number']+$this->data['Store Orders In Dispatch Area Number'];
+
+                $diff=$end-$start;
+
+                $delta=($diff>0?'+':'').number($diff).delta_icon($end,$start,$inverse=true);
+
+
+                return $delta;
+
+            case 'Today Orders Dispatched':
+
+                $number=0;
+
+                $sql=sprintf('select count(*) as num from `Order Dimension` where `Order Store Key`=%d and `Order Current Dispatch State`="Dispatched" and `Order Dispatched Date`>%s   and  `Order Dispatched Date`<%s   ',
+                             $this->id,
+                             prepare_mysql(date('Y-m-d 00:00:00')),
+                             prepare_mysql(date('Y-m-d 23:59:59'))
+                             );
+
+                if ($result=$this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $number=$row['num'];
+                	}
+                }else {
+                	print_r($error_info=$this->db->errorInfo());
+                	print "$sql\n";
+                	exit;
+                }
+
+
+                return number($number);
 
 
         }

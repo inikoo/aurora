@@ -126,6 +126,13 @@ function pending_orders($data, $db, $user, $account) {
             'title' => ($data['currency'] == 'account' ? $object->get('DC Orders In Dispatch Area Amount') : $object->get('Orders In Dispatch Area Amount'))
         ),
 
+        'Delta_Today_Start_Orders_In_Warehouse_Number' => array('value' => $object->get('Delta Today Start Orders In Warehouse Number')),
+        'Today_Orders_Dispatched' => array('value' => $object->get('Today Orders Dispatched'))
+
+
+     
+
+
     );
 
 
