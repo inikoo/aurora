@@ -38,9 +38,21 @@ className: "aright"
 }),
 headerCell: integerHeaderCell,
 sortType: "toggle",
-},{
+},
+{
 name: "sales",
 label: "{t}Sales amount{/t}",
+editable: false,
+sortable: false,
+cell: Backgrid.HtmlCell.extend({
+className: "aright"
+}),
+headerCell: integerHeaderCell,
+sortType: "toggle",
+},
+{
+name: "delta_sales_1yb",
+label: "Delta {t}1y{/t}",
 editable: false,
 sortable: false,
 cell: Backgrid.HtmlCell.extend({

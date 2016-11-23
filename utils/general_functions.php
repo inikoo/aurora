@@ -136,13 +136,16 @@ function delta($current_value, $old_value) {
 }
 
 
-function delta_icon($_value, $_value_1yb) {
-    $up_arrow
-        = '<i title="%s" class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>';
-    $down_arrow
-        = '<i title="%s" class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>';
-    $no_change
-        = '<i class="fa fa-fw fa-pause fa-rotate-90 super_discreet" aria-hidden="true"></i>';
+function delta_icon($_value, $_value_1yb,$inverse=false) {
+
+    if($inverse){
+        $up_arrow   = '<i title="%s" class="fa fa-fw fa-play fa-rotate-270 error" aria-hidden="true"></i>';
+        $down_arrow = '<i title="%s" class="fa fa-fw fa-play fa-rotate-90 success" aria-hidden="true"></i>';
+    }else {
+        $up_arrow   = '<i title="%s" class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>';
+        $down_arrow = '<i title="%s" class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>';
+    }
+        $no_change = '<i class="fa fa-fw fa-pause fa-rotate-90 super_discreet" aria-hidden="true"></i>';
 
     $delta_icon = sprintf($no_change);
 
@@ -158,6 +161,10 @@ function delta_icon($_value, $_value_1yb) {
             $delta_icon = sprintf($down_arrow, $delta);
 
         }
+    }elseif($_value_1yb==0 and $_value>0){
+        $delta_icon = sprintf($up_arrow, '');
+    }elseif($_value_1yb==0 and $_value<0){
+        $delta_icon = sprintf($down_arrow, '');
     }
 
     return $delta_icon;

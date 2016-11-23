@@ -185,6 +185,7 @@ function get_fork_data($job) {
     );
 
 
+
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
             $fork_data = json_decode($row['Fork Process Data'], true);

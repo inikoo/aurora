@@ -2208,7 +2208,7 @@ function sales_history($_data, $db, $user, $account) {
     );
 
 
-    $adata = array();
+    $record_data = array();
 
     $from_date = '';
     $to_date   = '';
@@ -2245,10 +2245,8 @@ function sales_history($_data, $db, $user, $account) {
                 $_date = date('Y-m-d', strtotime($data['Date'].' +0:00'));
             }
 
-            $adata[$_date] = array(
-                'sales'      => '<span class="very_discreet">'.money(
-                        0, $currency
-                    ).'</span>',
+            $record_data[$_date] = array(
+                'sales'      => '<span class="very_discreet">'.money(0, $currency).'</span>',
                 'dispatched' => '<span class="very_discreet">'.number(0).'</span>',
                 'deliveries' => '<span class="very_discreet">'.number(0).'</span>',
                 'date'       => $date
@@ -2277,10 +2275,10 @@ function sales_history($_data, $db, $user, $account) {
                 $to_date   = gmdate("Y-m-01", strtotime($to_date.' + 3 month +0:00'));
             } elseif ($_data['parameters']['frequency'] == 'monthly') {
                 $from_date = gmdate("Y-m-01", strtotime($from_date.' +0:00'));
-                $to_date   = gmdate("Y-m-01", strtotime($to_date.' + 1 month +0:00'));
+                $to_date   = gmdate("Y-m-01", strtotime($to_date.' + 1 year +0:00'));
             } elseif ($_data['parameters']['frequency'] == 'weekly') {
                 $from_date = gmdate("Y-m-d", strtotime($from_date.'  -1 week  +0:00'));
-                $to_date   = gmdate("Y-m-d", strtotime($to_date.' + 1 week +0:00'));
+                $to_date   = gmdate("Y-m-d", strtotime($to_date.' + 1 year +0:00'));
             } elseif ($_data['parameters']['frequency'] == 'daily') {
                 $from_date = $from_date.'';
                 $to_date   = $to_date.'';
@@ -2296,7 +2294,7 @@ function sales_history($_data, $db, $user, $account) {
 
 
     $sql = sprintf(
-        "select $fields from $table $where $wheref and %s>=%s and  %s<=%s %s", $date_field, prepare_mysql($from_date), $date_field, prepare_mysql($to_date), " $group_by "
+        "select $fields from $table $where $wheref and %s>=%s and  %s<=%s %s order by $date_field  desc  ", $date_field, prepare_mysql($from_date), $date_field, prepare_mysql($to_date), " $group_by "
     );
 
     //print $sql;
@@ -2304,32 +2302,63 @@ function sales_history($_data, $db, $user, $account) {
 
 
         foreach ($result as $data) {
+
+
+
+
             if ($_data['parameters']['frequency'] == 'annually') {
                 $_date = strftime("%Y", strtotime($data['Date'].' +0:00'));
+
+                $_date_next_year=strftime("%Y", strtotime($data['Date'].' + 1 year'));
+
             } elseif ($_data['parameters']['frequency'] == 'quarterly') {
                 $_date = 'Q'.ceil(date('n', strtotime($data['Date'].' +0:00')) / 3).' '.strftime("%Y", strtotime($data['Date'].' +0:00'));
+
+                $_date_next_year = 'Q'.ceil(date('n', strtotime($data['Date'].' + 1 year')) / 3).' '.strftime("%Y", strtotime($data['Date'].' + 1 year'));
+
+
+
             } elseif ($_data['parameters']['frequency'] == 'monthly') {
                 $_date = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
+                $_date_next_year = strftime("%b %Y", strtotime($data['Date'].' + 1 year'));
             } elseif ($_data['parameters']['frequency'] == 'weekly') {
 
                 $_date = strftime("%Y%W ", strtotime($data['Date'].' +0:00'));
+                $_date_next_year = strftime("%Y%W ", strtotime($data['Date'].' + 1 year'));
             } elseif ($_data['parameters']['frequency'] == 'daily') {
 
                 $_date = date('Y-m-d', strtotime($data['Date'].' +0:00'));
+                $_date_next_year = date('Y-m-d', strtotime($data['Date'].' + 1 year'));
             }
 
 
-            if (array_key_exists($_date, $adata)) {
+            if (array_key_exists($_date, $record_data)) {
 
-                $adata[$_date] = array(
+                $record_data[$_date] = array(
+                    '_sales'=>$data['sales'],
                     'sales'      => money($data['sales'], $currency),
                     'deliveries' => number($data['deliveries']),
                     'dispatched' => number($data['dispatched']),
-                    'date'       => $adata[$_date]['date']
+                    'date'       => $record_data[$_date]['date']
 
 
                 );
             }
+
+
+
+
+            if (array_key_exists($_date_next_year, $record_data)  and isset( $record_data[$_date_next_year]['_sales'])  ) {
+
+              //  print 'xxx'. $_date_next_year;;
+
+                $record_data[$_date_next_year]['delta_sales_1yb'] = '<span class="">'.delta( $record_data[$_date_next_year]['_sales'],$data['sales']).' '.delta_icon( $record_data[$_date_next_year]['_sales'],$data['sales']).'</span>';
+
+
+
+            }
+
+        //    print_r($record_data);
         }
 
     } else {
@@ -2339,10 +2368,14 @@ function sales_history($_data, $db, $user, $account) {
     }
 
 
+
+
+
+
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => array_values($adata),
+            'data'          => array_values($record_data),
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,

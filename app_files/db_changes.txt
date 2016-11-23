@@ -457,6 +457,8 @@ Only for bali dw:
 
 
 
+ALTER TABLE `Store Data` ADD `Store Today Start Orders In Warehouse Number` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store Orders In Dispatch Area Amount`;
+ALTER TABLE `Account Data` ADD `Account Today Start Orders In Warehouse Number` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Account Orders In Dispatch Area Amount`;
 
 
 
