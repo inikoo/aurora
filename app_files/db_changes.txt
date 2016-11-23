@@ -457,9 +457,7 @@ Only for bali dw:
 
 
 
-ALTER TABLE `Store Data` ADD `Store Today Start Orders In Warehouse Number` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store Orders In Dispatch Area Amount`;
-ALTER TABLE `Account Data` ADD `Account Today Start Orders In Warehouse Number` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Account Orders In Dispatch Area Amount`;
-
+ c
 
 
 TODO IN COSTA!!!!=====
@@ -488,6 +486,10 @@ ALTER TABLE `Part Category Dimension` DROP `Part Category 3 Year Acc Required`, 
 
 
 ALTER TABLE `Product Category Dimension` ADD `Product Category Active Web For Sale` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product Category Unknown Stock Products`, ADD `Product Category Active Web Out of Stock` MEDIUMINT UNSIGNED NULL DEFAULT '0' AFTER `Product Category Active Web For Sale`, ADD `Product Category Active Web Offline` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product Category Active Web Out of Stock`;
+
+
+
+ALTER TABLE `Store Data` ADD `Store Today Start Orders In Warehouse Number` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store Orders In Dispatch Area Amount`;
 
 
 ===============

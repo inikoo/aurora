@@ -108,7 +108,7 @@ trait PartCategory {
     }
 
 
-    function update_part_timeseries_record($timeseries, $to, $from, $fork_key) {
+    function update_part_timeseries_record($timeseries, $to, $from, $fork_key=false) {
 
 
         if ($this->get('Category Branch Type') == 'Root') {

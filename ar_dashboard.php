@@ -130,7 +130,7 @@ function pending_orders($data, $db, $user, $account) {
         'Today_Orders_Dispatched' => array('value' => $object->get('Today Orders Dispatched'))
 
 
-     
+
 
 
     );
