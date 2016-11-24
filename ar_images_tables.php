@@ -92,6 +92,34 @@ function images($_data, $db, $user) {
                 '<span class="button" id="delete_image_button_%d" onClick="delete_image(%d)"><i class="fa fa-trash"></i> %s</span>', $data['Image Subject Key'], $data['Image Subject Key'], _('Delete')
             );
 
+            switch ($data['Image Subject Object Image Scope']){
+                case 'SKO':
+
+                    $object_image_scope=_('SKO image');
+                    break;
+
+                case 'Default':
+
+                    switch ($data['Image Subject Object']){
+                        case 'Part':
+                        case 'Product':
+
+                        $object_image_scope=_('Marketing');
+                            break;
+
+
+                        default:
+                            $object_image_scope=$data['Image Subject Object Image Scope'];
+
+                    }
+
+
+                    break;
+                default:
+                    $object_image_scope=$data['Image Subject Object Image Scope'];
+
+            }
+
 
             $adata[] = array(
                 'id'          => (integer)$data['Image Subject Key'],
@@ -104,9 +132,8 @@ function images($_data, $db, $user) {
                 'dimensions'  => $data['Image Width'].'x'.$data['Image Height'],
                 'operations'  => $operations,
                 'visibility'  => $visibility,
-                'image_order' => $ordinal_formatter->format(
-                    $data['Image Subject Order']
-                )
+                'image_order' => $ordinal_formatter->format($data['Image Subject Order']),
+                 'object_image_scope'  => $object_image_scope
                 //'type'=>$type,
                 //'file_type'=>$file_type,
                 //'file'=>sprintf('<a href="/attachment.php?id=%d" download><i class="fa fa-download"></i></a>  <a href="/attachment.php?id=%d" >%s</a>' , $data['Image Subject Key'], $data['Image Subject Key'], $data['Image File Original Name']),
