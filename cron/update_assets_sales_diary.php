@@ -51,6 +51,47 @@ $timeseries=get_time_series_config();
 
 
 
+$account->load_acc_data();
+
+
+$account->update_orders_in_basket_data();
+$account->update_orders_in_process_data();
+$account->update_orders_in_warehouse_data();
+$account->update_orders_packed_data();
+$account->update_orders_ready_to_ship_data();
+
+$account->update(
+    array(  'Account Today Start Orders In Warehouse Number'=>$account->get('Account Orders In Warehouse Number')+$account->get('Account Orders Packed Number')+$account->get('Account Orders In Dispatch Area Number'))
+
+);
+
+
+$sql = sprintf("SELECT `Store Key` FROM `Store Dimension`");
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+        $store = new Store('id', $row['Store Key']);
+
+        $store->load_acc_data();
+
+        $store->update_orders_in_basket_data();
+        $store->update_orders_in_process_data();
+        $store->update_orders_in_warehouse_data();
+        $store->update_orders_packed_data();
+        $store->update_orders_ready_to_ship_data();
+
+        $store->update(
+            array('Store Today Start Orders In Warehouse Number'=>$store->get('Store Orders In Warehouse Number')+$store->get('Store Orders Packed Number')+$store->get('Store Orders In Dispatch Area Number'))
+
+        );
+
+
+
+    }
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
+}
+
 
 
 $sql = sprintf('SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Part" ORDER BY  `Category Key` DESC');
@@ -213,17 +254,6 @@ if ($result = $db->query($sql)) {
         $store->update_sales_from_invoices('Today', false, true);
         $store->update_new_products();
 
-        $store->update_orders_in_basket_data();
-        $store->update_orders_in_process_data();
-        $store->update_orders_in_warehouse_data();
-        $store->update_orders_packed_data();
-        $store->update_orders_ready_to_ship_data();
-
-        $store->update(
-            'Store Today Start Orders In Warehouse Number'=>$store->get('Store Orders In Warehouse Number')+$store->get('Store Orders Packed Number')+$store->get('Store Orders In Dispatch Area Number');
-
-        );
-
 
 
     }
@@ -233,16 +263,6 @@ if ($result = $db->query($sql)) {
 }
 
 
-$account->update_orders_in_basket_data();
-$account->update_orders_in_process_data();
-$account->update_orders_in_warehouse_data();
-$account->update_orders_packed_data();
-$account->update_orders_ready_to_ship_data();
-
-$account->update(
-    'Account Today Start Orders In Warehouse Number'=>$account->get('Account Orders In Warehouse Number')+$account->get('Account Orders Packed Number')+$account->get('Account Orders In Dispatch Area Number');
-
-        );
 
 
 

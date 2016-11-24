@@ -405,14 +405,20 @@ function stock_history($_data, $db, $user, $account) {
 
     if ($_data['parameters']['frequency'] == 'annually') {
         $rtext_label = 'year';
+        $date_format="%Y";
     } elseif ($_data['parameters']['frequency'] == 'monthly') {
         $rtext_label = 'month';
+        $date_format="%b %Y";
+
     } elseif ($_data['parameters']['frequency'] == 'weekly') {
         $rtext_label = 'week';
+        $date_format="(%e %b) %Y %W";
+
     } else {
         $rtext_label = 'day';
-    }
+        $date_format="%a %e %b %Y";
 
+    }
 
     include_once 'prepare_table/init.php';
 
@@ -425,22 +431,14 @@ function stock_history($_data, $db, $user, $account) {
 
 
             $adata[] = array(
-                'date'       => strftime(
-                    "%a %e %b %Y", strtotime($data['Date'].' +0:00')
-                ),
-                'year'       => strftime(
-                    "%Y", strtotime($data['Date'].' +0:00')
-                ),
-                'month_year' => strftime(
-                    "%b %Y", strtotime($data['Date'].' +0:00')
-                ),
-                'week_year'  => strftime(
-                    "(%e %b) %Y %W ", strtotime($data['Date'].' +0:00')
-                ),
+               // 'date'       => strftime("%a %e %b %Y", strtotime($data['Date'].' +0:00')),
+               // 'year'       => strftime("%Y", strtotime($data['Date'].' +0:00')),
+               // 'month_year' => strftime("%b %Y", strtotime($data['Date'].' +0:00')),
+                //'week_year'  => strftime("(%e %b) %Y %W ", strtotime($data['Date'].' +0:00')),
+
+                'date'       => strftime($date_format, strtotime($data['Date'].' +0:00')),
                 'stock'      => number($data['Quantity On Hand']),
-                'value'      => money(
-                    $data['Value At Day Cost'], $account->get('Currency')
-                ),
+                'value'      => money($data['Value At Day Cost'], $account->get('Currency')),
                 'in'         => number($data['Quantity In']),
                 'sold'       => number($data['Quantity Sold']),
                 'lost'       => number($data['Quantity Lost']),
@@ -474,17 +472,23 @@ function stock_history($_data, $db, $user, $account) {
 function inventory_stock_history($_data, $db, $user, $account) {
 
 
+
     if ($_data['parameters']['frequency'] == 'annually') {
         $rtext_label = 'year';
-
+        $date_format="%Y";
     } elseif ($_data['parameters']['frequency'] == 'monthly') {
         $rtext_label = 'month';
+        $date_format="%b %Y";
+
     } elseif ($_data['parameters']['frequency'] == 'weekly') {
         $rtext_label = 'week';
+        $date_format="(%e %b) %Y %W";
+
     } else {
         $rtext_label = 'day';
-    }
+        $date_format="%a %e %b %Y";
 
+    }
 
     include_once 'prepare_table/init.php';
 
@@ -496,29 +500,33 @@ function inventory_stock_history($_data, $db, $user, $account) {
         foreach ($result as $data) {
 
 
+
+            $date=strftime($date_format, strtotime($data['Date'].' +0:00'));
+
+            if ($_data['parameters']['frequency'] == 'daily') {
+
+                $date=sprintf('<span class="link" onclick="change_view(\'inventory/stock_history/day/%s\')" >%s</span>',
+                              $data['Date'],
+                              $date
+                              );
+            }
+
             $adata[] = array(
-                'date'       => $data['Date'],
-                'day'        => strftime(
-                    "%a %e %b %Y", strtotime($data['Date'].' +0:00')
-                ),
-                'year'       => strftime(
-                    "%Y", strtotime($data['Date'].' +0:00')
-                ),
-                'month_year' => strftime(
-                    "%b %Y", strtotime($data['Date'].' +0:00')
-                ),
-                'week_year'  => strftime(
-                    "(%e %b) %Y %W ", strtotime($data['Date'].' +0:00')
-                ),
+                //'date'       => $data['Date'],
+
+
+                // 'day'        => strftime("%a %e %b %Y", strtotime($data['Date'].' +0:00')),
+               // 'year'       => strftime("%Y", strtotime($data['Date'].' +0:00')),
+               // 'month_year' => strftime("%b %Y", strtotime($data['Date'].' +0:00')),
+               // 'week_year'  => strftime("(%e %b) %Y %W ", strtotime($data['Date'].' +0:00')),
+
+                'date'       => $date,
+
                 'parts'      => number($data['Parts']),
                 'locations'  => number($data['Locations']),
 
-                'value'            => money(
-                    $data['Value At Day Cost'], $account->get('Currency')
-                ),
-                'commercial_value' => money(
-                    $data['Value Commercial'], $account->get('Currency')
-                ),
+                'value'            => money($data['Value At Day Cost'], $account->get('Currency')),
+                'commercial_value' => money($data['Value Commercial'], $account->get('Currency')),
                 //'in'=>number($data['Quantity In']),
                 //'sold'=>number($data['Quantity Sold']),
                 //'lost'=>number($data['Quantity Lost']),

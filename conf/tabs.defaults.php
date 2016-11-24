@@ -1469,10 +1469,9 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'note',
-        'elements_type' => each(
-                               $elements_options['part_stock_transactions']
-                           ) ['key'],
+        'elements_type' => each($elements_options['part_stock_transactions']) ['key'],
         'elements'      => $elements_options['part_stock_transactions'],
+
     ),
 
     'inventory.stock.history' => array(
@@ -1482,6 +1481,8 @@ $tab_defaults = array(
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'note',
+        'frequency'   => 'monthly',
+
 
     ),
 

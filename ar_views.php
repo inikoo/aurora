@@ -625,7 +625,6 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
 }
 
-
 function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $metadata = false) {
 
 
@@ -637,11 +636,10 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
 
     $smarty->assign('data', $state);
 
-
     if (file_exists('tabs/'.$actual_tab.'.tab.php')) {
         include_once 'tabs/'.$actual_tab.'.tab.php';
     } else {
-        $html = 'Tab Not found: >'.$actual_tab.'<';
+        $html = 'Tab Not found: >'.$actual_tab.'.tab.php<';
 
     }
     //print $tab;
