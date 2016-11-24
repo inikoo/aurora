@@ -675,6 +675,31 @@ class Part extends Asset {
                     "%a %e %b %Y %H:%M %Z", strtotime($this->data['Part Valid To'] . ' +0:00')
                 );
                 break;
+            case 'Package Description Image':
+
+                $image='';
+
+                $sql=sprintf('select `Image Subject Image Key`  from `Image Subject Bridge` where `Image Subject Object` = "Part" AND `Image Subject Object Key` =%d and `Image Subject Object Image Scope`="SKO"  ' ,
+                             $this->id
+                             );
+
+
+
+                if ($result=$this->db->query($sql)) {
+                		foreach ($result as $row) {
+                            $image.=sprintf('<img src="/image_root.php?id=%d&size=thumbnail"> ',$row['Image Subject Image Key']);
+                		}
+                }else {
+                		print_r($error_info=$this->db->errorInfo());
+                		print "$sql\n";
+                		exit;
+                }
+
+
+
+                    return $image;
+
+                break;
             default:
 
                 if (preg_match('/No Supplied$/', $key)) {
@@ -3208,6 +3233,13 @@ class Part extends Asset {
             case 'Part Package Description':
                 $label = _('SKO description');
                 break;
+            case 'Part Package Description Note':
+                $label = _('SKO description note');
+                break;
+            case 'Part Package Image':
+                $label = _('SKO image');
+                break;
+
             case 'Part Unit Price':
                 $label = _('unit recommended price');
                 break;

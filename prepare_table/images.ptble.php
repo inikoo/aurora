@@ -13,7 +13,7 @@ $table
     = '`Image Dimension` I left join `Image Subject Bridge` B on (I.`Image Key`=`Image Subject Image Key`)';
 
 $fields
-    = "`Image Subject Order`,`Image Subject Is Public`,`Image Subject Key`,I.`Image Key`,`Image Width`,	`Image Height`,`Image File Size`,`Image File Format`,`Image Filename`,`Image Subject Image Caption`";
+    = "`Image Subject Order`,`Image Subject Is Public`,`Image Subject Key`,I.`Image Key`,`Image Width`,	`Image Height`,`Image File Size`,`Image File Format`,`Image Filename`,`Image Subject Image Caption`,`Image Subject Object`,`Image Subject Object Image Scope`";
 
 //print_r($parameters);
 
@@ -63,9 +63,13 @@ if ($order == 'size') {
     $order = '`Image File Format`';
 } elseif ($order == 'filename') {
     $order = '`Image Filename`';
+} elseif ($order == 'object_image_scope') {
+    $order = '`Image Subject Object Image Scope`';
 } else {
     $order = '`Image Subject Order`';
 }
+
+
 
 
 $sql_totals

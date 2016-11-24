@@ -92,7 +92,9 @@ switch ($tipo) {
             $_REQUEST, array(
                 'parent'     => array('type' => 'string'),
                 'parent_key' => array('type' => 'numeric'),
-            )
+                'parent_object_scope' => array('type' => 'string','optional'=>true),
+
+                     )
         );
 
         upload_images($account, $db, $user, $editor, $data, $smarty);
@@ -299,6 +301,12 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
     include_once 'class.Image.php';
 
 
+
+    if(isset($data['parent_object_scope'])){
+        $parent_object_scope=$data['parent_object_scope'];
+    }else {
+        $parent_object_scope = 'Default';
+}
     $parent         = get_object($data['parent'], $data['parent_key']);
     $parent->editor = $editor;
 
@@ -392,8 +400,10 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
                 'type'     => $type
             ),
             'Image Filename' => $name,
+            'Image Subject Object Image Scope'=>$parent_object_scope
 
         );
+
 
         $image = $parent->add_image($image_data);
 
@@ -428,7 +438,11 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
         'error_msg'      => $error_msg,
         'uploads'        => $uploads,
         'number_images'  => $parent->get_number_images(),
-        'main_image_key' => $parent->get_main_image_key()
+        'main_image_key' => $parent->get_main_image_key(),
+
+        'thumbnail'            => sprintf('<img src="/image_root.php?id=%d&size=thumbnail">',$image->id)
+
+
 
     );
 

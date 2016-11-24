@@ -457,7 +457,10 @@ Only for bali dw:
 
 
 
- c
+ ALTER TABLE `Part Dimension` ADD `Part Package Description Note` VARCHAR(255) NULL DEFAULT NULL AFTER `Part Package Description`;
+ALTER TABLE `Image Subject Bridge` ADD `Image Subject Object Type` VARCHAR(16) NOT NULL DEFAULT 'Default' AFTER `Image Subject Object`, ADD INDEX (`Image Subject Object Type`);
+ALTER TABLE `Image Subject Bridge` CHANGE `Image Subject Object Type` `Image Subject Object Image Scope` VARCHAR(16) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Default';
+
 
 
 TODO IN COSTA!!!!=====

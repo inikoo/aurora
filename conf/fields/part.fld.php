@@ -338,6 +338,42 @@ $part_fields[] = array(
         ),
 
         array(
+            'render'          => (!($supplier_part_scope or $new) ? true : false),
+            'id'              => 'Part_Package_Description_Note',
+            'edit'            => (($edit and !$supplier_part_scope) ? 'string' : ''),
+            'value'           => htmlspecialchars($object->get('Part Package Description Note')),
+            'formatted_value' => $object->get('Package Description Note'),
+            'label'           => ucfirst($object->get_field_label('Part Package Description Note')),
+            'required'        => true,
+            'type'            => 'value'
+
+
+        ),
+        array(
+            'render'          => (!($supplier_part_scope or $new) ? true : false),
+            'id'              => 'Part_Package_Image',
+            'edit'            => (($edit and !$supplier_part_scope) ? 'upload' : ''),
+            'value'           => htmlspecialchars($object->get('Part Package Image')),
+            'formatted_value' => $object->get('Package Description Image'),
+            'label'           => ucfirst($object->get_field_label('Part Package Image')),
+            'required'        => true,
+            'type'            => 'value',
+            'upload_data'     => array(
+                'tipo'                => 'upload_images',
+                'parent'              => 'part',
+                'parent_key'          => $object->id,
+                'object'              => 'image',
+                'parent_object_scope' => 'SKO',
+
+                'label' => _('Upload SKO image')
+
+
+            )
+
+
+        ),
+
+        array(
             'id'   => 'Part_Package_Weight',
             'edit' => ($edit ? 'numeric' : ''),
 

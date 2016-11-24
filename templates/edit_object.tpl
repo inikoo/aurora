@@ -146,6 +146,10 @@
                                     <div id="editor_container_{$field.id}" class="hide">
                                         {include file="editor.tpl" editor_data=$field.editor_data }
                                     </div>
+                                {elseif $edit=='upload'  }
+                                    <div id="edit_object_upload_{$field.id}" class="hide">
+                                        {include file="edit_object_upload.tpl" upload_data=$field.upload_data field=$field.id}
+                                    </div>
                                 {elseif $edit=='country_select'  }
                                     <input id="{$field.id}" class="input_field hide width_500" value=""/>
                                     <i id="{$field.id}_save_button" class="fa fa-cloud save {$edit} hide"

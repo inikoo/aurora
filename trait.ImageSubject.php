@@ -29,47 +29,57 @@ trait ImageSubject {
             'Image Filename'      => $raw_data['Image Filename'],
             'Image File Format'   => '',
             'Image Data'          => '',
-            'upload_data'         => $raw_data['Upload Data'],
-            'editor'              => $this->editor
+
+            'upload_data' => $raw_data['Upload Data'],
+            'editor'      => $this->editor
         );
+
+
+        if (isset($raw_data['Image Subject Object Image Scope'])) {
+            $object_image_scope =$raw_data['Image Subject Object Image Scope'];
+        } else {
+            $object_image_scope = 'Default';
+        }
 
 
         $image = new Image('find', $data, 'create');
 
         if ($image->id) {
-            $this->link_image($image->id);
+            $this->link_image($image->id,$object_image_scope);
 
             if ($this->table_name == 'Part') {
 
 
-                $this->activate();
+                if($object_image_scope!='SKO') {
+
+                    $this->activate();
 
 
-                foreach ($this->get_products('objects') as $product) {
+                    foreach ($this->get_products('objects') as $product) {
 
-                    if (count($product->get_parts()) == 1) {
-                        $product->editor = $this->editor;
-                        $product->link_image($image->id);
+                        if (count($product->get_parts()) == 1) {
+                            $product->editor = $this->editor;
+                            $product->link_image($image->id);
+                        }
+
                     }
-
                 }
 
-
-            }elseif($this->table_name == 'Category'){
-                $account=new Account();
-                if($this->get('Category Scope')=='Part' and $this->get('Category Root Key')==$account->get('Account Part Family Category Key')){
+            } elseif ($this->table_name == 'Category') {
+                $account = new Account();
+                if ($this->get('Category Scope') == 'Part' and $this->get('Category Root Key') == $account->get('Account Part Family Category Key')) {
 
                     $sql = sprintf(
-                        'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Product" AND `Category Code`=%s  ',prepare_mysql($this->get('Code'))
+                        'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Product" AND `Category Code`=%s  ', prepare_mysql($this->get('Code'))
                     );
 
 
                     if ($result = $this->db->query($sql)) {
                         foreach ($result as $row) {
 
-                            $category = new Category($row['Category Key']);
+                            $category         = new Category($row['Category Key']);
                             $category->editor = $this->editor;
-                            $category->link_image($image->id);
+                            $category->link_image($image->id, $object_image_scope);
 
                         }
 
@@ -83,7 +93,7 @@ trait ImageSubject {
 
             }
 
-
+return $image;
         } else {
             $this->error = true;
             $this->msg   = "Can't create/found image, ".$image->msg;
@@ -94,7 +104,7 @@ trait ImageSubject {
     }
 
 
-    function link_image($image_key) {
+    function link_image($image_key, $object_image_scope='Default') {
 
 
         $image = new Image($image_key);
@@ -130,9 +140,9 @@ trait ImageSubject {
 
             if (in_array(
                 $subject, array(
-                'Product',
-                'Part'
-            )
+                            'Product',
+                            'Part'
+                        )
             )) {
                 $is_public = 'Yes';
             } else {
@@ -140,8 +150,8 @@ trait ImageSubject {
             }
 
             $sql = sprintf(
-                "INSERT INTO `Image Subject Bridge` (`Image Subject Object`,`Image Subject Object Key`,`Image Subject Image Key`,`Image Subject Is Principal`,`Image Subject Image Caption`,`Image Subject Date`,`Image Subject Order`,`Image Subject Is Public`) VALUES (%s,%d,%d,%s,'',%s,%d,%s)",
-                prepare_mysql($subject), $subject_key, $image->id, prepare_mysql($principal), prepare_mysql(gmdate('Y-m-d H:i:s')), ($number_images + 1), prepare_mysql($is_public)
+                "INSERT INTO `Image Subject Bridge` (`Image Subject Object Image Scope`,`Image Subject Object`,`Image Subject Object Key`,`Image Subject Image Key`,`Image Subject Is Principal`,`Image Subject Image Caption`,`Image Subject Date`,`Image Subject Order`,`Image Subject Is Public`) VALUES (%s,%s,%d,%d,%s,'',%s,%d,%s)",
+                prepare_mysql($object_image_scope), prepare_mysql($subject), $subject_key, $image->id, prepare_mysql($principal), prepare_mysql(gmdate('Y-m-d H:i:s')), ($number_images + 1), prepare_mysql($is_public)
 
             );
             $this->db->exec($sql);

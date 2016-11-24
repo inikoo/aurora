@@ -58,7 +58,22 @@ editable: false,
 cell: Backgrid.StringCell.extend({
 className: " width_150 "
 }),
-},{
+}
+
+
+,{
+name: "object_image_scope",
+label: "{t}Scope{/t}",
+sortType: "toggle",
+editable: false,
+cell: Backgrid.StringCell.extend({
+
+
+className: ""
+}),
+},
+
+{
 name: "caption",
 label: "{t}Caption{/t}",
 sortType: "toggle",
@@ -68,7 +83,9 @@ cell: Backgrid.StringCell.extend({
 
 className: ""
 }),
-},{
+},
+
+{
 name: "operations",
 label: "{t}Operations{/t}",
 sortable: false,

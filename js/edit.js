@@ -59,6 +59,11 @@ function open_edit_field(object, key, field) {
             $('#editor_container_' + field).removeClass('hide')
 
             break;
+        case 'upload':
+
+            $('#edit_object_upload_' + field).removeClass('hide')
+
+            break;
         case 'html_editor':
             $('#' + field).removeClass('hide')
             $('#' + field).focus()
@@ -265,6 +270,11 @@ function close_edit_field(field) {
         case 'editor':
 
             $('#editor_container_' + field).addClass('hide')
+
+            break;
+        case 'upload':
+
+            $('#edit_object_upload_' + field).addClass('hide')
 
             break;
         case 'html_editor':
