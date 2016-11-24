@@ -3536,26 +3536,12 @@ $modules = array(
                 'icon'      => 'area-chart',
                 'reference' => 'inventory/stock_history',
                 'tabs'      => array(
-                    'inventory.stock.history.annually' => array(
+                    'inventory.stock.history' => array(
                         'label' => _(
-                            'Annually'
+                            'Stock history'
                         )
                     ),
-                    'inventory.stock.history.monthly'  => array(
-                        'label' => _(
-                            'Monthly'
-                        )
-                    ),
-                    'inventory.stock.history.weekly'   => array(
-                        'label' => _(
-                            'Weekly'
-                        )
-                    ),
-                    'inventory.stock.history.daily'    => array(
-                        'label' => _(
-                            'Daily'
-                        )
-                    ),
+
                     'inventory.stock.history.plot'     => array(
                         'label' => _(
                             'Chart'

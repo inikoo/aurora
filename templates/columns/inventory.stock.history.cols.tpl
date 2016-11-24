@@ -10,12 +10,19 @@ cell: "string",
 
 {
 name: "date",
-label: "",
-editable: false,
-renderable: false,
-cell: "string",
+label: "{t}Date{/t}",
 
+editable: false,
+cell: Backgrid.HtmlCell.extend({
+
+className: " aright width_150"
+
+
+}),
+headerCell: integerHeaderCell,
+sortType: "toggle",
 },
+
 
 {
 name: "day",
@@ -70,7 +77,7 @@ sortType: "toggle",
 
 {
 name: "parts",
-label: "{t}Parts{/t}",
+label: "{t}Partss{/t}",
 editable: false,
 sortable: false,
 
