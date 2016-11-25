@@ -107,10 +107,10 @@ function get_widget_details(element, widget, metadata) {
 
 function change_view(_request, metadata) {
 
-
     if (metadata == undefined) {
         metadata = {};
     }
+
 
 
     var request = "/ar_views.php?tipo=views&request=" + _request + '&metadata=' + JSON.stringify(metadata) + "&old_state=" + JSON.stringify(state)

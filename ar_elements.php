@@ -1278,9 +1278,19 @@ function get_orders_element_numbers($db, $data, $user) {
 
 
     switch ($data['parent']) {
+        case 'account':
+            $table = '`Order Dimension` O';
+            $where = sprintf('where  true');
+
+            $object=get_object('account',1);
+
+            break;
         case 'store':
             $table = '`Order Dimension` O';
             $where = sprintf('where  `Order Store Key`=%d', $parent_key);
+
+            $object=get_object('store',$parent_key);
+
             break;
         case 'campaign':
             $table
@@ -1329,8 +1339,30 @@ function get_orders_element_numbers($db, $data, $user) {
             'Sample'   => 0,
             'Donation' => 0,
             'Other'    => 0
+        ),
+        'flow'=>array(
+            'Basket'    => 0,
+            'Submitted_Unpaid'   => 0,
+            'Submitted_Paid' => 0,
+            'InWarehouse'    => 0,
+            'Packed'    => 0,
+            'Dispatch_Ready'    => 0,
+            'Dispatched_Today'    => 0
+
+
+
         )
     );
+
+    if($data['parent']=='account' or $data['parent']=='store'){
+        $elements_numbers['flow']['Basket']=$object->get('Orders In Basket Number');
+        $elements_numbers['flow']['Submitted_Unpaid']=$object->get('Orders In Process Paid Number');
+        $elements_numbers['flow']['Submitted_Paid']=$object->get('Orders In Process Not Paid Number');
+        $elements_numbers['flow']['Packed']=$object->get('Orders Packed Number');
+        $elements_numbers['flow']['Dispatch_Ready']=$object->get('Orders In Dispatch Area Number');
+        $elements_numbers['flow']['Dispatched_Today']=$object->get('Today Orders Dispatched');
+
+    }
 
 
     //USE INDEX (`Main Source Type Store Key`)

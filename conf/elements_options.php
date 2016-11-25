@@ -221,7 +221,7 @@ $elements_options = array(
             ),
         ),
         'type'     => array(
-            'label' => _('Payment'),
+            'label' => _('Type'),
             'items' => array(
                 'Order'    => array(
                     'label'    => _('Order'),
@@ -295,6 +295,45 @@ $elements_options = array(
                     'selected' => true
                 ),
             )
+        ),
+        'flow' => array(
+            'label' => _('Process flow'),
+            'items' => array(
+                'Basket' => array(
+                    'label'    => _('IPrcss'),
+                    'title'    => _('In Process'),
+                    'selected' => false
+                ),
+                'Submitted_Unpaid'         => array(
+                    'label'    => _('S (UPaid)'),
+                    'title'    => _('Submitted (Unpaid)'),
+                    'selected' => true
+                ),
+                'Submitted_Paid'         => array(
+                    'label'    => _('S (Paid)'),
+                    'selected' => true
+                ),
+                'InWarehouse'        => array(
+                    'label'    => _('Warhs'),
+                    'title'    => _('In Warehouse'),
+                    'selected' => true
+                ),
+                'Packed'         => array(
+                    'label'    => _('Pkd'),
+                    'title'    => _('Packed'),
+                    'selected' => true
+                ),
+                'Dispatch_Ready'         => array(
+                    'label'    => _('Disp Rdy'),
+                    'title'    => _('Dispatch Ready'),
+                    'selected' => true
+                ),
+                'Dispatched_Today'         => array(
+                    'label'    => _('Disp Tdy'),
+                    'title'    => _('Dispatched today'),
+                    'selected' => false
+                )
+            ),
         ),
 
 

@@ -71,6 +71,8 @@ if (isset($metadata['parameters'])) {
     }
 }
 
+//print_r( $parameters['elements']);
+
 //print_r($metadata);
 
 if (isset($metadata['element'])) {
@@ -79,9 +81,13 @@ if (isset($metadata['element'])) {
 
         if (isset($parameters['elements'][$element_type])) {
 
+
+
             foreach ($elements as $_key => $value) {
-                $parameters['elements'][$element_type]['items'][$_key]['selected']
-                    = $value;
+
+             //  print $element_type.' '.$_key.': '.$value."\n";
+
+                $parameters['elements'][$element_type]['items'][$_key]['selected'] = $value;
             }
 
         }
@@ -89,6 +95,7 @@ if (isset($metadata['element'])) {
     }
 
 }
+//print_r( $parameters['elements']);
 
 
 $parameters['tab'] = $tab;

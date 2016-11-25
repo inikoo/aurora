@@ -57,13 +57,24 @@
     <li class="flex-item">
 
         <span>{t}In basket{/t}</span>
-        <div class="title"><span class="Orders_In_Basket_Number">{$object->get('Orders In Basket Number')}</span></div>
+        <div class="title"><span class="Orders_In_Basket_Number button"  onclick="change_view(
+                    '{if $object->get_object_name()=='Store'}orders/{$object->id}{/if}' ,
+                    { parameters:{ period:'all',elements_type:'flow' } ,element:{ flow:{ Basket:1,Submitted_Unpaid:'',Submitted_Paid:'',InWarehouse:'',Packed:'',Dispatch_Ready:'',Dispatched_Today:''}}}
+                    )">{$object->get('Orders In Basket Number')}</span></div>
         <div ><span class="Orders_In_Basket_Amount" title="{if $currency=='account'}{$object->get('DC Orders In Basket Amount')}{else}{$object->get('Orders In Basket Amount')}{/if}">{if $currency=='account'}{$object->get('DC Orders In Basket Amount Minify')}{else}{$object->get('Orders In Basket Amount Minify')}{/if}</span></div>
 
     </li>
     <li class="flex-item">
         <span>{t}Submitted{/t}</span>
-        <div class="title"><span class="discreet" ><span class="Orders_In_Process_Not_Paid_Number" title="{t}Unpaid submitted orders{/t}">{$object->get('Orders In Process Not Paid Number')}</span> | </span> <span class="Orders_In_Process_Paid_Number" title="{t}Paid submitted orders{/t}">{$object->get('Orders In Process Paid Number')}</span> </div>
+        <div class="title"><span class="discreet" >
+                <span class="Orders_In_Process_Not_Paid_Number button" title="{t}Unpaid submitted orders{/t}"  onclick="change_view(
+                        '{if $object->get_object_name()=='Store'}orders/{$object->id}{/if}' ,
+                        { parameters:{ period:'all',elements_type:'flow' } ,element:{ flow:{ Basket:'',Submitted_Unpaid:1,Submitted_Paid:'',InWarehouse:'',Packed:'',Dispatch_Ready:'',Dispatched_Today:''}}}
+                        )" >{$object->get('Orders In Process Not Paid Number')}</span> | </span>
+            <span class="Orders_In_Process_Paid_Number button" title="{t}Paid submitted orders{/t}"  onclick="change_view(
+                    '{if $object->get_object_name()=='Store'}orders/{$object->id}{/if}' ,
+                    { parameters:{ period:'all',elements_type:'flow' } ,element:{ flow:{ Basket:'',Submitted_Unpaid:'',Submitted_Paid:1,InWarehouse:'',Packed:'',Dispatch_Ready:'',Dispatched_Today:''}}}
+                    )">{$object->get('Orders In Process Paid Number')}</span> </div>
         <div >
             <span class="discreet"><span class="Orders_In_Process_Not_Paid_Amount" title="{if $currency=='account'}{$object->get('DC Orders In Process Not Paid Amount')}{else}{$object->get('Orders In Process Not Paid Amount')}{/if}">{if $currency=='account'}{$object->get('DC Orders In Process Not Paid Amount Minify')}{else}{$object->get('Orders In Process Not Paid Amount Minify')}{/if}</span> | </span>
             <span class="Orders_In_Process_Paid_Amount" title="{if $currency=='account'}{$object->get('DC Orders In Process Paid Amount')}{else}{$object->get('Orders In Process Paid Amount')}{/if}">{if $currency=='account'}{$object->get('DC Orders In Process Paid Amount Minify')}{else}{$object->get('Orders In Process Paid Amount Minify')}{/if}</span></div>
@@ -72,9 +83,20 @@
     <li class="flex-item">
         <span>{t}In warehouse{/t}</span>
         <div class="title">
-            <span class="Orders_In_Warehouse_Number" title="{t}Orders in warehouse{/t}">{$object->get('Orders In Warehouse Number')}</span> |
-            <span class="Orders_Packed_Number" title="{t}Packed orders{/t}">{$object->get('Orders Packed Number')}</span> |
-            <span class="Orders_In_Dispatch_Area_Number" title="{t}Orders ready to dispatch{/t}" >{$object->get('Orders In Dispatch Area Number')}</span>
+            <span class="Orders_In_Warehouse_Number button" title="{t}Orders in warehouse{/t}"
+                  onclick="change_view(
+                    '{if $object->get_object_name()=='Store'}orders/{$object->id}{/if}' ,
+                    { parameters:{ period:'all',elements_type:'flow' } ,element:{ flow:{ Basket:'',Submitted_Unpaid:'',Submitted_Paid:'',InWarehouse:1,Packed:'',Dispatch_Ready:'',Dispatched_Today:''}}}
+                    )"
+            >{$object->get('Orders In Warehouse Number')}</span> |
+            <span class="Orders_Packed_Number button" title="{t}Packed orders{/t}"  onclick="change_view(
+                    '{if $object->get_object_name()=='Store'}orders/{$object->id}{/if}' ,
+                    { parameters:{ period:'all',elements_type:'flow' } ,element:{ flow:{ Basket:'',Submitted_Unpaid:'',Submitted_Paid:'',InWarehouse:0,Packed:1,Dispatch_Ready:'',Dispatched_Today:''}}}
+                    )">{$object->get('Orders Packed Number')}</span> |
+            <span class="Orders_In_Dispatch_Area_Numbe button" title="{t}Orders ready to dispatch{/t}"  onclick="change_view(
+                    '{if $object->get_object_name()=='Store'}orders/{$object->id}{/if}' ,
+                    { parameters:{ period:'all',elements_type:'flow' } ,element:{ flow:{ Basket:'',Submitted_Unpaid:'',Submitted_Paid:'',InWarehouse:'',Packed:'',Dispatch_Ready:1,Dispatched_Today:''}}}
+                    )">{$object->get('Orders In Dispatch Area Number')}</span>
         </div>
         <div >
             <span class="Orders_In_Warehouse_Amount" title="{if $currency=='account'}{$object->get('DC Orders In Warehouse Amount')}{else}{$object->get('Orders In Warehouse Amount')}{/if}">{if $currency=='account'}{$object->get('DC Orders In Warehouse Amount Minify')}{else}{$object->get('Orders In Warehouse Amount Minify')}{/if}</span> |
@@ -88,7 +110,10 @@
         <span>{t}Today{/t}</span>
         <div class="title">
             <span class="Delta_Today_Start_Orders_In_Warehouse_Number" title="Today's difference of orders in warehouse">{$object->get('Delta Today Start Orders In Warehouse Number')}</span>
-            <span class="padding_left_10 Today_Orders_Dispatched" title="Today's dispatched orders">{$object->get('Today Orders Dispatched')}</span>
+            <span class="padding_left_10 Today_Orders_Dispatched button" title="Today's dispatched orders"  onclick="change_view(
+                    '{if $object->get_object_name()=='Store'}orders/{$object->id}{/if}' ,
+                    { parameters:{ period:'all',elements_type:'flow' } ,element:{ flow:{ Basket:'',Submitted_Unpaid:'',Submitted_Paid:'',InWarehouse:'',Packed:'',Dispatch_Ready:'',Dispatched_Today:1}}}
+                    )">{$object->get('Today Orders Dispatched')}</span>
 
         </div>
 
