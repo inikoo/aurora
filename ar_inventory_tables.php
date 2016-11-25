@@ -1816,7 +1816,7 @@ function sales_history($_data, $db, $user, $account) {
                 $_date = $date;
             } elseif ($_data['parameters']['frequency'] == 'weekly') {
                 $date  = strftime(
-                    "(%e %b) %Y %W ", strtotime($data['Invoice Date'].' +0:00')
+                    "(%e %b) %Y %W ", strtotime($data['Date'].' +0:00')
                 );
                 $_date = strftime("%Y%W ", strtotime($data['Date'].' +0:00'));
             } elseif ($_data['parameters']['frequency'] == 'daily') {
