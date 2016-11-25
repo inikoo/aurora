@@ -601,9 +601,10 @@ function get_view($db, $smarty, $user, $account, $modules) {
     $state['metadata'] = (isset($data['metadata']) ? $data['metadata'] : array());
 
 
-    $response['tab'] = get_tab(
-        $db, $smarty, $user, $account, $state['tab'], $state['subtab'], $state, $data['metadata']
-    );
+
+
+
+    $response['tab'] = get_tab($db, $smarty, $user, $account, $state['tab'], $state['subtab'], $state, $data['metadata']);
 
 
     unset($state['_object']);

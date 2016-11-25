@@ -170,14 +170,81 @@ if (isset($parameters['elements_type'])) {
 
 
     switch ($parameters['elements_type']) {
+
+        case ('flow'):
+
+            $num_elements_checked = 0;
+
+
+            $_where='';
+
+            foreach ($parameters['elements']['flow']['items'] as $_key => $_value) {
+                $_value = $_value['selected'];
+                if ($_value) {
+                    $num_elements_checked++;
+
+                    if ($_key == 'Basket') {
+                        $_where.=" or (`Order Number Items`>0 AND `Order Current Dispatch State`  IN ('In Process by Customer','In Process') ) ";
+
+                    }
+                    if ($_key == 'Submitted_Unpaid') {
+                        $_where.=" or (`Order Current Dispatch State`='Submitted by Customer'  AND `Order Current Payment State`!='Paid' ) ";
+
+                    }
+                    if ($_key == 'Submitted_Paid') {
+                        $_where.=" or (`Order Current Dispatch State`='Submitted by Customer'  AND `Order Current Payment State`='Paid' ) ";
+
+                    }
+
+                    if ($_key == 'InWarehouse') {
+                        $_where.=" or (`Order Current Dispatch State` in ('Ready to Pick', 'Picking & Packing', 'Ready to Ship', 'Packing')  ) ";
+
+                    }
+
+                    if ($_key == 'Packed') {
+                        $_where.=" or (`Order Current Dispatch State` in ('Packed')  ) ";
+
+                    }
+
+
+                    if ($_key == 'Dispatch_Ready') {
+                        $_where.=" or (`Order Current Dispatch State` in ('Packed Done')  ) ";
+
+                    }
+
+                    if ($_key == 'Dispatched_Today') {
+                        $_where.=sprintf(" or (  `Order Current Dispatch State`='Dispatched' and `Order Dispatched Date`>%s   and  `Order Dispatched Date`<%s   ) ",
+                                         prepare_mysql(date('Y-m-d 00:00:00')),
+                                         prepare_mysql(date('Y-m-d 23:59:59'))
+                                         );
+
+                    }
+
+
+                }
+            }
+
+
+            if($num_elements_checked ==0){
+                $where=' where false';
+
+            }else{
+
+                $_where=preg_replace('/^ or/','',$_where);
+
+                $where.='and ( '.$_where.')';
+
+            }
+
+           // print $where;
+
+            break;
         case('dispatch'):
             $_elements            = '';
             $num_elements_checked = 0;
 
 
-            foreach (
-                $parameters['elements']['dispatch']['items'] as $_key => $_value
-            ) {
+            foreach ($parameters['elements']['dispatch']['items'] as $_key => $_value) {
                 $_value = $_value['selected'];
                 if ($_value) {
                     $num_elements_checked++;
