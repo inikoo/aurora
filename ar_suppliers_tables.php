@@ -1464,16 +1464,17 @@ function delivery_checking_items($_data, $db, $user) {
             }
 
 
+
             $edit_sko_checked_quantity = sprintf(
                 '<span class="%s" ondblclick="show_check_dialog(this)">%s</span>
                 <span data-settings=\'{"field": "Supplier Delivery Checked Quantity", "transaction_key":%d,"item_key":%d, "item_historic_key":%d ,"on":1 }\' class="checked_quantity %s"  >
                     <input class="checked_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button %s" aria-hidden="true">
                 </span>',
-                ($supplier_delivery->get('Supplier Delivery Status')=='Placed'?'hide':''),
+                ($supplier_delivery->get('Supplier Delivery State')=='Placed'?'':'hide'),
                 number($sko_checked_quantity),
                 $data['Purchase Order Transaction Fact Key'],
                 $data['Supplier Part Key'], $data['Supplier Part Historic Key'],
-                ($supplier_delivery->get('Supplier Delivery Status')!='Placed'?'hide':''),
+                ($supplier_delivery->get('Supplier Delivery State')=='Placed'?'hide':''),
                 $sko_checked_quantity, $sko_checked_quantity, ''
             );
 
