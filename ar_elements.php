@@ -1356,8 +1356,8 @@ function get_orders_element_numbers($db, $data, $user) {
 
     if($data['parent']=='account' or $data['parent']=='store'){
         $elements_numbers['flow']['Basket']=$object->get('Orders In Basket Number');
-        $elements_numbers['flow']['Submitted_Unpaid']=$object->get('Orders In Process Paid Number');
-        $elements_numbers['flow']['Submitted_Paid']=$object->get('Orders In Process Not Paid Number');
+        $elements_numbers['flow']['Submitted_Unpaid']=$object->get('Orders In Process Not Paid Number');
+        $elements_numbers['flow']['Submitted_Paid']=$object->get('Orders In Process Paid Number');
         $elements_numbers['flow']['Packed']=$object->get('Orders Packed Number');
         $elements_numbers['flow']['Dispatch_Ready']=$object->get('Orders In Dispatch Area Number');
         $elements_numbers['flow']['Dispatched_Today']=$object->get('Today Orders Dispatched');
