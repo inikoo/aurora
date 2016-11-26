@@ -1742,7 +1742,12 @@ $modules = array(
                     'category.product.sales.plot'     => 'category.sales',
                     'category.product.sales.history'  => 'category.sales',
                     'category.product.sales.calendar' => 'category.sales',
-                    'category.product.sales.info'     => 'category.sales'
+                    'category.product.sales.info'     => 'category.sales',
+                    'category.webpage.preview'     => 'category.webpage',
+                    'category.webpage.details'     => 'category.webpage',
+                    'category.webpage.products'     => 'category.webpage',
+                    'category.webpage.analytics'     => 'category.webpage'
+
 
                 ),
                 'tabs'           => array(
@@ -1783,7 +1788,25 @@ $modules = array(
                         )
 
                     ),
+                    'category.webpage'    => array(
+                        'label' => _('Website'),
+                        'icon'  => 'globe',
+                        'subtabs' => array(
+                            'category.webpage.settings'  => array(
+                                'label' => _('Settings'),
+                                'icon'=>'sliders'
+                            ),
 
+                            'category.webpage.preview'     => array(
+                                'label' => _('Preview')
+                            ),
+                            'category.webpage.analytics'  => array(
+                                'label' => _('Analytics')
+                            ),
+
+
+                        )
+                    ),
 
                     'category.history' => array(
                         'label' => _('History'),

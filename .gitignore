@@ -34,3 +34,7 @@ cron/fix.php
 *.php~
 
 deleteme.php
+
+css/jquery-ui.old.css
+
+js/libs/jquery-ui.old.js

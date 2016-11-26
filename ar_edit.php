@@ -30,6 +30,18 @@ $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
 
+    case 'edit_category_stack_index':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'stack_index'           => array('type' => 'numeric'),
+                         'key'       => array('type' => 'key'),
+                         'subject_key'           => array('type' => 'key'),
+
+                     )
+        );
+        edit_category_stack_index($data,$editor);
+
+        break;
     case 'calculate_sales':
         $data = prepare_values(
             $_REQUEST, array(
@@ -2274,6 +2286,17 @@ function calculate_sales($account, $db, $data, $editor) {
 
     );
     echo json_encode($response);
+
+
+}
+
+function edit_category_stack_index($data, $editor){
+
+
+    $object         = get_object('category', $data['key']);
+    $object->editor = $editor;
+
+    $object->change_subject_stack($data['stack_index'],$data['subject_key']);
 
 
 }

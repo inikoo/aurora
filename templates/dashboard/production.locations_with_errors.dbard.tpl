@@ -1,4 +1,4 @@
-<div style="" class="button widget"
+<div  class="button widget"
      onClick="get_widget_details(this,'supplier.part_locations_with_errors.wget',{ parent: 'supplier','parent_key':{$supplier->id}})">
     <div id="locations_with_errors"
          style="padding-top: 10px;padding-right: 10px;padding-left: 10px;padding-bottom: 10px;"></div>
