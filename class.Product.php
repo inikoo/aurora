@@ -408,6 +408,25 @@ class Product extends Asset {
 
         switch ($key) {
 
+
+            case 'Webpage Image':
+
+
+                $image_key=$this->get('Product Main Image Key');
+
+                if ($image_key) {
+                    $img='/image_root.php?size=small&id='.$image_key;
+                   // $normal_img='image_root.php?id='.$image_key;
+                }else {
+                    $img='/art/nopic.png';
+                   // $normal_img='art/nopic.png';
+
+                }
+
+                return $img;
+
+                break;
+
             case 'Webpage Related Products':
 
                 $related_products_data = $this->webpage->get_related_products_data();
@@ -465,6 +484,55 @@ class Product extends Asset {
                 return $this->webpage->get('Page Found In Page Key');
 
                 break;
+
+            case 'Webpage Price':
+
+                $price = money(
+                    $this->data['Product Price'], $this->data['Store Currency Code']
+                );
+
+                if ($this->data['Product Units Per Case'] != 1) {
+
+                    $price .= ' ('.money(
+                            $this->data['Product Price'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code']
+                        ).'/'.$this->data['Product Unit Label'].')';
+
+
+                    //$price.=' ('.sprintf(_('%s per %s'), money($this->data['Product Price']/$this->data['Product Units Per Case'], $this->data['Store Currency Code']), $this->data['Product Unit Label']).')';
+                }
+
+
+
+
+                return $price;
+                break;
+
+            case 'Webpage RRP':
+
+                if ($this->data['Product RRP'] == '') {
+                    return '';
+                }
+
+                $rrp = money(
+                    $this->data['Product RRP'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code']
+                );
+                if ($this->get('Product Units Per Case') != 1) {
+                    $rrp .= '/'.$this->get('Product Unit Label');
+                }
+
+
+
+                return $rrp;
+                break;
+
+            case 'Webpage Out of Stock Label':
+                if ($this->get('Product Total Acc Quantity Ordered')>0) {
+                    return _('Out of stock');
+                }else{
+                    return _('Launching soon');
+                }
+
+
             case 'Price':
 
                 $price = money(
@@ -514,6 +582,14 @@ class Product extends Asset {
                     $this->data['Product RRP'], $this->data['Store Currency Code']
                 );
                 break;
+
+
+
+                return money(
+                    $this->data['Product RRP'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code']
+                );
+                break;
+
             case 'Unit RRP':
 
                 if ($this->data['Product RRP'] == '') {

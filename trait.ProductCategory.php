@@ -78,7 +78,7 @@ trait ProductCategory {
         $this->webpage->editor = $this->editor;
 
 
-        // Temporal should be take off bcuse page should be created when product is createss
+        // Temporal should be take off because page should be created when product is create
         /*
         if (!$this->webpage->id) {
 
@@ -102,6 +102,39 @@ trait ProductCategory {
         }
 
         */
+
+        return $this->webpage;
+
+    }
+
+
+    function display($field) {
+
+        switch ($field) {
+
+            case 'Main Image Src':
+
+
+                $image_key = $this->get_main_image_key();
+
+                if ($image_key) {
+                    $img = '/image_root.php?size=small&id='.$image_key;
+                    // $normal_img='image_root.php?id='.$image_key;
+                } else {
+                    $img = '/art/nopic.png';
+                    // $normal_img='art/nopic.png';
+
+                }
+
+                return $img;
+
+                break;
+
+
+            default:
+                return '';
+                break;
+        }
 
     }
 
@@ -999,6 +1032,124 @@ trait ProductCategory {
 
 
         return $category_data;
+    }
+
+    function create_stack_index($force_reindex = false) {
+
+
+        //    $this->db->exec('truncate `Product Category Stack Index`');
+
+        $null_stacks = false;
+
+        $sql = sprintf(
+            "SELECT `Product Category Stack Product ID`,`Product Category Stack Category Key`,`Product Category Stack Index`, P.`Product ID`,`Product Code`,`Product Web State` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Stack Index` S ON (`Subject Key`=S.`Product Category Stack Product ID` AND S.`Product Category Stack Category Key`=B.`Category Key`)    WHERE  `Category Key`=%d  ORDER BY ifnull(`Product Category Stack Index`,99999999),`Product Code File As`",
+            $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['Product Category Stack Product ID'] == '') {
+                    $null_stacks = true;
+
+                    $sql = sprintf(
+                        'INSERT INTO `Product Category Stack Index` (`Product Category Stack Category Key`,`Product Category Stack Product ID`) VALUES (%d,%d) ', $this->id, $row['Product ID']
+                    );
+                    $this->db->exec($sql);
+
+                }
+
+                if ($row['Product Category Stack Index'] == '') {
+                    $null_stacks = true;
+                }
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        //   exit;
+
+        $stack_index = 0;
+        if ($null_stacks or $force_reindex) {
+
+            $sql = sprintf(
+                "SELECT `Product Category Stack Key`,`Product Category Stack Product ID`,`Product Category Stack Category Key`,`Product Category Stack Index`, P.`Product ID`,`Product Code`,`Product Web State` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Stack Index` S ON (`Subject Key`=S.`Product Category Stack Product ID` AND S.`Product Category Stack Category Key`=B.`Category Key`)    WHERE  `Category Key`=%d  ORDER BY ifnull(`Product Category Stack Index`,99999999),`Product Code File As`",
+                $this->id
+            );
+
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+
+                    //     print_r($row);
+
+                    $stack_index++;
+                    $sql = sprintf(
+                        'UPDATE `Product Category Stack Index` SET `Product Category Stack Index`=%d WHERE `Product Category Stack Key`=%d', $stack_index, $row['Product Category Stack Key']
+                    );
+                    $this->db->exec($sql);
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+        }
+
+
+    }
+
+
+    function change_subject_stack($stack_index, $subject_key) {
+
+
+        $subjects = array();
+
+        $sql = sprintf(
+            "SELECT `Product Category Stack Index`,`Product Category Stack Key`,`Product Category Stack Product ID` AS subject_key,`Product Category Stack Category Key` FROM `Product Category Stack Index`    WHERE  `Product Category Stack Category Key`=%d ",
+            $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['subject_key'] == $subject_key) {
+
+                    $row['Product Category Stack Index'] = $stack_index;
+
+                }
+                $subjects[$row['Product Category Stack Index']] = $row['Product Category Stack Key'];;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+        ksort($subjects);
+        $stack_index = 0;
+
+
+        //  print_r($subjects);
+        foreach ($subjects as $tmp => $product_category_stack_key) {
+            $stack_index++;
+
+            $sql = sprintf(
+                'UPDATE `Product Category Stack Index` SET `Product Category Stack Index`=%d WHERE `Product Category Stack Key`=%d ', $stack_index, $product_category_stack_key
+            );
+
+            //  print "$sql\n";
+
+            $this->db->exec($sql);
+
+        }
+
     }
 
 

@@ -26,7 +26,7 @@ sortType: "toggle",
 
 {
 name: "stock",
-label: "{t}Stockx{/t}",
+label: "{t}Stock{/t}",
 editable: false,
 sortable: false,
 

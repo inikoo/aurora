@@ -2383,13 +2383,6 @@ input.inputfile {
   text-align: center;
   padding: 0px; }
 
-#dashboard_pending_orders .widgetx {
-  float: left;
-  min-width: 70px;
-  margin: 5px 0px 5px 10px;
-  text-align: center;
-  padding: 0px; }
-
 .dashboard {
   font-size: 90%; }
   .dashboard .button .selected {
@@ -2475,6 +2468,13 @@ input.inputfile {
       .dashboard table .header td {
         font-weight: 600;
         border-bottom: 1px solid #ccc; }
+
+.widget_container .widget {
+  float: left;
+  min-width: 70px;
+  margin: 5px 0px 5px 10px;
+  text-align: center;
+  padding: 0px; }
 
 .adr {
   line-height: 22px; }
