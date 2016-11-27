@@ -2268,22 +2268,22 @@ function sales_history($_data, $db, $user, $account) {
 
         case 'supplier':
         case 'category':
-            if ($_data['parameters']['frequency'] == 'annually') {
-                $from_date = gmdate("Y-01-01", strtotime($from_date.' +0:00'));
-                $to_date   = gmdate("Y-12-31", strtotime($to_date.' +0:00'));
-            } elseif ($_data['parameters']['frequency'] == 'quarterly') {
-                $from_date = gmdate("Y-m-01", strtotime($from_date.' +0:00'));
-                $to_date   = gmdate("Y-m-01", strtotime($to_date.' + 3 month +0:00'));
-            } elseif ($_data['parameters']['frequency'] == 'monthly') {
-                $from_date = gmdate("Y-m-01", strtotime($from_date.' +0:00'));
-                $to_date   = gmdate("Y-m-01", strtotime($to_date.' + 1 year +0:00'));
-            } elseif ($_data['parameters']['frequency'] == 'weekly') {
-                $from_date = gmdate("Y-m-d", strtotime($from_date.'  -1 week  +0:00'));
-                $to_date   = gmdate("Y-m-d", strtotime($to_date.' + 1 year +0:00'));
-            } elseif ($_data['parameters']['frequency'] == 'daily') {
-                $from_date = $from_date.'';
-                $to_date   = $to_date.'';
-            }
+        if ($_data['parameters']['frequency'] == 'annually') {
+            $from_date = gmdate("Y-01-01", strtotime($from_date.' +0:00'));
+            $to_date   = gmdate("Y-12-31", strtotime($to_date.' +0:00'));
+        } elseif ($_data['parameters']['frequency'] == 'quarterly') {
+            $from_date = gmdate("Y-m-01", strtotime($from_date.'  -1 year  +0:00'));
+            $to_date   = gmdate("Y-m-01", strtotime($to_date.' + 3 month +0:00'));
+        }elseif ($_data['parameters']['frequency'] == 'monthly') {
+            $from_date = gmdate("Y-m-01", strtotime($from_date.' -1 year  +0:00'));
+            $to_date   = gmdate("Y-m-01", strtotime($to_date.' +0:00'));
+        } elseif ($_data['parameters']['frequency'] == 'weekly') {
+            $from_date = gmdate("Y-m-d", strtotime($from_date.'  -1 year  +0:00'));
+            $to_date   = gmdate("Y-m-d", strtotime($to_date.'  +0:00'));
+        } elseif ($_data['parameters']['frequency'] == 'daily') {
+            $from_date = gmdate("Y-m-d", strtotime($from_date.' - 1 year +0:00'));
+            $to_date   =  $to_date ;
+        }
             $group_by = '';
 
             break;
@@ -2295,8 +2295,11 @@ function sales_history($_data, $db, $user, $account) {
 
 
     $sql = sprintf(
-        "select $fields from $table $where $wheref and %s>=%s and  %s<=%s %s order by $date_field  desc  ", $date_field, prepare_mysql($from_date), $date_field, prepare_mysql($to_date), " $group_by "
+        "select $fields from $table $where $wheref and %s>=%s and  %s<=%s %s order by $date_field    ", $date_field, prepare_mysql($from_date), $date_field, prepare_mysql($to_date), " $group_by "
     );
+
+    $last_year_data=array();
+
 
     //print $sql;
     if ($result = $db->query($sql)) {
@@ -2306,37 +2309,34 @@ function sales_history($_data, $db, $user, $account) {
 
 
 
-
             if ($_data['parameters']['frequency'] == 'annually') {
                 $_date = strftime("%Y", strtotime($data['Date'].' +0:00'));
-
-                $_date_next_year=strftime("%Y", strtotime($data['Date'].' + 1 year'));
-
+                $_date_last_year=strftime("%Y", strtotime($data['Date'].' - 1 year'));
+                $date=$_date;
             } elseif ($_data['parameters']['frequency'] == 'quarterly') {
                 $_date = 'Q'.ceil(date('n', strtotime($data['Date'].' +0:00')) / 3).' '.strftime("%Y", strtotime($data['Date'].' +0:00'));
-
-                $_date_next_year = 'Q'.ceil(date('n', strtotime($data['Date'].' + 1 year')) / 3).' '.strftime("%Y", strtotime($data['Date'].' + 1 year'));
-
-
-
+                $_date_last_year = 'Q'.ceil(date('n', strtotime($data['Date'].' - 1 year')) / 3).' '.strftime("%Y", strtotime($data['Date'].' - 1 year'));
+                $date=$_date;
             } elseif ($_data['parameters']['frequency'] == 'monthly') {
                 $_date = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
-                $_date_next_year = strftime("%b %Y", strtotime($data['Date'].' + 1 year'));
+                $_date_last_year = strftime("%b %Y", strtotime($data['Date'].' - 1 year'));
+                $date=$_date;
             } elseif ($_data['parameters']['frequency'] == 'weekly') {
-
                 $_date = strftime("%Y%W ", strtotime($data['Date'].' +0:00'));
-                $_date_next_year = strftime("%Y%W ", strtotime($data['Date'].' + 1 year'));
+                $_date_last_year = strftime("%Y%W ", strtotime($data['Date'].' - 1 year'));
+                $date  = strftime("(%e %b) %Y %W ", strtotime($data['Date'].' +0:00'));
             } elseif ($_data['parameters']['frequency'] == 'daily') {
-
                 $_date = date('Y-m-d', strtotime($data['Date'].' +0:00'));
-                $_date_next_year = date('Y-m-d', strtotime($data['Date'].' + 1 year'));
+                $_date_last_year = date('Y-m-d', strtotime($data['Date'].'  -1 year'));
+                $date  = strftime("%a %e %b %Y", strtotime($data['Date'].' +0:00'));
             }
+
+            $last_year_data[$_date]=array('_sales'=>$data['sales']);
 
 
             if (array_key_exists($_date, $record_data)) {
 
                 $record_data[$_date] = array(
-                    '_sales'=>$data['sales'],
                     'sales'      => money($data['sales'], $currency),
                     'deliveries' => number($data['deliveries']),
                     'dispatched' => number($data['dispatched']),
@@ -2348,15 +2348,8 @@ function sales_history($_data, $db, $user, $account) {
 
 
 
-
-            if (array_key_exists($_date_next_year, $record_data)  and isset( $record_data[$_date_next_year]['_sales'])  ) {
-
-              //  print 'xxx'. $_date_next_year;;
-
-                $record_data[$_date_next_year]['delta_sales_1yb'] = '<span class="">'.delta( $record_data[$_date_next_year]['_sales'],$data['sales']).' '.delta_icon( $record_data[$_date_next_year]['_sales'],$data['sales']).'</span>';
-
-
-
+            if ( isset( $last_year_data[$_date_last_year]  )) {
+                $record_data[$_date]['delta_sales_1yb'] = '<span class="" title="'.money($last_year_data[$_date_last_year]['_sales'], $currency).'">'.delta( $data['sales'],$last_year_data[$_date_last_year]['_sales']).' '.delta_icon($data['sales'], $last_year_data[$_date_last_year]['_sales']).'</span>';
             }
 
         //    print_r($record_data);

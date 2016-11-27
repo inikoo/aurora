@@ -70,8 +70,10 @@ update_products_web_status($db);
 
 create_part_data_dimension($db);
 update_part_category_status($db);
-*/
 set_images_from_product_families($db);
+
+*/
+update_part_category_status($db);
 
 
 function set_images_from_product_families($db){

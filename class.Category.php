@@ -362,8 +362,10 @@ class Category extends DB_Table {
             } elseif ($this->data['Category Scope'] == 'Part') {
                 $created_msg = _("Part's category created");
 
-                $sql = sprintf(
-                    "INSERT INTO `Part Category Dimension` (`Part Category Key`) VALUES (%d)", $this->id
+                $sql = sprintf("INSERT INTO `Part Category Dimension` (`Part Category Key`,`Part Category Valid From`) VALUES (%d,%s)",
+                    $this->id,
+                    prepare_mysql(gmdate('Y-m-d H:i:s'))
+
                 );
                 $this->db->exec($sql);
 
