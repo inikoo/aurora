@@ -158,13 +158,36 @@
         cursor:pointer}
 
 
+
+    #description_block{
+        position:relative}
+
+    .webpage_content_header{
+        position:relative;float:left}
+
+    #webpage_content_header_image{
+        width:250px
+    }
+
+    #webpage_content_header_text{
+        left:100px
+
+        }
+
+    {$webpage->get('Page Store CSS')}
+
+
+
+
+
+
 </style>
 
 
 
 
 <div style="padding:20px;">
-
+  
 
     <span id="ordering_settings" class="hide" data-labels='{
     "ordered":"<i class=\"fa fa-thumbs-o-up fa-flip-horizontal \" aria-hidden=\"true\"></i> {t}Ordered{/t}",
@@ -175,14 +198,14 @@
 
     <div id="description_block" class="description_block" >
 
-        <div class="webpage_content_header" style="position:relative;float:left" >
+        <div id="webpage_content_header_image" class="webpage_content_header" style="" >
 
 
         <img  src="{$category->display('Main Image Src')}"  style="width:100%"  />
 
           </div>
 
-        <div class="webpage_content_header"  style="position:relative;margin-left:40px;float:left" >
+        <div id="webpage_content_header_text" class="webpage_content_header"  style="" >
             <h1>
                 {$category->get('Code')} {$category->get('Label')}
             </h1>
@@ -252,7 +275,7 @@
 <script>
 
     
-    var te
+    var save_webpage_content_header_state_timer=false;
     
     count=1;
 
@@ -350,7 +373,38 @@
 
 
    
+    function save_webpage_content_header_state(){
 
+        var css='';
+
+        webpage_content_header_state={}
+
+
+                css+='#description_block{ height:'+$('#description_block').height()+'px}'
+
+
+
+        $( ".webpage_content_header" ).each(function( index ) {
+            webpage_content_header_state.top= $( this ).offset().top-$('#description_block').offset().top-1
+            webpage_content_header_state.left= $( this ).offset().left-$('#description_block').offset().left-1
+            webpage_content_header_state.width=$(this).width()
+            webpage_content_header_state.height=$(this).height()
+
+
+            css+='#'+$( this ).attr('id')+'{ position:absolute;margin-left:0px; top:'+webpage_content_header_state.top+'px;left:'+webpage_content_header_state.left+'px;width:'+webpage_content_header_state.width+'px;height:'+webpage_content_header_state.height+'px}'
+
+        });
+
+        console.log(css)
+
+        var request = '/ar_edit.php?tipo=edit_webpage&key=' + {$webpage->id} + '&field=css&value=' + btoa(css)
+        console.log(request)
+        $.getJSON(request, function (data) {
+
+        })
+
+
+}
 
     $('.webpage_content_header')
             .draggable(
@@ -359,8 +413,11 @@
                         scroll: false,
                         stop: function (event, ui) {
 
-                            console.log(this.id)
-                            console.log(ui.position)
+                            if(save_webpage_content_header_state_timer)
+                                clearTimeout(save_webpage_content_header_state_timer);
+                            save_webpage_content_header_state_timer = setTimeout(function(){ save_webpage_content_header_state(); }, 750);
+
+
 
                         }
                     }
@@ -371,9 +428,12 @@
                     {
                         stop: function (event, ui) {
 
-                            console.log(this.id)
-                            console.log(ui.size)
+                           // console.log(this.id)
+                           // console.log(ui.size)
 
+                            if(save_webpage_content_header_state_timer)
+                                clearTimeout(save_webpage_content_header_state_timer);
+                            save_webpage_content_header_state_timer = setTimeout(function(){ save_webpage_content_header_state(); }, 750);
 
                         }
 
