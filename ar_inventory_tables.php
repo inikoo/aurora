@@ -134,7 +134,7 @@ function parts($_data, $db, $user, $type, $account) {
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     //print $sql;
 
-    $adata = array();
+    $record_data = array();
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
@@ -201,7 +201,7 @@ function parts($_data, $db, $user, $type, $account) {
             );
 
 
-            $adata[] = array(
+            $record_data[] = array(
                 'id'                 => (integer)$data['Part SKU'],
                 'associated'         => $associated,
                 'reference'          => $data['Part Reference'],
@@ -388,7 +388,7 @@ function parts($_data, $db, $user, $type, $account) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $record_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -424,13 +424,13 @@ function stock_history($_data, $db, $user, $account) {
 
     $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
-    $adata = array();
+    $record_data = array();
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
 
-            $adata[] = array(
+            $record_data[] = array(
                // 'date'       => strftime("%a %e %b %Y", strtotime($data['Date'].' +0:00')),
                // 'year'       => strftime("%Y", strtotime($data['Date'].' +0:00')),
                // 'month_year' => strftime("%b %Y", strtotime($data['Date'].' +0:00')),
@@ -457,7 +457,7 @@ function stock_history($_data, $db, $user, $account) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $record_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -494,7 +494,7 @@ function inventory_stock_history($_data, $db, $user, $account) {
 
     $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
-    $adata = array();
+    $record_data = array();
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
@@ -511,7 +511,7 @@ function inventory_stock_history($_data, $db, $user, $account) {
                               );
             }
 
-            $adata[] = array(
+            $record_data[] = array(
                 //'date'       => $data['Date'],
 
 
@@ -545,7 +545,7 @@ function inventory_stock_history($_data, $db, $user, $account) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $record_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -567,7 +567,7 @@ function stock_transactions($_data, $db, $user) {
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     //print $sql;
-    $adata = array();
+    $record_data = array();
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
@@ -739,7 +739,7 @@ function stock_transactions($_data, $db, $user) {
             }
 
 
-            $adata[] = array(
+            $record_data[] = array(
                 'id'   => (integer)$data['Inventory Transaction Key'],
                 'date' => strftime(
                     "%a %e %b %Y %H:%M %Z", strtotime($data['Date'].' +0:00')
@@ -766,7 +766,7 @@ function stock_transactions($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $record_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -836,7 +836,7 @@ function supplier_parts($_data, $db, $user, $account) {
     include_once 'prepare_table/init.php';
 
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
+    $record_data = array();
 
 
     $exchange = -1;
@@ -925,7 +925,7 @@ function supplier_parts($_data, $db, $user, $account) {
             $part_description = $part_status.'<span style="min-width:80px;display: inline-block;" class="link padding_right_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'
                 .$data['Part Reference'].'</span> ';
 
-            $adata[] = array(
+            $record_data[] = array(
                 'id'               => (integer)$data['Supplier Part Key'],
                 'supplier_key'     => (integer)$data['Supplier Part Supplier Key'],
                 'supplier_code'    => $data['Supplier Code'],
@@ -967,7 +967,7 @@ function supplier_parts($_data, $db, $user, $account) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $record_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -988,7 +988,7 @@ function barcodes($_data, $db, $user) {
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     //print $sql;
-    $adata = array();
+    $record_data = array();
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
@@ -1024,7 +1024,7 @@ function barcodes($_data, $db, $user) {
                 $assets = '';
             }
 
-            $adata[] = array(
+            $record_data[] = array(
                 'id'     => (integer)$data['Barcode Key'],
                 'link'   => '<i class="fa fa-barcode "></i>',
                 // '<span class="fa-stack fa-lg"><i class="fa fa-barcode fa-stack-1x"></i><i class="fa fa-angle-down fa-inverse fa-stack-1x"></i></span>',
@@ -1048,7 +1048,7 @@ function barcodes($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $record_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -1075,7 +1075,7 @@ function part_categories($_data, $db, $user, $account) {
     include_once 'prepare_table/init.php';
 
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
+    $record_data = array();
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
@@ -1097,7 +1097,7 @@ function part_categories($_data, $db, $user, $account) {
             $level = $data['Category Branch Type'];
 
 
-            $adata[] = array(
+            $record_data[] = array(
                 'id'                  => (integer)$data['Category Key'],
                 'store_key'           => (integer)$data['Category Store Key'],
                 'code'                => $data['Category Code'],
@@ -1336,7 +1336,7 @@ function part_categories($_data, $db, $user, $account) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $record_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -1354,7 +1354,7 @@ function categories($_data, $db, $user) {
     include_once 'prepare_table/init.php';
 
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
+    $record_data = array();
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
@@ -1376,7 +1376,7 @@ function categories($_data, $db, $user) {
             $level = $data['Category Branch Type'];
 
 
-            $adata[] = array(
+            $record_data[] = array(
                 'id'                  => (integer)$data['Category Key'],
                 'store_key'           => (integer)$data['Category Store Key'],
                 'code'                => $data['Category Code'],
@@ -1408,7 +1408,7 @@ function categories($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $record_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -1428,9 +1428,9 @@ function category_all_availeable_parts($_data, $db, $user) {
     include_once 'prepare_table/init.php';
 
     $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
+    $record_data = array();
 
-    $adata = array();
+    $record_data = array();
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
@@ -1446,7 +1446,7 @@ function category_all_availeable_parts($_data, $db, $user) {
             }
 
 
-            $adata[] = array(
+            $record_data[] = array(
                 'id'               => (integer)$data['Part SKU'],
                 'associated'       => $associated,
                 'reference'        => $data['Part Reference'],
@@ -1463,7 +1463,7 @@ function category_all_availeable_parts($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $record_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -1483,9 +1483,9 @@ function category_all_parts($_data, $db, $user) {
     include_once 'prepare_table/init.php';
 
     $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
+    $record_data = array();
 
-    $adata = array();
+    $record_data = array();
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
@@ -1506,7 +1506,7 @@ function category_all_parts($_data, $db, $user) {
                     break;
             }
 
-            $adata[] = array(
+            $record_data[] = array(
                 'id'               => (integer)$data['Part SKU'],
                 'reference'        => $data['Part Reference'],
                 'unit_description' => $data['Part Unit Description'],
@@ -1526,7 +1526,7 @@ function category_all_parts($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $record_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -1545,7 +1545,7 @@ function product_families($_data, $db, $user) {
     include_once 'prepare_table/init.php';
 
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
+    $record_data = array();
 
     //print $sql;
 
@@ -1570,7 +1570,7 @@ function product_families($_data, $db, $user) {
             }
 
 
-            $adata[] = array(
+            $record_data[] = array(
                 'operations' => $operations,
 
                 'id'              => (integer)$data['Store Key'],
@@ -1592,7 +1592,7 @@ function product_families($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $record_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -1686,7 +1686,7 @@ function sales_history($_data, $db, $user, $account) {
 
 
 
-    $adata = array();
+    $record_data = array();
 
     $from_date = '';
     $to_date   = '';
@@ -1711,18 +1711,14 @@ function sales_history($_data, $db, $user, $account) {
                 $date  = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
                 $_date = $date;
             } elseif ($_data['parameters']['frequency'] == 'weekly') {
-                $date  = strftime(
-                    "(%e %b) %Y %W ", strtotime($data['Date'].' +0:00')
-                );
+                $date  = strftime("(%e %b) %Y %W ", strtotime($data['Date'].' +0:00'));
                 $_date = strftime("%Y%W ", strtotime($data['Date'].' +0:00'));
             } elseif ($_data['parameters']['frequency'] == 'daily') {
-                $date  = strftime(
-                    "%a %e %b %Y", strtotime($data['Date'].' +0:00')
-                );
-                $_date = $date;
+                $date  = strftime("%a %e %b %Y", strtotime($data['Date'].' +0:00'));
+                $_date = date('Y-m-d', strtotime($data['Date'].' +0:00'));
             }
 
-            $adata[$_date] = array(
+            $record_data[$_date] = array(
                 'sales'     => '<span class="very_discreet">'.money(
                         0, $currency
                     ).'</span>',
@@ -1745,26 +1741,17 @@ function sales_history($_data, $db, $user, $account) {
     switch ($_data['parameters']['parent']) {
         case 'part':
             if ($_data['parameters']['frequency'] == 'annually') {
-                $from_date = gmdate(
-                    "Y-01-01 00:00:00", strtotime($from_date.' +0:00')
-                );
-                $to_date   = gmdate(
-                    "Y-12-31 23:59:59", strtotime($to_date.' +0:00')
-                );
+                $from_date = gmdate("Y-01-01 00:00:00", strtotime($from_date.' +0:00'));
+                $to_date   = gmdate("Y-12-31 23:59:59", strtotime($to_date.' +0:00'));
+            } elseif ($_data['parameters']['frequency'] == 'quarterly') {
+                $from_date = gmdate("Y-m-01 00:00:00", strtotime($from_date.' +0:00'));
+                $to_date   = gmdate("Y-m-01 00:00:00", strtotime($to_date.' + 3 month +0:00'));
             } elseif ($_data['parameters']['frequency'] == 'monthly') {
-                $from_date = gmdate(
-                    "Y-m-01 00:00:00", strtotime($from_date.' +0:00')
-                );
-                $to_date   = gmdate(
-                    "Y-m-01 00:00:00", strtotime($to_date.' + 1 month +0:00')
-                );
+                $from_date = gmdate("Y-m-01 00:00:00", strtotime($from_date.' +0:00'));
+                $to_date   = gmdate("Y-m-01 00:00:00", strtotime($to_date.' + 1 month +0:00'));
             } elseif ($_data['parameters']['frequency'] == 'weekly') {
-                $from_date = gmdate(
-                    "Y-m-d 00:00:00", strtotime($from_date.'  -1 week  +0:00')
-                );
-                $to_date   = gmdate(
-                    "Y-m-d 00:00:00", strtotime($to_date.' + 1 week +0:00')
-                );
+                $from_date = gmdate("Y-m-d 00:00:00", strtotime($from_date.'  -1 week  +0:00'));
+                $to_date   = gmdate("Y-m-d 00:00:00", strtotime($to_date.' + 1 week +0:00'));
             } elseif ($_data['parameters']['frequency'] == 'daily') {
                 $from_date = $from_date.' 00:00:00';
                 $to_date   = $to_date.' 23:59:59';
@@ -1774,21 +1761,18 @@ function sales_history($_data, $db, $user, $account) {
             if ($_data['parameters']['frequency'] == 'annually') {
                 $from_date = gmdate("Y-01-01", strtotime($from_date.' +0:00'));
                 $to_date   = gmdate("Y-12-31", strtotime($to_date.' +0:00'));
-            } elseif ($_data['parameters']['frequency'] == 'monthly') {
-                $from_date = gmdate("Y-m-01", strtotime($from_date.' +0:00'));
-                $to_date   = gmdate(
-                    "Y-m-01", strtotime($to_date.' + 1 month +0:00')
-                );
+            } elseif ($_data['parameters']['frequency'] == 'quarterly') {
+                $from_date = gmdate("Y-m-01", strtotime($from_date.'  -1 year  +0:00'));
+                $to_date   = gmdate("Y-m-01", strtotime($to_date.' + 3 month +0:00'));
+            }elseif ($_data['parameters']['frequency'] == 'monthly') {
+                $from_date = gmdate("Y-m-01", strtotime($from_date.' -1 year  +0:00'));
+                $to_date   = gmdate("Y-m-01", strtotime($to_date.' +0:00'));
             } elseif ($_data['parameters']['frequency'] == 'weekly') {
-                $from_date = gmdate(
-                    "Y-m-d", strtotime($from_date.'  -1 week  +0:00')
-                );
-                $to_date   = gmdate(
-                    "Y-m-d", strtotime($to_date.' + 1 week +0:00')
-                );
+                $from_date = gmdate("Y-m-d", strtotime($from_date.'  -1 year  +0:00'));
+                $to_date   = gmdate("Y-m-d", strtotime($to_date.'  +0:00'));
             } elseif ($_data['parameters']['frequency'] == 'daily') {
-                $from_date = $from_date.'';
-                $to_date   = $to_date.'';
+                $from_date = gmdate("Y-m-d", strtotime($from_date.' - 1 year +0:00'));
+                $to_date   =  $to_date ;
             }
 
             break;
@@ -1800,42 +1784,63 @@ function sales_history($_data, $db, $user, $account) {
 
 
     $sql = sprintf(
-        "select $fields from $table $where $wheref and %s>=%s and  %s<=%s %s", $date_field, prepare_mysql($from_date), $date_field, prepare_mysql($to_date), " $group_by "
+        "select $fields from $table $where $wheref and %s>=%s and  %s<=%s %s order by $date_field    ", $date_field, prepare_mysql($from_date), $date_field, prepare_mysql($to_date), " $group_by "
     );
 
-    //print $sql;
+
+
+    $last_year_data=array();
+
     if ($result = $db->query($sql)) {
 
 
         foreach ($result as $data) {
+            
             if ($_data['parameters']['frequency'] == 'annually') {
-                $date  = strftime("%Y", strtotime($data['Date'].' +0:00'));
-                $_date = $date;
+                $_date = strftime("%Y", strtotime($data['Date'].' +0:00'));
+                $_date_last_year=strftime("%Y", strtotime($data['Date'].' - 1 year'));
+                $date=$_date;
+            } elseif ($_data['parameters']['frequency'] == 'quarterly') {
+                $_date = 'Q'.ceil(date('n', strtotime($data['Date'].' +0:00')) / 3).' '.strftime("%Y", strtotime($data['Date'].' +0:00'));
+                $_date_last_year = 'Q'.ceil(date('n', strtotime($data['Date'].' - 1 year')) / 3).' '.strftime("%Y", strtotime($data['Date'].' - 1 year'));
+                $date=$_date;
             } elseif ($_data['parameters']['frequency'] == 'monthly') {
-                $date  = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
-                $_date = $date;
+                $_date = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
+                $_date_last_year = strftime("%b %Y", strtotime($data['Date'].' - 1 year'));
+                $date=$_date;
             } elseif ($_data['parameters']['frequency'] == 'weekly') {
-                $date  = strftime(
-                    "(%e %b) %Y %W ", strtotime($data['Date'].' +0:00')
-                );
                 $_date = strftime("%Y%W ", strtotime($data['Date'].' +0:00'));
+                $_date_last_year = strftime("%Y%W ", strtotime($data['Date'].' - 1 year'));
+                $date  = strftime("(%e %b) %Y %W ", strtotime($data['Date'].' +0:00'));
             } elseif ($_data['parameters']['frequency'] == 'daily') {
-                $date  = strftime(
-                    "%a %e %b %Y", strtotime($data['Date'].' +0:00')
-                );
-                $_date = $date;
+                $_date = date('Y-m-d', strtotime($data['Date'].' +0:00'));
+                $_date_last_year = date('Y-m-d', strtotime($data['Date'].'  -1 year'));
+                $date  = strftime("%a %e %b %Y", strtotime($data['Date'].' +0:00'));
             }
 
-            if (array_key_exists($_date, $adata)) {
+
+            $last_year_data[$_date]=array('_sales'=>$data['sales']);
 
 
-                $adata[$_date] = array(
+
+
+
+            if (array_key_exists($_date, $record_data)) {
+
+
+
+                $record_data[$_date] = array(
+
                     'sales'      => money($data['sales'], $currency),
                     'deliveries' => number($data['deliveries']),
-                    'date'       => $date
+                    'date'      => $record_data[$_date]['date']
 
 
                 );
+
+                if ( isset( $last_year_data[$_date_last_year]  )) {
+                    $record_data[$_date]['delta_sales_1yb'] = '<span class="" title="'.money($last_year_data[$_date_last_year]['_sales'], $currency).'">'.delta( $data['sales'],$last_year_data[$_date_last_year]['_sales']).' '.delta_icon($data['sales'], $last_year_data[$_date_last_year]['_sales']).'</span>';
+                }
             }
         }
 
@@ -1846,10 +1851,12 @@ function sales_history($_data, $db, $user, $account) {
     }
 
 
+   // print_r($last_year_data);
+
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => array_values($adata),
+            'data'          => array_values($record_data),
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,

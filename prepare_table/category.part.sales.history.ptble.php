@@ -12,29 +12,26 @@
 if ($parameters['frequency'] == 'annually') {
 
     $frequency         = 'Yearly';
-    $group_by          = ' group by Year(`Date`) ';
-    $sql_totals_fields = 'Year(` Date`)';
+
 } elseif ($parameters['frequency'] == 'quarterly') {
     $frequency = 'Quarterly';
 
-    $group_by          = '  group by DATE_FORMAT(`Date`,"%Y-%m") ';
-    $sql_totals_fields = 'DATE_FORMAT(`Date`,"%Y-%m")';
+
 } elseif ($parameters['frequency'] == 'monthly') {
     $frequency = 'Monthly';
 
-    $group_by          = '  group by DATE_FORMAT(`Date`,"%Y-%m") ';
-    $sql_totals_fields = 'DATE_FORMAT(`Date`,"%Y-%m")';
+
 } elseif ($parameters['frequency'] == 'weekly') {
     $frequency = 'Weekly';
 
-    $group_by          = ' group by Yearweek(`Date`) ';
-    $sql_totals_fields = 'Yearweek(`Date`)';
+
 } elseif ($parameters['frequency'] == 'daily') {
     $frequency = 'Daily';
 
-    $group_by          = ' ';
-    $sql_totals_fields = '`Invoice Date`';
+
 }
+
+$group_by          = ' ';
 
 $timeseries_key = '';
 $sql            = sprintf(
@@ -52,8 +49,7 @@ if ($result = $db->query($sql)) {
 
 //print $sql;
 
-$fields
-       = ' `Timeseries Record Date` as Date,sum(`Timeseries Record Float A`) as sales ,sum(`Timeseries Record Integer A`) as deliveries,sum(`Timeseries Record Integer B`) as skos';
+$fields = ' `Timeseries Record Date` as Date,`Timeseries Record Float A` as sales ,`Timeseries Record Integer A` as deliveries,`Timeseries Record Integer B` as skos';
 $where = sprintf(
     "where `Timeseries Record Timeseries Key`=%d", $timeseries_key
 );

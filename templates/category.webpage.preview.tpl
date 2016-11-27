@@ -25,7 +25,7 @@
     }
 
 #products    .block {
-        border: 1px solid #ccc;background:#fff;padding:10px 0px 0px 0px;
+        border: 1px solid #ccc;background:#fff;padding:0px 0px 0px 0px;
     font-family: "Ubuntu",Helvetica,Arial,sans-serif;
 
 }
@@ -39,7 +39,7 @@
 
 
     .block.product_showcase{
-        height:279px}
+        height:317px}
 
 
     .wraptocenter {
@@ -187,7 +187,7 @@
 
 
 <div style="padding:20px;">
-  
+
 
     <span id="ordering_settings" class="hide" data-labels='{
     "ordered":"<i class=\"fa fa-thumbs-o-up fa-flip-horizontal \" aria-hidden=\"true\"></i> {t}Ordered{/t}",
@@ -225,6 +225,12 @@
 
             <div id="product_target_div_{$product.stack_index}" stack_index="{$product.stack_index}" draggable="{if $product.object->get('Product Web State')=='For Sale' }true{else}false{/if}" ondragstart="drag(event)" product_code="{$product.object->get('Code')}" product_id="{$product.object->id}" ondrop="drop(event)" ondragover="allowDrop(event)" class="block four product_showcase " style="margin-bottom:20px;position:relative">
 
+
+
+                <div style=padding:4px;height:30px;color:brown ;">
+
+
+                </div>
 
 
                 <div class="wraptocenter product_image" onCLick="console.log('move')">
