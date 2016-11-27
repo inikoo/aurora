@@ -30,6 +30,19 @@ $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
 
+    case 'edit_webpage':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'key'       => array('type' => 'key'),
+                         'field'     => array('type' => 'string'),
+                         'value'     => array('type' => 'string'),
+
+                     )
+        );
+        edit_webpage($data,$editor,$db);
+
+        break;
+
     case 'edit_category_stack_index':
         $data = prepare_values(
             $_REQUEST, array(
@@ -2297,6 +2310,30 @@ function edit_category_stack_index($data, $editor){
     $object->editor = $editor;
 
     $object->change_subject_stack($data['stack_index'],$data['subject_key']);
+
+
+}
+
+function edit_webpage($data, $editor,$db){
+
+
+    // todo migrate to Webpage & WebpageVersion classes
+
+
+    switch($data['field']) {
+    case 'css':
+        $value=base64_decode($data['value']);
+        $sql=sprintf('update `Page Store Dimension` set `Page Store CSS`=%s where `Page Key` =%d',
+                     prepare_mysql($value),
+                     $data['key']
+                     );
+        print $sql;
+        $db->exec($sql);
+        break;
+    default:
+        break;
+    }
+
 
 
 }
