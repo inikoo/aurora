@@ -33,6 +33,7 @@ require_once 'class.Image.php';
 require_once 'class.Store.php';
 require_once 'class.Warehouse.php';
 require_once 'class.Part.php';
+require_once 'class.Category.php';
 
 require_once 'class.Product.php';
 include_once 'utils/parse_materials.php';
@@ -69,6 +70,27 @@ reindex_order($db);
 function reindex_order($db) {
 
 
+
+
+    $sql = sprintf('SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Product"  ORDER BY  `Category Key` DESC');
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+            $category = new Category($row['Category Key']);
+
+            $category->reindex_order();
+
+
+
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print $sql;
+        exit;
+    }
+
     $sql = sprintf(
         'SELECT `Product ID` FROM `Product Dimension` ORDER BY `Product ID` DESC  '
     );
@@ -86,6 +108,13 @@ function reindex_order($db) {
         print_r($error_info = $db->errorInfo());
         exit;
     }
+
+
+
+
+
+
+
 
 }
 

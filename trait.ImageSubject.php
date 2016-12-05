@@ -36,7 +36,7 @@ trait ImageSubject {
 
 
         if (isset($raw_data['Image Subject Object Image Scope'])) {
-            $object_image_scope =$raw_data['Image Subject Object Image Scope'];
+            $object_image_scope = $raw_data['Image Subject Object Image Scope'];
         } else {
             $object_image_scope = 'Default';
         }
@@ -45,12 +45,12 @@ trait ImageSubject {
         $image = new Image('find', $data, 'create');
 
         if ($image->id) {
-            $this->link_image($image->id,$object_image_scope);
+            $this->link_image($image->id, $object_image_scope);
 
             if ($this->table_name == 'Part') {
 
 
-                if($object_image_scope!='SKO') {
+                if ($object_image_scope != 'SKO') {
 
                     $this->activate();
 
@@ -93,7 +93,7 @@ trait ImageSubject {
 
             }
 
-return $image;
+            return $image;
         } else {
             $this->error = true;
             $this->msg   = "Can't create/found image, ".$image->msg;
@@ -104,7 +104,7 @@ return $image;
     }
 
 
-    function link_image($image_key, $object_image_scope='Default') {
+    function link_image($image_key, $object_image_scope = 'Default') {
 
 
         $image = new Image($image_key);
@@ -151,7 +151,8 @@ return $image;
 
             $sql = sprintf(
                 "INSERT INTO `Image Subject Bridge` (`Image Subject Object Image Scope`,`Image Subject Object`,`Image Subject Object Key`,`Image Subject Image Key`,`Image Subject Is Principal`,`Image Subject Image Caption`,`Image Subject Date`,`Image Subject Order`,`Image Subject Is Public`) VALUES (%s,%s,%d,%d,%s,'',%s,%d,%s)",
-                prepare_mysql($object_image_scope), prepare_mysql($subject), $subject_key, $image->id, prepare_mysql($principal), prepare_mysql(gmdate('Y-m-d H:i:s')), ($number_images + 1), prepare_mysql($is_public)
+                prepare_mysql($object_image_scope), prepare_mysql($subject), $subject_key, $image->id, prepare_mysql($principal), prepare_mysql(gmdate('Y-m-d H:i:s')), ($number_images + 1),
+                prepare_mysql($is_public)
 
             );
             $this->db->exec($sql);

@@ -1270,6 +1270,11 @@ class Page extends DB_Table {
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
+
+
+
+
+
         switch ($field) {
 
             case 'Related Products':
@@ -1493,6 +1498,7 @@ class Page extends DB_Table {
                 );
                 break;
             case('filename'):
+            case('Page Store Content Template Filename'):
                 $this->update_field(
                     'Page Store Content Template Filename', $value, $options
                 );
@@ -1504,6 +1510,7 @@ class Page extends DB_Table {
                 break;
 
             case('Page Store CSS'):
+            case('Page Store Content Data'):
             case('Number See Also Links'):
             case('Number Found In Links'):
             case('Page Footer Height'):
@@ -1512,6 +1519,8 @@ class Page extends DB_Table {
             case('Page Head Include'):
             case('Page Body Include'):
             case('Page Store Title'):
+
+
 
                 $this->update_field($field, $value, $options);
                 break;
@@ -2026,6 +2035,16 @@ class Page extends DB_Table {
     function get($key) {
         switch ($key) {
 
+
+            case 'Content Data':
+                if($this->data['Page Store Content Data']==''){
+                    $content_data=false;
+                }else{
+                    $content_data=json_decode($this->data['Page Store Content Data'],true);
+                }
+                return $content_data;
+                break;
+
             case 'Webpage Website Key':
                 return $this->get('Page Site Key');
                 break;
@@ -2075,6 +2094,7 @@ class Page extends DB_Table {
             case('link'):
                 return $this->display();
                 break;
+
             default:
                 if (isset($this->data[$key])) {
                     return $this->data[$key];

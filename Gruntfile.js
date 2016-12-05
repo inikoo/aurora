@@ -248,7 +248,6 @@ module.exports = function (grunt) {
             options: {
 
                 current_symlink: 'current',
-
                 zip_deploy: true,
                 max_buffer: 200 * 1024 * 1024
             },
@@ -277,7 +276,20 @@ module.exports = function (grunt) {
                     debug: true,
                     releases_to_keep: '3'
                 }
-            }
+            },
+            ecom: {
+                options: {
+                    local_path: 'ecom/',
+                    deploy_path: '/home/inikoo/ecom',
+                    host: '<%= secret.ecom.host %>',
+                    username: '<%= secret.ecom.username %>',
+                    password: '<%= secret.ecom.password %>',
+                    port: '<%= secret.ecom.port %>',
+                    debug: true,
+                    releases_to_keep: '3'
+
+                }
+            },
 
 
         },
@@ -320,5 +332,6 @@ module.exports = function (grunt) {
     grunt.registerTask('qfork', ['copy:fork']);
     grunt.registerTask('deploy_fork', ['clean:fork', 'copy:fork_stones', 'copy:fork', 'ssh_deploy:fork_external_libs', 'ssh_deploy:fork']);
     grunt.registerTask('deploy_qfork', ['copy:fork', 'ssh_deploy:fork']);
+    grunt.registerTask('ecom', ['ssh_deploy:ecom']);
 
 };

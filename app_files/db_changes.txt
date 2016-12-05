@@ -457,6 +457,9 @@ Only for bali dw:
 
 
 ALTER TABLE `Category Bridge` ADD `Stack Index` SMALLINT NOT NULL DEFAULT '1' AFTER `Category Head Key`;
+ALTER TABLE `Category Dimension` ADD `Category Main Image` VARCHAR(255) NULL DEFAULT NULL AFTER `Category Sticky Note`, ADD `Category Main Image Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Category Main Image`;
+ALTER TABLE `Page Store Dimension` ADD `Page Store Metadata` TEXT NULL DEFAULT NULL AFTER `Page See Also Last Updated`;
+ALTER TABLE `Page Store Dimension` CHANGE `Page Store Metadata` `Page Store Content Data` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 
 
 

@@ -16,6 +16,7 @@ require_once 'utils/natural_language.php';
 require_once 'utils/parse_natural_language.php';
 
 
+
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
         'state' => 405,
@@ -30,6 +31,22 @@ $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
 
+
+    case 'webpage_content_data':
+
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'parent'     => array('type' => 'string'),
+                         'parent_key'       => array('type' => 'key'),
+                         'section'     => array('type' => 'string'),
+                         'block'     => array('type' => 'string'),
+                         'content'     => array('type' => 'string','optional'=>true),
+                         'type'     => array('type' => 'string','optional'=>true),
+
+                     )
+        );
+        webpage_content_data($data,$editor,$db);
+        break;
     case 'edit_webpage':
         $data = prepare_values(
             $_REQUEST, array(
@@ -2337,5 +2354,59 @@ function edit_webpage($data, $editor,$db){
 
 
 }
+
+function  webpage_content_data($data,$editor,$db){
+    // todo migrate to Webpage & WebpageVersion classes
+    include_once('class.Page.php');
+    $webpage=new Page($data['parent_key']);
+
+    $content_data=$webpage->get('Content Data');
+
+
+
+
+
+    if(isset($data['content'])){
+
+        $data['content']=str_replace('<div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"><br></div>','',$data['content']);
+
+        $data['content']=str_replace('<div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"><br></div>','',$data['content']);
+        $data['content']=str_replace('<div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"><br></div>','',$data['content']);
+
+    }
+
+
+    if(isset($content_data[$data['section']])){
+
+        if(isset($content_data[$data['section']]['blocks'][$data['block']])){
+
+            $content_data[$data['section']]['blocks'][$data['block']]['content']=$data['content'];
+        }else{
+            $content_data[$data['section']]['blocks'][$data['block']]=array(
+                'content'=>$data['content'],
+                'type'=>$data['type']
+            );
+
+        }
+
+
+    }
+
+
+    $webpage->update(array('Page Store Content Data'=>json_encode($content_data)),'no_history');
+
+
+
+    $response = array(
+        'state'    => 200,
+        'content' => (isset($data['content'])?$data['content']:'')
+
+
+    );
+    echo json_encode($response);
+
+
+}
+
 
 ?>

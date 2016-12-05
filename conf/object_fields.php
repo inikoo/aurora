@@ -98,7 +98,15 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             return $object_fields;
             break;
         case 'Category':
-            include 'fields/category.fld.php';
+
+            if (isset($options['type']) and $options['type'] == 'webpage_settings') {
+                include 'fields/category.webpage.fld.php';
+            } else {
+
+                include 'fields/category.fld.php';
+            }
+
+
 
             return $category_fields;
             break;

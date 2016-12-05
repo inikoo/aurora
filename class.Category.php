@@ -1,8 +1,6 @@
 <?php
 /*
- File: Category.php
 
- This file contains the Category Class
 
  About:
  Author: Raul Perusquia <rulovico@gmail.com>
@@ -43,6 +41,7 @@ class Category extends DB_Table {
         );
         $this->all_descendants_keys = array();
         $this->skip_update_sales    = false;
+        $this->webpage=false;
 
         if (is_numeric($a1) and !$a2) {
             $this->get_data('id', $a1);
@@ -338,6 +337,7 @@ class Category extends DB_Table {
 		*/
 
 
+
             $this->new = true;
 
             $created_msg = _('Category created');
@@ -621,6 +621,23 @@ class Category extends DB_Table {
 
         switch ($key) {
 
+            case 'Image':
+
+
+
+                $image_key = $this->data['Category Main Image Key'];
+
+                if ($image_key) {
+                    $img = '/image_root.php?size=small&id='.$image_key;
+                } else {
+                    $img = '/art/nopic.png';
+
+                }
+
+                return $img;
+                break;
+
+
             case 'Subjects Not Assigned':
             case 'Number Subjects':
             case 'Children':
@@ -643,6 +660,8 @@ class Category extends DB_Table {
             case 'Product':
 
                 switch ($key) {
+
+
 
                     case 'Status':
                         switch ($this->data['Product Category Status']) {
@@ -691,10 +710,45 @@ class Category extends DB_Table {
                         break;
 
 
+                    case 'Category Webpage Template':
+                        // todo migrate to new webpage and webpage version classes
+
+
+                        if($this->webpage->get('Page Store Content Display Type')=='Source'){
+                            return 'blank';
+                        }else{
+                            return $this->webpage->get('Page Store Content Template Filename');
+                        }
+
+                    case 'Webpage Template':
+                        // todo migrate to new webpage and webpage version classes
+
+                        if(!is_object($this->webpage))$this->get_webpage();
+
+                        if($this->webpage->get('Page Store Content Display Type')=='Source'){
+                            return _('White canvas');
+                        }else{
+                            switch($this->webpage->get('Page Store Content Template Filename')) {
+                                case 'family_buttons':
+                                    return '<span class="italic discreet" >Old products showcase (unsupported)</span>';
+                                    break;
+                                case 'products_showcase':
+                                    return _("Products showcase");
+                                    break;
+                                default:
+                                    return $this->webpage->get('Page Store Content Template Filename');
+                                    break;
+                            }
+                        }
+
+
+
+
+
+                        break;
                     case 'Webpage Related Products':
 
-                        $related_products_data
-                                          = $this->webpage->get_related_products_data();
+                        $related_products_data = $this->webpage->get_related_products_data();
                         $related_products = '';
 
 
@@ -702,9 +756,7 @@ class Category extends DB_Table {
                             $related_products .= $link['code'].', ';
                         }
 
-                        $related_products = preg_replace(
-                            '/, $/', '', $related_products
-                        );
+                        $related_products = preg_replace('/, $/', '', $related_products);
 
                         return $related_products;
 
@@ -729,6 +781,21 @@ class Category extends DB_Table {
 
                         return $see_also;
 
+
+                        break;
+
+
+
+
+                    case 'Category Webpage Meta Description':
+                    case 'Webpage Meta Description':
+                        return $this->webpage->get('Page Store Description');
+
+                        break;
+
+                    case 'Category Webpage Browser Title':
+                    case 'Webpage Browser Title':
+                    return $this->webpage->get('Page Title');
 
                         break;
 
@@ -2401,7 +2468,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
 
         // print_r($this->base_data('Product Category Data'));
-        // print "** $field $value\n";
         // exit;
 
         if (array_key_exists($field, $this->base_data())) {
@@ -2449,7 +2515,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                 $this->update_field($field, $value, $options);
 
             }
-        } elseif (array_key_exists($field, $this->base_data('Product Category Dimension'))) {
+        }
+        elseif (array_key_exists($field, $this->base_data('Product Category Dimension'))) {
 
             switch ($field) {
 
@@ -2644,10 +2711,52 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
             $this->update_table_field($field, $value, $options, 'Supplier Category', 'Supplier Category Data', $this->id);
         } elseif (array_key_exists($field, $this->base_data('Supplier Category Dimension'))) {
             $this->update_table_field($field, $value, $options, 'Supplier Category', 'Supplier Category Dimension', $this->id);
-        } else {
+        }
+        else {
             switch ($field) {
+
+
+                case 'Webpage Template':
+
+                    if(!is_object($this->webpage))$this->get_webpage();
+
+
+
+
+                    if($value=='blank'){
+                        $this->webpage->update(array('Page Store Content Display Type'=>'Source'), $options);
+
+                    }else{
+
+
+                        $this->webpage->update(array('Page Store Content Display Type'=>'Template','Page Store Content Template Filename' => $value), $options);
+
+                    }
+                    $this->updated = $this->webpage->updated;
+
+                break;
+                case 'Category Webpage Browser Title':
+                    if(!is_object($this->webpage))$this->get_webpage();
+
+                    $this->webpage->update(array('Page Title' => $value), $options);
+                    $this->updated = $this->webpage->updated;
+
+                    break;
+
+                case 'Category Webpage Meta Description':
+                    if(!is_object($this->webpage))$this->get_webpage();
+                    $this->webpage->update(
+                        array(
+                            'Page Store Description' => $value
+                        ), $options
+                    );
+
+                    $this->updated = $this->webpage->updated;
+
+                    break;
+
                 case 'Webpage See Also':
-                    $this->get_webpage();
+                    if(!is_object($this->webpage))$this->get_webpage();
                     $this->webpage->update(
                         array(
                             'See Also' => $value
@@ -2689,6 +2798,15 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     );
 
                     $this->updated = true;
+
+                    break;
+
+
+
+                default:
+
+
+
 
                     break;
 
@@ -3460,9 +3578,14 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                 $label = _('description');
                 break;
             case 'Category Webpage Name':
-                $label = _('Webpage name');
+                $label = _('webpage name');
                 break;
-
+            case 'Category Webpage Browser Title':
+                $label = _('browser title');
+                break;
+            case 'Category Webpage Meta Description':
+                $label = _('meta description');
+                break;
 
             default:
                 $label = $field;

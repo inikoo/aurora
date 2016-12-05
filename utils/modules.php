@@ -1744,7 +1744,7 @@ $modules = array(
                     'category.product.sales.calendar' => 'category.sales',
                     'category.product.sales.info'     => 'category.sales',
                     'category.webpage.preview'     => 'category.webpage',
-                    'category.webpage.details'     => 'category.webpage',
+                    'category.webpage.settings'     => 'category.webpage',
                     'category.webpage.products'     => 'category.webpage',
                     'category.webpage.analytics'     => 'category.webpage'
 
