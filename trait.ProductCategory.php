@@ -108,36 +108,6 @@ trait ProductCategory {
     }
 
 
-    function display($field) {
-
-        switch ($field) {
-
-            case 'Main Image Src':
-
-
-                $image_key = $this->get_main_image_key();
-
-                if ($image_key) {
-                    $img = '/image_root.php?size=small&id='.$image_key;
-                    // $normal_img='image_root.php?id='.$image_key;
-                } else {
-                    $img = '/art/nopic.png';
-                    // $normal_img='art/nopic.png';
-
-                }
-
-                return $img;
-
-                break;
-
-
-            default:
-                return '';
-                break;
-        }
-
-    }
-
 
     function create_product_timeseries($data, $fork_key = 0) {
 

@@ -9,105 +9,123 @@
 
 */
 
-include_once('class.Product.php');
+include_once('class.Public_Category.php');
+include_once('class.Public_Product.php');
 
-$logged=true;
-
-$category=$state['_object'];
-
-if($category->get('Category Scope')=='Product'){
+$logged = true;
 
 
-    $category->create_stack_index(true);
+$category = $state['_object'];
+$webpage  = $category->get_webpage();
 
-    $webpage=$category->get_webpage();
+if (!$webpage->id) {
+    $html = '<div style="padding:40px">'._("This category don't have webpage").'</div>';
 
-
-
-
-
-    $products=array();
-
-    $sql = sprintf("SELECT `Product Category Stack Product ID`,`Product Category Stack Category Key`,`Product Category Stack Index`, P.`Product ID`,`Product Code`,`Product Web State` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Stack Index` S ON (`Subject Key`=S.`Product Category Stack Product ID` AND S.`Product Category Stack Category Key`=B.`Category Key`) 
-   WHERE  `Category Key`=%d  and `Product Web State` in  ('For Sale','Out of Stock')   ORDER BY `Product Web State`,   ifnull(`Product Category Stack Index`,99999999)",
-                   $category->id);
-
-
-  //  print $sql;
-
-    $counter=0;
-    $stack_index=0;
-    if ($result=$db->query($sql)) {
-    		foreach ($result as $row) {
-
-
-                $product=new Product( $row['Product ID']);
-
-$product->load_acc_data();
-
-
-
-                $image_key=$product->get('Product Main Image Key');
-
-                if ($image_key) {
-                    $img='/image_root.php?size=small&id='.$image_key;
-                    $normal_img='image_root.php?id='.$image_key;
-                }else {
-                    $img='art/nopic.png';
-                    $normal_img='art/nopic.png';
-
-                }
-
-                $stack_index++;
-
-
-                $product_data=array(
-                    'stack_index'=>$stack_index,
-                    'object'=>$product,
-                    'code'=>$product->data['Product Code'],
-                    'name'=>$product->data['Product Name'],
-                    'id'=>$product->data['Product ID'],
-                    'price'=>$product->data['Product Price'],
-                    'special_char'=>$product->data['Product Special Characteristic'],
-                    'img'=>$img,
-
-                 //   'page_id'=>$row['Page Key'],
-                );
-
-
-
-
-                if ($counter==0) {
-                    $product_data['first']=true;
-                }else {
-                    $product_data['first']=false;
-                }
-
-                $product_data['col']=fmod($counter, 4)+1;
-                $counter++;
-                $products[]=$product_data;
-    		}
-    }else {
-    		print_r($error_info=$db->errorInfo());
-    		print "$sql\n";
-    		exit;
-    }
-
-
-
-
-  //  print_r($products);
-
-$smarty->assign('_products',$products);
-    $smarty->assign('category',$category);
-    $smarty->assign('webpage',$webpage);
-
-
-
-    $html=$smarty->fetch('category.webpage.preview.tpl');
-
+    return;
 }
 
+// todo migrate to new webpage & webpage version classes
+
+
+switch ($webpage->get('Page Store Content Template Filename')) {
+    case 'products_showcase':
+
+        // todo remove this when all descriptions are moved inside webpage content data
+
+        if ($webpage->id and $webpage->get('Content Data') == '') {
+            $title = $category->get('Label');
+            if ($title == '') {
+                $title = $category->get('Code');
+            }
+            if ($title == '') {
+                $title = _('Title');
+            }
+
+            $description = $category->get('Product Category Description');
+            if ($description == '') {
+                $description = $category->get('Label');
+            }
+            if ($description == '') {
+                $description = $category->get('Code');
+            }
+            if ($description == '') {
+                $description = _('Description');
+            }
+
+
+            $image_src = $category->get('Image');
+
+            $content_data = array(
+                'description_block' => array(
+
+                    'blocks' => array(
+
+                        'webpage_content_header_image' => array(
+                            'type'      => 'image',
+                            'image_src' => $image_src
+
+                        ),
+
+                        'webpage_content_header_text' => array(
+                            'type'    => 'text',
+                            'content' => sprintf('<h1 class="description_title">%s</h1><div class="description">%s</div>', $title, $description)
+
+                        )
+
+                    )
+                )
+
+            );
+
+            //print_r($content_data);
+            $webpage->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+
+        }
+
+
+        $public_category = new Public_Category($category->id);
+        $public_category->load_webpage();
+
+
+        $html = '';
+
+        if ($public_category->get('Scope') == 'Product') {
+
+            $category->create_stack_index(true);
+
+            $products = array();
+
+            $sql = sprintf(
+                "SELECT `Product Category Stack Product ID`,`Product Category Stack Category Key`,`Product Category Stack Index`, P.`Product ID`,`Product Code`,`Product Web State` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Stack Index` S ON (`Subject Key`=S.`Product Category Stack Product ID` AND S.`Product Category Stack Category Key`=B.`Category Key`)  WHERE  `Category Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Product Web State`,   ifnull(`Product Category Stack Index`,99999999)",
+                $public_category->id
+            );
+
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    $products[] = new Public_Product($row['Product ID']);
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+            $smarty->assign('products', $products);
+            $smarty->assign('category', $public_category);
+
+
+            $html = $smarty->fetch('category.webpage.preview.tpl');
+
+        }
+
+        break;
+    default:
+
+        $html = '<div style="padding:40px">'._("There is no preview for this template").'</div>';
+
+}
 
 
 ?>
