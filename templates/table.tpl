@@ -211,9 +211,8 @@
     <div class="square_button right ">
         <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
 
-            <input type="file" name="image_upload" id="file_upload" class="inputfile" multiple/>
-            <label for="file_upload"><i
-                        class="fa {if isset($upload_file.icon)}{$upload_file.icon}{else}fa-upload{/if} fa-fw button"></i></label>
+            <input type="file" name="image_upload" id="file_upload" class="input_file" multiple/>
+            <label for="file_upload"><i class="fa {if isset($upload_file.icon)}{$upload_file.icon}{else}fa-upload{/if} fa-fw button"></i></label>
         </form>
     </div>
     <span id="file_upload_msg" style="float:right;padding-right:10px"></span>

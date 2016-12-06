@@ -16,7 +16,6 @@ require_once 'utils/natural_language.php';
 require_once 'utils/parse_natural_language.php';
 
 
-
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
         'state' => 405,
@@ -31,53 +30,70 @@ $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
 
+    case 'publish_webpage':
 
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'parent_key' => array('type' => 'key'),
+
+
+                     )
+        );
+        publish_webpage($data, $editor, $db);
+        break;
     case 'webpage_content_data':
 
         $data = prepare_values(
             $_REQUEST, array(
                          'parent'     => array('type' => 'string'),
-                         'parent_key'       => array('type' => 'key'),
-                         'section'     => array('type' => 'string'),
-                         'block'     => array('type' => 'string'),
-                         'content'     => array('type' => 'string','optional'=>true),
-                         'type'     => array('type' => 'string','optional'=>true),
+                         'parent_key' => array('type' => 'key'),
+                         'section'    => array('type' => 'string'),
+                         'block'      => array('type' => 'string'),
+                         'content'    => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         ),
+                         'type'       => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         ),
 
                      )
         );
-        webpage_content_data($data,$editor,$db);
+        webpage_content_data($data, $editor, $db);
         break;
     case 'edit_webpage':
         $data = prepare_values(
             $_REQUEST, array(
-                         'key'       => array('type' => 'key'),
-                         'field'     => array('type' => 'string'),
-                         'value'     => array('type' => 'string'),
+                         'key'   => array('type' => 'key'),
+                         'field' => array('type' => 'string'),
+                         'value' => array('type' => 'string'),
 
                      )
         );
-        edit_webpage($data,$editor,$db);
+        edit_webpage($data, $editor, $db);
 
         break;
 
     case 'edit_category_stack_index':
         $data = prepare_values(
             $_REQUEST, array(
-                         'stack_index'           => array('type' => 'numeric'),
-                         'key'       => array('type' => 'key'),
-                         'subject_key'           => array('type' => 'key'),
+                         'stack_index' => array('type' => 'numeric'),
+                         'key'         => array('type' => 'key'),
+                         'subject_key' => array('type' => 'key'),
+                         'webpage_key' => array('type' => 'key'),
 
                      )
         );
-        edit_category_stack_index($data,$editor);
+        edit_category_stack_index($data, $editor);
 
         break;
     case 'calculate_sales':
         $data = prepare_values(
             $_REQUEST, array(
-                         'parent'           => array('type' => 'string'),
-                         'parent_key'       => array('type' => 'key'),
-                         'scope'           => array('type' => 'string'),
+                         'parent'     => array('type' => 'string'),
+                         'parent_key' => array('type' => 'key'),
+                         'scope'      => array('type' => 'string'),
 
                      )
         );
@@ -411,8 +427,7 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
                 $smarty->assign('data', $object->get_related_products_data());
                 $smarty->assign('mode', 'edit');
 
-                $update_metadata['webpage_related_products_editor']
-                    = $smarty->fetch('webpage_related_products.edit.tpl');
+                $update_metadata['webpage_related_products_editor'] = $smarty->fetch('webpage_related_products.edit.tpl');
 
             }
 
@@ -2225,12 +2240,12 @@ function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
 
     $transaction_data = $parent->update_item($data);
 
-    if($parent->error){
+    if ($parent->error) {
         $response = array(
-            'state'            => 400,
-            'msg' => $parent->msg
+            'state' => 400,
+            'msg'   => $parent->msg
         );
-    }else {
+    } else {
 
         $response = array(
             'state'            => 200,
@@ -2320,71 +2335,89 @@ function calculate_sales($account, $db, $data, $editor) {
 
 }
 
-function edit_category_stack_index($data, $editor){
+function edit_category_stack_index($data, $editor) {
 
+    include_once('class.Page.php');
+    $webpage = new Page($data['webpage_key']);
 
     $object         = get_object('category', $data['key']);
     $object->editor = $editor;
 
-    $object->change_subject_stack($data['stack_index'],$data['subject_key']);
+    $object->change_subject_stack($data['stack_index'], $data['subject_key']);
+
+
+    $response = array(
+        'state'   => 200,
+        'publish' => $webpage->get('Publish')
+
+
+    );
+
+    echo json_encode($response);
 
 
 }
 
-function edit_webpage($data, $editor,$db){
+function edit_webpage($data, $editor, $db) {
 
 
     // todo migrate to Webpage & WebpageVersion classes
 
+    include_once('class.Page.php');
+    $webpage = new Page($data['key']);
 
-    switch($data['field']) {
-    case 'css':
-        $value=base64_decode($data['value']);
-        $sql=sprintf('update `Page Store Dimension` set `Page Store CSS`=%s where `Page Key` =%d',
-                     prepare_mysql($value),
-                     $data['key']
-                     );
-        print $sql;
-        $db->exec($sql);
-        break;
-    default:
-        break;
+    switch ($data['field']) {
+        case 'css':
+            $value = base64_decode($data['value']);
+
+
+            $webpage->update(array('Page Store CSS'=>$value),'no_history');
+
+
+            break;
+        default:
+            break;
     }
 
+    $response = array(
+        'state'   => 200,
+        'content' => (isset($data['content']) ? $data['content'] : ''),
+        'publish' => $webpage->get('Publish')
 
+
+    );
+
+    echo json_encode($response);
 
 }
 
-function  webpage_content_data($data,$editor,$db){
+function webpage_content_data($data, $editor, $db) {
     // todo migrate to Webpage & WebpageVersion classes
     include_once('class.Page.php');
-    $webpage=new Page($data['parent_key']);
+    $webpage = new Page($data['parent_key']);
 
-    $content_data=$webpage->get('Content Data');
-
-
+    $content_data = $webpage->get('Content Data');
 
 
+    if (isset($data['content'])) {
 
-    if(isset($data['content'])){
+        $data['content'] = str_replace('<div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"><br></div>', '', $data['content']);
 
-        $data['content']=str_replace('<div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"><br></div>','',$data['content']);
-
-        $data['content']=str_replace('<div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"><br></div>','',$data['content']);
-        $data['content']=str_replace('<div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"><br></div>','',$data['content']);
+        $data['content'] = str_replace('<div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"><br></div>', '', $data['content']);
+        $data['content'] = str_replace('<div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"><br></div>', '', $data['content']);
 
     }
 
 
-    if(isset($content_data[$data['section']])){
+    if (isset($content_data[$data['section']])) {
 
-        if(isset($content_data[$data['section']]['blocks'][$data['block']])){
+        if (isset($content_data[$data['section']]['blocks'][$data['block']])) {
 
-            $content_data[$data['section']]['blocks'][$data['block']]['content']=$data['content'];
-        }else{
-            $content_data[$data['section']]['blocks'][$data['block']]=array(
-                'content'=>$data['content'],
-                'type'=>$data['type']
+            $content_data[$data['section']]['blocks'][$data['block']]['content'] = $data['content'];
+        } else {
+            $content_data[$data['section']]['blocks'][$data['block']] = array(
+                'content' => $data['content'],
+                'type'    => $data['type']
             );
 
         }
@@ -2393,14 +2426,33 @@ function  webpage_content_data($data,$editor,$db){
     }
 
 
-    $webpage->update(array('Page Store Content Data'=>json_encode($content_data)),'no_history');
-
+    $webpage->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
 
 
     $response = array(
-        'state'    => 200,
-        'content' => (isset($data['content'])?$data['content']:'')
+        'state'   => 200,
+        'content' => (isset($data['content']) ? $data['content'] : ''),
+        'publish' => $webpage->get('Publish')
 
+
+    );
+    echo json_encode($response);
+
+
+}
+
+
+function publish_webpage($data, $editor, $db) {
+
+    // todo migrate to Webpage & WebpageVersion classes
+    include_once('class.Page.php');
+    $webpage = new Page($data['parent_key']);
+
+    $webpage->publish();
+
+
+    $response = array(
+        'state' => 200
 
     );
     echo json_encode($response);

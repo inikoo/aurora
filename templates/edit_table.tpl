@@ -154,7 +154,7 @@
     <div class="square_button right move_left">
         <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
 
-            <input type="file" name="image_upload" id="file_upload" class="inputfile" multiple/>
+            <input type="file" name="image_upload" id="file_upload" class="input_file" multiple/>
             <label for="file_upload"><i id="upload_icon"
                                         class="fa fa-cloud-upload fa-fw button very_discreet"></i></label>
         </form>

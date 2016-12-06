@@ -1,7 +1,8 @@
 {assign 'see_also'  $category->webpage->get_see_also() }
-{assign 'content_data' $category->webpage->get('Content Data')}
+{assign 'content_data' $category->webpage->get('Content Published Data')}
 
  <style>
+
 
 
 input {
@@ -24,17 +25,21 @@ input {
   box-sizing: content-box;
   -webkit-appearance: none;
   }
+h1{
+
+    font-family: "Ubuntu",Helvetica,Arial,sans-serif;
+    font-weight: 800;
+    font-size:21px;
+    padding:20px 0px 20px 0px;
+}
 
 
     #page_content{
-        padding:20px;
-        border:1px solid #d0d0d0;
-        border-top:none;
-        width:992px;
-        margin:auto;
+
 
         font-family: "Ubuntu",Helvetica,Arial,sans-serif;
-        color:red
+        color:rgb(85, 85, 85);
+        font-size:14px;
 
     }
 
@@ -113,7 +118,7 @@ input {
 
 
     .product_prices.log_out{
-        text-align: center;
+        text-align: center;font-style: italic; color:#236E4B
 
     }
 
@@ -290,10 +295,11 @@ input {
     }
 
 
-    {$category->webpage->get('CSS')}
+    {$category->webpage->get('Published CSS')}
 
 </style>
- 
+
+<div id="page_content">
  
 <span id="ordering_settings" class="hide" data-labels='{
     "ordered":"<i class=\"fa fa-thumbs-o-up fa-flip-horizontal fa-fw \" aria-hidden=\"true\"></i> {t}Ordered{/t}",
@@ -310,8 +316,8 @@ input {
         
         {if $data.type=='text'}
            
-        <div id="{$id}" class="xwebpage_content_header">
-            {$data.content}  
+        <div id="{$id}" class="webpage_content_header">
+            {$data.content}
         </div>
         {elseif $data.type=='image'}
             <div id="webpage_content_header_image" class="webpage_content_header"  >
@@ -362,8 +368,8 @@ input {
                     {if $rrp!=''}<div>{t}RRP{/t}: {$rrp}</div>{/if}
                 </div>
                 {else}
-                <div class="product_price log_out hide" >
-                    <div class="price italic">{t}For prices, please login or register{/t}</div>
+                <div class="product_prices log_out" >
+                    <div >{t}For prices, please login or register{/t}</div>
                  </div>
                 {/if}
 
@@ -431,7 +437,7 @@ input {
             </div>
 
     </div>
-    
+    </div>
     
 <script>
 
@@ -537,12 +543,15 @@ input {
            $(this).find('i').removeClass('fa-hand-pointer-o').addClass('fa-spinner fa-spin  ')
            $(this).prev('input').prop('readonly', true);
 
-           
+
+
+           var order_key='{$order->id}';
+            if(order_key=='')order_key=0;
+
            
         var element=$(this);
-        var request = 'ar_basket.php?tipo=edit_order_transaction&pid=' + $(this).closest('.product_showcase').attr('product_id') + '&order_key=' + {$order->id} + '&qty=' + order_qty+'&page_key='+{$category->webpage->id}+'&page_section_type=Family'
+        var request = 'ar_basket.php?tipo=edit_order_transaction&pid=' + $(this).closest('.product_showcase').attr('product_id') + '&order_key=' + order_key+ '&qty=' + order_qty+'&page_key='+{$category->webpage->id}+'&page_section_type=Family'
 
-       
         $.getJSON(request, function (data) {
         
           

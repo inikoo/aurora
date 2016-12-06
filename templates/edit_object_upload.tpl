@@ -12,7 +12,7 @@
         <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
             {$upload_data.label}
 
-            <input type="file" name="image_upload" id="file_upload" class="inputfile" multiple/>
+            <input type="file" name="image_upload" id="file_upload" class="input_file" multiple/>
             <label for="file_upload"><i class="fa fa-upload fa-fw button"></i></label>
         </form>
 
