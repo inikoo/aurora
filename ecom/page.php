@@ -17,114 +17,129 @@ if (!isset($skip_common))include_once 'common.php';
 
 if (!$is_cached ) {
 
-	$page=new Page($page_key);
+    $page = new Page($page_key);
 
 
-	if (!$page->id) {
-		header('Location: index.php?no_page');
-		exit;
-	}
+    if (!$page->id) {
+        header('Location: index.php?no_page');
+        exit;
+    }
 
 
-	if ($page->data['Page Site Key']!=$site->id) {
-		header('Location: index.php?site_page_not_match');
-		//    exit("No site/page not match");
-		exit;
-	}
+    if ($page->data['Page Site Key'] != $site->id) {
+        header('Location: index.php?site_page_not_match');
+        //    exit("No site/page not match");
+        exit;
+    }
 
-	if ($page->data['Page Store Section']=='Search') {
-		header('Location: search.php');
-		exit;
-	}
+    if ($page->data['Page Store Section'] == 'Search') {
+        header('Location: search.php');
+        exit;
+    }
 
-	if ($page->data['Page Store Section']=='Registration') {
-		header('Location: registration.php');
-		exit;
-	}
-	if ($page->data['Page Store Section']=='Login') {
-		header('Location: login.php');
-		exit;
-	}
-	if ($page->data['Page Store Section']=='Reset') {
-		header('Location: reset.php');
-		exit;
-	}
+    if ($page->data['Page Store Section'] == 'Registration') {
+        header('Location: registration.php');
+        exit;
+    }
+    if ($page->data['Page Store Section'] == 'Login') {
+        header('Location: login.php');
+        exit;
+    }
+    if ($page->data['Page Store Section'] == 'Reset') {
+        header('Location: reset.php');
+        exit;
+    }
 
-	if ($page->data['Page Store Section']=='Client Section') {
-		header('Location: profile.php');
-		exit;
-	}
-
-
+    if ($page->data['Page Store Section'] == 'Client Section') {
+        header('Location: profile.php');
+        exit;
+    }
 
 
-	if ($page->data['Page State']=='Offline') {
+    if ($page->data['Page State'] == 'Offline') {
 
 
+        $site_url = $site->data['Site URL'];
+        $url      = $_SERVER['REQUEST_URI'];
+        $url      = preg_replace('/^\//', '', $url);
+        $url      = preg_replace('/\?.*$/', '', $url);
 
-		$site_url=$site->data['Site URL'];
-		$url=$_SERVER['REQUEST_URI'];
-		$url=preg_replace('/^\//', '', $url);
-		$url=preg_replace('/\?.*$/', '', $url);
+        $original_url = $url;
+        header("Location: http://".$site_url."/404.php?&url=$url&original_url=$original_url");
 
-		$original_url=$url;
-		header("Location: http://".$site_url."/404.php?&url=$url&original_url=$original_url");
+        exit;
+    }
 
-		exit;
-	}
+    //'System','Info','Department','Family','Product','FamilyCategory','ProductCategory','Thanks'
+    if (in_array(
+        $page->data['Page Store Section Type'], array(
+        'Family',
+        'Product'
+    )
+    )) {
 
-	//'System','Info','Department','Family','Product','FamilyCategory','ProductCategory','Thanks'
-	if (in_array($page->data['Page Store Section Type'], array('Family', 'Product')) ) {
+        if ($order_in_process and $order_in_process->id) {
+            if ($order_in_process->data['Order Current Dispatch State'] == 'Waiting for Payment Confirmation') {
+                header('Location: waiting_payment_confirmation.php');
+                exit;
 
-		if ($order_in_process and $order_in_process->id) {
-			if ( $order_in_process->data['Order Current Dispatch State']=='Waiting for Payment Confirmation') {
-				header('Location: waiting_payment_confirmation.php');
-				exit;
+            }
+        }
+    }
+    $template_suffix = '';
 
-			}
-		}
-	}
-	$template_suffix='';
+    if ($logged_in) {
+        $page->customer = $customer;
+        $page->order    = $order_in_process;
+    }
 
-	if ($logged_in) {
-		$page->customer=$customer;
-		$page->order=$order_in_process;
-	}
-
-	$smarty->assign('logged', $logged_in);
-	$page->site=$site;
-	$page->user=$user;
-	$page->logged=$logged_in;
-	$page->currency=$store->data['Store Currency Code'];
-	$page->currency_symbol=currency_symbol($store->data['Store Currency Code']);
-	$page->customer=$customer;
-
-
-
-	if ( in_array($page->get('Page Store Content Template Filename'), array('products_showcase')) and $page->get('Page Store Content Display Type')=='Template' ) {
-		$version=2;
-	}else {
-		$version=1;
-
-	}
-	$smarty->assign('_version_', $version);
+    $smarty->assign('logged', $logged_in);
+    $page->site            = $site;
+    $page->user            = $user;
+    $page->logged          = $logged_in;
+    $page->currency        = $store->data['Store Currency Code'];
+    $page->currency_symbol = currency_symbol($store->data['Store Currency Code']);
+    $page->customer        = $customer;
 
 
+    if (in_array($page->get('Page Store Content Template Filename'), array('products_showcase')) and $page->get('Page Store Content Display Type') == 'Template') {
+        $version = 2;
+    } else {
+        $version = 1;
 
-	$smarty->assign('title', $page->data['Page Title']);
-	$smarty->assign('store', $store);
-	$smarty->assign('page', $page);
-	$smarty->assign('site', $site);
+    }
+    $smarty->assign('_version_', $version);
 
-	$css_files=array();
-	$js_files=array();
-	$base_css_files=array(
-		$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		$yui_path.'menu/assets/skins/sam/menu.css',
-		'css/inikoo.css',
-		'css/style.css'
+
+    $smarty->assign('title', $page->data['Page Title']);
+    $smarty->assign('store', $store);
+    $smarty->assign('page', $page);
+    $smarty->assign('site', $site);
+
+    $css_files = array();
+    $js_files  = array();
+
+
+    if ($version == 1) {
+
+    $base_css_files = array(
+        $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+        $yui_path.'menu/assets/skins/sam/menu.css',
+        'css/inikoo.css',
+        'css/style.css'
+
+    );
+}
+    else {
+    $base_css_files = array(
+        $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+        $yui_path.'menu/assets/skins/sam/menu.css',
+        'css/inikoo.css',
+  'css/style.css',
 
 	);
+
+}
 
 	if ($version==2) {
 
@@ -220,7 +235,12 @@ if (!$is_cached ) {
 
 		$smarty->assign('type_content', 'file');
 
-		$css_files[]='css/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.css';
+
+        if ($version==1) {
+
+            $css_files[] = 'css/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.css';
+
+        }
 
 		if ($page->data['Page Code']=='login') {
 

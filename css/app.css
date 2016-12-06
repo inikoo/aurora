@@ -2015,7 +2015,7 @@ tr.invalid input {
   background: #94db84;
   border: 1px solid #78bf41; }
 
-input.inputfile {
+input.input_file {
   width: 0.1px;
   height: 0.1px;
   opacity: 0;

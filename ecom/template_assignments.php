@@ -57,7 +57,14 @@ if ($page->data['Page Store Section Type']=='Family') {
 
 	$public_customer=new Public_Customer($customer->id);
 	$public_order=new Public_Order($order_in_process->id);
-	$public_user=new Public_Website_User($user->id);
+
+
+	if($user=='') {
+        $public_user=new Public_Website_User(0);
+    }else{
+        $public_user=new Public_Website_User($user->id);
+	}
+
 
 
 
@@ -65,7 +72,7 @@ if ($page->data['Page Store Section Type']=='Family') {
 	$products = array();
 
 	$sql = sprintf(
-		"SELECT `Product Category Stack Product ID`,`Product Category Stack Category Key`,`Product Category Stack Index`, P.`Product ID`,`Product Code`,`Product Web State` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Stack Index` S ON (`Subject Key`=S.`Product Category Stack Product ID` AND S.`Product Category Stack Category Key`=B.`Category Key`)  WHERE  `Category Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Product Web State`,   ifnull(`Product Category Stack Index`,99999999)",
+		"SELECT  P.`Product ID` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Index` S ON (`Subject Key`=S.`Product Category Index Product ID` AND S.`Product Category Index Category Key`=B.`Category Key`)  WHERE  `Category Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Product Web State`, ifnull(`Product Category Index Published Stack`,99999999),`Product Code File As` ",
 		$public_category->id
 	);
 

@@ -14,7 +14,7 @@
 
 
 
-<span style="margin-right:20px" class="invisible">
+<span style="margin-right:20px" class="hide">
     <i class="fa fa-desktop padding_right_5 " aria-hidden="true"></i>
     <i class="fa fa-tablet padding_right_5" aria-hidden="true"></i>
     <i class="fa fa-mobile" aria-hidden="true"></i>
@@ -22,6 +22,7 @@
 
 <span class="button " onclick="toggle_logged_in_view(this)"><i class="fa fa-toggle-on " aria-hidden="true" alt="{t}On{/t}"></i> <span class="unselectable">{t}Logged in{/t}</span></span>
 
+    <span id="publish" class="button save {if $webpage->get('Publish')}changed valid{/if}" style="float:right" onclick="publish(this)"><span class="unselectable">{t}Publish{/t}</span> <i class="fa fa-rocket" aria-hidden="true"></i></span>
 
 
 
@@ -113,19 +114,20 @@
         padding-left:10px;padding-right:10px;display:block;height:51px;
     }
 
-    .product_price{
+    .product_prices{
         padding-left:10px;padding-right:10px;display:block;height:37px;
     }
 
 
-    .product_price.log_out{
-        text-align: center;
+    .product_prices.log_out{
+        text-align: center;font-style: italic; color:#236E4B
 
     }
 
-    .product_price .price{
+    .product_prices .product_price{
         color:#236E4B
     }
+
 
 
     .more_info{
@@ -310,7 +312,6 @@
 
 
 
-
     <div id="description_block" class="description_block" >
 
 
@@ -326,8 +327,28 @@
             {$data.content}
         </div>
         {elseif $data.type=='image'}
+
+            <div id="{$id}_change_image" class="hide">
+
+
+                    <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
+                        <input type="file" name="image_upload" id="file_upload" class="input_file" multiple/>
+                        <label for="file_upload">
+                            <span class="fa-stack fa-lg button discreet  close_editing" style="font-size:12px;position:absolute">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-i-cursor fa-stack-1x fa-inverse"></i>
+                 </span>
+                        </label>
+                    </form>
+
+
+
+            </div>
+
+
             <div id="webpage_content_header_image" class="webpage_content_header"  >
-                <img  src="{$data.image_src}"  style="width:100%"  />
+
+                   <img  src="{$data.image_src}"  style="width:100%"  />
             </div>
         {/if}
         {/foreach}
@@ -366,14 +387,14 @@
                 </div>
 
 
-                <div class="product_price log_in " >
-                    <div class="price">{t}Price{/t}: {$product->get('Price')}</div>
+                <div class="product_prices log_in " >
+                    <div class="product_price">{t}Price{/t}: {$product->get('Price')}</div>
                     {assign 'rrp' $product->get('RRP')}
                     {if $rrp!=''}<div>{t}RRP{/t}: {$rrp}</div>{/if}
                 </div>
 
-                <div class="product_price log_out hide" >
-                    <div class="price italic">{t}For prices, please login or register{/t}</div>
+                <div class="product_prices log_out hide" >
+                    <div >{t}For prices, please login or register{/t}</div>
                  </div>
 
 
@@ -521,15 +542,49 @@
 
     function  save_stack_index(stack_index,product_id) {
 
-        var request = '/ar_edit.php?tipo=edit_category_stack_index&key=' + {$category->id} + '&stack_index=' + (stack_index-0.5) + '&subject_key='+product_id
+        var request = '/ar_edit.php?tipo=edit_category_stack_index&key=' + {$category->id} + '&stack_index=' + (stack_index-0.5) + '&subject_key='+product_id+ '&webpage_key='+{$webpage->id}
         console.log(request)
         $.getJSON(request, function (data) {
+
+            if(data.state==200){
+
+
+                if($('#publish').find('i').hasClass('fa-rocket')) {
+
+                    if (data.publish) {
+                        $('#publish').addClass('changed valid')
+                    } else {
+                        $('#publish').removeClass('changed valid')
+                    }
+                }
+
+            }
 
         })
     }
 
 
+    function publish(element){
 
+
+        var icon=$(element).find('i')
+
+        if(icon.hasClass('fa-spin')) return;
+
+
+        icon.removeClass('fa-rocket').addClass('fa-spinner fa-spin')
+
+        var request = '/ar_edit.php?tipo=publish_webpage&parent_key=' + {$webpage->id}
+        console.log(request)
+        $.getJSON(request, function (data) {
+
+            icon.addClass('fa-rocket').removeClass('fa-spinner fa-spin')
+            $(element).removeClass('changed valid')
+
+        })
+
+
+    }
 
    
     function save_webpage_content_header_state(){
@@ -557,8 +612,23 @@
         console.log(css)
 
         var request = '/ar_edit.php?tipo=edit_webpage&key=' + {$category->webpage->id} + '&field=css&value=' + btoa(css)
-        console.log(request)
+       // console.log(request)
         $.getJSON(request, function (data) {
+
+            if(data.state==200){
+
+
+
+                if($('#publish').find('i').hasClass('fa-rocket')) {
+
+                    if (data.publish) {
+                        $('#publish').addClass('changed valid')
+                    } else {
+                        $('#publish').removeClass('changed valid')
+                    }
+                }
+
+            }
 
         })
 
@@ -631,6 +701,25 @@
             }
 
 
+        }).on('froalaEditor.save.after', function (e, editor, response) {
+
+
+            var data=jQuery.parseJSON(response)
+
+            if(data.state==200){
+
+
+
+                if($('#publish').find('i').hasClass('fa-rocket')) {
+
+                    if (data.publish) {
+                        $('#publish').addClass('changed valid')
+                    } else {
+                        $('#publish').removeClass('changed valid')
+                    }
+                }
+
+            }
         })
 
 
@@ -833,8 +922,8 @@ console.log($(this))
         if(icon.hasClass('fa-toggle-on')){
             icon.removeClass('fa-toggle-on').addClass('fa-toggle-off')
 
-            $('.product_price.log_in').addClass('hide')
-            $('.product_price.log_out').removeClass('hide')
+            $('.product_prices.log_in').addClass('hide')
+            $('.product_prices.log_out').removeClass('hide')
 
             $('.ordering.log_in').addClass('hide')
             $('.ordering.log_out').removeClass('hide')
@@ -843,8 +932,8 @@ console.log($(this))
         }else{
             icon.addClass('fa-toggle-on').removeClass('fa-toggle-off')
 
-            $('.product_price.log_in').removeClass('hide')
-            $('.product_price.log_out').addClass('hide')
+            $('.product_prices.log_in').removeClass('hide')
+            $('.product_prices.log_out').addClass('hide')
             $('.ordering.log_in').removeClass('hide')
             $('.ordering.log_out').addClass('hide')
 
@@ -855,10 +944,13 @@ console.log($(this))
     }
 
 
+    $('.image_upload').on('change', function (e) {
 
-    $(function() {
+        console.log('caca')
 
     });
+
+
 
 
 </script>

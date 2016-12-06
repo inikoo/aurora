@@ -1007,12 +1007,12 @@ trait ProductCategory {
     function create_stack_index($force_reindex = false) {
 
 
-        //    $this->db->exec('truncate `Product Category Stack Index`');
+        //    $this->db->exec('truncate `Product Category Index`');
 
         $null_stacks = false;
 
         $sql = sprintf(
-            "SELECT `Product Category Stack Product ID`,`Product Category Stack Category Key`,`Product Category Stack Index`, P.`Product ID`,`Product Code`,`Product Web State` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Stack Index` S ON (`Subject Key`=S.`Product Category Stack Product ID` AND S.`Product Category Stack Category Key`=B.`Category Key`)    WHERE  `Category Key`=%d  ORDER BY ifnull(`Product Category Stack Index`,99999999),`Product Code File As`",
+            "SELECT `Product Category Index Product ID`,`Product Category Index Category Key`,`Product Category Index Stack`, P.`Product ID`,`Product Code`,`Product Web State` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Index` S ON (`Subject Key`=S.`Product Category Index Product ID` AND S.`Product Category Index Category Key`=B.`Category Key`)    WHERE  `Category Key`=%d  ORDER BY ifnull(`Product Category Index Stack`,99999999),`Product Code File As`",
             $this->id
         );
 
@@ -1020,17 +1020,17 @@ trait ProductCategory {
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
-                if ($row['Product Category Stack Product ID'] == '') {
+                if ($row['Product Category Index Product ID'] == '') {
                     $null_stacks = true;
 
                     $sql = sprintf(
-                        'INSERT INTO `Product Category Stack Index` (`Product Category Stack Category Key`,`Product Category Stack Product ID`) VALUES (%d,%d) ', $this->id, $row['Product ID']
+                        'INSERT INTO `Product Category Index` (`Product Category Index Category Key`,`Product Category Index Product ID`) VALUES (%d,%d) ', $this->id, $row['Product ID']
                     );
                     $this->db->exec($sql);
 
                 }
 
-                if ($row['Product Category Stack Index'] == '') {
+                if ($row['Product Category Index Stack'] == '') {
                     $null_stacks = true;
                 }
 
@@ -1048,7 +1048,7 @@ trait ProductCategory {
         if ($null_stacks or $force_reindex) {
 
             $sql = sprintf(
-                "SELECT `Product Category Stack Key`,`Product Category Stack Product ID`,`Product Category Stack Category Key`,`Product Category Stack Index`, P.`Product ID`,`Product Code`,`Product Web State` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Stack Index` S ON (`Subject Key`=S.`Product Category Stack Product ID` AND S.`Product Category Stack Category Key`=B.`Category Key`)    WHERE  `Category Key`=%d  ORDER BY ifnull(`Product Category Stack Index`,99999999),`Product Code File As`",
+                "SELECT `Product Category Index Key`,`Product Category Index Product ID`,`Product Category Index Category Key`,`Product Category Index Stack`, P.`Product ID`,`Product Code`,`Product Web State` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Index` S ON (`Subject Key`=S.`Product Category Index Product ID` AND S.`Product Category Index Category Key`=B.`Category Key`)    WHERE  `Category Key`=%d  ORDER BY ifnull(`Product Category Index Stack`,99999999),`Product Code File As`",
                 $this->id
             );
 
@@ -1060,7 +1060,7 @@ trait ProductCategory {
 
                     $stack_index++;
                     $sql = sprintf(
-                        'UPDATE `Product Category Stack Index` SET `Product Category Stack Index`=%d WHERE `Product Category Stack Key`=%d', $stack_index, $row['Product Category Stack Key']
+                        'UPDATE `Product Category Index` SET `Product Category Index Stack`=%d WHERE `Product Category Index Key`=%d', $stack_index, $row['Product Category Index Key']
                     );
                     $this->db->exec($sql);
                 }
@@ -1082,7 +1082,7 @@ trait ProductCategory {
         $subjects = array();
 
         $sql = sprintf(
-            "SELECT `Product Category Stack Index`,`Product Category Stack Key`,`Product Category Stack Product ID` AS subject_key,`Product Category Stack Category Key` FROM `Product Category Stack Index`    WHERE  `Product Category Stack Category Key`=%d ",
+            "SELECT `Product Category Index Stack`,`Product Category Index Key`,`Product Category Index Product ID` AS subject_key,`Product Category Index Category Key` FROM `Product Category Index`    WHERE  `Product Category Index Category Key`=%d ",
             $this->id
         );
 
@@ -1092,10 +1092,10 @@ trait ProductCategory {
 
                 if ($row['subject_key'] == $subject_key) {
 
-                    $row['Product Category Stack Index'] = $stack_index;
+                    $row['Product Category Index Stack'] = $stack_index;
 
                 }
-                $subjects[$row['Product Category Stack Index']] = $row['Product Category Stack Key'];;
+                $subjects[$row['Product Category Index Stack']] = $row['Product Category Index Key'];;
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -1111,7 +1111,7 @@ trait ProductCategory {
             $stack_index++;
 
             $sql = sprintf(
-                'UPDATE `Product Category Stack Index` SET `Product Category Stack Index`=%d WHERE `Product Category Stack Key`=%d ', $stack_index, $product_category_stack_key
+                'UPDATE `Product Category Index` SET `Product Category Index Stack`=%d WHERE `Product Category Index Key`=%d ', $stack_index, $product_category_stack_key
             );
 
             //  print "$sql\n";

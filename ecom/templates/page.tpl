@@ -101,7 +101,7 @@
 		</div>
 		{/if}
 		<div id="ft" style="z-index:2" style="{if $page->get('Page Footer Type')=='None'}display:none{/if}">
-			{*}{include file="string:{$page->get_footer_template()}" } {*}
+		{include file="string:{$page->get_footer_template()}" }
 		</div>
 	</div>
 	{$page->get_body_includes()} 

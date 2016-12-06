@@ -25,6 +25,7 @@ class Page extends DB_Table {
     var $set_currency = 'GBP';
     var $set_currency_exchange = 1;
 
+
     function Page($arg1 = false, $arg2 = false, $arg3 = false) {
 
 
@@ -33,6 +34,8 @@ class Page extends DB_Table {
 
         $this->table_name    = 'Page';
         $this->ignore_fields = array('Page Key');
+        $this->scope    = false;
+        $this->scope_load = false;
 
 
         if (!$arg1 and !$arg2) {
@@ -650,13 +653,12 @@ class Page extends DB_Table {
                                 if ($see_also_page->id and $see_also_page->data['Page State'] == 'Online' and $see_also_page->data['Page Stealth Mode'] == 'No'
                                     and $see_also_page->data['Page Store Image Key']
                                 ) {
-                                    $see_also[$see_also_page_key]
-                                                  = array(
+                                    $see_also[$see_also_page_key] = array(
                                         'type'     => 'Sales',
                                         'value'    => $row['Correlation'],
                                         'page_key' => $see_also_page_key
                                     );
-                                    $number_links = count($see_also);
+                                    $number_links                 = count($see_also);
                                     //print "$number_links>=$max_links\n";
                                     if ($number_links >= $max_sales_links) {
                                         break;
@@ -731,13 +733,12 @@ class Page extends DB_Table {
                                     if ($see_also_page->id and $see_also_page->data['Page State'] == 'Online' and $see_also_page->data['Page Stealth Mode'] == 'No'
                                         and $see_also_page->data['Page Store Image Key']
                                     ) {
-                                        $see_also[$see_also_page_key]
-                                                      = array(
+                                        $see_also[$see_also_page_key] = array(
                                             'type'     => 'Semantic',
                                             'value'    => $row['Weight'],
                                             'page_key' => $see_also_page_key
                                         );
-                                        $number_links = count($see_also);
+                                        $number_links                 = count($see_also);
                                         if ($number_links >= $max_links) {
                                             break;
                                         }
@@ -770,13 +771,12 @@ class Page extends DB_Table {
                         foreach ($result as $row) {
 
 
-                            $see_also[$row['Page Key']]
-                                          = array(
+                            $see_also[$row['Page Key']] = array(
                                 'type'     => 'Other',
                                 'value'    => 1,
                                 'page_key' => $row['Page Key']
                             );
-                            $number_links = count($see_also);
+                            $number_links               = count($see_also);
                             if ($number_links >= $max_links) {
                                 break;
                             }
@@ -820,13 +820,12 @@ class Page extends DB_Table {
                             $see_also_page_key = array_pop($page_keys);
                             $see_also_page     = new Page($see_also_page_key);
                             if ($see_also_page->id and $see_also_page->data['Page State'] == 'Online' and $see_also_page->data['Page Stealth Mode'] == 'No') {
-                                $see_also[$see_also_page_key]
-                                              = array(
+                                $see_also[$see_also_page_key] = array(
                                     'type'     => 'Sales',
                                     'value'    => $row['Correlation'],
                                     'page_key' => $see_also_page_key
                                 );
-                                $number_links = count($see_also);
+                                $number_links                 = count($see_also);
                                 if ($number_links >= $max_links) {
                                     break;
                                 }
@@ -864,13 +863,12 @@ class Page extends DB_Table {
                         $see_also_page_key = array_pop($page_keys);
                         $see_also_page     = new Page($see_also_page_key);
                         if ($see_also_page->id and $see_also_page->data['Page State'] == 'Online' and $see_also_page->data['Page Stealth Mode'] == 'No') {
-                            $see_also[$see_also_page_key]
-                                          = array(
+                            $see_also[$see_also_page_key] = array(
                                 'type'     => 'Same Family',
                                 'value'    => rand(),
                                 'page_key' => $see_also_page_key
                             );
-                            $number_links = count($see_also);
+                            $number_links                 = count($see_also);
                             if ($number_links >= $max_links) {
                                 break;
                             }
@@ -908,13 +906,12 @@ class Page extends DB_Table {
 
 
                         if ($see_also_page->id and $see_also_page->data['Page State'] == 'Online' and $see_also_page->data['Page Stealth Mode'] == 'No') {
-                            $see_also[$see_also_page_key]
-                                          = array(
+                            $see_also[$see_also_page_key] = array(
                                 'type'     => 'Same Store',
                                 'value'    => 0.001,
                                 'page_key' => $see_also_page_key
                             );
-                            $number_links = count($see_also);
+                            $number_links                 = count($see_also);
                             if ($number_links >= $max_links) {
                                 break;
                             }
@@ -1080,14 +1077,13 @@ class Page extends DB_Table {
         global $memcache_ip;
 
 
-
         $account      = new Account($this->db);
         $account_code = $account->get('Account Code');
 
         include_once 'class.Site.php';
         $site = new Site($this->data['Page Site Key']);
 
-        $template_response='';
+        $template_response = '';
 
         // Tdo manage smarty cache
         /*
@@ -1269,10 +1265,6 @@ class Page extends DB_Table {
     }
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
-
-
-
-
 
 
         switch ($field) {
@@ -1519,7 +1511,6 @@ class Page extends DB_Table {
             case('Page Head Include'):
             case('Page Body Include'):
             case('Page Store Title'):
-
 
 
                 $this->update_field($field, $value, $options);
@@ -2035,13 +2026,60 @@ class Page extends DB_Table {
     function get($key) {
         switch ($key) {
 
+            case 'Publish':
+
+
+                if ($this->data['Page Store Content Data'] != $this->data['Page Store Content Published Data']) {
+
+
+                    return true;
+                }
+
+                if ($this->data['Page Store CSS'] != $this->data['Page Store Published CSS']) {
+
+
+                    return true;
+                }
+
+                $this->load_scope();
+
+                if ($this->scope_found == 'Category') {
+
+                    $sql = sprintf(
+                        'SELECT `Product Category Index Stack`,`Product Category Index Published Stack`,`Product Category Index Content Data`,`Product Category Index Content Published Data`  FROM  `Product Category Index`  WHERE `Product Category Index Category Key`=%d  ',
+                        $this->scope->id
+                    );
+
+                    if ($result = $this->db->query($sql)) {
+                        foreach ($result as $row) {
+                            if ($row['Product Category Index Stack'] != $row['Product Category Index Published Stack']) {
+                                return true;
+                            }
+                            if ($row['Product Category Index Content Data'] != $row['Product Category Index Content Published Data']) {
+                                return true;
+                            }
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+
+
+                }
+
+
+                return false;
+
+                break;
 
             case 'Content Data':
-                if($this->data['Page Store Content Data']==''){
-                    $content_data=false;
-                }else{
-                    $content_data=json_decode($this->data['Page Store Content Data'],true);
+                if ($this->data['Page Store Content Data'] == '') {
+                    $content_data = false;
+                } else {
+                    $content_data = json_decode($this->data['Page Store Content Data'], true);
                 }
+
                 return $content_data;
                 break;
 
@@ -2111,6 +2149,68 @@ class Page extends DB_Table {
         return false;
     }
 
+    function load_scope() {
+
+        $this->scope_load = true;
+
+
+        if ($this->data['Page Store Section'] == 'Product Description') {
+            include_once ('class.Public_Product.php');
+            $this->scope       = new Public_Product($this->data['Page Parent Key']);
+            $this->scope_found = 'Product';
+
+
+        } elseif ($this->data['Page Store Section'] == 'Category') {
+            include_once ('class.Public_Category.php');
+
+            $this->scope       = new Public_Category($this->data['Page Parent Key']);
+            $this->scope_found = 'Category';
+
+        } elseif ($this->data['Page Store Section'] == 'Family Catalogue') {
+
+            // Todo (Migration)
+
+            $sql = sprintf(
+                "SELECT `Product Family Code`,`Store Family Category Key` FROM `Product Family Dimension` LEFT JOIN `Store Dimension` ON (`Store Key`=`Product Family Store Key`)  WHERE `Product Family Key`=%d ",
+                $this->data['Page Parent Key']
+            );
+
+
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+
+                    $sql = sprintf(
+                        'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Root Key`=%d AND  `Category Code`=%s  ', $row['Store Family Category Key'],
+                        prepare_mysql($row['Product Family Code'])
+                    );
+                    if ($result2 = $this->db->query($sql)) {
+                        if ($row2 = $result2->fetch()) {
+                            include_once ('class.Public_Category.php');
+                            $this->scope       = new Public_Category($row2['Category Key']);
+                            $this->scope_found = 'Category';
+
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+
+                } else {
+
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+        }
+
+
+    }
+
     function display($tipo = 'link') {
 
         switch ($tipo) {
@@ -2122,6 +2222,29 @@ class Page extends DB_Table {
 
         }
 
+
+    }
+
+    function publish() {
+
+
+        $sql = sprintf(
+            'update `Page Store Dimension` set  `Page Store Content Published Data`=`Page Store Content Data`,`Page Store Published CSS`=`Page Store CSS` where `Page Key`=%d ',
+            $this->id
+        );
+
+        $this->db->exec($sql);
+
+        $this->load_scope();
+
+        if($this->scope_load=='Category'){}
+        $sql = sprintf(
+            'update  `Product Category Index` set  `Product Category Index Published Stack`=`Product Category Index Stack`,`Product Category Index Content Published Data`=`Product Category Index Content Data` where `Product Category Index Category Key`=%d ',
+            $this->scope->id
+        );
+        $this->db->exec($sql);
+
+        $this->get_data('id',$this->id);
 
     }
 
@@ -2168,8 +2291,7 @@ class Page extends DB_Table {
                                 );
                                 break;
                             default:
-                                $formatted_correlation_type
-                                                             = $row['Correlation Type'];
+                                $formatted_correlation_type  = $row['Correlation Type'];
                                 $formatted_correlation_value = number(
                                     $row['Correlation Value']
                                 );
@@ -2267,8 +2389,7 @@ class Page extends DB_Table {
                             );
                             break;
                         default:
-                            $formatted_correlation_type
-                                                         = $row['Correlation Type'];
+                            $formatted_correlation_type  = $row['Correlation Type'];
                             $formatted_correlation_value = number(
                                 $row['Correlation Value']
                             );
@@ -2491,15 +2612,11 @@ class Page extends DB_Table {
             );
             mysql_query($sql);
             //print "$sql\n";
-            $this->data['Page Store Number Products'] = $number_products;
-            $this->data['Page Store Number Out of Stock Products']
-                                                      = $number_out_of_stock_products;
-            $this->data['Page Store Number Sold Out Products']
-                                                      = $number_sold_out_products;
-            $this->data['Page Store Number List Products']
-                                                      = $number_list_products;
-            $this->data['Page Store Number Button Products']
-                                                      = $number_button_products;
+            $this->data['Page Store Number Products']              = $number_products;
+            $this->data['Page Store Number Out of Stock Products'] = $number_out_of_stock_products;
+            $this->data['Page Store Number Sold Out Products']     = $number_sold_out_products;
+            $this->data['Page Store Number List Products']         = $number_list_products;
+            $this->data['Page Store Number Button Products']       = $number_button_products;
 
 
         }
@@ -2604,14 +2721,15 @@ class Page extends DB_Table {
             );
             $res = mysql_query($sql);
             if ($row = mysql_fetch_assoc($res)) {
-                $email_reminder = '<br/><span id="send_reminder_wait_'.$product->id.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '
-                    ._('Processing request').'</span><span id="send_reminder_container_'.$product->id.'"  style="color:#777"><span id="send_reminder_info_'.$product->id.'" >'._(
+                $email_reminder =
+                    '<br/><span id="send_reminder_wait_'.$product->id.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._(
+                        'Processing request'
+                    ).'</span><span id="send_reminder_container_'.$product->id.'"  style="color:#777"><span id="send_reminder_info_'.$product->id.'" >'._(
                         "We'll notify you via email"
                     ).' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','.$product->id
                     .')"  >('._('Cancel').')</span></span></span>';
             } else {
-                $email_reminder
-                    = '<br/>
+                $email_reminder = '<br/>
 					<span id="send_reminder_wait_'.$product->id.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._(
                         'Processing request'
                     ).'</span>
@@ -2783,14 +2901,15 @@ class Page extends DB_Table {
             );
             $res     = mysql_query($sql);
             if ($row = mysql_fetch_assoc($res)) {
-                $email_reminder = '<br/><span id="send_reminder_wait_'.$product->id.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '
-                    ._('Processing request').'</span><span id="send_reminder_container_'.$product->id.'"  style="color:#777"><span id="send_reminder_info_'.$product->id.'" >'._(
+                $email_reminder =
+                    '<br/><span id="send_reminder_wait_'.$product->id.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._(
+                        'Processing request'
+                    ).'</span><span id="send_reminder_container_'.$product->id.'"  style="color:#777"><span id="send_reminder_info_'.$product->id.'" >'._(
                         "We'll notify you via email"
                     ).' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','.$product->id
                     .')"  >('._('Cancel').')</span></span></span>';
             } else {
-                $email_reminder
-                    = '<br/>
+                $email_reminder = '<br/>
 					<span id="send_reminder_wait_'.$product->id.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._(
                         'Processing request'
                     ).'</span>
@@ -2994,14 +3113,15 @@ class Page extends DB_Table {
             );
             $res = mysql_query($sql);
             if ($row = mysql_fetch_assoc($res)) {
-                $email_reminder = '<br/><span id="send_reminder_wait_'.$product->id.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '
-                    ._('Processing request').'</span><span id="send_reminder_container_'.$product->id.'"  style="color:#777"><span id="send_reminder_info_'.$product->id.'" >'._(
+                $email_reminder =
+                    '<br/><span id="send_reminder_wait_'.$product->id.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._(
+                        'Processing request'
+                    ).'</span><span id="send_reminder_container_'.$product->id.'"  style="color:#777"><span id="send_reminder_info_'.$product->id.'" >'._(
                         "We'll notify you via email"
                     ).' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','.$product->id
                     .')"  >('._('Cancel').')</span></span></span>';
             } else {
-                $email_reminder
-                    = '<br/>
+                $email_reminder = '<br/>
 					<span id="send_reminder_wait_'.$product->id.'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._(
                         'Processing request'
                     ).'</span>
@@ -3156,8 +3276,7 @@ class Page extends DB_Table {
                         $order_by = '`Product RRP`';
                         break;
                     case 'Sales':
-                        $order_by
-                            = '`Product 1 Year Acc Quantity Ordered` desc';
+                        $order_by = '`Product 1 Year Acc Quantity Ordered` desc';
                         break;
                     case 'Date':
                         $order_by = '`Product Valid From`';
@@ -3210,8 +3329,8 @@ class Page extends DB_Table {
                     } else {
                         $row2['Next Supplier Shipment'] = strftime(
                             "%a, %e %b %y", strtotime(
-                                $row2['Product Next Supplier Shipment'].' +0:00'
-                            )
+                                              $row2['Product Next Supplier Shipment'].' +0:00'
+                                          )
                         );
                     }
 
@@ -3536,16 +3655,17 @@ class Page extends DB_Table {
                 );
                 $res = mysql_query($sql);
                 if ($row = mysql_fetch_assoc($res)) {
-                    $email_reminder = '<br/><span id="send_reminder_wait_'.$product['Product ID']
-                        .'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request')
-                        .'</span><span id="send_reminder_container_'.$product['Product ID'].'"  style="color:#777"><span id="send_reminder_info_'.$product['Product ID'].'" >'._(
+                    $email_reminder =
+                        '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '
+                        ._('Processing request').'</span><span id="send_reminder_container_'.$product['Product ID'].'"  style="color:#777"><span id="send_reminder_info_'.$product['Product ID'].'" >'
+                        ._(
                             "We'll notify you via email"
                         ).' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','
                         .$product['Product ID'].')"  >('._('Cancel').')</span></span></span>';
                 } else {
-                    $email_reminder = '<br/><span id="send_reminder_wait_'.$product['Product ID']
-                        .'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request')
-                        .'</span><span id="send_reminder_container_'.$product['Product ID'].'" style="color:#777" ><span id="send_reminder_'.$product['Product ID']
+                    $email_reminder =
+                        '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '
+                        ._('Processing request').'</span><span id="send_reminder_container_'.$product['Product ID'].'" style="color:#777" ><span id="send_reminder_'.$product['Product ID']
                         .'" style="cursor:pointer;" onClick="send_reminder('.$product['Product ID'].')">'._(
                             'Notify me when back in stock'
                         ).' <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span></span><span id="send_reminder_msg_'.$product['Product ID'].'"></span></span>';
@@ -3565,8 +3685,7 @@ class Page extends DB_Table {
 
                 }
 
-                $input
-                       = ' <span class="out_of_stock" style="font-size:80%" title="'.$out_of_stock_label.'">'._('OoS').'</span>';
+                $input = ' <span class="out_of_stock" style="font-size:80%" title="'.$out_of_stock_label.'">'._('OoS').'</span>';
                 $input = '';
 
 
@@ -3594,8 +3713,7 @@ class Page extends DB_Table {
 
             if ($product['Product Web State'] == 'Out of Stock') {
                 $tr_class .= 'out_of_stock_tr';
-                $tr_style
-                             = "background-color:rgba(255,209,209,.6);border-top:1px solid #FF9999;;border-bottom:1px solid #FFB2B2;font-size:95%;padding-bottom:0px;";
+                $tr_style    = "background-color:rgba(255,209,209,.6);border-top:1px solid #FF9999;;border-bottom:1px solid #FFB2B2;font-size:95%;padding-bottom:0px;";
                 $description = $product['description']."<br/><span class='out_of_stock' style='opacity:.6;filter: alpha(opacity = 60);' >$out_of_stock_label2</span>$email_reminder";
             } else {
                 $tr_style    = "padding-bottom:5px";
@@ -3723,16 +3841,17 @@ class Page extends DB_Table {
                 );
                 $res = mysql_query($sql);
                 if ($row = mysql_fetch_assoc($res)) {
-                    $email_reminder = '<br/><span id="send_reminder_wait_'.$product['Product ID']
-                        .'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request')
-                        .'</span><span id="send_reminder_container_'.$product['Product ID'].'"  style="color:#777"><span id="send_reminder_info_'.$product['Product ID'].'" >'._(
+                    $email_reminder =
+                        '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '
+                        ._('Processing request').'</span><span id="send_reminder_container_'.$product['Product ID'].'"  style="color:#777"><span id="send_reminder_info_'.$product['Product ID'].'" >'
+                        ._(
                             "We'll notify you via email"
                         ).' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','
                         .$product['Product ID'].')"  >('._('Cancel').')</span></span></span>';
                 } else {
-                    $email_reminder = '<br/><span id="send_reminder_wait_'.$product['Product ID']
-                        .'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request')
-                        .'</span><span id="send_reminder_container_'.$product['Product ID'].'" style="color:#777" ><span id="send_reminder_'.$product['Product ID']
+                    $email_reminder =
+                        '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '
+                        ._('Processing request').'</span><span id="send_reminder_container_'.$product['Product ID'].'" style="color:#777" ><span id="send_reminder_'.$product['Product ID']
                         .'" style="cursor:pointer;" onClick="send_reminder('.$product['Product ID'].')">'._(
                             'Notify me when back in stock'
                         ).' <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span></span><span id="send_reminder_msg_'.$product['Product ID'].'"></span></span>';
@@ -3752,8 +3871,7 @@ class Page extends DB_Table {
 
                 }
 
-                $input
-                       = ' <span class="out_of_stock" style="font-size:80%" title="'.$out_of_stock_label.'">'._('OoS').'</span>';
+                $input = ' <span class="out_of_stock" style="font-size:80%" title="'.$out_of_stock_label.'">'._('OoS').'</span>';
                 $input = '';
 
 
@@ -3781,8 +3899,7 @@ class Page extends DB_Table {
 
             if ($product['Product Web State'] == 'Out of Stock') {
                 $tr_class .= 'out_of_stock_tr';
-                $tr_style
-                             = "background-color:rgba(255,209,209,.6);border-top:1px solid #FF9999;;border-bottom:1px solid #FFB2B2;font-size:95%;padding-bottom:0px;";
+                $tr_style    = "background-color:rgba(255,209,209,.6);border-top:1px solid #FF9999;;border-bottom:1px solid #FFB2B2;font-size:95%;padding-bottom:0px;";
                 $description = $product['description']."<br/><span class='out_of_stock' style='opacity:.6;filter: alpha(opacity = 60);' >$out_of_stock_label2</span>$email_reminder";
             } else {
                 $tr_style    = "padding-bottom:5px";
@@ -4004,16 +4121,17 @@ class Page extends DB_Table {
                 );
                 $res = mysql_query($sql);
                 if ($row = mysql_fetch_assoc($res)) {
-                    $email_reminder = '<br/><span id="send_reminder_wait_'.$product['Product ID']
-                        .'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request')
-                        .'</span><span id="send_reminder_container_'.$product['Product ID'].'"  style="color:#777"><span id="send_reminder_info_'.$product['Product ID'].'" >'._(
+                    $email_reminder =
+                        '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '
+                        ._('Processing request').'</span><span id="send_reminder_container_'.$product['Product ID'].'"  style="color:#777"><span id="send_reminder_info_'.$product['Product ID'].'" >'
+                        ._(
                             "We'll notify you via email"
                         ).' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','
                         .$product['Product ID'].')"  >('._('Cancel').')</span></span></span>';
                 } else {
-                    $email_reminder = '<br/><span id="send_reminder_wait_'.$product['Product ID']
-                        .'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request')
-                        .'</span><span id="send_reminder_container_'.$product['Product ID'].'" style="color:#777" ><span id="send_reminder_'.$product['Product ID']
+                    $email_reminder =
+                        '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '
+                        ._('Processing request').'</span><span id="send_reminder_container_'.$product['Product ID'].'" style="color:#777" ><span id="send_reminder_'.$product['Product ID']
                         .'" style="cursor:pointer;" onClick="send_reminder('.$product['Product ID'].')">'._(
                             'Notify me when back in stock'
                         ).' <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span></span><span id="send_reminder_msg_'.$product['Product ID'].'"></span></span>';
@@ -4033,8 +4151,7 @@ class Page extends DB_Table {
 
                 }
 
-                $input
-                       = ' <span class="out_of_stock" style="font-size:80%" title="'.$out_of_stock_label.'">'._('OoS').'</span>';
+                $input = ' <span class="out_of_stock" style="font-size:80%" title="'.$out_of_stock_label.'">'._('OoS').'</span>';
                 $input = '';
 
 
@@ -4082,8 +4199,7 @@ class Page extends DB_Table {
 
             if ($product['Product Web State'] == 'Out of Stock') {
                 $tr_class .= 'out_of_stock_tr';
-                $tr_style
-                             = "background-color:rgba(255,209,209,.6);border-top:1px solid #FF9999;;border-bottom:1px solid #FFB2B2;font-size:95%;padding-bottom:0px;";
+                $tr_style    = "background-color:rgba(255,209,209,.6);border-top:1px solid #FF9999;;border-bottom:1px solid #FFB2B2;font-size:95%;padding-bottom:0px;";
                 $description = $product['description']."<br/><span class='out_of_stock' style='opacity:.6;filter: alpha(opacity = 60);' >$out_of_stock_label2</span>$email_reminder";
             } else {
                 $tr_style    = "padding-bottom:5px";
@@ -4488,16 +4604,17 @@ class Page extends DB_Table {
                 );
                 $res = mysql_query($sql);
                 if ($row = mysql_fetch_assoc($res)) {
-                    $email_reminder = '<br/><span id="send_reminder_wait_'.$product['Product ID']
-                        .'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request')
-                        .'</span><span id="send_reminder_container_'.$product['Product ID'].'"  style="color:#777"><span id="send_reminder_info_'.$product['Product ID'].'" >'._(
+                    $email_reminder =
+                        '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '
+                        ._('Processing request').'</span><span id="send_reminder_container_'.$product['Product ID'].'"  style="color:#777"><span id="send_reminder_info_'.$product['Product ID'].'" >'
+                        ._(
                             "We'll notify you via email"
                         ).' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','
                         .$product['Product ID'].')"  >('._('Cancel').')</span></span></span>';
                 } else {
-                    $email_reminder = '<br/><span id="send_reminder_wait_'.$product['Product ID']
-                        .'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '._('Processing request')
-                        .'</span><span id="send_reminder_container_'.$product['Product ID'].'" style="color:#777" ><span id="send_reminder_'.$product['Product ID']
+                    $email_reminder =
+                        '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '
+                        ._('Processing request').'</span><span id="send_reminder_container_'.$product['Product ID'].'" style="color:#777" ><span id="send_reminder_'.$product['Product ID']
                         .'" style="cursor:pointer;" onClick="send_reminder('.$product['Product ID'].')">'._(
                             'Notify me when back in stock'
                         ).' <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span></span><span id="send_reminder_msg_'.$product['Product ID'].'"></span></span>';
@@ -4517,8 +4634,7 @@ class Page extends DB_Table {
 
                 }
 
-                $input
-                       = ' <span class="out_of_stock" style="font-size:80%" title="'.$out_of_stock_label.'">'._('OoS').'</span>';
+                $input = ' <span class="out_of_stock" style="font-size:80%" title="'.$out_of_stock_label.'">'._('OoS').'</span>';
                 $input = '';
 
 
@@ -4546,8 +4662,7 @@ class Page extends DB_Table {
 
             if ($product['Product Web State'] == 'Out of Stock') {
                 $tr_class .= 'out_of_stock_tr';
-                $tr_style
-                             = "background-color:rgba(255,209,209,.6);border-top:1px solid #FF9999;;border-bottom:1px solid #FFB2B2;font-size:95%;padding-bottom:0px;";
+                $tr_style    = "background-color:rgba(255,209,209,.6);border-top:1px solid #FF9999;;border-bottom:1px solid #FFB2B2;font-size:95%;padding-bottom:0px;";
                 $description = $product['description']."<br/><span class='out_of_stock' style='opacity:.6;filter: alpha(opacity = 60);' >$out_of_stock_label2</span>$email_reminder";
             } else {
                 $tr_style    = "padding-bottom:5px";
@@ -4621,8 +4736,7 @@ class Page extends DB_Table {
                         .$this->site->get_checkout_data('id').'&return='.$this->data['Page URL'].'"\' >'._('Basket & Checkout')
                         .'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>';
 
-                    $basket
-                        = '<div style="float:left;position:relative;top:4px;margin-right:20px"><span>'.$this->customer->get_hello()
+                    $basket = '<div style="float:left;position:relative;top:4px;margin-right:20px"><span>'.$this->customer->get_hello()
                         .'</span>  <span class="link" onClick=\'window.location="logout.php"\' id="logout">'._('Log Out').'</span> <span  class="link" onClick=\'window.location="profile.php"\' >'._(
                             'My Account'
                         ).'</span> </div>';
@@ -4647,8 +4761,7 @@ class Page extends DB_Table {
                     global $valid_currencies;
 
                     if (count($valid_currencies) > 1) {
-                        $currency_info
-                            = '
+                        $currency_info = '
 					<div class="currencies" ><span  class="inline_content" style="margin-left:0px;margin-right:10px;"><span>'._('Prices in').' '.$this->set_currency.'</span>
 				 <img id="show_currency_dialog" onclick="show_currencies_dialog()"  src="art/dropdown.png">
 				 <img id="hide_currency_dialog" style="display:none" onclick="hide_currencies_dialog()"  src="art/dropup.png">
@@ -4656,8 +4769,7 @@ class Page extends DB_Table {
 
 				 </span></div>';
 
-                        $currency_dialog
-                            = '<div id="currency_dialog" ><div style="margin:0px auto" class="buttons small left "><br>';
+                        $currency_dialog = '<div id="currency_dialog" ><div style="margin:0px auto" class="buttons small left "><br>';
                         foreach (
                             $valid_currencies as $currency_code => $valid_currency
                         ) {
@@ -4669,16 +4781,14 @@ class Page extends DB_Table {
                     }
 
 
-                    $basket
-                        = '<div style="width:100%;">
+                    $basket = '<div style="width:100%;">
 				<div class="actions" >
 					<span class="hello_customer">'.$this->customer->get_hello().'</span>
 					<span class="link" onClick=\'window.location="logout.php"\' id="logout">'._('Log Out').'</span>
 					<span class="link" onClick=\'window.location="profile.php"\' >'._('My Account').'</span>
 				</div>';
 
-                    $basket
-                        .= ' <div class="checkout_info" >
+                    $basket .= ' <div class="checkout_info" >
 				<span class="basket_info">
 				    <img  onClick=\'window.location="basket.php"\' src="art/basket.jpg" />
 				     '._('Items total').':
@@ -4690,8 +4800,7 @@ class Page extends DB_Table {
 				 </div>';
 
 
-                    $basket
-                        .= '<div id="top_bar_back_to_shop" style="float:right;position:relative;top:2px">
+                    $basket .= '<div id="top_bar_back_to_shop" style="float:right;position:relative;top:2px">
 				<img  src="art/back_to_shop.jpg" style="height:15px;position:relative;top:3px;margin-left:0px;cursor:pointer"/>
 				 <span onClick=\'back_to_shop()\' style="color:#ff8000;margin-left:0px" class="link basket"  id="see_basket"  >'._('Back to shop').'</span>
 				</div> ';
@@ -4708,8 +4817,7 @@ class Page extends DB_Table {
 
 
         } else {
-            $html
-                = '<div style="float:right"> <span class="link" onClick=\'window.location="registration.php"\' id="show_register_dialog">'._('Create Account')
+            $html = '<div style="float:right"> <span class="link" onClick=\'window.location="registration.php"\' id="show_register_dialog">'._('Create Account')
                 .'</span> <span class="link"  onClick=\'window.location="login.php?from='.$this->id.'"\' id="show_login_dialog">'._('Log in')
                 .'</span><img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>';
         }
@@ -4801,8 +4909,7 @@ class Page extends DB_Table {
             //print "$sql\n";
             $old_products_on_list = array();
             while ($row2 = mysql_fetch_assoc($res2)) {
-                $old_products_on_list[$row2['Product ID']]
-                    = $row2['Page Product Key'];
+                $old_products_on_list[$row2['Product ID']] = $row2['Page Product Key'];
             }
 
             foreach ($new_products_on_list as $product_pid => $tmp) {
@@ -4956,8 +5063,7 @@ class Page extends DB_Table {
         $products = array();
         while ($row2 = mysql_fetch_assoc($result)) {
 
-            $old_page_buttons_to_delete[$row2['Page Product Button Key']]
-                = $row2['Product ID'];
+            $old_page_buttons_to_delete[$row2['Page Product Button Key']] = $row2['Product ID'];
         }
 
         $number_buttons = 0;
@@ -5142,14 +5248,13 @@ class Page extends DB_Table {
         $_system = ob_get_clean();
         if (preg_match('/darwin/i', $_system)) {
             //$url='http://www.yahoo.com';
-            $command
-                = "mantenence/scripts/webkit2png_mac.py  -C -o server_files/tmp/pp_image".$this->id."  --clipheight=".($height * 0.5)."  --clipwidth=512  -s 0.5  ".$url;
+            $command = "mantenence/scripts/webkit2png_mac.py  -C -o server_files/tmp/pp_image".$this->id."  --clipheight=".($height * 0.5)."  --clipwidth=512  -s 0.5  ".$url;
 
             //       $command="mantenence/scripts/webkit2png  -C -o server_files/tmp/ph_image".$this->id."  --clipheight=80  --clipwidth=488  -s 0.5   http://localhost/dw/public_header_preview.php?id=".$this->id;
 
         } elseif (preg_match('/linux/i', $_system)) {
-            $command
-                = 'xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py --style=windows  --log=server_files/tmp/webkit2png_linux.log -o server_files/tmp/pp_image'
+            $command =
+                'xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py --style=windows  --log=server_files/tmp/webkit2png_linux.log -o server_files/tmp/pp_image'
                 .$this->id.'-clipped.png    '.$url;
 
 
@@ -5254,8 +5359,8 @@ class Page extends DB_Table {
         if ($this->data['Page Preview Snapshot Last Update'] != '') {
             return strftime(
                 "%a %e %b %Y %H:%M %Z", strtotime(
-                    $this->data['Page Preview Snapshot Last Update'].' UTC'
-                )
+                                          $this->data['Page Preview Snapshot Last Update'].' UTC'
+                                      )
             );
         }
     }
@@ -5464,8 +5569,9 @@ class Page extends DB_Table {
         }
 
 
-        list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb)
-            = calculate_interval_dates($this->db, $interval);
+        list(
+            $db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb
+            ) = calculate_interval_dates($this->db, $interval);
 
         $sql = sprintf(
             "SELECT count(*) AS num_requests ,count(DISTINCT `Visitor Session Key`) num_sessions ,count(DISTINCT `Visitor Key`) AS num_visitors   FROM  `User Request Dimension`   WHERE `Page Key`=%d  %s",
@@ -5477,12 +5583,9 @@ class Page extends DB_Table {
 
         $res = mysql_query($sql);
         if ($row = mysql_fetch_assoc($res)) {
-            $this->data['Page Store '.$db_interval.' Acc Requests']
-                = $row['num_requests'];
-            $this->data['Page Store '.$db_interval.' Acc Sessions']
-                = $row['num_sessions'];
-            $this->data['Page Store '.$db_interval.' Acc Visitors']
-                = $row['num_visitors'];
+            $this->data['Page Store '.$db_interval.' Acc Requests'] = $row['num_requests'];
+            $this->data['Page Store '.$db_interval.' Acc Sessions'] = $row['num_sessions'];
+            $this->data['Page Store '.$db_interval.' Acc Visitors'] = $row['num_visitors'];
         } else {
             $this->data['Page Store '.$db_interval.' Acc Requests'] = 0;
             $this->data['Page Store '.$db_interval.' Acc Sessions'] = 0;
@@ -5499,12 +5602,9 @@ class Page extends DB_Table {
         $res = mysql_query($sql);
         //print "$sql\n\n\n\n";
         if ($row = mysql_fetch_assoc($res)) {
-            $this->data['Page Store '.$db_interval.' Acc Users Requests']
-                = $row['num_requests'];
-            $this->data['Page Store '.$db_interval.' Acc Users Sessions']
-                = $row['num_sessions'];
-            $this->data['Page Store '.$db_interval.' Acc Users']
-                = $row['num_users'];
+            $this->data['Page Store '.$db_interval.' Acc Users Requests'] = $row['num_requests'];
+            $this->data['Page Store '.$db_interval.' Acc Users Sessions'] = $row['num_sessions'];
+            $this->data['Page Store '.$db_interval.' Acc Users']          = $row['num_users'];
         } else {
             $this->data['Page Store '.$db_interval.' Acc Users Requests'] = 0;
             $this->data['Page Store '.$db_interval.' Acc Users Sessions'] = 0;
@@ -5575,8 +5675,7 @@ class Page extends DB_Table {
             $small_url  = 'public_image.php?id='.$product->data["Product Main Image Key"].'&size=small';
             $normal_url = 'public_image.php?id='.$product->data["Product Main Image Key"];
             $code       = $product->data['Product Code'];
-            $html
-                        = '<ul class="gallery clearfix"><li>
+            $html       = '<ul class="gallery clearfix"><li>
 			<a  style="border:none;text-decoration:none" href="'.$normal_url.'" rel="prettyPhoto" >
 			<img style="float:left;border:0px solid#ccc;padding:2px;margin:2px;cursor:pointer;width:150px" src="'.$small_url.'" alt="'.$code.'" />
 			</a></li></ul>';
