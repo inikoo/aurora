@@ -3,7 +3,22 @@
 
  <style>
 
+     .hide{
+         display:none}
 
+     @font-face {
+         font-family: 'Ubuntu';
+         font-style: normal;
+         font-weight: 300;
+         src: local('Ubuntu Light'), local('Ubuntu-Light'), url("/fonts/ubuntu300.woff2") format('woff2');
+     }
+
+     @font-face {
+         font-family: 'Ubuntu';
+         font-style: normal;
+         font-weight: 700;
+         src: local('Ubuntu Bold'), local('Ubuntu-Bold'), url("/fonts/ubuntu700.woff2") format('woff2');
+     }
 
 input {
   position: relative;
@@ -25,6 +40,8 @@ input {
   box-sizing: content-box;
   -webkit-appearance: none;
   }
+
+
 h1{
 
     font-family: "Ubuntu",Helvetica,Arial,sans-serif;
@@ -65,19 +82,19 @@ h1{
     }
 
 
-    #products{
+    .product_blocks{
         width:970px;margin:auto;
         margin-top:20px
     }
 
-    #products    .block {
+    .product_blocks    .block {
         border: 1px solid #ccc;
         background:#fff;
         padding:0px 0px 0px 0px;
 
     }
 
-    #products .block:hover{
+    .product_blocks .block:hover{
         border:1px solid #A3C5CC;
     }
 
@@ -255,24 +272,23 @@ h1{
 
 
 
-
-
+     .title{
+         font-weight:800;font-size:120%;padding-bottom:10px;margin-left:20px
+     }
 
 
     #bottom_see_also{
-        margin:auto;padding:0px;margin-top:10px;width:935px
+        margin:auto;padding:0px;margin-top:10px;width:970px;
     }
 
-    #bottom_see_also .title{
-        font-weight:800;font-size:120%;padding-bottom:10px;
-    }
+
 
     #bottom_see_also .item{
         height:220px;width:170px;float:left;text-align:center;margin-left:20px
 
     }
     #bottom_see_also .item:first-of-type{
-        margin-left:0px
+        margin-left:20px
 
     }
 
@@ -316,7 +332,7 @@ h1{
         
         {if $data.type=='text'}
            
-        <div id="{$id}" class="webpage_content_header">
+        <div id="{$id}" class="webpage_content_header fr-view">
             {$data.content}
         </div>
         {elseif $data.type=='image'}
@@ -336,7 +352,7 @@ h1{
     
     
     
-    <div id="products" >
+    <div id="products" class="product_blocks ">
     
     {foreach from=$products item=product key=stack_index}
         <div class="product_wrap">
@@ -412,12 +428,94 @@ h1{
                 {/if}
 
             </div>
-
-
         </div>
     {/foreach}
     <div style="clear:both"></div>
     </div>
+
+
+    <div   class="product_blocks {if $related_products|@count eq 0}hide{/if}">
+        <div class="title">{t}Related products{/t}:</div>
+        {foreach from=$related_products item=product key=stack_index}
+        <div class="product_wrap">
+
+        <div id="product_target_div_{$stack_index}" stack_index="{$stack_index}"  product_code="{$product->get('Code')}" product_id="{$product->id}"  class="block four product_showcase " style="margin-bottom:20px;position:relative">
+
+            <div style=padding:4px;height:30px;color:brown ;">
+        </div>
+
+
+        <a href="page.php?id={$product->get('Webpage Key')}">
+            <div class="wrap_to_center product_image" >
+                <img draggable="false" class="more_info" src="/art/moreinfo_corner1.png">
+
+                <img draggable="false" src="{$product->get('Image')}" />
+            </div>
+        </a>
+
+        <div class="product_description"  >
+            <span class="code">{$product->get('Code')}</span>
+            <div class="name">{$product->get('Name')}</div>
+
+        </div>
+
+        {if $logged}
+            <div class="product_prices log_in " >
+                <div class="product_price">{t}Price{/t}: {$product->get('Price')}</div>
+                {assign 'rrp' $product->get('RRP')}
+                {if $rrp!=''}<div>{t}RRP{/t}: {$rrp}</div>{/if}
+            </div>
+        {else}
+            <div class="product_prices log_out" >
+                <div >{t}For prices, please login or register{/t}</div>
+            </div>
+        {/if}
+
+        {if $logged}
+
+            {if $product->get('Web State')=='Out of Stock'}
+                <div class="ordering log_in can_not_order {$product->get('Out of Stock Class')} ">
+
+                    {assign 'reminder_key' {$product->get('Reminder Key',{$user->id})} }
+
+                    <span class="product_footer label ">{$product->get('Out of Stock Label')}</span>
+                    <span class="product_footer reminder" reminder_key="{$reminder_key}"><i class="fa {if $reminder_key>0}fa-envelope{else}fa-envelope-o{/if}" aria-hidden="true"></i>  </span>
+
+
+                </div>
+            {else if $product->get('Web State')=='For Sale'}
+
+                <div class="ordering log_in " >
+                    {assign 'quantity_ordered' $product->get('Ordered Quantity',$order->id) }
+                    <input maxlength=6  class='order_input ' id='but_qty{$product->id}'   type="text"' size='2'  value='{$quantity_ordered}' ovalue='{$quantity_ordered}'>
+                    {if $quantity_ordered==''}
+                        <span class="product_footer order_button "><i class="fa fa-hand-pointer-o fa-fw" aria-hidden="true"></i> {t}Order now{/t}</span>
+                    {else}
+                        <span class="product_footer order_button ordered"><i class="fa  fa-thumbs-o-up fa-flip-horizontal fa-fw" aria-hidden="true"></i> {t}Ordered{/t}</span>
+                    {/if}
+                    {assign 'favourite_key' {$product->get('Favourite Key',{$customer->id})} }
+                    <span class="product_footer  favourite  " favourite_key={$favourite_key} ><i class="fa {if $favourite_key}fa-heart marked{else}fa-heart-o{/if}" aria-hidden="true"></i>  </span>
+
+
+                </div>
+
+
+
+            {/if}
+        {else}
+            <div class="ordering log_out hide" >
+                <div ><span onClick="location.href='login.php?from={$page->id}'" class="button login_button" >{t}Login{/t}</span></div>
+                <div ><span onClick="location.href='registration.php'" class="button register_button" >{t}Register{/t}</span></div>
+            </div>
+        {/if}
+
+    </div>
+        </div>
+        {/foreach}
+        <div style="clear:both"></div>
+    </div>
+
+
 
      <div id="bottom_see_also"  class="{if $see_also|@count eq 0}hide{/if}">
          <div class="title">{t}See also{/t}:</div>

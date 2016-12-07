@@ -2731,7 +2731,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
                         $this->webpage->update(array('Page Store Content Display Type'=>'Template','Page Store Content Template Filename' => $value), $options);
 
+
                     }
+                    $this->webpage->publish();
                     $this->updated = $this->webpage->updated;
 
                 break;

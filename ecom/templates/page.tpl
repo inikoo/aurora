@@ -1,4 +1,36 @@
 {if !isset($_version_)} {assign '_version_' 1} {/if}
+{if $_version_==3}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Bootstrap 101 Template</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <h1>Hello, world!</h1>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>
+
+
+{else}
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang='{$language}' xml:lang='{$language}' xmlns="http://www.w3.org/1999/xhtml">
@@ -65,11 +97,13 @@
 		
 	
 		{if $_version_==2}
+
 		<div id="bd" style="z-index:1;">
 		
 		{include file="$type_content:$template_string"} 
 		
 		</div>
+
 		{else}
 		<div id="bd" style="z-index:1;">
 		
@@ -79,7 +113,7 @@
 			</div>
 			{if $page->data['Number See Also Links']>0    } 
 			<div id="bottom_see_also" style="margin:auto;padding:20px;margin-top:10px">
-				<span style="font-weight:800;font-size:110%">{t}See also{/t}:</span> 
+				<span style="font-weight:800;font-size:110%">{t}See also{/t}:</span>
 				<div style="margin-top:7px">
 					{foreach from=$page->get_see_also() item=see_also name=foo} 
 					<div style="height:220px;width:170px;float:left;text-align:center;{if !$smarty.foreach.foo.first}margin-left:20px{/if}">
@@ -107,3 +141,4 @@
 	{$page->get_body_includes()} 
 </body>
 </html>
+{/if}

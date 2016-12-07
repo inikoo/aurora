@@ -187,8 +187,19 @@ class Public_Product {
                 return $favourite_key;
                 break;
 
-            case 'Code':
+
             case 'Name':
+
+                if($this->data['Product Units Per Case']>1){
+                    return $this->data['Product Units Per Case'].'x '.$this->data['Product Name'];
+                }else{
+                    return $this->data['Product Name'];
+                }
+
+
+                break;
+
+            case 'Code':
             case 'Web State':
                 return $this->data['Product '.$key];
                 break;

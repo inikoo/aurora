@@ -67,19 +67,19 @@
     }
 
 
-    #products{
+    .product_blocks{
         width:970px;margin:auto;
         margin-top:20px
     }
 
-    #products    .block {
+    .product_blocks    .block {
         border: 1px solid #ccc;
         background:#fff;
         padding:0px 0px 0px 0px;
 
     }
 
-    #products .block:hover{
+    .product_blocks .block:hover{
         border:1px solid #A3C5CC;
     }
 
@@ -253,18 +253,20 @@
         cursor:pointer}
 
 
+     .title{
+        font-weight:800;font-size:120%;padding-bottom:10px;margin-left:20px
+    }
 
-
-
+    #related_products .title{
+        margin-left:20px
+    }
 
 
     #bottom_see_also{
         margin:auto;padding:0px;margin-top:10px;width:935px
     }
 
-    #bottom_see_also .title{
-        font-weight:800;font-size:120%;padding-bottom:10px;
-    }
+
 
     #bottom_see_also .item{
         height:220px;width:170px;float:left;text-align:center;margin-left:20px
@@ -364,7 +366,7 @@
 
 
 
-    <div id="products" >
+    <div id="products" class="product_blocks">
     {foreach from=$products item=product key=stack_index}
         <div class="product_wrap">
 
@@ -432,6 +434,81 @@
     {/foreach}
     <div style="clear:both"></div>
     </div>
+
+
+
+<div id="related_products"  class="product_blocks {if $related_products|@count eq 0}hide{/if}">
+    <div class="title">{t}See also{/t}:</div>
+
+    {foreach from=$related_products item=product key=stack_index}
+    <div class="product_wrap">
+
+        <div id="product_target_div_{$stack_index}" stack_index="{$stack_index}" xdraggable="{if $product->get('Web State')=='For Sale' }true{else}false{/if}" xondragstart="drag(event)" product_code="{$product->get('Code')}" product_id="{$product->id}" xondrop="drop(event)" xondragover="allowDrop(event)" class="block four product_showcase " style="margin-bottom:20px;position:relative">
+
+            <div style=padding:4px;height:30px;color:brown ;">
+        </div>
+
+
+        <div class="wrap_to_center product_image" onCLick="console.log('move')">
+            <img draggable="false" class="more_info" src="/art/moreinfo_corner1.png">
+            <img draggable="false" src="{$product->get('Image')}" />
+        </div>
+
+
+        <div class="product_description"  >
+            <span class="code">{$product->get('Code')}</span>
+            <div class="name">{$product->get('Name')}</div>
+
+        </div>
+
+
+        <div class="product_prices log_in " >
+            <div class="product_price">{t}Price{/t}: {$product->get('Price')}</div>
+            {assign 'rrp' $product->get('RRP')}
+            {if $rrp!=''}<div>{t}RRP{/t}: {$rrp}</div>{/if}
+        </div>
+
+        <div class="product_prices log_out hide" >
+            <div >{t}For prices, please login or register{/t}</div>
+        </div>
+
+
+        {if $product->get('Web State')=='Out of Stock'}
+            <div class="ordering log_in can_not_order {$product->get('Out of Stock Class')} ">
+
+                <span class="product_footer label ">{$product->get('Out of Stock Label')}</span>
+                <span class="product_footer reminder"><i class="fa fa-envelope-o" aria-hidden="true"></i>  </span>
+
+
+            </div>
+        {else if $product->get('Web State')=='For Sale'}
+
+            <div class="ordering log_in " >
+                <input maxlength=6  class='order_input ' id='but_qty{$product->id}'   type="text" size='2'  value='{$product->get('Ordered Quantity')}' ovalue='{$product->get('Ordered Quantity')}'>
+                <span class="product_footer order_button"   ><i class="fa fa-hand-pointer-o" aria-hidden="true"></i> {t}Order now{/t}</span>
+                <span class="product_footer  favorite "><i class="fa fa-heart-o" aria-hidden="true"></i>  </span>
+
+
+            </div>
+
+
+
+        {/if}
+        <div class="ordering log_out hide" >
+            <div ><span class="login_button" >{t}Login{/t}</span></div>
+            <div ><span class="register_button" >{t}Register{/t}</span></div>
+        </div>
+
+
+    </div>
+
+
+</div>
+{/foreach}
+<div style="clear:both"></div>
+</div>
+
+
 
      <div id="bottom_see_also"  class="{if $see_also|@count eq 0}hide{/if}">
          <div class="title">{t}See also{/t}:</div>

@@ -636,6 +636,18 @@ $tab_defaults = array(
         'f_period'    => 'ytd',
 
     ),
+
+     'website.footer.versions'             => array(
+    'view'        => 'overview',
+    'sort_key'    => 'code',
+    'sort_order'  => 1,
+    'rpp'         => 100,
+    'rpp_options' => $default_rrp_options,
+    'f_field'     => 'code',
+
+),
+
+
     'page.blocks'                    => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
