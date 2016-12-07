@@ -34,6 +34,48 @@
 
 <style>
 
+
+
+
+
+
+    input {
+        position: relative;
+        bottom: 2px;
+
+        padding: 4px 6px;
+        font-weight: normal;
+        color: #555;
+        vertical-align: middle;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        margin: 0px;
+        font-family: inherit;
+        font-size: 100%;
+        line-height: normal;
+        outline: none;
+        -webkit-box-sizing: content-box;
+        -moz-box-sizing: content-box;
+        box-sizing: content-box;
+        -webkit-appearance: none;
+    }
+
+
+    h1{
+
+        font-family: "Ubuntu",Helvetica,Arial,sans-serif;
+        font-weight: 800;
+        font-size:21px;
+        padding:0;
+        margin:17.4333px 0px;
+
+    }
+
+
+
+
+
+
     #page_content{
         padding:20px;
         border:1px solid #d0d0d0;

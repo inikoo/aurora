@@ -20,6 +20,11 @@
          src: local('Ubuntu Bold'), local('Ubuntu-Bold'), url("/fonts/ubuntu700.woff2") format('woff2');
      }
 
+     p{
+         padding: .5em 0px;
+
+     }
+
 input {
   position: relative;
   bottom: 2px;
@@ -47,7 +52,9 @@ h1{
     font-family: "Ubuntu",Helvetica,Arial,sans-serif;
     font-weight: 800;
     font-size:21px;
-    padding:20px 0px 20px 0px;
+    padding:0;
+    margin:17.4333px 0px;
+
 }
 
 
