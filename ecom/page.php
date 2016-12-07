@@ -1,21 +1,21 @@
 <?php
 
 
-
 if (!isset($page_key) and isset($_REQUEST['id'])) {
-	$page_key=$_REQUEST['id'];
+    $page_key = $_REQUEST['id'];
 }
 
 if (!isset($page_key)) {
-	header('Location: index.php?no_page_key');
-	exit;
+    header('Location: index.php?no_page_key');
+    exit;
 }
 
-if (!isset($skip_common))include_once 'common.php';
+if (!isset($skip_common)) {
+    include_once 'common.php';
+}
 
 
-
-if (!$is_cached ) {
+if (!$is_cached) {
 
     $page = new Page($page_key);
 
@@ -73,9 +73,9 @@ if (!$is_cached ) {
     //'System','Info','Department','Family','Product','FamilyCategory','ProductCategory','Thanks'
     if (in_array(
         $page->data['Page Store Section Type'], array(
-        'Family',
-        'Product'
-    )
+                                                  'Family',
+                                                  'Product'
+                                              )
     )) {
 
         if ($order_in_process and $order_in_process->id) {
@@ -122,208 +122,214 @@ if (!$is_cached ) {
 
     if ($version == 1) {
 
-    $base_css_files = array(
-        $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-        $yui_path.'menu/assets/skins/sam/menu.css',
-        'css/inikoo.css',
-        'css/style.css'
+        $base_css_files = array(
+            $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+            $yui_path.'menu/assets/skins/sam/menu.css',
+            'css/inikoo.css',
+            'css/style.css'
 
-    );
-}
-    else {
-    $base_css_files = array(
-        $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-        $yui_path.'menu/assets/skins/sam/menu.css',
-        'css/inikoo.css',
-  'css/style.css',
+        );
+    } else {
+        $base_css_files = array(
+            $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+            $yui_path.'menu/assets/skins/sam/menu.css',
+            'css/inikoo.css',
+            'css/style.css',
 
-	);
+        );
 
-}
+    }
 
-	if ($version==2) {
+    if ($version == 2) {
 
-		$base_js_files=array(
-			$yui_path.'utilities/utilities.js',
-			$yui_path.'json/json-min.js',
-			'js/common.js',
-			'js/edit_common.js',
+        $base_js_files = array(
+            $yui_path.'utilities/utilities.js',
+            $yui_path.'json/json-min.js',
+            'js/common.js',
+            'js/edit_common.js',
 
-			// 'js/page.js'
-		);
-	}else {
-		$base_js_files=array(
-			"js/jquery.min.js", "js/analytics.js",
-			$yui_path.'utilities/utilities.js',
-			$yui_path.'json/json-min.js',
-			'js/common.js',
-			'js/edit_common.js',
+            // 'js/page.js'
+        );
+    } else {
+        $base_js_files = array(
+            "js/jquery.min.js",
+            "js/analytics.js",
+            $yui_path.'utilities/utilities.js',
+            $yui_path.'json/json-min.js',
+            'js/common.js',
+            'js/edit_common.js',
 
-			// 'js/page.js'
-		);
-	}
+            // 'js/page.js'
+        );
+    }
 
-	//$js_files=array("js/jquery.min.js","js/analytics.js");
-	$js_files[]=sprintf(INIKOO_ACCOUNT."_js/menu_%02d.js", $site->id);
-
-
-	// Dont put YUI stuff in normal assets pages (except if is inikoo -check out-)
-	if (  !$site->data['Site Checkout Method']=='Inikoo' and !in_array($page->data['Page Store Section'], array('Registration', 'Client Section', 'Checkout', 'Login', 'Welcome', 'Reset', 'Basket'))) {
-		$base_js_files=array();
-	}
-
-	if ($logged_in and $site->data['Site Checkout Method']=='Inikoo') {
-		$base_css_files[]='css/order_fields.css';
-	}
+    //$js_files=array("js/jquery.min.js","js/analytics.js");
+    $js_files[] = sprintf(INIKOO_ACCOUNT."_js/menu_%02d.js", $site->id);
 
 
-	$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Header External File Bridge` where `Page Header Key`=%d", $page->data['Page Header Key']);
-	$res=mysql_query($sql);
-	//print $sql;
-	while ($row=mysql_fetch_assoc($res)) {
-		if ($row['External File Type']=='CSS') {
-			$base_css_files[]=sprintf(INIKOO_ACCOUNT."_css/%07d.css", $row['external_file_key']);
-		}else {
-			$base_js_files[]=sprintf(INIKOO_ACCOUNT."_js/%07d.js", $row['external_file_key']);
-		}
-	}
+    // Dont put YUI stuff in normal assets pages (except if is inikoo -check out-)
+    if (!$site->data['Site Checkout Method'] == 'Inikoo' and !in_array(
+            $page->data['Page Store Section'], array(
+            'Registration',
+            'Client Section',
+            'Checkout',
+            'Login',
+            'Welcome',
+            'Reset',
+            'Basket'
+        )
+        )
+    ) {
+        $base_js_files = array();
+    }
 
-	$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Footer External File Bridge` where `Page Footer Key`=%d", $page->data['Page Footer Key']);
-	$res=mysql_query($sql);
-	while ($row=mysql_fetch_assoc($res)) {
-		if ($row['External File Type']=='CSS') {
-
-			$base_css_files[]=sprintf(INIKOO_ACCOUNT."_css/%07d.css", $row['external_file_key']);
-		}else {
-			$base_js_files[]=sprintf(INIKOO_ACCOUNT."_js/%07d.js", $row['external_file_key']);
-		}
-	}
-
-	$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Site External File Bridge` where `Site Key`=%d", $site->id);
-	$res=mysql_query($sql);
-	while ($row=mysql_fetch_assoc($res)) {
-		if ($row['External File Type']=='CSS') {
-			$base_css_files[]=sprintf(INIKOO_ACCOUNT."_css/%07d.css", $row['external_file_key']);
-		}else {
-			$base_js_files[]=sprintf(INIKOO_ACCOUNT."_js/%07d.js", $row['external_file_key']);
-		}
-	}
-
-	$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Store External File Bridge` where `Page Key`=%d", $page->id);
-	$res=mysql_query($sql);
-	while ($row=mysql_fetch_assoc($res)) {
-		if ($row['External File Type']=='CSS') {
-			$base_css_files[]=sprintf(INIKOO_ACCOUNT."_css/%07d.css", $row['external_file_key']);
-		}else {
-			$base_js_files[]=sprintf(INIKOO_ACCOUNT."_js/%07d.js", $row['external_file_key']);
-		}
-	}
+    if ($logged_in and $site->data['Site Checkout Method'] == 'Inikoo') {
+        $base_css_files[] = 'css/order_fields.css';
+    }
 
 
+    $sql =
+        sprintf("SELECT `External File Type`,`Page Store External File Key` AS external_file_key FROM `Page Header External File Bridge` WHERE `Page Header Key`=%d", $page->data['Page Header Key']);
+    $res = mysql_query($sql);
+    //print $sql;
+    while ($row = mysql_fetch_assoc($res)) {
+        if ($row['External File Type'] == 'CSS') {
+            $base_css_files[] = sprintf(INIKOO_ACCOUNT."_css/%07d.css", $row['external_file_key']);
+        } else {
+            $base_js_files[] = sprintf(INIKOO_ACCOUNT."_js/%07d.js", $row['external_file_key']);
+        }
+    }
 
-	if ($page->data['Page Store Content Display Type']=='Source') {
+    $sql =
+        sprintf("SELECT `External File Type`,`Page Store External File Key` AS external_file_key FROM `Page Footer External File Bridge` WHERE `Page Footer Key`=%d", $page->data['Page Footer Key']);
+    $res = mysql_query($sql);
+    while ($row = mysql_fetch_assoc($res)) {
+        if ($row['External File Type'] == 'CSS') {
 
-		$smarty->assign('type_content', 'file');
-		$smarty->assign('template_string', $page->data['Page Store Source']);
-		$smarty->assign('user_template', true);
+            $base_css_files[] = sprintf(INIKOO_ACCOUNT."_css/%07d.css", $row['external_file_key']);
+        } else {
+            $base_js_files[] = sprintf(INIKOO_ACCOUNT."_js/%07d.js", $row['external_file_key']);
+        }
+    }
+
+    $sql = sprintf("SELECT `External File Type`,`Page Store External File Key` AS external_file_key FROM `Site External File Bridge` WHERE `Site Key`=%d", $site->id);
+    $res = mysql_query($sql);
+    while ($row = mysql_fetch_assoc($res)) {
+        if ($row['External File Type'] == 'CSS') {
+            $base_css_files[] = sprintf(INIKOO_ACCOUNT."_css/%07d.css", $row['external_file_key']);
+        } else {
+            $base_js_files[] = sprintf(INIKOO_ACCOUNT."_js/%07d.js", $row['external_file_key']);
+        }
+    }
+
+    $sql = sprintf("SELECT `External File Type`,`Page Store External File Key` AS external_file_key FROM `Page Store External File Bridge` WHERE `Page Key`=%d", $page->id);
+    $res = mysql_query($sql);
+    while ($row = mysql_fetch_assoc($res)) {
+        if ($row['External File Type'] == 'CSS') {
+            $base_css_files[] = sprintf(INIKOO_ACCOUNT."_css/%07d.css", $row['external_file_key']);
+        } else {
+            $base_js_files[] = sprintf(INIKOO_ACCOUNT."_js/%07d.js", $row['external_file_key']);
+        }
+    }
 
 
-		$smarty->assign('template_string', sprintf("pages/%07d.tpl", $page->id));
+    if ($page->data['Page Store Content Display Type'] == 'Source') {
 
-	}
-	else {
+        $smarty->assign('type_content', 'file');
+        $smarty->assign('template_string', $page->data['Page Store Source']);
+        $smarty->assign('user_template', true);
 
-		$smarty->assign('type_content', 'file');
+
+        $smarty->assign('template_string', sprintf("pages/%07d.tpl", $page->id));
+
+    } else {
+
+        $smarty->assign('type_content', 'file');
 
 
-        if ($version==1) {
+        if ($version == 1) {
 
             $css_files[] = 'css/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.css';
 
         }
 
-		if ($page->data['Page Code']=='login') {
+        if ($page->data['Page Code'] == 'login') {
 
-			//if (strpos((isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:''), 'Chrome') !== false) {
-			// $smarty->assign('template_string','login.chrome.tpl');
-			// $js_files[]='js/login.chrome.js';
-			//}else {
-			$smarty->assign('template_string', 'login.tpl');
-			$js_files[]='js/login.js';
-			//}
-		}else {
+            //if (strpos((isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:''), 'Chrome') !== false) {
+            // $smarty->assign('template_string','login.chrome.tpl');
+            // $js_files[]='js/login.chrome.js';
+            //}else {
+            $smarty->assign('template_string', 'login.tpl');
+            $js_files[] = 'js/login.js';
+            //}
+        } else {
 
-			$smarty->assign('template_string', $page->data['Page Store Content Template Filename'].$template_suffix.'.tpl');
-			$js_files[]='js/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.js';
-		}
-	}
-
-
-
-
-	$js_files[]='js/reminders.js';
+            $smarty->assign('template_string', $page->data['Page Store Content Template Filename'].$template_suffix.'.tpl');
+            if ($version == 1) {
+                $js_files[] = 'js/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.js';
+            }
+        }
+    }
 
 
-	if ($site->data['Site Checkout Method']=='Inikoo') {
-		$js_files[]='js/fill_basket.js';
-		$js_files[]='js/edit_favorites.js';
-
-	}
-	$js_files[]='js/edit_currency.js';
+    $js_files[] = 'js/reminders.js';
 
 
+    if ($site->data['Site Checkout Method'] == 'Inikoo') {
+        $js_files[] = 'js/fill_basket.js';
+        $js_files[] = 'js/edit_favorites.js';
 
-	$js_files[]=sprintf(INIKOO_ACCOUNT."_js/page_%05d.js", $page->id);
-	$css_files[]=sprintf(INIKOO_ACCOUNT."_css/page_%05d.css", $page->id);
-	if ($site->data['Site Search Method']=='Custome') {
-		$js_files[]=sprintf(INIKOO_ACCOUNT."_js/search_%02d.js", $site->id);
-		$css_files[]=sprintf(INIKOO_ACCOUNT."_css/search_%02d.css", $site->id);
-	}else {
-		$js_files[]='js/bar_search.js';
-		$css_files[]='css/bar_search.css';
-	}
-	if ($site->data['Site Checkout Method']=='Mals') {
-		$js_files[]='js/basket_emals_commerce.js';
-	}
+    }
+    $js_files[] = 'js/edit_currency.js';
 
 
-	if ($page->data['Page Store Section']=='Family Catalogue' and $version==1 ) {
-
-		$js_files[]='js/fz.shadow.js';
-		$js_files[]='js/fz.js';
-		$js_files[]='js/imgpop.js';
-	}
-
-
-
-	if ($page->data['Page Store Section']=='Product Description') {
-		$js_files[]='js/fz.shadow.js';
-		$js_files[]='js/fz.js';
-		$js_files[]='js/imgpop_inikoo.js';
-	}
+    $js_files[]  = sprintf(INIKOO_ACCOUNT."_js/page_%05d.js", $page->id);
+    $css_files[] = sprintf(INIKOO_ACCOUNT."_css/page_%05d.css", $page->id);
+    if ($site->data['Site Search Method'] == 'Custome') {
+        $js_files[]  = sprintf(INIKOO_ACCOUNT."_js/search_%02d.js", $site->id);
+        $css_files[] = sprintf(INIKOO_ACCOUNT."_css/search_%02d.css", $site->id);
+    } else {
+        $js_files[]  = 'js/bar_search.js';
+        $css_files[] = 'css/bar_search.css';
+    }
+    if ($site->data['Site Checkout Method'] == 'Mals') {
+        $js_files[] = 'js/basket_emals_commerce.js';
+    }
 
 
+    if ($page->data['Page Store Section'] == 'Family Catalogue' and $version == 1) {
+
+        $js_files[] = 'js/fz.shadow.js';
+        $js_files[] = 'js/fz.js';
+        $js_files[] = 'js/imgpop.js';
+    }
 
 
-	$css_files[]=sprintf(INIKOO_ACCOUNT."_css/menu_%02d.css", $site->id);
-
-	$js_no_async_files=array();
-	//$js_no_async_files=array("js/jquery.min.js","js/analytics.js?1");
-	//$js_no_async_files[]=sprintf(INIKOO_ACCOUNT."_js/menu_%02d.js",$site->id);
-	$smarty->assign('js_no_async_files', join(',', $js_no_async_files));
-
-
-	$css_files=array_merge( $base_css_files, $css_files);
+    if ($page->data['Page Store Section'] == 'Product Description') {
+        $js_files[] = 'js/fz.shadow.js';
+        $js_files[] = 'js/fz.js';
+        $js_files[] = 'js/imgpop_inikoo.js';
+    }
 
 
-	$js_files=array_merge( $base_js_files, $js_files);
+    $css_files[] = sprintf(INIKOO_ACCOUNT."_css/menu_%02d.css", $site->id);
 
-	$smarty->assign('css_files', join(',', $css_files).'?v=150608');
-	$smarty->assign('js_files', join(',', $js_files).'?v=150814');
+    $js_no_async_files = array();
+    //$js_no_async_files=array("js/jquery.min.js","js/analytics.js?1");
+    //$js_no_async_files[]=sprintf(INIKOO_ACCOUNT."_js/menu_%02d.js",$site->id);
+    $smarty->assign('js_no_async_files', join(',', $js_no_async_files));
 
 
+    $css_files = array_merge($base_css_files, $css_files);
 
-	include 'template_assignments.php';
+
+    $js_files = array_merge($base_js_files, $js_files);
+
+    $smarty->assign('css_files', join(',', $css_files).'?v=150608');
+    $smarty->assign('js_files', join(',', $js_files).'?v=150814');
+
+
+    include 'template_assignments.php';
 
 
 }

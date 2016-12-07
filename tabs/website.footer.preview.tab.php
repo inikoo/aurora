@@ -9,25 +9,10 @@
 
 */
 
-include_once('class.WebsiteNode.php');
-
-$node = new WebsiteNode('website_code', $state['key'], 'p.home');
-$page = get_object('webpage', $node->get_webpage_key());
 
 
-$request = preg_replace('/\./', '/', strtolower($node->get('Code')));
-$smarty->assign('request', $request);
 
-
-$smarty->assign('node', $node);
-
-$smarty->assign('page', $page);
-$smarty->assign('key', $state['key']);
-
-$smarty->assign('state', $state);
-
-
-$html = $smarty->fetch('footer_preview.tpl');
+$html ='';// $smarty->fetch('footer_preview.tpl');
 
 
 ?>

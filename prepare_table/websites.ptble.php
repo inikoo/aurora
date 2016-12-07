@@ -18,16 +18,13 @@ if (count($user->websites) == 0) {
 
 switch ($parameters['parent']) {
     case('store'):
-        $where .= sprintf(
-            ' and `Website Store Key`=%d and W.`Website Key` in (%s)', $parameters['parent_key'], join(',', $user->websites)
-        );
+        $where .= sprintf(' and `Website Store Key`=%d and W.`Website Key` in (%s)', $parameters['parent_key'], join(',', $user->websites));
 
 
         break;
     default:
-        $where .= sprintf(
-            ' and W.`Website Key` in (%s)', join(',', $user->websites)
-        );
+        //$where .= sprintf(' and W.`Website Key` in (%s)', join(',', $user->websites));
+        $where .= sprintf(' and true');
 
 
         break;
@@ -102,6 +99,7 @@ $table
 
 $sql_totals
     = "select count(Distinct W.`Website Key`) as num from $table  $where  ";
+
 
 $fields
     = "`Website Number Products`,`Website Number Out of Stock Products`,`Website Number WebPages with Out of Stock Products`,`Website Number WebPages with Products`,`Website Number WebPages`,`Website Total Acc Requests`,`Website Total Acc Sessions`,`Website Total Acc Visitors`,`Website Total Acc Users`,`Website Code`,`Website Name`,W.`Website Key`,`Website URL`

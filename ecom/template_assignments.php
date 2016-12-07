@@ -88,8 +88,27 @@ if ($page->data['Page Store Section Type']=='Family') {
 	}
 
 
+    $related_products = array();
+
+    $sql = sprintf(
+        "SELECT `Webpage Related Product Product ID`  FROM `Webpage Related Product Bridge` B  LEFT JOIN `Product Dimension` P ON (`Webpage Related Product Product ID`=P.`Product ID`)  WHERE  `Webpage Related Product Page Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Webpage Related Product Order`",
+        $public_category->webpage->id
+    );
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $related_products[] = new Public_Product($row['Webpage Related Product Product ID']);
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
 	$smarty->assign('products', $products);
-	$smarty->assign('category', $public_category);
+    $smarty->assign('related_products', $related_products);
+    $smarty->assign('category', $public_category);
 	$smarty->assign('customer', $public_customer);
 	$smarty->assign('order', $public_order);
 	$smarty->assign('user', $public_user);

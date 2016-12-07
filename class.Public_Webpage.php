@@ -137,6 +137,7 @@ class Public_Webpage {
 
                 return $this->data['Page URL'];
                 break;
+
             case 'CSS':
             case 'Published CSS':
                 return $this->data['Page Store '.$key];
@@ -152,15 +153,10 @@ class Public_Webpage {
                 break;
 
             case 'Image':
-
-
-
                 if (!$this->scope_load) {
                     $this->load_scope();
                 }
-
-
-
+                //sasdasd asdasdasd asdasd
                 if(is_object($this->scope)){
 
 

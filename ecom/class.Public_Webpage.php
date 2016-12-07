@@ -137,28 +137,26 @@ class Public_Webpage {
 
                 return $this->data['Page URL'];
                 break;
+
             case 'CSS':
-                return $this->data['Page Store CSS'];
+            case 'Published CSS':
+                return $this->data['Page Store '.$key];
                 break;
             case 'Content Data':
-                if($this->data['Page Store Content Data']==''){
+            case 'Content Published Data':
+                if($this->data['Page Store '.$key]==''){
                     $content_data=false;
                 }else{
-                    $content_data=json_decode($this->data['Page Store Content Data'],true);
+                    $content_data=json_decode($this->data['Page Store '.$key],true);
                 }
                 return $content_data;
                 break;
 
             case 'Image':
-
-
-
                 if (!$this->scope_load) {
                     $this->load_scope();
                 }
-
-
-
+                //sasdasd asdasdasd asdasd
                 if(is_object($this->scope)){
 
 

@@ -46,8 +46,8 @@ $editor = array(
     'Date'         => gmdate('Y-m-d H:i:s')
 );
 
-$sql = 'truncate `Template Scope Dimension`;truncate `Template Dimension`;truncate `Website Dimension`;truncate `Website Node Dimension`;truncate `Webpage Dimension`; truncate `Webpage Version Block Bridge`;truncate `Webpage Version Dimension`';
-$db->exec($sql);
+//$sql = 'truncate `Template Scope Dimension`;truncate `Template Dimension`;truncate `Website Dimension`;truncate `Website Node Dimension`;truncate `Webpage Dimension`; truncate `Webpage Version Block Bridge`;truncate `Webpage Version Dimension`';
+//$db->exec($sql);
 
 
 $sql = sprintf('SELECT * FROM `Site Dimension` WHERE `Site Key`=1 ');
@@ -70,7 +70,13 @@ if ($result = $db->query($sql)) {
             'editor'         => $editor
         );
 
+
+        print_r($website_data);
+
         $website = $store->create_website($website_data);
+
+        print_r( $website);
+
         if ($site->get('Site From') != '') {
             $website->update(
                 array(
@@ -79,6 +85,9 @@ if ($result = $db->query($sql)) {
                 )
             );
         }
+
+
+        continue;
 
 
         $website->create_no_product_webnodes();
