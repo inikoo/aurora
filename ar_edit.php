@@ -2468,7 +2468,7 @@ function update_product_category_index($data, $editor, $db) {
         'SELECT `Product Category Index Key`,`Product Category Index Content Data` FROM `Product Category Index` WHERE `Product Category Index Key`=%d ', $data['key']
     );
 
-   print_r($data);
+
 
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
@@ -2494,7 +2494,7 @@ function update_product_category_index($data, $editor, $db) {
 
 
 
-            print_r($product_content_data);
+
         }
     } else {
         print_r($error_info = $db->errorInfo());
