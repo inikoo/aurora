@@ -303,13 +303,11 @@ class Public_Product {
 
             case 'Price':
 
-                $price = money($this->data['Product Price'], $this->data['Store Currency Code']);
+                $price = preg_replace('/PLN/','zł ',money($this->data['Product Price'], $this->data['Store Currency Code']));
 
                 if ($this->data['Product Units Per Case'] != 1) {
 
-                    $price .= ' ('.money(
-                            $this->data['Product Price'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code']
-                        ).'/'.$this->data['Product Unit Label'].')';
+                    $price .= ' ('.preg_replace('/PLN/','zł ',money($this->data['Product Price'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code'])).'/'.$this->data['Product Unit Label'].')';
 
 
                     //$price.=' ('.sprintf(_('%s per %s'), money($this->data['Product Price']/$this->data['Product Units Per Case'], $this->data['Store Currency Code']), $this->data['Product Unit Label']).')';
@@ -326,9 +324,7 @@ class Public_Product {
                     return '';
                 }
 
-                $rrp = money(
-                    $this->data['Product RRP'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code']
-                );
+                $rrp = preg_replace('/PLN/','zł ',money($this->data['Product RRP'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code']));
                 if ($this->get('Product Units Per Case') != 1) {
                     $rrp .= '/'.$this->data['Product Unit Label'];
                 }
