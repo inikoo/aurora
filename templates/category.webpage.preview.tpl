@@ -131,7 +131,7 @@
 
 
     .block.product_showcase{
-        height:317px}
+        height:319px}
 
 
     .wrap_to_center {
@@ -337,6 +337,21 @@
         border: 1px dashed lightgrey;
     }
 
+    .product_header_text{
+        padding:4px;height:30px;color:brown ;
+        border:1px solid transparent;cursor:text;
+
+    }
+
+    .product_header_text p{
+        padding:0px ; margin:0px;text-align: center;
+        z-index: 100;position:relative;
+    }
+
+    .product_header_text:hover{
+        border:1px solid lightskyblue;
+    }
+
 
     {$category->webpage->get('CSS')}
 
@@ -352,8 +367,6 @@
 {assign 'content_data' $category->webpage->get('Content Data')}
 
 <div id="page_content" >
-
-
 
 
     <div id="description_block" class="description_block" >
@@ -405,16 +418,14 @@
         <div style="clear:both"></div>
     </div>
 
-
-
-
     <div id="products" class="product_blocks">
-    {foreach from=$products item=product key=stack_index}
+    {foreach from=$products item=product_data key=stack_index}
         <div class="product_wrap">
+            {assign 'product' $product_data.object}
+            <div id="product_target_div_{$stack_index}" stack_index="{$stack_index}" draggable="{if $product->get('Web State')=='For Sale' }true{else}false{/if}" ondragstart="drag(event)" product_code="{$product->get('Code')}"  index_key="{$product_data.index_key}" product_id="{$product->id}" ondrop="drop(event)" ondragover="allowDrop(event)" class="block four product_showcase " style="margin-bottom:20px;position:relative">
 
-            <div id="product_target_div_{$stack_index}" stack_index="{$stack_index}" draggable="{if $product->get('Web State')=='For Sale' }true{else}false{/if}" ondragstart="drag(event)" product_code="{$product->get('Code')}" product_id="{$product->id}" ondrop="drop(event)" ondragover="allowDrop(event)" class="block four product_showcase " style="margin-bottom:20px;position:relative">
-
-                <div style=padding:4px;height:30px;color:brown ;">
+                <div class="product_header_text fr-view" >
+                    {$product_data.header_text}
                 </div>
 
 
@@ -479,7 +490,7 @@
 
 
 
-<div id="related_products"  class="product_blocks {if $related_products|@count eq 0}hide{/if}">
+    <div id="related_products"  class="product_blocks {if $related_products|@count eq 0}hide{/if}">
     <div class="title">{t}See also{/t}:</div>
 
     {foreach from=$related_products item=product key=stack_index}
@@ -775,6 +786,57 @@
     );
 
 
+    $('.product_header_text').dblclick(function() {
+
+     $(this).froalaEditor({
+
+
+         toolbarInline: true,
+         charCounterCount: false,
+         toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'color', 'emoticons', '-', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'indent', 'outdent', '-', 'undo', 'redo'],
+
+         saveInterval: 500,
+         saveParam: 'content',
+
+         saveURL: '/ar_edit.php',
+
+         saveMethod: 'POST',
+
+         saveParams: {
+             webpage_key:  {$category->webpage->id},
+             key: $(this).closest('.product_showcase').attr('index_key'),
+             tipo: 'update_product_category_index',
+             type: 'header_text',
+
+
+
+         }
+
+
+     }).on('froalaEditor.save.after', function (e, editor, response) {
+
+
+         var data=jQuery.parseJSON(response)
+
+         if(data.state==200){
+
+
+
+             if($('#publish').find('i').hasClass('fa-rocket')) {
+
+                 if (data.publish) {
+                     $('#publish').addClass('changed valid')
+                 } else {
+                     $('#publish').removeClass('changed valid')
+                 }
+             }
+
+         }
+     })
+
+    })
+
+
     $('#webpage_content_header_text').dblclick(function() {
 
 /*
@@ -792,6 +854,9 @@
             left:$(this).position().left - 30 + "px",
             top: $(this).position().top + 5 + "px"
         });
+
+
+
 
 
 

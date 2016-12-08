@@ -72,14 +72,24 @@ if ($page->data['Page Store Section Type']=='Family') {
 	$products = array();
 
 	$sql = sprintf(
-		"SELECT  P.`Product ID` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Index` S ON (`Subject Key`=S.`Product Category Index Product ID` AND S.`Product Category Index Category Key`=B.`Category Key`)  WHERE  `Category Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Product Web State`, ifnull(`Product Category Index Published Stack`,99999999),`Product Code File As` ",
+		"SELECT  P.`Product ID`,`Product Category Index Content Published Data` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Index` S ON (`Subject Key`=S.`Product Category Index Product ID` AND S.`Product Category Index Category Key`=B.`Category Key`)  WHERE  `Category Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Product Web State`, ifnull(`Product Category Index Published Stack`,99999999),`Product Code File As` ",
 		$public_category->id
 	);
 
 
 	if ($result = $db->query($sql)) {
 		foreach ($result as $row) {
-			$products[] = new Public_Product($row['Product ID']);
+            if ($row['Product Category Index Content Published Data'] == '') {
+                $product_content_data = array('header_text' => '');
+            } else {
+                $product_content_data =json_decode($row['Product Category Index Content Published Data'],true);
+
+            }
+
+            $products[] = array(
+                'object'      => new Public_Product($row['Product ID']),
+                'header_text' => (isset($product_content_data['header_text'])?$product_content_data['header_text']:'')
+            );
 		}
 	} else {
 		print_r($error_info = $db->errorInfo());

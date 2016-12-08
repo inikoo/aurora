@@ -41,6 +41,23 @@ switch ($tipo) {
         );
         publish_webpage($data, $editor, $db);
         break;
+    case 'update_product_category_index':
+
+
+
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'webpage_key' => array('type' => 'key'),
+
+                         'key'     => array('type' => 'key'),
+                         'type'    => array('type' => 'string'),
+                         'content' => array('type' => 'string')
+
+
+                     )
+        );
+        update_product_category_index($data, $editor, $db);
+        break;
     case 'webpage_content_data':
 
         $data = prepare_values(
@@ -2371,7 +2388,7 @@ function edit_webpage($data, $editor, $db) {
             $value = base64_decode($data['value']);
 
 
-            $webpage->update(array('Page Store CSS'=>$value),'no_history');
+            $webpage->update(array('Page Store CSS' => $value), 'no_history');
 
 
             break;
@@ -2441,6 +2458,64 @@ function webpage_content_data($data, $editor, $db) {
 
 }
 
+function update_product_category_index($data, $editor, $db) {
+
+    // todo migrate to Webpage & WebpageVersion classes
+    include_once('class.Page.php');
+    $webpage = new Page($data['webpage_key']);
+
+    $sql = sprintf(
+        'SELECT `Product Category Index Key`,`Product Category Index Content Data` FROM `Product Category Index` WHERE `Product Category Index Key`=%d ', $data['key']
+    );
+
+   print_r($data);
+
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            if ($row['Product Category Index Content Data'] == '') {
+                $product_content_data = array('header_text' => '');
+            } else {
+
+                $product_content_data = json_decode($row['Product Category Index Content Data'], true);
+
+            }
+
+            $product_content_data[$data['type']] = $data['content'];
+
+
+
+
+            $sql = sprintf(
+                'UPDATE `Product Category Index` SET `Product Category Index Content Data`=%s   WHERE `Product Category Index Key`=%d ',
+                prepare_mysql(json_encode($product_content_data)),
+                $row['Product Category Index Key']
+            );
+            $db->exec($sql);
+
+
+
+            print_r($product_content_data);
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+
+
+    $response = array(
+        'state'   => 200,
+        'content' => (isset($data['content']) ? $data['content'] : ''),
+        'publish' => $webpage->get('Publish')
+
+
+    );
+    echo json_encode($response);
+
+
+}
 
 function publish_webpage($data, $editor, $db) {
 
