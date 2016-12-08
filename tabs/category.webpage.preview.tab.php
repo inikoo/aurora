@@ -19,9 +19,7 @@ $category = $state['_object'];
 $webpage  = $category->get_webpage();
 
 
-
 $smarty->assign('webpage', $webpage);
-
 
 
 if (!$webpage->id) {
@@ -102,14 +100,27 @@ switch ($webpage->get('Page Store Content Template Filename')) {
             $products = array();
 
             $sql = sprintf(
-                "SELECT `Product Category Index Product ID`,`Product Category Index Category Key`,`Product Category Index Stack`, P.`Product ID`,`Product Code`,`Product Web State` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Index` S ON (`Subject Key`=S.`Product Category Index Product ID` AND S.`Product Category Index Category Key`=B.`Category Key`)  WHERE  `Category Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Product Web State`,   ifnull(`Product Category Index Stack`,99999999)",
+                "SELECT `Product Category Index Key`,`Product Category Index Content Data`,`Product Category Index Product ID`,`Product Category Index Category Key`,`Product Category Index Stack`, P.`Product ID`,`Product Code`,`Product Web State` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Index` S ON (`Subject Key`=S.`Product Category Index Product ID` AND S.`Product Category Index Category Key`=B.`Category Key`)  WHERE  `Category Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Product Web State`,   ifnull(`Product Category Index Stack`,99999999)",
                 $public_category->id
             );
 
 
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
-                    $products[] = new Public_Product($row['Product ID']);
+
+
+                    if ($row['Product Category Index Content Data'] == '') {
+                        $product_content_data = array('header_text' => '');
+                    } else {
+                        $product_content_data =json_decode($row['Product Category Index Content Data'],true);
+
+                    }
+
+                    $products[] = array(
+                        'object'      => new Public_Product($row['Product ID']),
+                        'index_key'   => $row['Product Category Index Key'],
+                        'header_text' => (isset($product_content_data['header_text'])?$product_content_data['header_text']:'')
+                    );
                 }
             } else {
                 print_r($error_info = $db->errorInfo());

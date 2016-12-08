@@ -21,7 +21,7 @@
      }
 
      p{
-         padding: .5em 0px;
+         margin: 1em 0px;
 
      }
 
@@ -111,7 +111,7 @@ h1{
 
 
     .block.product_showcase{
-        height:317px}
+        height:319px}
 
 
     .wrap_to_center {
@@ -313,9 +313,18 @@ h1{
         max-height:168px;max-width: 168px;overflow:hidden;}
 
 
-    .editing{
-        border: 1px dashed lightgrey;
-    }
+
+
+     .product_header_text{
+         padding:4px;height:30px;color:brown ;
+         border:1px solid transparent;cursor:text;
+
+     }
+
+     .product_header_text p{
+         padding:0px ; margin:0px;text-align: center;
+         z-index: 100;position:relative;
+     }
 
 
     {$category->webpage->get('Published CSS')}
@@ -361,12 +370,14 @@ h1{
     
     <div id="products" class="product_blocks ">
     
-    {foreach from=$products item=product key=stack_index}
+    {foreach from=$products item=product_data key=stack_index}
         <div class="product_wrap">
-
+            {assign 'product' $product_data.object}
             <div id="product_target_div_{$stack_index}" stack_index="{$stack_index}"  product_code="{$product->get('Code')}" product_id="{$product->id}"  class="block four product_showcase " style="margin-bottom:20px;position:relative">
 
-                <div style=padding:4px;height:30px;color:brown ;">
+
+                <div class="product_header_text fr-view" >
+                    {$product_data.header_text}
                 </div>
 
 
@@ -448,8 +459,7 @@ h1{
 
         <div id="product_target_div_{$stack_index}" stack_index="{$stack_index}"  product_code="{$product->get('Code')}" product_id="{$product->id}"  class="block four product_showcase " style="margin-bottom:20px;position:relative">
 
-            <div style=padding:4px;height:30px;color:brown ;">
-        </div>
+
 
 
         <a href="page.php?id={$product->get('Webpage Key')}">
