@@ -66,7 +66,8 @@ switch ($webpage->get('Page Store Content Template Filename')) {
 
                         'webpage_content_header_image' => array(
                             'type'      => 'image',
-                            'image_src' => $image_src
+                            'image_src' => $image_src,
+                            'caption'=>''
 
                         ),
 
