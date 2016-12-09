@@ -35,11 +35,28 @@ trait ImageSubject {
         );
 
 
+
+
+
         if (isset($raw_data['Image Subject Object Image Scope'])) {
-            $object_image_scope = $raw_data['Image Subject Object Image Scope'];
+
+            if($this->table_name=='Page'){
+
+                $scope_data=json_decode($raw_data['Image Subject Object Image Scope'],true);
+                $object_image_scope=$scope_data['scope'];
+
+
+
+            }else{
+                $object_image_scope = $raw_data['Image Subject Object Image Scope'];
+            }
+
+
         } else {
             $object_image_scope = 'Default';
         }
+
+
 
 
         $image = new Image('find', $data, 'create');
@@ -65,7 +82,8 @@ trait ImageSubject {
                     }
                 }
 
-            } elseif ($this->table_name == 'Category') {
+            }
+            elseif ($this->table_name == 'Category') {
                 $account = new Account();
                 if ($this->get('Category Scope') == 'Part' and $this->get('Category Root Key') == $account->get('Account Part Family Category Key')) {
 
@@ -92,6 +110,44 @@ trait ImageSubject {
                 }
 
             }
+            elseif ($this->table_name == 'Page') {
+
+               if($scope_data['scope']=='content'){
+
+
+
+                   $content_data = $this->get('Content Data');
+
+
+
+
+                   $image_src= '/image_root.php?size=small&id='.$image->id;
+
+
+                   if (isset($content_data[$scope_data['section']])) {
+
+                       if (isset($content_data[$scope_data['section']]['blocks'][$scope_data['block']])) {
+
+                           $content_data[$scope_data['section']]['blocks'][$scope_data['block']]['image_src'] = $image_src;
+                       } else {
+                           $content_data[$data['section']]['blocks'][$data['block']] = array(
+                               'image_src' => $image_src,
+                               'type'    => 'image'
+                           );
+
+                       }
+
+
+                   }
+
+
+                   $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+
+
+
+               }
+
+            }
 
             return $image;
         } else {
@@ -107,15 +163,26 @@ trait ImageSubject {
     function link_image($image_key, $object_image_scope = 'Default') {
 
 
+
+
+       // ALTER TABLE `Image Subject Bridge` CHANGE `Image Subject Object` `Image Subject Object` ENUM('Webpage','Store Product','Site Favicon','Product','Family','Department','Store','Part','Supplier Product','Store Logo','Store Email Template Header','Store Email Postcard','Email Image','Page','Page Header','Page Footer','Page Header Preview','Page Footer Preview','Page Preview','Site Menu','Site Search','User Profile','Attachment Thumbnail','Category','Staff') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+
         $image = new Image($image_key);
 
         if ($image->id) {
             $subject_key = $this->id;
             $subject     = $this->table_name;
+
+            if($this->table_name == 'Page')$subject='Webpage';
+
+
+
             $sql         = sprintf(
                 "SELECT `Image Subject Image Key`,`Image Subject Is Principal` FROM `Image Subject Bridge` WHERE `Image Subject Object`=%s AND `Image Subject Object Key`=%d  AND `Image Subject Image Key`=%d",
                 prepare_mysql($subject), $subject_key, $image->id
             );
+
+
 
             if ($result = $this->db->query($sql)) {
                 if ($row = $result->fetch()) {
@@ -138,12 +205,7 @@ trait ImageSubject {
             }
 
 
-            if (in_array(
-                $subject, array(
-                            'Product',
-                            'Part'
-                        )
-            )) {
+            if (in_array($subject, array('Product', 'Part','Webpage'))) {
                 $is_public = 'Yes';
             } else {
                 $is_public = 'No';
@@ -156,7 +218,7 @@ trait ImageSubject {
 
             );
             $this->db->exec($sql);
-
+//print $sql;
 
             $this->reindex_order();
 

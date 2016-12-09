@@ -34,10 +34,10 @@ switch ($tipo) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                'object' => array('type' => 'string'),
-                'key'    => array('type' => 'numeric')
+                         'object' => array('type' => 'string'),
+                         'key'    => array('type' => 'numeric')
 
-            )
+                     )
         );
 
         get_data($account, $db, $user, $data, $smarty);
@@ -46,11 +46,11 @@ switch ($tipo) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                'parent'     => array('type' => 'string'),
-                'parent_key' => array('type' => 'numeric'),
-                'object'     => array('type' => 'string'),
+                         'parent'     => array('type' => 'string'),
+                         'parent_key' => array('type' => 'numeric'),
+                         'object'     => array('type' => 'string'),
 
-            )
+                     )
         );
 
         upload_objects($account, $db, $user, $editor, $data, $smarty);
@@ -59,11 +59,11 @@ switch ($tipo) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                'parent'     => array('type' => 'string'),
-                'parent_key' => array('type' => 'numeric'),
-                'objects'    => array('type' => 'string'),
+                         'parent'     => array('type' => 'string'),
+                         'parent_key' => array('type' => 'numeric'),
+                         'objects'    => array('type' => 'string'),
 
-            )
+                     )
         );
 
         edit_objects($account, $db, $user, $editor, $data, $smarty);
@@ -73,12 +73,12 @@ switch ($tipo) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                'object'      => array('type' => 'string'),
-                'parent'      => array('type' => 'string'),
-                'parent_key'  => array('type' => 'key'),
-                'fields_data' => array('type' => 'json array'),
+                         'object'      => array('type' => 'string'),
+                         'parent'      => array('type' => 'string'),
+                         'parent_key'  => array('type' => 'key'),
+                         'fields_data' => array('type' => 'json array'),
 
-            )
+                     )
         );
 
         upload_attachment($account, $db, $user, $editor, $data, $smarty);
@@ -86,13 +86,15 @@ switch ($tipo) {
 
     case 'upload_images':
 
-        //print_r($_REQUEST);
 
         $data = prepare_values(
             $_REQUEST, array(
-                'parent'     => array('type' => 'string'),
-                'parent_key' => array('type' => 'numeric'),
-                'parent_object_scope' => array('type' => 'string','optional'=>true),
+                         'parent'              => array('type' => 'string'),
+                         'parent_key'          => array('type' => 'numeric'),
+                         'parent_object_scope' => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         ),
 
                      )
         );
@@ -136,8 +138,8 @@ function upload_attachment($account, $db, $user, $editor, $data, $smarty) {
         && strtolower($_SERVER['REQUEST_METHOD']) == 'post'
     ) { //catch file overload error...
         $postMax  = ini_get('post_max_size'); //grab the size limits...
-        $msg
-                  = "File can not be attached, please note files larger than {$postMax} will result in this error!, let's us know, an we will increase the size limits"; // echo out error and solutions...
+        $msg      =
+            "File can not be attached, please note files larger than {$postMax} will result in this error!, let's us know, an we will increase the size limits"; // echo out error and solutions...
         $response = array(
             'state' => 400,
             'msg'   => _('Files could not be attached').".<br>".$msg,
@@ -220,9 +222,8 @@ function upload_attachment($account, $db, $user, $editor, $data, $smarty) {
         }
 
 
-        $data['fields_data']['Filename'] = $file_data['tmp_name'];
-        $data['fields_data']['Attachment File Original Name']
-                                         = $file_data['name'];
+        $data['fields_data']['Filename']                      = $file_data['tmp_name'];
+        $data['fields_data']['Attachment File Original Name'] = $file_data['name'];
         //$data['fields_data']['Subject']=$parent->get_object_name();
 
         switch ($data['object']) {
@@ -301,12 +302,11 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
     include_once 'class.Image.php';
 
 
-
-    if(isset($data['parent_object_scope'])){
-        $parent_object_scope=$data['parent_object_scope'];
-    }else {
+    if (isset($data['parent_object_scope'])) {
+        $parent_object_scope = $data['parent_object_scope'];
+    } else {
         $parent_object_scope = 'Default';
-}
+    }
     $parent         = get_object($data['parent'], $data['parent_key']);
     $parent->editor = $editor;
 
@@ -395,12 +395,12 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
         $data['fields_data']['Attachment File Original Name'] = $name;
 
         $image_data = array(
-            'Upload Data'    => array(
+            'Upload Data'                      => array(
                 'tmp_name' => $tmp_name,
                 'type'     => $type
             ),
-            'Image Filename' => $name,
-            'Image Subject Object Image Scope'=>$parent_object_scope
+            'Image Filename'                   => $name,
+            'Image Subject Object Image Scope' => $parent_object_scope
 
         );
 
@@ -439,12 +439,16 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
         'uploads'        => $uploads,
         'number_images'  => $parent->get_number_images(),
         'main_image_key' => $parent->get_main_image_key(),
-
-        'thumbnail'            => sprintf('<img src="/image_root.php?id=%d&size=thumbnail">',$image->id)
-
+        'image_src'      => sprintf('/image_root.php?id=%d', $image->id),
+        'thumbnail'      => sprintf('<img src="/image_root.php?id=%d&size=thumbnail">', $image->id)
 
 
     );
+
+    // todo remove parent->get_object_name()=='Page' when new class is used
+    if($parent->get_object_name()=='Page' or  $parent->get_object_name()=='Webpage'){
+        $response['publish'] =$parent->get('Publish');
+    }
 
     echo json_encode($response);
 

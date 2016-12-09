@@ -439,7 +439,7 @@ h1{
 
                 {/if}
                 {else}
-                <div class="ordering log_out hide" >
+                <div class="ordering log_out " >
                     <div ><span onClick="location.href='login.php?from={$page->id}'" class="button login_button" >{t}Login{/t}</span></div>
                     <div ><span onClick="location.href='registration.php'" class="button register_button" >{t}Register{/t}</span></div>
                 </div>

@@ -108,6 +108,10 @@
 
     }
 
+    .webpage_content_header_text,.webpage_content_header_image {
+        border: 1px dashed transparent;
+    }
+
 
     .product_blocks{
         width:970px;margin:auto;
@@ -358,11 +362,14 @@
 </style>
 
 
-<span id="ordering_settings" class="hide" data-labels='{
-    "ordered":"<i class=\"fa fa-thumbs-o-up fa-flip-horizontal \" aria-hidden=\"true\"></i> {t}Ordered{/t}",
-    "order":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {t}Order now{/t}",
-    "update":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {t}Update{/t}"
-    }'></span>
+<style>
+
+
+</style>
+
+
+
+<span id="ordering_settings" class="hide" data-labels='{ "ordered":"<i class=\"fa fa-thumbs-o-up fa-flip-horizontal \" aria-hidden=\"true\"></i> {t}Ordered{/t}", "order":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {t}Order now{/t}", "update":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {t}Update{/t}"  }'></span>
 
 {assign 'content_data' $category->webpage->get('Content Data')}
 
@@ -370,51 +377,37 @@
 
 
     <div id="description_block" class="description_block" >
+        <div id="image_edit_toolbar" class="edit_toolbar hide" section="description_block">
+            <i class="fa fa-window-close fa-fw button" style="margin-bottom:10px" aria-hidden="true"></i><br>
 
+            <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
+                <input type="file" name="image_upload" id="file_upload" class="input_file" multiple/>
+                <label for="file_upload">
+                    <i class="fa  fa-picture-o fa-fw button" aria-hidden="true"></i><br>
+                </label>
+            </form>
+            <i class="fa  fa-comment  fa-fw button hide" style="margin-top:5px"  aria-hidden="true"></i><br>
+
+            <i class="fa  fa-trash error fa-fw button hide" style="margin-top:20px" aria-hidden="true"></i><br>
+
+        </div>
 
         {foreach from=$content_data.description_block.blocks key=id item=data}
-        {if $data.type=='text'}
-            <div id="{$id}_close_editing" class="hide">
-                <span class="fa-stack fa-lg button discreet  close_editing" style="font-size:12px;position:absolute">
-                <i class="fa fa-circle fa-stack-2x"></i>
-                <i class="fa fa-i-cursor fa-stack-1x fa-inverse"></i>
-                 </span>
-            </div>
-        <div id="{$id}" class="webpage_content_header">
-            {$data.content}
-        </div>
-        {elseif $data.type=='image'}
-
-            <div id="{$id}_change_image" class="hide">
+            {if $data.type=='text'}
+                <div id="{$id}_close_editing" class="hide">
+                    <i class="fa   fa-stop-circle" aria-hidden="true"></i><br>
+                </div>
+                <div id="{$id}" class="webpage_content_header webpage_content_header_text">
+                    {$data.content}
+                </div>
+            {elseif $data.type=='image'}
 
 
-                    <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
-                        <input type="file" name="image_upload" id="file_upload" class="input_file" multiple/>
-                        <label for="file_upload">
-                            <span class="fa-stack fa-lg button discreet  close_editing" style="font-size:12px;position:absolute">
-                <i class="fa fa-circle fa-stack-2x"></i>
-                <i class="fa fa-i-cursor fa-stack-1x fa-inverse"></i>
-                 </span>
-                        </label>
-                    </form>
-
-
-
-            </div>
-
-
-            <div id="webpage_content_header_image" class="webpage_content_header"  >
-
+                <div  id="{$id}" class="webpage_content_header webpage_content_header_image"  >
                    <img  src="{$data.image_src}"  style="width:100%"  />
-            </div>
-        {/if}
+                </div>
+            {/if}
         {/foreach}
-
-
-
-
-
-
         <div style="clear:both"></div>
     </div>
 
@@ -488,12 +481,9 @@
     <div style="clear:both"></div>
     </div>
 
-
-
     <div id="related_products"  class="product_blocks {if $related_products|@count eq 0}hide{/if}">
-    <div class="title">{t}See also{/t}:</div>
-
-    {foreach from=$related_products item=product key=stack_index}
+        <div class="title">{t}See also{/t}:</div>
+        {foreach from=$related_products item=product key=stack_index}
     <div class="product_wrap">
 
         <div id="product_target_div_{$stack_index}" stack_index="{$stack_index}" xdraggable="{if $product->get('Web State')=='For Sale' }true{else}false{/if}" xondragstart="drag(event)" product_code="{$product->get('Code')}" product_id="{$product->id}" xondrop="drop(event)" xondragover="allowDrop(event)" class="block four product_showcase " style="margin-bottom:20px;position:relative">
@@ -558,10 +548,8 @@
 
 </div>
 {/foreach}
-<div style="clear:both"></div>
-</div>
-
-
+        <div style="clear:both"></div>
+    </div>
 
      <div id="bottom_see_also"  class="{if $see_also|@count eq 0}hide{/if}">
          <div class="title">{t}See also{/t}:</div>
@@ -592,9 +580,87 @@
     count=1;
 
 
+    var droppedFiles = false;
+
+    $('#file_upload').on('change', function (e) {
 
 
 
+            var ajaxData = new FormData();
+
+            //var ajaxData = new FormData( );
+            if (droppedFiles) {
+                $.each(droppedFiles, function (i, file) {
+                    ajaxData.append('files', file);
+                });
+            }
+
+
+            $.each($('#file_upload').prop("files"), function (i, file) {
+                ajaxData.append("files[" + i + "]", file);
+
+            });
+
+
+            ajaxData.append("tipo", 'upload_images')
+            ajaxData.append("parent", 'old_page')
+            ajaxData.append("parent_key", '{$webpage->id}')
+           ajaxData.append("parent_object_scope", JSON.stringify( {
+               scope:'content',
+               section:  $('#image_edit_toolbar').attr('section'),
+               block: $('#image_edit_toolbar').attr('block')
+
+           } ) )
+
+            var image=$('#'+$('#image_edit_toolbar').attr('block')+' img')
+
+            $.ajax({
+                url: "/ar_upload.php",
+                type: 'POST',
+                data: ajaxData,
+                dataType: 'json',
+                cache: false,
+                contentType: false,
+                processData: false,
+
+
+                complete: function () {
+
+                },
+                success: function (data) {
+
+                    console.log(data)
+
+                    if (data.state == '200') {
+                    console.log(data.image_src)
+                        image.attr('src',data.image_src)
+
+                        if($('#publish').find('i').hasClass('fa-rocket')) {
+
+                            if (data.publish) {
+                                $('#publish').addClass('changed valid')
+                            } else {
+                                $('#publish').removeClass('changed valid')
+                            }
+                        }
+
+
+
+
+                    } else if (data.state == '400') {
+
+                    }
+
+
+                },
+                error: function () {
+
+                }
+            });
+
+
+
+    });
 
     function allowDrop(ev) {
         ev.preventDefault();
@@ -836,31 +902,65 @@
 
     })
 
-
     $('#webpage_content_header_text').dblclick(function() {
 
-/*
 
- $(this).draggable( 'disable' ).resizable('disable').addClass('editing').prev().removeClass('hide').css({
- position: 'absolute',
- left:$(this).position().left - 30 + "px",
- top: $(this).position().top + 5 + "px"
- });
 
- */
+    })
+
+
+    $('.webpage_content_header_image').dblclick(function(){
+
+
+
+
+        $('#image_edit_toolbar').removeClass('hide').css({
+            position: 'absolute',
+            left:$(this).position().left - 25 + "px",
+            top: $(this).position().top + 5 + "px"
+        }).attr('block',$(this).attr('id'))
+
+        $(this).draggable( 'disable' ).resizable('destroy').addClass('editing')
+
+
+    })
+
+
+    $('#image_edit_toolbar .fa-window-close').click(function() {
+        $('#image_edit_toolbar').addClass('hide')
+        $('#'+$('#image_edit_toolbar').attr('block')).removeClass('editing').draggable( 'enable' ).resizable(
+            {
+                stop: function (event, ui) {
+                    if(save_webpage_content_header_state_timer)
+                        clearTimeout(save_webpage_content_header_state_timer);
+                    save_webpage_content_header_state_timer = setTimeout(function(){ save_webpage_content_header_state(); }, 750);
+
+                }
+
+            }
+
+        );
+
+    })
+
+
+
+    $('.webpage_content_header_text').dblclick(function() {
+
+
 
         $(this).draggable( 'disable' ).resizable('destroy').addClass('editing').prev().removeClass('hide').css({
-            position: 'absolute',
+            position: 'relative',
             left:$(this).position().left - 30 + "px",
             top: $(this).position().top + 5 + "px"
-        });
+        })
 
 
 
 
 
 
-        $('div#webpage_content_header_text').froalaEditor({
+        $(this).froalaEditor({
 
 
             toolbarInline: true,
@@ -918,30 +1018,20 @@
 
     });
 
+
+
+
+
     $('.close_editing').click(function() {
 
-console.log($(this))
-
-
-
-        /*
-         $(this).closest('div').addClass('hide').next().draggable( 'enable' ).resizable('enable').removeClass('editing')
-
-
-         */
 
         $(this).closest('div').addClass('hide').next().froalaEditor('destroy')
 
         $(this).closest('div').addClass('hide').next().draggable( 'enable' ).removeClass('editing')
 
         $(this).closest('div').addClass('hide').next().resizable(
-
             {
                 stop: function (event, ui) {
-
-                    // console.log(this.id)
-                    // console.log(ui.size)
-
                     if(save_webpage_content_header_state_timer)
                         clearTimeout(save_webpage_content_header_state_timer);
                     save_webpage_content_header_state_timer = setTimeout(function(){ save_webpage_content_header_state(); }, 750);
