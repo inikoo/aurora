@@ -353,7 +353,7 @@ h1{
         </div>
         {elseif $data.type=='image'}
             <div id="webpage_content_header_image" class="webpage_content_header"  >
-                <img  src="{$data.image_src}"  style="width:100%"  />
+                <img  src="{$data.image_src}"  style="width:100%"  title="{if isset($data.caption)}{$data.caption}{/if}" />
             </div>
         {/if}
         {/foreach}
@@ -415,7 +415,7 @@ h1{
                         {assign 'reminder_key' {$product->get('Reminder Key',{$user->id})} }
 
                         <span class="product_footer label ">{$product->get('Out of Stock Label')}</span>
-                        <span class="product_footer reminder" reminder_key="{$reminder_key}"><i class="fa {if $reminder_key>0}fa-envelope{else}fa-envelope-o{/if}" aria-hidden="true"></i>  </span>
+                        <span class="product_footer reminder" reminder_key="{$reminder_key}"><i  title="{if $reminder_key>0}{t}Click to remove notification{/t}{else}{t}Click to be notified by email{/t}{/if}"   class="fa {if $reminder_key>0}fa-envelope{else}fa-envelope-o{/if}" aria-hidden="true"></i>  </span>
 
 
                     </div>
@@ -571,13 +571,18 @@ h1{
 
         if(icon.hasClass('fa-envelope-o')){
           
-            icon.removeClass('fa-envelope-o').addClass('fa-envelope').addClass('marked')
+            icon.removeClass('fa-envelope-o').addClass('fa-envelope').addClass('marked').attr('title','{t}Click to remove notification{/t}')
+
+
+
             var request ='ar_reminders.php?tipo=send_reminder&pid='+ $(this).closest('.product_showcase').attr('product_id')
+
+
 
         }else{
           
 
-            icon.removeClass('fa-envelope').addClass('fa-envelope-o').removeClass('marked')
+            icon.removeClass('fa-envelope').addClass('fa-envelope-o').removeClass('marked').attr('title','{t}Click to be notified by email{/t}')
             var request='ar_reminders.php?tipo=cancel_send_reminder&esr_key='+$(this).attr('reminder_key')
 
         }

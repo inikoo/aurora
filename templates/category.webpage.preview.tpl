@@ -386,16 +386,25 @@
                     <i class="fa  fa-picture-o fa-fw button" aria-hidden="true"></i><br>
                 </label>
             </form>
-            <i class="fa  fa-comment  fa-fw button hide" style="margin-top:5px"  aria-hidden="true"></i><br>
 
+
+
+            <i class="fa caption_icon fa-comment  fa-fw button " style="margin-top:5px"  aria-hidden="true"></i><br>
+            <div class="caption hide" style="position:relative;z-index: 100;border:1px solid #ccc;background-color: white;padding:10px 10px 10px 5px">
+                <input id="caption_input" value="" style="width:400px">
+            </div>
             <i class="fa  fa-trash error fa-fw button hide" style="margin-top:20px" aria-hidden="true"></i><br>
+
+
+
+
 
         </div>
 
         {foreach from=$content_data.description_block.blocks key=id item=data}
             {if $data.type=='text'}
-                <div id="{$id}_close_editing" class="hide">
-                    <i class="fa   fa-stop-circle" aria-hidden="true"></i><br>
+                <div  class="hide">
+                    <i class="fa close_edit_text fa-window-close fa-fw button" aria-hidden="true"></i><br>
                 </div>
                 <div id="{$id}" class="webpage_content_header webpage_content_header_text">
                     {$data.content}
@@ -404,7 +413,7 @@
 
 
                 <div  id="{$id}" class="webpage_content_header webpage_content_header_image"  >
-                   <img  src="{$data.image_src}"  style="width:100%"  />
+                   <img  src="{$data.image_src}"  style="width:100%"  title="{if isset($data.caption)}{$data.caption}{/if}" />
                 </div>
             {/if}
         {/foreach}
@@ -576,7 +585,8 @@
 
     
     var save_webpage_content_header_state_timer=false;
-    
+    var save_image_caption=false;
+
     count=1;
 
 
@@ -810,7 +820,7 @@
         var request = '/ar_edit.php?tipo=edit_webpage&key=' + {$category->webpage->id} + '&field=css&value=' + btoa(css)
        // console.log(request)
         $.getJSON(request, function (data) {
-
+            console.log(data)
             if(data.state==200){
 
 
@@ -862,7 +872,7 @@
          toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'color', 'emoticons', '-', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'indent', 'outdent', '-', 'undo', 'redo'],
 
          saveInterval: 500,
-         saveParam: 'content',
+         saveParam: 'value',
 
          saveURL: '/ar_edit.php',
 
@@ -945,14 +955,83 @@
 
 
 
+    $('#image_edit_toolbar .fa-comment').click(function() {
+
+        var caption= $(this).closest('.edit_toolbar').find('div.caption')
+
+        if(caption.hasClass('hide')) {
+
+            caption.removeClass('hide').css({
+                position: 'absolute', left: $(this).position().left + 25 + "px", top: $(this).position().top - 10 + "px"
+            }).find('input').val($('#' + $(this).closest('.edit_toolbar').attr('block') + ' img').attr('title'))
+        }else{
+
+            clearTimeout(save_image_caption);
+            save_caption()
+            caption.addClass('hide')
+
+        }
+
+
+    })
+
+
+    $("#caption_input").on('input propertychange', function(){
+
+
+
+        $(this).closest('.edit_toolbar').find('.caption_icon').removeClass('fa-comment').addClass('fa-spinner fa-spin')
+
+        if(save_image_caption)
+            clearTimeout(save_image_caption);
+        save_image_caption = setTimeout(function(){ save_caption(); }, 400);
+
+
+    })
+
+
+    function save_caption() {
+
+var caption=$('#caption_input').val()
+        var block=$('#image_edit_toolbar').attr('block')
+
+        var request = '/ar_edit.php?tipo=webpage_content_data&parent=page&parent_key=' + {$category->webpage->id} +'&section=description_block&block=' + block + '&type=caption&value=' + caption
+   // console.log(request)
+
+    $.getJSON(request, function (data) {
+
+        if (data.state == 200) {
+
+            $('#image_edit_toolbar').find('.caption_icon').addClass('fa-comment').removeClass('fa-spinner fa-spin')
+
+            $('#'+block+' img').attr('title',caption)
+
+
+
+            if ($('#publish').find('i').hasClass('fa-rocket')) {
+
+                if (data.publish) {
+                    $('#publish').addClass('changed valid')
+                } else {
+                    $('#publish').removeClass('changed valid')
+                }
+            }
+
+        }
+
+    })
+
+}
+
+
     $('.webpage_content_header_text').dblclick(function() {
 
 
 
         $(this).draggable( 'disable' ).resizable('destroy').addClass('editing').prev().removeClass('hide').css({
             position: 'relative',
-            left:$(this).position().left - 30 + "px",
-            top: $(this).position().top + 5 + "px"
+            left:$(this).position().left - 25+ "px",
+            top: $(this).position().top +5  +'px'
         })
 
 
@@ -968,7 +1047,7 @@
             toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'color', 'emoticons', '-', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'indent', 'outdent', '-', 'undo', 'redo'],
 
             saveInterval: 500,
-            saveParam: 'content',
+            saveParam: 'value',
 
             saveURL: '/ar_edit.php',
 
@@ -1022,7 +1101,7 @@
 
 
 
-    $('.close_editing').click(function() {
+    $('.close_edit_text.fa-window-close').click(function() {
 
 
         $(this).closest('div').addClass('hide').next().froalaEditor('destroy')

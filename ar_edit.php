@@ -44,14 +44,13 @@ switch ($tipo) {
     case 'update_product_category_index':
 
 
-
         $data = prepare_values(
             $_REQUEST, array(
                          'webpage_key' => array('type' => 'key'),
 
                          'key'     => array('type' => 'key'),
                          'type'    => array('type' => 'string'),
-                         'content' => array('type' => 'string')
+                         'value' => array('type' => 'string')
 
 
                      )
@@ -66,7 +65,7 @@ switch ($tipo) {
                          'parent_key' => array('type' => 'key'),
                          'section'    => array('type' => 'string'),
                          'block'      => array('type' => 'string'),
-                         'content'    => array(
+                         'value'    => array(
                              'type'     => 'string',
                              'optional' => true
                          ),
@@ -2398,7 +2397,7 @@ function edit_webpage($data, $editor, $db) {
 
     $response = array(
         'state'   => 200,
-        'content' => (isset($data['content']) ? $data['content'] : ''),
+        'content' => (isset($data['value']) ? $data['value'] : ''),
         'publish' => $webpage->get('Publish')
 
 
@@ -2416,26 +2415,34 @@ function webpage_content_data($data, $editor, $db) {
     $content_data = $webpage->get('Content Data');
 
 
-    if (isset($data['content'])) {
-
-        $data['content'] = str_replace('<div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"><br></div>', '', $data['content']);
-        $data['content'] = str_replace('<div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"><br></div>', '', $data['content']);
-        $data['content'] = str_replace('<div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"><br></div>', '', $data['content']);
-
-    }
+    if ($data['type'] == 'text') {
 
 
-    if (isset($content_data[$data['section']])) {
+        $data['value'] = str_replace('<div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"><br></div>', '', $data['value']);
+        $data['value'] = str_replace('<div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"><br></div>', '', $data['value']);
+        $data['value'] = str_replace('<div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"><br></div>', '', $data['value']);
 
-        if (isset($content_data[$data['section']]['blocks'][$data['block']])) {
 
-            $content_data[$data['section']]['blocks'][$data['block']]['content'] = $data['content'];
-        } else {
-            $content_data[$data['section']]['blocks'][$data['block']] = array(
-                'content' => $data['content'],
-                'type'    => $data['type']
-            );
+        if (isset($content_data[$data['section']])) {
 
+            if (isset($content_data[$data['section']]['blocks'][$data['block']])) {
+
+                $content_data[$data['section']]['blocks'][$data['block']]['content'] = $data['value'];
+            } else {
+                $content_data[$data['section']]['blocks'][$data['block']] = array(
+                    'content' => $data['value'],
+                    'type'    => $data['type']
+                );
+
+            }
+
+
+        }
+    }elseif ($data['type'] == 'caption') {
+        if (isset($content_data[$data['section']])) {
+            if (isset($content_data[$data['section']]['blocks'][$data['block']])) {
+                $content_data[$data['section']]['blocks'][$data['block']]['caption'] = $data['value'];
+            }
         }
 
 
@@ -2447,7 +2454,7 @@ function webpage_content_data($data, $editor, $db) {
 
     $response = array(
         'state'   => 200,
-        'content' => (isset($data['content']) ? $data['content'] : ''),
+        'content' => (isset($data['value']) ? $data['value'] : ''),
         'publish' => $webpage->get('Publish')
 
 
@@ -2468,7 +2475,6 @@ function update_product_category_index($data, $editor, $db) {
     );
 
 
-
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
             if ($row['Product Category Index Content Data'] == '') {
@@ -2479,19 +2485,14 @@ function update_product_category_index($data, $editor, $db) {
 
             }
 
-            $product_content_data[$data['type']] = $data['content'];
-
-
+            $product_content_data[$data['type']] = $data['value'];
 
 
             $sql = sprintf(
-                'UPDATE `Product Category Index` SET `Product Category Index Content Data`=%s   WHERE `Product Category Index Key`=%d ',
-                prepare_mysql(json_encode($product_content_data)),
+                'UPDATE `Product Category Index` SET `Product Category Index Content Data`=%s   WHERE `Product Category Index Key`=%d ', prepare_mysql(json_encode($product_content_data)),
                 $row['Product Category Index Key']
             );
             $db->exec($sql);
-
-
 
 
         }
@@ -2502,11 +2503,9 @@ function update_product_category_index($data, $editor, $db) {
     }
 
 
-
-
     $response = array(
         'state'   => 200,
-        'content' => (isset($data['content']) ? $data['content'] : ''),
+        'content' => (isset($data['value']) ? $data['value'] : ''),
         'publish' => $webpage->get('Publish')
 
 
