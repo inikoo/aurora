@@ -15,9 +15,12 @@ include_once 'class.DB_Table.php';
 include_once 'class.PageStoreSection.php';
 include_once 'class.Site.php';
 include_once 'class.Image.php';
+include_once 'trait.ImageSubject.php';
+
 
 class Page extends DB_Table {
-
+    use ImageSubject;
+    
     var $new = false;
     var $logged = false;
     var $snapshots_taken = 0;
