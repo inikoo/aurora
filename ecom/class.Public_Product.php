@@ -335,7 +335,18 @@ class Public_Product {
 
             case 'Out of Stock Label':
                 if ($this->data['Product Total Acc Quantity Ordered'] > 0) {
-                    return _('Out of stock');
+
+
+                    if($this->get('Product Next Supplier Shipment')){
+                        $title=_('Expected').': '.strftime("%a %e %b %Y",strtotime($this->data['Product Next Supplier Shipment'].' +0:00'));
+
+                        $label=_('Out of stock').' <span style="font-size:85%" title="'.$title.'">('.$this->get('Next Supplier Shipment').')</span>';
+                    }else{
+                        $label=_('Out of stock');
+                    }
+
+
+                    return  $label;
                 } else {
                     return _('Launching soon');
                 }
@@ -368,6 +379,17 @@ class Public_Product {
                 } else {
                     return number($this->data['Product Availability']);
                 }
+                break;
+
+            case 'Product Next Supplier Shipment':
+
+                return ($this->data['Product Availability State']=='0000-00-00 00:00:00'?'':$this->data['Product Availability State']);
+
+                break;
+            case 'Next Supplier Shipment':
+
+                return strftime("%e %b %y",strtotime($this->data['Product Next Supplier Shipment'].' +0:00'));
+
                 break;
             default:
 
