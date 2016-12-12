@@ -2418,6 +2418,11 @@ function webpage_content_data($data, $editor, $db) {
     if ($data['type'] == 'text') {
 
 
+        $data['value'] = str_replace('<div class="ui-resizable-handle ui-resizable-e" style="z-index: 90; display: block;"></div>', '', $data['value']);
+        $data['value'] = str_replace('<div class="ui-resizable-handle ui-resizable-s" style="z-index: 90; display: block;"></div>', '', $data['value']);
+        $data['value'] = str_replace('<div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90; display: block;"></div>', '', $data['value']);
+
+
         $data['value'] = str_replace('<div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"><br></div>', '', $data['value']);
         $data['value'] = str_replace('<div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"><br></div>', '', $data['value']);
         $data['value'] = str_replace('<div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"><br></div>', '', $data['value']);
