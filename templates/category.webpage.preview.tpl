@@ -1294,7 +1294,7 @@ var position=$(this).position();
             saveURL: '/ar_edit.php',
 
             saveMethod: 'POST',
-
+            zIndex: 1000,
             saveParams: {
                 tipo: 'webpage_content_data',
                 parent: 'page',
