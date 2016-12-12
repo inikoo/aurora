@@ -396,7 +396,7 @@
         <i class="create_image fa fa-picture-o fa-fw button" aria-hidden="true" style="position:absolute;left:-25px;top:30px"></i>
 
 
-        <div id="image_edit_toolbar" class="edit_toolbar hide" section="description_block">
+        <div id="image_edit_toolbar" class="edit_toolbar hide" section="description_block" style=" z-index: 200;position:relative;">
             <i class="fa fa-window-close fa-fw button" style="margin-bottom:10px" aria-hidden="true"></i><br>
 
             <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
@@ -416,7 +416,7 @@
       </div>
 
 
-        <div id="text_edit_toolbar" class="edit_toolbar hide" section="description_block">
+        <div id="text_edit_toolbar" class="edit_toolbar hide" section="description_block"  style=" z-index: 200;position:relative;">
             <i class="fa close_edit_text fa-window-close fa-fw button" style="margin-bottom:10px" aria-hidden="true"></i><br>
             <i class="fa  fa-trash error fa-fw button   " style="margin-top:20px" aria-hidden="true"></i><br>
 
@@ -1063,8 +1063,12 @@ var position=$(this).position();
 
     var section=$(this).closest('div.section');
 
-    text = $('<div class="webpage_content_header webpage_content_header_text" style="width:150px;height:100px;text-align:center" ><h1>Bla bla</h1><p>bla bla bla</p></div>').
-    uniqueId() .draggable(
+        var datetime = new Date();
+
+
+    text = $('<div class="webpage_content_header webpage_content_header_text" style="width:150px;height:100px;text-align:center" ><h1>Bla bla</h1><p>bla bla bla</p></div>')
+        .attr('id', 'text'+datetime.getTime())
+        .draggable(
         {
             containment: "#description_block",
             scroll: false,
@@ -1127,9 +1131,11 @@ var position=$(this).position();
 
 
         var section=$(this).closest('div.section');
+        var datetime = new Date();
 
-        var img = $('<div class="webpage_content_header webpage_content_header_image" ><img src="/art/nopic.png" style="width:100%"></div>').
-        uniqueId() .draggable(
+        var img = $('<div class="webpage_content_header webpage_content_header_image" ><img src="/art/nopic.png" style="width:100%"></div>')
+            .attr('id', 'image'+datetime.getTime())
+            .draggable(
             {
                 containment: "#description_block",
                 scroll: false,
@@ -1255,6 +1261,10 @@ var position=$(this).position();
 
         $('#page_content').on( "dblclick", ".webpage_content_header_text", function() {
 
+
+           if(! $('#text_edit_toolbar').hasClass('hide')){
+               return
+           }
 
             var position=$(this).position();
 
@@ -1384,8 +1394,6 @@ var position=$(this).position();
                     {
                         stop: function (event, ui) {
 
-                           // console.log(this.id)
-                           // console.log(ui.size)
 
                             if(save_webpage_content_header_state_timer)
                                 clearTimeout(save_webpage_content_header_state_timer);
