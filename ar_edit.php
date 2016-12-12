@@ -2444,10 +2444,136 @@ function webpage_content_data($data, $editor, $db) {
                 $content_data[$data['section']]['blocks'][$data['block']]['caption'] = $data['value'];
             }
         }
-
-
     }
+    elseif ($data['type'] == 'add_class') {
+        if (isset($content_data[$data['section']])) {
 
+
+
+            if($data['block']!='') {
+
+
+                if (isset($content_data[$data['section']]['blocks'][$data['block']])) {
+
+                    if (isset($content_data[$data['section']]['blocks'][$data['block']]['class'])) {
+
+                        $classes = preg_split('/\s+/', $content_data[$data['section']]['blocks'][$data['block']]['class']);
+
+                        foreach (preg_split('/\s+/', $data['value']) as $value) {
+                            if (!in_array($data['value'], $classes)) {
+                                $classes[] = $value;
+                            }
+                        }
+
+
+                        $content_data[$data['section']]['blocks'][$data['block']]['class'] = join(' ', $classes);
+                    } else {
+                        $content_data[$data['section']]['blocks'][$data['block']]['class'] = $data['value'];
+                    }
+
+
+                }
+
+            }else{
+
+                if (isset($content_data[$data['section']]['class'])) {
+
+                    $classes = preg_split('/\s+/', $content_data[$data['section']]['class']);
+
+                    foreach (preg_split('/\s+/', $data['value']) as $value) {
+                        if (!in_array($data['value'], $classes)) {
+                            $classes[] = $value;
+                        }
+                    }
+
+
+                    $content_data[$data['section']]['class'] = join(' ', $classes);
+                } else {
+                    $content_data[$data['section']]['class'] = $data['value'];
+                }
+
+
+            }
+
+        }
+    }
+    elseif ($data['type'] == 'remove_class') {
+        if (isset($content_data[$data['section']])) {
+
+
+            if($data['block']!='') {
+
+                if (isset($content_data[$data['section']]['blocks'][$data['block']])) {
+
+                    if (isset($content_data[$data['section']]['blocks'][$data['block']]['class'])) {
+
+                        $classes = preg_split('/\s/', $content_data[$data['section']]['blocks'][$data['block']]['class']);
+                        foreach (preg_split('/\s+/', $data['value']) as $value) {
+                            unset($classes[$value]);
+                        }
+
+
+                        $content_data[$data['section']]['blocks'][$data['block']]['class'] = trim(join(' ', $classes));
+                    } else {
+                        $content_data[$data['section']]['blocks'][$data['block']]['class'] = '';
+                    }
+
+
+                }
+
+            }else{
+                if (isset($content_data[$data['section']]['class'])) {
+
+                    $classes = preg_split('/\s+/', $content_data[$data['section']]['class']);
+
+
+
+
+
+                        $classes = array_diff($classes, preg_split('/\s+/', $data['value']));
+
+
+                    $content_data[$data['section']]['class'] = trim(join(' ', $classes));
+                } else {
+                    $content_data[$data['section']]['class'] = '';
+                }
+
+            }
+
+        }
+    }
+    elseif ($data['type'] == 'add_image') {
+        if (isset($content_data[$data['section']])) {
+
+
+
+            $content_data[$data['section']]['blocks'][$data['block']]=array(
+                'type'      => 'image',
+                'image_src' => $data['value'],
+                'caption'=>'',
+                'class'    => ''
+
+            );
+
+
+
+
+        }
+    }
+    elseif ($data['type'] == 'remove_block') {
+        if (isset($content_data[$data['section']])) {
+
+                $blocks=$content_data[$data['section']]['blocks'];
+
+                unset($content_data[$data['section']]['blocks'][$data['block']]);
+
+
+
+
+
+
+        }
+    }
 
     $webpage->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
 

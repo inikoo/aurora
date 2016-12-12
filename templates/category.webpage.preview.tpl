@@ -22,7 +22,24 @@
 
 <span class="button " onclick="toggle_logged_in_view(this)"><i class="fa fa-toggle-on " aria-hidden="true" alt="{t}On{/t}"></i> <span class="unselectable">{t}Logged in{/t}</span></span>
 
+
     <span id="publish" class="button save {if $webpage->get('Publish')}changed valid{/if}" style="float:right" onclick="publish(this)"><span class="unselectable">{t}Publish{/t}</span> <i class="fa fa-rocket" aria-hidden="true"></i></span>
+
+<span style="float:right;margin-right:60px" >
+    <i id="description_block_on" class="fa toggle_description_block fa-header fa-fw button" aria-hidden="true"  ></i>
+
+
+    <span id="description_block_off"  class="toggle_description_block fa-stack hide button" style="position:relative;top:-5px;left:5px"  >
+  <i class="fa fa-header fa-stack-1x"></i>
+  <i class="fa fa-close fa-stack-2x very_discreet error"></i>
+</span>
+
+</span>
+
+
+
+
+
 
 
 
@@ -92,7 +109,7 @@
 
     #description_block{
         position:relative; width:935px;margin:auto;
-        padding:0px
+        padding:0px;margin-bottom:20px;
 
     }
 
@@ -115,7 +132,7 @@
 
     .product_blocks{
         width:970px;margin:auto;
-        margin-top:20px
+
     }
 
     .product_blocks    .block {
@@ -362,10 +379,6 @@
 </style>
 
 
-<style>
-
-
-</style>
 
 
 
@@ -373,10 +386,16 @@
 
 {assign 'content_data' $category->webpage->get('Content Data')}
 
-<div id="page_content" >
+<div id="page_content" style="position:relative">
 
 
-    <div id="description_block" class="description_block" >
+    <div id="description_block" class="section description_block {$content_data.description_block.class} " >
+
+
+        <i class="create_text fa fa-align-center fa-fw button" aria-hidden="true" style="position:absolute;left:-25px;top:10px"></i>
+        <i class="create_image fa fa-picture-o fa-fw button" aria-hidden="true" style="position:absolute;left:-25px;top:30px"></i>
+
+
         <div id="image_edit_toolbar" class="edit_toolbar hide" section="description_block">
             <i class="fa fa-window-close fa-fw button" style="margin-bottom:10px" aria-hidden="true"></i><br>
 
@@ -393,19 +412,20 @@
             <div class="caption hide" style="position:relative;z-index: 100;border:1px solid #ccc;background-color: white;padding:10px 10px 10px 5px">
                 <input id="caption_input" value="" style="width:400px">
             </div>
-            <i class="fa  fa-trash error fa-fw button hide" style="margin-top:20px" aria-hidden="true"></i><br>
+            <i class="fa  fa-trash error fa-fw button   " style="margin-top:20px" aria-hidden="true"></i><br>
+      </div>
 
 
-
-
+        <div id="text_edit_toolbar" class="edit_toolbar hide" section="description_block">
+            <i class="fa close_edit_text fa-window-close fa-fw button" style="margin-bottom:10px" aria-hidden="true"></i><br>
+            <i class="fa  fa-trash error fa-fw button   " style="margin-top:20px" aria-hidden="true"></i><br>
 
         </div>
 
+
         {foreach from=$content_data.description_block.blocks key=id item=data}
             {if $data.type=='text'}
-                <div  class="hide">
-                    <i class="fa close_edit_text fa-window-close fa-fw button" aria-hidden="true"></i><br>
-                </div>
+
                 <div id="{$id}" class="webpage_content_header webpage_content_header_text">
                     {$data.content}
                 </div>
@@ -588,6 +608,16 @@
     var save_image_caption=false;
 
     count=1;
+
+
+
+    if($('#description_block').hasClass('hide')){
+
+        $('#description_block_on').addClass('hide')
+        $('#description_block_off').removeClass('hide')
+
+
+    }
 
 
     var droppedFiles = false;
@@ -800,7 +830,8 @@
         webpage_content_header_state={}
 
 
-                css+='#description_block{ height:'+$('#description_block').height()+'px}'
+                css+='#description_block{ ' +
+                    'height:'+$('#description_block').height()+'px}'
 
 
 
@@ -815,7 +846,7 @@
 
         });
 
-        console.log(css)
+
 
         var request = '/ar_edit.php?tipo=edit_webpage&key=' + {$category->webpage->id} + '&field=css&value=' + btoa(css)
        // console.log(request)
@@ -863,6 +894,7 @@
 
 
     $('.product_header_text').dblclick(function() {
+
 
      $(this).froalaEditor({
 
@@ -912,22 +944,61 @@
 
     })
 
-    $('#webpage_content_header_text').dblclick(function() {
+   $('.toggle_description_block').click(function(){
+        if($('#description_block_on').hasClass('hide')){
+
+            $('#description_block_on').removeClass('hide')
+            $('#description_block_off').addClass('hide')
+            $('#description_block').removeClass('hide');
+
+            var type='remove_class'
+
+        }else{
+            $('#description_block_on').addClass('hide')
+            $('#description_block_off').removeClass('hide')
+            $('#description_block').addClass('hide');
+            var type='add_class'
+
+        }
 
 
 
-    })
+       var request = '/ar_edit.php?tipo=webpage_content_data&parent=page&parent_key=' + {$category->webpage->id} +'&section=description_block&block=&type='+type+'&value=hide'
 
 
-    $('.webpage_content_header_image').dblclick(function(){
+       $.getJSON(request, function (data) {
+
+           if (data.state == 200) {
 
 
+
+               if ($('#publish').find('i').hasClass('fa-rocket')) {
+                   if (data.publish) {
+                       $('#publish').addClass('changed valid')
+                   } else {
+                       $('#publish').removeClass('changed valid')
+                   }
+               }
+
+           }
+
+       })
+
+
+       }
+   )
+
+
+    $('#page_content').on( "dblclick", ".webpage_content_header_image", function() {
+
+
+var position=$(this).position();
 
 
         $('#image_edit_toolbar').removeClass('hide').css({
             position: 'absolute',
-            left:$(this).position().left - 25 + "px",
-            top: $(this).position().top + 5 + "px"
+            left:position.left - 25 + "px",
+            top: position.top + 5 + "px"
         }).attr('block',$(this).attr('id'))
 
         $(this).draggable( 'disable' ).resizable('destroy').addClass('editing')
@@ -953,6 +1024,169 @@
 
     })
 
+
+    $('#image_edit_toolbar .fa-trash,#text_edit_toolbar .fa-trash').click(function() {
+
+      var toolbar=$(this).closest('.edit_toolbar')
+
+        toolbar.addClass('hide')
+        $('#'+toolbar.attr('block')).remove()
+
+        var request = '/ar_edit.php?tipo=webpage_content_data&parent=page&parent_key=' + {$category->webpage->id} +'&section=description_block&block='+toolbar.attr('block')+'&type=remove_block&value='
+
+
+        $.getJSON(request, function (data) {
+
+            if (data.state == 200) {
+
+
+
+                if ($('#publish').find('i').hasClass('fa-rocket')) {
+                    if (data.publish) {
+                        $('#publish').addClass('changed valid')
+                    } else {
+                        $('#publish').removeClass('changed valid')
+                    }
+                }
+
+            }
+
+        })
+
+
+
+    })
+
+
+    $('.create_text').click(function() {
+
+
+    var section=$(this).closest('div.section');
+
+    text = $('<div class="webpage_content_header webpage_content_header_text" style="width:150px;height:100px;text-align:center" ><h1>Bla bla</h1><p>bla bla bla</p></div>').
+    uniqueId() .draggable(
+        {
+            containment: "#description_block",
+            scroll: false,
+            stop: function (event, ui) {
+
+                if(save_webpage_content_header_state_timer)
+                    clearTimeout(save_webpage_content_header_state_timer);
+                save_webpage_content_header_state_timer = setTimeout(function(){ save_webpage_content_header_state(); }, 750);
+
+
+
+            }
+        }
+    )
+        .resizable(
+            {
+                stop: function (event, ui) {
+
+                    // console.log(this.id)
+                    // console.log(ui.size)
+
+                    if(save_webpage_content_header_state_timer)
+                        clearTimeout(save_webpage_content_header_state_timer);
+                    save_webpage_content_header_state_timer = setTimeout(function(){ save_webpage_content_header_state(); }, 750);
+
+                }
+
+            }
+        ) .appendTo(section)
+
+
+
+    var request = '/ar_edit.php?tipo=webpage_content_data&parent=page&parent_key=' + {$category->webpage->id} +'&section=description_block&block='+text.attr('id')+'&type=text&value='+text.html()
+
+
+    $.getJSON(request, function (data) {
+
+        if (data.state == 200) {
+
+
+
+            if ($('#publish').find('i').hasClass('fa-rocket')) {
+                if (data.publish) {
+                    $('#publish').addClass('changed valid')
+                } else {
+                    $('#publish').removeClass('changed valid')
+                }
+            }
+
+        }
+
+    })
+
+
+
+
+})
+
+    $('.create_image').click(function() {
+
+
+        var section=$(this).closest('div.section');
+
+        var img = $('<div class="webpage_content_header webpage_content_header_image" ><img src="/art/nopic.png" style="width:100%"></div>').
+        uniqueId() .draggable(
+            {
+                containment: "#description_block",
+                scroll: false,
+                stop: function (event, ui) {
+
+                    if(save_webpage_content_header_state_timer)
+                        clearTimeout(save_webpage_content_header_state_timer);
+                    save_webpage_content_header_state_timer = setTimeout(function(){ save_webpage_content_header_state(); }, 750);
+
+
+
+                }
+            }
+        )
+            .resizable(
+                {
+                    stop: function (event, ui) {
+
+                        // console.log(this.id)
+                        // console.log(ui.size)
+
+                        if(save_webpage_content_header_state_timer)
+                            clearTimeout(save_webpage_content_header_state_timer);
+                        save_webpage_content_header_state_timer = setTimeout(function(){ save_webpage_content_header_state(); }, 750);
+
+                    }
+
+                }
+            ) .appendTo(section)
+
+
+
+        var request = '/ar_edit.php?tipo=webpage_content_data&parent=page&parent_key=' + {$category->webpage->id} +'&section=description_block&block='+img.attr('id')+'&type=add_image&value='+img.find('img').attr('src')
+
+
+        $.getJSON(request, function (data) {
+
+            if (data.state == 200) {
+
+
+
+                if ($('#publish').find('i').hasClass('fa-rocket')) {
+                    if (data.publish) {
+                        $('#publish').addClass('changed valid')
+                    } else {
+                        $('#publish').removeClass('changed valid')
+                    }
+                }
+
+            }
+
+        })
+
+
+
+
+    })
 
 
     $('#image_edit_toolbar .fa-comment').click(function() {
@@ -992,49 +1226,47 @@
 
     function save_caption() {
 
-var caption=$('#caption_input').val()
+        var caption=$('#caption_input').val()
         var block=$('#image_edit_toolbar').attr('block')
 
         var request = '/ar_edit.php?tipo=webpage_content_data&parent=page&parent_key=' + {$category->webpage->id} +'&section=description_block&block=' + block + '&type=caption&value=' + caption
-   // console.log(request)
 
-    $.getJSON(request, function (data) {
+        $.getJSON(request, function (data) {
 
-        if (data.state == 200) {
+            if (data.state == 200) {
 
-            $('#image_edit_toolbar').find('.caption_icon').addClass('fa-comment').removeClass('fa-spinner fa-spin')
+                $('#image_edit_toolbar').find('.caption_icon').addClass('fa-comment').removeClass('fa-spinner fa-spin')
+                $('#'+block+' img').attr('title',caption)
 
-            $('#'+block+' img').attr('title',caption)
-
-
-
-            if ($('#publish').find('i').hasClass('fa-rocket')) {
-
-                if (data.publish) {
-                    $('#publish').addClass('changed valid')
-                } else {
-                    $('#publish').removeClass('changed valid')
+                if ($('#publish').find('i').hasClass('fa-rocket')) {
+                    if (data.publish) {
+                        $('#publish').addClass('changed valid')
+                    } else {
+                        $('#publish').removeClass('changed valid')
+                    }
                 }
+
             }
 
-        }
-
-    })
-
-}
-
-
-    $('.webpage_content_header_text').dblclick(function() {
-
-
-
-        $(this).draggable( 'disable' ).resizable('destroy').addClass('editing').prev().removeClass('hide').css({
-            position: 'relative',
-            left:$(this).position().left - 25+ "px",
-            top: $(this).position().top +5  +'px'
         })
 
+    }
 
+
+        $('#page_content').on( "dblclick", ".webpage_content_header_text", function() {
+
+
+            var position=$(this).position();
+
+        $(this).draggable( 'disable' ).resizable('destroy').addClass('editing')
+
+            console.log($(this).position())
+
+        $('#text_edit_toolbar').removeClass('hide').css({
+            position: 'absolute',
+            left:position.left - 25 + "px",
+            top: position.top + 5 + "px"
+        }).attr('block',$(this).attr('id'))
 
 
 
@@ -1101,14 +1333,17 @@ var caption=$('#caption_input').val()
 
 
 
-    $('.close_edit_text.fa-window-close').click(function() {
+    $('#text_edit_toolbar .fa-window-close').click(function() {
 
+        $('#text_edit_toolbar').addClass('hide')
 
-        $(this).closest('div').addClass('hide').next().froalaEditor('destroy')
+       var block= $('#'+$('#text_edit_toolbar').attr('block'))
 
-        $(this).closest('div').addClass('hide').next().draggable( 'enable' ).removeClass('editing')
+        block.froalaEditor('destroy')
 
-        $(this).closest('div').addClass('hide').next().resizable(
+        block.draggable( 'enable' ).removeClass('editing')
+
+        block.resizable(
             {
                 stop: function (event, ui) {
                     if(save_webpage_content_header_state_timer)
@@ -1144,10 +1379,8 @@ var caption=$('#caption_input').val()
 
                         }
                     }
-
             )
             .resizable(
-
                     {
                         stop: function (event, ui) {
 
@@ -1161,7 +1394,6 @@ var caption=$('#caption_input').val()
                         }
 
                     }
-
             );
 
 

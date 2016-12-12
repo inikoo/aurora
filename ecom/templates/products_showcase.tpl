@@ -339,8 +339,8 @@ h1{
     "update":"<i class=\"fa fa-hand-pointer-o fa-fw \" aria-hidden=\"true\"></i>  {t}Update{/t}"
     }'></span>
 
- 
-    <div id="description_block" class="description_block" >
+
+    <div id="description_block" class="description_block {$content_data.description_block.class}" >
 
 
         {foreach from=$content_data.description_block.blocks key=id item=data}
