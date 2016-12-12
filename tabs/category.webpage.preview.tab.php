@@ -61,17 +61,20 @@ switch ($webpage->get('Page Store Content Template Filename')) {
 
             $content_data = array(
                 'description_block' => array(
+                    'class'=>'',
 
                     'blocks' => array(
 
                         'webpage_content_header_image' => array(
                             'type'      => 'image',
                             'image_src' => $image_src,
-                            'caption'=>''
+                            'caption'=>'',
+                            'class'    => ''
 
                         ),
 
                         'webpage_content_header_text' => array(
+                            'class'    => '',
                             'type'    => 'text',
                             'content' => sprintf('<h1 class="description_title">%s</h1><div class="description">%s</div>', $title, $description)
 
