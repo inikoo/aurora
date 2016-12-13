@@ -512,14 +512,17 @@
 
     <div id="related_products"  class="product_blocks {if $related_products|@count eq 0}hide{/if}">
         <div class="title">{t}See also{/t}:</div>
-        {foreach from=$related_products item=product key=stack_index}
+        {foreach from=$related_products item=product_data key=stack_index}
+            {assign 'product' $product_data.object}
     <div class="product_wrap">
 
-        <div id="product_target_div_{$stack_index}" stack_index="{$stack_index}" xdraggable="{if $product->get('Web State')=='For Sale' }true{else}false{/if}" xondragstart="drag(event)" product_code="{$product->get('Code')}" product_id="{$product->id}" xondrop="drop(event)" xondragover="allowDrop(event)" class="block four product_showcase " style="margin-bottom:20px;position:relative">
 
-            <div style=padding:4px;height:30px;color:brown ;">
-        </div>
 
+
+        <div id="product_target_div_{$stack_index}"  index_key="{$product_data.index_key}"  stack_index="{$stack_index}" xdraggable="true" xondragstart="drag(event)" product_code="{$product->get('Code')}" product_id="{$product->id}" xondrop="drop(event)" xondragover="allowDrop(event)" class="block four product_showcase " style="margin-bottom:20px;position:relative">
+            <div class="product_header_text related_product fr-view" >
+                {$product_data.header_text}
+            </div>
 
         <div class="wrap_to_center product_image" onCLick="console.log('move')">
             <img draggable="false" class="more_info" src="/art/moreinfo_corner1.png">
@@ -896,6 +899,9 @@
     $('.product_header_text').dblclick(function() {
 
 
+
+
+
      $(this).froalaEditor({
 
 
@@ -913,7 +919,7 @@
          saveParams: {
              webpage_key:  {$category->webpage->id},
              key: $(this).closest('.product_showcase').attr('index_key'),
-             tipo: 'update_product_category_index',
+             tipo: ($(this).hasClass('related_product')?'update_webpage_related_product': 'update_product_category_index'),
              type: 'header_text',
 
 

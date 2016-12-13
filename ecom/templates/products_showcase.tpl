@@ -454,13 +454,17 @@ h1{
 
     <div   class="product_blocks {if $related_products|@count eq 0}hide{/if}">
         <div class="title">{t}Related products{/t}:</div>
-        {foreach from=$related_products item=product key=stack_index}
-        <div class="product_wrap">
+        {foreach from=$related_products item=product_data key=stack_index}
+            {assign 'product' $product_data.object}
+
+            <div class="product_wrap">
 
         <div id="product_target_div_{$stack_index}" stack_index="{$stack_index}"  product_code="{$product->get('Code')}" product_id="{$product->id}"  class="block four product_showcase " style="margin-bottom:20px;position:relative">
 
 
-
+            <div class="product_header_text fr-view" >
+                {$product_data.header_text}
+            </div>
 
         <a href="page.php?id={$product->get('Webpage Key')}">
             <div class="wrap_to_center product_image" >
@@ -520,7 +524,7 @@ h1{
 
             {/if}
         {else}
-            <div class="ordering log_out hide" >
+            <div class="ordering log_out " >
                 <div ><span onClick="location.href='login.php?from={$page->id}'" class="button login_button" >{t}Login{/t}</span></div>
                 <div ><span onClick="location.href='registration.php'" class="button register_button" >{t}Register{/t}</span></div>
             </div>

@@ -337,10 +337,15 @@ class Public_Product {
                 if ($this->data['Product Total Acc Quantity Ordered'] > 0) {
 
 
-                    if($this->get('Product Next Supplier Shipment')){
+
+
+                    if($this->data['Product Next Supplier Shipment']!=''){
                         $title=_('Expected').': '.strftime("%a %e %b %Y",strtotime($this->data['Product Next Supplier Shipment'].' +0:00'));
 
-                        $label=_('Out of stock').' <span style="font-size:85%" title="'.$title.'">('.$this->get('Next Supplier Shipment').')</span>';
+
+
+
+                        $label=_('Out of stock').' <span style="font-size:80%" title="'.$title.'">('.$this->get('Next Supplier Shipment').')</span>';
                     }else{
                         $label=_('Out of stock');
                     }
