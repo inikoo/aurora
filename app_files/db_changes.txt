@@ -462,6 +462,11 @@ Only for bali dw:
 
 
 
+ALTER TABLE `Webpage Related Product Bridge` DROP PRIMARY KEY, ADD UNIQUE (`Webpage Related Product Page Key`, `Webpage Related Product Product ID`) USING BTREE;
+ALTER TABLE `Webpage Related Product Bridge` ADD `Webpage Related Product Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`Webpage Related Product Key`);
+
+
+
 TODO IN COSTA!!!!=====
 
 

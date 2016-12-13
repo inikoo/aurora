@@ -1316,13 +1316,13 @@ class Page extends DB_Table {
 
 
                         $sql = sprintf(
-                            'INSERT INTO  `Webpage Related Product Bridge` (`Webpage Related Product Page Key`,`Webpage Related Product Product ID`,`Webpage Related Product Product Page Key`,`Webpage Related Product Order`) VALUES (%d,%d,%d,%d)  ON DUPLICATE KEY UPDATE `Webpage Related Product Order`=%d ',
-                            $this->id, $product_id, $product_page_keys[$product_id], $order_value, $order_value
+                            'INSERT INTO  `Webpage Related Product Bridge` (`Webpage Related Product Page Key`,`Webpage Related Product Product ID`,`Webpage Related Product Product Page Key`,`Webpage Related Product Published Order`,`Webpage Related Product Order`) VALUES (%d,%d,%d,%d,%d)  ON DUPLICATE KEY UPDATE `Webpage Related Product Order`=%d,`Webpage Related Product Published Order`=%d ',
+                            $this->id, $product_id, $product_page_keys[$product_id], $order_value, $order_value, $order_value, $order_value
 
 
                         );
 
-                        //print "$sql\n";
+
                         $this->db->exec($sql);
                         $order_value++;
 
@@ -2072,6 +2072,29 @@ class Page extends DB_Table {
                 }
 
 
+                $sql = sprintf(
+                    'SELECT `Webpage Related Product Order`,`Webpage Related Product Published Order`,`Webpage Related Product Content Data`,`Webpage Related Product Content Published Data`  FROM  `Webpage Related Product Bridge`  WHERE `Webpage Related Product Page Key`=%d  ',
+                    $this->id
+                );
+
+               // print $sql;
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        if ($row['Webpage Related Product Order'] != $row['Webpage Related Product Published Order']) {
+                            return true;
+                        }
+                        if ($row['Webpage Related Product Content Data'] != $row['Webpage Related Product Content Published Data']) {
+                            return true;
+                        }
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
                 return false;
 
                 break;
@@ -2248,6 +2271,12 @@ class Page extends DB_Table {
             $this->db->exec($sql);
         }
 
+
+        $sql = sprintf(
+            'update  `Webpage Related Product Bridge` set  `Webpage Related Product Content Published Data`=`Webpage Related Product Content Data`,`Webpage Related Product Published Order`=`Webpage Related Product Order` where `Webpage Related Product Page Key`=%d ',
+            $this->id
+        );
+        $this->db->exec($sql);
 
         $this->get_data('id',$this->id);
 

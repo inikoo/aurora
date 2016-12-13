@@ -101,13 +101,30 @@ if ($page->data['Page Store Section Type']=='Family') {
     $related_products = array();
 
     $sql = sprintf(
-        "SELECT `Webpage Related Product Product ID`  FROM `Webpage Related Product Bridge` B  LEFT JOIN `Product Dimension` P ON (`Webpage Related Product Product ID`=P.`Product ID`)  WHERE  `Webpage Related Product Page Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Webpage Related Product Order`",
+        "SELECT `Webpage Related Product Key`,`Webpage Related Product Product ID`,`Webpage Related Product Content Published Data`  FROM `Webpage Related Product Bridge` B  LEFT JOIN `Product Dimension` P ON (`Webpage Related Product Product ID`=P.`Product ID`)  WHERE  `Webpage Related Product Page Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Webpage Related Product Published Order`",
         $public_category->webpage->id
     );
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
-            $related_products[] = new Public_Product($row['Webpage Related Product Product ID']);
+
+
+            if ($row['Webpage Related Product Content Published Data'] == '') {
+                $product_content_data = array('header_text' => '');
+            } else {
+                $product_content_data =json_decode($row['Webpage Related Product Content Published Data'],true);
+
+            }
+
+            $related_products[] = array(
+                'header_text' => (isset($product_content_data['header_text'])?$product_content_data['header_text']:''),
+                'object'      =>  new Public_Product($row['Webpage Related Product Product ID']),
+                'index_key'   => $row['Webpage Related Product Key'],
+
+
+            );
+
+
         }
     } else {
         print_r($error_info = $db->errorInfo());
