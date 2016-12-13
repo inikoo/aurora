@@ -172,6 +172,10 @@ switch ($webpage->get('Page Store Content Template Filename')) {
 
             $html = $smarty->fetch('category.webpage.preview.tpl');
 
+
+
+
+
         }
 
         break;
