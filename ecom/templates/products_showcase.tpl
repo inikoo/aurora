@@ -152,7 +152,7 @@ h1{
 
 
     .more_info{
-        cursor:pointer;position:absolute;width:40px;top:-1px;left:179px}
+        cursor:pointer;position:absolute;width:40px;top:-1px;left:179px;z-index: 200}
 
 
 

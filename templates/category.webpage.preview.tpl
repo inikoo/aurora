@@ -441,9 +441,18 @@
     </div>
 
     <div id="products" class="product_blocks">
+
+
+
+     
     {foreach from=$products item=product_data key=stack_index}
         <div class="product_wrap">
             {assign 'product' $product_data.object}
+
+
+
+
+
             <div id="product_target_div_{$stack_index}" stack_index="{$stack_index}" draggable="{if $product->get('Web State')=='For Sale' }true{else}false{/if}" ondragstart="drag(event)" product_code="{$product->get('Code')}"  index_key="{$product_data.index_key}" product_id="{$product->id}" ondrop="drop(event)" ondragover="allowDrop(event)" class="block four product_showcase " style="margin-bottom:20px;position:relative">
 
                 <div class="product_header_text fr-view" >
@@ -907,7 +916,7 @@
 
          toolbarInline: true,
          charCounterCount: false,
-         toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'color', 'emoticons', '-', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'indent', 'outdent', '-', 'undo', 'redo'],
+         toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'color', 'emoticons', '-', 'fontFamily', 'fontSize','align', 'undo', 'redo'],
 
          saveInterval: 500,
          saveParam: 'value',
