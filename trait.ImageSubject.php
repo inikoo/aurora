@@ -114,36 +114,36 @@ trait ImageSubject {
 
                if($scope_data['scope']=='content'){
 
-
-
                    $content_data = $this->get('Content Data');
-
-
-
-
                    $image_src= '/image_root.php?size=small&id='.$image->id;
+
+
 
 
                    if (isset($content_data[$scope_data['section']])) {
 
-                       if (isset($content_data[$scope_data['section']]['blocks'][$scope_data['block']])) {
+                       if($scope_data['section']=='panels'){
+                           foreach($content_data['panels'] as $panel_key=>$panel){
+                               if($panel['id']==$scope_data['block']){
+                                   $content_data['panels'][$panel_key]['image_src'] = $image_src;
+                               }
+                           }
 
-                           $content_data[$scope_data['section']]['blocks'][$scope_data['block']]['image_src'] = $image_src;
-                       } else {
-                           $content_data[$data['section']]['blocks'][$data['block']] = array(
-                               'image_src' => $image_src,
-                               'type'    => 'image'
-                           );
-
+                       }else{
+                           if (isset($content_data[$scope_data['section']]['blocks'][$scope_data['block']])) {
+                               $content_data[$scope_data['section']]['blocks'][$scope_data['block']]['image_src'] = $image_src;
+                           } else {
+                               $content_data[$data['section']]['blocks'][$data['block']] = array(
+                                   'image_src' => $image_src,
+                                   'type'    => 'image'
+                               );
+                           }
                        }
 
 
+
                    }
-
-
                    $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
-
-
 
                }
 

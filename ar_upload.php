@@ -27,6 +27,8 @@ if (!isset($_REQUEST['tipo'])) {
 }
 
 
+//print_r($_REQUEST);
+
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {

@@ -1,0 +1,134 @@
+ {foreach from=$products item=product_data}
+     {assign stack_index $product_data.stack_index}
+
+            <div class="product_wrap"  stack_index="{$stack_index}" max_free_slots="{$product_data.data.max_free_slots}" >
+
+
+                {if $product_data.type=='product'}
+                    {assign 'product' $product_data.object}
+                    <div id="product_target_div_{$stack_index}" stack_index="{$stack_index}" draggable="{if $product->get('Web State')=='For Sale' }true{else}false{/if}" ondragstart="drag(event)" product_code="{$product->get('Code')}"  index_key="{$product_data.index_key}" product_id="{$product->id}" ondrop="drop(event)" ondragover="allowDrop(event)" class="product_block product_showcase " style="position:relative">
+
+                <div class="product_header_text fr-view" >
+                    {$product_data.header_text}
+                </div>
+               <div class="wrap_to_center product_image" onCLick="console.log('move')">
+                    <img draggable="false" class="more_info" src="/art/moreinfo_corner1.png">
+                    <img draggable="false" src="{$product->get('Image')}" />
+                 </div>
+
+
+                <div class="product_description"  >
+                    <span class="code">{$product->get('Code')}</span>
+                    <div class="name">{$product->get('Name')}</div>
+
+                </div>
+
+
+                <div class="product_prices log_in " >
+                    <div class="product_price">{t}Price{/t}: {$product->get('Price')}</div>
+                    {assign 'rrp' $product->get('RRP')}
+                    {if $rrp!=''}<div>{t}RRP{/t}: {$rrp}</div>{/if}
+                </div>
+
+                <div class="product_prices log_out hide" >
+                    <div >{t}For prices, please login or register{/t}</div>
+                 </div>
+
+
+                {if $product->get('Web State')=='Out of Stock'}
+                    <div class="ordering log_in can_not_order {$product->get('Out of Stock Class')} ">
+
+                        <span class="product_footer label ">{$product->get('Out of Stock Label')}</span>
+                        <span class="product_footer reminder"><i class="fa fa-envelope-o" aria-hidden="true"></i>  </span>
+
+
+                    </div>
+                {else if $product->get('Web State')=='For Sale'}
+
+                <div class="ordering log_in " >
+                    <input maxlength=6  class='order_input ' id='but_qty{$product->id}'   type="text" size='2'  value='{$product->get('Ordered Quantity')}' ovalue='{$product->get('Ordered Quantity')}'>
+                     <span class="product_footer order_button"   ><i class="fa fa-hand-pointer-o" aria-hidden="true"></i> {t}Order now{/t}</span>
+                     <span class="product_footer  favorite "><i class="fa fa-heart-o" aria-hidden="true"></i>  </span>
+
+
+                </div>
+
+
+
+                {/if}
+                <div class="ordering log_out hide" >
+                <div ><span class="login_button" >{t}Login{/t}</span></div>
+                <div ><span class="register_button" >{t}Register{/t}</span></div>
+            </div>
+
+
+            </div>
+                    <div class="product_block product_overlay hide" >
+
+
+
+                    <div class="buttons panel_type"  >
+                        <div class="flex-item button" type="image"><i class="fa fa-picture-o" aria-hidden="true"></i></div>
+                        <div class="flex-item button invisible" type="text"><i class="fa fa-align-center" aria-hidden="true"></i></div>
+                        <div class="flex-item button invisible" type="banner"><i class="fa fa-bullhorn" aria-hidden="true"></i></div>
+                        <div class="flex-item button invisible" type="code"><i class="fa fa-code" aria-hidden="true"></i></div>
+                    </div>
+
+
+
+                    <div  class="buttons super_discreet panel_size">
+                        <div class="flex-item {if $product_data.data.max_free_slots<1}hide{/if}" size="1" >1x</div>
+                        <div class="flex-item {if $product_data.data.max_free_slots<2}hide{/if}" size="2">2x</div>
+                        <div class="flex-item {if $product_data.data.max_free_slots<3}hide{/if}" size="3">3x</div>
+                        <div class="flex-item {if $product_data.data.max_free_slots<4}hide{/if}" size="4">4x</div>
+                    </div>
+
+
+
+
+                </div>
+                {else}
+                    {if $product_data.data.type=='image'}
+                        <div id="{$product_data.data.id}" style="position:relative" class=" panel image panel_{$product_data.data.size}">
+
+
+
+                            <img  src="{$product_data.data.image_src}"  title="{$product_data.data.caption}" />
+
+
+                        <div class="panel_settings buttons">
+
+
+
+
+                            <div class="flex-item button" type="update_image" title="{t}Change image{/t}">
+                                <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
+                                    <input type="file" name="image_upload"  panel_key="{$product_data.data.id}" id="file_upload_{$product_data.data.id}" class="input_file input_file_panel " multiple/>
+                                    <label for="file_upload_{$product_data.data.id}">
+                                        <i class="fa  fa-picture-o fa-fw button" aria-hidden="true"></i><br>
+                                    </label>
+                                </form>
+                                </div>
+                            <div class="flex-item button" type="update_caption"><i class="fa fa-comment caption_icon" aria-hidden="true"></i></div>
+                            <div class="flex-item button" type="update_link"><i class="fa fa-link link_url_icon link_icon" aria-hidden="true"></i></div>
+                            <div class="flex-item button" type="delete_panel" title="{t}Delete panel{/t}"><i class="fa fa-trash error" aria-hidden="true"></i></div>
+                        </div>
+
+
+
+                            <div class="input_container caption hide column_{$stack_index % 4}  " style="">
+                                <input  value="{$product_data.data.caption}" >
+                            </div>
+                            <div class="input_container link_url hide column_{$stack_index % 4}  " style="">
+                                <input  value="{$product_data.data.link}" placeholder="http://">
+                            </div>
+
+                        </div>
+                    {/if}
+
+                {/if}
+
+            </div>
+
+
+ {/foreach}

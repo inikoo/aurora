@@ -48,8 +48,8 @@ switch ($tipo) {
             $_REQUEST, array(
                          'webpage_key' => array('type' => 'key'),
 
-                         'key'     => array('type' => 'key'),
-                         'type'    => array('type' => 'string'),
+                         'key'   => array('type' => 'key'),
+                         'type'  => array('type' => 'string'),
                          'value' => array('type' => 'string')
 
 
@@ -64,8 +64,8 @@ switch ($tipo) {
             $_REQUEST, array(
                          'webpage_key' => array('type' => 'key'),
 
-                         'key'     => array('type' => 'key'),
-                         'type'    => array('type' => 'string'),
+                         'key'   => array('type' => 'key'),
+                         'type'  => array('type' => 'string'),
                          'value' => array('type' => 'string')
 
 
@@ -80,8 +80,11 @@ switch ($tipo) {
                          'parent'     => array('type' => 'string'),
                          'parent_key' => array('type' => 'key'),
                          'section'    => array('type' => 'string'),
-                         'block'      => array('type' => 'string'),
-                         'value'    => array(
+                         'block'      => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         ),
+                         'value'      => array(
                              'type'     => 'string',
                              'optional' => true
                          ),
@@ -92,7 +95,7 @@ switch ($tipo) {
 
                      )
         );
-        webpage_content_data($data, $editor, $db);
+        webpage_content_data($data, $editor, $db, $smarty);
         break;
     case 'edit_webpage':
         $data = prepare_values(
@@ -2423,7 +2426,7 @@ function edit_webpage($data, $editor, $db) {
 
 }
 
-function webpage_content_data($data, $editor, $db) {
+function webpage_content_data($data, $editor, $db, $smarty) {
     // todo migrate to Webpage & WebpageVersion classes
     include_once('class.Page.php');
     $webpage = new Page($data['parent_key']);
@@ -2459,19 +2462,59 @@ function webpage_content_data($data, $editor, $db) {
 
 
         }
-    }elseif ($data['type'] == 'caption') {
+    } elseif ($data['type'] == 'caption') {
         if (isset($content_data[$data['section']])) {
-            if (isset($content_data[$data['section']]['blocks'][$data['block']])) {
-                $content_data[$data['section']]['blocks'][$data['block']]['caption'] = $data['value'];
+
+
+            if ($data['section'] == 'panels') {
+
+
+                foreach($content_data[$data['section']] as $panel_key=>$panel){
+                    if($data['block']==$panel['id']){
+
+                        $content_data[$data['section']][$panel_key]['caption']=$data['value'];
+                        break;
+                    }
+                }
+
+            } else {
+
+
+                if (isset($content_data[$data['section']]['blocks'][$data['block']])) {
+                    $content_data[$data['section']]['blocks'][$data['block']]['caption'] = $data['value'];
+                }
             }
+
         }
-    }
-    elseif ($data['type'] == 'add_class') {
+    }elseif ($data['type'] == 'link') {
         if (isset($content_data[$data['section']])) {
 
 
+            if ($data['section'] == 'panels') {
 
-            if($data['block']!='') {
+
+                foreach($content_data[$data['section']] as $panel_key=>$panel){
+                    if($data['block']==$panel['id']){
+
+                        $content_data[$data['section']][$panel_key]['link']=$data['value'];
+                        break;
+                    }
+                }
+
+            } else {
+
+
+                if (isset($content_data[$data['section']]['blocks'][$data['block']])) {
+                    $content_data[$data['section']]['blocks'][$data['block']]['link'] = $data['value'];
+                }
+            }
+
+        }
+    } elseif ($data['type'] == 'add_class') {
+        if (isset($content_data[$data['section']])) {
+
+
+            if ($data['block'] != '') {
 
 
                 if (isset($content_data[$data['section']]['blocks'][$data['block']])) {
@@ -2495,7 +2538,7 @@ function webpage_content_data($data, $editor, $db) {
 
                 }
 
-            }else{
+            } else {
 
                 if (isset($content_data[$data['section']]['class'])) {
 
@@ -2517,12 +2560,11 @@ function webpage_content_data($data, $editor, $db) {
             }
 
         }
-    }
-    elseif ($data['type'] == 'remove_class') {
+    } elseif ($data['type'] == 'remove_class') {
         if (isset($content_data[$data['section']])) {
 
 
-            if($data['block']!='') {
+            if ($data['block'] != '') {
 
                 if (isset($content_data[$data['section']]['blocks'][$data['block']])) {
 
@@ -2542,16 +2584,13 @@ function webpage_content_data($data, $editor, $db) {
 
                 }
 
-            }else{
+            } else {
                 if (isset($content_data[$data['section']]['class'])) {
 
                     $classes = preg_split('/\s+/', $content_data[$data['section']]['class']);
 
 
-
-
-
-                        $classes = array_diff($classes, preg_split('/\s+/', $data['value']));
+                    $classes = array_diff($classes, preg_split('/\s+/', $data['value']));
 
 
                     $content_data[$data['section']]['class'] = trim(join(' ', $classes));
@@ -2562,38 +2601,84 @@ function webpage_content_data($data, $editor, $db) {
             }
 
         }
-    }
-    elseif ($data['type'] == 'add_image') {
+    } elseif ($data['type'] == 'add_image') {
         if (isset($content_data[$data['section']])) {
 
 
-
-            $content_data[$data['section']]['blocks'][$data['block']]=array(
+            $content_data[$data['section']]['blocks'][$data['block']] = array(
                 'type'      => 'image',
                 'image_src' => $data['value'],
-                'caption'=>'',
-                'class'    => ''
+                'caption'   => '',
+                'class'     => ''
 
             );
 
 
-
-
         }
-    }
-    elseif ($data['type'] == 'remove_block') {
+    } elseif ($data['type'] == 'remove_block') {
         if (isset($content_data[$data['section']])) {
 
-                $blocks=$content_data[$data['section']]['blocks'];
 
-                unset($content_data[$data['section']]['blocks'][$data['block']]);
-
-
-
-
+            unset($content_data[$data['section']]['blocks'][$data['block']]);
 
 
         }
+    } elseif ($data['type'] == 'add_panel') {
+
+        $panel_data = json_decode($data['value'], true);
+
+
+        $size_tag = $panel_data['size'].'x';
+
+        $panel = array(
+            'id'   => $data['block'],
+            'type' => $panel_data['type'],
+            'size' => $size_tag
+
+        );
+
+        if ($panel_data['type'] == 'image') {
+
+
+            $panel['image_src'] = '/art/panel_'.$size_tag.'_1.png';
+            $panel['link']      = '';
+            $panel['caption']   = '';
+        }
+
+        $content_data['panels'][$panel_data['stack_index']] = $panel;
+
+        $webpage->load_scope();
+        if ($webpage->scope_found == 'Category') {
+            $products_html = get_products_html($data, $content_data, $webpage, $smarty, $db);
+
+        }
+
+        //  print_r( $content_data);
+
+    } elseif ($data['type'] == 'remove_panel') {
+
+
+        if (isset($content_data['panels'])) {
+
+
+            foreach ($content_data['panels'] as $panel_key => $panel) {
+                if ($panel['id'] == $data['block']) {
+                    unset($content_data['panels'][$panel_key]);
+                    break;
+                }
+
+            }
+
+            $webpage->load_scope();
+            if ($webpage->scope_found == 'Category') {
+                $products_html = get_products_html($data, $content_data, $webpage, $smarty, $db);
+
+            }
+
+
+        }
+
+
     }
 
     $webpage->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
@@ -2602,10 +2687,15 @@ function webpage_content_data($data, $editor, $db) {
     $response = array(
         'state'   => 200,
         'content' => (isset($data['value']) ? $data['value'] : ''),
-        'publish' => $webpage->get('Publish')
+        'publish' => $webpage->get('Publish'),
 
 
     );
+
+    if (isset($products_html)) {
+        $response['products'] = $products_html;
+    }
+
     echo json_encode($response);
 
 
@@ -2729,6 +2819,253 @@ function publish_webpage($data, $editor, $db) {
     );
     echo json_encode($response);
 
+
+}
+
+
+function get_products_html($data, $content_data, $webpage, $smarty, $db) {
+
+    include_once 'class.Public_Product.php';
+    $public_category = new Public_Category($webpage->scope->id);
+    $public_category->load_webpage();
+
+
+
+    if (isset($content_data['panels'])) {
+        $panels = $content_data['panels'];
+    } else {
+        $panels = array();
+    }
+
+    ksort($panels);
+    $products = array();
+
+    $sql = sprintf(
+        "SELECT `Product Category Index Key`,`Product Category Index Content Data`,`Product Category Index Product ID`,`Product Category Index Category Key`,`Product Category Index Stack`, P.`Product ID`,`Product Code`,`Product Web State` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Index` S ON (`Subject Key`=S.`Product Category Index Product ID` AND S.`Product Category Index Category Key`=B.`Category Key`)  WHERE  `Category Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Product Web State`,   ifnull(`Product Category Index Stack`,99999999)",
+        $public_category->id
+    );
+
+
+    $stack_index = 0;
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $row) {
+
+
+            if (isset($panels[$stack_index])) {
+                $products[] = array(
+                    'type' => 'panel',
+                    'data' => $panels[$stack_index]
+                );
+
+                $size=floatval($panels[$stack_index]['size']);
+
+
+
+
+                unset($panels[$stack_index]);
+                $stack_index+=$size;
+
+                list($stack_index, $products) = get_next_panel($stack_index, $products, $panels);
+
+            }
+
+
+            if ($row['Product Category Index Content Data'] == '') {
+                $product_content_data = array('header_text' => '');
+            } else {
+                $product_content_data = json_decode($row['Product Category Index Content Data'], true);
+
+            }
+
+            $products[] = array(
+                'type'        => 'product',
+                'object'      => new Public_Product($row['Product ID']),
+                'index_key'   => $row['Product Category Index Key'],
+                'header_text' => (isset($product_content_data['header_text']) ? $product_content_data['header_text'] : '')
+            );
+
+            $stack_index++;
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+    //  print_r($products);
+
+
+    $panel_rows=array();
+    $max_row_free_slots=array();
+    $max_cell_free_slots=array();
+
+    $row_index=-1;
+
+    $stack_index=-1;
+
+    foreach($products as $key=>$item){
+
+
+        if($item['type']=='product'){
+            $stack_index++;
+        }else{
+            $stack_index+=floatval($item['data']['size']);
+        }
+        $products[$key]['stack_index']=$stack_index;
+
+
+
+        $current_row=floor($stack_index/4);
+        if($row_index!=$current_row){
+            //       print "- $current_row \n";
+            $row_index=$current_row;
+            $max_free_slots=0;
+            $current_free_slots=0;
+
+
+
+
+        }
+
+        if($item['type']=='product'){
+            $current_free_slots++;
+            if($current_free_slots>$max_free_slots){
+                $max_free_slots=$current_free_slots;
+            }
+        }else{
+
+            //$key+=floatval($item['data']['size'])-1;
+
+            if($current_free_slots>$max_free_slots){
+                $max_free_slots=$current_free_slots;
+            }
+            $current_free_slots=0;
+        }
+
+
+
+
+        //      print "$stack_index ".($stack_index%4)." ".floor($stack_index/4)." | $current_free_slots $max_free_slots  \n";
+        if($item['type']=='panel'){
+
+
+            if(isset($panel_rows[floor($stack_index/4)])){
+                $panel_rows[floor($stack_index/4)]+=floatval($item['data']['size']);
+            }else{
+                $panel_rows[floor($stack_index/4)]=floatval($item['data']['size']);
+            }
+
+        }
+
+        $max_row_free_slots[$current_row]=$max_free_slots ;
+
+
+
+
+
+        if($stack_index%4==1 and $item['type']!='product'
+            and $products[$stack_index-1]['type']=='product'
+        ){
+            $max_cell_free_slots[$stack_index-1]=1;
+
+        }
+
+
+    }
+
+    //   print_r(  $max_row_free_slots);
+    //    print_r(  $max_cell_free_slots);
+
+    $stack_index=-1;
+    foreach($products as $key=>$item){
+
+        if($item['type']=='product'){
+            $stack_index++;
+        }else{
+            $stack_index+=floatval($item['data']['size']);
+        }
+
+        $current_row=floor($stack_index/4);
+        if(isset($panel_rows[$current_row])){
+            $panels_in_row = $panel_rows[$current_row];
+        }else {
+            $panels_in_row = 0;
+        }
+        $products[$key]['data']['panels_in_row']= $panels_in_row ;
+        $products[$key]['data']['max_free_slots']= $max_row_free_slots[$current_row] ;
+        if(isset($max_cell_free_slots[$stack_index])){
+            $products[$stack_index]['data']['max_free_slots']= $max_cell_free_slots[$stack_index];
+        }
+
+
+    }
+    // print_r($panel_rows);
+    // print_r($products);
+
+
+    $related_products = array();
+
+    $sql = sprintf(
+        "SELECT `Webpage Related Product Key`,`Webpage Related Product Product ID`,`Webpage Related Product Content Data`  FROM `Webpage Related Product Bridge` B  LEFT JOIN `Product Dimension` P ON (`Webpage Related Product Product ID`=P.`Product ID`)  WHERE  `Webpage Related Product Page Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Webpage Related Product Order`",
+        $webpage->id
+    );
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+            if ($row['Webpage Related Product Content Data'] == '') {
+                $product_content_data = array('header_text' => '');
+            } else {
+                $product_content_data = json_decode($row['Webpage Related Product Content Data'], true);
+
+            }
+
+            $related_products[] = array(
+                'header_text' => (isset($product_content_data['header_text']) ? $product_content_data['header_text'] : ''),
+                'object'      => new Public_Product($row['Webpage Related Product Product ID']),
+                'index_key'   => $row['Webpage Related Product Key'],
+
+
+            );
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+
+    $smarty->assign('products', $products);
+    $smarty->assign('content_data', $content_data);
+
+    $smarty->assign('category', $public_category);
+
+
+    return $smarty->fetch('category.webpage.preview.products.tpl');
+
+
+}
+
+function get_next_panel($stack_index, $products, $panels) {
+
+    if (isset($panels[$stack_index])) {
+        $products[] = array(
+            'type' => 'panel',
+            'data' => $panels[$stack_index]
+        );
+
+        $size=floatval($panels[$stack_index]['size']);
+        unset($panels[$stack_index]);
+        $stack_index+=$size;
+        list($stack_index, $products) = get_next_panel($stack_index, $products, $panels);
+    }
+
+    return array(
+        $stack_index,
+        $products
+    );
 
 }
 

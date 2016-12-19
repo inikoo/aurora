@@ -66,6 +66,16 @@ if ($page->data['Page Store Section Type']=='Family') {
 	}
 
 
+    $content_data = $public_category->webpage->get('Content Data');
+
+
+
+
+    if (isset($content_data['panels'])) {
+        $panels = $content_data['panels'];
+    } else {
+        $panels = array();
+    }
 
 
 
@@ -76,9 +86,33 @@ if ($page->data['Page Store Section Type']=='Family') {
 		$public_category->id
 	);
 
-
+    $stack_index = 0;
 	if ($result = $db->query($sql)) {
 		foreach ($result as $row) {
+
+
+		//	print $stack_index."\n";
+
+            if (isset($panels[$stack_index])) {
+                $products[] = array(
+                    'type' => 'panel',
+                    'data' => $panels[$stack_index]
+                );
+
+                $size=floatval($panels[$stack_index]['size']);
+
+
+
+
+                unset($panels[$stack_index]);
+                $stack_index+=$size;
+
+                list($stack_index, $products) = get_next_panel($stack_index, $products, $panels);
+
+            }
+
+
+
             if ($row['Product Category Index Content Published Data'] == '') {
                 $product_content_data = array('header_text' => '');
             } else {
@@ -87,9 +121,11 @@ if ($page->data['Page Store Section Type']=='Family') {
             }
 
             $products[] = array(
+                'type'        => 'product',
                 'object'      => new Public_Product($row['Product ID']),
                 'header_text' => (isset($product_content_data['header_text'])?$product_content_data['header_text']:'')
             );
+            $stack_index++;
 		}
 	} else {
 		print_r($error_info = $db->errorInfo());
@@ -132,6 +168,7 @@ if ($page->data['Page Store Section Type']=='Family') {
         exit;
     }
 
+    //print_r($products);
 
 	$smarty->assign('products', $products);
     $smarty->assign('related_products', $related_products);
@@ -162,6 +199,26 @@ $smarty->assign('_site', $_site);
 
 
 
+function get_next_panel($stack_index, $products, $panels) {
+
+    if (isset($panels[$stack_index])) {
+        $products[] = array(
+            'type' => 'panel',
+            'data' => $panels[$stack_index]
+        );
+
+        $size=floatval($panels[$stack_index]['size']);
+        unset($panels[$stack_index]);
+        $stack_index+=$size;
+        list($stack_index, $products) = get_next_panel($stack_index, $products, $panels);
+    }
+
+    return array(
+        $stack_index,
+        $products
+    );
+
+}
 
 
 ?>
