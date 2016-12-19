@@ -135,24 +135,37 @@
 
     }
 
-    .product_blocks    .block {
+    .product_wrap{
+        position: relative;
+        float:left;
+
+        margin-left:18px;
+
+    }
+    .product_block{
+        width:218px;
+        height:318px;
+        margin-bottom:20px;
+    }
+
+    .product_showcase {
         border: 1px solid #ccc;
         background:#fff;
         padding:0px 0px 0px 0px;
 
+
     }
 
-    .product_blocks .block:hover{
+    .product_overlay{
+        position:absolute;top:0px;left:0px; border:1px solid #ccc;
+        background-color: rgba(255,255,255,.9);z-index: 1000;
+
+
+    }
+
+    .product_showcase:hover{
         border:1px solid #A3C5CC;
     }
-
-    .block.four{
-        float:left;width:218px;margin-left:18px;
-    }
-
-
-    .block.product_showcase{
-        height:319px}
 
 
     .wrap_to_center {
@@ -174,7 +187,7 @@
 
 
     .product_description{
-        padding-left:10px;padding-right:10px;display:block;height:51px;
+        padding-left:10px;padding-right:10px;display:block;height:50px;
     }
 
     .product_prices{
@@ -374,6 +387,102 @@
     }
 
 
+    .product_overlay .buttons{
+        padding:5px;display: flex;color:#777
+    }
+
+    .product_overlay .buttons div{
+        border-left:none;
+    }
+    .product_overlay .buttons div:first-of-type{
+        border-left:1px solid #ccc
+    }
+
+    .product_overlay .buttons .selected{
+        background-color: aliceblue;color:#000;
+    }
+
+    .product_overlay .buttons.hide{
+
+    }
+
+    .panel{
+        margin-bottom:20px;
+    }
+
+    .panel .buttons{
+        position:absolute;top:10px;z-index: 2;display:flex;width:200px;margin-left:10px;
+    }
+
+
+
+    .panel .buttons div{
+        cursor: pointer;
+        background-color: snow
+    }
+
+    .panel.image{
+        border:none;
+    }
+
+    .panel_1x{
+        height:320px;width:220px;
+
+    }
+    .panel_2x{
+        height:320px;width:457px;
+
+    }
+
+    .panel_3x{
+        height:320px;width:696px;
+
+    }
+
+    .panel_4x{
+        width:934px;
+
+    }
+    .panel img{
+        height:100%;width:100%;border:none
+
+    }
+
+
+    .caption{
+        position:relative;z-index: 100;border:1px solid #ccc;background-color: white;padding:10px 10px 10px 5px
+
+    }
+
+    .caption input,{
+        width:400px
+    }
+
+    .input_container{
+        position:relative;z-index: 100;border:1px solid #ccc;background-color: white;padding:10px 10px 10px 5px
+
+    }
+
+    .panel .input_container{
+        position:absolute;top:60px;left:10px
+    }
+
+    .panel .input_container.column_3{
+        left:-220px
+    }
+
+
+
+    .input_container input{
+        width:400px
+    }
+    .link_url {
+        width:415px
+    }
+    .link_url input{
+        width:400px
+    }
+
     {$category->webpage->get('CSS')}
 
 </style>
@@ -384,7 +493,6 @@
 
 <span id="ordering_settings" class="hide" data-labels='{ "ordered":"<i class=\"fa fa-thumbs-o-up fa-flip-horizontal \" aria-hidden=\"true\"></i> {t}Ordered{/t}", "order":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {t}Order now{/t}", "update":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {t}Update{/t}"  }'></span>
 
-{assign 'content_data' $category->webpage->get('Content Data')}
 
 <div id="page_content" style="position:relative">
 
@@ -409,8 +517,8 @@
 
 
             <i class="fa caption_icon fa-comment  fa-fw button " style="margin-top:5px"  aria-hidden="true"></i><br>
-            <div class="caption hide" style="position:relative;z-index: 100;border:1px solid #ccc;background-color: white;padding:10px 10px 10px 5px">
-                <input id="caption_input" value="" style="width:400px">
+            <div class="caption hide" >
+                <input id="caption_input" value="" >
             </div>
             <i class="fa  fa-trash error fa-fw button   " style="margin-top:20px" aria-hidden="true"></i><br>
       </div>
@@ -441,94 +549,24 @@
     </div>
 
     <div id="products" class="product_blocks">
-
-
-
-     
-    {foreach from=$products item=product_data key=stack_index}
-        <div class="product_wrap">
-            {assign 'product' $product_data.object}
-
-
-
-
-
-            <div id="product_target_div_{$stack_index}" stack_index="{$stack_index}" draggable="{if $product->get('Web State')=='For Sale' }true{else}false{/if}" ondragstart="drag(event)" product_code="{$product->get('Code')}"  index_key="{$product_data.index_key}" product_id="{$product->id}" ondrop="drop(event)" ondragover="allowDrop(event)" class="block four product_showcase " style="margin-bottom:20px;position:relative">
-
-                <div class="product_header_text fr-view" >
-                    {$product_data.header_text}
-                </div>
-
-
-                <div class="wrap_to_center product_image" onCLick="console.log('move')">
-                    <img draggable="false" class="more_info" src="/art/moreinfo_corner1.png">
-                    <img draggable="false" src="{$product->get('Image')}" />
-                 </div>
-
-
-                <div class="product_description"  >
-                    <span class="code">{$product->get('Code')}</span>
-                    <div class="name">{$product->get('Name')}</div>
-
-                </div>
-
-
-                <div class="product_prices log_in " >
-                    <div class="product_price">{t}Price{/t}: {$product->get('Price')}</div>
-                    {assign 'rrp' $product->get('RRP')}
-                    {if $rrp!=''}<div>{t}RRP{/t}: {$rrp}</div>{/if}
-                </div>
-
-                <div class="product_prices log_out hide" >
-                    <div >{t}For prices, please login or register{/t}</div>
-                 </div>
-
-
-                {if $product->get('Web State')=='Out of Stock'}
-                    <div class="ordering log_in can_not_order {$product->get('Out of Stock Class')} ">
-
-                        <span class="product_footer label ">{$product->get('Out of Stock Label')}</span>
-                        <span class="product_footer reminder"><i class="fa fa-envelope-o" aria-hidden="true"></i>  </span>
-
-
-                    </div>
-                {else if $product->get('Web State')=='For Sale'}
-
-                <div class="ordering log_in " >
-                    <input maxlength=6  class='order_input ' id='but_qty{$product->id}'   type="text" size='2'  value='{$product->get('Ordered Quantity')}' ovalue='{$product->get('Ordered Quantity')}'>
-                     <span class="product_footer order_button"   ><i class="fa fa-hand-pointer-o" aria-hidden="true"></i> {t}Order now{/t}</span>
-                     <span class="product_footer  favorite "><i class="fa fa-heart-o" aria-hidden="true"></i>  </span>
-
-
-                </div>
-
-
-
-                {/if}
-            <div class="ordering log_out hide" >
-                <div ><span class="login_button" >{t}Login{/t}</span></div>
-                <div ><span class="register_button" >{t}Register{/t}</span></div>
-            </div>
-
-
-            </div>
-
-
+        <i id="add_panel" class=" fa fa-building  fa-rotate-180 button" aria-hidden="true" style="position:absolute;left:25px;margin-top:10px"></i>
+        <div id="products_helper">
+         {include file="category.webpage.preview.products.tpl" }
         </div>
-    {/foreach}
-    <div style="clear:both"></div>
+        <div style="clear:both"></div>
     </div>
 
+
     <div id="related_products"  class="product_blocks {if $related_products|@count eq 0}hide{/if}">
-        <div class="title">{t}See also{/t}:</div>
+        <div class="title">{t}Related products{/t}:</div>
         {foreach from=$related_products item=product_data key=stack_index}
             {assign 'product' $product_data.object}
-    <div class="product_wrap">
+            <div class="product_wrap">
 
 
 
 
-        <div id="product_target_div_{$stack_index}"  index_key="{$product_data.index_key}"  stack_index="{$stack_index}" xdraggable="true" xondragstart="drag(event)" product_code="{$product->get('Code')}" product_id="{$product->id}" xondrop="drop(event)" xondragover="allowDrop(event)" class="block four product_showcase " style="margin-bottom:20px;position:relative">
+        <div id="product_target_div_{$stack_index}"  index_key="{$product_data.index_key}"  stack_index="{$stack_index}" xdraggable="true" xondragstart="drag(event)" product_code="{$product->get('Code')}" product_id="{$product->id}" xondrop="drop(event)" xondragover="allowDrop(event)" class="product_block product_showcase " style="margin-bottom:20px;position:relative">
             <div class="product_header_text related_product fr-view" >
                 {$product_data.header_text}
             </div>
@@ -587,6 +625,9 @@
     </div>
 
 
+
+
+
 </div>
 {/foreach}
         <div style="clear:both"></div>
@@ -618,6 +659,8 @@
     
     var save_webpage_content_header_state_timer=false;
     var save_image_caption=false;
+    var save_panel_image_caption_timer=false;
+    var save_panel_image_link_timer=false;
 
     count=1;
 
@@ -637,7 +680,6 @@
     $('#file_upload').on('change', function (e) {
 
 
-
             var ajaxData = new FormData();
 
             //var ajaxData = new FormData( );
@@ -654,17 +696,19 @@
             });
 
 
-            ajaxData.append("tipo", 'upload_images')
-            ajaxData.append("parent", 'old_page')
-            ajaxData.append("parent_key", '{$webpage->id}')
-           ajaxData.append("parent_object_scope", JSON.stringify( {
-               scope:'content',
-               section:  $('#image_edit_toolbar').attr('section'),
-               block: $('#image_edit_toolbar').attr('block')
 
-           } ) )
 
-            var image=$('#'+$('#image_edit_toolbar').attr('block')+' img')
+
+                ajaxData.append("tipo", 'upload_images')
+                ajaxData.append("parent", 'old_page')
+                ajaxData.append("parent_key", '{$webpage->id}')
+                ajaxData.append("parent_object_scope", JSON.stringify({
+                    scope: 'content', section: $('#image_edit_toolbar').attr('section'), block: $('#image_edit_toolbar').attr('block')
+
+                }))
+
+                var image = $('#' + $('#image_edit_toolbar').attr('block') + ' img')
+
 
             $.ajax({
                 url: "/ar_upload.php",
@@ -957,6 +1001,20 @@
          }
      })
 
+    })
+
+
+
+    $('#add_panel').click(function(){
+
+        if(!$(this).hasClass('active')) {
+            $(this).addClass('active')
+            $('#products .product_overlay').removeClass('hide')
+        }else{
+            $(this).removeClass('active')
+            $('#products .product_overlay').addClass('hide')
+
+        }
     })
 
    $('.toggle_description_block').click(function(){
@@ -1274,7 +1332,7 @@ var position=$(this).position();
     }
 
 
-        $('#page_content').on( "dblclick", ".webpage_content_header_text", function() {
+    $('#page_content').on( "dblclick", ".webpage_content_header_text", function() {
 
 
            if(! $('#text_edit_toolbar').hasClass('hide')){
@@ -1292,8 +1350,6 @@ var position=$(this).position();
             left:position.left - 25 + "px",
             top: position.top + 5 + "px"
         }).attr('block',$(this).attr('id'))
-
-
 
 
         $(this).froalaEditor({
@@ -1551,14 +1607,329 @@ var position=$(this).position();
 
     }
 
+   // $('.image_upload').on('change', function (e) {});
 
-    $('.image_upload').on('change', function (e) {
 
-        console.log('caca')
+
+    $('#products_helper').on('click', '.product_overlay .panel_type div', function() {
+
+
+
+      //  $('.product_overlay .panel_type div').click(function() {
+
+
+        $(this).closest('#products').find('.panel_type div').removeClass('selected')
+        $(this).closest('#products').find('.panel_size').addClass('super_discreet')
+
+        $(this).addClass('selected')
+
+
+        var wrap=$(this).closest('.product_wrap')
+
+        if(wrap.attr('max_free_slots')>1){
+            wrap.find('.panel_size').removeClass('super_discreet').find('div').addClass('button')
+        }else{
+            add_panel(wrap.attr('stack_index'),1,$(this).attr('type'))
+        }
+
+    });
+
+    $('#products_helper').on('click', '.product_overlay .panel_size div', function() {
+
+      //  $('.product_overlay .panel_size div').click(function() {
+
+        var wrap=$(this).closest('.product_wrap')
+
+
+        if($(this).parent().hasClass('super_discreet'))return
+
+
+        console.log($(this).closest('.product_overlay').find('.panel_type'))
+
+        add_panel(wrap.attr('stack_index'),$(this).attr('size'),$(this).closest('.product_overlay').find('.panel_type div.selected').attr('type'))
+
 
     });
 
 
+    function add_panel(stack_index,size,type){
+
+        var datetime = new Date();
+
+        var block='panel'+datetime.getTime()
+
+        var request = '/ar_edit.php?tipo=webpage_content_data&parent=page&parent_key=' + {$category->webpage->id} +'&section=products&block=' + block + '&type=add_panel&value='
+            + JSON.stringify({
+                'stack_index':stack_index,'size':size,'type':type})
+
+
+        console.log(type)
+
+        $.getJSON(request, function (data) {
+
+            if (data.state == 200) {
+
+                $('#products_helper').html(data.products)
+
+                if ($('#publish').find('i').hasClass('fa-rocket')) {
+                    if (data.publish) {
+                        $('#publish').addClass('changed valid')
+                    } else {
+                        $('#publish').removeClass('changed valid')
+                    }
+                }
+
+            }
+
+        })
+
+    }
+
+
+    $('#products_helper').on('click', '.panel_settings.buttons .button', function() {
+
+
+
+
+
+
+    var block=$(this).closest('.panel').attr('id')
+
+      switch($(this).attr('type')){
+          case 'delete_panel':
+              console.log('delete')
+              var request = '/ar_edit.php?tipo=webpage_content_data&parent=page&parent_key=' + {$category->webpage->id} +'&section=panels&block=' + block + '&type=remove_panel&value='
+              $.getJSON(request, function (data) {
+
+                  if (data.state == 200) {
+
+                      $('#products_helper').html(data.products)
+
+                      if ($('#publish').find('i').hasClass('fa-rocket')) {
+                          if (data.publish) {
+                              $('#publish').addClass('changed valid')
+                          } else {
+                              $('#publish').removeClass('changed valid')
+                          }
+                      }
+
+                  }
+
+              })
+              break;
+
+          case 'update_caption':
+              var caption=$(this).closest('.panel').find('.caption')
+              if(caption.hasClass('hide')){
+                  caption.removeClass('hide')
+                  caption.find('input').focus().putCursorAtEnd()
+
+
+                  $(this).find('i').addClass('faa-smooth_flash animated faa-slow')
+
+                  var link=$(this).closest('.panel').find('.link_url')
+                  link.addClass('hide')
+                  link.find('i').removeClass('faa-smooth_flash animated faa-slow')
+
+
+
+              }else{
+                  caption.addClass('hide')
+                  $(this).find('i').removeClass('faa-smooth_flash animated faa-slow')
+              }
+              break;
+          case 'update_link':
+              var link=$(this).closest('.panel').find('.link_url')
+              if(link.hasClass('hide')){
+                  link.removeClass('hide')
+                  link.find('input').focus().putCursorAtEnd()
+
+                  $(this).find('i').addClass('faa-smooth_flash animated faa-slow')
+
+                  var caption=$(this).closest('.panel').find('.caption')
+                  caption.addClass('hide')
+                  caption.find('i').removeClass('faa-smooth_flash animated faa-slow')
+
+
+              }else{
+                  link.addClass('hide')
+                  $(this).find('i').removeClass('faa-smooth_flash animated faa-slow')
+              }
+              break;   
+
+      }
+
+
+
+    });
+
+
+
+
+    function save_panel_image_option(type,input) {
+
+        var block=input.closest('.panel').attr('id')
+        var input_icon=input.closest('.panel').find('.'+type+'_icon')
+
+        var request = '/ar_edit.php?tipo=webpage_content_data&parent=page&parent_key=' + {$category->webpage->id} +'&section=panels&block=' + block + '&type='+type+'&value=' + input.val()
+        console.log(request)
+
+        $.getJSON(request, function (data) {
+
+            if (data.state == 200) {
+
+                if(type=='caption'){
+                    icon_class='fa-comment'
+                }else{
+                    icon_class='fa-link'
+                }
+                
+                input_icon.addClass('faa-smooth_flash animated faa-slow '+icon_class).removeClass('fa-spinner fa-spin')
+
+
+                if ($('#publish').find('i').hasClass('fa-rocket')) {
+                    if (data.publish) {
+                        $('#publish').addClass('changed valid')
+                    } else {
+                        $('#publish').removeClass('changed valid')
+                    }
+                }
+
+            }
+
+        })
+
+    }
+
+
+    $('#products_helper').on('input propertychange', '.panel .caption', function() {
+
+
+
+    //    $(".panel .caption").on('input propertychange', function(){
+
+        $(this).closest('.panel').find('.caption_icon').removeClass('faa-smooth_flash animated faa-slow fa-comment').addClass('fa-spinner fa-spin')
+
+
+        var element=$(this).find('input')
+        if(save_panel_image_caption_timer)
+           clearTimeout(save_panel_image_caption_timer);
+
+
+
+        save_panel_image_caption_timer = setTimeout(function(){
+            save_panel_image_option('caption',element)
+        }, 400);
+
+
+    })
+
+
+    $('#products_helper').on('input propertychange', '.panel .link_url', function() {
+
+
+        //   $(".panel .link_url").on('input propertychange', function(){
+
+        $(this).closest('.panel').find('.link_icon').removeClass('faa-smooth_flash animated faa-slow fa-link').addClass('fa-spinner fa-spin')
+
+
+        var element=$(this).find('input')
+        if(save_panel_image_link_timer)
+            clearTimeout(save_panel_image_link_timer);
+
+
+
+        save_panel_image_link_timer = setTimeout(function(){
+            save_panel_image_option('link',element)
+        }, 400);
+
+
+    })
+
+    $('#products_helper').on('change', '.input_file_panel', function() {
+
+
+   // $('.input_file_panel').on('change', function (e) {
+
+        console.log('caca')
+
+        var ajaxData = new FormData();
+
+        //var ajaxData = new FormData( );
+        if (droppedFiles) {
+            $.each(droppedFiles, function (i, file) {
+                ajaxData.append('files', file);
+            });
+        }
+
+
+        $.each($('#file_upload_'+$(this).attr('panel_key')).prop("files"), function (i, file) {
+            ajaxData.append("files[" + i + "]", file);
+
+        });
+
+
+
+
+
+        ajaxData.append("tipo", 'upload_images')
+        ajaxData.append("parent", 'old_page')
+        ajaxData.append("parent_key", '{$webpage->id}')
+        ajaxData.append("parent_object_scope", JSON.stringify({
+            scope: 'content', section: 'panels', block: $(this).attr('panel_key')
+
+        }))
+
+        var image = $(this).closest('.panel').find('img')
+
+
+        $.ajax({
+            url: "/ar_upload.php",
+            type: 'POST',
+            data: ajaxData,
+            dataType: 'json',
+            cache: false,
+            contentType: false,
+            processData: false,
+
+
+            complete: function () {
+
+            },
+            success: function (data) {
+
+                console.log(data)
+
+                if (data.state == '200') {
+                    console.log(data.image_src)
+                    image.attr('src',data.image_src)
+
+                    if($('#publish').find('i').hasClass('fa-rocket')) {
+
+                        if (data.publish) {
+                            $('#publish').addClass('changed valid')
+                        } else {
+                            $('#publish').removeClass('changed valid')
+                        }
+                    }
+
+
+
+
+                } else if (data.state == '400') {
+
+                }
+
+
+            },
+            error: function () {
+
+            }
+        });
+
+
+
+    });
 
 
 </script>

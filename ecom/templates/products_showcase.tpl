@@ -72,7 +72,7 @@ h1{
 
     #description_block{
         position:relative; width:935px;margin:auto;
-        padding:0px;margin-top:20px;
+        padding:0px;margin-top:20px;margin-bottom: 20px;
 
     }
 
@@ -89,29 +89,57 @@ h1{
     }
 
 
-    .product_blocks{
+    .xproduct_blocks{
         width:970px;margin:auto;
         margin-top:20px
     }
 
-    .product_blocks    .block {
+    .xproduct_showcase {
         border: 1px solid #ccc;
         background:#fff;
         padding:0px 0px 0px 0px;
-
+        float:left;width:218px;margin-left:18px;
+        height:319px
     }
 
-    .product_blocks .block:hover{
+
+
+     .product_blocks{
+         width:970px;margin:auto;
+
+     }
+
+     .product_wrap{
+         position: relative;
+         float:left;
+
+         margin-left:18px;
+
+     }
+     .product_block{
+         width:218px;
+         height:318px;
+         margin-bottom:20px;   float:left
+     }
+
+     .product_showcase {
+         border: 1px solid #ccc;
+         background:#fff;
+         padding:0px 0px 0px 0px;
+
+
+     }
+
+
+
+
+     .product_showcase:hover{
         border:1px solid #A3C5CC;
     }
 
-    .block.four{
-        float:left;width:218px;margin-left:18px;
-    }
 
 
-    .block.product_showcase{
-        height:319px}
+
 
 
     .wrap_to_center {
@@ -327,7 +355,53 @@ h1{
      }
 
 
-    {$category->webpage->get('Published CSS')}
+
+
+     .panel{
+         margin-bottom:20px;
+     }
+
+     .panel .buttons{
+         position:absolute;top:10px;z-index: 2;display:flex;width:200px;margin-left:10px;
+     }
+
+
+
+     .panel .buttons div{
+         cursor: pointer;
+         background-color: snow
+     }
+
+     .panel.image{
+         border:none;
+     }
+
+     .panel_1x{
+         height:320px;width:220px;
+
+     }
+     .panel_2x{
+         height:320px;width:457px;
+
+     }
+
+     .panel_3x{
+         height:320px;width:696px;
+
+     }
+
+     .panel_4x{
+         width:934px;
+
+     }
+     .panel img{
+         height:100%;width:100%;border:none
+
+     }
+
+
+
+     {$category->webpage->get('Published CSS')}
 
 </style>
 
@@ -352,7 +426,7 @@ h1{
             {$data.content}
         </div>
         {elseif $data.type=='image'}
-            <div id="webpage_content_header_image" class="webpage_content_header"  >
+            <div  id="{$id}" class="webpage_content_header webpage_content_header_image"  >
                 <img  src="{$data.image_src}"  style="width:100%"  title="{if isset($data.caption)}{$data.caption}{/if}" />
             </div>
         {/if}
@@ -372,8 +446,10 @@ h1{
     
     {foreach from=$products item=product_data key=stack_index}
         <div class="product_wrap">
+
+            {if $product_data.type=='product'}
             {assign 'product' $product_data.object}
-            <div id="product_target_div_{$stack_index}" stack_index="{$stack_index}"  product_code="{$product->get('Code')}" product_id="{$product->id}"  class="block four product_showcase " style="margin-bottom:20px;position:relative">
+            <div id="product_target_div_{$stack_index}" stack_index="{$stack_index}"  product_code="{$product->get('Code')}" product_id="{$product->id}"  class="product_block product_showcase " style="margin-bottom:20px;position:relative">
 
 
                 <div class="product_header_text fr-view" >
@@ -446,6 +522,25 @@ h1{
                 {/if}
 
             </div>
+            {else}
+                {if $product_data.data.type=='image'}
+                    <div id="{$product_data.data.id}" style="position:relative" class=" panel image panel_{$product_data.data.size}">
+
+
+                        {if $product_data.data.link!=''}
+                            <a href="{$product_data.data.link}"><img  src="{$product_data.data.image_src}"  title="{$product_data.data.caption}" /></a>
+                        {else}
+                            <img  src="{$product_data.data.image_src}"  title="{$product_data.data.caption}" />
+                        {/if}
+
+
+
+
+
+
+                    </div>
+                {/if}
+            {/if}
         </div>
     {/foreach}
     <div style="clear:both"></div>
@@ -459,7 +554,7 @@ h1{
 
             <div class="product_wrap">
 
-        <div id="product_target_div_{$stack_index}" stack_index="{$stack_index}"  product_code="{$product->get('Code')}" product_id="{$product->id}"  class="block four product_showcase " style="margin-bottom:20px;position:relative">
+        <div id="product_target_div_{$stack_index}" stack_index="{$stack_index}"  product_code="{$product->get('Code')}" product_id="{$product->id}"  class="product_block product_showcase " style="margin-bottom:20px;position:relative">
 
 
             <div class="product_header_text fr-view" >

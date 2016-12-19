@@ -11,6 +11,10 @@
     {if $_DEVEL}
         <link href="/css/jquery-ui.css" rel="stylesheet">
         <link href="/css/font-awesome.css" rel="stylesheet">
+        <link href="/css/font-awesome-animation.css" rel="stylesheet">
+
+
+
         <link href="/css/intlTelInput.css" rel="stylesheet">
         <link href="/css/countrySelect.css" rel="stylesheet">
         <link href="/css/d3fc.css" rel="stylesheet">
