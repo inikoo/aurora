@@ -551,6 +551,15 @@
 
 
 
+        <div id="text_edit_toolbar" class="edit_toolbar hide" section="description_block" style=" z-index: 200;position:relative;">
+            <i class="fa fa-window-close fa-fw button" style="margin-bottom:10px" aria-hidden="true"></i><br>
+
+            
+            <i class="fa  fa-trash error fa-fw button   " style="margin-top:20px" aria-hidden="true"></i><br>
+        </div>
+
+
+
 
 
         {foreach from=$content_data.description_block.blocks key=id item=data}
@@ -1360,11 +1369,14 @@ var position=$(this).position();
     $('#page_content').on( "dblclick", ".webpage_content_header_text", function() {
 
 
+
            if(! $('#text_edit_toolbar').hasClass('hide')){
+               console.log('caca')
                return
            }
 
             var position=$(this).position();
+
 
         $(this).draggable( 'disable' ).resizable('destroy').addClass('editing')
 
@@ -1759,7 +1771,7 @@ var position=$(this).position();
 
                   toolbarInline: true,
                   charCounterCount: false,
-                  toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'color', 'emoticons', '-', 'fontFamily', 'fontSize','align', 'undo', 'redo'],
+                  toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'color', 'emoticons','insertVideo', '-', 'fontFamily', 'fontSize','align', 'undo', 'redo'],
 
                   saveInterval: 500,
                   saveParam: 'value',
@@ -1784,7 +1796,7 @@ var position=$(this).position();
                   },
                   imageUploadMethod: 'POST',
                   imageMaxSize: 5 * 1024 * 1024,
-                  imageAllowedTypes: ['jpeg', 'jpg', 'png'],
+                  imageAllowedTypes: ['jpeg', 'jpg', 'png','gif'],
 
 
                   saveParams: {
