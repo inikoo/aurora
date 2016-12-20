@@ -164,7 +164,7 @@ switch ($webpage->get('Page Store Content Template Filename')) {
                 exit;
             }
 
-          //  print_r($products);
+           // print_r($products);
 
 
             $panel_rows=array();

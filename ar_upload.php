@@ -27,7 +27,6 @@ if (!isset($_REQUEST['tipo'])) {
 }
 
 
-//print_r($_REQUEST);
 
 $tipo = $_REQUEST['tipo'];
 
@@ -97,7 +96,7 @@ switch ($tipo) {
                              'type'     => 'string',
                              'optional' => true
                          ),
-
+                         'response_type'              => array('type' => 'string', 'optional' => true),
                      )
         );
 
@@ -324,9 +323,9 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
     }
 
 
-    if (empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD'])
-        && strtolower($_SERVER['REQUEST_METHOD']) == 'post'
-    ) { //catch file overload error...
+
+
+    if (empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD']) && strtolower($_SERVER['REQUEST_METHOD']) == 'post') { //catch file overload error...
         $postMax  = ini_get('post_max_size'); //grab the size limits...
         $msg      = sprintf(
             _(
@@ -358,7 +357,22 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
     $error_msg = array();
     $uploads   = 0;
 
+
+    if(isset($_FILES['file'])){
+        $_FILES['files']['name'][0]=array($_FILES['file']['name']);
+        $_FILES['files']['size'][0]=$_FILES['file']['size'];
+        $_FILES['files']['tmp_name'][0]=$_FILES['file']['tmp_name'];
+        $_FILES['files']['type'][0]=$_FILES['file']['type'];
+        $_FILES['files']['error'][0]=$_FILES['file']['error'];
+
+    }
+
+   // print_r($_FILES['files']);
+
+
     foreach ($_FILES['files']['name'] as $file_key => $name) {
+
+
 
 
         $error    = $_FILES['files']['error'][$file_key];
@@ -426,33 +440,40 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
 
     }
 
-    if ($uploads > 0) {
-        $msg = '<i class="fa fa-check"></i> '._('Success');
-    } else {
-        $msg = '<i class="fa fa-exclamation-circle"></i>';
+
+    if(isset($data['response_type']) and  $data['response_type']=='froala'){
+        echo json_encode(array('link'=>sprintf('/image_root.php?id=%d', $image->id)));
+    }else{
+        if ($uploads > 0) {
+            $msg = '<i class="fa fa-check"></i> '._('Success');
+        } else {
+            $msg = '<i class="fa fa-exclamation-circle"></i>';
+        }
+
+        $response = array(
+            'state'          => 200,
+            'tipo'           => 'upload_images',
+            'msg'            => $msg,
+            'errors'         => $errors,
+            'error_msg'      => $error_msg,
+            'uploads'        => $uploads,
+            'number_images'  => $parent->get_number_images(),
+            'main_image_key' => $parent->get_main_image_key(),
+            'image_src'      => sprintf('/image_root.php?id=%d', $image->id),
+            'thumbnail'      => sprintf('<img src="/image_root.php?id=%d&size=thumbnail">', $image->id)
+
+
+        );
+
+        // todo remove parent->get_object_name()=='Page' when new class is used
+        if($parent->get_object_name()=='Page' or  $parent->get_object_name()=='Webpage'){
+            $response['publish'] =$parent->get('Publish');
+        }
+
+        echo json_encode($response);
+
     }
 
-    $response = array(
-        'state'          => 200,
-        'tipo'           => 'upload_images',
-        'msg'            => $msg,
-        'errors'         => $errors,
-        'error_msg'      => $error_msg,
-        'uploads'        => $uploads,
-        'number_images'  => $parent->get_number_images(),
-        'main_image_key' => $parent->get_main_image_key(),
-        'image_src'      => sprintf('/image_root.php?id=%d', $image->id),
-        'thumbnail'      => sprintf('<img src="/image_root.php?id=%d&size=thumbnail">', $image->id)
-
-
-    );
-
-    // todo remove parent->get_object_name()=='Page' when new class is used
-    if($parent->get_object_name()=='Page' or  $parent->get_object_name()=='Webpage'){
-        $response['publish'] =$parent->get('Publish');
-    }
-
-    echo json_encode($response);
 
 
 }

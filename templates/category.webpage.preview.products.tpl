@@ -69,7 +69,7 @@
 
                     <div class="buttons panel_type"  >
                         <div class="flex-item button" type="image"><i class="fa fa-picture-o" aria-hidden="true"></i></div>
-                        <div class="flex-item button invisible" type="text"><i class="fa fa-align-center" aria-hidden="true"></i></div>
+                        <div class="flex-item button" type="text"><i class="fa fa-align-center" aria-hidden="true"></i></div>
                         <div class="flex-item button invisible" type="banner"><i class="fa fa-bullhorn" aria-hidden="true"></i></div>
                         <div class="flex-item button invisible" type="code"><i class="fa fa-code" aria-hidden="true"></i></div>
                     </div>
@@ -88,15 +88,48 @@
 
                 </div>
                 {else}
-                    {if $product_data.data.type=='image'}
+
+                {if $product_data.data.type=='text'}
+                    <div id="{$product_data.data.id}" style="position:relative" class=" panel  panel_{$product_data.data.size} {$product_data.data.class}">
+                        <div  class="edit_toolbar hide" section="panels"  style=" z-index: 200;position:absolute;left:-20px;top:7px;">
+                            <i class="fa close_edit_text fa-window-close fa-fw button" style="margin-bottom:10px" aria-hidden="true"></i><br>
+                            <i class="fa  fa-trash error fa-fw button   " style="margin-top:20px" aria-hidden="true"></i><br>
+
+                        </div>
+
+                        <div class="panel_content fr-view">
+                        {$product_data.data.content}
+                       </div>
+
+
+
+
+                        <div class="panel_controls hide">
+                        <div class="panel_settings buttons hide" >
+
+
+                            <div class="flex-item button" type="update_text"><i class="fa fa-pencil edit_text_icon" aria-hidden="true"></i></div>
+                            <div class="flex-item button" type="delete_panel" title="{t}Delete panel{/t}"><i class="fa fa-trash error" aria-hidden="true"></i></div>
+
+                            <div class="flex-item button invisible" type="update_class"><i class="fa fa-css3  class_icon" aria-hidden="true"></i></div>
+                            <div class="flex-item button invisible" ><i class="fa" aria-hidden="true"></i></div>
+
+                        </div>
+                        </div>
+
+                    </div>
+
+
+
+                    {elseif $product_data.data.type=='image'}
                         <div id="{$product_data.data.id}" style="position:relative" class=" panel image panel_{$product_data.data.size}">
 
 
 
                             <img  src="{$product_data.data.image_src}"  title="{$product_data.data.caption}" />
 
-
-                        <div class="panel_settings buttons">
+                            <div class="panel_controls hide">
+                             <div class="panel_settings buttons hide">
 
 
 
@@ -122,7 +155,7 @@
                             <div class="input_container link_url hide column_{$stack_index % 4}  " style="">
                                 <input  value="{$product_data.data.link}" placeholder="http://">
                             </div>
-
+                            </div>
                         </div>
                     {/if}
 

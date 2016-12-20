@@ -120,7 +120,7 @@ switch ($tipo) {
 
                      )
         );
-        edit_category_stack_index($data, $editor);
+        edit_category_stack_index($data, $editor,$smarty,$db);
 
         break;
     case 'calculate_sales':
@@ -2370,7 +2370,7 @@ function calculate_sales($account, $db, $data, $editor) {
 
 }
 
-function edit_category_stack_index($data, $editor) {
+function edit_category_stack_index($data, $editor,$smarty,$db) {
 
     include_once('class.Page.php');
     $webpage = new Page($data['webpage_key']);
@@ -2387,6 +2387,14 @@ function edit_category_stack_index($data, $editor) {
 
 
     );
+
+
+    $products_html = get_products_html($data, $content_data, $webpage, $smarty, $db);
+
+
+    if (isset($products_html)) {
+        $response['products'] = $products_html;
+    }
 
     echo json_encode($response);
 
@@ -2449,16 +2457,34 @@ function webpage_content_data($data, $editor, $db, $smarty) {
 
         if (isset($content_data[$data['section']])) {
 
-            if (isset($content_data[$data['section']]['blocks'][$data['block']])) {
 
-                $content_data[$data['section']]['blocks'][$data['block']]['content'] = $data['value'];
-            } else {
-                $content_data[$data['section']]['blocks'][$data['block']] = array(
-                    'content' => $data['value'],
-                    'type'    => $data['type']
-                );
+            if($data['section']=='panels'){
+                //print_r($data);
+                //print_r($content_data['panels']);
 
+                foreach( $content_data['panels'] as $key=>$value){
+                    if($value['id']==$data['block']){
+                     //   print 'xxxxx';
+                        $content_data['panels'][$key]['content']=$data['value'];
+                    }
+                    break;
+                }
+
+
+            }else{
+                if (isset($content_data[$data['section']]['blocks'][$data['block']])) {
+
+                    $content_data[$data['section']]['blocks'][$data['block']]['content'] = $data['value'];
+                } else {
+                    $content_data[$data['section']]['blocks'][$data['block']] = array(
+                        'content' => $data['value'],
+                        'type'    => $data['type']
+                    );
+
+                }
             }
+
+
 
 
         }
@@ -2643,9 +2669,16 @@ function webpage_content_data($data, $editor, $db, $smarty) {
             $panel['image_src'] = '/art/panel_'.$size_tag.'_1.png';
             $panel['link']      = '';
             $panel['caption']   = '';
+        }else if($panel_data['type'] == 'text'){
+
+            $panel['content']      = 'bla bla bla';
+            $panel['class']   = 'text_panel_default';
+
         }
 
         $content_data['panels'][$panel_data['stack_index']] = $panel;
+
+        ksort($content_data['panels']);
 
         $webpage->load_scope();
         if ($webpage->scope_found == 'Category') {
@@ -2680,6 +2713,9 @@ function webpage_content_data($data, $editor, $db, $smarty) {
 
 
     }
+
+    //print_r($content_data);
+    //exit;
 
     $webpage->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
 
@@ -2740,6 +2776,8 @@ function update_product_category_index($data, $editor, $db) {
     }
 
 
+    $products_html = get_products_html($data, $content_data, $webpage, $smarty, $db);
+
     $response = array(
         'state'   => 200,
         'content' => (isset($data['value']) ? $data['value'] : ''),
@@ -2747,6 +2785,12 @@ function update_product_category_index($data, $editor, $db) {
 
 
     );
+
+    if (isset($products_html)) {
+        $response['products'] = $products_html;
+    }
+
+
     echo json_encode($response);
 
 

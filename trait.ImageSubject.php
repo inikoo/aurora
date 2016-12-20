@@ -112,6 +112,9 @@ trait ImageSubject {
             }
             elseif ($this->table_name == 'Page') {
 
+
+              //  print_r($scope_data);
+
                if($scope_data['scope']=='content'){
 
                    $content_data = $this->get('Content Data');
