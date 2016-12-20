@@ -35,6 +35,8 @@
         <link href="/css/editor/plugins/quick_insert.css" rel="stylesheet">
         <link href="/css/editor/plugins/table.css" rel="stylesheet">
         <link href="/css/editor/plugins/video.css" rel="stylesheet">
+        <link href="/css/editor/plugins/draggable.css" rel="stylesheet">
+
         <link href="/css/amcharts/style.css" rel="stylesheet">
         <link href="/css/sweetalert.css" rel="stylesheet">
 
@@ -79,6 +81,8 @@
         <script type="text/javascript" src="/js/libs/editor/codemirror.js"></script>
         <script type="text/javascript" src="/js/libs/editor/codemirror.xml.js"></script>
         <script type="text/javascript" src="/js/libs/editor/plugins/align.min.js"></script>
+        <script type="text/javascript" src="/js/libs/editor/plugins/draggable.min.js"></script>
+
         <script type="text/javascript" src="/js/libs/editor/plugins/char_counter.min.js"></script>
         <script type="text/javascript" src="/js/libs/editor/plugins/code_beautifier.min.js"></script>
         <script type="text/javascript" src="/js/libs/editor/plugins/code_view.min.js"></script>
