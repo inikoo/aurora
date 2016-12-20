@@ -399,6 +399,31 @@ h1{
 
      }
 
+     .text_panel_default{
+         border:1px solid #ccc;
+
+     }
+
+     .text_panel_default.panel_1x{
+         height:318px;width:218px;
+     }
+
+     .text_panel_default.panel_2x{
+         height:318px;width:455px;
+     }
+
+     .text_panel_default.panel_3x{
+         height:318px;width:694px;
+
+     }
+
+     .text_panel_default.panel_4x{
+         height:318px;width:932px;
+     }
+
+     .text_panel_default .panel_content{
+         margin:20px;
+     }
 
 
      {$category->webpage->get('Published CSS')}
@@ -523,7 +548,20 @@ h1{
 
             </div>
             {else}
-                {if $product_data.data.type=='image'}
+            {if $product_data.data.type=='text'}
+                <div id="{$product_data.data.id}" style="position:relative" class=" panel  panel_{$product_data.data.size} {$product_data.data.class}">
+
+
+                    <div class="panel_content fr-view">
+                        {$product_data.data.content}
+                    </div>
+
+
+
+
+
+                </div>
+                {elseif $product_data.data.type=='image'}
                     <div id="{$product_data.data.id}" style="position:relative" class=" panel image panel_{$product_data.data.size}">
 
 

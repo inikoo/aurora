@@ -391,6 +391,7 @@
         padding:5px;display: flex;color:#777
     }
 
+
     .product_overlay .buttons div{
         border-left:none;
     }
@@ -402,9 +403,7 @@
         background-color: aliceblue;color:#000;
     }
 
-    .product_overlay .buttons.hide{
 
-    }
 
     .panel{
         margin-bottom:20px;
@@ -483,6 +482,33 @@
         width:400px
     }
 
+
+    .text_panel_default{
+        border:1px solid #ccc;
+
+    }
+
+    .text_panel_default.panel_1x{
+        height:318px;width:218px;
+    }
+
+    .text_panel_default.panel_2x{
+        height:318px;width:455px;
+    }
+
+    .text_panel_default.panel_3x{
+        height:318px;width:694px;
+
+    }
+
+    .text_panel_default.panel_4x{
+        height:318px;width:932px;
+    }
+
+    .text_panel_default .panel_content{
+        margin:20px;
+    }
+
     {$category->webpage->get('CSS')}
 
 </style>
@@ -500,8 +526,8 @@
     <div id="description_block" class="section description_block {$content_data.description_block.class} " >
 
 
-        <i class="create_text fa fa-align-center fa-fw button" aria-hidden="true" style="position:absolute;left:-25px;top:10px"></i>
-        <i class="create_image fa fa-picture-o fa-fw button" aria-hidden="true" style="position:absolute;left:-25px;top:30px"></i>
+        <i class="create_text fa fa-align-center fa-fw button" aria-hidden="true" style="position:absolute;left:-40px;top:10px"></i>
+        <i class="create_image fa fa-picture-o fa-fw button" aria-hidden="true" style="position:absolute;left:-40px;top:30px"></i>
 
 
         <div id="image_edit_toolbar" class="edit_toolbar hide" section="description_block" style=" z-index: 200;position:relative;">
@@ -524,11 +550,7 @@
       </div>
 
 
-        <div id="text_edit_toolbar" class="edit_toolbar hide" section="description_block"  style=" z-index: 200;position:relative;">
-            <i class="fa close_edit_text fa-window-close fa-fw button" style="margin-bottom:10px" aria-hidden="true"></i><br>
-            <i class="fa  fa-trash error fa-fw button   " style="margin-top:20px" aria-hidden="true"></i><br>
 
-        </div>
 
 
         {foreach from=$content_data.description_block.blocks key=id item=data}
@@ -549,7 +571,7 @@
     </div>
 
     <div id="products" class="product_blocks">
-        <i id="add_panel" class=" fa fa-building  fa-rotate-180 button" aria-hidden="true" style="position:absolute;left:25px;margin-top:10px"></i>
+        <i id="add_panel" class=" fa fa-building  fa-rotate-180 button" aria-hidden="true" style="position:absolute;left:10px;margin-top:10px"></i>
         <div id="products_helper">
          {include file="category.webpage.preview.products.tpl" }
         </div>
@@ -705,7 +727,8 @@
                 ajaxData.append("parent_object_scope", JSON.stringify({
                     scope: 'content', section: $('#image_edit_toolbar').attr('section'), block: $('#image_edit_toolbar').attr('block')
 
-                }))
+                })
+                )
 
                 var image = $('#' + $('#image_edit_toolbar').attr('block') + ' img')
 
@@ -840,7 +863,7 @@
 
             if(data.state==200){
 
-
+                $('#products_helper').html(data.products)
                 if($('#publish').find('i').hasClass('fa-rocket')) {
 
                     if (data.publish) {
@@ -1010,10 +1033,12 @@
         if(!$(this).hasClass('active')) {
             $(this).addClass('active')
             $('#products .product_overlay').removeClass('hide')
+            $('.panel_controls').removeClass('hide')
+
         }else{
             $(this).removeClass('active')
             $('#products .product_overlay').addClass('hide')
-
+            $('.panel_controls').addClass('hide')
         }
     })
 
@@ -1610,8 +1635,29 @@ var position=$(this).position();
    // $('.image_upload').on('change', function (e) {});
 
 
+    $('#products_helper').on('mouseover', '.panel', function() {
 
-    $('#products_helper').on('click', '.product_overlay .panel_type div', function() {
+
+
+
+        if(!$('#add_panel').hasClass('active') && !$(this).hasClass('editing')  ){
+            $(this).find('.panel_controls').removeClass('hide')
+        }
+
+
+
+    })
+
+    $('#products_helper').on('mouseout', '.panel', function() {
+        if(!$('#add_panel').hasClass('active') && !$(this).hasClass('editing')  ){
+            $(this).find('.panel_controls').addClass('hide')
+        }
+
+
+    })
+
+
+        $('#products_helper').on('click', '.product_overlay .panel_type div', function() {
 
 
 
@@ -1694,8 +1740,93 @@ var position=$(this).position();
 
 
     var block=$(this).closest('.panel').attr('id')
-
+    //console.log($(this).attr('type'))
       switch($(this).attr('type')){
+
+          case 'update_text':
+
+              var panel= $(this).closest('.panel');
+
+              panel.addClass('editing')
+
+              panel.find('.edit_toolbar').removeClass('hide')
+
+              panel.find('.panel_controls').addClass('hide')
+
+
+              panel.find('.panel_content').froalaEditor({
+
+
+                  toolbarInline: true,
+                  charCounterCount: false,
+                  toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'color', 'emoticons', '-', 'fontFamily', 'fontSize','align', 'undo', 'redo'],
+
+                  saveInterval: 500,
+                  saveParam: 'value',
+
+                  saveURL: '/ar_edit.php',
+
+                  saveMethod: 'POST',
+
+
+
+                  imageUploadURL: '/ar_upload.php',
+                  imageUploadParams: {
+                      tipo: 'upload_images',
+                      parent: 'old_page',
+                      parent_key: {$webpage->id},
+                      parent_object_scope:JSON.stringify({
+                          scope: 'content', section: 'panels', block:  panel.attr('id')
+
+                      }),
+                      response_type: 'froala'
+
+                  },
+                  imageUploadMethod: 'POST',
+                  imageMaxSize: 5 * 1024 * 1024,
+                  imageAllowedTypes: ['jpeg', 'jpg', 'png'],
+
+
+                  saveParams: {
+                      parent : 'webpage',
+                      parent_key:  {$category->webpage->id},
+                      section: 'panels',
+                      block: $(this).closest('.panel').attr('id'),
+                      tipo: 'webpage_content_data',
+                      type: 'text',
+
+
+
+                  }
+
+
+              }).on('froalaEditor.save.after', function (e, editor, response) {
+
+
+                  var data=jQuery.parseJSON(response)
+
+                  if(data.state==200){
+
+
+
+                      if($('#publish').find('i').hasClass('fa-rocket')) {
+
+                          if (data.publish) {
+                              $('#publish').addClass('changed valid')
+                          } else {
+                              $('#publish').removeClass('changed valid')
+                          }
+                      }
+
+                  }
+              })
+
+
+
+
+
+
+    break;
           case 'delete_panel':
               console.log('delete')
               var request = '/ar_edit.php?tipo=webpage_content_data&parent=page&parent_key=' + {$category->webpage->id} +'&section=panels&block=' + block + '&type=remove_panel&value='
@@ -1931,5 +2062,42 @@ var position=$(this).position();
 
     });
 
+
+    $('#products_helper').on('click', '.edit_toolbar i', function() {
+        if($(this).hasClass('fa-window-close')){
+
+            $(this).closest('.panel').find('.panel_content').froalaEditor('destroy')
+            $(this).closest('.panel').find('.edit_toolbar').addClass('hide')
+            $(this).closest('.panel').removeClass('editing')
+
+        }else if($(this).hasClass('fa-trash')){
+
+
+            var block=  $(this).closest('.panel').attr('id')
+
+
+            var request = '/ar_edit.php?tipo=webpage_content_data&parent=page&parent_key=' + {$category->webpage->id} +'&section=panels&block=' + block + '&type=remove_panel&value='
+            $.getJSON(request, function (data) {
+
+                if (data.state == 200) {
+
+                    $('#products_helper').html(data.products)
+
+                    if ($('#publish').find('i').hasClass('fa-rocket')) {
+                        if (data.publish) {
+                            $('#publish').addClass('changed valid')
+                        } else {
+                            $('#publish').removeClass('changed valid')
+                        }
+                    }
+
+                }
+
+            })
+
+        }
+
+    }
+    )
 
 </script>
