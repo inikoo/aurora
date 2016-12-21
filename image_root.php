@@ -26,10 +26,7 @@ if (!isset($_REQUEST['id'])) {
 }
 
 
-if (isset($_REQUEST['size']) and preg_match(
-        '/^large|small|thumbnail|tiny$/', $_REQUEST['size']
-    )
-) {
+if (isset($_REQUEST['size']) and preg_match('/^large|small|thumbnail|tiny$/', $_REQUEST['size'])) {
     $size = $_REQUEST['size'];
 } else {
     $size = 'original';
