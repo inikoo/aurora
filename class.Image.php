@@ -29,14 +29,13 @@ class Image {
     var $delete_source_file = false;
 
 
-    public $editor
-        = array(
-            'Author Name'  => false,
-            'Author Alias' => false,
-            'Author Key'   => 0,
-            'User Key'     => 0,
-            'Date'         => false
-        );
+    public $editor = array(
+        'Author Name'  => false,
+        'Author Alias' => false,
+        'Author Key'   => 0,
+        'User Key'     => 0,
+        'Date'         => false
+    );
 
 
     function Image($a1, $a2 = false, $a3 = false) {
@@ -193,22 +192,20 @@ class Image {
 
     function create($data) {
 
-       // print_r($data);
+        // print_r($data);
 
         $tmp_file = $data['upload_data']['tmp_name'];
         unset($data['upload_data']);
         $data['Image File Size'] = filesize($tmp_file);
 
         $data['Image File Format'] = $this->guess_file_format($tmp_file);
-        $im                        = $this->get_image_from_file(
-            $data['Image File Format'], $tmp_file
-        );
+        $im                        = $this->get_image_from_file($data['Image File Format'], $tmp_file);
         if (!$im) {
             return;
         }
 
         // Remove and delete Image Original Filename after migration
-        if(!isset($data['Image Original Filename'])) {
+        if (!isset($data['Image Original Filename'])) {
             $data['Image Original Filename'] = $data['Image Filename'];
         }
 
@@ -218,9 +215,13 @@ class Image {
         unset($data['upload_data']);
 
 
-        $data['Image Data'] = $this->get_image_blob(
-            $im, $data['Image File Format']
-        );
+        if ($data['Image File Format']== 'gif' and $this->is_animated_gif($tmp_file)) {
+            $data['Image Data'] = file_get_contents( $tmp_file);
+        }else{
+            $data['Image Data'] = $this->get_image_blob($im, $data['Image File Format']);
+        }
+
+
 
 
         $keys   = '(';
@@ -666,8 +667,7 @@ class Image {
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-                $subject_types[$row['Subject Type']]
-                    = $row['Image Subject Type'];
+                $subject_types[$row['Subject Type']] = $row['Image Subject Type'];
 
             }
         } else {
@@ -799,6 +799,27 @@ class Image {
         }
 
 
+    }
+
+    function is_animated_gif($filename) {
+        if(!($fh = @fopen($filename, 'rb')))
+            return false;
+        $count = 0;
+        //an animated gif contains multiple "frames", with each frame having a
+        //header made up of:
+        // * a static 4-byte sequence (\x00\x21\xF9\x04)
+        // * 4 variable bytes
+        // * a static 2-byte sequence (\x00\x2C) (some variants may use \x00\x21 ?)
+
+        // We read through the file til we reach the end of the file, or we've found
+        // at least 2 frame headers
+        while(!feof($fh) && $count < 2) {
+            $chunk = fread($fh, 1024 * 100); //read 100kb at a time
+            $count += preg_match_all('#\x00\x21\xF9\x04.{4}\x00(\x2C|\x21)#s', $chunk, $matches);
+        }
+
+        fclose($fh);
+        return $count > 1;
     }
 
 }
