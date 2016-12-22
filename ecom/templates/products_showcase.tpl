@@ -561,7 +561,22 @@ h1{
 
 
                 </div>
-                {elseif $product_data.data.type=='image'}
+            {elseif $product_data.data.type=='code'}
+                <div id="{$product_data.data.id}" code_key="{$product_data.data.key}" style="position:relative;" class=" panel image panel_{$product_data.data.size}">
+
+
+
+
+                    <iframe class="" src="/panel_code.php?id={$product_data.data.key}"  style=" height: 100%;width: 100%;border:none " sandbox="allow-scripts allow-same-origin" >
+                        
+                    </iframe>
+
+                </div>
+
+
+
+
+            {elseif $product_data.data.type=='image'}
                     <div id="{$product_data.data.id}" style="position:relative" class=" panel image panel_{$product_data.data.size}">
 
 

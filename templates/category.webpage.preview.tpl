@@ -873,6 +873,7 @@
             if(data.state==200){
 
                 $('#products_helper').html(data.products)
+                $('#add_panel').removeClass('active')
                 if($('#publish').find('i').hasClass('fa-rocket')) {
 
                     if (data.publish) {
@@ -1735,6 +1736,7 @@ var position=$(this).position();
             if (data.state == 200) {
 
                 $('#products_helper').html(data.products)
+                $('#add_panel').removeClass('active')
 
                 if ($('#publish').find('i').hasClass('fa-rocket')) {
                     if (data.publish) {
@@ -1849,7 +1851,7 @@ var position=$(this).position();
 
 
 
-    break;
+      break;
           case 'delete_panel':
               console.log('delete')
               var request = '/ar_edit.php?tipo=webpage_content_data&parent=page&parent_key=' + {$category->webpage->id} +'&section=panels&block=' + block + '&type=remove_panel&value='
@@ -1858,7 +1860,7 @@ var position=$(this).position();
                   if (data.state == 200) {
 
                       $('#products_helper').html(data.products)
-
+                      $('#add_panel').removeClass('active')
                       if ($('#publish').find('i').hasClass('fa-rocket')) {
                           if (data.publish) {
                               $('#publish').addClass('changed valid')
@@ -1909,7 +1911,32 @@ var position=$(this).position();
                   link.addClass('hide')
                   $(this).find('i').removeClass('faa-smooth_flash animated faa-slow')
               }
-              break;   
+              break;
+          case 'update_code':
+
+              var panel= $(this).closest('.panel');
+
+              panel.addClass('editing')
+
+              panel.find('.code_editor_container').removeClass('hide')
+              panel.find('.edit_toolbar').removeClass('hide')
+
+              panel.find('.panel_controls').addClass('hide')
+              panel.find('iframe').addClass('hide')
+
+
+              var myCodeMirror = CodeMirror.fromTextArea(document.getElementById('code_editor_'+panel.attr('code_key')),
+                  {
+                      lineNumbers: true,
+                      styleActiveLine: true,
+                      matchBrackets: true,
+                      theme: 'dracula'
+                  }
+              );
+
+              $('#'+'code_editor_'+panel.attr('code_key')).data('CodeMirrorInstance', myCodeMirror);
+
+              break;
 
       }
 
@@ -2089,9 +2116,72 @@ var position=$(this).position();
     $('#products_helper').on('click', '.edit_toolbar i', function() {
         if($(this).hasClass('fa-window-close')){
 
-            $(this).closest('.panel').find('.panel_content').froalaEditor('destroy')
-            $(this).closest('.panel').find('.edit_toolbar').addClass('hide')
-            $(this).closest('.panel').removeClass('editing')
+            if($(this).hasClass('text')) {
+
+                $(this).closest('.panel').find('.panel_content').froalaEditor('destroy')
+                $(this).closest('.panel').find('.edit_toolbar').addClass('hide')
+                $(this).closest('.panel').removeClass('editing')
+
+            }else if($(this).hasClass('code')) {
+
+                var panel= $(this).closest('.panel')
+
+               panel.find('.edit_toolbar').addClass('hide')
+                panel.removeClass('editing')
+
+
+
+                var block= panel.attr('id')
+                var type='code';
+
+                var iframe= panel.find('iframe')
+
+
+                var editor=  $('#'+'code_editor_'+ panel.attr('code_key')).data('CodeMirrorInstance');
+
+
+                btoa(editor.getValue())
+
+                var request = '/ar_edit.php?tipo=webpage_content_data&parent=page&parent_key=' + {$category->webpage->id} +'&section=panels&block=' + block + '&type='+type+'&value=' + encodeURIComponent(btoa(editor.getValue()))
+                console.log(request)
+
+               $.getJSON(request, function (data) {
+
+                    if (data.state == 200) {
+
+
+                        iframe.attr( 'src', function ( i, val ) { return val; });
+
+/*
+                        if(type=='caption'){
+                            icon_class='fa-comment'
+                        }else{
+                            icon_class='fa-link'
+                        }
+
+                        input_icon.addClass('faa-smooth_flash animated faa-slow '+icon_class).removeClass('fa-spinner fa-spin')
+*/
+
+                        if ($('#publish').find('i').hasClass('fa-rocket')) {
+                            if (data.publish) {
+                                $('#publish').addClass('changed valid')
+                            } else {
+                                $('#publish').removeClass('changed valid')
+                            }
+                        }
+
+                    }
+
+                })
+
+
+                $(this).closest('.panel').find('iframe').removeClass('hide')
+                $(this).closest('.panel').find('.code_editor_container').addClass('hide')
+
+            }
+
+
+
 
         }else if($(this).hasClass('fa-trash')){
 
@@ -2105,7 +2195,7 @@ var position=$(this).position();
                 if (data.state == 200) {
 
                     $('#products_helper').html(data.products)
-
+                    $('#add_panel').removeClass('active')
                     if ($('#publish').find('i').hasClass('fa-rocket')) {
                         if (data.publish) {
                             $('#publish').addClass('changed valid')

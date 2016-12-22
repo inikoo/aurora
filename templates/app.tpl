@@ -23,6 +23,7 @@
         <link href="/css/editor/froala_editor.css" rel="stylesheet">
         <link href="/css/editor/froala_style.css" rel="stylesheet">
         <link href="/css/editor/codemirror.css" rel="stylesheet">
+        <link href="/css/editor/codemirror_dracula.css" rel="stylesheet">
         <link href="/css/editor/plugins/char_counter.css" rel="stylesheet">
         <link href="/css/editor/plugins/code_view.css" rel="stylesheet">
         <link href="/css/editor/plugins/colors.css" rel="stylesheet">
@@ -80,6 +81,8 @@
         <script type="text/javascript" src="/js/libs/editor/froala_editor.min.js"></script>
         <script type="text/javascript" src="/js/libs/editor/codemirror.js"></script>
         <script type="text/javascript" src="/js/libs/editor/codemirror.xml.js"></script>
+        <script type="text/javascript" src="/js/libs/editor/codemirror_active-line.js"></script>
+
         <script type="text/javascript" src="/js/libs/editor/plugins/align.min.js"></script>
         <script type="text/javascript" src="/js/libs/editor/plugins/draggable.min.js"></script>
 

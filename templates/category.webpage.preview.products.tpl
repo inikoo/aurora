@@ -70,8 +70,8 @@
                     <div class="buttons panel_type"  >
                         <div class="flex-item button" type="image"><i class="fa fa-picture-o" aria-hidden="true"></i></div>
                         <div class="flex-item button" type="text"><i class="fa fa-align-center" aria-hidden="true"></i></div>
+                        <div class="flex-item button " type="code"><i class="fa fa-code" aria-hidden="true"></i></div>
                         <div class="flex-item button invisible" type="banner"><i class="fa fa-bullhorn" aria-hidden="true"></i></div>
-                        <div class="flex-item button invisible" type="code"><i class="fa fa-code" aria-hidden="true"></i></div>
                     </div>
 
 
@@ -92,7 +92,7 @@
                 {if $product_data.data.type=='text'}
                     <div id="{$product_data.data.id}" style="position:relative" class=" panel  panel_{$product_data.data.size} {$product_data.data.class}">
                         <div  class="edit_toolbar hide" section="panels"  style=" z-index: 200;position:absolute;left:-20px;top:7px;">
-                            <i class="fa close_edit_text fa-window-close fa-fw button" style="margin-bottom:10px" aria-hidden="true"></i><br>
+                            <i class="fa close_edit_text fa-window-close fa-fw button text" style="margin-bottom:10px" aria-hidden="true"></i><br>
                             <i class="fa  fa-trash error fa-fw button   " style="margin-top:20px" aria-hidden="true"></i><br>
 
                         </div>
@@ -157,7 +157,46 @@
                             </div>
                             </div>
                         </div>
-                    {/if}
+
+
+                {elseif $product_data.data.type=='code'}
+                    <div id="{$product_data.data.id}" code_key="{$product_data.data.key}" style="position:relative;" class=" panel image panel_{$product_data.data.size}">
+
+
+                        <div  class="edit_toolbar hide" section="panels"  style=" z-index: 200;position:absolute;left:-20px;top:7px;">
+                            <i class="fa close_edit_text fa-window-close fa-fw button code" style="margin-bottom:10px" aria-hidden="true"></i><br>
+                            <i class="fa  fa-trash error fa-fw button   " style="margin-top:20px" aria-hidden="true"></i><br>
+
+                        </div>
+
+                        <iframe class="" src="/panel_code.php?id={$product_data.data.key}"  style="position: absolute; height: 100%;width: 100%;border:none " sandbox="allow-scripts allow-same-origin" />
+
+                        <div class="code_editor_container hide">
+                        <textarea  id="code_editor_{$product_data.data.key}"  style="width:100%;height: 100%">{$product_data.data.content}</textarea>
+
+                            </div>
+                        <div class="panel_controls hide">
+                            <div class="panel_settings buttons hide">
+
+
+
+
+                                <div class="flex-item button" type="update_code"><i class="fa fa-file-code-o code_icon" aria-hidden="true"></i></div>
+                                <div class="flex-item button" type="delete_panel" title="{t}Delete panel{/t}"><i class="fa fa-trash error" aria-hidden="true"></i></div>
+                            </div>
+
+
+
+                            <div class="input_container caption hide column_{$stack_index % 4}  " style="">
+                                <input  value="{$product_data.data.caption}" >
+                            </div>
+                            <div class="input_container link_url hide column_{$stack_index % 4}  " style="">
+                                <input  value="{$product_data.data.link}" placeholder="http://">
+                            </div>
+                        </div>
+
+                    </div>
+                {/if}
 
                 {/if}
 
