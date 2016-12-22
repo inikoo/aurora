@@ -568,7 +568,7 @@ h1{
 
 
                     <iframe class="" src="/panel_code.php?id={$product_data.data.key}"  style=" height: 100%;width: 100%;border:none " sandbox="allow-scripts allow-same-origin" >
-                        
+
                     </iframe>
 
                 </div>
