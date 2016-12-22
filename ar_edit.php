@@ -2458,15 +2458,19 @@ function webpage_content_data($data, $editor, $db, $smarty) {
 
 
             if ($data['section'] == 'panels') {
-                //print_r($data);
-                //print_r($content_data['panels']);
+               // print_r($data);
+              //  print_r($content_data['panels']);
 
                 foreach ($content_data['panels'] as $key => $value) {
+
+                  //  print_r($value);
+
                     if ($value['id'] == $data['block']) {
-                        //   print 'xxxxx';
+                        //  print $data['value'];
                         $content_data['panels'][$key]['content'] = $data['value'];
+                        break;
                     }
-                    break;
+
                 }
 
 

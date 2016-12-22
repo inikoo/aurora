@@ -442,7 +442,7 @@
         width:934px;
 
     }
-    .panel img{
+    .panel .panel_image{
         height:100%;width:100%;border:none
 
     }
@@ -1466,6 +1466,9 @@ var position=$(this).position();
        var block= $('#'+$('#text_edit_toolbar').attr('block'))
 
         block.froalaEditor('destroy')
+        block.addClass('fr-view')
+
+
 
         block.draggable( 'enable' ).removeClass('editing')
 
@@ -2118,7 +2121,14 @@ var position=$(this).position();
 
             if($(this).hasClass('text')) {
 
+
+                var content= $(this).closest('.panel').find('.panel_content').froalaEditor('html.get');
                 $(this).closest('.panel').find('.panel_content').froalaEditor('destroy')
+
+                console.log(content)
+
+              //  $(this).closest('.panel').find('.panel_content').html(content+'<img  src="/image_root.php?id=1301678" style="width: 300px;">');
+                $(this).closest('.panel').find('.panel_content').addClass('fr-view')
                 $(this).closest('.panel').find('.edit_toolbar').addClass('hide')
                 $(this).closest('.panel').removeClass('editing')
 
