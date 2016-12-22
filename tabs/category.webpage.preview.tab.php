@@ -108,6 +108,8 @@ switch ($webpage->get('Page Store Content Template Filename')) {
                 $panels = array();
             }
 
+           // print_r($panels);
+
             ksort($panels);
            $products = array();
 
