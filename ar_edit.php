@@ -2539,7 +2539,7 @@ print_r($_REQUEST);
 
                         $content_data['panels'][$panel_key]['content'] = $code;
 
-                        print_r($content_data);
+                  //      print_r($content_data);
 
                         $sql = sprintf(
                             'UPDATE `Webpage Panel Dimension` SET `Webpage Panel Data`=%s ,`Webpage Panel Metadata`=%s WHERE `Webpage Panel Key`=%d ',
@@ -2548,7 +2548,6 @@ print_r($_REQUEST);
                             $content_data['panels'][$panel_key]['key']
                         );
                         $db->exec($sql);
-print $sql;
                         break;
                     }
                 }
@@ -2758,13 +2757,17 @@ print $sql;
         if (isset($content_data['panels'])) {
 
 
+        //    print_r($content_data['panels']);
             foreach ($content_data['panels'] as $panel_key => $panel) {
                 if ($panel['id'] == $data['block']) {
+                    $sql = sprintf('DELETE FROM `Webpage Panel Dimension` WHERE  `Webpage Panel Key`=%d ',
+                                   $content_data['panels'][$panel_key]['key']
+                                   );
+                    $db->exec($sql);
+
                     unset($content_data['panels'][$panel_key]);
-
-                    $sql = sprintf('DELETE FROM `Webpage Panel Dimension` WHERE  ');
-
                     break;
+
                 }
 
             }
