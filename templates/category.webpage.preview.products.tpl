@@ -147,7 +147,17 @@
                             <div class="flex-item button" type="delete_panel" title="{t}Delete panel{/t}"><i class="fa fa-trash error" aria-hidden="true"></i></div>
                         </div>
 
-
+                        <div style="position: absolute;color: white;top:60px;left:12px">
+                            {if $product_data.data.size=='1x'}
+                            220 x 320
+                            {elseif $product_data.data.size=='2x'}
+                            457 x 320
+                            {elseif $product_data.data.size=='3x'}
+                            696 x 320
+                            {elseif $product_data.data.size=='4x'}
+                                934 x {t}any height{/t}
+                            {/if}
+                        </div>
 
                             <div class="input_container caption hide column_{$stack_index % 4}  " style="">
                                 <input  value="{$product_data.data.caption}" >
