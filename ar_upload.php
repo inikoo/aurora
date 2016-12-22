@@ -359,15 +359,16 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
 
 
     if(isset($_FILES['file'])){
-        $_FILES['files']['name'][0]=array($_FILES['file']['name']);
+        $_FILES['files']['name'][0]=$_FILES['file']['name'];
         $_FILES['files']['size'][0]=$_FILES['file']['size'];
         $_FILES['files']['tmp_name'][0]=$_FILES['file']['tmp_name'];
         $_FILES['files']['type'][0]=$_FILES['file']['type'];
         $_FILES['files']['error'][0]=$_FILES['file']['error'];
 
+
+
     }
 
-   // print_r($_FILES['files']);
 
 
     foreach ($_FILES['files']['name'] as $file_key => $name) {
@@ -419,6 +420,8 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
             'Image Subject Object Image Scope' => $parent_object_scope
 
         );
+
+
 
 
         $image = $parent->add_image($image_data);

@@ -126,7 +126,7 @@
 
 
 
-                            <img  src="{$product_data.data.image_src}"  title="{$product_data.data.caption}" />
+                            <img  class="panel_image" src="{$product_data.data.image_src}"  title="{$product_data.data.caption}" />
 
                             <div class="panel_controls hide">
                              <div class="panel_settings buttons hide">

@@ -521,6 +521,8 @@ function capitalize($str, $encoding = 'UTF-8') {
 
 function prepare_mysql($string, $null_if_empty = true) {
 
+
+
     if (is_numeric($string)) {
         return "'".$string."'";
     } elseif ($string == '' and $null_if_empty) {
