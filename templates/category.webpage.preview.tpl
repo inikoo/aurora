@@ -820,7 +820,7 @@
 
         if(target_stack_index==ev.dataTransfer.getData("stack_index")){
             return;
-        }else if(target_stack_index<ev.dataTransfer.getData("stack_index")){
+        }else{
 
             var tmp_html = product_showcase.html();
             var tmp_product_code = product_showcase.attr('product_code');
@@ -830,11 +830,21 @@
             product_showcase.attr('product_code',ev.dataTransfer.getData("product_code"))
             product_showcase.attr('product_id',ev.dataTransfer.getData("product_id"))
 
-            change_next(  ev.dataTransfer.getData("stack_index") , tmp_html ,tmp_product_code,tmp_product_id,product_showcase.closest('.product_wrap').next().find('.product_showcase'))
-            save_stack_index(target_stack_index,ev.dataTransfer.getData("product_id"))
+           // change_next(  ev.dataTransfer.getData("stack_index") , tmp_html ,tmp_product_code,tmp_product_id,product_showcase.closest('.product_wrap').next().find('.product_showcase'))
 
-        }else{
 
+
+            console.log(target_stack_index)
+
+            if(target_stack_index<ev.dataTransfer.getData("stack_index")){
+                var new_stack_index=(parseFloat(target_stack_index)+0.5)
+            }else{
+                var new_stack_index=(parseFloat(target_stack_index)+1.5)
+
+            }
+
+
+            save_stack_index(new_stack_index,ev.dataTransfer.getData("product_id"))
 
         }
 
@@ -866,7 +876,7 @@
 
     function  save_stack_index(stack_index,product_id) {
 
-        var request = '/ar_edit.php?tipo=edit_category_stack_index&key=' + {$category->id} + '&stack_index=' + (stack_index-0.5) + '&subject_key='+product_id+ '&webpage_key='+{$webpage->id}
+        var request = '/ar_edit.php?tipo=edit_category_stack_index&key=' + {$category->id} + '&stack_index=' +stack_index + '&subject_key='+product_id+ '&webpage_key='+{$webpage->id}
         console.log(request)
         $.getJSON(request, function (data) {
 

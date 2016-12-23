@@ -95,11 +95,15 @@ switch ($webpage->get('Page Store Content Template Filename')) {
         $public_category->load_webpage();
         $content_data = $category->webpage->get('Content Data');
 
+
+        $category->create_stack_index(true);
+
+
         $html = '';
 
         if ($public_category->get('Scope') == 'Product') {
 
-            $category->create_stack_index(true);
+          //  $category->create_stack_index(true);
 
 
             if (isset($content_data['panels'])) {
