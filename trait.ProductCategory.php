@@ -108,7 +108,6 @@ trait ProductCategory {
     }
 
 
-
     function create_product_timeseries($data, $fork_key = 0) {
 
         if ($this->get('Category Branch Type') == 'Root') {
@@ -1072,11 +1071,28 @@ trait ProductCategory {
 
         }
 
+        $sql = sprintf(
+            "SELECT `Product Category Index Key`,`Product Category Index Content Data`,`Product Category Index Product ID`,`Product Category Index Category Key`,`Product Category Index Stack`, P.`Product ID`,`Product Code`,`Product Web State` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Index` S ON (`Subject Key`=S.`Product Category Index Product ID` AND S.`Product Category Index Category Key`=B.`Category Key`)  WHERE  `Category Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY   ifnull(`Product Category Index Stack`,99999999)",
+            $this->id
+        );
+
+
+        $stack_index = 0;
+        if ($result = $this->db->query($sql)) {
+
+            foreach ($result as $row) {
+                //    print_r($row);
+
+            }
+        }
 
     }
 
 
     function change_subject_stack($stack_index, $subject_key) {
+
+
+        //print "$stack_index  $subject_key ";
 
 
         $subjects = array();
@@ -1102,11 +1118,19 @@ trait ProductCategory {
             print "$sql\n";
             exit;
         }
+
+
+        //  print_r($subjects);
+
+
         ksort($subjects);
         $stack_index = 0;
 
 
-        //  print_r($subjects);
+          //print_r($subjects);
+
+          //exit;
+
         foreach ($subjects as $tmp => $product_category_stack_key) {
             $stack_index++;
 

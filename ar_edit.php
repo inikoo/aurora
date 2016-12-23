@@ -2387,8 +2387,9 @@ function edit_category_stack_index($data, $editor, $smarty, $db) {
 
 
     );
-
-
+//print_r($data);
+    $content_data = $webpage->get('Content Data');
+    $webpage->load_scope();
     $products_html = get_products_html($data, $content_data, $webpage, $smarty, $db);
 
 
@@ -2944,6 +2945,8 @@ function publish_webpage($data, $editor, $db) {
 function get_products_html($data, $content_data, $webpage, $smarty, $db) {
 
     include_once 'class.Public_Product.php';
+    include_once 'class.Public_Category.php';
+
     $public_category = new Public_Category($webpage->scope->id);
     $public_category->load_webpage();
 
