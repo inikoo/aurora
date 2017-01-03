@@ -328,7 +328,7 @@ switch ($webpage->get('Page Store Content Template Filename')) {
         // todo remove this when all descriptions are moved inside webpage content data
 
 
-        if ($webpage->id and $webpage->get('Content Data') == '' or true  ) {
+        if ($webpage->id and $webpage->get('Content Data') == ''  ) {
 
 
             $sql = sprintf(
@@ -345,12 +345,7 @@ switch ($webpage->get('Page Store Content Template Filename')) {
 
             $db->exec($sql);
 
-            $sql = sprintf(
-                'DELETE FROM  `Webpage Section Dimension` WHERE `Webpage Section Webpage Key`=%d  ', $webpage->id
 
-            );
-
-            $db->exec($sql);
 
 
             $title = $category->get('Label');
