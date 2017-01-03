@@ -99,9 +99,9 @@
 		{if $_version_==2}
 
 		<div id="bd" style="z-index:1;">
-		
-		{include file="$type_content:$template_string"} 
-		
+
+		{include file="$type_content:$template_string"}
+
 		</div>
 
 		{else}
@@ -134,6 +134,7 @@
 			
 		</div>
 		{/if}
+
 		<div id="ft" style="z-index:2" style="{if $page->get('Page Footer Type')=='None'}display:none{/if}">
 		{include file="string:{$page->get_footer_template()}" }
 		</div>

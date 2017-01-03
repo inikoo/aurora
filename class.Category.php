@@ -735,6 +735,9 @@ class Category extends DB_Table {
                                 case 'products_showcase':
                                     return _("Products showcase");
                                     break;
+                                case 'categories_showcase':
+                                    return _("Categories showcase");
+                                    break;
                                 default:
                                     return $this->webpage->get('Page Store Content Template Filename');
                                     break;

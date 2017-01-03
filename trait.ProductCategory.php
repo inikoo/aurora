@@ -26,88 +26,6 @@ trait ProductCategory {
 
     }
 
-
-    function get_webpage() {
-
-        $page_key = 0;
-        include_once 'class.Page.php';
-
-
-        $category_key = $this->id;
-
-        include_once 'class.Store.php';
-        $store = new Store($this->get('Category Store Key'));
-
-        // Migration
-        if ($this->get('Category Root Key') == $store->get(
-                'Store Family Category Key'
-            )
-        ) {
-
-
-            $sql = sprintf(
-                "SELECT * FROM `Product Family Dimension` WHERE `Product Family Store Key`=%d AND `Product Family Code`=%s", $this->get('Category Store Key'),
-                prepare_mysql($this->get('Category Code'))
-            );
-
-
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
-
-                    $category_key = $row['Product Family Key'];
-                }
-            }
-
-
-        }
-
-
-        $sql = sprintf(
-            'SELECT `Page Key` FROM `Page Store Dimension` WHERE `Page Store Section Type`="Family"  AND  `Page Parent Key`=%d ', $category_key
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $page_key = $row['Page Key'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-        $this->webpage         = new Page($row['Page Key']);
-        $this->webpage->editor = $this->editor;
-
-
-        // Temporal should be take off because page should be created when product is create
-        /*
-        if (!$this->webpage->id) {
-
-            $page_data=array(
-                'Page Store Content Display Type'=>'Template',
-                'Page Store Content Template Filename'=>'product',
-                'Page State'=>'Online'
-
-            );
-            include_once 'class.Store.php';
-
-            $store=new Store($this->get('Product Store Key'));
-
-            foreach ($store->get_sites('objects') as $site) {
-
-                $product_page_key=$site->add_product_page($this->id, $page_data);
-                $this->webpage=new Page($product_page_key);
-            }
-
-
-        }
-
-        */
-
-        return $this->webpage;
-
-    }
-
-
     function create_product_timeseries($data, $fork_key = 0) {
 
         if ($this->get('Category Branch Type') == 'Root') {
@@ -193,7 +111,6 @@ trait ProductCategory {
         }
 
     }
-
 
     function update_product_timeseries_record($timeseries, $to, $from, $fork_key) {
 
@@ -311,7 +228,6 @@ trait ProductCategory {
 
     }
 
-
     function get_product_timeseries_record_data($timeseries, $date_frequency_period) {
 
 
@@ -416,7 +332,6 @@ trait ProductCategory {
         return $product_ids;
 
     }
-
 
     function update_product_category_sales($interval, $this_year = true, $last_year = true) {
 
@@ -571,7 +486,6 @@ trait ProductCategory {
         return $sales_product_category_data;
     }
 
-
     function get_products_subcategories_status_numbers($options = '') {
 
         $elements_numbers = array(
@@ -604,7 +518,6 @@ trait ProductCategory {
         return $elements_numbers;
 
     }
-
 
     function update_product_category_new_products() {
 
@@ -1008,46 +921,14 @@ trait ProductCategory {
 
         //    $this->db->exec('truncate `Product Category Index`');
 
-        $null_stacks = false;
-
-        $sql = sprintf(
-            "SELECT `Product Category Index Product ID`,`Product Category Index Category Key`,`Product Category Index Stack`, P.`Product ID`,`Product Code`,`Product Web State` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Index` S ON (`Subject Key`=S.`Product Category Index Product ID` AND S.`Product Category Index Category Key`=B.`Category Key`)    WHERE  `Category Key`=%d  ORDER BY ifnull(`Product Category Index Stack`,99999999),`Product Code File As`",
-            $this->id
-        );
+        // print_r($this);
+        if ($this->get('Category Subject') == 'Product') {
 
 
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                if ($row['Product Category Index Product ID'] == '') {
-                    $null_stacks = true;
-
-                    $sql = sprintf(
-                        'INSERT INTO `Product Category Index` (`Product Category Index Category Key`,`Product Category Index Product ID`) VALUES (%d,%d) ', $this->id, $row['Product ID']
-                    );
-                    $this->db->exec($sql);
-
-                }
-
-                if ($row['Product Category Index Stack'] == '') {
-                    $null_stacks = true;
-                }
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        //   exit;
-
-        $stack_index = 0;
-        if ($null_stacks or $force_reindex) {
+            $null_stacks = false;
 
             $sql = sprintf(
-                "SELECT `Product Category Index Key`,`Product Category Index Product ID`,`Product Category Index Category Key`,`Product Category Index Stack`, P.`Product ID`,`Product Code`,`Product Web State` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Index` S ON (`Subject Key`=S.`Product Category Index Product ID` AND S.`Product Category Index Category Key`=B.`Category Key`)    WHERE  `Category Key`=%d  ORDER BY ifnull(`Product Category Index Stack`,99999999),`Product Code File As`",
+                "SELECT `Product Category Index Product ID`,`Product Category Index Category Key`,`Product Category Index Stack`, P.`Product ID`,`Product Code`,`Product Web State` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Index` S ON (`Subject Key`=S.`Product Category Index Product ID` AND S.`Product Category Index Category Key`=B.`Category Key`)    WHERE  `Category Key`=%d  ORDER BY ifnull(`Product Category Index Stack`,99999999),`Product Code File As`",
                 $this->id
             );
 
@@ -1055,13 +936,20 @@ trait ProductCategory {
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
 
-                    //     print_r($row);
+                    if ($row['Product Category Index Product ID'] == '') {
+                        $null_stacks = true;
 
-                    $stack_index++;
-                    $sql = sprintf(
-                        'UPDATE `Product Category Index` SET `Product Category Index Stack`=%d WHERE `Product Category Index Key`=%d', $stack_index, $row['Product Category Index Key']
-                    );
-                    $this->db->exec($sql);
+                        $sql = sprintf(
+                            'INSERT INTO `Product Category Index` (`Product Category Index Category Key`,`Product Category Index Product ID`) VALUES (%d,%d) ', $this->id, $row['Product ID']
+                        );
+                        $this->db->exec($sql);
+
+                    }
+
+                    if ($row['Product Category Index Stack'] == '') {
+                        $null_stacks = true;
+                    }
+
                 }
             } else {
                 print_r($error_info = $this->db->errorInfo());
@@ -1069,80 +957,410 @@ trait ProductCategory {
                 exit;
             }
 
-        }
 
-        $sql = sprintf(
-            "SELECT `Product Category Index Key`,`Product Category Index Content Data`,`Product Category Index Product ID`,`Product Category Index Category Key`,`Product Category Index Stack`, P.`Product ID`,`Product Code`,`Product Web State` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Index` S ON (`Subject Key`=S.`Product Category Index Product ID` AND S.`Product Category Index Category Key`=B.`Category Key`)  WHERE  `Category Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY   ifnull(`Product Category Index Stack`,99999999)",
-            $this->id
-        );
+            //   exit;
+
+            $stack_index = 0;
+            if ($null_stacks or $force_reindex) {
+
+                $sql = sprintf(
+                    "SELECT `Product Category Index Key`,`Product Category Index Product ID`,`Product Category Index Category Key`,`Product Category Index Stack`, P.`Product ID`,`Product Code`,`Product Web State` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Index` S ON (`Subject Key`=S.`Product Category Index Product ID` AND S.`Product Category Index Category Key`=B.`Category Key`)    WHERE  `Category Key`=%d  ORDER BY ifnull(`Product Category Index Stack`,99999999),`Product Code File As`",
+                    $this->id
+                );
 
 
-        $stack_index = 0;
-        if ($result = $this->db->query($sql)) {
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
 
-            foreach ($result as $row) {
-                //    print_r($row);
+                        //     print_r($row);
+
+                        $stack_index++;
+                        $sql = sprintf(
+                            'UPDATE `Product Category Index` SET `Product Category Index Stack`=%d WHERE `Product Category Index Key`=%d', $stack_index, $row['Product Category Index Key']
+                        );
+                        $this->db->exec($sql);
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
 
             }
+
+
+        } elseif ($this->get('Category Subject') == 'Category') {
+
+
+            include_once 'class.Public_Webpage.php';
+
+
+            $null_stacks = false;
+
+
+            $sql = sprintf(
+                "SELECT `Subject Key`,`Category Webpage Index Content Data`,`Category Webpage Index Key`,`Category Webpage Index Category Key`,`Category Webpage Index Stack`  FROM `Category Bridge` B  LEFT JOIN `Product Category Dimension` P ON (B.`Subject Key`=P.`Product Category Key`)   LEFT JOIN `Category Webpage Index` ON (`Category Webpage Index Category Key`=`Subject Key`)  WHERE B.`Category Key`=%d AND  `Product Category Public`='Yes' ORDER BY  ifnull(`Category Webpage Index Stack`,99999999)",
+                $this->id
+
+            );
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+
+                    if ($row['Category Webpage Index Category Key'] == '') {
+                        $null_stacks = true;
+
+
+                        $subject_webpage = new Public_Webpage('scope', 'Category', $row['Subject Key']);
+
+                        if ($subject_webpage->id) {
+
+
+                            $sql = sprintf(
+                                'INSERT INTO `Category Webpage Index` (`Category Webpage Index Parent Category Key`,`Category Webpage Index Category Key`,`Category Webpage Index Webpage Key`,`Category Webpage Index Category Webpage Key`) VALUES (%d,%d,%d,%d) ',
+                                $this->id, $row['Subject Key'], $this->webpage->id, $subject_webpage->id
+                            );
+
+
+                            $this->db->exec($sql);
+                        }
+
+                    }
+
+                    if ($row['Category Webpage Index Stack'] == '') {
+                        $null_stacks = true;
+                    }
+
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+            //   print_r($panels);
+
+            //exit;
+            $stack_index = 0;
+            if ($null_stacks or $force_reindex) {
+
+                $sql = sprintf(
+                    "SELECT `Subject Key`,`Category Webpage Index Content Data`,`Category Webpage Index Key`,`Category Webpage Index Category Key`,`Category Webpage Index Stack` FROM `Category Bridge` B  LEFT JOIN `Product Category Dimension` P ON (B.`Subject Key`=P.`Product Category Key`)   LEFT JOIN `Category Webpage Index` ON (`Category Webpage Index Category Key`=`Subject Key`) LEFT JOIN `Category Dimension` Cat  ON  (Cat.`Category Key`=`Subject Key`)  WHERE  B.`Category Key`=%d AND `Product Category Public`='Yes' ORDER BY  ifnull(`Category Webpage Index Stack`,99999999)",
+                    $this->id
+
+                );
+
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+
+                        //print_r($row);
+
+                        $stack_index++;
+                        $sql = sprintf(
+                            'UPDATE `Category Webpage Index` SET `Category Webpage Index Stack`=%d WHERE `Category Webpage Index Key`=%d', $stack_index, $row['Category Webpage Index Key']
+                        );
+                        $this->db->exec($sql);
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+            }
+
+
         }
 
     }
 
-
-    function change_subject_stack($stack_index, $subject_key) {
+    function update_subject_stack($stack_index, $subject_key) {
 
 
         //print "$stack_index  $subject_key ";
 
+        if ($this->get('Category Subject') == 'Product') {
 
-        $subjects = array();
+            $subjects = array();
 
-        $sql = sprintf(
-            "SELECT `Product Category Index Stack`,`Product Category Index Key`,`Product Category Index Product ID` AS subject_key,`Product Category Index Category Key` FROM `Product Category Index`    WHERE  `Product Category Index Category Key`=%d ",
-            $this->id
-        );
+            $sql = sprintf(
+                "SELECT `Product Category Index Stack`,`Product Category Index Key`,`Product Category Index Product ID` AS subject_key,`Product Category Index Category Key` FROM `Product Category Index`    WHERE  `Product Category Index Category Key`=%d ",
+                $this->id
+            );
 
 
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
 
-                if ($row['subject_key'] == $subject_key) {
+                    if ($row['subject_key'] == $subject_key) {
 
-                    $row['Product Category Index Stack'] = $stack_index;
+                        $row['Product Category Index Stack'] = $stack_index;
+
+                    }
+                    $subjects[$row['Product Category Index Stack']] = $row['Product Category Index Key'];;
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+            ksort($subjects);
+            $stack_index = 0;
+
+
+            //print_r($subjects);
+
+            //exit;
+
+            foreach ($subjects as $tmp => $product_category_stack_key) {
+                $stack_index++;
+
+                $sql = sprintf(
+                    'UPDATE `Product Category Index` SET `Product Category Index Stack`=%d WHERE `Product Category Index Key`=%d ', $stack_index, $product_category_stack_key
+                );
+
+                //  print "$sql\n";
+
+                $this->db->exec($sql);
+
+            }
+
+        } elseif ($this->get('Category Subject') == 'Category') {
+
+            $this->get_webpage();
+            $content_data = $this->webpage->get('Content Data');
+
+
+            if (isset($content_data['page_breaks'])) {
+                $page_breaks = $content_data['page_breaks'];
+                ksort($page_breaks);
+            } else {
+                $page_breaks = array();
+            }
+
+
+            print_r($page_breaks);
+
+
+            $subjects = array();
+
+            $sql = sprintf(
+                "SELECT `Category Webpage Index Stack`,`Category Webpage Index Key`,`Category Webpage Index Category Key` AS subject_key FROM `Category Webpage Index`    WHERE  `Category Webpage Index Parent Category Key`=%d ",
+                $this->id
+            );
+
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+
+
+                    if ($row['subject_key'] == $subject_key) {
+
+                        $original_stack_index                = $row['Category Webpage Index Stack'];
+                        $row['Category Webpage Index Stack'] = $stack_index;
+
+
+                    }
+                    $subjects[$row['Category Webpage Index Stack']] = $row['Category Webpage Index Key'];
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+            ksort($subjects);
+            print_r($subjects);
+
+
+            //  print_r($subjects);
+
+
+            //  print  $original_stack_index;
+
+
+            if ($original_stack_index < $stack_index) {
+
+                $original_block      = false;
+                $new_block           = false;
+                $next_original_block = false;
+                $next_new_block      = false;
+                foreach ($page_breaks as $page_break_stack_index => $page_break) {
+
+
+                    print " $page_break_stack_index\n";
+
+                    if ($page_break_stack_index <= $original_stack_index) {
+                        $original_block = $page_break_stack_index;
+                    }
+                    if ($page_break_stack_index <= $stack_index) {
+
+
+                        $new_block = $page_break_stack_index;
+                    }
+
+                    if ($original_block and $original_block != $page_break_stack_index and !$next_original_block) {
+                        $next_original_block = $page_break_stack_index;
+                    }
+
+                    if ($new_block and $new_block != $page_break_stack_index and !$next_new_block) {
+                        $next_new_block = $page_break_stack_index;
+                    }
 
                 }
-                $subjects[$row['Product Category Index Stack']] = $row['Product Category Index Key'];;
+
+
+                print "\n* $original_block - $new_block   $stack_index   $next_original_block $next_new_block\n";
+
+
+                if ($original_block and $next_new_block and $original_block != $next_new_block) {
+
+
+                    if ($next_original_block) {
+                        $page_breaks[$next_original_block - 1] = $page_breaks[$next_original_block];
+                        unset($page_breaks[$next_original_block]);
+                    }
+                    if ($next_new_block) {
+                        // $page_breaks[$next_new_block+1] = $page_breaks[$next_new_block];
+                        // unset($page_breaks[$next_new_block]);
+                    }
+
+                    print "xxxx  $original_block $next_new_block \n ";
+
+                    $subjects[(string)($stack_index - 1)] = $subjects[$stack_index];
+                    unset($subjects[$stack_index]);
+                    ksort($subjects);
+                }
+
+
+            }
+            print_r($page_breaks);
+
+            print_r($subjects);
+
+            $content_data['page_breaks'] = $page_breaks;
+
+            //  $this->webpage->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+
+
+            //exit;
+            $stack_index = 0;
+            foreach ($subjects as $tmp => $category_webpage_stack_key) {
+                $stack_index++;
+
+                $sql = sprintf(
+                    'UPDATE `Category Webpage Index` SET `Category Webpage Index Stack`=%d WHERE `Category Webpage Index Key`=%d ', $stack_index, $category_webpage_stack_key
+                );
+
+                print "$sql\n";
+
+                //   $this->db->exec($sql);
+
+            }
+
+        }
+
+
+    }
+
+    function get_webpage() {
+
+        $page_key = 0;
+        include_once 'class.Page.php';
+
+
+        $category_key = $this->id;
+
+        include_once 'class.Store.php';
+        $store = new Store($this->get('Category Store Key'));
+
+        // Migration
+        if ($this->get('Category Root Key') == $store->get('Store Family Category Key')) {
+
+            $section_type = 'Family';
+
+            $sql = sprintf(
+                "SELECT * FROM `Product Family Dimension` WHERE `Product Family Store Key`=%d AND `Product Family Code`=%s", $this->get('Category Store Key'),
+                prepare_mysql($this->get('Category Code'))
+            );
+
+
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+
+                    $category_key = $row['Product Family Key'];
+                }
+            }
+
+
+        } elseif ($this->get('Category Root Key') == $store->get('Store Department Category Key')) {
+
+
+            $sql = sprintf(
+                "SELECT * FROM `Product Department Dimension` WHERE `Product Department Store Key`=%d AND `Product Department Code`=%s", $this->get('Category Store Key'),
+                prepare_mysql($this->get('Category Code'))
+            );
+
+
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+
+                    $category_key = $row['Product Department Key'];
+                }
+            }
+            $section_type = 'Department';
+
+        } else {
+            $section_type = 'Category';
+
+        }
+
+        $sql = sprintf(
+            'SELECT `Page Key` FROM `Page Store Dimension` WHERE `Page Store Section Type`=%s  AND  `Page Parent Key`=%d ', prepare_mysql($section_type), $category_key
+        );
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $page_key = $row['Page Key'];
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
             exit;
         }
+        $this->webpage         = new Page($row['Page Key']);
+        $this->webpage->editor = $this->editor;
 
 
-        //  print_r($subjects);
+        // Temporal should be take off because page should be created when product is create
+        /*
+        if (!$this->webpage->id) {
 
+            $page_data=array(
+                'Page Store Content Display Type'=>'Template',
+                'Page Store Content Template Filename'=>'product',
+                'Page State'=>'Online'
 
-        ksort($subjects);
-        $stack_index = 0;
-
-
-          //print_r($subjects);
-
-          //exit;
-
-        foreach ($subjects as $tmp => $product_category_stack_key) {
-            $stack_index++;
-
-            $sql = sprintf(
-                'UPDATE `Product Category Index` SET `Product Category Index Stack`=%d WHERE `Product Category Index Key`=%d ', $stack_index, $product_category_stack_key
             );
+            include_once 'class.Store.php';
 
-            //  print "$sql\n";
+            $store=new Store($this->get('Product Store Key'));
 
-            $this->db->exec($sql);
+            foreach ($store->get_sites('objects') as $site) {
+
+                $product_page_key=$site->add_product_page($this->id, $page_data);
+                $this->webpage=new Page($product_page_key);
+            }
+
 
         }
+
+        */
+
+        return $this->webpage;
 
     }
 

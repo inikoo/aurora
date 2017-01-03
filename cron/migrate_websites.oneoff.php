@@ -36,6 +36,8 @@ require_once 'class.WebsiteNode.php';
 require_once 'class.Webpage.php';
 require_once 'class.Product.php';
 require_once 'class.Store.php';
+require_once 'class.Public_Product.php';
+require_once 'class.Category.php';
 
 $editor = array(
     'Author Name'  => '',
@@ -45,6 +47,104 @@ $editor = array(
     'User Key'     => 0,
     'Date'         => gmdate('Y-m-d H:i:s')
 );
+
+normalize_webpage_scopes($db);
+
+function normalize_webpage_scopes($db) {
+
+
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension`  ');
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $webpage = new Page($row['Page Key']);
+            $store   = new Store($row['Page Store Key']);
+
+            $webpage->load_scope();
+
+
+            if ($webpage->scope) {
+                $scope = $webpage->scope;
+
+
+                if ($scope->get_object_name() == 'Product') {
+                    $webpage->update(
+                        array(
+                            'Webpage Scope'     => 'Product',
+                            'Webpage Scope Key' => $scope->id
+                        ), 'no_history'
+                    );
+
+                } elseif ($scope->get_object_name() == 'Category') {
+
+
+                    $category = new Category($scope->id);
+
+
+                    if ($category->get('Category Subject') == 'Product') {
+
+                        $webpage->update(
+                            array(
+                                'Webpage Scope'     => 'Category Products',
+                                'Webpage Scope Key' => $category->id
+                            ), 'no_history'
+                        );
+
+
+
+                    } elseif ($category->get('Category Subject') == 'Category') {
+                        //print $category->get('Category Subject');
+
+                        $webpage->update(
+                            array(
+                                'Webpage Scope'     => 'Category Categories',
+                                'Webpage Scope Key' => $scope->id
+                            ), 'no_history'
+                        );
+
+
+                        if ($category->get('Category Root Key') == $store->get('Store Family Category Key')) {
+
+                            $webpage->update(
+                                array(
+                                    'Webpage Scope Metadata' => 'Family',
+                                ), 'no_history'
+                            );
+                        } elseif ($category->get('Category Root Key') == $store->get('Store Department Category Key')) {
+                            $webpage->update(
+                                array(
+                                    'Webpage Scope Metadata' => 'Department',
+                                ), 'no_history'
+                            );
+                        }
+
+                    }
+
+
+                }
+
+            }
+            else{
+
+                if($row['Page Store Section']=='Family Catalogue'){
+                    print "Family ".$row['Page Parent Code']."\n";
+
+                }if($row['Page Store Section']=='Department Catalogue'){
+                    print "Dept ".$row['Page Parent Code']."\n";
+
+                }
+
+            }
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+}
+
+exit;
 
 //$sql = 'truncate `Template Scope Dimension`;truncate `Template Dimension`;truncate `Website Dimension`;truncate `Website Node Dimension`;truncate `Webpage Dimension`; truncate `Webpage Version Block Bridge`;truncate `Webpage Version Dimension`';
 //$db->exec($sql);
@@ -63,7 +163,7 @@ if ($result = $db->query($sql)) {
         $website_data = array(
             'Website Code'   => $site->get('Site Code'),
             'Website Name'   => $site->get('Site Name'),
-            'Website Type'   => ($site->get('Site Code')=='DS'?'EcomDS':'EcomB2B'),
+            'Website Type'   => ($site->get('Site Code') == 'DS' ? 'EcomDS' : 'EcomB2B'),
             'Website URL'    => $site->get('Site URL'),
             'Website Locale' => $site->get('Site Locale'),
             'Website Name'   => $site->get('Site Name'),
@@ -75,7 +175,7 @@ if ($result = $db->query($sql)) {
 
         $website = $store->create_website($website_data);
 
-        print_r( $website);
+        print_r($website);
 
         if ($site->get('Site From') != '') {
             $website->update(

@@ -17,6 +17,7 @@ $public_options = array(
 asort($public_options);
 
 
+
 $category_product_fields = array(
     array(
         'label'      => _('Visibility'),

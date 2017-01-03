@@ -75,6 +75,7 @@ module.exports = function (grunt) {
                     'web/css/aurora.css': 'web/sass/aurora.scss'
                 }
             },
+            /*
             ecom: {
                 options: {
                     // style: 'compressed'
@@ -83,6 +84,7 @@ module.exports = function (grunt) {
                     'ecom/css/app.css': 'ecom/sass/app.scss'
                 }
             },
+            */
             login: {
                 options: {
                     // style: 'compressed'

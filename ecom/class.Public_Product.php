@@ -201,6 +201,7 @@ class Public_Product {
 
             case 'Code':
             case 'Web State':
+            case 'Description':
                 return $this->data['Product '.$key];
                 break;
 
@@ -396,6 +397,8 @@ class Public_Product {
                 return strftime("%e %b %y",strtotime($this->data['Product Next Supplier Shipment'].' +0:00'));
 
                 break;
+
+
             default:
 
 
@@ -408,6 +411,94 @@ class Public_Product {
         include_once 'class.Public_Webpage.php';
         $this->webpage = new Public_Webpage('scope', 'Product', $this->id);
     }
+
+    function get_images_slidesshow() {
+        include_once 'utils/natural_language.php';
+
+        if ($this->table_name == 'Store Product') {
+            $image_subject_type = 'Product';
+        } else {
+            $image_subject_type = $this->table_name;
+        }
+
+
+        $sql = sprintf(
+            "SELECT `Image Subject Is Principal`,`Image Key`,`Image Subject Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` FROM `Image Subject Bridge` B LEFT JOIN `Image Dimension` I ON (`Image Subject Image Key`=`Image Key`) WHERE `Image Subject Object`=%s AND   `Image Subject Object Key`=%d ORDER BY `Image Subject Is Principal`,`Image Subject Date`,`Image Subject Key`",
+            prepare_mysql($image_subject_type), $this->id
+        );
+
+        $subject_order=0;
+
+        //print $sql;
+        $images_slideshow = array();
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['Image Height'] != 0) {
+                    $ratio = $row['Image Width'] / $row['Image Height'];
+                } else {
+                    $ratio = 1;
+                }
+                // print_r($row);
+                $images_slideshow[] = array(
+                    'subject_order'=>$subject_order,
+                    'name'          => $row['Image Filename'],
+                    'small_url'     => 'image_root.php?id='.$row['Image Key'].'&size=small',
+                    'thumbnail_url' => 'image_root.php?id='.$row['Image Key'].'&size=thumbnail',
+                    'normal_url'    => 'image_root.php?id='.$row['Image Key'],
+                    'filename'      => $row['Image Filename'],
+                    'ratio'         => $ratio,
+                    'caption'       => $row['Image Subject Image Caption'],
+                    'is_principal'  => $row['Image Subject Is Principal'],
+                    'id'            => $row['Image Key'],
+                    'size'          => file_size($row['Image File Size']),
+                    'width'         => $row['Image Width'],
+                    'height'        => $row['Image Height']
+
+                );
+                $subject_order++;
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql";
+            exit;
+        }
+
+
+        return $images_slideshow;
+    }
+
+    function get_number_images() {
+
+        $subject = $this->table_name;
+
+        $number_of_images = 0;
+        $sql              = sprintf(
+            "SELECT count(*) AS num FROM `Image Subject Bridge` WHERE `Image Subject Object`=%s AND `Image Subject Object Key`=%d ", prepare_mysql($subject), $this->id
+        );
+        //print $sql;
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number_of_images = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql";
+            exit;
+        }
+
+
+        return $number_of_images;
+    }
+
+    function get_object_name() {
+        return $this->table_name;
+
+    }
+
 
 
 }

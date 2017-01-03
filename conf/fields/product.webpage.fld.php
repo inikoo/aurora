@@ -3,7 +3,7 @@
 
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 1 December 2016 at 13:23:45 GMT+8, Kuta, Bali
+ Created: 29 December 2016 at 13:54:31 CET, Mijas Costa, Spain
 
  Copyright (c) 2016, Inikoo
 
@@ -29,38 +29,17 @@ if (isset($options['new']) and $options['new']) {
 
 $subject_render = false;
 
-if($object->get('Category Subject')=='Category'){
-    $template_options = array(
-        'blank'    => _('White canvas'),
-        'categories_showcase'    => _('Categories showcase')
+ $template_options = array(
+        'product'    => _('Product')
     );
-
-}else{
-    $template_options = array(
-        'blank'    => _('White canvas'),
-        'family_buttons'    => 'Old products showcase',
-        'products_showcase'    => _('Products showcase')
-    );
-
-}
 
 asort($template_options);
 
 
-$subject_options         = array(
-    'Product'  => _('Products'),
-    'Category' => _('Categories')
-);
-$subject_value           = 'Product';
-$subject_formatted_value = _('Products');
-$subject_render          = true;
 
 
 
-
-
-
-$category_fields = array(
+$product_fields = array(
     array(
         'label'      => _('Webpage'),
         'show_title' => true,
@@ -79,7 +58,7 @@ $category_fields = array(
 
 */
             array(
-                'id'                       => 'Category_Website_Node_Parent_Key',
+                'id'                       => 'Product_Website_Node_Parent_Key',
                 'edit'                     => 'dropdown_select',
                 'scope'                    => 'web_node',
                 'parent'                   => 'website',
@@ -95,12 +74,12 @@ $category_fields = array(
             ),
 
             array(
-                'id'   => 'Category_Webpage_Name',
+                'id'   => 'Product_Webpage_Name',
                 'edit' => ($edit ? 'string' : ''),
 
-                'value'           => htmlspecialchars($object->get('Category Webpage Name')),
+                'value'           => htmlspecialchars($object->get('Product Webpage Name')),
                 'formatted_value' => $object->get('Webpage Name'),
-                'label'           => ucfirst($object->get_field_label('Category Webpage Name')),
+                'label'           => ucfirst($object->get_field_label('Product Webpage Name')),
                 'required'        => true,
                 'type'            => ''
 
@@ -108,12 +87,12 @@ $category_fields = array(
             ),
 
             array(
-                'id'   => 'Category_Webpage_Browser_Title',
+                'id'   => 'Product_Webpage_Browser_Title',
                 'edit' => ($edit ? 'string' : ''),
 
-                'value'           => htmlspecialchars($object->get('Category Webpage Browser Title')),
+                'value'           => htmlspecialchars($object->get('Product Webpage Browser Title')),
                 'formatted_value' => $object->get('Webpage Browser Title'),
-                'label'           => ucfirst($object->get_field_label('Category Webpage Browser Title')),
+                'label'           => ucfirst($object->get_field_label('Product Webpage Browser Title')),
                 'required'        => true,
                 'type'            => ''
 
@@ -121,12 +100,12 @@ $category_fields = array(
             ),
 
             array(
-                'id'   => 'Category_Webpage_Meta_Description',
+                'id'   => 'Product_Webpage_Meta_Description',
                 'edit' => ($edit ? 'textarea' : ''),
 
-                'value'           => htmlspecialchars($object->get('Category Webpage Meta Description')),
+                'value'           => htmlspecialchars($object->get('Product Webpage Meta Description')),
                 'formatted_value' => $object->get('Webpage Meta Description'),
-                'label'           => ucfirst($object->get_field_label('Category Webpage Meta Description')),
+                'label'           => ucfirst($object->get_field_label('Product Webpage Meta Description')),
                 'required'        => true,
                 'type'            => ''
 
@@ -153,8 +132,6 @@ $category_fields = array(
 
 );
 
-
-
 $template_field = array(
 
 
@@ -172,7 +149,7 @@ $template_field = array(
                 'edit' => ($edit ? 'option' : ''),
 
                 'id'              => 'Webpage_Template',
-                'value'           => $object->get('Category Webpage Template'),
+                'value'           => $object->get('Product Webpage Template'),
                 'formatted_value' => $object->get('Webpage Template'),
                 'options'         => $template_options,
                 'label'           => _('Template'),
@@ -192,8 +169,6 @@ $template_field = array(
 
 );
 
-
-
 $template_fields = array(
 
 
@@ -212,15 +187,6 @@ $template_fields = array(
 
 
             array(
-                'id'              => 'Webpage_Related_Products',
-                'edit'            => 'webpage_related_products',
-                'value'           => '',
-                'formatted_value' => $object->get('Webpage Related Products'),
-                'label'           => _('Related products links'),
-                'required'        => false,
-                'type'            => ''
-            ),
-            array(
                 'id'              => 'Webpage_See_Also',
                 'edit'            => 'webpage_see_also',
                 'value'           => '',
@@ -237,53 +203,12 @@ $template_fields = array(
 
 );
 
-$category_fields = array_merge(
-    $category_fields, $template_field,$template_fields
+$product_fields = array_merge(
+    $product_fields, $template_field,$template_fields
 );
 
 
 
-
-
-
-/*
-
-        $store = new Store($object->get('Store Key'));
-
-
-
-        $object->get_webpage();
-
-
-        if ($store->get('Store Family Category Key') == $object->get(
-                'Category Root Key'
-            )
-        ) {
-
-            include 'family.fld.php';
-            $category_fields = array_merge(
-                $category_fields, $category_product_fields
-            );
-
-        } elseif ($store->get('Store Department Category Key') == $object->get(
-                'Category Root Key'
-            )
-        ) {
-
-            include 'department.fld.php';
-            $category_fields = array_merge(
-                $category_fields, $category_product_fields
-            );
-
-        } else {
-            include 'category.product.fld.php';
-            $category_fields = array_merge(
-                $category_fields, $category_product_fields
-            );
-
-        }
-
-*/
 
 
 

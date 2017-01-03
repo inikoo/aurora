@@ -20,7 +20,7 @@ include_once 'trait.ImageSubject.php';
 
 class Page extends DB_Table {
     use ImageSubject;
-    
+
     var $new = false;
     var $logged = false;
     var $snapshots_taken = 0;
@@ -37,8 +37,8 @@ class Page extends DB_Table {
 
         $this->table_name    = 'Page';
         $this->ignore_fields = array('Page Key');
-        $this->scope    = false;
-        $this->scope_load = false;
+        $this->scope         = false;
+        $this->scope_load    = false;
 
 
         if (!$arg1 and !$arg2) {
@@ -576,6 +576,9 @@ class Page extends DB_Table {
                         break;
 
                     case 'Department Catalogue':
+
+                        include_once 'class.Department.php';
+
                         $department = new Department(
                             $this->data['Page Parent Key']
                         );
@@ -1514,6 +1517,9 @@ class Page extends DB_Table {
             case('Page Head Include'):
             case('Page Body Include'):
             case('Page Store Title'):
+            case('Webpage Scope'):
+            case('Webpage Scope Key'):
+            case('Webpage Scope Metadata'):
 
 
                 $this->update_field($field, $value, $options);
@@ -2077,7 +2083,7 @@ class Page extends DB_Table {
                     $this->id
                 );
 
-               // print $sql;
+                // print $sql;
 
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
@@ -2181,13 +2187,13 @@ class Page extends DB_Table {
 
 
         if ($this->data['Page Store Section'] == 'Product Description') {
-            include_once ('class.Public_Product.php');
+            include_once('class.Public_Product.php');
             $this->scope       = new Public_Product($this->data['Page Parent Key']);
             $this->scope_found = 'Product';
 
 
         } elseif ($this->data['Page Store Section'] == 'Category') {
-            include_once ('class.Public_Category.php');
+            include_once('class.Public_Category.php');
 
             $this->scope       = new Public_Category($this->data['Page Parent Key']);
             $this->scope_found = 'Category';
@@ -2211,7 +2217,48 @@ class Page extends DB_Table {
                     );
                     if ($result2 = $this->db->query($sql)) {
                         if ($row2 = $result2->fetch()) {
-                            include_once ('class.Public_Category.php');
+                            include_once('class.Public_Category.php');
+                            $this->scope       = new Public_Category($row2['Category Key']);
+                            $this->scope_found = 'Category';
+
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+
+                } else {
+
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+        } elseif ($this->data['Page Store Section'] == 'Department Catalogue') {
+
+            // Todo (Migration)
+
+            $sql = sprintf(
+                "SELECT `Product Department Code`,`Store Department Category Key` FROM `Product Department Dimension` LEFT JOIN `Store Dimension` ON (`Store Key`=`Product Department Store Key`)  WHERE `Product Department Key`=%d ",
+                $this->data['Page Parent Key']
+            );
+
+
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+
+                    $sql = sprintf(
+                        'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Root Key`=%d AND  `Category Code`=%s  ', $row['Store Department Category Key'],
+                        prepare_mysql($row['Product Department Code'])
+                    );
+
+                    if ($result2 = $this->db->query($sql)) {
+                        if ($row2 = $result2->fetch()) {
+                            include_once('class.Public_Category.php');
                             $this->scope       = new Public_Category($row2['Category Key']);
                             $this->scope_found = 'Category';
 
@@ -2253,19 +2300,20 @@ class Page extends DB_Table {
 
     function publish() {
 
+        $content_data = $this->get('Content Data');
+
 
         $sql = sprintf(
-            'update `Page Store Dimension` set  `Page Store Content Published Data`=`Page Store Content Data`,`Page Store Published CSS`=`Page Store CSS` where `Page Key`=%d ',
-            $this->id
+            'UPDATE `Page Store Dimension` SET  `Page Store Content Published Data`=`Page Store Content Data`,`Page Store Published CSS`=`Page Store CSS` WHERE `Page Key`=%d ', $this->id
         );
 
         $this->db->exec($sql);
 
         $this->load_scope();
 
-        if($this->scope_load=='Category'){
+        if ($this->scope_load == 'Category') {
             $sql = sprintf(
-                'update  `Product Category Index` set  `Product Category Index Published Stack`=`Product Category Index Stack`,`Product Category Index Content Published Data`=`Product Category Index Content Data` where `Product Category Index Category Key`=%d ',
+                'UPDATE  `Product Category Index` SET  `Product Category Index Published Stack`=`Product Category Index Stack`,`Product Category Index Content Published Data`=`Product Category Index Content Data` WHERE `Product Category Index Category Key`=%d ',
                 $this->scope->id
             );
             $this->db->exec($sql);
@@ -2273,12 +2321,29 @@ class Page extends DB_Table {
 
 
         $sql = sprintf(
-            'update  `Webpage Related Product Bridge` set  `Webpage Related Product Content Published Data`=`Webpage Related Product Content Data`,`Webpage Related Product Published Order`=`Webpage Related Product Order` where `Webpage Related Product Page Key`=%d ',
+            'UPDATE  `Webpage Related Product Bridge` SET  `Webpage Related Product Content Published Data`=`Webpage Related Product Content Data`,`Webpage Related Product Published Order`=`Webpage Related Product Order` WHERE `Webpage Related Product Page Key`=%d ',
             $this->id
         );
         $this->db->exec($sql);
 
-        $this->get_data('id',$this->id);
+        $this->get_data('id', $this->id);
+
+
+        if (isset($content_data['sections'])) {
+            $sections = array();
+
+
+            foreach ($content_data['sections'] as $section_stack_index => $section_data) {
+
+                $categories                     = get_website_section_items($this->db, $section_data);
+                $sections[$section_data['key']] = array(
+                    'data'       => $section_data,
+                    'categories' => $categories
+                );
+            }
+
+        }
+
 
     }
 
@@ -3691,15 +3756,18 @@ class Page extends DB_Table {
                 if ($row = mysql_fetch_assoc($res)) {
                     $email_reminder =
                         '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '
-                        ._('Processing request').'</span><span id="send_reminder_container_'.$product['Product ID'].'"  style="color:#777"><span id="send_reminder_info_'.$product['Product ID'].'" >'
                         ._(
+                            'Processing request'
+                        ).'</span><span id="send_reminder_container_'.$product['Product ID'].'"  style="color:#777"><span id="send_reminder_info_'.$product['Product ID'].'" >'._(
                             "We'll notify you via email"
                         ).' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','
                         .$product['Product ID'].')"  >('._('Cancel').')</span></span></span>';
                 } else {
                     $email_reminder =
                         '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '
-                        ._('Processing request').'</span><span id="send_reminder_container_'.$product['Product ID'].'" style="color:#777" ><span id="send_reminder_'.$product['Product ID']
+                        ._(
+                            'Processing request'
+                        ).'</span><span id="send_reminder_container_'.$product['Product ID'].'" style="color:#777" ><span id="send_reminder_'.$product['Product ID']
                         .'" style="cursor:pointer;" onClick="send_reminder('.$product['Product ID'].')">'._(
                             'Notify me when back in stock'
                         ).' <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span></span><span id="send_reminder_msg_'.$product['Product ID'].'"></span></span>';
@@ -3877,15 +3945,18 @@ class Page extends DB_Table {
                 if ($row = mysql_fetch_assoc($res)) {
                     $email_reminder =
                         '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '
-                        ._('Processing request').'</span><span id="send_reminder_container_'.$product['Product ID'].'"  style="color:#777"><span id="send_reminder_info_'.$product['Product ID'].'" >'
                         ._(
+                            'Processing request'
+                        ).'</span><span id="send_reminder_container_'.$product['Product ID'].'"  style="color:#777"><span id="send_reminder_info_'.$product['Product ID'].'" >'._(
                             "We'll notify you via email"
                         ).' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','
                         .$product['Product ID'].')"  >('._('Cancel').')</span></span></span>';
                 } else {
                     $email_reminder =
                         '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '
-                        ._('Processing request').'</span><span id="send_reminder_container_'.$product['Product ID'].'" style="color:#777" ><span id="send_reminder_'.$product['Product ID']
+                        ._(
+                            'Processing request'
+                        ).'</span><span id="send_reminder_container_'.$product['Product ID'].'" style="color:#777" ><span id="send_reminder_'.$product['Product ID']
                         .'" style="cursor:pointer;" onClick="send_reminder('.$product['Product ID'].')">'._(
                             'Notify me when back in stock'
                         ).' <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span></span><span id="send_reminder_msg_'.$product['Product ID'].'"></span></span>';
@@ -4157,15 +4228,18 @@ class Page extends DB_Table {
                 if ($row = mysql_fetch_assoc($res)) {
                     $email_reminder =
                         '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '
-                        ._('Processing request').'</span><span id="send_reminder_container_'.$product['Product ID'].'"  style="color:#777"><span id="send_reminder_info_'.$product['Product ID'].'" >'
                         ._(
+                            'Processing request'
+                        ).'</span><span id="send_reminder_container_'.$product['Product ID'].'"  style="color:#777"><span id="send_reminder_info_'.$product['Product ID'].'" >'._(
                             "We'll notify you via email"
                         ).' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','
                         .$product['Product ID'].')"  >('._('Cancel').')</span></span></span>';
                 } else {
                     $email_reminder =
                         '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '
-                        ._('Processing request').'</span><span id="send_reminder_container_'.$product['Product ID'].'" style="color:#777" ><span id="send_reminder_'.$product['Product ID']
+                        ._(
+                            'Processing request'
+                        ).'</span><span id="send_reminder_container_'.$product['Product ID'].'" style="color:#777" ><span id="send_reminder_'.$product['Product ID']
                         .'" style="cursor:pointer;" onClick="send_reminder('.$product['Product ID'].')">'._(
                             'Notify me when back in stock'
                         ).' <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span></span><span id="send_reminder_msg_'.$product['Product ID'].'"></span></span>';
@@ -4640,15 +4714,18 @@ class Page extends DB_Table {
                 if ($row = mysql_fetch_assoc($res)) {
                     $email_reminder =
                         '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '
-                        ._('Processing request').'</span><span id="send_reminder_container_'.$product['Product ID'].'"  style="color:#777"><span id="send_reminder_info_'.$product['Product ID'].'" >'
                         ._(
+                            'Processing request'
+                        ).'</span><span id="send_reminder_container_'.$product['Product ID'].'"  style="color:#777"><span id="send_reminder_info_'.$product['Product ID'].'" >'._(
                             "We'll notify you via email"
                         ).' <span style="cursor:pointer" id="cancel_send_reminder_'.$row['Email Site Reminder Key'].'"  onClick="cancel_send_reminder('.$row['Email Site Reminder Key'].','
                         .$product['Product ID'].')"  >('._('Cancel').')</span></span></span>';
                 } else {
                     $email_reminder =
                         '<br/><span id="send_reminder_wait_'.$product['Product ID'].'"  style="display:none;color:#777"><img style="height:10px;position:relative;bottom:-1px"  src="art/loading.gif"> '
-                        ._('Processing request').'</span><span id="send_reminder_container_'.$product['Product ID'].'" style="color:#777" ><span id="send_reminder_'.$product['Product ID']
+                        ._(
+                            'Processing request'
+                        ).'</span><span id="send_reminder_container_'.$product['Product ID'].'" style="color:#777" ><span id="send_reminder_'.$product['Product ID']
                         .'" style="cursor:pointer;" onClick="send_reminder('.$product['Product ID'].')">'._(
                             'Notify me when back in stock'
                         ).' <img style="position:relative;bottom:-2px" src="art/send_mail.png"/></span></span><span id="send_reminder_msg_'.$product['Product ID'].'"></span></span>';
@@ -5991,6 +6068,690 @@ class Page extends DB_Table {
 
         return $badges;
 
+
+    }
+
+
+    //======= new methods
+
+    function update_items_order($item_key, $target_key, $target_section_key) {
+
+
+        $content_data = $this->get('Content Data');
+
+        $updated_metadata = array('section_keys' => array());
+
+
+        switch ($this->scope->get_object_name()) {
+            case 'Category':
+                include_once('class.Category.php');
+                $category = new Category($this->scope->id);
+                //print'x'.$category->get('Category Subject').'x';
+
+
+                if ($category->get('Category Subject') == 'Category') {
+
+                    $item_found   = false;
+                    $target_found = false;
+
+                    $sql = sprintf(
+                        'SELECT `Category Webpage Index Key`,`Category Webpage Index Section Key`,`Category Webpage Index Stack` FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d AND `Category Webpage Index Category Key`=%d ',
+                        $this->id, $item_key
+
+
+                    );
+
+                    if ($result = $this->db->query($sql)) {
+                        if ($row = $result->fetch()) {
+
+                            $item_section_key = $row['Category Webpage Index Section Key'];
+                            $item_found       = true;
+                            $item_stack       = $row['Category Webpage Index Stack'];
+                            $item_index_key   = $row['Category Webpage Index Key'];
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+
+
+                    if (!$item_found) {
+                        $this->msg   = 'Item not found in website';
+                        $this->error = true;
+
+                        return;
+
+                    }
+
+
+                    if ($target_key) {
+
+
+                        $sql = sprintf(
+                            'SELECT `Category Webpage Index Section Key`,`Category Webpage Index Stack` FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d AND `Category Webpage Index Category Key`=%d ',
+                            $this->id, $target_key
+
+
+                        );
+
+                        if ($result = $this->db->query($sql)) {
+                            if ($row = $result->fetch()) {
+                                $target_section_key = $row['Category Webpage Index Section Key'];
+                                $target_found       = true;
+                                $target_stack       = $row['Category Webpage Index Stack'];
+                            }
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
+                            print "$sql\n";
+                            exit;
+                        }
+
+
+                        if (!$target_found) {
+                            $this->msg   = 'Target not found in website';
+                            $this->error = true;
+
+                            return;
+
+                        }
+
+                        if ($item_section_key == $target_section_key) {
+
+
+                            $updated_metadata['section_keys'][] = $item_section_key;
+
+                            $subjects = array();
+
+                            $sql = sprintf(
+                                "SELECT `Category Webpage Index Stack`,`Category Webpage Index Key`,`Category Webpage Index Category Key` AS subject_key FROM `Category Webpage Index`    WHERE  `Category Webpage Index Webpage Key`=%d ",
+                                $this->id
+                            );
+
+
+                            if ($result = $this->db->query($sql)) {
+                                foreach ($result as $row) {
+
+
+                                    if ($row['subject_key'] == $item_key) {
+
+                                        $row['Category Webpage Index Stack'] = (string)($target_stack < $item_stack ? $target_stack - 0.5 : $target_stack + .5);
+
+
+                                    }
+
+
+                                    //print_r($row);
+
+                                    $subjects[$row['Category Webpage Index Stack']] = $row['Category Webpage Index Key'];
+                                }
+                            } else {
+                                print_r($error_info = $this->db->errorInfo());
+                                print "$sql\n";
+                                exit;
+                            }
+
+
+                            ksort($subjects);
+                            //print_r($subjects);
+
+                            $stack_index = 0;
+                            foreach ($subjects as $tmp => $category_webpage_stack_key) {
+                                $stack_index++;
+
+                                $sql = sprintf(
+                                    'UPDATE `Category Webpage Index` SET `Category Webpage Index Stack`=%d WHERE `Category Webpage Index Key`=%d ', $stack_index, $category_webpage_stack_key
+                                );
+
+                                //print "$sql\n";
+
+                                $this->db->exec($sql);
+
+                            }
+
+
+                        } else {
+
+
+                            $updated_metadata['section_keys'][] = $item_section_key;
+                            $updated_metadata['section_keys'][] = $target_section_key;
+
+
+                            $sql = sprintf(
+                                'UPDATE `Category Webpage Index` SET `Category Webpage Index Section Key`=%d , `Category Webpage Index Stack`=%d WHERE `Category Webpage Index Key`=%d',
+                                $target_section_key, 0, $item_index_key
+
+
+                            );
+                            $this->db->exec($sql);
+
+
+                            $subjects = array();
+                            $sql      = sprintf(
+                                "SELECT `Category Webpage Index Stack`,`Category Webpage Index Key`,`Category Webpage Index Category Key` AS subject_key FROM `Category Webpage Index`    WHERE  `Category Webpage Index Webpage Key`=%d AND  `Category Webpage Index Section Key`=%d ORDER BY `Category Webpage Index Stack` ",
+                                $this->id, $target_section_key
+
+                            );
+                            if ($result = $this->db->query($sql)) {
+                                foreach ($result as $row) {
+
+
+                                    // print "aaaa_> $item_index_key\n";
+                                    // print_r($row);
+
+                                    if ($item_index_key == $row['Category Webpage Index Key']) {
+                                        $tmp = (string)$target_stack - .5;
+
+                                        //  print "x  $tmp x\n";
+
+                                        $row['Category Webpage Index Stack'] = (string)($target_stack - .5);
+                                    }
+                                    $subjects[$row['Category Webpage Index Stack']] = $row['Category Webpage Index Key'];
+                                }
+                            }
+                            // print_r($subjects);
+                            ksort($subjects);
+
+                            //  print_r($subjects);
+
+                            $stack_index = 0;
+                            foreach ($subjects as $tmp => $category_webpage_stack_key) {
+                                $stack_index++;
+                                $sql = sprintf(
+                                    'UPDATE `Category Webpage Index` SET `Category Webpage Index Stack`=%d WHERE `Category Webpage Index Key`=%d ', $stack_index, $category_webpage_stack_key
+                                );
+                                $this->db->exec($sql);
+
+                            }
+
+
+                            $subjects = array();
+                            $sql      = sprintf(
+                                "SELECT `Category Webpage Index Stack`,`Category Webpage Index Key`,`Category Webpage Index Category Key` AS subject_key FROM `Category Webpage Index`    WHERE  `Category Webpage Index Webpage Key`=%d AND  `Category Webpage Index Section Key`=%d ORDER BY `Category Webpage Index Stack` ",
+                                $this->id, $item_section_key
+
+                            );
+                            if ($result = $this->db->query($sql)) {
+                                foreach ($result as $row) {
+                                    $subjects[$row['Category Webpage Index Stack']] = $row['Category Webpage Index Key'];
+                                }
+                            }
+
+                            $stack_index = 0;
+                            foreach ($subjects as $tmp => $category_webpage_stack_key) {
+                                $stack_index++;
+                                $sql = sprintf(
+                                    'UPDATE `Category Webpage Index` SET `Category Webpage Index Stack`=%d WHERE `Category Webpage Index Key`=%d ', $stack_index, $category_webpage_stack_key
+                                );
+                                $this->db->exec($sql);
+
+                            }
+
+
+                        }
+
+
+                    } else {
+                        // move last square
+
+                        $sql = sprintf(
+                            'SELECT max(`Category Webpage Index Stack`) AS stack FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d AND `Category Webpage Index Section Key`=%d ',
+                            $this->id, $target_section_key
+
+
+                        );
+
+
+                        //  print $sql;
+
+                        if ($result = $this->db->query($sql)) {
+                            if ($row = $result->fetch()) {
+                                $stack = $row['stack'];
+                                if ($target_section_key == $item_section_key) {
+
+                                    $updated_metadata['section_keys'][] = $item_section_key;
+
+                                    $subjects = array();
+                                    $sql      = sprintf(
+                                        "SELECT `Category Webpage Index Stack`,`Category Webpage Index Key`,`Category Webpage Index Category Key` AS subject_key FROM `Category Webpage Index`    WHERE  `Category Webpage Index Webpage Key`=%d ",
+                                        $this->id
+                                    );
+                                    if ($result = $this->db->query($sql)) {
+                                        foreach ($result as $row) {
+                                            if ($row['subject_key'] == $item_key) {
+                                                $row['Category Webpage Index Stack'] = $stack + 1;
+                                            }
+                                            $subjects[$row['Category Webpage Index Stack']] = $row['Category Webpage Index Key'];
+                                        }
+                                    }
+
+                                    ksort($subjects);
+                                    $stack_index = 0;
+                                    foreach ($subjects as $tmp => $category_webpage_stack_key) {
+                                        $stack_index++;
+                                        $sql = sprintf(
+                                            'UPDATE `Category Webpage Index` SET `Category Webpage Index Stack`=%d WHERE `Category Webpage Index Key`=%d ', $stack_index, $category_webpage_stack_key
+                                        );
+                                        $this->db->exec($sql);
+
+                                    }
+
+
+                                } else {
+                                    $updated_metadata['section_keys'][] = $item_section_key;
+                                    $updated_metadata['section_keys'][] = $target_section_key;
+
+                                    $sql = sprintf(
+                                        'UPDATE `Category Webpage Index` SET `Category Webpage Index Section Key`=%d , `Category Webpage Index Stack`=%d WHERE `Category Webpage Index Key`=%d',
+                                        $target_section_key, $stack + 1, $item_index_key
+
+
+                                    );
+                                    $this->db->exec($sql);
+
+
+                                    $subjects = array();
+                                    $sql      = sprintf(
+                                        "SELECT `Category Webpage Index Stack`,`Category Webpage Index Key`,`Category Webpage Index Category Key` AS subject_key FROM `Category Webpage Index`    WHERE  `Category Webpage Index Webpage Key`=%d AND  `Category Webpage Index Section Key`=%d ORDER BY `Category Webpage Index Stack` ",
+                                        $this->id, $item_section_key
+
+                                    );
+                                    if ($result = $this->db->query($sql)) {
+                                        foreach ($result as $row) {
+                                            $subjects[$row['Category Webpage Index Stack']] = $row['Category Webpage Index Key'];
+                                        }
+                                    }
+
+                                    $stack_index = 0;
+                                    foreach ($subjects as $tmp => $category_webpage_stack_key) {
+                                        $stack_index++;
+                                        $sql = sprintf(
+                                            'UPDATE `Category Webpage Index` SET `Category Webpage Index Stack`=%d WHERE `Category Webpage Index Key`=%d ', $stack_index, $category_webpage_stack_key
+                                        );
+                                        $this->db->exec($sql);
+
+                                    }
+
+
+                                }
+
+
+                            } else {
+                                $this->msg   = 'Section not found in website';
+                                $this->error = true;
+
+                                return;
+                            }
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
+                            print "$sql\n";
+                            exit;
+                        }
+
+                    }
+
+
+                }
+
+
+                break;
+            default:
+                break;
+        }
+
+
+        $result=array();
+
+        foreach ($updated_metadata['section_keys'] as $section_key) {
+            foreach ($content_data['sections'] as $section_stack_index => $section_data) {
+                if ($section_data['key'] == $section_key) {
+                    $content_data['sections'][$section_stack_index]['items'] = get_website_section_items($this->db, $section_data);
+                    $result[$section_key]= $content_data['sections'][$section_stack_index]['items'] ;
+                    break;
+                }
+            }
+        }
+
+        $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+
+
+        return $result;
+
+
+    }
+
+
+    function delete_section($section_key) {
+
+        $content_data = $this->get('Content Data');
+
+
+        foreach ($content_data['sections'] as $_key => $_data) {
+
+            //  print_r($_data);
+
+            if ($_data['type'] == 'anchor') {
+                $anchor_section_key = $_data['key'];
+
+                break;
+            }
+
+        }
+        $sql = sprintf(
+            'SELECT max(`Category Webpage Index Stack`) AS stack FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d 
+              AND `Category Webpage Index Section Key`=%d ', $this->id, $anchor_section_key
+        );
+
+
+
+        //  print $sql;
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $stack = $row['stack'];
+
+
+                $sql = sprintf(
+                    'UPDATE `Category Webpage Index` SET `Category Webpage Index Section Key`=%d , `Category Webpage Index Stack`=`Category Webpage Index Stack`+%d WHERE `Category Webpage Index Section Key`=%d',
+                    $anchor_section_key, $stack, $section_key
+
+
+                );
+
+
+                // print $sql;
+
+                $this->db->exec($sql);
+
+
+                $subjects = array();
+                $sql      = sprintf(
+                    "SELECT `Category Webpage Index Stack`,`Category Webpage Index Key`,`Category Webpage Index Category Key` AS subject_key FROM `Category Webpage Index`    WHERE  `Category Webpage Index Webpage Key`=%d AND  `Category Webpage Index Section Key`=%d ORDER BY `Category Webpage Index Stack` ",
+                    $this->id, $anchor_section_key
+
+                );
+
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        $subjects[$row['Category Webpage Index Stack']] = $row['Category Webpage Index Key'];
+                    }
+                }
+
+                ksort($subjects);
+
+                $stack_index = 0;
+                foreach ($subjects as $tmp => $category_webpage_stack_key) {
+                    $stack_index++;
+                    $sql = sprintf(
+                        'UPDATE `Category Webpage Index` SET `Category Webpage Index Stack`=%d WHERE `Category Webpage Index Key`=%d ', $stack_index, $category_webpage_stack_key
+                    );
+                    $this->db->exec($sql);
+
+                }
+
+
+            } else {
+                $this->msg   = 'Section not found in website';
+                $this->error = true;
+
+                return;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        foreach ($content_data['sections'] as $_key => $_data) {
+            if ($_data['key'] == $section_key) {
+                unset($content_data['sections'][$_key]);
+                break;
+            }
+
+        }
+
+
+
+
+
+
+
+
+
+        $result=array();
+
+
+            foreach ($content_data['sections'] as $section_stack_index => $section_data) {
+                if ($section_data['key'] == $anchor_section_key) {
+                    $content_data['sections'][$section_stack_index]['items'] = get_website_section_items($this->db, $section_data);
+                    $result[$anchor_section_key]= $content_data['sections'][$section_stack_index]['items'] ;
+                    break;
+                }
+            }
+
+        $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+
+
+        return $result;
+
+    }
+
+    function add_section() {
+
+        $content_data = $this->get('Content Data');
+
+
+        $section = array(
+            'title'    => 'Bla bla',
+            'subtitle' => 'bla bla',
+            'type'     => 'page_break',
+            'panels'   => array(),
+
+            'items' => array()
+
+        );
+
+        if (isset($content_data['sections'])) {
+            $section_stack_index = count($content_data['sections']) + 1;
+        } else {
+            $section_stack_index = 1;
+        }
+
+
+        $sql = sprintf(
+            'INSERT INTO `Webpage Section Dimension` (`Webpage Section Webpage Key`,`Webpage Section Webpage Stack Index`,`Webpage Section Data`) VALUES (%d,%d,%s) ', $this->id, $section_stack_index,
+            prepare_mysql(json_encode($section))
+
+        );
+
+
+        $this->db->exec($sql);
+        $section['key'] = $this->db->lastInsertId();
+
+
+        $content_data['sections'][] = $section;
+
+        $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+
+
+        $updated_metadata['new_section'] = $section;
+
+        return $updated_metadata;
+
+    }
+
+
+    function add_section_item($item_key, $section_key) {
+
+
+        include_once('class.Public_Webpage.php');
+        include_once('class.Category.php');
+
+
+        $updated_metadata = array('section_keys' => array());
+
+        $content_data = $this->get('Content Data');
+
+        // print_r($content_data['sections']);
+
+        $found_section = false;
+        foreach ($content_data['sections'] as $section_data) {
+            if ($section_data['key'] == $section_key) {
+                $found_section = true;
+                break;
+
+            }
+        }
+
+
+        if (!$found_section) {
+
+            $this->msg   = 'Item not found in website';
+            $this->error = true;
+
+            return $updated_metadata;
+        }
+
+        $parent_category  = new Category($this->get('Webpage Scope Key'));
+        $subject_category = new Category($item_key);
+        $subject_webpage  = new Public_Webpage('scope', 'Category', $item_key);
+
+
+        if ($subject_webpage->id) {
+
+
+            $sql = sprintf(
+                'SELECT max(`Category Webpage Index Stack`) AS stack FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d AND `Category Webpage Index Section Key`=%d ',
+                $this->id, $section_key
+
+
+            );
+
+
+            //  print $sql;
+            $stack = 0;
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $stack = $row['stack'];
+
+                }
+            }
+
+            $stack++;
+
+            if ($parent_category->is_subject_associated($item_key)) {
+                $subject_type = 'Subject';
+            } else {
+                $subject_type = 'Guest';
+
+            }
+
+            $subject_data = array(
+                'header_text' => $subject_category->get('Label'),
+                'image_src'   => $subject_category->get('Image'),
+                'footer_text' => $subject_category->get('Code'),
+            );
+            $sql          = sprintf(
+                'INSERT INTO `Category Webpage Index` (`Category Webpage Index Parent Category Key`,`Category Webpage Index Category Key`,`Category Webpage Index Webpage Key`,`Category Webpage Index Category Webpage Key`,`Category Webpage Index Section Key`,`Category Webpage Index Content Data`,`Category Webpage Index Subject Type`,`Category Webpage Index Stack`) VALUES (%d,%d,%d,%d,%d,%s,%s,%d) ',
+                $this->get('Webpage Scope Key'), $item_key, $this->id, $subject_webpage->id, $section_key, prepare_mysql(json_encode($subject_data)),
+
+                prepare_mysql($subject_type), $stack
+            );
+
+
+            $this->db->exec($sql);
+
+
+            $updated_metadata['section_keys'][] = $section_key;
+
+
+        } else {
+            $this->msg   = "Item don't have website";
+            $this->error = true;
+
+            return $updated_metadata;
+        }
+
+        $result=array();
+
+        foreach ($updated_metadata['section_keys'] as $section_key) {
+            foreach ($content_data['sections'] as $section_stack_index => $section_data) {
+                if ($section_data['key'] == $section_key) {
+                    $content_data['sections'][$section_stack_index]['items'] = get_website_section_items($this->db, $section_data);
+                    $result[$section_key]= $content_data['sections'][$section_stack_index]['items'] ;
+                    break;
+                }
+            }
+        }
+
+        $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+
+
+        return $result;
+
+
+
+    }
+
+
+    function remove_section_item($item_key) {
+
+        $updated_metadata = array('section_keys' => array());
+        $content_data = $this->get('Content Data');
+
+        $sql = sprintf(
+            'SELECT `Category Webpage Index Key`,`Category Webpage Index Section Key`,`Category Webpage Index Stack` FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d AND `Category Webpage Index Category Key`=%d ',
+            $this->id, $item_key
+
+
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+
+                $updated_metadata['section_keys'][] = $row['Category Webpage Index Section Key'];
+
+                $sql = sprintf(
+                    'DELETE FROM `Category Webpage Index` WHERE `Category Webpage Index Key`=%d  ',
+
+                    $row['Category Webpage Index Key']
+                );
+                $this->db->exec($sql);
+
+            } else {
+                $this->msg   = 'Item not found in website';
+                $this->error = true;
+
+                return $updated_metadata;
+
+                return;
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $result=array();
+
+        foreach ($updated_metadata['section_keys'] as $section_key) {
+            foreach ($content_data['sections'] as $section_stack_index => $section_data) {
+                if ($section_data['key'] == $section_key) {
+                    $content_data['sections'][$section_stack_index]['items'] = get_website_section_items($this->db, $section_data);
+                    $result[$section_key]= $content_data['sections'][$section_stack_index]['items'] ;
+                    break;
+                }
+            }
+        }
+
+        $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+
+
+        return $result;
 
     }
 

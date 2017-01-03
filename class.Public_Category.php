@@ -126,11 +126,7 @@ class Public_Category {
             exit;
         }
 
-
-
         $this->webpage         = new Page($page_key );
-
-
 
         return $this->webpage;
 
@@ -169,6 +165,12 @@ class Public_Category {
 
     }
 
+
+
+    function get_object_name() {
+        return $this->table_name;
+
+    }
 
 
 }
