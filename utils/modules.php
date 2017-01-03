@@ -19,8 +19,9 @@ $_product = array(
         'product.sales.calendar'       => 'product.sales',
         'product.customers.customers'  => 'product.customers',
         'product.customers.favourites' => 'product.customers',
-        'product.website.webpage'      => 'product.website',
-        'product.website.pages'        => 'product.website',
+        'product.webpage.settings'      => 'product.webpage',
+        'product.webpage.preview'      => 'product.webpage',
+        'product.webpage.analytics'      => 'product.webpage',
     ),
 
     'tabs' => array(
@@ -86,6 +87,28 @@ $_product = array(
             'title' => _('Offers')
         ),
 
+
+        'product.webpage'    => array(
+            'label' => _('Website'),
+            'icon'  => 'globe',
+            'subtabs' => array(
+                'product.webpage.settings'  => array(
+                    'label' => _('Settings'),
+                    'icon'=>'sliders'
+                ),
+
+                'product.webpage.preview'     => array(
+                    'label' => _('Preview')
+                ),
+                'product.webpage.analytics'  => array(
+                    'label' => _('Analytics')
+                ),
+
+
+            )
+        ),
+
+        /*
         'product.website' => array(
             'label'   => _('Website'),
             'title'   => _('Website'),
@@ -109,6 +132,8 @@ $_product = array(
 
             )
         ),
+
+        */
         'product.history' => array(
             'label' => _('History'),
             'icon'  => 'road',

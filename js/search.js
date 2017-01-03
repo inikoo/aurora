@@ -14,6 +14,7 @@ function delayed_search(search_field, timeout) {
 
     var query = search_field.val()
 
+
     key_scope = {
         type: 'search'
     }

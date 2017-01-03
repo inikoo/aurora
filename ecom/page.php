@@ -102,12 +102,14 @@ if (!$is_cached) {
     $page->customer        = $customer;
 
 
-    if (in_array($page->get('Page Store Content Template Filename'), array('products_showcase')) and $page->get('Page Store Content Display Type') == 'Template') {
+    if (in_array($page->get('Page Store Content Template Filename'), array('products_showcase','categories_showcase')) and $page->get('Page Store Content Display Type') == 'Template') {
         $version = 2;
     } else {
         $version = 1;
 
     }
+
+
     $smarty->assign('_version_', $version);
 
 
@@ -118,6 +120,8 @@ if (!$is_cached) {
 
     $css_files = array();
     $js_files  = array();
+
+
 
 
     if ($version == 1) {
@@ -253,6 +257,10 @@ if (!$is_cached) {
 
         }
 
+
+
+
+
         if ($page->data['Page Code'] == 'login') {
 
             //if (strpos((isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:''), 'Chrome') !== false) {
@@ -283,8 +291,11 @@ if (!$is_cached) {
     $js_files[] = 'js/edit_currency.js';
 
 
-    $js_files[]  = sprintf(INIKOO_ACCOUNT."_js/page_%05d.js", $page->id);
-    $css_files[] = sprintf(INIKOO_ACCOUNT."_css/page_%05d.css", $page->id);
+    if($version==1) {
+        $js_files[]  = sprintf(INIKOO_ACCOUNT."_js/page_%05d.js", $page->id);
+        $css_files[] = sprintf(INIKOO_ACCOUNT."_css/page_%05d.css", $page->id);
+    }
+
     if ($site->data['Site Search Method'] == 'Custome') {
         $js_files[]  = sprintf(INIKOO_ACCOUNT."_js/search_%02d.js", $site->id);
         $css_files[] = sprintf(INIKOO_ACCOUNT."_css/search_%02d.css", $site->id);
@@ -322,6 +333,7 @@ if (!$is_cached) {
 
     $css_files = array_merge($base_css_files, $css_files);
 
+   // print_r($css_files);
 
     $js_files = array_merge($base_js_files, $js_files);
 

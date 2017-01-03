@@ -1680,9 +1680,11 @@ function save_sticky_note() {
 function delayed_on_change_dropdown_select_field(object, timeout) {
     var field = object.attr('id');
 
+
+
+
     var field_element = $('#' + field);
     var new_value = field_element.val()
-
 
     key_scope = {
         type: 'dropdown_select',
@@ -1700,16 +1702,24 @@ function delayed_on_change_dropdown_select_field(object, timeout) {
 
 function get_dropdown_select(dropdown_input, new_value) {
 
+
+
     var parent_key = $('#' + dropdown_input).attr('parent_key')
     var parent = $('#' + dropdown_input).attr('parent')
     var scope = $('#' + dropdown_input).attr('scope')
     var field = $('#' + dropdown_input).attr('field')
     var request = '/ar_find.php?tipo=find_object&query=' + fixedEncodeURIComponent(new_value) + '&scope=' + scope + '&parent=' + parent + '&parent_key=' + parent_key + '&state=' + JSON.stringify(state)
 
+    console.log(request)
     $.getJSON(request, function (data) {
 
 
         if (data.number_results > 0) {
+
+
+            console.log('#' + field + '_results_container')
+
+
             $('#' + field + '_results_container').removeClass('hide').addClass('show')
             $('#' + field + '_msg').html('').addClass('hide')
             $('#' + field).val('')
@@ -1742,6 +1752,7 @@ function get_dropdown_select(dropdown_input, new_value) {
                 on_changed_value(field, '')
             }
         }
+        console.log("#" + field + "_results")
 
 
         $("#" + field + "_results .result").remove();

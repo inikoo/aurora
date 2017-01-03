@@ -6,7 +6,7 @@
 
                 {if $product_data.type=='product'}
                     {assign 'product' $product_data.object}
-                    <div id="product_target_div_{$stack_index}" stack_index="{$stack_index}" draggable="{if $product->get('Web State')=='For Sale' }true{else}false{/if}" ondragstart="drag(event)" product_code="{$product->get('Code')}"  index_key="{$product_data.index_key}" product_id="{$product->id}" ondrop="drop(event)" ondragover="allowDrop(event)" class="product_block product_showcase " style="position:relative">
+                    <div id="product_target_div_{$stack_index}" stack_index="{$product_data.product_stack_index}" draggable="{if $product->get('Web State')=='For Sale' }true{else}false{/if}" ondragstart="product_drag(event)" product_code="{$product->get('Code')}"  index_key="{$product_data.index_key}" product_id="{$product->id}" ondrop="product_drop(event)" ondragover="product_allowDrop(event)" class="product_block product_showcase " style="position:relative">
 
                 <div class="product_header_text fr-view" >
                     {$product_data.header_text}
@@ -18,7 +18,7 @@
 
 
                 <div class="product_description"  >
-                    <span class="code">{$product->get('Code')}</span>
+                    <span class="code">{$product->get('Code')} {$stack_index} </span>
                     <div class="name">{$product->get('Name')}</div>
 
                 </div>

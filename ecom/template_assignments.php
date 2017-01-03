@@ -179,10 +179,53 @@ if ($page->data['Page Store Section Type']=='Family') {
 
 
 
-}elseif ($page->data['Page Store Section Type']=='Department') {
+}
+elseif ($page->data['Page Store Section Type']=='Department') {
+
+
 	$smarty->assign('_families', $page->get_families_data());
 	$department=new Department($page->data['Page Parent Key']);
 	$smarty->assign('department', $department);
+
+
+
+    include_once 'class.Public_Category.php';
+    include_once 'class.Public_Webpage.php';
+    include_once 'class.Public_Product.php';
+    include_once 'class.Public_Customer.php';
+    include_once 'class.Public_Order.php';
+    include_once 'class.Public_Website_User.php';
+
+    $public_category=new Public_Category('root_key_code', $store->get('Store Department Category Key'), $department->get('Product Department Code'));
+
+
+    $public_category->load_webpage();
+
+    $public_customer=new Public_Customer($customer->id);
+    $public_order=new Public_Order($order_in_process->id);
+
+
+    if($user=='') {
+        $public_user=new Public_Website_User(0);
+    }else{
+        $public_user=new Public_Website_User($user->id);
+    }
+
+
+    $content_data = $public_category->webpage->get('Content Data');
+
+    $smarty->assign('content_data', $content_data);
+
+    $smarty->assign('sections', $content_data['sections']);
+
+
+
+    $smarty->assign('category', $public_category);
+    $smarty->assign('customer', $public_customer);
+    $smarty->assign('order', $public_order);
+    $smarty->assign('user', $public_user);
+
+
 }elseif ($page->data['Page Store Section Type']=='Product') {
 	$smarty->assign('product', $page->get_product_data());
 }elseif ($page->data['Page Store Section']=='Front Page Store') {

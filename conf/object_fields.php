@@ -170,9 +170,21 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
         case 'Product':
         case 'StoreProduct':
 
-            $object->get_webpage();
+
+        $object->get_webpage();
+        if (isset($options['type']) and $options['type'] == 'webpage_settings') {
+            include 'fields/product.webpage.fld.php';
+        } else {
 
             include 'fields/product.fld.php';
+        }
+
+
+
+
+
+
+
 
             return $product_fields;
             break;

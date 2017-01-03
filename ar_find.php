@@ -126,6 +126,9 @@ switch ($tipo) {
             case 'product_webpages':
                 find_product_webpages($db, $account, $memcache_ip, $data);
                 break;
+            case 'category_webpages':
+                find_category_webpages($db, $account, $memcache_ip, $data);
+                break;
             default:
                 $response = array(
                     'state' => 405,
@@ -2218,9 +2221,7 @@ function find_product_webpages($db, $account, $memcache_ip, $data) {
                     $candidates[$row['Product ID']] = 1000;
                 } else {
 
-                    $len_name                       = strlen(
-                        $row['Product Code']
-                    );
+                    $len_name                       = strlen($row['Product Code']);
                     $len_q                          = strlen($q);
                     $factor                         = $len_q / $len_name;
                     $candidates[$row['Product ID']] = 500 * $factor;
@@ -2286,5 +2287,202 @@ function find_product_webpages($db, $account, $memcache_ip, $data) {
     echo json_encode($response);
 
 }
+
+
+
+
+function find_category_webpages($db, $account, $memcache_ip, $data) {
+
+
+    $cache       = false;
+    $max_results = 5;
+    $user        = $data['user'];
+    $q           = trim($data['query']);
+
+
+    if ($q == '') {
+        $response = array(
+            'state'   => 200,
+            'results' => 0,
+            'data'    => ''
+        );
+        echo json_encode($response);
+
+        return;
+    }
+
+  //  $where = sprintf("  and `Product Category Status` in ('Active','Discontinuing') ");
+    switch ($data['parent']) {
+        case 'website':
+            $where = sprintf(' and `Page Site Key`=%d', $data['parent_key']);
+            break;
+        case 'store':
+            $where = sprintf(' and `Page Store Key`=%d', $data['parent_key']);
+            break;
+        default:
+
+            break;
+    }
+
+
+    /*
+
+    if (isset($data['metadata']['option'])) {
+        switch ($data['metadata']['option']) {
+            case 'only_online':
+                $where .= sprintf(' and `Page State`="Online"');
+                break;
+            default:
+
+                break;
+        }
+
+    }
+
+    if (isset($data['metadata']['exclude']) and count(
+            $data['metadata']['exclude']
+        ) > 0
+    ) {
+        $where .= sprintf(
+            ' and `Product Category Key` not in (%s) ', join(',', $data['metadata']['exclude'])
+        );
+
+    }
+
+    */
+
+    $memcache_fingerprint = $account->get('Account Code').'FIND_CatWebP'.md5($q);
+
+    $cache = new Memcached();
+    $cache->addServer($memcache_ip, 11211);
+
+
+    if (strlen($q) <= 2) {
+        $memcache_time = 295200;
+    }
+    if (strlen($q) <= 3) {
+        $memcache_time = 86400;
+    }
+    if (strlen($q) <= 4) {
+        $memcache_time = 3600;
+    } else {
+        $memcache_time = 300;
+
+    }
+
+
+    $results_data = $cache->get($memcache_fingerprint);
+
+
+    if (!$results_data or true) {
+
+        $candidates      = array();
+        $candidates_data = array();
+
+
+        $sql = sprintf(
+            "select `Page Key`,`Category Code`,`Category Label`,`Category Subject`,`Category Key`,`Product Category Active Products`,`Product Category Status` from `Page Store Dimension`  left join `Category Dimension` on (`Webpage Scope Key`=`Category Key` and `Webpage Scope` in ('Category Products','Category Categories')  )   left join `Product Category Dimension` on (`Category Key`=`Product Category Key`)  where  `Category Code` like '%s%%' %s order by `Category Code` limit $max_results ",
+            $q, $where
+        );
+
+        //	print $sql;
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['Category Code'] == $q) {
+                    $candidates[$row['Category Key']] = 1000;
+                } else {
+
+                    $len_name                       = strlen($row['Category Code']);
+                    $len_q                          = strlen($q);
+                    $factor                         = $len_q / $len_name;
+                    $candidates[$row['Category Key']] = 500 * $factor;
+                }
+
+                $candidates_data[$row['Category Key']]
+                    = array(
+                    'Category Code' => $row['Category Code'],
+                    'Category Label' => $row['Category Label'],
+                    'Status'=> $row['Product Category Status'],
+                    'Products'=> $row['Product Category Active Products'],
+                    'Category Subject'=> $row['Category Subject'],
+                );
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+        arsort($candidates);
+
+
+        $total_candidates = count($candidates);
+
+        if ($total_candidates == 0) {
+            $response = array(
+                'state'   => 200,
+                'results' => 0,
+                'data'    => ''
+            );
+            echo json_encode($response);
+
+            return;
+        }
+
+
+        $results = array();
+        foreach ($candidates as $category_key => $candidate) {
+
+          //  print $candidates_data[$category_key]['Status'];
+
+            if( in_array($candidates_data[$category_key]['Status'],array('Active','Discontinuing'))){
+                $value=$category_key;
+                $description=$candidates_data[$category_key]['Category Label'];
+                $code=$candidates_data[$category_key]['Category Code'];
+
+                if($candidates_data[$category_key]['Category Subject']=='Product'){
+                    $description.=' <span class="discreet italic">('.$candidates_data[$category_key]['Products'].' <i class="fa fa-cube" aria-hidden="true"></i>)</span>';
+                }else{
+                    $description.=' <span class="discreet italic">('._('Category').')</span>';
+
+                }
+
+            }else{
+                $value=0;
+                $description='<span style="text-decoration: line-through;">'.$candidates_data[$category_key]['Category Label'].'</span>';
+                $code='<span style="text-decoration: line-through;">'.$candidates_data[$category_key]['Category Code'].'</span>';
+            }
+
+
+            $results[$category_key] = array(
+                'code'            => $code,
+                'description'     => $description,
+                'value'           => $value,
+                'formatted_value' => $candidates_data[$category_key]['Category Code']
+            );
+
+        }
+
+        $results_data = array(
+            'n' => count($results),
+            'd' => $results
+        );
+        $cache->set($memcache_fingerprint, $results_data, $memcache_time);
+
+
+    }
+    $response = array(
+        'state'          => 200,
+        'number_results' => $results_data['n'],
+        'results'        => $results_data['d'],
+        'q'              => $q
+    );
+
+    echo json_encode($response);
+
+}
+
 
 ?>

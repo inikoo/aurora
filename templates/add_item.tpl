@@ -61,7 +61,7 @@
 
         $.getJSON(request, function (data) {
 
-
+console.log('ss')
             if (data.number_results > 0) {
                 $('#add_item_results_container').removeClass('hide').addClass('show')
                 $('#add_item').removeClass('invalid')
