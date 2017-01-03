@@ -1004,6 +1004,9 @@ trait ProductCategory {
 
             );
 
+            //print $sql;
+
+
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
 
