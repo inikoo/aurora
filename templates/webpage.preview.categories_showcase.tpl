@@ -162,7 +162,7 @@
 
 
 
-    <div style="position:relative;">
+    <div style="position:relative;" id="items_views">
 
 
 
@@ -178,7 +178,7 @@
 
 
 
-    <div id="items_container" class="product_blocks"   style="margin-bottom:80px;"  >
+        <div id="items_container" class="product_blocks"   style="margin-bottom:80px;"  >
 
         {foreach from=$sections item=section_data}
             {include file="webpage.preview.categories_showcase.section.tpl" section_data=$section_data   }

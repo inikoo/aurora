@@ -4,7 +4,13 @@
         <i class="fa fa-trash-o" style="position:relative;top:20px" aria-hidden="true"></i>
     </div>
 
-    <i class="fa fa-trash {if $section_data.type=='anchor'}invisible{/if} button" onClick="delete_section(this)" style="position:relative;top:25px;left:-25.9px" aria-hidden="true"></i>
+        <i class="invisible fa fa-hand-grab-o fa-fw {if $section_data.type=='anchor'}invisible{/if}"  style="position:relative;top:24px;left:-25.9px"  aria-hidden="true"
+        draggable="true" ondragend="move_section_ondragend(event)" ondragstart="move_section_ondragstart(event)"   ondragover="move_section_allowDrop(event)"  ondrop="move_section_items_drop(event)"
+        ></i>
+    <i class="fa fa-trash fa-fw {if $section_data.type=='anchor'}invisible{/if} button" onClick="delete_section(this)" style="position:relative;top:50px;left:-47.5px" aria-hidden="true"></i>
+
+    
+    
     <div id="section_{$section_data.key}" style="position:relative" class="page_break  panel_4" >
         <span  ondrop="return false;" class="section_header title items_view {$section_data.type}" {if $section_data.type!='anchor'} contenteditable="true"{/if} field="title">{if $section_data.type=='anchor'}
         <i class="fa fa-th fa-fw button  box_view" style="margin-left:0px" aria-hidden="true"></i>
