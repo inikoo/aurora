@@ -238,7 +238,6 @@
     {include file="js/webpage.preview.publish.tpl.js" }
     {include file="js/webpage.preview.description_block.tpl.js" }
     {include file="js/webpage.preview.products.tpl.js" }
-    {include file="js/webpage.preview.products.tpl.js" }
 
 
     $('.favorite').click(function() {
