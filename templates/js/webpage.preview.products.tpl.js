@@ -94,7 +94,7 @@
 
     function  save_stack_index(stack_index,product_id) {
 
-        var request = '/ar_edit_website?tipo=edit_category_stack_index&key=' + {$category->id} + '&stack_index=' +stack_index + '&subject_key='+product_id+ '&webpage_key='+{$webpage->id}
+        var request = '/ar_edit_website.php?tipo=edit_category_stack_index&key=' + {$category->id} + '&stack_index=' +stack_index + '&subject_key='+product_id+ '&webpage_key='+{$webpage->id}
         console.log(request)
         $.getJSON(request, function (data) {
 
@@ -137,7 +137,7 @@
          saveInterval: 500,
          saveParam: 'value',
 
-         saveURL: '/ar_edit_website',
+         saveURL: '/ar_edit_website.php',
 
          saveMethod: 'POST',
 
@@ -262,7 +262,7 @@
 
         var block='panel'+datetime.getTime()
 
-        var request = '/ar_edit_website?tipo=webpage_content_data&parent=page&parent_key=' + {$category->webpage->id} +'&section=products&block=' + block + '&type=add_panel&value='
+        var request = '/ar_edit_website.php?tipo=webpage_content_data&parent=page&parent_key=' + {$category->webpage->id} +'&section=products&block=' + block + '&type=add_panel&value='
             + JSON.stringify({
                 'stack_index':stack_index,'size':size,'type':type})
 
@@ -327,7 +327,7 @@
                   saveInterval: 500,
                   saveParam: 'value',
 
-                  saveURL: '/ar_edit_website',
+                  saveURL: '/ar_edit_website.php',
 
                   saveMethod: 'POST',
 
@@ -392,7 +392,7 @@
       break;
           case 'delete_panel':
               console.log('delete')
-              var request = '/ar_edit_website?tipo=webpage_content_data&parent=page&parent_key=' + {$category->webpage->id} +'&section=panels&block=' + block + '&type=remove_panel&value='
+              var request = '/ar_edit_website.php?tipo=webpage_content_data&parent=page&parent_key=' + {$category->webpage->id} +'&section=panels&block=' + block + '&type=remove_panel&value='
               $.getJSON(request, function (data) {
 
                   if (data.state == 200) {
@@ -490,7 +490,7 @@
         var block=input.closest('.panel').attr('id')
         var input_icon=input.closest('.panel').find('.'+type+'_icon')
 
-        var request = '/ar_edit_website?tipo=webpage_content_data&parent=page&parent_key=' + {$category->webpage->id} +'&section=panels&block=' + block + '&type='+type+'&value=' + input.val()
+        var request = '/ar_edit_website.php?tipo=webpage_content_data&parent=page&parent_key=' + {$category->webpage->id} +'&section=panels&block=' + block + '&type='+type+'&value=' + input.val()
         console.log(request)
 
         $.getJSON(request, function (data) {
@@ -687,7 +687,7 @@
 
                 btoa(editor.getValue())
 
-                var request = '/ar_edit_website?tipo=webpage_content_data&parent=page&parent_key=' + {$category->webpage->id} +'&section=panels&block=' + block + '&type='+type+'&value=' + encodeURIComponent(btoa(editor.getValue()))
+                var request = '/ar_edit_website.php?tipo=webpage_content_data&parent=page&parent_key=' + {$category->webpage->id} +'&section=panels&block=' + block + '&type='+type+'&value=' + encodeURIComponent(btoa(editor.getValue()))
                 console.log(request)
 
                $.getJSON(request, function (data) {
@@ -734,7 +734,7 @@
             var block=  $(this).closest('.panel').attr('id')
 
 
-            var request = '/ar_edit_website?tipo=webpage_content_data&parent=page&parent_key=' + {$category->webpage->id} +'&section=panels&block=' + block + '&type=remove_panel&value='
+            var request = '/ar_edit_website.php?tipo=webpage_content_data&parent=page&parent_key=' + {$category->webpage->id} +'&section=panels&block=' + block + '&type=remove_panel&value='
             $.getJSON(request, function (data) {
 
                 if (data.state == 200) {
