@@ -55,7 +55,7 @@ cell: Backgrid.StringCell.extend({
 },
 {
 name: "sko_description",
-label: "{t}Unit description{/t}",
+label: "{t}SKO description{/t}",
 editable: false,
 sortType: "toggle",
 
