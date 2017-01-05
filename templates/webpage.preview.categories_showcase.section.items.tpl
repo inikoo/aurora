@@ -4,7 +4,7 @@
 
 
                 {if $category_data.type=='category'}
-                    <div id="category_target_div_{$stack_index}" stack_index="{$category_data.category_stack_index}" draggable="true"   index_key="{$category_data.index_key}" category_key="{$category_data.category_key}"  class="category_block category_showcase item_dragabble" style="position:relative"   item_type="{$category_data.item_type}" item_key="{$category_data.category_key}"  ondragend="overview_items_ondragend(event)" ondragstart="overview_items_ondragstart(event)"  ondragover="overview_items_allowDrop(event)"  ondrop="overview_items_drop(event)">
+                    <div id="category_target_div_{$stack_index}" stack_index="{$category_data.category_stack_index}"    index_key="{$category_data.index_key}" category_key="{$category_data.category_key}"  class="category_block category_showcase item_dragabble" style="position:relative"   item_type="{$category_data.item_type}" item_key="{$category_data.category_key}"  draggable="true" ondragend="overview_items_ondragend(event)" ondragstart="overview_items_ondragstart(event)"  ondragover="overview_items_allowDrop(event)"  ondrop="overview_items_drop(event)">
 
 
                 <div class="category_header_text fr-view"  style="text-align: center">

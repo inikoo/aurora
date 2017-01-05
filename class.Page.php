@@ -6755,6 +6755,71 @@ class Page extends DB_Table {
 
     }
 
+    function update_webpage_section_order($section_key,$target_key){
+
+
+        $content_data = $this->get('Content Data');
+
+
+        $_sections=$content_data['sections'];
+        foreach( $_sections as $index=>$section_data){
+
+
+
+            if($section_data['key']==$section_key){
+                $section_index=$index;
+                $moving_section=$section_data;
+                unset( $_sections[$index]);
+            }
+            if($section_data['key']==$target_key){
+                $target_index=$index;
+            }
+          }
+
+
+        $sections=array();
+
+
+        if($target_index>$section_index){
+
+            foreach($_sections as $index=>$section_data){
+
+
+                $sections[]=$section_data;
+                if($index==$target_index){
+                    $sections[]=$moving_section;
+                }
+
+
+            }
+
+        }else{
+
+            foreach($_sections as $index=>$section_data){
+
+
+
+                if($index==$target_index){
+                    $sections[]=$moving_section;
+                }
+                $sections[]=$section_data;
+
+            }
+
+        }
+
+
+
+        $content_data['sections']= $sections;
+        $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+
+
+
+
+
+
+    }
+
 
 }
 

@@ -35,7 +35,7 @@ switch ($tipo) {
             $_REQUEST, array(
                          'webpage_key' => array('type' => 'key'),
                          'section_key' => array('type' => 'key'),
-                         'target_key'    => array('type' => 'key'),
+                         'target_key'  => array('type' => 'key'),
 
                      )
         );
@@ -118,7 +118,7 @@ switch ($tipo) {
 
                      )
         );
-        update_product_category_index($data, $editor, $db,$smarty);
+        update_product_category_index($data, $editor, $db, $smarty);
         break;
     case 'update_webpage_related_product':
 
@@ -724,7 +724,7 @@ function webpage_content_data($data, $editor, $db, $smarty) {
 
 }
 
-function update_product_category_index($data, $editor, $db,$smarty) {
+function update_product_category_index($data, $editor, $db, $smarty) {
 
     // todo migrate to Webpage & WebpageVersion classes
     include_once('class.Page.php');
@@ -1092,10 +1092,10 @@ function update_webpage_section_data($data, $editor, $db, $smarty) {
     $webpage = new Page($data['parent_key']);
 
     $content_data = $webpage->get('Content Data');
-    $result_data=array();
+    $result_data  = array();
     //  print_r($content_data);
     if ($data['type'] == 'title' or $data['type'] == 'subtitle') {
-        $data['value']=trim($data['value']);
+        $data['value'] = trim($data['value']);
 
         foreach ($content_data['sections'] as $_key => $_data_section) {
             if ($_data_section['key'] == $data['section_key']) {
@@ -1180,7 +1180,6 @@ function delete_webpage_section($data, $editor, $smarty, $db) {
     $updated_result = $webpage->delete_section($data['section_key']);
 
 
-
     $overview_items_html = array();
     $items_html          = array();
 
@@ -1199,8 +1198,6 @@ function delete_webpage_section($data, $editor, $smarty, $db) {
 
 
     );
-
-
 
 
     echo json_encode($response);
@@ -1245,10 +1242,7 @@ function add_webpage_item($data, $editor, $smarty, $db) {
     $webpage->load_scope();
 
 
-
-
     $updated_result = $webpage->add_section_item($data['item_key'], $data['section_key']);
-
 
 
     $overview_items_html = array();
@@ -1270,7 +1264,6 @@ function add_webpage_item($data, $editor, $smarty, $db) {
 
     );
     echo json_encode($response);
-
 
 
 }
@@ -1283,8 +1276,7 @@ function delete_webpage_item($data, $editor, $smarty, $db) {
     $webpage->load_scope();
 
 
-    $updated_result =$webpage->remove_section_item($data['item_key']);
-
+    $updated_result = $webpage->remove_section_item($data['item_key']);
 
 
     $overview_items_html = array();
@@ -1308,9 +1300,7 @@ function delete_webpage_item($data, $editor, $smarty, $db) {
     echo json_encode($response);
 }
 
-function update_webpage_section_order($data, $editor, $smarty, $db){
-
-
+function update_webpage_section_order($data, $editor, $smarty, $db) {
 
 
     include_once('class.Page.php');
@@ -1319,17 +1309,28 @@ function update_webpage_section_order($data, $editor, $smarty, $db){
     $webpage->load_scope();
 
 
-    $updated_result =$webpage->update_webpage_section_order($data['section_key'],$data['target_key']);
 
+    $webpage->update_webpage_section_order($data['section_key'], $data['target_key']);
 
+    $content_data = $webpage->get('Content Data');
 
+    $overview='';
+    $items='';
+    foreach($content_data['sections'] as $section){
+        $smarty->assign('section_data', $section);
 
+        $overview.= $smarty->fetch('webpage.preview.categories_showcase.overview_section.tpl');
+        $items.= $smarty->fetch('webpage.preview.categories_showcase.section.tpl');
+
+    }
 
 
     $response = array(
-        'state'               => 200,
+        'state'    => 200,
+        'overview' => $overview,
+        'items'    => $items,
 
-        'publish'             => $webpage->get('Publish')
+        'publish' => $webpage->get('Publish')
 
 
     );
@@ -1337,7 +1338,6 @@ function update_webpage_section_order($data, $editor, $smarty, $db){
 
 
 }
-
 
 
 ?>

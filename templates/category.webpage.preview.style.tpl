@@ -566,6 +566,14 @@
     }
 
 
+    .section_overview_container.page_break{
+        border:1px solid  white
+    }
+
+    .section_overview_container.page_break.highlight{
+        border:1px solid  lightskyblue
+    }
+
     {$css}
 
 
