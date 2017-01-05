@@ -30,6 +30,17 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
+    case 'update_webpage_section_order':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'webpage_key' => array('type' => 'key'),
+                         'section_key' => array('type' => 'key'),
+                         'target_key'    => array('type' => 'key'),
+
+                     )
+        );
+        update_webpage_section_order($data, $editor, $smarty, $db);
+        break;
     case 'add_webpage_item':
         $data = prepare_values(
             $_REQUEST, array(
@@ -107,7 +118,7 @@ switch ($tipo) {
 
                      )
         );
-        update_product_category_index($data, $editor, $db);
+        update_product_category_index($data, $editor, $db,$smarty);
         break;
     case 'update_webpage_related_product':
 
@@ -713,11 +724,14 @@ function webpage_content_data($data, $editor, $db, $smarty) {
 
 }
 
-function update_product_category_index($data, $editor, $db) {
+function update_product_category_index($data, $editor, $db,$smarty) {
 
     // todo migrate to Webpage & WebpageVersion classes
     include_once('class.Page.php');
     $webpage = new Page($data['webpage_key']);
+
+    $content_data = $webpage->get('Content Data');
+
 
     $sql = sprintf(
         'SELECT `Product Category Index Key`,`Product Category Index Content Data` FROM `Product Category Index` WHERE `Product Category Index Key`=%d ', $data['key']
@@ -848,7 +862,7 @@ function get_products_html($data, $content_data, $webpage, $smarty, $db) {
     include_once 'class.Public_Product.php';
     include_once 'class.Public_Category.php';
 
-    $public_category = new Public_Category($webpage->scope->id);
+    $public_category = new Public_Category($webpage->get('Webpage Scope Key'));
     $public_category->load_webpage();
 
 
@@ -1293,5 +1307,37 @@ function delete_webpage_item($data, $editor, $smarty, $db) {
     );
     echo json_encode($response);
 }
+
+function update_webpage_section_order($data, $editor, $smarty, $db){
+
+
+
+
+    include_once('class.Page.php');
+    $webpage = new Page($data['webpage_key']);
+
+    $webpage->load_scope();
+
+
+    $updated_result =$webpage->update_webpage_section_order($data['section_key'],$data['target_key']);
+
+
+
+
+
+
+    $response = array(
+        'state'               => 200,
+
+        'publish'             => $webpage->get('Publish')
+
+
+    );
+    echo json_encode($response);
+
+
+}
+
+
 
 ?>
