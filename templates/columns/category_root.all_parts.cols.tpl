@@ -48,8 +48,8 @@ className: "link"
 
 },
 {
-name: "unit_description",
-label: "{t}Unit description{/t}",
+name: "sko_description",
+label: "{t}SKO description{/t}",
 editable: false,
 sortType: "toggle",
 
