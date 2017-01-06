@@ -328,7 +328,7 @@ switch ($webpage->get('Page Store Content Template Filename')) {
         // todo remove this when all descriptions are moved inside webpage content data
 
 
-        if ($webpage->id and $webpage->get('Content Data') == ''  ) {
+        if ($webpage->id and $webpage->get('Content Data') == '' ) {
 
 
             $sql = sprintf(
@@ -476,7 +476,6 @@ switch ($webpage->get('Page Store Content Template Filename')) {
         }
 
     //    $category->create_stack_index($force_reindex = false);
-
 
 
 

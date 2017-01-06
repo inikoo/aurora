@@ -163,9 +163,6 @@
 
 
     <div style="position:relative;" id="items_views">
-
-
-
         <div id="overview_container" class="hide product_blocks" style="margin-bottom:80px;">
 
 
@@ -178,7 +175,7 @@
 
 
 
-        <div id="items_container" class="product_blocks"   style="margin-bottom:80px;"  >
+        <div id="items_container" class="category_blocks cats"   style="margin-bottom:80px;"  >
 
         {foreach from=$sections item=section_data}
             {include file="webpage.preview.categories_showcase.section.tpl" section_data=$section_data   }
@@ -222,6 +219,8 @@
     {include file="js/webpage.preview.description_block.tpl.js" }
     {include file="js/webpage.preview.sections.tpl.js" }
 
+
+    {include file="js/webpage.preview.panels.tpl.js" }
 
 
 

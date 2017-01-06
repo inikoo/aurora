@@ -113,7 +113,8 @@ trait ImageSubject {
             elseif ($this->table_name == 'Page') {
 
 
-              //  print_r($scope_data);
+
+
 
                if($scope_data['scope']=='content'){
 
@@ -123,9 +124,31 @@ trait ImageSubject {
 
 
 
-                   if (isset($content_data[$scope_data['section']])) {
+                       if($scope_data['section']=='panels_in_section'){
 
-                       if($scope_data['section']=='panels'){
+
+                           foreach($content_data['sections'] as $section_index=>$section) {
+
+
+                               foreach ($section['panels'] as $panel_index => $panel) {
+                                   if ($panel['id'] == $scope_data['block']) {
+
+
+                                       $content_data['sections'][$section_index]['panels'][$panel_index]['image_src'] = $image_src;
+                                       break 2;
+                                   }
+                               }
+
+                           }
+
+                           include_once ('utils/website_functions.php');
+                           $content_data['sections'][$section_index]['items']= get_website_section_items($this->db,$content_data['sections'][$section_index]);
+
+
+                         //  print_r( $content_data);
+
+
+                       } else if($scope_data['section']=='panels'){
                            foreach($content_data['panels'] as $panel_key=>$panel){
                                if($panel['id']==$scope_data['block']){
                                    $content_data['panels'][$panel_key]['image_src'] = $image_src;
@@ -145,7 +168,7 @@ trait ImageSubject {
 
 
 
-                   }
+
                    $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
 
                }

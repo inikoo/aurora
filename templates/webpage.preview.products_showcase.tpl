@@ -127,11 +127,11 @@
         <div style="clear:both"></div>
     </div>
 
-    <div id="products" class="product_blocks">
-        <i id="add_panel" class=" fa fa-building  fa-rotate-180 button" aria-hidden="true" style="position:absolute;left:10px;margin-top:10px"></i>
-        <div id="products_helper">
+    <div id="items_container" class="product_blocks">
+        <i id="add_panel" class="fa fa-cog button" aria-hidden="true" style="position:absolute;left:10px;margin-top:10px"></i>
+
          {include file="webpage.preview.products_showcase.products.tpl" }
-        </div>
+
         <div style="clear:both"></div>
     </div>
 
@@ -238,6 +238,8 @@
     {include file="js/webpage.preview.publish.tpl.js" }
     {include file="js/webpage.preview.description_block.tpl.js" }
     {include file="js/webpage.preview.products.tpl.js" }
+    {include file="js/webpage.preview.panels.tpl.js" }
+
 
 
     $('.favorite').click(function() {

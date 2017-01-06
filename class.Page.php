@@ -6820,6 +6820,111 @@ class Page extends DB_Table {
 
     }
 
+    function add_panel($section_key,$panel_data){
+
+        $content_data = $this->get('Content Data');
+     //   print_r($content_data['sections']);
+
+        foreach($content_data['sections'] as $_key=>$section_data){
+//print_r($section_data);
+
+         //   print "$_key\n";
+            if($section_data['key']==$section_key){
+
+
+
+                $section_index=$_key;
+                $panels=$section_data['panels'];
+
+//
+              //  print "xx $section_index\n";
+               // break;
+
+               // print_r($_key);
+            }
+
+        }
+
+
+        //print "yy $section_index\n";
+        //print_r($content_data);
+        //$panels=$content_data[$section_key]
+
+        $size_tag = $panel_data['size'].'x';
+
+        $panel = array(
+            'id'   => $panel_data['id'],
+            'type' => $panel_data['type'],
+            'size' => $size_tag
+
+        );
+
+        if ($panel_data['type'] == 'image') {
+
+
+            $panel['image_src'] = '/art/panel_'.$size_tag.'_1.png';
+            $panel['link']      = '';
+            $panel['caption']   = '';
+        } elseif ($panel_data['type'] == 'text') {
+
+            $panel['content'] = 'bla bla bla';
+            $panel['class']   = 'text_panel_default';
+
+        } elseif ($panel_data['type'] == 'code') {
+
+            $panel['content'] = '';
+            $panel['class']   = 'code_panel_default';
+
+
+        } elseif ($panel_data['type'] == 'page_break') {
+
+            $panel['title']    = 'Bla bla';
+            $panel['subtitle'] = 'bla bla';
+
+
+        }
+
+        $sql = sprintf(
+            'INSERT INTO `Webpage Panel Dimension` (`Webpage Panel Section Key`,`Webpage Panel Id`,`Webpage Panel Webpage Key`,`Webpage Panel Type`,`Webpage Panel Data`,`Webpage Panel Metadata`) VALUES (%d,%s,%d,%s,%s,%s) ',
+            $section_key,prepare_mysql($panel_data['id']), $this->id, prepare_mysql($panel_data['type']), ($panel_data['type'] == 'code' ? prepare_mysql($panel['content']) : prepare_mysql('')),
+            prepare_mysql(json_encode($panel))
+
+        );
+
+
+        // print $sql;
+
+        $this->db->exec($sql);
+        $panel['key'] = $this->db->lastInsertId();
+
+
+        $panels[$panel_data['stack_index']] = $panel;
+
+        ksort($panels);
+
+
+      //  print_r($panels);
+
+
+       // print "xxa $section_index";
+
+
+        $content_data['sections'][$section_index]['panels']=$panels;
+
+        $content_data['sections'][$section_index]['items']= get_website_section_items($this->db,$content_data['sections'][$section_index]);
+
+        //print_r($content_data);
+        $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+
+        $result=array();
+        $result[$section_key]= $content_data['sections'][$section_index]['items'] ;
+
+
+
+        return $result;
+
+
+    }
 
 }
 
