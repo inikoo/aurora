@@ -157,9 +157,9 @@ if ($order == 'code') {
     $order = '`Category Code`';
 }
 
+$fields =
 
-$fields
-    = "P.`Product Category Key`,C.`Category Code`,`Category Label`,C.`Category Key`,`Category Store Key`,
+    "P.`Product Category Key`,C.`Category Code`,`Category Label`,C.`Category Key`,`Category Store Key`,
     (`Product Category Active Products`+`Product Category Discontinuing Products`) as products,
     `Category Number Subjects` as subjects,
     `Product Category Active Products`,`Product Category Status`,

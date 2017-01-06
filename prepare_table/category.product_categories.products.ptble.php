@@ -154,13 +154,19 @@ if ($order == 'code') {
     $order = "`Product Category 3 Quarter Ago Invoiced Amount`";
 } elseif ($order == 'sales_quarter4') {
     $order = "`Product Category 4 Quarter Ago Invoiced Amount`";
+}elseif ($order == 'online') {
+    $order = "online";
+} elseif ($order == 'out_of_stock') {
+    $order = "`Product Category Active Web Out of Stock`";
+} elseif ($order == 'percentage_out_of_stock') {
+    $order = "`Product Category Active Web Out of Stock`/online";
 } else {
     $order = '`Category Code`';
 }
 
 
-$fields
-    = "P.`Product Category Key`,C.`Category Code`,`Category Label`,C.`Category Key`,`Category Store Key`,
+$fields = "`Product Category Active Web For Sale`,`Product Category Active Web Out of Stock`,`Product Category Active Web For Sale`+`Product Category Active Web Out of Stock` as online,
+    P.`Product Category Key`,C.`Category Code`,`Category Label`,C.`Category Key`,`Category Store Key`,
     (`Product Category Active Products`+`Product Category Discontinuing Products`) as products,
     `Category Number Subjects` as subjects,
     `Product Category Active Products`,`Product Category Status`,
@@ -169,10 +175,7 @@ $fields
 `Product Category Year To Day Acc Invoiced Amount`,`Product Category Year To Day Acc 1YB Invoiced Amount`,`Product Category 1 Year Ago Invoiced Amount`,`Product Category 2 Year Ago Invoiced Amount`,`Product Category 3 Year Ago Invoiced Amount`,`Product Category 4 Year Ago Invoiced Amount`,`Product Category 5 Year Ago Invoiced Amount`,
 `Product Category Quarter To Day Acc Invoiced Amount`,`Product Category Quarter To Day Acc 1YB Invoiced Amount`,`Product Category 1 Quarter Ago Invoiced Amount`,`Product Category 2 Quarter Ago Invoiced Amount`,`Product Category 3 Quarter Ago Invoiced Amount`,`Product Category 4 Quarter Ago Invoiced Amount`,
 `Product Category 1 Quarter Ago 1YB Invoiced Amount`,`Product Category 2 Quarter Ago 1YB Invoiced Amount`,`Product Category 3 Quarter Ago 1YB Invoiced Amount`,`Product Category 4 Quarter Ago 1YB Invoiced Amount`,
-`Product Category Currency Code`,$yb_fields
-
-
- ";
+`Product Category Currency Code`,$yb_fields";
 $table
     = '  `Category Bridge` B left join    `Category Dimension` C   on (B.`Subject Key`=C.`Category Key` and `Subject`="Category")  left join `Product Category Dimension` P on (P.`Product Category Key`=C.`Category Key`) left join `Product Category Data` D on (D.`Product Category Key`=C.`Category Key`) left join `Product Category DC Data` DC on (DC.`Product Category Key`=C.`Category Key`)';
 

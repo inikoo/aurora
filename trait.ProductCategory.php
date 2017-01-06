@@ -568,6 +568,8 @@ trait ProductCategory {
 
         $product_ids = $this->get_product_ids();
 
+      //  print  $product_ids;
+
         if ($product_ids != '') {
 
             $sql = sprintf(
@@ -603,6 +605,8 @@ trait ProductCategory {
                 }
             }
 
+
+
             //'For Sale','Out of Stock','Discontinued','Offline'
 
             $sql = sprintf(
@@ -626,6 +630,11 @@ trait ProductCategory {
             }
 
         }
+
+      //  print_r($elements_status_numbers);
+        //print_r($elements_active_web_status_numbers);
+
+        //exit;
 
 
         $update_data = array(
