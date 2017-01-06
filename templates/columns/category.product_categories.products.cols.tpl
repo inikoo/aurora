@@ -10,25 +10,10 @@ cell: "string"
 name: "code",
 label: "{t}Code{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({
-orderSeparator: '',
-events: {
-"click": function() {
-change_view('{if $data.module=='products'}products/{$data._object->get('Category Store Key')}/{else if $data.module=='customers'}customers/{$data._object->get('Category Store Key')}/{elseif $data.module=='invoices_server'}invoices/all/{/if}category/' + this.model.get("id") )
-}
-},
-className: "link",
-
-render: function () {
-this.constructor.__super__.render.apply(this, arguments);
-if(this.model.get('id')==''){
-this.$el.removeClass('link');
-}
-return this;
-}
-
+cell: Backgrid.HtmlCell.extend({
 
 })
+
 },
 {
 name: "label",
@@ -69,6 +54,57 @@ cell: Backgrid.StringCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 },
+
+{
+name: "online",
+label:"{t}Online{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='online'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+cell: Backgrid.StringCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+
+},
+
+{
+name: "out_of_stock",
+label:"{t}Out of stock{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='out_of_stock'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+cell: Backgrid.StringCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+
+},
+
+
+{
+name: "percentage_out_of_stock",
+label:"%",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='percentage_out_of_stock'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+cell: Backgrid.HtmlCell.extend({ } )
+
+},
+
+{
+name: "webpage",
+label: "{t}Webpage{/t}",
+editable: false,
+cell: Backgrid.HtmlCell.extend({
+
+})
+
+},
+
+
 {
 name: "suspended",
 label:"{t}Suspended{/t}",
@@ -331,10 +367,26 @@ grid.columns.findWhere({ name: 'sales_quarter2'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'sales_quarter3'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'sales_quarter4'} ).set("renderable", false)
 
+grid.columns.findWhere({ name: 'online'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'out_of_stock'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'webpage'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'percentage_out_of_stock'} ).set("renderable", false)
+
 if(view=='overview'){
 grid.columns.findWhere({ name: 'label'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'products'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'status'} ).set("renderable", true)
+}
+if(view=='webpages'){
+//grid.columns.findWhere({ name: 'products'} ).set("renderable", true)
+//grid.columns.findWhere({ name: 'status'} ).set("renderable", true)
+
+grid.columns.findWhere({ name: 'online'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'out_of_stock'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'percentage_out_of_stock'} ).set("renderable", true)
+
+grid.columns.findWhere({ name: 'webpage'} ).set("renderable", true)
+
 }else if(view=='status'){
 grid.columns.findWhere({ name: 'status'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'active'} ).set("renderable", true)

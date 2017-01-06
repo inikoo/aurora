@@ -15,7 +15,14 @@ $category = $state['_object'];
 
 if ($category->get('Category Scope') == 'Product') {
 
+
+
+
     if ($category->get('Category Subject') == 'Product') {
+
+        $category->update_product_category_products_data();
+
+
 
         $tab     = 'category.products';
         $ar_file = 'ar_products_tables.php';
@@ -98,6 +105,10 @@ if ($category->get('Category Scope') == 'Product') {
     } else {
 
 
+
+
+
+
         $tab     = 'category.product_categories.products';
         $ar_file = 'ar_products_tables.php';
         $tipo    = 'product_categories_products';
@@ -107,6 +118,7 @@ if ($category->get('Category Scope') == 'Product') {
 
         $table_views = array(
             'overview' => array('label' => _('Overview')),
+            'webpages' => array('label' => _('Webpages')),
             'status'   => array('label' => _("Product's Status")),
             'stock'    => array('label' => _('Stock')),
             'sales'    => array('label' => _('Sales')),

@@ -419,6 +419,41 @@ h1{
          height:318px;width:932px;
      }
 
+
+     .category_wrap  .text_panel_default.panel_1x{
+            height:218px;
+     }
+
+     .category_wrap   .text_panel_default.panel_2x{
+            height:218px;
+     }
+
+     .category_wrap  .text_panel_default.panel_3x{
+            height:218px;
+
+     }
+
+     .category_wrap  .text_panel_default.panel_4x{
+            height:218px;
+     }
+
+
+     .category_wrap  .panel_1x{
+            height:220px;
+
+     }
+     .category_wrap  .panel_2x{
+            height:220px;
+
+     }
+     .category_wrap  .panel_3x{
+            height:220px;
+
+     }
+
+
+
+
      .text_panel_default .panel_content{
          margin:20px;
      }
