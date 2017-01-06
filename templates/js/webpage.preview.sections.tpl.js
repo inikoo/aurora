@@ -472,8 +472,17 @@ function select_dropdown_item(element) {
 
 
 $('#overview_container,#items_container').on('keyup', '[contenteditable]', function () {
-
     var element = $(this)
+
+
+    if(element.attr('field')==undefined){
+        return true;
+    }
+
+
+    console.log('xxxx')
+
+
     if (save_section_header) clearTimeout(save_section_header);
     save_section_header = setTimeout(function () {
         update_section_header(element);
@@ -484,12 +493,18 @@ $('#overview_container,#items_container').on('keyup', '[contenteditable]', funct
 $('#overview_container,#items_container').on('blur', '[contenteditable]', function () {
 
 
+    if($(this).attr('field')==undefined){
+        return true;
+    }
+
+
     update_section_header($(this))
 
 
 })
 
 function update_section_header(element) {
+
 
     var section_key = element.closest('.section').attr('section_key');
     var type = element.attr('field');
@@ -535,4 +550,6 @@ function update_section_header(element) {
     })
 
 }
+
+
 

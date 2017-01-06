@@ -1,7 +1,7 @@
  {foreach from=$products item=product_data}
      {assign stack_index $product_data.stack_index}
 
-            <div class="product_wrap"  stack_index="{$stack_index}" max_free_slots="{$product_data.data.max_free_slots}" >
+            <div class="product_wrap item_wrap"  stack_index="{$stack_index}" max_free_slots="{$product_data.data.max_free_slots}" >
 
 
                 {if $product_data.type=='product'}
@@ -63,7 +63,7 @@
 
 
             </div>
-                    <div class="product_block product_overlay hide" >
+                    <div class="product_block item_overlay hide" >
 
 
 

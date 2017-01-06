@@ -30,6 +30,17 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
+    case 'add_panel':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'webpage_key' => array('type' => 'key'),
+                         'section_key' => array('type' => 'key'),
+                         'value'       => array('type' => 'json array')
+
+                     )
+        );
+        add_panel($data, $editor, $smarty, $db);
+        break;
     case 'update_webpage_section_order':
         $data = prepare_values(
             $_REQUEST, array(
@@ -358,19 +369,41 @@ function webpage_content_data($data, $editor, $db, $smarty) {
         $data['value'] = str_replace('<div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"><br></div>', '', $data['value']);
 
 
-        if (isset($content_data[$data['section']])) {
 
 
-            if ($data['section'] == 'panels') {
-                // print_r($data);
-                //  print_r($content_data['panels']);
+            if ($data['section'] == 'panels_in_section') {
+               // print "yyyyy";
+
+
+                foreach ($content_data['sections'] as $section_index => $section) {
+
+
+
+
+                    foreach ($section['panels'] as $panel_index => $panel) {
+
+                        if ($panel['id'] == $data['block']) {
+
+                          //  print_r($panel);
+                            $content_data['sections'][$section_index]['panels'][$panel_index]['content'] = $data['value'];
+                          //  print_r($panel);
+                            break 2;
+                        }
+                    }
+
+                }
+
+
+                $content_data['sections'][$section_index]['items'] = get_website_section_items($db, $content_data['sections'][$section_index]);
+
+
+            } elseif ($data['section'] == 'panels') {
+
 
                 foreach ($content_data['panels'] as $key => $value) {
 
-                    //  print_r($value);
 
                     if ($value['id'] == $data['block']) {
-                        //  print $data['value'];
                         $content_data['panels'][$key]['content'] = $data['value'];
                         break;
                     }
@@ -392,31 +425,50 @@ function webpage_content_data($data, $editor, $db, $smarty) {
             }
 
 
-        }
+
     } elseif ($data['type'] == 'caption') {
-        if (isset($content_data[$data['section']])) {
 
 
-            if ($data['section'] == 'panels') {
+        if ($data['section'] == 'panels_in_section') {
+
+            foreach ($content_data['sections'] as $section_index => $section) {
 
 
-                foreach ($content_data[$data['section']] as $panel_key => $panel) {
-                    if ($data['block'] == $panel['id']) {
+                foreach ($section['panels'] as $panel_index => $panel) {
+                    if ($panel['id'] == $data['block']) {
 
-                        $content_data[$data['section']][$panel_key]['caption'] = $data['value'];
-                        break;
+
+                        $content_data['sections'][$section_index]['panels'][$panel_index]['caption'] = $data['value'];
+                        break 2;
                     }
                 }
 
-            } else {
+            }
 
 
-                if (isset($content_data[$data['section']]['blocks'][$data['block']])) {
-                    $content_data[$data['section']]['blocks'][$data['block']]['caption'] = $data['value'];
+            $content_data['sections'][$section_index]['items'] = get_website_section_items($db, $content_data['sections'][$section_index]);
+
+
+        } elseif ($data['section'] == 'panels') {
+
+
+            foreach ($content_data[$data['section']] as $panel_key => $panel) {
+                if ($data['block'] == $panel['id']) {
+
+                    $content_data[$data['section']][$panel_key]['caption'] = $data['value'];
+                    break;
                 }
             }
 
+        } else {
+
+
+            if (isset($content_data[$data['section']]['blocks'][$data['block']])) {
+                $content_data[$data['section']]['blocks'][$data['block']]['caption'] = $data['value'];
+            }
         }
+
+
     } elseif ($data['type'] == 'code') {
 
 
@@ -461,9 +513,29 @@ function webpage_content_data($data, $editor, $db, $smarty) {
 
         }
     } elseif ($data['type'] == 'link') {
-        if (isset($content_data[$data['section']])) {
 
 
+        if ($data['section'] == 'panels_in_section') {
+
+            foreach ($content_data['sections'] as $section_index => $section) {
+
+
+                foreach ($section['panels'] as $panel_index => $panel) {
+                    if ($panel['id'] == $data['block']) {
+
+
+                        $content_data['sections'][$section_index]['panels'][$panel_index]['link'] = $data['value'];
+                        break 2;
+                    }
+                }
+
+            }
+
+
+            $content_data['sections'][$section_index]['items'] = get_website_section_items($db, $content_data['sections'][$section_index]);
+
+
+        } else {
             if ($data['section'] == 'panels') {
 
 
@@ -482,8 +554,9 @@ function webpage_content_data($data, $editor, $db, $smarty) {
                     $content_data[$data['section']]['blocks'][$data['block']]['link'] = $data['value'];
                 }
             }
-
         }
+
+
     } elseif ($data['type'] == 'add_class') {
         if (isset($content_data[$data['section']])) {
 
@@ -669,9 +742,44 @@ function webpage_content_data($data, $editor, $db, $smarty) {
 
     } elseif ($data['type'] == 'remove_panel') {
 
+        if ($data['section'] == 'panels_in_section') {
 
-        if (isset($content_data['panels'])) {
 
+
+
+
+            foreach ($content_data['sections'] as $section_index => $section) {
+
+
+                foreach ($section['panels'] as $panel_index => $panel) {
+
+
+                    if ($panel['id'] == $data['block']) {
+
+
+
+                        $sql = sprintf(
+                            'DELETE FROM `Webpage Panel Dimension` WHERE  `Webpage Panel Key`=%d ', $panel['key']
+                        );
+                       $db->exec($sql);
+                        unset($content_data['sections'][$section_index]['panels'][$panel_index]);
+                        $content_data['sections'][$section_index]['items'] = get_website_section_items($db, $content_data['sections'][$section_index]);
+
+                        break 2;
+                    }
+                }
+
+            }
+
+            $section_key = $content_data['sections'][$section_index]['key'];
+            $items = $content_data['sections'][$section_index]['items'];
+            $smarty->assign('categories', $items);
+            $overview_items_html[$section_key] = $smarty->fetch('webpage.preview.categories_showcase.overview_section.items.tpl');
+            $items_html[$section_key]          = $smarty->fetch('webpage.preview.categories_showcase.section.items.tpl');
+
+
+
+        } elseif ($data['section'] == 'panels') {
 
             //    print_r($content_data['panels']);
             foreach ($content_data['panels'] as $panel_key => $panel) {
@@ -697,8 +805,8 @@ function webpage_content_data($data, $editor, $db, $smarty) {
 
         }
 
-
     }
+
 
     //print_r($content_data);
     //exit;
@@ -718,6 +826,16 @@ function webpage_content_data($data, $editor, $db, $smarty) {
     if (isset($products_html)) {
         $response['products'] = $products_html;
     }
+    if (isset($items_html)) {
+        $response['items_html'] = $items_html;
+    }
+    if (isset($overview_items_html)) {
+        $response['overview_items_html'] = $overview_items_html;
+    }
+
+
+
+
 
     echo json_encode($response);
 
@@ -1309,18 +1427,17 @@ function update_webpage_section_order($data, $editor, $smarty, $db) {
     $webpage->load_scope();
 
 
-
     $webpage->update_webpage_section_order($data['section_key'], $data['target_key']);
 
     $content_data = $webpage->get('Content Data');
 
-    $overview='';
-    $items='';
-    foreach($content_data['sections'] as $section){
+    $overview = '';
+    $items    = '';
+    foreach ($content_data['sections'] as $section) {
         $smarty->assign('section_data', $section);
 
-        $overview.= $smarty->fetch('webpage.preview.categories_showcase.overview_section.tpl');
-        $items.= $smarty->fetch('webpage.preview.categories_showcase.section.tpl');
+        $overview .= $smarty->fetch('webpage.preview.categories_showcase.overview_section.tpl');
+        $items .= $smarty->fetch('webpage.preview.categories_showcase.section.tpl');
 
     }
 
@@ -1339,5 +1456,37 @@ function update_webpage_section_order($data, $editor, $smarty, $db) {
 
 }
 
+function add_panel($data, $editor, $smarty, $db) {
+
+    include_once('class.Page.php');
+    $webpage = new Page($data['webpage_key']);
+
+
+    $updated_result = $webpage->add_panel($data['section_key'], $data['value']);
+
+
+
+
+    $overview_items_html = array();
+    $items_html          = array();
+
+    foreach ($updated_result as $section_key => $items) {
+        $smarty->assign('categories', $items);
+        $overview_items_html[$section_key] = $smarty->fetch('webpage.preview.categories_showcase.overview_section.items.tpl');
+        $items_html[$section_key]          = $smarty->fetch('webpage.preview.categories_showcase.section.items.tpl');
+    }
+
+
+    $response = array(
+        'state'               => 200,
+        'items_html'          => $items_html,
+        'overview_items_html' => $overview_items_html,
+        'publish'             => $webpage->get('Publish')
+
+
+    );
+    echo json_encode($response);
+
+}
 
 ?>

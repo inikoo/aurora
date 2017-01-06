@@ -1,6 +1,6 @@
 {foreach from=$categories item=category_data}
        {assign stack_index $category_data.stack_index}
-            <div class="category_wrap"  stack_index="{$stack_index}" category_stack_index="{$category_data.category_stack_index}"  max_free_slots="{$category_data.data.max_free_slots}" >
+            <div class="category_wrap item_wrap"  stack_index="{$stack_index}" category_stack_index="{$category_data.category_stack_index}"  max_free_slots="{$category_data.data.max_free_slots}" >
 
 
                 {if $category_data.type=='category'}
@@ -23,14 +23,14 @@
                     
                     
                     
-                    <div class="category_block product_overlay hide" >
+                    <div class="category_block item_overlay hide" >
 
 
 
                     <div class="buttons panel_type"  >
                         <div class="flex-item button" type="image"><i class="fa fa-picture-o" aria-hidden="true"></i></div>
                         <div class="flex-item button" type="text"><i class="fa fa-align-center" aria-hidden="true"></i></div>
-                        <div class="flex-item button " type="code"><i class="fa fa-code" aria-hidden="true"></i></div>
+                        <div class="flex-item button invisible" type="code"><i class="fa fa-code" aria-hidden="true"></i></div>
                         <div class="flex-item button invisible" type="banner"><i class="fa fa-bullhorn" aria-hidden="true"></i></div>
                     </div>
 
@@ -44,16 +44,7 @@
                     </div>
 
 
-                        {if  $category_data.stack_index%4==0}
-
-                            <div class="buttons panel_type " >
-                                <div class="flex-item button" type="move_block" title="Page break" ><i class="fa fa-reply  fa-flip-horizontal" aria-hidden="true" ></i></div>
-                                <div class="flex-item button invisible" type="page_break" title="Page break" ><i class="fa  fa-window-minimize" aria-hidden="true" ></i></div>
-                                <div class="flex-item button invisible" type="page_break" title="Page break" ><i class="fa  fa-window-minimize" aria-hidden="true" ></i></div>
-                                <div class="flex-item button invisible" type="page_break" title="Page break" ><i class="fa  fa-window-minimize" aria-hidden="true" ></i></div>
-
-                            </div>
-                        {/if}
+                      
 
                 </div>
                 
@@ -130,13 +121,7 @@
                             {/if}
                         </div>
 
-                                {if  $category_data.stack_index%4==0}
-
-                                    <div class="buttons add_page_break " style="top:80px" >
-                                        <div class="flex-item button" type="page_break" title="Page break" ><i class="fa  fa-window-minimize" aria-hidden="true" ></i></div>
-
-                                    </div>
-                                {/if}
+                             
 
 
 
