@@ -99,9 +99,15 @@
 
 
 
-
-
 <div id="page_content" style="position:relative">
+
+
+
+    <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
+        <input type="file" name="image_upload" id="item_image_uploader" class="input_file input_file_item " multiple/>
+
+    </form>
+
 
 
     <div id="description_block" class="section description_block {$content_data.description_block.class} " >

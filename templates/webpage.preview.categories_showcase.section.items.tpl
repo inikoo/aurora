@@ -4,14 +4,19 @@
 
 
                 {if $category_data.type=='category'}
-                    <div id="category_target_div_{$stack_index}" stack_index="{$category_data.category_stack_index}"    index_key="{$category_data.index_key}" category_key="{$category_data.category_key}"  class="category_block category_showcase item_dragabble" style="position:relative"   item_type="{$category_data.item_type}" item_key="{$category_data.category_key}"  draggable="true" ondragend="overview_items_ondragend(event)" ondragstart="overview_items_ondragstart(event)"  ondragover="overview_items_allowDrop(event)"  ondrop="overview_items_drop(event)">
+                <div id="category_target_div_{$stack_index}"  item_key="{$category_data.category_key}" stack_index="{$category_data.category_stack_index}"    index_key="{$category_data.index_key}" category_key="{$category_data.category_key}"  class="category_block item_showcase category_showcase item_dragabble" style="position:relative"   item_type="{$category_data.item_type}" item_key="{$category_data.category_key}"  draggable="true" ondragend="overview_items_ondragend(event)" ondragstart="overview_items_ondragstart(event)"  ondragover="overview_items_allowDrop(event)"  ondrop="overview_items_drop(event)">
 
 
-                <div class="category_header_text fr-view"  style="text-align: center">
+                <div class="item_header_text fr-view"  style="text-align: center">
                     {$category_data.header_text}
                 </div>
-               <div class="wrap_to_center product_image" onCLick="console.log('move')">
-                    <img draggable="false" src="{$category_data.image_src}" />
+               <div class="wrap_to_center category_image">
+                   
+                    <img draggable="false" src="{$category_data.image_src}"  id="item_image_{$category_data.index_key}"  />
+                 
+                    
+                    
+                    
                  </div>
 
                 <div style=" display: none;border-top:1px solid #ccc;margin-top:5px" >
@@ -87,7 +92,7 @@
                             <img  class="panel_image" src="{$category_data.data.image_src}"  title="{$category_data.data.caption}" />
 
                             <div class="panel_controls hide">
-                             <div class="panel_settings buttons hide">
+                             <div class="panel_settingsx buttons hide">
 
 
 
@@ -96,7 +101,7 @@
                                 <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
                                     <input type="file" name="image_upload"  panel_key="{$category_data.data.id}" id="file_upload_{$category_data.data.id}" class="input_file input_file_panel " multiple/>
                                     <label for="file_upload_{$category_data.data.id}">
-                                        <i class="fa  fa-picture-o fa-fw button" aria-hidden="true"></i><br>
+                                        <i class="fa  fa-picture-o fa-fw button" aria-hidden="true"></i>
                                     </label>
                                 </form>
                                 </div>

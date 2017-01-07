@@ -518,7 +518,7 @@
 
     }
 
-    .category_header_text{
+    .item_header_text{
         padding:8px;height:30px;margin-bottom:5px;
         border:1px solid transparent;cursor:text;padding-top:10px;padding-bottom:0px;
         font-family: "Ubuntu",Helvetica,Arial,sans-serif;
@@ -526,12 +526,12 @@
 
     }
 
-    .category_header_text p{
+    .item_header_text p{
         padding:0px ; margin:0px;text-align: center;
         z-index: 100;position:relative;
     }
 
-    .category_header_text:hover{
+    .item_header_text:hover{
         border:1px solid lightskyblue;
     }
 
