@@ -142,7 +142,7 @@
          saveMethod: 'POST',
 
          saveParams: {
-             webpage_key:  {$category->webpage->id},
+             webpage_key: $('#webpage_preview').attr('webpage_key'),
              key: $(this).closest('.product_showcase').attr('index_key'),
              tipo: ($(this).hasClass('related_product')?'update_webpage_related_product': 'update_product_category_index'),
              type: 'header_text',

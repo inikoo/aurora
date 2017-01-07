@@ -426,6 +426,74 @@ function webpage_content_data($data, $editor, $db, $smarty) {
 
 
 
+    }
+    elseif ($data['type'] == 'item_header_text') {
+
+
+
+
+        if ($data['section'] == 'panels_in_section') {
+            // print "yyyyy";
+
+
+            foreach($content_data['sections'] as $section_index=>$section) {
+
+
+                foreach ($section['items'] as $item_index => $item) {
+
+
+
+                    if ($item['type']=='category' and   $item['category_key'] == $data['block']) {
+
+
+
+                        $sql=sprintf('select `Category Webpage Index Key` ,`Category Webpage Index Content Data` from `Category Webpage Index` where `Category Webpage Index Key`=%d  ',
+                                     $content_data['sections'][$section_index]['items'][$item_index]['index_key']
+
+
+                        );
+
+                        if ($result=$db->query($sql)) {
+                            if ($row = $result->fetch()) {
+                                $item_content_data = json_decode($row['Category Webpage Index Content Data'], true);
+
+                                $item_content_data['header_text']=$data['value'];
+
+
+                                $sql = sprintf(
+                                    'UPDATE `Category Webpage Index` set `Category Webpage Index Content Data`=%s WHERE `Category Webpage Index Key`=%d ',
+                                    prepare_mysql(json_encode($item_content_data)), $row['Category Webpage Index Key']
+                                );
+
+                                $db->exec($sql);
+                            }
+                        }else {
+                            print_r($error_info=$this->db->errorInfo());
+                            print "$sql\n";
+                            exit;
+                        }
+
+
+
+
+
+
+
+                        //    print_r(  $content_data['sections'][$section_index]['items']);
+
+                        break 2;
+                    }
+                }
+
+            }
+
+
+            $content_data['sections'][$section_index]['items'] = get_website_section_items($db, $content_data['sections'][$section_index]);
+
+
+        }
+
+
     } elseif ($data['type'] == 'caption') {
 
 

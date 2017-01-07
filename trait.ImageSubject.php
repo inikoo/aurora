@@ -113,7 +113,7 @@ trait ImageSubject {
             elseif ($this->table_name == 'Page') {
 
 
-
+   // print_r($scope_data);
 
 
                if($scope_data['scope']=='content'){
@@ -121,10 +121,64 @@ trait ImageSubject {
                    $content_data = $this->get('Content Data');
                    $image_src= '/image_root.php?size=small&id='.$image->id;
 
+                   if($scope_data['section']=='items'){
+
+                       foreach($content_data['sections'] as $section_index=>$section) {
+
+
+                           foreach ($section['items'] as $item_index => $item) {
 
 
 
-                       if($scope_data['section']=='panels_in_section'){
+                               if ($item['type']=='category' and   $item['category_key'] == $scope_data['item_key']) {
+
+
+
+                                    $sql=sprintf('select `Category Webpage Index Key` ,`Category Webpage Index Content Data` from `Category Webpage Index` where `Category Webpage Index Key`=%d  ',
+                                                 $content_data['sections'][$section_index]['items'][$item_index]['index_key']
+
+
+                                                 );
+
+                                    if ($result=$this->db->query($sql)) {
+                                        if ($row = $result->fetch()) {
+                                            $item_content_data = json_decode($row['Category Webpage Index Content Data'], true);
+
+                                            $item_content_data['image_src']=$image_src;
+
+
+                                            $sql = sprintf(
+                                                'UPDATE `Category Webpage Index` set `Category Webpage Index Content Data`=%s WHERE `Category Webpage Index Key`=%d ',
+                                                prepare_mysql(json_encode($item_content_data)), $row['Category Webpage Index Key']
+                                            );
+
+                                            $this->db->exec($sql);
+                                        }
+                                    }else {
+                                    	print_r($error_info=$this->db->errorInfo());
+                                    	print "$sql\n";
+                                    	exit;
+                                    }
+
+
+
+
+
+
+
+                               //    print_r(  $content_data['sections'][$section_index]['items']);
+
+                                   break 2;
+                               }
+                           }
+
+                       }
+
+                       include_once ('utils/website_functions.php');
+                       $content_data['sections'][$section_index]['items']= get_website_section_items($this->db,$content_data['sections'][$section_index]);
+                      // print_r( $content_data['sections'][$section_index]['items']);
+
+                   }elseif($scope_data['section']=='panels_in_section'){
 
 
                            foreach($content_data['sections'] as $section_index=>$section) {

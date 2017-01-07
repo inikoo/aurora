@@ -538,7 +538,6 @@
 
         $.each($('#file_upload_'+$(this).attr('panel_key')).prop("files"), function (i, file) {
             ajaxData.append("files[" + i + "]", file);
-
         });
 
 

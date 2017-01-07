@@ -19,7 +19,7 @@ function get_website_section_items($db, $section_data) {
 
 
     $sql = sprintf(
-        "SELECT `Page Code`,`Category Webpage Index Category Webpage Key`,`Category Webpage Index Subject Type`,`Category Webpage Index Stack`,`Product Category Active Products`,`Category Webpage Index Category Key`,`Category Code`,`Category Webpage Index Content Data`,`Category Webpage Index Key` 
+        "SELECT `Category Webpage Index Key`,`Page Code`,`Category Webpage Index Category Webpage Key`,`Category Webpage Index Subject Type`,`Category Webpage Index Stack`,`Product Category Active Products`,`Category Webpage Index Category Key`,`Category Code`,`Category Webpage Index Content Data`,`Category Webpage Index Key` 
             FROM `Category Webpage Index` CWI
             LEFT JOIN `Product Category Dimension` P ON (`Category Webpage Index Category Key`=P.`Product Category Key`)   
             LEFT JOIN `Category Dimension` Cat ON (Cat.`Category Key`=`Category Webpage Index Category Key`)     
@@ -79,14 +79,16 @@ function get_website_section_items($db, $section_data) {
 
 
             if ($row['Category Webpage Index Content Data'] == '') {
-                $product_content_data = array(
+                $item_content_data = array(
                     'header_text' => '',
                     'footer_text' => ''
+
                 );
             } else {
-                $product_content_data = json_decode($row['Category Webpage Index Content Data'], true);
+                $item_content_data = json_decode($row['Category Webpage Index Content Data'], true);
 
             }
+
 
 
             if (isset($page_breaks[$row['Category Webpage Index Stack']])) {
@@ -109,11 +111,12 @@ function get_website_section_items($db, $section_data) {
                 'index_key'            => $row['Category Webpage Index Key'],
                 'webpage_key'          => $row['Category Webpage Index Category Webpage Key'],
                 'webpage_code'         => $row['Page Code'],
-                'header_text'          => (isset($product_content_data['header_text']) ? $product_content_data['header_text'] : ''),
-                'footer_text'          => (isset($product_content_data['footer_text']) ? $product_content_data['footer_text'] : ''),
-                'image_src'            => $product_content_data['image_src'],
+                'header_text'          => (isset($item_content_data['header_text']) ? $item_content_data['header_text'] : ''),
+                'footer_text'          => (isset($item_content_data['footer_text']) ? $item_content_data['footer_text'] : ''),
+                'image_src'            => $item_content_data['image_src'],
                 'category_stack_index' => $row['Category Webpage Index Stack'],
-                'item_type'            => $row['Category Webpage Index Subject Type']
+                'item_type'            => $row['Category Webpage Index Subject Type'],
+                
 
             );
             $category_stack_index = $row['Category Webpage Index Stack'];
