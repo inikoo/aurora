@@ -24,7 +24,7 @@
                     
                     
                     
-                    <div class="category_block item_overlay xhide" >
+                    <div class="category_block item_overlay hide" >
 
   <div style="display:flex;padding:0px 5px;position:relative;top:-5px;font-size:90%" >
                     <div class="flex-item" style="background-color:white">{$category_data.category_code}</div>
