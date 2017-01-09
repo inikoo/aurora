@@ -17,6 +17,7 @@ include_once 'class.Site.php';
 include_once 'class.Image.php';
 include_once 'trait.ImageSubject.php';
 
+include_once 'utils/website_functions.php';
 
 class Page extends DB_Table {
     use ImageSubject;
@@ -1504,7 +1505,7 @@ class Page extends DB_Table {
 
             case('Page State'):
                 $this->update_state($value, $options);
-                $this->refresh_cache();
+               // $this->refresh_cache();
                 break;
 
             case('Page Store CSS'):

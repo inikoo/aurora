@@ -1,3 +1,6 @@
+
+
+
 <div id="section_overview_{$section_data.key}_container" style="position:relative;margin-bottom:10px;;margin-top:0px" class="section  section_overview_container   {$section_data.type}" section_key="{$section_data.key}" ondrop="move_section_drop(event)" ondragover="move_section_allowDrop(event)">
 
     <div item_key=0 class="remove_drop_zone button overview_item_droppable invisible" style="position:absolute;top:50px;left:-37px;height:60px;width: 30px;margin-right:5px;border:1px dashed #ccc;text-align:center; " ondrop="overview_delete_items_drop(event)"  ondragover="overview_items_allowDrop(event)"  >

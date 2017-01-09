@@ -422,60 +422,61 @@ switch ($webpage->get('Page Store Content Template Filename')) {
 
 
             $category->create_stack_index(true);
+            $content_data = $category->webpage->get('Content Data');
 
 
-            $sql = sprintf(
-                "SELECT `Subject Key`,`Category Webpage Index Key`,`Category Webpage Index Content Data`,`Category Webpage Index Key`,Cat.`Category Key` FROM `Category Bridge` B  LEFT JOIN `Product Category Dimension` P ON (B.`Subject Key`=P.`Product Category Key`)   LEFT JOIN `Category Webpage Index`    ON (`Category Webpage Index Category Key`=`Subject Key`)  LEFT JOIN `Category Dimension` Cat ON (Cat.`Category Key`=B.`Subject Key`)  WHERE  B.`Category Key`=%d  AND `Product Category Public`='Yes' ",
-                $public_category->id
-
-            );
-
-
-            if ($result = $db->query($sql)) {
-
-                foreach ($result as $row) {
-
-                    $_category = new Public_Category($row['Category Key']);
-
-                    if ($row['Category Webpage Index Content Data'] == '') {
-
-                        $data = array(
-                            'header_text' => $_category->get('Label'),
-                            'image_src'   => $_category->get('Image'),
-                            'footer_text' => $_category->get('Code'),
-                        );
-
+            /*
                         $sql = sprintf(
-                            'UPDATE `Category Webpage Index` SET `Category Webpage Index Section Key`=%d,  `Category Webpage Index Content Data`=%s WHERE `Category Webpage Index Key`=%d ',
-                            $section['key'], prepare_mysql(json_encode($data)), $row['Category Webpage Index Key']
+                            "SELECT `Subject Key`,`Category Webpage Index Key`,`Category Webpage Index Content Data`,`Category Webpage Index Key`,Cat.`Category Key` FROM `Category Bridge` B  LEFT JOIN `Product Category Dimension` P ON (B.`Subject Key`=P.`Product Category Key`)   LEFT JOIN `Category Webpage Index`    ON (`Category Webpage Index Category Key`=`Subject Key`)  LEFT JOIN `Category Dimension` Cat ON (Cat.`Category Key`=B.`Subject Key`)  WHERE  B.`Category Key`=%d  AND `Product Category Public`='Yes' ",
+                            $public_category->id
+
                         );
 
-                        $db->exec($sql);
+
+                        if ($result = $db->query($sql)) {
+
+                            foreach ($result as $row) {
+
+                                $_category = new Public_Category($row['Category Key']);
+
+                                if ($row['Category Webpage Index Content Data'] == '') {
+
+                                    $data = array(
+                                        'header_text' => $_category->get('Label'),
+                                        'image_src'   => $_category->get('Image'),
+                                        'footer_text' => $_category->get('Code'),
+                                    );
+
+                                    $sql = sprintf(
+                                        'UPDATE `Category Webpage Index` SET `Category Webpage Index Section Key`=%d,  `Category Webpage Index Content Data`=%s WHERE `Category Webpage Index Key`=%d ',
+                                        $section['key'], prepare_mysql(json_encode($data)), $row['Category Webpage Index Key']
+                                    );
+
+                                    $db->exec($sql);
 
 
-                    }
+                                }
 
-                }
-            }
+                            }
+                        }
 
-            $sections = array();
-
-
-            foreach ($content_data['sections'] as $section_stack_index => $section_data) {
-
-                $content_data['sections'][$section_stack_index]['items']= get_website_section_items($db,$section_data);
-
-            }
+                        $sections = array();
 
 
-            $webpage->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+                        foreach ($content_data['sections'] as $section_stack_index => $section_data) {
 
+                            $content_data['sections'][$section_stack_index]['items']= get_website_section_items($db,$section_data);
+
+                        }
+
+
+                        $webpage->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+            */
 
 
         }
 
     //    $category->create_stack_index($force_reindex = false);
-
 
 
 

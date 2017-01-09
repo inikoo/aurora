@@ -927,10 +927,12 @@ trait ProductCategory {
 
     function create_stack_index($force_reindex = false) {
 
+        if($this->get('Category Branch Type')=='Root'){
 
-        //    $this->db->exec('truncate `Product Category Index`');
+            return;
+        }
 
-        // print_r($this);
+
         if ($this->get('Category Subject') == 'Product') {
 
 
@@ -998,13 +1000,37 @@ trait ProductCategory {
             }
 
 
-        } elseif ($this->get('Category Subject') == 'Category') {
+        }
+        elseif ($this->get('Category Subject') == 'Category') {
 
 
             include_once 'class.Public_Webpage.php';
+            include_once 'class.Public_Category.php';
+            include_once 'utils/website_functions.php';
 
+
+
+
+            $this->get_webpage();
 
             $null_stacks = false;
+
+
+            $content_data     =  $this->webpage->get('Content Data');
+            $anchor_section_key=0;
+            foreach ($content_data['sections'] as $_key => $_data) {
+
+                //  print_r($_data);
+
+                if ($_data['type'] == 'anchor') {
+                    $anchor_section_key = $_data['key'];
+
+                    break;
+                }
+
+            }
+
+
 
 
             $sql = sprintf(
@@ -1013,10 +1039,7 @@ trait ProductCategory {
 
             );
 
-            //print $sql;
-
-
-            if ($result = $this->db->query($sql)) {
+               if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
 
                     if ($row['Category Webpage Index Category Key'] == '') {
@@ -1024,17 +1047,34 @@ trait ProductCategory {
 
 
                         $subject_webpage = new Public_Webpage('scope', 'Category', $row['Subject Key']);
+                        $subject=new Public_Category($row['Subject Key']);
 
                         if ($subject_webpage->id) {
 
 
-                            $sql = sprintf(
-                                'INSERT INTO `Category Webpage Index` (`Category Webpage Index Parent Category Key`,`Category Webpage Index Category Key`,`Category Webpage Index Webpage Key`,`Category Webpage Index Category Webpage Key`) VALUES (%d,%d,%d,%d) ',
-                                $this->id, $row['Subject Key'], $this->webpage->id, $subject_webpage->id
+
+                            $_data = array(
+                                'header_text' => $subject->get('Label'),
+                                'image_src'   => $subject->get('Image'),
+                                'footer_text' => $subject->get('Code'),
                             );
 
+                            $sql = sprintf(
+                                'INSERT INTO `Category Webpage Index` (`Category Webpage Index Section Key`,`Category Webpage Index Content Data`,`Category Webpage Index Parent Category Key`,`Category Webpage Index Category Key`,`Category Webpage Index Webpage Key`,`Category Webpage Index Category Webpage Key`) VALUES (%d,%s,%d,%d,%d,%d) ',
+                                $anchor_section_key,
+                                prepare_mysql(json_encode($_data)),
+                                $this->id,
+                                $row['Subject Key'],
+                                $this->webpage->id,
+                                $subject_webpage->id
+                            );
 
                             $this->db->exec($sql);
+
+
+
+
+
                         }
 
                     }
@@ -1083,6 +1123,21 @@ trait ProductCategory {
 
             }
 
+
+
+
+
+
+
+            foreach ($content_data['sections'] as $section_stack_index => $section_data) {
+
+                $content_data['sections'][$section_stack_index]['items']= get_website_section_items($this->db,$section_data);
+
+
+            }
+
+
+            $this->webpage->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
 
         }
 

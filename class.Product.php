@@ -2032,9 +2032,9 @@ class Product extends Asset {
             		foreach ($result as $row) {
                        $category=new Category($row['Category Key']);
 
-                       print_r($category->get('Code'));
+                    //   print_r($category->get('Code'));
 
-                       $category->update_product_category_products_data();
+                        $category->update_product_category_products_data();
             		}
             }else {
             		print_r($error_info=$this->db->errorInfo());
