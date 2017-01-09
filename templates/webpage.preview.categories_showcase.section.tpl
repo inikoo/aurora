@@ -24,6 +24,7 @@
         <span class="section_header sub_title items_view {$section_data.type}" {if $section_data.type!='anchor'} contenteditable="true"{/if} field="subtitle">{if $section_data.type=='anchor'}<i class="fa fa-plus button add_section" aria-hidden="true"></i>{else}{$section_data.subtitle}{/if}</span>
     </div>
 
+
     <div style="display:flex;flex-flow: row wrap;clear:both;" id="section_items_{$section_data.key}">
         {include file="webpage.preview.categories_showcase.section.items.tpl" categories=$section_data.items   }
     </div>

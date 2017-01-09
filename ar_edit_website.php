@@ -1547,16 +1547,51 @@ function add_panel($data, $editor, $smarty, $db) {
 
 function update_object_public($data, $editor, $smarty, $db) {
 
+
+    include_once('class.Page.php');
+
+
     $object = get_object($data['object'], $data['object_key']);
 
-    if ($object->get_object_name() == 'Category') {
 
+    if ($object->get_object_name() == 'Category') {
         $object->update(array('Product Category Public' => $data['value']));
 
-    } elseif ($object->get_object_name() == 'Category') {
+    } elseif ($object->get_object_name() == 'Product') {
 
         $object->update(array('Product Public' => $data['value']));
     }
+
+
+    $webpage             = new Page($data['webpage_key']);
+    $content_data        = $webpage->get('Content Data');
+    $overview_items_html = array();
+    $items_html          = array();
+
+
+    foreach ($content_data['sections'] as $section_stack_index => $section_data) {
+        if ($section_data['key'] == $data['section_key']) {
+
+
+            $smarty->assign('categories', $content_data['sections'][$section_stack_index]['items']);
+            $overview_items_html[$data['section_key']] = $smarty->fetch('webpage.preview.categories_showcase.overview_section.items.tpl');
+            $items_html[$data['section_key']]          = $smarty->fetch('webpage.preview.categories_showcase.section.items.tpl');
+
+
+            break;
+        }
+    }
+
+
+    $response = array(
+        'state'               => 200,
+        'items_html'          => $items_html,
+        'overview_items_html' => $overview_items_html,
+        'publish'             => $webpage->get('Publish')
+
+
+    );
+    echo json_encode($response);
 
 
 }

@@ -167,7 +167,6 @@
     </div>
 
 
-
     <div style="position:relative;" id="items_views">
         <div id="overview_container" class="hide product_blocks" style="margin-bottom:80px;">
 

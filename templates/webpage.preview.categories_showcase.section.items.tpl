@@ -1,3 +1,4 @@
+
 {foreach from=$categories item=category_data}
        {assign stack_index $category_data.stack_index}
             <div class="category_wrap item_wrap"  item_key="{$category_data.category_key}" stack_index="{$stack_index}" category_stack_index="{$category_data.category_stack_index}"  max_free_slots="{$category_data.data.max_free_slots}" >
@@ -101,7 +102,7 @@
                             <img  class="panel_image" src="{$category_data.data.image_src}"  title="{$category_data.data.caption}" />
 
                             <div class="panel_controls hide">
-                             <div class="panel_settingsx buttons hide">
+                             <div class="panel_settings buttons hide">
 
 
 

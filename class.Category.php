@@ -2625,13 +2625,16 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     include_once 'class.Product.php';
                     include_once 'class.Page.php';
 
+
                      $this->update_table_field($field, $value, $options, 'Product Category', 'Product Category Dimension', $this->id);
 
 
+
+                    $this->get_webpage();
                     if ($value == 'No') {
 
 
-                        $this->get_webpage();
+
                         if($this->webpage->id) {
                             $this->webpage->update(array('Page State' => 'Offline'));
                         }
@@ -2672,15 +2675,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
                                 $webpage->update(array('Page State'=>'Offline'));
 
-
-
-
                             }
-
-
-
-
-
                         } else {
                             print_r($error_info = $this->db->errorInfo());
                             print "$sql\n";
@@ -2688,46 +2683,74 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         }
 
 
+                        foreach ($this->get_children_keys() as $children_key) {
+                            $subcategory = new Category($children_key);
+                            $subcategory->update(array('Product Category Public' => $value), $options);
+                        }
+
+
+                        $sql = sprintf('SELECT `Subject Key`,`Subject` FROM `Category Bridge` WHERE `Category Key`=%d ', $this->id);
+
+
+                        if ($result = $this->db->query($sql)) {
+                            foreach ($result as $row) {
 
 
 
 
+                                if ($row['Subject'] == 'Product') {
+                                    $product = new Product($row['Subject Key']);
+                                    //  print_r($row);
+                                    $product->update(array('Product Web Configuration' => 'Offline'), $options);
+                                } else {
+                                    if ($row['Subject'] == 'Category') {
+                                        $subcategory = new Category($row['Subject Key']);
+                                        $subcategory->update(array('Product Category Public' => $value), $options);
+                                    }
+                                }
 
 
+                            }
+                        }
 
 
                     }
-
-
-                    foreach ($this->get_children_keys() as $children_key) {
-                        $subcategory = new Category($children_key);
-                        $subcategory->update(array('Product Category Public' => $value), $options);
-                    }
-
-
-                    $sql = sprintf('SELECT `Subject Key`,`Subject` FROM `Category Bridge` WHERE `Category Key`=%d ', $this->id);
-
-
-                    if ($result = $this->db->query($sql)) {
-                        foreach ($result as $row) {
+                    elseif($value == 'Yes'){
 
 
 
+                        if($this->webpage->id) {
+                            $this->webpage->update(array('Page State' => 'Online'));
 
-                            if ($row['Subject'] == 'Product') {
-                                $product = new Product($row['Subject Key']);
-                              //  print_r($row);
-                                $product->update(array('Product Web Configuration' => 'Offline'), $options);
-                            } else {
-                                if ($row['Subject'] == 'Category') {
-                                    $subcategory = new Category($row['Subject Key']);
-                                    $subcategory->update(array('Product Category Public' => $value), $options);
+
+                            $sql = sprintf(
+                                "SELECT `Category Key`  FROM `Category Bridge` where `Subject Key`=%d and `Subject`='Category' group by `Category Key` ",
+                                $this->id
+
+                            );
+                            if ($result = $this->db->query($sql)) {
+                                foreach ($result as $row) {
+                                    $parent=new Category($row['Category Key']);
+
+                                   // print_r($parent->get('Code'));
+                                    $parent->create_stack_index(true);
+
                                 }
                             }
 
 
+                        }else{
+                            // todo: create webpage??
                         }
+
+
+
+
                     }
+
+
+
+
 
 
 
