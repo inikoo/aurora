@@ -30,6 +30,18 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
+    case 'update_object_public':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'webpage_key' => array('type' => 'key'),
+                         'section_key' => array('type' => 'numeric'),
+                         'object'      => array('type' => 'string'),
+                         'object_key'  => array('type' => 'key'),
+                         'value'       => array('type' => 'string'),
+                     )
+        );
+        update_object_public($data, $editor, $smarty, $db);
+        break;
     case 'add_panel':
         $data = prepare_values(
             $_REQUEST, array(
@@ -369,114 +381,100 @@ function webpage_content_data($data, $editor, $db, $smarty) {
         $data['value'] = str_replace('<div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"><br></div>', '', $data['value']);
 
 
+        if ($data['section'] == 'panels_in_section') {
+            // print "yyyyy";
 
 
-            if ($data['section'] == 'panels_in_section') {
-               // print "yyyyy";
+            foreach ($content_data['sections'] as $section_index => $section) {
 
 
-                foreach ($content_data['sections'] as $section_index => $section) {
+                foreach ($section['panels'] as $panel_index => $panel) {
 
+                    if ($panel['id'] == $data['block']) {
 
-
-
-                    foreach ($section['panels'] as $panel_index => $panel) {
-
-                        if ($panel['id'] == $data['block']) {
-
-                          //  print_r($panel);
-                            $content_data['sections'][$section_index]['panels'][$panel_index]['content'] = $data['value'];
-                          //  print_r($panel);
-                            break 2;
-                        }
+                        //  print_r($panel);
+                        $content_data['sections'][$section_index]['panels'][$panel_index]['content'] = $data['value'];
+                        //  print_r($panel);
+                        break 2;
                     }
-
                 }
 
-
-                $content_data['sections'][$section_index]['items'] = get_website_section_items($db, $content_data['sections'][$section_index]);
-
-
-            } elseif ($data['section'] == 'panels') {
-
-
-                foreach ($content_data['panels'] as $key => $value) {
-
-
-                    if ($value['id'] == $data['block']) {
-                        $content_data['panels'][$key]['content'] = $data['value'];
-                        break;
-                    }
-
-                }
-
-
-            } else {
-                if (isset($content_data[$data['section']]['blocks'][$data['block']])) {
-
-                    $content_data[$data['section']]['blocks'][$data['block']]['content'] = $data['value'];
-                } else {
-                    $content_data[$data['section']]['blocks'][$data['block']] = array(
-                        'content' => $data['value'],
-                        'type'    => $data['type']
-                    );
-
-                }
             }
 
 
-
-    }
-    elseif ($data['type'] == 'item_header_text') {
+            $content_data['sections'][$section_index]['items'] = get_website_section_items($db, $content_data['sections'][$section_index]);
 
 
+        } elseif ($data['section'] == 'panels') {
+
+
+            foreach ($content_data['panels'] as $key => $value) {
+
+
+                if ($value['id'] == $data['block']) {
+                    $content_data['panels'][$key]['content'] = $data['value'];
+                    break;
+                }
+
+            }
+
+
+        } else {
+            if (isset($content_data[$data['section']]['blocks'][$data['block']])) {
+
+                $content_data[$data['section']]['blocks'][$data['block']]['content'] = $data['value'];
+            } else {
+                $content_data[$data['section']]['blocks'][$data['block']] = array(
+                    'content' => $data['value'],
+                    'type'    => $data['type']
+                );
+
+            }
+        }
+
+
+    } elseif ($data['type'] == 'item_header_text') {
 
 
         if ($data['section'] == 'panels_in_section') {
             // print "yyyyy";
 
 
-            foreach($content_data['sections'] as $section_index=>$section) {
+            foreach ($content_data['sections'] as $section_index => $section) {
 
 
                 foreach ($section['items'] as $item_index => $item) {
 
 
-
-                    if ($item['type']=='category' and   $item['category_key'] == $data['block']) {
-
+                    if ($item['type'] == 'category' and $item['category_key'] == $data['block']) {
 
 
-                        $sql=sprintf('select `Category Webpage Index Key` ,`Category Webpage Index Content Data` from `Category Webpage Index` where `Category Webpage Index Key`=%d  ',
-                                     $content_data['sections'][$section_index]['items'][$item_index]['index_key']
+                        $sql = sprintf(
+                            'SELECT `Category Webpage Index Key` ,`Category Webpage Index Content Data` FROM `Category Webpage Index` WHERE `Category Webpage Index Key`=%d  ',
+                            $content_data['sections'][$section_index]['items'][$item_index]['index_key']
 
 
                         );
 
-                        if ($result=$db->query($sql)) {
+                        if ($result = $db->query($sql)) {
                             if ($row = $result->fetch()) {
                                 $item_content_data = json_decode($row['Category Webpage Index Content Data'], true);
 
-                                $item_content_data['header_text']=$data['value'];
+                                $item_content_data['header_text'] = $data['value'];
 
 
                                 $sql = sprintf(
-                                    'UPDATE `Category Webpage Index` set `Category Webpage Index Content Data`=%s WHERE `Category Webpage Index Key`=%d ',
+                                    'UPDATE `Category Webpage Index` SET `Category Webpage Index Content Data`=%s WHERE `Category Webpage Index Key`=%d ',
                                     prepare_mysql(json_encode($item_content_data)), $row['Category Webpage Index Key']
                                 );
 
                                 $db->exec($sql);
                             }
-                        }else {
-                            print_r($error_info=$this->db->errorInfo());
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
                             print "$sql\n";
                             exit;
                         }
-
-
-
-
-
 
 
                         //    print_r(  $content_data['sections'][$section_index]['items']);
@@ -813,9 +811,6 @@ function webpage_content_data($data, $editor, $db, $smarty) {
         if ($data['section'] == 'panels_in_section') {
 
 
-
-
-
             foreach ($content_data['sections'] as $section_index => $section) {
 
 
@@ -825,11 +820,10 @@ function webpage_content_data($data, $editor, $db, $smarty) {
                     if ($panel['id'] == $data['block']) {
 
 
-
                         $sql = sprintf(
                             'DELETE FROM `Webpage Panel Dimension` WHERE  `Webpage Panel Key`=%d ', $panel['key']
                         );
-                       $db->exec($sql);
+                        $db->exec($sql);
                         unset($content_data['sections'][$section_index]['panels'][$panel_index]);
                         $content_data['sections'][$section_index]['items'] = get_website_section_items($db, $content_data['sections'][$section_index]);
 
@@ -840,11 +834,10 @@ function webpage_content_data($data, $editor, $db, $smarty) {
             }
 
             $section_key = $content_data['sections'][$section_index]['key'];
-            $items = $content_data['sections'][$section_index]['items'];
+            $items       = $content_data['sections'][$section_index]['items'];
             $smarty->assign('categories', $items);
             $overview_items_html[$section_key] = $smarty->fetch('webpage.preview.categories_showcase.overview_section.items.tpl');
             $items_html[$section_key]          = $smarty->fetch('webpage.preview.categories_showcase.section.items.tpl');
-
 
 
         } elseif ($data['section'] == 'panels') {
@@ -900,9 +893,6 @@ function webpage_content_data($data, $editor, $db, $smarty) {
     if (isset($overview_items_html)) {
         $response['overview_items_html'] = $overview_items_html;
     }
-
-
-
 
 
     echo json_encode($response);
@@ -1533,8 +1523,6 @@ function add_panel($data, $editor, $smarty, $db) {
     $updated_result = $webpage->add_panel($data['section_key'], $data['value']);
 
 
-
-
     $overview_items_html = array();
     $items_html          = array();
 
@@ -1554,6 +1542,22 @@ function add_panel($data, $editor, $smarty, $db) {
 
     );
     echo json_encode($response);
+
+}
+
+function update_object_public($data, $editor, $smarty, $db) {
+
+    $object = get_object($data['object'], $data['object_key']);
+
+    if ($object->get_object_name() == 'Category') {
+
+        $object->update(array('Product Category Public' => $data['value']));
+
+    } elseif ($object->get_object_name() == 'Category') {
+
+        $object->update(array('Product Public' => $data['value']));
+    }
+
 
 }
 

@@ -1920,21 +1920,31 @@ class Page extends DB_Table {
 
             );
 
+            $this->db->exec($sql);
 
-            mysql_query($sql);
 
             $sql = sprintf(
                 "UPDATE `Page Product Dimension` SET `State`=%s WHERE `Page Key`=%d", prepare_mysql($this->data['Page State']), $this->id
             );
-            mysql_query($sql);
+            $this->db->exec($sql);
+
+
             $sql = sprintf(
                 "SELECT `Page Store Key`  FROM  `Page Store See Also Bridge` WHERE `Page Store See Also Key`=%d ", $this->id
             );
-            $res = mysql_query($sql);
-            while ($row = mysql_fetch_assoc($res)) {
-                $_page = new Page ($row['Page Store Key']);
-                $_page->update_see_also();
+
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $_page = new Page ($row['Page Store Key']);
+                    $_page->update_see_also();
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
             }
+
 
         }
 
@@ -6400,13 +6410,13 @@ class Page extends DB_Table {
         }
 
 
-        $result=array();
+        $result = array();
 
         foreach ($updated_metadata['section_keys'] as $section_key) {
             foreach ($content_data['sections'] as $section_stack_index => $section_data) {
                 if ($section_data['key'] == $section_key) {
                     $content_data['sections'][$section_stack_index]['items'] = get_website_section_items($this->db, $section_data);
-                    $result[$section_key]= $content_data['sections'][$section_stack_index]['items'] ;
+                    $result[$section_key]                                    = $content_data['sections'][$section_stack_index]['items'];
                     break;
                 }
             }
@@ -6419,7 +6429,6 @@ class Page extends DB_Table {
 
 
     }
-
 
     function delete_section($section_key) {
 
@@ -6441,7 +6450,6 @@ class Page extends DB_Table {
             'SELECT max(`Category Webpage Index Stack`) AS stack FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d 
               AND `Category Webpage Index Section Key`=%d ', $this->id, $anchor_section_key
         );
-
 
 
         //  print $sql;
@@ -6513,23 +6521,16 @@ class Page extends DB_Table {
         }
 
 
+        $result = array();
 
 
-
-
-
-
-
-        $result=array();
-
-
-            foreach ($content_data['sections'] as $section_stack_index => $section_data) {
-                if ($section_data['key'] == $anchor_section_key) {
-                    $content_data['sections'][$section_stack_index]['items'] = get_website_section_items($this->db, $section_data);
-                    $result[$anchor_section_key]= $content_data['sections'][$section_stack_index]['items'] ;
-                    break;
-                }
+        foreach ($content_data['sections'] as $section_stack_index => $section_data) {
+            if ($section_data['key'] == $anchor_section_key) {
+                $content_data['sections'][$section_stack_index]['items'] = get_website_section_items($this->db, $section_data);
+                $result[$anchor_section_key]                             = $content_data['sections'][$section_stack_index]['items'];
+                break;
             }
+        }
 
         $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
 
@@ -6581,7 +6582,6 @@ class Page extends DB_Table {
         return $updated_metadata;
 
     }
-
 
     function add_section_item($item_key, $section_key) {
 
@@ -6674,13 +6674,13 @@ class Page extends DB_Table {
             return $updated_metadata;
         }
 
-        $result=array();
+        $result = array();
 
         foreach ($updated_metadata['section_keys'] as $section_key) {
             foreach ($content_data['sections'] as $section_stack_index => $section_data) {
                 if ($section_data['key'] == $section_key) {
                     $content_data['sections'][$section_stack_index]['items'] = get_website_section_items($this->db, $section_data);
-                    $result[$section_key]= $content_data['sections'][$section_stack_index]['items'] ;
+                    $result[$section_key]                                    = $content_data['sections'][$section_stack_index]['items'];
                     break;
                 }
             }
@@ -6692,14 +6692,12 @@ class Page extends DB_Table {
         return $result;
 
 
-
     }
-
 
     function remove_section_item($item_key) {
 
         $updated_metadata = array('section_keys' => array());
-        $content_data = $this->get('Content Data');
+        $content_data     = $this->get('Content Data');
 
         $sql = sprintf(
             'SELECT `Category Webpage Index Key`,`Category Webpage Index Section Key`,`Category Webpage Index Stack` FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d AND `Category Webpage Index Category Key`=%d ',
@@ -6736,13 +6734,13 @@ class Page extends DB_Table {
             exit;
         }
 
-        $result=array();
+        $result = array();
 
         foreach ($updated_metadata['section_keys'] as $section_key) {
             foreach ($content_data['sections'] as $section_stack_index => $section_data) {
                 if ($section_data['key'] == $section_key) {
                     $content_data['sections'][$section_stack_index]['items'] = get_website_section_items($this->db, $section_data);
-                    $result[$section_key]= $content_data['sections'][$section_stack_index]['items'] ;
+                    $result[$section_key]                                    = $content_data['sections'][$section_stack_index]['items'];
                     break;
                 }
             }
@@ -6755,92 +6753,84 @@ class Page extends DB_Table {
 
     }
 
-    function update_webpage_section_order($section_key,$target_key){
+    function update_webpage_section_order($section_key, $target_key) {
 
 
         $content_data = $this->get('Content Data');
 
 
-        $_sections=$content_data['sections'];
-        foreach( $_sections as $index=>$section_data){
+        $_sections = $content_data['sections'];
+        foreach ($_sections as $index => $section_data) {
 
 
-
-            if($section_data['key']==$section_key){
-                $section_index=$index;
-                $moving_section=$section_data;
-                unset( $_sections[$index]);
+            if ($section_data['key'] == $section_key) {
+                $section_index  = $index;
+                $moving_section = $section_data;
+                unset($_sections[$index]);
             }
-            if($section_data['key']==$target_key){
-                $target_index=$index;
+            if ($section_data['key'] == $target_key) {
+                $target_index = $index;
             }
-          }
+        }
 
 
-        $sections=array();
+        $sections = array();
 
 
-        if($target_index>$section_index){
+        if ($target_index > $section_index) {
 
-            foreach($_sections as $index=>$section_data){
+            foreach ($_sections as $index => $section_data) {
 
 
-                $sections[]=$section_data;
-                if($index==$target_index){
-                    $sections[]=$moving_section;
+                $sections[] = $section_data;
+                if ($index == $target_index) {
+                    $sections[] = $moving_section;
                 }
 
 
             }
 
-        }else{
+        } else {
 
-            foreach($_sections as $index=>$section_data){
+            foreach ($_sections as $index => $section_data) {
 
 
-
-                if($index==$target_index){
-                    $sections[]=$moving_section;
+                if ($index == $target_index) {
+                    $sections[] = $moving_section;
                 }
-                $sections[]=$section_data;
+                $sections[] = $section_data;
 
             }
 
         }
 
 
-
-        $content_data['sections']= $sections;
+        $content_data['sections'] = $sections;
         $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
-
-
-
-
 
 
     }
 
-    function add_panel($section_key,$panel_data){
+    function add_panel($section_key, $panel_data) {
 
         $content_data = $this->get('Content Data');
-     //   print_r($content_data['sections']);
+        //   print_r($content_data['sections']);
 
-        foreach($content_data['sections'] as $_key=>$section_data){
-//print_r($section_data);
+        foreach ($content_data['sections'] as $_key => $section_data) {
+            //print_r($section_data);
 
-         //   print "$_key\n";
-            if($section_data['key']==$section_key){
+            //   print "$_key\n";
+            if ($section_data['key'] == $section_key) {
 
 
+                $section_index = $_key;
+                $panels        = $section_data['panels'];
 
-                $section_index=$_key;
-                $panels=$section_data['panels'];
+                //
+                //  print "xx $section_index\n";
+                // break;
 
-//
-              //  print "xx $section_index\n";
-               // break;
-
-               // print_r($_key);
+                // print_r($_key);
             }
 
         }
@@ -6886,7 +6876,7 @@ class Page extends DB_Table {
 
         $sql = sprintf(
             'INSERT INTO `Webpage Panel Dimension` (`Webpage Panel Section Key`,`Webpage Panel Id`,`Webpage Panel Webpage Key`,`Webpage Panel Type`,`Webpage Panel Data`,`Webpage Panel Metadata`) VALUES (%d,%s,%d,%s,%s,%s) ',
-            $section_key,prepare_mysql($panel_data['id']), $this->id, prepare_mysql($panel_data['type']), ($panel_data['type'] == 'code' ? prepare_mysql($panel['content']) : prepare_mysql('')),
+            $section_key, prepare_mysql($panel_data['id']), $this->id, prepare_mysql($panel_data['type']), ($panel_data['type'] == 'code' ? prepare_mysql($panel['content']) : prepare_mysql('')),
             prepare_mysql(json_encode($panel))
 
         );
@@ -6903,28 +6893,44 @@ class Page extends DB_Table {
         ksort($panels);
 
 
-      //  print_r($panels);
+        //  print_r($panels);
 
 
-       // print "xxa $section_index";
+        // print "xxa $section_index";
 
 
-        $content_data['sections'][$section_index]['panels']=$panels;
+        $content_data['sections'][$section_index]['panels'] = $panels;
 
-        $content_data['sections'][$section_index]['items']= get_website_section_items($this->db,$content_data['sections'][$section_index]);
+        $content_data['sections'][$section_index]['items'] = get_website_section_items($this->db, $content_data['sections'][$section_index]);
 
         //print_r($content_data);
         $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
 
-        $result=array();
-        $result[$section_key]= $content_data['sections'][$section_index]['items'] ;
-
+        $result               = array();
+        $result[$section_key] = $content_data['sections'][$section_index]['items'];
 
 
         return $result;
 
 
     }
+
+    function reindex_items() {
+
+        $content_data = $this->get('Content Data');
+
+        foreach ($content_data['sections'] as $section_stack_index => $section_data) {
+
+            $content_data['sections'][$section_stack_index]['items'] = get_website_section_items($this->db, $section_data);
+
+        }
+
+
+        $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+
+
+    }
+
 
 }
 

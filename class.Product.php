@@ -2018,7 +2018,30 @@ class Product extends Asset {
         $web_availability_updated = ($old_web_availability != $web_availability ? true : false);
 
 
+
+
         if ($web_availability_updated) {
+
+
+
+
+            $sql=sprintf('select `Category Key` from `Category Bridge` where `Subject Key`=%d and `Subject`="Product" group by `Category Key` ',
+                         $this->id
+                         );
+            if ($result=$this->db->query($sql)) {
+            		foreach ($result as $row) {
+                       $category=new Category($row['Category Key']);
+
+                       print_r($category->get('Code'));
+
+                       $category->update_product_category_products_data();
+            		}
+            }else {
+            		print_r($error_info=$this->db->errorInfo());
+            		print "$sql\n";
+            		exit;
+            }
+
 
 
             //print $this->data['Product Store Key'].' '.$this->data['Product Code']." $old_web_availability  $web_availability \n";

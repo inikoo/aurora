@@ -19,24 +19,7 @@ asort($public_options);
 
 
 $category_product_fields = array(
-    array(
-        'label'      => _('Visibility'),
-        'show_title' => true,
-        'fields'     => array(
 
-            array(
-                'edit'            => 'option',
-                'id'              => 'Product_Category_Public',
-                'options'         => $public_options,
-                'value'           => $object->get('Product Category Public'),
-                'formatted_value' => $object->get('Public'),
-                'label'           => _('Public'),
-                'type'            => 'value'
-            ),
-
-
-        )
-    ),
 
 
     array(
@@ -71,7 +54,26 @@ $category_product_fields = array(
         )
     ),
 
+    array(
+        'label'      => _('Visibility'),
+        'show_title' => true,
+        'fields'     => array(
 
+            array(
+                'edit'            => 'option',
+                'id'              => 'Product_Category_Public',
+                'options'         => $public_options,
+                'value'           => $object->get('Product Category Public'),
+                'formatted_value' => $object->get('Public'),
+                'label'           => _('Public'),
+                'type'            => 'value'
+            ),
+
+
+        )
+    ),
+
+/*
     array(
         'label'      => _('Webpage').' <span class="no_title">'.$object->webpage->get('Code').'</span>',
         'show_title' => true,
@@ -199,7 +201,7 @@ $category_product_fields = array(
 
         )
     ),
-
+*/
 
 );
 

@@ -47,6 +47,8 @@ html, body, textarea {
     visibility: visible; }
   html .hide, body .hide, textarea .hide {
     display: none; }
+  html .strikethrough, body .strikethrough, textarea .strikethrough {
+    text-decoration: line-through; }
 
 .panel {
   border: 1px solid #ccc;

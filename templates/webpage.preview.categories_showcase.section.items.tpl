@@ -1,6 +1,6 @@
 {foreach from=$categories item=category_data}
        {assign stack_index $category_data.stack_index}
-            <div class="category_wrap item_wrap"  stack_index="{$stack_index}" category_stack_index="{$category_data.category_stack_index}"  max_free_slots="{$category_data.data.max_free_slots}" >
+            <div class="category_wrap item_wrap"  item_key="{$category_data.category_key}" stack_index="{$stack_index}" category_stack_index="{$category_data.category_stack_index}"  max_free_slots="{$category_data.data.max_free_slots}" >
 
 
                 {if $category_data.type=='category'}
@@ -19,18 +19,17 @@
                     
                  </div>
 
-                <div style=" display: none;border-top:1px solid #ccc;margin-top:5px" >
-                    <span style="width: 50%;text-align: center;border-right :1px solid #ccc">{$category_data.category_code}</span>
-                    <span style="width: 50%;text-align: center"> {$category_data.number_products} <i class="fa fa-cube" aria-hidden="true"></i></span>
-                </div>
-
+               
                 </div>
                     
                     
                     
-                    <div class="category_block item_overlay hide" >
+                    <div class="category_block item_overlay xhide" >
 
-
+  <div style="display:flex;padding:0px 5px;position:relative;top:-5px;font-size:90%" >
+                    <div class="flex-item" style="background-color:white">{$category_data.category_code}</div>
+                    <div class="flex-item" style="background-color:white"> {$category_data.number_products} <i class="fa fa-cube" aria-hidden="true"></i></div>
+                </div>
 
                     <div class="buttons panel_type"  >
                         <div class="flex-item button" type="image"><i class="fa fa-picture-o" aria-hidden="true"></i></div>
@@ -49,7 +48,17 @@
                     </div>
 
 
+ <div  class="buttons  ">
+                        <div class="flex-item button make_category_no_public"    ><i class="fa fa-microphone-slash discreet red" aria-hidden="true" title="{t}Make category not public{/t}"></i></div>
+                        <div class="flex-item invisible" ></div>
+                        <div class="flex-item invisible" ></div>
+                         <div class="flex-item invisible" ></div>
+                    </div>
                       
+                      
+                      
+              
+
 
                 </div>
                 
