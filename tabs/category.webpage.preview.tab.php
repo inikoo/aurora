@@ -467,7 +467,6 @@ switch ($webpage->get('Page Store Content Template Filename')) {
 
             }
 
-           // print_r($content_data);
 
             $webpage->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
 

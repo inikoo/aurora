@@ -165,7 +165,9 @@ if ($order == 'code') {
 }
 
 
-$fields = "`Product Category Active Web For Sale`,`Product Category Active Web Out of Stock`,`Product Category Active Web For Sale`+`Product Category Active Web Out of Stock` as online,
+$fields = "
+`Page Key`,`Page Code`,`Page State`,
+`Product Category Active Web For Sale`,`Product Category Active Web Out of Stock`,`Product Category Active Web For Sale`+`Product Category Active Web Out of Stock` as online,
     P.`Product Category Key`,C.`Category Code`,`Category Label`,C.`Category Key`,`Category Store Key`,
     (`Product Category Active Products`+`Product Category Discontinuing Products`) as products,
     `Category Number Subjects` as subjects,
@@ -177,7 +179,10 @@ $fields = "`Product Category Active Web For Sale`,`Product Category Active Web O
 `Product Category 1 Quarter Ago 1YB Invoiced Amount`,`Product Category 2 Quarter Ago 1YB Invoiced Amount`,`Product Category 3 Quarter Ago 1YB Invoiced Amount`,`Product Category 4 Quarter Ago 1YB Invoiced Amount`,
 `Product Category Currency Code`,$yb_fields";
 $table
-    = '  `Category Bridge` B left join    `Category Dimension` C   on (B.`Subject Key`=C.`Category Key` and `Subject`="Category")  left join `Product Category Dimension` P on (P.`Product Category Key`=C.`Category Key`) left join `Product Category Data` D on (D.`Product Category Key`=C.`Category Key`) left join `Product Category DC Data` DC on (DC.`Product Category Key`=C.`Category Key`)';
+    = '  `Category Bridge` B left join    `Category Dimension` C   on (B.`Subject Key`=C.`Category Key` and `Subject`="Category")  left join `Product Category Dimension` P on (P.`Product Category Key`=C.`Category Key`) left join `Product Category Data` D on (D.`Product Category Key`=C.`Category Key`) left join `Product Category DC Data` DC on (DC.`Product Category Key`=C.`Category Key`)
+    left join `Page Store Dimension` on (`Webpage Scope Key`=B.`Subject Key` and `Webpage Scope`="Category Products"  )
+    
+    ';
 
 $sql_totals
     = "select count(distinct C.`Category Key`) as num from $table $where";

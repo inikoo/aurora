@@ -41,7 +41,7 @@ class Category extends DB_Table {
         );
         $this->all_descendants_keys = array();
         $this->skip_update_sales    = false;
-        $this->webpage=false;
+        $this->webpage              = false;
 
         if (is_numeric($a1) and !$a2) {
             $this->get_data('id', $a1);
@@ -237,11 +237,10 @@ class Category extends DB_Table {
         }
 
         if (!$data['Category Store Key'] and $data['Category Parent Key']) {
-            $parent_category = new Category(
+            $parent_category            = new Category(
                 $data['Category Parent Key']
             );
-            $data['Category Store Key']
-                             = $parent_category->data['Category Store Key'];
+            $data['Category Store Key'] = $parent_category->data['Category Store Key'];
         }
 
         $fields = array();
@@ -337,7 +336,6 @@ class Category extends DB_Table {
 		*/
 
 
-
             $this->new = true;
 
             $created_msg = _('Category created');
@@ -362,16 +360,14 @@ class Category extends DB_Table {
             } elseif ($this->data['Category Scope'] == 'Part') {
                 $created_msg = _("Part's category created");
 
-                $sql = sprintf("INSERT INTO `Part Category Dimension` (`Part Category Key`,`Part Category Valid From`) VALUES (%d,%s)",
-                    $this->id,
-                    prepare_mysql(gmdate('Y-m-d H:i:s'))
+                $sql = sprintf(
+                    "INSERT INTO `Part Category Dimension` (`Part Category Key`,`Part Category Valid From`) VALUES (%d,%s)", $this->id, prepare_mysql(gmdate('Y-m-d H:i:s'))
 
                 );
                 $this->db->exec($sql);
 
 
-                $sql
-                    = $sql = sprintf(
+                $sql = $sql = sprintf(
                     "INSERT INTO `Part Category Data` (`Part Category Key`) VALUES (%d)", $this->id
                 );
                 $this->db->exec($sql);
@@ -528,67 +524,67 @@ class Category extends DB_Table {
         $num_active    = 0;
         $num_no_active = 0;
 
-/*
-        if ($this->data['Category Subject'] == 'Category') {
+        /*
+                if ($this->data['Category Subject'] == 'Category') {
+
+                    $sql = sprintf(
+                        "SELECT sum(`Category Number Subjects`)  AS num FROM `Category Bridge` B LEFT JOIN `Category Dimension` C ON (B.`Subject Key`=C.`Category Key`) WHERE B.`Category Key`=%d  ", $this->id
+                    );
+
+                    if ($result = $this->db->query($sql)) {
+                        if ($row = $result->fetch()) {
+                            $num = $row['num'];
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        exit;
+                    }
+                    $num_active    = $num;
+                    $num_no_active = 0;
+
+                } else {
+        */
+        $sql = sprintf(
+            "SELECT COUNT(DISTINCT `Subject Key`)  AS num FROM `Category Bridge`  WHERE `Category Key`=%d  ", $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $num = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+        if ($this->get('Category Scope') == 'Part') {
 
             $sql = sprintf(
-                "SELECT sum(`Category Number Subjects`)  AS num FROM `Category Bridge` B LEFT JOIN `Category Dimension` C ON (B.`Subject Key`=C.`Category Key`) WHERE B.`Category Key`=%d  ", $this->id
+                "SELECT count(*) AS num, `Part Status` FROM `Category Bridge` B LEFT JOIN `Part Dimension` P ON (B.`Subject Key`=P.`Part SKU`) WHERE B.`Category Key`=%d GROUP BY `Part Status` ",
+                $this->id
             );
 
             if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    $num = $row['num'];
+                foreach ($result as $row) {
+                    if ($row['Part Status'] == 'In Use') {
+                        $num_active = $row['num'];
+                    } else {
+                        $num_no_active = $row['num'];
+                    }
                 }
             } else {
                 print_r($error_info = $this->db->errorInfo());
                 exit;
             }
-            $num_active    = $num;
-            $num_no_active = 0;
+
 
         } else {
-*/
-            $sql = sprintf(
-                "SELECT COUNT(DISTINCT `Subject Key`)  AS num FROM `Category Bridge`  WHERE `Category Key`=%d  ", $this->id
-            );
-
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    $num = $row['num'];
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
-            }
-
-            if ($this->get('Category Scope') == 'Part') {
-
-                $sql = sprintf(
-                    "SELECT count(*) AS num, `Part Status` FROM `Category Bridge` B LEFT JOIN `Part Dimension` P ON (B.`Subject Key`=P.`Part SKU`) WHERE B.`Category Key`=%d GROUP BY `Part Status` ",
-                    $this->id
-                );
-
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-                        if ($row['Part Status'] == 'In Use') {
-                            $num_active = $row['num'];
-                        } else {
-                            $num_no_active = $row['num'];
-                        }
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
-                }
+            $num_active    = $num;
+            $num_no_active = 0;
+        }
 
 
-            } else {
-                $num_active    = $num;
-                $num_no_active = 0;
-            }
-
-
-     //   }
+        //   }
 
 
         $sql = sprintf(
@@ -596,7 +592,7 @@ class Category extends DB_Table {
             $num_no_active, $this->id
         );
 
-     //   print $sql;
+        //   print $sql;
 
         $this->db->exec($sql);
         $this->update_no_assigned_subjects();
@@ -622,7 +618,6 @@ class Category extends DB_Table {
         switch ($key) {
 
             case 'Image':
-
 
 
                 $image_key = $this->data['Category Main Image Key'];
@@ -660,7 +655,6 @@ class Category extends DB_Table {
             case 'Product':
 
                 switch ($key) {
-
 
 
                     case 'Status':
@@ -714,21 +708,23 @@ class Category extends DB_Table {
                         // todo migrate to new webpage and webpage version classes
 
 
-                        if($this->webpage->get('Page Store Content Display Type')=='Source'){
+                        if ($this->webpage->get('Page Store Content Display Type') == 'Source') {
                             return 'blank';
-                        }else{
+                        } else {
                             return $this->webpage->get('Page Store Content Template Filename');
                         }
 
                     case 'Webpage Template':
                         // todo migrate to new webpage and webpage version classes
 
-                        if(!is_object($this->webpage))$this->get_webpage();
+                        if (!is_object($this->webpage)) {
+                            $this->get_webpage();
+                        }
 
-                        if($this->webpage->get('Page Store Content Display Type')=='Source'){
+                        if ($this->webpage->get('Page Store Content Display Type') == 'Source') {
                             return _('White canvas');
-                        }else{
-                            switch($this->webpage->get('Page Store Content Template Filename')) {
+                        } else {
+                            switch ($this->webpage->get('Page Store Content Template Filename')) {
                                 case 'family_buttons':
                                     return '<span class="italic discreet" >Old products showcase (unsupported)</span>';
                                     break;
@@ -745,14 +741,11 @@ class Category extends DB_Table {
                         }
 
 
-
-
-
                         break;
                     case 'Webpage Related Products':
 
                         $related_products_data = $this->webpage->get_related_products_data();
-                        $related_products = '';
+                        $related_products      = '';
 
 
                         foreach ($related_products_data['links'] as $link) {
@@ -788,8 +781,6 @@ class Category extends DB_Table {
                         break;
 
 
-
-
                     case 'Category Webpage Meta Description':
                     case 'Webpage Meta Description':
                         return $this->webpage->get('Page Store Description');
@@ -798,7 +789,7 @@ class Category extends DB_Table {
 
                     case 'Category Webpage Browser Title':
                     case 'Webpage Browser Title':
-                    return $this->webpage->get('Page Title');
+                        return $this->webpage->get('Page Title');
 
                         break;
 
@@ -839,8 +830,8 @@ class Category extends DB_Table {
 
                         return strftime(
                             "%a %e %b %Y", strtotime(
-                                $this->data['Product Category '.$key].' +0:00'
-                            )
+                                             $this->data['Product Category '.$key].' +0:00'
+                                         )
                         );
 
 
@@ -853,8 +844,8 @@ class Category extends DB_Table {
 
                             return strftime(
                                 "%a %e %b %Y", strtotime(
-                                    $this->data['Product Category '.$key].' +0:00'
-                                )
+                                                 $this->data['Product Category '.$key].' +0:00'
+                                             )
                             );
 
                         }
@@ -873,9 +864,9 @@ class Category extends DB_Table {
                         }
                         break;
                     case 'Percentage Active Web Out of Stock':
-                        return percentage($this->data['Product Category Active Web Out of Stock'],$this->data['Product Category Active Products'],0);
+                        return percentage($this->data['Product Category Active Web Out of Stock'], $this->data['Product Category Active Products'], 0);
                     case 'Percentage Active Web Offline':
-                        return percentage($this->data['Product Category Active Web Offline'],$this->data['Product Category Active Products'],0);
+                        return percentage($this->data['Product Category Active Web Offline'], $this->data['Product Category Active Products'], 0);
 
                     default:
 
@@ -970,11 +961,13 @@ class Category extends DB_Table {
                             } else {
                                 $_number = $this->data[$field];
                             }
+
                             return number($_number, $fraction_digits).$suffix;
                         }
                         if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced) Soft Minify$/', $key)) {
-                            $field = 'Product Category '.preg_replace('/ Soft Minify$/', '', $key);
+                            $field   = 'Product Category '.preg_replace('/ Soft Minify$/', '', $key);
                             $_number = $this->data[$field];
+
                             return number($_number, 0);
                         }
 
@@ -1012,8 +1005,8 @@ class Category extends DB_Table {
 
                         return strftime(
                             "%a %e %b %Y", strtotime(
-                                $this->data['Part Category '.$key].' +0:00'
-                            )
+                                             $this->data['Part Category '.$key].' +0:00'
+                                         )
                         );
 
 
@@ -1166,8 +1159,8 @@ class Category extends DB_Table {
 
                         return strftime(
                             "%a %e %b %Y", strtotime(
-                                $this->data['Supplier Category '.$key].' +0:00'
-                            )
+                                             $this->data['Supplier Category '.$key].' +0:00'
+                                         )
                         );
 
 
@@ -1180,8 +1173,8 @@ class Category extends DB_Table {
 
                             return strftime(
                                 "%a %e %b %Y", strtotime(
-                                    $this->data['Supplier Category '.$key].' +0:00'
-                                )
+                                                 $this->data['Supplier Category '.$key].' +0:00'
+                                             )
                             );
 
                         }
@@ -1642,9 +1635,8 @@ class Category extends DB_Table {
         }
 
 
-        $data['Category Branch Type'] = 'Head';
-        $data['Category Subject Multiplicity']
-                                      = $this->data['Category Subject Multiplicity'];
+        $data['Category Branch Type']          = 'Head';
+        $data['Category Subject Multiplicity'] = $this->data['Category Subject Multiplicity'];
 
         $data['Category Root Key']   = $this->data['Category Root Key'];
         $data['Category Parent Key'] = $this->id;
@@ -1892,8 +1884,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     $parent_category->data['Category Children Other'] = 'No';
                     $sql                                              = sprintf(
                         "UPDATE `Category Dimension` SET `Category Children Other`=%s WHERE `Category Key`=%d", prepare_mysql(
-                            $parent_category->data['Category Children Other']
-                        ), $parent_category->id
+                        $parent_category->data['Category Children Other']
+                    ), $parent_category->id
                     );
                 }
 
@@ -2163,8 +2155,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
                         if ($result = $this->db->query($sql)) {
                             if ($department = $result->fetch()) {
-                                $department_key
-                                    = $department['Product Department Key'];
+                                $department_key = $department['Product Department Key'];
                             } else {
                                 $department_key = false;
                             }
@@ -2185,8 +2176,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
                         if ($result = $this->db->query($sql)) {
                             if ($family = $result->fetch()) {
-                                $family_key
-                                    = $department['Product Department Key'];
+                                $family_key = $department['Product Department Key'];
                             } else {
                                 $family_key = false;
                             }
@@ -2305,8 +2295,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         foreach ($category->get_parent_keys() as $parent_key) {
                             $sql = sprintf(
                                 "INSERT INTO `Category Bridge` VALUES (%d,%s,%d, NULL,%d)", $parent_key, prepare_mysql(
-                                    $category->data['Category Subject']
-                                ), $subject_key, $subject_key
+                                $category->data['Category Subject']
+                            ), $subject_key, $subject_key
                             );
 
                             $insert = $this->db->prepare($sql);
@@ -2383,8 +2373,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-                $sub_category_keys_selected[$row['Category Key']]
-                    = $row['Category Key'];
+                $sub_category_keys_selected[$row['Category Key']] = $row['Category Key'];
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -2518,8 +2507,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                 $this->update_field($field, $value, $options);
 
             }
-        }
-        elseif (array_key_exists($field, $this->base_data('Product Category Dimension'))) {
+        } elseif (array_key_exists($field, $this->base_data('Product Category Dimension'))) {
 
             switch ($field) {
 
@@ -2634,57 +2622,115 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
 
                 case 'Product Category Public':
+                    include_once 'class.Product.php';
+                    include_once 'class.Page.php';
+
+                     $this->update_table_field($field, $value, $options, 'Product Category', 'Product Category Dimension', $this->id);
+
+
+                    if ($value == 'No') {
+
+
+                        $this->get_webpage();
+                        if($this->webpage->id) {
+                            $this->webpage->update(array('Page State' => 'Offline'));
+                        }
+
+                        $sql = sprintf(
+                            'SELECT `Category Webpage Index Webpage Key`,`Category Webpage Index Key` FROM `Category Webpage Index` WHERE `Category Webpage Index Category Key`=%d  ', $this->id
+                        );
+
+
+                        if ($result = $this->db->query($sql)) {
+                            foreach ($result as $row) {
+                                $webpage = new Page($row['Category Webpage Index Webpage Key']);
+
+                                $sql = sprintf('DELETE FROM `Category Webpage Index` WHERE `Category Webpage Index Key`=%d', $row['Category Webpage Index Key']);
+                                $this->db->exec($sql);
+
+                                $webpage->reindex_items();
+
+                            }
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
+                            print "$sql\n";
+                            exit;
+                        }
+
+
+                        $sql = sprintf(
+                            'SELECT `Category Webpage Index Webpage Key`,`Category Webpage Index Key` FROM `Category Webpage Index` WHERE `Category Webpage Index Parent Category Key`=%d   group by `Category Webpage Index Webpage Key`', $this->id
+                        );
+
+
+                        if ($result = $this->db->query($sql)) {
+                            foreach ($result as $row) {
+                                $webpage = new Page($row['Category Webpage Index Webpage Key']);
+
+                                $sql = sprintf('DELETE FROM `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d', $row['Category Webpage Index Webpage Key']);
+                                $this->db->exec($sql);
+
+                                $webpage->update(array('Page State'=>'Offline'));
+
+
+
+
+                            }
+
+
+
+
+
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
+                            print "$sql\n";
+                            exit;
+                        }
+
+
+
+
+
+
+
+
+
+
+                    }
 
 
                     foreach ($this->get_children_keys() as $children_key) {
                         $subcategory = new Category($children_key);
-                        $subcategory->update(
-                            array('Product Category Public' => $value), $options
-                        );
-
-
+                        $subcategory->update(array('Product Category Public' => $value), $options);
                     }
-                    //$this->update_subject_field($field, $value, $options);
-                    $this->update_table_field(
-                        $field, $value, $options, 'Product Category', 'Product Category Dimension', $this->id
-                    );
 
 
-                    $sql = sprintf(
-                        'SELECT `Subject Key`,`Subject` FROM `Category Bridge` WHERE `Category Key`=%d ', $this->id
-                    );
+                    $sql = sprintf('SELECT `Subject Key`,`Subject` FROM `Category Bridge` WHERE `Category Key`=%d ', $this->id);
 
-                    include_once 'class.Product.php';
 
                     if ($result = $this->db->query($sql)) {
                         foreach ($result as $row) {
 
-                            if ($row['Subject'] == 'Product') {
 
+
+
+                            if ($row['Subject'] == 'Product') {
                                 $product = new Product($row['Subject Key']);
-                                $product->update(
-                                    array('Product Public' => $value), $options
-                                );
+                              //  print_r($row);
+                                $product->update(array('Product Web Configuration' => 'Offline'), $options);
                             } else {
                                 if ($row['Subject'] == 'Category') {
-
-                                    $subcategory = new Category(
-                                        $row['Subject Key']
-                                    );
-
-
-                                    $subcategory->update(
-                                        array('Product Category Public' => $value), $options
-                                    );
+                                    $subcategory = new Category($row['Subject Key']);
+                                    $subcategory->update(array('Product Category Public' => $value), $options);
                                 }
                             }
 
 
                         }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        exit;
                     }
+
+
+
 
                     break;
 
@@ -2696,7 +2742,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
                 // $this->update_subject_field($field, $value, $options);
             }
-        }elseif (array_key_exists($field, $this->base_data('Part Category Dimension'))) {
+        } elseif (array_key_exists($field, $this->base_data('Part Category Dimension'))) {
             $this->update_table_field($field, $value, $options, 'Part Category', 'Part Category Dimension', $this->id);
         } elseif (array_key_exists($field, $this->base_data('Part Category Data'))) {
             $this->update_table_field($field, $value, $options, 'Part Category', 'Part Category Data', $this->id);
@@ -2706,7 +2752,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
             $this->update_table_field($field, $value, $options, 'Product Category DC', 'Product Category DC Data', $this->id);
         } elseif (array_key_exists($field, $this->base_data('Invoice Category Dimension'))) {
             $this->update_table_field($field, $value, $options, 'Invoice Category', 'Invoice Category Dimension', $this->id);
-        }elseif (array_key_exists($field, $this->base_data('Invoice Category Data'))) {
+        } elseif (array_key_exists($field, $this->base_data('Invoice Category Data'))) {
             $this->update_table_field($field, $value, $options, 'Invoice Category', 'Invoice Category Data', $this->id);
         } elseif (array_key_exists($field, $this->base_data('Invoice Category DC Data'))) {
             $this->update_table_field($field, $value, $options, 'Invoice Category', 'Invoice Category DC Data', $this->id);
@@ -2714,34 +2760,40 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
             $this->update_table_field($field, $value, $options, 'Supplier Category', 'Supplier Category Data', $this->id);
         } elseif (array_key_exists($field, $this->base_data('Supplier Category Dimension'))) {
             $this->update_table_field($field, $value, $options, 'Supplier Category', 'Supplier Category Dimension', $this->id);
-        }
-        else {
+        } else {
             switch ($field) {
 
 
                 case 'Webpage Template':
 
-                    if(!is_object($this->webpage))$this->get_webpage();
+                    if (!is_object($this->webpage)) {
+                        $this->get_webpage();
+                    }
 
 
+                    if ($value == 'blank') {
+                        $this->webpage->update(array('Page Store Content Display Type' => 'Source'), $options);
+
+                    } else {
 
 
-                    if($value=='blank'){
-                        $this->webpage->update(array('Page Store Content Display Type'=>'Source'), $options);
-
-                    }else{
-
-
-                        $this->webpage->update(array('Page Store Content Display Type'=>'Template','Page Store Content Template Filename' => $value), $options);
+                        $this->webpage->update(
+                            array(
+                                'Page Store Content Display Type'      => 'Template',
+                                'Page Store Content Template Filename' => $value
+                            ), $options
+                        );
 
 
                     }
                     $this->webpage->publish();
                     $this->updated = $this->webpage->updated;
 
-                break;
+                    break;
                 case 'Category Webpage Browser Title':
-                    if(!is_object($this->webpage))$this->get_webpage();
+                    if (!is_object($this->webpage)) {
+                        $this->get_webpage();
+                    }
 
                     $this->webpage->update(array('Page Title' => $value), $options);
                     $this->updated = $this->webpage->updated;
@@ -2749,7 +2801,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     break;
 
                 case 'Category Webpage Meta Description':
-                    if(!is_object($this->webpage))$this->get_webpage();
+                    if (!is_object($this->webpage)) {
+                        $this->get_webpage();
+                    }
                     $this->webpage->update(
                         array(
                             'Page Store Description' => $value
@@ -2761,7 +2815,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     break;
 
                 case 'Webpage See Also':
-                    if(!is_object($this->webpage))$this->get_webpage();
+                    if (!is_object($this->webpage)) {
+                        $this->get_webpage();
+                    }
                     $this->webpage->update(
                         array(
                             'See Also' => $value
@@ -2807,10 +2863,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     break;
 
 
-
                 default:
-
-
 
 
                     break;
@@ -2837,8 +2890,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-                $this->all_descendants_keys[$row['Category Key']]
-                    = $row['Category Key'];
+                $this->all_descendants_keys[$row['Category Key']] = $row['Category Key'];
                 $this->load_all_descendants_keys($row['Category Key']);
             }
         } else {
@@ -3029,12 +3081,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                             //print $sql;
                             if ($result = $this->db->query($sql)) {
                                 if ($department = $result->fetch()) {
-                                    $department_key
-                                        = $department['Product Department Key'];
-                                    $department_code
-                                        = $department['Product Department Code'];
-                                    $department_name
-                                        = $department['Product Department Name'];
+                                    $department_key  = $department['Product Department Key'];
+                                    $department_code = $department['Product Department Code'];
+                                    $department_name = $department['Product Department Name'];
                                 } else {
                                     $department_key = false;
                                 }
@@ -3232,19 +3281,19 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
     }
 
-    function create_timeseries($data,$fork_key=false) {
+    function create_timeseries($data, $fork_key = false) {
         switch ($this->data['Category Scope']) {
             case('Part'):
-                $this->create_part_timeseries($data,$fork_key);
+                $this->create_part_timeseries($data, $fork_key);
                 break;
             case('Product'):
-                $this->create_product_timeseries($data,$fork_key);
+                $this->create_product_timeseries($data, $fork_key);
                 break;
             case('Invoice'):
-                $this->create_invoice_timeseries($data,$fork_key);
+                $this->create_invoice_timeseries($data, $fork_key);
                 break;
             case('Supplier'):
-                $this->create_supplier_timeseries($data,$fork_key);
+                $this->create_supplier_timeseries($data, $fork_key);
                 break;
 
         }
@@ -3252,26 +3301,26 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
     }
 
 
-    function update_sales_from_invoices($interval, $this_year =true, $last_year = true){
+    function update_sales_from_invoices($interval, $this_year = true, $last_year = true) {
         switch ($this->data['Category Scope']) {
             case('Part'):
-                $this->update_part_category_sales($interval, $this_year , $last_year);
+                $this->update_part_category_sales($interval, $this_year, $last_year);
                 break;
             case('Product'):
-                $this->update_product_category_sales($interval, $this_year , $last_year);
+                $this->update_product_category_sales($interval, $this_year, $last_year);
                 break;
             case('Invoice'):
-                $this->update_invoice_category_sales($interval, $this_year , $last_year);
+                $this->update_invoice_category_sales($interval, $this_year, $last_year);
                 break;
             case('Supplier'):
-                $this->update_supplier_category_sales($interval, $this_year , $last_year);
+                $this->update_supplier_category_sales($interval, $this_year, $last_year);
                 break;
 
         }
 
     }
-    
-    function update_previous_years_data(){
+
+    function update_previous_years_data() {
         switch ($this->data['Category Scope']) {
             case('Part'):
                 $this->update_part_category_previous_years_data();
@@ -3287,11 +3336,11 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                 break;
 
         }
-        
+
     }
 
 
-    function update_previous_quarters_data(){
+    function update_previous_quarters_data() {
         switch ($this->data['Category Scope']) {
             case('Part'):
                 $this->update_part_category_previous_quarters_data();
@@ -3309,9 +3358,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
         }
 
     }
-
-
-
 
 
     function get_other_categories() {
@@ -3496,22 +3542,22 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
         $branch_type_icon = '';
         switch ($this->data['Category Branch Type']) {
             case('Root'):
-                $branch_type_icon = '<img src="art/icons/category_root'.($this->data['Category Can Have Other'] == 'Yes' ? ($this->data['Category Children Other'] == 'Yes' ? '_with_other'
-                        : '_can_other') : '').'.png" title="'._('Root Node').'" /> ';
+                $branch_type_icon =
+                    '<img src="art/icons/category_root'.($this->data['Category Can Have Other'] == 'Yes' ? ($this->data['Category Children Other'] == 'Yes' ? '_with_other' : '_can_other') : '')
+                    .'.png" title="'._('Root Node').'" /> ';
                 break;
             case('Node'):
-                $branch_type_icon = '<img src="art/icons/category_node'.($this->data['Category Can Have Other'] == 'Yes' ? ($this->data['Category Children Other'] == 'Yes' ? '_with_other'
-                        : '_can_other') : '').'.png" title="'._('Node').'" />';
+                $branch_type_icon =
+                    '<img src="art/icons/category_node'.($this->data['Category Can Have Other'] == 'Yes' ? ($this->data['Category Children Other'] == 'Yes' ? '_with_other' : '_can_other') : '')
+                    .'.png" title="'._('Node').'" />';
                 break;
             case('Head'):
                 if ($this->data['Is Category Field Other'] == 'No') {
-                    $branch_type_icon
-                        = '<img src="art/icons/category_head.png" title="'._(
+                    $branch_type_icon = '<img src="art/icons/category_head.png" title="'._(
                             'Head Node'
                         ).'" /> ';
                 } else {
-                    $branch_type_icon
-                        = '<img src="art/icons/category_head_other.png" title="'._('Head Node').' ('._('Other').')" /> ';
+                    $branch_type_icon = '<img src="art/icons/category_head_other.png" title="'._('Head Node').' ('._('Other').')" /> ';
                 }
 
         }

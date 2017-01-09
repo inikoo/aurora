@@ -1119,6 +1119,14 @@ function product_categories_products($_data, $db, $user) {
         }
 
 
+        if($data['Page Key']>0){
+            $webpage=sprintf('<span class="%s">%s</span>',
+                ($data['Page State']=='Offline'?'discreet strikethrough':''),
+                             $data['Page Code']);
+        }else{
+            $webpage=   '<span class="super_discreet">-</span>';
+        }
+
         $record_data[] = array(
             'id'               => (integer)$data['Product Category Key'],
             'store_key'        => (integer)$data['Category Store Key'],
@@ -1138,9 +1146,10 @@ function product_categories_products($_data, $db, $user) {
             'sales_1yb'        => delta($data['sales'], $data['sales_1yb']),
             'qty_invoiced'     => number($data['qty_invoiced']),
             'qty_invoiced_1yb' => delta($data['qty_invoiced'], $data['qty_invoiced_1yb']),
-            'online'           => number($data['online']),
-            'out_of_stock'     => number($data['Product Category Active Web Out of Stock']),
-            'percentage_out_of_stock'     =>'<span class="discreet">'. percentage($data['Product Category Active Web Out of Stock'],$data['online']).'</span>',
+            'online'           => ($data['Page Key']>0?number($data['online']):'<span class="super_discreet">-</span>'),
+            'out_of_stock'     =>  ($data['Page Key']>0?number($data['Product Category Active Web Out of Stock']):'<span class="super_discreet">-</span>'),
+            'percentage_out_of_stock'     =>($data['Page Key']>0?percentage($data['Product Category Active Web Out of Stock'],$data['online']):''),
+            'webpage'=>$webpage,
 
 
             'sales_year0' => sprintf(
