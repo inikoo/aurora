@@ -1018,6 +1018,11 @@ trait ProductCategory {
 
             $content_data     =  $this->webpage->get('Content Data');
             $anchor_section_key=0;
+
+       //     print 'caca';
+     //print_r($content_data);
+
+
             foreach ($content_data['sections'] as $_key => $_data) {
 
                 //  print_r($_data);

@@ -328,7 +328,7 @@ switch ($webpage->get('Page Store Content Template Filename')) {
         // todo remove this when all descriptions are moved inside webpage content data
 
 
-        if ($webpage->id and $webpage->get('Content Data') == '' ) {
+        if (  ( $webpage->id and $webpage->get('Content Data') == '' )   ) {
 
 
             $sql = sprintf(
@@ -416,7 +416,7 @@ switch ($webpage->get('Page Store Content Template Filename')) {
             $section['key'] = $db->lastInsertId();
 
             $content_data['sections'][] = $section;
-
+            $webpage->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
 
             //print_r($content_data);
 
