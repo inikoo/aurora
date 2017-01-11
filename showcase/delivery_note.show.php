@@ -12,6 +12,9 @@
 
 function get_delivery_note_showcase($data) {
 
+
+
+
     global $smarty, $user;
 
     if (!$data['_object']->id) {
@@ -23,7 +26,7 @@ function get_delivery_note_showcase($data) {
     $delivery_note = $data['_object'];
 
 
-    $parcels     = $delivery_note->get_formatted_parcels();
+    $parcels     = $delivery_note->get('Parcels');
     $weight      = $delivery_note->data['Delivery Note Weight'];
     $consignment = $delivery_note->data['Delivery Note Shipper Consignment'];
 

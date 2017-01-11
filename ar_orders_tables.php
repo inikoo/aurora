@@ -591,6 +591,10 @@ function invoice_items($_data, $db, $user) {
 
 function delivery_note_items($_data, $db, $user) {
 
+    //print_r($_data);
+
+    include_once ('class.DeliveryNote.php');
+
     global $_locale;// fix this locale stuff
 
     $rtext_label = 'item';
@@ -600,21 +604,15 @@ function delivery_note_items($_data, $db, $user) {
 
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref  $group_by order by $order $order_direction  limit $start_from,$number_results";
+   // print $sql;
     $adata = array();
     foreach ($db->query($sql) as $data) {
 
 
-        $quantity = number($data['Order Quantity']);
+        $quantity = number($data['quantity']);
+        $to_pick=$data['quantity']-$data['Picked'];
 
-        if ($data['Order Bonus Quantity'] != 0) {
-            if ($data['Order Quantity'] != 0) {
-                $quantity .= '<br/> +'.number($data['Order Bonus Quantity']).' '._('free');
-            } else {
-                $quantity = number($data['Order Bonus Quantity']).' '._('free');
-            }
-        }
 
         switch ($dn->data['Delivery Note State']) {
             case 'Dispatched':
@@ -651,12 +649,9 @@ function delivery_note_items($_data, $db, $user) {
         $notes = preg_replace('/\<br\/\>$/', '', $notes);
 
 
-        $description = '<b>'.number($data['Required']).'x</b> '.$data['Part Unit Description'];
-        if ($data['Product Code'] != $data['Part Reference']) {
-            $description .= ' (<i>'.$data['Part Reference'].', <span class="link" onClick="change_view(\'part/'.$data['Part SKU'].'\')">SKU'.$data['Part SKU'].'</span></i>)';
-        } else {
-            $description .= ' (<i><span class="link" onClick="change_view(\'part/'.$data['Part SKU'].'\')">SKU'.$data['Part SKU'].'</span></i>)';
-        }
+        $notes ='';
+        $description =$data['Part Package Description'];
+
 
 
         if ($data['Part UN Number']) {
@@ -664,18 +659,52 @@ function delivery_note_items($_data, $db, $user) {
         }
 
 
+        $picked = sprintf(
+            '<span class="%s" ondblclick="show_check_dialog(this)">%s</span>
+                <span data-settings=\'{"field": "Picked", "transaction_key":%d,"item_key":%d ,"on":1 }\' class="picked_quantity %s"  >
+                    <input class="picked_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button add_picked %s" aria-hidden="true">
+                </span>',
+            ($dn->get('Supplier Delivery State')=='Picked'?'':'hide'),
+            number($data['Picked']),
+            $data['Inventory Transaction Key'],
+            $data['Part SKU'],
+            ($dn->get('Supplier Delivery State')=='Picked'?'hide':''),
+            $data['Picked'], $data['Picked'], ''
+        );
+
+        $packed = sprintf(
+            '<span class="%s" ondblclick="show_check_dialog(this)">%s</span>
+                <span data-settings=\'{"field": "Packed", "transaction_key":%d,"item_key":%d ,"on":1 }\' class="packed_quantity %s"  >
+                    <input class="checked_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button %s" aria-hidden="true">
+                </span>',
+            ($dn->get('Supplier Delivery State')=='Packed'?'':'hide'),
+            number($data['Packed']),
+            $data['Inventory Transaction Key'],
+            $data['Part SKU'],
+            ($dn->get('Supplier Delivery State')=='Packed'?'hide':''),
+            $data['Packed'], $data['Packed'], ''
+        );
+
+
+        $location=sprintf('<span class="%s location"  location_key="%d" >%s</span>',
+            ($to_pick>0?'discreet':''),
+                          $data['Location Key'],
+                          $data['Location Code']
+        );
+
         $adata[] = array(
             'id' => (integer)$data['Inventory Transaction Key'],
 
-            'code'        => $data['Product Code'],
-            'product_pid' => $data['Product ID'],
+            'reference'        => $data['Part Reference'],
+         //   'product_pid' => $data['Product ID'],
             'description' => $description,
             'quantity'    => $quantity,
-            'dispatched'  => number(
-                -1 * $data['Inventory Transaction Quantity']
+            'dispatched'  => number(-1 * $data['Inventory Transaction Quantity']
             ),
-            'packed'      => number($data['Packed']),
-            'picked'      => number($data['Picked']),
+            'packed'      => $packed,
+            'picked'=>$picked,
+            'location'=>$location,
+
             'notes'       => $notes
 
 

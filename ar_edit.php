@@ -58,24 +58,7 @@ switch ($tipo) {
 
         break;
 
-    case 'edit_item_in_order':
-        $data = prepare_values(
-            $_REQUEST, array(
-                         'field'             => array('type' => 'string'),
-                         'parent'            => array('type' => 'string'),
-                         'parent_key'        => array('type' => 'key'),
-                         'item_key'          => array('type' => 'key'),
-                         'item_historic_key' => array('type' => 'key'),
-                         'transaction_key'   => array(
-                             'type'     => 'numeric',
-                             'optional' => true
-                         ),
-                         'qty'               => array('type' => 'numeric'),
 
-                     )
-        );
-        edit_item_in_order($account, $db, $user, $editor, $data, $smarty);
-        break;
 
     case 'bridge':
         $data = prepare_values(
@@ -2168,29 +2151,6 @@ function edit_bridge($account, $db, $user, $editor, $data, $smarty) {
 }
 
 
-function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
-
-    $parent         = get_object($data['parent'], $data['parent_key']);
-    $parent->editor = $editor;
-
-    $transaction_data = $parent->update_item($data);
-
-    if ($parent->error) {
-        $response = array(
-            'state' => 400,
-            'msg'   => $parent->msg
-        );
-    } else {
-
-        $response = array(
-            'state'            => 200,
-            'transaction_data' => $transaction_data,
-            'metadata'         => $parent->get_update_metadata()
-        );
-    }
-    echo json_encode($response);
-
-}
 
 
 function create_time_series($account, $db, $data, $editor) {

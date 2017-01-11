@@ -83,6 +83,9 @@ switch ($tipo) {
 
 
                 break;
+            case 'employee':
+                find_employees($db, $account, $memcache_ip, $data);
+                break;
             case 'suppliers':
                 find_suppliers($db, $account, $memcache_ip, $data);
                 break;
@@ -2461,6 +2464,269 @@ function find_category_webpages($db, $account, $memcache_ip, $data) {
                 'description'     => $description,
                 'value'           => $value,
                 'formatted_value' => $candidates_data[$category_key]['Category Code']
+            );
+
+        }
+
+        $results_data = array(
+            'n' => count($results),
+            'd' => $results
+        );
+        $cache->set($memcache_fingerprint, $results_data, $memcache_time);
+
+
+    }
+    $response = array(
+        'state'          => 200,
+        'number_results' => $results_data['n'],
+        'results'        => $results_data['d'],
+        'q'              => $q
+    );
+
+    echo json_encode($response);
+
+}
+
+
+
+function find_employees($db, $account, $memcache_ip, $data) {
+
+
+    $cache       = false;
+    $max_results = 5;
+    $user        = $data['user'];
+    $q           = trim($data['query']);
+
+
+    if ($q == '') {
+        $response = array(
+            'state'   => 200,
+            'results' => 0,
+            'data'    => ''
+        );
+        echo json_encode($response);
+
+        return;
+    }
+
+    //  $where = sprintf("  and `Product Staff Status` in ('Active','Discontinuing') ");
+    switch ($data['parent']) {
+        case 'account':
+            $where = sprintf(' and  true');
+            break;
+
+        default:
+
+            break;
+    }
+
+
+
+
+
+
+    if (isset($data['metadata']['option'])) {
+        switch ($data['metadata']['option']) {
+            case 'only_working':
+                $where .= sprintf(' and `Staff Currently Working`="Yes"');
+                break;
+            default:
+
+                break;
+        }
+
+    }
+
+    /*
+
+    if (isset($data['metadata']['exclude']) and count(
+            $data['metadata']['exclude']
+        ) > 0
+    ) {
+        $where .= sprintf(
+            ' and `Product Staff Key` not in (%s) ', join(',', $data['metadata']['exclude'])
+        );
+
+    }
+
+    */
+
+    $memcache_fingerprint = $account->get('Account Code').'FIND_Staff'.md5($q);
+
+    $cache = new Memcached();
+    $cache->addServer($memcache_ip, 11211);
+
+
+    if (strlen($q) <= 2) {
+        $memcache_time = 295200;
+    }
+    if (strlen($q) <= 3) {
+        $memcache_time = 86400;
+    }
+    if (strlen($q) <= 4) {
+        $memcache_time = 3600;
+    } else {
+        $memcache_time = 300;
+
+    }
+
+
+    $results_data = $cache->get($memcache_fingerprint);
+
+
+    if (!$results_data or true) {
+
+        $candidates      = array();
+        $candidates_data = array();
+
+
+
+        $sql = sprintf(
+            "select `Staff Key`,`Staff Alias`,`Staff Name`,`Staff ID`,`Staff Currently Working` from `Staff Dimension`   where  `Staff ID` like '%s%%' %s  limit $max_results ",
+            $q, $where
+        );
+
+        //print $sql;
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['Staff Alias'] == $q) {
+                    $candidates[$row['Staff Key']] = 1000;
+                } else {
+
+                    $len_name                       = strlen($row['Staff Alias']);
+                    $len_q                          = strlen($q);
+                    $factor                         = $len_q / $len_name;
+                    $candidates[$row['Staff Key']] = 500 * $factor;
+                }
+
+                $candidates_data[$row['Staff Key']]
+                    = array(
+                    'Staff Alias' => $row['Staff Alias'],
+                    'Staff Name' => $row['Staff Name'],
+                    'Staff ID' => $row['Staff ID'],
+                    'Status'=>$row['Staff Currently Working']
+
+                );
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+
+        $sql = sprintf(
+            "select `Staff Key`,`Staff Alias`,`Staff Name`,`Staff ID`,`Staff Currently Working` from `Staff Dimension`   where  `Staff Alias` like '%s%%' %s  limit $max_results ",
+            $q, $where
+        );
+
+        	//print $sql;
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['Staff Alias'] == $q) {
+                    $candidates[$row['Staff Key']] = 500;
+                } else {
+
+                    $len_name                       = strlen($row['Staff Alias']);
+                    $len_q                          = strlen($q);
+                    $factor                         = $len_q / $len_name;
+                    $candidates[$row['Staff Key']] = 250 * $factor;
+                }
+
+                $candidates_data[$row['Staff Key']]
+                    = array(
+                    'Staff Alias' => $row['Staff Alias'],
+                    'Staff Name' => $row['Staff Name'],
+                    'Staff ID' => $row['Staff ID'],
+                    'Status'=>$row['Staff Currently Working']
+
+                );
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+        $sql = sprintf(
+            "select `Staff Key`,`Staff Alias`,`Staff Name`,`Staff ID`,`Staff Currently Working` from `Staff Dimension`   where  `Staff Name`   REGEXP '[[:<:]]%s'  limit $max_results ",
+            $q, $where
+        );
+
+        //print $sql;
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['Staff Alias'] == $q) {
+                    $candidates[$row['Staff Key']] = 400;
+                } else {
+
+                    $len_name                       = strlen($row['Staff Alias']);
+                    $len_q                          = strlen($q);
+                    $factor                         = $len_q / $len_name;
+                    $candidates[$row['Staff Key']] = 200 * $factor;
+                }
+
+                $candidates_data[$row['Staff Key']]
+                    = array(
+                    'Staff Alias' => $row['Staff Alias'],
+                    'Staff Name' => $row['Staff Name'],
+                    'Staff ID' => $row['Staff ID'],
+                    'Status'=>$row['Staff Currently Working']
+
+                );
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+        arsort($candidates);
+
+
+        $total_candidates = count($candidates);
+
+        if ($total_candidates == 0) {
+            $response = array(
+                'state'   => 200,
+                'results' => 0,
+                'data'    => ''
+            );
+            echo json_encode($response);
+
+            return;
+        }
+
+
+        $results = array();
+        foreach ($candidates as $staff_key => $candidate) {
+
+            //  print $candidates_data[$staff_key]['Status'];
+
+            if($candidates_data[$staff_key]['Status']='Yes'){
+                $value=$staff_key;
+                $description=$candidates_data[$staff_key]['Staff Name'].' ('.$candidates_data[$staff_key]['Staff Alias'].')';
+                $code=$candidates_data[$staff_key]['Staff ID'];
+
+
+
+            }else{
+                $value=0;
+                $description='<span style="text-decoration: line-through;">'.$candidates_data[$staff_key]['Staff Name'].' ('.$candidates_data[$staff_key]['Staff Alias'].')</span>';
+                $code='<span style="text-decoration: line-through;">'.$candidates_data[$staff_key]['Staff Id'].'</span>';
+            }
+
+
+            $results[$staff_key] = array(
+                'code'            => $code,
+                'description'     => $description,
+                'value'           => $value,
+                'formatted_value' => $candidates_data[$staff_key]['Staff Alias']
             );
 
         }

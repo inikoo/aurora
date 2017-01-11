@@ -85,7 +85,6 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
     require_once 'utils/parse_request.php';
 
-
     $data = prepare_values(
         $_REQUEST, array(
                      'request'   => array('type' => 'string'),
@@ -486,6 +485,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
     $state['store']     = $store;
     $state['website']   = $website;
     $state['warehouse'] = $warehouse;
+
 
 
     $sql = sprintf(
