@@ -1708,7 +1708,14 @@ function get_dropdown_select(dropdown_input, new_value) {
     var parent = $('#' + dropdown_input).attr('parent')
     var scope = $('#' + dropdown_input).attr('scope')
     var field = $('#' + dropdown_input).attr('field')
-    var request = '/ar_find.php?tipo=find_object&query=' + fixedEncodeURIComponent(new_value) + '&scope=' + scope + '&parent=' + parent + '&parent_key=' + parent_key + '&state=' + JSON.stringify(state)
+    var metadata = $('#' + dropdown_input).data('metadata')
+console.log(metadata)
+
+    if(metadata==undefined){
+        metadata={}
+    }
+
+    var request = '/ar_find.php?tipo=find_object&query=' + fixedEncodeURIComponent(new_value) + '&scope=' + scope + '&parent=' + parent + '&parent_key=' + parent_key + '&metadata=' + JSON.stringify(metadata)+ '&state=' + JSON.stringify(state)
 
     console.log(request)
     $.getJSON(request, function (data) {

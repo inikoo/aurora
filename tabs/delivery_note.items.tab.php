@@ -18,12 +18,13 @@ $default = $user->get_tab_defaults($tab);
 
 $table_views = array(
     'overview'     => array(
-        'label' => _('Description'),
-        'title' => _('Description')
+        'label' => _('Overview'),
     ),
-    'tariff_codes' => array(
-        'label' => _('Tariff Codes'),
-        'title' => _('Tariff Codes')
+    'picking_aid' => array(
+        'label' => _('Picking Aid'),
+    ),
+    'packing_aid' => array(
+        'label' => _('Packing Aid'),
     ),
 
 );
@@ -46,6 +47,19 @@ $parameters = array(
 
 );
 
+$smarty->assign(
+    'table_metadata', base64_encode(
+                        json_encode(
+                            array('parent'     => $state['object'],
+                                  'parent_key' => $state['key']
+                            )
+                        )
+                    )
+);
+$smarty->assign('dn', $state['_object']);
+$state['_object']->update_state();
+
+$smarty->assign('table_top_template', 'delivery_note.options.tpl');
 
 include('utils/get_table_html.php');
 

@@ -11,6 +11,8 @@
 */
 
 
+$group_by=' group by ITF.`Part SKU` ';
+
 $where = sprintf(
     ' where   ITF.`Delivery Note Key`=%d and `Inventory Transaction Type`!="Adjust"', $parameters['parent_key']
 );
@@ -27,30 +29,26 @@ if ($parameters['f_field'] == 'code' and $f_value != '') {
 $_order = $order;
 $_dir   = $order_direction;
 
-if ($order == 'code') {
-    $order = 'OTF.`Product Code`';
+if ($order == 'reference') {
+    $order = '`Part Reference`';
 } elseif ($order == 'quantity') {
     $order = '`Order Quantity`';
 } elseif ($order == 'last_updated') {
     $order = '`Order Last Updated Date`';
+} elseif ($order == 'quantity') {
+    $order = 'quantity';
 } else {
     $order = 'ITF.`Inventory Transaction Key`';
 }
 
 $table
-    = ' `Inventory Transaction Fact` ITF left join   `Order Transaction Fact`OTF  on (ITF.`Map To Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`)   ';
+    = ' `Inventory Transaction Fact` ITF  left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`)  LEFT JOIN  `Location Dimension` L ON  (L.`Location Key`=ITF.`Location Key`)  ';
 
 $sql_totals = "select count(*) as num from $table $where";
 
 
-$fields
-    = "
-`Order Quantity`,`Order Bonus Quantity`,`Inventory Transaction Quantity`,`Out of Stock`,`Required`,`Part Unit Description`,`Part Reference`,PD.`Part SKU`,
-`Not Found`,`No Picked Other`,`Product Code`,`Part UN Number`,`Order Transaction Fact Key`,`Product ID`,`Product Code`,`Order Transaction Amount`,`Order Currency Code`,
-`Picked`,`Packed`,`Inventory Transaction Key`
-
-
-";
+$fields = "`Part Package Description`,`Inventory Transaction Quantity`,`Out of Stock`,`Required`,`Part Unit Description`,`Part Reference`,PD.`Part SKU`,
+`Not Found`,`No Picked Other`,`Part UN Number`,`Picked`,`Packed`,`Location Code`,ITF.`Location Key`,`Inventory Transaction Key`,(`Required`+`Given`) as quantity";
 
 //	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 //print $sql;

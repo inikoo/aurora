@@ -1,5 +1,89 @@
-<div class="delivery_note">
-    <div id="contact_data" class="block" style="float:left;padding:20px 20px;max-width:500px;min-height:170px;">
+
+<div class="timeline_horizontal">
+
+    <ul class="timeline" id="timeline">
+
+
+            <li id="order_node" class="li complete">
+                <div class="label">
+                    <span class="state ">{t}Send to warehouse{/t}</span>
+                </div>
+                <div class="timestamp">
+                    <span class="Date_Created">&nbsp;{$delivery_note->get('Creation Date')}</span>
+                    <span class="start_date Order_Placed_Date">{$delivery_note->get('Order Date Placed')} </span>
+                </div>
+                <div class="dot">
+                </div>
+            </li>
+
+
+        {if $delivery_note->get('State Index')<0 and $delivery_note->get('Dispatched Date')=='' and  $delivery_note->get('Received Date')==''  }
+            <li id="received_node" class="li  cancelled">
+                <div class="label">
+                    <span class="state ">{t}Cancelled{/t}</span>
+                </div>
+                <div class="timestamp">
+                    <span class="">&nbsp;{$delivery_note->get('Cancelled Date')}</span>
+                </div>
+                <div class="dot">
+                </div>
+            </li>
+        {/if}
+        <li id="picked_node"
+            class="li  {if $delivery_note->get('State Index')>=30 or ($delivery_note->get('State Index')<0 and ($delivery_note->get('Date Start Picking')!=''  or $delivery_note->get(' Date Start Packing')!=''))  }complete{/if}">
+            <div class="label">
+                <span class="state ">{t}Picked{/t} <span></i></span></span>
+            </div>
+            <div class="timestamp">
+                <span class="Delivery_Note_Picked_Percentage_or_Date">&nbsp;{$delivery_note->get('Picked Percentage or Date')}</span>
+            </div>
+            <div class="dot">
+            </div>
+        </li>
+
+        <li id="dispatched_node"
+            class="li  {if $delivery_note->get('State Index')>=30 or ($delivery_note->get('State Index')<0 and ($delivery_note->get('Dispatched Date')!=''  or $delivery_note->get('Received Date')!=''))  }complete{/if}">
+            <div class="label">
+                <span class="state ">{t}Packed{/t} <span></i></span></span>
+            </div>
+            <div class="timestamp">
+                <span class="Supplier_Delivery_Dispatched_Date">&nbsp;{$delivery_note->get('Dispatched Date')}</span>
+            </div>
+            <div class="dot">
+            </div>
+        </li>
+
+        <li id="dispatched_node"
+            class="li  {if $delivery_note->get('State Index')>=30 or ($delivery_note->get('State Index')<0 and ($delivery_note->get('Dispatched Date')!=''  or $delivery_note->get('Received Date')!=''))  }complete{/if}">
+            <div class="label">
+                <span class="state ">{t}Dispatch Approved{/t} <span></i></span></span>
+            </div>
+            <div class="timestamp">
+                <span class="Supplier_Delivery_Dispatched_Date">&nbsp;{$delivery_note->get('Dispatched Date')}</span>
+            </div>
+            <div class="dot">
+            </div>
+        </li>
+
+
+        <li id="dispatched_node"
+            class="li  {if $delivery_note->get('State Index')>=30 or ($delivery_note->get('State Index')<0 and ($delivery_note->get('Dispatched Date')!=''  or $delivery_note->get('Received Date')!=''))  }complete{/if}">
+            <div class="label">
+                <span class="state ">{t}Dispatched{/t} <span></i></span></span>
+            </div>
+            <div class="timestamp">
+                <span class="Supplier_Delivery_Dispatched_Date">&nbsp;{$delivery_note->get('Dispatched Date')}</span>
+            </div>
+            <div class="dot">
+            </div>
+        </li>
+
+
+    </ul>
+</div>
+
+<div class="order_header delivery_note" style="">
+    <div id="xcontact_data" class="xblock" xstyle="float:left;padding:20px 20px;max-width:500px;min-height:170px;">
         <div class="data_container">
             <div class="data_field">
                 <i class="fa fa-user"></i> <span>{$delivery_note->get('Delivery Note Customer Name')}</span>
@@ -24,8 +108,26 @@
         </div>
     </div>
 
+    <div id="xdates" class="xblock xdates" xstyle="float:right;border-left:1px solid #ccc;height:100%;;width:300px">
+        <table border="0" class="date_and_state">
 
-    <div id="totals" class="block totals">
+            <tr>
+                <td colspan="2" class="state">{$delivery_note->get('State')}</td>
+            </tr>
+            <tr class="state two-columns">
+                <td id="pick_aid_container{$delivery_note->id}"><span class="link"
+                                                                      onclick="delivery_note('order/{$delivery_note->id}/pick_aid')">{t}Picking Aid{/t}</span>
+                    <a class="pdf_link" target='_blank' href="pdf/order_pick_aid.pdf.php?id={$delivery_note->id}"> <img
+                                src="/art/pdf.gif"></a></td>
+                <td id="pack_aid_container{$delivery_note->id}"><span class="link"
+                                                                      onclick="change_view('delivery_note/{$delivery_note->id}/pack_aid')">{t}Pack Aid{/t}</span>
+                </td>
+            </tr>
+        </table>
+
+
+    </div>
+    <div id="xtotals" class="xblock xtotals">
 
         <table border="0" class="info_block">
             <tr id="edit_weight_tr">
@@ -101,56 +203,6 @@
 
         <div style="clear:both">
         </div>
-    </div>
-    <div id="dates" class="block dates" style="float:right;border-left:1px solid #ccc;height:100%;;width:300px">
-        <table border="0" class="date_and_state">
-            <tr>
-            <tr>
-                <td colspan="2" class="date"
-                    title="{$delivery_note->get('Date')}">{$delivery_note->get_date('Delivery Note Date')}</td>
-            </tr>
-            <tr>
-                <td colspan="2" class="state">{$delivery_note->get_formatted_state()}</td>
-            </tr>
-            <tr class="state two-columns">
-                <td id="pick_aid_container{$delivery_note->id}"><span class="link"
-                                                                      onclick="delivery_note('order/{$delivery_note->id}/pick_aid')">{t}Picking Aid{/t}</span>
-                    <a class="pdf_link" target='_blank' href="pdf/order_pick_aid.pdf.php?id={$delivery_note->id}"> <img
-                                src="/art/pdf.gif"></a></td>
-                <td id="pack_aid_container{$delivery_note->id}"><span class="link"
-                                                                      onclick="change_view('delivery_note/{$delivery_note->id}/pack_aid')">{t}Pack Aid{/t}</span>
-                </td>
-            </tr>
-        </table>
-        <table id="orders" border="0" class="ul_table">
-            {foreach from=$delivery_note->get_orders_objects() item=order}
-                <tr>
-                    <td class="icon"><i class="fa fa-fw fa-shopping-cart"></i></td>
-                    <td><span class="link"
-                              onclick="change_view('delivery_note/{$delivery_note->id}/order/{$order->id}')">{$order->get('Order Public ID')}</span>
-                    </td>
-
-                </tr>
-            {/foreach}
-        </table>
-        <table id="invoices" border="0" class="ul_table">
-            {foreach from=$delivery_note->get_invoices_objects() item=invoice}
-                <tr>
-                    <td class="icon"><i class="fa fa-fw fa-usd"></i></td>
-                    <td><span class="link"
-                              onclick="change_view('delivery_note/{$delivery_note->id}/invoice/{$invoice->id}')">{$invoice->get('Invoice Public ID')}</span>
-                        <a class="pdf_link" target='_blank' href="/pdf/invoice.pdf.php?id={$invoice->id}"> <img
-                                    src="/art/pdf.gif"></a></td>
-                    <td style="text-align:right;padding-right:10px;font-size:80%;"> {$invoice->get_formatted_payment_state()} </td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="right" style="text-align:right"
-                        id="operations_container{$invoice->id}">{$invoice->get_operations($user,'delivery_note',$delivery_note->id)}</td>
-                </tr>
-            {/foreach}
-        </table>
-    </div>
-    <div style="clear:both">
     </div>
 
 </div>

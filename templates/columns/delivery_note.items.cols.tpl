@@ -16,10 +16,10 @@ renderable: false
 
 
 },{
-name: "code",
-label: "{t}Product{/t}",
+name: "reference",
+label: "{t}Reference{/t}",
 editable: false,
-cell: Backgrid.StringCell.extend({
+cell: Backgrid.HtmlCell.extend({
 events: {
 "click": function() {
 change_view("order/{$data['key']}/item/"+this.model.get("id"))
@@ -27,31 +27,44 @@ change_view("order/{$data['key']}/item/"+this.model.get("id"))
 },
 className: "link"
 }),
-}, {
+},
+{
+name: "description",
+label: "{t}Description{/t}",
+editable: false,
+cell: "html"
+
+},
+
+{
+name: "location",
+label: "{t}Location{/t}",
+editable: false,
+cell: "html"
+
+},
+
+
+{
 name: "quantity",
-label: "{t}Ordered{/t}",
+label: "{t}Qty{/t}",
 defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
-},{
-name: "description",
-label: "{t}Parts{/t}",
-editable: false,
-cell: "html"
-
-}, {
+},
+{
 name: "picked",
 label: "{t}Picked{/t}",
 defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='picked'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }, {
 name: "packed",
@@ -62,13 +75,8 @@ sortType: "toggle",
 {if $sort_key=='packed'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 
-cell: Backgrid.StringCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
-}, {
-name: "notes",
-label: "{t}Notes{/t}",
-editable: false,
-cell: "html"
 }
 ]
 

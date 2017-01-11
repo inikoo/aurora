@@ -74,7 +74,7 @@ table.totals {
 
 }
 
-.xorder, .invoice, .delivery_note {
+.xorder, .invoice, .xdelivery_note {
 
   border-bottom: 1px solid #ccc;
 
@@ -206,3 +206,19 @@ table.totals {
   }
 
 }
+
+.order_header{
+  display:flex;
+  border-bottom: 1px solid #ccc;
+
+  > div{
+    border-left: 1px solid #ccc;
+    flex-grow:1;
+    padding:10px;
+   // &:last-of-type { border-left:none;}
+  }
+
+}
+
+
+

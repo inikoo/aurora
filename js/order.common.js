@@ -304,8 +304,24 @@ function save_item_qty_change(element) {
 
     var table_metadata = JSON.parse(atob($('#table').data("metadata")))
 
-    var request = '/ar_edit.php?tipo=edit_item_in_order&parent=' + table_metadata.parent + '&field=' + settings.field + '&parent_key=' + table_metadata.parent_key + '&item_key=' + settings.item_key + '&item_historic_key=' + settings.item_historic_key + '&qty=' + qty + '&transaction_key=' + settings.transaction_key
+
+
+    var request = '/ar_edit_orders.php?tipo=edit_item_in_order&parent=' + table_metadata.parent + '&field=' + settings.field + '&parent_key=' + table_metadata.parent_key + '&item_key=' + settings.item_key  + '&qty=' + qty + '&transaction_key=' + settings.transaction_key
+
+    if(settings.item_historic_key!=undefined){
+        request=request+'&item_historic_key=' + settings.item_historic_key
+    }
+
+    if(settings.field=='Picked'){
+        request=request+'&picker_key=' +  $('#dn_data').attr('picker_key')
+    }
+
+    if(settings.field=='Packed'){
+        request=request+'&packer_key=' +  $('#dn_data').attr('packer_key')
+    }
+
     console.log(request)
+
 
     //=====
     var form_data = new FormData();
@@ -315,7 +331,18 @@ function save_item_qty_change(element) {
     form_data.append("parent", table_metadata.parent)
     form_data.append("parent_key", table_metadata.parent_key)
     form_data.append("item_key", settings.item_key)
-    form_data.append("item_historic_key", settings.item_historic_key)
+    if(settings.item_historic_key!=undefined){
+        form_data.append("item_historic_key", settings.item_historic_key)
+    }
+
+    if(settings.field=='Picked'){
+        form_data.append("picker_key", $('#dn_data').attr('picker_key'))
+    }
+    if(settings.field=='Packed'){
+        form_data.append("packer_key", $('#dn_data').attr('packer_key'))
+    }
+
+
     form_data.append("transaction_key", settings.transaction_key)
 
 
@@ -323,7 +350,7 @@ function save_item_qty_change(element) {
 
     var request = $.ajax({
 
-        url: "/ar_edit.php",
+        url: "/ar_edit_orders.php",
         data: form_data,
         processData: false,
         contentType: false,

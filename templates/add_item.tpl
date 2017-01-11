@@ -222,7 +222,7 @@ console.log('ss')
 
 
 
-        var request = '/ar_edit.php?tipo=edit_item_in_order&field=' + table_metadata.field + '&parent=' + table_metadata.parent + '&parent_key=' + table_metadata.parent_key + '&item_key=' + $('#add_item_save').attr('item_key') + '&item_historic_key=' + $('#add_item_save').attr('item_historic_key') + '&qty=' + $('#add_item_qty').val()
+        var request = '/ar_edit_orders.php?tipo=edit_item_in_order&field=' + table_metadata.field + '&parent=' + table_metadata.parent + '&parent_key=' + table_metadata.parent_key + '&item_key=' + $('#add_item_save').attr('item_key') + '&item_historic_key=' + $('#add_item_save').attr('item_historic_key') + '&qty=' + $('#add_item_qty').val()
         console.log(request)
         // return;
         //=====
@@ -238,7 +238,7 @@ console.log('ss')
 
         var request = $.ajax({
 
-            url: "/ar_edit.php",
+            url: "/ar_edit_orders.php",
             data: form_data,
             processData: false,
             contentType: false,

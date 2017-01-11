@@ -27,7 +27,6 @@ function get_orders_navigation($data, $smarty, $user, $db, $account) {
 
     $block_view = $data['section'];
 
-
     $sections = get_sections('orders', $store->id);
     switch ($block_view) {
         case 'orders':
@@ -1153,6 +1152,10 @@ function get_delivery_note_navigation($data, $smarty, $user, $db, $account) {
 
                         prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                     );
+
+
+                  //  print $sql;
+
 
                     if ($result = $db->query($sql)) {
                         if ($row = $result->fetch()) {
