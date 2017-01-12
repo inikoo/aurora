@@ -935,6 +935,7 @@ trait ProductCategory {
 
         if ($this->get('Category Subject') == 'Product') {
 
+            $this->get_webpage();
 
             $null_stacks = false;
 
@@ -951,7 +952,9 @@ trait ProductCategory {
                         $null_stacks = true;
 
                         $sql = sprintf(
-                            'INSERT INTO `Product Category Index` (`Product Category Index Category Key`,`Product Category Index Product ID`) VALUES (%d,%d) ', $this->id, $row['Product ID']
+                            'INSERT INTO `Product Category Index` (`Product Category Index Category Key`,`Product Category Index Product ID`,`Product Category Index Website Key`) VALUES (%d,%d,%d) ',
+                            $this->id, $row['Product ID'],
+                            $this->webpage->id
                         );
                         $this->db->exec($sql);
 
