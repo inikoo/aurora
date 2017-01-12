@@ -10,6 +10,18 @@
 *}
 
 
+
+<div id="code_editor_dialog" class="hide" style="width:920px;height: 300px;position:absolute;left:90px;border:1px solid #ccc;background-color:white;padding:20px 20px 20px 25px;;z-index: 100">
+    <div  class="edit_toolbar " section="panels"  style=" z-index: 200;position:absolute;left:4px;top:17px;">
+        <i id="save_code"  class="fa close_edit_text fa-window-close fa-fw button code" style="margin-bottom:10px" aria-hidden="true"></i><br>
+        <i class="fa  fa-trash error fa-fw button   " style="margin-top:20px" aria-hidden="true"></i><br>
+
+    </div>
+
+    <textarea  id="code_editor"  style="margin-left:20px;"></textarea>
+</div>
+
+
 <div id="add_item_dialog" class="hide" style="position:absolute;border:1px solid #ccc;background-color:white;padding:20px;z-index: 100">
 
     <i class="fa fa-window-close button" aria-hidden="true" style="position:absolute;top:10px;left:10px;"></i>
@@ -220,6 +232,19 @@
 </div>
 
 <script>
+
+
+    var myCodeMirror = CodeMirror.fromTextArea(document.getElementById('code_editor'),
+        {
+            lineNumbers: true,
+            styleActiveLine: true,
+            matchBrackets: true,
+            theme: 'dracula'
+        }
+    );
+
+    $('#code_editor').data('CodeMirrorInstance', myCodeMirror);
+
 
     {include file="js/webpage.preview.publish.tpl.js" }
     {include file="js/webpage.preview.description_block.tpl.js" }

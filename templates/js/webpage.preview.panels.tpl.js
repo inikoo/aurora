@@ -399,31 +399,136 @@
               break;
           case 'update_code':
 
+              $('#code_editor_dialog').removeClass('hide')
+
+
+
+
+
+
               var panel= $(this).closest('.panel');
+
+
+
+
+
+              var offset = panel.offset();
+
+              console.log(offset)
+
+              $('#code_editor_dialog').offset({
+                  top: panel.offset().top ,
+               })
+
+
+
 
               panel.addClass('editing')
 
-              panel.find('.code_editor_container').removeClass('hide')
-              panel.find('.edit_toolbar').removeClass('hide')
+              //panel.find('.code_editor_container').removeClass('hide')
+              //panel.find('.edit_toolbar').removeClass('hide')
 
-              panel.find('.panel_controls').addClass('hide')
-              panel.find('iframe').addClass('hide')
+             // panel.find('.panel_controls').addClass('hide')
+             // panel.find('iframe').addClass('hide')
 
 
-              var myCodeMirror = CodeMirror.fromTextArea(document.getElementById('code_editor_'+panel.attr('code_key')),
-                  {
-                      lineNumbers: true,
-                      styleActiveLine: true,
-                      matchBrackets: true,
-                      theme: 'dracula'
-                  }
-              );
 
-              $('#'+'code_editor_'+panel.attr('code_key')).data('CodeMirrorInstance', myCodeMirror);
+
+              $('#code_editor').attr('panel',panel.attr('id'))
+
+
+              $('#code_editor').data('CodeMirrorInstance').refresh()
+
+              $('#code_editor').data('CodeMirrorInstance').setValue($('#'+'code_editor_'+panel.attr('code_key')).val());
 
               break;
 
       }
+
+
+
+    });
+
+
+
+
+
+    $( "#save_code" ).click(function() {
+
+
+
+
+        var panel= $('#'+ $('#code_editor').attr('panel'))
+
+        panel.find('.edit_toolbar').addClass('hide')
+        panel.removeClass('editing')
+
+
+
+        var block= panel.attr('id')
+        var type='code';
+
+        var iframe= panel.find('iframe')
+
+
+        var editor=  $('#code_editor').data('CodeMirrorInstance');
+
+
+        btoa(editor.getValue())
+
+
+        if( $('#items_container').hasClass('cats')    ){
+            var section='panels_in_section'
+        }else{
+            var section='panels'
+        }
+
+
+        var request = '/ar_edit_website.php?tipo=webpage_content_data&parent=page&parent_key=' + $('#webpage_preview').attr('webpage_key')  +'&section='+section+'&block=' + block + '&type='+type+'&value=' + encodeURIComponent(btoa(editor.getValue()))
+        console.log(request)
+
+        $.getJSON(request, function (data) {
+
+            if (data.state == 200) {
+                $('#'+'code_editor_'+panel.attr('code_key')).val(data.content)
+
+                iframe.attr( 'src', function ( i, val ) { return val; });
+
+               // iframe.attr("src", iframe.attr("src"));
+
+
+               // console.log(iframe.attr('src'))
+             //   iframe.attr('src','www.google.com')
+
+
+
+
+
+                /*
+                 if(type=='caption'){
+                 icon_class='fa-comment'
+                 }else{
+                 icon_class='fa-link'
+                 }
+
+                 input_icon.addClass('faa-smooth_flash animated faa-slow '+icon_class).removeClass('fa-spinner fa-spin')
+                 */
+
+                if ($('#publish').find('i').hasClass('fa-rocket')) {
+                    if (data.publish) {
+                        $('#publish').addClass('changed valid')
+                    } else {
+                        $('#publish').removeClass('changed valid')
+                    }
+                }
+
+            }
+
+        })
+
+
+        $(this).closest('.panel').find('iframe').removeClass('hide')
+        $('#code_editor_dialog').addClass('hide')
 
 
 
@@ -625,61 +730,10 @@
                 $(this).closest('.panel').find('.edit_toolbar').addClass('hide')
                 $(this).closest('.panel').removeClass('editing')
 
-            }else if($(this).hasClass('code')) {
-
-                var panel= $(this).closest('.panel')
-
-               panel.find('.edit_toolbar').addClass('hide')
-                panel.removeClass('editing')
+            }else if($(this).hasClass('code'))
+            {
 
 
-
-                var block= panel.attr('id')
-                var type='code';
-
-                var iframe= panel.find('iframe')
-
-
-                var editor=  $('#'+'code_editor_'+ panel.attr('code_key')).data('CodeMirrorInstance');
-
-
-                btoa(editor.getValue())
-
-                var request = '/ar_edit_website.php?tipo=webpage_content_data&parent=page&parent_key=' + $('#webpage_preview').attr('webpage_key')  +'&section=panels&block=' + block + '&type='+type+'&value=' + encodeURIComponent(btoa(editor.getValue()))
-                console.log(request)
-
-               $.getJSON(request, function (data) {
-
-                    if (data.state == 200) {
-
-
-                        iframe.attr( 'src', function ( i, val ) { return val; });
-
-/*
-                        if(type=='caption'){
-                            icon_class='fa-comment'
-                        }else{
-                            icon_class='fa-link'
-                        }
-
-                        input_icon.addClass('faa-smooth_flash animated faa-slow '+icon_class).removeClass('fa-spinner fa-spin')
-*/
-
-                        if ($('#publish').find('i').hasClass('fa-rocket')) {
-                            if (data.publish) {
-                                $('#publish').addClass('changed valid')
-                            } else {
-                                $('#publish').removeClass('changed valid')
-                            }
-                        }
-
-                    }
-
-                })
-
-
-                $(this).closest('.panel').find('iframe').removeClass('hide')
-                $(this).closest('.panel').find('.code_editor_container').addClass('hide')
 
             }
 

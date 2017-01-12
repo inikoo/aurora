@@ -35,7 +35,7 @@
                     <div class="buttons panel_type"  >
                         <div class="flex-item button" type="image"><i class="fa fa-picture-o" aria-hidden="true"></i></div>
                         <div class="flex-item button" type="text"><i class="fa fa-align-center" aria-hidden="true"></i></div>
-                        <div class="flex-item button invisible" type="code"><i class="fa fa-code" aria-hidden="true"></i></div>
+                        <div class="flex-item button" type="code"><i class="fa fa-code" aria-hidden="true"></i></div>
                         <div class="flex-item button invisible" type="banner"><i class="fa fa-bullhorn" aria-hidden="true"></i></div>
                     </div>
 
@@ -152,18 +152,13 @@
                     <div id="{$category_data.data.id}" code_key="{$category_data.data.key}" style="position:relative;" class=" panel image panel_{$category_data.data.size}">
 
 
-                        <div  class="edit_toolbar hide" section="panels"  style=" z-index: 200;position:absolute;left:-20px;top:7px;">
-                            <i class="fa close_edit_text fa-window-close fa-fw button code" style="margin-bottom:10px" aria-hidden="true"></i><br>
-                            <i class="fa  fa-trash error fa-fw button   " style="margin-top:20px" aria-hidden="true"></i><br>
-
-                        </div>
+                       
 
                         <iframe class="" src="/panel_code.php?id={$category_data.data.key}"  style="position: absolute; height: 100%;width: 100%;border:none " sandbox="allow-scripts allow-same-origin" />
 
-                        <div class="code_editor_container hide">
-                        <textarea  id="code_editor_{$category_data.data.key}"  style="width:100%;height: 100%">{$category_data.data.content}</textarea>
+                        <textarea  class="hide" id="code_editor_{$category_data.data.key}">{$category_data.data.content}</textarea>
 
-                            </div>
+                          
                         <div class="panel_controls hide">
                             <div class="panel_settings buttons hide">
 
