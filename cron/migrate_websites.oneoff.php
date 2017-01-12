@@ -48,7 +48,34 @@ $editor = array(
     'Date'         => gmdate('Y-m-d H:i:s')
 );
 
-normalize_webpage_scopes($db);
+
+$sql = sprintf('SELECT `Product Category Index Category Key` FROM `Product Category Index`  GROUP BY `Product Category Index Category Key`  ');
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+        $category = new Category($row['Product Category Index Category Key']);
+        $category->get_webpage();
+
+
+
+        if ($category->webpage->id) {
+            $sql = sprintf(
+                'UPDATE `Product Category Index`  SET `Product Category Index Website Key`=%d WHERE  `Product Category Index Category Key`=%d ', $category->webpage->id,
+                $row['Product Category Index Category Key']
+
+            );
+
+            $db->exec($sql);
+
+        }
+    }
+} else {
+    print_r($error_info = $db->errorInfo());
+    print "$sql\n";
+    exit;
+}
+
+
+//normalize_webpage_scopes($db);
 
 function normalize_webpage_scopes($db) {
 
@@ -92,7 +119,6 @@ function normalize_webpage_scopes($db) {
                         );
 
 
-
                     } elseif ($category->get('Category Subject') == 'Category') {
                         //print $category->get('Category Subject');
 
@@ -124,13 +150,13 @@ function normalize_webpage_scopes($db) {
 
                 }
 
-            }
-            else{
+            } else {
 
-                if($row['Page Store Section']=='Family Catalogue'){
+                if ($row['Page Store Section'] == 'Family Catalogue') {
                     print "Family ".$row['Page Parent Code']."\n";
 
-                }if($row['Page Store Section']=='Department Catalogue'){
+                }
+                if ($row['Page Store Section'] == 'Department Catalogue') {
                     print "Dept ".$row['Page Parent Code']."\n";
 
                 }

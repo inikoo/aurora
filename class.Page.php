@@ -1505,7 +1505,7 @@ class Page extends DB_Table {
 
             case('Page State'):
                 $this->update_state($value, $options);
-               // $this->refresh_cache();
+                // $this->refresh_cache();
                 break;
 
             case('Page Store CSS'):
@@ -6094,6 +6094,8 @@ class Page extends DB_Table {
 
 
         switch ($this->scope->get_object_name()) {
+
+
             case 'Category':
                 include_once('class.Category.php');
                 $category = new Category($this->scope->id);
@@ -6402,6 +6404,152 @@ class Page extends DB_Table {
                     }
 
 
+
+                    $result = array();
+
+                    foreach ($updated_metadata['section_keys'] as $section_key) {
+                        foreach ($content_data['sections'] as $section_stack_index => $section_data) {
+                            if ($section_data['key'] == $section_key) {
+                                $content_data['sections'][$section_stack_index]['items'] = get_website_section_items($this->db, $section_data);
+                                $result[$section_key]                                    = $content_data['sections'][$section_stack_index]['items'];
+                                break;
+                            }
+                        }
+                    }
+
+                    $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+
+
+                    return $result;
+
+                }
+                if ($category->get('Category Subject') == 'Product') {
+
+                    $item_found   = false;
+                    $target_found = false;
+
+                    $sql = sprintf(
+                        'SELECT `Product Category Index Key`,`Product Category Index Stack` FROM  `Product Category Index` WHERE `Product Category Index Website Key`=%d AND `Product Category Index Product ID`=%d ',
+                        $this->id, $item_key
+
+
+                    );
+                    if ($result = $this->db->query($sql)) {
+                        if ($row = $result->fetch()) {
+
+                            $item_section_key = 0;
+                            $item_found       = true;
+                            $item_stack       = $row['Product Category Index Stack'];
+                            $item_index_key   = $row['Product Category Index Key'];
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "xx $sql\n";
+                        exit;
+                    }
+
+
+                    if (!$item_found) {
+                        $this->msg   = 'Item not found in website';
+                        $this->error = true;
+
+                        return;
+
+                    }
+
+
+                    if ($target_key) {
+
+
+                        $sql = sprintf(
+                            'SELECT `Product Category Index Key`,`Product Category Index Stack` FROM  `Product Category Index` WHERE `Product Category Index Website Key`=%d AND `Product Category Index Product ID`=%d ',
+                            $this->id, $target_key
+
+
+                        );
+
+                        if ($result = $this->db->query($sql)) {
+                            if ($row = $result->fetch()) {
+                                $target_section_key = 0;
+                                $target_found       = true;
+                                $target_stack       = $row['Product Category Index Stack'];
+                            }
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
+                            print "$sql\n";
+                            exit;
+                        }
+
+
+                        if (!$target_found) {
+                            $this->msg   = 'Target not found in website';
+                            $this->error = true;
+
+                            return;
+
+                        }
+
+                        if ($item_section_key == $target_section_key) {
+
+
+                            $updated_metadata['section_keys'][] = $item_section_key;
+
+                            $subjects = array();
+
+                            $sql = sprintf(
+                                "SELECT `Product Category Index Stack`,`Product Category Index Key`,`Product Category Index Product ID` AS subject_key FROM `Product Category Index` WHERE  `Product Category Index Website Key`=%d ",
+                                $this->id
+                            );
+
+
+                            if ($result = $this->db->query($sql)) {
+                                foreach ($result as $row) {
+
+
+                                    if ($row['subject_key'] == $item_key) {
+                                        $row['Product Category Index Stack'] = (string)($target_stack < $item_stack ? $target_stack - 0.5 : $target_stack + .5);
+                                    }
+                                    $subjects[$row['Product Category Index Stack']] = $row['Product Category Index Key'];
+                                }
+                            } else {
+                                print_r($error_info = $this->db->errorInfo());
+                                print "$sql\n";
+                                exit;
+                            }
+
+
+                            ksort($subjects);
+                            //print_r($subjects);
+
+                            $stack_index = 0;
+                            foreach ($subjects as $tmp => $category_webpage_stack_key) {
+                                $stack_index++;
+
+                                $sql = sprintf(
+                                    'UPDATE `Product Category Index` SET `Product Category Index Stack`=%d WHERE `Product Category Index Key`=%d ', $stack_index, $category_webpage_stack_key
+                                );
+
+                                //print "$sql\n";
+
+                                $this->db->exec($sql);
+
+                            }
+
+
+                        }
+
+
+                    }
+
+
+
+
+                    $result = array();
+
+
+
+                    return $result;
+
                 }
 
 
@@ -6411,22 +6559,6 @@ class Page extends DB_Table {
         }
 
 
-        $result = array();
-
-        foreach ($updated_metadata['section_keys'] as $section_key) {
-            foreach ($content_data['sections'] as $section_stack_index => $section_data) {
-                if ($section_data['key'] == $section_key) {
-                    $content_data['sections'][$section_stack_index]['items'] = get_website_section_items($this->db, $section_data);
-                    $result[$section_key]                                    = $content_data['sections'][$section_stack_index]['items'];
-                    break;
-                }
-            }
-        }
-
-        $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
-
-
-        return $result;
 
 
     }

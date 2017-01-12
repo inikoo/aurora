@@ -40,29 +40,11 @@
             return;
         }else{
 
-            //var tmp_html = product_showcase.html();
-            //var tmp_product_code = product_showcase.attr('product_code');
-            //var tmp_product_id = product_showcase.attr('product_id');
-
-            //product_showcase.html(ev.dataTransfer.getData("html"))
-            //product_showcase.attr('product_code',ev.dataTransfer.getData("product_code"))
-            //product_showcase.attr('product_id',ev.dataTransfer.getData("product_id"))
-
-           // change_next(  ev.dataTransfer.getData("stack_index") , tmp_html ,tmp_product_code,tmp_product_id,product_showcase.closest('.product_wrap').next().find('.product_showcase'))
 
 
 
-            console.log(target_stack_index)
 
-            if(target_stack_index<ev.dataTransfer.getData("stack_index")){
-                var new_stack_index=(parseFloat(target_stack_index)+0.5)
-            }else{
-                var new_stack_index=(parseFloat(target_stack_index)+1.5)
-
-            }
-
-
-            save_stack_index(new_stack_index,ev.dataTransfer.getData("product_id"))
+            save_stack_index(ev.dataTransfer.getData("product_id"),product_showcase.attr('product_id'))
 
         }
 
@@ -92,15 +74,21 @@
 
     }
 
-    function  save_stack_index(stack_index,product_id) {
+    function  save_stack_index(item_key,target_key) {
 
-        var request = '/ar_edit_website.php?tipo=edit_category_stack_index&key=' + {$category->id} + '&stack_index=' +stack_index + '&subject_key='+product_id+ '&webpage_key='+{$webpage->id}
+
+
+        var request = '/ar_edit_website.php?tipo=update_webpage_items_order&item_key=' + item_key+ '&target_key=' +target_key +'&webpage_key='+ $('#webpage_preview').attr('webpage_key')+'&target_section_key=0'
         console.log(request)
+
         $.getJSON(request, function (data) {
 
             if(data.state==200){
 
                 $('#products_helper').html(data.products)
+
+
+
                 $('#add_panel').removeClass('active')
                 if($('#publish').find('i').hasClass('fa-rocket')) {
 
