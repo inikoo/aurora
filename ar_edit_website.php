@@ -538,36 +538,48 @@ function webpage_content_data($data, $editor, $db, $smarty) {
     } elseif ($data['type'] == 'code') {
 
 
-        if (isset($content_data[$data['section']])) {
+        if ($data['section'] == 'panels_in_section') {
+
+            foreach ($content_data['sections'] as $section_index => $section) {
 
 
-            if ($data['section'] == 'panels') {
+                foreach ($section['panels'] as $panel_index => $panel) {
+                    if ($panel['id'] == $data['block']) {
+
+
+                        $content_data['sections'][$section_index]['panels'][$panel_index]['caption'] = $data['value'];
+
+
+                        $data['value']= base64_decode($data['value']);
+                        $content_data['sections'][$section_index]['panels'][$panel_index]['content'] = $data['value'];
+                        $sql = sprintf(
+                            'UPDATE `Webpage Panel Dimension` SET `Webpage Panel Data`=%s ,`Webpage Panel Metadata`=%s WHERE `Webpage Panel Key`=%d ',
+                            prepare_mysql($data['value']),
+                            prepare_mysql(json_encode($content_data['sections'][$section_index]['panels'][$panel_index])),
+                            $content_data['sections'][$section_index]['panels'][$panel_index]['key']
+                        );
+                        $db->exec($sql);
+
+                        break 2;
+                    }
+                }
+
+            }
+
+
+            $content_data['sections'][$section_index]['items'] = get_website_section_items($db, $content_data['sections'][$section_index]);
+
+
+        }else if ($data['section'] == 'panels') {
 
 
                 foreach ($content_data[$data['section']] as $panel_key => $panel) {
                     if ($data['block'] == $panel['id']) {
 
-                        /*
-                                                $code=base64_decode(rawurldecode($data['value']));
-                                               // $data['value']=$code;
-
-                        print_r($_REQUEST);
-                                                print_r(rawurldecode($data['value']));
-                                                print_r(base64_decode($data['value']));
-                        */
-
-
-                        $code = base64_decode($data['value']);
-
-                        //  exit;
-
-
-                        $content_data['panels'][$panel_key]['content'] = $code;
-
-                        //      print_r($content_data);
-
+                        $data['value'] = base64_decode($data['value']);
+                        $content_data['panels'][$panel_key]['content'] = $data['value'];
                         $sql = sprintf(
-                            'UPDATE `Webpage Panel Dimension` SET `Webpage Panel Data`=%s ,`Webpage Panel Metadata`=%s WHERE `Webpage Panel Key`=%d ', prepare_mysql($code),
+                            'UPDATE `Webpage Panel Dimension` SET `Webpage Panel Data`=%s ,`Webpage Panel Metadata`=%s WHERE `Webpage Panel Key`=%d ', prepare_mysql($data['value']),
                             prepare_mysql(json_encode($content_data['panels'][$panel_key])), $content_data['panels'][$panel_key]['key']
                         );
                         $db->exec($sql);
@@ -577,7 +589,7 @@ function webpage_content_data($data, $editor, $db, $smarty) {
 
             }
 
-        }
+
     } elseif ($data['type'] == 'link') {
 
 
