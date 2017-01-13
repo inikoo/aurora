@@ -591,11 +591,11 @@ function check_for_duplicates($data, $db, $user, $account) {
                 case 'Part Barcode Number':
                 case 'Part Part Barcode Number':
 
-
                     $invalid_msg              = _('Part barcode already used');
                     $sql                      = sprintf(
                         "SELECT P.`Part SKU` AS `key` ,`Part Barcode Number` AS field FROM `Part Dimension` P WHERE  `Part Barcode Number`=%s   ", prepare_mysql($data['value'])
                     );
+
                     $validation_sql_queries[] = array(
                         'sql'         => $sql,
                         'invalid_msg' => $invalid_msg

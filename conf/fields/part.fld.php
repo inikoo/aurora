@@ -113,7 +113,7 @@ if (!($supplier_part_scope or $new)) {
 
             array(
                 'id'   => 'Part_Barcode_Number',
-                'edit' => ($edit ? 'barcode' : ''),
+                'edit' => ($edit ? 'string' : ''),
 
                 'value'             => htmlspecialchars(
                     $object->get('Part Barcode Number')
