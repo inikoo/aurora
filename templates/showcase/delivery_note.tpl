@@ -32,7 +32,7 @@
         <li id="picked_node"
             class="li  {if $delivery_note->get('State Index')>=30 or ($delivery_note->get('State Index')<0 and ($delivery_note->get('Date Start Picking')!=''  or $delivery_note->get(' Date Start Packing')!=''))  }complete{/if}">
             <div class="label">
-                <span class="state ">{t}Picked{/t} <span></i></span></span>
+                <span class="state Delivery_Note_Picked_Label">{if $delivery_note->get('State Index')==20 }{t}Picking{/t}{else}{t}Picked{/t}{/if}<span></i></span></span>
             </div>
             <div class="timestamp">
                 <span class="Delivery_Note_Picked_Percentage_or_Date">&nbsp;{$delivery_note->get('Picked Percentage or Date')}</span>
@@ -41,17 +41,19 @@
             </div>
         </li>
 
-        <li id="dispatched_node"
-            class="li  {if $delivery_note->get('State Index')>=30 or ($delivery_note->get('State Index')<0 and ($delivery_note->get('Dispatched Date')!=''  or $delivery_note->get('Received Date')!=''))  }complete{/if}">
+        <li id="packed_node"
+            class="li  {if $delivery_note->get('State Index')>=30 or ($delivery_note->get('State Index')<0 and ($delivery_note->get('Date Start Picking')!=''  or $delivery_note->get(' Date Start Packing')!=''))  }complete{/if}">
             <div class="label">
-                <span class="state ">{t}Packed{/t} <span></i></span></span>
+                <span class="state Delivery_Note_Packed_Label">{if $delivery_note->get('State Index')==40 }{t}Packing{/t}{else}{t}Packed{/t}{/if}<span></i></span></span>
             </div>
             <div class="timestamp">
-                <span class="Supplier_Delivery_Dispatched_Date">&nbsp;{$delivery_note->get('Dispatched Date')}</span>
+                <span class="Delivery_Note_Packed_Percentage_or_Date">&nbsp;{$delivery_note->get('Packed Percentage or Date')}</span>
             </div>
             <div class="dot">
             </div>
         </li>
+
+      
 
         <li id="dispatched_node"
             class="li  {if $delivery_note->get('State Index')>=30 or ($delivery_note->get('State Index')<0 and ($delivery_note->get('Dispatched Date')!=''  or $delivery_note->get('Received Date')!=''))  }complete{/if}">
@@ -153,7 +155,7 @@
             </tr>
             {if $delivery_note->get('Delivery Note Date Start Picking')!='' or $delivery_note->get('Delivery Note Picker Assigned Alias')!=''}
                 <tr>
-                    <td class="aright"> {if $delivery_note->get('Delivery Note Date Finish Picking')==''}{t}Picking by{/t}{else}{t}Picked by{/t}{/if}
+                    <td class="aright"> {if $delivery_note->get('Delivery Note Date Finish Picking')==''}{t}Picking by{/t}{else}{t}Packed by{/t}{/if}
                         :
                     </td>
                     <td width="200px" class="aright">{$delivery_note->get('Delivery Note Assigned Picker Alias')} </td>
