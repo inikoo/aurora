@@ -3128,6 +3128,19 @@ $modules = array(
 
     'inventory'       => array(
         'sections' => array(
+
+            'dashboard'          => array(
+                'type'      => 'navigation',
+                'label'     => _('Dashboard'),
+                'icon'      => 'tachometer',
+                'reference' => 'inventory/dashboard',
+                'tabs'      => array(
+                    'inventory.dashboard' => array('label' => _('Dashboard'))
+
+                )
+            ),
+
+
             'inventory'         => array(
 
                 'type'      => 'navigation',
@@ -3139,7 +3152,7 @@ $modules = array(
                         'label' => _(
                             'In process'
                         ),
-                        'class' => 'discret'
+                        'class' => 'discreet'
                     ),
                     'inventory.parts'               => array(
                         'label' => _(
@@ -3150,20 +3163,24 @@ $modules = array(
                         'label' => _(
                             'Discontinuing'
                         ),
-                        'class' => 'discret'
+                        'class' => 'discreet'
                     ),
                     'inventory.discontinued_parts'  => array(
                         'label' => _(
                             'Discontinued'
                         ),
-                        'class' => 'very_discret'
+                        'class' => 'very_discreet'
                     ),
 
                 )
             ),
+
+
+
+
             'barcodes'          => array(
                 'type'      => 'navigation',
-                'label'     => _('Barcodes'),
+                'label'     => _('Retail barcodes'),
                 'icon'      => 'barcode',
                 'reference' => 'inventory/barcodes',
                 'tabs'      => array(

@@ -588,6 +588,33 @@ class Account extends DB_Table {
 
     }
 
+    function update_parts_data() {
+        $number_parts = 0;
+        $number_parts_no_sko_barcodes = 0;
+        $sql           = sprintf(
+            'SELECT count(*) AS num FROM `Part Dimension` WHERE `Part Status`="In Use"'
+        );
+        if ($row = $this->db->query($sql)->fetch()) {
+            $number_parts = $row['num'];
+        }
+
+        $sql           = sprintf(
+            'SELECT count(*) AS num FROM `Part Dimension` WHERE `Part Status`="In Use" and `Part SKO Barcode`!=""  '
+        );
+        if ($row = $this->db->query($sql)->fetch()) {
+            $number_parts_no_sko_barcodes = $row['num'];
+        }
+
+        $this->update(
+            array(
+                'Account Active Parts Number' => $number_parts,
+                'Account Active Parts with SKO Barcode Number' => $number_parts_no_sko_barcodes,
+
+            ), 'no_history'
+        );
+
+    }
+
     function create_supplier($data) {
         $this->new_employee = false;
 

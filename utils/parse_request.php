@@ -2374,7 +2374,14 @@ function parse_request($_data, $db, $modules, $account = '', $user = '') {
 
                     if ($view_path[0] == 'transactions') {
                         $section = 'transactions';
-                    } elseif ($view_path[0] == 'stock_history') {
+
+                    } elseif ($view_path[0] == 'dashboard') {
+
+                        $section = 'dashboard';
+
+
+
+                    }  elseif ($view_path[0] == 'stock_history') {
                         $section = 'stock_history';
 
                         if (isset($view_path[1])) {

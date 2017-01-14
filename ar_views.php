@@ -1622,7 +1622,11 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
             //print $data['section'];
             switch ($data['section']) {
-
+                case ('dashboard'):
+                    return get_dashboard_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
 
                 case ('inventory'):
                     return get_inventory_navigation(

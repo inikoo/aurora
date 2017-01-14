@@ -2120,12 +2120,8 @@ class Part extends Asset {
 
 
                     }
-                } elseif (array_key_exists(
-                    $field, $this->base_data('Part Data')
-                )) {
-                    $this->update_table_field(
-                        $field, $value, $options, 'Part Data', 'Part Data', $this->id
-                    );
+                } elseif (array_key_exists($field, $this->base_data('Part Data'))) {
+                    $this->update_table_field($field, $value, $options, 'Part Data', 'Part Data', $this->id);
                 } elseif (preg_match('/^custom_field_part/i', $field)) {
                     $this->update_field($field, $value, $options);
                 }

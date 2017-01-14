@@ -111,29 +111,9 @@ if (!($supplier_part_scope or $new)) {
                 'type'            => 'value'
             ),
 
-            array(
-                'id'   => 'Part_Barcode_Number',
-                'edit' => ($edit ? 'string' : ''),
 
-                'value'             => htmlspecialchars(
-                    $object->get('Part Barcode Number')
-                ),
-                'formatted_value'   => $object->get('Barcode Number'),
-                'label'             => ucfirst(
-                    $object->get_field_label('Part Barcode Number')
-                ),
-                'required'          => false,
-                'server_validation' => json_encode(
-                    array(
-                        'tipo'       => 'check_for_duplicates',
-                        'parent'     => 'account',
-                        'parent_key' => 1,
-                        'object'     => 'Part',
-                        'key'        => $object->id
-                    )
-                ),
-                'type'              => 'value'
-            ),
+
+
 
 
         )
@@ -184,6 +164,31 @@ $part_fields[] = array(
 
     'show_title' => true,
     'fields'     => array(
+
+        array(
+            'id'   => 'Part_Barcode_Number',
+            'edit' => ($edit ? 'barcode' : ''),
+
+            'value'             => htmlspecialchars(
+                $object->get('Part Barcode Number')
+            ),
+            'formatted_value'   => $object->get('Barcode Number'),
+            'label'             => ucfirst(
+                $object->get_field_label('Part Barcode Number')
+            ),
+            'required'          => false,
+            'server_validation' => json_encode(
+                array(
+                    'tipo'       => 'check_for_duplicates',
+                    'parent'     => 'account',
+                    'parent_key' => 1,
+                    'object'     => 'Part',
+                    'key'        => $object->id
+                )
+            ),
+            'type'              => 'value'
+        ),
+
 
         array(
             'id'     => 'Part_Unit_Description',
@@ -317,7 +322,29 @@ $part_fields[] = array(
             'required'        => ($supplier_part_scope ? false : true),
             'type'            => 'value'
         ),
+        array(
+            'id'   => 'Part_SKO_Barcode',
+            'edit' => ($edit ? 'string' : ''),
 
+            'value'             => htmlspecialchars(
+                $object->get('Part SKO Barcode')
+            ),
+            'formatted_value'   => $object->get('SKO Barcode'),
+            'label'             => ucfirst(
+                $object->get_field_label('SKO Barcode')
+            ),
+            'required'          => false,
+            'server_validation' => json_encode(
+                array(
+                    'tipo'       => 'check_for_duplicates',
+                    'parent'     => 'account',
+                    'parent_key' => 1,
+                    'object'     => 'Part',
+                    'key'        => $object->id
+                )
+            ),
+            'type'              => 'value'
+        ),
         array(
             'render' => (!($supplier_part_scope or $new) ? true : false),
 

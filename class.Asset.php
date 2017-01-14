@@ -22,11 +22,9 @@ class Asset extends DB_Table {
 
         switch ($field) {
 
-            case 'Part Barcode Number':
-return false;
-                break;
 
-            case 'Product Barcode Number':
+
+            case $this->table_name.' Barcode Number':
 
                 if ($value == '') {
                     include_once 'class.Barcode.php';
