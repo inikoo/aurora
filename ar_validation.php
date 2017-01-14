@@ -603,6 +603,22 @@ function check_for_duplicates($data, $db, $user, $account) {
 
 
                     break;
+                case 'Part SKO Barcode':
+                case 'Part Part SKO Barcode':
+
+                    $invalid_msg              = _('SKO barcode already used');
+                    $sql                      = sprintf(
+                        "SELECT P.`Part SKU` AS `key` ,`Part Barcode Number` AS field FROM `Part Dimension` P WHERE  `Part SKO Barcode`=%s   ", prepare_mysql($data['value'])
+                    );
+
+                    $validation_sql_queries[] = array(
+                        'sql'         => $sql,
+                        'invalid_msg' => $invalid_msg
+                    );
+
+
+                    break;
+
                 case 'Part Reference':
                 case 'Part Part Reference':
 
