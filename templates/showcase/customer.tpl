@@ -1,3 +1,10 @@
+<div id="sticky_note_container">
+    <i style="top:10px" class="fa fa-pencil" aria-hidden="true"></i>
+    <i style="top:30px" class="fa fa-trash" aria-hidden="true"></i>
+    <div id="sticky_note" contenteditable="true" >{$customer->get('Sticky Note')}xx</div>
+</div>
+
+
 <div id="customer" class="subject_profile" key="{$customer->id}" store_key="{$customer->get('Store Key')}">
     <div id="contact_data">
         <div class="data_container">
@@ -77,7 +84,6 @@
                 {$customer->get('Contact Address')}
             </div>
         </div>
-        {include file='sticky_note.tpl' object='Customer'  key=$customer->id sticky_note_field='Customer_Sticky_Note' _object=$customer}
 
 
         <div style="clear:both">

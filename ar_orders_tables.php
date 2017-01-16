@@ -84,8 +84,7 @@ function orders($_data, $db, $user) {
 
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
 
@@ -97,12 +96,8 @@ function orders($_data, $db, $user) {
             'store_key'      => (integer)$data['Order Store Key'],
             'customer_key'   => (integer)$data['Order Customer Key'],
             'public_id'      => $data['Order Public ID'],
-            'date'           => strftime(
-                "%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')
-            ),
-            'last_date'      =>strftime(
-                "%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')
-            ),
+            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
+            'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
             'customer'       => $data['Order Customer Name'],
             'dispatch_state' => get_order_formatted_dispatch_state(
                 $data['Order Current Dispatch State'], $data['Order Key']
@@ -139,8 +134,7 @@ function delivery_notes($_data, $db, $user) {
     $rtext_label = 'delivery_note';
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
     $adata = array();
 
@@ -231,8 +225,7 @@ function invoices($_data, $db, $user) {
     $rtext_label = 'invoice';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
     //print $sql;
@@ -312,8 +305,7 @@ function orders_index($_data, $db, $user) {
     $rtext_label = 'store';
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     $total_orders         = 0;
     $total_invoices       = 0;
@@ -395,8 +387,7 @@ function order_items($_data, $db, $user) {
 
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
     foreach ($db->query($sql) as $data) {
 
@@ -502,8 +493,7 @@ function invoice_items($_data, $db, $user) {
     }
 
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
     foreach ($db->query($sql) as $data) {
 
@@ -593,7 +583,12 @@ function delivery_note_items($_data, $db, $user) {
 
     //print_r($_data);
 
-    include_once ('class.DeliveryNote.php');
+    include_once('class.DeliveryNote.php');
+    include_once('utils/order_handing_functions.php');
+
+
+
+
 
     global $_locale;// fix this locale stuff
 
@@ -605,13 +600,15 @@ function delivery_note_items($_data, $db, $user) {
     include_once 'prepare_table/init.php';
 
     $sql = "select $fields from $table $where $wheref  $group_by order by $order $order_direction  limit $start_from,$number_results";
-   // print $sql;
+    // print $sql;
     $adata = array();
     foreach ($db->query($sql) as $data) {
 
 
-        $quantity = number($data['quantity']);
-        $to_pick=$data['quantity']-$data['Picked'];
+
+
+
+        $to_pick  = $data['quantity'] - $data['Picked'];
 
 
         switch ($dn->data['Delivery Note State']) {
@@ -646,11 +643,8 @@ function delivery_note_items($_data, $db, $user) {
                 ).'<br/>';
         }
 
-        $notes = preg_replace('/\<br\/\>$/', '', $notes);
 
-
-        $notes ='';
-        $description =$data['Part Package Description'];
+        $description = $data['Part Package Description'];
 
 
 
@@ -659,43 +653,38 @@ function delivery_note_items($_data, $db, $user) {
         }
 
 
-        $picked = sprintf(
-            '<span class="%s" ondblclick="show_check_dialog(this)">%s</span>
-                <span data-settings=\'{"field": "Picked", "transaction_key":%d,"item_key":%d ,"on":1 }\' class="picked_quantity %s"  >
-                    <input class="picked_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button add_picked %s" aria-hidden="true">
-                </span>',
-            ($dn->get('Supplier Delivery State')=='Picked'?'':'hide'),
-            number($data['Picked']),
-            $data['Inventory Transaction Key'],
-            $data['Part SKU'],
-            ($dn->get('Supplier Delivery State')=='Picked'?'hide':''),
-            $data['Picked'], $data['Picked'], ''
-        );
+
 
         $packed = sprintf(
             '<span class="%s" ondblclick="show_check_dialog(this)">%s</span>
                 <span data-settings=\'{"field": "Packed", "transaction_key":%d,"item_key":%d ,"on":1 }\' class="packed_quantity %s"  >
                     <input class="checked_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button %s" aria-hidden="true">
                 </span>',
-            ($dn->get('Supplier Delivery State')=='Packed'?'':'hide'),
-            number($data['Packed']),
-            $data['Inventory Transaction Key'],
-            $data['Part SKU'],
-            ($dn->get('Supplier Delivery State')=='Packed'?'hide':''),
-            $data['Packed'], $data['Packed'], ''
+            ($dn->get('Supplier Delivery State') == 'Packed' ? '' : 'hide'), number($data['Packed']), $data['Inventory Transaction Key'], $data['Part SKU'],
+            ($dn->get('Supplier Delivery State') == 'Packed' ? 'hide' : ''), $data['Packed'], $data['Packed'], ''
         );
 
 
-        $location=sprintf('<span class="%s location"  location_key="%d" >%s</span>',
-            ($to_pick>0?'discreet':''),
-                          $data['Location Key'],
-                          $data['Location Code']
-        );
+
+
+        $quantity='<div class="quantity_components">'.get_item_quantity($data['quantity'],$data['to_pick']).'</div>';
+
+        $picked='<div class="picked_quantity_components">'.get_item_picked($data['pending'],$data['Quantity On Hand'], $data['Inventory Transaction Key'],$data['Part SKU'],$data['Picked'],$data['Part Current On Hand Stock']).'</div>';
+        $location='<div class="location_components">'.get_item_location($data['pending'],$data['Quantity On Hand'],$data['Date Picked'],$data['Location Key'],$data['Location Code'],$data['Part Current On Hand Stock']).'</div>';
+
+
+        if($data['Picked']==$data['quantity']){
+            $picked_info='<i class="fa fa-fw fa-check success" aria-hidden="true"></i>';
+
+        }else{
+            $picked_info='';
+        }
+
 
         $adata[] = array(
             'id' => (integer)$data['Inventory Transaction Key'],
 
-            'reference'        => $data['Part Reference'],
+            'reference'        => sprintf('<span onclick="change_view(\'part/%d\')">%s</span>',$data['Part SKU'],$data['Part Reference']),
          //   'product_pid' => $data['Product ID'],
             'description' => $description,
             'quantity'    => $quantity,
@@ -703,9 +692,10 @@ function delivery_note_items($_data, $db, $user) {
             ),
             'packed'      => $packed,
             'picked'=>$picked,
+            'picked_info'=>$picked_info,
             'location'=>$location,
 
-            'notes'       => $notes
+
 
 
         );
@@ -731,7 +721,7 @@ function invoice_categories($_data, $db, $user) {
 
 
     $rtext_label = 'category';
-    include_once 'prepare_table/init.php';
+    include_once 'prepare_table / init.php';
 
     $sql
            = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";

@@ -8,23 +8,10 @@ renderable: false
 
 
 },{
-name: "product_pid",
-label: "",
-editable: false,
-cell: "string",
-renderable: false
-
-
-},{
 name: "reference",
 label: "{t}Reference{/t}",
 editable: false,
 cell: Backgrid.HtmlCell.extend({
-events: {
-"click": function() {
-change_view("order/{$data['key']}/item/"+this.model.get("id"))
-}
-},
 className: "link"
 }),
 },
@@ -66,7 +53,16 @@ sortType: "toggle",
 {if $sort_key=='picked'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
-}, {
+},
+{
+name: "picked_info",
+label: "{t}Picked{/t}",
+editable: false,
+cell: "html"
+
+},
+
+{
 name: "packed",
 label: "{t}Packed{/t}",
 defaultOrder:1,
@@ -81,4 +77,46 @@ headerCell: integerHeaderCell
 ]
 
 
-function change_table_view(view, save_state) {}
+function change_table_view(view,save_state){
+
+$('.view').removeClass('selected');
+$('#view_'+view).addClass('selected');
+
+
+grid.columns.findWhere({ name: 'reference'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'description'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'location'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'quantity'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'picked'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'packed'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'picked_info'} ).set("renderable", false)
+
+
+if(view=='overview'){
+grid.columns.findWhere({ name: 'reference'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'description'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'quantity'} ).set("renderable", true)
+}else if(view=='picking_aid'){
+grid.columns.findWhere({ name: 'reference'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'description'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'quantity'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'location'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'picked'} ).set("renderable", true)
+
+}else if(view=='packing_aid'){
+grid.columns.findWhere({ name: 'reference'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'description'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'quantity'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'packed'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'picked_info'} ).set("renderable", true)
+
+}
+
+if(save_state){
+var request = "/ar_state.php?tipo=set_table_view&tab={$tab}&table_view=" + view
+
+$.getJSON(request, function(data) {});
+}
+
+
+}

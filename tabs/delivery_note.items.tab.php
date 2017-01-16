@@ -57,7 +57,7 @@ $smarty->assign(
                     )
 );
 $smarty->assign('dn', $state['_object']);
-$state['_object']->update_state();
+$state['_object']->update_totals();
 
 $smarty->assign('table_top_template', 'delivery_note.options.tpl');
 

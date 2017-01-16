@@ -110,7 +110,8 @@ $sql_totals
 $fields
     .= '`Date`,`Inventory Transaction Section`,`Inventory Transaction Key`,`Inventory Transaction Quantity`,
 `Part Reference`,ITF.`Part SKU`,`Delivery Note ID`,ITF.`Delivery Note Key`,ITF.`Location Key`,`Location Code`,`Required`,`Part Location Stock`,`Inventory Transaction Type`,`Metadata`,
-`Note`,`User Alias`,ITF.`User Key`,`User Handle`';
+`Note`,`User Alias`,ITF.`User Key`,`User Handle`,`Given`,`Required`+`Given`+`Inventory Transaction Quantity`-`Out of Stock`-`No Authorized`-`Not Found`-`No Picked Other` as pending  '           ;
+
 
 
 ?>

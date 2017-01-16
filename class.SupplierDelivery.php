@@ -235,6 +235,7 @@ class SupplierDelivery extends DB_Table {
         }
 
 
+
         switch ($key) {
             case 'State Index':
                 switch ($this->data['Supplier Delivery State']) {

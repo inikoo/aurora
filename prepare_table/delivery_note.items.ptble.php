@@ -42,13 +42,20 @@ if ($order == 'reference') {
 }
 
 $table
-    = ' `Inventory Transaction Fact` ITF  left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`)  LEFT JOIN  `Location Dimension` L ON  (L.`Location Key`=ITF.`Location Key`)  ';
+    = ' `Inventory Transaction Fact` ITF  left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`)  LEFT JOIN  `Location Dimension` L ON  (L.`Location Key`=ITF.`Location Key`) 
+     LEFT JOIN  `Part Location Dimension` PL ON  (ITF.`Location Key`=PL.`Location Key` and ITF.`Part SKU`=PL.`Part SKU`) 
+     ';
 
 $sql_totals = "select count(*) as num from $table $where";
 
 
 $fields = "`Part Package Description`,`Inventory Transaction Quantity`,`Out of Stock`,`Required`,`Part Unit Description`,`Part Reference`,PD.`Part SKU`,
-`Not Found`,`No Picked Other`,`Part UN Number`,`Picked`,`Packed`,`Location Code`,ITF.`Location Key`,`Inventory Transaction Key`,(`Required`+`Given`) as quantity";
+`Not Found`,`No Picked Other`,`Part UN Number`,`Picked`,`Packed`,`Location Code`,ITF.`Location Key`,`Inventory Transaction Key`,(`Required`+`Given`) as quantity,
+`Required`+`Given`+`Inventory Transaction Quantity`-`Out of Stock`-`No Authorized`-`Not Found`-`No Picked Other` as pending,
+`Required`+`Given`-`Out of Stock`-`No Authorized`-`Not Found`-`No Picked Other` as to_pick,
+
+`Quantity On Hand`,PD.`Part Current On Hand Stock`,`Date Picked`,`Date Packed`
+";
 
 //	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 //print $sql;

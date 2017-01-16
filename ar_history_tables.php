@@ -45,11 +45,15 @@ switch ($tipo) {
 
 function object_history($_data, $db, $user) {
 
+   // print_r($_data);
 
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+    //print $sql;
+
+
     $adata = array();
 
 
@@ -73,16 +77,16 @@ function object_history($_data, $db, $user) {
 
             if ($data['Deletable'] == 'Yes') {
                 $edit = sprintf(
-                    '<i history_key="%d" id="history_note_edit_button_%d" class="fa fa-pencil very_discret button fw note_buttons" alt="%s" ></i>', $data['History Key'], $data['History Key'],
+                    '<i history_key="%d" id="history_note_edit_button_%d" class="fa fa-pencil very_discreet button fw note_buttons" alt="%s" ></i>', $data['History Key'], $data['History Key'],
                     _('Edit')
                 );
             } else {
                 $edit = sprintf(
-                    '<i history_key="%d" id="undo_strikethrough_button_%d" class="fa strikethrough_button fa-undo very_discret button fw %s" alt="%s" ></i>', $data['History Key'],
+                    '<i history_key="%d" id="undo_strikethrough_button_%d" class="fa strikethrough_button fa-undo very_discreet button fw %s" alt="%s" ></i>', $data['History Key'],
                     $data['History Key'], ($data['Strikethrough'] == 'Yes' ? '' : 'hide'), _('unstrikethrough')
                 );
                 $edit .= sprintf(
-                    '<i history_key="%d" id="strikethrough_button_%d"  class="fa strikethrough_button fa-strikethrough very_discret button fw %s" alt="%s" ></i>', $data['History Key'],
+                    '<i history_key="%d" id="strikethrough_button_%d"  class="fa strikethrough_button fa-strikethrough very_discreet button fw %s" alt="%s" ></i>', $data['History Key'],
                     $data['History Key'], ($data['Strikethrough'] == 'Yes' ? 'hide' : ''),
 
                     _('strikethrough')
