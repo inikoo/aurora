@@ -107,6 +107,19 @@ function get_widget_details(element, widget, metadata) {
 
 function change_view(_request, metadata) {
 
+
+    evt=window.event;
+
+    if (evt.type=='click' && evt.metaKey){
+
+
+
+        window.open('/'+_request, '_blank');
+        return;
+
+    }
+
+
     if (metadata == undefined) {
         metadata = {};
     }
@@ -114,6 +127,16 @@ function change_view(_request, metadata) {
 
 
     var request = "/ar_views.php?tipo=views&request=" + _request + '&metadata=' + JSON.stringify(metadata) + "&old_state=" + JSON.stringify(state)
+
+
+
+
+
+
+
+
+
+
 
     if (metadata.tab != undefined) {
         request = request + '&tab=' + metadata.tab;
