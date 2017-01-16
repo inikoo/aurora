@@ -605,6 +605,8 @@ class Account extends DB_Table {
             $number_parts_no_sko_barcodes = $row['num'];
         }
 
+
+
         $this->update(
             array(
                 'Account Active Parts Number' => $number_parts,

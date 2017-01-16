@@ -2537,6 +2537,8 @@ function find_employees($db, $account, $memcache_ip, $data) {
 
     }
 
+
+
     /*
 
     if (isset($data['metadata']['exclude']) and count(
@@ -2586,7 +2588,7 @@ function find_employees($db, $account, $memcache_ip, $data) {
             $q, $where
         );
 
-        //print $sql;
+
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
 
@@ -2652,11 +2654,11 @@ function find_employees($db, $account, $memcache_ip, $data) {
         }
 
         $sql = sprintf(
-            "select `Staff Key`,`Staff Alias`,`Staff Name`,`Staff ID`,`Staff Currently Working` from `Staff Dimension`   where  `Staff Name`   REGEXP '[[:<:]]%s'  limit $max_results ",
+            "select `Staff Key`,`Staff Alias`,`Staff Name`,`Staff ID`,`Staff Currently Working` from `Staff Dimension`   where  `Staff Name`   REGEXP '[[:<:]]%s' %s  limit $max_results ",
             $q, $where
         );
 
-        //print $sql;
+       // print $sql;
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
 

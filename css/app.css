@@ -727,10 +727,10 @@ right connector from last child*/
   width: 400px; }
 
 .width_500 {
-  width: 400px; }
+  width: 500px; }
 
 .width_600 {
-  width: 400px; }
+  width: 600px; }
 
 .small {
   font-size: 90%; }
@@ -1656,6 +1656,18 @@ table.totals .total td {
   vertical-align: bottom;
   max-width: 270px;
   max-height: 270px; }
+
+#sticky_note_container {
+  position: relative;
+  color: white; }
+  #sticky_note_container i {
+    opacity: .4;
+    position: absolute;
+    right: 10px; }
+  #sticky_note_container #sticky_note {
+    border-bottom: 1px solid #ccc;
+    padding: 20px;
+    background-color: #ff69b4; }
 
 textarea {
   position: relative;

@@ -58,7 +58,15 @@ $export_edit_template_fields = array(
             'label'         => _('Family'),
             'checked'       => 0
         ),
-
+ array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => 'SKO Barcode',
+            'name'          => 'Part SKO Barcode',
+            'label'         => _('Part SKO Barcode'),
+            'checked'       => 0
+        ),
         array(
             'default_value' => '',
             'show_for_new'  => true,
@@ -402,7 +410,15 @@ $export_edit_template_fields = array(
             'checked'       => 0
         ),
 
-
+array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => 'Part SKO Barcode',
+            'name'          => 'Part SKO Barcode',
+            'label'         => _('Part SKO Barcode'),
+            'checked'       => 0
+        ),
         array(
             'default_value' => '',
             'show_for_new'  => true,

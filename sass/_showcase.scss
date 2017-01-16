@@ -99,3 +99,14 @@
   max-width: 270px;
   max-height: 270px;
 }
+
+
+#sticky_note_container{
+  position:relative;color:white;
+  i {  opacity:.4;position:absolute;right:10px;  }
+
+  #sticky_note{
+    border-bottom:1px solid #ccc;padding:20px;background-color: #ff69b4;
+  }
+
+}

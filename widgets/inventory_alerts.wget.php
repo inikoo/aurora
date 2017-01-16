@@ -30,9 +30,7 @@ function get_inventory_alerts( $db, $account, $user, $smarty) {
 
 
         $smarty->assign('data', $data);
-        $html .= $smarty->fetch(
-            'dashboard/inventory.parts_with_no_sko_barcode.dbard.tpl'
-        );
+        $html .= '<div class="parts_with_no_sko_barcode">'.$smarty->fetch('dashboard/inventory.parts_with_no_sko_barcode.dbard.tpl').'</div>';
     }
 
     return $html;

@@ -1423,6 +1423,8 @@ class Part extends Asset {
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
+        global  $account;
+
         if ($this->update_asset_field_switcher(
             $field, $value, $options, $metadata
         )
@@ -1972,6 +1974,65 @@ class Part extends Asset {
 
                 //$this->update_linked_products($field, $value, $options, $metadata);
                 $this->updated = $updated;
+
+                break;
+            case 'Part SKO Barcode':
+
+
+                $sql = sprintf(
+                    'SELECT count(*) AS num FROM `Part Dimension` WHERE `Part SKO Barcode`=%s AND `Part SKU`!=%d ', prepare_mysql($value), $this->id
+                );
+
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        if ($row['num'] > 0) {
+                            $this->error = true;
+                            $this->msg   = sprintf(
+                                _('Duplicated SKO barcode (%s)'), $value
+                            );
+
+                            return;
+                        }
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    exit;
+                }
+
+
+                $this->update_field($field, $value, $options);
+
+                $account->update_parts_data();
+
+
+                include_once ('widgets/inventory_alerts.wget.php');
+                global $smarty;
+
+                $_data = get_widget_data(
+
+                    $account->get('Account Active Parts Number')-$account->get('Account Active Parts with SKO Barcode Number'),
+                    $account->get('Account Active Parts Number'),
+                    0,
+                    0);
+
+
+
+
+
+
+
+
+                    $smarty->assign('data', $_data);
+
+
+
+
+                $this->update_metadata = array(
+                   'parts_with_no_sko_barcode' => $smarty->fetch('dashboard/inventory.parts_with_no_sko_barcode.dbard.tpl')
+
+
+
+                );
 
                 break;
             case 'Part UN Number':

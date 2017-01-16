@@ -41,7 +41,7 @@ sortable: false,
 
 cell: Backgrid.HtmlCell.extend({
 
-
+className: "width_500"
 })
 
 }
