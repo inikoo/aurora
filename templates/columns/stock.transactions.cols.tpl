@@ -66,4 +66,9 @@ className: "width_20"
 },
 ]
 
-function change_table_view(view,save_state){}
+function change_table_view(view,save_state){
+
+
+
+
+}

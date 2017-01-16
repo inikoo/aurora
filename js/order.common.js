@@ -306,6 +306,15 @@ function save_item_qty_change(element) {
 
 
 
+
+    console.log(table_metadata)
+
+    if(settings.field=='Picked' &&  $('#dn_data').attr('picker_key')=='') {
+
+        sweetAlert($('#dn_data').attr('no_picker_msg'));
+        return;
+    }
+
     var request = '/ar_edit_orders.php?tipo=edit_item_in_order&parent=' + table_metadata.parent + '&field=' + settings.field + '&parent_key=' + table_metadata.parent_key + '&item_key=' + settings.item_key  + '&qty=' + qty + '&transaction_key=' + settings.transaction_key
 
     if(settings.item_historic_key!=undefined){
@@ -365,47 +374,260 @@ function save_item_qty_change(element) {
         $(element).removeClass('fa-spinner fa-spin fa-cloud').addClass('fa-plus');
 
         if (data.state == 200) {
+
+            console.log(data)
+
             input.val(data.transaction_data.qty).removeClass('discreet')
 
-            $(element).closest('tr').find('.subtotals').html(data.transaction_data.subtotals)
-            console.log(data)
-            console.log(data.metadata.state_index)
+            if(table_metadata.parent=='delivery_note'){
 
-            $(element).closest('tr').find('.placement').html(data.metadata.placement)
-            $(element).closest('.checked_quantity').find('.checked_qty').attr('ovalue', data.transaction_data.qty)
-
-
-            $('#inputted_node').addClass('complete')
-            $('#purchase_order_node').addClass('complete')
-
-            if (data.metadata.state_index >= 30) {
-                $('#dispatched_node').addClass('complete')
-            }
-            if (data.metadata.state_index >= 40) {
-                $('#received_node').addClass('complete')
-            }
-
-            if (data.metadata.state_index >= 50) {
-                $('#checked_node').addClass('complete')
-            }
-            if (data.metadata.state_index == 100) {
-                $('#placed_node').addClass('complete')
-
-                if (state.tab == 'supplier.delivery.items') {
+                console.log(data.metadata.location_components)
+                console.log(data.metadata.picked_quantity_components)
+                console.log(data.metadata.pending)
 
 
-                    change_tab('supplier.delivery.items')
+                $(element).closest('tr').find('.location_components').html(data.metadata.location_components)
+                $(element).closest('tr').find('.picked_quantity_components').html(data.metadata.picked_quantity_components)
 
+
+                if (data.metadata.state_index >= 30) {
+                    $('#picked_node').addClass('complete')
                 }
 
 
+
             }else{
-                $('#placed_node').removeClass('complete')
+                $(element).closest('tr').find('.subtotals').html(data.transaction_data.subtotals)
+                $(element).closest('tr').find('.placement').html(data.metadata.placement)
+                $(element).closest('.checked_quantity').find('.checked_qty').attr('ovalue', data.transaction_data.qty)
+
+                $('#inputted_node').addClass('complete')
+                $('#purchase_order_node').addClass('complete')
+
+                if (data.metadata.state_index >= 30) {
+                    $('#dispatched_node').addClass('complete')
+                }
+                if (data.metadata.state_index >= 40) {
+                    $('#received_node').addClass('complete')
+                }
+
+                if (data.metadata.state_index >= 50) {
+                    $('#checked_node').addClass('complete')
+                }
+                if (data.metadata.state_index == 100) {
+                    $('#placed_node').addClass('complete')
+                    if (state.tab == 'supplier.delivery.items') {
+                        change_tab('supplier.delivery.items')
+                    }
+                }else{
+                    $('#placed_node').removeClass('complete')
+                }
             }
 
 
-            for (var key in data.metadata.class_html) {
 
+
+
+
+
+            for (var key in data.metadata.class_html) {
+                $('.' + key).html(data.metadata.class_html[key])
+            }
+
+
+            for (var key in data.metadata.hide) {
+                $('#' + data.metadata.hide[key]).addClass('hide')
+            }
+            for (var key in data.metadata.show) {
+                $('#' + data.metadata.show[key]).removeClass('hide')
+            }
+
+
+        } else if (data.state == 400) {
+            sweetAlert(data.msg);
+        }
+
+    })
+
+
+    request.fail(function (jqXHR, textStatus) {
+        console.log(textStatus)
+
+        console.log(jqXHR.responseText)
+
+
+    });
+
+
+}
+
+
+function save_item_out_of_stock_qty_change(element) {
+
+    $(element).addClass('fa-spinner fa-spin');
+
+
+    var input =  $('#set_out_of_stock_items_dialog').find('input')
+
+    if ($(element).hasClass('fa-plus')) {
+
+        if (isNaN(input.val()) || input.val() == '') {
+            var qty = 1
+        } else {
+            qty = parseFloat(input.val()) + 1
+        }
+
+        input.val(qty).addClass('discreet')
+
+    } else if ($(element).hasClass('fa-minus')) {
+
+        if (isNaN(input.val()) || input.val() == '' || input.val() == 0) {
+            var qty = 0
+        } else {
+            qty = parseFloat(input.val()) - 1
+        }
+
+        input.val(qty).addClass('discreet')
+
+    } else {
+        qty = parseFloat(input.val())
+
+    }
+
+    if (qty == '') qty = 0;
+
+
+
+
+
+    var table_metadata = JSON.parse(atob($('#table').data("metadata")))
+
+
+
+
+
+
+    var request = '/ar_edit_orders.php?tipo=edit_item_in_order&parent=' + table_metadata.parent + '&field=Out_of_stock&parent_key=' + table_metadata.parent_key + '&item_key=' + $('#set_out_of_stock_items_dialog').attr('item_key') + '&qty=' + qty + '&transaction_key=' + $('#set_out_of_stock_items_dialog').attr('transaction_key')
+
+
+    console.log(request)
+
+    return;
+
+    if(settings.item_historic_key!=undefined){
+        request=request+'&item_historic_key=' + settings.item_historic_key
+    }
+
+    if(settings.field=='Picked'){
+        request=request+'&picker_key=' +  $('#dn_data').attr('picker_key')
+    }
+
+    if(settings.field=='Packed'){
+        request=request+'&packer_key=' +  $('#dn_data').attr('packer_key')
+    }
+
+    console.log(request)
+
+
+    //=====
+    var form_data = new FormData();
+
+    form_data.append("tipo", 'edit_item_in_order')
+    form_data.append("field", settings.field)
+    form_data.append("parent", table_metadata.parent)
+    form_data.append("parent_key", table_metadata.parent_key)
+    form_data.append("item_key", settings.item_key)
+    if(settings.item_historic_key!=undefined){
+        form_data.append("item_historic_key", settings.item_historic_key)
+    }
+
+    if(settings.field=='Picked'){
+        form_data.append("picker_key", $('#dn_data').attr('picker_key'))
+    }
+    if(settings.field=='Packed'){
+        form_data.append("packer_key", $('#dn_data').attr('packer_key'))
+    }
+
+
+    form_data.append("transaction_key", settings.transaction_key)
+
+
+    form_data.append("qty", qty)
+
+    var request = $.ajax({
+
+        url: "/ar_edit_orders.php",
+        data: form_data,
+        processData: false,
+        contentType: false,
+        type: 'POST',
+        dataType: 'json'
+
+    })
+
+
+    request.done(function (data) {
+
+        $(element).removeClass('fa-spinner fa-spin fa-cloud').addClass('fa-plus');
+
+        if (data.state == 200) {
+
+            console.log(data)
+
+            input.val(data.transaction_data.qty).removeClass('discreet')
+
+            if(table_metadata.parent=='delivery_note'){
+
+                console.log(data.metadata.location_components)
+                console.log(data.metadata.picked_quantity_components)
+                console.log(data.metadata.pending)
+
+
+                $(element).closest('tr').find('.location_components').html(data.metadata.location_components)
+                $(element).closest('tr').find('.picked_quantity_components').html(data.metadata.picked_quantity_components)
+
+
+                if (data.metadata.state_index >= 30) {
+                    $('#picked_node').addClass('complete')
+                }
+
+
+
+            }else{
+                $(element).closest('tr').find('.subtotals').html(data.transaction_data.subtotals)
+                $(element).closest('tr').find('.placement').html(data.metadata.placement)
+                $(element).closest('.checked_quantity').find('.checked_qty').attr('ovalue', data.transaction_data.qty)
+
+                $('#inputted_node').addClass('complete')
+                $('#purchase_order_node').addClass('complete')
+
+                if (data.metadata.state_index >= 30) {
+                    $('#dispatched_node').addClass('complete')
+                }
+                if (data.metadata.state_index >= 40) {
+                    $('#received_node').addClass('complete')
+                }
+
+                if (data.metadata.state_index >= 50) {
+                    $('#checked_node').addClass('complete')
+                }
+                if (data.metadata.state_index == 100) {
+                    $('#placed_node').addClass('complete')
+                    if (state.tab == 'supplier.delivery.items') {
+                        change_tab('supplier.delivery.items')
+                    }
+                }else{
+                    $('#placed_node').removeClass('complete')
+                }
+            }
+
+
+
+
+
+
+
+            for (var key in data.metadata.class_html) {
                 $('.' + key).html(data.metadata.class_html[key])
             }
 

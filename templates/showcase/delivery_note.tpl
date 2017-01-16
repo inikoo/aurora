@@ -42,7 +42,7 @@
         </li>
 
         <li id="packed_node"
-            class="li  {if $delivery_note->get('State Index')>=30 or ($delivery_note->get('State Index')<0 and ($delivery_note->get('Date Start Picking')!=''  or $delivery_note->get(' Date Start Packing')!=''))  }complete{/if}">
+            class="li  {if $delivery_note->get('State Index')>=40 or ($delivery_note->get('State Index')<0 and ($delivery_note->get('Date Start Picking')!=''  or $delivery_note->get(' Date Start Packing')!=''))  }complete{/if}">
             <div class="label">
                 <span class="state Delivery_Note_Packed_Label">{if $delivery_note->get('State Index')==40 }{t}Packing{/t}{else}{t}Packed{/t}{/if}<span></i></span></span>
             </div>
@@ -56,7 +56,7 @@
       
 
         <li id="dispatched_node"
-            class="li  {if $delivery_note->get('State Index')>=30 or ($delivery_note->get('State Index')<0 and ($delivery_note->get('Dispatched Date')!=''  or $delivery_note->get('Received Date')!=''))  }complete{/if}">
+            class="li  {if $delivery_note->get('State Index')>=50 or ($delivery_note->get('State Index')<0 and ($delivery_note->get('Dispatched Date')!=''  or $delivery_note->get('Received Date')!=''))  }complete{/if}">
             <div class="label">
                 <span class="state ">{t}Dispatch Approved{/t} <span></i></span></span>
             </div>
@@ -69,7 +69,7 @@
 
 
         <li id="dispatched_node"
-            class="li  {if $delivery_note->get('State Index')>=30 or ($delivery_note->get('State Index')<0 and ($delivery_note->get('Dispatched Date')!=''  or $delivery_note->get('Received Date')!=''))  }complete{/if}">
+            class="li  {if $delivery_note->get('State Index')>=50 or ($delivery_note->get('State Index')<0 and ($delivery_note->get('Dispatched Date')!=''  or $delivery_note->get('Received Date')!=''))  }complete{/if}">
             <div class="label">
                 <span class="state ">{t}Dispatched{/t} <span></i></span></span>
             </div>

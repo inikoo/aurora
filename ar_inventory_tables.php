@@ -29,6 +29,10 @@ $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
 
+    case 'parts_no_sko_barcode':
+        parts_no_sko_barcode(get_table_parameters(), $db, $user, '', $account);
+        break;
+
     case 'parts':
         parts(get_table_parameters(), $db, $user, '', $account);
         break;
@@ -405,18 +409,18 @@ function stock_history($_data, $db, $user, $account) {
 
     if ($_data['parameters']['frequency'] == 'annually') {
         $rtext_label = 'year';
-        $date_format="%Y";
+        $date_format = "%Y";
     } elseif ($_data['parameters']['frequency'] == 'monthly') {
         $rtext_label = 'month';
-        $date_format="%b %Y";
+        $date_format = "%b %Y";
 
     } elseif ($_data['parameters']['frequency'] == 'weekly') {
         $rtext_label = 'week';
-        $date_format="(%e %b) %Y %W";
+        $date_format = "(%e %b) %Y %W";
 
     } else {
         $rtext_label = 'day';
-        $date_format="%a %e %b %Y";
+        $date_format = "%a %e %b %Y";
 
     }
 
@@ -431,17 +435,17 @@ function stock_history($_data, $db, $user, $account) {
 
 
             $record_data[] = array(
-               // 'date'       => strftime("%a %e %b %Y", strtotime($data['Date'].' +0:00')),
-               // 'year'       => strftime("%Y", strtotime($data['Date'].' +0:00')),
-               // 'month_year' => strftime("%b %Y", strtotime($data['Date'].' +0:00')),
+                // 'date'       => strftime("%a %e %b %Y", strtotime($data['Date'].' +0:00')),
+                // 'year'       => strftime("%Y", strtotime($data['Date'].' +0:00')),
+                // 'month_year' => strftime("%b %Y", strtotime($data['Date'].' +0:00')),
                 //'week_year'  => strftime("(%e %b) %Y %W ", strtotime($data['Date'].' +0:00')),
 
-                'date'       => strftime($date_format, strtotime($data['Date'].' +0:00')),
-                'stock'      => number($data['Quantity On Hand']),
-                'value'      => money($data['Value At Day Cost'], $account->get('Currency')),
-                'in'         => number($data['Quantity In']),
-                'sold'       => number($data['Quantity Sold']),
-                'lost'       => number($data['Quantity Lost']),
+                'date'  => strftime($date_format, strtotime($data['Date'].' +0:00')),
+                'stock' => number($data['Quantity On Hand']),
+                'value' => money($data['Value At Day Cost'], $account->get('Currency')),
+                'in'    => number($data['Quantity In']),
+                'sold'  => number($data['Quantity Sold']),
+                'lost'  => number($data['Quantity Lost']),
 
             );
 
@@ -472,21 +476,20 @@ function stock_history($_data, $db, $user, $account) {
 function inventory_stock_history($_data, $db, $user, $account) {
 
 
-
     if ($_data['parameters']['frequency'] == 'annually') {
         $rtext_label = 'year';
-        $date_format="%Y";
+        $date_format = "%Y";
     } elseif ($_data['parameters']['frequency'] == 'monthly') {
         $rtext_label = 'month';
-        $date_format="%b %Y";
+        $date_format = "%b %Y";
 
     } elseif ($_data['parameters']['frequency'] == 'weekly') {
         $rtext_label = 'week';
-        $date_format="(%e %b) %Y %W";
+        $date_format = "(%e %b) %Y %W";
 
     } else {
         $rtext_label = 'day';
-        $date_format="%a %e %b %Y";
+        $date_format = "%a %e %b %Y";
 
     }
 
@@ -500,15 +503,13 @@ function inventory_stock_history($_data, $db, $user, $account) {
         foreach ($result as $data) {
 
 
-
-            $date=strftime($date_format, strtotime($data['Date'].' +0:00'));
+            $date = strftime($date_format, strtotime($data['Date'].' +0:00'));
 
             if ($_data['parameters']['frequency'] == 'daily') {
 
-                $date=sprintf('<span class="link" onclick="change_view(\'inventory/stock_history/day/%s\')" >%s</span>',
-                              $data['Date'],
-                              $date
-                              );
+                $date = sprintf(
+                    '<span class="link" onclick="change_view(\'inventory/stock_history/day/%s\')" >%s</span>', $data['Date'], $date
+                );
             }
 
             $record_data[] = array(
@@ -516,14 +517,14 @@ function inventory_stock_history($_data, $db, $user, $account) {
 
 
                 // 'day'        => strftime("%a %e %b %Y", strtotime($data['Date'].' +0:00')),
-               // 'year'       => strftime("%Y", strtotime($data['Date'].' +0:00')),
-               // 'month_year' => strftime("%b %Y", strtotime($data['Date'].' +0:00')),
-               // 'week_year'  => strftime("(%e %b) %Y %W ", strtotime($data['Date'].' +0:00')),
+                // 'year'       => strftime("%Y", strtotime($data['Date'].' +0:00')),
+                // 'month_year' => strftime("%b %Y", strtotime($data['Date'].' +0:00')),
+                // 'week_year'  => strftime("(%e %b) %Y %W ", strtotime($data['Date'].' +0:00')),
 
-                'date'       => $date,
+                'date' => $date,
 
-                'parts'      => number($data['Parts']),
-                'locations'  => number($data['Locations']),
+                'parts'     => number($data['Parts']),
+                'locations' => number($data['Locations']),
 
                 'value'            => money($data['Value At Day Cost'], $account->get('Currency')),
                 'commercial_value' => money($data['Value Commercial'], $account->get('Currency')),
@@ -638,7 +639,6 @@ function stock_transactions($_data, $db, $user) {
                                 '<span class="button" onClick="change_view(\'location/%d\')">%s</span>', $data['Location Key'], $data['Location Code']
                             )
 
-
                         );
                     } else {
                         $note = sprintf(
@@ -661,10 +661,16 @@ function stock_transactions($_data, $db, $user) {
 
                         );
                     }
+                    $pending = $data['pending'];
+                    if ($pending > 0) {
+                        $note .= ' <span class="discreet italic">('.sprintf(_('%s to be picked'), $pending).')</span>';
+
+                    }
 
 
                     break;
-                case 'In':
+                case
+                    'In':
                     $type = '<i class="fa fa-sign-in fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Audit':
@@ -835,7 +841,7 @@ function supplier_parts($_data, $db, $user, $account) {
     $rtext_label = 'supplier part';
     include_once 'prepare_table/init.php';
 
-    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql         = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $record_data = array();
 
 
@@ -1074,7 +1080,7 @@ function part_categories($_data, $db, $user, $account) {
 
     include_once 'prepare_table/init.php';
 
-    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql         = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $record_data = array();
     if ($result = $db->query($sql)) {
 
@@ -1353,7 +1359,7 @@ function categories($_data, $db, $user) {
     $rtext_label = 'category';
     include_once 'prepare_table/init.php';
 
-    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql         = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $record_data = array();
     if ($result = $db->query($sql)) {
 
@@ -1427,7 +1433,7 @@ function category_all_availeable_parts($_data, $db, $user) {
 
     include_once 'prepare_table/init.php';
 
-    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $sql         = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $record_data = array();
 
     $record_data = array();
@@ -1482,7 +1488,7 @@ function category_all_parts($_data, $db, $user) {
 
     include_once 'prepare_table/init.php';
 
-    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $sql         = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $record_data = array();
 
     $record_data = array();
@@ -1496,7 +1502,7 @@ function category_all_parts($_data, $db, $user) {
                     break;
                 case 'Not in Use':
                     $status = sprintf(
-                        '<span class="warning" ></span>', _('Discontined')
+                        '<span class="warning" ></span>', _('Discontinued')
                     );
 
                     break;
@@ -1510,9 +1516,7 @@ function category_all_parts($_data, $db, $user) {
                 'id'               => (integer)$data['Part SKU'],
                 'reference'        => $data['Part Reference'],
                 'unit_description' => $data['Part Unit Description'],
-                'family'           => ($data['Category Code'] == ''
-                    ? '<span class="very_discreet italic">'._('Not associated').'</span>'
-                    : '<span class="link" onClick="change_view(\'category/'
+                'family'           => ($data['Category Code'] == '' ? '<span class="very_discreet italic">'._('Not associated').'</span>' : '<span class="link" onClick="change_view(\'category/'
                     .$data['Category Key'].'\')">'.$data['Category Code'].'</span>'),
                 'status'           => $status
             );
@@ -1544,7 +1548,7 @@ function product_families($_data, $db, $user) {
     $rtext_label = 'store';
     include_once 'prepare_table/init.php';
 
-    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql         = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $record_data = array();
 
     //print $sql;
@@ -1556,8 +1560,9 @@ function product_families($_data, $db, $user) {
             if ($data['category_data'] == '') {
                 $family          = '<span class="super_discreet">'._('Family not set').'</span>';
                 $number_products = '<span class="super_discreet">-</span>';
-                $operations      = (in_array($data['Store Key'], $user->stores) ? '<i class="fa fa-plus button" aria-hidden="true" onClick="open_new_product_family('.$data['Store Key'].')" ></i>' : '<i class="fa fa-lock "></i>');
-                $code= sprintf('<span >%s</span>', $data['Store Code']);
+                $operations      = (in_array($data['Store Key'], $user->stores) ? '<i class="fa fa-plus button" aria-hidden="true" onClick="open_new_product_family('.$data['Store Key'].')" ></i>'
+                    : '<i class="fa fa-lock "></i>');
+                $code            = sprintf('<span >%s</span>', $data['Store Code']);
 
             } else {
                 $family_data = preg_split('/,/', $data['category_data']);
@@ -1565,8 +1570,9 @@ function product_families($_data, $db, $user) {
 
                 $family          = sprintf('<span class="button" onClick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Store Key'], $family_data[0], $family_data[1]);
                 $number_products = number($data['number_products']);
-                $operations      = (in_array($data['Store Key'], $user->stores) ? '<i class="fa fa-refresh button" aria-hidden="true" onClick="open_new_product_family('.$data['Store Key'].')" )"></i>' : '<i class="fa fa-lock "></i>');
-                $code= sprintf('<span class="button" onClick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Store Key'], $family_data[0], $data['Store Code']);
+                $operations      = (in_array($data['Store Key'], $user->stores) ? '<i class="fa fa-refresh button" aria-hidden="true" onClick="open_new_product_family('.$data['Store Key'].')" )"></i>'
+                    : '<i class="fa fa-lock "></i>');
+                $code            = sprintf('<span class="button" onClick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Store Key'], $family_data[0], $data['Store Code']);
             }
 
 
@@ -1621,7 +1627,7 @@ function sales_history($_data, $db, $user, $account) {
         $rtext_label       = 'quarter';
         $_group_by         = '  group by YEAR(`Date`), QUARTER(`Date`) ';
         $sql_totals_fields = 'DATE_FORMAT(`Date`,"%Y %q")';
-    }  elseif ($_data['parameters']['frequency'] == 'monthly') {
+    } elseif ($_data['parameters']['frequency'] == 'monthly') {
         $rtext_label       = 'month';
         $_group_by         = '  group by DATE_FORMAT(`Date`,"%Y-%m") ';
         $sql_totals_fields = 'DATE_FORMAT(`Date`,"%Y-%m")';
@@ -1635,8 +1641,6 @@ function sales_history($_data, $db, $user, $account) {
         $_group_by         = ' group by Date(`Date`) ';
         $sql_totals_fields = '`Date`';
     }
-
-
 
 
     switch ($_data['parameters']['parent']) {
@@ -1676,14 +1680,9 @@ function sales_history($_data, $db, $user, $account) {
 
 
     $sql = sprintf(
-        'SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=date(%s) AND `Date`<=DATE(%s) %s ORDER BY %s  LIMIT %s',
-        prepare_mysql($from),
-        prepare_mysql($to),
-        $_group_by,
-        "`Date` $order_direction ",
-        "$start_from,$number_results"
+        'SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=date(%s) AND `Date`<=DATE(%s) %s ORDER BY %s  LIMIT %s', prepare_mysql($from), prepare_mysql($to), $_group_by,
+        "`Date` $order_direction ", "$start_from,$number_results"
     );
-
 
 
     $record_data = array();
@@ -1705,9 +1704,9 @@ function sales_history($_data, $db, $user, $account) {
                 $_date = $date;
             } elseif ($_data['parameters']['frequency'] == 'quarterly') {
 
-                $date  = 'Q'.ceil(date('n', strtotime($data['Date'].' +0:00'))/3).' '.strftime("%Y", strtotime($data['Date'].' +0:00'));
+                $date  = 'Q'.ceil(date('n', strtotime($data['Date'].' +0:00')) / 3).' '.strftime("%Y", strtotime($data['Date'].' +0:00'));
                 $_date = $date;
-            }elseif ($_data['parameters']['frequency'] == 'monthly') {
+            } elseif ($_data['parameters']['frequency'] == 'monthly') {
                 $date  = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
                 $_date = $date;
             } elseif ($_data['parameters']['frequency'] == 'weekly') {
@@ -1764,7 +1763,7 @@ function sales_history($_data, $db, $user, $account) {
             } elseif ($_data['parameters']['frequency'] == 'quarterly') {
                 $from_date = gmdate("Y-m-01", strtotime($from_date.'  -1 year  +0:00'));
                 $to_date   = gmdate("Y-m-01", strtotime($to_date.' + 3 month +0:00'));
-            }elseif ($_data['parameters']['frequency'] == 'monthly') {
+            } elseif ($_data['parameters']['frequency'] == 'monthly') {
                 $from_date = gmdate("Y-m-01", strtotime($from_date.' -1 year  +0:00'));
                 $to_date   = gmdate("Y-m-01", strtotime($to_date.' +0:00'));
             } elseif ($_data['parameters']['frequency'] == 'weekly') {
@@ -1772,7 +1771,7 @@ function sales_history($_data, $db, $user, $account) {
                 $to_date   = gmdate("Y-m-d", strtotime($to_date.'  +0:00'));
             } elseif ($_data['parameters']['frequency'] == 'daily') {
                 $from_date = gmdate("Y-m-d", strtotime($from_date.' - 1 year +0:00'));
-                $to_date   =  $to_date ;
+                $to_date   = $to_date;
             }
 
             break;
@@ -1788,58 +1787,56 @@ function sales_history($_data, $db, $user, $account) {
     );
 
 
-
-    $last_year_data=array();
+    $last_year_data = array();
 
     if ($result = $db->query($sql)) {
 
 
         foreach ($result as $data) {
-            
+
             if ($_data['parameters']['frequency'] == 'annually') {
-                $_date = strftime("%Y", strtotime($data['Date'].' +0:00'));
-                $_date_last_year=strftime("%Y", strtotime($data['Date'].' - 1 year'));
-                $date=$_date;
+                $_date           = strftime("%Y", strtotime($data['Date'].' +0:00'));
+                $_date_last_year = strftime("%Y", strtotime($data['Date'].' - 1 year'));
+                $date            = $_date;
             } elseif ($_data['parameters']['frequency'] == 'quarterly') {
-                $_date = 'Q'.ceil(date('n', strtotime($data['Date'].' +0:00')) / 3).' '.strftime("%Y", strtotime($data['Date'].' +0:00'));
+                $_date           = 'Q'.ceil(date('n', strtotime($data['Date'].' +0:00')) / 3).' '.strftime("%Y", strtotime($data['Date'].' +0:00'));
                 $_date_last_year = 'Q'.ceil(date('n', strtotime($data['Date'].' - 1 year')) / 3).' '.strftime("%Y", strtotime($data['Date'].' - 1 year'));
-                $date=$_date;
+                $date            = $_date;
             } elseif ($_data['parameters']['frequency'] == 'monthly') {
-                $_date = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
+                $_date           = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
                 $_date_last_year = strftime("%b %Y", strtotime($data['Date'].' - 1 year'));
-                $date=$_date;
+                $date            = $_date;
             } elseif ($_data['parameters']['frequency'] == 'weekly') {
-                $_date = strftime("%Y%W ", strtotime($data['Date'].' +0:00'));
+                $_date           = strftime("%Y%W ", strtotime($data['Date'].' +0:00'));
                 $_date_last_year = strftime("%Y%W ", strtotime($data['Date'].' - 1 year'));
-                $date  = strftime("(%e %b) %Y %W ", strtotime($data['Date'].' +0:00'));
+                $date            = strftime("(%e %b) %Y %W ", strtotime($data['Date'].' +0:00'));
             } elseif ($_data['parameters']['frequency'] == 'daily') {
-                $_date = date('Y-m-d', strtotime($data['Date'].' +0:00'));
+                $_date           = date('Y-m-d', strtotime($data['Date'].' +0:00'));
                 $_date_last_year = date('Y-m-d', strtotime($data['Date'].'  -1 year'));
-                $date  = strftime("%a %e %b %Y", strtotime($data['Date'].' +0:00'));
+                $date            = strftime("%a %e %b %Y", strtotime($data['Date'].' +0:00'));
             }
 
 
-            $last_year_data[$_date]=array('_sales'=>$data['sales']);
-
-
-
+            $last_year_data[$_date] = array('_sales' => $data['sales']);
 
 
             if (array_key_exists($_date, $record_data)) {
-
 
 
                 $record_data[$_date] = array(
 
                     'sales'      => money($data['sales'], $currency),
                     'deliveries' => number($data['deliveries']),
-                    'date'      => $record_data[$_date]['date']
+                    'date'       => $record_data[$_date]['date']
 
 
                 );
 
-                if ( isset( $last_year_data[$_date_last_year]  )) {
-                    $record_data[$_date]['delta_sales_1yb'] = '<span class="" title="'.money($last_year_data[$_date_last_year]['_sales'], $currency).'">'.delta( $data['sales'],$last_year_data[$_date_last_year]['_sales']).' '.delta_icon($data['sales'], $last_year_data[$_date_last_year]['_sales']).'</span>';
+                if (isset($last_year_data[$_date_last_year])) {
+                    $record_data[$_date]['delta_sales_1yb'] =
+                        '<span class="" title="'.money($last_year_data[$_date_last_year]['_sales'], $currency).'">'.delta($data['sales'], $last_year_data[$_date_last_year]['_sales']).' '.delta_icon(
+                            $data['sales'], $last_year_data[$_date_last_year]['_sales']
+                        ).'</span>';
                 }
             }
         }
@@ -1851,7 +1848,7 @@ function sales_history($_data, $db, $user, $account) {
     }
 
 
-   // print_r($last_year_data);
+    // print_r($last_year_data);
 
     $response = array(
         'resultset' => array(
@@ -1866,6 +1863,54 @@ function sales_history($_data, $db, $user, $account) {
     );
     echo json_encode($response);
 }
+
+
+function parts_no_sko_barcode($_data, $db, $user) {
+
+
+    $rtext_label = 'part';
+
+    include_once 'prepare_table/init.php';
+
+    $sql         = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $record_data = array();
+
+    $record_data = array();
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+            $record_data[] = array(
+                'id'        => (integer)$data['Part SKU'],
+                'reference' => $data['Part Reference'],
+                'description' => $data['Part Package Description'],
+                'barcode'   => sprintf('<input class="sko_barcode" style="width:200px" part_sku="%d"> <i class="fa save_sko_barcode fa-cloud very_discreet" aria-hidden="true"></i> <span class="sko_barcode_msg error" ></span>',
+                                       $data['Part SKU']
+                                       )
+            );
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
 
 
 ?>

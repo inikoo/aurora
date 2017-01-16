@@ -85,7 +85,7 @@
         }
         var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value)
         if (history_key == '') {
-            request += '&metadata=' + JSON.stringify({'deletable': ($('#note_type').hasClass('fa-check-square-o') ? 'No' : 'Yes')})
+            request += '&metadata=' + JSON.stringify({ 'deletable': ($('#note_type').hasClass('fa-check-square-o') ? 'No' : 'Yes')})
         }
 
 

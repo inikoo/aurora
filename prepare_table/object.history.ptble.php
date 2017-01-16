@@ -221,6 +221,9 @@ if ($parameters['f_field'] == 'notes' and $f_value != '') {
 
 $_order = $order;
 $_dir   = $order_direction;
+
+
+
 if ($order == 'date') {
     $order
         = "`History Date` $order_direction , `History Key` $order_direction ";

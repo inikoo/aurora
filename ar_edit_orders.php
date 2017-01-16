@@ -29,6 +29,18 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
+    case 'set_state':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'object' => array('type' => 'string'),
+
+                         'key' => array('type' => 'key'),
+                         'value'         => array('type' => 'string'),
+
+                     )
+        );
+        set_state($data, $editor, $smarty, $db);
+        break;
     case 'set_picker':
         $data = prepare_values(
             $_REQUEST, array(
@@ -39,6 +51,7 @@ switch ($tipo) {
         );
         set_order_handler('Picker',$data, $editor, $smarty, $db);
         break;
+
     case 'set_packer':
         $data = prepare_values(
             $_REQUEST, array(
@@ -143,31 +156,25 @@ function set_order_handler($type,$data, $editor, $smarty, $db) {
 
 }
 
-function set_pscker($data, $editor, $smarty, $db) {
+function set_state($data, $editor, $smarty, $db){
 
 
-    $dn         = get_object('delivery_note', $data['delivery_note_key']);
-    $dn->editor = $editor;
+    $object        = get_object($data['object'], $data['key']);
+    $object->editor = $editor;
 
-    $staff = get_object('staff', $data['staff_key']);
 
-    if ($staff->id) {
-        $dn->update(
-            array(
-                'Delivery Note Assigned Packer Key'   => $staff->id,
-                'Delivery Note Assigned Packer Alias' => $staff->get('Alias')
-            )
-        );
-    }
+
+    $object->set_state($data['value']);
 
     $response = array(
         'state'       => 200,
-        'staff_alias' => $staff->get('Alias'),
-        'staff_key'   => $staff->id
+
     );
+
     echo json_encode($response);
 
 }
+
 
 
 ?>
