@@ -167,9 +167,7 @@ $supplier_part_fields[] = array(
                 $object->get('Part Part Barcode Number')
             ),
             'formatted_value'   => $object->get('Part Barcode Number'),
-            'label'             => ucfirst(
-                $object->get_field_label('Part Barcode Number')
-            ),
+            'label'             => _('Unit barcode (EAN-13)'),
             'required'          => false,
             'server_validation' => json_encode(
                 array(
