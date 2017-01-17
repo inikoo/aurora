@@ -159,13 +159,66 @@ $supplier_part_fields[] = array(
             ),
             'type'              => 'value'
         ),
+
+        array(
+            'id'   => 'Supplier_Part_Package_Description',
+            'edit' => ($edit ? 'string' : ''),
+
+            'value'           => htmlspecialchars(
+                $object->get('Part Part Package Description')
+            ),
+            'formatted_value' => $object->get('Part Package Description'),
+            'label'           => _('Part SKO description'),
+            'required'        => true,
+            'type'            => 'value'
+        ),
+
+
+        array(
+            'id'   => 'Part_SKO_Barcode',
+            'edit' => ($edit ? 'string' : ''),
+
+            'value'             => htmlspecialchars($object->get('Part Part SKO Barcode')),
+            'formatted_value'   => $object->get('SKO Barcode'),
+            'label'             => _('Part SKO barcode').' ('._('Stock control').')',
+            'required'          => false,
+            'server_validation' => json_encode(
+                array(
+                    'tipo'       => 'check_for_duplicates',
+                    'parent'     => 'account',
+                    'parent_key' => 1,
+                    'object'     => 'Part',
+                    'key'        => $object->id
+                )
+            ),
+            'type'              => 'value'
+        ),
+
+        array(
+            'id'              => 'Part_Units_Per_Package',
+            'edit'            => 'smallint_unsigned',
+            'value'           => ($new
+                ? 1
+                : htmlspecialchars(
+                    $object->get('Part Part Units Per Package')
+                )),
+            'formatted_value' => ($new
+                ? 1
+                : $object->get(
+                    'Part Units Per Package'
+                )),
+            'label'           => ucfirst(
+                $object->get_field_label('Part Units Per Package')
+            ),
+            'required'        => true,
+            'type'            => 'value'
+        ),
+
         array(
             'id'   => 'Part_Barcode_Number',
             'edit' => ($edit ? 'barcode' : ''),
 
-            'value'             => htmlspecialchars(
-                $object->get('Part Part Barcode Number')
-            ),
+            'value'             => htmlspecialchars($object->get('Part Part Barcode Number')),
             'formatted_value'   => $object->get('Part Barcode Number'),
             'label'             => _('Unit barcode (EAN-13)'),
             'required'          => false,
@@ -202,20 +255,6 @@ $supplier_part_fields[] = array(
             'type'            => 'value'
         ),
         array(
-            'id'   => 'Supplier_Part_Package_Description',
-            'edit' => ($edit ? 'string' : ''),
-
-            'value'           => htmlspecialchars(
-                $object->get('Part Part Package Description')
-            ),
-            'formatted_value' => $object->get('Part Package Description'),
-            'label'           => ucfirst(
-                $object->get_field_label('Part Package Description')
-            ),
-            'required'        => true,
-            'type'            => 'value'
-        ),
-        array(
             'id'   => 'Supplier_Part_Unit_Description',
             'edit' => ($edit ? 'string' : ''),
 
@@ -249,44 +288,8 @@ $supplier_part_fields[] = array(
             'required'        => true,
             'type'            => 'value'
         ),
-        array(
-            'id'              => 'Supplier_Part_Packages_Per_Carton',
-            'edit'            => 'smallint_unsigned',
-            'value'           => ($new
-                ? 1
-                : htmlspecialchars(
-                    $object->get('Supplier Part Packages Per Carton')
-                )),
-            'formatted_value' => ($new
-                ? 1
-                : $object->get(
-                    'Packages Per Carton'
-                )),
-            'label'           => ucfirst(
-                $object->get_field_label('Supplier Part Packages Per Carton')
-            ),
-            'required'        => true,
-            'type'            => 'value'
-        ),
-        array(
-            'id'              => 'Part_Units_Per_Package',
-            'edit'            => 'smallint_unsigned',
-            'value'           => ($new
-                ? 1
-                : htmlspecialchars(
-                    $object->get('Part Part Units Per Package')
-                )),
-            'formatted_value' => ($new
-                ? 1
-                : $object->get(
-                    'Part Units Per Package'
-                )),
-            'label'           => ucfirst(
-                $object->get_field_label('Part Units Per Package')
-            ),
-            'required'        => true,
-            'type'            => 'value'
-        ),
+
+
     )
 );
 
@@ -360,7 +363,25 @@ $supplier_part_fields[] = array(
 
         ),
 
-
+        array(
+            'id'              => 'Supplier_Part_Packages_Per_Carton',
+            'edit'            => 'smallint_unsigned',
+            'value'           => ($new
+                ? 1
+                : htmlspecialchars(
+                    $object->get('Supplier Part Packages Per Carton')
+                )),
+            'formatted_value' => ($new
+                ? 1
+                : $object->get(
+                    'Packages Per Carton'
+                )),
+            'label'           => ucfirst(
+                $object->get_field_label('Supplier Part Packages Per Carton')
+            ),
+            'required'        => true,
+            'type'            => 'value'
+        ),
         array(
             'id'              => 'Supplier_Part_Minimum_Carton_Order',
             'edit'            => 'smallint_unsigned',
