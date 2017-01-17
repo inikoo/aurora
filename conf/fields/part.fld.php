@@ -173,7 +173,7 @@ $part_fields[] = array(
                 $object->get('Part Barcode Number')
             ),
             'formatted_value'   => $object->get('Barcode Number'),
-            'label'             => _('Unit barcode'),
+            'label'             => _('Unit barcode (EAN-13)'),
             'required'          => false,
             'server_validation' => json_encode(
                 array(
