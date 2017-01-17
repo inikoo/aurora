@@ -1483,7 +1483,7 @@ class SupplierPart extends DB_Table {
                 break;
 
             case 'Supplier Part Packages Per Carton':
-                $label = _("outers (SKO) per carton");
+                $label = _("SKOs per carton");
                 break;
             case 'Supplier Part Carton CBM':
                 $label = _("carton CBM");
