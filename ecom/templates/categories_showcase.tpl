@@ -183,37 +183,16 @@
                                     <div id="{$category_data.data.id}" code_key="{$category_data.data.key}" style="position:relative;" class=" panel image panel_{$category_data.data.size}">
 
 
-                                        <div  class="edit_toolbar hide" section="panels"  style=" z-index: 200;position:absolute;left:-20px;top:7px;">
-                                            <i class="fa close_edit_text fa-window-close fa-fw button code" style="margin-bottom:10px" aria-hidden="true"></i><br>
-                                            <i class="fa  fa-trash error fa-fw button   " style="margin-top:20px" aria-hidden="true"></i><br>
+                                        <iframe class="" src="/panel_code.php?id={$category_data.data.key}"  style="position: absolute; height: 100%;width: 100%;padding:0px;margin:0px;background-color:white "
+                                                marginwidth="0"
+                                                marginheight="0"
+                                                hspace="0"
+                                                vspace="0"
+                                                frameborder="0"
+                                                scrolling="no"
 
-                                        </div>
+                                                sandbox="allow-scripts allow-same-origin allow-popups" ></iframe>
 
-                                        <iframe class="" src="/panel_code.php?id={$category_data.data.key}"  style="position: absolute; height: 100%;width: 100%;border:none " sandbox="allow-scripts allow-same-origin" />
-
-                                        <div class="code_editor_container hide">
-                                            <textarea  id="code_editor_{$category_data.data.key}"  style="width:100%;height: 100%">{$category_data.data.content}</textarea>
-
-                                        </div>
-                                        <div class="panel_controls hide">
-                                            <div class="panel_settings buttons hide">
-
-
-
-
-                                                <div class="flex-item button" type="update_code"><i class="fa fa-file-code-o code_icon" aria-hidden="true"></i></div>
-                                                <div class="flex-item button" type="delete_panel" title="{t}Delete panel{/t}"><i class="fa fa-trash error" aria-hidden="true"></i></div>
-                                            </div>
-
-
-
-                                            <div class="input_container caption hide column_{$stack_index % 4}  " style="">
-                                                <input  value="{$category_data.data.caption}" >
-                                            </div>
-                                            <div class="input_container link_url hide column_{$stack_index % 4}  " style="">
-                                                <input  value="{$category_data.data.link}" placeholder="http://">
-                                            </div>
-                                        </div>
 
                                     </div>
                                 {elseif $category_data.data.type=='page_break'}

@@ -152,9 +152,16 @@
                     <div id="{$category_data.data.id}" code_key="{$category_data.data.key}" style="position:relative;" class=" panel image panel_{$category_data.data.size}">
 
 
-                       
 
-                        <iframe class="" src="/panel_code.php?id={$category_data.data.key}"  style="position: absolute; height: 100%;width: 100%;border:none " sandbox="allow-scripts allow-same-origin" />
+                        <iframe class="" src="/panel_code.php?id={$category_data.data.key}"  style="position: absolute; height: 100%;width: 100%;padding:0px;margin:0px;background-color: white "
+                                marginwidth="0"
+                                marginheight="0"
+                                hspace="0"
+                                vspace="0"
+                                frameborder="0"
+                                scrolling="no"
+
+                                sandbox="allow-scripts allow-same-origin" />
 
                         <textarea  class="hide" id="code_editor_{$category_data.data.key}">{$category_data.data.content}</textarea>
 
