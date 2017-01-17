@@ -167,6 +167,7 @@ $part_fields[] = array(
 
         array(
             'id'   => 'Part_Barcode_Number',
+            'render' => ($supplier_part_scope ? false : true),
             'edit' => ($edit ? 'barcode' : ''),
 
             'value'             => htmlspecialchars(

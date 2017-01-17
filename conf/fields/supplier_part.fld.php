@@ -143,9 +143,7 @@ $supplier_part_fields[] = array(
                 $object->get('Part Part Reference')
             ),
             'formatted_value'   => $object->get('Part Reference'),
-            'label'             => ucfirst(
-                $object->get_field_label('Part Reference')
-            ),
+            'label'             => _('Part SKO reference'),
             'required'          => true,
             'server_validation' => json_encode(
                 array(
