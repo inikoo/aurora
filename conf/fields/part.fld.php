@@ -329,7 +329,7 @@ $part_fields[] = array(
             ),
             'formatted_value'   => $object->get('SKO Barcode'),
             'label'             => ucfirst(
-                $object->get_field_label('SKO Barcode')
+                $object->get_field_label('SKO Barcode').' ('._('Stock control').')'
             ),
             'required'          => false,
             'server_validation' => json_encode(
