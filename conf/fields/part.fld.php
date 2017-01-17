@@ -173,9 +173,7 @@ $part_fields[] = array(
                 $object->get('Part Barcode Number')
             ),
             'formatted_value'   => $object->get('Barcode Number'),
-            'label'             => ucfirst(
-                $object->get_field_label('Part Barcode Number')
-            ),
+            'label'             => _('Unit barcode'),
             'required'          => false,
             'server_validation' => json_encode(
                 array(
