@@ -129,6 +129,7 @@
 
     <div id="items_container" class="product_blocks">
         <i id="add_panel" class="fa fa-cog button" aria-hidden="true" style="position:absolute;left:10px;margin-top:10px"></i>
+        <i id="sort_alpha" class="fa fa-sort-alpha-asc button" aria-hidden="true" style="position:absolute;left:10px;margin-top:40px"></i>
         <div id="products_helper">
          {include file="webpage.preview.products_showcase.products.tpl" }
         </div>>
@@ -280,7 +281,10 @@
 
     });
 
-    $('.order_button').hover(
+
+
+
+        $('.order_button').hover(
         function() {
             var input= $( this ).closest('.ordering').find('.order_input');
             if(input.val()==''){

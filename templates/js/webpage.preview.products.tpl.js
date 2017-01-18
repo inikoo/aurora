@@ -164,3 +164,29 @@
     })
 
 
+
+    $('#sort_alpha').click(function() {
+
+
+            var request = '/ar_edit_website.php?tipo=sort_alpha&object=webpage&key='+$('#webpage_preview').attr('webpage_key')
+            $.getJSON(request, function (data) {
+                if(data.state==200){
+
+                    $('#products_helper').html(data.products)
+
+                    if($('#publish').find('i').hasClass('fa-rocket')) {
+
+                        if (data.publish) {
+                            $('#publish').addClass('changed valid')
+                        } else {
+                            $('#publish').removeClass('changed valid')
+                        }
+                    }
+
+
+                }
+            })
+
+
+        }
+    )
