@@ -19,7 +19,7 @@
 
                 <div class="product_description"  >
                     <span class="code">{$product->get('Code')}</span>
-                    <div class="name">{$product->get('Name')}</div>
+                    <div class="name item_name">{$product->get('Name')}</div>
 
                 </div>
 

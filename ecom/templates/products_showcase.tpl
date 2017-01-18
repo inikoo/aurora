@@ -67,7 +67,7 @@
 
                 <div class="product_description"  >
                     <span class="code">{$product->get('Code')}</span>
-                    <div class="name">{$product->get('Name')}</div>
+                    <div class="name item_name">{$product->get('Name')}</div>
 
                 </div>
 
@@ -199,7 +199,7 @@
 
         <div class="product_description"  >
             <span class="code">{$product->get('Code')}</span>
-            <div class="name">{$product->get('Name')}</div>
+            <div class="name item_name">{$product->get('Name')}</div>
 
         </div>
 
@@ -456,5 +456,29 @@
         }
 
     });
+
+
+
+    $( ".item_name" ).each(function( index ) {
+
+
+        var len_fit = 60; // According to your question, 10 letters can fit in.
+        var un = $(this)
+
+        // Get the lenght of user name.
+        var len_user_name = un.html().length;
+        if(len_fit < len_user_name ) {
+
+            // Calculate the new font size.
+            var size_now = parseInt(un.css("font-size"));
+            var size_new = size_now * len_fit / len_user_name;
+
+            // Set the new font size to the user name.
+            un.css("font-size", size_new);
+
+        }
+
+    });
+
 
 </script>    
