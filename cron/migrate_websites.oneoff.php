@@ -75,7 +75,7 @@ if ($result = $db->query($sql)) {
 }
 */
 
-//normalize_webpage_scopes($db);
+normalize_webpage_scopes($db);
 
 function normalize_webpage_scopes($db) {
 
