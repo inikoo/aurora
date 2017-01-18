@@ -48,7 +48,7 @@ $editor = array(
     'Date'         => gmdate('Y-m-d H:i:s')
 );
 
-
+/*
 $sql = sprintf('SELECT `Product Category Index Category Key` FROM `Product Category Index`  GROUP BY `Product Category Index Category Key`  ');
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
@@ -73,7 +73,7 @@ if ($result = $db->query($sql)) {
     print "$sql\n";
     exit;
 }
-
+*/
 
 //normalize_webpage_scopes($db);
 
