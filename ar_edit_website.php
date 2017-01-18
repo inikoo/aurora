@@ -30,6 +30,15 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
+    case 'sort_alpha':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'key' => array('type' => 'key'),
+
+                     )
+        );
+        update_items_sort_alpha($data, $editor, $smarty, $db);
+        break;
     case 'update_object_public':
         $data = prepare_values(
             $_REQUEST, array(
@@ -1402,6 +1411,70 @@ function update_object_public($data, $editor, $smarty, $db) {
     );
     echo json_encode($response);
 
+
+}
+
+function update_items_sort_alpha($data, $editor, $smarty, $db) {
+
+
+    include_once('class.Page.php');
+
+
+    $webpage = new Page($data['key']);
+
+
+    $webpage->load_scope();
+
+    $webpage->update_items_sort_alpha();
+
+
+
+
+
+    switch ($webpage->scope->get_object_name()) {
+
+
+        case 'Category':
+            include_once('class.Category.php');
+            $category = new Category($webpage->scope->id);
+            //print'x'.$category->get('Category Subject').'x';
+
+
+            if ($category->get('Category Subject') == 'Category') {
+                $overview_items_html = array();
+                $items_html          = array();
+
+                foreach ($updated_result as $section_key => $items) {
+                    $smarty->assign('categories', $items);
+                    $overview_items_html[$section_key] = $smarty->fetch('webpage.preview.categories_showcase.overview_section.items.tpl');
+                    $items_html[$section_key]          = $smarty->fetch('webpage.preview.categories_showcase.section.items.tpl');
+                }
+
+
+                $response = array(
+                    'state'               => 200,
+                    'items_html'          => $items_html,
+                    'overview_items_html' => $overview_items_html,
+                    'publish'             => $webpage->get('Publish')
+
+
+                );
+            } elseif ($category->get('Category Subject') == 'Product') {
+
+                $content_data = $webpage->get('Content Data');
+
+                $response = array(
+                    'state'               => 200,
+                    'products'          => get_products_html($content_data, $webpage, $smarty, $db),
+                    'publish'             => $webpage->get('Publish')
+
+
+                );
+            }
+    }
+
+
+    echo json_encode($response);
 
 }
 

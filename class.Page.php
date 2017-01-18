@@ -7048,6 +7048,83 @@ class Page extends DB_Table {
 
     }
 
+
+
+    function update_items_sort_alpha(){
+
+        $content_data = $this->get('Content Data');
+
+        $updated_metadata = array('section_keys' => array());
+
+
+        switch ($this->scope->get_object_name()) {
+
+
+            case 'Category':
+                include_once('class.Category.php');
+                $category = new Category($this->scope->id);
+                //print'x'.$category->get('Category Subject').'x';
+
+
+                if ($category->get('Category Subject') == 'Product') {
+
+                    $item_section_key=0;
+                    $updated_metadata['section_keys'][] = $item_section_key;
+
+                    $subjects = array();
+
+                    $sql = sprintf(
+                        "SELECT `Product Category Index Stack`,`Product Category Index Key`,`Product Category Index Product ID` AS subject_key FROM `Product Category Index`  left join `Product Dimension` P on ( `Product ID`=`Product Category Index Product ID`)  WHERE  `Product Category Index Website Key`=%d  order by `Product Code File As`",
+                        $this->id
+                    );
+
+                    $count=0;
+                    if ($result = $this->db->query($sql)) {
+                        foreach ($result as $row) {
+
+
+
+                            $subjects[$count++] = $row['Product Category Index Key'];
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+
+
+                    ksort($subjects);
+                    //print_r($subjects);
+
+                    $stack_index = 0;
+                    foreach ($subjects as $tmp => $category_webpage_stack_key) {
+                        $stack_index++;
+
+                        $sql = sprintf(
+                            'UPDATE `Product Category Index` SET `Product Category Index Stack`=%d WHERE `Product Category Index Key`=%d ', $stack_index, $category_webpage_stack_key
+                        );
+
+                        //print "$sql\n";
+
+                        $this->db->exec($sql);
+
+                    }
+
+                }
+
+        }
+
+
+
+        $result = array();
+
+
+
+        return $result;
+
+    }
+
+
     function reindex_items() {
 
         $content_data = $this->get('Content Data');
