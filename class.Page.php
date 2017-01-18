@@ -6404,7 +6404,6 @@ class Page extends DB_Table {
                     }
 
 
-
                     $result = array();
 
                     foreach ($updated_metadata['section_keys'] as $section_key) {
@@ -6542,10 +6541,7 @@ class Page extends DB_Table {
                     }
 
 
-
-
                     $result = array();
-
 
 
                     return $result;
@@ -6557,8 +6553,6 @@ class Page extends DB_Table {
             default:
                 break;
         }
-
-
 
 
     }
@@ -7049,8 +7043,7 @@ class Page extends DB_Table {
     }
 
 
-
-    function update_items_sort_alpha(){
+    function sort_items($type) {
 
         $content_data = $this->get('Content Data');
 
@@ -7068,20 +7061,51 @@ class Page extends DB_Table {
 
                 if ($category->get('Category Subject') == 'Product') {
 
-                    $item_section_key=0;
+                    $item_section_key                   = 0;
                     $updated_metadata['section_keys'][] = $item_section_key;
 
                     $subjects = array();
 
+
+                    switch ($type) {
+                        case 'code_asc':
+                            $_order = 'order by `Product Code File As`';
+                            break;
+                        case 'code_desc':
+                            $_order = 'order by `Product Code File As` desc';
+                            break;
+                        case 'name_asc':
+                            $_order = 'order by `Product Name`';
+                            break;
+                        case 'name_desc':
+                            $_order = 'order by `Product Name` desc';
+                            break;
+                        case 'sales_asc':
+                            $_order = 'order by `Product 1 Year Acc Invoiced Amount`';
+                            break;
+                        case 'sales_desc':
+                            $_order = 'order by Product 1 Year Acc Invoiced Amount` desc';
+                            break;
+                        case 'date_asc':
+                            $_order = 'order by date(`Product Valid From`),`Product Code File As` ';
+                            break;
+                        case 'date_desc':
+                            $_order = 'order by date(`Product Valid From`) desc, `Product Code File As` ';
+                            break;
+                        default:
+                            $_order = 'order by `Product Code File As`';
+
+                    }
+
+
                     $sql = sprintf(
-                        "SELECT `Product Category Index Stack`,`Product Category Index Key`,`Product Category Index Product ID` AS subject_key FROM `Product Category Index`  left join `Product Dimension` P on ( `Product ID`=`Product Category Index Product ID`)  WHERE  `Product Category Index Website Key`=%d  order by `Product Code File As`",
+                        "SELECT `Product Category Index Stack`,`Product Category Index Key`,`Product Category Index Product ID` AS subject_key FROM `Product Category Index`  left join `Product Dimension` P on ( P.`Product ID`=`Product Category Index Product ID`) left join `Product Data` D on ( D.`Product ID`=`Product Category Index Product ID`)  WHERE  `Product Category Index Website Key`=%d  $_order",
                         $this->id
                     );
 
-                    $count=0;
+                    $count = 0;
                     if ($result = $this->db->query($sql)) {
                         foreach ($result as $row) {
-
 
 
                             $subjects[$count++] = $row['Product Category Index Key'];
@@ -7115,9 +7139,7 @@ class Page extends DB_Table {
         }
 
 
-
         $result = array();
-
 
 
         return $result;
