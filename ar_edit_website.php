@@ -30,14 +30,15 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
-    case 'sort_alpha':
+    case 'sort_items':
         $data = prepare_values(
             $_REQUEST, array(
                          'key' => array('type' => 'key'),
+                         'value'       => array('type' => 'string'),
 
                      )
         );
-        update_items_sort_alpha($data, $editor, $smarty, $db);
+        sort_items($data, $editor, $smarty, $db);
         break;
     case 'update_object_public':
         $data = prepare_values(
@@ -1414,7 +1415,7 @@ function update_object_public($data, $editor, $smarty, $db) {
 
 }
 
-function update_items_sort_alpha($data, $editor, $smarty, $db) {
+function sort_items($data, $editor, $smarty, $db) {
 
 
     include_once('class.Page.php');
@@ -1425,7 +1426,7 @@ function update_items_sort_alpha($data, $editor, $smarty, $db) {
 
     $webpage->load_scope();
 
-    $webpage->update_items_sort_alpha();
+    $webpage->sort_items($data['value']);
 
 
 

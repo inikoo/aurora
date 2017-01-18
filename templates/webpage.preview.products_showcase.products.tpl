@@ -18,7 +18,7 @@
 
 
                 <div class="product_description"  >
-                    <span class="code">{$product->get('Code')} {$stack_index} </span>
+                    <span class="code">{$product->get('Code')}</span>
                     <div class="name">{$product->get('Name')}</div>
 
                 </div>

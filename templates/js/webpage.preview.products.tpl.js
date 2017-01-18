@@ -164,12 +164,28 @@
     })
 
 
+    $('#show_sort_options').click(function() {
 
-    $('#sort_alpha').click(function() {
+        if($('#sort_options').hasClass('hide')){
+            $('#sort_options').removeClass('hide').offset({ top:$('#show_sort_options').offset().top-15, left:$('#show_sort_options').offset().left+20  })
+
+        }else{
+            $('#sort_options').addClass('hide')
+
+        }
 
 
-            var request = '/ar_edit_website.php?tipo=sort_alpha&object=webpage&key='+$('#webpage_preview').attr('webpage_key')
-            $.getJSON(request, function (data) {
+        }
+    )
+
+
+
+
+
+    $('#sort_options i').click(function() {
+
+        var request = '/ar_edit_website.php?tipo=sort_items&object=webpage&key='+$('#webpage_preview').attr('webpage_key')+'&value='+$(this).attr('type')
+        $.getJSON(request, function (data) {
                 if(data.state==200){
 
                     $('#products_helper').html(data.products)
@@ -187,6 +203,7 @@
                 }
             })
 
+        $('#sort_options').addClass('hide')
 
         }
     )
