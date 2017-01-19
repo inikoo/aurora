@@ -153,7 +153,7 @@
 
 
 
-                        <iframe class="" src="/panel_code.php?id={$category_data.data.key}"  style="position: absolute; height: 100%;width: 100%;padding:0px;margin:0px;background-color: white "
+                        <iframe class="" src="/panel_code.php?id={$category_data.data.key}"  style="position: absolute; height: 100%;width: 100%;padding:0px;margin:0px "
                                 marginwidth="0"
                                 marginheight="0"
                                 hspace="0"

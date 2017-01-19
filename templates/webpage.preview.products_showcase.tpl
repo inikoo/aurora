@@ -36,6 +36,16 @@
 </div>
 
 
+<div id="code_editor_dialog" class="hide" style="width:920px;height: 300px;position:absolute;left:90px;border:1px solid #ccc;background-color:white;padding:20px 20px 20px 25px;;z-index: 400">
+    <div  class="edit_toolbar " section="panels"  style=" z-index: 200;position:absolute;left:4px;top:17px;">
+        <i id="save_code"  class="fa close_edit_text fa-window-close fa-fw button code" style="margin-bottom:10px" aria-hidden="true"></i><br>
+        <i class="fa  fa-trash error fa-fw button   " style="margin-top:20px" aria-hidden="true"></i><br>
+
+    </div>
+
+    <textarea  id="code_editor"  style="margin-left:20px;"></textarea>
+</div>
+
 
 <span id="ordering_settings" class="hide" data-labels='{ "ordered":"<i class=\"fa fa-thumbs-o-up fa-flip-horizontal \" aria-hidden=\"true\"></i> {t}Ordered{/t}", "order":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {t}Order now{/t}", "update":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {t}Update{/t}"  }'></span>
 
@@ -262,6 +272,20 @@
 </div>
 
 <script>
+
+
+
+    var myCodeMirror = CodeMirror.fromTextArea(document.getElementById('code_editor'),
+        {
+            lineNumbers: true,
+            styleActiveLine: true,
+            matchBrackets: true,
+            theme: 'dracula'
+        }
+    );
+
+    $('#code_editor').data('CodeMirrorInstance', myCodeMirror);
+
 
     {include file="js/webpage.preview.publish.tpl.js" }
     {include file="js/webpage.preview.description_block.tpl.js" }
