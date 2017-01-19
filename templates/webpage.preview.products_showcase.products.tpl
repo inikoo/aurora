@@ -179,7 +179,20 @@
 
                         </div>
 
-                        <iframe class="" src="/panel_code.php?id={$product_data.data.key}" style="overflow:hidden;position:absolute; height: 100%;width: 100%;border:none " sandbox="allow-scripts allow-same-origin" />
+                        <iframe class="" src="/panel_code.php?id={$product_data.data.key}"
+
+
+                                style="position: absolute; height: 100%;width: 100%;padding:0px;margin:0px; "
+                                marginwidth="0"
+                                marginheight="0"
+                                hspace="0"
+                                vspace="0"
+                                frameborder="0"
+                                scrolling="no"
+
+
+
+                                sandbox="allow-scripts allow-same-origin" />
 
                         <div class="code_editor_container hide">
                         <textarea  id="code_editor_{$product_data.data.key}"  style="width:100%;height: 100%">{$product_data.data.content}</textarea>

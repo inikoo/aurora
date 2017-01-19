@@ -119,7 +119,7 @@
 
             if (data.state == 200) {
 
-                $('#items_container').html(data.products)
+                $('#products_helper').html(data.products)
                 $('#add_panel').removeClass('active')
 
 
@@ -177,7 +177,7 @@
 
             if (data.state == 200) {
 
-                $('#items_container').html(data.products)
+                $('#products_helper').html(data.products)
                 $('#add_panel').removeClass('active')
 
                 if ($('#publish').find('i').hasClass('fa-rocket')) {
@@ -319,7 +319,7 @@
 
                   if (data.state == 200) {
 
-                      $('#items_container').html(data.products)
+                      $('#products_helper').html(data.products)
                       $('#add_panel').removeClass('active')
 
 
@@ -757,7 +757,7 @@
 
                 if (data.state == 200) {
 
-                    $('#items_container').html(data.products)
+                    $('#products_helper').html(data.products)
                     $('#add_panel').removeClass('active')
                     if ($('#publish').find('i').hasClass('fa-rocket')) {
                         if (data.publish) {
