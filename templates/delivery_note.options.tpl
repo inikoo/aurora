@@ -21,17 +21,18 @@
 
 <span id="dn_data" class="hide"  dn_key="{$dn->id}"   picker_key="{$dn->get('Delivery Note Assigned Picker Key')}"  packer_key="{$dn->get('Delivery Note Assigned Packer Key')}"
       no_picker_msg="{t}Please assign picker{/t}"
+      no_packer_msg="{t}Please assign packer{/t}"
 
 ></span>
-<div class="table_new_fields">
-  
-    <div id="picking_options" style="align-items: stretch;flex: 1;padding:10px 20px;border-left:1px solid #eee">
+<div class="table_new_fields" style="border-bottom:1px solid #ccc;">
+
+    <div id="picking_options" class="picking_options" style="align-items: stretch;flex: 1;border-left:1px solid #ccc">
        {include file="delivery_note.options.picking.tpl"}
     </div>
-    <div id="packing_options" style="align-items: stretch;flex: 1;padding:10px 20px;border-left:1px solid #eee">
+    <div id="packing_options" class="packing_options  " style="align-items: stretch;flex: 0;padding:10px 20px;border-left:1px solid #eee">
         {include file="delivery_note.options.packing.tpl"}
     </div>
-    
+
     
      </div>
 
@@ -54,10 +55,19 @@
 
     $('#table').on('click', 'i.no_stock_location', function() {
 
-        var settings =  $(this).closest('tr').find('.picking').parent().data('settings')
-        var offset =$(this).offset()
-        $('#set_out_of_stock_items_dialog').removeClass('hide').offset({ top:offset.top-15, left:offset.left-$('#set_out_of_stock_items_dialog').width()-50.0}).attr('transaction_key',settings.transaction_key).attr('item_key',settings.item_key)
-        out_of_stock_dialog_open=true;
+        if($('#set_out_of_stock_items_dialog').hasClass('hide')) {
+
+            var settings = $(this).closest('tr').find('.picking').parent().data('settings')
+            var offset = $(this).offset()
+            $('#set_out_of_stock_items_dialog').removeClass('hide').offset({
+                top: offset.top - 15,
+                left: offset.left - $('#set_out_of_stock_items_dialog').width() - 50.0
+            }).attr('transaction_key', settings.transaction_key).attr('item_key', settings.item_key)
+            out_of_stock_dialog_open = true;
+        }else{
+            $('#set_out_of_stock_items_dialog').addClass('hide')
+            out_of_stock_dialog_open = false;
+        }
 
     });
 
@@ -130,6 +140,17 @@
             if(data.state==200){
 
 
+                for (var key in data.metadata.class_html) {
+                    $('.' + key).html(data.metadata.class_html[key])
+                }
+
+
+                for (var key in data.metadata.hide) {
+                    $('#' + data.metadata.hide[key]).addClass('hide')
+                }
+                for (var key in data.metadata.show) {
+                    $('#' + data.metadata.show[key]).removeClass('hide')
+                }
             }
         })
     })
@@ -141,6 +162,17 @@
             if(data.state==200){
 
 
+                for (var key in data.metadata.class_html) {
+                    $('.' + key).html(data.metadata.class_html[key])
+                }
+
+
+                for (var key in data.metadata.hide) {
+                    $('#' + data.metadata.hide[key]).addClass('hide')
+                }
+                for (var key in data.metadata.show) {
+                    $('#' + data.metadata.show[key]).removeClass('hide')
+                }
             }
         })
     })

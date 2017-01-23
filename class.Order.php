@@ -3755,7 +3755,9 @@ class Order extends DB_Table {
             $date = gmdate('Y-m-d H:i:s');
         }
 
-        if (!($this->data['Order Current Dispatch State'] == 'In Process' or $this->data['Order Current Dispatch State'] == 'Submitted by Customer' or $this->data['Order Current Dispatch State']
+        if (!($this->data['Order Current Dispatch State'] == 'In Process' or
+            $this->data['Order Current Dispatch State'] == 'Submitted by Customer' or
+            $this->data['Order Current Dispatch State']
             == 'In Process by Customer')
         ) {
             $this->error = true;
@@ -3791,37 +3793,20 @@ class Order extends DB_Table {
             'Delivery Note Email'                 => $this->data['Order Email']
 
         );
-        $sql     = sprintf(
-            "INSERT INTO debugtable (`text`,`date`) VALUES (%s,NOW())", prepare_mysql('new DN'.$this->id)
-        );
-        mysql_query($sql);
 
 
-        $dn               = new DeliveryNote('create', $data_dn, $this);
-        $dn->update_stock = $this->update_stock;
 
-        if (isset($this->date_create_inventory_transaction_fact)) {
-            $date = $this->date_create_inventory_transaction_fact;
-        }
+        $dn = new DeliveryNote('create', $data_dn, $this);
 
 
-        $dn->create_inventory_transaction_fact($this->id, $date, $extra_data);
+
+        $this->update(array(
+            'Order Current Dispatch State'=>'Ready to Pick',
+            'Order Current XHTML Dispatch State'=>_('Ready to Pick')
+
+                      ),'no_history');
 
 
-        $this->data['Order Current Dispatch State']       = 'Ready to Pick';
-        $this->data['Order Current XHTML Dispatch State'] = _('Ready to Pick');
-
-        // $sql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql('end creating DN'.$this->id));mysql_query($sql);
-
-
-        $sql = sprintf(
-            "UPDATE `Order Dimension` SET `Order Send to Warehouse Date`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s  WHERE `Order Key`=%d", prepare_mysql($date),
-            prepare_mysql($this->data['Order Current Dispatch State']), prepare_mysql($this->data['Order Current XHTML Dispatch State']), $this->id
-        );
-
-        // $sqlx=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql($sql));mysql_query($sqlx);
-
-        mysql_query($sql);
 
         $this->update_delivery_notes();
         $this->update_full_search();
@@ -3830,7 +3815,7 @@ class Order extends DB_Table {
             'History Abstract' => _('Order send to warehouse'),
             'History Details'  => '',
         );
-        $this->add_subject_history($history_data);
+        $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->table_name , $this->id);
 
         return $dn;
     }
@@ -7530,9 +7515,7 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,
 
                 break;
             case('Shipping And Handing Net Amount'):
-                return money(
-                    $this->data['Order Shipping Net Amount'] + $this->data['Order Charges Net Amount']
-                );
+                return money($this->data['Order Shipping Net Amount'] + $this->data['Order Charges Net Amount']);
                 break;
             case('Date'):
             case('Last Updated Date'):
@@ -7547,9 +7530,7 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,
             case('Post Transactions Dispatched Date'):
             case('Packed Done Date'):
 
-                return strftime(
-                    "%e %b %Y %H:%M", strtotime($this->data['Order '.$key].' +0:00')
-                );
+                return strftime("%e %b %y %H:%M", strtotime($this->data['Order '.$key].' +0:00'));
                 break;
             case('Submitted by Customer Interval'):
                 if ($this->data['Order Submitted by Customer Date'] == '') {
@@ -7718,6 +7699,10 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,
             return $this->data [$_key];
         }
 
+        if (array_key_exists('Order '.$key, $this->data)) {
+            return $this->data['Order '.$key];
+        }
+
         return false;
     }
 
@@ -7730,7 +7715,7 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,
 
         $deliveries = array();
         $sql        = sprintf(
-            "SELECT `Delivery Note Key` FROM `Order Transaction Fact` WHERE `Order Key`=%d  GROUP BY `Delivery Note Key`", $this->id
+            "SELECT `Delivery Note Key` FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d  GROUP BY `Delivery Note Key`", $this->id
         );
 
         if ($result = $this->db->query($sql)) {

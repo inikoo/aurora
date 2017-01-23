@@ -23,10 +23,47 @@ function get_item_quantity($quantity,$to_pick){
 }
 
 
-function get_item_picked($pending,$quantity_on_location,$itf_key,$part_sku,$picked,$part_stock){
+
+function get_item_packed($pending,$itf_key,$part_sku,$packed){
+
+    $pack_pending=$pending-$packed;
 
 
-  $picked = sprintf('<span class="picked_quantity_done %s">  
+
+    $packed = sprintf('<span class="packed_quantity_done %s">  
+ <input class="packed_qty width_50" style="background-color:rgba(192,216,144, 0.2)" ondblclick="show_check_dialog(this)" value="%s" readonly >
+  <i  class="fa  fa-check fa-fw button add_packed " aria-hidden="true"/></span>
+  
+  
+  
+  
+
+                <span data-settings=\'{"field": "Packed", "transaction_key":%d,"item_key":%d ,"on":1 }\' class="packed_quantity %s"  >
+                    <input class="packing width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button add_packed %s" aria-hidden="true">
+                </span>',
+
+
+        ( $pack_pending > 0   ? 'hide' : ''),
+                      number($packed),
+
+
+
+                      $itf_key, $part_sku,
+
+        ($pack_pending > 0  ? '' : 'hide'),
+                      $packed,
+                      $packed, ''
+    );
+
+    return $packed ;
+}
+
+
+
+function get_item_picked($pending,$quantity_on_location,$itf_key,$part_sku,$picked,$part_stock,$barcode,$part_reference,$part_description,$part_image_key){
+
+
+  $picked =sprintf('<span class="picked_quantity_done %s">  
  <input class="picked_qty width_50" style="background-color:rgba(192,216,144, 0.2)" ondblclick="show_check_dialog(this)" value="%s" readonly >
   <i  class="fa  fa-check fa-fw button add_picked " aria-hidden="true"/></span>
   
@@ -36,8 +73,8 @@ function get_item_picked($pending,$quantity_on_location,$itf_key,$part_sku,$pick
   <i  class="fa  %s fa-fw button warning add_picked " aria-hidden="true"/></span>
   
 
-                <span data-settings=\'{"field": "Picked", "transaction_key":%d,"item_key":%d ,"on":1 }\' class="picked_quantity %s"  >
-                    <input class="picking width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button add_picked %s" aria-hidden="true">
+                <span data-settings=\'{"field": "Picked", "transaction_key":%d,"item_key":%d ,"on":1, "reference":"%s" , "description":"%s" , "image_key":%d  }\' class="picked_quantity %s"  >
+                    <input class="picking width_50" value="%s" ovalue="%s" barcode="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button add_picked %s" aria-hidden="true">
                 </span>',
 
 
@@ -51,11 +88,11 @@ function get_item_picked($pending,$quantity_on_location,$itf_key,$part_sku,$pick
             number($picked),
             ($part_stock<1?'fa-ban':'fa-clock-o'),
 
-           $itf_key, $part_sku,
+           $itf_key, $part_sku,$part_reference,$part_description,$part_image_key,
 
-            ($pending != 0 && $quantity_on_location>1   ? '' : 'hide'),
+            ($pending != 0 && $quantity_on_location>=1   ? '' : 'hide'),
              $picked,
-            $picked, ''
+            $picked, $barcode,''
         );
 
 return $picked ;

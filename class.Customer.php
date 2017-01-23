@@ -743,12 +743,10 @@ class Customer extends Subject {
         }
 
 
-        if ($this->update_subject_field_switcher(
-            $field, $value, $options, $metadata
-        )
-        ) {
+        if ($this->update_subject_field_switcher($field, $value, $options, $metadata)) {
             return;
         }
+
 
 
         switch ($field) {

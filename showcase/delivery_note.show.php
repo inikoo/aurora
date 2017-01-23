@@ -25,6 +25,9 @@ function get_delivery_note_showcase($data) {
 
     $delivery_note = $data['_object'];
 
+    $delivery_note->update_totals();
+
+$order=new Order($delivery_note->get('Delivery Note Order Key'));
 
     $parcels     = $delivery_note->get('Parcels');
     $weight      = $delivery_note->data['Delivery Note Weight'];
@@ -36,6 +39,8 @@ function get_delivery_note_showcase($data) {
     $smarty->assign(
         'consignment', ($consignment ? $delivery_note->get('Consignment') : '')
     );
+
+    $smarty->assign('order', $order);
 
 
     return $smarty->fetch('showcase/delivery_note.tpl');

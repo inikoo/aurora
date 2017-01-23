@@ -178,7 +178,7 @@ h1{
 
 
     .more_info{
-        cursor:pointer;position:absolute;width:40px;top:-1px;left:179px;z-index: 200}
+        cursor:pointer;position:absolute;width:40px;top:-1px;left:179px;z-index: 99}
 
 
 
@@ -349,7 +349,7 @@ h1{
 
      .product_header_text p{
          padding:0px ; margin:0px;text-align: center;
-         z-index: 100;position:relative;
+         z-index: 98;position:relative;
      }
 
 

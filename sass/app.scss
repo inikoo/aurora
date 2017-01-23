@@ -706,6 +706,19 @@ right connector from last child*/
   color: #777
 }
 
+
+.super_discreet_on_hover{
+  opacity: .0;
+  color: #777
+}
+
+
+.super_discreet_on_hover:hover{
+  opacity: .3;
+  color: #777
+}
+
+
 .no_discreet {
   opacity: 1;
   color: #555

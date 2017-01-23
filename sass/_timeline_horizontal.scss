@@ -54,6 +54,20 @@
     top: 15px;
     color: #aaa
   }
+  
+  .label .start {
+  
+    margin-bottom: 10px;
+    padding: 0px 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: 100;
+    position: absolute;
+    top: 0px;
+    left: -66%
+  }
+  
 
   .dot {
     padding: 0px 40px;

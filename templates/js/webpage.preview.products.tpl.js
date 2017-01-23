@@ -184,7 +184,7 @@
     $( ".item_name" ).each(function( index ) {
 
 
-        var len_fit = 60; // According to your question, 10 letters can fit in.
+        var len_fit = 50; // According to your question, 10 letters can fit in.
         var un = $(this)
 
         // Get the lenght of user name.

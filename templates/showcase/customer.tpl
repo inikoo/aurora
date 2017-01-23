@@ -1,8 +1,4 @@
-<div id="sticky_note_container">
-    <i style="top:10px" class="fa fa-pencil" aria-hidden="true"></i>
-    <i style="top:30px" class="fa fa-trash" aria-hidden="true"></i>
-    <div id="sticky_note" contenteditable="true" >{$customer->get('Sticky Note')}xx</div>
-</div>
+{include file="sticky_note.tpl" value=$customer->get('Sticky Note') object="Customer" key="{$customer->id}" field="Customer_Sticky_Note"  }
 
 
 <div id="customer" class="subject_profile" key="{$customer->id}" store_key="{$customer->get('Store Key')}">
@@ -13,7 +9,7 @@
                         class="Customer_Name">{$customer->get('Customer Name')}</span>
             </div>
             <div class="data_field">
-                <i title="{t}Contact name{/t}" class="fa fa-user"></i> <span
+                <i title="{t}Contact name{/t}" class="fa fa-male"></i> <span
                         class="Customer_Main_Contact_Name">{$customer->get('Customer Main Contact Name')}</span>
             </div>
             <div class="data_field {if !$customer->get('Customer Tax Number')}hide{/if}">
@@ -189,8 +185,9 @@
     </div>
 </div>
 
-
 <script>
+
+
     function email_width_hack() {
         var email_length = $('#showcase_Customer_Main_Plain_Email').text().length
 

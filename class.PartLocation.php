@@ -1455,7 +1455,6 @@ class PartLocation extends DB_Table {
     function update_can_pick($value) {
 
 
-        // Note:Inverse Translation InvT
         if (preg_match('/^(yes|si)$/i', $value)) {
             $value = 'Yes';
         } else {
@@ -1465,13 +1464,17 @@ class PartLocation extends DB_Table {
             "UPDATE `Part Location Dimension` SET `Can Pick`=%s ,`Last Updated`=NOW() WHERE `Part SKU`=%d AND `Location Key`=%d ", prepare_mysql($value), $this->part_sku, $this->location_key
         );
 
+
+
         $update = $this->db->prepare($sql);
         $update->execute();
 
         if ($update->rowCount()) {
             $this->updated          = true;
             $this->data['Can Pick'] = $value;
-            $this->part->update_picking_location();
+
+
+
         }
 
 

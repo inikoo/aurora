@@ -111,9 +111,7 @@ abstract class DB_Table extends stdClass {
     }
 
     protected function update_field($field, $value, $options = '') {
-        $this->update_table_field(
-            $field, $value, $options, $this->table_name, $this->table_name.' Dimension', $this->id
-        );
+        $this->update_table_field($field, $value, $options, $this->table_name, $this->table_name.' Dimension', $this->id);
 
     }
 
@@ -244,7 +242,7 @@ abstract class DB_Table extends stdClass {
                 "UPDATE `%s` SET `%s`=%s WHERE `%s`=%d", addslashes($table_full_name), addslashes($field), prepare_mysql($value, $null_if_empty), addslashes($key_field), $table_key
             );
 
-            //print "$sql\n";
+           // print "$sql\n";
 
         }
 
@@ -307,9 +305,7 @@ abstract class DB_Table extends stdClass {
 
         );
 
-        $history_key = $this->add_history(
-            $history_data, false, false, $options
-        );
+        $history_key = $this->add_history($history_data, false, false, $options);
 
 
         if (!in_array($table_name, array())) {
@@ -318,7 +314,7 @@ abstract class DB_Table extends stdClass {
             $sql = sprintf(
                 "INSERT INTO `%s History Bridge` VALUES (%d,%d,'No','No','Changes')", $table_name, $table_key, $history_key
             );
-
+           // print "$sql\n";
             $this->db->exec($sql);
         }
 
@@ -327,9 +323,7 @@ abstract class DB_Table extends stdClass {
     function add_history($raw_data, $force = false, $post_arg1 = false, $options = '') {
 
 
-        return $this->add_table_history(
-            $raw_data, $force, $post_arg1, $options, $this->table_name, $this->get_main_id()
-        );
+        return $this->add_table_history($raw_data, $force, $post_arg1, $options, $this->table_name, $this->get_main_id());
     }
 
     function add_table_history($raw_data, $force, $post_arg1, $options = '', $table_name, $table_key) {
@@ -358,6 +352,10 @@ abstract class DB_Table extends stdClass {
         foreach ($raw_data as $key => $value) {
             $data[$key] = $value;
         };
+
+
+        if($data['Action']=='updated')$data['Action']='edited';
+
         if (array_key_exists('User Key', $raw_data)) {
             $data['User Key'] = $raw_data['User Key'];
         } else {
@@ -537,7 +535,7 @@ abstract class DB_Table extends stdClass {
             prepare_mysql($data['History Abstract']), prepare_mysql($data['History Details']), $data['User Key'], prepare_mysql($data['Deep']), prepare_mysql($data['Metadata'])
         );
 
-
+      //  print "$sql\n";
         $this->db->exec($sql);
 
         $history_key = $this->db->lastInsertId();

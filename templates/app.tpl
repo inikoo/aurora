@@ -65,7 +65,8 @@
 
 
         <script type="text/javascript" src="/js/app.js"></script>
-        <script type="text/javascript" src="/js/keyboard_shorcuts.js"></script>
+        <script type="text/javascript" src="/js/keyboard_shortcuts.js"></script>
+        <script type="text/javascript" src="/js/barcode_scanner.js"></script>
         <script type="text/javascript" src="/js/search.js"></script>
         <script type="text/javascript" src="/js/table.js"></script>
         <script type="text/javascript" src="/js/validation.js"></script>
@@ -115,6 +116,11 @@
         <script type="text/javascript" src="/js/libs/amcharts/amstock.js"></script>
         <script type="text/javascript" src="/js/libs/amcharts/plugins/dataloader/dataloader.min.js"></script>
         <script type="text/javascript" src="/js/libs/amcharts/plugins/export/export.min.js"></script>
+        <script type="text/javascript" src="/js/libs/jquery.scannerdetection.js"></script>
+
+
+
+
     {else}
         <link href="/build/css/libs.min.css" rel="stylesheet">
         <link href="/build/css/app.min.css" rel="stylesheet">
