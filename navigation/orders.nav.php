@@ -776,7 +776,6 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
                         prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                     );
 
-
                     if ($result = $db->query($sql)) {
                         if ($row = $result->fetch()) {
                             $prev_key   = $row['object_key'];
@@ -787,6 +786,7 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
                         exit;
                     }
 
+                  //  print "$sql ";
 
                     $sql = sprintf(
                         "select `Order Public ID` object_name,O.`Order Key` as object_key from $table   $where $wheref
@@ -804,7 +804,7 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
                         print_r($error_info = $db->errorInfo());
                         exit;
                     }
-
+                  //  print "$sql ";
 
                     if ($order_direction == 'desc') {
                         $_tmp1      = $prev_key;
@@ -882,7 +882,8 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
             $search_placeholder = _('Search customers');
 
 
-        } elseif ($data['parent'] == 'store') {
+        }
+        elseif ($data['parent'] == 'store') {
             $store     = new Store($data['parent_key']);
             $up_button = array(
                 'icon'      => 'arrow-up',
@@ -932,7 +933,8 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
             $search_placeholder = _('Search orders');
 
 
-        } elseif ($data['parent'] == 'delivery_note') {
+        }
+        elseif ($data['parent'] == 'delivery_note') {
             $delivery_note = new DeliveryNote($data['parent_key']);
             $up_button     = array(
                 'icon'      => 'arrow-up',
@@ -983,7 +985,8 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
             $search_placeholder = _('Search delivery notes');
 
 
-        } elseif ($data['parent'] == 'invoice') {
+        }
+        elseif ($data['parent'] == 'invoice') {
             $invoice   = new Invoice($data['parent_key']);
             $up_button = array(
                 'icon'      => 'arrow-up',

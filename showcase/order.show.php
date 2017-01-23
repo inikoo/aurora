@@ -12,10 +12,11 @@
 
 function get_order_showcase($data, $smarty, $user, $db) {
 
-
     if (!$data['_object']->id) {
         return "";
     }
+
+
 
     $smarty->assign('order', $data['_object']);
 

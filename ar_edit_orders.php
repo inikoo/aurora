@@ -29,6 +29,19 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
+
+    case 'create_delivery_note':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'object' => array('type' => 'string'),
+
+                         'key' => array('type' => 'key'),
+
+                     )
+        );
+        create_delivery_note($data, $editor, $smarty, $db,$account);
+        break;
+
     case 'set_state':
         $data = prepare_values(
             $_REQUEST, array(
@@ -166,15 +179,59 @@ function set_state($data, $editor, $smarty, $db){
 
     $object->set_state($data['value']);
 
+
+
     $response = array(
         'state'       => 200,
-
+        'metadata'         => $object->get_update_metadata()
     );
 
     echo json_encode($response);
 
 }
 
+function create_delivery_note($data, $editor, $smarty, $db,$account){
 
+
+    $order        = get_object('order', $data['key']);
+    $order->editor = $editor;
+
+
+
+
+
+    $dn=$order->send_to_warehouse();
+
+
+
+
+
+
+    if (!$order->error) {
+        include 'utils/new_fork.php';
+        $msg=new_housekeeping_fork('send_to_warehouse',array('type'=>'send_to_warehouse','delivery_note_key'=>$dn->id),$account->get('Account Code'));
+
+        $response=array(
+            'state'=>200,
+            'order_key'=>$order->id,
+            'dn_key'=>$dn->id,
+          //  'dispatch_state'=>get_order_formated_dispatch_state($order->get('Order Current Dispatch State'),$order->id),
+           // 'operations'=>get_orders_operations($order->data,$user)
+
+        );
+
+    } else {
+
+        $response=array('state'=>400,'msg'=>$order->msg,'number_items'=>$order->get('Order Number Items'),'order_key'=>$order->id);
+
+
+    }
+
+
+
+
+    echo json_encode($response);
+
+}
 
 ?>

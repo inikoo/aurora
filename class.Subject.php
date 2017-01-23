@@ -651,6 +651,8 @@ class Subject extends DB_Table {
 
     function update_subject_field_switcher($field, $value, $options = '', $metadata) {
 
+
+
         switch ($field) {
 
 
@@ -985,9 +987,7 @@ class Subject extends DB_Table {
                 $old_value = $this->get('Main Contact Name');
 
                 if ($value == '' and $this->data[$this->table_name.' Company Name'] == '') {
-                    $this->msg   = _(
-                        "Contact name can't be emply if the company name is empty as well"
-                    );
+                    $this->msg   = "Contact name can't be empty if the company name is empty";
                     $this->error = true;
 
                     return;
@@ -995,30 +995,20 @@ class Subject extends DB_Table {
 
                 $this->update_field($field, $value, $options);
                 if ($this->data[$this->table_name.' Company Name'] == '') {
-                    $this->update_field(
-                        $this->table_name.' Name', $value, 'no_history'
-                    );
+                    $this->update_field($this->table_name.' Name', $value, 'no_history');
 
                 }
 
 
                 if ($old_value == $this->get('Contact Address Recipient')) {
-                    $this->update_field(
-                        $this->table_name.' Contact Address Recipient', $value, 'no_history'
-                    );
-                    $this->update_address_formatted_fields(
-                        'Contact', 'no_history'
-                    );
+                    $this->update_field($this->table_name.' Contact Address Recipient', $value, 'no_history');
+                    $this->update_address_formatted_fields('Contact', 'no_history');
 
                 }
                 if ($this->table_name == 'Customer') {
                     if ($old_value == $this->get('Invoice Address Recipient')) {
-                        $this->update_field(
-                            $this->table_name.' Invoice Address Recipient', $value, 'no_history'
-                        );
-                        $this->update_address_formatted_fields(
-                            'Invoice', 'no_history'
-                        );
+                        $this->update_field($this->table_name.' Invoice Address Recipient', $value, 'no_history');
+                        $this->update_address_formatted_fields('Invoice', 'no_history');
 
                     }
                 }
@@ -1027,9 +1017,7 @@ class Subject extends DB_Table {
                     $this->table_name.'_Name' => array(
                         'field'           => $this->table_name.'_Name',
                         'render'          => true,
-                        'value'           => $this->get(
-                            $this->table_name.' Name'
-                        ),
+                        'value'           => $this->get($this->table_name.' Name'),
                         'formatted_value' => $this->get('Name'),
 
 

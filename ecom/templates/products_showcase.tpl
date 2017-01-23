@@ -116,8 +116,8 @@
                 {/if}
                 {else}
                 <div class="ordering log_out " >
-                    <div ><span onClick="location.href='login.php?from={$page->id}'" class="button login_button" >{t}Login{/t}</span></div>
-                    <div ><span onClick="location.href='registration.php'" class="button register_button" >{t}Register{/t}</span></div>
+                    <div ><span onClick="location.href='login.php?from={$page->id}'" class="button login_button label_when_log_out" >{t}Login{/t}</span></div>
+                    <div ><span onClick="location.href='registration.php'" class="button register_button label_when_log_out" >{t}Register{/t}</span></div>
                 </div>
                 {/if}
 
@@ -142,7 +142,13 @@
 
 
 
-                    <iframe class="" src="/panel_code.php?id={$product_data.data.key}"  style=" height: 100%;width: 100%;border:none " sandbox="allow-scripts allow-same-origin allow-popups" >
+                    <iframe class="" src="/panel_code.php?id={$product_data.data.key}"      style="position: absolute; height: 100%;width: 100%;padding:0px;margin:0px;background-color: white "
+                            marginwidth="0"
+                            marginheight="0"
+                            hspace="0"
+                            vspace="0"
+                            frameborder="0"
+                            scrolling="no" sandbox="allow-scripts allow-same-origin allow-popups" >
 
                     </iframe>
 
@@ -248,8 +254,8 @@
             {/if}
         {else}
             <div class="ordering log_out " >
-                <div ><span onClick="location.href='login.php?from={$page->id}'" class="button login_button" >{t}Login{/t}</span></div>
-                <div ><span onClick="location.href='registration.php'" class="button register_button" >{t}Register{/t}</span></div>
+                <div ><span onClick="location.href='login.php?from={$page->id}'" class="button login_button label_when_log_out" >{t}Login{/t}</span></div>
+                <div ><span onClick="location.href='registration.php'" class="button register_button label_when_log_out" >{t}Register{/t}</span></div>
             </div>
         {/if}
 
@@ -386,13 +392,11 @@
     
     
       
-           var order_qty=$(this).prev('input').val()
-           $(this).find('i').removeClass('fa-hand-pointer-o').addClass('fa-spinner fa-spin  ')
-           $(this).prev('input').prop('readonly', true);
+            var order_qty=$(this).prev('input').val()
+            $(this).find('i').removeClass('fa-hand-pointer-o').addClass('fa-spinner fa-spin  ')
+            $(this).prev('input').prop('readonly', true);
 
-
-
-           var order_key='{$order->id}';
+            var order_key='{$order->id}';
             if(order_key=='')order_key=0;
 
            
@@ -412,8 +416,8 @@
             }else{
                 element.html($('#ordering_settings').data('labels').order).removeClass('ordered')
             }
-            
-               if(data.quantity==0)data.quantity=''
+
+            if(data.quantity==0)data.quantity=''
             
             element.prev('input').val(data.quantity).attr('ovalue',data.quantity).prop('readonly', false);
             
@@ -459,10 +463,29 @@
 
 
 
+    $( ".label_when_log_out" ).each(function( index ) {
+
+
+        var len_fit = 10;
+        var un = $(this)
+
+
+        var len_user_name = un.html().length;
+        if(len_fit < len_user_name ) {
+
+            var size_now = parseInt(un.css("font-size"));
+            var size_new = size_now * len_fit / len_user_name;
+            un.css("font-size", size_new);
+
+        }
+
+    });
+
+
     $( ".item_name" ).each(function( index ) {
 
 
-        var len_fit = 60; // According to your question, 10 letters can fit in.
+        var len_fit = 50; // According to your question, 10 letters can fit in.
         var un = $(this)
 
         // Get the lenght of user name.

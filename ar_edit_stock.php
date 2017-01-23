@@ -29,6 +29,20 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
+    case 'set_as_picking_location':
+
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'part_sku'             => array('type' => 'key'),
+                         'location_key'    => array('type' => 'key'),
+
+                     )
+        );
+
+
+        set_as_picking_location($account, $db, $user, $editor, $data, $smarty);
+        break;
+
 
     case 'place_part':
 
@@ -477,5 +491,57 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
 
 }
 
+
+function set_as_picking_location($account, $db, $user, $editor, $data, $smarty){
+
+    $part=get_object('part',$data['part_sku']);
+
+
+    $ok=false;
+    foreach($part->get_locations('part_location_object') as $part_location){
+        if($part_location->location_key==$data['location_key']){
+            $ok=true;
+        }
+    }
+
+  if($ok){
+
+
+
+      foreach($part->get_locations('part_location_object') as $part_location){
+
+
+
+          if($part_location->location_key==$data['location_key']){
+              $part_location->update(array('Part Location Can Pick'=>'Yes'));
+          }else{
+              $part_location->update(array('Part Location Can Pick'=>'No'));
+          }
+
+
+
+      }
+
+      $response = array(
+          'state' => 200,
+          'part_locations_data'=>$part->get_locations('data')
+
+      );
+
+  }else{
+      $response = array(
+          'state' => 400,
+          'msg'   => 'location not found'
+      );
+
+  }
+
+
+
+    echo json_encode($response);
+
+
+
+}
 
 ?>

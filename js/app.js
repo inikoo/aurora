@@ -38,7 +38,15 @@ $(document).ready(function () {
         key_press(e)
     });
 
+
+
+    $(document).scannerDetection(function(value){
+
+        scanned_barcode(value)
+    });
+
 })
+
 
 
 function change_browser_history_state(request) {

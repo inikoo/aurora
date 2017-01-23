@@ -3,7 +3,7 @@
 {assign payments $order->get_payments('objects')}
 
 <div class="timeline_horizontal with_time">
-
+    {foreach from=$deliveries item=dn name=delivery_notes}
     <ul class="timeline" id="timeline">
         <li id="submitted_node" class="li {if $order->get('State Index')>=30}complete{/if}">
             <div class="label">
@@ -17,51 +17,41 @@
             </div>
         </li>
 
-        <li id="send_node" class="li  {if $order->get('State Index')>=60}complete{/if} ">
+        <li id="send_node" class="li  {if $dn->id}complete{/if} ">
             <div class="label">
-                <span class="state" style="position:relative;left:5px">{t}Delivery note{/t} <span></i></span></span>
+                <span class="state" style="position:relative;left:5px">&nbsp;{$dn->get('ID')}&nbsp;<span></i></span></span>
             </div>
             <div class="timestamp">
 			<span class="Deliveries_Public_IDs" style="position:relative;left:5px">&nbsp;
-                {foreach from=$deliveries item=dn name=delivery_notes}
-                    <span class="{if $smarty.foreach.delivery_notes.index != 0}hide{/if}">{$dn->get('ID')}</span>
-                {/foreach}
+
+                    <span class="">&nbsp;{$dn->get('Creation Date')}&nbsp;</span>
+
                 &nbsp;</span>
             </div>
             <div class="truck">
             </div>
         </li>
-        <li id="send_node" class="li  {if $order->get('State Index')>=60}complete{/if}">
+
+        <li id="warehouse_node" class="li  {if $dn->get('State Index')>=70}complete{/if}">
             <div class="label">
-                <span class="state ">{t}Send to warehouse{/t} <span></i></span></span>
+                <span class="state ">&nbsp;{$dn->get('State')}&nbsp;<span></i></span></span>
             </div>
             <div class="timestamp">
-                <span class="Order_Inputted_Date">&nbsp;{foreach from=$deliveries item=dn name=delivery_notes}<span
-                    class="{if $smarty.foreach.delivery_notes.index != 0}hide{/if}">{$dn->get('Creation Date')}</span>{/foreach}
+                <span class="Order_Inputted_Date">&nbsp;<span
+                    class="">{$dn->get('Picking and Packing Percentage or Date')}</span>
                     &nbsp;</span>
             </div>
             <div class="dot">
             </div>
         </li>
-        <li id="send_node" class="li  {if $order->get('State Index')>=60}complete{/if}">
+
+        <li class="li {if $order->get('State Index')==100}complete{/if}">
             <div class="label">
-                <span class="state ">{t}Start Picking{/t} <span></i></span></span>
+                <span class="state">{t}Dispatch approved{/t}</span>
             </div>
             <div class="timestamp">
-                <span class="Order_Inputted_Date">&nbsp;{foreach from=$deliveries item=dn name=delivery_notes}<span
-                    class="{if $smarty.foreach.delivery_notes.index != 0}hide{/if}">{$dn->get('Start Picking Date')}</span>{/foreach}
-                    &nbsp;</span>
-            </div>
-            <div class="dot">
-            </div>
-        </li>
-        <li id="send_node" class="li  {if $order->get('State Index')>=60}complete{/if}">
-            <div class="label">
-                <span class="state ">{t}Packed{/t} <span></i></span></span>
-            </div>
-            <div class="timestamp">
-                <span class="Order_Inputted_Date">&nbsp;{foreach from=$deliveries item=dn name=delivery_notes}<span
-                    class="{if $smarty.foreach.delivery_notes.index != 0}hide{/if}">{$dn->get('Picking and Packing Percentage or Date')}</span>{/foreach}
+                <span>&nbsp;<span
+                            class="{if $smarty.foreach.delivery_notes.index != 0}hide{/if}">{$dn->get('Dispatched Date')}</span>
                     &nbsp;</span>
             </div>
             <div class="dot">
@@ -73,17 +63,18 @@
                 <span class="state">{t}Dispatched{/t}</span>
             </div>
             <div class="timestamp">
-                <span>&nbsp;{foreach from=$deliveries item=dn name=delivery_notes}<span
-                    class="{if $smarty.foreach.delivery_notes.index != 0}hide{/if}">{$dn->get('Dispatched Date')}</span>{/foreach}
+                <span>&nbsp;<span
+                    class="{if $smarty.foreach.delivery_notes.index != 0}hide{/if}">{$dn->get('Dispatched Date')}</span>
                     &nbsp;</span>
             </div>
             <div class="dot">
             </div>
         </li>
     </ul>
+    {/foreach}
 </div>
 
-<div class="order" style="display: flex;" data-object="{$object_data}">
+<div id="order" class="order" style="display: flex;" data-object="{$object_data}" order_key="{$order->id}">
     <div class="block" style=" align-items: stretch;flex: 1">
         <div class="data_container" style="padding:5px 10px">
             <div class="data_field">
@@ -264,22 +255,20 @@
     </div>
     <div class="block " style="align-items: stretch;flex: 1 ">
 
-
-        <div class="delivery_notes" style="margin-bottom:10px;position:relative;top:-5px">
+        <div class="delivery_notes" style="margin-bottom:10px;position:relative;top:-5px;">
             <div id="create_delivery"
-                 class="delivery_node {if {$order->get('State Index')|intval}<30 or ($order->get('Order Ordered Number Items')-$order->get('Order Number Supplier Delivery Items'))==0  }hide{/if}"
-                 style="height:30px;clear:both;border-top:1px solid #ccc;border-bottom:1px solid #ccc">
+                 class="delivery_node {if {$order->get('State Index')|intval}>30 or ( {$order->get('State Index')|intval}<10)   }hide{/if}"
+                 style="height:30px;clear:both;border-bottom:1px solid #ccc">
 
                 <div id="back_operations"></div>
-                <span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic"><i
-                            class="fa fa-truck  button" aria-hidden="true"></i> {t}Delivery{/t} </span>
-                <div id="forward_operations">
+                <span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic"><i class="fa fa-truck  button" aria-hidden="true"></i> {t}Delivery note{/t} </span>
+                <div id="forward_operations" ">
 
                     <div id="received_operations"
-                         class="order_operation {if !($order->get('Order State')=='Submitted' or  $order->get('Order State')=='Send') }hide{/if}">
+                         class="order_operation ">
                         <div class="square_button right" style="padding:0;margin:0;position:relative;top:0px"
-                             title="{t}Input delivery note{/t}">
-                            <i class="fa fa-plus" aria-hidden="true" onclick="show_create_delivery()"></i>
+                             title="{t}Send to warehouse{/t}">
+                            <i class="fa fa-plus" aria-hidden="true" onclick="create_delivery_note()"></i>
 
                         </div>
                     </div>
@@ -289,13 +278,23 @@
 
             </div>
             {foreach from=$deliveries item=dn}
-                <div class="delivery_node" style="height:30px;clear:both;border-bottom:1px solid #ccc">
+                <div class="delivery_node {if !$dn->id}hide{/if}" style="height:30px;clear:both;border-bottom:1px solid #ccc"   >
                     <span style="float:left;padding-left:10px;padding-top:5px"> <span class="button"
-                                                                                      onClick="change_view('order/{$order->id}/delivery_note/{$dn->id}')"> <i
+                                                                                      onClick="change_view('delivery_notes/{$dn->get('Delivery Note Store Key')}/{$dn->id}')"> <i
                                     class="fa fa-truck fa-fw "
-                                    aria-hidden="true"></i> {$dn->get('ID')}</span> ({$dn->get('Abbreviated State')}
-                        ) </span>
+                                    aria-hidden="true"></i> {$dn->get('ID')}</span> ({$dn->get('Abbreviated State')}) </span>
+
+                    <div id="forward_operations"  class="order_operation {if $dn->get('Delivery Note State')!='Packed'  }hide{/if}">
+                        <div class="square_button right" style="padding:0;margin:0;position:relative;top:0px"
+                             title="{t}Approve dispatch{/t}">
+                            <i class="fa fa-thumbs-up" aria-hidden="true" dn_key="{$dn->id}" onclick="approve_dispatch(this)"></i>
+                        </div>
+
+                    </div>
+
                 </div>
+
+
             {/foreach}
         </div>
         <div class="invoices" style="margin-bottom:10px">
@@ -405,3 +404,29 @@
     <div style="clear:both">
     </div>
 </div>
+
+<script>
+
+    function create_delivery_note(element){
+
+        var request = '/ar_edit_orders.php?tipo=create_delivery_note&object=order&key='+$('#order').attr('order_key')
+        $.getJSON(request, function (data) {
+            if(data.state==200){
+
+
+            }
+        })
+    }
+
+    function approve_dispatch(element){
+
+        var request = '/ar_edit_orders.php?tipo=set_state&object=delivery_note&key='+$(element).attr('dn_key')+'&value=Approved'
+        $.getJSON(request, function (data) {
+            if(data.state==200){
+
+
+            }
+        })
+    }
+
+</script>

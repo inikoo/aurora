@@ -50,6 +50,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             $object = new Invoice($key);
             break;
         case 'delivery_note':
+        case 'deliverynote':
         case 'pick_aid':
         case 'pack_aid':
             include_once 'class.DeliveryNote.php';

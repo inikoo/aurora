@@ -576,6 +576,14 @@ right connector from last child*/
   opacity: .3;
   color: #777; }
 
+.super_discreet_on_hover {
+  opacity: .0;
+  color: #777; }
+
+.super_discreet_on_hover:hover {
+  opacity: .3;
+  color: #777; }
+
 .no_discreet {
   opacity: 1;
   color: #555; }
@@ -2204,6 +2212,16 @@ input.input_file {
     left: 55%;
     top: 15px;
     color: #aaa; }
+  .timeline_horizontal .label .start {
+    margin-bottom: 10px;
+    padding: 0px 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: 100;
+    position: absolute;
+    top: 0px;
+    left: -66%; }
   .timeline_horizontal .dot {
     padding: 0px 40px;
     display: flex;
@@ -2583,5 +2601,17 @@ input.input_file {
 
   #app_main {
     margin-left: 40px; } }
+iframe {
+  margin: 0px !important;
+  padding: 0px !important;
+  background-color: #DDDDDD;
+  border: 0px !important; }
+
+html, body {
+  margin: 0px !important;
+  padding: 0px !important;
+  border: 0px !important;
+  width: 100%;
+  height: 100%; }
 
 /*# sourceMappingURL=app.css.map */

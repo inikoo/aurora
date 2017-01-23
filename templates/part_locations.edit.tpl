@@ -1,13 +1,13 @@
 {foreach $locations_data item=location_data}
-    <tr class="locations">
+    <tr id="part_location_edit_{$location_data.location_key}" class="locations"  location_key="{$location_data.location_key}" >
         <td style="width:20px" class="unlink_operations hide"><i class="fa fa-fw  fa-unlink button super_discreet"
                                                                  aria-hidden="true" title="{t}Disassociate location{/t}"
                                                                  onclick="disassociate_location(this)"></i></td>
         <td>
-	    <span onclick="change_view('/locations/{$location_data.warehouse_key}/{$location_data.location_key}')"
-              class="link location_info">
-	        <span class="location_used_for_icon">{$location_data.location_used_for_icon}</span> 
-	        <span class="location_code">{$location_data.location_code}</span></span>
+	    <span
+              class=" location_info">
+	        <span class="location_used_for_icon"><i onclick="set_as_picking_location({$part_sku},{$location_data.location_key})" class="fa fa-fw fa-shopping-basket  {if $location_data.can_pick=='No'}super_discreet_on_hover button{else}{/if}   " aria-hidden="true" title="{if $location_data.can_pick=='No'}{t}Set as picking location{/t}{else}{t}Picking location{/t}{/if}" ></i></span>
+	        <span onclick="change_view('/locations/{$location_data.warehouse_key}/{$location_data.location_key}')" class="link location_code">{$location_data.location_code}</span></span>
 
             <span class="very_discreet recommendations">
 	        <span onClick="open_edit_min_max(this)"

@@ -910,6 +910,10 @@ class Product extends Asset {
             "SELECT `Product Part Key`,`Product Part Linked Fields`,`Product Part Part SKU`,`Product Part Ratio`,`Product Part Note` FROM `Product Part Bridge` WHERE `Product Part Product ID`=%d ",
             $this->id
         );
+
+
+
+
         $parts_data = array();
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
@@ -1987,6 +1991,8 @@ class Product extends Asset {
 
     function update_web_state($use_fork = true) {
 
+
+        include_once('class.Category.php');
 
         $old_web_state = $this->get('Product Web State');
 

@@ -38,3 +38,5 @@ deleteme.php
 css/jquery-ui.old.css
 
 js/libs/jquery-ui.old.js
+
+*.wcpcache

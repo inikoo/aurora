@@ -433,7 +433,7 @@ function order_items($_data, $db, $user) {
 
 
         if ($data['Current Dispatching State'] == 'Out of Stock in Basket') {
-            $description .= '<br> <span class="attention"><img src="/art/icons/error.png"> '._('Product out of stock, removed from basket').'</span>';
+            $description .= '<br> <span class="warning"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> '._('Product out of stock, removed from basket').'</span>';
             $quantity = number($data['Out of Stock Quantity']);
 
             $class = 'out_of_stock';
@@ -609,6 +609,9 @@ function delivery_note_items($_data, $db, $user) {
 
 
         $to_pick  = $data['quantity'] - $data['Picked'];
+        $to_pack  = $data['quantity'] - $data['Packed'];
+
+
 
 
         switch ($dn->data['Delivery Note State']) {
@@ -655,22 +658,21 @@ function delivery_note_items($_data, $db, $user) {
 
 
 
-        $packed = sprintf(
-            '<span class="%s" ondblclick="show_check_dialog(this)">%s</span>
-                <span data-settings=\'{"field": "Packed", "transaction_key":%d,"item_key":%d ,"on":1 }\' class="packed_quantity %s"  >
-                    <input class="checked_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button %s" aria-hidden="true">
-                </span>',
-            ($dn->get('Supplier Delivery State') == 'Packed' ? '' : 'hide'), number($data['Packed']), $data['Inventory Transaction Key'], $data['Part SKU'],
-            ($dn->get('Supplier Delivery State') == 'Packed' ? 'hide' : ''), $data['Packed'], $data['Packed'], ''
-        );
-
-
-
 
         $quantity='<div class="quantity_components">'.get_item_quantity($data['quantity'],$data['to_pick']).'</div>';
 
-        $picked='<div class="picked_quantity_components">'.get_item_picked($data['pending'],$data['Quantity On Hand'], $data['Inventory Transaction Key'],$data['Part SKU'],$data['Picked'],$data['Part Current On Hand Stock']).'</div>';
-        $location='<div class="location_components">'.get_item_location($data['pending'],$data['Quantity On Hand'],$data['Date Picked'],$data['Location Key'],$data['Location Code'],$data['Part Current On Hand Stock']).'</div>';
+        $picked='<div class="picked_quantity_components">'.get_item_picked($data['pending'],$data['Quantity On Hand'], $data['Inventory Transaction Key'],$data['Part SKU'],$data['Picked'],$data['Part Current On Hand Stock'],$data['Part SKO Barcode'],
+                                                                           $data['Part Reference'],
+                                                                           base64_encode($data['Part Package Description'].($data['Picking Note']!=''?' <span>('.$data['Picking Note'].'</span>':'')),
+                                                                                                               $data['Part Main Image Key']
+
+                                                                           ).'</div>';
+
+
+
+
+        $packed='<div class="packed_quantity_components">'.get_item_packed($to_pack, $data['Inventory Transaction Key'],$data['Part SKU'],$data['Packed']).'</div>';
+        $location='<div class="location_components">'.get_item_location($data['pending'],$data['Quantity On Hand'],$data['Date Picked'],$data['Location Key'],$data['Location Code'],$data['Part Current On Hand Stock'],$data['Part SKO Barcode']).'</div>';
 
 
         if($data['Picked']==$data['quantity']){

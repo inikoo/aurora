@@ -248,7 +248,7 @@
 
 
                 <tbody id="part_locations" class="Part_Locations">
-                {include file='part_locations.edit.tpl' locations_data=$part->get_locations('data')}
+                {include file='part_locations.edit.tpl' locations_data=$part->get_locations('data') part_sku=$part->id}
                 </tbody>
 
 

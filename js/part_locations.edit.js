@@ -183,8 +183,7 @@ function move_qty_changed(element) {
 //console.log(value)
 //console.log($('.locations  .from ').closest('tr').find('input.stock').val())
 
-            if (parseInt(value) > parseInt(
-                    $('.locations  .from ').closest('tr').find('input.stock').attr('ovalue'))) {
+            if (parseInt(value) > parseInt($('.locations  .from ').closest('tr').find('input.stock').attr('ovalue'))) {
                 validation.class = 'invalid'
             }
         }
@@ -267,8 +266,7 @@ function stock_changed(element) {
 
     if (!validation) {
         validation = {
-            class: 'valid',
-            type: 'valid'
+            class: 'valid', type: 'valid'
         }
     }
 
@@ -624,12 +622,7 @@ function save_add_location() {
 
     var request = $.ajax({
 
-        url: "/ar_edit_stock.php",
-        data: form_data,
-        processData: false,
-        contentType: false,
-        type: 'POST',
-        dataType: 'json'
+        url: "/ar_edit_stock.php", data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
 
     })
 
@@ -745,12 +738,7 @@ function save_stock() {
 
     var request = $.ajax({
 
-        url: "/ar_edit_stock.php",
-        data: form_data,
-        processData: false,
-        contentType: false,
-        type: 'POST',
-        dataType: 'json'
+        url: "/ar_edit_stock.php", data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
 
     })
 
@@ -908,8 +896,7 @@ function save_recomendations(type, element) {
         var location_key = $(element).closest('tr').find('.stock').attr('location_key')
 
         var value = JSON.stringify({
-            min: min,
-            max: max
+            min: min, max: max
         });
         var field = 'Part_Location_min_max'
     } else {
@@ -939,12 +926,7 @@ function save_recomendations(type, element) {
 
     var request = $.ajax({
 
-        url: "/ar_edit.php",
-        data: form_data,
-        processData: false,
-        contentType: false,
-        type: 'POST',
-        dataType: 'json'
+        url: "/ar_edit.php", data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
 
     })
 
@@ -1004,8 +986,7 @@ function set_inventory_transaction_note(element) {
     if ($('#inventory_transaction_note').hasClass('hide') || $(element).attr('id') != $('#inventory_transaction_note').data('id')) {
 
         $('#inventory_transaction_note').data({
-            'element': $(element),
-            'id': $(element).attr('id')
+            'element': $(element), 'id': $(element).attr('id')
         })
 
         $('#inventory_transaction_note').removeClass('hide')
@@ -1014,8 +995,7 @@ function set_inventory_transaction_note(element) {
 
 
         $('#inventory_transaction_note').css({
-            'left': position.left - $('#inventory_transaction_note').width(),
-            'top': position.top
+            'left': position.left - $('#inventory_transaction_note').width(), 'top': position.top
         })
 
 
@@ -1024,5 +1004,34 @@ function set_inventory_transaction_note(element) {
         $('#inventory_transaction_note').addClass('hide')
 
     }
+
+}
+
+function set_as_picking_location(part_sku, location_key) {
+
+    var request = '/ar_edit_stock.php?tipo=set_as_picking_location&part_sku=' + part_sku + '&location_key=' + location_key
+    $.getJSON(request, function (data) {
+
+        if (data.state == 200) {
+
+            for (i in data.part_locations_data) {
+                console.log(data.part_locations_data[i])
+
+                var icon= $('#part_location_edit_'+data.part_locations_data[i].location_key+' .location_used_for_icon i')
+
+                if(data.part_locations_data[i].can_pick=='Yes'){
+
+                    icon.removeClass('super_discreet_on_hover button').attr('title',data.part_locations_data[i].label)
+                }else{
+                    icon.addClass('super_discreet_on_hover button').attr('title',data.part_locations_data[i].label)
+
+                }
+
+
+            }
+
+        }
+
+    })
 
 }

@@ -1022,6 +1022,8 @@ class Part extends Asset {
         );
 
 
+
+
         $part_locations = array();
 
 
@@ -1060,9 +1062,7 @@ class Part extends Asset {
                     }
 
                     $part_locations[] = array(
-                        'formatted_stock' => number(
-                            $row['Quantity On Hand'], 3
-                        ),
+                        'formatted_stock' => number($row['Quantity On Hand'], 3),
                         'stock'           => $row['Quantity On Hand'],
                         'warehouse_key'   => $row['Location Warehouse Key'],
 
@@ -1070,6 +1070,8 @@ class Part extends Asset {
                         'part_sku'     => $row['Part SKU'],
 
                         'location_code'          => $row['Location Code'],
+
+
                         'location_used_for_icon' => $used_for,
                         'location_used_for'      => $row['Location Mainly Used For'],
                         'formatted_min_qty'      => ($row['Minimum Quantity'] != '' ? $row['Minimum Quantity'] : '?'),
@@ -1079,7 +1081,10 @@ class Part extends Asset {
                         'max_qty'                => $row['Maximum Quantity'],
                         'move_qty'               => $row['Moving Quantity'],
 
-                        'can_pick' => $row['Can Pick']
+                        'can_pick' => $row['Can Pick'],
+                        'label'=>($row['Can Pick']=='Yes'?_('Picking location') : _('Set as picking location') )
+
+
                     );
 
                 }
@@ -2225,6 +2230,31 @@ class Part extends Asset {
 
         return $supplier_parts;
     }
+
+
+    function get_stock_supplier_data(){
+
+        // todo create a way to know what is the supplier based in stock
+
+        $supplier_key=0;
+        $supplier_part_key=0;
+        $supplier_part_historic_key=0;
+
+
+
+
+        foreach($this-> get_supplier_parts('objects') as $supplier_part){
+            $supplier_key=$supplier_part->get('Supplier Part Supplier Key');
+            $supplier_part_key=$supplier_part->id;
+            $supplier_part_historic_key=$supplier_part->get('Supplier Part Historic Key');
+            break;
+        }
+
+
+        return array($supplier_key,$supplier_part_key, $supplier_part_historic_key);
+    }
+
+
 
     function get_category_data() {
 
@@ -3686,6 +3716,68 @@ class Part extends Asset {
 
 
     }
+
+    function get_picking_locations($qty=1) {
+
+
+        include_once 'class.PartLocation.php';
+
+        $this->unknown_location_associated=false;
+        $locations=array();
+        $locations_data=array();
+        $sql=sprintf("select `Location Key` from `Part Location Dimension` where `Part SKU` in (%s) order by `Can Pick` ;", $this->sku);
+
+       // print $sql;
+
+
+
+        if ($result=$this->db->query($sql)) {
+        		foreach ($result as $row) {
+                    $part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
+                    //list($stock,$value,$in_process)=$part_location->get_stock();
+                    $stock=$part_location->data['Quantity On Hand'];
+
+                    $locations_data[]=array('location_key'=>$row['Location Key'], 'stock'=>$stock);
+        		}
+        }else {
+        		print_r($error_info=$this->db->errorInfo());
+        		print "$sql\n";
+        		exit;
+        }
+
+
+
+
+        $number_associated_locations=count($locations_data);
+
+        if ($number_associated_locations==0) {
+            $this->unknown_location_associated=true;
+            $locations[]= array('location_key'=>1, 'qty'=>$qty);
+          //  $qty=0;
+        }else {
+
+            foreach ($locations_data as $location_data) {
+
+                $locations[]=array('location_key'=>$location_data['location_key'], 'qty'=>$qty);
+                break;
+
+
+
+
+
+            }
+            //print_r($locations);
+            //print "--- $qty\n";
+
+
+
+        }
+
+        //print_r($locations);
+        return $locations;
+
+    }
+
 
 
 }
