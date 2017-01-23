@@ -116,11 +116,12 @@ $shippingArray = array( 'job_id' => NULL,
 $shippmentId='168108576';
 $returnFormat='text/vnd.citizen-clp';
 
+$returnFormat='text/html';
 
-header('Content-Type: text/vnd.citizen-clp');
+header("Content-Type: $returnFormat");
 
 
 $s= $shipping->getLabel($shippmentId, $returnFormat);
-$s = str_replace(array("\n", "\r"), array('\n', '\r'), $s);
+//$s = str_replace(array("\n", "\r"), array('\n', '\r'), $s);
 print $s;
 ?>
