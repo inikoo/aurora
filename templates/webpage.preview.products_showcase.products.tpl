@@ -11,8 +11,15 @@
                 <div class="product_header_text fr-view" >
                     {$product_data.header_text}
                 </div>
+
+
+
+
                <div class="wrap_to_center product_image" onCLick="console.log('move')">
-                    <img draggable="false" class="more_info" src="/art/moreinfo_corner1.png">
+
+                   <i class="fa fa-info-circle more_info" title="{t}More information{/t}" aria-hidden="true"></i>
+
+
                     <img draggable="false" src="{$product->get('Image')}" />
                  </div>
 
