@@ -177,14 +177,15 @@ h1{
     }
 
 
-    .more_info{
-        cursor:pointer;position:absolute;width:40px;top:-1px;left:179px;z-index: 99}
+
+     .more_info{
+            cursor:pointer;position:absolute;width:40px;top:3px;left:179px;font-size:24px;opacity:.7;color:royalblue}
 
 
 
 
 
-    .description_block{
+     .description_block{
         margin-bottom:20px;background:#fff;padding:10px 20px;border:1px solid #eee}
 
 

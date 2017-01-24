@@ -33,7 +33,7 @@ if (isset($urlParts['query'])) {
 		}
 
 
-		
+
 
 		//Send ClientPrintJob back to the client
 		ob_start();
