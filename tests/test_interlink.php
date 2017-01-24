@@ -52,7 +52,7 @@ $dataArray = array(
 $shippingArray = array( 'job_id' => NULL,
                         'collectionOnDelivery' => NULL,
                         'invoice'=> NULL,
-                        'collectionDate' => '2017-1-23T05:00:00',
+                        'collectionDate' => '2017-1-25T05:00:00',
                         'consolidate' => NULL,
                         'consignment' => [[
                                               'consignmentNumber' => NULL,
@@ -95,7 +95,7 @@ $shippingArray = array( 'job_id' => NULL,
                                               'networkCode'=> '1^01',
                                               'numberOfParcels'=> 1,
                                               'totalWeight'=> 5,
-                                              'shippingRef1'=> 'My Ref 1',
+                                              'shippingRef1'=> 'Test dont send',
                                               'shippingRef2'=> 'My Ref 2',
                                               'shippingRef3'=> 'My Ref 3',
                                               'customsValue'=> NULL,
@@ -113,15 +113,22 @@ $shippingArray = array( 'job_id' => NULL,
 
 
 //print_r($shipping->insertShipping($shippingArray));
-$shippmentId='168108576';
+//exit;
+$shippmentId='168491973';
 $returnFormat='text/vnd.citizen-clp';
 
-$returnFormat='text/html';
+//$returnFormat='text/html';
 
 header("Content-Type: $returnFormat");
-
-
 $s= $shipping->getLabel($shippmentId, $returnFormat);
+
+print "$s";
+
+//$s= $shipping->getLabel($shippmentId, $returnFormat);
 //$s = str_replace(array("\n", "\r"), array('\n', '\r'), $s);
-print $s;
+
+//$file = 'tests/data.txt';
+//file_put_contents($file, $s);
+
+
 ?>
