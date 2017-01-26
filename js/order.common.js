@@ -70,7 +70,7 @@ function save_order_operation(element) {
     });
 
 
-    var request = '/ar_edit_orders.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value + '&metadata=' + JSON.stringify(metadata)
+    var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value + '&metadata=' + JSON.stringify(metadata)
     console.log(request)
     //  return;
     //=====
@@ -85,7 +85,7 @@ function save_order_operation(element) {
 
     var request = $.ajax({
 
-        url: "/ar_edit_orders.php",
+        url: "/ar_edit.php",
         data: form_data,
         processData: false,
         contentType: false,
