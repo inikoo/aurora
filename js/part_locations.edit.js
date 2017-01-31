@@ -109,6 +109,11 @@ function move(element) {
 
         $('#move_stock_qty').focus()
 
+
+        move_qty_changed($('#move_stock_qty'))
+
+        console.log(movements)
+
     }
 
 }
@@ -726,7 +731,7 @@ function save_stock() {
     // used only for debug
     var request = '/ar_edit_stock.php?tipo=edit_stock&object=part&key=' + $('#locations_table').attr('part_sku') + '&parts_locations_data=' + JSON.stringify(parts_locations_data) + '&movements=' + JSON.stringify(_movements)
     console.log(request)
-    // return;
+   //  return;
     //=====
     var form_data = new FormData();
     form_data.append("tipo", 'edit_stock')
