@@ -8,9 +8,9 @@
 <div id="page_content">
  
 <span id="ordering_settings" class="hide" data-labels='{
-    "ordered":"<i class=\"fa fa-thumbs-o-up fa-flip-horizontal fa-fw \" aria-hidden=\"true\"></i> {t}Ordered{/t}",
-    "order":"<i class=\"fa fa-hand-pointer-o fa-fw \" aria-hidden=\"true\"></i>  {t}Order now{/t}",
-    "update":"<i class=\"fa fa-hand-pointer-o fa-fw \" aria-hidden=\"true\"></i>  {t}Update{/t}"
+    "ordered":"<i class=\"fa fa-thumbs-o-up fa-flip-horizontal fa-fw \" aria-hidden=\"true\"></i> <span class=\"order_button_text\">{t}Ordered{/t}</span>",
+    "order":"<i class=\"fa fa-hand-pointer-o fa-fw \" aria-hidden=\"true\"></i>  <span class=\"order_button_text\">{t}Order now{/t}</span>",
+    "update":"<i class=\"fa fa-hand-pointer-o fa-fw \" aria-hidden=\"true\"></i>  <span class=\"order_button_text\">{t}Updated{/t}</span>"
     }'></span>
 
 
@@ -59,10 +59,9 @@
 
                <a href="page.php?id={$product->get('Webpage Key')}">  
                <div class="wrap_to_center product_image" >
-                   <i class="fa fa-info-circle more_info" title="{t}More information{/t}" aria-hidden="true"></i>
+                    <img draggable="false" class="more_info" src="/art/moreinfo_corner1.png">
 
-
-                   <img draggable="false" src="{$product->get('Image')}" />
+                    <img draggable="false" src="{$product->get('Image')}" />
                  </div>
                 </a>
 
@@ -102,9 +101,9 @@
                 {assign 'quantity_ordered' $product->get('Ordered Quantity',$order->id) }
                     <input maxlength=6  class='order_input ' id='but_qty{$product->id}'   type="text"' size='2'  value='{$quantity_ordered}' ovalue='{$quantity_ordered}'>
                      {if $quantity_ordered==''}
-                        <span class="product_footer order_button "><i class="fa fa-hand-pointer-o fa-fw" aria-hidden="true"></i> {t}Order now{/t}</span>
+                    <span class="product_footer order_button "><i class="fa fa-hand-pointer-o fa-fw" aria-hidden="true"></i> <span class="order_button_text">{t}Order now{/t}</span></span>
                      {else}
-                        <span class="product_footer order_button ordered"><i class="fa  fa-thumbs-o-up fa-flip-horizontal fa-fw" aria-hidden="true"></i> {t}Ordered{/t}</span>
+                         <span class="product_footer order_button ordered"><i class="fa  fa-thumbs-o-up fa-flip-horizontal fa-fw" aria-hidden="true"></i> <span class="order_button_text">{t}Ordered{/t}</span></span>
                      {/if}
                      {assign 'favourite_key' {$product->get('Favourite Key',{$customer->id})} }
                      <span class="product_footer  favourite  " favourite_key={$favourite_key} ><i class="fa {if $favourite_key}fa-heart marked{else}fa-heart-o{/if}" aria-hidden="true"></i>  </span>
@@ -240,9 +239,9 @@
                     {assign 'quantity_ordered' $product->get('Ordered Quantity',$order->id) }
                     <input maxlength=6  class='order_input ' id='but_qty{$product->id}'   type="text"' size='2'  value='{$quantity_ordered}' ovalue='{$quantity_ordered}'>
                     {if $quantity_ordered==''}
-                        <span class="product_footer order_button "><i class="fa fa-hand-pointer-o fa-fw" aria-hidden="true"></i> {t}Order now{/t}</span>
+                        <span class="product_footer order_button "><i class="fa fa-hand-pointer-o fa-fw" aria-hidden="true"></i> <span class="order_button_text">{t}Order now{/t}</span>></span>
                     {else}
-                        <span class="product_footer order_button ordered"><i class="fa  fa-thumbs-o-up fa-flip-horizontal fa-fw" aria-hidden="true"></i> {t}Ordered{/t}</span>
+                        <span class="product_footer order_button ordered"><i class="fa  fa-thumbs-o-up fa-flip-horizontal fa-fw" aria-hidden="true"></i> <span class="order_button_text">{t}Ordered{/t}</span></span>
                     {/if}
                     {assign 'favourite_key' {$product->get('Favourite Key',{$customer->id})} }
                     <span class="product_footer  favourite  " favourite_key={$favourite_key} ><i class="fa {if $favourite_key}fa-heart marked{else}fa-heart-o{/if}" aria-hidden="true"></i>  </span>
@@ -477,6 +476,27 @@
             var size_now = parseInt(un.css("font-size"));
             var size_new = size_now * len_fit / len_user_name;
             un.css("font-size", size_new);
+
+        }
+
+    });
+
+    $( ".order_button_text" ).each(function( index ) {
+
+
+        var len_fit = 9;
+        var un = $(this)
+
+
+        var len_user_name = un.html().length;
+        if(len_fit < len_user_name ) {
+
+            var size_now = parseInt(un.css("font-size"));
+            var size_new = size_now * len_fit / len_user_name;
+          console.log(size_now)
+            console.log(size_new)
+
+             un.css("font-size", size_new);
 
         }
 

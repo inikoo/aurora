@@ -177,15 +177,14 @@ h1{
     }
 
 
-
-     .more_info{
-            cursor:pointer;position:absolute;width:40px;top:3px;left:179px;font-size:24px;opacity:.7;color:royalblue}
-
+    .more_info{
+        cursor:pointer;position:absolute;width:40px;top:-1px;left:179px;z-index:1}
 
 
 
 
-     .description_block{
+
+    .description_block{
         margin-bottom:20px;background:#fff;padding:10px 20px;border:1px solid #eee}
 
 
@@ -350,7 +349,7 @@ h1{
 
      .product_header_text p{
          padding:0px ; margin:0px;text-align: center;
-         z-index: 98;position:relative;
+         z-index: 0;position:relative;
      }
 
 
@@ -361,7 +360,7 @@ h1{
      }
 
      .panel .buttons{
-         position:absolute;top:10px;z-index: 2;display:flex;width:200px;margin-left:10px;
+         position:absolute;top:10px;;display:flex;width:200px;margin-left:10px;
      }
 
 
