@@ -223,7 +223,7 @@ function edit_stock($account, $db, $user, $editor, $data, $smarty) {
     $parts_locations_data = $data['parts_locations_data'];
 
     $movement = $data['movements'];
-
+//print_r($data);
 
     if (isset($movement['part_sku']) and isset($movement['from_location_key'])) {
 
