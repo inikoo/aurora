@@ -1789,6 +1789,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '') {
 
                 }
                 break;
+
+
             case 'order':
                 if (!$user->can_view('orders')) {
                     $module  = 'utils';
@@ -2187,7 +2189,26 @@ function parse_request($_data, $db, $modules, $account = '', $user = '') {
                         $key    = $view_path[0];
 
                         if (isset($view_path[1])) {
-                            if ($view_path[1] == 'locations') {
+
+
+
+                            if ($view_path[1] == 'delivery_notes') {
+                                //===
+
+                                if (!$user->can_view('orders')) {
+                                    $module  = 'utils';
+                                    $section = 'forbidden';
+                                    break;
+                                }
+
+                                $section = 'delivery_notes';
+                                $object  = '';
+
+                                $parent     = 'warehouse';
+                                $parent_key = $key;
+
+
+                            }elseif ($view_path[1] == 'locations') {
                                 $section = 'locations';
                                 $object  = '';
 

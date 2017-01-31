@@ -342,6 +342,17 @@ $tab_defaults = array(
         'elements_type' => each($elements_options['delivery_notes'])['key'],
         'elements'      => $elements_options['delivery_notes']
     ),
+    'pending_delivery_notes'              => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'customer',
+
+
+
+    ),
     'orders_index'                => array(
         'view'        => 'overview',
         'sort_key'    => 'code',

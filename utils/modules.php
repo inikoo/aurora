@@ -891,9 +891,11 @@ $modules = array(
         'parent_type' => 'key',
         'sections'    => array(
 
+
+
             'delivery_notes' => array(
                 'type'      => 'navigation',
-                'label'     => _('Delivery notes'),
+                'label'     => _('All delivery notes'),
                 'icon'      => 'truck fa-flip-horizontal',
                 'reference' => 'delivery_notes/%d',
                 'tabs'      => array(
@@ -3712,7 +3714,22 @@ $modules = array(
                 'tabs'      => array(
                     'warehouse.locations' => array(
                         'label' => _('Locations'),
-                        'title' => _('Locations')
+                    ),
+
+
+                )
+
+            ),
+
+            'delivery_notes' => array(
+
+                'type'      => 'navigation',
+                'label'     => _('Pending delivery notes'),
+                'icon'      => 'truck fa-flip-horizontal',
+                'reference' => 'warehouse/%d/delivery_notes',
+                'tabs'      => array(
+                    'warehouse.delivery_notes' => array(
+                        'label' => _('Delivery notes'),
                     ),
 
 
