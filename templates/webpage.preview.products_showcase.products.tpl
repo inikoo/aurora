@@ -17,9 +17,10 @@
 
                <div class="wrap_to_center product_image" onCLick="console.log('move')">
 
-                   <i class="fa fa-info-circle more_info" title="{t}More information{/t}" aria-hidden="true"></i>
+                   <i class="fa fa-info-circle more_info" aria-hidden="true"></i>
 
 
+                   <img draggable="false" class="more_info" src="/art/moreinfo_corner1.png">
                     <img draggable="false" src="{$product->get('Image')}" />
                  </div>
 
