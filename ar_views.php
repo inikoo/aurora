@@ -916,7 +916,6 @@ function get_menu($data, $user, $smarty) {
 
 function get_navigation($user, $smarty, $data, $db, $account) {
 
-    //print $data['module'];
 
     switch ($data['module']) {
 
@@ -1201,36 +1200,26 @@ function get_navigation($user, $smarty, $data, $db, $account) {
             break;
         case ('delivery_notes'):
             require_once 'navigation/orders.nav.php';
+
             switch ($data['section']) {
                 case ('delivery_notes'):
-                    return get_delivery_notes_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
+                    return get_delivery_notes_navigation($data, $smarty, $user, $db, $account);
                     break;
+
                 case ('delivery_note'):
-                    return get_delivery_note_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
+                    return get_delivery_note_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('invoice'):
-                    return get_invoice_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
+                    return get_invoice_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('order'):
-                    return get_order_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
+                    return get_order_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('pick_aid'):
-                    return get_pick_aid_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
+                    return get_pick_aid_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('pack_aid'):
-                    return get_pack_aid_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
+                    return get_pack_aid_navigation($data, $smarty, $user, $db, $account);
                     break;
                 default:
                     return 'View not found';
@@ -1729,6 +1718,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
         case ('warehouses'):
         case ('warehouses_server'):
             require_once 'navigation/warehouses.nav.php';
+
             switch ($data['section']) {
 
                 case ('warehouses'):
@@ -1781,6 +1771,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     );
                     break;
 
+                case ('delivery_notes'):
+                    return get_delivery_notes_navigation($data, $smarty, $user, $db, $account);
+                    break;
 
             }
 
@@ -4778,6 +4771,23 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     );
                     $branch[] = array(
                         'label'     => _('Locations'),
+                        'icon'      => '',
+                        'reference' => ''
+                    );
+                    break;
+                case 'delivery_notes':
+                    $branch[] = array(
+                        'label'     => '('._('All warehouses').')',
+                        'icon'      => '',
+                        'reference' => 'warehouses'
+                    );
+                    $branch[] = array(
+                        'label'     => '<span class="id Warehouse_Code">'.$state['warehouse']->get('Code').'</span>',
+                        'icon'      => 'map',
+                        'reference' => 'warehouse/'.$state['parent_key']
+                    );
+                    $branch[] = array(
+                        'label'     => _('Pending delivery notes'),
                         'icon'      => '',
                         'reference' => ''
                     );

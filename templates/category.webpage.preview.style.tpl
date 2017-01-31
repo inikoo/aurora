@@ -161,7 +161,8 @@
 
 
     .more_info{
-        cursor:pointer;position:absolute;width:40px;top:3px;left:179px;font-size:24px;opacity:.7;color:royalblue}
+        cursor:pointer;position:absolute;width:40px;top:-1px;left:179px
+    }
 
 
 

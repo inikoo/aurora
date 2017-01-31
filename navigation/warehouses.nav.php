@@ -770,4 +770,118 @@ function get_locations_category_navigation($data, $smarty, $user, $db, $account)
 }
 
 
+
+function get_delivery_notes_navigation($data, $smarty, $user, $db, $account) {
+
+
+    require_once 'class.Warehouse.php';
+
+    switch ($data['parent']) {
+        case 'warehouse':
+            $warehouse = new Warehouse($data['parent_key']);
+            break;
+        default:
+
+            break;
+    }
+
+    $block_view = $data['section'];
+
+
+    $sections = get_sections('warehouses', $warehouse->id);
+    switch ($block_view) {
+
+        case 'delivery_notes':
+            $sections_class = '';
+            $title          = _('Delivery Notes').' <span class="id">'.$warehouse->get('Code').'</span>';
+
+
+            break;
+
+    }
+
+    $left_buttons = array();
+
+
+
+    if (count($user->warehouses) > 1) {
+
+        list($prev_key, $next_key) = get_prev_next($warehouse->id, $user->warehouses);
+
+        $sql = sprintf(
+            "SELECT `Warehouse Code` FROM `Warehouse Dimension` WHERE `Warehouse Key`=%d", $prev_key
+        );
+
+
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $prev_title = _('Warehouse').' '.$row['Warehouse Code'];
+            } else {
+                $prev_title = '';
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+        $sql = sprintf(
+            "SELECT `Warehouse Code` FROM `Warehouse Dimension` WHERE `Warehouse Key`=%d", $next_key
+        );
+
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $next_title = _('Warehouse').' '.$row['Warehouse Code'];
+            } else {
+                $next_title = '';
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+        $left_buttons[] = array(
+            'icon'      => 'arrow-left',
+            'title'     => $prev_title,
+            'reference' => $block_view.'/'.$prev_key
+        );
+
+        $left_buttons[] = array(
+            'icon'      => 'arrow-right',
+            'title'     => $next_title,
+            'reference' => $block_view.'/'.$next_key
+        );
+    }
+
+
+    $right_buttons = array();
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+
+    $_content = array(
+        'sections_class' => $sections_class,
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search delivery notes')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
+
 ?>

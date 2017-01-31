@@ -48,6 +48,9 @@ switch ($tipo) {
     case 'delivery_notes':
         delivery_notes(get_table_parameters(), $db, $user);
         break;
+    case 'pending_delivery_notes':
+        pending_delivery_notes(get_table_parameters(), $db, $user);
+        break;
     case 'orders_index':
         orders_index(get_table_parameters(), $db, $user);
         break;
@@ -130,7 +133,8 @@ function orders($_data, $db, $user) {
 
 
 function delivery_notes($_data, $db, $user) {
-    global $db;
+
+
     $rtext_label = 'delivery_note';
     include_once 'prepare_table/init.php';
 
@@ -155,9 +159,10 @@ function delivery_notes($_data, $db, $user) {
             case('Replacement'):
             case('Replacement & Shortages'):
                 $type = _('Replacement');
+                break;
             case('Shortages'):
                 $type = _('Shortages');
-
+break;
             default:
                 $type = $data['Delivery Note Type'];
 
@@ -192,9 +197,98 @@ function delivery_notes($_data, $db, $user) {
             'number'   => $data['Delivery Note ID'],
             'customer' => $data['Delivery Note Customer Name'],
 
-            'date'    => strftime(
-                "%a %e %b %Y %H:%M %Z", strtotime($data['Delivery Note Date Created'].' +0:00')
-            ),
+            'date'    => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Delivery Note Date Created'].' +0:00')),
+            'state'   => $data['Delivery Note XHTML State'],
+            'weight'  => weight($data['Delivery Note Weight']),
+            'parcels' => $parcels,
+            'type'    => $type,
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function pending_delivery_notes($_data, $db, $user) {
+
+
+    $rtext_label = 'delivery_note';
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+    $adata = array();
+
+
+    foreach ($db->query($sql) as $data) {
+
+
+        switch ($data['Delivery Note Type']) {
+            case('Order'):
+                $type = _('Order');
+                break;
+            case('Sample'):
+                $type = _('Sample');
+                break;
+            case('Donation'):
+                $type = _('Donation');
+                break;
+            case('Replacement'):
+            case('Replacement & Shortages'):
+                $type = _('Replacement');
+                break;
+            case('Shortages'):
+                $type = _('Shortages');
+                break;
+            default:
+                $type = $data['Delivery Note Type'];
+
+        }
+
+        switch ($data['Delivery Note Parcel Type']) {
+            case('Pallet'):
+                $parcel_type = 'P';
+                break;
+            case('Envelope'):
+                $parcel_type = 'e';
+                break;
+            default:
+                $parcel_type = 'b';
+
+        }
+
+        if ($data['Delivery Note Number Parcels'] == '') {
+            $parcels = '?';
+        } elseif ($data['Delivery Note Parcel Type'] == 'Pallet' and $data['Delivery Note Number Boxes']) {
+            $parcels = number($data['Delivery Note Number Parcels']).' '.$parcel_type.' ('.$data['Delivery Note Number Boxes'].' b)';
+        } else {
+            $parcels = number($data['Delivery Note Number Parcels']).' '.$parcel_type;
+        }
+
+
+        $adata[] = array(
+            'id'           => (integer)$data['Delivery Note Key'],
+            'store_key'    => (integer)$data['Delivery Note Store Key'],
+            'customer_key' => (integer)$data['Delivery Note Customer Key'],
+
+            'number'   => $data['Delivery Note ID'],
+            'customer' => $data['Delivery Note Customer Name'],
+
+            'date'    => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Delivery Note Date Created'].' +0:00')),
             'state'   => $data['Delivery Note XHTML State'],
             'weight'  => weight($data['Delivery Note Weight']),
             'parcels' => $parcels,
