@@ -415,6 +415,11 @@
 
     }
 
+    .category_wrap  .panel_4x{
+        height:220px;
+
+    }
+
 
 
 
