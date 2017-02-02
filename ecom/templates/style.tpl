@@ -452,7 +452,8 @@ h1{
      }
 
      .category_wrap  .panel_4x{
-            height:220px;
+            height:160px;
+
 
      }
 

@@ -2416,7 +2416,7 @@ function find_category_webpages($db, $account, $memcache_ip, $data) {
             print_r($error_info = $db->errorInfo());
             exit;
         }
-
+//print $sql;
 
         arsort($candidates);
 
