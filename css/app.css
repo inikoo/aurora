@@ -1058,6 +1058,17 @@ right connector from last child*/
   #select_date_control_panel .until, #select_interval_control_panel .until {
     margin-top: 15px; }
 
+.date_chooser_in_edit {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  height: 22px;
+  line-height: 22px;
+  font-size: 90%; }
+
 .popout_chooser {
   width: 200px; }
   .popout_chooser.corner {

@@ -45,6 +45,222 @@
                         <tr id="{$field.id}_field" class="{if !$render}hide{/if} ">
                             <td colspan="3" class="label">{$field.label}</td>
                         </tr>
+
+
+
+
+                    {elseif $class=='operation_date_interval'}
+                        <tr id="{$field.id}_field" class="{if !$render}hide{/if} ">
+                            <td class="label">{$field.label}</td>
+                            <td></td>
+                            <td>
+
+                        <div class="date_chooser_in_edit hide">
+
+                                <input id="select_interval_from" type="hidden" value="{$field.from_mmddyy}" has_been_valid="0"/>
+
+                                <input id="select_interval_to" type="hidden" value="{$field.to_mmddyy}" has_been_valid="0"/>
+
+
+
+                                <div id="select_interval_control_panel" class="">
+                                    <div id="select_interval_datepicker" class="datepicker" style="float:left">
+                                    </div>
+                                    <div class="date_chooser_form">
+                                        <div class="label from">{t}From{/t}</div>
+                                        <input id="select_interval_from_formatted" style="width:100px" class="" value="{$field.from_locale}" readonly/>
+                                        <div class="label until">{t}Until{/t}</div>
+                                        <input id="select_interval_to_formatted" style="width:100px"  class="" value="{$field.to_locale}" readonly/>
+                                        <i onclick="submit_interval()" id="select_interval_save" class="fa button fa-play save"></i>
+                                    </div>
+                                    <div style="clear:both"></div>
+                                </div>
+                            </div>
+                            </td>
+                        </tr>
+
+
+            <script>
+
+
+                $(function () {
+
+
+                    $("#select_interval_datepicker").datepicker({
+
+                        altFormat: "yy-mm-dd",
+                        defaultDate: new Date("{$field.from}"),
+
+                        numberOfMonths: 2,
+
+
+
+                        beforeShowDay: function (date) {
+
+                            console.log( $.datepicker._defaults.dateFormat)
+                            console.log( $("#select_interval_from").val())
+
+                            var date1 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $("#select_interval_from").val());
+                            var date2 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $("#select_interval_to").val());
+                            return [true, date1 && ((date.getTime() == date1.getTime()) || (date2 && date >= date1 && date <= date2)) ? "dp-highlight" : ""];
+                        },
+                        onSelect: function (dateText, inst) {
+                            var date1 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $("#select_interval_from").val());
+                            var date2 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $("#select_interval_to").val());
+                            var selectedDate = $.datepicker.parseDate($.datepicker._defaults.dateFormat, dateText);
+
+                            date_iso_formatted = $.datepicker.formatDate("yy-mm-dd", $(this).datepicker("getDate"))
+                            date_formatted = $.datepicker.formatDate("dd/mm/yy", $(this).datepicker("getDate"))
+
+                            if (!date1 || date2) {
+                                $("#select_interval_from").val(dateText);
+                                $("#select_interval_to").val("");
+                                $("#select_interval_from_formatted").val(date_formatted);
+                                $("#select_interval_to_formatted").val('');
+
+                                $(this).datepicker();
+                            } else if (selectedDate < date1) {
+                                $("#select_interval_to").val($("#select_interval_from").val());
+                                $("#select_interval_from").val(dateText);
+
+                                $("#select_interval_to_formatted").val($("#select_interval_from_formatted").val());
+                                $("#select_interval_from_formatted").val(date_formatted);
+
+                                $(this).datepicker();
+                            } else {
+                                $("#select_interval_to").val(dateText);
+                                $("#select_interval_to_formatted").val(date_formatted);
+
+                                $(this).datepicker();
+                            }
+
+
+                            validate_interval()
+                        }
+
+
+                    });
+
+                })
+
+
+                function validate_interval() {
+                    $('#select_interval_save').removeClass('possible_valid valid invalid')
+
+                    if ($("#select_interval_from_formatted").val() == '' || $("#select_interval_to_formatted").val() == '') {
+                        validation = 'possible_valid';
+                    } else {
+                        validation = 'valid';
+
+                    }
+                    $('#select_interval_save').addClass(validation)
+
+                }
+
+
+                function submit_interval() {
+                    if ($('#select_interval_save').hasClass('valid')) {
+
+                        var request = '/ar_edit_employees.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value) + '&metadata=' + JSON.stringify(metadata)
+                        //  console.log(request)
+
+                        $.getJSON(request, function (data) {
+
+                            $('#' + field + '_save_button').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
+                            if (data.state == 100) {
+                                pre_save_actions(field, data)
+
+                            }
+                            if (data.state == 200) {
+
+
+                                //  console.log(data)
+
+                                $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
+                                $('#' + field + '_value').val(data.value)
+
+
+                                $("#" + field + '_field').removeClass('changed')
+                                $("#" + field + '_field').removeClass('valid')
+
+
+//            console.log(data.formatted_value)
+                                $('.' + field).html(data.formatted_value)
+                                if (type == 'option') {
+
+                                    //   $('#' + field + '_options li .current_mark')
+                                    $('#' + field + '_options li i.current_mark').removeClass('current')
+                                    $('#' + field + '_options li.selected  i.current_mark').addClass('current')
+
+                                    // console.log('#' + field + '_option_' + value + ' .current_mark')
+                                    //  $('#' + field + '_option_' + value + ' .current_mark').addClass('current')
+                                } else if (type == 'radio_option') {
+                                    $('#' + field + '_options li .current_mark').removeClass('current')
+                                    $('#' + field + '_option_' + value + ' .current_mark').addClass('current')
+                                } else if (type == 'dropdown_select') {
+                                    //  $('#' + field + '').removeClass('current')
+                                    $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
+                                } else {
+                                    $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
+                                }
+
+                                if (data.action == 'deleted') {
+                                    $('#' + field + '_edit_button').parent('.show_buttons').css('visibility', 'hidden')
+                                    $('#' + field + '_label').find('.button').addClass('hide')
+                                }
+
+                                if (data.directory_field != '') {
+                                    $('#' + data.directory_field + '_directory').html(data.directory)
+                                    if (data.items_in_directory == 0) {
+                                        $('#' + data.directory_field + '_field').addClass('hide')
+                                    } else {
+                                        $('#' + data.directory_field + '_field').removeClass('hide')
+                                    }
+                                }
+                                if (data.action == 'new_field') {
+                                    if (data.new_fields) {
+                                        for (var key in data.new_fields) {
+                                            create_new_field(data.new_fields[key])
+                                        }
+                                    }
+                                }
+
+
+                                close_edit_field(field)
+
+                                if (data.other_fields) {
+                                    for (var key in data.other_fields) {
+                                        update_field(data.other_fields[key])
+                                    }
+                                }
+
+                                if (data.deleted_fields) {
+                                    for (var key in data.deleted_fields) {
+                                        delete_field(data.deleted_fields[key])
+                                    }
+                                }
+
+                                for (var key in data.update_metadata.class_html) {
+                                    $('.' + key).html(data.update_metadata.class_html[key])
+                                }
+
+                                post_save_actions(field, data)
+
+                            } else if (data.state == 400) {
+                                $('#' + field + '_editor').removeClass('valid potentially_valid').addClass('invalid')
+
+                                $('#' + field + '_msg').html(data.msg).removeClass('hide')
+
+                            }
+                        })
+
+                    }
+
+                }
+
+
+            </script>
+
                     {else}
                         <tr id="{$field.id}_field" field="{$field.id}"
                             class="{if $smarty.foreach.fields.last}last{/if} {if !$render}hide{/if}  {$class} "

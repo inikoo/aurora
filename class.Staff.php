@@ -28,6 +28,7 @@ class Staff extends DB_Table {
 
         $this->table_name    = 'Staff';
         $this->ignore_fields = array('Staff Key');
+        $this->system_user=false;
 
         if (is_numeric($arg1)) {
             $this->get_data('id', $arg1);
@@ -722,6 +723,31 @@ class Staff extends DB_Table {
                     '<a href="mailto:%s" target="_top">%s</a>', $this->data['Staff Email'], $this->data['Staff Email']
                 ) : '';
                 break;
+
+            case 'Staff User Groups':
+            case 'Staff User Stores':
+            case 'Staff User Websites':
+
+            case 'Staff User Warehouses':
+            case 'Staff User Productions':
+            $field=preg_replace('/^Staff /','',$key);
+
+                if(!is_object( $this->system_user))$this->get_user();
+                if(is_object( $this->system_user)) {return $this->system_user->get($field);}
+                break;
+            case 'User Groups':
+            case 'User Stores':
+            case 'User Websites':
+
+            case 'User Warehouses':
+            case 'User Productions':
+                $field=preg_replace('/^User /','',$key);
+                if(!is_object( $this->system_user))$this->get_user();
+                if(is_object( $this->system_user)) {
+                    return $this->system_user->get($field);
+                }
+                break;
+
             case('User Active'):
                 if (array_key_exists('Staff User Active', $this->data)) {
                     switch ($this->data['Staff User Active']) {
@@ -1029,6 +1055,33 @@ class Staff extends DB_Table {
 
     }
 
+
+    function get_user(){
+
+
+
+        $sql = sprintf('SELECT `User Key` FROM `User Dimension` WHERE `User Type`=%s AND `User Parent Key`=%d ',
+                       prepare_mysql( ($this->get('Staff Type') == 'Contractor'?'Contractor':'Staff')  ),
+                       $this->id);
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->system_user= new User($row['User Key']);
+                return  $this->system_user;
+        	}else{
+                return false;
+            }
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
+        }
+
+
+
+
+    }
+
     function get_user_data() {
 
 
@@ -1297,25 +1350,13 @@ class Staff extends DB_Table {
 
                 $this->update_field($field, $value, $options);
 
-                list($working_hours_per_week, $working_hours_per_week_metadata)
-                    = $this->get_working_hours_per_week(
-                    $this->data['Staff Working Hours']
-                );
-                $this->update_field(
-                    'Staff Working Hours Per Week', $working_hours_per_week, 'no_history'
-                );
-                $this->update_field(
-                    'Staff Working Hours Per Week Metadata', json_encode($working_hours_per_week_metadata), 'no_history'
-                );
+                list($working_hours_per_week, $working_hours_per_week_metadata) = $this->get_working_hours_per_week($this->data['Staff Working Hours']);
+
+                $this->update_field('Staff Working Hours Per Week', $working_hours_per_week, 'no_history');
+                $this->update_field('Staff Working Hours Per Week Metadata', json_encode($working_hours_per_week_metadata), 'no_history');
 
 
-                $to = date(
-                    'Y-m-d', strtotime(
-                        date('Y', strtotime('now + 1 year')).'-'.$account->get(
-                            'Account HR Start Year'
-                        )
-                    )
-                );
+                $to = date('Y-m-d', strtotime(date('Y', strtotime('now + 1 year')).'-'.$account->get('Account HR Start Year')));
 
                 $from = date('Y-m-d');
 
@@ -1324,9 +1365,7 @@ class Staff extends DB_Table {
 
                     $dates = date_range($from, $to);
                     foreach ($dates as $date) {
-                        $timesheet = $this->create_timesheet(
-                            strtotime($date.' 00:00:00'), 'force'
-                        );
+                        $timesheet = $this->create_timesheet(strtotime($date.' 00:00:00'), 'force');
                         $timesheet->update_number_clocking_records();
                         $timesheet->process_clocking_records_action_type();
                         if ($timesheet->get('Timesheet Clocking Records') > 0) {
@@ -1373,21 +1412,54 @@ class Staff extends DB_Table {
             case('Staff User Handle'):
             case('Staff User Password'):
             case('Staff User Active'):
+            case('Staff User Groups'):
+            case('Staff User Stores'):
+            case('Staff User Websites'):
+            case('Staff User Warehouses'):
+            case('Staff User Productions'):
 
-                $this->get_user_data();
+                $this->get_user();
 
 
-                $system_user         = new User($this->data['Staff User Key']);
-                $system_user->editor = $this->editor;
-                $user_field          = preg_replace('/^Staff /', '', $field);
-                //$old_value=$this->get($user_field);
+                if(is_object( $this->system_user)) {
+                    $this->system_user->editor = $this->editor;
+                    $user_field                = preg_replace('/^Staff /', '', $field);
 
-                $system_user->update(array($user_field => $value), $options);
-                $this->error   = $system_user->error;
-                $this->msg     = $system_user->msg;
-                $this->updated = $system_user->updated;
-                $this->get_user_data();
+                    $this->system_user->update(array($user_field => $value), $options);
+                    $this->error   = $this->system_user->error;
+                    $this->msg     = $this->system_user->msg;
+                    $this->updated = $this->system_user->updated;
 
+                    $this->get_user_data();
+
+
+                    $this->other_fields_updated = array(
+                        'Staff_User_Stores' => array(
+                            'field'           => 'Staff_User_Stores',
+                            'render'          => $this->system_user->has_scope('Stores')
+                        ),
+                        'Staff_User_Warehouses' => array(
+                            'field'           => 'Staff_User_Warehouses',
+                            'render'          => $this->system_user->has_scope('Warehouses')
+                        ), 'Staff_User_Websites' => array(
+                            'field'           => 'Staff_User_Websites',
+                            'render'          => $this->system_user->has_scope('Websites')
+                        ), 'Staff_User_Productions' => array(
+                            'field'           => 'Staff_User_Productions',
+                            'render'          => $this->system_user->has_scope('Productions')
+                        ),
+
+
+
+
+
+
+
+                    );
+
+
+
+                }
 
                 break;
 
@@ -1758,7 +1830,7 @@ class Staff extends DB_Table {
 
                 break;
             case 'Staff Position':
-                $label = _('roles');
+                $label = _('Job position');
                 break;
             case 'Staff Job Title':
 
@@ -1792,21 +1864,37 @@ class Staff extends DB_Table {
 
             case 'Staff User Active':
             case 'User Active':
-                $label = _('active');
+                $label = _('system user active');
                 break;
             case 'Staff User Handle':
             case 'User Handle':
-                $label = _('login');
+                $label = _('system user login');
                 break;
 
             case 'Staff User Password':
             case 'User Password':
-                $label = _('password');
+                $label = _('system user password');
                 break;
 
-            case 'Staff PIN':
-                $label = _('PIN');
+            case 'Staff User PIN':
+                $label = _('System user PIN');
                 break;
+            case 'User Groups':
+                $label = _('System user groups');
+                break;
+            case 'User Stores':
+                $label = _('Authorized stores');
+                break;
+            case 'User Websites':
+                $label = _('Authorized websites');
+                break;
+            case 'User Warehouses':
+                $label = _('Authorized warehouses');
+                break;
+            case 'User Productions':
+                $label = _('Authorized manufactures');
+                break;
+
 
 
             default:

@@ -46,3 +46,13 @@
   }
 
 }
+
+
+.date_chooser_in_edit {
+  @include unselectable;
+
+  height: $height_short_row;
+  line-height: $height_short_row;
+  font-size: 90%;
+ 
+}

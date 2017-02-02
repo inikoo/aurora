@@ -372,7 +372,7 @@ function user_categories($_data, $db, $user) {
                 $request = 'account/users/warehouse';
                 break;
             case 'Administrator':
-                $type    = _('Adminstrator');
+                $type    = _('Administrator');
                 $request = 'account/users/root';
                 break;
             case 'Supplier':

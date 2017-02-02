@@ -106,6 +106,7 @@ trait InvoiceCategory {
         ) : '')
         );
 
+      //  print "$sql\n";
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {

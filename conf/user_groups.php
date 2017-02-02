@@ -61,7 +61,9 @@ $user_groups = array(
             'SV',
             'WV',
             'SV'
-        )
+        ),
+        'Stores_Scope'=>true
+        
 
     ),
     3 => array(
@@ -83,7 +85,8 @@ $user_groups = array(
             'PC',
             'PD',
             'PE'
-        )
+        ),
+         'Warehouses_Scope'=>true
 
     ),
     4 => array(
@@ -91,7 +94,9 @@ $user_groups = array(
         'Name'   => _('Production operative'),
         'View'   => '<i  title="'._('Production').'" class="fa fa-square fa-fw"></i>',
         'Edit'   => '',
-        'Rights' => array('FV')
+        'Rights' => array('FV'),
+        'Productions_Scope'=>true,
+        'Warehouses_Scope'=>true
 
     ),
     5 => array(
@@ -117,7 +122,7 @@ $user_groups = array(
 
     ),
     7 => array(
-        'Key'    => 4,
+        'Key'    => 7,
         'Name'   => _('Production manager'),
         'View'   => '<i  title="'._('Inventory').'" class="fa fa-square fa-fw"></i> <i  title="'._(
                 'Warehouse (Locations)'
@@ -129,7 +134,10 @@ $user_groups = array(
             'FV',
             'FE',
             'FC'
-        )
+        ),
+        'Productions_Scope'=>true,
+        'Warehouses_Scope'=>true
+        
 
     ),
     8 => array(
@@ -162,7 +170,8 @@ $user_groups = array(
             'ME',
             'MC',
             'MD'
-        )
+        ),
+        'Stores_Scope'=>true
     ),
 
 
@@ -177,7 +186,9 @@ $user_groups = array(
             'WD',
             'WC',
             'SV'
-        )
+        ),
+         'Websites_Scope'=>true,
+         'Stores_Scope'=>true
 
     ),
     11 => array(
@@ -191,7 +202,8 @@ $user_groups = array(
             'OV',
             'PV',
             'LV'
-        )
+        ),
+        'Warehouses_Scope'=>true
 
     ),
     14 => array(
@@ -226,6 +238,7 @@ $user_groups = array(
         )
 
     ),
+    
 
 
 );

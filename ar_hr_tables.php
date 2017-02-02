@@ -68,7 +68,11 @@ switch ($tipo) {
     case 'timesheets.employees':
         timesheets_employees(get_table_parameters(), $db, $user);
         break;
-    case 'deleted.employees':
+
+    case 'positions':
+        positions(get_table_parameters(), $db, $user);
+        break;
+        case 'deleted.employees':
         deleted_employees(get_table_parameters(), $db, $user, 'current');
         break;
     case 'deleted.contractors':
@@ -1221,6 +1225,126 @@ function deleted_contractors($_data, $db, $user) {
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function positions($_data, $db, $user) {
+
+   // $rtext_label = 'job position';
+    include_once 'prepare_table/init.php';
+
+    include 'conf/roles.php';
+
+    $sql = "select $fields from $table $where $wheref $group_by ";
+
+    //print $sql;
+    $base_data = $roles;
+
+
+    //print_r($base_data);
+
+    foreach ($db->query($sql) as $data) {
+
+        $base_data[$data['Role Code']] = $data;
+    }
+
+    foreach ($base_data as $key => $data) {
+
+      //  print_r($data);
+
+        /*
+        switch ($data['User Type']) {
+            case 'Staff':
+                $type    = _('Employees');
+                $request = 'account/users/staff';
+                break;
+            case 'Contractor':
+                $type    = _('Contractors');
+                $request = 'account/users/contractors';
+                break;
+            case 'Warehouse':
+                $type    = _('Warehouse');
+                $request = 'account/users/warehouse';
+                break;
+            case 'Administrator':
+                $type    = _('Administrator');
+                $request = 'account/users/root';
+                break;
+            case 'Supplier':
+                $type    = _('Suppliers');
+                $request = 'account/users/suppliers';
+                break;
+            case 'Agent':
+                $type    = _('Agents');
+                $request = 'account/users/agents';
+                break;
+            default:
+                $type = '**'.$data['User Type'];
+                break;
+        }
+*/
+
+        $adata[] = array(
+            'id'      => $key,
+            '_position'         => $data['title'],
+            'position'         => sprintf('<span class="button" onClick="change_view(\'hr/position/%s\')">%s</span>',$key,$data['title']),
+            '_employees' => (isset($data['employees'])? $data['employees']:0),
+
+            'employees' => (isset($data['employees'])? number($data['employees']):0)
+        );
+
+    }
+
+
+    foreach ($adata as $key => $row) {
+        $positions[$key]  = $row['_position'];
+        $employees[$key] = $row['_employees'];
+    }
+
+
+    //print_r($positions);
+
+
+  if($order=='position'){
+      if($order_direction=='desc'){
+          array_multisort($positions, SORT_DESC, $adata);
+
+      }else{
+          array_multisort($positions, SORT_ASC, $adata);
+
+      }
+
+  }elseif($order=='employees'){
+        if($order_direction=='desc'){
+            array_multisort($employees, SORT_DESC, $adata);
+
+        }else{
+            array_multisort($employees, SORT_ASC, $adata);
+
+        }
+
+    }
+
+
+  //  print $order.' '.$order_direction;
+
+
+
+    $total_records = count($roles);
+    $rtext         = sprintf(ngettext('%s job position', '%s job positions', $total_records), number($total_records));
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $order,
+            'sort_dir'      => $order_direction,
             'total_records' => $total
 
         )

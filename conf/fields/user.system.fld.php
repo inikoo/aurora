@@ -11,6 +11,9 @@
 */
 
 include 'utils/available_locales.php';
+include 'conf/user_groups.php';
+
+
 
 if (isset($options['new']) and $options['new']) {
     $new = true;
@@ -18,6 +21,18 @@ if (isset($options['new']) and $options['new']) {
     $new = false;
 }
 
+$options_User_Groups=array();
+
+foreach($user_groups as $key=>$user_group){
+    $options_User_Groups[$user_group['Key']]=array('label'=>$user_group['Name'],'selected'=>false);
+}
+
+
+foreach (preg_split('/,/', $object->get('User Groups')) as $current_user_group_key) {
+    if (array_key_exists($current_user_group_key, $options_User_Groups)) {
+        $options_User_Groups[$current_user_group_key]['selected'] = true;
+    }
+}
 
 $options_locales = array();
 foreach ($available_locales as $locale) {
@@ -38,6 +53,7 @@ $options_yn = array(
 );
 asort($options_yn);
 asort($options_locales);
+asort($options_User_Groups);
 
 
 $object_fields = array(
@@ -314,16 +330,15 @@ if (!$new) {
             'fields'     => array(
 
                 array(
-                    'id'              => 'Staff_Position',
+                    'id'              => 'User_Groups',
                     'edit'            => 'radio_option',
-                    'value'           => $employee->get('Staff Position'),
-                    'formatted_value' => $employee->get('Position'),
-                    'options'         => $options_Staff_Position,
-                    'label'           => ucfirst(
-                        $employee->get_field_label('Staff Position')
-                    ),
+                    'value'           => $object->get('User Groups'),
+                    'formatted_value' => $object->get('Groups'),
+                    'options'         => $options_User_Groups,
+                    'label'           => ucfirst($object->get_field_label('User Groups')),
                 ),
                 array(
+                    'render'=>$object->has_scope('Stores'),
                     'id'              => 'User_Stores',
                     'edit'            => 'radio_option',
                     'value'           => $object->get('User Stores'),
@@ -336,6 +351,7 @@ if (!$new) {
 
                 ),
                 array(
+                    'render'=>$object->has_scope('Websites'),
                     'id'              => 'User_Websites',
                     'edit'            => 'radio_option',
                     'value'           => $object->get('User Websites'),
@@ -348,6 +364,7 @@ if (!$new) {
 
                 ),
                 array(
+                    'render'=>$object->has_scope('Warehouses'),
                     'id'              => 'User_Warehouses',
                     'edit'            => 'radio_option',
                     'value'           => $object->get('User Warehouses'),
@@ -361,6 +378,7 @@ if (!$new) {
 
                 ),
                 array(
+                    'render'=>$object->has_scope('Productions'),
                     'id'              => 'User_Productions',
                     'edit'            => 'radio_option',
                     'value'           => $object->get('User Productions'),

@@ -44,9 +44,10 @@ $print_est = true;
 
 print date('l jS \of F Y h:i:s A')."\n";
 
+update_sales($db, $print_est);
+
 update_products($db, $print_est);
 
-update_sales($db, $print_est);
 update_orders($db, $print_est);
 
 function update_orders($db, $print_est) {
@@ -197,6 +198,7 @@ function update_sales($db, $print_est) {
 
 
 }
+
 
 
 ?>

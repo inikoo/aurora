@@ -446,9 +446,9 @@ class User extends DB_Table {
                 $number_stores = $this->get_number_stores();
 
                 if ($number_stores == 0) {
-                    return '<span class="none very_discreet" ><i class="fa fa-toggle-off"></i> '._('none').'</span>';
+                    $stores= '<span class="none very_discreet" >'._('none').'</span>';
                 } elseif ($number_stores == $account->get('Stores') and $number_stores > 20) {
-                    return '<span class="all" ><i class="fa fa-toggle-on"></i> '._('all').'</span>';
+                    $stores= '<span class="all" > '._('all').'</span>';
                 } else {
 
                     $stores = array();
@@ -461,8 +461,12 @@ class User extends DB_Table {
                         $stores[] = $row['Store Code'];
                     }
 
-                    return join($stores, ', ').' <span class="very_disceet italic">('.$number_stores.'/'.$account->get('Stores').')</span>';
+                    $stores= join($stores, ', ');
                 }
+
+
+
+                return $stores.' <span class="very_discreet italic">('.$number_stores.'/'.$account->get('Stores').')</span>';
 
                 break;
 
@@ -501,7 +505,7 @@ class User extends DB_Table {
                     $productions = join($productions, ', ');
                 }
 
-                return $productions.' <span class="very_disceet italic">('.$number_productions.'/'.$account->get('Productions').')</span>';
+                return $productions.' <span class="very_discreet italic">('.$number_productions.'/'.$account->get('Productions').')</span>';
 
                 break;
 
@@ -521,10 +525,10 @@ class User extends DB_Table {
 
                 if ($number_websites == 0) {
                     $websites
-                        = '<span class="none" ><i class="fa fa-toggle-off"></i> '._('none').'</span>';
+                        = '<span class="none very_discreet" > '._('none').'</span>';
                 } elseif ($number_websites == $account->get('Websites')) {
                     $websites
-                        = '<span class="all" ><i class="fa fa-toggle-on"></i> '._('all').'</span>';
+                        = '<span class="all" > '._('all').'</span>';
                 } else {
 
                     $websites = array();
@@ -541,7 +545,7 @@ class User extends DB_Table {
                     $websites = join($websites, ', ');
                 }
 
-                return $websites.' <span class="very_disceet italic">('.$number_websites.'/'.$account->get('Websites').')</span>';
+                return $websites.' <span class="very_discreet italic">('.$number_websites.'/'.$account->get('Websites').')</span>';
                 break;
             case 'User Warehouses':
                 $warehouses = array();
@@ -558,7 +562,7 @@ class User extends DB_Table {
                 $number_warehouses = $this->get_number_warehouses();
                 if ($number_warehouses == 0) {
                     $warehouses
-                        = '<span class="none very_discreet" ><i class="fa fa-toggle-off"></i> '._('none').'</span>';
+                        = '<span class="none very_discreet" > '._('none').'</span>';
                 } elseif ($number_warehouses == $account->get('Warehouses') and $number_warehouses > 20) {
                     $warehouses
                         = '<span class="all" ><i class="fa fa-toggle-on"></i> '._('all').'</span>';
@@ -578,7 +582,7 @@ class User extends DB_Table {
                     $warehouses = join($warehouses, ', ');
                 }
 
-                return $warehouses.' <span class="very_disceet italic">('.$number_warehouses.'/'.$account->get('Warehouses').')</span>';
+                return $warehouses.' <span class="very_discreet italic">('.$number_warehouses.'/'.$account->get('Warehouses').')</span>';
 
                 break;
 
@@ -676,7 +680,7 @@ class User extends DB_Table {
     }
 
     function get_groups() {
-        $groups = array();
+        $groups = '';
         $sql    = sprintf(
             "SELECT GROUP_CONCAT(`User Group Key`) AS groups FROM `User Group User Bridge` UGUB  WHERE UGUB.`User Key`=%d", $this->id
         );
@@ -844,6 +848,28 @@ class User extends DB_Table {
 
             case('User Groups'):
                 $this->update_groups($value);
+
+
+                $this->other_fields_updated = array(
+                    'User_Stores' => array(
+                        'field'           => 'User_Stores',
+                        'render'          => $this->has_scope('Stores')
+                    ),
+                    'User_Warehouses' => array(
+                        'field'           => 'User_Warehouses',
+                        'render'          => $this->has_scope('Warehouses')
+                    ), 'User_Websites' => array(
+                        'field'           => 'User_Websites',
+                        'render'          => $this->has_scope('Websites')
+                    ), 'User_Productions' => array(
+                        'field'           => 'User_Productions',
+                        'render'          => $this->has_scope('Productions')
+                    )
+
+
+                );
+
+
                 break;
             case('User Stores'):
                 $this->update_stores($value);
@@ -1339,10 +1365,13 @@ class User extends DB_Table {
     }
 
     function add_website($to_add, $history = true) {
+
+        include_once('class.Website.php');
+
         $changed = 0;
         foreach ($to_add as $scope_id) {
 
-            $website = new Site($scope_id);
+            $website = new Website($scope_id);
             if (!$website->id) {
                 continue;
             }
@@ -1359,7 +1388,7 @@ class User extends DB_Table {
 
                 $history_data = array(
                     'History Abstract'    => sprintf(
-                        _("User's rights for website %s were granted"), $website->data['Site Code']
+                        _("User's rights for website %s were granted"), $website->get(' Code')
                     ),
                     'History Details'     => '',
                     'Action'              => 'disassociate',
@@ -2665,6 +2694,29 @@ class User extends DB_Table {
 
 
         return $dashboard_items;
+
+
+    }
+
+
+    function has_scope($scope){
+
+
+
+        $groups=$this->get_groups();
+        if($groups!=''){
+            include 'conf/user_groups.php';
+
+            foreach(preg_split('/,/',$groups) as $group_key){
+                if(isset($user_groups[$group_key][$scope.'_Scope'] ) and  $user_groups[$group_key][$scope.'_Scope']){
+                    return true;
+                }
+            }
+
+
+        }
+
+        return false;
 
 
     }
