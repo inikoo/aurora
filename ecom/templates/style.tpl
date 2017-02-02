@@ -451,7 +451,10 @@ h1{
 
      }
 
+     .category_wrap  .panel_4x{
+            height:220px;
 
+     }
 
 
      .text_panel_default .panel_content{

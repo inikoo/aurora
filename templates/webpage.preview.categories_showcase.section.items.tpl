@@ -42,10 +42,10 @@
 
 
                     <div  class="buttons super_discreet panel_size">
-                        <div class="flex-item {if $category_data.data.max_free_slots<1}hide{/if}" size="1" >1x</div>
-                        <div class="flex-item {if $category_data.data.max_free_slots<2}hide{/if}" size="2">2x</div>
-                        <div class="flex-item {if $category_data.data.max_free_slots<3}hide{/if}" size="3">3x</div>
-                        <div class="flex-item {if $category_data.data.max_free_slots<4}hide{/if}" size="4">4x</div>
+                        <div class="flex-item {if $category_data.data.max_free_slots<1}xhide{/if}" size="1" >1x</div>
+                        <div class="flex-item {if $category_data.data.max_free_slots<2}xhide{/if}" size="2">2x</div>
+                        <div class="flex-item {if $category_data.data.max_free_slots<3}xhide{/if}" size="3">3x</div>
+                        <div class="flex-item {if $category_data.data.max_free_slots<4}xhide{/if}" size="4">4x</div>
                     </div>
 
 
@@ -149,7 +149,7 @@
                             </div>
                         </div>
                     {elseif $category_data.data.type=='code'}
-                    <div id="{$category_data.data.id}" code_key="{$category_data.data.key}" style="position:relative;" class=" panel image panel_{$category_data.data.size}">
+                    <div id="{$category_data.data.id}" code_key="{$category_data.data.key}" style="position:relative;" class=" panel image  panel_{$category_data.data.size}">
 
 
 
