@@ -3154,6 +3154,18 @@ function parse_request($_data, $db, $modules, $account = '', $user = '') {
                         $section = 'hr.history';
 
 
+                    }  elseif ($view_path[0] == 'position') {
+                        $section    = 'position';
+                        $object     = 'position';
+                        $parent     = 'account';
+                        $parent_key = 1;
+                        if (isset($view_path[1])) {
+
+                                $key = $view_path[1];
+
+                        }
+
+
                     } elseif ($view_path[0] == 'timesheet') {
                         $section    = 'timesheet';
                         $object     = 'timesheet';

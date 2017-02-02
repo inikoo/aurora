@@ -172,9 +172,7 @@ class Timesheet extends DB_Table {
         $data['Timesheet Record Staff Key']
                                                 = $this->data['Timesheet Staff Key'];
         $data['editor']                         = $this->editor;
-        $timesheet_record                       = new Timesheet_Record(
-            'new', $data
-        );
+        $timesheet_record                       = new Timesheet_Record('new', $data);
 
 
         if ($timesheet_record->new) {

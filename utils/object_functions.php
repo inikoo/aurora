@@ -246,6 +246,12 @@ function get_object($object_name, $key, $load_other_data = false) {
             require_once "class.Supplier_Production.php";
             $object = new Supplier_Production($key);
             break;
+        case 'position':
+            require_once "class.Job_Position.php";
+
+
+            $object = new Job_Position($key);
+            break;
         default:
             exit('need to complete E1: >'.strtolower($object_name)."<\n");
             break;

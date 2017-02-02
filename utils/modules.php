@@ -4097,12 +4097,12 @@ $modules = array(
                     'organization.areas'       => array(
                         'label' => _(
                             'Working Areas'
-                        )
+                        ),'class'=>'hide'
                     ),
                     'organization.departments' => array(
                         'label' => _(
                             'Company departments'
-                        )
+                        ),'class'=>'hide'
                     ),
                     'organization.positions'   => array(
                         'label' => _(
@@ -4112,7 +4112,7 @@ $modules = array(
                     'organization.organigram'  => array(
                         'label' => _(
                             'Organizational chart'
-                        )
+                        ),'class'=>'hide'
                     ),
 
 
@@ -4129,16 +4129,18 @@ $modules = array(
                         ),
                         'icon'  => 'database'
                     ),
-                    'employee.history'     => array(
-                        'label' => _(
-                            'History, notes'
-                        ),
-                        'icon'  => 'sticky-note-o'
-                    ),
+
                     'employee.timesheets'  => array(
                         'label' => _(
                             'Timesheets'
                         )
+                    ),
+                    'employee.history'     => array(
+                        'label' => _(
+                            'History, notes'
+                        ),
+                        'icon'  => 'road',
+                        'class'=>'right icon_only'
                     ),
                     'employee.images'      => array(
                         'label' => _(
@@ -4379,6 +4381,28 @@ $modules = array(
                 )
 
             ),
+
+
+            'position'         => array(
+                'type' => 'object',
+
+
+                'tabs' => array(
+
+
+                    'position.employees'  => array(
+                        'label' => _(
+                            'Employees'
+                        )
+                    ),
+
+
+
+                )
+
+            ),
+
+
             'uploads'              => array(
                 'type' => '',
                 'tabs' => array(

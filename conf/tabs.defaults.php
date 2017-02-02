@@ -1913,6 +1913,14 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => ''
     ),
+    'organization.positions'         => array(
+        'view'        => 'overview',
+        'sort_key'    => 'position',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => ''
+    ),
     'reports'                    => array(
         'view'        => 'overview',
         'sort_key'    => 'id',

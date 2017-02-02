@@ -9,6 +9,8 @@
 
 */
 
+include 'conf/user_groups.php';
+
 
 if (isset($options['new']) and $options['new']) {
     $new = true;
@@ -18,6 +20,8 @@ if (isset($options['new']) and $options['new']) {
 
 $employee = $object;
 $account  = new Account();
+
+$employee->get_user();
 
 $options_Staff_Payment_Terms = array(
     'Monthly'  => _('Monthly (fixed)'),
@@ -53,11 +57,8 @@ foreach ($roles as $_key => $_data) {
     }
 }
 
-foreach (
-    preg_split('/,/', $employee->get('Staff Position')) as $current_position_key
-) {
+foreach (preg_split('/,/', $employee->get('Staff Position')) as $current_position_key) {
     if (array_key_exists($current_position_key, $options_Staff_Position)) {
-
         $options_Staff_Position[$current_position_key]['selected'] = true;
     }
 }
@@ -74,6 +75,114 @@ foreach ($db->query($sql) as $row) {
         'selected' => false
     );
 }
+
+
+
+
+$_options_User_Groups=array();
+$options_User_Groups=array();
+
+foreach($user_groups as $key=>$user_group){
+    $_options_User_Groups['x'. $user_group['Key']]=array('label'=>$user_group['Name'],'selected'=>false,'key'=>$user_group['Key']);
+}
+
+
+foreach($_options_User_Groups as $k => $d) {
+    $_tmp[$k] = $d['label'];
+}
+array_multisort($_tmp, SORT_ASC, $_options_User_Groups);
+foreach($_options_User_Groups as $_option){
+    $options_User_Groups[(string) $_option['key']]=$_option;
+}
+
+
+$options_Stores = array();
+$sql            = sprintf('SELECT `Store Key` AS `key` ,`Store Name`,`Store Code`   FROM `Store Dimension`  ');
+foreach ($db->query($sql) as $row) {
+    $options_Stores[$row['key']] = array(
+        'label'    => $row['Store Code'],
+        'selected' => false
+    );
+}
+
+
+
+$options_Websites = array();
+$sql              = sprintf('SELECT `Site Key` AS `key` ,`Site Name`,`Site Code` FROM `Site Dimension`  ');
+foreach ($db->query($sql) as $row) {
+    $options_Websites[$row['key']] = array(
+        'label'    => $row['Site Code'],
+        'selected' => false
+    );
+}
+
+
+$options_Warehouses = array();
+$sql                = sprintf('SELECT `Warehouse Key` AS `key` ,`Warehouse Name`,`Warehouse Code` FROM `Warehouse Dimension`  ');
+foreach ($db->query($sql) as $row) {
+    $options_Warehouses[$row['key']] = array(
+        'label'    => $row['Warehouse Code'],
+        'selected' => false
+    );
+}
+
+
+
+
+
+$options_Productions = array();
+$sql                 = sprintf(
+    'SELECT `Supplier Production Supplier Key` AS `key`,`Supplier Name`,`Supplier Code` FROM `Supplier Production Dimension` SPD LEFT JOIN `Supplier Dimension` S ON (`Supplier Key`=`Supplier Production Supplier Key`)  '
+);
+
+
+foreach ($db->query($sql) as $row) {
+    $options_Productions[$row['key']] = array(
+        'label'    => $row['Supplier Code'],
+        'selected' => false
+    );
+}
+
+
+
+
+if(is_object($employee->system_user)) {
+
+
+
+
+    foreach (preg_split('/,/', $employee->system_user->get('User Groups')) as $current_user_group_key) {
+        if (array_key_exists($current_user_group_key, $options_User_Groups)) {
+            $options_User_Groups[$current_user_group_key]['selected'] = true;
+        }
+    }
+
+    foreach (preg_split('/,/', $employee->system_user->get('User Stores')) as $key) {
+        if (array_key_exists($key, $options_Stores)) {
+            $options_Stores[$key]['selected'] = true;
+        }
+    }
+
+    foreach (preg_split('/,/', $employee->system_user->get('User Websites')) as $key) {
+        if (array_key_exists($key, $options_Websites)) {
+            $options_Websites[$key]['selected'] = true;
+        }
+    }
+
+    foreach (preg_split('/,/', $employee->system_user->get('User Warehouses')) as $key) {
+        if (array_key_exists($key, $options_Warehouses)) {
+            $options_Warehouses[$key]['selected'] = true;
+        }
+    }
+
+    foreach (preg_split('/,/', $employee->system_user->get('User Productions')) as $key) {
+        if (array_key_exists($key, $options_Productions)) {
+            $options_Productions[$key]['selected'] = true;
+        }
+    }
+
+}
+
 asort($options_Staff_Position);
 asort($options_Staff_Supervisor);
 asort($options_Staff_Type);
@@ -339,6 +448,16 @@ $object_fields = array(
                 'type'     => 'value'
             ),
             array(
+                'id'              => 'Staff_Position',
+                'edit'            => 'radio_option',
+                'value'           => $employee->get('Staff Position'),
+                'formatted_value' => $employee->get('Position'),
+                'options'         => $options_Staff_Position,
+                'label'           => ucfirst(
+                    $employee->get_field_label('Staff Position')
+                ),
+            ),
+            array(
                 //   'render'=>($employee->get('Staff Currently Working')=='Yes'?true:false),
                 'id'   => 'Staff_Supervisor',
                 'edit' => ($edit ? 'radio_option' : ''),
@@ -413,20 +532,9 @@ if (!$new) {
                     'value'           => $employee->get('Staff User Active'),
                     'formatted_value' => $employee->get('User Active'),
                     'options'         => $options_yn,
-                    'label'           => ucfirst(
-                        $employee->get_field_label('Staff Active')
-                    ),
+                    'label'           => ucfirst($employee->get_field_label('Staff User Active')),
                 ),
-                array(
-                    'id'              => 'Staff_Position',
-                    'edit'            => 'radio_option',
-                    'value'           => $employee->get('Staff Position'),
-                    'formatted_value' => $employee->get('Position'),
-                    'options'         => $options_Staff_Position,
-                    'label'           => ucfirst(
-                        $employee->get_field_label('Staff Position')
-                    ),
-                ),
+
                 array(
 
                     'id'                => 'Staff_User_Handle',
@@ -468,6 +576,68 @@ if (!$new) {
                 ),
 
 
+
+                array(
+                    'render' => ($employee->get('Staff User Active') == 'Yes' ? true : false),
+                    'id'              => 'Staff_User_Groups',
+                    'edit'            => 'radio_option',
+                    'value'           => $employee->system_user->get('User Groups'),
+                    'formatted_value' => $employee->system_user->get('Groups'),
+                    'options'         => $options_User_Groups,
+                    'label'           => ucfirst($object->get_field_label('User Groups')),
+                ),
+                array(
+                    'render'=>$employee->system_user->has_scope('Stores'),
+                    'id'              => 'Staff_User_Stores',
+                    'edit'            => 'radio_option',
+                    'value'           => $employee->system_user->get('User Stores'),
+                    'formatted_value' => $employee->system_user->get('Stores'),
+                    'label'           => ucfirst($object->get_field_label('User Stores')),
+                    'options'         => $options_Stores,
+                    'required'        => false
+
+                ),
+                array(
+                    'render'=>$employee->system_user->has_scope('Websites'),
+                    'id'              => 'Staff_User_Websites',
+                    'edit'            => 'radio_option',
+                    'value'           => $employee->system_user->get('User Websites'),
+                    'formatted_value' => $employee->system_user->get('Websites'),
+                    'label'           => ucfirst($employee->get_field_label('User Websites')
+                    ),
+                    'options'         => $options_Websites,
+                    'required'        => false
+
+                ),
+                array(
+                    'render'=>$employee->system_user->has_scope('Warehouses'),
+                    'id'              => 'Staff_User_Warehouses',
+                    'edit'            => 'radio_option',
+                    'value'           => $employee->system_user->get('User Warehouses'),
+                    'formatted_value' => $employee->system_user->get('Warehouses'),
+                    'label'           => ucfirst($employee->get_field_label('User Warehouses')
+                    ),
+                    'options'         => $options_Warehouses,
+                    'required'        => false
+
+
+                ),
+                array(
+                    'render'=>$employee->system_user->has_scope('Productions'),
+                    'id'              => 'Staff_User_Productions',
+                    'edit'            => 'radio_option',
+                    'value'           => $employee->system_user->get('User Productions'),
+                    'formatted_value' => $employee->system_user->get('Productions'),
+                    'label'           => ucfirst($employee->get_field_label('User Productions')
+                    ),
+                    'options'         => $options_Productions,
+                    'required'        => false
+
+
+                )
+                
+                
+
             )
         );
 
@@ -491,12 +661,31 @@ if (!$new) {
 
     }
 
+    $from=date('y-m-d');
+    $from_locale=date('d/m/y');
+    $from_mmddyy=date('m/d/Y');
+    $to_locale='';
+    $to_mmddyy='';
 
     $operations = array(
         'label'      => _('Operations'),
         'show_title' => true,
         'class'      => 'operations',
         'fields'     => array(
+
+            array(
+                'id'        => 'recalculate_timesheets',
+                'class'     => 'operation_date_interval',
+                'value'     => '',
+                'label'     => '<span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="show_choose_interval(this)" class="delete_object button">'._("Recalculate time sheets").' <i class="fa fa-refresh new_button "></i></span>',
+                'reference' => '',
+                'type'      => 'date_interval',
+                'from'=>$from,
+                'from_locale'=>$from_locale,
+                'to_locale'=>$to_locale,
+                'from_mmddyy'=>$from_mmddyy,
+                'to_mmddyy'=>$to_mmddyy
+            ),
 
             array(
                 'id'        => 'delete_employee',
@@ -507,6 +696,7 @@ if (!$new) {
                 'reference' => '',
                 'type'      => 'operation'
             ),
+
 
 
         )
@@ -624,6 +814,9 @@ if (!$new) {
                 'required'        => false,
 
             ),
+
+
+
 
 
         )
