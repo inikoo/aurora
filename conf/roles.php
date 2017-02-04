@@ -141,7 +141,7 @@ $roles = array(
         )
     ),
     'PICK'  => array(
-        'title'       => _('Picker'),
+        'title'       => _('Picker/Packer'),
         'size'        => array(
             'Basic',
             'Medium',

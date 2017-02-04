@@ -887,11 +887,13 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             include_once 'showcase/supplier.order.item.show.php';
             $html = get_showcase($data, $smarty, $user, $db);
             break;
-            break;
         case 'supplierdelivery':
             include_once 'showcase/supplier.delivery.show.php';
             $html = get_showcase($data, $smarty, $user, $db);
             break;
+        case 'position':
+            include_once 'showcase/job_position.show.php';
+            $html = get_showcase($data, $smarty, $user, $db);
             break;
         default:
             $html = $data['object'].' -> '.$data['key'];
@@ -1876,6 +1878,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_history_navigation(
                         $data, $smarty, $user, $db, $account
                     );
+                    break;
+                case ('position'):
+                    return get_position_navigation($data, $smarty, $user, $db, $account);
                     break;
             }
 
@@ -4212,6 +4217,27 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'reference' => 'employee/'.$employee->id.'/attachment/'.$state['_object']->id
                     );
                     break;
+
+                case 'organization':
+                    $branch[] = array(
+                        'label'     => _('Organization'),
+                        'icon'      => '',
+                        'reference' => 'hr/organization'
+                    );
+                    break;
+                case 'position':
+                    $branch[] = array(
+                        'label'     => _('Job positions'),
+                        'icon'      => '',
+                        'reference' => 'hr/organization'
+                    );
+                    $branch[] = array(
+                        'label'     => $state['_object']->get('title'),
+                        'icon'      => '',
+                        'reference' => ''
+                    );
+                    break;
+
                 case 'timesheets':
                     $branch[] = array(
                         'label'     => _("Employees' calendar"),

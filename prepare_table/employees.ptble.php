@@ -27,9 +27,9 @@ if ($parameters['parent'] == 'account') {
 
 } elseif ($parameters['parent'] == 'position') {
     $table
-        = '`Staff Dimension` SD  left join `Company Position Staff Bridge` on B (B.`Staff Key`=SD.`Staff Key`)';
+        = '`Staff Dimension` SD  left join `Staff Role Bridge`  B on  (B.`Staff Key`=SD.`Staff Key`) left join `User Dimension` U on (SD.`Staff Key`=U.`User Parent Key` and `User Type`="Staff") ';
 
-    $where .= sprintf(' and  B.`Position Key`=%d', $parameters['parent_key']);
+    $where .= sprintf(' and  B.`Role Code`=%s', prepare_mysql($parameters['parent_key']));
 
 }
 
@@ -103,9 +103,10 @@ if ($order == 'name') {
 $sql_totals
     = "select count(Distinct SD.`Staff Key`) as num from $table  $where  ";
 
+
 $fields
     = "`Staff ID`,`Staff Job Title`,`Staff Birthday`,`Staff Official ID`,`Staff Email`,`Staff Telephone Formatted`,`Staff Telephone`,`Staff Next of Kind`,
-`Staff Alias`,`Staff Key`,`Staff Name`,`Staff Type`,
+`Staff Alias`,SD.`Staff Key`,`Staff Name`,`Staff Type`,
 `Staff Valid To`,`Staff Valid From`,`User Login Count`,
 `User Handle`,`User Active`,`User Last Login`,
 (select GROUP_CONCAT(`Role Code` ) from `Staff Role Bridge` B  where  B.`Staff Key`=SD.`Staff Key` ) as roles,

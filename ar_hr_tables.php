@@ -91,7 +91,6 @@ switch ($tipo) {
 
 function employees($_data, $db, $user, $type = '') {
 
-
     if ($type == 'current') {
         $extra_where = ' and `Staff Currently Working`="Yes"';
         $rtext_label = 'employee';
@@ -103,11 +102,7 @@ function employees($_data, $db, $user, $type = '') {
     }
 
     include_once 'prepare_table/init.php';
-
-    $sql
-        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-
-
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
@@ -1242,52 +1237,13 @@ function positions($_data, $db, $user) {
 
     $sql = "select $fields from $table $where $wheref $group_by ";
 
-    //print $sql;
     $base_data = $roles;
-
-
-    //print_r($base_data);
-
     foreach ($db->query($sql) as $data) {
 
-        $base_data[$data['Role Code']] = $data;
+        $base_data[$data['Role Code']] = array_merge($base_data[$data['Role Code']],$data);
     }
 
     foreach ($base_data as $key => $data) {
-
-      //  print_r($data);
-
-        /*
-        switch ($data['User Type']) {
-            case 'Staff':
-                $type    = _('Employees');
-                $request = 'account/users/staff';
-                break;
-            case 'Contractor':
-                $type    = _('Contractors');
-                $request = 'account/users/contractors';
-                break;
-            case 'Warehouse':
-                $type    = _('Warehouse');
-                $request = 'account/users/warehouse';
-                break;
-            case 'Administrator':
-                $type    = _('Administrator');
-                $request = 'account/users/root';
-                break;
-            case 'Supplier':
-                $type    = _('Suppliers');
-                $request = 'account/users/suppliers';
-                break;
-            case 'Agent':
-                $type    = _('Agents');
-                $request = 'account/users/agents';
-                break;
-            default:
-                $type = '**'.$data['User Type'];
-                break;
-        }
-*/
 
         $adata[] = array(
             'id'      => $key,
