@@ -57,10 +57,11 @@ class Job_Position {
 
 
 		switch ($key) {
+            case 'title':
 
+                return $this->data[$key];
 		default:
 
-			return '';
 
 		}
 

@@ -148,7 +148,10 @@
                             hspace="0"
                             vspace="0"
                             frameborder="0"
-                            scrolling="no" sandbox="allow-scripts allow-same-origin allow-popups" >
+                            scrolling="no"
+                            sandbox="allow-scripts allow-same-origin allow-popups allow-top-navigation"
+
+                    >
 
                     </iframe>
 

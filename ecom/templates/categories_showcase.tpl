@@ -191,7 +191,7 @@
                                                 frameborder="0"
                                                 scrolling="no"
 
-                                                sandbox="allow-scripts allow-same-origin allow-popups" ></iframe>
+                                                sandbox="allow-scripts allow-same-origin allow-popups allow-top-navigation" ></iframe>
 
 
                                     </div>
