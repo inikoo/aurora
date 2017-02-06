@@ -458,7 +458,7 @@ class Part extends Asset {
 
 
 
-                $sko_cost=sprintf(_('%s stock cost per SKO'),
+                $sko_cost=sprintf(_('SKO stock value %s'),
                                    money($this->data['Part Cost in Warehouse'] , $account->get('Account Currency'))
 
                 );
