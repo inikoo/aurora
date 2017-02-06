@@ -878,6 +878,8 @@ class Warehouse extends DB_Table {
 
     function get_kpi($interval){
 
+        global $account;
+
         include_once 'utils/date_functions.php';
         list($db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb) = calculate_interval_dates($this->db, $interval);
 
@@ -900,7 +902,7 @@ class Warehouse extends DB_Table {
         	exit;
         }
 
-        $sql=sprintf('select sum(`Delivery Note Invoiced Net DC Amount`) as amount from `Delivery Note Dimension` where `Delivery Note Date`>=%s and `Delivery Note Date`<=%s  and `Delivery Note State`="Delivery Note State" ',
+        $sql=sprintf('select sum(`Delivery Note Invoiced Net DC Amount`) as amount from `Delivery Note Dimension` where `Delivery Note Date`>=%s and `Delivery Note Date`<=%s  and `Delivery Note State`="Dispatched" ',
                      prepare_mysql($from_date),
                      prepare_mysql($to_date)
         );
@@ -916,8 +918,15 @@ class Warehouse extends DB_Table {
             exit;
         }
 
-
-        return $amount/$hrs;
+//print $sql;
+        return array(
+           'kpi'=> $amount/$hrs,
+           'amount'=>$amount,
+           'hrs'=>$hrs,
+        'formatted_kpi'=> number($amount/$hrs,2).' '.$account->get('Account Currency').'/h',
+           'formatted_amount'=>money($amount,$account->get('Account Currency')),
+           'formatted_hrs'=>sprintf('%d hours',number($hrs,1)),
+        );
 
 
     }

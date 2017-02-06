@@ -9,7 +9,7 @@
 -->
 *}
 
-
+{assign "kpi" $warehouse->get_kpi('Month to day')}
 <div style="border-bottom:1px solid #ccc;padding:20px">
-<div style="border:1px solid #eee;padding:10px;font-size:150%;width:200px">{$warehouse->get_kpi('Last Week')}</div>
+<div style="border:1px solid #eee;padding:10px;font-size:150%;width:200px" title="{$kpi.formatted_amount} /{$kpi.formatted_hrs} ">{$kpi.formatted_kpi}</div>
 </div>
