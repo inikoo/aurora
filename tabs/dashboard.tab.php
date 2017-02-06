@@ -83,6 +83,30 @@ foreach ($user->get_dashboard_items() as $item) {
         $html .= get_dashboard_pending_orders($db, $account, $user, $smarty, $parent,$currency, $_SESSION['display_device_version']);
 
     }
+    elseif ($item == 'kpis') {
+
+        $period = '1y';
+
+        include_once 'widgets/kpis.wget.php';
+
+        if (isset($_SESSION['dashboard_state']['pending_orders']['parent'])) {
+            $parent = $_SESSION['dashboard_state']['pending_orders']['parent'];
+        } else {
+            $parent = '';
+        }
+
+        if (isset($_SESSION['dashboard_state']['pending_orders']['currency'])) {
+            $currency = $_SESSION['dashboard_state']['pending_orders']['currency'];
+        } else {
+            $currency = 'account';
+        }
+
+
+
+
+        $html .= get_dashboard_kpis($db, $account, $user, $smarty, $parent,$currency, $_SESSION['display_device_version']);
+
+    }
 
 }
 
