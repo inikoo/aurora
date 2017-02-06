@@ -22,7 +22,7 @@ function update_parts_cost($db) {
         'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Reference`="FO-P7" ORDER BY `Part SKU` desc  '
     );
     $sql = sprintf(
-        'SELECT `Part SKU` FROM `Part Dimension`  ORDER BY `Part SKU`   '
+        'SELECT `Part SKU` FROM `Part Dimension`  ORDER BY `Part SKU`  desc '
     );
 
     if ($result = $db->query($sql)) {
