@@ -31,6 +31,8 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
     );
 
 
+
+
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
 
@@ -39,12 +41,13 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
 
 
             if (strtotime($date1) < strtotime($date2)) {
-
                 $reload = true;
 
 
             }
             $exchange_rate = $row['Exchange'];
+            return $exchange_rate;
+
 
         } else {
             $reload = true;

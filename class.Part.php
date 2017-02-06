@@ -449,6 +449,48 @@ class Part extends Asset {
                     return $this->data['Part Status'];
                 }
                 break;
+
+            case 'SKO Price':
+                if ($this->data['Part Unit Price'] == '') {
+                    return _('Cost price not set up');
+                }
+                include_once 'utils/natural_language.php';
+
+
+
+                $sko_cost=sprintf(_('%s cost per SKO'),
+                                   money($this->data['Part Cost'] , $account->get('Account Currency'))
+
+                );
+
+
+
+                $sko_recomended_price=sprintf(_('suggested SKO price: %s'),
+                                   money($this->data['Part Unit Price'] * $this->data['Part Units Per Package'], $account->get('Account Currency'))
+
+                                   );
+
+
+
+                if ($this->data['Part Units Per Package'] != 0 and is_numeric(
+                        $this->data['Part Units Per Package']
+                    )
+                ) {
+
+                    $unit_margin = $this->data['Part Unit Price'] - ($this->data['Part Cost'] / $this->data['Part Units Per Package']);
+
+                    $sko_recomended_price .= sprintf(
+                        ' (<span class="'.($unit_margin < 0 ? 'error' : '').'">%s '._('margin').'</span>)', percentage($unit_margin, $this->data['Part Unit Price'])
+                    );
+                }
+
+
+
+
+                return $sko_cost.' <span class="discreet" style="margin-left:10px">'.$sko_recomended_price.'</span>';
+                break;
+            case 'Unit RRP':
+
             case 'Unit Price':
                 if ($this->data['Part Unit Price'] == '') {
                     return '';
