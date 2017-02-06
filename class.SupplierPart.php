@@ -883,6 +883,15 @@ class SupplierPart extends DB_Table {
                     $value = 0;
                 }
 
+                if(preg_match('/\%$/',$value)){
+                    $value=preg_replace('/\%^/','',$value);
+
+
+
+                    $value=$this->data['Supplier Part Unit Cost']   *$value/100;
+                }
+
+
                 if (!is_numeric($value) or $value < 0) {
                     $this->error = true;
                     $this->msg   = sprintf(
