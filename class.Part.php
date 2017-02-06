@@ -489,7 +489,7 @@ class Part extends Asset {
 
                 return $sko_cost.' <span class="discreet" style="margin-left:10px">'.$sko_recomended_price.'</span>';
                 break;
-           
+
 
             case 'Unit Price':
                 if ($this->data['Part Unit Price'] == '') {
