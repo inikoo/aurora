@@ -924,7 +924,7 @@ class Warehouse extends DB_Table {
            'kpi'=> $amount/$hrs,
            'amount'=>$amount,
            'hrs'=>$hrs,
-        'formatted_kpi'=> number($amount/$hrs,2).' '.$account->get('Account Currency').'/h',
+        'formatted_kpi'=> number($amount/$hrs,2).' '.currency_symbol($account->get('Account Currency')).'/h',
            'formatted_amount'=>money($amount,$account->get('Account Currency')),
            'formatted_hrs'=>sprintf('%d hours',number($hrs,1)),
         );
