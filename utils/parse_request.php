@@ -2187,12 +2187,16 @@ function parse_request($_data, $db, $modules, $account = '', $user = '') {
                     if (is_numeric($view_path[0])) {
                         $object = 'warehouse';
                         $key    = $view_path[0];
-
                         if (isset($view_path[1])) {
 
+                        if ($view_path[1] == 'dashboard') {
+
+                               $section = 'dashboard';
 
 
-                            if ($view_path[1] == 'delivery_notes') {
+
+
+                        }elseif ($view_path[1] == 'delivery_notes') {
                                 //===
 
                                 if (!$user->can_view('orders')) {
@@ -2400,7 +2404,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '') {
 
                         $section = 'dashboard';
 
-
+exit;
 
                     }  elseif ($view_path[0] == 'stock_history') {
                         $section = 'stock_history';

@@ -24,6 +24,12 @@ $sql = sprintf(
     'SELECT `Timesheet Key` FROM `Timesheet Dimension` WHERE `Timesheet Clocking Records`>0  '
 );
 
+$sql = sprintf(
+    'SELECT `Timesheet Key` FROM `Timesheet Dimension` WHERE `Timesheet Date`>="2017-02-01"  '
+);
+
+
+
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $timesheet = new Timesheet($row['Timesheet Key']);

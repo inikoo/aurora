@@ -12,6 +12,41 @@
 
 include_once 'class.Warehouse.php';
 
+
+function get_dashboard_navigation($data, $smarty, $user, $db) {
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+    $sections      = get_sections($data['module'], $data['key']);
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+
+    $_content = array(
+
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => _('Warehouse dashboard'),
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search warehouse')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
 function get_warehouses_navigation($data, $smarty, $user, $db, $account) {
 
 

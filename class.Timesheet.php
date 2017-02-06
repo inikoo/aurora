@@ -339,6 +339,17 @@ class Timesheet extends DB_Table {
             array('Timesheet Clocked Time' => ($clocked_seconds)), 'no_history'
         );
 
+        include_once 'class.Staff.php';
+        $employee=new Staff($this->get('Timesheet Staff Key'));
+        $positions=preg_split('/,/', $employee->get('Staff Position'));
+        if(   in_array('PICK', $positions)  or  in_array('WAHSC', $positions) ){
+           // print "$clocked_seconds\n";
+
+            $this->update(
+            array('Timesheet Warehouse Clocked Time' => ($clocked_seconds)), 'no_history'
+            );
+        }
+
 
         switch (date('N', strtotime($this->get('Timesheet Date')))) {
             case 1:
