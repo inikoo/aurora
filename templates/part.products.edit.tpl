@@ -13,7 +13,7 @@
 <div style="padding:10px;border-bottom:1px solid #ccc;display:flex;justify-content: space-around;">
 <div style="text-align: left;">
 
- {$supplier_parts_number}   {if isset($supplier_part)}  {t}Current unit cost{/t}: {$supplier_part->get('Unit Cost')} {t}Extras{/t}: {$supplier_part->get('Unit Extra Cost')}  {/if}
+ {if isset($supplier_part)}  {t}Current unit cost{/t}: {$supplier_part->get('Unit Cost')} {t}Extras{/t}: {$supplier_part->get('Unit Extra Cost')}  {/if}
 
 
 </div>
