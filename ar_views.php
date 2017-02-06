@@ -1722,7 +1722,11 @@ function get_navigation($user, $smarty, $data, $db, $account) {
             require_once 'navigation/warehouses.nav.php';
 
             switch ($data['section']) {
-
+                case ('dashboard'):
+                    return get_dashboard_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
                 case ('warehouses'):
                     return get_warehouses_navigation(
                         $data, $smarty, $user, $db, $account
@@ -4772,7 +4776,20 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
             switch ($state['section']) {
-                case 'warehouse':
+
+
+
+case 'dashboard':
+            $branch[] = array(
+            'label'     => _('Warehouse dashboard'),
+            'icon'      => 'tachometer',
+            'reference' => ''
+            );
+
+            break;
+
+
+        case 'warehouse':
                     $branch[] = array(
                         'label'     => '('._('All warehouses').')',
                         'icon'      => '',
@@ -4942,7 +4959,11 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     );
 
                     break;
-            }
+
+
+
+
+        }
 
 
             break;

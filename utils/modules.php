@@ -3649,30 +3649,37 @@ $modules = array(
     ),
     'warehouses'      => array(
         'sections' => array(
+            'dashboard'          => array(
+                'type'      => 'navigation',
+                'label'     => _('Dashboard'),
+                'icon'      => 'tachometer',
+                'reference' => 'warehouse/%d/dashboard',
+                'tabs'      => array(
+                    'warehouse.dashboard' => array('label' => _('Dashboard'))
+
+                )
+            ),
 
 
             'warehouse' => array(
 
                 'type'      => 'navigation',
-                'label'     => '',
+                'label'     => _('Warehouse'),
                 'title'     => _('Warehouse'),
                 'icon'      => 'map',
                 'reference' => 'warehouse/%d',
-                'class'     => 'icon_only',
+
                 'tabs'      => array(
                     'warehouse.details'        => array(
                         'label' => _('Data'),
                         'title' => _(
-                            'Warehouse detais'
+                            'Warehouse details'
                         ),
                         'icon'  => 'database'
                     ),
                     'warehouse.replenishments' => array(
                         'label' => _(
-                            "Replenishments"
-                        ),
-                        'title' => _(
-                            "Replenishments"
+                            "Replenishment"
                         )
                     ),
                     'warehouse.parts'          => array(

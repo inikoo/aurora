@@ -876,6 +876,52 @@ class Warehouse extends DB_Table {
 
     }
 
+    function get_kpi($interval){
+
+        include_once 'utils/date_functions.php';
+        list($db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb) = calculate_interval_dates($this->db, $interval);
+
+     //  print "$db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb \n";
+
+
+        $sql=sprintf('select sum(`Timesheet Warehouse Clocked Time`) as seconds from `Timesheet Dimension` where `Timesheet Date`>=%s and `Timesheet Date`<=%s ',
+                     prepare_mysql($from_date),
+                     prepare_mysql($to_date)
+                     );
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $hrs=$row['seconds']/3600;
+        	}else{
+                $hrs=0;
+            }
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
+        }
+
+        $sql=sprintf('select sum(`Delivery Note Invoiced Net DC Amount`) as amount from `Delivery Note Dimension` where `Delivery Note Date`>=%s and `Delivery Note Date`<=%s  and `Delivery Note State`="Delivery Note State" ',
+                     prepare_mysql($from_date),
+                     prepare_mysql($to_date)
+        );
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $amount=$row['amount'];
+            }else{
+                $amount=0;
+            }
+        }else {
+            print_r($error_info=$this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        return $amount/$hrs;
+
+
+    }
+
 
 }
 
