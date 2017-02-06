@@ -10,8 +10,7 @@
 */
 
 
-$table
-       = '`Staff Dimension` SD left join `User Dimension` U on (SD.`Staff Key`=U.`User Parent Key` and `User Type`="Staff") ';
+$table = '`Staff Dimension` SD left join `User Dimension` U on (SD.`Staff Key`=U.`User Parent Key` and `User Type`="Staff") ';
 $where = ' where `Staff Type`!="Contractor" ';
 
 if ($parameters['parent'] == 'account') {
@@ -29,7 +28,7 @@ if ($parameters['parent'] == 'account') {
     $table
         = '`Staff Dimension` SD  left join `Staff Role Bridge`  B on  (B.`Staff Key`=SD.`Staff Key`) left join `User Dimension` U on (SD.`Staff Key`=U.`User Parent Key` and `User Type`="Staff") ';
 
-    $where .= sprintf(' and  B.`Role Code`=%s', prepare_mysql($parameters['parent_key']));
+    $where = sprintf(' where  B.`Role Code`=%s', prepare_mysql($parameters['parent_key']));
 
 }
 
