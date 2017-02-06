@@ -122,12 +122,18 @@ function stores($_data, $db, $user) {
 function products($_data, $db, $user, $account) {
 
 
+    include_once 'utils/currency_functions.php';
+
     if ($_data['parameters']['parent'] == 'customer_favourites') {
         $rtext_label = 'product favourited';
     } else {
         $rtext_label = 'product';
     }
 
+if($_data['parameters']['parent']=='part') {
+    include_once 'class.Product.php';
+
+}
 
     include_once 'prepare_table/init.php';
 
@@ -205,6 +211,30 @@ function products($_data, $db, $user, $account) {
             }
 
 
+            if ($data['Store Currency Code'] != $account->get('Account Currency')) {
+
+                $exchange = currency_conversion(
+                    $db, $data['Store Currency Code'], $account->get('Account Currency'), '- 180 minutes'
+                );
+
+            } else {
+                $exchange = 1;
+            }
+
+
+
+
+
+            if($_data['parameters']['parent']=='part'){
+
+                $product=new Product('id',$data['Product ID']);
+                $parts=$product->get('Parts');
+            }else{
+
+                $parts='';
+            }
+
+
             $record_data[] = array(
 
                 'id'               => (integer)$data['Product ID'],
@@ -213,19 +243,12 @@ function products($_data, $db, $user, $account) {
                 'store'            => $data['Store Code'],
                 'code'             => $data['Product Code'],
                 'name'             => $data['Product Units Per Case'].'x '.$data['Product Name'],
-                'price'            => money(
-                    $data['Product Price'], $data['Store Currency Code']
-                ),
-                'margin'           => '<span title="'._('Cost price').':'.money(
-                        $data['Product Cost'], $account->get('Account Currency')
-                    ).'">'.percentage(
-                        $data['Product Price'] - $data['Product Cost'], $data['Product Price']
-                    ).'<span>',
+                'price'            => sprintf('<span style="cursor:text" title="%s" onClick="open_edit_price(this)">%s</span>',money($exchange*$data['Product Price'], $account->get('Account Currency')), money($data['Product Price'], $data['Store Currency Code'])),
+                'margin'           => '<span style="cursor:text" onClick="open_edit_margin(this)" title="'._('Cost price').':'.money($data['Product Cost'], $account->get('Account Currency')).'">'.percentage($exchange*$data['Product Price'] - $data['Product Cost'], $exchange*$data['Product Price']).'<span>',
                 'web_state'        => $web_state,
                 'status'           => $status,
-                'sales'            => money(
-                    $data['sales'], $data['Store Currency Code']
-                ),
+                'parts'=>$parts,
+                'sales'            => money($data['sales'], $data['Store Currency Code']),
                 'sales_1yb'        => delta($data['sales'], $data['sales_1yb']),
                 'qty_invoiced'     => number($data['qty_invoiced']),
                 'qty_invoiced_1yb' => delta(

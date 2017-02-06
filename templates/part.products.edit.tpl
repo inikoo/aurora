@@ -10,6 +10,13 @@
 *}
 
 
+<div style="padding:10px;border-bottom:1px solid #ccc;text-align:right">
+
+     {$part->get('SKO Price')}
+
+
+</div>
+
 <div style="padding:10px;border-bottom:1px solid #ccc;text-align:right"
      class="{if !$products_without_auto_web_configuration}hide{/if}">
     <span class="button" data-data='{ "object": "part", "key":"{$part_sku}"}'
@@ -17,6 +24,7 @@
                                                                               aria-hidden="true"></i>  <span
                 class="padding_left_5">{t}Set all products web configuration as Automatic{/t}</span> </span>
 </div>
+
 
 <script>
 

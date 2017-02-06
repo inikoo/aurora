@@ -12,20 +12,30 @@ label: "",
 editable: false,
 renderable: false,
 cell: "string"
-}, {
-name: "store",
-label: "{t}Store{/t}",
-renderable: {if ($data['parent']=='account' or $data['parent']=='warehouse' ) }true{else}false{/if},
+},
+
+{
+name: "code",
+label: "{t}Code{/t}   ",
 editable: false,
 sortType: "toggle",
 cell: Backgrid.StringCell.extend({
 events: {
 "click": function() {
-change_view('products/'+this.model.get("store_key"))
+change_view( {if $data['section']=='part'}'part/{$data['key']}/product/' + this.model.get("id"){else if $data['section']=='category'}'products/{$data['store']->id}/category/{$data['_object']->get('Category Position')}/product/' + this.model.get("id"){else}'products/{$data['parent_key']}/'+this.model.get("id"){/if})
 }
 },
 className: "link width_150",
 })
+},
+
+{
+name: "store",
+label: "{t}Store{/t}",
+renderable: {if ($data['parent']=='account' or $data['parent']=='warehouse' ) }true{else}false{/if},
+editable: false,
+sortType: "toggle",
+cell: Backgrid.StringCell.extend([])
 },
 
 {
@@ -48,32 +58,23 @@ cell: Backgrid.HtmlCell.extend({} ),
 
 },
 
+
+
 {
-name: "code",
-label: "{t}Code{/t}   ",
+name: "parts",
+label: "{t}Parts{/t}",
 editable: false,
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
-events: {
-"click": function() {
-change_view( {if $data['section']=='part'}'part/{$data['key']}/product/' + this.model.get("id"){else if $data['section']=='category'}'products/{$data['store']->id}/category/{$data['_object']->get('Category Position')}/product/' + this.model.get("id"){else}'products/{$data['parent_key']}/'+this.model.get("id"){/if})
-}
-},
-className: "link width_150",
-})
-}, {
-name: "name",
-label: "{t}Name{/t}",
-editable: false,
-sortType: "toggle",
-cell: "string"
+cell: "html"
 },
 {
 name: "price",
 label: "{t}Price{/t}",
 editable: false,
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({ } ),
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+headerCell: integerHeaderCell
 
 },
 {
@@ -346,7 +347,7 @@ close_columns_period_options()
 $('#columns_period').addClass('hide');
 
 
-grid.columns.findWhere({ name: 'name'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'parts'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'status'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'price'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'margin'} ).set("renderable", false)
@@ -377,7 +378,7 @@ grid.columns.findWhere({ name: 'percentage_repeat_customer_total'} ).set("render
 
 
 if(view=='overview'){
-grid.columns.findWhere({ name: 'name'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'parts'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'price'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'status'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'margin'} ).set("renderable", true)

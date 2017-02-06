@@ -394,6 +394,7 @@ class Product extends Asset {
 
     function get($key, $arg1 = '') {
 
+        global $account;
 
         include_once 'utils/natural_language.php';
 
@@ -549,9 +550,21 @@ class Product extends Asset {
                     //$price.=' ('.sprintf(_('%s per %s'), money($this->data['Product Price']/$this->data['Product Units Per Case'], $this->data['Store Currency Code']), $this->data['Product Unit Label']).')';
                 }
 
-                $unit_margin      = $this->data['Product Price'] - $this->data['Product Cost'];
+
+                if ($this->data['Store Currency Code'] != $account->get('Account Currency')) {
+                    include_once 'utils/currency_functions.php';
+                    $exchange = currency_conversion(
+                        $this->db, $this->data['Store Currency Code'], $account->get('Account Currency'), '- 15 minutes'
+                    );
+
+                } else {
+                    $exchange = 1;
+                }
+
+
+                $unit_margin      =  ($exchange*$this->data['Product Price'] )- $this->data['Product Cost'];
                 $price_other_info = sprintf(
-                    _('margin %s'), percentage($unit_margin, $this->data['Product Price'])
+                    _('margin %s'), percentage($unit_margin, $exchange*$this->data['Product Price'])
                 );
 
 
@@ -657,7 +670,7 @@ class Product extends Asset {
 
                 foreach ($parts_data as $part_data) {
 
-                    $parts .= ', '.number($part_data['Ratio']).'x <span class="link" onClick="change_view(\'part/'.$part_data['Part']->id.'\')">'.$part_data['Part']->get(
+                    $parts .= ', '.number($part_data['Ratio']).'x <span class="button " onClick="change_view(\'part/'.$part_data['Part']->id.'\')">'.$part_data['Part']->get(
                             'Reference'
                         ).'</span>';
                     //if ($part_data['Note']!='') {
