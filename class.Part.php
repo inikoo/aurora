@@ -450,7 +450,7 @@ class Part extends Asset {
                 }
                 break;
 
-            case 'SKO Price':
+            case 'SKO Dispatched Cost Price':
                 if ($this->data['Part Unit Price'] == '') {
                     return _('Cost price not set up');
                 }
@@ -489,7 +489,7 @@ class Part extends Asset {
 
                 return $sko_cost.' <span class="discreet" style="margin-left:10px">'.$sko_recomended_price.'</span>';
                 break;
-            case 'Unit RRP':
+           
 
             case 'Unit Price':
                 if ($this->data['Part Unit Price'] == '') {
