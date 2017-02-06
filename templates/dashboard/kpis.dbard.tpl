@@ -30,7 +30,7 @@
     <li class="flex-item">
         {assign "kpi" $warehouse->get_kpi('Month To Day')}
 
-        <span>{t}Warehouse{/t} <span class="very_discreet">(MTD)</span></span>
+        <span title="{t}Warehouse productivity metric{/t}"> WPM <span class="very_discreet">(MTD)</span></span>
         <div class="title">
             <span class="Orders_In_Warehouse_Number button" title="{t}Orders in warehouse{/t}">{$kpi.formatted_kpi}</span>
         </div>
