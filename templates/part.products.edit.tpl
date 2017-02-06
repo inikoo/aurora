@@ -12,7 +12,7 @@
 
 <div style="padding:10px;border-bottom:1px solid #ccc;text-align:right">
 
-     {$part->get('SKO Price')}
+     {$part->get('SKO Dispatched Cost Price')}
 
 
 </div>
