@@ -65,6 +65,17 @@ foreach ($state['_object']->get_products() as $product_id) {
 $smarty->assign('part_sku', $state['key']);
 $smarty->assign('part', $state['_object']);
 
+
+$supplier_parts=$state['_object']->get_supplier_parts('objects');
+if(count($supplier_parts)>0){
+
+
+$smarty->assign('supplier_part', array_pop($supplier_parts)  );
+
+}
+
+
+
 $smarty->assign(
     'products_without_auto_web_configuration', $products_without_auto_web_configuration
 );

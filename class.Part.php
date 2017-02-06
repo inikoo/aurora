@@ -450,7 +450,7 @@ class Part extends Asset {
                 }
                 break;
 
-            case 'SKO Dispatched Cost Price':
+            case 'SKO Cost in Warehouse - Price':
                 if ($this->data['Part Unit Price'] == '') {
                     return _('Cost price not set up');
                 }
@@ -458,8 +458,8 @@ class Part extends Asset {
 
 
 
-                $sko_cost=sprintf(_('%s cost per SKO'),
-                                   money($this->data['Part Cost'] , $account->get('Account Currency'))
+                $sko_cost=sprintf(_('%s stock cost per SKO'),
+                                   money($this->data['Part Cost in Warehouse'] , $account->get('Account Currency'))
 
                 );
 
@@ -477,7 +477,7 @@ class Part extends Asset {
                     )
                 ) {
 
-                    $unit_margin = $this->data['Part Unit Price'] - ($this->data['Part Cost'] / $this->data['Part Units Per Package']);
+                    $unit_margin = $this->data['Part Unit Price'] - ($this->data['Part Cost in Warehouse'] / $this->data['Part Units Per Package']);
 
                     $sko_recomended_price .= sprintf(
                         ' (<span class="'.($unit_margin < 0 ? 'error' : '').'">%s '._('margin').'</span>)', percentage($unit_margin, $this->data['Part Unit Price'])

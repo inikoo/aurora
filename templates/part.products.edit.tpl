@@ -10,11 +10,16 @@
 *}
 
 
-<div style="padding:10px;border-bottom:1px solid #ccc;text-align:right">
+<div style="padding:10px;border-bottom:1px solid #ccc;display:flex;justify-content: space-around;">
+<div style="text-align: left;">
 
-     {$part->get('SKO Dispatched Cost Price')}
+    {if isset($supplier_part)}  {t}Current unit cost{/t}: {$supplier_part->get('Unit Cost')} {t}Extras{/t}: {$supplier_part->get('Unit Extra Cost')}  {/if}
 
 
+</div>
+    <div style="text-align: right;;">
+        {$part->get('SKO Cost in Warehouse - Price')}
+    </div>
 </div>
 
 <div style="padding:10px;border-bottom:1px solid #ccc;text-align:right"
