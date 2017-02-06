@@ -63,6 +63,7 @@ foreach ($state['_object']->get_products() as $product_id) {
     }
 }
 $smarty->assign('part_sku', $state['key']);
+$smarty->assign('part', $state['_object']);
 
 $smarty->assign(
     'products_without_auto_web_configuration', $products_without_auto_web_configuration
