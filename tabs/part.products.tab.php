@@ -67,6 +67,9 @@ $smarty->assign('part', $state['_object']);
 
 
 $supplier_parts=$state['_object']->get_supplier_parts('objects');
+
+$smarty->assign('supplier_parts_number', count($supplier_parts) );
+
 if(count($supplier_parts)>0){
 
 
