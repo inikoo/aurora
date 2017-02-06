@@ -1237,6 +1237,8 @@ function positions($_data, $db, $user) {
 
     $sql = "select $fields from $table $where $wheref $group_by ";
 
+   // print $sql;
+
     $base_data = $roles;
     foreach ($db->query($sql) as $data) {
 
