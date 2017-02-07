@@ -10,10 +10,8 @@
 *}
 
 
-<div id="dashboard_pending_orders" style="margin-top:20px;padding:0px" class="dashboard">
+<div id="dashboard_kpis" style="margin-top:20px;padding:0px" class="dashboard">
     
-    <input id="pending_orders_currency" type="hidden" value="{$currency}">
-    <input id="pending_orders_parent" type="hidden" value="{$parent}">
 
 <table border="0" style="width:100%">
     <tr class="main_title small_row">
@@ -32,10 +30,10 @@
 
         <span title="{t}Warehouse productivity metric{/t}"> WPM <span class="very_discreet">(MTD)</span></span>
         <div class="title">
-            <span class="Orders_In_Warehouse_Number button" title="{t}Orders in warehouse{/t}">{$kpi.formatted_kpi}</span>
+            <span class=" button" title="{t}Net sales per man hour{/t}">{$kpi.formatted_kpi}</span>
         </div>
         <div >
-            <span class="Orders_In_Warehouse_Amount" title="">{$kpi.formatted_hrs}</span>
+            <span class="" title="">{$kpi.formatted_hrs}</span>
 
         </div>
 
