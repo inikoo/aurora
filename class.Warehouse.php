@@ -989,7 +989,7 @@ class Warehouse extends DB_Table {
         $sql = sprintf(
             'SELECT count(DISTINCT P.`Part SKU`) AS num FROM 
               `Part Dimension` P LEFT JOIN `Part Location Dimension` PL ON (PL.`Part SKU`=P.`Part SKU`) 
-              WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand`  and (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)<=`Part Current Stock`  AND `Part Location Warehouse Key`=%d and `Can Pick`="Yes"'
+              WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand`    AND `Part Location Warehouse Key`=%d and `Can Pick`="Yes"'
               ,
             $this->id
         );
