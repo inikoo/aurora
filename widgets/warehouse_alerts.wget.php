@@ -18,7 +18,7 @@ function get_warehouse_alerts( $db, $warehouse,$account, $user, $smarty) {
     $html = '';
 
 
-
+/*
 
     $data = get_widget_data_inverse(
         $warehouse->get('Warehouse Part Locations Errors'),
@@ -37,7 +37,7 @@ function get_warehouse_alerts( $db, $warehouse,$account, $user, $smarty) {
     }
 
 
-
+*/
 
     $data = get_widget_data(
         $warehouse->get('Warehouse Paid Ordered Parts To Replenish'),
