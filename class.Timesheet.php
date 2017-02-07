@@ -350,6 +350,14 @@ class Timesheet extends DB_Table {
             );
         }
 
+        if(   in_array('PRODM', $positions)  or  in_array('PRODO', $positions) ){
+            // print "$clocked_seconds\n";
+
+            $this->update(
+                array('Timesheet Production Clocked Time' => ($clocked_seconds)), 'no_history'
+            );
+        }
+
 
         switch (date('N', strtotime($this->get('Timesheet Date')))) {
             case 1:

@@ -150,16 +150,7 @@ $roles = array(
         'instances'   => array('Com'),
         'user_groups' => array(11)
     ),
-    'PACK'  => array(
-        'title'       => _('Packer'),
-        'size'        => array(
-            'Basic',
-            'Medium',
-            'Big'
-        ),
-        'instances'   => array('Com'),
-        'user_groups' => array(11)
-    ),
+
     'OHADM' => array(
         'title'       => _('Dispatch Supervisor'),
         'size'        => array(
