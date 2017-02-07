@@ -49,21 +49,23 @@ className: "link"
 })
 
 },
+
 {
-name: "can_pick",
-label: "{t}Can pick{/t}",
+name: "to_pick",
+label: "{t}Ordered{/t}",
 editable: false,
+
+defaultOrder:1,
 sortType: "toggle",
+{if $sort_key=='stock'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
-cell: Backgrid.StringCell.extend({
-
-
-})
-
+headerCell: integerHeaderCell
 },
+
 {
 name: "quantity",
-label: "{t}Quantity{/t}",
+label: "{t}Stock in location{/t}",
 editable: false,
 
 defaultOrder:1,

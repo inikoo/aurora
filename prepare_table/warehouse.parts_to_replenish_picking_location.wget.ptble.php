@@ -48,6 +48,10 @@ if ($order == 'id') {
     $order = 'P.`Part SKU`';
 } elseif ($order == 'stock') {
     $order = '`Part Current Stock`';
+}elseif ($order == 'quantity') {
+    $order = '`Quantity on hand`';
+}elseif ($order == 'to_pick') {
+    $order = 'to_pick';
 } elseif ($order == 'stock_status') {
     $order = '`Part Stock Status`';
 } elseif ($order == 'reference') {
@@ -83,7 +87,7 @@ $sql_totals = "select count(DISTINCT PLD.`Part SKU`) as num from $table  $where 
 
 $fields
     .= "
-P.`Part SKU`,`Part Reference`,`Part Unit Description`,`Part Current Stock`,`Part Stock Status`,`Part Days Available Forecast`,
+P.`Part SKU`,`Part Reference`,`Part Unit Description`,`Part Current Stock`,`Part Stock Status`,`Part Days Available Forecast`,`Part Current Stock In Process`+ `Part Current Stock Ordered Paid` as to_pick,
 `Location Code`,PLD.`Location Key`,`Part Location Warehouse Key`,
 `Quantity On Hand`,`Quantity In Process`,`Stock Value`,`Can Pick`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Last Updated`
 
