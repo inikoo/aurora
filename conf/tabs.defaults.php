@@ -2372,6 +2372,17 @@ $tab_defaults = array(
         'elements_type' => each($elements_options['parts']) ['key'],
         'elements'      => $elements_options['parts'],
     ),
+
+    'warehouse.parts_to_replenish_picking_location.wget' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'reference',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'reference',
+
+    ),
+
     'supplier.part_locations_with_errors.wget' => array(
         'view'        => 'overview',
         'sort_key'    => 'reference',

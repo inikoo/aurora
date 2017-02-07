@@ -963,7 +963,7 @@ class Warehouse extends DB_Table {
     function update_paid_ordered_parts() {
 
         $paid_ordered_parts      = 0;
-        $ok_picking_location_paid_ordered_parts = 0;
+        $to_replenish_picking_location_paid_ordered_parts = 0;
 
 
         $sql = sprintf(
@@ -996,7 +996,7 @@ class Warehouse extends DB_Table {
         //print $sql;
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $ok_picking_location_paid_ordered_parts = $row['num'];
+                $to_replenish_picking_location_paid_ordered_parts = $row['num'];
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -1007,7 +1007,7 @@ class Warehouse extends DB_Table {
         $this->update(
             array(
                  'Warehouse Paid Ordered Parts'=>$paid_ordered_parts,
-                'Warehouse Paid Ordered Parts To Replenish' => $paid_ordered_parts-$ok_picking_location_paid_ordered_parts
+                'Warehouse Paid Ordered Parts To Replenish' => $to_replenish_picking_location_paid_ordered_parts
 
             ), 'no_history'
         );
