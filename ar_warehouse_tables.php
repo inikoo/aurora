@@ -39,6 +39,9 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
+    case 'parts_to_replenish_picking_location':
+        part_locations_to_replenish_picking_location(get_table_parameters(), $db, $user);
+        break;
     case 'warehouses':
         warehouses(get_table_parameters(), $db, $user);
         break;
@@ -557,6 +560,111 @@ function stock_transactions($_data, $db, $user) {
     );
     echo json_encode($response);
 }
+
+function part_locations_to_replenish_picking_location($_data, $db, $user) {
+
+
+    $rtext_label = 'part location with errors';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $table_data = array();
+
+    //print $sql;
+
+
+    foreach ($db->query($sql) as $data) {
+
+        $table_data[] = array(
+            // 'id'=>(integer) $data['Part SKU'],
+            'reference'        => $data['Part Reference'],
+            'unit_description' => $data['Part Unit Description'],
+            'location'         => $data['Location Code'],
+            'location_key'     => $data['Location Key'],
+            'warehouse_key'    => $data['Part Location Warehouse Key'],
+            'part_sku'         => $data['Part SKU'],
+            'can_pick'         => ($data['Can Pick'] == 'Yes'
+                ? _('Yes')
+                : _(
+                    'No'
+                )),
+            'quantity'         => '<span class="error">'.number(
+                    $data['Quantity On Hand']
+                ),
+            '</span>'
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $table_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+function part_locations_with_errors($_data, $db, $user) {
+
+
+    $rtext_label = 'part location with errors';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $table_data = array();
+
+    //print $sql;
+
+
+    foreach ($db->query($sql) as $data) {
+
+        $table_data[] = array(
+            // 'id'=>(integer) $data['Part SKU'],
+            'reference'        => $data['Part Reference'],
+            'unit_description' => $data['Part Unit Description'],
+            'location'         => $data['Location Code'],
+            'location_key'     => $data['Location Key'],
+            'warehouse_key'    => $data['Part Location Warehouse Key'],
+            'part_sku'         => $data['Part SKU'],
+            'can_pick'         => ($data['Can Pick'] == 'Yes'
+                ? _('Yes')
+                : _(
+                    'No'
+                )),
+            'quantity'         => '<span class="error">'.number(
+                    $data['Quantity On Hand']
+                ),
+            '</span>'
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $table_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
 
 
 ?>
