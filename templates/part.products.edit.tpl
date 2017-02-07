@@ -10,6 +10,30 @@
 *}
 
 
+
+<div id="set_price_dialog" class="hidex" style="position:absolute;border:1px solid #ccc;background-color: white;padding:10px 20px;z-index: 100">
+    <table>
+
+        <tr>
+            <td>{t}Price{/t} (<span id="set_price_currency"></span>)
+
+                <input class=" width_50" value="" ovalue="" /> <i onClick="save_product_price(this)" class="fa  fa-cloud fa-fw button " aria-hidden="true"/>
+
+
+            </td>
+        </tr>
+
+        <tr class="hide">
+            <td class="out_of_stock_location_code"></td>  <td class="out_of_stock_part_reference"></td> <td class="out_of_stock_part_stock"></td>
+
+        </tr>
+
+    </table>
+    <script>
+
+    </script>
+</div>
+
 <div style="padding:10px;border-bottom:1px solid #ccc;display:flex;justify-content: space-around;">
 <div style="text-align: left;">
 

@@ -2404,7 +2404,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '') {
 
                         $section = 'dashboard';
 
-exit;
+
 
                     }  elseif ($view_path[0] == 'stock_history') {
                         $section = 'stock_history';
@@ -4031,7 +4031,6 @@ exit;
     }
 
 
-    //print_r($state);
     return $state;
 
 }
@@ -4073,6 +4072,8 @@ function parse_tabs($module, $section, $_data, $modules) {
         }
         $subtab = parse_subtab($module, $section, $tab, $modules);
     }
+
+
 
     return array(
         $tab,

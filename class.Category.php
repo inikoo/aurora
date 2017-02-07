@@ -2294,7 +2294,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         $category = new Category($row['Category Key']);
                         foreach ($category->get_parent_keys() as $parent_key) {
                             $sql = sprintf(
-                                "INSERT INTO `Category Bridge` VALUES (%d,%s,%d, NULL,%d)", $parent_key, prepare_mysql(
+                                "INSERT INTO `Category Bridge` VALUES (%d,%s,%d, NULL,%d,1)", $parent_key, prepare_mysql(
                                 $category->data['Category Subject']
                             ), $subject_key, $subject_key
                             );

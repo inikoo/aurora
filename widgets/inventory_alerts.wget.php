@@ -33,49 +33,15 @@ function get_inventory_alerts( $db, $account, $user, $smarty) {
         $html .= '<div class="parts_with_no_sko_barcode">'.$smarty->fetch('dashboard/inventory.parts_with_no_sko_barcode.dbard.tpl').'</div>';
     }
 
-    return $html;
 
 
-    $data = get_widget_data(
-        $account->get('Supplier Production Paid Ordered Parts Todo'), $account->get('Supplier Number Parts'), $account->get(
-        'Supplier Production Tolerable Percentage Paid Ordered Parts Todo'
-    ), $account->get(
-        'Supplier Production Max Percentage Paid Ordered Parts Todo'
-    )
-
-    );
-    if ($data['ok']) {
 
 
-        $smarty->assign('data', $data);
-        $html .= $smarty->fetch('dashboard/production.todo.ordered.dbard.tpl');
-    }
 
-    $data = get_widget_data(
-        $account->get('Supplier Number Todo Parts'), $account->get('Supplier Number Parts'), $account->get('Supplier Tolerable Percentage Todo Parts'),
-        $account->get('Supplier Max Percentage Todo Parts')
-
-    );
-    if ($data['ok']) {
-
-
-        $smarty->assign('data', $data);
-        $html .= $smarty->fetch('dashboard/production.todo.dbard.tpl');
-    }
-
-
-    $data = get_widget_data(
-        $account->get('Supplier Number Surplus Parts'), $account->get('Supplier Number Parts'), $account->get('Supplier Tolerable Percentage Surplus Parts'),
-        $account->get('Supplier Max Percentage Surplus Parts')
-
-    );
-    if ($data['ok']) {
-        $smarty->assign('data', $data);
-        $html .= $smarty->fetch('dashboard/production.surplus.dbard.tpl');
-    }
 
 
     return $html;
+
 
 }
 
