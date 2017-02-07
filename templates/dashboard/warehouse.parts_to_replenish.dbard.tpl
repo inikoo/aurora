@@ -2,7 +2,7 @@
      onClick="get_widget_details(this,'warehouse.parts_to_replenish.wget',{ parent: 'warehouse','parent_key':{$warehouse->id}})">
     <div id="parts_to_replenish"
          style="padding-top: 10px;padding-right: 10px;padding-left: 10px;padding-bottom: 10px;"></div>
-    <div style="color:#aaa">{t}Locations to replenish{/t}</div>
+    <div style="color:#aaa">{t}Ordered to replenish{/t}</div>
 </div>
 
 <script type="text/javascript">
