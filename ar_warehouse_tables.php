@@ -586,9 +586,13 @@ function part_locations_to_replenish_picking_location($_data, $db, $user) {
             'warehouse_key'    => $data['Part Location Warehouse Key'],
             'part_sku'         => $data['Part SKU'],
 
-            'quantity'         => number($data['Quantity On Hand']),
-            'to_pick'         => number($data['to_pick']),
-            '</span>'
+            'quantity_in_picking'         => number(floor($data['Quantity On Hand'])),
+            'to_pick'         => number(ceil($data['to_pick'])),
+
+            'total_stock'         => number(floor($data['Part Current Stock'])),
+'storing_locations'=>$data['storing_locations']
+
+
 
         );
 

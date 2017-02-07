@@ -24,7 +24,7 @@ $fields = '';
 
 if ($parameters['parent'] == 'warehouse') {
     $where = sprintf(
-        "where `Part Location Warehouse Key`=%d  and `Can Pick`='Yes' and (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand` ", $parameters['parent_key']
+        "where `Part Location Warehouse Key`=%d  and `Can Pick`='Yes' and (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand`  and (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)<=`Part Current Stock` ", $parameters['parent_key']
     );
 } else {
     exit("parent not found ".$parameters['parent']);
@@ -89,7 +89,8 @@ $fields
     .= "
 P.`Part SKU`,`Part Reference`,`Part Unit Description`,`Part Current Stock`,`Part Stock Status`,`Part Days Available Forecast`,`Part Current Stock In Process`+ `Part Current Stock Ordered Paid` as to_pick,
 `Location Code`,PLD.`Location Key`,`Part Location Warehouse Key`,
-`Quantity On Hand`,`Quantity In Process`,`Stock Value`,`Can Pick`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Last Updated`
+`Quantity On Hand`,`Quantity In Process`,`Stock Value`,`Can Pick`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Last Updated`,
+(select Group_CONCAT(LL.`Location Code`) from `Part Location Dimension` PL_SL left join `Location Dimension` LL on (LL.`Location Key`=PL_SL.`Location Key`) where PL_SL.`Part SKU`=PLD.`Part SKU` and PL_SL.`Can Pick`='No'  ) as storing_locations
 
 ";
 

@@ -34,7 +34,7 @@ className: "link"
 },
 {
 name: "location",
-label: "{t}Location{/t}",
+label: "{t}Picking location{/t}",
 editable: false,
 sortType: "toggle",
 
@@ -64,8 +64,8 @@ headerCell: integerHeaderCell
 },
 
 {
-name: "quantity",
-label: "{t}Stock in location{/t}",
+name: "quantity_in_picking",
+label: "{t}Stock in picking{/t}",
 editable: false,
 
 defaultOrder:1,
@@ -75,6 +75,29 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
 },
+
+{
+name: "total_stock",
+label: "{t}Total stock{/t}",
+editable: false,
+
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='stock'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+headerCell: integerHeaderCell
+},
+
+{
+name: "storing_locations",
+label: "{t}Storing locations{/t}",
+editable: false,
+sortType: "toggle",
+
+cell: Backgrid.StringCell.extend({})
+
+}
 
 ]
 
