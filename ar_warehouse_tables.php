@@ -585,14 +585,9 @@ function part_locations_to_replenish_picking_location($_data, $db, $user) {
             'location_key'     => $data['Location Key'],
             'warehouse_key'    => $data['Part Location Warehouse Key'],
             'part_sku'         => $data['Part SKU'],
-            'can_pick'         => ($data['Can Pick'] == 'Yes'
-                ? _('Yes')
-                : _(
-                    'No'
-                )),
-            'quantity'         => '<span class="error">'.number(
-                    $data['Quantity On Hand']
-                ),
+
+            'quantity'         => number($data['Quantity On Hand']),
+            'to_pick'         => number($data['to_pick']),
             '</span>'
 
         );
