@@ -401,10 +401,13 @@ class Warehouse extends DB_Table {
 
 
         $number_locations = 0;
+        $number_part_locations = 0;
+        $number_part_locations_with_errors = 0;
 
-        $sql = sprintf(
-            'SELECT count(*) AS number FROM `Location Dimension` WHERE `Location Warehouse Key`=%d', $this->id
-        );
+        $pending_orders = 0;
+        $pending_orders_with_missing_pick_stock = 0;
+
+        $sql = sprintf('SELECT count(*) AS number FROM `Location Dimension` WHERE `Location Warehouse Key`=%d', $this->id);
 
 
         if ($result = $this->db->query($sql)) {
@@ -416,6 +419,23 @@ class Warehouse extends DB_Table {
             print_r($error_info = $this->db->errorInfo());
             exit;
         }
+
+        $sql = sprintf('SELECT count(*) AS number  , sum(if(`Quantity On Hand`<0,1,0) ) as errors FROM `Part Location Dimension` WHERE `Part Location Warehouse Key`=%d', $this->id);
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number_part_locations = $row['number'];
+                $number_part_locations_with_errors = $row['errors'];
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+
 
 
         /*
@@ -453,7 +473,11 @@ class Warehouse extends DB_Table {
 
 
         $this->update(
-            array('Warehouse Number Locations' => $number_locations), 'no_history'
+            array(
+                'Warehouse Number Locations' => $number_locations,
+            'Warehouse Part Locations' => $number_part_locations,
+        'Warehouse Part Locations Errors' => $number_part_locations_with_errors
+            ), 'no_history'
         );
 
 
@@ -927,6 +951,65 @@ class Warehouse extends DB_Table {
         'formatted_kpi'=> number($amount/$hrs,2).' '.currency_symbol($account->get('Account Currency')).'/h',
            'formatted_amount'=>money($amount,$account->get('Account Currency')),
            'formatted_hrs'=>sprintf('%d hours',number($hrs,1)),
+        );
+
+
+    }
+
+
+
+
+
+    function update_paid_ordered_parts() {
+
+        $paid_ordered_parts      = 0;
+        $ok_picking_location_paid_ordered_parts = 0;
+
+
+        $sql = sprintf(
+            'SELECT count(DISTINCT P.`Part SKU`) AS num FROM 
+              `Part Dimension` P LEFT JOIN `Part Location Dimension` PL ON (PL.`Part SKU`=P.`Part SKU`) 
+              WHERE  `Part Location Warehouse Key`=%d'
+            ,
+            $this->id
+        );
+        //print $sql;
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $paid_ordered_parts = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+
+        $sql = sprintf(
+            'SELECT count(DISTINCT P.`Part SKU`) AS num FROM 
+              `Part Dimension` P LEFT JOIN `Part Location Dimension` PL ON (PL.`Part SKU`=P.`Part SKU`) 
+              WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand` AND `Part Location Warehouse Key`=%d and `Can Pick`="Yes"'
+              ,
+            $this->id
+        );
+        //print $sql;
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $ok_picking_location_paid_ordered_parts = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $this->update(
+            array(
+                 'Warehouse Paid Ordered Parts'=>$paid_ordered_parts,
+                'Warehouse Paid Ordered Parts To Replenish' => $paid_ordered_parts-$ok_picking_location_paid_ordered_parts
+
+            ), 'no_history'
         );
 
 

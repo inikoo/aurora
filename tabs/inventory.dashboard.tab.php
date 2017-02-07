@@ -12,7 +12,7 @@
 
 
 $account->load_acc_data();
-$account->update_parts_data();
+//$account->update_parts_data();
 
 
 include_once 'widgets/inventory_alerts.wget.php';
