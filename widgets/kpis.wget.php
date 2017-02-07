@@ -19,6 +19,7 @@ function get_dashboard_kpis($db, $account, $user, $smarty, $parent = '', $curren
 
     include_once 'class.Warehouse.php';
 
+    include_once 'class.Supplier_Production.php';
 
     $smarty->assign('user', $user);
 
@@ -27,6 +28,21 @@ function get_dashboard_kpis($db, $account, $user, $smarty, $parent = '', $curren
     $warehouse=new Warehouse(1);
     $smarty->assign('warehouse', $warehouse);
 
+
+
+
+    $sql=sprintf('select `Supplier Production Supplier Key`  from `Supplier Production Dimension`');
+    if ($result=$db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $supplier_production=new Supplier_Production($row['Supplier Production Supplier Key']);
+            $smarty->assign('supplier_production', $supplier_production);
+
+        }
+    }else {
+        print_r($error_info=$db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
 
     if ($display_device_version == 'mobile') {
         return $smarty->fetch('dashboard/kpis.mobile.dbard.tpl');
