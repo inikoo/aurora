@@ -564,7 +564,7 @@ function stock_transactions($_data, $db, $user) {
 function part_locations_to_replenish_picking_location($_data, $db, $user) {
 
 
-    $rtext_label = 'part location with errors';
+    $rtext_label = 'picking locations needed to replenish for ordered parts';
 
 
     include_once 'prepare_table/init.php';

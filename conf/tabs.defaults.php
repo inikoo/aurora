@@ -2377,7 +2377,7 @@ $tab_defaults = array(
         'view'        => 'overview',
         'sort_key'    => 'reference',
         'sort_order'  => 1,
-        'rpp'         => 100,
+        'rpp'         => 500,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'reference',
 
