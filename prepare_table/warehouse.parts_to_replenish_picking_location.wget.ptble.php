@@ -49,7 +49,7 @@ $fields = '';
 
 if ($parameters['parent'] == 'warehouse') {
     $where = sprintf(
-        "where `Part Location Warehouse Key`=%d  and `Can Pick`='Yes' and (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand`    ", $parameters['parent_key']
+        "where `Part Location Warehouse Key`=%d  and `Can Pick`='Yes' and (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand`  and (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0  ", $parameters['parent_key']
     );
 
 if($production_suppliers!='') {
