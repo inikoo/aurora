@@ -1003,7 +1003,7 @@ class Warehouse extends DB_Table {
             $sql = sprintf(
                 'SELECT count(DISTINCT P.`Part SKU`) AS num FROM 
               `Part Dimension` P LEFT JOIN `Part Location Dimension` PL ON (PL.`Part SKU`=P.`Part SKU`)  LEFT JOIN `Supplier Part Dimension` SP ON (SP.`Supplier Part Part SKU`=P.`Part SKU`) 
-              WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand`    AND `Part Location Warehouse Key`=%d AND `Can Pick`="Yes"   and `Supplier Part Supplier Key` not in (%s) ',
+              WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand`   and (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0   AND `Part Location Warehouse Key`=%d AND `Can Pick`="Yes"   and `Supplier Part Supplier Key` not in (%s) ',
                 $this->id,
                 $production_suppliers
             );
@@ -1012,7 +1012,7 @@ class Warehouse extends DB_Table {
             $sql = sprintf(
                 'SELECT count(DISTINCT P.`Part SKU`) AS num FROM 
               `Part Dimension` P LEFT JOIN `Part Location Dimension` PL ON (PL.`Part SKU`=P.`Part SKU`) 
-              WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand`    AND `Part Location Warehouse Key`=%d AND `Can Pick`="Yes" ', $this->id
+              WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand`  and (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0    AND `Part Location Warehouse Key`=%d AND `Can Pick`="Yes" ', $this->id
             );
 
 
