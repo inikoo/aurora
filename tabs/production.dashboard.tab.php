@@ -13,6 +13,16 @@
 
 $supplier = $state['_object'];
 
+
+
+
+
+$smarty->assign('supplier_production',$state['_object']);
+
+$html = $smarty->fetch('production.kpi.tpl');
+
+
+
 //print_r($supplier);
 
 //$supplier->update_locations_with_errors();
@@ -23,7 +33,6 @@ $smarty->assign('supplier', $supplier);
 
 include_once 'widgets/production_alerts.wget.php';
 
-$html = '';
 
 
 $html .= '<div class="widget_container">'.get_production_alerts($supplier, $db, $account, $user, $smarty).'</div>';

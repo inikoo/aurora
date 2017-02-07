@@ -178,7 +178,68 @@ class Supplier_Production extends Supplier {
     }
 
 
+    function get_kpi($interval){
+
+        global $account;
+
+        include_once 'utils/date_functions.php';
+        list($db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb) = calculate_interval_dates($this->db, $interval);
+
+        // print "$db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb \n";
+
+
+        $sql=sprintf('select sum(`Timesheet Production Clocked Time`) as seconds from `Timesheet Dimension` where `Timesheet Date`>=%s and `Timesheet Date`<=%s ',
+                     prepare_mysql($from_date),
+                     prepare_mysql($to_date)
+        );
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $hrs=$row['seconds']/3600;
+            }else{
+                $hrs=0;
+            }
+        }else {
+            print_r($error_info=$this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        // print $sql;
+
+        $sql=sprintf('select sum(`Amount In`) as amount from `Inventory Transaction Fact` ITF LEFT JOIN `Supplier Part Dimension` SP ON (SP.`Supplier Part Part SKU`=ITF.`Part SKU`)   where `Date`>=%s and `Date`<=%s  and `Inventory Transaction Type`="Sale" and `Supplier Part Supplier Key`=%d   ',
+                     prepare_mysql($from_date),
+                     prepare_mysql($to_date),
+                     $this->id
+        );
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $amount=$row['amount'];
+            }else{
+                $amount=0;
+            }
+        }else {
+            print_r($error_info=$this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+        //    print $sql;
+        return array(
+            'kpi'=> $amount/$hrs,
+            'amount'=>$amount,
+            'hrs'=>$hrs,
+            'formatted_kpi'=> number($amount/$hrs,2).' '.currency_symbol($account->get('Account Currency')).'/h',
+            'formatted_amount'=>money($amount,$account->get('Account Currency')),
+            'formatted_hrs'=>sprintf('%d hours',number($hrs,1)),
+        );
+
+
+    }
+
 }
+
+
+
+
 
 
 ?>
