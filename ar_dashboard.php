@@ -451,7 +451,7 @@ function sales_overview($_data, $db, $user, $account) {
 
 
             $data['orders_overview_refunds_delta_'.$row['record_key']] = array(
-                'value' => delta($row['refunds'], $row['refunds_1yb']).' '.delta_icon($row['refunds'], $row['refunds_1yb']),
+                'value' => delta($row['refunds'], $row['refunds_1yb']).' '.delta_icon($row['refunds'], $row['refunds_1yb'],$inverse=true),
                 'title' => number($row['refunds_1yb'])
             );
 
@@ -463,14 +463,8 @@ function sales_overview($_data, $db, $user, $account) {
                 'request' => 'delivery_notes/'.$row['record_key']
             );
             $data['orders_overview_replacements_delta_'.$row['record_key']]          = array(
-                'value' => delta(
-                        $row['replacements'], $row['replacements_1yb']
-                    ).' '.delta_icon(
-                        $row['replacements'], $row['replacements_1yb']
-                    ),
-                'title' => number(
-                    $row['replacements_1yb']
-                )
+                'value' => delta($row['replacements'], $row['replacements_1yb']).' '.delta_icon($row['replacements'], $row['replacements_1yb'],$inverse=true),
+                'title' => number($row['replacements_1yb'])
             );
             $data['orders_overview_replacements_percentage_'.$row['record_key']]     = array(
                 'value' => percentage(
@@ -552,12 +546,8 @@ function sales_overview($_data, $db, $user, $account) {
         )
     );
     $data['orders_overview_refunds_delta_totals'] = array(
-        'value' => delta(
-                $sum_refunds, $sum_refunds_1yb
-            ).' '.delta_icon($sum_refunds, $sum_refunds_1yb),
-        'title' => number(
-            $sum_refunds_1yb
-        )
+        'value' => delta($sum_refunds, $sum_refunds_1yb).' '.delta_icon($sum_refunds, $sum_refunds_1yb,$inverse=true),
+        'title' => number($sum_refunds_1yb)
     );
 
 
@@ -581,9 +571,7 @@ function sales_overview($_data, $db, $user, $account) {
         )
     );
     $data['orders_overview_replacements_delta_totals']          = array(
-        'value' => delta(
-                $sum_replacements, $sum_replacements_1yb
-            ).' '.delta_icon($sum_replacements, $sum_replacements_1yb),
+        'value' => delta($sum_replacements, $sum_replacements_1yb).' '.delta_icon($sum_replacements, $sum_replacements_1yb,$inverse=true),
         'title' => number(
             $sum_replacements_1yb
         )
