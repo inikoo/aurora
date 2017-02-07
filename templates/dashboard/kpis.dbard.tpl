@@ -39,6 +39,20 @@
 
     </li>
 
+    <li class="flex-item">
+        {assign "ppm_kpi" $supplier_production->get_kpi('Month To Day')}
+
+        <span title="{t}Production productivity metric{/t}"> PPM <span class="very_discreet">(MTD)</span></span>
+        <div class="title">
+            <span class=" button" title="{t}Production sales per man hour{/t}">{$ppm_kpi.formatted_kpi}</span>
+        </div>
+        <div >
+            <span class="" title="">{$ppm_kpi.formatted_hrs}</span>
+
+        </div>
+
+    </li>
+
 </ul>
 
 
