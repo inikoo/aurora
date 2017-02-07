@@ -93,6 +93,8 @@ headerCell: integerHeaderCell
 name: "storing_locations",
 label: "{t}Storing locations{/t}",
 editable: false,
+sortable: false,
+
 sortType: "toggle",
 
 cell: Backgrid.StringCell.extend({})
