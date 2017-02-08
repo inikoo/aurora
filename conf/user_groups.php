@@ -60,9 +60,12 @@ $user_groups = array(
             'CD',
             'SV',
             'WV',
-            'SV'
+            'PV'
+
         ),
-        'Stores_Scope'=>true
+        'Stores_Scope'=>true,
+         'Websites_Scope'=>true,
+ 'Warehouses_Scope'=>true
         
 
     ),
@@ -177,7 +180,7 @@ $user_groups = array(
 
     10 => array(
         'Key'    => 10,
-        'Name'   => _('Webmaster'),
+        'Name'   => _('Sales'),
         'View'   => '<i title="'._('Websites').'" class="fa fa-globe fa-fw"></i>',
         'Edit'   => '<i title="'._('Websites').'" class="fa fa-globe fa-fw"></i>',
         'Rights' => array(
@@ -185,7 +188,10 @@ $user_groups = array(
             'WE',
             'WD',
             'WC',
-            'SV'
+            'SV',
+            'SE',
+            'SD',
+            'SC'
         ),
          'Websites_Scope'=>true,
          'Stores_Scope'=>true
