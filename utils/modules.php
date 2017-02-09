@@ -4136,7 +4136,11 @@ $modules = array(
                         ),
                         'icon'  => 'database'
                     ),
-
+                    'employee.today_timesheet.records'  => array(
+                        'label' => _(
+                            'Today timesheet'
+                        )
+                    ),
                     'employee.timesheets'  => array(
                         'label' => _(
                             'Timesheets'

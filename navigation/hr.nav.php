@@ -2079,7 +2079,7 @@ function get_position_navigation($data, $smarty, $user, $db) {
 
         $base_data = $roles;
         foreach ($db->query($sql) as $data) {
-
+            if(isset($base_data[$data['Role Code']]))
             $base_data[$data['Role Code']] = array_merge($base_data[$data['Role Code']],$data);
         }
 

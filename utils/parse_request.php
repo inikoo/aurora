@@ -2196,7 +2196,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '') {
 
 
 
-                        }elseif ($view_path[1] == 'delivery_notes') {
+                        }
+                        elseif ($view_path[1] == 'delivery_notes') {
                                 //===
 
                                 if (!$user->can_view('orders')) {
@@ -2212,20 +2213,23 @@ function parse_request($_data, $db, $modules, $account = '', $user = '') {
                                 $parent_key = $key;
 
 
-                            }elseif ($view_path[1] == 'locations') {
+                            }
+                        elseif ($view_path[1] == 'locations') {
                                 $section = 'locations';
                                 $object  = '';
 
                                 $parent     = 'warehouse';
                                 $parent_key = $key;
 
-                            } elseif ($view_path[1] == 'categories') {
+                            }
+                        elseif ($view_path[1] == 'categories') {
                                 $object     = 'warehouse';
                                 $key        = $view_path[0];
                                 $section    = 'categories';
                                 $parent     = 'warehouse';
                                 $parent_key = $view_path[0];
-                            } else {
+                            }
+                        else {
                                 if ($view_path[1] == 'category') {
                                     $section = 'category';
                                     $object  = 'category';
@@ -4049,6 +4053,7 @@ function parse_tabs($module, $section, $_data, $modules) {
         $tab    = $_data['tab'];
         $subtab = parse_subtab($module, $section, $tab, $modules);
     } else {
+
 
         if (isset ($_SESSION['state'][$module][$section]['tab'])) {
             $tab = $_SESSION['state'][$module][$section]['tab'];

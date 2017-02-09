@@ -19,7 +19,7 @@ cell: "string",
 {
 name: "used",
 label: "",
-renderable: {if $data['object']=='timesheet'}true{else}false{/if},
+renderable: {if $data['object']=='timesheet'  or $data['object']=='employee'}true{else}false{/if},
 
 editable: false,
 sortType: "toggle",
@@ -36,7 +36,7 @@ name: "formatted_timesheet_id",
 label: "{t}Timesheet{/t}",
 editable: false,
 
-renderable: {if $data['object']=='timesheet'}false{else}true{/if},
+renderable: {if $data['object']=='timesheet' or $data['object']=='employee'}false{else}true{/if},
 
 
 sortType: "toggle",
@@ -83,7 +83,7 @@ className: "link"
 
 name: "date",
 label: "{t}Date{/t}",
-renderable: {if $data['object']=='timesheet'}false{else}true{/if},
+renderable: {if $data['object']=='timesheet'  or $data['object']=='employee'}false{else}true{/if},
 
 editable: false,
 defaultOrder:1,
@@ -98,7 +98,7 @@ headerCell: integerHeaderCell
 
 name: "time",
 label: "{t}Time{/t}",
-renderable: {if $data['object']!='timesheet'}false{else}true{/if},
+renderable: {if $data['object']=='timesheet'  or $data['object']=='employee'}true{else}false{/if},
 
 editable: false,
 defaultOrder:1,
