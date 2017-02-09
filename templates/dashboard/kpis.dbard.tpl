@@ -144,9 +144,9 @@
 
 
         console.log(r.kpi.formatted_kpi)
-                $(obj).find('#kpi_value').html( r.kpi.formatted_kpi)
+                $(obj).find('.kpi_value').html( r.kpi.formatted_kpi)
 
-                $(obj).find('#aux_kpi_data').html( r.kpi.formatted_aux_kpi_data)
+                $(obj).find('.aux_kpi_data').html( r.kpi.formatted_aux_kpi_data)
 
             });
 
