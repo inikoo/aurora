@@ -344,7 +344,6 @@ class Timesheet extends DB_Table {
         $positions=preg_split('/,/', $employee->get('Staff Position'));
         if(   in_array('PICK', $positions)  or  in_array('WAHSC', $positions) ){
            // print "$clocked_seconds\n";
-
             $this->update(
             array('Timesheet Warehouse Clocked Time' => ($clocked_seconds)), 'no_history'
             );
@@ -1024,6 +1023,93 @@ class Timesheet extends DB_Table {
         );
 
         $this->db->exec($sql);
+
+    }
+
+    function get_clocked_split_time() {
+
+        $action_type = '';
+
+
+        $clocked_seconds = 0;
+        $sql             = sprintf(
+            'SELECT `Timesheet Record Date`,`Timesheet Record Key`, UNIX_TIMESTAMP(`Timesheet Record Date`) date FROM `Timesheet Record Dimension` WHERE `Timesheet Record Timesheet Key`=%d AND `Timesheet Record Type`="ClockingRecord" ORDER BY `Timesheet Record Date`',
+            $this->id
+        );
+
+        // print $sql;
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+              //  print_r($row);
+
+                if ($action_type == 'Start' or $action_type == '') {
+                    $start_date  = $row['date'];
+                    $action_type = 'End';
+                } else {
+                    $end_date        = $row['date'];
+                    $clocked_seconds = $clocked_seconds + ($end_date - $start_date);
+                    $action_type     = 'Start';
+                }
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        //print $action_type ;
+
+        if ($action_type == 'End' and $start_date < gmdate('U')) {
+            $end_date        = gmdate('U');
+            $clocked_seconds = $clocked_seconds + ($end_date - $start_date);
+
+        }
+
+
+        return $clocked_seconds;
+
+    }
+
+    function get_clocked_open_jaw_time() {
+
+        $action_type = '';
+
+
+        $clocked_seconds = 0;
+        $sql             = sprintf(
+            'SELECT `Timesheet Record Date`,`Timesheet Record Key`, UNIX_TIMESTAMP(`Timesheet Record Date`) date FROM `Timesheet Record Dimension` WHERE `Timesheet Record Timesheet Key`=%d   AND `Timesheet Record Ignored Due Missing End`="Yes" AND `Timesheet Record Action Type`="Start" and `Timesheet Record Type`="ClockingRecord" ORDER BY `Timesheet Record Date`',
+            $this->id
+        );
+
+      //   print $sql;
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+
+                    $start_date  = $row['date'];
+                    $action_type = 'End';
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        //print $action_type ;
+
+        if ($action_type == 'End' and $start_date < gmdate('U')) {
+            $end_date        = gmdate('U');
+            $clocked_seconds = $clocked_seconds + ($end_date - $start_date);
+
+        }
+
+
+        return $clocked_seconds;
 
     }
 

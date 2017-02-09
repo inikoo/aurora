@@ -1242,6 +1242,7 @@ function positions($_data, $db, $user) {
     $base_data = $roles;
     foreach ($db->query($sql) as $data) {
 
+        if(isset($base_data[$data['Role Code']]))
         $base_data[$data['Role Code']] = array_merge($base_data[$data['Role Code']],$data);
     }
 

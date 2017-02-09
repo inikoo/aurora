@@ -90,8 +90,7 @@ if ($user->can_view('orders')) {
 */
 
     if ($user->get('User Hooked Store Key')) {
-        $nav_menu[]
-            = array(
+        $nav_menu[] = array(
             '<i class="fa fa-truck fa-flip-horizontal fa-fw"></i>',
             _('Delivery notes'),
             'delivery_notes',
@@ -100,8 +99,7 @@ if ($user->can_view('orders')) {
             ''
         );
     } else {
-        $nav_menu[]
-            = array(
+        $nav_menu[] = array(
             '<i class="fa fa-truck fa-flip-horizontal fa-fw"></i>',
             _('Delivery notes'),
             'delivery_notes/all',
@@ -277,9 +275,7 @@ if ($user->can_view('locations')) {
         $nav_menu[] = array(
             '<i class="fa fa-map fa-fw"></i>',
             _('Warehouse'),
-            'warehouse/'.$user->get(
-                'User Hooked Warehouse Key'
-            ),
+            'warehouse/'.$user->get('User Hooked Warehouse Key').'/dashboard',
             'warehouses',
             'module',
             ''

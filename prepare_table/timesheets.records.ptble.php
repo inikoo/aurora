@@ -17,7 +17,8 @@ switch ($parameters['parent']) {
         );
         break;
     case 'timesheet':
-        $where = sprintf(
+    case 'Timesheet':
+    $where = sprintf(
             " where  TRD.`Timesheet Record Timesheet Key`=%d ", $parameters['parent_key']
         );
         break;
@@ -25,7 +26,7 @@ switch ($parameters['parent']) {
         $where = sprintf(" where true ");
         break;
     default:
-        exit('parent not suported');
+        exit('parent not supported '.$parameters['parent']);
         break;
 }
 

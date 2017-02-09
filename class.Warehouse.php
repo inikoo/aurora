@@ -332,12 +332,12 @@ class Warehouse extends DB_Table {
 
         if (!in_array(
             $data['Location Mainly Used For'], array(
-                'Picking',
-                'Storing',
-                'Loading',
-                'Displaying',
-                'Other'
-            )
+                                                 'Picking',
+                                                 'Storing',
+                                                 'Loading',
+                                                 'Displaying',
+                                                 'Other'
+                                             )
         )
         ) {
 
@@ -400,11 +400,11 @@ class Warehouse extends DB_Table {
     function update_children() {
 
 
-        $number_locations = 0;
-        $number_part_locations = 0;
+        $number_locations                  = 0;
+        $number_part_locations             = 0;
         $number_part_locations_with_errors = 0;
 
-        $pending_orders = 0;
+        $pending_orders                         = 0;
         $pending_orders_with_missing_pick_stock = 0;
 
         $sql = sprintf('SELECT count(*) AS number FROM `Location Dimension` WHERE `Location Warehouse Key`=%d', $this->id);
@@ -420,12 +420,12 @@ class Warehouse extends DB_Table {
             exit;
         }
 
-        $sql = sprintf('SELECT count(*) AS number  , sum(if(`Quantity On Hand`<0,1,0) ) as errors FROM `Part Location Dimension` WHERE `Part Location Warehouse Key`=%d', $this->id);
+        $sql = sprintf('SELECT count(*) AS number  , sum(if(`Quantity On Hand`<0,1,0) ) AS errors FROM `Part Location Dimension` WHERE `Part Location Warehouse Key`=%d', $this->id);
 
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $number_part_locations = $row['number'];
+                $number_part_locations             = $row['number'];
                 $number_part_locations_with_errors = $row['errors'];
 
             }
@@ -433,9 +433,6 @@ class Warehouse extends DB_Table {
             print_r($error_info = $this->db->errorInfo());
             exit;
         }
-
-
-
 
 
         /*
@@ -474,9 +471,9 @@ class Warehouse extends DB_Table {
 
         $this->update(
             array(
-                'Warehouse Number Locations' => $number_locations,
-            'Warehouse Part Locations' => $number_part_locations,
-        'Warehouse Part Locations Errors' => $number_part_locations_with_errors
+                'Warehouse Number Locations'      => $number_locations,
+                'Warehouse Part Locations'        => $number_part_locations,
+                'Warehouse Part Locations Errors' => $number_part_locations_with_errors
             ), 'no_history'
         );
 
@@ -576,9 +573,9 @@ class Warehouse extends DB_Table {
 
         if (in_array(
             $field, array(
-                'Warehouse Flag Label',
-                'Warehouse Flag Active'
-            )
+                      'Warehouse Flag Label',
+                      'Warehouse Flag Active'
+                  )
         )) {
 
 
@@ -900,81 +897,101 @@ class Warehouse extends DB_Table {
 
     }
 
-    function get_kpi($interval){
+    function get_kpi($interval) {
 
         global $account;
 
         include_once 'utils/date_functions.php';
         list($db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb) = calculate_interval_dates($this->db, $interval);
 
-      // print "$db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb \n";
+        // print "$db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb \n";
 
 
-        $sql=sprintf('select sum(`Timesheet Warehouse Clocked Time`) as seconds from `Timesheet Dimension` where `Timesheet Date`>=%s and `Timesheet Date`<=%s ',
-                     prepare_mysql($from_date),
-                     prepare_mysql($to_date)
-                     );
-        if ($result=$this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $hrs=$row['seconds']/3600;
-        	}else{
-                $hrs=0;
-            }
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
-        }
-
-       // print $sql;
-
-        $sql=sprintf('select sum(`Delivery Note Invoiced Net DC Amount`) as amount from `Delivery Note Dimension`   where `Delivery Note Date`>=%s and `Delivery Note Date`<=%s  and `Delivery Note State`="Dispatched" ',
-                     prepare_mysql($from_date),
-                     prepare_mysql($to_date)
+        $sql = sprintf(
+            'SELECT sum(`Timesheet Warehouse Clocked Time`) AS seconds FROM `Timesheet Dimension` WHERE `Timesheet Date`>=%s AND `Timesheet Date`<=%s ', prepare_mysql($from_date),
+            prepare_mysql($to_date)
         );
-        if ($result=$this->db->query($sql)) {
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $amount=$row['amount'];
-            }else{
-                $amount=0;
+                $hrs = $row['seconds'] / 3600;
+            } else {
+                $hrs = 0;
             }
-        }else {
-            print_r($error_info=$this->db->errorInfo());
+        } else {
+            print_r($error_info = $this->db->errorInfo());
             print "$sql\n";
             exit;
         }
-    //    print $sql;
+
+
+        if ($to_date == gmdate('Y-m-d 23:59:59')) {
+            include_once 'class.Timesheet.php';
+
+            $sql = sprintf(
+                "SELECT `Timesheet Key` FROM `Timesheet Dimension` T LEFT JOIN `Staff Role Bridge` B ON (B.`Staff Key`=`Timesheet Staff Key`) WHERE `Role Code` IN ('PICK','WAHSC') AND `Timesheet Date`=%s ",
+                prepare_mysql(gmdate('Y-m-d'))
+            );
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $timesheet = new Timesheet($row['Timesheet Key']);
+                    $hrs += $timesheet->get_clocked_open_jaw_time() / 3600;
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+        }
+
+
+        // print $sql;
+
+        $sql = sprintf(
+            'SELECT sum(`Delivery Note Invoiced Net DC Amount`) AS amount FROM `Delivery Note Dimension`   WHERE `Delivery Note Date`>=%s AND `Delivery Note Date`<=%s  AND `Delivery Note State`="Dispatched" ',
+            prepare_mysql($from_date), prepare_mysql($to_date)
+        );
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $amount = $row['amount'];
+            } else {
+                $amount = 0;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        //    print $sql;
         return array(
-           'kpi'=> $amount/$hrs,
-           'amount'=>$amount,
-           'hrs'=>$hrs,
-        'formatted_kpi'=> number($amount/$hrs,2).' '.currency_symbol($account->get('Account Currency')).'/h',
-           'formatted_amount'=>money($amount,$account->get('Account Currency')),
-           'formatted_hrs'=>sprintf('%d hours',number($hrs,1)),
+            'kpi'              => $amount / $hrs,
+            'amount'           => $amount,
+            'hrs'              => $hrs,
+            'formatted_kpi'    => number($amount / $hrs, 2).' '.currency_symbol($account->get('Account Currency')).'/h',
+            'formatted_amount' => money($amount, $account->get('Account Currency')),
+            'formatted_hrs'    => sprintf('%d hours', number($hrs, 1)),
         );
 
 
     }
 
 
-
-
-
     function update_paid_ordered_parts() {
 
-        $paid_ordered_parts      = 0;
+        $paid_ordered_parts                               = 0;
         $to_replenish_picking_location_paid_ordered_parts = 0;
 
 
-
-        $production_suppliers='';
-        $sql=sprintf('select group_concat(`Supplier Production Supplier Key`) as  production_suppliers from `Supplier Production Dimension`');
-        if ($result=$this->db->query($sql)) {
+        $production_suppliers = '';
+        $sql                  = sprintf('SELECT group_concat(`Supplier Production Supplier Key`) AS  production_suppliers FROM `Supplier Production Dimension`');
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $production_suppliers=$row['production_suppliers'];
+                $production_suppliers = $row['production_suppliers'];
             }
-        }else {
-            print_r($error_info=$this->db->errorInfo());
+        } else {
+            print_r($error_info = $this->db->errorInfo());
             print "$sql\n";
             exit;
         }
@@ -982,9 +999,7 @@ class Warehouse extends DB_Table {
         $sql = sprintf(
             'SELECT count(DISTINCT P.`Part SKU`) AS num FROM 
               `Part Dimension` P LEFT JOIN `Part Location Dimension` PL ON (PL.`Part SKU`=P.`Part SKU`) 
-              WHERE  `Part Location Warehouse Key`=%d'
-            ,
-            $this->id
+              WHERE  `Part Location Warehouse Key`=%d', $this->id
         );
         //print $sql;
         if ($result = $this->db->query($sql)) {
@@ -998,21 +1013,21 @@ class Warehouse extends DB_Table {
         }
 
 
-        if($production_suppliers!=''){
+        if ($production_suppliers != '') {
 
             $sql = sprintf(
                 'SELECT count(DISTINCT P.`Part SKU`) AS num FROM 
               `Part Dimension` P LEFT JOIN `Part Location Dimension` PL ON (PL.`Part SKU`=P.`Part SKU`)  LEFT JOIN `Supplier Part Dimension` SP ON (SP.`Supplier Part Part SKU`=P.`Part SKU`) 
-              WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand`   and (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0   AND `Part Location Warehouse Key`=%d AND `Can Pick`="Yes"   and `Supplier Part Supplier Key` not in (%s) ',
-                $this->id,
-                $production_suppliers
+              WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand`   AND (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0   AND `Part Location Warehouse Key`=%d AND `Can Pick`="Yes"   AND `Supplier Part Supplier Key` NOT IN (%s) ',
+                $this->id, $production_suppliers
             );
 
-        }else {
+        } else {
             $sql = sprintf(
                 'SELECT count(DISTINCT P.`Part SKU`) AS num FROM 
               `Part Dimension` P LEFT JOIN `Part Location Dimension` PL ON (PL.`Part SKU`=P.`Part SKU`) 
-              WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand`  and (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0    AND `Part Location Warehouse Key`=%d AND `Can Pick`="Yes" ', $this->id
+              WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand`  AND (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0    AND `Part Location Warehouse Key`=%d AND `Can Pick`="Yes" ',
+                $this->id
             );
 
 
@@ -1031,7 +1046,7 @@ class Warehouse extends DB_Table {
 
         $this->update(
             array(
-                 'Warehouse Paid Ordered Parts'=>$paid_ordered_parts,
+                'Warehouse Paid Ordered Parts'              => $paid_ordered_parts,
                 'Warehouse Paid Ordered Parts To Replenish' => $to_replenish_picking_location_paid_ordered_parts
 
             ), 'no_history'
