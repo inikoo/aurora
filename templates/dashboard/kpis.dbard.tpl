@@ -135,6 +135,9 @@
         $('#kpis li.kpi').each(function(i, obj) {
 
             var kpi_element=$(obj);
+            kpi_element.find('.kpi_value').addClass('super_discreet')
+            kpi_element.find('.aux_kpi_data').addClass('super_discreet')
+
 
             var request = "/ar_dashboard.php?tipo=kpi&type=" + $(obj).attr('type') + '&parent=' + $(obj).attr('parent') + '&parent_key=' + $(obj).attr('parent_key')+'&period='+period
             console.log(request)
@@ -144,9 +147,9 @@
 
 
         console.log(r.kpi.formatted_kpi)
-                $(obj).find('.kpi_value').html( r.kpi.formatted_kpi)
+                kpi_element.find('.kpi_value').html( r.kpi.formatted_kpi).removeClass('super_discreet')
 
-                $(obj).find('.aux_kpi_data').html( r.kpi.formatted_aux_kpi_data)
+                kpi_element.find('.aux_kpi_data').html( r.kpi.formatted_aux_kpi_data).removeClass('super_discreet')
 
             });
 
