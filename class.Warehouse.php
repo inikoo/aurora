@@ -952,6 +952,9 @@ class Warehouse extends DB_Table {
             'SELECT sum(`Delivery Note Invoiced Net DC Amount`) AS amount FROM `Delivery Note Dimension`   WHERE `Delivery Note Date`>=%s AND `Delivery Note Date`<=%s  AND `Delivery Note State`="Dispatched" ',
             prepare_mysql($from_date), prepare_mysql($to_date)
         );
+
+      //  print $sql;
+
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $amount = $row['amount'];
@@ -972,6 +975,7 @@ class Warehouse extends DB_Table {
             'formatted_kpi'    => number($amount / $hrs, 2).' '.currency_symbol($account->get('Account Currency')).'/h',
             'formatted_amount' => money($amount, $account->get('Account Currency')),
             'formatted_hrs'    => sprintf('%d hours', number($hrs, 1)),
+            'formatted_aux_kpi_data'=>sprintf('%d hours', number($hrs, 1)),
         );
 
 

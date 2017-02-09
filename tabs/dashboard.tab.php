@@ -89,22 +89,17 @@ foreach ($user->get_dashboard_items() as $item) {
 
         include_once 'widgets/kpis.wget.php';
 
-        if (isset($_SESSION['dashboard_state']['pending_orders']['parent'])) {
-            $parent = $_SESSION['dashboard_state']['pending_orders']['parent'];
+        if (isset($_SESSION['dashboard_state']['kpis']['period'])) {
+            $period = $_SESSION['dashboard_state']['kpis']['period'];
         } else {
-            $parent = '';
-        }
-
-        if (isset($_SESSION['dashboard_state']['pending_orders']['currency'])) {
-            $currency = $_SESSION['dashboard_state']['pending_orders']['currency'];
-        } else {
-            $currency = 'account';
+            $period = 'mtd';
         }
 
 
 
 
-        $html .= get_dashboard_kpis($db, $account, $user, $smarty, $parent,$currency, $_SESSION['display_device_version']);
+
+        $html .= get_dashboard_kpis($db, $account, $user, $smarty, $period, $_SESSION['display_device_version']);
 
     }
 
