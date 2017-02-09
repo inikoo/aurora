@@ -27,6 +27,19 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
+    case 'kpi':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'type'       => array('type' => 'string'),
+                         'parent'     => array('type' => 'string'),
+                         'period'     => array('type' => 'period'),
+                         'parent_key' => array('type' => 'key'),
+
+
+                     )
+        );
+        kpi($data, $db, $user, $account);
+        break;
     case 'sales_overview':
         $data = prepare_values(
             $_REQUEST, array(
@@ -127,10 +140,7 @@ function pending_orders($data, $db, $user, $account) {
         ),
 
         'Delta_Today_Start_Orders_In_Warehouse_Number' => array('value' => $object->get('Delta Today Start Orders In Warehouse Number')),
-        'Today_Orders_Dispatched' => array('value' => $object->get('Today Orders Dispatched'))
-
-
-
+        'Today_Orders_Dispatched'                      => array('value' => $object->get('Today Orders Dispatched'))
 
 
     );
@@ -451,7 +461,7 @@ function sales_overview($_data, $db, $user, $account) {
 
 
             $data['orders_overview_refunds_delta_'.$row['record_key']] = array(
-                'value' => delta($row['refunds'], $row['refunds_1yb']).' '.delta_icon($row['refunds'], $row['refunds_1yb'],$inverse=true),
+                'value' => delta($row['refunds'], $row['refunds_1yb']).' '.delta_icon($row['refunds'], $row['refunds_1yb'], $inverse = true),
                 'title' => number($row['refunds_1yb'])
             );
 
@@ -463,7 +473,7 @@ function sales_overview($_data, $db, $user, $account) {
                 'request' => 'delivery_notes/'.$row['record_key']
             );
             $data['orders_overview_replacements_delta_'.$row['record_key']]          = array(
-                'value' => delta($row['replacements'], $row['replacements_1yb']).' '.delta_icon($row['replacements'], $row['replacements_1yb'],$inverse=true),
+                'value' => delta($row['replacements'], $row['replacements_1yb']).' '.delta_icon($row['replacements'], $row['replacements_1yb'], $inverse = true),
                 'title' => number($row['replacements_1yb'])
             );
             $data['orders_overview_replacements_percentage_'.$row['record_key']]     = array(
@@ -546,7 +556,7 @@ function sales_overview($_data, $db, $user, $account) {
         )
     );
     $data['orders_overview_refunds_delta_totals'] = array(
-        'value' => delta($sum_refunds, $sum_refunds_1yb).' '.delta_icon($sum_refunds, $sum_refunds_1yb,$inverse=true),
+        'value' => delta($sum_refunds, $sum_refunds_1yb).' '.delta_icon($sum_refunds, $sum_refunds_1yb, $inverse = true),
         'title' => number($sum_refunds_1yb)
     );
 
@@ -571,7 +581,7 @@ function sales_overview($_data, $db, $user, $account) {
         )
     );
     $data['orders_overview_replacements_delta_totals']          = array(
-        'value' => delta($sum_replacements, $sum_replacements_1yb).' '.delta_icon($sum_replacements, $sum_replacements_1yb,$inverse=true),
+        'value' => delta($sum_replacements, $sum_replacements_1yb).' '.delta_icon($sum_replacements, $sum_replacements_1yb, $inverse = true),
         'title' => number(
             $sum_replacements_1yb
         )
@@ -644,6 +654,32 @@ function sales_overview($_data, $db, $user, $account) {
     );
 
     echo json_encode($response);
+}
+
+
+function kpi($data, $db, $user, $account) {
+
+    require_once 'utils/object_functions.php';
+
+
+    $_SESSION['dashboard_state']['kpis'] = array(
+        'period' => $data['period'],
+
+    );
+
+    $object = get_object($data['parent'], $data['parent_key']);
+
+
+    $kpi_data = $object->get_kpi($data['period']);
+
+
+    $response = array(
+        'state' => 200,
+        'kpi' => $kpi_data,
+    );
+
+    echo json_encode($response);
+
 }
 
 

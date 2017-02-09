@@ -204,6 +204,31 @@ class Supplier_Production extends Supplier {
             exit;
         }
 
+
+
+        if ($to_date == gmdate('Y-m-d 23:59:59')) {
+            include_once 'class.Timesheet.php';
+
+            $sql = sprintf(
+                "SELECT `Timesheet Key` FROM `Timesheet Dimension` T LEFT JOIN `Staff Role Bridge` B ON (B.`Staff Key`=`Timesheet Staff Key`) WHERE `Role Code` IN ('PRODM','PRODO') AND `Timesheet Date`=%s ",
+                prepare_mysql(gmdate('Y-m-d'))
+            );
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $timesheet = new Timesheet($row['Timesheet Key']);
+                    $hrs += $timesheet->get_clocked_open_jaw_time() / 3600;
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+        }
+
+
+
         // print $sql;
 
         $sql=sprintf('select sum(`Amount In`) as amount from `Inventory Transaction Fact` ITF LEFT JOIN `Supplier Part Dimension` SP ON (SP.`Supplier Part Part SKU`=ITF.`Part SKU`)   where `Date`>=%s and `Date`<=%s  and `Inventory Transaction Type`="Sale" and `Supplier Part Supplier Key`=%d   ',
@@ -222,14 +247,25 @@ class Supplier_Production extends Supplier {
             print "$sql\n";
             exit;
         }
-        //    print $sql;
+
+
+        if($hrs==0){
+            $kpi= '';
+            $kpi_formatted='';
+        }else{
+            $kpi= $amount/$hrs;
+            $kpi_formatted=number($amount/$hrs,2).' '.currency_symbol($account->get('Account Currency')).'/h';
+        }
+
+
         return array(
-            'kpi'=> $amount/$hrs,
+            'kpi'=> $kpi,
             'amount'=>$amount,
             'hrs'=>$hrs,
-            'formatted_kpi'=> number($amount/$hrs,2).' '.currency_symbol($account->get('Account Currency')).'/h',
+            'formatted_kpi'=>$kpi_formatted ,
             'formatted_amount'=>money($amount,$account->get('Account Currency')),
             'formatted_hrs'=>sprintf('%d hours',number($hrs,1)),
+            'formatted_aux_kpi_data'=>sprintf('%d hours', number($hrs, 1)),
         );
 
 

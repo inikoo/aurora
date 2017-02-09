@@ -11,7 +11,7 @@
 */
 
 
-function get_dashboard_kpis($db, $account, $user, $smarty, $parent = '', $currency, $display_device_version = 'desktop') {
+function get_dashboard_kpis($db, $account, $user, $smarty, $period, $display_device_version = 'desktop') {
 
 
     include_once 'utils/date_functions.php';
@@ -27,6 +27,7 @@ function get_dashboard_kpis($db, $account, $user, $smarty, $parent = '', $curren
 
     $warehouse=new Warehouse(1);
     $smarty->assign('warehouse', $warehouse);
+    $smarty->assign('kpis_period', $period);
 
 
 
