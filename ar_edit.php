@@ -328,7 +328,6 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
             $action = 'updated';
 
-
             if ($field == 'Product Parts') {
                 $smarty->assign('parts_list', $object->get_parts_data(true));
                 $update_metadata['parts_list_items'] = $smarty->fetch(
@@ -339,15 +338,41 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
                 $smarty->assign('data', $object->get_see_also_data());
                 $smarty->assign('mode', 'edit');
 
-                $update_metadata['webpage_see_also_editor'] = $smarty->fetch(
-                    'webpage_see_also.edit.tpl'
-                );
+                $update_metadata['webpage_see_also_editor'] = $smarty->fetch('webpage_see_also.edit.tpl');
 
             } elseif ($field == 'Webpage Related Products') {
                 $smarty->assign('data', $object->get_related_products_data());
                 $smarty->assign('mode', 'edit');
 
                 $update_metadata['webpage_related_products_editor'] = $smarty->fetch('webpage_related_products.edit.tpl');
+
+            } elseif ($field == 'Product Price') {
+
+
+                if ($object->get('Store Currency Code') != $account->get('Account Currency')) {
+
+                    $exchange = currency_conversion($db, $object->get('Store Currency Code'), $account->get('Account Currency'), '- 180 minutes');
+
+                } else {
+                    $exchange = 1;
+                }
+
+
+
+
+                $update_metadata['price_cell']=sprintf('<span style="cursor:text" class="product_price" title="%s" pid="%d" price="%s"    currency="%s"  exchange="%s" cost="%s" old_margin="%s" onClick="open_edit_price(this)">%s</span>',
+                                                       money($exchange* $object->get('Product Price'), $account->get('Account Currency')),
+                                                       $object->id,
+                                                       $object->get('Product Price'),
+                                                       $object->get('Store Currency Code'),
+                                                       $exchange,
+                                                       $object->get('Product Cost'),
+                                                       percentage($exchange* $object->get('Product Price')- $object->get('Product Cost'), $exchange* $object->get('Product Price')),
+                                                       money( $object->get('Product Price'), $object->get('Store Currency Code')) );
+
+            //        $update_metadata['margin_cell']='<span style="cursor:text" class="product_margin" onClick="open_edit_margin(this)" title="'._('Cost price').':'.money($object->get('Product Cost'), $account->get('Account Currency')).'">'.percentage($exchange*$object->get('Product Price')-$object->get('Product Cost'), $exchange*$object->get('Product Price')).'<span>';
+
+                $update_metadata['margin_cell']='<span  class="product_margin"  title="'._('Cost price').':'.money($object->get('Product Cost'), $account->get('Account Currency')).'">'.percentage($exchange*$object->get('Product Price')-$object->get('Product Cost'), $exchange*$object->get('Product Price')).'<span>';
 
             }
 

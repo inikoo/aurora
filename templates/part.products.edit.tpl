@@ -11,24 +11,16 @@
 
 
 
-<div id="set_price_dialog" class="hidex" style="position:absolute;border:1px solid #ccc;background-color: white;padding:10px 20px;z-index: 100">
-    <table>
+<div id="set_price_dialog" class="hide" style="position:absolute;border:1px solid #ccc;background-color: white;padding:10px 10px;z-index: 100">
 
-        <tr>
-            <td>{t}Price{/t} (<span id="set_price_currency"></span>)
-
-                <input class=" width_50" value="" ovalue="" /> <i onClick="save_product_price(this)" class="fa  fa-cloud fa-fw button " aria-hidden="true"/>
+    <i style="position:relative;top:-7px;margin-right:10px" class="fa fa-window-close button" onClick="close_product_price_dialog()" aria-hidden="true"></i>
 
 
-            </td>
-        </tr>
+    {t}Price{/t} (<span id="set_price_currency"></span>)
 
-        <tr class="hide">
-            <td class="out_of_stock_location_code"></td>  <td class="out_of_stock_part_reference"></td> <td class="out_of_stock_part_stock"></td>
+                <input id="set_price_value" class=" width_75" value="" old_margin="" ovalue="" exchange="" cost="" product_id="" /> <i id="set_price_save" onClick="save_product_price(this)" class="fa  fa-cloud fa-fw button  save    " aria-hidden="true"/>
 
-        </tr>
 
-    </table>
     <script>
 
     </script>
@@ -95,6 +87,159 @@
         })
 
 
+    }
+
+    function open_edit_price(element){
+
+var element=$(element)
+
+        var offset = element.offset()
+
+
+
+        $('#set_price_currency').html(element.attr('currency'))
+        $('#set_price_value').val(element.attr('price')).attr('product_id',element.attr('pid')).attr('ovalue',element.attr('price')).attr('old_margin',element.attr('old_margin')).attr('exchange',element.attr('exchange')).attr('cost',element.attr('cost')).data('element',element).focus()
+
+
+
+        $('#set_price_dialog').removeClass('hide').offset({
+            top: offset.top -7.5,
+            left: offset.left +element.width()- $('#set_price_dialog').width()-20
+        })
+
+
+
+
+
+    }
+
+
+    var price_timeout=false;
+
+    $("#set_price_value").on("input propertychange", function (evt) {
+
+
+
+        window.clearTimeout(price_timeout);
+
+        var element=this
+        price_timeout=setTimeout(function() {
+            price_changed(element)
+        }, 400);
+
+
+
+
+
+
+
+    })
+    
+    
+    function price_changed(e){
+
+
+        new_price=$(e).val();
+
+        if( (new_price-$(e).attr('ovalue'))==0){
+
+            $('#set_price_save').removeClass('changed invalid valid')
+
+            $('#set_price_value').removeClass('invalid')
+
+
+
+        }else{
+
+            $('#set_price_save').addClass('changed')
+
+
+
+            var validation= client_validation('amount', true, new_price, '')
+
+            element = $(e).data('element');
+            var tr = element.closest('tr')
+            if(validation.class=='invalid'){
+
+                $('#set_price_value').addClass('invalid')
+                $('#set_price_save').addClass('invalid')
+            }
+            else if(validation.class=='valid') {
+
+
+                $('#set_price_save').removeClass('invalid').addClass('valid')
+
+                $('#set_price_value').removeClass('invalid')
+
+                console.log(validation)
+
+
+                element = $(e).data('element');
+
+                cost = $(e).attr('cost');
+                exchange = $(e).attr('exchange');
+
+                new_margin = ((exchange * new_price - cost) / (exchange * new_price) * 100).toFixed(2) + '%'
+
+
+
+               // tr.find('.product_price').addClass('very_discreet')
+
+
+                tr.find('.product_margin').html(new_margin)
+            }
+        }
+
+
+    }
+    
+    
+
+    function  save_product_price(){
+
+        if($('#set_price_save').hasClass('valid')){
+
+
+            $('#set_price_save').addClass('fa-spinner fa-spin').removeClass('valid changed')
+            var request='/ar_edit.php?tipo=edit_field&object=Product&key='+ $('#set_price_value').attr('product_id')+'&field=Product_Price&value='+ $('#set_price_value').val()
+
+            console.log(request)
+
+            $.getJSON(request, function (r) {
+
+                $('#set_price_save').removeClass('fa-spinner fa-spin')
+
+                console.log(r)
+
+                element = $('#set_price_value').data('element');
+                var tr = element.closest('tr')
+
+                tr.find('.product_price').parent().html(r.update_metadata.price_cell)
+
+                tr.find('.product_margin').parent().html(r.update_metadata.margin_cell)
+
+
+                close_product_price_dialog();
+
+                console.log(r)
+
+
+            });
+
+
+        }
+
+
+    }
+
+    function close_product_price_dialog(){
+
+        element = $('#set_price_value').data('element');
+        var tr = element.closest('tr')
+
+        tr.find('.product_margin').html( $('#set_price_value').attr('old_margin'))
+
+        $('#set_price_dialog').addClass('hide')
     }
 
 </script>
