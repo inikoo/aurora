@@ -87,6 +87,16 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 {
+name: "rrp",
+label: "{t}RRP{/t}",
+editable: false,
+sortType: "toggle",
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+headerCell: integerHeaderCell
+
+},
+{
 name: "web_state",
 label: "{t}Web state{/t}",
 editable: false,
@@ -150,7 +160,7 @@ headerCell: integerHeaderCell
 
 
 {
-name: "sales",
+name: "dc_sales",
 label: "{t}Sales{/t}",
 editable: false,
 
@@ -162,7 +172,7 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 {
-name: "sales_1yb",
+name: "dc_sales_1yb",
 label: "1YB",
 editable: false,
 
@@ -351,11 +361,13 @@ grid.columns.findWhere({ name: 'parts'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'status'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'price'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'margin'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'rrp'} ).set("renderable", false)
+
 grid.columns.findWhere({ name: 'web_state'} ).set("renderable", false)
 
 
-grid.columns.findWhere({ name: 'sales'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'sales_1yb'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'dc_sales'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'dc_sales_1yb'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'qty_invoiced'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'qty_invoiced_1yb'} ).set("renderable", false)
 
@@ -381,8 +393,17 @@ if(view=='overview'){
 grid.columns.findWhere({ name: 'parts'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'price'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'status'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'margin'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'web_state'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'dc_sales'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'dc_sales_1yb'} ).set("renderable", true)
+}else if(view=='price'){
+
+grid.columns.findWhere({ name: 'parts'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'price'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'status'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'margin'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'rrp'} ).set("renderable", true)
+
 }else if(view=='status'){
 grid.columns.findWhere({ name: 'status'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'active'} ).set("renderable", true)
@@ -391,8 +412,8 @@ grid.columns.findWhere({ name: 'discontinuing'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'discontinued'} ).set("renderable", true)
 }else if(view=='sales'){
 $('#columns_period').removeClass('hide');
-grid.columns.findWhere({ name: 'sales'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'sales_1yb'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'dc_sales'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'dc_sales_1yb'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'qty_invoiced'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'qty_invoiced_1yb'} ).set("renderable", true)
 

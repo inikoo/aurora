@@ -235,6 +235,34 @@ if($_data['parameters']['parent']=='part') {
             }
 
 
+
+
+
+
+
+            if ($data['Product RRP'] == '') {
+               $rrp='';
+            }else{
+                $rrp = money($data['Product RRP'] / $data['Product Units Per Case'], $data['Store Currency Code']);
+                if ($data['Product Units Per Case'] != 1) {
+                    $rrp .= '/'.$data['Product Unit Label'];
+                }
+                $rrp=sprintf('<span style="cursor:text" class="product_rrp" title="%s" pid="%d" rrp="%s"  currency="%s"   onClick="open_edit_rrp(this)">%s</span>',
+                             sprintf(_('margin %s'), percentage($data['Product RRP'] - $data['Product Price'], $data['Product RRP'])),
+                             $data['Product ID'],
+                             $data['Product RRP']/$data['Product Units Per Case'],
+                             $data['Store Currency Code'],
+                             $rrp
+
+                );
+
+            }
+
+
+            
+            
+            
+
             $record_data[] = array(
 
                 'id'               => (integer)$data['Product ID'],
@@ -253,7 +281,12 @@ if($_data['parameters']['parent']=='part') {
                                               percentage($exchange*$data['Product Price'] - $data['Product Cost'], $exchange*$data['Product Price']),
                                               money($data['Product Price'], $data['Store Currency Code']) ),
 
-         //                'margin'           => '<span style="cursor:text" class="product_margin" onClick="open_edit_margin(this)" title="'._('Cost price').':'.money($data['Product Cost'], $account->get('Account Currency')).'">'.percentage($exchange*$data['Product Price'] - $data['Product Cost'], $exchange*$data['Product Price']).'<span>',
+
+
+                'rrp'            => $rrp,
+
+
+                //                'margin'           => '<span style="cursor:text" class="product_margin" onClick="open_edit_margin(this)" title="'._('Cost price').':'.money($data['Product Cost'], $account->get('Account Currency')).'">'.percentage($exchange*$data['Product Price'] - $data['Product Cost'], $exchange*$data['Product Price']).'<span>',
 
                 'margin'           => '<span class="product_margin" title="'._('Cost price').':'.money($data['Product Cost'], $account->get('Account Currency')).'">'.percentage($exchange*$data['Product Price'] - $data['Product Cost'], $exchange*$data['Product Price']).'<span>',
                 'web_state'        => $web_state,
@@ -261,6 +294,8 @@ if($_data['parameters']['parent']=='part') {
                 'parts'=>$parts,
                 'sales'            => money($data['sales'], $data['Store Currency Code']),
                 'sales_1yb'        => delta($data['sales'], $data['sales_1yb']),
+                'dc_sales'            => money($data['dc_sales'], $account->get('Account Currency')),
+                'dc_sales_1yb'        => delta($data['dc_sales'], $data['dc_sales_1yb']),
                 'qty_invoiced'     => number($data['qty_invoiced']),
                 'qty_invoiced_1yb' => delta(
                     $data['qty_invoiced'], $data['qty_invoiced_1yb']

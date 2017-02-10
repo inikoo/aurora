@@ -173,11 +173,10 @@ if (isset($parameters['f_period'])) {
         '3 Year'
     )
     )) {
-        $yb_fields = "'' as sales_1y,'' as qty_invoiced_1yb";
+        $yb_fields = "'' as sales_1y,'' as dc_sales_1y,'' as qty_invoiced_1yb";
 
     } else {
-        $yb_fields
-            = "`Product $db_period Acc 1YB Invoiced Amount` as sales_1yb, `Product $db_period Acc 1YB Quantity Invoiced` as qty_invoiced_1yb";
+        $yb_fields = "`Product $db_period Acc 1YB Invoiced Amount` as sales_1yb, `Product DC $db_period Acc 1YB Invoiced Amount` as dc_sales_1yb,  `Product $db_period Acc 1YB Quantity Invoiced` as qty_invoiced_1yb";
     }
 
 } else {
@@ -212,6 +211,8 @@ if ($order == 'stock') {
 
 } elseif ($order == 'sales') {
     $order = '`Product '.$period_tag.' Acc Invoiced Amount`';
+}elseif ($order == 'dc_sales') {
+    $order = '`Product DC '.$period_tag.' Acc Invoiced Amount`';
 } elseif ($order == 'sales_reorder') {
     $order = '`Product '.$period_tag.' Acc Invoiced Amount`';
 } elseif ($_order == 'delta_sales') {
@@ -353,9 +354,9 @@ $fields
 `Product Total Acc Invoiced Amount`,`Product Total Acc Quantity Invoiced`,`Product Total Acc Customers`,`Product Total Acc Repeat Customers`,
 `Product Year To Day Acc Invoiced Amount`,`Product Year To Day Acc 1YB Invoiced Amount`,
 `Product Quarter To Day Acc Invoiced Amount`,`Product Quarter To Day Acc 1YB Invoiced Amount`,
-if(`Product Total Acc Customers`=0,0,  (`Product Total Acc Repeat Customers`/`Product Total Acc Customers`)) percentage_repeat_customer_total,
+if(`Product Total Acc Customers`=0,0,  (`Product Total Acc Repeat Customers`/`Product Total Acc Customers`)) percentage_repeat_customer_total,`Product RRP`,`Product Unit Label`,
 
-`Product $db_period Acc Invoiced Amount` as sales,`Product $db_period Acc Quantity Invoiced` as qty_invoiced,
+`Product $db_period Acc Invoiced Amount` as sales,`Product DC $db_period Acc Invoiced Amount` as dc_sales,`Product $db_period Acc Quantity Invoiced` as qty_invoiced,
  $yb_fields
 
 

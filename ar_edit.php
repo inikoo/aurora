@@ -374,6 +374,32 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
                 $update_metadata['margin_cell']='<span  class="product_margin"  title="'._('Cost price').':'.money($object->get('Product Cost'), $account->get('Account Currency')).'">'.percentage($exchange*$object->get('Product Price')-$object->get('Product Cost'), $exchange*$object->get('Product Price')).'<span>';
 
+            }elseif ($field == 'Product Unit RRP') {
+
+
+
+                if ($object->get('Product RRP') == '') {
+                    $rrp='';
+                }else{
+                    $rrp = money($object->get('Product RRP') / $object->get('Product Units Per Case'), $object->get('Store Currency Code'));
+                    if ($object->get('Product Units Per Case') != 1) {
+                        $rrp .= '/'.$object->get('Product Unit Label');
+                    }
+                    $rrp=sprintf('<span style="cursor:text" class="product_rrp" title="%s" pid="%d" rrp="%s"  currency="%s"   onClick="open_edit_rrp(this)">%s</span>',
+                                 sprintf(_('margin %s'), percentage($object->get('Product RRP') - $object->get('Product Price'), $object->get('Product RRP'))),
+                                 $object->get('Product ID'),
+                                 $object->get('Product RRP')/$object->get('Product Units Per Case'),
+                                 $object->get('Store Currency Code'),
+                                 $rrp
+
+                    );
+
+                }
+                
+                
+
+                $update_metadata['rrp_cell']=$rrp;
+
             }
 
 
