@@ -514,9 +514,7 @@ class Product extends Asset {
                     return '';
                 }
 
-                $rrp = money(
-                    $this->data['Product RRP'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code']
-                );
+                $rrp = money($this->data['Product RRP'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code']);
                 if ($this->get('Product Units Per Case') != 1) {
                     $rrp .= '/'.$this->get('Product Unit Label');
                 }
@@ -591,16 +589,12 @@ class Product extends Asset {
                     return '';
                 }
 
-                return money(
-                    $this->data['Product RRP'], $this->data['Store Currency Code']
-                );
+                return money($this->data['Product RRP'], $this->data['Store Currency Code']);
                 break;
 
 
 
-                return money(
-                    $this->data['Product RRP'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code']
-                );
+                return money($this->data['Product RRP'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code']);
                 break;
 
             case 'Unit RRP':
@@ -609,18 +603,14 @@ class Product extends Asset {
                     return '';
                 }
 
-                $rrp = money(
-                    $this->data['Product RRP'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code']
-                );
+                $rrp = money($this->data['Product RRP'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code']);
                 if ($this->get('Product Units Per Case') != 1) {
                     $rrp .= '/'.$this->get('Product Unit Label');
                 }
 
 
                 $unit_margin    = $this->data['Product RRP'] - $this->data['Product Price'];
-                $rrp_other_info = sprintf(
-                    _('margin %s'), percentage($unit_margin, $this->data['Product RRP'])
-                );
+                $rrp_other_info = sprintf(_('margin %s'), percentage($unit_margin, $this->data['Product RRP']));
 
 
                 $rrp_other_info = preg_replace('/^, /', '', $rrp_other_info);
