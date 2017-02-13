@@ -21,15 +21,7 @@ label: "{t}Part{/t}",
 editable: false,
 sortType: "toggle",
 
-cell: Backgrid.StringCell.extend({
-events: {
-"click": function() {
-change_view('part/' + this.model.get("part_sku"))
-}
-},
-className: "link"
-
-})
+cell: Backgrid.HtmlCell.extend({ })
 
 },
 {
@@ -38,15 +30,7 @@ label: "{t}Picking location{/t}",
 editable: false,
 sortType: "toggle",
 
-cell: Backgrid.StringCell.extend({
-events: {
-"click": function() {
-change_view('locations/'+ this.model.get("warehouse_key")+'/' + this.model.get("location_key"))
-}
-},
-className: "link"
-
-})
+cell: Backgrid.HtmlCell.extend({ })
 
 },
 

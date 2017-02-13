@@ -967,12 +967,21 @@ class Warehouse extends DB_Table {
             exit;
         }
 
+
+        if($hrs==0){
+            $kpi='';
+            $formatted_kpi='-';
+        }else{
+            $kpi=$amount / $hrs;
+            $formatted_kpi=number($amount / $hrs, 2).' '.currency_symbol($account->get('Account Currency')).'/h';
+        }
+
         //    print $sql;
         return array(
-            'kpi'              => $amount / $hrs,
+            'kpi'              => $kpi,
             'amount'           => $amount,
             'hrs'              => $hrs,
-            'formatted_kpi'    => number($amount / $hrs, 2).' '.currency_symbol($account->get('Account Currency')).'/h',
+            'formatted_kpi'    => $formatted_kpi,
             'formatted_amount' => money($amount, $account->get('Account Currency')),
             'formatted_hrs'    => sprintf('%d hours', number($hrs, 1)),
             'formatted_aux_kpi_data'=>sprintf('%d hours', number($hrs, 1)),

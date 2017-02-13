@@ -241,6 +241,8 @@ $elements_options = array(
                 ),
             )
         ),
+
+        /*
         'source'   => array(
             'label' => _('Source'),
             'items' => array(
@@ -271,6 +273,8 @@ $elements_options = array(
             ),
 
         ),
+        */
+
         'payment'  => array(
             'label' => _('Payment'),
             'items' => array(

@@ -515,6 +515,21 @@ $modules = array(
         'parent'      => 'store',
         'parent_type' => 'key',
         'sections'    => array(
+
+
+
+            'dashboard'          => array(
+                'type'      => 'navigation',
+                'label'     => _('Dashboard'),
+                'icon'      => 'tachometer',
+                'reference' => 'orders/%d/dashboard',
+                'tabs'      => array(
+                    'orders.dashboard' => array('label' => _('Dashboard'))
+
+                )
+            ),
+
+
             'orders' => array(
                 'type'      => 'navigation',
                 'label'     => _('Orders'),

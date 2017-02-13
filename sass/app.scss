@@ -1019,24 +1019,6 @@ right connector from last child*/
   // span.hide{display:none}
 }
 
-.address_directory {
-  .container {
-    float: left;
-    margin-right: 50px;
-    &:last-of-type {
-      margin-right: 0px;
-    }
-    .show_buttons {
-      float: left;
-      min-height: 120px;
-      padding-top: 7px
-    }
-    .address {
-      float: left;
-      min-width: 140px
-    }
-  }
-}
 
 .progress_bar_container {
   width: 120px;

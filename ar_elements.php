@@ -1364,11 +1364,14 @@ function get_orders_element_numbers($db, $data, $user) {
 
     }
 
+    /*
 
     //USE INDEX (`Main Source Type Store Key`)
     $sql = sprintf(
         "SELECT count(*) AS number,`Order Main Source Type` AS element FROM %s    %s  %s GROUP BY `Order Main Source Type` ", $table, $where, $where_interval
     );
+
+    print $sql;
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
@@ -1381,7 +1384,7 @@ function get_orders_element_numbers($db, $data, $user) {
         print_r($error_info = $db->errorInfo());
         exit;
     }
-
+*/
 
     // USE INDEX (`Type Store Key`)
     $sql = sprintf(
@@ -1392,6 +1395,8 @@ function get_orders_element_numbers($db, $data, $user) {
         $elements_numbers['type'][$row['element']] = number($row['number']);
     }
     //USE INDEX (`Current Dispatch State Store Key`)
+
+    print $sql;
 
     $sql = sprintf(
         "SELECT count(*) AS number,`Order Current Dispatch State` AS element FROM %s  %s %s GROUP BY `Order Current Dispatch State` ", $table, $where, $where_interval

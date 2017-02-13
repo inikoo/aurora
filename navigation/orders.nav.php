@@ -11,6 +11,47 @@
 */
 
 
+
+function get_dashboard_navigation($data, $smarty, $user, $db, $account) {
+
+
+
+
+
+    $sections = get_sections('orders', $data['parent_key']);
+
+
+    $left_buttons = array();
+
+
+    $right_buttons = array();
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+    $title=_("Orders dashboard");
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search orders')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
 function get_orders_navigation($data, $smarty, $user, $db, $account) {
 
     global $user, $smarty;

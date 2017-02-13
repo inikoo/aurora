@@ -36,7 +36,7 @@ require_once 'class.Address.php';
 $sql = sprintf(
     'SELECT `Customer Key` FROM `Customer Dimension` WHERE `Customer Key`=229496 ORDER BY `Customer Key` DESC '
 );
-//$sql = sprintf('SELECT `Customer Key` FROM `Customer Dimension` ORDER BY `Customer Key` DESC ');
+$sql = sprintf('SELECT `Customer Key` FROM `Customer Dimension` ORDER BY `Customer Key` DESC ');
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {

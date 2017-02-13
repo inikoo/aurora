@@ -116,7 +116,8 @@ tr.invalid {
   table {
     width: 100%;
     .adr {
-      padding: 5px 0px;
+      border:1px solid ghostwhite;
+      padding: 5px  0px;
     }
     &.address tr {
       border: none;
@@ -260,6 +261,25 @@ tr.invalid {
       //padding-left: 5px;
     }
   }
+}
+
+
+
+.address_directory_buttons {
+  width: 60px;
+
+
+  margin-right:2px;
+  .fa {
+    margin-right:2px;
+    cursor: pointer;
+    opacity: .4;
+    transition: opacity .2s ease-in-out;
+    &:hover {
+      opacity: 1;
+    }
+  }
+
 }
 
 .show_buttons {

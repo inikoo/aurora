@@ -304,36 +304,35 @@ class Customer extends Subject {
                     if ($this->data['Customer Tax Number Validation Date'] != '') {
                         $_tmp = gmdate("U") - gmdate(
                                 "U", strtotime(
-                                    $this->data['Customer Tax Number Validation Date'].' +0:00'
-                                )
+                                       $this->data['Customer Tax Number Validation Date'].' +0:00'
+                                   )
                             );
                         if ($_tmp < 3600) {
                             $date = strftime(
                                 "%e %b %Y %H:%M:%S %Z", strtotime(
-                                    $this->data['Customer Tax Number Validation Date'].' +0:00'
-                                )
+                                                          $this->data['Customer Tax Number Validation Date'].' +0:00'
+                                                      )
                             );
 
                         } elseif ($_tmp < 86400) {
                             $date = strftime(
                                 "%e %b %Y %H:%M %Z", strtotime(
-                                    $this->data['Customer Tax Number Validation Date'].' +0:00'
-                                )
+                                                       $this->data['Customer Tax Number Validation Date'].' +0:00'
+                                                   )
                             );
 
                         } else {
                             $date = strftime(
                                 "%e %b %Y", strtotime(
-                                    $this->data['Customer Tax Number Validation Date'].' +0:00'
-                                )
+                                              $this->data['Customer Tax Number Validation Date'].' +0:00'
+                                          )
                             );
                         }
                     } else {
                         $date = '';
                     }
 
-                    $msg
-                        = $this->data['Customer Tax Number Validation Message'];
+                    $msg = $this->data['Customer Tax Number Validation Message'];
 
                     if ($this->data['Customer Tax Number Validation Source'] == 'Online') {
                         $source = '<i title=\''._('Validated online').'\' class=\'fa fa-globe\'></i>';
@@ -394,10 +393,10 @@ class Customer extends Subject {
                 }
 
                 return '<span title="'.strftime(
-                    "%a %e %b %Y %H:%M:%S %Z", strtotime($this->data['Customer '.$key]." +00:00")
-                ).'">'.strftime(
-                    "%a %e %b %Y", strtotime($this->data['Customer '.$key]." +00:00")
-                ).'</span>';
+                        "%a %e %b %Y %H:%M:%S %Z", strtotime($this->data['Customer '.$key]." +00:00")
+                    ).'">'.strftime(
+                        "%a %e %b %Y", strtotime($this->data['Customer '.$key]." +00:00")
+                    ).'</span>';
                 break;
             case('Orders'):
                 return number($this->data['Customer Orders']);
@@ -587,8 +586,8 @@ class Customer extends Subject {
 
 
         $address_plain      = strip_tags($this->get('Contact Address'));
-        $first_full_search  = $this->data['Customer Name'].' '.$this->data['Customer Name'].' '.$address_plain.' '.$this->data['Customer Main Contact Name'].' '
-            .$this->data['Customer Main Plain Email'];
+        $first_full_search  =
+            $this->data['Customer Name'].' '.$this->data['Customer Name'].' '.$address_plain.' '.$this->data['Customer Main Contact Name'].' '.$this->data['Customer Main Plain Email'];
         $second_full_search = '';
 
 
@@ -725,10 +724,10 @@ class Customer extends Subject {
         require_once 'utils/new_fork.php';
         list($fork_key, $msg) = new_fork(
             'housekeeping', array(
-                'type'        => 'order_created',
-                'subject_key' => $order->id,
-                'editor'      => $order->editor
-            ), $account->get('Account Code'), $this->db
+            'type'        => 'order_created',
+            'subject_key' => $order->id,
+            'editor'      => $order->editor
+        ), $account->get('Account Code'), $this->db
         );
 
         return $order;
@@ -746,7 +745,6 @@ class Customer extends Subject {
         if ($this->update_subject_field_switcher($field, $value, $options, $metadata)) {
             return;
         }
-
 
 
         switch ($field) {
@@ -866,17 +864,18 @@ class Customer extends Subject {
         $store = new Store($this->get('Store Key'));
 
 
-        list($address, $formatter, $postal_label_formatter)
-            = get_address_formatter(
+        list(
+            $address, $formatter, $postal_label_formatter
+            ) = get_address_formatter(
             $store->get('Store Home Country Code 2 Alpha'), $store->get('Store Locale')
         );
 
 
         $address = $address->withRecipient($fields['Address Recipient'])->withOrganization($fields['Address Organization'])->withAddressLine1($fields['Address Line 1'])->withAddressLine2(
-                $fields['Address Line 2']
-            )->withSortingCode($fields['Address Sorting Code'])->withPostalCode($fields['Address Postal Code'])->withDependentLocality($fields['Address Dependent Locality'])->withLocality(
-                $fields['Address Locality']
-            )->withAdministrativeArea($fields['Address Administrative Area'])->withCountryCode($fields['Address Country 2 Alpha Code']);
+            $fields['Address Line 2']
+        )->withSortingCode($fields['Address Sorting Code'])->withPostalCode($fields['Address Postal Code'])->withDependentLocality($fields['Address Dependent Locality'])->withLocality(
+            $fields['Address Locality']
+        )->withAdministrativeArea($fields['Address Administrative Area'])->withCountryCode($fields['Address Country 2 Alpha Code']);
 
         $xhtml_address = $formatter->format($address);
         $xhtml_address = preg_replace('/<br>\s/', "\n", $xhtml_address);
@@ -1153,8 +1152,9 @@ class Customer extends Subject {
             $store = new Store($this->get('Store Key'));
 
 
-            list($address, $formatter, $postal_label_formatter)
-                = get_address_formatter(
+            list(
+                $address, $formatter, $postal_label_formatter
+                ) = get_address_formatter(
                 $store->get('Store Home Country Code 2 Alpha'), $store->get('Store Locale')
             );
 
@@ -1331,11 +1331,8 @@ class Customer extends Subject {
         if ($result = $this->db->query($sql)) {
 
             foreach ($result as $row) {
-                $delivery_address_keys[$row['Customer Other Delivery Address Key']]
-                    = array(
-                    'value'           => $this->get(
-                        'Customer Other Delivery Address '.$row['Customer Other Delivery Address Key']
-                    ),
+                $delivery_address_keys[$row['Customer Other Delivery Address Key']] = array(
+                    'value'           => $this->get('Customer Other Delivery Address '.$row['Customer Other Delivery Address Key']),
                     'formatted_value' => $row['Customer Other Delivery Address Formatted'],
                     'label'           => $row['Customer Other Delivery Address Label'],
                 );
@@ -1381,8 +1378,7 @@ class Customer extends Subject {
     function get_order_in_process_key($dispatch_state = 'all') {
 
         if ($dispatch_state == 'all') {
-            $dispatch_state_valid_values
-                = "'In Process by Customer','Waiting for Payment Confirmation'";
+            $dispatch_state_valid_values = "'In Process by Customer','Waiting for Payment Confirmation'";
         } else {
             $dispatch_state_valid_values = "'In Process by Customer'";
         }
@@ -1405,8 +1401,7 @@ class Customer extends Subject {
     function get_order_in_process_keys($dispatch_state = 'all') {
 
         if ($dispatch_state == 'all') {
-            $dispatch_state_valid_values
-                = "'In Process by Customer','Waiting for Payment Confirmation'";
+            $dispatch_state_valid_values = "'In Process by Customer','Waiting for Payment Confirmation'";
         } else {
             $dispatch_state_valid_values = "'In Process by Customer'";
         }
@@ -1428,8 +1423,7 @@ class Customer extends Subject {
 
     function get_pending_orders_keys($dispatch_state = '') {
 
-        $dispatch_state_valid_values
-            = "'Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Packing','Packed','Packed Done'";
+        $dispatch_state_valid_values = "'Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Packing','Packed','Packed Done'";
 
         if ($dispatch_state == 'all') {
 
@@ -1512,9 +1506,7 @@ class Customer extends Subject {
                 $note = sprintf(
                     '%s <a href="order.php?id=%d">%s</a> (In Process)', _('Order Processed'), $order->data ['Order Key'], $order->data ['Order Public ID']
                 );
-                if ($order->data['Order Original Data MIME Type']
-                    = 'application/inikoo'
-                ) {
+                if ($order->data['Order Original Data MIME Type'] = 'application/inikoo') {
 
                     if ($this->editor['Author Alias'] != '' and $this->editor['Author Key']) {
                         $details = sprintf(
@@ -1534,9 +1526,7 @@ class Customer extends Subject {
                         '%s (<a href="customer.php?id=%d">%s</a>) place an order on %s', $this->get('Customer Name'), $this->id, $this->get('Formatted ID'), $tz_date
                     );
                 }
-                if ($order->data['Order Original Data MIME Type']
-                    = 'application/vnd.ms-excel'
-                ) {
+                if ($order->data['Order Original Data MIME Type'] = 'application/vnd.ms-excel') {
                     if ($order->data['Order Original Data Filename'] != '') {
 
                         $details .= '<div >'._('Original Source').":<img src='art/icons/page_excel.png'> ".$order->data['Order Original Data MIME Type']."</div>";
@@ -1836,9 +1826,7 @@ class Customer extends Subject {
                 $note = sprintf(
                     '%s <a href="order.php?id=%d">%s</a> (In Process)', _('Order'), $order->data ['Order Key'], $order->data ['Order Public ID']
                 );
-                if ($order->data['Order Original Data MIME Type']
-                    = 'application/inikoo'
-                ) {
+                if ($order->data['Order Original Data MIME Type'] = 'application/inikoo') {
 
                     if ($this->editor['Author Alias'] != '' and $this->editor['Author Key']) {
                         $details = sprintf(
@@ -1858,9 +1846,7 @@ class Customer extends Subject {
                         '%s (<a href="customer.php?id=%d">%s</a>) place an order on %s', $this->get('Customer Name'), $this->id, $this->get('Formatted ID'), $tz_date
                     );
                 }
-                if ($order->data['Order Original Data MIME Type']
-                    = 'application/vnd.ms-excel'
-                ) {
+                if ($order->data['Order Original Data MIME Type'] = 'application/vnd.ms-excel') {
                     if ($order->data['Order Original Data Filename'] != '') {
 
                         $details .= '<div >'._('Original Source').":<img src='art/icons/page_excel.png'> ".$order->data['Order Original Data MIME Type']."</div>";
@@ -2026,17 +2012,16 @@ class Customer extends Subject {
 
 
         if (strtotime($customer_to_merge->data['Customer First Contacted Date']) < strtotime($this->data['Customer First Contacted Date'])) {
-            $customer->data['Customer First Contacted Date']
-                 = $customer_to_merge->data['Customer First Contacted Date'];
-            $sql = sprintf(
+            $customer->data['Customer First Contacted Date'] = $customer_to_merge->data['Customer First Contacted Date'];
+            $sql                                             = sprintf(
                 "UPDATE `Customer Dimension` SET `Customer First Contacted Date`=%s WHERE `Customer Key`=%d ", prepare_mysql($customer->data['Customer First Contacted Date']), $this->id
             );
-            $res = mysql_query($sql);
-            $sql = sprintf(
+            $res                                             = mysql_query($sql);
+            $sql                                             = sprintf(
                 "UPDATE `History Dimension` SET `History Date`=%s   WHERE `Action`='created' AND `Direct Object`='Customer' AND `Direct Object Key`=%d  AND `Indirect Object`='' ",
                 prepare_mysql($customer->data['Customer First Contacted Date']), $this->id
             );
-            $res = mysql_query($sql);
+            $res                                             = mysql_query($sql);
 
         }
 
@@ -2157,17 +2142,14 @@ class Customer extends Subject {
         );
         $res = mysql_query($sql);
         if ($row = mysql_fetch_assoc($res)) {
-            $this->data['Customer Orders Invoiced'] = $row['num'];
-            $this->data['Customer First Invoiced Order Date']
-                                                    = $row['first_order_date'];
-            $this->data['Customer Last Invoiced Order Date']
-                                                    = $row['last_order_date'];
+            $this->data['Customer Orders Invoiced']           = $row['num'];
+            $this->data['Customer First Invoiced Order Date'] = $row['first_order_date'];
+            $this->data['Customer Last Invoiced Order Date']  = $row['last_order_date'];
         }
 
 
         if ($this->data['Customer Orders Invoiced'] > 1) {
-            $sql
-                        = "SELECT `Order Date` AS date FROM `Order Dimension` WHERE `Order Invoiced`='Yes'  AND `Order Customer Key`=".$this->id." ORDER BY `Order Date`";
+            $sql        = "SELECT `Order Date` AS date FROM `Order Dimension` WHERE `Order Invoiced`='Yes'  AND `Order Customer Key`=".$this->id." ORDER BY `Order Date`";
             $last_order = false;
             $intervals  = array();
             $result2    = mysql_query($sql);
@@ -2199,8 +2181,7 @@ class Customer extends Subject {
         // print $sql."\n";
         $res = mysql_query($sql);
         if ($row = mysql_fetch_assoc($res)) {
-            $this->data['Customer Last Invoiced Dispatched Date']
-                = $row['last_order_dispatched_date'];
+            $this->data['Customer Last Invoiced Dispatched Date'] = $row['last_order_dispatched_date'];
 
         }
 
@@ -2228,31 +2209,23 @@ class Customer extends Subject {
 
             $this->data['Customer Orders'] = $row['orders'];
 
-            $this->data['Customer Net Balance'] = $row['net_balance'];
-            $this->data['Customer Net Refunds']
-                                                = $row['net_refunds'];
-            $this->data['Customer Net Payments']
-                                                = $row['net_balance'] - $row['net_outstanding'];
-            $this->data['Customer Outstanding Net Balance']
-                                                = $row['net_outstanding'];
+            $this->data['Customer Net Balance']             = $row['net_balance'];
+            $this->data['Customer Net Refunds']             = $row['net_refunds'];
+            $this->data['Customer Net Payments']            = $row['net_balance'] - $row['net_outstanding'];
+            $this->data['Customer Outstanding Net Balance'] = $row['net_outstanding'];
 
-            $this->data['Customer Tax Balance'] = $row['tax_balance'];
-            $this->data['Customer Tax Refunds']
-                                                = $row['tax_refunds'];
-            $this->data['Customer Tax Payments']
-                                                = $row['tax_balance'] - $row['tax_outstanding'];
-            $this->data['Customer Outstanding Tax Balance']
-                                                = $row['tax_outstanding'];
+            $this->data['Customer Tax Balance']             = $row['tax_balance'];
+            $this->data['Customer Tax Refunds']             = $row['tax_refunds'];
+            $this->data['Customer Tax Payments']            = $row['tax_balance'] - $row['tax_outstanding'];
+            $this->data['Customer Outstanding Tax Balance'] = $row['tax_outstanding'];
 
             $this->data['Customer Profit'] = $row['profit'];
 
 
             if ($this->data['Customer Orders'] > 0) {
-                $this->data['Customer First Order Date']
-                                                    = $row['first_order_date'];
-                $this->data['Customer Last Order Date']
-                                                    = $row['last_order_date'];
-                $this->data['Customer With Orders'] = 'Yes';
+                $this->data['Customer First Order Date'] = $row['first_order_date'];
+                $this->data['Customer Last Order Date']  = $row['last_order_date'];
+                $this->data['Customer With Orders']      = 'Yes';
             }
 
 
@@ -2309,8 +2282,8 @@ class Customer extends Subject {
             //print "\n\n".$this->data['Customer First Contacted Date']." +".$this->data['Customer First Contacted Date']." seconds\n";
             $this->data['Customer Lost Date'] = gmdate(
                 'Y-m-d H:i:s', strtotime(
-                    $this->data['Customer First Contacted Date']." +".$store->data['Store Lost Customer Interval']." seconds"
-                )
+                                 $this->data['Customer First Contacted Date']." +".$store->data['Store Lost Customer Interval']." seconds"
+                             )
             );
         } else {
 
@@ -2319,8 +2292,7 @@ class Customer extends Subject {
             $lost_interval   = $store->data['Store Lost Customer Interval'];
 
             if ($orders > 20) {
-                $sigma_factor
-                    = 3.2906;//99.9% value assuming normal distribution
+                $sigma_factor = 3.2906;//99.9% value assuming normal distribution
 
                 $losing_interval = $this->data['Customer Order Interval'] + $sigma_factor * $this->data['Customer Order Interval STD'];
                 $lost_interval   = $losing_interval * 4.0 / 3.0;
@@ -2347,8 +2319,8 @@ class Customer extends Subject {
             //print "\n xxx ".$this->data['Customer Last Order Date']." +$losing_interval seconds"."    \n";
             $this->data['Customer Lost Date'] = gmdate(
                 'Y-m-d H:i:s', strtotime(
-                    $this->data['Customer Last Order Date']." +$lost_interval seconds"
-                )
+                                 $this->data['Customer Last Order Date']." +$lost_interval seconds"
+                             )
             );
 
         }
@@ -2405,8 +2377,7 @@ class Customer extends Subject {
 
 
         $has_orders = false;
-        $sql
-                    = "SELECT count(*) AS total  FROM `Order Dimension` WHERE `Order Customer Key`=".$this->id;
+        $sql        = "SELECT count(*) AS total  FROM `Order Dimension` WHERE `Order Customer Key`=".$this->id;
         $result     = mysql_query($sql);
         if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
             if ($row['total'] > 0) {
@@ -2957,16 +2928,16 @@ class Customer extends Subject {
             prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(
                 gmdate(
                     'Y-m-d H:i:s', strtotime(
-                        $card_info['expirationYear'].'-'.$card_info['expirationMonth'].'-01 +1 month'
-                    )
+                                     $card_info['expirationYear'].'-'.$card_info['expirationMonth'].'-01 +1 month'
+                                 )
                 )
             ), prepare_mysql($vault),
 
             prepare_mysql($card_data), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(
                 gmdate(
                     'Y-m-d H:i:s', strtotime(
-                        $card_info['expirationYear'].'-'.$card_info['expirationMonth'].'-01 +1 month'
-                    )
+                                     $card_info['expirationYear'].'-'.$card_info['expirationMonth'].'-01 +1 month'
+                                 )
                 )
             )
 

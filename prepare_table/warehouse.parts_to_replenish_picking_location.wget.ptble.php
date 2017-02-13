@@ -78,9 +78,7 @@ if ($parameters['f_field'] == 'reference' and $f_value != '') {
 $_order = $order;
 $_dir   = $order_direction;
 
-if ($order == 'id') {
-    $order = 'P.`Part SKU`';
-} elseif ($order == 'total_stock') {
+if ($order == 'total_stock') {
     $order = '`Part Current Stock`';
 }elseif ($order == 'quantity_in_picking') {
     $order = '`Quantity on hand`';
@@ -102,7 +100,7 @@ $sql_totals = "select count(DISTINCT PLD.`Part SKU`) as num from $table  $where 
 $fields
     .= "
 P.`Part SKU`,`Part Reference`,`Part Unit Description`,`Part Current Stock`,`Part Stock Status`,`Part Days Available Forecast`,`Part Current Stock In Process`+ `Part Current Stock Ordered Paid` as to_pick,
-`Location Code`,PLD.`Location Key`,`Part Location Warehouse Key`,
+`Location Code`,PLD.`Location Key`,`Part Location Warehouse Key`,`Part Package Description`,
 `Quantity On Hand`,`Quantity In Process`,`Stock Value`,`Can Pick`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Last Updated`,
 (select Group_CONCAT(LL.`Location Code`) from `Part Location Dimension` PL_SL left join `Location Dimension` LL on (LL.`Location Key`=PL_SL.`Location Key`) where PL_SL.`Part SKU`=PLD.`Part SKU` and PL_SL.`Can Pick`='No'  ) as storing_locations
 
