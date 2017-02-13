@@ -299,7 +299,12 @@ $elements_options = array(
                     'selected' => true
                 ),
             )
-        ),
+        )
+
+    ),
+
+    'orders_pending'                 => array(
+
         'flow' => array(
             'label' => _('Process flow'),
             'items' => array(
@@ -567,6 +572,21 @@ $elements_options = array(
         ),
     ),
 
+    'part_categories' => array(
+        'status' => array(
+        'label' => _('Category status'),
+        'items' => array(
+            'InUse'    => array(
+                'label'    => _('Active'),
+                'selected' => true
+            ),
+            'NotInUse' => array(
+                'label'    => _('Discontinued'),
+                'selected' => true
+            ),
+        )
+        )
+    ),
 
     'suppliers'       => array(
         'type' => array(

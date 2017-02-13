@@ -169,6 +169,8 @@ if ($parameters['f_field'] == 'used_in' and $f_value != '') {
 $_order = $order;
 $_dir   = $order_direction;
 
+
+
 if ($order == 'id') {
     $order = 'P.`Part SKU`';
 } elseif ($order == 'stock') {
