@@ -59,6 +59,41 @@ if ($parameters['f_field'] == 'code' and $f_value != '') {
 }
 
 
+
+
+switch ($parameters['elements_type']) {
+
+    case 'status':
+        $_elements      = '';
+        $count_elements = 0;
+        foreach (
+            $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
+        ) {
+            if ($_value['selected']) {
+                $count_elements++;
+
+
+
+                $_elements .= ','.prepare_mysql($_key);
+
+            }
+        }
+        $_elements = preg_replace('/^\,/', '', $_elements);
+        if ($_elements == '') {
+            $where .= ' and false';
+        } elseif ($count_elements < 2) {
+            $where .= ' and `Part Category Status` in ('.$_elements.')';
+        }
+
+
+        break;
+
+
+}
+
+
+
+
 $_dir = $order_direction;
 $_order = $order;
 
@@ -120,6 +155,8 @@ if ($order == 'code') {
     $order = "`Part Category Total Acc Invoiced Amount`";
 } elseif ($order == 'dispatched_total') {
     $order = "`Part Category Total Acc Dispatched`";
+} elseif ($order == 'dispatched') {
+    $order = "`Part Category $db_period Acc Dispatched`";
 } elseif ($order == 'customer_total') {
     $order = "`Part Category Total Acc Customers`";
 } elseif ($order == 'percentage_no_stock') {

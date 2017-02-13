@@ -95,7 +95,6 @@ if (isset($metadata['element'])) {
     }
 
 }
-//print_r( $parameters['elements']);
 
 
 $parameters['tab'] = $tab;
@@ -183,7 +182,6 @@ if (array_key_exists('frequency', $parameters)) {
     $smarty->assign('frequencies', $frequencies);
 
 }
-
 
 if (array_key_exists('elements', $parameters)) {
     $smarty->assign('elements', $parameters['elements']);

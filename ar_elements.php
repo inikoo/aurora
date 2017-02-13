@@ -97,6 +97,13 @@ switch ($tab) {
 
         get_parts_elements($db, $data['parameters'], $user);
         break;
+
+    case 'category.part_categories':
+        $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
+
+
+        get_part_categories_elements($db, $data['parameters'], $user);
+        break;
     case 'warehouse.locations':
         $data = prepare_values(
             $_REQUEST, array(
@@ -1396,7 +1403,7 @@ function get_orders_element_numbers($db, $data, $user) {
     }
     //USE INDEX (`Current Dispatch State Store Key`)
 
-    print $sql;
+
 
     $sql = sprintf(
         "SELECT count(*) AS number,`Order Current Dispatch State` AS element FROM %s  %s %s GROUP BY `Order Current Dispatch State` ", $table, $where, $where_interval
@@ -2096,6 +2103,48 @@ function get_ec_sales_list_elements($db, $parameters) {
     $stmt = $db->prepare($sql);
     $stmt->execute();
     $elements_numbers['tax_status']['Missing'] = $stmt->rowCount();
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+
+
+}
+
+
+
+
+function get_part_categories_elements($db, $data, $user) {
+
+
+
+    $elements_numbers = array(
+        'status' => array(
+            'InUse'     => 0,
+            'NotInUse'        => 0,
+
+        ),
+
+    );
+
+
+
+    $table = '`Category Dimension` B left join `Part Category Dimension` PC on (B.`Category Key`=`Part Category Key`)';
+    $where = sprintf('where `Category Parent Key`=%d', $data['parent_key']);
+
+
+
+    $sql = sprintf("select count(*) as number,`Part Category Status` as element from $table $where  group by `Part Category Status` ");
+
+
+    foreach ($db->query($sql) as $row) {
+
+        $elements_numbers['status'][$row['element']] = number($row['number']);
+
+    }
 
 
     $response = array(

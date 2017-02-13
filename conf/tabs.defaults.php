@@ -117,11 +117,36 @@ $tab_defaults = array(
         'f_period'    => 'ytd',
 
     ),
-    'orders'                      => array(
+    'orders.website'                      => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
         'sort_order'    => 1,
         'rpp'           => 500,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
+
+        'elements_type' => 'dispatch',
+
+
+    ),
+    'orders.pending'                      => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 500,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
+
+        'elements_type' => 'dispatch',
+        'elements'      => $elements_options['orders_pending'],
+      //  'export_fields' => $export_fields['orders_pending']
+
+    ),
+    'orders'                      => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 20,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'number',
         'from'          => '',
@@ -1454,19 +1479,19 @@ $tab_defaults = array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
-        'rpp'         => 100,
+        'rpp'         => 500,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'code',
         'f_period'    => 'ytd',
-        //  'elements_type'=>each(  $elements_options['parts']  ) ['key'],
-        //  'elements'=>$elements_options['parts'],
+          'elements_type'=>each(  $elements_options['part_categories']  ) ['key'],
+          'elements'=>$elements_options['part_categories'],
     ),
 
     'parts.categories'                    => array(
         'view'        => 'overview',
         'sort_key'    => 'code',
         'sort_order'  => 1,
-        'rpp'         => 100,
+        'rpp'         => 500,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'code'
     ),
