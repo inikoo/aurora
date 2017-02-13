@@ -89,6 +89,7 @@
 
  </table>
 </div>
+
 <ul id="kpis" class=" flex-container">
 
     <li class="flex-item  kpi    "  type="WPM" parent="warehouse" parent_key="{$warehouse->id}"  >

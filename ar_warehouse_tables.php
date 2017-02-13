@@ -57,9 +57,11 @@ switch ($tipo) {
     case 'parts':
         parts(get_table_parameters(), $db, $user);
         break;
-
     case 'stock_transactions':
         stock_transactions(get_table_parameters(), $db, $user);
+        break;
+    case 'part_locations_with_errors':
+        part_locations_with_errors(get_table_parameters(), $db, $user, $account);
         break;
     default:
         $response = array(
@@ -76,8 +78,7 @@ function warehouses($_data, $db, $user) {
     $rtext_label = 'warehouse';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
     // print $sql;
@@ -113,8 +114,7 @@ function areas($_data, $db, $user) {
     $rtext_label = 'area';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
     // print $sql;
@@ -158,8 +158,7 @@ function locations($_data, $db, $user) {
     $rtext_label = 'location';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
     foreach ($db->query($sql) as $data) {
@@ -236,8 +235,7 @@ function replenishments($_data, $db, $user) {
     $rtext_label = 'replenishment';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
     //print $sql;
@@ -336,8 +334,7 @@ function parts($_data, $db, $user) {
 
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
     //print $sql;
@@ -386,8 +383,7 @@ function stock_transactions($_data, $db, $user) {
 
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     //print $sql;
     $adata = array();
@@ -400,8 +396,7 @@ function stock_transactions($_data, $db, $user) {
             $stock = $data['Inventory Transaction Quantity'];
             switch ($data['Inventory Transaction Type']) {
                 case 'OIP':
-                    $type
-                        = '<i class="fa  fa-clock-o discret fa-fw" aria-hidden="true"></i>';
+                    $type = '<i class="fa  fa-clock-o discret fa-fw" aria-hidden="true"></i>';
 
                     if ($parameters['parent'] == 'part') {
                         $note = sprintf(
@@ -441,8 +436,7 @@ function stock_transactions($_data, $db, $user) {
 
                     break;
                 case 'Sale':
-                    $type
-                        = '<i class="fa fa-sign-out fa-fw" aria-hidden="true"></i>';
+                    $type = '<i class="fa fa-sign-out fa-fw" aria-hidden="true"></i>';
                     if ($parameters['parent'] == 'part') {
                         $note = sprintf(
                             _('%s %s (%s) taken from %s'),
@@ -463,8 +457,8 @@ function stock_transactions($_data, $db, $user) {
                     } else {
                         $note = sprintf(
                             _('%sx %s (%s) taken from %s'), number(
-                                -1 * $data['Inventory Transaction Quantity']
-                            ),
+                            -1 * $data['Inventory Transaction Quantity']
+                        ),
 
                             ($parameters['parent'] == 'part'
                                 ? sprintf(
@@ -485,14 +479,12 @@ function stock_transactions($_data, $db, $user) {
 
                     break;
                 case 'In':
-                    $type
-                        = '<i class="fa fa-sign-in fa-fw" aria-hidden="true"></i>';
+                    $type = '<i class="fa fa-sign-in fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Audit':
 
 
-                    $type
-                        = '<i class="fa fa-fw fa-dot-circle-o" aria-hidden="true"></i>';
+                    $type = '<i class="fa fa-fw fa-dot-circle-o" aria-hidden="true"></i>';
 
                     $stock = sprintf('<b>'.$data['Part Location Stock'].'</b>');
                     break;
@@ -502,20 +494,17 @@ function stock_transactions($_data, $db, $user) {
                         $stock = '+'.number($stock);
                     }
 
-                    $type
-                        = '<i class="fa fa-fw fa-sliders" aria-hidden="true"></i>';
+                    $type = '<i class="fa fa-fw fa-sliders" aria-hidden="true"></i>';
 
 
                     break;
 
                 case 'Move':
                     $stock = '±'.number($data['Metadata']);
-                    $type
-                           = '<i class="fa fa-refresh fa-fw" aria-hidden="true"></i>';
+                    $type  = '<i class="fa fa-refresh fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Error':
-                    $type
-                        = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+                    $type = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
                     break;
                 default:
                     $type = $data['Inventory Transaction Section'];
@@ -572,26 +561,23 @@ function part_locations_to_replenish_picking_location($_data, $db, $user) {
     $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $table_data = array();
 
+
+
     //print $sql;
 
 
     foreach ($db->query($sql) as $data) {
 
         $table_data[] = array(
-            // 'id'=>(integer) $data['Part SKU'],
-            'reference'        => $data['Part Reference'],
-            'unit_description' => $data['Part Unit Description'],
-            'location'         => $data['Location Code'],
-            'location_key'     => $data['Location Key'],
-            'warehouse_key'    => $data['Part Location Warehouse Key'],
-            'part_sku'         => $data['Part SKU'],
+            'reference'        => sprintf('<span class="link"  title="%s" onclick="change_view(\'part/%d\')">%s</span>',$data['Part Package Description'],$data['Part SKU'],$data['Part Reference']),
+            'location'         => sprintf('<span  class="link"  onclick="change_view(\'locations/%d/%d\')">%s</span>',$data['Part Location Warehouse Key'],$data['Location Key'],$data['Location Code']),
 
-            'quantity_in_picking'         => number(floor($data['Quantity On Hand'])),
-            'to_pick'         => number(ceil($data['to_pick'])),
 
-            'total_stock'         => number(floor($data['Part Current Stock'])),
-'storing_locations'=>$data['storing_locations']
+            'quantity_in_picking' => number(floor($data['Quantity On Hand'])),
+            'to_pick'             => number(ceil($data['to_pick'])),
 
+            'total_stock'       => number(floor($data['Part Current Stock'])),
+            'storing_locations' => $data['storing_locations']
 
 
         );
@@ -629,22 +615,14 @@ function part_locations_with_errors($_data, $db, $user) {
     foreach ($db->query($sql) as $data) {
 
         $table_data[] = array(
-            // 'id'=>(integer) $data['Part SKU'],
-            'reference'        => $data['Part Reference'],
-            'unit_description' => $data['Part Unit Description'],
-            'location'         => $data['Location Code'],
-            'location_key'     => $data['Location Key'],
-            'warehouse_key'    => $data['Part Location Warehouse Key'],
-            'part_sku'         => $data['Part SKU'],
-            'can_pick'         => ($data['Can Pick'] == 'Yes'
-                ? _('Yes')
-                : _(
-                    'No'
-                )),
-            'quantity'         => '<span class="error">'.number(
-                    $data['Quantity On Hand']
-                ),
-            '</span>'
+
+            'reference'        => sprintf('<span class="link" title="%s" onclick="change_view(\'part/%d\')">%s</span>',$data['Part Package Description'],$data['Part SKU'],$data['Part Reference']),
+            'location'         => sprintf('<span  class="link" onclick="change_view(\'locations/%d/%d\')">%s</span>',$data['Part Location Warehouse Key'],$data['Location Key'],$data['Location Code']),
+
+
+
+            'can_pick'         => ($data['Can Pick'] == 'Yes' ? _('Yes') : _('No')),
+            'quantity'         => '<span class="error">'.number($data['Quantity On Hand']), '</span>'
 
         );
 
@@ -663,7 +641,6 @@ function part_locations_with_errors($_data, $db, $user) {
     );
     echo json_encode($response);
 }
-
 
 
 ?>

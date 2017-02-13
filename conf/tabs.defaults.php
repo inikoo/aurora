@@ -1351,7 +1351,15 @@ $tab_defaults = array(
         'f_field'     => 'reference',
 
     ),
+    'warehouse.part_locations_with_errors.wget' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'reference',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'reference',
 
+    ),
 
     'warehouse.history'           => array(
         'view'        => 'overview',

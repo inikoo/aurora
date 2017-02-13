@@ -32,9 +32,7 @@ if ($user->can_view('customers')) {
         $nav_menu[] = array(
             '<i class="fa fa-users fa-fw"></i>',
             _('Customers'),
-            'customers/'.$user->get(
-                'User Hooked Store Key'
-            ),
+            'customers/'.$user->get('User Hooked Store Key').'/dashboard',
             'customers',
             'module',
             ''
@@ -67,7 +65,7 @@ if ($user->can_view('orders')) {
         $nav_menu[] = array(
             '<i class="fa fa-shopping-cart fa-fw"></i>',
             _('Orders'),
-            'orders',
+            'orders/'.$user->get('User Hooked Store Key').'/dashboard',
             'orders',
             'module',
             ''

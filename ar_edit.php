@@ -421,12 +421,14 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
             if ($field == 'new delivery address') {
                 $directory_field = 'other_delivery_addresses';
                 $smarty->assign('customer', $object);
-                $directory          = $smarty->fetch(
-                    'delivery_addresses_directory.tpl'
-                );
-                $items_in_directory = count(
-                    $object->get_other_delivery_addresses_data()
-                );
+
+                $other_delivery_addresses = $object->get_other_delivery_addresses_data();
+
+                $smarty->assign('other_delivery_addresses',$other_delivery_addresses);
+
+
+                $directory          = $smarty->fetch('delivery_addresses_directory.tpl');
+                $items_in_directory = count($object->get_other_delivery_addresses_data());
             }
 
 

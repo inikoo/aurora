@@ -35,11 +35,8 @@
 
                     {if $class=='directory'}
                         <tr id="{$field.id}_field" class="{if !$render}hide{/if}  ">
-                            <td class="label">{$field.label}
-
-                            </td>
-                            <td colspan="3" id="{$field.id}_directory"
-                                class="with_vertical_padding">{$field.formatted_value}</td>
+                            <td class="label">{$field.label}</td>
+                            <td colspan="3" id="{$field.id}_directory" class="with_vertical_padding">{$field.formatted_value}</td>
                         </tr>
                     {else if $class=='operation'}
                         <tr id="{$field.id}_field" class="{if !$render}hide{/if} ">
@@ -80,7 +77,7 @@
                         </tr>
 
 
-            <script>
+                    <script>
 
 
                 $(function () {
@@ -262,8 +259,7 @@
             </script>
 
                     {else}
-                        <tr id="{$field.id}_field" field="{$field.id}"
-                            class="{if $smarty.foreach.fields.last}last{/if} {if !$render}hide{/if}  {$class} "
+                        <tr id="{$field.id}_field" field="{$field.id}" class="{if $smarty.foreach.fields.last}last{/if} {if !$render}hide{/if}  {$class} "
                             {if $class=='new' and $field.reference!=''}onClick="change_view('{$field.reference}')"{/if} >
                             <td id="{$field.id}_label" class="label"><span>{$field.label}</span>
                                 {if $edit=='editor'}
@@ -294,11 +290,9 @@
                                          class="{$field.id} {$edit} fr-view  formatted_value "
                                          ondblclick="open_edit_this_field(this)">{$field.formatted_value}</div>
                                 {else}
-                                    <span id="{$field.id}_formatted_value" class="{$field.id} {$edit} formatted_value "
-                                          ondblclick="open_edit_this_field(this)">{if isset($field.formatted_value)}{$field.formatted_value}{else}{$field.value}{/if}</span>
+                                     <span id="{$field.id}_formatted_value" class="{$field.id} {$edit} formatted_value " ondblclick="open_edit_this_field(this)">{if isset($field.formatted_value)}{$field.formatted_value}{else}{$field.value}{/if}</span>
                                 {/if}
-                                <input id="{$field.id}_value" type='hidden' class="unformatted_value"
-                                       value="{$field.value}"/>
+                                <input id="{$field.id}_value" type='hidden' class="unformatted_value" value="{$field.value}"/>
 
 
                                 {if $edit=='string' or   $edit=='dimensions' or $edit=='handle' or  $edit=='email' or $edit=='new_email' or  $edit=='int_unsigned' or $edit=='smallint_unsigned' or $edit=='mediumint_unsigned' or $edit=='int' or $edit=='smallint' or $edit=='mediumint' or $edit=='anything' or $edit=='numeric'  or $edit=='amount'  or $edit=='amount_margin'  or $edit=='amount_percentage'}
@@ -445,6 +439,7 @@
                                                   has_been_valid="0">{$field.value}</textarea>
                                     </div>
                                 {elseif $edit=='address'  or $edit=='new_delivery_address' or $edit=='address_to_clone' }
+
                                     <div class="address_edit_fields_container">
                                         <table id="{$field.id}" border=0 class="address hide" field="{$field.id}">
                                             <tr id="{$field.id}_recipient" class="recipient">
@@ -564,7 +559,7 @@
                                         var initial_country = '{$default_country|lower}';
                                         {/if}
 
-
+                                        //caca
                                         $.fn.countrySelect.setCountryData({$field.countries});
 
                                         var country_select = $("#{$field.id}_country_select")

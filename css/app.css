@@ -1834,7 +1834,8 @@ tr.invalid input {
   .edit_object table {
     width: 100%; }
     .edit_object table .adr {
-      padding: 5px 0px; }
+      border: 1px solid ghostwhite;
+      padding: 5px  0px; }
     .edit_object table.address tr {
       border: none; }
       .edit_object table.address tr .label {
@@ -1928,6 +1929,17 @@ tr.invalid input {
     .edit_object table .label {
       width: 280px;
       vertical-align: top; }
+
+.address_directory_buttons {
+  width: 60px;
+  margin-right: 2px; }
+  .address_directory_buttons .fa {
+    margin-right: 2px;
+    cursor: pointer;
+    opacity: .4;
+    transition: opacity .2s ease-in-out; }
+    .address_directory_buttons .fa:hover {
+      opacity: 1; }
 
 .show_buttons {
   width: 20px;
@@ -2529,19 +2541,6 @@ input.input_file {
 
 .adr {
   line-height: 22px; }
-
-.address_directory .container {
-  float: left;
-  margin-right: 50px; }
-  .address_directory .container:last-of-type {
-    margin-right: 0px; }
-  .address_directory .container .show_buttons {
-    float: left;
-    min-height: 120px;
-    padding-top: 7px; }
-  .address_directory .container .address {
-    float: left;
-    min-width: 140px; }
 
 .progress_bar_container {
   width: 120px;

@@ -1143,26 +1143,21 @@ function get_navigation($user, $smarty, $data, $db, $account) {
         case ('orders'):
             require_once 'navigation/orders.nav.php';
             switch ($data['section']) {
+                case ('dashboard'):
+                    return get_dashboard_navigation($data, $smarty, $user, $db, $account);
+                    break;
                 case ('orders'):
                 case ('payments'):
-                    return get_orders_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
+                    return get_orders_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('order'):
-                    return get_order_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
+                    return get_order_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('delivery_note'):
-                    return get_delivery_note_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
+                    return get_delivery_note_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('invoice'):
-                    return get_invoice_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
+                    return get_invoice_navigation($data, $smarty, $user, $db, $account);
                     break;
                 default:
                     return 'View not found';
@@ -3457,7 +3452,27 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 'reference' => 'receipts'
             );
 
+
+
             switch ($state['section']) {
+
+                case 'dashboard':
+                    if ($user->get_number_stores() > 1) {
+                        $branch[] = array(
+                            'label'     => '('._('All stores').')',
+                            'icon'      => '',
+                            'reference' => 'orders/all'
+                        );
+                    }
+                    $store = new Store($state['parent_key']);
+
+                    $branch[] = array(
+                        'label'     => _("Orders").' '.$store->data['Store Code'],
+                        'icon'      => 'tachometer',
+                        'reference' => ''
+                    );
+
+                    break;
                 case 'orders':
 
                     if ($user->get_number_stores() > 1) {

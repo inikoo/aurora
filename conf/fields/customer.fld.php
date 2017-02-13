@@ -145,7 +145,7 @@ $customer_fields = array(
                         $object->get_field_label('Customer Other Email')
                     ).' <i onClick="set_this_as_main(this)" title="'._(
                         'Set as main email'
-                    ).'" class="fa fa-star-o very_discret button"></i>',
+                    ).'" class="fa fa-star-o very_discreet button"></i>',
                 'invalid_msg'       => get_invalid_message('email'),
                 'required'          => false
             ),
@@ -178,7 +178,7 @@ $customer_fields = array(
                         ? ''
                         : ' <i onClick="set_this_as_main(this)" title="'._(
                             'Set as main contact number'
-                        ).'" class="fa fa-star-o discret button"></i>') : ''),
+                        ).'" class="fa fa-star-o discreet button"></i>') : ''),
                 'invalid_msg'     => get_invalid_message('telephone'),
                 'required'        => false
             ),
@@ -199,7 +199,7 @@ $customer_fields = array(
                         ? ''
                         : ' <i onClick="set_this_as_main(this)" title="'._(
                             'Set as main contact number'
-                        ).'" class="fa fa-star-o discret button"></i>') : ''),
+                        ).'" class="fa fa-star-o discreet button"></i>') : ''),
                 'invalid_msg'     => get_invalid_message('telephone'),
                 'required'        => false
 
@@ -214,7 +214,7 @@ $customer_fields = array(
                         $object->get_field_label('Customer Other Telephone')
                     ).' <i onClick="set_this_as_main(this)" title="'._(
                         'Set as main telephone'
-                    ).'" class="fa fa-star-o very_discret button"></i>',
+                    ).'" class="fa fa-star-o very_discreet button"></i>',
                 'required'        => false
             ),
 
@@ -228,7 +228,7 @@ $customer_fields = array(
                         $object->get_field_label('Customer Other Telephone')
                     ).' <i onClick="set_this_as_main(this)" title="'._(
                         'Set as main telephone'
-                    ).'" class="fa fa-star-o very_discret button"></i>',
+                    ).'" class="fa fa-star-o very_discreet button"></i>',
                 'required'        => false
             ),
 
@@ -375,7 +375,7 @@ if (count($other_emails) > 0) {
                     $object->get_field_label('Customer Other Email')
                 ).' <i onClick="set_this_as_main(this)" title="'._(
                     'Set as main email'
-                ).'" class="fa fa-star-o very_discret button"></i>',
+                ).'" class="fa fa-star-o very_discreet button"></i>',
             'required'          => false
         );
     }
@@ -397,29 +397,36 @@ if (count($other_telephones) > 0) {
                     $object->get_field_label('Customer Other Telephone')
                 ).' <i onClick="set_this_as_main(this)" title="'._(
                     'Set as main telephone'
-                ).'" class="fa fa-star-o very_discret button"></i>',
+                ).'" class="fa fa-star-o very_discreet button"></i>',
             'required'        => false
         );
     }
     array_splice($customer_fields[2]['fields'], 2, 0, $other_telephones_fields);
 }
 
+$other_delivery_addresses_fields = array();
+
 
 $other_delivery_addresses = $object->get_other_delivery_addresses_data();
-if (count($other_delivery_addresses) > 0) {
-    $other_delivery_addresses_fields = array();
-    foreach (
-        $other_delivery_addresses as $other_telephone_data_key => $other_telephone_data
-    ) {
+
+$smarty->assign('other_delivery_addresses',$other_delivery_addresses);
+
+$number_other_delivery_address=count($other_delivery_addresses);
+
+if ($number_other_delivery_address> 0) {
+
+    foreach ($other_delivery_addresses as $other_delivery_address_key => $other_delivery_address) {
+
+   //   addresses ready to be edited from  $other_delivery_addresses_fields_directory
+
         $other_delivery_addresses_fields[] = array(
-            'id'              => 'Customer_Other_Delivery_Address_'.$other_telephone_data_key,
+            'id'              => 'Customer_Other_Delivery_Address_'.$other_delivery_address_key,
             'edit'            => 'address',
+            'countries'       => $countries,
             'render'          => false,
-            'value'           => htmlspecialchars(
-                $other_telephone_data['value']
-            ),
+            'value'           => htmlspecialchars($other_delivery_address['value']),
             'field_type'      => 'other_delivery_address',
-            'formatted_value' => $other_telephone_data['formatted_value'],
+            'formatted_value' => $other_delivery_address['formatted_value'],
             'invalid_msg'     => get_invalid_message('address'),
             'label'           => '',
             'required'        => false
@@ -429,19 +436,22 @@ if (count($other_delivery_addresses) > 0) {
 
 }
 
+//print_r($other_delivery_addresses);
+
+$other_delivery_addresses_fields_directory=$smarty->fetch('delivery_addresses_directory.tpl');
+
 $other_delivery_addresses_fields[] = array(
     'id'              => 'other_delivery_addresses',
-    'render'          => (count($other_delivery_addresses) > 0 ? true : false),
+    'render'          => ($number_other_delivery_address >0 ? true : false),
     'class'           => 'directory',
+
     'value'           => '',
     'label'           => _('Other delivery addresses'),
-    'formatted_value' => $smarty->fetch('delivery_addresses_directory.tpl'),
+    'formatted_value' =>$other_delivery_addresses_fields_directory,
     'reference'       => ''
 );
 
-array_splice(
-    $customer_fields[3]['fields'], 3, 0, $other_delivery_addresses_fields
-);
+array_splice($customer_fields[3]['fields'], 3, 0, $other_delivery_addresses_fields);
 
 
 ?>

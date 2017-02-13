@@ -1595,10 +1595,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '') {
                 break;
             case 'orders':
 
-                if ($user->get('User Type') == 'Staff' or $user->get(
-                        'User Type'
-                    ) == 'Contractor'
-                ) {
+                if ($user->get('User Type') == 'Staff' or $user->get('User Type') == 'Contractor') {
 
 
                     if (!$user->can_view('orders')) {
@@ -1612,10 +1609,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '') {
                         $section = 'orders';
 
                         $parent = 'store';
-                        if ($user->data['User Hooked Store Key'] and in_array(
-                                $user->data['User Hooked Store Key'], $user->stores
-                            )
-                        ) {
+                        if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'], $user->stores)) {
                             $parent_key = $user->data['User Hooked Store Key'];
                         } else {
                             $_tmp       = $user->stores;
@@ -1624,6 +1618,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '') {
 
                     }
                     $arg1 = array_shift($view_path);
+
                     if ($arg1 == 'all') {
                         $module     = 'orders_server';
                         $section    = 'orders';
@@ -1631,23 +1626,35 @@ function parse_request($_data, $db, $modules, $account = '', $user = '') {
                         $parent_key = 1;
 
 
-                    } elseif (is_numeric($arg1)) {
+                    }
+
+
+                    elseif (is_numeric($arg1)) {
+
+
+
+
                         $section    = 'orders';
                         $parent     = 'store';
                         $parent_key = $arg1;
 
-                        if (isset($view_path[0]) and is_numeric(
-                                $view_path[0]
-                            )
-                        ) {
-                            $section = 'order';
-                            $object  = 'order';
+                        if (isset($view_path[0])){
 
-                            $parent     = 'store';
-                            $parent_key = $arg1;
-                            $key        = $view_path[0];
+                            if($view_path[0]=='dashboard'){
+                                $section='dashboard';
+                            }elseif (is_numeric($view_path[0])) {
+                                $section = 'order';
+                                $object  = 'order';
+
+                                $parent     = 'store';
+                                $parent_key = $arg1;
+                                $key        = $view_path[0];
+
+                            }
 
                         }
+
+
 
                     }
                 } elseif ($user->get('User Type') == 'Agent') {
