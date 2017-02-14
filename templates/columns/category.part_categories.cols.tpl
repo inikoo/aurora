@@ -7,6 +7,29 @@ renderable: false,
 cell: "string",
 
 },
+
+
+
+
+
+
+
+{
+name: "status",
+label: '<i class="fa fa-retweet very_discreet" aria-hidden="true"></i>',
+editable: false,
+title: '{t}Category status{/t}',
+sortType: "toggle",
+cell: Backgrid.HtmlCell.extend({
+className: "width_20"
+}),
+headerCell: HeaderHtmlCell,
+
+},
+
+
+
+
 {
 name: "code",
 label: "{t}Code{/t}",
@@ -40,20 +63,24 @@ cell: "string"
 
 
 {
-name: "subjects_active",
-label: "{t}Parts{/t}",
-editable: false,
+name: "in_process",
+label: '<i class="fa fa-child" aria-hidden="true"></i>',
+title: "{t}Parts in process{/t}",
+headerCell: HeaderHtmlCell,
+headerClass:"aright",
 
+editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='supplier_parts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright"} ),
 
-headerCell: integerHeaderCell
 },
 {
-name: "subjects_no_active",
-label: "{t}Discontinued{/t}",
+name: "active",
+label: '<i class="fa fa-square" aria-hidden="true"></i>',
+title: "{t}Active parts{/t}",
+
 editable: false,
 
 defaultOrder:1,
@@ -61,7 +88,38 @@ sortType: "toggle",
 {if $sort_key=='supplier_parts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright"} ),
 
-headerCell: integerHeaderCell
+headerCell: HeaderHtmlCell,
+headerClass:"aright"
+},
+{
+name: "discontinuing",
+label: '<i class="fa fa-square warning discreet" aria-hidden="true"></i>',
+title: "{t}Discontinuing parts{/t}",
+
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='supplier_parts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.StringCell.extend({ className: "aright"} ),
+
+headerCell: HeaderHtmlCell,
+headerClass:"aright"
+
+},
+{
+name: "discontinued",
+label: '<i class="fa fa-square very_discreet" aria-hidden="true"></i>',
+editable: false,
+title: "{t}Discontinued parts{/t}",
+
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='supplier_parts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.StringCell.extend({ className: "aright"} ),
+
+headerCell: HeaderHtmlCell,
+headerClass:"aright"
+
 },
 
 {
@@ -506,8 +564,13 @@ grid.columns.findWhere({ name: 'low'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'critical'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'out_of_stock'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'stock_error'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'subjects_active'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'subjects_no_active'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'in_process'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'active'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'discontinuing'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'discontinued'} ).set("renderable", false)
+
+
+
 grid.columns.findWhere({ name: 'label'} ).set("renderable", false)
 
 grid.columns.findWhere({ name: 'dispatched'} ).set("renderable", false)
@@ -547,9 +610,12 @@ if(view=='overview'){
 $('#columns_period').removeClass('hide');
 
 grid.columns.findWhere({ name: 'sales'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'subjects_active'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'subjects_no_active'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'label'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'in_process'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'active'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'discontinuing'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'discontinued'} ).set("renderable", true)
+
 
 }else if(view=='sales'){
 $('#columns_period').removeClass('hide');

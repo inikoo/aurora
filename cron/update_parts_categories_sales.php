@@ -16,7 +16,6 @@ require_once 'class.Category.php';
 $print_est = true;
 
 update_parts_sales($db, $print_est);
-//update_categories_sales($db, $print_est);
 
 function update_parts_sales($db, $print_est) {
 

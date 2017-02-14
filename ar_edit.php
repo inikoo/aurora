@@ -241,13 +241,15 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
     $field = preg_replace('/_/', ' ', $data['field']);
 
 
-    $formatted_field = preg_replace(
-        '/^'.$object->get_object_name().' /', '', $field
-    );
+    $formatted_field = preg_replace('/^'.$object->get_object_name().' /', '', $field);
+
+
 
 
     if ($field == 'Staff Position' and $data['object'] == 'User') {
         $formatted_field = 'Position';
+    }elseif ($field == 'Part Category Status Including Parts') {
+        $formatted_field = 'Status Including Parts';
     }
 
 
@@ -319,6 +321,11 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
                     _('Deleted')
                 );
             }
+
+
+
+
+
 
 
 

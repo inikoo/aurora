@@ -18,7 +18,6 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
     $edit = true;
 
-
     switch ($object->get_object_name()) {
 
         case 'Account':

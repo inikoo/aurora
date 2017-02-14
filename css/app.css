@@ -33,6 +33,10 @@ html, body, textarea {
     text-decoration: none; }
   html .button, body .button, textarea .button {
     cursor: pointer; }
+  html i.button.edit, body i.button.edit, textarea i.button.edit {
+    opacity: .75; }
+    html i.button.edit:hover, body i.button.edit:hover, textarea i.button.edit:hover {
+      opacity: 1; }
   html .link:hover, html a:hover, body .link:hover, body a:hover, textarea .link:hover, textarea a:hover {
     text-decoration: underline; }
   html table, body table, textarea table {

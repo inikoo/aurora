@@ -45,7 +45,7 @@ if ($state['module'] == 'inventory') {
     } else {
         $title         = _('New category');
         $field_label   = _('Add category').':';
-        $placeholder   = _("Categoy code");
+        $placeholder   = _("Category code");
         $table_filters = array(
             'label' => array('label' => _('Label')),
             'code'  => array('label' => _('Code')),

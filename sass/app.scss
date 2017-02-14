@@ -121,6 +121,13 @@ html, body, textarea {
     cursor: pointer;
   }
 
+  i.button.edit {
+   opacity: .75;
+    &:hover{
+      opacity: 1;
+    }
+  }
+
   .link:hover, a:hover {
     text-decoration: underline;
 

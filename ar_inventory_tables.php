@@ -670,7 +670,7 @@ function stock_transactions($_data, $db, $user) {
 
                     break;
                 case
-                    'In':
+                'In':
                     $type = '<i class="fa fa-sign-in fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Audit':
@@ -1079,52 +1079,52 @@ function part_categories($_data, $db, $user, $account) {
     }
 
 
-
+    // print_r($_data);
 
     include_once 'prepare_table/init.php';
 
-    $sql         = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+
+    //print $sql;
     $record_data = array();
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
 
-            switch ($data['Category Branch Type']) {
-                case 'Root':
-                    $level = _('Root');
-                    break;
-                case 'Head':
-                    $level = _('Head');
-                    break;
-                case 'Node':
-                    $level = _('Node');
-                    break;
-                default:
-                    $level = $data['Category Branch Type'];
-                    break;
-            }
-            $level = $data['Category Branch Type'];
 
+            switch($data['Part Category Status']) {
+            case 'InUse':
+                $status='<i class="fa fa-sitemap" aria-hidden="true"></i>';
+                break;
+                case 'Discontinuing':
+                    $status='<i class="fa fa-sitemap very_discreet warning" aria-hidden="true"></i>';
+                    break;
+                case 'NotInUse':
+                    $status='<i class="fa fa-sitemap super_discreet" aria-hidden="true"></i>';
+                    break;
+                case 'InProcess':
+                    $status='<i class="fa fa-child" aria-hidden="true"></i>';
+                    break;
+            default:
+                $status='';
+                break;
+            }
+            
 
             $record_data[] = array(
-                'id'                  => (integer)$data['Category Key'],
-                'store_key'           => (integer)$data['Category Store Key'],
-                'code'                => $data['Category Code'],
-                'label'               => $data['Category Label'],
-                'subjects'            => number(
-                    $data['Category Number Subjects']
-                ),
-                'subjects_active'     => number(
-                    $data['Category Number Active Subjects']
-                ),
-                'subjects_no_active'  => number(
-                    $data['Category Number No Active Subjects']
-                ),
-                'level'               => $level,
+                'id'            => (integer)$data['Category Key'],
+                'store_key'     => (integer)$data['Category Store Key'],
+                'code'          => $data['Category Code'],
+                'label'         => $data['Category Label'],
+                'in_process'    => number($data['Part Category In Process']),
+                'active'        => number($data['Part Category Active']),
+                'discontinuing' => number($data['Part Category Discontinuing']),
+                'discontinued'  => number($data['Part Category Discontinued']),
+                'status'=>$status,
+
                 'subcategories'       => number($data['Category Children']),
-                'percentage_assigned' => percentage(
-                    $data['Category Number Subjects'], ($data['Category Number Subjects'] + $data['Category Subjects Not Assigned'])
-                ),
+                'percentage_assigned' => percentage($data['Category Number Subjects'], ($data['Category Number Subjects'] + $data['Category Subjects Not Assigned'])),
 
                 'surplus'      => sprintf(
                     '<span class="%s" title="%s">%s</span>', (ratio(
@@ -1318,18 +1318,10 @@ function part_categories($_data, $db, $user, $account) {
                 ),
 
 
-                'sales_total'         => money(
-                    $data['Part Category Total Acc Invoiced Amount'], $account->get('Account Currency')
-                ),
-                'dispatched_total'    => number(
-                    $data['Part Category Total Acc Dispatched'], 0
-                ),
-                'customer_total'      => number(
-                    $data['Part Category Total Acc Customers'], 0
-                ),
-                'percentage_no_stock' => percentage(
-                    $data['percentage_no_stock'], 1
-                ),
+                'sales_total'         => money($data['Part Category Total Acc Invoiced Amount'], $account->get('Account Currency')),
+                'dispatched_total'    => number($data['Part Category Total Acc Dispatched'], 0),
+                'customer_total'      => number($data['Part Category Total Acc Customers'], 0),
+                'percentage_no_stock' => percentage($data['percentage_no_stock'], 1),
 
 
             );
@@ -1885,12 +1877,13 @@ function parts_no_sko_barcode($_data, $db, $user) {
 
 
             $record_data[] = array(
-                'id'        => (integer)$data['Part SKU'],
-                'reference' => $data['Part Reference'],
+                'id'          => (integer)$data['Part SKU'],
+                'reference'   => $data['Part Reference'],
                 'description' => $data['Part Package Description'],
-                'barcode'   => sprintf('<input class="sko_barcode" style="width:200px" part_sku="%d"> <i class="fa save_sko_barcode fa-cloud very_discreet" aria-hidden="true"></i> <span class="sko_barcode_msg error" ></span>',
-                                       $data['Part SKU']
-                                       )
+                'barcode'     => sprintf(
+                    '<input class="sko_barcode" style="width:200px" part_sku="%d"> <i class="fa save_sko_barcode fa-cloud very_discreet" aria-hidden="true"></i> <span class="sko_barcode_msg error" ></span>',
+                    $data['Part SKU']
+                )
             );
         }
 
@@ -1912,8 +1905,6 @@ function parts_no_sko_barcode($_data, $db, $user) {
     );
     echo json_encode($response);
 }
-
-
 
 
 ?>

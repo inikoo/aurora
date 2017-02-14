@@ -15,6 +15,8 @@ include_once 'conf/object_fields.php';
 
 $category = $state['_object'];
 
+
+
 $object_fields = get_object_fields(
     $category, $db, $user, $smarty, array(
         'Category Scope'   => $category->get('Category Scope'),
