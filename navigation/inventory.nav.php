@@ -1152,6 +1152,7 @@ function get_categories_navigation($data, $smarty, $user, $db, $account) {
 
 function get_parts_category_navigation($data, $smarty, $user, $db, $account) {
 
+
     $category = $data['_object'];
 
     $left_buttons  = array();

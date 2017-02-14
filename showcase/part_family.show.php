@@ -17,7 +17,6 @@ function get_part_family_showcase($data, $smarty) {
 
     global $db;
 
-
     $category = $data['_object'];
     if (!$category->id) {
         return "";
@@ -38,6 +37,7 @@ function get_part_family_showcase($data, $smarty) {
 
     $smarty->assign('main_image', $main_image);
     $smarty->assign('images', $images);
+
 
 
     $smarty->assign(
@@ -388,40 +388,16 @@ function get_part_family_showcase($data, $smarty) {
         )
     );
 
+
     $customers = sprintf('<i class="fa fa-users padding_right_5" aria-hidden="true"></i> %s', $category->get('Total Acc Customers'));
 
     $smarty->assign('customers', $customers);
-
     $smarty->assign(
         'header_total_sales', sprintf(_('All sales since: %s'), $category->get('Valid From'))
     );
 
 
-    $elements_numbers = array(
-        'status' => array(
-            'InProcess'     => 0,
-            'NotInUse'      => 0,
-            'InUse'         => 0,
-            'Discontinuing' => 0
-        ),
-    );
 
-
-    $sql = sprintf(
-        "SELECT count(*) AS number,`Part Status` AS element FROM `Category Bridge` LEFT JOIN  `Part Dimension` P ON (`Subject Key`=`Part SKU`) WHERE `Subject`='Part' AND  `Category Key`=%d   GROUP BY `Part Status` ",
-        $category->id
-    );
-
-    //print $sql;
-    foreach ($db->query($sql) as $row) {
-
-        $elements_numbers['status'][preg_replace('/\s/', '', $row['element'])]
-            = number($row['number']);
-
-    }
-
-    //print_r($elements_numbers);
-    $smarty->assign('elements_numbers', $elements_numbers);
 
 
     return $smarty->fetch('showcase/part_family.tpl');

@@ -279,14 +279,10 @@ abstract class DB_Table extends stdClass {
 
 
                 $old_formatted_value = htmlentities($old_formatted_value);
-                $new_formatted_value = htmlentities(
-                    $this->get($formatted_field)
-                );
+                $new_formatted_value = htmlentities($this->get($formatted_field));
 
 
-                $this->add_changelog_record(
-                    $field, $old_formatted_value, $new_formatted_value, $options, $table_name, $table_key
-                );
+                $this->add_changelog_record($field, $old_formatted_value, $new_formatted_value, $options, $table_name, $table_key);
 
             }
 

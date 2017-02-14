@@ -576,8 +576,16 @@ $elements_options = array(
         'status' => array(
         'label' => _('Category status'),
         'items' => array(
+            'InProcess'    => array(
+                'label'    => _('In Process'),
+                'selected' => true
+            ),
             'InUse'    => array(
                 'label'    => _('Active'),
+                'selected' => true
+            ),
+            'Discontinuing' => array(
+                'label'    => _('Discontinuing'),
                 'selected' => true
             ),
             'NotInUse' => array(

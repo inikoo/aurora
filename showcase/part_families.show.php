@@ -12,7 +12,6 @@
 
 function get_part_familes_showcase($data, $smarty) {
 
-
     $category = $data['_object'];
     if (!$category->id) {
         return "_";

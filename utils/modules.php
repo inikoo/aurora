@@ -530,10 +530,33 @@ $modules = array(
             ),
 
 
+            'basket_orders'          => array(
+                'type'      => 'navigation',
+                'label'     => _('Orders in website'),
+                'icon'      => 'globe',
+                'reference' => 'orders/%d/website',
+                'tabs'      => array(
+                    'orders.website' => array('label' => _('Orders in website'))
+
+                )
+            ),
+
+            'pending_orders'          => array(
+                'type'      => 'navigation',
+                'label'     => _('Pending orders'),
+                'icon'      => 'shopping-cart',
+                'reference' => 'orders/%d/flow',
+                'tabs'      => array(
+                    'orders.pending' => array('label' => _('Pending orders'))
+
+                )
+            ),
+
+
             'orders' => array(
                 'type'      => 'navigation',
-                'label'     => _('Orders'),
-                'icon'      => 'shopping-cart',
+                'label'     => _('Orders (Archive)'),
+                'icon'      => 'archive',
                 'reference' => 'orders/%d',
                 'tabs'      => array(
                     'orders' => array()
@@ -3318,11 +3341,13 @@ $modules = array(
                             'Parts'
                         )
                     ),
+
                     'category.part.discontinued_subjects' => array(
                         'label' => _(
                             'Discontinued parts'
                         )
                     ),
+
                     'category.categories'                 => array(
                         'label' => _(
                             'Subcategories'

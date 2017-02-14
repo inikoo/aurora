@@ -73,6 +73,8 @@ update_part_category_status($db);
 set_images_from_product_families($db);
 
 */
+
+create_part_data_dimension($db);
 update_part_category_status($db);
 
 
@@ -762,6 +764,27 @@ function update_stock() {
 
 function create_part_data_dimension() {
     global $db;
+
+
+
+    $sql = sprintf(
+        "SELECT `Category Key` FROM `Category Dimension` WHERE `Category Branch Type`='Head' AND `Category Scope`='Part'  "
+    );
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+
+            $sql
+                = "INSERT INTO `Part Category Data` (`Part Category Key`) VALUES(".$row['Category Key'].");";
+            $db->exec($sql);
+
+        }
+    }
+
+
+
     $sql = sprintf('SELECT `Part SKU` FROM `Part Dimension`  ');
 
     if ($result = $db->query($sql)) {
@@ -774,20 +797,6 @@ function create_part_data_dimension() {
 
     }
 
-
-    $sql = sprintf(
-        "SELECT `Category Key`,`Subject Key` FROM `Category Bridge` WHERE `Category Head Key`=`Category Key` AND `Subject`='Part' "
-    );
-    if ($result = $db->query($sql)) {
-        foreach ($result as $row) {
-
-
-            $sql
-                = "INSERT INTO `Part Category Data` (`Part Category Key`) VALUES(".$row['Category Key'].");";
-            $db->exec($sql);
-
-        }
-    }
 
 
 }

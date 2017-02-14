@@ -1642,6 +1642,10 @@ function parse_request($_data, $db, $modules, $account = '', $user = '') {
 
                             if($view_path[0]=='dashboard'){
                                 $section='dashboard';
+                            }if($view_path[0]=='flow'){
+                                $section='pending_orders';
+                            }if($view_path[0]=='website'){
+                                $section='basket_orders';
                             }elseif (is_numeric($view_path[0])) {
                                 $section = 'order';
                                 $object  = 'order';

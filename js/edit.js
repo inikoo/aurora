@@ -1062,6 +1062,23 @@ function save_field(object, key, field) {
                 $('.' + key).html(data.update_metadata.class_html[key])
             }
 
+          //  console.log( data.update_metadata.hide)
+            console.log( data.update_metadata.show)
+
+            for (var key in data.update_metadata.hide) {
+               // console.log(data.update_metadata.hide[key])
+               // console.log($('.' + data.update_metadata.hide[key]))
+
+                $('.' + data.update_metadata.hide[key]).addClass('hide')
+            }
+
+            for (var key in data.update_metadata.show) {
+                console.log(data.update_metadata.show[key])
+console.log($('.' + data.update_metadata.show[key]).html()  )
+                $('.' + data.update_metadata.show[key]).removeClass('hide')
+            }
+
+
             post_save_actions(field, data)
 
         } else if (data.state == 400) {

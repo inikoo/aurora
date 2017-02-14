@@ -108,7 +108,7 @@ trait PartCategory {
     }
 
 
-    function update_part_timeseries_record($timeseries, $to, $from, $fork_key=false) {
+    function update_part_timeseries_record($timeseries, $to, $from, $fork_key = false) {
 
 
         if ($this->get('Category Branch Type') == 'Root') {
@@ -501,8 +501,12 @@ trait PartCategory {
 
     }
 
+
     function update_part_category_status() {
 
+        $current_status = $this->data['Part Category Status'];
+
+        $total            = 0;
         $elements_numbers = array(
             'In Process'    => 0,
             'Not In Use'    => 0,
@@ -518,7 +522,8 @@ trait PartCategory {
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-                $elements_numbers[$row['Part Status']] = number($row['num']);
+                $elements_numbers[$row['Part Status']] = $row['num'];
+                $total += $row['num'];
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -526,18 +531,63 @@ trait PartCategory {
         }
 
 
-        if ($elements_numbers['Not In Use'] > 0 and $elements_numbers['In Use'] == 0 and $elements_numbers['In Process'] == 0 and $elements_numbers['Discontinuing'] == 0) {
-            $status = 'NotInUse';
-        } else {
+        if ($total == 0) {
+            $status = 'InProcess';
+        } elseif ($elements_numbers['In Use'] > 0) {
             $status = 'InUse';
+        } else {
+
+            if ($elements_numbers['Not In Use'] == $total) {
+                $status = 'NotInUse';
+
+
+            } elseif ($elements_numbers['Discontinuing'] == $total) {
+                $status = 'Discontinuing';
+            } elseif ($elements_numbers['In Process'] > 0) {
+                $status = 'InProcess';
+            } else {
+                $status = 'Discontinuing';
+            }
+
         }
 
-        $this->update(array('Part Category Status' => $status), 'no_hsitory');
+
+        $this->update(
+            array(
+                'Part Category In Process'    => $elements_numbers['In Process'],
+                'Part Category Active'        => $elements_numbers['In Use'],
+                'Part Category Discontinuing' => $elements_numbers['Discontinuing'],
+                'Part Category Discontinued'  => $elements_numbers['Not In Use'],
+                'Part Category Status'        => $status
+            ), 'no_history'
+        );
+
+
+
+        if ($status == 'NotInUse') {
+
+            if ($this->data['Part Category Valid To'] == '' or $current_status != $status) {
+                $this->update(
+                    array(
+                        'Part Category Valid To' => gmdate('Y-m-d H:i:s')
+                    ), 'no_history'
+                );
+
+            }
+
+        } else {
+            $this->update(
+                array(
+                    'Part Category Valid To' => ''
+                ), 'no_history'
+            );
+        }
 
 
     }
 
     function update_part_stock_status() {
+
 
         $elements_numbers = array(
             'Surplus'      => 0,

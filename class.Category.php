@@ -429,9 +429,7 @@ class Category extends DB_Table {
                 'History Abstract' => $created_msg,
                 'History Details'  => ''
             );
-            $this->add_subject_history(
-                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id()
-            );
+            $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
 
 
             $this->update_branch_tree();
@@ -985,11 +983,31 @@ class Category extends DB_Table {
 
                 switch ($key) {
 
+
+                    case 'In Process':
+                    case 'Active':
+                    case 'Discontinuing':
+                    case 'Discontinued':
+                        return number($this->data['Part Category '.$key]);
+                        break;
+
+                    case 'Part Category Status Including Parts':
+
+                        return $this->get('Part Category Status');
+
+                        break;
+                    case 'Status Including Parts':
                     case 'Status':
 
                         switch ($this->data['Part Category Status']) {
                             case 'InUse':
                                 return _('Active');
+                                break;
+                            case 'InProcess':
+                                return _('In process');
+                                break;
+                            case 'Discontinuing':
+                                return _('Discontinuing');
                                 break;
                             case 'NotInUse':
                                 return _('Discontinued');
@@ -2626,16 +2644,14 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     include_once 'class.Page.php';
 
 
-                     $this->update_table_field($field, $value, $options, 'Product Category', 'Product Category Dimension', $this->id);
-
+                    $this->update_table_field($field, $value, $options, 'Product Category', 'Product Category Dimension', $this->id);
 
 
                     $this->get_webpage();
                     if ($value == 'No') {
 
 
-
-                        if($this->webpage->id) {
+                        if ($this->webpage->id) {
                             $this->webpage->update(array('Page State' => 'Offline'));
                         }
 
@@ -2662,7 +2678,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
 
                         $sql = sprintf(
-                            'SELECT `Category Webpage Index Webpage Key`,`Category Webpage Index Key` FROM `Category Webpage Index` WHERE `Category Webpage Index Parent Category Key`=%d   group by `Category Webpage Index Webpage Key`', $this->id
+                            'SELECT `Category Webpage Index Webpage Key`,`Category Webpage Index Key` FROM `Category Webpage Index` WHERE `Category Webpage Index Parent Category Key`=%d   GROUP BY `Category Webpage Index Webpage Key`',
+                            $this->id
                         );
 
 
@@ -2673,7 +2690,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                                 $sql = sprintf('DELETE FROM `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d', $row['Category Webpage Index Webpage Key']);
                                 $this->db->exec($sql);
 
-                                $webpage->update(array('Page State'=>'Offline'));
+                                $webpage->update(array('Page State' => 'Offline'));
 
                             }
                         } else {
@@ -2696,8 +2713,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                             foreach ($result as $row) {
 
 
-
-
                                 if ($row['Subject'] == 'Product') {
                                     $product = new Product($row['Subject Key']);
                                     //  print_r($row);
@@ -2714,45 +2729,34 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         }
 
 
-                    }
-                    elseif($value == 'Yes'){
+                    } elseif ($value == 'Yes') {
 
 
-
-                        if($this->webpage->id) {
+                        if ($this->webpage->id) {
                             $this->webpage->update(array('Page State' => 'Online'));
 
 
                             $sql = sprintf(
-                                "SELECT `Category Key`  FROM `Category Bridge` where `Subject Key`=%d and `Subject`='Category' group by `Category Key` ",
-                                $this->id
+                                "SELECT `Category Key`  FROM `Category Bridge` WHERE `Subject Key`=%d AND `Subject`='Category' GROUP BY `Category Key` ", $this->id
 
                             );
                             if ($result = $this->db->query($sql)) {
                                 foreach ($result as $row) {
-                                    $parent=new Category($row['Category Key']);
+                                    $parent = new Category($row['Category Key']);
 
-                                   // print_r($parent->get('Code'));
+                                    // print_r($parent->get('Code'));
                                     $parent->create_stack_index(true);
 
                                 }
                             }
 
 
-                        }else{
+                        } else {
                             // todo: create webpage??
                         }
 
 
-
-
                     }
-
-
-
-
-
-
 
 
                     break;
@@ -2766,7 +2770,11 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                 // $this->update_subject_field($field, $value, $options);
             }
         } elseif (array_key_exists($field, $this->base_data('Part Category Dimension'))) {
+
+
             $this->update_table_field($field, $value, $options, 'Part Category', 'Part Category Dimension', $this->id);
+
+
         } elseif (array_key_exists($field, $this->base_data('Part Category Data'))) {
             $this->update_table_field($field, $value, $options, 'Part Category', 'Part Category Data', $this->id);
         } elseif (array_key_exists($field, $this->base_data('Product Category Data'))) {
@@ -2785,6 +2793,101 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
             $this->update_table_field($field, $value, $options, 'Supplier Category', 'Supplier Category Dimension', $this->id);
         } else {
             switch ($field) {
+
+
+                case 'Part Category Status Including Parts':
+                    include_once 'class.Part.php';
+                    $old_formatted_value=$this->get('Status');
+
+                    if ($value == 'Discontinuing') {
+
+                        $sql = sprintf(
+                            "SELECT P.`Part SKU` FROM  `Part Dimension` P LEFT JOIN `Category Bridge` B ON (P.`Part SKU`=B.`Subject Key`)  WHERE B.`Category Key`=%d AND `Subject`='Part' AND P.`Part Status` IN ('In Use') ",
+                            $this->id
+                        );
+                        $counter=0;
+                        if ($result = $this->db->query($sql)) {
+                            foreach ($result as $row) {
+
+                                $part = new Part($row['Part SKU']);
+                                $part->update_status($value, $options);
+                                $counter++;
+                            }
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
+                            print "$sql\n";
+                            exit;
+                        }
+
+                        if($counter==0){
+                            $this->update(
+                                array(
+                                    'Part Category Status' => 'NotInUse'
+                                ), 'no_history'
+                            );
+                        }
+
+                    } elseif ($value == 'In Use') {
+                        $sql = sprintf(
+                            "SELECT P.`Part SKU` FROM  `Part Dimension` P LEFT JOIN `Category Bridge` B ON (P.`Part SKU`=B.`Subject Key`)  WHERE B.`Category Key`=%d AND `Subject`='Part' AND P.`Part Status` IN ('Discontinuing') ",
+                            $this->id
+                        );
+
+                        if ($result = $this->db->query($sql)) {
+                            foreach ($result as $row) {
+
+                                $part = new Part($row['Part SKU']);
+                                $part->update_status($value, $options);
+
+                            }
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
+                            print "$sql\n";
+                            exit;
+                        }
+
+                        if ($this->get('Part Category Active') == 0) {
+                            $this->update(
+                                array(
+                                    'Part Category Status' => 'InProcess'
+                                ), 'no_history'
+                            );
+                        }
+
+
+                    }
+
+                    $this->get_data('id', $this->id);
+
+
+                    $this->update_metadata = array(
+                        'class_html' => array(
+                            'Part_Status'         => $this->get('Status'),
+                            'In_Process_Parts'    => $this->get('In Process'),
+                            'In_Use_Parts'        => $this->get('Active'),
+                            'Discontinuing_Parts' => $this->get('Discontinuing'),
+                            'Not_In_Use_Parts'    => $this->get('Discontinued'),
+                            'Valid_To'=>$this->get('Valid To'),
+
+                        )
+                    );
+
+                    if($this->get('Part Category Status')=='NotInUse'){
+                        $this->update_metadata['show']=array('Valid_To');
+                    }else{
+                        $this->update_metadata['hide']=array('Valid_To');
+
+                    }
+                    $new_formatted_value=$this->get('Status');
+
+                    if($new_formatted_value!=$old_formatted_value)
+                    $this->add_changelog_record($field, $old_formatted_value, $new_formatted_value, '',  $this->get_object_name(), $this->get_main_id());
+
+
+
+
+
+                    break;
 
 
                 case 'Webpage Template':
@@ -3659,6 +3762,10 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                 break;
             case 'Category Webpage Meta Description':
                 $label = _('meta description');
+                break;
+            case 'Part Category Status':
+                case 'Part Category Status Including Parts':
+                $label = _('status');
                 break;
 
             default:

@@ -135,7 +135,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
     $website   = '';
     $warehouse = '';
 
-   // print_r($state);
+    // print_r($state);
 
     switch ($state['parent']) {
 
@@ -487,7 +487,6 @@ function get_view($db, $smarty, $user, $account, $modules) {
     $state['warehouse'] = $warehouse;
 
 
-
     $sql = sprintf(
         'INSERT INTO `User System View Fact`  (`User Key`,`Date`,`Module`,`Section`,`Tab`,`Parent`,`Parent Key`,`Object`,`Object Key`)  VALUES (%d,%s,%s,%s,%s,%s,%s,%s,%s)', $user->id,
         prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($state['module']), prepare_mysql($state['section']), prepare_mysql(
@@ -599,9 +598,6 @@ function get_view($db, $smarty, $user, $account, $modules) {
     }
 
     $state['metadata'] = (isset($data['metadata']) ? $data['metadata'] : array());
-
-
-
 
 
     $response['tab'] = get_tab($db, $smarty, $user, $account, $state['tab'], $state['subtab'], $state, $data['metadata']);
@@ -1146,6 +1142,13 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('dashboard'):
                     return get_dashboard_navigation($data, $smarty, $user, $db, $account);
                     break;
+                case ('basket_orders'):
+                    return get_basket_orders_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('pending_orders'):
+                    return get_pending_orders_navigation($data, $smarty, $user, $db, $account);
+                    break;
+
                 case ('orders'):
                 case ('payments'):
                     return get_orders_navigation($data, $smarty, $user, $db, $account);
@@ -2253,26 +2256,21 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
         } elseif ($data['_object']->get('Category Scope') == 'Part') {
 
 
-            if ($data['_object']->get('Root Key') == $account->get(
-                    'Account Part Family Category Key'
-                )
-            ) {
+            if ($data['_object']->get('Root Key') == $account->get('Account Part Family Category Key')) {
 
-                $_content['tabs']['category.categories']['label'] = _(
-                    'Families'
-                );
+                $_content['tabs']['category.categories']['label'] = _('Families');
 
                 if ($data['_object']->get('Category Branch Type') != 'Head') {
-                    $_content['tabs']['part_family.product_families']['class'] = 'hide';
-                    $_content['tabs']['category.images']['class']              = 'hide';
+                    $_content['tabs']['part_family.product_families']['class']        = 'hide';
+                    $_content['tabs']['category.images']['class']                     = 'hide';
+                    $_content['tabs']['category.part.discontinued_subjects']['class'] = 'hide';
+                    $_content['tabs']['category.part.sales']['class'] = 'hide';
 
                 }
 
             } else {
 
-                $_content['tabs']['category.subjects']['label']            = _(
-                    'Parts'
-                );
+                $_content['tabs']['category.subjects']['label']            = _('Parts');
                 $_content['tabs']['part_family.product_families']['class'] = 'hide';
                 $_content['tabs']['category.images']['class']              = 'hide';
 
@@ -3451,7 +3449,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 'icon'      => 'bars',
                 'reference' => 'receipts'
             );
-
 
 
             switch ($state['section']) {
@@ -4793,18 +4790,17 @@ function get_view_position($db, $state, $user, $smarty, $account) {
             switch ($state['section']) {
 
 
+                case 'dashboard':
+                    $branch[] = array(
+                        'label'     => _('Warehouse dashboard'),
+                        'icon'      => 'tachometer',
+                        'reference' => ''
+                    );
 
-case 'dashboard':
-            $branch[] = array(
-            'label'     => _('Warehouse dashboard'),
-            'icon'      => 'tachometer',
-            'reference' => ''
-            );
-
-            break;
+                    break;
 
 
-        case 'warehouse':
+                case 'warehouse':
                     $branch[] = array(
                         'label'     => '('._('All warehouses').')',
                         'icon'      => '',
@@ -4976,9 +4972,7 @@ case 'dashboard':
                     break;
 
 
-
-
-        }
+            }
 
 
             break;
@@ -5088,18 +5082,18 @@ case 'dashboard':
                     );
 
 
-                    switch($state['_object']->get('Webpage Version Device')) {
-                    case 'Desktop':
-                        $device_icon='desktop';
-                        break;
+                    switch ($state['_object']->get('Webpage Version Device')) {
+                        case 'Desktop':
+                            $device_icon = 'desktop';
+                            break;
                         case 'Mobile':
-                            $device_icon='mobile';
+                            $device_icon = 'mobile';
                             break;
                         case 'Tablet':
-                            $device_icon='tablet';
+                            $device_icon = 'tablet';
                             break;
-                    default:
-                        $device_icon='';
+                        default:
+                            $device_icon = '';
                     }
 
                     $branch[] = array(

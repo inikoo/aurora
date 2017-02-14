@@ -81,7 +81,7 @@ switch ($parameters['elements_type']) {
         $_elements = preg_replace('/^\,/', '', $_elements);
         if ($_elements == '') {
             $where .= ' and false';
-        } elseif ($count_elements < 2) {
+        } elseif ($count_elements < 4) {
             $where .= ' and `Part Category Status` in ('.$_elements.')';
         }
 
@@ -98,22 +98,26 @@ $_dir = $order_direction;
 $_order = $order;
 
 
+
 if ($order == 'code') {
     $order = '`Category Code`';
+}elseif ($order == 'status') {
+    $order = "`Part Category Status`";
 } elseif ($order == 'label') {
     $order = '`Category Label`';
-} elseif ($order == 'subjects') {
-    $order = '`Category Number Subjects`';
-} elseif ($order == 'subjects_active') {
-    $order = '`Category Number Active Subjects`';
-} elseif ($order == 'subjects_no_active') {
-    $order = '`Category Number No Active Subjects`';
-} elseif ($order == 'subcategories') {
-    $order = '`Category Children`';
-} elseif ($order == 'percentage_assigned') {
-    $order
-        = '`Category Number Subjects`/(`Category Number Subjects`+`Category Subjects Not Assigned`)';
-} elseif ($order == 'low') {
+} elseif ($order == 'in_process') {
+    $order = "`Part Category In Process`";
+} elseif ($order == 'active') {
+    $order = "`Part Category Active`";
+}elseif ($order == 'discontinuing') {
+ $order = "`Part Category Discontinuing`";
+}elseif ($order == 'discontinued') {
+ $order = "`Part Category Discontinued`";
+}
+
+
+
+elseif ($order == 'low') {
     $order = "`Part Category Number Low Parts`";
 } elseif ($order == 'surplus') {
     $order = "`Part Category Number Surplus Parts`";
@@ -187,7 +191,8 @@ $yb_fields `Category Number No Active Subjects`,`Category Number Active Subjects
 `Part Category Total Acc Invoiced Amount`,`Part Category Total Acc Dispatched`,`Part Category Total Acc Customers`,
 (`Part Category Number Out Of Stock Parts`+`Part Category Number Error Parts`)/(`Part Category Number Surplus Parts`+`Part Category Number Optimal Parts`+`Part Category Number Low Parts`+`Part Category Number Critical Parts`+`Part Category Number Out Of Stock Parts`+`Part Category Number Error Parts`) as percentage_no_stock,
 
-`Part Category Number Surplus Parts`,`Part Category Number Optimal Parts`,`Part Category Number Low Parts`,`Part Category Number Critical Parts`,`Part Category Number Out Of Stock Parts`,`Part Category Number Error Parts`
+`Part Category Number Surplus Parts`,`Part Category Number Optimal Parts`,`Part Category Number Low Parts`,`Part Category Number Critical Parts`,`Part Category Number Out Of Stock Parts`,`Part Category Number Error Parts`,
+`Part Category In Process`,`Part Category Active`,`Part Category Discontinuing`,`Part Category Discontinued`,`Part Category Status`
 
 
  ";

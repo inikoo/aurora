@@ -141,9 +141,7 @@
                 <tbody class="info">
                 <tr class="main ">
                     <td class=" highlight Part_Status">{$category->get('Status')} </td>
-                    <td class="aright "><span
-                                class=" {if $category->get('Part Category Status')!='NotInUse'}hide{/if}">{$category->get('Valid To')}</span>
-                    </td>
+                    <td class="aright "><span class="Valid_To {if $category->get('Part Category Status')!='NotInUse'}hide{/if}">{$category->get('Valid To')}</span></td>
                 </tr>
 
                 <tr>
@@ -151,16 +149,26 @@
                         <table style="width:100%;;margin-bottom:10px">
                             <tr style="border-top:1px solid #ccc;border-bottom:1px solid #ccc">
                                 <td style="border-left:1px solid #ccc;width:25%"
-                                    class="In_Process_Parts align_center discreet"
-                                    title="{t}Parts in process{/t}">{$elements_numbers.status.InProcess}</td>
-                                <td style="border-left:1px solid #ccc;width:25%" class="In_Use_Parts acenter"
-                                    title="{t}Parts active{/t}">{$elements_numbers.status.InUse}</td>
+                                    class=" align_center discreet" title="{t}Parts in process{/t}"><i class="fa fa-child" aria-hidden="true"></i> <span class="In_Process_Parts">{$category->get('In Process')}</span></td>
+
+                                <td style="border-left:1px solid #ccc;width:25%" class=" align_center"
+                                    title="{t}Parts active{/t}"><i class="fa fa-square " aria-hidden="true" ></i>  <span class="In_Use_Parts">{$category->get('Active')}</span></td>
+
                                 <td style="border-left:1px solid #ccc;width:25%"
-                                    class="Discontinuing_Parts align_center discreet "
-                                    title="{t}Parts discontinuing{/t}">{$elements_numbers.status.Discontinuing}</td>
+                                    class=" align_center discreet "
+                                    title="{t}Parts discontinuing{/t}"><i class="fa fa-square warning discreet" aria-hidden="true" ></i> <span class="Discontinuing_Parts">{$category->get('Discontinuing')}</span></td>
+
                                 <td style="border-left:1px solid #ccc;width:25%;border-right:1px solid #ccc;"
-                                    class="Not_In_Use_Parts align_center very_discreet"
-                                    title="{t}Parts discontinued{/t}">{$elements_numbers.status.NotInUse}</td>
+                                    class=" align_center very_discreet"
+                                    title="{t}Parts discontinued{/t}"><i class="fa fa-square very_discreet" aria-hidden="true" ></i> <span class="Not_In_Use_Parts">{$category->get('Discontinued')}</span></td>
+
+
+
+
+
+
+
+
                             </tr>
                         </table>
                     </td>

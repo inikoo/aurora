@@ -33,16 +33,16 @@ switch ($tab) {
     case 'agent.suppliers':
         $data = prepare_values(
             $_REQUEST, array(
-                'parameters' => array('type' => 'json array')
-            )
+                         'parameters' => array('type' => 'json array')
+                     )
         );
         get_suppliers_element_numbers($db, $data['parameters'], $user);
         break;
     case 'suppliers.deliveries':
         $data = prepare_values(
             $_REQUEST, array(
-                'parameters' => array('type' => 'json array')
-            )
+                         'parameters' => array('type' => 'json array')
+                     )
         );
         get_supplier_deliveries_element_numbers(
             $db, $data['parameters'], $user
@@ -51,32 +51,32 @@ switch ($tab) {
     case 'suppliers.orders':
         $data = prepare_values(
             $_REQUEST, array(
-                'parameters' => array('type' => 'json array')
-            )
+                         'parameters' => array('type' => 'json array')
+                     )
         );
         get_supplier_orders_elements($db, $data['parameters'], $user);
         break;
     case 'website.nodes':
         $data = prepare_values(
             $_REQUEST, array(
-                'parameters' => array('type' => 'json array')
-            )
+                         'parameters' => array('type' => 'json array')
+                     )
         );
         get_webnodes_element_numbers($db, $data['parameters'], $user);
         break;
     case 'campaigns':
         $data = prepare_values(
             $_REQUEST, array(
-                'parameters' => array('type' => 'json array')
-            )
+                         'parameters' => array('type' => 'json array')
+                     )
         );
         get_campaigns_element_numbers($db, $data['parameters'], $user);
         break;
     case 'deals':
         $data = prepare_values(
             $_REQUEST, array(
-                'parameters' => array('type' => 'json array')
-            )
+                         'parameters' => array('type' => 'json array')
+                     )
         );
         get_deals_element_numbers($db, $data['parameters'], $user);
         break;
@@ -86,8 +86,8 @@ switch ($tab) {
     case 'material.parts':
         $data = prepare_values(
             $_REQUEST, array(
-                'parameters' => array('type' => 'json array')
-            )
+                         'parameters' => array('type' => 'json array')
+                     )
         );
 
         if ($tab == 'category.all_parts') {
@@ -107,8 +107,8 @@ switch ($tab) {
     case 'warehouse.locations':
         $data = prepare_values(
             $_REQUEST, array(
-                'parameters' => array('type' => 'json array')
-            )
+                         'parameters' => array('type' => 'json array')
+                     )
         );
         get_warehouse_locations_elements($db, $data['parameters'], $user);
         break;
@@ -116,8 +116,8 @@ switch ($tab) {
     case 'website.favourites.customers':
         $data = prepare_values(
             $_REQUEST, array(
-                'parameters' => array('type' => 'json array')
-            )
+                         'parameters' => array('type' => 'json array')
+                     )
         );
         get_customers_element_numbers($db, $data['parameters'], $user);
         break;
@@ -126,8 +126,8 @@ switch ($tab) {
     case 'part.products':
         $data = prepare_values(
             $_REQUEST, array(
-                'parameters' => array('type' => 'json array')
-            )
+                         'parameters' => array('type' => 'json array')
+                     )
         );
         get_products_element_numbers($db, $data['parameters'], $user);
         break;
@@ -137,8 +137,8 @@ switch ($tab) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                'parameters' => array('type' => 'json array')
-            )
+                         'parameters' => array('type' => 'json array')
+                     )
         );
         get_services_element_numbers($db, $data['parameters'], $user);
         break;
@@ -146,11 +146,11 @@ switch ($tab) {
 
     case 'category.product_categories':
     case 'category.product_families':
-        case 'category.product_categories.products':
+    case 'category.product_categories.products':
         $data = prepare_values(
             $_REQUEST, array(
-                'parameters' => array('type' => 'json array')
-            )
+                         'parameters' => array('type' => 'json array')
+                     )
         );
         get_product_categories_element_numbers($db, $data['parameters'], $user);
         break;
@@ -167,8 +167,8 @@ switch ($tab) {
     case 'orders':
         $data = prepare_values(
             $_REQUEST, array(
-                'parameters' => array('type' => 'json array')
-            )
+                         'parameters' => array('type' => 'json array')
+                     )
         );
         get_orders_element_numbers($db, $data['parameters'], $user);
         break;
@@ -176,8 +176,8 @@ switch ($tab) {
     case 'customer.invoices':
         $data = prepare_values(
             $_REQUEST, array(
-                'parameters' => array('type' => 'json array')
-            )
+                         'parameters' => array('type' => 'json array')
+                     )
         );
         get_invoices_element_numbers($db, $data['parameters'], $user);
         break;
@@ -191,16 +191,16 @@ switch ($tab) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                'parameters' => array('type' => 'json array')
-            )
+                         'parameters' => array('type' => 'json array')
+                     )
         );
         get_history_elements($db, $data['parameters'], $user);
         break;
     case 'inventory.barcodes':
         $data = prepare_values(
             $_REQUEST, array(
-                'parameters' => array('type' => 'json array')
-            )
+                         'parameters' => array('type' => 'json array')
+                     )
         );
         get_barcodes_elements($db, $data['parameters'], $user);
         break;
@@ -210,8 +210,8 @@ switch ($tab) {
     case 'production.supplier_parts':
         $data = prepare_values(
             $_REQUEST, array(
-                'parameters' => array('type' => 'json array')
-            )
+                         'parameters' => array('type' => 'json array')
+                     )
         );
         get_supplier_parts_elements($db, $data['parameters'], $user);
         break;
@@ -220,8 +220,8 @@ switch ($tab) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                'parameters' => array('type' => 'json array')
-            )
+                         'parameters' => array('type' => 'json array')
+                     )
         );
         get_supplier_orders_elements($db, $data['parameters'], $user);
         break;
@@ -231,8 +231,8 @@ switch ($tab) {
     case 'location.stock.transactions':
         $data = prepare_values(
             $_REQUEST, array(
-                'parameters' => array('type' => 'json array')
-            )
+                         'parameters' => array('type' => 'json array')
+                     )
         );
         get_stock_transactions_elements($db, $data['parameters'], $user);
         break;
@@ -240,8 +240,8 @@ switch ($tab) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                'parameters' => array('type' => 'json array')
-            )
+                         'parameters' => array('type' => 'json array')
+                     )
         );
         get_category_root_all_parts_elements($db, $data['parameters'], $user);
         break;
@@ -249,8 +249,8 @@ switch ($tab) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                'parameters' => array('type' => 'json array')
-            )
+                         'parameters' => array('type' => 'json array')
+                     )
         );
         get_ec_sales_list_elements($db, $data['parameters'], $user);
         break;
@@ -385,8 +385,7 @@ function get_deals_element_numbers($db, $data, $user) {
 
     foreach ($db->query($sql) as $row) {
 
-        $elements_numbers['trigger'][preg_replace('/\s/', '_', $row['element'])]
-            = number($row['number']);
+        $elements_numbers['trigger'][preg_replace('/\s/', '_', $row['element'])] = number($row['number']);
 
     }
 
@@ -510,8 +509,7 @@ function get_stock_transactions_elements($db, $data, $user) {
 
         $elements_numbers['stock_status'][preg_replace(
             '/\s/', '', $row['element']
-        )]
-            = number($row['number']);
+        )] = number($row['number']);
 
     }
 
@@ -552,13 +550,11 @@ function get_parts_elements($db, $data, $user) {
             $where = sprintf(
                 " where `Subject`='Part' and  `Category Key`=%d  and `Part Status`='In Use' ", $data['parent_key']
             );
-            $table
-                   = ' `Category Bridge` left join  `Part Dimension` P on (`Subject Key`=`Part SKU`) ';
+            $table = ' `Category Bridge` left join  `Part Dimension` P on (`Subject Key`=`Part SKU`) ';
             break;
         case 'material':
             $where = sprintf(" where `Material Key`=%d", $data['parent_key']);
-            $table
-                   = ' `Part Material Bridge` B left join  `Part Dimension` P on (B.`Part SKU`=P.`Part SKU`) ';
+            $table = ' `Part Material Bridge` B left join  `Part Dimension` P on (B.`Part SKU`=P.`Part SKU`) ';
             break;
         default:
             $response = array(
@@ -579,8 +575,7 @@ function get_parts_elements($db, $data, $user) {
 
         $elements_numbers['stock_status'][preg_replace(
             '/\s/', '', $row['element']
-        )]
-            = number($row['number']);
+        )] = number($row['number']);
 
     }
 
@@ -614,8 +609,7 @@ function get_supplier_parts_elements($db, $data, $user) {
     );
 
 
-    $table
-        = '`Supplier Part Dimension`  SP left join `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`) ';
+    $table = '`Supplier Part Dimension`  SP left join `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`) ';
     switch ($data['parent']) {
         case 'supplier':
         case 'supplier_production':
@@ -675,8 +669,7 @@ function get_supplier_parts_elements($db, $data, $user) {
 
         $elements_numbers['part_status'][preg_replace(
             '/\s/', '', $row['element']
-        )]
-            = number($row['number']);
+        )] = number($row['number']);
 
     }
 
@@ -745,8 +738,7 @@ function get_warehouse_locations_elements($db, $data, $user) {
     );
     foreach ($db->query($sql) as $row) {
 
-        $elements_numbers['flags'][preg_replace('/\s/', '', $row['element'])]
-            = number($row['number']);
+        $elements_numbers['flags'][preg_replace('/\s/', '', $row['element'])] = number($row['number']);
 
     }
 
@@ -759,7 +751,6 @@ function get_warehouse_locations_elements($db, $data, $user) {
 
 
 }
-
 
 
 function get_products_element_numbers($db, $data, $user) {
@@ -787,8 +778,7 @@ function get_products_element_numbers($db, $data, $user) {
             );
             break;
         case 'part':
-            $table
-                = '`Product Dimension`  P left join `Product Part Bridge` B on (B.`Product Part Product ID`=P.`Product ID`)';
+            $table = '`Product Dimension`  P left join `Product Part Bridge` B on (B.`Product Part Product ID`=P.`Product ID`)';
 
             $where = sprintf(
                 " where `Product Type`='Product' and `Product Part Part SKU`=%d  ", $data['parent_key']
@@ -847,7 +837,6 @@ function get_products_element_numbers($db, $data, $user) {
 
 
 }
-
 
 
 function get_services_element_numbers($db, $data, $user) {
@@ -914,7 +903,6 @@ function get_services_element_numbers($db, $data, $user) {
 function get_product_categories_element_numbers($db, $data, $user) {
 
 
-
     $elements_numbers = array(
         'status' => array(
             'InProcess'     => 0,
@@ -929,7 +917,6 @@ function get_product_categories_element_numbers($db, $data, $user) {
 
     $table = '`Category Bridge` B left join `Product Category Dimension` PC on (B.`Subject Key`=`Product Category Key`)';
     $where = sprintf('where `Category Key`=%d', $data['parent_key']);
-
 
 
     $sql = sprintf("select count(*) as number,`Product Category Status` as element from $table $where  group by `Product Category Status` ");
@@ -957,7 +944,6 @@ function get_product_categories_element_numbers($db, $data, $user) {
 function get_product_categories_element_numbers_bis($db, $data, $user) {
 
 
-
     $elements_numbers = array(
         'status' => array(
             'InProcess'     => 0,
@@ -972,7 +958,6 @@ function get_product_categories_element_numbers_bis($db, $data, $user) {
 
     $table = '`Category Dimension` C left join `Product Category Dimension` PC on (C.`Category Key`=`Product Category Key`)';
     $where = sprintf('where `Category Parent Key`=%d', $data['parent_key']);
-
 
 
     $sql = sprintf("select count(*) as number,`Product Category Status` as element from $table $where  group by `Product Category Status` ");
@@ -1040,15 +1025,13 @@ function get_customers_element_numbers($db, $data) {
             $tab = 'customers.list';
             break;
         case 'campaign':
-            $table
-                   = '`Order Dimension` O  left join `Order Deal Bridge` DB on (DB.`Order Key`=O.`Order Key`) left join `Customer Dimension` C on (`Order Customer Key`=C.`Customer Key`) ';
+            $table = '`Order Dimension` O  left join `Order Deal Bridge` DB on (DB.`Order Key`=O.`Order Key`) left join `Customer Dimension` C on (`Order Customer Key`=C.`Customer Key`) ';
             $where = sprintf(
                 ' where `Deal Campaign Key`=%d', $data['parent_key']
             );
             break;
         case 'deal':
-            $table
-                   = '`Order Dimension` O  left join `Order Deal Bridge` DB on (DB.`Order Key`=O.`Order Key`) left join `Customer Dimension` C on (`Order Customer Key`=C.`Customer Key`) ';
+            $table = '`Order Dimension` O  left join `Order Deal Bridge` DB on (DB.`Order Key`=O.`Order Key`) left join `Customer Dimension` C on (`Order Customer Key`=C.`Customer Key`) ';
             $where = sprintf(' where `Deal Key`=%d', $data['parent_key']);
             break;
         case 'favourites':
@@ -1141,8 +1124,7 @@ function get_suppliers_element_numbers($db, $data) {
             $where = sprintf(
                 " where `Agent Supplier Agent Key`=%d", $parent_key
             );
-            $table
-                   = ' `Agent Supplier Bridge` B left join  `Supplier Dimension` S on (`Agent Supplier Supplier Key`=`Supplier Key`) ';
+            $table = ' `Agent Supplier Bridge` B left join  `Supplier Dimension` S on (`Agent Supplier Supplier Key`=`Supplier Key`) ';
 
             break;
         default:
@@ -1275,8 +1257,9 @@ function get_orders_element_numbers($db, $data, $user) {
     }
 
 
-    list($db_interval, $from, $to, $from_date_1yb, $to_1yb)
-        = calculate_interval_dates(
+    list(
+        $db_interval, $from, $to, $from_date_1yb, $to_1yb
+        ) = calculate_interval_dates(
         $db, $data['period'], $data['from'], $data['to']
     );
 
@@ -1289,24 +1272,22 @@ function get_orders_element_numbers($db, $data, $user) {
             $table = '`Order Dimension` O';
             $where = sprintf('where  true');
 
-            $object=get_object('account',1);
+            $object = get_object('account', 1);
 
             break;
         case 'store':
             $table = '`Order Dimension` O';
             $where = sprintf('where  `Order Store Key`=%d', $parent_key);
 
-            $object=get_object('store',$parent_key);
+            $object = get_object('store', $parent_key);
 
             break;
         case 'campaign':
-            $table
-                   = '`Order Dimension` O left join `Order Deal Bridge` DB on (DB.`Order Key`=O.`Order Key`) ';
+            $table = '`Order Dimension` O left join `Order Deal Bridge` DB on (DB.`Order Key`=O.`Order Key`) ';
             $where = sprintf('where  `Deal Campaign Key`=%d', $parent_key);
             break;
         case 'deal':
-            $table
-                   = '`Order Dimension` O left join `Order Deal Bridge` DB on (DB.`Order Key`=O.`Order Key`) ';
+            $table = '`Order Dimension` O left join `Order Deal Bridge` DB on (DB.`Order Key`=O.`Order Key`) ';
             $where = sprintf('where  `Deal Key`=%d', $parent_key);
             break;
         default:
@@ -1347,27 +1328,26 @@ function get_orders_element_numbers($db, $data, $user) {
             'Donation' => 0,
             'Other'    => 0
         ),
-        'flow'=>array(
-            'Basket'    => 0,
-            'Submitted_Unpaid'   => 0,
-            'Submitted_Paid' => 0,
-            'InWarehouse'    => 0,
-            'Packed'    => 0,
-            'Dispatch_Ready'    => 0,
-            'Dispatched_Today'    => 0
-
+        'flow'     => array(
+            'Basket'           => 0,
+            'Submitted_Unpaid' => 0,
+            'Submitted_Paid'   => 0,
+            'InWarehouse'      => 0,
+            'Packed'           => 0,
+            'Dispatch_Ready'   => 0,
+            'Dispatched_Today' => 0
 
 
         )
     );
 
-    if($data['parent']=='account' or $data['parent']=='store'){
-        $elements_numbers['flow']['Basket']=$object->get('Orders In Basket Number');
-        $elements_numbers['flow']['Submitted_Unpaid']=$object->get('Orders In Process Not Paid Number');
-        $elements_numbers['flow']['Submitted_Paid']=$object->get('Orders In Process Paid Number');
-        $elements_numbers['flow']['Packed']=$object->get('Orders Packed Number');
-        $elements_numbers['flow']['Dispatch_Ready']=$object->get('Orders In Dispatch Area Number');
-        $elements_numbers['flow']['Dispatched_Today']=$object->get('Today Orders Dispatched');
+    if ($data['parent'] == 'account' or $data['parent'] == 'store') {
+        $elements_numbers['flow']['Basket']           = $object->get('Orders In Basket Number');
+        $elements_numbers['flow']['Submitted_Unpaid'] = $object->get('Orders In Process Not Paid Number');
+        $elements_numbers['flow']['Submitted_Paid']   = $object->get('Orders In Process Paid Number');
+        $elements_numbers['flow']['Packed']           = $object->get('Orders Packed Number');
+        $elements_numbers['flow']['Dispatch_Ready']   = $object->get('Orders In Dispatch Area Number');
+        $elements_numbers['flow']['Dispatched_Today'] = $object->get('Today Orders Dispatched');
 
     }
 
@@ -1402,7 +1382,6 @@ function get_orders_element_numbers($db, $data, $user) {
         $elements_numbers['type'][$row['element']] = number($row['number']);
     }
     //USE INDEX (`Current Dispatch State Store Key`)
-
 
 
     $sql = sprintf(
@@ -1469,8 +1448,9 @@ function get_invoices_element_numbers($db, $parameters) {
     global $user;
 
 
-    list($db_interval, $from, $to, $from_date_1yb, $to_1yb)
-        = calculate_interval_dates(
+    list(
+        $db_interval, $from, $to, $from_date_1yb, $to_1yb
+        ) = calculate_interval_dates(
         $db, $parameters['period'], $parameters['from'], $parameters['to']
     );
 
@@ -1492,8 +1472,7 @@ function get_invoices_element_numbers($db, $parameters) {
             'Partially' => 0
         ),
     );
-    $table
-                      = '`Invoice Dimension` I left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)  ';
+    $table            = '`Invoice Dimension` I left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)  ';
 
 
     if (isset($parameters['awhere']) and $parameters['awhere']) {
@@ -1517,8 +1496,7 @@ function get_invoices_element_numbers($db, $parameters) {
         $where      = sprintf(
             " where `Subject`='Invoice' and  `Category Key`=%d", $parameters['parent_key']
         );
-        $table
-                    = ' `Category Bridge` left join  `Invoice Dimension` I on (`Subject Key`=`Invoice Key`) ';
+        $table      = ' `Category Bridge` left join  `Invoice Dimension` I on (`Subject Key`=`Invoice Key`) ';
         $where_type = '';
 
         $store_key = $category->data['Category Store Key'];
@@ -1533,8 +1511,7 @@ function get_invoices_element_numbers($db, $parameters) {
             $parameters['awhere'] = false;
             $store_key            = $list_data['List Parent Key'];
             if ($list_data['List Type'] == 'Static') {
-                $table
-                            = '`List Invoice Bridge` OB left join `Invoice Dimension` I  on (OB.`Invoice Key`=I.`Invoice Key`)';
+                $table      = '`List Invoice Bridge` OB left join `Invoice Dimension` I  on (OB.`Invoice Key`=I.`Invoice Key`)';
                 $where_type = sprintf(
                     ' and `List Key`=%d ', $parameters['parent_key']
                 );
@@ -1591,16 +1568,16 @@ function get_invoices_element_numbers($db, $parameters) {
         }
     } elseif ($parameters['parent'] == 'order') {
 
-        $table
-               = '`Order Invoice Bridge` B left join   `Invoice Dimension` I  on (I.`Invoice Key`=B.`Invoice Key`)     left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)';
+        $table =
+            '`Order Invoice Bridge` B left join   `Invoice Dimension` I  on (I.`Invoice Key`=B.`Invoice Key`)     left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)';
         $where = sprintf(
             'where  B.`Order Key`=%d  ', $parameters['parent_key']
         );
 
     } elseif ($parameters['parent'] == 'delivery_note') {
 
-        $table
-               = '`Invoice Delivery Note Bridge` B left join   `Invoice Dimension` I  on (I.`Invoice Key`=B.`Invoice Key`)     left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)';
+        $table =
+            '`Invoice Delivery Note Bridge` B left join   `Invoice Dimension` I  on (I.`Invoice Key`=B.`Invoice Key`)     left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)';
         $where = sprintf(
             'where  B.`Delivery Note Key`=%d  ', $parameters['parent_key']
         );
@@ -1615,8 +1592,8 @@ function get_invoices_element_numbers($db, $parameters) {
     } elseif ($parameters['parent'] == 'billingregion_taxcategory.invoices') {
 
         $fields = '`Store Code`,`Store Name`,`Country Name`,';
-        $table
-                = '`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Billing Country 2 Alpha Code`=C.`Country 2 Alpha Code`) ';
+        $table  =
+            '`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Billing Country 2 Alpha Code`=C.`Country 2 Alpha Code`) ';
 
         $parents = preg_split('/_/', $parameters['parent_key']);
         $where   = sprintf(
@@ -1626,8 +1603,8 @@ function get_invoices_element_numbers($db, $parameters) {
 
     } elseif ($parameters['parent'] == 'billingregion_taxcategory.refunds') {
 
-        $table
-            = '`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Billing Country 2 Alpha Code`=C.`Country 2 Alpha Code`) ';
+        $table =
+            '`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Billing Country 2 Alpha Code`=C.`Country 2 Alpha Code`) ';
 
         $parents = preg_split('/_/', $parameters['parent_key']);
         $where   = sprintf(
@@ -1677,8 +1654,9 @@ function get_invoices_element_numbers($db, $parameters) {
 
 function get_delivery_note_element_numbers($db, $data) {
 
-    list($db_interval, $from, $to, $from_date_1yb, $to_1yb)
-        = calculate_interval_dates(
+    list(
+        $db_interval, $from, $to, $from_date_1yb, $to_1yb
+        ) = calculate_interval_dates(
         $db, $data['period'], $data['from'], $data['to']
     );
 
@@ -1826,8 +1804,9 @@ function get_barcodes_elements($db, $data, $user) {
 function get_supplier_orders_elements($db, $data) {
 
 
-    list($db_interval, $from, $to, $from_date_1yb, $to_1yb)
-        = calculate_interval_dates(
+    list(
+        $db_interval, $from, $to, $from_date_1yb, $to_1yb
+        ) = calculate_interval_dates(
         $db, $data['period'], $data['from'], $data['to']
     );
 
@@ -1913,8 +1892,9 @@ function get_supplier_orders_elements($db, $data) {
 
 function get_supplier_deliveries_element_numbers($db, $data) {
 
-    list($db_interval, $from, $to, $from_date_1yb, $to_1yb)
-        = calculate_interval_dates(
+    list(
+        $db_interval, $from, $to, $from_date_1yb, $to_1yb
+        ) = calculate_interval_dates(
         $db, $data['period'], $data['from'], $data['to']
     );
 
@@ -2030,8 +2010,9 @@ function get_category_root_all_parts_elements($db, $data) {
 
 function get_ec_sales_list_elements($db, $parameters) {
 
-    list($db_interval, $from, $to, $from_date_1yb, $to_1yb)
-        = calculate_interval_dates(
+    list(
+        $db_interval, $from, $to, $from_date_1yb, $to_1yb
+        ) = calculate_interval_dates(
         $db, $parameters['period'], $parameters['from'], $parameters['to']
     );
 
@@ -2071,8 +2052,7 @@ function get_ec_sales_list_elements($db, $parameters) {
 
     $table = '`Invoice Dimension`';
 
-    $group_by
-        = 'group by `Invoice Tax Number`,`Invoice Billing Country 2 Alpha Code`,`Invoice Customer Key`';
+    $group_by = 'group by `Invoice Tax Number`,`Invoice Billing Country 2 Alpha Code`,`Invoice Customer Key`';
 
 
     $sql = sprintf(
@@ -2115,26 +2095,23 @@ function get_ec_sales_list_elements($db, $parameters) {
 }
 
 
-
-
 function get_part_categories_elements($db, $data, $user) {
-
 
 
     $elements_numbers = array(
         'status' => array(
-            'InUse'     => 0,
-            'NotInUse'        => 0,
+            'InUse'         => 0,
+            'NotInUse'      => 0,
+            'InProcess'     => 0,
+            'Discontinuing' => 0,
 
         ),
 
     );
 
 
-
     $table = '`Category Dimension` B left join `Part Category Dimension` PC on (B.`Category Key`=`Part Category Key`)';
     $where = sprintf('where `Category Parent Key`=%d', $data['parent_key']);
-
 
 
     $sql = sprintf("select count(*) as number,`Part Category Status` as element from $table $where  group by `Part Category Status` ");

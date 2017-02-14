@@ -116,20 +116,14 @@ switch ($options['Category Scope']) {
         $object->get_webpage();
 
 
-        if ($store->get('Store Family Category Key') == $object->get(
-                'Category Root Key'
-            )
-        ) {
+        if ($store->get('Store Family Category Key') == $object->get('Category Root Key')) {
 
             include 'family.fld.php';
             $category_fields = array_merge(
                 $category_fields, $category_product_fields
             );
 
-        } elseif ($store->get('Store Department Category Key') == $object->get(
-                'Category Root Key'
-            )
-        ) {
+        } elseif ($store->get('Store Department Category Key') == $object->get('Category Root Key')){
 
             include 'department.fld.php';
             $category_fields = array_merge(
@@ -147,6 +141,14 @@ switch ($options['Category Scope']) {
 
         break;
     default:
+
+
+    case 'Part':
+
+    include 'category.part.fld.php';
+    $category_fields = array_merge($category_fields, $category_product_fields);
+
+
 
         break;
 }
