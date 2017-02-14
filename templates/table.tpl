@@ -1,7 +1,3 @@
-{if isset($table_top_template)}
-    {include file=$table_top_template  }
-
-{/if}
 
 
 {if isset($period)  and   !isset($hide_period) }
@@ -9,11 +5,13 @@
     {include file="utils/date_chooser.tpl" period=$period from=$from to=$to from_mmddyy=$from_mmddyy  to_mmddyy=$to_mmddyy from_locale=$from_locale  to_locale=$to_locale  }
 {/if}
 
+{if isset($table_top_template)}
+    {include file=$table_top_template  }
+{/if}
 
 {if isset($elements) and count(elements)>0}
     <div id="elements" class="elements tabs ">
-        <div id="element_type" onClick="show_elements_types()"><i id="element_type_select_icon" class="fa fa-bars"
-            "></i></div>
+        <div id="element_type" onClick="show_elements_types()"><i id="element_type_select_icon" class="fa fa-bars""></i></div>
         {foreach from=$elements item=element_group key=_elements_type}
             <div id="elements_group_{$_elements_type}" elements_type="$_elements_type"
                  class="elements_group {if $_elements_type!=$elements_type}hide{/if}">
@@ -32,6 +30,9 @@
     </div>
 {/if}
 
+{if isset($table_top_lower_template)}
+    {include file=$table_top_lower_template  }
+{/if}
 
 <div class="table_info">
     <div id="last_page" onclick="rows.getLastPage()" class="square_button right hide" title="{t}Last page{/t}"
@@ -374,6 +375,9 @@
 
         render: function () {
             this.$el.empty();
+
+
+
             var rawValue = this.model.get(this.column.get("name"));
             var formattedValue = this.formatter.fromRaw(rawValue, this.model);
             this.$el.append(formattedValue);
@@ -381,24 +385,39 @@
             return this;
         }
     });
-    var RhtmlCell = Backgrid.RhtmlCell = Backgrid.Cell.extend({
+
+    var HeaderHtmlCell =  Backgrid.HeaderCell.extend({
 
         /** @property */
-        className: "html-cell aright",
+        className: "html-cell",
 
-        initialize: function () {
-            Backgrid.Cell.prototype.initialize.apply(this, arguments);
-        },
+
+
+
 
         render: function () {
-            this.$el.empty();
-            var rawValue = this.model.get(this.column.get("name"));
-            var formattedValue = this.formatter.fromRaw(rawValue, this.model);
-            this.$el.append(formattedValue);
+           this.$el.empty();
+
+
+            if (this.column.get('title')) {
+                this.$el.attr('title', this.column.get('title'))
+
+            }
+            if (this.column.get('headerClass')) {
+                this.$el.addClass(this.column.get('headerClass'));
+            }
+
+
+            this.$el.append(this.column.get("label"))
+
+
+
             this.delegateEvents();
             return this;
         }
     });
+
+
     var integerHeaderCell = Backgrid.HeaderCell.extend({
                 className: "align-right",
 
@@ -412,6 +431,29 @@
             }
     );
 
+
+
+
+/*
+     Backgrid.HeaderRow = Backgrid.HeaderRow.extend({
+        render: function() {
+            var that = this;
+            Backgrid.HeaderRow.__super__.render.call(this, arguments);
+            _.each(this.columns.models, function(modelValue) {
+
+               // that.$el.find('.' + modelValue.get('name')).html(modelValue.get('label'))
+
+                if (modelValue.get('title')) {
+                    that.$el.find('.' + modelValue.get('name')).attr('title', modelValue.get('title'))
+
+                }
+
+            });
+            return this;
+        }
+    });
+
+*/
 
     {include file="columns/`$tab`.cols.tpl" }
 
