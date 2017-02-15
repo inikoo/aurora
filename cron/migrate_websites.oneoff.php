@@ -157,7 +157,7 @@ function normalize_webpage_scopes($db) {
 
                 }
                 if ($row['Page Store Section'] == 'Department Catalogue') {
-                    print "Dept ".$row['Page Parent Code']."\n";
+                    print "Dept  ".$row['Page Store Key']." ".$row['Page Parent Code']."\n";
 
                 }
 
