@@ -1047,18 +1047,22 @@ trait ProductCategory {
 
             );
 
+            print $sql;
+            exit;
+
+
                if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
 
                     if ($row['Category Webpage Index Category Key'] == '') {
                         $null_stacks = true;
 
-                        print_r($row);
+
                         $subject_webpage = new Public_Webpage('scope', 'Category', $row['Subject Key']);
                         $subject=new Public_Category($row['Subject Key']);
 
 
-                        print_r($subject_webpage);
+                      //  print_r($subject_webpage);
 
 
                         if ($subject_webpage->id) {
@@ -1119,7 +1123,7 @@ trait ProductCategory {
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
 
-                        //print_r($row);
+
 
                         $stack_index++;
                         $sql = sprintf(
