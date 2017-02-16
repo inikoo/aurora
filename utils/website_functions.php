@@ -33,7 +33,7 @@ function get_website_section_items($db, $section_data) {
 
     );
 
-   //print $sql;
+   print $sql;
     $categories = array();
 
     $stack_index          = 0;

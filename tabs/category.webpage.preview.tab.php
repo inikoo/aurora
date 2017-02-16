@@ -351,7 +351,6 @@ switch ($webpage->get('Page Store Content Template Filename')) {
 
 
 
-
             $title = $category->get('Label');
             if ($title == '') {
                 $title = $category->get('Code');
