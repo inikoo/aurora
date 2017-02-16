@@ -505,7 +505,7 @@ if($webpage->get('Page Store Content Display Type')=='Template') {
     }
 
 }else{
-    $html = '<div style="padding:40px">'._("There is not preview for this template").'</div>';
+    $html = '<div style="padding:40px">'."There is not preview for white canvas template".'</div>';
 
     return;
 }

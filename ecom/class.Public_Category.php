@@ -82,7 +82,7 @@ class Public_Category {
     function load_webpage(){
 
         include_once 'class.Public_Webpage.php';
-        $this->webpage  = new Public_Webpage('scope','Category',$this->id);
+        $this->webpage=new Public_Webpage('scope',($this->get('Category Subject')=='Category'?'Category Categories':'Category Products'),$this->id);
     }
 
     function old_load_webpage() {

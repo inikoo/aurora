@@ -113,7 +113,7 @@
 
 
 
-        var request = '/ar_edit_website.php?tipo=edit_webpage&key=' + {$category->webpage->id} + '&field=css&value=' + btoa(css)
+        var request = '/ar_edit_website.php?tipo=edit_webpage&key=' + {$webpage->id} + '&field=css&value=' + btoa(css)
        // console.log(request)
         $.getJSON(request, function (data) {
             console.log(data)
@@ -178,7 +178,7 @@
 
 
 
-       var request = '/ar_edit_website.php?tipo=webpage_content_data&parent=page&parent_key=' + {$category->webpage->id} +'&section=description_block&block=&type='+type+'&value=hide'
+       var request = '/ar_edit_website.php?tipo=webpage_content_data&parent=page&parent_key=' + {$webpage->id} +'&section=description_block&block=&type='+type+'&value=hide'
 
 
        $.getJSON(request, function (data) {
@@ -247,7 +247,7 @@ var position=$(this).position();
         toolbar.addClass('hide')
         $('#'+toolbar.attr('block')).remove()
 
-        var request = '/ar_edit_website.php?tipo=webpage_content_data&parent=page&parent_key=' + {$category->webpage->id} +'&section=description_block&block='+toolbar.attr('block')+'&type=remove_block&value='
+        var request = '/ar_edit_website.php?tipo=webpage_content_data&parent=page&parent_key=' + {$webpage->id} +'&section=description_block&block='+toolbar.attr('block')+'&type=remove_block&value='
 
 
         $.getJSON(request, function (data) {
@@ -316,7 +316,7 @@ var position=$(this).position();
 
 
 
-    var request = '/ar_edit_website.php?tipo=webpage_content_data&parent=page&parent_key=' + {$category->webpage->id} +'&section=description_block&block='+text.attr('id')+'&type=text&value='+text.html()
+    var request = '/ar_edit_website.php?tipo=webpage_content_data&parent=page&parent_key=' + {$webpage->id} +'&section=description_block&block='+text.attr('id')+'&type=text&value='+text.html()
 
 
     $.getJSON(request, function (data) {
@@ -383,7 +383,7 @@ var position=$(this).position();
 
 
 
-        var request = '/ar_edit_website.php?tipo=webpage_content_data&parent=page&parent_key=' + {$category->webpage->id} +'&section=description_block&block='+img.attr('id')+'&type=add_image&value='+img.find('img').attr('src')
+        var request = '/ar_edit_website.php?tipo=webpage_content_data&parent=page&parent_key=' + {$webpage->id} +'&section=description_block&block='+img.attr('id')+'&type=add_image&value='+img.find('img').attr('src')
 
 
         $.getJSON(request, function (data) {
@@ -450,7 +450,7 @@ var position=$(this).position();
         var caption=$('#caption_input').val()
         var block=$('#image_edit_toolbar').attr('block')
 
-        var request = '/ar_edit_website.php?tipo=webpage_content_data&parent=page&parent_key=' + {$category->webpage->id} +'&section=description_block&block=' + block + '&type=caption&value=' + caption
+        var request = '/ar_edit_website.php?tipo=webpage_content_data&parent=page&parent_key=' + {$webpage->id} +'&section=description_block&block=' + block + '&type=caption&value=' + caption
 
         $.getJSON(request, function (data) {
 
@@ -518,7 +518,7 @@ var position=$(this).position();
             saveParams: {
                 tipo: 'webpage_content_data',
                 parent: 'page',
-                parent_key:  {$category->webpage->id},
+                parent_key:  {$webpage->id},
                 section: 'description_block',
                 block: $(this).attr('id'),
                 type: 'text'

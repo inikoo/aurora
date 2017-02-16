@@ -6710,7 +6710,7 @@ class Page extends DB_Table {
 
         $parent_category  = new Category($this->get('Webpage Scope Key'));
         $subject_category = new Category($item_key);
-        $subject_webpage  = new Public_Webpage('scope', 'Category', $item_key);
+        $subject_webpage  = new Public_Webpage('scope', ($subject_category->get('Category Subject')=='Category'?'Category Categories':'Category Products'), $subject_category->id);
 
 
         if ($subject_webpage->id) {
