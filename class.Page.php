@@ -41,6 +41,8 @@ class Page extends DB_Table {
         $this->scope         = false;
         $this->scope_load    = false;
 
+        $this->scope_found='';
+
 
         if (!$arg1 and !$arg2) {
             $this->error = true;
@@ -2284,7 +2286,10 @@ class Page extends DB_Table {
 
         $this->load_scope();
 
-        if ($this->scope_load == 'Category') {
+
+
+
+        if ($this->scope_found == 'Category') {
             $sql = sprintf(
                 'UPDATE  `Product Category Index` SET  `Product Category Index Published Stack`=`Product Category Index Stack`,`Product Category Index Content Published Data`=`Product Category Index Content Data` WHERE `Product Category Index Category Key`=%d ',
                 $this->scope->id
