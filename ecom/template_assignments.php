@@ -199,7 +199,15 @@ elseif ($page->data['Page Store Section Type']=='Department') {
     include_once 'class.Public_Order.php';
     include_once 'class.Public_Website_User.php';
 
-    $public_category=new Public_Category('root_key_code', $store->get('Store Department Category Key'), $department->get('Product Department Code'));
+
+
+    $public_webpage=new Public_Webpage($page->id);
+    $public_webpage->load_scope();
+
+    $public_category=$public_webpage->scope;
+
+  //  $public_category=new Public_Category('root_key_code', $store->get('Store Department Category Key'), $department->get('Product Department Code'));
+
 
 
     $public_category->load_webpage();
