@@ -1355,6 +1355,8 @@ function categories($_data, $db, $user) {
     include_once 'prepare_table/init.php';
 
     $sql         = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+
     $record_data = array();
     if ($result = $db->query($sql)) {
 

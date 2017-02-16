@@ -1491,7 +1491,7 @@ $tab_defaults = array(
         'view'        => 'overview',
         'sort_key'    => 'code',
         'sort_order'  => 1,
-        'rpp'         => 00,
+        'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'code'
     ),
