@@ -82,6 +82,8 @@ class Public_Category {
     function load_webpage(){
 
         include_once 'class.Public_Webpage.php';
+
+
         $this->webpage=new Public_Webpage('scope',($this->get('Category Subject')=='Category'?'Category Categories':'Category Products'),$this->id);
     }
 
@@ -138,6 +140,11 @@ class Public_Category {
 
         switch ($key) {
 
+
+            case 'Category Subject':
+                return $this->data[$key];
+                break;
+            case 'Subject':
             case 'Code':
             case 'Scope':
             case 'Label':
