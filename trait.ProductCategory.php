@@ -1042,7 +1042,7 @@ trait ProductCategory {
 
 
             $sql = sprintf(
-                "SELECT `Subject Key`,`Category Webpage Index Content Data`,`Category Webpage Index Key`,`Category Webpage Index Category Key`,`Category Webpage Index Stack`  FROM `Category Bridge` B  LEFT JOIN `Product Category Dimension` P ON (B.`Subject Key`=P.`Product Category Key`)   LEFT JOIN `Category Webpage Index` ON (`Category Webpage Index Category Key`=`Subject Key`)  WHERE B.`Category Key`=%d AND  `Product Category Public`='Yes' ORDER BY  ifnull(`Category Webpage Index Stack`,99999999)",
+                "SELECT `Category Code`,`Subject Key`,`Category Webpage Index Content Data`,`Category Webpage Index Key`,`Category Webpage Index Category Key`,`Category Webpage Index Stack`  FROM `Category Bridge` B LEFT JOIN `Category Dimension` CAT ON (B.`Subject Key`=CAT.`Category Key`)  LEFT JOIN `Product Category Dimension` P ON (B.`Subject Key`=P.`Product Category Key`)   LEFT JOIN `Category Webpage Index` ON (`Category Webpage Index Category Key`=`Subject Key`)  WHERE B.`Category Key`=%d AND  `Product Category Public`='Yes' ORDER BY  ifnull(`Category Webpage Index Stack`,99999999)",
                 $this->id
 
             );
@@ -1053,9 +1053,13 @@ trait ProductCategory {
                     if ($row['Category Webpage Index Category Key'] == '') {
                         $null_stacks = true;
 
-
+                        print_r($row);
                         $subject_webpage = new Public_Webpage('scope', 'Category', $row['Subject Key']);
                         $subject=new Public_Category($row['Subject Key']);
+
+
+                        print_r($subject_webpage);
+
 
                         if ($subject_webpage->id) {
 
