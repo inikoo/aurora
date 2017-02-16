@@ -1016,6 +1016,11 @@ trait ProductCategory {
 
             $this->get_webpage();
 
+            if( !$this->webpage->id){
+                return;
+            }
+
+
             $null_stacks = false;
 
 
@@ -1042,13 +1047,17 @@ trait ProductCategory {
 
 
             $sql = sprintf(
-                "SELECT `Category Code`,`Subject Key`,`Category Webpage Index Content Data`,`Category Webpage Index Key`,`Category Webpage Index Category Key`,`Category Webpage Index Stack`  FROM `Category Bridge` B LEFT JOIN `Category Dimension` CAT ON (B.`Subject Key`=CAT.`Category Key`)  LEFT JOIN `Product Category Dimension` P ON (B.`Subject Key`=P.`Product Category Key`)   LEFT JOIN `Category Webpage Index` ON (`Category Webpage Index Category Key`=`Subject Key`)  WHERE B.`Category Key`=%d AND  `Product Category Public`='Yes' ORDER BY  ifnull(`Category Webpage Index Stack`,99999999)",
+                "SELECT `Category Webpage Index Webpage Key`,`Category Code`,`Subject Key`,`Category Webpage Index Content Data`,`Category Webpage Index Key`,`Category Webpage Index Category Key`,`Category Webpage Index Stack`  
+            FROM `Category Bridge` B LEFT JOIN `Category Dimension` CAT ON (B.`Subject Key`=CAT.`Category Key`)  LEFT JOIN 
+            `Product Category Dimension` P ON (B.`Subject Key`=P.`Product Category Key`)   
+            LEFT JOIN `Category Webpage Index` ON (`Category Webpage Index Category Key`=`Subject Key`  and `Category Webpage Index Webpage Key`=%d )  
+                WHERE B.`Category Key`=%d AND  `Product Category Public`='Yes'   ORDER BY  ifnull(`Category Webpage Index Stack`,99999999)",
+                $this->webpage->id,
                 $this->id
 
             );
 
-            print $sql;
-            exit;
+
 
 
                if ($result = $this->db->query($sql)) {
