@@ -9,9 +9,9 @@
 
 */
 
-$tab     = 'orders.archived';
+$tab     = 'orders.pending';
 $ar_file = 'ar_orders_tables.php';
-$tipo    = 'archived_orders';
+$tipo    = 'pending_orders';
 
 $default = $user->get_tab_defaults($tab);
 
@@ -27,6 +27,11 @@ $parameters = array(
     'parent'     => 'store',
     'parent_key' => $state['parent_key'],
 );
+
+
+
+$smarty->assign('table_top_lower_template', 'orders_process.edit.tpl');
+
 
 include('utils/get_table_html.php');
 

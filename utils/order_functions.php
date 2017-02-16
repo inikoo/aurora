@@ -10,6 +10,10 @@
 
 
 function get_orders_operations($row, $user) {
+
+
+    include_once 'class.Order.php';
+
     $operations = '<div id="operations'.$row['Order Key'].'">';
     $class      = 'right';
 
@@ -37,15 +41,18 @@ function get_orders_operations($row, $user) {
         } elseif ($row['Order Current Dispatch State'] == 'Submitted by Customer') {
             $operations .= '<div class="buttons small '.$class.'">';
             $operations .= sprintf(
-                "<button id=\"send_to_warehouse_button_%d\" class=\"%s\" onClick=\"create_delivery_note_from_list(this,%d)\"><img id=\"send_to_warehouse_img_%d\" style='height:12px;width:12px' src='art/icons/cart_go.png'> %s</button>",
-                $row['Order Key'], ($row['Order Number Items'] == 0 ? 'disabled' : ''), $row['Order Key'], $row['Order Key'], _('Send Warehouse')
+                "<i class=\"fa fa-minus-circle error padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>",
+                $row['Order Key'],
+                $row['Order Public ID'], $row['Order Customer Name'], _('Cancel')
+            );
+
+            $operations .= sprintf(
+                "<i id=\"send_to_warehouse_button_%d\" class=\"%s fa fa-hand-lizard-o fa-flip-horizontal button edit \" onClick=\"create_delivery_note_from_list(this,%d)\" title='%s'></i>",
+                $row['Order Key'], ($row['Order Number Items'] == 0 ? 'disabled' : ''), $row['Order Key'], _('Send for picking')
             );
 
             //$operations.=sprintf("<button onClick=\"location.href='order.php?id=%d&referral=store_pending_orders'\"><img style='height:12px;width:12px' src='art/icons/cart_edit.png'> %s</button>",$row['Order Key'],_('Edit Order'));
-            $operations .= sprintf(
-                "<button onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\"><img style='height:12px;width:12px' src='art/icons/cross.png'> %s</button>", $row['Order Key'],
-                $row['Order Public ID'], $row['Order Customer Name'], _('Cancel')
-            );
+
             $operations .= '</div>';
 
         } else {
@@ -75,13 +82,20 @@ function get_orders_operations($row, $user) {
             )) {
 
                 $operations .= '<div class="buttons small '.$class.'">';
+
+
                 $operations .= sprintf(
-                    "<button onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\"><img style='height:12px;width:12px' src='art/icons/cross.png'> %s</button>", $row['Order Key'],
+                    "<i class=\"fa fa-minus-circle error padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>",
+                    $row['Order Key'],
                     $row['Order Public ID'], $row['Order Customer Name'], _('Cancel')
                 );
+
+
                 $operations .= sprintf(
-                    "<button onClick=\"location.href='order.php?id=%d&referral=store_pending_orders&amend=1'\"><img style='height:12px;width:12px' src='art/icons/cart_edit.png'> %s</button>",
-                    $row['Order Key'], _('Amend Order')
+                    "<button onClick=\"change_view('delivery_notes/%d/%d')\"><img style='height:12px;width:12px' src='art/icons/cross.png'> %s</button>",
+                    $row['Order Store Key'],
+                    $row['Delivery Note Key']
+                    , $row['Order Customer Name'], _('Cancel')
                 );
 
                 $operations .= '</div>';
@@ -242,6 +256,8 @@ function get_invoice_operations($row, $user, $parent = 'order', $parent_key = ''
 	';
 
     $operations .= '</div>';
+
+    return  $operations;
 
 }
 

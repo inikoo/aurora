@@ -32,7 +32,7 @@ events: {
 if(this.model.get('store_key')==''){
 change_view('orders/all' )
 }else{
-change_view('orders/' + this.model.get("store_key") )
+change_view('orders/' + this.model.get("store_key")+'/dashboard' )
 }
 }
 },

@@ -137,12 +137,12 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'number',
 
-        'elements_type' => 'dispatch',
+        'elements_type' => 'flow',
         'elements'      => $elements_options['orders_pending'],
       //  'export_fields' => $export_fields['orders_pending']
 
     ),
-    'orders'                      => array(
+    'orders.archived'                      => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
         'sort_order'    => 1,
@@ -151,9 +151,9 @@ $tab_defaults = array(
         'f_field'       => 'number',
         'from'          => '',
         'to'            => '',
-        'period'        => 'all',
+        'period'        => 'mtd',
         'elements_type' => 'dispatch',
-        'elements'      => $elements_options['orders'],
+        'elements'      => $elements_options['orders_archived'],
         'export_fields' => $export_fields['orders']
 
     ),
@@ -1491,7 +1491,7 @@ $tab_defaults = array(
         'view'        => 'overview',
         'sort_key'    => 'code',
         'sort_order'  => 1,
-        'rpp'         => 100,
+        'rpp'         => 00,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'code'
     ),

@@ -4638,9 +4638,25 @@ $modules = array(
                 'tabs'      => array(
                     'orders_index' => array(
                         'label' => _(
-                            "Order's Index"
+                            "Overview"
                         )
                     ),
+                    'orders_server' => array(
+                        'label' => _(
+                            "Orders list"
+                        )
+                    ),
+                    'delivery_notes_server' => array(
+                        'label' => _(
+                            "Delivery notes list"
+                        )
+                    ),
+                    'invoices_server' => array(
+                        'label' => _(
+                            "Invoice list"
+                        )
+                    ),
+
                 )
             ),
             'data_sets'    => array(
