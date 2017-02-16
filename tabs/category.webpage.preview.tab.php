@@ -415,7 +415,7 @@ switch ($webpage->get('Page Store Content Template Filename')) {
 
             );
 
-            print $sql;
+          //  print $sql;
 
             $db->exec($sql);
 
@@ -424,12 +424,12 @@ switch ($webpage->get('Page Store Content Template Filename')) {
             $content_data['sections'][] = $section;
             $webpage->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
 
-            //print_r($content_data);
+            print_r($content_data);
 
 
             $category->create_stack_index(true);
             $content_data = $category->webpage->get('Content Data');
-
+            print_r($content_data);
 
             /*
                         $sql = sprintf(
