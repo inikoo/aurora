@@ -332,7 +332,7 @@ switch ($webpage->get('Page Store Content Template Filename')) {
 
 
 
-        if (  ( $webpage->id and $webpage->get('Content Data') == '' )  or $webpage->id==73  ) {
+        if (  ( $webpage->id and $webpage->get('Content Data') == '' )  ) {
 
 
             $sql = sprintf(
