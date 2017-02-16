@@ -20,7 +20,6 @@ $category = $state['_object'];
 $webpage  = $category->get_webpage();
 
 
-print_r($webpage);
 
 
 $smarty->assign('webpage', $webpage);
@@ -333,7 +332,7 @@ switch ($webpage->get('Page Store Content Template Filename')) {
 
 
 
-        if (  ( $webpage->id and $webpage->get('Content Data') == '' )    ) {
+        if (  ( $webpage->id and $webpage->get('Content Data') == '' )  or $webpage->id==73  ) {
 
 
             $sql = sprintf(
@@ -415,6 +414,8 @@ switch ($webpage->get('Page Store Content Template Filename')) {
                 prepare_mysql(json_encode($section))
 
             );
+
+            print $sql;
 
             $db->exec($sql);
 
