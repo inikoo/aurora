@@ -29,7 +29,6 @@ class Public_Category {
 
             return;
         }
-
         $this->get_data($arg1, $arg2, $arg3);
 
 
@@ -37,6 +36,9 @@ class Public_Category {
 
 
     function get_data($tipo, $tag, $tag2 = false) {
+
+
+
         switch ($tipo) {
             case 'root_key_code':
                 $sql = sprintf(

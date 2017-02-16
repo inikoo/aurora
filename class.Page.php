@@ -89,11 +89,17 @@ class Page extends DB_Table {
                 "SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Page Code`=%s AND PS.`Page Site Key`=%d ", prepare_mysql($tag2), $tag
             );
 
+        } elseif ($tipo == 'scope') {
+            $sql = sprintf(
+                "SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Webpage Scope`=%s AND `Webpage Scope Key`=%d ", prepare_mysql($tag), $tag2
+            );
+
         } else {
             $sql = sprintf(
                 "SELECT * FROM `Page Dimension` WHERE  `Page Key`=%d", $tag
             );
         }
+
 
 
         $result = mysql_query($sql);
@@ -2209,85 +2215,41 @@ class Page extends DB_Table {
             $this->scope       = new Public_Category($this->data['Page Parent Key']);
             $this->scope_found = 'Category';
 
-        } elseif ($this->data['Page Store Section'] == 'Family Catalogue') {
-
-            // Todo (Migration)
-
-            $sql = sprintf(
-                "SELECT `Product Family Code`,`Store Family Category Key` FROM `Product Family Dimension` LEFT JOIN `Store Dimension` ON (`Store Key`=`Product Family Store Key`)  WHERE `Product Family Key`=%d ",
-                $this->data['Page Parent Key']
-            );
+        }
+        elseif ($this->data['Page Store Section'] == 'Family Catalogue') {
 
 
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
 
-                    $sql = sprintf(
-                        'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Root Key`=%d AND  `Category Code`=%s  ', $row['Store Family Category Key'],
-                        prepare_mysql($row['Product Family Code'])
-                    );
-                    if ($result2 = $this->db->query($sql)) {
-                        if ($row2 = $result2->fetch()) {
-                            include_once('class.Public_Category.php');
-                            $this->scope       = new Public_Category($row2['Category Key']);
-                            $this->scope_found = 'Category';
 
-                        }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
-                    }
+            include_once('class.Public_Category.php');
+            $store=new Store($this->get('Page Store Key'));
+            $category=new Public_Category('root_key_code',$store->get('Store Family Category Key'),$this->get('Code'));
+            if($category->id){
+                $this->scope       =$category;
+                $this->scope_found = 'Category';
 
-                } else {
-
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
 
-        } elseif ($this->data['Page Store Section'] == 'Department Catalogue') {
-
-            // Todo (Migration)
-
-            $sql = sprintf(
-                "SELECT `Product Department Code`,`Store Department Category Key` FROM `Product Department Dimension` LEFT JOIN `Store Dimension` ON (`Store Key`=`Product Department Store Key`)  WHERE `Product Department Key`=%d ",
-                $this->data['Page Parent Key']
-            );
 
 
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
 
-                    $sql = sprintf(
-                        'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Root Key`=%d AND  `Category Code`=%s  ', $row['Store Department Category Key'],
-                        prepare_mysql($row['Product Department Code'])
-                    );
+        }
+        elseif ($this->data['Page Store Section'] == 'Department Catalogue') {
 
-                    if ($result2 = $this->db->query($sql)) {
-                        if ($row2 = $result2->fetch()) {
-                            include_once('class.Public_Category.php');
-                            $this->scope       = new Public_Category($row2['Category Key']);
-                            $this->scope_found = 'Category';
+            include_once('class.Store.php');
 
-                        }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
-                    }
+            include_once('class.Public_Category.php');
+            $store=new Store($this->get('Page Store Key'));
+            $category=new Public_Category('root_key_code',$store->get('Store Department Category Key'),$this->get('Code'));
+            if($category->id){
+                $this->scope       =$category;
+                $this->scope_found = 'Category';
 
-                } else {
-
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
+
+
+
 
 
         }

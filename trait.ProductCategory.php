@@ -1345,95 +1345,12 @@ trait ProductCategory {
 
     function get_webpage() {
 
-        $page_key = 0;
+
         include_once 'class.Page.php';
 
-
-        $category_key = $this->id;
-
-        include_once 'class.Store.php';
-        $store = new Store($this->get('Category Store Key'));
-
-        // Migration
-        if ($this->get('Category Root Key') == $store->get('Store Family Category Key')) {
-
-            $section_type = 'Family';
-
-            $sql = sprintf(
-                "SELECT * FROM `Product Family Dimension` WHERE `Product Family Store Key`=%d AND `Product Family Code`=%s", $this->get('Category Store Key'),
-                prepare_mysql($this->get('Category Code'))
-            );
-
-
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
-
-                    $category_key = $row['Product Family Key'];
-                }
-            }
-
-
-        } elseif ($this->get('Category Root Key') == $store->get('Store Department Category Key')) {
-
-
-            $sql = sprintf(
-                "SELECT * FROM `Product Department Dimension` WHERE `Product Department Store Key`=%d AND `Product Department Code`=%s", $this->get('Category Store Key'),
-                prepare_mysql($this->get('Category Code'))
-            );
-
-
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
-
-                    $category_key = $row['Product Department Key'];
-                }
-            }
-            $section_type = 'Department';
-
-        } else {
-            $section_type = 'Category';
-
-        }
-
-        $sql = sprintf(
-            'SELECT `Page Key` FROM `Page Store Dimension` WHERE `Page Store Section Type`=%s  AND  `Page Parent Key`=%d ', prepare_mysql($section_type), $category_key
-        );
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $page_key = $row['Page Key'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-        $this->webpage         = new Page($row['Page Key']);
+        $this->webpage=new Page('scope',($this->get('Category Subject')=='Category'?'Category Categories':'Category Products'),$this->id);
         $this->webpage->editor = $this->editor;
 
-
-        // Temporal should be take off because page should be created when product is create
-        /*
-        if (!$this->webpage->id) {
-
-            $page_data=array(
-                'Page Store Content Display Type'=>'Template',
-                'Page Store Content Template Filename'=>'product',
-                'Page State'=>'Online'
-
-            );
-            include_once 'class.Store.php';
-
-            $store=new Store($this->get('Product Store Key'));
-
-            foreach ($store->get_sites('objects') as $site) {
-
-                $product_page_key=$site->add_product_page($this->id, $page_data);
-                $this->webpage=new Page($product_page_key);
-            }
-
-
-        }
-
-        */
 
         return $this->webpage;
 
