@@ -328,6 +328,9 @@ switch ($webpage->get('Page Store Content Template Filename')) {
         // todo remove this when all descriptions are moved inside webpage content data
 
 
+
+        print $webpage-id;
+
         if (  ( $webpage->id and $webpage->get('Content Data') == '' )    ) {
 
 
