@@ -11,11 +11,7 @@
 */
 
 
-
 function get_dashboard_navigation($data, $smarty, $user, $db, $account) {
-
-
-
 
 
     $sections = get_sections('orders', $data['parent_key']);
@@ -30,7 +26,83 @@ function get_dashboard_navigation($data, $smarty, $user, $db, $account) {
         $sections[$data['section']]['selected'] = true;
     }
 
-    $title=_("Orders dashboard");
+    $title = _("Orders dashboard");
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search orders')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
+function get_pending_orders_navigation($data, $smarty, $user, $db, $account) {
+
+
+    $sections = get_sections('orders', $data['parent_key']);
+
+
+    $left_buttons = array();
+
+
+    $right_buttons = array();
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+    $title = _("Pending orders");
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search orders')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
+function get_basket_orders_navigation($data, $smarty, $user, $db, $account) {
+
+
+    $sections = get_sections('orders', $data['parent_key']);
+
+
+    $left_buttons = array();
+
+
+    $right_buttons = array();
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+    $title = _("Orders in website");
 
     $_content = array(
         'sections_class' => '',
@@ -747,6 +819,7 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
     $left_buttons  = array();
     $right_buttons = array();
 
+
     if ($data['parent']) {
 
         switch ($data['parent']) {
@@ -755,7 +828,25 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
                 $_section = 'customers';
                 break;
             case 'store':
-                $tab      = 'orders';
+
+
+
+                switch ($object->get('Order Class')) {
+                    case 'Archived':
+                        $tab = 'orders.archived';
+                        break;
+                    case 'InProcess':
+                        $tab = 'orders.pending';
+                        break;
+                    case 'InWebsite':
+                        $tab = 'orders.website';
+                        break;
+                    default:
+                        exit("Error order don't have class");
+                        break;
+                }
+
+
                 $_section = 'orders';
                 break;
             case 'delivery_note':
@@ -827,7 +918,7 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
                         exit;
                     }
 
-                  //  print "$sql ";
+                    // print "$sql ";
 
                     $sql = sprintf(
                         "select `Order Public ID` object_name,O.`Order Key` as object_key from $table   $where $wheref
@@ -845,7 +936,7 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
                         print_r($error_info = $db->errorInfo());
                         exit;
                     }
-                  //  print "$sql ";
+                    //  print "$sql ";
 
                     if ($order_direction == 'desc') {
                         $_tmp1      = $prev_key;
@@ -926,13 +1017,45 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
         }
         elseif ($data['parent'] == 'store') {
             $store     = new Store($data['parent_key']);
-            $up_button = array(
-                'icon'      => 'arrow-up',
-                'title'     => _("Orders").' ('.$store->get(
-                        'Store Code'
-                    ).')',
-                'reference' => 'orders/'.$data['parent_key']
-            );
+
+
+
+
+            switch ($object->get('Order Class')) {
+                case 'Archived':
+                    $up_button = array(
+                        'icon'      => 'arrow-up',
+                        'title'     => _("Archived orders").' ('.$store->get('Store Code').')',
+                        'reference' => 'orders/'.$data['parent_key']
+                    );
+
+                    break;
+                case 'InProcess':
+                    $up_button = array(
+                        'icon'      => 'arrow-up',
+                        'title'     => _("Pending orders").' ('.$store->get('Store Code').')',
+                        'reference' => 'orders/'.$data['parent_key'].'/flow'
+                    );
+
+                    break;
+                case 'InWebsite':
+                    $up_button = array(
+                        'icon'      => 'arrow-up',
+                        'title'     => _("Orders in website").' ('.$store->get('Store Code').')',
+                        'reference' => 'orders/'.$data['parent_key'].'/website'
+                    );
+
+                    break;
+                default:
+                    exit("Error order don't have class");
+                    break;
+            }
+
+
+
+
+
+
 
             if ($prev_key) {
                 $left_buttons[] = array(
@@ -974,8 +1097,7 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
             $search_placeholder = _('Search orders');
 
 
-        }
-        elseif ($data['parent'] == 'delivery_note') {
+        } elseif ($data['parent'] == 'delivery_note') {
             $delivery_note = new DeliveryNote($data['parent_key']);
             $up_button     = array(
                 'icon'      => 'arrow-up',
@@ -1026,8 +1148,7 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
             $search_placeholder = _('Search delivery notes');
 
 
-        }
-        elseif ($data['parent'] == 'invoice') {
+        } elseif ($data['parent'] == 'invoice') {
             $invoice   = new Invoice($data['parent_key']);
             $up_button = array(
                 'icon'      => 'arrow-up',
@@ -1198,7 +1319,7 @@ function get_delivery_note_navigation($data, $smarty, $user, $db, $account) {
                     );
 
 
-                  //  print $sql;
+                    //  print $sql;
 
 
                     if ($result = $db->query($sql)) {

@@ -190,22 +190,11 @@ $elements_options = array(
 
         )
     ),
-    'orders'                 => array(
+    'orders_archived'                 => array(
         'dispatch' => array(
-            'label' => _('Dispatch state'),
+            'label' => _('Dispatched'),
             'items' => array(
-                'InProcessCustomer' => array(
-                    'label'    => _('Basket'),
-                    'selected' => true
-                ),
-                'InProcess'         => array(
-                    'label'    => _('In process'),
-                    'selected' => true
-                ),
-                'Warehouse'         => array(
-                    'label'    => _('Warehouse'),
-                    'selected' => true
-                ),
+
                 'Dispatched'        => array(
                     'label'    => _('Dispatched'),
                     'selected' => true
@@ -214,10 +203,7 @@ $elements_options = array(
                     'label'    => _('Cancelled'),
                     'selected' => false
                 ),
-                'Suspended'         => array(
-                    'label'    => _('Suspended'),
-                    'selected' => false
-                )
+
             ),
         ),
         'type'     => array(
@@ -242,7 +228,7 @@ $elements_options = array(
             )
         ),
 
-        /*
+
         'source'   => array(
             'label' => _('Source'),
             'items' => array(
@@ -273,33 +259,101 @@ $elements_options = array(
             ),
 
         ),
-        */
 
-        'payment'  => array(
-            'label' => _('Payment'),
+
+
+
+    ),
+
+    'orders'                 => array(
+
+
+        'dispatch' => array(
+            'label' => _('Dispatch state'),
             'items' => array(
-                'Paid'           => array(
-                    'label'    => _('Paid'),
+                'InProcessCustomer' => array(
+                    'label'    => _('Basket'),
                     'selected' => true
                 ),
-                'PartiallyPaid'  => array(
-                    'label'    => _('Partially Paid'),
+                'InProcess'         => array(
+                    'label'    => _('In process'),
                     'selected' => true
                 ),
-                'Unknown'        => array(
-                    'label'    => _('Unknown'),
+                'Warehouse'         => array(
+                    'label'    => _('Warehouse'),
                     'selected' => true
                 ),
-                'WaitingPayment' => array(
-                    'label'    => _('Waiting Payment'),
+                'Dispatched'        => array(
+                    'label'    => _('Dispatched'),
                     'selected' => true
                 ),
-                'NA'             => array(
-                    'label'    => _('NA'),
+                'Cancelled'         => array(
+                    'label'    => _('Cancelled'),
+                    'selected' => false
+                ),
+                'Suspended'         => array(
+                    'label'    => _('Suspended'),
+                    'selected' => false
+                )
+            ),
+        ),
+
+        'type'     => array(
+            'label' => _('Type'),
+            'items' => array(
+                'Order'    => array(
+                    'label'    => _('Order'),
+                    'selected' => true
+                ),
+                'Sample'   => array(
+                    'label'    => _('Sample'),
+                    'selected' => true
+                ),
+                'Donation' => array(
+                    'label'    => _('Donation'),
+                    'selected' => true
+                ),
+                'Other'    => array(
+                    'label'    => _('Other'),
                     'selected' => true
                 ),
             )
-        )
+        ),
+
+
+        'source'   => array(
+            'label' => _('Source'),
+            'items' => array(
+                'Internet' => array(
+                    'label'    => _('Website'),
+                    'selected' => true
+                ),
+                'Call'     => array(
+                    'label'    => _('Telephone'),
+                    'selected' => true
+                ),
+                'Store'    => array(
+                    'label'    => _('Showroom'),
+                    'selected' => true
+                ),
+                'Email'    => array(
+                    'label'    => _('Email'),
+                    'selected' => true
+                ),
+                'Fax'      => array(
+                    'label'    => _('Fax'),
+                    'selected' => true
+                ),
+                'Other'    => array(
+                    'label'    => _('Other'),
+                    'selected' => true
+                )
+            ),
+
+        ),
+
+
+
 
     ),
 

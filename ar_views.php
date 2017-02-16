@@ -3449,42 +3449,49 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 'icon'      => 'bars',
                 'reference' => 'receipts'
             );
-
-
             switch ($state['section']) {
 
                 case 'dashboard':
-                    if ($user->get_number_stores() > 1) {
-                        $branch[] = array(
-                            'label'     => '('._('All stores').')',
-                            'icon'      => '',
-                            'reference' => 'orders/all'
-                        );
-                    }
-                    $store = new Store($state['parent_key']);
 
                     $branch[] = array(
-                        'label'     => _("Orders").' '.$store->data['Store Code'],
+                        'label'     => _("Orders").' '.$state['store']->data['Store Code'],
                         'icon'      => 'tachometer',
                         'reference' => ''
                     );
 
                     break;
-                case 'orders':
 
-                    if ($user->get_number_stores() > 1) {
-                        $branch[] = array(
-                            'label'     => '('._('All stores').')',
-                            'icon'      => '',
-                            'reference' => 'orders/all'
-                        );
-                    }
-                    $store = new Store($state['parent_key']);
+
+                case 'basket_orders':
 
                     $branch[] = array(
-                        'label'     => _('Orders').' '.$store->data['Store Code'],
-                        'icon'      => '',
-                        'reference' => 'orders/'.$store->id
+                        'label'     => _('Orders in website').' '.$state['store']->data['Store Code'],
+                        'icon'      => 'globe',
+                        'reference' => ''
+                    );
+
+
+                    break;
+
+                case 'pending_orders':
+
+                    $branch[] = array(
+                        'label'     => _('Pending orders').' '.$state['store']->data['Store Code'],
+                        'icon'      => 'shopping-cart',
+                        'reference' => ''
+                    );
+
+
+                    break;
+
+                case 'orders':
+
+
+
+                    $branch[] = array(
+                        'label'     => _('Orders (Archive)').' '.$state['store']->data['Store Code'],
+                        'icon'      => 'archive',
+                        'reference' => ''
                     );
 
 
@@ -3544,29 +3551,42 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
                     } else {
-                        $store = new Store(
-                            $state['_object']->data['Order Store Key']
-                        );
 
-                        if ($user->get_number_stores() > 1) {
-                            $branch[] = array(
-                                'label'     => '('._('All stores').')',
-                                'icon'      => '',
-                                'reference' => 'orders/all'
-                            );
+
+                        switch ($state['_object']->get('Order Class')) {
+                            case 'Archived':
+                                $branch[] = array(
+                                    'label'     => _('Orders (Archive)').' '.$state['store']->data['Store Code'],
+                                    'icon'      => 'archive',
+                                    'reference' => 'orders/'.$state['store']->id
+                                );
+                                break;
+                            case 'InProcess':
+                                $branch[] = array(
+                                    'label'     => _('Pending orders').' '.$state['store']->data['Store Code'],
+                                    'icon'      => 'shopping-cart',
+                                    'reference' => 'orders/'.$state['store']->id.'/flow'
+                                );
+                                break;
+                            case 'InWebsite':
+                                $branch[] = array(
+                                    'label'     => _('Orders in website').' '.$state['store']->data['Store Code'],
+                                    'icon'      => 'globe',
+                                    'reference' => 'orders/'.$state['store']->id.'/website'
+                                );
+                                break;
+                            default:
+                                exit("Error order don't have class");
+                                break;
                         }
-                        $branch[] = array(
-                            'label'     => _('Orders').' '.$store->data['Store Code'],
-                            'icon'      => '',
-                            'reference' => 'orders/'.$store->id
-                        );
+
+
+
 
 
                     }
                     $branch[] = array(
-                        'label'     => $state['_object']->get(
-                            'Order Public ID'
-                        ),
+                        'label'     => $state['_object']->get('Order Public ID'),
                         'icon'      => 'shopping-cart',
                         'reference' => ''
                     );

@@ -172,6 +172,23 @@ switch ($tab) {
         );
         get_orders_element_numbers($db, $data['parameters'], $user);
         break;
+    case 'orders.pending':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'parameters' => array('type' => 'json array')
+                     )
+        );
+        get_orders_pending_element_numbers($db, $data['parameters'], $user);
+        break;
+    case 'orders.archived':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'parameters' => array('type' => 'json array')
+                     )
+        );
+        get_orders_archived_element_numbers($db, $data['parameters'], $user);
+        break;
+
     case 'invoices':
     case 'customer.invoices':
         $data = prepare_values(
@@ -1242,6 +1259,207 @@ function get_history_elements($db, $data) {
 
 
 }
+
+
+
+function get_orders_pending_element_numbers($db, $data, $user) {
+
+    if (!$user->can_view('orders')) {
+        echo json_encode(
+            array(
+                'state' => 405,
+                'resp'  => 'Forbidden'
+            )
+        );
+        exit;
+    }
+
+
+
+
+
+    $parent_key = $data['parent_key'];
+
+
+    switch ($data['parent']) {
+
+        case 'store':
+            $table = '`Order Dimension` O';
+            $where = sprintf('where  `Order Store Key`=%d', $parent_key);
+
+            $object = get_object('store', $parent_key);
+
+            break;
+
+        default:
+            exit ($data['parent']);
+            break;
+    }
+
+
+
+    $elements_numbers = array(
+
+        'flow'     => array(
+            'Basket'           => 0,
+            'Submitted_Unpaid' => 0,
+            'Submitted_Paid'   => 0,
+            'InWarehouse'      => 0,
+            'Packed'           => 0,
+            'Dispatch_Ready'   => 0,
+            'Dispatched_Today' => 0
+
+
+        )
+    );
+
+    if ($data['parent'] == 'account' or $data['parent'] == 'store') {
+        $elements_numbers['flow']['Basket']           = $object->get('Orders In Basket Number');
+        $elements_numbers['flow']['Submitted_Unpaid'] = $object->get('Orders In Process Not Paid Number');
+        $elements_numbers['flow']['Submitted_Paid']   = $object->get('Orders In Process Paid Number');
+        $elements_numbers['flow']['Packed']           = $object->get('Orders Packed Number');
+        $elements_numbers['flow']['Dispatch_Ready']   = $object->get('Orders In Dispatch Area Number');
+        $elements_numbers['flow']['Dispatched_Today'] = $object->get('Today Orders Dispatched');
+
+    }
+
+
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+
+
+}
+
+
+
+
+function get_orders_archived_element_numbers($db, $data, $user) {
+
+    if (!$user->can_view('orders')) {
+        echo json_encode(
+            array(
+                'state' => 405,
+                'resp'  => 'Forbidden'
+            )
+        );
+        exit;
+    }
+
+
+    list($db_interval, $from, $to, $from_date_1yb, $to_1yb) = calculate_interval_dates($db, $data['period'], $data['from'], $data['to']);
+
+
+    $parent_key = $data['parent_key'];
+
+
+    switch ($data['parent']) {
+        case 'account':
+            $table = '`Order Dimension` O';
+            $where = sprintf('where  true');
+
+            $object = get_object('account', 1);
+
+            break;
+        case 'store':
+            $table = '`Order Dimension` O';
+            $where = sprintf('where  `Order Store Key`=%d', $parent_key);
+
+            $object = get_object('store', $parent_key);
+
+            break;
+
+        default:
+            exit ($data['parent']);
+            break;
+    }
+
+    $where_interval = prepare_mysql_dates($from, $to, '`Order Date`');
+    $where_interval = $where_interval['mysql'];
+
+    $elements_numbers = array(
+        'dispatch' => array(
+
+            'Dispatched'        => 0,
+            'Cancelled'         => 0
+        ),
+        'source'   => array(
+            'Internet' => 0,
+            'Call'     => 0,
+            'Store'    => 0,
+            'Other'    => 0,
+            'Email'    => 0,
+            'Fax'      => 0
+        ),
+        'type'     => array(
+            'Order'    => 0,
+            'Sample'   => 0,
+            'Donation' => 0,
+            'Other'    => 0
+        )
+
+    );
+
+
+
+    //USE INDEX (`Main Source Type Store Key`)
+    $sql = sprintf(
+        "SELECT count(*) AS number,`Order Main Source Type` AS element FROM %s    %s  %s GROUP BY `Order Main Source Type` ", $table, $where, $where_interval
+    );
+
+  //  print $sql;
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $elements_numbers['source'][$row['element']] = number(
+                $row['number']
+            );
+        }
+    } else {
+        print "$sql";
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    // USE INDEX (`Type Store Key`)
+    $sql = sprintf(
+        "SELECT count(*) AS number,`Order Type` AS element FROM %s %s %s GROUP BY `Order Type` ", $table, $where, $where_interval
+    );
+    foreach ($db->query($sql) as $row) {
+
+        $elements_numbers['type'][$row['element']] = number($row['number']);
+    }
+    //USE INDEX (`Current Dispatch State Store Key`)
+
+
+    $sql = sprintf(
+        "SELECT count(*) AS number,`Order Current Dispatch State` AS element FROM %s  %s %s GROUP BY `Order Current Dispatch State` ", $table, $where, $where_interval
+    );
+    foreach ($db->query($sql) as $row) {
+
+        if ($row['element'] != '') {
+
+            if(isset($elements_numbers['dispatch'][$row['element']]))
+            $elements_numbers['dispatch'][$row['element']] = number($row['number']);
+        }
+    }
+
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+
+
+}
+
 
 
 function get_orders_element_numbers($db, $data, $user) {
