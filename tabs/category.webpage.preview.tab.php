@@ -20,6 +20,9 @@ $category = $state['_object'];
 $webpage  = $category->get_webpage();
 
 
+print_r($webpage);
+
+
 $smarty->assign('webpage', $webpage);
 
 
@@ -329,7 +332,6 @@ switch ($webpage->get('Page Store Content Template Filename')) {
 
 
 
-        print $webpage->id;
 
         if (  ( $webpage->id and $webpage->get('Content Data') == '' )    ) {
 
