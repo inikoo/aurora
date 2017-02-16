@@ -183,6 +183,9 @@ if ($page->data['Page Store Section Type']=='Family') {
 elseif ($page->data['Page Store Section Type']=='Department') {
 
 
+
+
+
 	$smarty->assign('_families', $page->get_families_data());
 	$department=new Department($page->data['Page Parent Key']);
 	$smarty->assign('department', $department);
@@ -200,6 +203,9 @@ elseif ($page->data['Page Store Section Type']=='Department') {
 
 
     $public_category->load_webpage();
+
+
+
 
     $public_customer=new Public_Customer($customer->id);
     $public_order=new Public_Order($order_in_process->id);
