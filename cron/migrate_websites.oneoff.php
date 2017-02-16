@@ -80,7 +80,8 @@ normalize_webpage_scopes($db);
 function normalize_webpage_scopes($db) {
 
 
-    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension`  ');
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` where `Page Key`=73 ');
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` where `Webpage Scope Key` is NULL or  `Webpage Scope Key`=0 ');
 
 
     if ($result = $db->query($sql)) {
@@ -95,6 +96,9 @@ function normalize_webpage_scopes($db) {
                 $scope = $webpage->scope;
 
 
+
+
+
                 if ($scope->get_object_name() == 'Product') {
                     $webpage->update(
                         array(
@@ -107,7 +111,6 @@ function normalize_webpage_scopes($db) {
 
 
                     $category = new Category($scope->id);
-
 
                     if ($category->get('Category Subject') == 'Product') {
 
@@ -138,6 +141,7 @@ function normalize_webpage_scopes($db) {
                                 ), 'no_history'
                             );
                         } elseif ($category->get('Category Root Key') == $store->get('Store Department Category Key')) {
+
                             $webpage->update(
                                 array(
                                     'Webpage Scope Metadata' => 'Department',
