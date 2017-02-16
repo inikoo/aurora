@@ -1066,9 +1066,9 @@ trait ProductCategory {
                     if ($row['Category Webpage Index Category Key'] == '') {
                         $null_stacks = true;
 
-
-                        $subject_webpage = new Public_Webpage('scope', 'Category', $row['Subject Key']);
                         $subject=new Public_Category($row['Subject Key']);
+
+                        $subject_webpage = new Public_Webpage('scope', ($subject->get('Category Subject')=='Category'?'Category Categories':'Category Products'), $subject->id);
 
 
                       //  print_r($subject_webpage);

@@ -37,7 +37,7 @@ class Public_Webpage {
     function get_data($tipo, $tag, $tag2 = false) {
 
         if ($tipo == 'scope') {
-
+/*
             // Todo (Migration)
             if ($tag == 'Category') {
 
@@ -100,7 +100,14 @@ class Public_Webpage {
                 'SELECT *FROM `Page Store Dimension`  PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Page Store Section Type`=%s  AND  `Page Parent Key`=%d ',
                 prepare_mysql($tag), $tag2
             );
+*/
 
+
+
+
+            $sql = sprintf(
+                "SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Webpage Scope`=%s AND `Webpage Scope Key`=%d ", prepare_mysql($tag), $tag2
+            );
 
         } elseif ($tipo == 'store_page_code') {
             $sql = sprintf(
