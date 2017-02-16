@@ -329,7 +329,7 @@ switch ($webpage->get('Page Store Content Template Filename')) {
 
 
 
-        print $webpage-id;
+        print $webpage->id;
 
         if (  ( $webpage->id and $webpage->get('Content Data') == '' )    ) {
 
