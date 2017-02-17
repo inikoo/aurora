@@ -41,7 +41,7 @@ class Page extends DB_Table {
         $this->scope         = false;
         $this->scope_load    = false;
 
-        $this->scope_found='';
+        $this->scope_found = '';
 
 
         if (!$arg1 and !$arg2) {
@@ -101,7 +101,6 @@ class Page extends DB_Table {
                 "SELECT * FROM `Page Dimension` WHERE  `Page Key`=%d", $tag
             );
         }
-
 
 
         $result = mysql_query($sql);
@@ -1284,6 +1283,19 @@ class Page extends DB_Table {
 
         switch ($field) {
 
+
+            case('Webpage Scope'):
+            case('Webpage Scope Key'):
+            case('Webpage Scope Metadata'):
+            case('Webpage Website Key'):
+            case('Webpage Store Key'):
+            case('Webpage State'):
+            case('Webpage Code'):
+
+                $this->update_field($field, $value, $options);
+                break;
+
+
             case 'Related Products':
 
                 $value = json_decode($value, true);
@@ -1526,13 +1538,6 @@ class Page extends DB_Table {
             case('Page Head Include'):
             case('Page Body Include'):
             case('Page Store Title'):
-            case('Webpage Scope'):
-            case('Webpage Scope Key'):
-            case('Webpage Scope Metadata'):
-
-
-                $this->update_field($field, $value, $options);
-                break;
 
             case('Page Store Source'):
                 $this->update_field($field, $value, $options);
@@ -2217,41 +2222,32 @@ class Page extends DB_Table {
             $this->scope       = new Public_Category($this->data['Page Parent Key']);
             $this->scope_found = 'Category';
 
-        }
-        elseif ($this->data['Page Store Section'] == 'Family Catalogue') {
-
-
-
-
-            include_once('class.Public_Category.php');
-            $store=new Store($this->get('Page Store Key'));
-            $category=new Public_Category('root_key_code',$store->get('Store Family Category Key'),$this->get('Code'));
-            if($category->id){
-                $this->scope       =$category;
-                $this->scope_found = 'Category';
-
-            }
-
-
-
-
-
-        }
-        elseif ($this->data['Page Store Section'] == 'Department Catalogue') {
+        } elseif ($this->data['Page Store Section'] == 'Family Catalogue') {
 
             include_once('class.Store.php');
 
             include_once('class.Public_Category.php');
-            $store=new Store($this->get('Page Store Key'));
-            $category=new Public_Category('root_key_code',$store->get('Store Department Category Key'),$this->get('Code'));
-            if($category->id){
-                $this->scope       =$category;
+            $store    = new Store($this->get('Page Store Key'));
+            $category = new Public_Category('root_key_code', $store->get('Store Family Category Key'), $this->get('Code'));
+            if ($category->id) {
+                $this->scope       = $category;
                 $this->scope_found = 'Category';
 
             }
 
 
+        } elseif ($this->data['Page Store Section'] == 'Department Catalogue') {
 
+            include_once('class.Store.php');
+
+            include_once('class.Public_Category.php');
+            $store    = new Store($this->get('Page Store Key'));
+            $category = new Public_Category('root_key_code', $store->get('Store Department Category Key'), $this->get('Code'));
+            if ($category->id) {
+                $this->scope       = $category;
+                $this->scope_found = 'Category';
+
+            }
 
 
         }
@@ -2285,8 +2281,6 @@ class Page extends DB_Table {
         $this->db->exec($sql);
 
         $this->load_scope();
-
-
 
 
         if ($this->scope_found == 'Category') {
@@ -6710,7 +6704,7 @@ class Page extends DB_Table {
 
         $parent_category  = new Category($this->get('Webpage Scope Key'));
         $subject_category = new Category($item_key);
-        $subject_webpage  = new Public_Webpage('scope', ($subject_category->get('Category Subject')=='Category'?'Category Categories':'Category Products'), $subject_category->id);
+        $subject_webpage  = new Public_Webpage('scope', ($subject_category->get('Category Subject') == 'Category' ? 'Category Categories' : 'Category Products'), $subject_category->id);
 
 
         if ($subject_webpage->id) {
@@ -7127,6 +7121,19 @@ class Page extends DB_Table {
 
         $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
 
+
+    }
+
+    function update_version() {
+
+        if (in_array($this->get('Page Store Content Template Filename'), array('products_showcase','categories_showcase')) and $this->get('Page Store Content Display Type') == 'Template') {
+            $version = 2;
+        } else {
+            $version = 1;
+
+        }
+
+        $this->update(array('Webpage Version'=>$version),'no_history');
 
     }
 
