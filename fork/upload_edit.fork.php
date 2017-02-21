@@ -50,6 +50,8 @@ function fork_upload_edit($job) {
     );
 
 
+  //  print_r($_data);
+
     $upload = new Upload('id', $fork_data['upload_key']);
 
     $upload->update(array('Upload State' => 'InProcess'));

@@ -186,9 +186,9 @@ class Part extends Asset {
 
             if (in_array(
                 $key, array(
-                    'Part XHTML Next Supplier Shipment',
-                    'Part XHTML Picking Location'
-                )
+                        'Part XHTML Next Supplier Shipment',
+                        'Part XHTML Picking Location'
+                    )
             )) {
                 $values .= prepare_mysql($value, false).",";
 
@@ -314,8 +314,7 @@ class Part extends Asset {
                         $row['Product Part Product ID']
                     );
                 } else {
-                    $products[$row['Product Part Product ID']]
-                        = $row['Product Part Product ID'];
+                    $products[$row['Product Part Product ID']] = $row['Product Part Product ID'];
                 }
 
 
@@ -351,28 +350,22 @@ class Part extends Asset {
 
                 switch ($this->data[$this->table_name.' Stock Status']) {
                     case 'Surplus':
-                        $stock_status
-                            = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true" title="'._('Surplus stock').'"></i>';
+                        $stock_status = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true" title="'._('Surplus stock').'"></i>';
                         break;
                     case 'Optimal':
-                        $stock_status
-                            = '<i class="fa fa-check-circle fa-fw" aria-hidden="true" title="'._('Optimal stock').'"></i>';
+                        $stock_status = '<i class="fa fa-check-circle fa-fw" aria-hidden="true" title="'._('Optimal stock').'"></i>';
                         break;
                     case 'Low':
-                        $stock_status
-                            = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true" title="'._('Low stock').'"></i>';
+                        $stock_status = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true" title="'._('Low stock').'"></i>';
                         break;
                     case 'Critical':
-                        $stock_status
-                            = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"  title="'._('Critical stock').'"></i>';
+                        $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"  title="'._('Critical stock').'"></i>';
                         break;
                     case 'Out_Of_Stock':
-                        $stock_status
-                            = '<i class="fa error fa-ban fa-fw" aria-hidden="true"  title="'._('Out of stock').'"></i>';
+                        $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true"  title="'._('Out of stock').'"></i>';
                         break;
                     case 'Error':
-                        $stock_status
-                            = '<i class="fa fa-question-circle fa-fw" aria-hidden="true"  title="'._('Error').'"></i>';
+                        $stock_status = '<i class="fa fa-question-circle fa-fw" aria-hidden="true"  title="'._('Error').'"></i>';
                         break;
                     default:
                         $stock_status = $this->data[$this->table_name.' Stock Status'];
@@ -457,19 +450,16 @@ class Part extends Asset {
                 include_once 'utils/natural_language.php';
 
 
-
-                $sko_cost=sprintf(_('SKO stock value %s'),
-                                   money($this->data['Part Cost in Warehouse'] , $account->get('Account Currency'))
+                $sko_cost = sprintf(
+                    _('SKO stock value %s'), money($this->data['Part Cost in Warehouse'], $account->get('Account Currency'))
 
                 );
 
 
+                $sko_recomended_price = sprintf(
+                    _('suggested SKO price: %s'), money($this->data['Part Unit Price'] * $this->data['Part Units Per Package'], $account->get('Account Currency'))
 
-                $sko_recomended_price=sprintf(_('suggested SKO price: %s'),
-                                   money($this->data['Part Unit Price'] * $this->data['Part Units Per Package'], $account->get('Account Currency'))
-
-                                   );
-
+                );
 
 
                 if ($this->data['Part Units Per Package'] != 0 and is_numeric(
@@ -483,8 +473,6 @@ class Part extends Asset {
                         ' (<span class="'.($unit_margin < 0 ? 'error' : '').'">%s '._('margin').'</span>)', percentage($unit_margin, $this->data['Part Unit Price'])
                     );
                 }
-
-
 
 
                 return $sko_cost.' <span class="discreet" style="margin-left:10px">'.$sko_recomended_price.'</span>';
@@ -563,9 +551,9 @@ class Part extends Asset {
                 }
 
                 return '<i '.($this->get('Part Barcode Key') ? 'class="fa fa-barcode button" onClick="change_view(\'inventory/barcode/'.$this->get('Part Barcode Key').'\')"' : 'class="fa fa-barcode"')
-                .' ></i><span class="Part_Barcode_Number ">'.$this->get(
-                    'Part Barcode Number'
-                ).'</span>';
+                    .' ></i><span class="Part_Barcode_Number ">'.$this->get(
+                        'Part Barcode Number'
+                    ).'</span>';
 
                 break;
 
@@ -579,10 +567,10 @@ class Part extends Asset {
 
                 if (in_array(
                     $this->data['Part Products Web Status'], array(
-                        'No Products',
-                        'Offline',
-                        'Out of Stock'
-                    )
+                                                               'No Products',
+                                                               'Offline',
+                                                               'Out of Stock'
+                                                           )
                 )) {
                     return '';
                 }
@@ -594,37 +582,36 @@ class Part extends Asset {
 
                     $available_forecast = '<span >'.sprintf(
                             _('%s in stock'), '<span  title="'.sprintf(
-                                "%s %s", number(
-                                $this->data['Part Days Available Forecast'], 1
-                            ), ngettext(
-                                    "day", "days", intval(
-                                        $this->data['Part Days Available Forecast']
-                                    )
-                                )
-                            ).'">'.seconds_to_until(
-                                $this->data['Part Days Available Forecast'] * 86400
-                            ).'</span>'
+                                                "%s %s", number(
+                                                $this->data['Part Days Available Forecast'], 1
+                                            ), ngettext(
+                                                    "day", "days", intval(
+                                                             $this->data['Part Days Available Forecast']
+                                                         )
+                                                )
+                                            ).'">'.seconds_to_until(
+                                                $this->data['Part Days Available Forecast'] * 86400
+                                            ).'</span>'
                         ).'</span>';
 
                     if ($this->data['Part Fresh'] == 'No') {
                         $available_forecast .= ' <i class="fa fa-fighter-jet padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
                     } else {
-                        $available_forecast
-                            = ' <i class="fa fa-lemon-o padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
+                        $available_forecast = ' <i class="fa fa-lemon-o padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
                     }
                 } else {
                     $available_forecast = '<span >'.sprintf(
                             _('%s availability'), '<span  title="'.sprintf(
-                                "%s %s", number(
-                                $this->data['Part Days Available Forecast'], 1
-                            ), ngettext(
-                                    "day", "days", intval(
-                                        $this->data['Part Days Available Forecast']
-                                    )
-                                )
-                            ).'">'.seconds_to_until(
-                                $this->data['Part Days Available Forecast'] * 86400
-                            ).'</span>'
+                                                    "%s %s", number(
+                                                    $this->data['Part Days Available Forecast'], 1
+                                                ), ngettext(
+                                                        "day", "days", intval(
+                                                                 $this->data['Part Days Available Forecast']
+                                                             )
+                                                    )
+                                                ).'">'.seconds_to_until(
+                                                    $this->data['Part Days Available Forecast'] * 86400
+                                                ).'</span>'
                         ).'</span>';
 
 
@@ -642,10 +629,10 @@ class Part extends Asset {
                     );
 
                     return '<img src="/art/flags/'.strtolower(
-                        $country->get('Country 2 Alpha Code')
-                    ).'.gif" title="'.$country->get('Country Code').'"> '._(
-                        $country->get('Country Name')
-                    );
+                            $country->get('Country 2 Alpha Code')
+                        ).'.gif" title="'.$country->get('Country Code').'"> '._(
+                            $country->get('Country Name')
+                        );
                 } else {
                     return '';
                 }
@@ -672,8 +659,8 @@ class Part extends Asset {
                 } else {
                     return strftime(
                         "%a, %e %b %y", strtotime(
-                            $this->data['Part Next Supplier Shipment'].' +0:00'
-                        )
+                                          $this->data['Part Next Supplier Shipment'].' +0:00'
+                                      )
                     );
                 }
                 break;
@@ -709,37 +696,36 @@ class Part extends Asset {
             case('Valid From Datetime'):
 
                 return strftime(
-                    "%a %e %b %Y %H:%M %Z", strtotime($this->data['Part Valid From'] . ' +0:00')
+                    "%a %e %b %Y %H:%M %Z", strtotime($this->data['Part Valid From'].' +0:00')
                 );
                 break;
             case('Valid To'):
                 return strftime(
-                    "%a %e %b %Y %H:%M %Z", strtotime($this->data['Part Valid To'] . ' +0:00')
+                    "%a %e %b %Y %H:%M %Z", strtotime($this->data['Part Valid To'].' +0:00')
                 );
                 break;
             case 'Package Description Image':
 
-                $image='';
+                $image = '';
 
-                $sql=sprintf('select `Image Subject Image Key`  from `Image Subject Bridge` where `Image Subject Object` = "Part" AND `Image Subject Object Key` =%d and `Image Subject Object Image Scope`="SKO"  ' ,
-                             $this->id
-                             );
+                $sql = sprintf(
+                    'SELECT `Image Subject Image Key`  FROM `Image Subject Bridge` WHERE `Image Subject Object` = "Part" AND `Image Subject Object Key` =%d AND `Image Subject Object Image Scope`="SKO"  ',
+                    $this->id
+                );
 
 
-
-                if ($result=$this->db->query($sql)) {
-                		foreach ($result as $row) {
-                            $image.=sprintf('<img src="/image_root.php?id=%d&size=thumbnail"> ',$row['Image Subject Image Key']);
-                		}
-                }else {
-                		print_r($error_info=$this->db->errorInfo());
-                		print "$sql\n";
-                		exit;
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        $image .= sprintf('<img src="/image_root.php?id=%d&size=thumbnail"> ', $row['Image Subject Image Key']);
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
                 }
 
 
-
-                    return $image;
+                return $image;
 
                 break;
             default:
@@ -935,13 +921,11 @@ class Part extends Asset {
             foreach ($result as $row) {
 
                 if ($scope == 'objects') {
-                    $suppliers[$row['Supplier Part Supplier Key']]
-                        = new Supplier_Production(
+                    $suppliers[$row['Supplier Part Supplier Key']] = new Supplier_Production(
                         $row['Supplier Part Supplier Key']
                     );
                 } else {
-                    $suppliers[$row['Supplier Part Supplier Key']]
-                        = $row['Supplier Part Supplier Key'];
+                    $suppliers[$row['Supplier Part Supplier Key']] = $row['Supplier Part Supplier Key'];
                 }
 
 
@@ -1064,8 +1048,6 @@ class Part extends Asset {
         );
 
 
-
-
         $part_locations = array();
 
 
@@ -1073,8 +1055,7 @@ class Part extends Asset {
             foreach ($result as $row) {
 
                 if ($scope == 'keys') {
-                    $part_locations[$row['Location Key']]
-                        = $row['Location Key'];
+                    $part_locations[$row['Location Key']] = $row['Location Key'];
                 } elseif ($scope == 'objects') {
                     $part_locations[$row['Location Key']] = new Location(
                         $row['Location Key']
@@ -1111,7 +1092,7 @@ class Part extends Asset {
                         'location_key' => $row['Location Key'],
                         'part_sku'     => $row['Part SKU'],
 
-                        'location_code'          => $row['Location Code'],
+                        'location_code' => $row['Location Code'],
 
 
                         'location_used_for_icon' => $used_for,
@@ -1124,7 +1105,7 @@ class Part extends Asset {
                         'move_qty'               => $row['Moving Quantity'],
 
                         'can_pick' => $row['Can Pick'],
-                        'label'=>($row['Can Pick']=='Yes'?_('Picking location') : _('Set as picking location') )
+                        'label'    => ($row['Can Pick'] == 'Yes' ? _('Picking location') : _('Set as picking location'))
 
 
                     );
@@ -1191,9 +1172,9 @@ class Part extends Asset {
 
         $msg = new_housekeeping_fork(
             'au_housekeeping', array(
-                'type'     => 'update_part_products_availability',
-                'part_sku' => $this->id
-            ), $account->get('Account Code')
+            'type'     => 'update_part_products_availability',
+            'part_sku' => $this->id
+        ), $account->get('Account Code')
         );
 
 
@@ -1356,8 +1337,7 @@ class Part extends Asset {
                 }
 
 
-                $this->data['Part Days Available Forecast']
-                                                                 = $this->data['Part Current Stock'] / ($this->data['Part 1 Quarter Acc Dispatched'] / $days_on_sale);
+                $this->data['Part Days Available Forecast']      = $this->data['Part Current Stock'] / ($this->data['Part 1 Quarter Acc Dispatched'] / $days_on_sale);
                 $this->data['Part XHTML Available For Forecast'] = number(
                         $this->data['Part Days Available Forecast'], 0
                     ).' '._('d');
@@ -1368,11 +1348,9 @@ class Part extends Asset {
                         $this->data['Part Valid From']
                     ) / 86400);
                 if ($from_since < ($this->data['Part Excess Availability Days Limit'] / 2)) {
-                    $forecast
-                        = $this->data['Part Excess Availability Days Limit'] - 1;
+                    $forecast = $this->data['Part Excess Availability Days Limit'] - 1;
                 } else {
-                    $forecast
-                        = $this->data['Part Excess Availability Days Limit'] + $from_since;
+                    $forecast = $this->data['Part Excess Availability Days Limit'] + $from_since;
                 }
 
 
@@ -1470,7 +1448,7 @@ class Part extends Asset {
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
-        global  $account;
+        global $account;
 
         if ($this->update_asset_field_switcher(
             $field, $value, $options, $metadata
@@ -1807,11 +1785,9 @@ class Part extends Asset {
                             $this->db->exec($sql);
 
                             if (isset($materials_to_update[$material_data['id']])) {
-                                $materials_to_update[$material_data['id']]
-                                    = false;
+                                $materials_to_update[$material_data['id']] = false;
                             } else {
-                                $materials_to_update[$material_data['id']]
-                                    = true;
+                                $materials_to_update[$material_data['id']] = true;
                             }
 
                         }
@@ -1939,9 +1915,8 @@ class Part extends Asset {
                         //print $sql;
                         if ($result = $this->db->query($sql)) {
                             foreach ($result as $row) {
-                                $purchase_order_keys[$row['Purchase Order Key']]
-                                     = $row['Purchase Order Key'];
-                                $sql = sprintf(
+                                $purchase_order_keys[$row['Purchase Order Key']] = $row['Purchase Order Key'];
+                                $sql                                             = sprintf(
                                     'UPDATE `Purchase Order Transaction Fact` SET  `Purchase Order Weight`=%f WHERE `Purchase Order Transaction Fact Key`=%d',
                                     $this->get('Part Package Weight') * $row['Supplier Part Packages Per Carton'] * $row['Purchase Order Quantity'], $row['Purchase Order Transaction Fact Key']
                                 );
@@ -2051,36 +2026,25 @@ class Part extends Asset {
 
                 $account->update_parts_data();
 
+                if (file_exists('widgets/inventory_alerts.wget.php')) {
+                    include_once('widgets/inventory_alerts.wget.php');
+                    global $smarty;
 
-                include_once ('widgets/inventory_alerts.wget.php');
-                global $smarty;
-
-                $_data = get_widget_data(
-
-                    $account->get('Account Active Parts Number')-$account->get('Account Active Parts with SKO Barcode Number'),
-                    $account->get('Account Active Parts Number'),
-                    0,
-                    0);
+                    if (is_object($smarty)) {
 
 
+                        $_data = get_widget_data(
+
+                            $account->get('Account Active Parts Number') - $account->get('Account Active Parts with SKO Barcode Number'), $account->get('Account Active Parts Number'), 0, 0
+                        );
 
 
+                        $smarty->assign('data', $_data);
 
 
-
-
-                    $smarty->assign('data', $_data);
-
-
-
-
-                $this->update_metadata = array(
-                   'parts_with_no_sko_barcode' => $smarty->fetch('dashboard/inventory.parts_with_no_sko_barcode.dbard.tpl')
-
-
-
-                );
-
+                        $this->update_metadata = array('parts_with_no_sko_barcode' => $smarty->fetch('dashboard/inventory.parts_with_no_sko_barcode.dbard.tpl'));
+                    }
+                }
                 break;
             case 'Part UN Number':
             case 'Part UN Class':
@@ -2166,11 +2130,11 @@ class Part extends Asset {
 
                 if (!in_array(
                     $value, array(
-                        'In Use',
-                        'Not In Use',
-                        'Discontinuing',
-                        'In Process'
-                    )
+                              'In Use',
+                              'Not In Use',
+                              'Discontinuing',
+                              'In Process'
+                          )
                 )
                 ) {
                     $this->error = true;
@@ -2256,11 +2220,9 @@ class Part extends Asset {
             foreach ($result as $row) {
 
                 if ($scope == 'objects') {
-                    $supplier_parts[$row['Supplier Part Key']]
-                        = new SupplierPart($row['Supplier Part Key']);
+                    $supplier_parts[$row['Supplier Part Key']] = new SupplierPart($row['Supplier Part Key']);
                 } else {
-                    $supplier_parts[$row['Supplier Part Key']]
-                        = $row['Supplier Part Key'];
+                    $supplier_parts[$row['Supplier Part Key']] = $row['Supplier Part Key'];
                 }
 
 
@@ -2272,31 +2234,6 @@ class Part extends Asset {
 
         return $supplier_parts;
     }
-
-
-    function get_stock_supplier_data(){
-
-        // todo create a way to know what is the supplier based in stock
-
-        $supplier_key=0;
-        $supplier_part_key=0;
-        $supplier_part_historic_key=0;
-
-
-
-
-        foreach($this-> get_supplier_parts('objects') as $supplier_part){
-            $supplier_key=$supplier_part->get('Supplier Part Supplier Key');
-            $supplier_part_key=$supplier_part->id;
-            $supplier_part_historic_key=$supplier_part->get('Supplier Part Historic Key');
-            break;
-        }
-
-
-        return array($supplier_key,$supplier_part_key, $supplier_part_historic_key);
-    }
-
-
 
     function get_category_data() {
 
@@ -2451,6 +2388,30 @@ class Part extends Asset {
 
     }
 
+    function get_stock_supplier_data() {
+
+        // todo create a way to know what is the supplier based in stock
+
+        $supplier_key               = 0;
+        $supplier_part_key          = 0;
+        $supplier_part_historic_key = 0;
+
+
+        foreach ($this->get_supplier_parts('objects') as $supplier_part) {
+            $supplier_key               = $supplier_part->get('Supplier Part Supplier Key');
+            $supplier_part_key          = $supplier_part->id;
+            $supplier_part_historic_key = $supplier_part->get('Supplier Part Historic Key');
+            break;
+        }
+
+
+        return array(
+            $supplier_key,
+            $supplier_part_key,
+            $supplier_part_historic_key
+        );
+    }
+
     function update_on_demand() {
 
         $on_demand_available = 'No';
@@ -2507,11 +2468,9 @@ class Part extends Asset {
             foreach ($result as $row) {
 
                 if ($scope == 'objects') {
-                    $suppliers[$row['Supplier Part Supplier Key']]
-                        = new Supplier($row['Supplier Part Supplier Key']);
+                    $suppliers[$row['Supplier Part Supplier Key']] = new Supplier($row['Supplier Part Supplier Key']);
                 } else {
-                    $suppliers[$row['Supplier Part Supplier Key']]
-                        = $row['Supplier Part Supplier Key'];
+                    $suppliers[$row['Supplier Part Supplier Key']] = $row['Supplier Part Supplier Key'];
                 }
 
 
@@ -2728,7 +2687,7 @@ class Part extends Asset {
         //print $sql;
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-              //  print_r($row);
+                //  print_r($row);
                 $stock_in_paid_orders = $row['required'];
             }
         } else {
@@ -2737,7 +2696,7 @@ class Part extends Asset {
             exit;
         }
 
-       // print "$sql\n";
+        // print "$sql\n";
         $this->update(
             array(
                 'Part Current Stock Ordered Paid' => $stock_in_paid_orders
@@ -2949,8 +2908,7 @@ class Part extends Asset {
             if (array_key_exists($row['Location Key'], $locations_data)) {
                 $locations_data[$row['Location Key']] += $row['Inventory Transaction Quantity'];
             } else {
-                $locations_data[$row['Location Key']]
-                    = $row['Inventory Transaction Quantity'];
+                $locations_data[$row['Location Key']] = $row['Inventory Transaction Quantity'];
             }
 
             $stock += $row['Inventory Transaction Quantity'];
@@ -2968,8 +2926,9 @@ class Part extends Asset {
     function update_sales_from_invoices($interval, $this_year = true, $last_year = true) {
 
         include_once 'utils/date_functions.php';
-        list($db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb)
-            = calculate_interval_dates($this->db, $interval);
+        list(
+            $db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb
+            ) = calculate_interval_dates($this->db, $interval);
 
 
         if ($this_year) {
@@ -3759,58 +3718,60 @@ class Part extends Asset {
 
     }
 
-    function get_picking_locations($qty=1) {
+    function get_picking_locations($qty = 1) {
 
 
         include_once 'class.PartLocation.php';
 
-        $this->unknown_location_associated=false;
-        $locations=array();
-        $locations_data=array();
-        $sql=sprintf("select `Location Key` from `Part Location Dimension` where `Part SKU` in (%s) order by `Can Pick` ;", $this->sku);
+        $this->unknown_location_associated = false;
+        $locations                         = array();
+        $locations_data                    = array();
+        $sql                               = sprintf("SELECT `Location Key` FROM `Part Location Dimension` WHERE `Part SKU` IN (%s) ORDER BY `Can Pick` ;", $this->sku);
 
-       // print $sql;
+        // print $sql;
 
 
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $part_location = new PartLocation($this->sku.'_'.$row['Location Key']);
+                //list($stock,$value,$in_process)=$part_location->get_stock();
+                $stock = $part_location->data['Quantity On Hand'];
 
-        if ($result=$this->db->query($sql)) {
-        		foreach ($result as $row) {
-                    $part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
-                    //list($stock,$value,$in_process)=$part_location->get_stock();
-                    $stock=$part_location->data['Quantity On Hand'];
-
-                    $locations_data[]=array('location_key'=>$row['Location Key'], 'stock'=>$stock);
-        		}
-        }else {
-        		print_r($error_info=$this->db->errorInfo());
-        		print "$sql\n";
-        		exit;
+                $locations_data[] = array(
+                    'location_key' => $row['Location Key'],
+                    'stock'        => $stock
+                );
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
 
+        $number_associated_locations = count($locations_data);
 
-
-        $number_associated_locations=count($locations_data);
-
-        if ($number_associated_locations==0) {
-            $this->unknown_location_associated=true;
-            $locations[]= array('location_key'=>1, 'qty'=>$qty);
-          //  $qty=0;
-        }else {
+        if ($number_associated_locations == 0) {
+            $this->unknown_location_associated = true;
+            $locations[]                       = array(
+                'location_key' => 1,
+                'qty'          => $qty
+            );
+            //  $qty=0;
+        } else {
 
             foreach ($locations_data as $location_data) {
 
-                $locations[]=array('location_key'=>$location_data['location_key'], 'qty'=>$qty);
+                $locations[] = array(
+                    'location_key' => $location_data['location_key'],
+                    'qty'          => $qty
+                );
                 break;
-
-
-
 
 
             }
             //print_r($locations);
             //print "--- $qty\n";
-
 
 
         }
@@ -3819,7 +3780,6 @@ class Part extends Asset {
         return $locations;
 
     }
-
 
 
 }
