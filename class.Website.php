@@ -198,7 +198,7 @@ class Website extends DB_Table {
                              prepare_mysql($webpage_type['code'])
                 );
 
-                $db->exec($sql);
+                $this->db->exec($sql);
 
             }
 
