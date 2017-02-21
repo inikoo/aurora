@@ -188,7 +188,7 @@ class Website extends DB_Table {
             $this->setup_templates();
 
 
-            include_once 'conf/webpage_types.php';
+            include 'conf/webpage_types.php';
 
             foreach ($webpage_types as $webpage_type){
 

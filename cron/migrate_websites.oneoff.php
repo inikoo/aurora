@@ -87,7 +87,7 @@ normalize_webpage_scopes($db);
 
 function create_webpage_types($db) {
 
-    include_once 'conf/webpage_types.php';
+    include 'conf/webpage_types.php';
 
     $sql = sprintf('SELECT * FROM `Website Dimension` ');
     if ($result = $db->query($sql)) {
