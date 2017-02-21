@@ -12,17 +12,18 @@
 
 $table = '`Page Store Dimension` ';
 
+$where = 'where `Webpage State`="Online"';
+
 switch ($parameters['parent']) {
 
     case('website'):
-        $where = sprintf(
-            ' where  `Webpage Website Key`=%d  ', $parameters['parent_key']
-        );
+        $where .= sprintf(' and  `Webpage Website Key`=%d  ', $parameters['parent_key']);
+        break;
+    case('webpage_type'):
+        $where .= sprintf(' and  `Webpage Type Key`=%d  ', $parameters['parent_key']);
         break;
     case('node'):
-        $where = sprintf(
-            ' where  `Webpage Parent Key`=%d  ', $parameters['parent_key']
-        );
+        $where .= sprintf(' and  `Webpage Parent Key`=%d  ', $parameters['parent_key']);
         break;
     default:
         exit('parent not configured '.$parameters['parent']);
@@ -35,25 +36,21 @@ $group = '';
 if (isset($parameters['elements_type'])) {
 
     switch ($parameters['elements_type']) {
-        case 'state':
+        case 'type':
             $_elements      = '';
             $count_elements = 0;
-            foreach (
-                $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
-            ) {
+            foreach ($parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value) {
                 if ($_value['selected']) {
                     $count_elements++;
-                    $_elements .= ','.prepare_mysql($_key);
+                    $_elements .= ','.prepare_mysql(preg_replace('/_/',' ',$_key));
 
                 }
             }
-
-
             $_elements = preg_replace('/^\,/', '', $_elements);
             if ($_elements == '') {
                 $where .= ' and false';
-            } elseif ($count_elements < 2) {
-                $where .= ' and `Webpage State` in ('.$_elements.')';
+            } elseif ($count_elements < 5) {
+                $where .= ' and `Webpage Scope` in ('.$_elements.')';
 
             }
             break;
@@ -109,7 +106,12 @@ if ($order == 'code') {
 
 $sql_totals = "select count(Distinct `Page Key`) as num from $table  $where  ";
 
+
+
 $fields = "`Page Key` as `Webpage Key` ,`Webpage Code`,`Webpage State`,`Webpage Scope`,`Webpage Website Key`,`Webpage Version`";
+
+
+
 
 /*
 $table = '`Webpage Dimension` N';

@@ -59,6 +59,12 @@ switch ($tipo) {
     case 'webpages':
         webpages(get_table_parameters(), $db, $user);
         break;
+    case 'online_webpages':
+        webpages_online(get_table_parameters(), $db, $user);
+        break;
+    case 'offline_webpages':
+        webpages_offline(get_table_parameters(), $db, $user);
+        break;
     case 'root_nodes':
         root_nodes(get_table_parameters(), $db, $user);
         break;
@@ -77,6 +83,11 @@ switch ($tipo) {
     case 'users':
         users(get_table_parameters(), $db, $user);
         break;
+    case 'webpage_types':
+        webpage_types(get_table_parameters(), $db, $user);
+        break;
+
+
     default:
         $response = array(
             'state' => 405,
@@ -489,10 +500,18 @@ function root_nodes($_data, $db, $user) {
 
     foreach ($db->query($sql) as $data) {
 
+        if ($data['Webpage State'] == 'Online') {
+            $state = '<i class="fa fa-globe" aria-hidden="true"></i>';
+        } else {
+            $state = '<i class="fa fa-globe very_discreet" aria-hidden="true"></i>';
+
+        }
+
         $adata[] = array(
-            'id'   => (integer)$data['Website Node Key'],
-            'code' => $data['Webpage Code'],
-            'name' => $data['Webpage Name'],
+            'id'    => (integer)$data['Website Node Key'],
+            'code'  => $data['Webpage Code'],
+            'name'  => $data['Webpage Name'],
+            'state' => $state
 
 
         );
@@ -525,40 +544,6 @@ function nodes($_data, $db, $user) {
 
         $adata[] = array(
             'id'   => (integer)$data['Website Node Key'],
-            'code' => $data['Webpage Code'],
-            'name' => $data['Webpage Name'],
-
-
-        );
-
-    }
-
-    $response = array(
-        'resultset' => array(
-            'state'         => 200,
-            'data'          => $adata,
-            'rtext'         => $rtext,
-            'sort_key'      => $_order,
-            'sort_dir'      => $_dir,
-            'total_records' => $total
-
-        )
-    );
-    echo json_encode($response);
-}
-
-function webpages($_data, $db, $user) {
-
-    $rtext_label = 'webpage';
-    include_once 'prepare_table/init.php';
-
-    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
-
-    foreach ($db->query($sql) as $data) {
-
-        $adata[] = array(
-            'id'   => (integer)$data['Webpage Key'],
             'code' => $data['Webpage Code'],
             'name' => $data['Webpage Name'],
 
@@ -688,72 +673,72 @@ function templates($_data, $db, $user) {
         switch ($data['Template Scope']) {
             case 'Product':
                 $scope_icon = sprintf('<i class="fa fa-cube" aria-hidden="true" label="%s"></i>', _('Product'));
-                $scope = _('Product');
+                $scope      = _('Product');
                 break;
             case 'Blank':
                 $scope_icon = sprintf('<i class="fa fa-file-o" aria-hidden="true" label="%s"></i>', _('Blank'));
-                $scope = _('Blank');
+                $scope      = _('Blank');
                 break;
             case 'Category':
                 $scope_icon = sprintf('<i class="fa fa-cubes" aria-hidden="true" label="%s"></i>', _('Category'));
-                $scope = _('Category');
+                $scope      = _('Category');
                 break;
             case 'Categories':
                 $scope_icon = sprintf('<i class="fa fa-table" aria-hidden="true" label="%s"></i>', _('Categories'));
-                $scope = _('Categories');
+                $scope      = _('Categories');
                 break;
             case 'Basket':
                 $scope_icon = sprintf('<i class="fa fa-shopping-basket" aria-hidden="true" label="%s"></i>', _('Basket'));
-                $scope = _('Basket');
+                $scope      = _('Basket');
                 break;
             case 'Checkout':
                 $scope_icon = sprintf('<i class="fa fa-credit-card" aria-hidden="true" label="%s"></i>', _('Checkout'));
-                $scope = _('Checkout');
+                $scope      = _('Checkout');
                 break;
             case 'Hub':
                 $scope_icon = sprintf('<i class="fa fa-sitemap" aria-hidden="true" label="%s"></i>', _('Hub'));
-                $scope = _('Hub');
+                $scope      = _('Hub');
                 break;
             case 'Header':
                 $scope_icon = sprintf('<i class="fa fa-header" aria-hidden="true" label="%s"></i>', _('Header'));
-                $scope = _('Header');
+                $scope      = _('Header');
                 break;
             case 'Footer':
                 $scope_icon = sprintf('<i class="fa fa-minus" aria-hidden="true" label="%s"></i>', _('Footer'));
-                $scope = _('Footer');
+                $scope      = _('Footer');
                 break;
             case 'Home':
                 $scope_icon = sprintf('<i class="fa fa-home" aria-hidden="true" label="%s"></i>', _('Home'));
-                $scope = _('Home');
+                $scope      = _('Home');
                 break;
             case 'Login':
                 $scope_icon = sprintf('<i class="fa fa-sign-in" aria-hidden="true" label="%s"></i>', _('Login'));
-                $scope = _('Login');
+                $scope      = _('Login');
                 break;
             case 'Contact':
                 $scope_icon = sprintf('<i class="fa fa-phone" aria-hidden="true" label="%s"></i>', _('Contact'));
-                $scope = _('Contact');
+                $scope      = _('Contact');
                 break;
             case 'Register':
                 $scope_icon = sprintf('<i class="fa fa-user-plus" aria-hidden="true" label="%s"></i>', _('Register'));
-                $scope = _('Register');
+                $scope      = _('Register');
                 break;
             case 'ResetPwd':
                 $scope_icon = sprintf('<i class="fa fa-key" aria-hidden="true" label="%s"></i>', _('Reset password'));
-                $scope = _('Reset password');
+                $scope      = _('Reset password');
 
                 break;
             case 'Profile':
-                $scope_icon =sprintf('<i class="fa fa-user" aria-hidden="true" label="%s"></i>', _('Profile'));
-                $scope = _('Product');
+                $scope_icon = sprintf('<i class="fa fa-user" aria-hidden="true" label="%s"></i>', _('Profile'));
+                $scope      = _('Product');
                 break;
             case 'Orders':
                 $scope_icon = sprintf('<i class="fa fa-shopping-cart" aria-hidden="true" label="%s"></i>', _('Orders'));
-                $scope = _('Orders');
+                $scope      = _('Orders');
                 break;
             default:
                 $scope_icon = $data['Template Scope'];
-                $scope =  $data['Template Scope'];
+                $scope      = $data['Template Scope'];
                 break;
         }
 
@@ -788,17 +773,15 @@ function templates($_data, $db, $user) {
         }
 
 
-
         $adata[] = array(
-            'id'     => (integer)$data['Template Key'],
-            'code'   => sprintf('<span class="link" onclick="change_view(\'website/%d/template/%d\')">%s</span>', $data['Template Website Key'], $data['Template Key'], $data['Template Code']),
-            'device' => $device,
-            'type'  => $type,
-            'scope_icon'  => $scope_icon,
-            'scope'  => $scope,
+            'id'         => (integer)$data['Template Key'],
+            'code'       => sprintf('<span class="link" onclick="change_view(\'website/%d/template/%d\')">%s</span>', $data['Template Website Key'], $data['Template Key'], $data['Template Code']),
+            'device'     => $device,
+            'type'       => $type,
+            'scope_icon' => $scope_icon,
+            'scope'      => $scope,
             'web_pages'  => number($data['Template Number Webpages']),
-            'versions'  => number($data['Template Number Webpage Versions']),
-
+            'versions'   => number($data['Template Number Webpage Versions']),
 
 
         );
@@ -816,6 +799,282 @@ function templates($_data, $db, $user) {
 
         )
     );
+    echo json_encode($response);
+}
+
+
+function webpages($_data, $db, $user) {
+
+    $rtext_label = 'webpage';
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+
+    $adata = array();
+
+    foreach ($db->query($sql) as $data) {
+
+        if ($data['Webpage State'] == 'Online') {
+            $state = '<i class="fa fa-globe" aria-hidden="true"></i>';
+        } else {
+            $state = '<i class="fa fa-globe very_discreet" aria-hidden="true"></i>';
+
+        }
+
+        switch ($data['Webpage Scope']) {
+            case 'Product':
+                $type = sprintf('<i class="fa fa-leaf" aria-hidden="true" title="" ></i>', _('Product'));
+                break;
+            case 'Info':
+                $type = sprintf('<i class="fa fa-info" aria-hidden="true" title="" ></i>', _('Info'));
+                break;
+            case 'Category Products':
+                $type = sprintf('<i class="fa fa-pagelines" aria-hidden="true" title="" ></i>', _('Products'));
+
+                break;
+            case 'Category Categories':
+                $type = sprintf('<i class="fa fa-tree" aria-hidden="true" title="" ></i>', _('Categories'));
+
+                break;
+            case 'Operations':
+                $type = sprintf('<i class="fa fa-keyboard-o" aria-hidden="true" title="" ></i>', _('Operations'));
+
+                break;
+            default:
+                $type = $data['Webpage State'];
+                break;
+        }
+
+        $adata[] = array(
+            'id'      => (integer)$data['Webpage Key'],
+            'code'    => sprintf('<span class="link" onclick="change_view(\'website/%d/page/%d\')">%s</span>', $data['Webpage Website Key'], $data['Webpage Key'], $data['Webpage Code']),
+            'state'   => $state,
+            'type'    => $type,
+            'version' => number_format($data['Webpage Version'], 1),
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function webpages_online($_data, $db, $user) {
+
+    $rtext_label = 'webpage online';
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+
+    $adata = array();
+
+    foreach ($db->query($sql) as $data) {
+
+        if ($data['Webpage State'] == 'Online') {
+            $state = '<i class="fa fa-globe" aria-hidden="true"></i>';
+        } else {
+            $state = '<i class="fa fa-globe very_discreet" aria-hidden="true"></i>';
+
+        }
+
+        switch ($data['Webpage Scope']) {
+            case 'Product':
+                $type = sprintf('<i class="fa fa-leaf padding_left_10" aria-hidden="true" title="" ></i>', _('Product'));
+                break;
+            case 'Info':
+                $type = sprintf('<i class="fa fa-info padding_left_10" aria-hidden="true" title="" ></i>', _('Info'));
+                break;
+            case 'Category Products':
+                $type = sprintf('<i class="fa fa-pagelines padding_left_10" aria-hidden="true" title="" ></i>', _('Products'));
+
+                break;
+            case 'Category Categories':
+                $type = sprintf('<i class="fa fa-tree padding_left_10" aria-hidden="true" title="" ></i>', _('Categories'));
+
+                break;
+            case 'Operations':
+                $type = sprintf('<i class="fa fa-keyboard-o padding_left_10" aria-hidden="true" title="" ></i>', _('Operations'));
+
+                break;
+            default:
+                $type = $data['Webpage State'];
+                break;
+        }
+
+        $adata[] = array(
+            'id'      => (integer)$data['Webpage Key'],
+            'code'    => sprintf('<span class="link" onclick="change_view(\'website/%d/page/%d\')">%s</span>', $data['Webpage Website Key'], $data['Webpage Key'], $data['Webpage Code']),
+            'state'   => $state,
+            'type'    => $type,
+            'version' => number_format($data['Webpage Version'], 1),
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function webpages_offline($_data, $db, $user) {
+
+    $rtext_label = 'webpage offline';
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+
+    $adata = array();
+
+    foreach ($db->query($sql) as $data) {
+
+        if ($data['Webpage State'] == 'Online') {
+            $state = '<i class="fa fa-globe" aria-hidden="true"></i>';
+        } else {
+            $state = '<i class="fa fa-globe very_discreet" aria-hidden="true"></i>';
+
+        }
+
+        switch ($data['Webpage Scope']) {
+            case 'Product':
+                $type = sprintf('<i class="fa fa-leaf" aria-hidden="true" title="" ></i>', _('Product'));
+                break;
+            case 'Info':
+                $type = sprintf('<i class="fa fa-info" aria-hidden="true" title="" ></i>', _('Info'));
+                break;
+            case 'Category Products':
+                $type = sprintf('<i class="fa fa-pagelines" aria-hidden="true" title="" ></i>', _('Products'));
+
+                break;
+            case 'Category Categories':
+                $type = sprintf('<i class="fa fa-tree" aria-hidden="true" title="" ></i>', _('Categories'));
+
+                break;
+            case 'Operations':
+                $type = sprintf('<i class="fa fa-keyboard-o" aria-hidden="true" title="" ></i>', _('Operations'));
+
+                break;
+            default:
+                $type = $data['Webpage State'];
+                break;
+        }
+
+        $adata[] = array(
+            'id'      => (integer)$data['Webpage Key'],
+            'code'    => sprintf('<span class="link" onclick="change_view(\'website/%d/page/%d\')">%s</span>', $data['Webpage Website Key'], $data['Webpage Key'], $data['Webpage Code']),
+            'state'   => $state,
+            'type'    => $type,
+            'version' => number_format($data['Webpage Version'], 1),
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function webpage_types($_data, $db, $user) {
+
+    // $rtext_label = 'job position';
+    include_once 'prepare_table/init.php';
+
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+            switch ($data['Webpage Type Code']) {
+                case 'Ops':
+                    $label = _('System');
+                    break;
+                case 'Info':
+                    $label = _('Info');
+                    break;
+                case 'Prods':
+                    $label = _('Products');
+                    break;
+                case 'Prod':
+                    $label = _('Product');
+                    break;
+                case 'Cats':
+                    $label = _('Categories');
+                    break;
+                default:
+                    $label = $data['Webpage Type Code'];
+                    break;
+            }
+
+
+            $adata[] = array(
+                'id'              => $data['Webpage Type Key'],
+                'code'           => sprintf('<span class="button" onClick="change_view(\'/webpages/%d/type/%d\')">%s</span>', $data['Webpage Type Website Key'], $data['Webpage Type Key'], $data['Webpage Type Code']),
+                'label'           => sprintf('<span class="button" onClick="change_view(\'/webpages/%d/type/%d\')">%s</span>', $data['Webpage Type Website Key'], $data['Webpage Type Key'], $label),
+                'online_webpages' => number($data['Webpage Type Online Webpages'])
+            );
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+
+
     echo json_encode($response);
 }
 

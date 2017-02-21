@@ -858,8 +858,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '') {
                     $section = 'forbidden';
                     break;
                 }
-
-                $module  = 'websites';
+                $module  = 'websites_server';
                 $section = 'websites';
 
                 break;
@@ -906,6 +905,52 @@ function parse_request($_data, $db, $modules, $account = '', $user = '') {
 
 
                 break;
+
+
+
+            case 'webpages':
+                if (!$user->can_view('sites')) {
+                    $module  = 'utils';
+                    $section = 'forbidden';
+                    break;
+                }
+
+                $module  = 'websites';
+                $section = 'webpages';
+                $parent  = 'website';
+
+
+                if (isset($view_path[0]) and is_numeric($view_path[0]) ) {
+                    $parent_key     = $view_path[0];
+
+                }
+
+                if (isset($view_path[1])  ) {
+
+                    if($view_path[1]=='type'){
+
+                        $section = 'webpage_type';
+                        $object = 'webpage_type';
+                        if (isset($view_path[2])  and is_numeric($view_path[2]) ) {
+                            $key=$view_path[2];
+
+                        }
+                    }
+
+                }
+
+
+
+
+
+
+
+
+
+                break;
+
+
+
             case 'website':
                 if (!$user->can_view('sites')) {
                     $module  = 'utils';

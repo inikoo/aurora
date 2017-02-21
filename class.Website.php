@@ -188,6 +188,22 @@ class Website extends DB_Table {
             $this->setup_templates();
 
 
+            include_once 'conf/webpage_types.php';
+
+            foreach ($webpage_types as $webpage_type){
+
+
+                $sql=sprintf('insert into `Webpage Type Dimension` (`Webpage Type Website Key`,`Webpage Type Code`) values (%d,%s) ',
+                             $this->id,
+                             prepare_mysql($webpage_type['code'])
+                );
+
+                $db->exec($sql);
+
+            }
+
+
+
             if (is_numeric($this->editor['User Key']) and $this->editor['User Key'] > 1) {
 
                 $sql = sprintf("INSERT INTO `User Right Scope Bridge` VALUES(%d,'Website',%d)", $this->editor['User Key'], $this->id);

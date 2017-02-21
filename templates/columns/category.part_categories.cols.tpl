@@ -21,7 +21,7 @@ editable: false,
 title: '{t}Category status{/t}',
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({
-className: "width_20"
+className: "width_40"
 }),
 headerCell: HeaderHtmlCell,
 

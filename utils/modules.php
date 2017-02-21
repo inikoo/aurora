@@ -1236,27 +1236,43 @@ $modules = array(
 
         )
     ),
+
+
+    'websites_server'      => array(
+
+        'parent'      => 'none',
+        'parent_type' => 'none',
+        'section'     => 'websites',
+        'sections'    => array(
+            'websites' => array(
+                'type'      => 'navigation',
+                'label'     => _('Websites (All stores)'),
+                'icon'      => '',
+                'reference' => '',
+                'tabs'      => array(
+                    'websites' => array()
+                )
+            ),
+
+        )
+
+    ),
+
     'websites'              => array(
         'section'     => 'dashboard',
         'parent'      => 'website',
         'parent_type' => 'key',
         'sections'    => array(
-            'websites' => array(
-                'type'      => 'navigation',
-                'label'     => _('Websites'),
-                'icon'      => 'globe',
-                'reference' => 'websites',
-                'tabs'      => array(
-                    'websites' => array()
-                )
 
-            ),
+
+
             'website'  => array(
-                'type'      => 'object',
-                'label'     => _('Website'),
+                'type'      => 'navigation',
+                'label'     => '',
+                'title'     => _('Website'),
                 'icon'      => 'globe',
                 'reference' => 'website/%d',
-
+                'class'     => 'icon_only',
                 'subtabs_parent' => array(
                     'website.favourites.families'  => 'website.favourites',
                     'website.favourites.products'  => 'website.favourites',
@@ -1268,7 +1284,8 @@ $modules = array(
                     'website.reminders.families'   => 'website.reminders',
                     'website.reminders.products'   => 'website.reminders',
                     'website.root_nodes'           => 'website.content',
-                    'website.webpages'             => 'website.content',
+                    'website.online_webpages'             => 'website.content',
+                    'website.offline_webpages'             => 'website.content',
 
                     'website.footer.preview'  => 'website.footer',
                     'website.footer.versions' => 'website.footer',
@@ -1287,9 +1304,7 @@ $modules = array(
                 'tabs' => array(
 
                     'website.analytics' => array(
-                        'label' => _(
-                            'Analytics'
-                        ),
+                        'label' => _('Analytics'),
                         'icon'  => 'line-chart',
 
                         'subtabs' => array(
@@ -1478,29 +1493,57 @@ $modules = array(
 
                     ),
 
-                    'website.content' => array(
-                        'label'   => _(
-                            'Pages'
-                        ),
-                        'icon'    => 'files-o',
-                        'subtabs' => array(
-                            'website.root_nodes' => array(
-                                'label' => _(
-                                    'Sitemap'
-                                ),
-                                'icon'  => 'sitemap'
-                            ),
-                            'website.webpages'   => array(
-                                'label' => _(
-                                    'Page list'
-                                ),
-                                'icon'  => 'files-o'
-                            ),
 
-                        )
 
+
+                )
+            ),
+
+
+
+            'webpages' => array(
+                'type'      => 'navigation',
+                'label'     => _('Web pages'),
+                'icon'      => 'files-o',
+                'reference' => 'webpages/%d',
+
+                'tabs' => array(
+                    'website.online_webpages'   => array(
+                        'label' => _('Online web pages'),
+                        'icon'  => 'files-o'
+                    ),
+                    'website.webpage.types'   => array(
+                        'label' => _('Web pages by type'),
+                        'icon'  => 'server'
+                    ),
+                    'website.root_nodes' => array(
+                        'label' => _('Sitemap'),
+                        'icon'  => 'sitemap',
+                        'class'=>'hide'
+                    ),
+                    'website.offline_webpages'   => array(
+                        'label' => _('Offline web pages'),
+                        'class'=>'right icon_only',
+                        'icon'  => 'eye-slash'
                     ),
 
+                )
+
+            ),
+
+
+            'webpage_type' => array(
+                'type' => 'object',
+                'tabs' => array(
+
+
+
+                    'webpage_type.webpages'   => array(
+                        'label' => _(
+                            'Versions'
+                        ),
+                        'icon'  => 'files-o'
+                    ),
 
                 )
             ),
