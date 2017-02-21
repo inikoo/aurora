@@ -1291,6 +1291,8 @@ class Page extends DB_Table {
             case('Webpage Store Key'):
             case('Webpage State'):
             case('Webpage Code'):
+            case('Webpage Type Key'):
+            case 'Webpage Version':
 
                 $this->update_field($field, $value, $options);
                 break;
@@ -2210,45 +2212,16 @@ class Page extends DB_Table {
         $this->scope_load = true;
 
 
-        if ($this->data['Page Store Section'] == 'Product Description') {
+        if ($this->data['Webpage Scope'] == 'Product') {
             include_once('class.Public_Product.php');
-            $this->scope       = new Public_Product($this->data['Page Parent Key']);
+            $this->scope       = new Public_Product($this->data['Webpage Scope Key']);
             $this->scope_found = 'Product';
 
-
-        } elseif ($this->data['Page Store Section'] == 'Category') {
+        } elseif ($this->data['Webpage Scope'] == 'Category Categories' or $this->data['Webpage Scope'] == 'Category Products') {
             include_once('class.Public_Category.php');
 
-            $this->scope       = new Public_Category($this->data['Page Parent Key']);
+            $this->scope       = new Public_Category($this->data['Webpage Scope Key']);
             $this->scope_found = 'Category';
-
-        } elseif ($this->data['Page Store Section'] == 'Family Catalogue') {
-
-            include_once('class.Store.php');
-
-            include_once('class.Public_Category.php');
-            $store    = new Store($this->get('Page Store Key'));
-            $category = new Public_Category('root_key_code', $store->get('Store Family Category Key'), $this->get('Code'));
-            if ($category->id) {
-                $this->scope       = $category;
-                $this->scope_found = 'Category';
-
-            }
-
-
-        } elseif ($this->data['Page Store Section'] == 'Department Catalogue') {
-
-            include_once('class.Store.php');
-
-            include_once('class.Public_Category.php');
-            $store    = new Store($this->get('Page Store Key'));
-            $category = new Public_Category('root_key_code', $store->get('Store Department Category Key'), $this->get('Code'));
-            if ($category->id) {
-                $this->scope       = $category;
-                $this->scope_found = 'Category';
-
-            }
-
 
         }
 
@@ -7126,14 +7099,20 @@ class Page extends DB_Table {
 
     function update_version() {
 
-        if (in_array($this->get('Page Store Content Template Filename'), array('products_showcase','categories_showcase')) and $this->get('Page Store Content Display Type') == 'Template') {
+        if (in_array(
+                $this->get('Page Store Content Template Filename'), array(
+                'products_showcase',
+                'categories_showcase'
+            )
+            ) and $this->get('Page Store Content Display Type') == 'Template'
+        ) {
             $version = 2;
         } else {
             $version = 1;
 
         }
 
-        $this->update(array('Webpage Version'=>$version),'no_history');
+        $this->update(array('Webpage Version' => $version), 'no_history');
 
     }
 

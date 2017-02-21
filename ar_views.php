@@ -135,7 +135,6 @@ function get_view($db, $smarty, $user, $account, $modules) {
     $website   = '';
     $warehouse = '';
 
-    // print_r($state);
 
     switch ($state['parent']) {
 
@@ -253,10 +252,14 @@ function get_view($db, $smarty, $user, $account, $modules) {
         }
         if (is_numeric($_object->get('Warehouse Key'))) {
             include_once 'class.Warehouse.php';
-            $warehouse                  = new Warehouse(
-                $_object->get('Warehouse Key')
-            );
+            $warehouse                  = new Warehouse($_object->get('Warehouse Key'));
             $state['current_warehouse'] = $warehouse->id;
+        }
+
+        if (is_numeric($_object->get('Website Key'))) {
+            include_once 'class.Website.php';
+            $website                  = new Website($_object->get('Website Key'));
+            $state['current_website'] = $website->id;
         }
 
 
@@ -891,6 +894,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             include_once 'showcase/job_position.show.php';
             $html = get_showcase($data, $smarty, $user, $db);
             break;
+        case 'webpage_type':
+            include_once 'showcase/webpage_type.show.php';
+            $html = get_showcase($data, $smarty, $user, $db);
+            break;
         default:
             $html = $data['object'].' -> '.$data['key'];
             break;
@@ -1226,7 +1233,16 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
             }
             break;
+        case ('websites_server'):
+            require_once 'navigation/websites.nav.php';
+            switch ($data['section']) {
+                case ('websites'):
 
+                    return get_websites_navigation($data, $smarty, $user, $db, $account);
+                    break;
+            }
+
+            break;
         case ('websites'):
 
             require_once 'navigation/websites.nav.php';
@@ -1239,12 +1255,17 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db, $account
                     );
                     break;
-                case ('website'):
+                case ('webpages'):
 
-
-                    return get_website_navigation(
+                    return get_webpages_navigation(
                         $data, $smarty, $user, $db, $account
                     );
+                    break;
+                case ('webpage_type'):
+                    return get_webpage_type_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('website'):
+                    return get_website_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('website.node'):
                     return get_node_navigation(
@@ -2264,7 +2285,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
                     $_content['tabs']['part_family.product_families']['class']        = 'hide';
                     $_content['tabs']['category.images']['class']                     = 'hide';
                     $_content['tabs']['category.part.discontinued_subjects']['class'] = 'hide';
-                    $_content['tabs']['category.part.sales']['class'] = 'hide';
+                    $_content['tabs']['category.part.sales']['class']                 = 'hide';
 
                 }
 
@@ -3487,7 +3508,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 case 'orders':
 
 
-
                     $branch[] = array(
                         'label'     => _('Orders (Archive)').' '.$state['store']->data['Store Code'],
                         'icon'      => 'archive',
@@ -3579,9 +3599,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                                 exit("Error order don't have class");
                                 break;
                         }
-
-
-
 
 
                     }
@@ -4996,30 +5013,63 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
             break;
+        case 'websites_server':
 
 
+            $branch[] = array(
+                'label'     => _('Websites'),
+                'icon'      => '',
+                'reference' => ''
+            );
+
+
+            break;
         case 'websites':
 
 
             if ($user->get_number_websites() > 1) {
 
                 $branch[] = array(
-                    'label'     => _('Websites'),
-                    'icon'      => 'bars',
-                    'reference' => 'websites'
+                    'label'     => '('._('All websites').')',
+                    'icon'      => '',
+                    'reference' => 'websites/all'
                 );
 
             }
             switch ($state['section']) {
                 case 'website':
 
-                    $website = $state['_object'];
 
                     $branch[] = array(
-                        'label'     => '<span class="id Website_Code">'.$website->get('Code').'</span>',
-                        'icon'      => 'globe',
-                        'reference' => 'website/'.$website->id
+                        'label'     => '<span class="id Website_Code">'.$state['website']->get('Code').'</span>',
+                        'icon'      => '',
+                        'reference' => 'website/'.$state['website']->id
                     );
+                    break;
+                case 'webpage_type':
+                    $branch[] = array(
+                        'label'     => '<span class="id Website_Code">'.$state['website']->get('Code').'</span>',
+                        'icon'      => 'globe',
+                        'reference' => 'webpages/'.$state['website']->id
+                    );
+
+                    $branch[] = array(
+                        'label'     => _('Web page type').': <span class="id">'.$state['_object']->get('Label').'</span>',
+                        'icon'      => '',
+                        'reference' => ''
+                    );
+                    break;
+
+                case 'webpages':
+
+
+                    $branch[] = array(
+                        'label'     => '<span class="id Website_Code">'.$state['website']->get('Code').'</span> <i class="fa fa-files-o" aria-hidden="true"></i>',
+                        'icon'      => 'globe',
+                        'reference' => 'website/'.$state['website']->id
+                    );
+
+
                     break;
                 case 'website.node':
 

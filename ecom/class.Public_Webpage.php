@@ -186,73 +186,20 @@ class Public_Webpage {
         $this->scope_load = true;
 
 
-        switch ($this->data['Webpage Scope']) {
-            case 'Product':
-                $this->scope = new Public_Product($this->data['	Webpage Scope Key']);
+        if ($this->data['Webpage Scope'] == 'Product') {
+            include_once('class.Public_Product.php');
+            $this->scope       = new Public_Product($this->data['Webpage Scope Key']);
+            $this->scope_found = 'Product';
 
-                break;
-            case 'Category Categories':
-            case 'Category Products':
-                $this->scope = new Public_Category($this->data['Webpage Scope Key']);
+        } elseif ($this->data['Webpage Scope'] == 'Category Categories' or $this->data['Webpage Scope'] == 'Category Products') {
+            include_once('class.Public_Category.php');
 
-                break;
-            default:
-                break;
+            $this->scope       = new Public_Category($this->data['Webpage Scope Key']);
+            $this->scope_found = 'Category';
+
         }
 
-        /*
 
-                if ($this->data['Page Store Section'] == 'Product Description') {
-
-                    $this->scope = new Public_Product($this->data['Page Parent Key']);
-                    $this->scope_found = 'Unknown';
-
-
-                } elseif ($this->data['Page Store Section'] == 'Category') {
-
-                    $this->scope = new Public_Category($this->data['Page Parent Key']);
-
-                } elseif ($this->data['Page Store Section'] == 'Family Catalogue') {
-
-                    // Todo (Migration)
-
-                    $sql = sprintf(
-                        "SELECT `Product Family Code`,`Store Family Category Key` FROM `Product Family Dimension` LEFT JOIN `Store Dimension` ON (`Store Key`=`Product Family Store Key`)  WHERE `Product Family Key`=%d ",
-                        $this->data['Page Parent Key']
-                    );
-
-
-                    if ($result = $this->db->query($sql)) {
-                        if ($row = $result->fetch()) {
-
-                            $sql = sprintf(
-                                'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Root Key`=%d AND  `Category Code`=%s  ', $row['Store Family Category Key'],
-                                prepare_mysql($row['Product Family Code'])
-                            );
-                            if ($result2 = $this->db->query($sql)) {
-                                if ($row2 = $result2->fetch()) {
-                                    $this->scope = new Public_Category($row2['Category Key']);
-                                }
-                            } else {
-                                print_r($error_info = $this->db->errorInfo());
-                                print "$sql\n";
-                                exit;
-                            }
-
-                        }
-                        else{
-
-                        }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
-                    }
-
-
-                }
-
-        */
 
     }
 

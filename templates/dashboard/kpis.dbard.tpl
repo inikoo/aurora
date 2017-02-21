@@ -106,15 +106,15 @@
 
     </li>
 
-    <li class="flex-item  kpi    "  type="PPM" parent="supplier_production" parent_key="{$supplier_production->id}"  >
-        {assign "ppm_kpi" $supplier_production->get_kpi($kpis_period)}
+    <li class="flex-item  kpi ppm_kip   "  type="PPM" parent="supplier_production" parent_key="{$supplier_production->id}"  >
+
 
         <span title="{t}Production productivity metric{/t}"> PPM </span>
         <div class="title">
-            <span class="kpi_value  button" title="{t}Production sales per man hour{/t}">{$ppm_kpi.formatted_kpi}</span>
+            <span class="kpi_value  button" title="{t}Production sales per man hour{/t}"></span>
         </div>
         <div >
-            <span class="aux_kpi_data" title="">{$ppm_kpi.formatted_aux_kpi_data}</span>
+            <span class="aux_kpi_data" title=""></span>
 
         </div>
 
@@ -124,8 +124,9 @@
 
 
 <script>
-
-
+    $( "#kpis .ppm_kip" ).load(function() {
+        change_kpis_period('{$kpis_period}');
+    })
 
     function change_kpis_period(period) {
 

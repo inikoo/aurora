@@ -248,9 +248,12 @@ function get_object($object_name, $key, $load_other_data = false) {
             break;
         case 'position':
             require_once "class.Job_Position.php";
-
-
             $object = new Job_Position($key);
+            break;
+
+        case 'webpage_type':
+            require_once "class.Webpage_Type.php";
+            $object = new Webpage_Type($key);
             break;
         default:
             exit('need to complete E1: >'.strtolower($object_name)."<\n");

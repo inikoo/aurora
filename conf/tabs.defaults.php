@@ -632,6 +632,55 @@ $tab_defaults = array(
         'elements_type' => each($elements_options['webpages'])['key'],
         'elements'      => $elements_options['webpages'],
     ),
+    'website.online_webpages'               => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'code',
+        'f_period'      => 'ytd',
+        'elements_type' => each($elements_options['online_webpages'])['key'],
+        'elements'      => $elements_options['online_webpages'],
+    ),
+    'website.offline_webpages'               => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'code'
+
+    ),
+    'webpage_type.online_webpages'               => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'code',
+        'f_period'      => 'ytd',
+        'elements_type' => each($elements_options['online_webpages_in_webpage_type'])['key'],
+        'elements'      => $elements_options['online_webpages'],
+    ),
+    'webpage_type.offline_webpages'               => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'code'
+
+    ),
+    'website.webpage.types'         => array(
+        'view'        => 'overview',
+        'sort_key'    => 'type',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => ''
+    ),
+
     'website.root_nodes'             => array(
         'view'        => 'overview',
         'sort_key'    => 'id',

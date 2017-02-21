@@ -350,7 +350,15 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s picking location needed to replenish for ordered parts', '%s picking locations needed to replenish for ordered parts', $total_records), number($total_records)
         );
-    } else {
+    } elseif ($record_label == 'webpage online') {
+        return sprintf(
+            ngettext('%s online web page', '%s online web pages', $total_records), number($total_records)
+        );
+    }elseif ($record_label == 'webpage offline') {
+        return sprintf(
+            ngettext('%s online web page', '%s offline web pages', $total_records), number($total_records)
+        );
+    }else {
         return sprintf(
             ngettext('%s record', '%s records', $total_records), number($total_records)
         );
@@ -670,7 +678,19 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
                 '%s picking location needed to replenish for ordered parts of %s', '%s picking locations needed to replenish for ordered parts of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
-    } else {
+    } elseif ($record_label == 'webpage online') {
+        return sprintf(
+            ngettext(
+                '%s online web page of %s', '%s online web pages of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
+    }   elseif ($record_label == 'webpage offline') {
+        return sprintf(
+            ngettext(
+                '%s offline web page of %s', '%s offline web pages of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
+    }  else {
         return sprintf(
             ngettext('%s record of %s', '%s records of %s', $total_with_filter), number($total_with_filter), number($total_no_filter)
         );

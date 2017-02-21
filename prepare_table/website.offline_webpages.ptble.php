@@ -9,20 +9,17 @@
 
 */
 
-
 $table = '`Page Store Dimension` ';
+
+$where = 'where `Webpage State`="Offline"';
 
 switch ($parameters['parent']) {
 
     case('website'):
-        $where = sprintf(
-            ' where  `Webpage Website Key`=%d  ', $parameters['parent_key']
-        );
+        $where .= sprintf(' and  `Webpage Website Key`=%d  ', $parameters['parent_key']);
         break;
     case('node'):
-        $where = sprintf(
-            ' where  `Webpage Parent Key`=%d  ', $parameters['parent_key']
-        );
+        $where .= sprintf(' and  `Webpage Parent Key`=%d  ', $parameters['parent_key']);
         break;
     default:
         exit('parent not configured '.$parameters['parent']);
@@ -30,6 +27,7 @@ switch ($parameters['parent']) {
 }
 
 $group = '';
+
 
 
 if (isset($parameters['elements_type'])) {

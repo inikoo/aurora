@@ -7,15 +7,14 @@ renderable: false,
 cell: "string"
 },
 
-
 {
-name: "state",
-label: '<i class="fa fa-adjust discreet" aria-hidden="true"></i>',
+name: "type",
+label: '{t}Type{/t}',
 editable: false,
 title: '{t}Online state{/t}',
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({
-className: "width_20"
+className: ""
 }),
 headerCell: HeaderHtmlCell,
 
@@ -31,19 +30,6 @@ cell: Backgrid.HtmlCell.extend({ })
 },
 
 {
-name: "type",
-label: '<i class="fa fa-envira discreet" aria-hidden="true"></i>',
-editable: false,
-title: '{t}Online state{/t}',
-sortType: "toggle",
-cell: Backgrid.HtmlCell.extend({
-className: "width_4s0"
-}),
-headerCell: HeaderHtmlCell,
-
-}
-
-, {
 name: "version",
 label:"Version",
 editable: false,

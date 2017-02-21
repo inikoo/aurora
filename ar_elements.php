@@ -56,6 +56,17 @@ switch ($tab) {
         );
         get_supplier_orders_elements($db, $data['parameters'], $user);
         break;
+    case 'website.webpages':
+        $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
+        get_webpages_element_numbers($db, $data['parameters'], $user);
+        break;
+    case 'website.online_webpages':
+    case 'webpage_type.online_webpages':
+
+    $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
+        get_online_webpages_element_numbers($db, $data['parameters'], $user);
+        break;
+
     case 'website.nodes':
         $data = prepare_values(
             $_REQUEST, array(
@@ -1261,7 +1272,6 @@ function get_history_elements($db, $data) {
 }
 
 
-
 function get_orders_pending_element_numbers($db, $data, $user) {
 
     if (!$user->can_view('orders')) {
@@ -1273,9 +1283,6 @@ function get_orders_pending_element_numbers($db, $data, $user) {
         );
         exit;
     }
-
-
-
 
 
     $parent_key = $data['parent_key'];
@@ -1297,10 +1304,9 @@ function get_orders_pending_element_numbers($db, $data, $user) {
     }
 
 
-
     $elements_numbers = array(
 
-        'flow'     => array(
+        'flow' => array(
             'Basket'           => 0,
             'Submitted_Unpaid' => 0,
             'Submitted_Paid'   => 0,
@@ -1324,8 +1330,6 @@ function get_orders_pending_element_numbers($db, $data, $user) {
     }
 
 
-
-
     $response = array(
         'state'            => 200,
         'elements_numbers' => $elements_numbers
@@ -1334,8 +1338,6 @@ function get_orders_pending_element_numbers($db, $data, $user) {
 
 
 }
-
-
 
 
 function get_orders_archived_element_numbers($db, $data, $user) {
@@ -1384,8 +1386,8 @@ function get_orders_archived_element_numbers($db, $data, $user) {
     $elements_numbers = array(
         'dispatch' => array(
 
-            'Dispatched'        => 0,
-            'Cancelled'         => 0
+            'Dispatched' => 0,
+            'Cancelled'  => 0
         ),
         'source'   => array(
             'Internet' => 0,
@@ -1405,13 +1407,12 @@ function get_orders_archived_element_numbers($db, $data, $user) {
     );
 
 
-
     //USE INDEX (`Main Source Type Store Key`)
     $sql = sprintf(
         "SELECT count(*) AS number,`Order Main Source Type` AS element FROM %s    %s  %s GROUP BY `Order Main Source Type` ", $table, $where, $where_interval
     );
 
-  //  print $sql;
+    //  print $sql;
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
@@ -1444,11 +1445,11 @@ function get_orders_archived_element_numbers($db, $data, $user) {
 
         if ($row['element'] != '') {
 
-            if(isset($elements_numbers['dispatch'][$row['element']]))
-            $elements_numbers['dispatch'][$row['element']] = number($row['number']);
+            if (isset($elements_numbers['dispatch'][$row['element']])) {
+                $elements_numbers['dispatch'][$row['element']] = number($row['number']);
+            }
         }
     }
-
 
 
     $response = array(
@@ -1459,7 +1460,6 @@ function get_orders_archived_element_numbers($db, $data, $user) {
 
 
 }
-
 
 
 function get_orders_element_numbers($db, $data, $user) {
@@ -2350,6 +2350,130 @@ function get_part_categories_elements($db, $data, $user) {
 
 
 }
+
+
+function get_webpages_element_numbers($db, $data, $user) {
+
+
+    $parent_key = $data['parent_key'];
+
+    $elements_numbers = array(
+        'state'   => array(
+            'Online'  => 0,
+            'Offline' => 0,
+        ),
+        'version' => array(
+            '1' => 0,
+            '2' => 0,
+        ),
+
+    );
+
+
+    switch ($data['parent']) {
+        case 'website':
+            $where = sprintf(
+                ' where `Webpage Website Key`=%d  ', $data['parent_key']
+            );
+            break;
+
+        default:
+            $response = array(
+                'state' => 405,
+                'resp'  => 'customer parent not found '.$data['parent']
+            );
+            echo json_encode($response);
+
+            return;
+    }
+
+
+    $sql = sprintf("select count(*) as number,`Webpage State` as element from `Page Store Dimension`  $where  group by `Webpage State` ");
+    foreach ($db->query($sql) as $row) {
+        $elements_numbers['status'][$row['element']] = number($row['number']);
+    }
+
+
+    $sql = sprintf("select count(*) as number,`Webpage Version` as element from `Page Store Dimension`  $where  group by `Webpage Version` ");
+    foreach ($db->query($sql) as $row) {
+        $elements_numbers['version'][$row['element']] = number($row['number']);
+    }
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+
+
+}
+
+
+
+function get_online_webpages_element_numbers($db, $data, $user) {
+
+
+
+
+    $elements_numbers = array(
+        'type'   => array(
+            'Info'  => 0,
+            'Category_Categories' => 0,
+            'Category_Products' => 0,
+            'Product' => 0,
+            'Operations' => 0,
+
+        ),
+        'version' => array(
+            '1' => 0,
+            '2' => 0,
+        ),
+
+    );
+    $where=' where `Webpage State`="Online"';
+
+    switch ($data['parent']) {
+        case 'website':
+            $where .= sprintf(' and `Webpage Website Key`=%d  ', $data['parent_key']);
+            break;
+        case 'webpage_type':
+            $where .= sprintf(' and `Webpage Type Key`=%d  ', $data['parent_key']);
+            break;
+        default:
+            $response = array(
+                'state' => 405,
+                'resp'  => 'parent not found '.$data['parent']
+            );
+            echo json_encode($response);
+
+            return;
+    }
+
+
+    $sql = sprintf("select count(*) as number,`Webpage Scope` as element from `Page Store Dimension`  $where  group by `Webpage Scope` ");
+    foreach ($db->query($sql) as $row) {
+        $elements_numbers['type'][preg_replace('/ /','_',$row['element'])] = number($row['number']);
+    }
+
+
+    $sql = sprintf("select count(*) as number,`Webpage Version` as element from `Page Store Dimension`  $where  group by `Webpage Version` ");
+    foreach ($db->query($sql) as $row) {
+        $elements_numbers['version'][$row['element']] = number($row['number']);
+    }
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+
+
+}
+
+
+
 
 
 ?>

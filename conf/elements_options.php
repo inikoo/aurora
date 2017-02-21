@@ -190,16 +190,16 @@ $elements_options = array(
 
         )
     ),
-    'orders_archived'                 => array(
+    'orders_archived'        => array(
         'dispatch' => array(
             'label' => _('Dispatched'),
             'items' => array(
 
-                'Dispatched'        => array(
+                'Dispatched' => array(
                     'label'    => _('Dispatched'),
                     'selected' => true
                 ),
-                'Cancelled'         => array(
+                'Cancelled'  => array(
                     'label'    => _('Cancelled'),
                     'selected' => false
                 ),
@@ -229,7 +229,7 @@ $elements_options = array(
         ),
 
 
-        'source'   => array(
+        'source' => array(
             'label' => _('Source'),
             'items' => array(
                 'Internet' => array(
@@ -261,11 +261,9 @@ $elements_options = array(
         ),
 
 
-
-
     ),
 
-    'orders'                 => array(
+    'orders' => array(
 
 
         'dispatch' => array(
@@ -298,7 +296,7 @@ $elements_options = array(
             ),
         ),
 
-        'type'     => array(
+        'type' => array(
             'label' => _('Type'),
             'items' => array(
                 'Order'    => array(
@@ -321,7 +319,7 @@ $elements_options = array(
         ),
 
 
-        'source'   => array(
+        'source' => array(
             'label' => _('Source'),
             'items' => array(
                 'Internet' => array(
@@ -353,45 +351,43 @@ $elements_options = array(
         ),
 
 
-
-
     ),
 
-    'orders_pending'                 => array(
+    'orders_pending' => array(
 
         'flow' => array(
             'label' => _('Process flow'),
             'items' => array(
-                'Basket' => array(
+                'Basket'           => array(
                     'label'    => _('IPrcss'),
                     'title'    => _('In Process'),
                     'selected' => false
                 ),
-                'Submitted_Unpaid'         => array(
+                'Submitted_Unpaid' => array(
                     'label'    => _('S (UPaid)'),
                     'title'    => _('Submitted (Unpaid)'),
                     'selected' => true
                 ),
-                'Submitted_Paid'         => array(
+                'Submitted_Paid'   => array(
                     'label'    => _('S (Paid)'),
                     'selected' => true
                 ),
-                'InWarehouse'        => array(
+                'InWarehouse'      => array(
                     'label'    => _('Warhs'),
                     'title'    => _('In Warehouse'),
                     'selected' => true
                 ),
-                'Packed'         => array(
+                'Packed'           => array(
                     'label'    => _('Pkd'),
                     'title'    => _('Packed'),
                     'selected' => true
                 ),
-                'Dispatch_Ready'         => array(
+                'Dispatch_Ready'   => array(
                     'label'    => _('Disp Rdy'),
                     'title'    => _('Dispatch Ready'),
                     'selected' => true
                 ),
-                'Dispatched_Today'         => array(
+                'Dispatched_Today' => array(
                     'label'    => _('Disp Tdy'),
                     'title'    => _('Dispatched today'),
                     'selected' => false
@@ -401,7 +397,7 @@ $elements_options = array(
 
 
     ),
-    'invoices'               => array(
+    'invoices'       => array(
         'type'          => array(
             'label' => _('Type'),
             'items' => array(
@@ -440,7 +436,7 @@ $elements_options = array(
         )
 
     ),
-    'delivery_notes'         => array(
+    'delivery_notes' => array(
         'dispatch' => array(
             'label' => _('Dispatch state'),
             'items' => array(
@@ -628,25 +624,25 @@ $elements_options = array(
 
     'part_categories' => array(
         'status' => array(
-        'label' => _('Category status'),
-        'items' => array(
-            'InProcess'    => array(
-                'label'    => _('In Process'),
-                'selected' => true
-            ),
-            'InUse'    => array(
-                'label'    => _('Active'),
-                'selected' => true
-            ),
-            'Discontinuing' => array(
-                'label'    => _('Discontinuing'),
-                'selected' => true
-            ),
-            'NotInUse' => array(
-                'label'    => _('Discontinued'),
-                'selected' => true
-            ),
-        )
+            'label' => _('Category status'),
+            'items' => array(
+                'InProcess'     => array(
+                    'label'    => _('In Process'),
+                    'selected' => true
+                ),
+                'InUse'         => array(
+                    'label'    => _('Active'),
+                    'selected' => true
+                ),
+                'Discontinuing' => array(
+                    'label'    => _('Discontinuing'),
+                    'selected' => true
+                ),
+                'NotInUse'      => array(
+                    'label'    => _('Discontinued'),
+                    'selected' => true
+                ),
+            )
         )
     ),
 
@@ -1101,8 +1097,8 @@ $elements_options = array(
     ),
 
     'webpages' => array(
-        'status' => array(
-            'label' => _('Status'),
+        'state'   => array(
+            'label' => _('State'),
             'items' => array(
                 'Online'  => array(
                     'label'    => _('Online'),
@@ -1111,6 +1107,119 @@ $elements_options = array(
                 'Offline' => array(
                     'label'    => _('Offline'),
                     'selected' => false
+                ),
+
+            )
+
+
+        ),
+        'type'    => array(
+            'label' => _('Type'),
+            'items' => array(
+                'Info'                => array(
+                    'label'    => _('Info'),
+                    'selected' => true
+                ),
+                'Category_Categories' => array(
+                    'label'    => _('Categories'),
+                    'selected' => true
+                ),
+                'Category_Products'   => array(
+                    'label'    => _('Products'),
+                    'selected' => true
+                ),
+                'Product'             => array(
+                    'label'    => _('Product'),
+                    'selected' => true
+                ),
+                'Operations'                => array(
+                    'label'    => _('Operations'),
+                    'selected' => true
+                ),
+
+            )
+
+
+        ),
+        'version' => array(
+            'label' => _('Version'),
+            'items' => array(
+                '1' => array(
+                    'label'    => 'Version 1',
+                    'selected' => true
+                ),
+                '2' => array(
+                    'label'    => 'Version 2',
+                    'selected' => true
+                ),
+
+            )
+
+
+        ),
+    ),
+
+    //'Product','Category Categories','Category Products','Info','Operations'
+
+    'online_webpages_in_webpage_type'=>array(
+
+    'version' => array(
+        'label' => _('Version'),
+        'items' => array(
+            '1' => array(
+                'label'    => 'Version 1',
+                'selected' => true
+            ),
+            '2' => array(
+                'label'    => 'Version 2',
+                'selected' => true
+            ),
+
+        )
+
+
+    ),
+),
+
+    'online_webpages' => array(
+        'type'    => array(
+            'label' => _('Type'),
+            'items' => array(
+                'Info'                => array(
+                    'label'    => _('Info'),
+                    'selected' => true
+                ),
+                'Category_Categories' => array(
+                    'label'    => _('Categories'),
+                    'selected' => true
+                ),
+                'Category_Products'   => array(
+                    'label'    => _('Products'),
+                    'selected' => true
+                ),
+                'Product'             => array(
+                    'label'    => _('Product'),
+                    'selected' => true
+                ),
+                'Operations'                => array(
+                    'label'    => _('Operations'),
+                    'selected' => true
+                ),
+
+            )
+
+
+        ),
+        'version' => array(
+            'label' => _('Version'),
+            'items' => array(
+                '1' => array(
+                    'label'    => 'Version 1',
+                    'selected' => true
+                ),
+                '2' => array(
+                    'label'    => 'Version 2',
+                    'selected' => true
                 ),
 
             )
