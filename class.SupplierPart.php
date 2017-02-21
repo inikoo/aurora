@@ -239,7 +239,6 @@ class SupplierPart extends DB_Table {
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
         $field = preg_replace('/^Part Part /', 'Part ', $field);
-
         switch ($field) {
 
             case 'Supplier Part On Demand':
@@ -618,6 +617,20 @@ class SupplierPart extends DB_Table {
 
                     )
                 );
+
+                $this->other_fields_updated = array(
+                    'Part_Unit_Price' => array(
+                        'field'           => 'Part_Unit_Price',
+'render'=>true,
+                        'formatted_value'           => $this->get('Part Unit Price'),
+                        'value' => $this->get('Part Part Unit Price'),
+                    ),
+
+
+                );
+
+
+
                 $this->updated         = $updated;
                 break;
             case 'Supplier Part Currency Code':
@@ -916,6 +929,9 @@ class SupplierPart extends DB_Table {
                     $this->updated = $this->part->updated;
                     $this->msg     = $this->part->msg;
                     $this->error   = $this->part->error;
+
+                    $this->other_fields_updated = $this->part->other_fields_updated ;
+
 
                 } else {
 

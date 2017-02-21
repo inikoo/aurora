@@ -219,6 +219,10 @@ module.exports = function (grunt) {
                     dest: 'build/fork/'
                 }, {
                     expand: true,
+                    src: ['widgets/*.php'],
+                    dest: 'build/fork/'
+                }, {
+                    expand: true,
                     cwd: 'fork/',
                     src: ['*.php'],
                     dest: 'build/fork/'
