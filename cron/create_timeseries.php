@@ -147,9 +147,9 @@ function part_families() {
     global $db, $editor, $timeseries;
 
     $sql = sprintf(
-        'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Part" AND `Category Key`=12391  '
+        'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Part" AND `Category Key`=27832  '
     );
-    // $sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" order by  `Category Key` desc');
+     $sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" order by  `Category Key` desc');
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
@@ -165,7 +165,7 @@ function part_families() {
             }
 
             $timeseries_data = $timeseries[$category->get('Category Scope').'Category'];
-            print "creating ".$category->get('Code')." category \n";
+            print "creating ".$category->id." ".$category->get('Code')." category \n";
             foreach ($timeseries_data as $time_series_data) {
 
                 $editor['Date']           = gmdate('Y-m-d H:i:s');
