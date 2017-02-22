@@ -1779,7 +1779,11 @@ $modules = array(
                                     'Calendar'
                                 )
                             ),
-
+                            'store.sales.info'     => array(
+                                'label' => _('Info'),
+                                'icon'  => 'info',
+                                'class' => 'right icon_only'
+                            ),
 
                         )
 
