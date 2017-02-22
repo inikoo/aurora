@@ -2222,9 +2222,7 @@ function create_time_series($account, $db, $data, $editor) {
 
     $data['editor'] = $editor;
 
-    list($fork_key, $msg) = new_fork(
-        'au_time_series', $data, $account->get('Account Code'), $db
-    );
+    list($fork_key, $msg) = new_fork('au_time_series', $data, $account->get('Account Code'), $db);
 
 
     $response = array(
