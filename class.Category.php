@@ -2805,7 +2805,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     if ($value == 'Discontinuing') {
 
                         $sql = sprintf(
-                            "SELECT P.`Part SKU` FROM  `Part Dimension` P LEFT JOIN `Category Bridge` B ON (P.`Part SKU`=B.`Subject Key`)  WHERE B.`Category Key`=%d AND `Subject`='Part' AND P.`Part Status` IN ('In Use') ",
+                            "SELECT P.`Part SKU` FROM  `Part Dimension` P LEFT JOIN `Category Bridge` B ON (P.`Part SKU`=B.`Subject Key`)  WHERE B.`Category Key`=%d AND `Subject`='Part' AND P.`Part Status` IN ('In Use','In Process') ",
                             $this->id
                         );
                         $counter=0;
