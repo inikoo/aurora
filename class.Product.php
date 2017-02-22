@@ -192,6 +192,8 @@ class Product extends Asset {
             $this->data['Product Code']
         );
 
+
+
         $this->data['Product Stage']             = 'New';
         $this->data['Product Sales Type']        = 'Public Sale';
         $this->data['Product Availability Type'] = 'Normal';
@@ -200,6 +202,8 @@ class Product extends Asset {
         if ($this->data['Product Packing Group'] == '') {
             $this->data['Product Packing Group'] = 'None';
         }
+
+
 
 
         $keys   = '';
@@ -266,7 +270,7 @@ class Product extends Asset {
         } else {
             $this->error = true;
 
-            print "$sql\n";
+           // print "\n\n$sql\n\n";
 
             $this->msg = 'Error inserting Product record';
         }
