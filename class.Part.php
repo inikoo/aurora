@@ -967,6 +967,8 @@ class Part extends Asset {
     function update_status($value, $options = '', $force = false) {
 
 
+
+
         if ($value == 'Not In Use' and ($this->data['Part Current On Hand Stock'] - $this->data['Part Current Stock In Process']) > 0) {
             $value = 'Discontinuing';
         }
@@ -2128,6 +2130,7 @@ class Part extends Asset {
             case('Part Status'):
 
 
+
                 if (!in_array(
                     $value, array(
                               'In Use',
@@ -2143,13 +2146,12 @@ class Part extends Asset {
                     return;
                 }
 
-                if ($this->get('Part Status') == 'In Process' and $value != 'In Process' and !($this->get(
-                            'Part Current On Hand Stock'
-                        ) > 0 and $this->get_number_images() > 0)
+
+                if ($this->get('Part Status') == 'In Process' and $value = 'In Use' and !($this->get('Part Current On Hand Stock') > 0)
                 ) {
 
                     $this->error = true;
-                    $this->msg   = _("Part status can't be modified").' ('.$value.' >'.$this->get('Part Current On Hand Stock').'<  '.$this->get_number_images().' )';
+                    $this->msg   = _("Part status can't be set to active until stock is set up");
 
                     return;
 
