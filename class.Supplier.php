@@ -1529,6 +1529,8 @@ class Supplier extends SubjectSupplier {
 
     }
 
+    /*
+
     function update_timseries_date($date) {
         include_once 'class.Timeserie.php';
         $sql = sprintf(
@@ -1548,8 +1550,9 @@ class Supplier extends SubjectSupplier {
 
 
     }
+    */
 
-    function update_timeseries_record($timeseries, $from, $to, $fork_key) {
+    function update_timeseries_record($timeseries, $from, $to, $fork_key=false) {
 
 
         $dates = date_frequency_range(
@@ -1570,12 +1573,8 @@ class Supplier extends SubjectSupplier {
 
         foreach ($dates as $date_frequency_period) {
             $index++;
-            $sales_data = $this->get_sales_data(
-                $date_frequency_period['from'], $date_frequency_period['to']
-            );
-            $_date      = gmdate(
-                'Y-m-d', strtotime($date_frequency_period['from'].' +0:00')
-            );
+            $sales_data = $this->get_sales_data($date_frequency_period['from'], $date_frequency_period['to']);
+            $_date      = gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00'));
 
 
             if ($sales_data['deliveries'] > 0 or $sales_data['dispatched'] > 0 or $sales_data['invoiced_amount'] != 0 or $sales_data['required'] != 0 or $sales_data['profit'] != 0) {
