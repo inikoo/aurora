@@ -471,6 +471,7 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
                 $error          = $parent->error;
                 $error_metadata = (isset($parent->error_metadata) ? $parent->error_metadata : '');
                 $error_code     = $parent->error_code;
+               // print_r($parent);
 
             } else {
 

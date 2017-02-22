@@ -389,15 +389,23 @@ class Category extends DB_Table {
                 );
                 $this->db->exec($sql);
 
+
+
                 $sql = sprintf(
                     "INSERT INTO `Product Category Data` (`Product Category Key`) VALUES (%d)", $this->id
 
                 );
                 $this->db->exec($sql);
+
+
+
                 $sql = sprintf(
                     "INSERT INTO `Product Category DC Data` (`Product Category Key`) VALUES (%d)", $this->id
 
                 );
+
+
+
                 $this->db->exec($sql);
 
             } elseif ($this->data['Category Scope'] == 'Invoice') {
@@ -1681,7 +1689,7 @@ class Category extends DB_Table {
             if ($subcategory->duplicated_field == 'Category Code') {
                 $this->msg = _('Duplicated code');
             } else {
-                $this->msg = "Category cound not be created";
+                $this->msg = "Category could not be created";
             }
         }
 
@@ -1703,10 +1711,7 @@ class Category extends DB_Table {
             $store = new Store($this->get('Category Store Key'));
 
 
-            if ($this->get('Category Root Key') == $store->get(
-                    'Store Family Category Key'
-                )
-            ) {
+            if ($this->get('Category Root Key') == $store->get('Store Family Category Key')) {
 
 
                 $code = $subcategory->get('Category Code');
@@ -1744,13 +1749,11 @@ class Category extends DB_Table {
                 if ($family->new) {
                     $page_data = array(
                         'Page Store Content Display Type'      => 'Template',
-                        'Page Store Content Template Filename' => 'family_buttons',
+                        'Page Store Content Template Filename' => 'products_showcase',
                         'Page State'                           => 'Online'
                     );
                     foreach ($store->get_sites('objects') as $site) {
-                        $family_page_key = $site->add_family_page(
-                            $family->id, $page_data
-                        );
+                        $family_page_key = $site->add_family_page($family->id, $page_data);
                         $family_page     = new Page($family_page_key);
 
 

@@ -917,9 +917,7 @@ class Site extends DB_Table {
 
         $page_data = array(
             'Page Code'                              => $page_code,
-            'Page URL'                               => $this->data['Site URL'].'/'.strtolower(
-                    $page_code
-                ),
+            'Page URL'                               => $this->data['Site URL'].'/'.strtolower($page_code),
             'Page Site Key'                          => $this->id,
             'Page Type'                              => 'Store',
             'Page Store Key'                         => $store->id,
@@ -943,6 +941,11 @@ class Site extends DB_Table {
             'Page Store Creation Date' => gmdate('Y-m-d H:i:s'),
             'Number See Also Links'    => $this->data['Site Default Number See Also Links'],
             'Page State'               => 'Online',
+
+
+
+
+
             'editor'                   => $this->editor
         );
 
