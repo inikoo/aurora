@@ -40,7 +40,7 @@ function suppliers() {
 
     global $db, $editor, $timeseries;
 
-    $sql = sprintf('SELECT `Supplier Key` FROM `Supplier Dimension`  ');
+    $sql = sprintf('SELECT `Supplier Key` FROM `Supplier Dimension` order by `Supplier Code` ');
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
@@ -55,6 +55,7 @@ function suppliers() {
                 $editor['Date']           = gmdate('Y-m-d H:i:s');
                 $time_series_data['editor'] = $editor;
                 $supplier->create_timeseries($time_series_data);
+                print $supplier->get('Code')."\n";
 
             }
         }
