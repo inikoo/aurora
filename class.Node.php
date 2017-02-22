@@ -101,17 +101,29 @@ class nodes {
 
 
         $fields['Category Parent Key'] = $parent;
+
+
+
         $_keys                         = '';
         $_values                       = '';
         foreach ($fields as $key => $value) {
 
+            $_key=$key;
 
             if (!preg_match('/^\`.+\`$/', $key)) {
                 $key = "`".$key."`";
             }
 
             $_keys .= ",".$key."";
-            $_values .= ','.prepare_mysql($value, false);
+
+
+            if($_key=='Category Main Image Key'){
+                $_values .= ','.prepare_mysql($value, true);
+            }else{
+                $_values .= ','.prepare_mysql($value, false);
+            }
+
+
         }
         $_values = preg_replace('/^,/', '', $_values);
         $_keys   = preg_replace('/^,/', '', $_keys);
@@ -123,7 +135,7 @@ class nodes {
 
         $this->db->exec($sql);
 
-        //print "$sql\n";
+      //  print "$sql\n";
         //mysql_query($sql) or
         // die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
         $this->id = $this->db->lastInsertId();

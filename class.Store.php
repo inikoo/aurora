@@ -2677,6 +2677,9 @@ class Store extends DB_Table {
 
     function create_product($data) {
 
+
+
+
         $this->new_product = false;
 
         $data['editor'] = $this->editor;
@@ -2742,7 +2745,7 @@ class Store extends DB_Table {
         if (!isset($data['Product Units Per Case']) or $data['Product Units Per Case'] == '') {
             $this->error      = true;
             $this->msg        = _('Units per outer missing');
-            $this->error_code = 'sproduct_units_per_case_missing';
+            $this->error_code = 'product_units_per_case_missing';
 
             return;
         }
@@ -2804,6 +2807,9 @@ class Store extends DB_Table {
         $data['Product Locale']   = $this->data['Store Locale'];
 
 
+
+
+
         if (array_key_exists('Family Category Code', $data)) {
             include_once 'class.Category.php';
             $root_category = new Category(
@@ -2828,6 +2834,8 @@ class Store extends DB_Table {
         } else {
             $family_key = false;
         }
+
+
 
 
         if (isset($data['Parts']) and $data['Parts'] != '') {
@@ -2868,7 +2876,7 @@ class Store extends DB_Table {
             $product_parts = json_decode($data['Product Parts'], true);
 
             if ($product_parts and is_array($product_parts)) {
-                //print_r($product_parts);
+
                 foreach ($product_parts as $product_part) {
                     if (!is_array($product_part) or !isset($product_part['Part SKU']) or !isset($product_part['Ratio']) or !isset($product_part['Note']) or !is_numeric(
                             $product_part['Part SKU']
@@ -2933,10 +2941,15 @@ class Store extends DB_Table {
         }
 
 
+
         $product = new Product('find', $data, 'create');
 
 
         if ($product->id) {
+
+
+
+
             $this->new_object_msg = $product->msg;
 
             if ($product->new) {
@@ -2945,9 +2958,21 @@ class Store extends DB_Table {
                 $this->update_product_data();
 
                 if ($product_parts_data) {
-                    $product->update_part_list(
-                        $product_parts_data, 'no_history'
-                    );
+
+/*
+
+                    $tmp=json_decode($product_parts_data, true);
+                    print_r($tmp);
+
+                    foreach($tmp as $_key=>$_tmp_val){
+                        $tmp[$_key]['Key']=$product->id;
+                    }
+                    print_r($tmp);
+                    $product_parts_data=json_encode($tmp);
+
+*/
+
+                    $product->update_part_list($product_parts_data, 'no_history');
 
 
                 }
@@ -2963,6 +2988,10 @@ class Store extends DB_Table {
 
 
                 if ($family_key) {
+
+
+
+
                     $product->update(
                         array('Product Family Category Key' => $family_key), 'no_history'
                     );
@@ -2978,9 +3007,7 @@ class Store extends DB_Table {
 
                 foreach ($this->get_sites('objects') as $site) {
 
-                    $product_page_key = $site->add_product_page(
-                        $product->id, $page_data
-                    );
+                    $product_page_key = $site->add_product_page($product->id, $page_data);
                 }
 
 

@@ -376,11 +376,14 @@ $product_fields = array(
     array(
         'label'      => _('Webpage').' <span class="no_title">'.$object->webpage->get('Code').'</span>',
         'show_title' => true,
+        'class' => ($new ? 'hide' : ''),
         'fields'     => array(
 
 
             array(
+
                 'id'                       => 'Product_Website_Node_Parent_Key',
+                'render' => ($new ? false : true),
                 'edit'                     => 'dropdown_select',
                 'scope'                    => 'web_node',
                 'parent'                   => 'website',
@@ -404,6 +407,7 @@ $product_fields = array(
 
             array(
                 'id'   => 'Product_Webpage_Name',
+                'render' => ($new ? false : true),
                 'edit' => ($edit ? 'string' : ''),
 
                 'value'           => htmlspecialchars(
@@ -422,6 +426,7 @@ $product_fields = array(
             array(
                 'id'              => 'Product_Description',
                 'edit'            => ($edit ? 'editor' : ''),
+                'render' => ($new ? false : true),
                 'class'           => 'editor',
                 'editor_data'     => array(
                     'id'      => 'Product_Description',
@@ -476,6 +481,7 @@ $product_fields = array(
 
             array(
                 'id'              => 'Webpage_See_Also',
+                'render' => ($new ? false : true),
                 'edit'            => 'webpage_see_also',
                 'value'           => '',
                 'formatted_value' => $object->get('Webpage See Also'),

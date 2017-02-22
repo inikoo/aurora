@@ -192,23 +192,35 @@ class Product extends Asset {
             $this->data['Product Code']
         );
 
+        $this->data['Product Stage']             = 'New';
+        $this->data['Product Sales Type']        = 'Public Sale';
+        $this->data['Product Availability Type'] = 'Normal';
+        $this->data['Product Main Type']         = 'Sale';
+
+        if ($this->data['Product Packing Group'] == '') {
+            $this->data['Product Packing Group'] = 'None';
+        }
+
 
         $keys   = '';
         $values = '';
+
+
+      //  print_r($this->data);
+
         foreach ($this->data as $key => $value) {
             $keys .= ",`".$key."`";
             if (in_array(
                 $key, array(
-                        'Product Valid To',
-                        'Product Unit Weight',
-                        'Product Outer Weight',
-                        'Product RRP'
+                   'Product Special Characteristic Component A',
+                   'Product Special Characteristic Component B',
+                   'Product XHTML Next Supplier Shipment',
                     )
             )) {
-                $values .= ','.prepare_mysql($value, true);
+                $values .= ','.prepare_mysql($value, false);
 
             } else {
-                $values .= ','.prepare_mysql($value, false);
+                $values .= ','.prepare_mysql($value, true);
             }
         }
         $values = preg_replace('/^,/', '', $values);
@@ -233,9 +245,7 @@ class Product extends Asset {
 
 
             $history_data = array(
-                'History Abstract' => sprintf(
-                    _('%s product created'), $this->data['Product Name']
-                ),
+                'History Abstract' => sprintf(_('%s product created'), $this->data['Product Name']),
                 'History Details'  => '',
                 'Action'           => 'created'
             );
@@ -255,7 +265,10 @@ class Product extends Asset {
 
         } else {
             $this->error = true;
-            $this->msg   = 'Error inserting Product record';
+
+            print "$sql\n";
+
+            $this->msg = 'Error inserting Product record';
         }
 
 
@@ -413,14 +426,14 @@ class Product extends Asset {
             case 'Webpage Image':
 
 
-                $image_key=$this->get('Product Main Image Key');
+                $image_key = $this->get('Product Main Image Key');
 
                 if ($image_key) {
-                    $img='/image_root.php?size=small&id='.$image_key;
-                   // $normal_img='image_root.php?id='.$image_key;
-                }else {
-                    $img='/art/nopic.png';
-                   // $normal_img='art/nopic.png';
+                    $img = '/image_root.php?size=small&id='.$image_key;
+                    // $normal_img='image_root.php?id='.$image_key;
+                } else {
+                    $img = '/art/nopic.png';
+                    // $normal_img='art/nopic.png';
 
                 }
 
@@ -503,8 +516,6 @@ class Product extends Asset {
                 }
 
 
-
-
                 return $price;
                 break;
 
@@ -520,14 +531,13 @@ class Product extends Asset {
                 }
 
 
-
                 return $rrp;
                 break;
 
             case 'Webpage Out of Stock Label':
-                if ($this->get('Product Total Acc Quantity Ordered')>0) {
+                if ($this->get('Product Total Acc Quantity Ordered') > 0) {
                     return _('Out of stock');
-                }else{
+                } else {
                     return _('Launching soon');
                 }
 
@@ -560,9 +570,9 @@ class Product extends Asset {
                 }
 
 
-                $unit_margin      =  ($exchange*$this->data['Product Price'] )- $this->data['Product Cost'];
+                $unit_margin      = ($exchange * $this->data['Product Price']) - $this->data['Product Cost'];
                 $price_other_info = sprintf(
-                    _('margin %s'), percentage($unit_margin, $exchange*$this->data['Product Price'])
+                    _('margin %s'), percentage($unit_margin, $exchange * $this->data['Product Price'])
                 );
 
 
@@ -591,7 +601,6 @@ class Product extends Asset {
 
                 return money($this->data['Product RRP'], $this->data['Store Currency Code']);
                 break;
-
 
 
                 return money($this->data['Product RRP'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code']);
@@ -697,10 +706,10 @@ class Product extends Asset {
                     );
 
                     return '<img src="/art/flags/'.strtolower(
-                        $country->get('Country 2 Alpha Code')
-                    ).'.gif" title="'.$country->get('Country Code').'"> '._(
-                        $country->get('Country Name')
-                    );
+                            $country->get('Country 2 Alpha Code')
+                        ).'.gif" title="'.$country->get('Country Code').'"> '._(
+                            $country->get('Country Name')
+                        );
                 } else {
                     return '';
                 }
@@ -909,12 +918,10 @@ class Product extends Asset {
 
         include_once 'class.Part.php';
 
-        $sql        = sprintf(
+        $sql = sprintf(
             "SELECT `Product Part Key`,`Product Part Linked Fields`,`Product Part Part SKU`,`Product Part Ratio`,`Product Part Note` FROM `Product Part Bridge` WHERE `Product Part Product ID`=%d ",
             $this->id
         );
-
-
 
 
         $parts_data = array();
@@ -1985,7 +1992,7 @@ class Product extends Asset {
 
         $page = new Page($page_key);
 
-        $this->webpage= $page;
+        $this->webpage = $page;
 
         return $page;
 
@@ -2027,30 +2034,25 @@ class Product extends Asset {
         $web_availability_updated = ($old_web_availability != $web_availability ? true : false);
 
 
-
-
         if ($web_availability_updated) {
 
 
-
-
-            $sql=sprintf('select `Category Key` from `Category Bridge` where `Subject Key`=%d and `Subject`="Product" group by `Category Key` ',
-                         $this->id
-                         );
-            if ($result=$this->db->query($sql)) {
-            		foreach ($result as $row) {
-                       $category=new Category($row['Category Key']);
+            $sql = sprintf(
+                'SELECT `Category Key` FROM `Category Bridge` WHERE `Subject Key`=%d AND `Subject`="Product" GROUP BY `Category Key` ', $this->id
+            );
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $category = new Category($row['Category Key']);
 
                     //   print_r($category->get('Code'));
 
-                        $category->update_product_category_products_data();
-            		}
-            }else {
-            		print_r($error_info=$this->db->errorInfo());
-            		print "$sql\n";
-            		exit;
+                    $category->update_product_category_products_data();
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
             }
-
 
 
             //print $this->data['Product Store Key'].' '.$this->data['Product Code']." $old_web_availability  $web_availability \n";
@@ -2504,6 +2506,8 @@ class Product extends Asset {
     function update_part_list($value, $options = '') {
 
 
+
+
         $value = json_decode($value, true);
 
 
@@ -2536,7 +2540,7 @@ class Product extends Asset {
 
         foreach ($value as $product_part) {
 
-            //print_r($product_part);
+
             if (isset($product_part['Key']) and $product_part['Key'] > 0) {
 
                 $sql = sprintf(
@@ -2581,10 +2585,10 @@ class Product extends Asset {
                 if ($product_part['Part SKU'] > 0) {
 
                     $sql = sprintf(
-                        'INSERT INTO `Product Part Bridge` (`Product Part Product ID`,`Product Part Part SKU`,`Product Part Ratio`,`Product Part Note`) VALUES (%d,%d,%f,%s)', $this->id,
+                        'INSERT INTO `Product Part Bridge` (`Product Part Product ID`,`Product Part Part SKU`,`Product Part Ratio`,`Product Part Note`,`Product Part Linked Fields`) VALUES (%d,%d,%f,%s,"")', $this->id,
                         $product_part['Part SKU'], $product_part['Ratio'], prepare_mysql($product_part['Note'], false)
                     );
-                    //print $sql;
+                //    print $sql;
                     $this->db->exec($sql);
                     $this->updated = true;
                 }
