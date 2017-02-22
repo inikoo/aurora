@@ -175,6 +175,8 @@ function parts($_data, $db, $user, $type, $account) {
             }
 
 
+
+
             if ($data['Part Current Stock'] <= 0) {
                 $weeks_available = '-';
             } else {
@@ -188,10 +190,16 @@ function parts($_data, $db, $user, $type, $account) {
                 $status = _('Active');
             } elseif ($data['Part Status'] == 'Discontinuing') {
                 $status = _('Discontinuing');
+                $stock_status       = '<i class="fa fa-square warning fa-fw" aria-hidden="true"></i>';
+                $stock_status_label = _('Discontinuing');
             } elseif ($data['Part Status'] == 'Not In Use') {
                 $status = _('Discontinued');
             } elseif ($data['Part Status'] == 'In Process') {
                 $status = _('In process');
+
+                
+
+
             } else {
                 $status = $data['Part Status'];
             }
