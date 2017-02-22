@@ -112,7 +112,7 @@ trait ProductCategory {
 
     }
 
-    function update_product_timeseries_record($timeseries, $to, $from, $fork_key) {
+    function update_product_timeseries_record($timeseries, $to, $from, $fork_key=false) {
 
         if ($this->get('Category Branch Type') == 'Root') {
 

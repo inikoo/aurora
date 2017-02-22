@@ -737,7 +737,7 @@ class SubjectSupplier extends Subject {
             ) : ''), ($to_date ? sprintf('and `Date`<%s', prepare_mysql($to_date)) : '')
             );
 
-            //print "$sql\n";
+          //  print "$from_date $to_date  \n";
 
             if ($result = $this->db->query($sql)) {
                 if ($row = $result->fetch()) {
