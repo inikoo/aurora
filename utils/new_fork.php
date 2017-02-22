@@ -14,6 +14,8 @@
 
 function new_fork($type, $data, $account_code, $db) {
 
+
+
     $fork_encrypt_key = md5('huls0fjhslsshskslgjbtqcwijnbxhl2391');
 
     $token = substr(
@@ -66,6 +68,8 @@ function new_fork($type, $data, $account_code, $db) {
 
 
 function new_housekeeping_fork($type, $data, $account_code) {
+
+    include_once  'utils/aes.php';
 
     $fork_encrypt_key = md5('huls0fjhslsshskslgjbtqcwijnbxhl2391');
 

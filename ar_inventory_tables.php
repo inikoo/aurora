@@ -197,7 +197,7 @@ function parts($_data, $db, $user, $type, $account) {
             } elseif ($data['Part Status'] == 'In Process') {
                 $status = _('In process');
 
-                
+
 
 
             } else {

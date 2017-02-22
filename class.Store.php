@@ -2772,9 +2772,7 @@ class Store extends DB_Table {
 
         if (!is_numeric($data['Product Price']) or $data['Product Price'] < 0) {
             $this->error      = true;
-            $this->msg        = sprintf(
-                _('Invalid cost (%s)'), $data['Product Price']
-            );
+            $this->msg        = sprintf(_('Invalid cost (%s)'), $data['Product Price']);
             $this->error_code = 'invalid_product_price';
             $this->metadata   = $data['Product Price'];
 
@@ -3037,7 +3035,13 @@ class Store extends DB_Table {
         } else {
             $this->error = true;
 
-            $this->msg = $product->msg;
+            $this->msg = 'Error '.$product->msg;
+
+
+            $this->error      = true;
+            $this->error_code = 'cant create product'.$product->msg;
+            $this->metadata   = '';
+            
 
         }
 
