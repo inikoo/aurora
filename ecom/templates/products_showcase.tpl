@@ -59,7 +59,7 @@
 
                <a href="page.php?id={$product->get('Webpage Key')}">  
                <div class="wrap_to_center product_image" >
-                    <img draggable="false" class="more_info" src="/art/moreinfo_corner1.png">
+                   <i class="fa fa-info-circle more_info" aria-hidden="true" title="More info"></i>
 
                     <img draggable="false" src="{$product->get('Image')}" />
                  </div>

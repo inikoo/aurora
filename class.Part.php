@@ -2146,7 +2146,7 @@ class Part extends Asset {
                     return;
                 }
 
-
+/*
                 if ($this->get('Part Status') == 'In Process' and $value = 'In Use' and !($this->get('Part Current On Hand Stock') > 0)
                 ) {
 
@@ -2156,7 +2156,7 @@ class Part extends Asset {
                     return;
 
                 }
-
+*/
 
                 if ($value == 'Not In Use') {
                     if ($this->get('Part Current On Hand Stock') > 0) {

@@ -177,10 +177,11 @@ h1{
     }
 
 
-    .more_info{
-        cursor:pointer;position:absolute;width:40px;top:-1px;left:179px;z-index:1}
 
 
+     .more_info{
+            font-size:25px;cursor:pointer;position:absolute;width:40px;top:5px;left:182px;color:darkorange;z-index:1
+     }
 
 
 
