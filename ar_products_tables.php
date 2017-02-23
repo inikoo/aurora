@@ -977,6 +977,10 @@ function product_categories_categories($_data, $db, $user) {
     include_once 'class.Category.php';
     include_once 'class.Store.php';
 
+
+
+   // print_r($_data);
+
     $parent = new Category($_data['parameters']['parent_key']);
     $store  = new Store($parent->get('Category Store Key'));
     if ($store->get('Store Family Category Key') == $parent->get(

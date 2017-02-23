@@ -2258,16 +2258,44 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
 
                 if ($data['_object']->get('Root Key') == $data['store']->get('Store Family Category Key')) {
                     $_content['tabs']['category.categories']['label'] = _('Families');
+
+
+                    if ($data['store']->get('Store Family Category Key') == $data['_object']->id) {
+
+                        $_content['tabs']['category.webpage']['class']    = 'hide';
+                        $_content['tabs']['category.details']['class']    = 'hide';
+                        $_content['tabs']['category.categories']['class'] = 'hide';
+
+                        $_content['tabs']['category.categories']['selected'] = true;
+                        $data['tab']                                         = 'category.categories';
+                        $data['subtab']                                         = '';
+                        $_content['subtabs']=array();
+
+                    }
+
+
                 }
 
             } else {
-
-
                 if ($data['_object']->get('Root Key') == $data['store']->get('Store Department Category Key')) {
                     $_content['tabs']['category.subjects']['label']   = _('Families');
                     $_content['tabs']['category.categories']['label'] = _('Departments');
-                } elseif ($data['_object']->get('Root Key') == $data['store']->get('Store Family Category Key')) {
-                    $_content['tabs']['category.categories']['label'] = _('Families');
+
+
+                    if ($data['store']->get('Store Department Category Key') == $data['_object']->id) {
+
+                        $_content['tabs']['category.webpage']['class']    = 'hide';
+                        $_content['tabs']['category.details']['class']    = 'hide';
+                        $_content['tabs']['category.categories']['class'] = 'hide';
+
+                        $_content['tabs']['category.categories']['selected'] = true;
+                        $data['tab']                                         = 'category.categories';
+                        $data['subtab']                                         = '';
+                        $_content['subtabs']=array();
+
+                    }
+
+
                 } else {
 
                     $_content['tabs']['category.subjects']['label'] = _('Categories');
@@ -2340,7 +2368,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
 
         }
     }
-
+   // print_r($_content['tabs']);
+   // print_r($_content['subtabs']);
 
     $smarty->assign('_content', $_content);
 

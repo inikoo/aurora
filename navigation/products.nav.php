@@ -400,14 +400,14 @@ function get_products_all_stores_navigation($data, $smarty, $user, $db, $account
 function get_products_category_navigation($data, $smarty, $user, $db) {
 
 
-    require_once 'class.Category.php';
-    require_once 'class.Store.php';
 
 
-    $category = new Category($data['key']);
+    $category = $data['_object'];
 
     $left_buttons  = array();
     $right_buttons = array();
+
+
 
     switch ($data['parent']) {
         case 'category':
@@ -425,7 +425,7 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
                     'Category Root Key'
                 )
             ) {
-                $tab = 'category.categories';
+                $tab = 'category.product_categories.categories';
             } else {
 
                 $tab = 'subject_categories';
@@ -478,6 +478,12 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
 
 
     $_order_field = $order;
+
+
+    if($_order_field=='products'){
+        $_order_field='(`Product Category Active Products`+`Product Category Discontinuing Products`)';
+    }
+
     $order        = preg_replace('/^.*\.`/', '', $order);
     $order        = preg_replace('/^`/', '', $order);
     $order        = preg_replace('/`$/', '', $order);
@@ -502,6 +508,7 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
     if ($result2 = $db->query($sql)) {
         if ($row2 = $result2->fetch() and $row2['num'] > 1) {
 
+         //   print $order_direction;
 
             $sql = sprintf(
                 "select C.`Category Label` object_name,C.`Category Key` as object_key %s from $table   $where $wheref
@@ -509,6 +516,7 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
                 prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $category->id
             );
 
+           // print $sql;
 
             if ($result = $db->query($sql)) {
                 if ($row = $result->fetch()) {
@@ -545,6 +553,10 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
                 print_r($error_info = $db->errorInfo());
                 exit;
             }
+
+
+         // print $order_direction;
+
 
 
             if ($order_direction == 'desc') {
@@ -599,6 +611,7 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
             'icon'  => 'arrow-right disabled',
             'title' => '',
             'url'   => ''
+
         );
 
     }
@@ -607,33 +620,44 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
     if ($data['store']->get('Store Department Category Key') == $data['_object']->get('Category Root Key')) {
         if ($data['_object']->get('Category Root Key') != $data['_object']->id) {
             $category_title_label = _('Department').' ';
+            $title = $category_title_label.'<span class="Category_Code id">'.$data['_object']->get('Code').'</span>';
+
         } else {
-            $category_title_label = '';
+            $title=_('Departments');
         }
-        $title = $category_title_label.'<span class="Category_Code id">'.$data['_object']->get('Code').'</span>';
 
     } elseif ($data['store']->get('Store Family Category Key') == $data['_object']->get('Category Root Key')) {
-        $title = '<i class="fa fa-pagelines" aria-hidden="true"></i> <span class="Category_Code id">'.$data['_object']->get('Code').'</span>';
+
+        if ($data['_object']->get('Category Root Key') != $data['_object']->id) {
+            $category_title_label = _('Department').' ';
+            $title = $category_title_label.'<span class="Category_Code id">'.$data['_object']->get('Code').'</span>';
+
+        } else {
+            $title=_('Families');
+        }
+
 
     } else {
         $category_title_label = _('Category');
         $title                = $category_title_label.' <span class="Category_Code id">'.$data['_object']->get('Code').'</span>';
+
+        $right_buttons[] = array(
+            'icon'  => 'sticky-note',
+            'title' => _('Sticky note'),
+            'id'    => 'sticky_note_button',
+            'click' => "show_sticky_note_edit_dialog('sticky_note_button')",
+            'class' => ($category->get('Sticky Note') == '' ? '' : 'hide')
+        );
 
     }
 
 
     if ($data['_object']->get('Product Category Status') != 'Active') {
 
-    $title .= ' ('.$data['_object']->get('Status').')';
-}
+        $title .= ' ('.$data['_object']->get('Status').')';
+    }
 
-    $right_buttons[] = array(
-        'icon'  => 'sticky-note',
-        'title' => _('Sticky note'),
-        'id'    => 'sticky_note_button',
-        'click' => "show_sticky_note_edit_dialog('sticky_note_button')",
-        'class' => ($category->get('Sticky Note') == '' ? '' : 'hide')
-    );
+
 
     //$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit'), 'url'=>"edit_product_categories.php?store_id=".$data['store']->id);
 
@@ -889,8 +913,7 @@ function get_product_navigation($data, $smarty, $user, $db, $account) {
 
         if ($data['parent'] == 'order') {
             $_order_field_value = $data['otf'];
-            $extra_field
-                                = ',OTF.`Order Transaction Fact Key` as extra_field';
+            $extra_field        = ',OTF.`Order Transaction Fact Key` as extra_field';
         } else {
 
             $_order_field_value = $object->get($order);
@@ -1460,8 +1483,7 @@ function get_service_navigation($data, $smarty, $user, $db, $account) {
 
         if ($data['parent'] == 'order') {
             $_order_field_value = $data['otf'];
-            $extra_field
-                                = ',OTF.`Order Transaction Fact Key` as extra_field';
+            $extra_field        = ',OTF.`Order Transaction Fact Key` as extra_field';
         } else {
 
             $_order_field_value = $object->get($order);
