@@ -874,6 +874,8 @@ class Category extends DB_Table {
                     case 'Percentage Active Web Offline':
                         return percentage($this->data['Product Category Active Web Offline'], $this->data['Product Category Active Products'], 0);
 
+                    case 'products':
+                        return $this->data['Product Category Active Products']+$this->data['Product Category Discontinuing Products'];
                     default:
 
                         if (preg_match(

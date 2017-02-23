@@ -87,6 +87,8 @@ if ($order == 'code') {
     $order = '`Category Label`';
 } elseif ($order == 'products') {
     $order = 'products';
+}elseif ($order == 'families') {
+    $order = '`Category Number Subjects`';
 } elseif ($order == 'status') {
     $order = '`Product Category Status`';
 } elseif ($order == 'active') {
