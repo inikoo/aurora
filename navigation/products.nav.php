@@ -619,7 +619,7 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
 
     if ($data['store']->get('Store Department Category Key') == $data['_object']->get('Category Root Key')) {
         if ($data['_object']->get('Category Root Key') != $data['_object']->id) {
-         //   $category_title_label = _('Department').' ';
+           $category_title_label = _('Department').' ';
             $title = $category_title_label.'<span class="Category_Code id">'.$data['_object']->get('Code').'</span>';
 
         } else {

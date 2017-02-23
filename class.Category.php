@@ -340,6 +340,10 @@ class Category extends DB_Table {
 
             $created_msg = _('Category created');
 
+
+
+
+
             if ($this->data['Category Scope'] == 'Invoice') {
                 $sql = sprintf(
                     "INSERT INTO `Invoice Category Dimension` (`Invoice Category Key`,`Invoice Category Store Key`) VALUES (%d,%d)", $this->id, $this->data['Category Store Key']

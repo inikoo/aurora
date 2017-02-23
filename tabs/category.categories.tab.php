@@ -82,9 +82,7 @@ if ($state['module'] == 'inventory') {
 } elseif ($state['module'] == 'products') {
 
 
-    if($state['_object']->get('Category Subject')=='Product'){
-
-
+    if ($state['_object']->get('Category Subject') == 'Product') {
 
 
         $tab     = 'category.product_categories.categories';
@@ -149,7 +147,10 @@ if ($state['module'] == 'inventory') {
 
         );
 
-    }elseif($state['_object']->get('Category Subject')=='Category'){
+    } elseif ($state['_object']->get('Category Subject') == 'Category') {
+
+
+
 
         $tab     = 'category.product_categories.categories';
         $ar_file = 'ar_products_tables.php';
@@ -208,13 +209,12 @@ if ($state['module'] == 'inventory') {
                 'object'      => 'Category',
                 'parent'      => $state['object'],
                 'parent_key'  => $state['key'],
-                'placeholder' => _("Family's code")
+                'placeholder' => $placeholder
             )
 
         );
 
     }
-
 
 
     $smarty->assign('table_buttons', $table_buttons);
