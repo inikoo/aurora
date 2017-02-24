@@ -32,7 +32,7 @@ className: "link width_150",
 {
 name: "store",
 label: "{t}Store{/t}",
-renderable: {if ($data['parent']=='account' or $data['parent']=='warehouse' ) }true{else}false{/if},
+renderable: true,
 editable: false,
 sortType: "toggle",
 cell: Backgrid.StringCell.extend([])
