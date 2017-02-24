@@ -130,10 +130,15 @@ function products($_data, $db, $user, $account) {
         $rtext_label = 'product';
     }
 
-if($_data['parameters']['parent']=='part') {
-    include_once 'class.Product.php';
+    if ($_data['parameters']['parent'] == 'part') {
+        include_once 'class.Product.php';
 
-}
+    } elseif ($_data['parameters']['parent'] == 'category') {
+        include_once 'class.Category.php';
+        $category = new Category($_data['parameters']['parent_key']);
+
+        $path = sprintf('products/%d/category/%s/', $category->get('Category Store Key'), $category->get('Category Position'));
+    }
 
     include_once 'prepare_table/init.php';
 
@@ -222,80 +227,96 @@ if($_data['parameters']['parent']=='part') {
             }
 
 
+            if ($_data['parameters']['parent'] == 'part') {
 
+                $product = new Product('id', $data['Product ID']);
+                $parts   = $product->get('Parts');
+            } else {
 
-
-            if($_data['parameters']['parent']=='part'){
-
-                $product=new Product('id',$data['Product ID']);
-                $parts=$product->get('Parts');
-            }else{
-
-                $parts='';
+                $parts = '';
             }
 
 
-
-
-
-
-
             if ($data['Product RRP'] == '') {
-               $rrp='';
-            }else{
+                $rrp = '';
+            } else {
                 $rrp = money($data['Product RRP'] / $data['Product Units Per Case'], $data['Store Currency Code']);
                 if ($data['Product Units Per Case'] != 1) {
                     $rrp .= '/'.$data['Product Unit Label'];
                 }
-                $rrp=sprintf('<span style="cursor:text" class="product_rrp" title="%s" pid="%d" rrp="%s"  currency="%s"   onClick="open_edit_rrp(this)">%s</span>',
-                             sprintf(_('margin %s'), percentage($data['Product RRP'] - $data['Product Price'], $data['Product RRP'])),
-                             $data['Product ID'],
-                             $data['Product RRP']/$data['Product Units Per Case'],
-                             $data['Store Currency Code'],
-                             $rrp
+                $rrp = sprintf(
+                    '<span style="cursor:text" class="product_rrp" title="%s" pid="%d" rrp="%s"  currency="%s"   onClick="open_edit_rrp(this)">%s</span>',
+                    sprintf(_('margin %s'), percentage($data['Product RRP'] - $data['Product Price'], $data['Product RRP'])), $data['Product ID'],
+                    $data['Product RRP'] / $data['Product Units Per Case'], $data['Store Currency Code'], $rrp
 
                 );
 
             }
 
 
-            
-            
-            
+          //  print_r($_data);
+            $name = $data['Product Units Per Case'].'x '.$data['Product Name'];
 
+
+            switch ($_data['parameters']['parent']) {
+
+                case 'part':
+                    $code = sprintf('<span class="link" onClick="change_view(\'part/%d/product/%d\')" title="%s">%s</span>', $_data['parameters']['parent_key'], $data['Product ID'], $name, $data['Product Code']);
+                    break;
+                case 'category':
+                    $code = sprintf('<span class="link" onClick="change_view(\'%sproduct/%d\')" title="%s">%s</span>', $path, $data['Product ID'], $name, $data['Product Code']);
+                    break;
+                default:
+                    $code = sprintf('<span class="link" onClick="change_view(\'products/%d/%d\')" title="%s">%s</span>', $data['Store Key'], $data['Product ID'], $name, $data['Product Code']);
+                    break;
+            }
+
+
+            /*
+
+                        events: {
+                            "click": function() {
+                                change_view( {if $data['section']=='part'}'part/{$data['key']}/product/' + this.model.get("id")
+
+                                                                                                                      {else if $data['section']=='category'}'products/{$data['store']->id}/category/{$data['_object']->get('Category Position')}/product/' + this.model.get("id")
+
+                       {else}'products/{$data['parent_key']}/'+this.model.get("id"){/if})
+            }
+            },
+                        className: "link width_150",
+
+            */
             $record_data[] = array(
 
-                'id'               => (integer)$data['Product ID'],
-                'store_key'        => (integer)$data['Store Key'],
-                'associated'       => $associated,
-                'store'            => $data['Store Code'],
-                'code'             => $data['Product Code'],
-                'name'             => $data['Product Units Per Case'].'x '.$data['Product Name'],
-                'price'            => sprintf('<span style="cursor:text" class="product_price" title="%s" pid="%d" price="%s"    currency="%s"  exchange="%s" cost="%s" old_margin="%s" onClick="open_edit_price(this)">%s</span>',
-                                              money($exchange*$data['Product Price'], $account->get('Account Currency')),
-                                                    $data['Product ID'],
-                                                    $data['Product Price'],
-                                                    $data['Store Currency Code'],
-                                              $exchange,
-                                              $data['Product Cost'],
-                                              percentage($exchange*$data['Product Price'] - $data['Product Cost'], $exchange*$data['Product Price']),
-                                              money($data['Product Price'], $data['Store Currency Code']) ),
+                'id'         => (integer)$data['Product ID'],
+                'store_key'  => (integer)$data['Store Key'],
+                'associated' => $associated,
+                'store'      => sprintf('<span class="button" onClick="change_view(\'store/%d\')" title="%s"">%s</span>',$data['Store Key'],$data['Store Name'],$data['Store Code']),
+                'code'       => $code,
+                'name'       => $name,
+                'price'      => sprintf(
+                    '<span style="cursor:text" class="product_price" title="%s" pid="%d" price="%s"    currency="%s"  exchange="%s" cost="%s" old_margin="%s" onClick="open_edit_price(this)">%s</span>',
+                    money($exchange * $data['Product Price'], $account->get('Account Currency')), $data['Product ID'], $data['Product Price'], $data['Store Currency Code'], $exchange,
+                    $data['Product Cost'], percentage($exchange * $data['Product Price'] - $data['Product Cost'], $exchange * $data['Product Price']),
+                    money($data['Product Price'], $data['Store Currency Code'])
+                ),
 
 
-
-                'rrp'            => $rrp,
+                'rrp' => $rrp,
 
 
                 //                'margin'           => '<span style="cursor:text" class="product_margin" onClick="open_edit_margin(this)" title="'._('Cost price').':'.money($data['Product Cost'], $account->get('Account Currency')).'">'.percentage($exchange*$data['Product Price'] - $data['Product Cost'], $exchange*$data['Product Price']).'<span>',
 
-                'margin'           => '<span class="product_margin" title="'._('Cost price').':'.money($data['Product Cost'], $account->get('Account Currency')).'">'.percentage($exchange*$data['Product Price'] - $data['Product Cost'], $exchange*$data['Product Price']).'<span>',
+                'margin'           => '<span class="product_margin" title="'._('Cost price').':'.money($data['Product Cost'], $account->get('Account Currency')).'">'.percentage(
+                        $exchange * $data['Product Price'] - $data['Product Cost'], $exchange * $data['Product Price']
+                    ).'<span>',
                 'web_state'        => $web_state,
                 'status'           => $status,
-                'parts'=>$parts,
+                'parts'            => $parts,
                 'sales'            => money($data['sales'], $data['Store Currency Code']),
                 'sales_1yb'        => delta($data['sales'], $data['sales_1yb']),
-                'dc_sales'            => money($data['dc_sales'], $account->get('Account Currency')),
-                'dc_sales_1yb'        => delta($data['dc_sales'], $data['dc_sales_1yb']),
+                'dc_sales'         => money($data['dc_sales'], $account->get('Account Currency')),
+                'dc_sales_1yb'     => delta($data['dc_sales'], $data['dc_sales_1yb']),
                 'qty_invoiced'     => number($data['qty_invoiced']),
                 'qty_invoiced_1yb' => delta(
                     $data['qty_invoiced'], $data['qty_invoiced_1yb']
@@ -978,8 +999,7 @@ function product_categories_categories($_data, $db, $user) {
     include_once 'class.Store.php';
 
 
-
-   // print_r($_data);
+    // print_r($_data);
 
     $parent = new Category($_data['parameters']['parent_key']);
     $store  = new Store($parent->get('Category Store Key'));
@@ -1192,37 +1212,37 @@ function product_categories_products($_data, $db, $user) {
         }
 
 
-        if($data['Page Key']>0){
-            $webpage=sprintf('<span class="%s">%s</span>',
-                ($data['Page State']=='Offline'?'discreet strikethrough':''),
-                             $data['Page Code']);
-        }else{
-            $webpage=   '<span class="super_discreet">-</span>';
+        if ($data['Page Key'] > 0) {
+            $webpage = sprintf(
+                '<span class="%s">%s</span>', ($data['Page State'] == 'Offline' ? 'discreet strikethrough' : ''), $data['Page Code']
+            );
+        } else {
+            $webpage = '<span class="super_discreet">-</span>';
         }
 
         $record_data[] = array(
-            'id'               => (integer)$data['Product Category Key'],
-            'store_key'        => (integer)$data['Category Store Key'],
-            'code'             => sprintf(
+            'id'                      => (integer)$data['Product Category Key'],
+            'store_key'               => (integer)$data['Category Store Key'],
+            'code'                    => sprintf(
                 '<span class="link" onClick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Category Store Key'], $data['Product Category Key'], $data['Category Code']
             ),
-            'label'            => $data['Category Label'],
-            'status'           => $status,
-            'products'         => number($data['products']),
-            'families'         => number($data['subjects']),
-            'in_process'       => number($data['Product Category In Process Products']),
-            'active'           => number($data['Product Category Active Products']),
-            'suspended'        => number($data['Product Category Suspended Products']),
-            'discontinuing'    => number($data['Product Category Discontinuing Products']),
-            'discontinued'     => number($data['Product Category Discontinued Products']),
-            'sales'            => money($data['sales'], $data['Product Category Currency Code']),
-            'sales_1yb'        => delta($data['sales'], $data['sales_1yb']),
-            'qty_invoiced'     => number($data['qty_invoiced']),
-            'qty_invoiced_1yb' => delta($data['qty_invoiced'], $data['qty_invoiced_1yb']),
-            'online'           => ($data['Page Key']>0?number($data['online']):'<span class="super_discreet">-</span>'),
-            'out_of_stock'     =>  ($data['Page Key']>0?number($data['Product Category Active Web Out of Stock']):'<span class="super_discreet">-</span>'),
-            'percentage_out_of_stock'     =>($data['Page Key']>0?percentage($data['Product Category Active Web Out of Stock'],$data['online']):''),
-            'webpage'=>$webpage,
+            'label'                   => $data['Category Label'],
+            'status'                  => $status,
+            'products'                => number($data['products']),
+            'families'                => number($data['subjects']),
+            'in_process'              => number($data['Product Category In Process Products']),
+            'active'                  => number($data['Product Category Active Products']),
+            'suspended'               => number($data['Product Category Suspended Products']),
+            'discontinuing'           => number($data['Product Category Discontinuing Products']),
+            'discontinued'            => number($data['Product Category Discontinued Products']),
+            'sales'                   => money($data['sales'], $data['Product Category Currency Code']),
+            'sales_1yb'               => delta($data['sales'], $data['sales_1yb']),
+            'qty_invoiced'            => number($data['qty_invoiced']),
+            'qty_invoiced_1yb'        => delta($data['qty_invoiced'], $data['qty_invoiced_1yb']),
+            'online'                  => ($data['Page Key'] > 0 ? number($data['online']) : '<span class="super_discreet">-</span>'),
+            'out_of_stock'            => ($data['Page Key'] > 0 ? number($data['Product Category Active Web Out of Stock']) : '<span class="super_discreet">-</span>'),
+            'percentage_out_of_stock' => ($data['Page Key'] > 0 ? percentage($data['Product Category Active Web Out of Stock'], $data['online']) : ''),
+            'webpage'                 => $webpage,
 
 
             'sales_year0' => sprintf(

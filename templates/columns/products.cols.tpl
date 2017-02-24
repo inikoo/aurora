@@ -6,36 +6,23 @@ cell: "integer",
 renderable: false
 
 
-}, {
-name: "store_key",
-label: "",
-editable: false,
-renderable: false,
-cell: "string"
 },
-
 {
 name: "code",
 label: "{t}Code{/t}   ",
 editable: false,
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
-events: {
-"click": function() {
-change_view( {if $data['section']=='part'}'part/{$data['key']}/product/' + this.model.get("id"){else if $data['section']=='category'}'products/{$data['store']->id}/category/{$data['_object']->get('Category Position')}/product/' + this.model.get("id"){else}'products/{$data['parent_key']}/'+this.model.get("id"){/if})
-}
-},
-className: "link width_150",
-})
+cell: Backgrid.HtmlCell.extend({ })
 },
 
 {
 name: "store",
 label: "{t}Store{/t}",
-renderable: true,
+
+renderable: {if $data['object']=='part' or  $data['object']=='' }true{else}false{/if},
 editable: false,
 sortType: "toggle",
-cell: Backgrid.StringCell.extend([])
+cell: Backgrid.HtmlCell.extend([])
 },
 
 {
