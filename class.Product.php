@@ -193,7 +193,6 @@ class Product extends Asset {
         );
 
 
-
         $this->data['Product Stage']             = 'New';
         $this->data['Product Sales Type']        = 'Public Sale';
         $this->data['Product Availability Type'] = 'Normal';
@@ -204,21 +203,19 @@ class Product extends Asset {
         }
 
 
-
-
         $keys   = '';
         $values = '';
 
 
-      //  print_r($this->data);
+        //  print_r($this->data);
 
         foreach ($this->data as $key => $value) {
             $keys .= ",`".$key."`";
             if (in_array(
                 $key, array(
-                   'Product Special Characteristic Component A',
-                   'Product Special Characteristic Component B',
-                   'Product XHTML Next Supplier Shipment',
+                        'Product Special Characteristic Component A',
+                        'Product Special Characteristic Component B',
+                        'Product XHTML Next Supplier Shipment',
                     )
             )) {
                 $values .= ','.prepare_mysql($value, false);
@@ -270,7 +267,7 @@ class Product extends Asset {
         } else {
             $this->error = true;
 
-           // print "\n\n$sql\n\n";
+            // print "\n\n$sql\n\n";
 
             $this->msg = 'Error inserting Product record';
         }
@@ -2316,6 +2313,10 @@ class Product extends Asset {
 
         $this->update_web_state($use_fork);
 
+        foreach($this->get_categories('objects') as $category){
+            $category->update_product_category_products_data();
+        }
+
 
         $this->other_fields_updated = array(
             'Product_Availability' => array(
@@ -2510,8 +2511,6 @@ class Product extends Asset {
     function update_part_list($value, $options = '') {
 
 
-
-
         $value = json_decode($value, true);
 
 
@@ -2589,10 +2588,10 @@ class Product extends Asset {
                 if ($product_part['Part SKU'] > 0) {
 
                     $sql = sprintf(
-                        'INSERT INTO `Product Part Bridge` (`Product Part Product ID`,`Product Part Part SKU`,`Product Part Ratio`,`Product Part Note`,`Product Part Linked Fields`) VALUES (%d,%d,%f,%s,"")', $this->id,
-                        $product_part['Part SKU'], $product_part['Ratio'], prepare_mysql($product_part['Note'], false)
+                        'INSERT INTO `Product Part Bridge` (`Product Part Product ID`,`Product Part Part SKU`,`Product Part Ratio`,`Product Part Note`,`Product Part Linked Fields`) VALUES (%d,%d,%f,%s,"")',
+                        $this->id, $product_part['Part SKU'], $product_part['Ratio'], prepare_mysql($product_part['Note'], false)
                     );
-                //    print $sql;
+                    //    print $sql;
                     $this->db->exec($sql);
                     $this->updated = true;
                 }
@@ -2843,16 +2842,12 @@ class Product extends Asset {
             }
         } elseif ($status == 'Discontinuing') {
             if ($this->get('Product Status') == 'Active') {
-                $this->update(
-                    array('Product Status' => 'Discontinuing'), 'no_history'
-                );
+                $this->update(array('Product Status' => 'Discontinuing'), 'no_history');
 
             }
         } elseif ($status == 'Discontinued') {
 
-            $this->update(
-                array('Product Status' => 'Discontinued'), 'no_history'
-            );
+            $this->update(array('Product Status' => 'Discontinued'), 'no_history');
 
 
         }

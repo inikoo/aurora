@@ -106,7 +106,11 @@
 
 
 <div id="page_content" style="position:relative">
-
+    {if $category->get('Product Category Status')=='Discontinued'}
+    <div  class="section description_block alert alert-error alert-title" style="text-align:center">
+        <i class="fa fa-frown-o padding_right_20" aria-hidden="true"></i> {t}Discontinued{/t} <i class="fa fa-frown-o padding_left_20" aria-hidden="true"></i>
+    </div>
+{/if}
 
     <div id="description_block" class="section description_block {$content_data.description_block.class} " >
 
@@ -147,6 +151,7 @@
 
 
 
+
         {foreach from=$content_data.description_block.blocks key=id item=data}
             {if $data.type=='text'}
 
@@ -163,6 +168,12 @@
         {/foreach}
         <div style="clear:both"></div>
     </div>
+
+    {if $category->get('Product Category Status')=='Discontinued'}
+    <div  class="section description_block alert alert-error alert-title" style="text-align:center">
+        {t}Sorry, but all products in this web page are discontinued{/t}
+    </div>
+    {/if}
 
     <div id="items_container" class="product_blocks">
         <i id="add_panel" class="fa fa-cog button" aria-hidden="true" style="position:absolute;left:10px;margin-top:10px"></i>

@@ -1713,8 +1713,7 @@ class Page extends DB_Table {
             case('Webpage Code'):
             case('Webpage Type Key'):
             case 'Webpage Version':
-            case
-            'Webpage Launch Date':
+            case 'Webpage Launch Date':
 
                 $this->update_field($field, $value, $options);
                 break;
