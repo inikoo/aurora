@@ -4,8 +4,6 @@
 
 
 
-
-
     #page_content  input {
         position: relative;
         bottom: 2px;
@@ -612,6 +610,33 @@
 
     .section_overview_container.page_break.highlight{
         border:1px solid  lightskyblue
+    }
+
+
+
+    .alert {
+        padding: 8px 35px 8px 14px;
+        margin-bottom: 18px;
+        color: #c09853;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+        background-color: #fcf8e3;
+        border: 1px solid #fbeed5;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        border-radius: 4px;
+    }
+
+
+    .alert-danger,
+    .alert-error {
+        color: #b94a48;
+        background-color: #f2dede;
+        border-color: #eed3d7;
+    }
+    .alert-title{
+        font-family: "Ubuntu",Helvetica,Arial,sans-serif;
+        font-weight: 800;
+        font-size:21px;
     }
 
     {$css}

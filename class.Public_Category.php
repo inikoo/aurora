@@ -140,7 +140,7 @@ class Public_Category {
 
         switch ($key) {
 
-
+            case 'Product Category Status':
             case 'Category Subject':
                 return $this->data[$key];
                 break;

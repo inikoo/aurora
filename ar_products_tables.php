@@ -1238,7 +1238,14 @@ function product_categories_products($_data, $db, $user) {
             } else {
 
                 if ($data['Webpage State'] == 'Online') {
-                    $webpage_state = '<i class="fa fa-globe success" aria-hidden="true"></i>';
+                    if($data['Product Category Status']=='Discontinued'){
+                        $webpage_state = '<i class="fa fa-globe warning" aria-hidden="true"></i>';
+
+                    }else{
+                        $webpage_state = '<i class="fa fa-globe success" aria-hidden="true"></i>';
+
+                    }
+
                 } else {
                     $webpage_state = '<i class="fa fa-globe super_discreet" aria-hidden="true"></i>';
 
