@@ -1887,6 +1887,11 @@ function delete_object(element) {
     save_object_operation('delete', element)
 }
 
+
+function reset_object(element) {
+    save_object_operation('reset', element)
+}
+
 function archive_object(element) {
     save_object_operation('archive', element)
 }
@@ -1985,3 +1990,73 @@ $(document).on("click", "#exit_edit_table", function () {
     change_view(state.request + '&tab=' + state.tab.replace(/\_edit$/i, ""))
 
 });
+
+
+
+
+function publish(element,type){
+
+
+    var icon=$(element).find('i')
+
+    if(icon.hasClass('fa-spin')) return;
+
+
+    icon.removeClass('fa-rocket').addClass('fa-spinner fa-spin')
+
+    var request = '/ar_edit_website.php?tipo='+type+'&parent_key=' + $(element).attr('webpage_key')
+    console.log(request)
+    $.getJSON(request, function (data) {
+
+        icon.addClass('fa-rocket').removeClass('fa-spinner fa-spin')
+
+
+
+        if(type=='publish_webpage'){
+$('#publish').removeClass('changed valid')
+
+        }else if(type=='unpublish_webpage'){
+
+            $('#publish').addClass('changed valid')
+
+        }
+
+        if (data.other_fields) {
+            for (var key in data.other_fields) {
+                update_field(data.other_fields[key])
+            }
+        }
+
+        if (data.deleted_fields) {
+            for (var key in data.deleted_fields) {
+                delete_field(data.deleted_fields[key])
+            }
+        }
+
+        for (var key in data.update_metadata.class_html) {
+            $('.' + key).html(data.update_metadata.class_html[key])
+        }
+
+
+        for (var key in data.update_metadata.hide_by_id) {
+            $('#' + data.update_metadata.hide_by_id[key]).addClass('hide')
+        }
+
+        for (var key in data.update_metadata.show_by_id) {
+            $('#' + data.update_metadata.show_by_id[key]).removeClass('hide')
+        }
+
+        for (var key in data.update_metadata.visible_by_id) {
+            $('#' + data.update_metadata.visible_by_id[key]).removeClass('invisible')
+        }
+
+        for (var key in data.update_metadata.invisible_by_id) {
+            $('#' + data.update_metadata.invisible_by_id[key]).addClass('invisible')
+        }
+
+
+
+    })
+
+
+}

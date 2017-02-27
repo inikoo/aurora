@@ -10,6 +10,10 @@
  Version 3.0
 */
 
+
+$_tmp=array();
+$object->create_category_webpage(28131,$_tmp);
+
 if (isset($options['new']) and $options['new']) {
     $new = true;
 } else {

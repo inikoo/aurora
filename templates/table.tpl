@@ -417,6 +417,37 @@
         }
     });
 
+    var rightHeaderHtmlCell =  Backgrid.HeaderCell.extend({
+
+        /** @property */
+        className: "html-cell align-right",
+
+
+
+
+
+        render: function () {
+            this.$el.empty();
+
+
+            if (this.column.get('title')) {
+                this.$el.attr('title', this.column.get('title'))
+
+            }
+            if (this.column.get('headerClass')) {
+                this.$el.addClass(this.column.get('headerClass'));
+            }
+
+
+            this.$el.append(this.column.get("label"))
+
+
+
+            this.delegateEvents();
+            return this;
+        }
+    });
+
 
     var integerHeaderCell = Backgrid.HeaderCell.extend({
                 className: "align-right",

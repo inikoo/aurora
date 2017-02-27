@@ -254,14 +254,16 @@ function products($_data, $db, $user, $account) {
             }
 
 
-          //  print_r($_data);
+            //  print_r($_data);
             $name = $data['Product Units Per Case'].'x '.$data['Product Name'];
 
 
             switch ($_data['parameters']['parent']) {
 
                 case 'part':
-                    $code = sprintf('<span class="link" onClick="change_view(\'part/%d/product/%d\')" title="%s">%s</span>', $_data['parameters']['parent_key'], $data['Product ID'], $name, $data['Product Code']);
+                    $code = sprintf(
+                        '<span class="link" onClick="change_view(\'part/%d/product/%d\')" title="%s">%s</span>', $_data['parameters']['parent_key'], $data['Product ID'], $name, $data['Product Code']
+                    );
                     break;
                 case 'category':
                     $code = sprintf('<span class="link" onClick="change_view(\'%sproduct/%d\')" title="%s">%s</span>', $path, $data['Product ID'], $name, $data['Product Code']);
@@ -291,7 +293,7 @@ function products($_data, $db, $user, $account) {
                 'id'         => (integer)$data['Product ID'],
                 'store_key'  => (integer)$data['Store Key'],
                 'associated' => $associated,
-                'store'      => sprintf('<span class="button" onClick="change_view(\'store/%d\')" title="%s"">%s</span>',$data['Store Key'],$data['Store Name'],$data['Store Code']),
+                'store'      => sprintf('<span class="button" onClick="change_view(\'store/%d\')" title="%s"">%s</span>', $data['Store Key'], $data['Store Name'], $data['Store Code']),
                 'code'       => $code,
                 'name'       => $name,
                 'price'      => sprintf(
@@ -1167,6 +1169,9 @@ function product_categories_products($_data, $db, $user) {
     include_once 'class.Category.php';
     include_once 'class.Store.php';
 
+
+    // print_r($_data);
+
     $parent = new Category($_data['parameters']['parent_key']);
     $store  = new Store($parent->get('Category Store Key'));
 
@@ -1192,19 +1197,21 @@ function product_categories_products($_data, $db, $user) {
 
         switch ($data['Product Category Status']) {
             case 'In Process':
-                $status = _('Empty');
+                $status =sprintf('<i class="fa fa-circle-thin warning discreet" aria-hidden="true" title="%s"></i>', _('Empty'));
                 break;
             case 'Active':
-                $status = _('Active');
+                $status =sprintf('<i class="fa fa-sitemap" aria-hidden="true" title="%s"></i>', _('Active'));
                 break;
             case 'Suspended':
                 $status = _('Suspended');
                 break;
             case 'Discontinued':
-                $status = _('Discontinued');
+                $status =sprintf('<i class="fa fa-sitemap very_discreet" aria-hidden="true" title="%s"></i>', _('Discontinued'));
+
                 break;
             case 'Discontinuing':
-                $status = _('Discontinuing');
+                $status =sprintf('<i class="fa fa-sitemap warning discreet" aria-hidden="true" title="%s"></i>', _('Discontinuing'));
+
                 break;
             default:
                 $status = $data['Product Category Status'];
@@ -1212,13 +1219,36 @@ function product_categories_products($_data, $db, $user) {
         }
 
 
-        if ($data['Page Key'] > 0) {
+        if ($data['Page Key'] > 0 and $data['Product Category Public']=='Yes') {
             $webpage = sprintf(
                 '<span class="%s">%s</span>', ($data['Page State'] == 'Offline' ? 'discreet strikethrough' : ''), $data['Page Code']
             );
         } else {
             $webpage = '<span class="super_discreet">-</span>';
         }
+
+        if ($data['Product Category Public'] == 'No') {
+            $webpage_state = '<i class="fa fa-microphone-slash" aria-hidden="true"></i>';
+
+        } else {
+
+            if ($data['Page Key'] == '') {
+                $webpage_state = '<i class="fa fa-exclamation-circle error" aria-hidden="true"></i>';
+
+            } else {
+
+                if ($data['Webpage State'] == 'Online') {
+                    $webpage_state = '<i class="fa fa-globe success" aria-hidden="true"></i>';
+                } else {
+                    $webpage_state = '<i class="fa fa-globe super_discreet" aria-hidden="true"></i>';
+
+                }
+
+
+            }
+
+        }
+
 
         $record_data[] = array(
             'id'                      => (integer)$data['Product Category Key'],
@@ -1239,11 +1269,11 @@ function product_categories_products($_data, $db, $user) {
             'sales_1yb'               => delta($data['sales'], $data['sales_1yb']),
             'qty_invoiced'            => number($data['qty_invoiced']),
             'qty_invoiced_1yb'        => delta($data['qty_invoiced'], $data['qty_invoiced_1yb']),
-            'online'                  => ($data['Page Key'] > 0 ? number($data['online']) : '<span class="super_discreet">-</span>'),
-            'out_of_stock'            => ($data['Page Key'] > 0 ? number($data['Product Category Active Web Out of Stock']) : '<span class="super_discreet">-</span>'),
-            'percentage_out_of_stock' => ($data['Page Key'] > 0 ? percentage($data['Product Category Active Web Out of Stock'], $data['online']) : ''),
+            'online'                  => ($data['Product Category Public'] =='Yes' ? number($data['online']) : '<span class="super_discreet">-</span>'),
+            'out_of_stock'            => ($data['Product Category Public'] =='Yes' ? number($data['Product Category Active Web Out of Stock']) : '<span class="super_discreet">-</span>'),
+            'percentage_out_of_stock' => ($data['Product Category Public'] =='Yes'  ? percentage($data['Product Category Active Web Out of Stock'], $data['online']) : ''),
             'webpage'                 => $webpage,
-
+            'webpage_state'           => $webpage_state,
 
             'sales_year0' => sprintf(
                 '<span>%s</span> %s', money($data['Product Category Year To Day Acc Invoiced Amount'], $data['Product Category Currency Code']),

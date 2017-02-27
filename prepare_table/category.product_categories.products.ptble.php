@@ -167,7 +167,7 @@ if ($order == 'code') {
 
 $fields = "
 `Page Key`,`Page Code`,`Page State`,
-`Product Category Active Web For Sale`,`Product Category Active Web Out of Stock`,`Product Category Active Web For Sale`+`Product Category Active Web Out of Stock` as online,
+`Product Category Active Web For Sale`,`Product Category Active Web Out of Stock`,`Product Category Active Web For Sale`+`Product Category Active Web Out of Stock` as online,`Webpage State`,`Product Category Public`,
     P.`Product Category Key`,C.`Category Code`,`Category Label`,C.`Category Key`,`Category Store Key`,
     (`Product Category Active Products`+`Product Category Discontinuing Products`) as products,
     `Category Number Subjects` as subjects,

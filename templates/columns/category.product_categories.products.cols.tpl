@@ -7,6 +7,16 @@ renderable: false,
 cell: "string"
 },
 {
+name: "status",
+label:'<i class="fa fa-retweet" aria-hidden="true"></i> ',
+title:"{t}Category status{/t}",
+
+editable: false,
+cell: Backgrid.HtmlCell.extend({ }),
+headerCell: HeaderHtmlCell
+},
+
+{
 name: "code",
 label: "{t}Code{/t}",
 editable: false,
@@ -20,12 +30,6 @@ name: "label",
 label:"{t}Label{/t}",
 editable: false,
 cell: "string"
-},
-{
-name: "status",
-label:"{t}Status{/t}",
-editable: false,
-cell: "html"
 },
 
 {
@@ -56,28 +60,45 @@ headerCell: integerHeaderCell
 },
 
 {
+name: "webpage_state",
+label:'<i class="fa fa-retweet fa-fw" style="opacity:.8" aria-hidden="true"></i><i class="fa fa-globe fa-fw" style="position:relative;left:-25px;opacity:.3" aria-hidden="true"></i> ',
+title:"{t}Webpage state{/t}",
+
+editable: false,
+cell: Backgrid.HtmlCell.extend({
+
+}),
+headerCell: HeaderHtmlCell
+
+},
+
+{
 name: "online",
-label:"{t}Online{/t}",
+label:'<i class="fa fa-microphone" aria-hidden="true"></i> <i class="fa fa-cube" aria-hidden="true"></i>',
+title:"{t}Online products{/t}",
+
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='online'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
+headerCell: rightHeaderHtmlCell
 
 },
 
 {
 name: "out_of_stock",
-label:"{t}Out of stock{/t}",
+label:'<i class="fa fa-microphone" aria-hidden="true"></i> <i class="fa fa-cube" aria-hidden="true"></i> <i class="fa fa-ban error" aria-hidden="true"></i>',
+
+title:"{t}Online out of stock products{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='out_of_stock'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
+headerCell: rightHeaderHtmlCell
 
 },
 
@@ -341,7 +362,7 @@ $('#columns_period').addClass('hide');
 
 
 grid.columns.findWhere({ name: 'label'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'status'} ).set("renderable", false)
+//grid.columns.findWhere({ name: 'status'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'products'} ).set("renderable", false)
 
 grid.columns.findWhere({ name: 'active'} ).set("renderable", false)
@@ -371,6 +392,9 @@ grid.columns.findWhere({ name: 'online'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'out_of_stock'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'webpage'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'percentage_out_of_stock'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'webpage_state'} ).set("renderable", false)
+
+
 
 if(view=='overview'){
 grid.columns.findWhere({ name: 'label'} ).set("renderable", true)
@@ -380,6 +404,9 @@ grid.columns.findWhere({ name: 'status'} ).set("renderable", true)
 if(view=='webpages'){
 //grid.columns.findWhere({ name: 'products'} ).set("renderable", true)
 //grid.columns.findWhere({ name: 'status'} ).set("renderable", true)
+
+grid.columns.findWhere({ name: 'webpage_state'} ).set("renderable", true)
+
 
 grid.columns.findWhere({ name: 'online'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'out_of_stock'} ).set("renderable", true)

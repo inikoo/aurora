@@ -61,6 +61,49 @@ $subject_render          = true;
 
 
 $category_fields = array(
+
+
+    array(
+        'label'      => _('Webpage state').' <span class="padding_left_10 Webpage_State_Edit_Label"><i class="fa fa-globe '.($object->webpage->get('Webpage State')=='Online'?'success':'super_discreet').'" aria-hidden="true"></i></span>',
+        'class'      => 'operations',
+
+        'show_title' => true,
+        'fields'     => array(
+
+
+            array(
+                'id'        => 'launch_webpage',
+                'render'=>($object->webpage->get('Webpage Launch Date')!=''?false:true),
+                'class'     => 'operation',
+                'value'     => '',
+                'label'     => ' <span webpage_key="'.$object->webpage->id.'" onClick="publish(this,\'publish_webpage\')" class="save changed valid">'._("Launch web page").' <i class="fa fa-rocket save changed valid"></i></span>',
+                'reference' => '',
+                'type'      => 'operation'
+            ),
+
+            array(
+                'id'        => 'unpublish_webpage',
+                'render'=>(($object->webpage->get('Webpage Launch Date')=='' or $object->webpage->get('Webpage State')=='Offline' ) ?false:true),
+                'class'     => 'operation',
+                'value'     => '',
+                'label'     => ' <span webpage_key="'.$object->webpage->id.'" onClick="publish(this,\'unpublish_webpage\')" class="error button ">'._("Unpublish web page").' <i class="fa fa-rocket  fa-flip-vertical error button"></i></span>',
+                'reference' => '',
+                'type'      => 'operation'
+            ),
+            array(
+                'id'        => 'republish_webpage',
+                'render'=>(($object->webpage->get('Webpage Launch Date')!='' and $object->webpage->get('Webpage State')=='Offline' ) ?true:false),
+                'class'     => 'operation',
+                'value'     => '',
+                'label'     => ' <span webpage_key="'.$object->webpage->id.'" onClick="publish(this,\'publish_webpage\')" class=" button ">'._("Republish web page").' <i class="fa fa-rocket   button"></i></span>',
+                'reference' => '',
+                'type'      => 'operation'
+            ),
+
+
+        )
+    ),
+
     array(
         'label'      => _('Webpage'),
         'show_title' => true,
@@ -194,96 +237,80 @@ $template_field = array(
 
 
 
-$template_fields = array(
+if($object->get('Category Subject')=='Product') {
+
+
+    $template_fields = array(
+
+
+        array(
+            'label'      => _('Template settings'),
+            'show_title' => true,
+            'fields'     => array(
+
+
+                array(
+                    'id'              => 'Webpage_Related_Products',
+                    'edit'            => 'webpage_related_products',
+                    'value'           => '',
+                    'formatted_value' => $object->get('Webpage Related Products'),
+                    'label'           => _('Related products links'),
+                    'required'        => false,
+                    'type'            => ''
+                ),
+                array(
+                    'id'              => 'Webpage_See_Also',
+                    'edit'            => 'webpage_see_also',
+                    'value'           => '',
+                    'formatted_value' => $object->get('Webpage See Also'),
+                    'label'           => _('See also links'),
+                    'required'        => false,
+                    'type'            => ''
+                ),
+
+
+            )
+        ),
+
+
+    );
+}else{
+    $template_fields=array();
+}
+
+
+    $category_fields = array_merge(
+        $category_fields, $template_field, $template_fields
+    );
 
 
 
 
 
-    array(
-        'label'      => _('Template settings'),
-        'show_title' => true,
-        'fields'     => array(
+
+$operations = array(
+    'label'      => _('Operations'),
+    'show_title' => true,
+    'class'      => 'operations',
+    'fields'     => array(
+
+
+        array(
+            'id'        => 'reset_webpage',
+            'class'     => 'operation',
+            'value'     => '',
+            'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "old_page", "key":"'.$object->webpage->id.'"}\' onClick="reset_object(this)" class="delete_object disabled ">'._("Reset webpage").' <i class="fa fa-recycle  "></i></span>',
+            'reference' => '',
+            'type'      => 'operation'
+        ),
 
 
 
-
-
-
-
-            array(
-                'id'              => 'Webpage_Related_Products',
-                'edit'            => 'webpage_related_products',
-                'value'           => '',
-                'formatted_value' => $object->get('Webpage Related Products'),
-                'label'           => _('Related products links'),
-                'required'        => false,
-                'type'            => ''
-            ),
-            array(
-                'id'              => 'Webpage_See_Also',
-                'edit'            => 'webpage_see_also',
-                'value'           => '',
-                'formatted_value' => $object->get('Webpage See Also'),
-                'label'           => _('See also links'),
-                'required'        => false,
-                'type'            => ''
-            ),
-
-
-        )
-    ),
-
+    )
 
 );
 
-$category_fields = array_merge(
-    $category_fields, $template_field,$template_fields
-);
-
-
-
-
-
-
-/*
-
-        $store = new Store($object->get('Store Key'));
-
-
-
-        $object->get_webpage();
-
-
-        if ($store->get('Store Family Category Key') == $object->get(
-                'Category Root Key'
-            )
-        ) {
-
-            include 'family.fld.php';
-            $category_fields = array_merge(
-                $category_fields, $category_product_fields
-            );
-
-        } elseif ($store->get('Store Department Category Key') == $object->get(
-                'Category Root Key'
-            )
-        ) {
-
-            include 'department.fld.php';
-            $category_fields = array_merge(
-                $category_fields, $category_product_fields
-            );
-
-        } else {
-            include 'category.product.fld.php';
-            $category_fields = array_merge(
-                $category_fields, $category_product_fields
-            );
-
-        }
-
-*/
+$category_fields[] = $operations;
 
 
 
