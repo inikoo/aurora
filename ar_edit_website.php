@@ -137,6 +137,18 @@ switch ($tipo) {
         );
         publish_webpage($data, $editor, $db);
         break;
+    case 'unpublish_webpage':
+
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'parent_key' => array('type' => 'key'),
+
+
+                     )
+        );
+        unpublish_webpage($data, $editor, $db);
+        break;
+
     case 'update_product_category_index':
 
 
@@ -1045,8 +1057,36 @@ function publish_webpage($data, $editor, $db) {
     $webpage->publish();
 
 
+
     $response = array(
-        'state' => 200
+        'state' => 200,
+        'other_fields'       => $webpage->get_other_fields_update_info(),
+        'new_fields'         => $webpage->get_new_fields_info(),
+        'deleted_fields'     => $webpage->get_deleted_fields_info(),
+        'update_metadata'    => $webpage->get_update_metadata()
+
+    );
+    echo json_encode($response);
+
+
+}
+
+
+function unpublish_webpage($data, $editor, $db) {
+
+    // todo migrate to Webpage & WebpageVersion classes
+    include_once('class.Page.php');
+    $webpage = new Page($data['parent_key']);
+
+    $webpage->unpublish();
+
+
+    $response = array(
+        'state' => 200,
+            'other_fields'       => $webpage->get_other_fields_update_info(),
+            'new_fields'         => $webpage->get_new_fields_info(),
+            'deleted_fields'     => $webpage->get_deleted_fields_info(),
+            'update_metadata'    => $webpage->get_update_metadata()
 
     );
     echo json_encode($response);

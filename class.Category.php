@@ -2548,41 +2548,25 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         include_once 'class.Store.php';
                         $store = new Store($this->get('Category Store Key'));
 
-                        $family = new Category($value);
-                        $family->associate_subject(
-                            $this->id, false, '', 'skip_direct_update'
-                        );
 
+                        $old_parent_category=new Category($this->data['Product Category Department Category Key']);
 
-                        /*
-					$sql=sprintf("select C.`Category Key` from `Category Dimension` C left join `Category Bridge` B on (C.`Category Key`=B.`Category Key`) where `Category Root Key`=%d and `Subject Key`=%d and `Subject`='Category' and `Category Branch Type`='Head'",
+                        $new_parent_category = new Category($value);
+                        $new_parent_category->associate_subject($this->id, false, '', 'skip_direct_update');
 
-						$this->data['Store Department Category Key'],
-						$family->id
-					);
-					//print $sql;
-					$department_key='';
-					if ($result=$this->db->query($sql)) {
-						if ($row = $result->fetch()) {
-							$department_key=$row['Category Key'];
-						}
-					}else {
-						print_r($error_info=$this->db->errorInfo());
-						exit;
-					}
-					$this->update_field('Product Department Category Key', $department_key, 'no_history');
-*/
+                        $old_parent_category->update_product_category_products_data();
+                        $new_parent_category->update_product_category_products_data();
 
                     } else {
                         if ($this->data['Product Category Department Category Key'] != '') {
 
 
-                            $category = new Category(
-                                $this->data['Product Category Department Category Key']
-                            );
+                            $category = new Category($this->data['Product Category Department Category Key']);
 
                             if ($category->id) {
                                 $category->disassociate_subject($this->id);
+                                $category->update_product_category_products_data();
+
                             }
 
                         }
@@ -2593,9 +2577,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     //print "$field, $value";
 
                     //$this->update_subject_field($field, $value, 'no_history');
-                    $this->update_table_field(
-                        $field, $value, 'no_history', 'Product Category', 'Product Category Dimension', $this->id
-                    );
+                    $this->update_table_field($field, $value, 'no_history', 'Product Category', 'Product Category Dimension', $this->id);
 
                     $categories = '';
                     foreach ($this->get_category_data() as $item) {

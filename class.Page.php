@@ -192,7 +192,7 @@ class Page extends DB_Table {
 
     }
 
-    function create($raw_data) {
+    function create($raw_data, $migration_hack = false) {
 
 
         $this->new = false;
@@ -265,220 +265,218 @@ class Page extends DB_Table {
             //==== set scope
 
 
-            include_once 'class.Store.php';
-            $store   = new Store($this->data['Page Store Key']);
+            if ($migration_hack) {
 
 
-            //======
-            $scope = false;
-
-            if ($this->data['Page Store Section'] == 'Product Description') {
-                include_once('class.Public_Product.php');
-                $scope       = new Public_Product($this->data['Page Parent Key']);
-                $scope_found = 'Product';
+                include_once 'class.Store.php';
+                $store = new Store($this->data['Page Store Key']);
 
 
-            } elseif ($this->data['Page Store Section'] == 'Category') {
-                include_once('class.Public_Category.php');
+                //======
+                $scope = false;
 
-                $scope       = new Public_Category($this->data['Page Parent Key']);
-                $scope_found = 'Category';
+                if ($this->data['Page Store Section'] == 'Product Description') {
+                    include_once('class.Public_Product.php');
+                    $scope       = new Public_Product($this->data['Page Parent Key']);
+                    $scope_found = 'Product';
 
-            } elseif ($this->data['Page Store Section'] == 'Family Catalogue') {
 
+                } elseif ($this->data['Page Store Section'] == 'Category') {
+                    include_once('class.Public_Category.php');
 
-
-                include_once('class.Public_Category.php');
-                $store    = new Store($this->get('Page Store Key'));
-                $category = new Public_Category('root_key_code', $store->get('Store Family Category Key'), $this->get('Code'));
-                if ($category->id) {
-                    $scope       = $category;
+                    $scope       = new Public_Category($this->data['Page Parent Key']);
                     $scope_found = 'Category';
 
-                } else {
-
-                    $sql = sprintf('SELECT `Product Family Code`  FROM `Product Family Dimension` WHERE `Product Family Key`=%d ', $this->data['Page Parent Key']);
+                } elseif ($this->data['Page Store Section'] == 'Family Catalogue') {
 
 
-                    if ($result2 = $db->query($sql)) {
-                        if ($row2 = $result2->fetch()) {
+                    include_once('class.Public_Category.php');
+                    $store    = new Store($this->get('Page Store Key'));
+                    $category = new Public_Category('root_key_code', $store->get('Store Family Category Key'), $this->get('Code'));
+                    if ($category->id) {
+                        $scope       = $category;
+                        $scope_found = 'Category';
 
-                            $category = new Public_Category('root_key_code', $store->get('Store Family Category Key'), $row2['Product Family Code']);
-                            if ($category->id) {
-                                $scope       = $category;
-                                $scope_found = 'Category';
+                    } else {
 
-                            } else {
-                            //    print 'F '.$this->get('Code').' '.$this->data['Page Parent Code'].' '."$sql\n";
+                        $sql = sprintf('SELECT `Product Family Code`  FROM `Product Family Dimension` WHERE `Product Family Key`=%d ', $this->data['Page Parent Key']);
+
+
+                        if ($result2 = $this->db->query($sql)) {
+                            if ($row2 = $result2->fetch()) {
+
+                                $category = new Public_Category('root_key_code', $store->get('Store Family Category Key'), $row2['Product Family Code']);
+                                if ($category->id) {
+                                    $scope       = $category;
+                                    $scope_found = 'Category';
+
+                                } else {
+                                    //    print 'F '.$this->get('Code').' '.$this->data['Page Parent Code'].' '."$sql\n";
+
+                                }
 
                             }
-
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
+                            print "$sql\n";
+                            exit;
                         }
-                    } else {
-                        print_r($error_info = $db->errorInfo());
-                        print "$sql\n";
-                        exit;
+
                     }
+
+
+                } elseif ($this->data['Page Store Section'] == 'Department Catalogue') {
+
+                    include_once('class.Store.php');
+
+                    include_once('class.Public_Category.php');
+                    $store    = new Store($this->get('Page Store Key'));
+                    $category = new Public_Category('root_key_code', $store->get('Store Department Category Key'), $this->get('Code'));
+                    if ($category->id) {
+                        $scope       = $category;
+                        $scope_found = 'Category';
+
+                    } else {
+
+                        $sql = sprintf('SELECT `Product Department Code`  FROM `Product Department Dimension` WHERE `Product Department Key`=%d ', $this->data['Page Parent Key']);
+
+
+                        if ($result2 = $this->db->query($sql)) {
+                            if ($row2 = $result2->fetch()) {
+
+                                $category = new Public_Category('root_key_code', $store->get('Store Department Category Key'), $row2['Product Department Code']);
+                                if ($category->id) {
+                                    $scope       = $category;
+                                    $scope_found = 'Category';
+
+                                } else {
+                                    //  print 'D '.$this->get('Code').' '.$this->data['Page Parent Code'].' '."$sql\n";
+
+                                }
+
+                            }
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
+                            print "$sql\n";
+                            exit;
+                        }
+
+                    }
+
 
                 }
 
 
-            } elseif ($this->data['Page Store Section'] == 'Department Catalogue') {
-
-                include_once('class.Store.php');
-
-                include_once('class.Public_Category.php');
-                $store    = new Store($this->get('Page Store Key'));
-                $category = new Public_Category('root_key_code', $store->get('Store Department Category Key'), $this->get('Code'));
-                if ($category->id) {
-                    $scope       = $category;
-                    $scope_found = 'Category';
-
-                } else {
-
-                    $sql = sprintf('SELECT `Product Department Code`  FROM `Product Department Dimension` WHERE `Product Department Key`=%d ', $this->data['Page Parent Key']);
+                //===
+                require_once 'class.Webpage_Type.php';
 
 
-                    if ($result2 = $db->query($sql)) {
-                        if ($row2 = $result2->fetch()) {
-
-                            $category = new Public_Category('root_key_code', $store->get('Store Department Category Key'), $row2['Product Department Code']);
-                            if ($category->id) {
-                                $scope       = $category;
-                                $scope_found = 'Category';
-
-                            } else {
-                              //  print 'D '.$this->get('Code').' '.$this->data['Page Parent Code'].' '."$sql\n";
-
-                            }
-
-                        }
-                    } else {
-                        print_r($error_info = $db->errorInfo());
-                        print "$sql\n";
-                        exit;
-                    }
-
-                }
+                if ($scope) {
 
 
-            }
-
-
-            //===
-            require_once 'class.Webpage_Type.php';
-
-
-            if ($scope) {
-
-
-                if ($scope->get_object_name() == 'Product') {
-                    $this->update(
-                        array(
-                            'Webpage Scope'     => 'Product',
-                            'Webpage Scope Key' => $scope->id
-                        ), 'no_history'
-                    );
-
-                } elseif ($scope->get_object_name() == 'Category') {
-
-
-                    $category = new Category($scope->id);
-
-                    if ($category->get('Category Subject') == 'Product') {
-
+                    if ($scope->get_object_name() == 'Product') {
                         $this->update(
                             array(
-                                'Webpage Scope'     => 'Category Products',
-                                'Webpage Scope Key' => $category->id
-                            ), 'no_history'
-                        );
-
-
-                    } elseif ($category->get('Category Subject') == 'Category') {
-                        //print $category->get('Category Subject');
-
-                        $this->update(
-                            array(
-                                'Webpage Scope'     => 'Category Categories',
+                                'Webpage Scope'     => 'Product',
                                 'Webpage Scope Key' => $scope->id
                             ), 'no_history'
                         );
 
+                    } elseif ($scope->get_object_name() == 'Category') {
 
-                        if ($category->get('Category Root Key') == $store->get('Store Family Category Key')) {
 
-                            $this->update(
-                                array(
-                                    'Webpage Scope Metadata' => 'Family',
-                                ), 'no_history'
-                            );
-                        } elseif ($category->get('Category Root Key') == $store->get('Store Department Category Key')) {
+                        $category = new Category($scope->id);
+
+                        if ($category->get('Category Subject') == 'Product') {
 
                             $this->update(
                                 array(
-                                    'Webpage Scope Metadata' => 'Department',
+                                    'Webpage Scope'     => 'Category Products',
+                                    'Webpage Scope Key' => $category->id
                                 ), 'no_history'
                             );
+
+
+                        } elseif ($category->get('Category Subject') == 'Category') {
+                            //print $category->get('Category Subject');
+
+                            $this->update(
+                                array(
+                                    'Webpage Scope'     => 'Category Categories',
+                                    'Webpage Scope Key' => $scope->id
+                                ), 'no_history'
+                            );
+
+
+                            if ($category->get('Category Root Key') == $store->get('Store Family Category Key')) {
+
+                                $this->update(
+                                    array(
+                                        'Webpage Scope Metadata' => 'Family',
+                                    ), 'no_history'
+                                );
+                            } elseif ($category->get('Category Root Key') == $store->get('Store Department Category Key')) {
+
+                                $this->update(
+                                    array(
+                                        'Webpage Scope Metadata' => 'Department',
+                                    ), 'no_history'
+                                );
+                            }
+
                         }
+
 
                     }
 
-
                 }
 
+
+                if ($this->data['Page Store Section Type'] == 'Product') {
+                    $type = 'Prod';
+
+
+                } elseif ($this->data['Page Store Section'] == 'Department Catalogue') {
+                    $type = 'Cats';
+
+                } elseif ($this->data['Page Store Section'] == 'Family Catalogue') {
+
+                    $type = 'Prods';
+
+                } elseif ($this->data['Page Store Section'] == 'Information' or $this->data['Page Store Section'] == 'Front Page Store') {
+                    $type = 'Info';
+
+                } else {
+                    print $this->data['Page Store Section']."\n";
+                    $type = 'Sys';
+                }
+
+
+                $webpage_type = new Webpage_Type('website_code', $this->get('Page Site Key'), $type);
+
+
+                $this->update(
+                    array(
+                        'Webpage Website Key' => $this->get('Page Site Key'),
+                        'Webpage Store Key'   => $this->get('Page Store Key'),
+                        'Webpage State'       => $this->get('Page State'),
+                        'Webpage Type Key'    => $webpage_type->id,
+                    ), 'no_history'
+                );
+
+
+                $this->update(
+                    array(
+                        'Webpage Code' => $this->get('Page Code'),
+                    ), 'no_history'
+                );
+
+                $webpage_type->update_number_webpages();
+
+                $this->update_version();
             }
-
-
-
-
-            if ($this->data['Page Store Section Type'] == 'Product') {
-                $type = 'Prod';
-
-
-            } elseif ($this->data['Page Store Section'] == 'Department Catalogue') {
-                $type = 'Cats';
-
-            } elseif ($this->data['Page Store Section'] == 'Family Catalogue') {
-
-                $type = 'Prods';
-
-            } elseif ($this->data['Page Store Section'] == 'Information' or $this->data['Page Store Section'] == 'Front Page Store') {
-                $type = 'Info';
-
-            } else {
-                print $this->data['Page Store Section']."\n";
-                $type = 'Sys';
-            }
-
-
-            $webpage_type = new Webpage_Type('website_code', $this->get('Page Site Key'), $type);
-
-
-            $this->update(
-                array(
-                    'Webpage Website Key' => $this->get('Page Site Key'),
-                    'Webpage Store Key'   => $this->get('Page Store Key'),
-                    'Webpage State'       => $this->get('Page State'),
-                    'Webpage Type Key'    => $webpage_type->id,
-                ), 'no_history'
-            );
-
-
-            $this->update(
-                array(
-                    'Webpage Code' => $this->get('Page Code'),
-                ), 'no_history'
-            );
-
-            $webpage_type->update_number_webpages();
-
-            $this->update_version();
-            
 
             //===============
-
-
 
 
         } else {
@@ -1348,6 +1346,209 @@ class Page extends DB_Table {
 
     }
 
+    function get($key) {
+        switch ($key) {
+
+            case 'Publish':
+
+
+                if ($this->data['Page Store Content Data'] != $this->data['Page Store Content Published Data']) {
+
+
+                    return true;
+                }
+
+                if ($this->data['Page Store CSS'] != $this->data['Page Store Published CSS']) {
+
+
+                    return true;
+                }
+
+                $this->load_scope();
+
+                if ($this->scope_found == 'Category') {
+
+                    $sql = sprintf(
+                        'SELECT `Product Category Index Stack`,`Product Category Index Published Stack`,`Product Category Index Content Data`,`Product Category Index Content Published Data`  FROM  `Product Category Index`  WHERE `Product Category Index Category Key`=%d  ',
+                        $this->scope->id
+                    );
+
+                    if ($result = $this->db->query($sql)) {
+                        foreach ($result as $row) {
+                            if ($row['Product Category Index Stack'] != $row['Product Category Index Published Stack']) {
+                                return true;
+                            }
+                            if ($row['Product Category Index Content Data'] != $row['Product Category Index Content Published Data']) {
+                                return true;
+                            }
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+
+
+                }
+
+
+                $sql = sprintf(
+                    'SELECT `Webpage Related Product Order`,`Webpage Related Product Published Order`,`Webpage Related Product Content Data`,`Webpage Related Product Content Published Data`  FROM  `Webpage Related Product Bridge`  WHERE `Webpage Related Product Page Key`=%d  ',
+                    $this->id
+                );
+
+                // print $sql;
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        if ($row['Webpage Related Product Order'] != $row['Webpage Related Product Published Order']) {
+                            return true;
+                        }
+                        if ($row['Webpage Related Product Content Data'] != $row['Webpage Related Product Content Published Data']) {
+                            return true;
+                        }
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+                return false;
+
+                break;
+
+            case 'Content Data':
+                if ($this->data['Page Store Content Data'] == '') {
+                    $content_data = false;
+                } else {
+                    $content_data = json_decode($this->data['Page Store Content Data'], true);
+                }
+
+                return $content_data;
+                break;
+
+            case 'Webpage Website Key':
+                return $this->get('Page Site Key');
+                break;
+            case 'Code':
+                return $this->data['Page Code'];
+                break;
+
+            case  'Page Found In Page Key':
+
+                $found_in_page_key = '';
+
+                $sql = sprintf(
+                    "SELECT `Page Store Found In Key` FROM  `Page Store Found In Bridge` WHERE `Page Store Key`=%d", $this->id
+                );
+
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $found_in_page_key = $row['Page Store Found In Key'];
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    exit;
+                }
+
+                return $found_in_page_key;
+                break;
+            case  'Found In Page Key':
+
+                $found_in_page = '';
+
+                $sql = sprintf(
+                    "SELECT `Page Code` FROM  `Page Store Found In Bridge` B  LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Page Store Found In Key`)  WHERE B.`Page Store Key`=%d", $this->id
+                );
+
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $found_in_page = $row['Page Code'];
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    exit;
+                }
+
+                return $found_in_page;
+                break;
+
+            case('link'):
+                return $this->display();
+                break;
+
+            default:
+                if (isset($this->data[$key])) {
+                    return $this->data[$key];
+                }
+        }
+
+        if (preg_match('/ Acc /', $key)) {
+
+            $amount = 'Page Store '.$key;
+
+            return number($this->data[$amount]);
+        }
+
+        return false;
+    }
+
+    function load_scope() {
+
+        $this->scope_load = true;
+
+
+        if ($this->data['Webpage Scope'] == 'Product') {
+            include_once('class.Public_Product.php');
+            $this->scope       = new Public_Product($this->data['Webpage Scope Key']);
+            $this->scope_found = 'Product';
+
+        } elseif ($this->data['Webpage Scope'] == 'Category Categories' or $this->data['Webpage Scope'] == 'Category Products') {
+            include_once('class.Public_Category.php');
+
+            $this->scope       = new Public_Category($this->data['Webpage Scope Key']);
+            $this->scope_found = 'Category';
+
+        }
+
+
+    }
+
+    function display($tipo = 'link') {
+
+        switch ($tipo) {
+            case('html'):
+            case('xhtml'):
+            case('link'):
+            default:
+                return '<a href="'.$this->data['Page URL'].'">'.$this->data['Page Title'].'</a>';
+
+        }
+
+
+    }
+
+    function update_version() {
+
+        if (in_array(
+                $this->get('Page Store Content Template Filename'), array(
+                                                                      'products_showcase',
+                                                                      'categories_showcase'
+                                                                  )
+            ) and $this->get('Page Store Content Display Type') == 'Template'
+        ) {
+            $version = 2;
+        } else {
+            $version = 1;
+
+        }
+
+        $this->update(array('Webpage Version' => $version), 'no_history');
+
+    }
+
     function load_data() {
         $sql = sprintf(
             "SELECT * FROM `Page Store Data Dimension` WHERE `Page Key`=%d", $this->id
@@ -1512,6 +1713,8 @@ class Page extends DB_Table {
             case('Webpage Code'):
             case('Webpage Type Key'):
             case 'Webpage Version':
+            case
+            'Webpage Launch Date':
 
                 $this->update_field($field, $value, $options);
                 break;
@@ -2140,12 +2343,13 @@ class Page extends DB_Table {
         $this->update_store_search();
     }
 
-    function update_state($value, $options) {
+    function update_state($value, $options = '') {
 
         $old_state = $this->data['Page State'];
 
 
         $this->update_field('Page State', $value, $options);
+        $this->update_field('Webpage State', $value, 'no_history');
 
 
         if ($old_state != $this->data['Page State']) {
@@ -2277,191 +2481,18 @@ class Page extends DB_Table {
         return $data;
     }
 
-    function get($key) {
-        switch ($key) {
-
-            case 'Publish':
-
-
-                if ($this->data['Page Store Content Data'] != $this->data['Page Store Content Published Data']) {
-
-
-                    return true;
-                }
-
-                if ($this->data['Page Store CSS'] != $this->data['Page Store Published CSS']) {
-
-
-                    return true;
-                }
-
-                $this->load_scope();
-
-                if ($this->scope_found == 'Category') {
-
-                    $sql = sprintf(
-                        'SELECT `Product Category Index Stack`,`Product Category Index Published Stack`,`Product Category Index Content Data`,`Product Category Index Content Published Data`  FROM  `Product Category Index`  WHERE `Product Category Index Category Key`=%d  ',
-                        $this->scope->id
-                    );
-
-                    if ($result = $this->db->query($sql)) {
-                        foreach ($result as $row) {
-                            if ($row['Product Category Index Stack'] != $row['Product Category Index Published Stack']) {
-                                return true;
-                            }
-                            if ($row['Product Category Index Content Data'] != $row['Product Category Index Content Published Data']) {
-                                return true;
-                            }
-                        }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
-                    }
-
-
-                }
-
-
-                $sql = sprintf(
-                    'SELECT `Webpage Related Product Order`,`Webpage Related Product Published Order`,`Webpage Related Product Content Data`,`Webpage Related Product Content Published Data`  FROM  `Webpage Related Product Bridge`  WHERE `Webpage Related Product Page Key`=%d  ',
-                    $this->id
-                );
-
-                // print $sql;
-
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-                        if ($row['Webpage Related Product Order'] != $row['Webpage Related Product Published Order']) {
-                            return true;
-                        }
-                        if ($row['Webpage Related Product Content Data'] != $row['Webpage Related Product Content Published Data']) {
-                            return true;
-                        }
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-
-
-                return false;
-
-                break;
-
-            case 'Content Data':
-                if ($this->data['Page Store Content Data'] == '') {
-                    $content_data = false;
-                } else {
-                    $content_data = json_decode($this->data['Page Store Content Data'], true);
-                }
-
-                return $content_data;
-                break;
-
-            case 'Webpage Website Key':
-                return $this->get('Page Site Key');
-                break;
-            case 'Code':
-                return $this->data['Page Code'];
-                break;
-
-            case  'Page Found In Page Key':
-
-                $found_in_page_key = '';
-
-                $sql = sprintf(
-                    "SELECT `Page Store Found In Key` FROM  `Page Store Found In Bridge` WHERE `Page Store Key`=%d", $this->id
-                );
-
-                if ($result = $this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $found_in_page_key = $row['Page Store Found In Key'];
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
-                }
-
-                return $found_in_page_key;
-                break;
-            case  'Found In Page Key':
-
-                $found_in_page = '';
-
-                $sql = sprintf(
-                    "SELECT `Page Code` FROM  `Page Store Found In Bridge` B  LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Page Store Found In Key`)  WHERE B.`Page Store Key`=%d", $this->id
-                );
-
-                if ($result = $this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $found_in_page = $row['Page Code'];
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
-                }
-
-                return $found_in_page;
-                break;
-
-            case('link'):
-                return $this->display();
-                break;
-
-            default:
-                if (isset($this->data[$key])) {
-                    return $this->data[$key];
-                }
-        }
-
-        if (preg_match('/ Acc /', $key)) {
-
-            $amount = 'Page Store '.$key;
-
-            return number($this->data[$amount]);
-        }
-
-        return false;
-    }
-
-    function load_scope() {
-
-        $this->scope_load = true;
-
-
-        if ($this->data['Webpage Scope'] == 'Product') {
-            include_once('class.Public_Product.php');
-            $this->scope       = new Public_Product($this->data['Webpage Scope Key']);
-            $this->scope_found = 'Product';
-
-        } elseif ($this->data['Webpage Scope'] == 'Category Categories' or $this->data['Webpage Scope'] == 'Category Products') {
-            include_once('class.Public_Category.php');
-
-            $this->scope       = new Public_Category($this->data['Webpage Scope Key']);
-            $this->scope_found = 'Category';
-
-        }
-
-
-    }
-
-    function display($tipo = 'link') {
-
-        switch ($tipo) {
-            case('html'):
-            case('xhtml'):
-            case('link'):
-            default:
-                return '<a href="'.$this->data['Page URL'].'">'.$this->data['Page Title'].'</a>';
-
-        }
-
-
-    }
-
     function publish() {
+
+
+        if ($this->get('Webpage State') == 'Offline') {
+            $this->update_state('Online');
+
+        }
+        if ($this->get('Webpage Launch Date') == '') {
+            $this->update(array('Webpage Launch Date' => gmdate('Y-m-d H:i:s')), 'no_history');
+
+        }
+
 
         $content_data = $this->get('Content Data');
 
@@ -2507,6 +2538,41 @@ class Page extends DB_Table {
             }
 
         }
+
+
+        $this->update_metadata = array(
+            'class_html' => array(
+                'Webpage_State_Edit_Label' => '<i class="fa fa-globe '.($this->get('Webpage State') == 'Online' ? 'success' : 'super_discreet').'" aria-hidden="true"></i>',
+                'preview_publish_label'=>_('Publish')
+
+            ),
+            'hide_by_id' => array('republish_webpage_field','launch_webpage_field'),
+            'show_by_id' => array('unpublish_webpage_field'),
+            'visible_by_id' => array('link_to_live_webpage'),
+        );
+
+
+    }
+
+
+    function unpublish() {
+
+
+        $this->update_state('Offline');
+
+
+        $this->update_metadata = array(
+            'class_html' => array(
+                'Webpage_State_Edit_Label' => '<i class="fa fa-globe '.($this->get('Webpage State') == 'Online' ? 'success' : 'super_discreet').'" aria-hidden="true"></i>',
+                'preview_publish_label'=>_('Republish')
+
+            ),
+            'hide_by_id' => array('unpublish_webpage_field','launch_webpage_field'),
+            'show_by_id' => array('republish_webpage_field'),
+            'invisible_by_id' => array('link_to_live_webpage'),
+
+
+        );
 
 
     }
@@ -6198,6 +6264,9 @@ class Page extends DB_Table {
 
     }
 
+
+    //======= new methods
+
     function get_offer_badges() {
 
         $badges = array();
@@ -6234,9 +6303,6 @@ class Page extends DB_Table {
 
 
     }
-
-
-    //======= new methods
 
     function update_items_order($item_key, $target_key, $target_section_key) {
 
@@ -6869,7 +6935,6 @@ class Page extends DB_Table {
         include_once('class.Public_Webpage.php');
         include_once('class.Category.php');
 
-
         $updated_metadata = array('section_keys' => array());
 
         $content_data = $this->get('Content Data');
@@ -6901,7 +6966,6 @@ class Page extends DB_Table {
 
         if ($subject_webpage->id) {
 
-
             $sql = sprintf(
                 'SELECT max(`Category Webpage Index Stack`) AS stack FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d AND `Category Webpage Index Section Key`=%d ',
                 $this->id, $section_key
@@ -6919,6 +6983,7 @@ class Page extends DB_Table {
                 }
             }
 
+
             $stack++;
 
             if ($parent_category->is_subject_associated($item_key)) {
@@ -6928,12 +6993,15 @@ class Page extends DB_Table {
 
             }
 
+
             $subject_data = array(
                 'header_text' => $subject_category->get('Label'),
                 'image_src'   => $subject_category->get('Image'),
                 'footer_text' => $subject_category->get('Code'),
             );
-            $sql          = sprintf(
+
+
+            $sql = sprintf(
                 'INSERT INTO `Category Webpage Index` (`Category Webpage Index Parent Category Key`,`Category Webpage Index Category Key`,`Category Webpage Index Webpage Key`,`Category Webpage Index Category Webpage Key`,`Category Webpage Index Section Key`,`Category Webpage Index Content Data`,`Category Webpage Index Subject Type`,`Category Webpage Index Stack`) VALUES (%d,%d,%d,%d,%d,%s,%s,%d) ',
                 $this->get('Webpage Scope Key'), $item_key, $this->id, $subject_webpage->id, $section_key, prepare_mysql(json_encode($subject_data)),
 
@@ -7038,6 +7106,8 @@ class Page extends DB_Table {
 
         $content_data = $this->get('Content Data');
 
+        $section_index = 0;
+        $target_index  = 0;
 
         $_sections = $content_data['sections'];
         foreach ($_sections as $index => $section_data) {
@@ -7051,6 +7121,23 @@ class Page extends DB_Table {
             if ($section_data['key'] == $target_key) {
                 $target_index = $index;
             }
+        }
+
+
+        if (!$section_index or !$target_index) {
+
+            $this->error = true;
+            $this->msg   = "Section index or target not found";
+
+            return;
+        }
+
+        if ($section_index =$target_index) {
+
+            $this->error = true;
+            $this->msg   = "Same section index and target ";
+
+            return;
         }
 
 
@@ -7195,7 +7282,6 @@ class Page extends DB_Table {
 
     }
 
-
     function sort_items($type) {
 
         $content_data = $this->get('Content Data');
@@ -7299,7 +7385,6 @@ class Page extends DB_Table {
 
     }
 
-
     function reindex_items() {
 
         $content_data = $this->get('Content Data');
@@ -7316,27 +7401,115 @@ class Page extends DB_Table {
 
     }
 
-    function update_version() {
 
-        if (in_array(
-                $this->get('Page Store Content Template Filename'), array(
-                'products_showcase',
-                'categories_showcase'
-            )
-            ) and $this->get('Page Store Content Display Type') == 'Template'
-        ) {
-            $version = 2;
-        } else {
-            $version = 1;
+    function reset_object() {
+
+
+        if ($this->get('Webpage Scope') == 'Category Categories') {
+
+            include_once 'class.Category.php';
+
+            $category = new Category($this->get('Webpage Scope Key'));
+
+            $sql = sprintf(
+                'DELETE FROM  `Webpage Section Dimension` WHERE `Webpage Section Webpage Key`=%d  ', $this->id
+
+            );
+
+            $this->db->exec($sql);
+
+            $sql = sprintf(
+                'DELETE FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d  ', $this->id
+
+            );
+
+            $this->db->exec($sql);
+
+
+            $title = $category->get('Label');
+            if ($title == '') {
+                $title = $category->get('Code');
+            }
+            if ($title == '') {
+                $title = _('Title');
+            }
+
+            $description = $category->get('Product Category Description');
+            if ($description == '') {
+                $description = $category->get('Label');
+            }
+            if ($description == '') {
+                $description = $category->get('Code');
+            }
+            if ($description == '') {
+                $description = _('Description');
+            }
+
+
+            $image_src = $category->get('Image');
+
+            $content_data = array(
+                'description_block' => array(
+                    'class' => '',
+
+                    'blocks' => array(
+
+                        'webpage_content_header_image' => array(
+                            'type'      => 'image',
+                            'image_src' => $image_src,
+                            'caption'   => '',
+                            'class'     => ''
+
+                        ),
+
+                        'webpage_content_header_text' => array(
+                            'class'   => '',
+                            'type'    => 'text',
+                            'content' => sprintf('<h1 class="description_title">%s</h1><div class="description">%s</div>', $title, $description)
+
+                        )
+
+                    )
+                ),
+                'sections'          => array()
+
+            );
+
+            $section = array(
+                'type'     => 'anchor',
+                'title'    => '',
+                'subtitle' => '',
+                'panels'   => array()
+            );
+
+
+            $sql = sprintf(
+                'INSERT INTO `Webpage Section Dimension` (`Webpage Section Webpage Key`,`Webpage Section Webpage Stack Index`,`Webpage Section Data`) VALUES (%d,%d,%s) ', $this->id, 0,
+                prepare_mysql(json_encode($section))
+
+            );
+
+            //  print $sql;
+
+            $this->db->exec($sql);
+
+            $section['key'] = $this->db->lastInsertId();
+
+            $content_data['sections'][] = $section;
+            $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+
+
+            $category->create_stack_index(true);
+
 
         }
 
-        $this->update(array('Webpage Version' => $version), 'no_history');
 
     }
 
-
 }
+
+
 
 
 ?>

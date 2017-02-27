@@ -538,9 +538,8 @@ ALTER TABLE `Product Category Dimension` ADD PRIMARY KEY (`Product Category Key`
 STICKY:::: --> update `Category Dimension` set `Category Scope`=`Category Subject` where `Category Scope` is null or `Category Scope`='';
 
 
-
-
-
+costa important do this:
+ update `Page Store Dimension` set `Webpage Launch Date`=`Page Store Creation Date` where   `Page Store Creation Date`!='0000-00-00 00:00:00' and   `Page Store Creation Date` is not NULL and `Webpage State`='Online';
 
 
 

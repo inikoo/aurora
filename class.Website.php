@@ -190,18 +190,16 @@ class Website extends DB_Table {
 
             include 'conf/webpage_types.php';
 
-            foreach ($webpage_types as $webpage_type){
+            foreach ($webpage_types as $webpage_type) {
 
 
-                $sql=sprintf('insert into `Webpage Type Dimension` (`Webpage Type Website Key`,`Webpage Type Code`) values (%d,%s) ',
-                             $this->id,
-                             prepare_mysql($webpage_type['code'])
+                $sql = sprintf(
+                    'INSERT INTO `Webpage Type Dimension` (`Webpage Type Website Key`,`Webpage Type Code`) VALUES (%d,%s) ', $this->id, prepare_mysql($webpage_type['code'])
                 );
 
                 $this->db->exec($sql);
 
             }
-
 
 
             if (is_numeric($this->editor['User Key']) and $this->editor['User Key'] > 1) {
@@ -212,7 +210,6 @@ class Website extends DB_Table {
             }
 
 
-
             return;
         } else {
             $this->msg = "Error can not create website";
@@ -221,6 +218,94 @@ class Website extends DB_Table {
         }
     }
 
+    function setup_templates() {
+
+        include_once('class.TemplateScope.php');
+        include_once('class.Template.php');
+        include_once('conf/website_templates.php');
+
+        $templates = website_templates_config($this->get('Website Type'));
+
+        //print_r($templates);
+
+        foreach ($templates['templates'] as $template_code => $_template_data) {
+            // print_r($_template_data);
+
+            $template_scope_data = array(
+                'Template Scope Website Key' => $this->id,
+                'Template Scope Code'        => $_template_data['scope'],
+
+                'editor' => $this->editor
+
+            );
+
+            $template_scope = new TemplateScope('find', $template_scope_data, 'create');
+
+
+            $template_data = array(
+                'Template Code'   => $template_code,
+                'Template Base'   => 'Yes',
+                'Template Device' => (isset($_template_data['device']) ? $_template_data['device'] : 'desktop'),
+                'editor'          => $this->editor
+
+            );
+
+            $template_scope->create_template($template_data);
+
+            // $template=new Template('find',$template_data,'create');
+
+        }
+
+
+    }
+
+    function get($key, $data = false) {
+
+        if (!$this->id) {
+            return '';
+        }
+
+
+        switch ($key) {
+            case('num_areas'):
+            case('number_areas'):
+                if (!$this->areas) {
+                    $this->load('areas');
+                }
+
+                return count($this->areas);
+                break;
+            case('areas'):
+                if (!$this->areas) {
+                    $this->load('areas');
+                }
+
+                return $this->areas;
+                break;
+            case('area'):
+                if (!$this->areas) {
+                    $this->load('areas');
+                }
+                if (isset($this->areas[$data['id']])) {
+                    return $this->areas[$data['id']];
+                }
+                break;
+            default:
+
+
+                if (array_key_exists($key, $this->data)) {
+                    return $this->data[$key];
+                }
+
+                if (array_key_exists('Website '.$key, $this->data)) {
+                    return $this->data['Website '.$key];
+                }
+
+
+        }
+
+        return '';
+    }
 
     function create_no_product_webnodes() {
 
@@ -418,54 +503,6 @@ class Website extends DB_Table {
         }
     }
 
-    function get($key, $data = false) {
-
-        if (!$this->id) {
-            return '';
-        }
-
-
-        switch ($key) {
-            case('num_areas'):
-            case('number_areas'):
-                if (!$this->areas) {
-                    $this->load('areas');
-                }
-
-                return count($this->areas);
-                break;
-            case('areas'):
-                if (!$this->areas) {
-                    $this->load('areas');
-                }
-
-                return $this->areas;
-                break;
-            case('area'):
-                if (!$this->areas) {
-                    $this->load('areas');
-                }
-                if (isset($this->areas[$data['id']])) {
-                    return $this->areas[$data['id']];
-                }
-                break;
-            default:
-
-
-                if (array_key_exists($key, $this->data)) {
-                    return $this->data[$key];
-                }
-
-                if (array_key_exists('Website '.$key, $this->data)) {
-                    return $this->data['Website '.$key];
-                }
-
-
-        }
-
-        return '';
-    }
-
     function update_website_nodes_data() {
 
     }
@@ -602,7 +639,6 @@ class Website extends DB_Table {
 
     }
 
-
     function get_webpage($code) {
 
         if ($code == '') {
@@ -616,118 +652,194 @@ class Website extends DB_Table {
 
     }
 
+    function get_default_template_key($scope, $device = 'Desktop') {
 
-    function get_default_template_key($scope,$device='Desktop'){
+        $template_key = false;
 
-        $template_key=false;
+        $sql = sprintf(
+            'SELECT `Template Key` FROM `Template Dimension` WHERE `Template Website Key`=%d AND `Template Scope`=%s AND `Template Device`=%s ', $this->id, prepare_mysql($scope),
+            prepare_mysql($device)
 
-        $sql=sprintf('select `Template Key` from `Template Dimension` where `Template Website Key`=%d and `Template Scope`=%s and `Template Device`=%s ',
-                     $this->id,
-                     prepare_mysql($scope),
-                     prepare_mysql($device)
-
-                     );
-        if ($result=$this->db->query($sql)) {
+        );
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $template_key=$row['Template Key'];
-        	}
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
+                $template_key = $row['Template Key'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
-        if(!$template_key){
+        if (!$template_key) {
 
 
-            $sql=sprintf('select `Template Key` from `Template Dimension` where `Template Website Key`=%d and `Template Scope`=%s and `Template Device`="Desktop" ',
-                         $this->id,
-                         prepare_mysql($scope)
+            $sql = sprintf(
+                'SELECT `Template Key` FROM `Template Dimension` WHERE `Template Website Key`=%d AND `Template Scope`=%s AND `Template Device`="Desktop" ', $this->id, prepare_mysql($scope)
 
             );
-            if ($result=$this->db->query($sql)) {
+            if ($result = $this->db->query($sql)) {
                 if ($row = $result->fetch()) {
-                    $template_key=$row['Template Key'];
+                    $template_key = $row['Template Key'];
                 }
-            }else {
-                print_r($error_info=$this->db->errorInfo());
+            } else {
+                print_r($error_info = $this->db->errorInfo());
                 print "$sql\n";
                 exit;
             }
 
         }
 
-        if(!$template_key){
+        if (!$template_key) {
 
 
-            $sql=sprintf('select `Template Key` from `Template Dimension` where `Template Website Key`=%d and `Template Scope`="Blank" and `Template Device`=%s ',
-                         $this->id,
-                         prepare_mysql($scope)
+            $sql = sprintf(
+                'SELECT `Template Key` FROM `Template Dimension` WHERE `Template Website Key`=%d AND `Template Scope`="Blank" AND `Template Device`=%s ', $this->id, prepare_mysql($scope)
 
             );
-            if ($result=$this->db->query($sql)) {
+            if ($result = $this->db->query($sql)) {
                 if ($row = $result->fetch()) {
-                    $template_key=$row['Template Key'];
+                    $template_key = $row['Template Key'];
                 }
-            }else {
-                print_r($error_info=$this->db->errorInfo());
+            } else {
+                print_r($error_info = $this->db->errorInfo());
                 print "$sql\n";
                 exit;
             }
 
         }
 
-       // print $template_key;
-
+        // print $template_key;
 
 
         return $template_key;
 
     }
 
-    function setup_templates(){
+    function create_category_webpage($category_key, $raw_data) {
 
-        include_once('class.TemplateScope.php');
-        include_once('class.Template.php');
-        include_once('conf/website_templates.php');
+        include_once 'class.Webpage_Type.php';
+        include_once 'class.Site.php';
 
-        $templates=website_templates_config($this->get('Website Type'));
-
-        //print_r($templates);
-
-        foreach($templates['templates'] as $template_code=>$_template_data){
-           // print_r($_template_data);
-
-            $template_scope_data=array(
-                'Template Scope Website Key'=>$this->id,
-                'Template Scope Code'=>$_template_data['scope'],
-
-                'editor'=>$this->editor
-
-            );
-
-            $template_scope=new TemplateScope('find',$template_scope_data,'create');
+        $site=new Site($this->id);
 
 
-            $template_data=array(
-                'Template Code'=>$template_code,
-                'Template Base'=>'Yes',
-                'Template Device'=>(isset($_template_data['device'])?$_template_data['device']:'desktop'),
-                'editor'=>$this->editor
+        $sql = sprintf(
+            "SELECT `Page Key` FROM `Page Store Dimension` WHERE `Webpage Scope`='Category' AND `Webpage Scope Key`=%d  AND `Webpage Website Key`=%d ", $category_key, $this->id
+        );
 
-            );
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                return $row['Page Key'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
 
-            $template_scope->create_template($template_data);
+        include_once 'class.Category.php';
+        $category = new Category($category_key);
 
-           // $template=new Template('find',$template_data,'create');
+        $page_code = $this->get_unique_webpage_code($category->get('Code'));
+
+
+        $webpage_type = new Webpage_Type('website_code', $this->id, ($category->get('Category Subject') == 'Product' ? 'Prods' : 'Cats'));
+
+
+        $page_data = array(
+            'Page Code'                              => $page_code,
+            'Page URL'                               => $this->data['Website URL'].'/'.strtolower($page_code),
+            'Page Site Key'                          => $this->id,
+            'Page Type'                              => 'Store',
+            'Page Store Key'                         => $category->get('Category Store Key'),
+            'Page Parent Key'                        => $category->id,
+            'Page Parent Code'                       => $category->get('Code'),
+            'Page Store Section Type'                => 'Department',
+            'Page Store Section'                     => 'Department Catalogue',
+            'Page Store Last Update Date'            => gmdate('Y-m-d H:i:s'),
+            'Page Store Last Structural Change Date' => gmdate('Y-m-d H:i:s'),
+            'Page Locale'                            => $this->data['Website Locale'],
+            'Page Source Template'                   => '',
+            'Page Description'                       => '',
+            'Page Title'                             => $category->get('Label'),
+            'Page Short Title'                       => $category->get('Label'),
+            'Page Store Title'                       => $category->get('Label'),
+
+
+            'Page Header Key'          => $site->data['Site Default Header Key'],
+            'Page Footer Key'          => $site->data['Site Default Footer Key'],
+            'Page Store Creation Date' => gmdate('Y-m-d H:i:s'),
+            'Number See Also Links'    => ($category->get('Category Subject') == 'Product' ? 5 : 0),
+            'editor'                   => $this->editor,
+
+
+            'Webpage Scope'       => ($category->get('Category Subject') == 'Product' ? 'Category Products' : 'Category Categories'),
+            'Webpage Scope Key'   => $category->id,
+            'Webpage Website Key' => $this ->id,
+            'Webpage Store Key'   => $category->get('Category Store Key'),
+            'Webpage Type Key'    => $webpage_type->id,
+            'Webpage Code'        => $page_code,
+            'Page Store Content Display Type'=>'Template',
+            'Page Store Content Template Filename'=>'categories_showcase'
+
+        );
+
+
+        $page = new Page('find', $page_data, 'create');
+
+
+        $webpage_type->update_number_webpages();
+
+        $page->update_version();
+
+
+        if ($page->new) {
+            $page->update_see_also();
+        }
+
+        $this->new_page     = $page->new;
+        $this->new_page_key = $page->id;
+        $this->msg          = $page->msg;
+        $this->error        = $page->error;
+
+        //$this->update_product_totals();
+        //$this->update_page_totals();
+
+        return $page->id;
+
+    }
+
+    function get_unique_webpage_code($code) {
+
+
+        for ($i = 1; $i <= 200; $i++) {
+
+            if ($i == 1) {
+                $suffix = '';
+            } elseif ($i <= 100) {
+                $suffix = $i;
+            } else {
+                $suffix = uniqid('', true);
+            }
+
+
+            $sql = sprintf("SELECT `Page Code`,`Page Key` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d AND `Page Code`=%s  ", $this->id, prepare_mysql($code.$suffix));
+
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+
+                } else {
+                    return $code.$suffix;
+                }
+            }
+
 
         }
 
-
-
-
-
+        return $suffix;
     }
+
 
 }
 

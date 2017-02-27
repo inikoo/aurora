@@ -89,7 +89,13 @@
     </span>
 
     <span class="button " onclick="toggle_logged_in_view(this)"><i class="fa fa-toggle-on " aria-hidden="true" alt="{t}On{/t}"></i> <span class="unselectable">{t}Logged in{/t}</span></span>
-    <span id="publish" class="button save {if $webpage->get('Publish')}changed valid{/if}" style="float:right" onclick="publish(this)"><span class="unselectable">{t}Publish{/t}</span> <i class="fa fa-rocket" aria-hidden="true"></i></span>
+
+
+    <a id="link_to_live_webpage" target="_blank"  class="{if $webpage->get('Webpage State')=='Offline'}invisible{/if}"  href="http://{$webpage->get('Page URL')}" ><i class="fa fa-external-link" aria-hidden="true"  style="float:right;margin-left:20px;position:relative;top:2px"></i>   </a>
+
+    <span id="publish" class="button save {if $webpage->get('Publish') or $webpage->get('Webpage State')=='Offline'  }changed valid{/if}" webpage_key="{$webpage->id}" style="float:right" onclick="publish(this,'publish_webpage')"><span class="unselectable preview_publish_label">
+            {if  $webpage->get('Webpage Launch Date')==''}Launch{elseif $webpage->get('Webpage State')=='Offline'}{t}Republish{/t}{else}{t}Publish{/t}{/if}
+        </span> <i class="fa fa-rocket" aria-hidden="true"></i></span>
 
     <span style="float:right;margin-right:60px" >
         <i id="description_block_on" class="fa toggle_description_block fa-header fa-fw button" aria-hidden="true"  ></i>

@@ -245,6 +245,10 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 
 
+if ($field == 'Product Category Department Category Key') {
+    $formatted_field='Department Category Key';
+
+}
 
     if ($field == 'Staff Position' and $data['object'] == 'User') {
         $formatted_field = 'Position';
@@ -402,8 +406,8 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
                     );
 
                 }
-                
-                
+
+
 
                 $update_metadata['rrp_cell']=$rrp;
 
@@ -677,6 +681,9 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
     }
 
     switch ($data['operation']) {
+        case 'reset':
+            $request = $object->reset_object();
+            break;
         case 'delete':
             $request = $object->delete();
             break;
