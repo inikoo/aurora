@@ -2543,13 +2543,95 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         $store = new Store($this->get('Category Store Key'));
 
 
-                        $old_parent_category = new Category($this->data['Product Category Department Category Key']);
 
-                        $new_parent_category = new Category($value);
-                        $new_parent_category->associate_subject($this->id, false, '', 'skip_direct_update');
 
-                        $old_parent_category->update_product_category_products_data();
-                        $new_parent_category->update_product_category_products_data();
+
+                        if($this->data['Product Category Department Category Key']!=$value) {
+
+                            $old_parent_category = new Category($this->data['Product Category Department Category Key']);
+
+                            $new_parent_category = new Category($value);
+
+
+
+
+
+                            $new_parent_category->associate_subject($this->id, false, '', 'skip_direct_update');
+
+
+                            $old_parent_category->update_product_category_products_data();
+                            $new_parent_category->update_product_category_products_data();
+
+
+
+
+                            $webpage = $old_parent_category->get_webpage();
+                            if ($webpage->id) {
+                                $webpage->reindex_items();
+                                if ($webpage->updated) {
+                                    $webpage->publish();
+                                }
+                            }
+                            $sql = sprintf(
+                                'SELECT `Category Webpage Index Webpage Key` FROM `Category Webpage Index` WHERE `Category Webpage Index Category Key`=%d  GROUP BY `Category Webpage Index Webpage Key` ',
+                                $old_parent_category->id
+                            );
+
+                            if ($result = $this->db->query($sql)) {
+                                foreach ($result as $row) {
+                                    $webpage = new Page($row['Category Webpage Index Webpage Key']);
+                                    $webpage->reindex_items();
+                                    if ($webpage->updated) {
+                                        $webpage->publish();
+                                    }
+                                }
+                            } else {
+                                print_r($error_info = $this->db->errorInfo());
+                                print "$sql\n";
+                                exit;
+                            }
+
+
+
+
+                            $webpage = $new_parent_category->get_webpage();
+
+                            if ($webpage->id) {
+
+
+
+                                $webpage->reindex_items();
+
+                                if ($webpage->updated) {
+                                    $webpage->publish();
+                                }
+                            }
+
+                            $sql = sprintf(
+                                'SELECT `Category Webpage Index Webpage Key` FROM `Category Webpage Index` WHERE `Category Webpage Index Category Key`=%d  GROUP BY `Category Webpage Index Webpage Key` ',
+                                $new_parent_category->id
+                            );
+
+
+                            if ($result = $this->db->query($sql)) {
+                                foreach ($result as $row) {
+                                    $webpage = new Page($row['Category Webpage Index Webpage Key']);
+                                    $webpage->reindex_items();
+                                    if ($webpage->updated) {
+                                        $webpage->publish();
+                                    }
+                                }
+                            } else {
+                                print_r($error_info = $this->db->errorInfo());
+                                print "$sql\n";
+                                exit;
+                            }
+
+
+                        }
+
+
+
 
                     } else {
                         if ($this->data['Product Category Department Category Key'] != '') {
@@ -3130,16 +3212,11 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
                         }
 
-                        $abstract = sprintf(
-                            _('Product %s associated with category %s'), $product->get('Code'), $this->get('Code')
-                        );
+                        $abstract = sprintf(_('Product %s associated with category %s'), $product->get('Code'), $this->get('Code'));
                         $details  = '';
 
 
-                        if ($this->get('Category Root Key') == $store->get(
-                                'Store Family Category Key'
-                            )
-                        ) {
+                        if ($this->get('Category Root Key') == $store->get('Store Family Category Key')) {
 
                             // Migration -----
 
@@ -3206,10 +3283,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         }
 
 
-                        if ($this->get('Category Root Key') == $store->get(
-                                'Store Department Category Key'
-                            )
-                        ) {
+                        if ($this->get('Category Root Key') == $store->get('Store Department Category Key')) {
 
 
                             $sql = sprintf(
@@ -3288,6 +3362,10 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
 
                         }
+
+
+
+
 
 
                         //$abstract=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']);

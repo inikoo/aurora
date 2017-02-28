@@ -2421,6 +2421,8 @@ class Page extends DB_Table {
 
         $this->updated = false;
 
+
+
         if ($this->get('Webpage Scope') == 'Category Categories') {
 
             if ($this->get('Webpage Version') == 2) {
@@ -2451,7 +2453,8 @@ class Page extends DB_Table {
 
                 }
 
-                //  print_r($subjects);
+
+
 
                 $to_remove = array();
 
@@ -2468,10 +2471,7 @@ class Page extends DB_Table {
                     foreach ($content_data['sections'][$section_stack_index]['items'] as $item) {
 
 
-                        if (!isset($item['item_type'])) {
-                            exit;
 
-                        }
 
                         if ($item['type'] == 'category') {
 
@@ -2496,9 +2496,6 @@ class Page extends DB_Table {
 
                 }
 
-
-                // print_r($to_remove);
-                // print_r($subjects);
 
 
                 foreach ($to_remove as $item_key) {
