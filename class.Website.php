@@ -52,6 +52,9 @@ class Website extends DB_Table {
             }
         }
 
+        print $sql;
+
+
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id   = $this->data['Website Key'];
             $this->code = $this->data['Website Code'];
