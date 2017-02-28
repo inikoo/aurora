@@ -94,7 +94,6 @@ if (isset($metadata['element'])) {
     }
 
 }
-//print_r( $parameters['elements']);
 
 
 $parameters['tab'] = $tab;

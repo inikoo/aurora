@@ -63,7 +63,7 @@ switch ($tab) {
     case 'website.online_webpages':
     case 'webpage_type.online_webpages':
 
-    $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
+        $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
         get_online_webpages_element_numbers($db, $data['parameters'], $user);
         break;
 
@@ -2354,7 +2354,6 @@ function get_part_categories_elements($db, $data, $user) {
 
 function get_webpages_element_numbers($db, $data, $user) {
 
-
     $parent_key = $data['parent_key'];
 
     $elements_numbers = array(
@@ -2363,8 +2362,8 @@ function get_webpages_element_numbers($db, $data, $user) {
             'Offline' => 0,
         ),
         'version' => array(
-            '1' => 0,
-            '2' => 0,
+            'I'  => 0,
+            'II' => 0,
         ),
 
     );
@@ -2396,7 +2395,15 @@ function get_webpages_element_numbers($db, $data, $user) {
 
     $sql = sprintf("select count(*) as number,`Webpage Version` as element from `Page Store Dimension`  $where  group by `Webpage Version` ");
     foreach ($db->query($sql) as $row) {
-        $elements_numbers['version'][$row['element']] = number($row['number']);
+        if ($row['element'] == 1) {
+            $_element = 'I';
+        }
+        if ($row['element'] == 2) {
+            $_element = 'II';
+        }
+
+
+        $elements_numbers['version'][$_element] = number($row['number']);
     }
 
 
@@ -2410,28 +2417,25 @@ function get_webpages_element_numbers($db, $data, $user) {
 }
 
 
-
 function get_online_webpages_element_numbers($db, $data, $user) {
 
 
-
-
     $elements_numbers = array(
-        'type'   => array(
-            'Info'  => 0,
+        'type'    => array(
+            'Info'                => 0,
             'Category_Categories' => 0,
-            'Category_Products' => 0,
-            'Product' => 0,
-            'Operations' => 0,
+            'Category_Products'   => 0,
+            'Product'             => 0,
+            'Operations'          => 0,
 
         ),
         'version' => array(
-            '1' => 0,
-            '2' => 0,
+            'I'  => 0,
+            'II' => 0,
         ),
 
     );
-    $where=' where `Webpage State`="Online"';
+    $where            = ' where `Webpage State`="Online"';
 
     switch ($data['parent']) {
         case 'website':
@@ -2453,13 +2457,22 @@ function get_online_webpages_element_numbers($db, $data, $user) {
 
     $sql = sprintf("select count(*) as number,`Webpage Scope` as element from `Page Store Dimension`  $where  group by `Webpage Scope` ");
     foreach ($db->query($sql) as $row) {
-        $elements_numbers['type'][preg_replace('/ /','_',$row['element'])] = number($row['number']);
+        $elements_numbers['type'][preg_replace('/ /', '_', $row['element'])] = number($row['number']);
     }
 
 
     $sql = sprintf("select count(*) as number,`Webpage Version` as element from `Page Store Dimension`  $where  group by `Webpage Version` ");
     foreach ($db->query($sql) as $row) {
-        $elements_numbers['version'][$row['element']] = number($row['number']);
+
+        if ($row['element'] == 1) {
+            $_element = 'I';
+        }
+        if ($row['element'] == 2) {
+            $_element = 'II';
+        }
+
+
+        $elements_numbers['version'][$_element] = number($row['number']);
     }
 
 
@@ -2471,9 +2484,6 @@ function get_online_webpages_element_numbers($db, $data, $user) {
 
 
 }
-
-
-
 
 
 ?>

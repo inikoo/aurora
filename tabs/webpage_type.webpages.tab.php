@@ -12,7 +12,7 @@
 
 $tab     = 'webpage_type.online_webpages';
 $ar_file = 'ar_websites_tables.php';
-$tipo    = 'offline_webpages';
+$tipo    = 'online_webpages';
 
 $default = $user->get_tab_defaults($tab);
 

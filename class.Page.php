@@ -2540,13 +2540,16 @@ class Page extends DB_Table {
 
 
         $this->update_metadata = array(
-            'class_html' => array(
+            'class_html'    => array(
                 'Webpage_State_Edit_Label' => '<i class="fa fa-globe '.($this->get('Webpage State') == 'Online' ? 'success' : 'super_discreet').'" aria-hidden="true"></i>',
-                'preview_publish_label'=>_('Publish')
+                'preview_publish_label'    => _('Publish')
 
             ),
-            'hide_by_id' => array('republish_webpage_field','launch_webpage_field'),
-            'show_by_id' => array('unpublish_webpage_field'),
+            'hide_by_id'    => array(
+                'republish_webpage_field',
+                'launch_webpage_field'
+            ),
+            'show_by_id'    => array('unpublish_webpage_field'),
             'visible_by_id' => array('link_to_live_webpage'),
         );
 
@@ -2561,13 +2564,16 @@ class Page extends DB_Table {
 
 
         $this->update_metadata = array(
-            'class_html' => array(
+            'class_html'      => array(
                 'Webpage_State_Edit_Label' => '<i class="fa fa-globe '.($this->get('Webpage State') == 'Online' ? 'success' : 'super_discreet').'" aria-hidden="true"></i>',
-                'preview_publish_label'=>_('Republish')
+                'preview_publish_label'    => _('Republish')
 
             ),
-            'hide_by_id' => array('unpublish_webpage_field','launch_webpage_field'),
-            'show_by_id' => array('republish_webpage_field'),
+            'hide_by_id'      => array(
+                'unpublish_webpage_field',
+                'launch_webpage_field'
+            ),
+            'show_by_id'      => array('republish_webpage_field'),
             'invisible_by_id' => array('link_to_live_webpage'),
 
 
@@ -6782,7 +6788,6 @@ class Page extends DB_Table {
 
         foreach ($content_data['sections'] as $_key => $_data) {
 
-            //  print_r($_data);
 
             if ($_data['type'] == 'anchor') {
                 $anchor_section_key = $_data['key'];
@@ -6928,7 +6933,7 @@ class Page extends DB_Table {
 
     }
 
-    function add_section_item($item_key, $section_key) {
+    function add_section_item($item_key, $section_key=false) {
 
 
         include_once('class.Public_Webpage.php');
@@ -6940,6 +6945,25 @@ class Page extends DB_Table {
 
         // print_r($content_data['sections']);
 
+
+
+        if(!$section_key){
+
+            foreach ($content_data['sections'] as $_key => $_data) {
+
+
+                if ($_data['type'] == 'anchor') {
+                    $section_key = $_data['key'];
+
+                    break;
+                }
+
+            }
+
+        }
+
+
+
         $found_section = false;
         foreach ($content_data['sections'] as $section_data) {
             if ($section_data['key'] == $section_key) {
@@ -6950,9 +6974,18 @@ class Page extends DB_Table {
         }
 
 
+
+
+
+
+
+
+
+
+
         if (!$found_section) {
 
-            $this->msg   = 'Item not found in website';
+            $this->msg   = 'Web page section not found in website';
             $this->error = true;
 
             return $updated_metadata;
@@ -7131,7 +7164,7 @@ class Page extends DB_Table {
             return;
         }
 
-        if ($section_index =$target_index) {
+        if ($section_index = $target_index) {
 
             $this->error = true;
             $this->msg   = "Same section index and target ";
@@ -7386,18 +7419,88 @@ class Page extends DB_Table {
 
     function reindex_items() {
 
-        $content_data = $this->get('Content Data');
 
-        foreach ($content_data['sections'] as $section_stack_index => $section_data) {
 
-            $content_data['sections'][$section_stack_index]['items'] = get_website_section_items($this->db, $section_data);
+        if ($this->get('Webpage Scope') == 'Category Categories') {
 
+            if ($this->get('Webpage Version')==2) {
+
+                $subjects = array();
+                $sql      = sprintf('SELECT `Subject Key` FROM `Category Bridge` WHERE `Subject`="Category" AND `Category Key`=%d ', $this->get('Webpage Scope Key'));
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        $subjects[$row['Subject Key']] = $row['Subject Key'];
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+                foreach ($subjects as $item_key) {
+                    $sql = sprintf(
+                        'UPDATE `Category Webpage Index` SET `Category Webpage Index Subject Type`="Subject" WHERE `Category Webpage Index Webpage Key`=%d  AND `Category Webpage Index Category Key`=%d   ',
+                        $this->id, $item_key
+                    );
+                    $this->db->exec($sql);
+
+                }
+
+                //  print_r($subjects);
+
+                $to_remove = array();
+
+
+                $content_data = $this->get('Content Data');
+
+                foreach ($content_data['sections'] as $section_stack_index => $section_data) {
+
+
+                    $content_data['sections'][$section_stack_index]['items'] = get_website_section_items($this->db, $section_data);
+                    $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+
+
+                    foreach ($content_data['sections'][$section_stack_index]['items'] as $item) {
+
+                        if ($item['item_type'] == 'Subject') {
+                            //  print_r($item);
+                            if (!in_array($item['category_key'], $subjects)) {
+
+                                $to_remove[] = array(
+                                    'section_key' => $section_data['key'],
+
+                                    'category_key' => $item['category_key']
+                                );
+                            } else {
+                                unset($subjects[$item['category_key']]);
+                            }
+
+                        }
+
+
+                    }
+
+
+                }
+
+
+                // print_r($to_remove);
+                // print_r($subjects);
+
+
+                foreach ($to_remove as $item_key) {
+                    $this->remove_section_item($item_key['category_key']);
+
+                }
+                foreach ($subjects as $item_key) {
+                    $this->add_section_item($item_key);
+
+                }
+
+
+            }
         }
-
-
-        $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
-
-
     }
 
 
@@ -7507,8 +7610,6 @@ class Page extends DB_Table {
     }
 
 }
-
-
 
 
 ?>
