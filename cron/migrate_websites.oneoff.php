@@ -90,6 +90,11 @@ function create_webpage_types($db) {
 
     include 'conf/webpage_types.php';
 
+
+    $sql = sprintf('truncate `Website Type Dimension` ');
+    $db->exec($sql);
+
+
     $sql = sprintf('SELECT * FROM `Website Dimension` ');
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
