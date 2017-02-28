@@ -59,6 +59,10 @@ set_scope($db);
 
 function set_scope($db) {
 
+
+
+
+
     $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE `Webpage Scope Key` IS NULL OR  `Webpage Scope Key`=0 ');
 
 
@@ -238,6 +242,23 @@ function set_scope($db) {
                 }
 
             }
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` where `Webpage Scope`="Category Categories" ');
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $webpage = new Page($row['Page Key']);
+            $webpage->reindex_items();
+            print $webpage->get('Code')."\n";
+
         }
     } else {
         print_r($error_info = $db->errorInfo());

@@ -67,6 +67,10 @@ function update_products_categories_products_data($db, $print_est) {
         print_r($error_info = $db->errorInfo());
         exit;
     }
+
+
+
+
 }
 
 
