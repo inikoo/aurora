@@ -257,6 +257,7 @@ function set_scope($db) {
         foreach ($result as $row) {
             $webpage = new Page($row['Page Key']);
             $webpage->reindex_items();
+            $webpage->publish();
             print $webpage->get('Code')."\n";
 
         }
