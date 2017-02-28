@@ -61,6 +61,9 @@ if (isset($parameters['elements_type'])) {
                 $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
             ) {
                 if ($_value['selected']) {
+
+                    if($_key=='II')$_key=2;
+                    if($_key=='I')$_key=1;
                     $count_elements++;
                     $_elements .= ','.prepare_mysql($_key);
 
@@ -99,6 +102,8 @@ if ($order == 'code') {
     $order = '`Webpage State`';
 } elseif ($order == 'type') {
     $order = '`Webpage Scope`';
+} elseif ($order == 'version') {
+    $order = '`Webpage Version`';
 } else {
     $order = '`Webpage Key`';
 }

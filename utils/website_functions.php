@@ -18,6 +18,7 @@ function get_website_section_items($db, $section_data) {
     $panels = $section_data['panels'];
 
 
+
     $sql = sprintf(
         "SELECT `Category Webpage Index Key`,`Page Code`,`Category Webpage Index Category Webpage Key`,`Category Webpage Index Subject Type`,`Category Webpage Index Stack`,`Product Category Active Products`,`Category Webpage Index Category Key`,`Category Code`,`Category Webpage Index Content Data`,`Category Webpage Index Key` 
             FROM `Category Webpage Index` CWI
@@ -33,7 +34,6 @@ function get_website_section_items($db, $section_data) {
 
     );
 
-  // print $sql;
     $categories = array();
 
     $stack_index          = 0;

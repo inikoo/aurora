@@ -22,7 +22,7 @@
                          title="{$elements[$elements_type]['label']}: {if isset($element.title)}{$element.title}{else}{$element.label}{/if}">
                         <i id="element_checkbox_{$id}"
                            class="fa {if $element.selected}fa-check-square-o{else}fa-square-o{/if}"></i> <span
-                                class="label"> {$element.label}</span> <span class="qty" id="element_qty_{$id}"></span>
+                                class="label"> {$element.label}  </span> <span class="qty" id="element_qty_{$id}"></span>
                     </div>
                 {/foreach}
             </div>

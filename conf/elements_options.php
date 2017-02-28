@@ -1144,11 +1144,11 @@ $elements_options = array(
         'version' => array(
             'label' => _('Version'),
             'items' => array(
-                '1' => array(
+                'I' => array(
                     'label'    => 'Version 1',
                     'selected' => true
                 ),
-                '2' => array(
+                'II' => array(
                     'label'    => 'Version 2',
                     'selected' => true
                 ),
@@ -1166,11 +1166,11 @@ $elements_options = array(
     'version' => array(
         'label' => _('Version'),
         'items' => array(
-            '1' => array(
+            'I' => array(
                 'label'    => 'Version 1',
                 'selected' => true
             ),
-            '2' => array(
+            'II' => array(
                 'label'    => 'Version 2',
                 'selected' => true
             ),
@@ -1213,11 +1213,11 @@ $elements_options = array(
         'version' => array(
             'label' => _('Version'),
             'items' => array(
-                '1' => array(
+                'I' => array(
                     'label'    => 'Version 1',
                     'selected' => true
                 ),
-                '2' => array(
+                'II' => array(
                     'label'    => 'Version 2',
                     'selected' => true
                 ),
