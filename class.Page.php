@@ -7463,21 +7463,31 @@ class Page extends DB_Table {
 
                     foreach ($content_data['sections'][$section_stack_index]['items'] as $item) {
 
-                        if ($item['item_type'] == 'Subject') {
-                            //  print_r($item);
-                            if (!in_array($item['category_key'], $subjects)) {
 
-                                $to_remove[] = array(
-                                    'section_key' => $section_data['key'],
 
-                                    'category_key' => $item['category_key']
-                                );
-                            } else {
-                                unset($subjects[$item['category_key']]);
-                            }
+
+                        if(!isset($item['item_type'])){
+                            exit;
 
                         }
 
+                        if($item['type']=='category') {
+
+                            if ($item['item_type'] == 'Subject') {
+                                //  print_r($item);
+                                if (!in_array($item['category_key'], $subjects)) {
+
+                                    $to_remove[] = array(
+                                        'section_key' => $section_data['key'],
+
+                                        'category_key' => $item['category_key']
+                                    );
+                                } else {
+                                    unset($subjects[$item['category_key']]);
+                                }
+
+                            }
+                        }
 
                     }
 
