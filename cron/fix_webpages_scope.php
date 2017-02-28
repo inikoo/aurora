@@ -250,6 +250,23 @@ function set_scope($db) {
     }
 
 
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` ');
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $webpage = new Page($row['Page Key']);
+            $webpage->update_version();
+
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
     $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` where `Webpage Scope`="Category Categories" ');
 
 

@@ -3007,6 +3007,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
 
                     }
+                    $this->webpage->update_version();
                     $this->webpage->publish();
                     $this->updated = $this->webpage->updated;
 
