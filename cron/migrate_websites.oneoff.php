@@ -79,8 +79,8 @@ if ($result = $db->query($sql)) {
 
 migrate_website($db);
 
-//create_webpage_types($db);
-//normalize_webpage_scopes($db);
+create_webpage_types($db);
+normalize_webpage_scopes($db);
 
 
 //set_scope($db);
