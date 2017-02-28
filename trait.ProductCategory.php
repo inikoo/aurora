@@ -549,6 +549,10 @@ trait ProductCategory {
 
     function update_product_category_products_data() {
 
+
+
+        $old_active_products=$this->get('Product Category Active Products');
+
         $elements_status_numbers = array(
             'In Process'    => 0,
             'Active'        => 0,
@@ -654,6 +658,38 @@ trait ProductCategory {
         );
 
         $this->update($update_data, 'no_history');
+
+
+        if(  $old_active_products!=$this->get('Product Category Active Products')){
+            $webpage = $this->get_webpage();
+            if ($webpage->id) {
+                $webpage->reindex_items();
+                if ($webpage->updated) {
+                    $webpage->publish();
+                }
+            }
+            $sql = sprintf(
+                'SELECT `Category Webpage Index Webpage Key` FROM `Category Webpage Index` WHERE `Category Webpage Index Category Key`=%d  GROUP BY `Category Webpage Index Webpage Key` ',
+                $this->id
+            );
+
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $webpage = new Page($row['Category Webpage Index Webpage Key']);
+                    $webpage->reindex_items();
+                    if ($webpage->updated) {
+                        $webpage->publish();
+                    }
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+        }
 
 
     }

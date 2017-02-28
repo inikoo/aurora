@@ -341,9 +341,6 @@ class Category extends DB_Table {
             $created_msg = _('Category created');
 
 
-
-
-
             if ($this->data['Category Scope'] == 'Invoice') {
                 $sql = sprintf(
                     "INSERT INTO `Invoice Category Dimension` (`Invoice Category Key`,`Invoice Category Store Key`) VALUES (%d,%d)", $this->id, $this->data['Category Store Key']
@@ -394,7 +391,6 @@ class Category extends DB_Table {
                 $this->db->exec($sql);
 
 
-
                 $sql = sprintf(
                     "INSERT INTO `Product Category Data` (`Product Category Key`) VALUES (%d)", $this->id
 
@@ -402,12 +398,10 @@ class Category extends DB_Table {
                 $this->db->exec($sql);
 
 
-
                 $sql = sprintf(
                     "INSERT INTO `Product Category DC Data` (`Product Category Key`) VALUES (%d)", $this->id
 
                 );
-
 
 
                 $this->db->exec($sql);
@@ -879,7 +873,7 @@ class Category extends DB_Table {
                         return percentage($this->data['Product Category Active Web Offline'], $this->data['Product Category Active Products'], 0);
 
                     case 'products':
-                        return $this->data['Product Category Active Products']+$this->data['Product Category Discontinuing Products'];
+                        return $this->data['Product Category Active Products'] + $this->data['Product Category Discontinuing Products'];
                     default:
 
                         if (preg_match(
@@ -2549,7 +2543,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         $store = new Store($this->get('Category Store Key'));
 
 
-                        $old_parent_category=new Category($this->data['Product Category Department Category Key']);
+                        $old_parent_category = new Category($this->data['Product Category Department Category Key']);
 
                         $new_parent_category = new Category($value);
                         $new_parent_category->associate_subject($this->id, false, '', 'skip_direct_update');
@@ -2636,6 +2630,36 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
 
                     $this->update_table_field($field, $value, $options, 'Product Category', 'Product Category Dimension', $this->id);
+                    if ($this->updated) {
+                        $webpage = $this->get_webpage();
+                        if ($webpage->id) {
+                            $webpage->reindex_items();
+                            if ($webpage->updated) {
+                                $webpage->publish();
+                            }
+                        }
+                        $sql = sprintf(
+                            'SELECT `Category Webpage Index Webpage Key` FROM `Category Webpage Index` WHERE `Category Webpage Index Category Key`=%d  GROUP BY `Category Webpage Index Webpage Key` ',
+                            $this->id
+                        );
+
+
+                        if ($result = $this->db->query($sql)) {
+                            foreach ($result as $row) {
+                                $webpage = new Page($row['Category Webpage Index Webpage Key']);
+                                $webpage->reindex_items();
+                                if ($webpage->updated) {
+                                    $webpage->publish();
+                                }
+                            }
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
+                            print "$sql\n";
+                            exit;
+                        }
+
+
+                    }
 
 
                     $this->get_webpage();
@@ -2788,15 +2812,15 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
                 case 'Part Category Status Including Parts':
                     include_once 'class.Part.php';
-                    $old_formatted_value=$this->get('Status');
+                    $old_formatted_value = $this->get('Status');
 
                     if ($value == 'Discontinuing') {
 
-                        $sql = sprintf(
+                        $sql     = sprintf(
                             "SELECT P.`Part SKU` FROM  `Part Dimension` P LEFT JOIN `Category Bridge` B ON (P.`Part SKU`=B.`Subject Key`)  WHERE B.`Category Key`=%d AND `Subject`='Part' AND P.`Part Status` IN ('In Use','In Process') ",
                             $this->id
                         );
-                        $counter=0;
+                        $counter = 0;
                         if ($result = $this->db->query($sql)) {
                             foreach ($result as $row) {
 
@@ -2810,7 +2834,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                             exit;
                         }
 
-                        if($counter==0){
+                        if ($counter == 0) {
                             $this->update(
                                 array(
                                     'Part Category Status' => 'NotInUse'
@@ -2858,24 +2882,22 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                             'In_Use_Parts'        => $this->get('Active'),
                             'Discontinuing_Parts' => $this->get('Discontinuing'),
                             'Not_In_Use_Parts'    => $this->get('Discontinued'),
-                            'Valid_To'=>$this->get('Valid To'),
+                            'Valid_To'            => $this->get('Valid To'),
 
                         )
                     );
 
-                    if($this->get('Part Category Status')=='NotInUse'){
-                        $this->update_metadata['show']=array('Valid_To');
-                    }else{
-                        $this->update_metadata['hide']=array('Valid_To');
+                    if ($this->get('Part Category Status') == 'NotInUse') {
+                        $this->update_metadata['show'] = array('Valid_To');
+                    } else {
+                        $this->update_metadata['hide'] = array('Valid_To');
 
                     }
-                    $new_formatted_value=$this->get('Status');
+                    $new_formatted_value = $this->get('Status');
 
-                    if($new_formatted_value!=$old_formatted_value)
-                    $this->add_changelog_record($field, $old_formatted_value, $new_formatted_value, '',  $this->get_object_name(), $this->get_main_id());
-
-
-
+                    if ($new_formatted_value != $old_formatted_value) {
+                        $this->add_changelog_record($field, $old_formatted_value, $new_formatted_value, '', $this->get_object_name(), $this->get_main_id());
+                    }
 
 
                     break;
@@ -3755,7 +3777,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                 $label = _('meta description');
                 break;
             case 'Part Category Status':
-                case 'Part Category Status Including Parts':
+            case 'Part Category Status Including Parts':
                 $label = _('status');
                 break;
 
