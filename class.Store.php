@@ -3131,6 +3131,9 @@ class Store extends DB_Table {
         $data['Website Store Key']  = $this->id;
         $data['Website Valid From'] = gmdate('Y-m-d H:i:s');
 
+
+
+
         $website = new Website('find', $data, 'create');
 
         if ($website->id) {
