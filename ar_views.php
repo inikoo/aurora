@@ -249,6 +249,8 @@ function get_view($db, $smarty, $user, $account, $modules) {
         }
 
         print_r($_object);
+        print_r($state);
+        exit;
         if (is_numeric($_object->get('Store Key'))) {
             include_once 'class.Store.php';
             $store                  = new Store($_object->get('Store Key'));
