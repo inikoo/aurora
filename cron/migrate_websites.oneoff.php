@@ -78,8 +78,9 @@ if ($result = $db->query($sql)) {
 
 
 migrate_website($db);
-create_webpage_types($db);
-normalize_webpage_scopes($db);
+
+//create_webpage_types($db);
+//normalize_webpage_scopes($db);
 
 
 //set_scope($db);
@@ -576,6 +577,13 @@ function migrate_website($db) {
 
     global $editor;
 
+
+    $sql = sprintf('truncate `Website Dimension` ');
+$db->exec($sql);
+
+    $sql = sprintf('truncate `Website Data` ');
+    $db->exec($sql);
+
     $sql = sprintf('SELECT * FROM `Site Dimension` WHERE `Site Key`=1 ');
 
     $sql = sprintf('SELECT * FROM `Site Dimension` ');
@@ -587,6 +595,7 @@ function migrate_website($db) {
             $store->editor = $store;
 
             $website_data = array(
+                'Website Key'   => $site->id,
                 'Website Code'   => $site->get('Site Code'),
                 'Website Name'   => $site->get('Site Name'),
                 'Website Type'   => ($site->get('Site Code') == 'DS' ? 'EcomDS' : 'EcomB2B'),
@@ -611,6 +620,7 @@ function migrate_website($db) {
                     )
                 );
             }
+
 
         }
     }

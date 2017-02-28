@@ -52,7 +52,7 @@ class Website extends DB_Table {
             }
         }
 
-        print $sql;
+
 
 
         if ($this->data = $this->db->query($sql)->fetch()) {
@@ -87,8 +87,11 @@ class Website extends DB_Table {
         foreach ($raw_data as $key => $value) {
             if (array_key_exists($key, $data)) {
                 $data[$key] = _trim($value);
+            }elseif ($key=='Website Key') {
+                $data[$key] = _trim($value);
             }
         }
+
 
 
         if ($data['Website Code'] == '') {
@@ -144,6 +147,7 @@ class Website extends DB_Table {
 
 
         if ($create and !$this->found) {
+
             $this->create($data);
 
             return;
@@ -154,11 +158,17 @@ class Website extends DB_Table {
 
 
     function create($data) {
+
+
+
+
         $this->new = false;
         $base_data = $this->base_data();
 
         foreach ($data as $key => $value) {
             if (array_key_exists($key, $base_data)) {
+                $base_data[$key] = _trim($value);
+            }elseif($key=='Website Key'){
                 $base_data[$key] = _trim($value);
             }
         }
