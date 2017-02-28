@@ -257,6 +257,10 @@ function get_view($db, $smarty, $user, $account, $modules) {
         }
 
         if (is_numeric($_object->get('Website Key'))) {
+
+
+            print "xxx";
+
             include_once 'class.Website.php';
             $website                  = new Website($_object->get('Website Key'));
             $state['current_website'] = $website->id;
