@@ -3,6 +3,48 @@
 
 
 
+    .product_description_block{
+        border:1px dashed transparent; margin-top:25px;margin-bottom:10px;padding:0px;cursor:text
+
+    }
+    .product_description_block:hover{
+        border:1px dashed #ccc;
+
+    }
+
+
+    .gallery {
+        width:60px;margin-left:0px;list-style: none;padding:0;margin:10px 0px 0px 0px;}
+    .gallery li{
+        margin-bottom:10px
+    }
+
+
+    .gallery img.thumbs {
+        height:60px;float:left;border:1px solid#ccc;padding:2px;margin:2px 2px 6px 2px;cursor:pointer}
+
+
+    table.properties{
+
+
+
+    }
+
+    table.properties tr{
+
+            border-top:1px solid #CCCCCC;
+
+
+    }
+
+    table.properties td{
+
+            padding:5px 20px;
+        vertical-align: top;
+        line-height: 150%;
+
+    }
+
 
     #page_content  input {
         position: relative;

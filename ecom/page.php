@@ -1,5 +1,7 @@
 <?php
 
+include_once 'utils/natural_language.php';
+
 
 if (!isset($page_key) and isset($_REQUEST['id'])) {
     $page_key = $_REQUEST['id'];
@@ -102,7 +104,7 @@ if (!$is_cached) {
     $page->customer        = $customer;
 
 
-    if (in_array($page->get('Page Store Content Template Filename'), array('products_showcase','categories_showcase')) and $page->get('Page Store Content Display Type') == 'Template') {
+    if (in_array($page->get('Page Store Content Template Filename'), array('products_showcase','categories_showcase','')) and $page->get('Page Store Content Display Type') == 'Template') {
         $version = 2;
     } else {
         $version = 1;

@@ -12,6 +12,7 @@
 include_once 'trait.ImageSubject.php';
 include_once 'trait.AttachmentSubject.php';
 include_once 'trait.NotesSubject.php';
+include_once 'utils/natural_language.php';
 
 
 class Asset extends DB_Table {

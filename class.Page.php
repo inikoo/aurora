@@ -765,6 +765,9 @@ class Page extends DB_Table {
                 $content = '';
                 switch ($this->data['Page Store Section']) {
                     case 'Product Description':
+
+                        include_once('class.Product.php');
+
                         $product = new Product(
                             'id', $this->data['Page Parent Key']
                         );

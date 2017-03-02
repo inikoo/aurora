@@ -16,6 +16,9 @@
 <div id="page_content">
 
 
+
+
+
 <div id="description_block" class="description_block {$content_data.description_block.class}" >
 
 
