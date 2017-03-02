@@ -132,10 +132,19 @@
 
 
             <table class="properties">
+                <tr class="{if $Origin==''}hide{/if}"> <td >{t}Origin{/t}</td> <td>{$Origin}</td></tr>
+
                 <tr class="{if $Weight==''}hide{/if}"> <td>{$public_product->get_field_label('Product Unit Weight')|ucfirst}</td> <td>{$Weight}</td></tr>
                 <tr class="{if $Dimensions==''}hide{/if}">  <td>{$public_product->get_field_label('Product Unit Dimensions')|ucfirst}</td> <td>{$Dimensions}</td></tr>
                 <tr class="{if $Materials==''}hide{/if}"> <td>{t}Materials{/t}/{t}Ingredients{/t}</td> <td> <section style="width:70%"> {$Materials}</section></td></tr>
                 <tr class="{if $CPNP==''}hide{/if}"> <td title="{t}Cosmetic Products Notification Portal{/t} - Europa.eu">CPNP</td> <td>{$CPNP}</td></tr>
+
+                {foreach from=$product_attachments item=attachment}
+                    <tr>
+                        <td>{$attachment.label} <i class="fa fa-paperclip" style="margin-left:5px" aria-hidden="true"></i></td>
+                        <td  >   <span class="link">{$attachment.name}</span></td>
+                    </tr>
+                {/foreach}
             </table>
 
 

@@ -205,7 +205,17 @@ class Public_Product {
             case 'Description':
                 return $this->data['Product '.$key];
                 break;
+            case 'Origin':
+                if ($this->data['Product Origin Country Code']) {
+                    include_once 'class.Country.php';
+                    $country = new Country('code', $this->data['Product Origin Country Code']);
 
+                    return '<img src="/art/flags/'.strtolower($country->get('Country 2 Alpha Code')).'.gif" title="'.$country->get('Country Code').'"> '._($country->get('Country Name'));
+                } else {
+                    return '';
+                }
+
+                break;
 
             case 'Image':
 
@@ -612,6 +622,44 @@ break;
         include_once 'class.Public_Webpage.php';
         $this->webpage = new Public_Webpage('scope', 'Product', $this->id);
     }
+
+    function get_attachments(){
+
+        $attachments=array();
+
+
+        $sql=sprintf('select `Attachment Subject Type`, `Attachment Bridge Key`,`Attachment Caption`  from `Product Part Bridge`  left join `Attachment Bridge` AB  on (AB.`Subject Key`=`Product Part Part SKU`)    where AB.`Subject`="Part" and  `Product Part Product ID`=%d  and `Attachment Public`="Yes" and `Attachment Subject Type`="MSDS" ',
+                     $this->id);
+
+
+
+        if ($result2=$this->db->query($sql)) {
+            foreach ($result2 as $row2) {
+
+                if($row2['Attachment Subject Type']=='MSDS'){
+                    $label='<span title="'._('Material safety data sheet').'">MSDS</span>';
+                }else{
+                    $label=_('Attachment');
+                }
+
+
+                $attachments[]=array(
+                    'id'=>$row2['Attachment Bridge Key'],
+                    'label'=>$label,
+                    'name'=>$row2['Attachment Caption']);
+            }
+        }else {
+            print_r($error_info=$this->db->errorInfo());
+            exit;
+        }
+
+
+        return $attachments;
+
+
+
+    }
+
 
     function get_images_slidesshow() {
         include_once 'utils/natural_language.php';

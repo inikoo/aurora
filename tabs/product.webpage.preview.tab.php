@@ -65,17 +65,24 @@ switch ($webpage->get('Page Store Content Template Filename')) {
 
         $smarty->assign('public_product', $public_product);
 
+        $origin       = $public_product->get('Origin');
         $cpnp       = $public_product->get('CPNP Number');
         $materials  = $public_product->get('Materials');
         $weight     = $public_product->get('Unit Weight');
         $dimensions = $public_product->get('Unit Dimensions');
+        $product_attachments = $public_product->get_attachments();
 
         $smarty->assign('CPNP', $cpnp);
         $smarty->assign('Materials', $materials);
         $smarty->assign('Weight', $weight);
         $smarty->assign('Dimensions', $dimensions);
+        $smarty->assign('Origin', $origin);
+        $smarty->assign('product_attachments', $product_attachments);
 
-        if ($weight != '' or $dimensions != '' or $cpnp != '' or $materials != '') {
+
+
+
+        if ($weight != '' or $dimensions != ''or  $origin!='' or $cpnp != '' or $materials != '' or count($product_attachments)>0 ) {
             $has_properties_tab = true;
         } else {
             $has_properties_tab = false;
