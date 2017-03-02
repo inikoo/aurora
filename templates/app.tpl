@@ -40,6 +40,7 @@
 
         <link href="/css/amcharts/style.css" rel="stylesheet">
         <link href="/css/sweetalert.css" rel="stylesheet">
+        <link href="/css/fotorama.css" rel="stylesheet">
 
 
         <link href="/css/app.css" rel="stylesheet">
@@ -62,6 +63,7 @@
         <script type="text/javascript" src="/js/libs/d3fc.js"></script>
         <script type="text/javascript" src="/js/libs/sweetalert.min.js"></script>
 
+        <script type="text/javascript" src="/js/libs/fotorama.js"></script>
 
 
         <script type="text/javascript" src="/js/app.js"></script>
