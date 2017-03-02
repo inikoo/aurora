@@ -33,7 +33,7 @@
 
 
 				<div class="fotorama"
-					
+
 					 data-nav="thumbs"
 					 data-width="400"
 				>
@@ -114,6 +114,13 @@
 				{else}
 				<div class="product_prices log_out " style="clear:both;margin-top:40px">
 					<div >{t}For prices, please login or register{/t}</div>
+
+					<div class="ordering log_out " style="width:350px;margin:auto;margin-top:10px;" >
+						<div ><span onClick="location.href='login.php?from={$public_product->webpage->id}'" class="button login_button label_when_log_out" >{t}Login{/t}</span></div>
+						<div ><span onClick="location.href='registration.php'" class="button register_button label_when_log_out" >{t}Register{/t}</span></div>
+					</div>
+
+
 				</div>
 {/if}
 
