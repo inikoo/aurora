@@ -26,26 +26,30 @@
 	<div id="product_bd" style="padding:5px 20px 0px 20px;clear:both;border:none" class="product_showcase" product_id="{$public_product->id}" >
 
 		<div class="product" style="display: flex; ">
-			<div class="images" style="width:300px">
-				<div style="border:1px solid #ccc;background:#FFF">
-					<div class="wraptocenter">
-						<a href="{$public_product->get('Image')}" class="imgpop"><img src="{$public_product->get('Image')}"></a>
-					</div>
-				</div>
-				<ul class="gallery">
-                    {foreach from=$public_product->get_images_slidesshow() item=image name=foo}
-                        {if $image.subject_order>0   }
-							<li><a href="/{$image.normal_url}" class="imgpop"> <img class="thumbs" src="/{$image.small_url}" alt="{$image.name}" /> </a> </li>
-                        {/if}
-                    {/foreach}
-				</ul>
 
+			<div style="float:left;width:400px" >
+
+
+
+
+				<div class="fotorama"
+					
+					 data-nav="thumbs"
+					 data-width="400"
+				>
+                    {foreach from=$public_product->get_images_slidesshow() item=image name=foo}
+						<a href="/{$image.normal_url}"><img src="/{$image.small_url}"></a>
+                    {/foreach}
+
+
+				</div>
 
 
 
 			</div>
-			<div class="information" style="margin-left:40px;margin-right:20px;width:600px">
-				<h1 style="padding-top:5px;margin:2px 0;font-size:190%">
+
+			<div class="information" style="float:left;margin-left:30px;width:510px">
+				<h1 style="padding-top:5px;margin:2px 0;font-size:150%">
                     {$public_product->get('Name')}
 
                     {assign 'favourite_key' {$public_product->get('Favourite Key',{$customer->id})} }
@@ -177,3 +181,8 @@
 </div>
 
 {include file="order_products.js.tpl" }
+<script>
+
+
+
+	</script>

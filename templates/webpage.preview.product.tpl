@@ -44,26 +44,28 @@
     <div id="product_bd" style="padding:5px 20px 0px 20px;clear:both;">
 
             <div class="product" style="display: flex; ">
-                <div class="images" >
-                    <div style="width:300px;border:1px solid #ccc;background:#FFF">
-                        <div class="wraptocenter" style="position:relative;top:10px;left:10px;margin-bottom:10px">
-                            <a href="{$public_product->get('Image')}" class="imgpop"><img style="margin-bottom:20px" src="{$public_product->get('Image')}"></a>
-                        </div>
-                    </div>
+                <div style="float:left" >
 
-                    <ul class="gallery">
+
+
+
+                    <div class="fotorama"
+                         data-auto="false"
+                         data-nav="thumbs"
+                         data-width="450"
+                    >
                         {foreach from=$public_product->get_images_slidesshow() item=image name=foo}
-                            {if $image.subject_order>0   }
-                                <li><a href="/{$image.normal_url}" class="imgpop"> <img class="thumbs" src="/{$image.small_url}" alt="{$image.name}" /> </a> </li>
-                            {/if}
+                            <a href="/{$image.normal_url}"><img src="/{$image.small_url}"></a>
                         {/foreach}
-                    </ul>
+
+
+                    </div>
 
 
 
                 </div>
-                <div class="information" style="margin-left:40px;margin-right:20px;width:600px">
-                    <h1 style="padding-top:5px;margin:2px 0;font-size:190%">
+                <div class="information" style="float:left;margin-left:40px;">
+                    <h1 style="padding-top:5px;margin:2px 0;font-size:150%">
                         {$public_product->get('Name')}  <i class="fa fa-heart-o" style="margin-left:20px" aria-hidden="true"></i>
                     </h1>
                     <div class="highlight_box">
@@ -211,7 +213,9 @@
     }
 
 
-
+    $(function () {
+        $('.fotorama').fotorama();
+    });
 
 
 </script>

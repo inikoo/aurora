@@ -43,7 +43,9 @@
 	
 	
 	<link href="css/froala_style.css" rel="stylesheet" type="text/css" />
-    <link href="css/font-awesome.min.css" rel="stylesheet"> 
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+	<link href="css/fotorama.css" rel="stylesheet">
+
 	<link href="{$site->get_favicon_url()}" rel="shortcut icon" type="image/x-icon" />
 	{if $css_files!=''}
 	<link rel="stylesheet" href="min/f={$css_files}" type="text/css"/>
@@ -66,6 +68,7 @@
 
 
 	<script type="text/javascript" src="js/jquery-2.2.1.js"></script>
+	<script type="text/javascript" src="js/fotorama.js"></script>
 
 	
 	{$page->get_head_includes()} 
