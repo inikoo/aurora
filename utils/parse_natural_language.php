@@ -37,12 +37,14 @@ function parse_dimensions($dimension) {
         $w    = convert_units(floatval($dimensions[1]), $units, 'm');
         $h    = convert_units(floatval($dimensions[2]), $units, 'm');
         $vol  = convert_units($l * $w * $h, 'm3', 'l');
+        $box_vol=$vol;
         $type = 'Rectangular';
     } elseif (count($dimensions) == 2) {
         $l    = convert_units(floatval($dimensions[0]), $units, 'm');
         $w    = convert_units(floatval($dimensions[1]), $units, 'm');
         $h    = 0;
         $vol  = 0;
+        $box_vol=$vol;
         $type = 'Sheet';
     } elseif (count($dimensions) == 1) {
 
@@ -54,7 +56,10 @@ function parse_dimensions($dimension) {
             $l    = convert_units(floatval($match[3]), $units, 'm');
             $w    = $l;
             $h    = convert_units(floatval($match[1]), $units, 'm');
-            $vol  = convert_units($l * $w * $h, 'm3', 'l');
+            $r=$l/2;
+
+            $vol  = convert_units(3.141592 * $r  * $r * $h, 'm3', 'l');
+            $box_vol=convert_units($l * $w * $h, 'm3', 'l');
             $type = 'Cilinder';
 
         } elseif (preg_match(
@@ -64,7 +69,11 @@ function parse_dimensions($dimension) {
             $l    = convert_units(floatval($match[2]), $units, 'm');
             $w    = $l;
             $h    = $l;
-            $vol  = convert_units($l * $w * $h, 'm3', 'l');
+
+            $r=$l/2;
+
+            $vol  = convert_units(3.141592*4/3*$r * $r * $r, 'm3', 'l');
+            $box_vol=convert_units($l * $w * $h, 'm3', 'l');
             $type = 'Sphere';
             //print json_encode(array('l'=>$l, 'w'=>$w, 'h'=>$h, 'units'=>$units, 'vol'=>$vol, 'type'=>$type));
             //   exit;
@@ -74,6 +83,7 @@ function parse_dimensions($dimension) {
             $w    = 0;
             $h    = 0;
             $vol  = 0;
+            $box_vol=0;
             $type = 'String';
             //print json_encode(array('l'=>$l, 'w'=>$w, 'h'=>$h, 'units'=>$units, 'vol'=>$vol, 'type'=>$type));
             //   exit;
@@ -95,6 +105,7 @@ function parse_dimensions($dimension) {
             'h'     => $h,
             'units' => $units,
             'vol'   => $vol,
+            'box_vol'   => $box_vol,
             'type'  => $type
         )
     );

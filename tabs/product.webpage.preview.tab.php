@@ -15,7 +15,7 @@ $logged = true;
 
 
 $product = $state['_object'];
-$webpage  = $product->get_webpage();
+$webpage = $product->get_webpage();
 
 
 $smarty->assign('webpage', $webpage);
@@ -37,15 +37,57 @@ $content_data = $product->webpage->get('Content Data');
 switch ($webpage->get('Page Store Content Template Filename')) {
     case 'product':
 
+        $content_data = $webpage->get('Content Data');
+
+
+        if (($webpage->id and $webpage->get('Content Data') == '')) {
+
+            $content_data = array(
+                'description_block' => array(
+                    'class' => '',
+
+                    'content' => sprintf('<div class="description">%s</div>', $public_product->get('Description'))
+
+
+                ),
+                'tabs'              => array()
+
+            );
+
+            $webpage->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+
+
+        }
+
+
+        $smarty->assign('content_data', $content_data);
 
 
         $smarty->assign('public_product', $public_product);
 
+        $cpnp       = $public_product->get('CPNP Number');
+        $materials  = $public_product->get('Materials');
+        $weight     = $public_product->get('Unit Weight');
+        $dimensions = $public_product->get('Unit Dimensions');
+
+        $smarty->assign('CPNP', $cpnp);
+        $smarty->assign('Materials', $materials);
+        $smarty->assign('Weight', $weight);
+        $smarty->assign('Dimensions', $dimensions);
+
+        if ($weight != '' or $dimensions != '' or $cpnp != '' or $materials != '') {
+            $has_properties_tab = true;
+        } else {
+            $has_properties_tab = false;
+
+        }
+
+        $smarty->assign('has_properties_tab', $has_properties_tab);
+
 
         $html = $smarty->fetch('webpage.preview.product.tpl');
-    break;
-    }
-    
+        break;
+}
 
 
 ?>

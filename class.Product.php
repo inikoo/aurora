@@ -1378,8 +1378,8 @@ class Product extends Asset {
 
                         return;
                     }
-                    $_tmp = json_decode($dim, true);
-                    $vol  = $_tmp['vol'];
+                   // $_tmp = json_decode($dim, true);
+                 //   $vol  = $_tmp['vol'];
                 }
 
                 if (!preg_match('/from_part/', $options) and count(

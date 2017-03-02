@@ -9,6 +9,8 @@
  Version 2.0
 */
 
+
+
 $_site=array(
 	'telephone'=>$site->data['Site Contact Telephone'],
 	'address'=>$site->data['Site Contact Address'],
@@ -33,7 +35,7 @@ $_page=array(
 );
 
 
-if ($page->data['Page Store Section Type']=='Family') {
+if ($page->data['Page Store Section Type']=='Family'    or ($page->data['Webpage Version']==2 and  $page->data['Webpage Scope']=='Webpage Scope' )    ) {
 	$smarty->assign('_products', $page->get_products_data());
 
 	$smarty->assign('_related_products', $page->get_related_products_data());
@@ -50,7 +52,7 @@ if ($page->data['Page Store Section Type']=='Family') {
 	include_once 'class.Public_Order.php';
 	include_once 'class.Public_Website_User.php';
 
-	$public_category=new Public_Category('root_key_code', $store->get('Store Family Category Key'), $family->get('Product Family Code'));
+	$public_category=new Public_Category($page->data['Webpage Scope Key']);
 
 
 	$public_category->load_webpage();
@@ -240,8 +242,61 @@ elseif ($page->data['Page Store Section Type']=='Department') {
     $smarty->assign('user', $public_user);
 
 
-}elseif ($page->data['Page Store Section Type']=='Product') {
+}
+elseif ($page->data['Page Store Section Type']=='Product') {
 	$smarty->assign('product', $page->get_product_data());
+
+
+    include_once 'class.Public_Category.php';
+    include_once 'class.Public_Webpage.php';
+    include_once 'class.Public_Product.php';
+    include_once 'class.Public_Customer.php';
+    include_once 'class.Public_Order.php';
+    include_once 'class.Public_Website_User.php';
+
+    $public_product=new Public_Product($page->get('Webpage Scope Key'));
+
+
+    $public_product->load_webpage();
+
+    $public_customer=new Public_Customer($customer->id);
+    $public_order=new Public_Order($order_in_process->id);
+
+
+    if($user=='') {
+        $public_user=new Public_Website_User(0);
+    }else{
+        $public_user=new Public_Website_User($user->id);
+    }
+
+
+    $content_data = $public_product->webpage->get('Content Data');
+
+    $smarty->assign('public_product', $public_product);
+
+    $cpnp       = $public_product->get('CPNP Number');
+    $materials  = $public_product->get('Materials');
+    $weight     = $public_product->get('Unit Weight');
+    $dimensions = $public_product->get('Unit Dimensions');
+
+    $smarty->assign('CPNP', $cpnp);
+    $smarty->assign('Materials', $materials);
+    $smarty->assign('Weight', $weight);
+    $smarty->assign('Dimensions', $dimensions);
+
+    if ($weight != '' or $dimensions != '' or $cpnp != '' or $materials != '') {
+        $has_properties_tab = true;
+    } else {
+        $has_properties_tab = false;
+
+    }
+
+    $smarty->assign('has_properties_tab', $has_properties_tab);
+
+
+
+
+
 }elseif ($page->data['Page Store Section']=='Front Page Store') {
 	$smarty->assign('_departments', $page->get_departments_data());
 }

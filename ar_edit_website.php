@@ -441,6 +441,15 @@ function webpage_content_data($data, $editor, $db, $smarty) {
             }
 
 
+        } elseif ($data['section'] == 'product_description') {
+
+
+
+            $content_data['description_block']['content'] = $data['value'];
+
+
+
+
         } else {
             if (isset($content_data[$data['section']]['blocks'][$data['block']])) {
 
@@ -455,7 +464,9 @@ function webpage_content_data($data, $editor, $db, $smarty) {
         }
 
 
-    } elseif ($data['type'] == 'item_header_text') {
+    }
+
+    elseif ($data['type'] == 'item_header_text') {
 
 
         if ($data['section'] == 'panels_in_section') {
@@ -514,7 +525,8 @@ function webpage_content_data($data, $editor, $db, $smarty) {
         }
 
 
-    } elseif ($data['type'] == 'caption') {
+    }
+    elseif ($data['type'] == 'caption') {
 
 
         if ($data['section'] == 'panels_in_section') {
@@ -557,7 +569,8 @@ function webpage_content_data($data, $editor, $db, $smarty) {
         }
 
 
-    } elseif ($data['type'] == 'code') {
+    }
+    elseif ($data['type'] == 'code') {
 
 
         if ($data['section'] == 'panels_in_section') {
@@ -612,7 +625,8 @@ function webpage_content_data($data, $editor, $db, $smarty) {
         }
 
 
-    } elseif ($data['type'] == 'link') {
+    }
+    elseif ($data['type'] == 'link') {
 
 
         if ($data['section'] == 'panels_in_section') {
@@ -657,7 +671,8 @@ function webpage_content_data($data, $editor, $db, $smarty) {
         }
 
 
-    } elseif ($data['type'] == 'add_class') {
+    }
+    elseif ($data['type'] == 'add_class') {
         if (isset($content_data[$data['section']])) {
 
 
@@ -707,7 +722,8 @@ function webpage_content_data($data, $editor, $db, $smarty) {
             }
 
         }
-    } elseif ($data['type'] == 'remove_class') {
+    }
+    elseif ($data['type'] == 'remove_class') {
         if (isset($content_data[$data['section']])) {
 
 

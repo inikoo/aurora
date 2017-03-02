@@ -21,7 +21,7 @@
 
     <a target="_blank" href="http://{$webpage->get('Page URL')}" ><i class="fa fa-external-link" aria-hidden="true"  style="float:right;margin-left:20px;position:relative;top:2px"></i>   </a>
 
-    <span id="publish" class="button save {if $webpage->get('Publish')}changed valid{/if}" style="float:right" onclick="publish(this)"><span class="unselectable">{t}Publish{/t}</span> <i class="fa fa-rocket" aria-hidden="true"></i></span>
+    <span id="publish" webpage_key="{$webpage->id}" class="button save {if $webpage->get('Publish')}changed valid{/if}" style="float:right" onclick="publish(this,'publish_webpage')"><span class="unselectable">{t}Publish{/t}</span> <i class="fa fa-rocket" aria-hidden="true"></i></span>
 
 
 </div>
@@ -29,6 +29,7 @@
 
 {assign 'see_also'  $public_product->webpage->get_see_also() }
 {assign 'css'  $public_product->webpage->get('CSS') }
+
 
 
 {include file="category.webpage.preview.style.tpl" }
@@ -49,20 +50,12 @@
                             <a href="{$public_product->get('Image')}" class="imgpop"><img src="{$public_product->get('Image')}"></a>
                         </div>
                     </div>
-                    <div style="{if $public_product->get_number_images()<1}xdisplay:none{/if}">
 
 
 
-                        <ul class="gallery">
-                            {foreach from=$public_product->get_images_slidesshow() item=image name=foo}
-                                {if $image.subject_order>1  }
-                                    <li><a href="{$image.normal_url}" class="imgpop"> <img class="thumbs" src="{$image.small_url}" alt="{$image.name}" /> </a> </li>
-                                {/if}
-                            {/foreach}
-                        </ul>
-                    </div>
+
                 </div>
-                <div class="information" style="margin-left:40px">
+                <div class="information" style="margin-left:40px;margin-right:30px">
                     <h1 style="padding-top:5px;margin:2px 0;font-size:190%">
                         {$public_product->get('Name')}  <i class="fa fa-heart-o" style="margin-left:20px" aria-hidden="true"></i>
                     </h1>
@@ -101,36 +94,60 @@
 
 
 
+                    <div id="text_edit_toolbar" class="edit_toolbar hide" section="description_block" style=" z-index: 200;position:relative;">
+                        <i class="fa fa-window-close fa-fw button" style="margin-bottom:10px" aria-hidden="true"></i><br>
 
-                    <div class=" fr-view" style="border:1px dashed #ccc;margin-top:25px;padding:0px">
-                       {$public_product->get('Description')} xx
+
+                        <i class="fa  fa-trash error fa-fw button hide  " style="margin-top:20px" aria-hidden="true"></i><br>
                     </div>
+
+
+                    <div id="product_description" class="product_description_block fr-view {$content_data.description_block.class}">
+                       {$content_data.description_block.content}
+                    </div>
+
+
                 </div>
+                <ul class="gallery">
+                        {foreach from=$public_product->get_images_slidesshow() item=image name=foo}
+                            {if $image.subject_order>0  or true }
+                                <li><a href="/{$image.normal_url}" class="imgpop"> <img class="thumbs" src="/{$image.small_url}" alt="{$image.name}" /> </a> </li>
+                            {/if}
+                        {/foreach}
+                    </ul>
+                <div style="clear: both;height: 10px"></div>
 
 
 
             </div>
     </div>
 
-    <section class="product_tabs">
+    <section class="product_tabs" style="margin-top:20px">
 
-        <input id="tab-one" type="radio" name="grp" checked="checked"/>
-        <label for="tab-one">Tab One</label>
+        <input id="tab-properties" type="radio" name="grp" class="{if !$has_properties_tab}hide{/if}" {if $has_properties_tab}checked="checked"{/if} />
+        <label for="tab-properties">{t}Properties{/t}</label>
         <div>
-            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+
+
+
+            <table class="properties">
+                <tr class="{if $Weight==''}hide{/if}"> <td>{$public_product->get_field_label('Product Unit Weight')|ucfirst}</td> <td>{$Weight}</td></tr>
+                <tr class="{if $Dimensions==''}hide{/if}">  <td>{$public_product->get_field_label('Product Unit Dimensions')|ucfirst}</td> <td>{$Dimensions}</td></tr>
+                <tr class="{if $Materials==''}hide{/if}"> <td>{t}Materials{/t}/{t}Ingredients{/t}</td> <td> <section style="width:70%"> {$Materials}</section></td></tr>
+                <tr class="{if $CPNP==''}hide{/if}"> <td title="{t}Cosmetic Products Notification Portal{/t} - Europa.eu">CPNP</td> <td>{$CPNP}</td></tr>
+            </table>
+
+
         </div>
 
-        <input id="tab-two" type="radio" name="grp" />
-        <label for="tab-two">Tab Two</label>
+
+        <input id="tab-new" type="radio" name="grp" />
+        <label  class="hide" for="tab-new">{t}New tab{/t}</label>
         <div>
-            <img src="http://sbarthel.github.io/images/img/berg.JPG" alt="mountain" />
+            bla bla bla
         </div>
 
-        <input id="tab-three" type="radio" name="grp" />
-        <label for="tab-three">Tab Three</label>
-        <div>
-            ... no fixed height for tabbed area!
-        </div>
+
 
     </section>
 
@@ -140,3 +157,51 @@
     <div style="clear:both"></div>
 
 </div>
+
+
+
+<script>
+
+
+
+
+    {include file="js/webpage.preview.publish.tpl.js" }
+    {include file="js/webpage.preview.product_description.tpl.js" }
+    {include file="js/webpage.preview.tabs.tpl.js" }
+
+
+
+
+
+    function toggle_logged_in_view(element){
+
+        var icon=$(element).find('i')
+        if(icon.hasClass('fa-toggle-on')){
+            icon.removeClass('fa-toggle-on').addClass('fa-toggle-off')
+
+            $('.product_prices.log_in').addClass('hide')
+            $('.product_prices.log_out').removeClass('hide')
+
+            $('.ordering.log_in').addClass('hide')
+            $('.ordering.log_out').removeClass('hide')
+
+
+        }else{
+            icon.addClass('fa-toggle-on').removeClass('fa-toggle-off')
+
+            $('.product_prices.log_in').removeClass('hide')
+            $('.product_prices.log_out').addClass('hide')
+            $('.ordering.log_in').removeClass('hide')
+            $('.ordering.log_out').addClass('hide')
+
+        }
+
+
+
+    }
+
+
+
+
+
+</script>

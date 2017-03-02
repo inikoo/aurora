@@ -6,6 +6,12 @@
 
 
 <div id="page_content">
+
+    {if $category->get('Product Category Status')=='Discontinued'}
+        <div  class="section description_block alert alert-error alert-title" style="text-align:center">
+            <i class="fa fa-frown-o padding_right_20" aria-hidden="true"></i> {t}Discontinued{/t} <i class="fa fa-frown-o padding_left_20" aria-hidden="true"></i>
+        </div>
+    {/if}
  
 <span id="ordering_settings" class="hide" data-labels='{
     "ordered":"<i class=\"fa fa-thumbs-o-up fa-flip-horizontal fa-fw \" aria-hidden=\"true\"></i> <span class=\"order_button_text\">{t}Ordered{/t}</span>",
@@ -39,8 +45,12 @@
 
         <div style="clear:both"></div>
     </div>
-    
-    
+
+    {if $category->get('Product Category Status')=='Discontinued'}
+        <div  class="section description_block alert alert-error alert-title" style="text-align:center">
+            {t}Sorry, but all products in this web page are discontinued{/t}
+        </div>
+    {/if}
     
     <div id="products" class="product_blocks ">
     
@@ -198,13 +208,18 @@
                 {$product_data.header_text}
             </div>
 
-        <a href="page.php?id={$product->get('Webpage Key')}">
-            <div class="wrap_to_center product_image" >
-                <img draggable="false" class="more_info" src="/art/moreinfo_corner1.png">
 
-                <img draggable="false" src="{$product->get('Image')}" />
-            </div>
-        </a>
+
+            <a href="page.php?id={$product->get('Webpage Key')}">
+                <div class="wrap_to_center product_image" >
+                    <i class="fa fa-info-circle more_info" aria-hidden="true" title="More info"></i>
+
+                    <img draggable="false" src="{$product->get('Image')}" />
+                </div>
+            </a>
+
+
+
 
         <div class="product_description"  >
             <span class="code">{$product->get('Code')}</span>
