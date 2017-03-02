@@ -1535,11 +1535,15 @@ class Page extends DB_Table {
 
     function update_version() {
 
-        if (in_array($this->get('Page Store Content Template Filename'), array('products_showcase', 'categories_showcase')
+        if (in_array(
+                $this->get('Page Store Content Template Filename'), array(
+                                                                      'products_showcase',
+                                                                      'categories_showcase'
+                                                                  )
             ) and $this->get('Page Store Content Display Type') == 'Template'
         ) {
             $version = 2;
-        }elseif($this->get('Webpage Scope')=='Product') {
+        } elseif ($this->get('Webpage Scope') == 'Product') {
             $version = 2;
 
         } else {
@@ -2391,25 +2395,25 @@ class Page extends DB_Table {
                 $this->publish();
             }
 
-            $sql=sprintf('select `Category Webpage Index Webpage Key` from `Category Webpage Index` where `Category Webpage Index Category Webpage Key`=%d  group by `Category Webpage Index Webpage Key` ',
-                         $this->id
+            $sql = sprintf(
+                'SELECT `Category Webpage Index Webpage Key` FROM `Category Webpage Index` WHERE `Category Webpage Index Category Webpage Key`=%d  GROUP BY `Category Webpage Index Webpage Key` ',
+                $this->id
             );
 
 
-            if ($result=$this->db->query($sql)) {
+            if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
-                    $webpage=new Page($row['Category Webpage Index Webpage Key']);
+                    $webpage = new Page($row['Category Webpage Index Webpage Key']);
                     $webpage->reindex_items();
-                    if($webpage->updated) {
+                    if ($webpage->updated) {
                         $webpage->publish();
                     }
                 }
-            }else {
-                print_r($error_info=$this->db->errorInfo());
+            } else {
+                print_r($error_info = $this->db->errorInfo());
                 print "$sql\n";
                 exit;
             }
-
 
 
             $this->updated = true;
@@ -2422,7 +2426,6 @@ class Page extends DB_Table {
     function reindex_items() {
 
         $this->updated = false;
-
 
 
         if ($this->get('Webpage Scope') == 'Category Categories') {
@@ -2456,8 +2459,6 @@ class Page extends DB_Table {
                 }
 
 
-
-
                 $to_remove = array();
 
 
@@ -2471,8 +2472,6 @@ class Page extends DB_Table {
 
 
                     foreach ($content_data['sections'][$section_stack_index]['items'] as $item) {
-
-
 
 
                         if ($item['type'] == 'category') {
@@ -2497,7 +2496,6 @@ class Page extends DB_Table {
 
 
                 }
-
 
 
                 foreach ($to_remove as $item_key) {
@@ -2725,15 +2723,40 @@ class Page extends DB_Table {
 
         $this->db->exec($sql);
 
-        $this->load_scope();
+
+        if ($this->get('Webpage Scope') == 'Category Products') {
 
 
-        if ($this->scope_found == 'Category') {
+            include_once 'class.Page.php';
+
             $sql = sprintf(
                 'UPDATE  `Product Category Index` SET  `Product Category Index Published Stack`=`Product Category Index Stack`,`Product Category Index Content Published Data`=`Product Category Index Content Data` WHERE `Product Category Index Category Key`=%d ',
-                $this->scope->id
+                $this->get('Webpage Scope Key')
             );
             $this->db->exec($sql);
+
+
+            $sql = sprintf('SELECT `Product Category Index Product ID` FROM `Product Category Index`    WHERE `Product Category Index Website Key`=%d', $this->id);
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+
+                    $webpage = new Page('scope', 'Product', $row['Product Category Index Product ID']);
+
+
+                    if ($webpage->get('Webpage Launch Date') == '') {
+                        $webpage->publish();
+                    }
+
+
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
         }
 
 
