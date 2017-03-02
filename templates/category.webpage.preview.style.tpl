@@ -14,7 +14,7 @@
 
 
     .gallery {
-        width:60px;margin-left:0px;list-style: none;padding:0;margin:10px 0px 0px 0px;}
+        width:280px;;margin-left:0px;list-style: none;padding:0;margin:10px 0px 0px 0px;}
     .gallery li{
         margin-bottom:10px
     }

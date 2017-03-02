@@ -44,18 +44,25 @@
     <div id="product_bd" style="padding:5px 20px 0px 20px;clear:both;">
 
             <div class="product" style="display: flex; ">
-                <div class="images" style="width:280px">
-                    <div style="border:1px solid #ccc;background:#FFF">
-                        <div class="wraptocenter">
-                            <a href="{$public_product->get('Image')}" class="imgpop"><img src="{$public_product->get('Image')}"></a>
+                <div class="images" >
+                    <div style="width:300px;border:1px solid #ccc;background:#FFF">
+                        <div class="wraptocenter" style="position:relative;top:10px;left:10px;margin-bottom:10px">
+                            <a href="{$public_product->get('Image')}" class="imgpop"><img style="margin-bottom:20px" src="{$public_product->get('Image')}"></a>
                         </div>
                     </div>
 
+                    <ul class="gallery">
+                        {foreach from=$public_product->get_images_slidesshow() item=image name=foo}
+                            {if $image.subject_order>0   }
+                                <li><a href="/{$image.normal_url}" class="imgpop"> <img class="thumbs" src="/{$image.small_url}" alt="{$image.name}" /> </a> </li>
+                            {/if}
+                        {/foreach}
+                    </ul>
 
 
 
                 </div>
-                <div class="information" style="margin-left:40px;margin-right:30px">
+                <div class="information" style="margin-left:40px;margin-right:20px;width:600px">
                     <h1 style="padding-top:5px;margin:2px 0;font-size:190%">
                         {$public_product->get('Name')}  <i class="fa fa-heart-o" style="margin-left:20px" aria-hidden="true"></i>
                     </h1>
@@ -108,13 +115,7 @@
 
 
                 </div>
-                <ul class="gallery">
-                        {foreach from=$public_product->get_images_slidesshow() item=image name=foo}
-                            {if $image.subject_order>0  or true }
-                                <li><a href="/{$image.normal_url}" class="imgpop"> <img class="thumbs" src="/{$image.small_url}" alt="{$image.name}" /> </a> </li>
-                            {/if}
-                        {/foreach}
-                    </ul>
+
                 <div style="clear: both;height: 10px"></div>
 
 
