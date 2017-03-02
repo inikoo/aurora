@@ -80,6 +80,7 @@ function get_dashboard_sales_overview($db, $account, $user, $smarty, $type,$sub_
     );
 
 
+
     if ($result = $db->query($sql)) {
 
         foreach ($result as $row) {
