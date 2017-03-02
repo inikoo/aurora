@@ -77,13 +77,55 @@ if ($result = $db->query($sql)) {
 */
 
 
-migrate_website($db);
+//migrate_website($db);
 
-create_webpage_types($db);
-normalize_webpage_scopes($db);
+//create_webpage_types($db);
+//normalize_webpage_scopes($db);
 
+migrate_product_pages($db);
 
 //set_scope($db);
+
+
+function migrate_product_pages($db) {
+
+    $sql = sprintf('SELECT `Page Key`,`Webpage Scope Key` FROM `Page Store Dimension` WHERE `Webpage Scope`="Product"  ');
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $webpage = new Page($row['Page Key']);
+            $webpage->update_version();
+
+            $public_product=new Product($row['Webpage Scope Key']);
+
+            if (($webpage->id and $webpage->get('Content Data') == '')) {
+
+                $content_data = array(
+                    'description_block' => array(
+                        'class' => '',
+
+                        'content' => sprintf('<div class="description">%s</div>', $public_product->get('Description'))
+
+
+                    ),
+                    'tabs'              => array()
+
+                );
+
+                $webpage->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+                $webpage->publish();
+
+            }
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+}
 
 
 function create_webpage_types($db) {
@@ -384,7 +426,6 @@ function normalize_webpage_scopes($db) {
 }
 
 
-
 function set_scope($db) {
 
     $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE `Webpage Scope Key` IS NULL OR  `Webpage Scope Key`=0 ');
@@ -584,7 +625,7 @@ function migrate_website($db) {
 
 
     $sql = sprintf('truncate `Website Dimension` ');
-$db->exec($sql);
+    $db->exec($sql);
 
     $sql = sprintf('truncate `Website Data` ');
     $db->exec($sql);
@@ -600,7 +641,7 @@ $db->exec($sql);
             $store->editor = $store;
 
             $website_data = array(
-                'Website Key'   => $site->id,
+                'Website Key'    => $site->id,
                 'Website Code'   => $site->get('Site Code'),
                 'Website Name'   => $site->get('Site Name'),
                 'Website Type'   => ($site->get('Site Code') == 'DS' ? 'EcomDS' : 'EcomB2B'),

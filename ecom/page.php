@@ -318,11 +318,9 @@ if (!$is_cached) {
     }
 
 
-    if ($page->data['Page Store Section'] == 'Product Description') {
-        $js_files[] = 'js/fz.shadow.js';
-        $js_files[] = 'js/fz.js';
-        $js_files[] = 'js/imgpop_inikoo.js';
-    }
+
+
+
 
 
     $css_files[] = sprintf(INIKOO_ACCOUNT."_css/menu_%02d.css", $site->id);

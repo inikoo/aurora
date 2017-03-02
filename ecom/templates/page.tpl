@@ -60,9 +60,13 @@
 	{if isset($js_no_async_extra_file) and $js_no_async_extra_file!=''}
 	<script type="text/javascript" src="{$js_no_async_extra_file}"></script>
 	{/if}
-	
-	<script type="text/javascript" src="js/jquery-2.2.1.js">
-	
+
+
+
+
+
+	<script type="text/javascript" src="js/jquery-2.2.1.js"></script>
+
 	
 	{$page->get_head_includes()} 
 	
