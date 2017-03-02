@@ -1535,14 +1535,13 @@ class Page extends DB_Table {
 
     function update_version() {
 
-        if (in_array(
-                $this->get('Page Store Content Template Filename'), array(
-                                                                      'products_showcase',
-                                                                      'categories_showcase'
-                                                                  )
+        if (in_array($this->get('Page Store Content Template Filename'), array('products_showcase', 'categories_showcase')
             ) and $this->get('Page Store Content Display Type') == 'Template'
         ) {
             $version = 2;
+        }elseif($this->get('Webpage Scope')=='Product') {
+            $version = 2;
+
         } else {
             $version = 1;
 

@@ -35,271 +35,542 @@ $_page=array(
 );
 
 
-if ($page->data['Page Store Section Type']=='Family'    or ($page->data['Webpage Version']==2 and  $page->data['Webpage Scope']=='Webpage Scope' )    ) {
-	$smarty->assign('_products', $page->get_products_data());
+if($page->data['Webpage Version']==2){
 
-	$smarty->assign('_related_products', $page->get_related_products_data());
-
-
-	$family=new Family($page->data['Page Parent Key']);
-	$smarty->assign('family', $family);
+    if ( $page->data['Webpage Scope']=='Category Products'    ) {
 
 
-	include_once 'class.Public_Category.php';
-	include_once 'class.Public_Webpage.php';
-	include_once 'class.Public_Product.php';
-	include_once 'class.Public_Customer.php';
-	include_once 'class.Public_Order.php';
-	include_once 'class.Public_Website_User.php';
 
-	$public_category=new Public_Category($page->data['Webpage Scope Key']);
+        include_once 'class.Public_Category.php';
+        include_once 'class.Public_Webpage.php';
+        include_once 'class.Public_Product.php';
+        include_once 'class.Public_Customer.php';
+        include_once 'class.Public_Order.php';
+        include_once 'class.Public_Website_User.php';
 
-
-	$public_category->load_webpage();
-
-	$public_customer=new Public_Customer($customer->id);
-	$public_order=new Public_Order($order_in_process->id);
+        $public_category=new Public_Category($page->data['Webpage Scope Key']);
 
 
-	if($user=='') {
-        $public_user=new Public_Website_User(0);
-    }else{
-        $public_user=new Public_Website_User($user->id);
-	}
+        $public_category->load_webpage();
+
+        $public_customer=new Public_Customer($customer->id);
+        $public_order=new Public_Order($order_in_process->id);
 
 
-    $content_data = $public_category->webpage->get('Content Data');
+        if($user=='') {
+            $public_user=new Public_Website_User(0);
+        }else{
+            $public_user=new Public_Website_User($user->id);
+        }
+
+
+        $content_data = $public_category->webpage->get('Content Data');
 
 
 
 
-    if (isset($content_data['panels'])) {
-        $panels = $content_data['panels'];
-    } else {
-        $panels = array();
-    }
+        if (isset($content_data['panels'])) {
+            $panels = $content_data['panels'];
+        } else {
+            $panels = array();
+        }
 
 
 
-	$products = array();
+        $products = array();
 
-	$sql = sprintf(
-		"SELECT  P.`Product ID`,`Product Category Index Content Published Data` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Index` S ON (`Subject Key`=S.`Product Category Index Product ID` AND S.`Product Category Index Category Key`=B.`Category Key`)  WHERE  `Category Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Product Web State`, ifnull(`Product Category Index Published Stack`,99999999),`Product Code File As` ",
-		$public_category->id
-	);
+        $sql = sprintf(
+            "SELECT  P.`Product ID`,`Product Category Index Content Published Data` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Index` S ON (`Subject Key`=S.`Product Category Index Product ID` AND S.`Product Category Index Category Key`=B.`Category Key`)  WHERE  `Category Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Product Web State`, ifnull(`Product Category Index Published Stack`,99999999),`Product Code File As` ",
+            $public_category->id
+        );
 
-    $stack_index = 0;
-	if ($result = $db->query($sql)) {
-		foreach ($result as $row) {
+        $stack_index = 0;
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
 
 
-		//	print $stack_index."\n";
+                //	print $stack_index."\n";
 
-            if (isset($panels[$stack_index])) {
+                if (isset($panels[$stack_index])) {
+                    $products[] = array(
+                        'type' => 'panel',
+                        'data' => $panels[$stack_index]
+                    );
+
+                    $size=floatval($panels[$stack_index]['size']);
+
+
+
+
+                    unset($panels[$stack_index]);
+                    $stack_index+=$size;
+
+                    list($stack_index, $products) = get_next_panel($stack_index, $products, $panels);
+
+                }
+
+
+
+                if ($row['Product Category Index Content Published Data'] == '') {
+                    $product_content_data = array('header_text' => '');
+                } else {
+                    $product_content_data =json_decode($row['Product Category Index Content Published Data'],true);
+
+                }
+
                 $products[] = array(
-                    'type' => 'panel',
-                    'data' => $panels[$stack_index]
+                    'type'        => 'product',
+                    'object'      => new Public_Product($row['Product ID']),
+                    'header_text' => (isset($product_content_data['header_text'])?$product_content_data['header_text']:'')
+                );
+                $stack_index++;
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $related_products = array();
+
+        $sql = sprintf(
+            "SELECT `Webpage Related Product Key`,`Webpage Related Product Product ID`,`Webpage Related Product Content Published Data`  FROM `Webpage Related Product Bridge` B  LEFT JOIN `Product Dimension` P ON (`Webpage Related Product Product ID`=P.`Product ID`)  WHERE  `Webpage Related Product Page Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Webpage Related Product Published Order`",
+            $public_category->webpage->id
+        );
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                if ($row['Webpage Related Product Content Published Data'] == '') {
+                    $product_content_data = array('header_text' => '');
+                } else {
+                    $product_content_data =json_decode($row['Webpage Related Product Content Published Data'],true);
+
+                }
+
+                $related_products[] = array(
+                    'header_text' => (isset($product_content_data['header_text'])?$product_content_data['header_text']:''),
+                    'object'      =>  new Public_Product($row['Webpage Related Product Product ID']),
+                    'index_key'   => $row['Webpage Related Product Key'],
+
+
                 );
 
-                $size=floatval($panels[$stack_index]['size']);
-
-
-
-
-                unset($panels[$stack_index]);
-                $stack_index+=$size;
-
-                list($stack_index, $products) = get_next_panel($stack_index, $products, $panels);
 
             }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        //print_r($products);
+
+        $smarty->assign('products', $products);
+        $smarty->assign('related_products', $related_products);
+        $smarty->assign('category', $public_category);
+        $smarty->assign('customer', $public_customer);
+        $smarty->assign('order', $public_order);
+        $smarty->assign('user', $public_user);
+
+        $smarty->assign('webpage', $public_category->webpage);
+
+    }
+    else if ( $page->data['Webpage Scope']=='Category Categories'    ) {
 
 
 
-            if ($row['Product Category Index Content Published Data'] == '') {
-                $product_content_data = array('header_text' => '');
-            } else {
-                $product_content_data =json_decode($row['Product Category Index Content Published Data'],true);
-
-            }
-
-            $products[] = array(
-                'type'        => 'product',
-                'object'      => new Public_Product($row['Product ID']),
-                'header_text' => (isset($product_content_data['header_text'])?$product_content_data['header_text']:'')
-            );
-            $stack_index++;
-		}
-	} else {
-		print_r($error_info = $db->errorInfo());
-		print "$sql\n";
-		exit;
-	}
 
 
-    $related_products = array();
-
-    $sql = sprintf(
-        "SELECT `Webpage Related Product Key`,`Webpage Related Product Product ID`,`Webpage Related Product Content Published Data`  FROM `Webpage Related Product Bridge` B  LEFT JOIN `Product Dimension` P ON (`Webpage Related Product Product ID`=P.`Product ID`)  WHERE  `Webpage Related Product Page Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Webpage Related Product Published Order`",
-        $public_category->webpage->id
-    );
-
-    if ($result = $db->query($sql)) {
-        foreach ($result as $row) {
 
 
-            if ($row['Webpage Related Product Content Published Data'] == '') {
-                $product_content_data = array('header_text' => '');
-            } else {
-                $product_content_data =json_decode($row['Webpage Related Product Content Published Data'],true);
-
-            }
-
-            $related_products[] = array(
-                'header_text' => (isset($product_content_data['header_text'])?$product_content_data['header_text']:''),
-                'object'      =>  new Public_Product($row['Webpage Related Product Product ID']),
-                'index_key'   => $row['Webpage Related Product Key'],
+        include_once 'class.Public_Category.php';
+        include_once 'class.Public_Webpage.php';
+        include_once 'class.Public_Product.php';
+        include_once 'class.Public_Customer.php';
+        include_once 'class.Public_Order.php';
+        include_once 'class.Public_Website_User.php';
 
 
-            );
 
+        $public_webpage=new Public_Webpage($page->id);
+        $public_webpage->load_scope();
+
+        $public_category=$public_webpage->scope;
+
+        //  $public_category=new Public_Category('root_key_code', $store->get('Store Department Category Key'), $department->get('Product Department Code'));
+
+
+
+        $public_category->load_webpage();
+
+
+
+
+        $public_customer=new Public_Customer($customer->id);
+        $public_order=new Public_Order($order_in_process->id);
+
+
+        if($user=='') {
+            $public_user=new Public_Website_User(0);
+        }else{
+            $public_user=new Public_Website_User($user->id);
+        }
+
+
+        $content_data = $public_category->webpage->get('Content Data');
+
+        $smarty->assign('content_data', $content_data);
+
+        $smarty->assign('sections', $content_data['sections']);
+
+
+
+        $smarty->assign('category', $public_category);
+        $smarty->assign('customer', $public_customer);
+        $smarty->assign('order', $public_order);
+        $smarty->assign('user', $public_user);
+
+
+    }
+    else if ( $page->data['Webpage Scope']=='Product'    ) {
+        $smarty->assign('product', $page->get_product_data());
+
+
+        include_once 'class.Public_Category.php';
+        include_once 'class.Public_Webpage.php';
+        include_once 'class.Public_Product.php';
+        include_once 'class.Public_Customer.php';
+        include_once 'class.Public_Order.php';
+        include_once 'class.Public_Website_User.php';
+
+        $public_product=new Public_Product($page->get('Webpage Scope Key'));
+
+
+        $public_product->load_webpage();
+
+        $public_customer=new Public_Customer($customer->id);
+        $public_order=new Public_Order($order_in_process->id);
+
+
+        if($user=='') {
+            $public_user=new Public_Website_User(0);
+        }else{
+            $public_user=new Public_Website_User($user->id);
+        }
+
+
+        $content_data = $public_product->webpage->get('Content Data');
+
+        $smarty->assign('content_data', $content_data);
+
+        $smarty->assign('public_product', $public_product);
+        $smarty->assign('customer', $public_customer);
+        $smarty->assign('order', $public_order);
+        $smarty->assign('user', $public_user);
+        $smarty->assign('webpage', $public_product->webpage);
+
+        $cpnp       = $public_product->get('CPNP Number');
+        $materials  = $public_product->get('Materials');
+        $weight     = $public_product->get('Unit Weight');
+        $dimensions = $public_product->get('Unit Dimensions');
+
+        $smarty->assign('CPNP', $cpnp);
+        $smarty->assign('Materials', $materials);
+        $smarty->assign('Weight', $weight);
+        $smarty->assign('Dimensions', $dimensions);
+
+        if ($weight != '' or $dimensions != '' or $cpnp != '' or $materials != '') {
+            $has_properties_tab = true;
+        } else {
+            $has_properties_tab = false;
 
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
+
+        $smarty->assign('has_properties_tab', $has_properties_tab);
+
+
+
+
+
     }
 
-    //print_r($products);
 
-	$smarty->assign('products', $products);
-    $smarty->assign('related_products', $related_products);
-    $smarty->assign('category', $public_category);
-	$smarty->assign('customer', $public_customer);
-	$smarty->assign('order', $public_order);
-	$smarty->assign('user', $public_user);
+}else{
 
 
+    if ($page->data['Page Store Section Type']=='Family'      ) {
+        $smarty->assign('_products', $page->get_products_data());
+
+        $smarty->assign('_related_products', $page->get_related_products_data());
+
+
+        $family=new Family($page->data['Page Parent Key']);
+        $smarty->assign('family', $family);
+
+
+        include_once 'class.Public_Category.php';
+        include_once 'class.Public_Webpage.php';
+        include_once 'class.Public_Product.php';
+        include_once 'class.Public_Customer.php';
+        include_once 'class.Public_Order.php';
+        include_once 'class.Public_Website_User.php';
+
+        $public_category=new Public_Category($page->data['Webpage Scope Key']);
+
+
+        $public_category->load_webpage();
+
+        $public_customer=new Public_Customer($customer->id);
+        $public_order=new Public_Order($order_in_process->id);
+
+
+        if($user=='') {
+            $public_user=new Public_Website_User(0);
+        }else{
+            $public_user=new Public_Website_User($user->id);
+        }
+
+
+        $content_data = $public_category->webpage->get('Content Data');
+
+
+
+
+        if (isset($content_data['panels'])) {
+            $panels = $content_data['panels'];
+        } else {
+            $panels = array();
+        }
+
+
+
+        $products = array();
+
+        $sql = sprintf(
+            "SELECT  P.`Product ID`,`Product Category Index Content Published Data` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Index` S ON (`Subject Key`=S.`Product Category Index Product ID` AND S.`Product Category Index Category Key`=B.`Category Key`)  WHERE  `Category Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Product Web State`, ifnull(`Product Category Index Published Stack`,99999999),`Product Code File As` ",
+            $public_category->id
+        );
+
+        $stack_index = 0;
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                //	print $stack_index."\n";
+
+                if (isset($panels[$stack_index])) {
+                    $products[] = array(
+                        'type' => 'panel',
+                        'data' => $panels[$stack_index]
+                    );
+
+                    $size=floatval($panels[$stack_index]['size']);
+
+
+
+
+                    unset($panels[$stack_index]);
+                    $stack_index+=$size;
+
+                    list($stack_index, $products) = get_next_panel($stack_index, $products, $panels);
+
+                }
+
+
+
+                if ($row['Product Category Index Content Published Data'] == '') {
+                    $product_content_data = array('header_text' => '');
+                } else {
+                    $product_content_data =json_decode($row['Product Category Index Content Published Data'],true);
+
+                }
+
+                $products[] = array(
+                    'type'        => 'product',
+                    'object'      => new Public_Product($row['Product ID']),
+                    'header_text' => (isset($product_content_data['header_text'])?$product_content_data['header_text']:'')
+                );
+                $stack_index++;
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $related_products = array();
+
+        $sql = sprintf(
+            "SELECT `Webpage Related Product Key`,`Webpage Related Product Product ID`,`Webpage Related Product Content Published Data`  FROM `Webpage Related Product Bridge` B  LEFT JOIN `Product Dimension` P ON (`Webpage Related Product Product ID`=P.`Product ID`)  WHERE  `Webpage Related Product Page Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Webpage Related Product Published Order`",
+            $public_category->webpage->id
+        );
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                if ($row['Webpage Related Product Content Published Data'] == '') {
+                    $product_content_data = array('header_text' => '');
+                } else {
+                    $product_content_data =json_decode($row['Webpage Related Product Content Published Data'],true);
+
+                }
+
+                $related_products[] = array(
+                    'header_text' => (isset($product_content_data['header_text'])?$product_content_data['header_text']:''),
+                    'object'      =>  new Public_Product($row['Webpage Related Product Product ID']),
+                    'index_key'   => $row['Webpage Related Product Key'],
+
+
+                );
+
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        //print_r($products);
+
+        $smarty->assign('products', $products);
+        $smarty->assign('related_products', $related_products);
+        $smarty->assign('category', $public_category);
+        $smarty->assign('customer', $public_customer);
+        $smarty->assign('order', $public_order);
+        $smarty->assign('user', $public_user);
+
+
+
+    }
+    elseif ($page->data['Page Store Section Type']=='Department') {
+
+
+
+
+
+        $smarty->assign('_families', $page->get_families_data());
+        $department=new Department($page->data['Page Parent Key']);
+        $smarty->assign('department', $department);
+
+
+
+        include_once 'class.Public_Category.php';
+        include_once 'class.Public_Webpage.php';
+        include_once 'class.Public_Product.php';
+        include_once 'class.Public_Customer.php';
+        include_once 'class.Public_Order.php';
+        include_once 'class.Public_Website_User.php';
+
+
+
+        $public_webpage=new Public_Webpage($page->id);
+        $public_webpage->load_scope();
+
+        $public_category=$public_webpage->scope;
+
+        //  $public_category=new Public_Category('root_key_code', $store->get('Store Department Category Key'), $department->get('Product Department Code'));
+
+
+
+        $public_category->load_webpage();
+
+
+
+
+        $public_customer=new Public_Customer($customer->id);
+        $public_order=new Public_Order($order_in_process->id);
+
+
+        if($user=='') {
+            $public_user=new Public_Website_User(0);
+        }else{
+            $public_user=new Public_Website_User($user->id);
+        }
+
+
+        $content_data = $public_category->webpage->get('Content Data');
+
+        $smarty->assign('content_data', $content_data);
+
+        $smarty->assign('sections', $content_data['sections']);
+
+
+
+        $smarty->assign('category', $public_category);
+        $smarty->assign('customer', $public_customer);
+        $smarty->assign('order', $public_order);
+        $smarty->assign('user', $public_user);
+
+
+    }
+    elseif ($page->data['Page Store Section Type']=='Product') {
+        $smarty->assign('product', $page->get_product_data());
+
+
+        include_once 'class.Public_Category.php';
+        include_once 'class.Public_Webpage.php';
+        include_once 'class.Public_Product.php';
+        include_once 'class.Public_Customer.php';
+        include_once 'class.Public_Order.php';
+        include_once 'class.Public_Website_User.php';
+
+        $public_product=new Public_Product($page->get('Webpage Scope Key'));
+
+
+        $public_product->load_webpage();
+
+        $public_customer=new Public_Customer($customer->id);
+        $public_order=new Public_Order($order_in_process->id);
+
+
+        if($user=='') {
+            $public_user=new Public_Website_User(0);
+        }else{
+            $public_user=new Public_Website_User($user->id);
+        }
+
+
+        $content_data = $public_product->webpage->get('Content Data');
+
+        $smarty->assign('public_product', $public_product);
+
+        $cpnp       = $public_product->get('CPNP Number');
+        $materials  = $public_product->get('Materials');
+        $weight     = $public_product->get('Unit Weight');
+        $dimensions = $public_product->get('Unit Dimensions');
+
+        $smarty->assign('CPNP', $cpnp);
+        $smarty->assign('Materials', $materials);
+        $smarty->assign('Weight', $weight);
+        $smarty->assign('Dimensions', $dimensions);
+
+        if ($weight != '' or $dimensions != '' or $cpnp != '' or $materials != '') {
+            $has_properties_tab = true;
+        } else {
+            $has_properties_tab = false;
+
+        }
+
+        $smarty->assign('has_properties_tab', $has_properties_tab);
+
+
+
+
+
+    }
+    elseif ($page->data['Page Store Section']=='Front Page Store') {
+        $smarty->assign('_departments', $page->get_departments_data());
+    }
 
 }
-elseif ($page->data['Page Store Section Type']=='Department') {
 
 
-
-
-
-	$smarty->assign('_families', $page->get_families_data());
-	$department=new Department($page->data['Page Parent Key']);
-	$smarty->assign('department', $department);
-
-
-
-    include_once 'class.Public_Category.php';
-    include_once 'class.Public_Webpage.php';
-    include_once 'class.Public_Product.php';
-    include_once 'class.Public_Customer.php';
-    include_once 'class.Public_Order.php';
-    include_once 'class.Public_Website_User.php';
-
-
-
-    $public_webpage=new Public_Webpage($page->id);
-    $public_webpage->load_scope();
-
-    $public_category=$public_webpage->scope;
-
-  //  $public_category=new Public_Category('root_key_code', $store->get('Store Department Category Key'), $department->get('Product Department Code'));
-
-
-
-    $public_category->load_webpage();
-
-
-
-
-    $public_customer=new Public_Customer($customer->id);
-    $public_order=new Public_Order($order_in_process->id);
-
-
-    if($user=='') {
-        $public_user=new Public_Website_User(0);
-    }else{
-        $public_user=new Public_Website_User($user->id);
-    }
-
-
-    $content_data = $public_category->webpage->get('Content Data');
-
-    $smarty->assign('content_data', $content_data);
-
-    $smarty->assign('sections', $content_data['sections']);
-
-
-
-    $smarty->assign('category', $public_category);
-    $smarty->assign('customer', $public_customer);
-    $smarty->assign('order', $public_order);
-    $smarty->assign('user', $public_user);
-
-
-}
-elseif ($page->data['Page Store Section Type']=='Product') {
-	$smarty->assign('product', $page->get_product_data());
-
-
-    include_once 'class.Public_Category.php';
-    include_once 'class.Public_Webpage.php';
-    include_once 'class.Public_Product.php';
-    include_once 'class.Public_Customer.php';
-    include_once 'class.Public_Order.php';
-    include_once 'class.Public_Website_User.php';
-
-    $public_product=new Public_Product($page->get('Webpage Scope Key'));
-
-
-    $public_product->load_webpage();
-
-    $public_customer=new Public_Customer($customer->id);
-    $public_order=new Public_Order($order_in_process->id);
-
-
-    if($user=='') {
-        $public_user=new Public_Website_User(0);
-    }else{
-        $public_user=new Public_Website_User($user->id);
-    }
-
-
-    $content_data = $public_product->webpage->get('Content Data');
-
-    $smarty->assign('public_product', $public_product);
-
-    $cpnp       = $public_product->get('CPNP Number');
-    $materials  = $public_product->get('Materials');
-    $weight     = $public_product->get('Unit Weight');
-    $dimensions = $public_product->get('Unit Dimensions');
-
-    $smarty->assign('CPNP', $cpnp);
-    $smarty->assign('Materials', $materials);
-    $smarty->assign('Weight', $weight);
-    $smarty->assign('Dimensions', $dimensions);
-
-    if ($weight != '' or $dimensions != '' or $cpnp != '' or $materials != '') {
-        $has_properties_tab = true;
-    } else {
-        $has_properties_tab = false;
-
-    }
-
-    $smarty->assign('has_properties_tab', $has_properties_tab);
-
-
-
-
-
-}elseif ($page->data['Page Store Section']=='Front Page Store') {
-	$smarty->assign('_departments', $page->get_departments_data());
-}
 
 
 
