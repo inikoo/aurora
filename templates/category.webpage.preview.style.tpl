@@ -26,7 +26,7 @@
 
     table.properties{
 
-
+        width: 100%;
 
     }
 

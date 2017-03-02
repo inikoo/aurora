@@ -537,12 +537,8 @@ $product_fields = array(
                 'render'                   => ($new ? false : true),
                 'options'                  => get_countries($db),
                 'scope'                    => 'countries',
-                'value'                    => $object->get(
-                    'Product Origin Country Code'
-                ),
-                'formatted_value'          => $object->get(
-                    'Origin Country Code'
-                ),
+                'value'                    => $object->get('Product Origin Country Code'),
+                'formatted_value'          => $object->get('Origin Country Code'),
                 'stripped_formatted_value' => ($object->get(
                     'Product Origin Country Code'
                 ) != '' ? $object->get('Origin Country').' ('.$object->get(
