@@ -26,18 +26,25 @@
 	<div id="product_bd" style="padding:5px 20px 0px 20px;clear:both;border:none" class="product_showcase" product_id="{$public_product->id}" >
 
 		<div class="product" style="display: flex; ">
-			<div class="images" style="width:280px">
+			<div class="images" style="width:300px">
 				<div style="border:1px solid #ccc;background:#FFF">
 					<div class="wraptocenter">
 						<a href="{$public_product->get('Image')}" class="imgpop"><img src="{$public_product->get('Image')}"></a>
 					</div>
 				</div>
+				<ul class="gallery">
+                    {foreach from=$public_product->get_images_slidesshow() item=image name=foo}
+                        {if $image.subject_order>0   }
+							<li><a href="/{$image.normal_url}" class="imgpop"> <img class="thumbs" src="/{$image.small_url}" alt="{$image.name}" /> </a> </li>
+                        {/if}
+                    {/foreach}
+				</ul>
 
 
 
 
 			</div>
-			<div class="information" style="margin-left:20px;margin-right:20px;width:600px">
+			<div class="information" style="margin-left:40px;margin-right:20px;width:600px">
 				<h1 style="padding-top:5px;margin:2px 0;font-size:190%">
                     {$public_product->get('Name')}
 
@@ -45,7 +52,7 @@
 					<span class="  favourite  " favourite_key={$favourite_key} ><i style="font-size:70%;position:relative;top:-2px" class="fa {if $favourite_key}fa-heart marked{else}fa-heart-o{/if}" aria-hidden="true"></i>  </span>
 
 				</h1>
-				<div class="highlight_box">
+				<div class="">
 					<div style="float:left;margin-right:4px;min-width:200px">
                         {t}Product code{/t}: <span class="code">{$public_product->get('Code')} </span>
 					</div>
@@ -115,13 +122,7 @@
 
 
 			</div>
-			<ul class="gallery" style="margin-right:10px">
-                {foreach from=$public_product->get_images_slidesshow() item=image name=foo}
-                    {if $image.subject_order>0  or true }
-						<li><a href="/{$image.normal_url}" class="imgpop"> <img class="thumbs" src="/{$image.small_url}" alt="{$image.name}" /> </a> </li>
-                    {/if}
-                {/foreach}
-			</ul>
+
 			<div style="clear: both;height: 10px"></div>
 
 

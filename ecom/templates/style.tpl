@@ -10,7 +10,7 @@
 
 
           .gallery {
-                 width:60px;margin-left:0px;list-style: none;padding:0;margin:10px 0px 0px 0px;}
+                 width:400px;margin-left:0px;list-style: none;padding:0;margin:10px 0px 0px 0px;}
           .gallery li{
                  margin-bottom:10px
           }
@@ -21,7 +21,7 @@
 
 
           table.properties{
-
+width:100%;
 
 
           }

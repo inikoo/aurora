@@ -139,6 +139,36 @@ $('#page_content').on( "dblclick", ".product_description_block", function() {
 
 
 
+    $('#text_edit_toolbar .fa-window-close').click(function() {
+
+        $('#text_edit_toolbar').addClass('hide')
+
+        var block= $('#'+$('#text_edit_toolbar').attr('block'))
+
+        block.froalaEditor('destroy')
+        block.addClass('fr-view')
+
+
+block.removeClass('editing')
+
+        block.resizable(
+            {
+                stop: function (event, ui) {
+                    if(save_webpage_product_description_timer)
+                        clearTimeout(save_webpage_product_description_timer);
+                    save_webpage_product_description_timer = setTimeout(function(){ save_webpage_product_description(); }, 750);
+
+                }
+
+            }
+
+        );
+
+        //
+
+
+
+    });
 
 
 
