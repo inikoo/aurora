@@ -422,7 +422,17 @@ class Product extends Asset {
         }
 
         switch ($key) {
+            case 'Product Webpage Meta Description':
+            case 'Webpage Meta Description':
+                return $this->webpage->get('Page Store Description');
 
+                break;
+
+            case 'Product Webpage Browser Title':
+            case 'Webpage Browser Title':
+                return $this->webpage->get('Page Title');
+
+                break;
 
             case 'Webpage Image':
 
@@ -1140,6 +1150,34 @@ class Product extends Asset {
 
 
         switch ($field) {
+
+            case 'Product Webpage Browser Title':
+                if (!is_object($this->webpage)) {
+                    $this->get_webpage();
+                }
+
+
+
+                $this->webpage->update(array('Page Title' => $value), $options);
+                $this->updated = $this->webpage->updated;
+
+                break;
+
+            case 'Product Webpage Meta Description':
+                if (!is_object($this->webpage)) {
+                    $this->get_webpage();
+                }
+                $this->webpage->update(
+                    array(
+                        'Page Store Description' => $value
+                    ), $options
+                );
+
+                $this->updated = $this->webpage->updated;
+
+                break;
+
+
             case 'Webpage See Also':
 
                 $this->webpage->update(

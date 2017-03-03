@@ -199,7 +199,7 @@
                 {$product_data.header_text}
             </div>
 
-       
+
 
             <div class="wrap_to_center product_image" onCLick="console.log('move')">
 
