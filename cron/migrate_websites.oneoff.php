@@ -97,7 +97,7 @@ function migrate_product_pages($db) {
             $webpage = new Page($row['Page Key']);
             $webpage->update_version();
 
-            $public_product=new Product($row['Webpage Scope Key']);
+            $public_product=new Product('id',$row['Webpage Scope Key']);
 
             if (($webpage->id and $webpage->get('Content Data') == '')) {
 
