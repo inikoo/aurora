@@ -65,6 +65,13 @@ function set_scope($db) {
     $sql = sprintf('update  `Page Store Dimension`  set `Webpage Code`=`Page Code`  WHERE `Webpage Code` IS NULL  ');
 $db->exec($sql);
 
+
+    $sql = sprintf('update  `Page Store Dimension`  set `Webpage Webiste Key`=`Page Site Key`  WHERE `Webpage Webiste Key` IS NULL  ');
+    $db->exec($sql);
+
+    $sql = sprintf('update  `Page Store Dimension`  set `Webpage Store Key`=`Page Store Key`  WHERE `Webpage Store Key` IS NULL  ');
+    $db->exec($sql);
+
     $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE `Webpage Scope Key` IS NULL OR  `Webpage Scope Key`=0 ');
 
 
@@ -269,15 +276,17 @@ $db->exec($sql);
         exit;
     }
 
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` where `Webpage Scope`="Category Categories" and `Page Key`=51 ');
     $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` where `Webpage Scope`="Category Categories" ');
 
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
             $webpage = new Page($row['Page Key']);
+          //  print $webpage->id.' '.$webpage->get('Code')."\n";
             $webpage->reindex_items();
             $webpage->publish();
-            print $webpage->get('Code')."\n";
+
 
         }
     } else {
