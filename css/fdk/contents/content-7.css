@@ -1,0 +1,12 @@
+.content-7 .container * + img,
+.content-7 .container img + *,
+.content-7 .container * + .row {
+  margin-top: 30px;
+}
+@media (min-width: 768px) {
+  .content-7 .container * + img,
+  .content-7 .container img + *,
+  .content-7 .container * + .row {
+    margin-top: 50px;
+  }
+}

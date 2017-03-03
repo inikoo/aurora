@@ -1288,9 +1288,9 @@ $modules = array(
                     'website.offline_webpages'             => 'website.content',
 
                     'website.footer.preview'  => 'website.footer',
-                    'website.footer.versions' => 'website.footer',
+                    'website.footer.templates' => 'website.footer',
                     'website.header.preview'  => 'website.header',
-                    'website.header.versions' => 'website.header',
+                    'website.header.templates' => 'website.header',
 
 
                     'website.templates.categories' => 'website.templates',
@@ -1459,9 +1459,7 @@ $modules = array(
                                 'icon'  => 'eye'
                             ),
                             'website.header.versions' => array(
-                                'label' => _(
-                                    'Versions'
-                                ),
+                                'label' => _('Templates'),
                                 'icon'  => 'code-fork',
 
                             )
@@ -1481,10 +1479,8 @@ $modules = array(
                                 ),
                                 'icon'  => 'eye'
                             ),
-                            'website.footer.versions' => array(
-                                'label' => _(
-                                    'Versions'
-                                ),
+                            'website.footer.templates' => array(
+                                'label' => _('Templates'),
                                 'icon'  => 'code-fork',
 
                             )

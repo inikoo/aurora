@@ -1,0 +1,15 @@
+.content-15 {
+  text-align: center;
+}
+.content-15 .container * + .row {
+  margin-top: 30px;
+}
+@media (min-width: 768px) {
+  .content-15 .container * + .row {
+    margin-top: 50px;
+  }
+}
+.content-15 .container img + *,
+.content-15 .container * + img {
+  margin-top: 20px;
+}

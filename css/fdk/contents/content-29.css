@@ -1,0 +1,26 @@
+.content-29 {
+  text-align: center;
+}
+@media (min-width: 768px) {
+  .content-29 {
+    text-align: inherit;
+  }
+}
+.content-29 .container .row + *,
+.content-29 .container * + .row {
+  margin-top: 30px;
+}
+@media (min-width: 768px) {
+  .content-29 .container .row + *,
+  .content-29 .container * + .row {
+    margin-top: 50px;
+  }
+}
+@media (max-width: 767px) {
+  .content-29 .container .col-xs-12 + .col-xs-12 {
+    margin-top: 10px;
+  }
+  .content-29 .container .pull-right {
+    float: none !important;
+  }
+}

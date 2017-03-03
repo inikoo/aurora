@@ -1,0 +1,25 @@
+.pricing-1 .container * + .row {
+  margin-top: 30px;
+}
+@media (min-width: 768px) {
+  .pricing-1 .container * + .row {
+    margin-top: 50px;
+  }
+}
+@media (min-width: 768px) and (max-width: 1199px) {
+  .pricing-1 .container .col-sm-6:nth-child(n+3) {
+    margin-top: 30px;
+  }
+}
+.pricing-1 .container .black-box ul {
+  padding-left: 0;
+}
+.pricing-1 .container .black-box ul li {
+  list-style-type: none;
+}
+.pricing-1 .container .black-box ul li:before {
+  content: '\2713';
+  display: inline-block;
+  font-size: 16px;
+  margin-right: 10px;
+}

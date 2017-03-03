@@ -1,0 +1,26 @@
+.content-21 {
+  text-align: center;
+}
+.content-21 .container * + .row {
+  margin-top: 30px;
+}
+@media (min-width: 768px) {
+  .content-21 .container * + .row {
+    margin-top: 50px;
+  }
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  .content-21 .container * + .row {
+    margin-top: 40px;
+  }
+}
+@media (max-width: 767px) {
+  .content-21 .container .col-xs-6:nth-child(n+3) {
+    margin-top: 30px;
+  }
+}
+@media (min-width: 768px) and (max-width: 1199px) {
+  .content-21 .container .col-sm-4:nth-child(n+5) {
+    margin-top: 40px;
+  }
+}

@@ -43,6 +43,7 @@
         <link href="/css/fotorama.css" rel="stylesheet">
 
 
+
         <link href="/css/app.css" rel="stylesheet">
         <script type="text/javascript" src="/js/libs/jquery-2.2.1.js"></script>
         <script type="text/javascript" src="/js/libs/jquery-ui.js"></script>

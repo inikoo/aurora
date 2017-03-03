@@ -1,0 +1,25 @@
+.content-26 {
+  text-align: center;
+}
+.content-26 .container img + *,
+.content-26 .container * + img {
+  margin-top: 20px;
+}
+.content-26 .container * + .row {
+  margin-top: 50px;
+}
+@media (max-width: 767px) {
+  .content-26 .container .col-xs-12:nth-child(n+2) {
+    margin-top: 50px;
+  }
+}
+@media (max-width: 991px) {
+  .content-26 .container .col-xs-6:nth-child(n+3) {
+    margin-top: 50px;
+  }
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  .content-26 .container .col-sm-6:nth-child(n+3) {
+    margin-top: 50px;
+  }
+}

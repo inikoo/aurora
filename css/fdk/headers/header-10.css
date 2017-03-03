@@ -1,0 +1,23 @@
+.header-10 {
+  background: transparent;
+  text-align: center;
+}
+.header-10 .navbar-nav {
+  margin: 0 !important;
+}
+.header-10 .navbar .brand {
+  text-align: center;
+  display: block;
+  overflow: visible;
+  line-height: 60px;
+  width: 20%;
+  margin: auto;
+}
+.header-10 .navbar .brand img {
+  display: inline-block;
+  vertical-align: middle;
+  max-width: 100%;
+}
+.header-10 .navbar-collapse:not(.in) {
+  width: 40%;
+}

@@ -1,0 +1,8 @@
+.content-28 .container * + .row {
+  margin-top: 30px;
+}
+@media (min-width: 768px) {
+  .content-28 .container * + .row {
+    margin-top: 50px;
+  }
+}

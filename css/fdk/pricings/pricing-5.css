@@ -1,0 +1,40 @@
+.pricing-5 .container * + .row {
+  margin-top: 30px;
+}
+@media (min-width: 768px) {
+  .pricing-5 .container * + .row {
+    margin-top: 50px;
+  }
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  .pricing-5 .container .col-sm-8 + .col-sm-8 {
+    margin-top: 30px;
+  }
+}
+.pricing-5 .container .plan .plan-name * {
+  display: inline-block;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+.pricing-5 .container .plan .plan-name a {
+  float: right;
+}
+.pricing-5 .container .plan ul {
+  margin-top: 30px;
+  padding-left: 0;
+}
+.pricing-5 .container .plan ul + * {
+  margin-top: 30px;
+}
+.pricing-5 .container .plan ul li {
+  line-height: 230%;
+  list-style-type: none;
+  border-bottom: 1px solid #aaaaaa;
+}
+.pricing-5 .container .plan ul li:first-child {
+  border-top: 1px solid #aaaaaa;
+}
+.pricing-5 .container .plan ul li span {
+  min-width: 75px;
+  display: inline-block;
+}

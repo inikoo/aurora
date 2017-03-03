@@ -1,0 +1,18 @@
+.landing-4 {
+  text-align: center;
+}
+.landing-4 .container .row + * {
+  margin-top: 50px;
+}
+.landing-4 .container .social > div {
+  display: inline-block;
+}
+.landing-4 .container .social > div + div {
+  margin-left: 20px;
+}
+.landing-4 .container .social > div.fb-like span {
+  height: 27px !important;
+}
+.landing-4 .container .social > div.twitter-follow-button {
+  width: 140px !important;
+}

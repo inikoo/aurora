@@ -1,0 +1,23 @@
+.testimonial-10 .container * + .row {
+  margin-top: 30px;
+}
+@media (min-width: 768px) {
+  .testimonial-10 .container * + .row {
+    margin-top: 50px;
+  }
+}
+.testimonial-10 .container i.fa-twitter {
+  color: #55acee;
+  font-size: 120px;
+}
+.testimonial-10 .container .author {
+  float: right;
+}
+.testimonial-10 .container .author:before {
+  display: inline-block;
+  content: '\2014';
+  margin-right: 10px;
+}
+.testimonial-10 .container .col-xs-12 {
+  margin-top: 0;
+}

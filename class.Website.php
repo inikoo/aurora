@@ -38,6 +38,7 @@ class Website extends DB_Table {
 
     function get_data($key, $tag) {
 
+
         if ($key == 'id') {
             $sql = sprintf(
                 "SELECT * FROM `Website Dimension` WHERE `Website Key`=%d", $tag
@@ -280,28 +281,20 @@ class Website extends DB_Table {
 
 
         switch ($key) {
-            case('num_areas'):
-            case('number_areas'):
-                if (!$this->areas) {
-                    $this->load('areas');
+
+            case 'Data':
+            case 'Header Data':
+            case 'Footer Data':
+                if ($this->data['Website '.$key] == '') {
+                    $content_data = false;
+                } else {
+                    $content_data = json_decode($this->data['Website '.$key], true);
                 }
 
-                return count($this->areas);
+                return $content_data;
                 break;
-            case('areas'):
-                if (!$this->areas) {
-                    $this->load('areas');
-                }
 
-                return $this->areas;
-                break;
-            case('area'):
-                if (!$this->areas) {
-                    $this->load('areas');
-                }
-                if (isset($this->areas[$data['id']])) {
-                    return $this->areas[$data['id']];
-                }
+
                 break;
             default:
 
@@ -853,6 +846,38 @@ class Website extends DB_Table {
         return $suffix;
     }
 
+    function set_footer_template($template){
+
+
+        include_once 'conf/footer_data.php';
+
+        $footer_data=$this->get('Footer Data');
+        if(!$footer_data){
+
+            $footer_data=array(
+                'template'=>$template,
+                'data'=>get_default_footer_data($this,$template)
+
+
+            );
+
+
+
+        }else{
+            $footer_data['template']=$template;
+            if(isset($footer_data['legacy'][$template])){
+                $footer_data['data']=$footer_data['legacy'][$template]['data'];
+
+            }else{
+                $footer_data['data']=get_default_footer_data($this,$template);
+            }
+        }
+
+
+        $this->update(array('Website Footer Data'=>json_encode($footer_data)),'no_history');
+
+
+    }
 
 }
 

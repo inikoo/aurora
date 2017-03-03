@@ -1,0 +1,87 @@
+.blog_post-3 {
+  padding: 0 0 50px 0;
+}
+@media (min-width: 768px) {
+  .blog_post-3 {
+    padding: 100px 0;
+  }
+}
+.blog_post-3 .blog-post-date {
+  margin-bottom: 20px;
+}
+.blog_post-3 .blog-post-image {
+  padding-left: 0;
+  padding-right: 0;
+}
+@media (min-width: 768px) {
+  .blog_post-3 .blog-post-image {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+.blog_post-3 .blog-post-image img {
+  width: 100%;
+  vertical-align: top;
+  position: relative;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+}
+@media (min-width: 768px) {
+  .blog_post-3 .blog-post-image img {
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+    border-radius: 100%;
+    position: fixed;
+    width: calc(18% - 30px);
+  }
+}
+@media (min-width: 992px) and (max-width: 1199px) {
+  .blog_post-3 .blog-post-image img {
+    width: calc(19% - 30px);
+  }
+}
+@media (min-width: 1600px) and (max-width: 1899px) {
+  .blog_post-3 .blog-post-image img {
+    width: calc(14% - 30px);
+  }
+}
+@media (min-width: 1900px) and (max-width: 2599px) {
+  .blog_post-3 .blog-post-image img {
+    width: calc(10% - 30px);
+  }
+}
+@media (min-width: 2600px) {
+  .blog_post-3 .blog-post-image img {
+    width: calc(6% - 30px);
+  }
+}
+.blog_post-3 .blog-post-social {
+  margin-top: 30px;
+  text-align: center;
+}
+@media (min-width: 768px) {
+  .blog_post-3 .blog-post-social {
+    text-align: inherit;
+  }
+}
+.blog_post-3 .blog-post-social .container .row [class*="col-"] p i {
+  margin-right: 5px;
+}
+.blog_post-3 .blog-post-social .container .row [class*="col-"] div,
+.blog_post-3 .blog-post-social .container .row [class*="col-"] p {
+  display: inline;
+}
+.blog_post-3 .blog-post-social .container .row [class*="col-"] div + div,
+.blog_post-3 .blog-post-social .container .row [class*="col-"] p + div {
+  margin-left: 15px !important;
+}
+@media (min-width: 768px) {
+  .blog_post-3 .blog-post-social .container .row [class*="col-"] div + div,
+  .blog_post-3 .blog-post-social .container .row [class*="col-"] p + div {
+    margin-left: 20px;
+  }
+}
+.blog_post-3 .blog-post-social .container .row [class*="col-"] .fb-share-button span {
+  height: 27px !important;
+}

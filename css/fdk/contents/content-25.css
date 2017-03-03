@@ -1,0 +1,18 @@
+.content-25 .container .row + * {
+  margin-top: 20px;
+}
+.content-25 .container img + *,
+.content-25 .container * + img,
+.content-25 .container * + .row {
+  margin-top: 30px;
+}
+@media (min-width: 992px) {
+  .content-25 .container img + *,
+  .content-25 .container * + img,
+  .content-25 .container * + .row {
+    margin-top: 50px;
+  }
+}
+.content-25 .container .row .col-sm-6:nth-child(n+3) {
+  margin-top: 20px;
+}
