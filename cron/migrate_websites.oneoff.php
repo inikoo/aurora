@@ -101,6 +101,8 @@ function migrate_product_pages($db) {
 
             if (($webpage->id and $webpage->get('Content Data') == '')) {
 
+
+                print $webpage->get('Code')."\n";
                 $content_data = array(
                     'description_block' => array(
                         'class' => '',
