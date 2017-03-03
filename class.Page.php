@@ -2437,16 +2437,19 @@ class Page extends DB_Table {
 
 
                 $subjects = array();
-                $sql      = sprintf('SELECT `Subject Key` FROM `Category Bridge` WHERE `Subject`="Category" AND `Category Key`=%d ', $this->get('Webpage Scope Key'));
+                $sql      = sprintf('SELECT `Webpage Scope Key` FROM `Category Bridge` left join `Page Store Dimension` on (`Webpage Scope Key`=`Subject Key`   )  WHERE  ( `Webpage Scope`="Category Categories" or  `Webpage Scope`="Category Products" ) and   `Subject`="Category" AND `Category Key`=%d  order by `Webpage Scope Key` ', $this->get('Webpage Scope Key'));
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
-                        $subjects[$row['Subject Key']] = $row['Subject Key'];
+                        if($row['Webpage Scope Key']) {
+                            $subjects[] = $row['Webpage Scope Key'];
+                        }
                     }
                 } else {
                     print_r($error_info = $this->db->errorInfo());
                     print "$sql\n";
                     exit;
                 }
+
 
 
                 foreach ($subjects as $item_key) {
@@ -2458,52 +2461,80 @@ class Page extends DB_Table {
 
                 }
 
-
-                $to_remove = array();
+               // print_r($subjects);
 
 
                 $content_data = $this->get('Content Data');
+
+
+                //     print count($subjects)."sss\n";
+
 
                 foreach ($content_data['sections'] as $section_stack_index => $section_data) {
 
 
                     $content_data['sections'][$section_stack_index]['items'] = get_website_section_items($this->db, $section_data);
-                    $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
 
 
-                    foreach ($content_data['sections'][$section_stack_index]['items'] as $item) {
 
 
-                        if ($item['type'] == 'category') {
 
-                            if ($item['item_type'] == 'Subject') {
-                                //  print_r($item);
-                                if (!in_array($item['category_key'], $subjects)) {
 
-                                    $to_remove[] = array(
-                                        'section_key' => $section_data['key'],
+                }
+                $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
 
-                                        'category_key' => $item['category_key']
-                                    );
-                                } else {
-                                    unset($subjects[$item['category_key']]);
-                                }
+                $_subjects_in_webpage=array();
 
-                            }
-                        }
+                $sql = sprintf(
+                    "SELECT `Category Webpage Index Category Key`  ,`Category Webpage Index Section Key`          FROM `Category Webpage Index` CWI  WHERE  `Category Webpage Index Webpage Key`=%d and `Category Webpage Index Subject Type`='Subject'  order by `Category Webpage Index Category Key` ", $this->id
+
+
+                );
+
+
+
+
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+
+
+                        $_subjects_in_webpage[  ] = $row['Category Webpage Index Category Key'];
 
                     }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+                //print_r($subjects);
+                //print_r($_subjects_in_webpage);
+
+                //print count($_subjects_in_webpage)."\n";
+
+
+                $to_add=array_diff($subjects,$_subjects_in_webpage);
+                $to_remove=array_diff($_subjects_in_webpage,$subjects);
+
+
+                //print_r($to_add);
+                //print_r($to_remove);
+
+
+
+
+                foreach ($to_add as $item_key) {
+                    $this->add_section_item($item_key);
 
 
                 }
 
+
+
+               // print_r($_to_remove);
 
                 foreach ($to_remove as $item_key) {
-                    $this->remove_section_item($item_key['category_key']);
-
-                }
-                foreach ($subjects as $item_key) {
-                    $this->add_section_item($item_key);
+                     $this->remove_section_item($item_key);
 
                 }
 
@@ -2622,6 +2653,8 @@ class Page extends DB_Table {
         $subject_category = new Category($item_key);
         $subject_webpage  = new Public_Webpage('scope', ($subject_category->get('Category Subject') == 'Category' ? 'Category Categories' : 'Category Products'), $subject_category->id);
 
+
+      //  print_r($subject_category);
 
         if ($subject_webpage->id) {
 
