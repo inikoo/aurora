@@ -62,6 +62,8 @@ function set_scope($db) {
 
 
 
+    $sql = sprintf('update  `Page Store Dimension`  set `Webpage Code`=`Page Code`  WHERE `Webpage Code` IS NULL  ');
+$db->exec($sql);
 
     $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE `Webpage Scope Key` IS NULL OR  `Webpage Scope Key`=0 ');
 
