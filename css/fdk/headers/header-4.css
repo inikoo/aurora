@@ -1,0 +1,6 @@
+.header-4 .navbar .nav a {
+  border-bottom-style: solid;
+  border-bottom-width: 5px;
+  display: block;
+  padding-bottom: 15px;
+}

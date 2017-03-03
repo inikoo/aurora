@@ -1,0 +1,13 @@
+.testimonial-1 .container .box {
+  -webkit-border-radius: 100%;
+  -moz-border-radius: 100%;
+  border-radius: 100%;
+  border-width: 3px;
+  padding: 0;
+  display: inline-block;
+}
+.testimonial-1 .container img {
+  -webkit-border-radius: 100%;
+  -moz-border-radius: 100%;
+  border-radius: 100%;
+}

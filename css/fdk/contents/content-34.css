@@ -1,0 +1,9 @@
+@media (max-width: 767px) {
+  .content-34 {
+    text-align: center;
+  }
+}
+.content-34 .container .f-btn,
+.content-34 .container .r-btn {
+  min-width: 140px;
+}

@@ -1,0 +1,5 @@
+.testimonial-3 .container .author:before {
+  display: inline-block;
+  content: '\2014';
+  margin-right: 10px;
+}

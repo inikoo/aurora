@@ -1,0 +1,63 @@
+/* nav-in class in added to html. */
+/* Collapse */
+.header-6 .navbar .nav a {
+  border-bottom-width: 2px;
+  border-bottom-style: solid;
+  padding: 7px 10px;
+  margin: 12px 20px;
+}
+.header-6 .navbar .nav a.text-thin {
+  border-bottom-width: 0.36px;
+}
+.header-6 .navbar .nav a.text-light {
+  border-bottom-width: 1px;
+}
+.header-6 .navbar .nav a.text-xsmall {
+  border-bottom-width: 1px;
+}
+.header-6 .navbar .nav a.text-xsmall.text-thin {
+  border-bottom-width: 0.252px;
+}
+.header-6 .navbar .nav a.text-xsmall.text-light {
+  border-bottom-width: 1px;
+}
+.header-6 .navbar .nav a.text-small {
+  border-bottom-width: 2px;
+}
+.header-6 .navbar .nav a.text-small.text-thin {
+  border-bottom-width: 0.324px;
+}
+.header-6 .navbar .nav a.text-small.text-light {
+  border-bottom-width: 1px;
+}
+.header-6 .navbar .nav a.text-large {
+  border-bottom-width: 3px;
+}
+.header-6 .navbar .nav a.text-large.text-thin {
+  border-bottom-width: 0.432px;
+}
+.header-6 .navbar .nav a.text-large.text-light {
+  border-bottom-width: 1px;
+}
+.header-6 .navbar .nav a.text-xlarge {
+  border-bottom-width: 4px;
+}
+.header-6 .navbar .nav a.text-xlarge.text-thin {
+  border-bottom-width: 0.54px;
+}
+.header-6 .navbar .nav a.text-xlarge.text-light {
+  border-bottom-width: 2px;
+}
+.header-6 .navbar .nav a.text-xxlarge {
+  border-bottom-width: 4px;
+}
+.header-6 .navbar .nav a.text-xxlarge.text-thin {
+  border-bottom-width: 0.612px;
+}
+.header-6 .navbar .nav a.text-xxlarge.text-light {
+  border-bottom-width: 2px;
+}
+.header-6 .navbar-collapse.in .nav a,
+.header-6 .navbar-collapse.collapse .nav a {
+  margin: 0 10px;
+}

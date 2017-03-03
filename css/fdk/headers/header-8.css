@@ -1,0 +1,190 @@
+/* nav-in class in added to html. */
+/* Collapse */
+.header-8 .navbar .navbar-collapse ul.nav > li > a {
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  border-width: 2px;
+  border-style: solid;
+  padding: 10px;
+  margin: 8px 10px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.text-thin {
+  border-width: 0.36px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.text-light {
+  border-width: 1px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.text-xsmall {
+  border-width: 1px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.text-xsmall.text-thin {
+  border-width: 0.252px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.text-xsmall.text-light {
+  border-width: 1px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.text-small {
+  border-width: 2px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.text-small.text-thin {
+  border-width: 0.324px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.text-small.text-light {
+  border-width: 1px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.text-large {
+  border-width: 3px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.text-large.text-thin {
+  border-width: 0.432px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.text-large.text-light {
+  border-width: 1px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.text-xlarge {
+  border-width: 4px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.text-xlarge.text-thin {
+  border-width: 0.54px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.text-xlarge.text-light {
+  border-width: 2px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.text-xxlarge {
+  border-width: 4px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.text-xxlarge.text-thin {
+  border-width: 0.612px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.text-xxlarge.text-light {
+  border-width: 2px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a:hover,
+.header-8 .navbar .navbar-collapse ul.nav > li > a:active {
+  border-width: 2px;
+  border-style: solid;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a:hover.text-thin,
+.header-8 .navbar .navbar-collapse ul.nav > li > a:active.text-thin {
+  border-width: 0.36px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a:hover.text-light,
+.header-8 .navbar .navbar-collapse ul.nav > li > a:active.text-light {
+  border-width: 1px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a:hover.text-xsmall,
+.header-8 .navbar .navbar-collapse ul.nav > li > a:active.text-xsmall {
+  border-width: 1px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a:hover.text-xsmall.text-thin,
+.header-8 .navbar .navbar-collapse ul.nav > li > a:active.text-xsmall.text-thin {
+  border-width: 0.252px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a:hover.text-xsmall.text-light,
+.header-8 .navbar .navbar-collapse ul.nav > li > a:active.text-xsmall.text-light {
+  border-width: 1px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a:hover.text-small,
+.header-8 .navbar .navbar-collapse ul.nav > li > a:active.text-small {
+  border-width: 2px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a:hover.text-small.text-thin,
+.header-8 .navbar .navbar-collapse ul.nav > li > a:active.text-small.text-thin {
+  border-width: 0.324px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a:hover.text-small.text-light,
+.header-8 .navbar .navbar-collapse ul.nav > li > a:active.text-small.text-light {
+  border-width: 1px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a:hover.text-large,
+.header-8 .navbar .navbar-collapse ul.nav > li > a:active.text-large {
+  border-width: 3px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a:hover.text-large.text-thin,
+.header-8 .navbar .navbar-collapse ul.nav > li > a:active.text-large.text-thin {
+  border-width: 0.432px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a:hover.text-large.text-light,
+.header-8 .navbar .navbar-collapse ul.nav > li > a:active.text-large.text-light {
+  border-width: 1px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a:hover.text-xlarge,
+.header-8 .navbar .navbar-collapse ul.nav > li > a:active.text-xlarge {
+  border-width: 4px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a:hover.text-xlarge.text-thin,
+.header-8 .navbar .navbar-collapse ul.nav > li > a:active.text-xlarge.text-thin {
+  border-width: 0.54px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a:hover.text-xlarge.text-light,
+.header-8 .navbar .navbar-collapse ul.nav > li > a:active.text-xlarge.text-light {
+  border-width: 2px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a:hover.text-xxlarge,
+.header-8 .navbar .navbar-collapse ul.nav > li > a:active.text-xxlarge {
+  border-width: 4px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a:hover.text-xxlarge.text-thin,
+.header-8 .navbar .navbar-collapse ul.nav > li > a:active.text-xxlarge.text-thin {
+  border-width: 0.612px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a:hover.text-xxlarge.text-light,
+.header-8 .navbar .navbar-collapse ul.nav > li > a:active.text-xxlarge.text-light {
+  border-width: 2px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.popout {
+  border-width: 2px;
+  border-style: solid;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.popout.text-thin {
+  border-width: 0.36px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.popout.text-light {
+  border-width: 1px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.popout.text-xsmall {
+  border-width: 1px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.popout.text-xsmall.text-thin {
+  border-width: 0.252px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.popout.text-xsmall.text-light {
+  border-width: 1px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.popout.text-small {
+  border-width: 2px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.popout.text-small.text-thin {
+  border-width: 0.324px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.popout.text-small.text-light {
+  border-width: 1px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.popout.text-large {
+  border-width: 3px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.popout.text-large.text-thin {
+  border-width: 0.432px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.popout.text-large.text-light {
+  border-width: 1px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.popout.text-xlarge {
+  border-width: 4px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.popout.text-xlarge.text-thin {
+  border-width: 0.54px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.popout.text-xlarge.text-light {
+  border-width: 2px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.popout.text-xxlarge {
+  border-width: 4px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.popout.text-xxlarge.text-thin {
+  border-width: 0.612px;
+}
+.header-8 .navbar .navbar-collapse ul.nav > li > a.popout.text-xxlarge.text-light {
+  border-width: 2px;
+}

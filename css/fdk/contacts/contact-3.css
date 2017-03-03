@@ -1,0 +1,28 @@
+.contact-3 {
+  text-align: center;
+}
+.contact-3 .container * + .row,
+.contact-3 .container a.network-icon {
+  margin-top: 30px;
+}
+@media (min-width: 768px) {
+  .contact-3 .container * + .row,
+  .contact-3 .container a.network-icon {
+    margin-top: 50px;
+  }
+}
+.contact-3 .container form .form-group {
+  width: 100%;
+  margin-bottom: 15px;
+}
+.contact-3 .container p.line {
+  margin-bottom: 30px;
+}
+.contact-3 .container p.line:after {
+  line-height: 0.1;
+}
+@media (max-width: 767px) {
+  .contact-3 .container .col-xs-12 + .col-xs-12 {
+    margin-top: 0;
+  }
+}

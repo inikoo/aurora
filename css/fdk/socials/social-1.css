@@ -1,0 +1,19 @@
+.social-1 {
+  padding: 50px 0;
+}
+.social-1 .container .row .col-sm-6 {
+  text-align: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+@media (min-width: 768px) {
+  .social-1 .container .row .col-sm-6 {
+    padding-left: 40px;
+    text-align: inherit;
+  }
+  .social-1 .container .row .col-sm-6:first-child {
+    text-align: right;
+    padding-left: 0;
+    padding-right: 40px;
+  }
+}

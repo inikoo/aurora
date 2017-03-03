@@ -1,0 +1,33 @@
+.content-11 {
+  text-align: center;
+}
+.content-11 .container * + .row {
+  margin-top: 50px;
+}
+.content-11 .container .box {
+  padding-top: 0;
+}
+.content-11 .container .box h1,
+.content-11 .container .box h2,
+.content-11 .container .box h3,
+.content-11 .container .box h4,
+.content-11 .container .box h5,
+.content-11 .container .box h6 {
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  line-height: 260%;
+}
+.content-11 .container .box ul {
+  margin-top: 20px;
+  margin-bottom: 0;
+  padding-left: 0;
+}
+.content-11 .container .box ul li {
+  line-height: 200%;
+  list-style-type: none;
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  .content-11 .container .col-sm-8 + .col-sm-8 {
+    margin-top: 30px;
+  }
+}

@@ -1,0 +1,17 @@
+.testimonial-2 {
+  text-align: center;
+}
+.testimonial-2 .container .quote {
+  margin-bottom: 0;
+}
+.testimonial-2 .container .quote:before {
+  content: '\201D';
+  display: block;
+  font-size: 60px;
+  line-height: 100%;
+}
+.testimonial-2 .container .author:before {
+  content: '\2014';
+  display: block;
+  font-size: 30px;
+}

@@ -1,0 +1,15 @@
+.content-14 {
+  text-align: center;
+}
+@media (min-width: 768px) {
+  .content-14 {
+    text-align: inherit;
+  }
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  .content-14 .col-sm-12 + .col-sm-6,
+  .content-14 .col-sm-12 + .col-sm-6 + .col-sm-6,
+  .content-14 .col-sm-6 + .col-sm-12 {
+    margin-top: 30px;
+  }
+}

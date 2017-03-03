@@ -1,0 +1,12 @@
+.landing-8 .container ul {
+  padding-left: 0;
+}
+.landing-8 .container ul li {
+  list-style-type: none;
+}
+.landing-8 .container ul li:before {
+  content: '\2713';
+  display: inline-block;
+  font-size: 16px;
+  margin-right: 10px;
+}

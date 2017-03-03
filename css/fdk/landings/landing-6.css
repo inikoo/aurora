@@ -1,0 +1,32 @@
+.landing-6 .container .form-inline {
+  width: 100%;
+}
+.landing-6 .container .social > div {
+  display: inline-block;
+}
+.landing-6 .container .social > div + div {
+  margin-left: 20px;
+}
+.landing-6 .container .social > div.fb-like span {
+  height: 27px !important;
+}
+.landing-6 .container .social > div.twitter-follow-button {
+  width: 140px !important;
+}
+.landing-6 .container ul {
+  padding-left: 0;
+}
+.landing-6 .container ul li {
+  list-style-type: none;
+}
+.landing-6 .container ul li:before {
+  content: '\2713';
+  display: inline-block;
+  font-size: 16px;
+  margin-right: 10px;
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  .landing-6 .container .col-xs-12 + .col-xs-12 {
+    margin-top: 30px;
+  }
+}

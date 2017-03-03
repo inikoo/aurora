@@ -1,0 +1,14 @@
+.testimonial-11 {
+  text-align: center;
+}
+.testimonial-11 .container .logos {
+  margin: 25px 0;
+}
+.testimonial-11 .container .logos a {
+  display: inline-block;
+}
+.testimonial-11 .container .logos img {
+  display: inline-block;
+  margin: 10px 20px;
+  max-height: 50px;
+}

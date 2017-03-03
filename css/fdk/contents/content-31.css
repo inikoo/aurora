@@ -1,0 +1,15 @@
+.content-31.no-padding {
+  padding: 50px;
+}
+@media (min-width: 768px) {
+  .content-31.no-padding {
+    padding: 0;
+  }
+}
+.content-31 .container .row + * {
+  margin-top: 30px;
+}
+.content-31 .container .f-btn,
+.content-31 .container .r-btn {
+  min-width: 150px;
+}

@@ -1,0 +1,37 @@
+.pricing-2 {
+  text-align: center;
+}
+.pricing-2 .container * + .row {
+  margin-top: 30px;
+}
+@media (min-width: 768px) {
+  .pricing-2 .container * + .row {
+    margin-top: 50px;
+  }
+}
+@media (min-width: 768px) {
+  .pricing-2 .container [class*="col-"] + [class*="col-"] {
+    border-left: 1px solid #aaaaaa;
+  }
+}
+.pricing-2 .container .plan {
+  padding: 25px 5px;
+  border: 1px solid #aaaaaa;
+}
+@media (min-width: 768px) {
+  .pricing-2 .container .plan {
+    padding: 0;
+    border-width: 0;
+  }
+}
+.pricing-2 .container .plan .plan-name * {
+  margin-top: 0;
+}
+.pricing-2 .container .plan ul {
+  margin-top: 20px;
+  padding-left: 0;
+}
+.pricing-2 .container .plan ul li {
+  list-style-type: none;
+  line-height: 200%;
+}
