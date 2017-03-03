@@ -380,30 +380,6 @@ $product_fields = array(
         'fields'     => array(
 
 
-            array(
-
-                'id'                       => 'Product_Website_Node_Parent_Key',
-                'render' => ($new ? false : true),
-                'edit'                     => 'dropdown_select',
-                'scope'                    => 'web_node',
-                'parent'                   => 'website',
-                'parent_key'               => ($new
-                    ?: $object->webpage->get(
-                        'Page Site Key'
-                    )),
-                'value'                    => htmlspecialchars(
-                    $object->webpage->get('Page Found In Page Key')
-                ),
-                'formatted_value'          => $object->webpage->get(
-                    'Found In Page Key'
-                ),
-                'stripped_formatted_value' => '',
-                'label'                    => _('Found in'),
-                'required'                 => true,
-                'type'                     => ''
-
-
-            ),
 
             array(
                 'id'   => 'Product_Webpage_Name',
