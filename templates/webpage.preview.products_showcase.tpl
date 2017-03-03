@@ -199,10 +199,16 @@
                 {$product_data.header_text}
             </div>
 
-        <div class="wrap_to_center product_image" onCLick="change_view('')">
-            <img draggable="false" class="more_info" src="/art/moreinfo_corner1.png">
-            <img draggable="false" src="{$product->get('Image')}" />
-        </div>
+       
+
+            <div class="wrap_to_center product_image" onCLick="console.log('move')">
+
+                <i class="fa fa-info-circle more_info" aria-hidden="true"></i>
+
+
+
+                <img draggable="false" src="{$product->get('Image')}" />
+            </div>
 
 
         <div class="product_description"  >
