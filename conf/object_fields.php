@@ -295,8 +295,14 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             break;
         case 'Store':
 
-            if (!in_array($object->id, $user->stores)) {
-                $edit = false;
+            if (isset($options['new'])) {
+
+
+            }else {
+
+                if (!in_array($object->id, $user->stores)) {
+                    $edit = false;
+                }
             }
             include 'fields/store.fld.php';
 

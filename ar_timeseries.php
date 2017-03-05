@@ -289,6 +289,15 @@ function asset_sales($db, $data, $account) {
                 exit;
             }
 
+
+
+            if(!$timeseries_key){
+               print "Date,Open,Volume\n";
+                print date('Y-m-d').",0,0\n";
+                return;
+            }
+
+
             $fields = ' `Timeseries Record Date` as Date,sum(`Timeseries Record Float A`) as Sales ,sum(`Timeseries Record Integer A`) as Volume';
             $where = sprintf("where `Timeseries Record Timeseries Key`=%d", $timeseries_key);
             $group  = 'group by `Date`';
