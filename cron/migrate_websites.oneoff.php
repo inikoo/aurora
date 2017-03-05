@@ -89,7 +89,7 @@ migrate_product_pages($db);
 
 function migrate_product_pages($db) {
 
-    $sql = sprintf('SELECT `Page Key`,`Webpage Scope Key` FROM `Page Store Dimension` WHERE `Webpage Scope`="Product"  ');
+    $sql = sprintf('SELECT `Page Key`,`Webpage Scope Key` FROM `Page Store Dimension` WHERE `Webpage Scope`="Product" and (`Webpage Content Data`="" or `Webpage Content Data` is NULL )  ');
 
 
     if ($result = $db->query($sql)) {
