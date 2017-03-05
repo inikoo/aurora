@@ -217,12 +217,27 @@ class Store extends DB_Table {
                 "INSERT INTO `Store Data` (`Store Key`) VALUES (%d)", $this->id
             );
 
-            $db->exec($sql);
+            $this->db->exec($sql);
             $sql = sprintf(
                 "INSERT INTO `Store DC Data` (`Store Key`) VALUES (%d)", $this->id
 
             );
-            $db->exec($sql);
+            $this->db->exec($sql);
+
+
+            require_once 'conf/timeseries.php';
+
+            $timeseries=get_time_series_config();
+
+
+            $timeseries_data = $timeseries['Store'];
+
+            foreach ($timeseries_data as $time_series_data) {
+
+                $time_series_data['editor'] = $editor;
+                $this->create_timeseries($time_series_data);
+
+            }
 
 
             /*
@@ -342,13 +357,11 @@ class Store extends DB_Table {
 
     function delete() {
         $this->deleted = false;
-        $this->update_product_data();
+        $this->update_customers_data();
 
         if ($this->data['Store Contacts'] == 0) {
 
-            $sql = sprintf(
-                "SELECT `Category Key` FROM `Category Dimension where `Category Store KEY`=%d", $this->id
-            );
+            $sql = sprintf("SELECT `Category Key` FROM `Category Dimension` where `Category Store Key`=%d", $this->id);
 
             include_once 'class.Category.php';
             if ($result = $this->db->query($sql)) {
@@ -362,40 +375,42 @@ class Store extends DB_Table {
             }
 
 
-            $sql = sprintf(
-                "DELETE FROM `Store Dimension` WHERE `Store Key`=%d", $this->id
-            );
+            $sql = sprintf("DELETE FROM `Store Dimension` WHERE `Store Key`=%d", $this->id);
             $this->db->exec($sql);
             $this->deleted = true;
-            $sql           = sprintf(
-                "DELETE FROM `User Right Scope Bridge` WHERE `Scope`='Store' AND `Scope Key`=%d ", $this->id
-            );
+            $sql           = sprintf("DELETE FROM `User Right Scope Bridge` WHERE `Scope`='Store' AND `Scope Key`=%d ", $this->id);
             $this->db->exec($sql);
 
-            $sql = sprintf(
-                "DELETE FROM `Store Data` WHERE `Store Key`=%d ", $this->id
-            );
+            $sql = sprintf("DELETE FROM `Store Data` WHERE `Store Key`=%d ", $this->id);
             $this->db->exec($sql);
-            $sql = sprintf(
-                "DELETE FROM `Store DC Data` WHERE `Store Key`=%d ", $this->id
-            );
+            $sql = sprintf("DELETE FROM `Store DC Data` WHERE `Store Key`=%d ", $this->id);
             $this->db->exec($sql);
-            $sql = sprintf(
-                "DELETE FROM `Invoice Category Dimension` WHERE `Invoice Category Store Key`=%d ", $this->id
-            );
+            $sql = sprintf("DELETE FROM `Invoice Category Dimension` WHERE `Invoice Category Store Key`=%d ", $this->id);
             $this->db->exec($sql);
-            $sql = sprintf(
-                "DELETE FROM `Category Dimension` WHERE `Category Store Key`=%d ", $this->id
-            );
+
+
+            $sql = sprintf("SELECT `Timeseries Key` FROM `Timeseries Dimension` where `Timeseries Parent`='Store' and `Timeseries Parent Key`=%d ", $this->id);
+
+          if ($result=$this->db->query($sql)) {
+          		foreach ($result as $row) {
+                    $sql = sprintf("delete from FROM `Category Record Dimension` where `Timeseries Record Timeseries Key`=%d", $row['Timeseries Key']);
+                    $this->db->exec($sql);
+          		}
+          }else {
+          		print_r($error_info=$this->db->errorInfo());
+          		print "$sql\n";
+          		exit;
+          }
+            $sql = sprintf("delete FROM `Timeseries Dimension` where `Timeseries Parent`='Store' and `Timeseries Parent Key`=%d ", $this->id);
             $this->db->exec($sql);
+
+
 
 
             $history_key = $this->add_history(
                 array(
                     'Action'           => 'deleted',
-                    'History Abstract' => sprintf(
-                        _('Store %d deleted'), $this->data['Store Name']
-                    ),
+                    'History Abstract' => sprintf(_('Store %d deleted'), $this->data['Store Name']),
                     'History Details'  => ''
                 ), true
             );
@@ -408,7 +423,8 @@ class Store extends DB_Table {
 
             $this->deleted = true;
         } else {
-            $this->msg = _('Store can not be deleted because it has contacts');
+
+            $this->update();
 
         }
     }

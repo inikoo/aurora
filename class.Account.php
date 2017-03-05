@@ -64,207 +64,7 @@ class Account extends DB_Table {
             exit;
         }
 
-     
 
-
-    }
-
-
-    function get($key, $data = false) {
-
-        if (!$this->id) {
-            return;
-        }
-
-
-        switch ($key) {
-
-            case 'Account Currency':
-                return $this->data['Account Currency'];
-            break;
-            case 'Productions':
-
-                $number = 0;
-                $sql    = sprintf(
-                    "SELECT count(*) AS num FROM `Supplier Production Dimension`", $this->id
-                );
-                if ($row = $this->db->query($sql)->fetch()) {
-                    $number = $row['num'];
-                }
-
-                return $number;
-                break;
-
-            case('Locale'):
-
-
-                include 'utils/available_locales.php';
-
-                if (array_key_exists(
-                    $this->data['Account Locale'].'.UTF-8', $available_locales
-                )) {
-                    $locale = $available_locales[$this->data['Account Locale'].'.UTF-8'];
-
-                    return $locale['Language Name'].($locale['Language Name'] != $locale['Language Original Name'] ? ' ('.$locale['Language Original Name'].')' : '');
-                } else {
-
-                    return $this->data['Account Locale'];
-                }
-                break;
-
-
-            case 'Setup Metadata':
-                return json_decode($this->data['Account Setup Metadata'], true);
-                break;
-            case 'National Employment Code Label':
-
-                switch ($this->data['Account Country 2 Alpha Code']) {
-                    case 'GB':
-                        return _('National insurance number');
-                        break;
-                    case 'ES':
-                        return _('DNI');
-                        break;
-                    default:
-                        return '';
-                        break;
-                }
-
-                break;
-
-            case 'Delta Today Start Orders In Warehouse Number':
-
-                $start=$this->data['Account Today Start Orders In Warehouse Number'];
-                $end=$this->data['Account Orders In Warehouse Number']+$this->data['Account Orders Packed Number']+$this->data['Account Orders In Dispatch Area Number'];
-
-                $diff=$end-$start;
-
-                $delta=($diff>0?'+':'').number($diff).delta_icon($end,$start,$inverse=true);
-
-
-                return $delta;
-
-            case 'Today Orders Dispatched':
-
-                $number=0;
-
-                $sql=sprintf('select count(*) as num from `Order Dimension` where `Order Current Dispatch State`="Dispatched" and `Order Dispatched Date`>%s   and  `Order Dispatched Date`<%s   ',
-                             prepare_mysql(date('Y-m-d 00:00:00')),
-                             prepare_mysql(date('Y-m-d 23:59:59'))
-                );
-
-                if ($result=$this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $number=$row['num'];
-                    }
-                }else {
-                    print_r($error_info=$this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-
-
-                return number($number);
-
-            default:
-
-
-                if (preg_match('/^(DC Orders|Orders|Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Minify$/', $key)) {
-
-                    $field = 'Account '.preg_replace('/ Minify$/', '', $key);
-                    $field =preg_replace('/DC Orders/', 'Orders', $field);
-
-                    $suffix          = '';
-                    $fraction_digits = 'NO_FRACTION_DIGITS';
-                    if ($this->data[$field] >= 1000000) {
-                        $suffix          = 'M';
-                        $fraction_digits = 'DOUBLE_FRACTION_DIGITS';
-                        $_amount         = $this->data[$field] / 1000000;
-                    } elseif ($this->data[$field] >= 10000) {
-                        $suffix  = 'K';
-                        $_amount = $this->data[$field] / 1000;
-                    } elseif ($this->data[$field] > 100) {
-                        $fraction_digits = 'SINGLE_FRACTION_DIGITS';
-                        $suffix          = 'K';
-                        $_amount         = $this->data[$field] / 1000;
-                    } else {
-                        $_amount = $this->data[$field];
-                    }
-
-                    $amount = money($_amount, $this->get('Account Currency'), $locale = false, $fraction_digits).$suffix;
-
-                    return $amount;
-                }
-
-
-
-                if (preg_match('/^(DC Orders|Orders|Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Soft Minify$/', $key)) {
-
-                    $field = 'Account '.preg_replace('/ Soft Minify$/', '', $key);
-
-
-
-                    $field =preg_replace('/DC Orders/', 'Orders', $field);
-
-                    $suffix          = '';
-                    $fraction_digits = 'NO_FRACTION_DIGITS';
-                    $_amount         = $this->data[$field];
-
-                    $amount = money($_amount, $this->get('Account Currency'), $locale = false, $fraction_digits).$suffix;
-                    return $amount;
-                }
-                if (preg_match('/^(Orders|Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced|Invoices|Number)$/', $key)) {
-
-                    $field = 'Account '.$key;
-
-
-                    return number($this->data[$field]);
-                }
-                if (preg_match('/^(Orders|Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced|Invoices) Minify$/', $key)) {
-
-                    $field = 'Account '.preg_replace('/ Minify$/', '', $key);
-
-                    $suffix          = '';
-                    $fraction_digits = 0;
-                    if ($this->data[$field] >= 10000) {
-                        $suffix  = 'K';
-                        $_number = $this->data[$field] / 1000;
-                    } elseif ($this->data[$field] > 100) {
-                        $fraction_digits = 1;
-                        $suffix          = 'K';
-                        $_number         = $this->data[$field] / 1000;
-                    } else {
-                        $_number = $this->data[$field];
-                    }
-
-                    return number($_number, $fraction_digits).$suffix;
-                }
-                if (preg_match('/^(Orders|Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced|Invoices|Number) Soft Minify$/', $key)) {
-                    $field   = 'Account '.preg_replace('/ Soft Minify$/', '', $key);
-                    $_number = $this->data[$field];
-
-                    return number($_number, 0);
-                }
-
-                if (preg_match('/^(DC Orders|Orders|Total|1).*(Amount|Profit)$/', $key)) {
-
-                    $field = 'Account '.$key;
-                    $field =preg_replace('/DC Orders/', 'Orders', $field);
-
-
-                    return money($this->data[$field],$this->get('Account Currency'));
-                }
-                
-                if (array_key_exists($key, $this->data)) {
-                    return $this->data[$key];
-                }
-
-                if (array_key_exists('Account '.$key, $this->data)) {
-                    return $this->data['Account '.$key];
-                }
-        }
-
-        return '';
     }
 
     function update_name($value) {
@@ -401,14 +201,17 @@ class Account extends DB_Table {
         $data['editor'] = $this->editor;
 
 
-        $data['Account Valid From']                = gmdate('Y-m-d H:i:s');
-        $data['Account Timezone']                  = preg_replace('/_/', '/', $data['Account Timezone']);
-        $data['Account Home Country Code 2 Alpha'] = substr($data['Account Locale'], -2);
+      //  print_r($data);
 
-        $country                         = new Country('2alpha', $data['Account Home Country Code 2 Alpha']);
-        $data['Account Home Country Name'] = $country->get('Country Name');
 
-        $store = new Account('find', $data, 'create');
+        $data['Store Valid From']                = gmdate('Y-m-d H:i:s');
+        $data['Store Timezone']                  = preg_replace('/_/', '/', $data['Store Timezone']);
+        $data['Store Home Country Code 2 Alpha'] = substr($data['Store Locale'], -2);
+
+        $country                         = new Country('2alpha', $data['Store Home Country Code 2 Alpha']);
+        $data['Store Home Country Name'] = $country->get('Country Name');
+
+        $store = new Store('find', $data, 'create');
 
 
         if ($store->id) {
@@ -422,11 +225,9 @@ class Account extends DB_Table {
                 if ($store->found) {
 
                     $this->error_code     = 'duplicated_field';
-                    $this->error_metadata = json_encode(
-                        array($store->duplicated_field)
-                    );
+                    $this->error_metadata = json_encode(array($store->duplicated_field));
 
-                    if ($store->duplicated_field == 'Account Code') {
+                    if ($store->duplicated_field == 'Store Code') {
                         $this->msg = _('Duplicated store code');
                     } else {
                         $this->msg = _('Duplicated store name');
@@ -527,7 +328,6 @@ class Account extends DB_Table {
         return $barcode;
     }
 
-
     function create_warehouse($data) {
 
         $this->new_object = false;
@@ -589,27 +389,26 @@ class Account extends DB_Table {
     }
 
     function update_parts_data() {
-        $number_parts = 0;
+        $number_parts                 = 0;
         $number_parts_no_sko_barcodes = 0;
-        $sql           = sprintf(
+        $sql                          = sprintf(
             'SELECT count(*) AS num FROM `Part Dimension` WHERE `Part Status`="In Use"'
         );
         if ($row = $this->db->query($sql)->fetch()) {
             $number_parts = $row['num'];
         }
 
-        $sql           = sprintf(
-            'SELECT count(*) AS num FROM `Part Dimension` WHERE `Part Status`="In Use" and `Part SKO Barcode`!=""  '
+        $sql = sprintf(
+            'SELECT count(*) AS num FROM `Part Dimension` WHERE `Part Status`="In Use" AND `Part SKO Barcode`!=""  '
         );
         if ($row = $this->db->query($sql)->fetch()) {
             $number_parts_no_sko_barcodes = $row['num'];
         }
 
 
-
         $this->update(
             array(
-                'Account Active Parts Number' => $number_parts,
+                'Account Active Parts Number'                  => $number_parts,
                 'Account Active Parts with SKO Barcode Number' => $number_parts_no_sko_barcodes,
 
             ), 'no_history'
@@ -656,41 +455,34 @@ class Account extends DB_Table {
         unset($data['Supplier Contact Address country']);
 
         if (isset($data['Supplier Contact Address addressLine1'])) {
-            $address_fields['Address Line 1']
-                = $data['Supplier Contact Address addressLine1'];
+            $address_fields['Address Line 1'] = $data['Supplier Contact Address addressLine1'];
             unset($data['Supplier Contact Address addressLine1']);
         }
         if (isset($data['Supplier Contact Address addressLine2'])) {
-            $address_fields['Address Line 2']
-                = $data['Supplier Contact Address addressLine2'];
+            $address_fields['Address Line 2'] = $data['Supplier Contact Address addressLine2'];
             unset($data['Supplier Contact Address addressLine2']);
         }
         if (isset($data['Supplier Contact Address sortingCode'])) {
-            $address_fields['Address Sorting Code']
-                = $data['Supplier Contact Address sortingCode'];
+            $address_fields['Address Sorting Code'] = $data['Supplier Contact Address sortingCode'];
             unset($data['Supplier Contact Address sortingCode']);
         }
         if (isset($data['Supplier Contact Address postalCode'])) {
-            $address_fields['Address Postal Code']
-                = $data['Supplier Contact Address postalCode'];
+            $address_fields['Address Postal Code'] = $data['Supplier Contact Address postalCode'];
             unset($data['Supplier Contact Address postalCode']);
         }
 
         if (isset($data['Supplier Contact Address dependentLocality'])) {
-            $address_fields['Address Dependent Locality']
-                = $data['Supplier Contact Address dependentLocality'];
+            $address_fields['Address Dependent Locality'] = $data['Supplier Contact Address dependentLocality'];
             unset($data['Supplier Contact Address dependentLocality']);
         }
 
         if (isset($data['Supplier Contact Address locality'])) {
-            $address_fields['Address Locality']
-                = $data['Supplier Contact Address locality'];
+            $address_fields['Address Locality'] = $data['Supplier Contact Address locality'];
             unset($data['Supplier Contact Address locality']);
         }
 
         if (isset($data['Supplier Contact Address administrativeArea'])) {
-            $address_fields['Address Administrative Area']
-                = $data['Supplier Contact Address administrativeArea'];
+            $address_fields['Address Administrative Area'] = $data['Supplier Contact Address administrativeArea'];
             unset($data['Supplier Contact Address administrativeArea']);
         }
 
@@ -763,41 +555,34 @@ class Account extends DB_Table {
         unset($data['Agent Contact Address country']);
 
         if (isset($data['Agent Contact Address addressLine1'])) {
-            $address_fields['Address Line 1']
-                = $data['Agent Contact Address addressLine1'];
+            $address_fields['Address Line 1'] = $data['Agent Contact Address addressLine1'];
             unset($data['Agent Contact Address addressLine1']);
         }
         if (isset($data['Agent Contact Address addressLine2'])) {
-            $address_fields['Address Line 2']
-                = $data['Agent Contact Address addressLine2'];
+            $address_fields['Address Line 2'] = $data['Agent Contact Address addressLine2'];
             unset($data['Agent Contact Address addressLine2']);
         }
         if (isset($data['Agent Contact Address sortingCode'])) {
-            $address_fields['Address Sorting Code']
-                = $data['Agent Contact Address sortingCode'];
+            $address_fields['Address Sorting Code'] = $data['Agent Contact Address sortingCode'];
             unset($data['Agent Contact Address sortingCode']);
         }
         if (isset($data['Agent Contact Address postalCode'])) {
-            $address_fields['Address Postal Code']
-                = $data['Agent Contact Address postalCode'];
+            $address_fields['Address Postal Code'] = $data['Agent Contact Address postalCode'];
             unset($data['Agent Contact Address postalCode']);
         }
 
         if (isset($data['Agent Contact Address dependentLocality'])) {
-            $address_fields['Address Dependent Locality']
-                = $data['Agent Contact Address dependentLocality'];
+            $address_fields['Address Dependent Locality'] = $data['Agent Contact Address dependentLocality'];
             unset($data['Agent Contact Address dependentLocality']);
         }
 
         if (isset($data['Agent Contact Address locality'])) {
-            $address_fields['Address Locality']
-                = $data['Agent Contact Address locality'];
+            $address_fields['Address Locality'] = $data['Agent Contact Address locality'];
             unset($data['Agent Contact Address locality']);
         }
 
         if (isset($data['Agent Contact Address administrativeArea'])) {
-            $address_fields['Address Administrative Area']
-                = $data['Agent Contact Address administrativeArea'];
+            $address_fields['Address Administrative Area'] = $data['Agent Contact Address administrativeArea'];
             unset($data['Agent Contact Address administrativeArea']);
         }
 
@@ -984,60 +769,6 @@ class Account extends DB_Table {
 
     }
 
-    protected function update_field_switcher($field, $value, $options = '', $metadata = '') {
-
-
-        switch ($field) {
-            case 'Company Name':
-
-
-            case('Account Currency'):
-                $this->update_currency($value);
-                break;
-            default:
-
-                $base_data = $this->base_data();
-                if (array_key_exists($field, $base_data)) {
-                    $this->update_field($field, $value, $options);
-                }elseif (array_key_exists($field, $this->base_data('Account Data'))) {
-                    $this->update_table_field($field, $value, $options, 'Account', 'Account Data', $this->id);
-                }
-
-
-                break;
-        }
-    }
-
-    function update_currency($value) {
-        $value = strtoupper($value);
-        $sql   = sprintf(
-            "SELECT * FROM kbase.`Currency Dimension` WHERE `Currency Code`=%s", prepare_mysql($value)
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-                $sql = sprintf(
-                    "UPDATE `Account Dimension` SET `Account Currency`=%s", prepare_mysql($value)
-                );
-                $this->db->exec($sql);
-
-                $this->updated   = true;
-                $this->new_value = $value;
-
-            } else {
-                $this->error = true;
-                $this->msg   = 'Currency Code '.$value.' not valid';
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-    }
-
     function update_sales_from_invoices($interval, $this_year = true, $last_year = true) {
 
 
@@ -1152,19 +883,19 @@ class Account extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT count(DISTINCT `Invoice Customer Key`)  AS customers,sum(if(`Invoice Type`='Invoice',1,0))  AS invoices, sum(if(`Invoice Type`='Refund',1,0))  AS refunds  ,sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`) AS dc_discounts,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) dc_net  ,sum(`Invoice Total Profit`*`Invoice Currency Exchange`) AS dc_profit FROM `Invoice Dimension` WHERE true %s %s",
-             ($from_date ? sprintf('and `Invoice Date`>%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)) : '')
+            "SELECT count(DISTINCT `Invoice Customer Key`)  AS customers,sum(if(`Invoice Type`='Invoice',1,0))  AS invoices, sum(if(`Invoice Type`='Refund',1,0))  AS refunds  ,sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`) AS dc_discounts,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) dc_net  ,sum(`Invoice Total Profit`*`Invoice Currency Exchange`) AS dc_profit FROM `Invoice Dimension` WHERE TRUE %s %s",
+            ($from_date ? sprintf('and `Invoice Date`>%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)) : '')
 
         );
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $sales_data['discount_amount']    = $row['dc_discounts'];
-                $sales_data['amount']             = $row['dc_net'];
-                $sales_data['profit']             = $row['dc_profit'];
-                $sales_data['invoices']           = $row['invoices'];
-                $sales_data['refunds']            = $row['refunds'];
-                $sales_data['customers']          = $row['customers'];
+                $sales_data['discount_amount'] = $row['dc_discounts'];
+                $sales_data['amount']          = $row['dc_net'];
+                $sales_data['profit']          = $row['dc_profit'];
+                $sales_data['invoices']        = $row['invoices'];
+                $sales_data['refunds']         = $row['refunds'];
+                $sales_data['customers']       = $row['customers'];
 
             }
         } else {
@@ -1175,8 +906,9 @@ class Account extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT count(*)  AS replacements FROM `Delivery Note Dimension` WHERE `Delivery Note Type` IN ('Replacement & Shortages','Replacement','Shortages') AND true %s %s",
-             ($from_date ? sprintf('and `Delivery Note Date`>%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Delivery Note Date`<%s', prepare_mysql($to_date)) : ''));
+            "SELECT count(*)  AS replacements FROM `Delivery Note Dimension` WHERE `Delivery Note Type` IN ('Replacement & Shortages','Replacement','Shortages') AND TRUE %s %s",
+            ($from_date ? sprintf('and `Delivery Note Date`>%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Delivery Note Date`<%s', prepare_mysql($to_date)) : '')
+        );
 
 
         if ($result = $this->db->query($sql)) {
@@ -1213,8 +945,8 @@ class Account extends DB_Table {
 
 
         $sql = sprintf(
-            " SELECT COUNT(*) AS repeat_customers FROM( SELECT count(*) AS invoices ,`Invoice Customer Key` FROM `Invoice Dimension` WHERE true %s %s GROUP BY `Invoice Customer Key` HAVING invoices>1) AS tmp",
-             ($from_date ? sprintf('and `Invoice Date`>%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)) : '')
+            " SELECT COUNT(*) AS repeat_customers FROM( SELECT count(*) AS invoices ,`Invoice Customer Key` FROM `Invoice Dimension` WHERE TRUE %s %s GROUP BY `Invoice Customer Key` HAVING invoices>1) AS tmp",
+            ($from_date ? sprintf('and `Invoice Date`>%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)) : '')
         );
 
         if ($result = $this->db->query($sql)) {
@@ -1234,7 +966,6 @@ class Account extends DB_Table {
 
     }
 
-
     function update_previous_years_data() {
 
         foreach (range(1, 5) as $i) {
@@ -1244,13 +975,13 @@ class Account extends DB_Table {
 
 
             $data_to_update = array(
-                "Account $i Year Ago Invoiced Discount Amount"    => $data_iy_ago['discount_amount'],
-                "Account $i Year Ago Invoiced Amount"             => $data_iy_ago['amount'],
-                "Account $i Year Ago Invoices"                    => $data_iy_ago['invoices'],
-                "Account $i Year Ago Refunds"                     => $data_iy_ago['refunds'],
-                "Account $i Year Ago Replacements"                => $data_iy_ago['replacements'],
-                "Account $i Year Ago Delivery Notes"              => $data_iy_ago['deliveries'],
-                "Account $i Year Ago Profit"                      => $data_iy_ago['profit'],
+                "Account $i Year Ago Invoiced Discount Amount" => $data_iy_ago['discount_amount'],
+                "Account $i Year Ago Invoiced Amount"          => $data_iy_ago['amount'],
+                "Account $i Year Ago Invoices"                 => $data_iy_ago['invoices'],
+                "Account $i Year Ago Refunds"                  => $data_iy_ago['refunds'],
+                "Account $i Year Ago Replacements"             => $data_iy_ago['replacements'],
+                "Account $i Year Ago Delivery Notes"           => $data_iy_ago['deliveries'],
+                "Account $i Year Ago Profit"                   => $data_iy_ago['profit'],
 
             );
 
@@ -1281,22 +1012,22 @@ class Account extends DB_Table {
             );
 
             $data_to_update = array(
-                "Account $i Quarter Ago Invoiced Discount Amount"    => $sales_data['discount_amount'],
-                "Account $i Quarter Ago Invoiced Amount"             => $sales_data['amount'],
-                "Account $i Quarter Ago Invoices"                    => $sales_data['invoices'],
-                "Account $i Quarter Ago Refunds"                     => $sales_data['refunds'],
-                "Account $i Quarter Ago Replacements"                => $sales_data['replacements'],
-                "Account $i Quarter Ago Delivery Notes"              => $sales_data['deliveries'],
-                "Account $i Quarter Ago Profit"                      => $sales_data['profit'],
+                "Account $i Quarter Ago Invoiced Discount Amount" => $sales_data['discount_amount'],
+                "Account $i Quarter Ago Invoiced Amount"          => $sales_data['amount'],
+                "Account $i Quarter Ago Invoices"                 => $sales_data['invoices'],
+                "Account $i Quarter Ago Refunds"                  => $sales_data['refunds'],
+                "Account $i Quarter Ago Replacements"             => $sales_data['replacements'],
+                "Account $i Quarter Ago Delivery Notes"           => $sales_data['deliveries'],
+                "Account $i Quarter Ago Profit"                   => $sales_data['profit'],
 
-                "Account $i Quarter Ago 1YB Invoiced Discount Amount"    => $sales_data_1yb['discount_amount'],
-                "Account $i Quarter Ago 1YB Invoiced Amount"             => $sales_data_1yb['amount'],
-                "Account $i Quarter Ago 1YB Invoices"                    => $sales_data_1yb['invoices'],
-                "Account $i Quarter Ago 1YB Refunds"                     => $sales_data_1yb['refunds'],
-                "Account $i Quarter Ago 1YB Replacements"                => $sales_data_1yb['replacements'],
-                "Account $i Quarter Ago 1YB Delivery Notes"              => $sales_data_1yb['deliveries'],
-                "Account $i Quarter Ago 1YB Profit"                      => $sales_data_1yb['profit'],
-                );
+                "Account $i Quarter Ago 1YB Invoiced Discount Amount" => $sales_data_1yb['discount_amount'],
+                "Account $i Quarter Ago 1YB Invoiced Amount"          => $sales_data_1yb['amount'],
+                "Account $i Quarter Ago 1YB Invoices"                 => $sales_data_1yb['invoices'],
+                "Account $i Quarter Ago 1YB Refunds"                  => $sales_data_1yb['refunds'],
+                "Account $i Quarter Ago 1YB Replacements"             => $sales_data_1yb['replacements'],
+                "Account $i Quarter Ago 1YB Delivery Notes"           => $sales_data_1yb['deliveries'],
+                "Account $i Quarter Ago 1YB Profit"                   => $sales_data_1yb['profit'],
+            );
             $this->update($data_to_update, 'no_history');
         }
 
@@ -1322,7 +1053,6 @@ class Account extends DB_Table {
                 $from = '';
             }
             $to = date('Y-m-d');
-
 
 
             $sql        = sprintf('DELETE FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`<%s ', $timeseries->id, prepare_mysql($from));
@@ -1359,6 +1089,201 @@ class Account extends DB_Table {
 
     }
 
+    function get($key, $data = false) {
+
+        if (!$this->id) {
+            return;
+        }
+
+
+        switch ($key) {
+
+            case 'Account Currency':
+                return $this->data['Account Currency'];
+                break;
+            case 'Productions':
+
+                $number = 0;
+                $sql    = sprintf(
+                    "SELECT count(*) AS num FROM `Supplier Production Dimension`", $this->id
+                );
+                if ($row = $this->db->query($sql)->fetch()) {
+                    $number = $row['num'];
+                }
+
+                return $number;
+                break;
+
+            case('Locale'):
+
+
+                include 'utils/available_locales.php';
+
+                if (array_key_exists(
+                    $this->data['Account Locale'].'.UTF-8', $available_locales
+                )) {
+                    $locale = $available_locales[$this->data['Account Locale'].'.UTF-8'];
+
+                    return $locale['Language Name'].($locale['Language Name'] != $locale['Language Original Name'] ? ' ('.$locale['Language Original Name'].')' : '');
+                } else {
+
+                    return $this->data['Account Locale'];
+                }
+                break;
+
+
+            case 'Setup Metadata':
+                return json_decode($this->data['Account Setup Metadata'], true);
+                break;
+            case 'National Employment Code Label':
+
+                switch ($this->data['Account Country 2 Alpha Code']) {
+                    case 'GB':
+                        return _('National insurance number');
+                        break;
+                    case 'ES':
+                        return _('DNI');
+                        break;
+                    default:
+                        return '';
+                        break;
+                }
+
+                break;
+
+            case 'Delta Today Start Orders In Warehouse Number':
+
+                $start = $this->data['Account Today Start Orders In Warehouse Number'];
+                $end   = $this->data['Account Orders In Warehouse Number'] + $this->data['Account Orders Packed Number'] + $this->data['Account Orders In Dispatch Area Number'];
+
+                $diff = $end - $start;
+
+                $delta = ($diff > 0 ? '+' : '').number($diff).delta_icon($end, $start, $inverse = true);
+
+
+                return $delta;
+
+            case 'Today Orders Dispatched':
+
+                $number = 0;
+
+                $sql = sprintf(
+                    'SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Current Dispatch State`="Dispatched" AND `Order Dispatched Date`>%s   AND  `Order Dispatched Date`<%s   ',
+                    prepare_mysql(date('Y-m-d 00:00:00')), prepare_mysql(date('Y-m-d 23:59:59'))
+                );
+
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $number = $row['num'];
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+                return number($number);
+
+            default:
+
+
+                if (preg_match('/^(DC Orders|Orders|Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Minify$/', $key)) {
+
+                    $field = 'Account '.preg_replace('/ Minify$/', '', $key);
+                    $field = preg_replace('/DC Orders/', 'Orders', $field);
+
+                    $suffix          = '';
+                    $fraction_digits = 'NO_FRACTION_DIGITS';
+                    if ($this->data[$field] >= 1000000) {
+                        $suffix          = 'M';
+                        $fraction_digits = 'DOUBLE_FRACTION_DIGITS';
+                        $_amount         = $this->data[$field] / 1000000;
+                    } elseif ($this->data[$field] >= 10000) {
+                        $suffix  = 'K';
+                        $_amount = $this->data[$field] / 1000;
+                    } elseif ($this->data[$field] > 100) {
+                        $fraction_digits = 'SINGLE_FRACTION_DIGITS';
+                        $suffix          = 'K';
+                        $_amount         = $this->data[$field] / 1000;
+                    } else {
+                        $_amount = $this->data[$field];
+                    }
+
+                    $amount = money($_amount, $this->get('Account Currency'), $locale = false, $fraction_digits).$suffix;
+
+                    return $amount;
+                }
+
+
+                if (preg_match('/^(DC Orders|Orders|Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Soft Minify$/', $key)) {
+
+                    $field = 'Account '.preg_replace('/ Soft Minify$/', '', $key);
+
+
+                    $field = preg_replace('/DC Orders/', 'Orders', $field);
+
+                    $suffix          = '';
+                    $fraction_digits = 'NO_FRACTION_DIGITS';
+                    $_amount         = $this->data[$field];
+
+                    $amount = money($_amount, $this->get('Account Currency'), $locale = false, $fraction_digits).$suffix;
+
+                    return $amount;
+                }
+                if (preg_match('/^(Orders|Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced|Invoices|Number)$/', $key)) {
+
+                    $field = 'Account '.$key;
+
+
+                    return number($this->data[$field]);
+                }
+                if (preg_match('/^(Orders|Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced|Invoices) Minify$/', $key)) {
+
+                    $field = 'Account '.preg_replace('/ Minify$/', '', $key);
+
+                    $suffix          = '';
+                    $fraction_digits = 0;
+                    if ($this->data[$field] >= 10000) {
+                        $suffix  = 'K';
+                        $_number = $this->data[$field] / 1000;
+                    } elseif ($this->data[$field] > 100) {
+                        $fraction_digits = 1;
+                        $suffix          = 'K';
+                        $_number         = $this->data[$field] / 1000;
+                    } else {
+                        $_number = $this->data[$field];
+                    }
+
+                    return number($_number, $fraction_digits).$suffix;
+                }
+                if (preg_match('/^(Orders|Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced|Invoices|Number) Soft Minify$/', $key)) {
+                    $field   = 'Account '.preg_replace('/ Soft Minify$/', '', $key);
+                    $_number = $this->data[$field];
+
+                    return number($_number, 0);
+                }
+
+                if (preg_match('/^(DC Orders|Orders|Total|1).*(Amount|Profit)$/', $key)) {
+
+                    $field = 'Account '.$key;
+                    $field = preg_replace('/DC Orders/', 'Orders', $field);
+
+
+                    return money($this->data[$field], $this->get('Account Currency'));
+                }
+
+                if (array_key_exists($key, $this->data)) {
+                    return $this->data[$key];
+                }
+
+                if (array_key_exists('Account '.$key, $this->data)) {
+                    return $this->data['Account '.$key];
+                }
+        }
+
+        return '';
+    }
 
     function update_timeseries_record($timeseries, $from, $to, $fork_key) {
 
@@ -1462,8 +1387,6 @@ class Account extends DB_Table {
 
     }
 
-
-
     function update_orders_in_basket_data() {
 
         $data = array(
@@ -1474,7 +1397,7 @@ class Account extends DB_Table {
         );
 
         $sql = sprintf(
-            "SELECT count(*) AS num ,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order Number Items`>0  and `Order Current Dispatch State`  IN ('In Process by Customer','In Process')  ",
+            "SELECT count(*) AS num ,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order Number Items`>0  AND `Order Current Dispatch State`  IN ('In Process by Customer','In Process')  ",
             $this->id
         );
 
@@ -1494,17 +1417,14 @@ class Account extends DB_Table {
         }
 
 
-
         $data_to_update = array(
-            'Account Orders In Basket Number'              => $data['in_basket']['number'],
-            'Account Orders In Basket Amount'           => $data['in_basket']['dc_amount'],
-
+            'Account Orders In Basket Number' => $data['in_basket']['number'],
+            'Account Orders In Basket Amount' => $data['in_basket']['dc_amount'],
 
 
         );
         $this->update($data_to_update, 'no_history');
     }
-
 
     function update_orders_in_process_data() {
 
@@ -1521,7 +1441,7 @@ class Account extends DB_Table {
                 'dc_amount' => 0
             )
         );
-        $sql = sprintf(
+        $sql  = sprintf(
             'SELECT `Order Current Dispatch State`,count(*) AS num, ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order Current Dispatch State` ="Submitted by Customer"  AND `Order Current Payment State`="Paid" '
         );
 
@@ -1562,10 +1482,10 @@ class Account extends DB_Table {
 
 
         $data_to_update = array(
-            'Account Orders In Process Paid Number'        => $data['in_process_paid']['number'],
-            'Account Orders In Process Paid Amount'        => $data['in_process_paid']['dc_amount'],
-            'Account Orders In Process Not Paid Number'    => $data['in_process_not_paid']['number'],
-            'Account Orders In Process Not Paid Amount'    => $data['in_process_not_paid']['dc_amount'],
+            'Account Orders In Process Paid Number'     => $data['in_process_paid']['number'],
+            'Account Orders In Process Paid Amount'     => $data['in_process_paid']['dc_amount'],
+            'Account Orders In Process Not Paid Number' => $data['in_process_not_paid']['number'],
+            'Account Orders In Process Not Paid Amount' => $data['in_process_not_paid']['dc_amount'],
 
 
         );
@@ -1581,8 +1501,6 @@ class Account extends DB_Table {
                 'dc_amount' => 0
             ),
         );
-
-
 
 
         $sql = sprintf(
@@ -1605,11 +1523,9 @@ class Account extends DB_Table {
         }
 
 
-
         $data_to_update = array(
-            'Account Orders In Warehouse Number'              => $data['warehouse']['number'],
-            'Account Orders In Warehouse Amount'              => $data['warehouse']['dc_amount'],
-
+            'Account Orders In Warehouse Number' => $data['warehouse']['number'],
+            'Account Orders In Warehouse Amount' => $data['warehouse']['dc_amount'],
 
 
         );
@@ -1625,8 +1541,6 @@ class Account extends DB_Table {
                 'dc_amount' => 0
             ),
         );
-
-
 
 
         $sql = sprintf(
@@ -1649,11 +1563,9 @@ class Account extends DB_Table {
         }
 
 
-
         $data_to_update = array(
-            'Account Orders Packed Number'              => $data['packed']['number'],
-            'Account Orders Packed Amount'              => $data['packed']['dc_amount'],
-
+            'Account Orders Packed Number' => $data['packed']['number'],
+            'Account Orders Packed Amount' => $data['packed']['dc_amount'],
 
 
         );
@@ -1669,8 +1581,6 @@ class Account extends DB_Table {
                 'dc_amount' => 0
             ),
         );
-
-
 
 
         $sql = sprintf(
@@ -1693,15 +1603,67 @@ class Account extends DB_Table {
         }
 
 
-
         $data_to_update = array(
-            'Account Orders In Dispatch Area Number'              => $data['ready_to_ship']['number'],
-            'Account Orders In Dispatch Area Amount'              => $data['ready_to_ship']['dc_amount'],
-
+            'Account Orders In Dispatch Area Number' => $data['ready_to_ship']['number'],
+            'Account Orders In Dispatch Area Amount' => $data['ready_to_ship']['dc_amount'],
 
 
         );
         $this->update($data_to_update, 'no_history');
+    }
+
+    protected function update_field_switcher($field, $value, $options = '', $metadata = '') {
+
+
+        switch ($field) {
+            case 'Company Name':
+
+
+            case('Account Currency'):
+                $this->update_currency($value);
+                break;
+            default:
+
+                $base_data = $this->base_data();
+                if (array_key_exists($field, $base_data)) {
+                    $this->update_field($field, $value, $options);
+                } elseif (array_key_exists($field, $this->base_data('Account Data'))) {
+                    $this->update_table_field($field, $value, $options, 'Account', 'Account Data', $this->id);
+                }
+
+
+                break;
+        }
+    }
+
+    function update_currency($value) {
+        $value = strtoupper($value);
+        $sql   = sprintf(
+            "SELECT * FROM kbase.`Currency Dimension` WHERE `Currency Code`=%s", prepare_mysql($value)
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+                $sql = sprintf(
+                    "UPDATE `Account Dimension` SET `Account Currency`=%s", prepare_mysql($value)
+                );
+                $this->db->exec($sql);
+
+                $this->updated   = true;
+                $this->new_value = $value;
+
+            } else {
+                $this->error = true;
+                $this->msg   = 'Currency Code '.$value.' not valid';
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
     }
 
 

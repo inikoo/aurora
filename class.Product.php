@@ -1157,7 +1157,6 @@ class Product extends Asset {
                 }
 
 
-
                 $this->webpage->update(array('Page Title' => $value), $options);
                 $this->updated = $this->webpage->updated;
 
@@ -1416,8 +1415,8 @@ class Product extends Asset {
 
                         return;
                     }
-                   // $_tmp = json_decode($dim, true);
-                 //   $vol  = $_tmp['vol'];
+                    // $_tmp = json_decode($dim, true);
+                    //   $vol  = $_tmp['vol'];
                 }
 
                 if (!preg_match('/from_part/', $options) and count(
@@ -2351,7 +2350,7 @@ class Product extends Asset {
 
         $this->update_web_state($use_fork);
 
-        foreach($this->get_categories('objects') as $category){
+        foreach ($this->get_categories('objects') as $category) {
             $category->update_product_category_products_data();
         }
 
@@ -2372,6 +2371,44 @@ class Product extends Asset {
 
             )
         );
+
+
+    }
+
+    function get_categories($scope = 'keys') {
+
+        if ($scope == 'objects') {
+            include_once 'class.Category.php';
+        }
+
+
+        $categories = array();
+
+
+        $sql = sprintf(
+            "SELECT B.`Category Key` FROM `Category Dimension` C LEFT JOIN `Category Bridge` B ON (B.`Category Key`=C.`Category Key`) WHERE `Subject`='Product' AND `Subject Key`=%d AND `Category Branch Type`!='Root'",
+            $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($scope == 'objects') {
+                    $categories[$row['Category Key']] = new Category(
+                        $row['Category Key']
+                    );
+                } else {
+                    $categories[$row['Category Key']] = $row['Category Key'];
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+        return $categories;
 
 
     }
@@ -2895,44 +2932,6 @@ class Product extends Asset {
 
     }
 
-    function get_categories($scope = 'keys') {
-
-        if ($scope == 'objects') {
-            include_once 'class.Category.php';
-        }
-
-
-        $categories = array();
-
-
-        $sql = sprintf(
-            "SELECT B.`Category Key` FROM `Category Dimension` C LEFT JOIN `Category Bridge` B ON (B.`Category Key`=C.`Category Key`) WHERE `Subject`='Product' AND `Subject Key`=%d AND `Category Branch Type`!='Root'",
-            $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                if ($scope == 'objects') {
-                    $categories[$row['Category Key']] = new Category(
-                        $row['Category Key']
-                    );
-                } else {
-                    $categories[$row['Category Key']] = $row['Category Key'];
-                }
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-        return $categories;
-
-
-    }
-
     function update_up_today_sales() {
         $this->update_sales_from_invoices('Total');
         //$this->update_sales_from_invoices('Today');
@@ -3230,8 +3229,76 @@ class Product extends Asset {
 
     }
 
+    function delete() {
+
+        $this->deleted = false;
+
+
+        $sql=sprinft('select `Order Transaction Fact Key` from `Order Transaction Fact` where `Product ID`=%d ',$this->id);
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->update(array('Product Status'=>'Discontinued'));
+        	}else{
+
+
+                $sql = sprintf("DELETE FROM `Product Dimension` WHERE `Product ID`=%d", $this->id);
+                $this->db->exec($sql);
+
+                $sql = sprintf("DELETE FROM `Product History Dimension` WHERE `Product ID`=%d", $this->id);
+                $this->db->exec($sql);
+
+                $sql = sprintf("DELETE FROM `Product Availability Timeline` WHERE `Product ID`=%d", $this->id);
+                $this->db->exec($sql);
+
+                $sql = sprintf("DELETE FROM `Product Data` WHERE `Product ID`=%d", $this->id);
+                $this->db->exec($sql);
+                $sql = sprintf("DELETE FROM `Product DC Data` WHERE `Product ID`=%d", $this->id);
+                $this->db->exec($sql);
+
+
+                $webpage=$this->get_webpage();
+                if($webpage->id){
+                    $webpage->delete(false);
+                }
+
+
+
+                /*
+
+                $history_key = $this->add_history(
+                    array(
+                        'Action'           => 'deleted',
+                        'History Abstract' => sprintf(_('Store %d deleted'), $this->data['Store Name']),
+                        'History Details'  => ''
+                    ), true
+                );
+
+              */
+
+
+                $this->deleted = true;
+
+
+
+            }
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
+        }
+
+
+
+
+
+
+
+
+
+    }
 
 }
+
 
 
 ?>
