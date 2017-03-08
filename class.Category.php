@@ -660,7 +660,6 @@ class Category extends DB_Table {
 
                 switch ($key) {
 
-
                     case 'Status':
                         switch ($this->data['Product Category Status']) {
                             case 'In Process':
@@ -671,6 +670,9 @@ class Category extends DB_Table {
                                 break;
                             case 'Suspended':
                                 return _('Suspended');
+                                break;
+                            case 'Discontinuing':
+                                return _('Discontinuing');
                                 break;
                             case 'Discontinued':
                                 return _('Discontinued');
@@ -867,8 +869,10 @@ class Category extends DB_Table {
 
                         }
                         break;
+                    case 'Active Web For Sale including Out of Stock':
+                        return number($this->data['Product Category Active Web For Sale']+$this->data['Product Category Active Web Out of Stock']);
                     case 'Percentage Active Web Out of Stock':
-                        return percentage($this->data['Product Category Active Web Out of Stock'], $this->data['Product Category Active Products'], 0);
+                        return percentage($this->data['Product Category Active Web Out of Stock'], $this->data['Product Category Active Web For Sale']+$this->data['Product Category Active Web Out of Stock'], 0);
                     case 'Percentage Active Web Offline':
                         return percentage($this->data['Product Category Active Web Offline'], $this->data['Product Category Active Products'], 0);
 
