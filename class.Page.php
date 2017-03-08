@@ -2771,14 +2771,23 @@ class Page extends DB_Table {
 
             $sql = sprintf('SELECT `Product Category Index Product ID` FROM `Product Category Index`    WHERE `Product Category Index Website Key`=%d', $this->id);
 
+
+
+
+
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
 
                     $webpage = new Page('scope', 'Product', $row['Product Category Index Product ID']);
 
 
+
+
                     if ($webpage->get('Webpage Launch Date') == '') {
-                        $webpage->publish();
+
+
+
+                       $webpage->publish();
                     }
 
 
@@ -5548,7 +5557,7 @@ class Page extends DB_Table {
         return $this->data['Page Parent Code'];
     }
 
-    function update_list_products() {
+    function update_list_products_to_delete() {
 
 
         if ($this->data['Page Type'] != 'Store') {

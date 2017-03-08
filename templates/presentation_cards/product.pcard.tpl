@@ -14,15 +14,13 @@
             </td>
         </tr>
         <tr class="title">
-            <td colspan=2>{t}Product{/t} <i
-                        onClick="change_view('products/{$product->get('Product Store Key')}/{$product->id}')"
-                        class="fa fa-cube button"></i></td>
+            <td colspan=2>{t}Product{/t}</td>
         </tr>
 
 
         <tr>
             <td class="label">{$product->get_field_label('Product Code')|capitalize}</td>
-            <td>{$product->get('Code')}</td>
+            <td><span class="link" onClick="change_view('products/{$product->get('Product Store Key')}/{$product->id}')">{$product->get('Code')}</span></td>
         </tr>
         <tr>
             <td class="label">{$product->get_field_label('Product Name')|capitalize}</td>

@@ -3391,7 +3391,7 @@ class Part extends Asset {
                 $label = _('proper shipping name');
                 break;
             case 'Part Hazard Indentification Number':
-                $label = _('hazard indentification number');
+                $label = _('hazard identification number');
                 break;
             case 'Part Materials':
                 $label = _('Materials/Ingredients');

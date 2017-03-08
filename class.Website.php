@@ -54,8 +54,6 @@ class Website extends DB_Table {
         }
 
 
-
-
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id   = $this->data['Website Key'];
             $this->code = $this->data['Website Code'];
@@ -88,11 +86,10 @@ class Website extends DB_Table {
         foreach ($raw_data as $key => $value) {
             if (array_key_exists($key, $data)) {
                 $data[$key] = _trim($value);
-            }elseif ($key=='Website Key') {
+            } elseif ($key == 'Website Key') {
                 $data[$key] = _trim($value);
             }
         }
-
 
 
         if ($data['Website Code'] == '') {
@@ -161,15 +158,13 @@ class Website extends DB_Table {
     function create($data) {
 
 
-
-
         $this->new = false;
         $base_data = $this->base_data();
 
         foreach ($data as $key => $value) {
             if (array_key_exists($key, $base_data)) {
                 $base_data[$key] = _trim($value);
-            }elseif($key=='Website Key'){
+            } elseif ($key == 'Website Key') {
                 $base_data[$key] = _trim($value);
             }
         }
@@ -722,17 +717,18 @@ class Website extends DB_Table {
 
     }
 
-    function create_category_webpage($category_key, $raw_data) {
+    function create_category_webpage($category_key) {
 
         include_once 'class.Webpage_Type.php';
         include_once 'class.Site.php';
 
-        $site=new Site($this->id);
+        $site = new Site($this->id);
 
 
         $sql = sprintf(
             "SELECT `Page Key` FROM `Page Store Dimension` WHERE `Webpage Scope`='Category' AND `Webpage Scope Key`=%d  AND `Webpage Website Key`=%d ", $category_key, $this->id
         );
+
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
@@ -754,11 +750,26 @@ class Website extends DB_Table {
 
 
         $page_data = array(
-            'Page Code'                              => $page_code,
-            'Page URL'                               => $this->data['Website URL'].'/'.strtolower($page_code),
-            'Page Site Key'                          => $this->id,
-            'Page Type'                              => 'Store',
-            'Page Store Key'                         => $category->get('Category Store Key'),
+            'Page Code'                => $page_code,
+            'Page URL'                 => $this->data['Website URL'].'/'.strtolower($page_code),
+            'Page Site Key'            => $this->id,
+            'Page Type'                => 'Store',
+            'Page Store Key'           => $category->get('Category Store Key'),
+            'Page Store Creation Date' => gmdate('Y-m-d H:i:s'),
+            'Number See Also Links'    => ($category->get('Category Subject') == 'Product' ? 5 : 0),
+            'editor'                   => $this->editor,
+
+
+            'Webpage Scope'                        => ($category->get('Category Subject') == 'Product' ? 'Category Products' : 'Category Categories'),
+            'Webpage Scope Key'                    => $category->id,
+            'Webpage Website Key'                  => $this->id,
+            'Webpage Store Key'                    => $category->get('Category Store Key'),
+            'Webpage Type Key'                     => $webpage_type->id,
+            'Webpage Code'                         => $page_code,
+            'Page Store Content Display Type'      => 'Template',
+            'Page Store Content Template Filename' => ($category->get('Category Subject') == 'Product' ? 'products_showcase' : 'categories_showcase'),
+
+
             'Page Parent Key'                        => $category->id,
             'Page Parent Code'                       => $category->get('Code'),
             'Page Store Section Type'                => 'Department',
@@ -771,29 +782,16 @@ class Website extends DB_Table {
             'Page Title'                             => $category->get('Label'),
             'Page Short Title'                       => $category->get('Label'),
             'Page Store Title'                       => $category->get('Label'),
-
-
-            'Page Header Key'          => $site->data['Site Default Header Key'],
-            'Page Footer Key'          => $site->data['Site Default Footer Key'],
-            'Page Store Creation Date' => gmdate('Y-m-d H:i:s'),
-            'Number See Also Links'    => ($category->get('Category Subject') == 'Product' ? 5 : 0),
-            'editor'                   => $this->editor,
-
-
-            'Webpage Scope'       => ($category->get('Category Subject') == 'Product' ? 'Category Products' : 'Category Categories'),
-            'Webpage Scope Key'   => $category->id,
-            'Webpage Website Key' => $this ->id,
-            'Webpage Store Key'   => $category->get('Category Store Key'),
-            'Webpage Type Key'    => $webpage_type->id,
-            'Webpage Code'        => $page_code,
-            'Page Store Content Display Type'=>'Template',
-            'Page Store Content Template Filename'=>'categories_showcase'
+            'Page Header Key'                        => $site->data['Site Default Header Key'],
+            'Page Footer Key'                        => $site->data['Site Default Footer Key'],
+            //-------------------
 
         );
 
 
+        //print_r($page_data);
         $page = new Page('find', $page_data, 'create');
-
+        //  print_r($page->data);
 
         $webpage_type->update_number_webpages();
 
@@ -808,6 +806,66 @@ class Website extends DB_Table {
         $this->new_page_key = $page->id;
         $this->msg          = $page->msg;
         $this->error        = $page->error;
+
+
+        if ($category->get('Category Subject') == 'Product') {
+
+
+            $title = $category->get('Label');
+            if ($title == '') {
+                $title = $category->get('Code');
+            }
+            if ($title == '') {
+                $title = _('Title');
+            }
+
+            $description = $category->get('Product Category Description');
+            if ($description == '') {
+                $description = $category->get('Label');
+            }
+            if ($description == '') {
+                $description = $category->get('Code');
+            }
+            if ($description == '') {
+                $description = _('Description');
+            }
+
+
+            $image_src = $category->get('Image');
+
+            $content_data = array(
+                'description_block' => array(
+                    'class' => '',
+
+                    'blocks' => array(
+
+                        'webpage_content_header_image' => array(
+                            'type'      => 'image',
+                            'image_src' => $image_src,
+                            'caption'   => '',
+                            'class'     => ''
+
+                        ),
+
+                        'webpage_content_header_text' => array(
+                            'class'   => '',
+                            'type'    => 'text',
+                            'content' => sprintf('<h1 class="description_title">%s</h1><div class="description">%s</div>', $title, $description)
+
+                        )
+
+                    )
+                )
+
+            );
+
+            //print_r($content_data);
+            $page->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+
+
+            $category->create_stack_index(true);
+        }
+
 
         //$this->update_product_totals();
         //$this->update_page_totals();
@@ -846,35 +904,149 @@ class Website extends DB_Table {
         return $suffix;
     }
 
-    function set_footer_template($template){
+    function create_product_webpage($product_id) {
+
+        include_once 'class.Webpage_Type.php';
+        include_once 'class.Page.php';
+
+
+        include_once 'class.Site.php';
+        $site = new Site($this->id);
+
+
+        $sql = sprintf(
+            "SELECT `Page Key` FROM `Page Store Dimension` WHERE `Webpage Scope`='Product' AND `Webpage Scope Key`=%d  AND `Webpage Website Key`=%d ", $product_id, $this->id
+        );
+
+        //print $sql;
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                return $row['Page Key'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        include_once 'class.Product.php';
+        $product = new Product($product_id);
+
+        $page_code = $this->get_unique_webpage_code($product->get('Code'));
+
+
+        $webpage_type = new Webpage_Type('website_code', $this->id, 'Prod');
+
+
+        $page_data = array(
+            'Page Code'                => $page_code,
+            'Page URL'                 => $this->data['Website URL'].'/'.strtolower($page_code),
+            'Page Site Key'            => $this->id,
+            'Page Type'                => 'Store',
+            'Page Store Key'           => $product->get('Product Store Key'),
+            'Page Store Creation Date' => gmdate('Y-m-d H:i:s'),
+            'Number See Also Links'    => 5,
+            'editor'                   => $this->editor,
+
+
+            'Webpage Scope'                          => 'Product',
+            'Webpage Scope Key'                      => $product->id,
+            'Webpage Website Key'                    => $this->id,
+            'Webpage Store Key'                      => $product->get('Product Store Key'),
+            'Webpage Type Key'                       => $webpage_type->id,
+            'Webpage Code'                           => $page_code,
+            'Page Store Content Display Type'        => 'Template',
+            'Page Store Content Template Filename'   => 'product',
+
+
+            //--------   to remove ??
+            'Page Parent Key'                        => $product->id,
+            'Page Parent Code'                       => $product->get('Code'),
+            'Page Store Section Type'                => 'Product',
+            'Page Store Section'                     => 'Product Description',
+            'Page Store Last Update Date'            => gmdate('Y-m-d H:i:s'),
+            'Page Store Last Structural Change Date' => gmdate('Y-m-d H:i:s'),
+            'Page Locale'                            => $this->data['Website Locale'],
+            'Page Source Template'                   => '',
+            'Page Description'                       => '',
+            'Page Title'                             => $product->get('Name'),
+            'Page Short Title'                       => $product->get('Name'),
+            'Page Store Title'                       => $product->get('Name'),
+            'Page Header Key'                        => $site->data['Site Default Header Key'],
+            'Page Footer Key'                        => $site->data['Site Default Footer Key'],
+            //-------------------
+
+        );
+
+
+        $page = new Page('find', $page_data, 'create');
+
+
+        $webpage_type->update_number_webpages();
+
+        $page->update_version();
+
+
+        if ($page->new) {
+            $page->update_see_also();
+        }
+
+        $this->new_page     = $page->new;
+        $this->new_page_key = $page->id;
+        $this->msg          = $page->msg;
+        $this->error        = $page->error;
+
+
+
+        $content_data = array(
+            'description_block' => array(
+                'class' => '',
+
+                'content' => sprintf('<div class="description">%s</div>', $product->get('Description'))
+
+
+            ),
+            'tabs'              => array()
+
+        );
+
+        $page->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+
+
+
+        return $page->id;
+
+    }
+
+    function set_footer_template($template) {
 
 
         include_once 'conf/footer_data.php';
 
-        $footer_data=$this->get('Footer Data');
-        if(!$footer_data){
+        $footer_data = $this->get('Footer Data');
+        if (!$footer_data) {
 
-            $footer_data=array(
-                'template'=>$template,
-                'data'=>get_default_footer_data($this,$template)
+            $footer_data = array(
+                'template' => $template,
+                'data'     => get_default_footer_data($this, $template)
 
 
             );
 
 
+        } else {
+            $footer_data['template'] = $template;
+            if (isset($footer_data['legacy'][$template])) {
+                $footer_data['data'] = $footer_data['legacy'][$template]['data'];
 
-        }else{
-            $footer_data['template']=$template;
-            if(isset($footer_data['legacy'][$template])){
-                $footer_data['data']=$footer_data['legacy'][$template]['data'];
-
-            }else{
-                $footer_data['data']=get_default_footer_data($this,$template);
+            } else {
+                $footer_data['data'] = get_default_footer_data($this, $template);
             }
         }
 
 
-        $this->update(array('Website Footer Data'=>json_encode($footer_data)),'no_history');
+        $this->update(array('Website Footer Data' => json_encode($footer_data)), 'no_history');
 
 
     }

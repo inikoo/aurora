@@ -11,8 +11,8 @@
 */
 
 
-$_tmp=array();
-$object->create_category_webpage(28131,$_tmp);
+//$_tmp=array();
+//$object->create_category_webpage(28131,$_tmp);
 
 if (isset($options['new']) and $options['new']) {
     $new = true;
