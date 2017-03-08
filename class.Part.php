@@ -442,7 +442,27 @@ class Part extends Asset {
                     return $this->data['Part Status'];
                 }
                 break;
+            case 'Cost in Warehouse':
+                if ($this->data['Part Unit Price'] == '') {
+                    return _('Cost price not set up');
+                }
+                include_once 'utils/natural_language.php';
 
+
+                $sko_cost = sprintf('<span title="%s">%s/SKO</span>', _('SKO stock value'), money($this->data['Part Cost in Warehouse'], $account->get('Account Currency')));
+
+
+                $total_value=$this->data['Part Cost in Warehouse']*$this->get('Part Current On Hand Stock');
+
+                if($total_value>0){
+                    $total_value = sprintf('<span title="%s">%s</span>', _('Total stock value'), money($total_value ,$account->get('Account Currency')));
+                }else{
+                    $total_value='';
+                }
+
+
+                return $sko_cost.' <span class="discreet" style="margin-left:10px">'.$total_value.'</span>';
+                break;
             case 'SKO Cost in Warehouse - Price':
                 if ($this->data['Part Unit Price'] == '') {
                     return _('Cost price not set up');
@@ -3387,6 +3407,9 @@ class Part extends Asset {
                 break;
             case 'Part CPNP Number':
                 $label = _('CPNP number');
+                break;
+            case 'Part Cost in Warehouse':
+                $label = _('Stock value (per SKO)');
                 break;
             default:
                 $label = $field;
