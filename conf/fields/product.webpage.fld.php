@@ -40,6 +40,49 @@ asort($template_options);
 
 
 $product_fields = array(
+
+    array(
+        'label'      => _('Webpage state').' <span class="padding_left_10 Webpage_State_Edit_Label"><i class="fa fa-globe '.($object->webpage->get('Webpage State')=='Online'?'success':'super_discreet').'" aria-hidden="true"></i></span>',
+        'class'      => 'operations',
+
+        'show_title' => true,
+        'fields'     => array(
+
+
+            array(
+                'id'        => 'launch_webpage',
+                'render'=>($object->webpage->get('Webpage Launch Date')!=''?false:true),
+                'class'     => 'operation',
+                'value'     => '',
+                'label'     => ' <span webpage_key="'.$object->webpage->id.'" onClick="publish(this,\'publish_webpage\')" class="save changed valid">'._("Launch web page").' <i class="fa fa-rocket save changed valid"></i></span>',
+                'reference' => '',
+                'type'      => 'operation'
+            ),
+
+            array(
+                'id'        => 'unpublish_webpage',
+                'render'=>(($object->webpage->get('Webpage Launch Date')=='' or $object->webpage->get('Webpage State')=='Offline' ) ?false:true),
+                'class'     => 'operation',
+                'value'     => '',
+                'label'     => ' <span webpage_key="'.$object->webpage->id.'" onClick="publish(this,\'unpublish_webpage\')" class="error button ">'._("Unpublish web page").' <i class="fa fa-rocket  fa-flip-vertical error button"></i></span>',
+                'reference' => '',
+                'type'      => 'operation'
+            ),
+            array(
+                'id'        => 'republish_webpage',
+                'render'=>(($object->webpage->get('Webpage Launch Date')!='' and $object->webpage->get('Webpage State')=='Offline' ) ?true:false),
+                'class'     => 'operation',
+                'value'     => '',
+                'label'     => ' <span webpage_key="'.$object->webpage->id.'" onClick="publish(this,\'publish_webpage\')" class=" button ">'._("Republish web page").' <i class="fa fa-rocket   button"></i></span>',
+                'reference' => '',
+                'type'      => 'operation'
+            ),
+
+
+        )
+    ),
+
+
     array(
         'label'      => _('Webpage'),
         'show_title' => true,
@@ -57,21 +100,7 @@ $product_fields = array(
             ),
 
 */
-            array(
-                'id'                       => 'Product_Website_Node_Parent_Key',
-                'edit'                     => 'dropdown_select',
-                'scope'                    => 'web_node',
-                'parent'                   => 'website',
-                'parent_key'               => ($new ?: $object->webpage->get('Page Site Key')),
-                'value'                    => htmlspecialchars($object->webpage->get('Page Found In Page Key')),
-                'formatted_value'          => $object->webpage->get('Found In Page Key'),
-                'stripped_formatted_value' => '',
-                'label'                    => _('Found in'),
-                'required'                 => true,
-                'type'                     => ''
 
-
-            ),
 
             array(
                 'id'   => 'Product_Webpage_Name',
@@ -131,7 +160,7 @@ $product_fields = array(
 
 
 );
-
+/*
 $template_field = array(
 
 
@@ -168,8 +197,9 @@ $template_field = array(
 
 
 );
-
+*/
 $template_fields = array(
+
 
 
 
@@ -204,7 +234,9 @@ $template_fields = array(
 );
 
 $product_fields = array_merge(
-    $product_fields, $template_field,$template_fields
+    $product_fields,
+    //$template_field,
+    $template_fields
 );
 
 
