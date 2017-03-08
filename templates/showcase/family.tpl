@@ -168,17 +168,17 @@
                         <td colspan=2>
                             <table style="width:100%;;margin-top:10px;margin-bottom:10px" class="mesh">
                                 <tr >
-                                    <td style="width:22%" class="New_Products align_center discreet" title="{t}New products{/t}"><i class="fa fa-child" aria-hidden="true" title="{t}New products (less than 2 weeks){/t}"></i> {$category->get('New Products')}</td>
-                                    <td style="width:33%" class="Active_Products align_center" title="{t}Active products{/t}"><i class="fa fa-cube" aria-hidden="true"></i> {$category->get('Active Products')}{if $category->get('Product Category Discontinuing Products')>0}<span class="very_discreet" title="Discontinuing products">/{$category->get('Discontinuing Products')}</span>{/if}</td>
-                                    <td style="width:20%" class="Discontinuing_Products align_center discreet " title="{t}Suspended products{/t}"><i class="fa fa-cube discreet warning" aria-hidden="true" ></i> {$category->get('Suspended Products')}</td>
-                                    <td style="width:24%;" class="Discontinuing_Products align_center very_discreet" title="{t}Discontinued products{/t}"><i class="fa fa-cube very_discreet" aria-hidden="true" ></i> {$category->get('Discontinued Products')}</td>
+                                    <td style="width:20%" class="New_Products align_center discreet" title="{t}New products{/t}"><i class="fa fa-child" aria-hidden="true" title="{t}New products (less than 2 weeks){/t}"></i> {$category->get('New Products')}</td>
+                                    <td style="width:25%" class="Active_Products align_center" title="{t}Active products{/t}"><i class="fa fa-cube" aria-hidden="true"></i> {$category->get('Active Products')}</td>
+                                    <td style="width:25%" class="Discontinuing_Products align_center discreet " title="{t}Discontinuing products{/t}"><i class="fa fa-cube discreet warning" aria-hidden="true" ></i> {$category->get('Discontinuing Products')}</td>
+                                    <td style="width:30%;" class="Discontinued_Products align_center very_discreet" title="{t}Discontinued products{/t}"><i class="fa fa-cube very_discreet" aria-hidden="true" ></i> {$category->get('Discontinued Products')}  <span class="Suspended_Products_container {if $category->get('Suspended Products')==0}hide{/if}" title="{t}Suspended products{/t}">(<span class="Suspended_Products">{$category->get('Suspended Products')}</span>)</span>  </td>
                                 </tr>
                             </table>
                             <table style="width:100%;;margin-bottom:10px" class="mesh">
                                 <tr >
-                                    <td style="width:25%" class="Active_Web_For_Sale align_center discreet " title="{t}Active products online{/t}"><i class="fa fa-microphone " aria-hidden="true" "></i> {$category->get('Active Web For Sale')}</td>
-                                    <td style="width:25%" class="Active_Web_Out_of_Stock align_center " title="{t}Active products out of stock{/t}"><i class="fa fa-ban error " aria-hidden="true" "></i> {$category->get('Active Web Out of Stock')} {if $category->get('Product Category Active Web For Sale')>0 and $category->get('Product Category Active Web Out of Stock')>0 }({$category->get('Percentage Active Web Out of Stock')}){/if}</td>
-                                    <td style="width:25%" class="Active_Web_Offline align_center discreet" title="{t}Active products offline{/t}"><i class="fa fa-microphone-slash discreet " aria-hidden="true" "></i> {$category->get('Active Web Offline')}</td>
+                                    <td style="width:25%;border-right:1px  dashed #CCCCCC;" class="Active_Web_For_Sale_including_Out_of_Stock align_center discreet " title="{t}Products online{/t}"><i class="fa fa-microphone " aria-hidden="true" "></i> {$category->get('Active Web For Sale including Out of Stock')}</td>
+                                    <td style="width:25%;border-left:none" class="Active_Web_Out_of_Stock align_center " title="{t}Products out of stock{/t}"><i class="fa fa-ban error " aria-hidden="true" "></i> {$category->get('Active Web Out of Stock')} {if $category->get('Product Category Active Web For Sale')>0 and $category->get('Product Category Active Web Out of Stock')>0 }({$category->get('Percentage Active Web Out of Stock')}){/if}</td>
+                                    <td style="width:25%" class="Active_Web_Offline align_center discreet" title="{t}No public products{/t}"><i class="fa fa-microphone-slash discreet " aria-hidden="true" "></i> {$category->get('Active Web Offline')}</td>
                                 </tr>
                             </table>
                         </td>

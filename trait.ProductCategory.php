@@ -593,13 +593,15 @@ trait ProductCategory {
                 exit;
             }
 
-            if ($elements_status_numbers['Discontinued'] > 0 and $elements_status_numbers['Active'] == 0) {
+          //  print_r($elements_status_numbers);
+
+            if ($elements_status_numbers['Discontinued'] > 0 and $elements_status_numbers['Active'] == 0 and $elements_status_numbers['Discontinuing']==0 and  $elements_status_numbers['In Process'] ==0 and $elements_status_numbers['Suspended'] ==0) {
                 $category_status = 'Discontinued';
-            } elseif ($elements_status_numbers['Discontinuing'] > 0 and $elements_status_numbers['Active'] == 0) {
-                $category_status = 'Discontinuing';
-            } elseif ($elements_status_numbers['Suspended'] > 0 and $elements_status_numbers['Active'] == 0) {
+            } elseif ($elements_status_numbers['Suspended'] > 0 and $elements_status_numbers['Active'] == 0 and $elements_status_numbers['Discontinuing']==0 and  $elements_status_numbers['In Process'] ==0 ) {
                 $category_status = 'Suspended';
-            } elseif ($elements_status_numbers['In Process'] > 0 and $elements_status_numbers['Active'] == 0) {
+            }  elseif ($elements_status_numbers['Discontinuing'] > 0 and $elements_status_numbers['Active'] == 0 and  $elements_status_numbers['In Process'] ==0 ) {
+                $category_status = 'Discontinuing';
+            }elseif ($elements_status_numbers['In Process'] > 0 and $elements_status_numbers['Active'] == 0) {
                 $category_status = 'In Process';
             } else {
                 if ($elements_status_numbers['Active'] > 0) {
@@ -611,7 +613,6 @@ trait ProductCategory {
             }
 
 
-
             //'For Sale','Out of Stock','Discontinued','Offline'
 
             $sql = sprintf(
@@ -620,7 +621,7 @@ trait ProductCategory {
 
             );
 
-            //   print "$sql\n";
+            //  print "$sql\n";
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
