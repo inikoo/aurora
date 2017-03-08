@@ -542,4 +542,3 @@ costa important do this:
  update `Page Store Dimension` set `Webpage Launch Date`=`Page Store Creation Date` where   `Page Store Creation Date`!='0000-00-00 00:00:00' and   `Page Store Creation Date` is not NULL and `Webpage State`='Online';
 
 
-

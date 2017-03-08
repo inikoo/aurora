@@ -1,0 +1,56 @@
+.bac-slider-container {
+  position: relative;
+  margin: 0 auto
+}
+
+.bacslider-container {
+  position: absolute;
+  overflow: hidden;
+}
+
+.bacslider-container ul {
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
+.bacslider-container li {
+  list-style-type: none;
+  position: relative;
+  float: left;
+}
+
+.disable-link { pointer-events: none; }
+
+.prevli {
+  right: 20px;
+  background: url(prev.png);
+  cursor: pointer;
+  opacity: 0.7;
+}
+.prevli:hover {
+	opacity: 1;
+}
+.nextli {
+  right: 0px;
+  background: url(next.png);
+  cursor: pointer;
+  opacity: 0.7;
+}
+.nextli:hover {
+	opacity: 1;
+}
+
+/*.disable-link.prevli { background: none; }
+
+.disable-link.nextli { background: none; }*/
+
+.crousel-navigation {
+  position: absolute;
+  top: 7px;
+  width: 10px;
+  height: 18px;
+}
+
+
+

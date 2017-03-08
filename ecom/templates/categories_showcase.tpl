@@ -125,62 +125,14 @@
                                 {elseif $category_data.data.type=='image'}
                                     <div id="{$category_data.data.id}" style="position:relative" class=" panel image panel_{$category_data.data.size}">
 
-
-
-                                        <img  class="panel_image" src="{$category_data.data.image_src}"  title="{$category_data.data.caption}" />
-
-                                        <div class="panel_controls hide">
-                                            <div class="panel_settings buttons hide">
-
-
-
-
-                                                <div class="flex-item button" type="update_image" title="{t}Change image{/t}">
-                                                    <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
-                                                        <input type="file" name="image_upload"  panel_key="{$category_data.data.id}" id="file_upload_{$category_data.data.id}" class="input_file input_file_panel " multiple/>
-                                                        <label for="file_upload_{$category_data.data.id}">
-                                                            <i class="fa  fa-picture-o fa-fw button" aria-hidden="true"></i><br>
-                                                        </label>
-                                                    </form>
-                                                </div>
-                                                <div class="flex-item button" type="update_caption"><i class="fa fa-comment caption_icon" aria-hidden="true"></i></div>
-                                                <div class="flex-item button" type="update_link"><i class="fa fa-link link_url_icon link_icon" aria-hidden="true"></i></div>
-                                                <div class="flex-item button" type="delete_panel" title="{t}Delete panel{/t}"><i class="fa fa-trash error" aria-hidden="true"></i></div>
-                                            </div>
+                                        {if $category_data.data.link!=''}
+                                            <a href="{$category_data.data.link}"><img  class="panel_image" src="{$category_data.data.image_src}"  title="{$category_data.data.caption}" /></a>
+                                        {else}
+                                            <img  class="panel_image" src="{$product_data.data.image_src}"  title="{$product_data.data.caption}" />
+                                        {/if}
 
 
 
-
-
-                                            <div style="position: absolute;color: white;top:60px;left:12px">
-                                                {if $category_data.data.size=='1x'}
-                                                    220 x 220
-                                                {elseif $category_data.data.size=='2x'}
-                                                    457 x 320
-                                                {elseif $category_data.data.size=='3x'}
-                                                    696 x 320
-                                                {elseif $category_data.data.size=='4x'}
-                                                    934 x {t}any height{/t}
-                                                {/if}
-                                            </div>
-
-                                            {if  $category_data.stack_index%4==0}
-
-                                                <div class="buttons add_page_break " style="top:80px" >
-                                                    <div class="flex-item button" type="page_break" title="Page break" ><i class="fa  fa-window-minimize" aria-hidden="true" ></i></div>
-
-                                                </div>
-                                            {/if}
-
-
-
-                                            <div class="input_container caption hide column_{$stack_index % 4}  " style="">
-                                                <input  value="{$category_data.data.caption}" >
-                                            </div>
-                                            <div class="input_container link_url hide column_{$stack_index % 4}  " style="">
-                                                <input  value="{$category_data.data.link}" placeholder="http://">
-                                            </div>
-                                        </div>
                                     </div>
                                 {elseif $category_data.data.type=='code'}
                                     <div id="{$category_data.data.id}" code_key="{$category_data.data.key}" style="position:relative;" class=" panel image panel_{$category_data.data.size}">

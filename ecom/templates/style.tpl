@@ -1,5 +1,75 @@
    <style>
 
+          .sim_button{
+                 cursor:pointer;
+
+          }
+          .warp
+          {
+                 width: 100%;
+
+
+                 padding: 10px 10px;
+
+                 display: flex;
+                 justify-content: center; /* align horizontal */
+                 flex-flow: row wrap;
+
+
+          }
+
+          .warp div.warp_element
+          {
+
+                 float: left;
+                 margin: 10px 5px   ;
+
+          }
+
+
+
+          .more_info{
+                 font-size:22px;cursor:pointer;position:absolute;width:40px;top:2px;right:-19px;color:darkorange;z-index:1
+          }
+
+
+          .product_showcase .favourite{
+                 background-color: inherit;
+                 color: darkgray;cursor:pointer;z-index:1
+          }
+
+          .product_footer.favourite{
+                 padding:6px 10px 2px 10px;
+                 border-top:1px solid #ccc
+          }
+
+          .product_showcase .favourite i.marked{
+
+                 color: deeppink;
+          }
+
+
+
+          .asset_container{
+
+       line-height: normal;
+
+
+                 font-family: "Ubuntu",Helvetica,Arial,sans-serif;
+                 color:rgb(85, 85, 85);
+                 font-size:14px;
+
+
+}
+
+.asset_container p {
+       line-height: normal;
+       font-family: "Ubuntu",Helvetica,Arial,sans-serif;
+       color:rgb(85, 85, 85);
+       font-size:14px;
+
+}
+
 
 
           .product_description_block{
@@ -45,21 +115,6 @@ width:100%;
 
           .hide{
          display:none}
-
-     @font-face {
-         font-family: 'Ubuntu';
-         font-style: normal;
-         font-weight: 300;
-         src: local('Ubuntu Light'), local('Ubuntu-Light'), url("/fonts/ubuntu300.woff2") format('woff2');
-     }
-
-     @font-face {
-         font-family: 'Ubuntu';
-         font-style: normal;
-         font-weight: 700;
-         src: local('Ubuntu Bold'), local('Ubuntu-Bold'), url("/fonts/ubuntu700.woff2") format('woff2');
-     }
-
      p{
          margin: 1em 0px;
 
@@ -97,15 +152,6 @@ h1{
 
 }
 
-
-    #page_content{
-
-
-        font-family: "Ubuntu",Helvetica,Arial,sans-serif;
-        color:rgb(85, 85, 85);
-        font-size:14px;
-
-    }
 
 
 
@@ -201,11 +247,11 @@ h1{
 
 
     .product_description{
-        padding-left:10px;padding-right:10px;display:block;height:51px;
+        padding-left:10px;padding-right:10px;display:block;height:51px !important;;
     }
 
     .product_prices{
-        padding-left:10px;padding-right:10px;display:block;height:37px;
+        padding-left:10px;padding-right:10px;display:block;height:37px !important;
     }
 
 
@@ -221,10 +267,6 @@ h1{
 
 
 
-     .more_info{
-            font-size:25px;cursor:pointer;position:absolute;width:40px;top:5px;left:182px;color:darkorange;z-index:1
-     }
-
 
 
     .description_block{
@@ -238,7 +280,7 @@ h1{
         }
 
     .ordering.log_out span {
-        height:28px;
+        height:28px !important;
         padding:7px 20px 5px 10px;
         display:block;height:20px;cursor:pointer;
         font-weight: 800;
@@ -259,92 +301,47 @@ h1{
 
 
 
-
     .order_input{
-        float:left;position:relative;top:2px;border-right:none;border-left:none;height:20px;width:40px
+           float:left;width:45px;height: 20px;border:none;border-top:1px solid #ccc;border-bottom:1px solid #ccc;position:relative;top:0px
     }
 
 
 
-    .product_footer{
-        height:28px;position:relative;top:2px;
-       padding:7px 20px 3px 10px;
-        display:block;height:20px;cursor:pointer;
-        float:left;font-weight: 800;
-    }
-
-
-    .can_not_order .product_footer{
-        color:#fff;
-        background-color: darkgray;cursor:auto;
-
-    }
-
-    .can_not_order.out_of_stock .product_footer{
-        color:#fff;
-        background-color: darkgray;
-
-    }
-
-    .can_not_order.launching_soon .product_footer{
-        color:#fff;
-        background-color: darkseagreen;
+    .order_row,.out_of_stock_row{
+           width: 100%;background-color: orange;color:white;height:30px;line-height: 30px;text-align:center;padding:0px;position: absolute;bottom:0; text-align: left;
 
     }
 
 
-    .can_not_order .product_footer.label{
-        width:154px;
-    }
+          .order_row.empty:hover{
+                 background-color: firebrick;
 
-    .can_not_order .product_footer.reminder{
-        padding:6px 10px 2px 10px;
-        background-color: inherit;
-        color: darkgray;border-top:1px solid darkgray;cursor:pointer;
-    }
-    
-     .can_not_order .product_footer.reminder.lock{
-       background-color: #f7f7f7
-     }
-
-    .can_not_order.launching_soon .product_footer.reminder{
-        border-top:1px solid darkseagreen;
-        color: darkseagreen;
-    }
-
-
-
-
-    .product_showcase .favourite{
-        background-color: inherit;
-        color: darkgray;cursor:pointer
-    }
-
-          .product_footer.favourite{
-                 padding:6px 10px 2px 10px;
-                 border-top:1px solid #ccc
           }
 
-    .product_showcase .favourite i.marked{
 
-        color: deeppink;
-    }
+          .order_row.ordered{
+                 background-color: firebrick;
 
-    .product_footer.order_button{
-        width:102px;
-        color:#fff;
-        background-color: orange;
-    }
+          }
 
-    .product_footer.order_button:hover{
-        color:#fff;
-        background-color: maroon;
-    }
+          .out_of_stock_row.out_of_stock{
+                 background-color: darkgray
 
-    .product_footer.order_button.ordered{
-        color:#fff;
-        background-color: maroon;
-    }
+          }
+
+          .out_of_stock_row.launching_soon{
+                 background-color: darkseagreen;
+
+          }
+
+          .order_row .label,.out_of_stock_row .label{
+
+                padding-left:10px;font-weight: 800;
+
+          }
+
+
+
 
 
     .product_image{

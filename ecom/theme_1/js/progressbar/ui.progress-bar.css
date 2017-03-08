@@ -1,0 +1,203 @@
+
+/* Webkit animation keyframes */
+@-webkit-keyframes animate-stripes {
+  from {
+    background-position: 0 0;
+  }
+  
+  to {
+   background-position: 44px 0;
+  }
+}
+
+.ui-progress-bar {
+  position: relative;
+  height: 35px;
+  padding-right: 2px;
+  border-bottom: 10px solid #e0e0e0;
+  margin-top: -25px;
+  
+}
+.ui-progress {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  height: 35px;
+  border-bottom: 10px solid #8abfed;
+}
+.ui-progress.two {
+  border-bottom: 10px solid #b2c676;
+}
+.ui-progress.three {
+  border-bottom: 10px solid #b192d0;
+}
+.ui-progress.four {
+  border-bottom: 10px solid #e7d18d;
+}
+.ui-progress.five {
+  border-bottom: 10px solid #f39191;
+}
+.ui-progress span.ui-label {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  text-transform: uppercase;
+  font-size: 16px;
+  color: #272727;
+  position: absolute;
+  right: 0;
+  line-height: 20px;
+  padding-right: 12px;
+  white-space: nowrap;
+  
+}
+
+.ui-progress-bar.small {
+  height: 34px;
+  border-bottom: 8px solid #e0e0e0;
+  margin-top: -35px;
+  
+}
+.ui-progress.small {
+  height: 34px;
+  border-bottom: 8px solid #8abfed;
+}
+.ui-progress.small.two {
+  border-bottom: 8px solid #b2c676;
+}
+.ui-progress.small.three {
+  border-bottom: 8px solid #b192d0;
+}
+.ui-progress.small.four {
+  border-bottom: 8px solid #e7d18d;
+}
+.ui-progress.small.five {
+  border-bottom: 8px solid #f39191;
+}
+
+
+.ui-progress-bar2 {
+  position: relative;
+  height: 46px;
+  padding-right: 2px;
+  border-bottom: 10px solid #e0e0e0;
+  margin-top: -29px;
+  
+}
+.ui-progress2 {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  height: 46px;
+  border-bottom: 10px solid #8abfed;
+}
+.ui-progress2.two {
+  border-bottom: 10px solid #b2c676;
+}
+.ui-progress2.three {
+  border-bottom: 10px solid #b192d0;
+}
+.ui-progress2.four {
+  border-bottom: 10px solid #e7d18d;
+}
+.ui-progress2.five {
+  border-bottom: 10px solid #f39191;
+}
+.ui-progress2 span.ui-label {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  text-transform: uppercase;
+  font-size: 13px;
+  color: #fff;
+  position: absolute;
+  right: 0;
+  line-height: 28px;
+  padding-right: 12px;
+  white-space: nowrap;
+}
+.ui-progress2 b {
+	float: left;
+	width: 40px;
+	height: 40px;
+	text-align: center;
+	background: url(../../images/tooltop-graph.png) no-repeat center top;
+}
+
+
+
+.ui-progress-bar3 {
+  position: relative;
+  height: 35px;
+  padding-right: 2px;
+  border-bottom: 10px solid #e0e0e0;
+  margin-top: -25px;
+  
+}
+.ui-progress3 {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  height: 35px;
+  border-bottom: 10px solid #999;
+}
+.ui-progress3 span.ui-label {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  text-transform: uppercase;
+  font-size: 16px;
+  color: #272727;
+  position: absolute;
+  right: 0;
+  line-height: 20px;
+  padding-right: 12px;
+  white-space: nowrap;
+  
+}
+
+
+.ui-progress-bar4 {
+  position: relative;
+  height: 27px;
+  padding-right: 2px;
+  background-color: #e0e0e0;
+  margin-top: -10px;
+  border-radius: 14px;
+}
+.ui-progress4 {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  height: 27px;
+  background-color: #272727;
+  border-radius: 14px;
+}
+.ui-progress4 span.ui-label {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  text-transform: uppercase;
+  font-size: 14px;
+  color: #fff;
+  position: absolute;
+  right: 0;
+  line-height: 27px;
+  padding-right: 30px;
+  white-space: nowrap;
+  
+}
+
+.ui-progress-bar4.color {
+  height: 22px;
+  border-radius: 14px;
+  margin-top: -5px;
+}
+.ui-progress4.color {
+  height: 22px;
+  border-radius: 14px;
+  background-color: #e54c4c;
+}
+.ui-progress4 span.ui-label {
+  line-height: 22px;
+}
+
+.pro_bar h5 {
+	font-weight: 500;
+}

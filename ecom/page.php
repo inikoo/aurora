@@ -104,7 +104,14 @@ if (!$is_cached) {
     $page->customer        = $customer;
 
 
-    if (in_array($page->get('Page Store Content Template Filename'), array('products_showcase','categories_showcase','')) and $page->get('Page Store Content Display Type') == 'Template') {
+    if (in_array(
+            $page->get('Page Store Content Template Filename'), array(
+                                                                  'products_showcase',
+                                                                  'categories_showcase',
+                                                                  ''
+                                                              )
+        ) and $page->get('Page Store Content Display Type') == 'Template'
+    ) {
         $version = 2;
     } else {
         $version = 1;
@@ -122,8 +129,6 @@ if (!$is_cached) {
 
     $css_files = array();
     $js_files  = array();
-
-
 
 
     if ($version == 1) {
@@ -176,14 +181,14 @@ if (!$is_cached) {
     // Dont put YUI stuff in normal assets pages (except if is inikoo -check out-)
     if (!$site->data['Site Checkout Method'] == 'Inikoo' and !in_array(
             $page->data['Page Store Section'], array(
-            'Registration',
-            'Client Section',
-            'Checkout',
-            'Login',
-            'Welcome',
-            'Reset',
-            'Basket'
-        )
+                                                 'Registration',
+                                                 'Client Section',
+                                                 'Checkout',
+                                                 'Login',
+                                                 'Welcome',
+                                                 'Reset',
+                                                 'Basket'
+                                             )
         )
     ) {
         $base_js_files = array();
@@ -260,9 +265,6 @@ if (!$is_cached) {
         }
 
 
-
-
-
         if ($page->data['Page Code'] == 'login') {
 
             //if (strpos((isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:''), 'Chrome') !== false) {
@@ -293,7 +295,7 @@ if (!$is_cached) {
     $js_files[] = 'js/edit_currency.js';
 
 
-    if($version==1) {
+    if ($version == 1) {
         $js_files[]  = sprintf(INIKOO_ACCOUNT."_js/page_%05d.js", $page->id);
         $css_files[] = sprintf(INIKOO_ACCOUNT."_css/page_%05d.css", $page->id);
     }
@@ -318,11 +320,6 @@ if (!$is_cached) {
     }
 
 
-
-
-
-
-
     $css_files[] = sprintf(INIKOO_ACCOUNT."_css/menu_%02d.css", $site->id);
 
     $js_no_async_files = array();
@@ -333,7 +330,7 @@ if (!$is_cached) {
 
     $css_files = array_merge($base_css_files, $css_files);
 
-   // print_r($css_files);
+    // print_r($css_files);
 
     $js_files = array_merge($base_js_files, $js_files);
 
@@ -347,6 +344,160 @@ if (!$is_cached) {
 }
 
 
-$smarty->display('page.tpl', $page_key);
+if ($page->get('Webpage Version') == 2) {
+
+
+    $footer_data = array(
+        'rows' => array(
+            array(
+                'type'    => 'main_4',
+                'columns' => array(
+
+                    array(
+                        'type' => 'address',
+
+                        'items' => array(
+
+                        array(
+                                'type'=>'logo',
+                                'src'   => 'theme_1/images/footer-logo.png',
+                                'alt'   => '',
+                                'title' => ''
+
+                            ),
+                         array(
+                                'type'=>'text',
+                                'icon' => 'fa-map-marker ',
+                                'text' => '2901 Marmora Road, Glassgow,<br>Seattle, WA 98122-1090'
+                            ),
+                          array(
+                                'type'=>'text',
+                                'icon' => 'fa-phone',
+                                'text' => '1 -234 -456 -7890'
+                            ),
+                     array(
+                                'type'=>'email',
+                                'text' => 'info@yourdomain.com'
+                            ),
+                           array(
+                                'type'=>'logo',
+                                'src'   => 'theme_1/images/footer-wmap.png',
+                                'alt'   => '',
+                                'title' => ''
+
+                            ),
+                        ),
+
+
+                    ),
+
+                    array(
+                        'type'   => 'links',
+                        'header' => 'Useful Links',
+
+                        'items' => array(
+                            array(
+                                'url'   => '#',
+                                'label' => 'Home Page Variations'
+                            ),
+                            array(
+                                'url'   => '#',
+                                'label' => 'Awsome Slidershows'
+                            ),
+                            array(
+                                'url'   => '#',
+                                'label' => 'Features and Typography'
+                            )
+                        )
+                    ),
+
+                    array(
+                        'type'   => 'links',
+                        'header' => 'Useful Links 2',
+                        'items'  => array(
+                            array(
+                                'url'   => '#',
+                                'label' => 'Home Page Variations'
+                            ),
+                            array(
+                                'url'   => '#',
+                                'label' => 'Awsome Slidershows'
+                            ),
+                            array(
+                                'url'   => '#',
+                                'label' => 'Features and Typography'
+                            )
+                        )
+                    ),
+
+
+                    array(
+                        'type'    => 'text',
+                        'header'  => 'About Us',
+                        'text' => '
+                        
+                        <p>All the Lorem Ipsum generators on the Internet tend to repeat predefined</p>
+                        <br />
+                        <p>An chunks as necessary, making this the first true generator on the Internet. Lorem Ipsum as their default model text, and a search for lorem ipsum will uncover desktop publishing packages many purpose web sites.</p>
+
+                        '
+                    )
+
+                )
+
+            ),
+            array(
+                'type' => 'copyright',
+                'columns' => array(
+                    array(
+                        'type'=>'text',
+                        'text'=>'Copyright © 2014 Aaika.com. All rights reserved.  <a href="#">Terms of Use</a> | <a href="#">Privacy Policy</a>'
+
+                    ),
+                    array(
+                        'type'=>'social_links',
+                        'items'=>array(
+                            array(
+                                'icon' => 'fa-facebook',
+                                'url' => '#'
+
+                            )
+
+                        ),
+                        'items'=>array(
+                            array(
+                                'icon' => 'fa-twitter',
+                                'url' => '#'
+
+                            ),
+                            array(
+                                'icon' => 'fa-linkedin',
+                                'url' => '#'
+
+                            )
+
+                        )
+
+
+
+                    )
+
+    )
+
+            )
+
+        )
+
+
+    );
+    $smarty->assign('footer_data', $footer_data);
+
+
+    $smarty->display('webpage.tpl', $page_key);
+
+} else {
+    $smarty->display('page.tpl', $page_key);
+}
+
 
 ?>
