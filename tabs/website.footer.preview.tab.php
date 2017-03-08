@@ -9,10 +9,6 @@
 
 */
 
-
-
-
-$html ='';// $smarty->fetch('footer_preview.tpl');
-
+$html = $smarty->fetch('footer_preview.tpl');
 
 ?>

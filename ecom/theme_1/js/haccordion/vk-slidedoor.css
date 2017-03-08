@@ -1,0 +1,67 @@
+.vk-slidedoor{
+    position: relative;
+    overflow: hidden;
+    margin: 0px auto;
+    height: 280px;
+	float: left;
+}
+.vk-slidedoor .slidedoor-wrap{
+    position: relative;
+}
+.vk-slidedoor dl{
+    position: absolute;
+    margin: 0; 
+    height: 280px;
+}
+.vk-slidedoor dt{
+    float: left;
+    width: 45px;
+    padding: 0px 0px;
+    margin: 0;
+    height: 280px;
+    text-align: center;
+    word-wrap: break-word;
+    background: #272727;
+    font-size: 16px;
+	color: #fff;
+	border-right: 1px solid #454545;
+	transition: all 0.3s ease;
+}
+.en-US dt, .vi dt{
+    position: relative;
+}
+.en-US dt span, .vi dt span{
+    position: absolute;
+    left: -74px;
+    bottom: 100px;
+    display: block;
+    text-align: center;
+    width: 188px;
+    -webkit-transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+	text-align: left;
+}
+.vk-slidedoor dt:hover{
+    background: #454545;
+    cursor: pointer;
+}
+.vk-slidedoor .current dt{
+    background: #454545;
+}
+.vk-slidedoor dd{
+    margin: 0;
+    float: left;
+    width: 334px;
+    height: 280px;
+	padding: 30px 30px;
+    position: relative;
+    background: #eee;
+}
+.vk-slidedoor dd h3 {
+	margin-bottom: 8px;
+}
+
+

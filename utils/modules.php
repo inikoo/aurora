@@ -64,12 +64,8 @@ $_product = array(
             'label'   => _('Customers'),
             'subtabs' => array(
                 'product.customers.customers'  => array(
-                    'label' => _(
-                        'Customers'
-                    ),
-                    'title' => _(
-                        'Customers'
-                    )
+                    'label' => _('Customers')
+
                 ),
                 'product.customers.favourites' => array(
                     'label' => _(
@@ -1288,9 +1284,9 @@ $modules = array(
                     'website.offline_webpages'             => 'website.content',
 
                     'website.footer.preview'  => 'website.footer',
-                    'website.footer.templates' => 'website.footer',
+                //    'website.footer.templates' => 'website.footer',
                     'website.header.preview'  => 'website.header',
-                    'website.header.templates' => 'website.header',
+               //     'website.header.templates' => 'website.header',
 
 
                     'website.templates.categories' => 'website.templates',
@@ -1457,11 +1453,6 @@ $modules = array(
                                     'Preview'
                                 ),
                                 'icon'  => 'eye'
-                            ),
-                            'website.header.versions' => array(
-                                'label' => _('Templates'),
-                                'icon'  => 'code-fork',
-
                             )
 
                         ),
@@ -1478,11 +1469,6 @@ $modules = array(
                                     'Preview'
                                 ),
                                 'icon'  => 'eye'
-                            ),
-                            'website.footer.templates' => array(
-                                'label' => _('Templates'),
-                                'icon'  => 'code-fork',
-
                             )
 
                         ),

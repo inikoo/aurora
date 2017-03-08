@@ -5,7 +5,7 @@
 {include file="style.tpl" css=$category->webpage->get('Published CSS') }
 
 
-<div id="page_content">
+<div id="page_content" class="asset_container">
 
     {if $category->get('Product Category Status')=='Discontinued'}
         <div  class="section description_block alert alert-error alert-title" style="text-align:center">
@@ -28,7 +28,7 @@
         
         {if $data.type=='text'}
            
-        <div id="{$id}" class="webpage_content_header fr-view">
+        <div id="{$id}" class="webpage_content_header fr-view text">
             {$data.content}
         </div>
         {elseif $data.type=='image'}
@@ -51,15 +51,28 @@
             {t}Sorry, but all products in this web page are discontinued{/t}
         </div>
     {/if}
-    
-    <div id="products" class="product_blocks ">
-    
+
+
+    <div class="warp">
     {foreach from=$products item=product_data key=stack_index}
-        <div class="product_wrap">
+
+
+        <div class="warp_element">
+
+
 
             {if $product_data.type=='product'}
             {assign 'product' $product_data.object}
-            <div id="product_target_div_{$stack_index}" stack_index="{$stack_index}"  product_code="{$product->get('Code')}" product_id="{$product->id}"  class="product_block product_showcase " style="margin-bottom:20px;position:relative">
+            <div id="product_target_div_{$stack_index}" stack_index="{$stack_index}"  product_code="{$product->get('Code')}" product_id="{$product->id}"  class="product_block product_showcase "
+                 style="position:relative;border-bottom:none;">
+
+
+
+                <i class="fa fa-info-circle more_info" aria-hidden="true" title="More info"></i>
+
+                {assign 'favourite_key' {$product->get('Favourite Key',{$customer->id})} }
+                <span style="position:absolute;top:5px;left:5px" class="  favourite  " favourite_key={$favourite_key} ><i class="fa {if $favourite_key}fa-heart marked{else}fa-heart-o{/if}" aria-hidden="true"></i>  </span>
+
 
 
                 <div class="product_header_text fr-view" >
@@ -69,7 +82,7 @@
 
                <a href="page.php?id={$product->get('Webpage Key')}">  
                <div class="wrap_to_center product_image" >
-                   <i class="fa fa-info-circle more_info" aria-hidden="true" title="More info"></i>
+
 
                     <img draggable="false" src="{$product->get('Image')}" />
                  </div>
@@ -96,30 +109,34 @@
                 {if $logged}
 
                 {if $product->get('Web State')=='Out of Stock'}
-                    <div class="ordering log_in can_not_order {$product->get('Out of Stock Class')} ">
-                        
-                        {assign 'reminder_key' {$product->get('Reminder Key',{$user->id})} }
-
-                        <span class="product_footer label ">{$product->get('Out of Stock Label')}</span>
-                        <span class="product_footer reminder" reminder_key="{$reminder_key}"><i  title="{if $reminder_key>0}{t}Click to remove notification{/t}{else}{t}Click to be notified by email{/t}{/if}"   class="fa {if $reminder_key>0}fa-envelope{else}fa-envelope-o{/if}" aria-hidden="true"></i>  </span>
 
 
-                    </div>
+                    {assign 'reminder_key' {$product->get('Reminder Key',{$user->id})} }
+<div  class="out_of_stock_row {$product->get('Out of Stock Class')}"  >
+    <span class="label">
+    {$product->get('Out of Stock Label')}
+    <span  class="label sim_button " > <i reminder_key="{$reminder_key}" title="{if $reminder_key>0}{t}Click to remove notification{/t}{else}{t}Click to be notified by email{/t}{/if}"   class="reminder fa {if $reminder_key>0}fa-envelope{else}fa-envelope-o{/if}" aria-hidden="true"></i>  </span>
+    </span>
+</div>
+
+
+
+
+
+
                 {else if $product->get('Web State')=='For Sale'}
-
-                <div class="ordering log_in " >
-                {assign 'quantity_ordered' $product->get('Ordered Quantity',$order->id) }
-                    <input maxlength=6  class='order_input ' id='but_qty{$product->id}'   type="text"' size='2'  value='{$quantity_ordered}' ovalue='{$quantity_ordered}'>
-                     {if $quantity_ordered==''}
-                    <span class="product_footer order_button "><i class="fa fa-hand-pointer-o fa-fw" aria-hidden="true"></i> <span class="order_button_text">{t}Order now{/t}</span></span>
-                     {else}
-                         <span class="product_footer order_button ordered"><i class="fa  fa-thumbs-o-up fa-flip-horizontal fa-fw" aria-hidden="true"></i> <span class="order_button_text">{t}Ordered{/t}</span></span>
-                     {/if}
-                     {assign 'favourite_key' {$product->get('Favourite Key',{$customer->id})} }
-                     <span class="product_footer  favourite  " favourite_key={$favourite_key} ><i class="fa {if $favourite_key}fa-heart marked{else}fa-heart-o{/if}" aria-hidden="true"></i>  </span>
-
+                    {assign 'quantity_ordered' $product->get('Ordered Quantity',$order->id) }
+                <div class="order_row {if $quantity_ordered!=''}ordered{else}empty{/if}"      >
+                    <input maxlength=6  style="" class='order_input ' id='but_qty{$product->id}'   type="text"' size='2'  value='{$quantity_ordered}' ovalue='{$quantity_ordered}'>
+                    {if $quantity_ordered==''}
+                        <div class="label sim_button" style="margin-left:57px"  ><i class="fa fa-hand-pointer-o fa-fw" aria-hidden="true"></i> <span class="">{t}Order now{/t}</span></div>
+                    {else}
+                        <span class="label sim_button"><i class="fa  fa-thumbs-o-up fa-flip-horizontal fa-fw" aria-hidden="true"></i> <span class="">{t}Ordered{/t}</span></span>
+                    {/if}
 
                 </div>
+
+
 
 
 
@@ -190,95 +207,111 @@
             {/if}
         </div>
     {/foreach}
-    <div style="clear:both"></div>
     </div>
 
+    <div   class=" {if $related_products|@count eq 0}hide{/if}">
+        <div class="title" style="text-align: center">{t}Related products{/t}</div>
 
-    <div   class="product_blocks {if $related_products|@count eq 0}hide{/if}">
-        <div class="title">{t}Related products{/t}:</div>
+        <div class="warp">
         {foreach from=$related_products item=product_data key=stack_index}
-            {assign 'product' $product_data.object}
-
-            <div class="product_wrap">
-
-        <div id="product_target_div_{$stack_index}" stack_index="{$stack_index}"  product_code="{$product->get('Code')}" product_id="{$product->id}"  class="product_block product_showcase " style="margin-bottom:20px;position:relative">
 
 
-            <div class="product_header_text fr-view" >
-                {$product_data.header_text}
+            <div class="warp_element">
+
+
+
+
+                    {assign 'product' $product_data.object}
+                    <div id="product_target_div_{$stack_index}" stack_index="{$stack_index}"  product_code="{$product->get('Code')}" product_id="{$product->id}"  class="product_block product_showcase "
+                         style="position:relative;border-bottom:none;">
+
+
+
+                        <i class="fa fa-info-circle more_info" aria-hidden="true" title="More info"></i>
+
+                        {assign 'favourite_key' {$product->get('Favourite Key',{$customer->id})} }
+                        <span style="position:absolute;top:5px;left:5px" class="  favourite  " favourite_key={$favourite_key} ><i class="fa {if $favourite_key}fa-heart marked{else}fa-heart-o{/if}" aria-hidden="true"></i>  </span>
+
+
+
+                        <div class="product_header_text fr-view" >
+                            {$product_data.header_text}
+                        </div>
+
+
+                        <a href="page.php?id={$product->get('Webpage Key')}">
+                            <div class="wrap_to_center product_image" >
+
+
+                                <img draggable="false" src="{$product->get('Image')}" />
+                            </div>
+                        </a>
+
+                        <div class="product_description"  >
+                            <span class="code">{$product->get('Code')}</span>
+                            <div class="name item_name">{$product->get('Name')}</div>
+
+                        </div>
+
+                        {if $logged}
+                            <div class="product_prices log_in " >
+                                <div class="product_price">{t}Price{/t}: {$product->get('Price')}</div>
+                                {assign 'rrp' $product->get('RRP')}
+                                {if $rrp!=''}<div>{t}RRP{/t}: {$rrp}</div>{/if}
+                            </div>
+                        {else}
+                            <div class="product_prices log_out" >
+                                <div >{t}For prices, please login or register{/t}</div>
+                            </div>
+                        {/if}
+
+                        {if $logged}
+
+                            {if $product->get('Web State')=='Out of Stock'}
+
+
+                                {assign 'reminder_key' {$product->get('Reminder Key',{$user->id})} }
+                                <div  class="order_row {$product->get('Out of Stock Class')}"  >
+    <span class="label">
+    {$product->get('Out of Stock Label')}
+        <span  class="label sim_button " > <i reminder_key="{$reminder_key}" title="{if $reminder_key>0}{t}Click to remove notification{/t}{else}{t}Click to be notified by email{/t}{/if}"   class="reminder fa {if $reminder_key>0}fa-envelope{else}fa-envelope-o{/if}" aria-hidden="true"></i>  </span>
+    </span>
+                                </div>
+
+
+
+
+
+
+                            {else if $product->get('Web State')=='For Sale'}
+                                {assign 'quantity_ordered' $product->get('Ordered Quantity',$order->id) }
+                                <div class="order_row {if $quantity_ordered!=''}ordered{else}empty{/if}"      >
+                                    <input maxlength=6  style="" class='order_input ' id='but_qty{$product->id}'   type="text"' size='2'  value='{$quantity_ordered}' ovalue='{$quantity_ordered}'>
+                                    {if $quantity_ordered==''}
+                                        <div class="label sim_button" style="margin-left:57px"  ><i class="fa fa-hand-pointer-o fa-fw" aria-hidden="true"></i> <span class="">{t}Order now{/t}</span></div>
+                                    {else}
+                                        <span class="label sim_button"><i class="fa  fa-thumbs-o-up fa-flip-horizontal fa-fw" aria-hidden="true"></i> <span class="">{t}Ordered{/t}</span></span>
+                                    {/if}
+
+                                </div>
+
+
+
+
+
+                            {/if}
+                        {else}
+                            <div class="ordering log_out " >
+                                <div ><span onClick="location.href='login.php?from={$page->id}'" class="button login_button label_when_log_out" >{t}Login{/t}</span></div>
+                                <div ><span onClick="location.href='registration.php'" class="button register_button label_when_log_out" >{t}Register{/t}</span></div>
+                            </div>
+                        {/if}
+
+                    </div>
+
+
             </div>
 
-
-
-            <a href="page.php?id={$product->get('Webpage Key')}">
-                <div class="wrap_to_center product_image" >
-                    <i class="fa fa-info-circle more_info" aria-hidden="true" title="More info"></i>
-
-                    <img draggable="false" src="{$product->get('Image')}" />
-                </div>
-            </a>
-
-
-
-
-        <div class="product_description"  >
-            <span class="code">{$product->get('Code')}</span>
-            <div class="name item_name">{$product->get('Name')}</div>
-
-        </div>
-
-        {if $logged}
-            <div class="product_prices log_in " >
-                <div class="product_price">{t}Price{/t}: {$product->get('Price')}</div>
-                {assign 'rrp' $product->get('RRP')}
-                {if $rrp!=''}<div>{t}RRP{/t}: {$rrp}</div>{/if}
-            </div>
-        {else}
-            <div class="product_prices log_out" >
-                <div >{t}For prices, please login or register{/t}</div>
-            </div>
-        {/if}
-
-        {if $logged}
-
-            {if $product->get('Web State')=='Out of Stock'}
-                <div class="ordering log_in can_not_order {$product->get('Out of Stock Class')} ">
-
-                    {assign 'reminder_key' {$product->get('Reminder Key',{$user->id})} }
-
-                    <span class="product_footer label " style="width: 300px">{$product->get('Out of Stock Label')}</span>
-                    <span style="border-top:none" class="product_footer reminder" reminder_key="{$reminder_key}"><i class="fa {if $reminder_key>0}fa-envelope{else}fa-envelope-o{/if}" aria-hidden="true"></i>  </span>
-
-
-                </div>
-            {else if $product->get('Web State')=='For Sale'}
-
-                <div class="ordering log_in " >
-                    {assign 'quantity_ordered' $product->get('Ordered Quantity',$order->id) }
-                    <input maxlength=6  class='order_input ' id='but_qty{$product->id}'   type="text"' size='2'  value='{$quantity_ordered}' ovalue='{$quantity_ordered}'>
-                    {if $quantity_ordered==''}
-                        <span class="product_footer order_button "><i class="fa fa-hand-pointer-o fa-fw" aria-hidden="true"></i> <span class="order_button_text">{t}Order now{/t}</span>></span>
-                    {else}
-                        <span class="product_footer order_button ordered"><i class="fa  fa-thumbs-o-up fa-flip-horizontal fa-fw" aria-hidden="true"></i> <span class="order_button_text">{t}Ordered{/t}</span></span>
-                    {/if}
-                    {assign 'favourite_key' {$product->get('Favourite Key',{$customer->id})} }
-                    <span class="product_footer  favourite  " favourite_key={$favourite_key} ><i class="fa {if $favourite_key}fa-heart marked{else}fa-heart-o{/if}" aria-hidden="true"></i>  </span>
-
-
-                </div>
-
-
-
-            {/if}
-        {else}
-            <div class="ordering log_out " >
-                <div ><span onClick="location.href='login.php?from={$page->id}'" class="button login_button label_when_log_out" >{t}Login{/t}</span></div>
-                <div ><span onClick="location.href='registration.php'" class="button register_button label_when_log_out" >{t}Register{/t}</span></div>
-            </div>
-        {/if}
-
-    </div>
-        </div>
         {/foreach}
         <div style="clear:both"></div>
     </div>

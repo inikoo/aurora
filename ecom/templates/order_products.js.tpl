@@ -10,7 +10,7 @@
     
         $(this).addClass('lock')
     
-        var icon= $( this ).find('i');
+        var icon= $( this )
 
     
 
@@ -81,41 +81,55 @@
     });
     
     
-    $('.order_button').hover(
+    $('.order_row .label').hover(
             function() {
-                var input= $( this ).closest('.ordering').find('.order_input');
+
+
+                var input= $( this ).closest('.order_row').find('.order_input');
+
+
+                console.log(input)
+
                 if(input.val()==''){
-                    $( this ).closest('.ordering').find('.order_input').val(1)
+                    input.val(1)
                 }
 
 
             }, function() {
-                var input= $( this ).closest('.ordering').find('.order_input');
-                if(input.attr('ovalue')==''){
-                    $( this ).closest('.ordering').find('.order_input').val('')
+            var input= $( this ).closest('.order_row').find('.order_input');
+                if(input.attr('ovalue')=='' && !input.is('[readonly]') ){
+                    input.val('')
                 }
             }
     );
-    
-     $('.order_button').click(function() {
-     
-     
+
+    $('.order_row .label').click(function() {
+
+        var element=$(this);
+        var order_row=$(this).closest('.order_row');
         if($(this).find('i').hasClass('fa-spinner'))return;
      
     
-    
+    var input=order_row.find('.order_input')
       
-            var order_qty=$(this).prev('input').val()
+            var order_qty=input.val()
             $(this).find('i').removeClass('fa-hand-pointer-o').addClass('fa-spinner fa-spin  ')
-            $(this).prev('input').prop('readonly', true);
+         input.prop('readonly', true);
 
             var order_key='{$order->id}';
             if(order_key=='')order_key=0;
 
-           
-        var element=$(this);
-        var request = 'ar_basket.php?tipo=edit_order_transaction&pid=' + $(this).closest('.product_showcase').attr('product_id') + '&order_key=' + order_key+ '&qty=' + order_qty+'&page_key='+{$webpage->id}+'&page_section_type=Family'
+            if(order_qty>0){
+                order_row.addClass('ordered').removeClass('empty')
+            }else{
+             //   order_row.removeClass('ordered').addClass('empty')
 
+            }
+
+           
+
+        var request = 'ar_basket.php?tipo=edit_order_transaction&pid=' + $(this).closest('.product_showcase').attr('product_id') + '&order_key=' + order_key+ '&qty=' + order_qty+'&page_key='+{$webpage->id}+'&page_section_type=Family'
+console.log(request)
         $.getJSON(request, function (data) {
         
           
@@ -125,14 +139,16 @@
             
          
             if(data.quantity>0){
-                element.html($('#ordering_settings').data('labels').ordered).addClass('ordered')
+                element.html($('#ordering_settings').data('labels').ordered)
+                order_row.addClass('ordered').removeClass('empty')
             }else{
-                element.html($('#ordering_settings').data('labels').order).removeClass('ordered')
+                element.html($('#ordering_settings').data('labels').order)
+                order_row.removeClass('ordered').addClass('empty')
             }
 
             if(data.quantity==0)data.quantity=''
-            
-            element.prev('input').val(data.quantity).attr('ovalue',data.quantity).prop('readonly', false);
+
+                input.val(data.quantity).attr('ovalue',data.quantity).prop('readonly', false);
             
             }else if (data.state==201){
             
@@ -154,21 +170,27 @@
         $(this).val( $(this).val().replace(/[^\d]/g,'') )
 
         var order_qty=$(this).val()
+        var order_row=$( this ).closest('.order_row')
 
-        var button=$( this ).closest('.ordering').find('.order_button');
+        var button=order_row.find('.label');
 
         console.log(button)
 
         if(order_qty!=$(this).attr('ovalue')){
 
 
-            button.html( $('#ordering_settings').data('labels').update).addClass('ordered')
+            button.html( $('#ordering_settings').data('labels').update)
+            order_row.addClass('ordered').removeClass('empty')
         }else{
 
             if(order_qty>0){
-                button.html($('#ordering_settings').data('labels').ordered).addClass('ordered')
+                button.html($('#ordering_settings').data('labels').ordered)
+                order_row.addClass('ordered').removeClass('empty')
+
             }else{
-                button.html($('#ordering_settings').data('labels').order).removeClass('ordered')
+                button.html($('#ordering_settings').data('labels').order)
+                order_row.removeClass('ordered').addClass('empty')
+
 
             }
 
