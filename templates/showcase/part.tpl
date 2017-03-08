@@ -217,7 +217,14 @@
 
 
             <table style="width:100%">
+
+
+
+                <tr>
                 <td>
+
+                    <span  id="part_stock_value" style="font-size:85%" class="Part_Cost_in_Warehouse">{$part->get('Cost in Warehouse')}</span>
+
                     <i id="close_edit_stock" class="fa fa-sign-out fa-flip-horizontal button hide" aria-hidden="true"
                        title="{t}Exit edit stock{/t}" onClick="close_edit_stock()"></i></td>
                 <td class="aright">
@@ -228,6 +235,7 @@
                                                                   aria-hidden="true" title="{t}Save{/t}" id="save_stock"
                                                                   onClick="save_stock()"></i></span>
                 </td>
+                </tr>
             </table>
 
             <table id="locations_table" border="0" class="overview" part_sku="{$part->id}">

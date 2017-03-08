@@ -319,6 +319,9 @@ function edit_stock($account, $db, $user, $editor, $data, $smarty) {
             'Available_Forecast'       => $part->get('Available Forecast'),
             'Part_Locations'           => $part_locations,
             'Part_Status'              => $part->get('Status'),
+            'Part_Cost_in_Warehouse'=>$part->get('Cost in Warehouse')
+
+
         );
     }
 

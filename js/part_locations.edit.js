@@ -1,5 +1,6 @@
 function open_edit_stock() {
 
+$('#part_stock_value').addClass('hide')
 
     process_edit_stock()
 
@@ -22,6 +23,10 @@ function open_edit_stock() {
 }
 
 function close_edit_stock() {
+
+
+    $('#part_stock_value').removeClass('hide')
+
 
     if (!$('#move_stock_tr').hasClass('hide')) {
         close_move();
