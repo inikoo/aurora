@@ -2718,6 +2718,7 @@ class Store extends DB_Table {
         );
 
 
+
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 if ($row['num'] > 0) {
@@ -2735,6 +2736,7 @@ class Store extends DB_Table {
             print_r($error_info = $this->db->errorInfo());
             exit;
         }
+
 
 
         if (!isset($data['Product Unit Label']) or $data['Product Unit Label'] == '') {
@@ -2826,14 +2828,10 @@ class Store extends DB_Table {
 
         if (array_key_exists('Family Category Code', $data)) {
             include_once 'class.Category.php';
-            $root_category = new Category(
-                $this->get('Store Family Category Key')
-            );
+            $root_category = new Category($this->get('Store Family Category Key'));
             if ($root_category->id) {
                 $root_category->editor = $this->editor;
-                $family                = $root_category->create_category(
-                    array('Category Code' => $data['Family Category Code'])
-                );
+                $family                = $root_category->create_category(array('Category Code' => $data['Family Category Code']));
                 if ($family->id) {
                     $data['Product Family Category Key'] = $family->id;
 
@@ -2955,7 +2953,6 @@ class Store extends DB_Table {
         }
 
 
-
         $product = new Product('find', $data, 'create');
 
 
@@ -3002,26 +2999,18 @@ class Store extends DB_Table {
 
 
                 if ($family_key) {
-
-
-
-
                     $product->update(
                         array('Product Family Category Key' => $family_key), 'no_history'
                     );
                 }
 
 
-                $page_data = array(
-                    'Page Store Content Display Type'      => 'Template',
-                    'Page Store Content Template Filename' => 'product',
-                    'Page State'                           => 'Online'
 
-                );
 
-                foreach ($this->get_sites('objects') as $site) {
+                foreach ($this->get_websites('objects') as $website) {
 
-                    $product_page_key = $site->add_product_page($product->id, $page_data);
+
+                    $website->create_product_webpage($product->id);
                 }
 
 
@@ -3093,6 +3082,40 @@ class Store extends DB_Table {
         }
 
         return $sites;
+    }
+
+
+    function get_websites($scope = 'keys') {
+
+
+        if ($scope == 'objects') {
+            include_once 'class.Website.php';
+        }
+
+        $sql = sprintf(
+            "SELECT  `Website Key` FROM `Website Dimension` WHERE `Website Store Key`=%d ", $this->id
+        );
+
+        $websites = array();
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($scope == 'objects') {
+                    $websites[$row['Website Key']] = new Website($row['Website Key']);
+                } else {
+                    $websites[$row['Website Key']] = $row['Website Key'];
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        return $websites;
     }
 
     function create_category($raw_data) {

@@ -137,7 +137,7 @@ function fork_upload_edit($job) {
         update_upload_edit_stats($fork_key, $upload->id, $db);
 
         $sql = sprintf(
-            "UPDATE `Fork Dimension` SET `Fork Finished Date`=NOW(),`Fork Result`=%s `Fork Operations Errors`=(`Fork Operations Total Operations`-`Fork Operations Done`-`Fork Operations No Changed`-`Fork Operations Errors`) WHERE `Fork Key`=%d ",
+            "UPDATE `Fork Dimension` SET `Fork Finished Date`=NOW(),`Fork Result`=%s ,`Fork Operations Errors`=(`Fork Operations Total Operations`-`Fork Operations Done`-`Fork Operations No Changed`-`Fork Operations Errors`) WHERE `Fork Key`=%d ",
             prepare_mysql('error'), $fork_key
         );
         $db->exec($sql);
@@ -462,7 +462,6 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
             }
 
 
-            //print_r($data['fields_data']);
 
             $object = $parent->create_product($data['fields_data']);
             //print_r($object);

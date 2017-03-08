@@ -143,8 +143,10 @@ class Product extends Asset {
 
 
         $sql = sprintf(
-            "SELECT `Product ID` FROM `Product Dimension` WHERE  `Product Store Key`=%s AND `Product Code`=%s", $data['Product Store Key'], prepare_mysql($data['Product Code'])
+            "SELECT `Product ID` FROM `Product Dimension` WHERE  `Product Store Key`=%s AND `Product Code`=%s  AND `Product Status`!='Discontinued'  ", $data['Product Store Key'], prepare_mysql($data['Product Code'])
         );
+
+
 
 
         if ($result = $this->db->query($sql)) {
@@ -171,6 +173,9 @@ class Product extends Asset {
     }
 
     function create($data) {
+
+
+
 
         include_once 'utils/natural_language.php';
 

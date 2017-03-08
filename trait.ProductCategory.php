@@ -692,6 +692,23 @@ trait ProductCategory {
         }
 
 
+        $type = 'Category';
+        $sql  = sprintf(
+            "SELECT B.`Category Key` FROM `Category Bridge` B LEFT JOIN `Category Dimension` C ON (C.`Category Key`=B.`Category Key`) WHERE  `Category Branch Type`='Head'  AND B.`Subject Key`=%d AND B.`Subject`=%s",
+            $this->id, prepare_mysql($type)
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                if($row['Category Key']!=$this->id) {
+                    $parent_category = new Category($row['Category Key']);
+                    $parent_category->update_product_category_products_data();
+                }
+            }
+        }
+
+
     }
 
     function update_product_stock_status() {

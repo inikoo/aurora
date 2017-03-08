@@ -1702,6 +1702,7 @@ class Category extends DB_Table {
         }
 
 
+      //  print_r($subcategory);
         //-----Migration ---
 
         if ($this->get('Category Scope') == 'Product') {
@@ -1717,9 +1718,7 @@ class Category extends DB_Table {
                 $code = $subcategory->get('Category Code');
 
 
-                $sql = sprintf(
-                    'SELECT `Product Department Key` FROM `Product Department Dimension` WHERE `Product Department Store Key`=%s ', $store->id
-                );
+                $sql = sprintf('SELECT `Product Department Key` FROM `Product Department Dimension` WHERE `Product Department Store Key`=%s ', $store->id);
 
                 $dept_key = 0;
                 if ($result = $this->db->query($sql)) {
@@ -1746,37 +1745,20 @@ class Category extends DB_Table {
 
                 $family = new Family('find', $fam_data, 'create');
 
-                if ($family->new) {
-                    $page_data = array(
-                        'Page Store Content Display Type'      => 'Template',
-                        'Page Store Content Template Filename' => 'products_showcase',
-                        'Page State'                           => 'Online'
-                    );
-                    foreach ($store->get_sites('objects') as $site) {
-                        $family_page_key = $site->add_family_page($family->id, $page_data);
-                        $family_page     = new Page($family_page_key);
 
-
-                        $family_page->update_button_products('Parent');
-                        $family_page->update_list_products();
-                    }
-
-                }
                 $account = new Account($this->db);
 
                 $sql = sprintf(
-                    'SELECT `Image Subject Image Key` FROM `Image Subject Bridge` LEFT JOIN `Category Dimension` ON (`Image Subject Object Key`=`Category Key`)  WHERE `Category Subject`="Part" AND `Category Code`=%s  AND `Category Root Key`=%d ',
+                    'SELECT `Image Subject Image Key` FROM `Image Subject Bridge` LEFT JOIN `Category Dimension` ON (`Image Subject Object Key`=`Category Key`)  WHERE `Category Subject`="Part" AND `Category Code`=%s  AND `Category Root Key`=%d and `Image Subject Object`="Category" ',
                     prepare_mysql($subcategory->get('Category Code')), $account->get('Account Part Family Category Key')
                 );
 
-                //   print "$sql\n";
+
 
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
-                        //print_r($row);
-                        $subcategory->link_image(
-                            $row['Image Subject Image Key']
-                        );
+                      //  print_r($row);
+                        $subcategory->link_image($row['Image Subject Image Key']);
 
 
                     }
@@ -1791,7 +1773,18 @@ class Category extends DB_Table {
             }
 
 
-            // -----
+            $subcategory->update_product_category_products_data();
+
+
+
+
+            if ($subcategory->get('Product Category Public') == 'Yes') {
+                foreach ($store->get_websites('objects') as $website) {
+                   // print 'xxx';
+                    $website->create_category_webpage($subcategory->id);
+                }
+
+            }
 
 
         }
@@ -2099,10 +2092,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     //  Migration  ----
                     include_once 'class.Store.php';
                     $store = new Store($this->get('Category Store Key'));
-                    if ($this->get('Category Root Key') == $store->get(
-                            'Store Family Category Key'
-                        )
-                    ) {
+                    if ($this->get('Category Root Key') == $store->get('Store Family Category Key')) {
 
 
                         $sql = sprintf(
@@ -2127,20 +2117,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                                 //print $sql;
                                 $this->db->exec($sql);
 
-
-                                include_once 'class.Page.php';
-                                $sql  = sprintf(
-                                    "SELECT `Page Key` FROM `Page Store Dimension` WHERE `Page Store Section Type`='Family' AND  `Page Parent Key`=%d", $row['Product Family Key']
-                                );
-                                $res2 = mysql_query($sql);
-                                while ($row2 = mysql_fetch_array($res2)) {
-                                    $family_page = new Page($row2['Page Key']);
-                                    $family_page->update_button_products(
-                                        'Parent'
-                                    );
-                                    $family_page->update_list_products();
-
-                                }
 
                             }
                         } else {
@@ -2543,17 +2519,11 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         $store = new Store($this->get('Category Store Key'));
 
 
-
-
-
-                        if($this->data['Product Category Department Category Key']!=$value) {
+                        if ($this->data['Product Category Department Category Key'] != $value) {
 
                             $old_parent_category = new Category($this->data['Product Category Department Category Key']);
 
                             $new_parent_category = new Category($value);
-
-
-
 
 
                             $new_parent_category->associate_subject($this->id, false, '', 'skip_direct_update');
@@ -2561,8 +2531,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
                             $old_parent_category->update_product_category_products_data();
                             $new_parent_category->update_product_category_products_data();
-
-
 
 
                             $webpage = $old_parent_category->get_webpage();
@@ -2592,12 +2560,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                             }
 
 
-
-
                             $webpage = $new_parent_category->get_webpage();
 
                             if ($webpage->id) {
-
 
 
                                 $webpage->reindex_items();
@@ -2629,8 +2594,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
 
                         }
-
-
 
 
                     } else {
@@ -3244,31 +3207,16 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                                     );
 
                                     $this->db->exec($sql);
-                                    //print $sql;
-                                    include_once 'class.Page.php';
-                                    $sql  = sprintf(
-                                        "SELECT `Page Key` FROM `Page Store Dimension` WHERE `Page Store Section Type`='Family' AND  `Page Parent Key`=%d", $row['Product Family Key']
-                                    );
-                                    $res2 = mysql_query($sql);
-                                    while ($row2 = mysql_fetch_array($res2)) {
-                                        $family_page = new Page(
-                                            $row2['Page Key']
-                                        );
-                                        $family_page->update_button_products(
-                                            'Parent'
-                                        );
-                                        $family_page->update_list_products();
 
-                                    }
-
-
-                                    // print $sql;
                                 }
                             } else {
                                 print_r($error_info = $this->db->errorInfo());
                                 print $sql;
                                 exit;
                             }
+
+
+                            //   if($product->)
 
 
                             // Migration -----
@@ -3366,7 +3314,10 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
 
 
+                        if($this->get('Category Subject')=='Product'){
+                            $this->create_stack_index(true);
 
+                        }
 
 
                         //$abstract=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']);
