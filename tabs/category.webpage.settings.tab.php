@@ -29,7 +29,7 @@ if(!$webpage->id){
 
     if($category->get('Product Category Public')=='Yes'){
 
-        /*
+
 
         $html='<div style="padding:40px"><span class="button save valid changed" onclick="create_webpage()"><i class="fa fa-plus" aria-hidden="true"></i> '._("Create web page").'</span></div>
         <script>
@@ -41,7 +41,7 @@ if(!$webpage->id){
 
             if (data.state == 200) {
 
-               
+               change_view(state.request)
 
             }
 
@@ -55,9 +55,9 @@ if(!$webpage->id){
         
         ';
 
-        */
 
-        $html='<div style="padding:40px">'._("This category has no webpage").'</div>';
+
+    //    $html='<div style="padding:40px">'._("This category has no webpage").'</div>';
 
 
     }else{

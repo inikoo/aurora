@@ -3008,8 +3008,6 @@ class Store extends DB_Table {
 
 
                 foreach ($this->get_websites('objects') as $website) {
-
-
                     $website->create_product_webpage($product->id);
                 }
 
