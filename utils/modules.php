@@ -30,6 +30,26 @@ $_product = array(
             'icon'  => 'database',
             'title' => _('Details')
         ),
+        'product.webpage'    => array(
+            'label' => _('Website'),
+            'icon'  => 'globe',
+            'subtabs' => array(
+                'product.webpage.settings'  => array(
+                    'label' => _('Settings'),
+                    'icon'=>'sliders'
+                ),
+
+                'product.webpage.preview'     => array(
+                    'label' => _('Preview')
+                ),
+                'product.webpage.analytics'  => array(
+                    'label' => _('Analytics')
+                ),
+
+
+            )
+        ),
+
         'product.history'   => array(
             'label' => _('History, notes'),
             'icon'  => 'sticky-note-o'
@@ -84,25 +104,6 @@ $_product = array(
         ),
 
 
-        'product.webpage'    => array(
-            'label' => _('Website'),
-            'icon'  => 'globe',
-            'subtabs' => array(
-                'product.webpage.settings'  => array(
-                    'label' => _('Settings'),
-                    'icon'=>'sliders'
-                ),
-
-                'product.webpage.preview'     => array(
-                    'label' => _('Preview')
-                ),
-                'product.webpage.analytics'  => array(
-                    'label' => _('Analytics')
-                ),
-
-
-            )
-        ),
 
         /*
         'product.website' => array(
@@ -2648,9 +2649,7 @@ $modules = array(
                         'icon'  => 'stop'
                     ),
                     'agent.orders'         => array(
-                        'label' => _(
-                            'Purchase orders'
-                        ),
+                        'label' => _('Orders'),
                         'icon'  => 'clipboard'
                     ),
                     'agent.deliveries'     => array(

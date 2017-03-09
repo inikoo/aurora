@@ -374,115 +374,6 @@ $product_fields = array(
     ),
 
     array(
-        'label'      => _('Webpage').' <span class="no_title">'.$object->webpage->get('Code').'</span>',
-        'show_title' => true,
-        'class' => ($new ? 'hide' : ''),
-        'fields'     => array(
-
-
-
-            array(
-                'id'   => 'Product_Webpage_Name',
-                'render' => ($new ? false : true),
-                'edit' => ($edit ? 'string' : ''),
-
-                'value'           => htmlspecialchars(
-                    $object->get('Product Webpage Name')
-                ),
-                'formatted_value' => $object->get('Webpage Name'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Product Webpage Name')
-                ),
-                'required'        => true,
-                'type'            => ''
-
-
-            ),
-
-            array(
-                'id'              => 'Product_Description',
-                'edit'            => ($edit ? 'editor' : ''),
-                'render' => ($new ? false : true),
-                'class'           => 'editor',
-                'editor_data'     => array(
-                    'id'      => 'Product_Description',
-                    'content' => $object->get('Product Description'),
-
-                    'data' => base64_encode(
-                        json_encode(
-                            array(
-                                'mode'     => 'edit_object',
-                                'field'    => 'Product_Description',
-                                'plugins'  => array(
-                                    'paragraphStyle',
-                                    'paragraphFormat',
-                                    'fontFamily',
-                                    'fontSize',
-                                    'colors',
-                                    'align',
-                                    'draggable',
-                                    'image',
-                                    'link',
-                                    'save',
-                                    'entities',
-                                    'emoticons',
-                                    'fullscreen',
-                                    'lineBreaker',
-                                    'table',
-                                    'codeView',
-                                    'codeBeautifier'
-                                ),
-                                'metadata' => array(
-                                    'tipo'   => 'edit_field',
-                                    'object' => 'Product',
-                                    'key'    => $object->id,
-                                    'field'  => 'Product Description',
-
-
-                                )
-                            )
-                        )
-                    )
-
-                ),
-                'value'           => $object->get('Product Description'),
-                'formatted_value' => $object->get('Product Description'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Product Description')
-                ),
-                'required'        => false,
-                'type'            => ''
-            ),
-
-
-            array(
-                'id'              => 'Webpage_See_Also',
-                'render' => ($new ? false : true),
-                'edit'            => 'webpage_see_also',
-                'value'           => '',
-                'formatted_value' => $object->get('Webpage See Also'),
-                'label'           => _('See also links'),
-                'required'        => false,
-                'type'            => ''
-            ),
-
-            /*
-                array(
-                    'id'=>'Webpage_Related_Products',
-                    'edit'=>'webpage_related_products',
-                    'value'=>'' ,
-                    'formatted_value'=>$object->get('Webpage Related Products') ,
-                    'label'=>_('Related products links'),
-                    'required'=>false,
-                    'type'=>''
-                )
-    */
-
-
-        )
-    ),
-
-    array(
         'label'      => _('Properties'),
         'show_title' => true,
         'class'      => ($new ? 'hide' : ''),
@@ -681,5 +572,116 @@ foreach ($product_fields as $key=>$object_field) {
 
 }
 */
+
+
+    array(
+        'label'      => _('Webpage').' <span class="no_title">'.$object->webpage->get('Code').'</span>',
+        'show_title' => true,
+        'class' => ($new ? 'hide' : ''),
+        'fields'     => array(
+
+
+
+            array(
+                'id'   => 'Product_Webpage_Name',
+                'render' => ($new ? false : true),
+                'edit' => ($edit ? 'string' : ''),
+
+                'value'           => htmlspecialchars(
+                    $object->get('Product Webpage Name')
+                ),
+                'formatted_value' => $object->get('Webpage Name'),
+                'label'           => ucfirst(
+                    $object->get_field_label('Product Webpage Name')
+                ),
+                'required'        => true,
+                'type'            => ''
+
+
+            ),
+
+            array(
+                'id'              => 'Product_Description',
+                'edit'            => ($edit ? 'editor' : ''),
+                'render' => ($new ? false : true),
+                'class'           => 'editor',
+                'editor_data'     => array(
+                    'id'      => 'Product_Description',
+                    'content' => $object->get('Product Description'),
+
+                    'data' => base64_encode(
+                        json_encode(
+                            array(
+                                'mode'     => 'edit_object',
+                                'field'    => 'Product_Description',
+                                'plugins'  => array(
+                                    'paragraphStyle',
+                                    'paragraphFormat',
+                                    'fontFamily',
+                                    'fontSize',
+                                    'colors',
+                                    'align',
+                                    'draggable',
+                                    'image',
+                                    'link',
+                                    'save',
+                                    'entities',
+                                    'emoticons',
+                                    'fullscreen',
+                                    'lineBreaker',
+                                    'table',
+                                    'codeView',
+                                    'codeBeautifier'
+                                ),
+                                'metadata' => array(
+                                    'tipo'   => 'edit_field',
+                                    'object' => 'Product',
+                                    'key'    => $object->id,
+                                    'field'  => 'Product Description',
+
+
+                                )
+                            )
+                        )
+                    )
+
+                ),
+                'value'           => $object->get('Product Description'),
+                'formatted_value' => $object->get('Product Description'),
+                'label'           => ucfirst(
+                    $object->get_field_label('Product Description')
+                ),
+                'required'        => false,
+                'type'            => ''
+            ),
+
+
+            array(
+                'id'              => 'Webpage_See_Also',
+                'render' => ($new ? false : true),
+                'edit'            => 'webpage_see_also',
+                'value'           => '',
+                'formatted_value' => $object->get('Webpage See Also'),
+                'label'           => _('See also links'),
+                'required'        => false,
+                'type'            => ''
+            ),
+
+            /*
+                array(
+                    'id'=>'Webpage_Related_Products',
+                    'edit'=>'webpage_related_products',
+                    'value'=>'' ,
+                    'formatted_value'=>$object->get('Webpage Related Products') ,
+                    'label'=>_('Related products links'),
+                    'required'=>false,
+                    'type'=>''
+                )
+    */
+
+
+)
+)
+
 
 ?>
