@@ -1137,8 +1137,12 @@ class Product extends Asset {
             case 'Product CPNP Number':
                 $label = _('CPNP number');
                 break;
-
-
+            case 'Product Webpage Browser Title':
+                $label = _('webpage browser title');
+                break;
+            case 'Product Webpage Meta Description':
+                $label = _('webpage META description');
+                break;
             default:
                 $label = $field;
 
