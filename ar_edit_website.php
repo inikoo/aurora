@@ -30,14 +30,25 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
+    case 'create_webpage':
 
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'parent'     => array('type' => 'string'),
+                         'parent_key' => array('type' => 'key'),
+
+
+                     )
+        );
+        create_webpage($data, $editor, $smarty, $db);
+        break;
     case 'set_footer_template':
 
         $data = prepare_values(
             $_REQUEST, array(
-                         'object'       => array('type' => 'string'),
-                         'key' => array('type' => 'key'),
-                         'value'       => array('type' => 'string'),
+                         'object' => array('type' => 'string'),
+                         'key'    => array('type' => 'key'),
+                         'value'  => array('type' => 'string'),
 
                      )
         );
@@ -47,8 +58,8 @@ switch ($tipo) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                         'key' => array('type' => 'key'),
-                         'value'       => array('type' => 'string'),
+                         'key'   => array('type' => 'key'),
+                         'value' => array('type' => 'string'),
 
                      )
         );
@@ -458,10 +469,7 @@ function webpage_content_data($data, $editor, $db, $smarty) {
         } elseif ($data['section'] == 'product_description') {
 
 
-
             $content_data['description_block']['content'] = $data['value'];
-
-
 
 
         } else {
@@ -478,9 +486,7 @@ function webpage_content_data($data, $editor, $db, $smarty) {
         }
 
 
-    }
-
-    elseif ($data['type'] == 'item_header_text') {
+    } elseif ($data['type'] == 'item_header_text') {
 
 
         if ($data['section'] == 'panels_in_section') {
@@ -539,8 +545,7 @@ function webpage_content_data($data, $editor, $db, $smarty) {
         }
 
 
-    }
-    elseif ($data['type'] == 'caption') {
+    } elseif ($data['type'] == 'caption') {
 
 
         if ($data['section'] == 'panels_in_section') {
@@ -583,8 +588,7 @@ function webpage_content_data($data, $editor, $db, $smarty) {
         }
 
 
-    }
-    elseif ($data['type'] == 'code') {
+    } elseif ($data['type'] == 'code') {
 
 
         if ($data['section'] == 'panels_in_section') {
@@ -639,8 +643,7 @@ function webpage_content_data($data, $editor, $db, $smarty) {
         }
 
 
-    }
-    elseif ($data['type'] == 'link') {
+    } elseif ($data['type'] == 'link') {
 
 
         if ($data['section'] == 'panels_in_section') {
@@ -685,8 +688,7 @@ function webpage_content_data($data, $editor, $db, $smarty) {
         }
 
 
-    }
-    elseif ($data['type'] == 'add_class') {
+    } elseif ($data['type'] == 'add_class') {
         if (isset($content_data[$data['section']])) {
 
 
@@ -736,8 +738,7 @@ function webpage_content_data($data, $editor, $db, $smarty) {
             }
 
         }
-    }
-    elseif ($data['type'] == 'remove_class') {
+    } elseif ($data['type'] == 'remove_class') {
         if (isset($content_data[$data['section']])) {
 
 
@@ -1087,13 +1088,12 @@ function publish_webpage($data, $editor, $db) {
     $webpage->publish();
 
 
-
     $response = array(
-        'state' => 200,
-        'other_fields'       => $webpage->get_other_fields_update_info(),
-        'new_fields'         => $webpage->get_new_fields_info(),
-        'deleted_fields'     => $webpage->get_deleted_fields_info(),
-        'update_metadata'    => $webpage->get_update_metadata()
+        'state'           => 200,
+        'other_fields'    => $webpage->get_other_fields_update_info(),
+        'new_fields'      => $webpage->get_new_fields_info(),
+        'deleted_fields'  => $webpage->get_deleted_fields_info(),
+        'update_metadata' => $webpage->get_update_metadata()
 
     );
     echo json_encode($response);
@@ -1112,11 +1112,11 @@ function unpublish_webpage($data, $editor, $db) {
 
 
     $response = array(
-        'state' => 200,
-            'other_fields'       => $webpage->get_other_fields_update_info(),
-            'new_fields'         => $webpage->get_new_fields_info(),
-            'deleted_fields'     => $webpage->get_deleted_fields_info(),
-            'update_metadata'    => $webpage->get_update_metadata()
+        'state'           => 200,
+        'other_fields'    => $webpage->get_other_fields_update_info(),
+        'new_fields'      => $webpage->get_new_fields_info(),
+        'deleted_fields'  => $webpage->get_deleted_fields_info(),
+        'update_metadata' => $webpage->get_update_metadata()
 
     );
     echo json_encode($response);
@@ -1217,16 +1217,14 @@ function update_webpage_items_order($data, $editor, $smarty, $db) {
                 $content_data = $webpage->get('Content Data');
 
                 $response = array(
-                    'state'               => 200,
-                    'products'          => get_products_html($content_data, $webpage, $smarty, $db),
-                    'publish'             => $webpage->get('Publish')
+                    'state'    => 200,
+                    'products' => get_products_html($content_data, $webpage, $smarty, $db),
+                    'publish'  => $webpage->get('Publish')
 
 
                 );
             }
     }
-
-
 
 
     echo json_encode($response);
@@ -1499,9 +1497,6 @@ function sort_items($data, $editor, $smarty, $db) {
     $webpage->sort_items($data['value']);
 
 
-
-
-
     switch ($webpage->scope->get_object_name()) {
 
 
@@ -1535,9 +1530,9 @@ function sort_items($data, $editor, $smarty, $db) {
                 $content_data = $webpage->get('Content Data');
 
                 $response = array(
-                    'state'               => 200,
-                    'products'          => get_products_html($content_data, $webpage, $smarty, $db),
-                    'publish'             => $webpage->get('Publish')
+                    'state'    => 200,
+                    'products' => get_products_html($content_data, $webpage, $smarty, $db),
+                    'publish'  => $webpage->get('Publish')
 
 
                 );
@@ -1558,12 +1553,48 @@ function set_footer_template($data, $editor, $smarty, $db) {
     $object->set_footer_template($data['value']);
 
 
-
     $response = array(
         'state' => 200
 
 
     );
+    echo json_encode($response);
+}
+
+function create_webpage($data, $editor, $smarty, $db) {
+
+    include_once('class.Store.php');
+
+    $parent = get_object($data['parent'], $data['parent_key']);
+
+    $store = new Store($parent->get('Store Key'));
+
+    foreach ($store->get_websites('objects') as $website) {
+        if ($parent->get_object_name() == 'Product') {
+            $webpage_key = $website->create_product_webpage($parent->id);
+        } elseif ($parent->get_object_name() == 'Category') {
+            $webpage_key = $website->create_category_webpage($parent->id);
+        }
+    }
+
+if($webpage_key){
+
+    $response = array(
+        'state'       => 200,
+        'webpage_key' => $webpage_key
+
+
+    );
+}else{
+
+    $response = array(
+        'state'       => 400,
+        'msg' => $webpage_key
+
+
+    );
+}
+
     echo json_encode($response);
 }
 
