@@ -9,26 +9,44 @@
 
 */
 
+if ($user->get('User Type') == 'Agent') {
 
-$tab     = 'supplier.supplier_parts';
+    $tab     = 'agent_parts';
+
+    $table_views = array(
+        'overview' => array(
+            'label' => _('Overview'),
+            'title' => _('Overview')
+        )
+    );
+
+}else{
+    $tab     = 'supplier.supplier_parts';
+
+
+    $table_views = array(
+        'overview' => array(
+            'label' => _('Overview'),
+            'title' => _('Overview')
+        ),
+        'parts'    => array(
+            'label' => _('Inventory Part'),
+            'title' => _('Part details')
+        ),
+        'reorder'  => array('label' => _('Reorder')),
+
+    );
+
+}
+
+
 $ar_file = 'ar_inventory_tables.php';
 $tipo    = 'supplier_parts';
 
 $default = $user->get_tab_defaults($tab);
 
 
-$table_views = array(
-    'overview' => array(
-        'label' => _('Overview'),
-        'title' => _('Overview')
-    ),
-    'parts'    => array(
-        'label' => _('Inventory Part'),
-        'title' => _('Part details')
-    ),
-    'reorder'  => array('label' => _('Reorder')),
 
-);
 
 $table_filters = array(
     'reference' => array(

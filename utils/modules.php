@@ -5175,17 +5175,8 @@ $modules = array(
             ),
 
 
-            'orders' => array(
-                'type'      => 'navigation',
-                'label'     => _("Agent's purchase orders"),
-                'icon'      => 'clipboard',
-                'reference' => 'suppliers/orders',
-                'tabs'      => array(
-                    'agent_orders' => array()
-                )
-            ),
 
-            'order' => array(
+            'order_to_delete' => array(
                 'type' => 'object',
                 'tabs' => array(
 
@@ -5223,7 +5214,7 @@ $modules = array(
 
             ),
 
-            'deleted_order' => array(
+            'deleted_order_to_delete' => array(
                 'type' => 'object',
                 'tabs' => array(
 
@@ -5246,7 +5237,7 @@ $modules = array(
 
             ),
 
-            'delivery' => array(
+            'deliveryto_delete' => array(
                 'type' => 'object',
                 'tabs' => array(
 
@@ -5719,6 +5710,62 @@ $modules = array(
                 )
 
             ),
+
+
+        )
+    ),
+
+
+
+
+    'agent_parts' => array(
+        'sections' => array(
+            'parts' => array(
+                'type'      => 'navigation',
+                'label'     => _("Parts"),
+                'icon'      => 'stop',
+                'reference' => 'agent_parts',
+                'tabs'      => array(
+                    'agent.parts' => array()
+                )
+            ),
+
+
+            'agent_part'  => array(
+                'type' => 'object',
+
+
+                'tabs' => array(
+
+
+                    'supplier_part.details' => array(
+                        'label' => _(
+                            'Data'
+                        ),
+                        'icon'  => 'database'
+                    ),
+
+
+                    'supplier_part.images'  => array(
+                        'label' => _(
+                            'Images'
+                        ),
+                        'icon'  => 'camera-retro',
+                        'class' => 'right icon_only'
+                    ),
+                    'supplier_part.history' => array(
+                        'label' => _(
+                            'History/Notes'
+                        ),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+
+
+                )
+            ),
+
+
 
 
         )

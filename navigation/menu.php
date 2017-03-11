@@ -407,6 +407,15 @@ if ($user->get('User Type') == 'Agent') {
         'module',
         ''
     );
+
+    $nav_menu[] = array(
+        '<i class="fa fa-stop fa-fw"></i>',
+        _('Products'),
+        'agent_parts',
+        'agent_parts',
+        'module',
+        ''
+    );
     $nav_menu[] = array(
         '<i class="fa fa-user fa-fw"></i>',
         _('My profile'),
@@ -428,13 +437,7 @@ if ($user->get('User Type') == 'Agent') {
         'module',
         ''
     );
-    $nav_menu[] = array(
-        _('Dashboard'),
-        'index.php',
-        'home',
-        'module',
-        ''
-    );
+
 } elseif ($user->get('User Type') == 'Warehouse') {
 
     $nav_menu[] = array(
