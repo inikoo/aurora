@@ -1,5 +1,5 @@
 {assign "warehouse" $object}
-<div class="presention_card">
+<div class="presentation_card">
 
     <table>
         <tr id="result_controls" class="controls">

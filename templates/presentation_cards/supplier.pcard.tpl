@@ -1,5 +1,5 @@
 {assign "supplier" $object}
-<div class="presention_card">
+<div class="presentation_card">
     <table>
         <tr id="result_controls" class="controls">
             <td><span id="result_msg" class="msg success"><i class="fa fa-check"></i> {t}Success{/t}</span></td>
@@ -9,12 +9,10 @@
                             class="fa fa-flask"></i> </span></td>
         </tr>
         <tr class="title">
-            <td colspan="2">{t}Supplier{/t} <i
-                        onclick="change_view('supplier/{$supplier->get('Store Key')}/{$supplier->id}')"
-                        class="fa fa-ship link"></i></td>
+            <td colspan="2">{t}Supplier{/t} </td>
         </tr>
         <tr>
-            <td class="label">{$supplier->get_field_label('Supplier Code')|capitalize}</td>
+            <td class="label"><span class="link" onclick="change_view('supplier/{$supplier->id}')">{$supplier->get_field_label('Supplier Code')|capitalize}</span></td>
             <td>{$supplier->get('Code')}</td>
         </tr>
         <tr>
