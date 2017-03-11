@@ -411,6 +411,17 @@ if ($field == 'Product Category Department Category Key') {
 
                 $update_metadata['rrp_cell']=$rrp;
 
+            }elseif ($field == 'Supplier Part Unit Cost') {
+
+
+
+$cost=  sprintf('<span class="part_cost"  pid="%d" cost="%s"  currency="%s"   onClick="open_edit_cost(this)">%s</span>' ,
+                $object->get('Supplier Part Key'),$object->get('Supplier Part Unit Cost'),$object->get('Supplier Part Currency Code'),money($object->get('Supplier Part Unit Cost'), $object->get('Supplier Part Currency Code'))
+);
+
+
+                $update_metadata['cost_cell']=$cost;
+
             }
 
 

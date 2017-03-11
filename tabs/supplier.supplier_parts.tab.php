@@ -98,6 +98,9 @@ if ($state['_object']->get('Supplier Type') != 'Archived') {
 
 }
 
+$smarty->assign('table_top_template', 'supplier_parts.edit.tpl');
+
+
 include 'utils/get_table_html.php';
 
 
