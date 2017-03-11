@@ -951,9 +951,9 @@ function supplier_parts($_data, $db, $user, $account) {
 
                 'description'    => $data['Part Unit Description'],
                 'status'         => $status,
-                'cost'           => money(
-                    $data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']
-                ),
+                'cost'           => sprintf('<span class="part_cost"  pid="%d" cost="%s"  currency="%s"   onClick="open_edit_cost(this)">%s</span>' ,
+                                            $data['Supplier Part Key'],$data['Supplier Part Unit Cost'],$data['Supplier Part Currency Code'],money($data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code'])
+                                            ),
                 'delivered_cost' => '<span title="'.$exchange_info.'">'.money(
                         $exchange * ($data['Supplier Part Unit Cost'] + $data['Supplier Part Unit Extra Cost']), $account->get('Account Currency')
                     ).'</span>',
