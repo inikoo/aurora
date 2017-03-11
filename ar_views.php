@@ -2419,7 +2419,6 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
 
 function get_view_position($db, $state, $user, $smarty, $account) {
 
-
     $branch = array();
     //$branch=array(array('label'=>'<span >'._('Home').'</span>', 'icon'=>'home', 'reference'=>'/dashboard'));
     //print_r($state);
@@ -6130,6 +6129,11 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
         case 'agent_suppliers':
+
+
+
+
+
             if ($state['section'] == 'suppliers') {
                 $branch[] = array(
                     'label'     => _('Suppliers'),
@@ -6422,6 +6426,31 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
             break;
 
+        case 'agent_client_orders':
+
+            switch ($state['section']){
+                case 'orders':
+                    $branch[] = array(
+                        'label'     => _("Client's orders"),
+                        'icon'      => 'clipboard',
+                        'reference' => 'agents'
+                    );
+                    break;
+                case 'client_order':
+                    $branch[] = array(
+                        'label'     => _("Client's orders"),
+                        'icon'      => '',
+                        'reference' => 'orders'
+                    );
+                    $branch[] = array(
+                        'label'     => '<class ="Purchase_Order_Public_ID">'.$state['_object']->get('Public ID').'</span>',
+                        'icon'      => 'clipboard',
+                        'reference' => 'orders'
+                    );
+
+            }
+
+            break;
 
         default:
 

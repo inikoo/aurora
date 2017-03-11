@@ -954,6 +954,21 @@ $tab_defaults = array(
         'export_fields' => $export_fields['supplier_parts']
 
     ),
+
+    'agent_parts'           => array(
+        'view'          => 'overview',
+        'sort_key'      => 'reference',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'reference',
+        'elements_type' => each($elements_options['supplier_parts'])['key'],
+        'elements'      => $elements_options['supplier_parts'],
+        'export_fields' => $export_fields['supplier_parts']
+
+    ),
+
+
     'supplier.order.all_supplier_parts' => array(
         'view'        => 'overview',
         'sort_key'    => 'reference',

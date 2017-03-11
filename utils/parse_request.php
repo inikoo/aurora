@@ -3172,6 +3172,45 @@ function parse_request($_data, $db, $modules, $account = '', $user = '') {
 
                 break;
 
+
+            case 'agent_parts':
+                if ($user->get('User Type') != 'Agent') {
+                    $module  = 'utils';
+                    $section = 'forbidden';
+                    break;
+                }
+
+                $module = 'agent_parts';
+
+
+                $section = 'parts';
+
+
+
+                break;
+            case 'agent_part':
+                if ($user->get('User Type') != 'Agent') {
+                    $module  = 'utils';
+                    $section = 'forbidden';
+                    break;
+                }
+
+                $module = 'agent_parts';
+
+
+                $section = 'part';
+                $object  = 'supplier_part';
+
+                if (isset($view_path[0])) {
+                    if (is_numeric($view_path[0])) {
+                        $key = $view_path[0];
+                    }
+
+                }
+
+
+                break;
+
             case 'hr':
                 if (!$user->can_view('staff')) {
                     $module  = 'utils';
