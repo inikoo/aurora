@@ -1372,7 +1372,6 @@ function get_new_supplier_part_navigation($data, $smarty, $user, $db, $account) 
 
 function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
 
-
     $object        = $data['_object'];
     $left_buttons  = array();
     $right_buttons = array();

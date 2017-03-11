@@ -19,7 +19,7 @@ $nav_menu[] = array(
     '<i class="fa fa-dashboard fa-fw"></i>',
     _('Dashboard'),
     '/dashboard',
-    'dashboard',
+    '_dashboard',
     'module',
     ''
 );
@@ -376,25 +376,31 @@ if ($user->can_view('reports')) {
 
 if ($user->get('User Type') == 'Agent') {
 
+
+
+
     $nav_menu[] = array(
-        '<i class="fa fa-shopping-cart fa-fw"></i>',
-        _('Incoming orders'),
+        '<i class="fa fa-clipboard fa-fw"></i>',
+        _("Client's orders"),
         'orders',
-        'orders',
+        'agent_client_orders',
         'module',
         ''
     );
+
+
+
     $nav_menu[] = array(
-        '<i class="fa fa-truck fa-fw"></i>',
+        '<i class="fa fa-ship fa-fw"></i>',
         _('Deliveries'),
         'deliveries',
-        'deliveries',
+        'agent_client_deliveries',
         'module',
         ''
     );
 
     $nav_menu[] = array(
-        '<i class="fa fa-ship fa-fw"></i>',
+        '<i class="fa fa-industry fa-fw"></i>',
         _('Suppliers'),
         'suppliers',
         'agent_suppliers',
@@ -402,8 +408,8 @@ if ($user->get('User Type') == 'Agent') {
         ''
     );
     $nav_menu[] = array(
-        '<i class="fa fa-user-secret fa-fw"></i>',
-        _('Suppliers'),
+        '<i class="fa fa-user fa-fw"></i>',
+        _('My profile'),
         'profile',
         'agent_profile',
         'module',
@@ -472,9 +478,13 @@ if ($user->can_view('account')) {
 }
 
 
+
 $current_item = $data['module'];
 if ($current_item == 'customers_server') {
     $current_item = 'customers';
+}
+if ($current_item == 'dashboard') {
+    $current_item = '_dashboard';
 }
 if ($current_item == 'marketing_server') {
     $current_item = 'marketing';
@@ -497,7 +507,7 @@ if ($current_item == 'inventory_server') {
 if ($current_item == 'warehouses_server') {
     $current_item = 'warehouses';
 }
-if ($current_item == 'prdduction_server') {
+if ($current_item == 'production_server') {
     $current_item = 'production';
 }
 

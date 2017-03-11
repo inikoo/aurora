@@ -43,9 +43,7 @@ class PurchaseOrder extends DB_Table {
 
         global $account;
 
-        $parent = get_object(
-            $data['Purchase Order Parent'], $data['Purchase Order Parent Key']
-        );
+        $parent = get_object($data['Purchase Order Parent'], $data['Purchase Order Parent Key']);
 
         $this->editor = $data['editor'];
 
@@ -155,13 +153,7 @@ class PurchaseOrder extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-
-
-
-                $line_number = (int)preg_replace(
-                        '/[^\d]/', '', preg_replace('/^'.$code.'/','',$row['Purchase Order Public ID'])
-                    ) + 1;
-
+                $line_number = (int)preg_replace('/[^\d]/', '', preg_replace('/^'.$code.'/', '', $row['Purchase Order Public ID'])) + 1;
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -169,9 +161,7 @@ class PurchaseOrder extends DB_Table {
         }
 
 
-        return sprintf(
-            '%s%04d', $code, $line_number
-        );
+        return sprintf('%s%04d', $code, $line_number);
 
     }
 
@@ -211,6 +201,11 @@ class PurchaseOrder extends DB_Table {
                 );
             }
 
+            if ($this->data['Purchase Order Agent Data'] != '') {
+                $this->data = array_merge($this->data, json_decode($this->data['Purchase Order Agent Data'], true));
+            }
+
+
         }
 
     }
@@ -248,6 +243,9 @@ class PurchaseOrder extends DB_Table {
                     case 'InProcess':
                         return 10;
                         break;
+                    case 'SubmittedAgent':
+                        return 20;
+                        break;
                     case 'Submitted':
                         return 30;
                         break;
@@ -282,30 +280,31 @@ class PurchaseOrder extends DB_Table {
                 if ($this->data['Purchase Order CBM'] == '') {
                     if ($this->get('Purchase Order Number Items') > 0) {
                         return '<span class="italic very_discreet">'._(
-                            'Unknown Weight'
-                        ).'</span>';
+                                'Unknown Weight'
+                            ).'</span>';
                     }
                 } else {
                     return ($this->get('Purchase Order Missing Weights') > 0 ? '<i class="fa fa-exclamation-circle warning" aria-hidden="true" title="'._("Some supplier's parts without weight")
-                        .'" ></i> ' : '').weight($this->get('Purchase Order Weight'));
+                            .'" ></i> ' : '').weight($this->get('Purchase Order Weight'));
                 }
                 break;
             case 'CBM':
                 if ($this->data['Purchase Order CBM'] == '') {
                     if ($this->get('Purchase Order Number Items') > 0) {
                         return '<span class="italic very_discreet">'._(
-                            'Unknown CBM'
-                        ).'</span>';
+                                'Unknown CBM'
+                            ).'</span>';
                     }
                 } else {
                     return ($this->get('Purchase Order Missing CBMs') > 0 ? '<i class="fa fa-exclamation-circle warning" aria-hidden="true" title="'._("Some supplier's parts without CBM").'" ></i> '
-                        : '').number($this->data['Purchase Order CBM']).' m³';
+                            : '').number($this->data['Purchase Order CBM']).' m³';
                 }
                 break;
             case 'Estimated Receiving Date':
             case 'Agreed Receiving Date':
             case 'Creation Date':
             case 'Submitted Date':
+            case 'Submitted Agent Date':
             case 'Cancelled Date':
                 if ($this->data['Purchase Order '.$key] == '') {
                     return '';
@@ -325,8 +324,8 @@ class PurchaseOrder extends DB_Table {
 
                     if ($this->data['Purchase Order Estimated Receiving Date']) {
                         return '<span class="discreet"><i class="fa fa-thumb-tack" aria-hidden="true"></i> '.strftime(
-                            "%e %b %Y", strtotime($this->get('Estimated Receiving Date'))
-                        ).'</span>';
+                                "%e %b %Y", strtotime($this->get('Estimated Receiving Date'))
+                            ).'</span>';
                     } else {
 
                         $parent = get_object(
@@ -345,12 +344,12 @@ class PurchaseOrder extends DB_Table {
                                 )
                             ) {
                                 return '<span class="discreet italic">'.strftime(
-                                    "%d %b %Y", strtotime(
-                                                  'now +'.$parent->get(
-                                                      $parent->table_name.' Average Delivery Days'
-                                                  ).' days'
-                                              )
-                                ).'</span>';
+                                        "%d %b %Y", strtotime(
+                                                      'now +'.$parent->get(
+                                                          $parent->table_name.' Average Delivery Days'
+                                                      ).' days'
+                                                  )
+                                    ).'</span>';
 
                             } else {
                                 return '&nbsp;';
@@ -369,12 +368,12 @@ class PurchaseOrder extends DB_Table {
                                 )
                             ) {
                                 return '<span class="discreet italic">'.strftime(
-                                    "%d %b %Y", strtotime(
-                                                  $this->get('Purchase Order Submitted Date').' +'.$parent->get(
-                                                      $parent->table_name.' Average Delivery Days'
-                                                  ).' days'
-                                              )
-                                ).'</span>';
+                                        "%d %b %Y", strtotime(
+                                                      $this->get('Purchase Order Submitted Date').' +'.$parent->get(
+                                                          $parent->table_name.' Average Delivery Days'
+                                                      ).' days'
+                                                  )
+                                    ).'</span>';
 
                             } else {
                                 return '&nbsp;';
@@ -422,6 +421,9 @@ class PurchaseOrder extends DB_Table {
 
                     case 'Submitted':
                         return _('Submitted');
+                        break;
+                    case 'SubmittedAgent':
+                        return _('Submitted to Agent');
                         break;
                     case 'Confirmed':
                         return _('Confirmed');
@@ -605,42 +607,18 @@ class PurchaseOrder extends DB_Table {
 
         $delivery_data = array(
             'Supplier Delivery Public ID'           => $data['Supplier Delivery Public ID'],
-            'Supplier Delivery Parent'              => $this->get(
-                'Purchase Order Parent'
-            ),
-            'Supplier Delivery Parent Key'          => $this->get(
-                'Purchase Order Parent Key'
-            ),
-            'Supplier Delivery Parent Name'         => $this->get(
-                'Purchase Order Parent Name'
-            ),
-            'Supplier Delivery Parent Code'         => $this->get(
-                'Purchase Order Parent Code'
-            ),
-            'Supplier Delivery Parent Contact Name' => $this->get(
-                'Purchase Order Parent  Contact Name'
-            ),
-            'Supplier Delivery Parent Email'        => $this->get(
-                'Purchase Order Parent  Email'
-            ),
-            'Supplier Delivery Parent Telephone'    => $this->get(
-                'Purchase Order Parent Telephone'
-            ),
-            'Supplier Delivery Parent Address'      => $this->get(
-                'Purchase Order Parent Address'
-            ),
-            'Supplier Delivery Currency Code'       => $this->get(
-                'Purchase Order Currency Code'
-            ),
-            'Supplier Delivery Incoterm'            => $this->get(
-                'Purchase Order Incoterm'
-            ),
-            'Supplier Delivery Port of Import'      => $this->get(
-                'Purchase Order Port of Import'
-            ),
-            'Supplier Delivery Port of Export'      => $this->get(
-                'Purchase Order Port of Export'
-            ),
+            'Supplier Delivery Parent'              => $this->get('Purchase Order Parent'),
+            'Supplier Delivery Parent Key'          => $this->get('Purchase Order Parent Key'),
+            'Supplier Delivery Parent Name'         => $this->get('Purchase Order Parent Name'),
+            'Supplier Delivery Parent Code'         => $this->get('Purchase Order Parent Code'),
+            'Supplier Delivery Parent Contact Name' => $this->get('Purchase Order Parent Contact Name'),
+            'Supplier Delivery Parent Email'        => $this->get('Purchase Order Parent Email'),
+            'Supplier Delivery Parent Telephone'    => $this->get('Purchase Order Parent Telephone'),
+            'Supplier Delivery Parent Address'      => $this->get('Purchase Order Parent Address'),
+            'Supplier Delivery Currency Code'       => $this->get('Purchase Order Currency Code'),
+            'Supplier Delivery Incoterm'            => $this->get('Purchase Order Incoterm'),
+            'Supplier Delivery Port of Import'      => $this->get('Purchase Order Port of Import'),
+            'Supplier Delivery Port of Export'      => $this->get('Purchase Order Port of Export'),
             'Supplier Delivery Purchase Order Key'  => $this->id,
             //'Supplier Delivery Warehouse Key'=>$warehouse->id,
             //'Supplier Delivery Warehouse Metadata'=>json_encode($warehouse->data),
@@ -651,9 +629,7 @@ class PurchaseOrder extends DB_Table {
         //  print_r($delivery_data);
 
 
-        $delivery = new SupplierDelivery(
-            'new', $delivery_data
-        );
+        $delivery = new SupplierDelivery('new', $delivery_data);
 
 
         if ($delivery->error) {
@@ -856,6 +832,15 @@ class PurchaseOrder extends DB_Table {
         $operations = array();
 
 
+        if ($value == 'Submitted' and $this->get('Purchase Order Agent Key')) {
+            if ($old_value == 'InProcess') {
+                $value = 'SubmittedAgent';
+
+            }
+
+        }
+
+
         if ($old_value != $value) {
             switch ($value) {
                 case 'InProcess':
@@ -888,6 +873,48 @@ class PurchaseOrder extends DB_Table {
                         $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id()
                     );
 
+
+                    break;
+                case 'SubmittedAgent':
+
+
+                    $this->update_field(
+                        'Purchase Order Submitted Agent Date', $date, 'no_history'
+                    );
+
+                    $this->update_field(
+                        'Purchase Order Submitted Date', '', 'no_history'
+                    );
+                    $this->update_field(
+                        'Purchase Order Send Date', '', 'no_history'
+                    );
+
+                    $this->update_field(
+                        'Purchase Order State', $value, 'no_history'
+                    );
+                    $operations = array(
+                        'cancel_operations',
+                        'undo_submit_operations',
+                        'received_operations'
+                    );
+
+                    if ($old_value != 'Submitted') {
+                        if ($this->get('State Index') <= 20) {
+                            $history_abstract = _('Purchase order submitted');
+                        } else {
+                            $history_abstract = _('Purchase order set back as submitted to agent');
+
+                        }
+
+
+                        $history_data = array(
+                            'History Abstract' => $history_abstract,
+                            'History Details'  => '',
+                            'Action'           => 'created'
+                        );
+                        $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id());
+
+                    }
 
                     break;
 
@@ -1009,16 +1036,12 @@ class PurchaseOrder extends DB_Table {
 
 
             $sql = sprintf(
-                'UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Last Updated Date`=%s WHERE `Purchase Order Key`=%d ',
-                prepare_mysql($date),
-                $this->id
+                'UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Last Updated Date`=%s WHERE `Purchase Order Key`=%d ', prepare_mysql($date), $this->id
             );
             $this->db->exec($sql);
 
             $sql = sprintf(
-                'UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Transaction State`=%s WHERE `Purchase Order Key`=%d ',
-                prepare_mysql($value),
-                $this->id
+                'UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Transaction State`=%s WHERE `Purchase Order Key`=%d ', prepare_mysql($value), $this->id
             );
             $this->db->exec($sql);
 
@@ -1028,16 +1051,11 @@ class PurchaseOrder extends DB_Table {
 
         $this->update_metadata = array(
             'class_html'                => array(
-                'Purchase_Order_State'          => $this->get('State'),
-                'Purchase_Order_Submitted_Date' => '&nbsp;'.$this->get(
-                        'Submitted Date'
-                    ),
-                'Purchase_Order_Received_Date'  => '&nbsp;'.$this->get(
-                        'Received Date'
-                    ),
-                'Purchase_Order_Send_Date'      => '&nbsp;'.$this->get(
-                        'Send Date'
-                    ),
+                'Purchase_Order_State'                => $this->get('State'),
+                'Purchase_Order_Submitted_Date'       => '&nbsp;'.$this->get('Submitted Date'),
+                'Purchase_Order_Submitted_Agent_Date' => '&nbsp;'.$this->get('Submitted Agent Date'),
+                'Purchase_Order_Received_Date'        => '&nbsp;'.$this->get('Received Date'),
+                'Purchase_Order_Send_Date'            => '&nbsp;'.$this->get('Send Date'),
 
             ),
             'operations'                => $operations,
@@ -1096,12 +1114,10 @@ class PurchaseOrder extends DB_Table {
 
                 if ($scope == 'objects') {
 
-                    $deliveries[$row['Supplier Delivery Key']]
-                        = new SupplierDelivery($row['Supplier Delivery Key']);
+                    $deliveries[$row['Supplier Delivery Key']] = new SupplierDelivery($row['Supplier Delivery Key']);
 
                 } else {
-                    $deliveries[$row['Supplier Delivery Key']]
-                        = $row['Supplier Delivery Key'];
+                    $deliveries[$row['Supplier Delivery Key']] = $row['Supplier Delivery Key'];
                 }
             }
         } else {
@@ -1163,8 +1179,7 @@ class PurchaseOrder extends DB_Table {
                         "DELETE FROM `Purchase Order Transaction Fact` WHERE `Purchase Order Transaction Fact Key`=%d ", $row['Purchase Order Transaction Fact Key']
                     );
                     $this->db->exec($sql);
-                    $transaction_key
-                        = $row['Purchase Order Transaction Fact Key'];
+                    $transaction_key = $row['Purchase Order Transaction Fact Key'];
 
                 }
             }
@@ -1225,8 +1240,7 @@ class PurchaseOrder extends DB_Table {
                         $this->db->exec($sql);
                     }
 */
-                    $transaction_key
-                        = $row['Purchase Order Transaction Fact Key'];
+                    $transaction_key = $row['Purchase Order Transaction Fact Key'];
                 } else {
 
 
@@ -1343,8 +1357,8 @@ class PurchaseOrder extends DB_Table {
     function update_item_totals_from_order_transactions_old() {
 
 
-        $sql
-            = "SELECT count(DISTINCT `Supplier Product ID`) AS num_items ,sum(`Purchase Order Net Amount`) AS net, sum(`Purchase Order Tax Amount`) AS tax,  sum(`Purchase Order Shipping Contribution Amount`) AS shipping FROM `Purchase Order Transaction Fact` WHERE `Purchase Order Key`="
+        $sql =
+            "SELECT count(DISTINCT `Supplier Product ID`) AS num_items ,sum(`Purchase Order Net Amount`) AS net, sum(`Purchase Order Tax Amount`) AS tax,  sum(`Purchase Order Shipping Contribution Amount`) AS shipping FROM `Purchase Order Transaction Fact` WHERE `Purchase Order Key`="
             .$this->id;
         //print "$sql\n";
         $result = mysql_query($sql);
@@ -1355,8 +1369,7 @@ class PurchaseOrder extends DB_Table {
             //   $total = $row ['gross'] + $row ['tax'] + $row ['shipping']  - $row ['discount'] + $this->data ['Order Items Adjust Amount'];
 
             $this->data ['Purchase Order Items Net Amount'] = $row ['net'];
-            $this->data ['Purchase Order Number Items']
-                                                            = $row ['num_items'];
+            $this->data ['Purchase Order Number Items']     = $row ['num_items'];
 
 
             $sql = sprintf(

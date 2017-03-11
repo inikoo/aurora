@@ -9,9 +9,9 @@
 
 */
 
-$tab     = 'supplier.deliveries';
+$tab     = 'agent.deliveries';
 $ar_file = 'ar_suppliers_tables.php';
-$tipo    = 'deliveries';
+$tipo    = 'agent_deliveries';
 
 $default = $user->get_tab_defaults($tab);
 
@@ -22,10 +22,29 @@ $table_filters = array(
 );
 
 $parameters = array(
-    'parent'     => $state['object'],
-    'parent_key' => $state['key'],
+    'parent'     => 'account',
+    'parent_key' => ''
 
 );
+
+
+
+$table_buttons[] = array(
+    'icon'  => 'plus',
+    'title' => _('New delivery'),
+    'id'    => 'new_agent_delivery',
+    'attr'  => array(
+        'parent'     => 'agent',
+        'parent_key' => $user->get('User Parent Key')
+
+)
+
+
+);
+
+
+$smarty->assign('table_buttons', $table_buttons);
+$smarty->assign('js_code', 'js/injections/agent.deliveries.'.(_DEVEL ? '' : 'min.').'js');
 
 include 'utils/get_table_html.php';
 

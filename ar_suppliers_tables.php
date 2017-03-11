@@ -57,6 +57,12 @@ switch ($tipo) {
     case 'orders':
         orders(get_table_parameters(), $db, $user, $account);
         break;
+    case 'agent_orders':
+        agent_orders(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'agent_deliveries':
+        agent_deliveries(get_table_parameters(), $db, $user, $account);
+        break;
     case 'agent_client_orders':
         agent_client_orders(get_table_parameters(), $db, $user, $account);
         break;
@@ -838,9 +844,16 @@ function orders($_data, $db, $user) {
 }
 
 
-function agent_client_orders($_data, $db, $user) {
 
-    if ($user->get('User Type') != 'Agent') {
+
+
+function agent_orders($_data, $db, $user) {
+
+
+
+
+
+    if (!$user->can_view('suppliers')) {
         echo json_encode(
             array(
                 'state' => 405,
@@ -849,11 +862,10 @@ function agent_client_orders($_data, $db, $user) {
         );
         exit;
     }
-    $_data['parameters']['parent']     = 'agent';
-    $_data['parameters']['parent_key'] = $user->get('User Parent Key');
 
 
-    $rtext_label = 'client order';
+
+    $rtext_label = 'purchase order';
 
 
     include_once 'prepare_table/init.php';
@@ -867,6 +879,9 @@ function agent_client_orders($_data, $db, $user) {
             switch ($data['Purchase Order State']) {
                 case 'InProcess':
                     $state = sprintf('%s', _('In Process'));
+                    break;
+                case 'SubmittedAgent':
+                    $state = sprintf('%s', _('Submitted to agent'));
                     break;
                 case 'Submitted':
                     $state = sprintf('%s', _('Submitted'));
@@ -936,6 +951,201 @@ function agent_client_orders($_data, $db, $user) {
     );
     echo json_encode($response);
 }
+
+
+
+function agent_client_orders($_data, $db, $user) {
+
+    if ($user->get('User Type') != 'Agent') {
+        echo json_encode(
+            array(
+                'state' => 405,
+                'resp'  => 'Forbidden'
+            )
+        );
+        exit;
+    }
+    $_data['parameters']['agent_key'] = $user->get('User Parent Key');
+
+
+
+
+    $rtext_label = 'client order';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $table_data = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+            switch ($data['Purchase Order State']) {
+                case 'InProcess':
+                    $state = sprintf('%s', _('In Process'));
+                    break;
+                case 'SubmittedAgent':
+                    $state = sprintf('%s', _('Submitted to agent'));
+                    break;
+                case 'Submitted':
+                    $state = sprintf('%s', _('Submitted'));
+                    break;
+                case 'Confirmed':
+                    $state = sprintf('%s', _('Confirmed'));
+                    break;
+                case 'In Warehouse':
+                    $state = sprintf('%s', _('In Warehouse'));
+                    break;
+                case 'Done':
+                    $state = sprintf('%s', _('Done'));
+                    break;
+                case 'Cancelled':
+                    $state = sprintf('%s', _('Cancelled'));
+                    break;
+
+                default:
+                    $state = $data['Purchase Order State'];
+                    break;
+            }
+
+            $table_data[] = array(
+                'id'          => (integer)$data['Purchase Order Key'],
+                'parent_key'  => (integer)$data['Purchase Order Parent Key'],
+                'parent_type' => strtolower($data['Purchase Order Parent']),
+                'parent'      => strtolower(
+                    $data['Purchase Order Parent Name']
+                ),
+
+                'public_id' => $data['Purchase Order Public ID'],
+                'date'      => strftime(
+                    "%e %b %Y", strtotime($data['Purchase Order Creation Date'].' +0:00')
+                ),
+                'last_date' => strftime(
+                    "%a %e %b %Y %H:%M %Z", strtotime(
+                                              $data['Purchase Order Last Updated Date'].' +0:00'
+                                          )
+                ),
+                'state'     => $state,
+
+                'total_amount' => money(
+                    $data['Purchase Order Total Amount'], $data['Purchase Order Currency Code']
+                )
+
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $table_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+
+
+function agent_deliveries($_data, $db, $user) {
+
+    if ($user->get('User Type') != 'Agent') {
+        echo json_encode(
+            array(
+                'state' => 405,
+                'resp'  => 'Forbidden'
+            )
+        );
+        exit;
+    }
+
+    $_data['parameters']['agent_key'] = $user->get('User Parent Key');
+
+
+
+    $rtext_label = 'delivery';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $table_data = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+            switch ($data['Supplier Delivery State']) {
+                case 'InProcess':
+                    $state = sprintf('%s', _('In Process'));
+                    break;
+                case 'Submitted':
+                    $state = sprintf('%s', _('Submitted'));
+                    break;
+                case 'Confirmed':
+                    $state = sprintf('%s', _('Confirmed'));
+                    break;
+                case 'In Warehouse':
+                    $state = sprintf('%s', _('In Warehouse'));
+                    break;
+                case 'Done':
+                    $state = sprintf('%s', _('Done'));
+                    break;
+                case 'Cancelled':
+                    $state = sprintf('%s', _('Cancelled'));
+                    break;
+
+                default:
+                    $state = $data['Supplier Delivery State'];
+                    break;
+            }
+
+            $table_data[] = array(
+                'id'          => (integer)$data['Supplier Delivery Key'],
+                'public_id'   => sprintf('<span class="link" onClick="change_view(\'agent_delivery/%d\')">%s</span>',$data['Supplier Delivery Key'],$data['Supplier Delivery Public ID']),
+                'date'        => strftime("%e %b %Y", strtotime($data['Supplier Delivery Creation Date'].' +0:00')),
+                'last_date'   => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Supplier Delivery Last Updated Date'].' +0:00')),
+                'state'       => $state,
+
+                'total_amount' => money($data['Supplier Delivery Total Amount'], $data['Supplier Delivery Currency Code'])
+
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $table_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
 
 
 function deliveries($_data, $db, $user) {
@@ -1068,8 +1278,12 @@ function order_items($_data, $db, $user, $account) {
             $units_per_carton = $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'];
 
 
-            $subtotals = sprintf('<span  class="subtotals" >');
+            $subtotals = sprintf('<span  class="subtotals" style="font-size:90%%"  >');
             if ($data['Purchase Order Quantity'] > 0) {
+
+                $subtotals .=''.$data['Purchase Order Quantity'] * $units_per_carton.'u. ';
+
+
 
                 $amount = $data['Purchase Order Quantity'] * $units_per_carton * $data['Supplier Part Unit Cost'];
 
@@ -1119,21 +1333,21 @@ function order_items($_data, $db, $user, $account) {
 
             }
 
-            $description = ($data['Supplier Part Reference'] != $data['Part Reference'] ? $data['Part Reference'].', ' : '');
+            $description ='<div style="font-size:90%" >'. ($data['Supplier Part Reference'] != $data['Part Reference'] ? $data['Part Reference'].', ' : '');
 
 
-            $description .= $data['Part Unit Description'].' <span class="discreet">('.number($units_per_carton).'/C '.money(
-                    $data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')
-                ).')</span>';
+            $description .= $data['Part Unit Description'].' <span class="discreet" title="'._('Units per carton').'">('.number($units_per_carton).'/C) <span class="" title="'._('Carton cost').'">'.money(
+                    $units_per_carton*$data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')
+                ).'</span></span>';
 
 
-            if ($data['Supplier Part Minimum Carton Order'] > 0) {
+            if ($data['Supplier Part Minimum Carton Order'] > 0 and $data['Supplier Part Minimum Carton Order']!=1  ) {
                 $description .= sprintf(
                     ' <span class="discreet"><span title="%s">MOQ</span>:%s<span>', _('Minimum order (cartons)'), number($data['Supplier Part Minimum Carton Order'])
                 );
             }
 
-
+            $description_sales='';
             if ($purchase_order->get('State Index') < 30) {
 
 
@@ -1179,7 +1393,7 @@ function order_items($_data, $db, $user, $account) {
 
                 }
 
-                $description .= '<div style="margin-top:10px" >
+                $description_sales =$description.  '<div style="margin-top:10px" >
                         <span class="no_discreet"><i class="fa fa-square" aria-hidden="true"></i> '.$data['Part Reference'].'</span>
                         <span title="'._('Stock (cartons)').'">'.number(
                         $data['Part Current On Hand Stock'] / $data['Supplier Part Packages Per Carton']
@@ -1228,6 +1442,13 @@ function order_items($_data, $db, $user, $account) {
 			';
 
             }
+
+
+
+            $description.='</div>';
+            $description_sales.='</div>';
+
+
             $table_data[] = array(
 
                 'id'                => (integer)$data['Purchase Order Transaction Fact Key'],
@@ -1248,6 +1469,7 @@ function order_items($_data, $db, $user, $account) {
                 ),
                 'reference'         => $data['Supplier Part Reference'],
                 'description'       => $description,
+                'description_sales'       => $description_sales,
                 'quantity'          => sprintf(
                     '<span    data-settings=\'{"field": "Purchase Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button" aria-hidden="true"></i></span>',
                     $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $data['Purchase Order Quantity'] + 0,

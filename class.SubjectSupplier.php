@@ -20,6 +20,7 @@ class SubjectSupplier extends Subject {
         include_once 'class.Staff.php';
         include_once 'class.Warehouse.php';
 
+
         $staff     = new Staff($_data['user']->get('User Parent Key'));
         $warehouse = new Warehouse($_data['warehouse_key']);
 
@@ -28,29 +29,15 @@ class SubjectSupplier extends Subject {
             'Purchase Order Parent Key'          => $this->id,
             'Purchase Order Parent Name'         => $this->get('Name'),
             'Purchase Order Parent Code'         => $this->get('Code'),
-            'Purchase Order Parent Contact Name' => $this->get(
-                'Main Contact Name'
-            ),
-            'Purchase Order Parent Email'        => $this->get(
-                'Main Plain Email'
-            ),
-            'Purchase Order Parent Telephone'    => $this->get(
-                'Preferred Contact Number Formatted Number'
-            ),
-            'Purchase Order Parent Address'      => $this->get(
-                'Contact Address Formatted'
-            ),
+            'Purchase Order Parent Contact Name' => $this->get('Main Contact Name'),
+            'Purchase Order Parent Email'        => $this->get('Main Plain Email'),
+            'Purchase Order Parent Telephone'    => $this->get('Preferred Contact Number Formatted Number'),
+            'Purchase Order Parent Address'      => $this->get('Contact Address Formatted'),
 
-            'Purchase Order Currency Code'  => $this->get(
-                'Default Currency Code'
-            ),
+            'Purchase Order Currency Code'  => $this->get('Default Currency Code'),
             'Purchase Order Incoterm'       => $this->get('Default Incoterm'),
-            'Purchase Order Port of Import' => $this->get(
-                'Default Port of Import'
-            ),
-            'Purchase Order Port of Export' => $this->get(
-                'Default Port of Export'
-            ),
+            'Purchase Order Port of Import' => $this->get('Default Port of Import'),
+            'Purchase Order Port of Export' => $this->get('Default Port of Export'),
 
 
             'Purchase Order Warehouse Key'            => $warehouse->data['Warehouse Key'],
@@ -62,15 +49,42 @@ class SubjectSupplier extends Subject {
             'Purchase Order Warehouse VAT Number'     => $warehouse->data['Warehouse VAT Number'],
             'Purchase Order Warehouse Telephone'      => $warehouse->data['Warehouse Telephone'],
             'Purchase Order Warehouse Email'          => $warehouse->data['Warehouse Email'],
-            'Purchase Order Account Number'           => $this->data['Supplier Account Number'],
+            'Purchase Order Account Number'           => $this->get('Account Number'),
 
-            'Purchase Order Terms and Conditions' => $this->get(
-                'Default PO Terms and Conditions'
-            ),
+            'Purchase Order Terms and Conditions' => $this->get('Default PO Terms and Conditions'),
             'Purchase Order Main Buyer Key'       => $staff->id,
             'Purchase Order Main Buyer Name'      => $staff->get('Staff Name'),
-            'editor'                              => $this->editor
+            'editor'                              => $this->editor,
+
+
         );
+
+        if ($_data['agent_key']) {
+            include_once 'class.Agent.php';
+            $agent = new Agent($_data['agent_key']);
+            if ($agent->id) {
+                $order_data['Purchase Order Agent Key']  = $agent->id;
+                $order_data['Purchase Order Agent Data'] = json_encode(
+                    array(
+                        'Agent Name'         => $agent->get('Name'),
+                        'Agent Code'         => $agent->get('Code'),
+                        'Agent Contact Name' => $agent->get('Main Contact Name'),
+                        'Agent Email'        => $agent->get('Main Plain Email'),
+                        'Agent Telephone'    => $agent->get('Preferred Contact Number Formatted Number'),
+                        'Agent Address'      => $agent->get('Contact Address Formatted'),
+
+                    )
+
+                );
+
+            } else {
+                $this->error = true;
+                $this->msg   = _('Agent not found');
+
+            }
+
+
+        }
 
 
         if ($this->get('Show Warehouse TC in PO') == 'Yes') {
@@ -301,8 +315,8 @@ class SubjectSupplier extends Subject {
                         true,
                         strftime(
                             "%a, %e %b %y", strtotime(
-                                $this->get($this->table_name.' '.$key).' +0:00'
-                            )
+                                              $this->get($this->table_name.' '.$key).' +0:00'
+                                          )
                         )
                     );
                 }
@@ -315,8 +329,8 @@ class SubjectSupplier extends Subject {
                     $options_currencies = array();
                     $sql                = sprintf(
                         "SELECT `Currency Code`,`Currency Name`,`Currency Symbol` FROM kbase.`Currency Dimension` WHERE `Currency Code`=%s", prepare_mysql(
-                            $this->data[$this->table_name.' Default Currency Code']
-                        )
+                                                                                                                                               $this->data[$this->table_name.' Default Currency Code']
+                                                                                                                                           )
                     );
 
 
@@ -457,22 +471,23 @@ class SubjectSupplier extends Subject {
                     true,
                     $this->data[$field]
                 );
-            break;
+                break;
             case 'Acc To Day Updated':
             case 'Acc Ongoing Intervals Updated':
             case 'Acc Previous Intervals Updated':
 
-                if ($this->data[ $this->table_name.' '.$key] == '') {
-                    $value= '';
+                if ($this->data[$this->table_name.' '.$key] == '') {
+                    $value = '';
                 } else {
 
-                    $value= strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($this->data[ $this->table_name.' '.$key].' +0:00'));
+                    $value = strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($this->data[$this->table_name.' '.$key].' +0:00'));
 
                 }
-            return array(
-                true,
-                $value
-            );
+
+                return array(
+                    true,
+                    $value
+                );
                 break;
 
 
@@ -619,8 +634,9 @@ class SubjectSupplier extends Subject {
     function update_sales_from_invoices($interval, $this_year = true, $last_year = true) {
 
         include_once 'utils/date_functions.php';
-        list($db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb)
-            = calculate_interval_dates($this->db, $interval);
+        list(
+            $db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb
+            ) = calculate_interval_dates($this->db, $interval);
 
         if ($this_year) {
 
@@ -678,7 +694,7 @@ class SubjectSupplier extends Subject {
                         ]
         )) {
 
-            $this->update([ $this->table_name.' Acc To Day Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+            $this->update([$this->table_name.' Acc To Day Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
 
         } elseif (in_array(
             $db_interval, [
@@ -689,7 +705,7 @@ class SubjectSupplier extends Subject {
                         ]
         )) {
 
-            $this->update([ $this->table_name.' Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+            $this->update([$this->table_name.' Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
         } elseif (in_array(
             $db_interval, [
                             'Last Month',
@@ -699,7 +715,7 @@ class SubjectSupplier extends Subject {
                         ]
         )) {
 
-            $this->update([ $this->table_name.' Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+            $this->update([$this->table_name.' Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
         }
 
 
@@ -725,8 +741,7 @@ class SubjectSupplier extends Subject {
         if ($part_skus != '') {
 
             if ($from_date == '' and $to_date == '') {
-                $sales_data['repeat_customers']
-                    = $this->get_customers_total_data($part_skus);
+                $sales_data['repeat_customers'] = $this->get_customers_total_data($part_skus);
             }
 
 
@@ -737,7 +752,7 @@ class SubjectSupplier extends Subject {
             ) : ''), ($to_date ? sprintf('and `Date`<%s', prepare_mysql($to_date)) : '')
             );
 
-          //  print "$from_date $to_date  \n";
+            //  print "$from_date $to_date  \n";
 
             if ($result = $this->db->query($sql)) {
                 if ($row = $result->fetch()) {
@@ -787,7 +802,6 @@ class SubjectSupplier extends Subject {
     function update_previous_years_data() {
 
 
-
         foreach (range(1, 5) as $i) {
             $data_iy_ago = $this->get_sales_data(
                 date('Y-01-01 00:00:00', strtotime('-'.$i.' year')), date('Y-01-01 00:00:00', strtotime('-'.($i - 1).' year'))
@@ -811,10 +825,6 @@ class SubjectSupplier extends Subject {
         }
 
         $this->update([$this->table_name.' Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
-
-
-
-
 
 
     }
@@ -861,7 +871,7 @@ class SubjectSupplier extends Subject {
             $this->update($data_to_update, 'no_history');
         }
 
-        $this->update([ $this->table_name.' Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+        $this->update([$this->table_name.' Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
 
 
     }

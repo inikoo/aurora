@@ -1,8 +1,14 @@
 {assign deliveries $order->get_deliveries('objects')}
 
+<div style="padding:20px;border-bottom:1px solid #ccc" class="{if !$order->get('Purchase Order Agent Key')}hide{/if}">
 
-
-<div class="timeline_horizontal {if $order->get('Purchase Order State')=='Cancelled'}hide{/if}">
+<span class="fulfilled_by">
+    {if $order->get('State Index')==10} {t}This purchase order will be fulfilled by{/t} <span class="button" onClick="change_view('/agent/{$order->get('Purchase Order Agent Key')}')">{$order->get('Agent Name')} <i class="fa fa-user-secret" aria-hidden="true"></i></span>
+    {else $order->get('State Index')>10} {t}This purchase order is been fulfilled by{/t} <span class="button" onClick="change_view('/agent/{$order->get('Purchase Order Agent Key')}')">{$order->get('Agent Name')} <i class="fa fa-user-secret" aria-hidden="true"></i></span>
+{/if}
+</span>
+</div>
+<div class="timeline_horizontal {if $order->get('Purchase Order State')=='Cancelled'  or $order->get('Purchase Order Agent Key') }hide{/if}">
     <ul class="timeline" id="timeline">
         <li id="submitted_node" class="li {if $order->get('State Index')>=30}complete{/if}">
             <div class="label">
@@ -60,7 +66,7 @@
                 <span class="state ">{t}Received{/t}</span>
             </div>
             <div class="timestamp">
-			
+
 			<span class="Purchase_Order_Received_Date">&nbsp;<span
                         class="Purchase_Order_Received_Date">{$order->get('Received Date')}</span>{foreach from=$deliveries item=dn name=deliveries}
 			<span i
@@ -99,6 +105,59 @@
         </li>
     </ul>
 </div>
+<div class="timeline_horizontal {if $order->get('Purchase Order State')=='Cancelled' or !$order->get('Purchase Order Agent Key') }hide{/if}">
+    <ul class="timeline" id="timeline">
+        <li id="submitted_node" class="li {if $order->get('State Index')>=20}complete{/if}">
+            <div class="label">
+                <span class="state " title="{t}Submitted to agent{/t}"><i class="fa fa-paper-plane-o" aria-hidden="true"></i> {t}Agent{/t}</span>
+            </div>
+            <div class="timestamp">
+                <span class="Purchase_Order_Submitted_Date">&nbsp;{$order->get('Submitted Date')}</span> <span
+                        class="start_date">{$order->get('Creation Date')} </span>
+            </div>
+            <div class="dot">
+            </div>
+        </li>
+        <li id="submitted_node" class="li {if $order->get('State Index')>=30}complete{/if}">
+            <div class="label">
+                <span class="state " title="{t}Submitted to agent{/t}"><i class="fa fa-paper-plane-o" aria-hidden="true"></i> {t}Supplier{/t}</span></span>
+            </div>
+            <div class="timestamp">
+                <span class="Purchase_Order_Submitted_Date">&nbsp;{$order->get('Submitted Date')}</span>
+            </div>
+            <div class="dot">
+            </div>
+        </li>
+
+        <li class="li {if $order->get('State Index')>=35}complete{/if}">
+            <div class="label">
+                <span class="state ">{t}Received by agent{/t}</span>
+            </div>
+            <div class="timestamp">
+			
+			&nbsp;<span class="Purchase_Order_Agent_Received_Date">{$order->get('Agent Received Date')}</span>
+
+            </div>
+            <div class="dot">
+            </div>
+        </li>
+        <li id="send_node" class="li  {if $order->get('State Index')>=60}complete{/if} ">
+            <div class="label">
+                <span class="state" style="position:relative;left:5px">{t}Delivery{/t} <span></i></span></span>
+            </div>
+            <div class="timestamp">
+			<span class="Deliveries_Public_IDs"
+                  style="position:relative;left:5px">&nbsp;{foreach from=$deliveries item=dn name=deliveries}
+                <span i
+                      class="{if $smarty.foreach.deliveries.index != 0}hide{/if} index_{$smarty.foreach.deliveries.index}">{$dn->get('Public ID')}</span>
+                {/foreach}&nbsp;</span>
+            </div>
+            <div class="truck">
+            </div>
+        </li>
+
+    </ul>
+</div>
 <div class="timeline_horizontal  {if $order->get('Purchase Order State')!='Cancelled'}hide{/if}">
     <ul class="timeline" id="timeline">
         <li id="submitted_node" class="li complete">
@@ -129,7 +188,7 @@
 </div>
 
 <div class="order" style="display: flex;" data-object="{$object_data}">
-    <div class="block" style=" align-items: stretch;flex: 1">
+    <div style=" align-items: stretch;flex: 1" class="block {if $order->get('Purchase Order Agent Key')}hide{/if}">
         <div class="data_container" style="padding:5px 10px">
             <div class="data_field">
                 <i class="fa fa-ship fa-fw" aria-hidden="true" title="{t}Supplier{/t}"></i> <span
@@ -297,9 +356,8 @@
     <div class="block " style="align-items: stretch;flex: 1 ">
         <table border="0" class="info_block acenter">
             <tr>
-                <td>
-                    <span style=""><i class="fa fa-stop fa-fw discreet" aria-hidden="true"></i> <span
-                                class="Purchase_Order_Number_Items">{$order->get('Number Items')}</span></span>
+                <td style="text-align: center" >
+                    <span style=""><i class="fa fa-stop fa-fw discreet" aria-hidden="true"></i> <span class="Purchase_Order_Number_Items">{$order->get('Number Items')}</span></span>
                     <span class="{if $order->get('State Index')<60}super_discreet{/if}" style="padding-left:20px"><i
                                 class="fa fa-arrow-circle-down  fa-fw discreet" aria-hidden="true"></i> <span
                                 class="Purchase_Order_Number_Supplier_Delivery_Items">{$order->get('Number Supplier Delivery Items')}</span></span>
@@ -309,10 +367,10 @@
                 </td>
             </tr>
             <tr>
-                <td class="Purchase_Order_Weight" title="{t}Weight{/t}">{$order->get('Weight')}</td>
+                <td  style="text-align: center" class=" Purchase_Order_Weight" title="{t}Weight{/t}">{$order->get('Weight')}</td>
             </tr>
             <tr>
-                <td class="Purchase_Order_CBM" title="{t}CBM{/t}">{$order->get('CBM')}</td>
+                <td style="text-align: center" class="Purchase_Order_CBM" title="{t}CBM{/t}">{$order->get('CBM')}</td>
             </tr>
         </table>
         <div style="clear:both">

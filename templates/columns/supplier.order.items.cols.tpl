@@ -33,6 +33,8 @@ cell: Backgrid.HtmlCell.extend({ className: "width_20"} ),
 {
 name: "item_index",
 label: "",
+renderable:false,
+
 editable: false,
 cell: Backgrid.StringCell.extend({
 events: {
@@ -61,13 +63,41 @@ change_view("supplier/"+this.model.get("supplier_key")+"/part/"+this.model.get("
 },
 className: "link"
 }),
-},{
+},
+{
 name: "description",
-label: "{t}Unit description{/t}",
+label: "{t}Carton description{/t}",
 editable: false,
 cell: "html"
 
-}, {
+},
+{
+name: "description_sales",
+label: "{t}Carton description{/t}",
+editable: false,
+cell: "html"
+
+},
+{
+name: "unit",
+label: "{t}Unit description{/t}",
+editable: false,
+cell: "html"
+},
+{
+name: "unit_per_carton",
+label: "U/C",
+editable: false,
+cell: "html"
+},
+{
+name: "unit_cost",
+label: "{t}Unit cost{/t}",
+editable: false,
+cell: "html"
+},
+
+{
 name: "subtotals",
 label: "{t}Subtotals{/t}",
 defaultOrder:1,
@@ -111,6 +141,32 @@ headerCell: integerHeaderCell
 
 
 function change_table_view(view, save_state) {
+
+
+grid.columns.findWhere({ name: 'description'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'description_sales'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'unit'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'unit_per_carton'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'unit_cost'} ).set("renderable", false)
+
+
+
+
+if(view=='overview'){
+grid.columns.findWhere({ name: 'description'} ).set("renderable", true)
+
+}else if(view=='sales'){
+grid.columns.findWhere({ name: 'description_sales'} ).set("renderable", true)
+
+}else if(view=='unit'){
+grid.columns.findWhere({ name: 'unit'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'unit_per_carton'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'unit_cost'} ).set("renderable", true)
+
+}
+
+
+
 
 {if isset($data['metadata']['create_delivery']) and $data['metadata']['create_delivery'] }
 
