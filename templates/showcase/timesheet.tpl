@@ -1,5 +1,5 @@
 <div class="asset_profile container">
-    <div class="presention_card" style="width:400px;">
+    <div class="presentation_card" style="width:400px;">
         <table class="showcase" style="" border="0">
             <tr class="title">
                 <td colspan="2" class="label">{t}Work day{/t}</td>

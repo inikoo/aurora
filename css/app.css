@@ -1099,24 +1099,24 @@ right connector from last child*/
   padding-bottom: 10px;
   line-height: 70%; }
 
-.new_object table, .presention_card table, .showcase table, .export_dialog table {
+.new_object table, .presentation_card table, .showcase table, .export_dialog table {
   width: 100%; }
-  .new_object table .adr, .presention_card table .adr, .showcase table .adr, .export_dialog table .adr {
+  .new_object table .adr, .presentation_card table .adr, .showcase table .adr, .export_dialog table .adr {
     padding: 5px 0px; }
-  .new_object table.address tr, .presention_card table.address tr, .showcase table.address tr, .export_dialog table.address tr {
+  .new_object table.address tr, .presentation_card table.address tr, .showcase table.address tr, .export_dialog table.address tr {
     border: none; }
-    .new_object table.address tr .label, .presention_card table.address tr .label, .showcase table.address tr .label, .export_dialog table.address tr .label {
+    .new_object table.address tr .label, .presentation_card table.address tr .label, .showcase table.address tr .label, .export_dialog table.address tr .label {
       width: 160px; }
-  .new_object table .main_title, .presention_card table .main_title, .showcase table .main_title, .export_dialog table .main_title {
+  .new_object table .main_title, .presentation_card table .main_title, .showcase table .main_title, .export_dialog table .main_title {
     font-family: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
     font-weight: 300 !important;
     border: none;
     color: #ddd;
     background-color: #656565; }
-    .new_object table .main_title .button .fa, .presention_card table .main_title .button .fa, .showcase table .main_title .button .fa, .export_dialog table .main_title .button .fa {
+    .new_object table .main_title .button .fa, .presentation_card table .main_title .button .fa, .showcase table .main_title .button .fa, .export_dialog table .main_title .button .fa {
       position: relative;
       top: 1px; }
-    .new_object table .main_title .widget_types, .presention_card table .main_title .widget_types, .showcase table .main_title .widget_types, .export_dialog table .main_title .widget_types {
+    .new_object table .main_title .widget_types, .presentation_card table .main_title .widget_types, .showcase table .main_title .widget_types, .export_dialog table .main_title .widget_types {
       -webkit-touch-callout: none;
       -webkit-user-select: none;
       -khtml-user-select: none;
@@ -1128,65 +1128,65 @@ right connector from last child*/
       color: #ddd;
       font-size: 15.4px;
       background-color: #656565; }
-      .new_object table .main_title .widget_types .widget, .presention_card table .main_title .widget_types .widget, .showcase table .main_title .widget_types .widget, .export_dialog table .main_title .widget_types .widget {
+      .new_object table .main_title .widget_types .widget, .presentation_card table .main_title .widget_types .widget, .showcase table .main_title .widget_types .widget, .export_dialog table .main_title .widget_types .widget {
         float: left;
         padding: 0px 20px;
         border-right: 1px solid #666;
         cursor: pointer; }
-        .new_object table .main_title .widget_types .widget.right, .presention_card table .main_title .widget_types .widget.right, .showcase table .main_title .widget_types .widget.right, .export_dialog table .main_title .widget_types .widget.right {
+        .new_object table .main_title .widget_types .widget.right, .presentation_card table .main_title .widget_types .widget.right, .showcase table .main_title .widget_types .widget.right, .export_dialog table .main_title .widget_types .widget.right {
           float: right;
           border-right: none;
           border-left: 1px solid #ccc; }
-        .new_object table .main_title .widget_types .widget .fa, .presention_card table .main_title .widget_types .widget .fa, .showcase table .main_title .widget_types .widget .fa, .export_dialog table .main_title .widget_types .widget .fa {
+        .new_object table .main_title .widget_types .widget .fa, .presentation_card table .main_title .widget_types .widget .fa, .showcase table .main_title .widget_types .widget .fa, .export_dialog table .main_title .widget_types .widget .fa {
           font-size: 75%;
           position: relative;
           top: -1px; }
-      .new_object table .main_title .widget_types .widget.selected, .new_object table .main_title .widget_types .widget.selected:hover, .presention_card table .main_title .widget_types .widget.selected, .presention_card table .main_title .widget_types .widget.selected:hover, .showcase table .main_title .widget_types .widget.selected, .showcase table .main_title .widget_types .widget.selected:hover, .export_dialog table .main_title .widget_types .widget.selected, .export_dialog table .main_title .widget_types .widget.selected:hover {
+      .new_object table .main_title .widget_types .widget.selected, .new_object table .main_title .widget_types .widget.selected:hover, .presentation_card table .main_title .widget_types .widget.selected, .presentation_card table .main_title .widget_types .widget.selected:hover, .showcase table .main_title .widget_types .widget.selected, .showcase table .main_title .widget_types .widget.selected:hover, .export_dialog table .main_title .widget_types .widget.selected, .export_dialog table .main_title .widget_types .widget.selected:hover {
         color: #FFFF00; }
-      .new_object table .main_title .widget_types .widget:hover, .presention_card table .main_title .widget_types .widget:hover, .showcase table .main_title .widget_types .widget:hover, .export_dialog table .main_title .widget_types .widget:hover {
+      .new_object table .main_title .widget_types .widget:hover, .presentation_card table .main_title .widget_types .widget:hover, .showcase table .main_title .widget_types .widget:hover, .export_dialog table .main_title .widget_types .widget:hover {
         color: #FFFFCC; }
-    .new_object table .main_title .tabs, .presention_card table .main_title .tabs, .showcase table .main_title .tabs, .export_dialog table .main_title .tabs {
+    .new_object table .main_title .tabs, .presentation_card table .main_title .tabs, .showcase table .main_title .tabs, .export_dialog table .main_title .tabs {
       border-bottom: none !important;
       color: #ddd !important;
       background-color: #656565 !important; }
-      .new_object table .main_title .tabs .tab, .new_object table .main_title .tabs .element, .presention_card table .main_title .tabs .tab, .presention_card table .main_title .tabs .element, .showcase table .main_title .tabs .tab, .showcase table .main_title .tabs .element, .export_dialog table .main_title .tabs .tab, .export_dialog table .main_title .tabs .element {
+      .new_object table .main_title .tabs .tab, .new_object table .main_title .tabs .element, .presentation_card table .main_title .tabs .tab, .presentation_card table .main_title .tabs .element, .showcase table .main_title .tabs .tab, .showcase table .main_title .tabs .element, .export_dialog table .main_title .tabs .tab, .export_dialog table .main_title .tabs .element {
         border-right: 1px solid #666; }
-        .new_object table .main_title .tabs .tab.right, .new_object table .main_title .tabs .element.right, .presention_card table .main_title .tabs .tab.right, .presention_card table .main_title .tabs .element.right, .showcase table .main_title .tabs .tab.right, .showcase table .main_title .tabs .element.right, .export_dialog table .main_title .tabs .tab.right, .export_dialog table .main_title .tabs .element.right {
+        .new_object table .main_title .tabs .tab.right, .new_object table .main_title .tabs .element.right, .presentation_card table .main_title .tabs .tab.right, .presentation_card table .main_title .tabs .element.right, .showcase table .main_title .tabs .tab.right, .showcase table .main_title .tabs .element.right, .export_dialog table .main_title .tabs .tab.right, .export_dialog table .main_title .tabs .element.right {
           border-left: 1px solid #666; }
-      .new_object table .main_title .tabs .tab.widget:hover, .presention_card table .main_title .tabs .tab.widget:hover, .showcase table .main_title .tabs .tab.widget:hover, .export_dialog table .main_title .tabs .tab.widget:hover {
+      .new_object table .main_title .tabs .tab.widget:hover, .presentation_card table .main_title .tabs .tab.widget:hover, .showcase table .main_title .tabs .tab.widget:hover, .export_dialog table .main_title .tabs .tab.widget:hover {
         background-color: #color_dark_highlight !important; }
-      .new_object table .main_title .tabs .tab.widget_selected:hover, .new_object table .main_title .tabs .tab.widget_selected, .presention_card table .main_title .tabs .tab.widget_selected:hover, .presention_card table .main_title .tabs .tab.widget_selected, .showcase table .main_title .tabs .tab.widget_selected:hover, .showcase table .main_title .tabs .tab.widget_selected, .export_dialog table .main_title .tabs .tab.widget_selected:hover, .export_dialog table .main_title .tabs .tab.widget_selected {
+      .new_object table .main_title .tabs .tab.widget_selected:hover, .new_object table .main_title .tabs .tab.widget_selected, .presentation_card table .main_title .tabs .tab.widget_selected:hover, .presentation_card table .main_title .tabs .tab.widget_selected, .showcase table .main_title .tabs .tab.widget_selected:hover, .showcase table .main_title .tabs .tab.widget_selected, .export_dialog table .main_title .tabs .tab.widget_selected:hover, .export_dialog table .main_title .tabs .tab.widget_selected {
         color: #FFFF00 !important; }
-  .new_object table .formated_value, .presention_card table .formated_value, .showcase table .formated_value, .export_dialog table .formated_value {
+  .new_object table .formated_value, .presentation_card table .formated_value, .showcase table .formated_value, .export_dialog table .formated_value {
     margin-right: 10px; }
-  .new_object table td, .presention_card table td, .showcase table td, .export_dialog table td {
+  .new_object table td, .presentation_card table td, .showcase table td, .export_dialog table td {
     vertical-align: text-top; }
-  .new_object table tr, .presention_card table tr, .showcase table tr, .export_dialog table tr {
+  .new_object table tr, .presentation_card table tr, .showcase table tr, .export_dialog table tr {
     border-bottom: 1px solid #ddd;
     height: 32px;
     line-height: 32px; }
-  .new_object table tr.small_row, .presention_card table tr.small_row, .showcase table tr.small_row, .export_dialog table tr.small_row {
+  .new_object table tr.small_row, .presentation_card table tr.small_row, .showcase table tr.small_row, .export_dialog table tr.small_row {
     height: 22px;
     line-height: 22px; }
-  .new_object table tr.no_border, .presention_card table tr.no_border, .showcase table tr.no_border, .export_dialog table tr.no_border {
+  .new_object table tr.no_border, .presentation_card table tr.no_border, .showcase table tr.no_border, .export_dialog table tr.no_border {
     border: none; }
-  .new_object table tr.new, .presention_card table tr.new, .showcase table tr.new, .export_dialog table tr.new {
+  .new_object table tr.new, .presentation_card table tr.new, .showcase table tr.new, .export_dialog table tr.new {
     cursor: pointer; }
-  .new_object table .new_button, .presention_card table .new_button, .showcase table .new_button, .export_dialog table .new_button {
+  .new_object table .new_button, .presentation_card table .new_button, .showcase table .new_button, .export_dialog table .new_button {
     position: relative;
     top: 1px;
     left: 5px; }
-  .new_object table .title, .presention_card table .title, .showcase table .title, .export_dialog table .title {
+  .new_object table .title, .presentation_card table .title, .showcase table .title, .export_dialog table .title {
     border-top: none; }
-    .new_object table .title td, .presention_card table .title td, .showcase table .title td, .export_dialog table .title td {
+    .new_object table .title td, .presentation_card table .title td, .showcase table .title td, .export_dialog table .title td {
       font-family: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
       font-weight: 600;
       padding-top: 10px; }
-      .new_object table .title td .fa.link, .presention_card table .title td .fa.link, .showcase table .title td .fa.link, .export_dialog table .title td .fa.link {
+      .new_object table .title td .fa.link, .presentation_card table .title td .fa.link, .showcase table .title td .fa.link, .export_dialog table .title td .fa.link {
         margin-left: 5px;
         position: relative;
         top: 2px; }
-  .new_object table .label, .presention_card table .label, .showcase table .label, .export_dialog table .label {
+  .new_object table .label, .presentation_card table .label, .showcase table .label, .export_dialog table .label {
     width: 280px;
     vertical-align: top; }
 
@@ -1453,7 +1453,7 @@ table.totals .total td {
     width: 150px;
     white-space: normal;
     white-space: nowrap; }
-  .xorder .presention_card, .invoice .presention_card, .xdelivery_note .presention_card {
+  .xorder .presentation_card, .invoice .presentation_card, .xdelivery_note .presentation_card {
     padding: 10px 20px; }
   .xorder .showcase, .invoice .showcase, .xdelivery_note .showcase {
     padding-top: 0px; }
@@ -1990,7 +1990,7 @@ tr.invalid input {
   #parts_list .add_new_part_tr .button {
     padding-right: 15px; }
 
-.presention_card {
+.presentation_card {
   padding: 10px; }
 
 #fields.new_object {

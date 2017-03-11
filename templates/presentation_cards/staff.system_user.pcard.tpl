@@ -1,4 +1,4 @@
-<div class="presention_card">
+<div class="presentation_card">
     <table>
         <tr id="result_controls" class="controls">
             <td><span id="result_msg" class="msg success"><i class="fa fa-check"></i> {t}Success{/t}</span></td>
