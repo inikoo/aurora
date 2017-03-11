@@ -1209,8 +1209,8 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => each($elements_options['supplier_orders'])['key'],
-        'elements'      => $elements_options['supplier_orders']
+        'elements_type' => each($elements_options['agent_orders'])['key'],
+        'elements'      => $elements_options['agent_orders']
     ),
     'agent.client_orders'          => array(
         'view'          => 'overview',
@@ -1222,9 +1222,7 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => each(
-                               $elements_options['agent_client_orders']
-                           )['key'],
+        'elements_type' => each($elements_options['agent_client_orders'])['key'],
         'elements'      => $elements_options['agent_client_orders']
     ),
     'agent.deliveries'             => array(

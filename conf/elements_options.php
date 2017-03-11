@@ -993,6 +993,49 @@ $elements_options = array(
 
 
     ),
+    'agent_orders'     => array(
+        'state' => array(
+            'label' => _('State'),
+            'items' => array(
+
+
+                'SubmittedAgent'                   => array(
+                    'label'    => _(
+                        'Submitted to agent'
+                    ),
+                    'selected' => true
+                ),
+                'SubmittedInputtedDispatched' => array(
+                    'label'    => _(
+                        'Submitted, in transit'
+                    ),
+                    'selected' => true
+                ),
+                'ReceivedChecked'             => array(
+                    'label'    => _(
+                        'In warehouse'
+                    ),
+                    'selected' => true
+                ),
+                'Placed'                      => array(
+                    'label'    => _(
+                        'Placed'
+                    ),
+                    'selected' => true
+                ),
+                'Cancelled'                   => array(
+                    'label'    => _(
+                        'Cancelled'
+                    ),
+                    'selected' => false
+                ),
+            ),
+
+
+        ),
+
+
+    ),
     'supplier_deliveries' => array(
         'state' => array(
             'label' => _('State'),
@@ -1035,26 +1078,39 @@ $elements_options = array(
             'items' => array(
 
 
-                'InProcessbyClient' => array(
+
+
+                'SubmittedAgent'                   => array(
                     'label'    => _(
-                        'In process by client'
+                        'Submitted to agent'
                     ),
                     'selected' => true
                 ),
-                'InProcess'         => array(
-                    'label'    => _('In process'),
+                'SubmittedInputtedDispatched' => array(
+                    'label'    => _(
+                        'Submitted, in transit'
+                    ),
                     'selected' => true
                 ),
-                'Send'              => array(
-                    'label'    => _('Dispatched'),
+                'ReceivedChecked'             => array(
+                    'label'    => _(
+                        'In warehouse'
+                    ),
                     'selected' => true
                 ),
-                'Cancelled'         => array(
-                    'label'    => _('Cancelled'),
+                'Placed'                      => array(
+                    'label'    => _(
+                        'Placed'
+                    ),
+                    'selected' => true
+                ),
+                'Cancelled'                   => array(
+                    'label'    => _(
+                        'Cancelled'
+                    ),
                     'selected' => false
                 ),
             ),
-
 
         ),
 

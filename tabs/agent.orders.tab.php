@@ -11,7 +11,7 @@
 
 $tab     = 'agent.orders';
 $ar_file = 'ar_suppliers_tables.php';
-$tipo    = 'orders';
+$tipo    = 'agent_orders';
 
 $default = $user->get_tab_defaults($tab);
 
@@ -30,7 +30,7 @@ $parameters = array(
 
 );
 
-
+/*
 $table_buttons   = array();
 $table_buttons[] = array(
     'icon'  => 'plus',
@@ -45,7 +45,7 @@ $table_buttons[] = array(
 );
 
 $smarty->assign('table_buttons', $table_buttons);
-
+*/
 $smarty->assign(
     'js_code', 'js/injections/supplier.orders.'.(_DEVEL ? '' : 'min.').'js'
 );

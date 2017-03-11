@@ -81,7 +81,7 @@ if (isset($parameters['elements_type'])) {
 
 
                     if ($_key == 'SubmittedInputtedDispatched') {
-                        $_elements .= ",'Submitted','Inputted','Dispatched'";
+                        $_elements .= ",'Submitted','SubmittedAgent','Inputted','Dispatched'";
                     } elseif ($_key == 'ReceivedChecked') {
                         $_elements .= ",'Received','Checked'";
                     } else {

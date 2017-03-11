@@ -33,8 +33,8 @@ switch ($tipo) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                'customer_key' => array('type' => 'key'),
-            )
+                         'customer_key' => array('type' => 'key'),
+                     )
         );
         new_order_options($db, $data);
         break;
@@ -42,33 +42,44 @@ switch ($tipo) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                'parent'     => array('type' => 'string'),
-                'parent_key' => array('type' => 'key'),
-            )
+                         'parent'     => array('type' => 'string'),
+                         'parent_key' => array('type' => 'key'),
+                     )
         );
         new_purchase_order_options($db, $data);
+
+        break;
+    case 'new_agent_delivery_options':
+
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'parent'     => array('type' => 'string'),
+                         'parent_key' => array('type' => 'key'),
+                     )
+        );
+        new_agent_delivery_options($db, $data);
 
         break;
     case 'find_object':
 
         $data = prepare_values(
             $_REQUEST, array(
-                'query'      => array('type' => 'string'),
-                'scope'      => array('type' => 'string'),
-                'parent'     => array(
-                    'type'     => 'string',
-                    'optional' => true
-                ),
-                'parent_key' => array(
-                    'type'     => 'numeric',
-                    'optional' => true
-                ),
-                'state'      => array('type' => 'json array'),
-                'metadata'   => array(
-                    'type'     => 'json array',
-                    'optional' => true
-                )
-            )
+                         'query'      => array('type' => 'string'),
+                         'scope'      => array('type' => 'string'),
+                         'parent'     => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         ),
+                         'parent_key' => array(
+                             'type'     => 'numeric',
+                             'optional' => true
+                         ),
+                         'state'      => array('type' => 'json array'),
+                         'metadata'   => array(
+                             'type'     => 'json array',
+                             'optional' => true
+                         )
+                     )
         );
 
         $data['user'] = $user;
@@ -647,8 +658,7 @@ function find_locations($db, $account, $memcache_ip, $data) {
                     $candidates[$row['Location Key']] = 500 * $factor;
                 }
 
-                $candidates_data[$row['Location Key']]
-                    = array(
+                $candidates_data[$row['Location Key']] = array(
                     'Location Code'  => $row['Location Code'],
                     'Warehouse Code' => $row['Warehouse Code']
                 );
@@ -788,8 +798,7 @@ function find_parts($db, $account, $memcache_ip, $data) {
                     $candidates[$row['Part SKU']] = 500 * $factor;
                 }
 
-                $candidates_data[$row['Part SKU']]
-                    = array(
+                $candidates_data[$row['Part SKU']] = array(
                     'Part Reference'        => $row['Part Reference'],
                     'Part Unit Description' => $row['Part Unit Description']
                 );
@@ -936,8 +945,7 @@ function find_products($db, $account, $memcache_ip, $data) {
                     $candidates[$row['Product ID']] = 500 * $factor;
                 }
 
-                $candidates_data[$row['Product ID']]
-                    = array(
+                $candidates_data[$row['Product ID']] = array(
                     'Product Code' => $row['Product Code'],
                     'Product Name' => $row['Product Name']
                 );
@@ -1086,8 +1094,7 @@ function find_supplier_parts($db, $account, $memcache_ip, $data) {
                     $candidates[$row['Supplier Part Key']] = 500 * $factor;
                 }
 
-                $candidates_data[$row['Supplier Part Key']]
-                    = array(
+                $candidates_data[$row['Supplier Part Key']] = array(
                     'Supplier Part Historic Key' => $row['Supplier Part Historic Key'],
                     'Supplier Part Reference'    => $row['Supplier Part Reference'],
                     'Part Reference'             => $row['Part Reference'],
@@ -1121,8 +1128,7 @@ function find_supplier_parts($db, $account, $memcache_ip, $data) {
                     $candidates[$row['Supplier Part Key']] = 500 * $factor;
                 }
 
-                $candidates_data[$row['Supplier Part Key']]
-                    = array(
+                $candidates_data[$row['Supplier Part Key']] = array(
                     'Supplier Part Historic Key' => $row['Supplier Part Historic Key'],
                     'Supplier Part Reference'    => $row['Supplier Part Reference'],
                     'Part Reference'             => $row['Part Reference'],
@@ -1157,8 +1163,7 @@ function find_supplier_parts($db, $account, $memcache_ip, $data) {
         foreach ($candidates as $supplier_part_key => $candidate) {
 
 
-            $description
-                = $candidates_data[$supplier_part_key]['Part Unit Description'];
+            $description = $candidates_data[$supplier_part_key]['Part Unit Description'];
             if ($candidates_data[$supplier_part_key]['Part Reference'] != $candidates_data[$supplier_part_key]['Supplier Part Reference']) {
                 $description .= ' ('.highlightkeyword(
                         $candidates_data[$supplier_part_key]['Part Reference'], $q
@@ -1748,6 +1753,40 @@ function number_orders_in_process($db, $data) {
 
 }
 
+function new_agent_delivery_options($db, $data) {
+
+
+    $warehouse_options        = array();
+    $warehouse_key            = false;
+
+
+    $sql = sprintf("SELECT `Warehouse Key`,`Warehouse Code`,`Warehouse Name` FROM `Warehouse Dimension` WHERE `Warehouse State`='Active'");
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            if (!$warehouse_key) {
+                $warehouse_key = $row['Warehouse Key'];
+            }
+            $warehouse_options[$row['Warehouse Key']] = array('code' => $row['Warehouse Code']);
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'state'             => 200,
+        'warehouses'        => count($warehouse_options),
+        'warehouse_key'     => $warehouse_key,
+        'warehouse_options' => $warehouse_options,
+
+       // 'msg'               => $msg,
+    );
+    echo json_encode($response);
+    exit;
+
+}
+
 
 function new_purchase_order_options($db, $data) {
 
@@ -1783,8 +1822,7 @@ function new_purchase_order_options($db, $data) {
             if (!$warehouse_key) {
                 $warehouse_key = $row['Warehouse Key'];
             }
-            $warehouse_options[$row['Warehouse Key']]
-                = array('code' => $row['Warehouse Code']);
+            $warehouse_options[$row['Warehouse Key']] = array('code' => $row['Warehouse Code']);
         }
     } else {
         print_r($error_info = $db->errorInfo());
@@ -1903,8 +1941,7 @@ function find_web_node($db, $account, $memcache_ip, $data) {
                     $candidates[$row['Page Key']] = 500 * $factor;
                 }
 
-                $candidates_data[$row['Page Key']]
-                    = array(
+                $candidates_data[$row['Page Key']] = array(
                     'Page Code'        => $row['Page Code'],
                     'Page Store Title' => $row['Page Store Title']
                 );
@@ -2066,8 +2103,7 @@ function find_webpages($db, $account, $memcache_ip, $data) {
                     $candidates[$row['Page Key']] = 500 * $factor;
                 }
 
-                $candidates_data[$row['Page Key']]
-                    = array(
+                $candidates_data[$row['Page Key']] = array(
                     'Page Code'        => $row['Page Code'],
                     'Page Store Title' => $row['Page Store Title']
                 );
@@ -2230,8 +2266,7 @@ function find_product_webpages($db, $account, $memcache_ip, $data) {
                     $candidates[$row['Product ID']] = 500 * $factor;
                 }
 
-                $candidates_data[$row['Product ID']]
-                    = array(
+                $candidates_data[$row['Product ID']] = array(
                     'Product Code' => $row['Product Code'],
                     'Product Name' => $row['Product Name']
                 );
@@ -2292,8 +2327,6 @@ function find_product_webpages($db, $account, $memcache_ip, $data) {
 }
 
 
-
-
 function find_category_webpages($db, $account, $memcache_ip, $data) {
 
 
@@ -2314,7 +2347,7 @@ function find_category_webpages($db, $account, $memcache_ip, $data) {
         return;
     }
 
-  //  $where = sprintf("  and `Product Category Status` in ('Active','Discontinuing') ");
+    //  $where = sprintf("  and `Product Category Status` in ('Active','Discontinuing') ");
     switch ($data['parent']) {
         case 'website':
             $where = sprintf(' and `Page Site Key`=%d', $data['parent_key']);
@@ -2396,19 +2429,18 @@ function find_category_webpages($db, $account, $memcache_ip, $data) {
                     $candidates[$row['Category Key']] = 1000;
                 } else {
 
-                    $len_name                       = strlen($row['Category Code']);
-                    $len_q                          = strlen($q);
-                    $factor                         = $len_q / $len_name;
+                    $len_name                         = strlen($row['Category Code']);
+                    $len_q                            = strlen($q);
+                    $factor                           = $len_q / $len_name;
                     $candidates[$row['Category Key']] = 500 * $factor;
                 }
 
-                $candidates_data[$row['Category Key']]
-                    = array(
-                    'Category Code' => $row['Category Code'],
-                    'Category Label' => $row['Category Label'],
-                    'Status'=> $row['Product Category Status'],
-                    'Products'=> $row['Product Category Active Products'],
-                    'Category Subject'=> $row['Category Subject'],
+                $candidates_data[$row['Category Key']] = array(
+                    'Category Code'    => $row['Category Code'],
+                    'Category Label'   => $row['Category Label'],
+                    'Status'           => $row['Product Category Status'],
+                    'Products'         => $row['Product Category Active Products'],
+                    'Category Subject' => $row['Category Subject'],
                 );
 
             }
@@ -2416,7 +2448,7 @@ function find_category_webpages($db, $account, $memcache_ip, $data) {
             print_r($error_info = $db->errorInfo());
             exit;
         }
-//print $sql;
+        //print $sql;
 
         arsort($candidates);
 
@@ -2438,24 +2470,29 @@ function find_category_webpages($db, $account, $memcache_ip, $data) {
         $results = array();
         foreach ($candidates as $category_key => $candidate) {
 
-          //  print $candidates_data[$category_key]['Status'];
+            //  print $candidates_data[$category_key]['Status'];
 
-            if( in_array($candidates_data[$category_key]['Status'],array('Active','Discontinuing'))){
-                $value=$category_key;
-                $description=$candidates_data[$category_key]['Category Label'];
-                $code=$candidates_data[$category_key]['Category Code'];
+            if (in_array(
+                $candidates_data[$category_key]['Status'], array(
+                'Active',
+                'Discontinuing'
+            )
+            )) {
+                $value       = $category_key;
+                $description = $candidates_data[$category_key]['Category Label'];
+                $code        = $candidates_data[$category_key]['Category Code'];
 
-                if($candidates_data[$category_key]['Category Subject']=='Product'){
-                    $description.=' <span class="discreet italic">('.$candidates_data[$category_key]['Products'].' <i class="fa fa-cube" aria-hidden="true"></i>)</span>';
-                }else{
-                    $description.=' <span class="discreet italic">('._('Category').')</span>';
+                if ($candidates_data[$category_key]['Category Subject'] == 'Product') {
+                    $description .= ' <span class="discreet italic">('.$candidates_data[$category_key]['Products'].' <i class="fa fa-cube" aria-hidden="true"></i>)</span>';
+                } else {
+                    $description .= ' <span class="discreet italic">('._('Category').')</span>';
 
                 }
 
-            }else{
-                $value=0;
-                $description='<span style="text-decoration: line-through;">'.$candidates_data[$category_key]['Category Label'].'</span>';
-                $code='<span style="text-decoration: line-through;">'.$candidates_data[$category_key]['Category Code'].'</span>';
+            } else {
+                $value       = 0;
+                $description = '<span style="text-decoration: line-through;">'.$candidates_data[$category_key]['Category Label'].'</span>';
+                $code        = '<span style="text-decoration: line-through;">'.$candidates_data[$category_key]['Category Code'].'</span>';
             }
 
 
@@ -2486,7 +2523,6 @@ function find_category_webpages($db, $account, $memcache_ip, $data) {
     echo json_encode($response);
 
 }
-
 
 
 function find_employees($db, $account, $memcache_ip, $data) {
@@ -2521,10 +2557,6 @@ function find_employees($db, $account, $memcache_ip, $data) {
     }
 
 
-
-
-
-
     if (isset($data['metadata']['option'])) {
         switch ($data['metadata']['option']) {
             case 'only_working':
@@ -2536,7 +2568,6 @@ function find_employees($db, $account, $memcache_ip, $data) {
         }
 
     }
-
 
 
     /*
@@ -2582,10 +2613,8 @@ function find_employees($db, $account, $memcache_ip, $data) {
         $candidates_data = array();
 
 
-
         $sql = sprintf(
-            "select `Staff Key`,`Staff Alias`,`Staff Name`,`Staff ID`,`Staff Currently Working` from `Staff Dimension`   where  `Staff ID` like '%s%%' %s  limit $max_results ",
-            $q, $where
+            "select `Staff Key`,`Staff Alias`,`Staff Name`,`Staff ID`,`Staff Currently Working` from `Staff Dimension`   where  `Staff ID` like '%s%%' %s  limit $max_results ", $q, $where
         );
 
 
@@ -2596,18 +2625,17 @@ function find_employees($db, $account, $memcache_ip, $data) {
                     $candidates[$row['Staff Key']] = 1000;
                 } else {
 
-                    $len_name                       = strlen($row['Staff Alias']);
-                    $len_q                          = strlen($q);
-                    $factor                         = $len_q / $len_name;
+                    $len_name                      = strlen($row['Staff Alias']);
+                    $len_q                         = strlen($q);
+                    $factor                        = $len_q / $len_name;
                     $candidates[$row['Staff Key']] = 500 * $factor;
                 }
 
-                $candidates_data[$row['Staff Key']]
-                    = array(
+                $candidates_data[$row['Staff Key']] = array(
                     'Staff Alias' => $row['Staff Alias'],
-                    'Staff Name' => $row['Staff Name'],
-                    'Staff ID' => $row['Staff ID'],
-                    'Status'=>$row['Staff Currently Working']
+                    'Staff Name'  => $row['Staff Name'],
+                    'Staff ID'    => $row['Staff ID'],
+                    'Status'      => $row['Staff Currently Working']
 
                 );
 
@@ -2618,13 +2646,11 @@ function find_employees($db, $account, $memcache_ip, $data) {
         }
 
 
-
         $sql = sprintf(
-            "select `Staff Key`,`Staff Alias`,`Staff Name`,`Staff ID`,`Staff Currently Working` from `Staff Dimension`   where  `Staff Alias` like '%s%%' %s  limit $max_results ",
-            $q, $where
+            "select `Staff Key`,`Staff Alias`,`Staff Name`,`Staff ID`,`Staff Currently Working` from `Staff Dimension`   where  `Staff Alias` like '%s%%' %s  limit $max_results ", $q, $where
         );
 
-        	//print $sql;
+        //print $sql;
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
 
@@ -2632,18 +2658,17 @@ function find_employees($db, $account, $memcache_ip, $data) {
                     $candidates[$row['Staff Key']] = 500;
                 } else {
 
-                    $len_name                       = strlen($row['Staff Alias']);
-                    $len_q                          = strlen($q);
-                    $factor                         = $len_q / $len_name;
+                    $len_name                      = strlen($row['Staff Alias']);
+                    $len_q                         = strlen($q);
+                    $factor                        = $len_q / $len_name;
                     $candidates[$row['Staff Key']] = 250 * $factor;
                 }
 
-                $candidates_data[$row['Staff Key']]
-                    = array(
+                $candidates_data[$row['Staff Key']] = array(
                     'Staff Alias' => $row['Staff Alias'],
-                    'Staff Name' => $row['Staff Name'],
-                    'Staff ID' => $row['Staff ID'],
-                    'Status'=>$row['Staff Currently Working']
+                    'Staff Name'  => $row['Staff Name'],
+                    'Staff ID'    => $row['Staff ID'],
+                    'Status'      => $row['Staff Currently Working']
 
                 );
 
@@ -2654,11 +2679,10 @@ function find_employees($db, $account, $memcache_ip, $data) {
         }
 
         $sql = sprintf(
-            "select `Staff Key`,`Staff Alias`,`Staff Name`,`Staff ID`,`Staff Currently Working` from `Staff Dimension`   where  `Staff Name`   REGEXP '[[:<:]]%s' %s  limit $max_results ",
-            $q, $where
+            "select `Staff Key`,`Staff Alias`,`Staff Name`,`Staff ID`,`Staff Currently Working` from `Staff Dimension`   where  `Staff Name`   REGEXP '[[:<:]]%s' %s  limit $max_results ", $q, $where
         );
 
-       // print $sql;
+        // print $sql;
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
 
@@ -2666,18 +2690,17 @@ function find_employees($db, $account, $memcache_ip, $data) {
                     $candidates[$row['Staff Key']] = 400;
                 } else {
 
-                    $len_name                       = strlen($row['Staff Alias']);
-                    $len_q                          = strlen($q);
-                    $factor                         = $len_q / $len_name;
+                    $len_name                      = strlen($row['Staff Alias']);
+                    $len_q                         = strlen($q);
+                    $factor                        = $len_q / $len_name;
                     $candidates[$row['Staff Key']] = 200 * $factor;
                 }
 
-                $candidates_data[$row['Staff Key']]
-                    = array(
+                $candidates_data[$row['Staff Key']] = array(
                     'Staff Alias' => $row['Staff Alias'],
-                    'Staff Name' => $row['Staff Name'],
-                    'Staff ID' => $row['Staff ID'],
-                    'Status'=>$row['Staff Currently Working']
+                    'Staff Name'  => $row['Staff Name'],
+                    'Staff ID'    => $row['Staff ID'],
+                    'Status'      => $row['Staff Currently Working']
 
                 );
 
@@ -2710,17 +2733,16 @@ function find_employees($db, $account, $memcache_ip, $data) {
 
             //  print $candidates_data[$staff_key]['Status'];
 
-            if($candidates_data[$staff_key]['Status']='Yes'){
-                $value=$staff_key;
-                $description=$candidates_data[$staff_key]['Staff Name'].' ('.$candidates_data[$staff_key]['Staff Alias'].')';
-                $code=$candidates_data[$staff_key]['Staff ID'];
+            if ($candidates_data[$staff_key]['Status'] = 'Yes') {
+                $value       = $staff_key;
+                $description = $candidates_data[$staff_key]['Staff Name'].' ('.$candidates_data[$staff_key]['Staff Alias'].')';
+                $code        = $candidates_data[$staff_key]['Staff ID'];
 
 
-
-            }else{
-                $value=0;
-                $description='<span style="text-decoration: line-through;">'.$candidates_data[$staff_key]['Staff Name'].' ('.$candidates_data[$staff_key]['Staff Alias'].')</span>';
-                $code='<span style="text-decoration: line-through;">'.$candidates_data[$staff_key]['Staff Id'].'</span>';
+            } else {
+                $value       = 0;
+                $description = '<span style="text-decoration: line-through;">'.$candidates_data[$staff_key]['Staff Name'].' ('.$candidates_data[$staff_key]['Staff Alias'].')</span>';
+                $code        = '<span style="text-decoration: line-through;">'.$candidates_data[$staff_key]['Staff Id'].'</span>';
             }
 
 

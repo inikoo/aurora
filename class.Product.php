@@ -1120,7 +1120,7 @@ class Product extends Asset {
                 $label = _('proper shipping name');
                 break;
             case 'Product Hazard Indentification Number':
-                $label = _('hazard indentification number');
+                $label = _('hazard identification number');
                 break;
             case 'Product Materials':
                 $label = _('Materials/Ingredients');

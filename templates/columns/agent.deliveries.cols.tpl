@@ -11,19 +11,7 @@ name: "public_id",
 label: "{t}Number{/t}",
 editable: false,
 sortType: "toggle",
-cell: Backgrid.StringCell.extend({
-events: {
-"click": function() {
-{if $tab=='suppliers.deliveries'}
-    change_view("delivery/" + this.model.get("id")  )
-
-{else}
-    change_view("{$data['object']}/{$data['key']}/delivery/" + this.model.get("id")  )
-
-{/if}
-}
-},
-className: "link",
+cell: Backgrid.HtmlCell.extend({
 })
 }, {
 name: "date",
@@ -34,21 +22,8 @@ sortType: "toggle",
 {if $sort_key=='date'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.StringCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
-}, {
-name: "supplier",
-label: "{t}Supplier{/t}",
-renderable:{if $data['parent']=='supplier'}false{else}true{/if},
-sortType: "toggle",
-editable: false,
-cell: Backgrid.StringCell.extend({
-events: {
-"click": function() {
-change_view('supplier/' + this.model.get("supplier_key")  )
-}
 },
-className: "link",
-})
-}, {
+{
 name: "state",
 label: "{t}State{/t}",
 editable: false,

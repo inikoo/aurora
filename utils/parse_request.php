@@ -3099,13 +3099,13 @@ function parse_request($_data, $db, $modules, $account = '', $user = '') {
                 break;
 
             case 'deliveries':
-                if (!$user->can_view('suppliers')) {
+                if($user->get('User Type') != 'Agent') {
                     $module  = 'utils';
                     $section = 'forbidden';
                     break;
                 }
 
-                $module  = 'suppliers';
+                $module  = 'agent_client_deliveries';
                 $section = 'deliveries';
                 break;
 
@@ -3137,8 +3137,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '') {
                 $module     = 'agent_client_orders';
                 $section    = 'client_order';
                 $object     = 'purchase_order';
-                $parent     = 'agent';
-                $parent_key = $user->get('User Parent Key');
+                $parent     = 'account';
+                $parent_key = '';
 
                 if (isset($view_path[0])) {
                     if (is_numeric($view_path[0])) {
@@ -3149,7 +3149,28 @@ function parse_request($_data, $db, $modules, $account = '', $user = '') {
 
 
                 break;
+            case 'agent_delivery':
+                if ($user->get('User Type') != 'Agent') {
+                    $module  = 'utils';
+                    $section = 'forbidden';
+                    break;
+                }
 
+                $module = 'agent_client_deliveries';
+
+
+                $section = 'agent_delivery';
+                $object  = 'supplierdelivery';
+
+                if (isset($view_path[0])) {
+                    if (is_numeric($view_path[0])) {
+                        $key = $view_path[0];
+                    }
+
+                }
+
+
+                break;
 
             case 'hr':
                 if (!$user->can_view('staff')) {

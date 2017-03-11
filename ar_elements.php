@@ -244,15 +244,22 @@ switch ($tab) {
         get_supplier_parts_elements($db, $data['parameters'], $user);
         break;
     case 'supplier.orders':
-    case 'agent.orders':
 
-        $data = prepare_values(
-            $_REQUEST, array(
-                         'parameters' => array('type' => 'json array')
-                     )
-        );
+        $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
         get_supplier_orders_elements($db, $data['parameters'], $user);
         break;
+    case 'agent.orders':
+
+        $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
+        get_agent_orders_elements($db, $data['parameters'], $user);
+        break;
+
+    case 'agent.client_orders':
+
+        $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
+        get_agent_client_orders_elements($db, $data['parameters'], $user);
+        break;
+
 
     case 'part.stock.transactions':
     case 'inventory.stock.transactions':
@@ -2022,11 +2029,7 @@ function get_barcodes_elements($db, $data, $user) {
 function get_supplier_orders_elements($db, $data) {
 
 
-    list(
-        $db_interval, $from, $to, $from_date_1yb, $to_1yb
-        ) = calculate_interval_dates(
-        $db, $data['period'], $data['from'], $data['to']
-    );
+    list($db_interval, $from, $to, $from_date_1yb, $to_1yb) = calculate_interval_dates($db, $data['period'], $data['from'], $data['to']);
 
 
     $parent_key = $data['parent_key'];
@@ -2080,7 +2083,7 @@ function get_supplier_orders_elements($db, $data) {
         foreach ($result as $row) {
 
 
-            if ($row['element'] == 'Submitted' or $row['element'] == 'Inputted' or $row['element'] == 'Dispatched') {
+            if ($row['element'] == 'Submitted' or $row['element'] == 'SubmittedAgent' or $row['element'] == 'Inputted' or $row['element'] == 'Dispatched') {
                 $element = 'SubmittedInputtedDispatched';
             } elseif ($row['element'] == 'Received' or $row['element'] == 'Checked') {
                 $element = 'ReceivedChecked';
@@ -2107,6 +2110,175 @@ function get_supplier_orders_elements($db, $data) {
 
 }
 
+
+
+
+function get_agent_orders_elements($db, $data) {
+
+
+    list($db_interval, $from, $to, $from_date_1yb, $to_1yb) = calculate_interval_dates($db, $data['period'], $data['from'], $data['to']);
+
+
+    $parent_key = $data['parent_key'];
+
+
+    switch ($data['parent']) {
+        case 'supplier':
+            $table = '`Purchase Order Dimension` O';
+            $where = sprintf('where  `Purchase Order Parent`="Supplier" and `Purchase Order Parent Key`=%d and `Purchase Order Agent Key`>0', $parent_key);
+            break;
+        case 'agent':
+            $table = '`Purchase Order Dimension` O';
+            $where = sprintf('where  `Purchase Order Agent Key`=%d', $parent_key);
+            break;
+        case 'account':
+            $table = '`Purchase Order Dimension` O';
+            $where = sprintf('where  `Purchase Order Agent Key`>0');
+            break;
+        default:
+            exit ($data['parent']);
+            break;
+    }
+
+    $where_interval = prepare_mysql_dates($from, $to, '`Order Date`');
+    $where_interval = $where_interval['mysql'];
+
+
+    $elements_numbers = array(
+        'state' => array(
+            'SubmittedAgent'                   => 0,
+            'SubmittedInputtedDispatched' => 0,
+            'ReceivedChecked'             => 0,
+            'Placed'                      => 0,
+            'Cancelled'                   => 0
+        ),
+    );
+
+
+    //USE INDEX (`Main Source Type Store Key`)
+    $sql = sprintf(
+        "SELECT count(*) AS number,`Purchase Order State` AS element FROM %s    %s  %s GROUP BY `Purchase Order State` ", $table, $where, $where_interval
+    );
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+
+            if ($row['element'] == 'Submitted'  or $row['element'] == 'Inputted' or $row['element'] == 'Dispatched') {
+                $element = 'SubmittedInputtedDispatched';
+            } elseif ($row['element'] == 'Received' or $row['element'] == 'Checked') {
+                $element = 'ReceivedChecked';
+            } else {
+                $element = $row['element'];
+            }
+            if (isset($elements_numbers['state'][$element])) {
+                $elements_numbers['state'][$element] += $row['number'];
+            }
+        }
+    } else {
+        print "$sql";
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+
+
+}
+
+function get_agent_client_orders_elements($db, $data,$user) {
+
+
+    if ($user->get('User Type') != 'Agent') {
+        echo json_encode(
+            array(
+                'state' => 405,
+                'resp'  => 'Forbidden'
+            )
+        );
+        exit;
+    }
+    // $_data['parameters']['parent']     = 'agent';
+   $agent_key = $user->get('User Parent Key');
+
+
+
+    list($db_interval, $from, $to, $from_date_1yb, $to_1yb) = calculate_interval_dates($db, $data['period'], $data['from'], $data['to']);
+
+
+    $parent_key = $data['parent_key'];
+
+
+    switch ($data['parent']) {
+        case 'supplier':
+            $table = '`Purchase Order Dimension` O';
+            $where = sprintf('where  `Purchase Order Parent`="Supplier" and `Purchase Order Parent Key`=%d and `Purchase Order Agent Key`=%d', $parent_key,$agent_key);
+            break;
+
+        case 'account':
+            $table = '`Purchase Order Dimension` O';
+            $where = sprintf('where  `Purchase Order Agent Key`=%d',$agent_key);
+            break;
+        default:
+            exit ($data['parent']);
+            break;
+    }
+
+    $where_interval = prepare_mysql_dates($from, $to, '`Order Date`');
+    $where_interval = $where_interval['mysql'];
+
+
+    $elements_numbers = array(
+        'state' => array(
+            'SubmittedAgent'                   => 0,
+            'SubmittedInputtedDispatched' => 0,
+            'ReceivedChecked'             => 0,
+            'Placed'                      => 0,
+            'Cancelled'                   => 0
+        ),
+    );
+
+
+    //USE INDEX (`Main Source Type Store Key`)
+    $sql = sprintf(
+        "SELECT count(*) AS number,`Purchase Order State` AS element FROM %s    %s  %s GROUP BY `Purchase Order State` ", $table, $where, $where_interval
+    );
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+
+            if ($row['element'] == 'Submitted'  or $row['element'] == 'Inputted' or $row['element'] == 'Dispatched') {
+                $element = 'SubmittedInputtedDispatched';
+            } elseif ($row['element'] == 'Received' or $row['element'] == 'Checked') {
+                $element = 'ReceivedChecked';
+            } else {
+                $element = $row['element'];
+            }
+            if (isset($elements_numbers['state'][$element])) {
+                $elements_numbers['state'][$element] += $row['number'];
+            }
+        }
+    } else {
+        print "$sql";
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+
+
+}
 
 function get_supplier_deliveries_element_numbers($db, $data) {
 

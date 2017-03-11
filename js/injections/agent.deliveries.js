@@ -1,32 +1,36 @@
 /*Author: Raul Perusquia <raul@inikoo.com>
- Created: 13 May 2016 at 16:39:17 GMT+8, Kuala Lumpur, Malaysia
+ Created: 10 March 2017 at 14:23:06 GMT+8, Sanur, Bali, Indonesia
  Copyright (c) 2015, Inikoo
  Version 3.0*/
 
-$("#new_purchase_order").click(function () {
-    open_new_purchase_order()
+
+$("#new_agent_delivery").click(function () {
+    open_new_delivery()
 })
 
-function open_new_purchase_order() {
+function open_new_delivery() {
 
 
-    if (!$('#new_purchase_order i').hasClass('fa-plus')) {
+    if (!$('#new_agent_delivery i').hasClass('fa-plus')) {
         return;
     }
 
-    $('#new_purchase_order i').removeClass('fa-plus').addClass('fa-spinner fa-spin')
+    $('#new_agent_delivery i').removeClass('fa-plus').addClass('fa-spinner fa-spin')
 
 
-    var request = '/ar_find.php?tipo=new_purchase_order_options&parent=' + $('#new_purchase_order').attr('parent') + '&parent_key=' + $('#new_purchase_order').attr('parent_key')
-
+    var request = '/ar_find.php?tipo=new_agent_delivery_options&parent=' + $('#new_agent_delivery').attr('parent') + '&parent_key=' + $('#new_agent_delivery').attr('parent_key')
+console.log(request)
     $.getJSON(request, function (data) {
 
 
-        if (data.orders_in_process > 0 || data.warehouses > 1) {
-            $('#new_purchase_order i').addClass('fa-plus').removeClass('fa-spinner fa-spin')
+        if (data.warehouses > 1) {
+
+         alert('to do: dialog to choose warehouse')
+
+          //  $('#new_agent_delivery i').addClass('fa-plus').removeClass('fa-spinner fa-spin')
 
         } else {
-            new_purchase_order(data.warehouse_key);
+            new_agent_delivery(data.warehouse_key);
         }
 
 
@@ -34,15 +38,15 @@ function open_new_purchase_order() {
 
 }
 
-function new_purchase_order(warehouse_key) {
+function new_agent_delivery(warehouse_key) {
 
 
-    var object = 'PurchaseOrder'
-    var parent = $('#new_purchase_order').attr('parent')
-    var parent_key = $('#new_purchase_order').attr('parent_key')
+    var object = 'SupplierDelivery'
+    var parent = $('#new_agent_delivery').attr('parent')
+    var parent_key = $('#new_agent_delivery').attr('parent_key')
     var fields_data = {
         warehouse_key: warehouse_key,
-        agent_key:$('#new_purchase_order').attr('agent_key')
+        agent_key:$('#new_agent_delivery').attr('agent_key')
     };
 
 
@@ -71,7 +75,7 @@ function new_purchase_order(warehouse_key) {
 
         //console.log(data)
         if (data.state == 200) {
-            change_view($('#new_purchase_order').attr('parent') + '/' + $('#new_purchase_order').attr('parent_key') + '/order/' + data.new_id, {
+            change_view($('#new_agent_delivery').attr('parent') + '/' + $('#new_agent_delivery').attr('parent_key') + '/order/' + data.new_id, {
                 tab: 'supplier.order.items'
             })
 

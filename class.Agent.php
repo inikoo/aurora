@@ -702,6 +702,84 @@ class Agent extends SubjectSupplier {
     }
 
 
+    function create_delivery($data) {
+
+
+
+
+        $delivery_data = array(
+            'Supplier Delivery Public ID'           =>  $this->get_next_delivery_public_id(),
+            'Supplier Delivery Parent'              => 'Agent',
+            'Supplier Delivery Parent Key'          => $this->id,
+            'Supplier Delivery Parent Name'         => $this->get('Name'),
+            'Supplier Delivery Parent Code'         => $this->get('Code'),
+            'Supplier Delivery Parent Contact Name' => $this->get('Main Contact Name'),
+            'Supplier Delivery Parent Email'        => $this->get('Main Plain Email'),
+            'Supplier Delivery Parent Telephone'    => $this->get('Preferred Contact Number Formatted Number'),
+            'Supplier Delivery Parent Address'      => $this->get('Contact Address Formatted'),
+
+            'Supplier Delivery Currency Code'       => $this->get('Default Currency Code'),
+            'Supplier Delivery Incoterm'            => $this->get('Default Incoterm'),
+            'Supplier Delivery Port of Import'      => $this->get('Default Port of Import'),
+            'Supplier Delivery Port of Export'      => $this->get('Default Port of Export'),
+          //  'Supplier Delivery Purchase Order Key'  => $this->id,
+
+            //'Supplier Delivery Warehouse Key'=>$warehouse->id,
+            //'Supplier Delivery Warehouse Metadata'=>json_encode($warehouse->data),
+
+            'editor' => $this->editor
+        );
+
+        //  print_r($delivery_data);
+
+
+        $delivery = new SupplierDelivery('new', $delivery_data);
+
+
+        if ($delivery->error) {
+            $this->error = true;
+            $this->msg   = $delivery->msg;
+
+        } elseif ($delivery->new ) {
+
+
+
+
+
+        }
+
+
+        return $delivery;
+
+    }
+
+    function get_next_delivery_public_id() {
+
+        $code = $this->get('Code');
+
+        $line_number = 1;
+        $sql         = sprintf(
+            "SELECT `Supplier Delivery Public ID` FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery Parent`=%s  and `Supplier Delivery Parent Key`=%d ORDER BY REPLACE(`Supplier Delivery Public ID`,%s,'') DESC LIMIT 1",
+            prepare_mysql('Agent'),
+            $this->id,
+            prepare_mysql($code)
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $line_number = (int)preg_replace('/[^\d]/', '', preg_replace('/^'.$code.'/', '', $row['Supplier Delivery Public ID'])) + 1;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        return sprintf('%s%04d', $code, $line_number);
+
+    }
+
+
 }
 
 

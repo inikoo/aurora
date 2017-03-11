@@ -676,6 +676,9 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
     if (preg_match('/\_edit$/', $data['tab'])) {
         return '';
     }
+
+
+
     switch ($showcase) {
         case 'material':
             include_once 'showcase/material.show.php';
@@ -897,8 +900,17 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             $html = get_showcase($data, $smarty, $user, $db);
             break;
         case 'supplierdelivery':
-            include_once 'showcase/supplier.delivery.show.php';
-            $html = get_showcase($data, $smarty, $user, $db);
+
+
+            if ($user->get('User Type') == 'Agent') {
+                include_once 'showcase/agent_delivery.show.php';
+                $html = get_showcase($data, $smarty, $user, $db);
+            }else{
+                include_once 'showcase/supplier.delivery.show.php';
+                $html = get_showcase($data, $smarty, $user, $db);
+            }
+
+
             break;
         case 'position':
             include_once 'showcase/job_position.show.php';
@@ -930,7 +942,6 @@ function get_menu($data, $user, $smarty) {
 
 
 function get_navigation($user, $smarty, $data, $db, $account) {
-
 
     switch ($data['module']) {
 
@@ -2187,13 +2198,13 @@ function get_navigation($user, $smarty, $data, $db, $account) {
         case 'agent_client_deliveries':
             require_once 'navigation/agent.nav.php';
             switch ($data['section']) {
-                case ('agent_deliveries'):
-                    return get_agent_client_deliveries_navigation(
+                case ('deliveries'):
+                    return get_deliveries_navigation(
                         $data, $smarty, $user, $db, $account
                     );
                     break;
                 case ('agent_delivery'):
-                    return get_agent_client_delivery_navigation(
+                    return get_agent_delivery_navigation(
                         $data, $smarty, $user, $db, $account
                     );
                     break;

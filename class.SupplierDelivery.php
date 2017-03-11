@@ -242,6 +242,15 @@ class SupplierDelivery extends DB_Table {
                     case 'InProcess':
                         return 10;
                         break;
+
+                    case 'AgentReceived':
+                        return 20;
+                        break;
+
+                    case 'AgentChecked':
+                        return 25;
+                        break;
+
                     case 'Dispatched':
                         return 30;
                         break;

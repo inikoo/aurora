@@ -2643,9 +2643,7 @@ $modules = array(
                     ),
 
                     'agent.supplier_parts' => array(
-                        'label' => _(
-                            "Agent's Parts"
-                        ),
+                        'label' => _("Agent's Parts"),
                         'icon'  => 'stop'
                     ),
                     'agent.orders'         => array(
@@ -5623,22 +5621,17 @@ $modules = array(
             'client_order' => array(
                 'type' => 'object',
                 'tabs' => array(
-
-                    //'supplier.order.details'=>array('label'=>_('Data'), 'icon'=>'database'),
-
                     'client_order.items'     => array(
                         'label' => _(
                             'Items'
                         ),
                         'icon'  => 'bars'
                     ),
-                    'client_order.orders'    => array(
-                        'label' => _(
-                            'Purchase orders'
-                        ),
-                        'icon'  => 'clipboard'
-                    ),
-                    'supplier.order.history' => array(
+                    'client_order.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+
+
+
+                    'client_order.history' => array(
                         'label' => _(
                             'History/Notes'
                         ),
@@ -5676,6 +5669,63 @@ $modules = array(
 
         )
     ),
+
+    'agent_client_deliveries' => array(
+        'sections' => array(
+            'deliveries' => array(
+                'type'      => 'navigation',
+                'label'     => _("Deliveries"),
+                'icon'      => 'truck',
+                'reference' => 'delveries',
+                'tabs'      => array(
+                    'agent.deliveries' => array()
+                )
+            ),
+
+
+            'agent_delivery' => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'client_order.items'     => array('label' => _('Items'), 'icon'  => 'bars'),
+                    'client_order.client_orders'     => array('label' => _("Client's orders"), 'icon'  => 'clipboard'),
+                    'client_order.details'=>array('label'=>_('Data'), 'icon'=>'database'),
+
+
+
+                    'client_order.history' => array('label' => _('History/Notes'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+
+                )
+
+            ),
+
+            'deleted_order' => array(
+                'type' => 'object',
+                'tabs' => array(
+
+
+                    'deleted.supplier.order.items'   => array(
+                        'label' => _('Items'),
+                        'icon'  => 'bars'
+                    ),
+                    'deleted.supplier.order.history' => array(
+                        'label' => _('History/Notes'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+
+                )
+
+            ),
+
+
+        )
+    ),
+
+
+
 
 );
 
