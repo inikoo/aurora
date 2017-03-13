@@ -27,9 +27,7 @@ $object_fields_supplier_part = get_object_fields(
 
 
 $available_barcodes = 0;
-$sql                = sprintf(
-    "SELECT count(*) AS num FROM `Barcode Dimension` WHERE `Barcode Status`='Available'"
-);
+$sql                = sprintf("SELECT count(*) AS num FROM `Barcode Dimension` WHERE `Barcode Status`='Available'");
 if ($result = $db->query($sql)) {
     if ($row = $result->fetch()) {
         $available_barcodes = $row['num'];

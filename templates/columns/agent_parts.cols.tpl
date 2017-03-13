@@ -5,46 +5,58 @@ editable: false,
 renderable: false,
 cell: "string",
 
-}, {
-name: "supplier_code",
-label: "{t}Supplier{/t}",
-editable: false,
-renderable: {if $data['object']=='supplier' }false{else}true{/if},
-sortType: "toggle",
-
-cell: Backgrid.StringCell.extend({
-events: {
-"click": function() {
-change_view('/supplier/' + this.model.get("supplier_key"))
-}
 },
-className: "link"
 
-})
 
-}, {
-name: "status",
-label: "",
+{
+name: "part_status",
+label: '<i class="fa fa-shopping-bag fa-fw very_discreet" aria-hidden="true"></i>',
 editable: false,
+title: '{t}Required by client{/t}',
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({
-className: "width_20"
-})
+className: "width_40"
+}),
+headerCell: HeaderHtmlCell,
 
-}, 
+},
+
+{
+name: "status",
+label: '<i class="fa fa-retweet fa-fw  very_discreet" aria-hidden="true"></i>',
+editable: false,
+title: '{t}Product availability{/t}',
+sortType: "toggle",
+cell: Backgrid.HtmlCell.extend({
+className: "width_40"
+}),
+headerCell: HeaderHtmlCell,
+
+},
+
+
 {
 name: "reference",
 label: "{t}Reference{/t}",
 editable: false,
 sortType: "toggle",
 
-cell: Backgrid.StringCell.extend({
-events: {
-"click": function() {
-change_view('/supplier/' + this.model.get("supplier_key") + '/part/' + this.model.get("id"))
-}
+cell: Backgrid.HtmlCell.extend({
+
+})
+
 },
-className: "link"
+
+
+
+{
+name: "supplier_code",
+label: "{t}Supplier{/t}",
+editable: false,
+renderable: {if $data['object']=='supplier_code' }false{else}true{/if},
+sortType: "toggle",
+
+cell: Backgrid.HtmlCell.extend({
 
 })
 

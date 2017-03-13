@@ -29,6 +29,14 @@ if (!isset($_REQUEST['tab'])) {
 $tab = $_REQUEST['tab'];
 
 switch ($tab) {
+    case 'agent_parts':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'parameters' => array('type' => 'json array')
+                     )
+        );
+        get_agent_parts_element_numbers($db, $data['parameters'], $user);
+        break;
     case 'suppliers':
     case 'agent.suppliers':
         $data = prepare_values(
@@ -2656,6 +2664,126 @@ function get_online_webpages_element_numbers($db, $data, $user) {
 
 
 }
+
+
+
+function get_agent_parts_element_numbers($db, $data, $user) {
+
+
+    $parent_key = $data['parent_key'];
+
+    $elements_numbers = array(
+        'status'      => array(
+            'Available'    => 0,
+            'NoAvailable'  => 0,
+            'Discontinued' => 0
+        ),
+        'part_status' => array(
+            'Required'    => 0,
+            'NotRequired' => 0
+        ),
+
+    );
+
+
+
+
+    $table = '`Supplier Part Dimension`  SP left join `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`) ';
+    switch ($data['parent']) {
+        case 'supplier':
+        case 'supplier_production':
+
+            $where = sprintf(
+                ' where `Supplier Part Supplier Key`=%d  ', $data['parent_key']
+            );
+            break;
+        case 'agent':
+
+            $where = sprintf(
+                " where  `Agent Supplier Agent Key`=%d", $data['parent_key']
+            );
+            $table .= ' left join `Agent Supplier Bridge` on (SP.`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`)';
+
+            break;
+        case 'purchase_order':
+
+            $purchase_order = get_object('PurchaseOrder', $data['parent_key']);
+
+            if ($purchase_order->get('Purchase Order Parent') == 'Supplier') {
+
+                $where = sprintf(
+                    " where  `Supplier Part Supplier Key`=%d", $purchase_order->get('Purchase Order Parent Key')
+                );
+
+
+            } else {
+
+
+                $where = sprintf(
+                    "  where  `Agent Supplier Agent Key`=%d", $purchase_order->get('Purchase Order Parent Key')
+                );
+                $table .= ' left join `Agent Supplier Bridge` on (SP.`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`)';
+
+
+            }
+
+            break;
+        default:
+            $response = array(
+                'state' => 405,
+                'resp'  => 'product parent not found '.$data['parent']
+            );
+            echo json_encode($response);
+
+            return;
+    }
+
+
+    $sql = sprintf(
+        "select count(*) as number,`Part Status` as element from $table $where  group by `Part Status` "
+    );
+
+
+    foreach ($db->query($sql) as $row) {
+
+
+        if($row['element']=='Discontinuing' or $row['element']=='Not In Use'){
+            $_element='NotRequired';
+        }else{
+            $_element='Required';
+        }
+
+
+        $elements_numbers['part_status'][$_element] += $row['number'];
+
+    }
+
+
+    foreach( $elements_numbers['part_status'] as $key=>$value){
+        $elements_numbers['part_status'][$key]=number($value);
+    }
+
+
+    $sql = sprintf(
+        "select count(*) as number,`Supplier Part Status` as element from $table $where  group by `Supplier Part Status` "
+    );
+
+    foreach ($db->query($sql) as $row) {
+
+        $elements_numbers['status'][$row['element']] = number($row['number']);
+
+    }
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+
+
+}
+
 
 
 ?>

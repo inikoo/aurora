@@ -2212,6 +2212,19 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
             }
             break;
+        case 'agent_parts':
+            require_once 'navigation/agent.nav.php';
+            switch ($data['section']) {
+                case ('parts'):
+                    return get_parts_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+
+
+
+            }
+            break;
         default:
             return 'Module not found';
     }
@@ -6447,6 +6460,22 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'icon'      => 'clipboard',
                         'reference' => 'orders'
                     );
+
+            }
+
+            break;
+
+        case 'agent_parts':
+
+            switch ($state['section']){
+                case 'parts':
+                    $branch[] = array(
+                        'label'     => _("Products"),
+                        'icon'      => 'stop',
+                        'reference' => ''
+                    );
+                    break;
+
 
             }
 

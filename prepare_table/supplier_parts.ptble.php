@@ -9,6 +9,9 @@
 
 */
 
+
+
+
 $where = "where true  ";
 $table
        = "`Supplier Part Dimension` SP  left join `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`) left join `Supplier Dimension` S on (SP.`Supplier Part Supplier Key`=S.`Supplier Key`)  ";
@@ -92,11 +95,21 @@ if (isset($parameters['elements_type'])) {
         case 'part_status':
             $_elements      = '';
             $count_elements = 0;
-            foreach (
-                $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
+            foreach ($parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
             ) {
                 if ($_value['selected']) {
                     $count_elements++;
+
+                    if ($_key == "InUse") {
+                        $_key = "In Use";
+                    } elseif ($_key == "NotInUse") {
+                        $_key = "Not In Use";
+                    }elseif ($_key == 'InProcess') {
+                        $_key = "In Process";
+                    }
+
+
+
                     $_elements .= ','.prepare_mysql($_key);
 
                 }
@@ -104,14 +117,11 @@ if (isset($parameters['elements_type'])) {
             $_elements = preg_replace('/^\,/', '', $_elements);
             if ($_elements == '') {
                 $where .= ' and false';
-            } elseif ($count_elements == 1) {
-                if ($_elements == "'InUse'") {
-                    $_elements = "'In Use'";
-                } elseif ($_elements == "'NotInUse'") {
-                    $_elements = "'Not In Use'";
-                }
+            } elseif ($count_elements <4) {
 
-                $where .= ' and `Part Status`='.$_elements.'';
+                $where .= ' and `Part Status` in ('.$_elements.')';
+
+              
 
             }
             break;

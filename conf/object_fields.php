@@ -86,11 +86,11 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
             return $object_fields;
             break;
-           case 'Webpage Version':
+        case 'Webpage Version':
             include 'fields/webpage_version.fld.php';
 
             return $object_fields;
-            break; 
+            break;
         case 'Website Node':
             include 'fields/website.node.fld.php';
 
@@ -104,7 +104,6 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
                 include 'fields/category.fld.php';
             }
-
 
 
             return $category_fields;
@@ -170,19 +169,13 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
         case 'StoreProduct':
 
 
-        $object->get_webpage();
-        if (isset($options['type']) and $options['type'] == 'webpage_settings') {
-            include 'fields/product.webpage.fld.php';
-        } else {
+            $object->get_webpage();
+            if (isset($options['type']) and $options['type'] == 'webpage_settings') {
+                include 'fields/product.webpage.fld.php';
+            } else {
 
-            include 'fields/product.fld.php';
-        }
-
-
-
-
-
-
+                include 'fields/product.fld.php';
+            }
 
 
             return $product_fields;
@@ -203,66 +196,76 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
             $object->get_supplier_data();
 
+            if ($user->get('User Type') != 'Agent') {
 
-            if ($options['parent'] == 'supplier') {
-
-                $supplier = $options['parent_object'];
-
-                include 'fields/supplier_part.fld.php';
+                if ($options['parent'] == 'supplier') {
 
 
-                if (isset($options['new'])) {
-                    $object = new Part(0);
-                    include 'fields/part.fld.php';
-                    $supplier_part_fields = array_merge(
-                        $supplier_part_fields, $part_fields
-                    );
-                } else {
+                    $supplier = $options['parent_object'];
 
-                    $part = get_object(
-                        'Part', $object->get('Supplier Part Part SKU')
-                    );
-
-                    $object_fields_part = get_object_fields(
-                        $part, $db, $user, $smarty, array('supplier_part_scope' => true)
-                    );
-
-                    $supplier_part_fields = array_merge(
-                        $supplier_part_fields, $object_fields_part
-                    );
-
-                    $operations = array(
-                        'label'      => _('Operations'),
-                        'show_title' => true,
-                        'class'      => 'operations',
-                        'fields'     => array(
-
-                            array(
-                                'id'    => 'delete_supplier_part',
-                                'class' => 'operation',
-                                'value' => '',
-                                'label' => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'
-                                    .$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete supplier's part & related part")
-                                    .' <i class="fa fa-trash new_button link"></i></span>',
-
-                                'reference' => '',
-                                'type'      => 'operation'
-                            ),
+                    include 'fields/supplier_part.fld.php';
 
 
-                        )
+                    if (isset($options['new'])) {
+                        $object = new Part(0);
+                        include 'fields/part.fld.php';
+                        $supplier_part_fields = array_merge(
+                            $supplier_part_fields, $part_fields
+                        );
+                    } else {
 
-                    );
 
-                    $supplier_part_fields[] = $operations;
+                        $part = get_object('Part', $object->get('Supplier Part Part SKU'));
 
+                        $object_fields_part = get_object_fields($part, $db, $user, $smarty, array('supplier_part_scope' => true));
+
+                        $supplier_part_fields = array_merge($supplier_part_fields, $object_fields_part);
+
+                        $operations = array(
+                            'label'      => _('Operations'),
+                            'show_title' => true,
+                            'class'      => 'operations',
+                            'fields'     => array(
+
+                                array(
+                                    'id'    => 'delete_supplier_part',
+                                    'class' => 'operation',
+                                    'value' => '',
+                                    'label' => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'
+                                        .$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._(
+                                            "Delete supplier's part & related part"
+                                        ).' <i class="fa fa-trash new_button link"></i></span>',
+
+                                    'reference' => '',
+                                    'type'      => 'operation'
+                                ),
+
+
+                            )
+
+                        );
+
+                        $supplier_part_fields[] = $operations;
+                    }
+
+
+                    return $supplier_part_fields;
+                } elseif ($options['parent'] == 'part') {
+                    include 'fields/part.supplier_part.new.fld.php';
+
+                    return $supplier_part_fields;
                 }
+            }else{
+
+                $agent = $options['parent_object'];
+
+                $part = get_object('Part', $object->get('Supplier Part Part SKU'));
+
+                include 'fields/agent_part.fld.php';
 
                 return $supplier_part_fields;
-            } elseif ($options['parent'] == 'part') {
-                include 'fields/part.supplier_part.new.fld.php';
 
-                return $supplier_part_fields;
+
             }
             break;
 
@@ -298,7 +301,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             if (isset($options['new'])) {
 
 
-            }else {
+            } else {
 
                 if (!in_array($object->id, $user->stores)) {
                     $edit = false;

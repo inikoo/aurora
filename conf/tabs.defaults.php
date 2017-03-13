@@ -963,8 +963,8 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'reference',
         'elements_type' => each($elements_options['supplier_parts'])['key'],
-        'elements'      => $elements_options['supplier_parts'],
-        'export_fields' => $export_fields['supplier_parts']
+        'elements'      => $elements_options['agent_parts'],
+        'export_fields' => $export_fields['agent_parts']
 
     ),
 

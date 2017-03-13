@@ -21,30 +21,36 @@ function get_supplier_part_showcase($data, $smarty, $user, $db) {
         return "";
     }
 
-
-    $sql = sprintf(
-        "SELECT `Category Label`,`Category Code`,`Category Key` FROM `Category Dimension` WHERE `Category Key`=%d ", $part->get('Part Family Category Key')
-    );
-    if ($result = $db->query($sql)) {
-        if ($row = $result->fetch()) {
-            $family_data = array(
-                'id'    => $row['Category Key'],
-                'code'  => $row['Category Code'],
-                'label' => $row['Category Label'],
-            );
+    /*
+        $sql = sprintf(
+            "SELECT `Category Label`,`Category Code`,`Category Key` FROM `Category Dimension` WHERE `Category Key`=%d ", $part->get('Part Family Category Key')
+        );
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $family_data = array(
+                    'id'    => $row['Category Key'],
+                    'code'  => $row['Category Code'],
+                    'label' => $row['Category Label'],
+                );
+            } else {
+                $family_data = array('id' => false);
+            }
         } else {
-            $family_data = array('id' => false);
+            print_r($error_info = $db->errorInfo());
+            exit;
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
-    }
-
+    */
     $smarty->assign('supplier_part', $supplier_part);
     $smarty->assign('part', $part);
-    $smarty->assign('family_data', $family_data);
+    //$smarty->assign('family_data', $family_data);
 
-    return $smarty->fetch('showcase/supplier_part.tpl');
+
+    if ($user->get('User Type') == 'Agent') {
+        return $smarty->fetch('showcase/agent_part.tpl');
+    } else {
+        return $smarty->fetch('showcase/supplier_part.tpl');
+
+    }
 
 
 }

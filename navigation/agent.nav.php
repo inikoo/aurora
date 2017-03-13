@@ -12,6 +12,41 @@
 
 
 
+function get_parts_navigation($data, $smarty, $user, $db, $account) {
+
+    $left_buttons = array();
+
+    $right_buttons = array();
+    $sections      = get_sections('agent_client_deliveries', '');
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+    $title = _("Products");
+
+    $_content = array(
+
+        'sections_class' => '',
+        'sections'       => $sections,
+
+        'left_buttons'  => $left_buttons,
+        'right_buttons' => $right_buttons,
+        'title'         => $title,
+        'search'        => array(
+            'show'        => true,
+            'placeholder' => _('Search')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
 function get_deliveries_navigation($data, $smarty, $user, $db, $account) {
 
     $block_view   = $data['section'];
@@ -553,11 +588,7 @@ function get_supplier_part_navigation($data, $smarty, $user, $db, $account) {
     }
 
 
-    $title = _("Supplier's part").' <span class="id Supplier_Part_Reference">'.$data['_object']->get('Reference').'</span>';
-    $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-right padding_left_10"></i> <i class="fa fa-square button" title="'._('Part').'" onCLick="change_view(\'/part/'
-        .$data['_object']->part->id.'\')" ></i> <span class="Part_Reference button"  onCLick="change_view(\'part/'.$data['_object']->part->id.'\')">'.$data['_object']->part->get(
-            'Reference'
-        ).'</small>';
+    $title = _("Supplier's product").' <span class="id Supplier_Part_Reference">'.$data['_object']->get('Reference').'</span>';
 
 
     $_content = array(
