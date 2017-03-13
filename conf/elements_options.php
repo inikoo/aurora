@@ -708,8 +708,16 @@ $elements_options = array(
         'part_status' => array(
             'label' => _('Part status'),
             'items' => array(
+                'InProcess'    => array(
+                    'label'    => _('Part in process'),
+                    'selected' => true
+                ),
                 'InUse'    => array(
                     'label'    => _('Part active'),
+                    'selected' => true
+                ),
+                'Discontinuing' => array(
+                    'label'    => _('Part discontinuing'),
                     'selected' => true
                 ),
                 'NotInUse' => array(
@@ -721,6 +729,53 @@ $elements_options = array(
 
         )
     ),
+
+
+
+    'agent_parts'          => array(
+
+
+
+            'part_status' => array(
+                'label' => _('Required by client'),
+                'items' => array(
+                    'Required'    => array(
+                        'label'    => _('Required by client'),
+                        'selected' => true
+                    ),
+                    'NotRequired' => array(
+                        'label'    => _('Not required'),
+                        'selected' => true
+                    ),
+                )
+
+
+            ),
+            'status'      => array(
+            'label' => _('Availability'),
+            'items' => array(
+                'Available'    => array(
+                    'label'    => _('Available'),
+                    'selected' => true
+                ),
+                'NoAvailable'  => array(
+                    'label'    => _('No available'),
+                    'selected' => true
+                ),
+                'Discontinued' => array(
+                    'label'    => _('Discontinued'),
+                    'selected' => false
+                )
+            )
+
+
+        ),
+
+    ),
+
+
+
+
     'barcodes'                => array(
         'status' => array(
             'label' => _('Status'),

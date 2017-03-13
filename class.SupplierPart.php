@@ -241,6 +241,21 @@ class SupplierPart extends DB_Table {
         $field = preg_replace('/^Part Part /', 'Part ', $field);
         switch ($field) {
 
+
+            case 'Supplier Part Units Per Carton':
+
+
+
+                if($this->part->data['Part Units Per Package']==0 or $this->part->data['Part Units Per Package']==''){
+                    $this->error;
+                    $this->msg='Units per package are null or zero';
+                    return;
+
+                }
+
+                    $this->update(array('Supplier Part Packages Per Carton'=>$value/$this->part->data['Part Units Per Package']),$options);
+
+                break;
             case 'Supplier Part On Demand':
 
                 $this->get_supplier_data();
@@ -261,7 +276,7 @@ class SupplierPart extends DB_Table {
                 if ($this->data['Supplier On Demand'] == 'No' and $value == 'Yes') {
                     $this->error = true;
                     $this->msg   = _(
-                        "Supplier part can't set up as on demand because supplier isn't confugured to allow that"
+                        "Supplier part can't set up as on demand because supplier isn't configured to allow that"
                     );
 
                     return;
@@ -399,10 +414,10 @@ class SupplierPart extends DB_Table {
 
                 if (!in_array(
                     $value, array(
-                        'Available',
-                        'NoAvailable',
-                        'Discontinued'
-                    )
+                              'Available',
+                              'NoAvailable',
+                              'Discontinued'
+                          )
                 )
                 ) {
                     $this->error = true;
@@ -567,8 +582,8 @@ class SupplierPart extends DB_Table {
                     'Action'           => 'edited',
                     'History Abstract' => sprintf(
                         "Suppier's part %s supplier moved to supplier %s%s", sprintf(
-                            '<span class="button" onClick="change_view(\'supplier/%d/part/%d\')">%s</span>', $supplier->id, $this->id, $this->get('Reference')
-                        ), sprintf(
+                        '<span class="button" onClick="change_view(\'supplier/%d/part/%d\')">%s</span>', $supplier->id, $this->id, $this->get('Reference')
+                    ), sprintf(
                             '<span class="button" onClick="change_view(\'supplier/%d\')">%s</span>', $supplier->id, $supplier->get('Code')
                         ), $old_supplier_label
 
@@ -621,17 +636,16 @@ class SupplierPart extends DB_Table {
                 $this->other_fields_updated = array(
                     'Part_Unit_Price' => array(
                         'field'           => 'Part_Unit_Price',
-'render'=>true,
-                        'formatted_value'           => $this->get('Part Unit Price'),
-                        'value' => $this->get('Part Part Unit Price'),
+                        'render'          => true,
+                        'formatted_value' => $this->get('Part Unit Price'),
+                        'value'           => $this->get('Part Part Unit Price'),
                     ),
 
 
                 );
 
 
-
-                $this->updated         = $updated;
+                $this->updated = $updated;
                 break;
             case 'Supplier Part Currency Code':
 
@@ -896,12 +910,11 @@ class SupplierPart extends DB_Table {
                     $value = 0;
                 }
 
-                if(preg_match('/\%$/',$value)){
-                    $value=preg_replace('/\%^/','',$value);
+                if (preg_match('/\%$/', $value)) {
+                    $value = preg_replace('/\%^/', '', $value);
 
 
-
-                    $value=$this->data['Supplier Part Unit Cost']   *$value/100;
+                    $value = $this->data['Supplier Part Unit Cost'] * $value / 100;
                 }
 
 
@@ -930,7 +943,7 @@ class SupplierPart extends DB_Table {
                     $this->msg     = $this->part->msg;
                     $this->error   = $this->part->error;
 
-                    $this->other_fields_updated = $this->part->other_fields_updated ;
+                    $this->other_fields_updated = $this->part->other_fields_updated;
 
 
                 } else {
@@ -1004,8 +1017,8 @@ class SupplierPart extends DB_Table {
 
             case 'Supplier Key':
                 return $this->get('Supplier Name').(($this->get('Supplier Code') != '' and $this->get('Supplier Code') != $this->get(
-                        'Supplier Name'
-                    )) ? ' ('.$this->get('Supplier Code').')' : '');
+                            'Supplier Name'
+                        )) ? ' ('.$this->get('Supplier Code').')' : '');
                 break;
             case 'Average Delivery Days':
                 if ($this->data['Supplier Part Average Delivery Days'] == '') {
@@ -1014,8 +1027,8 @@ class SupplierPart extends DB_Table {
 
                 return sprintf(
                     "%d %s", $this->data['Supplier Part Average Delivery Days'], ngettext(
-                        "day", "days", $this->data['Supplier Part Average Delivery Days']
-                    )
+                               "day", "days", $this->data['Supplier Part Average Delivery Days']
+                           )
                 );
 
                 break;
@@ -1030,24 +1043,24 @@ class SupplierPart extends DB_Table {
                 if ($this->data['Supplier Part Status'] == 'Available') {
                     if ($this->data['Supplier Part Average Delivery Days'] != '') {
                         return '<span class="discreet"><i class="fa fa-hourglass-end fa-fw" aria-hidden="true" title="'._('Delivery time').'" ></i>  <span title="'.sprintf(
-                            "%s %s", number(
-                            $this->data['Supplier Part Average Delivery Days'], 1
-                        ), ngettext(
-                                "day", "days", number(
-                                    $this->data['Supplier Part Average Delivery Days'], 1
+                                "%s %s", number(
+                                $this->data['Supplier Part Average Delivery Days'], 1
+                            ), ngettext(
+                                    "day", "days", number(
+                                             $this->data['Supplier Part Average Delivery Days'], 1
+                                         )
                                 )
-                            )
-                        ).'">'.seconds_to_natural_string(
-                            $this->data['Supplier Part Average Delivery Days'] * 86400, true
-                        ).'</span></span>';
+                            ).'">'.seconds_to_natural_string(
+                                $this->data['Supplier Part Average Delivery Days'] * 86400, true
+                            ).'</span></span>';
                     } else {
                         return '<span class="error">'._('Unknown delivery time').'</span>';
                     }
 
                 } elseif ($this->data['Supplier Part Status'] == 'NoAvailable') {
                     return '<span class="discreet error">'._(
-                        'Supplier has not stock'
-                    ).'</span>';
+                            'Supplier has not stock'
+                        ).'</span>';
                 }
                 break;
 
@@ -1160,14 +1173,29 @@ class SupplierPart extends DB_Table {
 
                 return $cost;
                 break;
+            case 'Supplier Part Units Per Carton':
+                if ($this->data['Supplier Part Packages Per Carton'] == '' or $this->part->data['Part Units Per Package'] == '') {
+                    return '';
+                }
+
+                return $this->data['Supplier Part Packages Per Carton'] * $this->part->data['Part Units Per Package'];
+                break;
             case 'Units Per Carton':
                 if ($this->data['Supplier Part Packages Per Carton'] == '' or $this->part->data['Part Units Per Package'] == '') {
                     return '';
                 }
 
-                return number(
-                    $this->data['Supplier Part Packages Per Carton'] * $this->part->data['Part Units Per Package']
-                );
+                $units_per_carton = number($this->data['Supplier Part Packages Per Carton'] * $this->part->data['Part Units Per Package']);
+
+                if ($this->part->data['Part Units Per Package'] != 1 and is_numeric($this->part->data['Part Units Per Package'])) {
+
+                    $units_per_carton .= '<span class="discreet"> ('.number($this->data['Supplier Part Packages Per Carton']).' '.ngettext(
+                            'pack', 'packs', $this->data['Supplier Part Packages Per Carton']
+                        ).')</span>';
+                }
+
+                return $units_per_carton;
+
                 break;
 
             case 'Packages Per Carton':
@@ -1403,8 +1431,7 @@ class SupplierPart extends DB_Table {
             //print $sql;
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
-                    $purchase_order_keys[$row['Purchase Order Key']]
-                        = $row['Purchase Order Key'];
+                    $purchase_order_keys[$row['Purchase Order Key']] = $row['Purchase Order Key'];
 
                     $units_per_carton = $this->part->get(
                             'Part Units Per Package'
@@ -1417,10 +1444,11 @@ class SupplierPart extends DB_Table {
 						 `Purchase Order Weight`=%f,
 						 `Purchase Order Net Amount`=%.2f
 						  WHERE `Purchase Order Transaction Fact Key`=%d', $this->get('Supplier Part Historic Key'), $row['Purchase Order Quantity'] * $this->get(
-                            'Supplier Part Carton CBM'
-                        ), $row['Purchase Order Quantity'] * $this->get(
-                            'Supplier Part Packages Per Carton'
-                        ) * $this->get('Part Package Weight'), $row['Purchase Order Quantity'] * $units_per_carton * $this->get('Supplier Part Unit Cost'),
+                                                                                                     'Supplier Part Carton CBM'
+                                                                                                 ), $row['Purchase Order Quantity'] * $this->get(
+                                                                                                     'Supplier Part Packages Per Carton'
+                                                                                                 ) * $this->get('Part Package Weight'),
+                        $row['Purchase Order Quantity'] * $units_per_carton * $this->get('Supplier Part Unit Cost'),
 
                         $row['Purchase Order Transaction Fact Key']
                     );

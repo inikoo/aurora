@@ -30,6 +30,9 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
+    case 'agent_parts':
+        agent_parts(get_table_parameters(), $db, $user, $account);
+        break;
     case 'order.items':
         order_items(get_table_parameters(), $db, $user, $account);
         break;
@@ -3133,6 +3136,127 @@ function supplier_categories($_data, $db, $user) {
         'resultset' => array(
             'state'         => 200,
             'data'          => $table_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+
+function agent_parts($_data, $db, $user, $account) {
+
+
+    include_once 'utils/currency_functions.php';
+
+    if ($user->get('User Type') != 'Agent') {
+        echo json_encode(
+            array(
+                'state' => 405,
+                'resp'  => 'Forbidden'
+            )
+        );
+        exit;
+    }
+
+
+    $rtext_label = 'product';
+    include_once 'prepare_table/init.php';
+
+    $sql         = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $record_data = array();
+
+
+
+
+
+    if ($result = $db->query($sql)) {
+
+
+        foreach ($result as $data) {
+
+
+
+
+            switch ($data['Supplier Part Status']) {
+                case 'Available':
+                    $status = sprintf(
+                        '<i class="fa fa-stop success" title="%s"></i>', _('Available')
+                    );
+                    break;
+                case 'NoAvailable':
+                    $status = sprintf(
+                        '<i class="fa fa-stop warning" title="%s"></i>', _('No available')
+                    );
+
+                    break;
+                case 'Discontinued':
+                    $status = sprintf(
+                        '<i class="fa fa-ban error" title="%s"></i>', _('Discontinued')
+                    );
+
+                    break;
+                default:
+                    $status = $data['Supplier Part Status'];
+                    break;
+            }
+
+
+
+            if ($data['Part Status'] == 'Not In Use' or $data['Part Status'] == 'Discontinuing') {
+                $part_status = '<i class="fa fa-square-o fa-fw  very_discreet" title="'._("No longer required").'" aria-hidden="true"></i> ';
+$required=false;
+            }else {
+                $part_status = '<i class="fa fa-shopping-bag fa-fw " aria-hidden="true"></i> ';
+                $required=true;
+
+            }
+
+
+
+            $record_data[] = array(
+                'id'               => (integer)$data['Supplier Part Key'],
+                'supplier_key'     => (integer)$data['Supplier Part Supplier Key'],
+                'supplier_code'    => sprintf('<span class="link " onCLick="change_view(\'/supplier/%d\')">%s</span>', $data['Supplier Part Supplier Key'],$data['Supplier Code']),
+                'reference'        => sprintf('<span class="link %s " onCLick="change_view(\'/part/%d\')">%s</span>',($required?'':'strikethrough'), $data['Supplier Part Key'],$data['Supplier Part Reference']),
+
+
+                'description'    => $data['Part Unit Description'],
+                'status'         => $status,
+                'part_status'         => $part_status,
+
+                'cost'           => sprintf('<span class="part_cost"  pid="%d" cost="%s"  currency="%s"   onClick="open_edit_cost(this)">%s</span>' ,
+                                            $data['Supplier Part Key'],$data['Supplier Part Unit Cost'],$data['Supplier Part Currency Code'],money($data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code'])
+                ),
+
+                'packing'        => '
+				 <div style="float:right;min-width:30px;;text-align:right" title="'._('Units per carton').'"><span class="discreet" >'.($data['Part Units Per Package']
+                        * $data['Supplier Part Packages Per Carton'].'</span></div>
+				<div style="float:right;min-width:70px;text-align:center;"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['
+                        .$data['Supplier Part Packages Per Carton'].']</span></div>
+				<div style="float:right;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package'].'</span></div>
+				 '),
+
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print $sql;
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
