@@ -198,7 +198,7 @@ class Public_Product {
 
 
                 break;
-
+            case 'Status':
             case 'CPNP Number':
             case 'Code':
             case 'Web State':

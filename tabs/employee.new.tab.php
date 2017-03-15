@@ -2,12 +2,13 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 15 November 2015 at 14:20:16 GMT Sheffied UK
+ Created: 15 November 2015 at 14:20:16 GMT Sheffield UK
  Copyright (c) 2015, Inikoo
 
  Version 3
 
 */
+
 include_once 'utils/country_functions.php';
 
 include_once 'utils/invalid_messages.php';

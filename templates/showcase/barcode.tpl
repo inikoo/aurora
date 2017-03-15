@@ -1,7 +1,7 @@
-<div class="asset_profile" style="padding-top:10px">
+<div class="asset_profile" style="padding-top:10px;border-bottom:1px solid #ccc;padding-bottom:20px">
 
 
-    <div id="asset_data">
+    <div id="asset_data"  style="float:left;p" >
         <div class="data_container">
 
             <div class="data_field">
@@ -28,7 +28,7 @@
         <div style="clear:both">
         </div>
     </div>
-    <div id="info" style="position:relative;top:0px">
+    <div id="info" style="float:left;margin-top:20px;width:300px;margin-left:20px">
         <div id="overviews">
             <table border="0" class="overview" style="">
                 <tr id="status_tr" class="main">
@@ -47,16 +47,3 @@
 
 </div>
 
-
-<script>
-    function email_width_hack() {
-        var email_length = $('#showcase_Customer_Main_Plain_Email').text().length
-
-        if (email_length > 30) {
-            $('#showcase_Customer_Main_Plain_Email').css("font-size", "90%");
-        }
-    }
-
-    email_width_hack();
-
-</script>

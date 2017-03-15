@@ -25,7 +25,7 @@ class Asset extends DB_Table {
 
 
 
-            case $this->table_name.' Barcode Number':
+            case $this->table_name.' Barcode':
 
                 if ($value == '') {
                     include_once 'class.Barcode.php';
@@ -41,12 +41,8 @@ class Asset extends DB_Table {
                     }
                     $this->deleted_value = $this->get('Barcode Number');
 
-                    $this->update_field(
-                        $this->table_name.' Barcode Number', '', $options
-                    );
-                    $this->update_field(
-                        $this->table_name.' Barcode Key', '', 'no_history'
-                    );
+                    $this->update_field_switcher($this->table_name.' Barcode Number', '', $options);
+                    $this->update_field_switcher($this->table_name.' Barcode Key', '', 'no_history');
 
 
                     if ($this->table_name == 'Part') {
@@ -67,7 +63,7 @@ class Asset extends DB_Table {
 
                     $available_barcodes = 0;
                     $sql                = sprintf(
-                        "SELECT `Barcode Key` ,`Barcode Status` FROM `Barcode Dimension` WHERE `Barcode Number`=%s", $value
+                        "SELECT `Barcode Key` ,`Barcode Status` ,`Barcode Sticky Note` FROM `Barcode Dimension` WHERE `Barcode Number`=%s", $value
                     );
 
 
@@ -122,15 +118,24 @@ class Asset extends DB_Table {
                                 );
 
 
-                                $this->update_field(
-                                    $this->table_name.' Barcode Number', $value, 'no_history'
+                                $this->update_field_switcher($this->table_name.' Barcode Number', $value, 'no_history'
                                 );
-                                $this->update_field(
-                                    $this->table_name.' Barcode Key', $barcode->id, 'no_history'
-                                );
+                                $this->update_field_switcher($this->table_name.' Barcode Key', $barcode->id, 'no_history');
 
-                            } else {
-                                $this->error;
+                            }
+                            else  if ($row['Barcode Status'] == 'Reserved') {
+                                $this->error=true;
+                                $this->msg = _("Can't update barcode reserved").' '.$row['Barcode Sticky Note'] ;
+
+                                return true;
+                            } else  if ($row['Barcode Status'] == 'Used') {
+                                $this->error=true;
+                                $this->msg = _("Can't update, barcode already used");
+
+                                return true;
+                            }
+                            else {
+                                $this->error=true;
                                 $this->msg = _('Barcode no available');
 
                                 return true;
@@ -154,10 +159,10 @@ class Asset extends DB_Table {
                                 }
                             }
 
-                            $this->update_field(
+                            $this->update_field_switcher(
                                 $this->table_name.' Barcode Number', $value, $options
                             );
-                            $this->update_field(
+                            $this->update_field_switcher(
                                 $this->table_name.' Barcode Key', '', 'no_history'
                             );
 

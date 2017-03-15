@@ -121,7 +121,7 @@ if (isset($parameters['elements_type'])) {
 
                 $where .= ' and `Part Status` in ('.$_elements.')';
 
-              
+
 
             }
             break;

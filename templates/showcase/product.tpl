@@ -205,6 +205,22 @@
             </table>
 
 
+            <table id="barcode_data" border="0" class="overview {if $product->get('Product Barcode Number')==''}hide{/if} ">
+                <tr class="main">
+                    <td class="label">
+                        <i {if $product->get('Product Barcode Key')} class="fa fa-barcode button" onClick="change_view('inventory/barcode/{$product->get('Product Barcode Key')}')"{else}  class="fa fa-barcode"{/if} ></i>
+                    </td>
+                    <td class="Product_Barcode_Number highlight">{$product->get('Product Barcode Number')} </td>
+                    <td class="barcode_labels aright {if !$product->get('Product Barcode Key')}hide{/if}">
+                        <a class="padding_left_10" title="{t}Unit label{/t}"
+                           href="/asset_label.php?object=product&key={$product->id}&type=unit"><i class="fa fa-tags "></i></a>
+                    </td>
+
+                </tr>
+
+
+            </table>
+
         </div>
     </div>
     <div style="clear:both">

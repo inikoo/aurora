@@ -11,7 +11,43 @@
 */
 
 
+
+if (isset($options['new']) and $options['new']) {
+    $new = true;
+} else {
+    $new = false;
+}
+
+
+$options_status = array(
+    'Reserved'        => _('Reserved'),
+    'Available' => _('Available')
+);
+
+
 $barcode_fields = array(
+
+    array(
+        'label'      => _('Status'),
+        'show_title' => true,
+        'class'=> ( $object->get('Barcode Status')=='Used' ? 'hide' : ''),
+        'fields'     => array(
+
+            array(
+                'id'              => 'Barcode_Status',
+                'edit'   => ($edit ? 'option' : ''),
+                'render' => ($new or $object->get('Barcode Status')=='Used' ? false : true),
+                'options'         => $options_status,
+                'value'           => htmlspecialchars($object->get('Barcode Status')),
+                'formatted_value' => $object->get('Status'),
+                'label'           => ucfirst($object->get_field_label('Barcode Status')),
+                'required'        => false,
+                'type'            => 'value'
+            ),
+        )
+    ),
+
+
     array(
         'label'      => _('Notes'),
         'show_title' => true,
@@ -19,7 +55,7 @@ $barcode_fields = array(
 
             array(
                 'id'              => 'Barcode_Sticky_Note',
-                'edit'            => ($edit ? 'textarea' : ''),
+                'edit'            => ($edit ? 'string' : ''),
                 'value'           => htmlspecialchars(
                     $object->get('Barcode Sticky Note')
                 ),

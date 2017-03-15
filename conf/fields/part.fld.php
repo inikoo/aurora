@@ -58,9 +58,7 @@ if (!($supplier_part_scope or $new)) {
                 'edit'   => ($edit ? 'option' : ''),
 
                 'options'         => $options_status,
-                'value'           => htmlspecialchars(
-                    $object->get('Part Status')
-                ),
+                'value'           => htmlspecialchars($object->get('Part Status')),
                 'formatted_value' => $object->get('Status'),
                 'label'           => ucfirst(
                     $object->get_field_label('Part Status')
@@ -168,7 +166,7 @@ $part_fields[] = array(
     'fields'     => array(
 
         array(
-            'id'   => 'Part_Barcode_Number',
+            'id'   => 'Part_Barcode',
             'render' => ($supplier_part_scope ? false : true),
             'edit' => ($edit ? 'barcode' : ''),
 

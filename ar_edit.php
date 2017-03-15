@@ -1230,15 +1230,17 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             break;
         case 'Product':
             include_once 'class.Product.php';
+
+
+            print_r($data['fields_data']);
+
             $object = $parent->create_product($data['fields_data']);
 
             if ($parent->new_product) {
 
                 $smarty->assign('object', $object);
 
-                $pcard        = $smarty->fetch(
-                    'presentation_cards/product.pcard.tpl'
-                );
+                $pcard        = $smarty->fetch('presentation_cards/product.pcard.tpl');
                 $updated_data = array();
             } else {
 

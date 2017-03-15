@@ -11,7 +11,7 @@
 */
 
 
-$handle = fopen("barcodes.csv", "r");
+$handle = fopen("barcodes_2.csv", "r");
 require_once 'common.php';
 include_once 'utils/object_functions.php';
 
@@ -37,9 +37,9 @@ require_once 'class.Barcode.php';
 require_once 'class.Part.php';
 
 
-$sql
-    = "truncate `Barcode Dimension`; truncate `Barcode Asset Bridge`; truncate `Barcode History Bridge`";
+$sql = "truncate `Barcode Dimension`; truncate `Barcode Asset Bridge`; truncate `Barcode History Bridge`";
 $db->exec($sql);
+
 
 $sql = sprintf(
     'UPDATE  `Part Dimension` SET `Part Barcode Number`=NULL , `Part Barcode Key`=NULL;  '
@@ -59,19 +59,22 @@ $editor = array(
 $row = 1;
 while (($data = fgetcsv($handle, 1000, ",")) !== false) {
 
-    //print_r($data);
+    //  print_r($data);
     $num = count($data);
     $row++;
-    if ($num > 1 and strlen($data[1]) == 12) {
-        $number = $data[1];
+    if ($num > 1 and strlen($data[11]) == 12 and is_numeric($data[11])) {
+        $number = $data[11];
 
 
         $note = $data[6].', '.$data[7];
+
+        $note = $data[13];
         $note = preg_replace('/\, $/', '', $note);
 
 
         $check_digit = ean_checkdigit($number);
 
+        /*
         if (isset($data[8]) and strlen($data[8]) == 13) {
             $cross_reference_number = $data[8];
 
@@ -80,6 +83,8 @@ while (($data = fgetcsv($handle, 1000, ",")) !== false) {
                 continue;
             }
         }
+
+        */
         $barcode_data = array(
             'Barcode Number'      => $number.$check_digit,
             'Barcode Sticky Note' => $note
@@ -87,26 +92,38 @@ while (($data = fgetcsv($handle, 1000, ",")) !== false) {
 
         $add_asset = false;
 
-        if ($data[2] != '' or $data[3] != '' or $number < 505579657595) {
-            $part = new Part('reference', $data[2]);
+        if ($data[9] != '') {
+            $part = new Part('reference', $data[9]);
             if ($part->id) {
                 $add_asset = true;
+
+                if ($data[9] != '') {
+                    $note = $data[9].', '.$note;
+                }
+                //  }
+
+
+                $note = preg_replace('/\, $/', '', $note);
 
 
             } else {
                 $barcode_data['Barcode Status'] = 'Reserved';
 
-                if ($data[2] == '' and $data[3] == '') {
-                    $data[2] = 'empty';
+                if ($data[9] == '' and $data[13] == '') {
+                    $data[9] = 'empty';
                 }
 
-                if ($data[2] == '') {
-                    $note = $data[3].', '.$note;
+                //if ($data[2] == '') {
+                //  $note = $data[3].', '.$note;
 
-                } else {
-                    $note = $data[2].', '.$note;
-
+                //} else {
+                if ($data[9] != '') {
+                    $note = $data[9].', '.$note;
                 }
+                //  }
+
+
+                //   $note = $data[9];
 
                 $note = preg_replace('/\, $/', '', $note);
 
@@ -117,6 +134,8 @@ while (($data = fgetcsv($handle, 1000, ",")) !== false) {
 
 
         }
+
+        //   print "$row\n";
 
 
         $barcode = new Barcode('find', $barcode_data, 'create');
@@ -130,16 +149,25 @@ while (($data = fgetcsv($handle, 1000, ",")) !== false) {
 
             $barcode->assign_asset($asset_data);
 
+            if (!$barcode->assigned) {
+                $barcode->update(
+                    array(
+                        'Barcode Status'      => 'Reserved',
+                        'Barcode Sticky Note' => $note
+                    )
+                );
 
-            $sql = sprintf(
-                'UPDATE `Part Dimension` SET `Part Barcode Number`=%s,`Part Barcode Key`=%d WHERE `Part SKU`=%d ', prepare_mysql($barcode->get('Barcode Number')), $barcode->id, $part->id
-            );
-            $db->exec($sql);
+            }
+
 
         }
 
 
     }
+
+
+    // if($row>10)
+    //   exit;
 
 }
 

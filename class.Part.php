@@ -570,6 +570,9 @@ class Part extends Asset {
                     return '';
                 }
 
+
+
+
                 return '<i '.($this->get('Part Barcode Key') ? 'class="fa fa-barcode button" onClick="change_view(\'inventory/barcode/'.$this->get('Part Barcode Key').'\')"' : 'class="fa fa-barcode"')
                     .' ></i><span class="Part_Barcode_Number ">'.$this->get(
                         'Part Barcode Number'
@@ -1481,6 +1484,65 @@ class Part extends Asset {
 
         switch ($field) {
 
+
+            case 'Part Barcode Number':
+
+
+
+
+
+                $this->update_field($field, $value, $options);
+
+
+                $updated = $this->updated;
+
+
+
+                foreach ($this->get_products('objects') as $product) {
+
+                    if (count($product->get_parts()) == 1) {
+                        $product->editor = $this->editor;
+                        $product->update(
+                            array('Product Barcode Number' => $value), $options.' from_part'
+                        );
+                    }
+
+                }
+
+
+                $this->updated = $updated;
+
+
+
+                break;
+            case 'Part Barcode Key':
+
+
+                $this->update_field($field, $value, $options);
+
+
+                $updated = $this->updated;
+
+
+                foreach ($this->get_products('objects') as $product) {
+
+                    if (count($product->get_parts()) == 1) {
+                        $product->editor = $this->editor;
+                        $product->update(
+                            array('Product Barcode Key' => $value), $options.' from_part'
+                        );
+                    }
+
+                }
+
+
+                $this->updated = $updated;
+
+
+
+                break;
+
+
             case 'Part Unit Label':
 
 
@@ -1833,7 +1895,6 @@ class Part extends Asset {
 
                 $this->update_field('Part Materials', $materials, $options);
                 $updated = $this->updated;
-                //$this->update_linked_products($field, $value, $options, $metadata);
 
 
                 foreach ($this->get_products('objects') as $product) {
@@ -1849,6 +1910,25 @@ class Part extends Asset {
 
 
                 $this->updated = $updated;
+                break;
+
+
+            case '':
+
+
+
+                foreach ($this->get_products('objects') as $product) {
+
+                    if (count($product->get_parts()) == 1) {
+                        $product->editor = $this->editor;
+                        $product->update(
+                            array('Product Materials' => $value), $options.' from_part'
+                        );
+                    }
+
+                }
+
+
                 break;
 
             case 'Part Package Dimensions':
