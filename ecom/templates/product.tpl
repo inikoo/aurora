@@ -197,6 +197,7 @@
 				<tr class="{if $Dimensions==''}hide{/if}">  <td>{$public_product->get_field_label('Product Unit Dimensions')|ucfirst}</td> <td>{$Dimensions}</td></tr>
 				<tr class="{if $Materials==''}hide{/if}"> <td>{t}Materials{/t}/{t}Ingredients{/t}</td> <td> <section style="width:70%"> {$Materials}</section></td></tr>
 				<tr class="{if $CPNP==''}hide{/if}"> <td title="{t}Cosmetic Products Notification Portal{/t} - Europa.eu">CPNP</td> <td>{$CPNP}</td></tr>
+				<tr class="{if $Barcode==''}hide{/if}"> <td>{$public_product->get_field_label('Product Barcode Number')|ucfirst}</td> <td>{$Barcode}</td></tr>
 
                 {foreach from=$product_attachments item=attachment}
 					<tr>

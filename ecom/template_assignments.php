@@ -278,6 +278,7 @@ if($page->data['Webpage Version']==2){
         $weight     = $public_product->get('Unit Weight');
         $dimensions = $public_product->get('Unit Dimensions');
         $product_attachments = $public_product->get_attachments();
+        $barcode = $public_product->get('Barcode Number');
 
         $smarty->assign('CPNP', $cpnp);
         $smarty->assign('Materials', $materials);
@@ -285,6 +286,7 @@ if($page->data['Webpage Version']==2){
         $smarty->assign('Dimensions', $dimensions);
         $smarty->assign('Origin', $origin);
         $smarty->assign('product_attachments', $product_attachments);
+        $smarty->assign('Barcode', $barcode);
 
 
 

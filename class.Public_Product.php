@@ -199,6 +199,7 @@ class Public_Product {
 
                 break;
             case 'Status':
+            case 'Barcode Number':
             case 'CPNP Number':
             case 'Code':
             case 'Web State':
@@ -850,7 +851,7 @@ break;
                 $label = _('proper shipping name');
                 break;
             case 'Product Hazard Indentification Number':
-                $label = _('hazard indentification number');
+                $label = _('hazard identification number');
                 break;
             case 'Product Materials':
                 $label = _('Materials/Ingredients');
