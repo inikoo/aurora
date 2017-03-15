@@ -2685,11 +2685,14 @@ class User extends DB_Table {
 
         $dashboard_items = array();
 
-        if ($this->data['User Type'] == 'Staff' or $this->data['User Type'] == 'Administrator' or $this->data['User Type'] == 'Contractor') {
+        if ($this->data['User Type'] == 'Staff' or $this->data['User Type'] == 'Administrator' ) {
 
             $dashboard_items[] = 'pending_orders';
             $dashboard_items[] = 'sales_overview';
             $dashboard_items[] = 'kpis';
+
+        }else if($this->data['User Type'] == 'Contractor'){
+
 
         }
 
