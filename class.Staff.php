@@ -188,12 +188,17 @@ class Staff extends DB_Table {
             $this->data['Staff Valid From'] = gmdate('Y-m-d H:i:s');
         }
 
+        if($this->data['Staff PIN']==''){
+            $this->data['Staff PIN']='1234';
+        }
+
+
 
         $keys   = '';
         $values = '';
         foreach ($this->data as $key => $value) {
             $keys .= ",`".$key."`";
-            if ($key == 'Staff Valid To' or $key == 'Staff Birthday') {
+            if ($key == 'Staff Valid To' or $key == 'Staff Birthday' or $key=='Staff Working Hours Per Week' or $key=='Staff Warehouse Key' ) {
                 $values .= ','.prepare_mysql($value, true);
 
             } else {
@@ -295,6 +300,9 @@ class Staff extends DB_Table {
         } else {
             $this->error = true;
             $this->msg   = 'Error inserting staff record';
+
+            print $sql;
+
         }
 
 

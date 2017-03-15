@@ -104,10 +104,10 @@ class Barcode extends DB_Table {
         if (strlen($data['Barcode Number']) == 12) {
             $sql = sprintf(
                 "SELECT `Barcode Key` FROM `Barcode Dimension` WHERE  `Barcode Number`=%s  ", prepare_mysql(
-                    $data['Barcode Number'].$this->get_check_digit(
-                        'EAN', $data['Barcode Number']
-                    )
-                )
+                                                                                                $data['Barcode Number'].$this->get_check_digit(
+                                                                                                    'EAN', $data['Barcode Number']
+                                                                                                )
+                                                                                            )
             );
         } else {
 
@@ -123,6 +123,8 @@ class Barcode extends DB_Table {
                 $this->found_key = $row['Barcode Key'];
                 $this->get_data('id', $this->found_key);
                 $this->duplicated_field = 'Barcode Number';
+
+$this->msg=_('Barcode already in the system');
 
                 return;
             }
@@ -174,6 +176,9 @@ class Barcode extends DB_Table {
         }
 
 
+
+
+
         if ($base_data['Barcode Type'] == 'EAN') {
 
 
@@ -217,7 +222,6 @@ class Barcode extends DB_Table {
         $values = preg_replace('/,$/', ')', $values);
 
         $sql = sprintf("INSERT INTO `Barcode Dimension` %s %s", $keys, $values);
-
         if ($this->db->exec($sql)) {
             $this->id  = $this->db->lastInsertId();
             $this->msg = _("Barcode added");
@@ -236,6 +240,39 @@ class Barcode extends DB_Table {
             $this->add_subject_history(
                 $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id()
             );
+
+            //506006011228
+            // try to find orphans barcodes
+
+
+            $sql=sprintf('select `Part SKU` from `Part Dimension` where `Part Barcode Number`=%s and  (`Part Barcode Key`=0 or `Part Barcode Key` is null) ',
+
+                         $this->get('Barcode Number')
+
+                         );
+            if ($result=$this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+
+                    include_once 'class.Part.php';
+
+                    $part=new Part($row['Part SKU']);
+
+                    $asset_data = array(
+                        'Barcode Asset Type'          => 'Part',
+                        'Barcode Asset Key'           => $part->id,
+                        'Barcode Asset Assigned Date' => gmdate('Y-m-d H:i:s')
+                    );
+
+                    $this->assign_asset($asset_data);
+
+                }
+            }else {
+            	print_r($error_info=$this->db->errorInfo());
+            	print "$sql\n";
+            	exit;
+            }
+
+
 
 
             return;
@@ -288,6 +325,8 @@ class Barcode extends DB_Table {
             "INSERT INTO `Barcode Asset Bridge` %s %s", $keys, $values
         );
 
+
+
         if ($this->db->exec($sql)) {
 
             $this->msg                = _("Barcode assigned to asset");
@@ -295,13 +334,26 @@ class Barcode extends DB_Table {
 
             $this->update_status();
 
+
+
+
             if ($asset_data['Barcode Asset Type'] == 'Part') {
-                $asset       = get_object(
-                    $asset_data['Barcode Asset Type'], $asset_data['Barcode Asset Key']
-                );
+                $asset       = get_object($asset_data['Barcode Asset Type'], $asset_data['Barcode Asset Key']);
                 $asset_label = sprintf(
                     '<i class="fa fa-square fa-fw"></i> <span class="link" onClick="change_view(\'part/%d\')">%s</span>', $asset->get('Part SKU'), $asset->get('Part Reference')
                 );
+
+
+
+
+                $asset->update(
+                    array(
+                        'Part Barcode Number' => $this->get('Barcode Number'),
+                        'Part Barcode Key'    => $this->id
+                    ), 'no_history'
+                );
+
+
             } else {
                 $asset_label = 'asset';
             }
@@ -316,12 +368,13 @@ class Barcode extends DB_Table {
                 $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->get_main_id()
             );
 
-
+            $this->assigned=true;
             return;
         } else {
-            $this->msg = _("Error, can't assing asset");
-            print $sql;
-            exit;
+            $this->error=true;
+            $this->assigned=false;
+            $this->msg = _("Error, can't associate asset");
+
         }
 
 

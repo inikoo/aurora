@@ -32,12 +32,12 @@ $footer_data = array(
                         array(
                             'type' => 'text',
                             'icon' => 'fa-map-marker ',
-                            'text' => '2901 Marmora Road, Glassgow,<br>Seattle, WA 98122-1090'
+                            'text' => '110 London Road, Oxford,  OX2 6RB, UK'
                         ),
                         array(
                             'type' => 'text',
                             'icon' => 'fa-phone',
-                            'text' => '1 -234 -456 -7890'
+                            'text' => '+1-541-754-3010'
                         ),
                         array(
                             'type' => 'email',
@@ -57,39 +57,39 @@ $footer_data = array(
 
                 array(
                     'type'   => 'links',
-                    'header' => 'Useful Links',
+                    'header' => _('Useful Links'),
 
                     'items' => array(
                         array(
-                            'url'   => 'http://caca.com',
-                            'label' => 'Home Page Variations'
+                            'url'   => '#',
+                            'label' => _('Home Page Variations')
                         ),
                         array(
                             'url'   => '#',
-                            'label' => 'Awsome Slidershows'
+                            'label' =>_('Awesome Products')
                         ),
                         array(
                             'url'   => '#',
-                            'label' => 'Features and Typography'
+                            'label' => _('Features and Benefits')
                         )
                     )
                 ),
 
                 array(
                     'type'   => 'links',
-                    'header' => 'Useful Links 2',
+                    'header' => _('Useful Links 2'),
                     'items'  => array(
                         array(
                             'url'   => '#',
-                            'label' => 'Home Page Variations'
+                            'label' => _('Home Page Variations')
                         ),
                         array(
                             'url'   => '#',
-                            'label' => 'Awsome Slidershows'
+                            'label' => _('Awesome Products')
                         ),
                         array(
                             'url'   => '#',
-                            'label' => 'Features and Typography'
+                            'label' => _('Features and Benefits')
                         )
                     )
                 ),
@@ -97,7 +97,7 @@ $footer_data = array(
 
                 array(
                     'type'   => 'text',
-                    'header' => 'About Us',
+                    'header' => _('About Us'),
                     'text'   => '
                         
                         <p>All the Lorem Ipsum generators on the Internet tend to repeat predefined</p>

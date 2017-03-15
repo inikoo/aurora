@@ -18,6 +18,13 @@ if (isset($options['new']) and $options['new']) {
     $new = false;
 }
 
+
+if (isset($options['contractor']) and $options['contractor']) {
+    $contractor = true;
+} else {
+    $contractor = false;
+}
+
 $employee = $object;
 $account  = new Account();
 
@@ -351,7 +358,7 @@ $object_fields = array(
         )
     ),
     array(
-        'label'      => _('Employment'),
+        'label'      => ($contractor?_('Contractual service agreement'):_('Employment')),
         'show_title' => true,
         'class'      => 'edit_fields',
         'fields'     => array(
@@ -359,17 +366,9 @@ $object_fields = array(
 
                 'id'   => 'Staff_Type',
                 'edit' => ($edit ? 'option' : ''),
-
-                'value'           => ($new
-                    ? 'Employee'
-                    : $employee->get(
-                        'Staff Type'
-                    )),
-                'formatted_value' => ($new
-                    ? _('Employee')
-                    : $employee->get(
-                        'Type'
-                    )),
+                'render'=>($new and $contractor?false:true),
+                'value'           => ($new ?  ($contractor? 'Contractor' : 'Employee') : $employee->get('Staff Type')),
+                'formatted_value' => ($new ? ($contractor? _('Contractor') : _('Employee'))  : $employee->get('Type')),
                 'options'         => $options_Staff_Type,
                 'label'           => ucfirst(
                     $employee->get_field_label('Staff Type')
@@ -380,6 +379,7 @@ $object_fields = array(
 
             array(
                 'edit' => ($edit ? 'option' : ''),
+                'render'=>($new and $contractor?false:true),
 
                 'id'              => 'Staff_Currently_Working',
                 'value'           => ($new

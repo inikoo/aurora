@@ -25,7 +25,19 @@
 
 	<div id="product_bd" style="padding:5px 20px 0px 20px;clear:both;border:none" class="product_showcase" product_id="{$public_product->id}" >
 
+
+        {if $public_product->get('Status')=='Discontinued' }
+			<div  class="section description_block alert alert-error alert-title" style="text-align:center">
+				<i class="fa fa-frown-o padding_right_20" aria-hidden="true"></i> {t}Discontinued{/t} <i class="fa fa-frown-o padding_left_20" aria-hidden="true"></i>
+			</div>
+        {/if}
+
+
+
 		<div class="product" style="display: flex; ">
+
+
+
 
 			<div style="float:left;width:400px" >
 
@@ -75,6 +87,8 @@
 					<div style="margin-left:10px;">
 
 
+
+
                         {if $public_product->get('Web State')=='Out of Stock'}
 						<div class="ordering log_in can_not_order {$public_product->get('Out of Stock Class')} ">
 
@@ -90,6 +104,11 @@
 
 
 						<div class="ordering log_in " >
+
+
+
+
+
 
                             {assign 'quantity_ordered' $public_product->get('Ordered Quantity',$order->id) }
 							<input style="border-left:1px solid #ccc" maxlength=6  class='order_input ' id='but_qty{$public_product->id}'   type="text"' size='2'  value='{$quantity_ordered}' ovalue='{$quantity_ordered}'>
@@ -107,13 +126,35 @@
 
 						{/if}
 
+
+
+
+
 					</div>
 
 				</div>
+                    {if $public_product->get('Status')=='Discontinued' }
+						<br>
+						<div  class="section description_block alert alert-error alert-title" style=";margin-top:20px;margin-left:0;text-align:center">
+                            {t}Sorry, but this product is discontinued{/t}
+						</div>
+                    {/if}
 
 				{else}
 				<div class="product_prices log_out " style="clear:both;margin-top:40px">
+
+
+
 					<div >{t}For prices, please login or register{/t}</div>
+
+
+                    {if $public_product->get('Status')=='Discontinued' }
+						<div  class="section description_block alert alert-error alert-title" style="text-align:center">
+                            {t}Sorry, this product is discontinued{/t}
+						</div>
+                    {/if}
+
+
 
 					<div class="ordering log_out " style="width:350px;margin:auto;margin-top:10px;" >
 						<div ><span onClick="location.href='login.php?from={$public_product->webpage->id}'" class="button login_button label_when_log_out" >{t}Login{/t}</span></div>

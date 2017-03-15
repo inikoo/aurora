@@ -587,9 +587,12 @@ function check_for_duplicates($data, $db, $user, $account) {
             break;
         case 'Part':
             switch ($field) {
-
+                case 'Part Barcode':
                 case 'Part Barcode Number':
                 case 'Part Part Barcode Number':
+
+
+
 
                     $invalid_msg              = _('Part barcode already used');
                     $sql                      = sprintf(

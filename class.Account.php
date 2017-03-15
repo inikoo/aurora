@@ -151,8 +151,10 @@ class Account extends DB_Table {
         $this->new_employee = false;
 
         $data['editor'] = $this->editor;
-        $staff          = new Staff('find', $data, 'create');
 
+
+
+        $staff          = new Staff('find', $data, 'create');
         if ($staff->id) {
             $this->new_employee_msg = $staff->msg;
 
@@ -287,6 +289,9 @@ class Account extends DB_Table {
                     $this->new++;
                 } else {
                     $this->error = true;
+
+
+
                     $this->msg   = $barcode->msg;
 
                     return;

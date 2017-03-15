@@ -2887,18 +2887,27 @@ class Store extends DB_Table {
             include_once 'class.Part.php';
             $product_parts = json_decode($data['Product Parts'], true);
 
+
+
+
             if ($product_parts and is_array($product_parts)) {
 
                 foreach ($product_parts as $product_part) {
-                    if (!is_array($product_part) or !isset($product_part['Part SKU']) or !isset($product_part['Ratio']) or !isset($product_part['Note']) or !is_numeric(
-                            $product_part['Part SKU']
-                        ) or !is_string($product_part['Note'])
+                    if (!is_array($product_part)
+                        or !isset($product_part['Part SKU'])
+                        or !isset($product_part['Ratio'])
+                        or !isset($product_part['Note'])
+                        or !is_numeric($product_part['Part SKU'])
+                        or !is_string($product_part['Note'])
                     ) {
 
                         $this->error      = true;
                         $this->msg        = "Can't parse product parts";
                         $this->error_code = 'can_not_parse_product_parts';
                         $this->metadata   = '';
+
+
+
 
                         return;
                     }

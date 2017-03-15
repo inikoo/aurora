@@ -49,6 +49,9 @@ $table_buttons[] = array(
     'title'     => _('New contractor'),
     'reference' => "contractor/new"
 );
+
+
+
 $smarty->assign('table_buttons', $table_buttons);
 
 $smarty->assign('tipo', $tipo);
