@@ -344,7 +344,7 @@ if (!$is_cached) {
 }
 
 
-if ($page->get('Webpage Version') == 2) {
+if ($page->get('Webpage Version') == 2 and false) {
 
 
     $footer_data = array(

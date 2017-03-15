@@ -274,7 +274,7 @@ class Product extends Asset {
 
             // print "\n\n$sql\n\n";
 
-            $this->msg = 'Error inserting Product record';
+            $this->msg = 'Error inserting Product record $sql';
         }
 
 
