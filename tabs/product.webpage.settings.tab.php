@@ -25,11 +25,20 @@ $webpage=$product->get_webpage();
 
 if(!$webpage->id){
 
-    $html='<div style="padding:40px">'._("This category don't have webpage").'</div>';
+    $html='<div style="padding:40px">'._("This product don't have webpage").'</div>';
 
     return;
 
 }
+
+if($product->get('Product Web Configuration')=='Offline'){
+
+    $html='<div style="padding:40px">'._("This product is forced to be offline").'</div>';
+
+    return;
+
+}
+
 
 
 $object_fields = get_object_fields($product, $db, $user, $smarty, array('type' => 'webpage_settings'));
