@@ -922,15 +922,7 @@ class SupplierPart extends DB_Table {
                     $value = 0;
                 }
 
-                if (!preg_match('/\%$/', $value)) {
-                    $this->error = true;
-                    $this->msg   = sprintf(
-                        _('Invalid percentage (%s)'), $value
-                    );
-
-                    return;
-                }
-
+               
 
                 if (preg_match('/\%$/', $value)) {
                     $value = preg_replace('/\%^/', '', $value)/ 100;
