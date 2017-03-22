@@ -66,7 +66,7 @@ $footer_data = array(
                         ),
                         array(
                             'url'   => '#',
-                            'label' =>_('Awesome Products')
+                            'label' => _('Awesome Products')
                         ),
                         array(
                             'url'   => '#',
@@ -114,8 +114,23 @@ $footer_data = array(
             'type'    => 'copyright',
             'columns' => array(
                 array(
-                    'type' => 'text',
-                    'text' => 'Copyright © 2014 Aaika.com. All rights reserved.  <a href="#">Terms of Use</a> | <a href="#">Privacy Policy</a>'
+                    'type'  => 'copyright_bundle',
+                    'owner' => 'Aurora',
+
+
+                    'links' => array(
+                        array(
+                            'label' => _('Terms of Use'),
+                            'url'   => '#'
+                        ),
+                        array(
+                            'label' => _('Privacy Policy'),
+                            'url'   => '#'
+                        )
+
+
+                    )
+
 
                 ),
                 array(

@@ -86,7 +86,7 @@
 
     <!-- just remove the below comments witch bg patterns you want to use -->
     <!--<link rel="stylesheet" href="theme_1/css/bg-patterns/pattern-default.css" />-->
-    <!--<link rel="stylesheet" href="theme_1/css/bg-patterns/pattern-one.css" />-->
+  <link rel="stylesheet" href="theme_1/css/bg-patterns/pattern-eight.css" />
     <!--<link rel="stylesheet" href="theme_1/css/bg-patterns/pattern-two.css" />-->
     <!--<link rel="stylesheet" href="theme_1/css/bg-patterns/pattern-three.css" />-->
     <!--<link rel="stylesheet" href="theme_1/css/bg-patterns/pattern-four.css" />-->
@@ -102,8 +102,8 @@
 
     <!-- mega menu -->
     <link href="theme_1/js/mainmenu/bootstrap.min.css" rel="stylesheet">
-    <link href="theme_1/js/mainmenu/menu.css" rel="stylesheet">
 
+    <link href="theme_1/js/mainmenu/menu-5.css" rel="stylesheet">
 
     <script type="text/javascript" src="js/jquery-2.2.1.js"></script>
     <script type="text/javascript" src="js/fotorama.js"></script>
@@ -117,276 +117,328 @@
 
       <div class="site_wrapper">
 
-          <header class="header innerpages">
-
-              <div class="container">
-
-                  <!-- Logo -->
-                <div class="logo"><a href="index.html" id="logo"></a></div>
-
-                <!-- Navigation Menu -->
-                <nav class="menu_main">
-
-                    <div class="navbar yamm navbar-default">
-
-                        <div class="container">
-                            <div class="navbar-header">
-                                <div class="navbar-toggle .navbar-collapse .pull-right " data-toggle="collapse" data-target="#navbar-collapse-1"  > <span>Menu</span>
-                                    <button type="button" > <i class="fa fa-bars"></i></button>
-                                </div>
-                            </div>
-
-                            <div id="navbar-collapse-1" class="navbar-collapse collapse pull-right">
-
-                                <ul class="nav navbar-nav">
-
-                                    <li class="dropdown yamm-fw"><a href="index.html" data-toggle="dropdown" class="dropdown-toggle">Home</a>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <div class="yamm-content">
-                                                    <div class="row">
-
-                                                        <ul class="col-sm-6 col-md-4 list-unstyled two">
-                                                            <li>
-                                                                <p>Header Styles</p>
-                                                            </li>
-                                                            <li><a href="index1.html"><i class="fa fa-caret-right"></i> Header Style 1</a></li>
-                                                            <li><a href="index2.html"><i class="fa fa-caret-right"></i> Header Style 2</a></li>
-                                                            <li><a href="index3.html"><i class="fa fa-caret-right"></i> Header Style 3</a></li>
-                                                            <li><a href="index4.html"><i class="fa fa-caret-right"></i> Header Style 4</a></li>
-                                                            <li><a href="index5.html"><i class="fa fa-caret-right"></i> Header Style 5</a></li>
-                                                            <li><a href="index6.html"><i class="fa fa-caret-right"></i> Header Style 6</a></li>
-                                                            <li><a href="index.html"><i class="fa fa-caret-right"></i> Header Style 7</a></li>
-                                                        </ul>
-
-                                                        <ul class="col-sm-6 col-md-4 list-unstyled two">
-                                                            <li>
-                                                                <p>Home Page Styles</p>
-                                                            </li>
-                                                            <li><a href="index-layout1.html"><i class="fa fa-caret-right"></i> Home Layout 1</a></li>
-                                                            <li><a href="index-layout2.html"><i class="fa fa-caret-right"></i> Home Layout 2</a></li>
-                                                            <li><a href="index-layout3.html"><i class="fa fa-caret-right"></i> Home Layout 3</a></li>
-                                                            <li><a href="index-layout4.html"><i class="fa fa-caret-right"></i> Home Layout 4</a></li>
-                                                            <li><a href="index-layout5.html"><i class="fa fa-caret-right"></i> Home Layout 5</a></li>
-                                                            <li><a href="index-layout6.html"><i class="fa fa-caret-right"></i> Home Layout 6</a></li>
-                                                            <li><a href="index-layout7.html"><i class="fa fa-caret-right"></i> Home Layout 7</a></li>
-                                                        </ul>
-
-                                                        <ul class="col-sm-6 col-md-4 list-unstyled two">
-                                                            <li>
-                                                                <p>&nbsp;</p>
-                                                            </li>
-                                                            <li><a href="index-layout8.html"><i class="fa fa-caret-right"></i> Home Layout 8</a></li>
-                                                            <li><a href="index-layout9.html"><i class="fa fa-caret-right"></i> Home Layout 9</a></li>
-                                                            <li><a href="index-layout10.html"><i class="fa fa-caret-right"></i> Home Layout 10</a></li>
-                                                            <li><a href="index-layout11.html"><i class="fa fa-caret-right"></i> Home Layout 11</a></li>
-                                                            <li><a href="index-layout12.html"><i class="fa fa-caret-right"></i> Home Layout 12</a></li>
-                                                            <li><a href="index-layout13.html"><i class="fa fa-caret-right"></i> Home Layout 13</a></li>
-                                                            <li><a href="index.html"><i class="fa fa-caret-right"></i> Home Layout 14</a></li>
-                                                        </ul>
 
 
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </li>
+          <header id="header">
 
-                                    <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle active">Pages</a>
-                                        <ul class="dropdown-menu multilevel" role="menu">
-                                            <li><a href="about.html">About Style 1</a></li>
-                                            <li><a href="about2.html">About Style 2</a></li>
-                                            <li><a href="about3.html">About Style 3</a></li>
-                                            <li><a href="about4.html">About Style 4</a></li>
-                                            <li><a href="about5.html">About Style 5</a></li>
-                                            <li><a href="services.html" class="active">Services Style 1</a></li>
-                                            <li><a href="services2.html">Services Style 2</a></li>
-                                            <li><a href="services3.html">Services Style 3</a></li>
-                                            <li><a href="services4.html">Services Style 4</a></li>
-                                            <li><a href="services5.html">Services Style 5</a></li>
-                                            <li><a href="team.html">Our Team Style 1</a></li>
-                                            <li><a href="team2.html">Our Team Style 2</a></li>
-                                            <li><a href="team3.html">Our Team Style 3</a></li>
-                                            <li class="dropdown-submenu mul"> <a tabindex="-1" href="#">Multi Level Submenu +</a>
-                                                <ul class="dropdown-menu">
-                                                    <li><a href="#">Menu Item 1</a></li>
-                                                    <li><a href="#">Menu Item 2</a></li>
-                                                    <li><a href="#">Menu Item 3</a></li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </li>
 
-                                    <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Sliders</a>
-                                        <ul class="dropdown-menu multilevel" role="menu">
-                                            <li><a href="index1.html">Slider Style 1</a></li>
-                                            <li><a href="index5.html">Slider Style 2</a></li>
-                                            <li><a href="index4.html">Slider Style 3</a></li>
-                                            <li><a href="index-layout14.html">Slider Style 4</a></li>
-                                            <li><a href="index10.html">Slider Style 5</a></li>
-                                            <li><a href="index11.html">Slider Style 6</a></li>
-                                            <li><a href="index8.html">Slider Style 7</a></li>
-                                            <li><a href="index9.html">Slider Style 8</a></li>
-                                            <li><a href="index7.html">Slider Style 9</a></li>
-                                            <li><a href="index.html">Slider Style 10</a></li>
-                                        </ul>
-                                    </li>
+          <!-- Top header bar -->
+          <div id="topHeader">
 
-                                    <li class="dropdown yamm-fw"> <a href="#" data-toggle="dropdown" class="dropdown-toggle">Features</a>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <div class="yamm-content">
-                                                    <div class="row">
+              <div class="wrapper">
 
-                                                        <ul class="col-sm-6 col-md-4 list-unstyled two">
-                                                            <li>
-                                                                <p>Useful Pages</p>
-                                                            </li>
-                                                            <li><a href="left-sidebar.html"><i class="fa fa-angle-right"></i>Left Sidebar</a></li>
-                                                            <li><a href="right-sidebar.html"><i class="fa fa-angle-right"></i>Right Sidebar</a></li>
-                                                            <li><a href="left-nav.html"><i class="fa fa-angle-right"></i>Left Navigation</a></li>
-                                                            <li><a href="right-nav.html"><i class="fa fa-angle-right"></i>Right Navigation</a></li>
-                                                            <li><a href="login.html"><i class="fa fa-angle-right"></i>Login Form</a></li>
-                                                            <li><a href="register.html"><i class="fa fa-angle-right"></i>Registration Form</a></li>
-                                                            <li><a href="404.html"><i class="fa fa-angle-right"></i>404 Error Page</a></li>
-                                                            <li><a href="faq.html"><i class="fa fa-angle-right"></i>FAQs Page</a></li>
-                                                            <li><a href="video-bg.html"><i class="fa fa-angle-right"></i>Video Backgrounds</a></li>
-                                                        </ul>
+                  <div class="top_nav">
+                      <div class="container">
 
-                                                        <ul class="col-sm-6 col-md-4 list-unstyled two">
-                                                            <li>
-                                                                <p>Diffrent Websites</p>
-                                                            </li>
-                                                            <li><a href="coming-soon.html" target="_blank"><i class="fa fa-angle-right"></i>Coming Soon</a></li>
-                                                            <li><a href="history.html"><i class="fa fa-angle-right"></i>History Timeline</a></li>
-                                                            <li><a href="index-layout14.html"><i class="fa fa-angle-right"></i>Video BG Slider</a></li>
-                                                            <li><a href="template17.html"><i class="fa fa-angle-right"></i>Header Styles</a></li>
-                                                            <li><a href="template18.html"><i class="fa fa-angle-right"></i>Footer Styles</a></li>
-                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Masonry Gallerys</a> </li>
-                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Parallax Backgrounds</a> </li>
-                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Background Videos</a> </li>
-                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Create your Own</a> </li>
-                                                        </ul>
+                          <div class="left">
 
-                                                        <ul class="col-sm-6 col-md-4 list-unstyled two">
-                                                            <li>
-                                                                <p>More Features</p>
-                                                            </li>
-                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Mega Menu</a></li>
-                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Diffrent Websites</a></li>
-                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Cross Browser Check</a></li>
-                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Premium Sliders</a></li>
-                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Diffrent Slide Shows</a></li>
-                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Video BG Effects</a></li>
-                                                            <li><a href="#"><i class="fa fa-angle-right"></i>100+ Feature Sections</a></li>
-                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Use for any Website</a></li>
-                                                            <li><a href="#"><i class="fa fa-angle-right"></i>Free Updates</a></li>
-                                                        </ul>
+                              <!-- Logo -->
+                              <a href="index.html" id="logo2"></a>
 
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </li>
+                          </div><!-- end left -->
 
-                                    <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Portfolio</a>
-                                        <ul class="dropdown-menu" role="menu">
-                                            <li> <a href="portfolio-1.html">Single Item</a> </li>
-                                            <li> <a href="portfolio-5.html">Portfolio Masonry</a> </li>
-                                            <li> <a href="portfolio-4.html">Portfolio Columns 4</a> </li>
-                                            <li> <a href="portfolio-3.html">Portfolio Columns 3</a> </li>
-                                            <li> <a href="portfolio-2.html">Portfolio Columns 2</a> </li>
-                                            <li> <a href="portfolio-6.html">Portfolio + Sidebar</a> </li>
-                                            <li> <a href="portfolio-7.html">Portfolio Full Width</a> </li>
-                                            <li> <a href="portfolio-8.html">Image Gallery</a> </li>
-                                        </ul>
-                                    </li>
+                          <div class="right">
 
-                                    <li class="dropdown"> <a href="#" data-toggle="dropdown" class="dropdown-toggle">Blog </a>
-                                        <ul class="dropdown-menu multilevel" role="menu">
-                                            <li> <a href="blog-4.html">With Masonry</a> </li>
-                                            <li> <a href="blog.html">With Large Image</a> </li>
-                                            <li> <a href="blog-2.html">With Medium Image</a> </li>
-                                            <li> <a href="blog-3.html">With Small Image</a> </li>
-                                            <li> <a href="blog-post.html">Single Post</a> </li>
-                                        </ul>
-                                    </li>
+                              <a href="mailto:info@yourwebsite.com"><i class="fa fa-envelope"></i>&nbsp; info@yourwebsite.com</a>
+                              <i class="fa fa-phone-square"></i>&nbsp; +88 123 456 7890
 
-                                    <li class="dropdown yamm-fw"> <a href="#" data-toggle="dropdown" class="dropdown-toggle">Shortcodes</a>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <div class="yamm-content">
-                                                    <div class="row">
+                              <ul class="topsocial two">
+                                  <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                                  <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                                  <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+                                  <li><a href="#"><i class="fa fa-youtube"></i></a></li>
+                                  <li><a href="#"><i class="fa fa-rss"></i></a></li>
+                              </ul>
 
-                                                        <ul class="col-sm-6 col-md-4 list-unstyled two">
-                                                            <li><a href="template1.html"><i class="fa fa-plus-square"></i> Accordion &amp; Toggle</a></li>
-                                                            <li><a href="template2.html"><i class="fa fa-leaf"></i> Title Styles</a></li>
-                                                            <li><a href="template3.html"><i class="fa fa-bars"></i> List of Dividers</a></li>
-                                                            <li><a href="template4.html"><i class="fa fa-exclamation-triangle"></i> Boxes Alert</a></li>
-                                                            <li><a href="template5.html"><i class="fa fa-hand-o-up"></i> List of Buttons</a></li>
-                                                            <li><a href="template6.html"><i class="fa fa-cog"></i> Carousel Sliders</a></li>
-                                                            <li><a href="template7.html"><i class="fa fa-file-text"></i> Page Columns</a></li>
-                                                            <li><a href="template8.html"><i class="fa fa-rocket"></i> Animated Counters</a></li>
-                                                        </ul>
+                          </div><!-- end right -->
 
-                                                        <ul class="col-sm-6 col-md-4 list-unstyled two">
-                                                            <li><a href="template9.html"><i class="fa fa-pie-chart"></i> Pie Charts</a></li>
-                                                            <li><a href="template10.html"><i class="fa fa-flag"></i> Font Icons</a></li>
-                                                            <li><a href="template11.html"><i class="fa fa-umbrella"></i> Flip Boxes</a></li>
-                                                            <li><a href="template12.html"><i class="fa fa-picture-o"></i> Image Frames</a></li>
-                                                            <li><a href="template13.html"><i class="fa fa-table"></i> Pricing Tables</a></li>
-                                                            <li><a href="template14.html"><i class="fa fa-line-chart"></i> Progress Bars</a></li>
-                                                            <li><a href="template15.html"><i class="fa fa-toggle-on"></i> List of Tabs</a></li>
-                                                            <li><a href="template16.html"><i class="fa fa-paper-plane"></i> Popover &amp; Tooltip</a></li>
-                                                        </ul>
+                      </div>
+                  </div><!-- end top links -->
 
-                                                        <ul class="col-sm-6 col-md-4 list-unstyled two">
-                                                            <li>
-                                                                <p>About Website</p>
-                                                            </li>
-                                                            <li class="dart">
-                                                                <img src="http://placehold.it/230x80" alt="" class="rimg marb1" />
-                                                                There are many variations passages available the majority have alteration in some form, by injected humour on randomised words if you are going to use a passage of lorem anything.
-                                                            </li>
-                                                        </ul>
+              </div>
 
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </li>
+          </div><!-- end top navigations -->
 
-                                    <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Contact</a>
-                                        <ul class="dropdown-menu two" role="menu">
-                                            <li> <a href="contact.html">Contact Style 1</a> </li>
-                                            <li> <a href="contact2.html">Contact Style 2</a> </li>
-                                            <li> <a href="contact3.html">Contact Style 3</a> </li>
-                                        </ul>
-                                    </li>
 
-                                </ul>
+          <div id="trueHeader">
 
-                            </div>
-                        </div>
-                    </div>
+              <div class="wrapper">
 
-                </nav><!-- end Navigation Menu -->
+                  <!-- Navigation Menu -->
+                  <div class="container">
 
-                <div class="menu_right"><a href="#" class="buynow">Buy Now</a></div>
+                      <nav class="menu_main2">
 
-            </div>
+                          <div class="navbar yamm navbar-default">
 
-        </header>
+                              <div class="navbar-header">
+                                  <div class="navbar-toggle .navbar-collapse .pull-right " data-toggle="collapse" data-target="#navbar-collapse-1"  > <span>Menu</span>
+                                      <button type="button" > <i class="fa fa-bars"></i></button>
+                                  </div>
+                              </div>
 
-        <div class="clearfix margin_top10"></div>
+                              <div id="navbar-collapse-1" class="navbar-collapse collapse">
 
-        <div class="page_title2">
-            <div class="container">
+                                  <ul class="nav navbar-nav three">
 
-                <div class="title"><h1>Services</h1></div>
+                                      <li class="dropdown yamm-fw"><a href="index.html" data-toggle="dropdown" class="dropdown-toggle active">Home</a>
+                                          <ul class="dropdown-menu">
+                                              <li>
+                                                  <div class="yamm-content">
+                                                      <div class="row">
 
-            </div>
-        </div><!-- end page title -->
+                                                          <ul class="col-sm-6 col-md-4 list-unstyled two">
+                                                              <li>
+                                                                  <p>Header Styles</p>
+                                                              </li>
+                                                              <li><a href="index1.html"><i class="fa fa-caret-right"></i> Header Style 1</a></li>
+                                                              <li><a href="index2.html"><i class="fa fa-caret-right"></i> Header Style 2</a></li>
+                                                              <li><a href="index3.html"><i class="fa fa-caret-right"></i> Header Style 3</a></li>
+                                                              <li><a href="index4.html"><i class="fa fa-caret-right"></i> Header Style 4</a></li>
+                                                              <li><a href="index5.html"><i class="fa fa-caret-right"></i> Header Style 5</a></li>
+                                                              <li><a href="index6.html"><i class="fa fa-caret-right"></i> Header Style 6</a></li>
+                                                              <li><a href="index.html"><i class="fa fa-caret-right"></i> Header Style 7</a></li>
+                                                              <li><a href="index10.html"><i class="fa fa-caret-right"></i> Header Style 8</a></li>
+                                                              <li><a href="index11.html"><i class="fa fa-caret-right"></i> Header Style 9</a><b class="mitemnew">New</b></li>
+                                                              <li><a href="http://gsrthemes.com/aaika/onepage/index.html"><i class="fa fa-caret-right"></i> One Page Theme</a><b class="mitemnew">New</b></li>
+                                                          </ul>
+
+                                                          <ul class="col-sm-6 col-md-4 list-unstyled two">
+                                                              <li>
+                                                                  <p>Home Page Styles</p>
+                                                              </li>
+                                                              <li><a href="index-layout1.html"><i class="fa fa-caret-right"></i> Home Layout 1</a></li>
+                                                              <li><a href="index-layout2.html"><i class="fa fa-caret-right"></i> Home Layout 2</a></li>
+                                                              <li><a href="index-layout3.html"><i class="fa fa-caret-right"></i> Home Layout 3</a></li>
+                                                              <li><a href="index-layout4.html"><i class="fa fa-caret-right"></i> Home Layout 4</a></li>
+                                                              <li><a href="index-layout5.html"><i class="fa fa-caret-right"></i> Home Layout 5</a></li>
+                                                              <li><a href="index-layout6.html"><i class="fa fa-caret-right"></i> Home Layout 6</a></li>
+                                                              <li><a href="index-layout7.html"><i class="fa fa-caret-right"></i> Home Layout 7</a></li>
+                                                              <li><a href="index-layout8.html"><i class="fa fa-caret-right"></i> Home Layout 8</a></li>
+                                                              <li><a href="index-layout9.html"><i class="fa fa-caret-right"></i> Home Layout 9</a></li>
+                                                              <li><a href="index-layout10.html"><i class="fa fa-caret-right"></i> Home Layout 10</a></li>
+                                                          </ul>
+
+                                                          <ul class="col-sm-6 col-md-4 list-unstyled two">
+                                                              <li>
+                                                                  <p>&nbsp;</p>
+                                                              </li>
+                                                              <li><a href="index-layout11.html"><i class="fa fa-caret-right"></i> Home Layout 11</a></li>
+                                                              <li><a href="index-layout12.html"><i class="fa fa-caret-right"></i> Home Layout 12</a></li>
+                                                              <li><a href="index-layout13.html"><i class="fa fa-caret-right"></i> Home Layout 13</a></li>
+                                                              <li><a href="index.html"><i class="fa fa-caret-right"></i> Home Layout 14</a></li>
+                                                              <li><a href="index10.html"><i class="fa fa-caret-right"></i> Text Slider</a><b class="mitemnew">New</b></li>
+                                                              <li><a href="index9.html"><i class="fa fa-caret-right"></i> Header with Portfolio</a><b class="mitemnew">New</b></li>
+                                                              <li><a href="index7.html"><i class="fa fa-caret-right"></i> Slider with Form</a><b class="mitemnew">New</b></li>
+                                                              <li><a href="index8.html"><i class="fa fa-caret-right"></i> Form in Header</a><b class="mitemnew">New</b></li>
+
+                                                          </ul>
+
+
+                                                      </div>
+                                                  </div>
+                                              </li>
+                                          </ul>
+                                      </li>
+
+                                      <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Pages</a>
+                                          <ul class="dropdown-menu multilevel" role="menu">
+                                              <li><a href="about.html">About Style 1</a></li>
+                                              <li><a href="about2.html">About Style 2</a></li>
+                                              <li><a href="about3.html">About Style 3</a></li>
+                                              <li><a href="about4.html">About Style 4</a></li>
+                                              <li><a href="about5.html">About Style 5</a></li>
+                                              <li><a href="services.html">Services Style 1</a></li>
+                                              <li><a href="services2.html">Services Style 2</a></li>
+                                              <li><a href="services3.html">Services Style 3</a></li>
+                                              <li><a href="services4.html">Services Style 4</a></li>
+                                              <li><a href="services5.html">Services Style 5</a></li>
+                                              <li><a href="team.html">Our Team Style 1</a></li>
+                                              <li><a href="team2.html">Our Team Style 2</a></li>
+                                              <li><a href="team3.html">Our Team Style 3</a></li>
+                                              <li class="dropdown-submenu mul"> <a tabindex="-1" href="#">Multi Level Submenu +</a>
+                                                  <ul class="dropdown-menu">
+                                                      <li><a href="#">Menu Item 1</a></li>
+                                                      <li><a href="#">Menu Item 2</a></li>
+                                                      <li><a href="#">Menu Item 3</a></li>
+                                                  </ul>
+                                              </li>
+                                          </ul>
+                                      </li>
+
+                                      <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Sliders</a>
+                                          <ul class="dropdown-menu multilevel" role="menu">
+                                              <li><a href="index1.html">Slider Style 1</a></li>
+                                              <li><a href="index5.html">Slider Style 2</a></li>
+                                              <li><a href="index4.html">Slider Style 3</a></li>
+                                              <li><a href="index-layout14.html">Slider Style 4</a></li>
+                                              <li><a href="index10.html">Slider Style 5</a></li>
+                                              <li><a href="index11.html">Slider Style 6</a></li>
+                                              <li><a href="index8.html">Slider Style 7</a></li>
+                                              <li><a href="index9.html">Slider Style 8</a></li>
+                                              <li><a href="index7.html">Slider Style 9</a></li>
+                                              <li><a href="index.html">Slider Style 10</a></li>
+                                          </ul>
+                                      </li>
+
+                                      <li class="dropdown yamm-fw"> <a href="#" data-toggle="dropdown" class="dropdown-toggle">Features</a>
+                                          <ul class="dropdown-menu">
+                                              <li>
+                                                  <div class="yamm-content">
+                                                      <div class="row">
+
+                                                          <ul class="col-sm-6 col-md-4 list-unstyled two">
+                                                              <li>
+                                                                  <p>Useful Pages</p>
+                                                              </li>
+                                                              <li><a href="left-sidebar.html"><i class="fa fa-angle-right"></i>Left Sidebar</a></li>
+                                                              <li><a href="right-sidebar.html"><i class="fa fa-angle-right"></i>Right Sidebar</a></li>
+                                                              <li><a href="left-nav.html"><i class="fa fa-angle-right"></i>Left Navigation</a></li>
+                                                              <li><a href="right-nav.html"><i class="fa fa-angle-right"></i>Right Navigation</a></li>
+                                                              <li><a href="login.html"><i class="fa fa-angle-right"></i>Login Form</a></li>
+                                                              <li><a href="register.html"><i class="fa fa-angle-right"></i>Registration Form</a></li>
+                                                              <li><a href="404.html"><i class="fa fa-angle-right"></i>404 Error Page</a></li>
+                                                              <li><a href="faq.html"><i class="fa fa-angle-right"></i>FAQs Page</a></li>
+                                                              <li><a href="video-bg.html"><i class="fa fa-angle-right"></i>Video Backgrounds</a></li>
+                                                          </ul>
+
+                                                          <ul class="col-sm-6 col-md-4 list-unstyled two">
+                                                              <li>
+                                                                  <p>Diffrent Websites</p>
+                                                              </li>
+                                                              <li><a href="coming-soon.html" target="_blank"><i class="fa fa-angle-right"></i>Coming Soon</a></li>
+                                                              <li><a href="history.html"><i class="fa fa-angle-right"></i>History Timeline</a></li>
+                                                              <li><a href="index-layout14.html"><i class="fa fa-angle-right"></i>Video BG Slider</a></li>
+                                                              <li><a href="template17.html"><i class="fa fa-angle-right"></i>Header Styles</a></li>
+                                                              <li><a href="template18.html"><i class="fa fa-angle-right"></i>Footer Styles</a></li>
+                                                              <li><a href="#"><i class="fa fa-angle-right"></i>Masonry Gallerys</a> </li>
+                                                              <li><a href="#"><i class="fa fa-angle-right"></i>Parallax Backgrounds</a> </li>
+                                                              <li><a href="#"><i class="fa fa-angle-right"></i>Background Videos</a> </li>
+                                                              <li><a href="#"><i class="fa fa-angle-right"></i>Create your Own</a> </li>
+                                                          </ul>
+
+                                                          <ul class="col-sm-6 col-md-4 list-unstyled two">
+                                                              <li>
+                                                                  <p>More Features</p>
+                                                              </li>
+                                                              <li><a href="#"><i class="fa fa-angle-right"></i>Mega Menu</a></li>
+                                                              <li><a href="#"><i class="fa fa-angle-right"></i>Diffrent Websites</a></li>
+                                                              <li><a href="#"><i class="fa fa-angle-right"></i>Cross Browser Check</a></li>
+                                                              <li><a href="#"><i class="fa fa-angle-right"></i>Premium Sliders</a></li>
+                                                              <li><a href="#"><i class="fa fa-angle-right"></i>Diffrent Slide Shows</a></li>
+                                                              <li><a href="#"><i class="fa fa-angle-right"></i>Video BG Effects</a></li>
+                                                              <li><a href="#"><i class="fa fa-angle-right"></i>100+ Feature Sections</a></li>
+                                                              <li><a href="#"><i class="fa fa-angle-right"></i>Use for any Website</a></li>
+                                                              <li><a href="#"><i class="fa fa-angle-right"></i>Free Updates</a></li>
+                                                          </ul>
+
+                                                      </div>
+                                                  </div>
+                                              </li>
+                                          </ul>
+                                      </li>
+
+                                      <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Portfolio</a>
+                                          <ul class="dropdown-menu" role="menu">
+                                              <li> <a href="portfolio-1.html">Single Item</a> </li>
+                                              <li> <a href="portfolio-5.html">Portfolio Masonry</a> </li>
+                                              <li> <a href="portfolio-4.html">Portfolio Columns 4</a> </li>
+                                              <li> <a href="portfolio-3.html">Portfolio Columns 3</a> </li>
+                                              <li> <a href="portfolio-2.html">Portfolio Columns 2</a> </li>
+                                              <li> <a href="portfolio-6.html">Portfolio + Sidebar</a> </li>
+                                              <li> <a href="portfolio-7.html">Portfolio Full Width</a> </li>
+                                              <li> <a href="portfolio-8.html">Image Gallery</a> </li>
+                                          </ul>
+                                      </li>
+
+                                      <li class="dropdown"> <a href="#" data-toggle="dropdown" class="dropdown-toggle">Blog </a>
+                                          <ul class="dropdown-menu multilevel" role="menu">
+                                              <li> <a href="blog-4.html">With Masonry</a> </li>
+                                              <li> <a href="blog.html">With Large Image</a> </li>
+                                              <li> <a href="blog-2.html">With Medium Image</a> </li>
+                                              <li> <a href="blog-3.html">With Small Image</a> </li>
+                                              <li> <a href="blog-post.html">Single Post</a> </li>
+                                          </ul>
+                                      </li>
+
+                                      <li class="dropdown yamm-fw"> <a href="#" data-toggle="dropdown" class="dropdown-toggle">Shortcodes</a>
+                                          <ul class="dropdown-menu">
+                                              <li>
+                                                  <div class="yamm-content">
+                                                      <div class="row">
+
+                                                          <ul class="col-sm-6 col-md-4 list-unstyled two">
+                                                              <li><a href="template1.html"><i class="fa fa-plus-square"></i> Accordion &amp; Toggle</a></li>
+                                                              <li><a href="template2.html"><i class="fa fa-leaf"></i> Title Styles</a></li>
+                                                              <li><a href="template3.html"><i class="fa fa-bars"></i> List of Dividers</a></li>
+                                                              <li><a href="template4.html"><i class="fa fa-exclamation-triangle"></i> Boxes Alert</a></li>
+                                                              <li><a href="template5.html"><i class="fa fa-hand-o-up"></i> List of Buttons</a></li>
+                                                              <li><a href="template6.html"><i class="fa fa-cog"></i> Carousel Sliders</a></li>
+                                                              <li><a href="template7.html"><i class="fa fa-file-text"></i> Page Columns</a></li>
+                                                              <li><a href="template8.html"><i class="fa fa-rocket"></i> Animated Counters</a></li>
+                                                              <li><a href="template17.html"><i class="fa fa-question"></i> Faqs Page</a></li>
+                                                          </ul>
+
+                                                          <ul class="col-sm-6 col-md-4 list-unstyled two">
+                                                              <li><a href="template9.html"><i class="fa fa-pie-chart"></i> Pie Charts</a></li>
+                                                              <li><a href="template10.html"><i class="fa fa-flag"></i> Font Icons</a></li>
+                                                              <li><a href="template11.html"><i class="fa fa-umbrella"></i> Flip Boxes</a></li>
+                                                              <li><a href="template12.html"><i class="fa fa-picture-o"></i> Image Frames</a></li>
+                                                              <li><a href="template13.html"><i class="fa fa-table"></i> Pricing Tables</a></li>
+                                                              <li><a href="template14.html"><i class="fa fa-line-chart"></i> Progress Bars</a></li>
+                                                              <li><a href="template15.html"><i class="fa fa-toggle-on"></i> List of Tabs</a></li>
+                                                              <li><a href="template16.html"><i class="fa fa-paper-plane"></i> Popover &amp; Tooltip</a></li>
+                                                              <li><a href="template18.html"><i class="fa fa-play-circle"></i> Video Backgrounds</a></li>
+                                                          </ul>
+
+                                                          <ul class="col-sm-6 col-md-4 list-unstyled two">
+                                                              <li>
+                                                                  <p>About Website</p>
+                                                              </li>
+                                                              <li class="dart">
+                                                                  <img src="http://placehold.it/230x80" alt="" class="rimg marb1" />
+                                                                  There are many variations passages available the majority have alteration in some form, by injected humour on randomised words if you are going to use a passage of lorem anything.
+                                                              </li>
+                                                          </ul>
+
+                                                      </div>
+                                                  </div>
+                                              </li>
+                                          </ul>
+                                      </li>
+
+                                      <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Contact</a>
+                                          <ul class="dropdown-menu" role="menu">
+                                              <li> <a href="contact.html">Contact Style 1</a> </li>
+                                              <li> <a href="contact2.html">Contact Style 2</a> </li>
+                                              <li> <a href="contact3.html">Contact Style 3</a> </li>
+                                          </ul>
+                                      </li>
+
+                                  </ul>
+
+                              </div>
+
+                          </div>
+
+                      </nav><!-- end Navigation Menu -->
+
+                      <div class="menu_right2">
+                          <div class="search_hwrap two">
+                              <form action="index.html" autocomplete="on">
+                                  <input id="search" name="search" type="text" placeholder="Search the site..."><input id="search_submit" value="Rechercher" type="submit">
+                              </form>
+                          </div>
+                      </div><!-- end search bar -->
+
+                  </div>
+
+              </div>
+
+          </div>
+
+          </header>
+
 
 
 
@@ -436,13 +488,15 @@
 <script  src="theme_1/js/scrolltotop/totop.js" type="text/javascript"></script>
 
 <!-- sticky menu -->
-<script type="text/javascript"  src="theme_1/js/mainmenu/sticky-main.js"></script>
-<script type="text/javascript"  src="theme_1/js/mainmenu/modernizr.custom.75180.js"></script>
+
+  <script type="text/javascript" src="theme_1/js/mainmenu/sticky.js"></script>
+  <script type="text/javascript" src="js/mainmenu/modernizr.custom.75180.js"></script>
 
 
 
 
-</body>
+
+  </body>
 </html>
 
 

@@ -573,6 +573,54 @@ function client_validation(type, required, value, field) {
             }
             break
 
+        case 'percentage':
+
+
+            console.log('caca')
+
+            var comma = ','
+            var dot = '.'
+
+            var re = new RegExp(comma, "g");
+            value = value.replace(re, "")
+
+
+            if (value == dot) {
+                return {
+                    class: 'potentially_valid',
+                    type: 'invalid'
+                }
+            }
+
+
+            var regex = /^\d*\.?\d{0,6}\%$/
+            if (regex.test(value)) {
+
+                return {
+                    class: 'valid',
+                    type: 'valid'
+                }
+            }
+
+            var regex = /^\d*\.?\d{0,6}$/
+            if (!regex.test(value)) {
+                return {
+                    class: 'invalid',
+                    type: 'invalid_amount'
+                }
+            }else{
+                return {
+                    class: 'potentially_valid',
+                    type: 'invalid'
+                }
+            }
+
+
+
+
+
+            break
+
 
         case 'amount_margin':
 

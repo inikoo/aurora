@@ -128,7 +128,7 @@
 
            
 
-        var request = 'ar_basket.php?tipo=edit_order_transaction&pid=' + $(this).closest('.product_showcase').attr('product_id') + '&order_key=' + order_key+ '&qty=' + order_qty+'&page_key='+{$webpage->id}+'&page_section_type=Family'
+        var request = 'ar_basket.php?tipo=edit_order_transaction&pid=' + $(this).closest('.product_container').attr('product_id') + '&order_key=' + order_key+ '&qty=' + order_qty+'&page_key='+{$webpage->id}+'&page_section_type=Family'
 console.log(request)
         $.getJSON(request, function (data) {
         

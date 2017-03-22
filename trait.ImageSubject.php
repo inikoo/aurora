@@ -568,7 +568,7 @@ trait ImageSubject {
             print "$sql";
             exit;
         }
-
+        //1474527 ,1576664
 
         return $images_slideshow;
     }
@@ -578,6 +578,11 @@ trait ImageSubject {
         $sql = sprintf(
             'SELECT `Image Subject Key`,`Image Subject Image Key` FROM `Image Subject Bridge` WHERE `Image Subject Key`=%d ', $image_bridge_key
         );
+
+
+
+
+
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 

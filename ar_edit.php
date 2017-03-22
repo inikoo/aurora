@@ -1528,15 +1528,17 @@ function delete_image($account, $db, $user, $editor, $data, $smarty) {
     include_once 'class.Image.php';
 
 
+
     $sql = sprintf(
         'SELECT `Image Subject Object`,`Image Subject Object Key`,`Image Subject Image Key` FROM `Image Subject Bridge` WHERE `Image Subject Key`=%d ', $data['image_bridge_key']
     );
+
+
+
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
 
-            $object         = get_object(
-                $row['Image Subject Object'], $row['Image Subject Object Key']
-            );
+            $object         = get_object($row['Image Subject Object'], $row['Image Subject Object Key']);
             $object->editor = $editor;
 
             if (!$object->id) {

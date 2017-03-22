@@ -295,7 +295,7 @@
                                 <input id="{$field.id}_value" type='hidden' class="unformatted_value" value="{$field.value}"/>
 
 
-                                {if $edit=='string' or   $edit=='dimensions' or $edit=='handle' or  $edit=='email' or $edit=='new_email' or  $edit=='int_unsigned' or $edit=='smallint_unsigned' or $edit=='mediumint_unsigned' or $edit=='int' or $edit=='smallint' or $edit=='mediumint' or $edit=='anything' or $edit=='numeric'  or $edit=='amount'  or $edit=='amount_margin'  or $edit=='amount_percentage'}
+                                {if $edit=='string' or   $edit=='dimensions' or $edit=='handle' or  $edit=='email' or $edit=='new_email' or  $edit=='int_unsigned' or $edit=='smallint_unsigned' or $edit=='mediumint_unsigned' or $edit=='int' or   $edit=='percentage' or $edit=='smallint' or $edit=='mediumint' or $edit=='anything' or $edit=='numeric'  or $edit=='amount'  or $edit=='amount_margin'  or $edit=='amount_percentage'}
                                     <input id="{$field.id}" class="input_field hide" value="{$field.value}"
                                            has_been_valid="0"
                                            {if isset($field.placeholder)}placeholder="{$field.placeholder}"{/if} />
@@ -303,6 +303,8 @@
                                        onclick="save_this_field(this)"></i>
                                     <span id="{$field.id}_msg" class="msg"></span>
                                     <span id="{$field.id}_info" class="hide"></span>
+
+
                                 {elseif $edit=='barcode'  }
                                     <span id="{$field.id}_assign_available_barcode" class="fa-stack fa-lg button hide"
                                           available_barcodes="{$available_barcodes}"

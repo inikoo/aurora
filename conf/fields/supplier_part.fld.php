@@ -177,7 +177,7 @@ $supplier_part_fields[] = array(
             'edit' => ($edit ? 'string' : ''),
 
             'value'             => htmlspecialchars($object->get('Part Part SKO Barcode')),
-            'formatted_value'   => $object->get('SKO Barcode'),
+            'formatted_value'   => $object->get('Part SKO Barcode'),
             'label'             => _('Part SKO barcode').' ('._('Stock control').')',
             'required'          => false,
             'server_validation' => json_encode(
@@ -501,6 +501,7 @@ $supplier_part_fields[] = array(
 
         array(
             'id'              => 'Supplier_Part_Unit_Extra_Cost',
+            'render'=>false,
             'edit'            => 'amount_percentage',
             'locked'          => ($part_scope ? 1 : 0),
             'value'           => htmlspecialchars(
@@ -518,6 +519,24 @@ $supplier_part_fields[] = array(
                 )),
             'type'            => 'value'
         ),
+
+        array(
+            'id'              => 'Supplier_Part_Unit_Extra_Cost_Percentage',
+            'edit'            => 'percentage',
+            'locked'          => ($part_scope ? 1 : 0),
+            'value'           => htmlspecialchars(
+                $object->get('Supplier Part Unit Extra Cost Percentage')
+            ),
+            'formatted_value' => $object->get('Unit Extra Cost Percentage'),
+            'label'           => ucfirst(
+                $object->get_field_label('Supplier Part Unit Extra Cost Percentage')
+            ),
+            'required'        => false,
+            'placeholder'     => ($part_scope ? '' : '%'),
+            'type'            => 'value'
+        ),
+
+
         array(
             'id'   => 'Part_Unit_Price',
             'edit' => 'amount_margin',
