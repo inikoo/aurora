@@ -519,8 +519,9 @@ ALTER TABLE `Product Dimension` CHANGE `Product Current Key` `Product Current Ke
 
 
 ALTER TABLE `Staff Dimension` CHANGE `Staff Working Hours Per Week Metadata` `Staff Working Hours Per Week Metadata` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL;
-ALTER TABLE `Supplier Part Dimension` ADD `Supplier Part Unit Extra Cost Percentage` FLOAT NULL DEFAULT NULL AFTER `Supplier Part Unit Cost`;
 
+
+ update  `Supplier Part Dimension` set `Supplier Part Unit Extra Percentage`=truncate(`Supplier Part Unit Extra Cost`/`Supplier Part Unit Cost`,2),  where `Supplier Part Unit Extra Cost`!=0  and `Supplier Part Unit Cost`!=0 ;
 
 ===============
 
