@@ -29,6 +29,7 @@ if ($user->get('User Type') == 'Agent') {
             'label' => _('Overview'),
             'title' => _('Overview')
         ),
+        'barcodes'  => array('label' => _("Id's & Barcodes")),
         'parts'    => array(
             'label' => _('Inventory Part'),
             'title' => _('Part details')

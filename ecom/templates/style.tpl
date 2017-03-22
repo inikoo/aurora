@@ -6,13 +6,15 @@
           }
           .warp
           {
+
+
                  width: 100%;
 
 
                  padding: 10px 10px;
 
                  display: flex;
-                 justify-content: center; /* align horizontal */
+                 justify-content: flex-start;
                  flex-flow: row wrap;
 
 
@@ -21,7 +23,7 @@
           .warp div.warp_element
           {
 
-                 float: left;
+               //  float: left;
                  margin: 10px 5px   ;
 
           }
@@ -33,22 +35,26 @@
           }
 
 
-          .product_showcase .favourite{
-                 background-color: inherit;
+           .favourite{
+                 background-color: none;
                  color: darkgray;cursor:pointer;z-index:1
           }
 
-          .product_footer.favourite{
+          .favourite{
                  padding:6px 10px 2px 10px;
-                 border-top:1px solid #ccc
+
           }
 
-          .product_showcase .favourite i.marked{
+           .favourite i.marked{
 
                  color: deeppink;
           }
 
+          .product_showcase  .favourite i{
 
+                 font-size:20px;cursor:pointer;position:absolute;left:-1px;top:-1px;;z-index:1
+
+          }
 
           .asset_container{
 
@@ -180,14 +186,6 @@ h1{
         margin-top:20px
     }
 
-    .xproduct_showcase {
-        border: 1px solid #ccc;
-        background:#fff;
-        padding:0px 0px 0px 0px;
-        float:left;width:218px;margin-left:18px;
-        height:319px
-    }
-
 
 
      .product_blocks{
@@ -260,6 +258,7 @@ h1{
 
     }
 
+
     .product_prices .product_price{
         color:#236E4B
     }
@@ -292,14 +291,27 @@ h1{
 
 
     .ordering.log_out span:hover {
-        background-color: brown;
+           height:28px !important;
+        //   background-color: brown;
     }
 
+    .mark_on_hover:hover{
+           background-color: brown;
+    }
 
     .ordering{
     }
 
 
+
+    .log_in_buttons_individual_product div{
+           height: 28px;cursor:pointer;
+           float: left;; font-weight: 800;line-height: 28px;
+           min-width: 200px;
+           background-color: darkorange;color:whitesmoke;
+           margin-right: 4px;
+           text-align: center
+    }
 
     .order_input{
            float:left;width:45px;height: 20px;border:none;border-top:1px solid #ccc;border-bottom:1px solid #ccc;position:relative;top:0px

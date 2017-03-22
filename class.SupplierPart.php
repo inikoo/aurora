@@ -616,6 +616,16 @@ class SupplierPart extends DB_Table {
 
                 $this->update_field($field, $value, $options);
 
+
+
+            if($this->data['Supplier Part Unit Extra Cost Percentage']!=''){
+                $this->update_field('Supplier Part Unit Cost', $value*$this->data['Supplier Part Unit Extra Cost Percentage'], 'no_history');
+
+
+            }
+
+
+
                 $updated = $this->updated;
 
                 if (!preg_match('/skip_update_historic_object/', $options)) {
@@ -904,6 +914,75 @@ class SupplierPart extends DB_Table {
                 );
 
                 break;
+
+
+            case 'Supplier Part Unit Extra Cost Percentage':
+
+                if ($value == '') {
+                    $value = 0;
+                }
+
+                if (!preg_match('/\%$/', $value)) {
+                    $this->error = true;
+                    $this->msg   = sprintf(
+                        _('Invalid percentage (%s)'), $value
+                    );
+
+                    return;
+                }
+
+
+                if (preg_match('/\%$/', $value)) {
+                    $value = preg_replace('/\%^/', '', $value)/ 100;
+                   // $value = $this->data['Supplier Part Unit Cost'] * $value / 100;
+                }
+
+
+                if (!is_numeric($value) or $value < 0) {
+                    $this->error = true;
+                    $this->msg   = sprintf(
+                        _('Invalid percentage (%s)'), $value
+                    );
+
+                    return;
+                }
+
+                $this->update_field($field, $value, $options);
+
+                $this->update_field('Supplier Part Unit Extra Cost', $this->data['Supplier Part Unit Cost']*$value, 'no_history');
+
+
+
+                $this->part->update_cost();
+
+
+
+
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Carton_Cost'      => $this->get('Carton Cost'),
+                        'SKO_Cost'         => $this->get('SKO Cost'),
+                        'Unit_Cost_Amount' => $this->get('Unit Cost Amount'),
+
+                    )
+                );
+
+                $this->other_fields_updated = array(
+                    'Part_Unit_Price' => array(
+                        'field'           => 'Part_Unit_Price',
+                        'render'          => true,
+                        'formatted_value' => $this->get('Part Unit Price'),
+                        'value'           => $this->get('Part Part Unit Price'),
+                    ),
+
+
+                );
+
+
+
+                break;
+
+
             case 'Supplier Part Unit Extra Cost':
 
                 if ($value == '') {
@@ -912,9 +991,7 @@ class SupplierPart extends DB_Table {
 
                 if (preg_match('/\%$/', $value)) {
                     $value = preg_replace('/\%^/', '', $value);
-
-
-                    $value = $this->data['Supplier Part Unit Cost'] * $value / 100;
+                   $value = $this->data['Supplier Part Unit Cost'] * $value / 100;
                 }
 
 
@@ -1289,6 +1366,36 @@ class SupplierPart extends DB_Table {
                 return $cost;
                 break;
 
+            case 'Supplier Part Unit Extra Cost Percentage':
+                if ($this->data['Supplier Part Unit Extra Cost Percentage'] == '') {
+                    return '';
+                }
+
+
+
+
+                return percentage($this->data['Supplier Part Unit Extra Cost Percentage'],1);
+
+
+
+
+
+            case 'Unit Extra Cost Percentage':
+                if ($this->data['Supplier Part Unit Extra Cost Percentage'] == '') {
+                    return '';
+                }
+
+
+
+
+                    $extra_cost = ' <span class="">'.percentage($this->data['Supplier Part Unit Extra Cost Percentage'],1).'</span>';
+
+
+                $extra_cost .= ' <span class="discreet">'.money($this->data['Supplier Part Unit Extra Cost'], $this->data['Supplier Part Currency Code']).'</span>';
+
+
+                return $extra_cost;
+
             case 'Unit Extra Cost':
                 if ($this->data['Supplier Part Unit Extra Cost'] == '') {
                     return '';
@@ -1549,6 +1656,9 @@ class SupplierPart extends DB_Table {
                 break;
             case 'Supplier Part Unit Extra Cost':
                 $label = _("unit extra costs");
+                break;
+            case 'Supplier Part Unit Extra Cost Percentage':
+             $label = _("percentage extra costs");
                 break;
             case 'Part Reference':
                 $label = _("part reference");

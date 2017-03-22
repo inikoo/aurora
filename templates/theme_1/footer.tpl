@@ -127,25 +127,45 @@
 
 
 
-<div id="copyright_control_center" class="input_container link_url   " style="">
-    <div>  <span>{t}Copyright owner{/t}</span>   <input  value="" placeholder="{t}name{/t}"></div>
+<div id="copyright_bundle_control_center" class="input_container link_url  hide " style="">
+
+    <div style="margin-bottom:5px">  <i  onClick="update_copyright_bundle_from_dialog()" style="position:relative;top:-5px" class="button fa fa-fw fa-window-close" aria-hidden="true"></i>  </div>
+
+
+    <div>  <span>{t}Copyright owner{/t}</span>   <input  id="copyright_bundle_control_center_owner" value="" placeholder="{t}name{/t}"></div>
 
     <div style="border-bottom:1px solid #ccc;margin-bottom:5px">
         {t}Links{/t}
     </div>
 
 <div class="discreet_links_control_panel">
-    <div>  <input  value="" placeholder="{t}Link{/t} 1">   <input  value="" placeholder="{t}https://... or page code{/t}"></div>
-    <div>  <input  value="" placeholder="{t}Link{/t} 1">   <input  value="" placeholder="{t}https://... or page code{/t}"></div>
-    <div>  <input  value="" placeholder="{t}Link{/t} 1">   <input  value="" placeholder="{t}https://... or page code{/t}"></div>
+    <div class="copyright_link">  <input class="label" value="" placeholder="{t}Link label{/t}">   <input  class="url"  value="" placeholder="{t}https://... or page code{/t}"></div>
+    <div  class="copyright_link">  <input class="label" value="" placeholder="{t}Link label{/t}">   <input  class="url" value="" placeholder="{t}https://... or page code{/t}"></div>
+    <div  class="copyright_link">  <input class="label" value="" placeholder="{t}Link label{/t}">   <input  class="url" value="" placeholder="{t}https://... or page code{/t}"></div>
+    <div  class="copyright_link">  <input class="label" value="" placeholder="{t}Link label{/t}">   <input  class="url" value="" placeholder="{t}https://... or page code{/t}"></div>
+    <div  class="copyright_link">  <input class="label" value="" placeholder="{t}Link label{/t}">   <input  class="url" value="" placeholder="{t}https://... or page code{/t}"></div>
+
 </div>
 </div>
 
 
 <div id="social_links_control_center" class="input_container link_url hide  " style="">
- <div>   <i  class="button fa fa-fw fa-facebook" aria-hidden="true"></i>  <input  value="" placeholder="https://... Facebook"></div>
-     <div>   <i  class="button fa fa-fw fa-twitter" aria-hidden="true"></i>  <input  value="" placeholder="https://... Twitter"></div>
-    <div>   <i  class="button fa fa-fw fa-linkedin" aria-hidden="true"></i>  <input  value="" placeholder="https://... Linkedin"></div>
+
+    <div style="margin-bottom:5px">  <i  onClick="update_social_links_from_dialog()" style="position:relative;top:-5px" class="button fa fa-fw fa-window-close" aria-hidden="true"></i>  </div>
+
+    <div>   <i icon="fa-facebook" class="button social_link fa fa-fw fa-facebook" aria-hidden="true"></i>  <input  value="" placeholder="https://... Facebook"></div>
+    <div>   <i icon="fa-google-plus"  class="button social_link fa fa-fw fa-google-plus" aria-hidden="true"></i>  <input  value="" placeholder="https://... Google +"></div>
+    <div>   <i icon="fa-instagram"  class="button social_link fa fa-fw fa-instagram" aria-hidden="true"></i>  <input  value="" placeholder="https://... Instagram"></div>
+    <div>   <i icon="fa-linkedin"  class="button social_link fa fa-fw fa-linkedin" aria-hidden="true"></i>  <input  value="" placeholder="https://... Linkedin"></div>
+    <div>   <i icon="fa-pinterest"  class="button social_link fa fa-fw fa-pinterest" aria-hidden="true"></i>  <input  value="" placeholder="https://... Pinterest"></div>
+    <div>   <i icon="fa-snapchat"  class="button social_link fa fa-fw fa-snapchat" aria-hidden="true"></i>  <input  value="" placeholder="https://... Snapchat"></div>
+    <div>   <i icon="fa-twitter"  class="button social_link fa fa-fw fa-twitter" aria-hidden="true"></i>  <input  value="" placeholder="https://... Twitter"></div>
+    <div>   <i icon="fa-vk"  class="button social_link fa fa-fw fa-vk" aria-hidden="true"></i>  <input  value="" placeholder="https://... VK"></div>
+    <div>   <i icon="fa-xing"  class="button social_link fa fa-fw fa-xing" aria-hidden="true"></i>  <input  value="" placeholder="https://... Xing"></div>
+    <div>   <i icon="fa-youtube"  class="button social_link fa fa-fw fa-youtube" aria-hidden="true"></i>  <input  value="" placeholder="https://... Youtube"></div>
+
+
+
 
 </div>
 
@@ -370,12 +390,16 @@
                           <div class="one_half " >
                             {$column.text}
                           </div>
-                          {elseif $column.type=='social_links'}
+                      {elseif $column.type=='copyright_bundle'}
+                              <div class="one_half " onClick="edit_copyright_bundle(this)"  class="footer_copyright_bundle" >
+                                  {t}Copyright{/t} © {"%Y"|strftime} <span class="copyright_bundle_owner">{$column.owner}</span>. {t}All rights reserved{/t}. <span class="copyright_bundle_links">{foreach  from=$column.links item=item name=copyright_links}<a class="copyright_bundle_link" href="{$item.url}">{$item.label}</a>{if !$smarty.foreach.copyright_links.last} | {/if}{/foreach}</span>
+                              </div>
+                      {elseif $column.type=='social_links'}
                           <div class="one_half {if $smarty.foreach.copyright_info.last}last{/if}">
 
-                              <ul class="footer_social_links">
+                              <ul  onClick="edit_social_links(this)"  class="footer_social_links">
                                   {foreach from=$column.items item=item}
-                                      <li  onClick="edit_social_links(this)" class="" ><a href="{$item.url}"><i class="fa {$item.icon}"></i></a></li>
+                                      <li class="" icon="{$item.icon}"  ><a href="{$item.url}"><i class="fa {$item.icon}"></i></a></li>
 
                                   {/foreach}
                               </ul>
@@ -692,12 +716,104 @@ function add_link(element){
 
         function  edit_social_links(element){
 
-            var block=$(element).closest('.footer_social_links')
 
-            $('#social_links_control_center').removeClass('hide').offset({ top:block.offset().top -30-  $('#social_links_control_center').height() , left:block.offset().left+block.width()  - $('#social_links_control_center').width()  })
+        if(! $('#social_links_control_center').hasClass('hide')){
+            return
+        }
+
+        var block=$(element)
+            block.uniqueId()
+            var id= block.attr('id')
+
+            block.find('li').each(function(i, obj) {
+                $('#social_links_control_center').find('.'+$(obj).attr('icon')).next('input').val($(obj).find('a').attr('href')   )
+            });
+
+
+            $('#social_links_control_center').attr('block_id',id).removeClass('hide').offset({ top:block.offset().top -30-  $('#social_links_control_center').height() , left:block.offset().left+block.width()  - $('#social_links_control_center').width()  })
+
+
+
+
 
 
         }
 
 
-</script>
+        function update_social_links_from_dialog(){
+
+          var block=$('#'+$('#social_links_control_center').attr('block_id'))
+            $('#social_links_control_center').addClass('hide')
+            social_links=''
+
+           $('#social_links_control_center .social_link').each(function(i, obj) {
+               if ($(obj).next('input').val() != '') {
+                   social_links += ' <li class="" icon="' + $(obj).attr('icon') + '"  ><a href="' + $(obj).next('input').val() + '"><i class="fa ' + $(obj).attr('icon') + '"></i></a></li>'
+               }
+           })
+
+            if(social_links==''){
+                social_links='<i class="fa fa-plus editing" title="{t}Add social media link{/t}" aria-hidden="true"></i>  <span style="margin-left:5px" class="editing">{t}Add social media link{/t}</span>';
+            }
+
+            block.html(social_links)
+        }
+
+
+    function  edit_copyright_bundle(element){
+
+
+        if(! $('#copyright_bundle_control_center').hasClass('hide')){
+            return
+        }
+
+        var block=$(element)
+        block.uniqueId()
+        var id= block.attr('id')
+
+        block.find('.copyright_bundle_link').each(function(i, obj) {
+
+          var link=  $( "#copyright_bundle_control_center .discreet_links_control_panel div:nth-child("+(i+1)+")" )
+
+           // console.log( "#copyright_bundle_control_center .social_links_control_center:nth-child("+i+")")
+          //  console.log( $("#copyright_bundle_control_center .discreet_links_control_panel div:nth-child(1)").html())
+console.log(link.html())
+            link.find('.label').val($(obj).html())
+            link.find('.url').val($(obj).attr('href'))
+
+            //      $('#social_links_control_center').find('.'+$(obj).attr('icon')).next('input').val($(obj).find('a').attr('href')   )
+        });
+
+        $('#copyright_bundle_control_center_owner').val(block.find('.copyright_bundle_owner').html())
+        $('#copyright_bundle_control_center').attr('block_id',id).removeClass('hide').offset({ top:block.offset().top -30-  $('#copyright_bundle_control_center').height() , left:block.offset().left+block.width()  - $('#copyright_bundle_control_center').width()  })
+
+
+
+
+
+
+    }
+
+
+    function update_copyright_bundle_from_dialog(){
+
+        var block=$('#'+$('#copyright_bundle_control_center').attr('block_id'))
+        $('#copyright_bundle_control_center').addClass('hide')
+        copyright_links=''
+
+
+        block.find('.copyright_bundle_owner').html($('#copyright_bundle_control_center_owner').val())
+
+        $('#copyright_bundle_control_center .copyright_link').each(function(i, obj) {
+            if ($(obj).find('.label').val() != '' &&  $(obj).find('.url').val() != '') {
+                copyright_links += '<a class="copyright_bundle_link" href="' + $(obj).find('.url').val() + '">' + $(obj).find('.label').val() + '</a>  | '
+            }
+        })
+
+        copyright_links=copyright_links.replace(/ \| $/g, "");
+
+        block.find('.copyright_bundle_links').html(copyright_links)
+    }
+
+
+    </script>

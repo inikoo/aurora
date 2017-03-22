@@ -947,6 +947,8 @@ function supplier_parts($_data, $db, $user, $account) {
                 'part_reference'   => $data['Part Reference'],
                 'reference'        => $data['Supplier Part Reference'],
                 'part_description' => $part_description,
+                'barcode'=>$data['Part Barcode Number'],
+                'barcode_sko'=>$data['Part SKO Barcode'],
 
 
                 'description'    => $data['Part Unit Description'],

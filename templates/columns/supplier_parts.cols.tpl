@@ -83,14 +83,31 @@ name: "part_description",
 label: "{t}Part{/t}",
 editable: false,
 sortType: "toggle",
-
 cell: Backgrid.HtmlCell.extend({
-
-
 })
 
-}
-,
+},
+
+{
+name: "barcode",
+label: "{t}Unit barcode{/t}",
+editable: false,
+sortType: "toggle",
+cell: Backgrid.HtmlCell.extend({
+})
+
+},
+{
+name: "barcode_sko",
+label: "{t}SKO barcode{/t}",
+editable: false,
+sortType: "toggle",
+cell: Backgrid.HtmlCell.extend({
+})
+
+},
+
+
 {
 name: "stock",
 label: "{t}Stock{/t}",
@@ -144,6 +161,12 @@ grid.columns.findWhere({ name: 'stock'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'cost'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'delivered_cost'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'packing'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'barcode'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'barcode_sko'} ).set("renderable", false)
+
+
+
+
 
 if(view=='overview'){
 grid.columns.findWhere({ name: 'part_description'} ).set("renderable", true)
@@ -152,6 +175,13 @@ grid.columns.findWhere({ name: 'cost'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'delivered_cost'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'packing'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'description'} ).set("renderable", true)
+
+}else if(view=='barcodes'){
+grid.columns.findWhere({ name: 'part_reference'} ).set("renderable", true)
+
+grid.columns.findWhere({ name: 'description'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'barcode'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'barcode_sko'} ).set("renderable", true)
 
 }else if(view=='parts'){
 grid.columns.findWhere({ name: 'part_reference'} ).set("renderable", true)

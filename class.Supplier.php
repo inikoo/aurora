@@ -917,12 +917,29 @@ class Supplier extends SubjectSupplier {
 
         }
 
+        if (isset($data['Supplier Part Unit Extra Cost Percentage']) and $data['Supplier Part Unit Extra Cost Percentage'] == '') {
+            $data['Supplier Part Unit Extra Cost Percentage'] = 0;
+
+        }
+
+        if (isset($data['Supplier Part Unit Extra Cost Percentage']) and (!is_numeric($data['Supplier Part Unit Extra Cost Percentage']) or $data['Supplier Part Unit Extra Cost Percentage'] < 0)) {
+            $this->error      = true;
+            $this->msg        = sprintf(_('Invalid extra %% cost (%s)'), $data['Supplier Part Unit Extra Cost Percentage']);
+            $this->error_code = 'invalid_supplier_part_extra_cost_percentage';
+            $this->metadata   = $data['Supplier Part Unit Extra Cost Percentage'];
+
+            return;
+        }
+
+        if (isset($data['Supplier Part Unit Extra Cost Percentage'])) {
+            $data['Supplier Part Unit Extra Cost'] = $data['Supplier Part Unit Extra Cost Percentage'] * $data['Supplier Part Unit Cost'];
+
+        }
+
 
         $data['Supplier Part Supplier Key'] = $this->id;
 
-        $data['Supplier Part Minimum Carton Order'] = ceil(
-            $data['Supplier Part Minimum Carton Order']
-        );
+        $data['Supplier Part Minimum Carton Order'] = ceil($data['Supplier Part Minimum Carton Order']);
 
 
         $data['Supplier Part Currency Code'] = $this->data['Supplier Default Currency Code'];
@@ -930,13 +947,16 @@ class Supplier extends SubjectSupplier {
 
         $data['Supplier Part Status'] = 'Available';
 
+
+
+
         $supplier_part = new SupplierPart('find', $data, 'create');
 
 
         if ($supplier_part->id) {
             $this->new_object_msg = $supplier_part->msg;
 
-            if ($supplier_part->new) {
+            if ($supplier_part->new ) {
                 $this->new_object = true;
                 $this->update_supplier_parts();
 
@@ -966,12 +986,24 @@ class Supplier extends SubjectSupplier {
                 }
 
 
+
+
+
                 foreach ($data as $key => $value) {
                     $_key        = preg_replace('/^Part Part /', 'Part ', $key);
                     $data[$_key] = $value;
 
 
                 }
+
+                $auto_part_barcode=false;
+
+                if (isset($data['Part Barcode Number'])  and preg_match('/^auto$/i',$data['Part Barcode Number']) ) {
+                    $auto_part_barcode=true;
+                    unset($data['Part Barcode Number']);
+
+                }
+
 
 
                 $part = new Part('find', $data, 'create');
@@ -988,11 +1020,40 @@ class Supplier extends SubjectSupplier {
                         ), 'no_history'
                     );
 
+                    if($auto_part_barcode){
+
+
+                        $barcode_number = '';
+                        $sql            = sprintf("SELECT `Barcode Number` FROM `Barcode Dimension` WHERE `Barcode Status`='Available' ORDER BY `Barcode Number`");
+                        if ($result = $this->db->query($sql)) {
+                            if ($row = $result->fetch()) {
+                                $barcode_number = $row['Barcode Number'];
+                            }
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
+                            exit;
+                        }
+
+                        if($barcode_number!='') {
+                            $part->update(
+                                array(
+                                    'Part Barcode'          => $barcode_number,
+
+
+                                ), 'no_history'
+                            );
+                        }
+
+                    }
+                    
                     $supplier_part->update(
                         array('Supplier Part Part SKU' => $part->sku)
                     );
                     $supplier_part->get_data('id', $supplier_part->id);
 
+                    
+                    
+                    
                     $supplier_part->update_historic_object();
                     $part->update_cost();
                 } else {
@@ -1552,7 +1613,75 @@ class Supplier extends SubjectSupplier {
     }
     */
 
-    function update_timeseries_record($timeseries, $from, $to, $fork_key=false) {
+    function create_timeseries($data, $fork_key = 0) {
+
+
+        include_once 'class.Timeserie.php';
+
+        $data['Timeseries Parent']     = 'Supplier';
+        $data['Timeseries Parent Key'] = $this->id;
+
+
+        $data['editor'] = $this->editor;
+
+        $timeseries = new Timeseries('find', $data, 'create');
+
+        if ($timeseries->id) {
+            require_once 'utils/date_functions.php';
+
+            if ($this->data['Supplier Valid From'] != '') {
+                $from = date('Y-m-d', strtotime($this->get('Valid From')));
+
+            } else {
+                $from = '';
+            }
+
+            if ($this->get('Supplier Type') == 'Archived') {
+                $to = $this->get('Valid To');
+            } else {
+                $to = date('Y-m-d');
+            }
+
+
+            $sql        = sprintf(
+                'DELETE FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`<%s ', $timeseries->id, prepare_mysql($from)
+            );
+            $update_sql = $this->db->prepare($sql);
+            $update_sql->execute();
+            if ($update_sql->rowCount()) {
+                $timeseries->update(
+                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
+                );
+            }
+
+            $sql        = sprintf(
+                'DELETE FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`>%s ', $timeseries->id, prepare_mysql($to)
+            );
+            $update_sql = $this->db->prepare($sql);
+            $update_sql->execute();
+            if ($update_sql->rowCount()) {
+                $timeseries->update(
+                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
+                );
+            }
+
+            if ($from and $to) {
+                $this->update_timeseries_record($timeseries, $from, $to, $fork_key);
+            }
+
+
+            if ($timeseries->get('Timeseries Number Records') == 0) {
+                $timeseries->update(
+                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
+                );
+            }
+
+
+        }
+
+    }
+
+    function update_timeseries_record($timeseries, $from, $to, $fork_key = false) {
 
 
         $dates = date_frequency_range(
@@ -1639,74 +1768,6 @@ class Supplier extends SubjectSupplier {
             );
 
             $this->db->exec($sql);
-
-        }
-
-    }
-
-    function create_timeseries($data, $fork_key = 0) {
-
-
-        include_once 'class.Timeserie.php';
-
-        $data['Timeseries Parent']     = 'Supplier';
-        $data['Timeseries Parent Key'] = $this->id;
-
-
-        $data['editor']=$this->editor;
-
-        $timeseries = new Timeseries('find', $data, 'create');
-
-        if ($timeseries->id) {
-            require_once 'utils/date_functions.php';
-
-            if ($this->data['Supplier Valid From'] != '') {
-                $from = date('Y-m-d', strtotime($this->get('Valid From')));
-
-            } else {
-                $from = '';
-            }
-
-            if ($this->get('Supplier Type') == 'Archived') {
-                $to = $this->get('Valid To');
-            } else {
-                $to = date('Y-m-d');
-            }
-
-
-            $sql        = sprintf(
-                'DELETE FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`<%s ', $timeseries->id, prepare_mysql($from)
-            );
-            $update_sql = $this->db->prepare($sql);
-            $update_sql->execute();
-            if ($update_sql->rowCount()) {
-                $timeseries->update(
-                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
-                );
-            }
-
-            $sql        = sprintf(
-                'DELETE FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`>%s ', $timeseries->id, prepare_mysql($to)
-            );
-            $update_sql = $this->db->prepare($sql);
-            $update_sql->execute();
-            if ($update_sql->rowCount()) {
-                $timeseries->update(
-                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
-                );
-            }
-
-            if ($from and $to) {
-                $this->update_timeseries_record($timeseries, $from, $to, $fork_key);
-            }
-
-
-            if ($timeseries->get('Timeseries Number Records') == 0) {
-                $timeseries->update(
-                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
-                );
-            }
-
 
         }
 

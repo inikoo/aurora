@@ -53,6 +53,8 @@ function images($_data, $db, $user) {
         = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
+  //  print $sql;
+
     $adata = array();
 
     $ordinal_formatter = new \NumberFormatter(

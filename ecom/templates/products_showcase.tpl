@@ -63,12 +63,15 @@
 
             {if $product_data.type=='product'}
             {assign 'product' $product_data.object}
-            <div id="product_target_div_{$stack_index}" stack_index="{$stack_index}"  product_code="{$product->get('Code')}" product_id="{$product->id}"  class="product_block product_showcase "
+            <div id="product_target_div_{$stack_index}" stack_index="{$stack_index}"  product_code="{$product->get('Code')}" product_id="{$product->id}"  class="product_block product_showcase product_container "
                  style="position:relative;border-bottom:none;">
 
 
 
-                <i class="fa fa-info-circle more_info" aria-hidden="true" title="More info"></i>
+                <a href="page.php?id={$product->get('Webpage Key')}">
+
+                    <i class="fa fa-info-circle more_info" aria-hidden="true" title="More info"></i>
+                </a>
 
                 {assign 'favourite_key' {$product->get('Favourite Key',{$customer->id})} }
                 <span style="position:absolute;top:5px;left:5px" class="  favourite  " favourite_key={$favourite_key} ><i class="fa {if $favourite_key}fa-heart marked{else}fa-heart-o{/if}" aria-hidden="true"></i>  </span>
@@ -106,6 +109,11 @@
                  </div>
                 {/if}
 
+
+
+
+
+
                 {if $logged}
 
                 {if $product->get('Web State')=='Out of Stock'}
@@ -142,9 +150,9 @@
 
                 {/if}
                 {else}
-                <div class="ordering log_out " >
-                    <div ><span onClick="location.href='login.php?from={$page->id}'" class="button login_button label_when_log_out" >{t}Login{/t}</span></div>
-                    <div ><span onClick="location.href='registration.php'" class="button register_button label_when_log_out" >{t}Register{/t}</span></div>
+                <div class=" order_row " style="display:flex;" >
+                    <div class="mark_on_hover" style="flex-grow:1;text-align:center;border-right:1px solid #fff;  font-weight: 800;" ><span onClick="location.href='login.php?from={$page->id}'" class="sim_button" >{t}Login{/t}</span></div>
+                    <div  class="mark_on_hover" style="flex-grow:1;text-align:center;border-left:1px solid #fff;  font-weight: 800;" ><span onClick="location.href='registration.php'" class="sim_button" >{t}Register{/t}</span></div>
                 </div>
                 {/if}
 
@@ -210,7 +218,7 @@
     </div>
 
     <div   class=" {if $related_products|@count eq 0}hide{/if}">
-        <div class="title" style="text-align: center">{t}Related products{/t}</div>
+        <div class="title" style="margin-left:20px;ztext-align: center">{t}Related products{/t}</div>
 
         <div class="warp">
         {foreach from=$related_products item=product_data key=stack_index}
@@ -222,13 +230,13 @@
 
 
                     {assign 'product' $product_data.object}
-                    <div id="product_target_div_{$stack_index}" stack_index="{$stack_index}"  product_code="{$product->get('Code')}" product_id="{$product->id}"  class="product_block product_showcase "
+                    <div id="product_target_div_{$stack_index}" stack_index="{$stack_index}"  product_code="{$product->get('Code')}" product_id="{$product->id}"  class="product_block product_showcase product_container"
                          style="position:relative;border-bottom:none;">
 
-
+                        <a href="page.php?id={$product->get('Webpage Key')}">
 
                         <i class="fa fa-info-circle more_info" aria-hidden="true" title="More info"></i>
-
+                        </a>
                         {assign 'favourite_key' {$product->get('Favourite Key',{$customer->id})} }
                         <span style="position:absolute;top:5px;left:5px" class="  favourite  " favourite_key={$favourite_key} ><i class="fa {if $favourite_key}fa-heart marked{else}fa-heart-o{/if}" aria-hidden="true"></i>  </span>
 
@@ -252,7 +260,6 @@
                             <div class="name item_name">{$product->get('Name')}</div>
 
                         </div>
-
                         {if $logged}
                             <div class="product_prices log_in " >
                                 <div class="product_price">{t}Price{/t}: {$product->get('Price')}</div>
@@ -271,7 +278,7 @@
 
 
                                 {assign 'reminder_key' {$product->get('Reminder Key',{$user->id})} }
-                                <div  class="order_row {$product->get('Out of Stock Class')}"  >
+                                <div  class="out_of_stock_row {$product->get('Out of Stock Class')}"  >
     <span class="label">
     {$product->get('Out of Stock Label')}
         <span  class="label sim_button " > <i reminder_key="{$reminder_key}" title="{if $reminder_key>0}{t}Click to remove notification{/t}{else}{t}Click to be notified by email{/t}{/if}"   class="reminder fa {if $reminder_key>0}fa-envelope{else}fa-envelope-o{/if}" aria-hidden="true"></i>  </span>
@@ -288,7 +295,7 @@
                                 <div class="order_row {if $quantity_ordered!=''}ordered{else}empty{/if}"      >
                                     <input maxlength=6  style="" class='order_input ' id='but_qty{$product->id}'   type="text"' size='2'  value='{$quantity_ordered}' ovalue='{$quantity_ordered}'>
                                     {if $quantity_ordered==''}
-                                        <div class="label sim_button" style="margin-left:57px"  ><i class="fa fa-hand-pointer-o fa-fw" aria-hidden="true"></i> <span class="">{t}Order now{/t}</span></div>
+                                        <div class="label sim_button   " style="margin-left:57px"  ><i class="fa fa-hand-pointer-o fa-fw" aria-hidden="true"></i> <span class="">{t}Order now{/t}</span></div>
                                     {else}
                                         <span class="label sim_button"><i class="fa  fa-thumbs-o-up fa-flip-horizontal fa-fw" aria-hidden="true"></i> <span class="">{t}Ordered{/t}</span></span>
                                     {/if}
@@ -301,9 +308,9 @@
 
                             {/if}
                         {else}
-                            <div class="ordering log_out " >
-                                <div ><span onClick="location.href='login.php?from={$page->id}'" class="button login_button label_when_log_out" >{t}Login{/t}</span></div>
-                                <div ><span onClick="location.href='registration.php'" class="button register_button label_when_log_out" >{t}Register{/t}</span></div>
+                            <div class=" order_row " style="display:flex;" >
+                                <div class="mark_on_hover"  style="flex-grow:1;text-align:center;border-right:1px solid #fff;  font-weight: 800;" ><span onClick="location.href='login.php?from={$page->id}'" class="sim_button" >{t}Login{/t}</span></div>
+                                <div class="mark_on_hover"  style="flex-grow:1;text-align:center;border-left:1px solid #fff;  font-weight: 800;" ><span onClick="location.href='registration.php'" class="sim_button" >{t}Register{/t}</span></div>
                             </div>
                         {/if}
 
@@ -318,10 +325,16 @@
 
 
 
-     <div id="bottom_see_also"  class="{if $see_also|@count eq 0}hide{/if}">
-         <div class="title">{t}See also{/t}:</div>
-         <div>
-         {foreach from=$see_also item=see_also_item name=foo}
+
+    </div>
+
+
+
+
+    <div id="bottom_see_also"  class="{if $see_also|@count eq 0}hide{/if}">
+        <div class="title">{t}See also{/t}:</div>
+        <div>
+            {foreach from=$see_also item=see_also_item name=foo}
                 <div class="item" >
                     <div class="image_container" >
                         <a href="http://{$see_also_item->get('URL')}"> <img src="{$see_also_item->get('Image')}" style="" /> </a>
@@ -331,13 +344,11 @@
                     </div>
                 </div>
             {/foreach}
-             </div>
-            <div style="clear:both">
-            </div>
+        </div>
+        <div style="clear:both">
+        </div>
 
     </div>
-    </div>
-
 
 
 {include file="order_products.js.tpl" }

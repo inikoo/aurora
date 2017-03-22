@@ -48,6 +48,7 @@ function open_edit_field(object, key, field) {
         case 'pin':
         case 'password':
         case 'dimensions':
+        case 'percentage':
 
 
             $('#' + field).removeClass('hide')
@@ -261,6 +262,7 @@ function close_edit_field(field) {
         case 'amount_margin':
         case 'amount_percentage':
         case 'dimensions':
+        case 'percentage':
 
             $('#' + field).addClass('hide')
 

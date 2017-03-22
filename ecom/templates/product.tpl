@@ -19,11 +19,10 @@
 <span id="ordering_settings" class="hide" data-labels='{ "ordered":"<i class=\"fa fa-thumbs-o-up fa-flip-horizontal \" aria-hidden=\"true\"></i> {t}Ordered{/t}", "order":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {t}Order now{/t}", "update":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {t}Update{/t}"  }'></span>
 
 
-<div class="asset_container" id="page_content" style="position:relative">
 
 
 
-	<div id="product_bd" style="padding:5px 20px 0px 20px;clear:both;border:none" class="product_showcase" product_id="{$public_product->id}" >
+	<div id="product_bd" style="padding:5px 20px 0px 20px;clear:both;" class="product_container" product_id="{$public_product->id}" >
 
 
         {if $public_product->get('Status')=='Discontinued' }
@@ -34,7 +33,7 @@
 
 
 
-		<div class="product" style="display: flex; ">
+		<div class="product" style="display: flex; ;">
 
 
 
@@ -44,11 +43,7 @@
 
 
 
-				<div class="fotorama"
-
-					 data-nav="thumbs"
-					 data-width="400"
-				>
+				<div class="fotorama"  data-nav="thumbs"  data-width="400">
                     {foreach from=$public_product->get_images_slidesshow() item=image name=foo}
 						<a href="/{$image.normal_url}"><img src="/{$image.small_url}"></a>
                     {/foreach}
@@ -60,7 +55,7 @@
 
 			</div>
 
-			<div class="information" style="float:left;margin-left:30px;width:510px">
+			<div class="information" style="float:left;margin-left:30px;width:510px;">
 				<h1 style="padding-top:5px;margin:2px 0;font-size:150%">
                     {$public_product->get('Name')}
 
@@ -76,47 +71,51 @@
 				</div>
 
                 {if $logged}
-				<div class="ordering-container  log_in" style="display: flex;margin-top:40px;" >
+				<div class="ordering-container  log_in" style="margin-top:40px;" >
 
-					<div class="product_prices log_in " style="margin-left:0px;padding-left:0px;font-size: 120%;width:250px" >
+					<div class=" product_price " style="margin-left:0px;padding-left:0px;width:250px;margin-bottom:10px" >
 						<div class="product_price">{t}Price{/t}: {$public_product->get('Price')}</div>
                         {assign 'rrp' $public_product->get('RRP')}
-                        {if $rrp!=''}<div style="margin-top:4px">{t}RRP{/t}: {$rrp}</div>{/if}
+                        {if $rrp!=''}<div class="product_price" style="margin-top:4px">{t}RRP{/t}: {$rrp}</div>{/if}
+						<div style="clear:both"></div>
 					</div>
 
-					<div style="margin-left:10px;">
+
 
 
 
 
                         {if $public_product->get('Web State')=='Out of Stock'}
-						<div class="ordering log_in can_not_order {$public_product->get('Out of Stock Class')} ">
+						<div class="ordering log_in can_not_order {$public_product->get('Out of Stock Class')} " style="width:350px;position:relative;margin-top:40px">
+
+
 
                             {assign 'reminder_key' {$public_product->get('Reminder Key',{$user->id})} }
+							<div  class="out_of_stock_row {$public_product->get('Out of Stock Class')}"  >
+    <span class="label">
+    {$public_product->get('Out of Stock Label')}
+		<span  class="label sim_button " > <i reminder_key="{$reminder_key}" title="{if $reminder_key>0}{t}Click to remove notification{/t}{else}{t}Click to be notified by email{/t}{/if}"   class="reminder fa {if $reminder_key>0}fa-envelope{else}fa-envelope-o{/if}" aria-hidden="true"></i>  </span>
+    </span>
+							</div>
 
-							<span class="product_footer label ">{$public_product->get('Out of Stock Label')}</span>
-							<span class="product_footer reminder" reminder_key="{$reminder_key}"><i class="fa {if $reminder_key>0}fa-envelope{else}fa-envelope-o{/if}" aria-hidden="true"></i>  </span>
+
 
 
 						</div>
                         {else if $public_product->get('Web State')=='For Sale'}
 
-
-
-						<div class="ordering log_in " >
-
-
-
-
-
+						<div class="ordering log_in " style="width:200px;position:relative;margin-top:40px" >
 
                             {assign 'quantity_ordered' $public_product->get('Ordered Quantity',$order->id) }
-							<input style="border-left:1px solid #ccc" maxlength=6  class='order_input ' id='but_qty{$public_product->id}'   type="text"' size='2'  value='{$quantity_ordered}' ovalue='{$quantity_ordered}'>
-                            {if $quantity_ordered==''}
-								<span class="product_footer order_button "><i class="fa fa-hand-pointer-o fa-fw" aria-hidden="true"></i> <span class="order_button_text">{t}Order now{/t}</span></span>
-                            {else}
-								<span class="product_footer order_button ordered"><i class="fa  fa-thumbs-o-up fa-flip-horizontal fa-fw" aria-hidden="true"></i> <span class="order_button_text">{t}Ordered{/t}</span></span>
-                            {/if}
+							<div class="order_row {if $quantity_ordered!=''}ordered{else}empty{/if}"      >
+								<input maxlength=6  style="border-left:1px solid #ccc" class='order_input ' id='but_qty{$public_product->id}'   type="text"' size='2'  value='{$quantity_ordered}' ovalue='{$quantity_ordered}'>
+                                {if $quantity_ordered==''}
+									<div class="label sim_button" style="margin-left:57px"  ><i class="fa fa-hand-pointer-o fa-fw" aria-hidden="true"></i> <span class="">{t}Order now{/t}</span></div>
+                                {else}
+									<span class="label sim_button"><i class="fa  fa-thumbs-o-up fa-flip-horizontal fa-fw" aria-hidden="true"></i> <span class="">{t}Ordered{/t}</span></span>
+                                {/if}
+
+							</div>
 
 
 
@@ -130,7 +129,7 @@
 
 
 
-					</div>
+
 
 				</div>
                     {if $public_product->get('Status')=='Discontinued' }
@@ -141,11 +140,18 @@
                     {/if}
 
 				{else}
-				<div class="product_prices log_out " style="clear:both;margin-top:40px">
+				<div class="product_prices log_out " style="clear:both;margin-top:40px;width:500px;text-align: left">
 
 
 
 					<div >{t}For prices, please login or register{/t}</div>
+
+
+					<div class=" log_in_buttons_individual_product " style="margin-top:10px;" >
+						<div class="mark_on_hover" ><span onClick="location.href='login.php?from={$public_product->webpage->id}'"  >{t}Login{/t}</span></div>
+						<div class="mark_on_hover"  ><span onClick="location.href='registration.php'"  style="height: 30px"  >{t}Register{/t}</span></div>
+					</div>
+
 
 
                     {if $public_product->get('Status')=='Discontinued' }
@@ -156,14 +162,13 @@
 
 
 
-					<div class="ordering log_out " style="width:350px;margin:auto;margin-top:10px;" >
-						<div ><span onClick="location.href='login.php?from={$public_product->webpage->id}'" class="button login_button label_when_log_out" >{t}Login{/t}</span></div>
-						<div ><span onClick="location.href='registration.php'" class="button register_button label_when_log_out" >{t}Register{/t}</span></div>
-					</div>
 
 
 				</div>
-{/if}
+
+
+
+               {/if}
 
 
 
@@ -180,6 +185,9 @@
 
 
 		</div>
+
+
+
 	</div>
 
 	<section class="product_tabs" style="margin-top:20px">
@@ -225,9 +233,6 @@
 
 
 
-	<div style="clear:both"></div>
-
-</div>
 
 {include file="order_products.js.tpl" }
 <script>
