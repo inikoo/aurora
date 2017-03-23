@@ -855,7 +855,6 @@ function supplier_parts($_data, $db, $user, $account) {
 
     $exchange = -1;
 
-
     if ($result = $db->query($sql)) {
 
 

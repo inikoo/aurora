@@ -15,9 +15,11 @@ if ($user->get('User Type') == 'Agent') {
 
     $table_views = array(
         'overview' => array(
-            'label' => _('Overview'),
-            'title' => _('Overview')
-        )
+            'label' => _('Overview')
+
+        ),
+                'barcodes'  => array('label' => _("Id's & Barcodes")),
+
     );
 
 }else{
