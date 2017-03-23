@@ -10,6 +10,7 @@
  Version 3.0
 */
 
+
 include_once 'utils/static_data.php';
 
 $account = new Account();
