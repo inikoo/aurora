@@ -1012,8 +1012,11 @@ class SupplierPart extends DB_Table {
                     $this->msg     = $this->part->msg;
                     $this->error   = $this->part->error;
 
-                    $this->other_fields_updated = $this->part->other_fields_updated;
 
+                    if (isset($this->part->other_fields_updated)) {
+
+                        $this->other_fields_updated = $this->part->other_fields_updated;
+                    }
 
                 } else {
 

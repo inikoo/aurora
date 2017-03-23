@@ -320,7 +320,7 @@ $supplier_part_fields[] = array(
             'edit' => ($edit ? 'string' : ''),
 
             'value'             => htmlspecialchars($object->get('Part Part SKO Barcode')),
-            'formatted_value'   => $object->get('SKO Barcode'),
+            'formatted_value'   => $object->get('Part SKO Barcode'),
             'label'             => _('Barcode on pack'),
             'required'          => false,
             'server_validation' => json_encode(
