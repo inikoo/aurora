@@ -32,6 +32,7 @@ $(document).ready(function () {
     }
     structure = {}
 
+
     change_view($('#_request').val())
 
     $(document).keydown(function (e) {
@@ -115,7 +116,7 @@ function get_widget_details(element, widget, metadata) {
 
 function change_view(_request, metadata) {
 
-
+/*
     evt=window.event;
 
     if (evt.type=='click' && evt.metaKey){
@@ -126,7 +127,7 @@ function change_view(_request, metadata) {
         return;
 
     }
-
+*/
 
     if (metadata == undefined) {
         metadata = {};
