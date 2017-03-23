@@ -3222,7 +3222,7 @@ $required=false;
                 'id'               => (integer)$data['Supplier Part Key'],
                 'supplier_key'     => (integer)$data['Supplier Part Supplier Key'],
                 'supplier_code'    => sprintf('<span class="link " onCLick="change_view(\'/supplier/%d\')">%s</span>', $data['Supplier Part Supplier Key'],$data['Supplier Code']),
-                'reference'        => sprintf('<span class="link %s " onCLick="change_view(\'/part/%d\')">%s</span>',($required?'':'strikethrough'), $data['Supplier Part Key'],$data['Supplier Part Reference']),
+                'reference'        => sprintf('<span class="link %s " onCLick="change_view(\'/supplier/%d/part/%d\')">%s</span>',($required?'':'strikethrough'),  $data['Supplier Part Supplier Key'],$data['Supplier Part Key'],$data['Supplier Part Reference']),
 
 
                 'description'    => $data['Part Unit Description'],
