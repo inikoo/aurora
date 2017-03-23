@@ -619,7 +619,7 @@ class SupplierPart extends DB_Table {
 
 
             if($this->data['Supplier Part Unit Extra Cost Percentage']!=''){
-                $this->update_field('Supplier Part Unit Cost', $value*$this->data['Supplier Part Unit Extra Cost Percentage'], 'no_history');
+                $this->update_field('Supplier Part Unit Extra Cost ', $value*$this->data['Supplier Part Unit Extra Cost Percentage'], 'no_history');
 
 
             }
@@ -922,7 +922,7 @@ class SupplierPart extends DB_Table {
                     $value = 0;
                 }
 
-               
+
 
                 if (preg_match('/\%$/', $value)) {
                     $value = preg_replace('/\%^/', '', $value)/ 100;
