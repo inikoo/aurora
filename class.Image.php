@@ -721,7 +721,7 @@ class Image {
                 $subjects[] = array(
                     'Subject Type' => $row['Image Subject Object'],
                     'Subject Key'  => $row['Image Subject Object Key'],
-                    'Is Principal' => $row['Image Subject Object Key Is Principal']
+                    'Is Principal' => $row['Image Subject Is Principal']
                 );
 
             }
