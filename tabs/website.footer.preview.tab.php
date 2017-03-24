@@ -9,6 +9,12 @@
 
 */
 
+
+
+
+
+$smarty->assign('website',$state['_object']);
+
 $html = $smarty->fetch('footer_preview.tpl');
 
 ?>

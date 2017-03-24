@@ -50,6 +50,7 @@
 
     <link rel="stylesheet" href="/theme_1/css/reset.css" type="text/css" />
     <link rel="stylesheet" href="/theme_1/css/style.css" type="text/css" />
+    <link rel="stylesheet" href="/theme_1/css/aurora.css" type="text/css" />
 
 
 

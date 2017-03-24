@@ -10,7 +10,7 @@
     <table style="width:100%;font-size:2.0mm;">
         <tr>
             <td style="border:0px solid red;"><img style="height:20mm"
-                                                   src="/barcode_asset.php?number={$part->get('Part Barcode Number')}">
+                                                   src="/barcode_asset.php?type=code128&number={$part->get('Part Barcode Number')}">
             </td>
             <td style=" text-align: center;font-size:2mm;padding:2mm">
                 {if $part->get('Origin Country')!='' and $part->get('Part Origin Country Code')!=$account->get('Account Country Code')  }

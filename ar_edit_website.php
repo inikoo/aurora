@@ -30,6 +30,19 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
+
+    case 'save_footer':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'footer_data'     => array('type' => 'string'),
+
+
+                     )
+        );
+        save_footer($data, $editor, $smarty, $db);
+        break;
+
+
     case 'create_webpage':
 
         $data = prepare_values(
@@ -1598,5 +1611,16 @@ if($webpage_key){
     echo json_encode($response);
 }
 
+
+function save_footer($data){
+
+
+
+  $footer_data=json_decode(base64_decode($data['footer_data']),true);
+    print_r($footer_data);
+
+ //   print_r(base64_decode($footer_data));
+
+}
 
 ?>

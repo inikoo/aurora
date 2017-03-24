@@ -29,9 +29,9 @@ if (!in_array($object_name, array('part'))) {
 
 if (!in_array(
     $type, array(
-    'package',
-    'unit'
-)
+             'package',
+             'unit'
+         )
 )
 ) {
     exit('error 1');
