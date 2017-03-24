@@ -2437,10 +2437,13 @@ class Page extends DB_Table {
 
 
                 $subjects = array();
-                $sql      = sprintf('SELECT `Webpage Scope Key` FROM `Category Bridge` left join `Page Store Dimension` on (`Webpage Scope Key`=`Subject Key`   )  WHERE  ( `Webpage Scope`="Category Categories" or  `Webpage Scope`="Category Products" ) and   `Subject`="Category" AND `Category Key`=%d  order by `Webpage Scope Key` ', $this->get('Webpage Scope Key'));
+                $sql      = sprintf(
+                    'SELECT `Webpage Scope Key` FROM `Category Bridge` LEFT JOIN `Page Store Dimension` ON (`Webpage Scope Key`=`Subject Key`   )  WHERE  ( `Webpage Scope`="Category Categories" OR  `Webpage Scope`="Category Products" ) AND   `Subject`="Category" AND `Category Key`=%d  ORDER BY `Webpage Scope Key` ',
+                    $this->get('Webpage Scope Key')
+                );
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
-                        if($row['Webpage Scope Key']) {
+                        if ($row['Webpage Scope Key']) {
                             $subjects[] = $row['Webpage Scope Key'];
                         }
                     }
@@ -2449,7 +2452,6 @@ class Page extends DB_Table {
                     print "$sql\n";
                     exit;
                 }
-
 
 
                 foreach ($subjects as $item_key) {
@@ -2461,7 +2463,7 @@ class Page extends DB_Table {
 
                 }
 
-               // print_r($subjects);
+                // print_r($subjects);
 
 
                 $content_data = $this->get('Content Data');
@@ -2476,30 +2478,24 @@ class Page extends DB_Table {
                     $content_data['sections'][$section_stack_index]['items'] = get_website_section_items($this->db, $section_data);
 
 
-
-
-
-
                 }
                 $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
 
-                $_subjects_in_webpage=array();
+                $_subjects_in_webpage = array();
 
                 $sql = sprintf(
-                    "SELECT `Category Webpage Index Category Key`  ,`Category Webpage Index Section Key`          FROM `Category Webpage Index` CWI  WHERE  `Category Webpage Index Webpage Key`=%d and `Category Webpage Index Subject Type`='Subject'  order by `Category Webpage Index Category Key` ", $this->id
+                    "SELECT `Category Webpage Index Category Key`  ,`Category Webpage Index Section Key`          FROM `Category Webpage Index` CWI  WHERE  `Category Webpage Index Webpage Key`=%d AND `Category Webpage Index Subject Type`='Subject'  ORDER BY `Category Webpage Index Category Key` ",
+                    $this->id
 
 
                 );
-
-
-
 
 
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
 
 
-                        $_subjects_in_webpage[  ] = $row['Category Webpage Index Category Key'];
+                        $_subjects_in_webpage[] = $row['Category Webpage Index Category Key'];
 
                     }
                 } else {
@@ -2513,14 +2509,12 @@ class Page extends DB_Table {
                 //print count($_subjects_in_webpage)."\n";
 
 
-                $to_add=array_diff($subjects,$_subjects_in_webpage);
-                $to_remove=array_diff($_subjects_in_webpage,$subjects);
+                $to_add    = array_diff($subjects, $_subjects_in_webpage);
+                $to_remove = array_diff($_subjects_in_webpage, $subjects);
 
 
                 //print_r($to_add);
                 //print_r($to_remove);
-
-
 
 
                 foreach ($to_add as $item_key) {
@@ -2530,76 +2524,16 @@ class Page extends DB_Table {
                 }
 
 
-
-               // print_r($_to_remove);
+                // print_r($_to_remove);
 
                 foreach ($to_remove as $item_key) {
-                     $this->remove_section_item($item_key);
+                    $this->remove_section_item($item_key);
 
                 }
 
 
             }
         }
-    }
-
-    function remove_section_item($item_key) {
-
-        $updated_metadata = array('section_keys' => array());
-        $content_data     = $this->get('Content Data');
-
-        $sql = sprintf(
-            'SELECT `Category Webpage Index Key`,`Category Webpage Index Section Key`,`Category Webpage Index Stack` FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d AND `Category Webpage Index Category Key`=%d ',
-            $this->id, $item_key
-
-
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-
-                $updated_metadata['section_keys'][] = $row['Category Webpage Index Section Key'];
-
-                $sql = sprintf(
-                    'DELETE FROM `Category Webpage Index` WHERE `Category Webpage Index Key`=%d  ',
-
-                    $row['Category Webpage Index Key']
-                );
-                $this->db->exec($sql);
-
-            } else {
-                $this->msg   = 'Item not found in website';
-                $this->error = true;
-
-                return $updated_metadata;
-
-                return;
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-        $result = array();
-
-        foreach ($updated_metadata['section_keys'] as $section_key) {
-            foreach ($content_data['sections'] as $section_stack_index => $section_data) {
-                if ($section_data['key'] == $section_key) {
-                    $content_data['sections'][$section_stack_index]['items'] = get_website_section_items($this->db, $section_data);
-                    $result[$section_key]                                    = $content_data['sections'][$section_stack_index]['items'];
-                    break;
-                }
-            }
-        }
-
-        $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
-
-
-        return $result;
-
     }
 
     function add_section_item($item_key, $section_key = false) {
@@ -2654,7 +2588,7 @@ class Page extends DB_Table {
         $subject_webpage  = new Public_Webpage('scope', ($subject_category->get('Category Subject') == 'Category' ? 'Category Categories' : 'Category Products'), $subject_category->id);
 
 
-      //  print_r($subject_category);
+        //  print_r($subject_category);
 
         if ($subject_webpage->id) {
 
@@ -2734,6 +2668,65 @@ class Page extends DB_Table {
 
     }
 
+    function remove_section_item($item_key) {
+
+        $updated_metadata = array('section_keys' => array());
+        $content_data     = $this->get('Content Data');
+
+        $sql = sprintf(
+            'SELECT `Category Webpage Index Key`,`Category Webpage Index Section Key`,`Category Webpage Index Stack` FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d AND `Category Webpage Index Category Key`=%d ',
+            $this->id, $item_key
+
+
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+
+                $updated_metadata['section_keys'][] = $row['Category Webpage Index Section Key'];
+
+                $sql = sprintf(
+                    'DELETE FROM `Category Webpage Index` WHERE `Category Webpage Index Key`=%d  ',
+
+                    $row['Category Webpage Index Key']
+                );
+                $this->db->exec($sql);
+
+            } else {
+                $this->msg   = 'Item not found in website';
+                $this->error = true;
+
+                return $updated_metadata;
+
+                return;
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $result = array();
+
+        foreach ($updated_metadata['section_keys'] as $section_key) {
+            foreach ($content_data['sections'] as $section_stack_index => $section_data) {
+                if ($section_data['key'] == $section_key) {
+                    $content_data['sections'][$section_stack_index]['items'] = get_website_section_items($this->db, $section_data);
+                    $result[$section_key]                                    = $content_data['sections'][$section_stack_index]['items'];
+                    break;
+                }
+            }
+        }
+
+        $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+
+
+        return $result;
+
+    }
+
     function publish() {
 
 
@@ -2772,22 +2765,16 @@ class Page extends DB_Table {
             $sql = sprintf('SELECT `Product Category Index Product ID` FROM `Product Category Index`    WHERE `Product Category Index Website Key`=%d', $this->id);
 
 
-
-
-
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
 
                     $webpage = new Page('scope', 'Product', $row['Product Category Index Product ID']);
 
 
-
-
                     if ($webpage->get('Webpage Launch Date') == '') {
 
 
-
-                       $webpage->publish();
+                        $webpage->publish();
                     }
 
 
@@ -3137,6 +3124,19 @@ class Page extends DB_Table {
     function delete($create_deleted_page_record = true) {
 
 
+        $sql = sprintf('delete `Product Category Index` where `Product Category Index Website Key`=%d  ', $this->id);
+        $this->db->exec($sql);
+
+
+        $sql = sprintf('delete `Category Webpage Index` where `Category Webpage Index Webpage Key`=%d  ', $this->id);
+        $this->db->exec($sql);
+
+
+        $sql = sprintf('delete `Webpage Section Dimension` where `Webpage Section Webpage Key`=%d  ', $this->id);
+        $this->db->exec($sql);
+
+
+
         $this->deleted = false;
         $sql           = sprintf(
             "DELETE FROM `Page Dimension` WHERE `Page Key`=%d", $this->id
@@ -3254,6 +3254,15 @@ class Page extends DB_Table {
 
             $deleted_page = new PageDeleted();
             $deleted_page->create($data);
+
+
+
+            require_once 'class.Webpage_Type.php';
+
+            $webpage_type = new Webpage_Type($this->get('Webpage Type Key'));
+            $webpage_type->update_number_webpages();
+
+
             $this->new_value = $deleted_page->id;
         }
         $this->deleted = true;
