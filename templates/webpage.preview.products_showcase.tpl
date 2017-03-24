@@ -112,11 +112,15 @@
     </div>
 {/if}
 
+
+
+
     <div id="description_block" class="section description_block {$content_data.description_block.class} " >
 
 
         <i class="create_text fa fa-align-center fa-fw button" aria-hidden="true" style="position:absolute;left:-40px;top:10px"></i>
         <i class="create_image fa fa-picture-o fa-fw button" aria-hidden="true" style="position:absolute;left:-40px;top:30px"></i>
+
 
 
         <div id="image_edit_toolbar" class="edit_toolbar hide" section="description_block" style=" z-index: 200;position:relative;">
@@ -125,7 +129,7 @@
             <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
                 <input type="file" name="image_upload" id="file_upload" class="input_file" multiple/>
                 <label for="file_upload">
-                    <i class="fa  fa-picture-o fa-fw button" aria-hidden="true"></i><br>
+                    <i class="fa  fa-picture-o fa-fw button" aria-hidden="true" style="position:relative;left:-18px"></i><br>
                 </label>
             </form>
 

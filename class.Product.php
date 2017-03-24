@@ -1860,9 +1860,7 @@ class Product extends Asset {
 
                     include_once 'class.Category.php';
                     $family = new Category($value);
-                    $family->associate_subject(
-                        $this->id, false, '', 'skip_direct_update'
-                    );
+                    $family->associate_subject($this->id, false, '', 'skip_direct_update');
 
                     $sql = sprintf(
                         "SELECT C.`Category Key` FROM `Category Dimension` C LEFT JOIN `Category Bridge` B ON (C.`Category Key`=B.`Category Key`) WHERE `Category Root Key`=%d AND `Subject Key`=%d AND `Subject`='Category' AND `Category Branch Type`='Head'",

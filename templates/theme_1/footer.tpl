@@ -11,6 +11,20 @@
 <style>
 
 
+    input.input_file {
+        width: 0.1px;
+        height: 0.1px;
+        opacity: 0;
+        overflow: hidden;
+        position: absolute;
+        z-index: -1;
+    }
+
+
+    .save{
+        color:#0EBFE9;
+
+    }
     .italic {
         font-style: italic
     }
@@ -180,6 +194,14 @@
 
 </div>
 
+<div id="block_type_2" class="input_container block_type  hide" style="">
+    <div onClick="change_block_type(this)" class="type_copyright_bundle"><span>{t}Copyright{/t}</span></div>
+    <div  onClick="change_block_type(this)" class="type_social_links"><span>{t}Social icons{/t}</span></div>
+    <div onClick="change_block_type(this)"  class="type_low_text"><span>{t}Text{/t}</span></div>
+    <div onClick="change_block_type(this)"  class="type_low_nothing"><span>{t}Nothing{/t}</span></div>
+
+</div>
+
 <div id="item_types" class="input_container  hide  " style="">
     <div onClick="add_item_type(this)" ><i  class="button fa fa-fw fa-star" aria-hidden="true" label="{t}My company name{/t}"></i> </div>
 
@@ -199,18 +221,29 @@
 
 
 <i id="delete_link" class="fa fa-trash hide editing button" aria-hidden="true" onClick="delete_link(this)" style="position:absolute" title="{t}Remove link{/t}" ></i>
+
 <i id="delete_item" class="fa fa-trash hide editing button" aria-hidden="true" onClick="delete_item(this)" style="position:absolute" title="{t}Remove item{/t}" ></i>
+
+
+<form id="change_image" class="hide" style="position:absolute;top:0;left:0" method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
+    <input type="file" name="image_upload" id="file_upload" class="input_file" multiple/>
+    <label for="file_upload">
+        <i class=" fa fa-picture-o fa-fw button editing" aria-hidden="true" title="{t}Change image{/t}"></i>
+    </label>
+</form>
+
 
 <div>
 
 <div style="padding:20px;" class="control_panel">
     <span class="hide"><i class="fa fa-toggle-on" aria-hidden="true"></i> {t}Logged in{/t}</span>
-    <span class="button drag_mode" onClick="change_drag_mode(this)">
+    <span id="drag_mode" class="button drag_mode" onClick="change_drag_mode(this)">
         <i class="fa fa-hand-rock-o discreet" style="margin-left:20px" aria-hidden="true"></i> {t}Drag / Block edit mode{/t} <i class="fa fa-check-circle invisible" aria-hidden="true"></i>
     </span>
 
 
 
+    <span id="save_button" class="" style="float:right" onClick="save_footer()"><i class="fa fa-cloud  " aria-hidden="true"></i> {t}Save{/t}</span>
 
 
 </div>
@@ -228,6 +261,27 @@
 
 
     </ul>
+
+
+    <div id="block_copyright_bundle_stem_cell" class="hide">
+    <div onClick="edit_copyright_bundle(this)"  class="footer_copyright_bundle">
+        {t}Copyright{/t} © {"%Y"|strftime} <span class="copyright_bundle_owner">Aurora</span>. {t}All rights reserved{/t}. <span class="copyright_bundle_links"> <a class="copyright_bundle_link" href="#"> Terms of Use</a> | <a class="copyright_bundle_link" href="#"> Privacy Policy</a></span>
+    </div>
+    </div>
+    <div id="block_low_text_stem_cell" class="hide">
+        Bla bla bla
+    </div>
+
+    <div id="block_social_links_stem_cell" class="hide">
+        <ul  onClick="edit_social_links(this)"  class="footer_social_links">
+
+                <li class="" icon="fa-facebook"  ><a href="#"><i class="fa fa-facebook"></i></a></li>
+            <li class="" icon="fa-twitter"  ><a href="#"><i class="fa fa-twitter"></i></a></li>
+            <li class="" icon="fa-linkedin"  ><a href="#"><i class="fa fa-linkedin"></i></a></li>
+
+
+        </ul>
+    </div>
 
     <div id="block_text_stem_cell" class="hide">
 
@@ -251,9 +305,9 @@
         <div class="footer_block qlinks">
             <h4 class="lmb" contenteditable>{t}Useful Links{/t}</h4>
             <ul class="links_list">
-                <li class="item"><a href="#"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span ondrop="return false;" contenteditable>{t}Home Page Variations{/t}<span></span></a></li>
-                <li class="item"><a href="#"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span ondrop="return false;" contenteditable>{t}Awesome Products{/t}<span></span></a></li>
-                <li class="item"><a href="#"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span ondrop="return false;" contenteditable>{t}Features and Benefits{/t}<span></span></a></li>
+                <li class="item"><a href="#"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span class="item_label" ondrop="return false;" contenteditable>{t}Home Page Variations{/t}<span></span></a></li>
+                <li class="item"><a href="#"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span class="item_label" ondrop="return false;" contenteditable>{t}Awesome Products{/t}<span></span></a></li>
+                <li class="item"><a href="#"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span class="item_label" ondrop="return false;" contenteditable>{t}Features and Benefits{/t}<span></span></a></li>
                 <li onClick="add_link(this)"  class="ui-state-disabled add_link"><a href="{$item.url}"><i class="fa fa-fw fa-plus editing link_icon" onClick="update_link(this)"></i> <span class="editing" ondrop="return false;" >{t}Add link{/t}<span></span></a></li>
             </ul>
 
@@ -264,7 +318,10 @@
 
     <div id="block_nothing_stem_cell" class="hide">
 
-        <div >&nbsp;</div>
+        <div class="footer_block">&nbsp;</div>
+    </div>
+    <div id="block_low_nothing_stem_cell" class="hide">
+        &nbsp;
     </div>
 
     <div id="block_items_stem_cell" class="hide">
@@ -285,15 +342,8 @@
     </div>
 
   <footer class="footer">
-
-
-
-
-
-
       <div class="top_footer empty"></div><!-- end footer top section -->
-
-            <div class="clearfix"></div>
+      <div class="clearfix"></div>
 
       {foreach from=$footer_data.rows item=row}
 
@@ -308,7 +358,7 @@
 
               {if $column.type=='address'}
 
-                  <div class="one_fourth  editable_block {if $smarty.foreach.main_4.last}last{/if}" >
+                  <div class="one_fourth   editable_block {if $smarty.foreach.main_4.last}last{/if}" >
 
                       <i class="fa fa-hand-rock-o editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
                       <i onclick="open_block_type_options(this,'block_type_1','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
@@ -317,18 +367,18 @@
                       <ul class="footer_block faddress">
                           {foreach from=$column.items item=item }
                               {if $item.type=='logo'}
-                                  <li  class="item"><img  onclick="edit_item_image(this)" src="{$item.src}" alt=" {$item.alt}" /></li>
+                                  <li  class="item _logo"><img  onclick="edit_item_image(this)" src="{$item.src}" title=" {$item.title}" /></li>
                               {elseif $item.type=='text'}
-                                  <li   class="item"><i onclick="edit_item(this)"  class="fa fa-fw {$item.icon}"></i> <span contenteditable>{$item.text}</span></li>
+                                  <li   class="item _text" icon="{$item.icon}"><i onclick="edit_item(this)"  class="fa fa-fw {$item.icon}"></i> <span contenteditable>{$item.text}</span></li>
                               {elseif $item.type=='email'}
-                                  <li  class="item"><i onclick="edit_item(this)" class="fa fa-fw fa-envelope"></i> <span contenteditable>{$item.text}</span></li>
+                                  <li  class="item _email"><i onclick="edit_item(this)" class="fa fa-fw fa-envelope"></i> <span contenteditable>{$item.text}</span></li>
                               {/if}
                           {/foreach}
                           <li onClick="add_item(this)"  class="ui-state-disabled add_item"><a href="{$item.url}"><i class="fa fa-fw fa-plus editing link_icon" onClick="update_link(this)"></i> <span class="editing" ondrop="return false;" >{t}Add item{/t}<span></span></a></li>
                       </ul>
                   </div>
               {elseif $column.type=='links'}
-                  <div class="one_fourth  editable_block {if $smarty.foreach.main_4.last}last{/if}" >
+                  <div class="one_fourth links  editable_block {if $smarty.foreach.main_4.last}last{/if}" >
                       <i class="fa fa-hand-rock-o editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
                       <i onclick="open_block_type_options(this,'block_type_1','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
 
@@ -338,7 +388,9 @@
 
                           <ul class="links_list">
                               {foreach from=$column.items item=item }
-                                  <li class="item"><a href="{$item.url}"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span ondrop="return false;" contenteditable>{$item.label}<span></span></a></li>
+                                  <li class="item"><a href="{$item.url}">
+                                          <i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i>
+                                            <span class="item_label" ondrop="return false;" contenteditable>{$item.label}</span></a></li>
 
                               {/foreach}
 
@@ -357,10 +409,17 @@
 
                           <h4 class="lmb" contenteditable>{$column.header}</h4>
 
-                          <div contenteditable>
+                          <div  contenteditable>
                           {$column.text}
                           </div>
                       </div>
+                  </div>
+              {elseif $column.type=='nothing'}
+                  <div class="one_fourth  editable_block {if $smarty.foreach.main_4.last}last{/if}">
+                      <div class="footer_block nothing">
+
+                      </div>
+
                   </div>
               {/if}
 
@@ -378,7 +437,7 @@
 
 
               <div class="copyright_info">
-                  <div class="container">
+                  <div class="container sortable_container">
 
                       <div class="clearfix divider_dashed10"></div>
 
@@ -387,23 +446,52 @@
                       {foreach from=$row.columns item=column name=copyright_info}
 
                       {if $column.type=='text'}
-                          <div class="one_half " >
-                            {$column.text}
+                          <div class="one_half  {if $smarty.foreach.copyright_info.last}last{/if}" >
+                              <i class="fa fa-hand-rock-o editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
+                              <i onclick="open_block_type_options(this,'block_type_2','low_{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
+                              <div class="footer_block _copyright_text">
+                              {$column.text}
+                              </div>
                           </div>
+
+                          {elseif $column.type=='nothing'}
+                              <div class="one_half  {if $smarty.foreach.copyright_info.last}last{/if}" >
+                                  <i class="fa fa-hand-rock-o editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
+                                  <i onclick="open_block_type_options(this,'block_type_2','low_{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
+                                  <div class="footer_block _copyright_nothing">
+                                  </div>
+                              </div>
+
                       {elseif $column.type=='copyright_bundle'}
-                              <div class="one_half " onClick="edit_copyright_bundle(this)"  class="footer_copyright_bundle" >
+                              <div class="one_half  {if $smarty.foreach.copyright_info.last}last{/if}"  >
+
+                                  <i class="fa fa-hand-rock-o editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
+                                  <i onclick="open_block_type_options(this,'block_type_2','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
+
+                                  <div class="footer_block _copyright_bundle">
+                                <div onClick="edit_copyright_bundle(this)"  class="footer_copyright_bundle">
                                   {t}Copyright{/t} © {"%Y"|strftime} <span class="copyright_bundle_owner">{$column.owner}</span>. {t}All rights reserved{/t}. <span class="copyright_bundle_links">{foreach  from=$column.links item=item name=copyright_links}<a class="copyright_bundle_link" href="{$item.url}">{$item.label}</a>{if !$smarty.foreach.copyright_links.last} | {/if}{/foreach}</span>
+                                </div>
+                                </div>
                               </div>
                       {elseif $column.type=='social_links'}
-                          <div class="one_half {if $smarty.foreach.copyright_info.last}last{/if}">
+
+
+
+                          <div class="one_half  {if $smarty.foreach.copyright_info.last}last{/if}">
+
+                              <i class="fa fa-hand-rock-o editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
+                              <i onclick="open_block_type_options(this,'block_type_2','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
+
+                              <div class="footer_block _social_links">
 
                               <ul  onClick="edit_social_links(this)"  class="footer_social_links">
                                   {foreach from=$column.items item=item}
-                                      <li class="" icon="{$item.icon}"  ><a href="{$item.url}"><i class="fa {$item.icon}"></i></a></li>
+                                      <li class="social_link" icon="{$item.icon}"  ><a href="{$item.url}"><i class="fa {$item.icon}"></i></a></li>
 
                                   {/foreach}
                               </ul>
-
+                            </div>
                           </div>
                       {/if}
 
@@ -461,12 +549,23 @@ var current_editing_item_id=false
     function change_block_type(element) {
 
 
+
+
         var block_type = $(element).closest('.block_type')
 
-        console.log(block_type)
+        console.log( block_type.attr('block_id'))
+
+        console.log($('#' + block_type.attr('block_id')))
+
 
         if ($(element).hasClass('type_text')) {
             $('#' + block_type.attr('block_id')).replaceWith($('#block_text_stem_cell').html())
+        }else if ($(element).hasClass('type_low_text')) {
+            $('#' + block_type.attr('block_id')).html($('#block_low_text_stem_cell').html())
+        }else if ($(element).hasClass('type_social_links')) {
+            $('#' + block_type.attr('block_id')).html($('#block_social_links_stem_cell').html())
+        }else if ($(element).hasClass('type_copyright_bundle')) {
+            $('#' + block_type.attr('block_id')).html($('#block_copyright_bundle_stem_cell').html())
         }else if ($(element).hasClass('type_links')) {
             $('#' + block_type.attr('block_id')).replaceWith($('#block_links_stem_cell').html())
         }else if ($(element).hasClass('type_items')) {
@@ -481,6 +580,8 @@ var current_editing_item_id=false
 
         }else if ($(element).hasClass('type_nothing')) {
             $('#' + block_type.attr('block_id')).replaceWith($('#block_nothing_stem_cell').html())
+        }else if ($(element).hasClass('type_low_nothing')) {
+            $('#' + block_type.attr('block_id')).html($('#block_low_nothing_stem_cell').html())
         }
 
 
@@ -574,12 +675,20 @@ var current_editing_item_id=false
             current_editing_item_id = id
 
             $('#delete_item').removeClass('hide').offset({ top: $(element).offset().top, left: $(element).offset().left - 20}).attr('item_id', id)
+            $('#change_image').removeClass('hide').offset({ top: $(element).offset().top+20, left: $(element).offset().left - 20}).attr('item_id', id)
+
+         //   $('#change_image').removeClass('hide')
+
         }else{
             if(current_editing_item_id==id){
                 $('#delete_item').addClass('hide')
+                $('#change_image').addClass('hide')
+
             }else{
                 current_editing_item_id=id
                 $('#delete_item').removeClass('hide').offset({ top: $(element).offset().top, left: $(element).offset().left - 20}).attr('item_id', id)
+                $('#change_image').removeClass('hide').offset({ top: $(element).offset().top+20, left: $(element).offset().left - 20}).attr('item_id', id)
+
             }
 
         }
@@ -717,9 +826,9 @@ function add_link(element){
         function  edit_social_links(element){
 
 
-        if(! $('#social_links_control_center').hasClass('hide')){
-            return
-        }
+      //  if(! $('#social_links_control_center').hasClass('hide')){
+        //    return
+       // }
 
         var block=$(element)
             block.uniqueId()
@@ -730,7 +839,15 @@ function add_link(element){
             });
 
 
+
+        if($(element).closest('.one_half').hasClass('last')){
             $('#social_links_control_center').attr('block_id',id).removeClass('hide').offset({ top:block.offset().top -30-  $('#social_links_control_center').height() , left:block.offset().left+block.width()  - $('#social_links_control_center').width()  })
+
+        }else{
+            $('#social_links_control_center').attr('block_id',id).removeClass('hide').offset({ top:block.offset().top -30-  $('#social_links_control_center').height() , left:block.offset().left   })
+
+        }
+
 
 
 
@@ -761,6 +878,11 @@ function add_link(element){
 
 
     function  edit_copyright_bundle(element){
+
+
+            if($('#drag_mode').hasClass('on')){
+                return;
+            }
 
 
         if(! $('#copyright_bundle_control_center').hasClass('hide')){
@@ -814,6 +936,302 @@ console.log(link.html())
 
         block.find('.copyright_bundle_links').html(copyright_links)
     }
+
+    $("body").on('DOMSubtreeModified', ".footer", function() {
+        $('#save_button').addClass('save button')
+    });
+
+    function save_footer(){
+
+       if(! $('#save_button').hasClass('save')){
+         //  return;
+       }
+
+var cols_main_4=[];
+        var cols_copyright=[];
+
+        $('footer.footer .footer_block').each(function(i, obj) {
+
+
+
+            if($(obj).hasClass('faddress')){
+
+                var items =[];
+
+                $(obj).find('.item').each(function(j, obj2) {
+
+                    if($(obj2).hasClass('_logo')){
+
+
+                        console.log($(obj2))
+
+                       var img= $(obj2).find('img')
+
+
+                        items.push({
+                          type: "logo",
+                           src: img.attr('src'),
+                            title: img.attr('title')
+                        });
+
+                    }
+                    else if($(obj2).hasClass('_text')){
+
+
+
+                        items.push({
+                            type: "text",
+                            icon: $(obj2).attr('icon'),
+                            text:  $(obj2).find('span').html(),
+                        });
+
+                    } else if($(obj2).hasClass('_email')){
+
+
+
+                        items.push({
+                            type: "email",
+                            text:  $(obj2).find('span').html(),
+                        });
+
+                    }
+
+
+
+
+
+                   //console.log(obj2)
+
+                });
+
+
+
+
+
+                cols_main_4.push(
+                    {
+                        'type':'address',
+                        'items':items
+
+                    }
+                )
+
+            }
+            else if($(obj).hasClass('siteinfo')){
+
+                cols_main_4.push(
+                    {
+                        'type':'text',
+                        'header':$(obj).find('h4.lmb').html(),
+                        'text':$(obj).find('div').html()
+                    }
+                )
+
+            }
+            else if($(obj).hasClass('qlinks')){
+
+
+                var items=[]
+                $(obj).find('.item').each(function(j, obj2) {
+
+                        items.push({
+                            url: $(obj2).find('a').attr('href'),
+                            title: $(obj2).find('.item_label').html(),
+                        });
+
+
+                });
+
+
+                cols_main_4.push(
+                    {
+                        'type':'text',
+                        'header':$(obj).find('h4.lmb').html(),
+                        'items':items
+                    }
+                )
+
+            }
+            else if($(obj).hasClass('nothing')){
+                cols_main_4.push(
+                    {
+                        'type':'nothing'
+
+                    }
+                )
+            }
+            else if($(obj).hasClass('_copyright_text')){
+
+                cols_copyright.push(
+                    {
+                        'type':'text',
+                        'text':$(obj).html()
+                    }
+                )
+
+            }
+            else if($(obj).hasClass('_copyright_nothing')){
+
+                cols_copyright.push(
+                    {
+                        'type':'nothing'
+                    }
+                )
+
+            }
+
+            else if($(obj).hasClass('_copyright_bundle')){
+
+
+                var links=[]
+                $(obj).find('.copyright_bundle_link').each(function(j, obj2) {
+
+                    links.push({
+                        url: $(obj2).attr('href'),
+                        label: $(obj2).html(),
+                    });
+
+
+                });
+
+                cols_copyright.push(
+                    {
+                        'type':'copyright_bundle',
+                        'owner':$(obj).find('.copyright_bundle_owner').html(),
+                    'links':links
+                    }
+                )
+
+            }
+            else if($(obj).hasClass('_social_links')){
+
+
+                var items=[]
+                $(obj).find('.social_link').each(function(j, obj2) {
+
+                    items.push({
+                        url: $(obj2).find('a').attr('href'),
+                        icon: $(obj2).attr('icon'),
+                    });
+
+
+                });
+
+                cols_copyright.push(
+                    {
+                        'type':'social_links',
+                        'items':items
+                    }
+                )
+
+            }
+        })
+
+        footer_data=[]
+
+
+        footer_data.push({
+                'type':'main_4',
+                'columns':cols_main_4
+            }
+        )
+        footer_data.push({
+            'type':'copyright',
+            'columns':cols_copyright
+    }
+    )
+
+
+
+        console.log(footer_data)
+
+        var request = '/ar_edit_website.php?tipo=save_footer&footer_data=' +encodeURIComponent(btoa(JSON.stringify(footer_data)));
+
+
+        $.getJSON(request, function (data) {
+
+        })
+
+
+    }
+
+    var droppedFiles = false;
+
+    $('#file_upload').on('change', function (e) {
+
+
+        var ajaxData = new FormData();
+
+        //var ajaxData = new FormData( );
+        if (droppedFiles) {
+            $.each(droppedFiles, function (i, file) {
+                ajaxData.append('files', file);
+            });
+        }
+
+
+        $.each($('#file_upload').prop("files"), function (i, file) {
+            ajaxData.append("files[" + i + "]", file);
+
+        });
+
+
+
+
+
+        ajaxData.append("tipo", 'upload_images')
+        ajaxData.append("parent", 'website')
+        ajaxData.append("parent_key", '{$website->id}')
+        ajaxData.append("parent_object_scope", JSON.stringify({
+                scope: 'footer'
+
+            })
+        )
+
+     //   var image = $('#' + $('#image_edit_toolbar').attr('block') + ' img')
+
+
+        $.ajax({
+            url: "/ar_upload.php",
+            type: 'POST',
+            data: ajaxData,
+            dataType: 'json',
+            cache: false,
+            contentType: false,
+            processData: false,
+
+
+            complete: function () {
+
+            },
+            success: function (data) {
+
+                console.log(data)
+
+                if (data.state == '200') {
+                    console.log(data.image_src)
+                    image.attr('src',data.image_src)
+
+
+
+
+
+
+                } else if (data.state == '400') {
+
+                }
+
+
+            },
+            error: function () {
+
+            }
+        });
+
+
+
+    });
+
 
 
     </script>

@@ -1,0 +1,9 @@
+ul.footer_social_links {
+
+    float:left;
+}
+
+.one_half.last ul.footer_social_links {
+
+    float:right;
+}

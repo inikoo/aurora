@@ -141,15 +141,25 @@
                     </td>
                     <td class="Part_Barcode_Number highlight">{$part->get('Part Barcode Number')} </td>
                     <td class="barcode_labels aright {if !$part->get('Part Barcode Key')}hide{/if}">
-                        <a title="{t}Stock keeping unit (Outer){/t}"
-                           href="/asset_label.php?object=part&key={$part->id}&type=package"><i
-                                    class="fa fa-tag "></i></a>
+
                         <a class="padding_left_10" title="{t}Commercial unit label{/t}"
                            href="/asset_label.php?object=part&key={$part->id}&type=unit"><i class="fa fa-tags "></i></a>
                     </td>
 
                 </tr>
+                <tr class="main">
+                    <td class="label">
+                        <i class="fa fa-barcode "   ></i></i>
+                    </td>
+                    <td class="Part_SKO_Barcode ">{$part->get('Part SKO Barcode')} </td>
+                    <td class="barcode_labels aright {if !$part->get('Part Barcode Key')}hide{/if}">
+                        <a title="{t}Stock keeping unit (Outer){/t}"
+                           href="/asset_label.php?object=part&key={$part->id}&type=package"><i
+                                    class="fa fa-tag "></i></a>
 
+                    </td>
+
+                </tr>
 
             </table>
 

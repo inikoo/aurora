@@ -336,6 +336,9 @@ class Category extends DB_Table {
 		*/
 
 
+
+            print "XXX Created category";
+
             $this->new = true;
 
             $created_msg = _('Category created');
@@ -1685,115 +1688,126 @@ class Category extends DB_Table {
         // $data['editor']
 
 
+
+
+
         $subcategory = new Category('find create', $data);
 
-        if ($subcategory->found) {
+
+     //   print_r($subcategory);
+
+        if($subcategory->new) {
+
+
+            /*
+
+                    if ($data['Is Category Field Other'] == 'Yes') {
+                        $this->data['Category Children Other'] = 'Yes';
+                        $sql                                   = sprintf(
+                            "UPDATE `Category Dimension` SET `Category Children Other`=%s WHERE `Category Key`=%d", prepare_mysql($this->data['Category Children Other']), $this->id
+                        );
+                        $this->db->exec($sql);
+                    }
+            */
+
+            //  print_r($subcategory);
+            //-----Migration ---
+
+            if ($this->get('Category Scope') == 'Product') {
+                include_once 'class.Family.php';
+                include_once 'class.Store.php';
+                include_once 'class.Department.php';
+                $store = new Store($this->get('Category Store Key'));
+
+
+                if ($this->get('Category Root Key') == $store->get('Store Family Category Key')) {
+
+
+                    $code = $subcategory->get('Category Code');
+
+
+                    $sql = sprintf('SELECT `Product Department Key` FROM `Product Department Dimension` WHERE `Product Department Store Key`=%s ', $store->id);
+
+                    $dept_key = 0;
+                    if ($result = $this->db->query($sql)) {
+                        if ($row = $result->fetch()) {
+                            $dept_key = $row['Product Department Key'];
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        exit;
+                    }
+
+
+                    $fam_data = array(
+
+                        'Product Family Code'                   => $code,
+                        'Product Family Name'                   => $code,
+                        'Product Family Main Department Key'    => $dept_key,
+                        'Product Family Store Key'              => $store->id,
+                        'Product Family Special Characteristic' => $code
+                    );
+
+                    //print_r($fam_data);
+
+
+                    $family = new Family('find', $fam_data, 'create');
+
+
+                    $account = new Account($this->db);
+
+                    $sql = sprintf(
+                        'SELECT `Image Subject Image Key` FROM `Image Subject Bridge` LEFT JOIN `Category Dimension` ON (`Image Subject Object Key`=`Category Key`)  WHERE `Category Subject`="Part" AND `Category Code`=%s  AND `Category Root Key`=%d AND `Image Subject Object`="Category" ',
+                        prepare_mysql($subcategory->get('Category Code')), $account->get('Account Part Family Category Key')
+                    );
+
+
+                    if ($result = $this->db->query($sql)) {
+                        foreach ($result as $row) {
+                            //  print_r($row);
+                            $subcategory->link_image($row['Image Subject Image Key']);
+
+
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        exit;
+
+
+                    }
+
+
+                }
+
+
+                $subcategory->update_product_category_products_data();
+
+
+            //    if ($subcategory->get('Product Category Public') == 'Yes') {
+              //      foreach ($store->get_websites('objects') as $website) {
+                //        $website->create_category_webpage($subcategory->id);
+                  //  }
+
+               // }
+
+
+            }
+
+
+            return $subcategory;
+        }else if ($subcategory->found) {
             $this->error = true;
 
             if ($subcategory->duplicated_field == 'Category Code') {
                 $this->msg = _('Duplicated code');
             } else {
-                $this->msg = "Category could not be created";
+                $this->msg = "Category already exists";
             }
+            return $subcategory;
+        }else{
+            $this->error = true;
+            return false;
         }
-
-        if ($data['Is Category Field Other'] == 'Yes') {
-            $this->data['Category Children Other'] = 'Yes';
-            $sql                                   = sprintf(
-                "UPDATE `Category Dimension` SET `Category Children Other`=%s WHERE `Category Key`=%d", prepare_mysql($this->data['Category Children Other']), $this->id
-            );
-            $this->db->exec($sql);
-        }
-
-
-      //  print_r($subcategory);
-        //-----Migration ---
-
-        if ($this->get('Category Scope') == 'Product') {
-            include_once 'class.Family.php';
-            include_once 'class.Store.php';
-            include_once 'class.Department.php';
-            $store = new Store($this->get('Category Store Key'));
-
-
-            if ($this->get('Category Root Key') == $store->get('Store Family Category Key')) {
-
-
-                $code = $subcategory->get('Category Code');
-
-
-                $sql = sprintf('SELECT `Product Department Key` FROM `Product Department Dimension` WHERE `Product Department Store Key`=%s ', $store->id);
-
-                $dept_key = 0;
-                if ($result = $this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $dept_key = $row['Product Department Key'];
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
-                }
-
-
-                $fam_data = array(
-
-                    'Product Family Code'                   => $code,
-                    'Product Family Name'                   => $code,
-                    'Product Family Main Department Key'    => $dept_key,
-                    'Product Family Store Key'              => $store->id,
-                    'Product Family Special Characteristic' => $code
-                );
-
-                //print_r($fam_data);
-
-
-                $family = new Family('find', $fam_data, 'create');
-
-
-                $account = new Account($this->db);
-
-                $sql = sprintf(
-                    'SELECT `Image Subject Image Key` FROM `Image Subject Bridge` LEFT JOIN `Category Dimension` ON (`Image Subject Object Key`=`Category Key`)  WHERE `Category Subject`="Part" AND `Category Code`=%s  AND `Category Root Key`=%d and `Image Subject Object`="Category" ',
-                    prepare_mysql($subcategory->get('Category Code')), $account->get('Account Part Family Category Key')
-                );
-
-
-
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-                      //  print_r($row);
-                        $subcategory->link_image($row['Image Subject Image Key']);
-
-
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
-
-
-                }
-
-
-            }
-
-
-            $subcategory->update_product_category_products_data();
-
-
-
-
-            if ($subcategory->get('Product Category Public') == 'Yes') {
-                foreach ($store->get_websites('objects') as $website) {
-                   // print 'xxx';
-                    $website->create_category_webpage($subcategory->id);
-                }
-
-            }
-
-
-        }
-
-        return $subcategory;
 
 
     }
@@ -3170,13 +3184,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         $product = new Product($subject_key);
 
                         $store = new Store($this->get('Category Store Key'));
-                        if ($this->get('Category Root Key') == $store->get(
-                                'Store Family Category Key'
-                            )
-                        ) {
-                            $product->update(
-                                array('Product Family Category Key' => $this->id), 'no_history'
-                            );
+                        if ($this->get('Category Root Key') == $store->get('Store Family Category Key')) {
+                            $product->update(array('Product Family Category Key' => $this->id), 'no_history');
 
                         }
 
@@ -3323,6 +3332,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
                         }
 
+                        $this->update_product_category_products_data();
 
                         //$abstract=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']);
                         //$details=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> ('.$product->data['Product Name'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']).' ('.$this->data['Category Label'].')';

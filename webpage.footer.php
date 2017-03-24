@@ -10,6 +10,18 @@
 */
 
 include_once 'common.php';
+include_once 'class.Website.php';
+
+
+if(!isset($_REQUEST['website_key']) or !is_numeric($_REQUEST['website_key'])){
+    exit;
+}
+
+
+$website_key=$_REQUEST['website_key'];
+
+$website=new Website($website_key);
+
 
 $footer_data = array(
     'rows' => array(
@@ -25,7 +37,6 @@ $footer_data = array(
                         array(
                             'type'  => 'logo',
                             'src'   => 'theme_1/images/footer-logo.png',
-                            'alt'   => '',
                             'title' => ''
 
                         ),
@@ -46,7 +57,6 @@ $footer_data = array(
                         array(
                             'type'  => 'logo',
                             'src'   => 'theme_1/images/footer-wmap.png',
-                            'alt'   => '',
                             'title' => ''
 
                         ),
@@ -166,6 +176,7 @@ $footer_data = array(
 );
 
 $smarty->assign('footer_data', $footer_data);
+$smarty->assign('website', $website);
 
 
 $smarty->display('webpage.footer.tpl');

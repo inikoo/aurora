@@ -21,6 +21,12 @@ if (!is_numeric($number)) {
 
 }
 
+if (isset($_REQUEST['type'])) {
+    $type = $_REQUEST['type'])
+} else {
+    $type = 'ean';
+}
+
 
 if (isset($_REQUEST['scale']) and is_numeric($_REQUEST['scale'])) {
     $scale = ceil($_REQUEST['scale']);
@@ -28,12 +34,14 @@ if (isset($_REQUEST['scale']) and is_numeric($_REQUEST['scale'])) {
     $scale = null;
 }
 
-include_once('external_libs/barcodes/ean.php');
 
+if ($type == 'ean') {
+    include_once('external_libs/barcodes/ean.php');
+    $ean = new EAN(substr($number, 0, 12), $scale);
+    $ean->display();
+}
 
-$ean = new EAN(substr($number, 0, 12), $scale);
-
-$ean->display();
-
+    cd /home/inikoo/aw.au/cron/
+    php get_dropshipping_products.php
 
 ?>
