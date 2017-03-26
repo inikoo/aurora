@@ -49,6 +49,9 @@ class SupplierPart extends DB_Table {
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Supplier Part Key'];
 
+
+           
+
             $this->part = new Part($this->data['Supplier Part Part SKU']);
         }
 
@@ -1277,6 +1280,10 @@ class SupplierPart extends DB_Table {
                 $value = number(
                     $this->data['Supplier Part Packages Per Carton']
                 );
+
+
+
+
                 if ($this->part->data['Part Units Per Package'] != 1 and is_numeric($this->part->data['Part Units Per Package'])) {
                     $value .= ' <span class="very_discreet">('.number(
                             $this->data['Supplier Part Packages Per Carton'] * $this->part->data['Part Units Per Package']

@@ -20,14 +20,7 @@ label: "{t}Reference{/t}",
 editable: false,
 sortType: "toggle",
 
-cell: Backgrid.StringCell.extend({
-events: {
-"click": function() {
-change_view('/supplier/' + this.model.get("supplier_key") + '/part/' + this.model.get("id"))
-}
-},
-className: "link"
-
+cell: Backgrid.HtmlCell.extend({
 })
 
 },
@@ -38,13 +31,7 @@ label: "{t}Supplier{/t}",
 editable: false,
 sortType: "toggle",
 
-cell: Backgrid.StringCell.extend({
-events: {
-"click": function() {
-change_view('/supplier/' + this.model.get("supplier_key"))
-}
-},
-className: "link"
+cell: Backgrid.HtmlCell.extend({
 
 })
 
