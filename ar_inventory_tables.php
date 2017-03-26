@@ -941,7 +941,7 @@ function supplier_parts($_data, $db, $user, $account) {
             $record_data[] = array(
                 'id'               => (integer)$data['Supplier Part Key'],
                 'supplier_key'     => (integer)$data['Supplier Part Supplier Key'],
-                'supplier_code'    => $data['Supplier Code'],
+                'supplier_code'    => sprintf('<span class="link" onClick="change_view(\'supplier/%d/\')" >%s</span>',$data['Supplier Part Supplier Key'],$data['Supplier Code']),
                 'part_key'         => (integer)$data['Supplier Part Part SKU'],
                 'part_reference'   => $data['Part Reference'],
                 'reference'        => sprintf('<span class="link" onClick="change_view(\'supplier/%d/part/%d\')" >%s</span>',$data['Supplier Part Supplier Key'],$data['Supplier Part Key'],$data['Supplier Part Reference']),
