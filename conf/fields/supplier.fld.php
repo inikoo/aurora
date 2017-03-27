@@ -203,7 +203,7 @@ $object_fields = array(
     ),
 
     array(
-        'label'      => _('Telephones'),
+        'label'      => _('Contact'),
         'show_title' => false,
         'fields'     => array(
 
@@ -287,6 +287,19 @@ $object_fields = array(
                 'required'  => false,
                 'reference' => '',
                 'type'      => 'ignore'
+            ),
+
+
+            array(
+                'id'   => 'Supplier_QQ',
+                'edit' => ($edit ? 'string' : ''),
+
+                'value'           => $object->get('Supplier QQ'),
+                'formatted_value' => $object->get('QQ'),
+                'label'           => ucfirst($object->get_field_label('Supplier QQ')),
+                'invalid_msg'     => get_invalid_message('string'),
+                'required'        => false,
+                'type'            => 'value'
             ),
 
             array(

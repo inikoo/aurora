@@ -84,6 +84,13 @@
                             class="Supplier_Main_Plain_Mobile">{$supplier->get('Main Plain Mobile')}</span>
                 </div>
             {/if}
+
+
+            <div id="Supplier_QQ_display"
+                 class="data_field {if !$supplier->get('Supplier QQ')}hide{/if}">
+                <i title="Fax" class="fa fa-fw fa-qq"></i> <span class="Supplier_QQ">{$supplier->get('QQ')}</span>
+            </div>
+
             <div id="Supplier_Main_Plain_FAX_display"
                  class="data_field {if !$supplier->get('Supplier Main Plain FAX')}hide{/if}">
                 <i title="Fax" class="fa fa-fw fa-fax"></i> <span>{$supplier->get('Main Plain FAX')}</span>

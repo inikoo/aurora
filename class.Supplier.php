@@ -1436,7 +1436,9 @@ class Supplier extends SubjectSupplier {
             case 'Supplier Automatic Placement Location':
                 $label = _("Try automatic placement location");
                 break;
-
+            case 'Supplier QQ':
+                $label = 'QQ';
+                break;
 
             default:
                 $label = $field;
