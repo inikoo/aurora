@@ -476,7 +476,9 @@ class SupplierPart extends DB_Table {
                     return;
                 }
 
-                include_once 'class.Supplier.php';
+            include_once 'class.Supplier.php';
+
+
                 $supplier = new Supplier('code', $value);
                 if (!$supplier->id) {
                     $this->error = true;
@@ -487,6 +489,8 @@ class SupplierPart extends DB_Table {
                 $this->update_field_switcher(
                     'Supplier Part Supplier Key', $supplier->id, $options
                 );
+
+
                 break;
 
             case 'Supplier Part Supplier Key':
@@ -553,7 +557,7 @@ class SupplierPart extends DB_Table {
                 );
 
 
-                //$supplier->update_supplier_parts();
+                $supplier->update_supplier_parts();
                 //$supplier->update_up_today_sales();
                 //$supplier->update_last_period_sales();
                 //$supplier->update_interval_sales();
@@ -561,7 +565,7 @@ class SupplierPart extends DB_Table {
 
 
                 if ($old_supplier->id) {
-                    //$old_supplier->update_supplier_parts();
+                    $old_supplier->update_supplier_parts();
                     //$old_supplier->update_up_today_sales();
                     //$old_supplier->update_last_period_sales();
                     //$old_supplier->update_interval_sales();
