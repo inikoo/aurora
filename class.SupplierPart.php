@@ -50,7 +50,7 @@ class SupplierPart extends DB_Table {
             $this->id = $this->data['Supplier Part Key'];
 
 
-           
+
 
             $this->part = new Part($this->data['Supplier Part Part SKU']);
         }
