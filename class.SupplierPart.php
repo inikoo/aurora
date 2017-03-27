@@ -557,6 +557,18 @@ class SupplierPart extends DB_Table {
                 );
 
 
+                if($supplier->get('Supplier Default Currency Code')!=$old_supplier->get('Supplier Default Currency Code')){
+
+                    include_once 'utils/currency_functions.php';
+
+                    $exchange       = currency_conversion($this->db, $old_supplier->get('Supplier Default Currency Code'),$supplier->get('Supplier Default Currency Code'), '- 1 day');
+
+                    $this->update_field_switcher(
+                        'Supplier Part Unit Cost', $exchange*$this->get('Supplier Part Unit Cost'), 'no_history'
+                    );
+                }
+
+
                 $supplier->update_supplier_parts();
                 //$supplier->update_up_today_sales();
                 //$supplier->update_last_period_sales();
@@ -607,6 +619,7 @@ class SupplierPart extends DB_Table {
 
             case 'Supplier Part Unit Cost':
 
+
                 if ($value == '') {
                     $this->error = true;
                     $this->msg   = _('Cost missing');
@@ -625,8 +638,10 @@ class SupplierPart extends DB_Table {
 
 
 
+
             if($this->data['Supplier Part Unit Extra Cost Percentage']!=''){
-                $this->update_field('Supplier Part Unit Extra Cost ', $value*$this->data['Supplier Part Unit Extra Cost Percentage'], 'no_history');
+
+                $this->update_field('Supplier Part Unit Extra Cost', $value*$this->data['Supplier Part Unit Extra Cost Percentage'], 'no_history');
 
 
             }
@@ -1205,9 +1220,7 @@ class SupplierPart extends DB_Table {
                 } else {
                     $extra_cost = $this->data['Supplier Part Unit Extra Cost'];
                 }
-                $exchange       = currency_conversion(
-                    $this->db, $this->data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 1 day'
-                );
+                $exchange       = currency_conversion($this->db, $this->data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 1 day');
                 $delivered_cost = $exchange * $this->part->data['Part Units Per Package'] * $this->data['Supplier Part Packages Per Carton'] * ($this->data['Supplier Part Unit Cost'] + $extra_cost);
 
                 $cost = money(
