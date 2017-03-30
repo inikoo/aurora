@@ -1,4 +1,4 @@
-<div id="edit_history_note_dialog" class="hide textarea_dialog" object="{$state['object']}" key="{$state['key']}"
+<div id="edit_history_note_dialog" class="hide textarea_dialog" object="{$history_notes_data['object']}" key="{$history_notes_data['key']}"
      history_key="">
     <div class="note_type">
         <div class="label">{t}Permanent{/t} <i onClick="note_type()" id="note_type" class="fa fa-check-square-o fw"></i>
@@ -8,7 +8,7 @@
     <textarea id="history_note_value"></textarea><br>
     <i id="history_note_close_button" class="fa fa-sign-out fa-flip-horizontal fw "
        onclick="close_history_note_dialog()"></i>
-    <i id="history_note_save_button" class="fa fa-cloud save fw" onclick="save_history_note()"></i>
+    <i id="history_note_save_button" class="fa fa-cloud save  fa-fw" onclick="save_history_note()"></i>
 </div>
 <script>
     function note_type() {
@@ -110,7 +110,10 @@
                     });
 
                 }
+                $('#history_note_save_button').removeClass('changed valid')
 
+
+                $('#history_note_value').val('')
 
                 close_history_note_dialog()
             } else if (data.state == 400) {
@@ -198,5 +201,15 @@
         strikethrough_note('No', $(this))
     });
 
+    $('#history_note_value').on('input propertychange', function() {
+
+        if($('#history_note_value').val()==''){
+            $('#history_note_save_button').removeClass('changed valid')
+        }else{
+            $('#history_note_save_button').addClass('changed valid')
+
+        }
+
+    });
 
 </script>

@@ -1601,7 +1601,7 @@ class Department extends DB_Table {
         return $this->data['Product Department Main Image Key'];
     }
 
-    function add_image($image_key) {
+    function add_image($image_key,$option=false) {
 
         $sql = sprintf(
             "SELECT `Image Key`,`Is Principal` FROM `Image Bridge` WHERE `Subject Type`='Department' AND `Subject Key`=%d  AND `Image Key`=%d", $this->id, $image_key

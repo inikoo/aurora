@@ -15,7 +15,7 @@ include_once 'utils/natural_language.php';
 trait ImageSubject {
 
 
-    function add_image($raw_data) {
+    function add_image($raw_data,$options='') {
 
 
         include_once 'utils/units_functions.php';

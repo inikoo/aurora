@@ -1,1 +1,0 @@
-../../utils/detect_agent.php

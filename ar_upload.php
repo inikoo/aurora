@@ -96,6 +96,10 @@ switch ($tipo) {
                              'type'     => 'string',
                              'optional' => true
                          ),
+                         'options' => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         ),
                          'response_type'              => array('type' => 'string', 'optional' => true),
                      )
         );
@@ -308,6 +312,14 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
     } else {
         $parent_object_scope = 'Default';
     }
+
+
+    if (isset($data['options'])) {
+        $options = $data['options'];
+    } else {
+        $options = '';
+    }
+
     $parent         = get_object($data['parent'], $data['parent_key']);
     $parent->editor = $editor;
 
@@ -423,8 +435,7 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
 
 
 
-
-        $image = $parent->add_image($image_data);
+        $image = $parent->add_image($image_data,$options);
 
 
         if ($parent->error) {
@@ -446,6 +457,14 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
 
     if(isset($data['response_type']) and  $data['response_type']=='froala'){
         echo json_encode(array('link'=>sprintf('/image_root.php?id=%d', $image->id)));
+    }elseif(isset($data['response_type']) and  $data['response_type']=='website'){
+        echo json_encode(
+            array(
+                'state'=>200,
+                'web_image_key'=>$image,
+                'image_src'=>sprintf('/web_image.php?id=%d', $image
+                )
+            ));
     }else{
         if ($uploads > 0) {
             $msg = '<i class="fa fa-check"></i> '._('Success');

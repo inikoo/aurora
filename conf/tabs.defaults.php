@@ -2477,7 +2477,6 @@ $tab_defaults = array(
         'f_field'     => 'reference',
 
     ),
-
     'supplier.part_locations_with_errors.wget' => array(
         'view'        => 'overview',
         'sort_key'    => 'reference',
@@ -2519,6 +2518,27 @@ $tab_defaults = array(
         // 'f_period'=>'ytd',
         // 'elements_type'=>each(  $elements_options['parts']  ) ['key'],
         //  'elements'=>$elements_options['parts'],
+    ),
+
+    'category.webpage.logbook'              => array(
+        'view'          => 'overview',
+        'sort_key'      => 'date',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'note',
+        'elements_type' => each($elements_options['webpage_publishing_history'])['key'],
+        'elements'      => $elements_options['webpage_publishing_history']
+    ),
+    'product.webpage.logbook'              => array(
+        'view'          => 'overview',
+        'sort_key'      => 'date',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'note',
+        'elements_type' => each($elements_options['webpage_publishing_history'])['key'],
+        'elements'      => $elements_options['webpage_publishing_history']
     ),
 
 );

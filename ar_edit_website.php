@@ -34,7 +34,8 @@ switch ($tipo) {
     case 'save_footer':
         $data = prepare_values(
             $_REQUEST, array(
-                         'footer_data'     => array('type' => 'string'),
+                         'footer_key' => array('type' => 'key'),
+                         'footer_data' => array('type' => 'string')
 
 
                      )
@@ -1097,6 +1098,7 @@ function publish_webpage($data, $editor, $db) {
     // todo migrate to Webpage & WebpageVersion classes
     include_once('class.Page.php');
     $webpage = new Page($data['parent_key']);
+    $webpage->editor = $editor;
 
     $webpage->publish();
 
@@ -1120,6 +1122,7 @@ function unpublish_webpage($data, $editor, $db) {
     // todo migrate to Webpage & WebpageVersion classes
     include_once('class.Page.php');
     $webpage = new Page($data['parent_key']);
+    $webpage->editor = $editor;
 
     $webpage->unpublish();
 
@@ -1590,36 +1593,64 @@ function create_webpage($data, $editor, $smarty, $db) {
         }
     }
 
-if($webpage_key){
+    if ($webpage_key) {
 
-    $response = array(
-        'state'       => 200,
-        'webpage_key' => $webpage_key
-
-
-    );
-}else{
-
-    $response = array(
-        'state'       => 400,
-        'msg' => $webpage_key
+        $response = array(
+            'state'       => 200,
+            'webpage_key' => $webpage_key
 
 
-    );
-}
+        );
+    } else {
+
+        $response = array(
+            'state' => 400,
+            'msg'   => $webpage_key
+
+
+        );
+    }
 
     echo json_encode($response);
 }
 
 
-function save_footer($data){
+function save_footer($data, $editor) {
+
+    include_once('class.WebsiteFooter.php');
 
 
+    $footer_data = json_decode(base64_decode($data['footer_data']), true);
 
-  $footer_data=json_decode(base64_decode($data['footer_data']),true);
-    print_r($footer_data);
 
- //   print_r(base64_decode($footer_data));
+    $footer         = new WebsiteFooter($data['footer_key']);
+    $footer->editor = $editor;
+    $footer->update(
+        array(
+            'Website Footer Data' => $footer_data
+        )
+    );
+
+
+    if (!$footer->error) {
+
+        $response = array(
+            'state'       => 200
+
+
+        );
+    } else {
+
+        $response = array(
+            'state' => 400,
+            'msg'   => $footer->msg
+
+
+        );
+    }
+
+    echo json_encode($response);
+
 
 }
 

@@ -9,198 +9,169 @@
 
 */
 
-function get_default_footer_data($website,$template) {
+function get_default_footer_data($template) {
 
-    $time_series = array(
-        'Account' => array(
-            array(
-                'Timeseries Type'      => 'AccountSales',
-                'Timeseries Frequency' => 'Daily',
-                'Timeseries Scope'     => 'Sales',
-                'Timeseries Parent'    => 'Account',
-            ),
-            array(
-                'Timeseries Type'      => 'AccountSales',
-                'Timeseries Frequency' => 'Weekly',
-                'Timeseries Scope'     => 'Sales',
-                'Timeseries Parent'    => 'Account',
-            ),
-            array(
-                'Timeseries Type'      => 'AccountSales',
-                'Timeseries Frequency' => 'Monthly',
-                'Timeseries Scope'     => 'Sales',
-                'Timeseries Parent'    => 'Account',
-            ),
-            array(
-                'Timeseries Type'      => 'AccountSales',
-                'Timeseries Frequency' => 'Quarterly',
-                'Timeseries Scope'     => 'Sales',
-                'Timeseries Parent'    => 'Account',
-            ),
-            array(
-                'Timeseries Type'      => 'AccountSales',
-                'Timeseries Frequency' => 'Yearly',
-                'Timeseries Scope'     => 'Sales',
-                'Timeseries Parent'    => 'Account',
+
+    if ($template == 1) {
+
+
+        return array(
+            'rows' => array(
+                array(
+                    'type'    => 'main_4',
+                    'columns' => array(
+
+                        array(
+                            'type' => 'address',
+
+                            'items' => array(
+
+                                array(
+                                    'type'  => 'logo',
+                                    'src'   => 'theme_1/images/footer-logo.png',
+                                    'title' => ''
+
+                                ),
+                                array(
+                                    'type' => 'text',
+                                    'icon' => 'fa-map-marker ',
+                                    'text' => '110 London Road, Oxford,  OX2 6RB, UK'
+                                ),
+                                array(
+                                    'type' => 'text',
+                                    'icon' => 'fa-phone',
+                                    'text' => '+1-541-754-3010'
+                                ),
+                                array(
+                                    'type' => 'email',
+                                    'text' => 'info@yourdomain.com'
+                                ),
+                                array(
+                                    'type'  => 'logo',
+                                    'src'   => 'theme_1/images/footer-wmap.png',
+                                    'title' => ''
+
+                                ),
+                            ),
+
+
+                        ),
+
+                        array(
+                            'type'   => 'links',
+                            'header' => _('Useful Links'),
+
+                            'items' => array(
+                                array(
+                                    'url'   => '#',
+                                    'label' => _('Home Page Variations')
+                                ),
+                                array(
+                                    'url'   => '#',
+                                    'label' => _('Awesome Products')
+                                ),
+                                array(
+                                    'url'   => '#',
+                                    'label' => _('Features and Benefits')
+                                )
+                            )
+                        ),
+
+                        array(
+                            'type'   => 'links',
+                            'header' => _('Useful Links 2'),
+                            'items'  => array(
+                                array(
+                                    'url'   => '#',
+                                    'label' => _('Home Page Variations')
+                                ),
+                                array(
+                                    'url'   => '#',
+                                    'label' => _('Awesome Products')
+                                ),
+                                array(
+                                    'url'   => '#',
+                                    'label' => _('Features and Benefits')
+                                )
+                            )
+                        ),
+
+
+                        array(
+                            'type'   => 'text',
+                            'header' => _('About Us'),
+                            'text'   => '
+                        
+                        <p>All the Lorem Ipsum generators on the Internet tend to repeat predefined</p>
+                        <br />
+                        <p>An chunks as necessary, making this the first true generator on the Internet. Lorem Ipsum as their default model text, and a search for lorem ipsum will uncover desktop publishing packages many purpose web sites.</p>
+
+                        '
+                        )
+
+                    )
+
+                ),
+                array(
+                    'type'    => 'copyright',
+                    'columns' => array(
+                        array(
+                            'type'  => 'copyright_bundle',
+                            'owner' => 'Aurora',
+
+
+                            'links' => array(
+                                array(
+                                    'label' => _('Terms of Use'),
+                                    'url'   => '#'
+                                ),
+                                array(
+                                    'label' => _('Privacy Policy'),
+                                    'url'   => '#'
+                                )
+
+
+                            )
+
+
+                        ),
+                        array(
+                            'type'  => 'social_links',
+                            'items' => array(
+                                array(
+                                    'icon' => 'fa-facebook',
+                                    'url'  => '#'
+
+                                ),
+                                array(
+                                    'icon' => 'fa-twitter',
+                                    'url'  => '#'
+
+                                ),
+                                array(
+                                    'icon' => 'fa-linkedin',
+                                    'url'  => '#'
+
+                                )
+
+                            )
+
+                        )
+
+                    )
+
+                )
+
             )
 
 
+        );
 
+    } else {
+        return false;
 
-        ),
-        'Store' => array(
-            array(
-                'Timeseries Type'      => 'StoreSales',
-                'Timeseries Frequency' => 'Daily',
-                'Timeseries Scope'     => 'Sales',
-                'Timeseries Parent'    => 'Store',
-            ),
-            array(
-                'Timeseries Type'      => 'StoreSales',
-                'Timeseries Frequency' => 'Weekly',
-                'Timeseries Scope'     => 'Sales',
-                'Timeseries Parent'    => 'Store',
-            ),
-            array(
-                'Timeseries Type'      => 'StoreSales',
-                'Timeseries Frequency' => 'Monthly',
-                'Timeseries Scope'     => 'Sales',
-                'Timeseries Parent'    => 'Store',
-            ),
-            array(
-                'Timeseries Type'      => 'StoreSales',
-                'Timeseries Frequency' => 'Quarterly',
-                'Timeseries Scope'     => 'Sales',
-                'Timeseries Parent'    => 'Store',
-            ),
-            array(
-                'Timeseries Type'      => 'StoreSales',
-                'Timeseries Frequency' => 'Yearly',
-                'Timeseries Scope'     => 'Sales',
-                'Timeseries Parent'    => 'Store',
-            )
+    }
 
-
-
-
-        ),
-
-        'Supplier'        => array(
-            array(
-                'Timeseries Type'      => 'SupplierSales',
-                'Timeseries Frequency' => 'Daily',
-                'Timeseries Scope'     => 'Sales',
-                'Timeseries Parent'    => 'Supplier'
-            ),
-            array(
-                'Timeseries Type'      => 'SupplierSales',
-                'Timeseries Frequency' => 'Weekly',
-                'Timeseries Scope'     => 'Sales',
-                'Timeseries Parent'    => 'Supplier'
-            ),
-            array(
-                'Timeseries Type'      => 'SupplierSales',
-                'Timeseries Frequency' => 'Monthly',
-                'Timeseries Scope'     => 'Sales',
-                'Timeseries Parent'    => 'Supplier'
-            ),
-            array(
-                'Timeseries Type'      => 'SupplierSales',
-                'Timeseries Frequency' => 'Quarterly',
-                'Timeseries Scope'     => 'Sales',
-                'Timeseries Parent'    => 'Supplier'
-            ),
-            array(
-                'Timeseries Type'      => 'SupplierSales',
-                'Timeseries Frequency' => 'Yearly',
-                'Timeseries Scope'     => 'Sales',
-                'Timeseries Parent'    => 'Supplier'
-            ),
-
-
-
-
-
-
-        ),
-        'ProductCategory' => array(
-
-
-            array(
-                'Timeseries Type'      => 'ProductCategorySales',
-                'Timeseries Frequency' => 'Daily',
-                'Timeseries Scope'     => 'Sales',
-                'Timeseries Parent'    => 'Category'
-            ),
-
-            array(
-                'Timeseries Type'      => 'ProductCategorySales',
-                'Timeseries Frequency' => 'Weekly',
-                'Timeseries Scope'     => 'Sales',
-                'Timeseries Parent'    => 'Category'
-            ),
-            array(
-                'Timeseries Type'      => 'ProductCategorySales',
-                'Timeseries Frequency' => 'Monthly',
-                'Timeseries Scope'     => 'Sales',
-                'Timeseries Parent'    => 'Category'
-            ),
-            array(
-                'Timeseries Type'      => 'ProductCategorySales',
-                'Timeseries Frequency' => 'Quarterly',
-                'Timeseries Scope'     => 'Sales',
-                'Timeseries Parent'    => 'Category'
-            ),
-            array(
-                'Timeseries Type'      => 'ProductCategorySales',
-                'Timeseries Frequency' => 'Yearly',
-                'Timeseries Scope'     => 'Sales',
-                'Timeseries Parent'    => 'Category'
-            )
-
-
-        ),
-        'PartCategory'    => array(
-
-
-            array(
-                'Timeseries Type'      => 'PartCategorySales',
-                'Timeseries Frequency' => 'Daily',
-                'Timeseries Scope'     => 'Sales',
-                'Timeseries Parent'    => 'Category'
-            ),
-
-            array(
-                'Timeseries Type'      => 'PartCategorySales',
-                'Timeseries Frequency' => 'Weekly',
-                'Timeseries Scope'     => 'Sales',
-                'Timeseries Parent'    => 'Category'
-            ),
-            array(
-                'Timeseries Type'      => 'PartCategorySales',
-                'Timeseries Frequency' => 'Monthly',
-                'Timeseries Scope'     => 'Sales',
-                'Timeseries Parent'    => 'Category'
-            ),
-            array(
-                'Timeseries Type'      => 'PartCategorySales',
-                'Timeseries Frequency' => 'Quarterly',
-                'Timeseries Scope'     => 'Sales',
-                'Timeseries Parent'    => 'Category'
-            ),
-            array(
-                'Timeseries Type'      => 'PartCategorySales',
-                'Timeseries Frequency' => 'Yearly',
-                'Timeseries Scope'     => 'Sales',
-                'Timeseries Parent'    => 'Category'
-            )
-
-
-        )
-
-    );
-
-    return $time_series;
 
 }
 

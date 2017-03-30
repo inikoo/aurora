@@ -21,7 +21,9 @@ $_product = array(
         'product.customers.favourites' => 'product.customers',
         'product.webpage.settings'      => 'product.webpage',
         'product.webpage.preview'      => 'product.webpage',
-        'product.webpage.analytics'      => 'product.webpage',
+      //  'product.webpage.analytics'      => 'product.webpage',
+        'product.webpage.logbook'      => 'product.webpage',
+
     ),
 
     'tabs' => array(
@@ -40,11 +42,16 @@ $_product = array(
                 ),
 
                 'product.webpage.preview'     => array(
-                    'label' => _('Preview')
+                    'label' => _('Workshop'),
+                    'icon'=>'wrench'
                 ),
-                'product.webpage.analytics'  => array(
-                    'label' => _('Analytics')
+                'product.webpage.logbook'     => array(
+                    'label' => _('Logbook'),
+                    'icon'=>'road'
                 ),
+            //    'product.webpage.analytics'  => array(
+            //        'label' => _('Analytics')
+            //    ),
 
 
             )
@@ -1841,8 +1848,8 @@ $modules = array(
                     'category.webpage.preview'     => 'category.webpage',
                     'category.webpage.settings'     => 'category.webpage',
                     'category.webpage.products'     => 'category.webpage',
-                    'category.webpage.analytics'     => 'category.webpage'
-
+                    'category.webpage.analytics'     => 'category.webpage',
+                    'category.webpage.logbook'     => 'category.webpage'
 
                 ),
                 'tabs'           => array(
@@ -1893,11 +1900,17 @@ $modules = array(
                             ),
 
                             'category.webpage.preview'     => array(
-                                'label' => _('Preview')
+                                'label' => _('Workshop'),
+                                'icon'=>'wrench'
                             ),
-                            'category.webpage.analytics'  => array(
-                                'label' => _('Analytics')
+                            'category.webpage.logbook'     => array(
+                                'label' => _('Logbook'),
+                                'icon'=>'road'
                             ),
+                         //   'category.webpage.analytics'  => array(
+                          //      'label' => _('Analytics'),
+                         //       'icon'=>'line-chart'
+                          //  ),
 
 
                         )
